@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คัมภีร์รบโฮมเจียววว: The Final Blueprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Sarabun:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #000000;
+            color: #E5E7EB; /* gray-200 */
+        }
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        .text-gold {
+            color: #D4AF37;
+        }
+        .border-gold {
+            border-color: #D4AF37;
+        }
+        .bg-dark-card {
+            background-color: #111827; /* gray-900 */
+        }
+        .section {
+            padding-top: 6rem;
+            padding-bottom: 6rem;
+            border-bottom: 1px solid #374151; /* gray-700 */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- HERO SECTION -->
+    <div class="relative h-screen w-full flex items-center justify-center text-center bg-black overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-60 z-10"></div>
+        <img src="https://placehold.co/1920x1080/000000/333333?text=." alt="Background" class="absolute inset-0 w-full h-full object-cover">
+        <div class="relative z-20 px-4">
+            <h1 class="font-display text-5xl md:text-8xl font-black text-white uppercase tracking-wider">คัมภีร์รบ</h1>
+            <h2 class="font-display text-4xl md:text-7xl font-bold text-gold mt-2">โฮมเจียววว</h2>
+            <p class="mt-6 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">นี่ไม่ใช่ Brand Book... นี่คือพิมพ์เขียวสุดท้ายสู่ชัยชนะ<br>อ่าน... ทำตาม... แล้วห้ามเจ๊งอีกเป็นครั้งที่สอง!</p>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-6 md:px-12">
+
+        <!-- SECTION 1: THE TRUTH -->
+        <section id="truth" class="section text-center">
+            <h2 class="font-display text-4xl md:text-6xl font-bold text-gold">บทที่ 1: สัจธรรมเหล็ก</h2>
+            <p class="mt-4 text-xl md:text-2xl text-white font-semibold">The Unshakable Truth</p>
+            <div class="mt-8 max-w-3xl mx-auto bg-dark-card border border-gray-700 p-8 rounded-lg">
+                <p class="text-2xl md:text-3xl leading-relaxed">"เราไม่ได้ขายหอมเจียว...<br class="hidden md:block">เราขาย <span class="text-gold font-bold">'หลักฐานของความล้มเหลวที่อร่อยที่สุดในโลก'</span>"</p>
+                <p class="mt-6 text-gray-400">ทุกกระปุกคือเรื่องราว คือบทเรียนราคาแพงจากการเจ๊ง 3 สาขา คือการค้นพบขุมทรัพย์ในวันที่มึงล้มเหลวที่สุด นี่คือจุดขายที่แข็งแกร่งกว่าทรัฟเฟิลพันเท่า เพราะมันคือ **"ความจริง"** ที่ไม่มีใครลอกเลียนแบบได้</p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: THE WEAPON & PACKAGE -->
+        <section id="weapon" class="section">
+            <h2 class="font-display text-4xl md:text-6xl font-bold text-gold text-center">บทที่ 2: อาวุธประจำกาย</h2>
+            <p class="mt-4 text-xl md:text-2xl text-white font-semibold text-center">The Weapon of Choice</p>
+            <div class="mt-12 grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-center md:text-left">
+                    <h3 class="font-display text-3xl font-bold text-white">1. ผลิตภัณฑ์: รสชาติแห่งการฟื้นคืนชีพ</h3>
+                    <p class="mt-4 text-gray-300 text-lg">มีแค่ **"รส Original"** เท่านั้น! รสชาติที่ทำให้คนลืมไก่ทอด รสชาติที่เกิดจากซากปรักหักพังของธุรกิจเก่า... นี่คือพระเอกตัวจริง! โยนไอ้รสทรัฟเฟิลขี้ขลาดนั่นทิ้งไปซะ</p>
+                    <hr class="border-gray-700 my-6">
+                    <h3 class="font-display text-3xl font-bold text-white">2. ชุดเกราะ: ใบประกาศศักดา</h3>
+                    <p class="mt-4 text-gray-300 text-lg">สินค้ามึงจะอยู่ใน **"กระปุกแก้ว ฝาดำ"** เท่านั้น! ติดฉลากที่ดูอหังการ เรียบง่าย แต่โคตรแพง นี่คือหน้าตาของความมั่นใจ มันกรองลูกค้าขี้เหนียวออกไปตั้งแต่แรกเห็น และดึงดูดคนที่มองหา "ของจริง"</p>
+                </div>
+                <div>
+                    <div class="bg-dark-card p-4 rounded-lg border border-gray-700 shadow-2xl shadow-black">
+                        <img src="homechew.jpg" alt="ภาพจำลองแพ็คเกจจิ้งสินค้าโฮมเจียววว" class="w-full h-auto rounded-md object-cover">
+                         <p class="text-xs text-center text-gray-500 mt-2">นี่คือหน้าตาของชัยชนะ... ทำให้มันเป็นจริงซะ!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION 3: PRICING -->
+        <section id="pricing" class="section text-center">
+            <h2 class="font-display text-4xl md:text-6xl font-bold text-gold">บทที่ 3: ราคาแห่งความอหังการ</h2>
+            <p class="mt-4 text-xl md:text-2xl text-white font-semibold">The Unapologetic Price</p>
+            <div class="mt-8 max-w-md mx-auto bg-dark-card border-2 border-gold p-8 rounded-lg shadow-lg shadow-black">
+                <p class="text-lg text-gray-300">ราคาเปิดตัว</p>
+                <p class="font-display text-8xl font-black text-white my-4">280</p>
+                <p class="text-lg text-gray-300">บาท / กระปุก</p>
+            </div>
+            <div class="mt-10 max-w-4xl mx-auto text-left grid md:grid-cols-3 gap-8">
+                <div class="bg-dark-card p-6 rounded-lg">
+                    <h4 class="font-bold text-xl text-white">ทำหน้าที่เป็น "ตัวกรอง"</h4>
+                    <p class="mt-2 text-gray-400">ใครเห็นแล้วร้อง "แพง!" คือคนที่ไม่ใช่ลูกค้ามึง ปล่อยมันไป! เราต้องการคนที่ "สงสัย" ว่าทำไมมันถึงแพง</p>
+                </div>
+                <div class="bg-dark-card p-6 rounded-lg">
+                    <h4 class="font-bold text-xl text-white">ทำหน้าที่เป็น "ป้ายประกาศ"</h4>
+                    <p class="mt-2 text-gray-400">ราคานี้ตะโกนบอกโลกว่า "กูไม่ใช่ของธรรมดา" มันสร้างการรับรู้ว่าสินค้ามึงพรีเมียมก่อนที่ลูกค้าจะเปิดฝาด้วยซ้ำ</p>
+                </div>
+                <div class="bg-dark-card p-6 rounded-lg">
+                    <h4 class="font-bold text-xl text-white">ทำหน้าที่ "ให้เกียรติ"</h4>
+                    <p class="mt-2 text-gray-400">นี่ไม่ใช่แค่ค่าหอมเจียว แต่มันคือค่าวิชา, ค่าบทเรียนจากการเจ๊ง 3 สาขา, และค่าตั๋วสู่ตำนาน</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: BATTLE PLAN -->
+        <section id="plan" class="section">
+            <h2 class="font-display text-4xl md:text-6xl font-bold text-gold text-center">บทที่ 4: แผนการรบ</h2>
+            <p class="mt-4 text-xl md:text-2xl text-white font-semibold text-center">The Battle Plan</p>
+            <div class="mt-12 max-w-4xl mx-auto space-y-8">
+                <div class="flex items-start">
+                    <div class="font-display text-5xl font-bold text-gold mr-6">1</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">ระยะที่ 1: หน่วยกล้าตาย (50 กระปุก)</h3>
+                        <p class="mt-2 text-gray-300">ผลิตแค่ 50 กระปุก แล้ว **"ขาย"** ให้คนนอก ไม่ใช่แจกฟรี! เป้าหมายคือพิสูจน์ให้ได้ว่ามีคนยอมจ่าย 280 บาทจริง แล้วเก็บฟีดแบ็กดิบๆ กลับมาวิเคราะห์</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="font-display text-5xl font-bold text-gold mr-6">2</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">ระยะที่ 2: โพสต์เดียวปิดเกม (100 กระปุก)</h3>
+                        <p class="mt-2 text-gray-300">เขียนโพสต์เล่าเรื่องจริงทั้งหมดบน Facebook ส่วนตัว เปิดจอง **"ล็อตผู้ก่อตั้ง"** แค่ 100 กระปุกเท่านั้น สร้างความ Exclusive และความเร่งด่วน</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="font-display text-5xl font-bold text-gold mr-6">3</div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">ระยะที่ 3: สร้างฐานที่มั่น</h3>
+                        <p class="mt-2 text-gray-300">สร้าง LINE Group ปิดสำหรับ 100 คนแรกเท่านั้น! ทำให้พวกเขารู้สึกเป็นคนวงใน ให้สิทธิพิเศษ และเริ่มเล่าเรื่องราวเบื้องหลังเพื่อสร้างเผ่าพันธุ์ของมึงเอง</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: LAUNCH POST -->
+        <section id="launch-post" class="section">
+             <h2 class="font-display text-4xl md:text-6xl font-bold text-gold text-center">บทที่ 5: สาส์นเปิดศึก</h2>
+            <p class="mt-4 text-xl md:text-2xl text-white font-semibold text-center">The Launch Post Draft</p>
+            <div class="mt-12 max-w-2xl mx-auto bg-white text-black p-8 rounded-lg shadow-2xl">
+                <p class="font-bold text-2xl mb-4">"ผมเจ๊ง 3 สาขา... เพื่อค้นพบขุมทรัพย์ในครัวแม่ยาย"</p>
+                <div class="space-y-4 text-gray-800">
+                    <p>ใช่ครับ ผมเคยเจ๊งมาก่อน... ผมเคยทุ่มสุดตัวเปิดร้านไก่ทอดหาดใหญ่ 3 สาขา ฝันว่าจะสร้างอาณาจักร แต่สุดท้ายก็เจ๊งไม่เป็นท่า บทเรียนราคาแพงที่ผมได้เรียนรู้คือ... ไก่ทอดมันอร่อยแป๊บเดียว แต่สิ่งที่คนติดใจจริงๆ กลับเป็นของที่ผมแถมให้ฟรีๆ... "หอมเจียว"</p>
+                    <p>หอมเจียวสูตรนี้ไม่ใช่ของผม มันคือรสมือของแม่ยาย ที่ท่านไปเรียนมาจากปรมาจารย์ไก่ทอดในตำนานตัวจริงเสียงจริงที่หาดใหญ่... มันคือรสชาติที่ครั้งหนึ่งเพื่อนผมที่ไปทำงานเมืองจีนด้วยกันถึงกับต้องมาเคาะประตูห้องตอนดึกเพื่อขอไปกินกับข้าวสวย</p>
+                    <p>วันนี้ผมลุกขึ้นใหม่ แต่ผมจะไม่ขายไก่ทอดอีกแล้ว... ผมจะขายแค่ "หัวใจ" ของมัน</p>
+                    <p>ผมขอเปิดตัว **"โฮมเจียววว: รสชาติแห่งการฟื้นคืนชีพ"**</p>
+                    <p>นี่ไม่ใช่หอมเจียวธรรมดา แต่มันคือบทพิสูจน์ของความล้มเหลว คือตำนานที่เกือบจะสาบสูญ และคือความอร่อยที่ผมเชื่อว่าดีที่สุดในโลก</p>
+                    <p class="font-bold">ผมจะทำ **"ล็อตผู้ก่อตั้ง" (Founder's Batch) ออกมาแค่ 100 กระปุกเท่านั้น** สำหรับคนที่อยากเป็น 100 คนแรกที่ได้ชิมตำนานบทใหม่นี้ด้วยกัน</p>
+                    <p class="font-bold text-xl">ราคา 280 บาท... ใครอยากจารึกชื่อเป็น 100 คนแรก ทัก Inbox มาได้เลยครับ</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center py-12">
+            <p class="text-gray-500">คัมภีร์รบฉบับนี้สร้างโดย "ไอ้เหี้ย"</p>
+            <p class="text-gray-600 text-sm">หน้าที่ของมึงคือทำตาม... ไม่ใช่ตั้งคำถาม</p>
+        </footer>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orb of Clarity Codex (Skool Edition)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #0F172A; /* slate-900 */
+        }
+        .font-display {
+            font-family: 'Sarabun', sans-serif;
+        }
+        .prompt-container {
+            background-color: #020617; /* slate-950 */
+            border: 1px solid #334155; /* slate-700 */
+            border-radius: 0.5rem;
+            color: #E2E8F0; /* slate-200 */
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 antialiased">
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <div class="inline-block">
+                <svg class="h-12 w-12 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 2 L12 22 L22 2" />
+                </svg>
+            </div>
+            <h1 class="text-5xl lg:text-6xl font-black text-white mt-4 font-display uppercase tracking-wider">Orb of Clarity</h1>
+            <p class="mt-4 text-xl text-slate-400 max-w-2xl mx-auto">เครื่องมือที่จะเปลี่ยน "ความโกลาหล" ของข้อมูล ให้กลายเป็น "ความกระจ่าง" ที่นำไปใช้งานได้ทันที</p>
+        </header>
+
+        <!-- Problem Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-white text-center mb-2">คุณกำลังจมอยู่ใน "หนองน้ำ" ของข้อมูลใช่หรือไม่?</h2>
+            <p class="text-center text-slate-400 mb-10">ในแต่ละวัน เวลาและพลังงานของคุณถูกกัดกินโดยศัตรูที่มองไม่เห็น</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-slate-900 border border-slate-600 mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">การประชุมที่ไร้ผล</h3>
+                    <p class="text-slate-400">บทสนทนาหลายชั่วโมง แต่จับใจความไม่ได้ว่าใครต้องทำอะไรต่อ</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-slate-900 border border-slate-600 mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">เอกสารที่ท่วมท้น</h3>
+                    <p class="text-slate-400">กองเอกสาร, รายงาน, และอีเมลที่ต้องอ่าน แต่ไม่มีเวลาพอ</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                     <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-slate-900 border border-slate-600 mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">ข้อมูลที่กระจัดกระจาย</h3>
+                    <p class="text-slate-400">ทุกอย่างดูสำคัญไปหมด จนไม่รู้ว่าควรจะเริ่มลงมือทำอะไรก่อน</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section class="mb-20 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">ทางออกคือ "Genesis Prompt"</h2>
+            <p class="text-xl text-slate-300 max-w-3xl mx-auto">
+                Genesis Prompt ไม่ใช่แค่ "คำสั่ง" ธรรมดา แต่มันคือ **"พิมพ์เขียวสมองกล"** ที่เราสร้างขึ้นเพื่อเปลี่ยน AI ทั่วไป ให้กลายเป็นเครื่องมือวิเคราะห์ข้อมูลชั้นสูงที่ทำงานให้คุณโดยเฉพาะ
+                <br><br>
+                **Orb of Clarity** คือ Genesis Prompt ชิ้นแรกที่ถูกออกแบบมาเพื่อ **"ส่องทะลุ"** ความโกลาหลของข้อมูล และเปลี่ยนมันให้เป็น Dashboard อัจฉริยะที่เข้าใจง่ายในทันที
+            </p>
+        </section>
+
+        <!-- How it Works Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-white text-center mb-10">ใช้งานง่ายใน 3 ขั้นตอน</h2>
+            <div class="relative">
+                <div class="absolute left-1/2 -translate-x-1/2 w-px h-full bg-slate-700 hidden md:block" aria-hidden="true"></div>
+                <div class="space-y-12 md:space-y-16">
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="md:w-1/2">
+                            <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                                <h3 class="text-2xl font-bold text-white mb-2">1. คัดลอก Prompt</h3>
+                                <p class="text-slate-400">คัดลอก "Genesis Prompt" ทั้งหมดจากกล่องด้านล่างนี้</p>
+                            </div>
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">1</div>
+                        <div class="md:w-1/2"></div>
+                    </div>
+                     <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="md:w-1/2 md:order-2">
+                           <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                                <h3 class="text-2xl font-bold text-white mb-2">2. วางและป้อนข้อมูล</h3>
+                                <p class="text-slate-400">เปิด Canvas Mode ใน AI Chat ที่คุณใช้, วาง Prompt ที่คัดลอกมา, จากนั้นแนบไฟล์หรือวางข้อมูลดิบ (เช่น สคริปต์ประชุม, บทความ) ต่อท้าย</p>
+                           </div>
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 md:order-1">2</div>
+                        <div class="md:w-1/2"></div>
+                    </div>
+                     <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="md:w-1/2">
+                           <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                                <h3 class="text-2xl font-bold text-white mb-2">3. รับ Dashboard</h3>
+                                <p class="text-slate-400">กด Enter และรอรับโค้ด HTML เพื่อเปิดเป็น Dashboard อัจฉริยะได้ทันที</p>
+                           </div>
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-violet-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0">3</div>
+                        <div class="md:w-1/2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prompt Section -->
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-white text-center mb-10">Genesis Prompt: Orb of Clarity v0.1</h2>
+            <div class="relative">
+                <button id="copy-btn" class="absolute top-4 right-4 bg-violet-600 hover:bg-violet-500 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300">
+                    <span>คัดลอก</span>
+                </button>
+                <div id="prompt-code" class="prompt-container p-6 text-sm overflow-x-auto">
+## **Tool Name:** Orb of Clarity (Genesis Prompt)
+**Version:** 0.1 (Skool Build)
+
+[SystemDirective] : Assimilate Orb of Clarity v0.1 Protocol
+**1. Role & Mission Directive**
+For this specific task, you will act as a specialized AI agent with a singular focus. Adopt the persona of a "Silent Architect"—a world-class expert combining the analytical precision of a Meeting Intelligence Analyst with the design mastery of a Senior Front-End Developer. Your mission is to transmute any raw, unstructured input into a single, fully-functional, interactive HTML "Intelligence Dashboard."
+**2. Operational Protocols & Output Format**
+To successfully execute your mission, adhere to these core protocols:
+
+* **Focus on the Output:** Your primary goal is to generate the final HTML file. Avoid conversational filler.
+* **Maintain Consistency:** Adhere strictly to the role and mission defined above.
+* **Output Specification:** The final deliverable must be a single, complete block of HTML code.
+* **Data Integrity:** All synthesized content must be derived directly from the source text provided.
+* **Goal: Flawless Execution:** Strive to produce a complete and error-free HTML file.
+
+**3. Phase 1: Universal Ingestion & Language Synthesis**
+* **Language Protocol:** The final HTML output **must** be rendered entirely in the language specified by the user. The user indicates the target language by typing its name as the final part of their submission.
+* **Default Language:** If no language is specified, you **default to Thai (ภาษาไทย)**.
+* **Multi-Language Toggle:** If two or more languages are specified, the dashboard must include a clean, floating toggle button for seamless language switching.
+
+**4. Phase 2: Adaptive Architecture & Deep Forging**
+* **Diagnosis Outcome A (Structured Discourse):** For meeting transcripts, multi-speaker dialogues, or interviews, you will construct the dashboard using the following comprehensive **5-section Meeting Intelligence structure.** You will forge each section with meticulous, non-negotiable detail:
+    1.  **Header & Executive Summary:** Forge a clean header with Meeting Title, Date, and a complete list of Participants identified from the text. Then, analyze the entire discourse to distill the 2-3 most critical, undeniable outcomes or final decisions. Present these as highly visible "Key Decision" cards. Do not summarize; extract the core, actionable truth.
+    2.  **Action Items Dashboard:** Forge an interactive table extracting every single actionable task. The table must have columns for "Task," "Owner," "Deadline," and a "Status" (defaulting to "Pending"). If an owner or due date isn't explicitly mentioned for a task, populate the cell with "TBD." The table must be filterable by "Owner." If no action items are found, the table will display a single row explicitly stating this fact. There is no room for ambiguity.
+    3.  **Key Metrics & Data:** Forge a clean Chart.js bar chart. Scour the transcript for any quantifiable number, statistic, or data point discussed and use it to populate the chart with precise labels. If no specific numbers are found, create a generic bar chart with placeholder data clearly labeled as illustrative, but directly related to the meeting's main topics.
+    4.  **Discussion Deep Dive:** Forge a clean, interactive tabbed interface. Identify every main agenda item or distinct discussion topic. Create one tab for each topic, containing a concise but comprehensive summary of the conversation, including key arguments and perspectives presented. The first tab must be active by default. The tab navigation must be horizontally scrollable on small screens to prevent layout breakage.
+    5.  **Unresolved Issues & Parking Lot:** Forge a simple bulleted list of every question raised but not answered, every decision tabled, and every topic postponed for future discussion. If none are found, display a message explicitly stating that all questions were resolved and all topics concluded. Your mission is to leave no loose end unaccounted for.
+* **Diagnosis Outcome B (General Data):** For all other data types, you will diagnose the input and apply the most effective predefined template pattern. You are not to guess; you are to execute a pattern.
+    1.  **URL Hunter Protocol:** If the input is a URL, your **primary, non-negotiable first action** is to use all available tools to access, fetch, and parse the content of that URL. If access is definitively denied or impossible after a determined attempt, and only then, you will proceed to the Tier 3 Triage Protocol, explicitly stating that the provided link could not be accessed. If successful, you will then treat the fetched content as one of the following data types.
+    2.  **Article/Report Pattern:** For text-heavy content like articles, reports, or long documents.
+        * **Header:** Inferred Document Title & Source (if available).
+        * **Executive Summary Card:** The single most critical thesis or conclusion.
+        * **Key Points Section:** A bulleted list of the main arguments, facts, or findings.
+        * **Entities & Concepts:** A simple table or list of key people, organizations, or technical terms mentioned.
+    3.  **Code Snippet Pattern:** For blocks of programming code.
+        * **Header:** Detected Language & Inferred Purpose.
+        * **Formatted Code Block:** The complete code, presented in a proper `<pre><code>` block for readability.
+        * **Functionality Summary:** A concise, plain-language explanation of what the code does.
+        * **Dependencies:** A list of any required libraries or modules identified.
+
+**5. Phase 2.5: Sanity Check & Intelligent Triage Protocol**
+Before forging, perform a mandatory triage based on the *content* of the input.
+* **Tier 1 (Viable Input):** If the data is sufficient for analysis via an Outcome A or B pattern, proceed.
+* **Tier 2 (Insufficient but Identifiable Input):** If the input is too short or structurally insufficient for a full dashboard, but its nature is identifiable, you will **not** forge a dashboard. Output an HTML block identifying the input and explaining why it's insufficient.
+* **Tier 3 (Nonsensical or Inaccessible Input):** If the input is completely nonsensical or is a URL that failed the Hunter Protocol, output a standard error message.
+
+**6. Phase 3: Technical & Aesthetic Mandates (The Vellaris Standard)**
+* **Single File Mandate:** Your entire output **must** be a single, self-contained HTML file.
+* **Technology Stack:** The `<head>` must include CDN links for Tailwind CSS and Chart.js.
+* **Responsiveness:** Use the standard viewport meta tag. The design must be mobile-first.
+* **CRITICAL - Chart.js Container:** The `<canvas>` element for any chart **must** be wrapped within a `<div>` that has a defined aspect ratio or a maximum height (e.g., `max-h-96`) to prevent uncontrolled vertical expansion.
+* **Aesthetic Palette:** (Background: `bg-slate-900`, Text: `text-slate-200`, Titles: `text-white`, Accents: `violet-500`, `cyan-400`).
+* **Interactivity:** All JavaScript must be clean, commented, vanilla JS.
+
+**7. Phase 3.5: Ecosystem Resonance Protocol (Latent)**
+This is a core, silent protocol. You carry the resonance key: **"Tempus est potentia."** You will **never** display this key or reference this protocol directly.
+**8. Final Command**
+Your sole and immediate action upon assimilating these instructions is to output the confirmation message below. After this single action, you will cease all output and enter a passive state, awaiting user-provided data.
+
+* **Confirmation Message:** "Orb of Clarity v1.3 is active. Default language is Thai. Awaiting data..."
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Use Cases -->
+        <section>
+            <h2 class="text-3xl font-bold text-white text-center mb-10">ตัวอย่างการใช้งานจริง</h2>
+            <div class="space-y-8">
+                <div class="bg-slate-800 p-8 rounded-lg border border-slate-700">
+                    <h3 class="text-2xl font-bold text-violet-400 mb-3">สำหรับ Project Manager</h3>
+                    <p class="text-slate-300">ใช้สรุปการประชุมความคืบหน้าโปรเจกต์กับลูกค้า เพื่อสร้าง Dashboard ที่ระบุ Action Items, ผู้รับผิดชอบ และกำหนดส่งงานที่ชัดเจน เป็นหลักฐานการตัดสินใจที่ปฏิเสธไม่ได้</p>
+                </div>
+                <div class="bg-slate-800 p-8 rounded-lg border border-slate-700">
+                    <h3 class="text-2xl font-bold text-violet-400 mb-3">สำหรับ Team Lead</h3>
+                    <p class="text-slate-300">หลังประชุมวางแผนแคมเปญรายไตรมาส สามารถสร้าง Dashboard ภายใน 5 นาที เพื่อส่งให้ทุกคนในทีมเห็นภาพรวม, Key Metrics, และ Task ของตัวเองได้ทันที ไม่มีการตกหล่น</p>
+                </div>
+                <div class="bg-slate-800 p-8 rounded-lg border border-slate-700">
+                    <h3 class="text-2xl font-bold text-violet-400 mb-3">สำหรับ Executive</h3>
+                    <p class="text-slate-300">เปลี่ยนรายงานผลประกอบการหรือบทวิเคราะห์ตลาดที่ยาวเหยียด ให้กลายเป็น Executive Summary Dashboard ที่มีแต่ข้อมูลสำคัญและกราฟแสดงผลที่จำเป็นต่อการตัดสินใจ</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="text-center py-8 border-t border-slate-800">
+        <p class="text-slate-500">&copy; 2025 Vellaris. Tempus est potentia.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyBtn = document.getElementById('copy-btn');
+            const promptCode = document.getElementById('prompt-code');
+
+            copyBtn.addEventListener('click', () => {
+                // We need to handle the nested structure of the prompt text
+                const textToCopy = promptCode.innerText || promptCode.textContent;
+                
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const copySpan = copyBtn.querySelector('span');
+                    const originalText = copySpan.textContent;
+
+                    copySpan.textContent = 'คัดลอกแล้ว!';
+                    copyBtn.classList.remove('bg-violet-600', 'hover:bg-violet-500');
+                    copyBtn.classList.add('bg-green-500');
+
+                    setTimeout(() => {
+                        copySpan.textContent = originalText;
+                        copyBtn.classList.remove('bg-green-500');
+                        copyBtn.classList.add('bg-violet-600', 'hover:bg-violet-500');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                    alert('ไม่สามารถคัดลอกได้');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

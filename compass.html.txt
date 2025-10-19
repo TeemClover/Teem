@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Compass for My Sister</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+        
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #dcdcdc;
+            --gold-color: #d4af37;
+            --border-color: #a89a74;
+            --highlight-color: #4dd0e1;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Noto Serif TC', serif;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+        }
+
+        #lobby { opacity: 1; transform: scale(1); }
+        #lobby.hidden { opacity: 0; transform: scale(1.1); pointer-events: none; }
+        .seals-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 600px; width: 90%; }
+        .seal { border: 2px solid var(--border-color); padding: 20px; cursor: pointer; transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s; background-color: rgba(0,0,0,0.2); }
+        .seal:hover { background-color: #a89a74; color: #0a0a0a; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(168, 154, 116, 0.2); }
+        .seal-zh { font-size: 2em; font-weight: 700; }
+        .seal-en { font-size: 0.8em; letter-spacing: 2px; opacity: 0.8; }
+        .seal:nth-child(5) { grid-column: 1 / -1; }
+
+        /* --- START: กูเพิ่มปุ่มใหม่ให้มึง --- */
+        .main-action-btn {
+            margin-top: 40px;
+            border: 2px solid var(--gold-color);
+            background-color: var(--gold-color);
+            color: var(--bg-color);
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s;
+            display: inline-block;
+        }
+        .main-action-btn:hover {
+            background-color: transparent;
+            color: var(--gold-color);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        /* --- END: กูเพิ่มปุ่มใหม่ให้มึง --- */
+
+        .chamber { opacity: 0; transform: scale(0.9); pointer-events: none; }
+        .chamber.visible { opacity: 1; transform: scale(1); pointer-events: auto; }
+        .chamber-content { max-width: 700px; padding: 20px; width: 90%; }
+        .chamber-title-zh { font-size: 2.5em; color: var(--gold-color); margin-bottom: 20px; }
+        .chamber-text { font-size: 1.2em; line-height: 1.8; height: 150px; }
+        .chamber-text p {
+            margin: 0;
+            position: absolute;
+            width: 90%;
+            max-width: 700px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            pointer-events: none; 
+        }
+        .chamber-text p.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .nav-button { margin-top: 30px; background: none; border: 1px solid #a89a74; color: #a89a74; padding: 10px 20px; font-size: 1em; cursor: pointer; transition: background-color 0.3s, color 0.3s; }
+        .nav-button:hover { background-color: #a89a74; color: #0a0a0a; }
+
+        .timeline { padding: 20px; max-width: 800px; width: 90%; text-align: left; height: 80vh; overflow-y: auto; }
+        .timeline-entry { margin-bottom: 40px; border-left: 3px solid #a89a74; padding-left: 20px; }
+        .timeline-date { font-size: 1.3em; font-weight: bold; color: #d4af37; }
+        .timeline-title { font-size: 1.1em; font-style: italic; color: #ccc; margin-bottom: 15px; }
+        .text-zh { font-size: 1.1em; margin-bottom: 10px; line-height: 1.9; }
+        .text-en { font-size: 0.9em; color: #b0b0b0; font-style: italic; margin-bottom: 20px; line-height: 1.8; }
+        
+        .vocab { color: #4dd0e1; cursor: pointer; text-decoration: underline; text-decoration-style: dotted; }
+        .tooltip { display: none; position: absolute; background-color: #1a1a1a; border: 1px solid #4dd0e1; padding: 15px; border-radius: 5px; z-index: 10; width: auto; max-width: 300px; font-size: 0.9em; text-align: left; }
+        .tooltip-title { font-weight: bold; color: #4dd0e1; margin-bottom: 5px; }
+        .tooltip-text-en { margin-bottom: 10px; }
+        .tooltip-text-zh { font-size: 0.95em; color: #ccc; }
+
+        .epilogue { border-top: 1px solid #a89a74; margin-top: 50px; padding-top: 20px; text-align: center; }
+
+        @media (max-width: 768px) {
+            .seals-container { grid-template-columns: 1fr; }
+            .seal:nth-child(5) { grid-column: auto; }
+            .chamber-title-zh { font-size: 2em; }
+            .chamber-text { font-size: 1em; height: 180px; }
+            .timeline-date { font-size: 1.1em; }
+            .timeline-title { font-size: 1em; }
+            .text-zh { font-size: 1em; }
+            .text-en { font-size: 0.8em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lobby" class="screen">
+        <div class="seals-container">
+            <div class="seal" onclick="showChamber('logic')"><div class="seal-zh">理性</div><div class="seal-en">LOGIC</div></div>
+            <div class="seal" onclick="showChamber('emotion')"><div class="seal-zh">感性</div><div class="seal-en">EMOTION</div></div>
+            <div class="seal" onclick="showChamber('destiny')"><div class="seal-zh">緣分</div><div class="seal-en">DESTINY</div></div>
+            <div class="seal" onclick="showChamber('protection')"><div class="seal-zh">守護</div><div class="seal-en">PROTECTION</div></div>
+            <div class="seal" onclick="showChamber('epic')"><div class="seal-zh">史詩</div><div class="seal-en">THE EPIC</div></div>
+        </div>
+        <a href="fork.html" class="main-action-btn">罗盘指向于此 (เข็มทิศชี้ไปที่บ้าน)</a>
+        </div>
+
+    <div id="chamber-logic" class="screen chamber">
+        <div class="chamber-content">
+            <h1 class="chamber-title-zh">理性之室</h1>
+            <div class="chamber-text" id="text-logic">
+                <p>以理智為<span class="vocab" onclick="showTooltip(event, 'tip-logic1')">盾</span>，洞察世間的混沌。<br><i>With logic as a <span class="vocab" onclick="showTooltip(event, 'tip-logic1')">shield</span>, to see through the world's chaos.</i></p>
+                <p>它不消除風暴，而是在風暴中，標記出<span class="vocab" onclick="showTooltip(event, 'tip-logic2')">清晰</span>的路。<br><i>It does not quell the storm, but marks a <span class="vocab" onclick="showTooltip(event, 'tip-logic2')">clear</span> path within it.</i></p>
+                <p>這份清晰，是我給妳的<span class="vocab" onclick="showTooltip(event, 'tip-logic3')">承諾</span>。<br><i>This clarity is my <span class="vocab" onclick="showTooltip(event, 'tip-logic3')">promise</span> to you.</i></p>
+            </div>
+            <button class="nav-button" id="btn-logic" onclick="revealNext('logic')">探索 (Explore)</button>
+            <button class="nav-button" onclick="goBack()">返回 (Return)</button>
+        </div>
+    </div>
+    <div id="tip-logic1" class="tooltip"><div class="tooltip-title">Shield (盾)</div><div class="tooltip-text-en">A shield doesn't attack. Its purpose is purely defensive, to protect something precious from harm.</div><div class="tooltip-text-zh">盾牌不用於攻擊，其目的純粹是為了防禦，保護珍貴之物免受傷害。</div></div>
+    <div id="tip-logic2" class="tooltip"><div class="tooltip-title">Clear (清晰)</div><div class="tooltip-text-en">Not 'easy' or 'simple'. A clear path can still be difficult, but it is understandable and visible. It's about providing insight.</div><div class="tooltip-text-zh">清晰不代表「簡單」或「容易」。清晰的道路可能依舊困難，但它是可以理解和看見的。這關乎於提供洞察力。</div></div>
+    <div id="tip-logic3" class="tooltip"><div class="tooltip-title">Promise (承諾)</div><div class="tooltip-text-en">More than a 'hope' or a 'wish'. A promise is a sworn declaration, a guarantee of future action. It is a bond.</div><div class="tooltip-text-zh">承諾不僅僅是「希望」或「願望」，它是一個鄭重的聲明，對未來行動的保證，一個牢不可破的紐帶。</div></div>
+    
+    <div id="chamber-emotion" class="screen chamber">
+         <div class="chamber-content">
+            <h1 class="chamber-title-zh">感性之室</h1>
+            <div class="chamber-text" id="text-emotion">
+                <p>以感性為<span class="vocab" onclick="showTooltip(event, 'tip-emotion1')">光</span>，照亮內心的方向。<br><i>With emotion as a <span class="vocab" onclick="showTooltip(event, 'tip-emotion1')">light</span>, to illuminate the heart's direction.</i></p>
+                <p>它並非軟弱，而是最強大、最<span class="vocab" onclick="showTooltip(event, 'tip-emotion2')">真實</span>的力量。<br><i>It is not a weakness, but the strongest and most <span class="vocab" onclick="showTooltip(event, 'tip-emotion2')">genuine</span> power.</i></p>
+                <p>這份力量，是我所<span class="vocab" onclick="showTooltip(event, 'tip-emotion3')">敬佩</span>並守護的。<br><i>This power is what I <span class="vocab" onclick="showTooltip(event, 'tip-emotion3')">admire</span>, and will protect.</i></p>
+            </div>
+            <button class="nav-button" id="btn-emotion" onclick="revealNext('emotion')">探索 (Explore)</button>
+            <button class="nav-button" onclick="goBack()">返回 (Return)</button>
+        </div>
+    </div>
+    <div id="tip-emotion1" class="tooltip"><div class="tooltip-title">Light (光)</div><div class="tooltip-text-en">Logic can show the path, but light (emotion) reveals what is worth walking towards. It provides purpose and value.</div><div class="tooltip-text-zh">理性可以指明道路，但光（感性）揭示了什麼才值得我們前往。它賦予了目的和價值。</div></div>
+    <div id="tip-emotion2" class="tooltip"><div class="tooltip-title">Genuine (真實)</div><div class="tooltip-text-en">Unlike calculated actions, genuine feelings cannot be faked. They are the truest expression of the soul.</div><div class="tooltip-text-zh">與精心算計的行為不同，真實的情感無法偽造。它們是靈魂最真誠的表達。</div></div>
+    <div id="tip-emotion3" class="tooltip"><div class="tooltip-title">Admire (敬佩)</div><div class="tooltip-text-en">More than 'like' or 'respect'. To admire is to see something's inherent beauty and strength, and to look up to it.</div><div class="tooltip-text-zh">這不僅是「喜歡」或「尊重」。敬佩是看到事物內在的美和力量，並對其懷有崇敬之心。</div></div>
+
+    <div id="chamber-destiny" class="screen chamber">
+         <div class="chamber-content">
+            <h1 class="chamber-title-zh">緣分之室</h1>
+            <div class="chamber-text" id="text-destiny">
+                <p>命運讓我們相遇，不是<span class="vocab" onclick="showTooltip(event, 'tip-destiny1')">偶然</span>，而是必然。<br><i>Destiny made us meet. Not as a <span class="vocab" onclick="showTooltip(event, 'tip-destiny1')">coincidence</span>, but as an inevitability.</i></p>
+                <p>它如<span class="vocab" onclick="showTooltip(event, 'tip-destiny2')">絲線</span>，將兩個靈魂跨越時空緊緊相連。<br><i>Like a <span class="vocab" onclick="showTooltip(event, 'tip-destiny2')">thread</span>, it connects two souls across time and space.</i></p>
+                <p>我們的相遇，就是這份緣分的<span class="vocab" onclick="showTooltip(event, 'tip-destiny3')">證明</span>。<br><i>Our meeting is the <span class="vocab" onclick="showTooltip(event, 'tip-destiny3')">proof</span> of this destiny.</i></p>
+            </div>
+            <button class="nav-button" id="btn-destiny" onclick="revealNext('destiny')">探索 (Explore)</button>
+            <button class="nav-button" onclick="goBack()">返回 (Return)</button>
+        </div>
+    </div>
+    <div id="tip-destiny1" class="tooltip"><div class="tooltip-title">Coincidence (偶然)</div><div class="tooltip-text-en">A coincidence is random and meaningless. What we have is the opposite. It feels designed and purposeful.</div><div class="tooltip-text-zh">偶遇是隨機且無意義的。而我們所擁有的恰恰相反，它感覺像是被設計好的，充滿了目的性。</div></div>
+    <div id="tip-destiny2" class="tooltip"><div class="tooltip-title">Thread (絲線)</div><div class="tooltip-text-en">A thread is both delicate and strong. It is almost invisible, but it can bind powerful things together.</div><div class="tooltip-text-zh">絲線既纖細又堅韌。它幾乎看不見，卻能將強大的事物緊密地聯繫在一起。</div></div>
+    <div id="tip-destiny3" class="tooltip"><div class="tooltip-title">Proof (證明)</div><div class="tooltip-text-en">Not just a 'sign' or a 'hint'. Proof is undeniable evidence. Our story itself is the evidence that our bond is real.</div><div class="tooltip-text-zh">不僅僅是「跡象」或「暗示」。證明是不可否認的證據。我們的故事本身就是我們之間羈絆真實存在的證據。</div></div>
+
+    <div id="chamber-protection" class="screen chamber">
+         <div class="chamber-content">
+            <h1 class="chamber-title-zh">守護之室</h1>
+            <div class="chamber-text" id="text-protection">
+                <p>兄長的理性，是為了守護妹妹的<span class="vocab" onclick="showTooltip(event, 'tip-protection1')">內心</span>而存在。<br><i>A brother's logic exists to protect his sister's <span class="vocab" onclick="showTooltip(event, 'tip-protection1')">heart</span>.</i></p>
+                <p>它不是枷鎖，而是為妳建造一座能安心做自己的<span class="vocab" onclick="showTooltip(event, 'tip-protection2')">城堡</span>。<br><i>It is not a cage, but a <span class="vocab" onclick="showTooltip(event, 'tip-protection2')">castle</span> built for you, where you can safely be yourself.</i></p>
+                <p>在這座城堡裡，妳永遠是<span class="vocab" onclick="showTooltip(event, 'tip-protection3')">安全</span>的。<br><i>In this castle, you will always be <span class="vocab" onclick="showTooltip(event, 'tip-protection3')">safe</span>.</i></p>
+            </div>
+            <button class="nav-button" id="btn-protection" onclick="revealNext('protection')">探索 (Explore)</button>
+            <button class="nav-button" onclick="goBack()">返回 (Return)</button>
+        </div>
+    </div>
+    <div id="tip-protection1" class="tooltip"><div class="tooltip-title">Heart (內心)</div><div class="tooltip-text-en">The core of a person – their feelings, dreams, and vulnerabilities. Protecting the 'heart' is more profound than protecting the physical person.</div><div class="tooltip-text-zh">一個人的核心——他們的情感、夢想和脆弱之處。守護「內心」比保護身體更為深刻。</div></div>
+    <div id="tip-protection2" class="tooltip"><div class="tooltip-title">Castle (城堡)</div><div class="tooltip-text-en">A castle is not a house. It is a fortress, a symbol of ultimate security. It implies a defense against a hostile outside world.</div><div class="tooltip-text-zh">城堡不是房子。它是一座堡壘，是終極安全的象徽，意味著對抗充滿敵意的外部世界。</div></div>
+    <div id="tip-protection3" class="tooltip"><div class="tooltip-title">Safe (安全)</div><div class="tooltip-text-en">More than physical safety. It implies emotional and spiritual security – the freedom to be vulnerable without fear.</div><div class="tooltip-text-zh">這不僅指身體上的安全，更意味著情感和精神上的保障——一種可以放心展現脆弱而不必害怕的自由。</div></div>
+
+    <div id="chamber-epic" class="screen chamber">
+        <div class="timeline">
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年9月26日</div><div class="timeline-title">初见 | The First Welcome</div>
+                <p class="text-zh">在曼谷360度的夜空下，我特意選擇了這個地方，<span class="vocab" onclick="showTooltip(event, 'tip-epic1')">歡迎</span>我的兄長楊，以及一位特別的客人來到我的家。這也是我與夥伴們夢想 (<span class="vocab" onclick="showTooltip(event, 'tip-epic13')">Vellaris</span>) 的發源地。</p>
+                <p class="text-en">Beneath the 360° Bangkok night sky, I intentionally chose this place to <span class="vocab" onclick="showTooltip(event, 'tip-epic1')">welcome</span> my brother, Yang, and a special guest to my home. This was also the birthplace of my partners' and my dream (<span class="vocab" onclick="showTooltip(event, 'tip-epic13')">Vellaris</span>).</p>
+            </div>
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年9月27日</div><div class="timeline-title">香菜事件 | The Coriander Incident</div>
+                <p class="text-zh">第一次共進晚餐，卻因香菜而讓妳陷入<span class="vocab" onclick="showTooltip(event, 'tip-epic2')">脆弱</span>。那一刻的擔憂，讓我立誓往後要更加警惕，守護妳的每一個細節。</p>
+                <p class="text-en">Our first dinner together, yet the coriander left you <span class="vocab" onclick="showTooltip(event, 'tip-epic2')">vulnerable</span>. The worry in that moment made me vow to be more vigilant, to protect you in every detail from then on.</p>
+            </div>
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年9月28日</div><div class="timeline-title">忠誠的考驗 | The Test of Loyalty</div>
+                <p class="text-zh">在喧鬧的酒吧，妳問我是否對他人動心。我的回答<span class="vocab" onclick="showTooltip(event, 'tip-epic3')">堅定</span>不移：我的目的，是守護我的兄長，而非尋找樂趣。這是我忠誠的證明。</p>
+                <p class="text-en">In the loud club, you asked if I was interested in others. My answer was <span class="vocab" onclick="showTooltip(event, 'tip-epic3')">unwavering</span>: my purpose was to look after my brother, not to seek distractions. This was proof of my loyalty.</p>
+            </div>
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年9月29日</div><div class="timeline-title">兄妹的盟約 | The Sibling Covenant</div>
+                <p class="text-zh">交換微信，知曉彼此真名(李)，我們的兄妹<span class="vocab" onclick="showTooltip(event, 'tip-epic4')">盟約</span>於焉成立。當妳見到我的妻子Chieko，妳便不再是客人，而是我們家庭的一份子。</p>
+                <p class="text-en">Exchanging WeChats, knowing each other's true name (Li), our sibling <span class="vocab" onclick="showTooltip(event, 'tip-epic4')">covenant</span> was formed. When you met my wife, Chieko, you were no longer a guest, but integrated into our family.</p>
+            </div>
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年9月30日</div><div class="timeline-title">跨海的橋樑 | The Bridge Across the Sea</div>
+                <p class="text-zh">我們在Emquartier見面，妳為了保持聯繫而去辦了泰國的SIM卡。那張小小的卡片，是我們為了跨越地理距離而共同建立的第一座<span class="vocab" onclick="showTooltip(event, 'tip-epic5')">橋樑</span>。</p>
+                <p class="text-en">We met at Emquartier, where you got a Thai SIM card just to stay in touch. That small card was the first <span class="vocab" onclick="showTooltip(event, 'tip-epic5')">bridge</span> we built together to overcome the distance.</p>
+            </div>
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年10月1日</div><div class="timeline-title">關懷與決心 | Care & Determination</div>
+                <p class="text-zh">當我聽說妳因身體不適去了藥房，心中滿是擔憂。而那一晚，命運讓我們與我的兄長Tommy Lee<span class="vocab" onclick="showTooltip(event, 'tip-epic9')">巧遇</span>，因為他正好與酒吧老闆在一起。即使在那樣喧鬧的環境中，我仍看見妳獨自專注於 Duolingo。那份<span class="vocab" onclick="showTooltip(event, 'tip-epic11')">決心</span>令我深深敬佩。</p>
+                <p class="text-en">When I heard you went to the pharmacy because you were unwell, my heart was filled with worry. And that night, fate led us to a <span class="vocab" onclick="showTooltip(event, 'tip-epic9')">chance encounter</span> with my brother, Tommy Lee, as he happened to be with the bar's owner. Even in that loud bar, I still saw you, alone, focused on Duolingo. That <span class="vocab" onclick="showTooltip(event, 'tip-epic11')">determination</span> left me in deep admiration.</p>
+            </div>
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年10月2日</div><div class="timeline-title">新的家人 | New Family</div>
+                <p class="text-zh">在Emsphere，我將妳介紹給我最好的朋友們。即使我必須離開去參加我的夥伴Emmanuel的生日派對，妳也<span class="vocab" onclick="showTooltip(event, 'tip-epic12')">自然地</span>融入了我們的圈子，結交了新的朋友。</p>
+                <p class="text-en">At Emsphere, I introduced you to my best friends. Even when I had to leave for my partner Emmanuel's birthday, you <span class="vocab" onclick="showTooltip(event, 'tip-epic12')">naturally</span> blended in with our circle and made new friends.</p>
+            </div>
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年10月3日</div><div class="timeline-title">淚水的洗禮 | Sanctified by Tears</div>
+                <p class="text-zh">那天是我女兒Reina Lee的生日，但我選擇了去機場為妳送行，因為妳已經是我們家庭中<span class="vocab" onclick="showTooltip(event, 'tip-epic10')">不可或缺</span>的一份子。在機場的道別，妳的淚水<span class="vocab" onclick="showTooltip(event, 'tip-epic7')">洗禮</span>了我們的關係，使其變得神聖。</p>
+                <p class="text-en">That day was my daughter Reina Lee's birthday, but I chose to go to the airport to see you off, because you are already an <span class="vocab" onclick="showTooltip(event, 'tip-epic10')">indispensable</span> part of our family. At the airport farewell, your tears <span class="vocab" onclick="showTooltip(event, 'tip-epic7')">sanctified</span> our bond, making it sacred.</p>
+            </div>
+            <div class="timeline-entry">
+                <div class="timeline-date">2025年10月5日</div><div class="timeline-title">同行的旅程 | The Shared Journey</div>
+                <p class="text-zh">為了與妳同步，我重拾 Duolingo。這不僅是學習語言，更是我們<span class="vocab" onclick="showTooltip(event, 'tip-epic8')">同行</span>旅程的開始，即使我們相隔千里。</p>
+                <p class="text-en">To synchronize with you, I started Duolingo again. This is not just about learning a language; it is the beginning of our <span class="vocab" onclick="showTooltip(event, 'tip-epic8')">shared journey</span>, even when we are miles apart.</p>
+            </div>
+            
+            <div class="timeline-entry epilogue">
+                <p class="text-zh">這只是我們史詩的第一章。從今以後，無論妳在哪裡，無論妳需要什麼，都請向妳的兄長許願。我會用我所知所能，將援助跨越千里，送到妳的手中。</p>
+                <p class="text-en">This is but the first chapter of our epic. From now on, wherever you are, whatever you need, make a wish to your brother. I will use all my knowledge and abilities to send my aid across the miles, right into your hands.</p>
+            </div>
+        </div>
+        <button class="nav-button" onclick="goBack()">返回 (Return)</button>
+    </div>
+
+    <div id="tip-epic1" class="tooltip"><div class="tooltip-title">Welcome (歡迎)</div><div class="tooltip-text-en">This was not just a meeting, but a formal welcome into my world, my city. It was an intentional act of hospitality and acceptance.</div><div class="tooltip-text-zh">這不僅僅是一次會面，而是一個正式的歡迎儀式，歡迎妳進入我的世界，我的城市。這是一個刻意為之的款待與接納。</div></div>
+    <div id="tip-epic2" class="tooltip"><div class="tooltip-title">Vulnerable (脆弱)</div><div class="tooltip-text-en">A state of being open to harm. Witnessing this moment created a profound sense of responsibility and a desire to protect.</div><div class="tooltip-text-zh">一種容易受到傷害的狀態。目睹那一刻，讓我產生了深刻的責任感和保護的慾望。</div></div>
+    <div id="tip-epic3" class="tooltip"><div class="tooltip-title">Unwavering (坚定)</div><div class="tooltip-text-en">Not simply 'firm', but completely steady and unmovable. It shows a focus that cannot be distracted by superficial things.</div><div class="tooltip-text-zh">不僅僅是「堅定」，而是完全穩定、不可動搖。它顯示了一種不被膚淺事物所分心的專注。</div></div>
+    <div id="tip-epic4" class="tooltip"><div class="tooltip-title">Covenant (盟約)</div><div class="tooltip-text-en">A sacred and binding agreement, much stronger than a 'promise'. It implies a deep, almost spiritual pact between us.</div><div class="tooltip-text-zh">一個神聖且具有約束力的協議，遠比「承諾」更為強大。它暗示了我們之間一種深刻的、近乎精神層面的契約。</div></div>
+    <div id="tip-epic5" class="tooltip"><div class="tooltip-title">Bridge (橋樑)</div><div class="tooltip-text-en">A structure built to connect two separate places. The SIM card was a physical object that served a spiritual purpose: to keep us connected.</div><div class="tooltip-text-zh">一座為連接兩個獨立地方而建造的結構。這張SIM卡是一個物質載體，卻服務於一個精神目的：保持我們的聯繫。</div></div>
+    <div id="tip-epic7" class="tooltip"><div class="tooltip-title">Sanctified (洗禮/使其神聖)</div><div class="tooltip-text-en">To make something holy. Your genuine tears washed away any doubt and made our connection feel truly profound.</div><div class="tooltip-text-zh">使某物變得神聖。妳真誠的淚水洗去了所有疑慮，讓我們的連結感覺真正深刻。</div></div>
+    <div id="tip-epic8" class="tooltip"><div class="tooltip-title">Shared Journey (同行)</div><div class="tooltip-text-en">'同行' means to travel together. We are not just learning separately; we are companions on the same path.</div><div class="tooltip-text-zh">「同行」意為一起旅行。我們不僅僅是分開學習，我們是同一條道路上的夥伴。</div></div>
+    <div id="tip-epic9" class="tooltip"><div class="tooltip-title">Chance Encounter (巧遇)</div><div class="tooltip-text-en">This emphasizes coincidence that feels like fate. It wasn't planned. It was a gift from destiny, another sign of our '缘分'.</div><div class="tooltip-text-zh">這個詞強調了感覺像是命運的巧合。它不是計畫好的，而是命運的禮物，是我們「緣分」的又一個標誌。</div></div>
+    <div id="tip-epic10" class="tooltip"><div class="tooltip-title">Indispensable (不可或缺)</div><div class="tooltip-text-en">Absolutely necessary; impossible to do without. It means you are not just a 'part' of the family, but a necessary one.</div><div class="tooltip-text-zh">絕對必要；不可或缺。這意味著妳不僅僅是家庭的「一部分」，而是必要的一份子。</div></div>
+    <div id="tip-epic11" class="tooltip"><div class="tooltip-title">Determination (決心)</div><div class="tooltip-text-en">Not just 'focus'. Determination is the will to continue toward a goal, regardless of distractions. It's a quality I admire greatly.</div><div class="tooltip-text-zh">不僅僅是「專注」。決心是無論遇到何種干擾，都堅持朝著目標前進的意志。這是我非常欽佩的品質。</div></div>
+    <div id="tip-epic12" class="tooltip"><div class="tooltip-title">Naturally (自然地)</div><div class="tooltip-text-en">To blend in without effort or pretense. It showed that you belong with us, not as a guest, but as a natural part of the family.</div><div class="tooltip-text-zh">毫不費力、不帶偽裝地融入。這表明妳屬於我們，不是作為客人，而是作為家庭中自然而然的一份子。</div></div>
+    <div id="tip-epic13" class="tooltip"><div class="tooltip-title">Vellaris</div><div class="tooltip-text-en">The three of us (Teem, Em, Tong) gathered to be a guiding star for businesses into the new era of AI.</div><div class="tooltip-text-zh">我們三人（Teem, Em, Tong）聚集在一起，旨在成為引導商業邁向 AI 新時代的指路明燈。</div></div>
+
+    <script>
+        let currentStep = {};
+        const lobby = document.getElementById('lobby');
+
+        function showChamber(chamberName) {
+            currentStep[chamberName] = 0;
+            const chamber = document.getElementById(`chamber-${chamberName}`);
+            
+            lobby.classList.add('hidden');
+            chamber.classList.add('visible');
+            
+            if (chamberName !== 'epic') {
+                revealNext(chamberName, true);
+            }
+        }
+
+        function goBack() {
+            const visibleChamber = document.querySelector('.chamber.visible');
+            if (visibleChamber) {
+                hideAllTooltips();
+                visibleChamber.classList.remove('visible');
+            }
+            lobby.classList.remove('hidden');
+        }
+
+        function revealNext(chamberName, isFirst = false) {
+            const textContainer = document.getElementById(`text-${chamberName}`);
+            const paragraphs = textContainer.getElementsByTagName('p');
+            const button = document.getElementById(`btn-${chamberName}`);
+
+            if (!isFirst) { currentStep[chamberName]++; }
+
+            for (let i = 0; i < paragraphs.length; i++) { paragraphs[i].classList.remove('active'); }
+            if (currentStep[chamberName] < paragraphs.length) { paragraphs[currentStep[chamberName]].classList.add('active'); }
+            if (currentStep[chamberName] >= paragraphs.length - 1) { button.style.display = 'none'; } 
+            else { button.style.display = 'inline-block'; }
+        }
+        
+        function showTooltip(event, tooltipId) {
+            event.stopPropagation();
+            hideAllTooltips();
+
+            const tooltip = document.getElementById(tooltipId);
+            tooltip.style.display = 'block';
+            
+            const rect = event.target.getBoundingClientRect();
+            let top = rect.bottom + window.scrollY + 5;
+            let left = rect.left + window.scrollX;
+
+            if (left + tooltip.offsetWidth > window.innerWidth) {
+                left = window.innerWidth - tooltip.offsetWidth - 10;
+            }
+            if (top + tooltip.offsetHeight > document.documentElement.scrollHeight) {
+                top = rect.top + window.scrollY - tooltip.offsetHeight - 5;
+            }
+
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+        }
+
+        function hideAllTooltips() {
+            const tooltips = document.querySelectorAll('.tooltip');
+            tooltips.forEach(tooltip => {
+                tooltip.style.display = 'none';
+            });
+        }
+
+        document.addEventListener('click', hideAllTooltips);
+
+    </script>
+</body>
+</html>

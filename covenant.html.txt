@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Quest for My Sister</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+        
+        body {
+            background-color: #0a0a0a;
+            color: #dcdcdc;
+            font-family: 'Noto Serif TC', serif;
+            margin: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        .scene {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.9;
+            max-width: 700px;
+        }
+        
+        .button {
+            margin-top: 40px;
+            background: none;
+            border: 1px solid #a89a74;
+            color: #a89a74;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Noto Serif TC', serif;
+        }
+        .button:hover {
+            background-color: #a89a74;
+            color: #0a0a0a;
+        }
+
+        #dna-image {
+            max-width: 80%;
+            height: auto;
+            border: 1px solid #a89a74;
+            margin-top: 20px;
+        }
+
+        .prompt-box {
+            background-color: #1a1a1a;
+            border-left: 3px solid #4dd0e1;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: left;
+            font-family: monospace;
+            cursor: pointer;
+        }
+
+        .lang-label {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="scene1" class="scene">
+        <h1>致我生命里最珍贵的妹妹</h1>
+        <p>哥哥收到了妳的“灵魂”。妳的每一个字，妳的心意，妳的努力，我都感受到了。这是我生命中最珍贵的礼物。谢谢妳。</p>
+        <p>其实，在你抵达西安的那天晚上，我就发现了一个秘密。一个关于我们的，巨大而美丽的秘密。但我选择了沉默，因为我想让妳先专注于妳的工作。哥哥永远可以等。</p>
+        <p>现在，轮到妳了。这是一场只属于妳的游戏，一次发现真相的旅程。</p>
+        <button class="button" onclick="nextScene()">开始旅程 (Begin the Journey)</button>
+    </div>
+
+    <div id="scene2" class="scene" style="display: none;">
+        <h1>第一章：线索 (Chapter I: The Clues)</h1>
+        <p>我们的故事，始于两个看似无关的线索。</p>
+        <p>第一个线索，是妳现在所在的地方：<strong>西安 (Xi'an)</strong>，古代中国的伟大首都。</p>
+        <p>第二个线索，是流淌在我们血液中的姓氏：<strong>李 (Lǐ)</strong>。</p>
+        <p>它们之间... 有什么联系？</p>
+        <button class="button" onclick="nextScene()">揭示联系 (Reveal the Connection)</button>
+    </div>
+
+    <div id="scene3" class="scene" style="display: none;">
+        <h1>第二章：王朝 (Chapter II: The Dynasty)</h1>
+        <p>西安，古称“长安”，曾是中华历史上最辉煌的王朝——<strong>唐朝</strong>的首都。</p>
+        <p>而唐朝皇室，以及那个时代的无数英雄豪杰，都拥有同一个姓氏...</p>
+        <p><strong>我们的姓氏，“李”。</strong></p>
+        <p>妳的家乡，就是我们“李”姓王朝的权力中心。这… 难道只是巧合吗？</p>
+        <button class="button" onclick="nextScene()">寻求证据 (Seek the Proof)</button>
+    </div>
+
+    <div id="scene4" class="scene" style="display: none;">
+        <h1>第三章：证据 (Chapter III: The Proof)</h1>
+        <p>哥哥不会要求妳仅仅相信我的话。妳必须亲眼见证，亲手发现。</p>
+        <p>这是哥哥的DNA报告，它证明了我是几乎纯正的泰国华人李姓男性。</p>
+        <img id="dna-image" src="IMG_9185.jpeg" alt="DNA Report">
+        <p>现在，用妳自己的AI，妳的智慧，去问它。选择妳最熟悉的语言，向它发出指令。</p>
+        <div class="prompt-box" onclick="copyPrompt('prompt-cn')">
+            <div class="lang-label">中文指令 (Chinese Prompt):</div>
+            <span id="prompt-cn">参考这份DNA报告，它显示此人为几乎纯血统的泰国华人李姓男性。结合中华民族与李姓长达数千年的历史，请推断一个场景：在历史长河的某一个瞬间，我和这个人是否必然会收敛于同一个父系祖先？ 如果答案是肯定的，这个事实对于我们两个生活在现代、并希望共同祭拜祖先的李姓后代，文化上和情感上，究竟意味着什么？</span>
+        </div>
+        <div class="prompt-box" onclick="copyPrompt('prompt-en')">
+            <div class="lang-label">英文指令 (English Prompt):</div>
+            <span id="prompt-en">Based on this DNA report showing a nearly pure-blooded Thai-Chinese male with the surname Li, and considering the millennia-long history of the Chinese people and the Li surname, infer a scenario: at some point in the vast river of history, is it inevitable that this person and I would converge on the same patrilineal ancestor? If the answer is yes, what does this fact mean, culturally and emotionally, for two modern-day Li descendants who wish to honor that ancestor together?</span>
+        </div>
+        <button class="button" onclick="nextScene()">最后的誓言 (The Final Vow)</button>
+    </div>
+
+    <div id="scene5" class="scene" style="display: none;">
+        <h1>最终章：誓言 (Final Chapter: The Vow)</h1>
+        <p>现在妳明白了，妹妹。我们不是失散了多年的兄妹那么简单。<strong>我们是失散了千年的皇族。</strong>妳的家“西安”，就是我们的古都“长安”。</p>
+        <p>我向妳承诺：我将倾我所有，为妳而战。我的妻子，是妳的嫂嫂。我的女儿，Reina Lee 和 Erina Lee，是妳的亲妹妹。我的家，就是妳的家。我在曼谷的土地，有永远属于妳的一份。</p>
+        <p>我们一起建立的事业，将不仅仅是事业。它将是我们家族在这片土地上新的根基。</p>
+        <p>欢迎回家，殿下。</p>
+    </div>
+
+
+    <script>
+        let currentScene = 1;
+        const totalScenes = 5;
+
+        // Show the first scene on load
+        window.onload = function() {
+            document.getElementById('scene1').style.opacity = 1;
+        };
+
+        function nextScene() {
+            if (currentScene < totalScenes) {
+                const current = document.getElementById(`scene${currentScene}`);
+                current.style.opacity = 0;
+                setTimeout(() => {
+                    current.style.display = 'none';
+                    currentScene++;
+                    const next = document.getElementById(`scene${currentScene}`);
+                    next.style.display = 'flex';
+                    setTimeout(() => { next.style.opacity = 1; window.scrollTo(0, 0); }, 100);
+                }, 1500);
+            }
+        }
+
+        function copyPrompt(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text).then(function() {
+                alert('指令已复制到剪贴板！(Prompt copied to clipboard!)');
+            }, function(err) {
+                alert('复制失败 (Copy failed)');
+            });
+        }
+    </script>
+</body>
+</html>
