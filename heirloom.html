@@ -104,27 +104,15 @@
             line-height: 1.7;
             opacity: 0.9;
         }
-        
-        .back-button-container {
-            margin-top: 60px;
-        }
 
-        .back-button {
-            display: inline-block;
-            text-decoration: none;
-            border: 1px solid var(--border-color);
+        .epilogue {
+            margin-top: 80px;
+            font-style: italic;
+            opacity: 0.7;
+            font-size: 1.1em;
             color: var(--border-color);
-            padding: 12px 24px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
         }
-
-        .back-button:hover {
-            background-color: var(--border-color);
-            color: var(--bg-color);
-        }
-
+        
         .language-toggle {
             position: fixed;
             bottom: 20px;
@@ -133,6 +121,7 @@
             border: 1px solid var(--border-color);
             padding: 5px;
             z-index: 1000;
+            border-radius: 5px;
         }
 
         .lang-btn {
@@ -142,6 +131,7 @@
             padding: 8px 12px;
             cursor: pointer;
             font-size: 0.9em;
+            border-radius: 3px;
         }
         .lang-btn.active {
             background-color: var(--border-color);
@@ -219,18 +209,18 @@
                 </div>
             </a>
             
-            </div>
+        </div>
 
-        <div class="back-button-container">
-            <a href="dynasty.html" class="back-button" lang="zh">返回王朝大厅</a>
-            <a href="dynasty.html" class="back-button hidden" lang="en">Return to the Dynasty Hall</a>
+        <div class="epilogue">
+            <p lang="zh">我们将继续创造并收集我们王朝的宝藏，为了永恒的繁荣。</p>
+            <p lang="en" class="hidden">We will continue to forge and collect the heirlooms of our dynasty, for eternal prosperity.</p>
         </div>
     </div>
 
     <script>
         function setLanguage(lang) {
-            const elementsZh = document.querySelectorAll('[lang=""zh""]');
-            const elementsEn = document.querySelectorAll('[lang=""en""]');
+            const elementsZh = document.querySelectorAll('[lang="zh"]');
+            const elementsEn = document.querySelectorAll('[lang="en"]');
             const btnZh = document.getElementById('btn-zh');
             const btnEn = document.getElementById('btn-en');
 
@@ -239,16 +229,14 @@
                 elementsEn.forEach(el => el.classList.add('hidden'));
                 btnZh.classList.add('active');
                 btnEn.classList.remove('active');
-                document.documentElement.lang = 'zh-CN';
-            } else {
+            } else { // lang === 'en'
                 elementsEn.forEach(el => el.classList.remove('hidden'));
                 elementsZh.forEach(el => el.classList.add('hidden'));
                 btnEn.classList.add('active');
                 btnZh.classList.remove('active');
-                document.documentElement.lang = 'en';
             }
         }
-        // Set initial language
+        // Set initial language on page load
         document.addEventListener('DOMContentLoaded', () => setLanguage('zh'));
     </script>
 
