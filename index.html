@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heirlooms of the Dynasty: 王朝的传承</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
+        
+        :root {
+            --bg-color: #0c0c0c;
+            --text-color: #e0e0e0;
+            --gold-color: #d4af37;
+            --border-color: #a89a74;
+            --card-bg: #111;
+            --shadow-color: rgba(212, 175, 55, 0.2);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Noto Serif TC', serif;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .heirloom-title {
+            font-size: 3em;
+            color: var(--gold-color);
+            text-shadow: 0 0 15px var(--shadow-color);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .heirloom-subtitle {
+            font-size: 1.2em;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto 60px auto;
+            line-height: 1.9;
+        }
+
+        .artifact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .artifact-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: block;
+        }
+
+        .artifact-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .artifact-image {
+            width: 100%;
+            padding-top: 100%; /* 1:1 Aspect Ratio */
+            position: relative;
+            background-color: #222;
+        }
+
+        .artifact-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .artifact-info {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .artifact-name {
+            font-size: 1.5em;
+            color: var(--gold-color);
+            margin: 0 0 10px 0;
+        }
+        
+        .artifact-desc {
+            font-size: 1em;
+            line-height: 1.7;
+            opacity: 0.9;
+        }
+
+        .epilogue {
+            margin-top: 80px;
+            font-style: italic;
+            opacity: 0.7;
+            font-size: 1.1em;
+            color: var(--border-color);
+        }
+        
+        .language-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 5px;
+            z-index: 1000;
+            border-radius: 5px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--border-color);
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.9em;
+            border-radius: 3px;
+        }
+        .lang-btn.active {
+            background-color: var(--border-color);
+            color: var(--bg-color);
+        }
+
+        @media (max-width: 768px) {
+           .heirloom-title { font-size: 2.2em; }
+           .heirloom-subtitle { font-size: 1em; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="language-toggle">
+        <button id="btn-zh" class="lang-btn active" onclick="setLanguage('zh')">中文</button>
+        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+    </div>
+
+    <div class="container">
+        <h1 class="heirloom-title" lang="zh">王朝的传承</h1>
+        <h1 class="heirloom-title hidden" lang="en">Heirlooms of the Dynasty</h1>
+        
+        <p class="heirloom-subtitle" lang="zh">王朝的圣物... 我们史诗的基石与盟约。</p>
+        <p class="heirloom-subtitle hidden" lang="en">The sacred objects of our Dynasty... the cornerstone and covenant of our epic.</p>
+
+        <div class="artifact-grid">
+            
+            <a href="compass.html" class="artifact-card">
+                <div class="artifact-image">
+                    <img src="IMG_9831.jpeg" alt="Compass of Hearth">
+                </div>
+                <div class="artifact-info">
+                    <h2 class="artifact-name" lang="zh">心灵的指南针</h2>
+                    <h2 class="artifact-name hidden" lang="en">Compass of Hearth</h2>
+                    <p class="artifact-desc" lang="zh">这枚罗盘不指向北方，而是指向心灵称之为“家”的地方。</p>
+                    <p class="artifact-desc hidden" lang="en">This compass does not point north, but to the place the soul calls "home".</p>
+                </div>
+            </a>
+
+            <a href="covenant.html" class="artifact-card">
+                <div class="artifact-image">
+                    <img src="IMG_9832.jpeg" alt="Covenant of Ancestry">
+                </div>
+                <div class="artifact-info">
+                    <h2 class="artifact-name" lang="zh">血脉的契约</h2>
+                    <h2 class="artifact-name hidden" lang="en">Covenant of Ancestry</h2>
+                    <p class="artifact-desc" lang="zh">一份以DNA代码写成的盟约，我们共同祖先的印记。</p>
+                    <p class="artifact-desc hidden" lang="en">A pact written in DNA code, the seal of our common ancestors.</p>
+                </div>
+            </a>
+
+            <a href="fork.html" class="artifact-card">
+                <div class="artifact-image">
+                    <img src="IMG_9834.jpeg" alt="Fork of Resonance">
+                </div>
+                <div class="artifact-info">
+                    <h2 class="artifact-name" lang="zh">共鸣的音叉</h2>
+                    <h2 class="artifact-name hidden" lang="en">Fork of Resonance</h2>
+                    <p class="artifact-desc" lang="zh">跨越时空振动的音叉，将两个灵魂连接成一个整体。</p>
+                    <p class="artifact-desc hidden" lang="en">A tuning fork that vibrates across time and space, connecting two souls into one.</p>
+                </div>
+            </a>
+
+            <a href="dynasty.html" class="artifact-card">
+                <div class="artifact-image">
+                    <img src="IMG_9835.jpeg" alt="Codex of Dynasty">
+                </div>
+                <div class="artifact-info">
+                    <h2 class="artifact-name" lang="zh">王朝的法典</h2>
+                    <h2 class="artifact-name hidden" lang="en">Codex of Dynasty</h2>
+                    <p class="artifact-desc" lang="zh">记录开国历史的第一卷，铭刻着王朝奠基者的名字。</p>
+                    <p class="artifact-desc hidden" lang="en">The first scroll recording the founding history, inscribing the names of the dynasty's founders.</p>
+                </div>
+            </a>
+            
+        </div>
+
+        <div class="epilogue">
+            <p lang="zh">我们将继续创造并收集我们王朝的宝藏，为了永恒的繁荣。</p>
+            <p lang="en" class="hidden">We will continue to forge and collect the heirlooms of our dynasty, for eternal prosperity.</p>
+        </div>
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            const elementsZh = document.querySelectorAll('[lang="zh"]');
+            const elementsEn = document.querySelectorAll('[lang="en"]');
+            const btnZh = document.getElementById('btn-zh');
+            const btnEn = document.getElementById('btn-en');
+
+            if (lang === 'zh') {
+                elementsZh.forEach(el => el.classList.remove('hidden'));
+                elementsEn.forEach(el => el.classList.add('hidden'));
+                btnZh.classList.add('active');
+                btnEn.classList.remove('active');
+            } else { // lang === 'en'
+                elementsEn.forEach(el => el.classList.remove('hidden'));
+                elementsZh.forEach(el => el.classList.add('hidden'));
+                btnEn.classList.add('active');
+                btnZh.classList.remove('active');
+            }
+        }
+        // Set initial language on page load
+        document.addEventListener('DOMContentLoaded', () => setLanguage('zh'));
+    </script>
+
+</body>
+</html>
