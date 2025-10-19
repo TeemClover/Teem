@@ -73,13 +73,22 @@
             border: 2px solid var(--border-color);
             padding: 30px 20px;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s, border-color 0.3s;
         }
 
         .character-seal:hover {
             transform: translateY(-10px);
             background-color: #1f1f1f;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .journey-seal {
+            border-color: var(--highlight-color);
+            border-style: dashed;
+        }
+        .journey-seal:hover {
+             border-color: var(--gold-color);
+             background-color: #1a1a1a;
         }
 
         .seal-title {
@@ -196,7 +205,7 @@
                 <h2 class="seal-title">公主</h2>
                 <p class="seal-name">The Acrobat Oracle</p>
             </div>
-            <div class="character-seal" onclick="showDetail('journey')">
+            <div class="character-seal journey-seal" onclick="showDetail('journey')">
                 <h2 class="seal-title">第一章：旅程</h2>
                 <p class="seal-name">The Journey Begins</p>
             </div>
@@ -248,7 +257,7 @@
             </p>
             <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
             <p class="provision-text">
-                她对肉食与甜点充满热爱，却对米饭与面食不屑一顾。然而，她唯一的致命弱点，便是那令她生理不适的香菜。
+                她对肉食与甜点充满热爱，并且极其擅长烹饪各式面条。然而，她唯一的致命弱点，便是那令她生理不适的香菜。
             </p>
             <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
@@ -290,7 +299,7 @@
             </p>
             <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
             <p class="provision-text">
-                 她对日式拉面情有独钟，但对食物的品质极为挑剔，即便享用，也只是浅尝辄止。
+                她对日式拉面情有独钟，但对食物的品质极为挑剔，即便享用，也只是浅尝辄止。
             </p>
             <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
