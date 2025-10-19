@@ -14,7 +14,7 @@
             --border-color: #a89a74;
             --card-bg: #111;
             --shadow-color: rgba(212, 175, 55, 0.2);
-            --highlight-color: #4dd0e1; /* Added for consistency */
+            --highlight-color: #4dd0e1;
         }
 
         body {
@@ -45,7 +45,6 @@
             top: 0; left: 0;
         }
 
-        /* Lobby Screen */
         .codex-title {
             font-size: 3em;
             color: var(--gold-color);
@@ -65,7 +64,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
-            max-width: 1400px; /* Increased width to accommodate 5 cards */
+            max-width: 1400px;
             width: 100%;
         }
 
@@ -94,7 +93,6 @@
             opacity: 0.7;
         }
 
-        /* Detail Screen */
         .detail-card {
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -170,14 +168,13 @@
             .codex-title { font-size: 2em; }
             .codex-subtitle { font-size: 1em; }
         }
-
     </style>
 </head>
 <body>
 
     <div id="lobby" class="screen">
         <h1 class="codex-title">Codex of Dynasty</h1>
-        <p class="codex-subtitle">此卷非墨写就，而是以血脉为引，由灵魂的源代码所构成。这是李氏王朝的创世篇章，亦为未来者的加入，预留了不朽的席位。</p>
+        <p class="codex-subtitle">此卷非墨写就，而是以真实的DNA检测结果与家族成员的亲身经历为基础，通过AI进行深度融合，由灵魂的源代码所构成。这是李氏王朝的创世篇章，亦为未来者的加入，预留了不朽的席位。</p>
         <div class="dynasty-grid">
             <div class="character-seal" onclick="showDetail('king')">
                 <h2 class="seal-title">国王</h2>
@@ -199,6 +196,10 @@
                 <h2 class="seal-title">公主</h2>
                 <p class="seal-name">The Acrobat Oracle</p>
             </div>
+            <div class="character-seal" onclick="showDetail('journey')">
+                <h2 class="seal-title">第一章：旅程</h2>
+                <p class="seal-name">The Journey Begins</p>
+            </div>
         </div>
     </div>
 
@@ -207,7 +208,6 @@
             <h2 class="character-title">国王：世界构建者</h2>
             <p class="character-name">Narin Leelaporn (Teem 李娜霖)</p>
             <span class="character-codename">The Architect, INTP | 诞辰: 1989年1月27日</span>
-            
             <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
             <p class="inscription-text">
                 生来就拥有 <strong>“天赋(Gifted)”</strong> 级别的 <strong>“企业家才能(Entrepreneurship)”</strong> 与 <strong>“语言能力(Language Ability)”</strong>。他的思维是 <strong>“卓越(Excellent)”</strong> 级别的数据处理引擎，其 <strong>IQ</strong> 超越凡人。他是一位能将虚无构筑成宇宙的“建筑师”，能创造世界、传说与复杂的命运蓝图，将信念化为可供他人信仰的“宗教”。然而，最锋利的剑亦有裂痕，他的基因编码中潜藏着致命的“Bug”：他被标记为能够承受高压的 <strong>“战士(Warrior)”</strong>，却也同时面临着 <strong>“重度抑郁(Major Depression)”</strong> 与 <strong>“焦虑症(Anxiety Disorder)”</strong> 的高风险。他，就是“琉璃大炮(Glass Cannon)”——拥有最强破坏力的统帅，却也身披最脆弱的铠甲。
@@ -225,12 +225,10 @@
             <h2 class="character-title">王后：大地之锚</h2>
             <p class="character-name">Chieko Saito (斎藤 千恵子)</p>
             <span class="character-codename">The Anchor, ISFP | 诞辰: 1991年8月29日</span>
-
             <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
             <p class="inscription-text">
                 王朝的影子统帅，掌握着帝国的平衡。她并非追逐星辰，而是深植于现实的“船锚”，是防止巨舰飘入幻想世界的重心。凭借 <strong>“天赋(Gifted)”</strong> 级的 <strong>“舞蹈(Dancing Ability)”</strong> 与 <strong>“音乐才能(Musical Ability)”</strong>，她是能洞悉有形之美的艺术家。尽管DNA将她标记为 <strong>“忧虑者(Worrier)”</strong>，她却拥有发动心理战的超凡直觉。她是内务府的最高指挥官，她的幸福，便是王朝的最高法则。
             </p>
-
             <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
             <p class="provision-text">
                 她是泰王国的饕餮之后，一位能享受万千佳肴的美食女神。她“无所不吃”的能力，本身就是一项确保军队后勤永远顺畅的终极战略。因为，当王后得到满足时，所有士兵亦将饱足。
@@ -261,12 +259,10 @@
             <h2 class="character-title">公主：冰霜法师</h2>
             <p class="character-name">Reina Leelaporn (玲奈 李)</p>
             <span class="character-codename">Control Mage | 诞辰: 2014年10月3日</span>
-
             <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
             <p class="inscription-text">
                 第一顺位继承人，未来的魔法军团统帅。她生来就拥有 <strong>“天赋(Gifted)”</strong> 级别的 <strong>IQ</strong> 与 <strong>EQ</strong>。她选择了“王昭君”的道路——一位用冰雪风暴与毁灭性力量掌控战场的凛冽法师。这并非“辅助者”的选择，而是“毁灭者”的道路。作为一位聪慧善良的姐姐，她总是运用她的魔法力量，守护着自己的妹妹。
             </p>
-            
             <h3 class="inscription-title">宝库 (สมบัติ)</h3>
             <p class="provision-text">
                 泡泡玛特(Pop Mart)……是她钟爱的神圣盲盒。每一次开启，都是在为她的玩偶军团召唤一位新的“仆从”。
@@ -284,12 +280,10 @@
             <h2 class="character-title">公主：神谕者</h2>
             <p class="character-name">Erina Leelaporn (恵理奈 李)</p>
             <span class="character-codename">The Acrobat Oracle | 诞辰: 2017年2月10日</span>
-
             <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
             <p class="inscription-text">
                 王朝的财政大臣与皇家神谕官。她掌握着帝国的财政命脉，凭借 <strong>“天赋(Gifted)”</strong> 级的 <strong>IQ</strong> 与 <strong>“语言能力(Language Ability)”</strong>，能洞悉隐藏的“价值”，并极度热爱金钱。她能将“塔罗牌”转变为“黄金”。她的味蕾经过千挑万选，拒绝除“鸡肉”之外的一切肉类。只要一有空闲，她便会将过剩的精力用于翻筋斗——她是完美风暴的化身，也是从不出错的神谕者。
             </p>
-
             <h3 class="inscription-title">宝库 (สมบัติ)</h3>
             <p class="provision-text">
                 她与姐姐一样喜爱泡泡玛特，并且对卡通“蜡笔小新”情有独钟——这或许正是她那些出人意料行为的灵感来源。
@@ -297,6 +291,31 @@
             <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
             <p class="provision-text">
                  她对日式拉面情有独钟，但对食物的品质极为挑剔，即便享用，也只是浅尝辄止。
+            </p>
+            <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
+        </div>
+    </div>
+    
+    <div id="detail-journey" class="screen hidden">
+        <div class="detail-card">
+            <h2 class="character-title">第一章：童年之旅</h2>
+            <p class="character-name" style="opacity: 0.9; margin-bottom: 30px;">
+                这不是一份旅行计划，而是我们共同史诗的第一页。哥哥已经草拟了场景，现在，等待着我们的女主角——姐姐，来决定最终的篇章。
+            </p>
+            <h3 class="inscription-title">第一天 (10月24日): 欢乐之门</h3>
+            <p class="inscription-text">
+                我们的旅程不始于过去，而始于纯粹的欢乐。杭州乐园将是我们第一站。这一天，只属于三位姐妹的欢笑，没有任何烦恼。
+            </p>
+            <h3 class="inscription-title">第二天 (10月25日): 宁静之湖</h3>
+            <p class="inscription-text">
+                我们将漫步于西湖之畔，一个充满诗意与传说的地方。在这里，我们将分享故事，感受祖先土地的宁静。
+            </p>
+            <h3 class="inscription-title">第三至五天 (10月26-28日): 女帝的领域</h3>
+            <p class="inscription-text">
+                剩下的时间，将由姐姐全权决定。带我们去探索妳的世界，那些妳所爱的地方，那些妳渴望的美食。我们来到这里，是为了通过妳的眼睛，重新认识这个世界。
+            </p>
+            <p style="margin-top: 30px; text-align: center; font-style: italic; opacity: 0.8;">
+                这只是初稿，姐姐。最终的剧本，由妳来谱写。
             </p>
             <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
@@ -309,7 +328,8 @@
             'queen': document.getElementById('detail-queen'),
             'empress': document.getElementById('detail-empress'),
             'sorceress': document.getElementById('detail-sorceress'),
-            'oracle': document.getElementById('detail-oracle')
+            'oracle': document.getElementById('detail-oracle'),
+            'journey': document.getElementById('detail-journey')
         };
 
         function showDetail(character) {
