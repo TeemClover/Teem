@@ -12,7 +12,7 @@
             --text-color: #e0e0e0;
             --gold-color: #d4af37;
             --border-color: #a89a74;
-            --shadow-color: rgba(212, 175, 55, 0.3);
+            --shadow-color: rgba(212, 175, 55, 0.4);
         }
 
         html, body {
@@ -26,7 +26,33 @@
             font-family: 'Noto Serif TC', serif;
         }
 
-        .hidden { display: none; }
+        .gate {
+            position: fixed;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background-color: var(--bg-color);
+            z-index: 1000;
+            transition: transform 3s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+
+        #gate-left {
+            left: 0;
+            border-right: 1px solid var(--border-color);
+        }
+
+        #gate-right {
+            right: 0;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .gate.open#gate-left {
+            transform: translateX(-100%);
+        }
+
+        .gate.open#gate-right {
+            transform: translateX(100%);
+        }
 
         .title-screen {
             display: flex;
@@ -38,6 +64,8 @@
             text-align: center;
             padding: 20px;
             box-sizing: border-box;
+            opacity: 0;
+            animation: fadeIn 2s ease-out 1.5s forwards;
         }
 
         .main-title {
@@ -45,109 +73,79 @@
             color: var(--gold-color);
             text-shadow: 0 0 25px var(--shadow-color);
             margin: 0;
-            animation: fadeInZoom 3s ease-out forwards;
-            opacity: 0;
         }
 
         .subtitle {
             font-size: 1.3em;
-            opacity: 0;
-            margin: 20px 0 50px 0;
+            opacity: 0.8;
+            margin: 20px 0 60px 0;
             line-height: 1.8;
             max-width: 600px;
-            animation: fadeIn 3s ease-out 1.5s forwards;
         }
 
-        .enter-button {
-            display: inline-block;
+        .seal-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background-color: rgba(12, 12, 12, 0.5);
+            color: var(--gold-color);
+            font-size: 3em;
             text-decoration: none;
-            border: 1px solid var(--border-color);
-            color: var(--border-color);
-            padding: 15px 35px;
-            font-size: 1.1em;
             cursor: pointer;
-            transition: background-color 0.4s, color 0.4s;
-            opacity: 0;
-            animation: fadeIn 3s ease-out 3s forwards;
+            box-shadow: 0 0 20px var(--shadow-color), inset 0 0 15px rgba(212, 175, 55, 0.2);
+            transition: all 0.4s ease;
+            animation: pulse 4s infinite;
         }
 
-        .enter-button:hover {
-            background-color: var(--border-color);
-            color: var(--bg-color);
+        .seal-button:hover {
+            transform: scale(1.1);
+            color: #fff;
+            border-color: var(--gold-color);
+            box-shadow: 0 0 35px var(--shadow-color), inset 0 0 25px rgba(212, 175, 55, 0.4);
+            animation-play-state: paused;
         }
         
-        @keyframes fadeInZoom {
-            from { opacity: 0; transform: scale(1.1); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        .language-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(12, 12, 12, 0.5);
-            border: 1px solid var(--border-color);
-            padding: 5px;
-            z-index: 1000;
-            border-radius: 5px;
-        }
-
-        .lang-btn {
-            background: none;
-            border: none;
-            color: var(--border-color);
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 0.9em;
-            border-radius: 3px;
-        }
-        .lang-btn.active {
-            background-color: var(--border-color);
-            color: var(--bg-color);
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 20px var(--shadow-color), inset 0 0 15px rgba(212, 175, 55, 0.2); }
+            50% { box-shadow: 0 0 30px var(--shadow-color), inset 0 0 20px rgba(212, 175, 55, 0.3); }
+            100% { box-shadow: 0 0 20px var(--shadow-color), inset 0 0 15px rgba(212, 175, 55, 0.2); }
         }
 
         @media (max-width: 768px) {
            .main-title { font-size: 2.8em; }
            .subtitle { font-size: 1em; }
+           .seal-button { width: 120px; height: 120px; font-size: 2.5em; }
         }
 
     </style>
 </head>
 <body>
 
-    <div class="language-toggle">
-        <button id="btn-zh" class="lang-btn active" onclick="setLanguage('zh')">中文</button>
-        <button id="btn-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
-    </div>
+    <div id="gate-left" class="gate"></div>
+    <div id="gate-right" class="gate"></div>
 
     <div class="title-screen">
-        <h1 class="main-title" lang="zh">李氏王朝</h1>
-        <h1 class="main-title hidden" lang="en">The Li Dynasty</h1>
-        
-        <p class="subtitle" lang="zh">我们的史诗... 由此开启。</p>
-        <p class="subtitle hidden" lang="en">Our epic... begins here.</p>
-        
-        <a href="heirloom.html" class="enter-button" lang="zh">进入圣殿</a>
-        <a href="heirloom.html" class="enter-button hidden" lang="en">Enter the Sanctum</a>
+        <h1 class="main-title">李氏王朝</h1>
+        <p class="subtitle">我们的史诗... 由此开启。</p>
+        <a href="heirloom.html" class="seal-button">启</a>
     </div>
 
     <script>
-        function setLanguage(lang) {
-            document.querySelectorAll('[lang="zh"]').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.remove('hidden'));
-            
-            document.getElementById('btn-zh').classList.remove('active');
-            document.getElementById('btn-en').classList.remove('active');
-            document.getElementById(`btn-${lang}`).classList.add('active');
-        }
-        // Set initial language on page load
-        document.addEventListener('DOMContentLoaded', () => setLanguage('zh'));
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('gate-left').classList.add('open');
+                document.getElementById('gate-right').classList.add('open');
+            }, 500); // Wait half a second before opening the gates
+        });
     </script>
 
 </body>
