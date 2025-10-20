@@ -24,9 +24,7 @@
             padding: 40px 20px;
         }
 
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
 
         .container {
             max-width: 1200px;
@@ -71,6 +69,16 @@
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
         }
+        
+        /* New class for non-clickable artifact */
+        .non-interactive {
+            cursor: default;
+        }
+        .non-interactive:hover {
+            transform: none;
+            box-shadow: none;
+            background-color: var(--card-bg);
+        }
 
         .artifact-image {
             width: 100%;
@@ -104,7 +112,7 @@
             line-height: 1.7;
             opacity: 0.9;
         }
-
+        
         .epilogue {
             margin-top: 80px;
             font-style: italic;
@@ -172,6 +180,18 @@
                     <p class="artifact-desc hidden" lang="en">This compass does not point north, but to the place the soul calls "home".</p>
                 </div>
             </a>
+            
+            <div class="artifact-card non-interactive">
+                <div class="artifact-image">
+                    <img src="IMG_9842.jpeg" alt="A Letter to My Brother">
+                </div>
+                <div class="artifact-info">
+                    <h2 class="artifact-name" lang="zh">致哥哥的信</h2>
+                    <h2 class="artifact-name hidden" lang="en">A Letter to My Brother</h2>
+                    <p class="artifact-desc" lang="zh">第一份誓言。由女帝亲手写下，只为国王一人所见。</p>
+                    <p class="artifact-desc hidden" lang="en">The first oath. Penned by the Empress, for the King's eyes only.</p>
+                </div>
+            </div>
 
             <a href="covenant.html" class="artifact-card">
                 <div class="artifact-image">
@@ -219,24 +239,14 @@
 
     <script>
         function setLanguage(lang) {
-            const elementsZh = document.querySelectorAll('[lang="zh"]');
-            const elementsEn = document.querySelectorAll('[lang="en"]');
-            const btnZh = document.getElementById('btn-zh');
-            const btnEn = document.getElementById('btn-en');
-
-            if (lang === 'zh') {
-                elementsZh.forEach(el => el.classList.remove('hidden'));
-                elementsEn.forEach(el => el.classList.add('hidden'));
-                btnZh.classList.add('active');
-                btnEn.classList.remove('active');
-            } else { // lang === 'en'
-                elementsEn.forEach(el => el.classList.remove('hidden'));
-                elementsZh.forEach(el => el.classList.add('hidden'));
-                btnEn.classList.add('active');
-                btnZh.classList.remove('active');
-            }
+            document.querySelectorAll('[lang="zh"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.remove('hidden'));
+            
+            document.getElementById('btn-zh').classList.remove('active');
+            document.getElementById('btn-en').classList.remove('active');
+            document.getElementById(`btn-${lang}`).classList.add('active');
         }
-        // Set initial language on page load
         document.addEventListener('DOMContentLoaded', () => setLanguage('zh'));
     </script>
 
