@@ -24,9 +24,7 @@
             padding: 40px 20px;
         }
 
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
 
         .container {
             max-width: 1200px;
@@ -47,8 +45,15 @@
             font-size: 1.2em;
             opacity: 0.8;
             max-width: 800px;
-            margin: 0 auto 60px auto;
+            margin: 0 auto 10px auto;
             line-height: 1.9;
+        }
+        
+        .creators {
+            font-size: 1em;
+            opacity: 0.7;
+            color: var(--border-color);
+            margin-bottom: 60px;
         }
 
         .artifact-grid {
@@ -71,10 +76,18 @@
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
         }
+        
+        .non-interactive {
+            cursor: default;
+        }
+        .non-interactive:hover {
+            transform: none;
+            box-shadow: none;
+        }
 
         .artifact-image {
             width: 100%;
-            padding-top: 100%; /* 1:1 Aspect Ratio */
+            padding-top: 100%; 
             position: relative;
             background-color: #222;
         }
@@ -104,7 +117,7 @@
             line-height: 1.7;
             opacity: 0.9;
         }
-
+        
         .epilogue {
             margin-top: 80px;
             font-style: italic;
@@ -156,8 +169,11 @@
         <h1 class="heirloom-title" lang="zh">王朝的传承</h1>
         <h1 class="heirloom-title hidden" lang="en">Heirlooms of the Dynasty</h1>
         
-        <p class="heirloom-subtitle" lang="zh">王朝的圣物... 我们史诗的基石与盟约。</p>
-        <p class="heirloom-subtitle hidden" lang="en">The sacred objects of our Dynasty... the cornerstone and covenant of our epic.</p>
+        <p class="heirloom-subtitle" lang="zh">这本史诗... 由我们兄妹二人共同谱写。</p>
+        <p class="heirloom-subtitle hidden" lang="en">This epic... was written together by the two of us, brother and sister.</p>
+        
+        <p class="creators" lang="zh">作者：李娜霖 与 李娜娜</p>
+        <p class="creators hidden" lang="en">Authors: Narin & Nana</p>
 
         <div class="artifact-grid">
             
@@ -172,6 +188,18 @@
                     <p class="artifact-desc hidden" lang="en">This compass does not point north, but to the place the soul calls "home".</p>
                 </div>
             </a>
+            
+            <div class="artifact-card non-interactive">
+                <div class="artifact-image">
+                    <img src="IMG_9843.jpeg" alt="A Letter to My Brother">
+                </div>
+                <div class="artifact-info">
+                    <h2 class="artifact-name" lang="zh">致哥哥的信</h2>
+                    <h2 class="artifact-name hidden" lang="en">A Letter to My Brother</h2>
+                    <p class="artifact-desc" lang="zh">第一份誓言。由女帝亲手写下，只为国王一人所见。</p>
+                    <p class="artifact-desc hidden" lang="en">The first oath. Penned by the Empress, for the King's eyes only.</p>
+                </div>
+            </div>
 
             <a href="covenant.html" class="artifact-card">
                 <div class="artifact-image">
@@ -219,24 +247,14 @@
 
     <script>
         function setLanguage(lang) {
-            const elementsZh = document.querySelectorAll('[lang="zh"]');
-            const elementsEn = document.querySelectorAll('[lang="en"]');
-            const btnZh = document.getElementById('btn-zh');
-            const btnEn = document.getElementById('btn-en');
-
-            if (lang === 'zh') {
-                elementsZh.forEach(el => el.classList.remove('hidden'));
-                elementsEn.forEach(el => el.classList.add('hidden'));
-                btnZh.classList.add('active');
-                btnEn.classList.remove('active');
-            } else { // lang === 'en'
-                elementsEn.forEach(el => el.classList.remove('hidden'));
-                elementsZh.forEach(el => el.classList.add('hidden'));
-                btnEn.classList.add('active');
-                btnZh.classList.remove('active');
-            }
+            document.querySelectorAll('[lang="zh"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[lang="en"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.remove('hidden'));
+            
+            document.getElementById('btn-zh').classList.remove('active');
+            document.getElementById('btn-en').classList.remove('active');
+            document.getElementById(`btn-${lang}`).classList.add('active');
         }
-        // Set initial language on page load
         document.addEventListener('DOMContentLoaded', () => setLanguage('zh'));
     </script>
 
