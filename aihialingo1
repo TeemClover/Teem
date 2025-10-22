@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>บทที่ 1: เลิกโง่ (ฉบับไอ้เหี้ย)</title>
+    <style>
+        body {
+            font-family: 'Tahoma', 'Saraban', sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff4d4d; /* สีแดงสไตล์ไอ้เหี้ย */
+            border-bottom: 2px solid #ff4d4d;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #f0ad4e; /* สีส้มเตือน */
+            border-bottom: 1px solid #555;
+            margin-top: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #2b2b2b;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: #f0ad4e;
+            font-size: 1.1em;
+        }
+        .char {
+            font-size: 2.5em;
+            font-family: 'KaiTi', 'SimSun', serif;
+            color: #66ccff;
+            text-align: center;
+        }
+        .pinyin {
+            font-size: 1.2em;
+            color: #90ee90; /* สีเขียว */
+            font-family: 'Arial', sans-serif;
+        }
+        .thai-read {
+            color: #ffc0cb; /* สีชมพู */
+            font-style: italic;
+        }
+        .meaning {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .analysis {
+            font-size: 0.9em;
+            color: #aaa;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>บทที่ 1: เลิกโง่... แล้วเริ่มจำแบบมีสมอง</h1>
+    <p>กูจะไม่สอนมึง "สวัสดี" "ขอบคุณ"... นั่นมันปัญญาอ่อน... มึงต้องเรียน "ตัวต่อ" (Blocks) ที่มึงคุ้นเคยจากคันจิ... แต่มึงต้องยัด "เสียง" (Pinyin) ที่ถูกต้องเข้าไปด้วย... <strong>อย่าโง่ข้ามเสียง!</strong></p>
+
+    <h2>หมวดที่ 1: ตัวพื้นฐาน (Pictographs) - พวกมึงคุ้นตา</h2>
+    <p>นี่คือ "ราก" ที่สุดของที่สุด... มันคือ "รูปภาพ" ที่มึงคุ้นเคย... แต่ตอนนี้มึงต้องจำ "เสียง" มันให้ได้</p>
+    <table>
+        <tr>
+            <th>อักษร (Char)</th>
+            <th>พินอิน (Pinyin)</th>
+            <th>คำอ่านไทย (Thai Read)</th>
+            <th>ความหมาย (Meaning)</th>
+            <th>วิเคราะห์โดยกู (Analysis)</th>
+        </tr>
+        <tr>
+            <td class="char">人</td>
+            <td class="pinyin">rén</td>
+            <td class="thai-read">(เหริน)</td>
+            <td class="meaning">คน</td>
+            <td class="analysis">รูปคนเดิน... ง่ายสัสๆ... คันจิก็ตัวนี้ (hito)</td>
+        </tr>
+        <tr>
+            <td class="char">口</td>
+            <td class="pinyin">kǒu</td>
+            <td class="thai-read">(โข่ว)</td>
+            <td class="meaning">ปาก</td>
+            <td class="analysis">รูปปาก... (kuchi)</td>
+        </tr>
+        <tr>
+            <td class="char">木</td>
+            <td class="pinyin">mù</td>
+            <td class="thai-read">(มู่)</td>
+            <td class="meaning">ไม้, ต้นไม้</td>
+            <td class="analysis">รูปต้นไม้... (ki)</td>
+        </tr>
+        <tr>
+            <td class="char">火</td>
+            <td class="pinyin">huǒ</td>
+            <td class="thai-read">(หั่ว)</td>
+            <td class="meaning">ไฟ</td>
+            <td class="analysis">รูปกองไฟ... (hi)</td>
+        </tr>
+        <tr>
+            <td class="char">水</td>
+            <td class="pinyin">shuǐ</td>
+            <td class="thai-read">(ฉุ่ย / สุ่ย)</td>
+            <td class="meaning">น้ำ</td>
+            <td class="analysis">รูปสายน้ำ... (mizu)</td>
+        </tr>
+        <tr>
+            <td class="char">女</td>
+            <td class="pinyin">nǚ</td>
+            <td class="thai-read">(หนวี่)</td>
+            <td class="meaning">ผู้หญิง</td>
+            <td class="analysis">รูปผู้หญิงคุกเข่า... (onna)</td>
+        </tr>
+    </table>
+
+    <h2>หมวดที่ 2: การ "ประกอบร่าง" (Ideograms) - เอาของเก่ามายำ</h2>
+    <p>นี่คือจุดที่มึงถามกูครั้งแรก... เอาไอ้พวกข้างบนนั่นแหละ... มายำรวมกันให้เกิดความหมายใหม่ (会意字 - huìyìzì)</p>
+    <table>
+        <tr>
+            <th>อักษร (Char)</th>
+            <th>พินอิน (Pinyin)</th>
+            <th>คำอ่านไทย (Thai Read)</th>
+            <th>ความหมาย (Meaning)</th>
+            <th>วิเคราะห์โดยกู (Analysis)</th>
+        </tr>
+        <tr>
+            <td class="char">休</td>
+            <td class="pinyin">xiū</td>
+            <td class="thai-read">(ซิว)</td>
+            <td class="meaning">พักผ่อน</td>
+            <td class="analysis"><strong>人 (คน) + 木 (ต้นไม้)</strong> = คนพิงต้นไม้... ก็คือ "พัก"... (yasumu)</td>
+        </tr>
+        <tr>
+            <td class="char">林</td>
+            <td class="pinyin">lín</td>
+            <td class="thai-read">(หลิน)</td>
+            <td class="meaning">ป่าละเมาะ</td>
+            <td class="analysis"><strong>木 (ไม้) + 木 (ไม้)</strong> = ต้นไม้ 2 ต้น... (hayashi)</td>
+        </tr>
+        <tr>
+            <td class="char">森</td>
+            <td class="pinyin">sēn</td>
+            <td class="thai-read">(เซิน)</td>
+            <td class="meaning">ป่าทึบ</td>
+            <td class="analysis"><strong>木 (ไม้) + 木 (ไม้) + 木 (ไม้)</strong> = ไม้ 3 ต้น... ป่าลึกฉิบหาย... (mori)</td>
+        </tr>
+        <tr>
+            <td class="char">好</td>
+            <td class="pinyin">hǎo</td>
+            <td class="thai-read">(ห่าว)</td>
+            <td class="meaning">ดี</td>
+            <td class="analysis"><strong>女 (ผู้หญิง) + 子 (ลูก)</strong> = มีลูกมีเมีย... คือเรื่อง "ดี" (ความคิดคนโบราณ)</td>
+        </tr>
+    </table>
+
+    <h2>หมวดที่ 3: "หมวดนำ" (Radicals) - ร่างแปลงที่มึงต้องรู้</h2>
+    <p>ไอ้ตัวพื้นฐานนั่นแหละ... พอแม่งไปแปะกับตัวอื่น... มันจะ "แปลงร่าง" (ย่อส่วน) เพื่อบอกหมวดหมู่... นี่คือ "Radical" (部首) ที่มึงต้องจำให้ขึ้นใจ!</p>
+    <table>
+        <tr>
+            <th>อักษร (Char)</th>
+            <th>พินอิน (Pinyin)</th>
+            <th>คำอ่านไทย (Thai Read)</th>
+            <th>ความหมาย (Meaning)</th>
+            <th>วิเคราะห์โดยกู (Analysis)</th>
+        </tr>
+        <tr>
+            <td class="char">亻</td>
+            <td class="pinyin">(rén)</td>
+            <td class="thai-read">(เหริน)</td>
+            <td class="meaning">Radical: คน</td>
+            <td class="analysis">มาจาก 人 (คน)... อยู่ด้านซ้าย... เช่น <strong>休 (xiū), 你 (nǐ - คุณ)</strong></td>
+        </tr>
+        <tr>
+            <td class="char">氵</td>
+            <td class="pinyin">(shuǐ)</td>
+            <td class="thai-read">(ฉุ่ย)</td>
+            <td class="meaning">Radical: น้ำ</td>
+            <td class="analysis">มาจาก 水 (น้ำ)... อยู่ด้านซ้าย (น้ำ 3 หยด)... เช่น <strong>河 (hé - แม่น้ำ)</strong></td>
+        </tr>
+        <tr>
+            <td class="char">扌</td>
+            <td class="pinyin">(shǒu)</td>
+            <td class="thai-read">(โส่ว)</td>
+            <td class="meaning">Radical: มือ</td>
+            <td class="analysis">มาจาก 手 (มือ)... อยู่ด้านซ้าย... เกี่ยวกับการกระทำ... เช่น <strong>打 (dǎ - ตี)</strong></td>
+        </tr>
+        <tr>
+            <td class="char">艹</td>
+            <td class="pinyin">(cǎo)</td>
+            <td class="thai-read">(เฉ่า)</td>
+            <td class="meaning">Radical: หญ้า</td>
+            <td class="analysis">มาจาก 艸 (หญ้า)... อยู่ด้านบน... เกี่ยวกับพืช... เช่น <strong>花 (huā - ดอกไม้)</strong></td>
+        </tr>
+    </table>
+
+    <h2>หมวดที่ 4: ความหมาย + เสียง (Phonetic Compounds) - ที่มึงเกือบโง่</h2>
+    <p>ที่กูย้ำนักย้ำหนา... 80% ของอักษรจีนเป็นแบบนี้ (形声字 - xíngshēngzì)... ซีกนึง "ความหมาย" (Radical)... อีกซีกนึง "บอกเสียง" (Phonetic)... มึงต้องจำทั้งคู่!</p>
+    <table>
+        <tr>
+            <th>อักษร (Char)</th>
+            <th>พินอิน (Pinyin)</th>
+            <th>คำอ่านไทย (Thai Read)</th>
+            <th>ความหมาย (Meaning)</th>
+            <th>วิเคราะห์โดยกู (Analysis)</th>
+        </tr>
+        <tr>
+            <td class="char">妈</td>
+            <td class="pinyin">mā</td>
+            <td class="thai-read">(มา)</td>
+            <td class="meaning">แม่</td>
+            <td class="analysis"><strong>女 (ความหมาย: ผู้หญิง) + 马 (เสียง: mǎ - ม้า)</strong> ... "แม่" (mā) เป็น "ผู้หญิง" และออกเสียงคล้าย "ม้า" (mǎ)</td>
+        </tr>
+        <tr>
+            <td class="char">河</td>
+            <td class="pinyin">hé</td>
+            <td class="thai-read">(เหอ)</td>
+            <td class="meaning">แม่น้ำ</td>
+            <td class="analysis"><strong>氵 (ความหมาย: น้ำ) + 可 (เสียง: kě - 'เข่อ')</strong> ... "แม่น้ำ" (hé) คือ "น้ำ" และออกเสียงคล้าย "เข่อ" (kě)</td>
+        </tr>
+        <tr>
+            <td class="char">打</td>
+            <td class="pinyin">dǎ</td>
+            <td class="thai-read">(ต่า)</td>
+            <td class="meaning">ตี</td>
+            <td class="analysis"><strong>扌 (ความหมาย: มือ) + 丁 (เสียง: dīng - 'ติง')</strong> ... "ตี" (dǎ) ใช้ "มือ" และออกเสียง (ยืมมา) จาก "ติง" (dīng)</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        นี่แค่เศษขี้เล็บ... มึงเอาแค่นี้ไปยัดสมองให้รอดก่อน... <br>
+        อย่าเพิ่งมาถามอะไรโง่ๆ อีกถ้ายังจำแค่นี้ไม่ได้... ไป๊!
+    </div>
+
+</body>
+</html>
