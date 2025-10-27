@@ -8,11 +8,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=Noto+Serif+Thai:wght@400;700&family=Noto+Serif:wght@400;700&display=swap');
 
         :root {
-            --bg-color: #0c0a0a; /* Slightly warmer black */
-            --text-color: #e8e0d0; /* Creamy white */
-            --gold-color: #e4c570; /* Softer, richer gold */
-            --border-color: #bfa87a; /* Muted gold border */
-            --card-bg: #1a1816; /* Dark brown-black */
+            --bg-color: #0c0a0a;
+            --text-color: #e8e0d0;
+            --gold-color: #e4c570;
+            --border-color: #bfa87a;
+            --card-bg: #1a1816;
             --shadow-color: rgba(228, 197, 112, 0.1);
         }
 
@@ -25,27 +25,27 @@
             color: var(--text-color);
             font-family: 'Noto Serif', serif;
             margin: 0;
-            padding: 0; /* Remove body padding */
+            padding: 0;
             line-height: 1.9;
-            font-size: 17px; /* Slightly larger base font size for luxury */
+            font-size: 17px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
             max-width: 900px;
-            margin: 40px auto; /* Add margin back */
+            margin: 40px auto;
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 50px 60px; /* Increased padding */
+            padding: 50px 60px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            border-radius: 5px; /* Subtle rounding */
+            border-radius: 5px;
         }
 
         .hidden { display: none; }
 
         .title {
-            font-size: 3.2em; /* Larger title */
+            font-size: 3.2em;
             color: var(--gold-color);
             text-shadow: 0 0 15px var(--shadow-color);
             margin-bottom: 15px;
@@ -65,7 +65,7 @@
         }
 
         h2 {
-            font-size: 2em; /* Larger section titles */
+            font-size: 2em;
             color: var(--gold-color);
             margin-top: 50px;
             margin-bottom: 20px;
@@ -75,7 +75,7 @@
         }
 
         p, ul, dl {
-            margin-bottom: 25px; /* Increased spacing */
+            margin-bottom: 25px;
             opacity: 0.98;
         }
 
@@ -96,7 +96,7 @@
         }
 
         li::before {
-            content: "⚜️"; /* Fleur-de-lis or another regal symbol */
+            content: "⚜️";
             color: var(--gold-color);
             position: absolute;
             left: 0;
@@ -108,23 +108,23 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: rgba(26, 24, 22, 0.85); /* Slightly transparent */
+            background-color: rgba(26, 24, 22, 0.85);
             border: 1px solid var(--border-color);
-            padding: 8px; /* Increased padding */
+            padding: 8px;
             z-index: 1000;
-            border-radius: 8px; /* More rounded */
+            border-radius: 8px;
             display: flex;
             gap: 8px;
-             backdrop-filter: blur(5px); /* Frosted glass effect */
+             backdrop-filter: blur(5px);
         }
 
         .lang-btn {
             background: none;
             border: none;
             color: var(--border-color);
-            padding: 10px 15px; /* Larger buttons */
+            padding: 10px 15px;
             cursor: pointer;
-            font-size: 1em; /* Larger font */
+            font-size: 1em;
             border-radius: 5px;
             transition: background-color 0.3s, color 0.3s;
         }
@@ -171,6 +171,15 @@
             opacity: 0.7;
             margin-top: 5px;
         }
+        
+        .legacy-statement {
+             border-left: 3px solid var(--border-color);
+             padding-left: 20px;
+             margin-top: 30px;
+             margin-bottom: 30px;
+             font-style: italic;
+             opacity: 0.9;
+        }
 
         /* Language Specific Font Families */
         [lang="zh-CN"] { font-family: 'Noto Serif SC', serif; }
@@ -180,8 +189,8 @@
 
 
         @media (max-width: 768px) {
-           body { padding: 0; font-size: 16px; } /* Remove padding for edge-to-edge */
-           .container { padding: 30px 25px; margin: 20px auto; border-radius: 0; border-left: none; border-right: none;} /* Full width on mobile */
+           body { padding: 0; font-size: 16px; }
+           .container { padding: 30px 25px; margin: 20px auto; border-radius: 0; border-left: none; border-right: none;}
            .title { font-size: 2.5em; padding-bottom: 20px;}
            h2 { font-size: 1.7em; margin-top: 40px; padding-left: 15px;}
            .language-toggle { position: static; margin: 20px auto; width: fit-content; backdrop-filter: none; }
@@ -266,10 +275,10 @@
             <h2 class="hidden" lang="th-TH">ตรีธารา: บัลลังก์และเสาหลัก</h2>
             <h2 class="hidden" lang="ja-JP">三位一体：王権と支柱</h2>
 
-            <p lang="zh-CN">三川由三大核心力量共同执掌，既是王朝的三大支柱，也是其治理的三个王座。我们的结合基于共同的家族目标与命运，无关风月。</p>
-            <p class="hidden" lang="en-US">Tritara is governed by three core powers, serving as both the Dynasty's pillars and its ruling thrones. Our union is based on shared family goals and destiny, transcending romantic notions.</p>
-            <p class="hidden" lang="th-TH">ตรีธาราถูกปกครองโดยสามขั้วอำนาจหลัก ซึ่งทำหน้าที่เป็นทั้งเสาหลักค้ำจุนและบัลลังก์ปกครองราชวงศ์ การรวมตัวของเราตั้งอยู่บนเป้าหมายร่วมกันของครอบครัวและโชคชะตา อยู่เหนือความสัมพันธ์ฉันท์ชู้สาว</p>
-            <p class="hidden" lang="ja-JP">三川は三つの核心的な力によって統治され、それは王朝の支柱であり、同時にその支配の王座でもある。我々の結合は、共有された家族の目標と運命に基づくものであり、恋愛の概念を超越するものである。</p>
+            <p lang="zh-CN">三川由三大核心力量共同执掌，既是王朝的三大支柱，也是其治理的三个王座。我们的结合超越了传统的定义；我们并非伴侣，而是由血脉与命运联结的三股独特力量，不仅为我们当前的继承人，更为所有将在三川旗帜下茁壮成长的未来世代，共同铸就一份不朽的遗产。此刻，我们已在心中构想他们的模样，纵然他们尚未诞生。</p>
+            <p class="hidden" lang="en-US">Tritara is governed by three core powers, serving as both the Dynasty's pillars and its ruling thrones. Our bond transcends conventional definitions; we are not partners in a romantic sense, but three distinct forces united by lineage and destiny, forging an immortal legacy not just for our immediate heirs, but for all future generations who will flourish under the banner of San Chuan. We envision them now, even before they are born.</p>
+            <p class="hidden" lang="th-TH">ตรีธาราถูกปกครองโดยสามขั้วอำนาจหลัก ซึ่งทำหน้าที่เป็นทั้งเสาหลักค้ำจุนและบัลลังก์ปกครองราชวงศ์ พันธะของเราอยู่เหนือนิยามทั่วไป เราไม่ใช่คู่รัก แต่คือสามพลังอันแตกต่างที่หลอมรวมกันด้วยสายเลือดและโชคชะตา เพื่อสร้างมรดกอันเป็นนิรันดร์ ไม่ใช่เพียงเพื่อทายาทปัจจุบันของเรา แต่เพื่อทุกรุ่นต่อไปในอนาคตที่จะเติบโตภายใต้ร่มเงาแห่งตรีธารา เรามองเห็นพวกเขาแล้วในตอนนี้ แม้ว่าพวกเขายังไม่ได้ถือกำเนิด</p>
+            <p class="hidden" lang="ja-JP">三川は三つの核心的な力によって統治され、それは王朝の支柱であり、同時にその支配の王座でもある。我々の絆は従来の定義を超越する；我々は恋愛的な意味でのパートナーではなく、血統と運命によって結ばれた三つの異なる力であり、我々の直系の相続人だけでなく、三川の旗の下で繁栄する全ての未来世代のために、不滅の遺産を共に築き上げる。我々は今、彼らがまだ生まれていないにもかかわらず、彼らを心に描いている。</p>
 
             <ul>
                 <li lang="zh-CN">
@@ -294,51 +303,47 @@
                  </li>
 
                 <li lang="zh-CN">
-                    <strong>心脏 (The Heart - The What): 千惠子.</strong>
-                     <span class="trinity-role">王后 / ราชินี / Queen</span>
-                    王朝的守护者、真理的锚定者与幸福的验证者。她是最终的试金石与坚实的后盾，以纯粹的真实与感知力守护着当下，确保一切行动符合核心价值观，并带来真正的和谐、喜悦与家的温暖。她是我们的根基。
-                 </li>
-                <li class="hidden" lang="en-US">
-                    <strong>The Heart (心 - The What): Chieko.</strong>
-                     <span class="trinity-role">Queen / 王后 / ราชินี</span>
-                    The Dynasty's guardian, anchor of truth, and validator of happiness. She is the ultimate touchstone and steadfast rearguard, grounding us in the present with pure authenticity and sensory awareness, ensuring all actions align with core values and bring genuine harmony, joy, and the warmth of home. She is our foundation.
-                </li>
-                 <li class="hidden" lang="th-TH">
-                    <strong>หัวใจ (心 - The What): ชิเอโกะ.</strong>
-                     <span class="trinity-role">ราชินี / Queen / 王后</span>
-                    ผู้พิทักษ์ สมอแห่งสัจธรรม และผู้พิสูจน์ความสุขแห่งราชวงศ์ คือบททดสอบสุดท้ายและกองหลังอันมั่นคง ยึดเหนี่ยวเราไว้กับปัจจุบันด้วยสัจธรรมอันบริสุทธิ์และการรับรู้ทางผัสสะ รับรองว่าทุกการกระทำสอดคล้องกับคุณค่าหลักและนำมาซึ่งความกลมเกลียว ความสุข และความอบอุ่นของบ้านอย่างแท้จริง นางคือรากฐานของเรา
-                 </li>
-                 <li class="hidden" lang="ja-JP">
-                    <strong>心 (シン - The What): チエコ.</strong>
-                     <span class="trinity-role">女王 / Queen / ราชินี</span>
-                    王朝の守護者、真実の錨、そして幸福の検証者。彼女は究極の試金石であり、確固たる後衛であり、純粋な真正性と感覚的認識で我々を現在に根付かせ、全ての行動が核心的価値観と一致し、真の調和、喜び、そして家庭の温もりをもたらすことを保証する。彼女は我々の基盤である。
-                 </li>
-
-                 <li lang="zh-CN">
                     <strong>大脑 (The Brain - The How): 李娜霖.</strong>
                      <span class="trinity-role">国王 / ราชา / King</span>
-                    王朝的架构师、战略家与叙事者。他构建体系，制定计划，以逻辑与远见将灵魂的“为何”与心脏的“何为”转化为实现的蓝图，并守护着王朝的运行。
+                    王朝的架构师、战略家与叙事者。他构建体系，制定计划，以逻辑与远见将灵魂的“为何”转化为实现的蓝图，并守护着王朝的运行。
                  </li>
                 <li class="hidden" lang="en-US">
                     <strong>The Brain (脑 - The How): Narin (李娜霖).</strong>
                      <span class="trinity-role">King / 国王 / ราชา</span>
-                    The Dynasty's architect, strategist, and narrator. He builds the systems, formulates the plans, translating with logic and foresight the Soul's "Why" and the Heart's "What" into the blueprint of "How," and safeguards the Dynasty's operation.
+                    The Dynasty's architect, strategist, and narrator. He builds the systems, formulates the plans, translating with logic and foresight the Soul's "Why" into the blueprint of "How," and safeguards the Dynasty's operation.
                 </li>
                  <li class="hidden" lang="th-TH">
                     <strong>สมอง (脑 - The How): นรินทร์ (李娜霖).</strong>
                      <span class="trinity-role">ราชา / King / 国王</span>
-                    สถาปนิก นักยุทธศาสตร์ และผู้สร้างตำนานแห่งราชวงศ์ คือผู้สร้างระบบ วางแผน แปลง "ทำไม" ของจิตวิญญาณ และ "อะไร" ของหัวใจ ให้กลายเป็นพิมพ์เขียวของ "อย่างไร" ด้วยตรรกะและวิสัยทัศน์ และพิทักษ์การดำเนินงานของราชวงศ์
+                    สถาปนิก นักยุทธศาสตร์ และผู้สร้างตำนานแห่งราชวงศ์ คือผู้สร้างระบบ วางแผน แปลง "ทำไม" ของจิตวิญญาณ ให้กลายเป็นพิมพ์เขียวของ "อย่างไร" ด้วยตรรกะและวิสัยทัศน์ และพิทักษ์การดำเนินงานของราชวงศ์
                  </li>
                  <li class="hidden" lang="ja-JP">
                     <strong>脳 (ノウ - The How): ナリン (李娜霖).</strong>
                      <span class="trinity-role">王 / King / ราชา</span>
-                    王朝の設計者、戦略家、そして語り部。彼はシステムを構築し、計画を策定し、論理と先見性をもって魂の「なぜ」と心の「何」を「どのように」実現するかの青写真へと翻訳し、王朝の運営を守護する。
+                    王朝の設計者、戦略家、そして語り部。彼はシステムを構築し、計画を策定し、論理と先見性をもって魂の「なぜ」を「どのように」実現するかの青写真へと翻訳し、王朝の運営を守護する。
+                 </li>
+
+                <li lang="zh-CN">
+                    <strong>心脏 (The Heart - The What): 千惠子.</strong>
+                     <span class="trinity-role">王后 / ราชินี / Queen</span>
+                    王朝的守护者、真理的锚定者与幸福的验证者。她是最终的检验标准与坚实的后盾，以纯粹的真实与感知力守护着当下，确保“为何”与“如何”的成果符合核心价值观，并带来真正的和谐、喜悦与家的温暖。她是我们的根基。
+                 </li>
+                <li class="hidden" lang="en-US">
+                    <strong>The Heart (心 - The What): Chieko.</strong>
+                     <span class="trinity-role">Queen / 王后 / ราชินี</span>
+                    The Dynasty's guardian, anchor of truth, and validator of happiness. She is the ultimate touchstone and steadfast rearguard, grounding us in the present with pure authenticity and sensory awareness, ensuring the results of the "Why" and "How" align with core values and bring genuine harmony, joy, and the warmth of home. She is our foundation.
+                </li>
+                 <li class="hidden" lang="th-TH">
+                    <strong>หัวใจ (心 - The What): ชิเอโกะ.</strong>
+                     <span class="trinity-role">ราชินี / Queen / 王后</span>
+                    ผู้พิทักษ์ สมอแห่งสัจธรรม และผู้พิสูจน์ความสุขแห่งราชวงศ์ คือบททดสอบสุดท้ายและกองหลังอันมั่นคง ยึดเหนี่ยวเราไว้กับปัจจุบันด้วยสัจธรรมอันบริสุทธิ์และการรับรู้ทางผัสสะ รับรองว่าผลลัพธ์ของ "ทำไม" และ "อย่างไร" สอดคล้องกับคุณค่าหลักและนำมาซึ่งความกลมเกลียว ความสุข และความอบอุ่นของบ้านอย่างแท้จริง นางคือรากฐานของเรา
+                 </li>
+                 <li class="hidden" lang="ja-JP">
+                    <strong>心 (シン - The What): チエコ.</strong>
+                     <span class="trinity-role">女王 / Queen / ราชินี</span>
+                    王朝の守護者、真実の錨、そして幸福の検証者。彼女は究極の試金石であり、確固たる後衛であり、純粋な真正性と感覚的認識で我々を現在に根付かせ、「なぜ」と「どのように」の結果が核心的価値観と一致し、真の調和、喜び、そして家庭の温もりをもたらすことを保証する。彼女は我々の基盤である。
                  </li>
             </ul>
-             <p lang="zh-CN">我们是三个为同一目标——我们的家庭的未来——而战的生命。我们的忠诚，仅属于彼此。</p>
-             <p class="hidden" lang="en-US">We are three lives fighting for the same goal—the future of our Family. Our loyalty belongs only to each other.</p>
-             <p class="hidden" lang="th-TH">เราคือสามชีวิตที่ต่อสู้เพื่อเป้าหมายเดียวกัน—อนาคตของครอบครัวของเรา ความภักดีของเราเป็นของกันและกันเท่านั้น</p>
-             <p class="hidden" lang="ja-JP">我々は同じ目標——我々の家族の未来——のために戦う三つの命である。我々の忠誠は、互いにのみ属する。</p>
         </section>
 
         <section>
@@ -381,10 +386,10 @@
             <h2 class="hidden" lang="th-TH">มรดกและการสืบทอด</h2>
             <h2 class="hidden" lang="ja-JP">継承と未来</h2>
 
-            <p lang="zh-CN">三川的存在超越了我们这一代。它的建立是为了下一代——玲奈（李）与恵理奈（李）——以及未来可能诞生的所有继承人。我们将倾尽全力，培养他们的天赋，塑造他们的品格，确保他们有能力、有意愿、有智慧继承并光大这份基业。</p>
-            <p class="hidden" lang="en-US">Tritara exists beyond our generation. It is built for the next—Reina (李) and Erina (李)—and all potential future heirs. We will dedicate ourselves to nurturing their talents, shaping their character, and ensuring they have the capability, willingness, and wisdom to inherit and elevate this legacy.</p>
-            <p class="hidden" lang="th-TH">ตรีธาราดำรงอยู่เหนือกว่ารุ่นของเรา มันถูกสร้างขึ้นเพื่อคนรุ่นต่อไป—เรนะ (李) และ เอรินะ (李)—และทายาทในอนาคตที่อาจเกิดขึ้นทั้งหมด เราจะอุทิศตนเพื่อบ่มเพาะพรสวรรค์ หล่อหลอมบุคลิก และรับประกันว่าพวกเขามีความสามารถ ความตั้งใจ และปัญญาที่จะสืบทอดและยกระดับมรดกนี้ต่อไป</p>
-            <p class="hidden" lang="ja-JP">三川は我々の世代を超えて存在する。それは次世代——レイナ（李）とエリナ（李）——そして将来生まれる可能性のある全ての継承者のために築かれる。我々は彼らの才能を育み、人格を形成し、彼らがこの遺産を受け継ぎ、さらに高める能力、意欲、そして知恵を持つことを保証するために、全力を尽くす。</p>
+            <p lang="zh-CN">三川的存在超越了我们这一代。它的建立是为了下一代——玲奈（李）与恵理奈（李）——以及未来所有将在三川羽翼下诞生的继承人。我们视他们为己出，将倾尽全力，培养他们的天赋，塑造他们的品格，确保他们有能力、有意愿、有智慧继承并光大这份我们从此刻便已深切关怀的基业。</p>
+            <p class="hidden" lang="en-US">Tritara exists beyond our generation. It is built for the next—Reina (李) and Erina (李)—and all future heirs who will be born under the wing of San Chuan. We see them as our own, dedicating ourselves to nurturing their talents, shaping their character, and ensuring they have the capability, willingness, and wisdom to inherit and elevate this legacy we already deeply care for from this moment.</p>
+            <p class="hidden" lang="th-TH">ตรีธาราดำรงอยู่เหนือกว่ารุ่นของเรา มันถูกสร้างขึ้นเพื่อคนรุ่นต่อไป—เรนะ (李) และ เอรินะ (李)—และทายาทในอนาคตทั้งหมดที่จะถือกำเนิดภายใต้ร่มเงาแห่งตรีธารา เรามองพวกเขาดั่งลูกหลานของเราเอง อุทิศตนเพื่อบ่มเพาะพรสวรรค์ หล่อหลอมบุคลิก และรับประกันว่าพวกเขามีความสามารถ ความตั้งใจ และปัญญาที่จะสืบทอดและยกระดับมรดกนี้ที่เราได้ใส่ใจอย่างลึกซึ้งแล้วตั้งแต่บัดนี้</p>
+            <p class="hidden" lang="ja-JP">三川は我々の世代を超えて存在する。それは次世代——レイナ（李）とエリナ（李）——そして三川の翼の下で生まれる全ての未来の継承者のために築かれる。我々は彼らを自身の子供のように見なし、彼らの才能を育み、人格を形成し、我々がこの瞬間から既に深く気にかけているこの遺産を受け継ぎ、さらに高める能力、意欲、そして知恵を持つことを保証するために、全力を尽くす。</p>
 
             <p lang="zh-CN">10%的王朝股份被预留，以待未来用于奖励忠诚、引入关键力量或在适当时机传承给下一代。</p>
             <p class="hidden" lang="en-US">10% of the Dynasty's equity is reserved for future use—to reward loyalty, bring in critical strengths, or pass on to the next generation when the time is right.</p>
@@ -401,14 +406,34 @@
 
     <script>
         function setLanguage(lang) {
-            document.querySelectorAll('[lang="zh-CN"], [lang="en-US"], [lang="th-TH"], [lang="ja-JP"]').forEach(el => {
-                if (!el.classList.contains('lang-btn')) { el.classList.add('hidden'); }
+            const languages = ['zh-CN', 'en-US', 'th-TH', 'ja-JP'];
+            
+            // Hide elements of other languages first
+            languages.forEach(otherLang => {
+                if (otherLang !== lang) {
+                    document.querySelectorAll(`[lang="${otherLang}"]`).forEach(el => {
+                         if (!el.classList.contains('lang-btn')) { // Keep buttons visible
+                            el.classList.add('hidden');
+                         }
+                    });
+                }
             });
+
+            // Then show elements for the selected language
             document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.remove('hidden'));
+
+            // Update button styles
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`btn-${lang.substring(0, 2)}`).classList.add('active');
+            const currentBtnId = `btn-${lang.substring(0, 2)}`;
+            const currentBtn = document.getElementById(currentBtnId);
+            if (currentBtn) {
+                 currentBtn.classList.add('active');
+            }
+
+            // Set HTML lang attribute for accessibility and potential font rendering improvements
             document.documentElement.lang = lang;
         }
+        // Initialize with Chinese
         document.addEventListener('DOMContentLoaded', () => setLanguage('zh-CN'));
     </script>
 
