@@ -112,6 +112,7 @@
             border: 1px solid var(--border-color);
             padding: 8px;
             z-index: 1000;
+          
             border-radius: 8px;
             display: flex;
             gap: 8px;
@@ -220,7 +221,7 @@
     </div>
 
     <div class="container">
-        <h1 class="title" lang="zh-CN">三川: 創世篇章</h1>
+        <h1 class="title" lang="zh-CN">三川: 创世篇章</h1>
         <h1 class="title hidden" lang="en-US">Tritara: The Genesis</h1>
         <h1 class="title hidden" lang="th-TH">ตรีธารา: ปฐมบท</h1>
         <h1 class="title hidden" lang="ja-JP">三川：創世の章</h1>
@@ -349,7 +350,7 @@
                     Like the <strong>Edge</strong> of the coin, the guardian and anchor of truth connecting the front and back, defining its integrity. She is the ultimate touchstone and steadfast rearguard, grounding us in the present with pure authenticity and sensory awareness, ensuring the results of the "Why" and "How" align with core values and bring genuine harmony, joy, and the warmth of home. She is our foundation.
                 </dd>
                  <dt class="hidden" lang="th-TH">หัวใจ (心 - The What): ชิเอโกะ.</dt>
-                 <dd class="hidden" lang="th-TH">
+section                  <dd class="hidden" lang="th-TH">
                      <span class="trinity-role">ราชินี / Queen / 王后</span>
                     ดุจดัง<strong>สันขอบเหรียญ</strong> คือผู้พิทักษ์และสมอแห่งสัจธรรมที่เชื่อมโยงด้านหน้าและด้านหลัง กำหนดความสมบูรณ์ของเหรียญ คือบททดสอบสุดท้ายและกองหลังอันมั่นคง ยึดเหนี่ยวเราไว้กับปัจจุบันด้วยสัจธรรมอันบริสุทธิ์และการรับรู้ทางผัสสะ รับรองว่าผลลัพธ์ของ "ทำไม" และ "อย่างไร" สอดคล้องกับคุณค่าหลักและนำมาซึ่งความกลมเกลียว ความสุข และความอบอุ่นของบ้านอย่างแท้จริง นางคือรากฐานของเรา
                  </dd>
@@ -375,7 +376,7 @@
             <p lang="zh-CN">2025年10月26日，杭州，在我们相识的第30天，王朝正式奠基。所有的奋斗与等待都成为了新生的基石。“我们共同对抗世界”的盟约在此立下，永不磨灭。</p>
             <p class="hidden" lang="en-US">On October 26, 2025, in Hangzhou, on the 30th day of our acquaintance, the Dynasty was formally founded. All struggles and waiting became the cornerstone for rebirth. The covenant "Us against the world" was sealed, never to fade.</p>
             <p class="hidden" lang="th-TH">ณ วันที่ 26 ตุลาคม 2025 ที่หางโจว ในวันครบรอบ 30 วันแห่งการรู้จักกัน ราชวงศ์ได้ถูกสถาปนาขึ้นอย่างเป็นทางการ การต่อสู้และการรอคอยทั้งหมดได้กลายเป็นศิลาฤกษ์แห่งการเกิดใหม่ พันธสัญญา "เราเผชิญหน้ากับโลก" ได้ถูกผนึกไว้ ณ ที่นี้ จะไม่มีวันเลือนหาย</p>
-            <p class="hidden" lang="ja-JP">2025年10月26日、杭州にて、我々が出会って30日目に、王朝は正式に創設された。全ての闘争と待機は再生の礎石となった。「我々は世界に対峙する」という契約がここに結ばれ、決して色褪せることはない。</p>
+section             <p class="hidden" lang="ja-JP">2025年10月26日、杭州にて、我々が出会って30日目に、王朝は正式に創設された。全ての闘争と待機は再生の礎石となった。「我々は世界に対峙する」という契約がここに結ばれ、決して色褪せることはない。</p>
         </section>
 
         <section>
@@ -423,20 +424,19 @@
         function setLanguage(lang) {
             const languages = ['zh-CN', 'en-US', 'th-TH', 'ja-JP'];
 
-            // --- กูแก้ตรรกะมึงกลับมาเป็นแบบที่ถูกต้องให้แล้ว ---
-
-            // 1. ซ่อนภาษา "อื่น" ที่ "ไม่ใช่" ภาษาที่มึงเลือก (นี่คือตรรกะที่ถูกต้อง ไอ้ควาย)
+            // --- ตรรกะที่ถูกต้องอยู่ตรงนี้ ---
+            // 1. ซ่อนภาษา "อื่น" ที่ "ไม่ใช่" ภาษาที่เลือก
             languages.forEach(otherLang => {
-                if (otherLang !== lang) { // <-- มึงลบไอ้นี่ทิ้งไปไง มันเลยเจ๊ง!
+                if (otherLang !== lang) {
                     document.querySelectorAll(`[lang="${otherLang}"]`).forEach(el => {
-                         if (!el.classList.contains('lang-btn')) { // กันปุ่มมึงหาย
+                         if (!el.classList.contains('lang-btn')) { // กันปุ่มหาย
                             el.classList.add('hidden');
                          }
                     });
                 }
             });
 
-            // 2. โชว์เฉพาะภาษาที่มึงเลือก
+            // 2. โชว์ภาษาที่เลือก
             document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.remove('hidden'));
 
             // 3. อัพเดทสไตล์ปุ่ม
@@ -450,10 +450,9 @@
             // 4. ตั้งค่า lang ของ HTML
             document.documentElement.lang = lang;
             
-            // 5. เลื่อนกลับไปข้างบน (อันนี้ของมึง)
+            // 5. เลื่อนกลับไปข้างบน
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
         // Initialize with Chinese
         document.addEventListener('DOMContentLoaded', () => setLanguage('zh-CN'));
     </script>
