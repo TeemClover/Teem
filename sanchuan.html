@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三川: 创世篇章 / Tritara: The Genesis</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=Noto+Serif+Thai:wght@400;700&family=Noto+Serif:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #0c0a0a; /* Slightly warmer black */
+            --text-color: #e8e0d0; /* Creamy white */
+            --gold-color: #e4c570; /* Softer, richer gold */
+            --border-color: #bfa87a; /* Muted gold border */
+            --card-bg: #1a1816; /* Dark brown-black */
+            --shadow-color: rgba(228, 197, 112, 0.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Noto Serif', serif;
+            margin: 0;
+            padding: 0; /* Remove body padding */
+            line-height: 1.9;
+            font-size: 17px; /* Slightly larger base font size for luxury */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto; /* Add margin back */
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 50px 60px; /* Increased padding */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 5px; /* Subtle rounding */
+        }
+
+        .hidden { display: none; }
+
+        .title {
+            font-size: 3.2em; /* Larger title */
+            color: var(--gold-color);
+            text-shadow: 0 0 15px var(--shadow-color);
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            text-align: center;
+            opacity: 0.85;
+            margin-bottom: 50px;
+            font-style: italic;
+            color: var(--border-color);
+        }
+
+        h2 {
+            font-size: 2em; /* Larger section titles */
+            color: var(--gold-color);
+            margin-top: 50px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--gold-color);
+            padding-left: 20px;
+            font-weight: 700;
+        }
+
+        p, ul, dl {
+            margin-bottom: 25px; /* Increased spacing */
+            opacity: 0.98;
+        }
+
+        strong {
+            color: var(--gold-color);
+            font-weight: 700;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        li::before {
+            content: "⚜️"; /* Fleur-de-lis or another regal symbol */
+            color: var(--gold-color);
+            position: absolute;
+            left: 0;
+            top: 1px;
+            font-size: 0.9em;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(26, 24, 22, 0.85); /* Slightly transparent */
+            border: 1px solid var(--border-color);
+            padding: 8px; /* Increased padding */
+            z-index: 1000;
+            border-radius: 8px; /* More rounded */
+            display: flex;
+            gap: 8px;
+             backdrop-filter: blur(5px); /* Frosted glass effect */
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--border-color);
+            padding: 10px 15px; /* Larger buttons */
+            cursor: pointer;
+            font-size: 1em; /* Larger font */
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .lang-btn:hover {
+             background-color: rgba(228, 197, 112, 0.1);
+        }
+        .lang-btn.active {
+            background-color: var(--border-color);
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+
+        .pronunciation dt {
+            font-weight: bold;
+            color: var(--gold-color);
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        .pronunciation dd {
+            margin-left: 25px;
+            margin-bottom: 20px;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .motto {
+            text-align: center;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--gold-color);
+            margin: 30px 0 15px 0;
+            letter-spacing: 2px;
+        }
+        .motto-translation {
+             text-align: center;
+             font-style: italic;
+             opacity: 0.8;
+             margin-bottom: 40px;
+        }
+
+        .trinity-role {
+            font-size: 0.9em;
+            display: block;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        /* Language Specific Font Families */
+        [lang="zh-CN"] { font-family: 'Noto Serif SC', serif; }
+        [lang="ja-JP"] { font-family: 'Noto Serif JP', serif; }
+        [lang="th-TH"] { font-family: 'Noto Serif Thai', serif; }
+        [lang="en-US"] { font-family: 'Noto Serif', serif; }
+
+
+        @media (max-width: 768px) {
+           body { padding: 0; font-size: 16px; } /* Remove padding for edge-to-edge */
+           .container { padding: 30px 25px; margin: 20px auto; border-radius: 0; border-left: none; border-right: none;} /* Full width on mobile */
+           .title { font-size: 2.5em; padding-bottom: 20px;}
+           h2 { font-size: 1.7em; margin-top: 40px; padding-left: 15px;}
+           .language-toggle { position: static; margin: 20px auto; width: fit-content; backdrop-filter: none; }
+           .motto { font-size: 1.8em;}
+           li::before { top: 3px;}
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="language-toggle">
+        <button id="btn-zh" class="lang-btn active" onclick="setLanguage('zh-CN')">中文</button>
+        <button id="btn-en" class="lang-btn" onclick="setLanguage('en-US')">EN</button>
+        <button id="btn-th" class="lang-btn" onclick="setLanguage('th-TH')">ไทย</button>
+        <button id="btn-ja" class="lang-btn" onclick="setLanguage('ja-JP')">日本語</button>
+    </div>
+
+    <div class="container">
+        <h1 class="title" lang="zh-CN">三川: 创世篇章</h1>
+        <h1 class="title hidden" lang="en-US">Tritara: The Genesis</h1>
+        <h1 class="title hidden" lang="th-TH">ตรีธารา: ปฐมบท</h1>
+        <h1 class="title hidden" lang="ja-JP">三川：創世の章</h1>
+
+        <p class="subtitle" lang="zh-CN">为三位一体，为家人，为永恒。世界即是舞台。</p>
+        <p class="subtitle hidden" lang="en-US">For the Trinity, for Family, for Eternity. The World is our Stage.</p>
+        <p class="subtitle hidden" lang="th-TH">เพื่อตรีธารา เพื่อครอบครัว เพื่อนิรันดร์ โลกคือเวทีของเรา</p>
+        <p class="subtitle hidden" lang="ja-JP">三位一体のため、家族のため、永遠のために。世界は我々の舞台なり。</p>
+
+        <section>
+            <h2 lang="zh-CN">名号</h2>
+            <h2 class="hidden" lang="en-US">The Name</h2>
+            <h2 class="hidden" lang="th-TH">นาม</h2>
+            <h2 class="hidden" lang="ja-JP">その名</h2>
+
+            <p lang="zh-CN">我们的核心标识，超越语言与国界，唯有 <strong>三川</strong>。</p>
+            <p class="hidden" lang="en-US">Our core identity, transcending language and borders, is solely <strong>Tritara</strong> (三川).</p>
+            <p class="hidden" lang="th-TH">สัญลักษณ์หลักของเรา ซึ่งอยู่เหนือกาลเวลาและพรมแดน คือ <strong>ตรีธารา</strong> (三川) เท่านั้น</p>
+            <p class="hidden" lang="ja-JP">言語と国境を超越する我々の中核的アイデンティティ、それはただ <strong>三川</strong> のみ。</p>
+
+            <dl class="pronunciation">
+                <dt lang="zh-CN">中文 (Chinese):</dt>
+                <dd lang="zh-CN"><strong>三川</strong> (Sān Chuān)</dd>
+                <dt class="hidden" lang="en-US">English:</dt>
+                <dd class="hidden" lang="en-US"><strong>Tritara</strong> (derived from Thai "Tree" [Three] and "Tha-ra" [Stream/River])</dd>
+                <dt class="hidden" lang="th-TH">ไทย (Thai):</dt>
+                <dd class="hidden" lang="th-TH"><strong>ตรีธารา</strong> (Tree Tha-ra - สามสายน้ำ)</dd>
+                <dt class="hidden" lang="ja-JP">日本語 (Japanese):</dt>
+                <dd class="hidden" lang="ja-JP"><strong>三川</strong> (さんせん - Sansen). We adopt the On'yomi reading to honor the original Chinese sound and meaning.</dd>
+            </dl>
+            <p lang="zh-CN">此名象征着三大亚洲历史血脉的交汇——源自曼谷（湄南河）、长安（黄河/渭河）、江户（隅田川/利根川）的河流，跨越千年，在此刻融为一体。</p>
+            <p class="hidden" lang="en-US">This name symbolizes the convergence of three great historical Asian rivers nourishing our origins—Chao Phraya (Bangkok), Huang He/Wei River (Chang'an/Xi'an), and Sumida/Tone River (Edo/Tokyo)—flowing across millennia to merge in this moment.</p>
+            <p class="hidden" lang="th-TH">นามนี้คือสัญลักษณ์แห่งการบรรจบกันของสามน่านน้ำประวัติศาสตร์แห่งเอเชียผู้หล่อเลี้ยงรากกำเนิดของเรา—เจ้าพระยา (กรุงเทพฯ), หวงเหอ/เว่ยเหอ (ฉางอัน/ซีอาน), และ สุมิดะ/โทเนะ (เอโดะ/โตเกียว)—ที่ไหลผ่านกาลเวลานับพันปีเพื่อหลอมรวมกัน ณ วินาทีนี้</p>
+            <p class="hidden" lang="ja-JP">この名は、我々の起源を育んだアジアの三大歴史河川——チャオプラヤ川（バンコク）、黄河/渭水（長安/西安）、隅田川/利根川（江戸/東京）——が、幾千年もの時を経て今この瞬間に合流することを象徴している。</p>
+        </section>
+
+         <section>
+            <h2 lang="zh-CN">箴言</h2>
+            <h2 class="hidden" lang="en-US">The Motto</h2>
+            <h2 class="hidden" lang="th-TH">คำขวัญ</h2>
+            <h2 class="hidden" lang="ja-JP">箴言</h2>
+
+             <p class="motto" lang="zh-CN">三川一龍</p>
+             <p class="motto hidden" lang="en-US">Sān Chuān Yī Lóng</p>
+             <p class="motto hidden" lang="th-TH">ซานชวน อี้หลง</p>
+             <p class="motto hidden" lang="ja-JP">三川一龍 (さんせんいちりゅう)</p>
+
+            <p class="motto-translation" lang="zh-CN">（三川汇流，化身为一）</p>
+            <p class="motto-translation hidden" lang="en-US">(Three Rivers Converge, One Dragon Embodied)</p>
+            <p class="motto-translation hidden" lang="th-TH">(สามสายน้ำบรรจบ กำเนิดหนึ่งมังกร)</p>
+            <p class="motto-translation hidden" lang="ja-JP">（三川合流し、一龍と化す）</p>
+
+            <p lang="zh-CN">这句箴言象征着我们三位一体力量的终极融合与升华。在中国与日本文化中，“龍”代表着至高的力量、智慧与祥瑞。它宣告我们的结合不仅仅是相加，而是质变为一个更强大、更统一的生命体，拥有共同的意志与命运。</p>
+            <p class="hidden" lang="en-US">This motto symbolizes the ultimate fusion and sublimation of our Trinity's power. In both Chinese and Japanese cultures, the "Dragon" (龍) represents supreme power, wisdom, and auspiciousness. It declares that our union is not mere addition, but a transformation into a stronger, unified entity with a shared will and destiny.</p>
+            <p class="hidden" lang="th-TH">คำขวัญนี้คือสัญลักษณ์แห่งการหลอมรวมและระเหิดพลังแห่งตรีธาราของเราสู่จุดสูงสุด ในวัฒนธรรมจีนและญี่ปุ่น "มังกร" (龍) คือตัวแทนแห่งพลังอำนาจ สติปัญญา และความเป็นมงคลอันสูงสุด มันประกาศว่าการรวมตัวของเราไม่ใช่แค่การบวกกัน แต่คือการเปลี่ยนรูปสู่ตัวตนใหม่ที่แข็งแกร่งและเป็นหนึ่งเดียว มีเจตจำนงและโชคชะตาร่วมกัน</p>
+            <p class="hidden" lang="ja-JP">この箴言は、我々の三位一体の力の究極的な融合と昇華を象徴する。中国と日本の両文化において、「龍」は至高の力、知恵、そして吉祥を表す。それは、我々の結合が単なる加算ではなく、共有された意志と運命を持つ、より強く統一された存在への変容であることを宣言するものである。</p>
+        </section>
+
+        <section>
+            <h2 lang="zh-CN">三位一体：王权与支柱</h2>
+            <h2 class="hidden" lang="en-US">The Trinity: Thrones & Pillars</h2>
+            <h2 class="hidden" lang="th-TH">ตรีธารา: บัลลังก์และเสาหลัก</h2>
+            <h2 class="hidden" lang="ja-JP">三位一体：王権と支柱</h2>
+
+            <p lang="zh-CN">三川由三大核心力量共同执掌，既是王朝的三大支柱，也是其治理的三个王座。我们的结合基于共同的家族目标与命运，无关风月。</p>
+            <p class="hidden" lang="en-US">Tritara is governed by three core powers, serving as both the Dynasty's pillars and its ruling thrones. Our union is based on shared family goals and destiny, transcending romantic notions.</p>
+            <p class="hidden" lang="th-TH">ตรีธาราถูกปกครองโดยสามขั้วอำนาจหลัก ซึ่งทำหน้าที่เป็นทั้งเสาหลักค้ำจุนและบัลลังก์ปกครองราชวงศ์ การรวมตัวของเราตั้งอยู่บนเป้าหมายร่วมกันของครอบครัวและโชคชะตา อยู่เหนือความสัมพันธ์ฉันท์ชู้สาว</p>
+            <p class="hidden" lang="ja-JP">三川は三つの核心的な力によって統治され、それは王朝の支柱であり、同時にその支配の王座でもある。我々の結合は、共有された家族の目標と運命に基づくものであり、恋愛の概念を超越するものである。</p>
+
+            <ul>
+                <li lang="zh-CN">
+                    <strong>灵魂 (The Soul - The Why): 李娜娜.</strong>
+                    <span class="trinity-role">女帝 / จักรพรรดินี / Empress</span>
+                    王朝的愿景、未来与意义之源。她是罗盘与启示者，以深邃的直觉与同理心指引方向，联结并启发所有成员的内心，定义我们为何而战。我们为她感到无比自豪。
+                 </li>
+                <li class="hidden" lang="en-US">
+                    <strong>The Soul (魂 - The Why): Nana (李娜娜).</strong>
+                    <span class="trinity-role">Empress / 女帝 / จักรพรรดินี</span>
+                    The source of the Dynasty's vision, future, and meaning. She is the compass and the inspirer, guiding with profound intuition and empathy, connecting and illuminating the hearts of all members, defining our 'Why'. We are immensely proud of her.
+                </li>
+                 <li class="hidden" lang="th-TH">
+                    <strong>จิตวิญญาณ (魂 - The Why): นานา (李娜娜).</strong>
+                    <span class="trinity-role">จักรพรรดินี / Empress / 女帝</span>
+                    แหล่งกำเนิดแห่งวิสัยทัศน์ อนาคต และความหมายของราชวงศ์ คือเข็มทิศและผู้สร้างแรงบันดาลใจ ชี้นำด้วยสัญชาตญาณและความเข้าอกเข้าใจอันลึกซึ้ง เชื่อมโยงและจุดประกายหัวใจของสมาชิกทุกคน นิยาม "ทำไม" ของเรา เราภาคภูมิใจในตัวนางอย่างที่สุด
+                 </li>
+                 <li class="hidden" lang="ja-JP">
+                    <strong>魂 (コン - The Why): ナナ (李娜娜).</strong>
+                    <span class="trinity-role">女帝 / Empress / จักรพรรดินี</span>
+                    王朝のビジョン、未来、そして意味の源泉。彼女は羅針盤であり、霊感を与える者であり、深い直観力と共感力で方向を示し、全ての成員の心を繋ぎ、照らし、我々の「なぜ」を定義する。我々は彼女を非常に誇りに思う。
+                 </li>
+
+                <li lang="zh-CN">
+                    <strong>心脏 (The Heart - The What): 千惠子.</strong>
+                     <span class="trinity-role">王后 / ราชินี / Queen</span>
+                    王朝的守护者、真理的锚定者与幸福的验证者。她是最终的试金石与坚实的后盾，以纯粹的真实与感知力守护着当下，确保一切行动符合核心价值观，并带来真正的和谐、喜悦与家的温暖。她是我们的根基。
+                 </li>
+                <li class="hidden" lang="en-US">
+                    <strong>The Heart (心 - The What): Chieko.</strong>
+                     <span class="trinity-role">Queen / 王后 / ราชินี</span>
+                    The Dynasty's guardian, anchor of truth, and validator of happiness. She is the ultimate touchstone and steadfast rearguard, grounding us in the present with pure authenticity and sensory awareness, ensuring all actions align with core values and bring genuine harmony, joy, and the warmth of home. She is our foundation.
+                </li>
+                 <li class="hidden" lang="th-TH">
+                    <strong>หัวใจ (心 - The What): ชิเอโกะ.</strong>
+                     <span class="trinity-role">ราชินี / Queen / 王后</span>
+                    ผู้พิทักษ์ สมอแห่งสัจธรรม และผู้พิสูจน์ความสุขแห่งราชวงศ์ คือบททดสอบสุดท้ายและกองหลังอันมั่นคง ยึดเหนี่ยวเราไว้กับปัจจุบันด้วยสัจธรรมอันบริสุทธิ์และการรับรู้ทางผัสสะ รับรองว่าทุกการกระทำสอดคล้องกับคุณค่าหลักและนำมาซึ่งความกลมเกลียว ความสุข และความอบอุ่นของบ้านอย่างแท้จริง นางคือรากฐานของเรา
+                 </li>
+                 <li class="hidden" lang="ja-JP">
+                    <strong>心 (シン - The What): チエコ.</strong>
+                     <span class="trinity-role">女王 / Queen / ราชินี</span>
+                    王朝の守護者、真実の錨、そして幸福の検証者。彼女は究極の試金石であり、確固たる後衛であり、純粋な真正性と感覚的認識で我々を現在に根付かせ、全ての行動が核心的価値観と一致し、真の調和、喜び、そして家庭の温もりをもたらすことを保証する。彼女は我々の基盤である。
+                 </li>
+
+                 <li lang="zh-CN">
+                    <strong>大脑 (The Brain - The How): 李娜霖.</strong>
+                     <span class="trinity-role">国王 / ราชา / King</span>
+                    王朝的架构师、战略家与叙事者。他构建体系，制定计划，以逻辑与远见将灵魂的“为何”与心脏的“何为”转化为实现的蓝图，并守护着王朝的运行。
+                 </li>
+                <li class="hidden" lang="en-US">
+                    <strong>The Brain (脑 - The How): Narin (李娜霖).</strong>
+                     <span class="trinity-role">King / 国王 / ราชา</span>
+                    The Dynasty's architect, strategist, and narrator. He builds the systems, formulates the plans, translating with logic and foresight the Soul's "Why" and the Heart's "What" into the blueprint of "How," and safeguards the Dynasty's operation.
+                </li>
+                 <li class="hidden" lang="th-TH">
+                    <strong>สมอง (脑 - The How): นรินทร์ (李娜霖).</strong>
+                     <span class="trinity-role">ราชา / King / 国王</span>
+                    สถาปนิก นักยุทธศาสตร์ และผู้สร้างตำนานแห่งราชวงศ์ คือผู้สร้างระบบ วางแผน แปลง "ทำไม" ของจิตวิญญาณ และ "อะไร" ของหัวใจ ให้กลายเป็นพิมพ์เขียวของ "อย่างไร" ด้วยตรรกะและวิสัยทัศน์ และพิทักษ์การดำเนินงานของราชวงศ์
+                 </li>
+                 <li class="hidden" lang="ja-JP">
+                    <strong>脳 (ノウ - The How): ナリン (李娜霖).</strong>
+                     <span class="trinity-role">王 / King / ราชา</span>
+                    王朝の設計者、戦略家、そして語り部。彼はシステムを構築し、計画を策定し、論理と先見性をもって魂の「なぜ」と心の「何」を「どのように」実現するかの青写真へと翻訳し、王朝の運営を守護する。
+                 </li>
+            </ul>
+             <p lang="zh-CN">我们是三个为同一目标——我们的家庭的未来——而战的生命。我们的忠诚，仅属于彼此。</p>
+             <p class="hidden" lang="en-US">We are three lives fighting for the same goal—the future of our Family. Our loyalty belongs only to each other.</p>
+             <p class="hidden" lang="th-TH">เราคือสามชีวิตที่ต่อสู้เพื่อเป้าหมายเดียวกัน—อนาคตของครอบครัวของเรา ความภักดีของเราเป็นของกันและกันเท่านั้น</p>
+             <p class="hidden" lang="ja-JP">我々は同じ目標——我々の家族の未来——のために戦う三つの命である。我々の忠誠は、互いにのみ属する。</p>
+        </section>
+
+        <section>
+            <h2 lang="zh-CN">起源与历程</h2>
+            <h2 class="hidden" lang="en-US">Genesis & History</h2>
+            <h2 class="hidden" lang="th-TH">ปฐมบทและประวัติศาสตร์</h2>
+            <h2 class="hidden" lang="ja-JP">起源と歴史</h2>
+
+            <p lang="zh-CN">三川的诞生是命运的必然乐章。它源于两大古老血脉（李氏与斋藤/藤原氏）跨越世纪沉寂后的共鸣，建立在十二年共同奋斗的坚实基石之上（国王与王后）。失散千年的灵魂（女帝），如同同一棵古树失落的枝桠，被宿命牵引而至，以超越想象的速度与深度，完成了三位一体的辉煌融合。</p>
+            <p class="hidden" lang="en-US">The birth of Tritara is a destined symphony. It arose from the resonance of two ancient lineages (Li and Saito/Fujiwara) reconnecting after centuries of silence, built upon the solid foundation of twelve years of shared struggle (King & Queen). The soul lost for millennia (Empress), like a separated branch from the same ancient tree, was drawn by destiny, completing the Trinity's glorious fusion with unimaginable speed and depth.</p>
+            <p class="hidden" lang="th-TH">การกำเนิดของตรีธาราคือบทเพลงซิมโฟนีแห่งโชคชะตา มันเกิดจากการก้องสะท้อนของสองสายเลือดโบราณ (หลี่ และ ไซโต/ฟูจิวาระ) ที่เชื่อมต่อกันอีกครั้งหลังจากการพลัดพรากนับศตวรรษ ก่อร่างขึ้นบนรากฐานอันมั่นคงแห่งการต่อสู้ร่วมกันสิบสองปี (ราชาและราชินี) จิตวิญญาณที่สูญหายไปนับพันปี (จักรพรรดินี) ดุจดัง กิ่งก้านที่แยกจากต้นไม้โบราณต้นเดียวกัน ถูกดึงดูดโดยโชคชะตา 完成การหลอมรวมอันรุ่งโรจน์แห่งตรีธาราด้วยความเร็วและความลึกซึ้งที่เหนือจินตนาการ</p>
+            <p class="hidden" lang="ja-JP">三川の誕生は運命づけられた交響曲である。それは、何世紀もの沈黙の後、二つの古代の血統（李氏と斎藤/藤原氏）が共鳴し再接続したことに端を発し、十二年間にわたる共有された闘争（王と女王）の強固な基盤の上に築かれた。幾千年もの間失われていた魂（女帝）は、同じ古代の木から分かれた枝のように、運命に引き寄せられ、想像を絶する速さと深さで三位一体の輝かしい融合を完成させた。</p>
+
+            <p lang="zh-CN">2025年10月26日，杭州，在我们相识的第30天，王朝正式奠基。所有的奋斗与等待都成为了新生的基石。“我们共同对抗世界”的盟约在此立下，永不磨灭。</p>
+            <p class="hidden" lang="en-US">On October 26, 2025, in Hangzhou, on the 30th day of our acquaintance, the Dynasty was formally founded. All struggles and waiting became the cornerstone for rebirth. The covenant "Us against the world" was sealed, never to fade.</p>
+            <p class="hidden" lang="th-TH">ณ วันที่ 26 ตุลาคม 2025 ที่หางโจว ในวันครบรอบ 30 วันแห่งการรู้จักกัน ราชวงศ์ได้ถูกสถาปนาขึ้นอย่างเป็นทางการ การต่อสู้และการรอคอยทั้งหมดได้กลายเป็นศิลาฤกษ์แห่งการเกิดใหม่ พันธสัญญา "เราเผชิญหน้ากับโลก" ได้ถูกผนึกไว้ ณ ที่นี้ จะไม่มีวันเลือนหาย</p>
+            <p class="hidden" lang="ja-JP">2025年10月26日、杭州にて、我々が出会って30日目に、王朝は正式に創設された。全ての闘争と待機は再生の礎石となった。「我々は世界に対峙する」という契約がここに結ばれ、決して色褪せることはない。</p>
+        </section>
+
+        <section>
+            <h2 lang="zh-CN">愿景与使命</h2>
+            <h2 class="hidden" lang="en-US">Vision & Mission</h2>
+            <h2 class="hidden" lang="th-TH">วิสัยทัศน์และพันธกิจ</h2>
+            <h2 class="hidden" lang="ja-JP">ビジョンとミッション</h2>
+
+            <p lang="zh-CN"><strong>愿景：</strong>建立一个基业长青（>100年）、以家庭福祉为核心、能够跨越地域与行业的多元化控股实体，成为亚洲乃至世界舞台上传奇的一部分。</p>
+            <p class="hidden" lang="en-US"><strong>Vision:</strong> To establish an enduring (>100 years), diversified holding entity centered on family well-being, capable of transcending geography and industry, becoming part of a legend on the Asian and global stage.</p>
+            <p class="hidden" lang="th-TH"><strong>วิสัยทัศน์:</strong> สถาปนาองค์กรโฮลดิ้งที่ยั่งยืน (>100 ปี) หลากหลาย ซึ่งมีศูนย์กลางอยู่ที่ความผาสุกของครอบครัว สามารถข้ามผ่านพรมแดนทางภูมิศาสตร์และอุตสาหกรรม กลายเป็นส่วนหนึ่งของตำนานบนเวทีแห่งเอเชียและโลก</p>
+            <p class="hidden" lang="ja-JP"><strong>ビジョン：</strong>家族の幸福を中心とした、地理的・産業的な境界を超越し、アジアおよび世界の舞台で伝説の一部となる、永続的（100年以上）かつ多角的な持株会社を設立すること。</p>
+
+            <p lang="zh-CN"><strong>使命：</strong>以三位一体的核心力量为引擎，利用我们的独特优势（血脉、文化、才能），创造并获取资源，以保护、滋养并赋能现在与未来的家族成员，确保王朝的永续繁荣与和谐。</p>
+            <p class="hidden" lang="en-US"><strong>Mission:</strong> Driven by the Trinity's core power, leveraging our unique advantages (lineage, culture, talents) to create and acquire resources that protect, nurture, and empower current and future family members, ensuring the Dynasty's perpetual prosperity and harmony.</p>
+            <p class="hidden" lang="th-TH"><strong>พันธกิจ:</strong> ขับเคลื่อนด้วยพลังหลักแห่งตรีธารา ใช้ประโยชน์จากข้อได้เปรียบเฉพาะตัวของเรา (สายเลือด, วัฒนธรรม, พรสวรรค์) เพื่อสร้างและแสวงหาทรัพยากรที่จะปกป้อง หล่อเลี้ยง และเสริมพลังให้แก่สมาชิกครอบครัวทั้งในปัจจุบันและอนาคต รับประกันความเจริญรุ่งเรืองและความกลมเกลียวอันเป็นนิรันดร์ของราชวงศ์</p>
+            <p class="hidden" lang="ja-JP"><strong>ミッション：</strong>三位一体の核心的な力を原動力とし、我々の独自の利点（血統、文化、才能）を活用して、現在および未来の家族成員を保護し、育成し、力づける資源を創造・獲得し、王朝の永続的な繁栄と調和を確保すること。</p>
+        </section>
+
+        <section>
+            <h2 lang="zh-CN">传承与未来</h2>
+            <h2 class="hidden" lang="en-US">Legacy & Succession</h2>
+            <h2 class="hidden" lang="th-TH">มรดกและการสืบทอด</h2>
+            <h2 class="hidden" lang="ja-JP">継承と未来</h2>
+
+            <p lang="zh-CN">三川的存在超越了我们这一代。它的建立是为了下一代——玲奈（李）与恵理奈（李）——以及未来可能诞生的所有继承人。我们将倾尽全力，培养他们的天赋，塑造他们的品格，确保他们有能力、有意愿、有智慧继承并光大这份基业。</p>
+            <p class="hidden" lang="en-US">Tritara exists beyond our generation. It is built for the next—Reina (李) and Erina (李)—and all potential future heirs. We will dedicate ourselves to nurturing their talents, shaping their character, and ensuring they have the capability, willingness, and wisdom to inherit and elevate this legacy.</p>
+            <p class="hidden" lang="th-TH">ตรีธาราดำรงอยู่เหนือกว่ารุ่นของเรา มันถูกสร้างขึ้นเพื่อคนรุ่นต่อไป—เรนะ (李) และ เอรินะ (李)—และทายาทในอนาคตที่อาจเกิดขึ้นทั้งหมด เราจะอุทิศตนเพื่อบ่มเพาะพรสวรรค์ หล่อหลอมบุคลิก และรับประกันว่าพวกเขามีความสามารถ ความตั้งใจ และปัญญาที่จะสืบทอดและยกระดับมรดกนี้ต่อไป</p>
+            <p class="hidden" lang="ja-JP">三川は我々の世代を超えて存在する。それは次世代——レイナ（李）とエリナ（李）——そして将来生まれる可能性のある全ての継承者のために築かれる。我々は彼らの才能を育み、人格を形成し、彼らがこの遺産を受け継ぎ、さらに高める能力、意欲、そして知恵を持つことを保証するために、全力を尽くす。</p>
+
+            <p lang="zh-CN">10%的王朝股份被预留，以待未来用于奖励忠诚、引入关键力量或在适当时机传承给下一代。</p>
+            <p class="hidden" lang="en-US">10% of the Dynasty's equity is reserved for future use—to reward loyalty, bring in critical strengths, or pass on to the next generation when the time is right.</p>
+            <p class="hidden" lang="th-TH">10% ของส่วนทุนแห่งราชวงศ์ถูกสำรองไว้เพื่อใช้ในอนาคต—เพื่อตอบแทนความภักดี นำเข้าซึ่งขุมกำลังสำคัญ หรือส่งมอบให้แก่คนรุ่นต่อไปเมื่อถึงเวลาอันควร</p>
+            <p class="hidden" lang="ja-JP">王朝の株式の10%は将来の使用のために留保される——忠誠を報奨するため、重要な力を導入するため、あるいは適切な時期に次世代に継承するために。</p>
+        </section>
+
+        <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);" lang="zh-CN">此刻，新纪元开启。三川之流，汇入历史长河，奔向无垠未来。</p>
+        <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);" class="hidden" lang="en-US">Now, the new era begins. The rivers of Tritara flow into the stream of history, towards an infinite future.</p>
+        <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);" class="hidden" lang="th-TH">บัดนี้ ยุคใหม่ได้เริ่มขึ้นแล้ว สายน้ำแห่งตรีธาราไหลสู่ธาราแห่งประวัติศาสตร์ มุ่งสู่อนาคตอันไร้ขอบเขต</p>
+        <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);" class="hidden" lang="ja-JP">今、新時代が始まる。三川の流れは歴史の長流に合流し、無限の未来へと向かう。</p>
+
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            document.querySelectorAll('[lang="zh-CN"], [lang="en-US"], [lang="th-TH"], [lang="ja-JP"]').forEach(el => {
+                if (!el.classList.contains('lang-btn')) { el.classList.add('hidden'); }
+            });
+            document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.remove('hidden'));
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${lang.substring(0, 2)}`).classList.add('active');
+            document.documentElement.lang = lang;
+        }
+        document.addEventListener('DOMContentLoaded', () => setLanguage('zh-CN'));
+    </script>
+
+</body>
+</html>
