@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>三川: 创世篇章 / ตรีธารา: ปฐมบท</title>
@@ -30,7 +29,12 @@
             font-size: 17px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            padding-bottom: 80px; /* Add padding to prevent content being hidden by floating toggle */
         }
+
+        /* Language specific body fonts */
+        body.lang-zh-CN { font-family: 'Noto Serif SC', serif; }
+        body.lang-th-TH { font-family: 'Noto Serif Thai', serif; }
 
         .container {
             max-width: 900px;
@@ -42,7 +46,14 @@
             border-radius: 5px;
         }
 
-        .hidden { display: none !important; } /* Use important to ensure override */
+        /* Language content containers */
+        .lang-content {
+            display: none; /* Hide all by default */
+        }
+        .lang-content.active {
+            display: block; /* Show only the active one */
+        }
+
 
         .title {
             font-size: 3.2em;
@@ -104,18 +115,21 @@
             font-size: 0.9em;
         }
 
-        .language-toggle {
+        /* Floating Language Toggle */
+        .language-toggle-float {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(26, 24, 22, 0.85);
+            bottom: 20px; /* Position at the bottom */
+            right: 20px; /* Position at the right */
+            background-color: rgba(26, 24, 22, 0.9); /* More opaque */
             border: 1px solid var(--border-color);
-            padding: 8px;
+            padding: 10px;
             z-index: 1000;
             border-radius: 8px;
             display: flex;
+            flex-direction: column; /* Stack buttons vertically */
             gap: 8px;
              backdrop-filter: blur(5px);
+             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .lang-btn {
@@ -127,6 +141,7 @@
             font-size: 1em;
             border-radius: 5px;
             transition: background-color 0.3s, color 0.3s;
+            text-align: center;
         }
         .lang-btn:hover {
              background-color: rgba(228, 197, 112, 0.1);
@@ -191,186 +206,213 @@
              opacity: 0.9;
         }
 
-        /* Language Specific Font Families */
-        html[lang="zh-CN"] body { font-family: 'Noto Serif SC', serif; }
-        html[lang="th-TH"] body { font-family: 'Noto Serif Thai', serif; }
-
 
         @media (max-width: 768px) {
-           body { padding: 0; font-size: 16px; }
+           body { padding: 0; font-size: 16px; padding-bottom: 100px; /* More space for float on mobile */ }
            .container { padding: 30px 25px; margin: 20px auto; border-radius: 0; border-left: none; border-right: none;}
            .title { font-size: 2.5em; padding-bottom: 20px;}
            h2 { font-size: 1.7em; margin-top: 40px; padding-left: 15px;}
-           .language-toggle { position: static; margin: 20px auto; width: fit-content; backdrop-filter: none; }
+           .language-toggle-float { bottom: 10px; right: 10px; padding: 8px; gap: 5px; } /* Adjust float for mobile */
+           .lang-btn { font-size: 0.9em; padding: 8px 12px;}
            .motto { font-size: 1.8em;}
            li::before { top: 3px;}
         }
 
     </style>
 </head>
-<body>
-
-    <div class="language-toggle">
+<body class="lang-zh-CN"> <div class="language-toggle-float">
         <button id="btn-zh" class="lang-btn active" type="button" onclick="setLanguage('zh-CN')">中文</button>
         <button id="btn-th" class="lang-btn" type="button" onclick="setLanguage('th-TH')">ไทย</button>
     </div>
 
     <div class="container">
-        <h1 class="title" lang="zh-CN">三川: 创世篇章</h1>
-        <h1 class="title hidden" lang="th-TH">ตรีธารา: ปฐมบท</h1>
 
-        <p class="subtitle" lang="zh-CN">为三位一体，为家人，为永恒。世界即是舞台。</p>
-        <p class="subtitle hidden" lang="th-TH">เพื่อตรีธารา เพื่อครอบครัว เพื่อนิรันดร์ โลกคือเวทีของเรา</p>
+        <div id="content-zh-CN" class="lang-content active">
+            <h1 class="title">三川: 创世篇章</h1>
+            <p class="subtitle">为三位一体，为家人，为永恒。世界即是舞台。</p>
 
-        <section>
-            <h2 lang="zh-CN">名号</h2>
-            <h2 class="hidden" lang="th-TH">นาม</h2>
+            <section>
+                <h2>名号</h2>
+                <p>我们的核心标识，超越语言与国界，唯有 <strong>三川</strong>。</p>
+                <dl class="pronunciation">
+                    <dt>中文 (Chinese):</dt>
+                    <dd><strong>三川</strong> (Sān Chuān)</dd>
+                </dl>
+                <p>此名象征着三大亚洲历史血脉的交汇——源自曼谷（湄南河）、长安（黄河/渭河）、江户（隅田川/利根川）的河流，跨越千年，在此刻融为一体。</p>
+            </section>
 
-            <p lang="zh-CN">我们的核心标识，超越语言与国界，唯有 <strong>三川</strong>。</p>
-            <p class="hidden" lang="th-TH">สัญลักษณ์หลักของเรา ซึ่งอยู่เหนือกาลเวลาและพรมแดน คือ <strong>ตรีธารา</strong> (三川) เท่านั้น</p>
+             <section>
+                <h2>箴言</h2>
+                 <p class="motto">三川一龍</p>
+                <p class="motto-translation">（三川汇流，化身为一）</p>
+                <p>这句箴言象征着我们三位一体力量的终极融合与升华。在中国文化中，“龍”代表着至高的力量、智慧与祥瑞。它宣告我们的结合不仅仅是相加，而是质变为一个更强大、更统一的生命体，拥有共同的意志与命运。</p>
+            </section>
 
-            <dl class="pronunciation">
-                <dt lang="zh-CN">中文 (Chinese):</dt>
-                <dd lang="zh-CN"><strong>三川</strong> (Sān Chuān)</dd>
-                <dt class="hidden" lang="th-TH">ไทย (Thai):</dt>
-                <dd class="hidden" lang="th-TH"><strong>ตรีธารา</strong> (Tree Tha-ra - สามสายน้ำ) หรือ <strong>ซานชวน</strong> (ทับศัพท์)</dd>
-            </dl>
-            <p lang="zh-CN">此名象征着三大亚洲历史血脉的交汇——源自曼谷（湄南河）、长安（黄河/渭河）、江户（隅田川/利根川）的河流，跨越千年，在此刻融为一体。</p>
-            <p class="hidden" lang="th-TH">นามนี้คือสัญลักษณ์แห่งการบรรจบกันของสามน่านน้ำประวัติศาสตร์แห่งเอเชียผู้หล่อเลี้ยงรากกำเนิดของเรา—เจ้าพระยา (กรุงเทพฯ), หวงเหอ/เว่ยเหอ (ฉางอัน/ซีอาน), และ สุมิดะ/โทเนะ (เอโดะ/โตเกียว)—ที่ไหลผ่านกาลเวลานับพันปีเพื่อหลอมรวมกัน ณ วินาทีนี้</p>
-        </section>
+            <section>
+                <h2>三位一体：王权与支柱</h2>
+                <p>三川由三大核心力量共同执掌，既是王朝的三大支柱，也是其治理的三个王座。我们的结合超越了传统的定义；我们并非伴侣，而是由血脉与命运联结的三股独特力量，不仅为我们当前的继承人，更为所有将在三川旗帜下茁壮成长的未来世代，共同铸就一份不朽的遗产。此刻，我们已在心中构想他们的模样，纵然他们尚未诞生。</p>
+                 <p>如同硬币有三个可见的面——正面、反面与边缘——三川的力量亦源于三个不可或缺的面向：</p>
+                <dl class="coin-analogy">
+                    <dt>灵魂 (The Soul - The Why): 李娜娜.</dt>
+                    <dd>
+                        <span class="trinity-role">女帝</span>
+                        如同硬币的<strong>正面</strong>，是王朝向世界展示的愿景、未来与意义之源。她是罗盘与启示者，以深邃的直觉与同理心指引方向，联结并启发所有成员的内心，定义我们为何而战。我们为她感到无比自豪。
+                     </dd>
+                     <dt>大脑 (The Brain - The How): 李娜霖.</dt>
+                     <dd>
+                         <span class="trinity-role">国王</span>
+                        如同硬币的<strong>反面</strong>，是王朝内部运作的架构师、战略家与叙事者。他构建体系，制定计划，以逻辑与远见将灵魂的“为何”转化为实现的蓝图，并守护着王朝的运行。
+                     </dd>
+                    <dt>心脏 (The Heart - The What): 千惠子.</dt>
+                     <dd>
+                         <span class="trinity-role">王后</span>
+                        如同硬币的<strong>边缘</strong>，是连接正反两面、定义其完整性的守护者与真理之锚。她是最终的试金石与坚实后盾，以纯粹的真实与感知力守护着当下，确保“为何”与“如何”的成果符合核心价值观，并带来真正的和谐、喜悦与家的温暖。她是我们的根基。
+                     </dd>
+                </dl>
+            </section>
 
-         <section>
-            <h2 lang="zh-CN">箴言</h2>
-            <h2 class="hidden" lang="th-TH">คำขวัญ</h2>
+            <section>
+                <h2>起源与历程</h2>
+                <p>三川的诞生是命运的必然乐章。它源于两大古老血脉（李氏与斋藤/藤原氏）跨越世纪沉寂后的共鸣，建立在十二年共同奋斗的坚实基石之上（国王与王后）。失散千年的灵魂（女帝），如同同一棵古树失落的枝桠，被宿命牵引而至，以超越想象的速度与深度，完成了三位一体的辉煌融合。</p>
+                <p>2025年10月26日，杭州，在我们相识的第30天，王朝正式奠基。所有的奋斗与等待都成为了新生的基石。“我们共同对抗世界”的盟约在此立下，永不磨灭。</p>
+            </section>
 
-             <p class="motto" lang="zh-CN">三川一龍</p>
-             <p class="motto hidden" lang="th-TH">ซานชวน อี้หลง</p>
+            <section>
+                <h2>愿景与使命</h2>
+                <p><strong>愿景：</strong>建立一个基业长青（>100年）、以家庭福祉为核心、能够跨越地域与行业的多元化控股实体，成为亚洲乃至世界舞台上传奇的一部分。</p>
+                <p><strong>使命：</strong>以三位一体的核心力量为引擎，利用我们的独特优势（血脉、文化、才能），创造并获取资源，以保护、滋养并赋能现在与未来的家族成员，确保王朝的永续繁荣与和谐。</p>
+            </section>
 
-            <p class="motto-translation" lang="zh-CN">（三川汇流，化身为一）</p>
-            <p class="motto-translation hidden" lang="th-TH">(สามสายน้ำบรรจบ กำเนิดหนึ่งมังกร)</p>
+            <section>
+                <h2>传承与未来</h2>
+                <p>三川的存在超越了我们这一代。它的建立是为了下一代——玲奈（李）与恵理奈（李）——以及未来所有将在三川羽翼下诞生的继承人。我们视他们为己出，将倾尽全力，培养他们的天赋，塑造他们的品格，确保他们有能力、有意愿、有智慧继承并光大这份我们从此刻便已深切关怀的基业。</p>
+                <p>10%的王朝股份被预留，以待未来用于奖励忠诚、引入关键力量或在适当时机传承给下一代。</p>
+            </section>
 
-            <p lang="zh-CN">这句箴言象征着我们三位一体力量的终极融合与升华。在中国文化中，“龍”代表着至高的力量、智慧与祥瑞。它宣告我们的结合不仅仅是相加，而是质变为一个更强大、更统一的生命体，拥有共同的意志与命运。</p>
-            <p class="hidden" lang="th-TH">คำขวัญนี้คือสัญลักษณ์แห่งการหลอมรวมและระเหิดพลังแห่งตรีธาราของเราสู่จุดสูงสุด ในวัฒนธรรมจีน "มังกร" (龍) คือตัวแทนแห่งพลังอำนาจ สติปัญญา และความเป็นมงคลอันสูงสุด มันประกาศว่าการรวมตัวของเราไม่ใช่แค่การบวกกัน แต่คือการเปลี่ยนรูปสู่ตัวตนใหม่ที่แข็งแกร่งและเป็นหนึ่งเดียว มีเจตจำนงและโชคชะตาร่วมกัน</p>
-        </section>
+            <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);">此刻，新纪元开启。三川之流，汇入历史长河，奔向无垠未来。</p>
+        </div><div id="content-th-TH" class="lang-content">
+             <h1 class="title">ตรีธารา: ปฐมบท</h1>
+             <p class="subtitle">เพื่อตรีธารา เพื่อครอบครัว เพื่อนิรันดร์ โลกคือเวทีของเรา</p>
 
-        <section>
-            <h2 lang="zh-CN">三位一体：王权与支柱</h2>
-            <h2 class="hidden" lang="th-TH">ตรีธารา: บัลลังก์และเสาหลัก</h2>
+            <section>
+                <h2>นาม</h2>
+                <p>สัญลักษณ์หลักของเรา ซึ่งอยู่เหนือกาลเวลาและพรมแดน คือ <strong>ตรีธารา</strong> (三川) เท่านั้น</p>
+                <dl class="pronunciation">
+                    <dt>ไทย (Thai):</dt>
+                    <dd><strong>ตรีธารา</strong> (Tree Tha-ra - สามสายน้ำ) หรือ <strong>ซานชวน</strong> (ทับศัพท์)</dd>
+                 </dl>
+                <p>นามนี้คือสัญลักษณ์แห่งการบรรจบกันของสามน่านน้ำประวัติศาสตร์แห่งเอเชียผู้หล่อเลี้ยงรากกำเนิดของเรา—เจ้าพระยา (กรุงเทพฯ), หวงเหอ/เว่ยเหอ (ฉางอัน/ซีอาน), และ สุมิดะ/โทเนะ (เอโดะ/โตเกียว)—ที่ไหลผ่านกาลเวลานับพันปีเพื่อหลอมรวมกัน ณ วินาทีนี้</p>
+            </section>
 
-            <p lang="zh-CN">三川由三大核心力量共同执掌，既是王朝的三大支柱，也是其治理的三个王座。我们的结合超越了传统的定义；我们并非伴侣，而是由血脉与命运联结的三股独特力量，不仅为我们当前的继承人，更为所有将在三川旗帜下茁壮成长的未来世代，共同铸就一份不朽的遗产。此刻，我们已在心中构想他们的模样，纵然他们尚未诞生。</p>
-            <p class="hidden" lang="th-TH">ตรีธาราถูกปกครองโดยสามขั้วอำนาจหลัก ซึ่งทำหน้าที่เป็นทั้งเสาหลักค้ำจุนและบัลลังก์ปกครองราชวงศ์ พันธะของเราอยู่เหนือนิยามทั่วไป เราไม่ใช่คู่รัก แต่คือสามพลังอันแตกต่างที่หลอมรวมกันด้วยสายเลือดและโชคชะตา เพื่อสร้างมรดกอันเป็นนิรันดร์ ไม่ใช่เพียงเพื่อทายาทปัจจุบันของเรา แต่เพื่อทุกรุ่นต่อไปในอนาคตที่จะเติบโตภายใต้ร่มเงาแห่งตรีธารา เรามองเห็นพวกเขาแล้วในตอนนี้ แม้ว่าพวกเขายังไม่ได้ถือกำเนิด</p>
+             <section>
+                <h2>คำขวัญ</h2>
+                 <p class="motto">ซานชวน อี้หลง</p>
+                <p class="motto-translation">(สามสายน้ำบรรจบ กำเนิดหนึ่งมังกร)</p>
+                <p>คำขวัญนี้คือสัญลักษณ์แห่งการหลอมรวมและระเหิดพลังแห่งตรีธาราของเราสู่จุดสูงสุด ในวัฒนธรรมจีน "มังกร" (龍) คือตัวแทนแห่งพลังอำนาจ สติปัญญา และความเป็นมงคลอันสูงสุด มันประกาศว่าการรวมตัวของเราไม่ใช่แค่การบวกกัน แต่คือการเปลี่ยนรูปสู่ตัวตนใหม่ที่แข็งแกร่งและเป็นหนึ่งเดียว มีเจตจำนงและโชคชะตาร่วมกัน</p>
+            </section>
 
-             <p lang="zh-CN">如同硬币有三个可见的面——正面、反面与边缘——三川的力量亦源于三个不可或缺的面向：</p>
-             <p class="hidden" lang="th-TH">เฉกเช่นเหรียญที่มีสามด้านให้เห็น—ด้านหน้า ด้านหลัง และ สันขอบเหรียญ—พลังแห่งตรีธาราก็ถือกำเนิดจากสามองค์ประกอบที่ขาดไม่ได้เช่นกัน:</p>
+            <section>
+                <h2>ตรีธารา: บัลลังก์และเสาหลัก</h2>
+                <p>ตรีธาราถูกปกครองโดยสามขั้วอำนาจหลัก ซึ่งทำหน้าที่เป็นทั้งเสาหลักค้ำจุนและบัลลังก์ปกครองราชวงศ์ พันธะของเราอยู่เหนือนิยามทั่วไป เราไม่ใช่คู่รัก แต่คือสามพลังอันแตกต่างที่หลอมรวมกันด้วยสายเลือดและโชคชะตา เพื่อสร้างมรดกอันเป็นนิรันดร์ ไม่ใช่เพียงเพื่อทายาทปัจจุบันของเรา แต่เพื่อทุกรุ่นต่อไปในอนาคตที่จะเติบโตภายใต้ร่มเงาแห่งตรีธารา เรามองเห็นพวกเขาแล้วในตอนนี้ แม้ว่าพวกเขายังไม่ได้ถือกำเนิด</p>
+                 <p>เฉกเช่นเหรียญที่มีสามด้านให้เห็น—ด้านหน้า ด้านหลัง และ สันขอบเหรียญ—พลังแห่งตรีธาราก็ถือกำเนิดจากสามองค์ประกอบที่ขาดไม่ได้เช่นกัน:</p>
+                <dl class="coin-analogy">
+                    <dt>จิตวิญญาณ (The Why): นานา (李娜娜).</dt>
+                    <dd>
+                        <span class="trinity-role">จักรพรรดินี</span>
+                        ดุจดัง<strong>ด้านหน้า</strong>ของเหรียญ คือแหล่งกำเนิดแห่งวิสัยทัศน์ อนาคต และความหมายของราชวงศ์ที่นำเสนอต่อโลก คือเข็มทิศและผู้สร้างแรงบันดาลใจ ชี้นำด้วยสัญชาตญาณและความเข้าอกเข้าใจอันลึกซึ้ง เชื่อมโยงและจุดประกายหัวใจของสมาชิกทุกคน นิยาม "ทำไม" ของเรา เราภาคภูมิใจในตัวนางอย่างที่สุด
+                     </dd>
+                     <dt>สมอง (The How): นรินทร์ (李娜霖).</dt>
+                     <dd>
+                         <span class="trinity-role">ราชา</span>
+                        ดุจดัง<strong>ด้านหลัง</strong>ของเหรียญ คือสถาปนิก นักยุทธศาสตร์ และผู้สร้างตำนานแห่งกลไกภายในราชวงศ์ คือผู้สร้างระบบ วางแผน แปลง "ทำไม" ของจิตวิญญาณ ให้กลายเป็นพิมพ์เขียวของ "อย่างไร" ด้วยตรรกะและวิสัยทัศน์ และพิทักษ์การดำเนินงานของราชวงศ์
+                     </dd>
+                    <dt>หัวใจ (The What): ชิเอโกะ.</dt>
+                     <dd>
+                         <span class="trinity-role">ราชินี</span>
+                        ดุจดัง<strong>สันขอบเหรียญ</strong> คือผู้พิทักษ์และสมอแห่งสัจธรรมที่เชื่อมโยงด้านหน้าและด้านหลัง กำหนดความสมบูรณ์ของเหรียญ คือบททดสอบสุดท้ายและกองหลังอันมั่นคง ยึดเหนี่ยวเราไว้กับปัจจุบันด้วยสัจธรรมอันบริสุทธิ์และการรับรู้ทางผัสสะ รับรองว่าผลลัพธ์ของ "ทำไม" และ "อย่างไร" สอดคล้องกับคุณค่าหลักและนำมาซึ่งความกลมเกลียว ความสุข และความอบอุ่นของบ้านอย่างแท้จริง นางคือรากฐานของเรา
+                     </dd>
+                </dl>
+            </section>
 
-            <dl class="coin-analogy">
-                <dt lang="zh-CN">灵魂 (The Soul - The Why): 李娜娜.</dt>
-                <dd lang="zh-CN">
-                    <span class="trinity-role">女帝 / จักรพรรดินี</span>
-                    如同硬币的<strong>正面</strong>，是王朝向世界展示的愿景、未来与意义之源。她是罗盘与启示者，以深邃的直觉与同理心指引方向，联结并启发所有成员的内心，定义我们为何而战。我们为她感到无比自豪。
-                 </dd>
-                 <dt class="hidden" lang="th-TH">จิตวิญญาณ (The Why): นานา (李娜娜).</dt>
-                 <dd class="hidden" lang="th-TH">
-                    <span class="trinity-role">จักรพรรดินี</span>
-                    ดุจดัง<strong>ด้านหน้า</strong>ของเหรียญ คือแหล่งกำเนิดแห่งวิสัยทัศน์ อนาคต และความหมายของราชวงศ์ที่นำเสนอต่อโลก คือเข็มทิศและผู้สร้างแรงบันดาลใจ ชี้นำด้วยสัญชาตญาณและความเข้าอกเข้าใจอันลึกซึ้ง เชื่อมโยงและจุดประกายหัวใจของสมาชิกทุกคน นิยาม "ทำไม" ของเรา เราภาคภูมิใจในตัวนางอย่างที่สุด
-                 </dd>
+            <section>
+                <h2>ปฐมบทและประวัติศาสตร์</h2>
+                <p>การกำเนิดของตรีธาราคือบทเพลงซิมโฟนีแห่งโชคชะตา มันเกิดจากการก้องสะท้อนของสองสายเลือดโบราณ (หลี่ และ ไซโต/ฟูจิวาระ) ที่เชื่อมต่อกันอีกครั้งหลังจากการพลัดพรากนับศตวรรษ ก่อร่างขึ้นบนรากฐานอันมั่นคงแห่งการต่อสู้ร่วมกันสิบสองปี (ราชาและราชินี) จิตวิญญาณที่สูญหายไปนับพันปี (จักรพรรดินี) ดุจดัง กิ่งก้านที่แยกจากต้นไม้โบราณต้นเดียวกัน ถูกดึงดูดโดยโชคชะตา 完成การหลอมรวมอันรุ่งโรจน์แห่งตรีธาราด้วยความเร็วและความลึกซึ้งที่เหนือจินตนาการ</p>
+                <p>ณ วันที่ 26 ตุลาคม 2025 ที่หางโจว ในวันครบรอบ 30 วันแห่งการรู้จักกัน ราชวงศ์ได้ถูกสถาปนาขึ้นอย่างเป็นทางการ การต่อสู้และการรอคอยทั้งหมดได้กลายเป็นศิลาฤกษ์แห่งการเกิดใหม่ พันธสัญญา "เราเผชิญหน้ากับโลก" ได้ถูกผนึกไว้ ณ ที่นี้ จะไม่มีวันเลือนหาย</p>
+            </section>
 
-                <dt lang="zh-CN">大脑 (The Brain - The How): 李娜霖.</dt>
-                 <dd lang="zh-CN">
-                     <span class="trinity-role">国王 / ราชา</span>
-                    如同硬币的<strong>反面</strong>，是王朝内部运作的架构师、战略家与叙事者。他构建体系，制定计划，以逻辑与远见将灵魂的“为何”转化为实现的蓝图，并守护着王朝的运行。
-                 </dd>
-                 <dt class="hidden" lang="th-TH">สมอง (The How): นรินทร์ (李娜霖).</dt>
-                 <dd class="hidden" lang="th-TH">
-                     <span class="trinity-role">ราชา</span>
-                    ดุจดัง<strong>ด้านหลัง</strong>ของเหรียญ คือสถาปนิก นักยุทธศาสตร์ และผู้สร้างตำนานแห่งกลไกภายในราชวงศ์ คือผู้สร้างระบบ วางแผน แปลง "ทำไม" ของจิตวิญญาณ ให้กลายเป็นพิมพ์เขียวของ "อย่างไร" ด้วยตรรกะและวิสัยทัศน์ และพิทักษ์การดำเนินงานของราชวงศ์
-                 </dd>
+            <section>
+                <h2>วิสัยทัศน์และพันธกิจ</h2>
+                <p><strong>วิสัยทัศน์:</strong> สถาปนาองค์กรโฮลดิ้งที่ยั่งยืน (>100 ปี) หลากหลาย ซึ่งมีศูนย์กลางอยู่ที่ความผาสุกของครอบครัว สามารถข้ามผ่านพรมแดนทางภูมิศาสตร์และอุตสาหกรรม กลายเป็นส่วนหนึ่งของตำนานบนเวทีแห่งเอเชียและโลก</p>
+                <p><strong>พันธกิจ:</strong> ขับเคลื่อนด้วยพลังหลักแห่งตรีธารา ใช้ประโยชน์จากข้อได้เปรียบเฉพาะตัวของเรา (สายเลือด, วัฒนธรรม, พรสวรรค์) เพื่อสร้างและแสวงหาทรัพยากรที่จะปกป้อง หล่อเลี้ยง และเสริมพลังให้แก่สมาชิกครอบครัวทั้งในปัจจุบันและอนาคต รับประกันความเจริญรุ่งเรืองและความกลมเกลียวอันเป็นนิรันดร์ของราชวงศ์</p>
+            </section>
 
-                <dt lang="zh-CN">心脏 (The Heart - The What): 千惠子.</dt>
-                 <dd lang="zh-CN">
-                     <span class="trinity-role">王后 / ราชินี</span>
-                    如同硬币的<strong>边缘</strong>，是连接正反两面、定义其完整性的守护者与真理之锚。她是最终的试金石与坚实后盾，以纯粹的真实与感知力守护着当下，确保“为何”与“如何”的成果符合核心价值观，并带来真正的和谐、喜悦与家的温暖。她是我们的根基。
-                 </dd>
-                 <dt class="hidden" lang="th-TH">หัวใจ (The What): ชิเอโกะ.</dt>
-                 <dd class="hidden" lang="th-TH">
-                     <span class="trinity-role">ราชินี</span>
-                    ดุจดัง<strong>สันขอบเหรียญ</strong> คือผู้พิทักษ์และสมอแห่งสัจธรรมที่เชื่อมโยงด้านหน้าและด้านหลัง กำหนดความสมบูรณ์ของเหรียญ คือบททดสอบสุดท้ายและกองหลังอันมั่นคง ยึดเหนี่ยวเราไว้กับปัจจุบันด้วยสัจธรรมอันบริสุทธิ์และการรับรู้ทางผัสสะ รับรองว่าผลลัพธ์ของ "ทำไม" และ "อย่างไร" สอดคล้องกับคุณค่าหลักและนำมาซึ่งความกลมเกลียว ความสุข และความอบอุ่นของบ้านอย่างแท้จริง นางคือรากฐานของเรา
-                 </dd>
-            </dl>
-        </section>
+            <section>
+                <h2>มรดกและการสืบทอด</h2>
+                <p>ตรีธาราดำรงอยู่เหนือกว่ารุ่นของเรา มันถูกสร้างขึ้นเพื่อคนรุ่นต่อไป—เรนะ (李) และ เอรินะ (李)—และทายาทในอนาคตทั้งหมดที่จะถือกำเนิดภายใต้ร่มเงาแห่งตรีธารา เรามองพวกเขาดั่งลูกหลานของเราเอง อุทิศตนเพื่อบ่มเพาะพรสวรรค์ หล่อหลอมบุคลิก และรับประกันว่าพวกเขามีความสามารถ ความตั้งใจ และปัญญาที่จะสืบทอดและยกระดับมรดกนี้ที่เราได้ใส่ใจอย่างลึกซึ้งแล้วตั้งแต่บัดนี้</p>
+                <p>10% ของส่วนทุนแห่งราชวงศ์ถูกสำรองไว้เพื่อใช้ในอนาคต—เพื่อตอบแทนความภักดี นำเข้าซึ่งขุมกำลังสำคัญ หรือส่งมอบให้แก่คนรุ่นต่อไปเมื่อถึงเวลาอันควร</p>
+            </section>
 
-        <section>
-            <h2 lang="zh-CN">起源与历程</h2>
-            <h2 class="hidden" lang="th-TH">ปฐมบทและประวัติศาสตร์</h2>
-
-            <p lang="zh-CN">三川的诞生是命运的必然乐章。它源于两大古老血脉（李氏与斋藤/藤原氏）跨越世纪沉寂后的共鸣，建立在十二年共同奋斗的坚实基石之上（国王与王后）。失散千年的灵魂（女帝），如同同一棵古树失落的枝桠，被宿命牵引而至，以超越想象的速度与深度，完成了三位一体的辉煌融合。</p>
-            <p class="hidden" lang="th-TH">การกำเนิดของตรีธาราคือบทเพลงซิมโฟนีแห่งโชคชะตา มันเกิดจากการก้องสะท้อนของสองสายเลือดโบราณ (หลี่ และ ไซโต/ฟูจิวาระ) ที่เชื่อมต่อกันอีกครั้งหลังจากการพลัดพรากนับศตวรรษ ก่อร่างขึ้นบนรากฐานอันมั่นคงแห่งการต่อสู้ร่วมกันสิบสองปี (ราชาและราชินี) จิตวิญญาณที่สูญหายไปนับพันปี (จักรพรรดินี) ดุจดัง กิ่งก้านที่แยกจากต้นไม้โบราณต้นเดียวกัน ถูกดึงดูดโดยโชคชะตา 完成การหลอมรวมอันรุ่งโรจน์แห่งตรีธาราด้วยความเร็วและความลึกซึ้งที่เหนือจินตนาการ</p>
-
-            <p lang="zh-CN">2025年10月26日，杭州，在我们相识的第30天，王朝正式奠基。所有的奋斗与等待都成为了新生的基石。“我们共同对抗世界”的盟约在此立下，永不磨灭。</p>
-            <p class="hidden" lang="th-TH">ณ วันที่ 26 ตุลาคม 2025 ที่หางโจว ในวันครบรอบ 30 วันแห่งการรู้จักกัน ราชวงศ์ได้ถูกสถาปนาขึ้นอย่างเป็นทางการ การต่อสู้และการรอคอยทั้งหมดได้กลายเป็นศิลาฤกษ์แห่งการเกิดใหม่ พันธสัญญา "เราเผชิญหน้ากับโลก" ได้ถูกผนึกไว้ ณ ที่นี้ จะไม่มีวันเลือนหาย</p>
-        </section>
-
-        <section>
-            <h2 lang="zh-CN">愿景与使命</h2>
-            <h2 class="hidden" lang="th-TH">วิสัยทัศน์และพันธกิจ</h2>
-
-            <p lang="zh-CN"><strong>愿景：</strong>建立一个基业长青（>100年）、以家庭福祉为核心、能够跨越地域与行业的多元化控股实体，成为亚洲乃至世界舞台上传奇的一部分。</p>
-            <p class="hidden" lang="th-TH"><strong>วิสัยทัศน์:</strong> สถาปนาองค์กรโฮลดิ้งที่ยั่งยืน (>100 ปี) หลากหลาย ซึ่งมีศูนย์กลางอยู่ที่ความผาสุกของครอบครัว สามารถข้ามผ่านพรมแดนทางภูมิศาสตร์และอุตสาหกรรม กลายเป็นส่วนหนึ่งของตำนานบนเวทีแห่งเอเชียและโลก</p>
-
-            <p lang="zh-CN"><strong>使命：</strong>以三位一体的核心力量为引擎，利用我们的独特优势（血脉、文化、才能），创造并获取资源，以保护、滋养并赋能现在与未来的家族成员，确保王朝的永续繁荣与和谐。</p>
-            <p class="hidden" lang="th-TH"><strong>พันธกิจ:</strong> ขับเคลื่อนด้วยพลังหลักแห่งตรีธารา ใช้ประโยชน์จากข้อได้เปรียบเฉพาะตัวของเรา (สายเลือด, วัฒนธรรม, พรสวรรค์) เพื่อสร้างและแสวงหาทรัพยากรที่จะปกป้อง หล่อเลี้ยง และเสริมพลังให้แก่สมาชิกครอบครัวทั้งในปัจจุบันและอนาคต รับประกันความเจริญรุ่งเรืองและความกลมเกลียวอันเป็นนิรันดร์ของราชวงศ์</p>
-        </section>
-
-        <section>
-            <h2 lang="zh-CN">传承与未来</h2>
-            <h2 class="hidden" lang="th-TH">มรดกและการสืบทอด</h2>
-
-            <p lang="zh-CN">三川的存在超越了我们这一代。它的建立是为了下一代——玲奈（李）与恵理奈（李）——以及未来所有将在三川羽翼下诞生的继承人。我们视他们为己出，将倾尽全力，培养他们的天赋，塑造他们的品格，确保他们有能力、有意愿、有智慧继承并光大这份我们从此刻便已深切关怀的基业。</p>
-            <p class="hidden" lang="th-TH">ตรีธาราดำรงอยู่เหนือกว่ารุ่นของเรา มันถูกสร้างขึ้นเพื่อคนรุ่นต่อไป—เรนะ (李) และ เอรินะ (李)—และทายาทในอนาคตทั้งหมดที่จะถือกำเนิดภายใต้ร่มเงาแห่งตรีธารา เรามองพวกเขาดั่งลูกหลานของเราเอง อุทิศตนเพื่อบ่มเพาะพรสวรรค์ หล่อหลอมบุคลิก และรับประกันว่าพวกเขามีความสามารถ ความตั้งใจ และปัญญาที่จะสืบทอดและยกระดับมรดกนี้ที่เราได้ใส่ใจอย่างลึกซึ้งแล้วตั้งแต่บัดนี้</p>
-
-            <p lang="zh-CN">10%的王朝股份被预留，以待未来用于奖励忠诚、引入关键力量或在适当时机传承给下一代。</p>
-            <p class="hidden" lang="th-TH">10% ของส่วนทุนแห่งราชวงศ์ถูกสำรองไว้เพื่อใช้ในอนาคต—เพื่อตอบแทนความภักดี นำเข้าซึ่งขุมกำลังสำคัญ หรือส่งมอบให้แก่คนรุ่นต่อไปเมื่อถึงเวลาอันควร</p>
-        </section>
-
-        <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);" lang="zh-CN">此刻，新纪元开启。三川之流，汇入历史长河，奔向无垠未来。</p>
-        <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);" class="hidden" lang="th-TH">บัดนี้ ยุคใหม่ได้เริ่มขึ้นแล้ว สายน้ำแห่งตรีธาราไหลสู่ธาราแห่งประวัติศาสตร์ มุ่งสู่อนาคตอันไร้ขอบเขต</p>
-
-    </div>
+            <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);">บัดนี้ ยุคใหม่ได้เริ่มขึ้นแล้ว สายน้ำแห่งตรีธาราไหลสู่ธาราแห่งประวัติศาสตร์ มุ่งสู่อนาคตอันไร้ขอบเขต</p>
+        </div></div>
 
     <script>
         function setLanguage(lang) {
-            const languages = ['zh-CN', 'th-TH']; // Simplified languages array
+            const languages = ['zh-CN', 'th-TH']; // Supported languages
 
-            // Hide all language sections first
-            languages.forEach(l => {
-                document.querySelectorAll(`[lang="${l}"]`).forEach(el => {
-                     if (!el.classList.contains('lang-btn')) { // Keep buttons visible
-                        el.classList.add('hidden');
-                     }
-                });
+            // Hide all language content containers
+            document.querySelectorAll('.lang-content').forEach(div => {
+                div.classList.remove('active'); // Use class for visibility
+                div.style.display = 'none'; // Ensure it's hidden immediately
             });
 
-            // Show elements for the selected language
-            document.querySelectorAll(`[lang="${lang}"]`).forEach(el => el.classList.remove('hidden'));
+            // Show the selected language content container
+            const selectedContent = document.getElementById(`content-${lang}`);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+                selectedContent.style.display = 'block'; // Ensure it's shown
+            }
+
+            // Update body class for font switching
+            document.body.className = `lang-${lang}`; // Set body class directly
 
             // Update button styles
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            const currentBtnId = `btn-${lang.substring(0, 2)}`; // Corrected ID generation
+            const currentBtnId = `btn-${lang.substring(0, 2)}`;
             const currentBtn = document.getElementById(currentBtnId);
             if (currentBtn) {
                  currentBtn.classList.add('active');
             }
 
-            // Set HTML lang attribute for accessibility and fonts
+            // Set HTML lang attribute
             document.documentElement.lang = lang;
-            
+
              // Scroll to top gently after language change
              window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        // Initialize with Chinese
+
+        // Initialize with Chinese on DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
-             // Ensure initial state respects the default 'active' button
-             setLanguage('zh-CN');
+            // Set the initial active content based on the default language (zh-CN)
+            const initialContent = document.getElementById('content-zh-CN');
+            if(initialContent) {
+                initialContent.classList.add('active');
+                initialContent.style.display = 'block';
+            }
+            // Ensure correct button is active initially
+            const initialBtn = document.getElementById('btn-zh');
+            if(initialBtn) {
+                initialBtn.classList.add('active');
+            }
+             // Ensure correct body class is set initially
+            document.body.className = 'lang-zh-CN';
+             // Set initial HTML lang
+            document.documentElement.lang = 'zh-CN';
+
+             // Pre-hide other languages just in case CSS didn't catch them fast enough
+             const otherContent = document.getElementById('content-th-TH');
+             if(otherContent) {
+                 otherContent.style.display = 'none';
+             }
         });
     </script>
 
