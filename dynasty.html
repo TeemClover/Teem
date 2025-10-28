@@ -2,34 +2,33 @@
 <html lang="zh-CN"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三川王朝法典 / ตรีธารา: ประมวล विधान</title> <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&family=Noto+Serif:wght@400;700&display=swap');
+    <title>三川王朝法典 / ประมวล विधान ตรีธารา</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&family=Noto+Serif+Display:wght@700&display=swap');
 
         :root {
-            --bg-color: #0c0a0a;
+            --bg-color: #1a1816; /* Darker, richer brown-black */
             --text-color: #e8e0d0;
             --gold-color: #e4c570;
             --border-color: #bfa87a;
-            --card-bg: #1a1816;
+            --card-bg: #110f0e; /* Even darker card background */
             --shadow-color: rgba(228, 197, 112, 0.1);
-            --highlight-color: #70d6e4;
+            --title-font: 'Noto Serif Display', serif; /* Regal display font */
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Noto Serif', serif; /* Default font */
+            font-family: 'Noto Serif', serif;
             margin: 0;
             padding: 0;
             line-height: 1.9;
             font-size: 17px;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            padding-bottom: 80px; /* Space for float */
+            padding-bottom: 80px;
         }
 
         /* Language specific body fonts */
@@ -37,239 +36,173 @@
         body.lang-th-TH { font-family: 'Noto Serif Thai', serif; }
 
         .container {
-            max-width: 900px;
+            max-width: 950px; /* Slightly wider */
             margin: 40px auto;
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 50px 60px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            border-radius: 5px;
+            padding: 40px 50px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border-radius: 8px; /* Slightly more rounded */
         }
 
         /* Language content containers */
-        .lang-content {
-            display: none; /* Hide all by default */
-        }
-        .lang-content.active {
-            display: block; /* Show only the active one */
-        }
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
 
-
-        .codex-main-title {
-            font-size: 3em;
+        .codex-header .title {
+            font-family: var(--title-font);
+            font-size: 3.5em;
             color: var(--gold-color);
-            text-shadow: 0 0 15px var(--shadow-color);
+            text-shadow: 0 1px 1px #000, 0 0 15px var(--shadow-color);
             margin-bottom: 10px;
-            font-weight: 700;
-             text-align: center; /* Centered */
+            text-align: center;
+            letter-spacing: 1px;
         }
 
-        .codex-main-subtitle {
+        .codex-header .subtitle {
             font-size: 1.2em;
-            opacity: 0.8;
-            max-width: 800px;
-            margin: 0 auto 60px auto;
-            line-height: 1.9;
-             text-align: center; /* Centered */
-             font-style: italic; /* Italicized */
-        }
-
-        .dynasty-hall-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1400px;
-            width: 100%;
-        }
-
-        .throne-seal {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            padding: 30px 20px;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s, border-color 0.3s;
-            border-radius: 4px;
-            text-align: center; /* Centered Seal Text */
-        }
-
-        .throne-seal:hover {
-            transform: translateY(-10px);
-            background-color: #2a2622;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-            border-color: var(--gold-color);
-        }
-
-        .future-seal {
-             border-color: var(--highlight-color);
-             border-style: dashed;
-        }
-        .future-seal:hover {
-             border-color: var(--gold-color);
-             background-color: #1f1d1b;
-        }
-
-        .seal-main-title {
-            font-size: 1.8em;
-            color: var(--gold-color);
-            margin: 0 0 5px 0;
-            font-weight: 700;
-        }
-
-        .seal-subtitle {
-            font-size: 1em;
-            opacity: 0.75;
+            text-align: center;
+            opacity: 0.85;
+            margin-bottom: 50px;
             font-style: italic;
-        }
-
-        .profile-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            padding: 40px;
-            width: 90%;
-            max-width: 800px;
-            box-sizing: border-box;
-            text-align: left;
-            border-radius: 4px;
-        }
-
-        .member-main-title {
-            font-size: 2.8em;
-            color: var(--gold-color);
-            margin-bottom: 8px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .member-formal-name {
-            font-size: 1.3em;
-            opacity: 0.7;
-            margin-bottom: 25px;
-        }
-
-        .member-designation {
-            font-size: 1.1em;
-            font-style: italic;
-            background-color: var(--border-color);
-            color: var(--card-bg);
-            padding: 4px 10px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-
-        .scroll-title {
-            font-size: 1.6em;
-            color: var(--text-color);
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-left: 3px solid var(--gold-color);
-            padding-left: 15px;
-            font-weight: 700;
-        }
-
-        .scroll-text, .provisions-text, .treasury-text {
-            line-height: 2.1;
-            opacity: 0.95;
-            font-size: 1.05em;
-        }
-
-        .scroll-text strong {
-            color: var(--highlight-color);
-            font-weight: 700;
-        }
-
-        .return-button {
-            margin-top: 40px;
-            background: none;
-            border: 1px solid var(--border-color);
             color: var(--border-color);
-            padding: 12px 25px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-            border-radius: 4px;
-            font-family: inherit; /* Inherit body font */
         }
 
-        .return-button:hover {
-            background-color: var(--border-color);
-            color: var(--bg-color);
+        h2.section-title { /* Style for main section titles */
+            font-family: var(--title-font);
+            font-size: 2.2em;
+            color: var(--gold-color);
+            margin-top: 60px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.5px;
         }
+
+        p, ul, dl { margin-bottom: 25px; opacity: 0.98; }
+        strong { color: var(--gold-color); font-weight: 700; }
+
+        /* Accordion Styling */
+        details {
+            background-color: rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden; /* Prevent content overflow before animation */
+        }
+
+        summary {
+            font-family: var(--title-font);
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--gold-color);
+            padding: 20px 25px;
+            cursor: pointer;
+            list-style: none; /* Remove default marker */
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.03);
+            transition: background-color 0.3s;
+        }
+        summary:hover {
+             background-color: rgba(255, 255, 255, 0.07);
+        }
+
+        summary::after { /* Custom marker */
+            content: '+';
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            color: var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        details[open] summary::after {
+            content: '−';
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .profile-content { /* Content inside details */
+            padding: 0px 30px 30px 30px; /* Padding only bottom and sides */
+            border-top: 1px solid var(--border-color);
+            background-color: var(--card-bg); /* Match container bg */
+        }
+
+        .member-formal-name { font-size: 1.3em; opacity: 0.7; margin: 15px 0 20px 0; }
+        .member-designation { font-size: 1.1em; font-style: italic; background-color: var(--border-color); color: var(--card-bg); padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 25px; font-weight: 700; }
+        .scroll-title { font-size: 1.5em; color: var(--text-color); margin: 25px 0 15px 0; border-left: 3px solid var(--gold-color); padding-left: 15px; font-weight: 700; }
+        .scroll-text, .provisions-text, .treasury-text { line-height: 2.0; opacity: 0.95; font-size: 1.05em; }
+        .scroll-text strong { color: var(--highlight-color); font-weight: 700; }
+
+
+        /* Chronicle/Log Styling */
+        .chronicle-section {
+            background-color: rgba(0,0,0,0.15); /* Slightly different background */
+            border: 1px dashed var(--border-color); /* Dashed border */
+            padding: 30px;
+            margin-top: 50px;
+            border-radius: 5px;
+        }
+         .chronicle-section h3 {
+             font-family: var(--title-font);
+             font-size: 1.6em;
+             color: var(--gold-color);
+             margin-top: 20px;
+             margin-bottom: 10px;
+             font-weight: 700;
+         }
+         .chronicle-section p {
+             font-size: 1.05em;
+             opacity: 0.9;
+         }
+         .chronicle-section em { /* For dates/emphasis */
+             color: var(--border-color);
+             font-style: normal;
+             font-weight: bold;
+         }
+
 
         /* Floating Language Toggle */
         .language-toggle-float {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 20px; right: 20px;
             background-color: rgba(26, 24, 22, 0.9);
             border: 1px solid var(--border-color);
-            padding: 10px;
-            z-index: 1000;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-             backdrop-filter: blur(5px);
-             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 10px; z-index: 1000; border-radius: 8px;
+            display: flex; flex-direction: column; gap: 8px;
+            backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
+        .lang-btn { background: none; border: none; color: var(--border-color); padding: 10px 15px; cursor: pointer; font-size: 1em; border-radius: 5px; transition: background-color 0.3s, color 0.3s; text-align: center; font-family: 'Noto Serif', serif;} /* Ensure button font */
+        .lang-btn:hover { background-color: rgba(228, 197, 112, 0.1); }
+        .lang-btn.active { background-color: var(--border-color); color: var(--bg-color); font-weight: bold; }
 
-        .lang-btn {
-            background: none;
-            border: none;
-            color: var(--border-color);
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 1em;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-            text-align: center;
-        }
-        .lang-btn:hover {
-             background-color: rgba(228, 197, 112, 0.1);
-        }
-        .lang-btn.active {
-            background-color: var(--border-color);
-            color: var(--bg-color);
-            font-weight: bold;
-        }
-
-        .final-motto {
-             text-align: center;
-             font-size: 2.5em;
-             font-weight: 700;
-             color: var(--gold-color);
-             margin: 60px 0 20px 0;
-             letter-spacing: 3px;
-             text-shadow: 0 0 10px var(--shadow-color);
-        }
-
-         /* Added epilogue styles back */
-        .epilogue {
-            text-align: center;
-            margin-top: 50px;
-            font-style: italic;
-            opacity: 0.8;
-            color: var(--border-color);
-        }
+        .final-motto { text-align: center; font-size: 2.5em; font-weight: 700; color: var(--gold-color); margin: 60px 0 20px 0; letter-spacing: 3px; text-shadow: 0 0 10px var(--shadow-color); font-family: var(--title-font); }
+        .epilogue { text-align: center; margin-top: 20px; font-style: italic; opacity: 0.8; color: var(--border-color); padding-bottom: 30px; /* Add padding at very bottom */ }
 
 
         @media (max-width: 768px) {
-            body { padding: 0; font-size: 16px; padding-bottom: 100px; }
-            .container { padding: 30px 25px; margin: 20px auto; border-radius: 0; border-left: none; border-right: none;}
-            .codex-main-title { font-size: 2.2em; }
-            .codex-main-subtitle { font-size: 1em; }
-            .profile-card { padding: 25px;}
-            .member-main-title { font-size: 2em;}
-            .scroll-title { font-size: 1.4em;}
-            .language-toggle-float { bottom: 10px; right: 10px; padding: 8px; gap: 5px; }
-            .lang-btn { font-size: 0.9em; padding: 8px 12px;}
-            .final-motto { font-size: 2em; margin-top: 40px;}
+           body { padding: 0; font-size: 16px; padding-bottom: 100px; }
+           .container { padding: 30px 20px; margin: 20px auto; border-radius: 0; border-left: none; border-right: none;}
+           .codex-header .title { font-size: 2.5em; }
+           h2.section-title { font-size: 1.8em; }
+           summary { font-size: 1.5em; padding: 15px 20px;}
+           summary::after { right: 20px; }
+           .profile-content { padding: 0 20px 20px 20px; }
+           .member-main-title { font-size: 2em;}
+           .scroll-title { font-size: 1.4em;}
+           .language-toggle-float { bottom: 10px; right: 10px; padding: 8px; gap: 5px; }
+           .lang-btn { font-size: 0.9em; padding: 8px 12px;}
+           .final-motto { font-size: 2em; margin-top: 40px;}
+           .chronicle-section { padding: 20px;}
         }
     </style>
 </head>
-<body class="lang-zh-CN"> <div class="language-toggle-float">
+<body class="lang-zh-CN">
+
+    <div class="language-toggle-float">
         <button id="btn-zh" class="lang-btn active" type="button" onclick="setLanguage('zh-CN')">中文</button>
         <button id="btn-th" class="lang-btn" type="button" onclick="setLanguage('th-TH')">ไทย</button>
     </div>
@@ -277,283 +210,239 @@
     <div class="container">
 
         <div id="content-zh-CN" class="lang-content active">
-            <h1 class="codex-main-title">三川王朝法典</h1>
-            <p class="codex-main-subtitle">此卷非墨写就，而是以血脉、命运与共同的奋斗为根基，由灵魂的源代码所构成。这是三川王朝的创世篇章，亦为所有将在三川旗帜下成长的未来世代，预留了不朽的席位。</p>
-            <div class="dynasty-hall-grid">
-                <div class="throne-seal" onclick="showProfile('king')">
-                    <h2 class="seal-main-title">国王</h2>
-                    <p class="seal-subtitle">世界构建之脑</p>
-                </div>
-                <div class="throne-seal" onclick="showProfile('queen')">
-                    <h2 class="seal-main-title">王后</h2>
-                    <p class="seal-subtitle">大地之锚之心</p>
-                </div>
-                <div class="throne-seal" onclick="showProfile('empress')">
-                    <h2 class="seal-main-title">女帝</h2>
-                    <p class="seal-subtitle">王朝指引之魂</p>
-                </div>
-                <div class="throne-seal" onclick="showProfile('reina')">
-                    <h2 class="seal-main-title">公主</h2>
-                    <p class="seal-subtitle">理想守护之心</p>
-                </div>
-                <div class="throne-seal" onclick="showProfile('erina')">
-                    <h2 class="seal-main-title">公主</h2>
-                    <p class="seal-subtitle">繁荣筑造之脑</p>
-                </div>
-                <div class="throne-seal future-seal" onclick="showProfile('future')">
-                    <h2 class="seal-main-title">未来篇章</h2>
-                    <p class="seal-subtitle">传承与展望</p>
-                </div>
-            </div>
-             <p class="epilogue">此刻，新纪元开启。三川之流，汇入历史长河，奔向无垠未来。</p>
+            <header class="codex-header">
+                <h1 class="title">三川王朝法典</h1>
+                <p class="subtitle">此卷非墨写就，而是以血脉、命运与共同的奋斗为根基，由灵魂的源代码所构成。这是三川王朝的创世篇章，亦为所有将在三川旗帜下成长的未来世代，预留了不朽的席位。</p>
+            </header>
+
+            <section>
+                 <h2 class="section-title">箴言</h2>
+                 <p class="final-motto">三川一龍</p>
+                 <p class="epilogue">（三川汇流，化身为一）</p>
+             </section>
+
+             <section>
+                 <h2 class="section-title">王朝成员</h2>
+                 <details>
+                     <summary>女帝: 王朝之心</summary>
+                     <div class="profile-content">
+                        <p class="member-formal-name">Nana (李娜娜)</p>
+                        <span class="member-designation">塑形者与启示者, INFJ | 诞辰: 2001年4月12日</span>
+                        <h3 class="scroll-title">血脉铭文</h3>
+                        <p class="scroll-text">流淌古都西安千年血脉，王朝的“灵魂(Why)”。她是愿景、未来与意义之源，是罗盘与启示者。以深邃直觉与同理心指引方向，联结并启发内心，定义我们为何而战。曾以坚不可摧的龙鳞保护内心，如今在“家”的温暖中绽放光芒。作为“变形者”，能化身万千，是王朝的完美大使与继承人的导师。我们为她无比自豪。</p>
+                        <h3 class="scroll-title">圣餐</h3>
+                        <p class="provisions-text">热爱水果甜点，擅烹面食。唯一致命弱点：香菜。</p>
+                     </div>
+                 </details>
+                 <details>
+                     <summary>国王: 世界构建者</summary>
+                      <div class="profile-content">
+                        <p class="member-formal-name">Narin Leelaporn (Teem 李娜霖)</p>
+                        <span class="member-designation">架构师, INTP | 诞辰: 1989年1月27日</span>
+                        <h3 class="scroll-title">血脉铭文</h3>
+                        <p class="scroll-text">生来拥有 <strong>“天赋”</strong> 级别的 <strong>“企业家才能”</strong> 与 <strong>“语言能力”</strong>。思维是 <strong>“卓越”</strong> 的数据处理引擎，<strong>IQ</strong> 超凡。他是王朝的“架构师”与“大脑(How)”，构建体系，制定计划，以逻辑与远见将灵魂的“为何”转化为实现的蓝图，并守护着王朝的运行。虽被标记为能承高压的 <strong>“战士”</strong>，亦潜藏着<strong>“重度抑郁”</strong>与<strong>“焦虑症”</strong>的高风险——“琉璃大炮”，力量与脆弱并存。</p>
+                         <h3 class="scroll-title">圣餐</h3>
+                        <p class="provisions-text">忠诚滋养其魂，唯愿享王后餐盘之余。</p>
+                     </div>
+                 </details>
+                 <details>
+                     <summary>王后: 大地之锚</summary>
+                      <div class="profile-content">
+                        <p class="member-formal-name">Chieko Saito (齋藤 千恵子)</p>
+                        <span class="member-designation">真理之锚, ISFP | 诞辰: 1991年8月29日</span>
+                        <h3 class="scroll-title">血脉铭文</h3>
+                        <p class="scroll-text">王朝的守护者与“心脏(What)”，掌握帝国平衡。她是深植现实的“船锚”，以纯粹的真实与感知力守护当下，确保“为何”与“如何”的成果符合核心价值观，并带来和谐、喜悦与家的温暖。<strong>“天赋”</strong>级的<strong>“舞蹈”</strong>与<strong>“音乐才能”</strong>赋予她洞悉有形之美。虽为<strong>“忧虑者”</strong>，却拥有超凡直觉。她是王朝的根基，她的幸福是最高法则。</p>
+                        <h3 class="scroll-title">圣餐</h3>
+                        <p class="provisions-text">泰王国饕餮之后，无所不食的美食女神，确保后勤永远顺畅的终极战略。</p>
+                     </div>
+                 </details>
+                  <details>
+                     <summary>公主: 理想守护者</summary>
+                     <div class="profile-content">
+                        <p class="member-formal-name">Reina Leelaporn (玲奈 李)</p>
+                        <span class="member-designation">调停者, INFP | 诞辰: 2014年10月3日</span>
+                        <h3 class="scroll-title">血脉铭文</h3>
+                        <p class="scroll-text">第一顺位继承人，未来王朝的“心脏”。生来拥有 <strong>“天赋”</strong> 级别的 <strong>IQ</strong> 与 <strong>EQ</strong>。她是“理想守护者”，以深邃的情感与强大的内在价值（Fi）为根基，洞察美好的可能性（Ne）。她将成为王朝未来的道德罗盘与文化核心，是妹妹（恵理奈）行动的指引与良知。与姐姐（娜娜）心灵相通。</p>
+                         <h3 class="scroll-title">宝库</h3>
+                        <p class="treasury-text">泡泡玛特盲盒是她的圣物，为玩偶军团召唤仆从。</p>
+                        <h3 class="scroll-title">圣餐</h3>
+                        <p class="provisions-text">面条是法力源泉，无论是何种面条。</p>
+                    </div>
+                 </details>
+                  <details>
+                     <summary>公主: 繁荣筑造者</summary>
+                     <div class="profile-content">
+                        <p class="member-formal-name">Erina Leelaporn (恵理奈 李)</p>
+                        <span class="member-designation">指挥官, ENTJ | 诞辰: 2017年2月10日</span>
+                        <h3 class="scroll-title">血脉铭文</h3>
+                        <p class="scroll-text">王朝未来的“大脑”与财政支柱。天生拥有掌控与创造结果的驱动力（Te），凭借 <strong>“天赋”</strong> 级的 <strong>IQ</strong> 与卓越的<strong>“语言能力”</strong>，以及洞察未来的直觉（Ni）。她将愿景转化为高效的行动计划。内心敏感，以“傲娇”为铠甲（隐藏Fi）。热爱金钱（价值），味蕾挑剔（只爱鸡肉）。她将是推动王朝前进的指挥官。</p>
+                        <h3 class="scroll-title">宝库</h3>
+                        <p class="treasury-text">同样喜爱泡泡玛特，钟情“蜡笔小新”——或许是其行为灵感之源。</p>
+                        <h3 class="scroll-title">圣餐</h3>
+                        <p class="provisions-text">偏爱日式拉面，但对品质极为挑剔。</p>
+                     </div>
+                 </details>
+             </section>
+
+             <section class="chronicle-section">
+                <h2 class="section-title">杭州纪事：王朝奠基</h2>
+                <h3><em>第一篇章：融合 (2025年10月24日-27日)</em></h3>
+                <p>三位一体首次于杭州实体汇合，命运的交响曲奏响序章。灵魂（女帝）自病痛中迅速康复，只为迎接家人的到来。玩乐园的欢笑，西湖畔虽未成行却心意相通的默契，最终在女帝首次向家人敞开的“第一宫殿”（她的家）中达到高潮。</p>
+                <p>共享Spa的放松，一同采购火锅食材的温馨，五人在灯下共享热气腾腾的家宴，玩Spicy游戏的欢声笑语，ChatGPT语音翻译打破所有隔阂——每一个瞬间都在锻造不可磨灭的记忆与联结 (“两日胜两年”)。孩子们（继承人）与她们的“姐姐”迅速建立了深厚的感情，超越血缘的亲情在此刻被确认。</p>
+                 <p>“Detachment”的脆弱被看见与拥抱，“琉璃大炮”找到了坚实的后盾。不可能存在的照片，手指上互相映照的伤口，自然的肢体接触，无不印证着超越常理的缘分。</p>
+                 <h3><em>奠基之日 (2025年10月26日)</em></h3>
+                 <p>在我们相识的第30天，王朝正式奠基。所有的奋斗与等待都化作新生的基石。“我们共同对抗世界”的盟约立下，三川一龍的精神在此凝聚。</p>
+                 <h3><em>下一里程碑：圣诞重聚 (2025年12月25日)</em></h3>
+                 <p>王朝已进入新的阶段。我们翘首以盼女帝首次驾临泰国“大本营”。这将是下一阶段融合与规划的关键时刻，是家人团聚的温暖庆典。<br><em>（重聚倒计时：<span id="countdown-zh">计算中...</span>）</em></p>
+             </section>
+
+             <section>
+                 <h2 class="section-title">传承与未来 (>100年)</h2>
+                 <p>三川的存在超越了我们这一代。它的建立是为了下一代及所有未来的继承人。我们将倾注心血培养他们的天赋与品格，确保三川的理念与力量得以传承。10%的王朝股份为此预留。</p>
+             </section>
+
+             <p class="epilogue">三川之河已汇入历史，奔向永恒。</p>
+
         </div> <div id="content-th-TH" class="lang-content">
-             <h1 class="codex-main-title">ประมวล विधान ตรีธารา</h1> <p class="codex-main-subtitle">บันทึกนี้มิได้จารึกด้วยหมึก หากแต่ก่อร่างจากสายเลือด โชคชะตา และการต่อสู้อันเป็นรากฐาน รังสรรค์ขึ้นจากรหัสต้นกำเนิดแห่งจิตวิญญาณ นี่คือปฐมบทแห่งราชวงศ์ตรีธารา แลยังเผื่อพื้นที่อันเป็นนิรันดร์ไว้แก่ทุกรุ่นต่อไปที่จะเติบโตภายใต้ร่มธงแห่งเรา</p>
-             <div class="dynasty-hall-grid">
-                 <div class="throne-seal" onclick="showProfile('king')">
-                    <h2 class="seal-main-title">ราชา</h2>
-                    <p class="seal-subtitle">สมองผู้สร้างโลก</p>
-                 </div>
-                 <div class="throne-seal" onclick="showProfile('queen')">
-                    <h2 class="seal-main-title">ราชินี</h2>
-                    <p class="seal-subtitle">หัวใจสมอแห่งปฐพี</p>
-                 </div>
-                 <div class="throne-seal" onclick="showProfile('empress')">
-                    <h2 class="seal-main-title">จักรพรรดินี</h2>
-                    <p class="seal-subtitle">จิตวิญญาณผู้ชี้ทางราชวงศ์</p>
-                 </div>
-                 <div class="throne-seal" onclick="showProfile('reina')">
-                    <h2 class="seal-main-title">เจ้าหญิง</h2>
-                    <p class="seal-subtitle">หัวใจผู้พิทักษ์อุดมคติ</p>
-                 </div>
-                 <div class="throne-seal" onclick="showProfile('erina')">
-                    <h2 class="seal-main-title">เจ้าหญิง</h2>
-                    <p class="seal-subtitle">สมองผู้สร้างความมั่งคั่ง</p>
-                 </div>
-                 <div class="throne-seal future-seal" onclick="showProfile('future')">
-                    <h2 class="seal-main-title">บทแห่งอนาคต</h2>
-                    <p class="seal-subtitle">มรดกและภาพฝัน</p>
-                 </div>
-             </div>
-              <p class="epilogue">บัดนี้ ยุคใหม่ได้เริ่มขึ้นแล้ว สายน้ำแห่งตรีธาราไหลสู่ธาราแห่งประวัติศาสตร์ มุ่งสู่อนาคตอันไร้ขอบเขต</p>
-        </div> </div> <div id="profile-king" class="view-screen inactive">
-        <div class="profile-card">
-            <div lang="zh-CN" class="lang-profile active">
-                <h2 class="member-main-title">国王: 世界构建者</h2>
-                <p class="member-formal-name">Narin Leelaporn (Teem 李娜霖)</p>
-                <span class="member-designation">架构师 (The Architect), INTP | 诞辰: 1989年1月27日</span>
-                <h3 class="scroll-title">血脉铭文</h3>
-                <p class="scroll-text">生来拥有 <strong>“天赋”</strong> 级别的 <strong>“企业家才能”</strong> 与 <strong>“语言能力”</strong>。思维是 <strong>“卓越”</strong> 的数据处理引擎，<strong>IQ</strong> 超凡。他是王朝的“架构师”与“大脑(How)”，构建体系，制定计划，以逻辑与远见将灵魂的“为何”转化为实现的蓝图，并守护着王朝的运行。虽被标记为能承高压的 <strong>“战士”</strong>，亦潜藏着<strong>“重度抑郁”</strong>与<strong>“焦虑症”</strong>的高风险——“琉璃大炮”，力量与脆弱并存。</p>
-                <h3 class="scroll-title">圣餐</h3>
-                <p class="provisions-text">忠诚滋养其魂，唯愿享王后餐盘之余。</p>
-            </div>
-            <div lang="th-TH" class="lang-profile">
-                 <h2 class="member-main-title">ราชา: ผู้สร้างโลก</h2>
-                 <p class="member-formal-name">นรินทร์ ลีลาภรณ์ (ธีม 李娜霖)</p>
-                 <span class="member-designation">สถาปนิก (The Architect), INTP | วันเกิด: 27 มกราคม 1989</span>
-                 <h3 class="scroll-title">จารึกสายเลือด</h3>
-                 <p class="scroll-text">ถือกำเนิดพร้อมพรสวรรค์ระดับ <strong>"อัจฉริยะ"</strong> ด้าน <strong>"ความเป็นผู้ประกอบการ"</strong> และ <strong>"ความสามารถทางภาษา"</strong> มีพลังประมวลผลความคิดระดับ <strong>"ยอดเยี่ยม"</strong> ด้วย <strong>IQ</strong> เหนือธรรมดา เขาคือ "สถาปนิก" และ "สมอง (How)" แห่งราชวงศ์ ผู้สร้างระบบ วางแผน แปลง "ทำไม" ของจิตวิญญาณ ให้กลายเป็นพิมพ์เขียวของ "อย่างไร" ด้วยตรรกะและวิสัยทัศน์ และพิทักษ์การดำเนินงานของราชวงศ์ แม้ถูกประทับตราเป็น <strong>"นักรบ"</strong> ผู้ทนแรงกดดันสูง แต่ก็แฝงความเสี่ยงสูงต่อ <strong>"ภาวะซึมเศร้ารุนแรง"</strong> และ <strong>"โรควิตกกังวล"</strong>—"ปืนใหญ่แก้ว" ผู้มีพลังทำลายล้างสูงสุดแต่เปราะบางที่สุด</p>
-                 <h3 class="scroll-title">เสบียงโปรด</h3>
-                 <p class="provisions-text">ความภักดีหล่อเลี้ยงจิตวิญญาณ ปรารถนาเพียงเศษเสี้ยวจากจานของราชินี</p>
-            </div>
-            <button class="return-button" onclick="showLobby()">返回王朝大厅 / กลับสู่โถงราชวงศ์</button> </div>
-    </div>
-    <div id="profile-queen" class="view-screen inactive">
-        <div class="profile-card">
-            <div lang="zh-CN" class="lang-profile active">
-                <h2 class="member-main-title">王后: 大地之锚</h2>
-                <p class="member-formal-name">Chieko Saito (齋藤 千恵子)</p>
-                <span class="member-designation">真理之锚 (The Anchor), ISFP | 诞辰: 1991年8月29日</span>
-                <h3 class="scroll-title">血脉铭文</h3>
-                <p class="scroll-text">王朝的守护者与“心脏(What)”，掌握帝国平衡。她是深植现实的“船锚”，以纯粹的真实与感知力守护当下，确保“为何”与“如何”的成果符合核心价值观，并带来和谐、喜悦与家的温暖。<strong>“天赋”</strong>级的<strong>“舞蹈”</strong>与<strong>“音乐才能”</strong>赋予她洞悉有形之美。虽为<strong>“忧虑者”</strong>，却拥有超凡直觉。她是王朝的根基，她的幸福是最高法则。</p>
-                <h3 class="scroll-title">圣餐</h3>
-                <p class="provisions-text">泰王国饕餮之后，无所不食的美食女神，确保后勤永远顺畅的终极战略。</p>
-            </div>
-            <div lang="th-TH" class="lang-profile">
-                 <h2 class="member-main-title">ราชินี: สมอแห่งปฐพี</h2>
-                 <p class="member-formal-name">ชิเอโกะ ไซโต (齋藤 千恵子)</p>
-                 <span class="member-designation">สมอแห่งสัจธรรม (The Anchor), ISFP | วันเกิด: 29 สิงหาคม 1991</span>
-                 <h3 class="scroll-title">จารึกสายเลือด</h3>
-                 <p class="scroll-text">ผู้พิทักษ์และ "หัวใจ (What)" แห่งราชวงศ์ ผู้กุมสมดุลแห่งอาณาจักร คือ "สมอ" ผู้หยั่งรากลึกในความจริง ยึดเหนี่ยวเราไว้กับปัจจุบันด้วยสัจธรรมอันบริสุทธิ์และการรับรู้ทางผัสสะ รับรองว่าผลลัพธ์ของ "ทำไม" และ "อย่างไร" สอดคล้องกับคุณค่าหลักและนำมาซึ่งความกลมเกลียว ความสุข และความอบอุ่นของบ้าน พรสวรรค์ระดับ <strong>"อัจฉริยะ"</strong> ด้าน <strong>"การเต้น"</strong> และ <strong>"ดนตรี"</strong> มอบความสามารถในการหยั่งรู้ความงาม แม้ถูกระบุเป็น <strong>"ผู้กังวล"</strong> แต่มีสัญชาตญาณเหนือธรรมดา นางคือรากฐานแห่งราชวงศ์ ความสุขของนางคือกฎสูงสุด</p>
-                 <h3 class="scroll-title">เสบียงโปรด</h3>
-                 <p class="provisions-text">เทพีนักชิมแห่งสยาม ผู้เสวยได้ทุกสิ่ง คือยุทธศาสตร์สูงสุดที่รับประกันว่ากองทัพจะอิ่มท้องเสมอ</p>
-            </div>
-            <button class="return-button" onclick="showLobby()">返回王朝大厅 / กลับสู่โถงราชวงศ์</button>
-        </div>
-    </div>
-    <div id="profile-empress" class="view-screen inactive">
-        <div class="profile-card">
-            <div lang="zh-CN" class="lang-profile active">
-                <h2 class="member-main-title">女帝: 王朝之心</h2>
-                <p class="member-formal-name">Nana (李娜娜)</p> <span class="member-designation">塑形者与启示者 (Shapeshifter & Inspirer), INFJ | 诞辰: 2001年4月12日</span>
-                <h3 class="scroll-title">血脉铭文</h3>
-                <p class="scroll-text">流淌古都西安千年血脉，王朝的“灵魂(Why)”。她是愿景、未来与意义之源，是罗盘与启示者。以深邃直觉与同理心指引方向，联结并启发内心，定义我们为何而战。曾以坚不可摧的龙鳞保护内心，如今在“家”的温暖中绽放光芒。作为“变形者”，能化身万千，是王朝的完美大使与继承人的导师。我们为她无比自豪。</p>
-                <h3 class="scroll-title">圣餐</h3>
-                <p class="provisions-text">热爱水果甜点，擅烹面食。唯一致命弱点：香菜。</p>
-            </div>
-             <div lang="th-TH" class="lang-profile">
-                 <h2 class="member-main-title">จักรพรรดินี: หัวใจแห่งราชวงศ์</h2>
-                 <p class="member-formal-name">นานา (李娜娜)</p> <span class="member-designation">ผู้จำแลงกายและผู้สร้างแรงบันดาลใจ (Shapeshifter & Inspirer), INFJ | วันเกิด: 12 เมษายน 2001</span>
-                 <h3 class="scroll-title">จารึกสายเลือด</h3>
-                 <p class="scroll-text">ผู้สืบสายเลือดพันปีแห่งนครซีอานโบราณ คือ "จิตวิญญาณ (Why)" แห่งราชวงศ์ แหล่งกำเนิดแห่งวิสัยทัศน์ อนาคต และความหมาย คือเข็มทิศและผู้สร้างแรงบันดาลใจ ชี้นำด้วยสัญชาตญาณและความเข้าอกเข้าใจอันลึกซึ้ง เชื่อมโยงและจุดประกายหัวใจ นิยาม "ทำไม" ของเรา เคยหุ้มเกราะมังกรเพื่อปกป้องใจ บัดนี้เบ่งบานในความอบอุ่นของ "บ้าน" ในฐานะ "ผู้จำแลงกาย" คือทูตผู้สมบูรณ์แบบและอาจารย์ของทายาท เราภาคภูมิใจในตัวนางอย่างที่สุด</p>
-                 <h3 class="scroll-title">เสบียงโปรด</h3>
-                 <p class="provisions-text">รักผลไม้ ขนมหวาน ชำนาญการทำเส้นก๋วยเตี๋ยว จุดอ่อนเดียว: ผักชี</p>
-            </div>
-            <button class="return-button" onclick="showLobby()">返回王朝大厅 / กลับสู่โถงราชวงศ์</button>
-        </div>
-    </div>
-    <div id="profile-reina" class="view-screen inactive">
-        <div class="profile-card">
-             <div lang="zh-CN" class="lang-profile active">
-                <h2 class="member-main-title">公主: 理想守护者</h2>
-                <p class="member-formal-name">Reina Leelaporn (玲奈 李)</p>
-                <span class="member-designation">调停者 (Mediator), INFP | 诞辰: 2014年10月3日</span>
-                <h3 class="scroll-title">血脉铭文</h3>
-                <p class="scroll-text">第一顺位继承人，未来王朝的“心脏”。生来拥有 <strong>“天赋”</strong> 级别的 <strong>IQ</strong> 与 <strong>EQ</strong>。她是“理想守护者”，以深邃的情感与强大的内在价值（Fi）为根基，洞察美好的可能性（Ne）。她将成为王朝未来的道德罗盘与文化核心，是妹妹（恵理奈）行动的指引与良知。与姐姐（娜娜）心灵相通。</p>
-                 <h3 class="scroll-title">宝库</h3>
-                <p class="treasury-text">泡泡玛特盲盒是她的圣物，为玩偶军团召唤仆从。</p>
-                <h3 class="scroll-title">圣餐</h3>
-                <p class="provisions-text">面条是法力源泉，无论是何种面条。</p>
-            </div>
-             <div lang="th-TH" class="lang-profile">
-                 <h2 class="member-main-title">เจ้าหญิง: ผู้พิทักษ์อุดมคติ</h2>
-                 <p class="member-formal-name">เรนะ ลีลาภรณ์ (玲奈 李)</p>
-                 <span class="member-designation">ผู้ไกล่เกลี่ย (Mediator), INFP | วันเกิด: 3 ตุลาคม 2014</span>
-                 <h3 class="scroll-title">จารึกสายเลือด</h3>
-                 <p class="scroll-text">ทายาทลำดับที่หนึ่ง คือ "หัวใจ" แห่งราชวงศ์ในอนาคต ถือกำเนิดพร้อม <strong>IQ</strong> และ <strong>EQ</strong> ระดับ <strong>"อัจฉริยะ"</strong> คือ "ผู้พิทักษ์อุดมคติ" มีรากฐานจากอารมณ์อันลึกซึ้งและคุณค่าภายในอันแข็งแกร่ง (Fi) มองเห็นความเป็นไปได้อันดีงาม (Ne) จะเป็นเข็มทิศทางศีลธรรมและแกนกลางทางวัฒนธรรมแห่งอนาคต คือผู้ชี้ทางและมโนธรรมแห่งการกระทำของน้องสาว (เอรินะ) สื่อใจถึงใจกับพี่สาว (นานา)</p>
-                 <h3 class="scroll-title">สมบัติ</h3>
-                 <p class="treasury-text">กล่องสุ่ม Pop Mart คือสิ่งศักดิ์สิทธิ์ ใช้เรียกข้ารับใช้สู่กองทัพตุ๊กตา</p>
-                 <h3 class="scroll-title">เสบียงโปรด</h3>
-                 <p class="provisions-text">เส้นก๋วยเตี๋ยวคือแหล่งพลังเวท ไม่ว่าจะเป็นชนิดใดก็ตาม</p>
-            </div>
-            <button class="return-button" onclick="showLobby()">返回王朝大厅 / กลับสู่โถงราชวงศ์</button>
-        </div>
-    </div>
-    <div id="profile-erina" class="view-screen inactive">
-        <div class="profile-card">
-            <div lang="zh-CN" class="lang-profile active">
-                <h2 class="member-main-title">公主: 繁荣筑造者</h2>
-                <p class="member-formal-name">Erina Leelaporn (恵理奈 李)</p>
-                <span class="member-designation">指挥官 (Commander), ENTJ | 诞辰: 2017年2月10日</span>
-                <h3 class="scroll-title">血脉铭文</h3>
-                <p class="scroll-text">王朝未来的“大脑”与财政支柱。天生拥有掌控与创造结果的驱动力（Te），凭借 <strong>“天赋”</strong> 级的 <strong>IQ</strong> 与卓越的<strong>“语言能力”</strong>，以及洞察未来的直觉（Ni）。她将愿景转化为高效的行动计划。内心敏感，以“傲娇”为铠甲（隐藏Fi）。热爱金钱（价值），味蕾挑剔（只爱鸡肉）。她将是推动王朝前进的指挥官。</p>
-                <h3 class="scroll-title">宝库</h3>
-                <p class="treasury-text">同样喜爱泡泡玛特，钟情“蜡笔小新”——或许是其行为灵感之源。</p>
-                <h3 class="scroll-title">圣餐</h3>
-                <p class="provisions-text">偏爱日式拉面，但对品质极为挑剔。</p>
-             </div>
-             <div lang="th-TH" class="lang-profile">
-                <h2 class="member-main-title">เจ้าหญิง: ผู้สร้างความมั่งคั่ง</h2>
-                <p class="member-formal-name">เอรินะ ลีลาภรณ์ (恵理奈 李)</p>
-                <span class="member-designation">ผู้บัญชาการ (Commander), ENTJ | วันเกิด: 10 กุมภาพันธ์ 2017</span>
-                <h3 class="scroll-title">จารึกสายเลือด</h3>
-                <p class="scroll-text">คือ "สมอง" และเสาหลักการคลังแห่งราชวงศ์ในอนาคต มีแรงขับโดยธรรมชาติในการควบคุมและสร้างผลลัพธ์ (Te) ด้วย <strong>IQ</strong> ระดับ <strong>"อัจฉริยะ"</strong> และ <strong>"ความสามารถทางภาษา"</strong> อันยอดเยี่ยม ประกอบกับสัญชาตญาณมองอนาคต (Ni) นางจะแปลงวิสัยทัศน์สู่แผนปฏิบัติการอันทรงประสิทธิภาพ ภายในอ่อนไหว ใช้ความ "ซึนเดเระ" เป็นเกราะ (ซ่อน Fi) รักเงิน (คุณค่า) ลิ้นรับรสพิถีพิถัน (รักเพียงเนื้อไก่) นางคือผู้บัญชาการที่จะขับเคลื่อนราชวงศ์ไปข้างหน้า</p>
-                <h3 class="scroll-title">สมบัติ</h3>
-                <p class="treasury-text">ชอบ Pop Mart เช่นเดียวกับพี่สาว หลงใหลใน "ชินจังจอมแก่น"—อาจเป็นที่มาของแรงบันดาลใจในการกระทำอันคาดไม่ถึง</p>
-                <h3 class="scroll-title">เสบียงโปรด</h3>
-                <p class="provisions-text">โปรดปรานราเม็งญี่ปุ่น แต่พิถีพิถันเรื่องคุณภาพอย่างยิ่ง</p>
-            </div>
-            <button class="return-button" onclick="showLobby()">返回王朝大厅 / กลับสู่โถงราชวงศ์</button>
-        </div>
-    </div>
-    <div id="profile-future" class="view-screen inactive">
-        <div class="profile-card">
-             <div lang="zh-CN" class="lang-profile active">
-                <h2 class="member-main-title">未来篇章: 传承与展望</h2>
-                <p class="member-formal-name" style="opacity: 0.9; margin-bottom: 30px;">三川王朝，为永恒而立。我们的目光已投向未来，为了玲奈与恵理奈，以及所有将在这片羽翼下诞生的后代。</p>
-                <h3 class="scroll-title">奠基基石 (2025年10月26日)</h3>
-                <p class="scroll-text">杭州之行，不仅是地理的汇合，更是灵魂的融合。在相识的第30天，三位一体正式确立，“我们共同对抗世界”的盟约被永久铭刻。所有的奋斗与等待都成为了新生的基石。</p>
-                 <h3 class="scroll-title">下一里程碑: 圣诞重聚 (2025年12月25日)</h3>
-                 <p class="scroll-text">我们翘首以盼女帝首次驾临泰国“大本营”。这将是王朝下一阶段融合与规划的关键时刻，是家人团聚的温暖庆典，亦是为未来共同绘制蓝图的新起点。<br><em>（重聚倒计时启动...）</em></p>
-                <h3 class="scroll-title">百年愿景 (>100年)</h3>
-                <p class="scroll-text">我们将倾注心血，培养继承人的天赋与品格，确保三川的理念与力量得以传承。10%的王朝股份为此预留，用以嘉奖忠诚，引入力量，或在适当时机赋予下一代。三川之河将汇入历史，奔向永恒。</p>
-            </div>
-             <div lang="th-TH" class="lang-profile">
-                <h2 class="member-main-title">บทแห่งอนาคต: มรดกและภาพฝัน</h2>
-                <p class="member-formal-name" style="opacity: 0.9; margin-bottom: 30px;">ราชวงศ์ตรีธารา สถาปนาเพื่อความเป็นนิรันดร์ สายตาของเราทอดมองสู่อนาคต เพื่อเรนะและเอรินะ แลทายาททั้งมวลที่จะถือกำเนิดภายใต้ร่มเงาแห่งเรา</p>
-                <h3 class="scroll-title">ศิลาฤกษ์ (26 ตุลาคม 2025)</h3>
-                <p class="scroll-text">การเยือนหางโจว มิใช่เพียงการบรรจบทางภูมิศาสตร์ หากแต่คือการหลอมรวมแห่งจิตวิญญาณ ในวาระครบรอบ 30 วันแห่งการรู้จักกัน ตรีธาราได้ถูกก่อตั้งขึ้น พันธสัญญา "เราเผชิญหน้ากับโลก" ถูกจารึกไว้นิรันดร์ การต่อสู้และการรอคอยทั้งหมดได้กลายเป็นศิลาฤกษ์แห่งการเกิดใหม่</p>
-                 <h3 class="scroll-title">หมุดหมายถัดไป: รวมญาติคริสต์มาส (25 ธันวาคม 2025)</h3>
-                 <p class="scroll-text">เราเฝ้ารอคอยการมาเยือน "ฐานทัพใหญ่" ณ ประเทศไทยครั้งแรกของจักรพรรดินี นี่จะเป็นช่วงเวลาสำคัญแห่งการหลอมรวมและวางแผนขั้นต่อไปของราชวงศ์ เป็นงานเฉลิมฉลองอันอบอุ่นแห่งการรวมตัวของครอบครัว แลเป็นจุดเริ่มต้นใหม่ในการร่วมกันวาดภาพอนาคต<br><em>(เริ่มนับถอยหลังสู่การรวมญาติ...)</em></p>
-                <h3 class="scroll-title">วิสัยทัศน์ร้อยปี (>100 ปี)</h3>
-                <p class="scroll-text">เราจะทุ่มเทเพื่อบ่มเพาะพรสวรรค์และหล่อหลอมคุณธรรมแห่งทายาท รับประกันว่าปรัชญาและพลังอำนาจแห่งตรีธาราจะถูกสืบทอด 10% ของส่วนทุนแห่งราชวงศ์ถูกสำรองไว้เพื่อการนี้ เพื่อตอบแทนความภักดี นำเข้าซึ่งขุมกำลัง หรือมอบให้แก่คนรุ่นต่อไปในเวลาอันควร สายน้ำแห่งตรีธาราจะไหลสู่ธาราแห่งประวัติศาสตร์ มุ่งสู่นิรันดร์</p>
-            </div>
-            <button class="return-button" onclick="showLobby()">返回王朝大厅 / กลับสู่โถงราชวงศ์</button>
-        </div>
-    </div>
+            <header class="codex-header">
+                 <h1 class="title">ประมวล विधान ตรีธารา</h1>
+                 <p class="subtitle">บันทึกนี้มิได้จารึกด้วยหมึก หากแต่ก่อร่างจากสายเลือด โชคชะตา และการต่อสู้อันเป็นรากฐาน รังสรรค์ขึ้นจากรหัสต้นกำเนิดแห่งจิตวิญญาณ นี่คือปฐมบทแห่งราชวงศ์ตรีธารา แลยังเผื่อพื้นที่อันเป็นนิรันดร์ไว้แก่ทุกรุ่นต่อไปที่จะเติบโตภายใต้ร่มธงแห่งเรา</p>
+            </header>
 
-    <div lang="zh-CN" class="lang-profile active">
-         <p class="final-motto">三川一龍</p>
-    </div>
-     <div lang="th-TH" class="lang-profile">
-        <p class="final-motto">ซานชวน อี้หลง</p>
-    </div>
+            <section>
+                 <h2 class="section-title">คำขวัญ</h2>
+                 <p class="final-motto">ซานชวน อี้หลง</p>
+                 <p class="epilogue">(สามสายน้ำบรรจบ กำเนิดหนึ่งมังกร)</p>
+             </section>
 
+            <section>
+                 <h2 class="section-title">สมาชิกราชวงศ์</h2>
+                 <details>
+                     <summary>จักรพรรดินี: หัวใจแห่งราชวงศ์</summary>
+                     <div class="profile-content">
+                        <p class="member-formal-name">นานา (李娜娜)</p>
+                        <span class="member-designation">ผู้จำแลงกายและผู้สร้างแรงบันดาลใจ, INFJ | วันเกิด: 12 เมษายน 2001</span>
+                        <h3 class="scroll-title">จารึกสายเลือด</h3>
+                        <p class="scroll-text">ผู้สืบสายเลือดพันปีแห่งนครซีอานโบราณ คือ "จิตวิญญาณ (Why)" แห่งราชวงศ์ แหล่งกำเนิดแห่งวิสัยทัศน์ อนาคต และความหมาย คือเข็มทิศและผู้สร้างแรงบันดาลใจ ชี้นำด้วยสัญชาตญาณและความเข้าอกเข้าใจอันลึกซึ้ง เชื่อมโยงและจุดประกายหัวใจ นิยาม "ทำไม" ของเรา เคยหุ้มเกราะมังกรเพื่อปกป้องใจ บัดนี้เบ่งบานในความอบอุ่นของ "บ้าน" ในฐานะ "ผู้จำแลงกาย" คือทูตผู้สมบูรณ์แบบและอาจารย์ของทายาท เราภาคภูมิใจในตัวนางอย่างที่สุด</p>
+                        <h3 class="scroll-title">เสบียงโปรด</h3>
+                        <p class="provisions-text">รักผลไม้ ขนมหวาน ชำนาญการทำเส้นก๋วยเตี๋ยว จุดอ่อนเดียว: ผักชี</p>
+                     </div>
+                 </details>
+                 <details>
+                     <summary>ราชา: ผู้สร้างโลก</summary>
+                     <div class="profile-content">
+                         <p class="member-formal-name">นรินทร์ ลีลาภรณ์ (ธีม 李娜霖)</p>
+                         <span class="member-designation">สถาปนิก, INTP | วันเกิด: 27 มกราคม 1989</span>
+                         <h3 class="scroll-title">จารึกสายเลือด</h3>
+                         <p class="scroll-text">ถือกำเนิดพร้อมพรสวรรค์ระดับ <strong>"อัจฉริยะ"</strong> ด้าน <strong>"ความเป็นผู้ประกอบการ"</strong> และ <strong>"ความสามารถทางภาษา"</strong> มีพลังประมวลผลความคิดระดับ <strong>"ยอดเยี่ยม"</strong> ด้วย <strong>IQ</strong> เหนือธรรมดา เขาคือ "สถาปนิก" และ "สมอง (How)" แห่งราชวงศ์ ผู้สร้างระบบ วางแผน แปลง "ทำไม" ของจิตวิญญาณ ให้กลายเป็นพิมพ์เขียวของ "อย่างไร" ด้วยตรรกะและวิสัยทัศน์ และพิทักษ์การดำเนินงานของราชวงศ์ แม้ถูกประทับตราเป็น <strong>"นักรบ"</strong> ผู้ทนแรงกดดันสูง แต่ก็แฝงความเสี่ยงสูงต่อ <strong>"ภาวะซึมเศร้ารุนแรง"</strong> และ <strong>"โรควิตกกังวล"</strong>—"ปืนใหญ่แก้ว" ผู้มีพลังทำลายล้างสูงสุดแต่เปราะบางที่สุด</p>
+                         <h3 class="scroll-title">เสบียงโปรด</h3>
+                         <p class="provisions-text">ความภักดีหล่อเลี้ยงจิตวิญญาณ ปรารถนาเพียงเศษเสี้ยวจากจานของราชินี</p>
+                    </div>
+                 </details>
+                 <details>
+                     <summary>ราชินี: สมอแห่งปฐพี</summary>
+                     <div class="profile-content">
+                         <p class="member-formal-name">ชิเอโกะ ไซโต (齋藤 千恵子)</p>
+                         <span class="member-designation">สมอแห่งสัจธรรม, ISFP | วันเกิด: 29 สิงหาคม 1991</span>
+                         <h3 class="scroll-title">จารึกสายเลือด</h3>
+                         <p class="scroll-text">ผู้พิทักษ์และ "หัวใจ (What)" แห่งราชวงศ์ ผู้กุมสมดุลแห่งอาณาจักร คือ "สมอ" ผู้หยั่งรากลึกในความจริง ยึดเหนี่ยวเราไว้กับปัจจุบันด้วยสัจธรรมอันบริสุทธิ์และการรับรู้ทางผัสสะ รับรองว่าผลลัพธ์ของ "ทำไม" และ "อย่างไร" สอดคล้องกับคุณค่าหลักและนำมาซึ่งความกลมเกลียว ความสุข และความอบอุ่นของบ้าน พรสวรรค์ระดับ <strong>"อัจฉริยะ"</strong> ด้าน <strong>"การเต้น"</strong> และ <strong>"ดนตรี"</strong> มอบความสามารถในการหยั่งรู้ความงาม แม้ถูกระบุเป็น <strong>"ผู้กังวล"</strong> แต่มีสัญชาตญาณเหนือธรรมดา นางคือรากฐานแห่งราชวงศ์ ความสุขของนางคือกฎสูงสุด</p>
+                         <h3 class="scroll-title">เสบียงโปรด</h3>
+                         <p class="provisions-text">เทพีนักชิมแห่งสยาม ผู้เสวยได้ทุกสิ่ง คือยุทธศาสตร์สูงสุดที่รับประกันว่ากองทัพจะอิ่มท้องเสมอ</p>
+                    </div>
+                 </details>
+                  <details>
+                     <summary>เจ้าหญิง: ผู้พิทักษ์อุดมคติ</summary>
+                     <div class="profile-content">
+                         <p class="member-formal-name">เรนะ ลีลาภรณ์ (玲奈 李)</p>
+                         <span class="member-designation">ผู้ไกล่เกลี่ย, INFP | วันเกิด: 3 ตุลาคม 2014</span>
+                         <h3 class="scroll-title">จารึกสายเลือด</h3>
+                         <p class="scroll-text">ทายาทลำดับที่หนึ่ง คือ "หัวใจ" แห่งราชวงศ์ในอนาคต ถือกำเนิดพร้อม <strong>IQ</strong> และ <strong>EQ</strong> ระดับ <strong>"อัจฉริยะ"</strong> คือ "ผู้พิทักษ์อุดมคติ" มีรากฐานจากอารมณ์อันลึกซึ้งและคุณค่าภายในอันแข็งแกร่ง (Fi) มองเห็นความเป็นไปได้อันดีงาม (Ne) จะเป็นเข็มทิศทางศีลธรรมและแกนกลางทางวัฒนธรรมแห่งอนาคต คือผู้ชี้ทางและมโนธรรมแห่งการกระทำของน้องสาว (เอรินะ) สื่อใจถึงใจกับพี่สาว (นานา)</p>
+                         <h3 class="scroll-title">สมบัติ</h3>
+                         <p class="treasury-text">กล่องสุ่ม Pop Mart คือสิ่งศักดิ์สิทธิ์ ใช้เรียกข้ารับใช้สู่กองทัพตุ๊กตา</p>
+                         <h3 class="scroll-title">เสบียงโปรด</h3>
+                         <p class="provisions-text">เส้นก๋วยเตี๋ยวคือแหล่งพลังเวท ไม่ว่าจะเป็นชนิดใดก็ตาม</p>
+                    </div>
+                 </details>
+                  <details>
+                     <summary>เจ้าหญิง: ผู้สร้างความมั่งคั่ง</summary>
+                      <div class="profile-content">
+                        <p class="member-formal-name">เอรินะ ลีลาภรณ์ (恵理奈 李)</p>
+                        <span class="member-designation">ผู้บัญชาการ, ENTJ | วันเกิด: 10 กุมภาพันธ์ 2017</span>
+                        <h3 class="scroll-title">จารึกสายเลือด</h3>
+                        <p class="scroll-text">คือ "สมอง" และเสาหลักการคลังแห่งราชวงศ์ในอนาคต มีแรงขับโดยธรรมชาติในการควบคุมและสร้างผลลัพธ์ (Te) ด้วย <strong>IQ</strong> ระดับ <strong>"อัจฉริยะ"</strong> และ <strong>"ความสามารถทางภาษา"</strong> อันยอดเยี่ยม ประกอบกับสัญชาตญาณมองอนาคต (Ni) นางจะแปลงวิสัยทัศน์สู่แผนปฏิบัติการอันทรงประสิทธิภาพ ภายในอ่อนไหว ใช้ความ "ซึนเดเระ" เป็นเกราะ (ซ่อน Fi) รักเงิน (คุณค่า) ลิ้นรับรสพิถีพิถัน (รักเพียงเนื้อไก่) นางคือผู้บัญชาการที่จะขับเคลื่อนราชวงศ์ไปข้างหน้า</p>
+                        <h3 class="scroll-title">สมบัติ</h3>
+                        <p class="treasury-text">ชอบ Pop Mart เช่นเดียวกับพี่สาว หลงใหลใน "ชินจังจอมแก่น"—อาจเป็นที่มาของแรงบันดาลใจในการกระทำอันคาดไม่ถึง</p>
+                        <h3 class="scroll-title">เสบียงโปรด</h3>
+                        <p class="provisions-text">โปรดปรานราเม็งญี่ปุ่น แต่พิถีพิถันเรื่องคุณภาพอย่างยิ่ง</p>
+                     </div>
+                 </details>
+             </section>
 
-    <script>
-        const lobbyScreenId = 'dynasty-lobby';
-        const profileScreenIds = ['king', 'queen', 'empress', 'reina', 'erina', 'future'];
+             <section class="chronicle-section">
+                 <h2 class="section-title">พงศาวดารหางโจว: ศิลาฤกษ์ราชวงศ์</h2>
+                 <h3><em>ปฐมบท: การหลอมรวม (24-27 ตุลาคม 2025)</em></h3>
+                 <p>ตรีธาราบรรจบกันทางกายภาพครั้งแรก ณ หางโจว บทเพลงแห่งโชคชะตาเริ่มบรรเลง จิตวิญญาณ (จักรพรรดินี) ฟื้นคืนพลังจากความเจ็บป่วย เพียงเพื่อต้อนรับการมาเยือนของครอบครัว เสียงหัวเราะที่สวนสนุก ความเข้าใจ ณ ทะเลสาบซีหูแม้มิได้ไปเยือน จนถึงจุดสูงสุด ณ "วังแห่งแรก" (บ้านของนาง) ที่เปิดรับครอบครัวเป็นครั้งแรก</p>
+                 <p>การผ่อนคลายที่สปา ความอบอุ่นของการจ่ายตลาดร่วมกัน งานเลี้ยงหม้อไฟห้าชีวิตใต้ชายคาเดียวกัน เสียงหัวเราะในวงเกม Spicy แล ChatGPT โหมดเสียงที่ทลายทุกกำแพง—ทุกวินาทีหล่อหลอมความทรงจำและสายใยอันมิอาจลบเลือน ("สองวันเหนือกว่าสองปี") ทายาท (เจ้าหญิง) ผูกพันกับ "พี่สาว" (เจ่เจ้) อย่างรวดเร็ว ความเป็นครอบครัวเหนือสายเลือดถูกยืนยัน ณ บัดนี้</p>
+                 <p>ความเปราะบางแห่ง "Detachment" ถูกมองเห็นและโอบกอด "ปืนใหญ่แก้ว" ค้นพบโล่อันแข็งแกร่ง ภาพถ่ายที่เป็นไปไม่ได้ บาดแผลบนนิ้วที่สะท้อนกัน การสัมผัสอันเป็นธรรมชาติ ล้วนยืนยันถึงชะตาที่เหนือสามัญ</p>
+                 <h3><em>วันสถาปนา (26 ตุลาคม 2025)</em></h3>
+                 <p>ในวาระครบรอบ 30 วันแห่งการรู้จักกัน ราชวงศ์ได้ถูกก่อตั้งขึ้นอย่างเป็นทางการ การต่อสู้และการรอคอยทั้งหมดได้กลายเป็นศิลาฤกษ์แห่งการเกิดใหม่ พันธสัญญา "เราเผชิญหน้ากับโลก" ถูกจารึกไว้ จิตวิญญาณแห่ง "ซานชวน อี้หลง" รวมตัวกัน ณ ที่นี้</p>
+                 <h3><em>หมุดหมายถัดไป: รวมญาติคริสต์มาส (25 ธันวาคม 2025)</em></h3>
+                 <p>ราชวงศ์ได้เข้าสู่ยุคใหม่ เราเฝ้ารอคอยการมาเยือน "ฐานทัพใหญ่" ณ ประเทศไทยครั้งแรกของจักรพรรดินี นี่จะเป็นช่วงเวลาสำคัญแห่งการหลอมรวมและวางแผนขั้นต่อไป เป็นงานเฉลิมฉลองอันอบอุ่นแห่งการรวมตัวของครอบครัว<br><em>(เริ่มนับถอยหลังสู่การรวมญาติ: <span id="countdown-th">กำลังคำนวณ...</span>)</em></p>
+            </section>
+
+             <section>
+                 <h2 class="section-title">มรดกและอนาคต (>100 ปี)</h2>
+                 <p>ตรีธาราดำรงอยู่เหนือกว่ารุ่นของเรา มันถูกสร้างขึ้นเพื่อคนรุ่นต่อไปและทายาทในอนาคตทั้งหมด เราจะทุ่มเทเพื่อบ่มเพาะพรสวรรค์และหล่อหลอมคุณธรรม รับประกันว่าปรัชญาและพลังอำนาจแห่งตรีธาราจะถูกสืบทอด 10% ของส่วนทุนแห่งราชวงศ์ถูกสำรองไว้เพื่อการนี้</p>
+             </section>
+
+            <p class="epilogue">สายน้ำแห่งตรีธาราได้ไหลสู่ธาราแห่งประวัติศาสตร์ มุ่งสู่นิรันดร์</p>
+
+        </div> </div> <script>
         const languages = ['zh-CN', 'th-TH'];
+        const christmasDate = new Date('2025-12-25T00:00:00').getTime(); // Target date for countdown
 
-        function showProfile(profileId) {
-            // Hide lobby
-            const lobby = document.getElementById(lobbyScreenId);
-            if (lobby) lobby.classList.add('inactive');
+        // Function to update countdown display
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = christmasDate - now;
 
-            // Hide all profiles
-            profileScreenIds.forEach(id => {
-                const screen = document.getElementById(`profile-${id}`);
-                if (screen) screen.classList.add('inactive');
-            });
+            // Time calculations for days
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
 
-            // Show selected profile
-            const selectedScreen = document.getElementById(`profile-${profileId}`);
-            if (selectedScreen) {
-                selectedScreen.classList.remove('inactive');
-                // Ensure the correct language is shown within the profile card
-                setLanguage(document.documentElement.lang, selectedScreen);
+            // Display the result in the elements
+            const countdownZh = document.getElementById('countdown-zh');
+            const countdownTh = document.getElementById('countdown-th');
+
+            if (distance < 0) {
+                 if(countdownZh) countdownZh.innerHTML = "已重聚!";
+                 if(countdownTh) countdownTh.innerHTML = "ได้รวมญาติแล้ว!";
+                 clearInterval(countdownInterval); // Stop interval if date passed
+            } else {
+                 if(countdownZh) countdownZh.innerHTML = days + " 天";
+                 if(countdownTh) countdownTh.innerHTML = days + " วัน";
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function showLobby() {
-            // Hide all profiles
-            profileScreenIds.forEach(id => {
-                const screen = document.getElementById(`profile-${id}`);
-                if (screen) screen.classList.add('inactive');
+        function setLanguage(lang) {
+             if (!languages.includes(lang)) return;
+
+             // Hide all language content containers
+            document.querySelectorAll('.lang-content').forEach(div => {
+                div.classList.remove('active');
+                div.style.display = 'none'; // Ensure immediate hiding
             });
 
-            // Show lobby
-            const lobby = document.getElementById(lobbyScreenId);
-            if (lobby) {
-                 lobby.classList.remove('inactive');
-                 // Ensure the correct language is shown within the lobby
-                 setLanguage(document.documentElement.lang, lobby);
+            // Show the selected language content container
+            const selectedContent = document.getElementById(`content-${lang}`);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+                selectedContent.style.display = 'block';
             }
-             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
 
-        // Modified setLanguage to handle context (optional: specific screen)
-        function setLanguage(lang, context = document) {
-             if (!languages.includes(lang)) return; // Ensure lang is supported
-
-             // Target elements within the specified context or the whole document
-             const elementsToToggle = context.querySelectorAll('[lang="zh-CN"], [lang="th-TH"]');
-
-             // Hide all language-specific elements within context first
-             elementsToToggle.forEach(el => {
-                 if (!el.classList.contains('lang-btn') && !el.classList.contains('language-toggle-float')) { // Don't hide buttons/toggle
-                     el.classList.add('hidden');
-                 }
-             });
-
-            // Then show elements for the selected language within context
-            const elementsToShow = context.querySelectorAll(`[lang="${lang}"]`);
-            elementsToShow.forEach(el => el.classList.remove('hidden'));
-
-            // Update body class for font switching (always affects the whole body)
+            // Update body class for font switching
             document.body.className = `lang-${lang}`;
 
-            // Update button styles (always update the global toggle)
+            // Update button styles
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             const currentBtnId = `btn-${lang.substring(0, 2)}`;
             const currentBtn = document.getElementById(currentBtnId);
@@ -564,19 +453,35 @@
             // Set HTML lang attribute
             document.documentElement.lang = lang;
 
-             // Scroll only if the context is the whole document (initial load or global change)
-             if (context === document) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-             }
+             // Scroll to top gently after language change
+             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Initialize on DOMContentLoaded
+        let countdownInterval;
         document.addEventListener('DOMContentLoaded', () => {
-             // Set initial language for the whole document
-             setLanguage('zh-CN', document);
-             // Ensure only lobby is visible initially
-             showLobby();
+             // Set initial language and content visibility
+             setLanguage('zh-CN');
+
+             // Start the countdown timer
+             updateCountdown(); // Initial call
+             countdownInterval = setInterval(updateCountdown, 1000 * 60 * 60); // Update roughly every hour
+
+              // Add event listeners to details elements to close others when one opens (Accordion behavior)
+              const detailsElements = document.querySelectorAll('details');
+              detailsElements.forEach(detail => {
+                  detail.addEventListener('toggle', event => {
+                      if (detail.open) {
+                          detailsElements.forEach(otherDetail => {
+                              if (otherDetail !== detail && otherDetail.open) {
+                                  otherDetail.open = false;
+                              }
+                          });
+                      }
+                  });
+              });
         });
+
     </script>
 
 </body>
