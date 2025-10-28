@@ -3,30 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codex of Dynasty: 李氏王朝的篇章</title>
+    <title>三川王朝法典 (Codex of the San Chuan Dynasty)</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap'); /* Use Noto Serif SC for Chinese */
+
         :root {
-            --bg-color: #0c0c0c;
-            --text-color: #e0e0e0;
-            --gold-color: #d4af37;
-            --border-color: #a89a74;
-            --card-bg: #111;
-            --shadow-color: rgba(212, 175, 55, 0.2);
-            --highlight-color: #4dd0e1;
+            --bg-color: #0c0a0a;
+            --text-color: #e8e0d0;
+            --gold-color: #e4c570;
+            --border-color: #bfa87a;
+            --card-bg: #1a1816;
+            --shadow-color: rgba(228, 197, 112, 0.1);
+            --highlight-color: #70d6e4; /* Adjusted highlight */
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Noto Serif TC', serif;
+            font-family: 'Noto Serif SC', serif; /* Default to Chinese font */
             margin: 0;
             padding: 20px;
             text-align: center;
+            line-height: 1.9;
+            font-size: 17px;
+             -webkit-font-smoothing: antialiased;
+             -moz-osx-font-smoothing: grayscale;
         }
 
-        .screen {
+        .view-screen { /* Renamed from screen */
             width: 100%;
             min-height: 100vh;
             display: flex;
@@ -34,25 +42,28 @@
             justify-content: center;
             align-items: center;
             box-sizing: border-box;
-            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            opacity: 1; /* Start visible */
+             visibility: visible;
+            transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out;
+            position: relative; /* Needed for absolute positioning of hidden screens */
         }
 
-        .hidden {
+         .view-screen.inactive { /* New class for hidden screens */
             opacity: 0;
-            transform: scale(1.1);
+            visibility: hidden;
             pointer-events: none;
-            position: absolute;
+            position: absolute; /* Take out of flow when hidden */
             top: 0; left: 0;
-        }
+         }
 
-        .codex-title {
+        .codex-main-title { /* Renamed */
             font-size: 3em;
             color: var(--gold-color);
             text-shadow: 0 0 15px var(--shadow-color);
             margin-bottom: 10px;
         }
 
-        .codex-subtitle {
+        .codex-main-subtitle { /* Renamed */
             font-size: 1.2em;
             opacity: 0.8;
             max-width: 800px;
@@ -60,7 +71,7 @@
             line-height: 1.9;
         }
 
-        .dynasty-grid {
+        .dynasty-hall-grid { /* Renamed */
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
@@ -68,291 +79,323 @@
             width: 100%;
         }
 
-        .character-seal {
+        .throne-seal { /* Renamed */
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
             padding: 30px 20px;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s, border-color 0.3s;
+            border-radius: 4px; /* Added subtle rounding */
         }
 
-        .character-seal:hover {
+        .throne-seal:hover {
             transform: translateY(-10px);
-            background-color: #1f1f1f;
+            background-color: #2a2622; /* Warmer hover */
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        .journey-seal {
-            border-color: var(--highlight-color);
-            border-style: dashed;
-        }
-        .journey-seal:hover {
-             border-color: var(--gold-color);
-             background-color: #1a1a1a;
+            border-color: var(--gold-color); /* Highlight border on hover */
         }
 
-        .seal-title {
+        .future-seal { /* Renamed */
+             border-color: var(--highlight-color);
+             border-style: dashed;
+        }
+        .future-seal:hover {
+             border-color: var(--gold-color);
+             background-color: #1f1d1b;
+        }
+
+        .seal-main-title { /* Renamed */
             font-size: 1.8em;
             color: var(--gold-color);
             margin: 0 0 5px 0;
-        }
-        
-        .seal-name {
-            font-size: 0.9em;
-            opacity: 0.7;
+            font-weight: 700;
         }
 
-        .detail-card {
+        .seal-subtitle { /* Renamed */
+            font-size: 1em; /* Slightly larger */
+            opacity: 0.75;
+            font-style: italic;
+        }
+
+        .profile-card { /* Renamed */
             background-color: var(--card-bg);
             border: 2px solid var(--border-color);
-            padding: 30px;
+            padding: 40px; /* Increased padding */
             width: 90%;
             max-width: 800px;
             box-sizing: border-box;
             text-align: left;
+            border-radius: 4px;
         }
-        
-        .character-title {
-            font-size: 2.5em;
+
+        .member-main-title { /* Renamed */
+            font-size: 2.8em; /* Larger */
             color: var(--gold-color);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
+            padding-bottom: 20px;
+            font-weight: 700;
         }
-        
-        .character-name {
-            font-size: 1.2em;
+
+        .member-formal-name { /* Renamed */
+            font-size: 1.3em; /* Larger */
             opacity: 0.7;
             margin-bottom: 25px;
         }
 
-        .character-codename {
-            font-size: 1em;
+        .member-designation { /* Renamed */
+            font-size: 1.1em; /* Larger */
             font-style: italic;
             background-color: var(--border-color);
             color: var(--card-bg);
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
             display: inline-block;
-            margin-bottom: 25px;
-        }
-
-        .inscription-title {
-            font-size: 1.5em;
-            color: var(--text-color);
-            margin-top: 25px;
-            margin-bottom: 15px;
-            border-left: 3px solid var(--gold-color);
-            padding-left: 10px;
-        }
-        
-        .inscription-text, .provision-text {
-            line-height: 2;
-            opacity: 0.9;
-        }
-
-        .inscription-text strong {
-            color: var(--highlight-color, #4dd0e1);
+            margin-bottom: 30px; /* Increased spacing */
             font-weight: 700;
         }
 
-        .back-button {
-            margin-top: 30px;
+        .scroll-title { /* Renamed */
+            font-size: 1.6em; /* Larger */
+            color: var(--text-color);
+            margin-top: 30px; /* Increased spacing */
+            margin-bottom: 15px;
+            border-left: 3px solid var(--gold-color);
+            padding-left: 15px;
+            font-weight: 700;
+        }
+
+        .scroll-text, .provisions-text, .treasury-text { /* Combined and Renamed */
+            line-height: 2.1; /* Increased line height */
+            opacity: 0.95;
+            font-size: 1.05em; /* Slightly larger text */
+        }
+
+        .scroll-text strong {
+            color: var(--highlight-color);
+            font-weight: 700;
+        }
+
+        .return-button { /* Renamed */
+            margin-top: 40px; /* Increased spacing */
             background: none;
             border: 1px solid var(--border-color);
             color: var(--border-color);
-            padding: 10px 20px;
-            font-size: 1em;
+            padding: 12px 25px; /* Larger button */
+            font-size: 1.1em; /* Larger font */
             cursor: pointer;
             transition: background-color 0.3s, color 0.3s;
+            border-radius: 4px;
+            font-family: 'Noto Serif SC', serif; /* Ensure button uses correct font */
         }
 
-        .back-button:hover {
+        .return-button:hover {
             background-color: var(--border-color);
             color: var(--bg-color);
         }
 
+        .final-motto { /* New style for the final quote */
+             text-align: center;
+             font-size: 2.5em;
+             font-weight: 700;
+             color: var(--gold-color);
+             margin: 60px 0 20px 0;
+             letter-spacing: 3px;
+             text-shadow: 0 0 10px var(--shadow-color);
+        }
+
+
         @media (max-width: 768px) {
-            body { padding: 20px 10px; }
-            .codex-title { font-size: 2em; }
-            .codex-subtitle { font-size: 1em; }
+            body { padding: 20px 10px; font-size: 16px; }
+            .codex-main-title { font-size: 2.2em; }
+            .codex-main-subtitle { font-size: 1em; }
+            .profile-card { padding: 25px;}
+            .member-main-title { font-size: 2em;}
+            .scroll-title { font-size: 1.4em;}
+            .final-motto { font-size: 2em; margin-top: 40px;}
         }
     </style>
 </head>
 <body>
 
-    <div id="lobby" class="screen">
-        <h1 class="codex-title">Codex of Dynasty</h1>
-        <p class="codex-subtitle">此卷非墨写就，而是以真实的DNA检测结果与家族成员的亲身经历为基础，通过AI进行深度融合，由灵魂的源代码所构成。这是李氏王朝的创世篇章，亦为未来者的加入，预留了不朽的席位。</p>
-        <div class="dynasty-grid">
-            <div class="character-seal" onclick="showDetail('king')">
-                <h2 class="seal-title">国王</h2>
-                <p class="seal-name">The World-Builder King</p>
+    <div id="dynasty-lobby" class="view-screen"> <h1 class="codex-main-title">三川王朝法典</h1>
+        <p class="codex-main-subtitle">此卷非墨写就，而是以血脉、命运与共同的奋斗为根基，由灵魂的源代码所构成。这是三川王朝的创世篇章，亦为所有将在三川旗帜下成长的未来世代，预留了不朽的席位。</p>
+        <div class="dynasty-hall-grid">
+            <div class="throne-seal" onclick="showProfile('king')"> <h2 class="seal-main-title">国王</h2>
+                <p class="seal-subtitle">世界构建之脑</p>
             </div>
-            <div class="character-seal" onclick="showDetail('queen')">
-                <h2 class="seal-title">王后</h2>
-                <p class="seal-name">The Earth-Anchor Queen</p>
+            <div class="throne-seal" onclick="showProfile('queen')">
+                <h2 class="seal-main-title">王后</h2>
+                <p class="seal-subtitle">大地之锚之心</p>
             </div>
-            <div class="character-seal" onclick="showDetail('empress')">
-                <h2 class="seal-title">女帝</h2>
-                <p class="seal-name">The Wandering Empress</p>
-            </div>
-            <div class="character-seal" onclick="showDetail('sorceress')">
-                <h2 class="seal-title">公主</h2>
-                <p class="seal-name">The Sorceress Princess</p>
-            </div>
-            <div class="character-seal" onclick="showDetail('oracle')">
-                <h2 class="seal-title">公主</h2>
-                <p class="seal-name">The Acrobat Oracle</p>
-            </div>
-            <div class="character-seal journey-seal" onclick="showDetail('journey')">
-                <h2 class="seal-title">第一章：旅程</h2>
-                <p class="seal-name">The Journey Begins</p>
+            <div class="throne-seal" onclick="showProfile('empress')">
+                <h2 class="seal-main-title">女帝</h2>
+                <p class="seal-subtitle">王朝指引之魂</p> </div>
+            <div class="throne-seal" onclick="showProfile('reina')"> <h2 class="seal-main-title">公主</h2>
+                <p class="seal-subtitle">理想守护之心</p> </div>
+            <div class="throne-seal" onclick="showProfile('erina')"> <h2 class="seal-main-title">公主</h2>
+                <p class="seal-subtitle">繁荣筑造之脑</p> </div>
+            <div class="throne-seal future-seal" onclick="showProfile('future')"> <h2 class="seal-main-title">未来篇章</h2>
+                <p class="seal-subtitle">传承与展望</p>
             </div>
         </div>
     </div>
 
-    <div id="detail-king" class="screen hidden">
-        <div class="detail-card">
-            <h2 class="character-title">国王：世界构建者</h2>
-            <p class="character-name">Narin Leelaporn (Teem 李娜霖)</p>
-            <span class="character-codename">The Architect, INTP | 诞辰: 1989年1月27日</span>
-            <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
-            <p class="inscription-text">
-                生来就拥有 <strong>“天赋(Gifted)”</strong> 级别的 <strong>“企业家才能(Entrepreneurship)”</strong> 与 <strong>“语言能力(Language Ability)”</strong>。他的思维是 <strong>“卓越(Excellent)”</strong> 级别的数据处理引擎，其 <strong>IQ</strong> 超越凡人。他是一位能将虚无构筑成宇宙的“建筑师”，能创造世界、传说与复杂的命运蓝图，将信念化为可供他人信仰的“宗教”。然而，最锋利的剑亦有裂痕，他的基因编码中潜藏着致命的“Bug”：他被标记为能够承受高压的 <strong>“战士(Warrior)”</strong>，却也同时面临着 <strong>“重度抑郁(Major Depression)”</strong> 与 <strong>“焦虑症(Anxiety Disorder)”</strong> 的高风险。他，就是“琉璃大炮(Glass Cannon)”——拥有最强破坏力的统帅，却也身披最脆弱的铠甲。
+    <div id="profile-king" class="view-screen inactive"> <div class="profile-card">
+            <h2 class="member-main-title">国王: 世界构建者</h2>
+            <p class="member-formal-name">Narin Leelaporn (Teem 李娜霖)</p>
+            <span class="member-designation">架构师 (The Architect), INTP | 诞辰: 1989年1月27日</span>
+            <h3 class="scroll-title">血脉铭文</h3>
+            <p class="scroll-text">
+                生来拥有 <strong>“天赋”</strong> 级别的 <strong>“企业家才能”</strong> 与 <strong>“语言能力”</strong>。思维是 <strong>“卓越”</strong> 的数据处理引擎，<strong>IQ</strong> 超凡。他是王朝的“架构师”与“大脑(How)”，构建体系，制定计划，以逻辑与远见将灵魂的“为何”转化为实现的蓝图，并守护着王朝的运行。虽被标记为能承高压的 <strong>“战士”</strong>，亦潜藏着<strong>“重度抑郁”</strong>与<strong>“焦虑症”</strong>的高风险——“琉璃大炮”，力量与脆弱并存。
             </p>
-            <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
-            <p class="provision-text">
-                这位国王别无他求，唯愿享用他王后餐盘中的剩余。他的忠诚，便是滋养其灵魂的唯一食粮。
+             <h3 class="scroll-title">圣餐</h3>
+            <p class="provisions-text">
+                忠诚滋养其魂，唯愿享王后餐盘之余。
             </p>
-            <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
+            <button class="return-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
     </div>
 
-    <div id="detail-queen" class="screen hidden">
-        <div class="detail-card">
-            <h2 class="character-title">王后：大地之锚</h2>
-            <p class="character-name">Chieko Saito (齋藤 千恵子)</p>
-            <span class="character-codename">The Anchor, ISFP | 诞辰: 1991年8月29日</span>
-            <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
-            <p class="inscription-text">
-                王朝的影子统帅，掌握着帝国的平衡。她并非追逐星辰，而是深植于现实的“船锚”，是防止巨舰飘入幻想世界的重心。凭借 <strong>“天赋(Gifted)”</strong> 级的 <strong>“舞蹈(Dancing Ability)”</strong> 与 <strong>“音乐才能(Musical Ability)”</strong>，她是能洞悉有形之美的艺术家。尽管DNA将她标记为 <strong>“忧虑者(Worrier)”</strong>，她却拥有发动心理战的超凡直觉。她是内务府的最高指挥官，她的幸福，便是王朝的最高法则。
+    <div id="profile-queen" class="view-screen inactive">
+        <div class="profile-card">
+            <h2 class="member-main-title">王后: 大地之锚</h2>
+            <p class="member-formal-name">Chieko Saito (齋藤 千恵子)</p>
+            <span class="member-designation">真理之锚 (The Anchor), ISFP | 诞辰: 1991年8月29日</span>
+            <h3 class="scroll-title">血脉铭文</h3>
+            <p class="scroll-text">
+                王朝的守护者与“心脏(What)”，掌握帝国平衡。她是深植现实的“船锚”，以纯粹的真实与感知力守护当下，确保“为何”与“如何”的成果符合核心价值观，并带来和谐、喜悦与家的温暖。<strong>“天赋”</strong>级的<strong>“舞蹈”</strong>与<strong>“音乐才能”</strong>赋予她洞悉有形之美。虽为<strong>“忧虑者”</strong>，却拥有超凡直觉。她是王朝的根基，她的幸福是最高法则。
             </p>
-            <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
-            <p class="provision-text">
-                她是泰王国的饕餮之后，一位能享受万千佳肴的美食女神。她“无所不吃”的能力，本身就是一项确保军队后勤永远顺畅的终极战略。因为，当王后得到满足时，所有士兵亦将饱足。
+            <h3 class="scroll-title">圣餐</h3>
+            <p class="provisions-text">
+                 泰王国饕餮之后，无所不食的美食女神，确保后勤永远顺畅的终极战略。
             </p>
-            <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
+            <button class="return-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
     </div>
 
-    <div id="detail-empress" class="screen hidden">
-        <div class="detail-card">
-            <h2 class="character-title">女帝：失落的血脉</h2>
-            <p class="character-name">Nana (李娜娜)</p>
-            <span class="character-codename">The Shapeshifter, INFJ | 诞辰: 2001年4月12日</span>
-            <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
-            <p class="inscription-text">
-                一位流淌着纯正皇室血脉的女帝，其DNA源自古都西安四千年的传承。她是一位天生的“倡导者”，拥有洞察人心的力量和“泪水”这一最致命的情感武器。她的旅程充满了矛盾：她渴望家庭的温暖，却又享受独处的宁静；她拥有看穿谎言的直觉，却又容易陷入自我怀疑的迷雾。她是从INFP“疗愈者”蜕变为INFJ“女帝”的完美典范——为保护自己最纯粹的心，而披上了坚不可摧的龙鳞。作为一名“变形者”，她能化身万千，演绎众生，是王朝安插在凡人世界中最完美的间谍与大使。
+    <div id="profile-empress" class="view-screen inactive">
+        <div class="profile-card">
+            <h2 class="member-main-title">女帝: 王朝之心</h2> <p class="member-formal-name">Nana (李娜娜)</p>
+            <span class="member-designation">塑形者与启示者 (Shapeshifter & Inspirer), INFJ | 诞辰: 2001年4月12日</span>
+            <h3 class="scroll-title">血脉铭文</h3>
+            <p class="scroll-text">
+                流淌古都西安千年血脉，王朝的“灵魂(Why)”。她是愿景、未来与意义之源，是罗盘与启示者。以深邃直觉与同理心指引方向，联结并启发内心，定义我们为何而战。曾以坚不可摧的龙鳞保护内心，如今在“家”的温暖中绽放光芒。作为“变形者”，能化身万千，是王朝的完美大使与继承人的导师。我们为她无比自豪。
             </p>
-            <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
-            <p class="provision-text">
-                她对水果食与甜点充满热爱，并且极其擅长烹饪各式面条。然而，她唯一的致命弱点，便是那令她生理不适的香菜。
+            <h3 class="scroll-title">圣餐</h3>
+            <p class="provisions-text">
+                热爱水果甜点，擅烹面食。唯一致命弱点：香菜。
             </p>
-            <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
+            <button class="return-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
     </div>
 
-    <div id="detail-sorceress" class="screen hidden">
-        <div class="detail-card">
-            <h2 class="character-title">公主：冰霜法师</h2>
-            <p class="character-name">Reina Leelaporn (玲奈 李)</p>
-            <span class="character-codename">Control Mage | 诞辰: 2014年10月3日</span>
-            <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
-            <p class="inscription-text">
-                第一顺位继承人，未来的魔法军团统帅。她生来就拥有 <strong>“天赋(Gifted)”</strong> 级别的 <strong>IQ</strong> 与 <strong>EQ</strong>。她选择了“王昭君”的道路——一位用冰雪风暴与毁灭性力量掌控战场的凛冽法师。这并非“辅助者”的选择，而是“毁灭者”的道路。作为一位聪慧善良的姐姐，她总是运用她的魔法力量，守护着自己的妹妹。
+    <div id="profile-reina" class="view-screen inactive"> <div class="profile-card">
+            <h2 class="member-main-title">公主: 理想守护者</h2> <p class="member-formal-name">Reina Leelaporn (玲奈 李)</p>
+            <span class="member-designation">调停者 (Mediator), INFP | 诞辰: 2014年10月3日</span> <h3 class="scroll-title">血脉铭文</h3>
+            <p class="scroll-text">
+                第一顺位继承人，未来王朝的“心脏”。生来拥有 <strong>“天赋”</strong> 级别的 <strong>IQ</strong> 与 <strong>EQ</strong>。她是“理想守护者”，以深邃的情感与强大的内在价值（Fi）为根基，洞察美好的可能性（Ne）。她将成为王朝未来的道德罗盘与文化核心，是妹妹（恵理奈）行动的指引与良知。与姐姐（娜娜）心灵相通。
             </p>
-            <h3 class="inscription-title">宝库 (สมบัติ)</h3>
-            <p class="provision-text">
-                泡泡玛特(Pop Mart)……是她钟爱的神圣盲盒。每一次开启，都是在为她的玩偶军团召唤一位新的“仆从”。
+             <h3 class="scroll-title">宝库</h3>
+            <p class="treasury-text"> 泡泡玛特盲盒是她的圣物，为玩偶军团召唤仆从。
             </p>
-            <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
-            <p class="provision-text">
-                面条，是她的法力源泉。无论是拉面、乌冬还是意大利面，每一根面条都是她施展强大冰霜魔法所需的法力。
+            <h3 class="scroll-title">圣餐</h3>
+            <p class="provisions-text">
+                 面条是法力源泉，无论是何种面条。
             </p>
-            <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
+            <button class="return-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
     </div>
 
-    <div id="detail-oracle" class="screen hidden">
-        <div class="detail-card">
-            <h2 class="character-title">公主：神谕者</h2>
-            <p class="character-name">Erina Leelaporn (恵理奈 李)</p>
-            <span class="character-codename">The Acrobat Oracle | 诞辰: 2017年2月10日</span>
-            <h3 class="inscription-title">血脉铭文 (จารึก)</h3>
-            <p class="inscription-text">
-                王朝的财政大臣与皇家神谕官。她掌握着帝国的财政命脉，凭借 <strong>“天赋(Gifted)”</strong> 级的 <strong>IQ</strong> 与 <strong>“语言能力(Language Ability)”</strong>，能洞悉隐藏的“价值”，并极度热爱金钱。她能将“塔罗牌”转变为“黄金”。她的味蕾经过千挑万选，拒绝除“鸡肉”之外的一切肉类。只要一有空闲，她便会将过剩的精力用于翻筋斗——她是完美风暴的化身，也是从不出错的神谕者。
+    <div id="profile-erina" class="view-screen inactive"> <div class="profile-card">
+            <h2 class="member-main-title">公主: 繁荣筑造者</h2> <p class="member-formal-name">Erina Leelaporn (恵理奈 李)</p>
+            <span class="member-designation">指挥官 (Commander), ENTJ | 诞辰: 2017年2月10日</span> <h3 class="scroll-title">血脉铭文</h3>
+            <p class="scroll-text">
+                王朝未来的“大脑”与财政支柱。天生拥有掌控与创造结果的驱动力（Te），凭借 <strong>“天赋”</strong> 级的 <strong>IQ</strong> 与卓越的<strong>“语言能力”</strong>，以及洞察未来的直觉（Ni）。她将愿景转化为高效的行动计划。内心敏感，以“傲娇”为铠甲（隐藏Fi）。热爱金钱（价值），味蕾挑剔（只爱鸡肉）。她将是推动王朝前进的指挥官。
             </p>
-            <h3 class="inscription-title">宝库 (สมบัติ)</h3>
-            <p class="provision-text">
-                她与姐姐一样喜爱泡泡玛特，并且对卡通“蜡笔小新”情有独钟——这或许正是她那些出人意料行为的灵感来源。
+            <h3 class="scroll-title">宝库</h3>
+            <p class="treasury-text">
+                同样喜爱泡泡玛特，钟情“蜡笔小新”——或许是其行为灵感之源。
             </p>
-            <h3 class="inscription-title">圣餐 (เสบียงโปรด)</h3>
-            <p class="provision-text">
-                她对日式拉面情有独钟，但对食物的品质极为挑剔，即便享用，也只是浅尝辄止。
+            <h3 class="scroll-title">圣餐</h3>
+            <p class="provisions-text">
+                偏爱日式拉面，但对品质极为挑剔。
             </p>
-            <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
+            <button class="return-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
     </div>
-    
-    <div id="detail-journey" class="screen hidden">
-        <div class="detail-card">
-            <h2 class="character-title">第一章：童年之旅</h2>
-            <p class="character-name" style="opacity: 0.9; margin-bottom: 30px;">
-                这不是一份旅行计划，而是我们共同史诗的第一页。哥哥已经草拟了场景，现在，等待着我们的女主角——姐姐，来决定最终的篇章。
+
+    <div id="profile-future" class="view-screen inactive"> <div class="profile-card">
+            <h2 class="member-main-title">未来篇章: 传承与展望</h2>
+            <p class="member-formal-name" style="opacity: 0.9; margin-bottom: 30px;">
+                三川王朝，为永恒而立。我们的目光已投向未来，为了玲奈与恵理奈，以及所有将在这片羽翼下诞生的后代。
             </p>
-            <h3 class="inscription-title">第一天 (10月24日): 欢乐之门</h3>
-            <p class="inscription-text">
-                我们的旅程不始于过去，而始于纯粹的欢乐。杭州乐园将是我们第一站。这一天，只属于三位姐妹的欢笑，没有任何烦恼。
+            <h3 class="scroll-title">奠基基石 (2025年10月26日)</h3>
+            <p class="scroll-text">
+                杭州之行，不仅是地理的汇合，更是灵魂的融合。在相识的第30天，三位一体正式确立，“我们共同对抗世界”的盟约被永久铭刻。过去的奋斗化为新生的基石。
             </p>
-            <h3 class="inscription-title">第二天 (10月25日): 宁静之湖</h3>
-            <p class="inscription-text">
-                我们将漫步于西湖之畔，一个充满诗意与传说的地方。在这里，我们将分享故事，感受祖先土地的宁静。
+             <h3 class="scroll-title">下一里程碑: 圣诞重聚 (2025年12月25日)</h3>
+             <p class="scroll-text">
+                我们翘首以盼女帝首次驾临泰国“大本营”。这将是王朝下一阶段融合与规划的关键时刻，是家人团聚的温暖庆典，亦是为未来共同绘制蓝图的新起点。
+                <br><em>（倒计时启动...）</em>
             </p>
-            <h3 class="inscription-title">第三至五天 (10月26-28日): 女帝的领域</h3>
-            <p class="inscription-text">
-                剩下的时间，将由姐姐全权决定。带我们去探索妳的世界，那些妳所爱的地方，那些妳渴望的美食。我们来到这里，是为了通过妳的眼睛，重新认识这个世界。
+            <h3 class="scroll-title">百年愿景 (>100年)</h3>
+            <p class="scroll-text">
+                我们将倾注心血，培养继承人的天赋与品格，确保三川的理念与力量得以传承。10%的王朝股份为此预留，用以嘉奖忠诚，引入力量，或在适当时机赋予下一代。三川之河将汇入历史，奔向永恒。
             </p>
-            <p style="margin-top: 30px; text-align: center; font-style: italic; opacity: 0.8;">
-                这只是初稿，姐姐。最终的剧本，由妳来谱写。
-            </p>
-            <button class="back-button" onclick="showLobby()">返回王朝大厅</button>
+
+            <button class="return-button" onclick="showLobby()">返回王朝大厅</button>
         </div>
     </div>
+
+    <p class="final-motto">三川一龍</p>
 
     <script>
-        const lobby = document.getElementById('lobby');
-        const details = {
-            'king': document.getElementById('detail-king'),
-            'queen': document.getElementById('detail-queen'),
-            'empress': document.getElementById('detail-empress'),
-            'sorceress': document.getElementById('detail-sorceress'),
-            'oracle': document.getElementById('detail-oracle'),
-            'journey': document.getElementById('detail-journey')
+        const lobbyScreen = document.getElementById('dynasty-lobby'); // Updated ID
+        const profileScreens = { // Updated IDs
+            'king': document.getElementById('profile-king'),
+            'queen': document.getElementById('profile-queen'),
+            'empress': document.getElementById('profile-empress'),
+            'reina': document.getElementById('profile-reina'),
+            'erina': document.getElementById('profile-erina'),
+            'future': document.getElementById('profile-future')
         };
 
-        function showDetail(character) {
-            lobby.classList.add('hidden');
-            details[character].classList.remove('hidden');
+        function showProfile(profileId) { // Updated function name
+             if (lobbyScreen) {
+                 lobbyScreen.classList.add('inactive'); // Use inactive class
+             }
+             // Hide all profile screens first
+            for (const key in profileScreens) {
+                 if (profileScreens[key]) {
+                     profileScreens[key].classList.add('inactive');
+                 }
+            }
+             // Show the selected profile screen
+             if (profileScreens[profileId]) {
+                 profileScreens[profileId].classList.remove('inactive');
+             }
+             window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
         }
 
         function showLobby() {
-            const visibleDetail = document.querySelector('.screen:not(.hidden):not(#lobby)');
-            if (visibleDetail) {
-                visibleDetail.classList.add('hidden');
+            // Hide all profile screens
+            for (const key in profileScreens) {
+                 if (profileScreens[key]) {
+                     profileScreens[key].classList.add('inactive');
+                 }
             }
-            lobby.classList.remove('hidden');
+             // Show the lobby screen
+             if (lobbyScreen) {
+                lobbyScreen.classList.remove('inactive');
+             }
+              window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top
         }
+
+         // Initial setup to ensure only lobby is visible
+         document.addEventListener('DOMContentLoaded', () => {
+             showLobby(); // Call showLobby on load to set initial state
+         });
     </script>
 
 </body>
