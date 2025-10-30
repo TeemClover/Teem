@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title class="text-en">Narin Leelaporn: The San Chuan Architect</title>
+    <title class="text-en">NARIN LEELAPORN: THE SAN CHUAN ARCHITECT</title>
     <title class="text-zh" style="display: none;">李娜霖: 三川王朝战略架构师</title>
-    <title class="text-th" style="display: none;">นรินทร์ ลีลาภรณ์: สถาปนิกแห่งซานชวน</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Microsoft YaHei', 'Sukhumvit Set', sans-serif;
-            background-color: #000000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Microsoft YaHei', sans-serif;
+            background-color: #000000; /* Pure Black */
             color: #f0f0f0;
             line-height: 1.6;
             margin: 0;
@@ -28,12 +27,13 @@
             overflow: hidden;
             border: 1px solid #333333;
         }
+        /* ... ส่วน CSS อื่นๆ ที่ไม่ได้มีการเปลี่ยนแปลงมาก ... */
         .toggle-switch {
             text-align: right;
             padding: 15px 30px 0 0;
         }
         .toggle-switch button {
-            background-color: #ffc107; 
+            background-color: #ffc107; /* Gold */
             color: #000000;
             border: none;
             padding: 8px 15px;
@@ -52,7 +52,7 @@
             margin: 0;
             font-size: 3em;
             font-weight: 900;
-            color: #ffc107;
+            color: #ffc107; /* Gold */
         }
         .header h2 {
             margin: 5px 0 0;
@@ -60,19 +60,27 @@
             font-weight: 500;
             color: #aaaaaa;
         }
+        
+        /* 1. แก้ไขให้ Responsive ตาม Aspect Ratio */
         .photo-area {
             position: relative;
-            height: 400px;
+            width: 100%;
+            /* ลบ fixed height ออก */
+            padding-bottom: 50%; /* กำหนด Aspect Ratio เป็น 2:1 (ความสูง 50% ของความกว้าง) */
             overflow: hidden;
             border-bottom: 5px solid #ffc107;
         }
         .photo-area img {
+            position: absolute; /* ให้รูปอยู่ข้างใน div ที่มี padding-bottom */
+            top: 0;
+            left: 0;
             width: 100%;
-            height: auto;
+            height: 100%;
             object-fit: cover;
             filter: brightness(0.6);
-            min-height: 400px;
+            /* ลบ min-height: 400px; ออก */
         }
+
         .photo-caption {
             position: absolute;
             bottom: 0;
@@ -89,7 +97,7 @@
         }
         .content-grid {
             display: grid;
-            grid-template-columns: 1fr 2fr; 
+            grid-template-columns: 1fr 2fr;
             gap: 30px;
         }
         @media (max-width: 767px) {
@@ -131,9 +139,11 @@
             width: 1em;
             margin-left: -1em;
         }
+        /* 2. ปรับสไตล์ของ Strong Tag */
         strong {
             color: #fff;
-            font-weight: 600;
+            font-weight: 800; /* ทำให้ตัวหนาขึ้น */
+            text-shadow: 0 0 5px rgba(255, 193, 7, 0.5), 0 0 10px rgba(255, 193, 7, 0.2); /* เพิ่มเงาให้ดูมีสไตล์ทองๆ */
         }
         .highlight {
             color: #ffd700;
@@ -172,24 +182,20 @@
         <div class="toggle-switch">
             <button onclick="setLanguage('en')">English</button>
             <button onclick="setLanguage('zh')">中文</button>
-            <button onclick="setLanguage('th')">ไทย</button>
         </div>
 
         <div class="header">
             <h1 class="text-en">NARIN LEELAPORN</h1>
             <h1 class="text-zh" style="display: none;">李娜霖</h1>
-            <h1 class="text-th" style="display: none;">นรินทร์ ลีลาภรณ์</h1>
             <h2 class="text-en">Executive Officer, Strategic Systems Architect & Consultant (INTP)</h2>
             <h2 class="text-zh" style="display: none;">首席执行官, 战略系统架构师与顾问 (INTP)</h2>
-            <h2 class="text-th" style="display: none;">ผู้บริหาร, สถาปนิกและที่ปรึกษาระบบยุทธศาสตร์ (INTP)</h2>
         </div>
 
         <div class="photo-area">
-            <img src="IMG_2712.jpeg" alt="20,000 Audience Photo">
+            <img src="IMG_2712.jpg" alt="20,000 Audience Photo"> 
             <div class="photo-caption">
                 <span class="text-en">**The Genesis of Why:** Addressing a 20,000-person audience at age 20. This moment established the core philosophy that true value comes before profit.</span>
                 <span class="text-zh" style="display: none;">**起源的瞬间：** 20岁时对两万听众演讲。这个时刻确立了核心哲学：真正的价值先于利润。</span>
-                <span class="text-th" style="display: none;">**จุดกำเนิดแห่งปรัชญา:** การกล่าวสุนทรพจน์ต่อหน้าผู้ฟัง 20,000 คนเมื่ออายุ 20 ปี ซึ่งเป็นจุดเริ่มต้นของปรัชญาที่ว่าคุณค่าที่แท้จริงต้องมาก่อนผลกำไร</span>
             </div>
         </div>
 
@@ -200,96 +206,102 @@
                     
                     <div class="section-title text-en">I. The Power Stack & Philosophy</div>
                     <div class="section-title text-zh" style="display: none;">I. 核心能力与哲学</div>
-                    <div class="section-title text-th" style="display: none;">I. ขุมพลังและปรัชญา</div>
                     
                     <div class="box">
-                        <p class="text-en">My mission is to **eliminate the variable of human dishonesty**—a driving force born from contractual betrayal. I construct systems where <span class="highlight">success is guaranteed</span> by enforcing ethical conduct and elevating probability to the highest level.</p>
-                        <p class="text-zh" style="display: none;">我的使命是**消除人性中的欺骗变量**—这个动力源于合同欺骗。我通过强制执行道德规范来构建系统，保障成功，并将成功概率提升到最高水平。</p>
-                        <p class="text-th" style="display: none;">พันธกิจของข้าพเจ้าคือ **การกำจัดตัวแปรแห่งความไม่ซื่อสัตย์ของมนุษย์**—แรงผลักดันที่เกิดจากการผิดสัญญานี่เอง ข้าพเจ้าสร้างระบบที่รับประกันความสำเร็จโดยการบังคับใช้คุณธรรม ยกระดับโอกาสสำเร็จสู่ระดับสูงสุด</p>
+                        <p class="text-en">My mission is to **eliminate the variable of human dishonesty**—a driving force born from contractual betrayal. I construct systems where success is guaranteed by enforcing ethical conduct and elevating probability to the highest level.</p>
+                        <p class="text-zh" style="display: none;">我的使命是**消除人性中的欺骗变量**，这个动力源于合同欺骗。我通过强制执行道德规范来构建系统，保障成功，并将成功概率提升到最高水平。</p>
                     </div>
-
                     <div class="section-title text-en">II. INTP Logic & Strategic Capital</div>
                     <div class="section-title text-zh" style="display: none;">II. INTP 逻辑与战略资本</div>
-                    <div class="section-title text-th" style="display: none;">II. ตรรกะ INTP และทุนทางกลยุทธ์</div>
                     
                     <ul>
-                        <li class="text-en"><strong>The Anti-Fraud Architect:</strong> My mission is combining **AI and Law** to protect partners from legal fraud and ensure contractual certainty.</li>
-                        <li class="text-zh" style="display: none;"><strong>反欺诈架构师：</strong> 我的使命是结合**AI与法律**来防止欺诈，保障合同的确定性。</li>
-                        <li class="text-th" style="display: none;"><strong>สถาปนิกต่อต้านการโกง:</strong> ภารกิจของข้าพเจ้าคือการรวม **AI และกฎหมาย** เพื่อป้องกันการโกงและบังคับใช้ความแน่นอนของสัญญา</li>
+                        <li class="text-en"><strong>Anti-Fraud Architect:</strong> My focus is combining **AI and Law** to protect partners from legal fraud. This mission stems from the understanding that past failures were due to dishonesty, not flawed planning.</li>
+                        <li class="text-zh" style="display: none;"><strong>反欺诈架构师：</strong> 我的重点是结合**AI与法律**来防止欺诈。这项使命源于深刻理解：过去的失败是由于不诚信而非计划错误。</li>
 
                         <li class="text-en"><strong>Logic as Weaponry:</strong> Thailand's **#1 National Math Ranking** (perfect score). The ability to rapidly decompose and solve complex, high-variable problems in real-time.</li>
                         <li class="text-zh" style="display: none;"><strong>逻辑武器化：</strong> 泰国全国数学测试第一名和满分。保障了能够快速分解和解决高度复杂问题的高超能力。</li>
-                        <li class="text-th" style="display: none;"><strong>อาวุธทางตรรกะ:</strong> **อันดับ 1 และคะแนนเต็มระดับประเทศ ในการสอบคณิตศาสตร์** คือความสามารถในการแยกส่วนและแก้ปัญหาซับซ้อนที่มีตัวแปรสูงได้แบบเรียลไทม์</li>
 
-                        <li class="text-en"><strong>World-Class Strategy:</strong> **World Tournament Finalist** in the complex strategy game, *Flesh and Blood*. This skill is vital for executing optimal plans under pressure and converting randomness into high-probability victories.</li>
-                        <li class="text-zh" style="display: none;"><strong>世界级战略：</strong> 复杂战略游戏《Flesh and Blood》**全球总决赛选手**。此技能对于在高压下执行最佳方案，并将随机性转化为高概率胜利至关重要。</li>
-                        <li class="text-th" style="display: none;"><strong>กลยุทธ์ระดับโลก:</strong> **ผู้เข้าชิง World Tournament** ในเกมวางแผน *Flesh and Blood* คือทักษะสำคัญในการเปลี่ยนความไม่แน่นอนให้เป็นชัยชนะที่มีโอกาสสูง</li>
+                        <li class="text-en"><strong>World-Class Strategy:</strong> **World Tournament Finalist** in the complex strategy game, *Flesh and Blood*. This skill is vital for converting randomness into high-probability victories.</li>
+                        <li class="text-zh" style="display: none;"><strong>世界级战略：</strong> 复杂战略游戏《Flesh and Blood》**全球总决赛选手**。此能力对于将随机性转化为高概率胜利至关สำคัญ。</li>
                     </ul>
+                    
+                    <div class="section-title text-en">III. Language & Expertise</div>
+                    <div class="section-title text-zh" style="display: none;">III. 语言与专长</div>
+                    
+                    <ul>
+                        <li class="text-en"><strong>AI Language Expert:</strong> Proficient in AI Language Processing—able to read and write any language via text.</li>
+                        <li class="text-zh" style="display: none;"><strong>AI语言专家：</strong> 擅长AI语言处理—能够通过文本读写任何语言。</li>
+                        <li class="text-en"><strong>Polyglot Communications:</strong> Fluent in Thai (Native), English (Business), Basic Japanese, and Foundational Chinese.</li>
+                        <li class="text-zh" style="display: none;"><strong>多语言沟通：</strong> 泰语（母语）、英语（商务级）、基础日语/中文。</li>
+                        <li class="text-en"><strong>Global Connector:</strong> Possesses a strong network across China, Japan, the US, and Hong Kong.</li>
+                        <li class="text-zh" style="display: none;"><strong>全球连接者：</strong> 拥有强大的中国、日本、美国和香港商业人脉网络。</li>
+                    </ul>
+
+                     <div class="section-title text-en">V. Education & Certifications</div>
+                    <div class="section-title text-zh" style="display: none;">V. 教育与认证</div>
+                    
+                    <div class="box">
+                        <div class="experience-title text-en">Law (LL.B.) - Sripatum University (In Progress)</div>
+                        <div class="experience-title text-zh" style="display: none;">法学学士 (LL.B.) - 斯巴顿大学 (在读)</div>
+                        <p class="text-en">**Mission-Driven Study** focused on combining AI and legal knowledge to create enforceable contracts.</p>
+                        <p class="text-zh" style="display: none;">**使命驱动的学习**，专注于结合AI和法律知识来创建可强制执行的合同。</p>
+                        
+                        <div class="experience-title text-en">Rhetoric & Communication - Chulalongkorn University</div>
+                        <div class="experience-title text-zh" style="display: none;">修辞与传播学 - 朱拉隆功大学</div>
+                        
+                        <div class="experience-title text-en">Specialized Certifications</div>
+                        <div class="experience-title text-zh" style="display: none;">专业认证课程</div>
+                        <p class="text-en">Alibaba Core Value Certification, Digital Marketing (DEF4), Business Connection Development (The Connext 1), Story Telling (The Story 4), Licensed Insurance Agent, Investment Experience.</p>
+                        <p class="text-zh" style="display: none;">阿里巴巴核心价值观认证、数字营销 (DEF4)、商业连接发展 (The Connext 1)、品牌故事叙述 (The Story 4)、保险代理人执照、投资经验。</p>
+                    </div>
+
                 </div>
                 
                 <div class="main-section">
-                    <div class="section-title text-en">III. Executive Experience & Legacy</div>
-                    <div class="section-title text-zh" style="display: none;">III. 高管经验与传承</div>
-                    <div class="section-title text-th" style="display: none;">III. ประสบการณ์ระดับบริหารและมรดก</div>
+                    <div class="section-title text-en">IV. Executive History & Legacy</div>
+                    <div class="section-title text-zh" style="display: none;">IV. 高管履历与传承</div>
 
                     <div class="experience-detail">
-                        <div class="experience-title text-en">NUSASIRI PLC. (Stock Market Listed) - [2021-2022]</div>
+                        <div class="experience-title text-en">Nusasiri PLC. (Stock Market Listed) - [2021-2022]</div>
                         <div class="experience-title text-zh" style="display: none;">泰国上市公司 Nusasiri - [2021-2022]</div>
-                        <div class="experience-title text-th" style="display: none;">บริษัท นุสาสิริ จำกัด (มหาชน) - [2564-2565]</div>
-                        <div class="subtitle text-en">General Manager (GM) & Owner's Strategic Liaison</div>
+                        <div class="subtitle text-en">General Manager & Owner's Strategic Liaison (GM)</div>
                         <div class="subtitle text-zh" style: "display: none;">总经理与所有者战略联络官</div>
-                        <div class="subtitle text-th" style: "display: none;">ผู้จัดการทั่วไปและผู้ประสานงานกลยุทธ์ติดเจ้าของ</div>
                         
-                        <p class="text-en"><strong>Mission: First Mover Advantage.</strong> Led the complex market entry strategy for the first major public company to launch the **Cannabis, Wellness, and Tourism platform** in Thailand. Served as **Secretary-General of the Political Party** leveraging expertise in legislative work.</p>
-                        <p class="text-zh" style: "display: none;"><strong>任务：先发优势。</strong> 领导泰国首个大型上市公司推出**大麻、健康与旅游平台**的高度复杂的市场进入战略 并担任**政党秘书长**，利用立法工作专长。</p>
-                        <p class="text-th" style="display: none;"><strong>ภารกิจ: ผู้นำตลาดรายแรก.</strong> นำกลยุทธ์การเปิดตลาดที่ซับซ้อนสำหรับบริษัทมหาชนรายแรกที่เปิดตัว **แพลตฟอร์มกัญชา เวลเนส และการท่องเที่ยว** ในประเทศไทย ดำรงตำแหน่ง **เลขาธิการพรรคการเมือง** ใช้ความเชี่ยวชาญงานสภา</p>
+                        <p class="text-en"><strong>Mission: First Mover Advantage.</strong> Led the highly complex market entry for the **Cannabis, Wellness, and Tourism platform**. Managed multiple sectors (hospital, skin care, theme park) and provided strategic support during high-level political engagement as **Secretary-General of the Political Party**.</p>
+                        <p class="text-zh" style="display: none;"><strong>任务：先发优势。</strong> 领导泰国首个大型上市公司推出**大麻、健康与旅游平台**的高度复杂的市场进入战略。统筹多领域（医院、护肤品、主题公园），并以**政党秘书长**身份提供高级别政治战略支持。</p>
                     </div>
 
                     <div class="experience-detail">
-                        <div class="experience-title text-en">CLOVER GROUP (Founder) - [2007-Present]</div>
-                        <div class="experience-title text-zh" style="display: none;">CLOVER GROUP (创始人) - [2007-至今]</div>
-                        <div class="experience-title text-th" style="display: none;">CLOVER GROUP (ผู้ก่อตั้ง) - [2550-ปัจจุบัน]</div>
-                        <div class="subtitle text-en">Founder & Strategic Disruption Architect</div>
-                        <div class="subtitle text-zh" style: "display: none;">创始人与战略颠覆架构师</div>
-                        <div class="subtitle text-th" style: "display: none;">ผู้ก่อตั้งและสถาปนิกการปฏิวัติเชิงกลยุทธ์</div>
+                        <div class="experience-title text-en">INDEPENDENT CONSULTING & TECH VENTURES (Game Seminars) - [2021-Present]</div>
+                        <div class="experience-title text-zh" style="display: none;">独立咨询与技术投资 (游戏研讨会) - [2021-至今]</div>
+                        <div class="subtitle text-en">General Manager – Technology / Consultant</div>
+                        <div class="subtitle text-zh" style: "display: none;">技术总经理 / 独立顾问</div>
                         
-                        <p class="text-en"><strong>Legacy: The Multimedia Revolution.</strong> Pioneered the conversion of traditional communication into **advanced Multimedia production and continuous online conferencing**, establishing the <span class="highlight">largest and fastest-growing MLM group in Thailand</span>. Achieved **retirement at age 25** with sustained passive income.</p>
-                        <p class="text-zh" style="display: none;"><strong>传承：多媒体革命。</strong> 首创将传统沟通方式转换为**先进多媒体制作与持续在线会议**，建立了<span class="highlight">泰国规模最大、增长最快的MLM团队</span>。并在25岁时实现提前退休，拥有持续被动收入。</p>
-                        <p class="text-th" style="display: none;"><strong>มรดก: การปฏิวัติมัลติมีเดีย.</strong> บุกเบิกการเปลี่ยนรูปแบบการสื่อสารดั้งเดิม สู่ **การผลิตมัลติมีเดียขั้นสูงและการประชุมออนไลน์ต่อเนื่อง** ก่อตั้ง <span class="highlight">กลุ่ม MLM ที่ใหญ่และเติบโตเร็วที่สุดในประเทศไทย</span> และนำไปสู่การ **เกษียณตั้งแต่อายุ 25 ปี** พร้อมรายได้ต่อเนื่อง</p>
+                        <p class="text-en">Consultant role with In-Tech Steel, specializing in **Digital Optimization**. Founded a company focused on training Pro Players and organizing board game seminars to teach business strategy. *This venture was later closed due to subsequent COVID-19 outbreaks.*</p>
+                        <p class="text-zh" style="display: none;">担任In-Tech Steel的顾问，专注于**数字化优化**。并创立了一家专注于培训职业玩家和组织商业棋盘游戏研讨会的公司。*该企业因后续COVID-19爆发而关闭*。</p>
+                        <p class="text-en"><strong>Academic Engagement:</strong> Served as a special lecturer on **AI, Tech, Gaming, and Livestreaming** at Assumption College and Kasetsart University. Provided technology consulting to government community projects.</p>
+                        <p class="text-zh" style="display: none;">**学术参与：** 曾任职于易三仓学院和农业大学，讲授**AI、技术、游戏和直播**等课程。为政府社区项目提供技术咨询。</p>
                     </div>
 
                     <div class="experience-detail">
                         <div class="experience-title text-en">LAZADA THAILAND (Youpik) - [2019-2021]</div>
                         <div class="experience-title text-zh" style="display: none;">泰国 Lazada (Youpik) - [2019-2021]</div>
-                        <div class="experience-title text-th" style="display: none;">ลาซาด้า ประเทศไทย - [2562-2564]</div>
-                        <div class="subtitle text-en">VP of Training and Development (Alibaba Cultural Architect)</div>
-                        <div class="subtitle text-zh" style: "display: none;">培训与发展副总裁 (阿里巴巴文化架构师)</div>
-                        <div class="subtitle text-th" style: "display: none;">รองประธานฝ่ายฝึกอบรมและพัฒนา (สถาปนิกวัฒนธรรมอาลีบาบา)</div>
-                        <p class="text-en">Rigorous adherence to and embodiment of the **Alibaba Core Values**, leading to top-tier performance evaluation. <a href="IMG_1997.jpeg" target="_blank">[View Alibaba Core Values Document]</a></p>
-                        <p class="text-zh" style="display: none;">严格遵守并践行**阿里巴巴核心价值观**，绩效评估达到顶尖水平。<a href="IMG_1997.jpeg" target="_blank">[查看阿里巴巴核心价值观文件]</a></p>
-                        <p class="text-th" style="display: none;">การยึดมั่นและเป็นแบบอย่างใน **ค่านิยมหลักของ Alibaba** อย่างเคร่งครัด จนได้รับการประเมินผลงานระดับสูงสุด <a href="IMG_1997.jpeg" target="_blank">[ดูเอกสารค่านิยมหลักของ Alibaba]</a></p>
+                        <div class="subtitle text-en">VP of Training and Development</div>
+                        <div class="subtitle text-zh" style: "display: none;">培训与发展副总裁</div>
+                        <p class="text-en">Achieved rapid promotion by rigorously embodying the **Alibaba Core Values**, demonstrating top-tier performance and deep cultural internalization.</p>
+                        <p class="text-zh" style="display: none;">通过严格遵守**阿里巴巴核心价值观**实现快速晋升，展现了顶尖绩效和深厚的文化内化。</p>
                     </div>
 
                     <div class="experience-detail">
-                        <div class="experience-title text-en">IN-TECH STEEL & CONSULTING - [2021-Present]</div>
-                        <div class="experience-title text-zh" style="display: none;">In-Tech Steel 与咨询 - [2021-至今]</div>
-                        <div class="experience-title text-th" style="display: none;">In-Tech Steel และงานที่ปรึกษา - [2564-ปัจจุบัน]</div>
-                        <div class="subtitle text-en">General Manager – Technology / Independent Consultant</div>
-                        <div class="subtitle text-zh" style: "display: none;">技术总经理 / 独立顾问</div>
-                        <div class="subtitle text-th" style: "display: none;">ผู้จัดการทั่วไปฝ่ายเทคโนโลยี / ที่ปรึกษาอิสระ</div>
-                        <p class="text-en">Specialized in **Digital Optimization** and implementing customized business board game seminars to teach essential business skills.</p>
-                        <p class="text-zh" style="display: none;">专注于**数字化优化**和实施定制化商业棋盘游戏研讨会来教授核心商业技能。</p>
-                        <p class="text-th" style="display: none;">เชี่ยวชาญในการ **เพิ่มประสิทธิภาพเชิงดิจิทัล** และการจัดสัมมนาโดยใช้บอร์ดเกมที่ออกแบบมาเพื่อสอนทักษะทางธุรกิจ </p>
+                        <div class="experience-title text-en">CLOVER GROUP (Founder) - [2007-2019]</div>
+                        <div class="experience-title text-zh" style="display: none;">CLOVER GROUP (创始人) - [2007-2019]</div>
+                        <div class="subtitle text-en">Founder & Strategic Disruption Architect</div>
+                        <div class="subtitle text-zh" style: "display: none;">创始人与战略颠覆架构师</div>
+                        
+                        <p class="text-en"><strong>Legacy: The Multimedia Revolution.</strong> Pioneered the conversion of traditional communication into **advanced Multimedia production and continuous online conferencing**, establishing the <span class="highlight">largest and fastest-growing MLM group in Thailand</span>. Achieved **retirement at age 25**.</p>
+                        <p class="text-zh" style="display: none;"><strong>传承：多媒体革命。</strong> 首创将传统沟通方式转换为**先进多媒体制作与持续在线会议**，建立了<span class="highlight">泰国规模最大、增长最快的MLM团队</span>。并在**25岁实现退休**。</p>
                     </div>
 
-                    <div class="experience-detail">
-                        <div class="experience-title text-en">National TV Guest Speaker - [2020]</div>
-                        <div class="experience-title text-zh" style="display: none;">全国电视嘉宾演讲 - [2020]</div>
-                        <div class="experience-title text-th" style="display: none;">วิทยากรรับเชิญทางโทรทัศน์ระดับประเทศ - [2563]</div>
-                         <p class="text-en">Shared expertise on business models and success strategies across national media. <a href="IMG_1446.jpeg" target="_blank">[View National Broadcast Proof]</a></p>
-                        <p class="text-zh" style="display: none;">在全国媒体分享商业模式和成功战略。<a href="IMG_1446.jpeg" target="_blank">[查看全国广播证明]</a></p>
-                        <p class="text-th" style="display: none;">แบ่งปันความเชี่ยวชาญด้านรูปแบบธุรกิจและกลยุทธ์ความสำเร็จผ่านสื่อระดับประเทศ <a href="IMG_1446.jpeg" target="_blank">[ดูหลักฐานการออกอากาศระดับประเทศ]</a></p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -297,19 +309,19 @@
 
     <script>
         function setLanguage(lang) {
-            ['en', 'zh', 'th'].forEach(l => {
+            ['en', 'zh'].forEach(l => {https://www.myclover.com/narin
                 const displayStyle = (l === lang) ? 'block' : 'none';
                 document.querySelectorAll('.text-' + l).forEach(el => {
-                    // Check if parent is a list item or a subtitle/title, which should be inline/block as needed
+                    // Check if the element should generally be inline (like inside <li> or <h2>)
                     const parentTag = el.parentElement.tagName;
                     const isInlineContext = parentTag === 'LI' || el.parentElement.classList.contains('subtitle') || el.parentElement.classList.contains('experience-title') || el.parentElement.classList.contains('photo-caption');
 
                     if (isInlineContext) {
-                         el.style.display = (l === lang) ? 'inline' : 'none';
+                            el.style.display = (l === lang) ? 'inline' : 'none';
                     } else {
-                        el.style.display = displayStyle; // Default to block
+                        el.style.display = displayStyle;
                     }
-                    if (el.tagName === 'P' || el.tagName === 'DIV' || el.tagName === 'UL') {
+                    if (el.tagName === 'P' || el.tagName === 'DIV' || el.tagName === 'UL' || el.tagName === 'H1' || el.tagName === 'H2') {
                         el.style.display = displayStyle;
                     }
                 });
