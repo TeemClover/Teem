@@ -1,1 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The San Chuan Executive Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a2e; /* Dark theme for 'Cool' aesthetic */
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px 0;
+            background: #2a2a4a;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #4a4a75;
+        }
+        .toggle-switch {
+            text-align: right;
+            padding: 15px 30px 0 0;
+        }
+        .toggle-switch button {
+            background-color: #ffab00; /* Gold Accent */
+            color: #1a1a2e;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .toggle-switch button:hover {
+            background-color: #ffc107;
+        }
+        .header {
+            background-color: #0d47a1; /* Deep Blue Accent */
+            padding: 20px 40px;
+            text-align: left;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            font-weight: 800;
+        }
+        .header h2 {
+            margin: 5px 0 0;
+            font-size: 1.2em;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+        .photo-area {
+            position: relative;
+            height: 350px;
+            overflow: hidden;
+        }
+        .photo-area img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 40px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 0.9em;
+            text-align: center;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section-title {
+            color: #ffab00; /* Gold Accent */
+            font-size: 1.6em;
+            border-bottom: 2px solid #4a4a75;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .achievement-box {
+            background-color: #3b3b64;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #0d47a1;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 12px;
+            padding-left: 25px;
+            position: relative;
+            color: #ccc;
+        }
+        ul li::before {
+            content: '»';
+            color: #ffab00;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        strong {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toggle-switch">
+            <button onclick="setLanguage('en')">English</button>
+            <button onclick="setLanguage('zh')">中文</button>
+        </div>
 
+        <div class="header">
+            <h1 class="text-en">NARIN LEELAPORN</h1>
+            <h1 class="text-zh" style="display: none;">李娜霖</h1>
+            <h2 class="text-en">Executive Officer & Strategic Systems Architect (INTP)</h2>
+            <h2 class="text-zh" style="display: none;">首席执行官与战略系统设计师 (INTP)</h2>
+        </div>
+
+        <div class="photo-area">
+            <img src="IMAGE_URL_OF_THE_20K_AUDIENCE_PHOTO_HERE" alt="20,000 Audience Photo">
+            <div class="photo-caption text-en">Speaking on the importance of 'Why' to a 20,000-person audience at age 20. The genesis of our core philosophy.</div>
+            <div class="photo-caption text-zh" style="display: none;">20岁时对两万听众演讲“为什么”的重要性。这是我们核心哲学的起源。</div>
+        </div>
+
+        <div class="content">
+            <div class="section-title text-en">I. Core Mission: The Why-Driven Empire</div>
+            <div class="section-title text-zh" style="display: none;">I. 核心使命：为什么驱动的王朝</div>
+            
+            <div class="achievement-box">
+                <p class="text-en">My mission is to **eliminate the variable of dishonesty** and build systems where success is guaranteed. My commitment is to elevate the success rate of every partnership to the highest possible probability, using logic to enforce ethical conduct.</p>
+                <p class="text-zh" style="display: none;">我的使命是**消除人性中的欺骗变量**，并建立一个能够保障成功的系统。我承诺利用逻辑来强制执行道德，将每个合作的成功率提升至最接近100%的水平。</p>
+            </div>
+
+            <div class="section-title text-en">II. Strategic Capital: The INTP's Power Stack</div>
+            <div class="section-title text-zh" style="display: none;">II. 战略资本：INTP的能力集合</div>
+            <ul>
+                <li class="text-en"><strong>Logic as Weaponry:</strong> Achieved Thailand's **#1 National Math Ranking** and perfect score, demonstrating the ability to rapidly decompose and solve complex, high-variable problems in real-time.</li>
+                <li class="text-zh" style="display: none;"><strong>逻辑武器化：</strong> 获得泰国全国数学测试第一名和满分，展现了瞬间分解并实时解决高度复杂问题的高超能力。</li>
+                
+                <li class="text-en"><strong>The Anti-Fraud Architect:</strong> My motivation stems from past business failures caused by **contractual dishonesty, not analytical errors**. This drives my focus on integrating **AI and Law** to enforce legal compliance and protect partners.</li>
+                <li class="text-zh" style="display: none;"><strong>反欺诈架构师：</strong> 我的动力来自过去因**合同欺诈**而非分析错误导致的商业失败。这促使我专注于结合AI与法律来保障合同的遵守，保护合作方。</li>
+
+                <li class="text-en"><strong>World-Class Strategic Execution:</strong> **World Tournament Finalist** in the complex strategy game, Flesh and Blood. This is the skill of executing optimal plays under pressure and converting randomness (drawing cards) into decisive victory, even when faced with opponents' cheating.</li>
+                <li class="text-zh" style="display: none;"><strong>世界级战略执行力：</strong> 复杂战略游戏《Flesh and Blood》全球总决赛选手。这种能力是在高压下执行最佳方案，并将随机性转化为决定性胜利，甚至在面对对手欺诈时依然如此。</li>
+                
+                <li class="text-en"><strong>Ethical Foundation:</strong> Unwavering commitment to **Absolute Transparency** and **Zero Tolerance for Partner Dishonesty**. My core capital is the trust I invest in my partners.</li>
+                <li class="text-zh" style="display: none;"><strong>道德基础：</strong> 坚定不移地坚持**绝对透明**和**对合作方欺骗行为零容忍**。我最核心的资本是我对合作伙伴的信任投入。</li>
+            </ul>
+
+            <div class="section-title text-en">III. Core Expertise & Experience</div>
+            <div class="section-title text-zh" style="display: none;">III. 核心专长与经验</div>
+            <ul>
+                <li class="text-en"><strong>Multi-Sector GM:</strong> Managed complex sectors at Nusasiri Plc. (Wellness, Hospital, Cannabis, Theme Park).</li>
+                <li class="text-zh" style="display: none;"><strong>多领域总经理：</strong> 曾在上市公司 Nusasiri 负责健康、医院、大麻、主题公园等多个复杂领域的统筹管理。</li>
+                <li class="text-en"><strong>AI & Digital Transformation:</strong> Experienced in utilizing AI for strategic market entry and optimizing traditional industry operations (e.g., film production/media).</li>
+                <li class="text-zh" style="display: none;"><strong>AI 与数字化转型：</strong> 具备利用AI进行战略性市场切入和优化传统行业运营（如影视制作/媒体）的实战经验。</li>
+                <li class="text-en"><strong>Polyglot Communications:</strong> Expert in AI Language Processing (Reading/Writing any language via text)—bridging communication gaps across global partnerships.</li>
+                <li class="text-zh" style="display: none;"><strong>多语言沟通能力：</strong> 擅长AI语言处理（通过文本读写任何语言），弥合全球合作的沟通障碍。</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            document.querySelectorAll('.text-en').forEach(el => el.style.display = lang === 'en' ? 'block' : 'none');
+            document.querySelectorAll('.text-zh').forEach(el => el.style.display = lang === 'zh' ? 'block' : 'none');
+            // Special handling for list items that might be mixed
+            document.querySelectorAll('ul li').forEach(el => {
+                const en = el.querySelector('.text-en');
+                const zh = el.querySelector('.text-zh');
+                if (en && zh) {
+                    en.style.display = lang === 'en' ? 'inline' : 'none';
+                    zh.style.display = lang === 'zh' ? 'inline' : 'none';
+                }
+            });
+            document.documentElement.lang = lang;
+        }
+        // Set default language on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage('en');
+        });
+    </script>
+</body>
+</html>
