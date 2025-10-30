@@ -6,10 +6,9 @@
     <title class="text-en">NARIN LEELAPORN: THE SAN CHUAN ARCHITECT</title>
     <title class="text-zh" style="display: none;">李娜霖: 三川王朝战略架构师</title>
     <style>
-        /* Base Styles */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Microsoft YaHei', sans-serif;
-            background-color: #000000;
+            background-color: #000000; /* Pure Black */
             color: #f0f0f0;
             line-height: 1.6;
             margin: 0;
@@ -28,7 +27,21 @@
             overflow: hidden;
             border: 1px solid #333333;
         }
-        /* Header & Photo Area */
+        .toggle-switch {
+            text-align: right;
+            padding: 15px 30px 0 0;
+        }
+        .toggle-switch button {
+            background-color: #ffc107; /* Gold */
+            color: #000000;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
         .header {
             background: #0d0d0d;
             padding: 30px 40px 10px 40px;
@@ -38,7 +51,7 @@
             margin: 0;
             font-size: 3em;
             font-weight: 900;
-            color: #ffc107;
+            color: #ffc107; /* Gold */
         }
         .header h2 {
             margin: 5px 0 0;
@@ -48,16 +61,16 @@
         }
         .photo-area {
             position: relative;
-            height: 400px;
+            height: 450px; /* Increased height to show more audience */
             overflow: hidden;
             border-bottom: 5px solid #ffc107;
         }
         .photo-area img {
             width: 100%;
             height: auto;
-            object-fit: cover;
+            object-fit: contain; /* Changed to 'contain' or 'unset' to show full image */
             filter: brightness(0.6);
-            min-height: 400px;
+            min-height: 450px;
         }
         .photo-caption {
             position: absolute;
@@ -70,7 +83,6 @@
             font-size: 1.1em;
             text-align: center;
         }
-        /* Content Grid */
         .content {
             padding: 40px;
         }
@@ -81,10 +93,9 @@
         }
         @media (max-width: 767px) {
             .content-grid {
-                grid-template-columns: 1fr; /* Stack on Mobile */
+                grid-template-columns: 1fr;
             }
         }
-        /* Section Styling */
         .section-title {
             color: #ffc107;
             font-size: 1.8em;
@@ -120,7 +131,7 @@
             margin-left: -1em;
         }
         strong, .highlight {
-            color: #ffd700; /* Brighter Gold */
+            color: #ffd700;
             font-weight: 700;
         }
         a {
@@ -149,27 +160,6 @@
             color: #aaa;
             margin-bottom: 10px;
         }
-        .education-item {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px dotted #333;
-        }
-        /* Language Toggle */
-        .toggle-switch {
-            text-align: right;
-            padding: 15px 30px 0 0;
-        }
-        .toggle-switch button {
-            background-color: #ffc107;
-            color: #000000;
-            border: none;
-            padding: 8px 15px;
-            margin-left: 8px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
     </style>
 </head>
 <body>
@@ -189,8 +179,8 @@
         <div class="photo-area">
             <img src="IMG_2712.jpeg" alt="20,000 Audience Photo">
             <div class="photo-caption">
-                <span class="text-en"><strong>The Genesis of Why:</strong> Addressing a **20,000-person audience** at age 20. This moment established the core philosophy that **true value comes before profit**.</span>
-                <span class="text-zh" style="display: none;"><strong>起源的瞬间：</strong> 20岁时对**两万听众演讲**。这个时刻确立了核心哲学：**真正的价值先于利润**。</span>
+                <span class="text-en"><b>The Genesis of Why:</b> Addressing a **20,000-person audience** at age 20. This moment established the core philosophy that **true value comes before profit**.</span>
+                <span class="text-zh" style="display: none;"><b>起源的瞬间：</b> 20岁时对**两万听众演讲**。这个时刻确立了核心哲学：**真正的价值先于利润**。</span>
             </div>
         </div>
 
@@ -203,37 +193,34 @@
                     <div class="section-title text-zh" style="display: none;">I. 核心哲学与战略资本</div>
                     
                     <div class="box">
-                        <p class="text-en">My mission is to **eliminate the variable of human dishonesty**—a driving force born from contractual betrayal. I construct systems where **success is guaranteed** by enforcing ethical conduct and elevating probability to the highest level.</p>
-                        <p class="text-zh" style="display: none;">我的使命是**消除人性中的欺骗变量**—这个动力源于合同欺骗。我构建系统，通过强制执行道德规范，将成功概率提升到最高水平，从而**保障成功**。</p>
+                        <p class="text-en">My mission is to <b>eliminate the variable of human dishonesty</b>—a driving force born from contractual betrayal. I construct systems where <b>success is guaranteed</b> by enforcing ethical conduct and elevating probability to the highest level.</p>
+                        <p class="text-zh" style="display: none;">我的使命是<b>消除人性中的欺骗变量</b>，这个动力源于合同欺骗。我通过强制执行道德规范来构建系统，保障成功，并将成功概率提升到最高水平。</p>
                     </div>
 
-                    <div class="section-title text-en">II. Expertise & INTP Logic</div>
-                    <div class="section-title text-zh" style="display: none;">II. 专长与INTP逻辑</div>
+                    <div class="section-title text-en">II. INTP Logic & Strategic Assets</div>
+                    <div class="section-title text-zh" style="display: none;">II. INTP 逻辑与战略资产</div>
                     
                     <ul>
-                        <li class="text-en">**Anti-Fraud Architect:** Combining **AI and Law** to protect partners from legal fraud and ensure contractual certainty.</li>
-                        <li class="text-zh" style="display: none;">**反欺诈架构师：** 结合**AI与法律**来防止欺诈，保障合同的确定性。</li>
+                        <li class="text-en"><b>Anti-Fraud Architect:</b> My focus is combining <b>AI and Law</b> to protect partners from legal fraud and ensure contractual certainty.</li>
+                        <li class="text-zh" style="display: none;"><b>反欺诈架构师：</b> 重点是结合<b>AI与法律</b>来防止欺诈，保障合同的确定性。</li>
 
-                        <li class="text-en">**Logic as Weaponry:** Achieved **Thailand's #1 National Math Ranking** (perfect score). Guarantees the ability to rapidly decompose and solve complex, high-variable problems.</li>
-                        <li class="text-zh" style="display: none;">**逻辑武器化：** 获得**泰国全国数学测试第一名**和满分。保障了能够快速分解和解决高度复杂问题的高超能力。</li>
+                        <li class="text-en"><b>Logic as Weaponry:</b> Achieved <b>Thailand's #1 National Math Ranking</b> (perfect score). Guarantees the ability to rapidly decompose and solve complex, high-variable problems in real-time.</li>
+                        <li class="text-zh" style="display: none;"><b>逻辑武器化：</b> 获得<b>泰国全国数学测试第一名</b>和满分。保障了能够快速分解和解决高度复杂问题的高超能力。</li>
 
-                        <li class="text-en">**World-Class Strategy:** **World Tournament Finalist** in the complex strategy game, *Flesh and Blood*. Converting randomness into high-probability victories.</li>
-                        <li class="text-zh" style="display: none;">**世界级战略：** 复杂战略游戏《Flesh and Blood》**全球总决赛选手**。此能力对于将随机性转化为高概率胜利至关重要。</li>
-                        
-                        <li class="text-en">**Extreme Fear Tolerance:** Voluntarily skydived and performed solo deep-sea dives to 40 meters in near-total darkness.</li>
-                        <li class="text-zh" style="display: none;">**极限抗压能力：** 自愿跳伞并独立在近乎全黑的环境下深潜至40米。</li>
+                        <li class="text-en"><b>World-Class Strategy:</b> <b>World Tournament Finalist</b> in the complex strategy game, <i>Flesh and Blood</i>. This skill is vital for converting randomness into high-probability victories.</li>
+                        <li class="text-zh" style="display: none;"><b>世界级战略：</b> 复杂战略游戏《Flesh and Blood》<b>全球总决赛选手</b>。此能力对于将随机性转化为高概率胜利至关重要。</li>
                     </ul>
                     
                     <div class="section-title text-en">III. Languages & Global Reach</div>
                     <div class="section-title text-zh" style="display: none;">III. 语言与全球覆盖</div>
                     
                     <ul>
-                        <li class="text-en">**AI Language Expert:** Proficient in AI Language Processing—able to **read and write any language via text**.</li>
-                        <li class="text-zh" style="display: none;">**AI语言专家：** 擅长AI语言处理—能够通过文本**读写任何语言**。</li>
-                        <li class="text-en">**Polyglot Communications:** Fluent in Thai (Native), English (Business), Basic Japanese, and Foundational Chinese.</li>
-                        <li class="text-zh" style="display: none;">**多语言沟通：** 泰语（母语）、英语（商务级）、基础日语/中文。</li>
-                        <li class="text-en">**Global Connector:** Strong network across **China, Japan, the US, and Hong Kong**.</li>
-                        <li class="text-zh" style="display: none;">**全球连接者：** 拥有强大的**中国、日本、美国和香港**商业人脉网络。</li>
+                        <li class="text-en"><b>AI Language Expert:</b> Proficient in AI Language Processing—able to <b>read and write any language via text</b>.</li>
+                        <li class="text-zh" style="display: none;"><b>AI语言专家：</b> 擅长AI语言处理—能够通过文本<b>读写任何语言</b>。</li>
+                        <li class="text-en"><b>Global Connector:</b> Strong network across <b>China, Japan, the US, and Hong Kong</b>.</li>
+                        <li class="text-zh" style="display: none;"><b>全球连接者：</b> 拥有强大的<b>中国、日本、美国和香港</b>商业人脉网络。</li>
+                        <li class="text-en"><b>Polyglot Communications:</b> Fluent in Thai (Native), English (Business), Basic Japanese, and Foundational Chinese.</li>
+                        <li class="text-zh" style="display: none;"><b>多语言沟通：</b> 泰语（母语）、英语（商务级）、基础日语/中文。</li>
                     </ul>
 
                      <div class="section-title text-en">V. Education & Certifications</div>
@@ -243,8 +230,8 @@
                         <div class="education-item">
                             <div class="experience-title text-en">Law (LL.B.) - Sripatum University (In Progress)</div>
                             <div class="experience-title text-zh" style="display: none;">法学学士 (LL.B.) - 斯巴顿大学 (在读)</div>
-                            <p class="text-en">**Mission-Driven Study** focused on combining AI and legal knowledge to create enforceable contracts.</p>
-                            <p class="text-zh" style="display: none;">**使命驱动的学习**，专注于结合AI和法律知识来创建可强制执行的合同。</p>
+                            <p class="text-en"><b>Mission-Driven Study</b> focused on combining AI and legal knowledge to create enforceable contracts.</p>
+                            <p class="text-zh" style="display: none;"><b>使命驱动的学习</b>，专注于结合AI和法律知识来创建可强制执行的合同。</p>
                         </div>
                         <div class="education-item">
                             <div class="experience-title text-en">Rhetoric & Communication - Chulalongkorn University (Top University)</div>
@@ -258,14 +245,10 @@
                         <div class="experience-title text-en" style="margin-top: 20px;">Specialized Certifications</div>
                         <div class="experience-title text-zh" style="display: none; margin-top: 20px;">专业认证课程</div>
                         <ul>
-                            <li class="text-en">**Alibaba Certification:** Certified and trained at Alibaba Headquarters on Core Values. <a href="IMG_1997.jpeg" target="_blank">[View Alibaba Core Values Document]</a></li>
-                            <li class="text-zh" style="display: none;">**阿里巴巴认证：** 在阿里巴巴总部获得核心价值观认证与培训。<a href="IMG_1997.jpeg" target="_blank">[查看阿里巴巴核心价值观文件]</a></li>
-                            <li class="text-en">**The Connext 1:** Business Connection Development.</li>
-                            <li class="text-zh" style="display: none;">**The Connext 1:** 商业连接发展。</li>
-                            <li class="text-en">**DEF4:** Digital Communication and Media/Multimedia.</li>
-                            <li class="text-zh" style="display: none;">**DEF4:** 数字通信和多媒体。</li>
-                            <li class="text-en">**The Story 4:** Story Telling and Brand Communication.</li>
-                            <li class="text-zh" style="display: none;">**The Story 4:** 品牌故事叙述与传播。</li>
+                            <li class="text-en"><b>Alibaba Certification:</b> Certified and trained at Alibaba Headquarters on Core Values. <a href="IMG_1997.jpeg" target="_blank">[View Alibaba Core Values Document]</a></li>
+                            <li class="text-zh" style="display: none;"><b>阿里巴巴认证：</b> 在阿里巴巴总部获得核心价值观认证与培训。<a href="IMG_1997.jpeg" target="_blank">[查看阿里巴巴核心价值观文件]</a></li>
+                            <li class="text-en"><b>Digital & Connection:</b> Includes The Connext 1 (Business Connection), DEF4 (Digital Communication), and The Story 4 (Brand Storytelling).</li>
+                            <li class="text-zh" style="display: none;"><b>数字与连接：</b> 包括 The Connext 1 (商业连接发展), DEF4 (数字传播), 和 The Story 4 (品牌故事叙述)。</li>
                         </ul>
                     </div>
 
@@ -276,42 +259,23 @@
                     <div class="section-title text-zh" style="display: none;">IV. 高管履历 (时间顺序)</div>
 
                     <div class="experience-detail">
-                        <div class="experience-title text-en">CLOVER GROUP (Co-Founder) - [2007 – 2019]</div>
-                        <div class="experience-title text-zh" style="display: none;">CLOVER GROUP (联合创始人) - [2007 – 2019]</div>
-                        <div class="subtitle text-en">Co-Founder & Strategic Disruption Architect</div>
-                        <div class="subtitle text-zh" style: "display: none;">联合创始人与战略颠覆架构师</div>
+                        <div class="experience-title text-en">IN-TECH STEEL & POLITICAL ROLE - [2021 – Present]</div>
+                        <div class="experience-title text-zh" style="display: none;">In-Tech Steel 与政治角色 - [2021 – 至今]</div>
+                        <div class="subtitle text-en">General Manager – HR & Technology / Political Secretary-General</div>
+                        <div class="subtitle text-zh" style: "display: none;">人力资源与技术总经理 / 政党秘书长</div>
                         
-                        <p class="text-en"><strong>Legacy: The Multimedia Revolution.</strong> Co-Founded the company with my brother. Pioneered the conversion of traditional communication into **advanced Multimedia production and continuous online conferencing**, establishing the **largest and fastest-growing MLM group in Thailand**. Achieved **retirement at age 25**. </p>
-                        <p class="text-zh" style="display: none;"><strong>传承：多媒体革命。</strong> 与兄弟共同创立公司。首创将传统沟通方式转换为**先进多媒体制作与持续在线会议**，建立了**泰国规模最大、增长最快的MLM团队**。并在**25岁实现退休**。</p>
-                    </div>
-
-                    <div class="experience-detail">
-                        <div class="experience-title text-en">LAZADA THAILAND (Youpik) - [2019 – 2021]</div>
-                        <div class="experience-title text-zh" style="display: none;">泰国 Lazada (Youpik) - [2019 – 2021]</div>
-                        <div class="subtitle text-en">Vice President, Training and Development (Alibaba Cultural Architect)</div>
-                        <div class="subtitle text-zh" style: "display: none;">培训与发展副总裁 (阿里巴巴文化架构师)</div>
-                        <p class="text-en">Achieved **rapid promotion** by rigorously embodying the **Alibaba Core Values**, demonstrating deep cultural internalization. <a href="IMG_2695.jpeg" target="_blank">[View Photo in front of Alibaba]</a></p>
-                        <p class="text-zh" style="display: none;">通过严格遵守**阿里巴巴核心价值观**实现**快速晋升**，展现了深厚的文化内化。<a href="IMG_2695.jpeg" target="_blank">[查看在阿里巴巴总部的照片]</a></p>
+                        <p class="text-en">Managed <b>HR restructuring for IPO preparation</b> and provided technology consultation. Simultaneously served as <b>Secretary-General of the Political Party</b>.</p>
+                        <p class="text-zh" style="display: none;">负责<b>人力资源重组以准备IPO</b>并提供技术咨询。同时担任<b>政党秘书长</b>。</p>
                     </div>
 
                     <div class="experience-detail">
                         <div class="experience-title text-en">NUSASIRI PLC. (Stock Market Listed) - [2021 – 2022]</div>
                         <div class="experience-title text-zh" style="display: none;">泰国上市公司 Nusasiri - [2021 – 2022]</div>
-                        <div class="subtitle text-en">General Manager (GM) & Owner’s Strategic Liaison</div>
+                        <div class="subtitle text-en">General Manager & Owner’s Strategic Liaison</div>
                         <div class="subtitle text-zh" style: "display: none;">总经理与所有者战略联络官</div>
                         
-                        <p class="text-en"><strong>Mission: Cross-Sector Management.</strong> Worked directly with the owner to coordinate complex sectors: **Hospital, Wellness, Theme Park, Skincare, and Cannabis market entry**. Oversaw the integration of business units and drove the "First Mover Advantage" strategy.</p>
-                        <p class="text-zh" style="display: none;"><strong>任务：跨领域管理。</strong> 直接与所有者合作，统筹管理复杂的业务板块：**医院、健康、主题公园、护肤品以及大麻市场切入**。负责业务单元的整合，推动“先发优势”战略。</p>
-                    </div>
-
-                    <div class="experience-detail">
-                        <div class="experience-title text-en">IN-TECH STEEL & POLITICAL ROLE - [2021 – Present]</div>
-                        <div class="experience-title text-zh" style="display: none;">In-Tech Steel 与政治角色 - [2021 – 至今]</div>
-                        <div class="subtitle text-en">General Manager – Human Resources (HR) & Technology / Political Secretary-General</div>
-                        <div class="subtitle text-zh" style: "display: none;">人力资源与技术总经理 / 政党秘书长</div>
-                        
-                        <p class="text-en">Managed **HR restructuring for IPO preparation** and provided technology consultation. Simultaneously served as **Secretary-General of the Political Party** (This political work was done during the In-Tech timeframe).</p>
-                        <p class="text-zh" style="display: none;">负责**人力资源重组以准备IPO**并提供技术咨询。同时担任**政党秘书长**（该政治工作在 In-Tech 期间进行）。</p>
+                        <p class="text-en"><b>Mission: Cross-Sector Management.</b> Coordinated complex sectors: <b>Hospital, Wellness, Theme Park, Skincare, and Cannabis market entry</b>. Drove the "First Mover Advantage" strategy.</p>
+                        <p class="text-zh" style="display: none;"><b>任务：跨领域管理。</b> 统筹管理复杂的业务板块：<b>医院、健康、主题公园、护肤品以及大麻市场切入</b>。推动“先发优势”战略。</p>
                     </div>
 
                     <div class="experience-detail">
@@ -320,18 +284,37 @@
                         <div class="subtitle text-en">Founder / Business Consultant</div>
                         <div class="subtitle text-zh" style: "display: none;">创始人 / 商业顾问</div>
                         
-                        <p class="text-en">Founded a consulting firm focusing on **Pro Player training, business board game seminars, and Blockchain/Livestream strategy**. *This venture was later closed due to subsequent COVID-19 outbreaks.*</p>
-                        <p class="text-zh" style="display: none;">创立了一家咨询公司，专注于**职业玩家培训、商业棋盘游戏研讨会以及区块链/直播战略**。*该企业因后续COVID-19爆发而关闭*。</p>
+                        <p class="text-en">Founded a consulting firm focused on <b>Pro Player training, business board game seminars, and Blockchain/Livestream strategy</b>. <i>Venture was later closed due to subsequent COVID-19 outbreaks.</i></p>
+                        <p class="text-zh" style="display: none;">创立了一家咨询公司，专注于<b>职业玩家培训、商业棋盘游戏研讨会以及区块链/直播战略</b>。<i>该企业因后续COVID-19爆发而关闭。</i></p>
                     </div>
 
                     <div class="experience-detail">
-                        <div class="experience-title text-en">ACADEMIC & GOVERNMENT CONSULTING (Various) - [Ongoing]</div>
-                        <div class="experience-title text-zh" style="display: none;">学术与政府咨询 (多项) - [持续中]</div>
+                        <div class="experience-title text-en">LAZADA THAILAND (Youpik) - [2019 – 2021]</div>
+                        <div class="experience-title text-zh" style="display: none;">泰国 Lazada (Youpik) - [2019 – 2021]</div>
+                        <div class="subtitle text-en">VP of Training and Development (Alibaba Cultural Architect)</div>
+                        <div class="subtitle text-zh" style: "display: none;">培训与发展副总裁 (阿里巴巴文化架构师)</div>
+                        <p class="text-en">Achieved <b>rapid promotion</b> by rigorously embodying the <b>Alibaba Core Values</b>. <a href="IMG_2695.jpeg" target="_blank">[View Photo in front of Alibaba]</a></p>
+                        <p class="text-zh" style="display: none;">通过严格遵守<b>阿里巴巴核心价值观</b>实现<b>快速晋升</b>。<a href="IMG_2695.jpeg" target="_blank">[查看在阿里巴巴总部的照片]</a></p>
+                    </div>
+
+                    <div class="experience-detail">
+                        <div class="experience-title text-en">CLOVER GROUP (Co-Founder) & AIM STAR/LEGACY - [2007 – 2019]</div>
+                        <div class="experience-title text-zh" style="display: none;">CLOVER GROUP (联合创始人) & AIM STAR/LEGACY - [2007 – 2019]</div>
+                        <div class="subtitle text-en">Strategic Disruption Architect (Achieved Youngest Top Rank Representative)</div>
+                        <div class="subtitle text-zh" style: "display: none;">战略颠覆架构师 (达成最年轻顶级代表)</div>
+                        
+                        <p class="text-en"><b>Legacy: The Multimedia Revolution.</b> Pioneered advanced Multimedia and online conferencing, establishing the <b>largest and fastest-growing MLM group in Thailand</b>. Achieved <b>retirement at age 25</b>.</p>
+                        <p class="text-zh" style="display: none;"><b>传承：多媒体革命。</b> 首创先进多媒体制作与持续在线会议，建立了<b>泰国规模最大、增长最快的MLM团队</b>。并在<b>25岁实现退休</b>。</p>
+                    </div>
+
+                    <div class="experience-detail">
+                        <div class="experience-title text-en">ACADEMIC & GOVERNMENT CONSULTING - [Ongoing]</div>
+                        <div class="experience-title text-zh" style="display: none;">学术与政府咨询 - [持续中]</div>
                         <div class="subtitle text-en">Special Lecturer / Tech Consultant</div>
                         <div class="subtitle text-zh" style: "display: none;">特约讲师 / 技术顾问</div>
                         
-                        <p class="text-en">Guest lecturer on **AI, Tech, Gaming, and Livestreaming** at Assumption College and Kasetsart University. Provided technology consulting to government community projects. <a href="IMG_1446.jpeg" target="_blank">[View National Broadcast Proof]</a></p>
-                        <p class="text-zh" style="display: none;">曾任职于易三仓学院和农业大学，讲授**AI、技术、游戏和直播**等课程。为政府社区项目提供技术咨询。<a href="IMG_1446.jpeg" target="_blank">[查看全国电视露面证明]</a></p>
+                        <p class="text-en">Guest lecturer on <b>AI, Tech, Gaming, and Livestreaming</b> (Assumption/Kasetsart). Provided technology consulting to government community projects. <a href="IMG_1446.jpeg" target="_blank">[View National Broadcast Proof]</a></p>
+                        <p class="text-zh" style="display: none;">曾任职于易三仓学院和农业大学，讲授<b>AI、技术、游戏和直播</b>等课程。为政府社区项目提供技术咨询。<a href="IMG_1446.jpeg" target="_blank">[查看全国电视露面证明]</a></p>
                     </div>
 
                 </div>
