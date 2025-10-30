@@ -1,74 +1,413 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>欢迎回家 (Welcome Home)</title>
-    <style>
-        body {
-            font-family: 'Times New Roman', 'KaiTi', serif; /* Elegant Chinese and Western font */
-            background: linear-gradient(135deg, #0d47a1, #1a1a2e); /* Deep Blue to Dark Night */
-            color: #ffffff;
-            line-height: 1.8;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-        }
-        .welcome-container {
-            background: rgba(42, 42, 74, 0.9); /* Semi-transparent dark box */
-            padding: 40px 60px;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-            max-width: 500px;
-            border: 1px solid #0d47a1;
-        }
-        .main-message {
-            font-size: 1.8em;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #ffab00; /* Gold Accent */
-        }
-        .hint-message {
-            font-size: 1.2em;
-            margin: 15px 0;
-            line-height: 1.5;
-        }
-        .divider {
-            width: 50%;
-            height: 2px;
-            background-color: #ffab00;
-            margin: 25px auto;
-        }
-        .closing-line {
-            font-size: 1.1em;
-            font-style: italic;
-            opacity: 0.8;
-        }
-    </style>
+    <title>Narin Leelaporn - Executive Profile</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="welcome-container">
-        <div class="main-message">
-            很高兴妹妹回家了
-        </div>
-        
-        <div class="hint-message">
-            要抱抱！紧紧地抱一个！
-        </div>
+    <!-- Language Toggle Button (Floating) -->
+    <div class="language-toggle">
+        <button class="toggle-btn" id="langToggle" onclick="toggleLanguage()">
+            <span class="lang-label" id="langLabel">中文</span>
+        </button>
+    </div>
 
-        <div class="hint-message">
-            只须向哥哥打声招呼
-        </div>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="name" id="name">Narin Leelaporn</h1>
+                <p class="title" id="title">Executive Officer, Strategic Systems Architect & Consultant (INTP)</p>
+                <p class="mission" id="mission">To eliminate the variable of human dishonesty and construct systems where success is guaranteed, by integrating AI and Law to enforce ethical conduct.</p>
+            </div>
+        </header>
 
-        <div class="divider"></div>
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Expertise Section -->
+                <section class="section expertise-section">
+                    <h2 class="section-title" id="title_expertise">CORE EXPERTISE</h2>
+                    <div class="expertise-list">
+                        <div class="expertise-item">
+                            <h3 class="expertise-title" id="expertise_0_title">Logic & Precision</h3>
+                            <p class="expertise-detail" id="expertise_0_detail">Thailand's #1 National Math Ranking and perfect score.</p>
+                        </div>
+                        <div class="expertise-item">
+                            <h3 class="expertise-title" id="expertise_1_title">Strategic Execution</h3>
+                            <p class="expertise-detail" id="expertise_1_detail">World Tournament Competitor in the complex strategy game, Flesh and Blood. This skill converts randomness into high-probability victories.</p>
+                        </div>
+                        <div class="expertise-item">
+                            <h3 class="expertise-title" id="expertise_2_title">AI/Legal Focus</h3>
+                            <p class="expertise-detail" id="expertise_2_detail">Currently pursuing Law degree (LL.B.) to leverage AI for contractual certainty and protect partners from legal fraud.</p>
+                        </div>
+                        <div class="expertise-item">
+                            <h3 class="expertise-title" id="expertise_3_title">Financial Acumen</h3>
+                            <p class="expertise-detail" id="expertise_3_detail">Experienced in investment and financial modeling.</p>
+                        </div>
+                    </div>
+                </section>
 
-        <div class="closing-line">
-            哥哥会为你指明家的“门户”
+                <!-- Education Section -->
+                <section class="section education-section">
+                    <h2 class="section-title" id="title_education">EDUCATION</h2>
+                    <div class="education-list">
+                        <div class="education-item">
+                            <h3 class="education-institution">Sripatum University</h3>
+                            <p class="education-degree" id="education_0_degree">Bachelor of Laws (LL.B.) (In Progress)</p>
+                            <p class="education-focus" id="education_0_focus">Mission-driven study: AI and Law integration for contractual certainty.</p>
+                        </div>
+                        <div class="education-item">
+                            <h3 class="education-institution">Chulalongkorn University</h3>
+                            <p class="education-degree" id="education_1_degree">Bachelor's degree, Speech Communication and Rhetoric</p>
+                            <p class="education-focus" id="education_1_focus">Foundational expertise in public speaking and advanced communication.</p>
+                        </div>
+                        <div class="education-item">
+                            <h3 class="education-institution">Triamudom Suksa School</h3>
+                            <p class="education-degree" id="education_2_degree">High School</p>
+                            <p class="education-focus" id="education_2_focus">Science and Business Management (Top School in Thailand).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Certifications Section -->
+                <section class="section certifications-section">
+                    <h2 class="section-title" id="title_certifications">CERTIFICATIONS</h2>
+                    <div class="certifications-list">
+                        <div class="certification-item">
+                            <h4 class="certification-title" id="cert_0_title">Alibaba Certification</h4>
+                            <p class="certification-detail" id="cert_0_detail">Certified and trained at Alibaba Headquarters on Core Values.</p>
+                        </div>
+                        <div class="certification-item">
+                            <h4 class="certification-title" id="cert_1_title">The Connext 1</h4>
+                            <p class="certification-detail" id="cert_1_detail">Business Connection Development.</p>
+                        </div>
+                        <div class="certification-item">
+                            <h4 class="certification-title" id="cert_2_title">DEF4</h4>
+                            <p class="certification-detail" id="cert_2_detail">Digital Communication and Media/Multimedia.</p>
+                        </div>
+                        <div class="certification-item">
+                            <h4 class="certification-title" id="cert_3_title">The Story 4</h4>
+                            <p class="certification-detail" id="cert_3_detail">Story Telling and Brand Communication.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Professional Experience Section -->
+                <section class="section experience-section">
+                    <h2 class="section-title" id="title_experience">PROFESSIONAL EXPERIENCE</h2>
+                    <div class="experience-list">
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3 class="experience-company">In-Tech Steel</h3>
+                                <span class="experience-timeframe">2021</span>
+                            </div>
+                            <p class="experience-role" id="exp_0_role">Manager – Human Resources (HR)</p>
+                            <p class="experience-mission" id="exp_0_mission">Managed HR restructuring for IPO preparation and provided technology consultation.</p>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3 class="experience-company">Nusasiri PLC.</h3>
+                                <span class="experience-timeframe">2021</span>
+                            </div>
+                            <p class="experience-role" id="exp_1_role">General Manager (GM) & Owner's Representative</p>
+                            <p class="experience-mission" id="exp_1_mission">Worked directly with the owner to coordinate complex sectors: Hospital, Wellness, Theme Park, Real Estate.</p>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3 class="experience-company">Lazada Thailand (Youpik)</h3>
+                                <span class="experience-timeframe">2019 – 2021</span>
+                            </div>
+                            <p class="experience-role" id="exp_2_role">Vice President, Strategic Disruption</p>
+                            <p class="experience-mission" id="exp_2_mission">Achieved rapid promotion by rigorously embodying and training the Alibaba Core Values. Certified and trained at Alibaba Headquarters.</p>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <h3 class="experience-company">Clover Group</h3>
+                                <span class="experience-timeframe">2007 – 2019</span>
+                            </div>
+                            <p class="experience-role" id="exp_3_role">Co-Founder, Strategic Disruption</p>
+                            <p class="experience-mission" id="exp_3_mission">Pioneered advanced multimedia communication, establishing the largest and fastest-growing MLM group in Thailand. Achieved retirement at age 25.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Image Gallery Section -->
+                <section class="section gallery-section">
+                    <h2 class="section-title" id="title_gallery">HIGHLIGHTS</h2>
+                    <div class="gallery-grid">
+                        <div class="gallery-item">
+                            <img src="IMG_2712.jpeg" alt="Speaking to 20,000 people" class="gallery-image">
+                            <p class="gallery-caption" id="caption_20k">Speaking to 20,000 people</p>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="IMG_2695.jpeg" alt="At Alibaba Headquarters" class="gallery-image">
+                            <p class="gallery-caption" id="caption_alibaba">At Alibaba Headquarters</p>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="IMG_1446.jpeg" alt="TV Channel 5 Interview" class="gallery-image">
+                            <p class="gallery-caption" id="caption_tv">TV Channel 5 Interview</p>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="IMG_1997.jpeg" alt="Alibaba Core Values" class="gallery-image">
+                            <p class="gallery-caption" id="caption_values">Alibaba Core Values</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
+
+    <!-- Language Data -->
+    <script>
+        const translations = {
+            "en": {
+                "name": "Narin Leelaporn",
+                "title": "Executive Officer, Strategic Systems Architect & Consultant (INTP)",
+                "mission": "To eliminate the variable of human dishonesty and construct systems where success is guaranteed, by integrating AI and Law to enforce ethical conduct.",
+                "title_expertise": "CORE EXPERTISE",
+                "title_experience": "PROFESSIONAL EXPERIENCE",
+                "title_education": "EDUCATION",
+                "title_certifications": "CERTIFICATIONS",
+                "title_gallery": "HIGHLIGHTS",
+                "expertise": [
+                    {
+                        "title": "Logic & Precision",
+                        "detail": "Thailand's #1 National Math Ranking and perfect score."
+                    },
+                    {
+                        "title": "Strategic Execution",
+                        "detail": "World Tournament Competitor in the complex strategy game, Flesh and Blood. This skill converts randomness into high-probability victories."
+                    },
+                    {
+                        "title": "AI/Legal Focus",
+                        "detail": "Currently pursuing Law degree (LL.B.) to leverage AI for contractual certainty and protect partners from legal fraud."
+                    },
+                    {
+                        "title": "Financial Acumen",
+                        "detail": "Experienced in investment and financial modeling."
+                    }
+                ],
+                "experience": [
+                    {
+                        "role": "Manager – Human Resources (HR)",
+                        "mission": "Managed HR restructuring for IPO preparation and provided technology consultation."
+                    },
+                    {
+                        "role": "General Manager (GM) & Owner's Representative",
+                        "mission": "Worked directly with the owner to coordinate complex sectors: Hospital, Wellness, Theme Park, Real Estate."
+                    },
+                    {
+                        "role": "Vice President, Strategic Disruption",
+                        "mission": "Achieved rapid promotion by rigorously embodying and training the Alibaba Core Values. Certified and trained at Alibaba Headquarters."
+                    },
+                    {
+                        "role": "Co-Founder, Strategic Disruption",
+                        "mission": "Pioneered advanced multimedia communication, establishing the largest and fastest-growing MLM group in Thailand. Achieved retirement at age 25."
+                    }
+                ],
+                "education": [
+                    {
+                        "degree": "Bachelor of Laws (LL.B.) (In Progress)",
+                        "focus": "Mission-driven study: AI and Law integration for contractual certainty."
+                    },
+                    {
+                        "degree": "Bachelor's degree, Speech Communication and Rhetoric",
+                        "focus": "Foundational expertise in public speaking and advanced communication."
+                    },
+                    {
+                        "degree": "High School",
+                        "focus": "Science and Business Management (Top School in Thailand)."
+                    }
+                ],
+                "certifications": [
+                    {
+                        "title": "Alibaba Certification",
+                        "detail": "Certified and trained at Alibaba Headquarters on Core Values."
+                    },
+                    {
+                        "title": "The Connext 1",
+                        "detail": "Business Connection Development."
+                    },
+                    {
+                        "title": "DEF4",
+                        "detail": "Digital Communication and Media/Multimedia."
+                    },
+                    {
+                        "title": "The Story 4",
+                        "detail": "Story Telling and Brand Communication."
+                    }
+                ],
+                "captions": {
+                    "20k": "Speaking to 20,000 people",
+                    "alibaba": "At Alibaba Headquarters",
+                    "tv": "TV Channel 5 Interview",
+                    "values": "Alibaba Core Values"
+                }
+            },
+            "zh": {
+                "name": "Narin Leelaporn",
+                "title": "执行官, 战略系统架构师与顾问 (INTP)",
+                "mission": "核心使命: 消除人类不诚实的可变因素，通过整合人工智能和法律来强制执行道德行为，构建一个成功有保障的系统。",
+                "title_expertise": "核心专长",
+                "title_experience": "专业经验",
+                "title_education": "教育背景",
+                "title_certifications": "认证",
+                "title_gallery": "亮点",
+                "expertise": [
+                    {
+                        "title": "逻辑与精确",
+                        "detail": "泰国国家数学排名第一，获得满分。"
+                    },
+                    {
+                        "title": "战略执行",
+                        "detail": "复杂策略游戏《血肉之躯》世界锦标赛选手。此技能将随机性转化为高概率胜利。"
+                    },
+                    {
+                        "title": "人工智能/法律重点",
+                        "detail": "目前正在攻读法学学位（LL.B.），利用人工智能实现合同确定性，并保护合作伙伴免受法律欺诈。"
+                    },
+                    {
+                        "title": "金融敏锐度",
+                        "detail": "在投资和财务建模方面经验丰富。"
+                    }
+                ],
+                "experience": [
+                    {
+                        "role": "经理 - 人力资源 (HR)",
+                        "mission": "管理人力资源重组以准备首次公开募股（IPO），并提供技术咨询。"
+                    },
+                    {
+                        "role": "总经理 (GM) 和所有者代表",
+                        "mission": "直接与所有者合作，协调复杂领域：医院、健康、主题公园、房地产。"
+                    },
+                    {
+                        "role": "副总裁，战略创新",
+                        "mission": "通过严格体现和培训阿里巴巴核心价值观，实现了快速晋升。在阿里巴巴总部获得认证和培训。"
+                    },
+                    {
+                        "role": "联合创始人，战略创新",
+                        "mission": "开创了先进的多媒体通信，建立了泰国最大、增长最快的传销（MLM）集团。25岁实现退休。"
+                    }
+                ],
+                "education": [
+                    {
+                        "degree": "法学学士 (LL.B.) (进行中)",
+                        "focus": "使命驱动型学习：人工智能与法律的结合，以实现合同确定性。"
+                    },
+                    {
+                        "degree": "学士学位，演讲、传播与修辞学",
+                        "focus": "公共演讲和高级沟通的基础专业知识。"
+                    },
+                    {
+                        "degree": "高中",
+                        "focus": "科学与商业管理（泰国顶尖学校）。"
+                    }
+                ],
+                "certifications": [
+                    {
+                        "title": "阿里巴巴认证",
+                        "detail": "在阿里巴巴总部接受核心价值观认证和培训。"
+                    },
+                    {
+                        "title": "连接 1",
+                        "detail": "商业联系发展。"
+                    },
+                    {
+                        "title": "数字传播 4",
+                        "detail": "数字通信和媒体/多媒体。"
+                    },
+                    {
+                        "title": "故事 4",
+                        "detail": "故事讲述和品牌传播。"
+                    }
+                ],
+                "captions": {
+                    "20k": "向20,000人演讲",
+                    "alibaba": "在阿里巴巴总部",
+                    "tv": "第5频道电视采访",
+                    "values": "阿里巴巴核心价值观"
+                }
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'zh' : 'en';
+            updateLanguage();
+            updateToggleButton();
+        }
+
+        function updateLanguage() {
+            const trans = translations[currentLanguage];
+            
+            // Update basic text
+            document.getElementById('name').textContent = trans.name;
+            document.getElementById('title').textContent = trans.title;
+            document.getElementById('mission').textContent = trans.mission;
+            
+            // Update section titles
+            document.getElementById('title_expertise').textContent = trans.title_expertise;
+            document.getElementById('title_experience').textContent = trans.title_experience;
+            document.getElementById('title_education').textContent = trans.title_education;
+            document.getElementById('title_certifications').textContent = trans.title_certifications;
+            document.getElementById('title_gallery').textContent = trans.title_gallery;
+            
+            // Update expertise
+            trans.expertise.forEach((item, index) => {
+                document.getElementById(`expertise_${index}_title`).textContent = item.title;
+                document.getElementById(`expertise_${index}_detail`).textContent = item.detail;
+            });
+            
+            // Update experience
+            trans.experience.forEach((item, index) => {
+                document.getElementById(`exp_${index}_role`).textContent = item.role;
+                document.getElementById(`exp_${index}_mission`).textContent = item.mission;
+            });
+            
+            // Update education
+            trans.education.forEach((item, index) => {
+                document.getElementById(`education_${index}_degree`).textContent = item.degree;
+                document.getElementById(`education_${index}_focus`).textContent = item.focus;
+            });
+            
+            // Update certifications
+            trans.certifications.forEach((item, index) => {
+                document.getElementById(`cert_${index}_title`).textContent = item.title;
+                document.getElementById(`cert_${index}_detail`).textContent = item.detail;
+            });
+            
+            // Update captions
+            document.getElementById('caption_20k').textContent = trans.captions['20k'];
+            document.getElementById('caption_alibaba').textContent = trans.captions['alibaba'];
+            document.getElementById('caption_tv').textContent = trans.captions['tv'];
+            document.getElementById('caption_values').textContent = trans.captions['values'];
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = currentLanguage;
+        }
+
+        function updateToggleButton() {
+            const label = currentLanguage === 'en' ? '中文' : 'English';
+            document.getElementById('langLabel').textContent = label;
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateLanguage();
+            updateToggleButton();
+        });
+    </script>
 </body>
 </html>
