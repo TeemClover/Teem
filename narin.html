@@ -3,335 +3,372 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title class="text-en">NARIN LEELAPORN: THE SAN CHUAN ARCHITECT</title>
-    <title class="text-zh" style="display: none;">李娜霖: 三川王朝战略架构师</title>
+    <title>Narin Leelaporn - Executive Strategic Architect</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Microsoft YaHei', sans-serif;
-            background-color: #000000; /* Pure Black */
-            color: #f0f0f0;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            font-size: 16px;
-        }
-        .container {
-            width: 95%;
-            max-width: 1200px;
-            margin: 30px 0;
-            background: #111111;
-            box-shadow: 0 15px 50px rgba(255, 193, 7, 0.15);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 1px solid #333333;
-        }
-        /* ... ส่วน CSS อื่นๆ ที่ไม่ได้มีการเปลี่ยนแปลงมาก ... */
-        .toggle-switch {
-            text-align: right;
-            padding: 15px 30px 0 0;
-        }
-        .toggle-switch button {
-            background-color: #ffc107; /* Gold */
-            color: #000000;
-            border: none;
-            padding: 8px 15px;
-            margin-left: 8px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        .header {
-            background: #0d0d0d;
-            padding: 30px 40px 10px 40px;
-            text-align: left;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 3em;
-            font-weight: 900;
-            color: #ffc107; /* Gold */
-        }
-        .header h2 {
-            margin: 5px 0 0;
-            font-size: 1.4em;
-            font-weight: 500;
-            color: #aaaaaa;
-        }
-        
-        /* 1. แก้ไขให้ Responsive ตาม Aspect Ratio */
-        .photo-area {
-            position: relative;
-            width: 100%;
-            /* ลบ fixed height ออก */
-            padding-bottom: 50%; /* กำหนด Aspect Ratio เป็น 2:1 (ความสูง 50% ของความกว้าง) */
-            overflow: hidden;
-            border-bottom: 5px solid #ffc107;
-        }
-        .photo-area img {
-            position: absolute; /* ให้รูปอยู่ข้างใน div ที่มี padding-bottom */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.6);
-            /* ลบ min-height: 400px; ออก */
+        /* Variables and Basic Reset */
+        :root {
+            --color-gold: #FFD700; /* Classic Gold */
+            --color-black: #1c1c1c; /* Near Black */
+            --color-light: #f0f0f0;
+            --color-grey: #a0a0a0;
         }
 
-        .photo-caption {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 15px 40px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-size: 1.1em;
+        body { 
+            margin: 0; 
+            font-family: 'Roboto', sans-serif; 
+            background-color: var(--color-light); 
+            color: var(--color-black); 
+            line-height: 1.6;
+        }
+        * { box-sizing: border-box; }
+        .container { max-width: 1200px; margin: auto; padding: 0 20px; }
+        
+        /* Language Visibility */
+        .lang-cn { display: none; }
+
+        /* Floating Toggle */
+        #lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            cursor: pointer;
+            padding: 10px 15px;
+            background-color: var(--color-gold);
+            color: var(--color-black);
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s, transform 0.3s;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        #lang-toggle:hover { 
+            background-color: #e0b800;
+            transform: scale(1.05); 
+        }
+
+        /* --- Layout and Sections --- */
+        .section { padding: 80px 0; }
+        .dark-bg { background-color: var(--color-black); color: var(--color-light); }
+        .white-bg { background-color: var(--color-light); }
+        .centered-content { text-align: center; }
+
+        /* Typography */
+        h1 { font-size: 3.8em; margin-bottom: 0.1em; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; }
+        h2 { font-size: 1.6em; margin-top: 0; color: var(--color-gold); font-weight: 300; letter-spacing: 1px; }
+        .section-title { 
+            font-size: 2.2em; 
+            border-bottom: 3px solid var(--color-gold); 
+            padding-bottom: 10px; 
+            margin-bottom: 50px; 
+            display: inline-block; 
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .summary-statement { font-size: 1.4em; max-width: 900px; margin: 20px auto; font-style: italic; line-height: 1.8; }
+        
+        /* Hero Section (The Big Opener) */
+        .hero-section {
+            position: relative;
+            padding: 180px 0 80px;
+            color: var(--color-light);
+            text-align: center;
+            /* ใช้ภาพที่กูถ่ายหน้า Alibaba IMG_2712.jpeg เป็นพื้นหลังหลัก */
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('IMG_2712.jpeg') no-repeat center center/cover; 
+            min-height: 550px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Expertise Grid (3-Column Layout) */
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
             text-align: center;
         }
-        .content {
-            padding: 40px;
+        .expertise-item {
+            padding: 30px;
+            border: 1px solid var(--color-gold);
+            border-radius: 8px;
+            transition: background-color 0.3s;
         }
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
+        .expertise-item:hover {
+            background-color: #2a2a2a;
         }
-        @media (max-width: 767px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
+        .expertise-item h4 {
+            color: var(--color-gold);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
         }
-        .section-title {
-            color: #ffc107;
-            font-size: 1.8em;
-            border-bottom: 2px solid #333;
-            padding-bottom: 8px;
-            margin-bottom: 25px;
+        .expertise-item p {
+            font-size: 1.1em;
+            font-weight: 300;
+        }
+
+        /* Alibaba Section (Image & Text) */
+        .alibaba-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+        /* ใช้ภาพที่กูถ่ายหน้า Alibaba IMG_2695.jpeg */
+        .alibaba-photo {
+            max-width: 45%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border: 5px solid var(--color-gold);
+        }
+        .alibaba-content p {
+            text-align: left;
+            max-width: 55%;
+            font-size: 1.1em;
+        }
+        .core-value-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--color-gold);
+            text-decoration: none;
             font-weight: 700;
-            letter-spacing: 1px;
+            border: 1px solid var(--color-gold);
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
         }
-        .box {
-            background-color: #1f1f1f;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            border-left: 5px solid #ffc107;
+        .core-value-link:hover {
+            background-color: var(--color-gold);
+            color: var(--color-black);
         }
-        ul {
+
+
+        /* Timeline/List Styling */
+        .timeline-item {
+            margin-bottom: 30px;
+            border-left: 4px solid var(--color-gold);
+            padding-left: 20px;
+        }
+        .timeline-item h4 {
+            color: var(--color-gold);
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+        .timeline-item .duration {
+            color: var(--color-grey);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .timeline-item p {
+            margin-top: 0;
+            font-weight: 300;
+        }
+
+        .education-list {
             list-style: none;
             padding: 0;
         }
-        ul li {
-            margin-bottom: 12px;
-            padding-left: 25px;
-            position: relative;
-            color: #ccc;
+        .education-list li {
+            padding: 15px 0;
+            border-bottom: 1px dashed var(--color-gold);
+            font-size: 1.1em;
         }
-        ul li::before {
-            content: '♦';
-            color: #ffc107;
-            font-weight: bold;
-            display: inline-block;
-            width: 1em;
-            margin-left: -1em;
-        }
-        /* 2. ปรับสไตล์ของ Strong Tag */
-        strong {
-            color: #fff;
-            font-weight: 800; /* ทำให้ตัวหนาขึ้น */
-            text-shadow: 0 0 5px rgba(255, 193, 7, 0.5), 0 0 10px rgba(255, 193, 7, 0.2); /* เพิ่มเงาให้ดูมีสไตล์ทองๆ */
-        }
-        .highlight {
-            color: #ffd700;
-            font-weight: 700;
-        }
-        a {
-            color: #0d90ff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .experience-detail {
-            background-color: #1f1f1f;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-right: 3px solid #ffc107;
-        }
-        .experience-title {
-            color: #ffc107;
-            font-weight: 700;
-            font-size: 1.2em;
-            margin-bottom: 5px;
-        }
-        .subtitle {
-            font-style: italic;
-            font-size: 0.9em;
-            color: #aaa;
-            margin-bottom: 10px;
+
+        /* --- RESPONSIVE DESIGN (Mobile) --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; letter-spacing: 2px; }
+            h2 { font-size: 1.1em; }
+            .hero-section { padding-top: 120px; min-height: 450px; }
+            .section { padding: 50px 0; }
+            .section-title { font-size: 1.8em; margin-bottom: 30px; }
+            .summary-statement { font-size: 1.1em; }
+            
+            #lang-toggle { top: 10px; right: 10px; font-size: 0.75em; padding: 8px 12px; }
+
+            .expertise-grid {
+                grid-template-columns: 1fr; /* เปลี่ยนเป็น 1 คอลัมน์บนมือถือ */
+                gap: 20px;
+            }
+
+            .alibaba-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .alibaba-photo, .alibaba-content p {
+                max-width: 100%;
+                margin: 20px 0;
+                text-align: center;
+            }
+            .alibaba-content p {
+                text-align: center;
+            }
         }
     </style>
-</head>
+    </head>
 <body>
-    <div class="container">
-        <div class="toggle-switch">
-            <button onclick="setLanguage('en')">English</button>
-            <button onclick="setLanguage('zh')">中文</button>
-        </div>
 
-        <div class="header">
-            <h1 class="text-en">NARIN LEELAPORN</h1>
-            <h1 class="text-zh" style="display: none;">李娜霖</h1>
-            <h2 class="text-en">Executive Officer, Strategic Systems Architect & Consultant (INTP)</h2>
-            <h2 class="text-zh" style="display: none;">首席执行官, 战略系统架构师与顾问 (INTP)</h2>
-        </div>
+    <div id="lang-toggle" onclick="toggleLanguage()">EN / 中文</div>
 
-        <div class="photo-area">
-            <img src="IMG_2712.jpg" alt="20,000 Audience Photo"> 
-            <div class="photo-caption">
-                <span class="text-en">**The Genesis of Why:** Addressing a 20,000-person audience at age 20. This moment established the core philosophy that true value comes before profit.</span>
-                <span class="text-zh" style="display: none;">**起源的瞬间：** 20岁时对两万听众演讲。这个时刻确立了核心哲学：真正的价值先于利润。</span>
-            </div>
+    <header class="hero-section">
+        <div class="hero-content container">
+            <h1 class="lang-en">NARIN LEELAPORN</h1>
+            <h1 class="lang-cn">纳林·里拉蓬</h1>
+            <h2 class="lang-en">EXECUTIVE OFFICER, STRATEGIC SYSTEMS ARCHITECT & CONSULTANT (INTP)</h2>
+            <h2 class="lang-cn">执行官、战略系统架构师与顾问 (INTP)</h2>
         </div>
+    </header>
 
-        <div class="content">
-            <div class="content-grid">
+    <section id="executive-summary" class="section white-bg">
+        <div class="container centered-content">
+            <h3 class="lang-en section-title">CORE MISSION: ARCHITECTING CERTAINTY</h3>
+            <h3 class="lang-cn section-title">核心使命：构建确定性</h3>
+            <p class="summary-statement lang-en">
+                My Core Mission is **To eliminate the variable of human dishonesty and construct systems where success is guaranteed** and Law to enforce ethical conduct. This drive stems from past business failures caused by contractual dishonesty, leading to a focus on **AI/Legal Anti-Fraud Architecture**.
+            </p>
+            <p class="summary-statement lang-cn">
+                我的核心使命是：**消除人为不诚实的变量，构建成功被保证的系统**，并以法律来强制执行道德行为。这一动力源于过去因合同欺诈导致的业务失败，从而专注于**人工智能/法律反欺诈架构**。
+            </p>
+        </div>
+    </section>
+
+    <section id="expertise" class="section dark-bg">
+        <div class="container">
+            <h3 class="lang-en section-title centered-content">STRATEGIC CAPITAL & PROVEN PRECISION</h3>
+            <h3 class="lang-cn section-title centered-content">战略资产与实践证明的精准性</h3>
+            <div class="expertise-grid">
                 
-                <div class="sidebar">
-                    
-                    <div class="section-title text-en">I. The Power Stack & Philosophy</div>
-                    <div class="section-title text-zh" style="display: none;">I. 核心能力与哲学</div>
-                    
-                    <div class="box">
-                        <p class="text-en">My mission is to **eliminate the variable of human dishonesty**—a driving force born from contractual betrayal. I construct systems where success is guaranteed by enforcing ethical conduct and elevating probability to the highest level.</p>
-                        <p class="text-zh" style="display: none;">我的使命是**消除人性中的欺骗变量**，这个动力源于合同欺骗。我通过强制执行道德规范来构建系统，保障成功，并将成功概率提升到最高水平。</p>
-                    </div>
-                    <div class="section-title text-en">II. INTP Logic & Strategic Capital</div>
-                    <div class="section-title text-zh" style="display: none;">II. INTP 逻辑与战略资本</div>
-                    
-                    <ul>
-                        <li class="text-en"><strong>Anti-Fraud Architect:</strong> My focus is combining **AI and Law** to protect partners from legal fraud. This mission stems from the understanding that past failures were due to dishonesty, not flawed planning.</li>
-                        <li class="text-zh" style="display: none;"><strong>反欺诈架构师：</strong> 我的重点是结合**AI与法律**来防止欺诈。这项使命源于深刻理解：过去的失败是由于不诚信而非计划错误。</li>
-
-                        <li class="text-en"><strong>Logic as Weaponry:</strong> Thailand's **#1 National Math Ranking** (perfect score). The ability to rapidly decompose and solve complex, high-variable problems in real-time.</li>
-                        <li class="text-zh" style="display: none;"><strong>逻辑武器化：</strong> 泰国全国数学测试第一名和满分。保障了能够快速分解和解决高度复杂问题的高超能力。</li>
-
-                        <li class="text-en"><strong>World-Class Strategy:</strong> **World Tournament Finalist** in the complex strategy game, *Flesh and Blood*. This skill is vital for converting randomness into high-probability victories.</li>
-                        <li class="text-zh" style="display: none;"><strong>世界级战略：</strong> 复杂战略游戏《Flesh and Blood》**全球总决赛选手**。此能力对于将随机性转化为高概率胜利至关สำคัญ。</li>
-                    </ul>
-                    
-                    <div class="section-title text-en">III. Language & Expertise</div>
-                    <div class="section-title text-zh" style="display: none;">III. 语言与专长</div>
-                    
-                    <ul>
-                        <li class="text-en"><strong>AI Language Expert:</strong> Proficient in AI Language Processing—able to read and write any language via text.</li>
-                        <li class="text-zh" style="display: none;"><strong>AI语言专家：</strong> 擅长AI语言处理—能够通过文本读写任何语言。</li>
-                        <li class="text-en"><strong>Polyglot Communications:</strong> Fluent in Thai (Native), English (Business), Basic Japanese, and Foundational Chinese.</li>
-                        <li class="text-zh" style="display: none;"><strong>多语言沟通：</strong> 泰语（母语）、英语（商务级）、基础日语/中文。</li>
-                        <li class="text-en"><strong>Global Connector:</strong> Possesses a strong network across China, Japan, the US, and Hong Kong.</li>
-                        <li class="text-zh" style="display: none;"><strong>全球连接者：</strong> 拥有强大的中国、日本、美国和香港商业人脉网络。</li>
-                    </ul>
-
-                     <div class="section-title text-en">V. Education & Certifications</div>
-                    <div class="section-title text-zh" style="display: none;">V. 教育与认证</div>
-                    
-                    <div class="box">
-                        <div class="experience-title text-en">Law (LL.B.) - Sripatum University (In Progress)</div>
-                        <div class="experience-title text-zh" style="display: none;">法学学士 (LL.B.) - 斯巴顿大学 (在读)</div>
-                        <p class="text-en">**Mission-Driven Study** focused on combining AI and legal knowledge to create enforceable contracts.</p>
-                        <p class="text-zh" style="display: none;">**使命驱动的学习**，专注于结合AI和法律知识来创建可强制执行的合同。</p>
-                        
-                        <div class="experience-title text-en">Rhetoric & Communication - Chulalongkorn University</div>
-                        <div class="experience-title text-zh" style="display: none;">修辞与传播学 - 朱拉隆功大学</div>
-                        
-                        <div class="experience-title text-en">Specialized Certifications</div>
-                        <div class="experience-title text-zh" style="display: none;">专业认证课程</div>
-                        <p class="text-en">Alibaba Core Value Certification, Digital Marketing (DEF4), Business Connection Development (The Connext 1), Story Telling (The Story 4), Licensed Insurance Agent, Investment Experience.</p>
-                        <p class="text-zh" style="display: none;">阿里巴巴核心价值观认证、数字营销 (DEF4)、商业连接发展 (The Connext 1)、品牌故事叙述 (The Story 4)、保险代理人执照、投资经验。</p>
-                    </div>
-
+                <div class="expertise-item">
+                    <h4 class="lang-en">LOGIC & PRECISION</h4>
+                    <p class="lang-en">Thailand's **#1 National Math Ranking and perfect score**. Foundation of all systemic architecture and decision-making.</p>
+                    <h4 class="lang-cn">逻辑与精准</h4>
+                    <p class="lang-cn">泰国**全国数学排名第一**并获得满分。这是所有系统架构和决策的基础。</p>
                 </div>
                 
-                <div class="main-section">
-                    <div class="section-title text-en">IV. Executive History & Legacy</div>
-                    <div class="section-title text-zh" style="display: none;">IV. 高管履历与传承</div>
-
-                    <div class="experience-detail">
-                        <div class="experience-title text-en">Nusasiri PLC. (Stock Market Listed) - [2021-2022]</div>
-                        <div class="experience-title text-zh" style="display: none;">泰国上市公司 Nusasiri - [2021-2022]</div>
-                        <div class="subtitle text-en">General Manager & Owner's Strategic Liaison (GM)</div>
-                        <div class="subtitle text-zh" style: "display: none;">总经理与所有者战略联络官</div>
-                        
-                        <p class="text-en"><strong>Mission: First Mover Advantage.</strong> Led the highly complex market entry for the **Cannabis, Wellness, and Tourism platform**. Managed multiple sectors (hospital, skin care, theme park) and provided strategic support during high-level political engagement as **Secretary-General of the Political Party**.</p>
-                        <p class="text-zh" style="display: none;"><strong>任务：先发优势。</strong> 领导泰国首个大型上市公司推出**大麻、健康与旅游平台**的高度复杂的市场进入战略。统筹多领域（医院、护肤品、主题公园），并以**政党秘书长**身份提供高级别政治战略支持。</p>
-                    </div>
-
-                    <div class="experience-detail">
-                        <div class="experience-title text-en">INDEPENDENT CONSULTING & TECH VENTURES (Game Seminars) - [2021-Present]</div>
-                        <div class="experience-title text-zh" style="display: none;">独立咨询与技术投资 (游戏研讨会) - [2021-至今]</div>
-                        <div class="subtitle text-en">General Manager – Technology / Consultant</div>
-                        <div class="subtitle text-zh" style: "display: none;">技术总经理 / 独立顾问</div>
-                        
-                        <p class="text-en">Consultant role with In-Tech Steel, specializing in **Digital Optimization**. Founded a company focused on training Pro Players and organizing board game seminars to teach business strategy. *This venture was later closed due to subsequent COVID-19 outbreaks.*</p>
-                        <p class="text-zh" style="display: none;">担任In-Tech Steel的顾问，专注于**数字化优化**。并创立了一家专注于培训职业玩家和组织商业棋盘游戏研讨会的公司。*该企业因后续COVID-19爆发而关闭*。</p>
-                        <p class="text-en"><strong>Academic Engagement:</strong> Served as a special lecturer on **AI, Tech, Gaming, and Livestreaming** at Assumption College and Kasetsart University. Provided technology consulting to government community projects.</p>
-                        <p class="text-zh" style="display: none;">**学术参与：** 曾任职于易三仓学院和农业大学，讲授**AI、技术、游戏和直播**等课程。为政府社区项目提供技术咨询。</p>
-                    </div>
-
-                    <div class="experience-detail">
-                        <div class="experience-title text-en">LAZADA THAILAND (Youpik) - [2019-2021]</div>
-                        <div class="experience-title text-zh" style="display: none;">泰国 Lazada (Youpik) - [2019-2021]</div>
-                        <div class="subtitle text-en">VP of Training and Development</div>
-                        <div class="subtitle text-zh" style: "display: none;">培训与发展副总裁</div>
-                        <p class="text-en">Achieved rapid promotion by rigorously embodying the **Alibaba Core Values**, demonstrating top-tier performance and deep cultural internalization.</p>
-                        <p class="text-zh" style="display: none;">通过严格遵守**阿里巴巴核心价值观**实现快速晋升，展现了顶尖绩效和深厚的文化内化。</p>
-                    </div>
-
-                    <div class="experience-detail">
-                        <div class="experience-title text-en">CLOVER GROUP (Founder) - [2007-2019]</div>
-                        <div class="experience-title text-zh" style="display: none;">CLOVER GROUP (创始人) - [2007-2019]</div>
-                        <div class="subtitle text-en">Founder & Strategic Disruption Architect</div>
-                        <div class="subtitle text-zh" style: "display: none;">创始人与战略颠覆架构师</div>
-                        
-                        <p class="text-en"><strong>Legacy: The Multimedia Revolution.</strong> Pioneered the conversion of traditional communication into **advanced Multimedia production and continuous online conferencing**, establishing the <span class="highlight">largest and fastest-growing MLM group in Thailand</span>. Achieved **retirement at age 25**.</p>
-                        <p class="text-zh" style="display: none;"><strong>传承：多媒体革命。</strong> 首创将传统沟通方式转换为**先进多媒体制作与持续在线会议**，建立了<span class="highlight">泰国规模最大、增长最快的MLM团队</span>。并在**25岁实现退休**。</p>
-                    </div>
-
+                <div class="expertise-item">
+                    <h4 class="lang-en">AI / LEGAL FOCUS</h4>
+                    <p class="lang-en">Currently pursuing **Law degree (LL.B.)** to leverage AI for contractual certainty and Anti-Fraud architecture. **Mission-driven study.**</p>
+                    <h4 class="lang-cn">人工智能/法律核心</h4>
+                    <p class="lang-cn">目前正在攻读**法学学士学位 (LL.B.)**，利用AI实现合同确定性和反欺诈架构。**使命驱动的学习。**</p>
+                </div>
+                
+                <div class="expertise-item">
+                    <h4 class="lang-en">FEAR TOLERANCE</h4>
+                    <p class="lang-en">Voluntarily skydived and performed solo deep-sea dives to 40 meters in near-total darkness. **Calculated Risk is Standard Operating Procedure.**</p>
+                    <h4 class="lang-cn">恐惧耐受</h4>
+                    <p class="lang-cn">自愿进行高空跳伞并在近乎完全黑暗中进行40米深海潜水。**计算风险是标准操作程序。**</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <section id="alibaba-legacy" class="section white-bg">
+        <div class="container centered-content">
+            <h3 class="lang-en section-title">THE ALIBABA CORE VALUE DRIVEN VP</h3>
+            <h3 class="lang-cn section-title">以阿里巴巴核心价值观驱动的副总裁</h3>
+            <div class="alibaba-content">
+                <img src="IMG_2695.jpeg" alt="Narin at Alibaba Headquarters" class="alibaba-photo">
+                <div>
+                    <p class="lang-en">
+                        Achieved **rapid promotion** at **Lazada Thailand (Youpik)** by rigorously embodying the **Alibaba Core Values**. Certified and trained at Alibaba Headquarters.
+                        <br><br>
+                        **(The Multimedia Revolution):** Pioneered advanced multimedia communication, establishing the **largest and fastest-growing MLM group** in the Clover Group.
+                    </p>
+                    <p class="lang-cn">
+                        在**Lazada泰国 (Youpik)** 通过严格贯彻**阿里巴巴核心价值观**实现**快速晋升**。在阿里巴巴总部获得认证并接受培训。
+                        <br><br>
+                        **(多媒体革命):** 开创了先进的多媒体传播，在Clover Group建立了**最大且增长最快的传销组织**。
+                    </p>
+                    <a href="IMG_1997.jpeg" target="_blank" class="core-value-link lang-en">VIEW ALIBABA CORE VALUES (EN/TH)</a>
+                    <a href="IMG_1997.jpeg" target="_blank" class="core-value-link lang-cn">查看阿里巴巴核心价值观 (EN/TH)</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="details" class="section dark-bg">
+        <div class="container">
+            <h3 class="lang-en section-title centered-content">PROFESSIONAL TIMELINE (REVERSE CHRONOLOGICAL)</h3>
+            <h3 class="lang-cn section-title centered-content">职业时间线 (按时间倒序)</h3>
+            
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <h4 class="lang-en">In-Tech Steel | General Manager - Human Resources (Political Role)</h4>
+                    <h4 class="lang-cn">In-Tech Steel | 人力资源总经理 (政治角色)</h4>
+                    <p class="lang-en">Managed HR restructuring for IPO preparation and provided technology consultation. Served as Secretary-General of the Political General.</p>
+                    <p class="lang-cn">管理IPO准备的人力资源重组，并提供技术咨询。担任政治总干事秘书长。</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4 class="lang-en">Outworld Academy | Founder / Business Consultant</h4>
+                    <h4 class="lang-cn">Outworld Academy | 创始人 / 商业顾问</h4>
+                    <p class="lang-en">Founded a consulting firm focusing on Pro Player training, business board game seminars, and Blockchain/Livestream strategy.</p>
+                    <p class="lang-cn">创立了一家专注于职业玩家培训、商业棋盘游戏研讨会以及区块链/直播战略的咨询公司。</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4 class="lang-en">Nusasiri PLC. | Vice President (VP) & Co-Founder, Strategic Disruption</h4>
+                    <h4 class="lang-cn">Nusasiri PLC. | 副总裁 (VP) 和战略颠覆联席创始人</h4>
+                    <p class="lang-en">Worked directly with the owner to coordinate complex sectors including Hospital, Wellness, and Theme Park (Cross-Sector Management).</p>
+                    <p class="lang-cn">直接与所有者合作，协调复杂的部门，包括医院、健康中心和主题公园（跨部门管理）。</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4 class="lang-en">Aim Star Network / Clover Group | Top Rank Representative</h4>
+                    <h4 class="lang-cn">Aim Star Network / Clover Group | 顶级代表</h4>
+                    <p class="lang-en">Achieved the youngest highest rank by successfully driving technology adoption across the network.</p>
+                    <p class="lang-cn">通过在网络中成功推动技术采用，达到最年轻的最高级别。</p>
+                </div>
+                
+                <div class="timeline-item">
+                    <h4 class="lang-en">Academic/Govt. Roles | Special Lecturer / Tech Consultant</h4>
+                    <h4 class="lang-cn">学术/政府角色 | 特别讲师 / 技术顾问</h4>
+                    <p class="lang-en">Guest lecturer on AI, Tech, Gaming, and Livestreaming at institutions like Assumption College and Kasetsart University. Provided technology consulting.</p>
+                    <p class="lang-cn">在Assumption College和Kasetsart University等机构担任AI、技术、游戏和直播客座讲师。提供技术咨询。</p>
+                </div>
+            </div>
+            
+            <h3 class="lang-en section-title centered-content" style="margin-top: 80px;">EDUCATION & CERTIFICATIONS</h3>
+            <h3 class="lang-cn section-title centered-content" style="margin-top: 80px;">教育与认证</h3>
+            
+            <ul class="education-list lang-en">
+                <li>**Sripatum University:** Bachelor of Laws (LL.B.) (In Progress). Focus: AI and Law integration for contractual certainty.</li>
+                <li>**Chulalongkorn University:** Bachelor's degree, Speech Communication and Rhetoric.</li>
+                <li>**Triamudom Suksa (Top High School):** Foundational expertise in advanced Science and Business Management.</li>
+                <li>**Specialized Certifications:** Alibaba Headquarters Certified and Trained, Licensed Insurance Agent, Investment Experience, Expert in AI Language Processing (Able to read and write AI Language).</li>
+                <li>**Languages:** Thai (Native), English (Business), Basic Japanese.</li>
+            </ul>
+            <ul class="education-list lang-cn" style="display: none;">
+                <li>**斯巴顿大学:** 法学学士 (LL.B.) (在读)。重点：AI与法律整合以实现合同确定性。</li>
+                <li>**朱拉隆功大学:** 学士学位，言语传播与修辞学。</li>
+                <li>**三一中学 (顶尖高中):** 先进科学与商业管理基础专业知识。</li>
+                <li>**专业认证:** 阿里巴巴总部认证和培训、执业保险代理人、投资经验、AI语言处理专家（能够读写AI语言）。</li>
+                <li>**语言:** 泰语（母语）、英语（商务）、基础日语。</li>
+            </ul>
+        </div>
+    </section>
 
     <script>
-        function setLanguage(lang) {
-            ['en', 'zh'].forEach(l => {https://www.myclover.com/narin
-                const displayStyle = (l === lang) ? 'block' : 'none';
-                document.querySelectorAll('.text-' + l).forEach(el => {
-                    // Check if the element should generally be inline (like inside <li> or <h2>)
-                    const parentTag = el.parentElement.tagName;
-                    const isInlineContext = parentTag === 'LI' || el.parentElement.classList.contains('subtitle') || el.parentElement.classList.contains('experience-title') || el.parentElement.classList.contains('photo-caption');
+        function toggleLanguage() {
+            // Check current state: if '.lang-en' is NOT hidden, it means it's currently showing English.
+            const isEnglishCurrentlyVisible = document.querySelector('.lang-en').style.display !== 'none';
 
-                    if (isInlineContext) {
-                            el.style.display = (l === lang) ? 'inline' : 'none';
-                    } else {
-                        el.style.display = displayStyle;
-                    }
-                    if (el.tagName === 'P' || el.tagName === 'DIV' || el.tagName === 'UL' || el.tagName === 'H1' || el.tagName === 'H2') {
-                        el.style.display = displayStyle;
-                    }
-                });
+            // Toggle visibility for all elements with class 'lang-en' and 'lang-cn'
+            document.querySelectorAll('.lang-en').forEach(el => {
+                el.style.display = isEnglishCurrentlyVisible ? 'none' : (el.tagName === 'LI' ? 'list-item' : 'block');
             });
-            document.documentElement.lang = lang;
+            
+            document.querySelectorAll('.lang-cn').forEach(el => {
+                el.style.display = isEnglishCurrentlyVisible ? (el.tagName === 'LI' ? 'list-item' : 'block') : 'none';
+            });
+            
+            // Update the toggle button text
+            document.getElementById('lang-toggle').textContent = isEnglishCurrentlyVisible ? '中文 / EN' : 'EN / 中文';
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setLanguage('en'); 
-        });
     </script>
 </body>
 </html>
