@@ -1,13 +1,26 @@
+นี่คือ "แฟ้มข้อมูลผู้บริหาร" (Executive Profile) ฉบับสมบูรณ์ ที่รวม "ความเท่" "ความขลัง" และ "ความละเอียด" ทั้งหมดที่มึงต้องการ
+
+กูได้ออกแบบให้ใช้ธีม **ดำ-ทอง** เพื่อสื่อถึงอำนาจและความสง่างาม และใช้โครงสร้าง **Dashboard** ที่แยกส่วนให้ดูเป็นระเบียบและอ่านง่ายบนทุกอุปกรณ์
+
+-----
+
+### 1\. โครงสร้าง HTML/CSS & Language Toggle (ฉบับสมบูรณ์)
+
+*(มึงสามารถคัดลอกโค้ดนี้ไปเปิดเป็นไฟล์ .html ได้ทันที)*
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The San Chuan Executive Profile</title>
+    <title class="text-en">Narin Leelaporn: The San Chuan Architect</title>
+    <title class="text-zh" style="display: none;">李娜霖: 三川王朝战略架构师</title>
+    <title class="text-th" style="display: none;">นรินทร์ ลีลาพร: สถาปนิกแห่งซานชวน</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Microsoft YaHei', sans-serif;
-            background-color: #1a1a2e; /* Dark theme for 'Cool' aesthetic */
+            background-color: #0d0d0d; /* Near Black */
             color: #e0e0e0;
             line-height: 1.6;
             margin: 0;
@@ -17,105 +30,128 @@
             font-size: 16px;
         }
         .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 40px 0;
-            background: #2a2a4a;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            width: 95%;
+            max-width: 1200px;
+            margin: 30px 0;
+            background: #1a1a1a;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
             border-radius: 15px;
             overflow: hidden;
-            border: 1px solid #4a4a75;
+            border: 2px solid #333;
         }
         .toggle-switch {
             text-align: right;
             padding: 15px 30px 0 0;
+            border-bottom: 1px solid #333;
         }
         .toggle-switch button {
-            background-color: #ffab00;
-            color: #1a1a2e;
+            background-color: #ffc107; /* Gold */
+            color: #1a1a1a;
             border: none;
             padding: 8px 15px;
-            margin-left: 10px;
+            margin-left: 8px;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s;
         }
         .toggle-switch button:hover {
-            background-color: #ffc107;
+            background-color: #ffd700;
         }
         .header {
-            background-color: #0d47a1;
-            padding: 20px 40px;
+            background: #000;
+            padding: 30px 40px;
             text-align: left;
+            position: relative;
         }
         .header h1 {
             margin: 0;
-            font-size: 2.8em;
-            font-weight: 800;
+            font-size: 3em;
+            font-weight: 900;
+            color: #ffc107;
         }
         .header h2 {
             margin: 5px 0 0;
-            font-size: 1.2em;
-            font-weight: 400;
+            font-size: 1.4em;
+            font-weight: 500;
             opacity: 0.9;
         }
         .photo-area {
             position: relative;
             height: 350px;
             overflow: hidden;
+            border-bottom: 5px solid #ffc107;
         }
         .photo-area img {
             width: 100%;
             height: auto;
             object-fit: cover;
-            opacity: 0.8;
+            filter: grayscale(30%) brightness(0.7);
+            opacity: 0.9;
+            min-height: 350px;
         }
         .photo-caption {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 10px 40px;
-            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 40px;
+            background: rgba(0, 0, 0, 0.7);
             color: white;
-            font-size: 0.9em;
+            font-size: 1.1em;
             text-align: center;
         }
         .content {
             padding: 40px;
         }
-        .section-title {
-            color: #ffab00;
-            font-size: 1.6em;
-            border-bottom: 2px solid #4a4a75;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-            font-weight: 700;
+        .content-grid {
+            display: flex;
+            flex-direction: column; /* Default stack on mobile */
+            gap: 30px;
         }
-        .achievement-box {
-            background-color: #3b3b64;
+        /* Desktop/Tablet Layout: Dashboard Style */
+        @media (min-width: 768px) {
+            .content-grid {
+                display: grid;
+                grid-template-columns: 1fr 2fr; /* Left 1/3, Right 2/3 */
+            }
+            .sidebar {
+                grid-column: 1 / 2;
+                padding-right: 15px;
+            }
+            .main-section {
+                grid-column: 2 / 3;
+            }
+        }
+        .section-title {
+            color: #ffc107; /* Gold */
+            font-size: 1.8em;
+            border-bottom: 2px solid #4a4a4a;
+            padding-bottom: 8px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .box {
+            background-color: #252525;
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 25px;
-            border-left: 5px solid #0d47a1;
-        }
-        .achievement-box p {
-            margin: 5px 0;
+            border-left: 5px solid #ffc107;
         }
         ul {
             list-style: none;
             padding: 0;
         }
         ul li {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             padding-left: 25px;
             position: relative;
             color: #ccc;
         }
         ul li::before {
-            content: '»';
-            color: #ffab00;
+            content: '♦';
+            color: #ffc107;
             font-weight: bold;
             display: inline-block;
             width: 1em;
@@ -123,20 +159,43 @@
         }
         strong {
             color: #fff;
+            font-weight: 600;
+        }
+        .experience-detail {
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-right: 3px solid #ffc107;
         }
         .experience-title {
-            color: #0d47a1;
+            color: #ffc107;
             font-weight: 700;
+            font-size: 1.2em;
             margin-bottom: 5px;
         }
         .subtitle {
             font-style: italic;
             font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 10px;
         }
-        .experience-detail {
-            margin-bottom: 15px;
-            border-left: 3px solid #ffab00;
-            padding-left: 10px;
+        .collapsible-header {
+            cursor: pointer;
+            padding: 10px 0;
+            border-bottom: 1px dashed #4a4a4a;
+            color: #fff;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .collapsible-header:hover {
+            color: #ffc107;
+        }
+        .collapsible-content {
+            display: none;
+            padding-top: 10px;
+            color: #ccc;
         }
     </style>
 </head>
@@ -145,110 +204,212 @@
         <div class="toggle-switch">
             <button onclick="setLanguage('en')">English</button>
             <button onclick="setLanguage('zh')">中文</button>
+            <button onclick="setLanguage('th')">ไทย</button>
         </div>
 
         <div class="header">
             <h1 class="text-en">NARIN LEELAPORN</h1>
             <h1 class="text-zh" style="display: none;">李娜霖</h1>
-            <h2 class="text-en">Executive Officer & Strategic Systems Architect (INTP)</h2>
-            <h2 class="text-zh" style="display: none;">首席执行官与战略系统设计师 (INTP)</h2>
+            <h1 class="text-th" style="display: none;">นรินทร์ ลีลาพร</h1>
+            <h2 class="text-en">Executive Officer, Strategic Systems Architect & Consultant (INTP)</h2>
+            <h2 class="text-zh" style="display: none;">首席执行官, 战略系统架构师与顾问 (INTP)</h2>
+            <h2 class="text-th" style="display: none;">ผู้บริหาร, สถาปนิกและที่ปรึกษาระบบยุทธศาสตร์ (INTP)</h2>
         </div>
 
         <div class="photo-area">
-            <img src="IMAGE_URL_OF_THE_20K_AUDIENCE_PHOTO_HERE" alt="20,000 Audience Photo">
-            <div class="photo-caption text-en">Speaking on the importance of 'Why' to a 20,000-person audience at age 20. The genesis of our core philosophy.</div>
-            <div class="photo-caption text-zh" style="display: none;">20岁时对两万听众演讲“为什么”的重要性。这是我们核心哲学的起源。</div>
+            <img src="IMAGE_URL_OF_IMG_1446.jpeg_HERE" alt="National TV Appearance">
+            <div class="photo-caption">
+                <span class="text-en">National TV Appearance: Deploying Disruption. The authority of multimedia innovation and strategic insight (circa age 20).</span>
+                <span class="text-zh" style="display: none;">全国电视露面：部署颠覆性战略。多媒体创新和战略洞察力的权威展示（大约20岁时）。</span>
+                <span class="text-th" style="display: none;">ออกอากาศทั่วประเทศช่อง 5: การส่งมอบนวัตกรรมอำนาจมัลติมีเดียและข้อมูลเชิงกลยุทธ์ (ช่วงอายุ 20 ปี)</span>
+            </div>
         </div>
 
         <div class="content">
-            <div class="section-title text-en">I. Core Mission: The Why-Driven Empire</div>
-            <div class="section-title text-zh" style="display: none;">I. 核心使命：为什么驱动的王朝</div>
-            
-            <div class="achievement-box">
-                <p class="text-en">My mission is to **eliminate the variable of human dishonesty** and build systems where success is guaranteed. My ultimate commitment is to elevate the success rate of every partnership to the highest possible probability, using logic to enforce ethical conduct.</p>
-                <p class="text-zh" style="display: none;">我的使命是**消除人性中的欺骗变量**，并建立一个能够保障成功的系统。我的终极承诺是利用逻辑来强制执行道德，将每个合作的成功率提升至最接近100%的水平。</p>
-            </div>
+            <div class="content-grid">
+                <div class="sidebar">
+                    <div class="section-title text-en">I. Core Mission</div>
+                    <div class="section-title text-zh" style="display: none;">I. 核心使命</div>
+                    <div class="section-title text-th" style="display: none;">I. พันธกิจหลัก</div>
+                    <div class="box">
+                        <p class="text-en">My mandate is to **eliminate the variable of human dishonesty** and construct systems where success is inevitable. My expertise lies in leveraging **ultimate AI technology** to transform business outcomes and enforce ethical conduct, elevating success probability to the highest level.</p>
+                        <p class="text-zh" style="display: none;">我的使命是**消除人性中的欺骗变量**，并构建能保障成功的系统。我的专长在于利用**终极AI技术**来颠覆商业成果，强制执行道德规范，将成功概率提升到最高水平。</p>
+                        <p class="text-th" style="display: none;">พันธกิจของข้าพเจ้าคือ **การขจัดตัวแปรแห่งความไม่ซื่อสัตย์ของมนุษย์** และสร้างระบบที่รับประกันความสำเร็จ ข้าพเจ้าเชี่ยวชาญในการใช้ **เทคโนโลยี AI ขั้นสูงสุด** เพื่อเปลี่ยนผลลัพธ์ทางธุรกิจและบังคับใช้คุณธรรม ยกระดับโอกาสสำเร็จสู่ระดับสูงสุด</p>
+                    </div>
 
-            <div class="section-title text-en">II. Strategic Capital: The INTP's Power Stack</div>
-            <div class="section-title text-zh" style="display: none;">II. 战略资本：INTP的能力集合</div>
-            <ul>
-                <li class="text-en"><strong>Logic as Weaponry:</strong> Achieved Thailand's **#1 National Math Ranking** and perfect score. This is the ability to rapidly decompose and solve complex, high-variable problems in real-time.</li>
-                <li class="text-zh" style="display: none;"><strong>逻辑武器化：</strong> 获得泰国全国数学测试第一名和满分，展现了瞬间分解并实时解决高度复杂问题的高超能力。</li>
+                    <div class="section-title text-en">II. The Power Stack</div>
+                    <div class="section-title text-zh" style="display: none;">II. 能力集合</div>
+                    <div class="section-title text-th" style="display: none;">II. ขุมพลังและความสามารถ</div>
+                    <ul>
+                        <li class="text-en"><strong>Logic & Precision:</strong> Thailand's **#1 National Math Ranking** (perfect score). The ability to rapidly decompose complex, high-variable problems in real-time.</li>
+                        <li class="text-zh" style="display: none;"><strong>逻辑与精准：</strong> 泰国全国数学测试第一名和满分。能够实时分解并解决高度复杂问题。</li>
+                        <li class="text-th" style="display: none;"><strong>ตรรกะและความแม่นยำ:</strong> อันดับ 1 และคะแนนเต็มระดับประเทศ ในการสอบคณิตศาสตร์ คือความสามารถในการแยกส่วนและแก้ปัญหาซับซ้อนแบบเรียลไทม์</li>
+
+                        <li class="text-en"><strong>Strategic Mastery:</strong> **World Tournament Finalist** in the complex strategy game, *Flesh and Blood*. A proven skill in converting randomness into high-probability victory.</li>
+                        <li class="text-zh" style="display: none;"><strong>战略精通：</strong> 复杂战略游戏《Flesh and Blood》**全球总决赛选手**。ท能够将随机性转化为高概率胜利的实战证明。</li>
+                        <li class="text-th" style="display: none;"><strong>ความเชี่ยวชาญด้านกลยุทธ์:</strong> **ผู้เข้าชิง World Tournament** ในการ์ดเกม *Flesh and Blood* ซึ่งเป็นหลักฐานเชิงประจักษ์ในการเปลี่ยนความไม่แน่นอนให้เป็นชัยชนะที่มีโอกาสสูง</li>
+                        
+                        <li class="text-en"><strong>The Super Connector:</strong> Proven ability to open doors to **top-level networks** across Thailand, China, Japan, the US, and Hong Kong.</li>
+                        <li class="text-zh" style="display: none;"><strong>超级连接者：</strong> 具备打开**顶级人脉网络**的能力，覆盖泰国、中国、日本、美国和香港</li>
+                        <li class="text-th" style="display: none;"><strong>ซูเปอร์คอนเนคเตอร์:</strong> ความสามารถในการเปิดประตูสู่ **เครือข่ายระดับสูง** ทั่วประเทศไทย จีน ญี่ปุ่น อเมริกา และฮ่องกง</li>
+                    </ul>
+
+                    <div class="section-title text-en">III. Extreme Fear Tolerance (Fun Fact)</div>
+                    <div class="section-title text-zh" style="display: none;">III. 极度恐惧耐受性 (趣闻)</div>
+                    <div class="section-title text-th" style="display: none;">III. การพิชิตความกลัวขั้นสุด (Fun Fact)</div>
+                    <div class="box">
+                        <p class="text-en">I have voluntarily **skydived** from an aircraft and performed solo deep-sea dives to **40 meters in near-total darkness**. This establishes an absolute understanding of human limitation and fear—a critical asset for high-stakes decision-making.</p>
+                        <p class="text-zh" style="display: none;">我曾自愿**从飞机上跳伞**，并独自潜水至**40米深的近乎完全黑暗**。这确立了对人类局限和恐惧的绝对理解——这是高风险决策中的一项关键资产。</p>
+                        <p class="text-th" style="display: none;">เคย**กระโดดร่ม**จากเครื่องบิน และดำดิ่งเดี่ยวสู่ความลึก **40 เมตรในความมืดมิดเกือบสนิท** นี่คือการเข้าใจขีดจำกัดและความกลัวของมนุษย์อย่างถ่องแท้ ซึ่งเป็นทรัพย์สินสำคัญสำหรับการตัดสินใจในสถานการณ์เดิมพันสูง</p>
+                    </div>
+
+                </div>
                 
-                <li class="text-en"><strong>The Anti-Fraud Architect:</strong> Motivation stems from past business failures caused by **contractual dishonesty**. This drives my focus on integrating **AI and Law** to enforce legal compliance and protect partners from fraud.</li>
-                <li class="text-zh" style: "display: none;"><strong>反欺诈架构师：</strong> 我的动力来自过去因**合同欺诈**导致的商业失败。这促使我专注于结合AI与法律来保障合同的遵守，保护合作方。</li>
+                <div class="main-section">
+                    <div class="section-title text-en">IV. Strategic Experience (Missions)</div>
+                    <div class="section-title text-zh" style="display: none;">IV. 战略经验 (任务列表)</div>
+                    <div class="section-title text-th" style="display: none;">IV. ประสบการณ์เชิงกลยุทธ์ (ภารกิจ)</div>
 
-                <li class="text-en"><strong>World-Class Strategic Execution:</strong> **World Tournament Finalist** in the complex strategy game, Flesh and Blood. This skill is critical for executing optimal plays under pressure and converting randomness into high-probability victories, even when facing competitors' cheating.</li>
-                <li class="text-zh" style: "display: none;"><strong>世界级战略执行力：</strong> 复杂战略游戏《Flesh and Blood》全球总决赛选手。这种能力对于在高压下执行最佳方案，并将随机性转化为高概率胜利至关重要，即使面对对手欺诈也然。</li>
-                
-                <li class="text-en"><strong>Global Connector & Ethical Foundation:</strong> Unwavering commitment to **Absolute Transparency** and **Zero Tolerance for Partner Dishonesty**. Possesses a strong network across China, Japan, the US, and Hong Kong.</li>
-                <li class="text-zh" style: "display: none;"><strong>全球连接者与道德基础：</strong> 坚定不移地坚持**绝对透明**和**对合作方欺骗行为零容忍**。拥有强大的中国、日本、美国和香港商业人脉网络。</li>
-            </ul>
+                    <div class="experience-detail">
+                        <div class="experience-title text-en">NUSASIRI PLC. (Stock Market Listed) - [2021-2022]</div>
+                        <div class="experience-title text-zh" style="display: none;">泰国上市公司 Nusasiri - [2021-2022]</div>
+                        <div class="experience-title text-th" style="display: none;">บริษัท นุสาสิริ จำกัด (มหาชน) - [2564-2565]</div>
+                        <div class="subtitle text-en">General Manager & Owner's Strategic Liaison (GM)</div>
+                        <div class="subtitle text-zh" style: "display: none;">总经理与所有者战略联络官</div>
+                        <div class="subtitle text-th" style: "display: none;">ผู้จัดการทั่วไปและผู้ประสานงานกลยุทธ์ติดเจ้าของ</div>
+                        
+                        <div class="collapsible-header text-en" onclick="toggleDetails(this, 'nusasiri')">Mission: The Cannabis First Mover & Political Strategy [Click to Expand]</div>
+                        <div class="collapsible-header text-zh" style="display: none;" onclick="toggleDetails(this, 'nusasiri')">任务：大麻先行者与政治战略 [点击展开]</div>
+                        <div class="collapsible-header text-th" style="display: none;" onclick="toggleDetails(this, 'nusasiri')">ภารกิจ: ผู้นำตลาดกัญชาและกลยุทธ์ทางการเมือง [คลิกเพื่อขยาย]</div>
+                        
+                        <div id="nusasiri" class="collapsible-content">
+                            <p class="text-en">Led the complex market entry strategy for the first major publicly traded company to launch a **Cannabis, Wellness, and Tourism platform** in Thailand. Managed multiple sectors (hospital, skin care, theme park) under rapidly changing legal frameworks. Served as the **Secretary-General of the Political Party**, leveraging expertise in legislative work and high-level HR restructuring for IPO preparation.</p>
+                            <p class="text-zh" style="display: none;">领导泰国首个大型上市公司推出**大麻、健康与旅游平台**的高度复杂的市场进入战略。在不断变化的法律框架下，统筹了医院、护肤品、主题公园等多个行业。并担任**政党秘书长**，利用立法工作专长管理人力资源重组以准备IPO。</p>
+                            <p class="text-th" style="display: none;">นำกลยุทธ์การเปิดตลาดที่ซับซ้อนสำหรับบริษัทมหาชนรายใหญ่รายแรกที่เปิดตัว **แพลตฟอร์มกัญชา เวลเนส และการท่องเที่ยว** ในประเทศไทย บริหารหลายภาคส่วน (โรงพยาบาล สกินแคร์ สวนสนุก) ภายใต้กฎหมายที่เปลี่ยนแปลงบ่อย ดำรงตำแหน่ง **เลขาธิการพรรคการเมือง** ใช้ความเชี่ยวชาญงานสภาและการปรับโครงสร้าง HR ระดับสูงเพื่อเตรียม IPO</p>
+                        </div>
+                    </div>
 
-            <div class="section-title text-en">III. High-Stakes Missions & Experience</div>
-            <div class="section-title text-zh" style="display: none;">III. 高级别任务与经验</div>
+                    <div class="experience-detail">
+                        <div class="experience-title text-en">LAZADA THAILAND (Youpik) - [2019-2021]</div>
+                        <div class="experience-title text-zh" style="display: none;">泰国 Lazada (Youpik) - [2019-2021]</div>
+                        <div class="experience-title text-th" style="display: none;">ลาซาด้า ประเทศไทย - [2562-2564]</div>
+                        <div class="subtitle text-en">VP of Training and Development (Alibaba Cultural Architect)</div>
+                        <div class="subtitle text-zh" style: "display: none;">培训与发展副总裁 (阿里巴巴文化架构师)</div>
+                        <div class="subtitle text-th" style: "display: none;">รองประธานฝ่ายฝึกอบรมและพัฒนา (สถาปนิกวัฒนธรรมอาลีบาบา)</div>
+                        
+                        <div class="collapsible-header text-en" onclick="toggleDetails(this, 'lazada')">Mission: Alibaba Core Value Execution & Certification [Click to Expand]</div>
+                        <div class="collapsible-header text-zh" style="display: none;" onclick="toggleDetails(this, 'lazada')">任务：阿里巴巴核心价值观执行与认证 [点击展开]</div>
+                        <div class="collapsible-header text-th" style="display: none;" onclick="toggleDetails(this, 'lazada')">ภารกิจ: การดำเนินการและการรับรองค่านิยมหลักของ Alibaba [คลิกเพื่อขยาย]</div>
 
-            <div class="experience-detail">
-                <div class="experience-title text-en">NUSASIRI PLC. (Stock Market Listed) - [2021-2022]</div>
-                <div class="experience-title text-zh" style="display: none;">泰国上市公司 Nusasiri - [2021-2022]</div>
-                <div class="subtitle text-en">General Manager & Owner's Strategic Liaison (GM)</div>
-                <div class="subtitle text-zh" style: "display: none;">总经理与所有者战略联络官</div>
-                <p class="text-en"><strong>Mission: First Mover Advantage.</strong> Led the highly complex market entry strategy for the first major publicly traded company to launch the **Cannabis, Wellness, and Tourism platform** in Thailand. Managed multiple sectors (hospital, skin care, theme park) under rapidly changing legal frameworks.</p>
-                <p class="text-zh" style: "display: none;"><strong>任务：先发优势。</strong> 领导泰国首个大型上市公司推出**大麻、健康与旅游平台**的高度复杂的市场进入战略。在不断变化的法律框架下，统筹了医院、护肤品、主题公园等多个行业。</p>
-                <p class="text-en"><strong>Political & HR Strategy:</strong> Managed high-level HR restructuring for IPO preparation and served as the **Secretary-General of the Political Party** (appointed by the owner due to legislative work expertise).</p>
-                <p class="text-zh" style: "display: none;"><strong>政治与人力资源战略：</strong> 管理高级别人力资源重组以准备IPO，并担任**政党秘书长**（由所有者根据立法工作专长任命）。</p>
+                        <div id="lazada" class="collapsible-content">
+                            <p class="text-en">Achieved rapid promotion by rigorously embodying the **Alibaba Core Values**, leading to a performance evaluation of the highest caliber. **Certified and trained at Alibaba Headquarters**, demonstrating deep internalization of the core culture that drives global success.</p>
+                            <p class="text-zh" style="display: none;">通过严格遵守**阿里巴巴核心价值观**实现快速晋升，绩效评估达到最高水平。**在阿里巴巴总部获得认证与培训**，展现了对驱动全球成功的核心文化的深度内化。</p>
+                            <p class="text-th" style="display: none;">ได้รับการเลื่อนตำแหน่งอย่างรวดเร็วจากการยึดมั่นใน **ค่านิยมหลักของ Alibaba** อย่างเคร่งครัด จนได้รับการประเมินผลงานในระดับสูงสุด **ผ่านการรับรองและอบรมจากสำนักงานใหญ่ Alibaba** แสดงให้เห็นถึงการซึมซับวัฒนธรรมหลักที่ขับเคลื่อนความสำเร็จระดับโลก</p>
+                            <img src="IMAGE_URL_OF_IMG_2695.jpeg_HERE" alt="Alibaba Photo" style="width: 100%; max-width: 300px; margin-top: 10px; border-radius: 5px;">
+                        </div>
+                    </div>
+
+                    <div class="experience-detail">
+                        <div class="experience-title text-en">CLOVER GROUP & AIM STAR/LEGACY - [2007-2019]</div>
+                        <div class="experience-title text-zh" style="display: none;">CLOVER GROUP 与 AIM STAR/LEGACY - [2007-2019]</div>
+                        <div class="experience-title text-th" style="display: none;">CLOVER GROUP และ AIM STAR/LEGACY - [2550-2562]</div>
+                        <div class="subtitle text-en">Founder (Clover Group) / Youngest Top Rank Representative (MLM)</div>
+                        <div class="subtitle text-zh" style: "display: none;">创始人 (Clover Group) / 最年轻顶级代表 (MLM)</div>
+                        <div class="subtitle text-th" style: "display: none;">ผู้ก่อตั้ง (Clover Group) / ตัวแทนระดับสูงสุดที่อายุน้อยที่สุด (MLM)</div>
+                        
+                        <div class="collapsible-header text-en" onclick="toggleDetails(this, 'mlm')">Mission: Multimedia Disruption & Financial Freedom [Click to Expand]</div>
+                        <div class="collapsible-header text-zh" style="display: none;" onclick="toggleDetails(this, 'mlm')">任务：多媒体颠覆与财务自由 [点击展开]</div>
+                        <div class="collapsible-header text-th" style="display: none;" onclick="toggleDetails(this, 'mlm')">ภารกิจ: การปฏิวัติมัลติมีเดียและอิสรภาพทางการเงิน [คลิกเพื่อขยาย]</div>
+
+                        <div id="mlm" class="collapsible-content">
+                            <p class="text-en">As the founder of **Clover Group**, I spearheaded the market disruption by pioneering the conversion of outdated communication (cassettes/in-person meetings) into **advanced Multimedia production and continuous online conferencing**. This innovation established the **largest and fastest-growing MLM group in Thailand**, leading to retirement at age 25 with sustained passive income.</p>
+                            <p class="text-zh" style="display: none;">作为 **Clover Group** 的创始人，我通过首创将传统MLM沟通方式转换为**先进多媒体制作与持续在线会议** 来领导市场颠覆。这一创新建立了**泰国规模最大、增长最快的MLM团队**，使我在25岁实现退休并获得持续被动收入。</p>
+                            <p class="text-th" style="display: none;">ในฐานะผู้ก่อตั้ง **Clover Group** ข้าพเจ้าเป็นผู้นำการปฏิวัติตลาดโดยบุกเบิกการเปลี่ยนรูปแบบการสื่อสารเก่า (เทป/ประชุมสด) สู่ **การผลิตมัลติมีเดียขั้นสูงและการประชุมออนไลน์ต่อเนื่อง** นวัตกรรมนี้ทำให้กลุ่มกลายเป็น **กลุ่ม MLM ที่ใหญ่และเติบโตเร็วที่สุดในไทย** นำไปสู่การเกษียณตั้งแต่อายุ 25 ปี พร้อมรายได้ไม่เคยหยุดนิ่ง </p>
+                             <img src="IMAGE_URL_OF_IMG_2712.jpg_HERE" alt="20k Audience Photo" style="width: 100%; max-width: 300px; margin-top: 10px; border-radius: 5px;">
+                        </div>
+                    </div>
+
+                    <div class="section-title text-en">V. Education & Certifications</div>
+                    <div class="section-title text-zh" style="display: none;">V. 教育与认证</div>
+                    <div class="section-title text-th" style="display: none;">V. การศึกษาและการรับรอง</div>
+                    
+                    <div class="experience-detail">
+                        <div class="experience-title text-en">LAW (LL.B.) - Sripatum University (In Progress)</div>
+                        <div class="experience-title text-zh" style="display: none;">法学学士 - 斯巴顿大学 (在读)</div>
+                        <div class="experience-title text-th" style="display: none;">นิติศาสตรบัณฑิต - มหาวิทยาลัยศรีปทุม (กำลังศึกษา)</div>
+                        <div class="subtitle text-en">Mission: Integrating AI and Law to enforce contractual certainty.</div>
+                        <div class="subtitle text-zh" style: "display: none;">使命：结合AI和法律以强制执行合同的确定性。</div>
+                        <div class="subtitle text-th" style: "display: none;">พันธกิจ: บูรณาการ AI และกฎหมายเพื่อบังคับใช้ความแน่นอนของสัญญา</div>
+                    </div>
+
+                    <div class="experience-detail">
+                        <div class="experience-title text-en">SPEECH COMMUNICATION AND RHETORIC - Chulalongkorn University</div>
+                        <div class="experience-title text-zh" style="display: none;">修辞与传播学学士 - 朱拉隆功大学</div>
+                        <div class="experience-title text-th" style="display: none;">วาทวิทยาและสื่อสารการแสดง - จุฬาลงกรณ์มหาวิทยาลัย</div>
+                    </div>
+                    
+                    <div class="experience-detail">
+                        <div class="experience-title text-en">SPECIALIZED CERTIFICATIONS (Digital & Connection)</div>
+                        <div class="experience-title text-zh" style="display: none;">专业认证 (数字化与连接)</div>
+                        <div class="experience-title text-th" style="display: none;">การรับรองเฉพาะทาง (ดิจิทัลและการสร้างเครือข่าย)</div>
+                        <div class="subtitle text-en">DEF4, The Connext 1, The Story 4, Digital Marketing. (Leveraging these courses for top-level networking in Thailand)</div>
+                        <div class="subtitle text-zh" style: "display: none;">DEF4, The Connext 1, The Story 4, 数字营销。 (利用这些课程建立泰国顶级人脉网络)</div>
+                        <div class="subtitle text-th" style: "display: none;">DEF4, The Connext 1, The Story 4, Digital Marketing (ใช้ประโยชน์จากคอร์สเหล่านี้เพื่อสร้างเครือข่ายระดับสูงในประเทศไทย)</div>
+                    </div>
+
+                </div>
             </div>
-
-            <div class="experience-detail">
-                <div class="experience-title text-en">LAZADA THAILAND (Youpik) - [2019-2021]</div>
-                <div class="experience-title text-zh" style="display: none;">泰国 Lazada (Youpik) - [2019-2021]</div>
-                <div class="subtitle text-en">VP of Training and Development (Alibaba Culture)</div>
-                <div class="subtitle text-zh" style: "display: none;">培训与发展副总裁（阿里巴巴文化）</div>
-                <p class="text-en">Achieved rapid promotion by adhering strictly to the **Alibaba Core Values**, leading to excellent performance evaluation and embodying the 'Ali-Culture'. Certified in and deeply understands the core values and operations of Alibaba Headquarters.</p>
-                <p class="text-zh" style: "display: none;">通过严格遵守**阿里巴巴核心价值观**实现快速晋升，绩效评估优秀并深谙阿里文化。获得阿里巴巴总部核心价值观与运营认证。</p>
-            </div>
-            
-             <div class="experience-detail">
-                <div class="experience-title text-en">LEGACY CORP / AIM STARS NETWORK (Disruptive Multimedia Strategy) - [2007-2019]</div>
-                <div class="experience-title text-zh" style="display: none;">Legacy Corp / Aim Stars Network (颠覆性多媒体战略) - [2007-2019]</div>
-                <div class="subtitle text-en">Marketing Director / Brand Manager</div>
-                <div class="subtitle text-zh" style: "display: none;">营销总监 / 品牌经理</div>
-                <p class="text-en"><strong>Mission: Multimedia Disruption.</strong> Pioneered the conversion of traditional MLM communication into **advanced Multimedia production and continuous online conferencing**. This resulted in the establishment of the **largest and fastest-growing MLM group in Thailand**.</p>
-                <p class="text-zh" style: "display: none;"><strong>任务：多媒体颠覆。</strong> 首创将传统MLM沟通方式转换为**先进多媒体制作与持续在线会议**。此举导致了**泰国规模最大、增长最快的MLM团队**的建立。</p>
-                <p class="text-en"><strong>Early Success:</strong> Achieved financial independence (retired from the MLM sector at age 25), with continuous passive income flow since then. This success led to the famous **20,000-person speaking engagement** at age 20.</p>
-                <p class="text-zh" style: "display: none;"><strong>早期成就：</strong> 实现财务自由（25岁从MLM行业退休），此后被动收入持续流入。这一成功促成了20岁时在两万人研讨会上的著名演讲。</p>
-            </div>
-
-            <div class="section-title text-en">IV. Education & Specialized Skills</div>
-            <div class="section-title text-zh" style="display: none;">IV. 教育与专业技能</div>
-            <ul>
-                <li class="text-en"><strong>Law (LL.B.) - Sripatum University (In Progress):</strong> Mission-driven legal study focused on combining AI and law to prevent contractual fraud.</li>
-                <li class="text-zh" style: "display: none;"><strong>法学学士 - 斯巴顿大学 (在读):</strong> 以使命驱动的法律研究，专注于结合AI和法律来防止合同欺诈。</li>
-                <li class="text-en"><strong>Speech Communication and Rhetoric - Chulalongkorn University</strong></li>
-                <li class="text-zh" style: "display: none;"><strong>修辞与传播学 - 朱拉隆功大学</strong></li>
-                <li class="text-en"><strong>Specialized Courses (Sripatum University):</strong> Digital Marketing, Digital Communication (DEF4), Story Telling (The Story 4), and Business Connection Development (The Connext 1). (Crucial for building a top-level network in Thailand)</li>
-                <li class="text-zh" style: "display: none;"><strong>专业课程 (斯巴顿大学)：</strong> 数字营销、数字传播 (DEF4)、品牌故事叙述 (The Story 4) 和商业连接发展 (The Connext 1)。 (对建立泰国顶级人脉网络至关重要)</li>
-                <li class="text-en"><strong>Languages:</strong> Thai (Native), English (Business), Basic Japanese/Chinese. **AI Language Processing Expert**.</li>
-                <li class="text-zh" style: "display: none;"><strong>语言能力：</strong> 泰语（母语）、英语（商务级）、基础日语/中文。**AI语言处理专家**。</li>
-            </ul>
         </div>
     </div>
 
     <script>
-        function setLanguage(lang) {
-            document.querySelectorAll('.text-en').forEach(el => el.style.display = lang === 'en' ? 'block' : 'none');
-            document.querySelectorAll('.text-zh').forEach(el => el.style.display = lang === 'zh' ? 'block' : 'none');
-            document.querySelectorAll('ul li .text-en').forEach(el => el.style.display = lang === 'en' ? 'inline' : 'none');
-            document.querySelectorAll('ul li .text-zh').forEach(el => el.style.display = lang === 'zh' ? 'inline' : 'none');
-            document.querySelectorAll('.subtitle .text-en').forEach(el => el.style.display = lang === 'en' ? 'block' : 'none');
-            document.querySelectorAll('.subtitle .text-zh').forEach(el => el.style.display = lang === 'zh' ? 'block' : 'none');
-            document.querySelectorAll('.experience-title .text-en').forEach(el => el.style.display = lang === 'en' ? 'block' : 'none');
-            document.querySelectorAll('.experience-title .text-zh').forEach(el => el.style.display = lang === 'zh' ? 'block' : 'none');
-            document.documentElement.lang = lang;
+        // Helper function to show/hide elements based on language class
+        function updateDisplay(selector, lang, currentLang) {
+            document.querySelectorAll(selector).forEach(el => {
+                const isMatch = el.classList.contains('text-' + lang);
+                el.style.display = isMatch ? 'block' : 'none';
+                if (el.tagName === 'LI') {
+                    // Special handling for list items to prevent stacking issues
+                    el.style.display = isMatch ? 'list-item' : 'none';
+                }
+            });
         }
+
+        function setLanguage(lang) {
+            ['en', 'zh', 'th'].forEach(l => {
+                const displayStyle = (l === lang) ? 'block' : 'none';
+                document.querySelectorAll('.text-' + l).forEach(el => {
+                    // Default to block for most elements
+                    el.style.display = displayStyle;
+                    // Handle specific inline elements inside lists
+                    if (el.tagName !== 'P' && el.tagName !== 'DIV' && el.tagName !== 'H1' && el.tagName !== 'H2') {
+                         el.style.display = (l === lang) ? 'inline' : 'none';
+                    }
+                });
+            });
+            document.documentElement.lang = lang;
+            // Ensure the correct title is shown
+            document.querySelectorAll('title').forEach(t => t.style.display = 'none');
+            document.querySelector('.title.text-' + lang).style.display = 'block';
+        }
+        
+        // Function to handle collapsible sections
+        function toggleDetails(headerElement, targetId) {
+            const content = document.getElementById(targetId);
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                headerElement.innerHTML = headerElement.innerHTML.replace('[Click to Collapse]', '[Click to Expand]').replace('[คลิกเพื่อย่อ]', '[คลิกเพื่อขยาย]').replace('[点击收起]', '[点击展开]');
+            } else {
+                content.style.display = 'block';
+                headerElement.innerHTML = headerElement.innerHTML.replace('[Click to Expand]', '[Click to Collapse]').replace('[คลิกเพื่อขยาย]', '[คลิกเพื่อย่อ]').replace('[点击展开]', '[点击收起]');
+            }
+        }
+
+        // Set default language on load
         document.addEventListener('DOMContentLoaded', () => {
             setLanguage('en'); 
         });
     </script>
 </body>
 </html>
+```
