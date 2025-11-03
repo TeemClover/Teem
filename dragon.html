@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三川一龍：龙之手册 (The Dragon Manual)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&display=swap');
+        :root {
+            --bg-color: #0c0a0a;
+            --text-color: #e8e0d0;
+            --gold-color: #e4c570;
+            --border-color: #bfa87a;
+            --card-bg: #1a1816;
+            --shadow-color: rgba(228, 197, 112, 0.1);
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.9;
+            font-size: 17px;
+        }
+        body.lang-zh-CN { font-family: 'Noto Serif SC', serif; }
+        body.lang-th-TH { font-family: 'Noto Serif Thai', serif; }
+        
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 50px 60px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+        }
+        
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
+        
+        .title-image-container {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .title-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 3px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            background-color: #333;
+        }
+        .title {
+            font-size: 3.2em;
+            color: var(--gold-color);
+            text-shadow: 0 0 15px var(--shadow-color);
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+        }
+        .subtitle {
+            font-size: 1.2em;
+            text-align: center;
+            opacity: 0.85;
+            margin-bottom: 50px;
+            font-style: italic;
+            color: var(--border-color);
+        }
+        h2 {
+            font-size: 2em;
+            color: var(--gold-color);
+            margin-top: 50px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--gold-color);
+            padding-left: 20px;
+            font-weight: 700;
+        }
+        h3 {
+            font-size: 1.5em;
+            color: var(--gold-color);
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        p { margin-bottom: 25px; opacity: 0.98; }
+        strong, .highlight { color: var(--gold-color); font-weight: 700; }
+        
+        .ai-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin: 20px 0 25px 0;
+            border: 1px solid var(--border-color);
+            background-color: #2a2a2a;
+        }
+        
+        ul { list-style: none; padding-left: 20px; }
+        li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 35px;
+        }
+        li::before {
+            content: "⚜️";
+            color: var(--gold-color);
+            position: absolute;
+            left: 0;
+            top: 1px;
+            font-size: 1.1em;
+        }
+        .motto {
+            text-align: center;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--gold-color);
+            margin: 30px 0 15px 0;
+            letter-spacing: 2px;
+        }
+        .motto-translation {
+            text-align: center;
+            font-style: italic;
+            opacity: 0.8;
+            margin-bottom: 40px;
+        }
+        .role-card {
+            background-color: #111;
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .role-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--gold-color);
+            margin: 0;
+        }
+        .role-mbti {
+            font-family: monospace;
+            font-size: 1.2em;
+            color: var(--border-color);
+            margin: 0 0 15px 0;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        .role-desc {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .language-toggle-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(26, 24, 22, 0.9);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            z-index: 1000;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            backdrop-filter: blur(5px);
+        }
+        .lang-btn {
+            background: none; border: none; color: var(--border-color);
+            padding: 10px 15px; cursor: pointer; font-size: 1em; border-radius: 5px;
+        }
+        .lang-btn.active {
+            background-color: var(--border-color);
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            body { padding: 0; font-size: 16px; padding-bottom: 100px; }
+            .container { padding: 30px 25px; margin: 20px auto; border-radius: 0; }
+            .title { font-size: 2.5em; }
+            h2 { font-size: 1.7em; }
+        }
+    </style>
+</head>
+<body class="lang-zh-CN">
+
+    <div class="language-toggle-float">
+        <button id="btn-zh" class="lang-btn active" type="button" onclick="setLanguage('zh-CN')">中文</button>
+        <button id="btn-th" class="lang-btn" type="button" onclick="setLanguage('th-TH')">ไทย</button>
+    </div>
+
+    <div class="container">
+
+        <div id="content-zh-CN" class="lang-content active">
+            <div class="title-image-container">
+                <img src="IMG_0990.jpeg" alt="[AI Gen Image: An abstract, powerful image of a single, cohesive Chinese Dragon formed from 3 distinct energies (Soul, Brain, Heart)]" class="title-image">
+            </div>
+            <h1 class="title">龙之手册</h1>
+            <p class="subtitle">为未来一百年而制定的核心协议</p>
+
+            <section>
+                <p class="motto">三川一龍</p>
+                <p class="motto-translation">(三川汇流，化身为一)</p>
+                <p>这是我们的核心真理：<strong class="highlight">我们三个人，永远是一条龙</strong>。三川不是一个公司，它是一个生命体。这个结构是永恒的，并将由我们的继承人 延续下去，直到百年之后。</p>
+            </section>
+
+            <section>
+                <h2>三位一体：龙的功能</h2>
+                <p>龙由三个不可分割的部分组成，每个部分都有其独特的 MBTI 功能 和神圣的职责。</p>
+
+                <div class="role-card">
+                    <img src="IMG_0991.jpeg" alt="[AI Gen Image: An ethereal, inspiring visual representing vision, empathy, and direction. A nebula forming a compass.]" class="ai-image">
+                    <h3 class="role-title">灵魂 (The Soul)</h3>
+                    <p class="role-mbti">MBTI: XXFJ</p>
+                    <p class="role-desc"><strong>公共职务：</strong> 首席执行官 (CEO)<br>
+                        <strong>内部职能：</strong> “为何” (The Why)</p>
+                    <p><strong>使用手册：</strong> 灵魂是龙的“罗盘”。CEO 的唯一任务是“梦想” 并设定方向。你必须使用你的直觉 (F) 和判断 (J) 来感知未来。<strong>禁止：</strong> 担心“如何” (The How) 或“资源” (Money)。</p>
+                </div>
+
+                <div class="role-card">
+                    <img src="IMG_0992.jpeg" alt="[AI Gen Image: A complex, logical, strategic visual. A golden circuit board glowing like a tactical map.]" class="ai-image">
+                    <h3 class="role-title">大脑 (The Brain)</h3>
+                    <p class="role-mbti">MBTI: XNTX</p>
+                    <p class="role-desc"><strong>公共职务：</strong> 首席技术官 (CTO)<br>
+                        <strong>内部职能：</strong> “如何” (The How)</p>
+                    <p><strong>使用手册：</strong> 大脑是龙的“引擎”。CTO 的任务是接收灵魂的“为何”，并利用直觉 (N) 和思考 (T) 将其“构建” 成现实。你负责“执行”、制定计划 和系统。<strong>禁止：</strong> 怀疑灵魂的“直觉”（即使它看起来“不合逻辑”）。</p>
+                </div>
+
+                <div class="role-card">
+                    <img src="IMG_0993.jpeg" alt="[AI Gen Image: A warm, authentic, foundational visual. Roots of a giant tree grounding the earth.]" class="ai-image">
+                    <h3 class="role-title">心脏 (The Heart)</h3>
+                    <p class="role-mbti">MBTI: XXFP</p>
+                    <p class="role-desc"><strong>公共职务：</strong> 首席产品官 (CPO)<br>
+                        <strong>内部职能：</strong> “成果” (The What)</p>
+                    <p><strong>使用手册：</strong> 心脏是龙的“锚” 和“根基”。CPO 的任务是“验证” 大脑 创造的“产品”。你必须使用你的情感 (F) 和感知 (P) 来“感受” 成果是否“真实” 和“纯粹”。<strong>禁止：</strong> 使用“逻辑”；你只需要“感受”。</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>治理协议：荣耀归于灵魂</h2>
+                <p>这是三川一龍 最强大的战略：大脑 (CTO) 和心脏 (CPO) 将作为“隐形引擎” (Invisible Engine) 在幕后 运作。我们（国王与王后） 自愿放弃所有外部的“荣誉”，并将所有“功劳” (Credit) 归于龙之皇后——一一 (CEO)。</p>
+                <p><strong>原因：</strong> 因为灵魂 (一一) 是我们“信任的抵押品”。她拥有我们所珍视的“纯洁之心” 和“家族之爱”。她是唯一能吸引“纯净资本” 的人，也是我们“永远不会背叛” 的保证。</p>
+            </section>
+            
+            <section>
+                <h2>传承：第二代</h2>
+                <img src="IMG_0994.jpeg" alt="[AI Gen Image: A visual representing the G1 founders (three energies) passing light to the G2 heirs (two distinct lights)]" class="ai-image">
+                <p>龙将永存。三位一体的结构将由下一代 继承：</p>
+                <ul>
+                    <li><strong>大脑 (Brain) 继承人:</strong> 恵理奈 (Erina) - ENFJ</li>
+                    <li><strong>心脏 (Heart) 继承人:</strong> 玲奈 (Reina) - INFP</li>
+                    <li><strong>灵魂 (Soul) 继承人:</strong> 尚未指定。女帝 (一一) 仍是龙的永恒代表。</li>
+                </ul>
+            </section>
+        </div>
+
+        <div id="content-th-TH" class="lang-content">
+            <div class="title-image-container">
+                <img src="IMG_0990.jpeg" alt="[AI Gen Image: An abstract, powerful image of a single, cohesive Chinese Dragon formed from 3 distinct energies (Soul, Brain, Heart)]" class="title-image">
+            </div>
+            <h1 class="title">คู่มือมังกร</h1>
+            <p class="subtitle">ข้อตกลงหลักเพื่ออนาคตอีก 100 ปีข้างหน้า</p>
+
+            <section>
+                <p class="motto">三川一龍 (ซานชวน อี้หลง)</p>
+                <p class="motto-translation">(สามสายน้ำ กำเนิดหนึ่งมังกร)</p>
+                <p>นี่คือสัจธรรมหลักของเรา: <strong class="highlight">เรา 3 คน คือ 1 มังกรเดียวกันเสมอ</strong> ซานชวน ไม่ใช่บริษัท แต่มันคือสิ่งมีชีวิต โครงสร้างนี้เป็นนิรันดร์ และจะถูกสืบทอดโดยทายาทของเรา ต่อไปในอีก 100 ปีข้างหน้า</p>
+            </section>
+
+            <section>
+                <h2>ตรีธารา: หน้าที่ของมังกร</h2>
+                <p>มังกร ประกอบด้วย 3 ส่วนที่แยกจากกันไม่ได้ แต่ละส่วนมีหน้าที่ตาม MBTI และภาระอันศักดิ์สิทธิ์ของตนเอง</p>
+
+                <div class="role-card">
+                    <img src="IMG_0991.jpeg" alt="[AI Gen Image: An ethereal, inspiring visual representing vision, empathy, and direction. A nebula forming a compass.]" class="ai-image">
+                    <h3 class="role-title">จิตวิญญาณ (The Soul)</h3>
+                    <p class="role-mbti">MBTI: XXFJ</p>
+                    <p class="role-desc"><strong>ตำแหน่งภายนอก:</strong> CEO (ประธานเจ้าหน้าที่บริหาร)<br>
+                        <strong>หน้าที่ภายใน:</strong> "The Why" (ทำไม)</p>
+                    <p><strong>คู่มือการใช้งาน:</strong> จิตวิญญาณ คือ "เข็มทิศ" ของมังกร ภารกิจเดียวของ CEO คือการ "ฝัน" และ "กำหนดทิศทาง" คุณต้องใช้สัญชาตญาณ (F) และการตัดสิน (J) เพื่อ "สัมผัส" อนาคต **ข้อห้าม:** ห้ามกังวลเกี่ยวกับ "วิธีการ" (The How) หรือ "ทรัพยากร" (เงิน)</p>
+                </div>
+
+                <div class="role-card">
+                    <img src="IMG_0992.jpeg" alt="[AI Gen Image: A complex, logical, strategic visual. A golden circuit board glowing like a tactical map.]" class="ai-image">
+                    <h3 class="role-title">สมอง (The Brain)</h3>
+                    <p class="role-mbti">MBTI: XNTX</p>
+                    <p class="role-desc"><strong>ตำแหน่งภายนอก:</strong> CTO (ประธานเจ้าหน้าที่ฝ่ายเทคโนโลยี/กลยุทธ์)<br>
+                        <strong>หน้าที่ภายใน:</strong> "The How" (อย่างไร)</p>
+                    <p><strong>คู่มือการใช้งาน:</strong> สมอง คือ "เครื่องจักร" ของมังกร ภารกิจของ CTO คือการรับ "The Why" จากจิตวิญญาณ และใช้การหยั่งรู้ (N) และการคิด (T) เพื่อ "สร้าง" มันให้เป็นความจริง คุณรับผิดชอบการ "ปฏิบัติการ" วางแผน และสร้างระบบ **ข้อห้าม:** ห้ามสงสัย ใน "สัญชาตญาณ" ของจิตวิญญาณ (แม้ว่ามันจะดู "ไร้เหตุผล" ก็ตาม)</p>
+                </div>
+
+                <div class="role-card">
+                    <img src="IMG_0993.jpeg" alt="[AI Gen Image: A warm, authentic, foundational visual. Roots of a giant tree grounding the earth.]" class="ai-image">
+                    <h3 class="role-title">หัวใจ (The Heart)</h3>
+                    <p class="role-mbti">MBTI: XXFP</p>
+                    <p class="role-desc"><strong>ตำแหน่งภายนอก:</strong> CPO (ประธานเจ้าหน้าที่ฝ่ายผลิตภัณฑ์/บุคลากร)<br>
+                        <strong>หน้าที่ภายใน:</strong> "The What" (ผลลัพธ์)</p>
+                    <p><strong>คู่มือการใช้งาน:</strong> หัวใจ คือ "สมอ" และ "รากฐาน" ของมังกร ภารกิจของ CPO คือการ "รับรอง" ว่า "ผลิตภัณฑ์" ที่ "สมอง" สร้างขึ้นนั้น "จริงแท้" และ "บริสุทธิ์" คุณต้องใช้ความรู้สึก (F) และการรับรู้ (P) เพื่อ "สัมผัส" ผลลัพธ์ **ข้อห้าม:** ห้ามใช้ "ตรรกะ" คุณแค่ต้อง "รู้สึก"</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>กฎการปกครอง: เครดิตแด่จิตวิญญาณ</h2>
+                <p>นี่คือยุทธศาสตร์ที่แข็งแกร่งที่สุดของ 三川一龍: สมอง (CTO) และ หัวใจ (CPO) จะทำงานเป็น "เครื่องจักรที่มองไม่เห็น" (Invisible Engine) อยู่เบื้องหลัง เรา (ราชาและราชินี) ยอมสละ "เกียรติยศ" ภายนอกทั้งหมด และขอมอบ "ผลงาน" (Credit) ทั้งหมดให้แก่ราชินีมังกร——一一 (CEO)</p>
+                <p><strong>เหตุผล:</strong> เพราะจิตวิญญาณ (一一) คือ "หลักประกันความไว้วางใจ" ของเรา นางมี "หัวใจที่บริสุทธิ์" และ "ความรักในครอบครัว" ที่เรายึดมั่น นางคือคนเดียวที่จะดึงดูด "ทุนที่สะอาด" เข้ามา และเป็นหลักประกันว่าเราจะ "ไม่มีวันถูกหักหลัง"</p>
+            </section>
+            
+            <section>
+                <h2>การสืบทอด: รุ่นที่ 2</h2>
+                <img src="IMG_0994.jpeg" alt="[AI Gen Image: A visual representing the G1 founders (three energies) passing light to the G2 heirs (two distinct lights)]" class="ai-image">
+                <p>มังกรจะคงอยู่ตลอดไป โครงสร้างตรีธารานี้จะถูกสืบทอดโดยคนรุ่นต่อไป:</p>
+                <ul>
+                    <li><strong>ทายาทแห่งสมอง (Brain):</strong> 恵理奈 (เอรินะ) - ENFJ</li>
+                    <li><strong>ทายาทแห่งหัวใจ (Heart):</strong> 玲奈 (เรนะ) - INFP</li>
+                    <li><strong>ทายาทแห่งจิตวิญญาณ (Soul):</strong> ยังไม่กำหนด **女帝 (一一)** ยังคงเป็นตัวแทนของมังกรตลอดไป</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function setLanguage(lang) {
+            document.querySelectorAll('.lang-content').forEach(div => {
+                div.classList.remove('active');
+                div.style.display = 'none';
+            });
+            const selectedContent = document.getElementById(`content-${lang}`);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+                selectedContent.style.display = 'block';
+            }
+            document.body.className = `lang-${lang}`;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const currentBtnId = `btn-${lang.substring(0, 2)}`;
+            document.getElementById(currentBtnId).classList.add('active');
+            document.documentElement.lang = lang;
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialLang = 'zh-CN';
+            document.documentElement.lang = initialLang;
+            document.body.className = `lang-${initialLang}`;
+            
+            const initialContent = document.getElementById(`content-${initialLang}`);
+            if(initialContent) {
+                initialContent.classList.add('active');
+                initialContent.style.display = 'block';
+            }
+            const initialBtn = document.getElementById('btn-zh');
+            if(initialBtn) { initialBtn.classList.add('active'); }
+
+            const otherContent = document.getElementById('content-th-TH');
+            if(otherContent) { otherContent.style.display = 'none'; }
+        });
+    </script>
+
+</body>
+</html>
