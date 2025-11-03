@@ -25,6 +25,7 @@
         }
         body.lang-zh-CN { font-family: 'Noto Serif SC', serif; }
         body.lang-th-TH { font-family: 'Noto Serif Thai', serif; }
+        
         .container {
             max-width: 900px;
             margin: 40px auto;
@@ -34,8 +35,10 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
             border-radius: 5px;
         }
+        
         .lang-content { display: none; }
         .lang-content.active { display: block; }
+        
         .title-image-container {
             text-align: center;
             margin-bottom: 30px;
@@ -49,6 +52,7 @@
             margin: 0 auto;
             border-radius: 3px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            background-color: #333;
         }
         .title {
             font-size: 3.2em;
@@ -76,16 +80,39 @@
             font-weight: 700;
         }
         p { margin-bottom: 25px; opacity: 0.98; }
-        strong { color: var(--gold-color); font-weight: 700; }
+        strong, .highlight { color: var(--gold-color); font-weight: 700; }
+        
         .ai-image {
             width: 100%;
-            height: 300px;
+            height: 350px;
             object-fit: cover;
             border-radius: 5px;
-            margin: 10px 0 25px 0;
+            margin: 20px 0 25px 0;
             border: 1px solid var(--border-color);
-            background-color: #333; /* Placeholder */
+            background-color: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            opacity: 0.6;
+            font-family: 'Noto Serif', serif;
         }
+        
+        ul { list-style: none; padding-left: 20px; }
+        li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 35px;
+        }
+        li::before {
+            content: "⚜️";
+            color: var(--gold-color);
+            position: absolute;
+            left: 0;
+            top: 1px;
+            font-size: 1.1em;
+        }
+
         .language-toggle-float {
             position: fixed;
             bottom: 20px;
@@ -101,13 +128,8 @@
             backdrop-filter: blur(5px);
         }
         .lang-btn {
-            background: none;
-            border: none;
-            color: var(--border-color);
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 1em;
-            border-radius: 5px;
+            background: none; border: none; color: var(--border-color);
+            padding: 10px 15px; cursor: pointer; font-size: 1em; border-radius: 5px;
         }
         .lang-btn.active {
             background-color: var(--border-color);
@@ -132,11 +154,15 @@
     <div class="container">
 
         <div id="content-zh-CN" class="lang-content active">
+            <div class="title-image-container">
+                <img src="IMG_0982.jpeg" alt="Tritara (ตรีธารา) Logo" class="title-image">
+            </div>
             <h1 class="title">“ตรีธารา” (Tritara)</h1>
             <p class="subtitle">三川控股 (Sān Chuān Holdings) 旗舰项目执行摘要</p>
 
             <section>
                 <h2>1. 机会：亚洲的“不老泉”</h2>
+                <div class="ai-image" title="[AI Gen Image: The Fountain of Youth concept, blending Asian aesthetics and modern luxury]">IMG_0983.jpeg</div>
                 <p>我们不是在建造一个水疗中心；我们正在打造亚洲的<strong>“不老泉” (Fountain of Youth)</strong>。这是一个 24 小时营业 的庇护所，旨在解决现代城市生活的核心问题：“孤独” (Loneliness) 和“倦怠” (Burnout)。我们的目标市场是那些工作劳累的“独居者” 和需要“私人空间” 的“家庭”。我们提供一个他们可以“不下班直接入住” 的“第三空间”。</p>
             </section>
 
@@ -144,31 +170,54 @@
                 <h2>2. 融合：三川之力</h2>
                 <p>“ตรีธารา” (Tritara) 将三种亚洲最强的疗愈哲学融为一体：</p>
 
-                <h3>中国的奢华 (The Luxury of China)</h3>
-                <img src="https://i.imgur.com/89HqWJm.png" alt="[AI Gen Image: Luxurious private Chinese-style spa room with modern ink wash art]" class="ai-image">
-                <p>我们采纳中国顶级水疗中心的“24 小时帝国” 概念。客户支付一次性费用，即可享受 16-24 小时的完全放松。这包括**免费的餐饮**（水果、饮料、点心）、私人影院、KTV 和游戏室。这是我们为客户提供的“极致舒适”。</p>
+                <h3>中国的奢华：24 小时“邮轮级”体验</h3>
+                <div class="ai-image" title="[AI Gen Image: Luxurious private Chinese-style spa room with projector, fruit bar, and opulent decor]">IMG_0984.jpeg</div>
+                <p>我们采纳中国顶级水疗中心的“24 小时帝国” 概念。客户支付一次性费用，即可享受“邮轮级的生活品质”。这包括**免费的餐饮**（水果、饮料、点心）、私人影院、KTV 和游戏室。这是我们为客户提供的“极致舒适”。</p>
 
-                <h3>日本的款待 (The Soul of Japan)</h3>
-                <img src="https://i.imgur.com/L5E3k9Q.png" alt="[AI Gen Image: Minimalist Zen Onsen with bamboo and warm lighting]" class="ai-image">
-                <p>我们融合了日本“Omotenashi”（极致款待） 的精神。客人将获得“浴衣” (Yukata) 在公共区域穿着。我们的核心是“静谧” (Tranquility) 的温泉 体验，并提供采用当地时令食材烹制的“怀石料理” (Kaiseki)，将放松提升至精神层面。</p>
+                <h3>日本的款待：Omotenashi 之魂</h3>
+                <div class="ai-image" title="[AI Gen Image: Minimalist Zen Onsen with bamboo, showing hot, cold, and ice baths]">IMG_0985.jpeg</div>
+                <p>我们融合了日本“Omotenashi”（极致款待） 的精神。我们的核心是“静谧” (Tranquility) 的温泉 体验（包括热水、冷水 和冰浴）。客人将获得“浴衣” (Yukata) 在公共区域穿着，并提供采用当地时令食材烹制的“怀石料理” (Kaiseki)，将放松提升至精神层面。</p>
 
-                <h3>泰国的疗愈 (The Release of Thailand)</h3>
-                <img src="https://i.imgur.com/yS3bA7n.png" alt="[AI Gen Image: Serene Thai massage room with herbal elements and a sense of healing]" class="ai-image">
-                <p>我们提供的不是普通的按摩，而是“医疗级疗法” (Medical Therapy)。结合“被动瑜伽拉伸” 和泰式草药，我们的理疗师专注于“缓解疼痛” (Pain Relief) 和“释放停滞的能量”，实现真正的身体修复。</p>
+                <h3>泰国的疗愈：医疗级健康</h3>
+                <div class="ai-image" title="[AI Gen Image: High-tech minimalist wellness clinic room for IV drips and aesthetic treatments]">IMG_0986.jpeg</div>
+                <p>我们提供的不是普通的按摩，而是“医疗级疗法” (Medical Therapy)。此外，我们与顶级的美容诊所和“大师级”医生合作，提供“维生素输液”、“面部注射” 和“身体磨砂” 等全方位健康服务 (Wellness)。</p>
             </section>
 
             <section>
-                <h2>3. 投资与未来</h2>
-                <p>此项目“雄心勃勃” (Ambitious) 且需要大量资金。“三川控股” (Sān Chuān Holdings) 将作为管理实体，寻求泰国和中国的战略投资者 共同实现这一愿景。我们不是在追逐资本；我们是在“执行信念” (Executing Belief)。</p>
+                <h2>3. 社区与“圣所” (The Sanctuary)</h2>
+                <div class="ai-image" title="[AI Gen Image: A cozy, modern board game room with a Game Master table, integrated into a luxury lounge]">IMG_0987.jpeg</div>
+                <p>“ตรีธารา” (Tritara) 是一个“社区” (Community)。我们提供“私人储物柜”，让会员感觉这里“比租房还划算”。我们的“会员系统” 将融合三种文化 的精髓。从“棋盘游戏室”（配备专业“游戏主持人”）到“家庭套房”，我们还设有<strong class="highlight">“VIP 专属圣所” (The Sanctuary)</strong>，为顶级会员提供绝对的私密和专属服务。</p>
+            </section>
+
+            <section>
+                <h2>4. 发展蓝图：2026 年启航</h2>
+                <div class="ai-image" title="[AI Gen Image: A futuristic timeline/roadmap graphic with Zen influences]">IMG_0988.jpeg</div>
+                <p>我们的执行计划 重点明确，目标是在 2026 年 正式启动：</p>
+                <ul>
+                    <li><strong>阶段 1 (2025 Q1-Q2): 种子轮与奠基。</strong> 巩固“三川” 的核心“为何” (The Why)，完成法律实体设立，并 확보 种子资金。</li>
+                    <li><strong>阶段 2 (2025 Q3-Q4): 发展与战略联盟。</strong> 确定最终地点，完成建筑设计，并与我们的医疗 和技术合作伙伴建立联盟。</li>
+                    <li><strong>阶段 3 (2026 Q1-Q2): 建设与内部测试。</strong> 实体建设开始。招募和培训核心“Omotenashi” 团队。对“MVP” (最小可行产品) 服务进行 Beta 测试。</li>
+                    <li><strong>阶段 4 (2026 Q3-Q4): 盛大开业。</strong> “ตรีธารา” (Tritara) 正式向公众开放，开始重新定义亚洲的“放松” (Relaxation)。</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>5. 投资未来</h2>
+                <div class="ai-image" title="[AI Gen Image: Abstract image of three rivers (Thai, Chinese, Japanese culture) merging into one powerful entity]">IMG_0989.jpeg</div>
+                <p>此项目“雄心勃勃” (Ambitious)。“三川控股” (Sān Chuān Holdings) 将作为管理实体，寻求泰国和中国的战略投资者 共同实现这一愿景。我们不是在追逐资本；我们是在“执行信念” (Executing Belief)。</p>
             </section>
         </div>
 
         <div id="content-th-TH" class="lang-content">
+            <div class="title-image-container">
+                <img src="IMG_0982.jpeg" alt="Tritara (ตรีธารา) Logo" class="title-image">
+            </div>
             <h1 class="title">"ตรีธารา" (Tritara)</h1>
             <p class="subtitle">บทสรุปผู้บริหาร โครงการเรือธงของ ซานชวน โฮลดิ้ง</p>
 
             <section>
                 <h2>1. โอกาส: "น้ำพุแห่งความเยาว์วัย" แห่งเอเชีย</h2>
+                <div class="ai-image" title="[AI Gen Image: The Fountain of Youth concept, blending Asian aesthetics and modern luxury]">IMG_0983.jpeg</div>
                 <p>เราไม่ได้กำลังสร้าง "สปา" เรากำลังสร้าง **"น้ำพุแห่งความเยาว์วัย" (Fountain of Youth)** แห่งเอเชีย นี่คือ "สถานที่หลบภัย" (Sanctuary) ตลอด 24 ชั่วโมง ที่ออกแบบมาเพื่อแก้ปัญหาหลักของชีวิตเมืองสมัยใหม่: "ความเหงา" (Loneliness) และ "ความเหนื่อยล้า" (Burnout) เป้าหมายของเราคือ "คนโสดวัยทำงาน" และ "ครอบครัว" ที่ต้องการ "พื้นที่ส่วนตัว" เรามอบ "บ้านหลังที่สาม" ที่พวกเขาสามารถ "มาพักได้เลยหลังเลิกงาน"</p>
             </section>
 
@@ -176,22 +225,41 @@
                 <h2>2. การหลอมรวม: พลังแห่งสามสายน้ำ</h2>
                 <p>"ตรีธารา" (Tritara) จะหลอมรวมปรัชญาการฟื้นฟูที่ดีที่สุด 3 ชาติของเอเชียไว้ในที่เดียว:</p>
 
-                <h3>ความหรูหราแห่งจีน (The Luxury of China)</h3>
-                <img src="https://i.imgur.com/89HqWJm.png" alt="[AI Gen Image: Luxurious private Chinese-style spa room with modern ink wash art]" class="ai-image">
-                <p>เรานำแนวคิด **"อาณาจักร 24 ชั่วโมง"** จากสปาระดับสูงสุดของจีน ลูกค้าจ่ายครั้งเดียวเพื่อการพักผ่อน 16-24 ชั่วโมง ซึ่งรวมถึง **"อาหารและเครื่องดื่มฟรี"** (ผลไม้, เครื่องดื่ม, ของว่าง) โรงภาพยนตร์ส่วนตัว KTV และห้องเกม นี่คือ "ความสบายสูงสุด" ที่เรามอบให้</p>
+                <h3>ความหรูหราแห่งจีน: ประสบการณ์ "ระดับเรือสำราญ" 24 ชั่วโมง</h3>
+                <div class="ai-image" title="[AI Gen Image: Luxurious private Chinese-style spa room with projector, fruit bar, and opulent decor]">IMG_0984.jpeg</div>
+                <p>เรานำแนวคิด **"อาณาจักร 24 ชั่วโมง"** จากสปาระดับสูงสุดของจีน ลูกค้าจ่ายครั้งเดียวเพื่อสัมผัส "คุณภาพชีวิตระดับเรือสำราญ" 16-24 ชั่วโมง ซึ่งรวมถึง **"อาหารและเครื่องดื่มฟรี"** (ผลไม้, เครื่องดื่ม, ของว่าง) โรงภาพยนตร์ส่วนตัว KTV และห้องเกม นี่คือ "ความสบายสูงสุด" ที่เรามอบให้</p>
 
-                <h3>จิตวิญญาณแห่งญี่ปุ่น (The Soul of Japan)</h3>
-                <img src="https://i.imgur.com/L5E3k9Q.png" alt="[AI Gen Image: Minimalist Zen Onsen with bamboo and warm lighting]" class="ai-image">
-                <p>เราหลอมรวมจิตวิญญาณของ **"Omotenashi" (การบริการด้วยหัวใจ)** ลูกค้าจะได้รับ "ชุดยูกาตะ" (Yukata) เพื่อสวมใส่ในพื้นที่ส่วนกลาง หัวใจของเราคือ "ออนเซ็น" ที่ "เงียบสงบ" (Tranquility) และการเสิร์ฟ "อาหารไคเซกิ" (Kaiseki) ที่ใช้วัตถุดิบตามฤดูกาล เพื่อยกระดับการพักผ่อนสู่ระดับจิตวิญญาณ</p>
+                <h3>จิตวิญญาณแห่งญี่ปุ่น: Omotenashi</h3>
+                <div class="ai-image" title="[AI Gen Image: Minimalist Zen Onsen with bamboo, showing hot, cold, and ice baths]">IMG_0985.jpeg</div>
+                <p>เราหลอมรวมจิตวิญญาณของ **"Omotenashi" (การบริการด้วยหัวใจ)** หัวใจของเราคือ "ออนเซ็น" ที่ "เงียบสงบ" (Tranquility) (รวมถึงบ่อน้ำอุ่น น้ำเย็น และ Ice Bath) ลูกค้าจะได้รับ "ชุดยูกาตะ" (Yukata) เพื่อสวมใส่ในพื้นที่ส่วนกลาง และการเสิร์ฟ "อาหารไคเซกิ" (Kaiseki) ที่ใช้วัตถุดิบตามฤดูกาล เพื่อยกระดับการพักผ่อนสู่ระดับจิตวิญญาณ</p>
 
-                <h3>การปลดปล่อยแห่งไทย (The Release of Thailand)</h3>
-                <img src="https://i.imgur.com/yS3bA7n.png" alt="[AI Gen Image: Serene Thai massage room with herbal elements and a sense of healing]" class="ai-image">
-                <p>เราไม่ได้มอบแค่ "การนวด" แต่คือ **"การบำบัดเชิงการแพทย์" (Medical Therapy)** ด้วยการผสมผสาน "การยืดเหยียดแบบโยคะ" (Passive Yoga) และลูกประคบสมุนไพร นักบำบัดของเราจะมุ่งเน้นไปที่ "การบรรเทาอาการปวด" (Pain Relief) และ "การปลดปล่อยพลังงานที่ติดขัด" เพื่อการซ่อมแซมร่างกายอย่างแท้จริง</p>
+                <h3>การปลดปล่อยแห่งไทย: เวลเนสทางการแพทย์</h3>
+                <div class="ai-image" title="[AI Gen Image: High-tech minimalist wellness clinic room for IV drips and aesthetic treatments]">IMG_0986.jpeg</div>
+                <p>เราไม่ได้มอบแค่ "การนวด" แต่คือ **"การบำบัดเชิงการแพทย์" (Medical Therapy)** เราเป็นพันธมิตรกับคลินิกความงามชั้นนำและ "แพทย์ระดับปรมาจารย์" เพื่อให้บริการ "เวลเนส" (Wellness) ครบวงจร เช่น "การให้วิตามิน" (IV Drips) "การฉีดหน้า" และ "การขัดตัว" (Body Scrub)</p>
             </section>
 
             <section>
-                <h2>3. การลงทุนและอนาคต</h2>
-                <p>โครงการนี้ "ทะเยอทะยาน" และต้องใช้เงินทุนจำนวนมาก "ซานชวน โฮลดิ้ง" (Sān Chuān Holdings) จะทำหน้าที่เป็นผู้บริหาร และแสวงหาพันธมิตรนักลงทุนเชิงกลยุทธ์ทั้งจากไทยและจีน เพื่อสร้างวิสัยทัศน์นี้ให้เป็นจริง เราไม่ได้กำลัง "ไล่ล่าทุน" แต่เรากำลัง "ปฏิบัติการความเชื่อ" (Executing Belief)</p>
+                <h2>3. ชุมชนและ "The Sanctuary" (โซน VIP)</h2>
+                <div class="ai-image" title="[AI Gen Image: A cozy, modern board game room with a Game Master table, integrated into a luxury lounge]">IMG_0987.jpeg</div>
+                <p>"ตรีธารา" (Tritara) คือ "ชุมชน" (Community) เรามี "ล็อคเกอร์ส่วนตัว" ทำให้สมาชิกรู้สึกว่า "คุ้มยิ่งกว่าเช่าบ้าน" "ระบบสมาชิก" ของเราจะ "ผสมผสาน 3 วัฒนธรรม" เพื่อมอบมูลค่าที่เหนือกว่า ตั้งแต่ "ห้องบอร์ดเกม" (พร้อม "เกมมาสเตอร์" มืออาชีพ) ไปจนถึง "ห้องสวีทสำหรับครอบครัว" และเราจะมี <strong class="highlight">"The Sanctuary" (โซน VIP)</strong> สำหรับสมาชิกระดับสูงสุดที่ต้องการความเป็นส่วนตัวและการบริการขั้นสุด</p>
+            </section>
+
+            <section>
+                <h2>4. เส้นเวลา: เปิดตัว 2026</h2>
+                <div class="ai-image" title="[AI Gen Image: A futuristic timeline/roadmap graphic with Zen influences]">IMG_0988.jpeg</div>
+                <p>แผนการดำเนินงาน ของเราชัดเจน โดยมีเป้าหมายเปิดตัวในปี 2026:</p>
+                <ul>
+                    <li><strong>เฟส 1 (Q1-Q2 2025): ก่อตั้งและระดมทุนรอบ Seed</strong> ผนึก "The Why" ของ "ซานชวน" จัดตั้งนิติบุคคล และปิดการระดมทุนรอบ Seed</li>
+                    <li><strong>เฟส 2 (Q3-Q4 2025): พัฒนาและพันธมิตร</strong> สรุปที่ตั้งโครงการ ออกแบบสถาปัตยกรรม และสร้างพันธมิตรเชิงกลยุทธ์ด้านการแพทย์ และเทคโนโลยี</li>
+                    <li><strong>เฟส 3 (Q1-Q2 2026): ก่อสร้างและทดสอบ</strong> เริ่มการก่อสร้างจริง คัดเลือกและฝึกอบรมทีม "Omotenashi" และทดสอบบริการ "MVP" (Minimum Viable Product)</li>
+                    <li><strong>เฟส 4 (Q3-Q4 2026): เปิดตัวอย่างยิ่งใหญ่</strong> "ตรีธารา" (Tritara) เปิดให้บริการอย่างเป็นทางการ เริ่มต้นการนิยามใหม่ของ "การพักผ่อน" แห่งเอเชีย</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>5. การลงทุนและอนาคต</h2>
+                <div class="ai-image" title="[AI Gen Image: Abstract image of three rivers (Thai, Chinese, Japanese culture) merging into one powerful entity]">IMG_0989.jpeg</div>
+                <p>โครงการนี้ "ทะเยอทะยาน" "ซานชวน โฮลดิ้ง" (Sān Chuān Holdings) จะทำหน้าที่เป็นผู้บริหาร และแสวงหาพันธมิตรนักลงทุนเชิงกลยุทธ์ทั้งจากไทยและจีน เพื่อสร้างวิสัยทัศน์นี้ให้เป็นจริง เราไม่ได้กำลัง "ไล่ล่าทุน" แต่เรากำลัง "ปฏิบัติการความเชื่อ" (Executing Belief)</p>
             </section>
         </div>
     </div>
@@ -214,13 +282,18 @@
             document.documentElement.lang = lang;
         }
         document.addEventListener('DOMContentLoaded', () => {
-            const initialContent = document.getElementById('content-zh-CN');
+            const initialLang = 'zh-CN';
+            document.documentElement.lang = initialLang;
+            document.body.className = `lang-${initialLang}`;
+            
+            const initialContent = document.getElementById(`content-${initialLang}`);
             if(initialContent) {
                 initialContent.classList.add('active');
                 initialContent.style.display = 'block';
             }
             const initialBtn = document.getElementById('btn-zh');
             if(initialBtn) { initialBtn.classList.add('active'); }
+
             const otherContent = document.getElementById('content-th-TH');
             if(otherContent) { otherContent.style.display = 'none'; }
         });
