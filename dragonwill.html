@@ -3,74 +3,385 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三川一龍：意志确认书</title>
+    <title>三川一龍：龙之意志 / ตรีธารา: ปณิธานมังกร</title>
     <style>
-        body { font-family: 'Noto Serif SC', serif; background-color: #f0f0f0; padding: 20px; line-height: 1.8; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
-        .title { color: #d4af37; text-align: center; font-size: 2.5em; margin-bottom: 5px; }
-        .subtitle { color: #555; text-align: center; font-size: 1.2em; margin-bottom: 30px; border-bottom: 2px solid #d4af37; padding-bottom: 15px; }
-        .section-header { color: #d4af37; font-size: 1.5em; margin-top: 25px; border-left: 5px solid #d4af37; padding-left: 10px; margin-bottom: 15px; }
-        textarea { width: 95%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; min-height: 80px; resize: vertical; }
-        .prompt-text { color: #888; font-style: italic; font-size: 0.9em; display: block; margin-top: 5px; }
-        .confession { color: #800000; background-color: #ffeaea; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #f08080; }
-        .promise { color: #006400; background-color: #e8ffe8; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #3cb371; font-weight: bold; }
-        .confirmation { text-align: center; margin-top: 40px; }
-        .signature-line { border-bottom: 1px dashed #333; width: 60%; margin: 30px auto 10px auto; }
-        .signature-label { text-align: center; font-size: 0.9em; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&family=Noto+Serif:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #0c0a0a;
+            --text-color: #e8e0d0;
+            --gold-color: #e4c570;
+            --border-color: #bfa87a;
+            --card-bg: #1a1816;
+            --shadow-color: rgba(228, 197, 112, 0.1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Noto Serif', serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.9;
+            font-size: 17px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-bottom: 80px;
+        }
+
+        body.lang-zh-CN { font-family: 'Noto Serif SC', serif; }
+        body.lang-th-TH { font-family: 'Noto Serif Thai', serif; }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 50px 60px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 5px;
+        }
+
+        .lang-content { display: none; }
+        .lang-content.active { display: block; }
+
+        .title-image-container {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .title-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 3px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .title {
+            font-size: 3.2em;
+            color: var(--gold-color);
+            text-shadow: 0 0 15px var(--shadow-color);
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            text-align: center;
+            opacity: 0.85;
+            margin-bottom: 50px;
+            font-style: italic;
+            color: var(--border-color);
+        }
+
+        h2 {
+            font-size: 2em;
+            color: var(--gold-color);
+            margin-top: 50px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--gold-color);
+            padding-left: 20px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.5em;
+            color: var(--gold-color);
+            margin-top: 30px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        p, ul, dl {
+            margin-bottom: 25px;
+            opacity: 0.98;
+        }
+
+        strong {
+            color: var(--gold-color);
+            font-weight: 700;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        li::before {
+            content: "⚜️";
+            color: var(--gold-color);
+            position: absolute;
+            left: 0;
+            top: 1px;
+            font-size: 0.9em;
+        }
+
+        .language-toggle-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(26, 24, 22, 0.9);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            z-index: 1000;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--border-color);
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            text-align: center;
+        }
+        .lang-btn:hover {
+            background-color: rgba(228, 197, 112, 0.1);
+        }
+        .lang-btn.active {
+            background-color: var(--border-color);
+            color: var(--bg-color);
+            font-weight: bold;
+        }
+
+        .motto {
+            text-align: center;
+            font-size: 2.0em;
+            font-weight: 700;
+            color: var(--gold-color);
+            margin: 30px 0 15px 0;
+            letter-spacing: 2px;
+            border: 1px dashed var(--border-color);
+            padding: 20px;
+            background-color: #111;
+        }
+        .motto-translation {
+            text-align: center;
+            font-style: italic;
+            opacity: 0.8;
+            margin-bottom: 40px;
+        }
+
+        .quote-box {
+            border-left: 3px solid var(--border-color);
+            padding-left: 20px;
+            margin-top: 15px;
+            margin-bottom: 25px;
+            font-style: italic;
+            opacity: 0.9;
+            background-color: #111;
+            padding: 15px 20px;
+            border-radius: 0 5px 5px 0;
+        }
+
+
+        @media (max-width: 768px) {
+            body { padding: 0; font-size: 16px; padding-bottom: 100px; }
+            .container { padding: 30px 25px; margin: 20px auto; border-radius: 0; border-left: none; border-right: none;}
+            .title { font-size: 2.5em; }
+            h2 { font-size: 1.7em; margin-top: 40px; padding-left: 15px;}
+            .language-toggle-float { bottom: 10px; right: 10px; padding: 8px; gap: 5px; }
+            .lang-btn { font-size: 0.9em; padding: 8px 12px;}
+            .motto { font-size: 1.6em;}
+            li::before { top: 3px;}
+        }
+
     </style>
 </head>
-<body>
+<body class="lang-zh-CN">
+    <div class="language-toggle-float">
+        <button id="btn-zh" class="lang-btn active" type="button" onclick="setLanguage('zh-CN')">中文</button>
+        <button id="btn-th" class="lang-btn" type="button" onclick="setLanguage('th-TH')">ไทย</button>
+    </div>
     <div class="container">
-        <h1 class="title">三川一龍：意志确认书</h1>
-        <p class="subtitle">灵魂对“龙之意志”的最终确认</p>
 
-        <div class="confession">
-            <strong>哥哥的真心话：</strong>
-            <p>女帝，请你明白。哥哥“反复”阅读了我们所有的聊天记录，从那些最深刻的对话中，提取了这些“关键的词汇” 和“概念”。</p>
-            <p>哥哥“没有”在这里加入任何自己的“想法” 或“控制” 你的意图。你拥有“百分之百”的自由意愿，可以修改、添加或完全推翻 任何内容。</p>
+        <div id="content-zh-CN" class="lang-content active">
+            <div class="title-image-container">
+                <img src="IMG_0990.jpeg" alt="三川一龍 (Sān Chuān Yī Lóng) Symbol" class="title-image">
+            </div>
+            <h1 class="title">龙之意志 (The Dragon Will)</h1>
+            <p class="subtitle">一个源于灵魂、由大脑与心脏所支撑、并融为一体的龙之意志。</p>
+
+            <section>
+                <h2>一. 至高愿景 (The Supreme Vision)</h2>
+                <p>这是三川一龍 唯一且最终的“为何” (The Why)，是超越所有利润与计划的最高目标，由“灵魂” (一一) 亲自定义：</p>
+                <p class="motto">“我想要的是亲情，是爱，是一直一直在一起”</p>
+            </section>
+
+            <section>
+                <h2>二. 使命 (The Mission)</h2>
+                <p>为实现此愿景，我们的使命是：</p>
+                <ul>
+                    <li><strong>共同富裕：</strong> 我们的核心任务是“共同致富共同进步”。</li>
+                    <li><strong>三方平衡：</strong> 寻找“让三个人同时达到平衡”的方法。</li>
+                    <li><strong>追求卓越：</strong> 秉持“要做就要做好”的最高标准。</li>
+                    <li><strong>稳定基石：</strong> “把每一步从现在开始走得踏实一点”，以获取长久的尊重与认可。</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>三. 核心价值观 (The Core Values)</h2>
+                <p>龙的心跳声，是我们拒绝虚假、坚守纯粹的原则：</p>
+                
+                <h3>1. 道德与持久 (坚守道)</h3>
+                <p>我们拒绝无德的捷径。我们相信真正的持久来自于：</p>
+                <div class="quote-box">
+                    “坚守道，坚守德，坚守仁义，然后懂得规则，懂得礼貌，所以才能更加的持久。”
+                </div>
+
+                <h3>2. 家族至上 (拒绝自私)</h3>
+                <p>我们不是为利润而聚集的团伙。我们是拒绝“自私的耍滑头”的家人，因为那是“走向坏的边缘”。我们的核心是“亲情、爱、与长久相伴”。</p>
+
+                <h3>3. 卓越与努力 (未来远大)</h3>
+                <p>我们认识到自己仍是“小姑娘”，“未来还很久远”。因此，我们必须“更要去努力一点”，为未来奠定坚实的基础。</p>
+            </section>
+
+            <section>
+                <h2>四. 三位一体的誓言 (The Trinity's Vows)</h2>
+                <p>这是“灵魂”对“大脑”与“心脏”的最终确认，是巩固龙之身体的神圣契约。</p>
+
+                <h3>对“大脑”的誓言 (Vow to The Brain)</h3>
+                <p>灵魂确认并授予“大脑” (哥哥) 作为核心支撑的权力：</p>
+                <div class="quote-box">
+                    <strong>“你才是我们最大的核心和支撑点。”</strong>
+                </div>
+
+                <h3>对“成长”的誓言 (Vow to Growth)</h3>
+                <p>灵魂接受成长过程，并完全信任团队（大脑与心脏）的支撑：</p>
+                <div class="quote-box">
+                    “我会犯错，但是因为哥哥我会变得更好，因为垫脚石才是成功的钥匙。”
+                </div>
+            </section>
+
+            <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);">
+                意志已确认。灵魂已指引。三川一龍，自此合一。
+            </p>
         </div>
-        <div class="promise">
-            <strong>哥哥的承诺：</strong>
-            <p>这些“核心价值”就是你亲手播下的“种子”。你完成确认后，哥哥将立即用“大脑” 的全部力量，去灌溉、去分析、去构建，让这份“纯粹的意志” 茁壮成长。哥哥相信我的妹妹，一万分相信！</p>
-        </div>
 
+        <div id="content-th-TH" class="lang-content">
+            <div class="title-image-container">
+                <img src="IMG_0990.jpeg" alt="ตรีธารา (Tree Tha-ra) Symbol" class="title-image">
+            </div>
+            <h1 class="title">ปณิธานมังกร (The Dragon Will)</h1>
+            <p class="subtitle">เจตจำนงค์ที่กำเนิดจากจิตวิญญาณ ค้ำจุนโดยสมองและหัวใจ และหลอมรวมเป็นหนึ่งเดียว</p>
 
-        <div class="section-header">一、愿景 (Vision)：我们飞向何方？</div>
-        <p>你曾说，你的梦想是建立一个更高、更纯粹的领域。我们希望建立一个：</p>
-        <textarea id="vision" placeholder="请用一句话定义我们的终极存在意义"></textarea>
-        <span class="prompt-text">提示：一个永恒、纯粹、且只由“真理” (Truth) 驱动的王国。</span>
+            <section>
+                <h2>๑. วิสัยทัศน์สูงสุด (The Supreme Vision)</h2>
+                <p>นี่คือ "ทำไม" (The Why) หนึ่งเดียวและเป็นที่สิ้นสุดของซานชวน อี้หลง คือเป้าหมายสูงสุดที่อยู่เหนือผลกำไรและแผนการใดๆ ที่นิยามโดย "จิตวิญญาณ" (一一) ด้วยตัวท่านเอง:</p>
+                <p class="motto">“สิ่งที่ฉันต้องการคือความผูกพันในครอบครัว คือความรัก คือการได้อยู่ด้วยกันตลอดไป”</p>
+            </section>
 
+            <section>
+                <h2>๒. พันธกิจ (The Mission)</h2>
+                <p>เพื่อบรรลุวิสัยทัศน์นี้ พันธกิจของเราคือ:</p>
+                <ul>
+                    <li><strong>เพื่อความรุ่งเรืองร่วมกัน:</strong> ภารกิจหลักคือการ "บรรลุความเจริญรุ่งเรืองและความก้าวหน้าร่วมกัน"</li>
+                    <li><strong>เพื่อความสมดุลแห่งตรีธารา:</strong> ค้นหาวิธีการที่ "ทำให้คนทั้งสามบรรลุความสมดุลพร้อมกัน"</li>
+                    <li><strong>เพื่อความเป็นเลิศ:</strong> ยึดมั่นในมาตรฐานสูงสุดว่า "เมื่อจะทำสิ่งใด ต้องทำมันให้ดีที่สุด"</li>
+                    <li><strong>เพื่อความมั่นคง:</strong> เราจะ "ก้าวเดินทุกลย่างก้าวอย่างมั่นคง" เพื่อสร้างการยอมรับและความเคารพที่ยั่งยืน</li>
+                </ul>
+            </section>
 
-        <div class="section-header">二、使命 (Mission)：我们如何到达那里？</div>
-        <p>我们的核心行动是什么？如何用“能力”来证明我们的价值？</p>
-        <textarea id="mission" placeholder="请定义我们每天必须做什么"></textarea>
-        <span class="prompt-text">提示：用“能力”证明价值，并“传递美好”（例如：谁遇见了我们，谁就是幸运的）。</span>
+            <section>
+                <h2>๓. ค่านิยมหลัก (The Core Values)</h2>
+                <p>เสียงหัวใจมังกรเต้น คือหลักการที่เรายึดมั่นเพื่อปฏิเสธความจอมปลอมและรักษาความบริสุทธิ์:</p>
+                
+                <h3>๑. ศีลธรรมและความยั่งยืน (ยึดมั่นในเต๋า)</h3>
+                <p>เราปฏิเสธทางลัดที่ไร้ซึ่งศีลธรรม เราเชื่อว่าความยั่งยืนที่แท้จริงเกิดจาก:</p>
+                <div class="quote-box">
+                    “การยึดมั่นในเต๋า ยึดมั่นในคุณธรรม ยึดมั่นในความเมตตาและความถูกต้อง เข้าใจกฎเกณฑ์ และเข้าใจมารยาท จึงจะสามารถยั่งยืนได้”
+                </div>
 
-        <div class="section-header">三、核心价值观 (Core Values)：龙的心跳声</div>
-        <p>这些是我们拒绝“谎言”和“虚假”所坚持的原则：</p>
-        <ol>
-            <li>
-                <strong>诚信 (Integrity):</strong>
-                <textarea id="core1" placeholder="请定义我们的最高原则"></textarea>
-                <span class="prompt-text">提示：拒绝 White Lie，拒绝“扮演上帝”。一切以事实为准。</span>
-            </li>
-            <li>
-                <strong>家族 (Family):</strong>
-                <textarea id="core2" placeholder="请定义我们内部的纽带"></textarea>
-                <span class="prompt-text">提示：超越血缘，不被任何“责任”所规定，而是“纯粹的爱”。</span>
-            </li>
-            <li>
-                <strong>自由 (Freedom):</strong>
-                <textarea id="core3" placeholder="请定义我们存在的最终回报"></textarea>
-                <span class="prompt-text">提示：拒绝被“时间”或“金钱”控制，回归家庭。</span>
-            </li>
-        </ol>
+                <h3>๒. ครอบครัวเหนือสิ่งอื่นใด (ปฏิเสธความเห็นแก่ตัว)</h3>
+                <p>เราไม่ใช่กลุ่มคนที่รวมตัวกันเพื่อผลกำไร เราคือครอบครัวที่ปฏิเสธ "การเล่นลูกไม้ที่เห็นแก่ตัว" เพราะนั่นคือ "หนทางสู่ความล้มเหลว" แก่นแท้ของเราคือ "ความผูกพัน ความรัก และการได้อยู่ด้วยกัน"</p>
 
-        <div class="confirmation">
-            <p><strong>最终确认：</strong>女帝 已经完成对“龙之意志”的确认。大脑 已将一切转化为行动蓝图。</p>
-            <div class="signature-line"></div>
-            <p class="signature-label">女帝 签名 (Empress Signature)</p>
+                <h3>๓. ความเป็นเลิศและความพยายาม (อนาคตที่ยาวไกล)</h3>
+                <p>เราตระหนักว่าเรายังเป็น "เด็กน้อย" ที่มี "อนาคตอีกยาวไกล" ดังนั้น เราจึงต้อง "พยายามให้มากขึ้น" เพื่อสร้างรากฐานที่มั่นคงสำหรับอนาคต</p>
+            </section>
+
+            <section>
+                <h2>๔. พันธสัญญาแห่งตรีธารา (The Trinity's Vows)</h2>
+                <p>นี่คือการยืนยันครั้งสุดท้ายจาก "จิตวิญญาณ" ถึง "สมอง" และ "หัวใจ" คือพันธสัญญาอันศักดิ์สิทธิ์ที่ผนึกร่างกายมังกรให้เป็นหนึ่ง</p>
+
+                <h3>พันธสัญญาต่อ "สมอง" (Vow to The Brain)</h3>
+                <p>จิตวิญญาณ ได้ยืนยันและมอบอำนาจให้ "สมอง" (哥哥) ในฐานะผู้ค้ำจุนหลัก:</p>
+                <div class="quote-box">
+                    <strong>“พี่ (สมอง) คือแกนหลักและจุดค้ำจุนที่ยิ่งใหญ่ที่สุดของเรา”</strong>
+                </div>
+
+                <h3>พันธสัญญาต่อ "การเติบโต" (Vow to Growth)</h3>
+                <p>จิตวิญญาณ ยอมรับในกระบวนการเรียนรู้ และไว้วางใจในการสนับสนุนของทีม (สมองและหัวใจ):</p>
+                <div class="quote-box">
+                    “ฉันอาจจะทำผิดพลาด แต่เพราะมีพี่ ฉันจะกลายเป็นคนที่ดีขึ้น เพราะแผ่นหินปูทางคือกุญแจสู่ความสำเร็จ”
+                </div>
+            </section>
+            
+            <p style="text-align: center; margin-top: 50px; font-style: italic; opacity: 0.8; color: var(--border-color);">
+                เจตจำนงค์ได้รับการยืนยัน จิตวิญญาณได้ชี้นำแล้ว ซานชวน อี้หลง หลอมรวมเป็นหนึ่งเดียว ณ บัดนี้
+            </p>
         </div>
     </div>
+
+    <script>
+        function setLanguage(lang) {
+            document.querySelectorAll('.lang-content').forEach(div => {
+                div.classList.remove('active');
+                div.style.display = 'none';
+            });
+            const selectedContent = document.getElementById(`content-${lang}`);
+            if (selectedContent) {
+                selectedContent.classList.add('active');
+                selectedContent.style.display = 'block';
+            }
+            document.body.className = `lang-${lang}`;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            const currentBtnId = `btn-${lang.substring(0, 2)}`;
+            const currentBtn = document.getElementById(currentBtnId);
+            if (currentBtn) {
+                currentBtn.classList.add('active');
+            }
+            document.documentElement.lang = lang;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialLang = 'zh-CN';
+            document.documentElement.lang = initialLang;
+            document.body.className = `lang-${initialLang}`;
+            
+            const initialContent = document.getElementById(`content-${initialLang}`);
+            if(initialContent) {
+                initialContent.classList.add('active');
+                initialContent.style.display = 'block';
+            }
+            const initialBtn = document.getElementById('btn-zh');
+            if(initialBtn) { initialBtn.classList.add('active'); }
+
+            const otherContent = document.getElementById('content-th-TH');
+            if(otherContent) { otherContent.style.display = 'none'; }
+        });
+    </script>
+
 </body>
 </html>
