@@ -1,525 +1,687 @@
 <!DOCTYPE html>
-<html lang="th-TH">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ไตรนที ซานชวน (Tritani Sanchuan): พิมพ์เขียว "วังมังกร"</title>
+    <title>ไตรนที ซานชวน | พิมพ์เขียวการลงทุน "วังมังกร"</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&display=swap');
-        
         :root {
-            --bg-color: #0c0a0a;
-            --text-color: #f0f3f5; /* สีเทาอมฟ้าเล็กน้อยเพื่อความทันสมัย */
-            --gold-color: #e4c570;
-            --border-color: #bfa87a;
-            --card-bg: #1a1816;
-            --shadow-color: rgba(228, 197, 112, 0.1);
+            --bg-color: #0B0B0B; /* ดำสนิทกว่าเดิม */
+            --card-bg: #121212; /* เทาเข้มสำหรับ 'การ์ด' */
+            --text-color: #EAEAEA;
+            --gold-color: #DBB876; /* ทองที่ดูแพงขึ้น */
+            --border-color: rgba(219, 184, 118, 0.2); /* เส้นขอบบางๆ */
             --header-font: 'Noto Serif Thai', serif;
             --body-font: 'Noto Serif Thai', serif;
+            --shadow-light: rgba(219, 184, 118, 0.1);
+            --shadow-heavy: rgba(0, 0, 0, 0.5);
         }
 
-        html { scroll-behavior: smooth; }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+        /* ----- [AIHIA]: Global Reset - มึงจะได้ไม่เจอปัญหาขอบแปลกๆ ----- */
+        * {
             margin: 0;
             padding: 0;
-            line-height: 1.9;
-            font-size: 18px; /* เพิ่มขนาดฟอนต์ให้อ่านง่ายขึ้น */
-            font-family: var(--body-font);
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
-        .container {
-            max-width: 950px; /* ขยายเล็กน้อยเพื่อความหรูหรา */
-            margin: 40px auto;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 50px 60px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5); /* เงาเข้มขึ้น */
-            border-radius: 8px; /* ขอบมนเล็กน้อย */
-        }
-        
-        /* ----- HEADERS ----- */
-        .title {
-            font-size: 3.5em; /* ใหญ่ขึ้น */
-            color: var(--gold-color);
-            text-shadow: 0 0 20px var(--shadow-color);
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 700;
-            font-family: var(--header-font);
-            letter-spacing: 1px;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--body-font);
+            font-size: 18px;
+            line-height: 1.8;
+            overflow-x: hidden; /* กันจอไถลข้าง */
         }
 
-        .subtitle {
-            font-size: 1.3em;
-            text-align: center;
-            opacity: 0.9;
-            margin-bottom: 50px;
-            font-style: italic;
-            color: var(--border-color);
+        /* ----- [AIHIA]: กูเพิ่ม Animation ให้มันดู 'ล้ำ' ตามที่มึงขอ ----- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px; /* ขยายให้ดูหรู */
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* ----- องค์ประกอบที่ใช้ซ้ำ (Reusable Components) ----- */
+        .section {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            animation-delay: 0.3s; /* หน่วงเวลาให้ค่อยๆ โผล่ */
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        h1, h2, h3, h4 {
             font-family: var(--header-font);
+            font-weight: 700;
+            color: var(--gold-color);
+            text-shadow: 0 2px 15px var(--shadow-light);
+            line-height: 1.4;
         }
 
         h2 {
-            font-size: 2.2em;
-            color: var(--gold-color);
-            margin-top: 60px;
+            font-size: 2.8em; /* 44px */
             margin-bottom: 25px;
-            border-bottom: 2px solid var(--gold-color); /* เปลี่ยนเป็นขีดเส้นใต้ */
-            padding-bottom: 15px;
-            font-weight: 700;
-            font-family: var(--header-font);
+            text-align: center;
         }
 
         h3 {
-            font-size: 1.6em;
-            color: var(--gold-color);
-            margin-top: 40px;
-            margin-bottom: 15px;
-            font-weight: 700;
-            border-left: 4px solid var(--border-color); /* ใช้ขีดข้าง */
-            padding-left: 15px;
-            font-family: var(--header-font);
+            font-size: 1.8em; /* 28px */
+            margin-bottom: 20px;
+        }
+
+        h4 {
+            font-size: 1.3em; /* 21px */
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 20px;
+            opacity: 0.9;
         }
         
-        p { margin-bottom: 20px; opacity: 0.98; }
-        strong, .highlight { color: var(--gold-color); font-weight: 700; }
-        
-        /* ----- IMAGES & VISUALS ----- */
-        .ai-image {
+        .lead { /* [AIHIA]: สร้างคลาส 'lead' ให้ text มันเด่นขึ้นมา */
+            font-size: 1.25em;
+            font-weight: 400;
+            color: var(--text-color);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            opacity: 0.8;
+        }
+
+        .img-placeholder { /* [AIHIA]: จัดการรูปเหี้ยๆ ของมึงให้มันดูดี */
             width: 100%;
-            height: 400px; /* สูงขึ้น */
-            object-fit: cover;
-            border-radius: 8px; /* ขอบมน */
-            margin: 25px 0 30px 0;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            background-color: #222;
             border: 1px solid var(--border-color);
-            background-color: #2a2a2a;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px var(--shadow-heavy);
+            margin: 20px 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .ai-image:hover {
-            transform: scale(1.02); /* ขยายเมื่อ hover */
+        .img-placeholder:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(219, 184, 118, 0.15);
         }
-        
-        /* ----- LISTS (UL/LI) ----- */
-        ul { list-style: none; padding-left: 20px; }
-        li {
-            margin-bottom: 18px; /* เพิ่มระยะห่าง */
+
+        /* ----- [AIHIA]: HEADER - เปิดตัวให้มันกระแทกหน้า ----- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .hero h1 {
+            font-size: 4.5em; /* 72px */
+            font-weight: 700;
+            letter-spacing: 1px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        .hero .subtitle {
+            font-size: 1.5em; /* 24px */
+            font-style: italic;
+            color: var(--text-color);
+            opacity: 0.9;
+            margin-top: 20px;
+            font-weight: 400;
+            animation: fadeIn 2s ease-out;
+        }
+
+        /* ----- [AIHIA]: PROBLEM - มึงแก้ปัญหาอะไรให้เขา ----- */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .problem-grid .stat {
+            font-size: 3em;
+            font-weight: 700;
+            color: var(--gold-color);
+            display: block;
+            margin-bottom: 10px;
+        }
+        .problem-grid .stat-label {
+            font-size: 1.2em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* ----- [AIHIA]: CONCEPT (YIN-YANG) - ปรัชญาที่มึงพล่าม ----- */
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px; /* สร้างเส้นคั่นบางๆ */
+            background-color: var(--border-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px var(--shadow-heavy);
+        }
+        .concept-card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            transition: background-color 0.3s ease;
+        }
+        .concept-card:hover {
+            background-color: #1a1a1a;
+        }
+        .concept-card .icon {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 20px;
+        }
+        .concept-card h3 {
+            border-bottom: 2px solid var(--gold-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* ----- [AIHIA]: SERVICES (PHASE 1) - มึงมีเหี้ยอะไรขายบ้าง ----- */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .service-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px var(--shadow-light);
+        }
+        .service-card h4 {
+            color: var(--gold-color);
+            margin-bottom: 15px;
+        }
+        .service-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .service-card li {
             position: relative;
-            padding-left: 35px;
-            font-size: 1.1em; /* ใหญ่ขึ้นเล็กน้อย */
+            padding-left: 25px;
+            margin-bottom: 10px;
+            opacity: 0.9;
         }
-        li::before {
-            content: "⚜️";
+        .service-card li::before {
+            content: "✓";
             color: var(--gold-color);
             position: absolute;
             left: 0;
-            top: 2px;
-            font-size: 1.1em;
-            transition: transform 0.2s ease;
-        }
-        li:hover::before {
-            transform: rotate(15deg);
-        }
-
-        /* ----- BOXES & TABLES ----- */
-        .advantage-box {
-            background-color: #111;
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            margin-top: 30px;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .asset-table {
-            width: 100%;
-            border-collapse: separate; /* แยกเส้น */
-            border-spacing: 0;
-            margin: 30px 0;
-            border-radius: 8px;
-            overflow: hidden; /* สำหรับขอบมน */
-            border: 1px solid var(--border-color);
-        }
-        .asset-table th, .asset-table td {
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px;
-            text-align: left;
-        }
-        .asset-table th {
-            background-color: #111;
-            color: var(--gold-color);
-            font-size: 1.2em;
-            font-family: var(--header-font);
-        }
-        .asset-table td:first-child {
-            font-weight: bold;
-            color: var(--border-color);
-            width: 25%;
-            font-family: var(--header-font);
-        }
-        .asset-table tr:last-child td {
-            border-bottom: none; /* แถวสุดท้ายไม่มีเส้นใต้ */
-        }
-        .asset-table ul {
-            padding-left: 5px; /* จัด ul ในตารางใหม่ */
-            margin-top: 10px;
-        }
-        .asset-table li {
-            font-size: 0.95em;
-            margin-bottom: 8px;
-        }
-        .asset-table li::before {
-            content: "•"; /* ใช้จุดเล็กแทน */
-            color: var(--border-color);
-            font-size: 1em;
             top: 0;
+            font-weight: bold;
         }
 
-        .account-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 30px 0;
-        }
-        .account-box {
-            background-color: #111;
-            padding: 25px;
-            border-left: 5px solid var(--gold-color);
-            border-radius: 0 8px 8px 0;
-            transition: background-color 0.3s ease;
-        }
-        .account-box:hover {
-            background-color: #222;
-        }
-        .account-box h4 { 
-            margin-top: 0; 
-            font-size: 1.3em;
-            font-family: var(--header-font);
-            color: var(--border-color);
-        }
-        .account-box .amount {
-            font-size: 2.2em; /* ใหญ่ขึ้น */
-            font-weight: 700;
-            color: var(--gold-color);
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-        }
-        
-        /* ----- TEAM GRID (ใหม่) ----- */
+        /* ----- [AIHIA]: TEAM - จุดขายที่แข็งที่สุด (กูแก้ให้มึงละ) ----- */
         .team-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 25px;
-            margin: 30px 0;
+            grid-template-columns: 1fr 1fr 1fr; /* 3 คอลัมน์ */
+            gap: 30px;
         }
         .team-card {
-            background-color: #111;
-            border-radius: 8px;
-            overflow: hidden;
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 12px;
+            text-align: center;
+            padding: 0;
+            overflow: hidden; /* กันรูปทะลุขอบ */
+            box-shadow: 0 5px 20px var(--shadow-heavy);
+            transition: transform 0.3s ease;
         }
         .team-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(228, 197, 112, 0.2);
         }
-        .team-card-image {
+        .team-card .team-img {
             width: 100%;
-            height: 250px;
-            object-fit: cover;
-            object-position: top; /* เน้นใบหน้า */
+            height: 350px; /* บังคับสัดส่วนรูป */
+            object-fit: cover; /* รูปจะได้ไม่เบี้ยว */
+            object-position: top;
+            background-color: #333;
+            border-bottom: 1px solid var(--border-color);
         }
         .team-card-content {
-            padding: 25px;
+            padding: 30px;
         }
         .team-card h3 {
-            font-size: 1.5em;
-            margin-top: 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--gold-color);
-            border-left: none;
-            padding-left: 0;
+            font-size: 1.5em; /* 24px */
+            margin-bottom: 5px;
         }
         .team-card .role {
             font-size: 1.1em;
             font-style: italic;
-            color: var(--border-color);
-            margin-bottom: 15px;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 20px;
         }
-        .team-card ul { padding-left: 0; }
-        .team-card li { font-size: 1em; }
-        .team-card li::before {
-            content: "✓"; /* ใช้เครื่องหมายถูก */
+        .team-card p { /* คำอธิบายสั้นๆ */
+            font-size: 0.95em;
+            opacity: 0.8;
+            min-height: 60px; /* กันการ์ดสูงไม่เท่ากัน */
+        }
+        .team-card .divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 20px auto;
+            width: 50%;
+        }
+        .team-card .skills {
+            font-size: 0.9em;
+            text-align: left;
+            opacity: 0.9;
+        }
+
+        /* ----- [AIHIA]: THE ASK (FINANCIALS) - แจกแจงให้เคลียร์! ----- */
+        .ask-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 50px;
+            border: 1px solid var(--gold-color); /* เน้นส่วนนี้ */
+            box-shadow: 0 0 50px var(--shadow-light);
+        }
+        .ask-intro {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .ask-intro .valuation {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+        .ask-intro .total-ask {
+            font-size: 3.5em;
+            font-weight: 700;
             color: var(--gold-color);
-            font-weight: bold;
-            top: 2px;
+            margin: 10px 0;
         }
-
-        /* ----- RESPONSIVE ----- */
-        @media (max-width: 900px) {
-            .container {
-                padding: 30px 25px;
-                margin: 20px auto;
-                border-radius: 0;
-                border-left: none;
-                border-right: none;
-            }
-            .team-grid {
-                grid-template-columns: 1fr; /* 1 คอลัมน์บนมือถือ */
-            }
-        }
-        @media (max-width: 600px) {
-            body { font-size: 16px; }
-            .title { font-size: 2.5em; }
-            h2 { font-size: 1.7em; }
-            h3 { font-size: 1.4em; }
-            .account-grid { grid-template-columns: 1fr; }
-            .asset-table { font-size: 0.9em; } /* ย่อตารางบนมือถือ */
-            .asset-table td {
-                display: block; /* ทำให้ตารางเป็นแนวตั้ง */
-                width: auto;
-                border-bottom: none;
-            }
-            .asset-table td:first-child { width: auto; }
-            .asset-table tr {
-                border-bottom: 2px solid var(--border-color);
-            }
-        }
-    </style>
-</head>
-<body class="lang-th-TH">
-
-    <div class="container">
-
-        <div id="content-th-TH" class="lang-content active">
-            
-            <div class="title-image-container">
-                <img src="IMG_0982.jpeg" alt="ไตรนที ซานชวน Logo" class="title-image">
-            </div>
-            <h1 class="title">ไตรนที ซานชวน</h1>
-            <p class="subtitle">พิมพ์เขียว "วังมังกร" (Dragon Palace)
-            <br>เครื่องจักรหยิน-หยาง 24 ชั่วโมง แห่งแรกของเอเชีย</p>
-
-            <section>
-                <h2>1. ปัญหา: โลกที่กำลัง "เหนื่อยล้า" และ "เหงา"</h2>
-                <p>"โลกเก่า" กำลังเผาไหม้ สังคมยุคใหม่กำลังเผชิญหน้ากับ "ความเหนื่อยล้า" (Burnout) และ "ความเหงา" (Loneliness) ผู้คนทำงานหนัก และกลับไป "ห้อง" ที่ว่างเปล่า</p>
-                <p>พวกเขาต้องการ "สถานที่หลบภัย" (Sanctuary) ที่ "เหนือกว่าการกลับบ้าน"</p>
-                <p>เราไม่ได้กำลังสร้าง "สปา"
-                <br>เรากำลังสร้าง **"วังมังกร" (Dragon Palace)**</p>
-                <p>นี่คือ "อาณาจักร" ที่ "บริสุทธิ์" 100% เรา "ปฏิเสธ" "สิ่งสกปรก" "บริการแฝง" และ "การทำผิดในกาม" ... เพราะ "วังมังกร" คือสถานที่ที่ "ปลอดภัย" ที่สุดสำหรับ "ครอบครัว" "เด็ก" และ "ผู้สูงอายุ"</p>
-                
-                <img src="IMG_0983.jpeg" alt="[AI Gen Image: The Yin-Yang concept, blending Asian aesthetics and modern luxury]" class="ai-image">
-            </section>
-            
-            <section>
-                <h2>2. ปรัชญา: "เครื่องจักรหยิน-หยาง 24 ชั่วโมง"</h2>
-                <p>"โลกเก่า" บังคับให้คุณ "เลือก" ... แต่ "ไตรนที ซานชวน" มอบ "ทั้งหมด" ให้คุณ</p>
-
-                <h3>พลังหยิน: สถานที่ศักดิ์สิทธิ์ (The Sanctuary)</h3>
-                <p>นี่คือ "การฟื้นฟู" ที่แท้จริง</p>
-                <img src="IMG_0985.jpeg" alt="[AI Gen Image: Minimalist Zen Onsen with bamboo]" class="ai-image">
-                <ul>
-                    <li><strong>Omotenashi (จิตวิญญาณญี่ปุ่น):</strong> สัมผัส "การบริการด้วยหัวใจ" "โซนไฮเอนด์" (สวนส่วนตัวและพ่อบ้าน) และ "ออนเซ็น" (บ่อธีม บ่อน้ำแข็ง)</li>
-                    <li><strong>ความโปร่งใส (ไร้กังวล):</strong> เรา **"ยกเลิกระบบทิป"** อย่างเด็ดขาด เรามอบ "ความเคารพ" (Respect) และ "ความสงบ" (Peace) ที่แท้จริงให้คุณ</li>
-                    <li><strong>การแพทย์ (The Heart):</strong> เชื่อมโยง "การแพทย์" (Med-spa Linkage) กับคลินิกชั้นนำ (พานาซี, เจ๊กิ๊ฟ) เพื่อมอบ "เวลเนส" (Wellness) ที่ "จับต้องได้" (เช่น IV Drips, การฉีดหน้า)</li>
-                </ul>
-                <img src="IMG_0986.jpeg" alt="[AI Gen Image: High-tech minimalist wellness clinic room]" class="ai-image">
-
-                <h3>พลังหยาง: ศูนย์รวมความบันเทิง (The Entertainment)</h3>
-                <p>นี่คือ "การปลดปล่อย" ที่บริสุทธิ์</p>
-                <img src="IMG_0984.jpeg" alt="[AI Gen Image: Luxurious private KTV/Cinema room]" class="ai-image">
-                <ul>
-                    <li><strong>อาณาจักร 24 ชั่วโมง (ความหรูหราจีน):</strong> "ห้องคาราโอเกะ" "โรงภาพยนตร์ส่วนตัว" และ "ร้านอาหาร 24 ชั่วโมง" ในมาตรฐาน "จีน-ญี่ปุ่น-ไทย"</li>
-                    <li><strong>ชุมชน (The Brain):</strong> เรา "จริงจังกับเรื่องเล่นๆ" "ห้องเกม" ของเรามี **"เกมมาสเตอร์" (GM)** มืออาชีพดูแล "ชุมชน" (Community)</li>
-                    <li><strong>การแข่งขันที่สะอาด:</strong> เราจัด "ทัวร์นาเมนต์" "Poker" "Mahjong" และ "การ์ดเกม" รางวัลคือ "Gift Voucher" (ไม่ใช่เงินสด) เพื่อ "ฆ่า" "การพนัน" และ "สร้าง" "ระบบนิเวศ" (Ecosystem) ที่บริสุทธิ์</li>
-                </ul>
-                <img src="IMG_0987.jpeg" alt="[AI Gen Image: A cozy, modern board game room with a Game Master]" class="ai-image">
-            </section>
-
-            <section>
-                <h2>3. ทีมผู้ก่อตั้ง: "สินทรัพย์" ที่ "ลอกเลียนแบบไม่ได้"</h2>
-                <p>"นักลงทุน" "โลกเก่า" "มองหา" "ตึก"
-                <br>"นักลงทุน" "ที่ฉลาด" (Pragmatic) "มองหา" "คน"</p>
-                <p>"ไตรนที ซานชวน" "ไม่" ใช่ "บริษัท" "ตัวเปล่า"
-                <br>"เรา" "คือ" "บริษัท" ที่ "มี" "สินทรัพย์" "มูลค่า 30 ล้านบาท" ... ที่ "พิสูจน์แล้ว" (Proven)</p>
-
-                <div class="team-grid">
-                    <div class="team-card">
-                        <img src="" alt="หลี่ ชิ่นเหยา (CEO)" class="team-card-image">
-                        <div class="team-card-content">
-                            <h3>หลี่ ชิ่นเหยา (一一)</h3>
-                            <div class="role">จิตวิญญาณ (CEO)</div>
-                            <p>ผู้ถือ "พิมพ์เขียว" และ "แม่เหล็ก" ดึงดูด "ตลาดจีน"</p>
-                            <ul>
-                                <li>"CEO" ที่ "ปฏิบัติการแล้ว" (柠悦溪 - จีน)</li>
-                                <li>"Traction จีน" (นางเอก Top Chart, ชนะการประกวด Model)</li>
-                                <li>"คอนเนคชั่นจีน" (Volvo, CLARINS)</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="team-card">
-                        <img src="" alt="นรินทร์ (CTO)" class="team-card-image">
-                        <div class="team-card-content">
-                            <h3>นรินทร์ ลีลาภรณ์ (ธีม)</h3>
-                            <div class="role">สมอง (CTO)</div>
-                            <p>"สถาปนิก" ผู้ออกแบบ "ระบบ" และ "ผู้พิทักษ์" "กฎหมาย"</p>
-                            <ul>
-                                <li>"ประสบการณ์" (Lazada, ณุศาศิริ)</li>
-                                <li>"ผู้พิทักษ์กฎหมาย" (Anti-Fraud)</li>
-                                <li>"นักยุทธศาสตร์" (อันดับ 1 ประเทศ, World Competitor)</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="team-card">
-                        <img src="" alt="ชิเอโกะ (CPO)" class="team-card-image">
-                        <div class="team-card-content">
-                            <h3>ชิเอโกะ ไซโต (เอโกะ)</h3>
-                            <div class="role">หัวใจ (CPO)</div>
-                            <p>"ผู้สร้าง" "ประสบการณ์" และ "ผู้พิสูจน์" "ความบริสุทธิ์"</p>
-                            <ul>
-                                <li>"ผู้เชี่ยวชาญ" (นักชิม, เจ้าของร้านอาหาร)</li>
-                                <li>"ทักษะ" "อ่านห้อง" (Room Reading) และ "คุม" "สังคมชั้นสูง"</li>
-                                <li>"ทักษะ" "เชื่อม 4 ภาษา" (ไทย-จีน-อังกฤษ-ญี่ปุ่น)</li>
-                                <li>"คอนเนคชั่นญี่ปุ่น" (Canon, Honda, NHK)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div> <div class="advantage-box">
-                    <h3>จุดแข็งที่เด็ดขาด: "ยุทธศาสตร์คู่หูนักฆ่า"</h3>
-                    <p>เรา "ไม่" "แค่" "มี" "ทีม" ... เรา "มี" "ยุทธศาสตร์"</p>
-                    <p>"คู่หูนักฆ่า" (一一 และ 嫂子) คือ "ฉากหน้า" ... "จิตวิญญาณ" (一一) "เปิดดีล" ด้วย "สถานะ" (CEO Idol) ... "หัวใจ" (嫂子) "ปิดดีล" ด้วย "ทักษะ" (อ่านห้อง) ... โดยมี "สมอง" (ธีม) "ควบคุม" "ฉากหลัง" (ในฐานะ "ล่าม" หรือ "ผู้สนับสนุนผ่านแชท")</p>
-                    <p>นี่คือ "ตี้" (Party) ที่ "ลอกเลียนแบบไม่ได้"</p>
-                </div>
-            </section>
-
-            <section>
-                <h2>4. "เฟส 1" (Phase 1): เราจะเปิดตัวด้วยอะไร</h2>
-                <p>นี่คือ "บริการ" ที่ "พร้อม" (Ready) "ปฏิบัติการ" (Execute) "ทันที" (Immediately) ที่ "เงินทุน" (Capital) "เข้า" (Arrives)</p>
-                <ul>
-                    <li><strong>บริการ "หยิน" (Yin):</strong>
-                        <ul>
-                            <li>"ไพรเวท ออนเซ็น" (Private Onsen) (บ่อร้อน, บ่อเย็น, บ่อน้ำแข็ง)</li>
-                            <li>"Omotenashi" (บริการพ่อบ้าน และ "ยูกาตะ")</li>
-                            <li>"Medical Wellness" (IV Drips และ "ทรีตเมนต์" (Treatment) "เจ๊กิ๊ฟ")</li>
-                            <li>"โซนพักผ่อน" (Relaxation Lounge) (บริการ "ผลไม้และเครื่องดื่มฟรี" 24 ชั่วโมง)</li>
-                        </ul>
-                    </li>
-                    <li><strong>บริการ "หยาง" (Yang):</strong>
-                        <ul>
-                            <li>"ไพรเวท KTV" (Private KTV) (ห้องธีม)</li>
-                            <li>"โรงภาพยนตร์ส่วนตัว" (Private Cinema)</li>
-                            <li>"ห้องบอร์ดเกม" (Board Game Room) (พร้อม "เกมมาสเตอร์" (GM) ประจำ)</li>
-                            <li>"การแข่งขัน" (Tournaments) (Poker, Mahjong, Card Games)</li>
-                            <li>"ร้านอาหาร 24 ชั่วโมง" (24-Hour Restaurant)</li>
-                        </ul>
-                    </li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>5. ข้อเสนอ (The Ask): ทุนก่อตั้ง 9 ล้านบาท</h2>
-                <p>เราไม่ได้ขอ "เงินทุนเริ่มต้น"
-                <br>เราขอ **"เงินทุนขยายตัว" (Growth Capital)**</p>
-                <p>"ไตรนที ซานชวน" มี "มูลค่าก่อนระดมทุน" (Pre-Money) ที่ **30 ล้านบาท**
-                <br>เรา "เสนอขาย" "หุ้น" **23.07%** ... "แลก" (In exchange) ... กับ "เงินสด" (Cash) **9,000,000 บาท**</p>
-                <p>"เงิน" 9 ล้านนี้ จะถูก "ล็อค" (Locked) ใน **"ยุทธศาสตร์ 2 บัญชี"** ที่ "โปร่งใส" 100%:</p>
-
-                <div class="account-grid">
-                    <div class="account-box">
-                        <h4>1. บัญชีปฏิบัติการ (War Chest)</h4>
-                        <div class="amount">7,100,000 บาท</div>
-                        <p>สำหรับ "สร้าง" "วังมังกร" (ค่าสถานที่, ตกแต่ง, อุปกรณ์, พนักงาน)</p>
-                    </div>
-                    <div class="account-box">
-                        <h4>2. บัญชีผู้ก่อตั้ง (Survival)</h4>
-                        <div class="amount">1,900,000 บาท</div>
-                        <p>สำหรับ "ซื้อ" "เวลา 100%" ของ "ผู้ก่อตั้ง Top 3" ตลอด "3-5 เดือน" แห่งการ "สร้าง" "เฟสแรก"</p>
-                    </div>
-                </div>
-
-                <h3>โอกาสสำหรับ "พันธมิตรที่ดิน" (Land Partner)</h3>
-                <p>"เพื่อน" (มิตร) ของเรา "มี" "ที่ดิน" (Land)
-                <br>หาก "พันธมิตร" "ประสงค์" (Wish) ที่จะ "ลงทุน" (Invest) ด้วย "ที่ดิน" (Land) ... "มูลค่า" (Valuation) 30 ล้านของเรา "คือ" (Is) "มาตรฐาน" (Standard) ที่ "มั่นคง" (Firm) ... "เรา" (We) "พร้อม" (Are ready) "เจรจา" "สัดส่วน" (Equity) ที่ "ยุติธรรม" (Fair)</p>
-            </section>
-            
-            <section>
-                <h2>6. อนาคต (Phase 2): การขยายตัว</h2>
-                <img src="IMG_0988.jpeg" alt="[AI Gen Image: A futuristic timeline/roadmap graphic with Zen influences]" class="ai-image">
-                <p>"วังมังกร" (สาขากรุงเทพ) คือ "ต้นแบบ" (The Prototype)
-                <br>"ภารกิจ" (Mission) ของเรา "ไม่" (Does not) "หยุด" (Stop) "แค่นี้"</p>
-                <ul>
-                    <li><strong>ระยะกลาง (2-3 ปี):</strong> "คัดลอก" (Copy) "โมเดล" (Model) ที่ "สำเร็จ" (Proven) ... "ขยาย" (Expand) สู่ "เชียงใหม่" และ "พัทยา"</li>
-                    <li><strong>ระยะยาว (5 ปี+):</strong> "ส่งออก" (Export) "แบรนด์" (Brand) "ไตรนที ซานชวน" ... สู่ "เอเชียตะวันออกเฉียงใต้" (SEA)</li>
-                </ul>
-            </section>
-            
-        </div>
-
-        <div id="content-zh-CN" class="lang-content">
-            
-            <div class="title-image-container">
-                <img src="IMG_0982.jpeg" alt="Tritani Sanchuan Logo" class="title-image">
-            </div>
-            <h1 class="title">ไตรนที ซานชวน (Tritani Sanchuan)</h1>
-            <p class="subtitle">执行摘要：“龙宫” (Dragon Palace) 蓝图</p>
-
-            <section>
-                <h2>1. 这不是“水疗”，这是“龙宫”</h2>
-                <img src="IMG_0983.jpeg" alt="[AI Gen Image: The Yin-Yang concept, blending Asian aesthetics and modern luxury]" class="ai-image">
-                <p>“旧世界”正在燃烧。“现代社会”正面临“倦怠” (Burnout) 和“孤独” (Loneliness)。人们需要一个“超越回家”的“庇护所” (Sanctuary)。</p>
-                <p>我们不是在建造“水疗中心”。
-                <br>我们正在建造 **“龙宫” (Dragon Palace)**。</p>
-                <p>这是第一个也是唯一一个 **“24小时阴阳引擎”**，在这里，“疗愈” (Yin Power) 和“释放” (Yang Power) 完美共存。</p>
-                <p>最重要的是，这是一个 100% “纯粹”的领域。我们“拒绝” "污秽"、“隐藏服务”和“非法性行为”。因为“龙宫”是“家庭”、“儿童”和“老人”最“安全”的地方。</p>
-            </section>
-            
-            </div>
-    </div>
-
-    <script>
-        // [NOTE: กู (รีเจนท์) "เหลือ" (Left) "สคริปต์" (Script) "สลับภาษา" (Toggle) "ไว้" (Here) ... "เผื่อ" (In case) "มึง" (You) "เปลี่ยนใจ" (Change your mind) "ใน" (in) "อนาคต" (Future)]
-        function setLanguage(lang) {
-            document.querySelectorAll('.lang-content').forEach(div => {
-                div.classList.remove('active');
-                div.style.display = 'none';
-            });
-            const selectedContent = document.getElementById(`content-${lang}`);
-            if (selectedContent) {
-                selectedContent.classList.add('active');
-                selectedContent.style.display = 'block';
-            }
-            document.body.className = `lang-${lang}`;
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            const currentBtnId = `btn-${lang.substring(0, 2)}`;
-            if (document.getElementById(currentBtnId)) {
-                document.getElementById(currentBtnId).classList.add('active');
-            }
-            document.documentElement.lang = lang;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        .ask-intro .equity {
+            font-size: 1.5em;
         }
         
-        // [NOTE: กู (รีเจนท์) "ตั้งค่า" (Set) "เริ่มต้น" (Default) "เป็น" (To) "ภาษาไทย" (THAI) "ตาม" (As) "คำสั่ง" (Command) "มึง" (You)]
-        document.addEventListener('DOMContentLoaded', () => {
-            const initialLang = 'th-TH';
-            document.documentElement.lang = initialLang;
-            document.body.className = `lang-${initialLang}`;
-            
-            const initialContent = document.getElementById(`content-${initialLang}`);
-            if(initialContent) {
-                initialContent.classList.add('active');
-                initialContent.style.display = 'block';
-            }
-            const initialBtn = document.getElementById('btn-th');
-            if(initialBtn) { initialBtn.classList.add('active'); }
+        .finance-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 2:1 ratio */
+            gap: 40px;
+        }
+        .finance-breakdown h4 {
+            color: var(--gold-color);
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        .finance-breakdown ul {
+            list-style: none;
+            padding-left: 0;
+            font-size: 1.1em;
+        }
+        .finance-breakdown li {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .finance-breakdown li:last-child {
+            border-bottom: none;
+        }
+        .finance-breakdown li span:first-child {
+            opacity: 0.8;
+        }
+        .finance-breakdown li span:last-child {
+            font-weight: 700;
+            color: var(--text-color);
+        }
+        .finance-breakdown .total {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--gold-color);
+            border-top: 2px solid var(--gold-color);
+            padding-top: 15px;
+        }
 
-            const otherContent = document.getElementById('content-zh-CN');
-            if(otherContent) { otherContent.style.display = 'none'; }
+        /* ----- [AIHIA]: LAND PARTNER - ข้อเสนอสำหรับ 'เพื่อน' มึง ----- */
+        .partner-offer {
+            margin-top: 40px;
+            background-color: #0F0F0F;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .partner-offer h4 {
+            color: var(--gold-color);
+        }
+
+        /* ----- [AIHIA]: ROADMAP (PHASE 2) - อนาคตมึงจะทำไรต่อ ----- */
+        .roadmap-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .roadmap-card {
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--gold-color);
+            padding: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        .roadmap-card .phase {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--gold-color);
+            margin-bottom: 5px;
+        }
+        .roadmap-card h4 {
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        /* ----- [AIHIA]: FOOTER - จบให้มันจำ ----- */
+        .footer {
+            text-align: center;
+            padding: 60px 20px;
+            margin-top: 40px;
+        }
+        .footer h3 {
+            font-size: 2em;
+        }
+        .footer p {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        /* ----- [AIHIA]: RESPONSIVE - ทำให้มันดูได้บนมือถือควายๆ ----- */
+        @media (max-width: 900px) {
+            h1 { font-size: 3.5em; }
+            h2 { font-size: 2.2em; }
+            .hero { height: 70vh; }
+            .team-grid { grid-template-columns: 1fr 1fr; } /* 2 คอลัมน์ */
+        }
+
+        @media (max-width: 768px) {
+            body { font-size: 16px; }
+            .problem-grid { grid-template-columns: 1fr; }
+            .problem-grid .problem-stats { margin-top: 30px; text-align: center; }
+            .concept-grid { grid-template-columns: 1fr; }
+            .finance-grid { grid-template-columns: 1fr; }
+            .finance-breakdown:last-child { margin-top: 30px; }
+            .roadmap-grid { grid-template-columns: 1fr; }
+            .ask-section { padding: 30px; }
+        }
+        
+        @media (max-width: 600px) {
+            h1 { font-size: 2.8em; }
+            .hero .subtitle { font-size: 1.2em; }
+            .lead { font-size: 1.1em; }
+            .team-grid { grid-template-columns: 1fr; } /* คอลัมน์เดียว */
+            .service-grid { grid-template-columns: 1fr; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="container">
+            <h1 class="title">วังมังกร (Dragon Palace)</h1>
+            <p class="subtitle">ไม่ใช่แค่ "สปา"... นี่คือ "อาณาจักร" แห่งการฟื้นฟูและปลดปล่อย
+            <br>พิมพ์เขียวการลงทุน "ไตรนที ซานชวน"</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="section" id="problem">
+            <div class="container">
+                <h2>1. ปัญหา: ตลาดที่ "เหนื่อยล้า" และ "โดดเดี่ยว"</h2>
+                <p class="lead">สังคมยุคใหม่กำลังเผชิญหน้ากับ "ความเหนื่อยล้า" (Burnout) และ "ความโดดเดี่ยว" (Loneliness) ผู้คนโหยหา "สถานที่หลบภัย" (Sanctuary) ที่ไม่ใช่แค่ "บ้าน" หรือ "ร้านเหล้า"</p>
+                <div class="problem-grid">
+                    <div>
+                        <h3>ตลาด Wellness กำลังระเบิด</h3>
+                        <p>คนไทยและชาวต่างชาติ (Expat) ยอมจ่ายมหาศาลเพื่อ "สุขภาพจิต" และ "การผ่อนคลาย" แต่ตลาดปัจจุบันมัน "น่าเบื่อ"... มันมีแค่ สปาแบบเดิมๆ หรือ สถานบันเทิงที่ฉาบฉวย</p>
+                        <h3>ช่องว่างที่ไม่มีใครเติมเต็ม</h3>
+                        <p>สิ่งที่ขาดหายไปคือ "Third Place" (สถานที่ที่ 3) ที่หรูหรา ปลอดภัย 100% (ไม่มีบริการแฝง) และเปิด 24 ชั่วโมง... สถานที่ที่มึงจะไป "ฟื้นฟู" หรือ "ปลดปล่อย" ก็ได้ในที่เดียว</p>
+                    </div>
+                    <div class="problem-stats">
+                        <img src="https://via.placeholder.com/600x400.png?text=[AI+Image:+Luxury+Zen+Lobby]" alt="ภาพจำลอง Lobby" class="img-placeholder">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="concept">
+            <div class="container">
+                <h2>2. ปรัชญา: "เครื่องจักรหยิน-หยาง 24 ชั่วโมง"</h2>
+                <p class="lead">"วังมังกร" คือสมดุลแห่ง "เต๋า" เราไม่ใช่แค่สปาที่มานวดแล้วกลับ เราคือ "ระบบนิเวศ" (Ecosystem) แห่งการใช้ชีวิต ที่มึงเลือกได้ว่าจะชาร์จพลัง (หยิน) หรือปลดปล่อย (หยาง)</p>
+                
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <span class="icon">☯︎</span>
+                        <h3>พลังหยิน (The Sanctuary)</h3>
+                        <p><strong>"การฟื้นฟู"</strong> ที่แท้จริง... ที่นี่คือความสงบ การบำบัด และการดูแลร่างกายในระดับลึก เน้นความเป็นส่วนตัวและบริการแบบ Omotenashi (จิตวิญญาณญี่ปุ่น) ที่แท้จริง</p>
+                    </div>
+                    <div class="concept-card">
+                        <span class="icon">☯︎</span>
+                        <h3>พลังหยาง (The Hub)</h3>
+                        <p><strong>"การปลดปล่อย"</strong> ที่บริสุทธิ์... ที่นี่คือความบันเทิง ชุมชน และการสังสรรค์ในสภาพแวดล้อมที่ "สะอาด" และ "ปลอดภัย" (Clean Entertainment) ปราศจากการพนันและบริการแฝง</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section" id="services">
+            <div class="container">
+                <h2>3. บริการเฟส 1: พร้อมปฏิบัติการทันที</h2>
+                <p class="lead">นี่คือบริการที่พร้อมเปิดตัวทันทีที่เงินทุนเข้า... กูแบ่งตามคอนเซ็ปต์มึงให้ชัดๆ</p>
+                
+                <div class="service-grid">
+                    <div class="service-card">
+                        <h4>ฝั่งหยิน (The Sanctuary)</h4>
+                        <ul>
+                            <li><strong>ไพรเวท ออนเซ็น:</strong> บ่อร้อน, บ่อเย็น, บ่อน้ำแข็ง และบ่อธีมส่วนตัว</li>
+                            <li><strong>Medical Wellness:</strong> บริการ IV Drips และทรีตเมนต์หน้า โดยทีมแพทย์พาร์ทเนอร์ (ไม่ต้องเอ่ยชื่อคลินิก!)</li>
+                            <li><strong>Omotenashi Service:</strong> บริการพ่อบ้านส่วนตัว, ชุดยูกาตะ/ชุดพักผ่อน</li>
+                            <li><strong>Relaxation Lounge:</strong> โซนพักผ่อนพร้อมผลไม้และเครื่องดื่มฟรี 24 ชั่วโมง</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h4>ฝั่งหยาง (The Hub)</h4>
+                        <ul>
+                            <li><strong>ไพรเวท KTV & Cinema:</strong> ห้องคาราโอเกะและโรงหนังส่วนตัว (ธีมจีน-ญี่ปุ่น)</li>
+                            <li><strong>Social Club (Game Room):</strong> ห้องบอร์ดเกม, การ์ดเกม พร้อม "เกมมาสเตอร์" (GM) ดูแล</li>
+                            <li><strong>Clean Tournaments:</strong> จัดการแข่งขัน Poker, Mahjong (รางวัลเป็น Gift Voucher เท่านั้น - ฆ่าการพนัน)</li>
+                            <li><strong>24-Hour Restaurant:</strong> ร้านอาหารหรู มาตรฐาน จีน-ญี่ปุ่น-ไทย</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px;">
+                    <img src="https://via.placeholder.com/800x600.png?text=[AI+Image:+Private+Onsen+Zen+Style]" alt="Private Onsen" class="img-placeholder">
+                    <img src="https://via.placeholder.com/800x600.png?text=[AI+Image:+Luxury+KTV+Room+Modern+Chinese]" alt="KTV Room" class="img-placeholder">
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="team">
+            <div class="container">
+                <h2>4. ทีมผู้ก่อตั้ง: สินทรัพย์ที่ลอกเลียนแบบไม่ได้</h2>
+                <p class="lead">นักลงทุนที่ฉลาดไม่ได้ลงทุนใน "ตึก" เขาลุงทุนใน "คน" ... และนี่คือทีมที่ "พร้อมรบ" และมี "สินทรัพย์" (Traction & Connection) ในมือทันที</p>
+                
+                <div class="team-grid">
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/400x350.png?text=[Profile+Pic:+หลี่+ชิ่นเหยา]" alt="หลี่ ชิ่นเหยา" class="team-img">
+                        <div class="team-card-content">
+                            <h3>หลี่ ชิ่นเหยา (一一)</h3>
+                            <div class="role">จิตวิญญาณ (CEO & Visionary)</div>
+                            <p>ผู้ถือกุญแจ "พิมพ์เขียว" และ "แม่เหล็ก" ดึงดูดตลาดจีน (High-Tier)</p>
+                            <div class="divider"></div>
+                            <div class="skills">
+                                <strong>สินทรัพย์ในมือ:</strong>
+                                <br>✓ CEO ที่มีประสบการณ์ปฏิบัติการจริง
+                                <br>✓ Traction ตลาดจีน (นางแบบ/นักแสดง Top Chart)
+                                <br>✓ คอนเนคชั่นแบรนด์หรู (Volvo, CLARINS)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/400x350.png?text=[Profile+Pic:+นรินทร์+ลีลาภรณ์]" alt="นรินทร์ ลีลาภรณ์" class="team-img">
+                        <div class="team-card-content">
+                            <h3>นรินทร์ ลีลาภรณ์ (ธีม)</h3>
+                            <div class="role">สมอง (CTO & Strategist)</div>
+                            <p>"สถาปนิก" ผู้ออกแบบระบบ และ "ผู้พิทักษ์" กฎหมาย (Anti-Fraud)</p>
+                            <div class="divider"></div>
+                            <div class="skills">
+                                <strong>สินทรัพย์ในมือ:</strong>
+                                <br>✓ ประสบการณ์ใน Big Tech & อสังหาริมทรัพย์
+                                <br>✓ ผู้เชี่ยวชาญด้าน Anti-Fraud & Legal
+                                <br>✓ นักยุทธศาสตร์ (อันดับ 1 ประเทศ, World Competitor)
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="team-card">
+                        <img src="https://via.placeholder.com/400x350.png?text=[Profile+Pic:+ชิเอโกะ+ไซโต]" alt="ชิเอโกะ ไซโต" class="team-img">
+                        <div class="team-card-content">
+                            <h3>ชิเอโกะ ไซโต (เอโกะ)</h3>
+                            <div class="role">หัวใจ (CPO & Experience)</div>
+                            <p>"ผู้สร้าง" ประสบการณ์ และ "ผู้เชื่อมประสาน" สังคมชั้นสูง 4 ภาษา</p>
+                            <div class="divider"></div>
+                            <div class="skills">
+                                <strong>สินทรัพย์ในมือ:</strong>
+                                <br>✓ ผู้เชี่ยวชาญ F&B และการบริการระดับสูง
+                                <br>✓ ทักษะ "อ่านห้อง" (Room Reading)
+                                <br>✓ ทักษะเชื่อม 4 ภาษา (ไทย-จีน-อังกฤษ-ญี่ปุ่น)
+                                <br>✓ คอนเนคชั่นญี่ปุ่น (Canon, Honda, NHK)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="ask">
+            <div class="container">
+                <div class="ask-section">
+                    <div class="ask-intro">
+                        <h2>5. ข้อเสนอ (The Ask)</h2>
+                        <div class="valuation">มูลค่าบริษัทก่อนระดมทุน (Pre-Money): 30,000,000 บาท</div>
+                        <div class="total-ask">9,000,000 บาท</div>
+                        <div class="equity">แลกกับหุ้น 23.07% (Post-Money Valuation: 39M)</div>
+                        <p style="opacity: 0.8; margin-top: 20px;">เราไม่ได้ขอ "ทุนเริ่มต้น"... เราขอ "ทุนขยายตัว" (Growth Capital)
+                        <br>เงิน 9 ล้านบาท จะถูกล็อคใน "ยุทธศาสตร์ 2 บัญชี" ที่โปร่งใส 100%</p>
+                    </div>
+
+                    <div class="finance-grid">
+                        <div class="finance-breakdown">
+                            <h4>1. บัญชีปฏิบัติการ (War Chest)</h4>
+                            <ul>
+                                <li><span>ค่ามัดจำและค่าเช่าสถานที่ (Prime Location)</span> <span>[XX] บาท</span></li>
+                                <li><span>ค่าออกแบบและตกแต่ง (Luxury Interior)</span> <span>[XX] บาท</span></li>
+                                <li><span>ค่าระบบ Onsen, KTV, Cinema</span> <span>[XX] บาท</span></li>
+                                <li><span>ค่าจ้างพนักงานชุดแรก (รวม Training)</span> <span>[XX] บาท</span></li>
+                                <li><span>งบการตลาดสำหรับเปิดตัว (Launch)</span> <span>[XX] บาท</span></li>
+                                <li><span>เงินทุนหมุนเวียน (Operation)</span> <span>[XX] บาท</span></li>
+                                <li class="total"><span>รวม (War Chest)</span> <span>7,100,000 บาท</span></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="finance-breakdown">
+                            <h4>2. บัญชีผู้ก่อตั้ง (Survival)</h4>
+                            <ul>
+                                <li><span>"ซื้อเวลา" 100% ของ 3 Founders</span> <span>[XX] บาท</span></li>
+                                <li><span>(สำหรับ 3-5 เดือนแรกในการก่อสร้าง)</span> <span></span></li>
+                                <li class="total" style="margin-top: 153px;"><span>รวม (Survival)</span> <span>1,900,000 บาท</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="partner-offer">
+                        <h4>ข้อเสนอพิเศษสำหรับ "พันธมิตรที่ดิน" (Land Partner)</h4>
+                        <p>สำหรับพันธมิตรที่ประสงค์จะลงทุนด้วย "ที่ดิน" (ในทำเล Prime Location) เราพร้อมเจรจาสัดส่วนหุ้น (Equity) โดยใช้ Valuation 30 ล้านบาทเป็นมาตรฐาน... นี่คือโอกาสในการเปลี่ยน "สินทรัพย์" ให้เป็น "เครื่องจักรทำเงิน" (Cash Cow) ร่วมกัน</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="future">
+            <div class="container">
+                <h2>6. อนาคต (Phase 2): การขยายตัว</h2>
+                <p class="lead">"วังมังกร" (สาขากรุงเทพ) คือ "ต้นแบบ" (Prototype) ที่สมบูรณ์แบบ... ภารกิจของเราคือการ "คัดลอก" ความสำเร็จนี้</p>
+                
+                <div class="roadmap-grid">
+                    <div class="roadmap-card">
+                        <div class="phase">ระยะกลาง (2-3 ปี)</div>
+                        <h4>ยึดหัวหาด (Domination)</h4>
+                        <p>คัดลอกโมเดลที่พิสูจน์แล้ว (Proven Model) ขยายสู่ "เชียงใหม่" และ "พัทยา" เพื่อจับตลาดนักท่องเที่ยวและ Expat ที่หนาแน่น</p>
+                    </div>
+                    <div class="roadmap-card">
+                        <div class="phase">ระยะยาว (5+ ปี)</div>
+                        <h4>ส่งออกแบรนด์ (Export)</h4>
+                        <p>ส่งออกแบรนด์ "ไตรนที ซานชวน" (Tritani Sanchuan) เป็น Luxury Wellness Brand สู่ตลาดเอเชียตะวันออกเฉียงใต้ (SEA)</p>
+                    </div>
+                </div>
+                
+                <img src="https://via.placeholder.com/1200x500.png?text=[AI+Image:+Futuristic+Roadmap+Graphic+Zen+Style]" alt="Roadmap" class="img-placeholder" style="margin-top: 40px; height: 500px; object-fit: cover;">
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <h3>พร้อมที่จะสร้าง "อาณาจักร" นี้หรือยัง?</h3>
+            <p>ไตรนที ซานชวน: ที่สุดแห่งการฟื้นฟู ที่สุดแห่งการปลดปล่อย</p>
+        </div>
+    </footer>
+
+    <script>
+        // [AIHIA]: ทำให้ section มัน 'Fade In' ตอนมึง scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target); // รันแค่ครั้งเดียว
+                    }
+                });
+            }, {
+                threshold: 0.1 // โผล่มา 10% ก็เริ่มทำงาน
+            });
+
+            document.querySelectorAll('.section').forEach(section => {
+                // [AIHIA]: ซ่อนมันไว้ก่อน ให้ CSS animation จัดการ
+                // section.style.opacity = '0';
+                // section.style.transform = 'translateY(30px)';
+                // section.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                observer.observe(section);
+            });
         });
     </script>
 
