@@ -62,14 +62,27 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .story-timeline::before {
-            content: '';
+        .timeline-card {
+            position: relative;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        .timeline-card:hover {
+            border-color: #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+            transform: translateX(5px);
+        }
+        .timeline-line {
             position: absolute;
-            left: 0;
+            left: 2rem;
             top: 0;
-            height: 100%;
+            bottom: 0;
             width: 2px;
-            background: linear-gradient(to bottom, #FFD700, transparent);
+            background: linear-gradient(to bottom, #FFD700, #333);
         }
     </style>
 </head>
@@ -97,6 +110,9 @@
                 </a>
                 <a href="#story" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
                     <i data-lucide="book-open" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> จุดกำเนิดตำนาน
+                </a>
+                <a href="#naming" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
+                    <i data-lucide="globe" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> ความหมาย 4 ภาษา
                 </a>
                 <a href="#product" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
                     <i data-lucide="package" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> สินค้า & ราคา
@@ -127,7 +143,8 @@
             
             <!-- SECTION 1: THE VISION -->
             <section id="vision" class="mb-24 scroll-mt-24">
-                <div class="glass-panel p-8 rounded-2xl border-l-4 border-brand-yellow">
+                <div class="glass-panel p-8 rounded-2xl border-l-4 border-brand-yellow relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-yellow blur-[120px] opacity-10 pointer-events-none"></div>
                     <span class="text-brand-yellow font-bold tracking-wider text-sm uppercase">Our Vision</span>
                     <h2 class="font-head text-4xl md:text-6xl font-extrabold text-white mt-2 leading-tight">
                         เปลี่ยนจาก "เครื่องเคียง"<br>
@@ -137,17 +154,17 @@
                         ภารกิจของเราคือการทำให้ "โฮมเจียว" เป็น <strong>"The Natural Flavor Booster"</strong> หรือผงชูรสแห่งความกรอบที่ทุกบ้านต้องมีติดตู้กับข้าว เหมือนน้ำปลาหรือซอสพริก เพื่อเปลี่ยนอาหารจานธรรมดาให้กลายเป็นจานพิเศษ ในราคาที่ทุกคนเข้าถึงได้
                     </p>
                     <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700">
+                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700 hover:border-brand-yellow transition-colors">
                             <div class="h-10 w-10 rounded-full bg-yellow-900 flex items-center justify-center text-brand-yellow mb-4"><i data-lucide="zap"></i></div>
                             <h3 class="font-bold text-white text-lg">เข้าถึงง่าย (Accessible)</h3>
                             <p class="text-gray-400 text-sm mt-2">ราคาเป็นมิตร หาซื้อง่าย กินได้กับทุกอย่าง</p>
                         </div>
-                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700">
+                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700 hover:border-brand-yellow transition-colors">
                             <div class="h-10 w-10 rounded-full bg-yellow-900 flex items-center justify-center text-brand-yellow mb-4"><i data-lucide="repeat"></i></div>
                             <h3 class="font-bold text-white text-lg">กินได้ทุกวัน (Daily Use)</h3>
                             <p class="text-gray-400 text-sm mt-2">ไม่ใช่ของฝาก แต่เป็นของกินประจำวัน</p>
                         </div>
-                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700">
+                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700 hover:border-brand-yellow transition-colors">
                             <div class="h-10 w-10 rounded-full bg-yellow-900 flex items-center justify-center text-brand-yellow mb-4"><i data-lucide="heart"></i></div>
                             <h3 class="font-bold text-white text-lg">จริงใจ (Sincere)</h3>
                             <p class="text-gray-400 text-sm mt-2">รสชาติจากรสมือแม่ เพื่อคนในบ้าน</p>
@@ -156,55 +173,129 @@
                 </div>
             </section>
 
-             <!-- SECTION 2: BRAND STORY -->
-             <section id="story" class="mb-24 scroll-mt-24">
-                <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
-                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> จุดกำเนิดตำนาน
+             <!-- SECTION 2: BRAND STORY (REVAMPED TO POP) -->
+             <section id="story" class="mb-24 scroll-mt-24 relative">
+                <h2 class="font-head text-3xl font-bold text-white mb-12 flex items-center">
+                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> จุดกำเนิดตำนาน (Mae Jiaw's Journey)
                 </h2>
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div>
-                        <div class="relative pl-8 story-timeline space-y-12">
-                            <div class="relative">
-                                <div class="absolute -left-[39px] bg-neutral-900 border-2 border-brand-yellow rounded-full w-6 h-6 flex items-center justify-center">
-                                    <div class="w-2 h-2 bg-brand-yellow rounded-full"></div>
-                                </div>
-                                <h3 class="text-xl font-bold text-white mb-2">คำถามจากหัวใจแม่</h3>
-                                <p class="text-gray-400 leading-relaxed">
-                                    เรื่องราวเริ่มต้นง่ายๆ เมื่อลูกเขยชาวหาดใหญ่บ่นคิดถึง "ไก่ทอดหน้าโรงเรียนแสงทอง" รสชาติในความทรงจำ... <strong>"แม่เจียว"</strong> (คุณแม่ยายที่เป็นเชฟ) จึงถามสั้นๆ ว่า <em>"อยากกินมั้ย? เดี๋ยวแม่ทำให้"</em>
-                                </p>
-                            </div>
-                            <div class="relative">
-                                <div class="absolute -left-[39px] bg-neutral-900 border-2 border-brand-yellow rounded-full w-6 h-6 flex items-center justify-center">
-                                    <div class="w-2 h-2 bg-brand-yellow rounded-full"></div>
-                                </div>
-                                <h3 class="text-xl font-bold text-white mb-2">การเดินทางของแม่เจียว</h3>
-                                <p class="text-gray-400 leading-relaxed">
-                                    ด้วยความรัก แม่เจียวเดินทางไปหาดใหญ่ ฝากตัวเป็นศิษย์ของ <strong>"ก๊ะ"</strong> เจ้าของสูตรต้นตำรับ เรียนรู้วิชาทอดหอมเจียวที่กรอบนานและหอมทะลุถุง เพื่อกลับมาทำให้ลูกหลานทานที่กรุงเทพฯ
-                                </p>
-                            </div>
-                            <div class="relative">
-                                <div class="absolute -left-[39px] bg-neutral-900 border-2 border-brand-yellow rounded-full w-6 h-6 flex items-center justify-center">
-                                    <div class="w-2 h-2 bg-brand-yellow rounded-full"></div>
-                                </div>
-                                <h3 class="text-xl font-bold text-white mb-2">สู่ "โฮมเจียว" ของทุกคน</h3>
-                                <p class="text-gray-400 leading-relaxed">
-                                    จากความตั้งใจทำกินเองในบ้าน เพื่อนบ้านเริ่มได้ชิม เพื่อนลูกเริ่มติดใจ... จนกลายเป็นเสียงเรียกร้องให้ทำขาย วันนี้ "โฮมเจียว" จึงถือกำเนิดขึ้น เพื่อส่งต่อความรักความอร่อยแบบ <strong>"รสมือแม่"</strong> ให้ถึงครัวของทุกคน
-                                </p>
-                            </div>
+                
+                <div class="relative">
+                    <!-- Vertical Line -->
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-brand-yellow via-neutral-800 to-transparent rounded-full"></div>
+
+                    <!-- Step 1 -->
+                    <div class="flex flex-col md:flex-row items-center mb-16">
+                        <div class="md:w-1/2 pr-0 md:pr-12 text-center md:text-right order-2 md:order-1">
+                            <h3 class="font-head text-2xl font-bold text-brand-yellow mb-3">จุดเริ่มต้นจากความรัก</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                เมื่อลูกเขยชาวหาดใหญ่บ่นคิดถึง "ไก่ทอดหน้าโรงเรียนแสงทอง" รสชาติในความทรงจำ... <strong>"แม่เจียว"</strong> จึงถามสั้นๆ ด้วยหัวใจว่า <em>"อยากกินมั้ย? เดี๋ยวแม่ทำให้"</em>
+                            </p>
+                        </div>
+                        <div class="z-10 bg-neutral-900 border-4 border-brand-yellow rounded-full p-3 mb-4 md:mb-0 order-1 md:order-2">
+                            <i data-lucide="heart" class="w-6 h-6 text-brand-yellow"></i>
+                        </div>
+                        <div class="md:w-1/2 pl-0 md:pl-12 order-3">
+                             <div class="bg-neutral-800 p-4 rounded-xl border border-neutral-700 shadow-lg transform rotate-1 hover:rotate-0 transition-transform">
+                                <p class="text-sm text-gray-400 italic">"คำถามง่ายๆ ที่เปลี่ยนทุกอย่าง..."</p>
+                             </div>
                         </div>
                     </div>
-                    <div class="relative h-full min-h-[300px] rounded-2xl overflow-hidden">
-                        <img src="https://placehold.co/600x800/1a1a1a/FFD700?text=Mae+Jiaw's+Journey" alt="เรื่องราวของแม่เจียว" class="absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-500">
-                        <div class="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black to-transparent w-full">
-                            <p class="text-brand-yellow font-head text-lg italic">"ทำให้เหมือนทำให้คนที่บ้านกิน"</p>
-                            <p class="text-white text-sm mt-1">- คำสอนของก๊ะ สู่ปณิธานของแม่เจียว</p>
+
+                    <!-- Step 2 -->
+                    <div class="flex flex-col md:flex-row items-center mb-16">
+                         <div class="md:w-1/2 pr-0 md:pr-12 text-center md:text-right order-3 md:order-1 hidden md:block">
+                            <div class="bg-neutral-800 p-4 rounded-xl border border-neutral-700 shadow-lg transform -rotate-1 hover:rotate-0 transition-transform">
+                                <p class="text-sm text-gray-400 italic">"วิชาลับที่ไม่มีใครเลียนแบบได้"</p>
+                             </div>
+                        </div>
+                        <div class="z-10 bg-neutral-900 border-4 border-brand-yellow rounded-full p-3 mb-4 md:mb-0 order-1 md:order-2">
+                            <i data-lucide="map-pin" class="w-6 h-6 text-brand-yellow"></i>
+                        </div>
+                        <div class="md:w-1/2 pl-0 md:pl-12 text-center md:text-left order-2 md:order-3">
+                            <h3 class="font-head text-2xl font-bold text-brand-yellow mb-3">การเดินทางของผู้สืบทอด</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                แม่เจียวเดินทางไปหาดใหญ่ ฝากตัวเป็นศิษย์ของ <strong>"ก๊ะ"</strong> เจ้าของสูตรต้นตำรับ เรียนรู้วิชาทอดหอมเจียวที่กรอบนานและหอมทะลุถุง เพื่อกลับมาทำให้ลูกหลานทานที่กรุงเทพฯ
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 pr-0 md:pr-12 text-center md:text-right order-2 md:order-1">
+                            <h3 class="font-head text-2xl font-bold text-brand-yellow mb-3">สู่ "โฮมเจียว" ของทุกคน</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                จากทำให้คนในบ้าน... สู่การแบ่งปันเพื่อนบ้าน... จนกลายเป็นเสียงเรียกร้องให้ทำขาย วันนี้เราจึงส่งต่อความรักความอร่อยแบบ <strong>"รสมือแม่"</strong> ให้ถึงครัวของทุกคน
+                            </p>
+                        </div>
+                        <div class="z-10 bg-neutral-900 border-4 border-brand-yellow rounded-full p-3 mb-4 md:mb-0 order-1 md:order-2">
+                            <i data-lucide="home" class="w-6 h-6 text-brand-yellow"></i>
+                        </div>
+                        <div class="md:w-1/2 pl-0 md:pl-12 order-3">
+                             <div class="bg-neutral-800 p-4 rounded-xl border border-neutral-700 shadow-lg transform rotate-1 hover:rotate-0 transition-transform">
+                                <p class="text-sm text-gray-400 italic">"อร่อยเหมือนแม่ทำให้กิน"</p>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: NAMING & MEANING (NEW ADDITION) -->
+            <section id="naming" class="mb-24 scroll-mt-24">
+                <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
+                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> ความหมายแห่งชื่อ (4 ภาษา)
+                </h2>
+                <div class="bg-neutral-800/50 rounded-2xl p-8 border border-neutral-700">
+                    <p class="text-gray-300 mb-8 text-lg text-center max-w-3xl mx-auto">
+                        ชื่อแบรนด์ของเราไม่ได้ถูกตั้งขึ้นมาลอยๆ แต่ผ่านการคัดสรรให้มีความหมายที่เป็นมงคล อบอุ่น และสะท้อนตัวตนของเราในทุกภาษา
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Thai -->
+                        <div class="bg-neutral-900 p-6 rounded-xl border-l-4 border-brand-yellow">
+                            <h3 class="text-2xl font-head font-bold text-brand-yellow mb-1">โฮมเจียววว</h3>
+                            <p class="text-sm text-gray-500 mb-3">ภาษาไทย</p>
+                            <p class="text-gray-300">
+                                <strong class="text-white">ที่มา:</strong> "โฮม" คือ บ้าน (Home) + "เจียว" คือ แม่เจียว และกรรมวิธี <br>
+                                <strong class="text-white">ทำไมต้อง ววว?:</strong> "ววว" คือเสียงสะท้อน (Echo) แห่งความสุขและความกรอบที่ก้องกังวานไม่รู้จบ<br>
+                                <strong class="text-white">เลขมงคล (55):</strong> ผลรวมเลขศาสตร์ได้ 55 ซึ่งหมายถึง "มหาจักรพรรดิแห่งความสุขและการค้า" (เลข 5 คือ ฮ่าฮ่าฮ่า เสียงหัวเราะ)
+                            </p>
+                        </div>
+
+                        <!-- English -->
+                        <div class="bg-neutral-900 p-6 rounded-xl border-l-4 border-blue-500">
+                            <h3 class="text-2xl font-head font-bold text-blue-400 mb-1">HomeChew</h3>
+                            <p class="text-sm text-gray-500 mb-3">ภาษาอังกฤษ</p>
+                            <p class="text-gray-300">
+                                <strong class="text-white">Meaning:</strong> "Home" + "Chew". สื่อถึงความสุขในการเคี้ยวของอร่อยที่บ้าน เป็นชื่อที่ฟังดูเป็นมิตร อบอุ่น และจดจำง่ายสำหรับชาวต่างชาติ
+                            </p>
+                        </div>
+
+                        <!-- Chinese -->
+                        <div class="bg-neutral-900 p-6 rounded-xl border-l-4 border-red-500">
+                            <h3 class="text-2xl font-head font-bold text-red-400 mb-1">家福脆 (Jiā Fú Cuì)</h3>
+                            <p class="text-sm text-gray-500 mb-3">ภาษาจีน</p>
+                            <p class="text-gray-300">
+                                <strong class="text-white">ความหมาย:</strong> <br>
+                                家 (Jiā) = บ้าน<br>
+                                福 (Fú) = โชคลาภ/ความสุข<br>
+                                脆 (Cuì) = กรอบ<br>
+                                รวมกันคือ "ความกรอบนำโชคกลับสู่บ้าน" เป็นชื่อที่เป็นสิริมงคลสูงสุด
+                            </p>
+                        </div>
+
+                        <!-- Japanese -->
+                        <div class="bg-neutral-900 p-6 rounded-xl border-l-4 border-pink-500">
+                            <h3 class="text-2xl font-head font-bold text-pink-400 mb-1">ホームチュー (Hōmuchū)</h3>
+                            <p class="text-sm text-gray-500 mb-3">ภาษาญี่ปุ่น</p>
+                            <p class="text-gray-300">
+                                <strong class="text-white">ความรู้สึก:</strong> "โฮมุ" มาจาก Home ส่วน "จู" (チュー) พ้องเสียงกับเสียงจูบหรือเสียงน่ารักๆ ให้ความรู้สึกถึงแบรนด์ที่ทันสมัย น่ารัก และเข้าถึงง่าย (เหมือนคาแรคเตอร์แม่เจียวผมชมพู)
+                            </p>
                         </div>
                     </div>
                 </div>
             </section>
 
 
-            <!-- SECTION 3: PRODUCT & PRICE -->
+            <!-- SECTION 4: PRODUCT & PRICE -->
             <section id="product" class="mb-24 scroll-mt-24">
                 <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
                     <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> สินค้าและราคา
@@ -244,8 +335,9 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: TARGET AUDIENCE -->
+            <!-- SECTION 5: TARGET AUDIENCE -->
             <section id="audience" class="mb-24 scroll-mt-24">
+                <!-- Content same as previous version -->
                 <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
                     <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> ใครคือลูกค้าของเรา?
                 </h2>
@@ -296,14 +388,14 @@
                 </div>
             </section>
 
-            <!-- SECTION 5: MASCOT & TONE -->
+            <!-- SECTION 6: MASCOT & TONE -->
             <section id="mascot" class="mb-24 scroll-mt-24">
                 <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
                     <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> แม่เจียว: เพื่อนคู่ครัว (2025 Edition)
                 </h2>
                 <div class="bg-neutral-800 rounded-2xl p-8 border border-neutral-700 flex flex-col md:flex-row items-center gap-8">
-                    <!-- Mascot Image Container: SQUARE with Rounded Corners -->
-                    <div class="w-48 h-48 flex-shrink-0 bg-neutral-700 rounded-2xl overflow-hidden border-4 border-brand-yellow shadow-lg">
+                    <!-- UPDATED IMAGE: Square with rounded corners, IMG_8086.jpeg -->
+                    <div class="w-56 h-56 flex-shrink-0 bg-neutral-700 rounded-2xl overflow-hidden border-4 border-brand-yellow shadow-lg">
                         <img src="IMG_8086.jpeg" alt="แม่เจียว" class="w-full h-full object-cover">
                     </div>
                     <div>
@@ -321,8 +413,9 @@
                 </div>
             </section>
 
-            <!-- SECTION 6: TONE OF VOICE -->
+            <!-- SECTION 7: TONE OF VOICE -->
             <section id="tone" class="mb-24 scroll-mt-24">
+                <!-- Content same as previous version -->
                 <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
                     <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> การสื่อสาร (Tone of Voice)
                 </h2>
@@ -346,8 +439,9 @@
                 </div>
             </section>
 
-             <!-- SECTION 7: MENU PAIRING (Interactive) -->
+             <!-- SECTION 8: MENU PAIRING (Interactive) -->
              <section id="pairing" class="mb-24 scroll-mt-24">
+                <!-- Content same as previous version -->
                 <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
                     <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> จับคู่ความอร่อย (Menu Pairing)
                 </h2>
