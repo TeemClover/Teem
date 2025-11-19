@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปงานถ่ายทำ: หอมเจียวและไก่ทอดหาดใหญ่</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        violet: {
+                            500: '#8b5cf6',
+                        },
+                        cyan: {
+                            400: '#22d3ee',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header-gradient {
+            background-image: linear-gradient(to right, #8b5cf6, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased pb-12">
+
+    <!-- Header & Executive Summary -->
+    <header class="w-full bg-slate-900/90 sticky top-0 z-50 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 class="text-3xl font-extrabold header-gradient">Intelligence Dashboard: แผนถ่ายทำ "หอมเจียว"</h1>
+            <div class="flex justify-between items-center mt-1 text-sm text-slate-400">
+                <span>
+                    <strong>วันที่นัด:</strong> วันศุกร์ | 
+                    <strong>เวลา:</strong> 10:00 น. | 
+                    <strong>สถานที่:</strong> ที่บ้าน (บ้านตรงข้าม)
+                </span>
+                <span class="text-xs font-mono">
+                    <strong>ผู้เข้าร่วม:</strong> บีม, เนย, เอ๋ย
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+        <!-- Key Decision Cards -->
+        <section>
+            <h2 class="text-2xl font-bold text-white mb-6">🔑 2-3 ผลลัพธ์/การตัดสินใจที่สำคัญที่สุด (Key Decisions)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Key Decision 1 -->
+                <div class="glass-panel rounded-xl p-5 border-l-4 border-violet-500 shadow-xl">
+                    <h3 class="text-xl font-semibold text-white mb-2">ห้าม! เตรียมวัตถุดิบล่วงหน้า</h3>
+                    <p class="text-slate-300 text-sm">การถ่ายทำต้องเริ่มตั้งแต่ <b>"ศูนย์"</b> (ตั้งแต่หั่นหอม/คลุกแป้ง) เพื่อเก็บฟุตเทจกระบวนการผลิตทั้งหมด</p>
+                </div>
+                <!-- Key Decision 2 -->
+                <div class="glass-panel rounded-xl p-5 border-l-4 border-cyan-400 shadow-xl">
+                    <h3 class="text-xl font-semibold text-white mb-2">กำหนดการถ่ายทำ</h3>
+                    <p class="text-slate-300 text-sm">นัดเริ่ม <b>10:00 น.</b> (เนื่องจากต้องการถ่ายตั้งแต่ขั้นตอนแรก) และถ่ายทำตลอดทั้งวันศุกร์ (ทั้งวัน)</p>
+                </div>
+                <!-- Key Decision 3 -->
+                <div class="glass-panel rounded-xl p-5 border-l-4 border-pink-500 shadow-xl">
+                    <h3 class="text-xl font-semibold text-white mb-2">ชุดถ่ายพูดขาย (2 ชุด)</h3>
+                    <p class="text-slate-300 text-sm">ต้องเตรียมชุดสำหรับพูดขาย 2 ชุด (ชุดที่ทำเสร็จแล้ว และ ชุดที่ถ่ายทำจริง)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Items Dashboard -->
+        <section>
+            <h2 class="text-2xl font-bold text-white mb-6">📋 สิ่งที่ต้องทำ (Action Items Dashboard)</h2>
+            <div class="glass-panel rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-800/50 text-xs uppercase font-semibold text-slate-400">
+                            <tr>
+                                <th class="px-6 py-4">Task</th>
+                                <th class="px-6 py-4">Owner (ผู้รับผิดชอบ)</th>
+                                <th class="px-6 py-4">Deadline (กำหนดเสร็จ)</th>
+                                <th class="px-6 py-4 text-center">Status (สถานะ)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800">
+                            <!-- Task 1: เตรียมวัตถุดิบทั้งหมด (ห้ามหั่น/คุกกิ้ง) -->
+                            <tr class="hover:bg-slate-800/30 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">เตรียมวัตถุดิบ "หอมเจียว" ครบชุด</td>
+                                <td class="px-6 py-4">ทีมครัว</td>
+                                <td class="px-6 py-4">ก่อน 10:00 น. วันศุกร์</td>
+                                <td class="px-6 py-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-400/10 text-red-400">ห้ามหั่น!</span></td>
+                            </tr>
+                            <!-- Task 2: เตรียมพร็อพไก่ทอดเต็มชุด -->
+                            <tr class="hover:bg-slate-800/30 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">เตรียม "ข้าวเหนียวไก่ทอดหาดใหญ่" (Prop)</td>
+                                <td class="px-6 py-4">ทีมครัว</td>
+                                <td class="px-6 py-4">ก่อน 10:00 น. วันศุกร์</td>
+                                <td class="px-6 py-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-400/10 text-yellow-400">Pending</span></td>
+                            </tr>
+                            <!-- Task 3: หาช็อต Reference -->
+                            <tr class="hover:bg-slate-800/30 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">หา Reference ช็อตที่อยากได้</td>
+                                <td class="px-6 py-4">เอ๋ย (และส่งให้ทีม)</td>
+                                <td class="px-6 py-4">TBD (ก่อนวันศุกร์)</td>
+                                <td class="px-6 py-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-400/10 text-cyan-400">In Progress</span></td>
+                            </tr>
+                            <!-- Task 4: จัดหาคนรีวิว -->
+                            <tr class="hover:bg-slate-800/30 transition-colors">
+                                <td class="px-6 py-4 font-medium text-white">จัดหาคนรีวิว 5-10 คน (เด็กอ้วน/เพื่อนบ้าน)</td>
+                                <td class="px-6 py-4">ทีม</td>
+                                <td class="px-6 py-4">ก่อนวันศุกร์</td>
+                                <td class="px-6 py-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-400/10 text-yellow-400">Pending</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Metrics & Data (Financials Discussed) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="glass-panel rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6">💰 โครงสร้างค่าบริการ/คอมมิชชั่น</h2>
+                <div class="relative w-full h-80">
+                    <canvas id="commissionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Unresolved Issues & Parking Lot -->
+            <div class="glass-panel rounded-xl p-6">
+                <h2 class="text-2xl font-bold text-white mb-6">🔴 ประเด็นคงค้าง / ที่ต้องตัดสินใจ (Parking Lot)</h2>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3 text-sm text-slate-300 p-3 bg-slate-800/50 rounded-lg">
+                        <span class="mt-1.5 w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></span>
+                        <div class="flex flex-col">
+                            <span class="font-semibold text-white">รายละเอียดการทำหอมเจียว:</span>
+                            <span>ต้องแชร์วิธีทำและเวลาที่ใช้ให้ทีมงานก่อน เพื่อวางแผนการถ่ายทำชุดพูดขายให้เหมาะสม</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 text-sm text-slate-300 p-3 bg-slate-800/50 rounded-lg">
+                        <span class="mt-1.5 w-2 h-2 rounded-full bg-yellow-500 flex-shrink-0"></span>
+                        <div class="flex flex-col">
+                            <span class="font-semibold text-white">การใช้ "ผงหมักไก่":</span>
+                            <span>ปัจจุบันเป็นไก่หมักแป้ง (มีน้ำปลา) แต่ถูกเสนอให้เปลี่ยนเป็น "ไก่หมักผง" เพื่อขายผง (Future Product?)</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 text-sm text-slate-300 p-3 bg-slate-800/50 rounded-lg">
+                        <span class="mt-1.5 w-2 h-2 rounded-full bg-violet-500 flex-shrink-0"></span>
+                        <div class="flex flex-col">
+                            <span class="font-semibold text-white">ช็อต "โกยหอมเจียว":</span>
+                            <span>ต้องการช็อตที่ใช้มือโกยหอมเจียวจำนวนมากในกะละมัง (ต้องเตรียมหอมเจียวสำเร็จจำนวนมากสำหรับช็อตนี้)</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+
+        <!-- Discussion Deep Dive (Tabs) -->
+        <section>
+            <h2 class="text-2xl font-bold text-white mb-6">🔍 Discussion Deep Dive: การถ่ายทำ</h2>
+            <div class="glass-panel rounded-xl p-1">
+                <!-- Tab Headers -->
+                <div class="flex space-x-1 overflow-x-auto p-1 scrollbar-hide" id="tabHeaders">
+                    <button onclick="switchTab('tab-process')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-white bg-slate-700 hover:bg-slate-600 transition-all min-w-fit ring-2 ring-violet-500" data-target="tab-process">กระบวนการ (Process)</button>
+                    <button onclick="switchTab('tab-props')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all min-w-fit" data-target="tab-props">พร็อพ/ชุด (Props & Wardrobe)</button>
+                    <button onclick="switchTab('tab-sales')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all min-w-fit" data-target="tab-sales">พูดขาย/รีวิว (Sales & Review)</button>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="p-6 min-h-[200px]">
+                    <!-- Process Content -->
+                    <div id="tab-process" class="tab-content block">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">การเก็บฟุตเทจ (Footage Collection)</h3>
+                        <p class="text-slate-300 mb-4 leading-relaxed">
+                            ต้องการถ่ายทำแบบเต็มกระบวนการ (Process) ตั้งแต่เริ่มต้น: หั่นหอม -> คลุกแป้ง -> ทอด (ไม่ต้องการหอมเจียวสำเร็จรูป) เพื่อนำไปใช้เป็น Insert ในคลิปหลัก 
+                            การถ่ายทำจะใช้ <b>กล้องมือถือ</b> และเน้นที่ <b>Close-up Shot</b> ไม่ต้องเห็นฉากหลังมาก
+                        </p>
+                    </div>
+
+                    <!-- Props Content -->
+                    <div id="tab-props" class="tab-content hidden">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-3">เครื่องแต่งกายและอุปกรณ์ที่ใช้</h3>
+                        <ul class="list-disc list-inside text-slate-300 space-y-2 pl-4">
+                            <li><b>ชุดทำอาหาร:</b> เสื้อยืดสีขาวครึ่งตัวบน + ผ้ากันเปื้อน + ถุงมือพลาสติกสีดำ (แนะนำ)</li>
+                            <li><b>ชุดพูดขาย:</b> เตรียมไว้ 2 ชุด (ใช้สำหรับถ่ายชุดสำเร็จ และ ชุดที่ทำเสร็จใหม่ๆ)</li>
+                            <li><b>อุปกรณ์เสริม:</b> ต้องเตรียม 'กะละมัง' เพื่อใช้ถ่ายช็อต 'โกยหอมเจียว' จำนวนมาก</li>
+                        </ul>
+                    </div>
+
+                    <!-- Sales Content -->
+                    <div id="tab-sales" class="tab-content hidden">
+                        <h3 class="text-xl font-semibold text-pink-400 mb-3">การพูดขายและรีวิว</h3>
+                        <p class="text-slate-300 mb-4 leading-relaxed">
+                            ในวันศุกร์จะมีการถ่ายทำส่วน **"พูดขาย"** ด้วย และจะมีการเก็บฟุตเทจ **"รีวิว"** แยกไว้ในช่วงท้าย ซึ่งต้องการ **คนรีวิว 5-10 คน** โดยเสนอให้เป็น 'เด็กอ้วน' หรือ 'อาม่าเพื่อนบ้าน' ที่ดูน่ากินแล้วอร่อย
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Chart Configuration (แสดงสัดส่วนค่าบริการรายเดือนและคอมมิชชั่น)
+        const ctx = document.getElementById('commissionChart').getContext('2d');
+        const commissionChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['ค่าบริการรายเดือน (30,000 บาท)', 'ค่าคอมมิชชั่น Telesales (20%)', 'ค่าคอมมิชชั่น Admin (5%)'],
+                datasets: [{
+                    data: [30000, 20, 5], // 30,000 + 25% (as percentage) - illustrative data
+                    backgroundColor: [
+                        '#8b5cf6', // Violet
+                        '#22d3ee', // Cyan
+                        '#fb7185'  // Pink
+                    ],
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#e2e8f0',
+                            font: {
+                                family: 'Sarabun'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    if(context.parsed < 1000) {
+                                        label += ': ' + context.parsed + '%';
+                                    } else {
+                                        label += ': ' + context.parsed.toLocaleString('th-TH') + ' บาท (Fixed)';
+                                    }
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Tab Logic
+        function switchTab(targetId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            const target = document.getElementById(targetId);
+            target.classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-700', 'text-white', 'ring-2', 'ring-violet-500');
+                btn.classList.add('text-slate-400');
+                if(btn.dataset.target === targetId) {
+                    btn.classList.add('bg-slate-700', 'text-white', 'ring-2', 'ring-violet-500');
+                    btn.classList.remove('text-slate-400');
+                }
+            });
+        }
+        // Activate default tab on load
+        document.addEventListener('DOMContentLoaded', () => {
+            switchTab('tab-process');
+        });
+    </script>
+</body>
+</html>
