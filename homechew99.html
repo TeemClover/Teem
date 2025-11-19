@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeChew: The Mass Market Playbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;800&family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #0f0f0f;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, .font-head {
+            font-family: 'Prompt', sans-serif;
+        }
+        .text-brand-yellow {
+            color: #FFD700;
+        }
+        .bg-brand-yellow {
+            background-color: #FFD700;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+            border-color: #FFD700;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sidebar-link.active {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
+            border-left: 4px solid #FFD700;
+            color: #FFD700;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFD700;
+        }
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .story-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: linear-gradient(to bottom, #FFD700, transparent);
+        }
+    </style>
+</head>
+<body class="bg-neutral-950">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden fixed top-0 w-full z-50 bg-neutral-900 border-b border-neutral-800 p-4 flex justify-between items-center">
+        <span class="font-head font-bold text-xl text-brand-yellow">HomeChew</span>
+        <button id="mobile-menu-btn" class="text-white focus:outline-none">
+            <i data-lucide="menu"></i>
+        </button>
+    </div>
+
+    <div class="flex min-h-screen pt-16 md:pt-0">
+        
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-neutral-900 border-r border-neutral-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+            <div class="p-6">
+                <h1 class="font-head font-bold text-3xl gradient-text mb-1">HomeChew</h1>
+                <p class="text-xs text-gray-500 uppercase tracking-widest">The Playbook</p>
+            </div>
+            <nav class="mt-4 px-4 space-y-1">
+                <a href="#vision" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
+                    <i data-lucide="target" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> วิสัยทัศน์
+                </a>
+                <a href="#story" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
+                    <i data-lucide="book-open" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> จุดกำเนิดตำนาน
+                </a>
+                <a href="#product" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
+                    <i data-lucide="package" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> สินค้า & ราคา
+                </a>
+                <a href="#audience" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
+                    <i data-lucide="users" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> ใครคือลูกค้า?
+                </a>
+                <a href="#mascot" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
+                    <i data-lucide="smile" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> แม่เจียว 2025
+                </a>
+                <a href="#tone" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
+                    <i data-lucide="message-circle" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> Mood & Tone
+                </a>
+                <a href="#pairing" class="sidebar-link flex items-center px-4 py-3 text-sm font-medium text-gray-300 rounded-r-lg hover:text-white hover:bg-neutral-800 transition-colors group">
+                    <i data-lucide="utensils" class="mr-3 h-5 w-5 group-hover:text-brand-yellow"></i> เมนูคู่บุญ
+                </a>
+            </nav>
+            <div class="absolute bottom-0 p-6 w-full">
+                <div class="bg-neutral-800 rounded-lg p-4 border border-neutral-700">
+                    <p class="text-xs text-gray-400">เป้าหมายของเรา</p>
+                    <p class="font-head font-bold text-xl text-white mt-1">อร่อยทุกบ้าน!</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 p-6 md:p-12 max-w-7xl mx-auto">
+            
+            <!-- SECTION 1: THE VISION -->
+            <section id="vision" class="mb-24 scroll-mt-24">
+                <div class="glass-panel p-8 rounded-2xl border-l-4 border-brand-yellow">
+                    <span class="text-brand-yellow font-bold tracking-wider text-sm uppercase">Our Vision</span>
+                    <h2 class="font-head text-4xl md:text-6xl font-extrabold text-white mt-2 leading-tight">
+                        เปลี่ยนจาก "เครื่องเคียง"<br>
+                        สู่ <span class="gradient-text">"ความอร่อยคู่ครัว"</span> ของคนไทย
+                    </h2>
+                    <p class="mt-6 text-xl text-gray-300 leading-relaxed max-w-3xl">
+                        ภารกิจของเราคือการทำให้ "โฮมเจียว" เป็น <strong>"The Natural Flavor Booster"</strong> หรือผงชูรสแห่งความกรอบที่ทุกบ้านต้องมีติดตู้กับข้าว เหมือนน้ำปลาหรือซอสพริก เพื่อเปลี่ยนอาหารจานธรรมดาให้กลายเป็นจานพิเศษ ในราคาที่ทุกคนเข้าถึงได้
+                    </p>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700">
+                            <div class="h-10 w-10 rounded-full bg-yellow-900 flex items-center justify-center text-brand-yellow mb-4"><i data-lucide="zap"></i></div>
+                            <h3 class="font-bold text-white text-lg">เข้าถึงง่าย (Accessible)</h3>
+                            <p class="text-gray-400 text-sm mt-2">ราคาเป็นมิตร หาซื้อง่าย กินได้กับทุกอย่าง</p>
+                        </div>
+                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700">
+                            <div class="h-10 w-10 rounded-full bg-yellow-900 flex items-center justify-center text-brand-yellow mb-4"><i data-lucide="repeat"></i></div>
+                            <h3 class="font-bold text-white text-lg">กินได้ทุกวัน (Daily Use)</h3>
+                            <p class="text-gray-400 text-sm mt-2">ไม่ใช่ของฝาก แต่เป็นของกินประจำวัน</p>
+                        </div>
+                        <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700">
+                            <div class="h-10 w-10 rounded-full bg-yellow-900 flex items-center justify-center text-brand-yellow mb-4"><i data-lucide="heart"></i></div>
+                            <h3 class="font-bold text-white text-lg">จริงใจ (Sincere)</h3>
+                            <p class="text-gray-400 text-sm mt-2">รสชาติจากรสมือแม่ เพื่อคนในบ้าน</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- SECTION 2: BRAND STORY -->
+             <section id="story" class="mb-24 scroll-mt-24">
+                <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
+                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> จุดกำเนิดตำนาน
+                </h2>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div class="relative pl-8 story-timeline space-y-12">
+                            <div class="relative">
+                                <div class="absolute -left-[39px] bg-neutral-900 border-2 border-brand-yellow rounded-full w-6 h-6 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-brand-yellow rounded-full"></div>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">คำถามจากหัวใจแม่</h3>
+                                <p class="text-gray-400 leading-relaxed">
+                                    เรื่องราวเริ่มต้นง่ายๆ เมื่อลูกเขยชาวหาดใหญ่บ่นคิดถึง "ไก่ทอดหน้าโรงเรียนแสงทอง" รสชาติในความทรงจำ... <strong>"แม่เจียว"</strong> (คุณแม่ยายที่เป็นเชฟ) จึงถามสั้นๆ ว่า <em>"อยากกินมั้ย? เดี๋ยวแม่ทำให้"</em>
+                                </p>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute -left-[39px] bg-neutral-900 border-2 border-brand-yellow rounded-full w-6 h-6 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-brand-yellow rounded-full"></div>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">การเดินทางของแม่เจียว</h3>
+                                <p class="text-gray-400 leading-relaxed">
+                                    ด้วยความรัก แม่เจียวเดินทางไปหาดใหญ่ ฝากตัวเป็นศิษย์ของ <strong>"ก๊ะ"</strong> เจ้าของสูตรต้นตำรับ เรียนรู้วิชาทอดหอมเจียวที่กรอบนานและหอมทะลุถุง เพื่อกลับมาทำให้ลูกหลานทานที่กรุงเทพฯ
+                                </p>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute -left-[39px] bg-neutral-900 border-2 border-brand-yellow rounded-full w-6 h-6 flex items-center justify-center">
+                                    <div class="w-2 h-2 bg-brand-yellow rounded-full"></div>
+                                </div>
+                                <h3 class="text-xl font-bold text-white mb-2">สู่ "โฮมเจียว" ของทุกคน</h3>
+                                <p class="text-gray-400 leading-relaxed">
+                                    จากความตั้งใจทำกินเองในบ้าน เพื่อนบ้านเริ่มได้ชิม เพื่อนลูกเริ่มติดใจ... จนกลายเป็นเสียงเรียกร้องให้ทำขาย วันนี้ "โฮมเจียว" จึงถือกำเนิดขึ้น เพื่อส่งต่อความรักความอร่อยแบบ <strong>"รสมือแม่"</strong> ให้ถึงครัวของทุกคน
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative h-full min-h-[300px] rounded-2xl overflow-hidden">
+                        <img src="https://placehold.co/600x800/1a1a1a/FFD700?text=Mae+Jiaw's+Journey" alt="เรื่องราวของแม่เจียว" class="absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity duration-500">
+                        <div class="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black to-transparent w-full">
+                            <p class="text-brand-yellow font-head text-lg italic">"ทำให้เหมือนทำให้คนที่บ้านกิน"</p>
+                            <p class="text-white text-sm mt-1">- คำสอนของก๊ะ สู่ปณิธานของแม่เจียว</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- SECTION 3: PRODUCT & PRICE -->
+            <section id="product" class="mb-24 scroll-mt-24">
+                <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
+                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> สินค้าและราคา
+                </h2>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="relative group cursor-pointer">
+                        <div class="absolute inset-0 bg-brand-yellow blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-full"></div>
+                        <div class="relative bg-neutral-800 border border-neutral-700 rounded-2xl p-8 text-center card-hover">
+                            <div class="inline-block px-4 py-1 bg-brand-yellow text-black font-bold rounded-full text-sm mb-6">Best Seller</div>
+                            <h3 class="font-head text-4xl font-bold text-white">โฮมเจียว รสออริจินัล</h3>
+                            <p class="text-gray-400 mt-2">ความกรอบระดับตำนาน ในซองซิปล็อคที่ทันสมัย</p>
+                            <div class="my-8">
+                                <span class="text-6xl font-black text-brand-yellow">99.-</span>
+                                <span class="text-xl text-gray-500">บาท</span>
+                            </div>
+                            <div class="text-left space-y-3 text-sm text-gray-300">
+                                <div class="flex items-center"><i data-lucide="check-circle" class="text-green-500 mr-2 w-4"></i> หอมเจียวแท้ 100% เกรดส่งออก</div>
+                                <div class="flex items-center"><i data-lucide="check-circle" class="text-green-500 mr-2 w-4"></i> กรอบนาน ไม่อมน้ำมัน</div>
+                                <div class="flex items-center"><i data-lucide="check-circle" class="text-green-500 mr-2 w-4"></i> ซองซิปล็อค เก็บความกรอบได้ดีเยี่ยม</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <h3 class="font-head text-2xl font-bold text-white">The Magic Number: 99 บาท</h3>
+                        <p class="text-gray-300 leading-relaxed">
+                            นี่คือราคาที่ออกแบบมาให้ <strong>"ตัดสินใจง่าย" (Impulse Buy)</strong> เราต้องการให้โฮมเจียวเป็นสินค้าที่หยิบใส่ตะกร้าได้โดยไม่ต้องคิดมาก เป็นราคาที่แข่งขันได้ในตลาด Mass แต่ให้คุณภาพและ Branding ที่เหนือกว่า
+                        </p>
+                        <div class="bg-neutral-800/50 p-6 rounded-xl border border-neutral-700">
+                            <h4 class="font-bold text-brand-yellow mb-2">กลยุทธ์การขาย (Sales Tactics):</h4>
+                            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                                <li><strong>Upsell:</strong> ขายเป็ฯ Set 3 ซอง / 5 ซอง (ส่งฟรี) เพื่อเพิ่มยอดต่อบิล</li>
+                                <li><strong>Reason to Buy:</strong> "มีติดบ้านไว้อุ่นใจกว่า" (เหมือนยาสามัญประจำบ้าน)</li>
+                                <li><strong>Cross-sell:</strong> น้ำจิ้มไก่ทอด (1 ขวด) จัดคู่กันเป็น Set "คู่บุญ" 159 บาท</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: TARGET AUDIENCE -->
+            <section id="audience" class="mb-24 scroll-mt-24">
+                <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
+                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> ใครคือลูกค้าของเรา?
+                </h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Persona 1 -->
+                    <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700 card-hover">
+                        <div class="h-12 w-12 bg-blue-900/50 rounded-lg flex items-center justify-center text-blue-400 mb-4">
+                            <i data-lucide="briefcase"></i>
+                        </div>
+                        <h3 class="font-head text-xl font-bold text-white">ชาวออฟฟิศ / เด็กหอ</h3>
+                        <p class="text-gray-400 text-sm mt-2 mb-4">"ชีวิตรีบเร่ง กินง่าย แต่อยากได้อะไรอร่อยๆ"</p>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-neutral-700 text-xs text-gray-300 px-2 py-1 rounded">ชอบกินมาม่า</span>
+                            <span class="inline-block bg-neutral-700 text-xs text-gray-300 px-2 py-1 rounded">สั่งเดลิเวอรี่บ่อย</span>
+                            <span class="inline-block bg-neutral-700 text-xs text-gray-300 px-2 py-1 rounded">ทำอาหารไม่เก่ง</span>
+                        </div>
+                        <p class="mt-4 text-sm text-brand-yellow">👉 "เปลี่ยนมาม่าถ้วยโปรด ให้เป็นมื้อภัตตาคาร แค่โรย!"</p>
+                    </div>
+
+                    <!-- Persona 2 -->
+                    <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700 card-hover">
+                        <div class="h-12 w-12 bg-pink-900/50 rounded-lg flex items-center justify-center text-pink-400 mb-4">
+                            <i data-lucide="home"></i>
+                        </div>
+                        <h3 class="font-head text-xl font-bold text-white">แม่บ้านยุคใหม่</h3>
+                        <p class="text-gray-400 text-sm mt-2 mb-4">"ทำกับข้าวเอง แต่อยากมีตัวช่วยให้อร่อยขึ้น"</p>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-neutral-700 text-xs text-gray-300 px-2 py-1 rounded">ชอบทำไข่เจียว</span>
+                            <span class="inline-block bg-neutral-700 text-xs text-gray-300 px-2 py-1 rounded">หาของติดครัว</span>
+                            <span class="inline-block bg-neutral-700 text-xs text-gray-300 px-2 py-1 rounded">เลือกของดีให้ลูก</span>
+                        </div>
+                        <p class="mt-4 text-sm text-brand-yellow">👉 "เคล็ดลับมัดใจลูก ไข่เจียวโรยหอมเจียว กรอบจนคำสุดท้าย"</p>
+                    </div>
+
+                    <!-- Persona 3 -->
+                    <div class="bg-neutral-800 p-6 rounded-xl border border-neutral-700 card-hover">
+                        <div class="h-12 w-12 bg-green-900/50 rounded-lg flex items-center justify-center text-green-400 mb-4">
+                            <i data-lucide="beer"></i>
+                        </div>
+                        <h3 class="font-head text-xl font-bold text-white">สายกับแกล้ม / กินเล่น</h3>
+                        <p class="text-gray-400 text-sm mt-2 mb-4">"ชอบเคี้ยวอะไรกรอบๆ เพลินๆ"</p>
+                        <div class="space-y-2">
+                            <span class="inline-block bg-neutral-700 text-xs text-gray-300 px-2 py-1 rounded">กินคู่ยำ/ส้มตำ</span>
+                            <span class="inline-block bg-neutral-700 text-xs text-gray-300 px-2 py-1 rounded">กินเล่นหน้าทีวี</span>
+                        </div>
+                        <p class="mt-4 text-sm text-brand-yellow">👉 "กรอบ เพลิน หยุดไม่ได้ ระวังหมดกระปุกไม่รู้ตัว!"</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: MASCOT & TONE -->
+            <section id="mascot" class="mb-24 scroll-mt-24">
+                <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
+                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> แม่เจียว: เพื่อนคู่ครัว (2025 Edition)
+                </h2>
+                <div class="bg-neutral-800 rounded-2xl p-8 border border-neutral-700 flex flex-col md:flex-row items-center gap-8">
+                    <!-- Mascot Image Container: SQUARE with Rounded Corners -->
+                    <div class="w-48 h-48 flex-shrink-0 bg-neutral-700 rounded-2xl overflow-hidden border-4 border-brand-yellow shadow-lg">
+                        <img src="https://i.imgur.com/G5T2kXp.png" alt="แม่เจียว" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h3 class="font-head text-2xl font-bold text-white">คาแรคเตอร์ใหม่</h3>
+                        <p class="text-gray-300 mt-4 leading-relaxed">
+                            แม่เจียวคือตัวแทนของ <strong>"คุณแม่ข้างบ้านที่ทำกับข้าวเก่งและใจดี"</strong> ท่านมีผมสีชมพูที่สะท้อนความทันสมัยและหัวใจวัยรุ่น ไม่ใช่คนแก่ที่น่าเบื่อ ท่านชอบแบ่งปันสูตรอาหาร ชอบเห็นคนกินอิ่ม และมีความสุขกับการเข้าครัว
+                        </p>
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <span class="px-3 py-1 rounded-full bg-neutral-900 border border-neutral-600 text-sm text-gray-300">#ใจดี</span>
+                            <span class="px-3 py-1 rounded-full bg-neutral-900 border border-neutral-600 text-sm text-gray-300">#ทันสมัย</span>
+                            <span class="px-3 py-1 rounded-full bg-neutral-900 border border-neutral-600 text-sm text-gray-300">#กูรูของกิน</span>
+                            <span class="px-3 py-1 rounded-full bg-neutral-900 border border-neutral-600 text-sm text-gray-300">#แม่ครัวตัวจริง</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: TONE OF VOICE -->
+            <section id="tone" class="mb-24 scroll-mt-24">
+                <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
+                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> การสื่อสาร (Tone of Voice)
+                </h2>
+                <div class="glass-panel p-8 rounded-2xl">
+                    <p class="text-xl text-white mb-6">เราคุยกับลูกค้าเหมือน <strong>"เพื่อนแนะนำของอร่อยให้เพื่อน"</strong> หรือ <strong>"แม่ชวนลูกกินข้าว"</strong></p>
+                    
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="p-4 bg-neutral-900/50 rounded-lg border border-neutral-700">
+                            <h4 class="font-bold text-brand-yellow mb-2">สนุก & เป็นกันเอง (Fun & Friendly)</h4>
+                            <p class="text-gray-400 text-sm">"หิวกันรึยังจ๊ะ? เที่ยงนี้จัดมาม่าต้มยำโรยโฮมเจียวหน่อยมั้ย ฟินลืม!"</p>
+                        </div>
+                        <div class="p-4 bg-neutral-900/50 rounded-lg border border-neutral-700">
+                            <h4 class="font-bold text-brand-yellow mb-2">น่ากิน & กระตุ้นความอยาก (Appetizing)</h4>
+                            <p class="text-gray-400 text-sm">"ดูความกรอบสีทองนั่นสิ... แค่เห็นก็ได้ยินเสียงเคี้ยวกรุบกรับแล้ว!"</p>
+                        </div>
+                        <div class="p-4 bg-neutral-900/50 rounded-lg border border-neutral-700">
+                            <h4 class="font-bold text-brand-yellow mb-2">มีประโยชน์ & ให้ความรู้ (Helpful)</h4>
+                            <p class="text-gray-400 text-sm">"เคล็ดลับแม่เจียว: ถ้าไข่เจียวยังไม่ฟู ลองโรยโฮมเจียวตอนตีไข่ดูนะจ๊ะ หอมขึ้น 10 เท่า!"</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- SECTION 7: MENU PAIRING (Interactive) -->
+             <section id="pairing" class="mb-24 scroll-mt-24">
+                <h2 class="font-head text-3xl font-bold text-white mb-8 flex items-center">
+                    <span class="w-2 h-8 bg-brand-yellow mr-4 rounded-full"></span> จับคู่ความอร่อย (Menu Pairing)
+                </h2>
+                <p class="text-gray-400 mb-6">คลิกที่เมนูเพื่อดูว่า "โฮมเจียว" ยกระดับความอร่อยได้ยังไง (สคริปต์ขายของ)</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <button onclick="showPairing('noodle')" class="pairing-btn active p-4 bg-neutral-800 rounded-xl border border-neutral-700 hover:border-brand-yellow text-center transition-all focus:outline-none">
+                        <span class="text-3xl block mb-2">🍜</span> มาม่า/ก๋วยเตี๋ยว
+                    </button>
+                    <button onclick="showPairing('egg')" class="pairing-btn p-4 bg-neutral-800 rounded-xl border border-neutral-700 hover:border-brand-yellow text-center transition-all focus:outline-none">
+                        <span class="text-3xl block mb-2">🍳</span> ไข่เจียว/ไข่ดาว
+                    </button>
+                    <button onclick="showPairing('rice')" class="pairing-btn p-4 bg-neutral-800 rounded-xl border border-neutral-700 hover:border-brand-yellow text-center transition-all focus:outline-none">
+                        <span class="text-3xl block mb-2">🍚</span> ข้าวต้ม/โจ๊ก
+                    </button>
+                    <button onclick="showPairing('salad')" class="pairing-btn p-4 bg-neutral-800 rounded-xl border border-neutral-700 hover:border-brand-yellow text-center transition-all focus:outline-none">
+                        <span class="text-3xl block mb-2">🥗</span> ยำ/ส้มตำ
+                    </button>
+                </div>
+
+                <div id="pairing-content" class="bg-neutral-800 p-8 rounded-2xl border border-neutral-700 relative overflow-hidden min-h-[200px] flex items-center">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-yellow blur-[100px] opacity-10"></div>
+                    <div id="noodle-content" class="pairing-detail w-full">
+                        <h3 class="font-head text-2xl font-bold text-brand-yellow mb-2">The Noodle Booster</h3>
+                        <p class="text-white text-lg">"เบื่อไหมกับมาม่าเดิมๆ? แค่โรยโฮมเจียวลงไปตอนน้ำกำลังร้อนๆ... ความกรอบจะดูดซับน้ำซุป และส่งกลิ่นหอมระเบิดออกมา เปลี่ยนบะหมี่ซองละ 6 บาท ให้กลายเป็นราเมงชามละร้อย!"</p>
+                    </div>
+                    <div id="egg-content" class="pairing-detail hidden w-full">
+                        <h3 class="font-head text-2xl font-bold text-brand-yellow mb-2">The Perfect Crunch</h3>
+                        <p class="text-white text-lg">"ไข่เจียวนุ่มๆ เจอหอมเจียวกรอบๆ คือนิพพาน! texture ที่ตัดกันจะทำให้เคี้ยวเพลินจนหยุดไม่ได้ แนะนำให้โรยทั้งตอนทอดเสร็จใหม่ๆ และตอนกินคำต่อคำ!"</p>
+                    </div>
+                    <div id="rice-content" class="pairing-detail hidden w-full">
+                        <h3 class="font-head text-2xl font-bold text-brand-yellow mb-2">Morning Comfort</h3>
+                        <p class="text-white text-lg">"โจ๊กจืดๆ จะมีชีวิตชีวาขึ้นมาทันที ความหอมของหอมเจียวจะช่วยเจริญอาหาร เหมาะมากสำหรับมื้อเช้าที่เร่งรีบแต่อยากได้ความอุ่นใจ"</p>
+                    </div>
+                    <div id="salad-content" class="pairing-detail hidden w-full">
+                        <h3 class="font-head text-2xl font-bold text-brand-yellow mb-2">Spicy & Crispy</h3>
+                        <p class="text-white text-lg">"ยำแซ่บๆ หรือส้มตำนัวๆ ถ้าได้ความกรอบและรสหวานนิดๆ ของหอมเจียวไปตัด... มันจะกลมกล่อมขึ้นทันตาเห็น เป็น Secret Ingredient ของร้านยำดังๆ เลยนะ!"</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Close sidebar when clicking outside on mobile (optional but good UX)
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 768 && !sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        // Menu Pairing Logic
+        function showPairing(type) {
+            // Hide all contents
+            document.querySelectorAll('.pairing-detail').forEach(el => el.classList.add('hidden'));
+            // Remove active class from buttons
+            document.querySelectorAll('.pairing-btn').forEach(el => {
+                el.classList.remove('border-brand-yellow', 'bg-neutral-700');
+                el.classList.add('border-neutral-700', 'bg-neutral-800');
+            });
+
+            // Show selected content
+            document.getElementById(`${type}-content`).classList.remove('hidden');
+            // Highlight selected button
+            const activeBtn = document.querySelector(`button[onclick="showPairing('${type}')"]`);
+            activeBtn.classList.remove('border-neutral-700', 'bg-neutral-800');
+            activeBtn.classList.add('border-brand-yellow', 'bg-neutral-700');
+        }
+    </script>
+</body>
+</html>
