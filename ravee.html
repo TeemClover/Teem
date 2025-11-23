@@ -3,179 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Candidate Profile: GOLF</title>
+    <title>GOLF | The New Standard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;400;600;800&family=Outfit:wght@300;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Kanit', 'sans-serif'],
-                        display: ['Montserrat', 'sans-serif'],
+                        en: ['Outfit', 'sans-serif'],
                     },
                     colors: {
-                        'brand-gold': '#F59E0B',
-                        'brand-dark': '#0F172A',
-                        'brand-accent': '#38BDF8',
+                        'void': '#050505',
+                        'charcoal': '#121212',
+                        'accent': '#3B82F6', /* Blue Energy */
+                        'highlight': '#F59E0B',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        body { background-color: #050505; color: #ffffff; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .glow-text {
-            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.15);
+        }
+        .text-stroke {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+            color: transparent;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #FFFFFF 0%, #94A3B8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
-<body class="bg-brand-dark text-slate-200 font-sans antialiased selection:bg-brand-accent selection:text-brand-dark">
+<body class="overflow-x-hidden selection:bg-accent selection:text-white">
 
-    <section class="relative min-h-screen flex flex-col justify-center items-center text-center px-4 overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-            <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-brand-accent rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse"></div>
-            <div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-brand-gold rounded-full mix-blend-screen filter blur-[100px] opacity-10"></div>
+    <nav class="fixed w-full z-50 top-0 px-6 py-4 flex justify-between items-center bg-void/80 backdrop-blur-md border-b border-white/5">
+        <div class="font-en font-black text-2xl tracking-tighter">GOLF<span class="text-accent">.</span></div>
+        <div class="text-xs font-en tracking-widest text-gray-500">EST. 2025 // FUTURE POLITICS</div>
+    </nav>
+
+    <section class="relative min-h-screen flex items-center justify-center px-4 pt-20">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/20 rounded-full blur-[128px] animate-pulse-slow"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-highlight/10 rounded-full blur-[100px]"></div>
         </div>
 
-        <div class="z-10 max-w-4xl mx-auto">
-            <p class="text-brand-gold font-bold tracking-[0.3em] uppercase text-sm mb-4 animate-bounce">The New Era of Leadership</p>
-            
-            <h1 class="font-display text-6xl md:text-8xl font-black text-white mb-2 leading-tight tracking-tighter">
-                GOLF <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-accent to-blue-600 glow-text">[SURNAME]</span>
-            </h1>
-            
-            <h2 class="text-2xl md:text-3xl font-semibold text-slate-400 mb-8">
-                Deputy Party Leader & Party List #1
-            </h2>
-
-            <div class="glass-panel p-6 rounded-2xl max-w-2xl mx-auto mb-10 transform hover:scale-105 transition-transform duration-300 border-l-4 border-brand-accent">
-                <p class="text-lg md:text-xl italic text-slate-100">
-                    "เปลี่ยน... ให้ทันสมัย แต่ไม่ทิ้งรากเหง้า<br>
-                    สร้างเศรษฐกิจด้วยการลงมือทำ ไม่ใช่แค่วาทกรรม"
+        <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-white/10 bg-white/5">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="text-xs text-gray-300 font-en tracking-wider">PARTY LIST #01</span>
+                </div>
+                
+                <h1 class="text-7xl md:text-9xl font-en font-black leading-[0.9] tracking-tighter">
+                    THE <br>
+                    <span class="text-stroke">ENERGY</span> <br>
+                    TO CHANGE
+                </h1>
+                
+                <p class="text-gray-400 text-lg md:text-xl font-light max-w-lg leading-relaxed">
+                    ไม่ใช่แค่นักการเมือง แต่คือ "นักลงมือทำ" <br>
+                    ผสานความเร็วของโลกธุรกิจ เข้ากับความเข้าใจในเพื่อนมนุษย์
                 </p>
-            </div>
 
-            <a href="#experience" class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-brand-dark bg-gradient-to-r from-brand-accent to-blue-500 rounded-full shadow-lg hover:shadow-brand-accent/50 hover:translate-y-[-2px] transition-all duration-300">
-                รู้จักกอล์ฟให้ลึกกว่าเดิม
-            </a>
-        </div>
-    </section>
-
-    <section id="experience" class="py-20 px-4 max-w-5xl mx-auto">
-        <h3 class="font-display text-4xl font-bold text-white mb-12 border-b border-slate-700 pb-4">
-            EXECUTIVE TRACK RECORD <span class="text-brand-gold">.</span>
-        </h3>
-
-        <div class="space-y-12">
-            <div class="group relative pl-8 border-l-2 border-slate-700 hover:border-brand-accent transition-colors duration-300">
-                <div class="absolute -left-[9px] top-0 w-4 h-4 bg-brand-dark border-2 border-slate-500 rounded-full group-hover:bg-brand-accent group-hover:border-brand-accent transition-all"></div>
-                <div class="glass-panel p-8 rounded-xl hover:bg-white/10 transition-all">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-                        <h4 class="text-2xl font-bold text-white group-hover:text-brand-accent transition-colors">Managing Director</h4>
-                        <span class="text-sm text-slate-400 uppercase tracking-wider">Wellness Management Group</span>
-                    </div>
-                    <p class="text-brand-gold font-semibold mb-4">Health Me Fitness</p>
-                    <ul class="list-disc list-inside space-y-2 text-slate-300">
-                        <li>บริหารจัดการองค์กรเพื่อ<strong>ยกระดับคุณภาพชีวิต</strong>และสุขภาพประชาชน (Public Health Optimization).</li>
-                        <li>สร้าง Community ที่แข็งแกร่ง เน้นการสร้างวินัยและศักยภาพมนุษย์ (Human Capital Development).</li>
-                        <li>วางระบบบริหารจัดการธุรกิจบริการที่เน้นผลลัพธ์และความพึงพอใจสูงสุด.</li>
-                    </ul>
+                <div class="flex flex-wrap gap-4 pt-4">
+                    <a href="#" class="px-8 py-4 bg-white text-black font-bold rounded hover:bg-accent hover:text-white transition-colors duration-300">
+                        วิสัยทัศน์
+                    </a>
+                    <a href="#" class="px-8 py-4 border border-white/20 text-white rounded hover:bg-white/10 transition-colors duration-300">
+                        รู้จักกอล์ฟ
+                    </a>
                 </div>
             </div>
 
-            <div class="group relative pl-8 border-l-2 border-slate-700 hover:border-brand-accent transition-colors duration-300">
-                <div class="absolute -left-[9px] top-0 w-4 h-4 bg-brand-dark border-2 border-slate-500 rounded-full group-hover:bg-brand-accent group-hover:border-brand-accent transition-all"></div>
-                <div class="glass-panel p-8 rounded-xl hover:bg-white/10 transition-all">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-                        <h4 class="text-2xl font-bold text-white group-hover:text-brand-accent transition-colors">Managing Director</h4>
-                        <span class="text-sm text-slate-400 uppercase tracking-wider">QUV (Quality Ultra Vinyl)</span>
+            <div class="lg:col-span-5 relative">
+                <div class="relative w-full aspect-[3/4] rounded-2xl overflow-hidden glass-card flex items-center justify-center group">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop" 
+                         alt="Golf Portrait" 
+                         class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110">
+                    
+                    <div class="absolute bottom-6 left-6 z-20">
+                        <h2 class="text-3xl font-bold font-en">GOLF</h2>
+                        <p class="text-accent text-sm tracking-widest font-en uppercase">Deputy Leader</p>
                     </div>
-                    <p class="text-brand-gold font-semibold mb-4">Modern Living Infrastructure</p>
-                    <ul class="list-disc list-inside space-y-2 text-slate-300">
-                        <li>วางมาตรฐานวัสดุและนวัตกรรมเพื่อที่อยู่อาศัยสมัยใหม่ (Smart Housing Solutions).</li>
-                        <li>บริหารจัดการ Supply Chain และการค้าระหว่างประเทศ.</li>
-                        <li>ขับเคลื่อนธุรกิจด้วยแนวคิดความยั่งยืนและความคุ้มค่าทางเศรษฐกิจ (Economic Sustainability).</li>
-                    </ul>
                 </div>
-            </div>
-
-            <div class="group relative pl-8 border-l-2 border-slate-700 hover:border-brand-accent transition-colors duration-300">
-                <div class="absolute -left-[9px] top-0 w-4 h-4 bg-brand-dark border-2 border-slate-500 rounded-full group-hover:bg-brand-accent group-hover:border-brand-accent transition-all"></div>
-                <div class="glass-panel p-8 rounded-xl hover:bg-white/10 transition-all">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-                        <h4 class="text-2xl font-bold text-white group-hover:text-brand-accent transition-colors">Asia Regional Instructor</h4>
-                        <span class="text-sm text-slate-400 uppercase tracking-wider">Ducati Asia Pacific</span>
+                
+                <div class="absolute -bottom-6 -right-6 glass-card p-4 rounded-xl animate-float hidden md:block">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-accent/20 p-2 rounded-lg text-accent">
+                            <i class="fa-solid fa-bolt text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-400 font-en uppercase">Trait</div>
+                            <div class="font-bold">High Energy ESFP</div>
+                        </div>
                     </div>
-                    <p class="text-brand-gold font-semibold mb-4">Crisis Management & High Performance</p>
-                    <ul class="list-disc list-inside space-y-2 text-slate-300">
-                        <li>ผู้ฝึกสอนระดับภูมิภาคเอเชีย เชี่ยวชาญด้านการควบคุมสถานการณ์วิกฤต (Crisis Control).</li>
-                        <li>ถ่ายทอดทักษะความปลอดภัยมาตรฐานโลก (World-class Safety Standards).</li>
-                        <li>ทำงานร่วมกับทีมงานหลากหลายวัฒนธรรมทั่วเอเชีย (Cross-cultural Leadership).</li>
-                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-20 px-4 bg-gradient-to-b from-brand-dark to-slate-900">
-        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
-            
-            <div class="glass-panel p-8 rounded-2xl">
-                <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
-                    <span class="bg-brand-accent w-2 h-8 mr-4 rounded-full"></span> EDUCATION
-                </h3>
+    <section class="py-24 px-4 bg-charcoal relative">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-end mb-12">
                 <div>
-                    <h4 class="text-xl font-bold text-white">B.A. Communication Arts</h4>
-                    <p class="text-brand-accent mb-2">International College, Rangsit University</p>
-                    <p class="text-slate-400 text-sm">
-                        "Communication is the key to bridging the generational gap."<br>
-                        เชี่ยวชาญการสื่อสารสากลและการเจรจาต่อรอง
-                    </p>
+                    <h2 class="text-4xl md:text-5xl font-black font-en uppercase tracking-tight text-white">
+                        Beyond <span class="text-gray-600">Resume</span>
+                    </h2>
+                </div>
+                <div class="hidden md:block text-right">
+                    <p class="text-gray-400 text-sm">ประสบการณ์จริงในสนามธุรกิจ <br> สู่สนามการเมือง</p>
                 </div>
             </div>
 
-            <div class="glass-panel p-8 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-brand-gold/20">
-                <h3 class="font-display text-2xl font-bold text-white mb-6 flex items-center">
-                    <span class="bg-brand-gold w-2 h-8 mr-4 rounded-full"></span> LEADERSHIP DNA
-                </h3>
-                <div class="space-y-4">
-                    <div>
-                        <h5 class="text-white font-bold">THE MOBILIZER (ESFP)</h5>
-                        <div class="w-full bg-slate-700 h-2 rounded-full mt-1">
-                            <div class="bg-brand-gold h-2 rounded-full" style="width: 95%"></div>
+            <div class="grid grid-cols-1 md:grid-cols-4 grid-rows-auto gap-4 md:h-[600px]">
+                
+                <div class="md:col-span-2 md:row-span-2 glass-card rounded-2xl p-8 flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-32 bg-accent/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-accent/20 transition-all"></div>
+                    <div class="z-10">
+                        <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-6 text-white group-hover:bg-accent group-hover:scale-110 transition-all">
+                            <i class="fa-solid fa-motorcycle"></i>
                         </div>
-                        <p class="text-xs text-slate-400 mt-1">Energy & Action Oriented</p>
+                        <h3 class="text-2xl font-bold mb-2">DUCATI ASIA INSTRUCTOR</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                            ไม่ใช่แค่ขี่รถ แต่คือการบริหารความเสี่ยงระดับวินาที (Crisis Management) และการถ่ายทอดทักษะระดับสากลให้คนทั่วเอเชีย
+                        </p>
+                        <div class="flex gap-2 text-xs font-mono text-gray-500 mt-auto">
+                            <span class="border border-white/10 px-2 py-1 rounded">LEADERSHIP</span>
+                            <span class="border border-white/10 px-2 py-1 rounded">SAFETY</span>
+                        </div>
                     </div>
-                    <div>
-                        <h5 class="text-white font-bold">PUBLIC ENGAGEMENT</h5>
-                        <div class="w-full bg-slate-700 h-2 rounded-full mt-1">
-                            <div class="bg-brand-accent h-2 rounded-full" style="width: 90%"></div>
+                    <div class="absolute bottom-4 right-4 text-8xl font-black text-white/5 z-0">01</div>
+                </div>
+
+                <div class="md:col-span-2 md:row-span-1 glass-card rounded-2xl p-8 flex flex-col justify-center relative group">
+                    <div class="flex items-center justify-between z-10">
+                        <div>
+                            <div class="text-accent text-xs font-bold tracking-widest mb-1">MANAGING DIRECTOR</div>
+                            <h3 class="text-xl font-bold">WELLNESS MANAGEMENT GROUP</h3>
+                            <p class="text-gray-400 text-sm mt-2">บริหารสุขภาพคนเมือง สร้างวินัยและคุณภาพชีวิต</p>
                         </div>
-                        <p class="text-xs text-slate-400 mt-1">Connecting with People</p>
-                    </div>
-                    <div>
-                        <h5 class="text-white font-bold">PRAGMATIC SOLUTIONS</h5>
-                        <div class="w-full bg-slate-700 h-2 rounded-full mt-1">
-                            <div class="bg-green-500 h-2 rounded-full" style="width: 88%"></div>
+                        <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-white group-hover:rotate-12 transition-all">
+                            <i class="fa-solid fa-heart-pulse"></i>
                         </div>
-                        <p class="text-xs text-slate-400 mt-1">Results over Rhetoric</p>
                     </div>
                 </div>
-            </div>
 
+                <div class="md:col-span-1 md:row-span-1 glass-card rounded-2xl p-6 flex flex-col justify-between group">
+                    <div class="text-4xl text-gray-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold">MD @ QUV</h3>
+                        <p class="text-gray-400 text-xs mt-1">Innovative Material Solutions</p>
+                    </div>
+                </div>
+
+                <div class="md:col-span-1 md:row-span-1 glass-card rounded-2xl p-6 bg-white text-black flex flex-col justify-between hover:!bg-white hover:!text-black">
+                    <div class="text-4xl text-black">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold">RANGSIT U.</h3>
+                        <p class="text-gray-600 text-xs mt-1">Comm. Arts <br>(International)</p>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </section>
 
-    <footer class="py-12 text-center border-t border-slate-800">
-        <p class="text-slate-500 text-sm mb-4">Designed for the Future of Thailand</p>
-        <h2 class="text-3xl font-display font-bold text-white tracking-widest">GOLF [SURNAME]</h2>
+    <section class="py-20 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-accent/5"></div>
+        <div class="max-w-3xl mx-auto px-4 relative z-10">
+            <h2 class="text-5xl md:text-7xl font-en font-black mb-6 uppercase tracking-tighter">
+                Ready to <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-purple-500">Serve</span>
+            </h2>
+            <p class="text-gray-300 text-lg mb-8 font-light">
+                "ความสนุกคือพลัง ความจริงใจคืออาวุธ" <br> 
+                ผมพร้อมใช้พลังงานทั้งหมดที่มี เพื่อขับเคลื่อนประเทศไปข้างหน้า
+            </p>
+            <button class="bg-white text-black px-10 py-4 rounded-full font-bold hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                เข้าร่วมทีมกอล์ฟ
+            </button>
+        </div>
+    </section>
+
+    <footer class="py-8 text-center border-t border-white/5 text-gray-600 text-sm">
+        &copy; 2025 GOLF CAMPAIGN. DESIGNED FOR THE FUTURE.
     </footer>
 
 </body>
