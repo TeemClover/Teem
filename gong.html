@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONFIDENTIAL PROFILE: KONG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=Chakra+Petch:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cyber: ['Orbitron', 'sans-serif'],
+                        tech: ['Rajdhani', 'sans-serif'],
+                        thai: ['Chakra Petch', 'sans-serif'],
+                    },
+                    colors: {
+                        'neon-green': '#00ff41',
+                        'neon-blue': '#00f3ff',
+                        'dark-bg': '#050505',
+                        'glass': 'rgba(10, 20, 30, 0.8)',
+                    },
+                    animation: {
+                        'spin-slow': 'spin 10s linear infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glitch': 'glitch 1s linear infinite',
+                    },
+                    keyframes: {
+                        glitch: {
+                            '2%, 64%': { transform: 'translate(2px,0) skew(0deg)' },
+                            '4%, 60%': { transform: 'translate(-2px,0) skew(0deg)' },
+                            '62%': { transform: 'translate(0,0) skew(5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #020202; color: #e0e0e0; overflow-x: hidden; }
+        .cyber-border {
+            border: 1px solid #00ff41;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+            position: relative;
+        }
+        .cyber-border::before {
+            content: ''; position: absolute; top: -2px; left: -2px; width: 10px; h: 10px;
+            border-top: 2px solid #00ff41; border-left: 2px solid #00ff41;
+        }
+        .cyber-border::after {
+            content: ''; position: absolute; bottom: -2px; right: -2px; width: 10px; h: 10px;
+            border-bottom: 2px solid #00ff41; border-right: 2px solid #00ff41;
+        }
+        .hologram-text {
+            text-shadow: 0 0 5px #00ff41, 0 0 10px #00ff41;
+        }
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .stat-bar {
+            background: linear-gradient(90deg, #00ff41 0%, #00f3ff 100%);
+            box-shadow: 0 0 10px #00ff41;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #00ff41; }
+    </style>
+</head>
+<body class="grid-bg min-h-screen selection:bg-neon-green selection:text-black">
+
+    <div class="fixed inset-0 bg-black z-50 flex items-center justify-center pointer-events-none animate-[fadeOut_2s_ease-in-out_forwards]" style="animation-delay: 2s; animation-fill-mode: forwards;">
+        <div class="text-neon-green font-cyber text-2xl tracking-widest text-center">
+            INITIALIZING DATA STREAM...<br>
+            <span class="text-xs text-neon-blue">ACCESS GRANTED: LEVEL 99</span>
+        </div>
+    </div>
+
+    <style>
+        @keyframes fadeOut { to { opacity: 0; display: none; } }
+    </style>
+
+    <main class="container mx-auto px-4 py-10 relative z-10">
+        
+        <header class="flex justify-between items-end border-b border-neon-green/30 pb-4 mb-12">
+            <div>
+                <h1 class="text-6xl md:text-8xl font-cyber font-black text-white leading-none tracking-tighter mix-blend-screen">
+                    KONG<span class="text-neon-green">.</span>
+                </h1>
+                <p class="font-tech text-neon-blue tracking-[0.5em] text-lg uppercase mt-2">Nutthakorn Thaveeraksa</p>
+            </div>
+            <div class="text-right hidden md:block">
+                <div class="text-xs text-neon-green font-mono mb-1">SYSTEM STATUS: ONLINE</div>
+                <div class="text-4xl font-cyber font-bold text-white">LVL. <span class="text-neon-green">MAX</span></div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            <aside class="lg:col-span-4 space-y-8">
+                <div class="cyber-border bg-glass p-2 relative group overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-neon-green/10 z-10 pointer-events-none"></div>
+                    <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1000&auto=format&fit=crop" 
+                         alt="Kong Profile" 
+                         class="w-full h-auto grayscale contrast-125 brightness-90 group-hover:grayscale-0 transition-all duration-500">
+                    
+                    <div class="absolute bottom-4 left-4 z-20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-2 h-2 bg-neon-green rounded-full animate-pulse-fast"></span>
+                            <span class="font-tech text-xs text-white bg-black/50 px-2 py-1">AVAILABLE FOR DEPLOYMENT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cyber-border bg-glass p-6">
+                    <h3 class="font-cyber text-xl text-white mb-6 border-l-4 border-neon-green pl-3">ATTRIBUTES</h3>
+                    
+                    <div class="space-y-4 font-tech">
+                        <div>
+                            <div class="flex justify-between text-neon-blue mb-1">
+                                <span>ECONOMICS (Chula/Berkeley)</span>
+                                <span>98%</span>
+                            </div>
+                            <div class="h-2 bg-gray-800 w-full"><div class="h-full stat-bar" style="width: 98%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-neon-blue mb-1">
+                                <span>CONNECTIONS (FTI/YP3)</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="h-2 bg-gray-800 w-full"><div class="h-full stat-bar" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-neon-blue mb-1">
+                                <span>AGRO-TECH INNOVATION</span>
+                                <span>92%</span>
+                            </div>
+                            <div class="h-2 bg-gray-800 w-full"><div class="h-full stat-bar" style="width: 92%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border border-white/10 bg-black p-6 text-center group hover:border-neon-green transition-colors">
+                    <i class="fa-solid fa-envelope text-3xl text-gray-600 group-hover:text-neon-green mb-3 transition-colors"></i>
+                    <p class="font-tech text-xl text-white">N.thaveeraksa@gmail.com</p>
+                    <p class="font-tech text-sm text-gray-500">+668-3021-9999</p>
+                </div>
+            </aside>
+
+            <section class="lg:col-span-8 space-y-12">
+                
+                <div>
+                    <h2 class="font-cyber text-3xl text-white mb-8 flex items-center gap-4">
+                        <i class="fa-solid fa-briefcase text-neon-green"></i> MISSION LOG
+                    </h2>
+                    
+                    <div class="relative pl-8 border-l border-white/10 space-y-12">
+                        <div class="relative group">
+                            <div class="absolute -left-[37px] top-0 w-4 h-4 bg-neon-green rounded-sm shadow-[0_0_10px_#00ff41]"></div>
+                            <div class="bg-white/5 p-6 rounded border border-white/5 group-hover:border-neon-green/50 transition-all group-hover:translate-x-2">
+                                <div class="flex flex-col md:flex-row justify-between items-start mb-2">
+                                    <h3 class="font-thai text-2xl font-bold text-white">MANAGING DIRECTOR</h3>
+                                    <span class="font-mono text-neon-green text-sm">[ 2016 - CURRENT ]</span>
+                                </div>
+                                <h4 class="font-tech text-xl text-gray-400 mb-4">THAI AGRO INTERTRADE CO., LTD.</h4>
+                                <ul class="space-y-2 font-thai text-gray-300 font-light">
+                                    <li class="flex gap-3"><i class="fa-solid fa-caret-right text-neon-blue mt-1"></i> <span class="hover:text-white transition-colors">ปฏิวัติกระบวนการเกษตรด้วยนวัตกรรม (Grassroots Development & Innovation)</span></li>
+                                    <li class="flex gap-3"><i class="fa-solid fa-caret-right text-neon-blue mt-1"></i> <span class="hover:text-white transition-colors">วิเคราะห์ข้อมูลเชิงลึก (Data Analysis) เพื่อกำหนดทิศทางตลาดสินค้าเกษตรไทย</span></li>
+                                    <li class="flex gap-3"><i class="fa-solid fa-caret-right text-neon-blue mt-1"></i> <span class="hover:text-white transition-colors">พัฒนาผลิตภัณฑ์ใหม่ (New Product Development) ตอบโจทย์ตลาด Niche Market ระดับโลก</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="font-cyber text-3xl text-white mb-8 flex items-center gap-4">
+                        <i class="fa-solid fa-brain text-neon-blue"></i> KNOWLEDGE BASE
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="cyber-border bg-black p-6 hover:bg-white/5 transition-colors">
+                            <div class="text-neon-green text-xs font-cyber mb-2">ORIGIN</div>
+                            <h3 class="text-xl font-bold text-white font-thai">CHULALONGKORN UNIVERSITY</h3>
+                            <p class="text-gray-400 font-tech">Bachelor of Arts in Economics (2017)</p>
+                        </div>
+                        <div class="cyber-border bg-black p-6 hover:bg-white/5 transition-colors">
+                            <div class="text-neon-blue text-xs font-cyber mb-2">GLOBAL EXPANSION</div>
+                            <h3 class="text-xl font-bold text-white font-thai">UC BERKELEY</h3>
+                            <p class="text-gray-400 font-tech">Demographics & Public Economy (2016)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="font-cyber text-3xl text-white mb-8 flex items-center gap-4">
+                        <i class="fa-solid fa-network-wired text-neon-green"></i> ELITE NETWORK ACCESS
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] transition-all duration-300 group cursor-default">
+                            <div class="text-neon-green font-black text-2xl mb-1">YP3</div>
+                            <div class="text-xs text-gray-400 font-thai group-hover:text-white">ผู้บริหารกระบวนการยุติธรรม (Justice System)</div>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] transition-all duration-300 group cursor-default">
+                            <div class="text-neon-blue font-black text-2xl mb-1">FTI 6</div>
+                            <div class="text-xs text-gray-400 font-thai group-hover:text-white">Young FTI สภาอุตสาหกรรม (Industrial Sector)</div>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] transition-all duration-300 group cursor-default">
+                            <div class="text-purple-400 font-black text-2xl mb-1">ABC 13</div>
+                            <div class="text-xs text-gray-400 font-thai group-hover:text-white">สถาบันพัฒนาความคิดสร้างสรรค์เชิงธุรกิจ</div>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] transition-all duration-300 group cursor-default">
+                            <div class="text-yellow-400 font-black text-2xl mb-1">RE-CU</div>
+                            <div class="text-xs text-gray-400 font-thai group-hover:text-white">Real Estate Chula<br>(Junior 12)</div>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] transition-all duration-300 group cursor-default">
+                            <div class="text-red-400 font-black text-2xl mb-1">NIPS 23</div>
+                            <div class="text-xs text-gray-400 font-thai group-hover:text-white">นักลงทุนรุ่นใหม่เพื่อสังคม (Social Investor)</div>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 p-4 rounded hover:border-neon-green hover:shadow-[0_0_15px_rgba(0,255,65,0.3)] transition-all duration-300 group cursor-default">
+                            <div class="text-orange-400 font-black text-2xl mb-1">DEF #4</div>
+                            <div class="text-xs text-gray-400 font-thai group-hover:text-white">Digital & E-Commerce Expert</div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+        <footer class="mt-20 pt-8 border-t border-gray-900 flex justify-between items-center text-xs font-mono text-gray-600">
+            <div>Encrypted Connection: SECURE</div>
+            <div>ID: KONG-001 // THAILAND FUTURE</div>
+        </footer>
+
+    </main>
+
+    <div class="fixed inset-0 z-0 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+
+</body>
+</html>
