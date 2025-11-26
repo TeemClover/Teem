@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
+        /* --- GLOBAL VARIABLES --- */
         :root {
             --gold: #d4af37;
             --gold-glow: #f9d976;
@@ -17,7 +18,7 @@
             --text-bg: rgba(0, 0, 0, 0.85);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body, html {
             height: 100%;
@@ -25,25 +26,19 @@
             background-color: var(--dark-bg);
             color: #fff;
             overflow: hidden;
+            cursor: pointer; /* Indicate clickable */
         }
 
-        /* --- Language Visibility Logic --- */
-        /* Default hide all */
-        .lang-content { display: none; }
-        
-        /* Show based on body class */
-        body.lang-zh .lang-content[lang="zh"] { display: block; }
-        body.lang-th .lang-content[lang="th"] { display: block; }
-
-        /* --- Background --- */
+        /* --- BACKGROUND SYSTEM --- */
         #game-container {
             position: relative;
             width: 100%;
             height: 100%;
+            /* [IMPORTANT] ใส่รูปพื้นหลังตรงนี้ */
             background: url('bg-mystic.jpg') no-repeat center center/cover;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end; /* Mobile: Text at bottom */
+            justify-content: flex-end;
         }
 
         #bg-overlay {
@@ -54,7 +49,7 @@
             pointer-events: none;
         }
 
-        /* --- Hero Character (Center) --- */
+        /* --- HERO IMAGE --- */
         #hero-stage {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -62,18 +57,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            pointer-events: none; /* Let clicks pass through */
+            pointer-events: none;
         }
 
         #hero-image {
-            height: 80vh; /* Adjust based on screen */
+            height: 70vh; /* Mobile Friendly Height */
             width: auto;
-            max-width: 100%;
+            max-width: 95%;
             object-fit: contain;
             filter: drop-shadow(0 0 20px var(--gold));
-            opacity: 0; /* Start hidden */
-            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-            transform: scale(0.9);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+            transform: scale(0.95);
         }
         
         #hero-image.visible {
@@ -81,27 +76,32 @@
             transform: scale(1);
         }
 
-        /* --- Text Panel (Bottom Sheet Style for Mobile) --- */
+        /* --- TEXT PANEL (Bottom Sheet) --- */
         #story-panel {
             position: relative;
-            z-index: 10;
+            z-index: 10; /* Top Layer */
             width: 100%;
-            padding: 30px 20px 80px 20px; /* Bottom padding for toggle */
-            background: linear-gradient(to top, #000 10%, transparent);
+            padding: 20px 20px 80px 20px;
+            background: linear-gradient(to top, black 20%, transparent);
             text-align: center;
-            min-height: 30vh;
+            min-height: 40vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-end;
             align-items: center;
+            pointer-events: none; /* Allow clicks to pass through to body */
         }
 
+        /* Text content needs pointer-events auto if we want to select text, 
+           but for this game-like feel, we let the click bubble up to body */
+        
         .story-chapter {
             display: none;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.5s ease-out;
+            transition: all 0.6s ease-out;
             max-width: 600px;
+            text-shadow: 0 2px 4px black;
         }
 
         .story-chapter.active {
@@ -110,28 +110,35 @@
             transform: translateY(0);
         }
 
+        /* --- TYPOGRAPHY --- */
         h1 {
-            font-size: 1.8em;
+            font-size: 1.6em;
             color: var(--gold);
             text-transform: uppercase;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px var(--crimson);
+            border-bottom: 2px solid var(--crimson);
+            display: inline-block;
+            padding-bottom: 5px;
         }
 
         p {
             font-size: 1.1em;
             line-height: 1.6;
             color: #e0e0e0;
-            margin-bottom: 15px;
-            text-shadow: 0 1px 2px black;
+            margin-bottom: 10px;
         }
 
         .highlight { color: var(--gold-glow); font-weight: bold; }
 
-        /* --- Floating Language Toggle --- */
+        /* --- LANGUAGE LOGIC --- */
+        .lang-content { display: none; }
+        body.lang-zh .lang-content[lang="zh"] { display: block; }
+        body.lang-th .lang-content[lang="th"] { display: block; }
+
+        /* --- FLOATING TOGGLE (Fixed UI) --- */
         .language-toggle-float {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             right: 20px;
             background-color: rgba(20, 20, 20, 0.9);
             border: 1px solid var(--gold);
@@ -141,17 +148,18 @@
             display: flex;
             gap: 5px;
             backdrop-filter: blur(5px);
+            pointer-events: auto; /* Must be clickable */
         }
 
         .lang-btn {
             background: none;
             border: none;
             color: var(--gold);
-            padding: 8px 12px;
+            padding: 10px 15px;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 1em;
             border-radius: 4px;
-            font-family: 'Noto Serif SC', serif;
+            font-family: 'Noto Serif Thai', serif;
         }
 
         .lang-btn.active {
@@ -160,14 +168,7 @@
             font-weight: bold;
         }
 
-        /* --- Click Indicator --- */
-        #tap-area {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9;
-            cursor: pointer;
-        }
-
+        /* --- INDICATOR --- */
         #click-indicator {
             font-size: 0.9em;
             color: var(--gold);
@@ -175,57 +176,46 @@
             animation: pulse 2s infinite;
             margin-top: 20px;
             letter-spacing: 1px;
+            pointer-events: none;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
+            0%, 100% { opacity: 0.3; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1); }
         }
 
-        /* Particles */
+        /* --- PARTICLES --- */
         .particle {
             position: absolute;
-            width: 3px;
-            height: 3px;
+            width: 4px;
+            height: 4px;
             background: var(--gold);
             border-radius: 50%;
             z-index: 2;
             pointer-events: none;
             animation: rise 8s infinite linear;
+            box-shadow: 0 0 5px var(--gold);
         }
         @keyframes rise {
-            0% { transform: translateY(100vh); opacity: 0; }
+            0% { transform: translateY(110vh); opacity: 0; }
             50% { opacity: 0.8; }
             100% { transform: translateY(-10vh); opacity: 0; }
         }
 
-        /* Desktop Adjustment */
+        /* --- DESKTOP FIXES --- */
         @media (min-width: 768px) {
-            #game-container {
-                flex-direction: row;
-                justify-content: center;
-            }
-            #hero-image {
-                height: 85vh;
-            }
-            #story-panel {
-                position: absolute;
-                bottom: 50px;
-                background: none;
-                padding: 20px;
-                background-color: var(--text-bg);
-                border: 1px solid var(--gold);
-                border-radius: 10px;
-                width: auto;
-                min-width: 400px;
-            }
+            #hero-image { height: 85vh; }
+            #story-panel { justify-content: center; padding-bottom: 30px; }
+            h1 { font-size: 2.5em; }
+            p { font-size: 1.3em; }
         }
-
     </style>
 </head>
-<body class="lang-zh"> <div class="language-toggle-float">
-        <button class="lang-btn active" onclick="setLanguage('zh')">中文</button>
-        <button class="lang-btn" onclick="setLanguage('th')">ไทย</button>
+<body class="lang-th" onclick="handleGlobalClick(event)">
+
+    <div class="language-toggle-float">
+        <button class="lang-btn" onclick="changeLang('zh', event)">中文</button>
+        <button class="lang-btn active" onclick="changeLang('th', event)">ไทย</button>
     </div>
 
     <div id="game-container">
@@ -235,8 +225,6 @@
         <div id="hero-stage">
             <img id="hero-image" src="kyubi-queen-real.png" alt="Kyubi Queen">
         </div>
-
-        <div id="tap-area" onclick="nextChapter()"></div>
 
         <div id="story-panel">
             
@@ -288,87 +276,89 @@
             <div class="story-chapter" id="chap-4">
                 <div class="lang-content" lang="zh">
                     <h1>终章：爱的传承</h1>
-                    <p>娜娜……听着。</p>
-                    <p>这传说并非虚构……那位伟大的女子是<span class="highlight">“你的嫂子(Chieko)”</span>，而那位男子是<span class="highlight">“你的哥哥”</span>。</p>
+                    <p>娜娜……听着。这传说并非虚构……</p>
+                    <p>那位伟大的女子是<span class="highlight">“你的嫂子(Chieko)”</span>，而那位男子是<span class="highlight">“你的哥哥”</span>。</p>
                     <p>我们曾一同在地狱战斗，只为建立今天的天堂……现在，我们将这<span class="highlight">“智慧之翼”</span>赐予你。</p>
                 </div>
                 <div class="lang-content" lang="th">
                     <h1>ความจริง: มรดกแห่งรัก</h1>
-                    <p>นานา... จงฟัง.</p>
-                    <p>ตำนานนี้ไม่ใช่เรื่องเล่าขาน... หญิงสาวผู้ยิ่งใหญ่คนนั้นคือ <span class="highlight">"พี่สะใภ้ของเจ้า (Chieko)"</span> และชายหนุ่มผู้นั้นคือ <span class="highlight">"พี่ชายของเจ้า"</span></p>
+                    <p>นานา... จงฟัง. ตำนานนี้ไม่ใช่เรื่องเล่าขาน...</p>
+                    <p>หญิงสาวผู้ยิ่งใหญ่คนนั้นคือ <span class="highlight">"พี่สะใภ้ของเจ้า (Chieko)"</span> และชายหนุ่มผู้นั้นคือ <span class="highlight">"พี่ชายของเจ้า"</span></p>
                     <p>เราต่อสู้ในนรกด้วยกัน เพื่อสร้างสวรรค์ในวันนี้... และบัดนี้ เราขอมอบ <span class="highlight">"ปีกแห่งปัญญา"</span> นี้ให้เจ้า</p>
                 </div>
             </div>
 
             <div id="click-indicator">
-                <span class="lang-content" lang="zh">[ 点击继续 ]</span>
-                <span class="lang-content" lang="th">[ แตะเพื่อไปต่อ ]</span>
+                <span class="lang-content" lang="zh">[ 点击任意处继续 ]</span>
+                <span class="lang-content" lang="th">[ แตะที่ไหนก็ได้เพื่อไปต่อ ]</span>
             </div>
         </div>
     </div>
 
     <script>
-        // --- Configuration ---
+        // --- State ---
         let currentChapter = 1;
         const totalChapters = 4;
         const heroImage = document.getElementById('hero-image');
         const indicator = document.getElementById('click-indicator');
 
-        // --- Initialization ---
+        // --- Init ---
         window.onload = () => {
             createParticles();
             setTimeout(() => { heroImage.classList.add('visible'); }, 500);
         };
 
-        // --- Language Toggle Logic ---
-        function setLanguage(lang) {
+        // --- Language Toggle ---
+        function changeLang(lang, event) {
+            event.stopPropagation(); // Stop click from triggering nextChapter
             document.body.className = `lang-${lang}`;
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
         }
 
-        // --- Story Navigation ---
+        // --- Global Click Handler ---
+        function handleGlobalClick(event) {
+            // If clicked on button, do nothing (handled by changeLang)
+            if (event.target.classList.contains('lang-btn')) return;
+
+            nextChapter();
+        }
+
         function nextChapter() {
             if (currentChapter < totalChapters) {
-                // Fade out current
-                document.getElementById(`chap-${currentChapter}`).classList.remove('active');
+                // Fade out current text
+                const currentEl = document.getElementById(`chap-${currentChapter}`);
+                currentEl.classList.remove('active');
                 
                 currentChapter++;
                 
-                // Fade in next
+                // Fade in next text
                 setTimeout(() => {
                     document.getElementById(`chap-${currentChapter}`).classList.add('active');
-                }, 300);
+                }, 400);
 
-                // Check for Finale Reveal
+                // Check Finale
                 if (currentChapter === totalChapters) {
                     revealTrueForm();
                 }
-            } else {
-                // Restart or stay? Let's loop for now or just stop.
-                // alert("Legend Complete");
             }
         }
 
         function revealTrueForm() {
-            // Flash effect or simple cross-fade
             heroImage.style.opacity = 0; // Fade out Fox
-            
             setTimeout(() => {
-                // Change to Chieko's Real Photo
+                // รูปเฉลย (รูปเมียชุดปกติ)
                 heroImage.src = "chieko-reveal.png"; 
                 heroImage.style.opacity = 1;
                 heroImage.style.transform = "scale(1.05)";
-                
-                // Update Indicator Text
-                indicator.style.display = 'none';
+                indicator.style.display = 'none'; // Hide indicator at end
             }, 1000);
         }
 
-        // --- Visual Effects ---
+        // --- Particles ---
         function createParticles() {
             const container = document.getElementById('particles');
-            for(let i=0; i<30; i++){
+            for(let i=0; i<40; i++){
                 let p = document.createElement('div');
                 p.className = 'particle';
                 p.style.left = Math.random() * 100 + '%';
