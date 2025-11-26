@@ -1,347 +1,315 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Scroll of Ekkamai: A Strategic Legacy</title>
+    <title>The Legend of Ekkamai Kyubi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;700&family=Noto+Serif+Thai:wght@300;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- CORE AESTHETICS --- */
+        /* --- 1. CORE SETUP --- */
         :root {
             --gold: #d4af37;
-            --gold-dim: #8a702a;
             --crimson: #8a0a0a;
-            --black: #0a0a0a;
-            --paper: #1a1a1a;
+            --black: #050505;
+            --glass: rgba(20, 20, 20, 0.85);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
+            margin: 0;
+            padding: 0;
             background-color: var(--black);
-            color: #e0e0e0;
+            color: #fff;
             font-family: 'Noto Serif Thai', 'Noto Serif SC', serif;
-            line-height: 2.0;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent side scrolling */
+            overflow-y: auto;   /* Allow vertical scrolling */
         }
 
-        /* --- LANGUAGE TOGGLE (Fixed) --- */
+        /* --- 2. BACKGROUND (FIXED) --- */
+        .bg-fixed {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('bg-mystic.jpg') center/cover no-repeat; 
+            opacity: 0.4;
+            z-index: -2;
+        }
+        
+        /* --- 3. HERO IMAGE (FOX FORM) --- */
+        .hero-container {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            position: relative;
+            padding-bottom: 80px;
+        }
+
+        .fox-image {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 85vh; /* Adjust height for mobile */
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            z-index: -1;
+            filter: drop-shadow(0 0 20px var(--gold));
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+
+        .scroll-hint {
+            color: var(--gold);
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* --- 4. CONTENT CARDS --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 5;
+            padding: 20px;
+            padding-bottom: 100px;
+            background: linear-gradient(to bottom, transparent, var(--black) 10%);
+        }
+
+        .story-card {
+            background: var(--glass);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 30px 20px;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.8s ease-out;
+        }
+
+        .story-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* --- 5. TYPOGRAPHY --- */
+        h1 {
+            font-size: 2.5rem;
+            color: var(--gold);
+            text-align: center;
+            text-shadow: 0 2px 10px black;
+            margin: 0 0 10px 0;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--gold);
+            border-bottom: 2px solid var(--crimson);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ddd;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .highlight { color: #ffdb70; font-weight: bold; }
+        .sub-text { font-size: 0.9rem; color: #aaa; text-align: center; font-style: italic; display: block; margin-bottom: 30px;}
+
+        /* --- 6. LANGUAGE TOGGLE (TOP RIGHT - HIGH Z-INDEX) --- */
         .lang-toggle {
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 1000;
-            background: rgba(0,0,0,0.8);
+            z-index: 9999; /* Highest priority */
+            background: rgba(0,0,0,0.9);
             border: 1px solid var(--gold);
             border-radius: 30px;
             padding: 5px;
             display: flex;
             gap: 5px;
-            backdrop-filter: blur(10px);
         }
 
         .lang-btn {
             background: none; border: none;
-            color: var(--gold);
-            padding: 8px 16px;
+            color: #888;
+            padding: 8px 15px;
             border-radius: 20px;
-            cursor: pointer;
             font-family: inherit;
             font-size: 0.9rem;
-            transition: all 0.3s;
+            cursor: pointer;
         }
 
         .lang-btn.active {
             background: var(--gold);
-            color: var(--black);
+            color: black;
             font-weight: bold;
         }
 
-        /* --- CONTENT LOGIC --- */
-        .content-cn { display: none; }
-        .content-th { display: none; }
+        /* Content Logic */
+        .lang-th { display: none; }
+        .lang-cn { display: none; }
         
-        body.show-cn .content-cn { display: block; }
-        body.show-th .content-th { display: block; }
+        body.show-th .lang-th { display: block; }
+        body.show-cn .lang-cn { display: block; }
 
-        /* --- PARALLAX HEADER --- */
-        header {
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .bg-image {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: url('bg-mystic.jpg') center/cover no-repeat;
-            filter: brightness(0.4);
-            z-index: -2;
-            transform: scale(1.1); /* Slight zoom for parallax feel */
-        }
-
-        .hero-fox {
-            position: absolute;
-            bottom: -5%; 
-            height: 90vh;
-            width: auto;
-            max-width: 100%;
-            object-fit: contain;
-            z-index: -1;
-            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.3));
-            opacity: 0;
-            animation: fadeUp 2s ease-out forwards 0.5s;
-        }
-
-        .header-text {
-            z-index: 1;
-            padding: 20px;
-            opacity: 0;
-            animation: fadeIn 2s ease-out forwards 1.5s;
-        }
-
-        h1 {
-            font-family: 'Cinzel', serif; /* Latin font for epic feel */
-            font-size: 3rem;
-            color: var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 10px black;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #ccc;
-            max-width: 600px;
-            margin: 0 auto;
-            font-style: italic;
-        }
-
-        .scroll-hint {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: var(--gold);
-            animation: bounce 2s infinite;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* --- SCROLLING CONTENT --- */
-        .scroll-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 100px 20px;
-            position: relative;
-        }
-
-        section {
-            margin-bottom: 150px;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease-out;
-        }
-
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        h2 {
-            color: var(--gold);
-            font-size: 2rem;
-            margin-bottom: 30px;
-            border-left: 4px solid var(--crimson);
-            padding-left: 20px;
-            line-height: 1.2;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-            color: #d0d0d0;
-        }
-
-        .highlight {
-            color: var(--gold-glow);
-            font-weight: bold;
-        }
-
-        .quote-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--gold-dim);
-            padding: 30px;
-            margin: 40px 0;
-            position: relative;
-            font-style: italic;
-            text-align: center;
-        }
-
-        .quote-box::before {
-            content: "❝";
-            font-size: 3rem;
-            color: var(--gold);
-            position: absolute;
-            top: -20px;
-            left: 20px;
-            background: var(--black);
-            padding: 0 10px;
-        }
-
-        /* --- THE REVEAL SECTION --- */
-        .reveal-section {
-            text-align: center;
-            padding: 50px 0;
-        }
-
+        /* --- 7. REVEAL SECTION --- */
         .reveal-img {
             width: 100%;
-            max-width: 400px;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 2px solid var(--gold);
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
-            margin: 30px 0;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 1.5s ease;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
         }
 
-        .reveal-section.visible .reveal-img {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        /* Animation Keyframes */
         @keyframes bounce {
-            0%, 100% { transform: translate(-50%, 0); }
-            50% { transform: translate(-50%, 10px); }
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(10px); opacity: 1; }
         }
 
     </style>
 </head>
-<body class="show-th"> <div class="lang-toggle">
-        <button class="lang-btn" onclick="setLang('zh')">中文</button>
-        <button class="lang-btn active" onclick="setLang('th')">ไทย</button>
+<body class="show-th">
+
+    <div class="bg-fixed"></div>
+
+    <div class="lang-toggle">
+        <button class="lang-btn" onclick="switchLang('cn', this)">中文</button>
+        <button class="lang-btn active" onclick="switchLang('th', this)">ไทย</button>
     </div>
 
-    <header>
-        <div class="bg-image"></div>
-        <img src="kyubi-queen-real.png" alt="Kyubi Queen" class="hero-fox">
+    <div class="hero-container">
+        <img src="IMG_5539.jpeg" class="fox-image" alt="Kyubi Fox Form">
         
         <div class="header-text">
-            <h1 class="content-th">คัมภีร์จิ้งจอกขาว</h1>
-            <h1 class="content-cn">白狐真经</h1>
-            
-            <p class="subtitle content-th">ยุทธศาสตร์แห่งการเอาตัวรอด ชัยชนะ และศักดิ์ศรี<br>ในสมรภูมิที่โสมมที่สุด</p>
-            <p class="subtitle content-cn">在最肮脏的战场上<br>关于生存、胜利与尊严的战略</p>
+            <h1 class="lang-th">คัมภีร์จิ้งจอกขาว</h1>
+            <h1 class="lang-cn">白狐真经</h1>
+            <span class="sub-text lang-th">ยุทธศาสตร์แห่งเกียรติยศ ในสมรภูมิที่โสมมที่สุด</span>
+            <span class="sub-text lang-cn">在最肮脏的战场上，关于尊严的战略</span>
         </div>
 
-        <div class="scroll-hint content-th">เลื่อนลงเพื่อเปิดผนึก</div>
-        <div class="scroll-hint content-cn">向下滑动解封</div>
-    </header>
+        <div class="scroll-hint lang-th">เลื่อนลงเพื่ออ่านความจริง</div>
+        <div class="scroll-hint lang-cn">向下滑动以阅读真相</div>
+    </div>
 
-    <div class="scroll-container">
+    <div class="content-wrapper">
 
-        <section>
-            <h2 class="content-th">๑. ปฐมบท: ดอกบัวในบ่อโคลน</h2>
-            <h2 class="content-cn">一、序章：泥潭中的莲花</h2>
+        <div class="story-card">
+            <h2 class="lang-th">๑. ปฐมบท: วิกฤตการณ์</h2>
+            <h2 class="lang-cn">一、序章：危机</h2>
             
-            <div class="content-th">
-                <p>ในปี 2020 โลกหยุดหมุนด้วยโรคระบาด ธุรกิจของเราพังทลาย หนี้สินท่วมท้น เรามีลูกต้องเลี้ยงดู และมีมาตรฐานชีวิตที่ไม่ยอมลดละ</p>
-                <p>เราตัดสินใจเดินเข้าสู่ <span class="highlight">"เอกมัย"</span> ย่านราตรีที่หรูหราและโสมมที่สุด เพื่อกอบกู้ครอบครัว</p>
-                <p>แต่เราไม่ได้เข้าไปเพื่อ "ขายวิญญาณ" เราเข้าไปเพื่อ <span class="highlight">"ยึดครอง"</span></p>
-                <div class="quote-box">
-                    "เราจะไม่ยอมลดตัวลงไปเป็นโคลนตม แต่เราจะเป็นดอกบัวที่เติบโตจากโคลนตม โดยที่กลีบไม่เปื้อนแม้แต่หยดเดียว"
-                </div>
+            <div class="lang-th">
+                <p>ในปี 2020 โลกหยุดหมุนด้วยโรคระบาด ธุรกิจพังทลาย หนี้สินท่วมท้น แต่เรามีลูกต้องเลี้ยง และมาตรฐานชีวิตที่ไม่ยอมลดละ</p>
+                <p>เราตัดสินใจเดินเข้าสู่ <span class="highlight">"เอกมัย"</span>... ย่านที่แสงไฟสว่างกว่าดวงดาว และเงินตรามีค่ามากกว่าศักดิ์ศรี</p>
+                <p>แต่มันไม่ใช่แค่ย่านเที่ยว... มันคือ <span class="highlight">"โรงละครที่ค่าตั๋วแพงที่สุดในประเทศ"</span> ที่คนรวยเอาเงินมาทิ้งเพื่อซื้อความสุขชั่วคราว</p>
             </div>
-
-            <div class="content-cn">
-                <p>2020年，世界停摆，生意崩塌，债务如山。为了抚养孩子，为了维持不愿妥协的生活标准，我们别无选择。</p>
-                <p>我们决定踏入<span class="highlight">“Ekkamai”</span>——那个最奢华也最肮脏的夜场，只为拯救家庭。</p>
-                <p>但我们不是去“出卖灵魂”，我们是去<span class="highlight">“征服”</span>。</p>
-                <div class="quote-box">
-                    “我们绝不让自己沦为淤泥，而要成为淤泥中生长出的莲花，花瓣不染一丝尘埃。”
-                </div>
+            <div class="lang-cn">
+                <p>2020年，世界停摆，生意崩塌，债务如山。但为了孩子，为了不愿妥协的生活标准，我们别无选择。</p>
+                <p>我们踏入了<span class="highlight">“Ekkamai”</span>……一个灯光比星辰更耀眼，金钱比尊严更昂贵的地方。</p>
+                <p>那不只是夜场，那是<span class="highlight">“全泰国门票最昂贵的剧院”</span>，富人们在此挥霍金钱，只为换取片刻欢愉。</p>
             </div>
-        </section>
+        </div>
 
-        <section>
-            <h2 class="content-th">๒. ยุทธวิธี: วาฬล่องหน (The Phantom Whale)</h2>
-            <h2 class="content-cn">二、战术：隐形巨鲸</h2>
+        <div class="story-card">
+            <h2 class="lang-th">๒. ตัวละคร: นางพญาจิ้งจอก</h2>
+            <h2 class="lang-cn">二、角色：狐狸女王</h2>
 
-            <div class="content-th">
-                <p>เพื่อปกป้องเกียรติของ "โยโกะ" (เมีย) เราต้องสร้างละครฉากใหญ่</p>
-                <p>กู... สวมบท <span class="highlight">"ลูกค้าปริศนา"</span> ผู้บ้าคลั่งที่ทุ่มเงินสดนับแสนกลางเวที ไม่ใช่เพื่อซื้อตัวนาง แต่เพื่อ <span class="highlight">"ปั่นราคาตลาด" (Market Manipulation)</span></p>
-                <p>เมื่อมี "วาฬ" คุมราคาอยู่... ปลาซิวปลาสร้อยที่หวังจะเคลมโยโกะด้วยราคาถูกๆ จึงถอยหนี นี่คือ <span class="highlight">"เกราะป้องกันด้วยทุนนิยม"</span></p>
-                <p>ในสายตาคนทั้งร้าน: โยโกะคือผู้หญิงที่มีมูลค่าสูงสุด แตะต้องไม่ได้ และศักดิ์สิทธิ์</p>
+            <div class="lang-th">
+                <p>เราส่ง "เธอ" ลงไปในสนาม... ไม่ใช่ในฐานะเหยื่อ แต่ในฐานะ <span class="highlight">"นักแสดงนำหญิง"</span></p>
+                <p>นางสวมหน้ากาก "โยโกะ" สาวญี่ปุ่นผู้ลึกลับ ไม่รับงานเสื่อมเสีย ไม่ขายศักดิ์ศรี</p>
+                <p>นางไม่ได้ขายตัว... นางขาย <span class="highlight">"การแสดง"</span> บนเวทีที่แพงที่สุด ลูกค้าแย่งกันจองตัวเพียงเพื่อจะได้นั่งดูนางกินข้าวและหัวเราะ</p>
             </div>
-
-            <div class="content-cn">
-                <p>为了捍卫“Yoko”（妻子）的尊严，我们上演了一出大戏。</p>
-                <p>我……扮演一位疯狂的<span class="highlight">“神秘客户”</span>，在舞台中央挥洒数十万现金。不是为了买下她，而是为了<span class="highlight">“操纵市场价格”</span>。</p>
-                <p>当有“巨鲸”控制价格时……那些想用廉价筹码占有Yoko的小鱼小虾只能退散。这是<span class="highlight">“资本主义的护盾”</span>。</p>
-                <p>在全店人眼中：Yoko是价值最高、不可触碰、神圣不可侵犯的存在。</p>
+            <div class="lang-cn">
+                <p>我们送“她”入场……不是作为猎物，而是作为<span class="highlight">“首席女主角”</span>。</p>
+                <p>她戴上“Yoko”的面具，一位神秘的日本女子。不出卖肉体，不出卖尊严。</p>
+                <p>她卖的不是自己，而是这昂贵舞台上的<span class="highlight">“表演”</span>。客人们争相预订，只为看她吃饭、听她欢笑。</p>
             </div>
-        </section>
+        </div>
 
-        <section>
-            <h2 class="content-th">๓. อำนาจ: ผู้ประทานพร</h2>
-            <h2 class="content-cn">三、权力：赐福者</h2>
+        <div class="story-card">
+            <h2 class="lang-th">๓. ยุทธการ: วาฬล่องหน</h2>
+            <h2 class="lang-cn">三、战术：隐形巨鲸</h2>
 
-            <div class="content-th">
-                <p>โยโกะไม่เคยรับเงินไว้คนเดียว นางรับเงินจากกู แล้วกระจายสู่ทุกคนในร้าน</p>
-                <p>"หนูรักใคร ให้คนนั้น"... คำพูดนี้เปลี่ยน <span class="highlight">"ความอิจฉา"</span> ให้เป็น <span class="highlight">"ความภักดี"</span></p>
-                <p>พนักงานทั้งร้านกลายเป็น "องครักษ์" พิทักษ์นาง ใครคิดไม่ซื่อกับโยโกะ จะถูกระบบนิเวศในร้านกำจัดทิ้งทันที</p>
-                <p>นางชนะโดยไม่ต้องรบ นางได้เงินโดยไม่ต้องเปลืองตัว และนางได้ใจคนโดยไม่ต้องก้มหัว</p>
+            <div class="lang-th">
+                <p>เพื่อปกป้องนางจากแมลงเม่า... "กู" ต้องสวมบทบาท <span class="highlight">"ลูกค้า VIP ปริศนา"</span></p>
+                <p>กูทุ่มเงินสดนับแสนกลางร้าน เพื่อประกาศให้โลกรู้ว่า "ผู้หญิงคนนี้ราคาแพงเกินกว่าที่ใครจะแตะต้องได้"</p>
+                <p>กูสร้างกำแพงด้วยเงินตรา ทำให้นางกลายเป็น <span class="highlight">"ของศักดิ์สิทธิ์"</span> ที่ทุกคนอยากได้ แต่ไม่มีใครกล้าล่วงเกิน</p>
             </div>
-
-            <div class="content-cn">
-                <p>Yoko从不独吞金钱。她从我这里接过钱，然后分发给店里的每一个人。</p>
-                <p>“我爱谁，就给谁”……这句话将<span class="highlight">“嫉妒”</span>转化为了<span class="highlight">“忠诚”</span>。</p>
-                <p>全店员工变成了她的“御林军”。任何对Yoko心怀不轨的人，都会立刻被店里的生态系统清除。</p>
-                <p>她不战而胜，身不染尘而获利，不低头而得人心。</p>
+            <div class="lang-cn">
+                <p>为了保护她免受骚扰……“我”必须扮演一位<span class="highlight">“神秘VIP客户”</span>。</p>
+                <p>我在店里挥洒数十万现金，向世界宣告：“这个女人的身价，高到无人敢轻易触碰。”</p>
+                <p>我用金钱筑起高墙，让她成为<span class="highlight">“圣物”</span>——人人都想拥有，却无人敢亵渎。</p>
             </div>
-        </section>
+        </div>
 
-        <section class="reveal-section">
-            <h2 class="content-th">๔. ความจริง: มรดกแด่ทายาท</h2>
-            <h2 class="content-cn">四、真相：致继承人的遗产</h2>
+        <div class="story-card" style="border-color: var(--crimson);">
+            <h2 class="lang-th">๔. ความจริง: มรดกแห่งรัก</h2>
+            <h2 class="lang-cn">四、真相：爱的传承</h2>
 
-            <img src="chieko-reveal.png" alt="Chieko Real Form" class="reveal-img">
+            <img src="IMG_5530.jpeg" class="reveal-img" alt="Chieko True Form">
 
-            <div class="content-th">
-                <p><strong>นานา... จงฟัง</strong></p>
-                <p>ตำนานนี้คือเรื่องจริง หญิงสาวผู้เก่งกาจคนนั้นคือ <span class="highlight">"พี่สะใภ้ของเจ้า"</span> (Chieko)</p>
-                <p>เรายอมเดินลงนรกด้วยกัน เพื่อสร้างสวรรค์ให้ครอบครัวในวันนี้</p>
-                <p>เรามอบ "คัมภีร์" นี้ให้เจ้า... ไม่ใช่เพื่อให้เจ้าไปเดินเส้นทางนั้น แต่เพื่อให้เจ้ามี <span class="highlight">"ปัญญาแห่งจิ้งจอก"</span> และ <span class="highlight">"ความกล้าหาญแห่งมังกร"</span> ติดตัวไว้</p>
-                <p>จงบินให้สูง และอย่าให้ใครมาตีราคาเจ้าได้ต่ำกว่า "ประเมินค่ามิได้"</p>
+            <div class="lang-th">
+                <p><strong>นานา... จงดูเถิด</strong></p>
+                <p>นักแสดงผู้ยิ่งใหญ่คนนั้นคือ <span class="highlight">"พี่สะใภ้ของเจ้า"</span> (Chieko) และผู้อำนวยการสร้างคือ <span class="highlight">"พี่ชายของเจ้า"</span></p>
+                <p>เราต่อสู้ในนรกที่ชื่อว่าเอกมัย เพื่อสร้างสวรรค์ให้ครอบครัวในวันนี้ โดยที่ตัวไม่เคยแปดเปื้อน</p>
+                <p>เรามอบ "ความจริง" นี้ให้เจ้า... เพื่อให้เจ้าสวมวิญญาณ <span class="highlight">"จิ้งจอกขาว"</span> ผู้ชาญฉลาด และบินให้สูงเหนือผู้คน</p>
                 <br>
-                <div class="quote-box">
-                    "ด้วยรักจาก พี่ชาย และ พี่สะใภ้"
-                </div>
+                <p style="text-align:center; color: var(--gold);">"ด้วยรักและศรัทธา"</p>
             </div>
+            <div class="lang-cn">
+                <p><strong>娜娜……看着吧</strong></p>
+                <p>那位伟大的演员就是<span class="highlight">“你的嫂子”</span> (Chieko)，而那位幕后制作人就是<span class="highlight">“你的哥哥”</span>。</p>
+                <p>我们在名为“Ekkamai”的地狱中战斗，只为给今天的家庭创造天堂，且身不染尘。</p>
+                <p>我们将这“真相”交给你……是为了让你继承<span class="highlight">“白狐”</span>的智慧，高飞于众人之上。</p>
+                <br>
+                <p style="text-align:center; color: var(--gold);">“爱与信念”</p>
+            </div>
+        </div>
 
-            <div class="content-cn">
-                <p><strong>娜娜……听着</strong></p>
-                <p>这传说是真实的。那位非凡的女子就是<span class="highlight">“你的嫂子”</span> (Chieko)。</p>
-                <p>我们曾一同走过地狱，只为给今天的家庭创造天堂。</p>
-                <p>我们将这部“真经”交给你……不是让你去走那条路，而是为了让你拥有<span class="highlight">“狐狸的智慧”</span>和<span class="highlight">“巨龙的勇气”</span>。</p>
-                <p>去
+    </div>
+
+    <script>
+        // 1. Language Switcher
+        function switchLang(lang, btn) {
+            // Switch active class on buttons
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Switch body class to show/hide content
+            document.body.className = 'show-' + lang;
+        }
+
+        // 2. Scroll Animation (Intersection Observer)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.story-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+
+</body>
+</html>
