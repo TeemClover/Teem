@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตำนานจิ้งจอกเก้าหางแห่งเอกมัย (The Legend of Ekkamai Kyubi)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS Variables & Global Reset --- */
+        :root {
+            --gold: #d4af37;
+            --gold-glow: #f9d976;
+            --crimson: #8a0a0a;
+            --dark-bg: #050510;
+            --mystic-blue: #1a1a40;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Noto Serif Thai', 'Noto Serif SC', serif;
+            background-color: var(--dark-bg);
+            color: #fff;
+            overflow: hidden; /* Prevent scrolling for game-like feel */
+        }
+
+        /* --- Main Container & Background --- */
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            /* [IMAGE 1] ใส่รูปพื้นหลังตรงนี้ */
+            background: url('bg-mystic.jpg') no-repeat center center/cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Overlay to darken background and add texture */
+        #bg-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, var(--dark-bg) 90%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- Character Hero Section (Central) --- */
+        #hero-stage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            width: auto;
+            height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 1s ease-in-out;
+        }
+
+        /* The Fox Image Image */
+        #hero-image {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 30px var(--gold-glow));
+            animation: floatAnimation 6s ease-in-out infinite;
+             /* [IMAGE 2 & 3] รูปจะถูกเปลี่ยนด้วย JS */
+            opacity: 0; /* Start hidden for reveal effect */
+        }
+
+        /* Glow effect behind character */
+        #hero-glow {
+            position: absolute;
+            width: 60vh;
+            height: 60vh;
+            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+            opacity: 0.3;
+            z-index: -1;
+            animation: pulseAnimation 4s ease-in-out infinite;
+        }
+
+        /* --- Story Panel UI (Left Side) --- */
+        #story-panel {
+            position: absolute;
+            left: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40%;
+            max-width: 600px;
+            z-index: 10;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .story-chapter {
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .story-chapter.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Typography Styling */
+        h1.main-title {
+            font-size: 3em;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            border-bottom: 3px solid var(--crimson);
+            display: inline-block;
+            background: linear-gradient(to right, var(--gold), var(--gold-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2.sub-title {
+            font-size: 1.8em;
+            color: var(--gold-glow);
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .content-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #e0e0e0;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 25px;
+            border-left: 4px solid var(--gold);
+            border-radius: 0 10px 10px 0;
+            position: relative;
+        }
+
+        .cn-text {
+            display: block;
+            font-size: 0.9em;
+            color: #aaa;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .highlight {
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        /* --- Click Indicator --- */
+        #click-indicator {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            font-size: 1.2em;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: blinkAnimation 2s infinite;
+            cursor: pointer;
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        /* --- Animations --- */
+        @keyframes floatAnimation {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes pulseAnimation {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+
+        @keyframes blinkAnimation {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Particle Effects (Simple CSS version) */
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: var(--gold);
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 4;
+            pointer-events: none;
+            animation: riseUp 10s infinite linear;
+        }
+
+        @keyframes riseUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="game-container" onclick="nextChapter()">
+        <div id="bg-overlay"></div>
+        
+        <div id="particles-container"></div>
+
+        <div id="hero-stage">
+            <div id="hero-glow"></div>
+            <img id="hero-image" src="kyubi-queen-main.png" alt="Kyubi Queen">
+        </div>
+
+        <div id="story-panel">
+
+            <div class="story-chapter active" id="chap-1">
+                <h1 class="main-title">ปฐมบท: วิกฤตการณ์สีดำ</h1>
+                <h2 class="sub-title">Chapter 1: The Dark Crisis (危机之始)</h2>
+                <div class="content-text">
+                    <p>ในปี 2020 โลกถูกปกคลุมด้วยหมอกควันแห่งโรคระบาด ธุรกิจที่สร้างมาพังทลาย หนี้สินถาโถมเหมือนคลื่นยักษ์</p>
+                    <span class="cn-text">2020年，世界被疫情的阴霾笼罩。生意崩塌，债务如海啸般袭来。</span>
+                    <br>
+                    <p>เราสองคน หลังชนฝา... ไม่มีที่ให้ถอย</p>
+                    <span class="cn-text">我们两人，背水一战……无路可退。</span>
+                    <br>
+                    <p>ทางเลือกมีเพียงสอง: ยอมจำนนแล้วจมน้ำตาย หรือ <span class="highlight">"กระโดดลงไปในบ่อโคลนที่ลึกที่สุด... เพื่อหาสมบัติ"</span></p>
+                    <span class="cn-text">只有两个选择：投降淹死，或者“跳进最深的泥潭……去寻找宝藏”。</span>
+                </div>
+            </div>
+
+            <div class="story-chapter" id="chap-2">
+                <h1 class="main-title">ยุทธการ: หน้ากากพรางตา</h1>
+                <h2 class="sub-title">Chapter 2: The Mask of Deception (伪装面具)</h2>
+                <div class="content-text">
+                    <p>เราตัดสินใจเดินเข้าสู่ <span class="highlight">"เอกมัย"</span> ตลาดที่โสมมที่สุดและแพงที่สุด</p>
+                    <span class="cn-text">我们决定踏入“Ekkamai”——那个最肮脏也最昂贵的市场。</span>
+                    <br>
+                    <p>เพื่อความอยู่รอด เราต้องสวมหน้ากาก: หญิงสาวสวมบท <span class="highlight">"โยโกะ"</span> สาวญี่ปุ่นผู้ลึกลับและโสด... ชายหนุ่มสวมบท <span class="highlight">"ลูกค้า VIP ปริศนา"</span> ผู้มั่งคั่ง</p>
+                    <span class="cn-text">为了生存，我们戴上面具：女孩扮演神秘单身的日本女子“Yoko”……男孩扮演富有的“神秘VIP客户”。</span>
+                    <br>
+                    <p>เราต้องซ่อนความสัมพันธ์ "สามีภรรยา" ไว้ภายใต้เงามืด เพื่อสร้างมูลค่าที่ไม่มีใครเทียบได้</p>
+                    <span class="cn-text">我们必须将“夫妻”关系隐藏在阴影之下，以创造无与伦比的价值。</span>
+                </div>
+            </div>
+
+            <div class="story-chapter" id="chap-3">
+                <h1 class="main-title">ตำนาน: ราชินีผู้ไร้มลทิน</h1>
+                <h2 class="sub-title">Chapter 3: The Unsullied Queen (无瑕女王)</h2>
+                <div class="content-text">
+                    <p>ณ ใจกลางสมรภูมิราตรี ชายหนุ่มทุ่มเงินสดนับแสนเพื่อบูชาหญิงสาว... แต่สิ่งที่ได้รับกลับมา มีเพียงการได้สัมผัสแขนเสื้อ</p>
+                    <span class="cn-text">在夜战场的中心，男人挥金如土崇拜着女人……但他得到的，仅仅是触碰她的衣袖。</span>
+                    <br>
+                    <p>นางใช้ <span class="highlight">"กระเพาะหลุมดำ"</span> เผาผลาญเงินของศัตรูจนหมดสิ้นก่อนที่พวกเขาจะคิดเรื่องต่ำช้า</p>
+                    <span class="cn-text">她用“黑洞之胃”耗尽敌人的金钱，在他们产生龌龊念头之前。</span>
+                    <br>
+                    <p>นางยืนอยู่บนยอดพีระมิดของวงการสีเทา โดยที่ตัว <span class="highlight">"ไม่เคยแปดเปื้อน"</span> แม้แต่ปลายนิ้ว</p>
+                    <span class="cn-text">她站在灰色产业链的金字塔顶端，身体却“从未被玷污”一丝一毫。</span>
+                </div>
+            </div>
+
+             <div class="story-chapter" id="chap-4">
+                <h1 class="main-title">ความจริง: มรดกแห่งรัก</h1>
+                <h2 class="sub-title">Final Chapter: The Legacy of Love (爱的传承)</h2>
+                <div class="content-text" style="border-left-color: var(--crimson);">
+                    <p>นานา... จงฟัง.</p>
+                    <span class="cn-text">娜娜……听着。</span>
+                    <br>
+                    <p>ตำนานนี้ไม่ใช่เรื่องเล่าขาน... หญิงสาวผู้ยิ่งใหญ่คนนั้นคือ <span class="highlight">"พี่สะใภ้ของเจ้า (Chieko)"</span> และชายหนุ่มผู้นั้นคือ <span class="highlight">"พี่ชายของเจ้า"</span></p>
+                    <span class="cn-text">这传说并非虚构……那位伟大的女子是“你的嫂子(Chieko)”，而那位男子是“你的哥哥”。</span>
+                    <br>
+                    <p>เราต่อสู้ในนรกด้วยกัน เพื่อสร้างสวรรค์ในวันนี้... และบัดนี้ เราขอมอบ <span class="highlight">"ปีกแห่งปัญญา"</span> นี้ให้เจ้า เพื่อให้เจ้าบินสูงเสียดฟ้า โดยไม่ต้องตกลงไปในโคลนตมเหมือนที่เราเคยเผชิญ</p>
+                    <span class="cn-text">我们曾一同在地狱战斗，只为建立今天的天堂……现在，我们将这“智慧之翼”赐予你，让你飞得比天高，而不必像我们一样曾陷入泥潭。</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="click-indicator">
+            [ คลิกเพื่อเปิดผนึกตำนานบทต่อไป / 点击揭开下一章传说 ]
+        </div>
+
+    </div>
+
+    <script>
+        /* --- JavaScript Logic for Interaction --- */
+        let currentChapter = 1;
+        const totalChapters = 4;
+        const heroImage = document.getElementById('hero-image');
+        const clickIndicator = document.getElementById('click-indicator');
+
+        // Start reveal animation on load
+        window.onload = function() {
+            setTimeout(() => {
+                heroImage.style.opacity = 1;
+            }, 500);
+            createParticles();
+        };
+
+        function nextChapter() {
+            if (currentChapter < totalChapters) {
+                // Hide current chapter
+                document.getElementById(`chap-${currentChapter}`).classList.remove('active');
+                
+                // Move to next
+                currentChapter++;
+                
+                // Show next chapter with a slight delay for effect
+                setTimeout(() => {
+                     document.getElementById(`chap-${currentChapter}`).classList.add('active');
+                }, 400);
+
+                // Special handling for Final Chapter (The Reveal)
+                if (currentChapter === totalChapters) {
+                    revealTrueForm();
+                }
+
+            } else {
+                // Optional: What happens after final chapter?
+                // For now, just loop back to start or do nothing.
+                // clickIndicator.innerHTML = "ตำนานได้ถูกจารึกแล้ว / 传说已被铭记";
+                // clickIndicator.style.animation = "none";
+            }
+        }
+
+        function revealTrueForm() {
+            // Change indicator text
+            clickIndicator.innerHTML = "มรดกนี้เป็นของเจ้าแล้ว นานา / 这份传承现在属于你了，娜娜";
+            
+            // Fade out fox image slightly and swap to real photo
+            heroImage.style.opacity = 0;
+            setTimeout(() => {
+                // [IMAGE 3 PLACEHOLDER] เปลี่ยนเป็นรูปจริงของเมียมึงตรงนี้
+                heroImage.src = "chieko-reveal.png"; 
+                heroImage.style.transform = "scale(1.1)"; // Make it slightly bigger
+                heroImage.style.opacity = 1;
+                heroImage.style.filter = "drop-shadow(0 0 50px var(--gold-glow))";
+            }, 1000);
+        }
+
+        // Simple Particle Generator
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 50; i++) {
+                let particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+    </script>
+</body>
+</html>
