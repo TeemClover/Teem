@@ -14,7 +14,7 @@
             --gold-light: #ffe57f;
             --crimson: #8a0a0a;
             --black: #000000;
-            --glass: rgba(15, 15, 20, 0.9);
+            --glass: rgba(15, 15, 20, 0.92);
         }
 
         body {
@@ -96,11 +96,11 @@
             opacity: 0.8;
         }
 
-        /* --- 4. STORY CARDS --- */
+        /* --- 4. CONTENT CARDS --- */
         .content-wrapper {
             position: relative;
             z-index: 5;
-            padding: 40px 20px 100px 20px;
+            padding: 40px 20px 120px 20px;
             background: linear-gradient(to bottom, transparent, black 5%);
         }
 
@@ -109,9 +109,9 @@
             border: 1px solid var(--gold);
             border-left: 4px solid var(--gold);
             border-radius: 8px;
-            padding: 30px 25px;
+            padding: 30px 20px;
             margin-bottom: 50px;
-            max-width: 600px;
+            max-width: 650px;
             margin-left: auto;
             margin-right: auto;
             box-shadow: 0 10px 40px rgba(0,0,0,0.9);
@@ -127,21 +127,22 @@
 
         .strategy-box {
             border-color: var(--crimson);
-            background: linear-gradient(135deg, rgba(20,0,0,0.9), rgba(40,0,0,0.9));
+            background: linear-gradient(135deg, rgba(20,0,0,0.95), rgba(40,0,0,0.95));
         }
 
         h2 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: var(--gold);
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
             padding-bottom: 10px;
             margin-bottom: 20px;
             text-align: center;
+            line-height: 1.4;
         }
 
         p {
-            font-size: 1.1rem;
-            line-height: 1.9;
+            font-size: 1.05rem;
+            line-height: 1.8;
             color: #e0e0e0;
             margin-bottom: 20px;
             text-align: justify;
@@ -149,9 +150,24 @@
 
         .highlight { color: var(--gold-light); font-weight: bold; }
         
-        ul { padding-left: 20px; margin-bottom: 20px; }
-        li { margin-bottom: 15px; color: #ccc; list-style-type: "✦ "; line-height: 1.6; }
-        li span { color: var(--gold); font-weight: bold; display: block; margin-bottom: 5px;}
+        ul { list-style: none; padding: 0; }
+        li { 
+            margin-bottom: 25px; 
+            padding-left: 15px; 
+            border-left: 2px solid var(--crimson);
+        }
+        li strong { 
+            color: var(--gold); 
+            display: block; 
+            font-size: 1.1rem; 
+            margin-bottom: 8px;
+        }
+        li span {
+            color: #ccc;
+            font-size: 1rem;
+            display: block;
+            line-height: 1.6;
+        }
 
         /* --- 5. REVEAL & QUOTE --- */
         .reveal-img {
@@ -168,9 +184,10 @@
             font-style: italic;
             color: var(--gold);
             margin-top: 30px;
-            border: 1px solid var(--gold);
-            padding: 20px;
-            background: rgba(0,0,0,0.5);
+            border-top: 1px solid var(--gold);
+            border-bottom: 1px solid var(--gold);
+            padding: 20px 0;
+            background: rgba(0,0,0,0.3);
         }
 
         /* --- 6. LANGUAGE TOGGLE --- */
@@ -179,7 +196,7 @@
             top: 20px;
             right: 20px;
             z-index: 9999;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.9);
             border: 1px solid var(--gold);
             border-radius: 30px;
             padding: 6px;
@@ -248,14 +265,14 @@
             <h2 class="lang-cn">一、双重血脉的起源</h2>
             
             <div class="lang-th">
-                <p>ในอดีต... <strong>"ต้าจี่" (Daji)</strong> จิ้งจอกจีนใช้ความงามล่อลวงฮ่องเต้จนบ้านเมืองพินาศ นางคือสัญลักษณ์แห่ง "ความโกลาหล" และสุดท้ายนางก็พ่ายแพ้</p>
-                <p>แต่จิ้งจอกที่ข้ามน้ำข้ามทะเลมาสู่ญี่ปุ่นนามว่า <strong>"คิวบิ" (Kyubi)</strong> นั้นต่างออกไป... นางเรียนรู้ที่จะ "ซ่อนหาง" และใช้ <span class="highlight">"ปัญญา"</span> แทน "ราคะ"</p>
-                <p>นี่คือเรื่องราวของผู้หญิงคนหนึ่ง ที่เลือกใช้วิถีแห่ง "คิวบิ" ในการเอาตัวรอดในยุคที่มืดมนที่สุด</p>
+                <p>ในอดีตกาล... <strong>"ต้าจี่" (Daji)</strong> จิ้งจอกจีนใช้รูปโฉมล่อลวงฮ่องเต้จนบ้านเมืองพินาศ นางเป็นตัวแทนของ "ความโกลาหล" และสุดท้ายต้องพ่ายแพ้แก่ชะตากรรม</p>
+                <p>แต่จิ้งจอกที่ข้ามน้ำข้ามทะเลมาสู่ญี่ปุ่นนามว่า <strong>"คิวบิ" (Kyubi)</strong> นั้นต่างออกไป... นางเรียนรู้ที่จะ "ซ่อนหาง" และใช้ <span class="highlight">"ปัญญา"</span> นำทางแทน "ราคะ"</p>
+                <p>นี่คือเรื่องราวของผู้หญิงคนหนึ่ง ที่เลือกใช้วิถีแห่ง "คิวบิ" ในการเอาตัวรอดอย่างสง่างามที่สุด ในยุคที่มืดมนที่สุด</p>
             </div>
             <div class="lang-cn">
-                <p>在过去……中国的狐妖<strong>“妲己”</strong>用美色迷惑帝王，致使国家覆灭。她是“混乱”的象征，最终走向了毁灭。</p>
-                <p>但渡海来到日本的狐妖<strong>“九尾” (Kyubi)</strong> 却不同……她学会了“藏起尾巴”，用<span class="highlight">“智慧”</span>代替“色欲”。</p>
-                <p>这是一个女人在最黑暗的时代，选择走上“九尾之道”求生的故事。</p>
+                <p>古时……中国的狐妖<strong>“妲己”</strong>以色侍君，致使国家覆灭。她是“混乱”的象征，最终难逃毁灭的命运。</p>
+                <p>但渡海至日本的狐妖<strong>“九尾” (Kyubi)</strong> 却不同……她学会了“藏起尾巴”，以<span class="highlight">“智慧”</span>而非“色欲”驾驭人心。</p>
+                <p>这是一个女人在最黑暗的时代，选择以“九尾之道”优雅求生的故事。</p>
             </div>
         </div>
 
@@ -265,84 +282,80 @@
 
             <div class="lang-th">
                 <p>โลกหยุดหมุนเพราะโควิด ธุรกิจเราพังทลาย หนี้สินท่วมตัว แต่เรามีลูกที่ต้องเลี้ยงและมาตรฐานชีวิตที่ไม่ยอมลดละ</p>
-                <p>เราตัดสินใจเดินเข้าสู่ <span class="highlight">"เอกมัย"</span> ย่านที่ค่าตั๋วแพงที่สุดในกรุงเทพฯ แหล่งรวมคนรวยที่พร้อมจ่ายเงินซื้อความสุขชั่วคราว</p>
-                <p>หลายคนคิดว่าการทำงานที่นี่คือการ "ขายวิญญาณ" แต่สำหรับเรา... มันคือการ <span class="highlight">"เปิดโรงละคร"</span></p>
+                <p>เราตัดสินใจเดินเข้าสู่ <span class="highlight">"เอกมัย"</span>... ย่านที่ค่าตั๋วแพงที่สุดในกรุงเทพฯ ดงของคนรวยที่พร้อมจ่ายเงินซื้อความสุขชั่วคราว</p>
+                <p>หลายคนคิดว่าการทำงานที่นี่คือการ "ขายวิญญาณ" แต่สำหรับเรา... มันคือการ <span class="highlight">"เปิดโรงละคร"</span> เพื่อกอบกู้ศักดิ์ศรีและครอบครัว</p>
             </div>
             <div class="lang-cn">
-                <p>世界因疫情停摆，生意崩塌，债务如山。但为了抚养孩子，为了维持不愿妥协的生活标准，我们别无选择。</p>
+                <p>疫情让世界停摆，生意崩塌，债务如山。但为了抚养孩子，为了维持不愿妥协的生活标准，我们别无选择。</p>
                 <p>我们踏入了<span class="highlight">“Ekkamai”</span>——曼谷入场费最昂贵的地方，富人们在此挥金如土，只为换取片刻欢愉。</p>
-                <p>许多人认为在这里工作是“出卖灵魂”，但对我们来说……这是<span class="highlight">“开设剧场”</span>。</p>
+                <p>许多人认为这是“出卖灵魂”，但对我们而言……这是为了挽救尊严与家庭而开设的<span class="highlight">“宏大剧场”</span>。</p>
             </div>
         </div>
 
-<div class="story-card strategy-box">
-            <h2 class="lang-th">๓. คัมภีร์ยุทธ์: การสถาปนาอำนาจเหนือระบบ</h2>
+        <div class="story-card strategy-box">
+            <h2 class="lang-th">๓. คัมภีร์ยุทธ์: อำนาจเหนือระบบ</h2>
             <h2 class="lang-cn">三、战略真经：凌驾于系统的权力</h2>
 
             <div class="lang-th">
-                <p>ชัยชนะของเธอไม่ได้เกิดขึ้นจากความโชคดี แต่เกิดจากการวางหมากที่โหดเหี้ยมและแยบยล นี่คือการผ่าโครงสร้างอำนาจที่แท้จริง:</p>
-                
-                <br>
-                
+                <p>ความสำเร็จนี้ไม่ใช่เรื่องบังเอิญ แต่คือการวางหมากที่เหี้ยมเกรียมและแยบยล เพื่อสร้าง "พื้นที่ปลอดภัย" ท่ามกลางดงเสือสิงห์:</p>
                 <ul>
                     <li>
-                        <strong>1. เศรษฐศาสตร์หมุนเวียน (The Closed-Loop Economy)</strong>
-                        <span>หลายคนคิดว่าเรา "เสียเงิน" ไปกับการเปย์... แต่ความจริงคือ "เงินแทบไม่กระเด็น" ออกจากกระเป๋า เงินสดนับแสนที่ทุ่มลงไปกลางร้าน ถูกหมุนเวียนกลับมาสู่เธอในรูปแบบของ "ทิป" และ "ค่าคอมมิชชั่น" เราเสียเพียงค่าธรรมเนียมเล็กน้อยเพื่อซื้อสิ่งที่แพงที่สุด นั่นคือ <strong>"ตำนาน"</strong> ว่าเธอคือผู้หญิงที่มีค่าตัวแพงที่สุดในร้าน</span>
+                        <strong>1. ความลับสุดยอด (The Absolute Secret)</strong>
+                        <span>ไม่มีใครในร้านรู้ว่าเราคือ <strong>"สามีภรรยา"</strong> นี่คือเงื่อนไขสำคัญที่สุด! หากใครรู้ มูลค่าจะกลายเป็นศูนย์ทันที เราจึงสวมหน้ากากเป็น "คนแปลกหน้า" ที่มาเจอกันในร้าน เพื่อสร้างละครฉากใหญ่ที่สมจริงที่สุด</span>
                     </li>
                     
                     <li>
-                        <strong>2. การเชือดไก่ให้ลิงดู (The Purge of Traitors)</strong>
-                        <span>เคยมี "เซลล์" (Cheer) ที่รับเงินใต้โต๊ะจากลูกค้า เพื่อมากดดันให้เธอ "ออกงาน" (ไปต่อกับลูกค้า)... จุดจบของมันคือหายนะ เธอไม่ด่า ไม่โวยวาย แต่ยื่นคำขาดกับเจ้าของร้านด้วยน้ำเสียงเรียบเฉยว่า <strong>"ถ้าคนนี้ยังอยู่ โยโกะจะไม่มาทำงาน"</strong></span>
-                        <span>ผลลัพธ์? เจ้าของร้านเลือก "บ่อเงินบ่อทอง" อย่างเธอ และไล่เซลล์คนนั้นออกทันที เหตุการณ์นั้นทำให้ทุกคนรู้แจ้งว่า: <strong>"ใครทำให้โยโกะขุ่นเคือง คือการทุบหม้อข้าวตัวเอง"</strong></span>
+                        <strong>2. อุบายแกล้งเมา (The Drunkard's Ruse)</strong>
+                        <span>"กู" สวมบทลูกค้า VIP ผู้บ้าคลั่ง แกล้งเมาแล้วควักเงินสดปึกใหญ่ยื่นให้เธอต่อหน้าธารกำนัล พร้อมประกาศก้องว่า <strong>"หนูรักใคร ให้คนนั้น"</strong> นี่ไม่ใช่การแจกทาน แต่คือการมอบ "อำนาจ"</span>
                     </li>
 
                     <li>
-                        <strong>3. เจ้าของร้านผู้ยอมจำนน (The Submissive Owner)</strong>
-                        <span>ในทางนิตินัย เขาคือเจ้านาย... แต่ในทางพฤตินัย เขาต้องเกรงใจเธอเสมือนหุ้นส่วนใหญ่ เพราะเธอคือกุญแจที่ดึงดูดลูกค้า High-End ระดับประเทศเข้ามา ห้องไหนมีเธอ ห้องนั้นยอดทะลุเป้า เธอไม่ได้ทำงานให้ร้าน แต่ร้านต้องพึ่งพาบารมีของเธอเพื่อความอยู่รอด</span>
+                        <strong>3. บัตรผ่านทางทองคำ (The Golden Pass)</strong>
+                        <span>ผู้หญิงทั้งร้านจ้องจะจับ "กู" เพราะเห็นว่าเปย์หนัก แต่กูประกาศจุดยืนชัดเจน: <strong>"ถ้าโยโกะรักใคร กูถึงจะเลี้ยงเหล้าคนนั้น"</strong> ผลลัพธ์คือ ทุกคนต้องวิ่งเข้าหาโยโกะเพื่อขอส่วนบุญ นางกลายเป็นศูนย์กลางอำนาจที่ใครก็ต้องเกรงใจ</span>
                     </li>
 
                     <li>
-                        <strong>4. พรและคำสาป (The Blessing and The Curse)</strong>
-                        <span>เธอสร้างระบอบการปกครองด้วยความรักและความกลัว (Love & Fear) ใครที่เธอรัก เงินจะหล่นทับไม่ขาดสาย เธอเลี้ยงดูปูเสื่ออย่างดี แต่ใครที่เธอเกลียด หรือคิดไม่ซื่อ... จะไม่มีที่ยืนในร้านอีกต่อไป นี่คือ <strong>"อำนาจที่เบ็ดเสร็จ"</strong> ยิ่งกว่ามาเฟียคุมซอย</span>
+                        <strong>4. เปลี่ยนความอิจฉาเป็นศรัทธา (Turning Envy into Faith)</strong>
+                        <span>เงินที่ได้มา นางไม่เก็บไว้คนเดียว แต่กระจายให้พนักงานทุกคนที่นาง "รัก" คนที่นางเกลียดจะไม่ได้อะไรเลย... สิ่งนี้เปลี่ยนศัตรูให้กลายเป็น <strong>"องครักษ์"</strong> พนักงานทุกคนปกป้องนางยิ่งชีพ เพราะนางคือ "บ่อเงินบ่อทอง" ใครทำให้นางขุ่นเคือง คือการทุบหม้อข้าวตัวเอง</span>
+                    </li>
+
+                    <li>
+                        <strong>5. อาวุธลับทางธุรกิจ (The Business Weapon)</strong>
+                        <span>ในขณะที่คนอื่นขายศักดิ์ศรีแลกเงิน... "โยโกะ" คือคนที่ลูกค้าญี่ปุ่นระดับ <strong>ซาโจ้ (CEO)</strong> จองคิวข้ามปีเพื่อเชิญไปร่วมโต๊ะเจรจาธุรกิจร้อยล้าน เพราะนางคือ "เครื่องรางแห่งชัยชนะ" ที่ไม่มีวันถูกใครครอบครอง</span>
                     </li>
                 </ul>
-
-                <p class="highlight" style="text-align:center; margin-top:30px; font-size: 1.2rem;">
-                    "เธอเดินออกจากร้านอย่างราชินี ทิ้งไว้เพียงตำนานที่ไม่มีใครกล้าลบเลือน"
-                </p>
+                <p class="highlight" style="text-align:center; margin-top:30px;">"นางยืนอยู่บนจุดสูงสุดโดยที่ตัวไม่เคยแปดเปื้อน เพราะนางไม่ได้ขายตัว... แต่นางขาย 'บารมี'"</p>
             </div>
-
+            
             <div class="lang-cn">
-                <p>她的胜利并非侥幸，而是源于残酷而精妙的布局。这是对权力结构的真正解剖：</p>
-                
-                <br>
-                
+                <p>她的胜利并非侥幸，而是源于残酷而精妙的布局，在虎狼窝中创造了绝对的“安全区”：</p>
                 <ul>
                     <li>
-                        <strong>1. 闭环经济 (The Closed-Loop Economy)</strong>
-                        <span>许多人以为我们在“烧钱”……但真相是“肥水不流外人田”。我们在舞台上挥洒的数十万现金，最终都以“小费”和“提成”的形式回到了她手中。我们只付出了微小的成本，就买到了最昂贵的东西——<strong>“传说”</strong>，即她是全店身价最高的女人。</span>
+                        <strong>1. 绝对机密 (The Absolute Secret)</strong>
+                        <span>店里无人知晓我们是<strong>“夫妻”</strong>。这是最关键的条件！一旦关系曝光，价值即刻归零。因此，我们戴上“陌生人”的面具，上演了一出最逼真的大戏。</span>
                     </li>
                     
                     <li>
-                        <strong>2. 杀鸡儆猴 (The Purge of Traitors)</strong>
-                        <span>曾有拿了客户回扣的“销售”，试图施压让她“出台”……那个人的结局是毁灭性的。她没有争吵，只是平静地向老板下了最后通牒：<strong>“如果他在，Yoko就不来了。”</strong></span>
-                        <span>结果？老板毫不犹豫地选择了她这棵“摇钱树”，当场开除了那个销售。那一刻，所有人都明白了：<strong>“谁惹怒了Yoko，就是砸烂大家甚至老板的饭碗。”</strong></span>
+                        <strong>2. 醉酒计谋 (The Drunkard's Ruse)</strong>
+                        <span>“我”扮演疯狂的VIP客户，假装醉酒，当众将厚厚一叠现金塞给她，并高声宣布：<strong>“你爱谁，就把这钱赏给谁。”</strong> 这不是施舍，这是移交“权力”。</span>
                     </li>
 
                     <li>
-                        <strong>3. 臣服的老板 (The Submissive Owner)</strong>
-                        <span>名义上他是老板……实际上他必须像对待大股东一样敬畏她。因为她是吸引全国顶级高端客户的关键。有她在的包厢，业绩永远爆表。不是她在为店里打工，而是这家店必须依靠她的威望才能生存。</span>
+                        <strong>3. 黄金通行证 (The Golden Pass)</strong>
+                        <span>全店的女人都盯着“我”想以此上位，但我立场坚定：<strong>“只有Yoko爱的人，我才请喝酒。”</strong> 结果是，所有人必须讨好Yoko以求分一杯羹。她成为了无人敢惹的权力中心。</span>
                     </li>
 
                     <li>
-                        <strong>4. 祝福与诅咒 (The Blessing and The Curse)</strong>
-                        <span>她建立了一个基于爱与恐惧的统治。她所爱的人，金钱如雨点般落下；而她所厌恶或心怀不轨的人……在店里将无立足之地。这是比黑手党更绝对的<strong>“统治力”</strong>。</span>
+                        <strong>4. 化嫉妒为信仰 (Turning Envy into Faith)</strong>
+                        <span>所得钱财，她从不独享，而是分发给所有她“爱”的员工。而她厌恶的人，分文不得。这把敌人变成了<strong>“御林军”</strong>。全店员工誓死守护她，因为她是“摇钱树”——谁惹怒了她，就是砸大家的饭碗。</span>
+                    </li>
+
+                    <li>
+                        <strong>5. 商业秘密武器 (The Business Weapon)</strong>
+                        <span>当其他人出卖尊严换取金钱时……“Yoko”却是全球顶尖企业的<strong>社长 (CEO)</strong> 跨年预约，只为邀请去敲定亿万合同的关键人物。因为她是无人能占有的“胜利护身符”。</span>
                     </li>
                 </ul>
-
-                <p class="highlight" style="text-align:center; margin-top:30px; font-size: 1.2rem;">
-                    “她如女王般离场，只留下无人敢抹去的传说。”
-                </p>
+                <p class="highlight" style="text-align:center; margin-top:30px;">“她身不染尘地站在巅峰，因为她卖的不是身体……而是‘威望’。”</p>
             </div>
         </div>
 
@@ -387,7 +400,7 @@
                     entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.1 });
 
         document.querySelectorAll('.story-card').forEach(card => {
             observer.observe(card);
