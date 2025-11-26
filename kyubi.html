@@ -5,37 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Legend of Ekkamai Kyubi</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+Thai:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;600;900&family=Noto+Serif+Thai:wght@300;600;900&family=Cinzel:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. CORE AESTHETICS --- */
+        /* --- 1. MASTER THEME --- */
         :root {
             --gold: #d4af37;
-            --gold-light: #ffe57f;
+            --gold-dim: #8a702a;
+            --gold-glow: #ffdb70;
             --crimson: #8a0a0a;
-            --black: #000000;
-            --glass: rgba(15, 15, 20, 0.92);
+            --black: #020205;
+            --paper: rgba(15, 15, 20, 0.94);
+            --glass-border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
         body {
             margin: 0;
             padding: 0;
             background-color: var(--black);
-            color: #fff;
+            color: #e0e0e0;
             font-family: 'Noto Serif Thai', 'Noto Serif SC', serif;
             overflow-x: hidden;
+            line-height: 1.9;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- 2. BACKGROUND --- */
+        /* --- 2. IMMERSIVE BACKGROUND --- */
         .bg-fixed {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('bg-mystic.jpg') center/cover no-repeat;
+            /* [IMAGE] Background */
+            background: url('IMG_2013.jpeg') center/cover no-repeat;
             opacity: 0.3;
             z-index: -2;
+            filter: contrast(1.1) brightness(0.8);
         }
 
-        /* --- 3. HERO SECTION --- */
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, var(--black) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- 3. HERO SECTION (THE FOX) --- */
         .hero-container {
             height: 100vh;
             width: 100%;
@@ -44,80 +59,106 @@
             flex-direction: column;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 60px;
+            padding-bottom: 80px;
             overflow: hidden;
         }
 
         .fox-image {
             position: absolute;
-            bottom: 0;
+            bottom: -5%;
             left: 50%;
             transform: translateX(-50%);
-            height: 90vh;
+            height: 95vh; /* Oversized impact */
             width: auto;
-            max-width: 120%;
+            max-width: 140%;
             object-fit: contain;
             z-index: -1;
-            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.4));
+            filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.2));
             mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
             -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            opacity: 0;
+            animation: riseUp 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
         .title-group {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             z-index: 2;
-            text-shadow: 0 4px 20px black;
+            text-shadow: 0 5px 20px black;
+            opacity: 0;
+            animation: fadeIn 2s ease-out forwards 1s;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-family: 'Noto Serif Thai', serif;
+            font-weight: 900;
+            font-size: 3rem;
             color: var(--gold);
             margin: 0;
             line-height: 1.1;
             text-transform: uppercase;
             letter-spacing: 2px;
+            background: linear-gradient(to bottom, var(--gold-glow), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
             font-size: 1rem;
-            color: #ccc;
+            color: #bbb;
             font-style: italic;
-            margin-top: 10px;
+            margin-top: 15px;
             display: block;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
 
         .scroll-hint {
-            color: var(--gold-light);
+            color: var(--gold-dim);
             font-size: 0.8rem;
             animation: bounce 2s infinite;
             text-transform: uppercase;
             letter-spacing: 3px;
-            opacity: 0.8;
+            opacity: 0.7;
+            margin-top: 20px;
         }
 
-        /* --- 4. CONTENT CARDS --- */
+        /* --- 4. CONTENT ARCHITECTURE --- */
         .content-wrapper {
             position: relative;
             z-index: 5;
-            padding: 40px 20px 120px 20px;
-            background: linear-gradient(to bottom, transparent, black 5%);
+            padding: 20px;
+            padding-bottom: 150px;
+            background: linear-gradient(to bottom, transparent, var(--black) 5%);
         }
 
         .story-card {
-            background: var(--glass);
-            border: 1px solid var(--gold);
-            border-left: 4px solid var(--gold);
+            background: var(--paper);
+            border: var(--glass-border);
+            border-left: 3px solid var(--gold);
             border-radius: 8px;
-            padding: 30px 20px;
-            margin-bottom: 50px;
-            max-width: 650px;
+            padding: 40px 30px;
+            margin-bottom: 80px;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.95);
             opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s ease-out;
+            transform: translateY(60px);
+            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+        }
+
+        .story-card::before {
+            content: "✦";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--gold);
+            background: var(--black);
+            padding: 0 10px;
+            font-size: 1.2rem;
         }
 
         .story-card.visible {
@@ -125,101 +166,128 @@
             transform: translateY(0);
         }
 
+        /* Specific Card Styles */
         .strategy-box {
             border-color: var(--crimson);
-            background: linear-gradient(135deg, rgba(20,0,0,0.95), rgba(40,0,0,0.95));
+            background: linear-gradient(160deg, rgba(30, 10, 10, 0.96), rgba(10, 5, 5, 0.98));
+        }
+        
+        .secret-box {
+            border-color: #4a4a60;
+            background: linear-gradient(160deg, rgba(15, 15, 30, 0.96), rgba(5, 5, 10, 0.98));
         }
 
         h2 {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             color: var(--gold);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
             text-align: center;
-            line-height: 1.4;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         p {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #e0e0e0;
-            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 25px;
             text-align: justify;
+            font-weight: 300;
         }
 
-        .highlight { color: var(--gold-light); font-weight: bold; }
+        .highlight { color: var(--gold-glow); font-weight: 600; }
+        .crimson-text { color: #ff4d4d; font-weight: 600; }
         
+        /* List Styling */
         ul { list-style: none; padding: 0; }
         li { 
-            margin-bottom: 25px; 
-            padding-left: 15px; 
-            border-left: 2px solid var(--crimson);
+            margin-bottom: 35px; 
+            padding-left: 20px; 
+            border-left: 2px solid var(--gold-dim);
+            position: relative;
         }
         li strong { 
             color: var(--gold); 
             display: block; 
-            font-size: 1.1rem; 
-            margin-bottom: 8px;
+            font-size: 1.2rem; 
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         li span {
-            color: #ccc;
-            font-size: 1rem;
+            color: #bbb;
+            font-size: 1.05rem;
             display: block;
-            line-height: 1.6;
+            line-height: 1.8;
         }
 
-        /* --- 5. REVEAL & QUOTE --- */
+        /* --- 5. REVEAL SECTION --- */
         .reveal-img {
             width: 100%;
             border-radius: 4px;
-            border: 2px solid var(--gold);
-            margin: 20px 0;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            border: 1px solid var(--gold);
+            margin: 40px 0;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
+            filter: sepia(0.2) contrast(1.1);
         }
 
-        .quote {
-            font-size: 1.2rem;
+        .quote-box {
             text-align: center;
+            margin-top: 50px;
+            padding: 30px;
+            border-top: 1px solid var(--gold-dim);
+            border-bottom: 1px solid var(--gold-dim);
+            background: rgba(0,0,0,0.4);
+        }
+
+        .quote-text {
+            font-size: 1.3rem;
             font-style: italic;
             color: var(--gold);
-            margin-top: 30px;
-            border-top: 1px solid var(--gold);
-            border-bottom: 1px solid var(--gold);
-            padding: 20px 0;
-            background: rgba(0,0,0,0.3);
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .quote-credit {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         /* --- 6. LANGUAGE TOGGLE --- */
         .lang-toggle {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             z-index: 9999;
-            background: rgba(0,0,0,0.9);
-            border: 1px solid var(--gold);
-            border-radius: 30px;
+            background: rgba(0,0,0,0.85);
+            border: 1px solid var(--gold-dim);
+            border-radius: 40px;
             padding: 6px;
             display: flex;
             gap: 5px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
         .lang-btn {
             background: none; border: none;
             color: #888;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 8px 18px;
+            border-radius: 25px;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s ease;
         }
 
         .lang-btn.active {
             background: var(--gold);
             color: black;
-            font-weight: bold;
+            font-weight: 700;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
         .lang-th { display: none; }
@@ -227,9 +295,22 @@
         body.show-th .lang-th { display: block; }
         body.show-cn .lang-cn { display: block; }
 
+        /* Animations */
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); opacity: 0.6; }
-            50% { transform: translateY(10px); opacity: 1; }
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
+        @keyframes riseUp {
+            from { transform: translate(-50%, 100px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* Responsive Tweaks */
+        @media (min-width: 768px) {
+            h1 { font-size: 4rem; }
+            .fox-image { height: 95vh; max-width: 80%; }
+            .story-card { padding: 60px 50px; }
         }
 
     </style>
@@ -237,6 +318,7 @@
 <body class="show-th">
 
     <div class="bg-fixed"></div>
+    <div class="vignette"></div>
 
     <div class="lang-toggle">
         <button class="lang-btn" onclick="switchLang('cn', this)">中文</button>
@@ -244,7 +326,7 @@
     </div>
 
     <div class="hero-container">
-        <img src="IMG_5539.jpeg" class="fox-image" alt="Kyubi Form">
+        <img src="IMG_5540.jpeg" class="fox-image" alt="Kyubi Form">
         
         <div class="title-group">
             <h1 class="lang-th">ตำนาน<br>จิ้งจอกเก้าหาง<br>แห่งเอกมัย</h1>
@@ -265,122 +347,157 @@
             <h2 class="lang-cn">一、双重血脉的起源</h2>
             
             <div class="lang-th">
-                <p>ในอดีตกาล... <strong>"ต้าจี่" (Daji)</strong> จิ้งจอกจีนใช้รูปโฉมล่อลวงฮ่องเต้จนบ้านเมืองพินาศ นางเป็นตัวแทนของ "ความโกลาหล" และสุดท้ายต้องพ่ายแพ้แก่ชะตากรรม</p>
-                <p>แต่จิ้งจอกที่ข้ามน้ำข้ามทะเลมาสู่ญี่ปุ่นนามว่า <strong>"คิวบิ" (Kyubi)</strong> นั้นต่างออกไป... นางเรียนรู้ที่จะ "ซ่อนหาง" และใช้ <span class="highlight">"ปัญญา"</span> นำทางแทน "ราคะ"</p>
-                <p>นี่คือเรื่องราวของผู้หญิงคนหนึ่ง ที่เลือกใช้วิถีแห่ง "คิวบิ" ในการเอาตัวรอดอย่างสง่างามที่สุด ในยุคที่มืดมนที่สุด</p>
+                <p>ในอดีตกาล... <strong>"ต้าจี่" (Daji)</strong> จิ้งจอกจีนใช้รูปโฉมล่อลวงฮ่องเต้จนบ้านเมืองพินาศ นางเป็นตัวแทนของ "ความโกลาหล" และสุดท้ายต้องพ่ายแพ้แก่ชะตากรรมที่น่าเศร้า</p>
+                <p>แต่เมื่อข้ามน้ำข้ามทะเลมาสู่ญี่ปุ่น... จิ้งจอกนามว่า <strong>"คิวบิ" (Kyubi)</strong> กลับเรียนรู้ที่จะ "ซ่อนหาง" นางใช้ <span class="highlight">"ปัญญา"</span> นำทาง ใช้ความสง่างามเป็นอาวุธ และใช้ "มารยา" เพื่อความอยู่รอด ไม่ใช่เพื่อทำลายล้าง</p>
+                <p>นี่คือเรื่องราวของผู้หญิงคนหนึ่ง ที่เลือกเดินตามวิถีแห่ง "คิวบิ" ในการเอาตัวรอดอย่างสง่างามที่สุด ในยุคที่มืดมนที่สุด</p>
             </div>
             <div class="lang-cn">
-                <p>古时……中国的狐妖<strong>“妲己”</strong>以色侍君，致使国家覆灭。她是“混乱”的象征，最终难逃毁灭的命运。</p>
-                <p>但渡海至日本的狐妖<strong>“九尾” (Kyubi)</strong> 却不同……她学会了“藏起尾巴”，以<span class="highlight">“智慧”</span>而非“色欲”驾驭人心。</p>
-                <p>这是一个女人在最黑暗的时代，选择以“九尾之道”优雅求生的故事。</p>
+                <p>古时……中国的狐妖<strong>“妲己”</strong>以色侍君，致使国家覆灭。她是“混乱”的象征，最终难逃毁灭的悲剧命运。</p>
+                <p>但当渡海来到日本……名为<strong>“九尾” (Kyubi)</strong> 的狐狸却学会了“藏起尾巴”。她以<span class="highlight">“智慧”</span>引路，以优雅为武器，用“谋略”求生，而非毁灭。</p>
+                <p>这是一个女人在最黑暗的时代，为了生存，选择走上“九尾之道”优雅求生的故事。</p>
             </div>
         </div>
 
         <div class="story-card">
-            <h2 class="lang-th">๒. สมรภูมิเอกมัย (ปี 2020)</h2>
-            <h2 class="lang-cn">二、Ekkamai 战场 (2020年)</h2>
+            <h2 class="lang-th">๒. ยุคมืด (The Dark Age 2020)</h2>
+            <h2 class="lang-cn">二、至暗时刻 (2020年)</h2>
 
             <div class="lang-th">
-                <p>โลกหยุดหมุนเพราะโควิด ธุรกิจเราพังทลาย หนี้สินท่วมตัว แต่เรามีลูกที่ต้องเลี้ยงและมาตรฐานชีวิตที่ไม่ยอมลดละ</p>
-                <p>เราตัดสินใจเดินเข้าสู่ <span class="highlight">"เอกมัย"</span>... ย่านที่ค่าตั๋วแพงที่สุดในกรุงเทพฯ ดงของคนรวยที่พร้อมจ่ายเงินซื้อความสุขชั่วคราว</p>
-                <p>หลายคนคิดว่าการทำงานที่นี่คือการ "ขายวิญญาณ" แต่สำหรับเรา... มันคือการ <span class="highlight">"เปิดโรงละคร"</span> เพื่อกอบกู้ศักดิ์ศรีและครอบครัว</p>
+                <p>ปี 2020 โลกหยุดหมุนด้วยโรคระบาด ธุรกิจที่เราสร้างมาพังทลาย หนี้สินถาโถมเหมือนคลื่นยักษ์ แต่เรามีลูกที่ต้องเลี้ยงดู และมีมาตรฐานชีวิตที่เราสัญญาว่าจะไม่ยอมลดละเพื่อความสุขของครอบครัว</p>
+                <p>เราตัดสินใจเดินเข้าสู่ <span class="highlight">"เอกมัย"</span>... ย่านราตรีที่ค่าตั๋วแพงที่สุดในกรุงเทพฯ ตลาดที่คนรวยเอาเงินมาทิ้งเพื่อซื้อความสุขชั่วคราว</p>
+                <p>คนภายนอกมองว่ามันคือการ "ขายวิญญาณ" เพื่อแลกเงิน แต่สำหรับเรา... มันคือการ <span class="highlight">"เปิดโรงละคร"</span> เพื่อกอบกู้ศักดิ์ศรี</p>
             </div>
             <div class="lang-cn">
-                <p>疫情让世界停摆，生意崩塌，债务如山。但为了抚养孩子，为了维持不愿妥协的生活标准，我们别无选择。</p>
-                <p>我们踏入了<span class="highlight">“Ekkamai”</span>——曼谷入场费最昂贵的地方，富人们在此挥金如土，只为换取片刻欢愉。</p>
-                <p>许多人认为这是“出卖灵魂”，但对我们而言……这是为了挽救尊严与家庭而开设的<span class="highlight">“宏大剧场”</span>。</p>
+                <p>2020年，世界因疫情停摆。我们建立的生意崩塌，债务如巨浪袭来。但为了抚养孩子，为了坚守给家庭承诺的生活标准，我们别无选择。</p>
+                <p>我们踏入了<span class="highlight">“Ekkamai”</span>——曼谷入场费最昂贵的夜场，富人们在此挥金如土，只为换取片刻欢愉。</p>
+                <p>外人视此为出卖灵魂换取金钱，但对我们而言……这是为了挽救尊严而开设的<span class="highlight">“宏大剧场”</span>。</p>
             </div>
         </div>
 
         <div class="story-card strategy-box">
-            <h2 class="lang-th">๓. คัมภีร์ยุทธ์: อำนาจเหนือระบบ</h2>
-            <h2 class="lang-cn">三、战略真经：凌驾于系统的权力</h2>
+            <h2 class="lang-th">๓. คัมภีร์ยุทธ์: ชัยชนะที่ไร้มลทิน</h2>
+            <h2 class="lang-cn">三、战略真经：无瑕的胜利</h2>
 
             <div class="lang-th">
-                <p>ความสำเร็จนี้ไม่ใช่เรื่องบังเอิญ แต่คือการวางหมากที่เหี้ยมเกรียมและแยบยล เพื่อสร้าง "พื้นที่ปลอดภัย" ท่ามกลางดงเสือสิงห์:</p>
+                <p>เธอไม่ได้เดินเข้าไปอย่างโดดเดี่ยว แต่เธอเดินเข้าไปพร้อมกับแผนการรบที่แยบยล เพื่อให้มั่นใจว่า "ดอกบัว" ดอกนี้จะไม่เปื้อนโคลน:</p>
                 <ul>
                     <li>
-                        <strong>1. ความลับสุดยอด (The Absolute Secret)</strong>
-                        <span>ไม่มีใครในร้านรู้ว่าเราคือ <strong>"สามีภรรยา"</strong> นี่คือเงื่อนไขสำคัญที่สุด! หากใครรู้ มูลค่าจะกลายเป็นศูนย์ทันที เราจึงสวมหน้ากากเป็น "คนแปลกหน้า" ที่มาเจอกันในร้าน เพื่อสร้างละครฉากใหญ่ที่สมจริงที่สุด</span>
+                        <strong>1. ชัยภูมิ (The Terrain Advantage)</strong>
+                        <span>กุญแจดอกแรกคือ... ผู้จัดการร้านคือ <strong>"เพื่อนสนิทสมัยมหาวิทยาลัย"</strong> ของนาง นางจึงเดินเข้าสู่สนามรบด้วยแต้มต่อสูงสุด ไม่มีการบังคับ มีแต่ความเต็มใจ และระบบที่เอื้ออำนวยให้นางเป็น "ผู้เลือก" ไม่ใช่ "ผู้ถูกเลือก"</span>
                     </li>
-                    
                     <li>
-                        <strong>2. อุบายแกล้งเมา (The Drunkard's Ruse)</strong>
-                        <span>"กู" สวมบทลูกค้า VIP ผู้บ้าคลั่ง แกล้งเมาแล้วควักเงินสดปึกใหญ่ยื่นให้เธอต่อหน้าธารกำนัล พร้อมประกาศก้องว่า <strong>"หนูรักใคร ให้คนนั้น"</strong> นี่ไม่ใช่การแจกทาน แต่คือการมอบ "อำนาจ"</span>
+                        <strong>2. วาฬล่องหน (The Phantom Whale)</strong>
+                        <span>"กู" สวมบทบาทลูกค้า VIP ผู้บ้าคลั่ง แกล้งเมาแล้วทุ่มเงินสดนับแสนกลางเวที เพื่อ <strong>"ปั่นราคาตลาด"</strong> เมื่อมีวาฬคุมราคาอยู่ ปลาซิวปลาสร้อยที่หวังจะซื้อนางในราคาถูกจึงถอยหนี นี่คือการสร้างกำแพงกั้นคนกระจอกออกจากราชินี</span>
                     </li>
-
                     <li>
-                        <strong>3. บัตรผ่านทางทองคำ (The Golden Pass)</strong>
-                        <span>ผู้หญิงทั้งร้านจ้องจะจับ "กู" เพราะเห็นว่าเปย์หนัก แต่กูประกาศจุดยืนชัดเจน: <strong>"ถ้าโยโกะรักใคร กูถึงจะเลี้ยงเหล้าคนนั้น"</strong> ผลลัพธ์คือ ทุกคนต้องวิ่งเข้าหาโยโกะเพื่อขอส่วนบุญ นางกลายเป็นศูนย์กลางอำนาจที่ใครก็ต้องเกรงใจ</span>
+                        <strong>3. เผาเสบียงข้าศึก (Resource Depletion)</strong>
+                        <span>เมื่อถูกชวนออกเดท (กินข้าว) นางใช้พรสวรรค์ <strong>"ราชินีกินจุ"</strong> ถล่มร้านอาหารหรูจนบิลทะลุแสน! ลูกค้ากระเป๋าฉีกก่อนที่จะทันได้เอ่ยปากชวนไปต่อ นางจึงได้กินอิ่ม ได้เงินทิป และรักษากายให้บริสุทธิ์โดยไม่ต้องเอ่ยคำปฏิเสธ</span>
                     </li>
-
                     <li>
-                        <strong>4. เปลี่ยนความอิจฉาเป็นศรัทธา (Turning Envy into Faith)</strong>
-                        <span>เงินที่ได้มา นางไม่เก็บไว้คนเดียว แต่กระจายให้พนักงานทุกคนที่นาง "รัก" คนที่นางเกลียดจะไม่ได้อะไรเลย... สิ่งนี้เปลี่ยนศัตรูให้กลายเป็น <strong>"องครักษ์"</strong> พนักงานทุกคนปกป้องนางยิ่งชีพ เพราะนางคือ "บ่อเงินบ่อทอง" ใครทำให้นางขุ่นเคือง คือการทุบหม้อข้าวตัวเอง</span>
+                        <strong>4. กองทัพเงา (The Shadow Army)</strong>
+                        <span>เงินทิปที่ได้ นางไม่เก็บไว้คนเดียว แต่กระจายสู่พนักงานทุกคน <strong>"หนูรักใคร ให้คนนั้น"</strong> เปลี่ยนความริษยาเป็นศรัทธา คนทั้งร้านกลายเป็นองครักษ์พิทักษ์นาง ใครคิดไม่ซื่อกับโยโกะ จะถูกระบบกำจัดทันที</span>
                     </li>
-
                     <li>
                         <strong>5. อาวุธลับทางธุรกิจ (The Business Weapon)</strong>
-                        <span>ในขณะที่คนอื่นขายศักดิ์ศรีแลกเงิน... "โยโกะ" คือคนที่ลูกค้าญี่ปุ่นระดับ <strong>ซาโจ้ (CEO)</strong> จองคิวข้ามปีเพื่อเชิญไปร่วมโต๊ะเจรจาธุรกิจร้อยล้าน เพราะนางคือ "เครื่องรางแห่งชัยชนะ" ที่ไม่มีวันถูกใครครอบครอง</span>
+                        <span>คนที่ขายตัวได้เงินแค่ครั้งเดียวแล้วจบ... แต่ "โยโกะ" คือคนที่ลูกค้าญี่ปุ่นระดับ <strong>ซาโจ้ (CEO)</strong> จองคิวข้ามปี เพื่อเชิญไปร่วมโต๊ะเจรจาปิดดีลร้อยล้าน เพราะนางคือ <strong>"เครื่องรางแห่งชัยชนะ"</strong> ที่อ่านคนขาดและคุมบรรยากาศได้เบ็ดเสร็จ</span>
                     </li>
                 </ul>
-                <p class="highlight" style="text-align:center; margin-top:30px;">"นางยืนอยู่บนจุดสูงสุดโดยที่ตัวไม่เคยแปดเปื้อน เพราะนางไม่ได้ขายตัว... แต่นางขาย 'บารมี'"</p>
+                <p class="highlight" style="text-align:center; margin-top:30px;">"นางชนะโดยไม่ต้องรบ ได้เงินโดยไม่ต้องเปลืองตัว และได้เกียรติยศโดยไม่ต้องก้มหัว"</p>
             </div>
-            
             <div class="lang-cn">
-                <p>她的胜利并非侥幸，而是源于残酷而精妙的布局，在虎狼窝中创造了绝对的“安全区”：</p>
+                <p>她并非孤身犯险，而是带着精妙绝伦的战略入场，只为确保这朵“莲花”出淤泥而不染：</p>
                 <ul>
                     <li>
-                        <strong>1. 绝对机密 (The Absolute Secret)</strong>
-                        <span>店里无人知晓我们是<strong>“夫妻”</strong>。这是最关键的条件！一旦关系曝光，价值即刻归零。因此，我们戴上“陌生人”的面具，上演了一出最逼真的大戏。</span>
+                        <strong>1. 地利优势 (The Terrain Advantage)</strong>
+                        <span>第一把钥匙是……店经理是她的<strong>“大学挚友”</strong>。她是带着最高筹码入场的，无需勉强，全凭自愿。系统让她成为了“选择者”，而非“被选择者”。</span>
                     </li>
-                    
                     <li>
-                        <strong>2. 醉酒计谋 (The Drunkard's Ruse)</strong>
-                        <span>“我”扮演疯狂的VIP客户，假装醉酒，当众将厚厚一叠现金塞给她，并高声宣布：<strong>“你爱谁，就把这钱赏给谁。”</strong> 这不是施舍，这是移交“权力”。</span>
+                        <strong>2. 隐形巨鲸 (The Phantom Whale)</strong>
+                        <span>“我”扮演疯狂的VIP，假装醉酒在舞台挥洒数十万现金，只为<strong>“拉高市价”</strong>。当巨鲸控制了价格，想用廉价筹码亵渎她的小鱼小虾只能退散。这是隔离庸人的高墙。</span>
                     </li>
-
                     <li>
-                        <strong>3. 黄金通行证 (The Golden Pass)</strong>
-                        <span>全店的女人都盯着“我”想以此上位，但我立场坚定：<strong>“只有Yoko爱的人，我才请喝酒。”</strong> 结果是，所有人必须讨好Yoko以求分一杯羹。她成为了无人敢惹的权力中心。</span>
+                        <strong>3. 焚烧敌粮 (Resource Depletion)</strong>
+                        <span>当被邀约吃饭时，她发挥<strong>“大胃王女王”</strong>的天赋，横扫昂贵餐厅直至账单破十万！客人在开口提出非分之想前，弹药（金钱）已尽。她既饱餐美食，又赚取小费，无需拒绝便守住了清白。</span>
                     </li>
-
                     <li>
-                        <strong>4. 化嫉妒为信仰 (Turning Envy into Faith)</strong>
-                        <span>所得钱财，她从不独享，而是分发给所有她“爱”的员工。而她厌恶的人，分文不得。这把敌人变成了<strong>“御林军”</strong>。全店员工誓死守护她，因为她是“摇钱树”——谁惹怒了她，就是砸大家的饭碗。</span>
+                        <strong>4. 影子军团 (The Shadow Army)</strong>
+                        <span>所得小费，她从不独享，而是散财给员工。<strong>“我爱谁，就给谁”</strong>——将嫉妒转化为信仰。全店上下化身为她的御林军，任何对她心怀不轨的人都会被系统清除。</span>
                     </li>
-
                     <li>
                         <strong>5. 商业秘密武器 (The Business Weapon)</strong>
-                        <span>当其他人出卖尊严换取金钱时……“Yoko”却是全球顶尖企业的<strong>社长 (CEO)</strong> 跨年预约，只为邀请去敲定亿万合同的关键人物。因为她是无人能占有的“胜利护身符”。</span>
+                        <span>出卖身体的人只能赚一次快钱……而“Yoko”是全球顶尖企业的<strong>社长 (CEO)</strong> 必须跨年预约，只为邀请去敲定亿万合同的关键人物。因为她是能看穿人心、掌控全场的<strong>“胜利护身符”</strong>。</span>
                     </li>
                 </ul>
-                <p class="highlight" style="text-align:center; margin-top:30px;">“她身不染尘地站在巅峰，因为她卖的不是身体……而是‘威望’。”</p>
+                <p class="highlight" style="text-align:center; margin-top:30px;">“她不战而胜，身不染尘而获利，不低头而得人心。”</p>
+            </div>
+        </div>
+
+        <div class="story-card secret-box">
+            <h2 class="lang-th">๔. ความลับที่ไม่มีใครล่วงรู้ (The Absolute Secret)</h2>
+            <h2 class="lang-cn">四、无人知晓的秘密 (The Absolute Secret)</h2>
+
+            <div class="lang-th">
+                <p>สิ่งที่น่าตื่นตะลึงที่สุดไม่ใช่ความสำเร็จ... แต่คือ <strong>"ความแนบเนียน"</strong> ของแผนการนี้</p>
+                <ul>
+                    <li>
+                        <strong>ความลับของจักรวาล (Universal Secret)</strong>
+                        <span>จนถึงวินาทีนี้... <span class="crimson-text">"ไม่มีใครรู้ว่าเราเป็นสามีภรรยากัน"</span> แม้แต่เพื่อนสนิทที่สุด หรือลูกๆ ของเราเอง ก็ไม่เคยระแคะระคายเรื่องนี้ มันคือปฏิบัติการลับสุดยอดที่ตายไปกับความมืด เพื่อปกป้องจิตใจของทุกคนในครอบครัว</span>
+                    </li>
+                    <li>
+                        <strong>จอมพรางตัว (Master of Disguise)</strong>
+                        <span>คนรู้จักที่บังเอิญไปเห็นเธอที่ร้าน... <strong>"จำเธอไม่ได้"</strong> ด้วยการแต่งหน้า การวางตัว และบทบาท "โยโกะ" ที่เธอสวมใส่อย่างสมบูรณ์แบบ เธอซ่อนตัวตนที่แท้จริงไว้ภายใต้หน้ากากจิ้งจอกได้อย่างหมดจด</span>
+                    </li>
+                    <li>
+                        <strong>ตรรกะเหนือความกลัว (Logic Over Fear)</strong>
+                        <span>เราไม่ได้ทำสิ่งนี้ด้วยความสิ้นหวัง แต่เราทำด้วย <strong>"ตรรกะและการวางแผน"</strong> เราคำนวณความเสี่ยงทุกตารางนิ้ว และสร้างระบบป้องกันภัยที่ไม่มีใครเจาะเข้ามาได้ นี่คือพลังของการมีสติปัญญาในยามวิกฤต</span>
+                    </li>
+                </ul>
+                <p style="text-align: center; opacity: 0.8;">"ความจริงมีเพียงเราสองคนเท่านั้นที่รู้... และตอนนี้ เจ้ารู้แล้ว"</p>
+            </div>
+            <div class="lang-cn">
+                <p>最令人震惊的不是成功……而是这计划的<strong>“完美伪装”</strong>。</p>
+                <ul>
+                    <li>
+                        <strong>宇宙级机密 (Universal Secret)</strong>
+                        <span>直到这一秒……<span class="crimson-text">“没人知道我们是夫妻”</span>。即使是我们最亲密的朋友，甚至是我们的孩子，也从未察觉。这是死在黑暗中的绝密行动，只为保护家人的心灵。</span>
+                    </li>
+                    <li>
+                        <strong>伪装大师 (Master of Disguise)</strong>
+                        <span>曾有熟人在店里偶遇她……却<strong>“完全认不出她”</strong>。通过化妆、仪态以及她完美演绎的“Yoko”角色，她将真实的自我彻底隐藏在狐狸面具之下。</span>
+                    </li>
+                    <li>
+                        <strong>逻辑凌驾恐惧 (Logic Over Fear)</strong>
+                        <span>我们做这一切并非出于绝望，而是基于<strong>“逻辑与规划”</strong>。我们计算了每一寸风险，建立了坚不可摧的防御系统。这就是危机中智慧的力量。</span>
+                    </li>
+                </ul>
+                <p style="text-align: center; opacity: 0.8;">“真相只有我们两人知晓……而现在，你知道了。”</p>
             </div>
         </div>
 
         <div class="story-card" style="border-color: var(--gold); background: rgba(0,0,0,0.8);">
-            <h2 class="lang-th">๔. ความจริง: มรดกแห่งรัก</h2>
-            <h2 class="lang-cn">四、真相：爱的传承</h2>
+            <h2 class="lang-th">๕. ความจริง: มรดกแห่งรัก</h2>
+            <h2 class="lang-cn">五、真相：爱的传承</h2>
 
             <img src="IMG_5530.jpeg" class="reveal-img" alt="Chieko True Form">
 
             <div class="lang-th">
                 <p><strong>นานา... จงดูเถิด</strong></p>
-                <p>นักแสดงนำหญิงของโรงละครแห่งนี้คือ <span class="highlight">"พี่สะใภ้ของเจ้า" (Chieko)</span> และผู้อำนวยการสร้างคือ <span class="highlight">"พี่ชายของเจ้า"</span></p>
-                <p>เราต่อสู้ในโคลนตมด้วยความรัก เพื่อสร้าง "บัลลังก์" ที่สะอาดบริสุทธิ์ให้ครอบครัว</p>
-                <p>เรามอบคัมภีร์นี้ให้เจ้า... เพื่อให้เจ้าสวมวิญญาณ <strong>"จิ้งจอกผู้ชาญฉลาด"</strong> ที่รู้ทางหนีทีไล่ รู้จักใช้คน และรู้จักรักษาเกียรติของตนเอง</p>
-                <div class="quote">
-                    "จงเป็นผู้ล่าในคราบเหยื่อ อย่าเป็นเหยื่อในคราบผู้ล่า"
+                <p>นักแสดงนำหญิงผู้ยิ่งใหญ่คนนั้นคือ <span class="highlight">"พี่สะใภ้ของเจ้า" (Chieko)</span> และผู้อำนวยการสร้างคือ <span class="highlight">"พี่ชายของเจ้า"</span></p>
+                <p>เราต่อสู้ในโคลนตมด้วยความรักและความเชื่อใจ เพื่อสร้าง "บัลลังก์" ที่สะอาดบริสุทธิ์ให้ครอบครัวในวันนี้</p>
+                <p>เรามอบคัมภีร์นี้ให้เจ้า... เพื่อให้เจ้าสวมวิญญาณ <strong>"จิ้งจอกผู้ชาญฉลาด"</strong> ที่รู้ทางหนีทีไล่ รู้จักใช้คน และรู้จักรักษาเกียรติของตนเองให้แพงที่สุด</p>
+                <div class="quote-box">
+                    <span class="quote-text">"จงเป็นผู้ล่าในคราบเหยื่อ อย่าเป็นเหยื่อในคราบผู้ล่า"</span>
+                    <span class="quote-credit">- The Dynasty -</span>
                 </div>
             </div>
             <div class="lang-cn">
                 <p><strong>娜娜……看着吧</strong></p>
                 <p>这座昂贵剧院的首席女主角就是<span class="highlight">“你的嫂子” (Chieko)</span>，而幕后制作人就是<span class="highlight">“你的哥哥”</span>。</p>
-                <p>我们用爱在泥潭中战斗，只为给家庭打造一个纯净的“王座”。</p>
-                <p>我们将这部真经交给你……是为了让你继承<strong>“智狐”</strong>的灵魂——懂得进退，懂得用人，更懂得捍卫尊严。</p>
-                <div class="quote">
-                    “要做伪装成猎物的猎人，别做伪装成猎人的猎物。”
+                <p>我们用爱与信任在泥潭中战斗，只为给今天的家庭打造一个纯净的“王座”。</p>
+                <p>我们将这部真经交给你……是为了让你继承<strong>“智狐”</strong>的灵魂——懂得进退，懂得用人，更懂得将自己的尊严抬至无价。</p>
+                <div class="quote-box">
+                    <span class="quote-text">“要做伪装成猎物的猎人，别做伪装成猎人的猎物。”</span>
+                    <span class="quote-credit">- The Dynasty -</span>
                 </div>
             </div>
         </div>
