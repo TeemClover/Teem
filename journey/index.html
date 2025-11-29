@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAN CHUAN | Private Journeys</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Serif+Thai:wght@300;500;700&family=Prompt:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#D4AF37',
+                        'gold-light': '#F3E5AB',
+                        dark: '#0a0a0a',
+                        glass: 'rgba(20, 20, 20, 0.7)',
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif Thai"', 'serif'],
+                        display: ['"Cinzel"', 'serif'],
+                        sans: ['"Prompt"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+        
+        .text-shadow { text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+        .gradient-overlay { background: linear-gradient(to top, #0a0a0a 10%, transparent 100%); }
+    </style>
+</head>
+<body class="bg-dark text-gray-200 font-sans antialiased overflow-x-hidden">
+
+    <nav class="fixed w-full z-50 px-6 py-4 flex justify-between items-center bg-gradient-to-b from-black to-transparent">
+        <div class="text-gold font-display text-xl tracking-widest font-bold">SAN CHUAN</div>
+        <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="border border-gold text-gold px-6 py-2 rounded-full hover:bg-gold hover:text-black transition duration-300 font-serif text-sm uppercase tracking-wide">
+            Reserve Your Seat
+        </a>
+    </nav>
+
+    <header class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://placehold.co/1920x1080/111/333?text=Japan+Winter+Atmosphere" class="w-full h-full object-cover opacity-60 scale-110 animate-[pulse_10s_infinite]" alt="Japan Winter">
+            <div class="absolute inset-0 bg-black/40"></div>
+        </div>
+
+        <div class="relative z-10 text-center px-4" data-aos="fade-up" data-aos-duration="1500">
+            <p class="text-gold font-display tracking-[0.3em] text-sm md:text-lg mb-4">THE INNER CIRCLE EXPERIENCE</p>
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
+                มากกว่าการเดินทาง<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gold to-gold-light">คือการกลับบ้าน</span>
+            </h1>
+            <p class="font-sans font-light text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+                สัมผัสญี่ปุ่นในมุมมองของ "เพื่อนสนิท" ที่จะเปิดประตูบ้านต้อนรับคุณ<br>สู่ความอบอุ่นที่เงินอย่างเดียว... ซื้อไม่ได้
+            </p>
+            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="inline-block bg-gold text-dark font-bold py-4 px-10 rounded-sm hover:bg-white hover:scale-105 transition duration-300 shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+                ติดต่อจองทริปส่วนตัว
+            </a>
+        </div>
+        
+        <div class="absolute bottom-10 w-full text-center animate-bounce">
+            <span class="text-gold/50 text-xs tracking-widest uppercase">Scroll to Discover</span>
+        </div>
+    </header>
+
+    <section class="py-24 px-6 md:px-20 relative">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div data-aos="fade-right">
+                <h2 class="font-serif text-3xl md:text-4xl text-gold mb-6">เพื่อนรวย... พาเพื่อนเที่ยว</h2>
+                <div class="w-20 h-1 bg-gold mb-8"></div>
+                <p class="font-sans text-gray-400 text-lg leading-relaxed mb-6">
+                    คุณเคยไปพักโรงแรมคืนละแสน แต่ยังรู้สึกเป็น "คนนอก" ไหม?
+                </p>
+                <p class="font-sans text-gray-400 text-lg leading-relaxed mb-6">
+                    ที่ <strong>San Chuan</strong> เราไม่ได้ขายตั๋วเครื่องบิน หรือห้องพักที่คุณหาจองเองได้ แต่เรามอบ <strong>"สถานะ" (Status)</strong> และ <strong>"ความรู้สึกเหมือนอยู่บ้าน" (Belonging)</strong>
+                </p>
+                <p class="font-sans text-gray-300 text-lg leading-relaxed font-medium">
+                    เราพาคุณไปนอนเรียวกังที่จองยากที่สุด กินข้าวฝีมือเชฟที่เป็นเพื่อนกัน และนั่งจิบไวน์ในบรรยากาศที่โรแมนติกที่สุด โดยมีพวกเราดูแลเหมือนคุณเป็นญาติสนิทที่มาเยี่ยมบ้านต่างแดน
+                </p>
+            </div>
+            <div class="relative h-[600px]" data-aos="fade-left">
+                <img src="https://placehold.co/600x800/222/d4af37?text=Private+Dinner+Moment" class="w-full h-full object-cover rounded-lg shadow-2xl filter brightness-75 hover:brightness-100 transition duration-700">
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 border-2 border-gold/30 hidden md:block"></div>
+                <div class="absolute -top-10 -right-10 w-40 h-40 border-2 border-gold/30 hidden md:block"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-neutral-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-gold font-display tracking-widest text-sm">THE HOSTS</span>
+                <h2 class="font-serif text-4xl mt-2">ทีมงานคุณภาพระดับ VVIP</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="group relative overflow-hidden rounded-xl bg-dark border border-white/5 hover:border-gold/50 transition duration-500" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-80 overflow-hidden">
+                        <img src="https://placehold.co/400x500/111/fff?text=Chieko+(Host)" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-8 text-center relative">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gold text-dark font-bold px-4 py-1 text-xs tracking-wider uppercase">The Insider</div>
+                        <h3 class="font-serif text-2xl text-white mb-2">Chieko</h3>
+                        <p class="text-gray-400 font-sans text-sm mb-4">Host & Guide</p>
+                        <p class="text-gray-500 font-sans text-sm italic">"ลูกครึ่งญี่ปุ่นเจ้าถิ่น ผู้กุมกุญแจสู่ร้านลับและวัฒนธรรมชั้นสูง เธอไม่ได้มาบริการ แต่มา 'ต้อนรับ' คุณสู่บ้านของเธอ"</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl bg-dark border border-white/5 hover:border-gold/50 transition duration-500" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-80 overflow-hidden">
+                        <img src="https://placehold.co/400x500/222/fff?text=Teem+(Founder)" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-8 text-center relative">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gold text-dark font-bold px-4 py-1 text-xs tracking-wider uppercase">The Planner</div>
+                        <h3 class="font-serif text-2xl text-white mb-2">Teem</h3>
+                        <p class="text-gray-400 font-sans text-sm mb-4">Strategic Coordinator</p>
+                        <p class="text-gray-500 font-sans text-sm italic">"นักวางแผนและประสานงาน ผู้ถักทอทุกรายละเอียดให้ไร้รอยต่อ ให้คุณลืมคำว่า 'สะดุด' ไปจากทริปนี้"</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl bg-dark border border-white/5 hover:border-gold/50 transition duration-500" data-aos="fade-up" data-aos-delay="300">
+                    <div class="h-80 overflow-hidden">
+                        <img src="https://placehold.co/400x500/333/fff?text=Keen+(Butler)" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-8 text-center relative">
+                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gold text-dark font-bold px-4 py-1 text-xs tracking-wider uppercase">The Butler</div>
+                        <h3 class="font-serif text-2xl text-white mb-2">Keen</h3>
+                        <p class="text-gray-400 font-sans text-sm mb-4">Personal Assistant</p>
+                        <p class="text-gray-500 font-sans text-sm italic">"น้องชายผู้แข็งขันและใส่ใจ พร้อมดูแล แบกหาม ขับรถ และอำนวยความสะดวกทุกย่างก้าวด้วยรอยยิ้ม"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 relative" x-data="{ activeTab: 'route' }">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/5 to-transparent pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div data-aos="fade-right">
+                    <span class="text-red-500 font-display tracking-widest text-sm">WINTER 2025-2026</span>
+                    <h2 class="font-serif text-4xl md:text-6xl text-white mt-2">JAPAN LEGACY</h2>
+                    <p class="text-gold font-serif italic text-xl mt-2">Tokyo &rarr; Aomori</p>
+                </div>
+                
+                <div class="flex space-x-6 mt-8 md:mt-0" data-aos="fade-left">
+                    <button @click="activeTab = 'route'" :class="{ 'text-gold border-b-2 border-gold': activeTab === 'route', 'text-gray-500 hover:text-white': activeTab !== 'route' }" class="pb-2 text-sm uppercase tracking-wider transition">The Route</button>
+                    <button @click="activeTab = 'experience'" :class="{ 'text-gold border-b-2 border-gold': activeTab === 'experience', 'text-gray-500 hover:text-white': activeTab !== 'experience' }" class="pb-2 text-sm uppercase tracking-wider transition">The Experience</button>
+                    <button @click="activeTab = 'stay'" :class="{ 'text-gold border-b-2 border-gold': activeTab === 'stay', 'text-gray-500 hover:text-white': activeTab !== 'stay' }" class="pb-2 text-sm uppercase tracking-wider transition">The Stay</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 min-h-[500px]">
+                <div class="flex flex-col justify-center" x-show="activeTab === 'route'" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-x-10" x-transition:enter-end="opacity-100 translate-x-0">
+                    <h3 class="font-serif text-3xl text-white mb-6">จากแสงสีเมืองหลวง สู่หิมะขาวโพลน</h3>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                        เริ่มต้นที่ความศิวิไลซ์ของ <strong>Tokyo</strong> พาท่านลิ้มรสร้านลับที่คนไทยไม่รู้จัก ก่อนจะนั่ง Shinkansen ชั้น Gran Class มุ่งหน้าสู่เหนือสุดของเกาะฮอนชู <strong>Aomori</strong>
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        สัมผัสเส้นทางที่เต็มไปด้วยมนต์ขลังของหิมะ ปีศาจหิมะ (Snow Monsters) และเทศกาลฤดูหนาวที่หาดูยาก การเดินทางที่ออกแบบมาเพื่อคู่รักและกลุ่มเพื่อนสนิทโดยเฉพาะ
+                    </p>
+                </div>
+
+                <div class="flex flex-col justify-center" x-show="activeTab === 'experience'" style="display: none;" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-x-10" x-transition:enter-end="opacity-100 translate-x-0">
+                    <h3 class="font-serif text-3xl text-white mb-6">สกี ออนเซ็น และรสชาติแห่งชีวิต</h3>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                        เล่นสกีบนปุยหิมะที่ละเอียดที่สุด (Powder Snow) แช่ออนเซ็นกลางแจ้งท่ามกลางหิมะโปรยปราย และดื่มด่ำกับมื้อค่ำแบบ Kaiseki ที่ปรุงโดยวัตถุดิบที่ดีที่สุดในฤดูหนาว
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        Chieko จะพาท่านไปสัมผัส "Local Deep Culture" ที่ไม่ต้องต่อคิว ไม่ต้องแย่งชิง มีแต่ความสงบและความสุข
+                    </p>
+                </div>
+
+                <div class="flex flex-col justify-center" x-show="activeTab === 'stay'" style="display: none;" x-transition:enter="transition ease-out duration-500" x-transition:enter-start="opacity-0 translate-x-10" x-transition:enter-end="opacity-100 translate-x-0">
+                    <h3 class="font-serif text-3xl text-white mb-6">เรียวกังระดับตำนาน</h3>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                        เราคัดสรรที่พักที่ไม่ใช่แค่หรูหรา แต่ต้องมี "จิตวิญญาณ" นอนในเรียวกังที่มีประวัติศาสตร์ยาวนาน ห้องพักส่วนตัวที่มีบ่อออนเซ็นมองเห็นวิวภูเขา
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed">
+                        บรรยากาศโรแมนติกที่สุด เหมาะสำหรับการกระชับความสัมพันธ์ของคู่รัก ให้เวลานี้เป็นเวลาคุณภาพอย่างแท้จริง
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 h-full">
+                    <div class="row-span-2 overflow-hidden rounded-lg">
+                        <img src="https://placehold.co/400x600/111/333?text=Snowy+Aomori" class="w-full h-full object-cover hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="overflow-hidden rounded-lg">
+                        <img src="https://placehold.co/400x300/222/444?text=Private+Onsen" class="w-full h-full object-cover hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="overflow-hidden rounded-lg">
+                        <img src="https://placehold.co/400x300/333/555?text=Kaiseki+Dinner" class="w-full h-full object-cover hover:scale-110 transition duration-700">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 relative bg-fixed bg-center bg-cover" style="background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.6)), url('https://placehold.co/1920x1080/8a0a0a/000?text=Grand+Xian+Tang+Dynasty');">
+        <div class="container text-center relative z-10" data-aos="zoom-in">
+            <h2 class="font-serif text-5xl md:text-7xl text-white mb-4 tracking-tighter">XI'AN 2026</h2>
+            <div class="w-24 h-1 bg-red-600 mx-auto mb-8"></div>
+            <p class="font-sans text-xl md:text-2xl text-gray-200 mb-8 max-w-3xl mx-auto font-light">
+                เตรียมพบกับการเดินทางสู่บ้านเกิดของ <strong>"นานา"</strong><br>
+                เปิดประตูสู่ความยิ่งใหญ่ของราชวงศ์ถัง และเส้นทางสายไหมที่คุณไม่เคยเห็น
+            </p>
+            <span class="inline-block border border-red-500 text-red-500 px-6 py-2 tracking-widest text-sm uppercase">Coming Soon</span>
+        </div>
+    </section>
+
+    <section class="py-24 bg-dark text-center px-6">
+        <div class="max-w-4xl mx-auto" data-aos="fade-up">
+            <h2 class="font-serif text-3xl md:text-5xl text-gold mb-8">"ราคาคือสิ่งที่คุณจ่าย... คุณค่าคือสิ่งที่คุณจะไม่มีวันลืม"</h2>
+            <p class="font-sans text-gray-400 text-lg mb-12">
+                ทริปนี้รับจำนวนจำกัด (Max 6 ท่าน) เพื่อการดูแลที่ทั่วถึงที่สุด<br>
+                ให้เราเป็นส่วนหนึ่งในความทรงจำที่ดีที่สุดของปีนี้ของคุณ
+            </p>
+            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="inline-flex items-center justify-center bg-transparent border-2 border-gold text-gold font-bold py-4 px-12 text-lg rounded-sm hover:bg-gold hover:text-black transition duration-300 group">
+                <span>จองประสบการณ์นี้ผ่าน LINE ส่วนตัว</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-3 transform group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/10 py-10 bg-black text-center">
+        <div class="container">
+            <p class="font-display text-gold text-2xl mb-4">SAN CHUAN</p>
+            <p class="text-gray-600 text-xs uppercase tracking-widest">By Invitation Only. Crafted for the inner circle.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true,
+            offset: 100,
+            duration: 1000,
+            easing: 'ease-out-cubic',
+        });
+    </script>
+</body>
+</html>
