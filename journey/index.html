@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAN CHUAN | The Private Club That Moves</title>
+    <title>SAN CHUAN | The Elite Private Journeys</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Noto+Serif+Thai:wght@300;400;600;700&family=Prompt:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Noto+Serif+Thai:wght@300;500;700&family=Prompt:wght@200;300;400;500&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -27,10 +28,10 @@
                     fontFamily: {
                         serif: ['"Noto Serif Thai"', 'serif'],
                         display: ['"Cinzel"', 'serif'],
-                        sans: ['"Prompt"', 'sans-serif'],
+                        sans: ['"Prompt"', 'sans-serif'], // ใช้ Prompt เป็นฟอนต์หลัก
                     },
                     letterSpacing: {
-                        'widest-xl': '0.3em',
+                        'widest-xl': '0.2em',
                     }
                 }
             }
@@ -38,166 +39,163 @@
     </script>
 
     <style>
-        ::-webkit-scrollbar { width: 8px; }
+        /* Luxury Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #8E7224, #D4AF37); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #8E7224, #D4AF37); border-radius: 3px; }
         
-        .text-glow { text-shadow: 0 0 30px rgba(212,175,55,0.5); }
+        /* Custom Styles */
+        .text-glow { text-shadow: 0 0 30px rgba(212,175,55,0.4); }
+        .image-hover-zoom { transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .image-hover-zoom:hover { transform: scale(1.05); }
         
-        /* Custom Animations */
-        @keyframes slowZoom {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+        /* Animations */
+        @keyframes slowPan {
+            0% { transform: scale(1.1); }
+            100% { transform: scale(1.0); }
         }
-        .animate-zoom { animation: slowZoom 20s infinite alternate; }
+        .animate-pan { animation: slowPan 20s infinite alternate; }
         
-        .gold-border-bottom {
-            position: relative;
-        }
-        .gold-border-bottom::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 2px;
-            background-color: #D4AF37;
-        }
+        /* Typography Polish */
+        p { font-weight: 300; line-height: 1.8; }
+        strong { font-weight: 500; color: #F9E59D; }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold selection:text-black">
 
     <header class="relative h-screen w-full flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <img src="01.png" class="w-full h-full object-cover opacity-60 animate-zoom" alt="Japan Winter">
-            <div class="absolute inset-0 bg-gradient-to-t from-dark via-black/20 to-black/60"></div>
+            <img src="01.png" class="w-full h-full object-cover opacity-60 animate-pan" alt="Japan Winter">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-dark"></div>
         </div>
 
-        <div class="relative z-10 text-center px-4 max-w-6xl mx-auto" data-aos="fade-up" data-aos-duration="1500">
+        <div class="relative z-10 text-center px-4 max-w-7xl mx-auto" data-aos="fade-up" data-aos-duration="1500">
             <div class="border border-gold/30 inline-block px-6 py-2 mb-8 rounded-full bg-black/60 backdrop-blur-md">
                 <span class="text-gold font-display tracking-widest-xl text-xs font-bold">BY INVITATION ONLY</span>
             </div>
-            <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-4 leading-none tracking-tight text-glow">
+            <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-6 leading-none tracking-tight text-glow">
                 SAN CHUAN
             </h1>
-            <p class="font-display text-gold-light text-xl md:text-3xl tracking-[0.2em] uppercase mb-12">
+            <p class="font-display text-gold-light text-xl md:text-3xl tracking-[0.2em] uppercase mb-10 border-y border-gold/20 py-6 mx-auto max-w-4xl">
                 The Private Club That Moves
             </p>
-            
-            <div class="max-w-3xl mx-auto bg-black/40 p-8 backdrop-blur-sm border-t border-b border-gold/20">
-                <p class="font-serif text-white text-xl md:text-2xl leading-relaxed italic">
-                    "นิยามใหม่ของความหรูหรา... ไม่ใช่แค่ห้องชั้นธุรกิจ<br>แต่มันคือ <span class="text-gold">การเข้าถึง</span> และ <span class="text-gold">ความเป็นส่วนหนึ่ง</span>"
-                </p>
-            </div>
-
-            <div class="mt-12">
-                <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="group relative inline-flex items-center justify-center px-12 py-5 overflow-hidden font-display font-bold tracking-widest text-white bg-gold rounded-sm transition-all duration-300 hover:bg-white hover:text-black focus:outline-none shadow-[0_0_40px_rgba(212,175,55,0.4)]">
-                    <span class="relative">REQUEST ACCESS</span>
-                </a>
-            </div>
+            <p class="font-sans font-light text-gray-200 text-lg md:text-2xl max-w-3xl mx-auto mb-16 leading-relaxed drop-shadow-lg">
+                "นิยามใหม่ของความหรูหรา... ไม่ใช่แค่ห้องชั้นธุรกิจ<br>
+                แต่มันคือ <strong>การเข้าถึง</strong> และ <strong>ความเป็นส่วนหนึ่ง</strong>"
+            </p>
+            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="group relative inline-flex items-center justify-center px-12 py-4 overflow-hidden font-display font-bold tracking-widest text-white bg-transparent border-2 border-gold rounded-sm transition-all duration-300 hover:bg-gold hover:text-black focus:outline-none shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+                <span class="relative">REQUEST ACCESS</span>
+            </a>
+        </div>
+        
+        <div class="absolute bottom-10 w-full text-center animate-bounce">
+            <p class="text-gold/60 text-xs font-display tracking-[0.2em]">SCROLL TO ENTER THE INNER CIRCLE</p>
         </div>
     </header>
 
-    <section class="py-32 px-6 bg-dark-card relative">
+    <section class="py-32 px-6 bg-dark-card relative border-b border-white/5">
         <div class="absolute inset-0 opacity-10 bg-[url('13.png')] bg-fixed bg-cover mix-blend-overlay"></div>
         
-        <div class="max-w-5xl mx-auto relative z-10">
-            <div class="text-center mb-20" data-aos="fade-up">
-                <h2 class="font-serif text-4xl md:text-5xl text-gold mb-6">สิ่งที่เคยเป็น VS สิ่งที่ควรเป็น</h2>
-                <p class="font-sans text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
-                    ตั้งแต่อดีต ความหรูหราถูกกำหนดด้วย 'ดาว' หรือ 'ชั้นธุรกิจ' แต่สิ่งเหล่านี้ใครมีเงินก็ซื้อได้... ความพิเศษจึงเลือนหายไป
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-white/10" data-aos="zoom-in">
-                <div class="p-12 border-b md:border-b-0 md:border-r border-white/10 bg-gradient-to-b from-white/5 to-transparent">
-                    <h3 class="font-display text-gray-500 text-xl mb-6 tracking-widest">THE TOURIST</h3>
-                    <ul class="space-y-4 text-gray-400 font-sans font-light">
-                        <li class="flex items-start"><span class="text-red-900 mr-3">✕</span> เป็นเพียงนักท่องเที่ยวที่ถือกล้อง</li>
-                        <li class="flex items-start"><span class="text-red-900 mr-3">✕</span> นำทางโดยไกด์ที่ท่องบทมา</li>
-                        <li class="flex items-start"><span class="text-red-900 mr-3">✕</span> เข้าถึงได้แค่สถานที่ที่ Google Maps บอก</li>
-                    </ul>
+        <div class="max-w-6xl mx-auto relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div data-aos="fade-right">
+                    <h2 class="font-serif text-4xl md:text-5xl text-gold mb-8 leading-tight">เพื่อนรวย...<br><span class="text-white">พาเพื่อนเที่ยว</span></h2>
+                    <div class="w-24 h-1 bg-gold mb-10"></div>
+                    
+                    <div class="space-y-6 text-lg text-gray-300">
+                        <p>
+                            ตั้งแต่อดีต ความหรูหราถูกกำหนดด้วย 'ดาว' หรือ 'ตั๋วเครื่องบิน' แต่สิ่งเหล่านี้ใครมีเงินก็ซื้อได้... ความพิเศษจึงเลือนหายไป
+                        </p>
+                        <p>
+                            ที่ <strong>San Chuan</strong> เรามอบสิ่งที่เงินซื้อไม่ได้ นั่นคือ <strong>"ความเป็นคนวงใน" (Inner Circle Experience)</strong>
+                        </p>
+                        <p>
+                            คุณจะไม่ได้เป็นเพียงนักท่องเที่ยวที่ถือกล้อง แต่เป็น <strong>"แขกผู้มีเกียรติ"</strong> ที่ได้รับการต้อนรับจากเพื่อนในท้องถิ่น เข้าถึงประตูที่ปิดสำหรับคนทั่วไป และสัมผัสวัฒนธรรมผ่านสายตาของผู้มีอิทธิพล
+                        </p>
+                        <p class="text-gold italic font-medium mt-8 border-l-4 border-gold pl-6 py-2 bg-white/5">
+                            "เราไม่ได้จัดทัวร์... เราเชิญคุณมางานเลี้ยงส่วนตัวในบ้านเพื่อน"
+                        </p>
+                    </div>
                 </div>
-                <div class="p-12 bg-gradient-to-b from-gold/10 to-transparent relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-20 h-20 bg-gold/20 blur-3xl rounded-full"></div>
-                    <h3 class="font-display text-gold text-xl mb-6 tracking-widest">THE INNER CIRCLE</h3>
-                    <ul class="space-y-4 text-white font-sans text-lg">
-                        <li class="flex items-start"><span class="text-gold mr-3">✦</span> <strong>แขกผู้มีเกียรติ</strong> ที่ต้อนรับโดยเพื่อนเจ้าถิ่น</li>
-                        <li class="flex items-start"><span class="text-gold mr-3">✦</span> นำทางโดย <strong>ผู้มีอิทธิพล</strong> ที่เปิดประตูห้องลับให้คุณ</li>
-                        <li class="flex items-start"><span class="text-gold mr-3">✦</span> เข้าถึง <strong>"โลกที่เงินซื้อไม่ได้"</strong> แต่ความสัมพันธ์ซื้อได้</li>
-                    </ul>
+                
+                <div class="relative h-[700px] group" data-aos="fade-left">
+                    <div class="absolute inset-0 border border-gold/20 translate-x-4 translate-y-4 transition duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
+                    <img src="02.png" class="w-full h-full object-cover rounded-sm shadow-2xl filter brightness-90 group-hover:brightness-105 transition duration-700">
+                    <div class="absolute bottom-8 left-8 text-white font-serif text-2xl drop-shadow-lg">The Inner Circle Dinner</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-32 bg-black relative">
-        <div class="max-w-7xl mx-auto px-6">
+    <section class="py-32 bg-black relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold/10 via-dark to-dark opacity-40"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="text-center mb-24" data-aos="fade-up">
+                <span class="text-gold font-display tracking-[0.3em] text-sm block mb-4">THE GUARDIANS</span>
                 <h2 class="font-serif text-4xl md:text-6xl text-white mb-8">ทีมผู้สร้างตำนาน</h2>
                 <p class="font-sans text-gray-400 text-xl max-w-4xl mx-auto font-light leading-relaxed">
                     ทุกการเดินทางที่ยิ่งใหญ่ต้องอาศัยผู้คนที่พิเศษ...<br>
-                    เราไม่ใช่พนักงาน แต่เราคือ <strong>"เจ้าบ้าน"</strong> ที่จะดูแลคุณเหมือนคนในครอบครัว
+                    เราไม่ใช่ไกด์ แต่เราคือ <strong>"เจ้าบ้าน" (The Hosts)</strong> ที่จะดูแลคุณเหมือนคนในครอบครัว
                 </p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 
-                <div class="bg-dark-card border border-white/10 rounded-lg overflow-hidden shadow-2xl" data-aos="fade-up" data-aos-delay="0">
+                <div class="bg-dark-card border border-white/10 rounded-lg overflow-hidden shadow-2xl group hover:border-gold/30 transition duration-500" data-aos="fade-up" data-aos-delay="0">
                     <div class="h-[500px] overflow-hidden relative">
-                        <img src="08.png" class="w-full h-full object-cover object-top hover:scale-105 transition duration-1000">
-                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent"></div>
-                        <div class="absolute bottom-6 left-6">
-                            <h3 class="font-serif text-4xl text-white">Teem</h3>
-                            <p class="text-gold font-display text-sm tracking-widest mt-1">THE ARCHITECT</p>
+                        <img src="08.png" class="w-full h-full object-cover object-top transition duration-1000 group-hover:scale-105">
+                        <div class="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                        <div class="absolute bottom-8 left-8">
+                            <h3 class="font-serif text-4xl text-white mb-2">Teem</h3>
+                            <p class="text-gold font-display text-xs tracking-widest">THE ARCHITECT</p>
                         </div>
                     </div>
-                    <div class="p-8">
+                    <div class="p-8 pt-6">
                         <p class="font-sans text-gray-300 leading-relaxed mb-6">
                             <strong>"สถาปนิกแห่งประสบการณ์"</strong> Teem คือผู้ที่วางแผนทุกรายละเอียดจนถึงขั้นสมบูรณ์แบบ เขาเข้าใจว่าการเดินทางที่ดีไม่ได้เกิดจากโชค แต่เกิดจากการออกแบบที่พิถีพิถัน
                         </p>
-                        <p class="font-sans text-gray-500 text-sm italic">
-                            "จากการเลือกเวลาที่เหมาะสม ไปจนถึงการเจรจาต่อรองที่ดีที่สุด Teem จะทำให้ทุกวินาทีของการเดินทางมีความหมาย"
-                        </p>
+                        <div class="text-gray-500 text-sm italic border-t border-white/10 pt-4">
+                            "นักวางแผนและนักเจรจา ผู้ถักทอทุกรายละเอียดให้ไร้รอยต่อ เพื่อให้คุณลืมคำว่า 'สะดุด' ไปจากพจนานุกรม"
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-dark-card border border-gold/30 rounded-lg overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.15)] transform lg:-translate-y-8" data-aos="fade-up" data-aos-delay="200">
+                <div class="bg-dark-card border-2 border-gold/30 rounded-lg overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.15)] transform lg:-translate-y-12 z-10 group hover:border-gold/60 transition duration-500" data-aos="fade-up" data-aos-delay="200">
                     <div class="h-[500px] overflow-hidden relative">
-                        <img src="09.png" class="w-full h-full object-cover object-top hover:scale-105 transition duration-1000">
-                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent"></div>
-                        <div class="absolute bottom-6 left-6">
-                            <h3 class="font-serif text-4xl text-white">Chieko</h3>
-                            <p class="text-gold font-display text-sm tracking-widest mt-1">THE INSIDER</p>
+                        <img src="09.png" class="w-full h-full object-cover object-top transition duration-1000 group-hover:scale-105">
+                        <div class="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                        <div class="absolute bottom-8 left-8">
+                            <h3 class="font-serif text-4xl text-white mb-2">Chieko</h3>
+                            <p class="text-gold font-display text-xs tracking-widest">THE INSIDER</p>
                         </div>
                     </div>
-                    <div class="p-8">
+                    <div class="p-8 pt-6">
                         <p class="font-sans text-gray-300 leading-relaxed mb-6">
-                            <strong>"ผู้เปิดประตูที่ต้องห้าม"</strong> ด้วยสายเลือดและ Connection ระดับสูงในญี่ปุ่น Chieko สามารถนำคุณเข้าสู่โลกที่นักท่องเที่ยวทั่วไปไม่มีวันได้เหยียบเข้าไป
+                            <strong>"ผู้เปิดประตูที่ต้องห้าม"</strong> ด้วยสายเลือดและ Connection ระดับสูงในญี่ปุ่น Chieko คือเชฟและนักชิมชื่อดังผู้กุมหัวใจของร้านอาหารลับ เธอจะเปลี่ยนมื้ออาหารธรรมดาให้เป็นความทรงจำชั่วชีวิต
                         </p>
-                        <p class="font-sans text-gray-500 text-sm italic">
-                            "ไม่ว่าจะเป็นร้านอาหารที่ไม่รับแขกใหม่ บาร์ลับในตรอกเงียบ หรือเรียวกังที่มีคิวรอเป็นปี เธอคือกุญแจดอกสำคัญของคุณ"
-                        </p>
+                        <div class="text-gray-500 text-sm italic border-t border-white/10 pt-4">
+                            "เธอไม่ได้มาบริการ แต่มา 'ต้อนรับ' คุณสู่บ้านของเธอ... สู่โลกที่นักท่องเที่ยวทั่วไปไม่มีวันได้สัมผัส"
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-dark-card border border-white/10 rounded-lg overflow-hidden shadow-2xl" data-aos="fade-up" data-aos-delay="400">
+                <div class="bg-dark-card border border-white/10 rounded-lg overflow-hidden shadow-2xl group hover:border-gold/30 transition duration-500" data-aos="fade-up" data-aos-delay="400">
                     <div class="h-[500px] overflow-hidden relative">
-                        <img src="10.png" class="w-full h-full object-cover object-top hover:scale-105 transition duration-1000">
-                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent"></div>
-                        <div class="absolute bottom-6 left-6">
-                            <h3 class="font-serif text-4xl text-white">Keen</h3>
-                            <p class="text-gold font-display text-sm tracking-widest mt-1">THE ROYAL BUTLER</p>
+                        <img src="10.png" class="w-full h-full object-cover object-top transition duration-1000 group-hover:scale-105">
+                        <div class="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                        <div class="absolute bottom-8 left-8">
+                            <h3 class="font-serif text-4xl text-white mb-2">Keen</h3>
+                            <p class="text-gold font-display text-xs tracking-widest">THE ROYAL BUTLER</p>
                         </div>
                     </div>
-                    <div class="p-8">
+                    <div class="p-8 pt-6">
                         <p class="font-sans text-gray-300 leading-relaxed mb-6">
                             <strong>"ผู้รับใช้ด้วยหัวใจ"</strong> Keen รู้ว่าความหรูหราที่แท้จริงอยู่ที่รายละเอียดเล็กๆ การเตรียมพร้อมก่อนที่คุณจะร้องขอ และการแก้ปัญหาอย่างเงียบเชียบ
                         </p>
-                        <p class="font-sans text-gray-500 text-sm italic">
+                        <div class="text-gray-500 text-sm italic border-t border-white/10 pt-4">
                             "ความอบอุ่นเหมือนน้องชายที่คอยดูแล แบกหาม และอำนวยความสะดวก ให้คุณรู้สึกเหมือนอยู่บ้าน ไม่ว่าจะอยู่ที่ไหนในโลก"
-                        </p>
+                        </div>
                     </div>
                 </div>
 
@@ -207,125 +205,205 @@
 
     <section class="py-32 bg-dark-card border-t border-white/5 relative">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20">
-                <div data-aos="fade-right">
-                    <h2 class="font-serif text-6xl text-white mb-6">JAPAN LEGACY</h2>
-                    <p class="font-display text-gold text-xl tracking-widest mb-8">TOKYO &rarr; AOMORI</p>
-                    <p class="font-sans text-gray-400 text-lg leading-relaxed mb-10">
-                        ฤดูหนาวในญี่ปุ่นไม่ได้มีแค่หิมะ... มันคือเวลาที่วัฒนธรรมอันลึกซึ้งเปิดเผยตัวเองในรูปแบบที่บริสุทธิ์ที่สุด<br><br>
-                        เราจะพาคุณไปพักใน <strong>Private Ryokan</strong> ที่รับแขกเฉพาะผู้ได้รับการแนะนำ กินอาหาร <strong>Hidden Omakase</strong> ที่ปรุงด้วยวัตถุดิบท้องถิ่นหาทานยาก และสัมผัส <strong>Deep Culture</strong> ในอาโอโมริ
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+                
+                <div class="lg:col-span-5 sticky top-24" data-aos="fade-right">
+                    <span class="text-red-500 font-display tracking-widest text-sm block mb-4">WINTER 2025-2026</span>
+                    <h2 class="font-serif text-5xl md:text-7xl text-white mb-6 leading-none">JAPAN<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-200">LEGACY</span></h2>
+                    <p class="font-sans text-xl text-gray-400 mb-10 font-light leading-relaxed">
+                        จากแสงสีและความศิวิไลซ์ของ <strong>Tokyo</strong> สู่ความเงียบสงบและจิตวิญญาณแห่งหิมะที่ <strong>Aomori</strong><br><br>
+                        เราจะพาคุณไปพักใน <strong>Private Ryokan</strong> ที่รับแขกเฉพาะผู้ได้รับการแนะนำ กินอาหาร <strong>Hidden Omakase</strong> ที่ปรุงด้วยวัตถุดิบท้องถิ่นหาทานยาก และสัมผัสวัฒนธรรมในมิติที่คนส่วนใหญ่ไม่เคยเห็น
                     </p>
-
-                    <div class="bg-black border-l-4 border-gold p-8 rounded-r-lg">
-                        <h3 class="font-serif text-2xl text-white mb-4">กฎเหล็ก: 2 - 4 - 6</h3>
-                        <p class="font-sans text-gray-400 mb-6 italic">
-                            "เราปฏิเสธกลุ่มใหญ่ ไม่ใช่เพราะเราหยิ่ง แต่เพราะประตูบางบาน... เปิดให้เฉพาะคนกลุ่มเล็กเท่านั้น"
-                        </p>
-                        <ul class="space-y-4 font-sans text-sm">
-                            <li class="flex items-center text-gray-300">
-                                <span class="w-8 h-8 rounded-full bg-gold/20 text-gold flex items-center justify-center mr-4 font-bold">2</span>
-                                <span><strong>VVIP Privacy:</strong> การเดินทางแบบส่วนตัวที่สุด เหมาะสำหรับคู่รัก</span>
-                            </li>
-                            <li class="flex items-center text-white bg-gold/10 p-2 rounded">
-                                <span class="w-8 h-8 rounded-full bg-gold text-black flex items-center justify-center mr-4 font-bold">4</span>
-                                <span><strong>The Golden Ratio (แนะนำ):</strong> กลุ่มขนาดพอดีที่เหมาเคาน์เตอร์ร้านอาหารลับได้ทั้งร้าน โดยไม่ทำลายบรรยากาศ</span>
-                            </li>
-                            <li class="flex items-center text-gray-300">
-                                <span class="w-8 h-8 rounded-full bg-gold/20 text-gold flex items-center justify-center mr-4 font-bold">6</span>
-                                <span><strong>Maximum Limit:</strong> ขีดจำกัดสูงสุดที่เราจะดูแลได้ทั่วถึง *อาจต้องตัดบางสถานที่ที่รับคนได้น้อย</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 h-[700px]" data-aos="fade-left">
-                     <div class="col-span-2 row-span-2 relative rounded-lg overflow-hidden group">
-                        <img src="03.png" class="w-full h-full object-cover image-hover-zoom">
-                        <div class="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/90 to-transparent w-full">
-                            <span class="text-white font-serif text-2xl">Private Ryokan</span>
+                    
+                    <div class="bg-[#0A0A0A] border border-gold/20 p-8 rounded-sm shadow-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-20 h-20 bg-gold/5 rounded-bl-full"></div>
+                        <h4 class="font-serif text-gold text-2xl mb-6">กฎเหล็ก: 2 - 4 - 6</h4>
+                        <div class="space-y-6 font-sans text-gray-300">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 flex-shrink-0 bg-white/5 text-gold flex items-center justify-center rounded font-serif text-xl">2</div>
+                                <div>
+                                    <strong class="text-white block">VVIP Privacy</strong>
+                                    <p class="text-sm text-gray-500">การเดินทางแบบส่วนตัวที่สุด เหมาะสำหรับคู่รัก</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 bg-gold/5 -mx-4 px-4 py-3 rounded border-l-2 border-gold">
+                                <div class="w-10 h-10 flex-shrink-0 bg-gold text-black flex items-center justify-center rounded font-serif text-xl shadow-lg">4</div>
+                                <div>
+                                    <strong class="text-gold block">The Golden Ratio (แนะนำ)</strong>
+                                    <p class="text-sm text-gray-300">กลุ่มขนาดพอดีที่เหมาเคาน์เตอร์ร้านอาหารลับได้ทั้งร้าน โดยไม่ทำลายบรรยากาศ และนั่งรถตู้ได้สบายที่สุด</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 flex-shrink-0 bg-white/5 text-gold flex items-center justify-center rounded font-serif text-xl">6</div>
+                                <div>
+                                    <strong class="text-white block">Maximum Limit</strong>
+                                    <p class="text-sm text-gray-500">ขีดจำกัดสูงสุดที่เราดูแลได้ทั่วถึง *อาจต้องตัดบางสถานที่ที่รับคนได้น้อย</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                     <div class="relative rounded-lg overflow-hidden group">
-                        <img src="04.png" class="w-full h-full object-cover image-hover-zoom">
-                    </div>
-                     <div class="relative rounded-lg overflow-hidden group">
-                        <img src="05.png" class="w-full h-full object-cover image-hover-zoom">
-                    </div>
-                     <div class="col-span-2 relative rounded-lg overflow-hidden group">
-                        <img src="06.png" class="w-full h-full object-cover image-hover-zoom">
-                        <div class="absolute bottom-4 right-4 text-white font-serif text-lg">Members Only Bar</div>
+
+                    <div class="mt-10">
+                         <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="text-gold font-display text-lg hover:text-white transition flex items-center group tracking-widest">
+                            BOOK YOUR WINTER SEAT <span class="ml-4 transform group-hover:translate-x-2 transition text-2xl">→</span>
+                        </a>
                     </div>
                 </div>
+                
+                <div class="lg:col-span-7 grid grid-cols-2 gap-4 h-[800px]" data-aos="fade-left">
+                    <div class="col-span-2 row-span-2 relative rounded-lg overflow-hidden group cursor-pointer">
+                        <img src="03.png" class="w-full h-full object-cover image-hover-zoom">
+                        <div class="absolute bottom-0 left-0 p-8 bg-gradient-to-t from-black/90 to-transparent w-full">
+                            <span class="text-white font-serif text-3xl">Private Onsen Sanctuary</span>
+                            <p class="text-gray-400 text-sm font-sans mt-2">แช่น้ำแร่ท่ามกลางหิมะ ในพื้นที่ส่วนตัวที่ไร้ผู้คน</p>
+                        </div>
+                    </div>
+                    <div class="relative rounded-lg overflow-hidden group cursor-pointer">
+                        <img src="04.png" class="w-full h-full object-cover image-hover-zoom">
+                    </div>
+                    <div class="relative rounded-lg overflow-hidden group cursor-pointer">
+                        <img src="07.png" class="w-full h-full object-cover image-hover-zoom">
+                    </div>
+                    <div class="col-span-2 relative rounded-lg overflow-hidden group cursor-pointer h-64">
+                        <img src="05.png" class="w-full h-full object-cover image-hover-zoom">
+                        <div class="absolute top-4 left-4">
+                            <span class="text-white font-serif text-lg bg-black/50 px-4 py-2 rounded-sm backdrop-blur-md">Zao Snow Monsters</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <section class="py-32 relative bg-dark overflow-hidden">
-        <div class="absolute inset-0 opacity-30">
+    <section class="py-32 bg-[#050505] relative border-t border-white/5">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="font-serif text-3xl md:text-5xl text-white mb-6">ทำไม "SAN CHUAN" ถึงเป็นทางเลือกที่ฉลาดกว่า?</h2>
+                <p class="text-gray-500 font-sans text-lg">ตารางเปรียบเทียบสำหรับผู้ที่เห็นคุณค่าของ "เวลา" และ "ประสบการณ์"</p>
+            </div>
+
+            <div class="overflow-hidden shadow-2xl rounded-lg border border-white/5 bg-dark-card" data-aos="zoom-in">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr>
+                            <th class="p-8 bg-black text-gray-500 font-display text-xs tracking-widest w-1/4">FEATURE</th>
+                            <th class="p-8 bg-black text-gray-400 font-serif text-xl w-1/3 border-l border-white/5">Premium Tour</th>
+                            <th class="p-8 bg-gold/10 text-gold font-serif text-2xl w-1/3 border-l border-gold/30 relative overflow-hidden">
+                                SAN CHUAN
+                                <span class="text-xs block font-sans text-white mt-2 opacity-80 tracking-normal">The Inner Circle</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="font-sans text-base divide-y divide-white/5">
+                        <tr>
+                            <td class="p-8 text-gray-300 font-medium">การเข้าถึง (Access)</td>
+                            <td class="p-8 text-gray-500 border-l border-white/5">ร้านมิชลินทั่วไป (ใครจองก็ได้)</td>
+                            <td class="p-8 text-white border-l border-gold/20 font-medium bg-gold/5">
+                                <span class="text-gold text-xl block mb-1">"ร้านลับของคนท้องถิ่น"</span>
+                                <span class="text-sm text-gray-400">Member Only & Invite Only</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-8 text-gray-300 font-medium">ผู้นำทาง (The Guide)</td>
+                            <td class="p-8 text-gray-500 border-l border-white/5">ไกด์อาชีพ (ทำตามหน้าที่/เวลา)</td>
+                            <td class="p-8 text-white border-l border-gold/20 font-medium bg-gold/5">
+                                <span class="text-gold text-xl block mb-1">"เพื่อนระดับ VIP"</span>
+                                <span class="text-sm text-gray-400">เชฟดัง & เจ้าบ้าน ดูแลด้วยใจ 24 ชม.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-8 text-gray-300 font-medium">ความยืดหยุ่น (Flexibility)</td>
+                            <td class="p-8 text-gray-500 border-l border-white/5">ตารางเป๊ะ เปลี่ยนไม่ได้</td>
+                            <td class="p-8 text-white border-l border-gold/20 font-medium bg-gold/5">
+                                <span class="text-gold text-xl block mb-1">"ตามใจคุณ 100%"</span>
+                                <span class="text-sm text-gray-400">ตื่นสายได้ เปลี่ยนร้านได้ ไร้กฎเกณฑ์</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-8 text-gray-300 font-medium">ความรู้สึก (Feeling)</td>
+                            <td class="p-8 text-gray-500 border-l border-white/5">นักท่องเที่ยว (Tourist)</td>
+                            <td class="p-8 text-white border-l border-gold/20 font-medium bg-gold/5 shadow-[inset_0_0_30px_rgba(212,175,55,0.1)]">
+                                <span class="text-gold text-2xl font-serif">"เจ้าของบ้าน" (The Owner)</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-40 relative bg-dark overflow-hidden border-t border-crimson/30">
+        <div class="absolute inset-0 opacity-40">
             <img src="12.png" class="w-full h-full object-cover mix-blend-overlay animate-pulse">
         </div>
-        <div class="absolute inset-0 bg-gradient-to-r from-crimson/10 via-black/90 to-black"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-transparent"></div>
         
         <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                
-                <div class="order-2 lg:order-1" data-aos="fade-right">
-                    <span class="text-crimson font-display tracking-widest text-lg mb-2 block">COMING 2026</span>
-                    <h2 class="font-serif text-5xl md:text-7xl text-white mb-8">THE SILK ROAD<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">XI'AN LEGACY</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+                <div class="relative group" data-aos="zoom-in-right">
+                    <div class="aspect-[3/4] rounded-sm overflow-hidden border border-gold/30 shadow-[0_0_100px_rgba(138,10,10,0.5)] relative">
+                        <img src="11.png" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000 filter contrast-110 saturate-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-crimson/60 to-transparent opacity-40 group-hover:opacity-20 transition duration-700"></div>
+                        
+                        <div class="absolute bottom-8 left-0 w-full text-center">
+                            <span class="text-white font-serif text-4xl tracking-widest drop-shadow-2xl">NANA</span>
+                            <span class="block text-gold font-display text-sm mt-2 tracking-[0.3em]">THE EMPRESS OF SILK ROAD</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-aos="fade-left">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="h-[1px] w-20 bg-gradient-to-r from-transparent to-gold"></div>
+                        <span class="text-gold font-display tracking-[0.3em] text-lg">THE NEXT CHAPTER 2026</span>
+                    </div>
+                    <h2 class="font-serif text-6xl md:text-8xl text-white mb-10 leading-tight">XI'AN<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-800">ELITE ACCESS</span></h2>
                     
-                    <div class="space-y-8 font-sans text-gray-300 text-lg mb-12 leading-relaxed">
+                    <div class="space-y-8 font-sans text-gray-300 text-lg mb-16 leading-relaxed">
                         <p>
-                            หลังจากญี่ปุ่น... เราจะเปิดประตูสู่อีกหนึ่งตำนาน นั่นคือ <strong>China Silk Road</strong> เส้นทางสายไหมที่เชื่อมโยงอารยธรรมตะวันออก
+                            เตรียมพบกับการเปิดตัวเส้นทางสายไหมสู่จีนแผ่นดินใหญ่ นำทัพโดย <strong>"Nana"</strong> นักแสดงสาวและเจ้าบ้านผู้ทรงอิทธิพลแห่งซีอาน
                         </p>
-                        <div class="bg-black/60 border-l-4 border-crimson p-6">
-                            <h4 class="text-white font-serif text-xl mb-2">นำทีมโดย Nana (Celebrity Icon)</h4>
-                            <p class="text-gray-400 text-sm">
-                                "Nana ไม่ใช่ไกด์ธรรมดา เธอคือไอคอนที่มีชื่อเสียงในวงการบันเทิงจีน เธอจะพาคุณเดินผ่านกำแพงเมืองจีนในจุดที่ไม่มีนักท่องเที่ยว ดื่มชากับครอบครัวขุนนางเก่าแก่ และเปิดประตูที่ปิดตายมานานหลายศตวรรษ"
+                        <div class="border-l-4 border-crimson pl-8 py-4 bg-gradient-to-r from-crimson/10 to-transparent">
+                            <h4 class="text-white font-serif text-2xl mb-2">"ELITE ACCESS"</h4>
+                            <p class="text-gray-400">
+                                คุณจะได้เข้าถึงสถานที่ประวัติศาสตร์แบบ Private เดินเที่ยวกับคนดัง กินร้านที่ดาราเท่านั้นที่รู้จัก และได้รับการต้อนรับที่คุณจะรู้สึกเหมือนเป็น <strong>"ราชนิกุล"</strong> ที่กลับบ้าน
                             </p>
                         </div>
                     </div>
 
-                    <button class="px-12 py-4 border border-crimson text-crimson font-display tracking-widest hover:bg-crimson hover:text-white transition duration-500">
-                        JOIN THE WAITLIST
+                    <button class="px-16 py-5 bg-gradient-to-r from-crimson to-red-950 text-white font-display font-bold tracking-widest hover:from-red-600 hover:to-red-800 transition shadow-[0_0_40px_rgba(220,20,60,0.4)] rounded-sm border border-red-500/30 transform hover:-translate-y-1">
+                        WAITLIST OPENING SOON
                     </button>
                 </div>
-
-                <div class="order-1 lg:order-2 relative" data-aos="zoom-in">
-                    <div class="aspect-[3/4] rounded-lg overflow-hidden border border-gold/20 shadow-[0_0_60px_rgba(138,10,10,0.4)]">
-                        <img src="11.png" class="w-full h-full object-cover filter contrast-110 saturate-110 transform hover:scale-105 transition duration-1000">
-                    </div>
-                </div>
-
             </div>
         </div>
     </section>
 
-    <footer class="py-32 bg-black relative overflow-hidden text-center">
-        <div class="absolute inset-0 opacity-10">
+    <footer class="py-40 text-center bg-black relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
             <img src="13.png" class="w-full h-full object-cover">
         </div>
         <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/90"></div>
         
-        <div class="relative z-10 max-w-4xl mx-auto px-6" data-aos="fade-up">
+        <div class="relative z-10 max-w-5xl mx-auto px-6" data-aos="fade-up">
             <h2 class="font-serif text-4xl md:text-6xl text-white mb-12 leading-snug drop-shadow-2xl">
                 "เงินซื้อทริปได้...<br>แต่ซื้อ <span class="text-gold italic">ตำนาน</span> ไม่ได้"
             </h2>
             
-            <p class="font-sans text-gray-400 text-lg mb-8 max-w-2xl mx-auto">
-                คุณสามารถจองตั๋วเครื่องบินชั้นธุรกิจไปไหนก็ได้ จ่ายเงินเพื่อเข้าพักในสวีทที่หรูหราที่สุด...<br>
-                แต่คุณไม่สามารถซื้อความรู้สึกที่เจ้าของร้านอาหารที่ไม่เคยรับแขกใหม่ เปิดประตูต้อนรับคุณด้วยรอยยิ้ม<br>
-                <strong>เพราะคุณมากับครอบครัว San Chuan</strong>
+            <p class="font-sans text-gray-400 text-xl mb-10 max-w-3xl mx-auto font-light leading-relaxed">
+                คุณสามารถจองตั๋วเครื่องบินชั้นธุรกิจไปไหนก็ได้ จ่ายเงินเพื่อเข้าพักในสวีทที่หรูหราที่สุด...
+                แต่คุณไม่สามารถซื้อความรู้สึกที่เจ้าของร้านอาหารที่ไม่เคยรับแขกใหม่ เปิดประตูต้อนรับคุณด้วยรอยยิ้ม
             </p>
-            
-            <p class="font-display text-gold text-sm tracking-[0.3em] mb-16">WELCOME TO THE FAMILY</p>
+            <p class="font-serif text-gold text-2xl mb-16">"เพราะคุณมากับครอบครัว San Chuan"</p>
 
-            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="inline-block bg-gold text-dark font-bold py-6 px-24 rounded-sm hover:bg-white hover:scale-105 transition duration-300 shadow-[0_0_50px_rgba(212,175,55,0.4)] text-xl font-display tracking-wider">
+            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="inline-block bg-gold text-dark font-bold py-6 px-24 rounded-sm hover:bg-white hover:scale-105 transition duration-300 shadow-[0_0_60px_rgba(212,175,55,0.4)] text-xl font-display tracking-wider">
                 RESERVE YOUR LEGACY
             </a>
             
-            <div class="mt-24 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 font-display tracking-widest uppercase">
+            <div class="mt-32 border-t border-white/5 pt-10 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 font-display tracking-widest uppercase">
                 <p>San Chuan Private Journeys &copy; 2025</p>
-                <p>Crafted for the Inner Circle</p>
+                <p>By Invitation Only | Crafted for the Inner Circle</p>
             </div>
         </div>
     </footer>
@@ -336,7 +414,7 @@
             offset: 50,
             duration: 1200,
             once: true,
-            easing: 'ease-out-cubic',
+            easing: 'ease-out-quart',
         });
     </script>
 </body>
