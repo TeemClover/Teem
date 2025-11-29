@@ -29,8 +29,8 @@
                         display: ['"Cinzel"', 'serif'],
                         sans: ['"Prompt"', 'sans-serif'],
                     },
-                    backgroundImage: {
-                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(212, 175, 55, 0.15)',
                     }
                 }
             }
@@ -38,70 +38,77 @@
     </script>
 
     <style>
-        ::-webkit-scrollbar { width: 6px; }
+        /* Luxury Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #8E7224, #D4AF37); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #8E7224, #D4AF37); border-radius: 4px; }
         
-        .text-glow { text-shadow: 0 0 25px rgba(212,175,55,0.4); }
+        /* Animations */
+        @keyframes slowZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .animate-zoom { animation: slowZoom 20s infinite alternate; }
+        
+        .text-gradient-gold {
+            background: linear-gradient(to right, #D4AF37, #F9E59D, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+        }
+        
         .image-hover-zoom { transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .image-hover-zoom:hover { transform: scale(1.05); }
-        
-        @keyframes slowPan {
-            0% { transform: scale(1.1); }
-            100% { transform: scale(1.0); }
-        }
-        .animate-pan { animation: slowPan 20s infinite alternate; }
+
+        @keyframes shine { to { background-position: 200% center; } }
+        .text-glow { text-shadow: 0 0 25px rgba(212,175,55,0.4); }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold selection:text-black">
 
     <header class="relative h-screen w-full flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <img src="01.png" class="w-full h-full object-cover opacity-70 animate-pan" alt="Japan Winter">
-            <div class="absolute inset-0 bg-gradient-to-t from-dark via-black/40 to-black/60"></div>
+            <img src="01.png" class="w-full h-full object-cover opacity-60 animate-zoom" alt="Japan Winter">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-dark"></div>
         </div>
 
         <div class="relative z-10 text-center px-4 max-w-6xl mx-auto" data-aos="fade-up" data-aos-duration="1500">
-            <div class="inline-flex items-center gap-2 border border-gold/40 px-6 py-2 mb-8 rounded-full bg-black/60 backdrop-blur-md">
-                <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
-                <span class="text-gold font-display tracking-[0.3em] text-xs font-bold">BY INVITATION ONLY</span>
+            <div class="border border-gold/30 inline-block px-6 py-2 mb-8 rounded-full bg-black/60 backdrop-blur-md">
+                <span class="text-gold font-display tracking-[0.3em] text-sm">BY INVITATION ONLY</span>
             </div>
             <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-6 leading-none tracking-tight text-glow">
                 SAN CHUAN
             </h1>
-            <p class="font-display text-gold-light text-xl md:text-3xl tracking-[0.2em] uppercase mb-10 border-y border-gold/30 py-6 mx-auto max-w-4xl">
+            <p class="font-display text-gold-light text-xl md:text-3xl tracking-[0.2em] uppercase mb-10 border-y border-gold/20 py-6 mx-auto max-w-4xl">
                 The Private Club That Moves
             </p>
             <p class="font-sans font-light text-gray-200 text-lg md:text-2xl max-w-3xl mx-auto mb-16 leading-relaxed drop-shadow-lg">
-                "เลิกเป็นแค่นักท่องเที่ยว... แต่จงมาเป็น <strong>'แขกคนสำคัญของประเทศ'</strong>"<br>
-                สัมผัสโลกในมุมมองที่มหาเศรษฐียังต้องอิจฉา
+                "ไม่ใช่บริษัททัวร์ แต่คือไพรเวทคลับที่เคลื่อนที่ได้"<br>
+                เปลี่ยนคุณจาก 'นักท่องเที่ยว' ให้กลายเป็น <strong>'แขกคนสำคัญของประเทศ'</strong>
             </p>
-            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="group relative inline-flex items-center justify-center px-12 py-4 overflow-hidden font-display font-bold tracking-widest text-white bg-transparent border-2 border-gold rounded-sm transition-all duration-300 hover:bg-gold hover:text-black focus:outline-none shadow-[0_0_30px_rgba(212,175,55,0.3)]">
+            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="group relative inline-flex items-center justify-center px-10 py-4 overflow-hidden font-display font-bold tracking-widest text-white bg-transparent border-2 border-gold rounded-sm transition-all duration-300 hover:bg-gold hover:text-black focus:outline-none shadow-glow hover:shadow-[0_0_40px_rgba(212,175,55,0.6)]">
                 <span class="relative">REQUEST ACCESS</span>
             </a>
-        </div>
-        
-        <div class="absolute bottom-10 w-full text-center animate-bounce">
-            <p class="text-gold/60 text-xs font-display tracking-[0.3em]">SCROLL TO ENTER THE INNER CIRCLE</p>
         </div>
     </header>
 
     <section class="py-32 px-6 bg-dark-card relative border-b border-white/5">
         <div class="absolute inset-0 opacity-10 bg-[url('13.png')] bg-fixed bg-cover mix-blend-overlay"></div>
         
-        <div class="max-w-5xl mx-auto text-center relative z-10" data-aos="fade-up">
+        <div class="max-w-6xl mx-auto text-center relative z-10" data-aos="fade-up">
             <h2 class="font-serif text-4xl md:text-5xl text-gold mb-10 leading-tight">"ความหรูหราที่แท้จริง... ไม่ใช่สิ่งของ<br>แต่มันคือ <span class="text-white">การได้รับการยอมรับ</span>"</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 text-left mt-16">
-                <div class="bg-white/5 p-10 border-l-2 border-gold backdrop-blur-sm">
+                <div class="bg-white/5 p-10 border-l-2 border-gold backdrop-blur-sm shadow-lg transform hover:-translate-y-2 transition duration-500">
                     <h3 class="font-display text-gold text-xl mb-4 tracking-widest">NOT A TOURIST</h3>
-                    <p class="font-sans text-gray-400 leading-relaxed">
+                    <p class="font-sans text-gray-400 leading-relaxed text-lg">
                         คนรวยทั่วไปจ่ายเงินแสนเพื่อโรงแรมหรู แต่เมื่อเดินออกมาข้างนอก พวกเขาก็ยังเป็นแค่ "นักท่องเที่ยว" ที่พูดภาษาไม่ได้ ยืนงงในดงร้านอาหาร และเข้าไม่ถึงจิตวิญญาณที่แท้จริง
                     </p>
                 </div>
-                <div class="bg-white/5 p-10 border-r-2 border-gold backdrop-blur-sm text-right">
+                <div class="bg-white/5 p-10 border-r-2 border-gold backdrop-blur-sm text-right shadow-lg transform hover:-translate-y-2 transition duration-500">
                     <h3 class="font-display text-gold text-xl mb-4 tracking-widest">BUT A LOCAL VIP</h3>
-                    <p class="font-sans text-gray-400 leading-relaxed">
+                    <p class="font-sans text-gray-400 leading-relaxed text-lg">
                         แต่กับ <strong>San Chuan</strong> คุณคือ "เพื่อนของเจ้าถิ่นระดับสูง" คุณจะเดินเข้าร้านลับที่จองไม่ได้ด้วยการต้อนรับจากเชฟ คุณจะได้รับการดูแลแบบ VVIP จากคนในพื้นที่ ไม่ใช่เพราะเงิน แต่เพราะ "Connection" ของเรา
                     </p>
                 </div>
@@ -109,55 +116,57 @@
         </div>
     </section>
 
-    <section class="py-32 bg-black relative overflow-hidden">
+    <section class="py-32 bg-dark relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gold/5 via-dark to-dark opacity-30"></div>
+        
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="text-center mb-20" data-aos="fade-up">
-                <span class="text-gold font-display tracking-[0.3em] text-sm">THE GUARDIANS</span>
-                <h2 class="font-serif text-4xl md:text-6xl text-white mt-4 mb-6">3 เสาหลักแห่งอาณาจักร</h2>
+                <h2 class="font-serif text-4xl md:text-5xl text-gradient-gold mb-6">THE LIVING LEGENDS</h2>
                 <p class="font-sans text-gray-400 text-lg max-w-3xl mx-auto">
-                    ทีมงาน 3 คน ที่จะทุ่มเททุกทรัพยากรเพื่อดูแลคณะของคุณเพียง 2-6 ท่าน<br>นี่คืออัตราส่วนการดูแล (Staff-to-Guest Ratio) ที่หาไม่ได้จากที่ไหนในโลก
+                    เราไม่ใช่ไกด์ทัวร์ แต่เราคือ <strong>"ตำนานที่มีชีวิต"</strong> ในแต่ละพื้นที่<br>
+                    ทีมงาน 3 คน ที่จะทุ่มเททุกทรัพยากรเพื่อดูแลคณะของคุณเพียง 2-6 ท่าน
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8">
                 
-                <div class="group relative lg:-mt-16" data-aos="fade-up" data-aos-delay="200">
-                    <div class="aspect-[3/4] overflow-hidden rounded-sm border-2 border-gold shadow-[0_0_40px_rgba(212,175,55,0.3)] transition duration-500">
-                        <img src="08.png" class="w-full h-full object-cover transition duration-700 scale-100 group-hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
+                <div class="group relative" data-aos="fade-up" data-aos-delay="0">
+                    <div class="aspect-[3/4] overflow-hidden rounded-lg border-2 border-white/10 group-hover:border-gold transition duration-500 shadow-2xl">
+                        <img src="08.png" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-700 scale-100 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
                         <div class="absolute bottom-0 left-0 p-8 w-full">
-                            <span class="text-gold font-display tracking-widest text-sm block mb-2">THE HOST</span>
-                            <h3 class="font-serif text-4xl text-white mb-4">Teem</h3>
-                            <p class="text-gray-300 font-sans text-sm leading-relaxed">
-                                "นักวางแผนผู้เดินทางมาแล้วทุกทวีปทั่วโลก ผู้อยู่เบื้องหลังความไร้รอยต่อของทุกทริป ดีลเลอร์ที่เจรจาได้ทุกสิ่งเพื่อให้คุณได้รับสิ่งที่คุ้มค่าที่สุด"
+                            <span class="text-gold font-display tracking-widest text-sm block mb-2">THE ARCHITECT</span>
+                            <h3 class="font-serif text-3xl text-white mb-4">Teem</h3>
+                            <p class="text-gray-300 font-sans text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition duration-500 transform translate-y-4 group-hover:translate-y-0">
+                                "นักวางแผนผู้พิชิตมาแล้วทุกทวีปทั่วโลก ผู้อยู่เบื้องหลังความสำเร็จของทุกการเดินทาง ดีลเลอร์ที่เจรจาได้ทุกสิ่งเพื่อให้คุณได้รับสิ่งที่คุ้มค่าที่สุด"
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="group relative lg:-mt-16" data-aos="fade-up" data-aos-delay="200">
-                    <div class="aspect-[3/4] overflow-hidden rounded-sm border-2 border-gold shadow-[0_0_40px_rgba(212,175,55,0.3)] transition duration-500">
+                <div class="group relative lg:-mt-12" data-aos="fade-up" data-aos-delay="200">
+                    <div class="aspect-[3/4] overflow-hidden rounded-lg border-2 border-gold/50 shadow-[0_0_30px_rgba(212,175,55,0.2)] transition duration-500">
                         <img src="09.png" class="w-full h-full object-cover transition duration-700 scale-100 group-hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
                         <div class="absolute bottom-0 left-0 p-8 w-full">
                             <span class="text-gold font-display tracking-widest text-sm block mb-2">THE INSIDER</span>
                             <h3 class="font-serif text-4xl text-white mb-4">Chieko</h3>
                             <p class="text-gray-300 font-sans text-sm leading-relaxed">
-                                "เจ้าบ้านตัวจริง เชฟและนักชิมชื่อดังของไทย ลูกครึ่งญี่ปุ่นผู้กุมกุญแจสู่ร้านลับ เธอไม่ได้มาบริการ แต่มา 'ต้อนรับ' คุณสู่บ้านของเธอด้วยหัวใจ"
+                                "เชฟและนักชิมชื่อดังเจ้าของ 'Ako so Hungry' ลูกครึ่งญี่ปุ่นผู้กุมหัวใจของร้านอาหารลับ เธอจะเปลี่ยนมื้ออาหารธรรมดาให้เป็นความทรงจำชั่วชีวิต"
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="group relative lg:-mt-16" data-aos="fade-up" data-aos-delay="200">
-                    <div class="aspect-[3/4] overflow-hidden rounded-sm border-2 border-gold shadow-[0_0_40px_rgba(212,175,55,0.3)] transition duration-500">
-                        <img src="10.png" class="w-full h-full object-cover transition duration-700 scale-100 group-hover:scale-105">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
+                <div class="group relative" data-aos="fade-up" data-aos-delay="400">
+                    <div class="aspect-[3/4] overflow-hidden rounded-lg border-2 border-white/10 group-hover:border-gold transition duration-500 shadow-2xl">
+                        <img src="10.png" class="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition duration-700 scale-100 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
                         <div class="absolute bottom-0 left-0 p-8 w-full">
-                            <span class="text-gold font-display tracking-widest text-sm block mb-2">THE BUTLER</span>
-                            <h3 class="font-serif text-4xl text-white mb-4">Roykeane</h3>
-                            <p class="text-gray-300 font-sans text-sm leading-relaxed">
-                                "น้องชายผู้แข็งขันและใส่ใจ พร้อมดูแล แบกหาม ขับรถ และอำนวยความสะดวกทุกย่างก้าว ด้วยรอยยิ้มและความเต็มใจระดับสูงสุด"
+                            <span class="text-gold font-display tracking-widest text-sm block mb-2">THE ROYAL BUTLER</span>
+                            <h3 class="font-serif text-3xl text-white mb-4">Keen</h3>
+                            <p class="text-gray-300 font-sans text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition duration-500 transform translate-y-4 group-hover:translate-y-0">
+                                "น้องชายผู้แข็งขันและใส่ใจ พร้อมดูแล แบกหาม และอำนวยความสะดวกทุกย่างก้าว ด้วยหัวใจของการบริการที่หาไม่ได้จากที่ไหน"
                             </p>
                         </div>
                     </div>
@@ -280,6 +289,13 @@
                             <td class="p-6 text-gray-500 border-l border-white/5">ตารางเป๊ะ เปลี่ยนไม่ได้</td>
                             <td class="p-6 text-white border-l border-gold/20 font-medium bg-gold/5">
                                 <span class="text-gold text-lg">"ตามใจคุณ 100%"</span><br>ตื่นสายได้ เปลี่ยนร้านได้ ไร้กฎเกณฑ์
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="p-6 text-gray-300 font-medium">ความปลอดภัย (Safety)</td>
+                            <td class="p-6 text-center text-gray-500 bg-white/5 border-x border-white/10">ประกันการเดินทางทั่วไป</td>
+                            <td class="p-6 text-center text-white bg-gold/5 border-x border-gold/20 font-medium">
+                                <span class="text-gold">"การคุ้มครองระดับครอบครัว"</span><br>มีทีม Support ดูแลประกบ 24/7
                             </td>
                         </tr>
                         <tr class="hover:bg-white/5 transition">
