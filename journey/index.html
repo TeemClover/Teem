@@ -39,22 +39,31 @@
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
-        .text-glow { text-shadow: 0 0 20px rgba(212,175,55,0.3); }
+        
+        .image-glow { box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+        .text-shadow-gold { text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3); }
+        
+        /* Custom Animation for Hero Image */
+        @keyframes slowZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+        .animate-zoom { animation: slowZoom 20s infinite alternate; }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-gold selection:text-black">
 
     <header class="relative h-screen w-full flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <img src="https://placehold.co/1920x1080/000/333?text=Japan+Winter+Epic+Landscape" class="w-full h-full object-cover opacity-50 scale-105 animate-[pulse_15s_infinite]" alt="Background">
-            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-dark"></div>
+            <img src="01.png" class="w-full h-full object-cover opacity-60 animate-zoom" alt="Japan Winter">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-dark"></div>
         </div>
 
         <div class="relative z-10 text-center px-4" data-aos="fade-up" data-aos-duration="1500">
             <div class="border border-gold/30 inline-block px-4 py-1 mb-6 rounded-full bg-black/50 backdrop-blur-sm">
                 <span class="text-gold font-display tracking-[0.2em] text-xs md:text-sm">BY INVITATION ONLY</span>
             </div>
-            <h1 class="font-serif text-5xl md:text-7xl lg:text-9xl font-bold text-white mb-4 leading-tight tracking-tight">
+            <h1 class="font-serif text-5xl md:text-7xl lg:text-9xl font-bold text-white mb-4 leading-tight tracking-tight text-shadow-gold">
                 SAN CHUAN
             </h1>
             <p class="font-display text-gold text-lg md:text-2xl tracking-[0.3em] uppercase mb-8 border-y border-gold/20 py-4">
@@ -64,27 +73,37 @@
                 "ไม่ใช่บริษัททัวร์ แต่คือไพรเวทคลับที่เคลื่อนที่ได้"<br>
                 สัมผัสโลกในแบบที่ <strong>'คนวงใน'</strong> เท่านั้นที่ได้รับอนุญาต
             </p>
-            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-display font-medium tracking-tighter text-white bg-transparent border border-gold rounded-sm transition-all duration-300 hover:bg-gold hover:text-black focus:outline-none">
+            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="group relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-display font-medium tracking-tighter text-white bg-transparent border border-gold rounded-sm transition-all duration-300 hover:bg-gold hover:text-black focus:outline-none shadow-[0_0_20px_rgba(212,175,55,0.2)]">
                 <span class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-700"></span>
                 <span class="relative">REQUEST ACCESS</span>
             </a>
         </div>
     </header>
 
-    <section class="py-24 px-6 md:px-20 bg-dark-card border-y border-white/5">
-        <div class="max-w-5xl mx-auto text-center" data-aos="fade-up">
-            <h2 class="font-serif text-3xl md:text-5xl text-gold mb-8">"เพื่อนรวย... พาเพื่อนเที่ยว"</h2>
-            <p class="font-sans text-gray-400 text-lg leading-relaxed max-w-3xl mx-auto">
-                คุณเคยพักโรงแรมคืนละแสน แต่ยังรู้สึกเป็น "คนนอก" ไหม?<br><br>
-                ที่ <strong>San Chuan</strong> เราไม่ขายตั๋วเครื่องบิน เราไม่ขายห้องพัก<br>
-                สิ่งที่เราขายคือ <strong>"สถานะ" (Status)</strong> และ <strong>"การเข้าถึง" (Access)</strong><br><br>
-                เราคือกลุ่มเพื่อนที่มี Connection ระดับสูงในญี่ปุ่นและจีน ที่พร้อมจะเปิดประตูบ้านต้อนรับคุณ<br>
-                พาคุณไปนั่งกินข้าวกับเชฟระดับตำนาน แช่ออนเซ็นในที่ลับตาคน และดูแลคุณดุจญาติมิตร
-            </p>
+    <section class="py-24 px-6 md:px-20 bg-dark-card border-y border-white/5 relative">
+        <div class="absolute inset-0 opacity-10 bg-[url('13.png')] bg-cover mix-blend-overlay pointer-events-none"></div>
+        
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative z-10">
+            <div data-aos="fade-right">
+                <h2 class="font-serif text-3xl md:text-5xl text-gold mb-8">"เพื่อนรวย... พาเพื่อนเที่ยว"</h2>
+                <div class="w-20 h-1 bg-gold mb-8"></div>
+                <p class="font-sans text-gray-400 text-lg leading-relaxed mb-6">
+                    คุณเคยพักโรงแรมคืนละแสน แต่ยังรู้สึกเป็น "คนนอก" ไหม?<br><br>
+                    ที่ <strong>San Chuan</strong> เราไม่ขายตั๋วเครื่องบิน เราไม่ขายห้องพัก<br>
+                    สิ่งที่เราขายคือ <strong>"สถานะ" (Status)</strong> และ <strong>"การเข้าถึง" (Access)</strong>
+                </p>
+                <p class="font-sans text-gray-300 text-lg leading-relaxed font-medium">
+                    เราพาคุณเดินเข้าประตูหลังร้านอาหารระดับตำนาน นั่งดื่มชากับเจ้าของเรียวกังเก่าแก่ และได้รับการต้อนรับดุจญาติมิตร ไม่ใช่ในฐานะนักท่องเที่ยว แต่ในฐานะ <strong>"แขกคนสำคัญของตระกูล"</strong>
+                </p>
+            </div>
+            <div class="relative h-[600px] group" data-aos="fade-left">
+                <div class="absolute inset-0 border border-gold/20 translate-x-4 translate-y-4 transition duration-500 group-hover:translate-x-2 group-hover:translate-y-2"></div>
+                <img src="02.png" class="w-full h-full object-cover rounded-sm shadow-2xl filter brightness-90 group-hover:brightness-105 transition duration-700">
+            </div>
         </div>
     </section>
 
-    <section class="py-24 relative overflow-hidden">
+    <section class="py-24 relative overflow-hidden bg-[#080808]">
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
                 <div class="lg:col-span-4 flex flex-col justify-center" data-aos="fade-right">
@@ -95,7 +114,7 @@
                         ทริปที่ถูกออกแบบมาเพื่อคู่รักและกลุ่มเพื่อนที่ต้องการ "เวลาคุณภาพ" อย่างแท้จริง
                     </p>
                     
-                    <div class="bg-white/5 border-l-2 border-gold p-6 mb-8 backdrop-blur-sm">
+                    <div class="bg-white/5 border-l-2 border-gold p-6 mb-8 backdrop-blur-sm shadow-lg">
                         <h4 class="font-serif text-gold text-xl mb-2">กติกาของคลับ: จำนวนคน</h4>
                         <ul class="space-y-3 font-sans text-sm text-gray-300">
                             <li class="flex items-start"><span class="text-gold mr-2">✦</span> <strong>2 ท่าน:</strong> VVIP ส่วนตัวที่สุด อิสระไร้ขีดจำกัด</li>
@@ -109,41 +128,45 @@
                     </a>
                 </div>
 
-                <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4 h-[600px]" data-aos="fade-left">
-                    <div class="col-span-2 row-span-2 relative overflow-hidden rounded-sm group">
-                        <img src="https://placehold.co/800x800/222/fff?text=Private+Ryokan+Snow" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
-                        <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-t from-black/80 to-transparent w-full">
-                            <span class="text-white font-serif text-lg">Private Ryokan</span>
+                <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-4 h-auto md:h-[600px]" data-aos="fade-left">
+                    <div class="col-span-2 row-span-2 relative overflow-hidden rounded-sm group cursor-pointer">
+                        <img src="03.png" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                        <div class="absolute bottom-0 left-0 p-4 bg-gradient-to-t from-black/90 to-transparent w-full opacity-0 group-hover:opacity-100 transition duration-300">
+                            <span class="text-white font-serif text-lg tracking-wide">Private Onsen in Snow</span>
                         </div>
                     </div>
-                    <div class="relative overflow-hidden rounded-sm group">
-                        <img src="https://placehold.co/400x400/333/fff?text=Omakase+Chef" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                    <div class="relative overflow-hidden rounded-sm group cursor-pointer">
+                        <img src="04.png" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
                     </div>
-                    <div class="relative overflow-hidden rounded-sm group">
-                        <img src="https://placehold.co/400x400/444/fff?text=Snow+Monster" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                    <div class="relative overflow-hidden rounded-sm group cursor-pointer">
+                        <img src="05.png" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
                     </div>
-                    <div class="col-span-2 md:col-span-1 relative overflow-hidden rounded-sm group">
-                        <img src="https://placehold.co/400x400/555/fff?text=Hidden+Bar" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                    <div class="col-span-2 md:col-span-1 relative overflow-hidden rounded-sm group cursor-pointer">
+                        <img src="06.png" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
                     </div>
-                    <div class="relative overflow-hidden rounded-sm group md:hidden lg:block">
-                        <img src="https://placehold.co/400x400/666/fff?text=Sake+Tasting" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                    <div class="relative overflow-hidden rounded-sm group cursor-pointer md:hidden lg:block">
+                        <img src="07.png" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-32 relative bg-dark">
-        <div class="absolute inset-0 opacity-20 bg-[url('https://placehold.co/1920x1080/8a0a0a/000?text=Pattern')] bg-fixed"></div>
+    <section class="py-32 relative bg-dark overflow-hidden">
+        <div class="absolute inset-0 opacity-40">
+            <img src="12.png" class="w-full h-full object-cover mix-blend-overlay">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
         
         <div class="max-w-7xl mx-auto px-6 relative z-10">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 <div class="relative" data-aos="zoom-in-right">
-                    <div class="aspect-[3/4] rounded-lg overflow-hidden border border-gold/30 shadow-[0_0_50px_rgba(138,10,10,0.3)]">
-                        <img src="https://placehold.co/600x800/111/fff?text=Nana+(The+Empress)" class="w-full h-full object-cover">
+                    <div class="aspect-[3/4] rounded-lg overflow-hidden border border-gold/30 shadow-[0_0_50px_rgba(138,10,10,0.4)] relative group">
+                        <img src="11.png" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-1000">
+                        <div class="absolute inset-0 bg-gradient-to-t from-crimson/40 to-transparent opacity-60"></div>
                     </div>
-                    <div class="absolute -bottom-10 -right-10 w-40 h-40 border border-gold/50 hidden md:block"></div>
-                    <div class="absolute top-10 -left-10 w-20 h-20 bg-crimson/20 hidden md:block backdrop-blur-md"></div>
+                    <div class="absolute -bottom-6 -right-6 w-32 h-32 border-r-2 border-b-2 border-gold/50 hidden md:block"></div>
+                    <div class="absolute -top-6 -left-6 w-32 h-32 border-l-2 border-t-2 border-gold/50 hidden md:block"></div>
                 </div>
 
                 <div data-aos="fade-left">
@@ -151,14 +174,14 @@
                         <div class="h-[1px] w-12 bg-gold"></div>
                         <span class="text-gold font-display tracking-widest">THE SILK ROAD 2026</span>
                     </div>
-                    <h2 class="font-serif text-5xl text-white mb-6">XI'AN & BEYOND</h2>
-                    <p class="font-sans text-gray-300 text-lg mb-8 leading-relaxed">
+                    <h2 class="font-serif text-5xl text-white mb-6 leading-tight">XI'AN & BEYOND<br><span class="text-crimson">THE EMPRESS JOURNEY</span></h2>
+                    <p class="font-sans text-gray-300 text-lg mb-8 leading-relaxed font-light">
                         เตรียมพบกับการเปิดตัวเส้นทางสายไหมสู่จีนแผ่นดินใหญ่ นำทัพโดย <strong>"Nana"</strong>
                     </p>
                     
-                    <div class="bg-white/5 p-8 rounded-sm border-l-4 border-crimson mb-8">
+                    <div class="bg-black/40 p-8 rounded-sm border-l-4 border-crimson mb-8 backdrop-blur-md">
                         <h3 class="font-serif text-xl text-white mb-2">ทำไมต้องไปกับ Nana?</h3>
-                        <p class="font-sans text-gray-400 text-sm mb-4">
+                        <p class="font-sans text-gray-400 text-sm mb-4 leading-relaxed">
                             Nana ไม่ใช่ไกด์ แต่เธอคือ <strong>"นักแสดงสาว"</strong> และ <strong>"เจ้าบ้านผู้ทรงอิทธิพล"</strong> แห่งซีอาน การเดินทางกับเธอคือการเข้าถึง Exclusive Access ที่นักท่องเที่ยวทั่วไปไม่มีวันสัมผัส
                         </p>
                         <p class="font-sans text-gold text-sm italic">
@@ -166,7 +189,7 @@
                         </p>
                     </div>
 
-                    <button class="px-8 py-3 bg-crimson text-white font-display tracking-wider hover:bg-red-700 transition shadow-lg shadow-red-900/50">
+                    <button class="px-8 py-3 bg-gradient-to-r from-crimson to-red-900 text-white font-display tracking-wider hover:from-red-700 hover:to-red-900 transition shadow-lg shadow-red-900/50 rounded-sm">
                         WAITLIST OPENING SOON
                     </button>
                 </div>
@@ -174,48 +197,57 @@
         </div>
     </section>
 
-    <section class="py-24 bg-gradient-to-b from-dark to-black">
-        <div class="max-w-6xl mx-auto px-6 text-center">
+    <section class="py-24 bg-gradient-to-b from-dark to-black relative">
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
             <h2 class="font-serif text-3xl text-gold mb-16">THE TRINITY SERVICE</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-6 border border-white/5 hover:border-gold/30 transition duration-500 rounded-lg group bg-dark-card" data-aos="fade-up" data-aos-delay="0">
-                    <div class="w-24 h-24 mx-auto rounded-full mb-6 overflow-hidden border-2 border-gold/50 group-hover:border-gold transition">
-                        <img src="https://placehold.co/200x200/222/fff?text=Chieko" class="w-full h-full object-cover">
+                <div class="p-8 border border-white/5 hover:border-gold/30 transition duration-500 rounded-sm group bg-dark-card hover:bg-white/5" data-aos="fade-up" data-aos-delay="0">
+                    <div class="w-32 h-32 mx-auto rounded-full mb-6 overflow-hidden border-2 border-gold/30 group-hover:border-gold transition p-1">
+                        <img src="09.png" class="w-full h-full object-cover rounded-full">
                     </div>
-                    <h3 class="font-serif text-xl text-white mb-1">Chieko</h3>
+                    <h3 class="font-serif text-2xl text-white mb-1">Chieko</h3>
                     <p class="text-xs font-display text-gold tracking-widest mb-4">THE INSIDER</p>
-                    <p class="text-sm text-gray-500 font-sans">"ลูกครึ่งญี่ปุ่นเจ้าถิ่น ผู้กุมกุญแจสู่ร้านลับ เธอไม่ได้มาบริการ แต่มา 'ต้อนรับ' คุณสู่บ้านของเธอ"</p>
+                    <p class="text-sm text-gray-400 font-sans font-light leading-relaxed">"ลูกครึ่งญี่ปุ่นเจ้าถิ่น ผู้กุมกุญแจสู่ร้านลับ เธอไม่ได้มาบริการ แต่มา 'ต้อนรับ' คุณสู่บ้านของเธอ"</p>
                 </div>
 
-                <div class="p-6 border border-white/5 hover:border-gold/30 transition duration-500 rounded-lg group bg-dark-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="w-24 h-24 mx-auto rounded-full mb-6 overflow-hidden border-2 border-gold/50 group-hover:border-gold transition">
-                        <img src="https://placehold.co/200x200/333/fff?text=Teem" class="w-full h-full object-cover">
+                <div class="p-8 border border-white/5 hover:border-gold/30 transition duration-500 rounded-sm group bg-dark-card hover:bg-white/5" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-32 h-32 mx-auto rounded-full mb-6 overflow-hidden border-2 border-gold/30 group-hover:border-gold transition p-1">
+                        <img src="08.png" class="w-full h-full object-cover rounded-full">
                     </div>
-                    <h3 class="font-serif text-xl text-white mb-1">Teem</h3>
+                    <h3 class="font-serif text-2xl text-white mb-1">Teem</h3>
                     <p class="text-xs font-display text-gold tracking-widest mb-4">THE PLANNER</p>
-                    <p class="text-sm text-gray-500 font-sans">"นักวางแผนและเจรจา ผู้ถักทอทุกรายละเอียดให้ไร้รอยต่อ เพื่อให้คุณลืมคำว่า 'สะดุด' ไปจากทริปนี้"</p>
+                    <p class="text-sm text-gray-400 font-sans font-light leading-relaxed">"นักวางแผนและเจรจา ผู้ถักทอทุกรายละเอียดให้ไร้รอยต่อ เพื่อให้คุณลืมคำว่า 'สะดุด' ไปจากทริปนี้"</p>
                 </div>
 
-                <div class="p-6 border border-white/5 hover:border-gold/30 transition duration-500 rounded-lg group bg-dark-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-24 h-24 mx-auto rounded-full mb-6 overflow-hidden border-2 border-gold/50 group-hover:border-gold transition">
-                        <img src="https://placehold.co/200x200/444/fff?text=Keen" class="w-full h-full object-cover">
+                <div class="p-8 border border-white/5 hover:border-gold/30 transition duration-500 rounded-sm group bg-dark-card hover:bg-white/5" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-32 h-32 mx-auto rounded-full mb-6 overflow-hidden border-2 border-gold/30 group-hover:border-gold transition p-1">
+                        <img src="10.png" class="w-full h-full object-cover rounded-full">
                     </div>
-                    <h3 class="font-serif text-xl text-white mb-1">Keen</h3>
+                    <h3 class="font-serif text-2xl text-white mb-1">Keen</h3>
                     <p class="text-xs font-display text-gold tracking-widest mb-4">THE BUTLER</p>
-                    <p class="text-sm text-gray-500 font-sans">"องครักษ์พิทักษ์ความสุข พร้อมดูแล แบกหาม และอำนวยความสะดวกทุกย่างก้าวด้วยรอยยิ้ม"</p>
+                    <p class="text-sm text-gray-400 font-sans font-light leading-relaxed">"องครักษ์พิทักษ์ความสุข พร้อมดูแล แบกหาม และอำนวยความสะดวกทุกย่างก้าวด้วยรอยยิ้ม"</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="py-20 text-center bg-black relative overflow-hidden">
-        <div class="absolute inset-0 bg-[url('https://placehold.co/1920x600/111/333?text=Texture')] opacity-10"></div>
-        <div class="relative z-10 max-w-2xl mx-auto px-6">
-            <h2 class="font-serif text-2xl md:text-4xl text-white mb-8">"เราไม่ได้ทำทัวร์เพื่อปริมาณ<br>เราทำเพื่อ <span class="text-gold">ตำนาน</span> ของคุณ"</h2>
-            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="inline-block bg-gold text-dark font-bold py-4 px-12 rounded-sm hover:bg-white transition duration-300 transform hover:-translate-y-1 shadow-lg shadow-gold/20">
+    <footer class="py-24 text-center bg-black relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <img src="13.png" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/80"></div>
+        
+        <div class="relative z-10 max-w-3xl mx-auto px-6">
+            <h2 class="font-serif text-3xl md:text-5xl text-white mb-10 leading-tight">"ราคาคือสิ่งที่คุณจ่าย...<br>แต่ <span class="text-gold italic">ตำนาน</span> คือสิ่งที่คุณจะไม่มีวันลืม"</h2>
+            
+            <a href="https://line.me/ti/p/s_wzZWuRZ7" target="_blank" class="inline-block bg-gold text-dark font-bold py-4 px-12 rounded-sm hover:bg-white transition duration-300 transform hover:-translate-y-1 shadow-[0_0_30px_rgba(212,175,55,0.3)] text-lg">
                 ADD LINE TO DISCUSS
             </a>
-            <p class="mt-8 text-gray-600 text-xs font-display tracking-[0.2em] uppercase">San Chuan Private Journeys &copy; 2025</p>
+            
+            <div class="mt-16 border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 font-display tracking-widest uppercase">
+                <p>San Chuan Private Journeys &copy; 2025</p>
+                <p>By Invitation Only</p>
+            </div>
         </div>
     </footer>
 
