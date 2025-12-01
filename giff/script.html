@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Script Vault | Dr. Gift</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+        :root {
+            --bg-dark: #050505;
+            --card-bg: #121212;
+            --gold: #D4AF37;
+            --text-light: #E0E0E0;
+            --text-dim: #888;
+            --accent-red: #8a1c1c;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--gold);
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        p.intro {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* CARD STYLING */
+        .chapter-card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chapter-card:hover {
+            border-color: var(--gold);
+        }
+
+        /* ACCORDION HEADER */
+        summary {
+            padding: 20px;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--gold);
+            transition: transform 0.3s;
+        }
+
+        details[open] summary::after {
+            transform: rotate(45deg);
+        }
+
+        details[open] {
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        /* CONTENT INSIDE */
+        .script-content {
+            padding: 0 25px 25px 25px;
+            border-top: 1px solid #222;
+        }
+
+        /* DIRECTOR NOTE */
+        .director-note {
+            background-color: rgba(212, 175, 55, 0.1);
+            color: var(--gold);
+            padding: 10px 15px;
+            border-left: 3px solid var(--gold);
+            font-size: 0.85rem;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .dialogue {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 1px solid #444;
+        }
+
+        .highlight {
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        .prop-tag {
+            display: inline-block;
+            background: #222;
+            color: #aaa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            border: 1px solid #444;
+        }
+
+        /* BACK BUTTON */
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .back-btn:hover { color: #fff; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>THE MASTER NARRATIVE</h1>
+            <p class="intro">7 บทพูดสำหรับสร้างตัวตน "The Elite Architect"<br>คลิกที่หัวข้อเพื่อดูบทพูด</p>
+        </header>
+
+        <details class="chapter-card">
+            <summary>
+                <span>CH 01: The Market Disruption</span>
+            </summary>
+            <div class="script-content">
+                <div class="director-note">
+                    <strong>Mood:</strong> จริงจัง, มองกล้องตรงๆ, สายตาคมกริบ<br>
+                    <strong>Action:</strong> นั่งไขว่ห้างสบายๆ หรือยืนกอดอกหลวมๆ เปิดคลิปด้วยคำถามที่แทงใจดำ
+                </div>
+                <div class="dialogue">
+                    "คุณเคยสงสัยไหมคะ... ว่าทำไมคลินิกความงามถึงมีอยู่ทุกหัวมุมถนน แต่คนที่ 'ดูดีจริงๆ' กลับมีน้อยมาก?"
+                </div>
+                <div class="dialogue">
+                    "เพราะคนส่วนใหญ่กำลังแก้ปัญหาผิดจุดค่ะ... เรามัวแต่วิ่งไล่ตามริ้วรอย ถมฟิลเลอร์ลงไปในหลุม<br>
+                    แต่ลืมถามตัวเองว่า... <span class="highlight">โครงสร้างข้างในเราพังไปถึงไหนแล้ว?</span>"
+                </div>
+                <div class="dialogue">
+                    "หมอไม่ได้อยู่ที่นี่เพื่อ 'ขาย' โปรโมชั่น...<br>
+                    แต่อยู่เพื่อ 'เตือนสติ' และ 'วางแผน' ให้คุณใหม่... ในแบบที่หมอทำให้ตัวเอง"
+                </div>
+            </div>
+        </details>
+
+        <details class="chapter-card">
+            <summary>
+                <span>CH 02: The Enemy (Sugar Face)</span>
+            </summary>
+            <div class="script-content">
+                <span class="prop-tag">PROP: แก้วกาแฟ / ขนมเค้กสวยๆ</span>
+                <div class="director-note">
+                    <strong>Mood:</strong> เหมือนเพื่อนเตือนเพื่อน, เป็นห่วงแต่ดุ<br>
+                    <strong>Action:</strong> ถือแก้วกาแฟขึ้นมา แล้ววางลงแบบปฏิเสธ
+                </div>
+                <div class="dialogue">
+                    "หลายคนเข้ามาหาหมอพร้อมคำถามว่า 'ทำไมหน้าหมอง? ทำไมหน้าห้อย?' ทั้งที่โบกครีมกระปุกละหมื่น..."
+                </div>
+                <div class="dialogue">
+                    "คำตอบอาจจะอยู่ที่แก้วกาแฟที่คุณถืออยู่ก็ได้ค่ะ...<br>
+                    <span class="highlight">Sugar Face</span> หรือ 'หน้าติดหวาน' คือฆาตกรเงียบตัวจริง"
+                </div>
+                <div class="dialogue">
+                    "น้ำตาลทำให้คอลลาเจนของคุณ 'แข็ง' และ 'เปราะ' (Glycation)... ต่อให้ฉีดโบทั้งหน้า แต่ถ้าข้างในอักเสบ ผิวก็ไม่มีวันดูแพงค่ะ... เริ่มแก้ที่การกิน แล้วค่อยมาคุยเรื่องเข็มกับหมอ"
+                </div>
+            </div>
+        </details>
+
+        <details class="chapter-card">
+            <summary>
+                <span>CH 03: The Authority (Trainer)</span>
+            </summary>
+            <div class="script-content">
+                <span class="prop-tag">PROP: หุ่นจำลองกะโหลก / iPad เปิดรูป Anatomy</span>
+                <div class="director-note">
+                    <strong>Mood:</strong> มืออาชีพ, มั่นใจสูงสุด, Expert Voice<br>
+                    <strong>Action:</strong> ชี้ที่จุดบนใบหน้าตัวเอง หรือบนหุ่น
+                </div>
+                <div class="dialogue">
+                    "ในฐานะที่หมอเป็นคนสอนหมอด้วยกัน (National Trainer)...<br>
+                    สิ่งที่หมอย้ำเสมอคือ... ใบหน้าไม่ใช่กระดาษวาดรูป แต่มันคืองานสถาปัตยกรรมที่มีมิติ"
+                </div>
+                <div class="dialogue">
+                    "ใต้ผิวหนังของคุณมีชั้นไขมัน เส้นเอ็น และกระดูกที่ซับซ้อน... <br>
+                    การจิ้มเข็มลงไปโดยไม่เข้าใจ Layer ก็เหมือนการสร้างบ้านบนทราย..."
+                </div>
+                <div class="dialogue">
+                    "เทคนิคที่หมอใช้ คือการวางรากฐานใหม่... ไม่ใช่แค่ถมที่... <span class="highlight">เพราะความสวยที่ปลอดภัย ต้องมาจากความรู้ที่ลึกซึ้งเท่านั้นค่ะ</span>"
+                </div>
+            </div>
+        </details>
+
+        <details class="chapter-card">
+            <summary>
+                <span>CH 04: The Untouched Look</span>
+            </summary>
+            <div class="script-content">
+                <div class="director-note">
+                    <strong>Mood:</strong> สบายๆ, ศิลปิน (ISFP vibe), ยิ้มเล็กน้อย<br>
+                    <strong>Action:</strong> เดินดูรูปภาพ หรือจัดดอกไม้ (กิจกรรมที่ดูสุนทรีย์)
+                </div>
+                <div class="dialogue">
+                    "หมอเชื่อในความงามแบบ <span class="highlight">'The Untouched Look'</span> ค่ะ..."
+                </div>
+                <div class="dialogue">
+                    "คือความสวยที่คนทักว่า 'ไปทำอะไรมา ทำไมดูสดใสจัง?'<br>
+                    ...ไม่ใช่ทักว่า 'ไปทำจมูกร้านไหนมา?'"
+                </div>
+                <div class="dialogue">
+                    "มันคือศิลปะของการซ่อนร่องรอย... ให้เหลือไว้แค่ความสง่างาม<br>
+                    ถ้าคุณอยากหน้าเปลี่ยนเป็นคนอื่น หมออาจจะไม่ใช่คำตอบ... แต่ถ้าคุณอยากเป็นตัวเองในเวอร์ชันที่ดีที่สุด... เราคุยกันรู้เรื่องแน่นอนค่ะ"
+                </div>
+            </div>
+        </details>
+
+        <details class="chapter-card">
+            <summary>
+                <span>CH 05: The Asset Mindset</span>
+            </summary>
+            <div class="script-content">
+                <div class="director-note">
+                    <strong>Mood:</strong> Business Luxury, พูดกับนักธุรกิจ<br>
+                    <strong>Action:</strong> นั่งโต๊ะทำงาน ถือปากกาแพงๆ หรือดูเอกสาร
+                </div>
+                <div class="dialogue">
+                    "สำหรับคนไข้ของหมอ... ร่างกายไม่ใช่แค่เปลือกนอก<br>
+                    แต่มันคือ <span class="highlight">Asset (สินทรัพย์)</span> ที่แพงที่สุด"
+                </div>
+                <div class="dialogue">
+                    "คุณบริหารพอร์ตหุ้น บริหารธุรกิจระดับร้อยล้าน... แล้วพอร์ตร่างกายล่ะคะ? ติดลบอยู่หรือเปล่า?"
+                </div>
+                <div class="dialogue">
+                    "หมอทำหน้าที่เหมือน Fund Manager ให้ร่างกายคุณ... ดูแลค่าเลือด ฮอร์โมน และความเสื่อม... เพื่อให้คุณมีพลังไปต่อยอดความสำเร็จได้อีกนานๆ"
+                </div>
+            </div>
+        </details>
+
+        <details class="chapter-card">
+            <summary>
+                <span>CH 06: The Power of "NO"</span>
+            </summary>
+            <div class="script-content">
+                <div class="director-note">
+                    <strong>Mood:</strong> จริงใจ, เด็ดขาด, ปกป้อง<br>
+                    <strong>Action:</strong> สบตาคนดูนิ่งๆ เพื่อสื่อความ Trust
+                </div>
+                <div class="dialogue">
+                    "สิ่งที่คุณจะได้ยินจากหมอบ่อยที่สุด... อาจจะไม่ใช่คำว่า 'ได้ค่ะ'<br>
+                    แต่เป็นคำว่า <span class="highlight">'อย่าทำเลยค่ะ'</span>"
+                </div>
+                <div class="dialogue">
+                    "ถ้าหมอมองว่ามันไม่จำเป็น หรือทำแล้วหน้าจะดูแปลก หมอจะปฏิเสธทันที...<br>
+                    เพราะใบหน้าคุณคือผลงานของหมอ... และความไว้วางใจของคุณ คือสิ่งที่หมอให้ค่ามากที่สุด"
+                </div>
+                <div class="dialogue">
+                    "ที่ GEMS Scientific Beauty... เราไม่ขายคอร์ส แต่เราขาย 'ความจริง' ค่ะ"
+                </div>
+            </div>
+        </details>
+
+        <details class="chapter-card">
+            <summary>
+                <span>CH 07: The Invitation (Call to Action)</span>
+            </summary>
+            <div class="script-content">
+                <div class="director-note">
+                    <strong>Mood:</strong> อบอุ่น, เชื้อเชิญแบบ Exclusive<br>
+                    <strong>Action:</strong> ยิ้มปิดท้าย ผายมือเล็กน้อย
+                </div>
+                <div class="dialogue">
+                    "Wellness ไม่ใช่ทางลัด... แต่มันคือการเดินทางระยะยาว<br>
+                    ถ้าคุณพร้อมที่จะหยุดวิ่งตามกระแส แล้วหันมาสร้างรากฐานที่แข็งแรงจริงๆ..."
+                </div>
+                <div class="dialogue">
+                    "มาคุยกับหมอได้ค่ะ... เราจะมาออกแบบ <span class="highlight">'Legacy'</span> ของคุณไปด้วยกัน<br>
+                    ที่ GEMS Scientific Beauty ค่ะ"
+                </div>
+            </div>
+        </details>
+
+        <a href="index.html" class="back-btn">&larr; กลับสู่หน้าหลัก</a>
+    </div>
+
+    <script>
+        // Optional: Close other details when one is opened (Accordion effect)
+        const details = document.querySelectorAll("details");
+
+        details.forEach((targetDetail) => {
+            targetDetail.addEventListener("click", () => {
+                // Close all other details
+                details.forEach((detail) => {
+                    if (detail !== targetDetail) {
+                        detail.removeAttribute("open");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
