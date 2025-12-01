@@ -15,13 +15,12 @@
             --bg-dark: #050505;
             --bg-panel: #0F0F0F;
             --gold: #C5A059;
-            --gold-light: #E5C585;
             --text-main: #F0F0F0;
             --text-muted: #888888;
             --border: #2A2A2A;
         }
 
-        /* RESET & BASE */
+        /* RESET */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
@@ -51,428 +50,184 @@
             z-index: 2;
         }
 
-        /* --- HERO SECTION (REBUILT FOR IMAGE VISIBILITY) --- */
+        /* --- HERO SECTION (CLEAN FACE FIX) --- */
         .hero {
             height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-end; /* FIX: Move content to bottom */
             justify-content: center;
             text-align: center;
             position: relative;
             overflow: hidden;
+            padding-bottom: 80px; /* Space from bottom */
         }
 
-        /* HERO IMAGE: IMG_2358.jpg */
-        .hero-bg-img {
+        /* BACKGROUND IMAGE (.jpeg) */
+        .hero-bg {
             position: absolute;
             top: 0; left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Fill screen */
-            object-position: top center; /* Focus on Face (Top) */
+            width: 100%; height: 100%;
+            background-image: url('IMG_2358.jpeg');
+            background-size: cover;
+            background-position: top center; /* Focus on face at top */
             z-index: 1;
-            filter: brightness(0.6); /* Slightly dark to make text pop */
+        }
+
+        /* GRADIENT OVERLAY (To make text readable at bottom only) */
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 60%; /* Only covers bottom half */
+            background: linear-gradient(to top, #000000 10%, transparent 100%);
+            z-index: 2;
         }
 
         .hero-content {
             position: relative;
             z-index: 3;
-            animation: fadeUp 1.2s ease;
-            margin-top: 200px; /* Push text down so it doesn't cover face */
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            color: #fff;
-            text-shadow: 0 0 30px rgba(0,0,0,0.9);
+            width: 100%;
+            /* Removed heavy animations on load to keep it classy, using scroll reveal instead */
         }
 
         .hero-subtitle {
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: var(--gold);
             text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-bottom: 40px;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
             display: block;
-            text-shadow: 0 0 10px rgba(0,0,0,1);
-            background: rgba(0,0,0,0.6);
-            display: inline-block;
-            padding: 5px 15px;
-            backdrop-filter: blur(5px);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            font-weight: 600;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 0 2px 20px rgba(0,0,0,1);
         }
 
         .btn-main {
             display: inline-block;
-            padding: 15px 40px;
+            padding: 12px 35px;
             border: 1px solid var(--gold);
             color: var(--gold);
             font-family: 'Cinzel', serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             letter-spacing: 2px;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.5); /* Semi-transparent */
+            backdrop-filter: blur(5px);
+            border-radius: 2px;
         }
 
         .btn-main:hover {
             background-color: var(--gold);
             color: #000;
-            box-shadow: 0 0 20px rgba(197, 160, 89, 0.3);
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.4);
         }
 
-        /* --- SECTIONS COMMON --- */
+        /* --- ANIMATION (SCROLL REVEAL) --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- SECTIONS --- */
         section {
             padding: 100px 0;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #1a1a1a;
         }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-tag { font-size: 0.8rem; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; display: block; }
+        .section-title { font-size: 2.2rem; color: #fff; }
 
-        .section-tag {
-            font-size: 0.8rem;
-            color: var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            color: #fff;
-        }
-
-        /* --- MANIFESTO --- */
+        /* MANIFESTO */
         .manifesto-box {
             border-left: 2px solid var(--gold);
             padding-left: 40px;
             margin: 0 auto;
             max-width: 800px;
         }
-
-        .quote-large {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            color: #fff;
-            line-height: 1.4;
-            margin-bottom: 30px;
-        }
-
-        .thai-text {
-            font-family: 'Sarabun', sans-serif;
-            font-weight: 300;
-            color: var(--text-muted);
-            font-size: 1.1rem;
-        }
-
-        /* --- PILLARS GRID --- */
+        .quote-large { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #fff; line-height: 1.4; margin-bottom: 30px; }
+        
+        /* PILLARS */
         .pillars-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 40px;
         }
+        .pillar-card { padding: 30px; transition: 0.3s; border: 1px solid transparent; }
+        .pillar-card:hover { border-color: #333; background: #0a0a0a; transform: translateY(-5px); }
+        .pillar-icon { font-size: 2rem; color: var(--gold); margin-bottom: 20px; }
+        .pillar-card h3 { font-size: 1.2rem; margin-bottom: 15px; color: #fff; }
 
-        .pillar-card {
-            background: var(--bg-panel);
-            padding: 40px;
-            border: 1px solid transparent;
-            transition: 0.3s;
-        }
-
-        .pillar-card:hover {
-            border-color: var(--gold);
-            transform: translateY(-5px);
-        }
-
-        .pillar-icon {
-            font-size: 2rem;
-            color: var(--gold);
-            margin-bottom: 25px;
-        }
-
-        .pillar-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        /* --- AUTHORITY IMAGE SECTION (NO CROP FIX) --- */
-        .authority-img-wrapper {
-            position: relative;
-            margin: 40px 0;
-            border: 1px solid #333;
-            padding: 10px;
-            background: #111;
-        }
-
-        .authority-img {
-            width: 100%;
-            height: auto; /* FIX: Shows full height, no cropping */
-            display: block;
-        }
-        
+        /* AUTHORITY (.jpeg) */
+        .authority-img-wrapper { position: relative; margin: 40px 0; }
+        .authority-img { width: 100%; height: auto; display: block; filter: brightness(0.9); }
         .authority-badge {
-            position: absolute;
-            bottom: -20px;
-            right: 40px;
-            background: var(--gold);
-            color: #000;
-            padding: 15px 30px;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            letter-spacing: 2px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: absolute; bottom: -20px; right: 20px;
+            background: var(--gold); color: #000;
+            padding: 10px 25px; font-family: 'Cinzel'; font-weight: 700; letter-spacing: 1px;
         }
 
-        /* --- GLOBAL LIFESTYLE (NO CROP FIX) --- */
-        .lifestyle-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-        }
+        /* LIFESTYLE (.jpeg) */
+        .lifestyle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .lifestyle-img { width: 100%; height: auto; display: block; border: 1px solid #333; padding: 10px; }
+        .lifestyle-tags span { display: inline-block; border: 1px solid #333; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; color: #888; margin: 5px 5px 0 0; }
+
+        /* BIO (.jpeg) */
+        .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .portrait-img { width: 100%; height: auto; display: block; border: 1px solid var(--gold); padding: 10px; }
         
-        .lifestyle-content h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            color: #fff;
-            margin-bottom: 20px;
-        }
+        /* STATS */
+        .stats-bar { display: flex; gap: 20px; margin-top: 30px; }
+        .stat-item { flex: 1; text-align: center; border: 1px solid #222; padding: 20px; }
+        .stat-item h3 { font-size: 2rem; color: var(--gold); margin-bottom: 5px; }
+        .stat-item span { font-size: 0.7rem; color: #666; letter-spacing: 2px; }
 
-        .lifestyle-content p {
-            color: #aaa;
-            margin-bottom: 20px;
-            font-size: 1rem;
-        }
+        /* PROTOCOL & JOURNEY */
+        .step-item { display: flex; align-items: flex-start; margin-bottom: 30px; }
+        .step-num { font-family: 'Cinzel'; font-size: 2.5rem; color: #333; margin-right: 25px; line-height: 1; }
         
-        .lifestyle-tags span {
-            display: inline-block;
-            border: 1px solid #444;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--gold);
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-
-        .lifestyle-img-frame {
-            border: 1px solid #333;
-            padding: 15px;
-            background: #111;
-            /* transform: rotate(2deg); Removed rotation to look more formal */
-        }
-
-        .lifestyle-img {
-            width: 100%;
-            height: auto; /* FIX: Full image visibility */
-            display: block;
-        }
-
-        /* --- PROTOCOL --- */
-        .protocol-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .step-item {
-            display: flex;
-            align-items: flex-start;
-            background: rgba(255,255,255,0.03);
-            padding: 30px;
-            border-radius: 4px;
-        }
-
-        .step-num {
-            font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            color: rgba(255,255,255,0.1);
-            margin-right: 30px;
-            line-height: 1;
-        }
-
-        .step-content h4 {
-            color: var(--gold);
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        /* --- PHYSICIAN BIO SECTION (NO CROP FIX) --- */
-        .exec-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            gap: 60px;
-        }
-
-        .portrait-frame {
-            position: relative;
-            border: 1px solid var(--gold);
-            padding: 15px;
-        }
-
-        .portrait-img {
-            width: 100%;
-            height: auto; /* FIX: Full height, no crop */
-            max-height: 700px; /* Limit height if needed but keep aspect ratio */
-            object-fit: contain;
-            display: block;
-        }
-
-        /* --- TESTIMONIALS --- */
-        .testimonial-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .testi-card {
-            background: #000;
-            padding: 30px;
-            border: 1px solid #222;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .testi-text {
-            font-family: 'Sarabun', sans-serif;
-            font-style: italic;
-            color: #ccc;
-            margin-bottom: 20px;
-        }
-
-        .testi-author {
-            color: var(--gold);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: auto;
-        }
-
-        /* --- STATS --- */
-        .stats-bar {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .stat-item {
-            background: #000;
-            padding: 20px;
-            text-align: center;
-            flex: 1;
-            border: 1px solid #222;
-        }
-
-        .stat-item h3 {
-            font-size: 2.5rem;
-            color: var(--gold);
-            margin-bottom: 5px;
-        }
-        
-        .stat-item span {
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* --- JOURNEY --- */
-        .journey-list {
-            list-style: none;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .journey-list li {
-            position: relative;
-            padding-left: 40px;
-            margin-bottom: 40px;
-        }
-
-        .journey-list li::before {
-            content: '';
-            position: absolute;
-            left: 0; top: 8px;
-            width: 12px; height: 12px;
-            background: var(--gold);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--gold);
-        }
-
-        .journey-list li:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            left: 5px; top: 25px;
-            bottom: -25px;
-            width: 2px;
-            background: rgba(197, 160, 89, 0.3);
-        }
-
-        /* --- FOOTER & CONTACT CARD --- */
-        .contact-card {
-            background: linear-gradient(145deg, #111, #050505);
-            padding: 40px;
-            text-align: center;
-            border: 1px solid #222;
-            margin-top: 40px;
-        }
-
+        /* FOOTER */
+        .contact-card { background: #0a0a0a; padding: 50px 20px; text-align: center; margin-top: 50px; border: 1px solid #222; }
         .social-links { margin-top: 30px; display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
-        .social-icon { 
-            color: #888; font-size: 1.8rem; transition: 0.3s; display: flex; align-items: center; gap: 10px;
-        }
-        .social-icon:hover { color: var(--gold); transform: translateY(-3px); }
-        .social-label { font-size: 0.8rem; font-family: 'Inter'; text-transform: uppercase; letter-spacing: 1px; }
-
-        footer {
-            text-align: center;
-            padding: 50px 0;
-            font-size: 0.8rem;
-            color: #555;
-            background: #020202;
-        }
+        .social-icon { color: #666; font-size: 1.5rem; transition: 0.3s; }
+        .social-icon:hover { color: var(--gold); transform: scale(1.1); }
+        
+        footer { text-align: center; padding: 40px 0; font-size: 0.7rem; color: #444; border-top: 1px solid #111; }
 
         /* RESPONSIVE */
         @media (max-width: 900px) {
-            .hero-title { font-size: 3rem; }
-            .hero-subtitle { font-size: 1rem; }
-            .hero-content { margin-top: 150px; }
+            .hero-title { font-size: 2.5rem; }
+            .hero-subtitle { font-size: 0.9rem; }
             .exec-grid, .lifestyle-grid { grid-template-columns: 1fr; }
-            .authority-badge { position: relative; bottom: auto; right: auto; display: inline-block; margin-top: 10px; width: 100%; text-align: center; }
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+            .authority-badge { position: relative; bottom: auto; right: auto; margin-top: 15px; display: inline-block; }
         }
     </style>
 </head>
 <body>
 
-    <header class="hero">
-        <img src="IMG_2358.jpeg" alt="Dr. Giff Hero" class="hero-bg-img">
+    <div class="hero reveal active">
+        <div class="hero-bg"></div>
         
         <div class="container hero-content">
-            <span class="hero-subtitle"></span>
+            <span class="hero-subtitle">GEM Scientific Beauty</span>
             <h1 class="hero-title">DR. GIFF<br>WORAWAN</h1>
-            <p style="color: #ccc; margin-bottom: 40px; font-weight: 300; letter-spacing: 1px; text-shadow: 0 0 10px #000;">
-                THE MASTER ARCHITECT OF FACIAL ELEGANCE<br>
-                & LONGEVITY PHYSICIAN
-            </p>
             <a href="script.html" class="btn-main">ENTER THE SCRIPT VAULT</a>
         </div>
-    </header>
+    </div>
 
-    <section>
+    <section class="reveal">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Philosophy</span>
@@ -492,45 +247,32 @@
         </div>
     </section>
 
-    <section style="background-color: #080808;">
+    <section style="background-color: #080808;" class="reveal">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Core Competency</span>
                 <h2 class="section-title">THE 4 PILLARS</h2>
             </div>
-            
             <div class="pillars-grid">
                 <div class="pillar-card">
                     <i class="fas fa-brain pillar-icon"></i>
                     <h3>The Art of Anatomy</h3>
-                    <p class="thai-text" style="font-size: 0.9rem;">
-                        ในฐานะ <strong>National Trainer</strong> ความเข้าใจเรื่อง Layer ของใบหน้าคือหัวใจสำคัญ 
-                        เราไม่ได้แค่ "เติม" แต่เรา "วางโครงสร้าง" แสงและเงาใหม่ ให้ผลลัพธ์ดูเป็นธรรมชาติที่สุด
-                    </p>
+                    <p style="color:#888; font-size:0.9rem;">ความเข้าใจเรื่อง Layer ของใบหน้าคือหัวใจสำคัญ ไม่ใช่แค่เติม แต่คือการวางโครงสร้าง</p>
                 </div>
                 <div class="pillar-card">
                     <i class="fas fa-chart-line pillar-icon"></i>
                     <h3>The Biological Asset</h3>
-                    <p class="thai-text" style="font-size: 0.9rem;">
-                        สำหรับ Elite ร่างกายคือ <strong>Asset ที่แพงที่สุด</strong> หมอทำหน้าที่เหมือน Fund Manager 
-                        ดูแลพอร์ตสุขภาพผ่านค่าเลือด ฮอร์โมน และ DNA เพื่อรักษา Value ของคุณ
-                    </p>
+                    <p style="color:#888; font-size:0.9rem;">ร่างกายคือ Asset ที่แพงที่สุด เราดูแลพอร์ตสุขภาพผ่านค่าเลือด ฮอร์โมน และ DNA</p>
                 </div>
                 <div class="pillar-card">
                     <i class="fas fa-user-check pillar-icon"></i>
                     <h3>Sincere Integrity</h3>
-                    <p class="thai-text" style="font-size: 0.9rem;">
-                        เราให้คำปรึกษาอย่างตรงไปตรงมา บนพื้นฐานจรรยาบรรณแพทย์ 
-                        หากหัตถการใดไม่จำเป็น หมอจะแจ้งให้ทราบชัดเจน เพราะความไว้วางใจของคุณสำคัญที่สุด
-                    </p>
+                    <p style="color:#888; font-size:0.9rem;">เราให้คำปรึกษาอย่างตรงไปตรงมา บนพื้นฐานจรรยาบรรณแพทย์ หากไม่จำเป็น หมอจะปฏิเสธ</p>
                 </div>
                 <div class="pillar-card" style="border-color: var(--gold);">
                     <i class="fas fa-crown pillar-icon"></i>
                     <h3>Executive Presence</h3>
-                    <p class="thai-text" style="font-size: 0.9rem;">
-                        <strong>"อำนาจ" สะท้อนผ่านใบหน้า</strong> เราออกแบบบุคลิกภาพสำหรับผู้นำ 
-                        ให้ดูสง่า (Noble), เปี่ยมพลัง (Vibrant), และน่าเชื่อถือ ในทุกการเจรจาธุรกิจ
-                    </p>
+                    <p style="color:#888; font-size:0.9rem;">ออกแบบบุคลิกภาพสำหรับผู้นำ ให้ดูสง่า (Noble) และน่าเชื่อถือในทุกการเจรจา</p>
                 </div>
             </div>
 
@@ -539,195 +281,105 @@
                     <span class="section-tag">National Leadership</span>
                     <h2 class="section-title">TRUSTED BY THE NATION</h2>
                 </div>
-                
                 <div class="authority-img-wrapper">
-                    <img src="IMG_2365.jpeg" alt="Dr. Giff National Lecture" class="authority-img">
+                    <img src="IMG_2365.jpeg" alt="Dr. Giff Lecture" class="authority-img">
                     <div class="authority-badge">CSO CLINICAL TRAINER</div>
                 </div>
-                
-                <p class="thai-text" style="text-align: center; max-width: 800px; margin: 30px auto 0; color: #aaa;">
-                    ภาพบรรยากาศการบรรยายวิชาการระดับประเทศ (National Academic Meeting) 
-                    ซึ่ง <strong>Dr. Giff</strong> ได้รับเกียรติเป็นวิทยากรถ่ายทอดความรู้และเทคนิคชั้นสูงแก่แพทย์ทั่วประเทศ 
-                    สะท้อนถึงความเป็นผู้นำทางความคิด (Thought Leader) ที่ได้รับการยอมรับในวงการแพทย์อย่างแท้จริง
-                </p>
             </div>
-
         </div>
     </section>
 
-    <section>
+    <section class="reveal">
         <div class="container">
             <div class="lifestyle-grid">
                 <div class="lifestyle-content">
                     <span class="section-tag">The Art of Living</span>
                     <h3>THE GLOBAL AESTHETE</h3>
-                    <p class="thai-text">
-                        มากกว่าความเป็นแพทย์... คือ "รสนิยม" และ "การใช้ชีวิต"<br>
-                        หมอกิ๊ฟคือ <strong>Artist & Global Traveler</strong> ผู้เดินทางรอบโลกและเข้าใจไลฟ์สไตล์ของ High-Net-Worth Individuals อย่างลึกซึ้ง
-                    </p>
-                    <p class="thai-text">
-                        ด้วยเครือข่ายเพื่อนแพทย์และเซเลบริตี้ในหลายประเทศ (Global Connections) ทำให้หมอมีมุมมองความงามที่เป็นสากล 
-                        และรู้ดีว่าลูกค้า Elite ต้องการอะไร—ไม่ใช่แค่ความสวย แต่คือ <strong>"Experience"</strong> และ <strong>"Class"</strong>
-                    </p>
+                    <p style="color:#ccc;">หมอกิ๊ฟคือ <strong>Artist & Global Traveler</strong> ผู้เดินทางรอบโลกและเข้าใจไลฟ์สไตล์ของ High-Net-Worth Individuals อย่างลึกซึ้ง</p>
                     <div class="lifestyle-tags">
-                        <span><i class="fas fa-plane"></i> Global Citizen</span>
-                        <span><i class="fas fa-palette"></i> ISFP Artist Soul</span>
-                        <span><i class="fas fa-globe"></i> International Network</span>
+                        <span>Global Citizen</span>
+                        <span>ISFP Artist Soul</span>
+                        <span>International Network</span>
                     </div>
                 </div>
-                
-                <div class="lifestyle-img-frame">
-                    <img src="IMG_2362.jpeg" alt="Dr. Giff Global Lifestyle" class="lifestyle-img">
-                    <div style="text-align:center; padding-top:10px; color:#555; font-size:0.7rem; font-family:'Cinzel';">
-                        "ELEGANCE IS AN ATTITUDE"
-                    </div>
+                <div>
+                    <img src="IMG_2362.jpeg" alt="Dr. Giff Lifestyle" class="lifestyle-img">
+                    <div style="text-align:center; padding-top:10px; color:#555; font-size:0.7rem; font-family:'Cinzel';">"ELEGANCE IS AN ATTITUDE"</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section style="background: var(--bg-panel);">
+    <section style="background: var(--bg-panel);" class="reveal">
         <div class="container">
             <div class="exec-grid">
-                
-                <div class="portrait-frame">
+                <div>
                     <img src="IMG_2359.jpeg" alt="Dr. Giff Physician" class="portrait-img">
                 </div>
-
                 <div>
                     <span class="section-tag">The Physician</span>
-                    <h2 class="section-title" style="margin-bottom: 20px;">DR. GIFF<br>WORAWAN LEELAPORN</h2>
-                    <p class="thai-text" style="margin-bottom: 20px;">
-                        แพทย์ผู้ก่อตั้ง <strong>GEM Scientific Beauty</strong> และเทรนเนอร์ระดับประเทศ (National Trainer) 
-                        ผู้อยู่เบื้องหลังความเยาว์วัยของบุคคลชั้นนำ ด้วยความเชื่อที่ว่า "หมอที่ดีที่สุด คือร่างกายของคุณเอง" 
-                        หน้าที่ของหมอคือปลดล็อกศักยภาพนั้นออกมาด้วยศิลปะและวิทยาศาสตร์
-                    </p>
-                    <ul style="list-style: none; color: #aaa; font-family: 'Sarabun';">
-                        <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> Medical Director, GEM Scientific Beauty</li>
-                        <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> National Trainer for Profhilo & Revanesse</li>
-                        <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> CSO Clinical Trainer</li>
-                    </ul>
-                    
+                    <h2 class="section-title" style="margin-bottom: 20px;">DR. GIFF<br>WORAWAN</h2>
+                    <p style="color:#ccc;">แพทย์ผู้ก่อตั้ง <strong>GEM Scientific Beauty</strong> ผู้อยู่เบื้องหลังความเยาว์วัยของบุคคลชั้นนำ ด้วยความเชื่อที่ว่า "หมอที่ดีที่สุด คือร่างกายของคุณเอง"</p>
                     <div class="stats-bar">
                         <div class="stat-item">
                             <h3>15+</h3>
-                            <span>YEARS EXPERIENCE</span>
+                            <span>YEARS EXP.</span>
                         </div>
                         <div class="stat-item">
                             <h3>10k+</h3>
-                            <span>SUCCESSFUL CASES</span>
+                            <span>CASES</span>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
 
-    <section>
+    <section class="reveal">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Signature Service</span>
                 <h2 class="section-title">THE LEGACY PROTOCOL</h2>
-                <p class="thai-text">โปรแกรมเอกสิทธิ์เฉพาะบุคคล เพื่อการฟื้นฟูระดับ Cellular & Structural</p>
             </div>
-
-            <div class="protocol-steps">
+            <div style="max-width:800px; margin:0 auto;">
                 <div class="step-item">
                     <div class="step-num">01</div>
-                    <div class="step-content">
-                        <h4>THE BLUEPRINT (วิเคราะห์โครงสร้าง)</h4>
-                        <p class="thai-text">Deep Diagnostics: ตรวจยีน (DNA), ฮอร์โมน (Hormone Panel), และสแกนโครงหน้า 3 มิติ เพื่อหา "พิมพ์เขียว" ที่แท้จริงของคุณ</p>
+                    <div>
+                        <h4 style="color:var(--gold);">THE BLUEPRINT</h4>
+                        <p style="color:#888; font-size:0.9rem;">Deep Diagnostics: ตรวจยีน, ฮอร์โมน, และสแกนโครงหน้า 3 มิติ</p>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">02</div>
-                    <div class="step-content">
-                        <h4>THE RESTORATION (ฟื้นฟูฐานราก)</h4>
-                        <p class="thai-text">ซ่อมแซมระบบภายใน ลดการอักเสบ (Inflammation) และปรับสมดุลการนอน/อาหาร เพื่อเตรียม Canvas ให้พร้อมก่อนลงมือ</p>
+                    <div>
+                        <h4 style="color:var(--gold);">THE RESTORATION</h4>
+                        <p style="color:#888; font-size:0.9rem;">ฟื้นฟูระบบภายใน ลดการอักเสบ (Inflammation) ปรับสมดุลการนอน</p>
                     </div>
                 </div>
                 <div class="step-item">
                     <div class="step-num">03</div>
-                    <div class="step-content">
-                        <h4>THE SCULPTING (งานศิลปะ)</h4>
-                        <p class="thai-text">ปรับรูปหน้าด้วยเทคนิค "Light & Shadow" และ Biostimulators โดยมือหมอกิ๊ฟ เพื่อสร้าง The Untouched Look</p>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-num">04</div>
-                    <div class="step-content">
-                        <h4>THE SUSTAIN (รักษาระดับ)</h4>
-                        <p class="thai-text">ติดตามผลระยะยาว เหมือนมี Personal Health Consultant ส่วนตัว เพื่อให้กราฟชีวิตคุณไม่ตกลง</p>
+                    <div>
+                        <h4 style="color:var(--gold);">THE SCULPTING</h4>
+                        <p style="color:#888; font-size:0.9rem;">ปรับรูปหน้าด้วยเทคนิค "Light & Shadow" สร้างมิติที่เป็นธรรมชาติ</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section>
+    <section style="background-color: #080808;" class="reveal">
         <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Testimonials</span>
-                <h2 class="section-title">THE INNER CIRCLE</h2>
-                <p style="color: #555; font-style: italic;">Voice of the VVIPs (Confidential)</p>
-            </div>
-            <div class="testimonial-grid">
-                <div class="testi-card">
-                    <p class="testi-text">"สิ่งที่ผมซื้อจากหมอกิ๊ฟไม่ใช่ฟิลเลอร์ แต่คือ 'ความมั่นใจ' เวลาต้องดีลงานระดับประเทศ หน้าผมไม่เคยดูเหนื่อยอีกเลย"</p>
-                    <div class="testi-author">— CEO, SET 100 Company (Energy)</div>
-                </div>
-                <div class="testi-card">
-                    <p class="testi-text">"หมอคนเดียวที่กล้าดุฉันเรื่องน้ำตาล และนั่นเปลี่ยนชีวิตฉันไปเลย ผิวฉันดีขึ้นแบบที่ครีมกระปุกละแสนก็ทำให้ไม่ได้"</p>
-                    <div class="testi-author">— A-List Celebrity / Actress</div>
-                </div>
-                <div class="testi-card">
-                    <p class="testi-text">"I fly back to Bangkok twice a year just for Dr. Giff. She understands 'Asian Elegance' better than anyone."</p>
-                    <div class="testi-author">— HNW Expat / Private Banking Client</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section style="background-color: #080808;">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">YOUR JOURNEY BEGINS</h2>
-            </div>
-            <ul class="journey-list">
-                <li>
-                    <strong class="gold" style="font-size: 1.2rem;">STEP 1: The Private Consultation</strong><br>
-                    <span class="thai-text">นัดหมายเพื่อพูดคุยปัญหาระดับลึก (รับจำกัด 3 เคส/วัน เพื่อความเป็นส่วนตัวสูงสุด)</span>
-                </li>
-                <li>
-                    <strong class="gold" style="font-size: 1.2rem;">STEP 2: The Personal Blueprint</strong><br>
-                    <span class="thai-text">รับแผนการรักษา The Legacy Protocol เฉพาะบุคคล ที่ออกแบบโดย Dr. Giff</span>
-                </li>
-                <li>
-                    <strong class="gold" style="font-size: 1.2rem;">STEP 3: The Execution</strong><br>
-                    <span class="thai-text">เริ่มต้นกระบวนการย้อนวัย ด้วยเครื่องมือและผลิตภัณฑ์ระดับ Gold Standard</span>
-                </li>
-            </ul>
-            
             <div class="contact-card">
                 <h3 style="color:#fff; margin-bottom:20px;">EXCLUSIVE APPOINTMENT</h3>
-                <div style="text-align: center; margin-top: 20px;">
-                    <a href="https://line.me/R/ti/p/@752bsdty" target="_blank" class="btn-main">BOOK VIA LINE VVIP</a>
-                </div>
+                <p style="color:#666; margin-bottom:30px; font-size:0.9rem;">รับจำกัด 3 เคส/วัน เพื่อความเป็นส่วนตัวสูงสุด</p>
+                
+                <a href="https://line.me/R/ti/p/@752bsdty" target="_blank" class="btn-main">BOOK VIA LINE VVIP</a>
                 
                 <div class="social-links">
-                    <a href="https://www.instagram.com/gem.scientificbeauty" target="_blank" class="social-icon">
-                        <i class="fab fa-instagram"></i> <span class="social-label">Instagram</span>
-                    </a>
-                    <a href="https://www.facebook.com/gem.scientificbeauty" target="_blank" class="social-icon">
-                        <i class="fab fa-facebook"></i> <span class="social-label">Facebook</span>
-                    </a>
-                    <a href="https://tiktok.com/@gem.clinic" target="_blank" class="social-icon">
-                        <i class="fab fa-tiktok"></i> <span class="social-label">TikTok</span>
-                    </a>
-                    <a href="mailto:gemscientificbeauty@gmail.com" class="social-icon">
-                        <i class="fas fa-envelope"></i> <span class="social-label">Email</span>
-                    </a>
+                    <a href="https://www.instagram.com/gem.scientificbeauty" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/gem.scientificbeauty" target="_blank" class="social-icon"><i class="fab fa-facebook"></i></a>
+                    <a href="https://tiktok.com/@gem.clinic" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                    <a href="mailto:gemscientificbeauty@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
@@ -738,6 +390,22 @@
             <p>&copy; 2025 GEM SCIENTIFIC BEAUTY. ALL RIGHTS RESERVED.</p>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.reveal').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
 
 </body>
 </html>
