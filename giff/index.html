@@ -3,258 +3,553 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Giff Worawan | The Longevity Architect</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+    <title>Dr. Giff Worawan | The Master Architect</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Inter:wght@200;300;400;600&family=Sarabun:wght@200;300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
+    <style>
         :root {
-            --bg-color: #050505;
-            --text-main: #E0E0E0;
+            --bg-dark: #050505;
+            --bg-panel: #0F0F0F;
+            --gold: #C5A059; /* Classic Luxury Gold */
+            --gold-light: #E5C585;
+            --text-main: #F0F0F0;
             --text-muted: #888888;
-            --gold: #C5A059;
-            --border: #333333;
+            --border: #2A2A2A;
         }
 
+        /* RESET & BASE */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: 'Lora', serif;
-            margin: 0;
-            padding: 0;
-            line-height: 1.8;
-            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            overflow-x: hidden;
         }
 
         h1, h2, h3, h4 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Cinzel', serif;
             font-weight: 400;
-            margin: 0 0 20px 0;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
-        h1 { font-size: 3.5rem; line-height: 1.2; color: #fff; }
-        h2 { font-size: 2rem; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 40px; }
-        h3 { font-size: 1.5rem; color: #fff; margin-top: 30px; }
         strong { color: #fff; font-weight: 600; }
-
+        .gold { color: var(--gold); }
+        
+        /* CONTAINER */
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 80px 20px;
-            border-left: 1px solid var(--border);
-            border-right: 1px solid var(--border);
-            background-color: #0a0a0a;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* HEADER */
-        header {
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            padding-bottom: 60px;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(5,5,5,1)), url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2700&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle, transparent 20%, #050505 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            animation: fadeUp 1.2s ease;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        .btn-main {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-main:hover {
+            background-color: var(--gold);
+            color: #000;
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.3);
+        }
+
+        /* --- SECTIONS COMMON --- */
+        section {
+            padding: 100px 0;
             border-bottom: 1px solid var(--border);
         }
 
-        .subtitle {
-            font-family: 'Lora', serif;
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            font-size: 0.8rem;
+            color: var(--gold);
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: var(--gold);
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: block;
         }
 
-        /* BUTTON */
-        .cta-container {
-            margin: 40px 0;
-            text-align: center;
-        }
-
-        .btn-gold {
-            background-color: var(--gold);
-            color: #000;
-            padding: 15px 40px;
-            text-decoration: none;
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            display: inline-block;
-            border: 1px solid var(--gold);
-        }
-
-        .btn-gold:hover {
-            background-color: transparent;
-            color: var(--gold);
-        }
-
-        /* SECTIONS */
-        .content-block {
-            padding: 40px 0;
-        }
-
-        .quote-highlight {
-            font-size: 1.8rem;
-            font-style: italic;
+        .section-title {
+            font-size: 2.5rem;
             color: #fff;
-            text-align: center;
-            margin: 50px 0;
-            padding: 0 40px;
+        }
+
+        /* --- MANIFESTO --- */
+        .manifesto-box {
+            border-left: 2px solid var(--gold);
+            padding-left: 40px;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .quote-large {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: #fff;
             line-height: 1.4;
+            margin-bottom: 30px;
         }
 
-        .list-group {
-            list-style: none;
-            padding: 0;
-        }
-
-        .list-group li {
-            margin-bottom: 25px;
-            padding-left: 20px;
-            border-left: 2px solid var(--border);
-            transition: border-color 0.3s;
-        }
-
-        .list-group li:hover {
-            border-left-color: var(--gold);
-        }
-
-        .meta-data {
-            font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
+        .thai-text {
+            font-family: 'Sarabun', sans-serif;
+            font-weight: 300;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: block;
-            margin-bottom: 5px;
+            font-size: 1.1rem;
         }
 
-        /* GRID FOR BIO */
-        .bio-grid {
+        /* --- PILLARS GRID --- */
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .pillar-card {
+            background: var(--bg-panel);
+            padding: 40px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .pillar-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .pillar-icon {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 25px;
+        }
+
+        .pillar-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        /* --- PROTOCOL (Timeline) --- */
+        .protocol-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            background: rgba(255,255,255,0.03);
+            padding: 30px;
+            border-radius: 4px;
+        }
+
+        .step-num {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            color: rgba(255,255,255,0.1);
+            margin-right: 30px;
+            line-height: 1;
+        }
+
+        .step-content h4 {
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- EXECUTIVE PRESENCE (New Section) --- */
+        .exec-section {
+            background: linear-gradient(90deg, #0a0a0a 0%, #151515 100%);
+            border-left: 4px solid var(--gold);
+        }
+
+        .exec-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 30px;
+            align-items: center;
+            gap: 50px;
         }
 
-        .stat-box {
-            background: #111;
-            padding: 20px;
-            border: 1px solid var(--border);
+        /* --- INNER CIRCLE --- */
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
         }
 
-        .stat-number {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+        .testi-card {
+            background: #000;
+            padding: 30px;
+            border: 1px solid #222;
+        }
+
+        .testi-text {
+            font-family: 'Sarabun', sans-serif;
+            font-style: italic;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .testi-author {
             color: var(--gold);
-            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* FOOTER */
-        footer {
-            margin-top: 80px;
-            padding-top: 40px;
-            border-top: 1px solid var(--border);
+        /* --- BIO STATS --- */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
             text-align: center;
-            font-size: 0.8rem;
+            margin-top: 50px;
+            border-top: 1px solid var(--border);
+            padding-top: 50px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+        
+        .stat-item span {
             color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* --- JOURNEY --- */
+        .journey-list {
+            list-style: none;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .journey-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 40px;
+        }
+
+        .journey-list li::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 8px;
+            width: 12px; height: 12px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        .journey-list li:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 5px; top: 25px;
+            bottom: -25px;
+            width: 2px;
+            background: rgba(197, 160, 89, 0.3);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 50px 0;
+            font-size: 0.8rem;
+            color: #555;
+            background: #020202;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .exec-grid { grid-template-columns: 1fr; }
+            .stats-bar { flex-direction: column; }
+            .quote-large { font-size: 1.5rem; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <span class="subtitle">Personal Branding Strategy V.9</span>
-            <h1>DR. WORAWAN LEELAPORN</h1>
-            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
-                The Master Architect of Facial Elegance & Longevity Physician.<br>
-                สถาปนิกโครงสร้างใบหน้า และ แพทย์ผู้เชี่ยวชาญด้านเวชศาสตร์ชะลอวัย
+    <header class="hero">
+        <div class="container hero-content">
+            <span class="hero-subtitle">GEMS Scientific Beauty</span>
+            <h1 class="hero-title">DR. GIFF<br>WORAWAN</h1>
+            <p style="color: #ccc; margin-bottom: 40px; font-weight: 300; letter-spacing: 1px;">
+                THE MASTER ARCHITECT OF FACIAL ELEGANCE<br>
+                & LONGEVITY PHYSICIAN
             </p>
-            
-            <div class="cta-container">
-                <a href="script.html" class="btn-gold">ACCESS SCRIPT VAULT &rarr;</a>
-                <p style="font-size: 0.8rem; margin-top: 10px; color: #555;">(คลิกเพื่อเข้าสู่คลังสคริปต์วิดีโอ)</p>
-            </div>
-        </header>
+            <a href="script.html" class="btn-main">ENTER THE SCRIPT VAULT</a>
+        </div>
+    </header>
 
-        <section class="content-block">
-            <h2>01. THE MANIFESTO (เจตจำนง)</h2>
-            <div class="quote-highlight">
-                "Wellness isn’t about doing more,<br>it’s about doing what truly restores you."
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Philosophy</span>
+                <h2 class="section-title">THE MANIFESTO</h2>
             </div>
-            <p>
-                ในยุคที่วงการความงามเต็มไปด้วยการ "ยัดเยียด" และ "การตลาดที่เกินจริง" (Quick Fixes), 
-                <strong>Dr. Giff</strong> ยืนหยัดในฐานะ <strong>"The Purist"</strong> ผู้เชื่อในความงามที่เกิดจากสมดุลของระบบภายใน 
-                เราไม่ได้ต่อสู้กับความแก่ชรา (Aging) แต่เราบริหารจัดการความเสื่อม (Decay Management) ด้วยศิลปะและวิทยาศาสตร์
-            </p>
-            <ul class="list-group">
+            <div class="manifesto-box">
+                <p class="quote-large">
+                    "Wellness isn’t about doing more,<br>
+                    it’s about doing what <span class="gold">truly restores</span> you."
+                </p>
+                <p class="thai-text">
+                    ในโลกที่เต็มไปด้วยทางลัดและความงามฉาบฉวย <strong>Dr. Giff</strong> ยืนหยัดในฐานะ "The Purist" 
+                    เราไม่ได้ต่อสู้กับกาลเวลา แต่เราใช้ศิลปะและวิทยาศาสตร์เพื่อบริหารจัดการความเสื่อม (Decay Management) 
+                    ให้คุณยังคงเป็นตัวเอง... ในเวอร์ชันที่มีพลังที่สุด
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: #080808;">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Core Competency</span>
+                <h2 class="section-title">THE 4 PILLARS</h2>
+            </div>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <i class="fas fa-brain pillar-icon"></i>
+                    <h3>The Art of Anatomy</h3>
+                    <p class="thai-text" style="font-size: 0.95rem;">
+                        ในฐานะ <strong>National Trainer</strong> ความเข้าใจเรื่อง Layer ของใบหน้าคือหัวใจสำคัญ 
+                        เราไม่ได้แค่ "เติม" แต่เรา "วางโครงสร้าง" แสงและเงาใหม่ ให้ดูเป็นธรรมชาติที่สุด
+                    </p>
+                </div>
+                <div class="pillar-card">
+                    <i class="fas fa-chart-line pillar-icon"></i>
+                    <h3>The Biological Asset</h3>
+                    <p class="thai-text" style="font-size: 0.95rem;">
+                        สำหรับ Elite ร่างกายคือ <strong>Asset ที่แพงที่สุด</strong> หมอทำหน้าที่เหมือน Fund Manager 
+                        ดูแลพอร์ตสุขภาพผ่านค่าเลือด ฮอร์โมน และ DNA เพื่อรักษา Value ของคุณ
+                    </p>
+                </div>
+                <div class="pillar-card">
+                    <i class="fas fa-user-check pillar-icon"></i>
+                    <h3>Brutal Honesty</h3>
+                    <p class="thai-text" style="font-size: 0.95rem;">
+                        ความจริงใจคือความหรูหราสูงสุด เรากล้าที่จะพูดว่า <strong>"อย่าทำ"</strong> 
+                        ถ้ามันไม่จำเป็น หรือทำแล้วดูปลอม เราขายผลลัพธ์ระยะยาว ไม่ใช่ยอดขายรายวัน
+                    </p>
+                </div>
+                <div class="pillar-card" style="border-color: var(--gold);">
+                    <i class="fas fa-crown pillar-icon"></i>
+                    <h3>Executive Presence</h3>
+                    <p class="thai-text" style="font-size: 0.95rem;">
+                        <strong>"อำนาจ" สะท้อนผ่านใบหน้า</strong> เราออกแบบบุคลิกภาพสำหรับผู้นำ 
+                        ให้ดูสง่า (Noble), เปี่ยมพลัง (Vibrant), และน่าเชื่อถือ ในทุกการเจรจาธุรกิจ
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Signature Service</span>
+                <h2 class="section-title">THE LEGACY PROTOCOL</h2>
+                <p class="thai-text">โปรแกรมเอกสิทธิ์เฉพาะบุคคล เพื่อการฟื้นฟูระดับ Cellular & Structural</p>
+            </div>
+
+            <div class="protocol-steps">
+                <div class="step-item">
+                    <div class="step-num">01</div>
+                    <div class="step-content">
+                        <h4>THE BLUEPRINT (วิเคราะห์โครงสร้าง)</h4>
+                        <p class="thai-text">Deep Diagnostics: ตรวจยีน (DNA), ฮอร์โมน (Hormone Panel), และสแกนโครงหน้า 3 มิติ เพื่อหา "พิมพ์เขียว" ที่แท้จริงของคุณ</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">02</div>
+                    <div class="step-content">
+                        <h4>THE RESTORATION (ฟื้นฟูฐานราก)</h4>
+                        <p class="thai-text">ซ่อมแซมระบบภายใน ลดการอักเสบ (Inflammation) และปรับสมดุลการนอน/อาหาร เพื่อเตรียม Canvas ให้พร้อมก่อนลงมือ</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">03</div>
+                    <div class="step-content">
+                        <h4>THE SCULPTING (งานศิลปะ)</h4>
+                        <p class="thai-text">ปรับรูปหน้าด้วยเทคนิค "Light & Shadow" และ Biostimulators โดยมือหมอกิ๊ฟ เพื่อสร้าง The Untouched Look</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">04</div>
+                    <div class="step-content">
+                        <h4>THE SUSTAIN (รักษาระดับ)</h4>
+                        <p class="thai-text">ติดตามผลระยะยาว เหมือนมี Personal Health Consultant ส่วนตัว เพื่อให้กราฟชีวิตคุณไม่ตกลง</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background: var(--bg-panel);">
+        <div class="container">
+            <div class="exec-grid">
+                <div>
+                    <span class="section-tag">The Physician</span>
+                    <h2 class="section-title" style="margin-bottom: 20px;">DR. GIFF<br>WORAWAN LEELAPORN</h2>
+                    <p class="thai-text" style="margin-bottom: 20px;">
+                        แพทย์ผู้ก่อตั้ง GEMS Scientific Beauty และเทรนเนอร์ระดับประเทศ (National Trainer) 
+                        ผู้อยู่เบื้องหลังความเยาว์วัยของบุคคลชั้นนำ ด้วยความเชื่อที่ว่า "หมอที่ดีที่สุด คือร่างกายของคุณเอง" 
+                        หน้าที่ของหมอคือปลดล็อกศักยภาพนั้นออกมา
+                    </p>
+                    <ul style="list-style: none; color: #aaa; font-family: 'Sarabun';">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> Medical Director, GEMS Scientific Beauty</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> National Trainer for Profhilo & Revanesse</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> Speaker for Allergan Aesthetics</li>
+                    </ul>
+                </div>
+                <div class="stats-bar" style="border: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div class="stat-item" style="background: #000; padding: 30px;">
+                        <h3>15+</h3>
+                        <span>YEARS EXPERIENCE</span>
+                    </div>
+                    <div class="stat-item" style="background: #000; padding: 30px;">
+                        <h3>10k+</h3>
+                        <span>SUCCESSFUL CASES</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testimonials</span>
+                <h2 class="section-title">THE INNER CIRCLE</h2>
+                <p style="color: #555; font-style: italic;">Voice of the VVIPs (Confidential)</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testi-card">
+                    <p class="testi-text">"สิ่งที่ผมซื้อจากหมอกิ๊ฟไม่ใช่ฟิลเลอร์ แต่คือ 'ความมั่นใจ' เวลาต้องดีลงานระดับประเทศ หน้าผมไม่เคยดูเหนื่อยอีกเลย"</p>
+                    <div class="testi-author">— CEO, SET 100 Company (Energy)</div>
+                </div>
+                <div class="testi-card">
+                    <p class="testi-text">"หมอคนเดียวที่กล้าดุฉันเรื่องน้ำตาล และนั่นเปลี่ยนชีวิตฉันไปเลย ผิวฉันดีขึ้นแบบที่ครีมกระปุกละแสนก็ทำให้ไม่ได้"</p>
+                    <div class="testi-author">— A-List Celebrity / Actress</div>
+                </div>
+                <div class="testi-card">
+                    <p class="testi-text">"I fly back to Bangkok twice a year just for Dr. Giff. She understands 'Asian Elegance' better than anyone."</p>
+                    <div class="testi-author">— HNW Expat / Private Banking Client</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: #080808;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">YOUR JOURNEY BEGINS</h2>
+            </div>
+            <ul class="journey-list">
                 <li>
-                    <span class="meta-data">CORE BELIEF</span>
-                    <strong>Authentic Beauty (ความงามที่แท้จริง):</strong> ไม่ใช่การเปลี่ยนหน้าให้เป็นคนอื่น แต่คือการ Restoration (ฟื้นฟู) ให้กลับมาเป็นเวอร์ชันที่ดีที่สุดของตัวเอง
+                    <strong class="gold" style="font-size: 1.2rem;">STEP 1: The Private Consultation</strong><br>
+                    <span class="thai-text">นัดหมายเพื่อพูดคุยปัญหาระดับลึก (รับจำกัด 3 เคส/วัน เพื่อความเป็นส่วนตัวสูงสุด)</span>
                 </li>
                 <li>
-                    <span class="meta-data">THE ENEMY</span>
-                    <strong>Inflammation & Imbalance:</strong> ศัตรูไม่ใช่ริ้วรอย แต่คือการอักเสบจากน้ำตาล (Sugar), การนอนที่ผิดจังหวะ (Metabolic Jetlag), และความเครียดสะสม
+                    <strong class="gold" style="font-size: 1.2rem;">STEP 2: The Personal Blueprint</strong><br>
+                    <span class="thai-text">รับแผนการรักษา The Legacy Protocol เฉพาะบุคคล ที่ออกแบบโดย Dr. Giff</span>
                 </li>
                 <li>
-                    <span class="meta-data">THE METHOD</span>
-                    <strong>Precision & Artistry:</strong> ผสานเทคโนโลยีทางการแพทย์ (Deep Diagnostics) เข้ากับสายตาของศิลปิน (ISFP) เพื่อผลลัพธ์ที่ "Touchless" (ดูเหมือนไม่ได้ทำ)
+                    <strong class="gold" style="font-size: 1.2rem;">STEP 3: The Execution</strong><br>
+                    <span class="thai-text">เริ่มต้นกระบวนการย้อนวัย ด้วยเครื่องมือและผลิตภัณฑ์ระดับ Gold Standard</span>
                 </li>
             </ul>
-        </section>
+            <div style="text-align: center; margin-top: 60px;">
+                <a href="#" class="btn-main">BOOK APPOINTMENT (LINE VVIP)</a>
+            </div>
+        </div>
+    </section>
 
-        <section class="content-block">
-            <h2>02. THE PILLARS OF AUTHORITY</h2>
-            <p>โครงสร้างแบรนด์ถูกออกแบบเพื่อดึงดูดกลุ่ม Elite และ VVIP ที่ต้องการ Trust และ Privacy สูงสุด</p>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 GEMS SCIENTIFIC BEAUTY. ALL RIGHTS RESERVED.</p>
+            <p style="color: #333; margin-top: 10px;">STRATEGY BY AIHIA V.10</p>
+        </div>
+    </footer>
 
-            <h3>I. The Art of Anatomy (ศิลปะแห่งกายวิภาค)</h3>
-            <p>การนำเสนอความรู้ระดับ National Trainer ที่ไม่ใช่แค่การ "ฉีด" แต่คือการ "เข้าใจโครงสร้าง" แสงและเงา การขยับของกล้ามเนื้อ เพื่อให้ผลลัพธ์ดูเป็นธรรมชาติที่สุด</p>
-
-            <h3>II. The Biological Asset (ร่างกายคือสินทรัพย์)</h3>
-            <p>สำหรับกลุ่ม High Net Worth ร่างกายคือ Asset ที่แพงที่สุด เราทำหน้าที่เป็น "Fund Manager" บริหารพอร์ตสุขภาพ ผ่านการตรวจเลือดเชิงลึก ฮอร์โมน และ DNA</p>
-
-            <h3>III. brutal Truth & Honesty (ความจริงใจที่เด็ดขาด)</h3>
-            <p>กล้าที่จะปฏิเสธเคสที่ไม่จำเป็น กล้าที่จะเตือนสติเรื่อง Lifestyle เพราะผลลัพธ์ที่ยั่งยืนสำคัญกว่ากำไรระยะสั้น นี่คือสิ่งที่ทำให้ VVIP "วางใจ"</p>
-        </section>
-
-        <section class="content-block">
-            <h2>03. THE LEGACY PROTOCOL (PRODUCT)</h2>
-            <p>โปรแกรมเอกสิทธิ์เฉพาะบุคคล (Signature Service) ที่รวมศาสตร์แห่งความงามและการชะลอวัยเข้าด้วยกัน</p>
-            
-            <div class="bio-grid">
-                <div class="stat-box">
-                    <h4>PHASE 1: BLUEPRINT</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">
-                        การตรวจวิเคราะห์ระดับสูง (Deep Analysis)<br>
-                        • Genetic Testing<br>
-                        • Hormone Panel<br>
-                        • Facial Architecture Scan
-                    </p>
-                </div>
-                <div class="stat-box">
-                    <h4>PHASE 2: RESTORATION</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">
-                        การซ่อมแซมและฟื้นฟู (Repair)<br>
-                        • IV Nutrient Therapy<br>
-                        • Biostimulators<br>
-                        • Cellular Detox
-                    </p>
-                </div>
-                <div class="stat-box">
-                    <h4>PHASE 3: SCULPTING</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">
-                        งานศิลปะบนใบหน้า (Aesthetic)<br>
-                        • Light & Shadow Filler<br>
-                        • Skin Quality Improvement<br>
-                        • Natural Lifting
-                    </p>
-                </div>
-                <div class="stat-box">
-                    <h4>PHASE 4: SUSTAIN</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">
-                        การรักษาระดับ (Maintenance)<br>
-                        • Lifestyle Design<br>
-                        • Supplement Plan<br>
-                        • Quarterly Check-up
-                    </p>
+</body>
+</html>
