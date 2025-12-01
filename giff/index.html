@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Gift Worawan | The Master Architect of Facial Elegance</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400;500&display=swap');
+
+        :root {
+            --bg-color: #0a0a0a; /* ดำสนิทแบบ Luxury */
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --accent-gold: #D4AF37; /* ทองแบบผู้ดี */
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* --- HERO SECTION --- */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1618331835717-801e976710b2?q=80&w=2500&auto=format&fit=crop'); /* Placeholder Image: Luxury Dark Abstract */
+            background-size: cover;
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin: 0;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #fff, #999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            font-style: italic;
+            margin-top: 20px;
+            font-weight: 400;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        /* --- PHILOSOPHY SECTION --- */
+        .section {
+            padding: 100px 10%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .quote-box {
+            max-width: 800px;
+            text-align: center;
+            border-left: 2px solid var(--accent-gold);
+            padding-left: 30px;
+            margin: 50px 0;
+        }
+
+        .quote-text {
+            font-size: 2rem;
+            font-style: italic;
+            color: var(--text-primary);
+        }
+
+        .quote-author {
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* --- PROFILE GRID --- */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 50px;
+            align-items: center;
+        }
+
+        .profile-img-placeholder {
+            width: 100%;
+            height: 600px;
+            background-color: #1a1a1a;
+            border: 1px solid var(--accent-gold);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-secondary);
+            position: relative;
+        }
+        
+        .profile-img-placeholder::after {
+            content: "DR. GIFT PORTRAIT";
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 5px;
+        }
+
+        .profile-content h2 {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 30px;
+        }
+
+        .credential-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .credential-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .credential-list li::before {
+            content: "•";
+            color: var(--accent-gold);
+            font-size: 2rem;
+            margin-right: 15px;
+            line-height: 0;
+        }
+
+        /* --- LEGACY PROTOCOL --- */
+        .protocol-section {
+            background-color: #111;
+            width: 100%;
+        }
+
+        .card-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 40px;
+            width: 300px;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-gold);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 50px;
+            text-align: center;
+            border-top: 1px solid #222;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 3rem; }
+            .profile-grid { grid-template-columns: 1fr; }
+            .quote-text { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="hero-title">WORAWAN<br>LEELAPORN</h1>
+        <div class="hero-subtitle serif">The Master Architect of Facial Elegance</div>
+        <div class="scroll-indicator">Scroll to Discover</div>
+    </header>
+
+    <section class="section">
+        <div class="quote-box">
+            <p class="quote-text serif">
+                "Wellness isn’t about doing more,<br>it’s about doing what truly restores you."
+            </p>
+            <div class="quote-author">Dr. Gift Worawan — GEMS Scientific Beauty</div>
+        </div>
+        <p style="max-width: 600px; text-align: center; color: var(--text-secondary);">
+            เราไม่ได้แค่ "รักษา" แต่เรา "ฟื้นฟู" โครงสร้างและสมดุลของชีวิต
+            ด้วยศิลปะแห่งความเป็นธรรมชาติและวิทยาศาสตร์ที่แม่นยำ (Precision Medicine)
+        </p>
+    </section>
+
+    <section class="section">
+        <div class="profile-grid">
+            <div class="profile-img-placeholder">
+                </div>
+            <div class="profile-content">
+                <h2 class="serif">The Authority</h2>
+                <p>
+                    แพทย์ผู้เชี่ยวชาญด้านเวชศาสตร์ความงามและชะลอวัย ด้วยประสบการณ์กว่า 15 ปี 
+                    ผู้ผสมผสาน "สายตาแห่งศิลปิน" (ISFP) เข้ากับ "วิทยาศาสตร์การแพทย์"
+                </p>
+                <ul class="credential-list">
+                    <li>Medical Director, GEMS Scientific Beauty</li>
+                    <li>National Trainer for Profhilo & Revanesse</li>
+                    <li>Expert in Facial Architecture & Longevity</li>
+                    <li>Over 10,000+ Successful Cases</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="section protocol-section">
+        <h2 class="serif" style="color: #fff; font-size: 2.5rem;">The Legacy Protocol</h2>
+        <p style="color: var(--accent-gold); letter-spacing: 2px;">VVIP & ELITE MANAGEMENT</p>
+        
+        <div class="card-container">
+            <div class="card">
+                <h3>01. The Architect</h3>
+                <p>วิเคราะห์โครงสร้างใบหน้าและออกแบบความงามที่เป็นเอกลักษณ์เฉพาะบุคคล (Facial Design)</p>
+            </div>
+            <div class="card">
+                <h3>02. The Restoration</h3>
+                <p>ฟื้นฟูระดับเซลล์ (Cellular Therapy) ด้วยเทคโนโลยีชีวภาพเพื่อย้อนเวลาให้ร่างกาย</p>
+            </div>
+            <div class="card">
+                <h3>03. The Harmony</h3>
+                <p>ปรับสมดุลฮอร์โมนและ Lifestyle (Hormonal Balance) เพื่อพลังชีวิตที่ยั่งยืน</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>GEMS SCIENTIFIC BEAUTY © 2025 | EXCLUSIVE APPOINTMENT ONLY</p>
+    </footer>
+
+</body>
+</html>
