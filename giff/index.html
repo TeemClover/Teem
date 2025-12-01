@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Giff Worawan | The Master Architect</title>
+    <title>Dr. Giff Worawan | GEM Scientific Beauty</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,17 +50,17 @@
             z-index: 2;
         }
 
-        /* --- HERO SECTION (UPDATED) --- */
+        /* --- HERO SECTION --- */
         .hero {
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            /* ใช้รูปใหม่ IMG_2364.jpg เป็นปก */
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('IMG_2364.jpg');
+            /* HERO BG: Black Dress Portrait (IMG_2358.jpeg) */
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.9)), url('IMG_2358.jpeg');
             background-size: cover;
-            background-position: center top; /* จัดให้เห็นหน้าชัดๆ */
+            background-position: center top;
             background-attachment: fixed;
             position: relative;
         }
@@ -69,7 +69,7 @@
             position: relative;
             z-index: 3;
             animation: fadeUp 1.2s ease;
-            margin-top: 200px; /* ดันตัวหนังสือลงมาหน่อย ให้ไม่บังหน้า */
+            margin-top: 150px;
         }
 
         .hero-title {
@@ -205,7 +205,7 @@
             width: 100%;
             height: auto;
             display: block;
-            filter: grayscale(20%) contrast(110%);
+            filter: grayscale(10%) contrast(110%);
         }
         
         .authority-badge {
@@ -269,7 +269,7 @@
         .lifestyle-img {
             width: 100%;
             display: block;
-            filter: sepia(20%);
+            filter: sepia(10%);
         }
 
         /* --- PROTOCOL --- */
@@ -325,7 +325,7 @@
             filter: saturate(0.9);
         }
 
-        /* --- TESTIMONIALS (FIXED BUG) --- */
+        /* --- TESTIMONIALS --- */
         .testimonial-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -424,6 +424,18 @@
             color: #555;
             background: #020202;
         }
+        
+        .social-links { margin-top: 30px; display: flex; justify-content: center; gap: 20px; }
+        .social-icon { color: #666; font-size: 1.5rem; transition: 0.3s; }
+        .social-icon:hover { color: var(--gold); }
+        
+        .contact-card {
+            background: linear-gradient(145deg, #111, #050505);
+            padding: 40px;
+            text-align: center;
+            border: 1px solid #222;
+            margin-top: 40px;
+        }
 
         /* RESPONSIVE */
         @media (max-width: 900px) {
@@ -446,7 +458,7 @@
 
     <header class="hero">
         <div class="container hero-content">
-            <span class="hero-subtitle">GEMS Scientific Beauty</span>
+            <span class="hero-subtitle">GEM Scientific Beauty</span>
             <h1 class="hero-title">DR. GIFF<br>WORAWAN</h1>
             <p style="color: #ccc; margin-bottom: 40px; font-weight: 300; letter-spacing: 1px; text-shadow: 0 0 10px #000;">
                 THE MASTER ARCHITECT OF FACIAL ELEGANCE<br>
@@ -525,7 +537,7 @@
                 </div>
                 
                 <div class="authority-img-wrapper">
-                    <img src="IMG_2359.jpeg" alt="Dr. Giff National Lecture" class="authority-img">
+                    <img src="IMG_2365.jpeg" alt="Dr. Giff National Lecture" class="authority-img">
                     <div class="authority-badge">CSO CLINICAL TRAINER</div>
                 </div>
                 
@@ -575,19 +587,19 @@
             <div class="exec-grid">
                 
                 <div class="portrait-frame">
-                    <img src="IMG_2358.jpeg" alt="Dr. Giff Portrait" class="portrait-img">
+                    <img src="IMG_2359.jpeg" alt="Dr. Giff Physician" class="portrait-img">
                 </div>
 
                 <div>
                     <span class="section-tag">The Physician</span>
                     <h2 class="section-title" style="margin-bottom: 20px;">DR. GIFF<br>WORAWAN LEELAPORN</h2>
                     <p class="thai-text" style="margin-bottom: 20px;">
-                        แพทย์ผู้ก่อตั้ง GEMS Scientific Beauty และเทรนเนอร์ระดับประเทศ (National Trainer) 
+                        แพทย์ผู้ก่อตั้ง <strong>GEM Scientific Beauty</strong> และเทรนเนอร์ระดับประเทศ (National Trainer) 
                         ผู้อยู่เบื้องหลังความเยาว์วัยของบุคคลชั้นนำ ด้วยความเชื่อที่ว่า "หมอที่ดีที่สุด คือร่างกายของคุณเอง" 
                         หน้าที่ของหมอคือปลดล็อกศักยภาพนั้นออกมาด้วยศิลปะและวิทยาศาสตร์
                     </p>
                     <ul style="list-style: none; color: #aaa; font-family: 'Sarabun';">
-                        <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> Medical Director, GEMS Scientific Beauty</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> Medical Director, GEM Scientific Beauty</li>
                         <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> National Trainer for Profhilo & Revanesse</li>
                         <li style="margin-bottom: 10px;"><i class="fas fa-check gold" style="margin-right: 10px;"></i> CSO Clinical Trainer</li>
                     </ul>
@@ -692,15 +704,25 @@
                     <span class="thai-text">เริ่มต้นกระบวนการย้อนวัย ด้วยเครื่องมือและผลิตภัณฑ์ระดับ Gold Standard</span>
                 </li>
             </ul>
-            <div style="text-align: center; margin-top: 60px;">
-                <a href="#" class="btn-main">BOOK APPOINTMENT (LINE VVIP)</a>
+            
+            <div class="contact-card">
+                <h3 style="color:#fff; margin-bottom:20px;">EXCLUSIVE APPOINTMENT</h3>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#" class="btn-main">BOOK VIA LINE VVIP</a>
+                </div>
+                
+                <div class="social-links">
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/gem.scientificbeauty" target="_blank" class="social-icon"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-icon"><i class="fas fa-globe"></i></a>
+                </div>
             </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 GEMS SCIENTIFIC BEAUTY. ALL RIGHTS RESERVED.</p>
+            <p>&copy; 2025 GEM SCIENTIFIC BEAUTY. ALL RIGHTS RESERVED.</p>
         </div>
     </footer>
 
