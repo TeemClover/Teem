@@ -50,17 +50,17 @@
             z-index: 2;
         }
 
-        /* --- HERO SECTION --- */
+        /* --- HERO SECTION (UPDATED) --- */
         .hero {
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            /* BG: Lecture Image Darkened (.jpeg) */
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('IMG_2359.jpeg');
+            /* ใช้รูปใหม่ IMG_2364.jpg เป็นปก */
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('IMG_2364.jpg');
             background-size: cover;
-            background-position: center top;
+            background-position: center top; /* จัดให้เห็นหน้าชัดๆ */
             background-attachment: fixed;
             position: relative;
         }
@@ -69,15 +69,15 @@
             position: relative;
             z-index: 3;
             animation: fadeUp 1.2s ease;
+            margin-top: 200px; /* ดันตัวหนังสือลงมาหน่อย ให้ไม่บังหน้า */
         }
 
         .hero-title {
             font-size: 4rem;
             line-height: 1.1;
             margin-bottom: 20px;
-            background: linear-gradient(45deg, #fff, #aaa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
 
         .hero-subtitle {
@@ -87,6 +87,10 @@
             letter-spacing: 4px;
             margin-bottom: 40px;
             display: block;
+            text-shadow: 0 0 10px rgba(0,0,0,1);
+            background: rgba(0,0,0,0.6);
+            display: inline-block;
+            padding: 5px 15px;
         }
 
         .btn-main {
@@ -99,7 +103,7 @@
             font-size: 1rem;
             letter-spacing: 2px;
             transition: all 0.4s ease;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(5px);
         }
 
@@ -217,7 +221,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- GLOBAL LIFESTYLE (UPDATED) --- */
+        /* --- GLOBAL LIFESTYLE --- */
         .lifestyle-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -253,7 +257,7 @@
             border: 1px solid #333;
             padding: 15px;
             background: #111;
-            transform: rotate(2deg); /* Artistic tilt */
+            transform: rotate(2deg);
             transition: 0.3s;
         }
         
@@ -265,7 +269,7 @@
         .lifestyle-img {
             width: 100%;
             display: block;
-            filter: sepia(20%); /* Artistic filter */
+            filter: sepia(20%);
         }
 
         /* --- PROTOCOL --- */
@@ -321,7 +325,7 @@
             filter: saturate(0.9);
         }
 
-        /* --- TESTIMONIALS --- */
+        /* --- TESTIMONIALS (FIXED BUG) --- */
         .testimonial-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -332,6 +336,9 @@
             background: #000;
             padding: 30px;
             border: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .testi-text {
@@ -346,6 +353,7 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-top: auto;
         }
 
         /* --- STATS --- */
@@ -420,6 +428,8 @@
         /* RESPONSIVE */
         @media (max-width: 900px) {
             .hero-title { font-size: 3rem; }
+            .hero-subtitle { font-size: 1rem; }
+            .hero-content { margin-top: 100px; }
             .exec-grid, .lifestyle-grid { grid-template-columns: 1fr; }
             .portrait-img { height: 500px; }
             .authority-badge { position: relative; bottom: auto; right: auto; display: inline-block; margin-top: 10px; width: 100%; text-align: center; }
@@ -438,7 +448,7 @@
         <div class="container hero-content">
             <span class="hero-subtitle">GEMS Scientific Beauty</span>
             <h1 class="hero-title">DR. GIFF<br>WORAWAN</h1>
-            <p style="color: #ccc; margin-bottom: 40px; font-weight: 300; letter-spacing: 1px;">
+            <p style="color: #ccc; margin-bottom: 40px; font-weight: 300; letter-spacing: 1px; text-shadow: 0 0 10px #000;">
                 THE MASTER ARCHITECT OF FACIAL ELEGANCE<br>
                 & LONGEVITY PHYSICIAN
             </p>
@@ -649,15 +659,15 @@
             <div class="testimonial-grid">
                 <div class="testi-card">
                     <p class="testi-text">"สิ่งที่ผมซื้อจากหมอกิ๊ฟไม่ใช่ฟิลเลอร์ แต่คือ 'ความมั่นใจ' เวลาต้องดีลงานระดับประเทศ หน้าผมไม่เคยดูเหนื่อยอีกเลย"</p>
-                    <div class="testi-author">— CEO, SET 100 Company (Energy)</p>
+                    <div class="testi-author">— CEO, SET 100 Company (Energy)</div>
                 </div>
                 <div class="testi-card">
                     <p class="testi-text">"หมอคนเดียวที่กล้าดุฉันเรื่องน้ำตาล และนั่นเปลี่ยนชีวิตฉันไปเลย ผิวฉันดีขึ้นแบบที่ครีมกระปุกละแสนก็ทำให้ไม่ได้"</p>
-                    <div class="testi-author">— A-List Celebrity / Actress</p>
+                    <div class="testi-author">— A-List Celebrity / Actress</div>
                 </div>
                 <div class="testi-card">
                     <p class="testi-text">"I fly back to Bangkok twice a year just for Dr. Giff. She understands 'Asian Elegance' better than anyone."</p>
-                    <div class="testi-author">— HNW Expat / Private Banking Client</p>
+                    <div class="testi-author">— HNW Expat / Private Banking Client</div>
                 </div>
             </div>
         </div>
