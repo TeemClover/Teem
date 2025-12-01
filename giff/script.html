@@ -2,362 +2,211 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Giff | The Director's Monitor V.9</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dr. Giff | Production Monitor</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* --- 1. CORE VARIABLES & RESET --- */
+        /* --- 1. CORE VARIABLES --- */
         :root {
-            --bg-main: #050505;
-            --bg-panel: #0F0F0F;
-            --bg-card: #141414;
-            --border: #2A2A2A;
+            --bg-main: #000000; /* True Black for OLED */
+            --bg-panel: #111111;
+            --border: #333333;
             --gold: #D4AF37;
-            --gold-dim: #8a7024;
-            --gold-glow: rgba(212, 175, 55, 0.3);
-            --text-main: #Eaeaea;
+            --text-main: #FFFFFF;
             --text-muted: #888888;
-            --accent-alert: #cf3030;
             --font-display: 'Cinzel', serif;
             --font-ui: 'Inter', sans-serif;
             --font-script: 'Sarabun', sans-serif;
         }
 
-        * { box-sizing: border-box; outline: none; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--bg-main);
             color: var(--text-main);
             font-family: var(--font-ui);
             height: 100vh;
             display: flex;
-            overflow: hidden; /* App-like feel */
+            overflow: hidden;
         }
 
-        /* --- 2. LAYOUT: SIDEBAR --- */
+        /* --- 2. SIDEBAR (CONTROLLER) --- */
         aside {
-            width: 280px;
+            width: 260px;
             background-color: var(--bg-panel);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             z-index: 10;
-            transition: transform 0.3s ease;
         }
 
         .brand-header {
-            padding: 30px 20px;
+            padding: 25px 20px;
             text-align: center;
             border-bottom: 1px solid var(--border);
+            background: #080808;
         }
 
         .brand-header h1 {
             font-family: var(--font-display);
             color: var(--gold);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin: 0;
-            letter-spacing: 2px;
-        }
-
-        .brand-header span {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         nav.menu {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 0;
+            padding: 10px 0;
         }
 
         .menu-item {
-            padding: 15px 25px;
+            padding: 15px 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             color: var(--text-muted);
-            transition: all 0.2s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-left: 3px solid transparent;
+            transition: 0.2s;
         }
 
-        .menu-item:hover {
-            background-color: rgba(255,255,255,0.03);
-            color: #fff;
+        .menu-item:hover { background-color: rgba(255,255,255,0.05); color: #fff; }
+        .menu-item.active { background-color: rgba(212, 175, 55, 0.1); color: var(--gold); border-left-color: var(--gold); }
+        .menu-item i { margin-right: 12px; width: 20px; text-align: center; }
+
+        /* AI SECTION HIGHLIGHT */
+        .menu-item.ai-mode {
+            color: #ff4d4d;
+            border-top: 1px solid #333;
+            margin-top: 10px;
         }
+        .menu-item.ai-mode.active { color: #ff4d4d; border-left-color: #ff4d4d; background: rgba(255, 77, 77, 0.1); }
 
-        .menu-item.active {
-            background-color: rgba(212, 175, 55, 0.05);
-            color: var(--gold);
-            border-left-color: var(--gold);
-        }
-
-        .menu-item i { margin-right: 15px; width: 20px; text-align: center; }
-
-        .sidebar-footer {
-            padding: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .btn-back {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.8rem;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        
-        .btn-back:hover { border-color: var(--text-main); color: var(--text-main); }
-
-        /* --- 3. LAYOUT: MAIN CONTENT --- */
+        /* --- 3. MAIN AREA --- */
         main {
             flex: 1;
             display: flex;
             flex-direction: column;
             position: relative;
-            background: radial-gradient(circle at top right, #1a1a1a 0%, #050505 40%);
         }
 
         .top-bar {
-            height: 70px;
+            height: 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 40px;
+            padding: 0 30px;
             border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-        }
-
-        .scene-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .status-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .badge-ready { background: rgba(212, 175, 55, 0.1); color: var(--gold); border: 1px solid var(--gold); }
-        .badge-action { background: rgba(200, 0, 0, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; animation: pulse 2s infinite; }
-
-        .toolbar {
-            display: flex;
-            gap: 15px;
+            background: #050505;
         }
 
         .tool-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            width: 40px; height: 40px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
         }
+        .tool-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-        .tool-btn:hover { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
-
-        /* --- 4. SCRIPT CONTAINER --- */
+        /* --- 4. SCRIPT DISPLAY --- */
         .script-viewport {
             flex: 1;
             overflow-y: auto;
-            padding: 40px 10%;
+            padding: 40px 15%; /* Safety margins */
             scroll-behavior: smooth;
         }
 
-        .chapter-section {
-            display: none; /* Hidden by default */
-            animation: fadeIn 0.5s ease;
-        }
-        .chapter-section.active { display: block; }
-
-        .script-header {
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
-        }
+        .chapter-section { display: none; padding-bottom: 100px; }
+        .chapter-section.active { display: block; animation: fadeIn 0.4s ease; }
 
         .script-header h2 {
             font-family: var(--font-display);
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #fff;
-            margin: 0 0 10px 0;
+            margin: 0 0 5px 0;
         }
+        .script-meta { font-size: 0.8rem; color: #666; font-family: monospace; margin-bottom: 30px; }
 
-        .script-meta {
-            display: flex;
-            gap: 30px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-family: 'Courier New', monospace;
-        }
-
-        /* DIRECTOR NOTE BOX */
+        /* DIRECTOR NOTE */
         .director-box {
-            background: linear-gradient(90deg, rgba(212,175,55,0.05) 0%, rgba(0,0,0,0) 100%);
-            border-left: 4px solid var(--gold);
-            padding: 20px 30px;
-            margin-bottom: 40px;
-            border-radius: 0 8px 8px 0;
-        }
-
-        .director-label {
-            color: var(--gold);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .director-text {
-            color: #ddd;
-            font-style: italic;
-            font-size: 1rem;
-        }
-
-        /* DIALOGUE STYLING */
-        .dialogue-block {
+            background: rgba(212,175,55,0.08);
+            border-left: 3px solid var(--gold);
+            padding: 15px 20px;
             margin-bottom: 30px;
-            position: relative;
-            padding-left: 30px;
+            border-radius: 0 6px 6px 0;
         }
+        .director-label { color: var(--gold); font-size: 0.7rem; font-weight: 700; display: block; margin-bottom: 5px; }
+        .director-text { color: #ccc; font-style: italic; font-size: 0.95rem; }
 
-        .dialogue-block::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 10px;
-            bottom: 10px;
-            width: 2px;
-            background: #333;
-        }
-
-        .dialogue-block:hover::before {
-            background: var(--gold);
-            box-shadow: 0 0 8px var(--gold);
-        }
-
-        .speaker-name {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            letter-spacing: 1px;
-            display: block;
-        }
-
+        /* DIALOGUE */
+        .dialogue-block { margin-bottom: 40px; position: relative; padding-left: 20px; }
+        .dialogue-block::before { content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 2px; background: #333; }
+        .dialogue-block:hover::before { background: var(--gold); }
+        
+        .speaker-name { font-size: 0.75rem; color: #666; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        
         .line {
             font-family: var(--font-script);
-            font-size: 1.6rem; /* Large for reading */
-            line-height: 1.8;
+            font-size: 1.8rem; /* Big for iPad */
+            line-height: 1.6;
             color: #fff;
             font-weight: 300;
         }
 
-        .highlight {
-            color: var(--gold);
-            font-weight: 600;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-        }
+        .highlight { color: var(--gold); font-weight: 600; }
 
-        /* --- 5. TELEPROMPTER MODE --- */
-        body.prompter-mode aside, 
-        body.prompter-mode .top-bar {
-            display: none;
-        }
-
-        body.prompter-mode .script-viewport {
-            padding: 50px 15%;
-            background: #000;
-        }
-
-        body.prompter-mode .line {
-            font-size: 3rem; /* Huge for reading */
-            line-height: 1.6;
-        }
-
-        body.prompter-mode .director-box {
-            opacity: 0.5;
-            transform: scale(0.9);
-        }
-
-        body.prompter-mode .exit-prompter {
-            display: block;
-        }
-
+        /* --- 5. PROMPTER MODE (FULLSCREEN) --- */
+        body.prompter-mode aside, body.prompter-mode .top-bar { display: none; }
+        body.prompter-mode .script-viewport { padding: 60px 10%; background: #000; }
+        
+        /* HUGE TEXT FOR RECORDING */
+        body.prompter-mode .line { font-size: 3.2rem; line-height: 1.5; } 
+        body.prompter-mode .director-box { opacity: 0.6; transform: scale(0.95); transform-origin: left; }
+        body.prompter-mode .script-header { opacity: 0.5; transform: scale(0.8); transform-origin: left; }
+        
         .exit-prompter {
-            display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.2);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            z-index: 100;
+            display: none; position: fixed; top: 20px; right: 20px;
+            background: rgba(50,50,50,0.5); color: #fff;
+            padding: 10px 20px; border-radius: 30px; cursor: pointer; z-index: 100;
+            backdrop-filter: blur(5px); font-size: 0.8rem;
         }
+        body.prompter-mode .exit-prompter { display: block; }
 
-        /* ANIMATIONS */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* RESPONSIVE */
+        /* MOBILE/TABLET TWEAKS */
+        @media (max-width: 1024px) {
+            .script-viewport { padding: 30px 5%; }
+            .line { font-size: 1.5rem; }
+            body.prompter-mode .line { font-size: 2.5rem; }
+        }
         @media (max-width: 768px) {
-            body { flex-direction: column; height: auto; overflow: auto; }
-            aside { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
-            nav.menu { display: none; } /* Hide menu on mobile initially, maybe toggle */
-            .script-viewport { padding: 30px 20px; }
+            aside { display: none; position: absolute; height: 100%; width: 80%; box-shadow: 10px 0 20px #000; }
+            aside.mobile-active { display: flex; }
+            .top-bar { padding: 0 15px; }
             .line { font-size: 1.3rem; }
-            .top-bar { display: none; }
-            
-            /* Show simplified menu for mobile */
-            .mobile-menu-toggle { display: block; padding: 15px; text-align: center; color: var(--gold); cursor: pointer; border-bottom: 1px solid var(--border); }
-            nav.menu.mobile-open { display: block; max-height: 300px; }
         }
     </style>
 </head>
 <body>
 
-    <aside>
+    <aside id="sidebar">
         <div class="brand-header">
-            <h1>DR. Giff</h1>
-            <span>The Master Architect V.9</span>
+            <h1>DR. GIFF PRODUCTION</h1>
+            <span style="font-size:0.7rem; color:#555;">SHOOTING DAY: DEC 2025</span>
         </div>
         
-        <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-            <i class="fas fa-bars"></i> SELECT CHAPTER
-        </div>
-
-        <nav class="menu" id="menuList">
+        <nav class="menu">
             <div class="menu-item active" onclick="switchChapter(1)">
                 <i class="fas fa-bolt"></i> 01. The Disruption
             </div>
@@ -377,39 +226,33 @@
                 <i class="fas fa-ban"></i> 06. The Power of NO
             </div>
             <div class="menu-item" onclick="switchChapter(7)">
-                <i class="fas fa-envelope-open-text"></i> 07. The Invitation
+                <i class="fas fa-hand-holding-heart"></i> 07. The Invitation
             </div>
             <div class="menu-item" onclick="switchChapter(8)">
                 <i class="fas fa-crown"></i> 08. Executive Presence
             </div>
+            
+            <div class="menu-item ai-mode" onclick="switchChapter(9)">
+                <i class="fas fa-robot"></i> 09. AI CLONING PROTOCOL
+            </div>
         </nav>
-
-        <div class="sidebar-footer">
-            <a href="index.html" class="btn-back">
-                <i class="fas fa-arrow-left" style="margin-right:8px;"></i> EXIT TO MAIN
-            </a>
-        </div>
     </aside>
 
     <main>
         <div class="top-bar">
-            <div class="scene-info">
-                <span class="status-badge badge-ready" id="statusBadge">STANDBY</span>
-                <span style="font-size:0.9rem; color:#666;">|</span>
-                <span style="font-size:0.9rem; font-weight:600;">GEMS SCIENTIFIC BEAUTY PRODUCTION</span>
-            </div>
-            <div class="toolbar">
-                <button class="tool-btn" title="Toggle Teleprompter" onclick="togglePrompter()">
-                    <i class="fas fa-expand"></i>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button class="tool-btn" onclick="document.getElementById('sidebar').classList.toggle('mobile-active')" style="display:none;" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
                 </button>
-                <button class="tool-btn" title="Light Mode (Don't use)" onclick="alert('AIHIA SAYS: Real pros use Dark Mode.')">
-                    <i class="fas fa-sun"></i>
-                </button>
+                <span style="font-weight:600; font-size:0.9rem; color:#888;">SCENE MONITOR</span>
             </div>
+            <button class="tool-btn" onclick="togglePrompter()" style="width:auto; padding:0 20px;">
+                <i class="fas fa-expand" style="margin-right:10px;"></i> PROMPTER MODE
+            </button>
         </div>
 
         <div class="exit-prompter" onclick="togglePrompter()">
-            <i class="fas fa-times"></i> EXIT PROMPTER
+            <i class="fas fa-times"></i> EXIT
         </div>
 
         <div class="script-viewport">
@@ -417,70 +260,49 @@
             <div id="ch1" class="chapter-section active">
                 <div class="script-header">
                     <h2>01. The Market Disruption</h2>
-                    <div class="script-meta">
-                        <span><i class="far fa-clock"></i> 45 Sec</span>
-                        <span><i class="fas fa-video"></i> CU / Medium Shot</span>
-                        <span><i class="fas fa-thermometer-half"></i> Tone: Serious</span>
-                    </div>
+                    <div class="script-meta">TONE: SERIOUS / CAMERA: EYE-LEVEL</div>
                 </div>
-
                 <div class="director-box">
-                    <span class="director-label">DIRECTOR'S NOTE</span>
-                    <span class="director-text">นั่งไขว่ห้างสบายๆ หรือยืนกอดอกหลวมๆ มองกล้องเหมือนกำลังมองทะลุเข้าไปในใจคนดู เปิดด้วยคำถามที่แทงใจดำ</span>
+                    <span class="director-label">DIRECTOR</span>
+                    <span class="director-text">นั่งไขว่ห้างสบายๆ มองกล้องเหมือนมองทะลุเข้าไปในใจคนดู เปิดด้วยคำถามที่แทงใจดำ</span>
                 </div>
-
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
-                    <div class="line">
-                        "คุณเคยสงสัยไหมคะ... ว่าทำไมคลินิกความงามถึงมีอยู่ทุกหัวมุมถนน แต่คนที่ 'ดูดีจริงๆ' กลับมีน้อยมาก?"
-                    </div>
+                    <span class="speaker-name">DR. GIFF</span>
+                    <div class="line">"คุณเคยสงสัยไหมคะ... ว่าทำไมคลินิกความงามถึงมีอยู่ทุกหัวมุมถนน แต่คนที่ 'ดูดีจริงๆ' กลับมีน้อยมาก?"</div>
                 </div>
-
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
-                    <div class="line">
-                        "เพราะคนส่วนใหญ่กำลังแก้ปัญหาผิดจุดค่ะ... เรามัวแต่วิ่งไล่ตามริ้วรอย ถมฟิลเลอร์ลงไปในหลุม... แต่ลืมถามตัวเองว่า..."
-                    </div>
+                    <span class="speaker-name">DR. GIFF</span>
+                    <div class="line">"เพราะคนส่วนใหญ่กำลังแก้ปัญหาผิดจุดค่ะ... เรามัวแต่วิ่งไล่ตามริ้วรอย ถมฟิลเลอร์ลงไปในหลุม... แต่ลืมถามตัวเองว่า..."</div>
                 </div>
-
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
-                    <div class="line">
-                        "<span class="highlight">โครงสร้างข้างในเราพังไปถึงไหนแล้ว?</span>"
-                    </div>
+                    <span class="speaker-name">DR. GIFF</span>
+                    <div class="line">"<span class="highlight">โครงสร้างข้างในเราพังไปถึงไหนแล้ว?</span>"</div>
                 </div>
-
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
-                    <div class="line">
-                        "หมอไม่ได้อยู่ที่นี่เพื่อ 'ขาย' โปรโมชั่น... แต่อยู่เพื่อ 'เตือนสติ' และ 'วางแผน' ให้คุณใหม่... ในแบบที่หมอทำให้ตัวเอง"
-                    </div>
+                    <span class="speaker-name">DR. GIFF</span>
+                    <div class="line">"หมอไม่ได้อยู่ที่นี่เพื่อ 'ขาย' โปรโมชั่น... แต่อยู่เพื่อ 'เตือนสติ' และ 'วางแผน' ให้คุณใหม่... ในแบบที่หมอทำให้ตัวเอง"</div>
                 </div>
             </div>
 
             <div id="ch2" class="chapter-section">
                 <div class="script-header">
                     <h2>02. The Enemy (Sugar Face)</h2>
-                    <div class="script-meta">
-                        <span><i class="far fa-clock"></i> 60 Sec</span>
-                        <span><i class="fas fa-coffee"></i> Prop: Coffee/Cake</span>
-                        <span><i class="fas fa-thermometer-half"></i> Tone: Warning</span>
-                    </div>
+                    <div class="script-meta">PROP: COFFEE CUP / TONE: WARNING</div>
                 </div>
                 <div class="director-box">
-                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-label">DIRECTOR</span>
                     <span class="director-text">ถือแก้วกาแฟขึ้นมา แล้ววางลงแบบปฏิเสธ สายตาเป็นห่วงแต่ดุ เหมือนเพื่อนเตือนเพื่อน</span>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"หลายคนเข้ามาหาหมอพร้อมคำถามว่า 'ทำไมหน้าหมอง? ทำไมหน้าห้อย?' ทั้งที่โบกครีมกระปุกละหมื่น..."</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"คำตอบอาจจะอยู่ที่แก้วกาแฟที่คุณถืออยู่ก็ได้ค่ะ... <span class="highlight">Sugar Face</span> หรือ 'หน้าติดหวาน' คือฆาตกรเงียบตัวจริง"</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"น้ำตาลทำให้คอลลาเจนของคุณ 'แข็ง' และ 'เปราะ' (Glycation)... ต่อให้ฉีดโบทั้งหน้า แต่ถ้าข้างในอักเสบ ผิวก็ไม่มีวันดูแพงค่ะ"</div>
                 </div>
             </div>
@@ -488,25 +310,22 @@
             <div id="ch3" class="chapter-section">
                 <div class="script-header">
                     <h2>03. The Authority (Trainer)</h2>
-                    <div class="script-meta">
-                        <span><i class="far fa-clock"></i> 50 Sec</span>
-                        <span><i class="fas fa-brain"></i> Prop: Anatomy Model</span>
-                    </div>
+                    <div class="script-meta">PROP: ANATOMY MODEL / TONE: EXPERT</div>
                 </div>
                 <div class="director-box">
-                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-label">DIRECTOR</span>
                     <span class="director-text">ใช้น้ำเสียงผู้เชี่ยวชาญ มั่นใจสูงสุด ชี้ที่จุดบนใบหน้าตัวเอง หรือบนหุ่น Anatomy</span>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"ในฐานะที่หมอเป็นคนสอนหมอด้วยกัน (National Trainer)... สิ่งที่หมอย้ำเสมอคือ... ใบหน้าไม่ใช่กระดาษวาดรูป แต่มันคืองานสถาปัตยกรรมที่มีมิติ"</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"ใต้ผิวหนังของคุณมีชั้นไขมัน เส้นเอ็น และกระดูกที่ซับซ้อน... การจิ้มเข็มลงไปโดยไม่เข้าใจ Layer ก็เหมือนการสร้างบ้านบนทราย..."</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"เทคนิคที่หมอใช้ คือการวางรากฐานใหม่... <span class="highlight">เพราะความสวยที่ปลอดภัย ต้องมาจากความรู้ที่ลึกซึ้งเท่านั้นค่ะ</span>"</div>
                 </div>
             </div>
@@ -514,47 +333,41 @@
             <div id="ch4" class="chapter-section">
                 <div class="script-header">
                     <h2>04. The Untouched Look</h2>
-                    <div class="script-meta">
-                        <span><i class="far fa-clock"></i> 40 Sec</span>
-                        <span><i class="fas fa-spa"></i> Tone: Relaxed/ISFP</span>
-                    </div>
+                    <div class="script-meta">TONE: RELAXED / VIBE: ARTISTIC</div>
                 </div>
                 <div class="director-box">
-                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-label">DIRECTOR</span>
                     <span class="director-text">สบายๆ ศิลปิน ยิ้มเล็กน้อย ถ่ายขณะทำกิจกรรมที่ดูสุนทรีย์ (จัดดอกไม้/ดูรูป)</span>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"หมอเชื่อในความงามแบบ <span class="highlight">'The Untouched Look'</span> ค่ะ... คือความสวยที่คนทักว่า 'ไปทำอะไรมา ทำไมดูสดใสจัง?' ไม่ใช่ทักว่า 'ไปทำจมูกร้านไหนมา?'"</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
-                    <div class="line">"มันคือศิลปะของการซ่อนร่องรอย... ให้เหลือไว้แค่ความสง่างาม"</div>
+                    <span class="speaker-name">DR. GIFF</span>
+                    <div class="line">"มันคือศิลปะของการซ่อนร่องรอย... ให้เหลือไว้แค่ความสง่างาม... ถ้าคุณอยากหน้าเปลี่ยนเป็นคนอื่น หมออาจจะไม่ใช่คำตอบ... แต่ถ้าคุณอยากเป็นตัวเองในเวอร์ชันที่ดีที่สุด... เราคุยกันรู้เรื่องแน่นอนค่ะ"</div>
                 </div>
             </div>
 
             <div id="ch5" class="chapter-section">
                 <div class="script-header">
                     <h2>05. The Asset Mindset</h2>
-                    <div class="script-meta">
-                        <span><i class="far fa-clock"></i> 55 Sec</span>
-                        <span><i class="fas fa-briefcase"></i> Tone: Business Luxury</span>
-                    </div>
+                    <div class="script-meta">TONE: BUSINESS LUXURY</div>
                 </div>
                 <div class="director-box">
-                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-label">DIRECTOR</span>
                     <span class="director-text">นั่งโต๊ะทำงาน ถือปากกาแพงๆ หรือดูเอกสาร พูดเหมือนกำลังเจรจาธุรกิจ</span>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"สำหรับคนไข้ของหมอ... ร่างกายไม่ใช่แค่เปลือกนอก แต่มันคือ <span class="highlight">Asset (สินทรัพย์)</span> ที่แพงที่สุด"</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"คุณบริหารพอร์ตหุ้น บริหารธุรกิจระดับร้อยล้าน... แล้วพอร์ตร่างกายล่ะคะ? ติดลบอยู่หรือเปล่า?"</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"หมอทำหน้าที่เหมือน Fund Manager ให้ร่างกายคุณ... ดูแลค่าเลือด ฮอร์โมน และความเสื่อม... เพื่อให้คุณมีพลังไปต่อยอดความสำเร็จได้อีกนานๆ"</div>
                 </div>
             </div>
@@ -562,43 +375,41 @@
             <div id="ch6" class="chapter-section">
                 <div class="script-header">
                     <h2>06. The Power of "NO"</h2>
-                    <div class="script-meta">
-                        <span><i class="far fa-clock"></i> 45 Sec</span>
-                        <span><i class="fas fa-shield-alt"></i> Tone: Honest/Firm</span>
-                    </div>
+                    <div class="script-meta">TONE: FIRM & HONEST</div>
                 </div>
                 <div class="director-box">
-                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-label">DIRECTOR</span>
                     <span class="director-text">จริงใจ เด็ดขาด สบตาคนดูนิ่งๆ เพื่อสื่อความ Trust ว่าเราไม่ขายมั่ว</span>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"สิ่งที่คุณจะได้ยินจากหมอบ่อยที่สุด... อาจจะไม่ใช่คำว่า 'ได้ค่ะ' แต่เป็นคำว่า <span class="highlight">'อย่าทำเลยค่ะ'</span>"</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"ถ้าหมอมองว่ามันไม่จำเป็น หรือทำแล้วหน้าจะดูแปลก หมอจะปฏิเสธทันที... เพราะใบหน้าคุณคือผลงานของหมอ... และความไว้วางใจของคุณ คือสิ่งที่หมอให้ค่ามากที่สุด"</div>
+                </div>
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFF</span>
+                    <div class="line">"ที่ GEMS Scientific Beauty... เราไม่ขายคอร์ส แต่เราขาย 'ความจริงใจ' ค่ะ"</div>
                 </div>
             </div>
 
             <div id="ch7" class="chapter-section">
                 <div class="script-header">
                     <h2>07. The Invitation</h2>
-                    <div class="script-meta">
-                        <span><i class="far fa-clock"></i> 30 Sec</span>
-                        <span><i class="fas fa-hand-holding-heart"></i> Tone: Warm/Exclusive</span>
-                    </div>
+                    <div class="script-meta">TONE: WARM & EXCLUSIVE</div>
                 </div>
                 <div class="director-box">
-                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-label">DIRECTOR</span>
                     <span class="director-text">ยิ้มปิดท้าย ผายมือเล็กน้อย เชื้อเชิญแบบ Exclusive</span>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"Wellness ไม่ใช่ทางลัด... แต่มันคือการเดินทางระยะยาว ถ้าคุณพร้อมที่จะหยุดวิ่งตามกระแส แล้วหันมาสร้างรากฐานที่แข็งแรงจริงๆ..."</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"มาคุยกับหมอได้ค่ะ... เราจะมาออกแบบ <span class="highlight">'Legacy'</span> ของคุณไปด้วยกัน ที่ GEMS Scientific Beauty ค่ะ"</div>
                 </div>
             </div>
@@ -606,26 +417,55 @@
             <div id="ch8" class="chapter-section">
                 <div class="script-header">
                     <h2>08. The Executive Presence</h2>
-                    <div class="script-meta">
-                        <span><i class="far fa-clock"></i> 60 Sec</span>
-                        <span><i class="fas fa-chess-king"></i> Tone: Powerful/Leader</span>
-                    </div>
+                    <div class="script-meta">TONE: POWERFUL / LEADER</div>
                 </div>
                 <div class="director-box">
-                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-label">DIRECTOR</span>
                     <span class="director-text">ยืนล้วงกระเป๋า หรือพิงโต๊ะผู้บริหาร พูดเรื่องผลลัพธ์เชิงอำนาจ (Power)</span>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"ในการเจรจาธุรกิจระดับพันล้าน... <span class="highlight">'ใบหน้า' คือ First Impression ที่แพงที่สุด</span> ครับ/ค่ะ"</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"ถ้าหน้าคุณดู 'เหนื่อย' ดู 'เครียด' หรือดู 'ไม่สดใส'... คู่ค้าจะอ่านว่าคุณกำลังเพลี่ยงพล้ำ แต่ถ้าหน้าคุณดู 'สง่า' และ 'เปี่ยมพลัง' (Vibrant)... คุณชนะไปครึ่งทางแล้ว"</div>
                 </div>
                 <div class="dialogue-block">
-                    <span class="speaker-name">DR. Giff</span>
+                    <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"หมอไม่ได้ทำหน้าให้คุณสวย/หล่อขึ้นอย่างเดียว... แต่หมอ Design <span class="highlight">'Executive Presence'</span> เพื่อให้คุณครองห้องประชุมได้ต่างหาก"</div>
+                </div>
+            </div>
+
+            <div id="ch9" class="chapter-section">
+                <div class="script-header">
+                    <h2 style="color:#ff4d4d;">09. AI CLONING PROTOCOL</h2>
+                    <div class="script-meta" style="color:#ff4d4d;">DO NOT PUBLISH • FOR INTERNAL AI TRAINING ONLY</div>
+                </div>
+                
+                <div class="director-box" style="border-left-color:#ff4d4d; background:rgba(255, 77, 77, 0.05);">
+                    <span class="director-label" style="color:#ff4d4d;">CRITICAL INSTRUCTION</span>
+                    <span class="director-text">ใช้สำหรับเก็บ Voice & Facial Data เท่านั้น. ห้องต้องเงียบสนิท. ห้ามขยับตัวเยอะเกินไป. อ่านให้ชัดถ้อยชัดคำที่สุด.</span>
+                </div>
+
+                <div class="dialogue-block">
+                    <span class="speaker-name" style="color:#ff4d4d;">PART 1: CALIBRATION (อ่านปกติ)</span>
+                    <div class="line">"สวัสดีค่ะ หมอกิ๊ฟ วรวรรณ ลีลาภรณ์... วันนี้เราจะมาทดสอบระบบเสียงเพื่อการเรียนรู้ของปัญญาประดิษฐ์... การเปลี่ยนแปลงของผิวหนัง เกิดขึ้นจากปัจจัยภายในและภายนอก... แสงแดด ความเครียด และระดับฮอร์โมน ล้วนส่งผลต่อความยืดหยุ่นของใบหน้า"</div>
+                </div>
+
+                <div class="dialogue-block">
+                    <span class="speaker-name" style="color:#ff4d4d;">PART 2: TONE A (เสียงดุ / Authority)</span>
+                    <div class="line">"หยุดเดี๋ยวนี้นะคะ... ถ้าคุณยังกินน้ำตาลวันละ 3 แก้ว อย่ามาถามหมอว่าทำไมหน้าเหี่ยว เพราะต่อให้ฉีดฟิลเลอร์หมดเป็นล้าน หน้าคุณก็จะไม่ดีขึ้นถ้าพฤติกรรมยังเหมือนเดิม"</div>
+                </div>
+
+                <div class="dialogue-block">
+                    <span class="speaker-name" style="color:#ff4d4d;">PART 3: TONE B (เสียงนุ่ม / Empathy)</span>
+                    <div class="line">"หมอเข้าใจค่ะว่ามันยาก... การเปลี่ยนนิสัยต้องใช้เวลา ไม่ต้องรีบร้อนนะคะ ค่อยๆ ปรับไปทีละนิด หมอจะเป็นกำลังใจให้ และเราจะเดินไปถึงเป้าหมายด้วยกันค่ะ"</div>
+                </div>
+                
+                <div class="dialogue-block">
+                    <span class="speaker-name" style="color:#ff4d4d;">PART 4: TONE C (เสียงเล่าเรื่อง / Casual)</span>
+                    <div class="line">"เมื่อวานหมอไปเจอเคสนึงมา น่าสนใจมากเลยค่ะ เขาอายุ 50 แล้วนะ แต่ผิวเหมือนคนอายุ 30 ต้นๆ... เคล็ดลับเขาไม่มีอะไรซับซ้อนเลย แค่นอนให้พอและดื่มน้ำเยอะๆ"</div>
                 </div>
             </div>
 
@@ -633,46 +473,36 @@
     </main>
 
     <script>
-        // --- 6. APP LOGIC ---
-        
         function switchChapter(chIndex) {
-            // Update Menu
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            document.querySelectorAll('.menu-item')[chIndex - 1].classList.add('active');
+            const menuItems = document.querySelectorAll('.menu-item');
+            if(menuItems[chIndex-1]) menuItems[chIndex-1].classList.add('active');
 
-            // Update Content
             document.querySelectorAll('.chapter-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(`ch${chIndex}`).classList.add('active');
             
-            // Scroll to top
             document.querySelector('.script-viewport').scrollTop = 0;
+            
+            // Auto close mobile menu
+            document.getElementById('sidebar').classList.remove('mobile-active');
         }
 
         function togglePrompter() {
             document.body.classList.toggle('prompter-mode');
-            const badge = document.getElementById('statusBadge');
-            
             if(document.body.classList.contains('prompter-mode')) {
-                badge.innerText = "RECORDING";
-                badge.className = "status-badge badge-action";
-                
-                // Optional: Auto enter fullscreen
                 if (document.documentElement.requestFullscreen) {
                     document.documentElement.requestFullscreen();
                 }
             } else {
-                badge.innerText = "STANDBY";
-                badge.className = "status-badge badge-ready";
-                
-                // Exit fullscreen
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 }
             }
         }
-
-        function toggleMobileMenu() {
-            document.getElementById('menuList').classList.toggle('mobile-open');
+        
+        // Show mobile menu button logic if needed
+        if(window.innerWidth <= 768) {
+            document.getElementById('mobileMenuBtn').style.display = 'flex';
         }
     </script>
 </body>
