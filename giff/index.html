@@ -57,7 +57,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            /* แก้ไข: ใช้รูป Lecture (IMG_2359.jpeg) เป็นพื้นหลัง ปรับให้มืดลง 70% */
+            /* BG: Lecture Image Darkened (.jpeg) */
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('IMG_2359.jpeg');
             background-size: cover;
             background-position: center top;
@@ -217,7 +217,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- GLOBAL LIFESTYLE --- */
+        /* --- GLOBAL LIFESTYLE (UPDATED) --- */
         .lifestyle-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -247,6 +247,25 @@
             color: var(--gold);
             margin-right: 10px;
             margin-bottom: 10px;
+        }
+
+        .lifestyle-img-frame {
+            border: 1px solid #333;
+            padding: 15px;
+            background: #111;
+            transform: rotate(2deg); /* Artistic tilt */
+            transition: 0.3s;
+        }
+        
+        .lifestyle-img-frame:hover {
+            transform: rotate(0deg);
+            border-color: var(--gold);
+        }
+
+        .lifestyle-img {
+            width: 100%;
+            display: block;
+            filter: sepia(20%); /* Artistic filter */
         }
 
         /* --- PROTOCOL --- */
@@ -404,6 +423,7 @@
             .exec-grid, .lifestyle-grid { grid-template-columns: 1fr; }
             .portrait-img { height: 500px; }
             .authority-badge { position: relative; bottom: auto; right: auto; display: inline-block; margin-top: 10px; width: 100%; text-align: center; }
+            .lifestyle-img-frame { transform: rotate(0deg); margin-top: 30px; }
         }
 
         @keyframes fadeUp {
@@ -530,10 +550,11 @@
                     </div>
                 </div>
                 
-                <div style="background: #111; padding: 40px; border: 1px solid #333; text-align: center;">
-                    <i class="fas fa-passport" style="font-size: 3rem; color: #333; margin-bottom: 20px;"></i>
-                    <p style="color: #666; font-style: italic;">"I understand your world,<br>because it is also my world."</p>
-                    <div style="margin-top: 20px; font-family: 'Cinzel'; color: var(--gold);">DR. GIFF</div>
+                <div class="lifestyle-img-frame">
+                    <img src="IMG_2362.jpeg" alt="Dr. Giff Global Lifestyle" class="lifestyle-img">
+                    <div style="text-align:center; padding-top:10px; color:#555; font-size:0.7rem; font-family:'Cinzel';">
+                        "ELEGANCE IS AN ATTITUDE"
+                    </div>
                 </div>
             </div>
         </div>
@@ -628,15 +649,15 @@
             <div class="testimonial-grid">
                 <div class="testi-card">
                     <p class="testi-text">"สิ่งที่ผมซื้อจากหมอกิ๊ฟไม่ใช่ฟิลเลอร์ แต่คือ 'ความมั่นใจ' เวลาต้องดีลงานระดับประเทศ หน้าผมไม่เคยดูเหนื่อยอีกเลย"</p>
-                    <div class="testi-author">— CEO, SET 100 Company (Energy)</div>
+                    <div class="testi-author">— CEO, SET 100 Company (Energy)</p>
                 </div>
                 <div class="testi-card">
                     <p class="testi-text">"หมอคนเดียวที่กล้าดุฉันเรื่องน้ำตาล และนั่นเปลี่ยนชีวิตฉันไปเลย ผิวฉันดีขึ้นแบบที่ครีมกระปุกละแสนก็ทำให้ไม่ได้"</p>
-                    <div class="testi-author">— A-List Celebrity / Actress</div>
+                    <div class="testi-author">— A-List Celebrity / Actress</p>
                 </div>
                 <div class="testi-card">
                     <p class="testi-text">"I fly back to Bangkok twice a year just for Dr. Giff. She understands 'Asian Elegance' better than anyone."</p>
-                    <div class="testi-author">— HNW Expat / Private Banking Client</div>
+                    <div class="testi-author">— HNW Expat / Private Banking Client</p>
                 </div>
             </div>
         </div>
