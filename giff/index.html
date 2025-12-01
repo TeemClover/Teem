@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Inter:wght@200;300;400;600&family=Sarabun:wght@200;300;400;600&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
         :root {
@@ -40,6 +40,7 @@
 
         strong { color: #fff; font-weight: 600; }
         .gold { color: var(--gold); }
+        a { text-decoration: none; transition: 0.3s; }
         
         /* CONTAINER */
         .container {
@@ -50,27 +51,34 @@
             z-index: 2;
         }
 
-        /* --- HERO SECTION --- */
+        /* --- HERO SECTION (REBUILT FOR IMAGE VISIBILITY) --- */
         .hero {
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            /* FIX: .jpeg extension and Positioning */
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('IMG_2358.jpeg');
-            background-size: cover;
-            /* Focus on the face (20% from top) to prevent cropping on mobile */
-            background-position: center 20%;
-            background-attachment: fixed;
             position: relative;
+            overflow: hidden;
+        }
+
+        /* HERO IMAGE: IMG_2358.jpg */
+        .hero-bg-img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Fill screen */
+            object-position: top center; /* Focus on Face (Top) */
+            z-index: 1;
+            filter: brightness(0.6); /* Slightly dark to make text pop */
         }
 
         .hero-content {
             position: relative;
             z-index: 3;
             animation: fadeUp 1.2s ease;
-            margin-top: 180px;
+            margin-top: 200px; /* Push text down so it doesn't cover face */
         }
 
         .hero-title {
@@ -89,7 +97,7 @@
             margin-bottom: 40px;
             display: block;
             text-shadow: 0 0 10px rgba(0,0,0,1);
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.6);
             display: inline-block;
             padding: 5px 15px;
             backdrop-filter: blur(5px);
@@ -100,12 +108,10 @@
             padding: 15px 40px;
             border: 1px solid var(--gold);
             color: var(--gold);
-            text-decoration: none;
             font-family: 'Cinzel', serif;
             font-size: 1rem;
             letter-spacing: 2px;
-            transition: all 0.4s ease;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             backdrop-filter: blur(10px);
         }
 
@@ -194,7 +200,7 @@
             color: #fff;
         }
 
-        /* --- AUTHORITY IMAGE SECTION --- */
+        /* --- AUTHORITY IMAGE SECTION (NO CROP FIX) --- */
         .authority-img-wrapper {
             position: relative;
             margin: 40px 0;
@@ -205,7 +211,7 @@
 
         .authority-img {
             width: 100%;
-            height: auto; /* Ensure full image is shown */
+            height: auto; /* FIX: Shows full height, no cropping */
             display: block;
         }
         
@@ -222,7 +228,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- GLOBAL LIFESTYLE --- */
+        /* --- GLOBAL LIFESTYLE (NO CROP FIX) --- */
         .lifestyle-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -258,19 +264,13 @@
             border: 1px solid #333;
             padding: 15px;
             background: #111;
-            transform: rotate(2deg);
-            transition: 0.3s;
-        }
-        
-        .lifestyle-img-frame:hover {
-            transform: rotate(0deg);
-            border-color: var(--gold);
+            /* transform: rotate(2deg); Removed rotation to look more formal */
         }
 
         .lifestyle-img {
             width: 100%;
+            height: auto; /* FIX: Full image visibility */
             display: block;
-            filter: sepia(10%);
         }
 
         /* --- PROTOCOL --- */
@@ -304,7 +304,7 @@
             margin-bottom: 10px;
         }
 
-        /* --- PHYSICIAN BIO SECTION --- */
+        /* --- PHYSICIAN BIO SECTION (NO CROP FIX) --- */
         .exec-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -320,8 +320,9 @@
 
         .portrait-img {
             width: 100%;
-            height: 600px;
-            object-fit: cover;
+            height: auto; /* FIX: Full height, no crop */
+            max-height: 700px; /* Limit height if needed but keep aspect ratio */
+            object-fit: contain;
             display: block;
         }
 
@@ -416,7 +417,7 @@
             background: rgba(197, 160, 89, 0.3);
         }
 
-        /* --- FOOTER & CONTACT --- */
+        /* --- FOOTER & CONTACT CARD --- */
         .contact-card {
             background: linear-gradient(145deg, #111, #050505);
             padding: 40px;
@@ -425,9 +426,12 @@
             margin-top: 40px;
         }
 
-        .social-links { margin-top: 30px; display: flex; justify-content: center; gap: 20px; }
-        .social-icon { color: #666; font-size: 1.5rem; transition: 0.3s; }
-        .social-icon:hover { color: var(--gold); }
+        .social-links { margin-top: 30px; display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
+        .social-icon { 
+            color: #888; font-size: 1.8rem; transition: 0.3s; display: flex; align-items: center; gap: 10px;
+        }
+        .social-icon:hover { color: var(--gold); transform: translateY(-3px); }
+        .social-label { font-size: 0.8rem; font-family: 'Inter'; text-transform: uppercase; letter-spacing: 1px; }
 
         footer {
             text-align: center;
@@ -441,11 +445,9 @@
         @media (max-width: 900px) {
             .hero-title { font-size: 3rem; }
             .hero-subtitle { font-size: 1rem; }
-            .hero-content { margin-top: 100px; }
+            .hero-content { margin-top: 150px; }
             .exec-grid, .lifestyle-grid { grid-template-columns: 1fr; }
-            .portrait-img { height: 500px; }
             .authority-badge { position: relative; bottom: auto; right: auto; display: inline-block; margin-top: 10px; width: 100%; text-align: center; }
-            .lifestyle-img-frame { transform: rotate(0deg); margin-top: 30px; }
         }
 
         @keyframes fadeUp {
@@ -457,6 +459,8 @@
 <body>
 
     <header class="hero">
+        <img src="IMG_2358.jpeg" alt="Dr. Giff Hero" class="hero-bg-img">
+        
         <div class="container hero-content">
             <span class="hero-subtitle">GEM Scientific Beauty</span>
             <h1 class="hero-title">DR. GIFF<br>WORAWAN</h1>
@@ -708,13 +712,22 @@
             <div class="contact-card">
                 <h3 style="color:#fff; margin-bottom:20px;">EXCLUSIVE APPOINTMENT</h3>
                 <div style="text-align: center; margin-top: 20px;">
-                    <a href="#" class="btn-main">BOOK VIA LINE VVIP</a>
+                    <a href="https://line.me/R/ti/p/@752bsdty" target="_blank" class="btn-main">BOOK VIA LINE VVIP</a>
                 </div>
                 
                 <div class="social-links">
-                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.facebook.com/gem.scientificbeauty" target="_blank" class="social-icon"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="social-icon"><i class="fas fa-globe"></i></a>
+                    <a href="https://www.instagram.com/gem.scientificbeauty" target="_blank" class="social-icon">
+                        <i class="fab fa-instagram"></i> <span class="social-label">Instagram</span>
+                    </a>
+                    <a href="https://www.facebook.com/gem.scientificbeauty" target="_blank" class="social-icon">
+                        <i class="fab fa-facebook"></i> <span class="social-label">Facebook</span>
+                    </a>
+                    <a href="https://tiktok.com/@gem.clinic" target="_blank" class="social-icon">
+                        <i class="fab fa-tiktok"></i> <span class="social-label">TikTok</span>
+                    </a>
+                    <a href="mailto:gemscientificbeauty@gmail.com" class="social-icon">
+                        <i class="fas fa-envelope"></i> <span class="social-label">Email</span>
+                    </a>
                 </div>
             </div>
         </div>
