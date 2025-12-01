@@ -11,35 +11,68 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
+        /* --- 1. CORE THEME & RESET --- */
         :root {
-            --bg-dark: #050505;
-            --bg-panel: #0F0F0F;
+            --bg-main: #000000;
+            --bg-secondary: #080808;
             --gold: #C5A059;
-            --text-main: #F0F0F0;
+            --text-light: #FFFFFF;
             --text-muted: #888888;
-            --border: #2A2A2A;
+            --font-heading: 'Cinzel', serif;
+            --font-body: 'Inter', sans-serif;
+            --font-thai: 'Sarabun', sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.7;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            line-height: 1.8;
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4 { font-family: 'Cinzel', serif; font-weight: 400; letter-spacing: 1px; }
-        strong { color: #fff; font-weight: 600; }
+        h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 400; letter-spacing: 1px; color: var(--text-light); }
+        strong { color: var(--text-light); font-weight: 600; }
         .gold { color: var(--gold); }
-        a { text-decoration: none; transition: 0.3s; }
-        
+        a { text-decoration: none; transition: all 0.3s ease; }
+        img { max-width: 100%; height: auto; display: block; }
+
+        /* --- 2. LAYOUT UTILITIES --- */
         .container {
-            max-width: 1000px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 25px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* --- HERO SECTION --- */
+        section { padding: 120px 0; border-bottom: 1px solid #111; }
+        
+        .section-header { text-align: center; margin-bottom: 70px; }
+        .section-tag { display: block; font-size: 0.85rem; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; font-weight: 500; }
+        .section-title { font-size: 2.5rem; }
+
+        /* The "Apple" Smooth Reveal Animation */
+        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        /* --- 3. COMPONENTS --- */
+        .btn-main {
+            display: inline-block; padding: 14px 35px;
+            border: 1px solid var(--gold); color: var(--gold);
+            font-family: var(--font-heading); font-size: 0.9rem; letter-spacing: 2px;
+            background: rgba(10,10,10,0.8); backdrop-filter: blur(10px);
+        }
+        .btn-main:hover { background-color: var(--gold); color: #000; box-shadow: 0 5px 20px rgba(197, 160, 89, 0.3); }
+
+        /* --- 4. SECTIONS SPECIFIC --- */
+
+        /* HERO: Content at Bottom */
         .hero {
             height: 100vh;
             display: flex;
@@ -47,142 +80,98 @@
             justify-content: center;
             text-align: center;
             position: relative;
+            padding-bottom: 100px;
             overflow: hidden;
-            padding-bottom: 100px; /* Default padding */
         }
-
         .hero-bg {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            /* FIXED: .jpeg extension */
-            background-image: url('IMG_2358.jpeg');
-            background-size: cover;
-            background-position: top center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('IMG_2358.jpeg') no-repeat center top/cover;
+            z-index: 0;
+        }
+        .hero-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
+            background: linear-gradient(to top, #000 15%, transparent);
             z-index: 1;
         }
+        .hero-content { position: relative; z-index: 2; width: 100%; }
+        .hero-subtitle { font-family: var(--font-heading); color: var(--gold); letter-spacing: 4px; margin-bottom: 15px; display: block; }
+        .hero-title { font-size: 4rem; line-height: 1.1; margin-bottom: 35px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 60%;
-            background: linear-gradient(to top, #000000 20%, transparent 100%);
-            z-index: 2;
+        /* MANIFESTO */
+        .manifesto-box {
+            border-left: 3px solid var(--gold); padding-left: 40px;
+            margin: 0 auto; max-width: 850px;
         }
-
-        .hero-content {
-            position: relative; z-index: 3; width: 100%;
-        }
-
-        .hero-subtitle {
-            font-size: 1rem; color: var(--gold); text-transform: uppercase;
-            letter-spacing: 3px; margin-bottom: 10px; display: block;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8); font-weight: 600;
-        }
-
-        .hero-title {
-            font-size: 3.5rem; line-height: 1; margin-bottom: 30px; color: #fff;
-            text-shadow: 0 2px 20px rgba(0,0,0,1);
-        }
-
-        .btn-main {
-            display: inline-block; padding: 12px 35px;
-            border: 1px solid var(--gold); color: var(--gold);
-            font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 2px;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); border-radius: 2px;
-        }
-        .btn-main:hover { background-color: var(--gold); color: #000; box-shadow: 0 0 20px rgba(197, 160, 89, 0.4); }
-
-        /* --- SECTIONS --- */
-        section { padding: 100px 0; border-bottom: 1px solid #1a1a1a; }
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-tag { font-size: 0.8rem; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 10px;}
-        .section-title { font-size: 2.2rem; color: #fff; }
-
-        /* PILLARS */
-        .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
-        .pillar-card { padding: 30px; transition: 0.3s; border: 1px solid transparent; background: var(--bg-panel); }
-        .pillar-card:hover { border-color: #333; background: #0a0a0a; transform: translateY(-5px); }
-        .pillar-icon { font-size: 2rem; color: var(--gold); margin-bottom: 20px; }
-        .pillar-card h3 { font-size: 1.2rem; margin-bottom: 15px; color: #fff; }
-        .pillar-text { color: #888; font-size: 0.95rem; font-family: 'Sarabun', sans-serif; font-weight: 300; }
-
-        /* AUTHORITY IMAGE */
-        .authority-img-wrapper { position: relative; margin: 40px 0; }
-        .authority-img { width: 100%; height: auto; display: block; filter: brightness(0.9); }
-        .authority-badge {
-            position: absolute; bottom: -20px; right: 20px;
-            background: var(--gold); color: #000;
-            padding: 10px 25px; font-family: 'Cinzel'; font-weight: 700; letter-spacing: 1px;
-        }
-
-        /* LIFESTYLE (CLEANED UP) */
-        .lifestyle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-        .lifestyle-img { width: 100%; height: auto; display: block; border: 1px solid #222; padding: 10px; }
-        .lifestyle-caption {
-            text-align: center; padding-top: 15px; color: var(--gold);
-            font-size: 0.8rem; font-family: 'Cinzel'; letter-spacing: 2px;
-        }
-        .lifestyle-quote {
-            font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.1rem;
-            margin: 25px 0; line-height: 1.4;
-        }
-        .lifestyle-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
-        .lifestyle-tags span {
-            display: inline-block; border: 1px solid #333; padding: 8px 15px;
-            border-radius: 30px; font-size: 0.75rem; color: #aaa; letter-spacing: 1px;
-        }
-
-        /* BIO */
-        .exec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-        .portrait-img { width: 100%; height: auto; display: block; border: 1px solid var(--gold); padding: 10px; }
+        .quote-large { font-family: var(--font-heading); font-size: 2rem; line-height: 1.4; margin-bottom: 35px; }
         
-        .stats-bar { display: flex; gap: 20px; margin-top: 30px; }
-        .stat-item { flex: 1; text-align: center; border: 1px solid #222; padding: 20px; }
-        .stat-item h3 { font-size: 2rem; color: var(--gold); margin-bottom: 5px; }
-        .stat-item span { font-size: 0.7rem; color: #666; letter-spacing: 2px; }
+        /* PILLARS */
+        .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 50px; }
+        .pillar-item { padding: 35px; background: var(--bg-secondary); transition: 0.4s; border: 1px solid transparent; }
+        .pillar-item:hover { border-color: #222; transform: translateY(-8px); background: #0a0a0a; }
+        .pillar-icon { font-size: 2.2rem; color: var(--gold); margin-bottom: 25px; }
+        .pillar-item h3 { margin-bottom: 15px; font-size: 1.3rem; }
+        .pillar-desc { color: var(--text-muted); font-family: var(--font-thai); font-weight: 300; }
 
-        /* TESTIMONIALS (ENSURED EXISTENCE) */
-        .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .testi-card { background: #0a0a0a; padding: 30px; border: 1px solid #222; }
-        .testi-text { font-family: 'Sarabun'; font-style: italic; color: #ccc; margin-bottom: 20px; line-height: 1.6; }
-        .testi-author { color: var(--gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        /* AUTHORITY (Full Image) */
+        .authority-wrapper { position: relative; margin: 60px 0; }
+        .authority-badge {
+            position: absolute; bottom: -25px; right: 30px;
+            background: var(--gold); color: #000; padding: 12px 30px;
+            font-family: var(--font-heading); font-weight: 700; letter-spacing: 1px;
+        }
+
+        /* LIFESTYLE & BIO (Split Layout) */
+        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+        .image-frame { border: 1px solid #222; padding: 15px; }
+        .lifestyle-quote { font-family: var(--font-heading); font-size: 1.2rem; color: var(--gold); margin: 30px 0; }
+        .tags-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+        .tag { border: 1px solid #333; padding: 8px 18px; border-radius: 30px; font-size: 0.75rem; color: #999; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* STATS */
+        .stats-group { display: flex; gap: 30px; margin-top: 40px; }
+        .stat-box { flex: 1; text-align: center; border: 1px solid #222; padding: 25px; }
+        .stat-box h3 { font-size: 2.2rem; color: var(--gold); margin-bottom: 5px; }
+        .stat-box span { font-size: 0.75rem; color: #666; letter-spacing: 2px; text-transform: uppercase; }
 
         /* PROTOCOL */
-        .step-item { display: flex; align-items: flex-start; margin-bottom: 35px; }
-        .step-num { font-family: 'Cinzel'; font-size: 2.5rem; color: #333; margin-right: 25px; line-height: 1; }
-        .step-content h4 { color: var(--gold); margin-bottom: 10px; }
-        .step-content p { color: #888; font-size: 0.95rem; font-family: 'Sarabun'; }
+        .protocol-list { max-width: 850px; margin: 0 auto; }
+        .protocol-item { display: flex; margin-bottom: 40px; border-bottom: 1px solid #111; padding-bottom: 40px; }
+        .protocol-num { font-family: var(--font-heading); font-size: 3rem; color: #222; margin-right: 35px; line-height: 1; }
+        .protocol-content h4 { color: var(--gold); margin-bottom: 12px; }
+        .protocol-content p { color: var(--text-muted); font-family: var(--font-thai); }
 
-        /* CONTACT */
-        .contact-card { background: #0a0a0a; padding: 50px 20px; text-align: center; margin-top: 50px; border: 1px solid #222; }
-        .social-links { margin-top: 30px; display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
-        .social-icon { color: #666; font-size: 1.5rem; transition: 0.3s; display: flex; align-items: center; gap:10px; }
-        .social-icon:hover { color: var(--gold); transform: scale(1.1); }
-        .social-label { font-size: 0.8rem; font-family: 'Inter'; text-transform: uppercase; letter-spacing: 1px; }
+        /* TESTIMONIALS */
+        .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .testi-item { background: var(--bg-secondary); padding: 40px; border: 1px solid #1a1a1a; }
+        .testi-quote { font-family: var(--font-thai); font-style: italic; color: #ccc; margin-bottom: 25px; font-size: 1.05rem; }
+        .testi-client { color: var(--gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
 
-        footer { text-align: center; padding: 40px 0; font-size: 0.7rem; color: #444; border-top: 1px solid #111; }
+        /* FOOTER CTA */
+        .cta-box { background: linear-gradient(145deg, #0a0a0a, #000); padding: 70px 30px; text-align: center; border: 1px solid #111; }
+        .social-group { margin-top: 40px; display: flex; justify-content: center; gap: 30px; }
+        .social-link { color: #777; font-size: 1.6rem; display: flex; align-items: center; gap: 10px; }
+        .social-link span { font-size: 0.8rem; font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1px; }
+        .social-link:hover { color: var(--gold); transform: translateY(-3px); }
 
-        /* RESPONSIVE */
+        footer { text-align: center; padding: 50px 0; font-size: 0.75rem; color: #555; border-top: 1px solid #111; }
+
+        /* MOBILE RESPONSIVE */
         @media (max-width: 900px) {
-            /* FIX: Increase padding on mobile to prevent text overlap with browser UI */
-            .hero { padding-bottom: 160px; }
-            .hero-title { font-size: 2.8rem; }
-            .exec-grid, .lifestyle-grid { grid-template-columns: 1fr; }
-            /* Mobile Order for Lifestyle: Image first */
-            .lifestyle-grid div:first-child { order: 2; } 
-            .lifestyle-grid div:last-child { order: 1; margin-bottom: 30px; }
-            .authority-badge { position: relative; bottom: auto; right: auto; margin-top: 15px; display: inline-block; }
+            section { padding: 80px 0; }
+            .hero { padding-bottom: 150px; }
+            .hero-title { font-size: 3rem; }
+            .split-layout { grid-template-columns: 1fr; gap: 50px; }
+            .split-layout.reverse-mobile { display: flex; flex-direction: column-reverse; }
+            .authority-badge { position: relative; bottom: auto; right: auto; margin-top: 20px; display: inline-block; }
         }
     </style>
 </head>
 <body>
 
     <div class="hero">
-        <div class="hero-bg"></div>
-        
-        <div class="container hero-content">
+        <div class="hero-bg reveal-up"></div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content reveal-up delay-2">
             <span class="hero-subtitle">GEM Scientific Beauty</span>
             <h1 class="hero-title">DR. GIFF<br>WORAWAN</h1>
             <a href="script.html" class="btn-main">ENTER THE SCRIPT VAULT</a>
@@ -190,7 +179,7 @@
     </div>
 
     <section>
-        <div class="container">
+        <div class="container reveal-up">
             <div class="section-header">
                 <span class="section-tag">Philosophy</span>
                 <h2 class="section-title">THE MANIFESTO</h2>
@@ -200,7 +189,7 @@
                     "Wellness isn’t about doing more,<br>
                     it’s about doing what <span class="gold">truly restores</span> you."
                 </p>
-                <p class="thai-text" style="font-size: 1.1rem; color: #ccc;">
+                <p class="thai-text" style="font-size: 1.15rem; color: #ccc;">
                     ในโลกที่เต็มไปด้วยทางลัด <strong>Dr. Giff</strong> ยืนหยัดในฐานะ "The Purist" 
                     เราไม่ได้ต่อสู้กับกาลเวลา แต่เราบริหารจัดการความเสื่อม (Decay Management) ด้วยความเข้าใจ 
                     เพื่อให้คุณยังคงเป็นตัวเอง... ในเวอร์ชันที่มีพลังที่สุด
@@ -209,123 +198,126 @@
         </div>
     </section>
 
-    <section style="background-color: #080808;">
-        <div class="container">
+    <section style="background-color: var(--bg-secondary);">
+        <div class="container reveal-up">
             <div class="section-header">
                 <span class="section-tag">Core Competency</span>
                 <h2 class="section-title">THE 4 PILLARS</h2>
             </div>
             <div class="pillars-grid">
-                <div class="pillar-card">
+                <div class="pillar-item reveal-up delay-1">
                     <i class="fas fa-brain pillar-icon"></i>
                     <h3>The Art of Anatomy</h3>
-                    <p class="pillar-text">ในฐานะ <strong>National Trainer</strong> ความเข้าใจเรื่อง Layer ของใบหน้าคือหัวใจสำคัญ เราไม่ได้แค่ 'เติม' แต่เรา 'วางโครงสร้าง' แสงและเงาใหม่ ให้ผลลัพธ์ดูเป็นธรรมชาติที่สุด</p>
+                    <p class="pillar-desc">ในฐานะ <strong>National Trainer</strong> ความเข้าใจเรื่อง Layer ของใบหน้าคือหัวใจสำคัญ เราไม่ได้แค่ 'เติม' แต่เรา 'วางโครงสร้าง' แสงและเงาใหม่ ให้ผลลัพธ์ดูเป็นธรรมชาติที่สุด</p>
                 </div>
-                <div class="pillar-card">
+                <div class="pillar-item reveal-up delay-2">
                     <i class="fas fa-chart-line pillar-icon"></i>
                     <h3>The Biological Asset</h3>
-                    <p class="pillar-text">ร่างกายคือ Asset ที่แพงที่สุด เราดูแลพอร์ตสุขภาพผ่านค่าเลือด ฮอร์โมน และ DNA เพื่อรักษา Value ของคุณในระยะยาว</p>
+                    <p class="pillar-desc">ร่างกายคือ Asset ที่แพงที่สุด เราดูแลพอร์ตสุขภาพผ่านค่าเลือด ฮอร์โมน และ DNA เพื่อรักษา Value ของคุณในระยะยาว</p>
                 </div>
-                <div class="pillar-card">
+                <div class="pillar-item reveal-up delay-3">
                     <i class="fas fa-user-check pillar-icon"></i>
                     <h3>Sincere Integrity</h3>
-                    <p class="pillar-text">เราให้คำปรึกษาอย่างตรงไปตรงมา บนพื้นฐานจรรยาบรรณแพทย์ หากหัตถการใดไม่จำเป็น หมอจะแจ้งให้ทราบชัดเจน</p>
+                    <p class="pillar-desc">เราให้คำปรึกษาอย่างตรงไปตรงมา บนพื้นฐานจรรยาบรรณแพทย์ หากหัตถการใดไม่จำเป็น หมอจะแจ้งให้ทราบชัดเจน</p>
                 </div>
-                <div class="pillar-card" style="border-color: var(--gold);">
+                <div class="pillar-item reveal-up delay-1" style="border-color: var(--gold);">
                     <i class="fas fa-crown pillar-icon"></i>
                     <h3>Executive Presence</h3>
-                    <p class="pillar-text">ออกแบบบุคลิกภาพสำหรับผู้นำ ให้ดูสง่า (Noble), เปี่ยมพลัง (Vibrant), และน่าเชื่อถือ ในทุกการเจรจาธุรกิจ</p>
-                </div>
-            </div>
-
-            <div style="margin-top: 80px;">
-                <div class="section-header">
-                    <span class="section-tag">National Leadership</span>
-                    <h2 class="section-title">TRUSTED BY THE NATION</h2>
-                </div>
-                <div class="authority-img-wrapper">
-                    <img src="IMG_2365.jpeg" alt="Dr. Giff Lecture" class="authority-img">
-                    <div class="authority-badge">CSO CLINICAL TRAINER</div>
+                    <p class="pillar-desc">ออกแบบบุคลิกภาพสำหรับผู้นำ ให้ดูสง่า (Noble), เปี่ยมพลัง (Vibrant), และน่าเชื่อถือ ในทุกการเจรจาธุรกิจ</p>
                 </div>
             </div>
         </div>
     </section>
 
     <section>
-        <div class="container">
-            <div class="lifestyle-grid">
-                <div>
-                    <img src="IMG_2362.jpeg" alt="Dr. Giff Lifestyle" class="lifestyle-img">
-                    <div class="lifestyle-caption">"ELEGANCE IS AN ATTITUDE"</div>
+        <div class="container reveal-up">
+            <div class="section-header">
+                <span class="section-tag">National Leadership</span>
+                <h2 class="section-title">TRUSTED BY THE NATION</h2>
+            </div>
+            <div class="authority-wrapper">
+                <img src="IMG_2365.jpeg" alt="Dr. Giff National Lecture on Stage">
+                <div class="authority-badge">CSO CLINICAL TRAINER</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container reveal-up">
+            <div class="split-layout reverse-mobile">
+                <div class="image-frame reveal-up delay-1">
+                     <img src="IMG_2362.jpeg" alt="Dr. Giff Global Lifestyle">
                 </div>
-                <div class="lifestyle-content">
+                <div class="reveal-up delay-2">
                     <span class="section-tag">The Art of Living</span>
-                    <h3>THE GLOBAL AESTHETE</h3>
-                    <p style="color:#ccc; font-size: 1.05rem;">หมอกิ๊ฟคือ <strong>Artist & Global Traveler</strong> ผู้เดินทางรอบโลกและเข้าใจไลฟ์สไตล์ของ High-Net-Worth Individuals อย่างลึกซึ้ง</p>
-                    
+                    <h2 class="section-title">THE GLOBAL AESTHETE</h2>
+                    <p class="thai-text" style="color:#ccc; font-size: 1.1rem; margin-top: 20px;">
+                        หมอกิ๊ฟคือ <strong>Artist & Global Traveler</strong> ผู้เดินทางรอบโลกและเข้าใจไลฟ์สไตล์ของ High-Net-Worth Individuals อย่างลึกซึ้ง
+                    </p>
                     <div class="lifestyle-quote">
-                        "I understand your world,<br>because it is also my world."
+                        "I understand your world, because it is also my world."
                     </div>
-                    
-                    <div class="lifestyle-tags">
-                        <span>GLOBAL CITIZEN</span>
-                        <span>ISFP ARTIST SOUL</span>
-                        <span>INTERNATIONAL NETWORK</span>
+                    <div class="tags-group">
+                        <span class="tag">Global Citizen</span>
+                        <span class="tag">ISFP Artist Soul</span>
+                        <span class="tag">International Network</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section style="background: var(--bg-panel);">
-        <div class="container">
-            <div class="exec-grid">
-                <div>
-                    <img src="IMG_2359.jpeg" alt="Dr. Giff Physician" class="portrait-img">
-                </div>
-                <div>
+    <section style="background-color: var(--bg-secondary);">
+        <div class="container reveal-up">
+            <div class="split-layout">
+                <div class="reveal-up delay-1">
                     <span class="section-tag">The Physician</span>
-                    <h2 class="section-title" style="margin-bottom: 20px;">DR. GIFF<br>WORAWAN</h2>
-                    <p style="color:#ccc; font-family: 'Sarabun';">แพทย์ผู้ก่อตั้ง <strong>GEM Scientific Beauty</strong> และเทรนเนอร์ระดับประเทศ ผู้อยู่เบื้องหลังความเยาว์วัยของบุคคลชั้นนำ ด้วยความเชื่อที่ว่า "หมอที่ดีที่สุด คือร่างกายของคุณเอง"</p>
-                    <div class="stats-bar">
-                        <div class="stat-item">
+                    <h2 class="section-title">DR. GIFF<br>WORAWAN</h2>
+                    <p class="thai-text" style="color:#ccc; font-size: 1.1rem; margin-top: 20px;">
+                        แพทย์ผู้ก่อตั้ง <strong>GEM Scientific Beauty</strong> และเทรนเนอร์ระดับประเทศ ผู้อยู่เบื้องหลังความเยาว์วัยของบุคคลชั้นนำ ด้วยความเชื่อที่ว่า "หมอที่ดีที่สุด คือร่างกายของคุณเอง"
+                    </p>
+                    <div class="stats-group">
+                        <div class="stat-box">
                             <h3>15+</h3>
-                            <span>YEARS EXP.</span>
+                            <span>Years Exp.</span>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-box">
                             <h3>10k+</h3>
-                            <span>CASES</span>
+                            <span>Successful Cases</span>
                         </div>
                     </div>
+                </div>
+                <div class="image-frame reveal-up delay-2" style="border-color: var(--gold);">
+                     <img src="IMG_2359.jpeg" alt="Dr. Giff Physician Portrait">
                 </div>
             </div>
         </div>
     </section>
 
     <section>
-        <div class="container">
+        <div class="container reveal-up">
             <div class="section-header">
                 <span class="section-tag">Signature Service</span>
                 <h2 class="section-title">THE LEGACY PROTOCOL</h2>
             </div>
-            <div style="max-width:800px; margin:0 auto;">
-                <div class="step-item">
-                    <div class="step-num">01</div>
-                    <div class="step-content">
+            <div class="protocol-list">
+                <div class="protocol-item reveal-up delay-1">
+                    <div class="protocol-num">01</div>
+                    <div class="protocol-content">
                         <h4>THE BLUEPRINT</h4>
                         <p>Deep Diagnostics: ตรวจยีน (DNA), ฮอร์โมน (Hormone Panel), และสแกนโครงหน้า 3 มิติ เพื่อหา "พิมพ์เขียว" ที่แท้จริง</p>
                     </div>
                 </div>
-                <div class="step-item">
-                    <div class="step-num">02</div>
-                    <div class="step-content">
+                <div class="protocol-item reveal-up delay-2">
+                    <div class="protocol-num">02</div>
+                    <div class="protocol-content">
                         <h4>THE RESTORATION</h4>
-                        <p>ฟื้นฟูระบบภายใน ลดการอักเสบ (Inflammation) และปรับสมดุลการนอน/อาหาร เตรียม Canvas ให้พร้อม</p>
+                        <p>ฟื้นฟูระบบภายใน ลดการอักเสบ (Inflammation) และปรับสมดุลการนอน/อาหาร เพื่อเตรียม Canvas ให้พร้อมก่อนลงมือ</p>
                     </div>
                 </div>
-                <div class="step-item">
-                    <div class="step-num">03</div>
-                    <div class="step-content">
+                <div class="protocol-item reveal-up delay-3">
+                    <div class="protocol-num">03</div>
+                    <div class="protocol-content">
                         <h4>THE SCULPTING</h4>
                         <p>ปรับรูปหน้าด้วยเทคนิค "Light & Shadow" และ Biostimulators โดยมือหมอกิ๊ฟ เพื่อสร้าง The Untouched Look</p>
                     </div>
@@ -334,50 +326,50 @@
         </div>
     </section>
 
-    <section>
-        <div class="container">
+    <section style="background-color: var(--bg-secondary);">
+        <div class="container reveal-up">
             <div class="section-header">
                 <span class="section-tag">Testimonials</span>
                 <h2 class="section-title">THE INNER CIRCLE</h2>
-                <p style="color: #555; font-style: italic;">Voice of the VVIPs (Confidential)</p>
+                <p style="color: #666; font-style: italic; margin-top: 10px;">Voice of the VVIPs (Confidential)</p>
             </div>
-            <div class="testimonial-grid">
-                <div class="testi-card">
-                    <p class="testi-text">"สิ่งที่ผมซื้อจากหมอกิ๊ฟไม่ใช่ฟิลเลอร์ แต่คือ 'ความมั่นใจ' เวลาต้องดีลงานระดับประเทศ หน้าผมไม่เคยดูเหนื่อยอีกเลย"</p>
-                    <div class="testi-author">— CEO, SET 100 Company (Energy)</div>
+            <div class="testi-grid">
+                <div class="testi-item reveal-up delay-1">
+                    <p class="testi-quote">"สิ่งที่ผมซื้อจากหมอกิ๊ฟไม่ใช่ฟิลเลอร์ แต่คือ 'ความมั่นใจ' เวลาต้องดีลงานระดับประเทศ หน้าผมไม่เคยดูเหนื่อยอีกเลย"</p>
+                    <div class="testi-client">— CEO, SET 100 Company (Energy)</div>
                 </div>
-                <div class="testi-card">
-                    <p class="testi-text">"หมอคนเดียวที่กล้าดุฉันเรื่องน้ำตาล และนั่นเปลี่ยนชีวิตฉันไปเลย ผิวฉันดีขึ้นแบบที่ครีมกระปุกละแสนก็ทำให้ไม่ได้"</p>
-                    <div class="testi-author">— A-List Celebrity / Actress</div>
+                <div class="testi-item reveal-up delay-2">
+                    <p class="testi-quote">"หมอคนเดียวที่กล้าดุฉันเรื่องน้ำตาล และนั่นเปลี่ยนชีวิตฉันไปเลย ผิวฉันดีขึ้นแบบที่ครีมกระปุกละแสนก็ทำให้ไม่ได้"</p>
+                    <div class="testi-client">— A-List Celebrity / Actress</div>
                 </div>
-                <div class="testi-card">
-                    <p class="testi-text">"I fly back to Bangkok twice a year just for Dr. Giff. She understands 'Asian Elegance' better than anyone."</p>
-                    <div class="testi-author">— HNW Expat / Private Banking Client</div>
+                <div class="testi-item reveal-up delay-3">
+                    <p class="testi-quote">"I fly back to Bangkok twice a year just for Dr. Giff. She understands 'Asian Elegance' better than anyone."</p>
+                    <div class="testi-client">— HNW Expat / Private Banking Client</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section style="background-color: #080808;">
-        <div class="container">
-            <div class="contact-card">
-                <h3 style="color:#fff; margin-bottom:20px;">EXCLUSIVE APPOINTMENT</h3>
-                <p style="color:#666; margin-bottom:30px; font-size:0.9rem;">รับจำกัด 3 เคส/วัน เพื่อความเป็นส่วนตัวสูงสุด</p>
+    <section>
+        <div class="container reveal-up">
+            <div class="cta-box">
+                <h2 class="section-title" style="margin-bottom: 20px;">EXCLUSIVE APPOINTMENT</h2>
+                <p style="color:#888; margin-bottom: 40px;">รับจำกัด 3 เคส/วัน เพื่อความเป็นส่วนตัวสูงสุด</p>
                 
                 <a href="https://line.me/R/ti/p/@752bsdty" target="_blank" class="btn-main">BOOK VIA LINE VVIP</a>
                 
-                <div class="social-links">
-                    <a href="https://www.instagram.com/gem.scientificbeauty" target="_blank" class="social-icon">
-                        <i class="fab fa-instagram"></i> <span class="social-label">Instagram</span>
+                <div class="social-group">
+                    <a href="https://www.instagram.com/gem.scientificbeauty" target="_blank" class="social-link">
+                        <i class="fab fa-instagram"></i> <span>Instagram</span>
                     </a>
-                    <a href="https://www.facebook.com/gem.scientificbeauty" target="_blank" class="social-icon">
-                        <i class="fab fa-facebook"></i> <span class="social-label">Facebook</span>
+                    <a href="https://www.facebook.com/gem.scientificbeauty" target="_blank" class="social-link">
+                        <i class="fab fa-facebook"></i> <span>Facebook</span>
                     </a>
-                    <a href="https://tiktok.com/@gem.clinic" target="_blank" class="social-icon">
-                        <i class="fab fa-tiktok"></i> <span class="social-label">TikTok</span>
+                    <a href="https://tiktok.com/@gem.clinic" target="_blank" class="social-link">
+                        <i class="fab fa-tiktok"></i> <span>TikTok</span>
                     </a>
-                    <a href="mailto:gemscientificbeauty@gmail.com" class="social-icon">
-                        <i class="fas fa-envelope"></i> <span class="social-label">Email</span>
+                    <a href="mailto:gemscientificbeauty@gmail.com" class="social-link">
+                        <i class="fas fa-envelope"></i> <span>Email</span>
                     </a>
                 </div>
             </div>
@@ -390,5 +382,28 @@
         </div>
     </footer>
 
-    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 /* Trigger when 15% visible */
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); /* Animate only once */
+                    }
+                });
+            }, options);
+
+            document.querySelectorAll('.reveal-up').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
 </html>
