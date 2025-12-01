@@ -16,25 +16,23 @@
             --bg-main: #000000;
             --bg-secondary: #080808;
             --gold: #C5A059;
-            --text-light: #FFFFFF;
+            --text-main: #F0F0F0;
             --text-muted: #888888;
-            --font-heading: 'Cinzel', serif;
-            --font-body: 'Inter', sans-serif;
-            --font-thai: 'Sarabun', sans-serif;
+            --border: #2A2A2A;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             background-color: var(--bg-main);
-            color: var(--text-light);
-            font-family: var(--font-body);
-            line-height: 1.8;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 400; letter-spacing: 1px; color: var(--text-light); }
-        strong { color: var(--text-light); font-weight: 600; }
+        h1, h2, h3, h4 { font-family: 'Cinzel', serif; font-weight: 400; letter-spacing: 1px; }
+        strong { color: #fff; font-weight: 600; }
         .gold { color: var(--gold); }
         a { text-decoration: none; transition: all 0.3s ease; }
         img { max-width: 100%; height: auto; display: block; }
@@ -48,13 +46,13 @@
             z-index: 2;
         }
 
-        section { padding: 120px 0; border-bottom: 1px solid #111; }
+        section { padding: 100px 0; border-bottom: 1px solid #1a1a1a; }
         
-        .section-header { text-align: center; margin-bottom: 70px; }
+        .section-header { text-align: center; margin-bottom: 60px; }
         .section-tag { display: block; font-size: 0.85rem; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; font-weight: 500; }
         .section-title { font-size: 2.5rem; }
 
-        /* The "Apple" Smooth Reveal Animation */
+        /* Smooth Reveal Animation */
         .reveal-up { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
         .reveal-up.active { opacity: 1; transform: translateY(0); }
         .delay-1 { transition-delay: 0.1s; }
@@ -65,7 +63,7 @@
         .btn-main {
             display: inline-block; padding: 14px 35px;
             border: 1px solid var(--gold); color: var(--gold);
-            font-family: var(--font-heading); font-size: 0.9rem; letter-spacing: 2px;
+            font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 2px;
             background: rgba(10,10,10,0.8); backdrop-filter: blur(10px);
         }
         .btn-main:hover { background-color: var(--gold); color: #000; box-shadow: 0 5px 20px rgba(197, 160, 89, 0.3); }
@@ -85,7 +83,9 @@
         }
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            /* HERO: Black Dress */
             background: url('IMG_2358.jpeg') no-repeat center top/cover;
+            background-position: center 20%; 
             z-index: 0;
         }
         .hero-overlay {
@@ -94,15 +94,15 @@
             z-index: 1;
         }
         .hero-content { position: relative; z-index: 2; width: 100%; }
-        .hero-subtitle { font-family: var(--font-heading); color: var(--gold); letter-spacing: 4px; margin-bottom: 15px; display: block; }
-        .hero-title { font-size: 4rem; line-height: 1.1; margin-bottom: 35px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .hero-subtitle { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 4px; margin-bottom: 15px; display: block; text-shadow: 0 2px 10px rgba(0,0,0,0.8); font-weight: 600; }
+        .hero-title { font-size: 3.5rem; line-height: 1; margin-bottom: 35px; color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,1); }
 
         /* MANIFESTO */
         .manifesto-box {
             border-left: 3px solid var(--gold); padding-left: 40px;
             margin: 0 auto; max-width: 850px;
         }
-        .quote-large { font-family: var(--font-heading); font-size: 2rem; line-height: 1.4; margin-bottom: 35px; }
+        .quote-large { font-family: 'Cinzel', serif; font-size: 2rem; line-height: 1.4; margin-bottom: 35px; }
         
         /* PILLARS */
         .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 50px; }
@@ -110,47 +110,74 @@
         .pillar-item:hover { border-color: #222; transform: translateY(-8px); background: #0a0a0a; }
         .pillar-icon { font-size: 2.2rem; color: var(--gold); margin-bottom: 25px; }
         .pillar-item h3 { margin-bottom: 15px; font-size: 1.3rem; }
-        .pillar-desc { color: var(--text-muted); font-family: var(--font-thai); font-weight: 300; }
+        .pillar-desc { color: var(--text-muted); font-family: 'Sarabun', sans-serif; font-weight: 300; font-size: 0.95rem; }
 
-        /* AUTHORITY (Full Image) */
-        .authority-wrapper { position: relative; margin: 60px 0; }
+        /* AUTHORITY (NO CROP GUARANTEED) */
+        .authority-wrapper { position: relative; margin: 40px 0; }
+        .authority-img { 
+            width: 100%; 
+            height: auto; /* KEY: This ensures the image is never cropped */
+            display: block; 
+            filter: brightness(0.9); 
+        }
         .authority-badge {
             position: absolute; bottom: -25px; right: 30px;
-            background: var(--gold); color: #000; padding: 12px 30px;
-            font-family: var(--font-heading); font-weight: 700; letter-spacing: 1px;
+            background: var(--gold); color: #000;
+            padding: 12px 30px; font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 1px;
+        }
+        .authority-text {
+            text-align: center; max-width: 800px; margin: 50px auto 0;
+            color: #aaa; font-family: 'Sarabun', sans-serif; font-size: 1.1rem; line-height: 1.7;
         }
 
-        /* LIFESTYLE & BIO (Split Layout) */
+        /* LIFESTYLE (Split Layout) */
         .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
-        .image-frame { border: 1px solid #222; padding: 15px; }
-        .lifestyle-quote { font-family: var(--font-heading); font-size: 1.2rem; color: var(--gold); margin: 30px 0; }
-        .tags-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
-        .tag { border: 1px solid #333; padding: 8px 18px; border-radius: 30px; font-size: 0.75rem; color: #999; letter-spacing: 1px; text-transform: uppercase; }
+        .image-frame { border: 1px solid #222; padding: 15px; background: #0a0a0a; }
+        .image-frame img { width: 100%; height: auto; display: block; } /* No crop here too */
+        
+        .lifestyle-quote { 
+            font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--text-main); 
+            margin: 30px 0; border-left: 2px solid var(--gold); padding-left: 20px;
+        }
+        .lifestyle-desc { color: var(--text-muted); font-family: 'Sarabun', sans-serif; margin-bottom: 30px; }
+        .tags-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+        .tag { 
+            border: 1px solid var(--gold); padding: 8px 20px; border-radius: 30px; 
+            font-size: 0.75rem; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; 
+        }
+
+        /* BIO (Roles Restored) */
+        .role-list { list-style: none; padding: 0; margin: 30px 0; }
+        .role-list li { 
+            margin-bottom: 12px; color: #ccc; font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 1px;
+            display: flex; align-items: center;
+        }
+        .role-list li i { color: var(--gold); margin-right: 15px; font-size: 0.8rem; }
 
         /* STATS */
-        .stats-group { display: flex; gap: 30px; margin-top: 40px; }
-        .stat-box { flex: 1; text-align: center; border: 1px solid #222; padding: 25px; }
+        .stats-group { display: flex; gap: 30px; margin-top: 40px; border-top: 1px solid #222; padding-top: 30px; }
+        .stat-box { flex: 1; text-align: left; }
         .stat-box h3 { font-size: 2.2rem; color: var(--gold); margin-bottom: 5px; }
         .stat-box span { font-size: 0.75rem; color: #666; letter-spacing: 2px; text-transform: uppercase; }
 
         /* PROTOCOL */
         .protocol-list { max-width: 850px; margin: 0 auto; }
         .protocol-item { display: flex; margin-bottom: 40px; border-bottom: 1px solid #111; padding-bottom: 40px; }
-        .protocol-num { font-family: var(--font-heading); font-size: 3rem; color: #222; margin-right: 35px; line-height: 1; }
+        .protocol-num { font-family: 'Cinzel', serif; font-size: 3rem; color: #222; margin-right: 35px; line-height: 1; }
         .protocol-content h4 { color: var(--gold); margin-bottom: 12px; }
-        .protocol-content p { color: var(--text-muted); font-family: var(--font-thai); }
+        .protocol-content p { color: var(--text-muted); font-family: 'Sarabun', sans-serif; }
 
         /* TESTIMONIALS */
         .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
         .testi-item { background: var(--bg-secondary); padding: 40px; border: 1px solid #1a1a1a; }
-        .testi-quote { font-family: var(--font-thai); font-style: italic; color: #ccc; margin-bottom: 25px; font-size: 1.05rem; }
+        .testi-quote { font-family: 'Sarabun', sans-serif; font-style: italic; color: #ccc; margin-bottom: 25px; font-size: 1.05rem; }
         .testi-client { color: var(--gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
 
         /* FOOTER CTA */
         .cta-box { background: linear-gradient(145deg, #0a0a0a, #000); padding: 70px 30px; text-align: center; border: 1px solid #111; }
-        .social-group { margin-top: 40px; display: flex; justify-content: center; gap: 30px; }
+        .social-group { margin-top: 40px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
         .social-link { color: #777; font-size: 1.6rem; display: flex; align-items: center; gap: 10px; }
-        .social-link span { font-size: 0.8rem; font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1px; }
+        .social-link span { font-size: 0.8rem; font-family: 'Inter', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
         .social-link:hover { color: var(--gold); transform: translateY(-3px); }
 
         footer { text-align: center; padding: 50px 0; font-size: 0.75rem; color: #555; border-top: 1px solid #111; }
@@ -163,6 +190,8 @@
             .split-layout { grid-template-columns: 1fr; gap: 50px; }
             .split-layout.reverse-mobile { display: flex; flex-direction: column-reverse; }
             .authority-badge { position: relative; bottom: auto; right: auto; margin-top: 20px; display: inline-block; }
+            .stats-group { justify-content: center; text-align: center; }
+            .stat-box { text-align: center; }
         }
     </style>
 </head>
@@ -218,7 +247,7 @@
                 <div class="pillar-item reveal-up delay-3">
                     <i class="fas fa-user-check pillar-icon"></i>
                     <h3>Sincere Integrity</h3>
-                    <p class="pillar-desc">เราให้คำปรึกษาอย่างตรงไปตรงมา บนพื้นฐานจรรยาบรรณแพทย์ หากหัตถการใดไม่จำเป็น หมอจะแจ้งให้ทราบชัดเจน</p>
+                    <p class="pillar-desc">เราให้คำปรึกษาอย่างตรงไปตรงมา บนพื้นฐานจรรยาบรรณแพทย์ หากหัตถการใดไม่จำเป็น หมอจะแจ้งให้ทราบชัดเจน เพราะความจริงใจสำคัญที่สุด</p>
                 </div>
                 <div class="pillar-item reveal-up delay-1" style="border-color: var(--gold);">
                     <i class="fas fa-crown pillar-icon"></i>
@@ -236,9 +265,14 @@
                 <h2 class="section-title">TRUSTED BY THE NATION</h2>
             </div>
             <div class="authority-wrapper">
-                <img src="IMG_2365.jpeg" alt="Dr. Giff National Lecture on Stage">
+                <img src="IMG_2359.jpeg" alt="Dr. Giff National Academic Lecture" class="authority-img">
                 <div class="authority-badge">CSO CLINICAL TRAINER</div>
             </div>
+            <p class="authority-text">
+                ภาพบรรยากาศการบรรยายวิชาการระดับประเทศ (National Academic Meeting) 
+                ซึ่ง <strong>Dr. Giff</strong> ได้รับเกียรติเป็นวิทยากรถ่ายทอดความรู้และเทคนิคชั้นสูงแก่แพทย์ทั่วประเทศ 
+                สะท้อนถึงความเป็นผู้นำทางความคิด (Thought Leader) ที่ได้รับการยอมรับในวงการแพทย์อย่างแท้จริง
+            </p>
         </div>
     </section>
 
@@ -246,17 +280,21 @@
         <div class="container reveal-up">
             <div class="split-layout reverse-mobile">
                 <div class="image-frame reveal-up delay-1">
-                     <img src="IMG_2362.jpeg" alt="Dr. Giff Global Lifestyle">
+                    <img src="IMG_2362.jpeg" alt="Dr. Giff Global Lifestyle">
                 </div>
                 <div class="reveal-up delay-2">
                     <span class="section-tag">The Art of Living</span>
                     <h2 class="section-title">THE GLOBAL AESTHETE</h2>
-                    <p class="thai-text" style="color:#ccc; font-size: 1.1rem; margin-top: 20px;">
-                        หมอกิ๊ฟคือ <strong>Artist & Global Traveler</strong> ผู้เดินทางรอบโลกและเข้าใจไลฟ์สไตล์ของ High-Net-Worth Individuals อย่างลึกซึ้ง
-                    </p>
+                    
                     <div class="lifestyle-quote">
-                        "I understand your world, because it is also my world."
+                        "I understand your world,<br>because it is also my world."
                     </div>
+                    
+                    <p class="lifestyle-desc">
+                        หมอกิ๊ฟคือ <strong>Artist & Global Traveler</strong> ผู้เดินทางรอบโลกและเข้าใจไลฟ์สไตล์ของ High-Net-Worth Individuals อย่างลึกซึ้ง 
+                        เราเข้าใจดีว่า "ความแพง" ที่แท้จริงไม่ได้เกิดจากการเติมแต่งให้มาก แต่คือการคัดสรรสิ่งที่ใช่ที่สุด
+                    </p>
+                    
                     <div class="tags-group">
                         <span class="tag">Global Citizen</span>
                         <span class="tag">ISFP Artist Soul</span>
@@ -276,6 +314,13 @@
                     <p class="thai-text" style="color:#ccc; font-size: 1.1rem; margin-top: 20px;">
                         แพทย์ผู้ก่อตั้ง <strong>GEM Scientific Beauty</strong> และเทรนเนอร์ระดับประเทศ ผู้อยู่เบื้องหลังความเยาว์วัยของบุคคลชั้นนำ ด้วยความเชื่อที่ว่า "หมอที่ดีที่สุด คือร่างกายของคุณเอง"
                     </p>
+                    
+                    <ul class="role-list">
+                        <li><i class="fas fa-check"></i> Medical Director, GEM Scientific Beauty</li>
+                        <li><i class="fas fa-check"></i> National Trainer for Profhilo & Revanesse</li>
+                        <li><i class="fas fa-check"></i> CSO Clinical Trainer</li>
+                    </ul>
+
                     <div class="stats-group">
                         <div class="stat-box">
                             <h3>15+</h3>
@@ -288,7 +333,7 @@
                     </div>
                 </div>
                 <div class="image-frame reveal-up delay-2" style="border-color: var(--gold);">
-                     <img src="IMG_2359.jpeg" alt="Dr. Giff Physician Portrait">
+                    <img src="IMG_2365.jpeg" alt="Dr. Giff Physician Portrait">
                 </div>
             </div>
         </div>
