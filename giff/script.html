@@ -3,337 +3,677 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Script Vault | Dr. Gift</title>
+    <title>Dr. Gift | The Director's Monitor V.9</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;500;600&family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
-
+        /* --- 1. CORE VARIABLES & RESET --- */
         :root {
-            --bg-dark: #050505;
-            --card-bg: #121212;
+            --bg-main: #050505;
+            --bg-panel: #0F0F0F;
+            --bg-card: #141414;
+            --border: #2A2A2A;
             --gold: #D4AF37;
-            --text-light: #E0E0E0;
-            --text-dim: #888;
-            --accent-red: #8a1c1c;
+            --gold-dim: #8a7024;
+            --gold-glow: rgba(212, 175, 55, 0.3);
+            --text-main: #Eaeaea;
+            --text-muted: #888888;
+            --accent-alert: #cf3030;
+            --font-display: 'Cinzel', serif;
+            --font-ui: 'Inter', sans-serif;
+            --font-script: 'Sarabun', sans-serif;
         }
 
+        * { box-sizing: border-box; outline: none; }
+        
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: 'Sarabun', sans-serif;
             margin: 0;
-            padding: 20px;
-            line-height: 1.6;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: var(--font-ui);
+            height: 100vh;
+            display: flex;
+            overflow: hidden; /* App-like feel */
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+        /* --- 2. LAYOUT: SIDEBAR --- */
+        aside {
+            width: 280px;
+            background-color: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            transition: transform 0.3s ease;
         }
 
-        header {
+        .brand-header {
+            padding: 30px 20px;
             text-align: center;
-            margin-bottom: 40px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
 
-        h1 {
-            font-family: 'Playfair Display', serif;
+        .brand-header h1 {
+            font-family: var(--font-display);
             color: var(--gold);
-            font-size: 2.5rem;
+            font-size: 1.2rem;
             margin: 0;
+            letter-spacing: 2px;
         }
 
-        p.intro {
-            color: var(--text-dim);
-            font-size: 0.9rem;
+        .brand-header span {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* CARD STYLING */
-        .chapter-card {
-            background: var(--card-bg);
-            border: 1px solid #333;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: all 0.3s ease;
+        nav.menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 0;
         }
 
-        .chapter-card:hover {
-            border-color: var(--gold);
-        }
-
-        /* ACCORDION HEADER */
-        summary {
-            padding: 20px;
+        .menu-item {
+            padding: 15px 25px;
             cursor: pointer;
-            list-style: none;
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255,255,255,0.03);
+            color: #fff;
+        }
+
+        .menu-item.active {
+            background-color: rgba(212, 175, 55, 0.05);
+            color: var(--gold);
+            border-left-color: var(--gold);
+        }
+
+        .menu-item i { margin-right: 15px; width: 20px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        
+        .btn-back:hover { border-color: var(--text-main); color: var(--text-main); }
+
+        /* --- 3. LAYOUT: MAIN CONTENT --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: radial-gradient(circle at top right, #1a1a1a 0%, #050505 40%);
+        }
+
+        .top-bar {
+            height: 70px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 600;
-            font-size: 1.2rem;
+            padding: 0 40px;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .scene-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .badge-ready { background: rgba(212, 175, 55, 0.1); color: var(--gold); border: 1px solid var(--gold); }
+        .badge-action { background: rgba(200, 0, 0, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; animation: pulse 2s infinite; }
+
+        .toolbar {
+            display: flex;
+            gap: 15px;
+        }
+
+        .tool-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .tool-btn:hover { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 10px var(--gold-glow); }
+
+        /* --- 4. SCRIPT CONTAINER --- */
+        .script-viewport {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 10%;
+            scroll-behavior: smooth;
+        }
+
+        .chapter-section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease;
+        }
+        .chapter-section.active { display: block; }
+
+        .script-header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        .script-header h2 {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
             color: #fff;
+            margin: 0 0 10px 0;
         }
 
-        summary::-webkit-details-marker {
-            display: none;
+        .script-meta {
+            display: flex;
+            gap: 30px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
         }
 
-        summary::after {
-            content: '+';
-            font-size: 1.5rem;
+        /* DIRECTOR NOTE BOX */
+        .director-box {
+            background: linear-gradient(90deg, rgba(212,175,55,0.05) 0%, rgba(0,0,0,0) 100%);
+            border-left: 4px solid var(--gold);
+            padding: 20px 30px;
+            margin-bottom: 40px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .director-label {
             color: var(--gold);
-            transition: transform 0.3s;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
         }
 
-        details[open] summary::after {
-            transform: rotate(45deg);
-        }
-
-        details[open] {
-            border-color: var(--gold);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
-        }
-
-        /* CONTENT INSIDE */
-        .script-content {
-            padding: 0 25px 25px 25px;
-            border-top: 1px solid #222;
-        }
-
-        /* DIRECTOR NOTE */
-        .director-note {
-            background-color: rgba(212, 175, 55, 0.1);
-            color: var(--gold);
-            padding: 10px 15px;
-            border-left: 3px solid var(--gold);
-            font-size: 0.85rem;
-            margin: 20px 0;
+        .director-text {
+            color: #ddd;
             font-style: italic;
+            font-size: 1rem;
         }
 
-        .dialogue {
-            font-size: 1.1rem;
+        /* DIALOGUE STYLING */
+        .dialogue-block {
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .dialogue-block::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: #333;
+        }
+
+        .dialogue-block:hover::before {
+            background: var(--gold);
+            box-shadow: 0 0 8px var(--gold);
+        }
+
+        .speaker-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            display: block;
+        }
+
+        .line {
+            font-family: var(--font-script);
+            font-size: 1.6rem; /* Large for reading */
+            line-height: 1.8;
             color: #fff;
-            margin-bottom: 15px;
-            padding-left: 15px;
-            border-left: 1px solid #444;
+            font-weight: 300;
         }
 
         .highlight {
             color: var(--gold);
-            font-weight: bold;
+            font-weight: 600;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
         }
 
-        .prop-tag {
-            display: inline-block;
-            background: #222;
-            color: #aaa;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            border: 1px solid #444;
+        /* --- 5. TELEPROMPTER MODE --- */
+        body.prompter-mode aside, 
+        body.prompter-mode .top-bar {
+            display: none;
         }
 
-        /* BACK BUTTON */
-        .back-btn {
-            display: inline-block;
-            margin-top: 30px;
-            color: var(--text-dim);
-            text-decoration: none;
-            font-size: 0.9rem;
+        body.prompter-mode .script-viewport {
+            padding: 50px 15%;
+            background: #000;
         }
-        
-        .back-btn:hover { color: #fff; }
 
+        body.prompter-mode .line {
+            font-size: 3rem; /* Huge for reading */
+            line-height: 1.6;
+        }
+
+        body.prompter-mode .director-box {
+            opacity: 0.5;
+            transform: scale(0.9);
+        }
+
+        body.prompter-mode .exit-prompter {
+            display: block;
+        }
+
+        .exit-prompter {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body { flex-direction: column; height: auto; overflow: auto; }
+            aside { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+            nav.menu { display: none; } /* Hide menu on mobile initially, maybe toggle */
+            .script-viewport { padding: 30px 20px; }
+            .line { font-size: 1.3rem; }
+            .top-bar { display: none; }
+            
+            /* Show simplified menu for mobile */
+            .mobile-menu-toggle { display: block; padding: 15px; text-align: center; color: var(--gold); cursor: pointer; border-bottom: 1px solid var(--border); }
+            nav.menu.mobile-open { display: block; max-height: 300px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>THE MASTER NARRATIVE</h1>
-            <p class="intro">7 บทพูดสำหรับสร้างตัวตน "The Elite Architect"<br>คลิกที่หัวข้อเพื่อดูบทพูด</p>
-        </header>
+    <aside>
+        <div class="brand-header">
+            <h1>DR. GIFT</h1>
+            <span>The Master Architect V.9</span>
+        </div>
+        
+        <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i> SELECT CHAPTER
+        </div>
 
-        <details class="chapter-card">
-            <summary>
-                <span>CH 01: The Market Disruption</span>
-            </summary>
-            <div class="script-content">
-                <div class="director-note">
-                    <strong>Mood:</strong> จริงจัง, มองกล้องตรงๆ, สายตาคมกริบ<br>
-                    <strong>Action:</strong> นั่งไขว่ห้างสบายๆ หรือยืนกอดอกหลวมๆ เปิดคลิปด้วยคำถามที่แทงใจดำ
+        <nav class="menu" id="menuList">
+            <div class="menu-item active" onclick="switchChapter(1)">
+                <i class="fas fa-bolt"></i> 01. The Disruption
+            </div>
+            <div class="menu-item" onclick="switchChapter(2)">
+                <i class="fas fa-skull"></i> 02. The Enemy (Sugar)
+            </div>
+            <div class="menu-item" onclick="switchChapter(3)">
+                <i class="fas fa-graduation-cap"></i> 03. The Authority
+            </div>
+            <div class="menu-item" onclick="switchChapter(4)">
+                <i class="fas fa-paint-brush"></i> 04. The Untouched
+            </div>
+            <div class="menu-item" onclick="switchChapter(5)">
+                <i class="fas fa-chart-line"></i> 05. Asset Mindset
+            </div>
+            <div class="menu-item" onclick="switchChapter(6)">
+                <i class="fas fa-ban"></i> 06. The Power of NO
+            </div>
+            <div class="menu-item" onclick="switchChapter(7)">
+                <i class="fas fa-envelope-open-text"></i> 07. The Invitation
+            </div>
+            <div class="menu-item" onclick="switchChapter(8)">
+                <i class="fas fa-crown"></i> 08. Executive Presence
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="index.html" class="btn-back">
+                <i class="fas fa-arrow-left" style="margin-right:8px;"></i> EXIT TO MAIN
+            </a>
+        </div>
+    </aside>
+
+    <main>
+        <div class="top-bar">
+            <div class="scene-info">
+                <span class="status-badge badge-ready" id="statusBadge">STANDBY</span>
+                <span style="font-size:0.9rem; color:#666;">|</span>
+                <span style="font-size:0.9rem; font-weight:600;">GEMS SCIENTIFIC BEAUTY PRODUCTION</span>
+            </div>
+            <div class="toolbar">
+                <button class="tool-btn" title="Toggle Teleprompter" onclick="togglePrompter()">
+                    <i class="fas fa-expand"></i>
+                </button>
+                <button class="tool-btn" title="Light Mode (Don't use)" onclick="alert('AIHIA SAYS: Real pros use Dark Mode.')">
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="exit-prompter" onclick="togglePrompter()">
+            <i class="fas fa-times"></i> EXIT PROMPTER
+        </div>
+
+        <div class="script-viewport">
+            
+            <div id="ch1" class="chapter-section active">
+                <div class="script-header">
+                    <h2>01. The Market Disruption</h2>
+                    <div class="script-meta">
+                        <span><i class="far fa-clock"></i> 45 Sec</span>
+                        <span><i class="fas fa-video"></i> CU / Medium Shot</span>
+                        <span><i class="fas fa-thermometer-half"></i> Tone: Serious</span>
+                    </div>
                 </div>
-                <div class="dialogue">
-                    "คุณเคยสงสัยไหมคะ... ว่าทำไมคลินิกความงามถึงมีอยู่ทุกหัวมุมถนน แต่คนที่ 'ดูดีจริงๆ' กลับมีน้อยมาก?"
+
+                <div class="director-box">
+                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-text">นั่งไขว่ห้างสบายๆ หรือยืนกอดอกหลวมๆ มองกล้องเหมือนกำลังมองทะลุเข้าไปในใจคนดู เปิดด้วยคำถามที่แทงใจดำ</span>
                 </div>
-                <div class="dialogue">
-                    "เพราะคนส่วนใหญ่กำลังแก้ปัญหาผิดจุดค่ะ... เรามัวแต่วิ่งไล่ตามริ้วรอย ถมฟิลเลอร์ลงไปในหลุม<br>
-                    แต่ลืมถามตัวเองว่า... <span class="highlight">โครงสร้างข้างในเราพังไปถึงไหนแล้ว?</span>"
+
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">
+                        "คุณเคยสงสัยไหมคะ... ว่าทำไมคลินิกความงามถึงมีอยู่ทุกหัวมุมถนน แต่คนที่ 'ดูดีจริงๆ' กลับมีน้อยมาก?"
+                    </div>
                 </div>
-                <div class="dialogue">
-                    "หมอไม่ได้อยู่ที่นี่เพื่อ 'ขาย' โปรโมชั่น...<br>
-                    แต่อยู่เพื่อ 'เตือนสติ' และ 'วางแผน' ให้คุณใหม่... ในแบบที่หมอทำให้ตัวเอง"
+
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">
+                        "เพราะคนส่วนใหญ่กำลังแก้ปัญหาผิดจุดค่ะ... เรามัวแต่วิ่งไล่ตามริ้วรอย ถมฟิลเลอร์ลงไปในหลุม... แต่ลืมถามตัวเองว่า..."
+                    </div>
+                </div>
+
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">
+                        "<span class="highlight">โครงสร้างข้างในเราพังไปถึงไหนแล้ว?</span>"
+                    </div>
+                </div>
+
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">
+                        "หมอไม่ได้อยู่ที่นี่เพื่อ 'ขาย' โปรโมชั่น... แต่อยู่เพื่อ 'เตือนสติ' และ 'วางแผน' ให้คุณใหม่... ในแบบที่หมอทำให้ตัวเอง"
+                    </div>
                 </div>
             </div>
-        </details>
 
-        <details class="chapter-card">
-            <summary>
-                <span>CH 02: The Enemy (Sugar Face)</span>
-            </summary>
-            <div class="script-content">
-                <span class="prop-tag">PROP: แก้วกาแฟ / ขนมเค้กสวยๆ</span>
-                <div class="director-note">
-                    <strong>Mood:</strong> เหมือนเพื่อนเตือนเพื่อน, เป็นห่วงแต่ดุ<br>
-                    <strong>Action:</strong> ถือแก้วกาแฟขึ้นมา แล้ววางลงแบบปฏิเสธ
+            <div id="ch2" class="chapter-section">
+                <div class="script-header">
+                    <h2>02. The Enemy (Sugar Face)</h2>
+                    <div class="script-meta">
+                        <span><i class="far fa-clock"></i> 60 Sec</span>
+                        <span><i class="fas fa-coffee"></i> Prop: Coffee/Cake</span>
+                        <span><i class="fas fa-thermometer-half"></i> Tone: Warning</span>
+                    </div>
                 </div>
-                <div class="dialogue">
-                    "หลายคนเข้ามาหาหมอพร้อมคำถามว่า 'ทำไมหน้าหมอง? ทำไมหน้าห้อย?' ทั้งที่โบกครีมกระปุกละหมื่น..."
+                <div class="director-box">
+                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-text">ถือแก้วกาแฟขึ้นมา แล้ววางลงแบบปฏิเสธ สายตาเป็นห่วงแต่ดุ เหมือนเพื่อนเตือนเพื่อน</span>
                 </div>
-                <div class="dialogue">
-                    "คำตอบอาจจะอยู่ที่แก้วกาแฟที่คุณถืออยู่ก็ได้ค่ะ...<br>
-                    <span class="highlight">Sugar Face</span> หรือ 'หน้าติดหวาน' คือฆาตกรเงียบตัวจริง"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"หลายคนเข้ามาหาหมอพร้อมคำถามว่า 'ทำไมหน้าหมอง? ทำไมหน้าห้อย?' ทั้งที่โบกครีมกระปุกละหมื่น..."</div>
                 </div>
-                <div class="dialogue">
-                    "น้ำตาลทำให้คอลลาเจนของคุณ 'แข็ง' และ 'เปราะ' (Glycation)... ต่อให้ฉีดโบทั้งหน้า แต่ถ้าข้างในอักเสบ ผิวก็ไม่มีวันดูแพงค่ะ... เริ่มแก้ที่การกิน แล้วค่อยมาคุยเรื่องเข็มกับหมอ"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"คำตอบอาจจะอยู่ที่แก้วกาแฟที่คุณถืออยู่ก็ได้ค่ะ... <span class="highlight">Sugar Face</span> หรือ 'หน้าติดหวาน' คือฆาตกรเงียบตัวจริง"</div>
+                </div>
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"น้ำตาลทำให้คอลลาเจนของคุณ 'แข็ง' และ 'เปราะ' (Glycation)... ต่อให้ฉีดโบทั้งหน้า แต่ถ้าข้างในอักเสบ ผิวก็ไม่มีวันดูแพงค่ะ"</div>
                 </div>
             </div>
-        </details>
 
-        <details class="chapter-card">
-            <summary>
-                <span>CH 03: The Authority (Trainer)</span>
-            </summary>
-            <div class="script-content">
-                <span class="prop-tag">PROP: หุ่นจำลองกะโหลก / iPad เปิดรูป Anatomy</span>
-                <div class="director-note">
-                    <strong>Mood:</strong> มืออาชีพ, มั่นใจสูงสุด, Expert Voice<br>
-                    <strong>Action:</strong> ชี้ที่จุดบนใบหน้าตัวเอง หรือบนหุ่น
+            <div id="ch3" class="chapter-section">
+                <div class="script-header">
+                    <h2>03. The Authority (Trainer)</h2>
+                    <div class="script-meta">
+                        <span><i class="far fa-clock"></i> 50 Sec</span>
+                        <span><i class="fas fa-brain"></i> Prop: Anatomy Model</span>
+                    </div>
                 </div>
-                <div class="dialogue">
-                    "ในฐานะที่หมอเป็นคนสอนหมอด้วยกัน (National Trainer)...<br>
-                    สิ่งที่หมอย้ำเสมอคือ... ใบหน้าไม่ใช่กระดาษวาดรูป แต่มันคืองานสถาปัตยกรรมที่มีมิติ"
+                <div class="director-box">
+                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-text">ใช้น้ำเสียงผู้เชี่ยวชาญ มั่นใจสูงสุด ชี้ที่จุดบนใบหน้าตัวเอง หรือบนหุ่น Anatomy</span>
                 </div>
-                <div class="dialogue">
-                    "ใต้ผิวหนังของคุณมีชั้นไขมัน เส้นเอ็น และกระดูกที่ซับซ้อน... <br>
-                    การจิ้มเข็มลงไปโดยไม่เข้าใจ Layer ก็เหมือนการสร้างบ้านบนทราย..."
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"ในฐานะที่หมอเป็นคนสอนหมอด้วยกัน (National Trainer)... สิ่งที่หมอย้ำเสมอคือ... ใบหน้าไม่ใช่กระดาษวาดรูป แต่มันคืองานสถาปัตยกรรมที่มีมิติ"</div>
                 </div>
-                <div class="dialogue">
-                    "เทคนิคที่หมอใช้ คือการวางรากฐานใหม่... ไม่ใช่แค่ถมที่... <span class="highlight">เพราะความสวยที่ปลอดภัย ต้องมาจากความรู้ที่ลึกซึ้งเท่านั้นค่ะ</span>"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"ใต้ผิวหนังของคุณมีชั้นไขมัน เส้นเอ็น และกระดูกที่ซับซ้อน... การจิ้มเข็มลงไปโดยไม่เข้าใจ Layer ก็เหมือนการสร้างบ้านบนทราย..."</div>
+                </div>
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"เทคนิคที่หมอใช้ คือการวางรากฐานใหม่... <span class="highlight">เพราะความสวยที่ปลอดภัย ต้องมาจากความรู้ที่ลึกซึ้งเท่านั้นค่ะ</span>"</div>
                 </div>
             </div>
-        </details>
 
-        <details class="chapter-card">
-            <summary>
-                <span>CH 04: The Untouched Look</span>
-            </summary>
-            <div class="script-content">
-                <div class="director-note">
-                    <strong>Mood:</strong> สบายๆ, ศิลปิน (ISFP vibe), ยิ้มเล็กน้อย<br>
-                    <strong>Action:</strong> เดินดูรูปภาพ หรือจัดดอกไม้ (กิจกรรมที่ดูสุนทรีย์)
+            <div id="ch4" class="chapter-section">
+                <div class="script-header">
+                    <h2>04. The Untouched Look</h2>
+                    <div class="script-meta">
+                        <span><i class="far fa-clock"></i> 40 Sec</span>
+                        <span><i class="fas fa-spa"></i> Tone: Relaxed/ISFP</span>
+                    </div>
                 </div>
-                <div class="dialogue">
-                    "หมอเชื่อในความงามแบบ <span class="highlight">'The Untouched Look'</span> ค่ะ..."
+                <div class="director-box">
+                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-text">สบายๆ ศิลปิน ยิ้มเล็กน้อย ถ่ายขณะทำกิจกรรมที่ดูสุนทรีย์ (จัดดอกไม้/ดูรูป)</span>
                 </div>
-                <div class="dialogue">
-                    "คือความสวยที่คนทักว่า 'ไปทำอะไรมา ทำไมดูสดใสจัง?'<br>
-                    ...ไม่ใช่ทักว่า 'ไปทำจมูกร้านไหนมา?'"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"หมอเชื่อในความงามแบบ <span class="highlight">'The Untouched Look'</span> ค่ะ... คือความสวยที่คนทักว่า 'ไปทำอะไรมา ทำไมดูสดใสจัง?' ไม่ใช่ทักว่า 'ไปทำจมูกร้านไหนมา?'"</div>
                 </div>
-                <div class="dialogue">
-                    "มันคือศิลปะของการซ่อนร่องรอย... ให้เหลือไว้แค่ความสง่างาม<br>
-                    ถ้าคุณอยากหน้าเปลี่ยนเป็นคนอื่น หมออาจจะไม่ใช่คำตอบ... แต่ถ้าคุณอยากเป็นตัวเองในเวอร์ชันที่ดีที่สุด... เราคุยกันรู้เรื่องแน่นอนค่ะ"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"มันคือศิลปะของการซ่อนร่องรอย... ให้เหลือไว้แค่ความสง่างาม"</div>
                 </div>
             </div>
-        </details>
 
-        <details class="chapter-card">
-            <summary>
-                <span>CH 05: The Asset Mindset</span>
-            </summary>
-            <div class="script-content">
-                <div class="director-note">
-                    <strong>Mood:</strong> Business Luxury, พูดกับนักธุรกิจ<br>
-                    <strong>Action:</strong> นั่งโต๊ะทำงาน ถือปากกาแพงๆ หรือดูเอกสาร
+            <div id="ch5" class="chapter-section">
+                <div class="script-header">
+                    <h2>05. The Asset Mindset</h2>
+                    <div class="script-meta">
+                        <span><i class="far fa-clock"></i> 55 Sec</span>
+                        <span><i class="fas fa-briefcase"></i> Tone: Business Luxury</span>
+                    </div>
                 </div>
-                <div class="dialogue">
-                    "สำหรับคนไข้ของหมอ... ร่างกายไม่ใช่แค่เปลือกนอก<br>
-                    แต่มันคือ <span class="highlight">Asset (สินทรัพย์)</span> ที่แพงที่สุด"
+                <div class="director-box">
+                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-text">นั่งโต๊ะทำงาน ถือปากกาแพงๆ หรือดูเอกสาร พูดเหมือนกำลังเจรจาธุรกิจ</span>
                 </div>
-                <div class="dialogue">
-                    "คุณบริหารพอร์ตหุ้น บริหารธุรกิจระดับร้อยล้าน... แล้วพอร์ตร่างกายล่ะคะ? ติดลบอยู่หรือเปล่า?"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"สำหรับคนไข้ของหมอ... ร่างกายไม่ใช่แค่เปลือกนอก แต่มันคือ <span class="highlight">Asset (สินทรัพย์)</span> ที่แพงที่สุด"</div>
                 </div>
-                <div class="dialogue">
-                    "หมอทำหน้าที่เหมือน Fund Manager ให้ร่างกายคุณ... ดูแลค่าเลือด ฮอร์โมน และความเสื่อม... เพื่อให้คุณมีพลังไปต่อยอดความสำเร็จได้อีกนานๆ"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"คุณบริหารพอร์ตหุ้น บริหารธุรกิจระดับร้อยล้าน... แล้วพอร์ตร่างกายล่ะคะ? ติดลบอยู่หรือเปล่า?"</div>
+                </div>
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"หมอทำหน้าที่เหมือน Fund Manager ให้ร่างกายคุณ... ดูแลค่าเลือด ฮอร์โมน และความเสื่อม... เพื่อให้คุณมีพลังไปต่อยอดความสำเร็จได้อีกนานๆ"</div>
                 </div>
             </div>
-        </details>
 
-        <details class="chapter-card">
-            <summary>
-                <span>CH 06: The Power of "NO"</span>
-            </summary>
-            <div class="script-content">
-                <div class="director-note">
-                    <strong>Mood:</strong> จริงใจ, เด็ดขาด, ปกป้อง<br>
-                    <strong>Action:</strong> สบตาคนดูนิ่งๆ เพื่อสื่อความ Trust
+            <div id="ch6" class="chapter-section">
+                <div class="script-header">
+                    <h2>06. The Power of "NO"</h2>
+                    <div class="script-meta">
+                        <span><i class="far fa-clock"></i> 45 Sec</span>
+                        <span><i class="fas fa-shield-alt"></i> Tone: Honest/Firm</span>
+                    </div>
                 </div>
-                <div class="dialogue">
-                    "สิ่งที่คุณจะได้ยินจากหมอบ่อยที่สุด... อาจจะไม่ใช่คำว่า 'ได้ค่ะ'<br>
-                    แต่เป็นคำว่า <span class="highlight">'อย่าทำเลยค่ะ'</span>"
+                <div class="director-box">
+                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-text">จริงใจ เด็ดขาด สบตาคนดูนิ่งๆ เพื่อสื่อความ Trust ว่าเราไม่ขายมั่ว</span>
                 </div>
-                <div class="dialogue">
-                    "ถ้าหมอมองว่ามันไม่จำเป็น หรือทำแล้วหน้าจะดูแปลก หมอจะปฏิเสธทันที...<br>
-                    เพราะใบหน้าคุณคือผลงานของหมอ... และความไว้วางใจของคุณ คือสิ่งที่หมอให้ค่ามากที่สุด"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"สิ่งที่คุณจะได้ยินจากหมอบ่อยที่สุด... อาจจะไม่ใช่คำว่า 'ได้ค่ะ' แต่เป็นคำว่า <span class="highlight">'อย่าทำเลยค่ะ'</span>"</div>
                 </div>
-                <div class="dialogue">
-                    "ที่ GEMS Scientific Beauty... เราไม่ขายคอร์ส แต่เราขาย 'ความจริง' ค่ะ"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"ถ้าหมอมองว่ามันไม่จำเป็น หรือทำแล้วหน้าจะดูแปลก หมอจะปฏิเสธทันที... เพราะใบหน้าคุณคือผลงานของหมอ... และความไว้วางใจของคุณ คือสิ่งที่หมอให้ค่ามากที่สุด"</div>
                 </div>
             </div>
-        </details>
 
-        <details class="chapter-card">
-            <summary>
-                <span>CH 07: The Invitation (Call to Action)</span>
-            </summary>
-            <div class="script-content">
-                <div class="director-note">
-                    <strong>Mood:</strong> อบอุ่น, เชื้อเชิญแบบ Exclusive<br>
-                    <strong>Action:</strong> ยิ้มปิดท้าย ผายมือเล็กน้อย
+            <div id="ch7" class="chapter-section">
+                <div class="script-header">
+                    <h2>07. The Invitation</h2>
+                    <div class="script-meta">
+                        <span><i class="far fa-clock"></i> 30 Sec</span>
+                        <span><i class="fas fa-hand-holding-heart"></i> Tone: Warm/Exclusive</span>
+                    </div>
                 </div>
-                <div class="dialogue">
-                    "Wellness ไม่ใช่ทางลัด... แต่มันคือการเดินทางระยะยาว<br>
-                    ถ้าคุณพร้อมที่จะหยุดวิ่งตามกระแส แล้วหันมาสร้างรากฐานที่แข็งแรงจริงๆ..."
+                <div class="director-box">
+                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-text">ยิ้มปิดท้าย ผายมือเล็กน้อย เชื้อเชิญแบบ Exclusive</span>
                 </div>
-                <div class="dialogue">
-                    "มาคุยกับหมอได้ค่ะ... เราจะมาออกแบบ <span class="highlight">'Legacy'</span> ของคุณไปด้วยกัน<br>
-                    ที่ GEMS Scientific Beauty ค่ะ"
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"Wellness ไม่ใช่ทางลัด... แต่มันคือการเดินทางระยะยาว ถ้าคุณพร้อมที่จะหยุดวิ่งตามกระแส แล้วหันมาสร้างรากฐานที่แข็งแรงจริงๆ..."</div>
+                </div>
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"มาคุยกับหมอได้ค่ะ... เราจะมาออกแบบ <span class="highlight">'Legacy'</span> ของคุณไปด้วยกัน ที่ GEMS Scientific Beauty ค่ะ"</div>
                 </div>
             </div>
-        </details>
 
-        <a href="index.html" class="back-btn">&larr; กลับสู่หน้าหลัก</a>
-    </div>
+            <div id="ch8" class="chapter-section">
+                <div class="script-header">
+                    <h2>08. The Executive Presence</h2>
+                    <div class="script-meta">
+                        <span><i class="far fa-clock"></i> 60 Sec</span>
+                        <span><i class="fas fa-chess-king"></i> Tone: Powerful/Leader</span>
+                    </div>
+                </div>
+                <div class="director-box">
+                    <span class="director-label">DIRECTOR'S NOTE</span>
+                    <span class="director-text">ยืนล้วงกระเป๋า หรือพิงโต๊ะผู้บริหาร พูดเรื่องผลลัพธ์เชิงอำนาจ (Power)</span>
+                </div>
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"ในการเจรจาธุรกิจระดับพันล้าน... <span class="highlight">'ใบหน้า' คือ First Impression ที่แพงที่สุด</span> ครับ/ค่ะ"</div>
+                </div>
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"ถ้าหน้าคุณดู 'เหนื่อย' ดู 'เครียด' หรือดู 'ไม่สดใส'... คู่ค้าจะอ่านว่าคุณกำลังเพลี่ยงพล้ำ แต่ถ้าหน้าคุณดู 'สง่า' และ 'เปี่ยมพลัง' (Vibrant)... คุณชนะไปครึ่งทางแล้ว"</div>
+                </div>
+                <div class="dialogue-block">
+                    <span class="speaker-name">DR. GIFT</span>
+                    <div class="line">"หมอไม่ได้ทำหน้าให้คุณสวย/หล่อขึ้นอย่างเดียว... แต่หมอ Design <span class="highlight">'Executive Presence'</span> เพื่อให้คุณครองห้องประชุมได้ต่างหาก"</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
 
     <script>
-        // Optional: Close other details when one is opened (Accordion effect)
-        const details = document.querySelectorAll("details");
+        // --- 6. APP LOGIC ---
+        
+        function switchChapter(chIndex) {
+            // Update Menu
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.menu-item')[chIndex - 1].classList.add('active');
 
-        details.forEach((targetDetail) => {
-            targetDetail.addEventListener("click", () => {
-                // Close all other details
-                details.forEach((detail) => {
-                    if (detail !== targetDetail) {
-                        detail.removeAttribute("open");
-                    }
-                });
-            });
-        });
+            // Update Content
+            document.querySelectorAll('.chapter-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`ch${chIndex}`).classList.add('active');
+            
+            // Scroll to top
+            document.querySelector('.script-viewport').scrollTop = 0;
+        }
+
+        function togglePrompter() {
+            document.body.classList.toggle('prompter-mode');
+            const badge = document.getElementById('statusBadge');
+            
+            if(document.body.classList.contains('prompter-mode')) {
+                badge.innerText = "RECORDING";
+                badge.className = "status-badge badge-action";
+                
+                // Optional: Auto enter fullscreen
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                }
+            } else {
+                badge.innerText = "STANDBY";
+                badge.className = "status-badge badge-ready";
+                
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('menuList').classList.toggle('mobile-open');
+        }
     </script>
 </body>
 </html>
