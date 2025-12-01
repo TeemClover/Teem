@@ -87,7 +87,7 @@
         .menu-item.ai-mode { color: #ff4d4d; border-top: 1px solid #333; margin-top: 10px; }
         .menu-item.ai-mode.active { color: #ff4d4d; border-left-color: #ff4d4d; background: rgba(255, 77, 77, 0.1); }
 
-        /* NAVIGATION DOCK (NEW) */
+        /* NAVIGATION DOCK */
         .nav-dock {
             padding: 20px;
             border-top: 1px solid var(--border);
@@ -184,6 +184,33 @@
         .speaker-name { font-size: 0.75rem; color: #666; text-transform: uppercase; margin-bottom: 8px; display: block; }
         .line { font-family: var(--font-script); font-size: 1.8rem; line-height: 1.6; color: #fff; font-weight: 300; }
         .highlight { color: var(--gold); font-weight: 600; }
+
+        /* SCRIPT NAVIGATION (NEW) */
+        .script-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #222;
+        }
+
+        .nav-step-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: var(--font-ui);
+            font-size: 0.9rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-step-btn:hover { border-color: var(--gold); color: var(--gold); background: #222; }
+        .nav-step-btn.disabled { opacity: 0.3; pointer-events: none; border-color: transparent; }
 
         /* --- 5. PROMPTER MODE --- */
         body.prompter-mode aside, body.prompter-mode .top-bar { display: none; }
@@ -303,6 +330,11 @@
                     <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"หมอไม่ได้อยู่ที่นี่เพื่อ 'ขาย' โปรโมชั่น... แต่อยู่เพื่อ 'เตือนสติ' และ 'วางแผน' ให้คุณใหม่... ในแบบที่หมอทำให้ตัวเอง"</div>
                 </div>
+                
+                <div class="script-nav">
+                    <button class="nav-step-btn disabled"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn" onclick="switchChapter(2)">NEXT CHAPTER <i class="fas fa-arrow-right"></i></button>
+                </div>
             </div>
 
             <div id="ch2" class="chapter-section">
@@ -325,6 +357,11 @@
                 <div class="dialogue-block">
                     <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"น้ำตาลทำให้คอลลาเจนของคุณ 'แข็ง' และ 'เปราะ' (Glycation)... ต่อให้ฉีดโบทั้งหน้า แต่ถ้าข้างในอักเสบ ผิวก็ไม่มีวันดูแพงค่ะ"</div>
+                </div>
+
+                <div class="script-nav">
+                    <button class="nav-step-btn" onclick="switchChapter(1)"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn" onclick="switchChapter(3)">NEXT CHAPTER <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
@@ -349,6 +386,11 @@
                     <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"เทคนิคที่หมอใช้ คือการวางรากฐานใหม่... <span class="highlight">เพราะความสวยที่ปลอดภัย ต้องมาจากความรู้ที่ลึกซึ้งเท่านั้นค่ะ</span>"</div>
                 </div>
+
+                <div class="script-nav">
+                    <button class="nav-step-btn" onclick="switchChapter(2)"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn" onclick="switchChapter(4)">NEXT CHAPTER <i class="fas fa-arrow-right"></i></button>
+                </div>
             </div>
 
             <div id="ch4" class="chapter-section">
@@ -367,6 +409,11 @@
                 <div class="dialogue-block">
                     <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"มันคือศิลปะของการซ่อนร่องรอย... ให้เหลือไว้แค่ความสง่างาม... ถ้าคุณอยากหน้าเปลี่ยนเป็นคนอื่น หมออาจจะไม่ใช่คำตอบ... แต่ถ้าคุณอยากเป็นตัวเองในเวอร์ชันที่ดีที่สุด... เราคุยกันรู้เรื่องแน่นอนค่ะ"</div>
+                </div>
+
+                <div class="script-nav">
+                    <button class="nav-step-btn" onclick="switchChapter(3)"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn" onclick="switchChapter(5)">NEXT CHAPTER <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
@@ -391,6 +438,11 @@
                     <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"หมอทำหน้าที่เหมือน Fund Manager ให้ร่างกายคุณ... ดูแลค่าเลือด ฮอร์โมน และความเสื่อม... เพื่อให้คุณมีพลังไปต่อยอดความสำเร็จได้อีกนานๆ"</div>
                 </div>
+
+                <div class="script-nav">
+                    <button class="nav-step-btn" onclick="switchChapter(4)"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn" onclick="switchChapter(6)">NEXT CHAPTER <i class="fas fa-arrow-right"></i></button>
+                </div>
             </div>
 
             <div id="ch6" class="chapter-section">
@@ -412,7 +464,12 @@
                 </div>
                 <div class="dialogue-block">
                     <span class="speaker-name">DR. GIFF</span>
-                    <div class="line">"ที่ GEMS Scientific Beauty... เราไม่ขายคอร์ส แต่เราขาย 'ความจริงใจ' ค่ะ"</div>
+                    <div class="line">"ที่ GEM Scientific Beauty... เราไม่ขายคอร์ส แต่เราขาย 'ความจริงใจ' ค่ะ"</div>
+                </div>
+
+                <div class="script-nav">
+                    <button class="nav-step-btn" onclick="switchChapter(5)"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn" onclick="switchChapter(7)">NEXT CHAPTER <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
@@ -431,7 +488,12 @@
                 </div>
                 <div class="dialogue-block">
                     <span class="speaker-name">DR. GIFF</span>
-                    <div class="line">"มาคุยกับหมอได้ค่ะ... เราจะมาออกแบบ <span class="highlight">'Legacy'</span> ของคุณไปด้วยกัน ที่ GEMS Scientific Beauty ค่ะ"</div>
+                    <div class="line">"มาคุยกับหมอได้ค่ะ... เราจะมาออกแบบ <span class="highlight">'Legacy'</span> ของคุณไปด้วยกัน ที่ GEM Scientific Beauty ค่ะ"</div>
+                </div>
+
+                <div class="script-nav">
+                    <button class="nav-step-btn" onclick="switchChapter(6)"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn" onclick="switchChapter(8)">NEXT CHAPTER <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
@@ -455,6 +517,11 @@
                 <div class="dialogue-block">
                     <span class="speaker-name">DR. GIFF</span>
                     <div class="line">"หมอไม่ได้ทำหน้าให้คุณสวย/หล่อขึ้นอย่างเดียว... แต่หมอ Design <span class="highlight">'Executive Presence'</span> เพื่อให้คุณครองห้องประชุมได้ต่างหาก"</div>
+                </div>
+
+                <div class="script-nav">
+                    <button class="nav-step-btn" onclick="switchChapter(7)"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn" onclick="switchChapter(9)" style="border-color:#ff4d4d; color:#ff4d4d;">GO TO AI PROTOCOL <i class="fas fa-robot"></i></button>
                 </div>
             </div>
 
@@ -487,6 +554,11 @@
                 <div class="dialogue-block">
                     <span class="speaker-name" style="color:#ff4d4d;">PART 4: TONE C (เสียงเล่าเรื่อง / Casual)</span>
                     <div class="line">"เมื่อวานหมอไปเจอเคสนึงมา น่าสนใจมากเลยค่ะ เขาอายุ 50 แล้วนะ แต่ผิวเหมือนคนอายุ 30 ต้นๆ... เคล็ดลับเขาไม่มีอะไรซับซ้อนเลย แค่นอนให้พอและดื่มน้ำเยอะๆ"</div>
+                </div>
+
+                <div class="script-nav">
+                    <button class="nav-step-btn" onclick="switchChapter(8)"><i class="fas fa-arrow-left"></i> PREV</button>
+                    <button class="nav-step-btn disabled">END OF SCRIPT</button>
                 </div>
             </div>
 
