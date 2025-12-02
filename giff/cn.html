@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Giff Worawan | GEM Scientific Beauty (CN)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Inter:wght@200;300;400;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- 1. CORE THEME & RESET --- */
+        :root {
+            --bg-main: #000000;
+            --bg-secondary: #080808;
+            --gold: #C5A059;
+            --text-light: #F0F0F0;
+            --text-muted: #999999;
+            --font-heading: 'Cinzel', serif;
+            --font-body: 'Inter', sans-serif;
+            --font-cn: 'Noto Sans SC', sans-serif; /* Added Chinese Font */
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 400; letter-spacing: 1px; color: var(--text-light); }
+        strong { color: var(--text-light); font-weight: 600; }
+        .gold { color: var(--gold); }
+        a { text-decoration: none; transition: all 0.3s ease; }
+        img { max-width: 100%; height: auto; display: block; }
+
+        /* Chinese Text Adjustment */
+        .thai-text, .pillar-desc, .lifestyle-desc, .authority-text, .testi-quote, .protocol-content p {
+            font-family: var(--font-cn) !important;
+        }
+
+        /* --- 2. LAYOUT UTILITIES --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        section { padding: 100px 0; border-bottom: 1px solid #1a1a1a; }
+        
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-tag { display: block; font-size: 0.85rem; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; font-weight: 500; }
+        .section-title { font-size: 2.5rem; }
+
+        /* Smooth Reveal Animation */
+        .reveal-up { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        /* --- 3. COMPONENTS --- */
+        .btn-main {
+            display: inline-block; padding: 14px 35px;
+            border: 1px solid var(--gold); color: var(--gold);
+            font-family: var(--font-heading); font-size: 0.9rem; letter-spacing: 2px;
+            background: rgba(10,10,10,0.8); backdrop-filter: blur(10px);
+        }
+        .btn-main:hover { background-color: var(--gold); color: #000; box-shadow: 0 5px 20px rgba(197, 160, 89, 0.3); }
+
+        /* --- 4. SECTIONS SPECIFIC --- */
+
+        /* HERO */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-bottom: 100px;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('IMG_2358.jpeg') no-repeat center top/cover;
+            background-position: center 20%; 
+            z-index: 0;
+        }
+        .hero-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
+            background: linear-gradient(to top, #000 15%, transparent);
+            z-index: 1;
+        }
+        .hero-content { position: relative; z-index: 2; width: 100%; }
+        .hero-subtitle { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 4px; margin-bottom: 15px; display: block; text-shadow: 0 2px 10px rgba(0,0,0,0.8); font-weight: 600; }
+        .hero-title { font-size: 3.5rem; line-height: 1; margin-bottom: 35px; color: #fff; text-shadow: 0 2px 20px rgba(0,0,0,1); }
+
+        /* MANIFESTO */
+        .manifesto-box {
+            border-left: 3px solid var(--gold); padding-left: 40px;
+            margin: 0 auto; max-width: 850px;
+        }
+        .quote-large { font-family: var(--font-cn); font-size: 2rem; line-height: 1.4; margin-bottom: 35px; }
+        
+        /* PILLARS */
+        .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 50px; }
+        .pillar-item { padding: 35px; background: var(--bg-secondary); transition: 0.4s; border: 1px solid transparent; }
+        .pillar-item:hover { border-color: #222; transform: translateY(-8px); background: #0a0a0a; }
+        .pillar-icon { font-size: 2.2rem; color: var(--gold); margin-bottom: 25px; }
+        .pillar-item h3 { margin-bottom: 15px; font-size: 1.3rem; }
+        .pillar-desc { color: var(--text-muted); font-family: var(--font-cn); font-weight: 300; font-size: 0.95rem; }
+
+        /* AUTHORITY */
+        .authority-wrapper { position: relative; margin: 40px 0; }
+        .authority-img { width: 100%; height: auto; display: block; filter: brightness(0.9); }
+        .authority-badge {
+            position: absolute; bottom: -25px; right: 30px;
+            background: var(--gold); color: #000;
+            padding: 12px 30px; font-family: var(--font-heading); font-weight: 700; letter-spacing: 1px;
+        }
+        .authority-text {
+            text-align: center; max-width: 800px; margin: 50px auto 0;
+            color: #aaa; font-family: var(--font-cn); font-size: 1.1rem; line-height: 1.7;
+        }
+
+        /* LIFESTYLE */
+        .split-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
+        .image-frame { border: 1px solid #222; padding: 15px; background: #0a0a0a; }
+        .image-frame img { width: 100%; height: auto; display: block; }
+        
+        .lifestyle-quote { 
+            font-family: var(--font-cn); font-size: 1.4rem; color: var(--text-main); 
+            margin: 30px 0; border-left: 2px solid var(--gold); padding-left: 20px;
+        }
+        .lifestyle-desc { color: var(--text-muted); font-family: var(--font-cn); margin-bottom: 30px; }
+        .tags-group { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+        .tag { 
+            border: 1px solid var(--gold); padding: 8px 20px; border-radius: 30px; 
+            font-size: 0.8rem; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; font-family: var(--font-cn);
+        }
+
+        /* BIO */
+        .role-list { list-style: none; padding: 0; margin: 30px 0; }
+        .role-list li { 
+            margin-bottom: 12px; color: #ccc; font-family: var(--font-cn); font-size: 0.9rem; letter-spacing: 1px;
+            display: flex; align-items: center;
+        }
+        .role-list li i { color: var(--gold); margin-right: 15px; font-size: 0.8rem; }
+
+        /* STATS */
+        .stats-group { display: flex; gap: 30px; margin-top: 40px; border-top: 1px solid #222; padding-top: 30px; }
+        .stat-box { flex: 1; text-align: left; }
+        .stat-box h3 { font-size: 2.2rem; color: var(--gold); margin-bottom: 5px; }
+        .stat-box span { font-size: 0.75rem; color: #666; letter-spacing: 2px; text-transform: uppercase; }
+
+        /* PROTOCOL */
+        .protocol-list { max-width: 850px; margin: 0 auto; }
+        .protocol-item { display: flex; margin-bottom: 40px; border-bottom: 1px solid #111; padding-bottom: 40px; }
+        .protocol-num { font-family: var(--font-heading); font-size: 3rem; color: #222; margin-right: 35px; line-height: 1; }
+        .protocol-content h4 { color: var(--gold); margin-bottom: 12px; font-family: var(--font-cn); }
+        .protocol-content p { color: var(--text-muted); font-family: var(--font-cn); }
+
+        /* TESTIMONIALS */
+        .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+        .testi-item { background: var(--bg-secondary); padding: 40px; border: 1px solid #1a1a1a; }
+        .testi-quote { font-family: var(--font-cn); font-style: italic; color: #ccc; margin-bottom: 25px; font-size: 1.05rem; }
+        .testi-client { color: var(--gold); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-cn); }
+
+        /* FOOTER CTA */
+        .cta-box { background: linear-gradient(145deg, #0a0a0a, #000); padding: 70px 30px; text-align: center; border: 1px solid #111; }
+        .social-group { margin-top: 40px; display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        .social-link { color: #777; font-size: 1.6rem; display: flex; align-items: center; gap: 10px; }
+        .social-link span { font-size: 0.8rem; font-family: var(--font-body); text-transform: uppercase; letter-spacing: 1px; }
+        .social-link:hover { color: var(--gold); transform: translateY(-3px); }
+
+        footer { text-align: center; padding: 50px 0; font-size: 0.75rem; color: #555; border-top: 1px solid #111; }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 900px) {
+            section { padding: 80px 0; }
+            .hero { padding-bottom: 150px; }
+            .hero-title { font-size: 3rem; }
+            .split-layout { grid-template-columns: 1fr; gap: 50px; }
+            .split-layout.reverse-mobile { display: flex; flex-direction: column-reverse; }
+            .authority-badge { position: relative; bottom: auto; right: auto; margin-top: 20px; display: inline-block; }
+            .stats-group { justify-content: center; text-align: center; }
+            .stat-box { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <div class="hero-bg reveal-up"></div>
+        <div class="hero-overlay"></div>
+        <div class="container hero-content reveal-up delay-2">
+            <span class="hero-subtitle">GEM Scientific Beauty</span>
+            <h1 class="hero-title">DR. GIFF<br>WORAWAN</h1>
+            <a href="script.html" class="btn-main">进入内部脚本库 (INTERNAL)</a>
+        </div>
+    </div>
+
+    <section>
+        <div class="container reveal-up">
+            <div class="section-header">
+                <span class="section-tag">Philosophy · 理念</span>
+                <h2 class="section-title">THE MANIFESTO</h2>
+            </div>
+            <div class="manifesto-box">
+                <p class="quote-large">
+                    "真正的健康美学，不在于做得更多，<br>
+                    而在于<span class="gold">精准复原</span> (Truly Restores)。"
+                </p>
+                <p class="thai-text" style="font-size: 1.15rem; color: #ccc;">
+                    在充满“速成”捷径的世界里，<strong>Dr. Giff</strong> 坚持做一名“纯粹主义者” (The Purist)。
+                    我们不与时间为敌，而是通过医学理解来管理衰老 (Decay Management)。
+                    让您不仅保持自我，更成为那个“能量最饱满”的自己。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: var(--bg-secondary);">
+        <div class="container reveal-up">
+            <div class="section-header">
+                <span class="section-tag">Core Competency · 核心竞争力</span>
+                <h2 class="section-title">THE 4 PILLARS</h2>
+            </div>
+            <div class="pillars-grid">
+                <div class="pillar-item reveal-up delay-1">
+                    <i class="fas fa-brain pillar-icon"></i>
+                    <h3>The Art of Anatomy<br><span style="font-size:0.9rem; color:#666;">解剖学艺术</span></h3>
+                    <p class="pillar-desc">作为<strong>国家级培训导师</strong>，深知面部层次是核心。不是单纯的“填充”，而是重塑光影结构，打造宛若天生的自然美。</p>
+                </div>
+                <div class="pillar-item reveal-up delay-2">
+                    <i class="fas fa-chart-line pillar-icon"></i>
+                    <h3>The Biological Asset<br><span style="font-size:0.9rem; color:#666;">生物资产管理</span></h3>
+                    <p class="pillar-desc">身体是您最昂贵的资产。我们要像基金经理一样管理您的健康投资组合——通过血液、荷尔蒙和DNA数据，长期守护您的价值。</p>
+                </div>
+                <div class="pillar-item reveal-up delay-3">
+                    <i class="fas fa-user-check pillar-icon"></i>
+                    <h3>Sincere Integrity<br><span style="font-size:0.9rem; color:#666;">至诚之心</span></h3>
+                    <p class="pillar-desc">我们恪守医德，坦诚建议。如果某项治疗没有必要，医生会直接拒绝。因为您的信任，是我们最珍视的财富。</p>
+                </div>
+                <div class="pillar-item reveal-up delay-1" style="border-color: var(--gold);">
+                    <i class="fas fa-crown pillar-icon"></i>
+                    <h3>Executive Presence<br><span style="font-size:0.9rem; color:#666;">领袖气场</span></h3>
+                    <p class="pillar-desc">专为领袖设计形象——尊贵 (Noble)、活力 (Vibrant) 且值得信赖，助您在商业谈判中更胜一筹。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container reveal-up">
+            <div class="section-header">
+                <span class="section-tag">National Leadership · 国家级信赖</span>
+                <h2 class="section-title">TRUSTED BY THE NATION</h2>
+            </div>
+            <div class="authority-wrapper">
+                <img src="IMG_2359.jpeg" alt="Dr. Giff National Academic Lecture" class="authority-img">
+                <div class="authority-badge">CSO 首席临床培训官</div>
+            </div>
+            <p class="authority-text">
+                国家级学术会议现场。<strong>Dr. Giff</strong> 受邀作为演讲嘉宾，向全国医生传授高阶技术。
+                这不仅是荣誉，更是医学界公认的思想领袖 (Thought Leader) 地位。
+            </p>
+        </div>
+    </section>
+
+    <section>
+        <div class="container reveal-up">
+            <div class="split-layout reverse-mobile">
+                <div class="image-frame reveal-up delay-1">
+                    <img src="IMG_2362.jpeg" alt="Dr. Giff Global Lifestyle">
+                </div>
+                <div class="reveal-up delay-2">
+                    <span class="section-tag">The Art of Living · 生活艺术</span>
+                    <h2 class="section-title">THE GLOBAL AESTHETE</h2>
+                    
+                    <div class="lifestyle-quote">
+                        "我懂你的世界，<br>因为那也是我的世界。"
+                    </div>
+                    
+                    <p class="lifestyle-desc">
+                        Dr. Giff 不仅是医生，更是<strong>艺术家与环球旅行者</strong>。深谙高净值人群的生活方式与审美需求。
+                        我们理解，真正的“贵气”不是堆砌，而是极致的甄选。
+                    </p>
+                    
+                    <div class="tags-group">
+                        <span class="tag">全球公民 Global Citizen</span>
+                        <span class="tag">ISFP 艺术灵魂</span>
+                        <span class="tag">国际人脉网络</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: var(--bg-secondary);">
+        <div class="container reveal-up">
+            <div class="split-layout">
+                <div class="reveal-up delay-1">
+                    <span class="section-tag">The Physician · 医师</span>
+                    <h2 class="section-title">DR. GIFF<br>WORAWAN</h2>
+                    <p class="thai-text" style="color:#ccc; font-size: 1.1rem; margin-top: 20px;">
+                        GEM Scientific Beauty 创始人，国家级培训导师。她是顶层名流“冻龄”背后的秘密武器。以此信念为基石：“最好的医生，其实是你自己的身体机能。”
+                    </p>
+                    
+                    <ul class="role-list">
+                        <li><i class="fas fa-check"></i> 医疗总监 (Medical Director)</li>
+                        <li><i class="fas fa-check"></i> Profhilo & Revanesse 国家级导师</li>
+                        <li><i class="fas fa-check"></i> CSO 首席临床培训官</li>
+                    </ul>
+
+                    <div class="stats-group">
+                        <div class="stat-box">
+                            <h3>15+</h3>
+                            <span>Years Exp.</span>
+                        </div>
+                        <div class="stat-box">
+                            <h3>10k+</h3>
+                            <span>Successful Cases</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="image-frame reveal-up delay-2" style="border-color: var(--gold);">
+                    <img src="IMG_2365.jpeg" alt="Dr. Giff Physician Portrait">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container reveal-up">
+            <div class="section-header">
+                <span class="section-tag">Signature Service · 独家方案</span>
+                <h2 class="section-title">THE LEGACY PROTOCOL</h2>
+            </div>
+            <div class="protocol-list">
+                <div class="protocol-item reveal-up delay-1">
+                    <div class="protocol-num">01</div>
+                    <div class="protocol-content">
+                        <h4>THE BLUEPRINT (蓝图)</h4>
+                        <p>深度诊断：基因检测 (DNA)、荷尔蒙分析、3D面部扫描，寻找真正的年轻密码。</p>
+                    </div>
+                </div>
+                <div class="protocol-item reveal-up delay-2">
+                    <div class="protocol-num">02</div>
+                    <div class="protocol-content">
+                        <h4>THE RESTORATION (复原)</h4>
+                        <p>内在修复：消除炎症 (Inflammation)，调节睡眠与饮食，为身体打好地基。</p>
+                    </div>
+                </div>
+                <div class="protocol-item reveal-up delay-3">
+                    <div class="protocol-num">03</div>
+                    <div class="protocol-content">
+                        <h4>THE SCULPTING (雕琢)</h4>
+                        <p>光影艺术：利用光影美学与生物刺激剂，由 Dr. Giff 亲自打造“无痕”的高级脸。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="background-color: var(--bg-secondary);">
+        <div class="container reveal-up">
+            <div class="section-header">
+                <span class="section-tag">Testimonials · 口碑</span>
+                <h2 class="section-title">THE INNER CIRCLE</h2>
+                <p style="color: #666; font-style: italic; margin-top: 10px;">Voice of the VVIPs (Confidential)</p>
+            </div>
+            <div class="testi-grid">
+                <div class="testi-item reveal-up delay-1">
+                    <p class="testi-quote">"我在Dr. Giff这里买的不是填充剂，而是'自信'。在国家级商业谈判中，我的脸再也没有显露过疲态。"</p>
+                    <div class="testi-client">— 上市能源公司 CEO</div>
+                </div>
+                <div class="testi-item reveal-up delay-2">
+                    <p class="testi-quote">"她是唯一敢因为我吃糖而训斥我的医生。这改变了我的生活，皮肤状态好到连昂贵面霜都无法企及。"</p>
+                    <div class="testi-client">— 一线著名女星</div>
+                </div>
+                <div class="testi-item reveal-up delay-3">
+                    <p class="testi-quote">"我每年飞回曼谷两次，只为找Dr. Giff。她比任何人都懂什么是'东方的优雅'。"</p>
+                    <div class="testi-client">— 私人银行 VVIP 客户</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container reveal-up">
+            <div class="cta-box">
+                <h2 class="section-title" style="margin-bottom: 20px;">EXCLUSIVE APPOINTMENT</h2>
+                <p style="color:#888; margin-bottom: 40px;">每日仅限 3 位，确保极致私密。</p>
+                
+                <a href="https://line.me/R/ti/p/@752bsdty" target="_blank" class="btn-main">通过 LINE VVIP 预约</a>
+                
+                <div class="social-group">
+                    <a href="https://www.instagram.com/gem.scientificbeauty" target="_blank" class="social-link">
+                        <i class="fab fa-instagram"></i> <span>Instagram</span>
+                    </a>
+                    <a href="https://www.facebook.com/gem.scientificbeauty" target="_blank" class="social-link">
+                        <i class="fab fa-facebook"></i> <span>Facebook</span>
+                    </a>
+                    <a href="https://tiktok.com/@gem.clinic" target="_blank" class="social-link">
+                        <i class="fab fa-tiktok"></i> <span>TikTok</span>
+                    </a>
+                    <a href="mailto:gemscientificbeauty@gmail.com" class="social-link">
+                        <i class="fas fa-envelope"></i> <span>Email</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 GEM SCIENTIFIC BEAUTY. ALL RIGHTS RESERVED.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const options = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 /* Trigger when 15% visible */
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); /* Animate only once */
+                    }
+                });
+            }, options);
+
+            document.querySelectorAll('.reveal-up').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>
