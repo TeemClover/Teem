@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDITOR BRIEF: Dr. Giff (Master Series)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans+Thai:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #111111;
+            --bg-card: #1e1e1e;
+            --gold: #C5A059;
+            --text-main: #e0e0e0;
+            --text-muted: #888888;
+            --accent-red: #ff4d4d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Noto Sans Thai', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Cinzel', serif; margin-top: 0; }
+        .gold { color: var(--gold); }
+        .bold { fontWeight: 800; }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(to bottom, #000, #111);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+        }
+        .header-title { font-size: 2.5rem; letter-spacing: 2px; margin-bottom: 10px; }
+        .header-sub { color: var(--text-muted); font-size: 1rem; }
+
+        /* CONTAINER */
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+
+        /* SECTIONS */
+        .section { margin-bottom: 60px; }
+        .section-title { 
+            font-size: 1.5rem; 
+            border-left: 5px solid var(--gold); 
+            padding-left: 15px; 
+            margin-bottom: 30px; 
+            text-transform: uppercase;
+        }
+
+        /* ASSET LINK BOX */
+        .asset-box {
+            background: rgba(197, 160, 89, 0.1);
+            border: 1px solid var(--gold);
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 40px;
+            transition: 0.3s;
+        }
+        .asset-box:hover { background: rgba(197, 160, 89, 0.2); transform: translateY(-2px); }
+        .btn-drive {
+            display: inline-block;
+            background: var(--gold);
+            color: #000;
+            padding: 12px 30px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 50px;
+            margin-top: 15px;
+            font-family: 'Noto Sans Thai', sans-serif;
+        }
+        .btn-drive i { margin-right: 8px; }
+
+        /* PERSONA CARD */
+        .persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .persona-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 8px;
+            border-top: 3px solid #333;
+        }
+        .persona-card.highlight { border-color: var(--gold); }
+
+        /* EPISODE TIMELINE */
+        .timeline-item {
+            background: var(--bg-card);
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+        .timeline-header {
+            background: #2a2a2a;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .ep-badge { 
+            background: var(--gold); color: #000; 
+            padding: 4px 10px; border-radius: 4px; 
+            font-weight: bold; font-size: 0.8rem; margin-right: 15px; 
+        }
+        .timecode { font-family: monospace; color: #aaa; background: #000; padding: 2px 8px; border-radius: 4px; }
+        
+        .timeline-body { padding: 25px; }
+        .timeline-row { display: flex; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .timeline-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        
+        .col-label { width: 120px; font-weight: bold; color: var(--gold); flex-shrink: 0; }
+        .col-content { flex: 1; color: #ccc; }
+
+        /* B-ROLL GUIDE */
+        .broll-tag {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            border: 1px solid #555;
+        }
+        .broll-tag i { color: var(--gold); margin-right: 5px; }
+
+        /* HOOK STYLE */
+        .hook-box {
+            background: rgba(255, 77, 77, 0.1);
+            border-left: 3px solid var(--accent-red);
+            padding: 10px 15px;
+            color: #ffcccc;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        /* FOOTER */
+        footer { text-align: center; padding: 40px; color: #555; font-size: 0.8rem; border-top: 1px solid #222; margin-top: 60px; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="header-title">DR. GIFF <span class="gold">MASTER SERIES</span></h1>
+        <div class="header-sub">Official Editor Briefing v1.0 | GEM Scientific Beauty</div>
+    </header>
+
+    <div class="container">
+
+        <div class="asset-box">
+            <h3><i class="fas fa-folder-open gold"></i> ACCESS ALL RAW FILES</h3>
+            <p style="color:#ccc; margin-bottom:20px;">
+                <strong>Main Footage:</strong> ไฟล์หลักคือ <code>Dr Giff Interview.mov</code> (7 นาที) รวมทุกตอนไว้แล้ว<br>
+                <strong>B-Roll:</strong> แยก Folder ไว้ให้แล้ว (Insert) เลือกใช้ให้ตรงบริบท
+            </p>
+            <a href="https://drive.google.com/drive/folders/1PBXraOXvYsYPngFK8_wGiWCYHb_0RlbU?usp=drive_link" target="_blank" class="btn-drive">
+                <i class="fab fa-google-drive"></i> OPEN GOOGLE DRIVE FOLDER
+            </a>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🎯 EDITING STRATEGY (อ่านก่อนตัด)</h2>
+            
+            <div class="persona-grid">
+                <div class="persona-card highlight">
+                    <h4 class="gold"><i class="fas fa-user-md"></i> THE PERSONA</h4>
+                    <p style="font-size:0.9rem;">
+                        <strong>"The Master Architect"</strong><br>
+                        หมอคือผู้เชี่ยวชาญระดับอาจารย์ (National Trainer) <br>
+                        บุคลิก: <strong>"ดุแต่จริงใจ" (Sincere Integrity)</strong><br>
+                        พูดตรง ชัดถ้อยชัดคำ แพง สง่า ห้ามดูเล่น
+                    </p>
+                </div>
+                <div class="persona-card">
+                    <h4><i class="fas fa-video"></i> VISUAL STYLE</h4>
+                    <p style="font-size:0.9rem;">
+                        <strong>Dark Luxury Theme</strong><br>
+                        • Color Grade: ดึงสีดำให้เข้ม (Crush Blacks) ดันสีทองให้พุ่ง<br>
+                        • Text: ฟอนต์ Sans-Serif ตัวหนา (อ่านง่าย) เน้นคำสำคัญด้วย <span class="gold">สีทอง</span> หรือ <span style="color:#fff; background:#ff4d4d; padding:0 2px;">Highlight</span><br>
+                        • Subtitle: ขึ้นครบทุกคำ (Sync เป๊ะ)
+                    </p>
+                </div>
+                <div class="persona-card">
+                    <h4><i class="fas fa-music"></i> SOUND & PACE</h4>
+                    <p style="font-size:0.9rem;">
+                        <strong>Cinematic / Minimal</strong><br>
+                        • เพลง: Classical ผสม Electronic เบาๆ (ห้ามเพลงตลาดนัด)<br>
+                        • Pace: ตัดช่องว่างเสียง (Dead Air) ออก ให้กระชับ<br>
+                        • SFX: ใช้เสียง Whoosh / Hit ทุ้มๆ เน้นข้อความ
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">🎬 EPISODE TIMELINE (จากไฟล์ Dr Giff Interview.mov)</h2>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">*Timecode อ้างอิงจากไฟล์ Master 7 นาที</p>
+
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <div><span class="ep-badge">EP.01</span> THE DISRUPTION</div>
+                    <span class="timecode">00:00 - 01:21</span>
+                </div>
+                <div class="timeline-body">
+                    <div class="hook-box">
+                        <i class="fas fa-bolt"></i> <strong>HOOK:</strong> "เคยสงสัยมั้ยคะ? ทำไมคลินิกมีทุกหัวมุมถนน... แต่คนดูดีจริงๆ มีน้อยมาก?" (ขึ้นตัวหนังสือใหญ่ๆ ทันที)
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Concept</div>
+                        <div class="col-content">เปิดโปงความจริงวงการแพทย์ (คลินิกปิดตัวเยอะ เหลือแต่ตัวจริง)</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Highlight Text</div>
+                        <div class="col-content">
+                            "เหลือแค่ตัวจริงเท่านั้น" <br>
+                            "รีวิวจากลูกค้าจริง <span class="gold">ไม่ใช่อินฟลูเอนเซอร์</span>" (เน้นคำนี้หนักๆ)
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">B-Roll Guide</div>
+                        <div class="col-content">
+                            <span class="broll-tag"><i class="fas fa-folder"></i> Insert/หมอกิ๊ฟในคลินิก</span>
+                            ช่วงไล่ข้อ 1-5 ให้ขึ้น Text ตัวเลขใหญ่ๆ สลับกับภาพบรรยากาศคลินิกที่ดู Professional
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <div><span class="ep-badge">EP.02</span> THE ENEMY (SUGAR FACE)</div>
+                    <span class="timecode">01:22 - 02:10</span>
+                </div>
+                <div class="timeline-body">
+                    <div class="hook-box">
+                        <i class="fas fa-bolt"></i> <strong>HOOK:</strong> "คำตอบของหน้าแก่... อาจอยู่ที่แก้วกาแฟในมือคุณก็ได้ค่ะ"
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Highlight Text</div>
+                        <div class="col-content">
+                            <span class="gold" style="font-size:1.2rem; font-weight:bold;">SUGAR FACE</span> (หน้าติดหวาน)<br>
+                            "Glycation" / "คอลลาเจนแข็งและเปราะ"
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">B-Roll Guide</div>
+                        <div class="col-content">
+                            <span class="broll-tag"><i class="fas fa-folder"></i> Insert/เคสคนไข้คัดมาแล้ว</span>
+                            หาภาพผิวที่มีปัญหา หรือภาพกราฟิกโครงสร้างผิว (ถ้ามี) มาประกอบตอนพูดวิชาการ
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <div><span class="ep-badge">EP.03</span> THE AUTHORITY (TRAINER)</div>
+                    <span class="timecode">02:19 - 03:50</span>
+                </div>
+                <div class="timeline-body">
+                    <div class="hook-box">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>NOTE:</strong> ตัดช่วงพูดผิดตอนต้น (02:11-02:18) ทิ้ง เริ่มที่ 02:19
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Concept</div>
+                        <div class="col-content">หมอสอนหมอ (National Trainer) / ใบหน้าคือสถาปัตยกรรม</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Highlight Text</div>
+                        <div class="col-content">
+                            "สถาปนิกเบาๆ"<br>
+                            "สร้างบ้านบนทราย" (เปรียบเทียบให้เห็นภาพ)<br>
+                            <span class="gold">"ความปลอดภัย"</span>
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">B-Roll Guide</div>
+                        <div class="col-content">
+                            <span class="broll-tag"><i class="fas fa-folder"></i> Insert/หมอ Trainer ผลิตภัณฑ์ Profhilo</span>
+                            <span class="broll-tag"><i class="fas fa-folder"></i> Insert/รับรางวัล AESLA</span>
+                            <strong>สำคัญมาก:</strong> ต้องใส่ภาพหมอยืนถือไมค์สอน หรือรับรางวัล เพื่อโชว์ Authority
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <div><span class="ep-badge">EP.04</span> THE UNTOUCHED LOOK</div>
+                    <span class="timecode">03:51 - 04:35</span>
+                </div>
+                <div class="timeline-body">
+                    <div class="hook-box">
+                        <i class="fas fa-bolt"></i> <strong>HOOK:</strong> "Natural Beauty คือสวยจนเพื่อนทักว่า... ไปทำอะไรมา? ไม่ใช่ทักว่า ไปทำจมูกร้านไหน?"
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Concept</div>
+                        <div class="col-content">สวยแบบไม่โป๊ะ (Artistic Soul)</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Highlight Text</div>
+                        <div class="col-content">
+                            "Natural Beauty"<br>
+                            <span class="gold">"ศิลปะของการซ่อนร่องรอย"</span> (ทำตัวหนังสือสวยๆ เหมือนงานศิลปะ)
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">B-Roll Guide</div>
+                        <div class="col-content">
+                            <span class="broll-tag"><i class="fas fa-folder"></i> Insert/เคสคนไข้คัดมาแล้ว</span>
+                            <span class="broll-tag"><i class="fas fa-folder"></i> Insert/Menarini เคสฝรั่ง</span>
+                            ใช้ภาพหน้าคนไข้ที่ดูสวยธรรมชาติ (After)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <div><span class="ep-badge">EP.05</span> THE ASSET MINDSET</div>
+                    <span class="timecode">04:36 - 05:16</span>
+                </div>
+                <div class="timeline-body">
+                    <div class="hook-box">
+                        <i class="fas fa-bolt"></i> <strong>HOOK:</strong> "คุณบริหารพอร์ตหุ้นร้อยล้าน... แล้วพอร์ตร่างกายล่ะคะ? ติดลบอยู่หรือเปล่า?"
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Concept</div>
+                        <div class="col-content">ร่างกายคือการลงทุน (Business Luxury)</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Highlight Text</div>
+                        <div class="col-content">
+                            <span class="gold">ASSET</span> (ตัวใหญ่)<br>
+                            "Fund Manager"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item" style="border: 2px solid var(--gold);">
+                <div class="timeline-header" style="background:rgba(197, 160, 89, 0.2);">
+                    <div><span class="ep-badge" style="background:#fff; color:#000;">EP.06</span> <span class="gold bold">THE POWER OF NO (HERO CLIP)</span> 🏆</div>
+                    <span class="timecode">05:17 - 05:59</span>
+                </div>
+                <div class="timeline-body">
+                    <div class="hook-box">
+                        <i class="fas fa-bolt"></i> <strong>HOOK:</strong> "สิ่งที่หมอพูดบ่อยที่สุด... ไม่ใช่คำว่า 'ได้ค่ะ' แต่คือคำว่า... <span style="color:#fff; background:red; padding:0 5px;">อย่าทำเลยค่ะ!</span>"
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Concept</div>
+                        <div class="col-content">กล้าปฏิเสธ = จริงใจ (คลิปขายดีที่สุด)</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Edit Note</div>
+                        <div class="col-content">
+                            ตัดช่วงพูดผิด (05:39-05:42) ออก แล้วเชื่อมต่อด้วยประโยค "เพราะความไว้วางใจ..." ทันที
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Ending</div>
+                        <div class="col-content">
+                            จบที่: "ที่ GEM Scientific Beauty... เราไม่ขายคอร์ส แต่เราขาย <span class="gold">ความจริงใจ</span> ค่ะ"<br>
+                            (Fade Out เพลงให้ซึ้งๆ)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <div><span class="ep-badge">EP.08</span> EXECUTIVE PRESENCE</div>
+                    <span class="timecode">06:00 - 07:17</span>
+                </div>
+                <div class="timeline-body">
+                    <div class="hook-box">
+                        <i class="fas fa-bolt"></i> <strong>HOOK:</strong> "ในการเจรจาธุรกิจ... ใบหน้าคือ First Impression ที่แพงที่สุดค่ะ"
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Concept</div>
+                        <div class="col-content">หน้าตาคืออำนาจ (Leadership)</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Edit Note</div>
+                        <div class="col-content">
+                            ตัดช่วงหลุดขำ (06:46-07:00) ทิ้งทั้งหมด! <br>
+                            ให้ตัดมาใช้ Take สุดท้าย (07:01) "หมอไม่ได้ทำหน้าให้คุณสวยหล่อ..." จนจบ
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">Highlight Text</div>
+                        <div class="col-content">
+                            <span class="gold" style="font-size:1.2rem;">EXECUTIVE PRESENCE</span><br>
+                            "ออร่าระดับผู้บริหาร"
+                        </div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="col-label">B-Roll Guide</div>
+                        <div class="col-content">
+                            <span class="broll-tag"><i class="fas fa-folder"></i> Insert/งานหมอกิ๊ฟ MENARINI X VOGUE</span>
+                            ใช้ภาพงาน Event หรูๆ ที่หมอไปออกงาน เพื่อสื่อถึงความเป็น Social / Executive
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>&copy; 2025 AIHIA STRATEGY x DR. GIFF PRODUCTION</p>
+            <p>For Internal Use Only - Do Not Distribute</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
