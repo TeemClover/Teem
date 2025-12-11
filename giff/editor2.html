@@ -15,6 +15,7 @@
             --bg-body: #f4f4f4;
             --bg-card: #ffffff;
             --gold: #b89b5e;
+            --accent-blue: #2980b9;
             --text-dark: #333333;
             --text-muted: #666666;
             --alert: #d63031;
@@ -31,7 +32,22 @@
 
         .container { max-width: 900px; margin: 0 auto; }
 
-        /* HEADER */
+        /* DIRECTOR NOTE BOX */
+        .director-note {
+            background: #eaf6ff;
+            border-left: 5px solid var(--accent-blue);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(41, 128, 185, 0.1);
+        }
+        .note-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .note-header h3 { margin: 0; color: var(--accent-blue); font-family: 'Cinzel', serif; }
+        .feedback-quote {
+            font-style: italic; color: #444; background: #fff; padding: 10px 15px; border-radius: 6px; display: block; margin-top: 5px; border: 1px dashed #ccc;
+        }
+
+        /* MAIN HEADER */
         .header {
             text-align: center;
             background: #fff;
@@ -50,7 +66,7 @@
         }
         .header span { color: var(--text-muted); font-size: 0.95rem; display: block; margin-top: 10px; font-weight: 500; }
 
-        /* SECTIONS */
+        /* CONTENT BOXES */
         .box {
             background: var(--bg-card);
             border-radius: 12px;
@@ -107,7 +123,13 @@
         .mood-item h4 { margin: 0 0 10px 0; font-size: 1rem; }
         .mood-item ul { margin: 0; padding-left: 20px; color: #666; font-size: 0.9rem; }
 
-        @media (max-width: 768px) { .mood-grid { grid-template-columns: 1fr; } }
+        /* STANDARD GRID */
+        .standard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .std-item { background: #fafafa; padding: 15px; border-radius: 8px; border-left: 3px solid #ddd; }
+        .std-item strong { color: #333; display: block; margin-bottom: 5px; font-family: 'Cinzel', serif; font-size: 0.95rem; }
+        .std-item span { font-size: 0.85rem; color: #666; }
+
+        @media (max-width: 768px) { .mood-grid, .standard-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -130,8 +152,7 @@
                 </p>
             </div>
         </div>
-        <div class="container">
-        
+
         <div class="header">
             <h1>Dr. Giff <span style="color:var(--gold);">Production Standard</span></h1>
             <span>MASTER BRIEF & CORRECTION LOG (EP.06)</span>
@@ -172,7 +193,7 @@
             </p>
             <div class="mood-grid">
                 <div class="mood-item">
-                    <h4>✅ DO (สิ่งที่ต้องการ)</h4>
+                    <h4 style="color:var(--success);">✅ DO (สิ่งที่ต้องการ)</h4>
                     <ul>
                         <li>เพลงบรรเลงแนว <strong>Modern Classical</strong> (Piano, Strings)</li>
                         <li>จังหวะ Waltz หรือ Flow ที่ฟังแล้วดู "แพง" (สไตล์ Bridgerton)</li>
@@ -180,7 +201,7 @@
                     </ul>
                 </div>
                 <div class="mood-item" style="background: #fff5f5;">
-                    <h4>❌ AVOID (สิ่งที่ควรเลี่ยง)</h4>
+                    <h4 style="color:var(--alert);">❌ AVOID (สิ่งที่ควรเลี่ยง)</h4>
                     <ul>
                         <li>เพลงเศร้า/หดหู่ (Melancholic)</li>
                         <li>เพลงจังหวะเร็วเกินไป (Pop/EDM)</li>
@@ -252,8 +273,32 @@
             </a>
         </div>
 
-        <div style="text-align:center; margin-top:30px; font-size:0.8rem; color:#999;">
-            APPROVED FOR FINAL EDIT • GEM SCIENTIFIC BEAUTY
+        <div class="section-box box">
+            <h2 class="section-title" style="margin-top:0; font-family:'Cinzel',serif; display:flex; gap:10px; align-items:center; color:#000; font-size:1.4rem; border-bottom:1px solid #eee; padding-bottom:15px; margin-bottom:20px;">
+                <i class="fas fa-sliders-h" style="color:var(--gold);"></i> 5. THE "EXPENSIVE" LOOK PROTOCOL
+            </h2>
+            <div class="standard-grid">
+                <div class="std-item">
+                    <strong>1. The "Punch In" (Zoom)</strong>
+                    <span>ห้ามใช้ Digital Zoom ที่ภาพแตก. ถ้าจะ Zoom เข้าหน้าหมอตอนขยี้ประโยคเด็ด ต้องทำเนียนๆ (Smooth Motion) หรือตัดสลับ B-Roll เท่านั้น</span>
+                </div>
+                <div class="std-item">
+                    <strong>2. Text Animation</strong>
+                    <span>ห้ามใช้ Effect เด้งดึ๋งแบบ YouTuber เด็กๆ. ให้ใช้ "Fade Up" หรือ "Slide in" เบาๆ แบบ Elegant (Kinetic Typography แบบผู้ดี)</span>
+                </div>
+                <div class="std-item">
+                    <strong>3. Sound Mixing</strong>
+                    <span>เสียงพูดต้องดังกว่าเพลง Background เสมอ (Audio Ducking). ช่วงประโยคขายของ ("อย่าทำเลยค่ะ") ให้หรี่เพลงลง เพื่อให้เสียงพูดทรงพลังที่สุด</span>
+                </div>
+                <div class="std-item">
+                    <strong>4. Color Skin Tone</strong>
+                    <span>ผิวหมอต้อง "ฉ่ำวาว" (Glow) ห้ามหน้ามืด หรือติดเขียวเด็ดขาด. พื้นหลังดำต้องดำสนิท (True Black) เพื่อขับให้หมอเด่น</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:center; font-size:0.8rem; color:#999; margin-top:40px;">
+            AIHIA STRATEGY x DR. GIFF PRODUCTION <br> INTERNAL USE ONLY
         </div>
 
     </div>
