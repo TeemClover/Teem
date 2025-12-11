@@ -3,141 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MASTER BRIEF: DR. GIFF STANDARD</title>
+    <title>MASTER BRIEF: DR. GIFF FINAL</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans+Thai:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Sarabun:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
         :root {
-            --bg-dark: #050505;
-            --bg-panel: #111;
-            --gold: #C5A059;
-            --gold-dim: #8a703d;
-            --text-main: #e0e0e0;
-            --alert: #ff4d4d;
-            --success: #00b894;
+            --bg-body: #f8f9fa;
+            --bg-card: #ffffff;
+            --gold: #b89b5e;
+            --text-dark: #2d3436;
+            --text-muted: #636e72;
+            --accent-blue: #0984e3; /* Positive tone */
+            --alert: #d63031;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Noto Sans Thai', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            font-family: 'Sarabun', sans-serif;
             margin: 0; padding: 40px 20px;
             line-height: 1.6;
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
+        .container { max-width: 850px; margin: 0 auto; }
+
+        /* DIRECTOR NOTE BOX */
+        .director-note {
+            background: linear-gradient(135deg, #fff, #f0f8ff);
+            border-left: 5px solid var(--accent-blue);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+        .note-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .note-header h3 { margin: 0; color: var(--accent-blue); font-family: 'Sarabun', sans-serif; font-weight: 700; }
+        .feedback-quote {
+            font-style: italic; color: #555; background: rgba(9, 132, 227, 0.1);
+            padding: 10px 15px; border-radius: 6px; display: inline-block; margin-bottom: 10px;
+        }
 
         /* HEADER */
         .header {
             text-align: center;
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 30px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
         }
         .header h1 {
             font-family: 'Cinzel', serif;
             color: var(--gold);
-            font-size: 2.5rem;
-            letter-spacing: 4px;
+            font-size: 2rem;
             margin: 0;
-            text-transform: uppercase;
-        }
-        .header span {
-            font-family: 'Noto Sans Thai', sans-serif;
-            color: #888;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            display: block;
-            margin-top: 10px;
+            letter-spacing: 2px;
         }
 
-        /* SECTIONS */
-        .section-box {
-            background: var(--bg-panel);
-            border: 1px solid #333;
-            border-radius: 8px;
+        /* SECTION BOXES */
+        .box {
+            background: var(--bg-card);
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
             padding: 30px;
-            margin-bottom: 30px;
-            position: relative;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .section-title {
-            font-family: 'Cinzel', serif;
-            color: #fff;
-            margin-top: 0;
-            border-bottom: 1px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+        .section-head {
             display: flex; align-items: center; gap: 10px;
+            margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;
         }
-        .section-title i { color: var(--gold); }
+        .section-head i { color: var(--gold); font-size: 1.2rem; }
+        .section-head h2 { margin: 0; font-size: 1.2rem; font-weight: 700; }
 
-        /* AUDIO BRANDING GRID */
-        .audio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .audio-option {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 6px;
-            border-left: 3px solid #444;
-            transition: 0.3s;
+        /* AUDIO GRID */
+        .audio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .audio-item {
+            background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #eee;
         }
-        .audio-option:hover { border-color: var(--gold); background: #222; }
-        .audio-option h4 { margin: 0 0 10px 0; color: var(--gold); }
-        .audio-option p { font-size: 0.85rem; color: #ccc; margin: 0; }
+        .audio-item h4 { margin: 0 0 5px 0; color: var(--gold); font-size: 0.95rem; }
+        .audio-item p { font-size: 0.85rem; color: #666; margin: 0; }
 
-        /* QC FIX LIST */
-        .qc-list { list-style: none; padding: 0; }
+        /* QC LIST */
         .qc-item {
-            background: rgba(255, 77, 77, 0.05);
-            border: 1px solid rgba(255, 77, 77, 0.2);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
+            display: flex; gap: 15px; align-items: flex-start;
+            padding: 15px; border-bottom: 1px solid #f0f0f0;
         }
-        .qc-time {
-            font-family: monospace;
-            background: #000;
-            color: var(--alert);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            min-width: 60px;
-            text-align: center;
+        .qc-item:last-child { border-bottom: none; }
+        .time-badge {
+            background: #2d3436; color: #fff; padding: 2px 8px; border-radius: 4px;
+            font-family: monospace; font-size: 0.9rem; min-width: 55px; text-align: center;
         }
 
-        /* REF LINKS */
+        /* REFS */
         .ref-link {
-            display: flex; align-items: center; gap: 15px;
-            background: #000; padding: 15px; border-radius: 6px;
-            border: 1px solid #333; text-decoration: none; color: #ccc;
-            margin-bottom: 10px; transition: 0.3s;
+            display: block; background: #fff; border: 1px solid #ddd; padding: 15px;
+            border-radius: 8px; margin-bottom: 10px; text-decoration: none; color: #333;
+            transition: 0.2s; display: flex; align-items: center; gap: 15px;
         }
-        .ref-link:hover { border-color: var(--gold); color: var(--gold); }
-        .ref-icon { font-size: 1.5rem; }
-
-        /* MUSIC VIBE */
-        .music-desc {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 1.1rem;
-            color: var(--gold);
-            line-height: 1.6;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        /* POST PRODUCTION STANDARD */
-        .standard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .std-item strong { color: #fff; display: block; margin-bottom: 5px; }
-        .std-item span { font-size: 0.85rem; color: #888; }
-
-        @media (max-width: 600px) { .standard-grid { grid-template-columns: 1fr; } }
+        .ref-link:hover { border-color: var(--gold); background: #fffcf5; }
 
     </style>
 </head>
@@ -145,121 +111,97 @@
 
     <div class="container">
         
+        <div class="director-note">
+            <div class="note-header">
+                <i class="fas fa-comment-dots" style="font-size:1.5rem; color:var(--accent-blue);"></i>
+                <h3>DIRECTOR'S NOTE & CLIENT FEEDBACK</h3>
+            </div>
+            <p>
+                "ขอบคุณสำหรับการตัดต่อรอบแรกครับ <strong>จังหวะการตัด (Pacing) ทำได้ดีมาก ไหลลื่นและกระชับครับ</strong>"
+            </p>
+            <div style="margin-top:15px;">
+                <strong><i class="fas fa-star" style="color:#f1c40f;"></i> Feedback จากคุณหมอ (Client):</strong><br>
+                <span class="feedback-quote">"หมอชอบ Text ที่ขึ้นแบบมีสไตล์ เก็บดีเทลความหรูหราได้ดีเยี่ยม"</span>
+                <p style="font-size:0.9rem; color:#666; margin-top:5px;">
+                    *หมายเหตุ: ขอให้รักษามาตรฐานเรื่อง Font และ Animation แบบนี้ไว้ในทุกคลิปครับ ดูแพงและตรงโจทย์มาก
+                </p>
+            </div>
+        </div>
+
         <div class="header">
-            <h1>Dr. Giff <span style="color:#fff;">Master Standard</span></h1>
-            <span>FINAL EDITING PROTOCOL & ASSET GUIDELINE</span>
+            <h1>MASTER BRIEF V.FINAL</h1>
+            <span>DR. GIFF • EP.06 CORRECTION</span>
         </div>
 
-        <div class="section-box">
-            <h2 class="section-title"><i class="fas fa-volume-up"></i> 1. AUDIO LOGO (0:00 - 0:03)</h2>
-            <p style="margin-bottom:20px; color:#aaa; font-size:0.9rem;">
-                ต้องมี "Signature Sound" ที่ใส่ทุกคลิป เพื่อสร้างภาพจำ (Branding) Editor ต้องหาเสียง 3 แบบนี้มาให้เลือก:
+        <div class="box">
+            <div class="section-head">
+                <i class="fas fa-music"></i>
+                <h2>1. AUDIO ADJUSTMENT</h2>
+            </div>
+            <p style="color:var(--alert); font-weight:600; font-size:0.9rem;">
+                <i class="fas fa-times-circle"></i> REMOVE: ตัดเสียง Effect พิมพ์ดีด (Typing Sound) ออกทั้งหมดครับ มันลดความ Premium ของคลิป
             </p>
+            <p style="margin-top:15px; font-weight:600;">PLEASE ADD: เลือกใช้เสียงตามนี้ครับ</p>
             <div class="audio-grid">
-                <div class="audio-option">
-                    <h4>Option A: "The Crystal"</h4>
-                    <p>เสียงแก้วคริสตัลกระทบกันเบาๆ (High Pitch) + Reverb หางเสียงยาวๆ <br><em>(ให้ความรู้สึก: สะอาด, บริสุทธิ์, คลินิกไฮเอนด์)</em></p>
+                <div class="audio-item">
+                    <h4>Intro (0:00-0:03)</h4>
+                    <p>ใช้เสียงแนว <strong>"Crystal / Sparkle"</strong> วิบวับเบาๆ หรือ Piano โน้ตเดียวใสๆ เพื่อเป็น Signature Sound</p>
                 </div>
-                <div class="audio-option">
-                    <h4>Option B: "The Piano Drop"</h4>
-                    <p>เสียงเปียโนโน้ตตัวเดียว (Single Note) กดลงน้ำหนักกลางๆ + Sustain <br><em>(ให้ความรู้สึก: คลาสสิก, มั่นคง, น่าเชื่อถือ)</em></p>
-                </div>
-                <div class="audio-option">
-                    <h4>Option C: "The Atmosphere"</h4>
-                    <p>เสียง Woosh ลมผ่านเบาๆ ผสมเสียงกระดิ่งลม (Chimes) ไกลๆ <br><em>(ให้ความรู้สึก: ผ่อนคลาย, Wellness, ธรรมชาติ)</em></p>
+                <div class="audio-item">
+                    <h4>Music (After Hook)</h4>
+                    <p>เพลงแนว <strong>Modern Classical</strong> (Piano/Strings) สไตล์ผู้ดี ผ่อนคลาย หรูหรา (Ref: Bridgerton Vibe)</p>
                 </div>
             </div>
         </div>
 
-        <div class="section-box">
-            <h2 class="section-title"><i class="fas fa-music"></i> 2. MUSIC DIRECTION (After Hook)</h2>
-            <p class="music-desc">
-                "Modern Classical / Minimalist Luxury"
+        <div class="box">
+            <div class="section-head">
+                <i class="fas fa-palette"></i>
+                <h2>2. COLOR GRADING (NEW DIRECTION)</h2>
+            </div>
+            <p>
+                หมอชอบโทนภาพที่ดู <strong>"สว่าง, คลีน, ผิวมีออร่า" (Bright & Clean)</strong> 
+                รบกวนแก้สีจากเดิมที่ติดมืด/เข้ม ให้สว่างขึ้น ผิวหมอต้องดูฉ่ำวาวสุขภาพดี พื้นหลังขาวสะอาดตา
             </p>
-            <p style="color:#ccc;">
-                <strong>บรีฟดนตรีประกอบ:</strong> หลังจากจบ Hook (ช่วง 5 วินาทีแรก) ให้เฟดเข้าเพลงแนวคลาสสิกที่ดู <em>"ผู้ดีอังกฤษ"</em> หรือ <em>"Bridgerton Vibe"</em>
-            </p>
-            <ul style="color:#aaa; font-size:0.9rem; margin-top:15px;">
-                <li>✅ <strong>เครื่องดนตรี:</strong> เปียโน (Piano), เชลโล่ (Cello), หรือเครื่องสายวงเล็ก (String Quartet)</li>
-                <li>✅ <strong>จังหวะ:</strong> ไม่ช้าจนง่วง และไม่เร็วเป็น Pop ต้องมีจังหวะ Waltz หรือ Flow ที่ฟังแล้วดู "แพง"</li>
-                <li>❌ <strong>ห้ามใช้:</strong> เพลงเปียโนเศร้าๆ, เพลง Corporate บริษัทประกัน, หรือเพลง EDM</li>
-            </ul>
-        </div>
-
-        <div class="section-box" style="border-color: var(--alert);">
-            <h2 class="section-title" style="color:var(--alert);"><i class="fas fa-exclamation-triangle"></i> 3. URGENT FIXES (EP.06)</h2>
-            <p style="margin-bottom:15px; color:#ccc;">แก้ไขจุดผิดพลาดทางเทคนิค (Technical Error) ให้เรียบร้อยก่อนส่ง Final:</p>
-            
-            <ul class="qc-list">
-                <li class="qc-item">
-                    <span class="qc-time">00:13</span>
-                    <div>
-                        <strong>GLITCH REMOVAL</strong>
-                        <br><span style="font-size:0.85rem; color:#aaa;">มีภาพกระตุก 1 เฟรม (Frame Drop/Stutter) ต้องสมูท 100% ห้ามสะดุด</span>
-                    </div>
-                </li>
-                <li class="qc-item">
-                    <span class="qc-time">00:17</span>
-                    <div>
-                        <strong>SYNC ISSUE (GEM)</strong>
-                        <br><span style="font-size:0.85rem; color:#aaa;">คำว่า "GEM" ขึ้นช้ากว่าเสียงพูด (Late Sync). ต้องขึ้นพอดีกับพยางค์แรกของเสียง</span>
-                    </div>
-                </li>
-                <li class="qc-item">
-                    <span class="qc-time">00:19</span>
-                    <div>
-                        <strong>TYPO & SYNC</strong>
-                        <br><span style="font-size:0.85rem; color:#aaa;">1. ตัวหนังสือกับเสียงเหลื่อมกัน (ขึ้นไม่ตรง)</span>
-                        <br><span style="font-size:0.85rem; color:#fff; font-weight:bold;">2. แก้คำผิด: "คอส" ❌ -> แก้เป็น "คอร์ส" ✅ (ใส่ ร.เรือ การันต์)</span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <div class="section-box">
-            <h2 class="section-title"><i class="fas fa-eye"></i> 4. MASTER REFERENCE (กด Link เพื่อดูคลิปตัวอย่าง)</h2>
-            
-            <a href="https://www.instagram.com/reel/DRwuXCFgURk/?igsh=MWR5bDZmcWNkcGM2" target="_blank" class="ref-link">
-                <i class="fab fa-instagram ref-icon" style="color:#E1306C;"></i>
-                <div>
-                    <strong>FONT & TYPOGRAPHY STYLE</strong>
-                    <br><span style="font-size:0.8rem; color:#888;">สไตล์ฟอนต์: ผสมระหว่าง Serif (มีเชิง) บางๆ กับ Sans Serif หนาๆ ให้ดูนิตยสารแฟชั่น</span>
-                </div>
-            </a>
-
             <a href="https://www.instagram.com/p/DF3cJ45Ao61/?igsh=a2ZxdDdqMzhzdHRt" target="_blank" class="ref-link">
-                <i class="fab fa-instagram ref-icon" style="color:#E1306C;"></i>
+                <i class="fab fa-instagram" style="color:#E1306C; font-size:1.5rem;"></i>
                 <div>
-                    <strong>COLOR GRADING & MOOD</strong>
-                    <br><span style="font-size:0.8rem; color:#888;">โทนสี: ขาว คลีน ซอฟต์ เหมาะกับหมอ (ไม่เบลอจนหน้าลอย หรือขาวซีด)</span>
+                    <strong>CLICK TO SEE COLOR REF</strong>
+                    <br><span style="font-size:0.85rem; color:#888;">ตัวอย่างโทนสีที่หมอชอบ (Bright/White/Gold)</span>
                 </div>
             </a>
         </div>
 
-        <div class="section-box">
-            <h2 class="section-title"><i class="fas fa-sliders-h"></i> 5. THE "EXPENSIVE" LOOK PROTOCOL</h2>
-            <div class="standard-grid">
-                <div class="std-item">
-                    <strong>1. The "Punch In" (Zoom)</strong>
-                    <span>ห้ามใช้ Digital Zoom ที่ภาพแตก. ถ้าจะ Zoom เข้าหน้าหมอตอนขยี้ประโยคเด็ด ต้องทำเนียนๆ (Smooth Motion) หรือตัดสลับ B-Roll เท่านั้น</span>
+        <div class="box">
+            <div class="section-head">
+                <i class="fas fa-wrench"></i>
+                <h2>3. FINAL FIXES (QC)</h2>
+            </div>
+            
+            <div class="qc-item">
+                <span class="time-badge">00:13</span>
+                <div>
+                    <strong>Fix Glitch:</strong> มีภาพกระตุก 1 เฟรม (Frame Drop) รบกวนทำให้สมูทครับ
                 </div>
-                <div class="std-item">
-                    <strong>2. Text Animation</strong>
-                    <span>ห้ามใช้ Effect เด้งดึ๋งแบบ YouTuber เด็กๆ. ให้ใช้ "Fade Up" หรือ "Slide in" เบาๆ แบบ Elegant (Kinetic Typography แบบผู้ดี)</span>
+            </div>
+            <div class="qc-item">
+                <span class="time-badge">00:17</span>
+                <div>
+                    <strong>Fix Sync:</strong> คำว่า "GEM" ขึ้นช้ากว่าเสียงพูด (Late). ขอให้ขึ้นพร้อมพยางค์แรก
                 </div>
-                <div class="std-item">
-                    <strong>3. Sound Mixing</strong>
-                    <span>เสียงพูดต้องดังกว่าเพลง Background เสมอ (Audio Ducking). ช่วงประโยคขายของ ("อย่าทำเลยค่ะ") ให้หรี่เพลงลง เพื่อให้เสียงพูดทรงพลังที่สุด</span>
-                </div>
-                <div class="std-item">
-                    <strong>4. Color Skin Tone</strong>
-                    <span>ผิวหมอต้อง "ฉ่ำวาว" (Glow) ห้ามหน้ามืด หรือติดเขียวเด็ดขาด. พื้นหลังดำต้องดำสนิท (True Black) เพื่อขับให้หมอเด่น</span>
+            </div>
+            <div class="qc-item">
+                <span class="time-badge">00:19</span>
+                <div>
+                    <strong>Spelling & Sync:</strong>
+                    <br>1. แก้คำผิด: "คอส" ❌ เป็น <strong>"คอร์ส"</strong> ✅ (ใส่ ร.เรือ การันต์)
+                    <br>2. ขยับตัวหนังสือให้ตรงกับเสียงพูด (ตอนนี้เหลื่อมกันนิดหน่อยครับ)
                 </div>
             </div>
         </div>
 
-        <div style="text-align:center; font-size:0.8rem; color:#444; margin-top:40px;">
-            AIHIA STRATEGY x DR. GIFF PRODUCTION <br> INTERNAL USE ONLY
+        <div style="text-align:center; font-size:0.8rem; color:#aaa; margin-top:20px;">
+            GEM SCIENTIFIC BEAUTY • PRODUCTION TEAM
         </div>
 
     </div>
