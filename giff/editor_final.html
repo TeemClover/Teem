@@ -126,153 +126,6 @@
     </div>
 </header>
 
-    เข้าใจครับพี่ตั้ม! กูจัดให้ตามสั่ง
-
-กูได้เพิ่ม "กล่อง Resources แยก" (Asset Frame) ไว้ให้ส่วนบนสุดของ HTML เพื่อให้ Editor เห็นก่อนเลยว่า "ต้องโหลดของพวกนี้ก่อนเริ่มงาน"
-
-ในกล่องนี้กูใส่:
-
-Font Link: ลิงก์ไป Google Drive ของ Font ทั้งไทยและอังกฤษตามที่มึงแปะมา
-
-Prompt Link: ลิงก์ไปโฟลเดอร์ Prompt
-
-Instruction: สั่ง Editor ว่า ให้ลงฟอนต์ชุดนี้และใช้ตามที่ระบุ ห้ามใช้ฟอนต์อื่น
-
-และกูทำ "พื้นที่ว่าง (Frame)" เผื่อมึงจะไปพิมพ์เติมบรีฟ หรือ Prompt รายละเอียดเพิ่มเติมไว้ให้ในโค้ดด้วย
-
-📜 HTML MASTER BRIEF (Final V.3 - Asset & Font Update)
-(Copy ไปใช้ได้เลย มีลิงก์ครบ)
-
-HTML
-
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<title>FINAL CUT ORDER: Dr. Giff Project (7 Episodes)</title>
-<style>
-    :root {
-        --primary: #2c3e50;
-        --accent: #c0392b;
-        --success: #27ae60;
-        --warning: #f39c12;
-        --info: #3498db;
-        --bg: #f8f9fa;
-        --card-bg: #ffffff;
-    }
-    body { font-family: sans-serif; background-color: var(--bg); color: #333; line-height: 1.5; margin: 0; padding: 40px; }
-    .container { max-width: 1000px; margin: 0 auto; }
-    
-    header { background: var(--primary); color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
-    h1 { margin: 0; font-weight: 700; }
-    
-    /* === RESOURCE FRAME (กล่องแยกสำหรับของที่ต้องโหลด) === */
-    .resource-frame {
-        background-color: #fff;
-        border: 3px solid var(--primary);
-        border-radius: 8px;
-        padding: 25px;
-        margin-bottom: 40px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    .resource-header {
-        background-color: var(--primary);
-        color: white;
-        padding: 10px 20px;
-        margin: -25px -25px 20px -25px; /* ดึงให้เต็มขอบ */
-        font-size: 1.2em;
-        font-weight: bold;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .resource-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-    .resource-item {
-        background: #f8f9fa;
-        padding: 15px;
-        border-left: 5px solid var(--info);
-        border-radius: 4px;
-    }
-    .resource-item h3 { margin-top: 0; color: var(--primary); font-size: 1em; }
-    .btn-link {
-        display: inline-block;
-        background-color: var(--primary);
-        color: white;
-        text-decoration: none;
-        padding: 8px 15px;
-        border-radius: 4px;
-        font-size: 0.9em;
-        margin-top: 5px;
-        transition: background 0.2s;
-    }
-    .btn-link:hover { background-color: #34495e; }
-    
-    /* AREA สำหรับเติมเอง */
-    .custom-note-area {
-        margin-top: 20px;
-        border: 2px dashed #bbb;
-        padding: 20px;
-        background-color: #fafafa;
-        color: #7f8c8d;
-    }
-
-    /* กล่องกฎเหล็ก */
-    .urgent-box { background-color: #fff5f5; border: 2px solid var(--accent); padding: 25px; margin-bottom: 40px; border-radius: 8px; }
-    .urgent-rule { font-size: 1.1em; font-weight: bold; color: #c0392b; margin-bottom: 5px; }
-
-    /* Tables */
-    table { width: 100%; border-collapse: collapse; background: white; margin-bottom: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    th { background: #eee; padding: 12px; text-align: left; }
-    td { padding: 12px; border-bottom: 1px solid #ddd; vertical-align: top; }
-    .col-time { width: 15%; font-family: monospace; font-weight: bold; color: var(--accent); }
-    .asset-tag { display: inline-block; background: #e3f2fd; color: var(--info); padding: 3px 6px; border-radius: 4px; font-size: 0.85em; margin-top: 3px; border: 1px solid #badcfa; }
-    
-    .clip-title { font-size: 1.3em; font-weight: bold; color: var(--primary); margin-top: 30px; margin-bottom: 10px; border-left: 5px solid var(--info); padding-left: 10px; }
-
-</style>
-</head>
-<body>
-
-<div class="container">
-
-    <header>
-        <h1>DR. GIFF — FINAL CUT REVISION ORDER</h1>
-        <div style="margin-top: 10px; opacity: 0.9;">
-            <strong>To:</strong> Editor Team | <strong>Priority:</strong> URGENT
-        </div>
-    </header>
-
-    <div class="resource-frame">
-        <div class="resource-header">
-            <span>📦 PROJECT ASSETS & RESOURCES</span>
-            <span style="font-size: 0.8em; opacity: 0.8;">(ต้อง Download และติดตั้งก่อนเริ่มงาน)</span>
-        </div>
-        
-        <div class="resource-grid">
-            <div class="resource-item">
-                <h3>🔤 Thai Font: KulachatHC</h3>
-                <p style="font-size:0.9em; color:#666;">ใช้สำหรับพาดหัว (Headline) หรือข้อความหลัก ให้ความรู้สึก Modern Luxury</p>
-                <a href="https://drive.google.com/drive/folders/1Hz4xaB1P1pn_zm6FRDBZSP_QneDOtzd5?usp=share_link" target="_blank" class="btn-link">⬇️ Download Thai Font</a>
-            </div>
-
-            <div class="resource-item">
-                <h3>🔠 English Fonts: Libre & Brandon</h3>
-                <p style="font-size:0.9em; color:#666;">ใช้สำหรับ Subtitle หรือคำทับศัพท์ (Libre Baskerville / Brandon Grotesque)</p>
-                <a href="https://drive.google.com/drive/folders/1czT15pH0gnXe7EFHqjb3Csnm0aZLyjOQ?usp=share_link" target="_blank" class="btn-link">⬇️ Download Libre</a>
-                <a href="https://drive.google.com/drive/folders/1p-QgFXZxDnS51HGM6oMLAsfqLF-Fxu3w?usp=share_link" target="_blank" class="btn-link" style="margin-left:5px;">⬇️ Download Brandon</a>
-            </div>
-
-            <div class="resource-item" style="grid-column: span 2;">
-                <h3>🖼️ AI Prompts & References</h3>
-                <p style="font-size:0.9em; color:#666;">รวม Prompt และ Reference สำหรับการเจนภาพ Insert เพิ่มเติม</p>
-                <a href="https://drive.google.com/drive/folders/1ruBrbOZHRzwh7XgUacPTU9erbwXgXUKS?usp=share_link" target="_blank" class="btn-link">📂 Open Prompt Folder</a>
-            </div>
-        </div>
-        
     <div class="urgent-box">
         <h2>🚨 MANDATORY GLOBAL RULES (กฎเหล็กห้ามหลุด)</h2>
         <ul>
@@ -281,6 +134,34 @@ HTML
             <li><strong>AUDIO QUALITY:</strong> เช็คเสียงก้อง (Echo) ในทุกคลิป โดยเฉพาะ EP.02 ต้องแก้ด่วน</li>
             <li><strong>PACING:</strong> เน้น Insert ภาพทับเสียงพูด (B-Roll) มากกว่าการปล่อยหน้า Talking Head ยาวๆ</li>
         </ul>
+    </div>
+    
+    <div class="resource-frame">
+        <div class="resource-header">
+            <span>📦 MANDATORY ASSETS (ต้องโหลดก่อนเริ่มงาน)</span>
+        </div>
+        
+        <div class="resource-grid">
+            <div class="resource-item">
+                <h3>🔤 Thai Fonts (เลือกใช้ตามความเหมาะสม)</h3>
+                <p style="font-size:0.9em; color:#666; margin-bottom:5px;">ใช้ KulachatHC หรือ Prompt เป็นหลัก (Modern Luxury)</p>
+                <a href="https://drive.google.com/drive/folders/1Hz4xaB1P1pn_zm6FRDBZSP_QneDOtzd5?usp=share_link" target="_blank" class="btn-link">1. KulachatHC</a>
+                <a href="https://drive.google.com/drive/folders/1ruBrbOZHRzwh7XgUacPTU9erbwXgXUKS?usp=share_link" target="_blank" class="btn-link">2. Prompt (Thai Font)</a>
+            </div>
+
+            <div class="resource-item">
+                <h3>🔠 English Fonts (Subtitle/Keyword)</h3>
+                <p style="font-size:0.9em; color:#666; margin-bottom:5px;">ใช้ Libre หรือ Brandon สำหรับภาษาอังกฤษ</p>
+                <a href="https://drive.google.com/drive/folders/1czT15pH0gnXe7EFHqjb3Csnm0aZLyjOQ?usp=share_link" target="_blank" class="btn-link">Libre Baskerville</a>
+                <a href="https://drive.google.com/drive/folders/1p-QgFXZxDnS51HGM6oMLAsfqLF-Fxu3w?usp=share_link" target="_blank" class="btn-link">Brandon Grotesque</a>
+            </div>
+
+            <div class="resource-item" style="grid-column: span 2; background-color: #e8f5e9; border-left-color: #27ae60;">
+                <h3 style="color: #27ae60;">📂 FINAL INSERT ASSETS (รูปประกอบทั้งหมด)</h3>
+                <p style="font-size:0.9em; color:#333;">รวมรูป Insert ที่คัดมาแล้วสำหรับทุก EP (โหลดที่นี่ที่เดียว)</p>
+                <a href="https://drive.google.com/drive/folders/1Q2tWQwmAbULrBifKhxLCI56ZUk5kCQad?usp=sharing" target="_blank" class="btn-link asset-btn">⬇️ CLICK TO DOWNLOAD ALL INSERTS</a>
+            </div>
+        </div>
     </div>
 
     <div class="clip-card">
@@ -314,7 +195,7 @@ HTML
                         <span class="action-add">INSERT: ภาพบรรยากาศคลินิกสวยๆ</span>
                         <span class="note">ปูเรื่องสถานที่ก่อนเข้าเนื้อหา</span>
                     </td>
-                    <td><span class="asset-tag">01_Clinic_Luxury.jpg</span></td>
+                    <td><span class="asset-tag">01_Clinic_Luxury</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:13 - 00:18</td>
@@ -323,7 +204,7 @@ HTML
                         <span class="action-add">INSERT: ภาพหมอยืนดูเคส/ฟิล์ม</span>
                         <span class="note">แสดงความเชี่ยวชาญ (Expertise)</span>
                     </td>
-                    <td><span class="asset-tag">01_Doctor_Expert.jpg</span></td>
+                    <td><span class="asset-tag">01_Doctor_Expert</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:19 - 00:29</td>
@@ -332,7 +213,7 @@ HTML
                         <span class="action-add">INSERT: ภาพการบริการ/เสิร์ฟน้ำ/Lobby</span>
                         <span class="note">ต้องดูแพง ห้ามใช้ภาพ Reception นั่งเฉยๆ</span>
                     </td>
-                    <td><span class="asset-tag">01_Service_Premium.jpg</span></td>
+                    <td><span class="asset-tag">01_Service_Premium</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:30 - 00:36</td>
@@ -341,7 +222,7 @@ HTML
                         <span class="action-add">INSERT: ภาพเครื่องมือแพทย์ High-End</span>
                         <span class="note">เห็นตัวเครื่อง/แสงเลเซอร์ชัดๆ</span>
                     </td>
-                    <td><span class="asset-tag">01_Machine_FDA.jpg</span></td>
+                    <td><span class="asset-tag">01_Machine_FDA</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:37 - 00:44</td>
@@ -350,7 +231,7 @@ HTML
                         <span class="action-add">INSERT: ภาพกล่องยา/ผลิตภัณฑ์ของแท้</span>
                         <span class="note">Focus ที่กล่อง หรือ Seal รับรอง</span>
                     </td>
-                    <td><span class="asset-tag">01_Product_Authentic.jpg</span></td>
+                    <td><span class="asset-tag">01_Product_Authentic</span></td>
                 </tr>
             </tbody>
         </table>
@@ -375,8 +256,8 @@ HTML
                     <td class="col-time">Global</td>
                     <td class="col-audio">-</td>
                     <td>
-                        <span class="action-fix">CRITICAL FIX: Remove Audio Echo</span>
-                        <span class="note">ลบเอฟเฟคเสียง Echo ทั้งหมด</span>
+                        <span class="action-fix">CRITICAL FIX: Remove Audio Echo/Reverb</span>
+                        <span class="note">เสียงหมอก้องเกินไป ต้องทำให้แห้งและชัด (De-reverb)</span>
                     </td>
                     <td>-</td>
                 </tr>
@@ -388,7 +269,7 @@ HTML
                         <span class="action-add">REPLACE WITH: ภาพชานมไข่มุก (Bubble Tea)</span>
                         <span class="note">ตามบรีฟใหม่หมอ (Target อินชานมมากกว่า)</span>
                     </td>
-                    <td><span class="asset-tag">02_Bubble_Tea.jpg</span></td>
+                    <td><span class="asset-tag">02_Bubble_Tea</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">Mid-Clip</td>
@@ -398,8 +279,8 @@ HTML
                         <span class="note">ให้เห็นภาพโครงสร้างผิวถูกทำลาย</span>
                     </td>
                     <td>
-                        <span class="asset-tag">02_Glycation_Graphic.jpg</span><br>
-                        <span class="asset-tag">02_Sugar_Face_Compare.jpg</span>
+                        <span class="asset-tag">02_Glycation_Graphic</span><br>
+                        <span class="asset-tag">02_Sugar_Face_Compare</span>
                     </td>
                 </tr>
                 <tr>
@@ -438,7 +319,7 @@ HTML
                         <span class="action-add">INSERT: ภาพหมอชุด Scrub / Gown ทำงาน</span>
                         <span class="note">หมอต้องการลุค Expert ไม่ใช่ Celeb</span>
                     </td>
-                    <td><span class="asset-tag">03_Doctor_Scrub.jpg</span></td>
+                    <td><span class="asset-tag">03_Doctor_Scrub</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:11 - 00:17</td>
@@ -447,7 +328,7 @@ HTML
                         <span class="action-add">INSERT: ภาพ 3D Anatomy Layers</span>
                         <span class="note">ขึ้นภาพเลเยอร์ผิวให้ตรงกับที่หมอพูด (Medical Grade)</span>
                     </td>
-                    <td><span class="asset-tag">03_Anatomy_Layers.jpg</span></td>
+                    <td><span class="asset-tag">03_Anatomy_Layers</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:19 - 00:22</td>
@@ -456,7 +337,7 @@ HTML
                         <span class="action-add">INSERT: ภาพบ้าน/โครงสร้างทรุดบนทราย</span>
                         <span class="note">Visual Metaphor ต้องชัดเจน</span>
                     </td>
-                    <td><span class="asset-tag">03_House_Sand.jpg</span></td>
+                    <td><span class="asset-tag">03_House_Sand</span></td>
                 </tr>
             </tbody>
         </table>
@@ -492,7 +373,7 @@ HTML
                     <td>
                         <span class="action-add">INSERT: ภาพกลุ่มเพื่อนผู้หญิงคุยกัน (Good Vibes)</span>
                     </td>
-                    <td><span class="asset-tag">04_Friends_Gossip.jpg</span></td>
+                    <td><span class="asset-tag">04_Friends_Gossip</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:15 - 00:19</td>
@@ -500,7 +381,7 @@ HTML
                     <td>
                         <span class="action-add">INSERT: ภาพเชิงศิลปะ / การ Retouch / พู่กัน</span>
                     </td>
-                    <td><span class="asset-tag">04_Art_Retouch.jpg</span></td>
+                    <td><span class="asset-tag">04_Art_Retouch</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:20 - 00:29</td>
@@ -509,8 +390,8 @@ HTML
                         <span class="action-add">INSERT: ภาพผู้หญิงลุคแพง / ส่องกระจกยิ้ม</span>
                     </td>
                     <td>
-                        <span class="asset-tag">04_Elegant_Woman.jpg</span><br>
-                        <span class="asset-tag">04_Mirror_Smile.jpg</span> </td>
+                        <span class="asset-tag">04_Elegant_Woman</span><br>
+                        <span class="asset-tag">04_Mirror_Smile</span> </td>
                 </tr>
             </tbody>
         </table>
@@ -537,7 +418,7 @@ HTML
                     <td>
                         <span class="action-add">INSERT: กราฟหุ้นสีเขียว / การเติบโต</span>
                     </td>
-                    <td><span class="asset-tag">05_Graph_Green.jpg</span></td>
+                    <td><span class="asset-tag">05_Graph_Green</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:10 - 00:13</td>
@@ -545,7 +426,7 @@ HTML
                     <td>
                         <span class="action-add">INSERT: กราฟแดง / จอแดง / Down Trend</span>
                     </td>
-                    <td><span class="asset-tag">05_Graph_Red.jpg</span></td>
+                    <td><span class="asset-tag">05_Graph_Red</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:17 - 00:22</td>
@@ -555,8 +436,8 @@ HTML
                         <span class="note">ต้องเห็นหลักฐาน (Evidence) ว่าหมอวัดผลจริง</span>
                     </td>
                     <td>
-                        <span class="asset-tag">05_Lab_Report.jpg</span><br>
-                        <span class="asset-tag">05_Smartwatch_Red.jpg</span>
+                        <span class="asset-tag">05_Lab_Report</span><br>
+                        <span class="asset-tag">05_Smartwatch_Red</span>
                     </td>
                 </tr>
             </tbody>
@@ -594,7 +475,7 @@ HTML
                         <span class="action-add">INSERT: หมอ Consult คนไข้สีหน้าจริงใจ</span>
                         <span class="note">แสดง Deep Listening</span>
                     </td>
-                    <td><span class="asset-tag">06_Consult_Sincere.jpg</span></td>
+                    <td><span class="asset-tag">06_Consult_Sincere</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:14 - 00:17</td>
@@ -602,7 +483,7 @@ HTML
                     <td>
                         <span class="action-add">INSERT: ภาษากายอบอุ่น (มือแตะไหล่/พยักหน้า)</span>
                     </td>
-                    <td><span class="asset-tag">06_Hand_Care.jpg</span></td>
+                    <td><span class="asset-tag">06_Hand_Care</span></td>
                 </tr>
             </tbody>
         </table>
@@ -629,7 +510,7 @@ HTML
                     <td>
                         <span class="action-add">INSERT: นักธุรกิจหน้าโทรม/เครียด (Contrast)</span>
                     </td>
-                    <td><span class="asset-tag">08_Tired_Businessman.jpg</span></td>
+                    <td><span class="asset-tag">08_Tired_Businessman</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:11 - 00:15</td>
@@ -637,7 +518,7 @@ HTML
                     <td>
                         <span class="action-add">INSERT: บรรยากาศห้องประชุม (คนมองด้วยสายตาสงสัย)</span>
                     </td>
-                    <td><span class="asset-tag">08_Meeting_Judgment.jpg</span></td>
+                    <td><span class="asset-tag">08_Meeting_Judgment</span></td>
                 </tr>
                 <tr>
                     <td class="col-time">00:18 - 00:23</td>
@@ -645,7 +526,7 @@ HTML
                     <td>
                         <span class="action-add">INSERT: ผู้บริหารเดิน/ยืน บุคลิกภาพดีมาก (Aura)</span>
                     </td>
-                    <td><span class="asset-tag">08_Executive_Aura.jpg</span></td>
+                    <td><span class="asset-tag">08_Executive_Aura</span></td>
                 </tr>
             </tbody>
         </table>
