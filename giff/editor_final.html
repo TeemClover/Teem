@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>FINAL CUT ORDER: Dr. Giff Project (7 Episodes)</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #2c3e50;
+        --accent: #c0392b;
+        --success: #27ae60;
+        --warning: #f39c12;
+        --info: #3498db;
+        --bg: #f8f9fa;
+        --card-bg: #ffffff;
+    }
+    body {
+        font-family: 'Sarabun', sans-serif;
+        background-color: var(--bg);
+        color: #333;
+        line-height: 1.5;
+        margin: 0;
+        padding: 40px;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    header {
+        background: var(--primary);
+        color: white;
+        padding: 30px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    h1 { margin: 0; font-weight: 700; letter-spacing: 1px; }
+    .meta-info { margin-top: 10px; font-weight: 300; opacity: 0.9; }
+    
+    .urgent-box {
+        background-color: #ffebee;
+        border-left: 5px solid var(--accent);
+        padding: 20px;
+        margin-bottom: 30px;
+        border-radius: 4px;
+    }
+    .urgent-box h2 { color: var(--accent); margin-top: 0; display: flex; align-items: center; }
+    .urgent-box ul { margin-bottom: 0; }
+    
+    .clip-card {
+        background: var(--card-bg);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin-bottom: 40px;
+        overflow: hidden;
+        border-top: 5px solid var(--info);
+    }
+    .clip-header {
+        padding: 15px 25px;
+        background: #eef7fc;
+        border-bottom: 1px solid #e1e8ed;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .clip-title { font-size: 1.25em; font-weight: 700; color: var(--primary); }
+    .clip-status { font-size: 0.9em; font-weight: 600; color: #7f8c8d; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th {
+        background-color: #f1f2f6;
+        color: #57606f;
+        font-weight: 700;
+        text-align: left;
+        padding: 12px 15px;
+        font-size: 0.9em;
+        text-transform: uppercase;
+    }
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    
+    /* Column Widths */
+    .col-time { width: 12%; font-family: monospace; font-weight: bold; color: var(--accent); }
+    .col-audio { width: 25%; font-style: italic; color: #555; font-size: 0.9em; }
+    .col-action { width: 35%; }
+    .col-asset { width: 28%; }
+
+    /* Action Styles */
+    .action-remove { color: var(--accent); text-decoration: line-through; display: block; margin-bottom: 5px; opacity: 0.7; }
+    .action-add { color: var(--success); font-weight: 600; display: block; }
+    .action-fix { color: var(--warning); font-weight: 600; display: block; }
+    
+    .asset-tag {
+        display: inline-block;
+        background-color: #e3f2fd;
+        color: var(--info);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        font-family: monospace;
+        border: 1px solid #bbdefb;
+        margin-top: 4px;
+    }
+    .note { font-size: 0.85em; color: #95a5a6; margin-top: 5px; display: block; }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+    <h1>Dr. Giff Project: Final Cut Orders</h1>
+    <p><strong>Date:</strong> 18 Dec 2025 | <strong>To:</strong> Editor Team</p>
+    
+    <div class="editor-note">
+        <h3>👋 ถึง Editor ทีมตัดต่อครับ</h3>
+        <p>ก่อนอื่นขอชื่นชมงานตัดต่อที่ส่งมาครับ <strong>การเล่าเรื่อง (Storytelling) และจังหวะการตัด (Pacing) ทำได้ดีมากครับ</strong> ดูเพลินและน่าติดตามแล้ว</p>
+        <p>แต่หลังจากที่ได้คุยกับทางคุณหมอ (Dr. Giff) เราจำเป็นต้องปรับ <strong>"Brand Image"</strong> นิดหน่อยครับ เพื่อให้คลิปดู Premium และ Luxury สมกับราคา Service ของคลินิกครับ</p>
+        <p><strong>โจทย์หลักรอบนี้คือ:</strong> เปลี่ยนจากสไตล์ "YouTuber/Influencer" ให้เป็นสไตล์ <strong>"Netflix Documentary / High-End Commercial"</strong></p>
+        <p>ทางทีม Director เข้าใจว่าการหา Insert นั้นยากและเสียเวลา <strong>เราจึงทำการ Generate/Select ภาพ Insert (Assets) มาให้แล้วในรายการด้านล่าง</strong> เพื่อให้ Editor ทำงานได้ง่ายและไวที่สุดครับ แค่จับวางตาม Timecode ก็จบงานได้เลยครับ สู้ๆ ครับ!</p>
+    </div>
+</header>
+
+    <div class="urgent-box">
+        <h2>🚨 MANDATORY GLOBAL RULES (กฎเหล็กห้ามหลุด)</h2>
+        <ul>
+            <li><strong>NO CHEAP SOUND EFFECTS:</strong> ห้ามใส่เสียง "วิ้งๆ" "ปิ๊งๆ" "ตลกๆ" เด็ดขาด (หมอไม่ชอบ) ให้เหลือแค่เสียงพูด + ดนตรีคลอเบาๆ</li>
+            <li><strong>TEXT CLEANUP:</strong> ลด Motion ของ Text ให้นิ่งขึ้น เรียบหรู (เลิกใช้ Preset เด้งดึ๋ง) *เรื่อง Font จะแก้ทีเดียวตอนจบงาน*</li>
+            <li><strong>AUDIO QUALITY:</strong> เช็คเสียงก้อง (Echo) ในทุกคลิป โดยเฉพาะ EP.02 ต้องแก้ด่วน</li>
+            <li><strong>PACING:</strong> เน้น Insert ภาพทับเสียงพูด (B-Roll) มากกว่าการปล่อยหน้า Talking Head ยาวๆ</li>
+        </ul>
+    </div>
+
+    <div class="clip-card">
+        <div class="clip-header">
+            <span class="clip-title">EP.01 : What is Real? (ตัวจริงคืออะไร)</span>
+            <span class="clip-status">Concept: Luxury & Trust</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-time">Timecode</th>
+                    <th class="col-audio">Audio Cue (เสียงพูด)</th>
+                    <th class="col-action">Action Required</th>
+                    <th class="col-asset">Asset Provided</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-time">Global</td>
+                    <td class="col-audio">-</td>
+                    <td>
+                        <span class="action-remove">REMOVE: Sound Effect "Pling/Wink"</span>
+                        <span class="action-fix">Adjust Text Animation to be smooth/static</span>
+                    </td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:00 - 00:12</td>
+                    <td class="col-audio">"เคยสงสัยไหมคะว่าทำไม... เหลือแค่ตัวจริงเท่านั้น"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพบรรยากาศคลินิกสวยๆ</span>
+                        <span class="note">ปูเรื่องสถานที่ก่อนเข้าเนื้อหา</span>
+                    </td>
+                    <td><span class="asset-tag">01_Clinic_Luxury.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:13 - 00:18</td>
+                    <td class="col-audio">"อันที่ 1 คือแพทย์... มีประสบการณ์"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพหมอยืนดูเคส/ฟิล์ม</span>
+                        <span class="note">แสดงความเชี่ยวชาญ (Expertise)</span>
+                    </td>
+                    <td><span class="asset-tag">01_Doctor_Expert.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:19 - 00:29</td>
+                    <td class="col-audio">"เรื่องของ Service... เหมือนโรงแรม 5 ดาว"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพการบริการ/เสิร์ฟน้ำ/Lobby</span>
+                        <span class="note">ต้องดูแพง ห้ามใช้ภาพ Reception นั่งเฉยๆ</span>
+                    </td>
+                    <td><span class="asset-tag">01_Service_Premium.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:30 - 00:36</td>
+                    <td class="col-audio">"เครื่องมือที่ใช้... FDA Approved"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพเครื่องมือแพทย์ High-End</span>
+                        <span class="note">เห็นตัวเครื่อง/แสงเลเซอร์ชัดๆ</span>
+                    </td>
+                    <td><span class="asset-tag">01_Machine_FDA.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:37 - 00:44</td>
+                    <td class="col-audio">"Product... ต้องเป็นตัวยาแท้"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพกล่องยา/ผลิตภัณฑ์ของแท้</span>
+                        <span class="note">Focus ที่กล่อง หรือ Seal รับรอง</span>
+                    </td>
+                    <td><span class="asset-tag">01_Product_Authentic.jpg</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="clip-card">
+        <div class="clip-header">
+            <span class="clip-title">EP.02 : Sugar Face (หน้าติดหวาน)</span>
+            <span class="clip-status">Concept: Warning & Science</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-time">Timecode</th>
+                    <th class="col-audio">Audio Cue (เสียงพูด)</th>
+                    <th class="col-action">Action Required</th>
+                    <th class="col-asset">Asset Provided</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-time">Global</td>
+                    <td class="col-audio">-</td>
+                    <td>
+                        <span class="action-fix">CRITICAL FIX: Remove Audio Echo/Reverb</span>
+                        <span class="note">เสียงหมอก้องเกินไป ต้องทำให้แห้งและชัด (De-reverb)</span>
+                    </td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:00 - 00:10</td>
+                    <td class="col-audio">(ช่วง Intro / พูดเรื่องของหวาน)</td>
+                    <td>
+                        <span class="action-remove">REMOVE: ภาพกินโดนัท</span>
+                        <span class="action-add">REPLACE WITH: ภาพชานมไข่มุก (Bubble Tea)</span>
+                        <span class="note">ตามบรีฟใหม่หมอ (Target อินชานมมากกว่า)</span>
+                    </td>
+                    <td><span class="asset-tag">02_Bubble_Tea.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">Mid-Clip</td>
+                    <td class="col-audio">"Glycation... น้ำตาลเกาะโปรตีน"</td>
+                    <td>
+                        <span class="action-add">INSERT: กราฟิก Glycation / ผิวเหี่ยว</span>
+                        <span class="note">ให้เห็นภาพโครงสร้างผิวถูกทำลาย</span>
+                    </td>
+                    <td>
+                        <span class="asset-tag">02_Glycation_Graphic.jpg</span><br>
+                        <span class="asset-tag">02_Sugar_Face_Compare.jpg</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:36</td>
+                    <td class="col-audio">(ภาพตัดสลับ)</td>
+                    <td>
+                        <span class="action-fix">FIX GLITCH: ภาพหมอซ้อนทับกัน (Ghosting)</span>
+                        <span class="note">มีเฟรมที่ภาพซ้อนกันอยู่ เช็ค Layer ด่วน</span>
+                    </td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="clip-card">
+        <div class="clip-header">
+            <span class="clip-title">EP.03 : Doctor as Architect (สถาปนิกความงาม)</span>
+            <span class="clip-status">Concept: Professional Structure</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-time">Timecode</th>
+                    <th class="col-audio">Audio Cue (เสียงพูด)</th>
+                    <th class="col-action">Action Required</th>
+                    <th class="col-asset">Asset Provided</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-time">00:00 - 00:05</td>
+                    <td class="col-audio">"ในฐานะที่คุณหมอได้มีโอกาส..."</td>
+                    <td>
+                        <span class="action-remove">REMOVE: ภาพงาน Event / ชุดราตรีทั้งหมด</span>
+                        <span class="action-add">INSERT: ภาพหมอชุด Scrub / Gown ทำงาน</span>
+                        <span class="note">หมอต้องการลุค Expert ไม่ใช่ Celeb</span>
+                    </td>
+                    <td><span class="asset-tag">03_Doctor_Scrub.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:11 - 00:17</td>
+                    <td class="col-audio">"ชั้นไขมัน เส้นเอ็น กล้ามเนื้อ และกระดูก"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพ 3D Anatomy Layers</span>
+                        <span class="note">ขึ้นภาพเลเยอร์ผิวให้ตรงกับที่หมอพูด (Medical Grade)</span>
+                    </td>
+                    <td><span class="asset-tag">03_Anatomy_Layers.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:19 - 00:22</td>
+                    <td class="col-audio">"เหมือนการสร้างบ้านบนทราย"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพบ้าน/โครงสร้างทรุดบนทราย</span>
+                        <span class="note">Visual Metaphor ต้องชัดเจน</span>
+                    </td>
+                    <td><span class="asset-tag">03_House_Sand.jpg</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="clip-card">
+        <div class="clip-header">
+            <span class="clip-title">EP.04 : Natural Beauty (สวยแบบธรรมชาติ)</span>
+            <span class="clip-status">Concept: Art & Elegance</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-time">Timecode</th>
+                    <th class="col-audio">Audio Cue (เสียงพูด)</th>
+                    <th class="col-action">Action Required</th>
+                    <th class="col-asset">Asset Provided</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-time">Global</td>
+                    <td class="col-audio">-</td>
+                    <td>
+                        <span class="action-remove">REMOVE: Text คำถามรัวๆ (ทำจมูก? ฉีดโบ?)</span>
+                        <span class="note">เอามันออก มันรกและแย่งซีนหน้าหมอ</span>
+                    </td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:04 - 00:08</td>
+                    <td class="col-audio">"เพื่อนทักว่า... ไปทำอะไรมา"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพกลุ่มเพื่อนผู้หญิงคุยกัน (Good Vibes)</span>
+                    </td>
+                    <td><span class="asset-tag">04_Friends_Gossip.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:15 - 00:19</td>
+                    <td class="col-audio">"ศิลปะของการซ่อนร่องรอย"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพเชิงศิลปะ / การ Retouch / พู่กัน</span>
+                    </td>
+                    <td><span class="asset-tag">04_Art_Retouch.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:20 - 00:29</td>
+                    <td class="col-audio">"ความสง่างาม... The Best Version of You"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาพผู้หญิงลุคแพง / ส่องกระจกยิ้ม</span>
+                    </td>
+                    <td>
+                        <span class="asset-tag">04_Elegant_Woman.jpg</span><br>
+                        <span class="asset-tag">04_Mirror_Smile.jpg</span> </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="clip-card">
+        <div class="clip-header">
+            <span class="clip-title">EP.05 : Your Body is Asset (พอร์ตร่างกาย)</span>
+            <span class="clip-status">Concept: Investment & Data</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-time">Timecode</th>
+                    <th class="col-audio">Audio Cue (เสียงพูด)</th>
+                    <th class="col-action">Action Required</th>
+                    <th class="col-asset">Asset Provided</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-time">00:05 - 00:10</td>
+                    <td class="col-audio">"Asset ที่มีคุณค่ามาก... พอร์ตหุ้น"</td>
+                    <td>
+                        <span class="action-add">INSERT: กราฟหุ้นสีเขียว / การเติบโต</span>
+                    </td>
+                    <td><span class="asset-tag">05_Graph_Green.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:10 - 00:13</td>
+                    <td class="col-audio">"พอร์ตร่างกายของคุณติดลบอยู่หรือเปล่า"</td>
+                    <td>
+                        <span class="action-add">INSERT: กราฟแดง / จอแดง / Down Trend</span>
+                    </td>
+                    <td><span class="asset-tag">05_Graph_Red.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:17 - 00:22</td>
+                    <td class="col-audio">"ค่า Lab / ค่าฮอร์โมน / ค่าการนอน (Whoop)"</td>
+                    <td>
+                        <span class="action-add">INSERT: ใบผล Lab + นาฬิกาโชว์ค่า Recovery ต่ำ (สีแดง)</span>
+                        <span class="note">ต้องเห็นหลักฐาน (Evidence) ว่าหมอวัดผลจริง</span>
+                    </td>
+                    <td>
+                        <span class="asset-tag">05_Lab_Report.jpg</span><br>
+                        <span class="asset-tag">05_Smartwatch_Red.jpg</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="clip-card">
+        <div class="clip-header">
+            <span class="clip-title">EP.06 : Real Sincerity (ความจริงใจ)</span>
+            <span class="clip-status">Concept: Sincerity & No Hard Sell</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-time">Timecode</th>
+                    <th class="col-audio">Audio Cue (เสียงพูด)</th>
+                    <th class="col-action">Action Required</th>
+                    <th class="col-asset">Asset Provided</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-time">Global</td>
+                    <td class="col-audio">-</td>
+                    <td>
+                        <span class="action-remove">REMOVE: Text "ได้ค่ะ" "อย่าทำเลยค่ะ" ทั้งหมด</span>
+                        <span class="note">Text แบบนี้ดู Cheap มาก เอาออกให้หมด</span>
+                    </td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:06 - 00:09</td>
+                    <td class="col-audio">"อย่าทำเลยค่ะ... ปฏิเสธทันที"</td>
+                    <td>
+                        <span class="action-add">INSERT: หมอ Consult คนไข้สีหน้าจริงใจ</span>
+                        <span class="note">แสดง Deep Listening</span>
+                    </td>
+                    <td><span class="asset-tag">06_Consult_Sincere.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:14 - 00:17</td>
+                    <td class="col-audio">"ความไว้วางใจของทุกคน... ให้ค่ามากที่สุด"</td>
+                    <td>
+                        <span class="action-add">INSERT: ภาษากายอบอุ่น (มือแตะไหล่/พยักหน้า)</span>
+                    </td>
+                    <td><span class="asset-tag">06_Hand_Care.jpg</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="clip-card">
+        <div class="clip-header">
+            <span class="clip-title">EP.08 : Executive Presence (ใบหน้าผู้บริหาร)</span>
+            <span class="clip-status">Concept: High-End Business</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-time">Timecode</th>
+                    <th class="col-audio">Audio Cue (เสียงพูด)</th>
+                    <th class="col-action">Action Required</th>
+                    <th class="col-asset">Asset Provided</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-time">00:06 - 00:10</td>
+                    <td class="col-audio">"หน้าดูเหนื่อย ดูคิดอะไรอยู่ ดูไม่สดใส"</td>
+                    <td>
+                        <span class="action-add">INSERT: นักธุรกิจหน้าโทรม/เครียด (Contrast)</span>
+                    </td>
+                    <td><span class="asset-tag">08_Tired_Businessman.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:11 - 00:15</td>
+                    <td class="col-audio">"คู่ค้าของอาจจะคิดว่าคุณดูไม่มืออาชีพ..."</td>
+                    <td>
+                        <span class="action-add">INSERT: บรรยากาศห้องประชุม (คนมองด้วยสายตาสงสัย)</span>
+                    </td>
+                    <td><span class="asset-tag">08_Meeting_Judgment.jpg</span></td>
+                </tr>
+                <tr>
+                    <td class="col-time">00:18 - 00:23</td>
+                    <td class="col-audio">"หน้าของคุณดูสง่า... Executive Presence"</td>
+                    <td>
+                        <span class="action-add">INSERT: ผู้บริหารเดิน/ยืน บุคลิกภาพดีมาก (Aura)</span>
+                    </td>
+                    <td><span class="asset-tag">08_Executive_Aura.jpg</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
