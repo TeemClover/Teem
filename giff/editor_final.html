@@ -35,7 +35,6 @@
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     h1 { margin: 0; font-weight: 700; letter-spacing: 1px; }
-    .meta-info { margin-top: 10px; font-weight: 300; opacity: 0.9; }
     
     .urgent-box {
         background-color: #ffebee;
@@ -106,6 +105,66 @@
         margin-top: 4px;
     }
     .note { font-size: 0.85em; color: #95a5a6; margin-top: 5px; display: block; }
+    
+    /* Resource Section Styles */
+    .resource-frame {
+        background-color: #fff;
+        border: 2px solid var(--primary);
+        border-radius: 8px;
+        padding: 0;
+        margin-bottom: 40px;
+        overflow: hidden;
+    }
+    .resource-header {
+        background-color: var(--primary);
+        color: white;
+        padding: 10px 20px;
+        font-weight: bold;
+    }
+    .resource-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+    }
+    .resource-item {
+        padding: 20px;
+        border-right: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+    .btn-link {
+        display: inline-block;
+        text-decoration: none;
+        background: #eee;
+        color: #333;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        margin-top: 5px;
+        transition: 0.2s;
+    }
+    .btn-link:hover { background: #ddd; }
+    .asset-btn {
+        background: var(--success);
+        color: white;
+        font-weight: bold;
+        display: block;
+        text-align: center;
+        padding: 10px;
+    }
+    .asset-btn:hover { background: #219150; color: white; }
+
+    /* Footer Appreciation Note */
+    .footer-note {
+        background: linear-gradient(to right, #2c3e50, #34495e);
+        color: white;
+        padding: 30px;
+        border-radius: 8px;
+        margin-top: 50px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .footer-note h3 { margin-top: 0; color: #f1c40f; }
+    .footer-note p { opacity: 0.9; margin-bottom: 10px; }
 
 </style>
 </head>
@@ -114,16 +173,12 @@
 <div class="container">
 
 <header>
-    <h1>Dr. Giff Project: Final Cut Orders</h1>
-    <p><strong>Date:</strong> 18 Dec 2025 | <strong>To:</strong> Editor Team</p>
-    
-<header>
     <h1>DR. GIFF — FINAL CUT REVISION ORDERS</h1>
     <div style="margin-top: 10px; opacity: 0.9; font-size: 0.9em;">
         <strong>Date:</strong> 18 Dec 2025 | <strong>To:</strong> Editor Team
     </div>
     
-    <div class="editor-note">
+    <div class="editor-note" style="background: rgba(255,255,255,0.1); padding: 15px; margin-top: 15px; border-radius: 4px;">
         <h3>👋 เรียน ทีม Editor ที่เคารพครับ</h3>
         <p>ก่อนอื่นทางทีมงานต้องขอขอบคุณและชื่นชมสำหรับ Draft แรกที่ส่งมานะครับ <strong>การเล่าเรื่อง (Storytelling) และจังหวะ (Pacing) ทำออกมาได้ลื่นไหลและน่าติดตามมากครับ</strong></p>
         <p>เพื่อให้ผลงานชิ้นนี้สมบูรณ์แบบและตอบโจทย์ภาพลักษณ์ <strong>"Premium & Luxury"</strong> ของ Dr. Giff มากที่สุด เราจึงขอปรับจูน <strong>Tone & Mood</strong> ของงานเล็กน้อยครับ</p>
@@ -152,7 +207,7 @@
             <a href="https://drive.google.com/drive/folders/1p-QgFXZxDnS51HGM6oMLAsfqLF-Fxu3w?usp=share_link" target="_blank" class="btn-link">Brandon Grotesque</a>
         </div>
 
-        <div class="resource-item" style="grid-column: span 2; background-color: #e8f5e9; border-left-color: #27ae60;">
+        <div class="resource-item" style="grid-column: span 2; background-color: #e8f5e9; border-left: 5px solid #27ae60;">
             <h3 style="color: #27ae60;">📂 FINAL INSERT ASSETS (รูปประกอบทั้งหมด)</h3>
             <p style="font-size:0.9em; color:#333;">รวมภาพ Insert ที่คัดมาแล้วสำหรับทุก EP (โหลดครบจบที่นี่)</p>
             <a href="https://drive.google.com/drive/folders/1Q2tWQwmAbULrBifKhxLCI56ZUk5kCQad?usp=sharing" target="_blank" class="btn-link asset-btn">⬇️ CLICK TO DOWNLOAD ALL INSERTS</a>
@@ -188,8 +243,8 @@
                     <td class="col-time">Global</td>
                     <td class="col-audio">-</td>
                     <td>
-                        <span class="action-remove">ตอนนี้ไม่มีเฟรมเปิดเหมือนตอนอื่น"</span>
-                        <span class="action-fix">ทำเฟรมเปิดตอนเหมือนตอนที่เหลือ</span>
+                        <span class="action-fix">FIX: Frame เปิดรายการ</span>
+                        <span class="note">ตอนนี้ไม่มีเฟรมเปิดเหมือนตอนอื่น ทำเฟรมเปิดให้เหมือนตอนที่เหลือครับ</span>
                     </td>
                     <td>-</td>
                 </tr>
@@ -262,7 +317,7 @@
                     <td class="col-audio">-</td>
                     <td>
                         <span class="action-fix">CRITICAL FIX: Remove Audio Echo</span>
-                        <span class="note">เอา Effect เสียงก้องของหมอออก</span>
+                        <span class="note">เอา Effect เสียงก้องของหมอออก (สำคัญมาก)</span>
                     </td>
                     <td>-</td>
                 </tr>
@@ -517,6 +572,14 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="footer-note">
+        <h3>🙏 ขอบคุณและเป็นกำลังใจให้ทีม Editor ครับ</h3>
+        <p>ทางทีม Director เข้าใจดีครับว่าการรื้อแก้โครงสร้างงาน (Structure & Mood) ในรอบ Final นั้นใช้พลังงานเยอะมาก</p>
+        <p>เราจึงตั้งใจทำบรีฟชุดนี้ให้ละเอียดที่สุด และเตรียมของ (Assets) มาให้ครบที่สุด <strong>เพื่อให้ Editor "ไม่ต้องไปงมหาของเอง" และ "ไม่ต้องเดาใจลูกค้า" ครับ</strong></p>
+        <p>เชื่อมั่นในฝีมือครับ หวังว่าบรีฟนี้จะช่วยให้ทำงานได้ง่ายขึ้น รอชมผลงาน Masterpiece ชิ้นนี้ครับ ลุยครับ! ❤️</p>
+        <div style="margin-top:15px; font-weight:bold; color:#f1c40f;">— Creative Director & AIHIA Team</div>
     </div>
 
 </div>
