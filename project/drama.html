@@ -3,219 +3,581 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strategic Analysis: Commercial Short Drama in Thailand</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Project Dragon: Thailand Commercial Drama Revolution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&family=Noto+Sans+SC:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        /* --- CORE VARIABLES & RESET --- */
         :root {
-            --primary-color: #1a237e; /* Midnight Blue */
-            --accent-color: #c62828; /* China Red */
-            --text-color: #333;
-            --bg-color: #f9f9f9;
-            --card-bg: #ffffff;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --gold-main: #D4AF37;
+            --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #C5A028 100%);
+            --red-accent: #C92A2A;
+            --blue-ocean: #00B4DB;
+            --font-th: 'Prompt', sans-serif;
+            --font-cn: 'Noto Sans SC', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Sarabun', 'Noto Sans SC', sans-serif;
-            line-height: 1.8;
-            color: var(--text-color);
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: var(--font-th);
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
+        /* --- UTILITIES --- */
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: var(--card-bg);
-            padding: 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            border-radius: 8px;
+            padding: 0 20px;
         }
 
-        h1, h2, h3 {
-            color: var(--primary-color);
-            margin-top: 30px;
+        .lang-cn { display: none; font-family: var(--font-cn); }
+        .active-lang { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        h1 {
-            font-size: 2.5em;
-            text-align: center;
-            border-bottom: 3px solid var(--accent-color);
-            padding-bottom: 20px;
-            margin-bottom: 40px;
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 0;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .bilingual-box {
-            margin-bottom: 30px;
-            border-left: 4px solid var(--primary-color);
-            padding-left: 20px;
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .th-text {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            color: #2c3e50;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold-main);
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        .cn-text {
-            font-size: 1em;
-            color: #546e7a;
-            font-weight: 400;
-        }
-
-        .highlight-box {
-            background-color: #f0f4f8;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border: 1px solid #dbe2e8;
-        }
-
-        .label {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
+        .lang-switch-btn {
+            background: transparent;
+            border: 1px solid var(--gold-main);
+            color: var(--gold-main);
+            padding: 8px 20px;
+            border-radius: 50px;
+            cursor: pointer;
             font-weight: bold;
-            color: white;
-            margin-bottom: 5px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .label-th { background-color: var(--primary-color); }
-        .label-cn { background-color: var(--accent-color); }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
+        .lang-switch-btn:hover {
+            background: var(--gold-main);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
 
-        li {
-            margin-bottom: 15px;
-            padding-left: 20px;
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: url('https://www.transparenttextures.com/patterns/cubes.png');
+            opacity: 0.05;
+            animation: rotate 100s linear infinite;
+        }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: -webkit-linear-gradient(#fff, #999);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content h2 {
+            font-size: 1.5rem;
+            color: var(--gold-main);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .highlight-text {
+            color: var(--gold-main);
+            font-weight: 700;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            animation: bounce 2s infinite;
+            color: var(--text-secondary);
+            font-size: 2rem;
+        }
+
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+
+        /* --- SECTIONS GENERAL --- */
+        section {
+            padding: 100px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 60px;
             position: relative;
         }
 
-        li::before {
-            content: "•";
-            color: var(--accent-color);
-            font-weight: bold;
-            position: absolute;
-            left: 0;
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--gold-main);
+            margin: 15px auto 0;
         }
 
-        .footer {
-            text-align: center;
+        /* --- TEEM'S INSIGHT (MCN) --- */
+        .insight-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .insight-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .insight-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold-main);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .insight-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .bad-point { color: var(--red-accent); }
+        .good-point { color: var(--blue-ocean); }
+
+        /* --- MARKET CHART SECTION --- */
+        .chart-container {
+            position: relative;
+            height: 500px;
+            width: 100%;
+            background: rgba(20, 20, 20, 0.8);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- FRIED CHICKEN STRATEGY --- */
+        .strategy-steps {
+            display: flex;
+            justify-content: space-between;
             margin-top: 50px;
-            font-size: 0.9em;
-            color: #888;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
         }
 
-        @media (max-width: 600px) {
-            .container { padding: 20px; }
-            h1 { font-size: 1.8em; }
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-card);
+            border: 2px solid var(--gold-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--gold-main);
+            margin: 0 auto 20px;
+            transition: var(--transition);
+        }
+
+        .step:hover .step-icon {
+            background: var(--gold-main);
+            color: #000;
+            box-shadow: 0 0 20px var(--gold-main);
+        }
+
+        .step h3 { margin-bottom: 10px; font-size: 1.2rem; }
+        .step p { color: var(--text-secondary); font-size: 0.9rem; }
+
+        .arrow-next {
+            position: absolute;
+            top: 40px;
+            right: -20px;
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.2);
+        }
+
+        /* --- REGULATORY ADVANTAGE --- */
+        .advantage-box {
+            background: linear-gradient(135deg, rgba(20,20,20,1) 0%, rgba(30,30,30,1) 100%);
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--gold-main);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
+        }
+
+        .big-stat {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--gold-main);
+            margin: 20px 0;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 50px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            background: #000;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .insight-grid { grid-template-columns: 1fr; }
+            .strategy-steps { flex-direction: column; gap: 30px; }
+            .arrow-next { transform: rotate(90deg); top: auto; bottom: -25px; right: 45%; }
+            .chart-container { height: 350px; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>
-        คัมภีร์ยุทธศาสตร์: ตลาดละครสั้นไทย<br>
-        <span style="font-size: 0.6em; color: #555;">泰国商业短剧市场战略白皮书</span>
-    </h1>
+    <nav>
+        <div class="container nav-content">
+            <div class="logo">Project <span style="color:#fff">Dragon</span></div>
+            <button class="lang-switch-btn" onclick="toggleLanguage()">
+                <i class="fas fa-globe"></i>
+                <span id="lang-label">TH / 中文</span>
+            </button>
+        </div>
+    </nav>
 
-    <div class="highlight-box">
-        <p class="th-text"><strong>บทนำ:</strong> เอกสารฉบับนี้รวบรวมและวิเคราะห์ข้อมูลเชิงลึกจากการสนทนาระหว่าง Teem และ Nana เกี่ยวกับวิสัยทัศน์ของคุณ Peng Yusi เพื่อสร้างมาตรฐานใหม่ให้กับวงการพาณิชย์อิเล็กทรอนิกส์ในไทย</p>
-        <p class="cn-text"><strong>前言：</strong> 本白皮书汇总并深度分析了 Teem 与 Nana 的对话内容，基于鹏哥（Peng Yusi）的愿景，旨在为泰国电商和短剧行业树立新标杆。</p>
-    </div>
+    <header class="hero">
+        <div class="container hero-content">
+            <div class="lang-th active-lang" data-lang="th">
+                <h1>ปฏิวัติวงการอีคอมเมิร์ซไทย<br>ด้วย <span class="highlight-text">"ละครสั้นคุณภาพระดับภาพยนตร์"</span></h1>
+                <h2>เปลี่ยนจากการ "ยัดเยียดขาย" สู่การ "ดึงดูดด้วยเนื้อหา"</h2>
+                <p style="color: #888;">นำเสนอโดย Teem & Nana x Peng Yusi</p>
+            </div>
+            <div class="lang-cn" data-lang="cn">
+                <h1>泰国电商的新革命<br>以 <span class="highlight-text">"电影级商业短剧"</span> 破局</h1>
+                <h2>从 “硬广推销” 转型为 “内容引流”</h2>
+                <p style="color: #888;">Teem & Nana x Peng Yusi 联合呈现</p>
+            </div>
+            <div class="scroll-down"><i class="fas fa-chevron-down"></i></div>
+        </div>
+    </header>
 
-    <h2>1. วิเคราะห์โมเดล "ไก่ทอด" และวิสัยทัศน์ของคุณเผิง<br><small style="font-size: 0.6em; color: #666;">“炸鸡理论”与鹏哥的愿景分析</small></h2>
+    <section id="insight">
+        <div class="container">
+            <div class="section-title">
+                <span class="lang-th active-lang" data-lang="th">ทำไมต้องตอนนี้? : บทเรียนจาก MCN</span>
+                <span class="lang-cn" data-lang="cn">为什么是现在？: 来自 MCN 的市场洞察</span>
+            </div>
 
-    <div class="bilingual-box">
-        <p class="th-text">จากการที่นานาเล่าให้ฟัง คุณเผิงไม่ได้ต้องการแค่ "ขายของ" แต่ต้องการสร้าง "แบรนด์" ผ่านคอนเทนต์คุณภาพสูง โดยใช้แนวคิดเปรียบเทียบกับ <strong>"ร้านไก่ทอด"</strong>: เราจะไม่ยืนตะโกนขายไก่ดิบหน้าร้าน แต่เราจะทอดไก่ให้ส่งกลิ่นหอมฟุ้ง (สร้างละครคุณภาพ) เพื่อดึงดูดผู้คนให้เข้ามารอคิวด้วยความเต็มใจ แล้วค่อยขายสินค้าเมื่อพวกเขาหิว (มีความต้องการ)</p>
-        <p class="cn-text">据 Nana 转述，鹏哥的目标不仅仅是“卖货”，而是通过高质量内容建立“品牌”。这正是<strong>“炸鸡理论”</strong>的核心：我们不站在店门口吆喝卖生鸡肉，而是先把鸡炸得香气四溢（制作高质量短剧），吸引人们心甘情愿地排队，等他们饿了（产生需求）再进行销售。</p>
-    </div>
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <div class="insight-icon bad-point"><i class="fas fa-bullhorn"></i></div>
+                    <div class="lang-th active-lang" data-lang="th">
+                        <h3>ปัญหา: ยุคแห่งการ "ด้านชา"</h3>
+                        <p>จากประสบการณ์ทำ MCN ของผม การไลฟ์สดแบบเดิมๆ และคลิปรีวิวแบบ Hard Sell กำลังตายลง คนไทยเบื่อโฆษณา ยิ่งยัดเยียด ยิ่งหนี ค่าโฆษณา (Ads Cost) แพงขึ้นแต่ยอดขายลดลง</p>
+                    </div>
+                    <div class="lang-cn" data-lang="cn">
+                        <h3>痛点：流量的“麻木期”</h3>
+                        <p>基于我的 MCN 运营经验，传统的“叫卖式”直播和硬广植入正在失效。泰国用户对广告产生抗体，越是强推，越是反感。投流成本（Ads Cost）上升，转化率却在下降。</p>
+                    </div>
+                </div>
 
-    <div class="bilingual-box">
-        <p class="th-text"><strong>หัวใจสำคัญ:</strong> การทำละครสั้นแนวระทึกขวัญ/สืบสวนสอบสวน (Suspense/Thriller) ที่คุณเผิงถนัด ซึ่งเป็นสิ่งที่ตลาดไทยยังขาดแคลน โดยสินค้าจะถูก Tie-in เข้าไปในเนื้อเรื่องอย่างแนบเนียน (Soft Power) ไม่ใช่การยัดเยียดขาย</p>
-        <p class="cn-text"><strong>核心策略：</strong> 利用鹏哥擅长的悬疑/惊悚（Suspense/Thriller）题材制作短剧，这正是泰国市场目前稀缺的内容。商品将通过“软植入”（Soft Power）自然融入剧情，而非生硬推销。</p>
-    </div>
+                <div class="insight-card" style="border-color: var(--blue-ocean);">
+                    <div class="insight-icon good-point"><i class="fas fa-film"></i></div>
+                    <div class="lang-th active-lang" data-lang="th">
+                        <h3>ทางออก: ความบันเทิงนำการขาย</h3>
+                        <p>เราต้องใช้ "ละครสั้น" (Short Drama) มาเป็นตัวเปิดใจ คนไทยไม่ได้เกลียดการซื้อของ แต่เกลียดการถูกขาย ถ้าเนื้อเรื่องสนุก (โดยเฉพาะแนวสืบสวน/ดราม่า) เขาจะเปิดใจรับสินค้าโดยไม่รู้ตัว</p>
+                    </div>
+                    <div class="lang-cn" data-lang="cn">
+                        <h3>出路：娱乐驱动销售</h3>
+                        <p>我们需要用“短剧”作为破冰工具。泰国人并不讨厌买东西，但讨厌“被推销”。如果剧情精彩（尤其是悬疑/剧情类），他们会在潜移默化中接受产品。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <h2>2. เจาะลึกตลาดไทย: ยุคแห่ง "ละครคุณธรรม" และปัญหาเรื้อรัง<br><small style="font-size: 0.6em; color: #666;">深挖泰国市场：“道德短剧”时代及其痛点</small></h2>
+    <section id="strategy" style="background: rgba(255,255,255,0.02);">
+        <div class="container">
+            <div class="section-title">
+                <span class="lang-th active-lang" data-lang="th">กลยุทธ์ "ทอดไก่ให้หอม" (The Fried Chicken Theory)</span>
+                <span class="lang-cn" data-lang="cn">战略核心：“炸鸡理论”</span>
+            </div>
 
-    <div class="bilingual-box">
-        <p class="th-text">ในปัจจุบัน ตลาดละครสั้นใน TikTok ไทยถูกครอบครองโดยสิ่งที่เรียกว่า <strong>"ละครคุณธรรม" (Lakorn Khun Tham)</strong> ซึ่งมีลักษณะเฉพาะตัวดังนี้:</p>
-        <p class="cn-text">目前，泰国 TikTok 短剧市场主要被所谓的<strong>“道德短剧”（Lakorn Khun Tham）</strong>所占据，其特点如下：</p>
-    </div>
+            <div class="strategy-steps">
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-fire"></i></div>
+                    <div class="lang-th active-lang" data-lang="th">
+                        <h3>1. ทอดให้หอม (Content First)</h3>
+                        <p>สร้างละครคุณภาพระดับ Cinema (ฝีมือพี่เผิง) แนวระทึกขวัญที่คนไทยไม่เคยดู เพื่อดึงคนให้หยุดดู</p>
+                    </div>
+                    <div class="lang-cn" data-lang="cn">
+                        <h3>1. 炸得喷香 (内容为王)</h3>
+                        <p>制作电影级质感的短剧（鹏哥的强项），尤其是泰国罕见的悬疑题材，以此抓住眼球。</p>
+                    </div>
+                    <div class="arrow-next"><i class="fas fa-chevron-right"></i></div>
+                </div>
 
-    <ul>
-        <li>
-            <span class="label label-th">รูปแบบเนื้อหา (Content Format)</span><br>
-            <span class="th-text">เนื้อหาซ้ำซากจำเจ (Cliché): พล็อตเรื่องกว่า 90% วนเวียนอยู่กับ "ประธานบริษัทปลอมตัวเป็นยาม/คนจน", "ลูกสะใภ้ถูกแม่ผัวรังแก", หรือ "การดูถูกคนจนแล้วเจอดีตอนจบ" เน้นสอนใจแบบตื้นๆ ขาวกับดำชัดเจน</span><br>
-            <span class="cn-text">内容千篇一律：90% 的剧情围绕“霸道总裁假扮保安/穷人”、“儿媳被婆婆欺负”或“势利眼最终被打脸”展开。强调浅显的因果报应，黑白分明。</span>
-        </li>
-        <li>
-            <span class="label label-th">คุณภาพการผลิต (Production Quality)</span><br>
-            <span class="th-text">ส่วนใหญ่ถ่ายทำด้วยมือถือ การจัดแสงไม่สมจริง การแสดงที่ดูเกินจริง (Overacting) เพื่อดึงดูดความสนใจกลุ่ม Mass ในเวลาสั้นๆ</span><br>
-            <span class="cn-text">制作粗糙：大多使用手机拍摄，灯光不专业，演员表演浮夸（Overacting），只为在短时间内吸引下沉市场用户的眼球。</span>
-        </li>
-        <li>
-            <span class="label label-th">รายได้มาจากไหน? (Revenue Model)</span><br>
-            <span class="th-text">รายได้หลักมาจากการรับจ้างรีวิวสินค้าแบบ Hard Sell (ถือสินค้าพูดหน้ากล้องกลางเรื่อง) และรายได้จาก Affiliate (ตะกร้าสินค้า) ซึ่งเริ่มได้ผลน้อยลงเพราะคนดูเริ่มเบื่อหน่าย</span><br>
-            <span class="cn-text">盈利来源：主要依靠硬广植入（演员在剧中直接手持商品口播）和联盟带货（挂车）。但由于观众产生审美疲劳，这种模式的效果正在减弱。</span>
-        </li>
-    </ul>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-users"></i></div>
+                    <div class="lang-th active-lang" data-lang="th">
+                        <h3>2. คนต่อคิว (High Engagement)</h3>
+                        <p>เมื่อคนติดเนื้อเรื่อง จะเกิดฐานแฟนคลับ เกิดการแชร์ และคอมเมนต์ถกเถียงเรื่องบท</p>
+                    </div>
+                    <div class="lang-cn" data-lang="cn">
+                        <h3>2. 排队等候 (高互动率)</h3>
+                        <p>当观众沉迷剧情，就会形成粉丝群，引发转发和对剧情的激烈讨论。</p>
+                    </div>
+                    <div class="arrow-next"><i class="fas fa-chevron-right"></i></div>
+                </div>
 
-    <h2>3. ทำไมโมเดลของคุณเผิงถึงจะ "ฆ่า" ตลาดเก่าได้?<br><small style="font-size: 0.6em; color: #666;">为什么鹏哥的模式能“降维打击”现有市场？</small></h2>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="lang-th active-lang" data-lang="th">
+                        <h3>3. ขายตอนหิว (Soft Conversion)</h3>
+                        <p>สินค้าคือ "กุญแจสำคัญ" ของเรื่อง หรือสิ่งที่ตัวเอกใช้จริง คนดูจะซื้อตามเพราะ "ความอิน" ไม่ใช่เพราะถูกบังคับ</p>
+                    </div>
+                    <div class="lang-cn" data-lang="cn">
+                        <h3>3. 饿时开卖 (软性转化)</h3>
+                        <p>产品是剧情的“关键线索”或主角的必备品。观众购买是因为“代入感”，而非被迫消费。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="bilingual-box">
-        <p class="th-text">จากประสบการณ์ทำ MCN ของผม (Teem) ผมเห็นสัญญาณว่าคนไทยกำลังโหยหาคอนเทนต์ที่ "ฉลาดขึ้น" และ "สวยงามขึ้น" นี่คือเหตุผลที่เราจะได้เปรียบ:</p>
-        <p class="cn-text">基于我（Teem）运营 MCN 的经验，我发现泰国观众开始渴望“更聪明”和“更精美”的内容。这就是我们的优势所在：</p>
-    </div>
+    <section id="market">
+        <div class="container">
+            <div class="section-title">
+                <span class="lang-th active-lang" data-lang="th">โอกาสในน่านน้ำสีคราม (Blue Ocean Strategy)</span>
+                <span class="lang-cn" data-lang="cn">蓝海战略：市场机会分析</span>
+            </div>
 
-    <div class="highlight-box">
-        <h3 style="margin-top:0; font-size:1.2em;">A. คุณภาพระดับภาพยนตร์ (Cinematic Quality)</h3>
-        <p class="th-text">ทีมงานของคุณเผิงมีความรู้เรื่องมุมกล้อง การเล่าเรื่อง และการตัดต่อระดับภาพยนตร์ การนำคุณภาพระดับนี้มาลงในจอมือถือ จะสร้างความแตกต่างจากคู่แข่งที่ถ่ายกันบ้านๆ อย่างชัดเจน (High Perception Value)</p>
-        <p class="cn-text"><strong>电影级质感：</strong> 鹏哥团队拥有电影级的镜头语言、叙事能力和剪辑技术。将这种品质带入手机屏幕，将与现有粗制滥造的短剧形成鲜明对比（建立高端认知）。</p>
-    </div>
+            <div class="insight-grid">
+                <div style="text-align: left;">
+                     <div class="lang-th active-lang" data-lang="th">
+                        <h3>เราจะอยู่ตรงไหนของตลาด?</h3>
+                        <p>ตลาดละครสั้นไทยตอนนี้มีแต่ <strong>"ละครคุณธรรม" (Moral Stories)</strong> ที่คุณภาพต่ำ (Low Quality) และเนื้อเรื่องซ้ำซาก</p>
+                        <br>
+                        <p>จุดที่พี่เผิงจะเข้ามา คือจุดที่ <strong>"คุณภาพสูง" (High Quality)</strong> และเป็นแนว <strong>"ระทึกขวัญ" (Suspense)</strong> ซึ่งยัง <u>ไม่มีคู่แข่ง</u> ในไทย</p>
+                        <ul style="margin-top:20px; color: var(--gold-main);">
+                            <li><i class="fas fa-check"></i> ไม่ต้องแข่งลดราคากับตลาดล่าง</li>
+                            <li><i class="fas fa-check"></i> ดึงดูดสปอนเซอร์แบรนด์หรูได้</li>
+                            <li><i class="fas fa-check"></i> สร้างภาพลักษณ์แบรนด์ที่เหนือกว่า</li>
+                        </ul>
+                    </div>
+                    <div class="lang-cn" data-lang="cn">
+                        <h3>我们的市场定位在哪里？</h3>
+                        <p>目前的泰国短剧市场充斥着低质量、剧情雷同的<strong>“道德短剧”（Moral Stories）</strong>。</p>
+                        <br>
+                        <p>鹏哥切入的点是<strong>“高品质”（High Quality）</strong>且<strong>“悬疑题材”（Suspense）</strong>的领域，这在泰国目前还是<u>无人区</u>。</p>
+                        <ul style="margin-top:20px; color: var(--gold-main);">
+                            <li><i class="fas fa-check"></i> 避免低端市场的价格战</li>
+                            <li><i class="fas fa-check"></i> 吸引高端品牌赞助</li>
+                            <li><i class="fas fa-check"></i> 建立卓越的品牌形象</li>
+                        </ul>
+                    </div>
+                </div>
 
-    <div class="highlight-box">
-        <h3 style="margin-top:0; font-size:1.2em;">B. เนื้อหาที่แตกต่าง (Genre Differentiation)</h3>
-        <p class="th-text">แนวระทึกขวัญ (Suspense) เป็นแนวที่ดึงดูด Engagement ได้สูงมาก (คนดูจนจบเพื่อรู้ความจริง) แต่ในไทยยังไม่มีใครทำได้ถึงระดับ การนำสินค้าเข้ามาอยู่ในปมปริศนา จะทำให้สินค้าดูน่าค้นหา ไม่ใช่ดูน่ารำคาญ</p>
-        <p class="cn-text"><strong>题材差异化：</strong> 悬疑类（Suspense）内容的完播率极高（观众为了解真相会看到最后），但在泰国尚无头部玩家。将商品融入谜题之中，会让你产品显得“神秘诱人”，而不是“令人厌烦”。</p>
-    </div>
+                <div class="chart-container">
+                    <canvas id="marketChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <h2>4. ความได้เปรียบทางกฎหมายและการดำเนินงาน<br><small style="font-size: 0.6em; color: #666;">政策优势与执行落地</small></h2>
+    <section id="advantage">
+        <div class="container">
+            <div class="advantage-box">
+                <div class="lang-th active-lang" data-lang="th">
+                    <h2>ความได้เปรียบสูงสุดในไทย</h2>
+                    <div class="big-stat">NO CENSORSHIP</div>
+                    <h3>"ไม่ต้องตรวจบทก่อนถ่ายทำ" (No Filing / No Bei-An)</h3>
+                    <p>ต่างจากจีนที่ต้องรอตรวจบทนาน ในไทยเราสามารถ <strong>Shoot & Post</strong> ได้ทันที!<br>
+                    เราสามารถปรับแก้คอนเทนต์ตามกระแสได้วันต่อวัน นี่คือ Speed ที่คู่แข่งจีนตามไม่ทัน</p>
+                </div>
+                <div class="lang-cn" data-lang="cn">
+                    <h2>在泰国的绝对优势</h2>
+                    <div class="big-stat">无需备案</div>
+                    <h3>"拍摄前无需送审" (No Censorship)</h3>
+                    <p>不同于中国漫长的剧本审查，在泰国我们可以<strong>“即拍即发” (Shoot & Post)</strong>！<br>
+                    我们可以根据热点按天调整内容，这种“泰国速度”是由于政策红利带来的巨大优势。</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <div class="bilingual-box">
-        <p class="th-text"><strong>เรื่องการเซ็นเซอร์ (Filing/Bei-An):</strong> ประเด็นที่คุณเผิงกังวลที่สุดคือการต้องยื่นตรวจบทก่อนถ่ายทำ (เหมือนในจีน) ขอยืนยันว่า <strong>"ประเทศไทยไม่มีกฎหมายนี้สำหรับคลิปสั้น"</strong></p>
-        <p class="cn-text"><strong>关于备案/审查：</strong> 鹏哥最担心的“拍摄前剧本送审”问题（如在中国那样），我在此确认：<strong>“泰国短剧市场没有此类前置审查制度。”</strong></p>
-    </div>
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Project Dragon. Confidential Proposal.</p>
+            <p style="color: var(--gold-main); margin-top: 10px;">Teem x Nana x Peng Yusi</p>
+        </div>
+    </footer>
 
-    <div class="bilingual-box">
-        <p class="th-text">เราสามารถ <strong>"ถ่ายทำและโพสต์ได้ทันที" (Shoot & Post)</strong> ตราบใดที่ไม่ผิดกฎหมายร้ายแรง สิ่งนี้ทำให้เรามีความคล่องตัวสูงมากในการทดสอบตลาด ปรับเปลี่ยนบท หรือแก้เกมตามกระแส ซึ่งเป็น Speed ที่หาไม่ได้ในประเทศจีน</p>
-        <p class="cn-text">我们可以<strong>“即拍即发” (Shoot & Post)</strong>。只要不触犯严重法律底线，我们可以极速测试市场、调整剧本或追逐热点。这种<strong>“泰国速度”</strong>是在中国无法比拟的巨大优势。</p>
-    </div>
+    <script>
+        // 1. Language Switcher Logic
+        function toggleLanguage() {
+            const currentLang = document.querySelector('.active-lang').getAttribute('data-lang');
+            const newLang = currentLang === 'th' ? 'cn' : 'th';
+            
+            // Hide all active
+            document.querySelectorAll('.active-lang').forEach(el => {
+                el.classList.remove('active-lang');
+                el.style.display = 'none';
+            });
 
-    <h2>5. บทสรุปและก้าวต่อไป (Conclusion & Next Steps)<br><small style="font-size: 0.6em; color: #666;">总结与下一步计划</small></h2>
+            // Show new lang
+            document.querySelectorAll(`.lang-${newLang}`).forEach(el => {
+                el.classList.add('active-lang');
+                el.style.display = 'block';
+            });
 
-    <div class="bilingual-box">
-        <p class="th-text">เรากำลังจะเปลี่ยนจากยุค <strong>"Push Marketing"</strong> (ละครคุณธรรมที่ยัดเยียดขาย) ไปสู่ยุค <strong>"Pull Marketing"</strong> (ละครคุณภาพที่ดึงดูดด้วยเนื้อเรื่อง) โดยมี Teem เป็นผู้บริหารจัดการในไทย (Local Operator) และมี Nana เป็นสะพานเชื่อมวัฒนธรรม (Cultural Bridge)</p>
-        <p class="cn-text">我们正致力于从<strong>“推式营销”</strong>（硬广植入的道德短剧）向<strong>“拉式营销”</strong>（以优质剧情吸引用户的商业短剧）转型。Teem 将作为泰国本地运营官（Local Operator），Nana 作为文化桥梁（Cultural Bridge），共同推进这一变革。</p>
-    </div>
+            // Update Button Text
+            const btnLabel = document.getElementById('lang-label');
+            btnLabel.textContent = newLang === 'th' ? 'TH / 中文' : '中文 / TH';
+        }
 
-    <div class="highlight-box" style="border-color: var(--primary-color); background-color: #e8eaf6;">
-        <p class="th-text" style="text-align: center; font-weight: bold;">"ในไทย ใครเริ่มก่อนและคุณภาพดีกว่า คือผู้ชนะ... และเราพร้อมแล้ว"</p>
-        <p class="cn-text" style="text-align: center; font-weight: bold;">“在泰国，谁先入局且品质更高，谁就是赢家……而我们已经准备好了。”</p>
-    </div>
+        // Initialize display (ensure only TH shows first)
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('.lang-cn').forEach(el => el.style.display = 'none');
+            
+            // 2. Chart.js Logic (The "Wow" Factor)
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            
+            // Gradient for the bubble
+            const gradientBlue = ctx.createLinearGradient(0, 0, 0, 400);
+            gradientBlue.addColorStop(0, 'rgba(0, 180, 219, 0.7)');
+            gradientBlue.addColorStop(1, 'rgba(0, 180, 219, 0.1)');
 
-    <div class="footer">
-        <p>Created by Teem for Internal Strategic Planning | Confidential</p>
-    </div>
-
-</div>
-
+            const marketChart = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Existing Competitors (Thai Moral Dramas)',
+                            data: [
+                                { x: 2, y: 8, r: 25 }, // Low Quality, High Virality (Mass)
+                                { x: 3, y: 7, r: 15 },
+                                { x: 1, y: 6, r: 10 }
+                            ],
+                            backgroundColor: 'rgba(201, 42, 42, 0.6)', // Red
+                            borderColor: 'rgba(201, 42, 42, 1)'
+                        },
+                        {
+                            label: 'OUR PROJECT (Peng x Teem)',
+                            data: [
+                                { x: 9, y: 9, r: 40 } // High Quality, High Virality
+                            ],
+                            backgroundColor: gradientBlue, // Blue Ocean
+                            borderColor: '#00B4DB',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Production Quality (Cinema Grade)', color: '#fff' },
+                            min: 0,
+                            max: 10,
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#aaa' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Market Potential / Virality', color: '#fff' },
+                            min: 0,
+                            max: 10,
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: '#aaa' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#fff', font: { size: 14 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.raw.x > 8) {
+                                        return " THE BLUE OCEAN: High Quality Suspense Drama";
+                                    } else {
+                                        return " Red Ocean: Low Quality Moral Drama";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
