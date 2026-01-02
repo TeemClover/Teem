@@ -2,29 +2,55 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PROJECT EMPIRE | 2026</title>
     <style>
         :root {
-            --primary-gold: #D4AF37;
-            --primary-red: #C41E3A;
-            --bg-dark: #0a0a0a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text-light: #ffffff;
-            --text-dim: #a0a0a0;
+            --gold: #D4AF37;
+            --gold-dim: #8a702a;
+            --black: #050505;
+            --card-bg: rgba(20, 20, 20, 0.85);
+            --text-main: #ffffff;
+            --text-sub: #b0b0b0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
+            background-color: var(--black);
+            color: var(--text-main);
             overflow-x: hidden;
-            padding-bottom: 80px;
+            padding-bottom: 50px;
         }
 
-        /* Hero Section */
-        .slide {
+        /* --- BACKGROUNDS --- */
+        .bg-fixed {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            /* รูปพื้นหลังเมืองและพลุ */
+            background: url('IMG_3638.jpeg') center/cover no-repeat;
+            opacity: 0.2; 
+            filter: blur(3px);
+        }
+
+        /* --- TOGGLE BUTTON --- */
+        .lang-switch {
+            position: fixed;
+            top: 20px; right: 20px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+        }
+
+        /* --- SECTIONS --- */
+        .section {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,315 +58,299 @@
             align-items: center;
             padding: 20px;
             position: relative;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .hero-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at top right, #330000 0%, #000000 70%);
-            z-index: -1;
+        /* --- COVER SLIDE --- */
+        .cover-img-box {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            margin-bottom: 30px;
+        }
+        .cover-img-box img {
+            width: 100%;
+            display: block;
         }
 
         h1 {
-            font-size: 2.5rem;
-            text-align: center;
-            background: linear-gradient(45deg, var(--primary-gold), #fff);
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff, var(--gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
+            text-align: center;
+            line-height: 1;
         }
 
         h2 {
             font-size: 1.2rem;
-            color: var(--primary-gold);
-            margin-bottom: 15px;
-            text-transform: uppercase;
+            color: var(--gold);
             letter-spacing: 2px;
-        }
-
-        p {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-dim);
+            text-transform: uppercase;
             text-align: center;
-            max-width: 600px;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
         }
 
-        /* Card Style */
-        .card {
+        /* --- PROFILE CARDS (INTERACTIVE) --- */
+        .profile-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .profile-card {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 20px;
-            padding: 25px;
-            width: 100%;
-            max-width: 400px;
-            margin: 15px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease;
-        }
-
-        .card:active { transform: scale(0.98); }
-
-        .card-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: var(--primary-red);
-        }
-
-        /* Image Placeholder */
-        .img-box {
-            width: 100%;
-            height: 200px;
-            background-color: #222;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            position: relative;
-        }
-        
-        .img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.8;
-        }
-
-        /* Floating Toggle */
-        .toggle-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--primary-gold);
-            color: #000;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+            border-left: 4px solid var(--gold);
+            border-radius: 10px;
+            padding: 20px;
             cursor: pointer;
-            z-index: 1000;
-            border: none;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .toggle-btn:hover { transform: scale(1.1); }
+        .profile-card:active { transform: scale(0.98); }
 
-        /* Animations */
-        .fade-up {
-            animation: fadeUp 1s ease forwards;
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .role-title {
+            color: var(--gold);
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .name-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .expand-icon {
+            font-size: 1.5rem;
+            color: var(--gold);
+            transition: transform 0.3s;
+        }
+
+        /* EXPANDED CONTENT */
+        .profile-details {
+            max-height: 0;
             opacity: 0;
-            transform: translateY(30px);
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0, 1, 0, 1);
+            margin-top: 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
+
+        .profile-card.active .profile-details {
+            max-height: 500px; /* Adjust if content is longer */
+            opacity: 1;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+
+        .profile-card.active .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--gold);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin: 0 5px 5px 0;
+        }
+
+        .bio-text {
+            font-size: 0.9rem;
+            color: #ddd;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        /* --- ANIMATIONS --- */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s forwards;
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
 
         @keyframes fadeUp {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-
-        /* Language Logic */
+        /* --- LANGUAGE LOGIC --- */
         .lang-th { display: none; }
-        .active-th .lang-cn { display: none; }
-        .active-th .lang-th { display: block; }
-        
-        /* Highlight Numbers */
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
-        .stat-box {
-            background: rgba(0,0,0,0.3);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .stat-num {
-            font-size: 1.5rem;
-            color: var(--primary-gold);
-            font-weight: bold;
-        }
-        .stat-label { font-size: 0.8rem; color: #888; }
+        body.show-th .lang-th { display: block; }
+        body.show-th .lang-cn { display: none; }
 
     </style>
 </head>
 <body>
 
-    <button class="toggle-btn" onclick="toggleLanguage()">
-        <span class="lang-cn">泰</span>
-        <span class="lang-th">CN</span>
+    <div class="bg-fixed"></div>
+
+    <button class="lang-switch" onclick="toggleLang()">
+        <span class="lang-cn">切换语言 (TH)</span>
+        <span class="lang-th">Switch Lang (CN)</span>
     </button>
 
-    <div class="slide">
-        <div class="hero-bg"></div>
-        <div class="img-box fade-up">
-            <img src="IMG_3637.jpeg?q=80&w=1000&auto=format&fit=crop" alt="The Team">
+    <div class="section">
+        <div class="cover-img-box fade-up">
+            <img src="IMG_3637.jpeg" alt="The Empire Team">
         </div>
+        
         <h2 class="fade-up delay-1">
             <span class="lang-cn">中泰娱乐联盟</span>
-            <span class="lang-th">Thai-Chinese Entertainment Alliance</span>
+            <span class="lang-th">THE THAI-CHINESE ALLIANCE</span>
         </h2>
+        
         <h1 class="fade-up delay-2">
-            <span class="lang-cn">帝国计划 2026</span>
-            <span class="lang-th">PROJECT EMPIRE 2026</span>
+            <span class="lang-cn">帝国计划<br>2026</span>
+            <span class="lang-th">PROJECT EMPIRE<br>2026</span>
         </h1>
-        <p class="fade-up delay-3">
-            <span class="lang-cn">开启东南亚影视新纪元<br>无限创意 · 跨境红利 · 顶级资源</span>
-            <span class="lang-th">เปิดศักราชใหม่แห่งวงการบันเทิง<br>อิสรภาพทางความคิด · กำไรไร้พรมแดน · ทรัพยากรระดับท็อป</span>
+
+        <p class="fade-up delay-3" style="text-align: center; color: #aaa; margin-top: 20px;">
+            <span class="lang-cn">点击下方卡片查看核心成员</span>
+            <span class="lang-th">แตะที่การ์ดด้านล่างเพื่อดูข้อมูลทีมบริหาร</span>
         </p>
     </div>
 
-    <div class="slide" style="background: #111;">
-        <h2>
-            <span class="lang-cn">破局之道</span>
-            <span class="lang-th">ทางรอดและโอกาส</span>
-        </h2>
-        
-        <div class="card fade-up">
-            <div class="card-icon">⚠️</div>
-            <h3>
-                <span class="lang-cn">痛点：创作受限</span>
-                <span class="lang-th">ปัญหา: ข้อจำกัดทางความคิด</span>
-            </h3>
-            <p style="text-align: left; font-size: 0.9rem; margin-top: 10px;">
-                <span class="lang-cn">国内审查严格，灵异/惊悚题材难以施展。市场内卷严重，成本高昂。</span>
-                <span class="lang-th">จีนมีกฎเซนเซอร์เข้มงวด หนังผี/ระทึกขวัญทำสุดไม่ได้ ตลาดแข่งกันเดือด ต้นทุนสูง</span>
-            </p>
-        </div>
+    <div class="section" style="padding-top: 0;">
+        <div class="profile-container">
 
-        <div class="card fade-up delay-1" style="border-color: var(--primary-gold);">
-            <div class="card-icon">🚀</div>
-            <h3>
-                <span class="lang-cn">解药：泰国基地</span>
-                <span class="lang-th">ทางออก: ฐานทัพไทย</span>
-            </h3>
-            <p style="text-align: left; font-size: 0.9rem; margin-top: 10px;">
-                <span class="lang-cn"><strong>创意避难所：</strong>真正的灵异题材，无拘无束。<br><strong>成本优势：</strong>制作成本降低 30%，品质国际化。</span>
-                <span class="lang-th"><strong>Creative Asylum:</strong> ทำหนังผีได้จริง อิสระ 100%<br><strong>Cost Effective:</strong> ต้นทุนถูกกว่า 30% แต่ได้งานระดับอินเตอร์</span>
-            </p>
+            <div class="profile-card fade-up" onclick="toggleCard(this)">
+                <div class="profile-header">
+                    <div>
+                        <div class="role-title">
+                            <span class="lang-cn">首席内容官 (CCO)</span>
+                            <span class="lang-th">The King of Internet Movies</span>
+                        </div>
+                        <div class="name-title">PENG YUSI</div>
+                    </div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="profile-details">
+                    <span class="skill-tag">Box Office King</span>
+                    <span class="skill-tag">Director</span>
+                    <span class="skill-tag">Actor</span>
+                    <div class="bio-text">
+                        <span class="lang-cn">中国网络电影票房之王。恐怖与玄幻题材的顶尖操盘手。帝国计划的资本与流量引擎。</span>
+                        <span class="lang-th">ราชาหนังเว็บจีน (Internet Movie King) ผู้ครองตลาดหนังผีและแฟนตาซี เป็นแม่เหล็กดึงดูดเงินลงทุนและยอดวิวสูงสุด</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card fade-up delay-1" onclick="toggleCard(this)">
+                <div class="profile-header">
+                    <div>
+                        <div class="role-title">
+                            <span class="lang-cn">首席执行官 (CEO)</span>
+                            <span class="lang-th">The Strategic Architect</span>
+                        </div>
+                        <div class="name-title">NARIN LEELAPORN</div>
+                    </div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="profile-details">
+                    <span class="skill-tag">INTP Strategist</span>
+                    <span class="skill-tag">Math Genius</span>
+                    <span class="skill-tag">System Architect</span>
+                    <div class="bio-text">
+                        <span class="lang-cn">战略架构师，擅长逻辑拆解与风险控制。曾获国家数学奥赛冠军。不仅是管理者，更是幕后的操盘手。</span>
+                        <span class="lang-th">นักวางยุทธศาสตร์ (INTP) ผู้เชี่ยวชาญการสร้างระบบและบริหารความเสี่ยง ดีกรีแชมป์คณิตศาสตร์ระดับประเทศ ผู้อยู่เบื้องหลังความสำเร็จขององค์กร</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card fade-up delay-2" onclick="toggleCard(this)">
+                <div class="profile-header">
+                    <div>
+                        <div class="role-title">
+                            <span class="lang-cn">缪斯女神 (THE MUSE)</span>
+                            <span class="lang-th">The Viral Queen</span>
+                        </div>
+                        <div class="name-title">CHIEKO SAITO</div>
+                    </div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="profile-details">
+                    <span class="skill-tag">JP/TH/EN Speaker</span>
+                    <span class="skill-tag">YouTuber</span>
+                    <span class="skill-tag">Actress</span>
+                    <div class="bio-text">
+                        <span class="lang-cn">精通三语的超级网红。前大胃王女王，拥有极强的镜头表现力。既能驾驭恐怖片的女鬼，也能演绎高端名媛。</span>
+                        <span class="lang-th">ราชินีไวรัล พูดได้ 3 ภาษา (ไทย/ญี่ปุ่น/อังกฤษ) อดีต YouTuber สายกินจุ และนักแสดงที่รับบทได้หลากหลาย ตั้งแต่ผีสาวยันไฮโซ</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-card fade-up delay-3" onclick="toggleCard(this)">
+                <div class="profile-header">
+                    <div>
+                        <div class="role-title">
+                            <span class="lang-cn">国际事务官 (GLOBAL)</span>
+                            <span class="lang-th">The Trendsetter</span>
+                        </div>
+                        <div class="name-title">NANA (LI QINYAO)</div>
+                    </div>
+                    <div class="expand-icon">▼</div>
+                </div>
+                <div class="profile-details">
+                    <span class="skill-tag">Actress</span>
+                    <span class="skill-tag">Short Drama Expert</span>
+                    <span class="skill-tag">Liaison</span>
+                    <div class="bio-text">
+                        <span class="lang-cn">资深演员，参演多部影视剧（古装/现代）。短剧赛道的敏锐捕捉者。连接中泰资源的桥梁。</span>
+                        <span class="lang-th">นักแสดงมากฝีมือ (ทั้งพีเรียดและยุคปัจจุบัน) ผู้เชี่ยวชาญตลาดซีรีส์สั้น (Short Drama) และเป็นทูตเชื่อมสัมพันธ์ไทย-จีน</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div class="slide">
-        <h2>
-            <span class="lang-cn">核心架构</span>
-            <span class="lang-th">โครงสร้างอำนาจ</span>
-        </h2>
-        <div class="img-box fade-up">
-            <img src="IMG_3638.jpeg?q=80&w=1000&auto=format&fit=crop" alt="Strategy Board">
-        </div>
-        
-        <div class="stat-grid fade-up delay-1" style="width: 100%; max-width: 400px;">
-            <div class="stat-box">
-                <div class="stat-num">彭 (Peng)</div>
-                <div class="stat-label">
-                    <span class="lang-cn">首席内容官 (CCO)</span>
-                    <span class="lang-th">Chief Content Officer</span>
-                </div>
-            </div>
-            <div class="stat-box" style="border: 1px solid var(--primary-gold);">
-                <div class="stat-num">我 (User)</div>
-                <div class="stat-label">
-                    <span class="lang-cn">首席执行官 (CEO)</span>
-                    <span class="lang-th">Chief Executive Officer</span>
-                </div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-num">Chieko</div>
-                <div class="stat-label">
-                    <span class="lang-cn">缪斯女神 (Icon)</span>
-                    <span class="lang-th">The Muse & Icon</span>
-                </div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-num">Nana</div>
-                <div class="stat-label">
-                    <span class="lang-cn">国际事务 (Global)</span>
-                    <span class="lang-th">Global Relations</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="slide" style="background: linear-gradient(to top, #000, #1a0505);">
-        <h2>
-            <span class="lang-cn">商业版图</span>
-            <span class="lang-th">โมเดลทำเงิน</span>
-        </h2>
-        
-        <div class="card fade-up">
-            <h3>🎥 <span class="lang-cn">网络大电影 (Wangda)</span><span class="lang-th">หนังยาว (Wangda)</span></h3>
-            <p><span class="lang-cn">深耕灵异/惊悚赛道，主要投放 iQIYI / Tencent。</span><span class="lang-th">เจาะตลาดหนังผี/ระทึกขวัญ ส่งตรงลง iQIYI / Tencent</span></p>
-        </div>
-
-        <div class="card fade-up delay-1">
-            <h3>📱 <span class="lang-cn">竖屏短剧 (Short Drama)</span><span class="lang-th">ซีรีส์สั้น (Short Drama)</span></h3>
-            <p><span class="lang-cn">由 Nana 主理，主打快速变现与流量爆发。</span><span class="lang-th">ดูแลโดย Nana เน้น Viral และคืนทุนไว</span></p>
-        </div>
-
-        <div class="card fade-up delay-2">
-            <h3>💰 <span class="lang-cn">跨境植入 (Ads)</span><span class="lang-th">โฆษณาข้ามชาติ</span></h3>
-            <p><span class="lang-cn">将泰国品牌植入中国影视，赚取双向红利。</span><span class="lang-th">ส่งสินค้าไทยไปโผล่ในหนังจีน กินค่าโฆษณาสองทาง</span></p>
-        </div>
-    </div>
-
-    <div class="slide">
-        <h2>
-            <span class="lang-cn">2026 里程碑</span>
-            <span class="lang-th">Roadmap 2026</span>
-        </h2>
-
-        <div style="width: 100%; max-width: 400px; padding-left: 20px; border-left: 2px solid var(--primary-gold);">
-            <div class="fade-up" style="margin-bottom: 30px;">
-                <h3 style="color: var(--primary-gold);">Jan 2026</h3>
-                <p><span class="lang-cn">🎂 生日周签约 (成立合资公司)</span><span class="lang-th">🎂 เซ็นสัญญาในสัปดาห์วันเกิด (ก่อตั้งบริษัท)</span></p>
-            </div>
-            <div class="fade-up delay-1" style="margin-bottom: 30px;">
-                <h3 style="color: #fff;">Q2 2026</h3>
-                <p><span class="lang-cn">剧本开发 & 招商引资</span><span class="lang-th">พัฒนาบท & หานักลงทุน</span></p>
-            </div>
-            <div class="fade-up delay-2" style="margin-bottom: 30px;">
-                <h3 style="color: #fff;">Q3 2026</h3>
-                <p><span class="lang-cn">🎬 泰国开机 (第一部大制作)</span><span class="lang-th">🎬 เปิดกล้องถ่ายทำเรื่องแรกในไทย</span></p>
-            </div>
-            <div class="fade-up delay-3">
-                <h3 style="color: var(--primary-red);">Q4 2026</h3>
-                <p><span class="lang-cn">🚀 上线分红 & 庆功宴</span><span class="lang-th">🚀 หนังฉาย & รับส่วนแบ่งกำไร</span></p>
-            </div>
-        </div>
-
-        <button style="margin-top: 50px; padding: 15px 40px; background: var(--primary-gold); border: none; font-weight: bold; font-size: 1.2rem; cursor: pointer; border-radius: 30px;">
-            <span class="lang-cn">让我们开始吧</span>
-            <span class="lang-th">LET'S START</span>
+    <div class="section" style="min-height: 20vh;">
+        <button style="padding: 15px 40px; background: var(--gold); border: none; font-weight: 800; font-size: 1.2rem; cursor: pointer; border-radius: 30px; color: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);">
+            <span class="lang-cn">开启新纪元</span>
+            <span class="lang-th">START THE LEGACY</span>
         </button>
     </div>
 
     <script>
-        function toggleLanguage() {
-            document.body.classList.toggle('active-th');
-            // Animate items again for effect (optional)
-            const cards = document.querySelectorAll('.card, .stat-box, h1, h2, p');
-            cards.forEach(card => {
-                card.style.animation = 'none';
-                card.offsetHeight; /* trigger reflow */
-                card.style.animation = null; 
+        // Language Toggle Logic
+        function toggleLang() {
+            document.body.classList.toggle('show-th');
+        }
+
+        // Accordion Logic
+        function toggleCard(element) {
+            // Close all other cards
+            const allCards = document.querySelectorAll('.profile-card');
+            allCards.forEach(card => {
+                if (card !== element) {
+                    card.classList.remove('active');
+                }
             });
+            // Toggle clicked card
+            element.classList.toggle('active');
         }
     </script>
+
 </body>
 </html>
