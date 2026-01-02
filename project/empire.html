@@ -3,198 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROJECT EMPIRE | 2026</title>
+    <title>SINO-THAI SYNERGY 2026</title>
     <style>
         :root {
             --gold: #D4AF37;
             --gold-dim: #8a702a;
-            --black: #050505;
-            --card-bg: rgba(20, 20, 20, 0.85);
-            --text-main: #ffffff;
+            --black: #080808;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: 1px solid rgba(212, 175, 55, 0.15);
+            --text-main: #f0f0f0;
             --text-sub: #b0b0b0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif; }
         
         body {
             background-color: var(--black);
             color: var(--text-main);
             overflow-x: hidden;
-            padding-bottom: 50px;
+            padding-bottom: 60px;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
-        /* --- BACKGROUNDS --- */
+        /* --- BACKGROUND --- */
         .bg-fixed {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -2;
-            /* รูปพื้นหลังเมืองและพลุ */
             background: url('IMG_3638.jpeg') center/cover no-repeat;
-            opacity: 0.2; 
-            filter: blur(3px);
+            opacity: 0.15; 
+            filter: blur(2px) grayscale(40%);
         }
 
-        /* --- TOGGLE BUTTON --- */
-        .lang-switch {
+        /* --- NAVIGATION --- */
+        .nav-bar {
             position: fixed;
-            top: 20px; right: 20px;
+            top: 0; left: 0; width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
             z-index: 1000;
-            background: rgba(0,0,0,0.6);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+        }
+
+        .lang-switch {
+            background: rgba(212, 175, 55, 0.1);
             border: 1px solid var(--gold);
             color: var(--gold);
-            padding: 8px 15px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-weight: bold;
-            backdrop-filter: blur(5px);
+            font-size: 0.8rem;
             cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
         }
+        .lang-switch:active { background: var(--gold); color: #000; }
 
         /* --- SECTIONS --- */
-        .section {
-            min-height: 100vh;
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            height: 90vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            justify-content: flex-end;
+            margin-bottom: 50px;
             position: relative;
         }
 
-        /* --- COVER SLIDE --- */
-        .cover-img-box {
-            width: 100%;
-            max-width: 500px;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-            margin-bottom: 30px;
+        .hero-img {
+            position: absolute;
+            top: 15%; left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 60vh;
+            object-fit: cover;
+            border-radius: 200px 200px 20px 20px; /* Shape like a window/portal */
+            border: 1px solid var(--gold-dim);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+            opacity: 0;
+            animation: fadeIn 1.5s forwards;
         }
-        .cover-img-box img {
-            width: 100%;
-            display: block;
+
+        .hero-text {
+            text-align: center;
+            z-index: 2;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: slideUp 1s forwards 0.5s;
         }
 
         h1 {
-            font-size: 2.8rem;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff, var(--gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            text-align: center;
-            line-height: 1;
-        }
-
-        h2 {
-            font-size: 1.2rem;
+            font-size: 2rem;
             color: var(--gold);
             letter-spacing: 2px;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 10px;
+            font-weight: 400;
         }
 
-        /* --- PROFILE CARDS (INTERACTIVE) --- */
-        .profile-container {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .profile-card {
-            background: var(--card-bg);
-            border-left: 4px solid var(--gold);
-            border-radius: 10px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-card:active { transform: scale(0.98); }
-
-        .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .role-title {
-            color: var(--gold);
+        .subtitle {
             font-size: 0.9rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 5px;
+            color: var(--text-sub);
+            font-style: italic;
         }
 
-        .name-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-        }
-
-        .expand-icon {
-            font-size: 1.5rem;
+        /* --- CARDS (STRATEGY & PAIN POINTS) --- */
+        .section-title {
+            text-align: center;
             color: var(--gold);
+            font-size: 1.2rem;
+            margin: 60px 0 30px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            position: relative;
+        }
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 40px; height: 2px;
+            background: var(--gold-dim);
+            margin: 10px auto 0;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: var(--card-border);
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
             transition: transform 0.3s;
         }
-
-        /* EXPANDED CONTENT */
-        .profile-details {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0, 1, 0, 1);
-            margin-top: 0;
-            border-top: 1px solid rgba(255,255,255,0.1);
+        
+        .card h3 {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .profile-card.active .profile-details {
-            max-height: 500px; /* Adjust if content is longer */
-            opacity: 1;
-            margin-top: 15px;
-            padding-top: 15px;
-        }
-
-        .profile-card.active .expand-icon {
-            transform: rotate(180deg);
-        }
-
-        .skill-tag {
-            display: inline-block;
-            background: rgba(212, 175, 55, 0.2);
-            color: var(--gold);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin: 0 5px 5px 0;
-        }
-
-        .bio-text {
+        .card p {
             font-size: 0.9rem;
-            color: #ddd;
-            line-height: 1.6;
-            margin-top: 10px;
+            color: var(--text-sub);
+            margin: 0;
         }
+
+        .icon { font-size: 1.5rem; }
+
+        /* --- PROFILE (FROM V2) --- */
+        .profile-container { display: flex; flex-direction: column; gap: 15px; }
+        
+        .profile-card {
+            background: rgba(255,255,255,0.02);
+            border-left: 3px solid var(--gold);
+            padding: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .profile-card:hover { background: rgba(255,255,255,0.05); }
+
+        .profile-header { display: flex; justify-content: space-between; align-items: center; }
+        .role { font-size: 0.75rem; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+        .name { font-size: 1.3rem; font-weight: bold; margin-top: 2px; }
+        .expand-btn { color: var(--gold); transition: transform 0.3s; }
+        
+        .profile-body {
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: all 0.5s ease;
+            font-size: 0.9rem; color: #ccc;
+            margin-top: 0;
+        }
+        .profile-card.active .profile-body { max-height: 500px; opacity: 1; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+        .profile-card.active .expand-btn { transform: rotate(180deg); }
+
+        /* --- ROADMAP --- */
+        .timeline { border-left: 2px solid var(--gold-dim); padding-left: 25px; margin-left: 10px; }
+        .time-item { margin-bottom: 30px; position: relative; }
+        .time-item::before {
+            content: ""; position: absolute; left: -31px; top: 5px;
+            width: 10px; height: 10px; background: var(--gold); border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold);
+        }
+        .time-date { color: var(--gold); font-size: 0.9rem; font-weight: bold; }
+        .time-title { font-size: 1.1rem; margin: 5px 0; }
+        .time-desc { font-size: 0.85rem; color: #888; }
 
         /* --- ANIMATIONS --- */
-        .fade-up {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeUp 0.8s forwards;
-        }
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- LANGUAGE LOGIC --- */
+        /* --- UTILS --- */
         .lang-th { display: none; }
         body.show-th .lang-th { display: block; }
         body.show-th .lang-cn { display: none; }
@@ -205,150 +216,212 @@
 
     <div class="bg-fixed"></div>
 
-    <button class="lang-switch" onclick="toggleLang()">
-        <span class="lang-cn">切换语言 (TH)</span>
-        <span class="lang-th">Switch Lang (CN)</span>
-    </button>
-
-    <div class="section">
-        <div class="cover-img-box fade-up">
-            <img src="IMG_3637.jpeg" alt="The Empire Team">
-        </div>
-        
-        <h2 class="fade-up delay-1">
-            <span class="lang-cn">中泰娱乐联盟</span>
-            <span class="lang-th">THE THAI-CHINESE ALLIANCE</span>
-        </h2>
-        
-        <h1 class="fade-up delay-2">
-            <span class="lang-cn">帝国计划<br>2026</span>
-            <span class="lang-th">PROJECT EMPIRE<br>2026</span>
-        </h1>
-
-        <p class="fade-up delay-3" style="text-align: center; color: #aaa; margin-top: 20px;">
-            <span class="lang-cn">点击下方卡片查看核心成员</span>
-            <span class="lang-th">แตะที่การ์ดด้านล่างเพื่อดูข้อมูลทีมบริหาร</span>
-        </p>
-    </div>
-
-    <div class="section" style="padding-top: 0;">
-        <div class="profile-container">
-
-            <div class="profile-card fade-up" onclick="toggleCard(this)">
-                <div class="profile-header">
-                    <div>
-                        <div class="role-title">
-                            <span class="lang-cn">首席内容官 (CCO)</span>
-                            <span class="lang-th">The King of Internet Movies</span>
-                        </div>
-                        <div class="name-title">PENG YUSI</div>
-                    </div>
-                    <div class="expand-icon">▼</div>
-                </div>
-                <div class="profile-details">
-                    <span class="skill-tag">Box Office King</span>
-                    <span class="skill-tag">Director</span>
-                    <span class="skill-tag">Actor</span>
-                    <div class="bio-text">
-                        <span class="lang-cn">中国网络电影票房之王。恐怖与玄幻题材的顶尖操盘手。帝国计划的资本与流量引擎。</span>
-                        <span class="lang-th">ราชาหนังเว็บจีน (Internet Movie King) ผู้ครองตลาดหนังผีและแฟนตาซี เป็นแม่เหล็กดึงดูดเงินลงทุนและยอดวิวสูงสุด</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card fade-up delay-1" onclick="toggleCard(this)">
-                <div class="profile-header">
-                    <div>
-                        <div class="role-title">
-                            <span class="lang-cn">首席执行官 (CEO)</span>
-                            <span class="lang-th">The Strategic Architect</span>
-                        </div>
-                        <div class="name-title">NARIN LEELAPORN</div>
-                    </div>
-                    <div class="expand-icon">▼</div>
-                </div>
-                <div class="profile-details">
-                    <span class="skill-tag">INTP Strategist</span>
-                    <span class="skill-tag">Math Genius</span>
-                    <span class="skill-tag">System Architect</span>
-                    <div class="bio-text">
-                        <span class="lang-cn">战略架构师，擅长逻辑拆解与风险控制。曾获国家数学奥赛冠军。不仅是管理者，更是幕后的操盘手。</span>
-                        <span class="lang-th">นักวางยุทธศาสตร์ (INTP) ผู้เชี่ยวชาญการสร้างระบบและบริหารความเสี่ยง ดีกรีแชมป์คณิตศาสตร์ระดับประเทศ ผู้อยู่เบื้องหลังความสำเร็จขององค์กร</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card fade-up delay-2" onclick="toggleCard(this)">
-                <div class="profile-header">
-                    <div>
-                        <div class="role-title">
-                            <span class="lang-cn">缪斯女神 (THE MUSE)</span>
-                            <span class="lang-th">The Viral Queen</span>
-                        </div>
-                        <div class="name-title">CHIEKO SAITO</div>
-                    </div>
-                    <div class="expand-icon">▼</div>
-                </div>
-                <div class="profile-details">
-                    <span class="skill-tag">JP/TH/EN Speaker</span>
-                    <span class="skill-tag">YouTuber</span>
-                    <span class="skill-tag">Actress</span>
-                    <div class="bio-text">
-                        <span class="lang-cn">精通三语的超级网红。前大胃王女王，拥有极强的镜头表现力。既能驾驭恐怖片的女鬼，也能演绎高端名媛。</span>
-                        <span class="lang-th">ราชินีไวรัล พูดได้ 3 ภาษา (ไทย/ญี่ปุ่น/อังกฤษ) อดีต YouTuber สายกินจุ และนักแสดงที่รับบทได้หลากหลาย ตั้งแต่ผีสาวยันไฮโซ</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-card fade-up delay-3" onclick="toggleCard(this)">
-                <div class="profile-header">
-                    <div>
-                        <div class="role-title">
-                            <span class="lang-cn">国际事务官 (GLOBAL)</span>
-                            <span class="lang-th">The Trendsetter</span>
-                        </div>
-                        <div class="name-title">NANA (LI QINYAO)</div>
-                    </div>
-                    <div class="expand-icon">▼</div>
-                </div>
-                <div class="profile-details">
-                    <span class="skill-tag">Actress</span>
-                    <span class="skill-tag">Short Drama Expert</span>
-                    <span class="skill-tag">Liaison</span>
-                    <div class="bio-text">
-                        <span class="lang-cn">资深演员，参演多部影视剧（古装/现代）。短剧赛道的敏锐捕捉者。连接中泰资源的桥梁。</span>
-                        <span class="lang-th">นักแสดงมากฝีมือ (ทั้งพีเรียดและยุคปัจจุบัน) ผู้เชี่ยวชาญตลาดซีรีส์สั้น (Short Drama) และเป็นทูตเชื่อมสัมพันธ์ไทย-จีน</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="section" style="min-height: 20vh;">
-        <button style="padding: 15px 40px; background: var(--gold); border: none; font-weight: 800; font-size: 1.2rem; cursor: pointer; border-radius: 30px; color: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);">
-            <span class="lang-cn">开启新纪元</span>
-            <span class="lang-th">START THE LEGACY</span>
+    <div class="nav-bar">
+        <button class="lang-switch" onclick="toggleLang()">
+            <span class="lang-cn">EN/TH</span>
+            <span class="lang-th">中文</span>
         </button>
     </div>
 
+    <div class="container">
+
+        <div class="hero">
+            <img src="IMG_3637.jpeg" class="hero-img" alt="Team Alliance">
+            <div class="hero-text">
+                <h1>
+                    <span class="lang-cn">中泰共创 · 2026</span>
+                    <span class="lang-th">SINO-THAI SYNERGY 2026</span>
+                </h1>
+                <p class="subtitle">
+                    <span class="lang-cn">以尊重为基石 · 以创意为翅膀</span>
+                    <span class="lang-th">สานฝันด้วยเกียรติ · บินสูงด้วยความคิดสร้างสรรค์</span>
+                </p>
+            </div>
+        </div>
+
+        <h2 class="section-title">
+            <span class="lang-cn">共同愿景</span>
+            <span class="lang-th">OUR SHARED VISION</span>
+        </h2>
+        <div class="strategy-grid">
+            <div class="card">
+                <h3><span class="icon">🌏</span> 
+                    <span class="lang-cn">文化避难所</span>
+                    <span class="lang-th">Creative Sanctuary</span>
+                </h3>
+                <p>
+                    <span class="lang-cn">泰国不仅仅是取景地，更是华语创作者释放想象力的自由港湾。我们将打破束缚，创造真正的艺术。</span>
+                    <span class="lang-th">ไทยไม่ใช่แค่โลเคชั่น แต่คือ "พื้นที่ปลอดภัย" ทางความคิด ที่จะปลดปล่อยจินตนาการของพาร์ทเนอร์จีนให้ไร้ขีดจำกัด</span>
+                </p>
+            </div>
+            <div class="card">
+                <h3><span class="icon">🤝</span> 
+                    <span class="lang-cn">互补共赢</span>
+                    <span class="lang-th">Perfect Harmony</span>
+                </h3>
+                <p>
+                    <span class="lang-cn">彭哥的才华 + 娜娜的魅力 + 我们的资源 = 无法复制的铁三角。</span>
+                    <span class="lang-th">ความสามารถของพี่เผิง + เสน่ห์ของนานา + ทรัพยากรของเรา = สมการความสำเร็จที่ใครก็ลอกเลียนแบบไม่ได้</span>
+                </p>
+            </div>
+        </div>
+
+        <h2 class="section-title">
+            <span class="lang-cn">核心联盟</span>
+            <span class="lang-th">THE ALLIANCE</span>
+        </h2>
+        <div class="profile-container">
+            
+            <div class="profile-card" onclick="toggleCard(this)">
+                <div class="profile-header">
+                    <div>
+                        <div class="role"><span class="lang-cn">领航者</span><span class="lang-th">THE VISIONARY LEADER</span></div>
+                        <div class="name">PENG YUSI</div>
+                    </div>
+                    <div class="expand-btn">▼</div>
+                </div>
+                <div class="profile-body">
+                    <p>
+                        <span class="lang-cn"><strong>网络电影之王:</strong> 凭借敏锐的市场嗅觉和卓越的演技，定义了中国网大的标准。他是我们最尊重的创作灵魂。</span>
+                        <span class="lang-th"><strong>ราชาหนังเว็บ (The King):</strong> ผู้กำหนดมาตรฐานวงการหนังจีน ด้วยวิสัยทัศน์ที่เฉียบขาด เขาคือหัวใจสำคัญของการสร้างสรรค์ผลงาน</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="profile-card" onclick="toggleCard(this)">
+                <div class="profile-header">
+                    <div>
+                        <div class="role"><span class="lang-cn">基石与架构</span><span class="lang-th">THE ARCHITECT</span></div>
+                        <div class="name">NARIN LEELAPORN</div>
+                    </div>
+                    <div class="expand-btn">▼</div>
+                </div>
+                <div class="profile-body">
+                    <p>
+                        <span class="lang-cn"><strong>战略支持:</strong> 曾获国家数学奥赛冠军 (INTP)，擅长将复杂问题转化为可执行的系统。我的职责是为您扫清一切障碍，让艺术无忧落地。</span>
+                        <span class="lang-th"><strong>ผู้วางรากฐาน (Support):</strong> ใช้ตรรกะและระบบ (INTP/Math Genius) เพื่อบริหารจัดการหลังบ้าน หน้าที่ของผมคือ "เคลียร์ทาง" ให้ศิลปินได้วิ่งอย่างอิสระ</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="profile-card" onclick="toggleCard(this)">
+                <div class="profile-header">
+                    <div>
+                        <div class="role"><span class="lang-cn">无限可能</span><span class="lang-th">THE VERSATILE MUSE</span></div>
+                        <div class="name">CHIEKO SAITO</div>
+                    </div>
+                    <div class="expand-btn">▼</div>
+                </div>
+                <div class="profile-body">
+                    <p>
+                        <span class="lang-cn"><strong>多面女王:</strong> 精通三语 (中/泰/英)，前大胃王冠军，资深YouTuber。她能驾驭从“恐怖怨灵”到“高贵名媛”的任何角色，且极具敬业精神 (吃苦耐劳)。</span>
+                        <span class="lang-th"><strong>ราชินีพันหน้า:</strong> พูดได้ 3 ภาษา นักกินจุในตำนาน และ YouTuber นางพร้อมทุ่มเทรับบทบาทที่ท้าทายที่สุด ไม่ว่าจะบทผีที่น่ากลัว หรือบทเจ้าหญิงที่งดงาม</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="profile-card" onclick="toggleCard(this)">
+                <div class="profile-header">
+                    <div>
+                        <div class="role"><span class="lang-cn">文化桥梁</span><span class="lang-th">THE CULTURAL BRIDGE</span></div>
+                        <div class="name">NANA (LI QINYAO)</div>
+                    </div>
+                    <div class="expand-btn">▼</div>
+                </div>
+                <div class="profile-body">
+                    <p>
+                        <span class="lang-cn"><strong>短剧先锋:</strong> 资深演员，深谙短剧 (Vertical Drama) 的爆款逻辑。她是连接中泰文化的温柔纽带，也是未来的流量操盘手。</span>
+                        <span class="lang-th"><strong>ผู้เชื่อมสัมพันธ์:</strong> นักแสดงมากฝีมือและผู้เชี่ยวชาญตลาด Short Drama เธอคือ "ทูต" ที่ทำให้การทำงานระหว่างสองวัฒนธรรมลื่นไหลและอบอุ่น</span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <h2 class="section-title">
+            <span class="lang-cn">商业版图</span>
+            <span class="lang-th">BUSINESS ECOSYSTEM</span>
+        </h2>
+        <div class="strategy-grid">
+            <div class="card" style="border-left: 3px solid #ff4d4d;">
+                <h3>🎥 
+                    <span class="lang-cn">精品长片 (Movies)</span>
+                    <span class="lang-th">Premium Movies</span>
+                </h3>
+                <p>
+                    <span class="lang-cn">深耕灵异/惊悚赛道。利用泰国制作优势，打造符合中国观众口味的“重磅”内容。</span>
+                    <span class="lang-th">เจาะตลาดหนังผี/ระทึกขวัญ ใช้โปรดักชั่นไทยคุณภาพสูง สร้างคอนเทนต์ที่ "ถึงใจ" คนดูจีน</span>
+                </p>
+            </div>
+            <div class="card" style="border-left: 3px solid #4dff4d;">
+                <h3>📱 
+                    <span class="lang-cn">爆款短剧 (Shorts)</span>
+                    <span class="lang-th">Vertical Drama</span>
+                </h3>
+                <p>
+                    <span class="lang-cn">由Nana主理。快速迭代，以泰国的异域风情为卖点，收割碎片化流量。</span>
+                    <span class="lang-th">ดูแลโดยนานา เน้นความเร็วและ Viral ใช้โลเคชั่นไทยสร้างความแปลกใหม่ให้ตลาดจีน</span>
+                </p>
+            </div>
+        </div>
+
+        <h2 class="section-title">
+            <span class="lang-cn">未来之路</span>
+            <span class="lang-th">THE JOURNEY AHEAD</span>
+        </h2>
+        <div class="timeline">
+            <div class="time-item">
+                <div class="time-date">JAN 2026</div>
+                <div class="time-title">
+                    <span class="lang-cn">🎂 生日契约 (The Birthday Pact)</span>
+                    <span class="lang-th">สัญญาใจวันเกิด</span>
+                </div>
+                <div class="time-desc">
+                    <span class="lang-cn">在我们共同的生日周，正式确立合作关系。</span>
+                    <span class="lang-th">ลงนามความร่วมมืออย่างเป็นทางการในช่วงสัปดาห์วันเกิดของเรา</span>
+                </div>
+            </div>
+            <div class="time-item">
+                <div class="time-date">Q2 2026</div>
+                <div class="time-title">
+                    <span class="lang-cn">🚀 剧本与筹备 (Development)</span>
+                    <span class="lang-th">พัฒนาบทและเตรียมงาน</span>
+                </div>
+                <div class="time-desc">
+                    <span class="lang-cn">打磨第一个剧本，整合泰国顶级制作资源。</span>
+                    <span class="lang-th">คัดเลือกบทที่ดีที่สุด และระดมทีมงานระดับ A-List ของไทย</span>
+                </div>
+            </div>
+            <div class="time-item">
+                <div class="time-date">Q3 2026</div>
+                <div class="time-title">
+                    <span class="lang-cn">🎬 开机大吉 (First Action)</span>
+                    <span class="lang-th">เปิดกล้องโปรเจกต์แรก</span>
+                </div>
+                <div class="time-desc">
+                    <span class="lang-cn">第一部中泰合拍大片正式开拍。</span>
+                    <span class="lang-th">เริ่มถ่ายทำหนังเรื่องแรก ที่จะเปลี่ยนวงการ</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px; color: var(--gold-dim); font-size: 0.8rem;">
+            <p>DESIGNED FOR THE ALLIANCE</p>
+        </div>
+
+    </div>
+
     <script>
-        // Language Toggle Logic
         function toggleLang() {
             document.body.classList.toggle('show-th');
         }
 
-        // Accordion Logic
-        function toggleCard(element) {
-            // Close all other cards
+        function toggleCard(card) {
             const allCards = document.querySelectorAll('.profile-card');
-            allCards.forEach(card => {
-                if (card !== element) {
-                    card.classList.remove('active');
-                }
+            allCards.forEach(c => {
+                if (c !== card) c.classList.remove('active');
             });
-            // Toggle clicked card
-            element.classList.toggle('active');
+            card.classList.toggle('active');
         }
     </script>
 
