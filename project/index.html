@@ -3,191 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>THE EMPIRE | VISION</title>
+    <meta name="theme-color" content="#000000">
+    <title>THE EMPIRE: GENESIS</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Noto+Serif+SC:wght@300;500;700&family=Noto+Serif+Thai:wght@300;500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Noto+Serif+SC:wght@300;500;700&family=Noto+Serif+Thai:wght@300;500;700&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. CORE VARIABLES --- */
+        /* --- 1. THEME ENGINE --- */
         :root {
             --gold: #D4AF37;
             --gold-glow: #F9EAC3;
             --gold-dim: #8A702A;
-            --bg-deep: #020202;
-            --glass: rgba(20, 20, 20, 0.85);
+            --bg-deep: #050505;
+            --glass: rgba(15, 15, 15, 0.9);
             --border: 1px solid rgba(212, 175, 55, 0.3);
             --text-main: #F4F4F4;
             --text-muted: #A0A0A0;
-            --rush-red: #FF3B30;
             --ease: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Noto Serif SC', 'Noto Serif Thai', serif; line-height: 1.7; overflow-x: hidden; }
-        
-        /* --- 2. BACKGROUNDS --- */
-        .bg-fixed {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5;
-            background: url('IMG_3638.jpeg') center/cover no-repeat;
-            opacity: 0.15; filter: contrast(1.2) blur(3px); transform: scale(1.05);
-        }
-        .bg-gradient {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -4;
-            background: radial-gradient(circle at center, transparent 0%, #000 120%);
-        }
+        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Noto Serif SC', 'Noto Serif Thai', serif; line-height: 1.8; overflow-x: hidden; padding-bottom: 120px; }
 
-        /* --- 3. NAVIGATION (GLOBAL) --- */
-        .nav-bar {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; z-index: 1000;
-            background: rgba(10, 10, 10, 0.9); border: var(--border);
-            backdrop-filter: blur(15px); border-radius: 50px;
-            display: flex; justify-content: space-between; padding: 5px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .nav-item {
-            flex: 1; text-align: center; padding: 12px 0;
-            color: #666; text-decoration: none; font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-            border-radius: 40px; transition: all 0.3s;
-        }
-        .nav-item.active { background: var(--gold); color: #000; box-shadow: 0 0 15px rgba(212,175,55,0.4); }
-
-        /* --- 4. HERO SECTION --- */
+        /* --- 2. HERO SECTION (FACES VISIBLE) --- */
         .hero {
             height: 100vh; width: 100%; position: relative;
-            display: flex; flex-direction: column; justify-content: flex-start; /* Top align */
-            align-items: center; padding-top: 15vh; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: flex-start; /* Text at Top */
+            align-items: center; padding-top: 12vh; overflow: hidden;
         }
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            background: url('IMG_3637.jpeg') center bottom no-repeat; /* Faces at bottom */
-            background-size: cover; animation: zoom 30s infinite alternate;
+            /* Using Team Photo */
+            background: url('IMG_3637.jpeg') center bottom no-repeat;
+            background-size: cover;
+            animation: slowPan 30s infinite alternate;
         }
-        .hero-overlay-top {
-            position: absolute; top: 0; left: 0; width: 100%; height: 50%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); z-index: 0;
+        /* Gradient to make text readable */
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+            z-index: 0;
         }
         .hero-content {
             position: relative; z-index: 2; text-align: center; max-width: 90%;
             animation: slideDown 1.5s var(--ease) forwards;
         }
+        
         h1 {
-            font-family: 'Cinzel', serif; font-size: 2.8rem; line-height: 1;
-            background: linear-gradient(to bottom, #fff, var(--gold));
+            font-family: 'Cinzel', serif; font-size: 2.8rem; line-height: 1.1; margin-bottom: 15px;
+            background: linear-gradient(to bottom, #fff 20%, var(--gold) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 10px; text-transform: uppercase; filter: drop-shadow(0 5px 15px #000);
+            text-transform: uppercase; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.8));
         }
         .tagline {
-            font-family: 'Montserrat', sans-serif; font-size: 0.8rem; letter-spacing: 4px;
+            font-family: 'Montserrat', sans-serif; font-size: 0.75rem; letter-spacing: 4px;
             color: #fff; text-transform: uppercase; border-top: 1px solid var(--gold);
             border-bottom: 1px solid var(--gold); padding: 8px 0; display: inline-block;
-            background: rgba(0,0,0,0.3); backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(5px);
         }
 
-        /* --- 5. CONTENT SECTIONS --- */
-        .container { max-width: 800px; margin: 0 auto; padding: 0 25px 120px; position: relative; z-index: 2; }
+        .scroll-hint {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 10; opacity: 0.8;
+        }
+        .mouse {
+            width: 24px; height: 40px; border: 2px solid var(--gold); border-radius: 20px; position: relative;
+        }
+        .mouse::after {
+            content: ""; position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+            width: 4px; height: 4px; background: var(--gold); border-radius: 50%; animation: scroll 2s infinite;
+        }
+
+        /* --- 3. CONTENT CONTAINER --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 25px; position: relative; z-index: 2; }
         
         .section { margin-top: 100px; opacity: 0; transform: translateY(50px); transition: all 1s var(--ease); }
         .section.visible { opacity: 1; transform: translateY(0); }
 
-        .section-title {
-            text-align: center; margin-bottom: 40px; font-family: 'Cinzel', serif;
-            font-size: 1.8rem; color: var(--gold); letter-spacing: 2px;
+        .section-header { text-align: center; margin-bottom: 50px; position: relative; }
+        .divider-icon { font-size: 1.5rem; color: var(--gold); margin-bottom: 10px; display: block; }
+        h2 {
+            font-family: 'Cinzel', serif; font-size: 2rem; color: var(--gold); margin: 0; letter-spacing: 2px; text-transform: uppercase;
         }
-        .section-desc {
-            text-align: center; font-size: 1rem; color: var(--text-muted);
-            margin-bottom: 40px; font-style: italic;
+        .section-subtitle {
+            font-family: 'Noto Serif SC', serif; font-size: 1rem; color: var(--text-muted);
+            margin-top: 10px; font-style: italic;
         }
 
-        /* --- CARDS --- */
-        .card {
-            background: var(--glass); border: var(--border); border-radius: 12px;
-            padding: 30px; margin-bottom: 25px; position: relative; overflow: hidden;
+        /* --- 4. MANIFESTO CARD (EMOTIONAL HOOK) --- */
+        .manifesto-card {
+            background: linear-gradient(160deg, rgba(30,30,30,0.9), rgba(10,10,10,0.95));
+            border: var(--border); border-left: 4px solid var(--gold);
+            padding: 40px 30px; border-radius: 8px; margin-bottom: 60px;
+            position: relative; overflow: hidden;
         }
-        .card::before { content: ""; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: var(--gold); }
-        .card h3 { font-family: 'Cinzel', serif; color: #fff; margin-bottom: 15px; font-size: 1.3rem; }
-        .card p { color: #ccc; font-size: 0.95rem; text-align: justify; margin-bottom: 15px; }
+        .manifesto-card p { font-size: 1.05rem; color: #ccc; line-height: 2; text-align: justify; margin-bottom: 20px; }
+        .manifesto-card strong { color: var(--gold-glow); font-weight: 600; }
+        .signature { text-align: right; margin-top: 20px; font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.2rem; }
+
+        /* --- 5. THE PIVOT (STRATEGY) --- */
+        .strategy-box {
+            background: var(--glass); border: var(--border); padding: 35px;
+            border-radius: 8px; margin-bottom: 30px; transition: 0.3s;
+        }
+        .strategy-box:hover { border-color: var(--gold); transform: translateY(-5px); }
         
-        .badge {
-            display: inline-block; padding: 4px 10px; border: 1px solid var(--gold);
-            color: var(--gold); font-size: 0.7rem; border-radius: 4px; text-transform: uppercase;
-            font-weight: bold; margin-bottom: 10px;
+        .st-head { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .st-icon { font-size: 2.5rem; }
+        .st-title { font-family: 'Cinzel', serif; font-size: 1.3rem; color: #fff; text-transform: uppercase; }
+        .st-desc { font-size: 1rem; color: #bbb; line-height: 1.7; }
+
+        /* --- 6. ONE FISH TWO EATS --- */
+        .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+        .dual-item {
+            background: rgba(255,255,255,0.03); padding: 20px; text-align: center;
+            border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);
         }
+        .dual-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .dual-h { color: var(--gold-glow); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 5px; }
+        .dual-p { font-size: 0.85rem; color: #999; }
 
-        /* --- ONE FISH TWO EATS --- */
-        .strategy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .s-box { background: rgba(255,255,255,0.05); padding: 15px; text-align: center; border-radius: 8px; }
-        .s-icon { font-size: 2rem; margin-bottom: 5px; display: block; }
-        .s-title { color: var(--gold-glow); font-weight: bold; font-size: 0.9rem; text-transform: uppercase; }
-        .s-text { font-size: 0.8rem; color: #aaa; margin-top: 5px; }
-
-        /* --- TIMELINE --- */
-        .controls { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
-        .btn-mode {
-            padding: 10px 25px; border-radius: 30px; border: 1px solid #555;
-            background: rgba(0,0,0,0.5); color: #888; text-transform: uppercase;
-            font-size: 0.75rem; font-weight: bold; cursor: pointer; transition: 0.3s;
+        /* --- 7. NAVIGATION CARDS (LINKS) --- */
+        .nav-grid { display: grid; grid-template-columns: 1fr; gap: 30px; margin-top: 60px; }
+        .nav-card {
+            display: block; text-decoration: none;
+            background: linear-gradient(90deg, rgba(20,20,20,0.9), rgba(40,40,40,0.9));
+            border: 1px solid var(--gold); padding: 30px; border-radius: 8px;
+            position: relative; transition: all 0.4s; overflow: hidden;
         }
-        .btn-mode.active[data-mode="normal"] { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
-        .btn-mode.active[data-mode="blitz"] { border-color: var(--rush-red); color: var(--rush-red); background: rgba(255,59,48,0.15); animation: pulse 2s infinite; }
+        .nav-card:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); }
+        .nav-card::after { content: "➔"; position: absolute; right: 30px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: var(--gold); }
+        
+        .nc-title { font-family: 'Cinzel', serif; font-size: 1.5rem; color: #fff; margin-bottom: 5px; display: block; }
+        .nc-sub { font-size: 0.9rem; color: var(--text-muted); font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 2px; }
 
-        .timeline { border-left: 2px solid var(--gold-dim); margin-left: 15px; padding-left: 25px; }
-        .timeline.blitz { border-left-color: var(--rush-red); }
-        
-        .t-item { position: relative; margin-bottom: 40px; transition: 0.5s; }
-        .t-item.hidden { display: none; opacity: 0; }
-        
-        .t-dot {
-            position: absolute; left: -31px; top: 5px; width: 10px; height: 10px;
-            background: var(--bg-deep); border: 2px solid var(--gold); border-radius: 50%;
-            box-shadow: 0 0 10px var(--gold);
+        /* --- UTILS --- */
+        .lang-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 1100;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--gold);
+            color: var(--gold); padding: 6px 12px; border-radius: 20px;
+            font-size: 0.65rem; backdrop-filter: blur(5px); font-weight: bold; cursor: pointer;
         }
-        .blitz .t-dot { border-color: var(--rush-red); box-shadow: 0 0 10px var(--rush-red); }
-        
-        .t-date { color: var(--gold); font-weight: bold; font-family: 'Cinzel', serif; font-size: 0.9rem; }
-        .blitz .t-date { color: var(--rush-red); }
-        .t-head { color: #fff; font-weight: bold; font-size: 1.1rem; margin: 5px 0; }
-        .t-body { color: #999; font-size: 0.9rem; }
-
-        /* --- ANIMATIONS --- */
-        @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.1); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
-
-        /* --- LANG --- */
         .lang-th { display: none; }
         body.show-th .lang-th { display: block; }
         body.show-th .lang-cn { display: none; }
-        
-        .lang-btn {
-            position: fixed; top: 20px; right: 20px; z-index: 1100;
-            background: rgba(255,255,255,0.1); border: 1px solid var(--gold);
-            color: var(--gold); padding: 5px 15px; border-radius: 20px;
-            font-size: 0.7rem; backdrop-filter: blur(5px);
-        }
+
+        @keyframes slowPan { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scroll { 0% { top: 8px; opacity: 1; } 100% { top: 24px; opacity: 0; } }
 
     </style>
 </head>
 <body>
 
-    <button class="lang-btn" onclick="toggleLang()">EN / CN</button>
-
-    <nav class="nav-bar">
-        <a href="#" class="nav-item active">VISION</a>
-        <a href="team.html" class="nav-item">TEAM</a>
-        <a href="business.html" class="nav-item">BUSINESS</a>
-    </nav>
-
-    <div class="bg-fixed"></div>
-    <div class="bg-gradient"></div>
+    <button class="lang-btn" onclick="toggleLang()">CN / TH</button>
 
     <div class="hero">
         <div class="hero-bg"></div>
-        <div class="hero-overlay-top"></div>
-        
+        <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1>
                 <span class="lang-cn">中泰娱乐帝国</span>
@@ -198,127 +173,107 @@
                 <span class="lang-th">CREATIVITY · FREEDOM · WEALTH</span>
             </div>
         </div>
+        <div class="scroll-hint">
+            <div class="mouse"></div>
+            <span style="font-size:0.6rem; color:#888; letter-spacing:2px;">SCROLL</span>
+        </div>
     </div>
 
     <div class="container">
 
         <div class="section">
-            <h2 class="section-title">
-                <span class="lang-cn">战略愿景</span>
-                <span class="lang-th">STRATEGIC VISION</span>
-            </h2>
-            <p class="section-desc">
-                <span class="lang-cn">“大众市场为主，恐怖为辅。全品类降维打击。”</span>
-                <span class="lang-th">"Mass Market is Key. Horror is just the gateway."</span>
-            </p>
-
-            <div class="card">
-                <span class="badge">CORE STRATEGY</span>
-                <h3>
-                    <span class="lang-cn">一鱼两吃：双版本策略</span>
-                    <span class="lang-th">ONE CONTENT, TWO CUTS</span>
-                </h3>
+            <div class="manifesto-card">
                 <p>
-                    <span class="lang-cn">我们在泰国拍摄，利用低成本与高自由度。同一个项目，制作两个版本：</span>
-                    <span class="lang-th">ถ่ายทำที่ไทยด้วยต้นทุนที่ถูกกว่า แต่ได้คุณภาพระดับสากล 1 โปรเจกต์ ตัดต่อ 2 แบบ:</span>
+                    <span class="lang-cn">
+                        “娜娜，这不仅仅是一份商业计划书，这是给<strong>家人</strong>的承诺。<br><br>
+                        我们在曼谷一起度过的日日夜夜，那些疯狂的派对、同榻而眠的夜晚、以及彼此交换的真心话，
+                        早已超越了所谓的‘合作伙伴’。<br><br>
+                        <strong>我们四个人，是异父异母的亲兄妹。</strong><br>
+                        这个帝国，是哥哥为你、为嫂子、为彭哥，也是为我们这个‘家’而建立的堡垒。”
+                    </span>
+                    <span class="lang-th">
+                        "นานา นี่ไม่ใช่แค่แผนธุรกิจ แต่คือคำสัญญาของ <strong>คนในครอบครัว</strong><br><br>
+                        ช่วงเวลาที่เราผ่านมาร่วมกันในกรุงเทพฯ ปาร์ตี้สุดเหวี่ยง คืนที่เรานอนเตียงเดียวกัน และความในใจที่แลกเปลี่ยน 
+                        มันเกินคำว่า 'หุ้นส่วน' ไปไกลแล้ว<br><br>
+                        <strong>พวกเรา 4 คน คือพี่น้องคนละท้องที่รักกันที่สุด</strong><br>
+                        อาณาจักรนี้ พี่สร้างขึ้นเพื่อเรา เพื่อซ้อ เพื่อพี่เผิง และเพื่อ 'บ้าน' ของพวกเราทุกคน"
+                    </span>
                 </p>
-                <div class="strategy-grid">
-                    <div class="s-box">
-                        <span class="s-icon">🌏</span>
-                        <div class="s-title"><span class="lang-cn">国际版 (UNCUT)</span><span class="lang-th">GLOBAL / THAI</span></div>
-                        <div class="s-text">
-                            <span class="lang-cn">尺度全开，真鬼/惊悚/大尺度。发行海外赚美金。</span>
-                            <span class="lang-th">จัดเต็ม Uncensored ฉายไทยและขายสิทธิ์ทั่วโลก</span>
-                        </div>
+                <div class="signature">- Teem (Narin) -</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <span class="divider-icon">💎</span>
+                <h2>
+                    <span class="lang-cn">核心战略</span>
+                    <span class="lang-th">CORE STRATEGY</span>
+                </h2>
+                <div class="section-subtitle">MASS MARKET DOMINANCE</div>
+            </div>
+
+            <div class="strategy-box">
+                <div class="st-head">
+                    <span class="st-icon">🚀</span>
+                    <div class="st-title"><span class="lang-cn">从“小众”到“大众”</span><span class="lang-th">FROM NICHE TO MASS</span></div>
+                </div>
+                <div class="st-desc">
+                    <span class="lang-cn">
+                        你说得对，恐怖片只是起点，<strong>大众市场 (Mass Market)</strong> 才是我们的星辰大海。<br>
+                        我们将利用泰国无可比拟的“奢华资源”（豪宅/游艇/美景），拍摄<strong>现代/爱情/复仇/霸总</strong>题材。
+                        用电影级的质感，降维打击国内的短剧市场。
+                    </span>
+                    <span class="lang-th">
+                        จริงอย่างที่น้องบอก หนังผีเป็นแค่จุดเริ่ม แต่ <strong>"ตลาดมหาชน"</strong> คือเป้าหมายที่แท้จริง<br>
+                        เราจะใช้ทรัพยากร "สุดหรู" ของไทย (บ้าน/เรือ/วิว) ถ่ายทำแนว <strong>รักโรแมนติก/แก้แค้น/ท่านประธาน</strong> 
+                        ด้วยคุณภาพระดับภาพยนตร์ เพื่อฆ่าคู่แข่งในตลาดซีรีส์สั้นให้ตายเรียบ
+                    </span>
+                </div>
+            </div>
+
+            <div class="strategy-box">
+                <div class="st-head">
+                    <span class="st-icon">🐟</span>
+                    <div class="st-title"><span class="lang-cn">一鱼两吃</span><span class="lang-th">ONE FISH, TWO EATS</span></div>
+                </div>
+                <div class="st-desc">
+                    <span class="lang-cn">同一个项目，双重收益。不浪费任何一点资源。</span>
+                    <span class="lang-th">โปรเจกต์เดียว กำไรสองต่อ ไม่เสียของแม้แต่นิดเดียว</span>
+                </div>
+                <div class="dual-grid">
+                    <div class="dual-item">
+                        <span class="dual-icon">🌏</span>
+                        <div class="dual-h"><span class="lang-cn">国际版 (UNCUT)</span><span class="lang-th">GLOBAL VER.</span></div>
+                        <p class="dual-p"><span class="lang-cn">尺度全开，真鬼/大尺度/惊悚。</span><span class="lang-th">จัดเต็ม Uncensored ดราม่า/แรง/ผีจริง</span></p>
                     </div>
-                    <div class="s-box">
-                        <span class="s-icon">🇨🇳</span>
-                        <div class="s-title"><span class="lang-cn">国内版 (SAFE)</span><span class="lang-th">CHINA MAINLAND</span></div>
-                        <div class="s-text">
-                            <span class="lang-cn">剪辑成心理悬疑/犯罪片，符合审查，赚人民币。</span>
-                            <span class="lang-th">ตัดต่อใหม่ให้ผ่านเซนเซอร์ ฉายโกยเงินหยวน</span>
-                        </div>
+                    <div class="dual-item">
+                        <span class="dual-icon">🇨🇳</span>
+                        <div class="dual-h"><span class="lang-cn">国内版 (SAFE)</span><span class="lang-th">CHINA VER.</span></div>
+                        <p class="dual-p"><span class="lang-cn">精剪成悬疑/情感/精品剧，符合审查。</span><span class="lang-th">ตัดต่อใหม่ให้สวยงาม ผ่านเซนเซอร์ ฉายจีน</span></p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h2 class="section-title">
-                <span class="lang-cn">独家优势</span>
-                <span class="lang-th">OUR ADVANTAGE</span>
-            </h2>
-
-            <div class="card">
-                <span class="badge">SAFETY NET</span>
-                <h3>
-                    <span class="lang-cn">🛡️ 法律与合规盾牌</span>
-                    <span class="lang-th">THE COMPLIANCE SHIELD</span>
-                </h3>
-                <p>
-                    <span class="lang-cn">Narin (CEO) 确保所有操作<strong>100%符合泰国法律</strong>。从签证、拍摄许可到税务，全程正规化。我们不走灰色地带，杜绝任何“秋后算账”的风险。让中方资方绝对安心。</span>
-                    <span class="lang-th">Narin การันตีความถูกต้องทางกฎหมาย 100% (Visa/Permit/Tax) เราไม่ทำสีเทา เพื่อปิดประตูความเสี่ยงย้อนหลังให้นักลงทุนสบายใจที่สุด</span>
-                </p>
+            <div class="section-header">
+                <span class="divider-icon">🗝️</span>
+                <h2>
+                    <span class="lang-cn">进入帝国</span>
+                    <span class="lang-th">ENTER THE EMPIRE</span>
+                </h2>
             </div>
 
-            <div class="card">
-                <span class="badge">CREATIVE FREEDOM</span>
-                <h3>
-                    <span class="lang-cn">🏝️ 创意避难所</span>
-                    <span class="lang-th">CREATIVE ASYLUM</span>
-                </h3>
-                <p>
-                    <span class="lang-cn">泰国是亚洲唯一的“创作特区”。不仅可以拍灵异，更能利用奢华场景（豪宅/游艇）拍摄<strong>大众喜爱的现代剧/短剧</strong>，成本却比国内低30%。</span>
-                    <span class="lang-th">ไทยคือพื้นที่อิสระ ไม่ใช่แค่หนังผี แต่เราจะใช้ Location หรู (บ้าน/เรือ) ถ่ายซีรีส์รัก/ไฮโซ ในราคาที่ถูกกว่าจีน 30% แต่ภาพดูแพงกว่า</span>
-                </p>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">
-                <span class="lang-cn">征程时间表</span>
-                <span class="lang-th">TIMELINE</span>
-            </h2>
-
-            <div class="controls">
-                <button class="btn-mode active" data-mode="normal" onclick="setTimeline('normal')">NORMAL (稳健)</button>
-                <button class="btn-mode" data-mode="blitz" onclick="setTimeline('blitz')">⚡ BLITZ (闪电战)</button>
-            </div>
-
-            <div class="timeline" id="timelineTrack">
-                <div class="t-item">
-                    <div class="t-dot"></div>
-                    <div class="t-date">JAN 2026</div>
-                    <div class="t-head"><span class="lang-cn">🎂 生日周契约</span><span class="lang-th">The Birthday Pact</span></div>
-                    <div class="t-body"><span class="lang-cn">正式签署合资协议。</span><span class="lang-th">เซ็นสัญญาจัดตั้งบริษัท</span></div>
-                </div>
-
-                <div class="t-item mode-blitz hidden">
-                    <div class="t-dot"></div>
-                    <div class="t-date" style="color:var(--rush-red)">FEB 2026</div>
-                    <div class="t-head"><span class="lang-cn">⚡ 闪电开机</span><span class="lang-th">SHOOT NOW</span></div>
-                    <div class="t-body"><span class="lang-cn">直接启动首部短剧拍摄，边拍边招商。</span><span class="lang-th">เปิดกล้องซีรีส์สั้นทันที! ถ่ายไปขายไป</span></div>
-                </div>
-                <div class="t-item mode-blitz hidden">
-                    <div class="t-dot"></div>
-                    <div class="t-date" style="color:var(--rush-red)">MAR 2026</div>
-                    <div class="t-head"><span class="lang-cn">💰 资金回笼</span><span class="lang-th">FIRST CASHFLOW</span></div>
-                    <div class="t-body"><span class="lang-cn">短剧上线回款，投入大电影。</span><span class="lang-th">รับรายได้ก้อนแรก หมุนไปสร้างหนังใหญ่</span></div>
-                </div>
-
-                <div class="t-item mode-normal">
-                    <div class="t-dot"></div>
-                    <div class="t-date">Q2 2026</div>
-                    <div class="t-head"><span class="lang-cn">🚀 筹备与招商</span><span class="lang-th">Development Phase</span></div>
-                    <div class="t-body"><span class="lang-cn">Nana启动短剧招商，打磨大电影剧本。</span><span class="lang-th">นานาเริ่มหาลูกค้าและเตรียมบทหนังใหญ่</span></div>
-                </div>
-
-                <div class="t-item">
-                    <div class="t-dot"></div>
-                    <div class="t-date">Q3 2026</div>
-                    <div class="t-head"><span class="lang-cn">🎬 全面爆发</span><span class="lang-th">Full Scale Launch</span></div>
-                    <div class="t-body"><span class="lang-cn">大电影与短剧同步在泰国开拍。</span><span class="lang-th">เปิดกล้องถ่ายทำเต็มรูปแบบ</span></div>
-                </div>
+            <div class="nav-grid">
+                <a href="team.html" class="nav-card">
+                    <span class="nc-title"><span class="lang-cn">我们的战队</span><span class="lang-th">THE DREAM TEAM</span></span>
+                    <span class="nc-sub"><span class="lang-cn">四大支柱 · 完美互补</span><span class="lang-th">4 PILLARS OF POWER</span></span>
+                </a>
+                <a href="business.html" class="nav-card" style="border-color:var(--gold-glow);">
+                    <span class="nc-title"><span class="lang-cn">作战计划</span><span class="lang-th">THE BATTLE PLAN</span></span>
+                    <span class="nc-sub"><span class="lang-cn">商业模式 · 闪电战</span><span class="lang-th">BUSINESS & BLITZ MODE</span></span>
+                </a>
             </div>
         </div>
 
@@ -327,25 +282,6 @@
     <script>
         function toggleLang() { document.body.classList.toggle('show-th'); }
         
-        function setTimeline(mode) {
-            const track = document.getElementById('timelineTrack');
-            document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.btn-mode[data-mode="${mode}"]`).classList.add('active');
-            
-            if(mode === 'blitz') track.classList.add('blitz'); else track.classList.remove('blitz');
-            
-            const nNodes = document.querySelectorAll('.mode-normal');
-            const bNodes = document.querySelectorAll('.mode-blitz');
-            
-            if(mode === 'normal') {
-                bNodes.forEach(el => { el.style.display = 'none'; setTimeout(()=>el.classList.add('hidden'),0); });
-                nNodes.forEach(el => { el.style.display = 'block'; setTimeout(()=>el.classList.remove('hidden'),50); });
-            } else {
-                nNodes.forEach(el => { el.style.display = 'none'; setTimeout(()=>el.classList.add('hidden'),0); });
-                bNodes.forEach(el => { el.style.display = 'block'; setTimeout(()=>el.classList.remove('hidden'),50); });
-            }
-        }
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         }, { threshold: 0.1 });
