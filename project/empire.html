@@ -3,44 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE EMPIRE: 2026 MASTERPLAN</title>
+    <title>THE EMPIRE: GRAND MASTERPLAN 2026</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+SC:wght@300;500;700&family=Noto+Serif+Thai:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Noto+Serif+SC:wght@300;500;700&family=Noto+Serif+Thai:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
         /* * -----------------------------------------------------------
-         * 1. CORE VARIABLES & RESET (THE FOUNDATION)
+         * 1. THE FOUNDATION (VARIABLES & RESET)
          * -----------------------------------------------------------
          */
         :root {
-            /* Gold Palette */
+            /* Palette: Imperial Gold & Deep Void */
             --gold-primary: #D4AF37;
             --gold-secondary: #C5A028;
             --gold-light: #F9EAC3;
             --gold-dark: #8A702A;
+            --gold-glow: rgba(212, 175, 55, 0.6);
             
-            /* Backgrounds */
-            --bg-deep: #050505;
+            --bg-deep: #020202;
+            --bg-panel: rgba(15, 15, 15, 0.95);
             --glass-strong: rgba(10, 10, 10, 0.85);
-            --glass-medium: rgba(20, 20, 20, 0.65); /* More transparent for BG visibility */
-            --glass-light: rgba(255, 255, 255, 0.05);
+            --glass-medium: rgba(20, 20, 20, 0.65);
             
-            /* UI Elements */
-            --border-fine: 1px solid rgba(212, 175, 55, 0.3);
-            --border-glow: 1px solid rgba(212, 175, 55, 0.6);
-            --shadow-card: 0 10px 40px rgba(0,0,0,0.5);
-            
-            /* Text */
-            --text-main: #F0F0F0;
-            --text-muted: #B0B0B0;
-            --text-gold: #E5C35D;
+            --text-main: #F4F4F4;
+            --text-muted: #A0A0A0;
+            --text-accent: #E5C35D;
 
-            /* Animation */
+            --border-fine: 1px solid rgba(212, 175, 55, 0.3);
+            --border-active: 1px solid var(--gold-primary);
+            
+            --shadow-card: 0 15px 50px rgba(0,0,0,0.7);
+            --shadow-glow: 0 0 20px rgba(212, 175, 55, 0.15);
+
             --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-elastic: cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         html { scroll-behavior: smooth; }
 
         body {
@@ -54,82 +53,91 @@
         }
 
         /* * -----------------------------------------------------------
-         * 2. BACKGROUND SYSTEM (PARALLAX & DEPTH)
+         * 2. BACKGROUND ARCHITECTURE
          * -----------------------------------------------------------
          */
         .bg-fixed {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2;
-            /* [IMAGE] Background - Fireworks/City */
+            z-index: -3;
             background: url('IMG_3638.jpeg') center/cover no-repeat;
-            background-attachment: fixed; /* Parallax Magic */
-            opacity: 0.25; /* Increased visibility as requested */
-            filter: contrast(1.1) saturate(1.1);
-            transform: scale(1.05); /* Slight zoom for depth */
+            background-attachment: fixed;
+            opacity: 0.2;
+            filter: contrast(1.2) saturate(1.1);
+            transform: scale(1.05);
         }
 
         .bg-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            /* Gradient to ensure text readability over the image */
+            z-index: -2;
             background: linear-gradient(to bottom, 
-                rgba(5,5,5,0.7) 0%, 
-                rgba(5,5,5,0.4) 50%, 
-                rgba(5,5,5,0.8) 100%);
+                rgba(2,2,2,0.8) 0%, 
+                rgba(2,2,2,0.5) 40%, 
+                rgba(2,2,2,0.9) 100%);
+            pointer-events: none;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background-image: radial-gradient(var(--gold-primary) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.05;
             pointer-events: none;
         }
 
         /* * -----------------------------------------------------------
-         * 3. NAVIGATION & UI
+         * 3. NAVIGATION SYSTEM
          * -----------------------------------------------------------
          */
         .nav-bar {
             position: fixed;
             top: 0; left: 0; width: 100%;
-            padding: 20px 25px;
+            padding: 20px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
+            backdrop-filter: blur(5px);
             transition: all 0.4s ease;
         }
 
         .brand {
             font-family: 'Cinzel', serif;
             color: var(--gold-primary);
-            font-size: 0.9rem;
-            letter-spacing: 3px;
+            font-size: 1rem;
+            letter-spacing: 4px;
             font-weight: 700;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+        .brand::before { content: "❖"; font-size: 1.2rem; }
 
         .lang-btn {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             border: 1px solid var(--gold-primary);
             color: var(--gold-primary);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-family: 'Noto Serif SC', serif;
-            font-size: 0.75rem;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             cursor: pointer;
-            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+            text-transform: uppercase;
         }
 
-        .lang-btn:active {
-            transform: scale(0.95);
-            background: var(--gold-primary);
-            color: #000;
-        }
+        .lang-btn:hover { background: rgba(212, 175, 55, 0.1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
+        .lang-btn:active { transform: scale(0.95); background: var(--gold-primary); color: #000; }
 
         /* * -----------------------------------------------------------
-         * 4. HERO SECTION (CINEMATIC OPENING)
+         * 4. CINEMATIC HERO SECTION
          * -----------------------------------------------------------
          */
         .hero {
@@ -137,10 +145,10 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
+            justify-content: center;
             align-items: center;
             position: relative;
-            padding-bottom: 80px;
+            padding-bottom: 60px;
             overflow: hidden;
         }
 
@@ -148,16 +156,14 @@
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            /* [IMAGE] Cover - Team on Boat */
             background: url('IMG_3637.jpeg') center/cover no-repeat;
-            /* Subtle animation to bring photo to life */
-            animation: breathe 20s infinite alternate; 
+            animation: breathe 25s infinite alternate; 
         }
 
         .hero-gradient {
             position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 60%;
-            background: linear-gradient(to top, var(--bg-deep) 15%, transparent 100%);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, var(--bg-deep) 90%);
             z-index: 0;
         }
 
@@ -166,47 +172,57 @@
             z-index: 2;
             text-align: center;
             max-width: 90%;
-            animation: slideUpFade 1.5s var(--ease-out) forwards;
+            margin-top: 20vh;
+            animation: heroReveal 1.8s var(--ease-out) forwards;
         }
 
         h1 {
             font-family: 'Cinzel', serif;
-            font-size: 2.8rem;
-            line-height: 1.1;
+            font-size: 3.5rem;
+            line-height: 1;
             color: var(--gold-light);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-transform: uppercase;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            background: linear-gradient(to bottom, #fff, var(--gold-primary));
+            text-shadow: 0 10px 40px rgba(0,0,0,0.9);
+            background: linear-gradient(to bottom, #fff 20%, var(--gold-primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
         }
 
         .hero-subtitle {
-            font-family: 'Noto Serif SC', serif;
-            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
             color: #ccc;
-            letter-spacing: 4px;
+            letter-spacing: 6px;
             text-transform: uppercase;
             display: block;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             text-shadow: 0 2px 10px rgba(0,0,0,1);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 15px 0;
+            display: inline-block;
         }
 
-        .scroll-hint {
-            margin-top: 30px;
-            width: 1px;
-            height: 60px;
-            background: linear-gradient(to bottom, var(--gold-primary), transparent);
-            animation: scrollPulse 2s infinite;
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.7;
         }
+        .scroll-text { font-size: 0.7rem; color: var(--gold-primary); letter-spacing: 2px; text-transform: uppercase; }
+        .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--gold-primary), transparent); animation: scrollPulse 2s infinite; }
 
         /* * -----------------------------------------------------------
-         * 5. CONTENT CONTAINER & SECTIONS
+         * 5. LAYOUT & TYPOGRAPHY
          * -----------------------------------------------------------
          */
         .container {
-            max-width: 650px;
+            max-width: 700px;
             margin: 0 auto;
             padding: 0 25px;
             position: relative;
@@ -214,355 +230,238 @@
         }
 
         .section {
-            margin-bottom: 120px;
+            margin-bottom: 150px;
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1s ease, transform 1s var(--ease-out);
+            transform: translateY(50px);
+            transition: opacity 1.2s ease, transform 1.2s var(--ease-out);
         }
+        .section.visible { opacity: 1; transform: translateY(0); }
 
-        .section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
+        .section-header { text-align: center; margin-bottom: 60px; }
 
         h2 {
             font-family: 'Cinzel', serif;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: var(--gold-primary);
-            letter-spacing: 2px;
-            margin-bottom: 10px;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
             position: relative;
             display: inline-block;
         }
-
         h2::after {
-            content: "✦";
+            content: "";
             display: block;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: var(--gold-dark);
+            width: 60px; height: 2px;
+            background: var(--gold-primary);
+            margin: 15px auto 0;
+            box-shadow: 0 0 10px var(--gold-primary);
         }
 
         .section-desc {
-            font-size: 0.95rem;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1rem;
             color: var(--text-muted);
             max-width: 80%;
             margin: 0 auto;
             font-style: italic;
-        }
-
-        /* * -----------------------------------------------------------
-         * 6. STRATEGY CARDS (GLASSMORPHISM)
-         * -----------------------------------------------------------
-         */
-        .strategy-card {
-            /* High Transparency to see background */
-            background: var(--glass-medium);
-            backdrop-filter: blur(10px);
-            border: var(--border-fine);
-            border-radius: 12px;
-            padding: 35px 30px;
-            margin-bottom: 30px;
-            position: relative;
-            box-shadow: var(--shadow-card);
-            transition: transform 0.4s ease;
-        }
-
-        .strategy-card:hover { transform: translateY(-5px); border-color: var(--gold-primary); }
-
-        .card-icon {
-            font-size: 2.2rem;
-            margin-bottom: 15px;
-            display: block;
-            /* Gold Gradient Text */
-            background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .card-text {
-            font-size: 0.95rem;
-            color: #dcdcdc;
-            text-align: justify;
-            line-height: 1.8;
-        }
-
-        .highlight-box {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(212, 175, 55, 0.1);
-            border-left: 2px solid var(--gold-primary);
-            font-size: 0.9rem;
-            color: var(--gold-light);
-        }
-
-        /* * -----------------------------------------------------------
-         * 7. THE ALLIANCE (BALANCED PROFILES)
-         * -----------------------------------------------------------
-         */
-        .profile-card {
-            background: var(--glass-medium);
-            backdrop-filter: blur(12px);
-            border: var(--border-fine);
-            border-left: 3px solid var(--gold-dark);
-            padding: 25px;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: all 0.4s var(--ease-out);
-            border-radius: 0 12px 12px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-card:hover {
-            background: rgba(40, 40, 40, 0.7);
-            border-left-color: var(--gold-primary);
-            padding-left: 30px; /* Slight slide effect */
-        }
-
-        .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .role-badge {
-            font-size: 0.65rem;
-            color: var(--gold-primary);
-            border: 1px solid var(--gold-dark);
-            padding: 3px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            display: inline-block;
-        }
-
-        .profile-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 2px;
-        }
-
-        .profile-title {
-            font-size: 0.85rem;
-            color: #aaa;
-            letter-spacing: 0.5px;
-        }
-
-        .expand-btn {
-            font-size: 1.5rem;
-            color: var(--gold-dark);
-            transition: transform 0.5s var(--ease-out);
-        }
-
-        /* Expanded Content */
-        .profile-body {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            transition: all 0.6s var(--ease-out);
-            margin-top: 0;
-        }
-
-        .profile-card.active .profile-body {
-            max-height: 1000px;
-            opacity: 1;
-            margin-top: 25px;
-            padding-top: 25px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .profile-card.active .expand-btn {
-            transform: rotate(180deg);
-            color: var(--gold-primary);
-        }
-
-        /* The Balance Grid (2 Strengths / 2 Duties) */
-        .balance-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .balance-col h4 {
-            font-size: 0.75rem;
-            color: var(--gold-primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            padding-bottom: 5px;
-        }
-
-        .balance-item {
-            margin-bottom: 12px;
-        }
-
-        .balance-label {
-            display: block;
-            color: #fff;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 3px;
-        }
-
-        .balance-desc {
-            display: block;
-            color: #bbb;
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-
-        /* * -----------------------------------------------------------
-         * 8. REVENUE ECOSYSTEM (CENTRALIZED)
-         * -----------------------------------------------------------
-         */
-        .revenue-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-        }
-
-        .revenue-card {
-            background: var(--glass-medium);
-            border: var(--border-fine);
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            transition: transform 0.3s;
-            position: relative;
-        }
-        
-        .revenue-card:hover { 
-            transform: translateY(-5px); 
-            border-color: var(--gold-primary);
-            background: rgba(30,30,30,0.8);
-        }
-
-        .rev-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            display: inline-block;
-            filter: drop-shadow(0 0 10px rgba(212,175,55,0.3));
-        }
-
-        .rev-title {
-            color: var(--gold-light);
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        .rev-desc {
-            font-size: 0.9rem;
-            color: #ccc;
             line-height: 1.6;
         }
 
         /* * -----------------------------------------------------------
-         * 9. ROADMAP (TIMELINE)
+         * 6. STRATEGIC ANALYSIS (COMPARISON)
          * -----------------------------------------------------------
          */
-        .roadmap-container {
-            border-left: 2px solid var(--gold-dark);
-            padding-left: 30px;
-            margin-left: 20px;
+        .strategy-grid { display: grid; gap: 30px; }
+
+        .strategy-card {
+            background: var(--glass-medium);
+            backdrop-filter: blur(15px);
+            border: var(--border-fine);
+            border-radius: 2px;
+            padding: 40px 30px;
             position: relative;
+            transition: transform 0.4s ease;
         }
+        .strategy-card:hover { transform: translateY(-5px); border-color: var(--gold-primary); }
 
-        .roadmap-item {
-            position: relative;
-            margin-bottom: 50px;
-        }
+        .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .card-icon { font-size: 2rem; color: var(--gold-primary); text-shadow: 0 0 15px rgba(212,175,55,0.4); }
+        .card-title { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .card-body { font-size: 0.95rem; color: #ccc; line-height: 1.8; text-align: justify; }
 
-        /* Gold Dot */
-        .roadmap-item::before {
-            content: "";
-            position: absolute;
-            left: -36px;
-            top: 5px;
-            width: 10px;
-            height: 10px;
-            background: var(--bg-deep);
-            border: 2px solid var(--gold-primary);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--gold-primary);
-            transition: background 0.3s;
-        }
-
-        .roadmap-item:hover::before {
-            background: var(--gold-primary);
-        }
-
-        .roadmap-date {
-            font-family: 'Cinzel', serif;
-            color: var(--gold-primary);
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .roadmap-title {
-            font-size: 1.2rem;
-            color: #fff;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .roadmap-text {
-            font-size: 0.9rem;
-            color: #999;
+        .highlight-quote {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(212, 175, 55, 0.08);
+            border-left: 3px solid var(--gold-primary);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--gold-light);
+            font-size: 1.1rem;
         }
 
         /* * -----------------------------------------------------------
-         * 10. FOOTER & ANIMATIONS
+         * 7. THE ALLIANCE (4 PILLARS)
+         * -----------------------------------------------------------
+         */
+        .profile-card {
+            background: linear-gradient(145deg, rgba(25,25,25,0.9), rgba(10,10,10,0.95));
+            border: var(--border-fine);
+            border-left: 4px solid var(--gold-dark);
+            padding: 30px;
+            margin-bottom: 25px;
+            cursor: pointer;
+            transition: all 0.5s var(--ease-out);
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-card:hover { background: rgba(30,30,30,0.95); border-left-color: var(--gold-primary); padding-left: 35px; box-shadow: var(--shadow-glow); }
+
+        .profile-header { display: flex; justify-content: space-between; align-items: center; }
+        .profile-info h3 { font-family: 'Cinzel', serif; font-size: 1.5rem; color: #fff; margin-bottom: 5px; }
+        .profile-role { font-size: 0.7rem; color: var(--gold-primary); border: 1px solid var(--gold-dark); padding: 4px 10px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; }
+        
+        .expand-btn {
+            width: 40px; height: 40px;
+            border: 1px solid var(--gold-dark);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gold-primary);
+            transition: all 0.4s ease;
+        }
+        .profile-card:hover .expand-btn { border-color: var(--gold-primary); background: rgba(212,175,55,0.1); }
+
+        .profile-body {
+            max-height: 0; opacity: 0; overflow: hidden;
+            transition: all 0.8s var(--ease-out);
+        }
+        .profile-card.active .profile-body { max-height: 1200px; opacity: 1; margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .profile-card.active .expand-btn { transform: rotate(180deg); background: var(--gold-primary); color: #000; }
+
+        /* The 2x2 Grid */
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 600px) { .balance-grid { grid-template-columns: 1fr; gap: 20px; } }
+
+        .col-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem; color: var(--gold-primary);
+            text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 15px; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 5px;
+        }
+
+        .balance-item { margin-bottom: 15px; }
+        .b-label { color: #fff; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; display: block; }
+        .b-desc { color: #bbb; font-size: 0.85rem; line-height: 1.5; }
+
+        /* * -----------------------------------------------------------
+         * 8. SHORT DRAMA REVOLUTION (NEW SECTION)
+         * -----------------------------------------------------------
+         */
+        .short-drama-box {
+            background: url('IMG_3638.jpeg') center/cover no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            padding: 60px 30px;
+            border: 1px solid var(--gold-primary);
+            text-align: center;
+            overflow: hidden;
+        }
+        .short-drama-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 1;
+        }
+        .sd-content { position: relative; z-index: 2; }
+        
+        .sd-title { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #fff; margin-bottom: 10px; }
+        .sd-subtitle { color: var(--gold-primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; }
+
+        .sd-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: left; }
+        @media (max-width: 600px) { .sd-grid { grid-template-columns: 1fr; } }
+
+        .sd-item { background: rgba(255,255,255,0.05); padding: 20px; border-left: 2px solid var(--gold-dark); transition: 0.3s; }
+        .sd-item:hover { background: rgba(212,175,55,0.1); border-left-color: var(--gold-primary); }
+        .sd-head { color: #fff; font-weight: bold; margin-bottom: 5px; font-size: 1rem; }
+        .sd-text { color: #aaa; font-size: 0.85rem; }
+
+        /* * -----------------------------------------------------------
+         * 9. REVENUE STREAMS (CENTRALIZED)
+         * -----------------------------------------------------------
+         */
+        .revenue-container { display: flex; flex-direction: column; gap: 20px; }
+        .revenue-row {
+            display: flex; align-items: center; gap: 20px;
+            background: var(--glass-medium); border: var(--border-fine); padding: 25px;
+            transition: 0.3s;
+        }
+        .revenue-row:hover { transform: translateX(10px); border-color: var(--gold-primary); }
+        
+        .rev-icon { font-size: 2.5rem; min-width: 60px; text-align: center; }
+        .rev-info h4 { color: var(--gold-light); font-size: 1.1rem; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
+        .rev-info p { color: #ccc; font-size: 0.9rem; margin: 0; }
+
+        /* * -----------------------------------------------------------
+         * 10. TIMELINE (INTERACTIVE: NORMAL vs RUSH)
+         * -----------------------------------------------------------
+         */
+        .timeline-controls {
+            display: flex; justify-content: center; gap: 15px; margin-bottom: 40px;
+        }
+        .mode-btn {
+            background: transparent; border: 1px solid #555; color: #777;
+            padding: 8px 20px; border-radius: 20px; cursor: pointer;
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .mode-btn.active {
+            border-color: var(--gold-primary); color: var(--gold-primary);
+            box-shadow: 0 0 15px rgba(212,175,55,0.2); font-weight: bold;
+        }
+        .mode-btn[data-mode="rush"]:hover { border-color: #ff4d4d; color: #ff4d4d; }
+        .mode-btn.active[data-mode="rush"] { border-color: #ff4d4d; color: #ff4d4d; box-shadow: 0 0 15px rgba(255,77,77,0.3); }
+
+        .timeline-container {
+            border-left: 2px solid var(--gold-dark);
+            padding-left: 30px; margin-left: 20px; position: relative;
+            transition: all 0.5s ease;
+        }
+        .timeline-container.rush-mode { border-left-color: #ff4d4d; }
+
+        .t-item { position: relative; margin-bottom: 50px; opacity: 1; transition: 0.5s; }
+        .t-item.hidden { display: none; opacity: 0; }
+
+        .t-dot {
+            position: absolute; left: -36px; top: 5px;
+            width: 10px; height: 10px; background: var(--bg-deep);
+            border: 2px solid var(--gold-primary); border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold-primary);
+            transition: 0.3s;
+        }
+        .rush-mode .t-dot { border-color: #ff4d4d; box-shadow: 0 0 10px #ff4d4d; }
+
+        .t-date { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 5px; display: block; color: var(--gold-primary); }
+        .rush-mode .t-date { color: #ff4d4d; }
+
+        .t-title { font-size: 1.2rem; color: #fff; margin-bottom: 5px; font-weight: 600; }
+        .t-desc { font-size: 0.9rem; color: #aaa; }
+
+        /* * -----------------------------------------------------------
+         * 11. FOOTER & UTILS
          * -----------------------------------------------------------
          */
         .footer {
-            text-align: center;
-            padding: 60px 0;
-            margin-top: 60px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center; padding: 80px 0;
+            border-top: 1px solid rgba(255,255,255,0.05); margin-top: 80px;
         }
-        .footer-logo {
-            font-family: 'Cinzel', serif;
-            color: #333;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-        .footer-text {
-            color: #444;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        .footer-brand { font-family: 'Cinzel', serif; font-size: 1.5rem; color: #333; margin-bottom: 10px; }
+        .footer-copy { color: #444; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* Keyframes */
+        /* Animations */
         @keyframes breathe { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
-        @keyframes scrollPulse { 0% { height: 40px; opacity: 0.5; } 50% { height: 70px; opacity: 1; } 100% { height: 40px; opacity: 0.5; } }
-        @keyframes slideUpFade { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes scrollPulse { 0% { height: 40px; opacity: 0.3; } 50% { height: 70px; opacity: 1; } 100% { height: 40px; opacity: 0.3; } }
+        @keyframes heroReveal { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Language Toggle Classes */
+        /* Lang Logic */
         .lang-th { display: none; }
         body.show-th .lang-th { display: block; }
         body.show-th .lang-cn { display: none; }
@@ -573,12 +472,13 @@
 
     <div class="bg-fixed"></div>
     <div class="bg-overlay"></div>
+    <div class="particles"></div>
 
     <div class="nav-bar">
         <div class="brand">EMPIRE 2026</div>
         <button class="lang-btn" onclick="toggleLang()">
-            <span class="lang-cn">切换语言 (TH)</span>
-            <span class="lang-th">LANGUAGE (CN)</span>
+            <span class="lang-cn">TH / CN</span>
+            <span class="lang-th">切换语言 (CN)</span>
         </button>
     </div>
 
@@ -595,7 +495,11 @@
                 <span class="lang-cn">共创 · 共赢 · 新纪元</span>
                 <span class="lang-th">CREATIVITY · FREEDOM · WEALTH</span>
             </span>
-            <div class="scroll-hint"></div>
+            
+            <div class="scroll-indicator">
+                <span class="scroll-text">SCROLL</span>
+                <div class="scroll-line"></div>
+            </div>
         </div>
     </div>
 
@@ -608,36 +512,50 @@
                     <span class="lang-th">STRATEGIC VISION</span>
                 </h2>
                 <p class="section-desc">
-                    <span class="lang-cn">当市场受限，我们开辟新路。</span>
-                    <span class="lang-th">เมื่อประตูหนึ่งปิด เราจะสร้างประตูบานใหม่ที่กว้างกว่าเดิม</span>
+                    <span class="lang-cn">“当一扇门关闭，我们在曼谷打开一扇窗。”</span>
+                    <span class="lang-th">"เมื่อประตูหนึ่งปิดลง เราจะสร้างประตูบานใหม่ที่ยิ่งใหญ่กว่าเดิมที่กรุงเทพฯ"</span>
                 </p>
             </div>
 
-            <div class="strategy-card">
-                <span class="card-icon">⚠️</span>
-                <div class="card-title">
-                    <span class="lang-cn">现状：创作的枷锁</span>
-                    <span class="lang-th">ปัญหา: ทางตันของจินตนาการ</span>
+            <div class="strategy-grid">
+                <div class="strategy-card">
+                    <div class="card-header">
+                        <span class="card-icon">⚠️</span>
+                        <div class="card-title">
+                            <span class="lang-cn">现状：创作的枷锁</span>
+                            <span class="lang-th">THE PAIN: RESTRICTIONS</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="lang-cn">
+                            在国内，灵异题材（Horror）面临严格的“无鬼”审查，导致创作空间极度受限。与此同时，市场进入红海，制作成本逐年攀升，投资回报率（ROI）面临巨大挑战。
+                        </span>
+                        <span class="lang-th">
+                            ในจีน หนังผี (Horror) ติดกฎเหล็ก "ห้ามมีผีจริง" ทำให้จินตนาการถูกจำกัด ตลาดกลายเป็น Red Ocean ที่ต้นทุนสูงลิ่วแต่ความเสี่ยงมหาศาล
+                        </span>
+                    </div>
                 </div>
-                <div class="card-text">
-                    <span class="lang-cn">在国内，灵异与惊悚题材面临严格的审查限制，导致创作空间受挤压。同时，市场竞争激烈，制作成本高昂。</span>
-                    <span class="lang-th">ตลาดจีนมีข้อจำกัดเรื่อง "หนังผี" และ "ความรุนแรง" สูงมาก ทำให้ผู้สร้างไม่สามารถปล่อยของได้เต็มที่ บวกกับต้นทุนการผลิตที่สูงขึ้นทุกปี</span>
-                </div>
-            </div>
 
-            <div class="strategy-card" style="border-left: 3px solid #51cf66;">
-                <span class="card-icon">🚀</span>
-                <div class="card-title" style="color: #51cf66;">
-                    <span class="lang-cn">解药：泰国的自由</span>
-                    <span class="lang-th">ทางออก: อิสรภาพที่เมืองไทย</span>
-                </div>
-                <div class="card-text">
-                    <span class="lang-cn">泰国是亚洲恐怖文化的中心。这里拥有<strong>创作的绝对自由</strong>。我们可以拍摄真正的灵异题材，通过低成本、高品质的制作，反向输出给渴望新鲜内容的全球观众。</span>
-                    <span class="lang-th">ไทยคือ "เมืองหลวงแห่งหนังผี" ที่นี่เรามีอิสระ 100% ในการสร้างสรรค์ ต้นทุนถูกกว่า 30% แต่ได้คุณภาพระดับโลก เราจะเป็นฐานผลิต Content ที่จีนทำไม่ได้</span>
-                </div>
-                <div class="highlight-box">
-                    <span class="lang-cn">“把泰国作为我们的创意特区，打破一切束缚。”</span>
-                    <span class="lang-th">"ใช้ไทยเป็น Creative Asylum เพื่อปลดปล่อยจินตนาการที่ถูกกักขัง"</span>
+                <div class="strategy-card" style="border-left: 4px solid #51cf66;">
+                    <div class="card-header">
+                        <span class="card-icon" style="color: #51cf66;">🚀</span>
+                        <div class="card-title" style="color: #51cf66;">
+                            <span class="lang-cn">解药：泰国的自由</span>
+                            <span class="lang-th">THE CURE: FREEDOM IN THAILAND</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="lang-cn">
+                            泰国是亚洲恐怖文化的中心，拥有<strong>创作的绝对自由</strong>。这里是我们的“创意特区”：成本降低30%，品质国际化。我们可以拍摄真正的灵异大片，反向输出给渴望新鲜内容的全球观众。
+                        </span>
+                        <span class="lang-th">
+                            ไทยคือ "เมืองหลวงแห่งหนังผี" ที่นี่เรามีอิสระ 100% (Creative Asylum) ต้นทุนถูกกว่า 30% แต่ได้งานระดับอินเตอร์ เราจะเป็นฐานผลิตที่จีนทำไม่ได้ แต่คนจีนอยากดู
+                        </span>
+                    </div>
+                    <div class="highlight-quote">
+                        <span class="lang-cn">“在这里，唯一的限制只有想象力。”</span>
+                        <span class="lang-th">"ที่นี่... ขีดจำกัดเดียวคือจินตนาการของคุณ"</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -649,57 +567,41 @@
                     <span class="lang-th">THE CORE ALLIANCE</span>
                 </h2>
                 <p class="section-desc">
-                    <span class="lang-cn">四大支柱 · 各司其职</span>
-                    <span class="lang-th">4 เสาหลักที่สมดุลและแข็งแกร่ง</span>
+                    <span class="lang-cn">四大支柱 · 完美互补</span>
+                    <span class="lang-th">4 เสาหลักที่สมดุลและทรงพลัง</span>
                 </p>
             </div>
 
             <div class="profile-card" onclick="toggleCard(this)">
                 <div class="profile-header">
-                    <div>
-                        <span class="role-badge">CCO / LEADER</span>
-                        <div class="profile-name">PENG YUSI</div>
-                        <div class="profile-title">
-                            <span class="lang-cn">中国网络电影之王</span>
-                            <span class="lang-th">The King of Internet Movies</span>
-                        </div>
+                    <div class="profile-info">
+                        <span class="profile-role">CCO / LEADER</span>
+                        <h3>PENG YUSI</h3>
                     </div>
                     <div class="expand-btn">+</div>
                 </div>
                 <div class="profile-body">
                     <div class="balance-grid">
                         <div class="balance-col">
-                            <h4><span class="lang-cn">核心优势</span><span class="lang-th">STRENGTHS</span></h4>
+                            <div class="col-title"><span class="lang-cn">核心优势</span><span class="lang-th">STRENGTHS</span></div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">敏锐嗅觉</span><span class="lang-th">Market Intuition</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">定义了网大市场的爆款标准。</span>
-                                    <span class="lang-th">ผู้กำหนดมาตรฐานวงการหนังเว็บจีน</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">敏锐嗅觉</span><span class="lang-th">Market Vision</span></span>
+                                <span class="b-desc"><span class="lang-cn">定义了网大市场的爆款标准。</span><span class="lang-th">ผู้กำหนดมาตรฐานวงการหนังเว็บจีน</span></span>
                             </div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">艺术灵魂</span><span class="lang-th">Artistic Soul</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">卓越的演技与导演才华。</span>
-                                    <span class="lang-th">พรสวรรค์ทั้งการแสดงและกำกับ</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">艺术灵魂</span><span class="lang-th">Artistic Soul</span></span>
+                                <span class="b-desc"><span class="lang-cn">卓越的演技与导演才华。</span><span class="lang-th">พรสวรรค์ทั้งการแสดงและกำกับ</span></span>
                             </div>
                         </div>
                         <div class="balance-col">
-                            <h4><span class="lang-cn">主要职责</span><span class="lang-th">KEY DUTIES</span></h4>
+                            <div class="col-title"><span class="lang-cn">主要职责</span><span class="lang-th">RESPONSIBILITIES</span></div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">内容把控</span><span class="lang-th">Content Direction</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">决定剧本方向与制作水准。</span>
-                                    <span class="lang-th">กำหนดทิศทางและคุณภาพของหนัง</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">内容把控</span><span class="lang-th">Content Direction</span></span>
+                                <span class="b-desc"><span class="lang-cn">决定古装/恐怖赛道的方向。</span><span class="lang-th">คุมทิศทางหนังผี/พีเรียด</span></span>
                             </div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">中国发行</span><span class="lang-th">Distribution</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">打通国内顶级平台资源。</span>
-                                    <span class="lang-th">เชื่อมต่อ Platform ยักษ์ใหญ่ในจีน</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">中国发行</span><span class="lang-th">Distribution</span></span>
+                                <span class="b-desc"><span class="lang-cn">打通国内顶级平台资源。</span><span class="lang-th">เชื่อมต่อ Platform ยักษ์ใหญ่ในจีน</span></span>
                             </div>
                         </div>
                     </div>
@@ -708,50 +610,34 @@
 
             <div class="profile-card" onclick="toggleCard(this)">
                 <div class="profile-header">
-                    <div>
-                        <span class="role-badge">CEO / STRATEGIST</span>
-                        <div class="profile-name">NARIN LEELAPORN</div>
-                        <div class="profile-title">
-                            <span class="lang-cn">战略架构师 & 法律顾问</span>
-                            <span class="lang-th">Strategic & Legal Counsel</span>
-                        </div>
+                    <div class="profile-info">
+                        <span class="profile-role">CEO / STRATEGIST</span>
+                        <h3>NARIN LEELAPORN</h3>
                     </div>
                     <div class="expand-btn">+</div>
                 </div>
                 <div class="profile-body">
                     <div class="balance-grid">
                         <div class="balance-col">
-                            <h4><span class="lang-cn">核心优势</span><span class="lang-th">STRENGTHS</span></h4>
+                            <div class="col-title"><span class="lang-cn">核心优势</span><span class="lang-th">STRENGTHS</span></div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">逻辑天才 (INTP)</span><span class="lang-th">Strategic Logic</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">国家级数学冠军，擅长系统布局。</span>
-                                    <span class="lang-th">แชมป์คณิตศาสตร์ ผู้เชี่ยวชาญการวางระบบ</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">逻辑天才 (INTP)</span><span class="lang-th">Strategic Mind</span></span>
+                                <span class="b-desc"><span class="lang-cn">国家级数学冠军，擅长系统布局。</span><span class="lang-th">แชมป์คณิตศาสตร์ ผู้เชี่ยวชาญการวางระบบ</span></span>
                             </div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">法律专家</span><span class="lang-th">Legal Expert</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">深厚的法律背景，规避一切风险。</span>
-                                    <span class="lang-th">นักกฎหมายผู้ปิดทุกความเสี่ยงทางธุรกิจ</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">法律专家</span><span class="lang-th">Legal Expert</span></span>
+                                <span class="b-desc"><span class="lang-cn">深厚的法律背景，规避一切风险。</span><span class="lang-th">นักกฎหมายผู้ปิดทุกความเสี่ยงทางธุรกิจ</span></span>
                             </div>
                         </div>
                         <div class="balance-col">
-                            <h4><span class="lang-cn">主要职责</span><span class="lang-th">KEY DUTIES</span></h4>
+                            <div class="col-title"><span class="lang-cn">主要职责</span><span class="lang-th">RESPONSIBILITIES</span></div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">体系搭建</span><span class="lang-th">System Architecture</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">建立安全、高效的公司运营架构。</span>
-                                    <span class="lang-th">สร้างโครงสร้างบริษัทที่มั่นคง</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">公司脊梁</span><span class="lang-th">The Backbone</span></span>
+                                <span class="b-desc"><span class="lang-cn">建立安全高效的运营架构。</span><span class="lang-th">สร้างโครงสร้างบริษัทที่มั่นคง</span></span>
                             </div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">合规风控</span><span class="lang-th">Compliance</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">确保每一分投资的安全。</span>
-                                    <span class="lang-th">ดูแลความปลอดภัยของเงินลงทุนและสัญญา</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">资源整合</span><span class="lang-th">Resource Integration</span></span>
+                                <span class="b-desc"><span class="lang-cn">为团队扫清一切障碍。</span><span class="lang-th">เคลียร์ปัญหาและหาทรัพยากร</span></span>
                             </div>
                         </div>
                     </div>
@@ -760,50 +646,34 @@
 
             <div class="profile-card" onclick="toggleCard(this)">
                 <div class="profile-header">
-                    <div>
-                        <span class="role-badge">ICON / HOSPITALITY</span>
-                        <div class="profile-name">CHIEKO SAITO</div>
-                        <div class="profile-title">
-                            <span class="lang-cn">全能艺人 & 首席体验官</span>
-                            <span class="lang-th">The Viral Queen & CXO</span>
-                        </div>
+                    <div class="profile-info">
+                        <span class="profile-role">ICON / MANAGER</span>
+                        <h3>CHIEKO SAITO</h3>
                     </div>
                     <div class="expand-btn">+</div>
                 </div>
                 <div class="profile-body">
                     <div class="balance-grid">
                         <div class="balance-col">
-                            <h4><span class="lang-cn">核心优势</span><span class="lang-th">STRENGTHS</span></h4>
+                            <div class="col-title"><span class="lang-cn">核心优势</span><span class="lang-th">STRENGTHS</span></div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">百变魅力</span><span class="lang-th">Versatility</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">精通三语，能驾驭恐怖与高贵角色。</span>
-                                    <span class="lang-th">พูดได้ 3 ภาษา รับบทได้หลากหลายและทุ่มเท</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">百变魅力</span><span class="lang-th">Versatility</span></span>
+                                <span class="b-desc"><span class="lang-cn">精通三语，能驾驭恐怖与高贵角色。</span><span class="lang-th">พูดได้ 3 ภาษา รับบทได้หลากหลายและทุ่มเท</span></span>
                             </div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">极致服务</span><span class="lang-th">Service Mind</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">懂生活，懂品味，懂人心。</span>
-                                    <span class="lang-th">เข้าใจศิลปะการดูแลคนระดับสูง</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">管理气场</span><span class="lang-th">Authority</span></span>
+                                <span class="b-desc"><span class="lang-cn">擅长“拿捏”人心，管理艺人。</span><span class="lang-th">มีบารมีในการคุมคนและบริหารศิลปิน</span></span>
                             </div>
                         </div>
                         <div class="balance-col">
-                            <h4><span class="lang-cn">主要职责</span><span class="lang-th">KEY DUTIES</span></h4>
+                            <div class="col-title"><span class="lang-cn">主要职责</span><span class="lang-th">RESPONSIBILITIES</span></div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">幕前演出</span><span class="lang-th">Star Performer</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">作为项目的核心面孔与流量担当。</span>
-                                    <span class="lang-th">เป็นนักแสดงนำและหน้าตาของโปรเจกต์</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">艺人总监</span><span class="lang-th">Head of Artist Mgmt</span></span>
+                                <span class="b-desc"><span class="lang-cn">管理旗下艺人，立威并建立秩序。</span><span class="lang-th">หัวหน้าฝ่ายดูแลศิลปิน</span></span>
                             </div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">高端接待</span><span class="lang-th">VVIP Hospitality</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">负责资方与明星的顶级线下体验。</span>
-                                    <span class="lang-th">ดูแลประสบการณ์ VVIP ให้แขกประทับใจ</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">高端接待</span><span class="lang-th">VVIP Hospitality</span></span>
+                                <span class="b-desc"><span class="lang-cn">负责资方与明星的顶级体验。</span><span class="lang-th">ดูแลประสบการณ์ VVIP ให้แขกประทับใจ</span></span>
                             </div>
                         </div>
                     </div>
@@ -812,50 +682,34 @@
 
             <div class="profile-card" onclick="toggleCard(this)">
                 <div class="profile-header">
-                    <div>
-                        <span class="role-badge">CREATIVE / BUSINESS</span>
-                        <div class="profile-name">NANA (LI QINYAO)</div>
-                        <div class="profile-title">
-                            <span class="lang-cn">创意总监 & 商务主理</span>
-                            <span class="lang-th">Creative Director & Partner</span>
-                        </div>
+                    <div class="profile-info">
+                        <span class="profile-role">CREATIVE / BUSINESS</span>
+                        <h3>NANA (LI QINYAO)</h3>
                     </div>
                     <div class="expand-btn">+</div>
                 </div>
                 <div class="profile-body">
                     <div class="balance-grid">
                         <div class="balance-col">
-                            <h4><span class="lang-cn">核心优势</span><span class="lang-th">STRENGTHS</span></h4>
+                            <div class="col-title"><span class="lang-cn">核心优势</span><span class="lang-th">STRENGTHS</span></div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">创作才华</span><span class="lang-th">Creative Talent</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">不仅演戏，更通晓编剧与导演。</span>
-                                    <span class="lang-th">มีความสามารถทั้งกำกับและเขียนบท</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">全能创作</span><span class="lang-th">Creative Talent</span></span>
+                                <span class="b-desc"><span class="lang-cn">不仅演戏，更通晓编剧与导演。</span><span class="lang-th">มีความสามารถทั้งกำกับและเขียนบท</span></span>
                             </div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">商业敏锐</span><span class="lang-th">Business Sense</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">深刻理解短视频商业变现逻辑。</span>
-                                    <span class="lang-th">เข้าใจโมเดลธุรกิจยุคใหม่ (Short Video)</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">商业敏锐</span><span class="lang-th">Business Sense</span></span>
+                                <span class="b-desc"><span class="lang-cn">深刻理解短剧商业变现逻辑。</span><span class="lang-th">เข้าใจโมเดลธุรกิจยุคใหม่ (Short Video)</span></span>
                             </div>
                         </div>
                         <div class="balance-col">
-                            <h4><span class="lang-cn">主要职责</span><span class="lang-th">KEY DUTIES</span></h4>
+                            <div class="col-title"><span class="lang-cn">主要职责</span><span class="lang-th">RESPONSIBILITIES</span></div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">短剧主理</span><span class="lang-th">Short Drama Lead</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">全权负责短剧的内容创作与把控。</span>
-                                    <span class="lang-th">ดูแลการผลิตซีรีส์สั้นทั้งระบบ</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">短剧主理</span><span class="lang-th">Short Drama Lead</span></span>
+                                <span class="b-desc"><span class="lang-cn">全权负责现代/竖屏短剧内容。</span><span class="lang-th">ดูแลการผลิตซีรีส์สั้นทั้งระบบ</span></span>
                             </div>
                             <div class="balance-item">
-                                <span class="balance-label"><span class="lang-cn">商务招商</span><span class="lang-th">Sponsorship</span></span>
-                                <span class="balance-desc">
-                                    <span class="lang-cn">负责品牌植入与商业化落地。</span>
-                                    <span class="lang-th">ดูแลการหาสปอนเซอร์และรายได้โฆษณา</span>
-                                </span>
+                                <span class="b-label"><span class="lang-cn">商务招商</span><span class="lang-th">Sponsorship</span></span>
+                                <span class="b-desc"><span class="lang-cn">负责品牌植入与商业化落地。</span><span class="lang-th">ดูแลการหาสปอนเซอร์และรายได้โฆษณา</span></span>
                             </div>
                         </div>
                     </div>
@@ -867,49 +721,100 @@
         <div class="section">
             <div class="section-header">
                 <h2>
+                    <span class="lang-cn">短剧革命</span>
+                    <span class="lang-th">THE SHORT DRAMA REVOLUTION</span>
+                </h2>
+                <p class="section-desc">
+                    <span class="lang-cn">高频 · 爆款 · 变现</span>
+                    <span class="lang-th">เร็ว · ดัง · รวย</span>
+                </p>
+            </div>
+
+            <div class="short-drama-box">
+                <div class="short-drama-overlay"></div>
+                <div class="sd-content">
+                    <div class="sd-title">VERTICAL DOMINANCE</div>
+                    <div class="sd-subtitle">POWERED BY NANA</div>
+                    
+                    <div class="sd-grid">
+                        <div class="sd-item">
+                            <div class="sd-head">🎬 <span class="lang-cn">内容生产</span><span class="lang-th">PRODUCTION</span></div>
+                            <div class="sd-text">
+                                <span class="lang-cn">利用泰国场景优势，打造差异化视觉。</span>
+                                <span class="lang-th">ใช้โลเคชั่นไทยสร้างภาพจำใหม่ที่ไม่เหมือนใคร</span>
+                            </div>
+                        </div>
+                        <div class="sd-item">
+                            <div class="sd-head">⚡ <span class="lang-cn">极速迭代</span><span class="lang-th">SPEED</span></div>
+                            <div class="sd-text">
+                                <span class="lang-cn">一周一更，快速测试市场反应。</span>
+                                <span class="lang-th">ปล่อยงานไว วัดผลเร็ว ปรับตัวทันตลาด</span>
+                            </div>
+                        </div>
+                        <div class="sd-item">
+                            <div class="sd-head">💰 <span class="lang-cn">商业闭环</span><span class="lang-th">MONETIZE</span></div>
+                            <div class="sd-text">
+                                <span class="lang-cn">品牌植入 + 付费观看 + 电商带货。</span>
+                                <span class="lang-th">Tie-in สินค้า + เก็บค่าดู + ขายของออนไลน์</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2>
                     <span class="lang-cn">商业生态</span>
                     <span class="lang-th">REVENUE STREAMS</span>
                 </h2>
                 <p class="section-desc">
-                    <span class="lang-cn">三大引擎 · 汇入中央</span>
-                    <span class="lang-th">3 ท่อรายได้หลักสู่กองกลาง</span>
+                    <span class="lang-cn">资金汇入中央 · 共享繁荣</span>
+                    <span class="lang-th">เงินไหลเข้ากองกลางเพื่อความมั่นคง</span>
                 </p>
             </div>
 
-            <div class="revenue-grid">
-                <div class="revenue-card">
-                    <span class="rev-icon">🎬</span>
-                    <div class="rev-title">
-                        <span class="lang-cn">影视版权 (IP)</span>
-                        <span class="lang-th">Content Revenue</span>
-                    </div>
-                    <div class="rev-desc">
-                        <span class="lang-cn">长视频平台的票房分账、海外版权销售、以及IP衍生授权。</span>
-                        <span class="lang-th">รายได้จากส่วนแบ่งค่าลิขสิทธิ์หนัง (Platform Share) และการขายสิทธิ์ทั่วโลก</span>
-                    </div>
-                </div>
-
-                <div class="revenue-card">
-                    <span class="rev-icon">🛍️</span>
-                    <div class="rev-title">
-                        <span class="lang-cn">品牌与广告</span>
-                        <span class="lang-th">Sponsorship & Ads</span>
-                    </div>
-                    <div class="rev-desc">
-                        <span class="lang-cn">利用短剧高流量进行品牌植入、广告合作及跨境电商带货。</span>
-                        <span class="lang-th">รายได้จากการ Tie-in สินค้าในซีรีส์ และค่าโฆษณาจากแบรนด์สินค้า</span>
+            <div class="revenue-container">
+                <div class="revenue-row">
+                    <div class="rev-icon">🎬</div>
+                    <div class="rev-info">
+                        <h4>
+                            <span class="lang-cn">影视版权 (Content IP)</span>
+                            <span class="lang-th">รายได้จากลิขสิทธิ์หนัง</span>
+                        </h4>
+                        <p>
+                            <span class="lang-cn">长视频平台的票房分账 (Revenue Share)、海外版权销售、以及IP衍生授权。</span>
+                            <span class="lang-th">ส่วนแบ่งรายได้จาก Platform จีน (iQIYI/Tencent) และการขายสิทธิ์ฉายทั่วโลก</span>
+                        </p>
                     </div>
                 </div>
 
-                <div class="revenue-card">
-                    <span class="rev-icon">🥂</span>
-                    <div class="rev-title">
-                        <span class="lang-cn">高端接待</span>
-                        <span class="lang-th">VIP Services</span>
+                <div class="revenue-row">
+                    <div class="rev-icon">🛍️</div>
+                    <div class="rev-info">
+                        <h4>
+                            <span class="lang-cn">品牌与广告 (Sponsorship)</span>
+                            <span class="lang-th">สปอนเซอร์ & โฆษณา</span>
+                        </h4>
+                        <p>
+                            <span class="lang-cn">利用短剧高流量进行品牌植入、广告合作及跨境电商带货。</span>
+                            <span class="lang-th">รายได้จากการ Tie-in สินค้าในซีรีส์ และค่าโฆษณาจากแบรนด์สินค้า</span>
+                        </p>
                     </div>
-                    <div class="rev-desc">
-                        <span class="lang-cn">整合游艇、豪车、餐饮资源，为明星资方提供付费顶级接待。</span>
-                        <span class="lang-th">รายได้จากการขายบริการ VVIP (รถ/เรือ/อาหาร) ให้กลุ่มดาราและนักลงทุน</span>
+                </div>
+
+                <div class="revenue-row">
+                    <div class="rev-icon">🥂</div>
+                    <div class="rev-info">
+                        <h4>
+                            <span class="lang-cn">高端接待 (VIP Services)</span>
+                            <span class="lang-th">บริการดูแล VVIP</span>
+                        </h4>
+                        <p>
+                            <span class="lang-cn">整合游艇、豪车、餐饮资源，为明星资方提供付费顶级接待。</span>
+                            <span class="lang-th">รายได้จากการขายบริการ VVIP (รถ/เรือ/อาหาร) ให้กลุ่มดาราและนักลงทุน</span>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -923,46 +828,77 @@
                 </h2>
             </div>
 
-            <div class="roadmap-container">
-                <div class="roadmap-item">
-                    <span class="roadmap-date">JAN 2026</span>
-                    <div class="roadmap-title">
+            <div class="timeline-controls">
+                <button class="mode-btn active" data-mode="normal" onclick="setTimeline('normal')">
+                    <span class="lang-cn">稳健模式 (Normal)</span>
+                    <span class="lang-th">แผนเติบโตปกติ</span>
+                </button>
+                <button class="mode-btn" data-mode="rush" onclick="setTimeline('rush')">
+                    <span class="lang-cn">极速模式 (Blitz)</span>
+                    <span class="lang-th">แผนรุกฆาต (เร่งด่วน)</span>
+                </button>
+            </div>
+
+            <div class="timeline-container" id="timeline">
+                
+                <div class="t-item">
+                    <div class="t-dot"></div>
+                    <span class="t-date">JAN 2026</span>
+                    <div class="t-title">
                         <span class="lang-cn">🎂 生日周契约</span>
                         <span class="lang-th">The Birthday Pact</span>
                     </div>
-                    <div class="roadmap-text">
+                    <div class="t-desc">
                         <span class="lang-cn">在共同的生日周，正式签署合资协议。</span>
                         <span class="lang-th">เซ็นสัญญาจัดตั้งบริษัทในสัปดาห์วันเกิด</span>
                     </div>
                 </div>
-                <div class="roadmap-item">
-                    <span class="roadmap-date">Q2 2026</span>
-                    <div class="roadmap-title">
+
+                <div class="t-item mode-normal">
+                    <div class="t-dot"></div>
+                    <span class="t-date">Q2 2026</span>
+                    <div class="t-title">
                         <span class="lang-cn">🚀 筹备与招商</span>
                         <span class="lang-th">Development Phase</span>
                     </div>
-                    <div class="roadmap-text">
+                    <div class="t-desc">
                         <span class="lang-cn">启动短剧剧本与招商，打磨大电影剧本。</span>
                         <span class="lang-th">เริ่มเขียนบทซีรีส์/หาลูกค้า และเตรียมงานหนังใหญ่</span>
                     </div>
                 </div>
-                <div class="roadmap-item">
-                    <span class="roadmap-date">Q3 2026</span>
-                    <div class="roadmap-title">
-                        <span class="lang-cn">🎬 全面开机</span>
-                        <span class="lang-th">Action!</span>
+
+                <div class="t-item mode-rush hidden">
+                    <div class="t-dot"></div>
+                    <span class="t-date">FEB 2026 (RUSH)</span>
+                    <div class="t-title">
+                        <span class="lang-cn">⚡ 闪电开机</span>
+                        <span class="lang-th">Immediate Action</span>
                     </div>
-                    <div class="roadmap-text">
-                        <span class="lang-cn">大电影与短剧同步在泰国开拍。</span>
-                        <span class="lang-th">เปิดกล้องถ่ายทำเต็มรูปแบบ</span>
+                    <div class="t-desc">
+                        <span class="lang-cn">直接启动首部短剧拍摄，边拍边招商。</span>
+                        <span class="lang-th">เปิดกล้องซีรีส์สั้นเรื่องแรกทันที ถ่ายไปขายไป</span>
                     </div>
                 </div>
+
+                <div class="t-item">
+                    <div class="t-dot"></div>
+                    <span class="t-date">Q3 2026</span>
+                    <div class="t-title">
+                        <span class="lang-cn">🎬 全面爆发</span>
+                        <span class="lang-th">Full Scale Launch</span>
+                    </div>
+                    <div class="t-desc">
+                        <span class="lang-cn">大电影与短剧同步在泰国开拍/上线。</span>
+                        <span class="lang-th">เปิดกล้องหนังใหญ่ และปล่อยซีรีส์สั้นลงตลาด</span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <div class="footer">
-            <div class="footer-logo">THE EMPIRE</div>
-            <div class="footer-text">DESIGNED FOR THE ALLIANCE</div>
+            <div class="footer-brand">THE EMPIRE</div>
+            <div class="footer-copy">CONSTRUCTED BY THE ALLIANCE</div>
         </div>
 
     </div>
@@ -982,14 +918,39 @@
             card.classList.toggle('active');
         }
 
-        // Scroll Animation Observer
+        // Timeline Logic
+        function setTimeline(mode) {
+            const container = document.getElementById('timeline');
+            const btns = document.querySelectorAll('.mode-btn');
+            
+            // Update Buttons
+            btns.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.mode-btn[data-mode="${mode}"]`).classList.add('active');
+
+            // Update Line Color
+            if (mode === 'rush') container.classList.add('rush-mode');
+            else container.classList.remove('rush-mode');
+
+            // Toggle Items
+            document.querySelectorAll('.mode-normal').forEach(el => {
+                if(mode === 'normal') { el.classList.remove('hidden'); setTimeout(()=>el.style.opacity=1, 50); }
+                else { el.style.opacity=0; setTimeout(()=>el.classList.add('hidden'), 300); }
+            });
+
+            document.querySelectorAll('.mode-rush').forEach(el => {
+                if(mode === 'rush') { el.classList.remove('hidden'); setTimeout(()=>el.style.opacity=1, 50); }
+                else { el.style.opacity=0; setTimeout(()=>el.classList.add('hidden'), 300); }
+            });
+        }
+
+        // Scroll Animation
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.15 });
+        }, { threshold: 0.1 });
 
         document.querySelectorAll('.section').forEach(sec => {
             observer.observe(sec);
