@@ -20,7 +20,7 @@
             --gold-glow: #F9EAC3;
             --gold-dim: #8A702A;
             --bg-deep: #050505;
-            --glass: rgba(18, 18, 18, 0.9);
+            --glass: rgba(18, 18, 18, 0.95);
             --border: 1px solid rgba(212, 175, 55, 0.3);
             --text-main: #F4F4F4;
             --text-muted: #A0A0A0;
@@ -28,32 +28,29 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Noto Serif SC', 'Noto Serif Thai', serif; line-height: 1.8; overflow-x: hidden; padding-bottom: 120px; }
+        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Noto Serif SC', 'Noto Serif Thai', serif; line-height: 1.9; overflow-x: hidden; padding-bottom: 120px; }
 
         /* * ==========================================================================
-         * 2. HERO SECTION (FIXED LAYOUT: TEXT TOP / FACES BOTTOM)
+         * 2. HERO SECTION (TEXT TOP / FACES BOTTOM)
          * ==========================================================================
          */
         .hero {
             height: 100vh; width: 100%; position: relative;
             display: flex; flex-direction: column; 
-            justify-content: flex-start; /* ดันข้อความไปไว้ด้านบน */
+            justify-content: flex-start;
             align-items: center; 
-            padding-top: 15vh; /* พื้นที่ด้านบนสำหรับข้อความ (ตรงพลุ) */
+            padding-top: 15vh; /* ข้อความอยู่ด้านบน ตรงพลุ */
             overflow: hidden;
         }
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-            /* ใช้รูปทีมงาน */
             background: url('IMG_3637.jpeg') center bottom no-repeat;
             background-size: cover;
-            /* Animation ช้าๆ ให้ดูมีชีวิต */
             animation: slowPan 30s infinite alternate;
         }
-        /* Gradient ด้านบนเพื่อให้ตัวหนังสืออ่านง่ายทับพลุ */
         .hero-gradient-top {
-            position: absolute; top: 0; left: 0; width: 100%; height: 50%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%);
+            position: absolute; top: 0; left: 0; width: 100%; height: 55%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
             z-index: 0;
         }
         
@@ -63,16 +60,16 @@
         }
         
         h1 {
-            font-family: 'Cinzel', serif; font-size: 2.8rem; line-height: 1.2; margin-bottom: 15px;
+            font-family: 'Cinzel', serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 15px;
             background: linear-gradient(to bottom, #fff 20%, var(--gold) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-transform: uppercase; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.8));
+            text-transform: uppercase; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9));
         }
         .hero-sub {
             font-family: 'Montserrat', sans-serif; font-size: 0.75rem; letter-spacing: 3px;
             color: #fff; text-transform: uppercase; border-top: 1px solid var(--gold);
             border-bottom: 1px solid var(--gold); padding: 8px 0; display: inline-block;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
         }
 
         .scroll-hint {
@@ -107,7 +104,7 @@
         }
 
         /* * ==========================================================================
-         * 4. MANIFESTO CARD (FAMILY FIRST)
+         * 4. MANIFESTO CARD (FULL TEXT)
          * ==========================================================================
          */
         .manifesto-card {
@@ -116,7 +113,7 @@
             padding: 40px 30px; border-radius: 8px; margin-bottom: 60px;
             position: relative; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
-        .manifesto-card p { font-size: 1.05rem; color: #ccc; line-height: 1.9; text-align: justify; margin-bottom: 20px; }
+        .manifesto-card p { font-size: 1.05rem; color: #ccc; line-height: 2; text-align: justify; margin-bottom: 20px; }
         .manifesto-card strong { color: var(--gold-glow); font-weight: 600; }
         .signature { text-align: right; margin-top: 20px; font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.1rem; }
 
@@ -133,7 +130,7 @@
         .st-head { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
         .st-icon { font-size: 2.5rem; }
         .st-title { font-family: 'Cinzel', serif; font-size: 1.3rem; color: #fff; text-transform: uppercase; }
-        .st-desc { font-size: 1rem; color: #bbb; line-height: 1.7; }
+        .st-desc { font-size: 1rem; color: #bbb; line-height: 1.8; }
 
         /* * ==========================================================================
          * 6. UNFAIR ADVANTAGE (WHY THAILAND)
@@ -147,31 +144,41 @@
         }
         .adv-icon { font-size: 1.8rem; color: var(--gold); margin-top: -5px; }
         .adv-content h4 { color: #fff; margin-bottom: 5px; font-size: 1rem; font-weight: bold; }
-        .adv-content p { color: #999; font-size: 0.9rem; margin: 0; line-height: 1.6; }
+        .adv-content p { color: #999; font-size: 0.95rem; margin: 0; line-height: 1.6; }
 
         /* * ==========================================================================
-         * 7. NAVIGATION BAR (BOTTOM)
+         * 7. THE 4 PILLARS (TEAM INTRO - SENIORITY ORDER)
          * ==========================================================================
          */
-        .nav-bar {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 450px; z-index: 1000;
-            background: rgba(10, 10, 10, 0.95); border: var(--border);
-            backdrop-filter: blur(15px); border-radius: 50px;
-            display: flex; justify-content: space-between; padding: 6px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        .pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 30px; }
+        .pillar-card {
+            background: linear-gradient(135deg, rgba(30,30,30,0.8), rgba(10,10,10,0.9));
+            border: 1px solid rgba(212,175,55,0.15); padding: 20px; border-radius: 6px;
+            text-align: center; transition: 0.3s;
         }
-        .nav-item {
-            flex: 1; text-align: center; padding: 12px 0;
-            color: #666; text-decoration: none; font-family: 'Montserrat', sans-serif;
-            font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
-            border-radius: 40px; transition: all 0.3s;
-        }
-        .nav-item.active { background: var(--gold); color: #000; box-shadow: 0 0 15px rgba(212,175,55,0.4); }
-        .nav-item:hover:not(.active) { color: var(--gold); }
+        .pillar-card:hover { border-color: var(--gold); background: rgba(40,40,40,0.9); }
+        .p-rank { font-size: 0.7rem; color: var(--gold-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; display: block; }
+        .p-name { font-family: 'Cinzel', serif; font-size: 1.1rem; color: #fff; font-weight: 700; margin-bottom: 5px; }
+        .p-role { font-size: 0.8rem; color: var(--gold); font-weight: bold; }
+        .p-desc { font-size: 0.8rem; color: #888; margin-top: 8px; line-height: 1.5; }
 
         /* * ==========================================================================
-         * 8. UTILS & ANIMATION
+         * 8. NAVIGATION BUTTONS
+         * ==========================================================================
+         */
+        .nav-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 50px; }
+        .nav-card-link {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(255,255,255,0.05); padding: 25px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1); text-decoration: none; transition: 0.3s;
+        }
+        .nav-card-link:hover { border-color: var(--gold); background: rgba(212,175,55,0.1); }
+        .nav-text h3 { color: #fff; font-size: 1.2rem; margin: 0; font-family: 'Cinzel', serif; }
+        .nav-text p { color: #888; font-size: 0.8rem; margin: 5px 0 0 0; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-arrow { font-size: 1.5rem; color: var(--gold); }
+
+        /* * ==========================================================================
+         * 9. UTILS & ANIMATION
          * ==========================================================================
          */
         .lang-btn {
@@ -200,11 +207,11 @@
         
         <div class="hero-content">
             <h1>
-                <span class="lang-cn">从曼谷到北京</span>
-                <span class="lang-th">FROM BANGKOK TO BEIJING</span>
+                <span class="lang-cn">从曼谷到北京与杭州</span>
+                <span class="lang-th">FROM BANGKOK TO BEIJING & HANGZHOU</span>
             </h1>
             <div class="hero-sub">
-                <span class="lang-cn">信任 · 家人 · 帝国</span>
+                <span class="lang-cn">跨越国界的誓言</span>
                 <span class="lang-th">TRUST · FAMILY · EMPIRE</span>
             </div>
         </div>
@@ -221,21 +228,23 @@
             <div class="manifesto-card">
                 <p>
                     <span class="lang-cn">
-                        “娜娜，这一周在曼谷，我们经历的不仅仅是旅行，而是<strong>家人的重逢</strong>。<br><br>
-                        我们一起举杯，一起在游戏中并肩作战，<strong>喝到酩酊大醉，像家人一样互相照顾直到天亮。</strong>
+                        “致我的兄弟姐妹们：<br>
+                        上周在曼谷，我们经历的不仅仅是旅行，而是<strong>灵魂的重逢</strong>。<br><br>
+                        我们一起在霓虹灯下举杯，一起在游戏中并肩作战，<strong>我们痛饮至深夜，像真正的家人一样互相照顾，直到在彼此身边安然入睡，再一同迎接清晨的阳光。</strong><br>
                         这种超越血缘的羁绊，比任何商业合同都更坚固。<br><br>
-                        这个帝国，不仅是为了赚钱，更是为了让我们四个人——<strong>彭哥、我、嫂子、和你</strong>，
-                        在这个复杂的商业世界里，拥有一个永远可以把后背交给对方的‘家’。”
+                        这个交易的达成，不是因为利益，而是因为<strong>‘人’</strong>。因为我们彼此相爱，彼此信任。<br>
+                        这个帝国，是为我们四个人——<strong>彭哥、我、嫂子、和娜娜</strong>建立的堡垒。在这个复杂的世界里，我们就是彼此最坚实的后盾。”
                     </span>
                     <span class="lang-th">
-                        "นานา สัปดาห์ที่ผ่านมาในกรุงเทพฯ ไม่ใช่แค่การเที่ยว แต่คือการกลับมาพบกันของ <strong>ครอบครัว</strong><br><br>
-                        เราชนแก้วกัน ต่อสู้ในเกมด้วยกัน <strong>ดื่มกันจนหลับไปข้างกัน และดูแลกันจนตื่นมาสดชื่นเหมือนคนในบ้าน</strong>
-                        ความผูกพันนี้แข็งแกร่งยิ่งกว่าสัญญาธุรกิจใดๆ<br><br>
-                        อาณาจักรนี้ไม่ได้สร้างเพื่อเงินเท่านั้น แต่สร้างเพื่อพวกเรา 4 คน—<strong>พี่เผิง พี่ ซ้อ และเธอ</strong>
-                        ให้มี 'บ้าน' ที่เราสามารถฝากชีวิตไว้ให้กันและกันได้ ในโลกธุรกิจที่ซับซ้อนใบนี้"
+                        "ถึง พี่น้องของฉันทุกคน...<br>
+                        สัปดาห์ที่ผ่านมาในกรุงเทพฯ ไม่ใช่แค่การท่องเที่ยว แต่คือการกลับมาพบกันของ <strong>จิตวิญญาณ</strong><br><br>
+                        เราชนแก้วกันท่ามกลางแสงสี ต่อสู้เคียงบ่าเคียงไหล่ในเกม <strong>เราดื่มกันจนหลับไปข้างกัน และดูแลกันจนตื่นมาสดชื่นเหมือนคนในครอบครัวเดียวกัน</strong><br>
+                        ความผูกพันนี้แข็งแกร่งและลึกซึ้งยิ่งกว่าสัญญาธุรกิจฉบับไหนๆ<br><br>
+                        ดีลนี้เกิดขึ้นไม่ใช่เพราะผลประโยชน์ แต่เกิดขึ้นเพราะ <strong>'คน'</strong> เพราะเรารักและเชื่อใจกัน<br>
+                        อาณาจักรนี้คือป้อมปราการที่สร้างขึ้นเพื่อพวกเรา 4 คน—<strong>พี่เผิง, ผม, ซ้อ, และนานา</strong> เพื่อให้เรามีที่พึ่งพิงให้กันและกันเสมอ"
                     </span>
                 </p>
-                <div class="signature">- Teem (Narin) -</div>
+                <div class="signature">- Narin (Teem) -</div>
             </div>
         </div>
 
@@ -252,18 +261,18 @@
             <div class="strategy-box">
                 <div class="st-head">
                     <span class="st-icon">🚀</span>
-                    <div class="st-title"><span class="lang-cn">拥抱大众市场</span><span class="lang-th">MASS MARKET DOMINANCE</span></div>
+                    <div class="st-title"><span class="lang-cn">拥抱大众市场</span><span class="lang-th">MASS MARKET REVOLUTION</span></div>
                 </div>
                 <div class="st-desc">
                     <span class="lang-cn">
-                        你的建议点醒了我。我们不应局限于小众题材，而应进军<strong>短剧 (Short Drama)</strong> 的浩瀚蓝海。<br>
-                        我们要做的内容，不是为了猎奇，而是要<strong>“让人欲罢不能” (Binge-worthy)</strong>。<br>
-                        节奏快、爽点足、画面美——这就是我们在这个时代致胜的武器。
+                        我们已彻底觉醒。不应局限于小众题材，而应进军<strong>短剧 (Short Drama)</strong> 的浩瀚蓝海。<br>
+                        我们将暂时放下“惊悚/灵异”（作为秘密武器），全力主攻大众最渴望的题材。<br>
+                        <strong>速度即正义，流量即真理。</strong> 我们要做那种让人<strong>“欲罢不能，必须一口气看完”</strong>的爆款内容。
                     </span>
                     <span class="lang-th">
-                        คำแนะนำของน้องเตือนสติพี่ เราจะไม่จำกัดตัวเองในตลาดเฉพาะกลุ่ม แต่จะมุ่งสู่มหาสมุทรแห่ง <strong>"Short Drama"</strong><br>
-                        เราจะไม่ทำหนังแปลก แต่จะทำสิ่งที่ <strong>"น่าติดตามจนหยุดดูไม่ได้"</strong><br>
-                        เดินเรื่องไว สะใจ และภาพสวย... นี่คืออาวุธที่เราจะใช้ชนะในยุคนี้
+                        เราตื่นรู้แล้ว เราจะไม่จำกัดตัวเองในตลาดเฉพาะกลุ่ม แต่จะมุ่งสู่มหาสมุทรแห่ง <strong>"Short Drama"</strong><br>
+                        เราจะพักเรื่องสยองขวัญไว้ก่อน (เป็นอาวุธลับ) และลุยตลาดแมสเต็มกำลัง<br>
+                        <strong>ความเร็วคือหัวใจ</strong> เราจะสร้างคอนเทนต์ที่ <strong>"น่าติดตามจนหยุดดูไม่ได้"</strong> (Binge-worthy) ให้คนดูต้องดูรวดเดียวจบ
                     </span>
                 </div>
             </div>
@@ -273,60 +282,121 @@
             <div class="section-header">
                 <div class="divider-gold"></div>
                 <h2>
-                    <span class="lang-cn">独特优势</span>
-                    <span class="lang-th">WHY THAILAND?</span>
+                    <span class="lang-cn">为何首选泰国？</span>
+                    <span class="lang-th">WHY START IN THAILAND?</span>
                 </h2>
                 <div class="section-subtitle">MORE VALUE, MORE FREEDOM</div>
             </div>
 
             <div class="adv-grid">
                 <div class="adv-item">
-                    <span class="adv-icon">💰</span>
+                    <span class="adv-icon">🕊️</span>
                     <div class="adv-content">
-                        <h4><span class="lang-cn">更多选择，更高价值</span><span class="lang-th">SUPERIOR VALUE</span></h4>
+                        <h4><span class="lang-cn">创作的绝对自由</span><span class="lang-th">ABSOLUTE FREEDOM</span></h4>
                         <p>
-                            <span class="lang-cn">国内制作成本逐年上升。而在泰国，同样的预算可以获得更多选择：真正的豪宅、游艇与国际化场景。每一分钱都花在刀刃上。</span>
-                            <span class="lang-th">ในขณะที่ต้นทุนในจีนสูงขึ้น... เงินก้อนเดียวกันที่ไทย มอบทางเลือกที่เหนือกว่า: คฤหาสน์จริง เรือยอร์ชจริง และฉากอินเตอร์ ทุกบาทคุ้มค่าที่สุด</span>
+                            <span class="lang-cn">在这里，天空才是极限。没有题材的束缚，无论是特效的真实感，还是剧情的张力，我们可以把创意发挥到极致。</span>
+                            <span class="lang-th">ที่นี่ ท้องฟ้าคือขีดจำกัด ไม่มีกรอบมาขวางกั้นจินตนาการ ไม่ว่าจะความสมจริงของเอฟเฟกต์ หรือความเข้มข้นของบท เราใส่ได้สุดแม็กซ์</span>
                         </p>
                     </div>
                 </div>
                 <div class="adv-item">
-                    <span class="adv-icon">🕊️</span>
+                    <span class="adv-icon">💎</span>
                     <div class="adv-content">
-                        <h4><span class="lang-cn">创作自由</span><span class="lang-th">CREATIVE FREEDOM</span></h4>
+                        <h4><span class="lang-cn">电影级质感，更高性价比</span><span class="lang-th">CINEMATIC QUALITY</span></h4>
                         <p>
-                            <span class="lang-cn">在这里，我们的创意不受束缚。无论是特效的真实感，还是题材的广度，泰国都提供了无限可能。</span>
-                            <span class="lang-th">ที่นี่ จินตนาการเราไร้ขีดจำกัด ทั้งความสมจริงของเอฟเฟกต์และความหลากหลายของเนื้อหา ไทยมอบความเป็นไปได้ที่ไม่สิ้นสุด</span>
+                            <span class="lang-cn">同样的预算，在泰国能创造出双倍的价值。真正的豪宅、超跑、游艇......我们将把短剧拍出<strong>电影大片</strong>的质感，让观众大饱眼福。</span>
+                            <span class="lang-th">งบเท่ากัน ที่ไทยได้มากกว่า 2 เท่า คฤหาสน์จริง รถหรูจริง เรือยอร์ชจริง... เราจะยกระดับ Short Drama ให้กลายเป็น <strong>งานภาพยนตร์</strong> ที่คู่แข่งตามไม่ทัน</span>
                         </p>
                     </div>
                 </div>
                 <div class="adv-item">
                     <span class="adv-icon">🛡️</span>
                     <div class="adv-content">
-                        <h4><span class="lang-cn">合规与安全</span><span class="lang-th">100% COMPLIANCE</span></h4>
+                        <h4><span class="lang-cn">合规与安全</span><span class="lang-th">100% CLEAN BUSINESS</span></h4>
                         <p>
-                            <span class="lang-cn">这是我们在泰国的立身之本。所有业务透明、合法、正规。这是对每一位家人最负责的保障。</span>
-                            <span class="lang-th">นี่คือจุดยืนของเรา ธุรกิจทุกอย่างโปร่งใส ถูกกฎหมาย และขาวสะอาด เพื่อความปลอดภัยสูงสุดของคนในครอบครัวทุกคน</span>
+                            <span class="lang-cn">这是我们在泰国的立身之本。所有业务透明、合法、正规（由 Narin 亲自把关）。这是对每一位家人最负责的保障。</span>
+                            <span class="lang-th">นี่คือจุดยืนของเรา ธุรกิจทุกอย่างโปร่งใส ถูกกฎหมาย และขาวสะอาด (นรินทร์ดูแลเองทั้งหมด) เพื่อความปลอดภัยระยะยาวของทุกคน</span>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="section" style="text-align:center; margin-bottom:150px;">
-            <p style="color:#fff; font-size:1.1rem; font-style:italic; margin-bottom:30px;">
-                <span class="lang-cn">"如果准备好了，请点击下方，检阅我们的战队与计划。"</span>
-                <span class="lang-th">"ถ้าพร้อมแล้ว... ขอเชิญเปิดดูทำเนียบรุ่นและแผนการรบของเรา"</span>
+        <div class="section">
+            <div class="section-header">
+                <div class="divider-gold"></div>
+                <h2>
+                    <span class="lang-cn">四大支柱</span>
+                    <span class="lang-th">THE 4 PILLARS</span>
+                </h2>
+                <div class="section-subtitle">RESPECTING SENIORITY & TALENT</div>
+            </div>
+            
+            <div class="pillar-grid">
+                <div class="pillar-card">
+                    <span class="p-rank">NO.1 / 大哥</span>
+                    <div class="p-name">PENG YUSI</div>
+                    <span class="p-role">COMMANDER (总指挥)</span>
+                    <p class="p-desc">
+                        <span class="lang-cn">他是我们的精神领袖，用他在行业的顶级地位和艺术眼光，引领整个帝国的方向。</span>
+                        <span class="lang-th">พี่ใหญ่และศูนย์รวมจิตใจ ใช้บารมีและสายตาที่เฉียบคม กำหนดทิศทางของจักรวรรดิ</span>
+                    </p>
+                </div>
+                <div class="pillar-card">
+                    <span class="p-rank">NO.2 / 二哥</span>
+                    <div class="p-name">NARIN (TEEM)</div>
+                    <span class="p-role">STRATEGIST (战略家)</span>
+                    <p class="p-desc">
+                        <span class="lang-cn">负责解决所有难题。搞定资金、搞定法律、搞定资源，为前线输送弹药。</span>
+                        <span class="lang-th">ผู้แก้ปัญหาทุกอย่าง หาเงิน เคลียร์กฎหมาย จัดการทรัพยากร เพื่อสนับสนุนแนวหน้า</span>
+                    </p>
+                </div>
+                <div class="pillar-card">
+                    <span class="p-rank">NO.3 / 大姐</span>
+                    <div class="p-name">CHIEKO</div>
+                    <span class="p-role">GUARDIAN (守护者)</span>
+                    <p class="p-desc">
+                        <span class="lang-cn">用她的智慧和气场管理人才，用她的品味打造顶级的接待体验。</span>
+                        <span class="lang-th">ใช้ปัญญาและบารมีคุมคน และใช้รสนิยมอันเลิศหรูดูแลพาร์ทเนอร์ระดับ VVIP</span>
+                    </p>
+                </div>
+                <div class="pillar-card">
+                    <span class="p-rank">NO.4 / 小妹</span>
+                    <div class="p-name">NANA</div>
+                    <span class="p-role">VISIONARY (远见者)</span>
+                    <p class="p-desc">
+                        <span class="lang-cn">最敏锐的眼睛。她洞察市场趋势，她是连接中泰文化的桥梁，是我们未来的核心。</span>
+                        <span class="lang-th">ดวงตาที่มองเห็นอนาคต เข้าใจตลาดแมส เชื่อมโยงวัฒนธรรมไทย-จีน คือหัวใจของยุคใหม่</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="team.html" class="nav-card-link">
+                <div class="nav-text">
+                    <h3><span class="lang-cn">深入了解战队</span><span class="lang-th">MEET THE TEAM</span></h3>
+                    <p>DETAILED PROFILES</p>
+                </div>
+                <div class="nav-arrow">➔</div>
+            </a>
+            <a href="business.html" class="nav-card-link" style="border-color:var(--gold);">
+                <div class="nav-text">
+                    <h3><span class="lang-cn">查看作战计划</span><span class="lang-th">THE BATTLE PLAN</span></h3>
+                    <p>BUSINESS & ROADMAP</p>
+                </div>
+                <div class="nav-arrow">➔</div>
+            </a>
+        </div>
+
+        <div class="section" style="text-align:center; margin-bottom:50px;">
+            <p style="color:#888; font-size:0.9rem; font-style:italic;">
+                <span class="lang-cn">“为了家庭，为了荣耀，为了未来。”</span>
+                <span class="lang-th">"เพื่อครอบครัว เพื่อเกียรติยศ และเพื่ออนาคต"</span>
             </p>
         </div>
 
     </div>
-
-    <nav class="nav-bar">
-        <a href="#" class="nav-item active">VISION</a>
-        <a href="team.html" class="nav-item">TEAM</a>
-        <a href="business.html" class="nav-item">BUSINESS</a>
-    </nav>
 
     <script>
         function toggleLang() { document.body.classList.toggle('show-th'); }
