@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>THE ALLIANCE | EMPIRE 2026</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Noto+Serif+SC:wght@300;500;700&family=Noto+Serif+Thai:wght@300;500;700&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CORE VARIABLES --- */
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F9EAC3;
+            --gold-dim: #8A702A;
+            --bg-deep: #020202;
+            --glass-strong: rgba(15, 15, 15, 0.95);
+            --glass-medium: rgba(25, 25, 25, 0.85);
+            --border: 1px solid rgba(212, 175, 55, 0.3);
+            --text-main: #F4F4F4;
+            --text-muted: #A0A0A0;
+            --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Noto Serif SC', 'Noto Serif Thai', serif; line-height: 1.7; overflow-x: hidden; }
+
+        /* --- BACKGROUNDS --- */
+        .bg-fixed {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5;
+            background: url('IMG_3637.jpeg') center/cover no-repeat; /* Use Team Photo for Team Page */
+            opacity: 0.15; filter: contrast(1.1) blur(5px); transform: scale(1.1);
+        }
+        .bg-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -4;
+            background: radial-gradient(circle at center, transparent 0%, #000 100%);
+        }
+
+        /* --- NAVIGATION --- */
+        .nav-bar {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 400px; z-index: 1000;
+            background: rgba(10, 10, 10, 0.9); border: var(--border);
+            backdrop-filter: blur(15px); border-radius: 50px;
+            display: flex; justify-content: space-between; padding: 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .nav-item {
+            flex: 1; text-align: center; padding: 12px 0;
+            color: #666; text-decoration: none; font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            border-radius: 40px; transition: all 0.3s;
+        }
+        .nav-item.active { background: var(--gold); color: #000; box-shadow: 0 0 15px rgba(212,175,55,0.4); }
+        .nav-item:hover:not(.active) { color: var(--gold); }
+
+        /* --- HEADER & BACK BUTTON --- */
+        .top-header {
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px; z-index: 900;
+            display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+        }
+        .back-btn {
+            text-decoration: none; color: var(--gold); font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            border: 1px solid var(--gold); padding: 8px 15px; border-radius: 20px;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); transition: 0.3s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .back-btn::before { content: "←"; font-size: 1rem; }
+        .back-btn:hover { background: rgba(212,175,55,0.2); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+
+        .page-title {
+            font-family: 'Cinzel', serif; font-size: 1.2rem; color: #fff;
+            text-shadow: 0 0 10px rgba(212,175,55,0.5);
+        }
+
+        /* --- CONTENT CONTAINER --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 100px 20px 120px; position: relative; z-index: 2; }
+
+        .hero-text { text-align: center; margin-bottom: 60px; animation: slideDown 1s var(--ease) forwards; }
+        .hero-text h1 {
+            font-family: 'Cinzel', serif; font-size: 2.5rem; color: var(--gold);
+            margin-bottom: 10px; letter-spacing: 2px;
+        }
+        .hero-text p { font-size: 1rem; color: var(--text-muted); font-style: italic; }
+
+        /* --- PROFILE CARDS (FULL DETAIL) --- */
+        .profile-card {
+            background: var(--glass-medium); border: var(--border); border-left: 4px solid var(--gold);
+            padding: 40px 30px; margin-bottom: 40px; border-radius: 8px; position: relative;
+            transition: transform 0.4s; overflow: hidden;
+        }
+        .profile-card:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        
+        .p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .p-role { 
+            font-family: 'Montserrat', sans-serif; font-size: 0.7rem; color: var(--gold); 
+            border: 1px solid var(--gold-dim); padding: 5px 12px; border-radius: 20px; 
+            text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 10px;
+        }
+        .p-name { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 700; color: #fff; line-height: 1.2; }
+        .p-aka { font-size: 0.9rem; color: #888; font-style: italic; display: block; margin-top: 5px; }
+        .p-icon { font-size: 2rem; opacity: 0.8; }
+
+        /* GRID SYSTEM (3 Strengths + 3 Duties) */
+        .p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 700px) { .p-grid { grid-template-columns: 1fr; gap: 25px; } }
+
+        .p-col h4 {
+            font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold-light);
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;
+            border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 8px;
+        }
+
+        .p-item { margin-bottom: 15px; position: relative; padding-left: 15px; }
+        .p-item::before { content: "◆"; position: absolute; left: 0; top: 6px; color: var(--gold); font-size: 0.5rem; }
+        .p-lbl { display: block; color: #fff; font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+        .p-desc { display: block; color: #aaa; font-size: 0.85rem; line-height: 1.6; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- LANG UTILS --- */
+        .lang-th { display: none; }
+        body.show-th .lang-th { display: block; }
+        body.show-th .lang-cn { display: none; }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-fixed"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="top-header">
+        <a href="index.html" class="back-btn"><span class="lang-cn">返回首页</span><span class="lang-th">กลับหน้าหลัก</span></a>
+        <div class="page-title">THE ALLIANCE</div>
+        <a href="#" onclick="toggleLang()" class="back-btn" style="border-color:#555; color:#aaa;">CN / TH</a>
+    </div>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item">VISION</a>
+        <a href="#" class="nav-item active">TEAM</a>
+        <a href="business.html" class="nav-item">BUSINESS</a>
+    </nav>
+
+    <div class="container">
+
+        <div class="hero-text">
+            <h1>
+                <span class="lang-cn">四大支柱</span>
+                <span class="lang-th">4 PILLARS OF POWER</span>
+            </h1>
+            <p>
+                <span class="lang-cn">基于信任、能力与互补的完美联盟</span>
+                <span class="lang-th">การรวมตัวที่สมบูรณ์แบบ บนพื้นฐานของความเชื่อใจและความสามารถ</span>
+            </p>
+        </div>
+
+        <div class="profile-card">
+            <div class="p-header">
+                <div>
+                    <span class="p-role">CEO / STRATEGIST</span>
+                    <div class="p-name">NARIN LEELAPORN</div>
+                    <span class="p-aka">The Strategic Architect (公司脊梁)</span>
+                </div>
+                <div class="p-icon">🧠</div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col">
+                    <h4><span class="lang-cn">三大核心优势</span><span class="lang-th">3 KEY STRENGTHS</span></h4>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">逻辑天才 (INTP)</span><span class="lang-th">Strategic Logic</span></span>
+                        <span class="p-desc"><span class="lang-cn">国家级数学冠军背景，擅长精密布局。</span><span class="lang-th">แชมป์คณิตศาสตร์ ผู้เชี่ยวชาญการวางระบบ</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">法律护盾</span><span class="lang-th">Legal Expert</span></span>
+                        <span class="p-desc"><span class="lang-cn">深厚法律背景，规避跨国风险。</span><span class="lang-th">มีความรู้กฎหมาย ปิดทุกความเสี่ยง</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">顶级人脉</span><span class="lang-th">Gov Connection</span></span>
+                        <span class="p-desc"><span class="lang-cn">直通泰国政府与皇室背景的连接。</span><span class="lang-th">คอนเนคชั่นระดับสูง ภาครัฐและเอกชน</span></span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <h4><span class="lang-cn">帝国职责</span><span class="lang-th">KEY RESPONSIBILITIES</span></h4>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">体系搭建</span><span class="lang-th">System Architecture</span></span>
+                        <span class="p-desc"><span class="lang-cn">建立安全、高效的运营架构与资金流。</span><span class="lang-th">สร้างโครงสร้างบริษัทที่มั่นคง</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">风控管理</span><span class="lang-th">Risk Management</span></span>
+                        <span class="p-desc"><span class="lang-cn">处理所有合同、合规与资金安全。</span><span class="lang-th">บริหารความเสี่ยง การเงิน และสัญญา</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">资源整合</span><span class="lang-th">Integration</span></span>
+                        <span class="p-desc"><span class="lang-cn">搞定场地、签证、退税等所有障碍。</span><span class="lang-th">เคลียร์ทางสะดวกให้ทีมงานสร้างสรรค์</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <div class="p-header">
+                <div>
+                    <span class="p-role">CCO / LEADER</span>
+                    <div class="p-name">PENG YUSI</div>
+                    <span class="p-aka">The King of Internet Movies (网大之王)</span>
+                </div>
+                <div class="p-icon">👑</div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col">
+                    <h4><span class="lang-cn">三大核心优势</span><span class="lang-th">3 KEY STRENGTHS</span></h4>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">票房号召力</span><span class="lang-th">Box Office Power</span></span>
+                        <span class="p-desc"><span class="lang-cn">中国网大市场的顶流神话，千万级粉丝。</span><span class="lang-th">ตำนานหนังเว็บจีน ฐานแฟนคลับ 10 ล้าน+</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">题材敏锐度</span><span class="lang-th">Genre Mastery</span></span>
+                        <span class="p-desc"><span class="lang-cn">深耕古装/玄幻/动作赛道，懂观众爽点。</span><span class="lang-th">เชี่ยวชาญหนังบู๊/พีเรียด รู้ใจคนดูที่สุด</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">制作经验</span><span class="lang-th">Production XP</span></span>
+                        <span class="p-desc"><span class="lang-cn">丰富的制片与导演经验，能把控大制作。</span><span class="lang-th">ประสบการณ์สูงในการคุมโปรดักชั่นใหญ่</span></span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <h4><span class="lang-cn">帝国职责</span><span class="lang-th">KEY RESPONSIBILITIES</span></h4>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">内容总舵主</span><span class="lang-th">Content Direction</span></span>
+                        <span class="p-desc"><span class="lang-cn">把控所有长视频项目的剧本与方向。</span><span class="lang-th">คุมทิศทางและคุณภาพของหนังใหญ่</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">选角决策</span><span class="lang-th">Casting Approval</span></span>
+                        <span class="p-desc"><span class="lang-cn">决定主要演员阵容，确保流量。</span><span class="lang-th">ตัดสินใจเรื่องนักแสดงหลัก</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">发行核武器</span><span class="lang-th">Distribution Power</span></span>
+                        <span class="p-desc"><span class="lang-cn">直接对接爱优腾 (iQIYI/Tencent) S级资源。</span><span class="lang-th">ดีลผู้บริหาร Platform จีนได้โดยตรง</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <div class="p-header">
+                <div>
+                    <span class="p-role">CREATIVE / BUSINESS</span>
+                    <div class="p-name">NANA (LI QINYAO)</div>
+                    <span class="p-aka">The Short Drama Expert (短剧女王)</span>
+                </div>
+                <div class="p-icon">📱</div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col">
+                    <h4><span class="lang-cn">三大核心优势</span><span class="lang-th">3 KEY STRENGTHS</span></h4>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">全能创作</span><span class="lang-th">Creative Force</span></span>
+                        <span class="p-desc"><span class="lang-cn">不仅演戏，更通晓<strong>编剧与导演</strong>。</span><span class="lang-th">เขียนบทได้ กำกับได้ แสดงได้ (ครบเครื่อง)</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">流量敏锐</span><span class="lang-th">Trend Hunter</span></span>
+                        <span class="p-desc"><span class="lang-cn">深刻理解短视频与大众市场的爆款逻辑。</span><span class="lang-th">เข้าใจตลาด Mass และพฤติกรรมคนดูยุคใหม่</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">商业嗅觉</span><span class="lang-th">Business Sense</span></span>
+                        <span class="p-desc"><span class="lang-cn">懂内容变现，知道如何将流量转化为金钱。</span><span class="lang-th">รู้วิธีหาเงินจากคอนเทนต์ (Monetization)</span></span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <h4><span class="lang-cn">帝国职责</span><span class="lang-th">KEY RESPONSIBILITIES</span></h4>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">短剧主理人</span><span class="lang-th">Short Drama Lead</span></span>
+                        <span class="p-desc"><span class="lang-cn">全权负责现代/竖屏短剧的内容创作。</span><span class="lang-th">ดูแลการผลิตซีรีส์สั้นทั้งระบบ</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">商务招商</span><span class="lang-th">Sponsorship</span></span>
+                        <span class="p-desc"><span class="lang-cn">负责品牌植入、广告合作与商业化。</span><span class="lang-th">ดูแลสปอนเซอร์และรายได้โฆษณา</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">文化桥梁</span><span class="lang-th">Cultural Bridge</span></span>
+                        <span class="p-desc"><span class="lang-cn">连接中泰两端的创意与沟通。</span><span class="lang-th">เชื่อมประสานทีมงานไทย-จีน</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <div class="p-header">
+                <div>
+                    <span class="p-role">ICON / MANAGER</span>
+                    <div class="p-name">CHIEKO SAITO</div>
+                    <span class="p-aka">The Viral Queen (百变天后)</span>
+                </div>
+                <div class="p-icon">🎭</div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col">
+                    <h4><span class="lang-cn">三大核心优势</span><span class="lang-th">3 KEY STRENGTHS</span></h4>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">百变魅力</span><span class="lang-th">Versatility</span></span>
+                        <span class="p-desc"><span class="lang-cn">精通三语，能驾驭从恐怖到高贵的任何角色。</span><span class="lang-th">พูดได้ 3 ภาษา รับบทได้หลากหลายสุดๆ</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">管理气场</span><span class="lang-th">Authority</span></span>
+                        <span class="p-desc"><span class="lang-cn">天生的管理气场，擅长“拿捏”人心。</span><span class="lang-th">มีบารมีในการคุมคนและบริหารศิลปิน</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">顶级品味</span><span class="lang-th">Elite Taste</span></span>
+                        <span class="p-desc"><span class="lang-cn">深谙高端生活方式，懂得如何取悦VVIP。</span><span class="lang-th">เข้าใจไลฟ์สไตล์ระดับสูง (High-End Lifestyle)</span></span>
+                    </div>
+                </div>
+                <div class="p-col">
+                    <h4><span class="lang-cn">帝国职责</span><span class="lang-th">KEY RESPONSIBILITIES</span></h4>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">艺人总监</span><span class="lang-th">Head of Talent</span></span>
+                        <span class="p-desc"><span class="lang-cn">管理旗下艺人纪律，建立演艺梯队。</span><span class="lang-th">ดูแลกฎระเบียบและคัดเลือกศิลปิน</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">首席体验官</span><span class="lang-th">Chief Experience Officer</span></span>
+                        <span class="p-desc"><span class="lang-cn">负责VVIP资方的顶级接待体验。</span><span class="lang-th">ดูแลประสบการณ์ VVIP ให้แขกประทับใจ</span></span>
+                    </div>
+                    <div class="p-item">
+                        <span class="p-lbl"><span class="lang-cn">战略客串</span><span class="lang-th">Strategic Cameo</span></span>
+                        <span class="p-desc"><span class="lang-cn">出演关键角色以“立威”，建立行业地位。</span><span class="lang-th">รับบทสำคัญเพื่อสร้างบารมีในวงการ</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleLang() {
+            document.body.classList.toggle('show-th');
+        }
+    </script>
+
+</body>
+</html>
