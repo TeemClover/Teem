@@ -32,50 +32,84 @@
         h1 { font-family: 'Cinzel', serif; font-size: 2.5rem; color: var(--gold); margin: 0 0 10px 0; text-shadow: var(--neon-gold); }
         .hero-sub { color: #888; font-size: 0.9rem; letter-spacing: 1px; }
 
-        /* HERO CARD DESIGN */
+        /* HERO CARD DESIGN (PROFILE STYLE) */
         .hero-card {
             background: linear-gradient(145deg, rgba(25,25,25,0.9), rgba(10,10,10,0.95));
-            border: var(--border); border-radius: 12px; margin-bottom: 40px;
+            border: var(--border); border-radius: 12px; margin-bottom: 50px;
             overflow: hidden; position: relative; transition: 0.4s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .hero-card.leader { border-color: var(--gold); box-shadow: 0 0 30px rgba(212,175,55,0.15); }
+        .hero-card.leader { border-color: var(--gold); box-shadow: 0 0 40px rgba(212,175,55,0.2); }
         
+        /* Header Layout: Mobile First (Stacked) */
         .hc-header {
-            padding: 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: center; gap: 20px; /* Add gap for avatar */
+            padding: 40px 20px; /* เพิ่มพื้นที่แนวตั้ง */
+            background: rgba(255,255,255,0.02); 
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; 
+            flex-direction: column; /* เรียงลงมา (รูปบน ชื่อล่าง) */
+            align-items: center; 
+            text-align: center;
+            gap: 20px; 
         }
         
-        /* Profile Avatar in Card Header */
+        /* Large Profile Avatar */
         .hc-avatar {
-            width: 70px; height: 70px; border-radius: 50%; 
-            border: 2px solid var(--gold); 
-            background-size: cover; background-position: center;
-            box-shadow: 0 0 15px rgba(212,175,55,0.3);
+            width: 180px; /* ใหญ่สะใจ (จากเดิม 70px) */
+            height: 180px; 
+            border-radius: 50%; 
+            border: 4px solid var(--gold); 
+            background-size: cover; background-position: center top;
+            box-shadow: 0 0 30px rgba(212,175,55,0.3); /* Glow ชัดขึ้น */
             flex-shrink: 0;
+            transition: transform 0.5s;
+        }
+        /* .hero-card:hover .hc-avatar { transform: scale(1.05); } */
+
+        .hc-info { width: 100%; }
+        .hc-role { 
+            font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 0.8rem; 
+            color: var(--bg); background: var(--gold); padding: 5px 15px; border-radius: 20px; 
+            text-transform: uppercase; display: inline-block; margin-bottom: 15px; letter-spacing: 1px;
+        }
+        .hc-name { 
+            font-family: 'Cinzel', serif; font-size: 2rem; /* ชื่อใหญ่ขึ้น */
+            color: #fff; margin: 0; font-weight: 700; line-height: 1.1; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+        
+        /* Desktop Adjustment */
+        @media (min-width: 768px) {
+            .hc-header {
+                flex-direction: row; /* เรียงแนวนอน */
+                text-align: left;
+                padding: 40px;
+                gap: 40px;
+            }
+            .hc-avatar {
+                width: 200px; height: 200px; /* ในคอมใหญ่ขึ้นอีกนิด */
+            }
+            .hc-info { align-items: flex-start; }
         }
 
-        .hc-info { flex-grow: 1; }
-        .hc-role { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 0.7rem; color: var(--bg); background: var(--gold); padding: 4px 10px; border-radius: 4px; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
-        .hc-name { font-family: 'Cinzel', serif; font-size: 1.4rem; color: #fff; margin: 0; font-weight: 700; line-height: 1.2; }
-        
         .hc-body { padding: 30px 25px; }
         
         .stats-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 25px; }
         
-        .stat-box h4 { color: var(--gold); margin: 0 0 8px 0; font-size: 0.85rem; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 10px; font-family: 'Montserrat', sans-serif; }
+        .stat-box h4 { color: var(--gold); margin: 0 0 12px 0; font-size: 0.9rem; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 12px; font-family: 'Montserrat', sans-serif; letter-spacing: 1px; }
         .stat-list { list-style: none; padding: 0; margin: 0; }
-        .stat-list li { font-size: 0.95rem; color: #ddd; margin-bottom: 6px; display: flex; align-items: flex-start; }
-        .stat-list li::before { content: "✦"; color: var(--gold); margin-right: 8px; font-size: 0.8rem; margin-top: 3px; }
+        .stat-list li { font-size: 1rem; color: #ddd; margin-bottom: 8px; display: flex; align-items: flex-start; line-height: 1.5; }
+        .stat-list li::before { content: "✦"; color: var(--gold); margin-right: 10px; font-size: 0.8rem; margin-top: 4px; }
 
         .verdict {
-            background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold); border-radius: 8px;
-            padding: 15px; text-align: center; margin-top: 10px;
+            background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212,175,55,0.4); border-radius: 8px;
+            padding: 20px; text-align: center; margin-top: 20px;
         }
-        .verdict-title { display: block; font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; font-weight: bold; }
-        .verdict-text { font-size: 1rem; font-weight: 600; color: #fff; font-style: italic; }
+        .verdict-title { display: block; font-size: 0.75rem; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; font-weight: 800; }
+        .verdict-text { font-size: 1.1rem; font-weight: 600; color: #fff; font-style: italic; }
 
-        /* SYNERGY SECTION (INTERACTIVE) */
-        .synergy-section { margin-top: 80px; padding: 30px 20px; background: rgba(0,0,0,0.6); border-radius: 12px; border: 1px dashed var(--gold); text-align: center; }
+        /* SYNERGY SECTION */
+        .synergy-section { margin-top: 80px; padding: 40px 20px; background: rgba(0,0,0,0.6); border-radius: 12px; border: 1px dashed var(--gold); text-align: center; }
         .syn-title { font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--gold); margin-bottom: 10px; }
         .syn-desc { color: #aaa; font-size: 0.9rem; margin-bottom: 30px; }
         
@@ -86,15 +120,15 @@
             transition: 0.3s; position: relative; opacity: 0.6;
         }
         .avatar.active { border-color: var(--gold); box-shadow: 0 0 20px var(--gold); opacity: 1; transform: scale(1.1); }
-        .avatar span { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: #fff; font-family: 'Montserrat', sans-serif; font-weight: bold; width: 100%; text-align: center; }
+        .avatar span { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: #fff; font-family: 'Montserrat', sans-serif; font-weight: bold; width: 100%; text-align: center; text-shadow: 0 2px 4px #000; }
 
         .combo-result { 
             min-height: 150px; background: var(--glass); border: 1px solid var(--gold); border-radius: 8px; 
-            padding: 25px; display: none; animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 30px; display: none; animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .combo-result.show { display: block; }
-        .combo-name { font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--gold); margin-bottom: 10px; text-transform: uppercase; text-shadow: var(--neon-gold); }
-        .combo-desc { font-size: 1rem; color: #fff; line-height: 1.6; }
+        .combo-name { font-family: 'Cinzel', serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 15px; text-transform: uppercase; text-shadow: var(--neon-gold); line-height: 1.3; }
+        .combo-desc { font-size: 1.1rem; color: #fff; line-height: 1.7; font-weight: 300; }
 
         /* NAV */
         .nav-bar {
