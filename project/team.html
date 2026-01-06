@@ -42,10 +42,21 @@
         
         .hc-header {
             padding: 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; align-items: center; gap: 20px; /* Add gap for avatar */
         }
-        .hc-role { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 0.8rem; color: var(--bg); background: var(--gold); padding: 4px 10px; border-radius: 4px; text-transform: uppercase; }
-        .hc-name { font-family: 'Cinzel', serif; font-size: 1.5rem; color: #fff; margin: 0; font-weight: 700; }
+        
+        /* Profile Avatar in Card Header */
+        .hc-avatar {
+            width: 70px; height: 70px; border-radius: 50%; 
+            border: 2px solid var(--gold); 
+            background-size: cover; background-position: center;
+            box-shadow: 0 0 15px rgba(212,175,55,0.3);
+            flex-shrink: 0;
+        }
+
+        .hc-info { flex-grow: 1; }
+        .hc-role { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 0.7rem; color: var(--bg); background: var(--gold); padding: 4px 10px; border-radius: 4px; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
+        .hc-name { font-family: 'Cinzel', serif; font-size: 1.4rem; color: #fff; margin: 0; font-weight: 700; line-height: 1.2; }
         
         .hc-body { padding: 30px 25px; }
         
@@ -145,8 +156,11 @@
 
         <div class="hero-card leader">
             <div class="hc-header">
-                <span class="hc-role">THE LEADER</span>
-                <h2 class="hc-name">NANA</h2>
+                <div class="hc-avatar" style="background-image: url('IMG_3637_NANA.jpg');"></div>
+                <div class="hc-info">
+                    <span class="hc-role">THE LEADER</span>
+                    <h2 class="hc-name">NANA</h2>
+                </div>
             </div>
             <div class="hc-body">
                 <div class="lang-content active" id="na-cn">
@@ -200,8 +214,11 @@
 
         <div class="hero-card">
             <div class="hc-header">
-                <span class="hc-role">THE COACH</span>
-                <h2 class="hc-name">PENG YUSI</h2>
+                <div class="hc-avatar" style="background-image: url('IMG_3637_PENG.jpg');"></div>
+                <div class="hc-info">
+                    <span class="hc-role">THE COACH</span>
+                    <h2 class="hc-name">PENG YUSI</h2>
+                </div>
             </div>
             <div class="hc-body">
                 <div class="lang-content active" id="pe-cn">
@@ -255,8 +272,11 @@
 
         <div class="hero-card">
             <div class="hc-header">
-                <span class="hc-role">THE EXECUTOR</span>
-                <h2 class="hc-name">NARIN (TEEM)</h2>
+                <div class="hc-avatar" style="background-image: url('IMG_3637_TEEM.jpg');"></div>
+                <div class="hc-info">
+                    <span class="hc-role">THE EXECUTOR</span>
+                    <h2 class="hc-name">NARIN (TEEM)</h2>
+                </div>
             </div>
             <div class="hc-body">
                 <div class="lang-content active" id="te-cn">
@@ -310,8 +330,11 @@
 
         <div class="hero-card">
             <div class="hc-header">
-                <span class="hc-role">THE SUPPORTER</span>
-                <h2 class="hc-name">CHIEKO</h2>
+                <div class="hc-avatar" style="background-image: url('IMG_3637_CHIEKO.jpg');"></div>
+                <div class="hc-info">
+                    <span class="hc-role">THE SUPPORTER</span>
+                    <h2 class="hc-name">CHIEKO</h2>
+                </div>
             </div>
             <div class="hc-body">
                 <div class="lang-content active" id="ch-cn">
