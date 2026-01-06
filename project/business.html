@@ -75,11 +75,16 @@
         
         .pj-content { padding: 30px 25px; }
         .pj-title { font-family: 'Cinzel', serif; font-size: 1.4rem; color: #fff; margin-bottom: 10px; display: block; line-height: 1.3; font-weight: 600; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        .pj-spec { display: block; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--gold); margin-bottom: 15px; border-left: 3px solid var(--gold); padding-left: 10px; }
         
+        /* Specs Box */
+        .pj-specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .pj-spec-item span { display: block; }
+        .pj-label { font-size: 0.65rem; color: #888; text-transform: uppercase; font-family: 'Montserrat', sans-serif; }
+        .pj-value { font-size: 0.85rem; color: var(--gold); font-weight: bold; }
+
         .pj-desc { font-size: 1rem; color: #ccc; line-height: 1.7; margin-bottom: 20px; font-weight: 300; text-align: justify; }
         
-        .pj-nana-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px; border: 1px dashed rgba(255,255,255,0.2); }
+        .pj-nana-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px; border: 1px dashed rgba(255,255,255,0.2); border-left: 3px solid var(--gold); }
         .pj-nana-head { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: #888; text-transform: uppercase; display: block; margin-bottom: 5px; font-weight: bold; }
         .pj-nana-text { font-size: 0.95rem; color: #e0e0e0; font-style: italic; }
 
@@ -101,6 +106,11 @@
         .risk-box { background: rgba(30, 10, 10, 0.3); border-left: 3px solid #8a0a0a; padding: 20px; margin-bottom: 20px; border-radius: 0 4px 4px 0; }
         .rb-title { color: #d65a5a; font-weight: bold; font-size: 1rem; display: block; margin-bottom: 8px; font-family: 'Montserrat', sans-serif; }
         .rb-desc { font-size: 0.95rem; color: #bbb; line-height: 1.6; }
+
+        /* Archive Link */
+        .archive-link-box { text-align: center; margin-top: 60px; margin-bottom: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; }
+        .archive-btn { display: inline-block; border: 1px solid #444; padding: 12px 25px; color: #666; text-decoration: none; font-family: 'Montserrat', sans-serif; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; transition: 0.3s; border-radius: 4px; }
+        .archive-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.05); }
 
         /* Nav */
         .nav-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; z-index: 1000; background: rgba(10, 10, 10, 0.95); border: var(--border); backdrop-filter: blur(15px); border-radius: 50px; display: flex; justify-content: space-between; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
@@ -278,16 +288,26 @@
             <div class="pj-content">
                 <div class="lang-content active" id="pj1-cn">
                     <span class="pj-title">A. 《穿越之破咒千金》<br>(Curse Breaker)</span>
-                    <span class="pj-spec">规格：60集 × 2分钟 | 拍摄周期：10天 (高效拍摄)</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">集数/时长</span><span class="pj-value">60集 × 2分钟</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">拍摄周期</span><span class="pj-value">10天 (高效) + 15天后期</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (RMB)</span><span class="pj-value">15万</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (THB)</span><span class="pj-value">≈75万</span></div>
+                    </div>
                     <p class="pj-desc"><strong>核心设定：</strong> 现代复仇女主穿越到泰国古宅千金身上，继承家族“被诅咒”的命运。一边对抗继母阴谋，一边用现代知识揭开诅咒真相（如祖先冤魂）。最终手刃仇人，实现双重逆袭。</p>
                     <div class="pj-nana-box">
                         <span class="pj-nana-head">NANA'S INSIGHT:</span>
-                        [cite_start]<p class="pj-nana-text">“用现代科学（如监控、心理学）破解灵异陷阱是最大爽点。每5集一个小反转。植入泰国寺庙、水灯节等本土元素。” [cite: 81]</p>
+                        <p class="pj-nana-text">“最大爽点是用现代科学（监控、心理学）破解灵异陷阱。每5集一个小反转。植入泰国寺庙、水灯节等本土元素。”</p>
                     </div>
                 </div>
                 <div class="lang-content" id="pj1-th">
                     <span class="pj-title">A. 《ทะลุมิติมาล้างคำสาปคุณหนู》</span>
-                    <span class="pj-spec">สเปค: 60 ตอน × 2 นาที | ถ่ายทำ: 10 วัน (ระบบจีน)</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">จำนวนตอน/เวลา</span><span class="pj-value">60 ตอน × 2 นาที</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">ระยะเวลาถ่ายทำ</span><span class="pj-value">10 วัน (ถ่าย) + 15 วัน (ตัดต่อ)</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (RMB)</span><span class="pj-value">150,000</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (THB)</span><span class="pj-value">≈750,000</span></div>
+                    </div>
                     <p class="pj-desc"><strong>เรื่องย่อ:</strong> สาวแกร่งยุคใหม่ทะลุมิติไปร่างคุณหนูในบ้านโบราณที่ต้องคำสาป (นางเอกตายทุกรุ่น) ต้องงัดข้อกับแม่เลี้ยงใจร้าย และใช้วิทยาศาสตร์สมัยใหม่ล้างคำสาปตระกูล</p>
                     <div class="pj-nana-box">
                         <span class="pj-nana-head">NANA'S INSIGHT:</span>
@@ -304,20 +324,30 @@
             <div class="pj-content">
                 <div class="lang-content active" id="pj2-cn">
                     <span class="pj-title">B. 《曼谷逆袭：灵异侦探》<br>(Spirit Detective)</span>
-                    <span class="pj-spec">规格：80集 × 1.5分钟 | 拍摄周期：8-10天</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">集数/时长</span><span class="pj-value">80集 × 1.5分钟</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">拍摄周期</span><span class="pj-value">8天 (高效) + 20天后期</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (RMB)</span><span class="pj-value">20万</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (THB)</span><span class="pj-value">≈100万</span></div>
+                    </div>
                     <p class="pj-desc"><strong>核心设定：</strong> 被职场霸凌的女主意外获得“阴阳眼”，辞职开设灵异侦探社。一边帮冤魂伸冤（惊悚线），一边利用鬼魂线索反击曾经欺压她的人（逆袭线）。</p>
                     <div class="pj-nana-box">
                         <span class="pj-nana-head">NANA'S INSIGHT:</span>
-                        [cite_start]<p class="pj-nana-text">“利用竖屏特写放大恐怖氛围（如镜中鬼影）。彭禺ム可客串‘灵异导师’，吸引国内粉丝。每集解决一个微型灵异案件。” [cite: 85]</p>
+                        <p class="pj-nana-text">“利用竖屏特写放大恐怖氛围（如镜中鬼影）。彭禺ム可客串‘灵异导师’，吸引国内粉丝。每集解决一个微型灵异案件。”</p>
                     </div>
                 </div>
                 <div class="lang-content" id="pj2-th">
                     <span class="pj-title">B. 《นักสืบสัมผัสวิญญาณ》</span>
-                    <span class="pj-spec">สเปค: 80 ตอน × 1.5 นาที | ถ่ายทำ: 8-10 วัน</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">จำนวนตอน/เวลา</span><span class="pj-value">80 ตอน × 1.5 นาที</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">ระยะเวลาถ่ายทำ</span><span class="pj-value">8 วัน (ถ่าย) + 20 วัน (ตัดต่อ)</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (RMB)</span><span class="pj-value">200,000</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (THB)</span><span class="pj-value">≈1,000,000</span></div>
+                    </div>
                     <p class="pj-desc"><strong>เรื่องย่อ:</strong> สาวออฟฟิศที่ถูกรังแกได้ตาทิพย์ ลาออกเปิดสำนักงานนักสืบ รับงานสืบสวนโดยใช้ผีสืบความลับคนชั่วเพื่อแก้แค้น (เส้นเรื่องสยองขวัญ + แก้แค้น)</p>
                     <div class="pj-nana-box">
                         <span class="pj-nana-head">NANA'S INSIGHT:</span>
-                        <p class="pj-nana-text">"ใช้มุมกล้องแนวตั้งขยี้ความหลอน (เช่น เงาในกระจก) ไฮไลท์คือพี่เผิงรับบท 'อาจารย์ปราบผี' เพื่อดึงฐานแฟนคลับจีน"</p>
+                        <p class="pj-nana-text">"ใช้มุมกล้องแนวตั้งขยี้ความหลอน (เช่น เงาในกระจก) ไฮไลท์คือพี่เผิงรับบท 'อาจารย์ปราบผี' เพื่อดึงฐานแฟนคลับจีน และจบในตอนดูง่าย"</p>
                     </div>
                 </div>
             </div>
@@ -330,16 +360,26 @@
             <div class="pj-content">
                 <div class="lang-content active" id="pj3-cn">
                     <span class="pj-title">C. 《重生复仇：古宅魅影》<br>(Shadow of Old House)</span>
-                    <span class="pj-spec">规格：40集 × 3分钟 | 拍摄周期：8-10天</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">集数/时长</span><span class="pj-value">40集 × 3分钟</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">拍摄周期</span><span class="pj-value">7天 (高效) + 18天后期</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (RMB)</span><span class="pj-value">18万</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (THB)</span><span class="pj-value">≈90万</span></div>
+                    </div>
                     <p class="pj-desc"><strong>核心设定：</strong> 被害死的女主重生，发现家族古宅藏着“能实现愿望但需付出代价”的灵异力量。她与“魅影”交易，步步为营向仇人复仇。</p>
                     <div class="pj-nana-box">
                         <span class="pj-nana-head">NANA'S INSIGHT:</span>
-                        [cite_start]<p class="pj-nana-text">“风格偏黑暗、性感。魅影以半透明黑影形式存在。结局反转：魅影其实是被家族害死的先祖。使用第一视角（FPV）拍摄增强沉浸感。” [cite: 89]</p>
+                        <p class="pj-nana-text">“风格偏黑暗、性感。魅影以半透明黑影形式存在。结局反转：魅影其实是被家族害死的先祖。使用第一视角（FPV）拍摄增强沉浸感。”</p>
                     </div>
                 </div>
                 <div class="lang-content" id="pj3-th">
                     <span class="pj-title">C. 《เงาปริศนาในบ้านโบราณ》</span>
-                    <span class="pj-spec">สเปค: 40 ตอน × 3 นาที | ถ่ายทำ: 8-10 วัน</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">จำนวนตอน/เวลา</span><span class="pj-value">40 ตอน × 3 นาที</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">ระยะเวลาถ่ายทำ</span><span class="pj-value">7 วัน (ถ่าย) + 18 วัน (ตัดต่อ)</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (RMB)</span><span class="pj-value">180,000</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (THB)</span><span class="pj-value">≈900,000</span></div>
+                    </div>
                     <p class="pj-desc"><strong>เรื่องย่อ:</strong> นางเอกถูกฆ่าตาย เกิดใหม่มาทำสัญญาเลือดกับ "เงาปีศาจ" ในบ้านเก่าเพื่อแลกพลังมาแก้แค้นคนทรยศ โดยต้องจ่ายค่าตอบแทนที่คาดไม่ถึง</p>
                     <div class="pj-nana-box">
                         <span class="pj-nana-head">NANA'S INSIGHT:</span>
@@ -487,6 +527,10 @@
                     <span class="rb-desc">ทางแก้: Teem ดูแลใบอนุญาต วีซ่า และภาษีให้ถูกต้อง 100%</span>
                 </div>
             </div>
+        </div>
+
+        <div class="archive-link-box">
+            <a href="research.html" class="archive-btn">ACCESS FULL ARCHIVE (CONFIDENTIAL)</a>
         </div>
 
     </div>
