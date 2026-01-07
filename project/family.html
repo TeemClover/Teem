@@ -102,6 +102,24 @@
         .lang-content.active { display: block; }
         
         @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+        /* THE GOLDEN BUTTON STYLE */
+        .archive-link-box { text-align: center; margin-top: 40px; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 40px; }
+        .archive-btn { 
+            display: inline-block; width: 100%; max-width: 400px;
+            background: linear-gradient(135deg, #b8860b, #d4af37, #f0e68c, #d4af37);
+            background-size: 200% 200%;
+            padding: 18px 25px; 
+            color: #000; text-decoration: none; 
+            font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 800;
+            letter-spacing: 1px; text-transform: uppercase; 
+            border-radius: 6px; box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            transition: all 0.3s; animation: gradientMove 3s infinite;
+        }
+        .archive-btn:hover { transform: scale(1.02); box-shadow: 0 0 40px rgba(212, 175, 55, 0.6); }
+        .archive-icon { margin-left: 10px; }
+        @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
     </style>
 </head>
 <body>
@@ -301,6 +319,13 @@
             <a href="business.html" class="btn-link" style="border-color:var(--gold); color:var(--gold);">
                 <span class="lang-content active" id="btn2-cn">查看作战计划 (REVEAL THE PLAN)</span>
                 <span class="lang-content" id="btn2-th">เปิดแผนปฏิบัติการ (REVEAL THE PLAN)</span>
+            </a>
+        </div>
+
+        <div class="archive-link-box">
+            <a href="research.html" class="archive-btn">
+                <span class="lang-content active" id="btn-arc-cn">娜娜的详细作战计划 (绝密 / TOP SECRET) <span class="archive-icon">➜</span></span>
+                <span class="lang-content" id="btn-arc-th">แผนการรบละเอียดโดยนานา (ลับสุดยอด) <span class="archive-icon">➜</span></span>
             </a>
         </div>
 
