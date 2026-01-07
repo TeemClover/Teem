@@ -54,28 +54,51 @@
         /* Cards */
         .card { background: var(--glass); border: var(--border); padding: 35px 25px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .card p { margin-bottom: 20px; text-align: justify; font-size: 1rem; color: #ddd; font-weight: 300; }
-        .card strong { color: #fff; font-weight: 700; }
-        .card em { color: var(--gold); font-style: normal; font-weight: 700; }
-
-        /* Market Analysis (New) */
+        
+        /* FIX: Bold text is GOLD now */
+        .card strong { color: var(--gold); font-weight: 700; } 
+        
+        /* Market Analysis */
         .market-img-placeholder {
             width: 100%; height: 200px; background: #111; border: 1px dashed var(--gold);
             display: flex; align-items: center; justify-content: center; margin-bottom: 25px; border-radius: 6px;
             color: #555; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; letter-spacing: 1px;
         }
-        
         .market-grid { display: grid; gap: 20px; }
         .market-item { background: rgba(255,255,255,0.03); padding: 20px; border-left: 3px solid var(--gold); border-radius: 4px; }
         .m-head { color: var(--gold); font-weight: 700; font-size: 1rem; margin-bottom: 8px; display: block; font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
         .m-desc { font-size: 0.95rem; color: #bbb; line-height: 1.6; }
+
+        /* WHY US (Redesigned) */
+        .why-item { margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .why-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .why-head { 
+            font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--gold); 
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: flex; align-items: center; 
+        }
+        .why-head i { margin-right: 10px; font-style: normal; font-size: 1.2rem; }
+        .why-desc { font-size: 1rem; color: #ccc; padding-left: 0; line-height: 1.7; }
         
-        /* Team Grid */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .team-card { background: rgba(255,255,255,0.03); padding: 20px 15px; border-radius: 6px; text-align: center; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
-        .team-card:hover { border-color: var(--gold); transform: translateY(-3px); }
-        .role { font-size: 0.65rem; color: var(--gold); font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 1px; font-family: 'Montserrat', sans-serif; }
-        .name { font-size: 1rem; font-weight: 700; margin-bottom: 8px; font-family: 'Cinzel', serif; color: #fff; }
-        .desc { font-size: 0.8rem; color: #999; line-height: 1.4; }
+        /* Team Grid (Improved) */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } /* Increased gap */
+        .team-card { 
+            background: linear-gradient(145deg, rgba(30,30,30,0.6), rgba(10,10,10,0.8));
+            padding: 25px 15px; border-radius: 8px; text-align: center; 
+            border: 1px solid rgba(212, 175, 55, 0.2); transition: 0.3s; 
+            display: flex; flex-direction: column; justify-content: flex-start;
+        }
+        .team-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 5px 20px rgba(212,175,55,0.1); }
+        
+        .role { 
+            font-size: 0.65rem; color: var(--gold); font-weight: 800; text-transform: uppercase; 
+            display: block; margin-bottom: 10px; letter-spacing: 1px; font-family: 'Montserrat', sans-serif; 
+            min-height: 20px; /* Balance height */
+        }
+        .name { 
+            font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; font-family: 'Cinzel', serif; color: #fff; 
+            min-height: 25px; /* Balance height */
+        }
+        .desc { font-size: 0.85rem; color: #aaa; line-height: 1.5; font-weight: 300; }
 
         /* FOMO Box */
         .fomo-box {
@@ -87,9 +110,16 @@
         .fomo-title { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--gold); margin-bottom: 20px; display: block; }
         .fomo-text { color: #ccc; font-size: 1rem; margin-bottom: 30px; line-height: 1.7; }
 
-        /* Nav Buttons */
-        .btn-link { display: block; background: rgba(212,175,55,0.1); border: 1px solid var(--gold); color: #fff; padding: 16px; text-align: center; text-decoration: none; border-radius: 4px; margin-top: 15px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; transition: 0.3s; text-transform: uppercase; }
-        .btn-link:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(212,175,55,0.4); }
+        /* Buttons */
+        .btn-container { display: flex; flex-direction: column; gap: 15px; margin-top: 30px; }
+        .btn-link { 
+            display: block; background: rgba(212,175,55,0.1); border: 1px solid var(--gold); color: #fff; 
+            padding: 16px; text-align: center; text-decoration: none; border-radius: 4px; 
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; 
+            letter-spacing: 1px; transition: 0.3s; text-transform: uppercase; 
+        }
+        .btn-link.primary { background: var(--gold); color: #000; border: none; }
+        .btn-link:hover { opacity: 0.9; box-shadow: 0 0 20px rgba(212,175,55,0.3); }
         
         /* NAV BAR (Bottom) */
         .nav-bar {
@@ -154,7 +184,7 @@
                 <div class="lang-content active" id="let-cn">
                     <p>“致 未来的战略盟友：</p>
                     <p>去年12月在曼谷的会晤，绝非偶然，而是一场<strong>‘变革’的序幕</strong>。</p>
-                    <p>在<strong>执行主席娜娜 (The Empress)</strong> 的远见卓识下，我们看见了巨大的市场空白：<strong>中国市场的渴望</strong>与<strong>泰国制作潜力的完美契合</strong>。我作为<strong>首席执行官 (The Hand)</strong>，使命是将这一愿景转化为坚实的商业架构与盈利能力。</p>
+                    <p>在<strong>执行主席娜娜 (Executive Chairwoman)</strong> 的远见卓识下，我们看见了巨大的市场空白：<strong>中国市场的渴望</strong>与<strong>泰国制作潜力的完美契合</strong>。我作为<strong>首席执行官 (CEO)</strong>，使命是将这一愿景转化为坚实的商业架构与盈利能力。</p>
                     <p>我们不仅仅是在创立一家公司，更是在搭建一座<strong>‘生态系统’</strong>，将两大文化强国的顶级资本、技术与艺术无缝连接。</p>
                     <p>这趟列车即将驶离站台……这是一张通往亿万级市场的头等舱船票。我们诚挚邀请您，成为这传奇的一部分。”</p>
                     <div style="text-align:right; color:var(--gold); font-weight:700;">- Narin (Teem), CEO & Co-Founder -</div>
@@ -162,7 +192,7 @@
                 <div class="lang-content" id="let-th">
                     <p>"ถึง พันธมิตรทางยุทธศาสตร์...</p>
                     <p>การรวมตัวกันที่กรุงเทพฯ เมื่อปลายปีที่ผ่านมา ไม่ใช่เรื่องบังเอิญ แต่มันคือการ <strong>'จัดทัพ'</strong> ครั้งสำคัญเพื่อการปฏิวัติวงการ</p>
-                    <p>ภายใต้วิสัยทัศน์อันเฉียบคมของ <strong>'คุณนานา' (The Empress)</strong> ผู้มองเห็นช่องว่างมหาศาลในตลาด Global Short Drama เธอได้วางยุทธศาสตร์ที่จะนำ <strong>'โมเดลความสำเร็จของจีน'</strong> มาผสานกับ <strong>'ศักยภาพการผลิตของไทย'</strong></p>
+                    <p>ภายใต้วิสัยทัศน์อันเฉียบคมของ <strong>'คุณนานา' (Executive Chairwoman)</strong> ผู้มองเห็นช่องว่างมหาศาลในตลาด Global Short Drama เธอได้วางยุทธศาสตร์ที่จะนำ <strong>'โมเดลความสำเร็จของจีน'</strong> มาผสานกับ <strong>'ศักยภาพการผลิตของไทย'</strong></p>
                     <p>ในฐานะ <strong>CEO (The Hand)</strong> หน้าที่ของผมคือการเปลี่ยนวิสัยทัศน์นั้นให้กลายเป็นโครงสร้างธุรกิจที่แข็งแกร่ง ปลอดภัย และทำกำไรได้จริง เรากำลังสร้าง <strong>'Ecosystem'</strong> ที่เชื่อมโยงทุน เทคโนโลยี และศิลปะเข้าด้วยกัน</p>
                     <p>รถด่วนขบวนนี้กำลังจะออกจากชานชาลา... และนี่คือคำเชิญสู่ที่นั่งระดับ First Class สำหรับผู้ที่มองเห็นอนาคตเดียวกับเรา"</p>
                     <div style="text-align:right; color:var(--gold); font-weight:700;">- นรินทร์ (Teem), Chief Executive Officer -</div>
@@ -185,7 +215,7 @@
                     <div class="market-grid">
                         <div class="market-item">
                             <span class="m-head">💥 爆发增长 (THE EXPLOSION)</span>
-                            <span class="m-desc">全球短剧市场呈指数级增长，中国市场规模已破千亿，但全球市场仍是一片蓝海，缺乏真正的统治者。</span>
+                            <span class="m-desc">全球短剧市场呈指数级增长，中国市场规模已破千亿，但全球市场仍是一片蓝海。</span>
                         </div>
                         <div class="market-item">
                             <span class="m-head">⚠️ 行业痛点 (THE PAIN POINT)</span>
@@ -193,7 +223,7 @@
                         </div>
                         <div class="market-item">
                             <span class="m-head">🚀 我们的方案 (THE SOLUTION)</span>
-                            <span class="m-desc">我们是<strong>“缺失的一环”</strong>。利用中国验证过的爆款模型 (Proven Model) + 泰国极致性价比的执行力 (Thai Execution)，输出全球通用的软实力。</span>
+                            <span class="m-desc">我们是<strong>“缺失的一环”</strong>。利用中国验证过的爆款模型 + 泰国极致性价比的执行力。</span>
                         </div>
                     </div>
                 </div>
@@ -201,7 +231,7 @@
                     <div class="market-grid">
                         <div class="market-item">
                             <span class="m-head">💥 แรงระเบิด (THE EXPLOSION)</span>
-                            <span class="m-desc">ตลาด Short Drama ทั่วโลกกำลังเติบโตแบบ Exponential มูลค่าตลาดจีนทะลุแสนล้านหยวน แต่ตลาด Global ยังเป็น Blue Ocean ที่ไร้ผู้ครองบัลลังก์ที่แท้จริง</span>
+                            <span class="m-desc">ตลาด Short Drama ทั่วโลกกำลังเติบโตแบบ Exponential มูลค่าตลาดจีนทะลุแสนล้านหยวน แต่ตลาด Global ยังเป็น Blue Ocean ที่ไร้ผู้ครองบัลลังก์</span>
                         </div>
                         <div class="market-item">
                             <span class="m-head">⚠️ ปัญหาที่พบ (THE PAIN POINT)</span>
@@ -209,7 +239,7 @@
                         </div>
                         <div class="market-item">
                             <span class="m-head">🚀 ทางออกของเรา (THE SOLUTION)</span>
-                            <span class="m-desc">เราคือ <strong>"Missing Link"</strong> เรานำสูตรสำเร็จที่พิสูจน์แล้วจากจีน (Proven Model) มาผลิตด้วยความประณีตและต้นทุนที่คุ้มค่าของไทย (Thai Execution) เพื่อส่งออกสู่ตลาดโลก</span>
+                            <span class="m-desc">เราคือ <strong>"Missing Link"</strong> เรานำสูตรสำเร็จที่พิสูจน์แล้วจากจีน มาผลิตด้วยความประณีตและต้นทุนที่คุ้มค่าของไทย</span>
                         </div>
                     </div>
                 </div>
@@ -224,14 +254,32 @@
 
             <div class="card">
                 <div class="lang-content active" id="why-cn">
-                    <p><strong>💎 不对等优势 (UNFAIR ADVANTAGE):</strong> 当竞争对手还在试错时，我们已拥有来自行业顶层的<strong>“成功圣经”</strong>和世界级的<strong>“泰国生产基地”</strong>。</p>
-                    <p><strong>💰 成本套利 (COST ARBITRAGE):</strong> 我们能以低于全球竞争对手3倍的成本，制造出电影级质感的内容 = <strong>超高投资回报率 (High ROI)</strong>。</p>
-                    <p><strong>🛡️ 风险管理 (RISK MANAGEMENT):</strong> 由法律专家构建的严密商业架构，确保合规性与税务安全，最大化保护投资者利益。</p>
+                    <div class="why-item">
+                        <div class="why-head"><i>💎</i> 不对等优势 (UNFAIR ADVANTAGE)</div>
+                        <div class="why-desc">当竞争对手还在试错时，我们已拥有来自行业顶层的<strong>“成功圣经”</strong>和世界级的<strong>“泰国生产基地”</strong>。</div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-head"><i>💰</i> 成本套利 (COST ARBITRAGE)</div>
+                        <div class="why-desc">我们能以低于全球竞争对手3倍的成本，制造出电影级质感的内容 = <strong>超高投资回报率 (High ROI)</strong>。</div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-head"><i>🛡️</i> 风险管理 (RISK MANAGEMENT)</div>
+                        <div class="why-desc">由法律专家构建的严密商业架构，确保合规性与税务安全，最大化保护投资者利益。</div>
+                    </div>
                 </div>
                 <div class="lang-content" id="why-th">
-                    <p><strong>💎 UNFAIR ADVANTAGE (ความได้เปรียบที่ไม่เป็นธรรม):</strong> ในขณะที่คู่แข่งต้องลองผิดลองถูก เรามี <strong>"คัมภีร์ความสำเร็จ"</strong> จากผู้นำตลาดจีน และ <strong>"ฐานการผลิต"</strong> ระดับโลกในไทยอยู่ในมือตั้งแต่วันแรก</p>
-                    <p><strong>💰 COST ARBITRAGE (ส่วนต่างต้นทุน):</strong> เราสามารถผลิตงานคุณภาพระดับ Cinematic ได้ในต้นทุนที่ต่ำกว่าคู่แข่งในตลาดโลกถึง 3 เท่า = <strong>High ROI (ผลตอบแทนการลงทุนสูง)</strong></p>
-                    <p><strong>🛡️ RISK MANAGEMENT (การบริหารความเสี่ยง):</strong> โครงสร้างธุรกิจและกฎหมายถูกวางระบบโดยผู้เชี่ยวชาญ เพื่อปกป้องผลประโยชน์ของนักลงทุนสูงสุด (Legal & Tax Compliance)</p>
+                    <div class="why-item">
+                        <div class="why-head"><i>💎</i> UNFAIR ADVANTAGE (ความได้เปรียบที่ไม่เป็นธรรม)</div>
+                        <div class="why-desc">ในขณะที่คู่แข่งต้องลองผิดลองถูก เรามี <strong>"คัมภีร์ความสำเร็จ"</strong> จากผู้นำตลาดจีน และ <strong>"ฐานการผลิต"</strong> ระดับโลกในไทยอยู่ในมือตั้งแต่วันแรก</div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-head"><i>💰</i> COST ARBITRAGE (ส่วนต่างต้นทุน)</div>
+                        <div class="why-desc">เราสามารถผลิตงานคุณภาพระดับ Cinematic ได้ในต้นทุนที่ต่ำกว่าคู่แข่งในตลาดโลกถึง 3 เท่า = <strong>High ROI (ผลตอบแทนการลงทุนสูง)</strong></div>
+                    </div>
+                    <div class="why-item">
+                        <div class="why-head"><i>🛡️</i> RISK MANAGEMENT (การบริหารความเสี่ยง)</div>
+                        <div class="why-desc">โครงสร้างธุรกิจและกฎหมายถูกวางระบบโดยผู้เชี่ยวชาญ เพื่อปกป้องผลประโยชน์ของนักลงทุนสูงสุด (Legal & Tax Compliance)</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -244,11 +292,11 @@
 
             <div class="grid">
                 <div class="team-card">
-                    <span class="role">THE EXECUTIVE CHAIRWOMAN</span>
+                    <span class="role">EXECUTIVE CHAIRWOMAN</span>
                     <div class="name">NANA</div>
                     <div class="desc">
-                        <span class="lang-content active" id="p1-cn"><strong>THE EMPRESS:</strong> 拥有最终决策权，掌控帝国愿景与航向。</span>
-                        <span class="lang-content" id="p1-th"><strong>THE EMPRESS:</strong> ผู้กำหนดทิศทางลม ตัดสินใจ Final Decision และเป็นเจ้าของวิสัยทัศน์ทั้งหมด</span>
+                        <span class="lang-content active" id="p1-cn"><strong>THE VISIONARY:</strong> 拥有最终决策权，掌控帝国愿景与航向。</span>
+                        <span class="lang-content" id="p1-th"><strong>THE VISIONARY:</strong> ผู้กำหนดทิศทางลม ตัดสินใจ Final Decision และเป็นเจ้าของวิสัยทัศน์ทั้งหมด</span>
                     </div>
                 </div>
                 <div class="team-card">
@@ -287,26 +335,30 @@
             <div class="lang-content active" id="fomo-cn">
                 <p class="fomo-text">
                     “机会从不等待……我们亦是如此。”<br><br>
-                    <strong>90天作战计划</strong>已获批准并启动。核心资源、顶级场地与A级团队已锁定。<br>
+                    <strong>90天作战计划</strong>已获批准并启动。核心资源已锁定。<br>
                     我们不接受所有人的加入……我们只寻找少数<strong>“战略合作伙伴”</strong>。<br><br>
-                    如果您认为自己是这块拼图的关键……<br>
                     <strong>这扇门正为您打开，但不会永远敞开。</strong>
                 </p>
             </div>
             <div class="lang-content" id="fomo-th">
                 <p class="fomo-text">
                     "โอกาส ไม่เคยรอใคร... และเราก็เช่นกัน"<br><br>
-                    แผนปฏิบัติการ <strong>90 Days Operation</strong> ได้ถูกอนุมัติและเริ่มเดินหน้าแล้ว ทรัพยากรหลัก สถานที่ และทีมงานระดับ A-List ถูกจองตัวเรียบร้อยแล้ว<br>
-                    เราไม่ได้เปิดรับทุกคน... เรากำลังมองหา <strong>"Strategic Partner"</strong> เพียงไม่กี่ราย ที่พร้อมจะโตไปกับเรา<br><br>
-                    หากคุณคิดว่าคุณคือจิ๊กซอว์ชิ้นสำคัญ...<br>
+                    แผนปฏิบัติการ <strong>90 Days Operation</strong> ได้ถูกอนุมัติและเริ่มเดินหน้าแล้ว ทรัพยากรหลักถูกจองตัวเรียบร้อยแล้ว<br>
+                    เราไม่ได้เปิดรับทุกคน... เรากำลังมองหา <strong>"Strategic Partner"</strong> เพียงไม่กี่ราย<br><br>
                     <strong>ประตูบานนี้เปิดรอคุณอยู่ แต่จะไม่เปิดตลอดไป</strong>
                 </p>
             </div>
 
-            <a href="business.html" class="btn-link" style="border-color:var(--gold); color:var(--gold); background:rgba(212,175,55,0.05);">
-                <span class="lang-content active" id="btn2-cn">查看商业计划 (ACCESS BUSINESS PLAN)</span>
-                <span class="lang-content" id="btn2-th">เข้าดูแผนธุรกิจ (ACCESS BUSINESS PLAN)</span>
-            </a>
+            <div class="btn-container">
+                <a href="business.html" class="btn-link primary">
+                    <span class="lang-content active" id="btn2-cn">查看商业计划 (ACCESS BUSINESS PLAN)</span>
+                    <span class="lang-content" id="btn2-th">เข้าดูแผนธุรกิจ (ACCESS BUSINESS PLAN)</span>
+                </a>
+                <a href="team.html" class="btn-link">
+                    <span class="lang-content active" id="btn1-cn">认识管理团队 (VIEW FULL TEAM)</span>
+                    <span class="lang-content" id="btn1-th">ดูข้อมูลทีมบริหาร (VIEW FULL TEAM)</span>
+                </a>
+            </div>
         </div>
 
     </div>
