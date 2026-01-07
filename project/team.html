@@ -95,29 +95,48 @@
 
         .hc-body { padding: 35px 30px; }
         
-        /* MATRIX GRID */
-        .matrix-grid { display: grid; grid-template-columns: 1fr; gap: 30px; margin-bottom: 30px; }
+        /* MATRIX GRID - REDESIGNED FOR MOBILE READABILITY */
+        .matrix-grid { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 30px; }
         @media (min-width: 768px) {
-            .matrix-grid { grid-template-columns: 1fr 1fr; }
+            .matrix-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
         }
         
         .matrix-box h4 { 
-            color: var(--gold); margin: 0 0 15px 0; font-size: 0.85rem; 
+            color: var(--gold); margin: 0 0 20px 0; font-size: 0.9rem; 
             text-transform: uppercase; border-bottom: 1px solid rgba(212,175,55,0.2); 
-            padding-bottom: 8px; font-family: 'Montserrat', sans-serif; letter-spacing: 1px; font-weight: 700;
+            padding-bottom: 10px; font-family: 'Montserrat', sans-serif; letter-spacing: 1px; font-weight: 700;
         }
+        
         .stat-list { list-style: none; padding: 0; margin: 0; }
-        .stat-list li { font-size: 0.9rem; color: #bbb; margin-bottom: 12px; display: flex; align-items: flex-start; line-height: 1.6; }
-        .stat-list li::before { content: "▪"; color: var(--gold); margin-right: 12px; font-size: 1.2rem; line-height: 1; }
-        .stat-list li strong { color: #fff; font-weight: 600; display: block; margin-bottom: 2px; font-size: 0.95rem; }
-        .stat-list li span { display: block; }
+        .stat-list li { 
+            margin-bottom: 20px; 
+            position: relative; 
+            padding-left: 15px; 
+            border-left: 2px solid rgba(255,255,255,0.1); 
+        }
+        .stat-list li strong { 
+            display: block; 
+            color: var(--gold); 
+            font-weight: 700; 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 0.9rem; 
+            margin-bottom: 5px; 
+            text-transform: uppercase;
+        }
+        .stat-list li span { 
+            display: block; 
+            color: #ccc; 
+            font-size: 0.95rem; 
+            line-height: 1.6; 
+            font-weight: 300;
+        }
 
         .indispensable {
             background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 4px;
-            padding: 20px; text-align: center; margin-top: 10px;
+            padding: 25px; text-align: center; margin-top: 10px;
         }
         .idp-title { display: block; font-size: 0.7rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; font-weight: 800; font-family: 'Montserrat', sans-serif; }
-        .idp-text { font-size: 1.05rem; font-weight: 500; color: #fff; font-style: italic; line-height: 1.6; font-family: 'Noto Serif SC', serif; }
+        .idp-text { font-size: 1.1rem; font-weight: 500; color: #fff; font-style: italic; line-height: 1.6; font-family: 'Noto Serif SC', serif; }
 
         /* SYNERGY SECTION */
         .synergy-section { margin-top: 100px; padding: 50px 30px; background: #080808; border-radius: 8px; border: 1px solid #222; text-align: center; position: relative; overflow: hidden; }
@@ -137,18 +156,19 @@
         .avatar.active span { color: var(--gold); }
 
         .combo-result { 
-            min-height: 180px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; 
-            padding: 40px; display: none; animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-height: 250px; /* Fixed height to prevent shrinking */
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; 
+            padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: all 0.3s ease;
         }
-        .combo-result.show { display: block; }
-        .combo-name { font-family: 'Cinzel', serif; font-size: 1.5rem; color: #fff; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 15px; display: inline-block; }
+        .combo-name { font-family: 'Cinzel', serif; font-size: 1.5rem; color: #fff; margin-bottom: 25px; text-transform: uppercase; border-bottom: 1px solid rgba(212,175,55,0.3); padding-bottom: 15px; display: inline-block; width: 100%; }
         
-        .skill-grid { display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left; max-width: 600px; margin: 0 auto; }
+        .skill-grid { display: grid; grid-template-columns: 1fr; gap: 20px; text-align: left; width: 100%; }
         @media (min-width: 600px) { .skill-grid { grid-template-columns: 1fr 1fr; } }
         
-        .skill-box { background: rgba(0,0,0,0.3); padding: 15px; border-left: 2px solid var(--gold); }
-        .sb-title { color: var(--gold); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.8rem; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .sb-desc { color: #ccc; font-size: 0.9rem; line-height: 1.5; }
+        .skill-box { background: rgba(0,0,0,0.3); padding: 20px; border-left: 2px solid var(--gold); }
+        .sb-title { color: var(--gold); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .sb-desc { color: #ccc; font-size: 0.95rem; line-height: 1.6; }
 
         /* NAV */
         .nav-bar {
@@ -173,10 +193,9 @@
         .l-btn.active { color: var(--gold); }
         
         .lang-content { display: none; }
-        .lang-content.active { display: block; }
+        .lang-content.active { display: block; animation: fadeIn 0.8s; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
     </style>
 </head>
@@ -280,7 +299,7 @@
             <div class="hc-header">
                 <div class="hc-avatar" style="background-image: url('IMG_3637_PENG.jpg');"></div>
                 <div class="hc-info">
-                    <span class="hc-role">THE MASTER</span>
+                    <span class="hc-role">THE GRANDMASTER</span>
                     <h2 class="hc-name">PENG YUSI</h2>
                     <div class="hc-bio">
                         <span class="lang-content active" id="pe-bio-cn">中国网络电影界的传奇人物。彭哥不仅是票房的保障，更是品质的标尺。十余年的影视深耕，集编、导、演于一身，他对惊悚与奇幻题材的掌控力，将为我们的作品注入电影级的质感与灵魂。</span>
@@ -522,57 +541,33 @@
         const combos = {
             "nana-teem": {
                 cn: { 
-                    title: "扭曲现实 (REALITY DISTORTION)", 
-                    s1: "极速落地 (Hyper-Execution): 将想法转化为现实的速度提升10倍。",
-                    s2: "战略创意 (Strategic Creativity): 在商业与法律的安全网内，肆意挥洒创意。"
+                    title: "愿景落地 (VISION TO REALITY)", 
+                    s1: "极速执行 (Hyper-Execution): 将宏大战略转化为可执行的商业结果。",
+                    s2: "战略护航 (Strategic Protection): 创意在商业与法律的护航下安全落地。"
                 },
                 th: { 
-                    title: "บิดเบือนความจริง (REALITY DISTORTION)", 
-                    s1: "Hyper-Execution: เปลี่ยนไอเดียในอากาศให้เป็นเนื้องานจริงได้ในความเร็วแสง",
-                    s2: "Strategic Creativity: ความคิดสร้างสรรค์ที่มีเกราะป้องกันทางธุรกิจและกฎหมาย"
-                }
-            },
-            "peng-chieko": {
-                cn: { 
-                    title: "不动如山 (THE IMMOVABLE MOUNTAIN)", 
-                    s1: "完美标准 (Perfect Standard): 彭哥的顶级制作 + Chieko 的完美后勤。",
-                    s2: "全球吸引力 (Global Appeal): 硬核粉丝 (CN) 与 国际形象 (Global) 的双重加持。"
-                },
-                th: { 
-                    title: "ขุนเขาที่ไม่สั่นคลอน (THE IMMOVABLE MOUNTAIN)", 
-                    s1: "Perfect Standard: งานเบื้องหน้าเป๊ะระดับเทพ (Peng) + การจัดการเบื้องหลังที่ไร้ที่ติ (Chieko)",
-                    s2: "Global Appeal: ดึงดูดทั้งฐานแฟนคลับสาย Hardcore (จีน) และสาย Mass/Inter"
+                    title: "วิสัยทัศน์สู่ความจริง (VISION TO REALITY)", 
+                    s1: "Hyper-Execution: การเปลี่ยนแผนยุทธศาสตร์ให้เป็นผลลัพธ์ทางธุรกิจที่จับต้องได้",
+                    s2: "Strategic Protection: ความคิดสร้างสรรค์ที่ถูกปกป้องด้วยกลไกทางธุรกิจและกฎหมาย"
                 }
             },
             "nana-peng": {
                 cn: { 
                     title: "巅峰融合 (THE ULTIMATE FUSION)", 
-                    s1: "类型融合 (Genre-Bending): 经典惊悚 (Peng) 与 现代短剧 (Nana) 的化学反应。",
+                    s1: "市场革命 (Market Revolution): 新生代流量与殿堂级制作标准的完美结合。",
                     s2: "流量海啸 (Traffic Tsunami): 双方粉丝合流，引爆全网话题。"
                 },
                 th: { 
                     title: "การผสานระดับตำนาน (THE ULTIMATE FUSION)", 
-                    s1: "Genre-Bending: ผสานความคลาสสิกของหนังผี (Peng) เข้ากับจริตละครสั้นสมัยใหม่ (Nana)",
+                    s1: "Market Revolution: การปฏิวัติวงการด้วยการรวมฐานผู้ชมยุคใหม่เข้ากับมาตรฐานภาพยนตร์ระดับสูง",
                     s2: "Traffic Tsunami: เรียกรวมพลแฟนคลับจากทั้งสองขั้ว เกิดเป็นกระแสไวรัลที่หยุดไม่อยู่"
-                }
-            },
-            "teem-chieko": {
-                cn: { 
-                    title: "坚实基石 (THE SOLID FOUNDATION)", 
-                    s1: "全域掌控 (Full-Scale Ops): Teem 控系统，Chieko 控人心。",
-                    s2: "危机免疫 (Crisis Immunity): 100% 屏蔽外部法律风险与内部人事矛盾。"
-                },
-                th: { 
-                    title: "รากฐานที่มั่นคง (THE SOLID FOUNDATION)", 
-                    s1: "Full-Scale Ops: คุมได้หมดตั้งแต่ไม้จิ้มฟันยันเรือรบ (Teem ดูระบบ / Chieko ดูคน)",
-                    s2: "Crisis Immunity: ป้องกันปัญหาภายนอก (Legal/Deal) และสลายปัญหาภายใน (HR/Morale) ได้ 100%"
                 }
             },
             "nana-chieko": {
                 cn: {
                     title: "绝对影响力 (ABSOLUTE INFLUENCE)",
-                    s1: "全面说服 (Total Persuasion): 娜娜的霸气与 Chieko 的柔和，无坚不摧的谈判组合。",
-                    s2: "高级形象 (Global Image): 共同打造无可挑剔的国际化品牌形象。"
+                    s1: "全面说服 (Total Persuasion): 霸气决策与柔和外交的完美互补。",
+                    s2: "国际形象 (Global Image): 共同打造无可挑剔的国际化品牌形象。"
                 },
                 th: {
                     title: "อิทธิพลเหนือระดับ (ABSOLUTE INFLUENCE)",
@@ -592,10 +587,34 @@
                     s2: "Risk-Free Creativity: ความคิดสร้างสรรค์ที่ไร้ขีดจำกัด บนพื้นฐานความเป็นไปได้จริง"
                 }
             },
+            "peng-chieko": {
+                cn: { 
+                    title: "和谐卓越 (HARMONY & EXCELLENCE)", 
+                    s1: "完美标准 (Perfect Standard): 严苛的制作标准与周到的后勤保障。",
+                    s2: "全球吸引力 (Global Appeal): 硬核实力与亲和力的双重加持。"
+                },
+                th: { 
+                    title: "ดุลยภาพแห่งความสำเร็จ (HARMONY & EXCELLENCE)", 
+                    s1: "Perfect Standard: การรักษาระดับคุณภาพงานที่เข้มงวด ควบคู่กับการบริหารความสัมพันธ์ในกองถ่าย",
+                    s2: "Global Appeal: ดึงดูดทั้งฐานแฟนคลับสาย Hardcore และสาย Mass/Inter"
+                }
+            },
+            "teem-chieko": {
+                cn: { 
+                    title: "坚实基石 (THE SOLID FOUNDATION)", 
+                    s1: "全域掌控 (Full-Scale Ops): Teem 控系统，Chieko 控人心。",
+                    s2: "危机免疫 (Crisis Immunity): 全面屏蔽外部风险与内部矛盾。"
+                },
+                th: { 
+                    title: "รากฐานที่มั่นคง (THE SOLID FOUNDATION)", 
+                    s1: "Full-Scale Ops: การบริหารจัดการองค์กรแบบ 360 องศา ครอบคลุมทั้งระบบปฏิบัติการและทรัพยากรมนุษย์",
+                    s2: "Crisis Immunity: การป้องกันความเสี่ยงภายนอกและการบริหารจัดการภายในที่ไร้รอยต่อ"
+                }
+            },
             // Fallback for others
             "default": {
-                cn: { title: "强强联手 (POWER DUO)", s1: "效率倍增", s2: "资源互补" },
-                th: { title: "คู่หูทรงพลัง (POWER DUO)", s1: "เพิ่มประสิทธิภาพ x2", s2: "เสริมทรัพยากรซึ่งกันและกัน" }
+                cn: { title: "请选择两位成员 (SELECT MEMBERS)", s1: "...", s2: "..." },
+                th: { title: "กรุณาเลือกสมาชิก 2 คน (SELECT MEMBERS)", s1: "...", s2: "..." }
             }
         };
 
@@ -624,11 +643,11 @@
                     <div class="combo-name">${currentLang === 'cn' ? data.cn.title : data.th.title}</div>
                     <div class="skill-grid">
                         <div class="skill-box">
-                            <span class="sb-title">SKILL UNLOCKED 1</span>
+                            <span class="sb-title">SYNERGY POWER 1</span>
                             <span class="sb-desc">${currentLang === 'cn' ? data.cn.s1 : data.th.s1}</span>
                         </div>
                         <div class="skill-box">
-                            <span class="sb-title">SKILL UNLOCKED 2</span>
+                            <span class="sb-title">SYNERGY POWER 2</span>
                             <span class="sb-desc">${currentLang === 'cn' ? data.cn.s2 : data.th.s2}</span>
                         </div>
                     </div>
