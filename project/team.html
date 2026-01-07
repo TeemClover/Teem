@@ -95,7 +95,7 @@
 
         .hc-body { padding: 35px 30px; }
         
-        /* MATRIX GRID - REDESIGNED FOR MOBILE READABILITY */
+        /* MATRIX GRID */
         .matrix-grid { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 30px; }
         @media (min-width: 768px) {
             .matrix-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
@@ -114,10 +114,11 @@
             padding-left: 15px; 
             border-left: 2px solid rgba(255,255,255,0.1); 
         }
-        /* Adjusted for readability: Title is White, Content is Grey */
+        
+        /* REVERTED TO GOLD AS REQUESTED */
         .stat-list li strong { 
             display: block; 
-            color: #fff; /* Changed from Gold to White for contrast against H4 */
+            color: var(--gold); /* GOLD IS BACK */
             font-weight: 700; 
             font-family: 'Montserrat', sans-serif; 
             font-size: 0.85rem; 
@@ -158,7 +159,7 @@
         .avatar.active span { color: var(--gold); }
 
         .combo-result { 
-            min-height: 280px; /* Fixed height to prevent shrinking */
+            min-height: 280px; 
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; 
             padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: all 0.3s ease;
@@ -171,6 +172,9 @@
         .skill-box { background: rgba(0,0,0,0.3); padding: 20px; border-left: 2px solid var(--gold); }
         .sb-title { color: var(--gold); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
         .sb-desc { color: #ccc; font-size: 0.95rem; line-height: 1.6; }
+        
+        /* FORCE GOLD IN SYNERGY DESCRIPTION */
+        .sb-desc strong { color: var(--gold); font-weight: 700; font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px; }
 
         /* NAV */
         .nav-bar {
@@ -544,73 +548,73 @@
             "nana-teem": {
                 cn: { 
                     title: "愿景落地 (VISION TO REALITY)", 
-                    s1: "极速执行 (Hyper-Execution): 将宏大战略转化为可执行的商业结果。",
-                    s2: "战略护航 (Strategic Protection): 创意在商业与法律的护航下安全落地。"
+                    s1: "<strong>极速执行 (Hyper-Execution):</strong> 将宏大战略转化为可执行的商业结果。",
+                    s2: "<strong>战略护航 (Strategic Protection):</strong> 创意在商业与法律的护航下安全落地。"
                 },
                 th: { 
                     title: "วิสัยทัศน์สู่ความจริง (VISION TO REALITY)", 
-                    s1: "Hyper-Execution: การเปลี่ยนแผนยุทธศาสตร์ให้เป็นผลลัพธ์ทางธุรกิจที่จับต้องได้",
-                    s2: "Strategic Protection: ความคิดสร้างสรรค์ที่ถูกปกป้องด้วยกลไกทางธุรกิจและกฎหมาย"
+                    s1: "<strong>Hyper-Execution:</strong> การเปลี่ยนแผนยุทธศาสตร์ให้เป็นผลลัพธ์ทางธุรกิจที่จับต้องได้",
+                    s2: "<strong>Strategic Protection:</strong> ความคิดสร้างสรรค์ที่ถูกปกป้องด้วยกลไกทางธุรกิจและกฎหมาย"
                 }
             },
             "nana-peng": {
                 cn: { 
                     title: "巅峰融合 (THE ULTIMATE FUSION)", 
-                    s1: "市场革命 (Market Revolution): 新生代流量与殿堂级制作标准的完美结合。",
-                    s2: "流量海啸 (Traffic Tsunami): 双方粉丝合流，引爆全网话题。"
+                    s1: "<strong>市场革命 (Market Revolution):</strong> 新生代流量与殿堂级制作标准的完美结合。",
+                    s2: "<strong>流量海啸 (Traffic Tsunami):</strong> 双方粉丝合流，引爆全网话题。"
                 },
                 th: { 
                     title: "การผสานระดับตำนาน (THE ULTIMATE FUSION)", 
-                    s1: "Market Revolution: การปฏิวัติวงการด้วยการรวมฐานผู้ชมยุคใหม่เข้ากับมาตรฐานภาพยนตร์ระดับสูง",
-                    s2: "Traffic Tsunami: เรียกรวมพลแฟนคลับจากทั้งสองขั้ว เกิดเป็นกระแสไวรัลที่หยุดไม่อยู่"
+                    s1: "<strong>Market Revolution:</strong> การปฏิวัติวงการด้วยการรวมฐานผู้ชมยุคใหม่เข้ากับมาตรฐานภาพยนตร์ระดับสูง",
+                    s2: "<strong>Traffic Tsunami:</strong> เรียกรวมพลแฟนคลับจากทั้งสองขั้ว เกิดเป็นกระแสไวรัลที่หยุดไม่อยู่"
                 }
             },
             "nana-chieko": {
                 cn: {
                     title: "中日双姝 (THE ORIENTAL BEAUTIES)",
-                    s1: "视觉冲击 (Visual Impact): 中日两国顶级美女的联合，形成全亚洲无法抗拒的视觉引力。",
-                    s2: "软实力 (Soft Power): 以极致的亲和力与美感，打通跨国界的情感共鸣。"
+                    s1: "<strong>视觉冲击 (Visual Impact):</strong> 中日两国顶级美女的联合，形成全亚洲无法抗拒的视觉引力。",
+                    s2: "<strong>软实力 (Soft Power):</strong> 以极致的亲和力与美感，打通跨国界的情感共鸣。"
                 },
                 th: {
                     title: "สองบุปผางามแห่งเอเชีย (THE ORIENTAL BEAUTIES)",
-                    s1: "China-Japan Fusion: การรวมพลังของสุดยอดสาวงามจากจีนและญี่ปุ่น สร้างแรงดึงดูดทางสายตาที่ไม่อาจต้านทาน",
-                    s2: "Cross-Border Charm: ใช้ Soft Power และเสน่ห์เฉพาะตัว เชื่อมโยงความรู้สึกของผู้ชมทั่วเอเชีย"
+                    s1: "<strong>China-Japan Fusion:</strong> การรวมพลังของสุดยอดสาวงามจากจีนและญี่ปุ่น สร้างแรงดึงดูดทางสายตาที่ไม่อาจต้านทาน",
+                    s2: "<strong>Cross-Border Charm:</strong> ใช้ Soft Power และเสน่ห์เฉพาะตัว เชื่อมโยงความรู้สึกของผู้ชมทั่วเอเชีย"
                 }
             },
             "peng-teem": {
                 cn: {
                     title: "制作重镇 (PRODUCTION POWERHOUSE)",
-                    s1: "资源最大化 (Resource Optimization): 用最具竞争力的成本实现电影级质感。",
-                    s2: "安全创作 (Risk-Free Creativity): 彭哥负责天马行空，Teem 负责落地生根。"
+                    s1: "<strong>资源最大化 (Resource Optimization):</strong> 用最具竞争力的成本实现电影级质感。",
+                    s2: "<strong>安全创作 (Risk-Free Creativity):</strong> 彭哥负责天马行空，Teem 负责落地生根。"
                 },
                 th: {
                     title: "ขุมพลังการผลิต (PRODUCTION POWERHOUSE)",
-                    s1: "Resource Optimization: การบริหารทรัพยากรเพื่อสร้างสรรค์งานคุณภาพสูงสุดในงบประมาณที่เหมาะสม",
-                    s2: "Risk-Free Creativity: ความคิดสร้างสรรค์ที่ไร้ขีดจำกัด บนพื้นฐานความเป็นไปได้จริง"
+                    s1: "<strong>Resource Optimization:</strong> การบริหารทรัพยากรเพื่อสร้างสรรค์งานคุณภาพสูงสุดในงบประมาณที่เหมาะสม",
+                    s2: "<strong>Risk-Free Creativity:</strong> ความคิดสร้างสรรค์ที่ไร้ขีดจำกัด บนพื้นฐานความเป็นไปได้จริง"
                 }
             },
             "peng-chieko": {
                 cn: { 
                     title: "和谐卓越 (HARMONY & EXCELLENCE)", 
-                    s1: "完美标准 (Perfect Standard): 严苛的制作标准与周到的后勤保障。",
-                    s2: "全球吸引力 (Global Appeal): 硬核实力与亲和力的双重加持。"
+                    s1: "<strong>完美标准 (Perfect Standard):</strong> 严苛的制作标准与周到的后勤保障。",
+                    s2: "<strong>全球吸引力 (Global Appeal):</strong> 硬核实力与亲和力的双重加持。"
                 },
                 th: { 
                     title: "ดุลยภาพแห่งความสำเร็จ (HARMONY & EXCELLENCE)", 
-                    s1: "Perfect Standard: การรักษาระดับคุณภาพงานที่เข้มงวด ควบคู่กับการบริหารความสัมพันธ์ในกองถ่าย",
-                    s2: "Global Appeal: ดึงดูดทั้งฐานแฟนคลับสาย Hardcore และสาย Mass/Inter"
+                    s1: "<strong>Perfect Standard:</strong> การรักษาระดับคุณภาพงานที่เข้มงวด ควบคู่กับการบริหารความสัมพันธ์ในกองถ่าย",
+                    s2: "<strong>Global Appeal:</strong> ดึงดูดทั้งฐานแฟนคลับสาย Hardcore และสาย Mass/Inter"
                 }
             },
             "teem-chieko": {
                 cn: { 
                     title: "坚实基石 (THE SOLID FOUNDATION)", 
-                    s1: "全域掌控 (Full-Scale Ops): Teem 控系统，Chieko 控人心。",
-                    s2: "坚固防线 (Robust Protection): 全面屏蔽外部风险与内部矛盾。"
+                    s1: "<strong>全域掌控 (Full-Scale Ops):</strong> Teem 控系统，Chieko 控人心。",
+                    s2: "<strong>坚固防线 (Robust Protection):</strong> 全面屏蔽外部风险与内部矛盾。"
                 },
                 th: { 
                     title: "รากฐานที่มั่นคง (THE SOLID FOUNDATION)", 
-                    s1: "Full-Scale Ops: การบริหารจัดการองค์กรแบบ 360 องศา ครอบคลุมทั้งระบบปฏิบัติการและทรัพยากรมนุษย์",
-                    s2: "Robust Protection: เกราะป้องกันที่แข็งแกร่ง ป้องกันความเสี่ยงภายนอกและจัดการภายในได้ราบรื่น"
+                    s1: "<strong>Full-Scale Ops:</strong> การบริหารจัดการองค์กรแบบ 360 องศา ครอบคลุมทั้งระบบปฏิบัติการและทรัพยากรมนุษย์",
+                    s2: "<strong>Robust Protection:</strong> เกราะป้องกันที่แข็งแกร่ง ป้องกันความเสี่ยงภายนอกและจัดการภายในได้ราบรื่น"
                 }
             },
             // Fallback for others
