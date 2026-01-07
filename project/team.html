@@ -114,14 +114,16 @@
             padding-left: 15px; 
             border-left: 2px solid rgba(255,255,255,0.1); 
         }
+        /* Adjusted for readability: Title is White, Content is Grey */
         .stat-list li strong { 
             display: block; 
-            color: var(--gold); 
+            color: #fff; /* Changed from Gold to White for contrast against H4 */
             font-weight: 700; 
             font-family: 'Montserrat', sans-serif; 
-            font-size: 0.9rem; 
+            font-size: 0.85rem; 
             margin-bottom: 5px; 
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .stat-list li span { 
             display: block; 
@@ -156,7 +158,7 @@
         .avatar.active span { color: var(--gold); }
 
         .combo-result { 
-            min-height: 250px; /* Fixed height to prevent shrinking */
+            min-height: 280px; /* Fixed height to prevent shrinking */
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; 
             padding: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: all 0.3s ease;
@@ -565,14 +567,14 @@
             },
             "nana-chieko": {
                 cn: {
-                    title: "绝对影响力 (ABSOLUTE INFLUENCE)",
-                    s1: "全面说服 (Total Persuasion): 霸气决策与柔和外交的完美互补。",
-                    s2: "国际形象 (Global Image): 共同打造无可挑剔的国际化品牌形象。"
+                    title: "中日双姝 (THE ORIENTAL BEAUTIES)",
+                    s1: "视觉冲击 (Visual Impact): 中日两国顶级美女的联合，形成全亚洲无法抗拒的视觉引力。",
+                    s2: "软实力 (Soft Power): 以极致的亲和力与美感，打通跨国界的情感共鸣。"
                 },
                 th: {
-                    title: "อิทธิพลเหนือระดับ (ABSOLUTE INFLUENCE)",
-                    s1: "Total Persuasion: พลังการเจรจาต่อรองที่สมบูรณ์แบบ ทั้งความเด็ดขาดและความประนีประนอม",
-                    s2: "Global Image: สร้างภาพลักษณ์แบรนด์ที่หรูหราและมีความเป็นสากล"
+                    title: "สองบุปผางามแห่งเอเชีย (THE ORIENTAL BEAUTIES)",
+                    s1: "China-Japan Fusion: การรวมพลังของสุดยอดสาวงามจากจีนและญี่ปุ่น สร้างแรงดึงดูดทางสายตาที่ไม่อาจต้านทาน",
+                    s2: "Cross-Border Charm: ใช้ Soft Power และเสน่ห์เฉพาะตัว เชื่อมโยงความรู้สึกของผู้ชมทั่วเอเชีย"
                 }
             },
             "peng-teem": {
@@ -603,12 +605,12 @@
                 cn: { 
                     title: "坚实基石 (THE SOLID FOUNDATION)", 
                     s1: "全域掌控 (Full-Scale Ops): Teem 控系统，Chieko 控人心。",
-                    s2: "危机免疫 (Crisis Immunity): 全面屏蔽外部风险与内部矛盾。"
+                    s2: "坚固防线 (Robust Protection): 全面屏蔽外部风险与内部矛盾。"
                 },
                 th: { 
                     title: "รากฐานที่มั่นคง (THE SOLID FOUNDATION)", 
                     s1: "Full-Scale Ops: การบริหารจัดการองค์กรแบบ 360 องศา ครอบคลุมทั้งระบบปฏิบัติการและทรัพยากรมนุษย์",
-                    s2: "Crisis Immunity: การป้องกันความเสี่ยงภายนอกและการบริหารจัดการภายในที่ไร้รอยต่อ"
+                    s2: "Robust Protection: เกราะป้องกันที่แข็งแกร่ง ป้องกันความเสี่ยงภายนอกและจัดการภายในได้ราบรื่น"
                 }
             },
             // Fallback for others
