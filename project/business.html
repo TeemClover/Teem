@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>THE EMPIRE: WAR ROOM</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Noto+Serif+SC:wght@300;500;700&family=Noto+Serif+Thai:wght@300;500;700&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold: #D4AF37; --gold-dim: #8a702a; --bg: #050505; 
+            --text: #e0e0e0; --text-muted: #888;
+            --glass: rgba(15, 15, 15, 0.95);
+            --border: 1px solid rgba(212, 175, 55, 0.3);
+            --card-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Noto Serif SC', 'Noto Serif Thai', serif; line-height: 1.7; padding-bottom: 150px; overflow-x: hidden; }
+        
+        .bg-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; background: url('IMG_3638.jpeg') center/cover; opacity: 0.1; filter: grayscale(100%); }
+        
+        .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 20px; z-index: 900; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.95); border-bottom: var(--border); backdrop-filter: blur(10px); }
+        .back-btn { text-decoration: none; color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 700; border: 1px solid var(--gold); padding: 6px 14px; border-radius: 30px; transition: 0.3s; }
+        .page-title { font-family: 'Cinzel', serif; font-size: 1rem; color: #fff; letter-spacing: 2px; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 100px 20px 40px; }
+
+        .title-block { text-align: center; margin-bottom: 50px; padding-bottom: 30px; border-bottom: 1px solid rgba(212,175,55,0.15); }
+        .title-main { font-family: 'Cinzel', serif; font-size: 2.2rem; background: linear-gradient(to bottom, #fff, var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); letter-spacing: 1px; margin-bottom: 10px; }
+        .title-sub { font-family: 'Montserrat', sans-serif; font-size: 0.7rem; color: var(--text-muted); letter-spacing: 3px; text-transform: uppercase; }
+
+        .section-header { display: flex; align-items: flex-end; gap: 15px; margin: 70px 0 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .sh-num { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; color: rgba(212,175,55,0.2); line-height: 0.8; }
+        .sh-text { display: flex; flex-direction: column; }
+        .sh-en { font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--gold); line-height: 1; letter-spacing: 1px; }
+        .sh-cn { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; font-weight: 400; }
+
+        .card { background: var(--glass); border: var(--border); padding: 30px 25px; border-radius: 6px; margin-bottom: 25px; box-shadow: var(--card-shadow); }
+        
+        .vision-box { text-align: center; padding: 35px 25px; background: linear-gradient(160deg, rgba(20,20,20,0.95), rgba(5,5,5,1)); border: 1px solid var(--gold); border-radius: 8px; margin-bottom: 50px; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(212,175,55,0.1); }
+        .vision-box::before { content: ""; position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: var(--gold); }
+        .v-head { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.2rem; letter-spacing: 2px; display: block; margin-bottom: 15px; opacity: 1; text-transform: uppercase; }
+        .v-body { font-size: 1.1rem; font-style: italic; color: #fff; line-height: 1.8; font-weight: 300; }
+
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .data-box { background: rgba(255,255,255,0.03); padding: 20px 15px; border-radius: 4px; text-align: center; border: 1px solid rgba(255,255,255,0.08); }
+        .db-val { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--gold); display: block; margin-bottom: 5px; }
+        .db-lbl { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+
+        .project-card { background: #000; border: var(--border); border-radius: 8px; margin-bottom: 50px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .pj-img-wrap { position: relative; width: 100%; aspect-ratio: 9/16; overflow: hidden; border-bottom: 1px solid rgba(212,175,55,0.2); }
+        .pj-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .pj-tag { position: absolute; top: 20px; left: 20px; background: var(--gold); color: #000; padding: 5px 12px; font-size: 0.7rem; font-weight: 800; font-family: 'Montserrat', sans-serif; text-transform: uppercase; border-radius: 2px; z-index: 2; box-shadow: 0 5px 15px rgba(0,0,0,0.5); letter-spacing: 1px; }
+        .pj-content { padding: 30px 25px; }
+        .pj-title { font-family: 'Cinzel', serif; font-size: 1.4rem; color: #fff; margin-bottom: 10px; display: block; line-height: 1.3; font-weight: 600; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .pj-specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+        .pj-spec-item span { display: block; }
+        .pj-label { font-size: 0.65rem; color: #888; text-transform: uppercase; font-family: 'Montserrat', sans-serif; }
+        .pj-value { font-size: 0.85rem; color: var(--gold); font-weight: bold; }
+        .pj-desc { font-size: 1rem; color: #ccc; line-height: 1.7; margin-bottom: 20px; font-weight: 300; text-align: justify; }
+        .pj-nana-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 4px; border: 1px dashed rgba(255,255,255,0.2); border-left: 3px solid var(--gold); }
+        .pj-nana-head { font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: #888; text-transform: uppercase; display: block; margin-bottom: 5px; font-weight: bold; }
+        .pj-nana-text { font-size: 0.95rem; color: #e0e0e0; font-style: italic; }
+
+        .timeline { border-left: 2px solid rgba(212,175,55,0.2); margin-left: 10px; padding-left: 30px; margin-top: 20px; }
+        .t-item { position: relative; margin-bottom: 40px; }
+        .t-item::before { content: ""; position: absolute; left: -36px; top: 6px; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 15px var(--gold); }
+        .t-head { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95rem; color: #fff; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .t-body { font-size: 0.95rem; color: #bbb; line-height: 1.6; }
+
+        .fin-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; margin-top: 15px; }
+        .fin-table td { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #ccc; }
+        .fin-table tr:last-child td { border-bottom: none; }
+        .fin-val { text-align: right; color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 600; }
+        .fin-highlight { color: var(--gold); font-weight: 700; font-size: 1.2rem; }
+
+        .risk-box { background: rgba(30, 10, 10, 0.3); border-left: 3px solid #8a0a0a; padding: 20px; margin-bottom: 20px; border-radius: 0 4px 4px 0; }
+        .rb-title { color: #d65a5a; font-weight: bold; font-size: 1rem; display: block; margin-bottom: 8px; font-family: 'Montserrat', sans-serif; }
+        .rb-desc { font-size: 0.95rem; color: #bbb; line-height: 1.6; }
+
+        /* THE GOLDEN BUTTON (LOCKED) */
+        .archive-link-box { text-align: center; margin-top: 50px; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 50px; }
+        .archive-btn { 
+            display: inline-block; width: 100%; max-width: 400px;
+            background: linear-gradient(135deg, #222, #333); /* Dark grey for lock */
+            border: 1px solid #555;
+            padding: 18px 25px; 
+            color: #888; text-decoration: none; 
+            font-family: 'Montserrat', sans-serif; font-size: 0.85rem; font-weight: 800;
+            letter-spacing: 1px; text-transform: uppercase; 
+            border-radius: 6px; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .archive-btn:hover { border-color: var(--gold); color: #fff; box-shadow: 0 0 15px rgba(212,175,55,0.2); }
+        .archive-icon { margin-left: 10px; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); backdrop-filter: blur(5px); justify-content: center; align-items: center; }
+        .modal-content { background: linear-gradient(145deg, #151515, #0a0a0a); border: 1px solid var(--gold); padding: 40px; width: 90%; max-width: 500px; border-radius: 10px; text-align: center; position: relative; box-shadow: 0 0 50px rgba(212,175,55,0.3); }
+        .close-modal { position: absolute; top: 10px; right: 20px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-modal:hover { color: #fff; }
+        .modal-icon { font-size: 40px; color: var(--gold); margin-bottom: 20px; display: block; }
+        .modal-title { font-family: 'Cinzel', serif; font-size: 1.5rem; color: #fff; margin-bottom: 15px; }
+        .modal-text { color: #ccc; font-size: 1rem; margin-bottom: 30px; line-height: 1.6; }
+        .modal-btn { display: inline-block; background: var(--gold); color: #000; padding: 12px 30px; font-weight: bold; text-decoration: none; border-radius: 4px; text-transform: uppercase; font-family: 'Montserrat', sans-serif; transition: 0.3s; }
+        .modal-btn:hover { background: #fff; }
+
+        .nav-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; z-index: 1000; background: rgba(10, 10, 10, 0.95); border: var(--border); backdrop-filter: blur(15px); border-radius: 50px; display: flex; justify-content: space-between; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .nav-item { flex: 1; text-align: center; padding: 12px 0; color: #666; text-decoration: none; font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; border-radius: 40px; transition: all 0.3s; }
+        .nav-item.active { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(212,175,55,0.4); }
+
+        .lang-float { position: fixed; top: 20px; right: 20px; z-index: 1000; background: rgba(0,0,0,0.8); padding: 5px; border-radius: 20px; border: 1px solid var(--gold); }
+        .l-btn { background: none; border: none; color: #888; padding: 5px 10px; font-size: 0.8rem; cursor: pointer; font-weight: bold; }
+        .l-btn.active { color: var(--gold); }
+        
+        .lang-content { display: none; }
+        .lang-content.active { display: block; animation: fadeIn 0.8s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+    </style>
+</head>
+<body>
+
+    <div class="lang-float">
+        <button class="l-btn active" onclick="setLang('cn')">CN</button>
+        <button class="l-btn" onclick="setLang('th')">TH</button>
+    </div>
+
+    <div class="top-header">
+        <a href="index.html" class="back-btn"><span class="lang-content active" id="bk-cn">返回</span><span class="lang-content" id="bk-th">กลับ</span></a>
+        <div class="page-title">THE WAR ROOM</div>
+        <div style="width:50px;"></div>
+    </div>
+
+    <div class="bg-fixed"></div>
+
+    <div class="container">
+
+        <div class="title-block">
+            <h1 class="title-main">
+                <span class="lang-content active" id="ht-cn">商业作战室</span>
+                <span class="lang-content" id="ht-th">ห้องบัญชาการรบ</span>
+            </h1>
+            <span class="title-sub">
+                <span class="lang-content active" id="hd-cn">愿景 · 90天计划 · 资本策略</span>
+                <span class="lang-content" id="hd-th">วิสัยทัศน์ · แผน 90 วัน · กลยุทธ์ระดมทุน</span>
+            </span>
+        </div>
+
+        <div class="vision-box">
+            <div class="lang-content active" id="vis-cn">
+                <span class="v-head">愿景 (VISION)</span>
+                <p class="v-body">“成为东南亚首屈一指的<strong>‘电影级竖屏短剧’</strong>制作中心，以<strong>‘中国速度+泰国美学’</strong>重新定义行业标准。”</p>
+                <div style="margin:25px 0; border-top:1px solid rgba(255,255,255,0.1);"></div>
+                <span class="v-head">使命 (MISSION)</span>
+                <p class="v-body">“打破粗制滥造的现状，用<strong>工业化标准</strong>为市场输送真正优质的内容，让观众欲罢不能，让资本获得丰厚回报。”</p>
+            </div>
+            <div class="lang-content" id="vis-th">
+                <span class="v-head">วิสัยทัศน์ (VISION)</span>
+                <p class="v-body">"ก้าวสู่การเป็นศูนย์กลางการผลิต <strong>'ละครสั้นแนวตั้งมาตรฐานภาพยนตร์'</strong> อันดับหนึ่งในเอเชียตะวันออกเฉียงใต้ ด้วยการผสาน <strong>'ความเร็วแบบจีน และ ความงดงามแบบไทย'</strong>"</p>
+                <div style="margin:25px 0; border-top:1px solid rgba(255,255,255,0.1);"></div>
+                <span class="v-head">พันธกิจ (MISSION)</span>
+                <p class="v-body">"ทำลายมาตรฐานเดิมๆ ที่ด้อยคุณภาพ และส่งมอบคอนเทนต์ระดับ <strong>Industrial Standard</strong> ที่คนดูต้องหยุดดู และสร้างผลตอบแทนที่คุ้มค่าสูงสุดให้นักลงทุน"</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <span class="sh-num">01</span>
+            <div class="sh-text">
+                <span class="sh-en">MARKET INSIGHT</span>
+                <span class="sh-cn">市场可行性 (FEASIBILITY)</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="lang-content active" id="mkt-cn">
+                <p>泰国竖屏短剧市场正处于<strong>供需错配的黄金窗口期</strong>。用户规模大、支付成熟、但内容质量普遍偏低。</p>
+                <div class="data-grid">
+                    <div class="data-box"><span class="db-val">4000W+</span><span class="db-lbl">TikTok 泰国用户</span></div>
+                    <div class="data-box"><span class="db-val">70%</span><span class="db-lbl">18-34岁 用户占比</span></div>
+                    <div class="data-box"><span class="db-val">1/3</span><span class="db-lbl">制作成本 (对比国内)</span></div>
+                    <div class="data-box"><span class="db-val">30%</span><span class="db-lbl">最高现金返还 (补贴)</span></div>
+                </div>
+            </div>
+            <div class="lang-content" id="mkt-th">
+                <p>ตลาดละครสั้นไทยกำลังอยู่ในช่วง <strong>"Golden Window"</strong> ความต้องการสูง แต่คุณภาพงานในตลาดยังต่ำ</p>
+                <div class="data-grid">
+                    <div class="data-box"><span class="db-val">40M+</span><span class="db-lbl">ผู้ใช้ TikTok ไทย</span></div>
+                    <div class="data-box"><span class="db-val">70%</span><span class="db-lbl">คนรุ่นใหม่ (18-34 ปี)</span></div>
+                    <div class="data-box"><span class="db-val">1/3</span><span class="db-lbl">ต้นทุนผลิต (เทียบจีน)</span></div>
+                    <div class="data-box"><span class="db-val">30%</span><span class="db-lbl">Cash Rebate (รัฐบาล)</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <span class="sh-num">02</span>
+            <div class="sh-text">
+                <span class="sh-en">THAI ADVANTAGE</span>
+                <span class="sh-cn">泰国核心优势</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="lang-content active" id="opp-cn">
+                <p style="margin-bottom:20px;">泰国不仅是取景地，更是我们实现“降维打击”的最佳战场：</p>
+                <div class="timeline">
+                    <div class="t-item">
+                        <span class="t-head">1. 制作价值倍增 (Value Multiplier)</span>
+                        <span class="t-body">在泰国，我们拥有<strong>“顶级资源的优先使用权”</strong>。Narin (Teem) 能够以极具竞争力的成本，调动豪宅、游艇等资源。这是<strong>“极致的资源整合”</strong>。</span>
+                    </div>
+                    <div class="t-item">
+                        <span class="t-head">2. 资本的新蓝海 (Capital Hub)</span>
+                        <span class="t-body">Narin 拥有深厚的本土人脉，能够<strong>“在泰国进行融资”</strong>。泰国的投资人对“中国技术+泰国落地”的项目充满渴望。</span>
+                    </div>
+                    <div class="t-item">
+                        <span class="t-head">3. 创作的自由港 (Creative Freedom)</span>
+                        <span class="t-body">无论是<strong>惊悚、玄幻还是复仇</strong>，我们可以在这里打磨出最极致的版本，然后以“精品”的姿态反攻全球市场。</span>
+                    </div>
+                </div>
+            </div>
+            <div class="lang-content" id="opp-th">
+                <p style="margin-bottom:20px;">ไทยไม่ใช่แค่สถานที่ถ่ายทำ แต่คือสมรภูมิที่เรามีความได้เปรียบสูงสุด:</p>
+                <div class="timeline">
+                    <div class="t-item">
+                        <span class="t-head">1. พลังทวีคูณของโปรดักชั่น</span>
+                        <span class="t-body">นรินทร์ (Teem) สามารถจัดการคฤหาสน์หรู หรือเรือยอร์ชได้ในต้นทุนที่คุ้มค่าที่สุด นี่ไม่ใช่ของฟรี แต่คือ <strong>"การบริหารทรัพยากรที่เหนือชั้น"</strong></span>
+                    </div>
+                    <div class="t-item">
+                        <span class="t-head">2. แหล่งระดมทุนแห่งใหม่</span>
+                        <span class="t-body">นรินทร์มีเครือข่ายสำหรับ <strong>"การระดมทุนในประเทศไทย"</strong> นักลงทุนไทยพร้อมสนับสนุนโปรเจกต์ "มาตรฐานจีน + ฐานการผลิตไทย"</span>
+                    </div>
+                    <div class="t-item">
+                        <span class="t-head">3. อิสรภาพทางความคิด</span>
+                        <span class="t-body">นโยบายที่เปิดกว้างอนุญาตให้เราใส่สุดในทุกไอเดีย ไม่ว่าจะเป็น <strong>ความสยองขวัญ แฟนตาซี หรือดราม่าแก้แค้น</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <span class="sh-num">03</span>
+            <div class="sh-text">
+                <span class="sh-en">THE STRATEGY</span>
+                <span class="sh-cn">核心方案：大女主+惊悚</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="lang-content active" id="st-cn">
+                <p class="text-gold" style="margin-bottom:15px; font-weight:bold; font-size:1.1rem; color:var(--gold);">公式：大女主爽点 (Empress) + 泰式惊悚 (Horror) + 竖屏强节奏</p>
+                <ul style="padding-left:20px; color:#ccc; line-height:1.8;">
+                    <li style="margin-bottom:10px;"><strong>差异化：</strong> 惊悚是女主逆袭的“工具”，大女主是故事的“内核”，双向吸引受众。</li>
+                    <li><strong>尺度突破：</strong> 放开国内禁止的血腥、灵异细节（如降头术），贴合泰国“因果报应”文化。</li>
+                </ul>
+            </div>
+            <div class="lang-content" id="st-th">
+                <p class="text-gold" style="margin-bottom:15px; font-weight:bold; font-size:1.1rem; color:var(--gold);">สูตรลับ: นางพญา (Empress) + ผีไทย (Horror) + จังหวะนรก</p>
+                <ul style="padding-left:20px; color:#ccc; line-height:1.8;">
+                    <li style="margin-bottom:10px;"><strong>ความต่าง:</strong> ใช้ความสยองขวัญเป็น "เครื่องมือ" ให้ตัวเอกหญิงใช้แก้แค้น และนางพญาคือ "แก่น" ของเรื่อง</li>
+                    <li><strong>ทะลุกรอบ:</strong> ใส่สุดเรื่องไสยศาสตร์/ความเชื่อ/กฎแห่งกรรม ที่ทำในจีนไม่ได้ แต่คนไทยชอบมาก</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <span class="sh-num">04</span>
+            <div class="sh-text">
+                <span class="sh-en">PILOT PROJECTS</span>
+                <span class="sh-cn">首批爆款题材</span>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="pj-img-wrap">
+                <span class="pj-tag">PRIORITY 1</span>
+                <img src="IMG_3796.jpeg" alt="Project 1: Curse Breaker">
+            </div>
+            <div class="pj-content">
+                <div class="lang-content active" id="pj1-cn">
+                    <span class="pj-title">A. 《穿越之破咒千金》<br>(Curse Breaker)</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">集数/时长</span><span class="pj-value">60集 × 2分钟</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">拍摄周期</span><span class="pj-value">10天 (高效) + 15天后期</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (RMB)</span><span class="pj-value">15万</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (THB)</span><span class="pj-value">≈75万</span></div>
+                    </div>
+                    <p class="pj-desc"><strong>核心设定：</strong> 现代复仇女主穿越到泰国古宅千金身上，继承家族“被诅咒”的命运。一边对抗继母阴谋，一边用现代知识揭开诅咒真相（如祖先冤魂）。最终手刃仇人，实现双重逆袭。</p>
+                    <div class="pj-nana-box">
+                        <span class="pj-nana-head">NANA'S INSIGHT:</span>
+                        <p class="pj-nana-text">“最大爽点是用现代科学（监控、心理学）破解灵异陷阱。每5集一个小反转。植入泰国寺庙、水灯节等本土元素。”</p>
+                    </div>
+                </div>
+                <div class="lang-content" id="pj1-th">
+                    <span class="pj-title">A. 《ทะลุมิติมาล้างคำสาปคุณหนู》</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">จำนวนตอน/เวลา</span><span class="pj-value">60 ตอน × 2 นาที</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">ระยะเวลาถ่ายทำ</span><span class="pj-value">10 วัน (ถ่าย) + 15 วัน (ตัดต่อ)</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (RMB)</span><span class="pj-value">150,000</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (THB)</span><span class="pj-value">≈750,000</span></div>
+                    </div>
+                    <p class="pj-desc"><strong>เรื่องย่อ:</strong> สาวแกร่งยุคใหม่ทะลุมิติไปร่างคุณหนูในบ้านโบราณที่ต้องคำสาป (นางเอกตายทุกรุ่น) ต้องงัดข้อกับแม่เลี้ยงใจร้าย และใช้วิทยาศาสตร์สมัยใหม่ล้างคำสาปตระกูล</p>
+                    <div class="pj-nana-box">
+                        <span class="pj-nana-head">NANA'S INSIGHT:</span>
+                        <p class="pj-nana-text">"จุดขายคือการใช้วิทยาศาสตร์ (เช่น กล้องวงจรปิด, จิตวิทยา) ตบหน้าผีและไสยศาสตร์ มีจุดหักมุมทุก 5 ตอน ใส่ความเป็นไทยเช่น วัด งานลอยกระทง ลงไป"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="pj-img-wrap">
+                <img src="IMG_3794.jpeg" alt="Project 2: Spirit Detective">
+            </div>
+            <div class="pj-content">
+                <div class="lang-content active" id="pj2-cn">
+                    <span class="pj-title">B. 《曼谷逆袭：灵异侦探》<br>(Spirit Detective)</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">集数/时长</span><span class="pj-value">80集 × 1.5分钟</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">拍摄周期</span><span class="pj-value">8天 (高效) + 20天后期</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (RMB)</span><span class="pj-value">20万</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (THB)</span><span class="pj-value">≈100万</span></div>
+                    </div>
+                    <p class="pj-desc"><strong>核心设定：</strong> 被职场霸凌的女主意外获得“阴阳眼”，辞职开设灵异侦探社。一边帮冤魂伸冤（惊悚线），一边利用鬼魂线索反击曾经欺压她的人（逆袭线）。</p>
+                    <div class="pj-nana-box">
+                        <span class="pj-nana-head">NANA'S INSIGHT:</span>
+                        <p class="pj-nana-text">“利用竖屏特写放大恐怖氛围（如镜中鬼影）。彭禺ム可客串‘灵异导师’，吸引国内粉丝。每集解决一个微型灵异案件。”</p>
+                    </div>
+                </div>
+                <div class="lang-content" id="pj2-th">
+                    <span class="pj-title">B. 《นักสืบสัมผัสวิญญาณ》</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">จำนวนตอน/เวลา</span><span class="pj-value">80 ตอน × 1.5 นาที</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">ระยะเวลาถ่ายทำ</span><span class="pj-value">8 วัน (ถ่าย) + 20 วัน (ตัดต่อ)</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (RMB)</span><span class="pj-value">200,000</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (THB)</span><span class="pj-value">≈1,000,000</span></div>
+                    </div>
+                    <p class="pj-desc"><strong>เรื่องย่อ:</strong> สาวออฟฟิศที่ถูกรังแกได้ตาทิพย์ ลาออกเปิดสำนักงานนักสืบ รับงานสืบสวนโดยใช้ผีสืบความลับคนชั่วเพื่อแก้แค้น (เส้นเรื่องสยองขวัญ + แก้แค้น)</p>
+                    <div class="pj-nana-box">
+                        <span class="pj-nana-head">NANA'S INSIGHT:</span>
+                        <p class="pj-nana-text">"ใช้มุมกล้องแนวตั้งขยี้ความหลอน (เช่น เงาในกระจก) ไฮไลท์คือพี่เผิงรับบท 'อาจารย์ปราบผี' เพื่อดึงฐานแฟนคลับจีน และจบในตอนดูง่าย"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <div class="pj-img-wrap">
+                <img src="IMG_3795.jpeg" alt="Project 3: Shadow of Old House">
+            </div>
+            <div class="pj-content">
+                <div class="lang-content active" id="pj3-cn">
+                    <span class="pj-title">C. 《重生复仇：古宅魅影》<br>(Shadow of Old House)</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">集数/时长</span><span class="pj-value">40集 × 3分钟</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">拍摄周期</span><span class="pj-value">7天 (高效) + 18天后期</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (RMB)</span><span class="pj-value">18万</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">预算 (THB)</span><span class="pj-value">≈90万</span></div>
+                    </div>
+                    <p class="pj-desc"><strong>核心设定：</strong> 被害死的女主重生，发现家族古宅藏着“能实现愿望但需付出代价”的灵异力量。她与“魅影”交易，步步为营向仇人复仇。</p>
+                    <div class="pj-nana-box">
+                        <span class="pj-nana-head">NANA'S INSIGHT:</span>
+                        <p class="pj-nana-text">“风格偏黑暗、性感。魅影以半透明黑影形式存在。结局反转：魅影其实是被家族害死的先祖。使用第一视角（FPV）拍摄增强沉浸感。”</p>
+                    </div>
+                </div>
+                <div class="lang-content" id="pj3-th">
+                    <span class="pj-title">C. 《เงาปริศนาในบ้านโบราณ》</span>
+                    <div class="pj-specs-grid">
+                        <div class="pj-spec-item"><span class="pj-label">จำนวนตอน/เวลา</span><span class="pj-value">40 ตอน × 3 นาที</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">ระยะเวลาถ่ายทำ</span><span class="pj-value">7 วัน (ถ่าย) + 18 วัน (ตัดต่อ)</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (RMB)</span><span class="pj-value">180,000</span></div>
+                        <div class="pj-spec-item"><span class="pj-label">งบประมาณ (THB)</span><span class="pj-value">≈900,000</span></div>
+                    </div>
+                    <p class="pj-desc"><strong>เรื่องย่อ:</strong> นางเอกถูกฆ่าตาย เกิดใหม่มาทำสัญญาเลือดกับ "เงาปีศาจ" ในบ้านเก่าเพื่อแลกพลังมาแก้แค้นคนทรยศ โดยต้องจ่ายค่าตอบแทนที่คาดไม่ถึง</p>
+                    <div class="pj-nana-box">
+                        <span class="pj-nana-head">NANA'S INSIGHT:</span>
+                        <p class="pj-nana-text">"โทนเรื่อง Dark & Sexy เงาปีศาจมาในรูปแบบควันดำหรือเสียงกระซิบ จุดหักมุมคือปีศาจคือบรรพบุรุษที่ถูกฆ่า ถ่ายทำแบบบุคคลที่ 1 (First Person) เพื่อความสมจริง"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <span class="sh-num">05</span>
+            <div class="sh-text">
+                <span class="sh-en">EXECUTION</span>
+                <span class="sh-cn">90天落地计划</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="lang-content active" id="plan-cn">
+                <div class="timeline">
+                    <div class="t-item">
+                        <span class="t-head">Phase 1: 筹备期 (1-30天)</span>
+                        <span class="t-body">剧本打磨、团队组建（泰籍惊悚顾问）、资源整合（锁定曼谷豪宅/寺庙）。</span>
+                    </div>
+                    <div class="t-item">
+                        <span class="t-head">Phase 2: 拍摄期 (31-60天)</span>
+                        <span class="t-body">核心项目开机。“10天高效拍摄”。彭哥现场指导灵异镜头，Nana 把关女主表演。</span>
+                    </div>
+                    <div class="t-item">
+                        <span class="t-head">Phase 3: 上线冲刺 (61-90天)</span>
+                        <span class="t-body">全渠道上线 (TikTok/TrueID)。前3集免费 + 后续付费 (Pay-per-view)。监控“1分钟留客率”。</span>
+                    </div>
+                </div>
+            </div>
+            <div class="lang-content" id="plan-th">
+                <div class="timeline">
+                    <div class="t-item">
+                        <span class="t-head">Phase 1: เตรียมการ (วันที่ 1-30)</span>
+                        <span class="t-body">ปรับบท, คัดทีมงาน (ที่ปรึกษาเรื่องผี), นรินทร์ล็อกคิวบ้านหรูและวัดเก่าแก่</span>
+                    </div>
+                    <div class="t-item">
+                        <span class="t-head">Phase 2: ถ่ายทำ (วันที่ 31-60)</span>
+                        <span class="t-body">เปิดกล้อง! (เรื่องละ 10 วัน) พี่เผิงคุมความหลอน นานาคุมการแสดงนางเอก</span>
+                    </div>
+                    <div class="t-item">
+                        <span class="t-head">Phase 3: โกยเงิน (วันที่ 61-90)</span>
+                        <span class="t-body">ปล่อยของลง Platform, เปิดระบบดูฟรี -> ติดเหรียญเก็บเงิน, ยิง Ads และวัดผลทันที</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <span class="sh-num">06</span>
+            <div class="sh-text">
+                <span class="sh-en">FINANCIALS</span>
+                <span class="sh-cn">盈利预测 (首年 MARKUP +20%)</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="lang-content active" id="fin-cn">
+                <p style="font-size:0.9rem; color:#888; margin-bottom:20px;">基于首批3部剧的保守估算 (Rate: 1 RMB ≈ 5 THB)</p>
+                <table class="fin-table">
+                    <tr><td>总收入 (Revenue)</td><td class="fin-val">300万 RMB <br><span style="color:#666; font-size:0.8rem;">(≈1500万 THB)</span></td></tr>
+                    <tr><td>总成本 (Cost)</td><td class="fin-val">200万 RMB <br><span style="color:#666; font-size:0.8rem;">(≈1000万 THB)</span></td></tr>
+                    <tr><td>净利润 (Net Profit)</td><td class="fin-val fin-highlight text-gold">100万 RMB <br><span style="color:#8a702a; font-size:0.8rem;">(≈500万 THB)</span></td></tr>
+                    <tr><td>ROI</td><td class="fin-val text-gold" style="font-size:1.5rem;">50.0%</td></tr>
+                </table>
+            </div>
+            <div class="lang-content" id="fin-th">
+                <p style="font-size:0.9rem; color:#888; margin-bottom:20px;">ประมาณการรายรับปีแรกจาก 3 เรื่อง (Markup +20%)</p>
+                <table class="fin-table">
+                    <tr><td>รายรับรวม (Revenue)</td><td class="fin-val">3.00 ล้านหยวน <br><span style="color:#666; font-size:0.8rem;">(≈15.0 ล้านบาท)</span></td></tr>
+                    <tr><td>ต้นทุนรวม (Cost)</td><td class="fin-val">2.00 ล้านหยวน <br><span style="color:#666; font-size:0.8rem;">(≈10.0 ล้านบาท)</span></td></tr>
+                    <tr><td>กำไรสุทธิ (Net Profit)</td><td class="fin-val fin-highlight text-gold">1.00 ล้านหยวน <br><span style="color:#8a702a; font-size:0.8rem;">(≈5.00 ล้านบาท)</span></td></tr>
+                    <tr><td>ROI</td><td class="fin-val text-gold" style="font-size:1.5rem;">50.0%</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <span class="sh-num">07</span>
+            <div class="sh-text">
+                <span class="sh-en">CAPITAL STRATEGY</span>
+                <span class="sh-cn">资本与资源 (TEEM)</span>
+            </div>
+        </div>
+
+        <div class="card" style="border:1px solid var(--gold);">
+            <div class="lang-content active" id="cap-cn">
+                <h3 style="margin-bottom:15px; color:#fff;">泰国融资战略</h3>
+                <ul style="padding-left:20px; color:#ccc; line-height:1.8;">
+                    <li style="margin-bottom:10px;"><strong>策略：</strong> 利用“中国技术 + 泰国落地”优势，吸引泰国高净值投资人。</li>
+                    <li style="margin-bottom:10px;"><strong>目标：</strong> 首批成功后，募集 A 轮资金，建立独立短剧 APP。</li>
+                    <li><strong>优势：</strong> 通过独家关系，以<strong>“最具竞争力的内部成本 (Exclusive Cost)”</strong>获取豪宅、超跑场地。</li>
+                </ul>
+            </div>
+            <div class="lang-content" id="cap-th">
+                <h3 style="margin-bottom:15px; color:#fff;">กลยุทธ์ระดมทุนในไทย</h3>
+                <ul style="padding-left:20px; color:#ccc; line-height:1.8;">
+                    <li style="margin-bottom:10px;"><strong>แผนการ:</strong> ใช้ความสำเร็จ 3 เรื่องแรก ดึงเงินทุนก้อนใหญ่จากนักลงทุนไทย</li>
+                    <li style="margin-bottom:10px;"><strong>เป้าหมาย:</strong> สร้างเงินหมุนเวียนและเตรียมสร้าง Platform ของตัวเอง</li>
+                    <li><strong>ความได้เปรียบ:</strong> ใช้คอนเนกชันเข้าถึงสถานที่หรูและรถซูเปอร์คาร์ใน <strong>"ราคาต้นทุนพิเศษ (Exclusive Cost)"</strong></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <span class="sh-num">08</span>
+            <div class="sh-text">
+                <span class="sh-en">RISK CONTROL</span>
+                <span class="sh-cn">风险控制 (不输的艺术)</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="lang-content active" id="risk-cn">
+                <p style="margin-bottom:20px; color:var(--gold);">“我们不只要赢，我们更要确保不输。”</p>
+                <div class="risk-box">
+                    <span class="rb-title">1. 文化与审查 (Cultural Risk)</span>
+                    <span class="rb-desc">对策：泰籍顾问审核剧本。惊悚镜头用“光影暗示”代替血腥，确保过审。</span>
+                </div>
+                <div class="risk-box">
+                    <span class="rb-title">2. 市场接受度 (Market Risk)</span>
+                    <span class="rb-desc">对策：小步快跑。首批严格控制预算，根据数据动态调整剧情。</span>
+                </div>
+                <div class="risk-box">
+                    <span class="rb-title">3. 运营合规 (Operational Risk)</span>
+                    <span class="rb-desc">对策：Teem 亲自坐镇，确保拍摄许可、签证、税务 100% 合规。</span>
+                </div>
+            </div>
+            <div class="lang-content" id="risk-th">
+                <p style="margin-bottom:20px; color:var(--gold);">"เราไม่ได้วางแผนแค่เพื่อจะชนะ แต่เราวางแผนเพื่อปิดประตูแพ้"</p>
+                <div class="risk-box">
+                    <span class="rb-title">1. ความเสี่ยงทางวัฒนธรรม</span>
+                    <span class="rb-desc">ทางแก้: มีที่ปรึกษาไทยสกรีนบท ฉากสยองใช้เทคนิค "แสงและเงา" แทนภาพสยดสยอง</span>
+                </div>
+                <div class="risk-box">
+                    <span class="rb-title">2. ความเสี่ยงการตลาด</span>
+                    <span class="rb-desc">ทางแก้: "ล้มบนฟูก" เริ่มด้วยทุนไม่สูง ปรับบททันทีตาม Feedback</span>
+                </div>
+                <div class="risk-box">
+                    <span class="rb-title">3. ความเสี่ยงการดำเนินงาน</span>
+                    <span class="rb-desc">ทางแก้: Teem ดูแลใบอนุญาต วีซ่า และภาษีให้ถูกต้อง 100%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="archive-link-box">
+            <a href="javascript:void(0)" class="archive-btn" onclick="openModal()">
+                <span class="archive-icon">🔒</span>
+                <span class="lang-content active" id="btn-arc-cn">查看详细作战计划 (TOP SECRET)</span>
+                <span class="lang-content" id="btn-arc-th">ดูแผนการรบละเอียด (ลับสุดยอด)</span>
+            </a>
+        </div>
+
+    </div>
+
+    <div id="secretModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <span class="modal-icon">🔒</span>
+            <h2 class="modal-title">
+                <span class="lang-content active" id="mod-ti-cn">绝密文档 (CONFIDENTIAL)</span>
+                <span class="lang-content" id="mod-ti-th">เอกสารลับเฉพาะ</span>
+            </h2>
+            <p class="modal-desc">
+                <span class="lang-content active" id="mod-tx-cn">该文档包含商业机密与核心数据。请预约会议以获取完整访问权限。</span>
+                <span class="lang-content" id="mod-tx-th">เอกสารนี้มีข้อมูลความลับทางการค้า กรุณานัดหมายเพื่อรับฟังแผนงานฉบับสมบูรณ์</span>
+            </p>
+            <a href="https://line.me/ti/p/~teem_narin" target="_blank" class="modal-action">
+                <span class="lang-content active" id="mod-btn-cn">预约会议 (BOOK A MEETING)</span>
+                <span class="lang-content" id="mod-btn-th">นัดหมายการประชุม (BOOK A MEETING)</span>
+            </a>
+        </div>
+    </div>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-item">VISION</a>
+        <a href="team.html" class="nav-item">TEAM</a>
+        <a href="#" class="nav-item active">BUSINESS</a>
+    </nav>
+
+    <script>
+        function setLang(lang) {
+            document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.l-btn').forEach(el => el.classList.remove('active'));
+            if(lang === 'cn') {
+                document.querySelectorAll('[id$="-cn"]').forEach(el => el.classList.add('active'));
+                document.querySelector('button[onclick="setLang(\'cn\')"]').classList.add('active');
+            } else {
+                document.querySelectorAll('[id$="-th"]').forEach(el => el.classList.add('active'));
+                document.querySelector('button[onclick="setLang(\'th\')"]').classList.add('active');
+            }
+        }
+
+        function openModal() { document.getElementById("secretModal").style.display = "flex"; }
+        function closeModal() { document.getElementById("secretModal").style.display = "none"; }
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("secretModal")) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
