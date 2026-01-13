@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700&family=Noto+Serif+Thai:wght@300;500;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -16,7 +16,7 @@
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Noto Serif SC', serif; line-height: 1.9; padding-bottom: 100px; font-size: 16px; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Noto Serif SC', 'Noto Serif Thai', serif; line-height: 1.9; padding-bottom: 100px; font-size: 16px; }
         
         /* Header */
         .top-header { position: fixed; top: 0; left: 0; width: 100%; padding: 15px 20px; z-index: 900; display: flex; justify-content: space-between; align-items: center; background: rgba(5,5,5,0.95); border-bottom: var(--border); backdrop-filter: blur(10px); }
@@ -52,11 +52,22 @@
         /* Separator */
         .divider { height: 1px; background: linear-gradient(90deg, transparent, #333, transparent); margin: 60px 0; }
 
+        /* Floating Toggle */
+        .lang-float { position: fixed; top: 60px; right: 20px; z-index: 1000; background: rgba(0,0,0,0.9); padding: 5px; border-radius: 20px; border: 1px solid var(--gold); display: flex; gap: 5px; }
+        .l-btn { background: none; border: none; color: #666; padding: 5px 12px; font-size: 0.75rem; cursor: pointer; font-weight: 700; border-radius: 15px; font-family: 'Montserrat', sans-serif; transition: 0.3s; }
+        .l-btn.active { background: var(--gold); color: #000; }
+
+        .lang-content { display: none; }
+        .lang-content.active { display: block; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         /* Mobile Adjust */
         @media (max-width: 600px) {
             .paper { padding: 30px 20px; }
             h1 { font-size: 1.6rem; }
             h2 { font-size: 1.2rem; }
+            .lang-float { top: 70px; }
         }
     </style>
 </head>
@@ -67,214 +78,553 @@
         <span class="doc-ref">DOC-REF: NANA-2026-STRATEGY</span>
     </div>
 
+    <div class="lang-float">
+        <button class="l-btn active" onclick="setLang('cn')">CN</button>
+        <button class="l-btn" onclick="setLang('th')">TH</button>
+    </div>
+
     <div class="container">
         <div class="paper">
             
-            <h1>泰国短剧市场分析</h1>
+            <h1>
+                <span class="lang-content active" id="title-cn">泰国短剧市场分析</span>
+                <span class="lang-content" id="title-th">วิเคราะห์ตลาดละครสั้นไทย</span>
+            </h1>
             <span class="sub-head">THAILAND SHORT DRAMA MARKET ANALYSIS</span>
 
             <div class="intro-box">
-                <p>泰国竖屏短剧市场正处于供需错配的<strong>黄金窗口期</strong>：用户规模大、支付成熟、内容质量普遍偏低，用中国成熟的工业化流程+本地团队+精准本土化，有机会快速建立领先优势。作为演员本人+有人脉+泰国资源整合（以及资金），是降本增效、做差异化精品的关键。下面是可落地的市场可行性与公司规划。</p>
+                <span class="lang-content active" id="intro-cn">泰国竖屏短剧市场正处于供需错配的<strong>黄金窗口期</strong>：用户规模大、支付成熟、内容质量普遍偏低，用中国成熟的工业化流程+本地团队+精准本土化，有机会快速建立领先优势。作为演员本人+有人脉+泰国资源整合（以及资金），是降本增效、做差异化精品的关键。下面是可落地的市场可行性与公司规划。</span>
+                <span class="lang-content" id="intro-th">ตลาดละครสั้นแนวตั้งของไทยกำลังอยู่ใน <strong>ช่วงเวลาทอง</strong> ของความไม่สมดุลระหว่างอุปสงค์และอุปทาน: ฐานผู้ใช้ขนาดใหญ่, ระบบการชำระเงินที่สมบูรณ์, แต่คุณภาพเนื้อหาโดยรวมยังต่ำ การใช้กระบวนการผลิตแบบอุตสาหกรรมที่สมบูรณ์ของจีน + ทีมงานท้องถิ่น + การปรับให้เข้ากับท้องถิ่นอย่างแม่นยำ จะมีโอกาสสร้างความได้เปรียบระดับผู้นำได้อย่างรวดเร็ว ในฐานะนักแสดง + มีคอนเนคชั่น + การรวมทรัพยากรในไทย (และเงินทุน) นี่คือกุญแจสำคัญในการลดต้นทุนเพิ่มประสิทธิภาพและสร้างผลงานคุณภาพที่แตกต่าง ด้านล่างนี้คือความเป็นไปได้ของตลาดและแผนงานบริษัทที่สามารถลงมือทำได้จริง</span>
             </div>
 
-            <h2>一、泰国竖屏短剧市场可行性：高潜力、低竞争</h2>
+            <h2>
+                <span class="lang-content active" id="h1-cn">一、泰国竖屏短剧市场可行性：高潜力、低竞争</span>
+                <span class="lang-content" id="h1-th">1. ความเป็นไปได้ของตลาดละครสั้นแนวตั้งในไทย: ศักยภาพสูง, การแข่งขันต่ำ</span>
+            </h2>
             <ul>
-                <li><strong>用户基础：</strong>TikTok 泰国用户超4000万，18-34岁占比70%+；25-44岁女性是短剧核心受众，偏好爱情、复仇、奇幻题材。</li>
-                <li><strong>市场缺口：</strong>目前多为手机拍摄、制作粗糙，缺乏工业化标准与强情节内容，观众期待本土优质短剧。</li>
-                <li><strong>商业化成熟：</strong>泰国支付体系完善，付费习惯好，广告市场活跃，爱奇艺泰国BL剧《心口不一》单剧净收入1400万泰铢（约300万人民币）。</li>
-                <li><strong>政策利好：</strong>影视激励计划提供15%-30%现金回扣，预算达5000万泰铢可获最高30%补贴。</li>
-                <li><strong>成本优势：</strong>制作成本约为国内1/3-1/2，单剧约10-30万人民币，适合快速迭代。</li>
-                <li><strong>文化适配：</strong>中泰文化相近，中国成功题材（如双向救赎）易本土化，恐怖/奇幻元素更贴合本地偏好。</li>
+                <li>
+                    <span class="lang-content active" id="li1-1-cn"><strong>用户基础：</strong>TikTok 泰国用户超4000万，18-34岁占比70%+；25-44岁女性是短剧核心受众，偏好爱情、复仇、奇幻题材。</span>
+                    <span class="lang-content" id="li1-1-th"><strong>ฐานผู้ใช้งาน:</strong> ผู้ใช้ TikTok ในไทยเกิน 40 ล้านคน, อายุ 18-34 ปี มีสัดส่วน 70%+; ผู้หญิงอายุ 25-44 ปี คือกลุ่มผู้ชมหลักของละครสั้น ชื่นชอบแนวความรัก, การแก้แค้น, และแฟนตาซี</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li1-2-cn"><strong>市场缺口：</strong>目前多为手机拍摄、制作粗糙，缺乏工业化标准与强情节内容，观众期待本土优质短剧。</span>
+                    <span class="lang-content" id="li1-2-th"><strong>ช่องว่างทางการตลาด:</strong> ปัจจุบันส่วนใหญ่ถ่ายทำด้วยมือถือ, การผลิตหยาบ, ขาดมาตรฐานอุตสาหกรรมและเนื้อหาที่มีพล็อตเรื่องเข้มข้น ผู้ชมคาดหวังละครสั้นท้องถิ่นที่มีคุณภาพ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li1-3-cn"><strong>商业化成熟：</strong>泰国支付体系完善，付费习惯好，广告市场活跃，爱奇艺泰国BL剧《心口不一》单剧净收入1400万泰铢（约300万人民币）。</span>
+                    <span class="lang-content" id="li1-3-th"><strong>ความพร้อมเชิงพาณิชย์:</strong> ระบบการชำระเงินของไทยสมบูรณ์, นิสัยการจ่ายเงินดี, ตลาดโฆษณาคึกคัก ละคร BL ของ iQIYI ไทยเรื่อง "ปากแข็ง" (心口不一) สร้างรายได้สุทธิต่อเรื่อง 14 ล้านบาท (ประมาณ 3 ล้านหยวน)</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li1-4-cn"><strong>政策利好：</strong>影视激励计划提供15%-30%现金回扣，预算达5000万泰铢可获最高30%补贴。</span>
+                    <span class="lang-content" id="li1-4-th"><strong>นโยบายสนับสนุน:</strong> แผนกระตุ้นอุตสาหกรรมภาพยนตร์มอบเงินคืน (Cash Rebate) 15%-30%, หากงบประมาณถึง 50 ล้านบาท สามารถรับเงินอุดหนุนสูงสุด 30%</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li1-5-cn"><strong>成本优势：</strong>制作成本约为国内1/3-1/2，单剧约10-30万人民币，适合快速迭代。</span>
+                    <span class="lang-content" id="li1-5-th"><strong>ความได้เปรียบด้านต้นทุน:</strong> ต้นทุนการผลิตประมาณ 1/3-1/2 ของในจีน, ต่อเรื่องประมาณ 10-30 แสนหยวน (5 แสน - 1.5 ล้านบาท), เหมาะสำหรับการพัฒนาซ้ำอย่างรวดเร็ว</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li1-6-cn"><strong>文化适配：</strong>中泰文化相近，中国成功题材（如双向救赎）易本土化，恐怖/奇幻元素更贴合本地偏好。</span>
+                    <span class="lang-content" id="li1-6-th"><strong>ความเหมาะสมทางวัฒนธรรม:</strong> วัฒนธรรมไทย-จีนใกล้เคียงกัน, แนวเรื่องที่ประสบความสำเร็จในจีน (เช่น การช่วยเหลือซึ่งกันและกัน) ปรับเข้ากับท้องถิ่นได้ง่าย, องค์ประกอบสยองขวัญ/แฟนตาซี ตรงกับความชอบของคนท้องถิ่นมากกว่า</span>
+                </li>
             </ul>
 
-            <h2>二、核心战略定位：精品竖屏短剧引领者</h2>
+            <h2>
+                <span class="lang-content active" id="h2-cn">二、核心战略定位：精品竖屏短剧引领者</span>
+                <span class="lang-content" id="h2-th">2. ตำแหน่งทางกลยุทธ์หลัก: ผู้นำละครสั้นแนวตั้งคุณภาพสูง</span>
+            </h2>
             <ul>
-                <li><strong>差异化定位：</strong>以电影级画面+强情节+竖屏专属语言，区别于手机拍摄的粗糙内容。</li>
-                <li><strong>内容策略：</strong>主打双向救赎+外冷内热女主+温柔守护男主的情感组合，叠加泰国观众喜爱的奇幻/悬疑元素。</li>
-                <li><strong>制作模式：</strong>中国工业化流程×泰国本土团队，采用“7天高效拍摄+专业后期+AI辅助”，突破泰国传统长周期瓶颈。</li>
-                <li><strong>渠道矩阵：</strong>TikTok/YouTube Shorts/Instagram Reels 引流+本土平台（TrueVisions NOW、爱奇艺泰国）付费+品牌植入多元变现。</li>
+                <li>
+                    <span class="lang-content active" id="li2-1-cn"><strong>差异化定位：</strong>以电影级画面+强情节+竖屏专属语言，区别于手机拍摄的粗糙内容。</span>
+                    <span class="lang-content" id="li2-1-th"><strong>ตำแหน่งที่แตกต่าง:</strong> ใช้ภาพระดับภาพยนตร์ + พล็อตเรื่องเข้มข้น + ภาษาภาพยนตร์แนวตั้ง เพื่อสร้างความแตกต่างจากเนื้อหาหยาบที่ถ่ายด้วยมือถือ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li2-2-cn"><strong>内容策略：</strong>主打双向救赎+外冷内热女主+温柔守护男主的情感组合，叠加泰国观众喜爱的奇幻/悬疑元素。</span>
+                    <span class="lang-content" id="li2-2-th"><strong>กลยุทธ์เนื้อหา:</strong> เน้นการช่วยเหลือซึ่งกันและกัน + นางเอกภายนอกเย็นชาภายในอบอุ่น + พระเอกผู้ปกป้องที่อ่อนโยน ผสมผสานกับองค์ประกอบแฟนตาซี/ระทึกขวัญที่ผู้ชมไทยชื่นชอบ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li2-3-cn"><strong>制作模式：</strong>中国工业化流程×泰国本土团队，采用“7天高效拍摄+专业后期+AI辅助”，突破泰国传统长周期瓶颈。</span>
+                    <span class="lang-content" id="li2-3-th"><strong>รูปแบบการผลิต:</strong> กระบวนการอุตสาหกรรมจีน × ทีมงานท้องถิ่นไทย, ใช้ระบบ "ถ่ายทำประสิทธิภาพสูง 7 วัน + ตัดต่อมืออาชีพ + AI ช่วยเหลือ", ทลายข้อจำกัดวงจรการผลิตที่ยาวนานแบบดั้งเดิมของไทย</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li2-4-cn"><strong>渠道矩阵：</strong>TikTok/YouTube Shorts/Instagram Reels 引流+本土平台（TrueVisions NOW、爱奇艺泰国）付费+品牌植入多元变现。</span>
+                    <span class="lang-content" id="li2-4-th"><strong>เมทริกซ์ช่องทาง:</strong> ดึงคนดูผ่าน TikTok/YouTube Shorts/Instagram Reels + จ่ายเงินดูบนแพลตฟอร์มท้องถิ่น (TrueVisions NOW, iQIYI Thailand) + การสร้างรายได้หลากหลายจากการ Tie-in แบรนด์</span>
+                </li>
             </ul>
 
-            <h2>三、分阶段实施计划</h2>
+            <h2>
+                <span class="lang-content active" id="h3-cn">三、分阶段实施计划</span>
+                <span class="lang-content" id="h3-th">3. แผนการดำเนินงานตามระยะ</span>
+            </h2>
             
-            <h3>1. 筹备期（1-2个月）</h3>
+            <h3>
+                <span class="lang-content active" id="h3-1-cn">1. 筹备期（1-2个月）</span>
+                <span class="lang-content" id="h3-1-th">1. ระยะเตรียมการ (1-2 เดือน)</span>
+            </h3>
             <ul>
-                <li><strong>团队组建：</strong>
+                <li>
+                    <span class="lang-content active" id="li3-1-1-cn"><strong>团队组建：</strong></span>
+                    <span class="lang-content" id="li3-1-1-th"><strong>การสร้างทีม:</strong></span>
                     <ul>
-                        <li>核心班底：（演员+艺术总监）+1名中国资深短剧导演+1名泰国本地编剧+1名制作人+1名运营负责人。</li>
-                        <li>本土合作：签约2-3家泰国经纪公司，锁定3-5名潜力演员（侧重“外冷内热”“温柔守护”型）。</li>
-                        <li>技术团队：摄影、灯光、剪辑（中泰各半，保证专业与本土审美平衡）。</li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-1-1-cn">核心班底：（演员+艺术总监）+1名中国资深短剧导演+1名泰国本地编剧+1名制作人+1名运营负责人。</span>
+                            <span class="lang-content" id="li3-1-1-1-th">ทีมหลัก: (นักแสดง + ผู้อำนวยการศิลป์) + 1 ผู้กำกับละครสั้นอาวุโสจากจีน + 1 คนเขียนบทท้องถิ่นไทย + 1 โปรดิวเซอร์ + 1 ผู้ดูแลการดำเนินงาน</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-1-2-cn">本土合作：签约2-3家泰国经纪公司，锁定3-5名潜力演员（侧重“外冷内热”“温柔守护”型）。</span>
+                            <span class="lang-content" id="li3-1-1-2-th">ความร่วมมือท้องถิ่น: เซ็นสัญญากับเอเจนซี่ไทย 2-3 แห่ง, ล็อคนักแสดงศักยภาพ 3-5 คน (เน้นประเภท "ภายนอกเย็นชาภายในอบอุ่น" "อ่อนโยนและปกป้อง")</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-1-3-cn">技术团队：摄影、灯光、剪辑（中泰各半，保证专业与本土审美平衡）。</span>
+                            <span class="lang-content" id="li3-1-1-3-th">ทีมเทคนิค: ช่างภาพ, แสง, ตัดต่อ (ไทย-จีน อย่างละครึ่ง, เพื่อสมดุลความเป็นมืออาชีพและรสนิยมท้องถิ่น)</span>
+                        </li>
                     </ul>
                 </li>
-                <li><strong>内容开发：</strong>
+                <li>
+                    <span class="lang-content active" id="li3-1-2-cn"><strong>内容开发：</strong></span>
+                    <span class="lang-content" id="li3-1-2-th"><strong>การพัฒนาเนื้อหา:</strong></span>
                     <ul>
-                        <li>IP储备：改编2个中国爆款双向救赎剧本（如《招惹》《虚颜》），融入泰国文化元素（如泼水节、寺庙、泰式美食）。</li>
-                        <li>原创开发：与泰国编剧共创1个本土奇幻爱情剧本，包含狼人/吸血鬼等热门元素。</li>
-                        <li>剧本测试：组织10人泰国年轻女性焦点小组，优化台词与情节节奏。</li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-2-1-cn">IP储备：改编2个中国爆款双向救赎剧本（如《招惹》《虚颜》），融入泰国文化元素（如泼水节、寺庙、泰式美食）。</span>
+                            <span class="lang-content" id="li3-1-2-1-th">คลัง IP: ดัดแปลง 2 บทละครฮิตจากจีนแนวช่วยเหลือกันและกัน (เช่น "The Provocateur", "A Familiar Stranger"), ผสมผสานวัฒนธรรมไทย (เช่น สงกรานต์, วัด, อาหารไทย)</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-2-2-cn">原创开发：与泰国编剧共创1个本土奇幻爱情剧本，包含狼人/吸血鬼等热门元素。</span>
+                            <span class="lang-content" id="li3-1-2-2-th">การพัฒนาต้นฉบับ: ร่วมสร้าง 1 บทละครรักแฟนตาซีท้องถิ่นกับคนเขียนบทไทย, รวมถึงองค์ประกอบยอดนิยมเช่น มนุษย์หมาป่า/แวมไพร์</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-2-3-cn">剧本测试：组织10人泰国年轻女性焦点小组，优化台词与情节节奏。</span>
+                            <span class="lang-content" id="li3-1-2-3-th">ทดสอบบท: จัดกลุ่ม Focus Group หญิงไทยรุ่นใหม่ 10 คน, เพื่อปรับปรุงบทพูดและจังหวะเนื้อเรื่อง</span>
+                        </li>
                     </ul>
                 </li>
-                <li><strong>资源整合：</strong>
+                <li>
+                    <span class="lang-content active" id="li3-1-3-cn"><strong>资源整合：</strong></span>
+                    <span class="lang-content" id="li3-1-3-th"><strong>การรวมทรัพยากร:</strong></span>
                     <ul>
-                        <li>场地合作：签约曼谷2-3个高端公寓、商场、餐厅作为固定拍摄点，降低成本。</li>
-                        <li>设备采购：配置专业竖屏拍摄设备（如索尼 FX3、Ronin RS3 Mini），提升画面质感。</li>
-                        <li>平台对接：与TikTok 泰国、TrueVisions NOW 建立合作，提前锁定推荐位。</li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-3-1-cn">场地合作：签约曼谷2-3个高端公寓、商场、餐厅作为固定拍摄点，降低成本。</span>
+                            <span class="lang-content" id="li3-1-3-1-th">ความร่วมมือสถานที่: เซ็นสัญญาคอนโดหรู, ห้าง, ร้านอาหารในกรุงเทพฯ 2-3 แห่งเป็นจุดถ่ายทำประจำ เพื่อลดต้นทุน</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-3-2-cn">设备采购：配置专业竖屏拍摄设备（如索尼 FX3、Ronin RS3 Mini），提升画面质感。</span>
+                            <span class="lang-content" id="li3-1-3-2-th">จัดซื้ออุปกรณ์: จัดหาอุปกรณ์ถ่ายทำแนวตั้งมืออาชีพ (เช่น Sony FX3, Ronin RS3 Mini), เพื่อยกระดับคุณภาพของภาพ</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-1-3-3-cn">平台对接：与TikTok 泰国、TrueVisions NOW 建立合作，提前锁定推荐位。</span>
+                            <span class="lang-content" id="li3-1-3-3-th">การเชื่อมต่อแพลตฟอร์ม: สร้างความร่วมมือกับ TikTok Thailand, TrueVisions NOW, ล็อคพื้นที่แนะนำล่วงหน้า</span>
+                        </li>
                     </ul>
                 </li>
             </ul>
 
-            <h3>2. 启动期（3-6个月）：快速试错，打造标杆</h3>
+            <h3>
+                <span class="lang-content active" id="h3-2-cn">2. 启动期（3-6个月）：快速试错，打造标杆</span>
+                <span class="lang-content" id="h3-2-th">2. ระยะเริ่มต้น (3-6 เดือน): ลองผิดลองถูกอย่างรวดเร็ว, สร้างผลงานต้นแบบ</span>
+            </h3>
             <ul>
-                <li><strong>首批项目（3部）：</strong>
+                <li>
+                    <span class="lang-content active" id="li3-2-1-cn"><strong>首批项目（3部）：</strong></span>
+                    <span class="lang-content" id="li3-2-1-th"><strong>โครงการชุดแรก (3 เรื่อง):</strong></span>
                     <ul>
-                        <li>项目A：《曼谷心跳》（爱情救赎），24集×2分钟，预算15万人民币，7天拍摄+15天后期。</li>
-                        <li>项目B：《月光下的契约》（奇幻爱情），30集×2分钟，预算20万人民币，8天拍摄+20天后期。</li>
-                        <li>项目C：《复仇千金》（爽剧），40集×2分钟，预算18万人民币，7天拍摄+18天后期。</li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-1-1-cn">项目A：《曼谷心跳》（爱情救赎），24集×2分钟，预算15万人民币，7天拍摄+15天后期。</span>
+                            <span class="lang-content" id="li3-2-1-1-th">โครงการ A: "Bangkok Heartbeat" (ความรักและการเยียวยา), 24 ตอน × 2 นาที, งบ 1.5 แสนหยวน, ถ่ายทำ 7 วัน + ตัดต่อ 15 วัน</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-1-2-cn">项目B：《月光下的契约》（奇幻爱情），30集×2分钟，预算20万人民币，8天拍摄+20天后期。</span>
+                            <span class="lang-content" id="li3-2-1-2-th">โครงการ B: "Contract Under Moonlight" (รักแฟนตาซี), 30 ตอน × 2 นาที, งบ 2 แสนหยวน, ถ่ายทำ 8 วัน + ตัดต่อ 20 วัน</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-1-3-cn">项目C：《复仇千金》（爽剧），40集×2分钟，预算18万人民币，7天拍摄+18天后期。</span>
+                            <span class="lang-content" id="li3-2-1-3-th">โครงการ C: "The Revenge Heiress" (ละครสะใจ), 40 ตอน × 2 นาที, งบ 1.8 แสนหยวน, ถ่ายทำ 7 วัน + ตัดต่อ 18 วัน</span>
+                        </li>
                     </ul>
                 </li>
-                <li><strong>制作流程：</strong>
+                <li>
+                    <span class="lang-content active" id="li3-2-2-cn"><strong>制作流程：</strong></span>
+                    <span class="lang-content" id="li3-2-2-th"><strong>กระบวนการผลิต:</strong></span>
                     <ul>
-                        <li>前期：中国导演主导分镜设计，泰国编剧本地化台词，你负责演员表演指导。</li>
-                        <li>拍摄：采用“分段排班制”适配泰国艺人工作习惯，每天8小时高效拍摄，核心场景集中完成。</li>
-                        <li>后期：AI辅助翻译+泰语母语配音，竖屏专属剪辑（特写为主，上下构图，避免左右信息丢失）。</li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-2-1-cn">前期：中国导演主导分镜设计，泰国编剧本地化台词，你负责演员表演指导。</span>
+                            <span class="lang-content" id="li3-2-2-1-th">ก่อนการผลิต: ผู้กำกับจีนดูแล Storyboard, คนเขียนบทไทยปรับบทพูดให้เข้ากับท้องถิ่น, คุณรับผิดชอบสอนการแสดง</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-2-2-cn">拍摄：采用“分段排班制”适配泰国艺人工作习惯，每天8小时高效拍摄，核心场景集中完成。</span>
+                            <span class="lang-content" id="li3-2-2-2-th">การถ่ายทำ: ใช้ระบบ "แบ่งกะ" ให้เหมาะกับนิสัยการทำงานของศิลปินไทย, ถ่ายทำอย่างมีประสิทธิภาพวันละ 8 ชั่วโมง, รวมฉากหลักถ่ายให้จบในรวดเดียว</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-2-3-cn">后期：AI辅助翻译+泰语母语配音，竖屏专属剪辑（特写为主，上下构图，避免左右信息丢失）。</span>
+                            <span class="lang-content" id="li3-2-2-3-th">หลังการผลิต: AI ช่วยแปล + พากย์เสียงโดยเจ้าของภาษาไทย, ตัดต่อสำหรับแนวตั้งโดยเฉพาะ (เน้นโคลสอัพ, องค์ประกอบภาพบน-ล่าง, หลีกเลี่ยงข้อมูลหายด้านซ้ายขวา)</span>
+                        </li>
                     </ul>
                 </li>
-                <li><strong>营销推广：</strong>
+                <li>
+                    <span class="lang-content active" id="li3-2-3-cn"><strong>营销推广：</strong></span>
+                    <span class="lang-content" id="li3-2-3-th"><strong>การตลาดและการโปรโมท:</strong></span>
                     <ul>
-                        <li>预热：TikTok 发布演员花絮、剧情预告，发起#曼谷心跳挑战，目标100万+播放。</li>
-                        <li>上线：平台推荐位+KOL联动+直播宣传，前3集免费，第4集起付费（单集5泰铢或包月99泰铢）。</li>
-                        <li>数据驱动：监控完播率、付费转化率，每集1分钟留客率低于60%立即调整后续剧情。</li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-3-1-cn">预热：TikTok 发布演员花絮、剧情预告，发起#曼谷心跳挑战，目标100万+播放。</span>
+                            <span class="lang-content" id="li3-2-3-1-th">อุ่นเครื่อง: TikTok ลงคลิปเบื้องหลังนักแสดง, ตัวอย่างเนื้อเรื่อง, เริ่มแคมเปญ #BangkokHeartbeatChallenge, เป้าหมาย 1 ล้าน+ วิว</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-3-2-cn">上线：平台推荐位+KOL联动+直播宣传，前3集免费，第4集起付费（单集5泰铢或包月99泰铢）。</span>
+                            <span class="lang-content" id="li3-2-3-2-th">เปิดตัว: พื้นที่แนะนำบนแพลตฟอร์ม + ร่วมมือกับ KOL + ไลฟ์สดโปรโมท, 3 ตอนแรกดูฟรี, เริ่มเก็บเงินตั้งแต่ตอนที่ 4 (ตอนละ 5 บาท หรือเหมาเดือน 99 บาท)</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-2-3-3-cn">数据驱动：监控完播率、付费转化率，每集1分钟留客率低于60%立即调整后续剧情。</span>
+                            <span class="lang-content" id="li3-2-3-3-th">ขับเคลื่อนด้วยข้อมูล: ตรวจสอบอัตราการดูจบ, อัตราการจ่ายเงิน, หากอัตราการดูต่อในนาทีแรกของแต่ละตอนต่ำกว่า 60% ให้ปรับเนื้อเรื่องส่วนต่อมาทันที</span>
+                        </li>
                     </ul>
                 </li>
             </ul>
 
-            <h3>3. 扩张期（7-12个月）：规模化生产，构建生态</h3>
+            <h3>
+                <span class="lang-content active" id="h3-3-cn">3. 扩张期（7-12个月）：规模化生产，构建生态</span>
+                <span class="lang-content" id="h3-3-th">3. ระยะขยายตัว (7-12 เดือน): การผลิตสเกลใหญ่, สร้างระบบนิเวศ</span>
+            </h3>
             <ul>
-                <li><strong>产能提升：</strong>组建2-3个并行拍摄团队，月产4-5部短剧，覆盖爱情、奇幻、悬疑等多元题材。</li>
-                <li><strong>IP孵化：</strong>打造自有演员IP，签约5-10名潜力新人，你亲自培训表演技巧，提升内容差异化。</li>
-                <li><strong>商业模式升级：</strong>
+                <li>
+                    <span class="lang-content active" id="li3-3-1-cn"><strong>产能提升：</strong>组建2-3个并行拍摄团队，月产4-5部短剧，覆盖爱情、奇幻、悬疑等多元题材。</span>
+                    <span class="lang-content" id="li3-3-1-th"><strong>เพิ่มกำลังการผลิต:</strong> สร้างทีมถ่ายทำคู่ขนาน 2-3 ทีม, ผลิตเดือนละ 4-5 เรื่อง, ครอบคลุมแนวความรัก, แฟนตาซี, ระทึกขวัญ และอื่นๆ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li3-3-2-cn"><strong>IP孵化：</strong>打造自有演员IP，签约5-10名潜力新人，你亲自培训表演技巧，提升内容差异化。</span>
+                    <span class="lang-content" id="li3-3-2-th"><strong>บ่มเพาะ IP:</strong> สร้าง IP นักแสดงของตัวเอง, เซ็นสัญญาเด็กใหม่ศักยภาพ 5-10 คน, คุณฝึกสอนการแสดงด้วยตัวเอง, เพิ่มความแตกต่างของเนื้อหา</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li3-3-3-cn"><strong>商业模式升级：</strong></span>
+                    <span class="lang-content" id="li3-3-3-th"><strong>อัปเกรดโมเดลธุรกิจ:</strong></span>
                     <ul>
-                        <li>广告植入：单剧植入8-10个品牌，如美妆、饮料、电商平台，参考《只有你》单剧80+广告模式。</li>
-                        <li>付费会员：推出“竖屏短剧通”，199泰铢/月无限看，目标用户10万+。</li>
-                        <li>IP衍生：开发周边、线下活动、演员直播带货，拓展收入来源。</li>
+                        <li>
+                            <span class="lang-content active" id="li3-3-3-1-cn">广告植入：单剧植入8-10个品牌，如美妆、饮料、电商平台，参考《只有你》单剧80+广告模式。</span>
+                            <span class="lang-content" id="li3-3-3-1-th">โฆษณาแฝง: Tie-in แบรนด์ 8-10 แบรนด์ต่อเรื่อง, เช่น เครื่องสำอาง, เครื่องดื่ม, อีคอมเมิร์ซ, อ้างอิงโมเดลโฆษณา 80+ ตัวของเรื่อง "Only You"</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-3-3-2-cn">付费会员：推出“竖屏短剧通”，199泰铢/月无限看，目标用户10万+。</span>
+                            <span class="lang-content" id="li3-3-3-2-th">สมาชิกเสียเงิน: เปิดตัว "Short Drama Pass", 199 บาท/เดือน ดูได้ไม่อั้น, เป้าหมายผู้ใช้ 100,000+ คน</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="li3-3-3-3-cn">IP衍生：开发周边、线下活动、演员直播带货，拓展收入来源。</span>
+                            <span class="lang-content" id="li3-3-3-3-th">ต่อยอด IP: พัฒนาสินค้าที่ระลึก, กิจกรรมออฟไลน์, นักแสดงไลฟ์สดขายของ, ขยายช่องทางรายได้</span>
+                        </li>
                     </ul>
                 </li>
-                <li><strong>生态构建：</strong>与泰国影视学院合作，开设“竖屏短剧制作”课程，培养本土人才，建立行业标准。</li>
+                <li>
+                    <span class="lang-content active" id="li3-3-4-cn"><strong>生态构建：</strong>与泰国影视学院合作，开设“竖屏短剧制作”课程，培养本土人才，建立行业标准。</span>
+                    <span class="lang-content" id="li3-3-4-th"><strong>สร้างระบบนิเวศ:</strong> ร่วมมือกับสถาบันภาพยนตร์ไทย, เปิดคอร์ส "การผลิตละครสั้นแนวตั้ง", สร้างบุคลากรท้องถิ่น, สร้างมาตรฐานอุตสาหกรรม</span>
+                </li>
             </ul>
 
-            <h2>四、核心竞争优势：你是关键差异化</h2>
+            <h2>
+                <span class="lang-content active" id="h4-cn">四、核心竞争优势：你是关键差异化</span>
+                <span class="lang-content" id="h4-th">4. ความได้เปรียบในการแข่งขันหลัก: คุณคือจุดต่างที่สำคัญ</span>
+            </h2>
             <ul>
-                <li><strong>表演指导：</strong>发挥演员经验，提升表演质量，打造“外冷内热女主”等鲜明角色，形成独特风格。</li>
-                <li><strong>中泰融合：</strong>你作为文化桥梁，确保剧情既符合中国强情节逻辑，又融入泰国本土文化，避免“文化折扣”。</li>
-                <li><strong>人脉变现：</strong>利用泰国资源快速对接演员、场地、平台，降低沟通成本，提高项目推进效率。</li>
-                <li><strong>工业化流程：</strong>引入中国“7天拍摄+AI辅助后期”模式，突破泰国传统制作周期长的瓶颈。</li>
+                <li>
+                    <span class="lang-content active" id="li4-1-cn"><strong>表演指导：</strong>发挥演员经验，提升表演质量，打造“外冷内热女主”等鲜明角色，形成独特风格。</span>
+                    <span class="lang-content" id="li4-1-th"><strong>การสอนการแสดง:</strong> ใช้ประสบการณ์นักแสดง, ยกระดับคุณภาพการแสดง, สร้างคาแรคเตอร์ "นางเอกภายนอกเย็นชาภายในอบอุ่น" ที่ชัดเจน, สร้างสไตล์ที่เป็นเอกลักษณ์</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li4-2-cn"><strong>中泰融合：</strong>你作为文化桥梁，确保剧情既符合中国强情节逻辑，又融入泰国本土文化，避免“文化折扣”。</span>
+                    <span class="lang-content" id="li4-2-th"><strong>การผสมผสานไทย-จีน:</strong> คุณเป็นสะพานวัฒนธรรม, มั่นใจว่าเนื้อเรื่องตรงตามตรรกะพล็อตเข้มข้นแบบจีน, แต่ผสานวัฒนธรรมไทย, หลีกเลี่ยง "ส่วนลดทางวัฒนธรรม"</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li4-3-cn"><strong>人脉变现：</strong>利用泰国资源快速对接演员、场地、平台，降低沟通成本，提高项目推进效率。</span>
+                    <span class="lang-content" id="li4-3-th"><strong>เปลี่ยนคอนเนคชั่นเป็นเงิน:</strong> ใช้ทรัพยากรไทยเชื่อมต่อนักแสดง, สถานที่, แพลตฟอร์มอย่างรวดเร็ว, ลดต้นทุนการสื่อสาร, เพิ่มประสิทธิภาพโครงการ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li4-4-cn"><strong>工业化流程：</strong>引入中国“7天拍摄+AI辅助后期”模式，突破泰国传统制作周期长的瓶颈。</span>
+                    <span class="lang-content" id="li4-4-th"><strong>กระบวนการอุตสาหกรรม:</strong> นำเข้ารูปแบบ "ถ่ายทำ 7 วัน + ตัดต่อ AI" ของจีน, ทลายคอขวดวงจรการผลิตที่ยาวนานของไทย</span>
+                </li>
             </ul>
 
-            <h2>五、风险控制与应对策略</h2>
+            <h2>
+                <span class="lang-content active" id="h5-cn">五、风险控制与应对策略</span>
+                <span class="lang-content" id="h5-th">5. การควบคุมความเสี่ยงและกลยุทธ์รับมือ</span>
+            </h2>
             <ul>
-                <li><strong>文化风险：</strong>组建泰籍编剧+文化顾问团队，剧本需通过泰国文化审查，避免宗教、王室等敏感内容。</li>
-                <li><strong>演员档期：</strong>采用“多组拍摄+备选演员”方案，核心演员提前1个月锁定档期，避免拍摄中断。</li>
-                <li><strong>市场接受度：</strong>首批项目采用“小成本试错”策略，单剧预算控制在30万人民币内，根据数据快速调整方向。</li>
-                <li><strong>竞争加剧：</strong>建立内容壁垒，每月投入10%预算用于剧本研发，打造独家IP，形成品牌效应。</li>
+                <li>
+                    <span class="lang-content active" id="li5-1-cn"><strong>文化风险：</strong>组建泰籍编剧+文化顾问团队，剧本需通过泰国文化审查，避免宗教、王室等敏感内容。</span>
+                    <span class="lang-content" id="li5-1-th"><strong>ความเสี่ยงทางวัฒนธรรม:</strong> จัดตั้งทีมคนเขียนบทไทย + ที่ปรึกษาวัฒนธรรม, บทต้องผ่านการตรวจสอบวัฒนธรรมไทย, หลีกเลี่ยงเนื้อหาอ่อนไหวเรื่องศาสนา, สถาบันฯ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li5-2-cn"><strong>演员档期：</strong>采用“多组拍摄+备选演员”方案，核心演员提前1个月锁定档期，避免拍摄中断。</span>
+                    <span class="lang-content" id="li5-2-th"><strong>คิวนักแสดง:</strong> ใช้แผน "ถ่ายทำหลายทีม + นักแสดงสำรอง", ล็อคคิวนักแสดงหลักล่วงหน้า 1 เดือน, ป้องกันการถ่ายทำสะดุด</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li5-3-cn"><strong>市场接受度：</strong>首批项目采用“小成本试错”策略，单剧预算控制在30万人民币内，根据数据快速调整方向。</span>
+                    <span class="lang-content" id="li5-3-th"><strong>การยอมรับของตลาด:</strong> โครงการชุดแรกใช้กลยุทธ์ "ลองผิดลองถูกด้วยต้นทุนต่ำ", คุมงบต่อเรื่องไม่เกิน 3 แสนหยวน, ปรับทิศทางอย่างรวดเร็วตามข้อมูล</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li5-4-cn"><strong>竞争加剧：</strong>建立内容壁垒，每月投入10%预算用于剧本研发，打造独家IP，形成品牌效应。</span>
+                    <span class="lang-content" id="li5-4-th"><strong>การแข่งขันที่รุนแรงขึ้น:</strong> สร้างกำแพงเนื้อหา, ลงทุน 10% ของงบทุกเดือนเพื่อวิจัยและพัฒนาบท, สร้าง IP เฉพาะตัว, สร้างผลลัพธ์ของแบรนด์</span>
+                </li>
             </ul>
 
-            <h2>六、盈利预测（首年）</h2>
+            <h2>
+                <span class="lang-content active" id="h6-cn">六、盈利预测（首年）</span>
+                <span class="lang-content" id="h6-th">6. คาดการณ์ผลกำไร (ปีแรก)</span>
+            </h2>
             <ul>
-                <li><strong>收入：</strong>首批3部剧，每部平均付费用户5万，单剧收入250万泰铢（约50万人民币），总收入150万人民币；广告植入每部80万泰铢（约16万人民币），总收入48万人民币；其他收入（IP授权、直播）50万人民币；首年总收入248万人民币。</li>
-                <li><strong>成本：</strong>3部剧制作成本53万人民币；团队人力成本80万人民币；营销推广40万人民币;其他费用20万人民币；首年总成本193万人民币。</li>
-                <li><strong>利润：</strong>首年净利润55万人民币，投资回报率28.5%。</li>
+                <li>
+                    <span class="lang-content active" id="li6-1-cn"><strong>收入：</strong>首批3部剧，每部平均付费用户5万，单剧收入250万泰铢（约50万人民币），总收入150万人民币；广告植入每部80万泰铢（约16万人民币），总收入48万人民币；其他收入（IP授权、直播）50万人民币；首年总收入248万人民币。</span>
+                    <span class="lang-content" id="li6-1-th"><strong>รายได้:</strong> ละครชุดแรก 3 เรื่อง, ผู้ใช้จ่ายเงินเฉลี่ย 50,000 คนต่อเรื่อง, รายได้ต่อเรื่อง 2.5 ล้านบาท (ประมาณ 5 แสนหยวน), รายได้รวม 1.5 ล้านหยวน; โฆษณาแฝงต่อเรื่อง 8 แสนบาท (ประมาณ 1.6 แสนหยวน), รายได้รวม 4.8 แสนหยวน; รายได้อื่นๆ (ลิขสิทธิ์ IP, ไลฟ์สด) 5 แสนหยวน; รายได้รวมปีแรก 2.48 ล้านหยวน</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li6-2-cn"><strong>成本：</strong>3部剧制作成本53万人民币；团队人力成本80万人民币；营销推广40万人民币;其他费用20万人民币；首年总成本193万人民币。</span>
+                    <span class="lang-content" id="li6-2-th"><strong>ต้นทุน:</strong> ต้นทุนการผลิต 3 เรื่อง 5.3 แสนหยวน; ต้นทุนบุคลากร 8 แสนหยวน; การตลาด 4 แสนหยวน; ค่าใช้จ่ายอื่นๆ 2 แสนหยวน; ต้นทุนรวมปีแรก 1.93 ล้านหยวน</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="li6-3-cn"><strong>利润：</strong>首年净利润55万人民币，投资回报率28.5%。</span>
+                    <span class="lang-content" id="li6-3-th"><strong>กำไร:</strong> กำไรสุทธิปีแรก 5.5 แสนหยวน, ผลตอบแทนการลงทุน (ROI) 28.5%</span>
+                </li>
             </ul>
 
-            <h3>行动清单（立即执行）</h3>
+            <h3>
+                <span class="lang-content active" id="act-h-cn">行动清单（立即执行）</span>
+                <span class="lang-content" id="act-h-th">รายการสิ่งที่ต้องทำ (ดำเนินการทันที)</span>
+            </h3>
             <ol style="color:#ccc; margin-left:20px;">
-                <li>1周内：与泰国本地编剧、导演见面，确定合作意向。</li>
-                <li>2周内：完成2个中国剧本的本土化改编，组织焦点小组测试。</li>
-                <li>1个月内：组建核心团队，签约3名潜力演员，锁定拍摄场地。</li>
-                <li>45天内：启动首部短剧《曼谷心跳》拍摄，打造标杆作品。</li>
+                <li>
+                    <span class="lang-content active" id="ol-1-cn">1周内：与泰国本地编剧、导演见面，确定合作意向。</span>
+                    <span class="lang-content" id="ol-1-th">ภายใน 1 สัปดาห์: พบคนเขียนบทและผู้กำกับไทย, ยืนยันความร่วมมือ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="ol-2-cn">2周内：完成2个中国剧本的本土化改编，组织焦点小组测试。</span>
+                    <span class="lang-content" id="ol-2-th">ภายใน 2 สัปดาห์: ดัดแปลงบทจีน 2 เรื่องให้เข้ากับท้องถิ่นเสร็จสิ้น, จัดทดสอบ Focus Group</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="ol-3-cn">1个月内：组建核心团队，签约3名潜力演员，锁定拍摄场地。</span>
+                    <span class="lang-content" id="ol-3-th">ภายใน 1 เดือน: สร้างทีมหลัก, เซ็นสัญญานักแสดงศักยภาพ 3 คน, ล็อคสถานที่ถ่ายทำ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="ol-4-cn">45天内：启动首部短剧《曼谷心跳》拍摄，打造标杆作品。</span>
+                    <span class="lang-content" id="ol-4-th">ภายใน 45 วัน: เริ่มถ่ายทำละครเรื่องแรก "Bangkok Heartbeat", สร้างผลงานต้นแบบ</span>
+                </li>
             </ol>
 
             <div class="divider"></div>
 
-            <h1>大女主+泰式惊悚：核心落地方案</h1>
+            <h1>
+                <span class="lang-content active" id="p2-h1-cn">大女主+泰式惊悚：核心落地方案</span>
+                <span class="lang-content" id="p2-h1-th">นางเอกสู้ชีวิต + สยองขวัญสไตล์ไทย: แผนปฏิบัติการหลัก</span>
+            </h1>
             <span class="sub-head">35-100 EPISODES · 1-3 MINUTES</span>
 
             <div class="intro-box">
-                <p>结合自身经验大女主创作经验、彭禺ム的惊悚题材优势，以及泰国创作自由的政策红利，核心方向是<strong>“大女主爽点+泰式惊悚元素+工业化竖屏制作”</strong>——用女主逆袭/复仇/穿越的强动机托底，以泰国本土灵异、因果报应等惊悚符号做差异化，既契合当地受众审美，又能放开国内管制的创作边界，快速抢占市场空白。</p>
+                <span class="lang-content active" id="p2-intro-cn">结合自身经验大女主创作经验、彭禺ム的惊悚题材优势，以及泰国创作自由的政策红利，核心方向是<strong>“大女主爽点+泰式惊悚元素+工业化竖屏制作”</strong>——用女主逆袭/复仇/穿越的强动机托底，以泰国本土灵异、因果报应等惊悚符号做差异化，既契合当地受众审美，又能放开国内管制的创作边界，快速抢占市场空白。</span>
+                <span class="lang-content" id="p2-intro-th">เมื่อรวมประสบการณ์การสร้างคาแรคเตอร์นางเอกสู้ชีวิต, ความเชี่ยวชาญแนวสยองขวัญของ Peng Yusi, และความได้เปรียบด้านนโยบายเสรีภาพในการสร้างสรรค์ของไทย ทิศทางหลักคือ <strong>"ความสะใจแบบนางเอกสู้ชีวิต + องค์ประกอบสยองขวัญไทย + การผลิตแนวตั้งแบบอุตสาหกรรม"</strong> — ใช้แรงจูงใจที่เข้มข้นของการพลิกเกม/แก้แค้น/ข้ามมิติของนางเอกเป็นฐาน, สร้างความแตกต่างด้วยสัญลักษณ์สยองขวัญอย่าง ผีไทย/กฎแห่งกรรม ซึ่งตรงกับรสนิยมผู้ชมท้องถิ่น และยังสามารถขยายขอบเขตการสร้างสรรค์ที่ถูกจำกัดในจีน เพื่อยึดครองช่องว่างในตลาดอย่างรวดเร็ว</span>
             </div>
 
-            <h2>一、核心定位：惊悚赋能的大女主爽剧引领者</h2>
+            <h2>
+                <span class="lang-content active" id="p2-h2-1-cn">一、核心定位：惊悚赋能的大女主爽剧引领者</span>
+                <span class="lang-content" id="p2-h2-1-th">1. ตำแหน่งหลัก: ผู้นำละครสั้นนางเอกสู้ชีวิตที่เสริมพลังด้วยความสยองขวัญ</span>
+            </h2>
             <ul>
-                <li><strong>内容公式：</strong>大女主核心爽点（逆袭/复仇/穿越）+泰式惊悚赋能（灵异诅咒/古宅秘闻/因果报应）+竖屏强节奏（3秒钩子+单集反转）</li>
-                <li><strong>差异化亮点：</strong>
+                <li>
+                    <span class="lang-content active" id="p2-li1-1-cn"><strong>内容公式：</strong>大女主核心爽点（逆袭/复仇/穿越）+泰式惊悚赋能（灵异诅咒/古宅秘闻/因果报应）+竖屏强节奏（3秒钩子+单集反转）</span>
+                    <span class="lang-content" id="p2-li1-1-th"><strong>สูตรเนื้อหา:</strong> ความสะใจหลักของนางเอก (พลิกเกม/แก้แค้น/ข้ามมิติ) + พลังสยองขวัญไทย (คำสาปวิญญาณ/ความลับบ้านโบราณ/กฎแห่งกรรม) + จังหวะแนวตั้งที่เข้มข้น (Hook 3 วินาที + หักมุมทุกตอน)</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li1-2-cn"><strong>差异化亮点：</strong></span>
+                    <span class="lang-content" id="p2-li1-2-th"><strong>จุดเด่นที่แตกต่าง:</strong></span>
                     <ul>
-                        <li>1. 区别于泰国本土粗糙短剧：用中国工业化拍摄流程（彭禺ム团队把控惊悚叙事+你的大女主表演指导），打造电影级竖屏质感；</li>
-                        <li>2. 突破纯惊悚/纯大女主的单一性：惊悚是女主逆袭的“工具”（如借灵异力量复仇），大女主是惊悚故事的“内核”（如打破诅咒的独立女性），双向吸引受众；</li>
-                        <li>3. 最大化创作自由：放开国内禁止的血腥、灵异细节（如泰式降头术、古宅鬼影），但贴合泰国“因果报应”文化，避免无底线猎奇。</li>
+                        <li>
+                            <span class="lang-content active" id="p2-li1-2-1-cn">1. 区别于泰国本土粗糙短剧：用中国工业化拍摄流程（彭禺ム团队把控惊悚叙事+你的大女主表演指导），打造电影级竖屏质感；</span>
+                            <span class="lang-content" id="p2-li1-2-1-th">1. ต่างจากละครสั้นหยาบๆ ในไทย: ใช้กระบวนการถ่ายทำอุตสาหกรรมจีน (ทีม Peng Yusi คุมการเล่าเรื่องสยองขวัญ + คุณสอนการแสดงนางเอก), สร้างงานภาพแนวตั้งระดับภาพยนตร์;</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="p2-li1-2-2-cn">2. 突破纯惊悚/纯大女主的单一性：惊悚是女主逆袭的“工具”（如借灵异力量复仇），大女主是惊悚故事的“内核”（如打破诅咒的独立女性），双向吸引受众；</span>
+                            <span class="lang-content" id="p2-li1-2-2-th">2. ทลายความจำเจของแนวสยองขวัญล้วน/นางเอกล้วน: ความสยองขวัญคือ "เครื่องมือ" ในการพลิกเกม (เช่น ยืมพลังวิญญาณแก้แค้น), นางเอกสู้ชีวิตคือ "แก่น" ของเรื่องสยองขวัญ (เช่น หญิงแกร่งผู้ทำลายคำสาป), ดึงดูดผู้ชมทั้งสองกลุ่ม;</span>
+                        </li>
+                        <li>
+                            <span class="lang-content active" id="p2-li1-2-3-cn">3. 最大化创作自由：放开国内禁止的血腥、灵异细节（如泰式降头术、古宅鬼影），但贴合泰国“因果报应”文化，避免无底线猎奇。</span>
+                            <span class="lang-content" id="p2-li1-2-3-th">3. อิสระในการสร้างสรรค์สูงสุด: ปลดล็อครายละเอียดเลือดสาด/วิญญาณที่ถูกห้ามในจีน (เช่น คุณไสยไทย, เงาผีบ้านโบราณ), แต่สอดคล้องกับวัฒนธรรม "กฎแห่งกรรม" ของไทย, ไม่ใช่แค่ความแปลกประหลาดที่ไร้ขอบเขต</span>
+                        </li>
                     </ul>
                 </li>
             </ul>
 
-            <h2>二、3个爆款级融合题材（35-100集 直接落地）</h2>
+            <h2>
+                <span class="lang-content active" id="p2-h2-2-cn">二、3个爆款级融合题材（35-100集 直接落地）</span>
+                <span class="lang-content" id="p2-h2-2-th">2. 3 ธีมผสมผสานระดับฮิต (35-100 ตอน พร้อมผลิต)</span>
+            </h2>
             
-            <h3>1. 《穿越之破咒千金》（60集×2分钟）</h3>
+            <h3>
+                <span class="lang-content active" id="p2-h3-1-cn">1. 《穿越之破咒千金》（60集×2分钟）</span>
+                <span class="lang-content" id="p2-h3-1-th">1. "ทะลุมิติคุณหนูผู้ทำลายคำสาป" (60 ตอน × 2 นาที)</span>
+            </h3>
             <ul>
-                <li><strong>核心设定：</strong>现代复仇女主穿越到泰国古宅千金身上，继承家族“被诅咒”的命运（每代女主都离奇死亡），一边对抗继母、渣男的夺权阴谋，一边揭开诅咒背后的灵异真相（如祖先冤魂复仇、古物诅咒）；</li>
-                <li><strong>惊悚爽点：</strong>女主利用现代知识破解灵异陷阱（如用监控抓鬼影、用心理学拆穿降头术），每5集一个小反转（如信任的仆人是诅咒执行者），最终手刃仇人+解脱冤魂，实现双重逆袭；</li>
-                <li><strong>本土化融合：</strong>植入泰国寺庙祈福、水灯节仪式、古宅建筑等元素，诅咒逻辑贴合“业报轮回”观念。</li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-1-1-cn"><strong>核心设定：</strong>现代复仇女主穿越到泰国古宅千金身上，继承家族“被诅咒”的命运（每代女主都离奇死亡），一边对抗继母、渣男的夺权阴谋，一边揭开诅咒背后的灵异真相（如祖先冤魂复仇、古物诅咒）；</span>
+                    <span class="lang-content" id="p2-li2-1-1-th"><strong>การตั้งค่าหลัก:</strong> นางเอกสายแก้แค้นยุคใหม่ข้ามมิติมาอยู่ในร่างคุณหนูบ้านโบราณในไทย, สืบทอดชะตา "ต้องคำสาป" ของตระกูล (ลูกสาวทุกคนตายอย่างปริศนา), ต้องต่อสู้กับแผนยึดอำนาจของแม่เลี้ยงและชายชั่ว, พร้อมกับเปิดโปงความจริงสยองขวัญเบื้องหลังคำสาป (เช่น วิญญาณบรรพบุรุษแก้แค้น, คำสาปวัตถุโบราณ);</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-1-2-cn"><strong>惊悚爽点：</strong>女主利用现代知识破解灵异陷阱（如用监控抓鬼影、用心理学拆穿降头术），每5集一个小反转（如信任的仆人是诅咒执行者），最终手刃仇人+解脱冤魂，实现双重逆袭；</span>
+                    <span class="lang-content" id="p2-li2-1-2-th"><strong>จุดสะใจสยองขวัญ:</strong> นางเอกใช้ความรู้สมัยใหม่แก้กับดักวิญญาณ (เช่น ใช้กล้องวงจรปิดจับเงาผี, ใช้จิตวิทยาจับโกหกคุณไสย), หักมุมเล็กๆ ทุก 5 ตอน (เช่น คนรับใช้ที่ไว้ใจคือผู้ลงมือตามคำสาป), สุดท้ายจัดการศัตรู + ปลดปล่อยวิญญาณ, พลิกเกมสองต่อ;</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-1-3-cn"><strong>本土化融合：</strong>植入泰国寺庙祈福、水灯节仪式、古宅建筑等元素，诅咒逻辑贴合“业报轮回”观念。</span>
+                    <span class="lang-content" id="p2-li2-1-3-th"><strong>การผสมผสานท้องถิ่น:</strong> ใส่ฉากไหว้พระวัดไทย, พิธีลอยกระทง, สถาปัตยกรรมบ้านโบราณ, ตรรกะคำสาปสอดคล้องกับแนวคิด "เวียนว่ายตายเกิด/กฎแห่งกรรม"</span>
+                </li>
             </ul>
 
-            <h3>2. 《曼谷逆袭：灵异侦探》（80集×1.5分钟）</h3>
+            <h3>
+                <span class="lang-content active" id="p2-h3-2-cn">2. 《曼谷逆袭：灵异侦探》（80集×1.5分钟）</span>
+                <span class="lang-content" id="p2-h3-2-th">2. "กรุงเทพฯ พลิกเกม: นักสืบวิญญาณ" (80 ตอน × 1.5 นาที)</span>
+            </h3>
             <ul>
-                <li><strong>核心设定：</strong>被职场霸凌、男友背叛的普通女主，意外获得“看见鬼魂”的能力，辞职开设“灵异侦探社”，一边帮冤魂伸冤（惊悚线），一边反击曾经欺压自己的人（逆袭线）；</li>
-                <li><strong>惊悚爽点：</strong>每集聚焦一个微型灵异案件（如校园冤魂、失踪人口的鬼魂求助），用竖屏特写放大恐怖氛围（如镜子里的鬼影、突然响起的泰式诡异音乐），女主用“鬼魂线索”拿捏反派把柄，爽感密集；</li>
-                <li><strong>彭禺ム赋能：</strong>他可客串“灵异导师”，指导女主运用能力，延续其网大惊悚片的成熟叙事节奏。</li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-2-1-cn"><strong>核心设定：</strong>被职场霸凌、男友背叛的普通女主，意外获得“看见鬼魂”的能力，辞职开设“灵异侦探社”，一边帮冤魂伸冤（惊悚线），一边反击曾经欺压自己的人（逆袭线）；</span>
+                    <span class="lang-content" id="p2-li2-2-1-th"><strong>การตั้งค่าหลัก:</strong> สาวธรรมดาที่ถูกกลั่นแกล้งในที่ทำงานและแฟนทรยศ, บังเอิญได้ความสามารถ "เห็นผี", ลาออกไปเปิด "สำนักงานนักสืบวิญญาณ", ช่วยเรียกร้องความยุติธรรมให้วิญญาณ (เส้นเรื่องสยอง) และโต้ตอบคนที่เคยรังแกตน (เส้นเรื่องพลิกเกม);</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-2-2-cn"><strong>惊悚爽点：</strong>每集聚焦一个微型灵异案件（如校园冤魂、失踪人口的鬼魂求助），用竖屏特写放大恐怖氛围（如镜子里的鬼影、突然响起的泰式诡异音乐），女主用“鬼魂线索”拿捏反派把柄，爽感密集；</span>
+                    <span class="lang-content" id="p2-li2-2-2-th"><strong>จุดสะใจสยองขวัญ:</strong> แต่ละตอนเน้นคดีวิญญาณสั้นๆ (เช่น วิญญาณในโรงเรียน, ผีคนหายขอความช่วยเหลือ), ใช้โคลสอัพแนวตั้งขยายบรรยากาศน่ากลัว (เช่น เงาผีในกระจก, ดนตรีไทยหลอนๆ ที่ดังขึ้น), นางเอกใช้ "เบาะแสจากผี" บีบจุดอ่อนตัวร้าย, ความสะใจอัดแน่น;</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-2-3-cn"><strong>彭禺ム赋能：</strong>他可客串“灵异导师”，指导女主运用能力，延续其网大惊悚片的成熟叙事节奏。</span>
+                    <span class="lang-content" id="p2-li2-2-3-th"><strong>Peng Yusi เสริมพลัง:</strong> เขาสามารถรับเชิญเป็น "อาจารย์ปราบผี", สอนนางเอกใช้พลัง, สานต่อจังหวะการเล่าเรื่องสยองขวัญที่เชี่ยวชาญ</span>
+                </li>
             </ul>
 
-            <h3>3. 《重生复仇：古宅魅影》（40集×3分钟）</h3>
+            <h3>
+                <span class="lang-content active" id="p2-h3-3-cn">3. 《重生复仇：古宅魅影》（40集×3分钟）</span>
+                <span class="lang-content" id="p2-h3-3-th">3. "เกิดใหม่แก้แค้น: เงาปริศนาบ้านโบราณ" (40 ตอน × 3 นาที)</span>
+            </h3>
             <ul>
-                <li><strong>核心设定：</strong>被闺蜜和丈夫联手害死的豪门女主，重生回到悲剧发生前，发现家族古宅藏着“能实现愿望但需付出代价”的灵异力量，她借助魅影之力，步步为营向仇人复仇；</li>
-                <li><strong>惊悚爽点：</strong>魅影以“半透明黑影”“低语声”形式存在，女主与魅影的交易充满悬念（如每复仇一次，自身就多一个灵异印记），结局反转（魅影是被家族害死的先祖，与女主联手清算所有恶人）；</li>
-                <li><strong>竖屏适配：</strong>用第一视角拍摄古宅探险场景（如推开房门的瞬间、楼梯间的脚步声），强化沉浸感，每集结尾留“魅影警告”钩子（如“下一个，轮到他了”）。</li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-3-1-cn"><strong>核心设定：</strong>被闺蜜和丈夫联手害死的豪门女主，重生回到悲剧发生前，发现家族古宅藏着“能实现愿望但需付出代价”的灵异力量，她借助魅影之力，步步为营向仇人复仇；</span>
+                    <span class="lang-content" id="p2-li2-3-1-th"><strong>การตั้งค่าหลัก:</strong> ไฮโซสาวที่ถูกเพื่อนสนิทและสามีร่วมมือกันฆ่า, เกิดใหม่ย้อนเวลาก่อนโศกนาฏกรรม, พบว่าบ้านโบราณของตระกูลซ่อนพลังลี้ลับที่ "ให้พรได้แต่ต้องแลกด้วยสิ่งตอบแทน", เธอยืมพลังจากเงาปริศนา, วางแผนแก้แค้นศัตรูทีละก้าว;</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-3-2-cn"><strong>惊悚爽点：</strong>魅影以“半透明黑影”“低语声”形式存在，女主与魅影的交易充满悬念（如每复仇一次，自身就多一个灵异印记），结局反转（魅影是被家族害死的先祖，与女主联手清算所有恶人）；</span>
+                    <span class="lang-content" id="p2-li2-3-2-th"><strong>จุดสะใจสยองขวัญ:</strong> เงาปริศนาปรากฏในรูป "เงาดำโปร่งแสง" "เสียงกระซิบ", การแลกเปลี่ยนระหว่างนางเอกกับเงาเต็มไปด้วยความระทึก (เช่น ทุกการแก้แค้น 1 ครั้ง จะมีรอยประทับวิญญาณบนตัว), ตอนจบหักมุม (เงาปริศนาคือบรรพบุรุษที่ถูกตระกูลฆ่า, ร่วมมือกับนางเอกจัดการคนชั่วทั้งหมด);</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li2-3-3-cn"><strong>竖屏适配：</strong>用第一视角拍摄古宅探险场景（如推开房门的瞬间、楼梯间的脚步声），强化沉浸感，每集结尾留“魅影警告”钩子（如“下一个，轮到他了”）。</span>
+                    <span class="lang-content" id="p2-li2-3-3-th"><strong>การปรับให้เข้ากับแนวตั้ง:</strong> ใช้มุมมองบุคคลที่หนึ่งถ่ายฉากสำรวจบ้านโบราณ (เช่น จังหวะผลักประตู, เสียงฝีเท้าบันได), เพิ่มความรู้สึกร่วม, ทิ้งท้ายทุกตอนด้วย "คำเตือนจากเงา" (เช่น "คนต่อไป, ถึงตาเขาแล้ว")</span>
+                </li>
             </ul>
 
-            <h2>三、90天落地调整版（适配融合题材）</h2>
+            <h2>
+                <span class="lang-content active" id="p2-h2-3-cn">三、90天落地调整版（适配融合题材）</span>
+                <span class="lang-content" id="p2-h2-3-th">3. แผนปรับปรุง 90 วันสู่การปฏิบัติจริง (ปรับให้เหมาะกับธีมผสมผสาน)</span>
+            </h2>
             
-            <h3>第一阶段：筹备期（1-30天）</h3>
+            <h3>
+                <span class="lang-content active" id="p2-h3-3-1-cn">第一阶段：筹备期（1-30天）</span>
+                <span class="lang-content" id="p2-h3-3-1-th">ระยะที่ 1: เตรียมการ (1-30 วัน)</span>
+            </h3>
             <ul>
-                <li><strong>团队升级：</strong>核心班底新增「泰籍惊悚题材顾问」（熟悉泰国灵异文化与审查边界）+「彭禺ム专属惊悚执行导演」（把控惊悚镜头与节奏）；签约2名“自带灵异气质”的泰籍演员（如气质清冷的女主、阴鸷反派）。</li>
-                <li><strong>剧本打磨：</strong>3个题材各完成前10集剧本，重点优化“3秒钩子”（如第一集开头：女主睁眼看到床前站着半透明鬼影），由彭禺ム审核惊悚逻辑，你把关大女主情绪张力；组织15人焦点小组（18-34岁女性为主），测试恐怖接受度。</li>
-                <li><strong>资源整合：</strong>签约曼谷2处核心场地（百年古宅、小众寺庙），采购惊悚特效道具（如烟雾机、光影设备），对接泰籍配音团队（适配诡异音效）；利用你的人脉申请泰国影视补贴（最高30%），降低制作成本。</li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-1-1-cn"><strong>团队升级：</strong>核心班底新增「泰籍惊悚题材顾问」（熟悉泰国灵异文化与审查边界）+「彭禺ム专属惊悚执行导演」（把控惊悚镜头与节奏）；签约2名“自带灵异气质”的泰籍演员（如气质清冷的女主、阴鸷反派）。</span>
+                    <span class="lang-content" id="p2-li3-1-1-th"><strong>อัปเกรดทีม:</strong> ทีมหลักเพิ่ม "ที่ปรึกษาแนวสยองขวัญไทย" (เชี่ยวชาญวัฒนธรรมผีไทยและขอบเขตการเซ็นเซอร์) + "ผู้กำกับบริหารสายสยองขวัญของ Peng Yusi" (คุมมุมกล้องและจังหวะหลอน); เซ็นสัญญา 2 นักแสดงไทยที่มี "ออร่าลึกลับ" (เช่น นางเอกบุคลิกเย็นชา, ตัวร้ายหน้าอำมหิต)</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-1-2-cn"><strong>剧本打磨：</strong>3个题材各完成前10集剧本，重点优化“3秒钩子”（如第一集开头：女主睁眼看到床前站着半透明鬼影），由彭禺ム审核惊悚逻辑，你把关大女主情绪张力；组织15人焦点小组（18-34岁女性为主），测试恐怖接受度。</span>
+                    <span class="lang-content" id="p2-li3-1-2-th"><strong>ขัดเกลาบท:</strong> เขียนบท 10 ตอนแรกของทั้ง 3 ธีม, เน้นปรับปรุง "Hook 3 วินาที" (เช่น เปิดตอนแรก: นางเอกลืมตาเห็นเงาผีโปร่งแสงปลายเตียง), Peng Yusi ตรวจสอบตรรกะความสยอง, คุณคุมความเข้มข้นของอารมณ์นางเอก; จัด Focus Group 15 คน (หญิง 18-34 ปี) ทดสอบระดับความกลัวที่รับได้</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-1-3-cn"><strong>资源整合：</strong>签约曼谷2处核心场地（百年古宅、小众寺庙），采购惊悚特效道具（如烟雾机、光影设备），对接泰籍配音团队（适配诡异音效）；利用你的人脉申请泰国影视补贴（最高30%），降低制作成本。</span>
+                    <span class="lang-content" id="p2-li3-1-3-th"><strong>รวมทรัพยากร:</strong> เซ็นสัญญา 2 สถานที่หลักในกรุงเทพฯ (บ้านร้อยปี, วัดลับๆ), ซื้ออุปกรณ์เอฟเฟกต์สยองขวัญ (เช่น เครื่องทำควัน, อุปกรณ์แสงเงา), ติดต่อทีมพากย์ไทย (ปรับแต่งเสียงหลอน); ใช้คอนเนคชั่นของคุณขอเงินอุดหนุนภาพยนตร์ไทย (สูงสุด 30%), ลดต้นทุนการผลิต</span>
+                </li>
             </ul>
 
-            <h3>第二阶段：拍摄期（31-60天）</h3>
+            <h3>
+                <span class="lang-content active" id="p2-h3-3-2-cn">第二阶段：拍摄期（31-60天）</span>
+                <span class="lang-content" id="p2-h3-3-2-th">ระยะที่ 2: ถ่ายทำ (31-60 วัน)</span>
+            </h3>
             <ul>
-                <li><strong>核心项目：</strong>优先拍摄《穿越之破咒千金》（60集），采用“10天高效拍摄+AI辅助后期”：中国团队负责分镜与惊悚节奏，泰籍团队把控场景与文化细节；彭禺ム现场指导灵异镜头拍摄（如鬼影出现的时机、音效搭配），你亲自培训女主“强情绪表演”（如复仇时的狠厉+面对灵异时的克制恐惧）。</li>
-                <li><strong>竖屏适配：</strong>每集必含1个特写惊悚镜头（如女主瞳孔里的鬼影倒影）、1个爽点镜头（如反派被灵异力量反噬），避免左右构图浪费，用上下分屏呈现“现实+灵异”双场景。</li>
-                <li><strong>预热造势：</strong>TikTok 发布“古宅探秘花絮”“彭禺ム谈泰式惊悚”短视频，发起#泰国最敢拍的大女主短剧话题，目标50万+播放。</li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-2-1-cn"><strong>核心项目：</strong>优先拍摄《穿越之破咒千金》（60集），采用“10天高效拍摄+AI辅助后期”：中国团队负责分镜与惊悚节奏，泰籍团队把控场景与文化细节；彭禺ム现场指导灵异镜头拍摄（如鬼影出现的时机、音效搭配），你亲自培训女主“强情绪表演”（如复仇时的狠厉+面对灵异时的克制恐惧）。</span>
+                    <span class="lang-content" id="p2-li3-2-1-th"><strong>โครงการหลัก:</strong> ถ่ายทำ "ทะลุมิติคุณหนูผู้ทำลายคำสาป" (60 ตอน) ก่อน, ใช้ระบบ "ถ่ายทำประสิทธิภาพสูง 10 วัน + ตัดต่อ AI": ทีมจีนรับผิดชอบ Storyboard และจังหวะสยอง, ทีมไทยคุมฉากและรายละเอียดวัฒนธรรม; Peng Yusi กำกับฉากวิญญาณหน้างาน (จังหวะผีโผล่, การใช้เสียง), คุณฝึกสอนนางเอกเรื่อง "การแสดงอารมณ์เข้มข้น" (เช่น ความโหดเหี้ยมตอนแก้แค้น + ความกลัวที่ต้องเก็บกดเมื่อเจอผี)</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-2-2-cn"><strong>竖屏适配：</strong>每集必含1个特写惊悚镜头（如女主瞳孔里的鬼影倒影）1个爽点镜头（如反派被灵异力量反噬），避免左右构图浪费，用上下分屏呈现“现实+灵异”双场景。</span>
+                    <span class="lang-content" id="p2-li3-2-2-th"><strong>การปรับให้เข้ากับแนวตั้ง:</strong> ทุกตอนต้องมี 1 ช็อตสยองขวัญระยะใกล้ (เช่น เงาผีสะท้อนในตานางเอก) และ 1 ช็อตสะใจ (เช่น ตัวร้ายโดนพลังลึกลับเล่นงาน), หลีกเลี่ยงการเสียพื้นที่ซ้ายขวา, ใช้การแบ่งจอ บน-ล่าง แสดงฉาก "ความจริง + วิญญาณ" พร้อมกัน</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-2-3-cn"><strong>预热造势：</strong>TikTok 发布“古宅探秘花絮”“彭禺ム谈泰式惊悚”短视频，发起#泰国最敢拍的大女主短剧话题，目标50万+播放。</span>
+                    <span class="lang-content" id="p2-li3-2-3-th"><strong>สร้างกระแส:</strong> TikTok ลงคลิป "สำรวจบ้านโบราณ", "Peng Yusi พูดถึงสยองขวัญไทย", เริ่มแคมเปญ #ละครสั้นนางเอกสู้ชีวิตที่กล้าถ่ายที่สุดในไทย, เป้าหมาย 5 แสน+ วิว</span>
+                </li>
             </ul>
 
-            <h3>第三阶段：上线冲刺期（61-90天）</h3>
+            <h3>
+                <span class="lang-content active" id="p2-h3-3-3-cn">第三阶段：上线冲刺期（61-90天）</span>
+                <span class="lang-content" id="p2-h3-3-3-th">ระยะที่ 3: เปิดตัวและเร่งยอด (61-90 วัน)</span>
+            </h3>
             <ul>
-                <li><strong>全渠道上线：</strong>《穿越之破咒千金》登陆TikTok/TrueVisions NOW/爱奇艺泰国，采用“前3集免费+单集5泰铢/包月99泰铢”模式，每更新5集发布1个“惊悚预告”（如“下一集，诅咒降临在继母身上”）。</li>
-                <li><strong>数据优化：</strong>重点监控“1分钟留客率”（目标≥70%）、“付费转化率”（目标≥8%），若某集留客率低于60%，立即插入“女主反杀小高潮”或“灵异大场面”；根据用户评论调整惊悚尺度（如观众反馈不够恐怖，可加拍古宅夜探片段）。</li>
-                <li><strong>商业变现：</strong>对接3-5个品牌植入（如女主用的防身喷雾、古宅修复用的建材、美妆品牌“逆袭蜕变”主题植入），同步筹备第二部《曼谷逆袭：灵异侦探》的演员定妆。</li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-3-1-cn"><strong>全渠道上线：</strong>《穿越之破咒千金》登陆TikTok/TrueVisions NOW/爱奇艺泰国，采用“前3集免费+单集5泰铢/包月99泰铢”模式，每更新5集发布1个“惊悚预告”（如“下一集，诅咒降临在继母身上”）。</span>
+                    <span class="lang-content" id="p2-li3-3-1-th"><strong>เปิดตัวทุกช่องทาง:</strong> "ทะลุมิติคุณหนูผู้ทำลายคำสาป" ลง TikTok/TrueVisions NOW/iQIYI Thailand, ใช้โมเดล "3 ตอนแรกฟรี + ตอนละ 5 บาท/เหมาเดือน 99 บาท", ทุกการอัปเดต 5 ตอน ปล่อย 1 "ตัวอย่างสยองขวัญ" (เช่น "ตอนต่อไป, คำสาปจะลงที่แม่เลี้ยง")</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-3-2-cn"><strong>数据优化：</strong>重点监控“1分钟留客率”（目标≥70%）、“付费转化率”（目标≥8%），若某集留客率低于60%，立即插入“女主反杀小高潮”或“灵异大场面”；根据用户评论调整惊悚尺度（如观众反馈不够恐怖，可加拍古宅夜探片段）。</span>
+                    <span class="lang-content" id="p2-li3-3-2-th"><strong>ปรับปรุงข้อมูล:</strong> เน้นดู "อัตราการอยู่ต่อใน 1 นาที" (เป้า ≥70%), "อัตราการจ่ายเงิน" (เป้า ≥8%), หากตอนไหนต่ำกว่า 60%, แทรก "ฉากนางเอกเอาคืน" หรือ "ฉากผีอลังการ" ทันที; ปรับระดับความน่ากลัวตามคอมเมนต์ (เช่น ถ้าคนบอกไม่น่ากลัวพอ, ถ่ายฉากสำรวจบ้านตอนกลางคืนเพิ่ม)</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li3-3-3-cn"><strong>商业变现：</strong>对接3-5个品牌植入（如女主用的防身喷雾、古宅修复用的建材、美妆品牌“逆袭蜕变”主题植入），同步筹备第二部《曼谷逆袭：灵异侦探》的演员定妆。</span>
+                    <span class="lang-content" id="p2-li3-3-3-th"><strong>สร้างรายได้:</strong> เชื่อมต่อ 3-5 แบรนด์ (เช่น สเปรย์ป้องกันตัวนางเอก, วัสดุซ่อมบ้านโบราณ, เครื่องสำอางธีม "เปลี่ยนลุคพลิกชีวิต"), เตรียมฟิตติ้งนักแสดงเรื่องที่ 2 "กรุงเทพฯ พลิกเกม: นักสืบวิญญาณ" ไปพร้อมกัน</span>
+                </li>
             </ul>
 
-            <h2>四、核心资源最大化（内行人）</h2>
+            <h2>
+                <span class="lang-content active" id="p2-h2-4-cn">四、核心资源最大化（内行人）</span>
+                <span class="lang-content" id="p2-h2-4-th">4. การใช้ทรัพยากรหลักให้คุ้มค่าที่สุด (มุมมองคนในวงการ)</span>
+            </h2>
             <ul>
-                <li><strong>自身优势的价值：</strong>主导大女主人设塑造（独立、狠厉但有共情点），把控表演细节，避免“傻白甜”；利用泰国人脉快速对接场地、演员、审查渠道，缩短筹备周期。</li>
-                <li><strong>彭禺ム的价值：</strong>担任“惊悚总监制”，输出网大成熟的惊悚叙事逻辑（如“悬念铺垫-恐怖爆发-反转收尾”）；自带国内惊悚受众基础，吸引中泰双语观众，提升项目关注度。</li>
-                <li><strong>协同效应：</strong>你负责“爽点落地”，彭负责“惊悚赋能”，形成“大女主让观众共情，惊悚让观众上头”的双重吸引力，区别于泰国本土单一题材短剧。</li>
+                <li>
+                    <span class="lang-content active" id="p2-li4-1-cn"><strong>自身优势的价值：</strong>主导大女主人设塑造（独立、狠厉但有共情点），把控表演细节，避免“傻白甜”；利用泰国人脉快速对接场地、演员、审查渠道，缩短筹备周期。</span>
+                    <span class="lang-content" id="p2-li4-1-th"><strong>มูลค่าความได้เปรียบของคุณ:</strong> เป็นผู้นำสร้างคาแรคเตอร์นางเอก (อิสระ, เด็ดขาดแต่เข้าถึงได้), คุมรายละเอียดการแสดง, เลี่ยงบท "ใสซื่อไร้สมอง"; ใช้คอนเนคชั่นไทยหาที่ถ่าย, นักแสดง, ช่องทางตรวจสอบเซ็นเซอร์อย่างรวดเร็ว, ลดเวลาเตรียมงาน</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li4-2-cn"><strong>彭禺ム的价值：</strong>担任“惊悚总监制”，输出网大成熟的惊悚叙事逻辑（如“悬念铺垫-恐怖爆发-反转收尾”）；自带国内惊悚受众基础，吸引中泰双语观众，提升项目关注度。</span>
+                    <span class="lang-content" id="p2-li4-2-th"><strong>มูลค่าของ Peng Yusi:</strong> รับตำแหน่ง "ผู้กำกับบริหารฝ่ายสยองขวัญ", ถ่ายทอดตรรกะการเล่าเรื่องสยองขวัญที่เชี่ยวชาญ (เช่น "ปูความสงสัย - ระเบิดความกลัว - จบด้วยหักมุม"); มีฐานแฟนคลับแนวสยองขวัญจากจีน, ดึงดูดผู้ชมสองภาษา, เพิ่มความน่าสนใจ</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li4-3-cn"><strong>协同效应：</strong>你负责“爽点落地”，彭负责“惊悚赋能”，形成“大女主让观众共情，惊悚让观众上头”的双重吸引力，区别于泰国本土单一题材短剧。</span>
+                    <span class="lang-content" id="p2-li4-3-th"><strong>ผลลัพธ์จากการร่วมมือ:</strong> คุณรับผิดชอบ "ความสะใจ", Peng รับผิดชอบ "พลังความหลอน", สร้างแรงดึงดูดสองทาง "นางเอกทำให้คนดูอิน, ความสยองทำให้คนดูติด", แตกต่างจากละครสั้นไทยแนวเดิมๆ</span>
+                </li>
             </ul>
 
-            <h2>五、风险控制</h2>
+            <h2>
+                <span class="lang-content active" id="p2-h2-5-cn">五、风险控制</span>
+                <span class="lang-content" id="p2-h2-5-th">5. การควบคุมความเสี่ยง</span>
+            </h2>
             <ul>
-                <li><strong>文化风险：</strong>所有灵异元素需经泰籍顾问审核，避免调侃宗教（如寺庙、佛像相关场景保持敬畏），惊悚情节围绕“因果报应”展开，符合当地价值观。</li>
-                <li><strong>尺度风险：</strong>血腥、暴力镜头用“光影暗示”（如黑影遮屏、音效配合）替代直白呈现，既满足创作自由，又规避审查风险。</li>
-                <li><strong>市场风险：</strong>首批项目预算控制在20万人民币内（60集），小成本试错；若惊悚尺度不被接受，可快速调整为“轻惊悚+强复仇”模式，保留大女主核心爽点。</li>
+                <li>
+                    <span class="lang-content active" id="p2-li5-1-cn"><strong>文化风险：</strong>所有灵异元素需经泰籍顾问审核，避免调侃宗教（如寺庙、佛像相关场景保持敬畏），惊悚情节围绕“因果报应”展开，符合当地价值观。</span>
+                    <span class="lang-content" id="p2-li5-1-th"><strong>ความเสี่ยงทางวัฒนธรรม:</strong> องค์ประกอบลี้ลับต้องผ่านการตรวจสอบจากที่ปรึกษาไทย, เลี่ยงการล้อเลียนศาสนา (เช่น ฉากเกี่ยวกับวัด, พระพุทธรูปต้องเคารพ), พล็อตสยองขวัญต้องวนเวียนอยู่กับ "กฎแห่งกรรม", สอดคล้องกับค่านิยมท้องถิ่น</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li5-2-cn"><strong>尺度风险：</strong>血腥、暴力镜头用“光影暗示”（如黑影遮屏、音效配合）替代直白呈现，既满足创作自由，又规避审查风险。</span>
+                    <span class="lang-content" id="p2-li5-2-th"><strong>ความเสี่ยงเรื่องความรุนแรง:</strong> ฉากเลือด, ความรุนแรงใช้ "แสงเงาบอกใบ้" (เช่น เงาดำบังจอ, เสียงประกอบ) แทนการโชว์ตรงๆ, ตอบโจทย์อิสระการสร้างสรรค์ และเลี่ยงความเสี่ยงเซ็นเซอร์</span>
+                </li>
+                <li>
+                    <span class="lang-content active" id="p2-li5-3-cn"><strong>市场风险：</strong>首批项目预算控制在20万人民币内（60集），小成本试错；若惊悚尺度不被接受，可快速调整为“轻惊悚+强复仇”模式，保留大女主核心爽点。</span>
+                    <span class="lang-content" id="p2-li5-3-th"><strong>ความเสี่ยงทางการตลาด:</strong> คุมงบโครงการแรกไม่เกิน 2 แสนหยวน (60 ตอน), ลองผิดลองถูกต้นทุนต่ำ; หากระดับความสยองไม่ได้รับความนิยม, ปรับเป็น "สยองขวัญเบาๆ + แก้แค้นหนักๆ" ได้ทันที, รักษาแก่นความสะใจของนางเอกไว้</span>
+                </li>
             </ul>
 
         </div>
     </div>
+
+    <script>
+        // Language Toggle
+        function setLang(lang) {
+            document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.l-btn').forEach(el => el.classList.remove('active'));
+            
+            if(lang === 'cn') {
+                document.querySelectorAll('[id$="-cn"]').forEach(el => el.classList.add('active'));
+                document.querySelector('button[onclick="setLang(\'cn\')"]').classList.add('active');
+            } else {
+                document.querySelectorAll('[id$="-th"]').forEach(el => el.classList.add('active'));
+                document.querySelector('button[onclick="setLang(\'th\')"]').classList.add('active');
+            }
+        }
+    </script>
 
 </body>
 </html>
