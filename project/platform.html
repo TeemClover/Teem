@@ -3,125 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Empire: Executive Summary</title>
-    <meta name="description" content="AI-Driven Vertical Drama Platform & E-Commerce Ecosystem Business Plan">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&family=Sarabun:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>PROJECT EMPIRE: The Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&family=Sarabun:wght@300;400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
         :root {
             --gold: #D4AF37;
-            --gold-dim: #8a7020;
-            --bg-dark: #0B0F19;
-            --bg-card: #151B2B;
-            --text-main: #E2E8F0;
-            --text-muted: #94A3B8;
-            --accent-green: #10B981;
-            --accent-red: #EF4444;
-            --border: #2D3748;
+            --gold-light: #F9E79F;
+            --bg-dark: #080a10;
+            --bg-panel: #11141d;
+            --text-main: #ECEFF1;
+            --text-muted: #90A4AE;
+            --accent: #29B6F6;
+            --success: #00E676;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+        body { 
+            font-family: 'Sarabun', sans-serif; 
+            background: var(--bg-dark); 
+            color: var(--text-main); 
             line-height: 1.6;
             overflow-x: hidden;
         }
-
-        h1, h2, h3, h4, .stat-val { font-family: 'Kanit', sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--gold); }
-
-        /* Layout */
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        h1, h2, h3, h4 { font-family: 'Kanit', sans-serif; text-transform: uppercase; }
+        .mono { font-family: 'JetBrains Mono', monospace; color: var(--gold); letter-spacing: 1px; font-size: 0.85rem; }
         
-        /* Header */
-        header {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .brand { font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        
+        /* HEADER */
+        header { padding: 40px 0; border-bottom: 1px solid #222; margin-bottom: 60px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .brand { font-size: 2.5rem; font-weight: 800; letter-spacing: 2px; line-height: 1; }
         .brand span { color: var(--gold); }
 
-        /* Sections */
-        section { margin-bottom: 80px; }
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #fff, #94A3B8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .section-subtitle { color: var(--gold); font-weight: 600; margin-bottom: 30px; display: block; letter-spacing: 1px;}
+        /* SECTION STYLES */
+        section { margin-bottom: 100px; }
+        .section-header { margin-bottom: 40px; }
+        .section-title { font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 10px; }
+        .section-desc { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; }
 
-        /* Data Cards */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 25px;
-            transition: all 0.3s ease;
-        }
-        .card:hover { border-color: var(--gold-dim); transform: translateY(-3px); }
-        .stat-big { font-size: 3rem; font-weight: 700; color: var(--gold); line-height: 1; margin: 15px 0; }
-        .stat-desc { font-size: 0.9rem; color: var(--text-muted); }
-
-        /* Interactive Matrix */
-        .matrix-container {
-            background: #0f131f;
-            border: 1px solid var(--gold-dim);
-            border-radius: 16px;
-            padding: 30px;
+        /* 1. START WITH WHY (HERO) */
+        .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        .why-card { 
+            background: linear-gradient(145deg, #1a1f2e, #11141d); 
+            padding: 40px; border-radius: 20px; 
+            border: 1px solid #333; 
             position: relative;
-            overflow: hidden;
         }
-        .matrix-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 5px;
-            background: linear-gradient(90deg, var(--gold), transparent);
+        .why-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--gold); }
+        .big-quote { font-size: 1.5rem; font-weight: 600; font-style: italic; color: var(--gold-light); margin-bottom: 20px; line-height: 1.4; }
+
+        /* 2. DATA HIGHLIGHTS */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; }
+        .stat-box { background: var(--bg-panel); padding: 30px; border-radius: 12px; text-align: center; border: 1px solid #222; transition: 0.3s; }
+        .stat-box:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .stat-num { font-size: 3rem; font-weight: 800; color: var(--gold); line-height: 1; font-family: 'Kanit'; }
+        .stat-label { font-size: 0.9rem; color: var(--text-muted); margin-top: 10px; text-transform: uppercase; }
+
+        /* 3. STRATEGY TABLE */
+        .strategy-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--bg-panel); border-radius: 12px; overflow: hidden; }
+        .strategy-table th { background: #222; color: var(--gold); padding: 20px; text-align: left; }
+        .strategy-table td { padding: 20px; border-bottom: 1px solid #333; }
+        .highlight { color: var(--success); font-weight: bold; }
+
+        /* 4. V2C CONCEPT (NO IMAGES) */
+        .v2c-box { 
+            background: #11141d; border: 1px solid var(--gold); 
+            border-radius: 20px; padding: 40px; 
+            display: flex; gap: 40px; align-items: center;
         }
-        .controls { display: flex; gap: 10px; margin-bottom: 30px; justify-content: center; }
-        .btn-control {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 10px 25px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: 'Kanit';
-        }
-        .btn-control.active, .btn-control:hover {
-            background: var(--gold);
-            color: #000;
-            border-color: var(--gold);
-            font-weight: bold;
+        .icon-display { 
+            font-size: 4rem; width: 120px; height: 120px; 
+            background: rgba(212, 175, 55, 0.1); color: var(--gold);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
 
-        /* Tech Stack */
-        .tech-pill {
-            display: inline-block;
-            background: rgba(212, 175, 55, 0.1);
-            color: var(--gold);
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-            font-family: 'JetBrains Mono', monospace;
+        /* 5. ROADMAP */
+        .roadmap { border-left: 2px solid #333; margin-left: 20px; padding-left: 40px; }
+        .phase { position: relative; margin-bottom: 50px; }
+        .phase::before { 
+            content: ''; position: absolute; left: -49px; top: 0; 
+            width: 16px; height: 16px; background: var(--bg-dark); 
+            border: 2px solid var(--gold); border-radius: 50%; 
         }
+        .phase-title { font-size: 1.5rem; color: white; margin-bottom: 15px; }
+        .phase-tag { background: var(--gold); color: black; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; margin-bottom: 10px; display: inline-block; }
+        .task-list li { margin-bottom: 10px; color: var(--text-muted); list-style: none; display: flex; align-items: center; }
+        .task-list li::before { content: '▸'; color: var(--gold); margin-right: 10px; }
 
-        /* Responsive */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr; }
-            .stat-big { font-size: 2.5rem; }
+            .why-grid, .stats-grid, .v2c-box { grid-template-columns: 1fr; }
+            .section-title { font-size: 2rem; }
         }
     </style>
 </head>
@@ -129,189 +101,168 @@
 
 <div class="container">
     <header>
-        <div class="brand">PROJECT <span>EMPIRE</span></div>
-        <div class="mono">CONFIDENTIAL // V.2026.1</div>
+        <div>
+            <div class="mono">CONFIDENTIAL // PLATFORM DECK</div>
+            <div class="brand">PROJECT <span>EMPIRE</span></div>
+        </div>
+        <div style="text-align: right;">
+            <div class="mono">2026</div>
+            <div style="font-size: 0.9rem; color: #666;">JAN 2026</div>
+        </div>
     </header>
 
     <section>
-        <span class="mono">01 MARKET INTELLIGENCE</span>
-        <h2 class="section-title">The "Flipping Point" Has Arrived</h2>
-        <span class="section-subtitle">เมื่อ "ละครสั้น" แซงหน้า "Box Office" : สัญญาณของการเปลี่ยนแปลงถาวร</span>
-
-        <div class="grid-2">
-            <div class="card">
-                <div class="tech-pill">CHINA MARKET DATA 2024</div>
-                <h3>มูลค่าตลาดละครสั้นจีน</h3>
-                <div class="stat-big">50.5 <span style="font-size:1.5rem">พันล้านหยวน</span></div>
-                <p class="stat-desc">สูงกว่ารายได้ Box Office ภาพยนตร์ทั้งประเทศ (42.5 พันล้านหยวน) เป็นครั้งแรกในประวัติศาสตร์</p>
-                <div style="margin-top:20px; height: 6px; background: #333; border-radius:3px; overflow:hidden;">
-                    <div style="width: 100%; height: 100%; background: var(--gold);"></div>
-                </div>
-                <p class="mono" style="margin-top:10px;">Growth Rate: +300% (CAGR 2021-2024)</p>
+        <div class="why-grid">
+            <div>
+                <div class="mono">THE GOLDEN CIRCLE</div>
+                <h1 class="section-title" style="font-size: 3.5rem; line-height: 1.1;">WHY<br><span style="color:var(--gold);">NOW?</span></h1>
+                <p class="section-desc">
+                    โลกเปลี่ยนแล้ว... เงินไม่ได้หายไปไหน แต่มันย้ายจาก "โรงหนัง" ไปอยู่ใน "มือถือ"
+                    <br><br>
+                    เรากำลังยืนอยู่บนจุดเปลี่ยนผ่านครั้งประวัติศาสตร์ ที่พฤติกรรมการเสพสื่อเปลี่ยนถาวร
+                    และผู้ที่ขยับตัวก่อน (First Mover) คือผู้ที่จะกำหนดกติกาของเกมนี้
+                </p>
             </div>
-            <div class="card">
-                <div class="tech-pill">CAPITAL EFFICIENCY</div>
-                <h3>ความเร็วรอบของเงินทุน (Velocity)</h3>
-                <div class="stat-big">6-10 <span style="font-size:1.5rem">รอบ/ปี</span></div>
-                <p class="stat-desc">เทียบกับภาพยนตร์ (1 รอบ/2 ปี) ประสิทธิภาพการใช้เงินทุนสูงกว่า 10 เท่า</p>
-                
-                <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:0.8rem; color:var(--text-muted);">
-                    <span>Movie: 18 Months</span>
-                    <span>Micro-Drama: 15 Days</span>
-                </div>
-                <div style="height: 6px; background: #333; border-radius:3px; overflow:hidden; position:relative;">
-                    <div style="width: 15%; height: 100%; background: var(--border);"></div>
-                    <div style="width: 85%; height: 100%; background: var(--accent-green); position:absolute; top:0; right:0;"></div>
-                </div>
+            <div class="why-card">
+                <div class="big-quote">"ปลาเร็วกินปลาช้า<br>ไม่ใช่ปลาใหญ่กินปลาเล็ก"</div>
+                <p style="color:white;">
+                    ในขณะที่ Netflix เป็นเรือสำราญที่กลับลำยาก...<br>
+                    <strong>Project Empire คือเรือเร็ว (Speedboat)</strong> ที่คล่องตัว ต้นทุนต่ำ และเข้ายึดน่านน้ำได้ทันที
+                </p>
             </div>
         </div>
     </section>
 
     <section>
-        <span class="mono">02 EXECUTION STACK</span>
-        <h2 class="section-title">AI-Native & Asset Heavy Strategy</h2>
-        <span class="section-subtitle">ผสานเทคโนโลยี AI เข้ากับ "ทรัพย์สินที่มีอยู่จริง" เพื่อความได้เปรียบที่ไม่แฟร์ (Unfair Advantage)</span>
-
-        <div class="grid-3">
-            <div class="card">
-                <div class="tech-pill">AI & TECH STACK</div>
-                <h4>🤖 Cost Reduction Engine</h4>
-                <ul style="list-style: none; margin-top: 15px; color: var(--text-muted);">
-                    <li style="margin-bottom:10px;">✅ <strong>AI Translation & Dubbing:</strong> ใช้ Model (e.g., Quwan Qianyin) แปลจีน-ไทยใน 24 ชม. <span style="color:var(--accent-green)">ลดต้นทุน 90%</span></li>
-                    <li style="margin-bottom:10px;">✅ <strong>Visual Search API:</strong> ระบบ "Video-to-Commerce" สแกนสินค้าในฉากเพื่อขายทันที</li>
-                    <li>✅ <strong>Data-Driven Script:</strong> ใช้ AI วิเคราะห์พล็อตที่ "แมส" ในจีน เพื่อปรับปรุงบทไทย</li>
-                </ul>
+        <div class="section-header">
+            <h2 class="section-title">The Market Shift</h2>
+            <p class="section-desc">ตัวเลขไม่เคยโกหก นี่คือสถิติตลาดจีนปี 2024 ที่ยืนยันว่าเรามาถูกทาง</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-num">50.5B</div>
+                <div class="stat-label">RMB Market Size</div>
+                <p style="font-size:0.8rem; color:#666; margin-top:5px;">แซงหน้า Box Office หนังโรงเป็นครั้งแรก</p>
             </div>
-
-            <div class="card">
-                <div class="tech-pill">REAL ESTATE PORTFOLIO</div>
-                <h4>🏰 Asset Utilization Strategy</h4>
-                <p style="color: var(--text-muted); margin-top: 10px;">เปลี่ยน Cost ให้เป็น Value ด้วยการใช้ Portfolio อสังหาฯ ของ Partner (P'Cheng & Sunny):</p>
-                <ul style="list-style: none; margin-top: 10px; font-size: 0.9rem;">
-                    <li>• Luxury Mansions → ฉากบ้านเศรษฐี/ตระกูลมาเฟีย</li>
-                    <li>• Showrooms/Offices → ฉากออฟฟิศประธาน</li>
-                    <li>• <span style="color:var(--gold)">Benefit:</span> ลดค่าเช่ากองถ่าย 100% และเปลี่ยนทรัพย์สินรอขายให้เป็น Media Exposure</li>
-                </ul>
+            <div class="stat-box">
+                <div class="stat-num">300%</div>
+                <div class="stat-label">Yearly Growth</div>
+                <p style="font-size:0.8rem; color:#666; margin-top:5px;">โตเร็วที่สุดในอุตสาหกรรมบันเทิง</p>
             </div>
-
-            <div class="card">
-                <div class="tech-pill">KEY TALENT</div>
-                <h4>👩🏻‍💼 Sunny (Strategic Partner)</h4>
-                <p style="color: var(--text-muted); margin-top: 10px;">ไม่ใช่แค่ดารา แต่คือ "Super Connector" และ "Sales Channel":</p>
-                <ul style="list-style: none; margin-top: 10px; font-size: 0.9rem;">
-                    <li>• <strong>Image:</strong> Fashionista & Boss Lady (ดึงดูดสินค้า Luxury/Fashion)</li>
-                    <li>• <strong>Trust:</strong> Connection ระดับ High-End ช่วยดีลแบรนด์สินค้าเข้าแอป</li>
-                    <li>• <strong>Content:</strong> ตรงกับพล็อต Spirit Detective (สวย+เท่+มูเตลู)</li>
-                </ul>
+            <div class="stat-box">
+                <div class="stat-num">x10</div>
+                <div class="stat-label">Capital Velocity</div>
+                <p style="font-size:0.8rem; color:#666; margin-top:5px;">รอบหมุนเงินเร็วกว่าหนังใหญ่ 10 เท่า</p>
             </div>
         </div>
     </section>
 
     <section>
-        <span class="mono">03 FINANCIAL PROJECTION</span>
-        <h2 class="section-title">Investment Matrix Simulation</h2>
-        <span class="section-subtitle">จำลองผลตอบแทนตามสถานการณ์จริง (กดเลือก Scenario เพื่อประเมินความเสี่ยง)</span>
+        <div class="section-header">
+            <h2 class="section-title">Our Strategy</h2>
+            <p class="section-desc">เราใช้ AI และ Asset ที่มีอยู่แล้ว (อสังหาฯ + Connection) เพื่อสร้างความได้เปรียบที่ไม่แฟร์ (Unfair Advantage)</p>
+        </div>
+        <table class="strategy-table">
+            <thead>
+                <tr>
+                    <th>COMPARISON</th>
+                    <th>🎬 OLD WORLD (หนังโรง/ละครยาว)</th>
+                    <th style="color: white; border-bottom: 3px solid var(--gold);">🚀 NEW WORLD (Project Empire)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Cost Structure</strong></td>
+                    <td>ทุนจม 10-100 ล้านบาท</td>
+                    <td class="highlight">ทุนต่ำ 2-3 ล้าน (ใช้ AI + สถานที่ฟรี)</td>
+                </tr>
+                <tr>
+                    <td><strong>Production Time</strong></td>
+                    <td>6 - 18 เดือน</td>
+                    <td class="highlight">7 - 15 วัน (พร้อมขาย)</td>
+                </tr>
+                <tr>
+                    <td><strong>Revenue Model</strong></td>
+                    <td>ขายตั๋วครั้งเดียวจบ</td>
+                    <td class="highlight">กินรวบ 3 ทาง (ค่าดู + โฆษณา + ขายของ)</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 
-        <div class="matrix-container">
-            <div class="controls">
-                <button class="btn-control" onclick="updateData('conservative')">Conservative</button>
-                <button class="btn-control active" onclick="updateData('base')">Base Case</button>
-                <button class="btn-control" onclick="updateData('aggressive')">Viral Case</button>
-            </div>
-
-            <div class="grid-3" style="text-align: center;">
-                <div>
-                    <div style="font-size:0.9rem; color:var(--text-muted);">Total Revenue / Month</div>
-                    <div class="stat-big" id="revVal">฿4.5M</div>
-                    <div class="mono" id="revSource">Ads + Sub + Commerce</div>
-                </div>
-                <div>
-                    <div style="font-size:0.9rem; color:var(--text-muted);">Break-Even Point</div>
-                    <div class="stat-big" id="roiVal" style="color:var(--accent-green);">45 Days</div>
-                    <div class="mono">Fast Turnover</div>
-                </div>
-                <div>
-                    <div style="font-size:0.9rem; color:var(--text-muted);">Active Users</div>
-                    <div class="stat-big" id="userVal">500K</div>
-                    <div class="mono">Traffic Matrix Strategy</div>
-                </div>
-            </div>
-            
-            <p style="margin-top: 20px; font-size: 0.8rem; color: #555; text-align: center;">
-                *Calculated based on Hybrid Model (Subscription 40% + Ad Revenue 30% + Affiliate Commerce 30%). Data benchmarked against 2024 Industry Standards.
+    <section>
+        <div class="section-header">
+            <div class="mono">THE MONEY MACHINE</div>
+            <h2 class="section-title">Video-to-Commerce (V2C)</h2>
+            <p class="section-desc">
+                นี่คือหัวใจสำคัญ... เราไม่ได้แค่ทำแอปดูหนัง แต่เราทำ <strong>"ห้างสรรพสินค้าที่มีความบันเทิง"</strong>
             </p>
         </div>
+
+        <div class="v2c-box">
+            <div style="text-align: center;">
+                <div class="icon-display">🛍️</div>
+                <div style="margin-top:20px; font-weight:bold; color:var(--gold);">ZERO INVENTORY</div>
+            </div>
+            <div>
+                <h3 style="color:white; margin-bottom:15px;">The Mechanism:</h3>
+                <ul style="color: var(--text-muted); line-height: 1.8;">
+                    <li>1. คนดูเห็น <strong>"ชุดซันนี่"</strong> หรือ <strong>"กำไลมูเตลู"</strong> ในฉาก</li>
+                    <li>2. AI สแกนสินค้าแล้วเด้งปุ่ม <strong>"ซื้อเลย"</strong> ขึ้นมาทันที</li>
+                    <li>3. ระบบส่งคนไป Shopee/TikTok Shop โดยอัตโนมัติ</li>
+                    <li>4. <strong>เรารับค่าคอมมิชชั่น 20% ฟรีๆ</strong> โดยไม่ต้องสต็อกของแม้แต่ชิ้นเดียว</li>
+                </ul>
+                <div style="margin-top:20px; padding:15px; background:rgba(0,230,118,0.1); border-left:3px solid var(--success); color:var(--success);">
+                    💡 <strong>Profit Case:</strong> ขายชุด 9,000 บาท (ค่าคอม 1,800) = กำไรเท่ากับคนดูหนัง 600 ตอน!
+                </div>
+            </div>
+        </div>
     </section>
 
     <section>
-        <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border-radius: 16px; padding: 40px; text-align: center; border: 1px solid var(--border);">
-            <h2 style="font-size: 2rem; color: #fff;">The Strategic Window is Closing</h2>
-            <p style="color: var(--text-muted); margin: 20px auto; max-width: 600px;">
-                ข้อมูลล่าสุด: แพลตฟอร์มจีน (DramaBox, ReelShort) เริ่มทดลองตลาดไทยแล้ว และ Netflix กำลังซุ่มทำ Vertical Content.
-                <br><br>
-                <span style="color: var(--gold); font-size: 1.2rem; font-weight: bold;">"First Mover Takes All"</span>
-            </p>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; margin: 40px auto; max-width: 800px; position: relative;">
-                <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: #333; z-index: 0;"></div>
-                
-                <div style="background: var(--bg-dark); border: 2px solid var(--gold); padding: 10px 20px; z-index: 1; border-radius: 20px;">
-                    <div style="font-weight: bold; color: var(--gold);">NOW</div>
-                    <div style="font-size: 0.8rem;">Blue Ocean</div>
-                </div>
-                
-                <div style="background: var(--bg-dark); border: 2px solid #555; padding: 10px 20px; z-index: 1; border-radius: 20px;">
-                    <div style="font-weight: bold; color: #aaa;">Q2 2026</div>
-                    <div style="font-size: 0.8rem;">Giant Entry</div>
-                </div>
-                
-                <div style="background: var(--bg-dark); border: 2px solid #555; padding: 10px 20px; z-index: 1; border-radius: 20px;">
-                    <div style="font-weight: bold; color: #aaa;">Q4 2026</div>
-                    <div style="font-size: 0.8rem;">Red Ocean</div>
-                </div>
+        <div class="section-header">
+            <h2 class="section-title">Roadmap 2026</h2>
+            <p class="section-desc">แผนงานละเอียด: เราจะทำอะไร? และใครรับผิดชอบ?</p>
+        </div>
+
+        <div class="roadmap">
+            <div class="phase">
+                <div class="phase-tag">PHASE 1: MONTH 1-2</div>
+                <h3 class="phase-title">Foundation & Setup</h3>
+                <ul class="task-list">
+                    <li><strong>TEEM:</strong> Setup Tech Team & AI Translation API (เตรียมระบบแปลภาษา)</li>
+                    <li><strong>NANA:</strong> ดีลลิขสิทธิ์หนังจีน 100 เรื่องแรก (เตรียม Content Stock)</li>
+                    <li><strong>SUNNY:</strong> เตรียมกองถ่าย "Spirit Detective" & เลือกสินค้า V2C (เตรียมผลิต)</li>
+                </ul>
             </div>
 
-            <p class="mono" style="opacity: 0.7;">Project Empire Ready for Execution.</p>
+            <div class="phase">
+                <div class="phase-tag">PHASE 2: MONTH 3-4</div>
+                <h3 class="phase-title">Launch & Monetize</h3>
+                <ul class="task-list">
+                    <li><strong>MARKETING:</strong> เปิดตัว APP + ยิง TikTok Matrix 10 ช่อง (หาลูกค้าฟรี)</li>
+                    <li><strong>PRODUCTION:</strong> เปิดกล้องถ่ายทำที่ The Palm (ใช้ Asset สร้างมูลค่า)</li>
+                    <li><strong>COMMERCE:</strong> เริ่มระบบ Affiliate V2C ล็อตแรก (เริ่มเก็บเงิน)</li>
+                </ul>
+            </div>
+
+            <div class="phase">
+                <div class="phase-tag">PHASE 3: MONTH 5+</div>
+                <h3 class="phase-title">Scale & Export</h3>
+                <ul class="task-list">
+                    <li><strong>EXPORT:</strong> ส่งออกหนังไทยกลับไปขายจีน (กินกำไร 2 ต่อ)</li>
+                    <li><strong>FINANCE:</strong> เตรียมตัวเลขเพื่อระดมทุน Series A (Valuation 100M+)</li>
+                </ul>
+            </div>
         </div>
     </section>
+
+    <footer style="border-top: 1px solid #222; padding-top: 40px; color: #555; text-align: center;">
+        <p class="mono">PROJECT EMPIRE © 2026</p>
+        <p style="font-size: 0.9rem; margin-top: 10px;">Investment Opportunity for P'Cheng</p>
+    </footer>
 
 </div>
-
-<script>
-    function updateData(scenario) {
-        // Reset active state
-        document.querySelectorAll('.btn-control').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-
-        const data = {
-            conservative: { rev: "฿850K", roi: "6 Months", users: "100K", source: "Mainly Ads" },
-            base: { rev: "฿4.5M", roi: "45 Days", users: "500K", source: "Ads + Sub + Commerce" },
-            aggressive: { rev: "฿20M+", roi: "15 Days", users: "1.5M+", source: "Viral Hit + High Commerce" }
-        };
-
-        const d = data[scenario];
-        
-        // Simple animation effect
-        const elements = ['revVal', 'roiVal', 'userVal', 'revSource'];
-        elements.forEach(id => {
-            const el = document.getElementById(id);
-            el.style.opacity = '0';
-            setTimeout(() => {
-                if(id === 'revVal') el.innerText = d.rev;
-                if(id === 'roiVal') el.innerText = d.roi;
-                if(id === 'userVal') el.innerText = d.users;
-                if(id === 'revSource') el.innerText = d.source;
-                
-                // Color logic
-                if (scenario === 'conservative') document.getElementById('revVal').style.color = '#94A3B8';
-                else if (scenario === 'aggressive') document.getElementById('revVal').style.color = '#10B981';
-                else document.getElementById('revVal').style.color = '#D4AF37';
-
-                el.style.opacity = '1';
-            }, 200);
-        });
-    }
-</script>
 
 </body>
 </html>
