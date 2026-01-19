@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROJECT EMPIRE: The Platform</title>
+    <title>PROJECT EMPIRE: โอกาสทางธุรกิจแพลตฟอร์มละครสั้น</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;800&family=Sarabun:wght@300;400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,6 +15,7 @@
             --text-muted: #90A4AE;
             --accent: #29B6F6;
             --success: #00E676;
+            --danger: #FF3D00;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,7 +37,7 @@
         .brand span { color: var(--gold); }
 
         /* SECTION STYLES */
-        section { margin-bottom: 100px; }
+        section { margin-bottom: 100px; position: relative; }
         .section-header { margin-bottom: 40px; }
         .section-title { font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 10px; }
         .section-desc { font-size: 1.2rem; color: var(--text-muted); max-width: 800px; }
@@ -65,35 +66,59 @@
         .strategy-table td { padding: 20px; border-bottom: 1px solid #333; }
         .highlight { color: var(--success); font-weight: bold; }
 
-        /* 4. V2C CONCEPT (NO IMAGES) */
-        .v2c-box { 
-            background: #11141d; border: 1px solid var(--gold); 
-            border-radius: 20px; padding: 40px; 
-            display: flex; gap: 40px; align-items: center;
+        /* 4. V2C CONCEPT (INTERACTIVE MOCKUP) */
+        .v2c-section { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; }
+        .mockup-container { 
+            position: relative; width: 300px; height: 600px; margin: 0 auto;
+            background: #000; border-radius: 40px; border: 8px solid #333; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            cursor: pointer;
         }
-        .icon-display { 
-            font-size: 4rem; width: 120px; height: 120px; 
-            background: rgba(212, 175, 55, 0.1); color: var(--gold);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        .mockup-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease; position: absolute; top: 0; left: 0; }
+        .click-hint {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.6); color: white; padding: 8px 16px; border-radius: 20px;
+            font-size: 0.8rem; pointer-events: none; border: 1px solid rgba(255,255,255,0.3);
+            z-index: 10;
         }
 
-        /* 5. ROADMAP */
-        .roadmap { border-left: 2px solid #333; margin-left: 20px; padding-left: 40px; }
-        .phase { position: relative; margin-bottom: 50px; }
-        .phase::before { 
-            content: ''; position: absolute; left: -49px; top: 0; 
-            width: 16px; height: 16px; background: var(--bg-dark); 
-            border: 2px solid var(--gold); border-radius: 50%; 
+        /* 5. LOCKED CONTENT (MODAL) */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.9); backdrop-filter: blur(8px);
         }
-        .phase-title { font-size: 1.5rem; color: white; margin-bottom: 15px; }
-        .phase-tag { background: var(--gold); color: black; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; margin-bottom: 10px; display: inline-block; }
-        .task-list li { margin-bottom: 10px; color: var(--text-muted); list-style: none; display: flex; align-items: center; }
-        .task-list li::before { content: '▸'; color: var(--gold); margin-right: 10px; }
+        .modal-content {
+            background: linear-gradient(145deg, #1a1f2e, #0f1219);
+            margin: 10% auto; padding: 40px; border: 1px solid var(--gold);
+            width: 90%; max-width: 500px; text-align: center; border-radius: 16px;
+            position: relative; box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+        }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-btn:hover { color: white; }
+        .modal-icon { font-size: 4rem; margin-bottom: 20px; display: block; }
+        .modal-title { color: var(--gold); margin-bottom: 15px; font-size: 1.5rem; }
+        .modal-desc { color: var(--text-muted); margin-bottom: 30px; }
+        .modal-action {
+            display: inline-block; background: var(--gold); color: black;
+            padding: 12px 30px; border-radius: 30px; text-decoration: none;
+            font-weight: bold; font-family: 'Kanit'; transition: 0.3s;
+        }
+        .modal-action:hover { transform: scale(1.05); background: #fff; }
+        
+        .locked-section { filter: blur(10px); pointer-events: none; user-select: none; opacity: 0.5; }
+        .lock-overlay-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 10; cursor: pointer;
+            background: rgba(0,0,0,0.8); border: 1px solid var(--gold); color: var(--gold);
+            padding: 15px 30px; border-radius: 8px; font-weight: bold;
+            display: flex; align-items: center; gap: 10px;
+        }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .why-grid, .stats-grid, .v2c-box { grid-template-columns: 1fr; }
+            .why-grid, .stats-grid, .v2c-section { grid-template-columns: 1fr; }
             .section-title { font-size: 2rem; }
+            .mockup-container { height: 500px; width: 250px; }
         }
     </style>
 </head>
@@ -102,32 +127,31 @@
 <div class="container">
     <header>
         <div>
-            <div class="mono">CONFIDENTIAL // PLATFORM DECK</div>
+            <div class="mono">เอกสารลับเฉพาะ // สำหรับนักลงทุน</div>
             <div class="brand">PROJECT <span>EMPIRE</span></div>
         </div>
         <div style="text-align: right;">
             <div class="mono">2026</div>
-            <div style="font-size: 0.9rem; color: #666;">JAN 2026</div>
+            <div style="font-size: 0.9rem; color: #666;">แพลตฟอร์มละครสั้นแนวตั้ง</div>
         </div>
     </header>
 
     <section>
         <div class="why-grid">
             <div>
-                <div class="mono">THE GOLDEN CIRCLE</div>
-                <h1 class="section-title" style="font-size: 3.5rem; line-height: 1.1;">WHY<br><span style="color:var(--gold);">NOW?</span></h1>
+                <div class="mono">THE OPPORTUNITY</div>
+                <h1 class="section-title" style="font-size: 3.5rem; line-height: 1.1;">ทำไมต้อง<br><span style="color:var(--gold);">ตอนนี้?</span></h1>
                 <p class="section-desc">
                     โลกเปลี่ยนแล้ว... เงินไม่ได้หายไปไหน แต่มันย้ายจาก "โรงหนัง" ไปอยู่ใน "มือถือ"
                     <br><br>
-                    เรากำลังยืนอยู่บนจุดเปลี่ยนผ่านครั้งประวัติศาสตร์ ที่พฤติกรรมการเสพสื่อเปลี่ยนถาวร
-                    และผู้ที่ขยับตัวก่อน (First Mover) คือผู้ที่จะกำหนดกติกาของเกมนี้
+                    เรากำลังยืนอยู่บนจุดเปลี่ยนผ่านครั้งประวัติศาสตร์ จากยุค "หนังโรงแนวนอน" สู่ยุค "ละครสั้นแนวตั้ง" ผู้ที่ขยับตัวก่อน (First Mover) คือผู้ที่จะกำหนดกติกาของเกมนี้
                 </p>
             </div>
             <div class="why-card">
                 <div class="big-quote">"ปลาเร็วกินปลาช้า<br>ไม่ใช่ปลาใหญ่กินปลาเล็ก"</div>
                 <p style="color:white;">
-                    ในขณะที่ Netflix เป็นเรือสำราญที่กลับลำยาก...<br>
-                    <strong>Project Empire คือเรือเร็ว (Speedboat)</strong> ที่คล่องตัว ต้นทุนต่ำ และเข้ายึดน่านน้ำได้ทันที
+                    ในขณะที่แพลตฟอร์มยักษ์ใหญ่ยังขยับตัวช้า...<br>
+                    <strong>Project Empire คือเรือเร็ว (Speedboat)</strong> ที่ออกแบบมาเพื่อยึดครองตลาดละครสั้นแนวตั้งได้ทันที
                 </p>
             </div>
         </div>
@@ -135,54 +159,54 @@
 
     <section>
         <div class="section-header">
-            <h2 class="section-title">The Market Shift</h2>
-            <p class="section-desc">ตัวเลขไม่เคยโกหก นี่คือสถิติตลาดจีนปี 2024 ที่ยืนยันว่าเรามาถูกทาง</p>
+            <h2 class="section-title">จุดเปลี่ยนของตลาด (The Market Shift)</h2>
+            <p class="section-desc">ตัวเลขจากจีนปี 2024 ยืนยันว่าเทรนด์นี้คือ "อนาคต" ที่หลีกเลี่ยงไม่ได้</p>
         </div>
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-num">50.5B</div>
-                <div class="stat-label">RMB Market Size</div>
-                <p style="font-size:0.8rem; color:#666; margin-top:5px;">แซงหน้า Box Office หนังโรงเป็นครั้งแรก</p>
+                <div class="stat-label">มูลค่าตลาด (หยวน)</div>
+                <p style="font-size:0.8rem; color:#666; margin-top:5px;">แซงหน้า Box Office หนังโรงเป็นครั้งแรกในประวัติศาสตร์</p>
             </div>
             <div class="stat-box">
                 <div class="stat-num">300%</div>
-                <div class="stat-label">Yearly Growth</div>
-                <p style="font-size:0.8rem; color:#666; margin-top:5px;">โตเร็วที่สุดในอุตสาหกรรมบันเทิง</p>
+                <div class="stat-label">อัตราการเติบโตรายปี</div>
+                <p style="font-size:0.8rem; color:#666; margin-top:5px;">สูงที่สุดในอุตสาหกรรมบันเทิงทั้งหมด</p>
             </div>
             <div class="stat-box">
                 <div class="stat-num">x10</div>
-                <div class="stat-label">Capital Velocity</div>
-                <p style="font-size:0.8rem; color:#666; margin-top:5px;">รอบหมุนเงินเร็วกว่าหนังใหญ่ 10 เท่า</p>
+                <div class="stat-label">ความเร็วในการหมุนเงิน</div>
+                <p style="font-size:0.8rem; color:#666; margin-top:5px;">รอบการคืนทุนเร็วกว่าหนังใหญ่ถึง 10 เท่า</p>
             </div>
         </div>
     </section>
 
     <section>
         <div class="section-header">
-            <h2 class="section-title">Our Strategy</h2>
-            <p class="section-desc">เราใช้ AI และ Asset ที่มีอยู่แล้ว (อสังหาฯ + Connection) เพื่อสร้างความได้เปรียบที่ไม่แฟร์ (Unfair Advantage)</p>
+            <h2 class="section-title">ความได้เปรียบทางกลยุทธ์</h2>
+            <p class="section-desc">เราใช้ AI และสินทรัพย์ที่มีอยู่ เพื่อสร้างความได้เปรียบที่ไม่แฟร์ (Unfair Advantage)</p>
         </div>
         <table class="strategy-table">
             <thead>
                 <tr>
-                    <th>COMPARISON</th>
-                    <th>🎬 OLD WORLD (หนังโรง/ละครยาว)</th>
-                    <th style="color: white; border-bottom: 3px solid var(--gold);">🚀 NEW WORLD (Project Empire)</th>
+                    <th>ตัวชี้วัด</th>
+                    <th>🎬 โลกเก่า (Traditional)</th>
+                    <th style="color: white; border-bottom: 3px solid var(--gold);">🚀 PROJECT EMPIRE (โลกใหม่)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>Cost Structure</strong></td>
-                    <td>ทุนจม 10-100 ล้านบาท</td>
-                    <td class="highlight">ทุนต่ำ 2-3 ล้าน (ใช้ AI + สถานที่ฟรี)</td>
+                    <td><strong>โครงสร้างต้นทุน</strong></td>
+                    <td>เสี่ยงสูง (10-100 ล้านบาท)</td>
+                    <td class="highlight">เสี่ยงต่ำ (2-3 ล้านบาท ด้วย AI + Asset เดิม)</td>
                 </tr>
                 <tr>
-                    <td><strong>Production Time</strong></td>
+                    <td><strong>ระยะเวลาผลิต</strong></td>
                     <td>6 - 18 เดือน</td>
                     <td class="highlight">7 - 15 วัน (พร้อมขาย)</td>
                 </tr>
                 <tr>
-                    <td><strong>Revenue Model</strong></td>
+                    <td><strong>โมเดลรายได้</strong></td>
                     <td>ขายตั๋วครั้งเดียวจบ</td>
                     <td class="highlight">กินรวบ 3 ทาง (ค่าดู + โฆษณา + ขายของ)</td>
                 </tr>
@@ -194,75 +218,100 @@
         <div class="section-header">
             <div class="mono">THE MONEY MACHINE</div>
             <h2 class="section-title">Video-to-Commerce (V2C)</h2>
-            <p class="section-desc">
-                นี่คือหัวใจสำคัญ... เราไม่ได้แค่ทำแอปดูหนัง แต่เราทำ <strong>"ห้างสรรพสินค้าที่มีความบันเทิง"</strong>
-            </p>
+            <p class="section-desc">เปลี่ยน "คนดู" ให้เป็น "คนซื้อ" ในเสี้ยววินาที</p>
         </div>
 
-        <div class="v2c-box">
-            <div style="text-align: center;">
-                <div class="icon-display">🛍️</div>
-                <div style="margin-top:20px; font-weight:bold; color:var(--gold);">ZERO INVENTORY</div>
+        <div class="v2c-section">
+            <div class="mockup-container" onclick="toggleV2C()">
+                <img id="v2cScreen" src="IMG_4418.jpeg" alt="Pause Screen" class="mockup-img">
+                <div class="click-hint">👆 แตะเพื่อดูสินค้า</div>
             </div>
+
             <div>
-                <h3 style="color:white; margin-bottom:15px;">The Mechanism:</h3>
-                <ul style="color: var(--text-muted); line-height: 1.8;">
-                    <li>1. คนดูเห็น <strong>"ชุดซันนี่"</strong> หรือ <strong>"กำไลมูเตลู"</strong> ในฉาก</li>
-                    <li>2. AI สแกนสินค้าแล้วเด้งปุ่ม <strong>"ซื้อเลย"</strong> ขึ้นมาทันที</li>
-                    <li>3. ระบบส่งคนไป Shopee/TikTok Shop โดยอัตโนมัติ</li>
-                    <li>4. <strong>เรารับค่าคอมมิชชั่น 20% ฟรีๆ</strong> โดยไม่ต้องสต็อกของแม้แต่ชิ้นเดียว</li>
+                <h3 style="color:white; margin-bottom:15px;">ไม่ต้องสต็อกของ กำไรเน้นๆ</h3>
+                <ul style="color: var(--text-muted); line-height: 1.8; list-style: none;">
+                    <li style="margin-bottom: 15px;">🛍️ <strong>ระบบ AI อัจฉริยะ:</strong> สแกนเจอสินค้าในฉากทันที (เสื้อผ้า/ไลฟ์สไตล์)</li>
+                    <li style="margin-bottom: 15px;">⚡ <strong>ซื้อง่ายจ่ายคล่อง:</strong> กดปุ่มเดียวเด้งไปซื้อได้เลย (Affiliate Links)</li>
+                    <li style="margin-bottom: 15px;">💰 <strong>กำไรล้วนๆ:</strong> รับค่าคอมมิชชั่น 15-20% ฟรีๆ โดยไม่ต้องแบกสต็อก</li>
                 </ul>
                 <div style="margin-top:20px; padding:15px; background:rgba(0,230,118,0.1); border-left:3px solid var(--success); color:var(--success);">
-                    💡 <strong>Profit Case:</strong> ขายชุด 9,000 บาท (ค่าคอม 1,800) = กำไรเท่ากับคนดูหนัง 600 ตอน!
+                    💡 <strong>Profit Case:</strong> ขายชุด 1 ตัว ราคา 9,000 บาท (ค่าคอมฯ 1,800) = กำไรเท่ากับคนดูหนัง 600 ตอน!
                 </div>
             </div>
         </div>
     </section>
 
-    <section>
-        <div class="section-header">
-            <h2 class="section-title">Roadmap 2026</h2>
-            <p class="section-desc">แผนงานละเอียด: เราจะทำอะไร? และใครรับผิดชอบ?</p>
+    <section style="margin-top: 150px; position: relative;">
+        <div class="locked-section">
+            <div class="section-header">
+                <h2 class="section-title">งานวิจัยและแผนงาน (Roadmap)</h2>
+                <p class="section-desc">แผนการดำเนินงานละเอียด, การคาดการณ์ทางการเงิน และข้อมูลแหล่งซัพพลายเออร์ลับ</p>
+            </div>
+            <div style="background: var(--bg-panel); height: 300px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                <p style="color: #333; font-size: 2rem; font-weight: bold;">CONFIDENTIAL DATA</p>
+            </div>
         </div>
 
-        <div class="roadmap">
-            <div class="phase">
-                <div class="phase-tag">PHASE 1: MONTH 1-2</div>
-                <h3 class="phase-title">Foundation & Setup</h3>
-                <ul class="task-list">
-                    <li><strong>TEEM:</strong> Setup Tech Team & AI Translation API (เตรียมระบบแปลภาษา)</li>
-                    <li><strong>NANA:</strong> ดีลลิขสิทธิ์หนังจีน 100 เรื่องแรก (เตรียม Content Stock)</li>
-                    <li><strong>SUNNY:</strong> เตรียมกองถ่าย "Spirit Detective" & เลือกสินค้า V2C (เตรียมผลิต)</li>
-                </ul>
-            </div>
-
-            <div class="phase">
-                <div class="phase-tag">PHASE 2: MONTH 3-4</div>
-                <h3 class="phase-title">Launch & Monetize</h3>
-                <ul class="task-list">
-                    <li><strong>MARKETING:</strong> เปิดตัว APP + ยิง TikTok Matrix 10 ช่อง (หาลูกค้าฟรี)</li>
-                    <li><strong>PRODUCTION:</strong> เปิดกล้องถ่ายทำที่ The Palm (ใช้ Asset สร้างมูลค่า)</li>
-                    <li><strong>COMMERCE:</strong> เริ่มระบบ Affiliate V2C ล็อตแรก (เริ่มเก็บเงิน)</li>
-                </ul>
-            </div>
-
-            <div class="phase">
-                <div class="phase-tag">PHASE 3: MONTH 5+</div>
-                <h3 class="phase-title">Scale & Export</h3>
-                <ul class="task-list">
-                    <li><strong>EXPORT:</strong> ส่งออกหนังไทยกลับไปขายจีน (กินกำไร 2 ต่อ)</li>
-                    <li><strong>FINANCE:</strong> เตรียมตัวเลขเพื่อระดมทุน Series A (Valuation 100M+)</li>
-                </ul>
-            </div>
+        <div class="lock-overlay-btn" onclick="openModal()">
+            <span style="font-size: 1.5rem;">🔒</span>
+            <span>เข้าถึงข้อมูลเชิงลึก</span>
         </div>
     </section>
 
-    <footer style="border-top: 1px solid #222; padding-top: 40px; color: #555; text-align: center;">
+    <footer style="border-top: 1px solid #222; padding-top: 40px; color: #555; text-align: center; margin-top: 50px;">
         <p class="mono">PROJECT EMPIRE © 2026</p>
-        <p style="font-size: 0.9rem; margin-top: 10px;">Investment Opportunity for P'Cheng</p>
+        <p style="font-size: 0.9rem; margin-top: 10px;">Investment Opportunity</p>
     </footer>
 
 </div>
+
+<div id="secretModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <span class="modal-icon">🔒</span>
+        <h2 class="modal-title">
+            <span class="lang-content active">เอกสารลับเฉพาะ (CONFIDENTIAL)</span>
+        </h2>
+        <p class="modal-desc">
+            เอกสารส่วนนี้ประกอบด้วยความลับทางการค้า, แผนการเงินเชิงลึก และกลยุทธ์การจัดหาแหล่งผลิตหลัก
+            <br><br>
+            กรุณานัดหมายการประชุมเพื่อรับฟังแผนงานฉบับสมบูรณ์
+        </p>
+        <a href="https://line.me/ti/p/~teemclover" target="_blank" class="modal-action">
+            นัดหมายการประชุม
+        </a>
+    </div>
+</div>
+
+<script>
+    // V2C Toggle Logic
+    let isProduct = false;
+    function toggleV2C() {
+        const img = document.getElementById('v2cScreen');
+        if (!isProduct) {
+            img.src = 'IMG_4419.jpeg'; // Link Product Screen
+            isProduct = true;
+        } else {
+            img.src = 'IMG_4418.jpeg'; // Pause Screen
+            isProduct = false;
+        }
+    }
+
+    // Modal Logic
+    function openModal() {
+        document.getElementById('secretModal').style.display = 'block';
+    }
+    function closeModal() {
+        document.getElementById('secretModal').style.display = 'none';
+    }
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('secretModal');
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
 
 </body>
 </html>
