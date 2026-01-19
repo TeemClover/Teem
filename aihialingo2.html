@@ -1,98 +1,603 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<style>
-    body { font-family: 'Sarabun', sans-serif; background-color: #1a1a1a; color: #e0e0e0; padding: 20px; }
-    h2 { color: #ff4d4d; border-bottom: 2px solid #ff4d4d; padding-bottom: 10px; }
-    .card { background-color: #2d2d2d; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #ff9900; }
-    .hanzi { font-size: 2em; font-weight: bold; color: #ffcc00; margin-right: 10px; }
-    .pinyin { color: #888; font-style: italic; font-size: 0.9em; }
-    .meaning { font-weight: bold; color: #fff; display: block; margin-top: 5px; }
-    .trick { background-color: #333; padding: 8px; border-radius: 4px; margin-top: 10px; font-size: 0.9em; border: 1px dashed #555; }
-    .category { font-size: 0.8em; text-transform: uppercase; color: #aaa; letter-spacing: 1px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIHIA'S HOK BIBLE: คัมภีร์ตบเกรียนจีน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f0f13;
+            --card-bg: #1e1e24;
+            --text-main: #e2e2e2;
+            --text-sub: #a0a0a0;
+            --accent-red: #ff4757; /* Attack/Danger */
+            --accent-blue: #1e90ff; /* Magic/Mana */
+            --accent-green: #2ed573; /* HP/Heal */
+            --accent-yellow: #ffa502; /* Physical/Gold */
+            --accent-purple: #a55eea; /* Special/Buff */
+            --border-rad: 8px;
+        }
+
+        body {
+            font-family: 'Sarabun', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 3px solid var(--accent-red);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 span { color: #fff; }
+
+        .subtitle {
+            color: var(--text-sub);
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        /* Navigation / TOC */
+        .toc {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-rad);
+            margin-bottom: 40px;
+            border: 1px solid #333;
+        }
+        .toc h3 { margin-top: 0; color: var(--accent-yellow); }
+        .toc ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+        .toc li a {
+            text-decoration: none;
+            color: var(--bg-color);
+            background: var(--text-sub);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .toc li a:hover { background: var(--accent-red); color: white; }
+
+        /* Section Styling */
+        section { margin-bottom: 60px; }
+        h2 {
+            border-left: 5px solid var(--accent-red);
+            padding-left: 15px;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Card Styling */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-rad);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+            border: 1px solid #333;
+        }
+        
+        .card:hover { transform: translateY(-5px); border-color: var(--accent-yellow); }
+
+        .hanzi-box {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .hanzi {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 15px;
+        }
+
+        .pinyin {
+            font-family: monospace;
+            color: var(--accent-yellow);
+            font-size: 1rem;
+        }
+
+        .meaning {
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .logic {
+            font-size: 0.95rem;
+            color: #ccc;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .logic strong { color: var(--accent-red); }
+        
+        /* Color Coding Classes */
+        .type-atk .hanzi { color: var(--accent-red); }
+        .type-mag .hanzi { color: var(--accent-blue); }
+        .type-def .hanzi { color: var(--accent-green); }
+        .type-mov .hanzi { color: var(--accent-purple); }
+
+        /* Complex Sentence Breakdowns */
+        .sentence-box {
+            background: #252530;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: var(--border-rad);
+            border-left: 4px solid var(--accent-purple);
+        }
+        .chinese-sent { font-size: 1.5rem; color: #fff; margin-bottom: 10px; letter-spacing: 1px; }
+        .breakdown { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+        .word-chunk {
+            background: #111;
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-align: center;
+            min-width: 60px;
+        }
+        .wc-hanzi { display: block; color: var(--accent-yellow); font-size: 1.1rem; }
+        .wc-mean { display: block; font-size: 0.8rem; color: #aaa; }
+        .full-trans { color: var(--accent-green); font-style: italic; font-weight: bold; border-top: 1px dashed #444; padding-top: 10px; }
+
+    </style>
 </head>
 <body>
 
-<h2>🔥 AIHIALINGO: ศัพท์ HoK ฉบับคนจริง</h2>
-<p>กดดูแล้วจำ อย่าให้กูต้องสอนซ้ำ</p>
+<header>
+    <h1>AIHIA <span>HOK GRIMOIRE</span></h1>
+    <div class="subtitle">คัมภีร์ล้างบางภาษาจีนฉบับคนเถื่อน (Visual & Semantic Decoding)</div>
+    <p style="color: #666; font-size: 0.8rem;">[SYSTEM NOTE: อ่านให้ตาแฉะ แล้วไปแบกทีมซะ]</p>
+</header>
 
-<div class="card">
-    <span class="category">ค่าพลัง (Stats)</span>
-    <div>
-        <span class="hanzi">攻击</span> <span class="pinyin">(Gōngjī)</span>
-    </div>
-    <span class="meaning">โจมตี (Attack)</span>
-    <div class="trick">
-        💡 <b>ทริคจำ:</b> เห็นตัว <b>击</b> (Jī) มั้ย? หน้าตามันเหมือนเป้าเล็งปืน หรือโดนผ่ากลาง แปลว่า "การกระแทก/ตี" เจอปุ๊บคือตีแม่งเลย
-    </div>
+<div class="toc">
+    <h3>สารบัญความเทพ</h3>
+    <ul>
+        <li><a href="#radicals">1. รากศัพท์ (The DNA)</a></li>
+        <li><a href="#stats">2. ค่าพลัง (Stats)</a></li>
+        <li><a href="#combat">3. ศัพท์การรบ (Combat & CC)</a></li>
+        <li><a href="#map">4. แมพ & ป่า (Map & Jungle)</a></li>
+        <li><a href="#items">5. คีย์เวิร์ดไอเทม (Item Shop)</a></li>
+        <li><a href="#sentences">6. แกะประโยคสกิล (Skill Logic)</a></li>
+    </ul>
 </div>
 
-<div class="card">
-    <span class="category">ค่าพลัง (Stats)</span>
-    <div>
-        <span class="hanzi">物理</span> <span class="pinyin">(Wùlǐ)</span>
-    </div>
-    <span class="meaning">กายภาพ (Physical)</span>
-    <div class="trick">
-        💡 <b>ทริคจำ:</b> <b>物</b> (Wù) แปลว่า "สิ่งของ/วัตถุ" ในเกมคือดาเมจที่มาจากของแข็ง (ตีธรรมดา) ไม่ใช่เวทมนตร์ จำแค่ตัวหน้าพอ
-    </div>
-</div>
+<section id="radicals">
+    <h2>1. รากศัพท์ (The DNA): จำภาพ ไม่จำเสียง</h2>
+    <p style="color:#aaa;">นี่คือชิ้นส่วนเลโก้ ถ้ามึงจำพวกนี้ได้ มึงจะเดาคำศัพท์ใหม่ๆ ได้เอง</p>
+    <div class="grid-container">
+        
+        <div class="card">
+            <div class="hanzi-box"><span class="hanzi">扌</span> <span class="pinyin">(Shǒu)</span></div>
+            <span class="meaning">มือ / การกระทำ</span>
+            <div class="logic">
+                <strong>ภาพ:</strong> นิ้วมือสามนิ้ว<br>
+                <strong>ความหมาย:</strong> ตี, จับ, ผลัก, กดสกิล<br>
+                <strong>ตัวอย่าง:</strong> 击 (ตี), 技 (สกิล), 控 (จับ/คุม)
+            </div>
+        </div>
 
-<div class="card">
-    <span class="category">ค่าพลัง (Stats)</span>
-    <div>
-        <span class="hanzi">法术</span> <span class="pinyin">(Fǎshù)</span>
-    </div>
-    <span class="meaning">เวทมนตร์ (Magic)</span>
-    <div class="trick">
-        💡 <b>ทริคจำ:</b> <b>法</b> (Fǎ) แปลว่า กฏ หรือ วิธี (เหมือน Law) ในเกมจีนหมายถึง "พลังเวทย์" (Mage ก็เรียก 法师 - ฟ่าซือ) เห็นน้ำๆ (氵) ข้างหน้า จำว่าเวทย์น้ำลายก็ได้
-    </div>
-</div>
+        <div class="card">
+            <div class="hanzi-box"><span class="hanzi">氵</span> <span class="pinyin">(Shuǐ)</span></div>
+            <span class="meaning">น้ำ / ของเหลว / เวทย์</span>
+            <div class="logic">
+                <strong>ภาพ:</strong> หยดน้ำ 3 หยด<br>
+                <strong>ความหมาย:</strong> เวทมนตร์ (Mana), ชีวิต, รักษา<br>
+                <strong>ตัวอย่าง:</strong> 法 (เวทย์), 活 (ชีวิต), 治 (รักษา)
+            </div>
+        </div>
 
-<div class="card">
-    <span class="category">ค่าพลัง (Stats)</span>
-    <div>
-        <span class="hanzi">暴击</span> <span class="pinyin">(Bàojī)</span>
-    </div>
-    <span class="meaning">คริติคอล (Crit)</span>
-    <div class="trick">
-        💡 <b>ทริคจำ:</b> <b>暴</b> (Bào) แปลว่า รุนแรง/ระเบิด (Violent) + <b>击</b> (ตี) = ตีแรงชิบหาย เห็นตัวยึกยือเยอะๆ คือเจ็บหนัก
-    </div>
-</div>
+        <div class="card">
+            <div class="hanzi-box"><span class="hanzi">火 / 灬</span> <span class="pinyin">(Huǒ)</span></div>
+            <span class="meaning">ไฟ / ความร้อนแรง</span>
+            <div class="logic">
+                <strong>ภาพ:</strong> เปลวไฟลุก หรือ จุด 4 จุดด้านล่าง<br>
+                <strong>ความหมาย:</strong> ดาเมจ, ระเบิด, เผาผลาญ<br>
+                <strong>ตัวอย่าง:</strong> 灵 (วิญญาณ), 灭 (ทำลายล้าง), 热 (ร้อน)
+            </div>
+        </div>
 
-<div class="card">
-    <span class="category">สถานะ (Status)</span>
-    <div>
-        <span class="hanzi">冷却</span> <span class="pinyin">(Lěngquè)</span>
-    </div>
-    <span class="meaning">คูลดาวน์ (Cooldown)</span>
-    <div class="trick">
-        💡 <b>ทริคจำ:</b> <b>冷</b> (Lěng) แปลว่า "หนาว/เย็น" มีเกล็ดน้ำแข็ง (冫) อยู่ข้างหน้า เย็นลง = Cooldown ไงไอ้ควาย ง่ายจะตาย
-    </div>
-</div>
+        <div class="card">
+            <div class="hanzi-box"><span class="hanzi">月</span> <span class="pinyin">(Ròu)</span></div>
+            <span class="meaning">เนื้อ / ร่างกาย</span>
+            <div class="logic">
+                <strong>ภาพ:</strong> ชิ้นเนื้อติดกระดูก<br>
+                <strong>ความหมาย:</strong> อวัยวะ, เลือด, ความถึก<br>
+                <strong>ตัวอย่าง:</strong> 肌 (กล้ามเนื้อ), 脑 (สมอง), 腿 (ขา)
+            </div>
+        </div>
 
-<div class="card">
-    <span class="category">คำสั่งในเกม (Gameplay)</span>
-    <div>
-        <span class="hanzi">集合</span> <span class="pinyin">(Jíhé)</span>
-    </div>
-    <span class="meaning">รวมตัว (Gather)</span>
-    <div class="trick">
-        💡 <b>ทริคจำ:</b> <b>合</b> (Hé) หน้าตาเหมือนคนมาอยู่ใต้หลังคาเดียวกัน หรือกล่องปิดฝา แปลว่า "ร่วมมือ/รวม" เห็นเพื่อนปิงคำนี้ มึงรีบวิ่งไปหาเลย
-    </div>
-</div>
+        <div class="card">
+            <div class="hanzi-box"><span class="hanzi">辶</span> <span class="pinyin">(Zǒu)</span></div>
+            <span class="meaning">การเดิน / เคลื่อนที่</span>
+            <div class="logic">
+                <strong>ภาพ:</strong> เรือ หรือ เท้ากำลังก้าว<br>
+                <strong>ความหมาย:</strong> วิ่ง, ความเร็ว, ระยะทาง<br>
+                <strong>ตัวอย่าง:</strong> 速 (เร็ว), 逃 (หนี), 追 (ไล่ล่า)
+            </div>
+        </div>
 
-<div class="card">
-    <span class="category">คำสั่งในเกม (Gameplay)</span>
-    <div>
-        <span class="hanzi">撤退</span> <span class="pinyin">(Chètuì)</span>
+        <div class="card">
+            <div class="hanzi-box"><span class="hanzi">疒</span> <span class="pinyin">(Bìng)</span></div>
+            <span class="meaning">โรค / อาการผิดปกติ</span>
+            <div class="logic">
+                <strong>ภาพ:</strong> คนนอนป่วยบนเตียง<br>
+                <strong>ความหมาย:</strong> เจ็บปวด, ติดสถานะ, บ้า<br>
+                <strong>ตัวอย่าง:</strong> 痛 (เจ็บ), 疯 (บ้าคลั่ง), 疗 (รักษา)
+            </div>
+        </div>
+
+         <div class="card">
+            <div class="hanzi-box"><span class="hanzi">目</span> <span class="pinyin">(Mù)</span></div>
+            <span class="meaning">ดวงตา / การมองเห็น</span>
+            <div class="logic">
+                <strong>ภาพ:</strong> ตาดำในตาขาว<br>
+                <strong>ความหมาย:</strong> วิสัยทัศน์, มึนงง (ตาลาย)<br>
+                <strong>ตัวอย่าง:</strong> 眼 (ตา/Ward), 眩 (ตาลาย/Stun)
+            </div>
+        </div>
+
     </div>
-    <span class="meaning">ถอย (Retreat)</span>
-    <div class="trick">
-        💡 <b>ทริคจำ:</b> <b>退</b> (Tuì) มีตัว 辶 (การเดิน/เคลื่อนที่) อยู่ข้างหลัง ตัวนี้แปลว่า "ถอยหลัง" เห็นปุ๊บ วิ่งดิเอ๋ วิ่ง!
+</section>
+
+<section id="stats">
+    <h2>2. ค่าพลัง (Stats): หน้า Dashboard ชีวิตมึง</h2>
+    <div class="grid-container">
+
+        <div class="card type-atk">
+            <div class="hanzi-box"><span class="hanzi">物理攻击</span></div>
+            <span class="meaning">Physical Attack (AD)</span>
+            <div class="logic">
+                <code>物 (ของ) + 理 (หลักการ)</code> = กายภาพ<br>
+                <code>攻 (งาน) + 击 (ตี)</code> = โจมตี<br>
+                จำสั้นๆ: <strong>物攻 (Wù Gōng)</strong>
+            </div>
+        </div>
+
+        <div class="card type-atk">
+            <div class="hanzi-box"><span class="hanzi">暴击率</span></div>
+            <span class="meaning">Critical Rate</span>
+            <div class="logic">
+                <code>暴 (ระเบิด) + 击 (ตี)</code> = คริ<br>
+                <code>率 (อัตรา)</code> = Rate (%)<br>
+                เห็น <strong>暴</strong> คือแรงสัสๆ
+            </div>
+        </div>
+
+        <div class="card type-atk">
+            <div class="hanzi-box"><span class="hanzi">物理穿透</span></div>
+            <span class="meaning">Physical Pierce (เจาะเกราะ)</span>
+            <div class="logic">
+                <code>穿 (เจาะ/สวม) + 透 (ทะลุ)</code><br>
+                จำภาพ <strong>ฟันหนูเจาะรู</strong> (穿)<br>
+                ไอเทมเจาะเกราะต้องมีคำนี้
+            </div>
+        </div>
+        
+        <div class="card type-atk">
+            <div class="hanzi-box"><span class="hanzi">攻击速度</span></div>
+            <span class="meaning">Attack Speed (AS)</span>
+            <div class="logic">
+                <code>攻 (ตี) + 速 (เร็ว)</code><br>
+                จำตัว <strong>速</strong> (มีตัววิ่ง 辶)
+            </div>
+        </div>
+
+        <div class="card type-mag">
+            <div class="hanzi-box"><span class="hanzi">法术攻击</span></div>
+            <span class="meaning">Magic Attack (AP)</span>
+            <div class="logic">
+                <code>法 (เวทย์) + 术 (วิชา)</code> = เวทมนตร์<br>
+                จำสั้นๆ: <strong>法攻 (Fǎ Gōng)</strong><br>
+                เห็น <strong>น้ำ (氵)</strong> คือเวทย์
+            </div>
+        </div>
+
+        <div class="card type-mag">
+            <div class="hanzi-box"><span class="hanzi">冷却缩减</span></div>
+            <span class="meaning">Cooldown Reduction (CDR)</span>
+            <div class="logic">
+                <code>冷 (เย็น) + 却 (ถอย)</code> = Cooldown<br>
+                <code>缩 (หด) + 减 (ลบ)</code> = ลดลง<br>
+                จำคำว่า <strong>"เย็น" (冷)</strong> ไว้
+            </div>
+        </div>
+
+        <div class="card type-mag">
+            <div class="hanzi-box"><span class="hanzi">最大法力</span></div>
+            <span class="meaning">Max Mana</span>
+            <div class="logic">
+                <code>最大 (ใหญ่สุด/Max)</code><br>
+                <code>法 (เวทย์) + 力 (กำลัง)</code> = มานา
+            </div>
+        </div>
+
+        <div class="card type-def">
+            <div class="hanzi-box"><span class="hanzi">最大生命</span></div>
+            <span class="meaning">Max HP</span>
+            <div class="logic">
+                <code>生 (เกิด) + 命 (ชีวิต)</code><br>
+                จำตัว <strong>命</strong> (เหมือนบ้านมีคนอยู่)<br>
+                สายแทงค์ต้องเน้นตัวนี้
+            </div>
+        </div>
+
+        <div class="card type-def">
+            <div class="hanzi-box"><span class="hanzi">物理防御</span></div>
+            <span class="meaning">Physical Defense (Armor)</span>
+            <div class="logic">
+                <code>防 (ป้องกัน) + 御 (ต้าน)</code><br>
+                จำตัว <strong>防</strong> (ฝั่งซ้ายเหมือนกำแพงเมือง)
+            </div>
+        </div>
+
+        <div class="card type-def">
+            <div class="hanzi-box"><span class="hanzi">法术防御</span></div>
+            <span class="meaning">Magic Defense (MR)</span>
+            <div class="logic">
+                <code>法 (เวทย์) + 防 (กัน)</code><br>
+                กันเวทย์ จำง่ายๆ
+            </div>
+        </div>
+
+        <div class="card type-mov">
+            <div class="hanzi-box"><span class="hanzi">移动速度</span></div>
+            <span class="meaning">Movement Speed</span>
+            <div class="logic">
+                <code>移 (ย้าย) + 动 (ขยับ)</code> = Move<br>
+                รองเท้าทุกคู่ต้องมีคำนี้
+            </div>
+        </div>
+
+        <div class="card type-mov">
+            <div class="hanzi-box"><span class="hanzi">吸血</span></div>
+            <span class="meaning">Lifesteal (ดูดเลือด)</span>
+            <div class="logic">
+                <code>吸 (ปากดูด) + 血 (เลือด)</code><br>
+                เห็น <strong>ปาก (口)</strong> คู่กับ <strong>เลือด</strong><br>
+                แยกเป็น 物理吸血 (ดูดกายภาพ) / 法术吸血 (ดูดเวทย์)
+            </div>
+        </div>
+
     </div>
-</div>
+</section>
+
+<section id="combat">
+    <h2>3. ศัพท์การรบ (Combat & CC): ภาษามรณะ</h2>
+    <div class="grid-container">
+        
+        <div class="card" style="border-left: 5px solid yellow;">
+            <div class="hanzi-box"><span class="hanzi">眩晕</span></div>
+            <span class="meaning">STUN (มึนงง)</span>
+            <div class="logic">
+                <code>眩 (ตาลาย) + 晕 (เวียนหัว)</code><br>
+                ทริค: เห็น <strong>目 (ตา)</strong> คู่กับอะไรยุ่งๆ คือสตั๊น
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid yellow;">
+            <div class="hanzi-box"><span class="hanzi">减速</span></div>
+            <span class="meaning">SLOW (ช้าลง)</span>
+            <div class="logic">
+                <code>减 (ลบ/ลด) + 速 (เร็ว)</code><br>
+                โดนแล้วเดินไม่ออก
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid yellow;">
+            <div class="hanzi-box"><span class="hanzi">击飞</span></div>
+            <span class="meaning">KNOCK UP (ลอย)</span>
+            <div class="logic">
+                <code>击 (ตี) + 飞 (บิน)</code><br>
+                ทริค: ตัว <strong>飞</strong> เหมือนปีกนก 2 ข้าง
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid yellow;">
+            <div class="hanzi-box"><span class="hanzi">沉默</span></div>
+            <span class="meaning">SILENCE (ใบ้)</span>
+            <div class="logic">
+                <code>沉 (จม) + 默 (ดำ/เงียบ)</code><br>
+                ดำดิ่งสู่ความเงียบ = กดสกิลไม่ได้
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid red;">
+            <div class="hanzi-box"><span class="hanzi">真实伤害</span></div>
+            <span class="meaning">TRUE DAMAGE</span>
+            <div class="logic">
+                <code>真 (จริง) + 实 (แท้)</code> = True<br>
+                <code>伤 (เจ็บ) + 害 (ภัย)</code> = Damage<br>
+                ตัวเลขสีขาว เจาะเกราะไม่สน
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid green;">
+            <div class="hanzi-box"><span class="hanzi">霸体</span></div>
+            <span class="meaning">SUPER ARMOR (กัน CC)</span>
+            <div class="logic">
+                <code>霸 (ทรราช/ผู้ยิ่งใหญ่) + 体 (ตัว)</code><br>
+                ตัวใหญ่คับฟ้า ใครก็หยุดไม่ได้ (CC Immune)
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid green;">
+            <div class="hanzi-box"><span class="hanzi">护盾</span></div>
+            <span class="meaning">SHIELD (เกราะดูดซับ)</span>
+            <div class="logic">
+                <code>护 (มือป้อง) + 盾 (โล่)</code><br>
+                เห็นหลอดขาวๆ เพิ่มขึ้นมา
+            </div>
+        </div>
+
+         <div class="card" style="border-left: 5px solid purple;">
+            <div class="hanzi-box"><span class="hanzi">位移</span></div>
+            <span class="meaning">DASH / BLINK</span>
+            <div class="logic">
+                <code>位 (ตำแหน่ง) + 移 (ย้าย)</code><br>
+                สกิลหนี หรือสกิลพุ่ง
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section id="map">
+    <h2>4. แมพ & ป่า (Map Logic): อ่านแผนที่ให้ออก</h2>
+    <div class="grid-container">
+        <div class="card">
+            <span class="hanzi">塔</span> (Tǎ) <br> <span class="meaning">ป้อม (Turret)</span>
+            <div class="logic">ดิน (土) กองเป็นชั้นๆ สูงๆ</div>
+        </div>
+        <div class="card">
+            <span class="hanzi">水晶</span> (Shuǐjīng) <br> <span class="meaning">บ้านหลัก (Core/Crystal)</span>
+            <div class="logic">น้ำ (水) + คริสตัล (晶 - พระอาทิตย์ 3 ดวง)</div>
+        </div>
+        <div class="card">
+            <span class="hanzi">龙</span> (Lóng) <br> <span class="meaning">มังกร (Dragon)</span>
+            <div class="logic">ตัวยึกยือหางยาวๆ ตีแล้วได้บัฟ/เงิน</div>
+        </div>
+        <div class="card">
+            <span class="hanzi">主宰</span> (Zhǔzǎi) <br> <span class="meaning">Slayer / Dark Slayer</span>
+            <div class="logic">ผู้ปกครอง (Lord) ตัวใหญ่สุดในแมพ</div>
+        </div>
+        <div class="card">
+            <span class="hanzi">兵线</span> (Bīngxiàn) <br> <span class="meaning">Minion Wave</span>
+            <div class="logic">ทหาร (兵) + เส้นทาง (线) = ครีปเลน</div>
+        </div>
+        <div class="card">
+            <span class="hanzi">野区</span> (Yěqū) <br> <span class="meaning">Jungle Area</span>
+            <div class="logic">ป่าเถื่อน (野) + พื้นที่ (区)</div>
+        </div>
+        <div class="card">
+            <span class="hanzi">草丛</span> (Cǎocóng) <br> <span class="meaning">พุ่มไม้ (Bush)</span>
+            <div class="logic">หญ้า (艹) เยอะๆ ซ้อนกัน (丛) = ที่ซ่อน</div>
+        </div>
+    </div>
+</section>
+
+<section id="items">
+    <h2>5. คีย์เวิร์ดไอเทม (Item Shop): ซื้อผิดชีวิตเปลี่ยน</h2>
+    <div class="grid-container">
+        <div class="card">
+            <span class="meaning">หมวดอาวุธ (ATK)</span>
+            <hr>
+            <ul>
+                <li><strong>剑 (Jiàn)</strong> = กระบี่ (เช่น Longinus)</li>
+                <li><strong>刀 (Dāo)</strong> = ดาบ (เช่น ดาบดูดเลือด)</li>
+                <li><strong>弓 (Gōng)</strong> = ธนู (เช่น ธนูเจาะเกราะ)</li>
+                <li><strong>破 (Pò)</strong> = ทำลาย (ของแรงๆ เช่น Fenrir)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <span class="meaning">หมวดเวทย์ (MAG)</span>
+            <hr>
+            <ul>
+                <li><strong>杖 (Zhàng)</strong> = ไม้เท้า (เช่น Staff of Nuul)</li>
+                <li><strong>书 (Shū)</strong> = หนังสือ (Holy of Holies)</li>
+                <li><strong>面具 (Miànjù)</strong> = หน้ากาก (Mask)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <span class="meaning">หมวดกัน (DEF)</span>
+            <hr>
+            <ul>
+                <li><strong>甲 (Jiǎ)</strong> = เกราะ (เช่น เกราะสะท้อน)</li>
+                <li><strong>铠 (Kǎi)</strong> = ชุดเกราะ (เช่น Gaia)</li>
+                <li><strong>心 (Xīn)</strong> = หัวใจ (Heart of Incubus)</li>
+                <li><strong>斗篷 (Dǒupéng)</strong> = ผ้าคลุม (Troy)</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="sentences">
+    <h2>6. แกะประโยคสกิล (AIHIA Deconstructor)</h2>
+    <p>เลิกกลัวประโยคยาวๆ กูจะหั่นให้มึงดู</p>
+
+    <div class="sentence-box">
+        <div class="chinese-sent">被动：生命值低于50%时，增加30%攻击速度</div>
+        <div class="breakdown">
+            <div class="word-chunk"><span class="wc-hanzi">被动</span><span class="wc-mean">Passive</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">：</span><span class="wc-mean">:</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">生命值</span><span class="wc-mean">HP Value</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">低于</span><span class="wc-mean">ต่ำกว่า</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">50%</span><span class="wc-mean">50%</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">时</span><span class="wc-mean">เมื่อ(Time)</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">，</span><span class="wc-mean">,</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">增加</span><span class="wc-mean">เพิ่ม</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">30%</span><span class="wc-mean">30%</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">攻击速度</span><span class="wc-mean">Atk Speed</span></div>
+        </div>
+        <div class="full-trans">สรุป: พาสซีฟ: เมื่อเลือดต่ำกว่า 50% จะตีเร็วขึ้น 30% (สูตร Berserk)</div>
+    </div>
+
+    <div class="sentence-box">
+        <div class="chinese-sent">技能命中敌人后，造成范围法术伤害并减速</div>
+        <div class="breakdown">
+            <div class="word-chunk"><span class="wc-hanzi">技能</span><span class="wc-mean">Skill</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">命中</span><span class="wc-mean">Hit(โดน)</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">敌人</span><span class="wc-mean">ศัตรู</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">后</span><span class="wc-mean">หลังจาก</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">造成</span><span class="wc-mean">สร้าง(ผล)</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">范围</span><span class="wc-mean">AOE(วงกว้าง)</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">法术伤害</span><span class="wc-mean">Magic Dmg</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">并</span><span class="wc-mean">และ</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">减速</span><span class="wc-mean">Slow</span></div>
+        </div>
+        <div class="full-trans">สรุป: สกิลโดนศัตรู -> ระเบิดวงกว้างเป็นเวทย์ + ติดสโลว์</div>
+    </div>
+
+     <div class="sentence-box">
+        <div class="chinese-sent">大招：蓄力后对路径上的敌人造成高额物理伤害</div>
+        <div class="breakdown">
+            <div class="word-chunk"><span class="wc-hanzi">大招</span><span class="wc-mean">Ulti</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">蓄力</span><span class="wc-mean">Charge(ชาร์จ)</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">后</span><span class="wc-mean">หลัง</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">对</span><span class="wc-mean">ต่อ(To)</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">路径</span><span class="wc-mean">Path(ทาง)</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">上</span><span class="wc-mean">บน</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">敌人</span><span class="wc-mean">ศัตรู</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">造成</span><span class="wc-mean">Deal</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">高额</span><span class="wc-mean">High Amount</span></div>
+            <div class="word-chunk"><span class="wc-hanzi">物理伤害</span><span class="wc-mean">Phy Dmg</span></div>
+        </div>
+        <div class="full-trans">สรุป: อัลติ: ชาร์จแล้วยิงเป็นเส้นตรง ดาเมจกายภาพแรงสัสๆ</div>
+    </div>
+
+</section>
+
+<footer>
+    <p>Generated by <strong>AIHIA V.4</strong> | "เลิกสำออย แล้วไปอ่าน"</p>
+</footer>
 
 </body>
 </html>
