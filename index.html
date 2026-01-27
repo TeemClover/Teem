@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyClover Studio | The Gold Standard Vertical Cinema</title>
+    <title>MyClover Studio | The Gold Standard of Vertical Cinema</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
@@ -102,6 +102,7 @@
             margin-bottom: 25px; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px);
         }
         .hero-title { font-size: clamp(3.5rem, 8vw, 6.5rem); line-height: 1.05; margin-bottom: 30px; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .hero-desc { font-size: 1.2rem; color: #eee; margin-bottom: 40px; max-width: 650px; font-weight: 300; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
         .btn-gold {
             position: relative; padding: 18px 50px; background: var(--gold); color: #000;
             text-transform: uppercase; font-weight: 700; letter-spacing: 2px; text-decoration: none; 
@@ -126,7 +127,7 @@
         .feature-list strong { color: #fff; font-size: 1.1rem; display: block; margin-bottom: 5px; }
         .feature-list span { color: #888; font-size: 0.95rem; }
 
-        /* --- NEW SECTION: BUSINESS SOLUTIONS (Strategy) --- */
+        /* --- BUSINESS SOLUTIONS --- */
         .business { padding: 120px 0; background: #050505; border-top: 1px solid #111; }
         .biz-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 60px; }
         .biz-card { 
@@ -148,6 +149,7 @@
         
         .swiper { width: 100%; padding-top: 40px; padding-bottom: 100px; }
         .swiper-slide { width: 300px; height: auto; transition: var(--transition); opacity: 0.5; transform: scale(0.9); }
+        
         .poster-box {
             width: 100%; aspect-ratio: 9/16; border-radius: 8px; overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1); position: relative;
@@ -169,7 +171,10 @@
         .contact-content { position: relative; z-index: 2; }
         
         .logo-badge {
-            height: 200px; width: auto; margin-bottom: 30px;
+            /* 2. ปรับขนาดโลโก้ตามสั่ง */
+            height: 200px; 
+            width: auto; 
+            margin-bottom: 30px;
             border: 2px solid var(--gold); border-radius: 8px; padding: 8px;
             box-shadow: 0 0 30px rgba(197, 160, 89, 0.2); transition: var(--transition);
             background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
@@ -194,6 +199,8 @@
             .container { padding: 0 25px; }
             .grid-2 { grid-template-columns: 1fr; }
             .hero-title { font-size: 3.2rem; }
+            /* ป้องกันโลโก้ใหญ่เกินในมือถือ */
+            .logo-badge { height: 150px; }
         }
     </style>
 </head>
@@ -249,7 +256,7 @@
                     <ul class="feature-list">
                         <li><strong>Beijing Strategy</strong><span>Script development based on Top 30 global viral charts.</span></li>
                         <li><strong>Hangzhou Intelligence</strong><span>Data-driven operations & platform logic optimization.</span></li>
-                        <li><strong>Bangkok Craftsmanship</strong><span>Cinema-grade production with the most efficient cost.</span></li>
+                        <li><strong>Bangkok Craftsmanship</strong><span>Cinema-grade production with high cost-efficiency.</span></li>
                     </ul>
                 </div>
             </div>
@@ -264,7 +271,7 @@
                     <span class="biz-icon">✦</span>
                     <h3 class="biz-title">Co-Production</h3>
                     <p class="biz-desc">Leverage our Thai infrastructure for high-value production. We handle casting, locations, and permits with "Speed-to-Market" efficiency.</p>
-                    <div><span class="biz-tag">Cost Efficiency</span><span class="biz-tag">4-Day Shoot</span></div>
+                    <div><span class="biz-tag">Cost Efficiency</span><span class="biz-tag">7-Day Shoot</span></div>
                 </div>
                 <div class="biz-card" data-aos="fade-up" data-aos-delay="200">
                     <span class="biz-icon">❖</span>
