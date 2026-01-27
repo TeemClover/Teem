@@ -39,7 +39,7 @@
         header {
             position: fixed; top: 0; width: 100%; z-index: 2000;
             transition: var(--transition);
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
             padding: 25px 0;
         }
         header.scrolled {
@@ -117,7 +117,7 @@
         .locations-text { color: var(--gold); letter-spacing: 6px; font-size: 0.9rem; text-transform: uppercase; font-weight: 600; }
 
         /* --- ABOUT --- */
-        .about { padding: 140px 0; background: var(--bg-accent); }
+        .about { padding: 120px 0; background: var(--bg-accent); }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
         .about-img { width: 100%; border-radius: 4px; box-shadow: 20px 20px 0px rgba(197, 160, 89, 0.1); filter: contrast(1.1); }
         .section-title { font-size: 3rem; margin-bottom: 25px; color: #fff; line-height: 1.2; }
@@ -126,106 +126,73 @@
         .feature-list strong { color: #fff; font-size: 1.1rem; display: block; margin-bottom: 5px; }
         .feature-list span { color: #888; font-size: 0.95rem; }
 
-        /* --- NEW CAROUSEL FIX: SEPARATED TEXT --- */
-        .portfolio { padding: 120px 0; background: #050505; overflow: hidden; }
-        
-        /* Swiper Container Padding to fit text below */
-        .swiper { 
-            width: 100%; 
-            padding-top: 40px; 
-            padding-bottom: 100px; /* เพิ่มพื้นที่ด้านล่างเยอะๆ ให้ตัวหนังสือไม่ตกขอบ */
+        /* --- NEW SECTION: BUSINESS SOLUTIONS (Strategy) --- */
+        .business { padding: 120px 0; background: #050505; border-top: 1px solid #111; }
+        .biz-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 60px; }
+        .biz-card { 
+            background: rgba(255,255,255,0.02); padding: 40px 30px; border: 1px solid rgba(255,255,255,0.05); 
+            transition: var(--transition); border-radius: 4px;
         }
-        
-        .swiper-slide {
-            width: 300px; 
-            height: auto; /* ให้ความสูงยืดตามเนื้อหา */
-            transition: var(--transition);
-            /* Slide ที่ไม่ได้เลือกจะจางและเล็ก */
-            opacity: 0.5; 
-            transform: scale(0.9);
+        .biz-card:hover { border-color: var(--gold); background: linear-gradient(145deg, rgba(10,40,24,0.2), transparent); transform: translateY(-5px); }
+        .biz-icon { font-size: 2rem; color: var(--gold); margin-bottom: 20px; display: block; }
+        .biz-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 15px; color: #fff; }
+        .biz-desc { color: #888; font-size: 0.9rem; margin-bottom: 20px; }
+        .biz-tag { 
+            font-size: 0.7rem; color: var(--gold); border: 1px solid rgba(197, 160, 89, 0.3); 
+            padding: 5px 10px; border-radius: 20px; display: inline-block; margin-right: 5px;
         }
+
+        /* --- CAROUSEL --- */
+        .portfolio { padding: 120px 0; background: #080808; overflow: hidden; position: relative; }
+        .portfolio::before { content:''; position: absolute; top:0; left:0; width:100%; height:100px; background:linear-gradient(#050505, transparent); z-index:2; }
         
-        /* 1. กล่องใส่รูป (Poster Only) */
+        .swiper { width: 100%; padding-top: 40px; padding-bottom: 100px; }
+        .swiper-slide { width: 300px; height: auto; transition: var(--transition); opacity: 0.5; transform: scale(0.9); }
         .poster-box {
-            width: 100%;
-            aspect-ratio: 9/16; /* บังคับสัดส่วนแนวตั้ง */
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            transition: var(--transition);
+            width: 100%; aspect-ratio: 9/16; border-radius: 8px; overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1); position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); transition: var(--transition);
         }
-        
         .poster-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .slide-content { margin-top: 25px; text-align: center; opacity: 0; transform: translateY(10px); transition: 0.5s ease; }
         
-        /* 2. กล่องใส่ข้อความ (Text Only - อยู่ใต้รูป) */
-        .slide-content {
-            margin-top: 25px; /* เว้นระยะจากรูป */
-            text-align: center;
-            opacity: 0; /* ซ่อนก่อน */
-            transform: translateY(10px); 
-            transition: 0.5s ease;
-        }
+        .swiper-slide-active { opacity: 1; transform: scale(1.05); z-index: 10; }
+        .swiper-slide-active .poster-box { border: 3px solid var(--gold); box-shadow: 0 0 60px rgba(197, 160, 89, 0.3); }
+        .swiper-slide-active .slide-content { opacity: 1; transform: translateY(0); }
         
-        /* --- Active Slide Styles --- */
-        .swiper-slide-active { 
-            opacity: 1; 
-            transform: scale(1.05); /* ขยายใหญ่ขึ้นนิดนึง */
-            z-index: 10;
-        }
-        
-        /* Active: ใส่กรอบทองที่รูป */
-        .swiper-slide-active .poster-box {
-            border: 3px solid var(--gold); /* กรอบทองอยู่นอกรูป */
-            box-shadow: 0 0 60px rgba(197, 160, 89, 0.3);
-        }
-
-        /* Active: โชว์ข้อความด้านล่าง */
-        .swiper-slide-active .slide-content { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
-        
-        .slide-genre { 
-            color: var(--gold); font-size: 0.75rem; text-transform: uppercase; 
-            letter-spacing: 3px; margin-bottom: 10px; display: block; font-weight: 700; 
-        }
-        .slide-logline { 
-            color: #fff; font-family: 'Playfair Display', serif; font-style: italic; 
-            font-size: 1rem; line-height: 1.4; 
-        }
-
-        /* --- CRAFT --- */
-        .craft { padding: 120px 0; background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.8)), url('IMG_4740.jpeg') fixed center/cover; text-align: center; }
-        .craft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 60px; }
-        .craft-item { padding: 40px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: var(--transition); }
-        .craft-item:hover { border-color: var(--gold); transform: translateY(-10px); background: rgba(10, 40, 24, 0.4); }
-        .craft-item h4 { color: var(--gold); font-size: 1.4rem; margin-bottom: 15px; }
-        .craft-item p { color: #aaa; font-size: 0.9rem; }
+        .slide-genre { color: var(--gold); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; display: block; font-weight: 700; }
+        .slide-logline { color: #fff; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; line-height: 1.4; }
 
         /* --- CONTACT --- */
-        .contact { padding: 140px 0; text-align: center; background: #080808; position: relative; }
+        .contact { padding: 140px 0; text-align: center; background: url('IMG_4740.jpeg') fixed center/cover; position: relative; }
+        .contact::before { content:''; position: absolute; inset:0; background: rgba(5,5,5,0.92); }
+        .contact-content { position: relative; z-index: 2; }
+        
         .logo-badge {
             height: 200px; width: auto; margin-bottom: 30px;
-            border: 2px solid var(--gold); border-radius: 8px; padding: 5px;
+            border: 2px solid var(--gold); border-radius: 8px; padding: 8px;
             box-shadow: 0 0 30px rgba(197, 160, 89, 0.2); transition: var(--transition);
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
         }
         .logo-badge:hover { box-shadow: 0 0 50px rgba(197, 160, 89, 0.6); transform: scale(1.05); background: #fff; }
+        
         .contact-note {
-            max-width: 600px; margin: 0 auto 40px; color: #666; font-size: 0.9rem;
-            border: 1px dashed #333; padding: 20px; border-radius: 4px;
+            max-width: 700px; margin: 0 auto 40px; color: #aaa; font-size: 0.95rem;
+            border: 1px solid rgba(197, 160, 89, 0.3); padding: 25px; border-radius: 4px;
+            background: rgba(10, 40, 24, 0.2);
         }
         .email-link {
             font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 4rem);
             color: var(--gold); text-decoration: none; display: block; transition: var(--transition);
         }
         .email-link:hover { color: #fff; text-shadow: 0 0 40px var(--gold); }
-        footer { padding: 40px 0; background: #000; text-align: center; color: #444; font-size: 0.75rem; letter-spacing: 2px; border-top: 1px solid #111; }
+        
+        footer { padding: 50px 0; background: #000; text-align: center; color: #555; font-size: 0.8rem; letter-spacing: 2px; border-top: 1px solid #111; }
 
+        @media (max-width: 1024px) { .biz-grid { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
             .container { padding: 0 25px; }
-            .grid-2, .craft-grid { grid-template-columns: 1fr; }
+            .grid-2 { grid-template-columns: 1fr; }
             .hero-title { font-size: 3.2rem; }
         }
     </style>
@@ -235,36 +202,33 @@
     <header id="header">
         <div class="container">
             <nav>
-                <div class="brand-logo">
-                    My<span class="highlight">Clover</span><span class="small">STUDIO</span>
-                </div>
-                <div class="hamburger" id="hamburgerBtn">
-                    <span></span><span></span><span></span>
-                </div>
+                <div class="brand-logo">My<span class="highlight">Clover</span><span class="small">STUDIO</span></div>
+                <div class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></div>
             </nav>
         </div>
     </header>
 
     <div class="menu-overlay" id="menuOverlay">
         <div class="menu-links">
-            <a href="#about" onclick="toggleMenu()">The Studio</a>
-            <a href="#lineup" onclick="toggleMenu()">Originals</a>
-            <a href="#craft" onclick="toggleMenu()">Craftsmanship</a>
-            <a href="#contact" onclick="toggleMenu()">Request Access</a>
+            <a href="#about" onclick="toggleMenu()">Our Vision</a>
+            <a href="#business" onclick="toggleMenu()">Services</a>
+            <a href="#lineup" onclick="toggleMenu()">The Slate</a>
+            <a href="#contact" onclick="toggleMenu()">Partnership</a>
         </div>
     </div>
 
     <section class="hero">
         <div class="hero-bg"></div>
         <div class="container hero-content" data-aos="fade-up" data-aos-duration="1200">
-            <span class="hero-tag">The Global Standard</span>
+            <span class="hero-tag">Vertical Cinema Authority</span>
             <h1 class="hero-title">
-                Crafting <br>Cinematic Stories <br><span style="color:var(--gold);">for the Digital Age.</span>
+                Bangkok Craft.<br>
+                <span style="color:var(--gold);">Global Revenue.</span>
             </h1>
             <p class="hero-desc">
-                We bridge the gap between China's viral storytelling speed and Thailand's world-class cinematic production. The result? Vertical masterpieces.
+                We bridge the gap between China's viral storytelling speed and Thailand's world-class cinematic production. High Retention. High ROI.
             </p>
-            <a href="#contact" class="btn-gold">Request Screening</a>
+            <a href="#contact" class="btn-gold">Request Business Deck</a>
         </div>
     </section>
 
@@ -277,13 +241,42 @@
             <div class="grid-2">
                 <div class="about-img-wrapper" data-aos="fade-right"><img src="IMG_4741.jpeg" alt="Production Team" class="about-img"></div>
                 <div data-aos="fade-left">
-                    <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:2px;">Our Expertise</span>
-                    <h2 class="section-title">The <span style="color:var(--gold);">Tri-City</span> Synergy</h2>
+                    <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:2px;">The Advantage</span>
+                    <h2 class="section-title">The <span style="color:var(--gold);">Tri-City</span> Model</h2>
+                    <p style="color:#bbb; font-size:1.05rem; margin-bottom:30px;">
+                        MyClover Studio is not just a production house; we are a data-driven content ecosystem engineered for the vertical screen era.
+                    </p>
                     <ul class="feature-list">
-                        <li><strong>Beijing Strategy</strong><span>Script development & viral narrative structures from top-tier Chinese directors.</span></li>
-                        <li><strong>Hangzhou Intelligence</strong><span>Data-driven market analysis and platform operations logic.</span></li>
-                        <li><strong>Bangkok Craftsmanship</strong><span>Cinema-grade production, world-famous Thai talent, and cost-effective execution.</span></li>
+                        <li><strong>Beijing Strategy</strong><span>Script development based on Top 30 global viral charts.</span></li>
+                        <li><strong>Hangzhou Intelligence</strong><span>Data-driven operations & platform logic optimization.</span></li>
+                        <li><strong>Bangkok Craftsmanship</strong><span>Cinema-grade production at 1/3 of the US cost.</span></li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="business" class="business">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;" data-aos="fade-up">Strategic <span style="color:var(--gold);">Solutions</span></h2>
+            <div class="biz-grid">
+                <div class="biz-card" data-aos="fade-up" data-aos-delay="100">
+                    <span class="biz-icon">✦</span>
+                    <h3 class="biz-title">Co-Production</h3>
+                    <p class="biz-desc">Leverage our Thai infrastructure for high-value production. We handle casting, locations, and permits with "Speed-to-Market" efficiency.</p>
+                    <div><span class="biz-tag">Cost Efficiency</span><span class="biz-tag">4-Day Shoot</span></div>
+                </div>
+                <div class="biz-card" data-aos="fade-up" data-aos-delay="200">
+                    <span class="biz-icon">❖</span>
+                    <h3 class="biz-title">IP Licensing</h3>
+                    <p class="biz-desc">Our Q1 2026 Slate is available for exclusive regional distribution. Localized for Thai, SEA, and Global markets.</p>
+                    <div><span class="biz-tag">Exclusive</span><span class="biz-tag">Revenue Share</span></div>
+                </div>
+                <div class="biz-card" data-aos="fade-up" data-aos-delay="300">
+                    <span class="biz-icon">⚡</span>
+                    <h3 class="biz-title">Brand Integration</h3>
+                    <p class="biz-desc">Seamless product placement and E-commerce hooks designed for high conversion (GMV) without disrupting the narrative flow.</p>
+                    <div><span class="biz-tag">Soft-Seeding</span><span class="biz-tag">E-Commerce</span></div>
                 </div>
             </div>
         </div>
@@ -300,110 +293,65 @@
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
                         <div class="poster-box"><img src="IMG_4742.jpeg" alt="Poster 1"></div>
-                        <div class="slide-content">
-                            <span class="slide-genre">Werewolf / Romance</span>
-                            <div class="slide-logline">"Betrayed by her pack, she found salvation in the arms of her enemy."</div>
-                        </div>
+                        <div class="slide-content"><span class="slide-genre">Werewolf / Romance</span><div class="slide-logline">"Betrayed by her pack, she found salvation in the arms of her enemy."</div></div>
                     </div>
                     <div class="swiper-slide">
                         <div class="poster-box"><img src="IMG_4743.jpeg" alt="Poster 2"></div>
-                        <div class="slide-content">
-                            <span class="slide-genre">Revenge / Drama</span>
-                            <div class="slide-logline">"A shattered mirror reflecting two lives. The heiress returns for blood."</div>
-                        </div>
+                        <div class="slide-content"><span class="slide-genre">Revenge / Drama</span><div class="slide-logline">"A shattered mirror reflecting two lives. The heiress returns for blood."</div></div>
                     </div>
                     <div class="swiper-slide">
                         <div class="poster-box"><img src="IMG_4750.jpeg" alt="Poster 3"></div>
-                        <div class="slide-content">
-                            <span class="slide-genre">CEO / Contract</span>
-                            <div class="slide-logline">"100 days to fall in love, or lose everything to the devil in a suit."</div>
-                        </div>
+                        <div class="slide-content"><span class="slide-genre">CEO / Contract</span><div class="slide-logline">"100 days to fall in love, or lose everything to the devil in a suit."</div></div>
                     </div>
                     <div class="swiper-slide">
                         <div class="poster-box"><img src="IMG_4751.jpeg" alt="Poster 4"></div>
-                        <div class="slide-content">
-                            <span class="slide-genre">Underdog / Billionaire</span>
-                            <div class="slide-logline">"They thought he was nothing. He bought their whole world."</div>
-                        </div>
+                        <div class="slide-content"><span class="slide-genre">Underdog / Billionaire</span><div class="slide-logline">"They thought he was nothing. He bought their whole world."</div></div>
                     </div>
                     <div class="swiper-slide">
                         <div class="poster-box"><img src="IMG_4752.jpeg" alt="Poster 5"></div>
-                        <div class="slide-content">
-                            <span class="slide-genre">Female Power / Action</span>
-                            <div class="slide-logline">"The Queen has returned to reclaim her throne. No mercy."</div>
-                        </div>
+                        <div class="slide-content"><span class="slide-genre">Female Power / Action</span><div class="slide-logline">"The Queen has returned to reclaim her throne. No mercy."</div></div>
                     </div>
                     <div class="swiper-slide">
                         <div class="poster-box"><img src="IMG_4744.jpeg" alt="Poster 6"></div>
-                        <div class="slide-content">
-                            <span class="slide-genre">Fantasy / Destiny</span>
-                            <div class="slide-logline">"Two worlds collide when an ancient warrior meets a modern girl."</div>
-                        </div>
+                        <div class="slide-content"><span class="slide-genre">Fantasy / Destiny</span><div class="slide-logline">"Two worlds collide when an ancient warrior meets a modern girl."</div></div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="craft" class="craft">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up">The <span style="color:var(--gold);">Craft</span> of Excellence</h2>
-            <div class="craft-grid">
-                <div class="craft-item" data-aos="fade-up" data-aos-delay="100">
-                    <h4 class="serif">Cinematic Vision</h4>
-                    <p>We shoot exclusively on <strong>ARRI Alexa & RED V-Raptor</strong>. This isn't just content; it's cinema in your palm.</p>
-                </div>
-                <div class="craft-item" data-aos="fade-up" data-aos-delay="200">
-                    <h4 class="serif">Thai Artistry</h4>
-                    <p>Access to Thailand’s award-winning acting talent, costume designers, and stunning 4K locations.</p>
-                </div>
-                <div class="craft-item" data-aos="fade-up" data-aos-delay="300">
-                    <h4 class="serif">Global Post-Prod</h4>
-                    <p>Experts from international streaming platforms handle color grading, sound design, and VFX.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="contact" class="contact">
-        <div class="container" data-aos="zoom-in">
+        <div class="container contact-content" data-aos="zoom-in">
             <a href="mailto:team@myclover.com"><img src="IMG_4739.jpeg" alt="MyClover Emblem" class="logo-badge"></a>
             <span style="color:var(--gold); text-transform:uppercase; letter-spacing:3px; display:block; margin-bottom:10px;">Private Distribution</span>
             <h2 class="section-title">Ready to <span style="color:var(--gold);">Partner?</span></h2>
             <div class="contact-note">
-                <strong>NOTE:</strong> Our content library is not publicly available. <br>
-                For full series access, screeners, and licensing inquiries, please contact our acquisition team directly.
+                <strong>NOTE:</strong> Our content library and full financial deck are not publicly available. <br>
+                For full series access, screeners, and co-production inquiries, please contact our acquisition team directly.
             </div>
             <a href="mailto:team@myclover.com" class="email-link">team@myclover.com</a>
-            <div style="font-size:0.8rem; color:#666; letter-spacing:2px; margin-top:50px;">MYCLOVER STUDIO &copy; 2026</div>
+            <div style="font-size:0.8rem; color:#888; letter-spacing:2px; margin-top:50px;">
+                MYCLOVER STUDIO &copy; 2026<br>
+                <span style="color:#555; font-size:0.7rem; display:block; margin-top:10px;">BANGKOK HQ • BEIJING • HANGZHOU</span>
+            </div>
         </div>
     </section>
 
     <footer>
-        <div class="container">BANGKOK | BEIJING | HANGZHOU</div>
+        <div class="container">
+            Global Short Drama Production & Distribution
+        </div>
     </footer>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         AOS.init({ offset: 80, duration: 1000, easing: 'ease-out-cubic', once: true });
-        
         var swiper = new Swiper(".mySwiper", {
-            effect: "coverflow",
-            grabCursor: true,
-            centeredSlides: true,
-            slidesPerView: "auto",
-            coverflowEffect: {
-                rotate: 0, /* ไม่หมุนภาพ */
-                stretch: 0,
-                depth: 100, /* ความลึก */
-                modifier: 2,
-                slideShadows: false, /* เอาเงาดำๆ ออกไปเลยจะได้เห็นรูปชัด */
-            },
-            loop: true,
-            autoplay: { delay: 3000, disableOnInteraction: false },
+            effect: "coverflow", grabCursor: true, centeredSlides: true, slidesPerView: "auto",
+            coverflowEffect: { rotate: 0, stretch: 0, depth: 100, modifier: 2, slideShadows: false },
+            loop: true, autoplay: { delay: 3000, disableOnInteraction: false },
         });
-
         const hamburger = document.getElementById('hamburgerBtn');
         const menuOverlay = document.getElementById('menuOverlay');
         function toggleMenu() { hamburger.classList.toggle('active'); menuOverlay.classList.toggle('open'); }
