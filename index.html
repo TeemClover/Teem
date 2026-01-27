@@ -7,20 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
+            --primary-green: #0A2818; 
             --gold: #C5A059;
             --gold-light: #E0C080;
             --bg-dark: #050505;
-            --bg-accent: #111111;
+            --bg-accent: #0f0f0f;
             --text-main: #FFFFFF;
             --text-dim: #A0A0A0;
-            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Montserrat', sans-serif;
@@ -30,276 +27,181 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, .serif {
-            font-family: 'Playfair Display', serif;
-        }
+        h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 
-        /* --- Navigation --- */
+        /* --- Header --- */
         header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 30px 0;
-            z-index: 1000;
+            position: fixed; top: 0; width: 100%; padding: 20px 0; z-index: 1000;
             transition: var(--transition);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
         }
-
         header.scrolled {
-            background: rgba(5, 5, 5, 0.95);
-            padding: 15px 0;
+            background: rgba(5, 5, 5, 0.98);
+            padding: 12px 0;
             border-bottom: 1px solid rgba(197, 160, 89, 0.2);
             backdrop-filter: blur(10px);
         }
+        nav { display: flex; justify-content: space-between; align-items: center; }
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: var(--text-main);
-            text-transform: uppercase;
-        }
-
-        .logo span { color: var(--gold); }
-
-        .nav-links a {
-            color: var(--text-main);
-            text-decoration: none;
-            margin-left: 40px;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        /* Logo Styling specifically for JPEG */
+        .logo-img {
+            height: 55px;
+            width: auto;
+            border-radius: 6px; /* ลบเหลี่ยม */
+            border: 1px solid var(--gold); /* กรอบทอง */
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); /* เรืองแสงนิดๆ */
             transition: var(--transition);
         }
+        .logo-img:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(197, 160, 89, 0.3); }
 
+        .nav-links a {
+            color: var(--text-main); text-decoration: none; margin-left: 40px;
+            font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+            transition: var(--transition);
+            font-weight: 600;
+        }
         .nav-links a:hover { color: var(--gold); }
 
         /* --- Hero Section --- */
         .hero {
             height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(to right, rgba(0,0,0,0.9) 30%, transparent), 
-                        url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=1920'); /* Placeholder: Cinema Set */
+            display: flex; align-items: center; position: relative;
+            background: url('IMG_4740.jpeg') no-repeat center center; /* Hero Image */
             background-size: cover;
-            background-position: center;
+        }
+        .hero::before {
+            content:''; position: absolute; inset: 0;
+            background: linear-gradient(to right, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 60%, transparent);
         }
 
-        .hero-content {
-            max-width: 800px;
-            z-index: 2;
+        .hero-content { position: relative; z-index: 2; max-width: 800px; padding-top: 60px; }
+        .hero-tag {
+            color: var(--gold); text-transform: uppercase; letter-spacing: 5px; 
+            font-size: 0.9rem; display: block; margin-bottom: 20px; font-weight: 700;
         }
-
-        .hero-content span {
-            color: var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            font-size: 0.9rem;
-            display: block;
-            margin-bottom: 20px;
+        .hero-title {
+            font-size: clamp(3rem, 7vw, 5.5rem); line-height: 1.1; margin-bottom: 30px;
+            text-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
-
-        .hero-content h1 {
-            font-size: clamp(3rem, 8vw, 5.5rem);
-            line-height: 1.1;
-            margin-bottom: 30px;
+        .hero-desc {
+            font-size: 1.2rem; color: #e0e0e0; margin-bottom: 40px; font-weight: 300; max-width: 600px;
+            border-left: 3px solid var(--gold); padding-left: 20px;
+            background: linear-gradient(to right, rgba(0,0,0,0.6), transparent);
         }
-
+        
         .btn-gold {
-            display: inline-block;
-            padding: 18px 45px;
+            padding: 18px 50px; background: transparent; color: var(--gold);
             border: 1px solid var(--gold);
-            color: var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: var(--transition);
-            background: transparent;
+            text-transform: uppercase; font-weight: 700; text-decoration: none;
+            letter-spacing: 2px; transition: var(--transition); display: inline-block;
+        }
+        .btn-gold:hover { background: var(--gold); color: #000; box-shadow: 0 0 40px rgba(197, 160, 89, 0.4); }
+
+        /* --- Locations Bar --- */
+        .locations-bar {
+            background: var(--primary-green); padding: 25px 0; text-align: center;
+            border-bottom: 1px solid var(--gold); border-top: 1px solid rgba(197, 160, 89, 0.3);
+            position: relative; z-index: 10;
+        }
+        .locations-text {
+            color: var(--gold); letter-spacing: 6px; font-size: 1rem; text-transform: uppercase; font-weight: 600;
         }
 
-        .btn-gold:hover {
-            background: var(--gold);
-            color: #000;
-            box-shadow: 0 0 30px rgba(197, 160, 89, 0.4);
-        }
-
-        /* --- Experience / Prestige Section --- */
-        .prestige {
-            padding: 140px 0;
-            background: var(--bg-accent);
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
-        }
-
-        .prestige-content h2 {
-            font-size: 3rem;
-            margin-bottom: 30px;
-            color: var(--gold);
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 50px;
-        }
-
-        .stat-item h4 {
-            font-size: 2.5rem;
-            color: var(--text-main);
-            margin-bottom: 5px;
-        }
-
-        .stat-item p {
-            color: var(--gold);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* --- Portfolio Grid --- */
-        .portfolio {
-            padding: 120px 0;
-        }
-
-        .portfolio-header {
-            text-align: center;
-            margin-bottom: 80px;
-        }
-
-        .portfolio-header h2 { font-size: 3.5rem; margin-bottom: 10px; }
-        .portfolio-header p { color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
-
-        .drama-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .drama-card {
+        /* --- About / Prestige Section --- */
+        .about { padding: 140px 0; background: var(--bg-accent); }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        
+        .about-img-wrapper {
             position: relative;
-            aspect-ratio: 9/16;
-            overflow: hidden;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.05);
         }
-
-        .drama-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 1s ease;
-            filter: grayscale(30%);
+        .about-img-wrapper::before {
+            content: ''; position: absolute; top: -20px; left: -20px; width: 100%; height: 100%;
+            border: 1px solid var(--gold); z-index: 0; opacity: 0.5;
         }
-
-        .drama-card:hover img {
-            transform: scale(1.1);
-            filter: grayscale(0%);
+        .about-img { 
+            width: 100%; position: relative; z-index: 1;
+            border-radius: 2px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            filter: contrast(1.1) saturate(1.1);
         }
+        
+        .section-title { font-size: 3.5rem; margin-bottom: 30px; line-height: 1.2; }
+        .text-gold { color: var(--gold); }
+        
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; }
+        .stat-item h4 { font-size: 2.5rem; color: #fff; margin-bottom: 5px; font-family: 'Playfair Display', serif; }
+        .stat-item p { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; }
 
-        .drama-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 40px;
-            opacity: 1;
-            transition: var(--transition);
+        /* --- Portfolio (Posters) --- */
+        .portfolio { padding: 120px 0; background: #050505; }
+        .portfolio-header { text-align: center; margin-bottom: 80px; }
+        .drama-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
         }
+        .poster-card {
+            position: relative; aspect-ratio: 9/16; overflow: hidden;
+            border: 1px solid #222; cursor: pointer; transition: var(--transition);
+        }
+        .poster-card img {
+            width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease;
+        }
+        .poster-card:hover img { transform: scale(1.08); }
+        .poster-card:hover { border-color: var(--gold); box-shadow: 0 10px 40px rgba(197, 160, 89, 0.1); z-index: 2; }
+        
+        /* Overlay on posters for extra premium feel on hover (Optional) */
+        .poster-card::after {
+            content:''; position: absolute; inset: 0; 
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            opacity: 0; transition: var(--transition);
+        }
+        .poster-card:hover::after { opacity: 1; }
 
-        .drama-overlay h3 { font-size: 1.8rem; margin-bottom: 5px; }
-        .drama-overlay span { color: var(--gold); font-size: 0.8rem; text-transform: uppercase; }
-
-        /* --- Craftmanship Section --- */
+        /* --- Craftmanship Section (Restored) --- */
         .craft {
             padding: 120px 0;
-            background: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1920');
-            background-attachment: fixed;
-            background-size: cover;
-            position: relative;
+            /* Use Hero Image blurred as background */
+            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.85)), url('IMG_4740.jpeg') fixed center/cover;
+            position: relative; text-align: center;
         }
-
-        .craft::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-        }
-
-        .craft-content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-        }
-
         .craft-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-            margin-top: 80px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 80px;
         }
+        .craft-item { padding: 40px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: var(--transition); }
+        .craft-item:hover { border-color: var(--gold); transform: translateY(-10px); background: rgba(10, 40, 24, 0.3); }
+        .craft-item h4 { color: var(--gold); font-size: 1.5rem; margin-bottom: 20px; font-family: 'Playfair Display', serif; }
+        .craft-item p { color: #bbb; font-size: 0.95rem; }
 
-        .craft-item h4 { color: var(--gold); font-size: 1.4rem; margin-bottom: 20px; }
-        .craft-item p { color: var(--text-dim); }
-
-        /* --- Partnership Section --- */
-        .partnership {
-            padding: 140px 0;
-            text-align: center;
+        /* --- Contact --- */
+        .contact { 
+            padding: 140px 0; text-align: center; 
+            background: #080808; position: relative; 
         }
-
-        .partnership h2 { font-size: 3rem; margin-bottom: 40px; }
-        .email-big {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1.5rem, 5vw, 3.5rem);
-            color: var(--gold);
-            text-decoration: none;
+        .email-link {
+            font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 4.5rem);
+            color: var(--gold); text-decoration: none; display: block; margin: 40px 0;
             transition: var(--transition);
         }
-        .email-big:hover { color: #fff; text-shadow: 0 0 30px rgba(197, 160, 89, 0.5); }
+        .email-link:hover { color: #fff; text-shadow: 0 0 40px var(--gold); }
 
         /* --- Footer --- */
         footer {
-            padding: 60px 0;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-dim);
-            letter-spacing: 2px;
+            padding: 50px 0; background: #000; border-top: 1px solid #111;
+            text-align: center; color: #555; font-size: 0.8rem; letter-spacing: 2px;
         }
 
-        /* --- Responsive --- */
+        /* Responsive */
         @media (max-width: 1024px) {
-            .drama-grid { grid-template-columns: repeat(2, 1fr); }
-            .grid-2, .craft-grid { grid-template-columns: 1fr; }
+             .drama-grid { grid-template-columns: repeat(2, 1fr); }
+             .grid-2 { gap: 40px; }
         }
-
         @media (max-width: 768px) {
+            .grid-2, .craft-grid { grid-template-columns: 1fr; }
+            .drama-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+            .hero-title { font-size: 3rem; }
+            .nav-links { display: none; }
             .container { padding: 0 25px; }
-            .hero-content h1 { font-size: 3.2rem; }
-            .nav-links { display: none; } /* Simplified for demo */
+            .section-title { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -308,10 +210,13 @@
     <header id="header">
         <div class="container">
             <nav>
-                <div class="logo">MY<span>CLOVER</span></div>
+                <div class="logo-container">
+                    <img src="IMG_4739.jpeg" alt="MyClover Studio Logo" class="logo-img"> 
+                </div>
                 <div class="nav-links">
-                    <a href="#prestige">Experience</a>
-                    <a href="#portfolio">Originals</a>
+                    <a href="#about">The Studio</a>
+                    <a href="#lineup">Originals</a>
+                    <a href="#craft">Craftsmanship</a>
                     <a href="#contact">Partnership</a>
                 </div>
             </nav>
@@ -321,31 +226,43 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <span>The Global Standard</span>
-                <h1>Crafting <br>Cinematic Stories <br>for the Digital Age.</h1>
-                <p style="font-size: 1.2rem; color: #ccc; margin-bottom: 40px; font-weight: 300;">
+                <span class="hero-tag">The Global Standard</span>
+                <h1 class="hero-title">
+                    Crafting <br>Cinematic Stories <br><span class="text-gold">for the Digital Age.</span>
+                </h1>
+                <div class="hero-desc">
                     Combining China's viral storytelling mastery with Thailand's world-class cinematic artistry. 
                     We don't just produce short dramas; we create vertical masterpieces.
-                </p>
+                </div>
                 <a href="#contact" class="btn-gold">Request Screening</a>
             </div>
         </div>
     </section>
 
-    <section id="prestige" class="prestige">
+    <div class="locations-bar">
+        <div class="container locations-text">
+            Bangkok &nbsp;•&nbsp; Beijing &nbsp;•&nbsp; Hangzhou
+        </div>
+    </div>
+
+    <section id="about" class="about">
         <div class="container">
             <div class="grid-2">
-                <div class="prestige-img">
-                    <img src="https://images.unsplash.com/photo-1492691523567-69dc384e5672?auto=format&fit=crop&q=80&w=800" alt="Cinematic Equipment" style="width: 100%; border-radius: 2px; filter: sepia(0.3) contrast(1.1);">
+                <div class="about-img-wrapper">
+                    <img src="IMG_4741.jpeg" alt="Production Team" class="about-img">
                 </div>
-                <div class="prestige-content">
-                    <h2>Unrivaled <span>Experience.</span></h2>
+                <div>
+                    <span style="color:var(--text-dim); text-transform: uppercase; letter-spacing: 2px;">Who We Are</span>
+                    <h2 class="section-title">The <span class="text-gold">Tri-City</span> Synergy</h2>
                     <p style="color: #ddd; font-size: 1.1rem; margin-bottom: 20px;">
-                        Our core team is a hybrid of global industry veterans. We bridge the gap between high-speed short-form viral content and the high-production values of international cinema.
+                        MyClover Studio operates a unique cross-border model, bridging the gap between high-speed viral content and international cinema quality.
                     </p>
-                    <p style="color: #888; font-weight: 300;">
-                        From award-winning cinematographers in the Thai feature film industry to narrative experts who have shaped billions of views in the Chinese short-drama market, MyClover brings a "Film Studio" mentality to every vertical project.
-                    </p>
+                    <ul style="list-style: none; color: #aaa; margin-bottom: 30px; line-height: 2;">
+                        <li>🟢 <strong>Beijing:</strong> Script development & Direction strategies.</li>
+                        <li>🟢 <strong>Hangzhou:</strong> Tech integration & vertical screen analytics.</li>
+                        <li>🟢 <strong>Bangkok:</strong> Cinema-grade Production & Star Talent.</li>
+                    </ul>
+                    
                     <div class="stats">
                         <div class="stat-item">
                             <h4>8K</h4>
@@ -361,34 +278,31 @@
         </div>
     </section>
 
-    <section id="portfolio" class="portfolio">
+    <section id="lineup" class="portfolio">
         <div class="container">
             <div class="portfolio-header">
-                <h2>Original <span>Series</span></h2>
-                <p>Exclusive 2026 Q1 Global Lineup</p>
+                <h2 class="section-title">Q1 2026 <span class="text-gold">Lineup</span></h2>
+                <p style="color: #666; letter-spacing: 3px; text-transform: uppercase;">Exclusive Originals</p>
             </div>
 
             <div class="drama-grid">
-                <div class="drama-card">
-                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600" alt="Alpha">
-                    <div class="drama-overlay">
-                        <span>Werewolf / Supernatural Romance</span>
-                        <h3>The Alpha's Betrayal</h3>
-                    </div>
+                <div class="poster-card">
+                    <img src="IMG_4742.jpeg" alt="The Alpha's Betrayal">
                 </div>
-                <div class="drama-card">
-                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=600" alt="Heir">
-                    <div class="drama-overlay">
-                        <span>Revenge / Urban Drama</span>
-                        <h3>Heir of Shadows</h3>
-                    </div>
+                <div class="poster-card">
+                    <img src="IMG_4743.jpeg" alt="Heir of Shadows">
                 </div>
-                <div class="drama-card">
-                    <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&q=80&w=600" alt="Contract">
-                    <div class="drama-overlay">
-                        <span>CEO / Modern Romance</span>
-                        <h3>The 100-Day Contract</h3>
-                    </div>
+                <div class="poster-card">
+                    <img src="IMG_4750.jpeg" alt="The 100-Day Contract">
+                </div>
+                <div class="poster-card">
+                    <img src="IMG_4751.jpeg" alt="The Hidden Billionaire">
+                </div>
+                <div class="poster-card">
+                    <img src="IMG_4752.jpeg" alt="Queen of Revenge">
+                </div>
+                <div class="poster-card">
+                    <img src="IMG_4744.jpeg" alt="Destiny Swap">
                 </div>
             </div>
             
@@ -398,15 +312,17 @@
         </div>
     </section>
 
-    <section class="craft">
-        <div class="container craft-content">
-            <h2 class="serif" style="font-size: 3rem; margin-bottom: 20px;">The <span>Craft</span> of Excellence</h2>
-            <p style="max-width: 700px; margin: 0 auto; color: #aaa;">We believe in premium execution. From Hollywood-standard lighting to narrative structures that keep audiences engaged until the final frame.</p>
+    <section id="craft" class="craft">
+        <div class="container">
+            <h2 class="section-title">The <span class="text-gold">Craft</span> of Excellence</h2>
+            <p style="max-width: 700px; margin: 0 auto; color: #aaa;">
+                We believe in premium execution. From Hollywood-standard lighting to narrative structures that keep audiences engaged until the final frame.
+            </p>
             
             <div class="craft-grid">
                 <div class="craft-item">
                     <h4>Cinematic Vision</h4>
-                    <p>Utilizing high-end cinema equipment and lighting normally reserved for feature-length films.</p>
+                    <p>Utilizing high-end ARRI & RED cameras and lighting normally reserved for feature-length films.</p>
                 </div>
                 <div class="craft-item">
                     <h4>Thai Artistry</h4>
@@ -420,15 +336,16 @@
         </div>
     </section>
 
-    <section id="contact" class="partnership">
+    <section id="contact" class="contact">
         <div class="container">
-            <span>For Licensing & Distribution</span>
-            <h2>Global Partnership <span>Enquiry</span></h2>
-            <p style="margin-bottom: 50px; color: #888;">We are currently selecting exclusive platform partners for our 2026 slate.</p>
-            <a href="mailto:team@myclover.com" class="email-big">team@myclover.com</a>
+            <span style="color: var(--gold); text-transform: uppercase; letter-spacing: 3px;">Exclusive Distribution</span>
+            <h2 class="section-title">Ready for <span class="text-gold">Launch?</span></h2>
+            <p style="color: #ccc;">Our slate is ready for global platform licensing. Contact our acquisition team.</p>
+            
+            <a href="mailto:team@myclover.com" class="email-link">team@myclover.com</a>
             
             <div style="margin-top: 60px;">
-                <p style="font-size: 0.8rem; letter-spacing: 2px; color: #444;">BANGKOK | SHANGHAI | SINGAPORE</p>
+                <p style="font-size: 0.8rem; letter-spacing: 2px; color: #444;">BANGKOK | BEIJING | HANGZHOU</p>
             </div>
         </div>
     </section>
@@ -440,7 +357,7 @@
     </footer>
 
     <script>
-        // Simple Header Scroll Effect
+        // Smooth Scroll & Header Effect
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
             if (window.scrollY > 50) {
@@ -448,6 +365,13 @@
             } else {
                 header.classList.remove('scrolled');
             }
+        });
+        
+        // Add subtle parallax effect to Hero
+        window.addEventListener('scroll', function() {
+            const scrolled = window.scrollY;
+            const hero = document.querySelector('.hero');
+            hero.style.backgroundPositionY = -(scrolled * 0.5) + 'px';
         });
     </script>
 </body>
