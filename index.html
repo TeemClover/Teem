@@ -33,28 +33,57 @@
 
         /* --- Header --- */
         header {
-            position: fixed; top: 0; width: 100%; padding: 20px 0; z-index: 1000;
+            position: fixed; top: 0; width: 100%; padding: 15px 0; z-index: 1000;
             transition: var(--transition);
-            background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
+            background: rgba(5, 5, 5, 0.9); /* พื้นหลังดำโปร่งแสงเสมอ เพื่อรองรับโลโก้ JPEG */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(197, 160, 89, 0.1);
         }
         header.scrolled {
-            background: rgba(5, 5, 5, 0.98);
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.98);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         nav { display: flex; justify-content: space-between; align-items: center; }
 
-        /* Logo Styling specifically for JPEG */
+        /* --- LOGO FIX: THE GOLD BADGE --- */
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* เปลี่ยน JPEG ให้เป็น Emblem หรู */
         .logo-img {
-            height: 55px;
-            width: auto;
-            border-radius: 6px; /* ลบเหลี่ยม */
-            border: 1px solid var(--gold); /* กรอบทอง */
-            box-shadow: 0 0 20px rgba(197, 160, 89, 0.15); /* เรืองแสงนิดๆ */
+            height: 50px; 
+            width: auto; 
+            /* เทคนิคทำให้ JPEG ดูแพง: ใส่กรอบซ้อน */
+            padding: 2px;
+            background: var(--gold); /* เส้นขอบในสีทอง */
+            border: 1px solid rgba(255,255,255,0.1); /* เส้นขอบนอก */
+            border-radius: 4px; /* มุมมนนิดๆ ให้ดูโมเดิร์น (ถ้าอยากได้กลม แก้เป็น 50%) */
+            box-shadow: 0 0 25px rgba(197, 160, 89, 0.4); /* เงาแสงทอง */
             transition: var(--transition);
         }
-        .logo-img:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(197, 160, 89, 0.3); }
+        
+        .logo-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(197, 160, 89, 0.6);
+            background: #fff;
+        }
+
+        /* เพิ่มชื่อ Brand เป็น Text ข้างๆ เพื่อความชัดเจน */
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+        .brand-name span { color: var(--gold); }
 
         .nav-links a {
             color: var(--text-main); text-decoration: none; margin-left: 40px;
@@ -68,12 +97,12 @@
         .hero {
             height: 100vh;
             display: flex; align-items: center; position: relative;
-            background: url('IMG_4740.jpeg') no-repeat center center; /* Hero Image */
+            background: url('IMG_4740.jpeg') no-repeat center center;
             background-size: cover;
         }
         .hero::before {
             content:''; position: absolute; inset: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.4) 60%, transparent);
+            background: linear-gradient(to right, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.3) 60%, transparent);
         }
 
         .hero-content { position: relative; z-index: 2; max-width: 800px; padding-top: 60px; }
@@ -149,7 +178,6 @@
         .poster-card:hover img { transform: scale(1.08); }
         .poster-card:hover { border-color: var(--gold); box-shadow: 0 10px 40px rgba(197, 160, 89, 0.1); z-index: 2; }
         
-        /* Overlay on posters for extra premium feel on hover (Optional) */
         .poster-card::after {
             content:''; position: absolute; inset: 0; 
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
@@ -157,10 +185,9 @@
         }
         .poster-card:hover::after { opacity: 1; }
 
-        /* --- Craftmanship Section (Restored) --- */
+        /* --- Craftmanship Section --- */
         .craft {
             padding: 120px 0;
-            /* Use Hero Image blurred as background */
             background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.85)), url('IMG_4740.jpeg') fixed center/cover;
             position: relative; text-align: center;
         }
@@ -202,6 +229,8 @@
             .nav-links { display: none; }
             .container { padding: 0 25px; }
             .section-title { font-size: 2.5rem; }
+            .logo-wrapper { gap: 10px; }
+            .brand-name { font-size: 1rem; }
         }
     </style>
 </head>
@@ -210,8 +239,9 @@
     <header id="header">
         <div class="container">
             <nav>
-                <div class="logo-container">
-                    <img src="IMG_4739.jpeg" alt="MyClover Studio Logo" class="logo-img"> 
+                <div class="logo-wrapper">
+                    <img src="IMG_4739.jpeg" alt="MyClover Logo" class="logo-img"> 
+                    <div class="brand-name">My<span>Clover</span></div>
                 </div>
                 <div class="nav-links">
                     <a href="#about">The Studio</a>
@@ -365,13 +395,6 @@
             } else {
                 header.classList.remove('scrolled');
             }
-        });
-        
-        // Add subtle parallax effect to Hero
-        window.addEventListener('scroll', function() {
-            const scrolled = window.scrollY;
-            const hero = document.querySelector('.hero');
-            hero.style.backgroundPositionY = -(scrolled * 0.5) + 'px';
         });
     </script>
 </body>
