@@ -3,45 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyClover Studio | Premium Short Dramas from Thailand</title>
+    <title>MyClover Studio | The Gold Standard of Vertical Cinema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* CSS Reset & Basic Style */
         :root {
-            --primary-color: #00D26A; /* Clover Green - สีเขียวเหนี่ยวทรัพย์ */
-            --dark-bg: #0a0a0a;
-            --light-text: #f5f5f5;
-            --grey-text: #a0a0a0;
+            --gold: #C5A059;
+            --gold-light: #E0C080;
+            --bg-dark: #050505;
+            --bg-accent: #111111;
+            --text-main: #FFFFFF;
+            --text-dim: #A0A0A0;
+            --transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+
+        * {
             margin: 0;
             padding: 0;
-            background-color: var(--dark-bg);
-            color: var(--light-text);
-            line-height: 1.6;
+            box-sizing: border-box;
         }
 
-        a { text-decoration: none; color: white; transition: 0.3s; }
-        a:hover { color: var(--primary-color); }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
 
-        /* Container */
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 40px;
         }
 
-        /* Header */
+        /* --- Navigation --- */
         header {
-            padding: 20px 0;
             position: fixed;
+            top: 0;
             width: 100%;
-            background: rgba(10, 10, 10, 0.9);
+            padding: 30px 0;
             z-index: 1000;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            background: rgba(5, 5, 5, 0.95);
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
             backdrop-filter: blur(10px);
         }
-        
+
         nav {
             display: flex;
             justify-content: space-between;
@@ -49,311 +64,391 @@
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .logo span { color: var(--gold); }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 40px;
+            font-size: 0.85rem;
             letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: var(--transition);
         }
 
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
+        .nav-links a:hover { color: var(--gold); }
 
-        /* Hero Section */
+        /* --- Hero Section --- */
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://via.placeholder.com/1920x1080/111/333?text=Cinematic+Production+Background');
-            background-size: cover;
-            background-position: center;
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to right, rgba(0,0,0,0.9) 30%, transparent), 
+                        url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&q=80&w=1920'); /* Placeholder: Cinema Set */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero-content span {
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 20px;
         }
 
         .hero-content h1 {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            line-height: 1.1;
+            margin-bottom: 30px;
+        }
+
+        .btn-gold {
+            display: inline-block;
+            padding: 18px 45px;
+            border: 1px solid var(--gold);
+            color: var(--gold);
             text-transform: uppercase;
             letter-spacing: 3px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            background: transparent;
         }
 
-        .hero-content p {
-            font-size: 1.5rem;
-            color: var(--grey-text);
-            margin-bottom: 40px;
-        }
-
-        .btn {
-            padding: 15px 40px;
-            background-color: var(--primary-color);
+        .btn-gold:hover {
+            background: var(--gold);
             color: #000;
-            font-weight: bold;
-            border-radius: 50px;
-            text-transform: uppercase;
-            font-size: 1rem;
-            cursor: pointer;
-            border: none;
-            transition: transform 0.2s;
-        }
-        
-        .btn:hover {
-            transform: scale(1.05);
-            background-color: #fff;
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.4);
         }
 
-        /* Section Styling */
-        section {
-            padding: 100px 0;
+        /* --- Experience / Prestige Section --- */
+        .prestige {
+            padding: 140px 0;
+            background: var(--bg-accent);
         }
 
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .section-title span {
-            color: var(--primary-color);
-        }
-
-        /* About Grid */
-        .about-grid {
+        .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            gap: 80px;
             align-items: center;
         }
 
-        .about-text h3 {
-            font-size: 2rem;
-            margin-bottom: 20px;
+        .prestige-content h2 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: var(--gold);
         }
 
-        /* Services / Features */
-        .features-grid {
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .stat-item h4 {
+            font-size: 2.5rem;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            color: var(--gold);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Portfolio Grid --- */
+        .portfolio {
+            padding: 120px 0;
+        }
+
+        .portfolio-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .portfolio-header h2 { font-size: 3.5rem; margin-bottom: 10px; }
+        .portfolio-header p { color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+
+        .drama-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
+        }
+
+        .drama-card {
+            position: relative;
+            aspect-ratio: 9/16;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .drama-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1s ease;
+            filter: grayscale(30%);
+        }
+
+        .drama-card:hover img {
+            transform: scale(1.1);
+            filter: grayscale(0%);
+        }
+
+        .drama-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+            opacity: 1;
+            transition: var(--transition);
+        }
+
+        .drama-overlay h3 { font-size: 1.8rem; margin-bottom: 5px; }
+        .drama-overlay span { color: var(--gold); font-size: 0.8rem; text-transform: uppercase; }
+
+        /* --- Craftmanship Section --- */
+        .craft {
+            padding: 120px 0;
+            background: url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=1920');
+            background-attachment: fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        .craft::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+        }
+
+        .craft-content {
+            position: relative;
+            z-index: 1;
             text-align: center;
         }
 
-        .feature-card {
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 10px;
-            border: 1px solid #333;
-        }
-
-        .feature-card h3 { color: var(--primary-color); margin-bottom: 15px; }
-
-        /* Portfolio / Projects */
-        .portfolio-grid {
+        .craft-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 40px;
+            margin-top: 80px;
         }
 
-        .project-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            cursor: pointer;
-        }
+        .craft-item h4 { color: var(--gold); font-size: 1.4rem; margin-bottom: 20px; }
+        .craft-item p { color: var(--text-dim); }
 
-        .project-card img {
-            width: 100%;
-            height: 450px; /* Portrait for vertical drama */
-            object-fit: cover;
-            transition: 0.5s;
-            opacity: 0.8;
-        }
-
-        .project-card:hover img {
-            transform: scale(1.1);
-            opacity: 1;
-        }
-
-        .project-info {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.8);
-            padding: 10px 20px;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        /* Contact Section */
-        .contact-section {
-            background: #111;
+        /* --- Partnership Section --- */
+        .partnership {
+            padding: 140px 0;
             text-align: center;
         }
 
-        .contact-info {
-            font-size: 1.2rem;
-            margin-top: 30px;
-            color: var(--grey-text);
+        .partnership h2 { font-size: 3rem; margin-bottom: 40px; }
+        .email-big {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 5vw, 3.5rem);
+            color: var(--gold);
+            text-decoration: none;
+            transition: var(--transition);
         }
+        .email-big:hover { color: #fff; text-shadow: 0 0 30px rgba(197, 160, 89, 0.5); }
 
-        .email-link {
-            font-size: 2rem;
-            color: var(--primary-color);
-            font-weight: bold;
-            display: block;
-            margin: 20px 0;
-        }
-
-        /* Footer */
+        /* --- Footer --- */
         footer {
-            padding: 20px;
+            padding: 60px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
             text-align: center;
-            border-top: 1px solid #333;
-            color: #666;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            letter-spacing: 2px;
         }
 
-        /* Mobile Responsive */
+        /* --- Responsive --- */
+        @media (max-width: 1024px) {
+            .drama-grid { grid-template-columns: repeat(2, 1fr); }
+            .grid-2, .craft-grid { grid-template-columns: 1fr; }
+        }
+
         @media (max-width: 768px) {
-            .about-grid, .features-grid, .portfolio-grid {
-                grid-template-columns: 1fr;
-            }
-            .hero-content h1 { font-size: 2.5rem; }
+            .container { padding: 0 25px; }
+            .hero-content h1 { font-size: 3.2rem; }
+            .nav-links { display: none; } /* Simplified for demo */
         }
     </style>
 </head>
 <body>
 
-    <header>
+    <header id="header">
         <div class="container">
             <nav>
-                <div class="logo">MYCLOVER STUDIO</div>
+                <div class="logo">MY<span>CLOVER</span></div>
                 <div class="nav-links">
-                    <a href="#about">About</a>
-                    <a href="#projects">Originals</a>
-                    <a href="#contact">Contact</a>
+                    <a href="#prestige">Experience</a>
+                    <a href="#portfolio">Originals</a>
+                    <a href="#contact">Partnership</a>
                 </div>
             </nav>
         </div>
     </header>
 
     <section class="hero">
-        <div class="container hero-content">
-            <h1>The New Era of <br> <span style="color:var(--primary-color)">Vertical Cinema</span></h1>
-            <p>Bridging Chinese Speed with Thai Craftsmanship. <br>Producing Premium Short Dramas for the Global Market.</p>
-            <a href="#contact" class="btn">Partner With Us</a>
+        <div class="container">
+            <div class="hero-content">
+                <span>The Global Standard</span>
+                <h1>Crafting <br>Cinematic Stories <br>for the Digital Age.</h1>
+                <p style="font-size: 1.2rem; color: #ccc; margin-bottom: 40px; font-weight: 300;">
+                    Combining China's viral storytelling mastery with Thailand's world-class cinematic artistry. 
+                    We don't just produce short dramas; we create vertical masterpieces.
+                </p>
+                <a href="#contact" class="btn-gold">Request Screening</a>
+            </div>
         </div>
     </section>
 
-    <section id="about">
+    <section id="prestige" class="prestige">
         <div class="container">
-            <div class="about-grid">
-                <div class="about-img">
-                    <img src="https://via.placeholder.com/600x400/222/555?text=Studio+Team+Meeting" alt="MyClover Team" style="width:100%; border-radius:10px;">
+            <div class="grid-2">
+                <div class="prestige-img">
+                    <img src="https://images.unsplash.com/photo-1492691523567-69dc384e5672?auto=format&fit=crop&q=80&w=800" alt="Cinematic Equipment" style="width: 100%; border-radius: 2px; filter: sepia(0.3) contrast(1.1);">
                 </div>
-                <div class="about-text">
-                    <h3>Bangkok Based. <br>Globally Minded.</h3>
-                    <p>MyClover Studio is a premier production house based in Bangkok, specializing in high-quality <strong>Vertical Short Dramas</strong>. We combine the proven viral storytelling formulas from the Chinese market with Thailand's world-renowned production values and acting talent.</p>
-                    <p>With a core team of experienced producers from Thailand and strategic direction from top-tier Chinese industry experts, we deliver content that is not only visually stunning but also highly addictive.</p>
+                <div class="prestige-content">
+                    <h2>Unrivaled <span>Experience.</span></h2>
+                    <p style="color: #ddd; font-size: 1.1rem; margin-bottom: 20px;">
+                        Our core team is a hybrid of global industry veterans. We bridge the gap between high-speed short-form viral content and the high-production values of international cinema.
+                    </p>
+                    <p style="color: #888; font-weight: 300;">
+                        From award-winning cinematographers in the Thai feature film industry to narrative experts who have shaped billions of views in the Chinese short-drama market, MyClover brings a "Film Studio" mentality to every vertical project.
+                    </p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <h4>8K</h4>
+                            <p>Native Resolution</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>Global</h4>
+                            <p>Narrative Standards</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section style="background-color: #151515;">
+    <section id="portfolio" class="portfolio">
         <div class="container">
-            <h2 class="section-title">Why <span>MyClover?</span></h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <h3>Cinema-Grade Visuals</h3>
-                    <p>We don't just shoot; we craft. Utilizing top-tier cameras, lighting, and Thai aesthetic expertise to elevate the "Short Drama" look.</p>
+            <div class="portfolio-header">
+                <h2>Original <span>Series</span></h2>
+                <p>Exclusive 2026 Q1 Global Lineup</p>
+            </div>
+
+            <div class="drama-grid">
+                <div class="drama-card">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=600" alt="Alpha">
+                    <div class="drama-overlay">
+                        <span>Werewolf / Supernatural Romance</span>
+                        <h3>The Alpha's Betrayal</h3>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <h3>Proven Viral Genres</h3>
-                    <p>From Werewolf Romances to CEO Revenges. Our scripts are data-driven, targeting the hottest trends in US, EU, and SEA markets.</p>
+                <div class="drama-card">
+                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=600" alt="Heir">
+                    <div class="drama-overlay">
+                        <span>Revenge / Urban Drama</span>
+                        <h3>Heir of Shadows</h3>
+                    </div>
                 </div>
-                <div class="feature-card">
-                    <h3>Cost & Speed Efficiency</h3>
-                    <p>Leveraging Thailand's optimal production costs and our agile "4-Day Shoot" model to maximize ROI for platforms.</p>
+                <div class="drama-card">
+                    <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&q=80&w=600" alt="Contract">
+                    <div class="drama-overlay">
+                        <span>CEO / Modern Romance</span>
+                        <h3>The 100-Day Contract</h3>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section id="projects">
-        <div class="container">
-            <h2 class="section-title">Q1 2026 <span>Lineup</span></h2>
-            <p style="text-align:center; color:#888; margin-bottom:40px;">Currently in production. Open for Licensing & Co-Production.</p>
             
-            <div class="portfolio-grid">
-                <div class="project-card">
-                    <img src="https://via.placeholder.com/400x600/333/fff?text=Poster:+The+Alpha's+Betrayal" alt="Drama Poster">
-                    <div class="project-info">
-                        <strong>The Alpha's Betrayal</strong><br>
-                        <small>Genre: Werewolf / Romance</small>
-                    </div>
+            <p style="text-align: center; margin-top: 60px; font-weight: 300; color: #555;">
+                And 12+ more titles currently in post-production.
+            </p>
+        </div>
+    </section>
+
+    <section class="craft">
+        <div class="container craft-content">
+            <h2 class="serif" style="font-size: 3rem; margin-bottom: 20px;">The <span>Craft</span> of Excellence</h2>
+            <p style="max-width: 700px; margin: 0 auto; color: #aaa;">We believe in premium execution. From Hollywood-standard lighting to narrative structures that keep audiences engaged until the final frame.</p>
+            
+            <div class="craft-grid">
+                <div class="craft-item">
+                    <h4>Cinematic Vision</h4>
+                    <p>Utilizing high-end cinema equipment and lighting normally reserved for feature-length films.</p>
                 </div>
-                <div class="project-card">
-                    <img src="https://via.placeholder.com/400x600/444/fff?text=Poster:+Reborn+Heir" alt="Drama Poster">
-                    <div class="project-info">
-                        <strong>Reborn Heir</strong><br>
-                        <small>Genre: Revenge / CEO</small>
-                    </div>
+                <div class="craft-item">
+                    <h4>Thai Artistry</h4>
+                    <p>Access to Thailand’s world-famous acting talent, costume design, and picturesque locations.</p>
                 </div>
-                <div class="project-card">
-                    <img src="https://via.placeholder.com/400x600/222/fff?text=Poster:+Contract+Love" alt="Drama Poster">
-                    <div class="project-info">
-                        <strong>7-Day Contract Love</strong><br>
-                        <small>Genre: Romance / Modern</small>
-                    </div>
-                </div>
-                 <div class="project-card">
-                    <img src="https://via.placeholder.com/400x600/333/fff?text=Poster:+Hidden+Billionaire" alt="Drama Poster">
-                    <div class="project-info">
-                        <strong>The Hidden Billionaire</strong><br>
-                        <small>Genre: Face-Slapping / Drama</small>
-                    </div>
-                </div>
-                 <div class="project-card">
-                    <img src="https://via.placeholder.com/400x600/444/fff?text=Poster:+Queen+of+Revenge" alt="Drama Poster">
-                    <div class="project-info">
-                        <strong>Queen of Revenge</strong><br>
-                        <small>Genre: Female Empowerment</small>
-                    </div>
-                </div>
-                 <div class="project-card">
-                    <img src="https://via.placeholder.com/400x600/222/fff?text=Poster:+Destiny+Swap" alt="Drama Poster">
-                    <div class="project-info">
-                        <strong>Destiny Swap</strong><br>
-                        <small>Genre: Fantasy / Romance</small>
-                    </div>
+                <div class="craft-item">
+                    <h4>Global Post-Prod</h4>
+                    <p>Color grading and sound engineering handled by experts from international streaming platforms.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contact" class="contact-section">
+    <section id="contact" class="partnership">
         <div class="container">
-            <h2 class="section-title">Let's <span>Collaborate</span></h2>
-            <p>Interested in Licensing, Distribution, or Co-Production?</p>
+            <span>For Licensing & Distribution</span>
+            <h2>Global Partnership <span>Enquiry</span></h2>
+            <p style="margin-bottom: 50px; color: #888;">We are currently selecting exclusive platform partners for our 2026 slate.</p>
+            <a href="mailto:team@myclover.com" class="email-big">team@myclover.com</a>
             
-            <div class="contact-info">
-                <p>Contact our Acquisition Team directly:</p>
-                <a href="mailto:partner@myclover.com" class="email-link">partner@myclover.com</a>
-                <p>Bangkok, Thailand | Shanghai, China</p>
-                <br>
-                <p style="color:#666; font-size:0.9rem;">(We are open for Global Platform Partnerships)</p>
+            <div style="margin-top: 60px;">
+                <p style="font-size: 0.8rem; letter-spacing: 2px; color: #444;">BANGKOK | SHANGHAI | SINGAPORE</p>
             </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 MyClover Studio. All Rights Reserved.</p>
+            <p>&copy; 2026 MYCLOVER STUDIO. ALL RIGHTS RESERVED. <br> PREMIUM VERTICAL PRODUCTIONS.</p>
         </div>
     </footer>
 
+    <script>
+        // Simple Header Scroll Effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
