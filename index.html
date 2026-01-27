@@ -6,7 +6,6 @@
     <title>MyClover Studio | The Gold Standard</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
@@ -36,7 +35,7 @@
         h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
         .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 
-        /* --- 1. HEADER & HAMBURGER --- */
+        /* --- HEADER --- */
         header {
             position: fixed; top: 0; width: 100%; z-index: 2000;
             transition: var(--transition);
@@ -44,46 +43,35 @@
             padding: 25px 0;
         }
         header.scrolled {
-            background: rgba(5, 5, 5, 0.95);
+            background: rgba(5, 5, 5, 0.98);
             backdrop-filter: blur(10px);
             padding: 15px 0;
             border-bottom: 1px solid rgba(197, 160, 89, 0.2);
         }
-
         nav { display: flex; justify-content: space-between; align-items: center; }
 
-        /* Typo Logo */
         .brand-logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem; color: #fff;
-            text-transform: uppercase; letter-spacing: 1px;
-            line-height: 0.8; cursor: pointer;
+            font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff;
+            text-transform: uppercase; letter-spacing: 1px; line-height: 0.8; cursor: pointer;
         }
         .brand-logo span.highlight { color: var(--gold); font-weight: 700; }
         .brand-logo span.small { 
             font-family: 'Montserrat', sans-serif; font-size: 0.65rem; 
-            display: block; letter-spacing: 4px; color: #888; 
-            margin-top: 5px; margin-left: 2px;
+            display: block; letter-spacing: 4px; color: #888; margin-top: 5px; margin-left: 2px;
         }
 
-        /* Hamburger */
         .hamburger {
-            cursor: pointer; width: 35px; height: 24px;
-            position: relative; z-index: 2100;
+            cursor: pointer; width: 35px; height: 24px; position: relative; z-index: 2100;
             display: flex; flex-direction: column; justify-content: space-between;
         }
-        .hamburger span {
-            display: block; width: 100%; height: 2px;
-            background-color: var(--gold); transition: var(--transition);
-        }
+        .hamburger span { display: block; width: 100%; height: 2px; background-color: var(--gold); transition: var(--transition); }
         .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(8px, 6px); }
         .hamburger.active span:nth-child(2) { opacity: 0; }
         .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(8px, -8px); }
 
-        /* Menu Overlay */
         .menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: rgba(0,0,0,0.95); z-index: 2050;
+            background: rgba(0,0,0,0.98); z-index: 2050;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; visibility: hidden; transition: var(--transition);
         }
@@ -94,173 +82,151 @@
             transition: var(--transition); opacity: 0; transform: translateY(20px);
         }
         .menu-overlay.open .menu-links a { opacity: 1; transform: translateY(0); }
-        .menu-overlay.open .menu-links a:nth-child(1) { transition-delay: 0.1s; }
-        .menu-overlay.open .menu-links a:nth-child(2) { transition-delay: 0.2s; }
-        .menu-overlay.open .menu-links a:nth-child(3) { transition-delay: 0.3s; }
         .menu-links a:hover { color: var(--gold); letter-spacing: 2px; }
 
-        /* --- 2. HERO SECTION (Moving Background) --- */
-        .hero {
-            height: 100vh; width: 100%; position: relative;
-            display: flex; align-items: center; overflow: hidden;
-        }
-        
-        /* The Moving Image Layer */
+        /* --- HERO --- */
+        .hero { height: 100vh; width: 100%; position: relative; display: flex; align-items: center; overflow: hidden; }
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('IMG_4740.jpeg');
             background-size: cover; background-position: center;
-            /* Ken Burns Effect Animation */
-            animation: kenburns 20s infinite alternate;
-            z-index: 0;
+            animation: kenburns 20s infinite alternate; z-index: 0;
         }
-        @keyframes kenburns {
-            from { transform: scale(1); }
-            to { transform: scale(1.15); }
-        }
+        @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.15); } }
 
-        /* Gradient Overlay (Lighter) */
-        .hero::before {
-            content:''; position: absolute; inset: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
-            z-index: 1;
-        }
-        .hero::after {
-            /* Gradient from bottom up for text readability */
-            content:''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
-            background: linear-gradient(to top, rgba(5,5,5,1), transparent);
-            z-index: 1;
-        }
-
+        .hero::before { content:''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.1)); z-index: 1; }
         .hero-content { position: relative; z-index: 2; max-width: 900px; padding-top: 80px; }
-        
         .hero-tag {
-            display: inline-block; padding: 8px 16px; 
-            border: 1px solid var(--gold); color: var(--gold);
+            display: inline-block; padding: 8px 16px; border: 1px solid var(--gold); color: var(--gold);
             font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 600;
             margin-bottom: 25px; background: rgba(0,0,0,0.3); backdrop-filter: blur(5px);
         }
-
-        .hero-title {
-            font-size: clamp(3.5rem, 8vw, 6.5rem); line-height: 1.05; margin-bottom: 30px;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        
-        .hero-desc {
-            font-size: 1.2rem; color: #eee; margin-bottom: 40px; max-width: 650px; font-weight: 300;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-        
+        .hero-title { font-size: clamp(3.5rem, 8vw, 6.5rem); line-height: 1.05; margin-bottom: 30px; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .btn-gold {
-            position: relative; padding: 18px 50px; 
-            background: var(--gold); color: #000;
+            position: relative; padding: 18px 50px; background: var(--gold); color: #000;
             text-transform: uppercase; font-weight: 700; letter-spacing: 2px; text-decoration: none; 
             display: inline-block; transition: var(--transition);
         }
-        .btn-gold:hover { background: #fff; box-shadow: 0 0 30px rgba(255,255,255,0.4); transform: translateY(-3px); }
+        .btn-gold:hover { background: #fff; transform: translateY(-3px); }
 
-        /* --- 3. LOCATIONS --- */
+        /* --- LOCATIONS --- */
         .locations-bar {
             background: var(--primary-green); padding: 25px 0; text-align: center;
-            border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold);
-            position: relative; z-index: 10;
+            border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); position: relative; z-index: 10;
         }
-        .locations-text { 
-            color: var(--gold); letter-spacing: 6px; font-size: 0.9rem; 
-            text-transform: uppercase; font-weight: 600; 
-        }
+        .locations-text { color: var(--gold); letter-spacing: 6px; font-size: 0.9rem; text-transform: uppercase; font-weight: 600; }
 
-        /* --- 4. ABOUT (Detailed Content Restored) --- */
+        /* --- ABOUT --- */
         .about { padding: 140px 0; background: var(--bg-accent); }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-        
-        .about-img { 
-            width: 100%; border-radius: 4px; 
-            box-shadow: 20px 20px 0px rgba(197, 160, 89, 0.1); 
-            filter: contrast(1.1);
-        }
-        
+        .about-img { width: 100%; border-radius: 4px; box-shadow: 20px 20px 0px rgba(197, 160, 89, 0.1); filter: contrast(1.1); }
         .section-title { font-size: 3rem; margin-bottom: 25px; color: #fff; line-height: 1.2; }
-        
         .feature-list { list-style: none; margin: 30px 0; border-left: 2px solid var(--gold); padding-left: 30px; }
         .feature-list li { margin-bottom: 20px; }
         .feature-list strong { color: #fff; font-size: 1.1rem; display: block; margin-bottom: 5px; }
         .feature-list span { color: #888; font-size: 0.95rem; }
 
-        /* --- 5. CAROUSEL & SYNOPSIS --- */
+        /* --- NEW CAROUSEL FIX: SEPARATED TEXT --- */
         .portfolio { padding: 120px 0; background: #050505; overflow: hidden; }
         
-        .swiper { width: 100%; padding-top: 40px; padding-bottom: 60px; }
+        /* Swiper Container Padding to fit text below */
+        .swiper { 
+            width: 100%; 
+            padding-top: 40px; 
+            padding-bottom: 100px; /* เพิ่มพื้นที่ด้านล่างเยอะๆ ให้ตัวหนังสือไม่ตกขอบ */
+        }
+        
         .swiper-slide {
-            width: 320px; height: 569px; /* 9:16 */
-            border-radius: 8px; position: relative; overflow: hidden;
+            width: 300px; 
+            height: auto; /* ให้ความสูงยืดตามเนื้อหา */
             transition: var(--transition);
-            /* Initial state: dark & small */
-            filter: brightness(0.5); transform: scale(0.9);
+            /* Slide ที่ไม่ได้เลือกจะจางและเล็ก */
+            opacity: 0.5; 
+            transform: scale(0.9);
         }
-        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Active State */
-        .swiper-slide-active { filter: brightness(1); transform: scale(1.1); z-index: 10; border: 1px solid var(--gold); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-
-        /* Synopsis Overlay */
+        /* 1. กล่องใส่รูป (Poster Only) */
+        .poster-box {
+            width: 100%;
+            aspect-ratio: 9/16; /* บังคับสัดส่วนแนวตั้ง */
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transition: var(--transition);
+        }
+        
+        .poster-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        
+        /* 2. กล่องใส่ข้อความ (Text Only - อยู่ใต้รูป) */
         .slide-content {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 30px 20px;
-            background: linear-gradient(to top, rgba(0,0,0,1), transparent);
-            opacity: 0; transform: translateY(20px); transition: 0.5s;
-        }
-        .swiper-slide-active .slide-content { opacity: 1; transform: translateY(0); }
-        
-        .slide-genre { color: var(--gold); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; display: block; font-weight: 700; }
-        .slide-logline { color: #fff; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; line-height: 1.3; }
-
-        /* --- 6. CRAFT (Technical Specs) --- */
-        .craft { 
-            padding: 120px 0; 
-            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.8)), url('IMG_4740.jpeg') fixed center/cover; 
+            margin-top: 25px; /* เว้นระยะจากรูป */
             text-align: center;
+            opacity: 0; /* ซ่อนก่อน */
+            transform: translateY(10px); 
+            transition: 0.5s ease;
         }
+        
+        /* --- Active Slide Styles --- */
+        .swiper-slide-active { 
+            opacity: 1; 
+            transform: scale(1.05); /* ขยายใหญ่ขึ้นนิดนึง */
+            z-index: 10;
+        }
+        
+        /* Active: ใส่กรอบทองที่รูป */
+        .swiper-slide-active .poster-box {
+            border: 3px solid var(--gold); /* กรอบทองอยู่นอกรูป */
+            box-shadow: 0 0 60px rgba(197, 160, 89, 0.3);
+        }
+
+        /* Active: โชว์ข้อความด้านล่าง */
+        .swiper-slide-active .slide-content { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        
+        .slide-genre { 
+            color: var(--gold); font-size: 0.75rem; text-transform: uppercase; 
+            letter-spacing: 3px; margin-bottom: 10px; display: block; font-weight: 700; 
+        }
+        .slide-logline { 
+            color: #fff; font-family: 'Playfair Display', serif; font-style: italic; 
+            font-size: 1rem; line-height: 1.4; 
+        }
+
+        /* --- CRAFT --- */
+        .craft { padding: 120px 0; background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.8)), url('IMG_4740.jpeg') fixed center/cover; text-align: center; }
         .craft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 60px; }
-        .craft-item { 
-            padding: 40px; background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.05); transition: var(--transition); 
-        }
+        .craft-item { padding: 40px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: var(--transition); }
         .craft-item:hover { border-color: var(--gold); transform: translateY(-10px); background: rgba(10, 40, 24, 0.4); }
         .craft-item h4 { color: var(--gold); font-size: 1.4rem; margin-bottom: 15px; }
         .craft-item p { color: #aaa; font-size: 0.9rem; }
 
-        /* --- 7. CONTACT (The Gatekeeper) --- */
+        /* --- CONTACT --- */
         .contact { padding: 140px 0; text-align: center; background: #080808; position: relative; }
-        
         .logo-badge {
             height: 100px; width: auto; margin-bottom: 30px;
             border: 2px solid var(--gold); border-radius: 8px; padding: 5px;
-            box-shadow: 0 0 30px rgba(197, 160, 89, 0.2);
-            transition: var(--transition);
+            box-shadow: 0 0 30px rgba(197, 160, 89, 0.2); transition: var(--transition);
         }
         .logo-badge:hover { box-shadow: 0 0 50px rgba(197, 160, 89, 0.6); transform: scale(1.05); background: #fff; }
-
         .contact-note {
             max-width: 600px; margin: 0 auto 40px; color: #666; font-size: 0.9rem;
             border: 1px dashed #333; padding: 20px; border-radius: 4px;
         }
-        
         .email-link {
             font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 4rem);
-            color: var(--gold); text-decoration: none; display: block;
-            transition: var(--transition);
+            color: var(--gold); text-decoration: none; display: block; transition: var(--transition);
         }
         .email-link:hover { color: #fff; text-shadow: 0 0 40px var(--gold); }
-        
         footer { padding: 40px 0; background: #000; text-align: center; color: #444; font-size: 0.75rem; letter-spacing: 2px; border-top: 1px solid #111; }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .container { padding: 0 25px; }
             .grid-2, .craft-grid { grid-template-columns: 1fr; }
             .hero-title { font-size: 3.2rem; }
-            .feature-list { padding-left: 20px; border-left: 1px solid var(--gold); }
         }
     </style>
 </head>
@@ -270,8 +236,7 @@
         <div class="container">
             <nav>
                 <div class="brand-logo">
-                    My<span class="highlight">Clover</span>
-                    <span class="small">STUDIO</span>
+                    My<span class="highlight">Clover</span><span class="small">STUDIO</span>
                 </div>
                 <div class="hamburger" id="hamburgerBtn">
                     <span></span><span></span><span></span>
@@ -291,7 +256,6 @@
 
     <section class="hero">
         <div class="hero-bg"></div>
-        
         <div class="container hero-content" data-aos="fade-up" data-aos-duration="1200">
             <span class="hero-tag">The Global Standard</span>
             <h1 class="hero-title">
@@ -305,37 +269,20 @@
     </section>
 
     <div class="locations-bar" data-aos="fade-up">
-        <div class="container locations-text">
-            Bangkok &nbsp;•&nbsp; Beijing &nbsp;•&nbsp; Hangzhou
-        </div>
+        <div class="container locations-text">Bangkok &nbsp;•&nbsp; Beijing &nbsp;•&nbsp; Hangzhou</div>
     </div>
 
     <section id="about" class="about">
         <div class="container">
             <div class="grid-2">
-                <div class="about-img-wrapper" data-aos="fade-right">
-                    <img src="IMG_4741.jpeg" alt="Production Team" class="about-img">
-                </div>
+                <div class="about-img-wrapper" data-aos="fade-right"><img src="IMG_4741.jpeg" alt="Production Team" class="about-img"></div>
                 <div data-aos="fade-left">
                     <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:2px;">Our Expertise</span>
                     <h2 class="section-title">The <span style="color:var(--gold);">Tri-City</span> Synergy</h2>
-                    <p style="color:#bbb; font-size:1.05rem; margin-bottom:30px;">
-                        MyClover Studio is not just a production house; it's a cross-border content ecosystem engineered for the vertical screen era.
-                    </p>
-                    
                     <ul class="feature-list">
-                        <li>
-                            <strong>Beijing Strategy</strong>
-                            <span>Script development & viral narrative structures from top-tier Chinese directors.</span>
-                        </li>
-                        <li>
-                            <strong>Hangzhou Intelligence</strong>
-                            <span>Data-driven market analysis and platform operations logic.</span>
-                        </li>
-                        <li>
-                            <strong>Bangkok Craftsmanship</strong>
-                            <span>Cinema-grade production, world-famous Thai talent, and cost-effective execution.</span>
-                        </li>
+                        <li><strong>Beijing Strategy</strong><span>Script development & viral narrative structures from top-tier Chinese directors.</span></li>
+                        <li><strong>Hangzhou Intelligence</strong><span>Data-driven market analysis and platform operations logic.</span></li>
+                        <li><strong>Bangkok Craftsmanship</strong><span>Cinema-grade production, world-famous Thai talent, and cost-effective execution.</span></li>
                     </ul>
                 </div>
             </div>
@@ -352,42 +299,42 @@
             <div class="swiper mySwiper" data-aos="fade-up" data-aos-delay="200">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
-                        <img src="IMG_4742.jpeg" alt="Poster 1">
+                        <div class="poster-box"><img src="IMG_4742.jpeg" alt="Poster 1"></div>
                         <div class="slide-content">
                             <span class="slide-genre">Werewolf / Romance</span>
                             <div class="slide-logline">"Betrayed by her pack, she found salvation in the arms of her enemy."</div>
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <img src="IMG_4743.jpeg" alt="Poster 2">
+                        <div class="poster-box"><img src="IMG_4743.jpeg" alt="Poster 2"></div>
                         <div class="slide-content">
                             <span class="slide-genre">Revenge / Drama</span>
                             <div class="slide-logline">"A shattered mirror reflecting two lives. The heiress returns for blood."</div>
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <img src="IMG_4750.jpeg" alt="Poster 3">
+                        <div class="poster-box"><img src="IMG_4750.jpeg" alt="Poster 3"></div>
                         <div class="slide-content">
                             <span class="slide-genre">CEO / Contract</span>
                             <div class="slide-logline">"100 days to fall in love, or lose everything to the devil in a suit."</div>
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <img src="IMG_4751.jpeg" alt="Poster 4">
+                        <div class="poster-box"><img src="IMG_4751.jpeg" alt="Poster 4"></div>
                         <div class="slide-content">
                             <span class="slide-genre">Underdog / Billionaire</span>
                             <div class="slide-logline">"They thought he was nothing. He bought their whole world."</div>
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <img src="IMG_4752.jpeg" alt="Poster 5">
+                        <div class="poster-box"><img src="IMG_4752.jpeg" alt="Poster 5"></div>
                         <div class="slide-content">
                             <span class="slide-genre">Female Power / Action</span>
                             <div class="slide-logline">"The Queen has returned to reclaim her throne. No mercy."</div>
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <img src="IMG_4744.jpeg" alt="Poster 6">
+                        <div class="poster-box"><img src="IMG_4744.jpeg" alt="Poster 6"></div>
                         <div class="slide-content">
                             <span class="slide-genre">Fantasy / Destiny</span>
                             <div class="slide-logline">"Two worlds collide when an ancient warrior meets a modern girl."</div>
@@ -412,7 +359,7 @@
                 </div>
                 <div class="craft-item" data-aos="fade-up" data-aos-delay="300">
                     <h4 class="serif">Global Post-Prod</h4>
-                    <p>Color grading, sound design, and VFX handled by experts from international streaming platforms.</p>
+                    <p>Experts from international streaming platforms handle color grading, sound design, and VFX.</p>
                 </div>
             </div>
         </div>
@@ -420,30 +367,20 @@
 
     <section id="contact" class="contact">
         <div class="container" data-aos="zoom-in">
-            <a href="mailto:team@myclover.com">
-                <img src="IMG_4739.jpeg" alt="MyClover Emblem" class="logo-badge">
-            </a>
-            
+            <a href="mailto:team@myclover.com"><img src="IMG_4739.jpeg" alt="MyClover Emblem" class="logo-badge"></a>
             <span style="color:var(--gold); text-transform:uppercase; letter-spacing:3px; display:block; margin-bottom:10px;">Private Distribution</span>
             <h2 class="section-title">Ready to <span style="color:var(--gold);">Partner?</span></h2>
-            
             <div class="contact-note">
                 <strong>NOTE:</strong> Our content library is not publicly available. <br>
                 For full series access, screeners, and licensing inquiries, please contact our acquisition team directly.
             </div>
-            
             <a href="mailto:team@myclover.com" class="email-link">team@myclover.com</a>
-            
-            <div style="font-size:0.8rem; color:#666; letter-spacing:2px; margin-top:50px;">
-                MYCLOVER STUDIO &copy; 2026
-            </div>
+            <div style="font-size:0.8rem; color:#666; letter-spacing:2px; margin-top:50px;">MYCLOVER STUDIO &copy; 2026</div>
         </div>
     </section>
 
     <footer>
-        <div class="container">
-            BANGKOK | BEIJING | HANGZHOU
-        </div>
+        <div class="container">BANGKOK | BEIJING | HANGZHOU</div>
     </footer>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
@@ -451,31 +388,25 @@
     <script>
         AOS.init({ offset: 80, duration: 1000, easing: 'ease-out-cubic', once: true });
         
-        // Swiper Config
         var swiper = new Swiper(".mySwiper", {
             effect: "coverflow",
             grabCursor: true,
             centeredSlides: true,
             slidesPerView: "auto",
             coverflowEffect: {
-                rotate: 0,
+                rotate: 0, /* ไม่หมุนภาพ */
                 stretch: 0,
-                depth: 150,
-                modifier: 2.5,
-                slideShadows: true,
+                depth: 100, /* ความลึก */
+                modifier: 2,
+                slideShadows: false, /* เอาเงาดำๆ ออกไปเลยจะได้เห็นรูปชัด */
             },
             loop: true,
             autoplay: { delay: 3000, disableOnInteraction: false },
         });
 
-        // Hamburger Logic
         const hamburger = document.getElementById('hamburgerBtn');
         const menuOverlay = document.getElementById('menuOverlay');
-        
-        function toggleMenu() {
-            hamburger.classList.toggle('active');
-            menuOverlay.classList.toggle('open');
-        }
+        function toggleMenu() { hamburger.classList.toggle('active'); menuOverlay.classList.toggle('open'); }
         hamburger.addEventListener('click', toggleMenu);
     </script>
 </body>
