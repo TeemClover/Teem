@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyClover Studio | The Gold Standard</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" /> <style>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
         :root {
             --primary-green: #0A2818; 
             --gold: #C5A059;
-            --gold-light: #E0C080;
             --bg-dark: #050505;
             --bg-accent: #0f0f0f;
             --text-main: #FFFFFF;
@@ -20,8 +22,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        /* Smooth Scroll Behavior */
         html { scroll-behavior: smooth; }
 
         body {
@@ -33,66 +33,58 @@
         }
 
         h1, h2, h3, .serif { font-family: 'Playfair Display', serif; }
-
         .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 
-        /* --- 1. HEADER & MOBILE NAV FIX --- */
+        /* --- 1. NEW HEADER (TYPO ART) --- */
         header {
             position: fixed; top: 0; width: 100%; z-index: 1000;
             transition: var(--transition);
             background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(197, 160, 89, 0.1);
-            padding: 15px 0;
+            padding: 20px 0;
         }
 
         nav { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            flex-wrap: wrap; /* Allow wrapping on mobile */
+            flex-wrap: wrap; 
         }
 
-        /* Logo Styling */
-        .logo-wrapper { display: flex; align-items: center; gap: 15px; }
-        .logo-img {
-            height: 50px; width: auto; 
-            padding: 2px; background: var(--gold);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 4px; 
-            box-shadow: 0 0 25px rgba(197, 160, 89, 0.3);
+        /* Typo Text Art Logo */
+        .brand-art {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            line-height: 1;
+            letter-spacing: 2px;
+            color: #fff;
+            text-transform: uppercase;
+            cursor: pointer;
         }
-        .brand-name {
-            font-family: 'Playfair Display', serif; font-size: 1.2rem;
-            font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
-            line-height: 1; display: block;
-        }
-        .brand-name span { color: var(--gold); }
+        .brand-art span.thin { font-weight: 400; font-style: italic; opacity: 0.9; }
+        .brand-art span.bold { font-weight: 700; color: var(--gold); letter-spacing: 4px; }
 
-        /* Navigation Links (Desktop) */
+        /* Navigation Links */
         .nav-links { display: flex; gap: 40px; }
         .nav-links a {
             color: var(--text-main); text-decoration: none;
             font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
             transition: var(--transition); font-weight: 600; position: relative;
         }
-        
-        /* Interactive Underline Effect */
         .nav-links a::after {
             content: ''; position: absolute; width: 0; height: 1px;
-            bottom: -5px; left: 0; background-color: var(--gold);
-            transition: 0.3s ease;
+            bottom: -5px; left: 0; background-color: var(--gold); transition: 0.3s ease;
         }
         .nav-links a:hover::after { width: 100%; }
         .nav-links a:hover { color: var(--gold); }
 
-        /* --- 2. HERO SECTION (Parallax) --- */
+        /* --- 2. HERO SECTION --- */
         .hero {
             height: 100vh;
             display: flex; align-items: center; position: relative;
             background: url('IMG_4740.jpeg') no-repeat center center;
-            background-size: cover;
-            background-attachment: fixed; /* Parallax Effect */
+            background-size: cover; background-attachment: fixed;
         }
         .hero::before {
             content:''; position: absolute; inset: 0;
@@ -103,7 +95,6 @@
         .hero-title {
             font-size: clamp(3rem, 7vw, 6rem); line-height: 1.1; margin-bottom: 30px;
             text-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            transform-origin: left;
         }
         
         .btn-gold {
@@ -113,117 +104,86 @@
             letter-spacing: 2px; text-decoration: none; display: inline-block;
             transition: var(--transition); z-index: 1;
         }
-        .btn-gold::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: var(--gold); transition: 0.4s; z-index: -1;
-        }
-        .btn-gold:hover::before { left: 0; }
-        .btn-gold:hover { color: #000; box-shadow: 0 0 30px rgba(197, 160, 89, 0.5); }
+        .btn-gold:hover { color: #000; box-shadow: 0 0 30px rgba(197, 160, 89, 0.5); background: var(--gold); }
 
-        /* --- 3. SWIPER CAROUSEL (Originals) --- */
+        /* --- 3. CAROUSEL --- */
         .portfolio { padding: 120px 0; background: #050505; overflow: hidden; }
-        
-        /* Styles for Swiper */
-        .swiper {
-            width: 100%;
-            padding-top: 50px;
-            padding-bottom: 50px;
-        }
+        .swiper { width: 100%; padding-top: 50px; padding-bottom: 50px; }
         .swiper-slide {
-            background-position: center;
-            background-size: cover;
-            width: 300px; /* Width of poster */
-            height: 533px; /* 9:16 Aspect Ratio */
-            border-radius: 10px;
+            background-position: center; background-size: cover;
+            width: 300px; height: 533px; border-radius: 10px;
             border: 1px solid rgba(197, 160, 89, 0.2);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
-            transition: var(--transition);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5); transition: var(--transition);
         }
-        .swiper-slide img {
-            display: block; width: 100%; height: 100%; object-fit: cover;
-            border-radius: 10px;
-        }
-        
-        /* Active Slide Effect */
-        .swiper-slide-active {
-            border: 2px solid var(--gold);
-            box-shadow: 0 0 40px rgba(197, 160, 89, 0.4);
-            transform: scale(1.1);
-        }
+        .swiper-slide img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+        .swiper-slide-active { border: 2px solid var(--gold); box-shadow: 0 0 40px rgba(197, 160, 89, 0.4); transform: scale(1.1); }
 
         .section-title { font-size: 3.5rem; margin-bottom: 20px; color: #fff; }
         .text-gold { color: var(--gold); }
 
-        /* --- 4. LOCATIONS BAR --- */
+        /* --- 4. LOCATIONS --- */
         .locations-bar {
             background: var(--primary-green); padding: 25px 0; text-align: center;
             border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold);
         }
-        .locations-text {
-            color: var(--gold); letter-spacing: 6px; font-size: 1rem; 
-            text-transform: uppercase; font-weight: 600;
-        }
+        .locations-text { color: var(--gold); letter-spacing: 6px; font-size: 1rem; text-transform: uppercase; font-weight: 600; }
 
-        /* --- 5. ABOUT SECTION --- */
+        /* --- 5. ABOUT --- */
         .about { padding: 140px 0; background: var(--bg-accent); }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-        .about-img { 
-            width: 100%; border-radius: 2px; 
-            box-shadow: 20px 20px 0px rgba(197, 160, 89, 0.1); /* Graphic Shadow */
-        }
+        .about-img { width: 100%; border-radius: 2px; box-shadow: 20px 20px 0px rgba(197, 160, 89, 0.1); }
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; }
         .stat-item h4 { font-size: 2.5rem; color: #fff; font-family: 'Playfair Display', serif; }
 
-        /* --- 6. CRAFT SECTION --- */
-        .craft {
-            padding: 120px 0;
-            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('IMG_4740.jpeg') fixed center/cover;
-        }
+        /* --- 6. CRAFT --- */
+        .craft { padding: 120px 0; background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('IMG_4740.jpeg') fixed center/cover; }
         .craft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 60px; }
-        .craft-item { 
-            padding: 40px; background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.05); 
+        .craft-item { padding: 40px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: var(--transition); }
+        .craft-item:hover { transform: translateY(-15px); background: rgba(10, 40, 24, 0.4); border-color: var(--gold); }
+
+        /* --- 7. CONTACT (With Clickable Logo) --- */
+        .contact { padding: 140px 0; text-align: center; background: #080808; }
+        
+        .contact-logo-link {
+            display: inline-block;
+            margin-bottom: 30px;
             transition: var(--transition);
         }
-        .craft-item:hover { 
-            transform: translateY(-15px); 
-            background: rgba(10, 40, 24, 0.4); 
-            border-color: var(--gold);
+        .contact-logo-link:hover { transform: scale(1.1); filter: drop-shadow(0 0 15px rgba(197, 160, 89, 0.5)); }
+        
+        .logo-badge {
+            height: 120px; width: auto; /* โลโก้ขนาดใหญ่ชัดเจน */
+            border-radius: 12px;
+            border: 2px solid var(--gold); /* กรอบทอง */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- 7. CONTACT & FOOTER --- */
-        .contact { padding: 140px 0; text-align: center; background: #080808; }
         .email-link {
             font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 4.5rem);
-            color: var(--gold); text-decoration: none; display: block; margin: 40px 0;
+            color: var(--gold); text-decoration: none; display: block; margin-top: 10px; margin-bottom: 40px;
             transition: var(--transition);
         }
-        .email-link:hover { color: #fff; text-shadow: 0 0 50px var(--gold); transform: scale(1.05); }
+        .email-link:hover { color: #fff; text-shadow: 0 0 50px var(--gold); transform: scale(1.02); }
         
         footer { padding: 50px 0; background: #000; text-align: center; color: #444; font-size: 0.8rem; letter-spacing: 2px; }
 
-        /* --- RESPONSIVE FIXES --- */
+        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
             .container { padding: 0 25px; }
-            
-            /* Mobile Nav Fix: Horizontal Scroll */
             header { padding: 15px 0; }
+            
+            /* Mobile Nav: Horizontal Scroll */
             .nav-links {
-                width: 100%;
-                overflow-x: auto; /* Enable Scroll */
-                white-space: nowrap; /* Keep line single */
-                padding: 15px 25px; /* Add padding for touch */
-                margin-top: 15px;
-                border-top: 1px solid rgba(255,255,255,0.05);
-                gap: 30px;
-                /* Hide Scrollbar */
+                width: 100%; overflow-x: auto; white-space: nowrap;
+                padding: 15px 5px; margin-top: 10px; gap: 30px;
                 -ms-overflow-style: none; scrollbar-width: none;
+                border-top: 1px solid rgba(255,255,255,0.05);
             }
             .nav-links::-webkit-scrollbar { display: none; }
             
             .hero-title { font-size: 3rem; }
             .grid-2, .craft-grid { grid-template-columns: 1fr; }
-            .brand-name { font-size: 1rem; }
+            .brand-art { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -232,10 +192,10 @@
     <header id="header">
         <div class="container">
             <nav>
-                <div class="logo-wrapper">
-                    <img src="IMG_4739.jpeg" alt="MyClover Logo" class="logo-img"> 
-                    <div class="brand-name">My<span>Clover</span></div>
+                <div class="brand-art">
+                    <span class="thin">My</span><span class="bold">CLOVER</span>
                 </div>
+
                 <div class="nav-links">
                     <a href="#about">The Studio</a>
                     <a href="#lineup">Originals</a>
@@ -249,7 +209,7 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content" data-aos="zoom-out" data-aos-duration="1500">
-                <span class="hero-tag" style="color:var(--gold); letter-spacing:4px; text-transform:uppercase; font-weight:700;">The Global Standard</span>
+                <span style="color:var(--gold); letter-spacing:4px; text-transform:uppercase; font-weight:700;">The Global Standard</span>
                 <h1 class="hero-title">
                     Crafting <br>Cinematic Stories <br><span class="text-gold">for the Digital Age.</span>
                 </h1>
@@ -303,12 +263,12 @@
 
             <div class="swiper mySwiper" data-aos="fade-up" data-aos-delay="200">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide"><img src="IMG_4742.jpeg" alt="Poster 1"></div>
-                    <div class="swiper-slide"><img src="IMG_4743.jpeg" alt="Poster 2"></div>
-                    <div class="swiper-slide"><img src="IMG_4750.jpeg" alt="Poster 3"></div>
-                    <div class="swiper-slide"><img src="IMG_4751.jpeg" alt="Poster 4"></div>
-                    <div class="swiper-slide"><img src="IMG_4752.jpeg" alt="Poster 5"></div>
-                    <div class="swiper-slide"><img src="IMG_4744.jpeg" alt="Poster 6"></div>
+                    <div class="swiper-slide"><img src="IMG_4742.jpeg" alt="The Alpha's Betrayal"></div>
+                    <div class="swiper-slide"><img src="IMG_4743.jpeg" alt="Heir of Shadows"></div>
+                    <div class="swiper-slide"><img src="IMG_4750.jpeg" alt="The 100-Day Contract"></div>
+                    <div class="swiper-slide"><img src="IMG_4751.jpeg" alt="The Hidden Billionaire"></div>
+                    <div class="swiper-slide"><img src="IMG_4752.jpeg" alt="Queen of Revenge"></div>
+                    <div class="swiper-slide"><img src="IMG_4744.jpeg" alt="Destiny Swap"></div>
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
@@ -318,7 +278,6 @@
     <section id="craft" class="craft">
         <div class="container">
             <h2 class="section-title" style="text-align:center;" data-aos="fade-up">The <span class="text-gold">Craft</span> of Excellence</h2>
-            
             <div class="craft-grid">
                 <div class="craft-item" data-aos="fade-up" data-aos-delay="100">
                     <h4 style="color:var(--gold); font-size:1.5rem; margin-bottom:15px;" class="serif">Cinematic Vision</h4>
@@ -340,8 +299,14 @@
         <div class="container" data-aos="zoom-in">
             <span style="color:var(--gold); text-transform:uppercase; letter-spacing:3px;">Exclusive Distribution</span>
             <h2 class="section-title">Ready for <span class="text-gold">Launch?</span></h2>
+            
+            <a href="mailto:team@myclover.com" class="contact-logo-link">
+                <img src="IMG_4739.jpeg" alt="Contact MyClover" class="logo-badge">
+            </a>
+
             <a href="mailto:team@myclover.com" class="email-link">team@myclover.com</a>
-            <div style="margin-top:50px; font-size:0.8rem; color:#666; letter-spacing:2px;">
+            
+            <div style="font-size:0.8rem; color:#666; letter-spacing:2px;">
                 MYCLOVER STUDIO &copy; 2026
             </div>
         </div>
@@ -355,38 +320,15 @@
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
     <script>
-        // 1. Initialize Animation on Scroll (AOS)
-        AOS.init({
-            offset: 100, // เริ่มเล่นตอนเลื่อนมาถึง 100px
-            duration: 1000, // ความยาวอนิเมชั่น 1 วินาที (นุ่มๆ)
-            easing: 'ease-out-cubic',
-            once: true // เล่นครั้งเดียวพอ ไม่ต้องเล่นซ้ำเวลาเลื่อนกลับ
-        });
-
-        // 2. Initialize Swiper (3D Coverflow Effect)
+        AOS.init({ offset: 100, duration: 1000, easing: 'ease-out-cubic', once: true });
+        
         var swiper = new Swiper(".mySwiper", {
-            effect: "coverflow",
-            grabCursor: true,
-            centeredSlides: true,
+            effect: "coverflow", grabCursor: true, centeredSlides: true,
             slidesPerView: "auto",
-            coverflowEffect: {
-                rotate: 20, // หมุนภาพนิดๆ ให้ดูมีมิติ
-                stretch: 0,
-                depth: 200, // ความลึก
-                modifier: 1,
-                slideShadows: true,
-            },
-            loop: true, // วนลูปไม่รู้จบ
-            autoplay: {
-                delay: 2500,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
+            coverflowEffect: { rotate: 20, stretch: 0, depth: 200, modifier: 1, slideShadows: true },
+            loop: true, autoplay: { delay: 2500, disableOnInteraction: false },
+            pagination: { el: ".swiper-pagination", clickable: true },
         });
     </script>
 </body>
