@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyClover Studio | The Gold Standard of Vertical Cinema</title>
+    <title>MyClover Studio | The Gold Standard</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
+    
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" /> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" /> <style>
         :root {
             --primary-green: #0A2818; 
             --gold: #C5A059;
@@ -14,10 +16,13 @@
             --bg-accent: #0f0f0f;
             --text-main: #FFFFFF;
             --text-dim: #A0A0A0;
-            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            --transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Smooth Scroll Behavior */
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Montserrat', sans-serif;
@@ -31,205 +36,193 @@
 
         .container { max-width: 1400px; margin: 0 auto; padding: 0 40px; }
 
-        /* --- Header --- */
+        /* --- 1. HEADER & MOBILE NAV FIX --- */
         header {
-            position: fixed; top: 0; width: 100%; padding: 15px 0; z-index: 1000;
+            position: fixed; top: 0; width: 100%; z-index: 1000;
             transition: var(--transition);
-            background: rgba(5, 5, 5, 0.9); /* พื้นหลังดำโปร่งแสงเสมอ เพื่อรองรับโลโก้ JPEG */
-            backdrop-filter: blur(10px);
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+            padding: 15px 0;
         }
-        header.scrolled {
-            background: rgba(0, 0, 0, 0.98);
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        nav { display: flex; justify-content: space-between; align-items: center; }
 
-        /* --- LOGO FIX: THE GOLD BADGE --- */
-        .logo-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; /* Allow wrapping on mobile */
         }
-        
-        /* เปลี่ยน JPEG ให้เป็น Emblem หรู */
+
+        /* Logo Styling */
+        .logo-wrapper { display: flex; align-items: center; gap: 15px; }
         .logo-img {
-            height: 50px; 
-            width: auto; 
-            /* เทคนิคทำให้ JPEG ดูแพง: ใส่กรอบซ้อน */
-            padding: 2px;
-            background: var(--gold); /* เส้นขอบในสีทอง */
-            border: 1px solid rgba(255,255,255,0.1); /* เส้นขอบนอก */
-            border-radius: 4px; /* มุมมนนิดๆ ให้ดูโมเดิร์น (ถ้าอยากได้กลม แก้เป็น 50%) */
-            box-shadow: 0 0 25px rgba(197, 160, 89, 0.4); /* เงาแสงทอง */
-            transition: var(--transition);
+            height: 50px; width: auto; 
+            padding: 2px; background: var(--gold);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px; 
+            box-shadow: 0 0 25px rgba(197, 160, 89, 0.3);
         }
-        
-        .logo-img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px rgba(197, 160, 89, 0.6);
-            background: #fff;
-        }
-
-        /* เพิ่มชื่อ Brand เป็น Text ข้างๆ เพื่อความชัดเจน */
         .brand-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            line-height: 1;
+            font-family: 'Playfair Display', serif; font-size: 1.2rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+            line-height: 1; display: block;
         }
         .brand-name span { color: var(--gold); }
 
+        /* Navigation Links (Desktop) */
+        .nav-links { display: flex; gap: 40px; }
         .nav-links a {
-            color: var(--text-main); text-decoration: none; margin-left: 40px;
+            color: var(--text-main); text-decoration: none;
             font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
-            transition: var(--transition);
-            font-weight: 600;
+            transition: var(--transition); font-weight: 600; position: relative;
         }
+        
+        /* Interactive Underline Effect */
+        .nav-links a::after {
+            content: ''; position: absolute; width: 0; height: 1px;
+            bottom: -5px; left: 0; background-color: var(--gold);
+            transition: 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
         .nav-links a:hover { color: var(--gold); }
 
-        /* --- Hero Section --- */
+        /* --- 2. HERO SECTION (Parallax) --- */
         .hero {
             height: 100vh;
             display: flex; align-items: center; position: relative;
             background: url('IMG_4740.jpeg') no-repeat center center;
             background-size: cover;
+            background-attachment: fixed; /* Parallax Effect */
         }
         .hero::before {
             content:''; position: absolute; inset: 0;
-            background: linear-gradient(to right, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.3) 60%, transparent);
+            background: linear-gradient(to right, rgba(0,0,0,0.95) 15%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.2));
         }
 
         .hero-content { position: relative; z-index: 2; max-width: 800px; padding-top: 60px; }
-        .hero-tag {
-            color: var(--gold); text-transform: uppercase; letter-spacing: 5px; 
-            font-size: 0.9rem; display: block; margin-bottom: 20px; font-weight: 700;
-        }
         .hero-title {
-            font-size: clamp(3rem, 7vw, 5.5rem); line-height: 1.1; margin-bottom: 30px;
-            text-shadow: 0 10px 40px rgba(0,0,0,0.8);
-        }
-        .hero-desc {
-            font-size: 1.2rem; color: #e0e0e0; margin-bottom: 40px; font-weight: 300; max-width: 600px;
-            border-left: 3px solid var(--gold); padding-left: 20px;
-            background: linear-gradient(to right, rgba(0,0,0,0.6), transparent);
+            font-size: clamp(3rem, 7vw, 6rem); line-height: 1.1; margin-bottom: 30px;
+            text-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            transform-origin: left;
         }
         
         .btn-gold {
+            position: relative; overflow: hidden;
             padding: 18px 50px; background: transparent; color: var(--gold);
-            border: 1px solid var(--gold);
-            text-transform: uppercase; font-weight: 700; text-decoration: none;
-            letter-spacing: 2px; transition: var(--transition); display: inline-block;
+            border: 1px solid var(--gold); text-transform: uppercase; font-weight: 700;
+            letter-spacing: 2px; text-decoration: none; display: inline-block;
+            transition: var(--transition); z-index: 1;
         }
-        .btn-gold:hover { background: var(--gold); color: #000; box-shadow: 0 0 40px rgba(197, 160, 89, 0.4); }
+        .btn-gold::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--gold); transition: 0.4s; z-index: -1;
+        }
+        .btn-gold:hover::before { left: 0; }
+        .btn-gold:hover { color: #000; box-shadow: 0 0 30px rgba(197, 160, 89, 0.5); }
 
-        /* --- Locations Bar --- */
+        /* --- 3. SWIPER CAROUSEL (Originals) --- */
+        .portfolio { padding: 120px 0; background: #050505; overflow: hidden; }
+        
+        /* Styles for Swiper */
+        .swiper {
+            width: 100%;
+            padding-top: 50px;
+            padding-bottom: 50px;
+        }
+        .swiper-slide {
+            background-position: center;
+            background-size: cover;
+            width: 300px; /* Width of poster */
+            height: 533px; /* 9:16 Aspect Ratio */
+            border-radius: 10px;
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+            transition: var(--transition);
+        }
+        .swiper-slide img {
+            display: block; width: 100%; height: 100%; object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        /* Active Slide Effect */
+        .swiper-slide-active {
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 40px rgba(197, 160, 89, 0.4);
+            transform: scale(1.1);
+        }
+
+        .section-title { font-size: 3.5rem; margin-bottom: 20px; color: #fff; }
+        .text-gold { color: var(--gold); }
+
+        /* --- 4. LOCATIONS BAR --- */
         .locations-bar {
             background: var(--primary-green); padding: 25px 0; text-align: center;
-            border-bottom: 1px solid var(--gold); border-top: 1px solid rgba(197, 160, 89, 0.3);
-            position: relative; z-index: 10;
+            border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold);
         }
         .locations-text {
-            color: var(--gold); letter-spacing: 6px; font-size: 1rem; text-transform: uppercase; font-weight: 600;
+            color: var(--gold); letter-spacing: 6px; font-size: 1rem; 
+            text-transform: uppercase; font-weight: 600;
         }
 
-        /* --- About / Prestige Section --- */
+        /* --- 5. ABOUT SECTION --- */
         .about { padding: 140px 0; background: var(--bg-accent); }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-        
-        .about-img-wrapper {
-            position: relative;
-        }
-        .about-img-wrapper::before {
-            content: ''; position: absolute; top: -20px; left: -20px; width: 100%; height: 100%;
-            border: 1px solid var(--gold); z-index: 0; opacity: 0.5;
-        }
         .about-img { 
-            width: 100%; position: relative; z-index: 1;
-            border-radius: 2px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-            filter: contrast(1.1) saturate(1.1);
+            width: 100%; border-radius: 2px; 
+            box-shadow: 20px 20px 0px rgba(197, 160, 89, 0.1); /* Graphic Shadow */
         }
-        
-        .section-title { font-size: 3.5rem; margin-bottom: 30px; line-height: 1.2; }
-        .text-gold { color: var(--gold); }
-        
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; }
-        .stat-item h4 { font-size: 2.5rem; color: #fff; margin-bottom: 5px; font-family: 'Playfair Display', serif; }
-        .stat-item p { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; }
+        .stat-item h4 { font-size: 2.5rem; color: #fff; font-family: 'Playfair Display', serif; }
 
-        /* --- Portfolio (Posters) --- */
-        .portfolio { padding: 120px 0; background: #050505; }
-        .portfolio-header { text-align: center; margin-bottom: 80px; }
-        .drama-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
-        }
-        .poster-card {
-            position: relative; aspect-ratio: 9/16; overflow: hidden;
-            border: 1px solid #222; cursor: pointer; transition: var(--transition);
-        }
-        .poster-card img {
-            width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease;
-        }
-        .poster-card:hover img { transform: scale(1.08); }
-        .poster-card:hover { border-color: var(--gold); box-shadow: 0 10px 40px rgba(197, 160, 89, 0.1); z-index: 2; }
-        
-        .poster-card::after {
-            content:''; position: absolute; inset: 0; 
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            opacity: 0; transition: var(--transition);
-        }
-        .poster-card:hover::after { opacity: 1; }
-
-        /* --- Craftmanship Section --- */
+        /* --- 6. CRAFT SECTION --- */
         .craft {
             padding: 120px 0;
-            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.85)), url('IMG_4740.jpeg') fixed center/cover;
-            position: relative; text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), url('IMG_4740.jpeg') fixed center/cover;
         }
-        .craft-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 80px;
+        .craft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 60px; }
+        .craft-item { 
+            padding: 40px; background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            transition: var(--transition);
         }
-        .craft-item { padding: 40px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: var(--transition); }
-        .craft-item:hover { border-color: var(--gold); transform: translateY(-10px); background: rgba(10, 40, 24, 0.3); }
-        .craft-item h4 { color: var(--gold); font-size: 1.5rem; margin-bottom: 20px; font-family: 'Playfair Display', serif; }
-        .craft-item p { color: #bbb; font-size: 0.95rem; }
+        .craft-item:hover { 
+            transform: translateY(-15px); 
+            background: rgba(10, 40, 24, 0.4); 
+            border-color: var(--gold);
+        }
 
-        /* --- Contact --- */
-        .contact { 
-            padding: 140px 0; text-align: center; 
-            background: #080808; position: relative; 
-        }
+        /* --- 7. CONTACT & FOOTER --- */
+        .contact { padding: 140px 0; text-align: center; background: #080808; }
         .email-link {
             font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 4.5rem);
             color: var(--gold); text-decoration: none; display: block; margin: 40px 0;
             transition: var(--transition);
         }
-        .email-link:hover { color: #fff; text-shadow: 0 0 40px var(--gold); }
+        .email-link:hover { color: #fff; text-shadow: 0 0 50px var(--gold); transform: scale(1.05); }
+        
+        footer { padding: 50px 0; background: #000; text-align: center; color: #444; font-size: 0.8rem; letter-spacing: 2px; }
 
-        /* --- Footer --- */
-        footer {
-            padding: 50px 0; background: #000; border-top: 1px solid #111;
-            text-align: center; color: #555; font-size: 0.8rem; letter-spacing: 2px;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-             .drama-grid { grid-template-columns: repeat(2, 1fr); }
-             .grid-2 { gap: 40px; }
-        }
+        /* --- RESPONSIVE FIXES --- */
         @media (max-width: 768px) {
-            .grid-2, .craft-grid { grid-template-columns: 1fr; }
-            .drama-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
-            .hero-title { font-size: 3rem; }
-            .nav-links { display: none; }
             .container { padding: 0 25px; }
-            .section-title { font-size: 2.5rem; }
-            .logo-wrapper { gap: 10px; }
+            
+            /* Mobile Nav Fix: Horizontal Scroll */
+            header { padding: 15px 0; }
+            .nav-links {
+                width: 100%;
+                overflow-x: auto; /* Enable Scroll */
+                white-space: nowrap; /* Keep line single */
+                padding: 15px 25px; /* Add padding for touch */
+                margin-top: 15px;
+                border-top: 1px solid rgba(255,255,255,0.05);
+                gap: 30px;
+                /* Hide Scrollbar */
+                -ms-overflow-style: none; scrollbar-width: none;
+            }
+            .nav-links::-webkit-scrollbar { display: none; }
+            
+            .hero-title { font-size: 3rem; }
+            .grid-2, .craft-grid { grid-template-columns: 1fr; }
             .brand-name { font-size: 1rem; }
         }
     </style>
@@ -255,21 +248,20 @@
 
     <section class="hero">
         <div class="container">
-            <div class="hero-content">
-                <span class="hero-tag">The Global Standard</span>
+            <div class="hero-content" data-aos="zoom-out" data-aos-duration="1500">
+                <span class="hero-tag" style="color:var(--gold); letter-spacing:4px; text-transform:uppercase; font-weight:700;">The Global Standard</span>
                 <h1 class="hero-title">
                     Crafting <br>Cinematic Stories <br><span class="text-gold">for the Digital Age.</span>
                 </h1>
-                <div class="hero-desc">
+                <p style="color:#ddd; margin-bottom:40px; max-width:600px; font-size:1.1rem;">
                     Combining China's viral storytelling mastery with Thailand's world-class cinematic artistry. 
-                    We don't just produce short dramas; we create vertical masterpieces.
-                </div>
+                </p>
                 <a href="#contact" class="btn-gold">Request Screening</a>
             </div>
         </div>
     </section>
 
-    <div class="locations-bar">
+    <div class="locations-bar" data-aos="fade-up">
         <div class="container locations-text">
             Bangkok &nbsp;•&nbsp; Beijing &nbsp;•&nbsp; Hangzhou
         </div>
@@ -278,29 +270,23 @@
     <section id="about" class="about">
         <div class="container">
             <div class="grid-2">
-                <div class="about-img-wrapper">
+                <div class="about-img-wrapper" data-aos="fade-right">
                     <img src="IMG_4741.jpeg" alt="Production Team" class="about-img">
                 </div>
-                <div>
-                    <span style="color:var(--text-dim); text-transform: uppercase; letter-spacing: 2px;">Who We Are</span>
-                    <h2 class="section-title">The <span class="text-gold">Tri-City</span> Synergy</h2>
-                    <p style="color: #ddd; font-size: 1.1rem; margin-bottom: 20px;">
-                        MyClover Studio operates a unique cross-border model, bridging the gap between high-speed viral content and international cinema quality.
+                <div data-aos="fade-left">
+                    <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:2px;">Who We Are</span>
+                    <h2 class="section-title" style="color:var(--gold);">The Tri-City Synergy</h2>
+                    <p style="color:#bbb; font-size:1.1rem; margin-bottom:30px;">
+                        MyClover Studio bridges the gap between high-speed viral content and international cinema quality.
                     </p>
-                    <ul style="list-style: none; color: #aaa; margin-bottom: 30px; line-height: 2;">
-                        <li>🟢 <strong>Beijing:</strong> Script development & Direction strategies.</li>
-                        <li>🟢 <strong>Hangzhou:</strong> Tech integration & vertical screen analytics.</li>
-                        <li>🟢 <strong>Bangkok:</strong> Cinema-grade Production & Star Talent.</li>
-                    </ul>
-                    
                     <div class="stats">
                         <div class="stat-item">
                             <h4>8K</h4>
-                            <p>Native Resolution</p>
+                            <p style="color:var(--gold);">Resolution</p>
                         </div>
                         <div class="stat-item">
                             <h4>Global</h4>
-                            <p>Narrative Standards</p>
+                            <p style="color:var(--gold);">Standard</p>
                         </div>
                     </div>
                 </div>
@@ -310,91 +296,97 @@
 
     <section id="lineup" class="portfolio">
         <div class="container">
-            <div class="portfolio-header">
+            <div style="text-align:center; margin-bottom:50px;" data-aos="fade-up">
                 <h2 class="section-title">Q1 2026 <span class="text-gold">Lineup</span></h2>
-                <p style="color: #666; letter-spacing: 3px; text-transform: uppercase;">Exclusive Originals</p>
+                <p style="color:#666; letter-spacing:3px; text-transform:uppercase;">Swipe to Explore</p>
             </div>
 
-            <div class="drama-grid">
-                <div class="poster-card">
-                    <img src="IMG_4742.jpeg" alt="The Alpha's Betrayal">
+            <div class="swiper mySwiper" data-aos="fade-up" data-aos-delay="200">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide"><img src="IMG_4742.jpeg" alt="Poster 1"></div>
+                    <div class="swiper-slide"><img src="IMG_4743.jpeg" alt="Poster 2"></div>
+                    <div class="swiper-slide"><img src="IMG_4750.jpeg" alt="Poster 3"></div>
+                    <div class="swiper-slide"><img src="IMG_4751.jpeg" alt="Poster 4"></div>
+                    <div class="swiper-slide"><img src="IMG_4752.jpeg" alt="Poster 5"></div>
+                    <div class="swiper-slide"><img src="IMG_4744.jpeg" alt="Poster 6"></div>
                 </div>
-                <div class="poster-card">
-                    <img src="IMG_4743.jpeg" alt="Heir of Shadows">
-                </div>
-                <div class="poster-card">
-                    <img src="IMG_4750.jpeg" alt="The 100-Day Contract">
-                </div>
-                <div class="poster-card">
-                    <img src="IMG_4751.jpeg" alt="The Hidden Billionaire">
-                </div>
-                <div class="poster-card">
-                    <img src="IMG_4752.jpeg" alt="Queen of Revenge">
-                </div>
-                <div class="poster-card">
-                    <img src="IMG_4744.jpeg" alt="Destiny Swap">
-                </div>
+                <div class="swiper-pagination"></div>
             </div>
-            
-            <p style="text-align: center; margin-top: 60px; font-weight: 300; color: #555;">
-                And 12+ more titles currently in post-production.
-            </p>
         </div>
     </section>
 
     <section id="craft" class="craft">
         <div class="container">
-            <h2 class="section-title">The <span class="text-gold">Craft</span> of Excellence</h2>
-            <p style="max-width: 700px; margin: 0 auto; color: #aaa;">
-                We believe in premium execution. From Hollywood-standard lighting to narrative structures that keep audiences engaged until the final frame.
-            </p>
+            <h2 class="section-title" style="text-align:center;" data-aos="fade-up">The <span class="text-gold">Craft</span> of Excellence</h2>
             
             <div class="craft-grid">
-                <div class="craft-item">
-                    <h4>Cinematic Vision</h4>
-                    <p>Utilizing high-end ARRI & RED cameras and lighting normally reserved for feature-length films.</p>
+                <div class="craft-item" data-aos="fade-up" data-aos-delay="100">
+                    <h4 style="color:var(--gold); font-size:1.5rem; margin-bottom:15px;" class="serif">Cinematic Vision</h4>
+                    <p style="color:#aaa;">High-end ARRI & RED cameras and lighting normally reserved for feature films.</p>
                 </div>
-                <div class="craft-item">
-                    <h4>Thai Artistry</h4>
-                    <p>Access to Thailand’s world-famous acting talent, costume design, and picturesque locations.</p>
+                <div class="craft-item" data-aos="fade-up" data-aos-delay="200">
+                    <h4 style="color:var(--gold); font-size:1.5rem; margin-bottom:15px;" class="serif">Thai Artistry</h4>
+                    <p style="color:#aaa;">World-famous acting talent, costume design, and picturesque locations.</p>
                 </div>
-                <div class="craft-item">
-                    <h4>Global Post-Prod</h4>
-                    <p>Color grading and sound engineering handled by experts from international streaming platforms.</p>
+                <div class="craft-item" data-aos="fade-up" data-aos-delay="300">
+                    <h4 style="color:var(--gold); font-size:1.5rem; margin-bottom:15px;" class="serif">Global Post-Prod</h4>
+                    <p style="color:#aaa;">Color grading and sound engineering by international experts.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="contact" class="contact">
-        <div class="container">
-            <span style="color: var(--gold); text-transform: uppercase; letter-spacing: 3px;">Exclusive Distribution</span>
+        <div class="container" data-aos="zoom-in">
+            <span style="color:var(--gold); text-transform:uppercase; letter-spacing:3px;">Exclusive Distribution</span>
             <h2 class="section-title">Ready for <span class="text-gold">Launch?</span></h2>
-            <p style="color: #ccc;">Our slate is ready for global platform licensing. Contact our acquisition team.</p>
-            
             <a href="mailto:team@myclover.com" class="email-link">team@myclover.com</a>
-            
-            <div style="margin-top: 60px;">
-                <p style="font-size: 0.8rem; letter-spacing: 2px; color: #444;">BANGKOK | BEIJING | HANGZHOU</p>
+            <div style="margin-top:50px; font-size:0.8rem; color:#666; letter-spacing:2px;">
+                MYCLOVER STUDIO &copy; 2026
             </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 MYCLOVER STUDIO. ALL RIGHTS RESERVED. <br> PREMIUM VERTICAL PRODUCTIONS.</p>
+            BANGKOK | BEIJING | HANGZHOU
         </div>
     </footer>
 
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
-        // Smooth Scroll & Header Effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
+        // 1. Initialize Animation on Scroll (AOS)
+        AOS.init({
+            offset: 100, // เริ่มเล่นตอนเลื่อนมาถึง 100px
+            duration: 1000, // ความยาวอนิเมชั่น 1 วินาที (นุ่มๆ)
+            easing: 'ease-out-cubic',
+            once: true // เล่นครั้งเดียวพอ ไม่ต้องเล่นซ้ำเวลาเลื่อนกลับ
+        });
+
+        // 2. Initialize Swiper (3D Coverflow Effect)
+        var swiper = new Swiper(".mySwiper", {
+            effect: "coverflow",
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: "auto",
+            coverflowEffect: {
+                rotate: 20, // หมุนภาพนิดๆ ให้ดูมีมิติ
+                stretch: 0,
+                depth: 200, // ความลึก
+                modifier: 1,
+                slideShadows: true,
+            },
+            loop: true, // วนลูปไม่รู้จบ
+            autoplay: {
+                delay: 2500,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
         });
     </script>
 </body>
