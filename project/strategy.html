@@ -2,324 +2,296 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SANCHUAN MASTER PLAN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANCHUAN HOLDINGS - STRATEGIC PLAN</title>
     <style>
         :root {
-            --primary: #1a2a6c; /* Navy Blue */
-            --accent: #b21f1f;  /* Deep Red */
-            --gold: #d4af37;    /* Premium Gold */
-            --bg: #f8f9fa;
-            --text: #333;
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --text-main: #E0E0E0;
+            --text-muted: #888888;
+            --gold-main: #D4AF37;
+            --gold-gradient: linear-gradient(135deg, #D4AF37 0%, #F2D06B 50%, #B4860B 100%);
+            --accent-red: #C0392B;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-            background-color: var(--bg);
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
-            color: var(--text);
+            padding: 20px 15px;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Header Area */
+        /* Header Styling */
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
         }
         .header h1 {
+            font-size: 26px;
             margin: 0;
-            font-size: 24px;
-            color: var(--primary);
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: 800;
-            letter-spacing: -0.5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
         .header p {
-            margin: 5px 0 0;
+            color: var(--gold-main);
             font-size: 12px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Vision Card */
-        .vision-card {
-            background: linear-gradient(135deg, var(--primary) 0%, #2a4088 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 20px rgba(26, 42, 108, 0.2);
-        }
-        .vision-title {
-            font-size: 12px;
+            letter-spacing: 2px;
+            margin-top: 5px;
             opacity: 0.8;
             text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        .vision-text {
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 1.5;
         }
 
-        /* Accordion Styling */
-        .accordion {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        /* Content Blocks */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            color: var(--gold-main);
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--gold-main);
+            padding-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .content-card {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Typography & Lists */
+        p {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #ccc;
+            text-align: justify;
         }
         
-        .card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-
-        .card-header {
-            padding: 18px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            background: white;
-            border-left: 4px solid transparent;
-        }
-
-        .card-header h3 {
-            margin: 0;
-            font-size: 16px;
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .icon {
-            font-size: 18px;
-            transition: transform 0.3s ease;
-            color: #ccc;
-        }
-
-        .card-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out;
-            background-color: #fff;
-            padding: 0 20px;
-            opacity: 0;
-        }
-
-        .card.active .card-header {
-            border-left-color: var(--accent);
-        }
-        .card.active .icon {
-            transform: rotate(180deg);
-            color: var(--accent);
-        }
-        .card.active .card-content {
-            padding: 0 20px 20px 20px; /* Add bottom padding when open */
-            opacity: 1;
-        }
-
-        /* Lists inside cards */
         ul {
-            padding-left: 0;
-            margin: 10px 0;
             list-style: none;
+            padding: 0;
+            margin: 0;
         }
+        
         li {
             position: relative;
-            padding-left: 20px;
+            padding-left: 15px;
             margin-bottom: 12px;
             font-size: 14px;
-            color: #555;
+            color: #ddd;
         }
+        
         li::before {
             content: "•";
-            color: var(--accent);
+            color: var(--gold-main);
             position: absolute;
             left: 0;
             font-weight: bold;
         }
 
-        /* Tags */
-        .tags-container {
+        strong {
+            color: white;
+            font-weight: 600;
+        }
+
+        .highlight-gold {
+            color: var(--gold-main);
+            font-weight: bold;
+        }
+        
+        .highlight-red {
+            color: #FF5252;
+            font-weight: bold;
+        }
+
+        /* Tags for Genres */
+        .tag-container {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-top: 10px;
         }
         .tag {
-            background: #f1f5f9;
-            color: #475569;
+            border: 1px solid var(--gold-main);
+            color: var(--gold-main);
             padding: 4px 10px;
-            border-radius: 20px;
             font-size: 12px;
-            font-weight: 600;
+            border-radius: 4px;
+            background: rgba(212, 175, 55, 0.1);
         }
 
-        /* CEO Section Special Style */
-        .ceo-card {
-            border: 1px solid var(--gold);
-            background: #fffcf5;
+        /* CEO Section Special */
+        .ceo-section {
+            border: 1px solid var(--gold-main);
+            background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
         }
-        .ceo-card .card-header h3 {
-            color: #b4860b;
-        }
-        .ceo-card.active .card-header {
-            border-left-color: var(--gold);
-        }
-        .highlight {
-            color: var(--accent);
+        .ceo-badge {
+            background: var(--gold-main);
+            color: black;
+            font-size: 10px;
             font-weight: bold;
-        }
-        .highlight-gold {
-            color: #b4860b;
-            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 2px;
+            vertical-align: middle;
+            margin-right: 5px;
         }
 
         /* Footer */
         .footer {
             text-align: center;
-            margin-top: 40px;
-            font-size: 11px;
-            color: #aaa;
-            padding-bottom: 20px;
+            font-size: 10px;
+            color: #555;
+            margin-top: 50px;
+            border-top: 1px solid #222;
+            padding-top: 20px;
         }
+
     </style>
 </head>
 <body>
 
     <div class="header">
+        <h1>三川控股</h1>
         <h1>SANCHUAN HOLDINGS</h1>
-        <p>Strategic Development Plan 2026</p>
+        <p>Strategic Master Plan 2026</p>
     </div>
 
-    <div class="vision-card">
-        <div class="vision-title">VISION & OPPORTUNITY</div>
-        <div class="vision-text">
-            泰国市场目前是一片“蓝海”，但缺乏专业团队。<br>
-            我们的目标：建立中泰合资独立制作公司，利用中国经验 + 泰国资源，打造头部精品短剧。
+    <div class="content-card">
+        <p style="font-size: 16px; color: white; line-height: 1.8;">
+            <span class="highlight-gold">核心愿景：</span> 
+            针对泰国市场“蓝海但缺乏专业度”的现状，建立中泰合资独立制作公司。利用中国成熟的短剧经验，结合泰国本土资源，打造头部精品内容。
+        </p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">01. 核心竞争优势 (Resources)</div>
+        <div class="content-card">
+            <ul>
+                <li><strong>专业制作班底：</strong> 拥有资深制片人、导演及线上运营团队，具备在泰国的实战项目履历。</li>
+                <li><strong>政府资源背书：</strong> <span class="highlight-gold">获得当地政府政策支持</span>，利用政府资源为平台增信，确立专业态度与竞争壁垒。</li>
+                <li><strong>品牌市场联动：</strong> 整合国内品牌与场景资源，为后期变现铺路。</li>
+                <li><strong>中国团队赋能：</strong> 依托国内成熟的短剧制作、导演及宣发团队，确保产出内容的精品化。</li>
+            </ul>
         </div>
     </div>
 
-    <div class="accordion">
+    <div class="section">
+        <div class="section-title">02. 内容战略 (Content Strategy)</div>
+        <div class="content-card">
+            <p><strong>剧本研发体系：</strong></p>
+            <ul>
+                <li>严格遵循当地法律法规。</li>
+                <li>结合<span class="highlight-gold">社会新闻热点</span>进行本土化改编，确保话题度。</li>
+            </ul>
+            
+            <p style="margin-top:15px;"><strong>覆盖热门题材 (Genres)：</strong></p>
+            <div class="tag-container">
+                <span class="tag">爱情 Romance</span>
+                <span class="tag">惊悚 Thriller</span>
+                <span class="tag">耽美 BL</span>
+                <span class="tag">校园 Campus</span>
+                <span class="tag">黑道总裁 Mafia/CEO</span>
+            </div>
 
-        <div class="card" onclick="toggleCard(this)">
-            <div class="card-header">
-                <h3>01. 核心竞争优势 (Core Resources)</h3>
-                <span class="icon">▼</span>
-            </div>
-            <div class="card-content">
-                <ul>
-                    <li><strong>专业班底：</strong>拥有资深制片人、导演及线上运营团队，具备泰国实战履历。</li>
-                    <li><strong>政府背书：</strong><span class="highlight">获得当地政府政策支持</span>，建立竞争壁垒，确立专业度。</li>
-                    <li><strong>中国赋能：</strong>依托国内成熟团队，确保产出内容的精品化。</li>
-                </ul>
-            </div>
+            <p style="margin-top:15px;"><strong>创新推广：</strong> 结合 <span class="highlight-gold">AI 动漫技术</span> 进行内容推广。</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">03. 运营执行架构 (Execution)</div>
+        <p style="color:#888; margin-bottom:10px; font-size:12px;">采用“中泰融合 + 传帮带”模式：</p>
+        
+        <div class="content-card">
+            <p><span class="highlight-gold">🎥 导演组 (Director)</span></p>
+            <ul>
+                <li><strong>中国导师带教制：</strong> 引入中国（或国外）成熟短剧导演，带动泰国本土导演。</li>
+                <li><strong>核心目标：</strong> 重点培训<strong>“短剧思维模式”</strong>，解决节奏拖沓问题。</li>
+            </ul>
         </div>
 
-        <div class="card" onclick="toggleCard(this)">
-            <div class="card-header">
-                <h3>02. 内容战略 (Content Strategy)</h3>
-                <span class="icon">▼</span>
-            </div>
-            <div class="card-content">
-                <p style="font-size:14px; margin-top:0;"><strong>剧本研发：</strong>严格遵循法律，结合社会新闻热点进行本土化改编。</p>
-                <div class="tags-container">
-                    <span class="tag">爱情 Romance</span>
-                    <span class="tag">惊悚 Thriller</span>
-                    <span class="tag">耽美 BL</span>
-                    <span class="tag">校园 Campus</span>
-                    <span class="tag">黑道总裁 Mafia/CEO</span>
-                </div>
-                <ul style="margin-top:15px;">
-                    <li><strong>创新推广：</strong>结合 AI 动漫技术进行分发。</li>
-                </ul>
-            </div>
+        <div class="content-card">
+            <p><span class="highlight-gold">📝 编剧组 (Scriptwriting) - 核心壁垒</span></p>
+            <ul>
+                <li><strong>第一层（泰方）：</strong> 泰国编剧负责抓取本土热点、社会新闻，进行初创。</li>
+                <li><strong>第二层（中方）：</strong> 中国编剧团队进行<span class="highlight-red">“二创” (Second Creation)</span>。</li>
+                <li><strong>作用：</strong> 负责把控短剧节奏、设置爆点 (Hook)、调整集数与时长，确保符合短剧爆款逻辑。</li>
+            </ul>
         </div>
 
-        <div class="card" onclick="toggleCard(this)">
-            <div class="card-header">
-                <h3>03. 运营执行架构 (Execution)</h3>
-                <span class="icon">▼</span>
-            </div>
-            <div class="card-content">
-                <p style="font-size:13px; color:#888;">采用“中泰融合 + 传帮带”模式：</p>
-                <ul>
-                    <li><strong>导演组：</strong><span class="highlight">中国导师带教制</span>。引入中国导演带动泰国导演，培训“短剧思维模式”。</li>
-                    <li><strong>制作组：</strong>中国核心阵容 + 泰国执行团队。</li>
-                    <li><strong>编剧组 (核心)：</strong>
-                        <br>- 泰国编剧：抓取本土热点/初创。
-                        <br>- 中国编剧：进行<span class="highlight">“二创” (Second Creation)</span>，把控节奏与爆点。
-                    </li>
-                    <li><strong>选角与宣发：</strong>中泰兼容，国内外双向运营。</li>
-                </ul>
-            </div>
+        <div class="content-card">
+            <p><span class="highlight-gold">🎬 制作与后期 (Production)</span></p>
+            <ul>
+                <li><strong>模式：</strong> 中国核心阵容 + 泰国执行团队。</li>
+                <li><strong>执行：</strong> 利用中国强大的后期制作能力，培养泰国团队的工业化制作水准。</li>
+            </ul>
         </div>
 
-        <div class="card" onclick="toggleCard(this)">
-            <div class="card-header">
-                <h3>04. 商业化与变现 (Commercialization)</h3>
-                <span class="icon">▼</span>
-            </div>
-            <div class="card-content">
-                <p style="font-size:14px;">建立完整的商业变现闭环：</p>
-                <ul>
-                    <li><strong>代言 (Endorsement)：</strong>艺人经纪变现。</li>
-                    <li><strong>推广 (Promotion)：</strong>品牌联合营销。</li>
-                    <li><strong>植入 (Placement)：</strong>内容场景营销，为品牌提供长尾流量。</li>
-                </ul>
-            </div>
+        <div class="content-card">
+            <p><span class="highlight-gold">🌟 艺人与宣发 (Casting & Marketing)</span></p>
+            <ul>
+                <li><strong>选角：</strong> 中泰兼容，挖掘有潜力的新人。</li>
+                <li><strong>宣发：</strong> 整合国内与国外运营团队，双向发力。</li>
+                <li><strong>管理：</strong> 筛选优质艺人长期签约与培养。</li>
+            </ul>
         </div>
+    </div>
 
-        <div class="card ceo-card" onclick="toggleCard(this)">
-            <div class="card-header">
-                <h3>🚀 CEO 战略补充 (Strategic Plus)</h3>
-                <span class="icon" style="color:#b4860b">▼</span>
-            </div>
-            <div class="card-content">
-                <ul>
-                    <li><strong>短剧 + 电商 (Content to Commerce)：</strong>利用流量打通电商带货，实现“看剧即购物”。(符合注册目标第32条)</li>
-                    <li><strong>IP 资产化：</strong>不只做剧，更做 IP 全版权开发（小说、周边、授权）。</li>
-                    <li><strong>成本优化：</strong><span class="highlight-gold">“泰国成本 + 中国质量”</span>，实现利润最大化。</li>
-                </ul>
-            </div>
+    <div class="section">
+        <div class="section-title">04. 商业化与变现 (Commercialization)</div>
+        <div class="content-card">
+            <p>建立完整的商业变现闭环：</p>
+            <ul>
+                <li><strong>代言 (Endorsement)：</strong> 艺人经纪与形象授权。</li>
+                <li><strong>推广 (Promotion)：</strong> 品牌联合营销活动。</li>
+                <li><strong>植入 (Product Placement)：</strong> 内容场景植入，创造长尾商业价值。</li>
+            </ul>
         </div>
+    </div>
 
+    <div class="section">
+        <div class="section-title" style="color:white; border-color:white;">🚀 CEO 战略补充 (CEO Strategy)</div>
+        <div class="content-card ceo-section">
+            <p style="color:var(--gold-main); font-size:12px; margin-bottom:15px;">*基于公司宏观布局的补充战略</p>
+            
+            <ul>
+                <li style="margin-bottom:15px;">
+                    <span class="highlight-gold">1. 短剧 + 电商 (Content to Commerce)</span><br>
+                    利用短剧的高流量属性，打通电商带货渠道。实现“看剧即购物”，将观众转化为消费者。（符合注册目标第32条）
+                </li>
+                <li style="margin-bottom:15px;">
+                    <span class="highlight-gold">2. IP 资产化 (IP Asset)</span><br>
+                    不只做剧，更做 IP。优质剧本和角色将进行全版权开发（小说、周边、海外授权）。
+                </li>
+                <li>
+                    <span class="highlight-gold">3. 成本结构优化 (Cost Efficiency)</span><br>
+                    <strong>“泰国成本 + 中国质量”</strong>：利用泰国相对较低的制作成本，配合中国的工业化流程，实现利润最大化。
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="footer">
-        © 2026 SANCHUAN HOLDINGS CO., LTD.<br>Confidential Document
+        <p>© 2026 SANCHUAN HOLDINGS CO., LTD.</p>
+        <p>CONFIDENTIAL DOCUMENT</p>
     </div>
 
-    <script>
-        function toggleCard(card) {
-            // Close all other cards
-            const allCards = document.querySelectorAll('.card');
-            allCards.forEach(c => {
-                if (c !== card) {
-                    c.classList.remove('active');
-                    c.querySelector('.card-content').style.maxHeight = null;
-                }
-            });
-
-            // Toggle current card
-            card.classList.toggle('active');
-            const content = card.querySelector('.card-content');
-            if (card.classList.contains('active')) {
-                content.style.maxHeight = content.scrollHeight + "px";
-            } else {
-                content.style.maxHeight = null;
-            }
-        }
-    </script>
 </body>
 </html>
