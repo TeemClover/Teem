@@ -3,289 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THAI FILM INDUSTRY STANDARD RATES</title>
+    <title>THAI PRODUCTION RATE CARD 2026</title>
     <style>
         :root {
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text-main: #e0e0e0;
-            --text-sub: #a0a0a0;
+            --bg: #000000;
+            --card-bg: #1c1c1e;
+            --text-main: #ffffff;
+            --text-sub: #8e8e93;
             --gold: #D4AF37;
-            --gold-dim: #8a7326;
-            --red: #cf6679;
+            --green: #30d158;
+            --blue: #0a84ff;
+            --red: #ff453a;
         }
 
         body {
-            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
             padding: 20px;
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .container { max-width: 600px; margin: 0 auto; }
 
         /* Header */
-        .header {
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 20px; margin: 0; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+        .header p { font-size: 12px; color: var(--text-sub); margin-top: 5px; }
+
+        /* Toggle Switch Container */
+        .toggle-container {
+            display: flex;
+            background: #2c2c2e;
+            border-radius: 9px;
+            padding: 3px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .toggle-btn {
+            flex: 1;
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #8e8e93;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.3s ease;
+            z-index: 2;
         }
-        .header h1 {
-            color: var(--gold);
-            font-size: 22px;
-            margin: 0 0 10px 0;
-            text-transform: uppercase;
+
+        .toggle-btn.active {
+            color: #fff;
+            background-color: #636366; /* Default inactive grey */
         }
-        .header p {
-            color: var(--text-sub);
-            font-size: 12px;
-            margin: 0;
+
+        /* Active Colors */
+        .toggle-btn[data-target="commercial"].active {
+            background-color: var(--blue);
+            box-shadow: 0 2px 8px rgba(10, 132, 255, 0.3);
+        }
+
+        .toggle-btn[data-target="shortdrama"].active {
+            background-color: var(--green);
+            box-shadow: 0 2px 8px rgba(48, 209, 88, 0.3);
         }
 
         /* Notice Box */
         .notice-box {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid var(--gold-dim);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 25px;
-            font-size: 13px;
-        }
-        .notice-title {
-            color: var(--gold);
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        /* Table Style */
-        .rate-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .rate-table th {
-            background-color: #2c2c2c;
-            color: var(--gold);
-            padding: 12px 10px;
-            font-size: 13px;
-            text-align: left;
-            font-weight: 600;
-        }
-        .rate-table td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #333;
-            font-size: 13px;
-        }
-        .rate-table tr:last-child td {
-            border-bottom: none;
-        }
-        .price-col {
-            font-family: "Menlo", monospace;
-            color: #fff;
-        }
-        .rmb-col {
-            color: #4caf50; /* Green for money */
-            font-weight: bold;
-        }
-
-        /* Remarks Section */
-        .remarks {
             font-size: 12px;
-            color: var(--text-sub);
-            margin-top: 20px;
-            padding: 15px;
-            background: #1a1a1a;
+            padding: 12px;
             border-radius: 8px;
+            margin-bottom: 20px;
+            display: none; /* Hidden by default */
         }
-        .remarks h3 {
-            color: var(--text-main);
+        .notice-commercial {
+            background: rgba(10, 132, 255, 0.15);
+            border: 1px solid rgba(10, 132, 255, 0.3);
+            color: #aaddff;
+        }
+        .notice-shortdrama {
+            background: rgba(48, 209, 88, 0.15);
+            border: 1px solid rgba(48, 209, 88, 0.3);
+            color: #b0ffc6;
+        }
+        
+        /* Table Styles */
+        .rate-section { display: none; animation: fadeIn 0.4s ease; }
+        .rate-section.active { display: block; }
+
+        .group-title {
+            color: var(--gold);
             font-size: 14px;
-            margin-top: 0;
-        }
-        .remarks ul {
-            padding-left: 20px;
-            margin-bottom: 0;
-        }
-        .remarks li {
-            margin-bottom: 8px;
-        }
-        .highlight-red {
-            color: var(--red);
-            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 3px solid var(--gold);
         }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px dashed #333;
-            font-size: 12px;
-            color: var(--gold);
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 10px; overflow: hidden; }
+        th { text-align: left; padding: 12px; font-size: 12px; color: #888; background: #252528; border-bottom: 1px solid #333; }
+        td { padding: 12px; font-size: 13px; border-bottom: 1px solid #2c2c2e; }
+        tr:last-child td { border-bottom: none; }
+        
+        .role-name { font-weight: 600; display: block; color: #fff; }
+        .role-sub { font-size: 10px; color: #666; font-weight: normal; }
+        .price { font-family: "Menlo", monospace; letter-spacing: -0.5px; }
+        .price-thb { color: #fff; display: block; }
+        .price-rmb { font-size: 11px; font-weight: bold; margin-top: 2px; display: block; }
+        
+        /* Color coding for prices */
+        .commercial-view .price-rmb { color: var(--blue); }
+        .shortdrama-view .price-rmb { color: var(--green); }
+
+        .tag-est {
+            display: inline-block;
+            font-size: 9px;
+            background: #333;
+            color: #aaa;
+            padding: 1px 4px;
+            border-radius: 3px;
+            margin-left: 5px;
+            vertical-align: middle;
         }
 
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .footer { text-align: center; font-size: 11px; color: #555; margin-top: 40px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>泰国影视行业标准薪资单</h1>
-        <p>Thailand Film Industry Standard Rate Card (2025-2026)</p>
+        <h1>THAI PRODUCTION RATES</h1>
+        <p>泰国影视制作薪资参考表 (2026)</p>
     </div>
 
-    <div class="notice-box">
-        <span class="notice-title">⚠️ 重要说明 (Important Notice)</span>
-        此表为<strong>“行业标准报价” (Standard Market Rate)</strong>，仅供前期预算参考。
-        <br>实际价格取决于项目规模、人员资历及最终谈判结果。
+    <div class="toggle-container">
+        <div class="toggle-btn active" data-target="commercial" onclick="switchTab('commercial')">
+            🎬 电影/广告 (Standard)
+        </div>
+        <div class="toggle-btn" data-target="shortdrama" onclick="switchTab('shortdrama')">
+            📱 短剧/网剧 (Estimated)
+        </div>
     </div>
 
-    <h3 style="color:white; border-left:3px solid var(--gold); padding-left:10px; margin-top:30px;">1. 导演与制片组 (Director & Production)</h3>
-    <table class="rate-table">
-        <thead>
-            <tr>
-                <th width="40%">职位 (Role)</th>
-                <th width="30%">泰铢/天 (THB/Day)</th>
-                <th width="30%">约合人民币 (RMB)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>导演</strong><br><span style="color:#888; font-size:11px;">Director</span></td>
-                <td class="price-col">15,000 - 40,000</td>
-                <td class="rmb-col">¥3,000 - 8,000</td>
-            </tr>
-            <tr>
-                <td><strong>副导演 (1st AD)</strong><br><span style="color:#888; font-size:11px;">Assistant Director</span></td>
-                <td class="price-col">5,000 - 10,000</td>
-                <td class="rmb-col">¥1,000 - 2,000</td>
-            </tr>
-            <tr>
-                <td><strong>场记</strong><br><span style="color:#888; font-size:11px;">Script Supervisor</span></td>
-                <td class="price-col">3,000 - 5,000</td>
-                <td class="rmb-col">¥600 - 1,000</td>
-            </tr>
-            <tr>
-                <td><strong>制片主任 (Line Producer)</strong><br><span style="color:#888; font-size:11px;">Budget & Team Manager</span></td>
-                <td class="price-col">8,000 - 15,000</td>
-                <td class="rmb-col">¥1,600 - 3,000</td>
-            </tr>
-            <tr>
-                <td><strong>制片统筹 (PM)</strong><br><span style="color:#888; font-size:11px;">Production Manager</span></td>
-                <td class="price-col">5,000 - 8,000</td>
-                <td class="rmb-col">¥1,000 - 1,600</td>
-            </tr>
-             <tr>
-                <td><strong>制片助理 (PA/Runner)</strong><br><span style="color:#888; font-size:11px;">Assistant / Runner</span></td>
-                <td class="price-col">1,500 - 2,500</td>
-                <td class="rmb-col">¥300 - 500</td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="notice-commercial" class="notice-box notice-commercial" style="display: block;">
+        <strong>🔵 标准商业报价 (Commercial Standard):</strong><br>
+        适用于电影、TVC广告及高规格剧集。人员经验丰富，流程规范。
+    </div>
+    <div id="notice-shortdrama" class="notice-box notice-shortdrama">
+        <strong>🟢 短剧估算报价 (Short Drama Estimate):</strong><br>
+        *注意：这是针对短剧市场的<strong>“估算价格” (Estimated Price)</strong>。
+        目前泰国暂无专门的短剧团队，此价格基于Freelance和中小型项目推算，仅供参考。
+    </div>
 
-    <h3 style="color:white; border-left:3px solid var(--gold); padding-left:10px;">2. 摄影与灯光组 (Camera & Lighting)</h3>
-    <table class="rate-table">
-        <thead>
-            <tr>
-                <th width="40%">职位 (Role)</th>
-                <th width="30%">泰铢/天 (THB/Day)</th>
-                <th width="30%">约合人民币 (RMB)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>摄影指导 (DoP)</strong><br><span style="color:#888; font-size:11px;">Director of Photography</span></td>
-                <td class="price-col">15,000 - 35,000</td>
-                <td class="rmb-col">¥3,000 - 7,000</td>
-            </tr>
-            <tr>
-                <td><strong>掌机摄影 (Cam Op)</strong><br><span style="color:#888; font-size:11px;">Camera Operator</span></td>
-                <td class="price-col">8,000 - 15,000</td>
-                <td class="rmb-col">¥1,600 - 3,000</td>
-            </tr>
-            <tr>
-                <td><strong>摄影大助 (1st AC)</strong><br><span style="color:#888; font-size:11px;">Focus Puller</span></td>
-                <td class="price-col">4,500 - 7,000</td>
-                <td class="rmb-col">¥900 - 1,400</td>
-            </tr>
-            <tr>
-                <td><strong>灯光师 (Gaffer)</strong><br><span style="color:#888; font-size:11px;">Head of Lighting</span></td>
-                <td class="price-col">6,000 - 10,000</td>
-                <td class="rmb-col">¥1,200 - 2,000</td>
-            </tr>
-            <tr>
-                <td><strong>场务/灯光助理 (Grip/Best Boy)</strong><br><span style="color:#888; font-size:11px;">Crew / Labor</span></td>
-                <td class="price-col">2,500 - 4,000</td>
-                <td class="rmb-col">¥500 - 800</td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="view-commercial" class="rate-section active commercial-view">
+        <div class="group-title">1. 导演与制片组 (Director & Prod)</div>
+        <table>
+            <thead><tr><th width="45%">职位 (Role)</th><th>参考薪资 (Rates)</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><span class="role-name">导演 (Director)</span><span class="role-sub">Commercial / Movie Grade</span></td>
+                    <td class="price"><span class="price-thb">15k - 40k THB</span><span class="price-rmb">¥3,000 - 8,000</span></td>
+                </tr>
+                <tr>
+                    <td><span class="role-name">副导演 (1st AD)</span><span class="role-sub">Experienced</span></td>
+                    <td class="price"><span class="price-thb">5k - 10k THB</span><span class="price-rmb">¥1,000 - 2,000</span></td>
+                </tr>
+                <tr>
+                    <td><span class="role-name">摄影指导 (DoP)</span><span class="role-sub">Cinema Grade</span></td>
+                    <td class="price"><span class="price-thb">15k - 35k THB</span><span class="price-rmb">¥3,000 - 7,000</span></td>
+                </tr>
+                <tr>
+                    <td><span class="role-name">制片主任 (Producer)</span><span class="role-sub">Line Producer</span></td>
+                    <td class="price"><span class="price-thb">8k - 15k THB</span><span class="price-rmb">¥1,600 - 3,000</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <h3 style="color:white; border-left:3px solid var(--gold); padding-left:10px;">3. 美术与服化 (Art & Costume)</h3>
-    <table class="rate-table">
-        <thead>
-            <tr>
-                <th width="40%">职位 (Role)</th>
-                <th width="30%">泰铢/天 (THB/Day)</th>
-                <th width="30%">约合人民币 (RMB)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>美术指导 (Art Director)</strong><br><span style="color:#888; font-size:11px;">Set Design Lead</span></td>
-                <td class="price-col">6,000 - 12,000</td>
-                <td class="rmb-col">¥1,200 - 2,400</td>
-            </tr>
-            <tr>
-                <td><strong>化妆师 (Makeup Artist)</strong><br><span style="color:#888; font-size:11px;">Makeup & Hair (Main)</span></td>
-                <td class="price-col">5,000 - 10,000</td>
-                <td class="rmb-col">¥1,000 - 2,000</td>
-            </tr>
-            <tr>
-                <td><strong>服装师 (Stylist)</strong><br><span style="color:#888; font-size:11px;">Wardrobe / Costume</span></td>
-                <td class="price-col">4,000 - 8,000</td>
-                <td class="rmb-col">¥800 - 1,600</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="remarks">
-        <h3>📝 备注 (Remarks) - 必须阅读</h3>
-        <ul>
-            <li>
-                <span class="highlight-red">关于工作时间 (Working Hours - Q System):</span><br>
-                泰国的计费单位是 <strong>"Q"</strong>。<br>
-                <strong>1 Q = 12 小时</strong> (包含1小时休息用餐)。<br>
-                如果工作时间超过 12 小时，必须支付 <strong>OT (加班费)</strong>，通常按小时计算。
-            </li>
-            <li style="margin-top:10px;">
-                <span class="highlight-red">关于包含内容 (Inclusions):</span><br>
-                以上报价仅为<strong>“纯人工费” (Labor Fee Only)</strong>。<br>
-                <strong>不包含：</strong>摄影器材租赁、灯光器材、车辆、场地费、餐饮费等。
-            </li>
-            <li style="margin-top:10px;">
-                <span class="highlight-red">关于汇率 (Exchange Rate):</span><br>
-                参考汇率：1 RMB ≈ 5 THB (具体以实时汇率为准)。
-            </li>
-        </ul>
+    <div id="view-shortdrama" class="rate-section shortdrama-view">
+        <div class="group-title">1. 导演与制片组 (Short Drama Optimized)</div>
+        <table>
+            <thead><tr><th width="45%">职位 (Role)</th><th>估算薪资 (Estimated)</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td><span class="role-name">导演 (Director)</span><span class="tag-est">Est.</span><span class="role-sub">Short Drama / Series</span></td>
+                    <td class="price"><span class="price-thb">8k - 20k THB</span><span class="price-rmb">¥1,600 - 4,000</span></td>
+                </tr>
+                <tr>
+                    <td><span class="role-name">副导演 (1st AD)</span><span class="role-sub">General</span></td>
+                    <td class="price"><span class="price-thb">3.5k - 7k THB</span><span class="price-rmb">¥700 - 1,400</span></td>
+                </tr>
+                <tr>
+                    <td><span class="role-name">摄影指导 (DoP)</span><span class="tag-est">Est.</span><span class="role-sub">Production Grade</span></td>
+                    <td class="price"><span class="price-thb">10k - 18k THB</span><span class="price-rmb">¥2,000 - 3,600</span></td>
+                </tr>
+                <tr>
+                    <td><span class="role-name">制片主任 (Producer)</span><span class="role-sub">Budget Control</span></td>
+                    <td class="price"><span class="price-thb">6k - 10k THB</span><span class="price-rmb">¥1,200 - 2,000</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="group-title">2. 基础执行组 (Execution Crew)</div>
+        <table>
+             <tbody>
+                <tr>
+                    <td><span class="role-name">灯光师 (Gaffer)</span></td>
+                    <td class="price"><span class="price-thb">5k - 8k THB</span><span class="price-rmb">¥1,000 - 1,600</span></td>
+                </tr>
+                <tr>
+                    <td><span class="role-name">美术/服化 (Art/Stylist)</span></td>
+                    <td class="price"><span class="price-thb">3.5k - 6k THB</span><span class="price-rmb">¥700 - 1,200</span></td>
+                </tr>
+                <tr>
+                    <td><span class="role-name">助理/场务 (PA/Runner)</span></td>
+                    <td class="price"><span class="price-thb">1,200 - 2,000 THB</span><span class="price-rmb">¥240 - 400</span></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div class="footer">
-        <p><strong>NEXT STEP:</strong> 收到具体剧本与拍摄计划后，我们将联系实际候选人进行最终报价确认。</p>
-        <p>Once the script and plan are finalized, we will contact actual candidates for confirmed quotes.</p>
-        <p>© 2026 SANCHUAN HOLDINGS</p>
+        1 Q = 12 Hours | Exchange Rate: ~5 THB/RMB<br>
+        © 2026 SANCHUAN HOLDINGS
     </div>
+
 </div>
+
+<script>
+    function switchTab(tab) {
+        // Buttons
+        document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.toggle-btn[data-target="${tab}"]`).classList.add('active');
+
+        // Content
+        document.querySelectorAll('.rate-section').forEach(sec => sec.classList.remove('active'));
+        document.getElementById(`view-${tab}`).classList.add('active');
+
+        // Notices
+        document.querySelectorAll('.notice-box').forEach(box => box.style.display = 'none');
+        document.getElementById(`notice-${tab}`).style.display = 'block';
+    }
+</script>
 
 </body>
 </html>
