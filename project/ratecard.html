@@ -34,7 +34,7 @@
         .header h1 { font-size: 20px; color: var(--gold); margin: 0; font-weight: 800; letter-spacing: 0.5px; }
         .header p { font-size: 11px; color: var(--text-sub); margin-top: 5px; }
 
-        /* Logic Box (For Nana) */
+        /* Logic Box */
         .logic-box {
             background: rgba(212, 175, 55, 0.08);
             border: 1px solid rgba(212, 175, 55, 0.4);
@@ -110,6 +110,9 @@
         .color-comm { color: var(--blue); }
         .color-short { color: var(--green); }
         .color-china { color: var(--purple); }
+        
+        /* Estimate Tag for China View */
+        .est-tag { font-size: 9px; opacity: 0.6; font-weight: normal; margin-left: 3px; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -164,6 +167,8 @@
                 <td><span class="price color-comm">25,000 - 50,000 泰铢</span><span class="price-sub">约 ¥5,400 - 10,800</span></td></tr>
             <tr><td><span class="role-title">B机 摄影师 (Op)</span><span class="role-sub">第二机位</span></td>
                 <td><span class="price color-comm">12,000 - 20,000 泰铢</span><span class="price-sub">约 ¥2,600 - 4,300</span></td></tr>
+            <tr><td><span class="role-title">C机 摄影师 (Op)</span><span class="role-sub">特写/稳定器</span></td>
+                <td><span class="price color-comm">8,000 - 15,000 泰铢</span><span class="price-sub">约 ¥1,700 - 3,200</span></td></tr>
             <tr><td><span class="role-title">摄影大助 (Focus)</span><span class="role-sub">跟焦员</span></td>
                 <td><span class="price color-comm">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
             <tr><td><span class="role-title">DIT 数据管理</span><span class="role-sub">现场调色/备份</span></td>
@@ -226,6 +231,8 @@
                 <td><span class="price color-short">10,000 - 18,000 泰铢</span><span class="price-sub">约 ¥2,100 - 3,900</span></td></tr>
             <tr><td><span class="role-title">B机 摄影师 (Op)</span><span class="role-sub">辅机位</span></td>
                 <td><span class="price color-short">5,000 - 9,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,900</span></td></tr>
+            <tr><td><span class="role-title">C机 摄影师 (Op)</span><span class="role-sub">特殊/Gimbal</span></td>
+                <td><span class="price color-short">4,000 - 7,000 泰铢</span><span class="price-sub">约 ¥870 - 1,500</span></td></tr>
             <tr><td><span class="role-title">摄影大助 (Focus)</span><span class="role-sub">跟焦员</span></td>
                 <td><span class="price color-short">3,000 - 5,000 泰铢</span><span class="price-sub">约 ¥650 - 1,080</span></td></tr>
             <tr><td><span class="role-title">DIT 数据管理</span><span class="role-sub">素材备份</span></td>
@@ -243,7 +250,7 @@
             <tr><td><span class="role-title">道具师 (Props)</span><span class="role-sub">现场道具</span></td>
                 <td><span class="price color-short">3,000 - 5,000 泰铢</span><span class="price-sub">约 ¥650 - 1,080</span></td></tr>
             <tr><td><span class="role-title">化妆/发型 (HMU)</span><span class="role-sub">短剧标准</span></td>
-                <td><span class="price color-short">3,500 - 6,000 泰铢</span><span class="price-sub">约 ¥760 - 1,300</span></td></tr>
+                <td><span class="price color-short">2,500 - 4,500 泰铢</span><span class="price-sub">约 ¥540 - 980</span></td></tr>
             <tr><td><span class="role-title">化妆助理</span><span class="role-sub">补妆</span></td>
                 <td><span class="price color-short">1,500 - 2,500 泰铢</span><span class="price-sub">约 ¥320 - 540</span></td></tr>
             <tr><td><span class="role-title">服装师 (Stylist)</span><span class="role-sub">服装管理</span></td>
@@ -266,62 +273,64 @@
     <div id="view-china" class="rate-view view-china">
         <div class="group-header">1. 导演与制片组</div>
         <table>
-            <tr><td><span class="role-title">导演</span><span class="role-sub">表格数据</span></td>
-                <td><span class="price color-china">¥ 4,000</span><span class="price-sub">约 18,400 泰铢</span></td></tr>
+            <tr><td><span class="role-title">导演</span><span class="role-sub">表格数据 (4000¥)</span></td>
+                <td><span class="price color-china">18,400 泰铢</span><span class="price-sub">¥ 4,000</span></td></tr>
             <tr><td><span class="role-title">副导演 (1st AD)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 600 - 1,000 (Est)</span><span class="price-sub">约 2,700 - 4,600 泰铢</span></td></tr>
-            <tr><td><span class="role-title">场记 (Script Sup)</span><span class="role-sub">表格数据</span></td>
-                <td><span class="price color-china">¥ 400</span><span class="price-sub">约 1,840 泰铢</span></td></tr>
-            <tr><td><span class="role-title">制片主任 (PM)</span><span class="role-sub">表格数据</span></td>
-                <td><span class="price color-china">¥ 1,500</span><span class="price-sub">约 6,900 泰铢</span></td></tr>
-            <tr><td><span class="role-title">制片统筹 (Coord)</span><span class="role-sub">表格数据</span></td>
-                <td><span class="price color-china">¥ 1,000</span><span class="price-sub">约 4,600 泰铢</span></td></tr>
+                <td><span class="price color-china">3,000 - 5,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 650 - 1,080</span></td></tr>
+            <tr><td><span class="role-title">场记 (Script Sup)</span><span class="role-sub">表格数据 (400¥)</span></td>
+                <td><span class="price color-china">1,840 泰铢</span><span class="price-sub">¥ 400</span></td></tr>
+            <tr><td><span class="role-title">制片主任 (PM)</span><span class="role-sub">表格数据 (1500¥)</span></td>
+                <td><span class="price color-china">6,900 泰铢</span><span class="price-sub">¥ 1,500</span></td></tr>
+            <tr><td><span class="role-title">制片统筹 (Coord)</span><span class="role-sub">表格数据 (1000¥)</span></td>
+                <td><span class="price color-china">4,600 泰铢</span><span class="price-sub">¥ 1,000</span></td></tr>
             <tr><td><span class="role-title">外联制片 (Loc Mgr)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 600 - 800 (Est)</span><span class="price-sub">约 2,700 - 3,600 泰铢</span></td></tr>
+                <td><span class="price color-china">2,500 - 3,500 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 540 - 760</span></td></tr>
             <tr><td><span class="role-title">制片助理 (PA)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 300 - 500 (Est)</span><span class="price-sub">约 1,380 - 2,300 泰铢</span></td></tr>
+                <td><span class="price color-china">1,200 - 1,800 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 260 - 390</span></td></tr>
         </table>
 
         <div class="group-header">2. 摄影与灯光组</div>
         <table>
-            <tr><td><span class="role-title">A机 摄影指导 (DoP)</span><span class="role-sub">表格数据</span></td>
-                <td><span class="price color-china">¥ 1,500</span><span class="price-sub">约 6,900 泰铢</span></td></tr>
-            <tr><td><span class="role-title">B机 摄影师 (Op)</span><span class="role-sub">表格数据</span></td>
-                <td><span class="price color-china">¥ 1,000</span><span class="price-sub">约 4,600 泰铢</span></td></tr>
+            <tr><td><span class="role-title">A机 摄影指导 (DoP)</span><span class="role-sub">表格数据 (1500¥)</span></td>
+                <td><span class="price color-china">6,900 泰铢</span><span class="price-sub">¥ 1,500</span></td></tr>
+            <tr><td><span class="role-title">B机 摄影师 (Op)</span><span class="role-sub">表格数据 (1000¥)</span></td>
+                <td><span class="price color-china">4,600 泰铢</span><span class="price-sub">¥ 1,000</span></td></tr>
+            <tr><td><span class="role-title">C机 摄影师 (Op)</span><span class="role-sub">表格数据 (800¥)</span></td>
+                <td><span class="price color-china">3,680 泰铢</span><span class="price-sub">¥ 800</span></td></tr>
             <tr><td><span class="role-title">摄影大助 (Focus)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 500 - 800 (Est)</span><span class="price-sub">约 2,300 - 3,600 泰铢</span></td></tr>
-            <tr><td><span class="role-title">DIT 数据管理</span><span class="role-sub">表格数据</span></td>
-                <td><span class="price color-china">¥ 400</span><span class="price-sub">约 1,840 泰铢</span></td></tr>
-            <tr><td><span class="role-title">灯光师 (Gaffer)</span><span class="role-sub">表格计算 (1000/人)</span></td>
-                <td><span class="price color-china">¥ 1,000 - 1,500</span><span class="price-sub">约 4,600 - 6,900 泰铢</span></td></tr>
-            <tr><td><span class="role-title">灯光/场务助理</span><span class="role-sub">表格数据 (1200/3人)</span></td>
-                <td><span class="price color-china">¥ 400</span><span class="price-sub">约 1,840 泰铢</span></td></tr>
+                <td><span class="price color-china">2,000 - 3,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 430 - 650</span></td></tr>
+            <tr><td><span class="role-title">DIT 数据管理</span><span class="role-sub">表格数据 (400¥)</span></td>
+                <td><span class="price color-china">1,840 泰铢</span><span class="price-sub">¥ 400</span></td></tr>
+            <tr><td><span class="role-title">灯光师 (Gaffer)</span><span class="role-sub">表格计算 (1000¥/人)</span></td>
+                <td><span class="price color-china">4,600 泰铢</span><span class="price-sub">¥ 1,000</span></td></tr>
+            <tr><td><span class="role-title">灯光/场务助理</span><span class="role-sub">表格数据 (400¥/人)</span></td>
+                <td><span class="price color-china">1,840 泰铢</span><span class="price-sub">¥ 400</span></td></tr>
         </table>
 
         <div class="group-header">3. 美术/造型/声音</div>
         <table>
             <tr><td><span class="role-title">美术指导 (Art Dir)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 1,000 - 1,500 (Est)</span><span class="price-sub">约 4,600 - 6,900 泰铢</span></td></tr>
+                <td><span class="price color-china">4,000 - 6,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 870 - 1,300</span></td></tr>
             <tr><td><span class="role-title">道具师 (Props)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 500 - 800 (Est)</span><span class="price-sub">约 2,300 - 3,600 泰铢</span></td></tr>
-            <tr><td><span class="role-title">化妆/发型 (HMU)</span><span class="role-sub">表格数据 (2000/3人)</span></td>
-                <td><span class="price color-china">¥ 666</span><span class="price-sub">约 3,060 泰铢</span></td></tr>
+                <td><span class="price color-china">2,000 - 3,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 430 - 650</span></td></tr>
+            <tr><td><span class="role-title">化妆/发型 (HMU)</span><span class="role-sub">表格计算 (666¥/人)</span></td>
+                <td><span class="price color-china">3,100 泰铢</span><span class="price-sub">¥ 666 (Avg)</span></td></tr>
             <tr><td><span class="role-title">化妆助理</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 300 - 500 (Est)</span><span class="price-sub">约 1,380 - 2,300 泰铢</span></td></tr>
+                <td><span class="price color-china">1,200 - 1,800 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 260 - 390</span></td></tr>
             <tr><td><span class="role-title">服装师 (Stylist)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 500 - 800 (Est)</span><span class="price-sub">约 2,300 - 3,600 泰铢</span></td></tr>
+                <td><span class="price color-china">2,500 - 4,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 540 - 870</span></td></tr>
             <tr><td><span class="role-title">收音师 (Sound)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 800 - 1,200 (Est)</span><span class="price-sub">约 3,600 - 5,500 泰铢</span></td></tr>
+                <td><span class="price color-china">3,500 - 5,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 760 - 1,080</span></td></tr>
         </table>
 
          <div class="group-header">4. 后勤与车辆</div>
         <table>
             <tr><td><span class="role-title">跟组司机 (Van)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 400 - 600 (Est)</span><span class="price-sub">约 1,840 - 2,700 泰铢</span></td></tr>
+                <td><span class="price color-china">2,000 - 3,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 430 - 650</span></td></tr>
             <tr><td><span class="role-title">剧组餐饮</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 30 - 50 (Est)</span><span class="price-sub">约 140 - 230 泰铢</span></td></tr>
+                <td><span class="price color-china">150 - 250 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 32 - 54</span></td></tr>
             <tr><td><span class="role-title">群演 (Extra)</span><span class="role-sub">市场估算</span></td>
-                <td><span class="price color-china">¥ 150 - 200 (Est)</span><span class="price-sub">约 690 - 920 泰铢</span></td></tr>
+                <td><span class="price color-china">800 - 1,200 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 170 - 260</span></td></tr>
         </table>
     </div>
 
@@ -333,11 +342,9 @@
 
 <script>
     function switchView(targetId) {
-        // Buttons
         document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelector(`.toggle-btn[data-target="${targetId}"]`).classList.add('active');
         
-        // Views
         document.querySelectorAll('.rate-view').forEach(el => el.classList.remove('active'));
         document.getElementById(targetId).classList.add('active');
     }
