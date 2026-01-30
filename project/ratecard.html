@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>泰国影视全案报价详解 2026</title>
+    <title>Sanchuan Full Rate Comparison 2026</title>
     <style>
         :root {
             --bg: #000000;
-            --card-bg: #161618;
+            --card-bg: #141414;
             --text-main: #ffffff;
             --text-sub: #a0a0a0;
             --gold: #D4AF37;
             --blue: #2979ff;
             --green: #00e676;
-            --red: #ff3d00;
             --purple: #d500f9;
+            --border: #333;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
@@ -27,34 +27,37 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .container { max-width: 600px; margin: 0 auto; }
+        .container { max-width: 600px; margin: 0 auto; padding-bottom: 50px; }
 
-        /* HEADER */
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
-        .header h1 { font-size: 22px; color: var(--gold); margin: 0; font-weight: 800; letter-spacing: 1px; }
+        /* Header */
+        .header { text-align: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .header h1 { font-size: 20px; color: var(--gold); margin: 0; font-weight: 800; letter-spacing: 0.5px; }
         .header p { font-size: 11px; color: var(--text-sub); margin-top: 5px; }
 
-        /* CRITICAL EXPLANATION BOX (Reply to Nana) */
+        /* Logic Box (For Nana) */
         .logic-box {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid var(--gold);
-            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px;
             padding: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
-        .logic-title { color: var(--gold); font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
-        .logic-content { font-size: 12px; color: #ddd; }
-        .logic-item { margin-bottom: 8px; position: relative; padding-left: 15px; }
-        .logic-item::before { content: "•"; color: var(--gold); position: absolute; left: 0; font-weight: bold; }
-        .logic-highlight { color: #fff; font-weight: bold; text-decoration: underline; text-decoration-color: var(--gold); }
+        .logic-title { color: var(--gold); font-size: 13px; font-weight: bold; margin-bottom: 8px; display: block; }
+        .logic-list { list-style: none; padding: 0; margin: 0; }
+        .logic-list li { 
+            font-size: 11px; color: #ccc; margin-bottom: 6px; padding-left: 12px; position: relative; 
+        }
+        .logic-list li::before { 
+            content: "•"; color: var(--gold); position: absolute; left: 0; font-weight: bold; 
+        }
 
-        /* TOGGLE BUTTONS */
+        /* Toggle Tabs */
         .toggle-container {
             display: flex;
-            background: #2c2c2e;
+            background: #222;
             border-radius: 8px;
-            padding: 3px;
-            margin-bottom: 20px;
+            padding: 4px;
+            margin-bottom: 15px;
         }
         .toggle-btn {
             flex: 1;
@@ -62,284 +65,279 @@
             padding: 10px 0;
             font-size: 12px;
             font-weight: bold;
-            color: #888;
+            color: #777;
             cursor: pointer;
             border-radius: 6px;
             transition: all 0.2s;
         }
-        .toggle-btn.active { color: #fff; background-color: #444; }
+        .toggle-btn.active { color: #fff; background-color: #333; }
         .toggle-btn[data-target="view-comm"].active { background-color: var(--blue); }
         .toggle-btn[data-target="view-short"].active { background-color: var(--green); }
         .toggle-btn[data-target="view-china"].active { background-color: var(--purple); }
 
-        /* RATE SECTIONS */
+        /* View Content */
         .rate-view { display: none; }
         .rate-view.active { display: block; animation: fadeIn 0.3s; }
 
-        .section-title {
+        /* Groups & Tables */
+        .group-header {
             color: #fff;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             margin-top: 25px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             padding-left: 10px;
-            border-left: 4px solid;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-left: 3px solid;
+            display: flex; justify-content: space-between;
         }
-        .view-comm .section-title { border-color: var(--blue); }
-        .view-short .section-title { border-color: var(--green); }
-        .view-china .section-title { border-color: var(--purple); }
+        .view-comm .group-header { border-color: var(--blue); color: var(--blue); }
+        .view-short .group-header { border-color: var(--green); color: var(--green); }
+        .view-china .group-header { border-color: var(--purple); color: var(--purple); }
 
-        /* TABLES */
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; margin-bottom: 5px; }
-        th { text-align: left; padding: 8px 12px; font-size: 11px; color: #666; background: #202022; text-transform: uppercase; }
-        td { padding: 10px 12px; border-bottom: 1px solid #2a2a2c; vertical-align: middle; }
+        th { text-align: left; padding: 10px; font-size: 11px; color: #666; background: #1a1a1a; }
+        td { padding: 10px; border-bottom: 1px solid #222; vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
 
-        /* Text Styles */
-        .role-main { display: block; font-size: 13px; font-weight: 600; color: #e0e0e0; }
-        .role-sub { display: block; font-size: 10px; color: #777; margin-top: 2px; }
+        /* Typography */
+        .role-title { display: block; font-size: 13px; font-weight: 600; color: #eee; }
+        .role-sub { display: block; font-size: 10px; color: #666; margin-top: 2px; }
         
-        .price-thb { display: block; font-family: "Arial", sans-serif; font-size: 13px; font-weight: bold; text-align: right; color: #fff; }
-        .price-rmb { display: block; font-size: 11px; text-align: right; margin-top: 2px; font-weight: 500; }
-        
-        .view-comm .price-rmb { color: var(--blue); }
-        .view-short .price-rmb { color: var(--green); }
-        .view-china .price-rmb { color: var(--purple); }
+        .price { display: block; font-family: "Arial", sans-serif; font-weight: bold; font-size: 13px; text-align: right; }
+        .price-sub { display: block; font-size: 10px; opacity: 0.7; text-align: right; margin-top: 2px; }
 
-        .tag { display: inline-block; font-size: 9px; padding: 1px 4px; border-radius: 3px; margin-left: 5px; vertical-align: middle; opacity: 0.8; }
-        .tag-team { background: #333; color: #ccc; border: 1px solid #555; }
-
-        /* FOOTER */
-        .footer { text-align: center; margin-top: 40px; font-size: 10px; color: #555; padding-top: 20px; border-top: 1px solid #222; }
+        /* Colors */
+        .color-comm { color: var(--blue); }
+        .color-short { color: var(--green); }
+        .color-china { color: var(--purple); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .footer { text-align: center; margin-top: 40px; font-size: 10px; color: #444; border-top: 1px solid #222; padding-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>泰国影视全案报价详解</h1>
-        <p>Full Production Rate Card 2026 (Comprehensive Edition)</p>
+        <h1>泰国影视制作全案对比</h1>
+        <p>Full Production Rate Comparison 2026</p>
     </div>
 
     <div class="logic-box">
-        <div class="logic-title">💡 为什么单价看起来偏高？(Pricing Logic)</div>
-        <div class="logic-content">
-            <div class="logic-item">
-                <span class="logic-highlight">1 Q = 12 小时工作制：</span><br>
-                泰国的单天报价是基于 12 小时（含休息）的高强度工作。如果实际拍摄不满 12 小时，或者只需半天，价格会相应降低。
-            </div>
-            <div class="logic-item">
-                <span class="logic-highlight">这是“散客”单人价：</span><br>
-                表格列出的是单独聘请 freelancer 的标准价。如果我们<strong>“打包雇佣” (Hire as a Team)</strong> 或<strong>“长期签约” (Multi-day Booking)</strong>，总价会有 20%-30% 的折扣空间。
-            </div>
-            <div class="logic-item">
-                <span class="logic-highlight">关于服化道 (700元问题)：</span><br>
-                这个价格通常包含了化妆师的<strong>“耗材费” (Cosmetics Kit Fee)</strong> 和跟妆服务。如果是短剧团队，我们可以找 <strong>助理级 (Junior)</strong> 或 <strong>包月团队</strong>，成本会大幅下降。
-            </div>
-        </div>
+        <span class="logic-title">💡 为什么单价看起来偏高？(Pricing Logic)</span>
+        <ul class="logic-list">
+            <li><strong>1 Q = 12 小时工作制：</strong> 泰国标准单天报价基于 12 小时高强度工作。如工作时长较短，价格可相应降低。</li>
+            <li><strong>散客 vs 打包：</strong> 表格为单人散客价。若<strong>“打包雇佣” (Whole Team)</strong> 或<strong>“长期签约”</strong>，通常有 20-30% 折扣空间。</li>
+            <li><strong>服化包含耗材：</strong> 化妆师报价通常包含<strong>化妆品/耗材费 (Kit Fee)</strong> 及全天跟妆服务。</li>
+        </ul>
     </div>
 
     <div class="toggle-container">
-        <div class="toggle-btn active" data-target="view-comm" onclick="switchTab('view-comm')">商业标准 (Commercial)</div>
-        <div class="toggle-btn" data-target="view-short" onclick="switchTab('view-short')">短剧优化 (Short Drama)</div>
-        <div class="toggle-btn" data-target="view-china" onclick="switchTab('view-china')">原始参考 (Ref)</div>
+        <div class="toggle-btn active" data-target="view-comm" onclick="switchView('view-comm')">1. 商业标准 (Comm)</div>
+        <div class="toggle-btn" data-target="view-short" onclick="switchView('view-short')">2. 短剧优化 (Short)</div>
+        <div class="toggle-btn" data-target="view-china" onclick="switchView('view-china')">3. 中国参考 (Ref)</div>
     </div>
 
     <div id="view-comm" class="rate-view view-comm active">
-        <div class="section-title">1. 导演与制片组 (Director & Prod)</div>
+        <div class="group-header">1. 导演与制片组</div>
         <table>
-            <tr>
-                <td width="55%"><span class="role-main">导演 (Director)</span><span class="role-sub">商业广告/电影级</span></td>
-                <td><span class="price-thb">20,000 - 45,000</span><span class="price-rmb">¥4,350 - 9,800</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">副导演 (1st AD)</span><span class="role-sub">现场执行/控场</span></td>
-                <td><span class="price-thb">8,000 - 15,000</span><span class="price-rmb">¥1,740 - 3,260</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">场记 (Script Sup)</span><span class="role-sub">素材记录</span></td>
-                <td><span class="price-thb">4,000 - 6,000</span><span class="price-rmb">¥870 - 1,300</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">制片主任 (Line Producer)</span><span class="role-sub">预算/团队管理</span></td>
-                <td><span class="price-thb">10,000 - 20,000</span><span class="price-rmb">¥2,170 - 4,350</span></td>
-            </tr>
+            <tr><td><span class="role-title">导演</span><span class="role-sub">商业/电影级</span></td>
+                <td><span class="price color-comm">25,000 - 50,000 泰铢</span><span class="price-sub">约 ¥5,400 - 10,800</span></td></tr>
+            <tr><td><span class="role-title">副导演 (1st AD)</span><span class="role-sub">资深控场</span></td>
+                <td><span class="price color-comm">10,000 - 18,000 泰铢</span><span class="price-sub">约 ¥2,100 - 3,900</span></td></tr>
+            <tr><td><span class="role-title">场记 (Script Sup)</span><span class="role-sub">专业级</span></td>
+                <td><span class="price color-comm">4,000 - 6,000 泰铢</span><span class="price-sub">约 ¥870 - 1,300</span></td></tr>
+            <tr><td><span class="role-title">制片主任 (PM)</span><span class="role-sub">总控预算</span></td>
+                <td><span class="price color-comm">15,000 - 25,000 泰铢</span><span class="price-sub">约 ¥3,200 - 5,400</span></td></tr>
+            <tr><td><span class="role-title">制片统筹 (Coord)</span><span class="role-sub">日程管理</span></td>
+                <td><span class="price color-comm">8,000 - 12,000 泰铢</span><span class="price-sub">约 ¥1,700 - 2,600</span></td></tr>
+            <tr><td><span class="role-title">外联制片 (Loc Mgr)</span><span class="role-sub">场地协调</span></td>
+                <td><span class="price color-comm">6,000 - 10,000 泰铢</span><span class="price-sub">约 ¥1,300 - 2,100</span></td></tr>
+            <tr><td><span class="role-title">制片助理 (PA)</span><span class="role-sub">机动人员</span></td>
+                <td><span class="price color-comm">2,500 - 3,500 泰铢</span><span class="price-sub">约 ¥540 - 760</span></td></tr>
         </table>
 
-        <div class="section-title">2. 摄影与灯光 (Camera & G&E)</div>
+        <div class="group-header">2. 摄影与灯光组</div>
         <table>
-            <tr>
-                <td width="55%"><span class="role-main">摄影指导 (DoP)</span><span class="role-sub">总指挥</span></td>
-                <td><span class="price-thb">20,000 - 40,000</span><span class="price-rmb">¥4,350 - 8,700</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">摄影师 (Cam Op)</span><span class="role-sub">掌机</span></td>
-                <td><span class="price-thb">10,000 - 18,000</span><span class="price-rmb">¥2,170 - 3,900</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">灯光师 (Gaffer)</span><span class="role-sub">灯光组长</span></td>
-                <td><span class="price-thb">8,000 - 12,000</span><span class="price-rmb">¥1,740 - 2,600</span></td>
-            </tr>
+            <tr><td><span class="role-title">A机 摄影指导 (DoP)</span><span class="role-sub">电影级</span></td>
+                <td><span class="price color-comm">25,000 - 50,000 泰铢</span><span class="price-sub">约 ¥5,400 - 10,800</span></td></tr>
+            <tr><td><span class="role-title">B机 摄影师 (Op)</span><span class="role-sub">第二机位</span></td>
+                <td><span class="price color-comm">12,000 - 20,000 泰铢</span><span class="price-sub">约 ¥2,600 - 4,300</span></td></tr>
+            <tr><td><span class="role-title">摄影大助 (Focus)</span><span class="role-sub">跟焦员</span></td>
+                <td><span class="price color-comm">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
+            <tr><td><span class="role-title">DIT 数据管理</span><span class="role-sub">现场调色/备份</span></td>
+                <td><span class="price color-comm">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
+            <tr><td><span class="role-title">灯光师 (Gaffer)</span><span class="role-sub">灯光总监</span></td>
+                <td><span class="price color-comm">8,000 - 15,000 泰铢</span><span class="price-sub">约 ¥1,700 - 3,200</span></td></tr>
+            <tr><td><span class="role-title">灯光/场务助理</span><span class="role-sub">每人</span></td>
+                <td><span class="price color-comm">2,500 - 4,000 泰铢</span><span class="price-sub">约 ¥540 - 870</span></td></tr>
+        </table>
+
+        <div class="group-header">3. 美术/造型/声音</div>
+        <table>
+            <tr><td><span class="role-title">美术指导 (Art Dir)</span><span class="role-sub">置景设计</span></td>
+                <td><span class="price color-comm">10,000 - 20,000 泰铢</span><span class="price-sub">约 ¥2,100 - 4,300</span></td></tr>
+            <tr><td><span class="role-title">道具师 (Props)</span><span class="role-sub">现场道具</span></td>
+                <td><span class="price color-comm">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
+            <tr><td><span class="role-title">化妆/发型 (HMU)</span><span class="role-sub">资深</span></td>
+                <td><span class="price color-comm">6,000 - 12,000 泰铢</span><span class="price-sub">约 ¥1,300 - 2,600</span></td></tr>
+            <tr><td><span class="role-title">化妆助理</span><span class="role-sub">补妆</span></td>
+                <td><span class="price color-comm">3,000 - 5,000 泰铢</span><span class="price-sub">约 ¥650 - 1,080</span></td></tr>
+            <tr><td><span class="role-title">服装师 (Stylist)</span><span class="role-sub">服装管理</span></td>
+                <td><span class="price color-comm">5,000 - 10,000 泰铢</span><span class="price-sub">约 ¥1,080 - 2,100</span></td></tr>
+            <tr><td><span class="role-title">收音师 (Sound)</span><span class="role-sub">含全套设备</span></td>
+                <td><span class="price color-comm">8,000 - 15,000 泰铢</span><span class="price-sub">约 ¥1,700 - 3,200</span></td></tr>
+        </table>
+
+         <div class="group-header">4. 后勤与车辆</div>
+        <table>
+            <tr><td><span class="role-title">跟组司机 (Van)</span><span class="role-sub">含油费</span></td>
+                <td><span class="price color-comm">3,000 - 4,000 泰铢</span><span class="price-sub">约 ¥650 - 870</span></td></tr>
+            <tr><td><span class="role-title">剧组餐饮</span><span class="role-sub">每人每天</span></td>
+                <td><span class="price color-comm">400 - 600 泰铢</span><span class="price-sub">约 ¥87 - 130</span></td></tr>
+            <tr><td><span class="role-title">群演 (Extra)</span><span class="role-sub">每人</span></td>
+                <td><span class="price color-comm">2,000 - 3,000 泰铢</span><span class="price-sub">约 ¥430 - 650</span></td></tr>
         </table>
     </div>
 
     <div id="view-short" class="rate-view view-short">
-        
-        <div class="section-title">1. 导演组 (Director Team)</div>
+        <div class="group-header">1. 导演与制片组</div>
         <table>
-            <tr>
-                <td width="55%"><span class="role-main">导演 (Director)</span><span class="role-sub">短剧经验</span></td>
-                <td><span class="price-thb">8,000 - 15,000</span><span class="price-rmb">¥1,740 - 3,260</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">副导演 (1st AD)</span><span class="role-sub">执行导演</span></td>
-                <td><span class="price-thb">3,500 - 6,000</span><span class="price-rmb">¥760 - 1,300</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">场记 (Script Sup)</span><span class="role-sub">可兼任助理</span></td>
-                <td><span class="price-thb">2,000 - 3,000</span><span class="price-rmb">¥430 - 650</span></td>
-            </tr>
+            <tr><td><span class="role-title">导演</span><span class="role-sub">短剧经验</span></td>
+                <td><span class="price color-short">10,000 - 20,000 泰铢</span><span class="price-sub">约 ¥2,100 - 4,300</span></td></tr>
+            <tr><td><span class="role-title">副导演 (1st AD)</span><span class="role-sub">现场执行</span></td>
+                <td><span class="price color-short">4,000 - 8,000 泰铢</span><span class="price-sub">约 ¥870 - 1,700</span></td></tr>
+            <tr><td><span class="role-title">场记 (Script Sup)</span><span class="role-sub">素材记录</span></td>
+                <td><span class="price color-short">2,000 - 3,500 泰铢</span><span class="price-sub">约 ¥430 - 760</span></td></tr>
+            <tr><td><span class="role-title">制片主任 (PM)</span><span class="role-sub">成本控制</span></td>
+                <td><span class="price color-short">6,000 - 10,000 泰铢</span><span class="price-sub">约 ¥1,300 - 2,100</span></td></tr>
+            <tr><td><span class="role-title">制片统筹 (Coord)</span><span class="role-sub">通告/日程</span></td>
+                <td><span class="price color-short">3,500 - 6,000 泰铢</span><span class="price-sub">约 ¥760 - 1,300</span></td></tr>
+            <tr><td><span class="role-title">外联制片 (Loc Mgr)</span><span class="role-sub">场地协调</span></td>
+                <td><span class="price color-short">3,000 - 5,000 泰铢</span><span class="price-sub">约 ¥650 - 1,080</span></td></tr>
+            <tr><td><span class="role-title">制片助理 (PA)</span><span class="role-sub">机动人员</span></td>
+                <td><span class="price color-short">1,500 - 2,500 泰铢</span><span class="price-sub">约 ¥320 - 540</span></td></tr>
         </table>
 
-        <div class="section-title">2. 制片组 (Production Team)</div>
+        <div class="group-header">2. 摄影与灯光组</div>
         <table>
-            <tr>
-                <td width="55%"><span class="role-main">制片主任 (Line Producer)</span><span class="role-sub">成本控制</span></td>
-                <td><span class="price-thb">6,000 - 10,000</span><span class="price-rmb">¥1,300 - 2,170</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">制片统筹 (PM)</span><span class="role-sub">日程/通告</span></td>
-                <td><span class="price-thb">3,500 - 5,000</span><span class="price-rmb">¥760 - 1,080</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">外联制片 (Location Mgr)</span><span class="role-sub">场地协调</span></td>
-                <td><span class="price-thb">3,000 - 5,000</span><span class="price-rmb">¥650 - 1,080</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">制片助理 (PA/Runner)</span><span class="role-sub">跑腿/杂务</span></td>
-                <td><span class="price-thb">1,200 - 2,000</span><span class="price-rmb">¥260 - 430</span></td>
-            </tr>
+            <tr><td><span class="role-title">A机 摄影指导 (DoP)</span><span class="role-sub">主机位</span></td>
+                <td><span class="price color-short">10,000 - 18,000 泰铢</span><span class="price-sub">约 ¥2,100 - 3,900</span></td></tr>
+            <tr><td><span class="role-title">B机 摄影师 (Op)</span><span class="role-sub">辅机位</span></td>
+                <td><span class="price color-short">5,000 - 9,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,900</span></td></tr>
+            <tr><td><span class="role-title">摄影大助 (Focus)</span><span class="role-sub">跟焦员</span></td>
+                <td><span class="price color-short">3,000 - 5,000 泰铢</span><span class="price-sub">约 ¥650 - 1,080</span></td></tr>
+            <tr><td><span class="role-title">DIT 数据管理</span><span class="role-sub">素材备份</span></td>
+                <td><span class="price color-short">2,500 - 4,000 泰铢</span><span class="price-sub">约 ¥540 - 870</span></td></tr>
+            <tr><td><span class="role-title">灯光师 (Gaffer)</span><span class="role-sub">组长</span></td>
+                <td><span class="price color-short">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
+            <tr><td><span class="role-title">灯光/场务助理</span><span class="role-sub">每人</span></td>
+                <td><span class="price color-short">1,500 - 2,500 泰铢</span><span class="price-sub">约 ¥320 - 540</span></td></tr>
         </table>
 
-        <div class="section-title">3. 摄影组 (Camera Team)</div>
+        <div class="group-header">3. 美术/造型/声音</div>
         <table>
-            <tr>
-                <td width="55%"><span class="role-main">摄影指导 (DoP/Cam A)</span><span class="role-sub">主机位</span></td>
-                <td><span class="price-thb">10,000 - 15,000</span><span class="price-rmb">¥2,170 - 3,260</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">摄影师 (Cam B)</span><span class="role-sub">辅机位</span></td>
-                <td><span class="price-thb">5,000 - 8,000</span><span class="price-rmb">¥1,080 - 1,740</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">摄影助理 (Focus/AC)</span><span class="role-sub">跟焦员</span></td>
-                <td><span class="price-thb">3,000 - 4,500</span><span class="price-rmb">¥650 - 980</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">DIT 数据管理</span><span class="role-sub">素材备份</span></td>
-                <td><span class="price-thb">2,500 - 4,000</span><span class="price-rmb">¥540 - 870</span></td>
-            </tr>
+            <tr><td><span class="role-title">美术指导 (Art Dir)</span><span class="role-sub">置景设计</span></td>
+                <td><span class="price color-short">5,000 - 9,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,900</span></td></tr>
+            <tr><td><span class="role-title">道具师 (Props)</span><span class="role-sub">现场道具</span></td>
+                <td><span class="price color-short">3,000 - 5,000 泰铢</span><span class="price-sub">约 ¥650 - 1,080</span></td></tr>
+            <tr><td><span class="role-title">化妆/发型 (HMU)</span><span class="role-sub">短剧标准</span></td>
+                <td><span class="price color-short">3,500 - 6,000 泰铢</span><span class="price-sub">约 ¥760 - 1,300</span></td></tr>
+            <tr><td><span class="role-title">化妆助理</span><span class="role-sub">补妆</span></td>
+                <td><span class="price color-short">1,500 - 2,500 泰铢</span><span class="price-sub">约 ¥320 - 540</span></td></tr>
+            <tr><td><span class="role-title">服装师 (Stylist)</span><span class="role-sub">服装管理</span></td>
+                <td><span class="price color-short">3,000 - 5,000 泰铢</span><span class="price-sub">约 ¥650 - 1,080</span></td></tr>
+            <tr><td><span class="role-title">收音师 (Sound)</span><span class="role-sub">含设备</span></td>
+                <td><span class="price color-short">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
         </table>
 
-        <div class="section-title">4. 灯光与场务 (G&E)</div>
+         <div class="group-header">4. 后勤与车辆</div>
         <table>
-            <tr>
-                <td width="55%"><span class="role-main">灯光师 (Gaffer)</span><span class="role-sub">组长</span></td>
-                <td><span class="price-thb">5,000 - 8,000</span><span class="price-rmb">¥1,080 - 1,740</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">灯光/场务助理 (Crew)</span><span class="role-sub">按人头算 <span class="tag tag-team">可打包</span></span></td>
-                <td><span class="price-thb">1,500 - 2,500</span><span class="price-rmb">¥320 - 540</span></td>
-            </tr>
-        </table>
-
-        <div class="section-title">5. 美术/服化 (Art & Style)</div>
-        <table>
-            <tr>
-                <td width="55%"><span class="role-main">美术指导 (Art Dir)</span><span class="role-sub">置景设计</span></td>
-                <td><span class="price-thb">5,000 - 8,000</span><span class="price-rmb">¥1,080 - 1,740</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">道具师 (Props)</span><span class="role-sub">现场道具</span></td>
-                <td><span class="price-thb">3,000 - 5,000</span><span class="price-rmb">¥650 - 1,080</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">化妆/发型 (HMU)</span><span class="role-sub">含工具箱 <span class="tag tag-team">打包价更低</span></span></td>
-                <td><span class="price-thb">3,500 - 6,000</span><span class="price-rmb">¥760 - 1,300</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">化妆助理 (HMU Asst)</span><span class="role-sub">补妆/群演妆</span></td>
-                <td><span class="price-thb">1,500 - 2,500</span><span class="price-rmb">¥320 - 540</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">服装师 (Stylist)</span><span class="role-sub">管理与搭配</span></td>
-                <td><span class="price-thb">3,000 - 5,000</span><span class="price-rmb">¥650 - 1,080</span></td>
-            </tr>
-        </table>
-
-        <div class="section-title">6. 声音与后期 (Sound & Post)</div>
-        <table>
-            <tr>
-                <td width="55%"><span class="role-main">收音师 (Sound Mixer)</span><span class="role-sub">含吊杆员+基本设备</span></td>
-                <td><span class="price-thb">5,000 - 8,000</span><span class="price-rmb">¥1,080 - 1,740</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">现场剪辑 (DIT/Editor)</span><span class="role-sub">粗剪/顺场</span></td>
-                <td><span class="price-thb">3,000 - 5,000</span><span class="price-rmb">¥650 - 1,080</span></td>
-            </tr>
-        </table>
-
-        <div class="section-title">7. 后勤与车辆 (Logistics)</div>
-        <table>
-            <tr>
-                <td width="55%"><span class="role-main">跟组司机 (Driver)</span><span class="role-sub">保姆车/面包车 (含油)</span></td>
-                <td><span class="price-thb">2,500 - 3,500</span><span class="price-rmb">¥540 - 760</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">器材车司机 (Truck)</span><span class="role-sub">含车辆</span></td>
-                <td><span class="price-thb">3,000 - 4,500</span><span class="price-rmb">¥650 - 980</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">剧组餐饮 (Catering)</span><span class="role-sub">每人/天 (含早午晚+水)</span></td>
-                <td><span class="price-thb">250 - 400</span><span class="price-rmb">¥55 - 85</span></td>
-            </tr>
-            <tr>
-                <td><span class="role-main">群演 (Extra)</span><span class="role-sub">背景/无台词 (每人)</span></td>
-                <td><span class="price-thb">800 - 1,200</span><span class="price-rmb">¥170 - 260</span></td>
-            </tr>
+            <tr><td><span class="role-title">跟组司机 (Van)</span><span class="role-sub">含油费</span></td>
+                <td><span class="price color-short">2,500 - 3,500 泰铢</span><span class="price-sub">约 ¥540 - 760</span></td></tr>
+            <tr><td><span class="role-title">剧组餐饮</span><span class="role-sub">每人每天</span></td>
+                <td><span class="price color-short">200 - 300 泰铢</span><span class="price-sub">约 ¥43 - 65</span></td></tr>
+            <tr><td><span class="role-title">群演 (Extra)</span><span class="role-sub">每人</span></td>
+                <td><span class="price color-short">800 - 1,500 泰铢</span><span class="price-sub">约 ¥170 - 320</span></td></tr>
         </table>
     </div>
 
     <div id="view-china" class="rate-view view-china">
-        <div class="section-title">您的预算表数据 (Ref)</div>
+        <div class="group-header">1. 导演与制片组</div>
         <table>
-            <tr><td width="55%"><span class="role-main">导演</span></td><td><span class="price-thb">18,400</span><span class="price-rmb">¥4,000</span></td></tr>
-            <tr><td><span class="role-main">制片</span></td><td><span class="price-thb">6,900</span><span class="price-rmb">¥1,500</span></td></tr>
-            <tr><td><span class="role-main">统筹</span></td><td><span class="price-thb">4,600</span><span class="price-rmb">¥1,000</span></td></tr>
-            <tr><td><span class="role-main">摄影师 A机</span></td><td><span class="price-thb">6,900</span><span class="price-rmb">¥1,500</span></td></tr>
-            <tr><td><span class="role-main">摄影师 B机</span></td><td><span class="price-thb">4,600</span><span class="price-rmb">¥1,000</span></td></tr>
-            <tr><td><span class="role-main">化妆师 (平均)</span></td><td><span class="price-thb">3,220</span><span class="price-rmb">¥700</span></td></tr>
-            <tr><td><span class="role-main">场务/灯光助理</span></td><td><span class="price-thb">1,840</span><span class="price-rmb">¥400</span></td></tr>
+            <tr><td><span class="role-title">导演</span><span class="role-sub">表格数据</span></td>
+                <td><span class="price color-china">¥ 4,000</span><span class="price-sub">约 18,400 泰铢</span></td></tr>
+            <tr><td><span class="role-title">副导演 (1st AD)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 600 - 1,000 (Est)</span><span class="price-sub">约 2,700 - 4,600 泰铢</span></td></tr>
+            <tr><td><span class="role-title">场记 (Script Sup)</span><span class="role-sub">表格数据</span></td>
+                <td><span class="price color-china">¥ 400</span><span class="price-sub">约 1,840 泰铢</span></td></tr>
+            <tr><td><span class="role-title">制片主任 (PM)</span><span class="role-sub">表格数据</span></td>
+                <td><span class="price color-china">¥ 1,500</span><span class="price-sub">约 6,900 泰铢</span></td></tr>
+            <tr><td><span class="role-title">制片统筹 (Coord)</span><span class="role-sub">表格数据</span></td>
+                <td><span class="price color-china">¥ 1,000</span><span class="price-sub">约 4,600 泰铢</span></td></tr>
+            <tr><td><span class="role-title">外联制片 (Loc Mgr)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 600 - 800 (Est)</span><span class="price-sub">约 2,700 - 3,600 泰铢</span></td></tr>
+            <tr><td><span class="role-title">制片助理 (PA)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 300 - 500 (Est)</span><span class="price-sub">约 1,380 - 2,300 泰铢</span></td></tr>
+        </table>
+
+        <div class="group-header">2. 摄影与灯光组</div>
+        <table>
+            <tr><td><span class="role-title">A机 摄影指导 (DoP)</span><span class="role-sub">表格数据</span></td>
+                <td><span class="price color-china">¥ 1,500</span><span class="price-sub">约 6,900 泰铢</span></td></tr>
+            <tr><td><span class="role-title">B机 摄影师 (Op)</span><span class="role-sub">表格数据</span></td>
+                <td><span class="price color-china">¥ 1,000</span><span class="price-sub">约 4,600 泰铢</span></td></tr>
+            <tr><td><span class="role-title">摄影大助 (Focus)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 500 - 800 (Est)</span><span class="price-sub">约 2,300 - 3,600 泰铢</span></td></tr>
+            <tr><td><span class="role-title">DIT 数据管理</span><span class="role-sub">表格数据</span></td>
+                <td><span class="price color-china">¥ 400</span><span class="price-sub">约 1,840 泰铢</span></td></tr>
+            <tr><td><span class="role-title">灯光师 (Gaffer)</span><span class="role-sub">表格计算 (1000/人)</span></td>
+                <td><span class="price color-china">¥ 1,000 - 1,500</span><span class="price-sub">约 4,600 - 6,900 泰铢</span></td></tr>
+            <tr><td><span class="role-title">灯光/场务助理</span><span class="role-sub">表格数据 (1200/3人)</span></td>
+                <td><span class="price color-china">¥ 400</span><span class="price-sub">约 1,840 泰铢</span></td></tr>
+        </table>
+
+        <div class="group-header">3. 美术/造型/声音</div>
+        <table>
+            <tr><td><span class="role-title">美术指导 (Art Dir)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 1,000 - 1,500 (Est)</span><span class="price-sub">约 4,600 - 6,900 泰铢</span></td></tr>
+            <tr><td><span class="role-title">道具师 (Props)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 500 - 800 (Est)</span><span class="price-sub">约 2,300 - 3,600 泰铢</span></td></tr>
+            <tr><td><span class="role-title">化妆/发型 (HMU)</span><span class="role-sub">表格数据 (2000/3人)</span></td>
+                <td><span class="price color-china">¥ 666</span><span class="price-sub">约 3,060 泰铢</span></td></tr>
+            <tr><td><span class="role-title">化妆助理</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 300 - 500 (Est)</span><span class="price-sub">约 1,380 - 2,300 泰铢</span></td></tr>
+            <tr><td><span class="role-title">服装师 (Stylist)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 500 - 800 (Est)</span><span class="price-sub">约 2,300 - 3,600 泰铢</span></td></tr>
+            <tr><td><span class="role-title">收音师 (Sound)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 800 - 1,200 (Est)</span><span class="price-sub">约 3,600 - 5,500 泰铢</span></td></tr>
+        </table>
+
+         <div class="group-header">4. 后勤与车辆</div>
+        <table>
+            <tr><td><span class="role-title">跟组司机 (Van)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 400 - 600 (Est)</span><span class="price-sub">约 1,840 - 2,700 泰铢</span></td></tr>
+            <tr><td><span class="role-title">剧组餐饮</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 30 - 50 (Est)</span><span class="price-sub">约 140 - 230 泰铢</span></td></tr>
+            <tr><td><span class="role-title">群演 (Extra)</span><span class="role-sub">市场估算</span></td>
+                <td><span class="price color-china">¥ 150 - 200 (Est)</span><span class="price-sub">约 690 - 920 泰铢</span></td></tr>
         </table>
     </div>
 
     <div class="footer">
-        汇率计算标准 (Exchange Rate): <strong>1 RMB = 4.6 THB</strong><br>
-        © 2026 SANCHUAN HOLDINGS | Confidential
+        汇率计算: <strong>1 RMB = 4.6 THB</strong> | © 2026 SANCHUAN HOLDINGS
     </div>
 
 </div>
 
 <script>
-    function switchTab(targetId) {
+    function switchView(targetId) {
+        // Buttons
         document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelector(`.toggle-btn[data-target="${targetId}"]`).classList.add('active');
-
+        
+        // Views
         document.querySelectorAll('.rate-view').forEach(el => el.classList.remove('active'));
         document.getElementById(targetId).classList.add('active');
     }
