@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanchuan Full Rate Comparison 2026</title>
+    <title>Sanchuan Production Rate 2026</title>
     <style>
         :root {
-            --bg: #000000;
+            --bg: #0a0a0a;
             --card-bg: #141414;
             --text-main: #ffffff;
-            --text-sub: #a0a0a0;
+            --text-sub: #888888;
             --gold: #D4AF37;
             --blue: #2979ff;
             --green: #00e676;
             --purple: #d500f9;
-            --border: #333;
+            --red: #ff3d00;
+            --border: #2a2a2a;
         }
 
         body {
@@ -22,99 +23,121 @@
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
-            padding: 15px;
+            padding: 20px;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
         }
 
-        .container { max-width: 600px; margin: 0 auto; padding-bottom: 50px; }
+        .container { max-width: 600px; margin: 0 auto; padding-bottom: 60px; }
 
         /* Header */
-        .header { text-align: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .header h1 { font-size: 20px; color: var(--gold); margin: 0; font-weight: 800; letter-spacing: 0.5px; }
-        .header p { font-size: 11px; color: var(--text-sub); margin-top: 5px; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .header h1 { font-size: 22px; color: var(--gold); margin: 0; font-weight: 800; letter-spacing: 0.5px; }
+        .header p { font-size: 11px; color: var(--text-sub); margin-top: 6px; text-transform: uppercase; letter-spacing: 1px;}
 
         /* Logic Box */
         .logic-box {
-            background: rgba(212, 175, 55, 0.08);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
+            background: linear-gradient(180deg, rgba(212, 175, 55, 0.1) 0%, rgba(20, 20, 20, 0) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
         }
-        .logic-title { color: var(--gold); font-size: 13px; font-weight: bold; margin-bottom: 8px; display: block; }
+        .logic-title { color: var(--gold); font-size: 13px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; }
         .logic-list { list-style: none; padding: 0; margin: 0; }
         .logic-list li { 
-            font-size: 11px; color: #ccc; margin-bottom: 6px; padding-left: 12px; position: relative; 
+            font-size: 11px; color: #ddd; margin-bottom: 8px; padding-left: 16px; position: relative; 
         }
         .logic-list li::before { 
-            content: "•"; color: var(--gold); position: absolute; left: 0; font-weight: bold; 
+            content: "•"; color: var(--gold); position: absolute; left: 0; font-weight: bold; font-size: 14px; line-height: 1;
         }
 
         /* Toggle Tabs */
         .toggle-container {
             display: flex;
-            background: #222;
-            border-radius: 8px;
+            background: #1a1a1a;
+            border-radius: 10px;
             padding: 4px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            position: sticky; top: 10px; z-index: 100;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border: 1px solid #333;
         }
         .toggle-btn {
             flex: 1;
             text-align: center;
-            padding: 10px 0;
+            padding: 12px 0;
             font-size: 12px;
             font-weight: bold;
-            color: #777;
+            color: #666;
             cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
         }
-        .toggle-btn.active { color: #fff; background-color: #333; }
-        .toggle-btn[data-target="view-comm"].active { background-color: var(--blue); }
-        .toggle-btn[data-target="view-short"].active { background-color: var(--green); }
-        .toggle-btn[data-target="view-china"].active { background-color: var(--purple); }
+        .toggle-btn.active { color: #fff; background-color: #2a2a2a; }
+        .toggle-btn[data-target="view-comm"].active { background-color: rgba(41, 121, 255, 0.2); color: var(--blue); border: 1px solid var(--blue); }
+        .toggle-btn[data-target="view-short"].active { background-color: rgba(0, 230, 118, 0.2); color: var(--green); border: 1px solid var(--green); }
+        .toggle-btn[data-target="view-china"].active { background-color: rgba(213, 0, 249, 0.2); color: var(--purple); border: 1px solid var(--purple); }
+
+        /* Badge for Recommended */
+        .badge-rec {
+            position: absolute; top: -8px; right: 5px;
+            background: var(--gold); color: #000;
+            font-size: 8px; padding: 2px 6px; border-radius: 4px;
+            font-weight: 800; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
 
         /* View Content */
         .rate-view { display: none; }
-        .rate-view.active { display: block; animation: fadeIn 0.3s; }
+        .rate-view.active { display: block; animation: slideUp 0.4s ease-out; }
 
         /* Groups & Tables */
         .group-header {
-            color: #fff;
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 25px;
-            margin-bottom: 8px;
-            padding-left: 10px;
-            border-left: 3px solid;
-            display: flex; justify-content: space-between;
+            color: #fff; font-size: 14px; font-weight: 700;
+            margin-top: 30px; margin-bottom: 10px; padding-left: 12px;
+            border-left: 4px solid; display: flex; justify-content: space-between; align-items: center;
         }
-        .view-comm .group-header { border-color: var(--blue); color: var(--blue); }
-        .view-short .group-header { border-color: var(--green); color: var(--green); }
-        .view-china .group-header { border-color: var(--purple); color: var(--purple); }
+        .view-comm .group-header { border-color: var(--blue); text-shadow: 0 0 10px rgba(41, 121, 255, 0.3); }
+        .view-short .group-header { border-color: var(--green); text-shadow: 0 0 10px rgba(0, 230, 118, 0.3); }
+        .view-china .group-header { border-color: var(--purple); text-shadow: 0 0 10px rgba(213, 0, 249, 0.3); }
 
-        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; margin-bottom: 5px; }
-        th { text-align: left; padding: 10px; font-size: 11px; color: #666; background: #1a1a1a; }
-        td { padding: 10px; border-bottom: 1px solid #222; vertical-align: middle; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card-bg); border-radius: 12px; overflow: hidden; margin-bottom: 10px; border: 1px solid #222; }
+        th { text-align: left; padding: 12px; font-size: 11px; color: #666; background: #1f1f1f; }
+        td { padding: 12px; border-bottom: 1px solid #222; vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
 
         /* Typography */
         .role-cn { display: block; font-size: 13px; font-weight: 600; color: #eee; }
-        .role-en { display: block; font-size: 10px; color: #888; margin-top: 1px; font-weight: normal; font-family: sans-serif; }
+        .role-en { display: block; font-size: 10px; color: #666; margin-top: 2px; font-family: sans-serif; }
         
-        .price { display: block; font-family: "Arial", sans-serif; font-weight: bold; font-size: 13px; text-align: right; }
-        .price-sub { display: block; font-size: 10px; opacity: 0.7; text-align: right; margin-top: 2px; }
+        .price { display: block; font-family: "DIN Alternate", "Arial", sans-serif; font-weight: bold; font-size: 14px; text-align: right; }
+        .price-sub { display: block; font-size: 10px; opacity: 0.6; text-align: right; margin-top: 2px; }
 
         /* Colors */
         .color-comm { color: var(--blue); }
         .color-short { color: var(--green); }
         .color-china { color: var(--purple); }
         
-        /* Estimate Tag */
-        .est-tag { font-size: 9px; opacity: 0.6; font-weight: normal; margin-left: 3px; background: #333; padding: 1px 3px; border-radius: 2px; }
+        /* Dimmed / Optional Roles */
+        .role-dimmed td { opacity: 0.35; filter: grayscale(100%); transition: opacity 0.3s; }
+        .role-dimmed:hover td { opacity: 1; filter: grayscale(0%); cursor: help; }
+        .tag-optional { font-size: 9px; border: 1px solid #444; color: #666; padding: 1px 4px; border-radius: 3px; margin-left: 5px; vertical-align: middle; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* Savings Box */
+        .savings-box {
+            background: linear-gradient(135deg, rgba(0, 230, 118, 0.1) 0%, rgba(20, 20, 20, 0) 100%);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+            border-radius: 12px; padding: 15px; margin-top: 30px;
+        }
+        .savings-header { color: var(--green); font-size: 14px; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; }
+        .combo-card {
+            background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .combo-text { font-size: 11px; color: #ccc; }
+        .combo-save { color: var(--gold); font-weight: bold; font-size: 12px; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .footer { text-align: center; margin-top: 40px; font-size: 10px; color: #444; border-top: 1px solid #222; padding-top: 20px; }
     </style>
@@ -123,236 +146,165 @@
 
 <div class="container">
     <div class="header">
-        <h1>泰国影视制作全案对比</h1>
-        <p>Full Production Rate Comparison 2026</p>
+        <h1>Sanchuan Production Rates</h1>
+        <p>Thailand vs China Comparison 2026</p>
     </div>
 
     <div class="logic-box">
-        <span class="logic-title">💡 为什么单价看起来偏高？(Pricing Logic)</span>
+        <span class="logic-title">💡 价格逻辑 (Pricing Logic)</span>
         <ul class="logic-list">
-            <li><strong>1 Q = 12 小时 (12-Hour Shift):</strong> 泰国标准报价基于12小时工作制。</li>
-            <li><strong>直聘价格 (Direct Freelance Rate):</strong> 以下为不通过中介的直聘参考价，更具性价比。</li>
-            <li><strong>浮动空间 (Negotiable):</strong> 最终价格取决于剧本难度和拍摄天数 (Total Days)。</li>
+            <li><strong>1 Q = 12 Hours:</strong> 泰国标准工作时长 (含1小时休息)。</li>
+            <li><strong>Hongguo Standard:</strong> 报价基于 Arri/Sony 电影机配置，非单反。</li>
+            <li><strong>Sanchuan Leverage:</strong> 利用“本土资源”整合岗位，可节省 20-30% 预算。</li>
         </ul>
     </div>
 
     <div class="toggle-container">
-        <div class="toggle-btn active" data-target="view-comm" onclick="switchView('view-comm')">1. 商业标准 (Comm)</div>
-        <div class="toggle-btn" data-target="view-short" onclick="switchView('view-short')">2. 短剧优化 (Short)</div>
+        <div class="toggle-btn" data-target="view-comm" onclick="switchView('view-comm')">1. 商业广告 (TVC)</div>
+        <div class="toggle-btn active" data-target="view-short" onclick="switchView('view-short')">
+            2. 短剧优化 (Short) <span class="badge-rec">REC</span>
+        </div>
         <div class="toggle-btn" data-target="view-china" onclick="switchView('view-china')">3. 中国参考 (Ref)</div>
     </div>
 
-    <div id="view-comm" class="rate-view view-comm active">
-        <div class="group-header">1. 导演与制片组 (Director & Prod)</div>
+    <div id="view-comm" class="rate-view view-comm">
+        <div style="text-align:center; padding:20px; color:var(--blue); font-size:12px; opacity:0.8;">
+            此标准适用于高端 TVC 广告，对于短剧来说属于"溢价" (Overkill)。<br>仅供参考市场上限。
+        </div>
+        <div class="group-header">1. 核心组 (Core Crew)</div>
         <table>
-            <tr><td><span class="role-cn">导演</span><span class="role-en">Director</span></td>
-                <td><span class="price color-comm">15,000 - 30,000 泰铢</span><span class="price-sub">约 ¥3,200 - 6,500</span></td></tr>
-            <tr><td><span class="role-cn">副导演</span><span class="role-en">1st AD</span></td>
-                <td><span class="price color-comm">8,000 - 15,000 泰铢</span><span class="price-sub">约 ¥1,700 - 3,200</span></td></tr>
-            <tr><td><span class="role-cn">场记</span><span class="role-en">Script Supervisor</span></td>
-                <td><span class="price color-comm">3,500 - 5,000 泰铢</span><span class="price-sub">约 ¥760 - 1,080</span></td></tr>
-            <tr><td><span class="role-cn">制片主任</span><span class="role-en">Production Manager</span></td>
-                <td><span class="price color-comm">10,000 - 18,000 泰铢</span><span class="price-sub">约 ¥2,100 - 3,900</span></td></tr>
-            <tr><td><span class="role-cn">制片统筹</span><span class="role-en">Coordinator</span></td>
-                <td><span class="price color-comm">6,000 - 9,000 泰铢</span><span class="price-sub">约 ¥1,300 - 1,900</span></td></tr>
-            <tr><td><span class="role-cn">外联制片</span><span class="role-en">Location Manager</span></td>
-                <td><span class="price color-comm">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
-            <tr><td><span class="role-cn">制片助理</span><span class="role-en">PA / Runner</span></td>
-                <td><span class="price color-comm">2,000 - 3,000 泰铢</span><span class="price-sub">约 ¥430 - 650</span></td></tr>
-        </table>
-
-        <div class="group-header">2. 摄影与灯光组 (Camera & G&E)</div>
-        <table>
-            <tr><td><span class="role-cn">A机 摄影指导</span><span class="role-en">DoP / Cam A</span></td>
-                <td><span class="price color-comm">18,000 - 35,000 泰铢</span><span class="price-sub">约 ¥3,900 - 7,600</span></td></tr>
-            <tr><td><span class="role-cn">B机 摄影师</span><span class="role-en">Camera Operator</span></td>
-                <td><span class="price color-comm">10,000 - 15,000 泰铢</span><span class="price-sub">约 ¥2,100 - 3,200</span></td></tr>
-            <tr><td><span class="role-cn">C机 摄影师</span><span class="role-en">Cam Op / Gimbal</span></td>
-                <td><span class="price color-comm">7,000 - 10,000 泰铢</span><span class="price-sub">约 ¥1,500 - 2,100</span></td></tr>
-            <tr><td><span class="role-cn">摄影大助</span><span class="role-en">1st AC (Focus)</span></td>
-                <td><span class="price color-comm">4,500 - 7,000 泰铢</span><span class="price-sub">约 ¥980 - 1,500</span></td></tr>
-            <tr><td><span class="role-cn">DIT 数据管理</span><span class="role-en">Digital Imaging Tech</span></td>
-                <td><span class="price color-comm">4,000 - 6,000 泰铢</span><span class="price-sub">约 ¥870 - 1,300</span></td></tr>
-            <tr><td><span class="role-cn">灯光师</span><span class="role-en">Gaffer</span></td>
-                <td><span class="price color-comm">6,000 - 10,000 泰铢</span><span class="price-sub">约 ¥1,300 - 2,100</span></td></tr>
-            <tr><td><span class="role-cn">灯光/场务助理</span><span class="role-en">Grip / Best Boy</span></td>
-                <td><span class="price color-comm">2,000 - 3,000 泰铢</span><span class="price-sub">约 ¥430 - 650</span></td></tr>
-        </table>
-
-        <div class="group-header">3. 美术/造型/声音 (Art & Style)</div>
-        <table>
-            <tr><td><span class="role-cn">美术指导</span><span class="role-en">Art Director</span></td>
-                <td><span class="price color-comm">8,000 - 15,000 泰铢</span><span class="price-sub">约 ¥1,700 - 3,200</span></td></tr>
-            <tr><td><span class="role-cn">道具师</span><span class="role-en">Props Master</span></td>
-                <td><span class="price color-comm">4,000 - 7,000 泰铢</span><span class="price-sub">约 ¥870 - 1,500</span></td></tr>
-            <tr><td><span class="role-cn">化妆/发型</span><span class="role-en">HMU Artist</span></td>
-                <td><span class="price color-comm">4,500 - 8,000 泰铢</span><span class="price-sub">约 ¥980 - 1,700</span></td></tr>
-            <tr><td><span class="role-cn">化妆助理</span><span class="role-en">HMU Assistant</span></td>
-                <td><span class="price color-comm">2,000 - 3,000 泰铢</span><span class="price-sub">约 ¥430 - 650</span></td></tr>
-            <tr><td><span class="role-cn">服装师</span><span class="role-en">Stylist / Costume</span></td>
-                <td><span class="price color-comm">4,000 - 7,000 泰铢</span><span class="price-sub">约 ¥870 - 1,500</span></td></tr>
-            <tr><td><span class="role-cn">收音师</span><span class="role-en">Sound Mixer</span></td>
-                <td><span class="price color-comm">6,000 - 10,000 泰铢</span><span class="price-sub">约 ¥1,300 - 2,100</span></td></tr>
-        </table>
-
-         <div class="group-header">4. 演员与后勤 (Cast & Logistics)</div>
-        <table>
-            <tr><td><span class="role-cn">主演 (男/女)</span><span class="role-en">Main Actor/Actress</span></td>
-                <td><span class="price color-comm">20,000+ 泰铢</span><span class="price-sub">约 ¥4,300+</span></td></tr>
-            <tr><td><span class="role-cn">群演 (无台词)</span><span class="role-en">Extra (Background)</span></td>
-                <td><span class="price color-comm">1,000 - 1,800 泰铢</span><span class="price-sub">约 ¥210 - 390</span></td></tr>
-            <tr><td><span class="role-cn">跟组司机</span><span class="role-en">Driver (车+人/不含油)</span></td>
-                <td><span class="price color-comm">1,800 - 2,500 泰铢</span><span class="price-sub">约 ¥390 - 540</span></td></tr>
-            <tr><td><span class="role-cn">剧组餐饮</span><span class="role-en">Catering (Per Head)</span></td>
-                <td><span class="price color-comm">250 - 400 泰铢</span><span class="price-sub">约 ¥54 - 87</span></td></tr>
+            <tr><td><span class="role-cn">导演</span><span class="role-en">Director (Commercial)</span></td>
+                <td><span class="price color-comm">30,000+ 泰铢</span></td></tr>
+            <tr><td><span class="role-cn">摄影指导</span><span class="role-en">DoP (Top Tier)</span></td>
+                <td><span class="price color-comm">25,000 - 40,000 泰铢</span></td></tr>
+            <tr><td><span class="role-cn">制片主任</span><span class="role-en">PM (Agency Grade)</span></td>
+                <td><span class="price color-comm">15,000 - 20,000 泰铢</span></td></tr>
         </table>
     </div>
 
-    <div id="view-short" class="rate-view view-short">
-        <div class="group-header">1. 导演与制片组 (Director & Prod)</div>
+    <div id="view-short" class="rate-view view-short active">
+        
+        <div class="group-header">
+            <span>1. 导演与制片组 (Director & Prod)</span>
+            <span style="font-size:10px; font-weight:normal; opacity:0.7">Narrative Tier</span>
+        </div>
         <table>
             <tr><td><span class="role-cn">导演</span><span class="role-en">Director</span></td>
-                <td><span class="price color-short">6,000 - 12,000 泰铢</span><span class="price-sub">约 ¥1,300 - 2,600</span></td></tr>
+                <td><span class="price color-short">15,000 泰铢</span><span class="price-sub">¥ ~3,200</span></td></tr>
+            
             <tr><td><span class="role-cn">副导演</span><span class="role-en">1st AD</span></td>
-                <td><span class="price color-short">3,500 - 6,000 泰铢</span><span class="price-sub">约 ¥760 - 1,300</span></td></tr>
-            <tr><td><span class="role-cn">场记</span><span class="role-en">Script Supervisor</span></td>
-                <td><span class="price color-short">1,500 - 2,500 泰铢</span><span class="price-sub">约 ¥320 - 540</span></td></tr>
+                <td><span class="price color-short">8,000 泰铢</span><span class="price-sub">¥ ~1,700</span></td></tr>
+            
+            <tr class="role-dimmed">
+                <td><span class="role-cn">场记 <span class="tag-optional">Opt</span></span><span class="role-en">Script Supervisor</span></td>
+                <td><span class="price color-short">3,000 泰铢</span><span class="price-sub">可由 AD 兼任</span></td></tr>
+
             <tr><td><span class="role-cn">制片主任</span><span class="role-en">Production Manager</span></td>
-                <td><span class="price color-short">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
-            <tr><td><span class="role-cn">制片统筹</span><span class="role-en">Coordinator</span></td>
-                <td><span class="price color-short">3,000 - 5,000 泰铢</span><span class="price-sub">约 ¥650 - 1,080</span></td></tr>
-            <tr><td><span class="role-cn">外联制片</span><span class="role-en">Location Manager</span></td>
-                <td><span class="price color-short">2,500 - 4,000 泰铢</span><span class="price-sub">约 ¥540 - 870</span></td></tr>
+                <td><span class="price color-short">10,000 - 12,000 泰铢</span><span class="price-sub">含中文沟通溢价</span></td></tr>
+
+            <tr class="role-dimmed">
+                <td><span class="role-cn">外联制片 <span class="tag-optional">Opt</span></span><span class="role-en">Location Manager</span></td>
+                <td><span class="price color-short">5,000 泰铢</span><span class="price-sub">可由 PM 兼任</span></td></tr>
+            
             <tr><td><span class="role-cn">制片助理</span><span class="role-en">PA / Runner</span></td>
-                <td><span class="price color-short">1,000 - 1,800 泰铢</span><span class="price-sub">约 ¥210 - 390</span></td></tr>
+                <td><span class="price color-short">2,000 泰铢</span><span class="price-sub">¥ ~430</span></td></tr>
         </table>
 
-        <div class="group-header">2. 摄影与灯光组 (Camera & G&E)</div>
+        <div class="group-header">
+            <span>2. 摄影与灯光 (Cam & G&E)</span>
+            <span style="font-size:10px; font-weight:normal; opacity:0.7">Cinema Grade</span>
+        </div>
         <table>
-            <tr><td><span class="role-cn">A机 摄影指导</span><span class="role-en">DoP / Cam A</span></td>
-                <td><span class="price color-short">8,000 - 15,000 泰铢</span><span class="price-sub">约 ¥1,700 - 3,200</span></td></tr>
-            <tr><td><span class="role-cn">B机 摄影师</span><span class="role-en">Camera Operator</span></td>
-                <td><span class="price color-short">5,000 - 8,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,700</span></td></tr>
-            <tr><td><span class="role-cn">C机 摄影师</span><span class="role-en">Cam Op / Gimbal</span></td>
-                <td><span class="price color-short">4,000 - 6,000 泰铢</span><span class="price-sub">约 ¥870 - 1,300</span></td></tr>
-            <tr><td><span class="role-cn">摄影大助</span><span class="role-en">1st AC (Focus)</span></td>
-                <td><span class="price color-short">2,500 - 4,000 泰铢</span><span class="price-sub">约 ¥540 - 870</span></td></tr>
-            <tr><td><span class="role-cn">DIT 数据管理</span><span class="role-en">Digital Imaging Tech</span></td>
-                <td><span class="price color-short">2,000 - 3,500 泰铢</span><span class="price-sub">约 ¥430 - 760</span></td></tr>
+            <tr><td><span class="role-cn">摄影指导 (A机)</span><span class="role-en">DoP (Sony FX6/9)</span></td>
+                <td><span class="price color-short">15,000 - 18,000 泰铢</span><span class="price-sub">保证画面质感</span></td></tr>
+            
+            <tr><td><span class="role-cn">跟焦员 (必选)</span><span class="role-en">1st AC (Focus Puller)</span></td>
+                <td><span class="price color-short">5,000 泰铢</span><span class="price-sub">竖屏大光圈必需</span></td></tr>
+            
+            <tr class="role-dimmed">
+                <td><span class="role-cn">B机摄影师 <span class="tag-optional">Opt</span></span><span class="role-en">Cam B Operator</span></td>
+                <td><span class="price color-short">8,000 泰铢</span><span class="price-sub">单机位可省</span></td></tr>
+
+            <tr class="role-dimmed">
+                <td><span class="role-cn">数据管理 <span class="tag-optional">Opt</span></span><span class="role-en">DIT</span></td>
+                <td><span class="price color-short">3,500 泰铢</span><span class="price-sub">由摄影助理兼任</span></td></tr>
+
             <tr><td><span class="role-cn">灯光师</span><span class="role-en">Gaffer</span></td>
-                <td><span class="price color-short">4,000 - 7,000 泰铢</span><span class="price-sub">约 ¥870 - 1,500</span></td></tr>
-            <tr><td><span class="role-cn">灯光/场务助理</span><span class="role-en">Grip / Best Boy</span></td>
-                <td><span class="price color-short">1,200 - 2,000 泰铢</span><span class="price-sub">约 ¥260 - 430</span></td></tr>
+                <td><span class="price color-short">6,000 - 8,000 泰铢</span><span class="price-sub">¥ ~1,500</span></td></tr>
         </table>
 
-        <div class="group-header">3. 美术/造型/声音 (Art & Style)</div>
+        <div class="group-header">3. 美术与造型 (Art & Style)</div>
         <table>
             <tr><td><span class="role-cn">美术指导</span><span class="role-en">Art Director</span></td>
-                <td><span class="price color-short">5,000 - 9,000 泰铢</span><span class="price-sub">约 ¥1,080 - 1,900</span></td></tr>
+                <td><span class="price color-short">8,000 - 10,000 泰铢</span><span class="price-sub">¥ ~2,100</span></td></tr>
+            
             <tr><td><span class="role-cn">道具师</span><span class="role-en">Props Master</span></td>
-                <td><span class="price color-short">2,500 - 4,000 泰铢</span><span class="price-sub">约 ¥540 - 870</span></td></tr>
-            <tr><td><span class="role-cn">化妆/发型</span><span class="role-en">HMU Artist</span></td>
-                <td><span class="price color-short">2,500 - 4,500 泰铢</span><span class="price-sub">约 ¥540 - 980</span></td></tr>
-            <tr><td><span class="role-cn">化妆助理</span><span class="role-en">HMU Assistant</span></td>
-                <td><span class="price color-short">1,200 - 2,000 泰铢</span><span class="price-sub">约 ¥260 - 430</span></td></tr>
-            <tr><td><span class="role-cn">服装师</span><span class="role-en">Stylist / Costume</span></td>
-                <td><span class="price color-short">2,500 - 4,500 泰铢</span><span class="price-sub">约 ¥540 - 980</span></td></tr>
-            <tr><td><span class="role-cn">收音师</span><span class="role-en">Sound Mixer</span></td>
-                <td><span class="price color-short">4,000 - 7,000 泰铢</span><span class="price-sub">约 ¥870 - 1,500</span></td></tr>
+                <td><span class="price color-short">4,000 泰铢</span><span class="price-sub">¥ ~870</span></td></tr>
+            
+            <tr><td><span class="role-cn">化妆/服装</span><span class="role-en">HMU & Stylist (Head)</span></td>
+                <td><span class="price color-short">5,000 泰铢</span><span class="price-sub">¥ ~1,080</span></td></tr>
+            
+            <tr class="role-dimmed">
+                <td><span class="role-cn">跟妆助理 <span class="tag-optional">Opt</span></span><span class="role-en">Assistant</span></td>
+                <td><span class="price color-short">2,000 泰铢</span><span class="price-sub">演员少可省</span></td></tr>
         </table>
 
-         <div class="group-header">4. 演员与后勤 (Cast & Logistics)</div>
-        <table>
-            <tr><td><span class="role-cn">主演 (男/女)</span><span class="role-en">Main Actor/Actress</span></td>
-                <td><span class="price color-short">15,000+ 泰铢</span><span class="price-sub">约 ¥3,200+</span></td></tr>
-            <tr><td><span class="role-cn">群演 (无台词)</span><span class="role-en">Extra (Background)</span></td>
-                <td><span class="price color-short">500 - 800 泰铢</span><span class="price-sub">约 ¥100 - 170</span></td></tr>
-            <tr><td><span class="role-cn">跟组司机</span><span class="role-en">Driver (车+人/不含油)</span></td>
-                <td><span class="price color-short">1,800 - 2,500 泰铢</span><span class="price-sub">约 ¥390 - 540</span></td></tr>
-            <tr><td><span class="role-cn">剧组餐饮</span><span class="role-en">Catering (Per Head)</span></td>
-                <td><span class="price color-short">150 - 250 泰铢</span><span class="price-sub">约 ¥32 - 54</span></td></tr>
-        </table>
+        <div class="savings-box">
+            <div class="savings-header">⚡ Sanchuan 效率优化策略 (Cost Optimization)</div>
+            
+            <div class="combo-card">
+                <div class="combo-text">
+                    <strong>策略 A: 岗位合并 (Merged Roles)</strong><br>
+                    PM 兼任 外联制片 & 统筹
+                </div>
+                <div class="combo-save">省 ¥ 1,800 / 天</div>
+            </div>
+
+            <div class="combo-card">
+                <div class="combo-text">
+                    <strong>策略 B: 摄制组精简 (Compact Crew)</strong><br>
+                    取消 DIT 专岗，由 2nd AC 兼任
+                </div>
+                <div class="combo-save">省 ¥ 760 / 天</div>
+            </div>
+
+            <div class="combo-card">
+                <div class="combo-text">
+                    <strong>策略 C: 车辆包干 (Transport Pkg)</strong><br>
+                    PA (助理) 兼任 道具车司机
+                </div>
+                <div class="combo-save">省 ¥ 400 / 天</div>
+            </div>
+            
+            <div style="font-size:10px; color:#888; margin-top:10px; text-align:center;">
+                * 通过 Sanchuan 本土资源整合，总体预算可比商业案降低 30%
+            </div>
+        </div>
+
     </div>
 
     <div id="view-china" class="rate-view view-china">
-        <div class="group-header">1. 导演与制片组 (Director & Prod)</div>
+        <div style="text-align:center; padding:20px; color:var(--purple); font-size:12px; opacity:0.8;">
+            中国横店流水线参考价 (Flat Rate)。<br>泰国因劳动法与器材租赁制，基础成本略高。
+        </div>
         <table>
-            <tr><td><span class="role-cn">导演</span><span class="role-en">Director</span></td>
-                <td><span class="price color-china">18,400 泰铢</span><span class="price-sub">¥ 4,000</span></td></tr>
-            <tr><td><span class="role-cn">副导演</span><span class="role-en">1st AD</span></td>
-                <td><span class="price color-china">3,000 - 5,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 650 - 1,080</span></td></tr>
-            <tr><td><span class="role-cn">场记</span><span class="role-en">Script Supervisor</span></td>
-                <td><span class="price color-china">1,840 泰铢</span><span class="price-sub">¥ 400</span></td></tr>
-            <tr><td><span class="role-cn">制片主任</span><span class="role-en">Production Manager</span></td>
-                <td><span class="price color-china">6,900 泰铢</span><span class="price-sub">¥ 1,500</span></td></tr>
-            <tr><td><span class="role-cn">制片统筹</span><span class="role-en">Coordinator</span></td>
-                <td><span class="price color-china">4,600 泰铢</span><span class="price-sub">¥ 1,000</span></td></tr>
-            <tr><td><span class="role-cn">外联制片</span><span class="role-en">Location Manager</span></td>
-                <td><span class="price color-china">2,500 - 3,500 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 540 - 760</span></td></tr>
-            <tr><td><span class="role-cn">制片助理</span><span class="role-en">PA / Runner</span></td>
-                <td><span class="price color-china">1,200 - 1,800 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 260 - 390</span></td></tr>
-        </table>
-
-        <div class="group-header">2. 摄影与灯光组 (Camera & G&E)</div>
-        <table>
-            <tr><td><span class="role-cn">A机 摄影指导</span><span class="role-en">DoP / Cam A</span></td>
-                <td><span class="price color-china">6,900 泰铢</span><span class="price-sub">¥ 1,500</span></td></tr>
-            <tr><td><span class="role-cn">B机 摄影师</span><span class="role-en">Camera Operator</span></td>
-                <td><span class="price color-china">4,600 泰铢</span><span class="price-sub">¥ 1,000</span></td></tr>
-            <tr><td><span class="role-cn">C机 摄影师</span><span class="role-en">Cam Op / Gimbal</span></td>
-                <td><span class="price color-china">3,680 泰铢</span><span class="price-sub">¥ 800</span></td></tr>
-            <tr><td><span class="role-cn">摄影大助</span><span class="role-en">1st AC (Focus)</span></td>
-                <td><span class="price color-china">2,000 - 3,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 430 - 650</span></td></tr>
-            <tr><td><span class="role-cn">DIT 数据管理</span><span class="role-en">Digital Imaging Tech</span></td>
-                <td><span class="price color-china">1,840 泰铢</span><span class="price-sub">¥ 400</span></td></tr>
-            <tr><td><span class="role-cn">灯光师</span><span class="role-en">Gaffer</span></td>
-                <td><span class="price color-china">4,600 泰铢</span><span class="price-sub">¥ 1,000</span></td></tr>
-            <tr><td><span class="role-cn">灯光/场务助理</span><span class="role-en">Grip / Best Boy</span></td>
-                <td><span class="price color-china">1,840 泰铢</span><span class="price-sub">¥ 400</span></td></tr>
-        </table>
-
-        <div class="group-header">3. 美术/造型/声音 (Art & Style)</div>
-        <table>
-            <tr><td><span class="role-cn">美术指导</span><span class="role-en">Art Director</span></td>
-                <td><span class="price color-china">4,000 - 6,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">约 ¥870 - 1,300</span></td></tr>
-            <tr><td><span class="role-cn">道具师</span><span class="role-en">Props Master</span></td>
-                <td><span class="price color-china">2,000 - 3,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 430 - 650</span></td></tr>
-            <tr><td><span class="role-cn">化妆/发型</span><span class="role-en">HMU Artist</span></td>
-                <td><span class="price color-china">3,100 泰铢</span><span class="price-sub">¥ 666 (Avg)</span></td></tr>
-            <tr><td><span class="role-cn">化妆助理</span><span class="role-en">HMU Assistant</span></td>
-                <td><span class="price color-china">1,200 - 1,800 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 260 - 390</span></td></tr>
-            <tr><td><span class="role-cn">服装师</span><span class="role-en">Stylist / Costume</span></td>
-                <td><span class="price color-china">2,500 - 4,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 540 - 870</span></td></tr>
-            <tr><td><span class="role-cn">收音师</span><span class="role-en">Sound Mixer</span></td>
-                <td><span class="price color-china">3,500 - 5,000 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 760 - 1,080</span></td></tr>
-        </table>
-
-         <div class="group-header">4. 演员与后勤 (Cast & Logistics)</div>
-        <table>
-            <tr><td><span class="role-cn">主演 (男/女)</span><span class="role-en">Main Actor/Actress</span></td>
-                <td><span class="price color-china">18,400 泰铢</span><span class="price-sub">¥ 4,000</span></td></tr>
-            <tr><td><span class="role-cn">群演 (无台词)</span><span class="role-en">Extra (Background)</span></td>
-                <td><span class="price color-china">500 - 800 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 100 - 170</span></td></tr>
-            <tr><td><span class="role-cn">跟组司机</span><span class="role-en">Driver (车+人/不含油)</span></td>
-                <td><span class="price color-china">1,800 - 2,500 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 390 - 540</span></td></tr>
-            <tr><td><span class="role-cn">剧组餐饮</span><span class="role-en">Catering (Per Head)</span></td>
-                <td><span class="price color-china">150 - 250 泰铢<span class="est-tag">Est</span></span><span class="price-sub">¥ 32 - 54</span></td></tr>
+            <tr><td><span class="role-cn">导演 (打包)</span></td><td><span class="price color-china">¥ 4,000</span></td></tr>
+            <tr><td><span class="role-cn">摄影 (打包)</span></td><td><span class="price color-china">¥ 1,500</span></td></tr>
+            <tr><td><span class="role-cn">灯光 (打包)</span></td><td><span class="price color-china">¥ 1,000</span></td></tr>
         </table>
     </div>
 
     <div class="footer">
-        汇率计算标准: <strong>1 RMB = 4.6 THB</strong> | © 2026 SANCHUAN HOLDINGS
+        Rate Exchange: <strong>1 RMB ≈ 4.6 THB</strong> | © 2026 SANCHUAN HOLDINGS
     </div>
 
 </div>
 
 <script>
     function switchView(targetId) {
-        // Update Buttons
         document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelector(`.toggle-btn[data-target="${targetId}"]`).classList.add('active');
         
-        // Update Views
         document.querySelectorAll('.rate-view').forEach(el => el.classList.remove('active'));
         document.getElementById(targetId).classList.add('active');
     }
