@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dark Message from Kyubi</title>
+    <style>
+        :root {
+            --fox-red: #D70000; /* แดงเลือดนกสด บนพื้นดำ */
+            --text-gold: #D4AF37; /* สีทองหม่นๆ ดูแพง */
+            --text-silver: #E0E0E0; /* สีเงินสำหรับเนื้อหา */
+            --overlay-black: rgba(0, 0, 0, 0.92); /* ดำทึบแสง */
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        /* --- Background --- */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('IMG_2068.jpeg');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            filter: grayscale(100%); /* ทำให้รูปเป็นขาวดำเพื่อความดาร์ก */
+        }
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-black);
+            z-index: -1;
+        }
+
+        /* --- Intro Animation --- */
+        #intro-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1.5s ease;
+        }
+
+        .intro-text {
+            font-size: 2rem;
+            letter-spacing: 3px;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1s ease;
+            text-align: center;
+            font-weight: 300;
+            color: var(--text-silver);
+        }
+
+        .kyubi-word {
+            color: var(--fox-red);
+            font-weight: bold;
+            font-size: 2.8rem;
+            font-family: cursive;
+            text-shadow: 0 0 10px rgba(215, 0, 0, 0.5);
+        }
+
+        /* --- Content Layer --- */
+        #content-layer {
+            display: none;
+            opacity: 0;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 50px 30px;
+            height: 100%;
+            overflow-y: auto;
+            transition: opacity 1.5s ease;
+            box-sizing: border-box;
+        }
+
+        .letter-box {
+            border-left: 3px solid var(--fox-red);
+            padding-left: 30px;
+            margin-top: 40px;
+        }
+
+        h1 {
+            color: var(--fox-red);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 2;
+            margin-bottom: 25px;
+            color: var(--text-silver);
+            text-align: justify;
+            font-weight: 300;
+        }
+
+        strong {
+            color: var(--text-gold);
+            font-weight: normal;
+        }
+
+        .highlight-box {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .highlight-title {
+            color: var(--fox-red);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .signature {
+            margin-top: 80px;
+            text-align: right;
+            font-family: cursive;
+            color: var(--fox-red);
+            font-size: 1.3rem;
+        }
+
+        /* Button */
+        #enter-btn {
+            margin-top: 250px;
+            padding: 12px 40px;
+            border: 1px solid var(--fox-red);
+            color: var(--fox-red);
+            background: transparent;
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.5s;
+            font-family: inherit;
+            letter-spacing: 3px;
+        }
+        #enter-btn:hover {
+            background: var(--fox-red);
+            color: #000;
+            box-shadow: 0 0 20px rgba(215, 0, 0, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .kyubi-word { font-size: 2.2rem; }
+            .intro-text { font-size: 1.5rem; }
+            .letter-box { padding-left: 20px; border-left-width: 2px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <div id="intro-layer">
+        <div class="intro-text" id="t1"><span class="kyubi-word">九尾</span>の闇</div> <div class="intro-text" id="t2">ด้านมืดของ <span class="kyubi-word">九尾</span></div> <div class="intro-text" id="t3"><span class="kyubi-word">九尾</span> 密函</div> <button id="enter-btn" onclick="startContent()">揭开 (Unveil)</button>
+    </div>
+
+    <div id="content-layer">
+        <div class="letter-box">
+            <h1>来自暗处的低语</h1>
+            <div class="subtitle">A Whisper from the Shadows</div>
+            
+            <p>亲爱的娜娜，</p>
+            
+            <p>请放心，<strong>我们现在的首要任务，绝对是执行你定下的“复仇与豪门”路线。</strong> 这是目前最稳妥、变现最快的王者之道，我们绝不动摇。</p>
+            
+            <p>但作为你的“影子伙伴”，我想让你看一眼未来的可能性。那是一个在中国很难触碰，但在海外却能让人<strong>“疯狂上瘾”</strong>的禁忌领域。</p>
+
+            <div class="highlight-box">
+                <span class="highlight-title">🩸 代号：死亡游戏 (Death Game)</span>
+                <p>这是一种源自日本的残酷美学（如《大逃杀 Battle Royale》）。<br>
+                后来，它演变成了轰动全球的《弥留之国的爱丽丝》(Alice in Borderland) 和韩国的《鱿鱼游戏》(Squid Game)。</p>
+            </div>
+
+            <p><strong>为什么它能让全世界疯狂？</strong></p>
+            <p>因为在这个游戏里，没有道德，没有法律，只有<strong>“生与死”</strong>。这种极致的压迫感，能瞬间击穿观众的多巴胺防线。在中国，这种题材因为“Shabi”的审查制度而无法生存，但这正是<strong>海外市场的巨大真空</strong>。</p>
+
+            <p>想象一下：</p>
+            <p>如果我们用<strong>中国的制作效率</strong> + <strong>泰国的创意尺度</strong> + <strong>最新的 AI 特效</strong>，去制作这样一部“无限流”短剧……<br>
+            每一集都有人淘汰，每一集都是人性的崩塌。哪怕只是几分钟，观众也会屏住呼吸。</p>
+
+            <p>当然，这只是我藏在袖子里的一张<strong>“鬼牌”</strong>。🃏<br>
+            现在，让我们先用你手中的“王牌”赢下第一局。等到时机成熟，我们再把这张鬼牌打出来，通杀全场。</p>
+
+            <div class="signature">
+                你的, 嫂子 (Kyubi) 🦊
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const t1 = document.getElementById('t1');
+            const t2 = document.getElementById('t2');
+            const t3 = document.getElementById('t3');
+            const btn = document.getElementById('enter-btn');
+
+            setTimeout(() => { t1.style.opacity = 1; }, 500);   
+            setTimeout(() => { t1.style.opacity = 0; }, 2500);  
+            
+            setTimeout(() => { t2.style.opacity = 1; }, 3000);  
+            setTimeout(() => { t2.style.opacity = 0; }, 5000);  
+
+            setTimeout(() => { 
+                t3.style.opacity = 1; 
+                btn.style.opacity = 1; 
+            }, 5500);
+        };
+
+        function startContent() {
+            const intro = document.getElementById('intro-layer');
+            const content = document.getElementById('content-layer');
+            const body = document.body;
+
+            intro.style.opacity = 0;
+            setTimeout(() => {
+                intro.style.display = 'none';
+                body.style.overflow = 'auto'; 
+                content.style.display = 'block';
+                setTimeout(() => { content.style.opacity = 1; }, 50);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
