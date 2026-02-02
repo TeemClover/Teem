@@ -173,6 +173,58 @@
             .intro-text { font-size: 1.5rem; }
             .letter-box { padding: 20px; }
         }
+        /* --- THE HIDDEN BUTTON STYLE --- */
+        .secret-gate {
+            display: block;
+            text-align: center;
+            margin: 40px auto 80px;
+            opacity: 0.6;
+            transition: all 0.5s ease;
+            text-decoration: none;
+            animation: pulse 3s infinite;
+        }
+
+        .secret-gate span {
+            font-size: 2.5rem;
+            color: #333;
+            text-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        .secret-gate:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .secret-gate:hover span {
+            color: #000;
+            text-shadow: 0 0 15px rgba(196, 30, 58, 0.4);
+        }
+
+        .secret-text {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 5px;
+            letter-spacing: 3px;
+            opacity: 0; /* ซ่อนข้อความไว้ ให้เห็นแค่เงา */
+            transition: opacity 0.5s;
+        }
+
+        .secret-gate:hover .secret-text {
+            opacity: 1; /* โชว์ข้อความเมื่อเอาเมาส์จี้ */
+            color: var(--fox-red);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.4; }
+        }
+
+        @media (max-width: 600px) {
+            .kyubi-word { font-size: 2.2rem; }
+            .intro-text { font-size: 1.5rem; }
+            .letter-box { padding: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -228,6 +280,11 @@
                 <span style="font-size: 0.8em; color: #666;">(Another Kyubi)</span>
             </div>
         </div>
+
+        <a href="shadow.html" class="secret-gate">
+            <span>🌑</span>
+            <div class="secret-text">还有一件事... (One more thing)</div>
+        </a>
     </div>
 
     <script>
