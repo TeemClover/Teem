@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message from Sor to Nana</title>
+    <title>Message from Kyubi to Jiuwei</title>
     <style>
         :root {
             --fox-red: #C41E3A; /* แดงจิ้งจอก */
-            --text-dark: #2c2c2c;
-            --overlay-white: rgba(255, 255, 255, 0.92);
+            --text-dark: #1a1a1a; /* สีดำเข้มขึ้นเพื่อให้อ่านง่ายบนพื้นหลังที่ชัดขึ้น */
+            --overlay-white: rgba(255, 255, 255, 0.85); /* ลดความขาวลง ให้เห็นรูปชัดขึ้น */
         }
 
         body, html {
@@ -39,7 +39,7 @@
             height: 100%;
             background-color: var(--overlay-white);
             z-index: -1;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(2px); /* เบลอน้อยลงนิดนึง */
         }
 
         /* --- Intro Animation --- */
@@ -80,7 +80,7 @@
         #content-layer {
             display: none;
             opacity: 0;
-            max-width: 650px;
+            max-width: 680px;
             margin: 0 auto;
             padding: 50px 30px;
             height: 100%;
@@ -90,10 +90,11 @@
         }
 
         .letter-box {
-            background: rgba(255, 255, 255, 0.4);
+            /* กรอบจางๆ เพื่อให้อ่านตัวหนังสือออกชัดเจนแม้วางบนรูป */
+            background: rgba(255, 255, 255, 0.5); 
             padding: 40px;
-            border-top: 1px solid var(--fox-red);
-            border-bottom: 1px solid var(--fox-red);
+            border-left: 5px solid var(--fox-red);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
 
         h1 {
@@ -108,24 +109,26 @@
             font-size: 16px;
             line-height: 2;
             margin-bottom: 25px;
-            color: #333;
+            color: var(--text-dark);
             text-align: justify;
+            font-weight: 500;
         }
 
         .highlight {
             font-weight: bold;
             color: #000;
-            background: linear-gradient(120deg, transparent 0%, rgba(196, 30, 58, 0.1) 100%);
+            background: linear-gradient(120deg, transparent 0%, rgba(196, 30, 58, 0.15) 100%);
         }
 
         .section-title {
             color: var(--fox-red);
             font-size: 1.2rem;
-            margin-top: 40px;
+            margin-top: 45px;
             margin-bottom: 15px;
             display: block;
-            text-align: center;
-            font-style: italic;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(196, 30, 58, 0.3);
+            padding-bottom: 5px;
         }
 
         .signature {
@@ -157,7 +160,7 @@
         @media (max-width: 600px) {
             .kyubi-word { font-size: 2.2rem; }
             .intro-text { font-size: 1.5rem; }
-            .letter-box { padding: 20px; border: none; }
+            .letter-box { padding: 20px; }
         }
     </style>
 </head>
@@ -181,27 +184,28 @@
             
             <p>为了我们的王国，我为你准备了一个特别的“魔法”，让我们把原本的“消耗”变成“收获”：</p>
 
-            <span class="section-title">✨ 把“寻找”变成“吸引” (The Magnet)</span>
+            <span class="section-title">✨ 1. 把“寻找”变成“吸引” (The Magnet)</span>
             <p>反正我们去中国拍摄也是要花钱雇人的，对吧？<br>
             普通的猎人才会满山跑去抓兔子。我们要建一座漂亮的花园（大师班），让那些渴望成名的孩子们自己带着钱、带着才华跑来找我们。</p>
             
-            <span class="section-title">✨ 只选最好的“金子” (Pure Gold Only)</span>
+            <span class="section-title">✨ 2. 只选最好的“金子” (Pure Gold Only)</span>
             <p>Teem 已经搞定了<strong>泰国排名第一的私立传媒大学 (Sripatum)</strong> 作为我们的首发阵地。如果不够，他手里还握着<strong>排名第一的公立大学 (Chula)</strong> 的校友王牌。<br>
             通过这个“大师班”，我们不用盲目试错。我们只挑选那些经过实战检验的<strong>“真金”</strong>带去中国。既赚了培训费，又得到了最顶尖的人才。</p>
 
-            <span class="section-title">✨ 完美的共赢 (The Perfect Win-Win)</span>
-            <p>在这个局里：<br>
-            大学得到了名声；<br>
-            学生得到了去中国参与大制作的“金钥匙”；<br>
-            而我们... <strong>坐收资金、人才和荣誉。</strong></p>
+            <span class="section-title">✨ 3. 当下与未来的双赢 (The Present & The Future)</span>
+            <p>Teem 告诉我，你现在很着急要剧本，这我们一定全力以赴（Immediate Action）。<br>
+            但我看到的不仅仅是这一部戏，而是<strong>“长远的胜利” (Long-term Victory)</strong>。</p>
+            <p>我一直相信：<strong>给年轻人机会，就是给我们的未来机会。</strong><br>
+            这些泰国孩子是一张白纸，他们渴望走向世界，他们视你为专业的偶像。这群人最适合植入你的“中国工业化体系”。<br>
+            通过<strong>“九尾·新星赏” (你喜欢的任何名字)</strong>，我们将最好的机会留给最努力的人。他们将成为你最忠诚、最强大的主力军。</p>
 
-            <p>这是一条我想让你看到的捷径。<br>
-            因为我知道，你和我一样，不喜欢流汗的胜利，只喜欢优雅的征服。</p>
+            <p>这是一条我想让你看到的捷径：<strong>剧本我们在做，队伍我们在建。</strong><br>
+            因为我知道，你和我一样，喜欢赢，更喜欢赢得连续、赢得漂亮。</p>
             
             <p>期待我们双狐合璧的那一天。</p>
 
             <div class="signature">
-                你的伙伴, 嫂子 (Sor)<br>
+                你的伙伴, 嫂子 (九尾)<br>
                 <span style="font-size: 0.8em; color: #666;">(Another Kyubi)</span>
             </div>
         </div>
