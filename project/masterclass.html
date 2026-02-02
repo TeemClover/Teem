@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message from Sor to Nana</title>
+    <style>
+        :root {
+            --fox-red: #C41E3A; /* แดงจิ้งจอก */
+            --text-dark: #2c2c2c;
+            --overlay-white: rgba(255, 255, 255, 0.92);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: "Songti SC", "SimSun", "Noto Serif SC", serif;
+            overflow: hidden;
+        }
+
+        /* --- Background --- */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('IMG_2068.jpeg');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+        }
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay-white);
+            z-index: -1;
+            backdrop-filter: blur(4px);
+        }
+
+        /* --- Intro Animation --- */
+        #intro-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1.5s ease;
+        }
+
+        .intro-text {
+            font-size: 2rem;
+            letter-spacing: 2px;
+            position: absolute;
+            opacity: 0;
+            transition: opacity 1s ease;
+            text-align: center;
+            font-weight: 300;
+            color: #000;
+        }
+
+        .kyubi-word {
+            color: var(--fox-red);
+            font-weight: bold;
+            font-size: 2.8rem;
+            font-family: cursive;
+        }
+
+        /* --- Main Content --- */
+        #content-layer {
+            display: none;
+            opacity: 0;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 50px 30px;
+            height: 100%;
+            overflow-y: auto;
+            transition: opacity 1.5s ease;
+            box-sizing: border-box;
+        }
+
+        .letter-box {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 40px;
+            border-top: 1px solid var(--fox-red);
+            border-bottom: 1px solid var(--fox-red);
+        }
+
+        h1 {
+            color: var(--fox-red);
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            font-weight: normal;
+            text-align: center;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 2;
+            margin-bottom: 25px;
+            color: #333;
+            text-align: justify;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #000;
+            background: linear-gradient(120deg, transparent 0%, rgba(196, 30, 58, 0.1) 100%);
+        }
+
+        .section-title {
+            color: var(--fox-red);
+            font-size: 1.2rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            display: block;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .signature {
+            margin-top: 60px;
+            text-align: right;
+            font-family: cursive;
+            color: var(--fox-red);
+            font-size: 1.3rem;
+        }
+
+        #enter-btn {
+            margin-top: 250px;
+            padding: 12px 40px;
+            border: 1px solid var(--fox-red);
+            color: var(--fox-red);
+            background: transparent;
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.5s;
+            font-family: inherit;
+            letter-spacing: 2px;
+        }
+        #enter-btn:hover {
+            background: var(--fox-red);
+            color: #fff;
+        }
+
+        @media (max-width: 600px) {
+            .kyubi-word { font-size: 2.2rem; }
+            .intro-text { font-size: 1.5rem; }
+            .letter-box { padding: 20px; border: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <div id="intro-layer">
+        <div class="intro-text" id="t1"><span class="kyubi-word">九尾</span>の絆</div> <div class="intro-text" id="t2">สายใยแห่ง <span class="kyubi-word">九尾</span></div> <div class="intro-text" id="t3"><span class="kyubi-word">九尾</span> 双生</div> <button id="enter-btn" onclick="startContent()">亲启 (Open)</button>
+    </div>
+
+    <div id="content-layer">
+        <div class="letter-box">
+            <div style="text-align:center; margin-bottom:20px; color:var(--fox-red); font-size:1.5rem;">🦊 ~ 🦊</div>
+            <h1>致 娜娜 (Nana)</h1>
+            
+            <p>亲爱的，</p>
+            <p>我想这就是我们之间的缘分。你也演过九尾，我也演过九尾，虽然时空不同，但我们的灵魂里都住着那只<strong>聪明、迷人又强大的狐狸</strong>。</p>
+            <p>既然我们是同类，那我们就该用“同类”的方式来玩这场游戏——<strong>赢得漂亮，且毫不费力。</strong> ✨</p>
+            
+            <p>为了我们的王国，我为你准备了一个特别的“魔法”，让我们把原本的“消耗”变成“收获”：</p>
+
+            <span class="section-title">✨ 把“寻找”变成“吸引” (The Magnet)</span>
+            <p>反正我们去中国拍摄也是要花钱雇人的，对吧？<br>
+            普通的猎人才会满山跑去抓兔子。我们要建一座漂亮的花园（大师班），让那些渴望成名的孩子们自己带着钱、带着才华跑来找我们。</p>
+            
+            <span class="section-title">✨ 只选最好的“金子” (Pure Gold Only)</span>
+            <p>Teem 已经搞定了<strong>泰国排名第一的私立传媒大学 (Sripatum)</strong> 作为我们的首发阵地。如果不够，他手里还握着<strong>排名第一的公立大学 (Chula)</strong> 的校友王牌。<br>
+            通过这个“大师班”，我们不用盲目试错。我们只挑选那些经过实战检验的<strong>“真金”</strong>带去中国。既赚了培训费，又得到了最顶尖的人才。</p>
+
+            <span class="section-title">✨ 完美的共赢 (The Perfect Win-Win)</span>
+            <p>在这个局里：<br>
+            大学得到了名声；<br>
+            学生得到了去中国参与大制作的“金钥匙”；<br>
+            而我们... <strong>坐收资金、人才和荣誉。</strong></p>
+
+            <p>这是一条我想让你看到的捷径。<br>
+            因为我知道，你和我一样，不喜欢流汗的胜利，只喜欢优雅的征服。</p>
+            
+            <p>期待我们双狐合璧的那一天。</p>
+
+            <div class="signature">
+                你的伙伴, 嫂子 (Sor)<br>
+                <span style="font-size: 0.8em; color: #666;">(Another Kyubi)</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const t1 = document.getElementById('t1');
+            const t2 = document.getElementById('t2');
+            const t3 = document.getElementById('t3');
+            const btn = document.getElementById('enter-btn');
+
+            setTimeout(() => { t1.style.opacity = 1; }, 500);   
+            setTimeout(() => { t1.style.opacity = 0; }, 2500);  
+            
+            setTimeout(() => { t2.style.opacity = 1; }, 3000);  
+            setTimeout(() => { t2.style.opacity = 0; }, 5000);  
+
+            setTimeout(() => { 
+                t3.style.opacity = 1; 
+                btn.style.opacity = 1; 
+            }, 5500);
+        };
+
+        function startContent() {
+            const intro = document.getElementById('intro-layer');
+            const content = document.getElementById('content-layer');
+            const body = document.body;
+
+            intro.style.opacity = 0;
+            setTimeout(() => {
+                intro.style.display = 'none';
+                body.style.overflow = 'auto'; 
+                content.style.display = 'block';
+                setTimeout(() => { content.style.opacity = 1; }, 50);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
