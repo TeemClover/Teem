@@ -93,41 +93,72 @@
         strong { color: #fff; font-weight: 600; }
         .gold-text { color: var(--gold); }
 
+        /* --- LANGUAGE TOGGLE BUTTON (FIXED TOP RIGHT) --- */
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .lang-toggle:hover {
+            background: var(--gold);
+            color: #000;
+            transform: translateY(2px);
+        }
+
+        @media (max-width: 600px) {
+            .role-card div { grid-template-columns: 1fr !important; gap: 40px !important; }
+        }
+
     </style>
 </head>
 <body>
 
+    <button id="langToggle" class="lang-toggle">TH / EN</button>
+
     <div class="container">
         <div class="header">
-            <span>STRATEGIC BRIEFING FOR</span>
+            <span data-i18n="header_sub">STRATEGIC BRIEFING FOR</span>
             <h1>DR. GIFF WORAWAN</h1>
-            <span>CONFIDENTIAL DOCUMENT V.9</span>
+            <span data-i18n="header_conf">CONFIDENTIAL DOCUMENT V.9</span>
         </div>
 
         <div class="section">
-            <h2>01. WHO ARE YOU TODAY?</h2>
-            <p>
+            <h2 data-i18n="sec1_title">01. WHO ARE YOU TODAY?</h2>
+            <p data-i18n="sec1_p1">
                 วันนี้หน้ากล้อง... หมอไม่ใช่ "คุณหมอใจดีที่คอยตามใจคนไข้" อีกต่อไปครับ<br>
                 แต่หมอคือ <strong>"THE GLOBAL AUTHORITY" (ผู้มีอำนาจระดับสากล)</strong>
             </p>
             <div class="box-highlight">
-                <p style="margin:0; font-style:italic;">
+                <p style="margin:0; font-style:italic;" data-i18n="sec1_quote">
                     "คนไข้ไม่ได้มาหาหมอเพื่อซื้อโบท็อกซ์... แต่เขามาซื้อ <strong>'รสนิยม'</strong> และ <strong>'การตัดสินใจ'</strong> ของหมอ"
                 </p>
             </div>
-            <p>
+            <p data-i18n="sec1_p2">
                 หมอคือศิลปินผู้เดินทางรอบโลก (Global Traveler) หมอเห็นความงามมาแล้วทุกรูปแบบ หมอรู้ดีที่สุดว่าอะไรคือ "Class" และอะไรคือ "Trash" ดังนั้น... <span class="gold-text">หมอมีสิทธิ์เลือกสิ่งที่ดีที่สุดให้คนไข้ และปฏิเสธสิ่งที่แย่ครับ</span>
             </p>
         </div>
 
         <div class="section">
-            <h2>02. WHY THIS PERSONA? (ทำไมต้องดุ? ทำไมต้องชัด?)</h2>
+            <h2 data-i18n="sec2_title">02. WHY THIS PERSONA? (ทำไมต้องดุ? ทำไมต้องชัด?)</h2>
             
             <div class="key-point">
                 <i class="fas fa-plane"></i>
                 <div>
-                    <strong>เพราะ "ของจริง" ดึงดูดคนทั้งโลก</strong><br>
-                    <span style="color:#aaa; font-size:0.95rem;">
+                    <strong data-i18n="sec2_point1_head">เพราะ "ของจริง" ดึงดูดคนทั้งโลก</strong><br>
+                    <span style="color:#aaa; font-size:0.95rem;" data-i18n="sec2_point1_body">
                         จำลูกค้าคนจีนที่ TEEM แนะนำมาได้ไหมครับ? เขาบินข้ามประเทศกลับมาหาหมอทุกครั้ง ไม่ยอมไปที่อื่น...
                         นั่นพิสูจน์แล้วว่า <strong>"ความจริงใจ (Sincere Integrity)"</strong> และ <strong>"ฝีมือ (Craft)"</strong> ของหมอ 
                         มีค่ามากกว่าโปรโมชั่นลดราคา
@@ -138,8 +169,8 @@
             <div class="key-point">
                 <i class="fas fa-crown"></i>
                 <div>
-                    <strong>เพราะลูกค้า Elite เบื่อ "เซลล์"</strong><br>
-                    <span style="color:#aaa; font-size:0.95rem;">
+                    <strong data-i18n="sec2_point2_head">เพราะลูกค้า Elite เบื่อ "เซลล์"</strong><br>
+                    <span style="color:#aaa; font-size:0.95rem;" data-i18n="sec2_point2_body">
                         คนรวยเบื่อคนที่พูดว่า "ได้ครับพี่ ดีครับผม"... เขาต้องการคนที่กล้าพูดว่า 
                         <span style="color:#fff;">"อย่าทำเลยค่ะ มันไม่สวย เชื่อหมอเถอะ"</span> 
                         นั่นแหละคือวินาทีที่เขาจะวางเงินและวางใจให้หมอดูแลทั้งชีวิต
@@ -149,31 +180,31 @@
         </div>
 
         <div class="section">
-            <h2>03. HOW TO ACT (วิธีวางตัวหน้ากล้อง)</h2>
-            <p>เมื่อไฟกล้องเปิด ผมอยากให้หมอปรับ Mindset ดังนี้ครับ:</p>
+            <h2 data-i18n="sec3_title">03. HOW TO ACT (วิธีวางตัวหน้ากล้อง)</h2>
+            <p data-i18n="sec3_intro">เมื่อไฟกล้องเปิด ผมอยากให้หมอปรับ Mindset ดังนี้ครับ:</p>
 
             <div class="role-card">
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; text-align:left;">
                     <div>
-                        <span style="font-size:0.8rem; color:#666;">เลิกเป็น (STOP)</span><br>
-                        <span class="dont-do">หมอที่พยายามขายของ</span><br>
-                        <span class="dont-do">พูดจาเอาใจจนดูไม่จริง</span><br>
-                        <span class="dont-do">กังวลว่าคนจะไม่ชอบ</span>
+                        <span style="font-size:0.8rem; color:#666;" data-i18n="act_stop">เลิกเป็น (STOP)</span><br>
+                        <span class="dont-do" data-i18n="act_stop_1">หมอที่พยายามขายของ</span><br>
+                        <span class="dont-do" data-i18n="act_stop_2">พูดจาเอาใจจนดูไม่จริง</span><br>
+                        <span class="dont-do" data-i18n="act_stop_3">กังวลว่าคนจะไม่ชอบ</span>
                     </div>
                     <div>
-                        <span style="font-size:0.8rem; color:var(--gold);">จงเป็น (START)</span><br>
-                        <span class="do-this">ผู้เชี่ยวชาญที่เลือกสิ่งที่ดีที่สุด</span><br>
-                        <span class="do-this">พูดตรงๆ แบบเพื่อนที่หวังดี</span><br>
-                        <span class="do-this">มั่นใจว่าเราคือเบอร์ 1</span>
+                        <span style="font-size:0.8rem; color:var(--gold);" data-i18n="act_start">จงเป็น (START)</span><br>
+                        <span class="do-this" data-i18n="act_start_1">ผู้เชี่ยวชาญที่เลือกสิ่งที่ดีที่สุด</span><br>
+                        <span class="do-this" data-i18n="act_start_2">พูดตรงๆ แบบเพื่อนที่หวังดี</span><br>
+                        <span class="do-this" data-i18n="act_start_3">มั่นใจว่าเราคือเบอร์ 1</span>
                     </div>
                 </div>
             </div>
 
-            <h3 style="margin-top:30px; font-size:1.2rem;">💡 PRO TIPS FOR FILMING:</h3>
+            <h3 style="margin-top:30px; font-size:1.2rem;" data-i18n="tips_title">💡 PRO TIPS FOR FILMING:</h3>
             <ul style="color:#ccc; list-style:none; padding:0;">
-                <li style="margin-bottom:15px;"><i class="fas fa-check gold-text"></i> <strong>Eye Contact:</strong> มองเลนส์เหมือนมองตาคนรัก หรือมองตาลูกศิษย์ที่หมออยากสอน อย่าหลบตา</li>
-                <li style="margin-bottom:15px;"><i class="fas fa-check gold-text"></i> <strong>Silence is Power:</strong> ไม่ต้องรีบพูดรัวๆ จังหวะหยุดคิด (Pause) คือจังหวะที่หมอดูแพงที่สุด</li>
-                <li style="margin-bottom:15px;"><i class="fas fa-check gold-text"></i> <strong>Own the Space:</strong> นั่งให้เต็มเก้าอี้ ยืดตัวขึ้น หมอคือเจ้าของคลินิก หมอคือเจ้าของวิชา</li>
+                <li style="margin-bottom:15px;"><i class="fas fa-check gold-text"></i> <span data-i18n="tip_1"><strong>Eye Contact:</strong> มองเลนส์เหมือนมองตาคนรัก หรือมองตาลูกศิษย์ที่หมออยากสอน อย่าหลบตา</span></li>
+                <li style="margin-bottom:15px;"><i class="fas fa-check gold-text"></i> <span data-i18n="tip_2"><strong>Silence is Power:</strong> ไม่ต้องรีบพูดรัวๆ จังหวะหยุดคิด (Pause) คือจังหวะที่หมอดูแพงที่สุด</span></li>
+                <li style="margin-bottom:15px;"><i class="fas fa-check gold-text"></i> <span data-i18n="tip_3"><strong>Own the Space:</strong> นั่งให้เต็มเก้าอี้ ยืดตัวขึ้น หมอคือเจ้าของคลินิก หมอคือเจ้าของวิชา</span></li>
             </ul>
         </div>
 
@@ -185,8 +216,71 @@
             <p style="color:#666;">- AIHIA STRATEGY TEAM -</p>
         </div>
 
-        <a href="script.html" class="btn-back">พร้อมแล้ว? ไปที่หน้าสคริปต์ (GO TO SCRIPT)</a>
+        <a href="script.html" class="btn-back" data-i18n="btn_back">พร้อมแล้ว? ไปที่หน้าสคริปต์ (GO TO SCRIPT)</a>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const enTranslations = {
+                header_sub: "STRATEGIC BRIEFING FOR",
+                header_conf: "CONFIDENTIAL DOCUMENT V.9",
+                sec1_title: "01. WHO ARE YOU TODAY?",
+                sec1_p1: `Today, on camera... you are no longer the "kind doctor who follows the patient's wish".<br>You are <strong>"THE GLOBAL AUTHORITY"</strong>.`,
+                sec1_quote: `"Patients don't come to you to buy Botox... they come to buy your <strong>'Taste'</strong> and your <strong>'Decisions'</strong>."`,
+                sec1_p2: `You are a Global Traveler. You have seen beauty in all forms. You know best what is "Class" and what is "Trash". Therefore... <span class="gold-text">You have the right to curate the best for the patient and reject the sub-par.</span>`,
+                sec2_title: "02. WHY THIS PERSONA? (THE STRATEGY)",
+                sec2_point1_head: "Authenticity Attracts the World",
+                sec2_point1_body: `Remember the Chinese client Teem referred? He flies back every time. It proves your <strong>"Sincere Integrity"</strong> and <strong>"Craft"</strong> are worth far more than discount promotions.`,
+                sec2_point2_head: "The Elite are Tired of 'Salespeople'",
+                sec2_point2_body: `High-net-worth clients are tired of "Yes sir/Yes ma'am". They want someone who dares to say <span style="color:#fff;">"Don't do it. It won't suit you. Trust me."</span> That is the moment they entrust you with their life.`,
+                sec3_title: "03. HOW TO ACT (ON CAMERA)",
+                sec3_intro: "When the lights go on, reset your mindset:",
+                act_stop: "STOP BEING",
+                act_stop_1: "A salesperson doctor",
+                act_stop_2: "Over-pleasing/Fake nice",
+                act_stop_3: "Worrying about likeability",
+                act_start: "START BEING",
+                act_start_1: "The Expert who curates",
+                act_start_2: "Direct like a true friend",
+                act_start_3: "Confident you are #1",
+                tips_title: "💡 PRO TIPS FOR FILMING:",
+                tip_1: "<strong>Eye Contact:</strong> Look at the lens like you look at a lover, or a student you want to teach. Do not look away.",
+                tip_2: "<strong>Silence is Power:</strong> Don't rush. The pause (Silence) is when you look the most expensive.",
+                tip_3: "<strong>Own the Space:</strong> Sit tall. Fill the chair. You own the clinic. You own the knowledge.",
+                btn_back: "READY? GO TO SCRIPT"
+            };
+
+            let currentLang = 'th';
+            const langBtn = document.getElementById('langToggle');
+            const translatableElements = document.querySelectorAll('[data-i18n]');
+
+            // Store original Thai text
+            translatableElements.forEach(el => {
+                el.dataset.thOriginal = el.innerHTML;
+            });
+
+            langBtn.addEventListener('click', () => {
+                if (currentLang === 'th') {
+                    // Switch to English
+                    translatableElements.forEach(el => {
+                        const key = el.getAttribute('data-i18n');
+                        if (enTranslations[key]) {
+                            el.innerHTML = enTranslations[key];
+                        }
+                    });
+                    langBtn.textContent = 'EN / TH';
+                    currentLang = 'en';
+                } else {
+                    // Switch back to Thai
+                    translatableElements.forEach(el => {
+                        el.innerHTML = el.dataset.thOriginal;
+                    });
+                    langBtn.textContent = 'TH / EN';
+                    currentLang = 'th';
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
