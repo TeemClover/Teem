@@ -65,8 +65,34 @@
             border: 1px solid var(--gold); color: var(--gold);
             font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 2px;
             background: rgba(10,10,10,0.8); backdrop-filter: blur(10px);
+            cursor: pointer;
         }
         .btn-main:hover { background-color: var(--gold); color: #000; box-shadow: 0 5px 20px rgba(197, 160, 89, 0.3); }
+
+        /* --- LANGUAGE TOGGLE BUTTON --- */
+        .lang-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .lang-toggle:hover {
+            background: var(--gold);
+            color: #000;
+            transform: translateY(-2px);
+        }
 
         /* --- 4. SECTIONS SPECIFIC --- */
 
@@ -192,10 +218,13 @@
             .authority-badge { position: relative; bottom: auto; right: auto; margin-top: 20px; display: inline-block; }
             .stats-group { justify-content: center; text-align: center; }
             .stat-box { text-align: center; }
+            .lang-toggle { bottom: 20px; right: 20px; padding: 8px 16px; font-size: 0.7rem; }
         }
     </style>
 </head>
 <body>
+
+    <button id="langToggle" class="lang-toggle">TH / EN</button>
 
     <div class="hero">
         <div class="hero-bg reveal-up"></div>
@@ -218,7 +247,7 @@
                     "Wellness isn’t about doing more,<br>
                     it’s about doing what <span class="gold">truly restores</span> you."
                 </p>
-                <p class="thai-text" style="font-size: 1.15rem; color: #ccc;">
+                <p class="thai-text" style="font-size: 1.15rem; color: #ccc;" data-i18n="manifesto_desc">
                     ในโลกที่เต็มไปด้วยทางลัด <strong>Dr. Giff</strong> ยืนหยัดในฐานะ "The Purist" 
                     เราไม่ได้ต่อสู้กับกาลเวลา แต่เราบริหารจัดการความเสื่อม (Decay Management) ด้วยความเข้าใจ 
                     เพื่อให้คุณยังคงเป็นตัวเอง... ในเวอร์ชันที่มีพลังที่สุด
@@ -237,22 +266,22 @@
                 <div class="pillar-item reveal-up delay-1">
                     <i class="fas fa-brain pillar-icon"></i>
                     <h3>The Art of Anatomy</h3>
-                    <p class="pillar-desc">ในฐานะ <strong>National Trainer</strong> ความเข้าใจเรื่อง Layer ของใบหน้าคือหัวใจสำคัญ เราไม่ได้แค่ 'เติม' แต่เรา 'วางโครงสร้าง' แสงและเงาใหม่ ให้ผลลัพธ์ดูเป็นธรรมชาติที่สุด</p>
+                    <p class="pillar-desc" data-i18n="pillar_1">ในฐานะ <strong>National Trainer</strong> ความเข้าใจเรื่อง Layer ของใบหน้าคือหัวใจสำคัญ เราไม่ได้แค่ 'เติม' แต่เรา 'วางโครงสร้าง' แสงและเงาใหม่ ให้ผลลัพธ์ดูเป็นธรรมชาติที่สุด</p>
                 </div>
                 <div class="pillar-item reveal-up delay-2">
                     <i class="fas fa-chart-line pillar-icon"></i>
                     <h3>The Biological Asset</h3>
-                    <p class="pillar-desc">ร่างกายคือ Asset ที่แพงที่สุด เราดูแลพอร์ตสุขภาพผ่านค่าเลือด ฮอร์โมน และ DNA เพื่อรักษา Value ของคุณในระยะยาว</p>
+                    <p class="pillar-desc" data-i18n="pillar_2">ร่างกายคือ Asset ที่แพงที่สุด เราดูแลพอร์ตสุขภาพผ่านค่าเลือด ฮอร์โมน และ DNA เพื่อรักษา Value ของคุณในระยะยาว</p>
                 </div>
                 <div class="pillar-item reveal-up delay-3">
                     <i class="fas fa-user-check pillar-icon"></i>
                     <h3>Sincere Integrity</h3>
-                    <p class="pillar-desc">เราให้คำปรึกษาอย่างตรงไปตรงมา บนพื้นฐานจรรยาบรรณแพทย์ หากหัตถการใดไม่จำเป็น หมอจะแจ้งให้ทราบชัดเจน เพราะความจริงใจสำคัญที่สุด</p>
+                    <p class="pillar-desc" data-i18n="pillar_3">เราให้คำปรึกษาอย่างตรงไปตรงมา บนพื้นฐานจรรยาบรรณแพทย์ หากหัตถการใดไม่จำเป็น หมอจะแจ้งให้ทราบชัดเจน เพราะความจริงใจสำคัญที่สุด</p>
                 </div>
                 <div class="pillar-item reveal-up delay-1" style="border-color: var(--gold);">
                     <i class="fas fa-crown pillar-icon"></i>
                     <h3>Executive Presence</h3>
-                    <p class="pillar-desc">ออกแบบบุคลิกภาพสำหรับผู้นำ ให้ดูสง่า (Noble), เปี่ยมพลัง (Vibrant), และน่าเชื่อถือ ในทุกการเจรจาธุรกิจ</p>
+                    <p class="pillar-desc" data-i18n="pillar_4">ออกแบบบุคลิกภาพสำหรับผู้นำ ให้ดูสง่า (Noble), เปี่ยมพลัง (Vibrant), และน่าเชื่อถือ ในทุกการเจรจาธุรกิจ</p>
                 </div>
             </div>
         </div>
@@ -268,7 +297,7 @@
                 <img src="IMG_2359.jpeg" alt="Dr. Giff National Academic Lecture" class="authority-img">
                 <div class="authority-badge">CSO CLINICAL TRAINER</div>
             </div>
-            <p class="authority-text">
+            <p class="authority-text" data-i18n="authority_desc">
                 ภาพบรรยากาศการบรรยายวิชาการระดับประเทศ (National Academic Meeting) 
                 ซึ่ง <strong>Dr. Giff</strong> ได้รับเกียรติเป็นวิทยากรถ่ายทอดความรู้และเทคนิคชั้นสูงแก่แพทย์ทั่วประเทศ 
                 สะท้อนถึงความเป็นผู้นำทางความคิด (Thought Leader) ที่ได้รับการยอมรับในวงการแพทย์อย่างแท้จริง
@@ -290,7 +319,7 @@
                         "I understand your world,<br>because it is also my world."
                     </div>
                     
-                    <p class="lifestyle-desc">
+                    <p class="lifestyle-desc" data-i18n="lifestyle_desc">
                         หมอกิ๊ฟคือ <strong>Artist & Global Traveler</strong> ผู้เดินทางรอบโลกและเข้าใจไลฟ์สไตล์ของ High-Net-Worth Individuals อย่างลึกซึ้ง 
                         เราเข้าใจดีว่า "ความแพง" ที่แท้จริงไม่ได้เกิดจากการเติมแต่งให้มาก แต่คือการคัดสรรสิ่งที่ใช่ที่สุด
                     </p>
@@ -311,7 +340,7 @@
                 <div class="reveal-up delay-1">
                     <span class="section-tag">The Physician</span>
                     <h2 class="section-title">DR. GIFF<br>WORAWAN</h2>
-                    <p class="thai-text" style="color:#ccc; font-size: 1.1rem; margin-top: 20px;">
+                    <p class="thai-text" style="color:#ccc; font-size: 1.1rem; margin-top: 20px;" data-i18n="bio_desc">
                         แพทย์ผู้ก่อตั้ง <strong>GEM Scientific Beauty</strong> และเทรนเนอร์ระดับประเทศ ผู้อยู่เบื้องหลังความเยาว์วัยของบุคคลชั้นนำ ด้วยความเชื่อที่ว่า "หมอที่ดีที่สุด คือร่างกายของคุณเอง"
                     </p>
                     
@@ -350,21 +379,21 @@
                     <div class="protocol-num">01</div>
                     <div class="protocol-content">
                         <h4>THE BLUEPRINT</h4>
-                        <p>Deep Diagnostics: ตรวจยีน (DNA), ฮอร์โมน (Hormone Panel), และสแกนโครงหน้า 3 มิติ เพื่อหา "พิมพ์เขียว" ที่แท้จริง</p>
+                        <p data-i18n="protocol_1">Deep Diagnostics: ตรวจยีน (DNA), ฮอร์โมน (Hormone Panel), และสแกนโครงหน้า 3 มิติ เพื่อหา "พิมพ์เขียว" ที่แท้จริง</p>
                     </div>
                 </div>
                 <div class="protocol-item reveal-up delay-2">
                     <div class="protocol-num">02</div>
                     <div class="protocol-content">
                         <h4>THE RESTORATION</h4>
-                        <p>ฟื้นฟูระบบภายใน ลดการอักเสบ (Inflammation) และปรับสมดุลการนอน/อาหาร เพื่อเตรียม Canvas ให้พร้อมก่อนลงมือ</p>
+                        <p data-i18n="protocol_2">ฟื้นฟูระบบภายใน ลดการอักเสบ (Inflammation) และปรับสมดุลการนอน/อาหาร เพื่อเตรียม Canvas ให้พร้อมก่อนลงมือ</p>
                     </div>
                 </div>
                 <div class="protocol-item reveal-up delay-3">
                     <div class="protocol-num">03</div>
                     <div class="protocol-content">
                         <h4>THE SCULPTING</h4>
-                        <p>ปรับรูปหน้าด้วยเทคนิค "Light & Shadow" และ Biostimulators โดยมือหมอกิ๊ฟ เพื่อสร้าง The Untouched Look</p>
+                        <p data-i18n="protocol_3">ปรับรูปหน้าด้วยเทคนิค "Light & Shadow" และ Biostimulators โดยมือหมอกิ๊ฟ เพื่อสร้าง The Untouched Look</p>
                     </div>
                 </div>
             </div>
@@ -380,11 +409,11 @@
             </div>
             <div class="testi-grid">
                 <div class="testi-item reveal-up delay-1">
-                    <p class="testi-quote">"สิ่งที่ผมซื้อจากหมอกิ๊ฟไม่ใช่ฟิลเลอร์ แต่คือ 'ความมั่นใจ' เวลาต้องดีลงานระดับประเทศ หน้าผมไม่เคยดูเหนื่อยอีกเลย"</p>
+                    <p class="testi-quote" data-i18n="testi_1">"สิ่งที่ผมซื้อจากหมอกิ๊ฟไม่ใช่ฟิลเลอร์ แต่คือ 'ความมั่นใจ' เวลาต้องดีลงานระดับประเทศ หน้าผมไม่เคยดูเหนื่อยอีกเลย"</p>
                     <div class="testi-client">— CEO, SET 100 Company (Energy)</div>
                 </div>
                 <div class="testi-item reveal-up delay-2">
-                    <p class="testi-quote">"หมอคนเดียวที่กล้าดุฉันเรื่องน้ำตาล และนั่นเปลี่ยนชีวิตฉันไปเลย ผิวฉันดีขึ้นแบบที่ครีมกระปุกละแสนก็ทำให้ไม่ได้"</p>
+                    <p class="testi-quote" data-i18n="testi_2">"หมอคนเดียวที่กล้าดุฉันเรื่องน้ำตาล และนั่นเปลี่ยนชีวิตฉันไปเลย ผิวฉันดีขึ้นแบบที่ครีมกระปุกละแสนก็ทำให้ไม่ได้"</p>
                     <div class="testi-client">— A-List Celebrity / Actress</div>
                 </div>
                 <div class="testi-item reveal-up delay-3">
@@ -399,7 +428,7 @@
         <div class="container reveal-up">
             <div class="cta-box">
                 <h2 class="section-title" style="margin-bottom: 20px;">EXCLUSIVE APPOINTMENT</h2>
-                <p style="color:#888; margin-bottom: 40px;">รับจำกัด 3 เคส/วัน เพื่อความเป็นส่วนตัวสูงสุด</p>
+                <p style="color:#888; margin-bottom: 40px;" data-i18n="cta_desc">รับจำกัด 3 เคส/วัน เพื่อความเป็นส่วนตัวสูงสุด</p>
                 
                 <a href="https://line.me/R/ti/p/@752bsdty" target="_blank" class="btn-main">BOOK VIA LINE VVIP</a>
                 
@@ -429,23 +458,72 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. Reveal Animation Logic (Original) ---
             const options = {
                 root: null,
                 rootMargin: '0px',
-                threshold: 0.15 /* Trigger when 15% visible */
+                threshold: 0.15
             };
 
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
-                        observer.unobserve(entry.target); /* Animate only once */
+                        observer.unobserve(entry.target);
                     }
                 });
             }, options);
 
             document.querySelectorAll('.reveal-up').forEach(el => {
                 observer.observe(el);
+            });
+
+            // --- 2. Language Toggle Logic (New) ---
+            const enTranslations = {
+                manifesto_desc: `In a world full of shortcuts, <strong>Dr. Giff</strong> stands as "The Purist". We don't fight time; we manage decay (Decay Management) with deep understanding, so you remain yourself... in your most powerful version.`,
+                pillar_1: `As a <strong>National Trainer</strong>, understanding the facial layers is key. We don't just 'fill', we 'structure' light and shadow for natural results that never look artificial.`,
+                pillar_2: `Your body is your most expensive asset. We manage your health portfolio via blood work, hormones, and DNA to protect your value in the long run.`,
+                pillar_3: `We consult with direct honesty based on medical ethics. If a procedure isn't needed, the doctor will say so. Sincerity is our core luxury.`,
+                pillar_4: `Designing personality for leaders. To look Noble, Vibrant, and Trustworthy in every high-stakes negotiation.`,
+                authority_desc: `Atmosphere from the National Academic Meeting, where <strong>Dr. Giff</strong> was honored as a speaker transferring advanced knowledge to doctors nationwide. Reflecting true Thought Leadership in the aesthetic field.`,
+                lifestyle_desc: `Dr. Giff is an <strong>Artist & Global Traveler</strong> who understands the lifestyle of High-Net-Worth Individuals. We know that true luxury isn't about adding more, but curating what is exactly right.`,
+                bio_desc: `Founder of <strong>GEM Scientific Beauty</strong> and National Trainer, the physician behind the youthfulness of top-tier individuals. Believing that "The best doctor is your own body".`,
+                protocol_1: `Deep Diagnostics: DNA test, Hormone Panel, and 3D Facial Scan to find your true "Blueprint".`,
+                protocol_2: `Restoring internal systems, reducing Inflammation, and balancing sleep/diet to prepare the Canvas before sculpting.`,
+                protocol_3: `Facial sculpting using "Light & Shadow" techniques and Biostimulators by Dr. Giff to create The Untouched Look.`,
+                testi_1: `"What I bought from Dr. Giff isn't filler, it's 'Confidence'. Dealing with national-level tasks, my face never looks tired anymore."`,
+                testi_2: `"The only doctor who dared to scold me about sugar. That changed my life. My skin is better than any 100k cream could achieve."`,
+                cta_desc: `Limited to 3 cases/day for maximum privacy.`
+            };
+
+            let currentLang = 'th';
+            const langBtn = document.getElementById('langToggle');
+            const translatableElements = document.querySelectorAll('[data-i18n]');
+
+            // Store original Thai text
+            translatableElements.forEach(el => {
+                el.dataset.thOriginal = el.innerHTML;
+            });
+
+            langBtn.addEventListener('click', () => {
+                if (currentLang === 'th') {
+                    // Switch to English
+                    translatableElements.forEach(el => {
+                        const key = el.getAttribute('data-i18n');
+                        if (enTranslations[key]) {
+                            el.innerHTML = enTranslations[key];
+                        }
+                    });
+                    langBtn.textContent = 'EN / TH';
+                    currentLang = 'en';
+                } else {
+                    // Switch back to Thai
+                    translatableElements.forEach(el => {
+                        el.innerHTML = el.dataset.thOriginal;
+                    });
+                    langBtn.textContent = 'TH / EN';
+                    currentLang = 'th';
+                }
             });
         });
     </script>
