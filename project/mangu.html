@@ -2,152 +2,148 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>曼谷心跳 - 我们的生日承诺</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我们的承诺 - 曼谷心跳</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #C0392B;
-            --gold-color: #D4AF37;
-            --bg-color: #0B0B0B;
-            --text-color: #EAEAEA;
-            --card-bg: #1A1A1A;
+            --gold: #D4AF37;
+            --deep-red: #8B0000;
+            --bg-dark: #0A0A0A;
+            --card-bg: #161616;
+            --text-gray: #CCCCCC;
+            --accent-blue: #3A5FCD;
         }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-dark);
+            color: #FFFFFF;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
+            line-height: 1.8;
         }
 
-        .hero-section {
+        .scroll-container { padding: 20px 15px; }
+
+        /* Header Section */
+        .hero {
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1563911302283-d2bc129e7570?auto=format&fit=crop&w=800&q=80');
             background-size: cover;
             background-position: center;
         }
-
-        h1 {
-            font-size: 3rem;
-            color: var(--gold-color);
-            margin-bottom: 0;
-            text-shadow: 2px 2px 10px rgba(0,0,0,1);
+        .hero h1 {
+            font-size: 3.5rem;
+            color: var(--gold);
+            margin: 0;
+            letter-spacing: 10px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
         }
-
-        .subtitle {
+        .hero p {
             font-size: 1.2rem;
-            letter-spacing: 5px;
-            margin-top: 10px;
+            color: #FFF;
+            margin-top: 20px;
+            letter-spacing: 3px;
         }
 
-        .scroll-down {
-            position: absolute;
-            bottom: 30px;
-            animation: bounce 2s infinite;
+        /* Message Bubble Styles */
+        .msg-section {
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .msg-section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .container {
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
+        .avatar-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
+        .teem-label { color: var(--gold); }
+        .saozi-label { color: var(--accent-blue); }
 
         .card {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border-left: 4px solid var(--gold-color);
+            padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-left: 4px solid transparent;
         }
+        .teem-card { border-left-color: var(--gold); }
+        .saozi-card { border-left-color: var(--accent-blue); }
 
-        .teem-voice { border-left-color: var(--gold-color); }
-        .saozi-voice { border-left-color: #3498DB; }
+        .content { font-size: 1.05rem; color: var(--text-gray); }
+        .highlight { color: #FFF; font-weight: bold; }
+        .keyword { color: var(--gold); text-decoration: underline; }
 
-        .label {
+        /* Stage Steps */
+        .stage-box {
+            margin-top: 20px;
+            border: 1px dashed #444;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .stage-num {
+            background: var(--gold);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
             font-weight: bold;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            display: block;
-            color: var(--gold-color);
+            margin-right: 10px;
         }
 
-        .saozi-voice .label { color: #3498DB; }
-
-        .content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #CCC;
+        /* Image Placeholder */
+        .image-placeholder {
+            width: 100%;
+            height: 250px;
+            background: #222;
+            border-radius: 15px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #555;
+            font-style: italic;
+            border: 1px solid #333;
+            overflow: hidden;
         }
+        .image-placeholder img { width: 100%; height: 100%; object-fit: cover; }
 
-        .highlight {
-            color: var(--gold-color);
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        /* Profile Card for Nana */
-        .profile-card {
-            background: linear-gradient(135deg, #2C3E50, #000000);
-            border-radius: 25px;
-            padding: 30px;
-            text-align: center;
-            border: 2px solid var(--gold-color);
-        }
-
+        /* Stats Section */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
             margin-top: 20px;
         }
-
-        .stat-item {
+        .stat-card {
             background: rgba(255,255,255,0.05);
             padding: 15px;
             border-radius: 15px;
+            text-align: center;
         }
+        .stat-val { font-size: 1.8rem; font-weight: bold; color: var(--gold); display: block; }
+        .stat-name { font-size: 0.8rem; color: #888; }
 
-        .stat-num {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--gold-color);
-            display: block;
-        }
-
-        .stat-text {
-            font-size: 0.8rem;
-            color: #888;
-        }
-
-        /* 3-Step Plan */
-        .plan-step {
-            margin-top: 20px;
-            border-top: 1px solid #333;
-            padding-top: 20px;
-        }
-
-        .step-num {
-            background: var(--gold-color);
-            color: #000;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            margin-right: 10px;
+        .footer-note {
+            text-align: center;
+            padding: 60px 20px;
+            color: #444;
+            font-size: 0.9rem;
         }
 
         @keyframes bounce {
@@ -155,118 +151,162 @@
             40% {transform: translateY(-10px);}
             60% {transform: translateY(-5px);}
         }
-
-        .footer {
-            text-align: center;
-            padding: 50px 20px;
-            font-size: 0.9rem;
-            color: #555;
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            animation: bounce 2s infinite;
+            font-size: 1.5rem;
+            color: var(--gold);
         }
-
-        .btn {
-            display: inline-block;
-            background: var(--gold-color);
-            color: #000;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            margin-top: 20px;
-            transition: transform 0.3s;
-        }
-
-        .btn:active { transform: scale(0.95); }
 
     </style>
 </head>
 <body>
 
-    <div class="hero-section">
-        <h1 class="animate__animated animate__fadeInDown">曼谷心跳</h1>
-        <p class="subtitle animate__animated animate__fadeInUp animate__delay-1s">MANGU HEARTBEAT</p>
-        <div class="scroll-down">▼</div>
+    <div class="hero">
+        <h1 class="animate__animated animate__fadeIn">曼谷心跳</h1>
+        <p class="animate__animated animate__fadeInUp animate__delay-1s">关于跨国梦想的终极蓝图</p>
+        <div class="scroll-hint">↓</div>
     </div>
 
-    <div class="container">
-        
-        <div class="card teem-voice animate__animated animate__fadeInUp">
-            <span class="label">哥哥的承诺</span>
-            <p class="content">
-                娜娜，关于《曼谷心跳》这个剧本，我有一个惊喜要告诉你。我邀请了一位<span class="highlight">极其低调但才华横溢的天才编剧</span>来操刀。他性格孤僻，从不公开露面，但当他听说了你的故事和我们李氏家族的羁绊后，他决定全力支持。
-            </p>
-            <p class="content">
-                他承诺<span class="highlight">不收分文</span>，并宣布将此剧的<span class="highlight">知识产权100%赠予我们的公司</span>。他唯一的愿望是看到这部剧在国际舞台上完美绽放。有趣的是，剧中的男主角正是以他为原型创作的。
-            </p>
-        </div>
+    <div class="scroll-container">
 
-        <div class="card saozi-voice animate__animated animate__fadeInUp">
-            <span class="label">嫂子的战略</span>
-            <p class="content">
-                妹妹，这部剧不仅仅是作品，它是一枚从中国发射、<span class="highlight">精准锁定泰国民众好奇心的“文化导弹”</span>。
-            </p>
-            <p class="content">
-                虽然“曼谷”是中文名，但这种异域视角的呈现，正是泰国观众最无法抵挡的诱惑。我们将通过这枚导弹，炸开整个东南亚的市场。
-            </p>
-        </div>
-
-        <div class="card teem-voice animate__animated animate__fadeInUp">
-            <span class="label">三步走全球战略计划</span>
-            
-            <div class="plan-step">
-                <span class="step-num">1</span> <strong>核心品牌确立：</strong> 完成属于我们的原创IP，确立唯一性。
-            </div>
-            <div class="plan-step">
-                <span class="step-num">2</span> <strong>中国华丽起航：</strong> 在中国影棚拍摄，以最顶尖的视觉和节奏呈现梦幻般的曼谷。
-            </div>
-            <div class="plan-step">
-                <span class="step-num">3</span> <strong>泰国本土引爆：</strong> 在泰国进行重制，加入最地道、最搞怪的泰国本土灵魂，创造前所未有的视听奇迹。
-            </div>
-        </div>
-
-        <div class="profile-card animate__animated animate__zoomIn">
-            <span class="label" style="color:white">聚光灯下的女王</span>
-            <h2 style="color:var(--gold-color); margin:10px 0;">娜娜 CEO / 演员 / 导演</h2>
-            <p style="font-size:0.9rem; color:#888;">国际级影视制作人 & 特聘讲师</p>
-            
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-num">30+</span>
-                    <span class="stat-text">榜单短剧作品</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-num">3亿+</span>
-                    <span class="stat-text">全网播放总量</span>
+        <div class="msg-section teem-voice">
+            <div class="avatar-label teem-label">哥哥的话：</div>
+            <div class="card teem-card">
+                <p class="content">
+                    娜娜，我们的计划不仅充满了情怀，更具备了极高的商业成功率。我们要打造的不仅仅是一部短剧，更是一个跨越国界的<span class="highlight">现象级知识产权</span>。
+                </p>
+                <div class="stage-box">
+                    <p class="content"><span class="stage-num">1</span> <span class="highlight">原创剧本阶段：</span> 我们将确立属于我们公司的核心知识产权，作为所有后续商业开发的基石。</p>
+                    <p class="content"><span class="stage-num">2</span> <span class="highlight">中国制作阶段：</span> 由你亲自挑选顶尖团队，配合我们选拔出的“右翼大将”在中国的专业环境下完成拍摄，确立高标准的制作水准。</p>
+                    <p class="content"><span class="stage-num">3</span> <span class="highlight">泰国本土阶段：</span> 由那位跟随你在中国深造、掌握了所有核心系统的泰国导演，回到曼谷执导本土版本。这是真正属于泰国的闪电拍摄奇迹。</p>
                 </div>
             </div>
-            
-            <p class="content" style="margin-top:20px; font-size:1rem; text-align:left;">
-                3月1日，在泰国顶级电影学府的精英聚会上，你将以<span class="highlight">短剧技术革命者</span>的身份降临。那里的导演、巨星和泰斗们都将见证你的光芒。你的任务是——<span class="highlight">挑选你的“右翼”</span>，带他去中国学习“闪电拍摄”技术，回泰国共同统领江山。
-            </p>
         </div>
 
-        <div class="card saozi-voice animate__animated animate__fadeInUp" style="margin-top:30px;">
-            <span class="label">关于嫂子的秘密武器</span>
-            <p class="content">
-                妹妹，你曾感叹嫂子的商业眼光。其实，她曾是行走在<span class="highlight">从工厂车间到总裁办公室的顶级泰日翻译</span>。她对跨国商业逻辑的理解刻在骨子里。
-            </p>
-            <p class="content">
-                在泰国，当你站在台前闪耀时，她就是你在台下最坚实的屏障，确保每一个谈判细节都能精准执行。
-            </p>
+        <div class="msg-section saozi-voice">
+            <div class="avatar-label saozi-label">嫂子的见解：</div>
+            <div class="card saozi-card">
+                <p class="content">
+                    妹妹，我和你哥哥都预见到，这部作品将成为震撼泰国的“文化导弹”。
+                </p>
+                <p class="content">
+                    我们要坚持使用你最初命名的那个名字——<span class="keyword">《曼谷心跳》</span>。你知道吗？绝大多数泰国人并不知道自己的首都用中文怎么称呼。当翻译软件自动跳出“曼谷”二字时，这种强烈的神秘感会瞬间击中他们的好奇心。
+                </p>
+                <p class="content">
+                    他们会迫切地想要知道，在国际视野中，他们引以为傲的家园是什么样子的。这种巨大的吸引力，将转化成海量的流量和关注。
+                </p>
+            </div>
         </div>
 
-        <div class="card" style="border:2px solid #b22222; text-align:center;">
-            <p class="highlight" style="font-size:1.5rem;">生日快乐，娜娜！</p>
-            <p class="content">
-                这不是一张纸的计划，这是我们三人的命运交响曲。我们将共同打造一个ยอดดาวน์โหลดทะลุล้าน（百万下载）的传奇时代。
-            </p>
-            <a href="#" class="btn">开启我们的时代</a>
+        <div class="msg-section teem-voice">
+            <div class="avatar-label teem-label">哥哥的秘密：</div>
+            <div class="card teem-card">
+                <p class="content">
+                    关于你写的《曼谷心跳》初稿，我找了一位非常特别的朋友来协助开发。
+                </p>
+                <p class="content">
+                    他是一位真正的天才，性格极其低调，甚至可以说是一个不愿在公众面前露面的“隐士”。他被你的才华和我们的愿景所打动，因此做出了一个令人震惊的决定：
+                </p>
+                <p class="content">
+                    他将<span class="highlight">无偿完成所有的后续开发工作，不收任何费用</span>。更重要的是，他愿意签署协议，将此剧的所有知识产权<span class="highlight">百分之百赠予我们的公司</span>。对他而言，看到这部作品以最优雅、最震撼的方式呈现，其价值远超金钱。
+                </p>
+                <p class="content">
+                    有趣的是，剧中的男主角正是以他为原型设计的。他性格中的坚韧与独特，将为角色注入灵魂。关于剧情的调整，<span class="highlight">你拥有绝对的最终决策权</span>。他只会在泰国本土语境的契合度上，提供专业的反馈和建议。
+                </p>
+            </div>
         </div>
 
-        <div class="footer">
-            2026年2月8日 · 曼谷 · 李氏兄妹同心
+        <div class="msg-section saozi-voice">
+            <div class="avatar-label saozi-label">嫂子的任务指引：</div>
+            <div class="card saozi-card">
+                <p class="content">
+                    三月一日的聚会，将是你征服泰国影视圈的起点。
+                </p>
+                <p class="content">
+                    那是泰国历史上排名第一的电影学院精英的聚会。届时，你面对的将是无数的行业传奇和未来的合作伙伴。我们为你准备了一个无可置疑的身份：
+                </p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-val">30+</span>
+                        <span class="stat-name">热门短剧作品</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-val">3亿+</span>
+                        <span class="stat-name">累计播放量</span>
+                    </div>
+                </div>
+                <p class="content" style="margin-top:20px;">
+                    你将以<span class="highlight">国际企业家、客聘讲师</span>以及<span class="highlight">行业革命者</span>的身份出席。你要在那群精英中，挑选出那位最合适的“接班人”——带他去中国学习你那套无坚不摧的“闪电拍摄系统”。
+                </p>
+            </div>
+        </div>
+
+        <div class="msg-section teem-voice">
+            <div class="avatar-label teem-label">哥哥的保证：</div>
+            <div class="card teem-card">
+                <p class="content">
+                    娜娜，我会向所有人隆重介绍你。我会告诉他们：
+                </p>
+                <p class="content">
+                    你是一位真正的全能型艺术家——既能写剧本，又能亲身演绎，还能精准掌控制作流程。你拥有遍布全中国的行业资源，而现在，你正准备在泰国建立属于自己的、最先进的制作基地。
+                </p>
+                <p class="content">
+                    现在已经有泰国的顶级学府在接洽，希望能派送优秀的学生去你的中国团队实习。因为大家都明白，你是掌握着财富密码和技术革命的那个人。
+                </p>
+            </div>
+        </div>
+
+        <div class="msg-section saozi-voice">
+            <div class="avatar-label saozi-label">嫂子的心里话：</div>
+            <div class="card saozi-card">
+                <p class="content">
+                    亲爱的妹妹，当我听说你称赞我的商业头脑时，我感到非常欣慰。
+                </p>
+                <p class="content">
+                    你哥哥告诉过你吗？我的翻译生涯是从工厂的车间基层一直走到跨国企业的最高决策会议。我服务过无数顶级的经营者和行业巨头。
+                </p>
+                <p class="content">
+                    之所以在泰国，大家听到的商业策略都那么精准，是因为我不仅是在翻译语言，我更是在翻译双边的战略需求。我非常清楚泰国市场的痛点。有我在台下为你守候，你在台上只管光芒万丈。
+                </p>
+            </div>
+        </div>
+
+        <div class="msg-section teem-voice">
+            <div class="avatar-label teem-label">哥哥的愿景：</div>
+            <div class="card teem-card">
+                <p class="content">
+                    当泰国版正式上线的时刻，那将是震惊整个泰国的时刻。
+                </p>
+                <p class="content">
+                    由于有着“中国制造”和“泰国灵魂”的双重加持，泰国民众会疯狂涌入。我相信，上线首日的应用下载量就能突破<span class="highlight">一百万次</span>。
+                </p>
+                <p class="content">
+                    这种巨大的能量，源于你，源于我们的团结。
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            二零二六年二月八日 · 李氏兄妹·同心协力
         </div>
 
     </div>
 
+    <script>
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.msg-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
 </body>
 </html>
