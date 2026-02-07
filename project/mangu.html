@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>曼谷心跳 - 我们的生日承诺</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #C0392B;
+            --gold-color: #D4AF37;
+            --bg-color: #0B0B0B;
+            --text-color: #EAEAEA;
+            --card-bg: #1A1A1A;
+        }
+
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--gold-color);
+            margin-bottom: 0;
+            text-shadow: 2px 2px 10px rgba(0,0,0,1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            letter-spacing: 5px;
+            margin-top: 10px;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--gold-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .teem-voice { border-left-color: var(--gold-color); }
+        .saozi-voice { border-left-color: #3498DB; }
+
+        .label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+            color: var(--gold-color);
+        }
+
+        .saozi-voice .label { color: #3498DB; }
+
+        .content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #CCC;
+        }
+
+        .highlight {
+            color: var(--gold-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Profile Card for Nana */
+        .profile-card {
+            background: linear-gradient(135deg, #2C3E50, #000000);
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid var(--gold-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .stat-num {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--gold-color);
+            display: block;
+        }
+
+        .stat-text {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* 3-Step Plan */
+        .plan-step {
+            margin-top: 20px;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        .step-num {
+            background: var(--gold-color);
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        .footer {
+            text-align: center;
+            padding: 50px 20px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--gold-color);
+            color: #000;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: transform 0.3s;
+        }
+
+        .btn:active { transform: scale(0.95); }
+
+    </style>
+</head>
+<body>
+
+    <div class="hero-section">
+        <h1 class="animate__animated animate__fadeInDown">曼谷心跳</h1>
+        <p class="subtitle animate__animated animate__fadeInUp animate__delay-1s">MANGU HEARTBEAT</p>
+        <div class="scroll-down">▼</div>
+    </div>
+
+    <div class="container">
+        
+        <div class="card teem-voice animate__animated animate__fadeInUp">
+            <span class="label">哥哥的承诺</span>
+            <p class="content">
+                娜娜，关于《曼谷心跳》这个剧本，我有一个惊喜要告诉你。我邀请了一位<span class="highlight">极其低调但才华横溢的天才编剧</span>来操刀。他性格孤僻，从不公开露面，但当他听说了你的故事和我们李氏家族的羁绊后，他决定全力支持。
+            </p>
+            <p class="content">
+                他承诺<span class="highlight">不收分文</span>，并宣布将此剧的<span class="highlight">知识产权100%赠予我们的公司</span>。他唯一的愿望是看到这部剧在国际舞台上完美绽放。有趣的是，剧中的男主角正是以他为原型创作的。
+            </p>
+        </div>
+
+        <div class="card saozi-voice animate__animated animate__fadeInUp">
+            <span class="label">嫂子的战略</span>
+            <p class="content">
+                妹妹，这部剧不仅仅是作品，它是一枚从中国发射、<span class="highlight">精准锁定泰国民众好奇心的“文化导弹”</span>。
+            </p>
+            <p class="content">
+                虽然“曼谷”是中文名，但这种异域视角的呈现，正是泰国观众最无法抵挡的诱惑。我们将通过这枚导弹，炸开整个东南亚的市场。
+            </p>
+        </div>
+
+        <div class="card teem-voice animate__animated animate__fadeInUp">
+            <span class="label">三步走全球战略计划</span>
+            
+            <div class="plan-step">
+                <span class="step-num">1</span> <strong>核心品牌确立：</strong> 完成属于我们的原创IP，确立唯一性。
+            </div>
+            <div class="plan-step">
+                <span class="step-num">2</span> <strong>中国华丽起航：</strong> 在中国影棚拍摄，以最顶尖的视觉和节奏呈现梦幻般的曼谷。
+            </div>
+            <div class="plan-step">
+                <span class="step-num">3</span> <strong>泰国本土引爆：</strong> 在泰国进行重制，加入最地道、最搞怪的泰国本土灵魂，创造前所未有的视听奇迹。
+            </div>
+        </div>
+
+        <div class="profile-card animate__animated animate__zoomIn">
+            <span class="label" style="color:white">聚光灯下的女王</span>
+            <h2 style="color:var(--gold-color); margin:10px 0;">娜娜 CEO / 演员 / 导演</h2>
+            <p style="font-size:0.9rem; color:#888;">国际级影视制作人 & 特聘讲师</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-num">30+</span>
+                    <span class="stat-text">榜单短剧作品</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-num">3亿+</span>
+                    <span class="stat-text">全网播放总量</span>
+                </div>
+            </div>
+            
+            <p class="content" style="margin-top:20px; font-size:1rem; text-align:left;">
+                3月1日，在泰国顶级电影学府的精英聚会上，你将以<span class="highlight">短剧技术革命者</span>的身份降临。那里的导演、巨星和泰斗们都将见证你的光芒。你的任务是——<span class="highlight">挑选你的“右翼”</span>，带他去中国学习“闪电拍摄”技术，回泰国共同统领江山。
+            </p>
+        </div>
+
+        <div class="card saozi-voice animate__animated animate__fadeInUp" style="margin-top:30px;">
+            <span class="label">关于嫂子的秘密武器</span>
+            <p class="content">
+                妹妹，你曾感叹嫂子的商业眼光。其实，她曾是行走在<span class="highlight">从工厂车间到总裁办公室的顶级泰日翻译</span>。她对跨国商业逻辑的理解刻在骨子里。
+            </p>
+            <p class="content">
+                在泰国，当你站在台前闪耀时，她就是你在台下最坚实的屏障，确保每一个谈判细节都能精准执行。
+            </p>
+        </div>
+
+        <div class="card" style="border:2px solid #b22222; text-align:center;">
+            <p class="highlight" style="font-size:1.5rem;">生日快乐，娜娜！</p>
+            <p class="content">
+                这不是一张纸的计划，这是我们三人的命运交响曲。我们将共同打造一个ยอดดาวน์โหลดทะลุล้าน（百万下载）的传奇时代。
+            </p>
+            <a href="#" class="btn">开启我们的时代</a>
+        </div>
+
+        <div class="footer">
+            2026年2月8日 · 曼谷 · 李氏兄妹同心
+        </div>
+
+    </div>
+
+</body>
+</html>
