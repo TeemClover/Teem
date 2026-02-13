@@ -8,376 +8,366 @@
 </head>
 <body data-lang="zh">
 
-  <!-- NAV -->
-  <nav class="nav-bar">
-    <a href="index.html" class="nav-logo">
-      三川 SANCHUAN
-      <span class="sub">MISSION CONTROL</span>
-    </a>
-    <div class="nav-links">
-      <a href="index.html" data-lang-zh>总览</a>
-      <a href="index.html" data-lang-th>ภาพรวม</a>
-      <a href="battle-plan.html" data-lang-zh>作战计划</a>
-      <a href="battle-plan.html" data-lang-th>แผนรบ</a>
-      <a href="training-camp.html" data-lang-zh>训练营蓝图</a>
-      <a href="training-camp.html" data-lang-th>ค่ายฝึก</a>
-    </div>
-  </nav>
-
-  <!-- LANG TOGGLE -->
-  <div class="lang-toggle">
-    <button data-lang="zh" class="active">中文</button>
-    <button data-lang="th">ไทย</button>
+<!-- NAV -->
+<nav class="nav-bar">
+  <a href="index.html" class="nav-logo">三川 SANCHUAN <span class="sub">MISSION CONTROL</span></a>
+  <div class="nav-links">
+    <a href="index.html"><span data-lang-zh>总览</span><span data-lang-th>ภาพรวม</span></a>
+    <a href="battle-plan.html"><span data-lang-zh>作战计划</span><span data-lang-th>แผนรบ</span></a>
+    <a href="training-camp.html"><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></a>
+    <a href="vision.html"><span data-lang-zh>愿景</span><span data-lang-th>วิสัยทัศน์</span></a>
   </div>
+  <button class="mobile-menu-btn" onclick="toggleMobileNav()">☰</button>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html"><span data-lang-zh>总览</span><span data-lang-th>ภาพรวม</span></a>
+  <a href="battle-plan.html"><span data-lang-zh>作战计划</span><span data-lang-th>แผนรบ</span></a>
+  <a href="training-camp.html"><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></a>
+  <a href="vision.html"><span data-lang-zh>愿景</span><span data-lang-th>วิสัยทัศน์</span></a>
+</div>
 
-  <!-- HERO -->
-  <section class="hero">
+<!-- LANG TOGGLE -->
+<div class="lang-toggle">
+  <button data-lang="zh">中文</button>
+  <button data-lang="th">ไทย</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" style="background-image: url('img/hero-main.jpg')"></div>
+  <div class="hero-content">
     <div class="hero-badge">
-      <span data-lang-zh>2026.02.14 战略会议纪要</span>
-      <span data-lang-th>บันทึกการประชุมเชิงกลยุทธ์ 14 ก.พ. 2026</span>
+      <span data-lang-zh>SANCHUAN · 战略总部</span>
+      <span data-lang-th>SANCHUAN · MISSION CONTROL</span>
     </div>
     <h1>
-      <span data-lang-zh>别人掏钱，我们造梦</span>
-      <span data-lang-th>ใช้เงินคนอื่น สร้างฝันของเรา</span>
+      <span data-lang-zh>泰国第一短剧表演学院</span>
+      <span data-lang-th>สถาบันการแสดงละครสั้น อันดับ 1 ของไทย</span>
     </h1>
     <p class="subtitle">
-      <span data-lang-zh>这不是一份普通的会议记录。这是三个人坐下来，用两种语言，拆解了一个价值千万的蓝海市场，然后画出了一张不花自己一分钱就能攻占它的作战地图。以下是完整的战略复盘。</span>
-      <span data-lang-th>นี่ไม่ใช่สรุปประชุมธรรมดา แต่เป็นบันทึกของ 3 คนที่นั่งลงคุยกัน 2 ภาษา แกะตลาด Blue Ocean มูลค่ามหาศาล แล้ววาดแผนที่จะยึดมันโดยไม่ต้องควักเงินตัวเองแม้แต่บาทเดียว นี่คือแผนยุทธศาสตร์ฉบับเต็ม</span>
+      <span data-lang-zh>以中国千亿短剧市场的成功模式为蓝本，打造东南亚首个竖屏短剧演员封闭式训练体系。我们不只是在做一个培训班——我们在定义一个全新的行业标准。</span>
+      <span data-lang-th>เอาโมเดลที่พิสูจน์แล้วจากตลาดละครสั้นจีนแสนล้าน มาสร้างระบบฝึกนักแสดงละครสั้นแนวตั้งแบบปิดแห่งแรกในอาเซียน เราไม่ได้ทำแค่คลาสเรียน — เรากำลังวางมาตรฐานใหม่ให้ทั้งอุตสาหกรรม</span>
     </p>
     <div>
-      <a href="battle-plan.html" class="nav-cta">
+      <a href="battle-plan.html" class="hero-cta">
         <span data-lang-zh>查看作战计划 →</span>
         <span data-lang-th>ดูแผนรบ →</span>
       </a>
-      <a href="training-camp.html" class="nav-cta outline">
+      <a href="training-camp.html" class="hero-cta outline">
         <span data-lang-zh>训练营蓝图</span>
-        <span data-lang-th>แผนค่ายฝึก</span>
+        <span data-lang-th>พิมพ์เขียวค่ายฝึก</span>
       </a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<!-- WHY #1 -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>WHY #1 · 为什么是第一</span>
+    <span data-lang-th>WHY #1 · ทำไมต้องเป็นที่ 1</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>占领"第一"的位置，其他一切自然跟来</span>
+    <span data-lang-th>ปักธงยึดตำแหน่ง "ที่ 1" ให้ได้ แล้วทุกอย่างจะตามมาเอง</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>在泰国，竖屏短剧表演培训是一片完全空白的市场。第一个进入的人不需要竞争——只需要定义规则。当我们成为"泰国短剧表演学院"的代名词，所有的机会都会主动找上门来。</span>
+    <span data-lang-th>ตลาดฝึกนักแสดงละครสั้นแนวตั้งในไทย ตอนนี้ว่างเปล่า ไม่มีใครทำ คนที่เข้าไปก่อนไม่ต้องแข่ง — แค่วางกฎเกมเอง พอเราเป็นชื่อแรกที่คนนึกถึงเมื่อพูดถึง "สถาบันละครสั้น" ทุกโอกาสจะวิ่งเข้ามาหาเราเอง</span>
+  </p>
 
-  <!-- CORE LOGIC -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>CORE LOGIC · 核心逻辑</span>
-      <span data-lang-th>CORE LOGIC · ตรรกะหลัก</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">为什么我们能赢？因为我们换了一种玩法。</h2>
-      <p class="section-desc">传统模式：先花钱拍戏 → 祈祷能卖出去 → 大概率亏损。我们的模式：先收钱教人 → 用学费拍戏 → 用作品赚更多钱。风险归零，利润前置。这不是理论，这是经过中国千亿短剧市场验证的公式。</p>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">ทำไมเราถึงชนะได้? เพราะเราเปลี่ยนกติกาเกม</h2>
-      <p class="section-desc">โมเดลเดิม: ลงทุนถ่ายหนังก่อน → ภาวนาว่าจะขายได้ → ส่วนใหญ่ขาดทุน โมเดลของเรา: เก็บค่าเรียนก่อน → เอาค่าเรียนไปถ่ายหนัง → เอาหนังไปทำเงินต่อ ความเสี่ยงเป็นศูนย์ กำไรมาก่อน นี่ไม่ใช่ทฤษฎี แต่เป็นสูตรที่ผ่านการพิสูจน์จากตลาดละครสั้นจีนมูลค่าแสนล้าน</p>
-    </div>
-
-    <div class="principle-grid">
-      <div class="principle">
-        <div class="emoji">🚫💰</div>
-        <div data-lang-zh>
-          <h4>零投入原则</h4>
-          <p>绝不花自己的钱。学费、投资人、赞助商——永远用别人的钱办自己的事。</p>
-        </div>
-        <div data-lang-th>
-          <h4>ห้ามใช้เงินตัวเอง</h4>
-          <p>ค่าเรียน นักลงทุน สปอนเซอร์ — ใช้เงินคนอื่นทำธุรกิจของเราเสมอ</p>
-        </div>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🏴</div>
+      <h3>
+        <span data-lang-zh>先发优势：快鱼吃慢鱼</span>
+        <span data-lang-th>First Mover: ปลาเร็วกินปลาช้า</span>
+      </h3>
+      <p>
+        <span data-lang-zh>短剧市场在中国已经验证了千亿规模，但在泰国还没有人做专业培训。我们不需要发明轮子——只需要把已经成功的模式搬过来，然后本地化。第一个做的人拿走80%的市场认知。</span>
+        <span data-lang-th>ตลาดละครสั้นในจีนพิสูจน์แล้วว่ามูลค่าแสนล้าน แต่ในไทยยังไม่มีใครทำฝึกอบรมจริงจัง เราไม่ต้องคิดค้นอะไรใหม่ — แค่เอาโมเดลที่สำเร็จแล้วมาปรับใช้ คนแรกที่ทำ กินตลาด 80% ของการรับรู้</span>
+      </p>
+      <span class="tag red">
+        <span data-lang-zh>⚡ 时间窗口有限</span>
+        <span data-lang-th>⚡ หน้าต่างโอกาสมีจำกัด</span>
+      </span>
+      <div class="insight-toggle" onclick="toggleInsight(this)">
+        <span data-lang-zh>💡 战略洞察</span>
+        <span data-lang-th>💡 มุมมองเชิงกลยุทธ์</span>
       </div>
-      <div class="principle">
-        <div class="emoji">⚡</div>
-        <div data-lang-zh>
-          <h4>快鱼吃慢鱼</h4>
-          <p>泰国短剧市场是一片蓝海，但窗口期不会永远敞开。谁先进场，谁就是规则制定者。</p>
-        </div>
-        <div data-lang-th>
-          <h4>ปลาเร็วกินปลาช้า</h4>
-          <p>ตลาดละครสั้นในไทยยังเป็น Blue Ocean แต่หน้าต่างโอกาสไม่ได้เปิดตลอด ใครเข้าก่อน คนนั้นเป็นคนวางกฎ</p>
-        </div>
-      </div>
-      <div class="principle">
-        <div class="emoji">🌏</div>
-        <div data-lang-zh>
-          <h4>中国标准 = 全球通行证</h4>
-          <p>符合中国大陆审核标准的内容，一定是绿色、健康的。能在中国发行，就能在全球发行。一次制作，全球分发。</p>
-        </div>
-        <div data-lang-th>
-          <h4>มาตรฐานจีน = ใบผ่านทางโลก</h4>
-          <p>เนื้อหาที่ผ่านมาตรฐานจีนแผ่นดินใหญ่ ย่อมเป็นเนื้อหาที่ปลอดภัยและเหมาะสม ถ่ายครั้งเดียว ฉายได้ทั่วโลก</p>
-        </div>
-      </div>
-      <div class="principle">
-        <div class="emoji">🔄</div>
-        <div data-lang-zh>
-          <h4>先收钱，后花钱</h4>
-          <p>现金流永远为正。学员缴费在前，我们投入在后。这不是创业，这是印钞机的逻辑。</p>
-        </div>
-        <div data-lang-th>
-          <h4>รับเงินก่อน จ่ายทีหลัง</h4>
-          <p>กระแสเงินสดเป็นบวกเสมอ นักเรียนจ่ายก่อน เราลงทุนทีหลัง นี่ไม่ใช่ Startup แต่เป็นตรรกะของเครื่องพิมพ์เงิน</p>
-        </div>
+      <div class="insight-content">
+        <span data-lang-zh>当一个品类还没有"第一名"的时候，第一个宣称自己是第一名的人，就自动成为第一名。这不是吹牛——这是定位理论的核心。我们不需要等到规模最大才说自己是第一，我们只需要第一个说出来，然后用行动证明。</span>
+        <span data-lang-th>เมื่อยังไม่มี "ที่ 1" ในหมวดหมู่ไหน คนแรกที่ประกาศว่าตัวเองคือที่ 1 ก็จะกลายเป็นที่ 1 โดยอัตโนมัติ นี่ไม่ใช่โม้ — นี่คือหัวใจของทฤษฎี Positioning เราไม่ต้องรอจนใหญ่ที่สุดถึงจะพูดได้ แค่พูดก่อน แล้วพิสูจน์ด้วยการกระทำ</span>
       </div>
     </div>
-  </section>
 
-  <div class="divider"></div>
-
-  <!-- FOUR PLANS OVERVIEW -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>BATTLE OVERVIEW · 四线作战</span>
-      <span data-lang-th>BATTLE OVERVIEW · แผนรบ 4 ทิศ</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">四条战线，同时推进，互为弹药</h2>
-      <p class="section-desc">不是做完一个再做下一个。四条线同时开火，每条线的产出都是另一条线的燃料。这就是飞轮效应。</p>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">4 แนวรบ เดินหน้าพร้อมกัน เป็นกระสุนให้กันและกัน</h2>
-      <p class="section-desc">ไม่ใช่ทำทีละอย่าง ทั้ง 4 แนวรบยิงพร้อมกัน ผลผลิตของแต่ละแนวคือเชื้อเพลิงของอีกแนว นี่คือ Flywheel Effect</p>
-    </div>
-
-    <div class="card-grid">
-      <div class="card">
-        <div class="card-icon">🎓</div>
-        <div data-lang-zh>
-          <h3>战线一：演员训练营</h3>
-          <p>最高优先级。在中国开设15天封闭式短剧演员培训班。学员缴费约3万元人民币（含食宿），我们用学费覆盖所有成本。3-4月开营，瞄准泰国大学放假期。这是整个帝国的现金流引擎。</p>
-        </div>
-        <div data-lang-th>
-          <h3>แนวรบที่ 1: ค่ายฝึกนักแสดง</h3>
-          <p>สำคัญที่สุด เปิดค่ายฝึกนักแสดงละครสั้นแบบปิด 15 วันที่จีน ค่าเรียนประมาณ 30,000 หยวน (รวมที่พัก+อาหาร) เราใช้ค่าเรียนครอบคลุมต้นทุนทั้งหมด เปิดค่าย มี.ค.-เม.ย. ตรงกับปิดเทอมมหาลัยไทย นี่คือเครื่องยนต์สร้างเงินสดของทั้งจักรวรรดิ</p>
-        </div>
-        <span class="tag red">
-          <span data-lang-zh>⚡ 最高优先</span>
-          <span data-lang-th>⚡ เร่งด่วนสูงสุด</span>
-        </span>
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h3>
+        <span data-lang-zh>零风险模型：用别人的钱造梦</span>
+        <span data-lang-th>โมเดลเสี่ยงศูนย์: ใช้เงินคนอื่นสร้างฝัน</span>
+      </h3>
+      <p>
+        <span data-lang-zh>学员交学费 → 我们用学费运营 → 优秀学员进组拍戏 → 作品产生收入。整个链条是"先收钱，后花钱"。我们永远不会亏损，因为钱在我们动手之前就已经到账了。</span>
+        <span data-lang-th>นักเรียนจ่ายค่าเรียน → เราเอาค่าเรียนมาบริหาร → คนเก่งเข้ากองถ่าย → ผลงานสร้างรายได้ ทั้งระบบคือ "รับเงินก่อน จ่ายทีหลัง" ไม่มีทางขาดทุน เพราะเงินเข้ากระเป๋าก่อนที่เราจะขยับตัวทำอะไร</span>
+      </p>
+      <span class="tag green">
+        <span data-lang-zh>✅ 现金流为正</span>
+        <span data-lang-th>✅ กระแสเงินสดเป็นบวก</span>
+      </span>
+      <div class="insight-toggle" onclick="toggleInsight(this)">
+        <span data-lang-zh>💡 商业逻辑</span>
+        <span data-lang-th>💡 ตรรกะทางธุรกิจ</span>
       </div>
-
-      <div class="card">
-        <div class="card-icon">🎬</div>
-        <div data-lang-zh>
-          <h3>战线二：带资进组短剧</h3>
-          <p>与训练营同步进行。筛选有资金和表演基础的学员，让他们"带资进组"参与真实短剧拍摄。学员出钱+出演，我们出技术+渠道。在中国拍摄，按中国标准制作，1-2个月内全球上线。</p>
-        </div>
-        <div data-lang-th>
-          <h3>แนวรบที่ 2: ละครสั้น "จ่ายเงินมาเล่น"</h3>
-          <p>ทำควบคู่กับค่ายฝึก คัดนักเรียนที่มีเงินและมีพื้นฐานการแสดง ให้ "带资进组" (นำเงินเข้ากอง) ร่วมถ่ายละครสั้นจริง นักเรียนออกเงิน+แสดง เราออกเทคนิค+ช่องทาง ถ่ายที่จีน ตามมาตรฐานจีน ออนไลน์ทั่วโลกภายใน 1-2 เดือน</p>
-        </div>
-        <span class="tag green">
-          <span data-lang-zh>🔄 与战线一同步</span>
-          <span data-lang-th>🔄 ทำพร้อมแนวรบ 1</span>
-        </span>
-      </div>
-
-      <div class="card">
-        <div class="card-icon">📱</div>
-        <div data-lang-zh>
-          <h3>战线三：平台攻略</h3>
-          <p>主动出击泰国超级App。目标：Grab、ThaiMart（กองสลากพลัส）、Shopee、Lazada。核心话术："你们已经有用户了，我们帮你们让用户待更久、买更多。"用中国淘宝/拼多多的短剧模式做案例，让平台买单。</p>
-        </div>
-        <div data-lang-th>
-          <h3>แนวรบที่ 3: บุกแพลตฟอร์มยักษ์</h3>
-          <p>เดินหน้าเข้าหา Super App ในไทย เป้าหมาย: Grab, ThaiMart (กองสลากพลัส), Shopee, Lazada คำพูดหลัก: "คุณมีผู้ใช้อยู่แล้ว เราช่วยให้เขาอยู่ในแอปนานขึ้น ซื้อของมากขึ้น" ใช้โมเดล Taobao/Pinduoduo ที่จีนเป็น Case Study ให้แพลตฟอร์มจ่าย</p>
-        </div>
-        <span class="tag purple">
-          <span data-lang-zh>📋 准备中</span>
-          <span data-lang-th>📋 เตรียมการ</span>
-        </span>
-      </div>
-
-      <div class="card">
-        <div class="card-icon">🤖</div>
-        <div data-lang-zh>
-          <h3>战线四：AI动漫真人剧</h3>
-          <p>2026年2月10日至4月5日，参加AI动画竞赛（奖金以美元计）。浩天团队正在准备参赛方案。如果获奖，不仅是收入，更是品牌背书和技术护城河。</p>
-        </div>
-        <div data-lang-th>
-          <h3>แนวรบที่ 4: AI Animation</h3>
-          <p>ช่วง 10 ก.พ. - 5 เม.ย. 2026 เข้าร่วมการแข่งขัน AI Animation (รางวัลเป็น USD) ทีมของห่าวเทียนกำลังเตรียม Proposal อยู่ ถ้าชนะ ไม่ใช่แค่รายได้ แต่เป็นการสร้างแบรนด์และ Moat ด้านเทคโนโลยี</p>
-        </div>
-        <span class="tag cyan">
-          <span data-lang-zh>🚀 进行中</span>
-          <span data-lang-th>🚀 กำลังดำเนินการ</span>
-        </span>
+      <div class="insight-content">
+        <span data-lang-zh>传统影视制作的致命弱点是"先花钱，再祈祷能赚回来"。我们彻底颠覆了这个逻辑。学员缴费就是我们的启动资金，优秀学员就是我们的免费劳动力（而且他们还付了钱来工作）。这个模型在中国已经被验证过无数次。</span>
+        <span data-lang-th>จุดอ่อนร้ายแรงของการผลิตหนังแบบเดิมคือ "จ่ายก่อน แล้วภาวนาว่าจะได้คืน" เราพลิกตรรกะนี้ทั้งหมด ค่าเรียนของนักเรียนคือทุนตั้งต้นของเรา นักเรียนเก่งๆ คือแรงงานฟรี (แถมเขายังจ่ายเงินมาทำงานให้เราอีก) โมเดลนี้พิสูจน์แล้วในจีนนับไม่ถ้วนครั้ง</span>
       </div>
     </div>
-  </section>
 
-  <div class="divider"></div>
-
-  <!-- KEY PLAYERS -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>THE WAR COUNCIL · 作战指挥部</span>
-      <span data-lang-th>THE WAR COUNCIL · สภาสงคราม</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">三个人，两种语言，一个目标</h2>
-      <p class="section-desc">这场会议的参与者不是在闲聊，而是在排兵布阵。每个人都有明确的战区和不可替代的核心能力。</p>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">3 คน 2 ภาษา 1 เป้าหมาย</h2>
-      <p class="section-desc">คนในห้องประชุมนี้ไม่ได้มานั่งคุยเล่น แต่มาจัดทัพ แต่ละคนมีสนามรบที่ชัดเจนและความสามารถหลักที่ขาดไม่ได้</p>
-    </div>
-
-    <div class="person-grid">
-      <div class="person-card">
-        <div class="role">THE STRATEGIST · 战略指挥官</div>
-        <div class="name">TEEM (Narin)</div>
-        <div data-lang-zh>
-          <p class="bio">泰国战区总指挥。朱拉隆功大学传媒系出身，拥有阿里巴巴级别的互联网思维和商法背景。他是把疯狂创意变成可执行方案的那个人。中泰双语无缝切换，既懂中国打法，又能在泰国落地。</p>
-        </div>
-        <div data-lang-th>
-          <p class="bio">ผู้บัญชาการสนามรบฝั่งไทย จบจุฬาฯ สื่อสารมวลชน มี Mindset แบบ Alibaba และพื้นฐานกฎหมายธุรกิจ เป็นคนที่เปลี่ยนไอเดียบ้าๆ ให้กลายเป็นแผนที่ทำได้จริง สลับจีน-ไทยได้ไร้รอยต่อ เข้าใจทั้งวิธีเล่นแบบจีนและการลงสนามในไทย</p>
-        </div>
-        <div class="tasks">
-          <h5 data-lang-zh>⚡ 紧急任务</h5>
-          <h5 data-lang-th>⚡ งานเร่งด่วน</h5>
-          <ul>
-            <li><span data-lang-zh>2天内完成课程方案</span><span data-lang-th>ทำแผนหลักสูตรให้เสร็จใน 2 วัน</span></li>
-            <li><span data-lang-zh>第3天开始对接泰国院校</span><span data-lang-th>วันที่ 3 เริ่มคุยกับมหาลัยในไทย</span></li>
-            <li><span data-lang-zh>翻译PPT为泰语，准备平台路演</span><span data-lang-th>แปล PPT เป็นไทย เตรียมพรีเซนต์แพลตฟอร์ม</span></li>
-            <li><span data-lang-zh>预约Grab/ThaiMart等平台高管会议</span><span data-lang-th>นัดประชุมผู้บริหาร Grab/ThaiMart</span></li>
-          </ul>
-        </div>
+    <div class="card">
+      <div class="card-icon">🌏</div>
+      <h3>
+        <span data-lang-zh>中国标准 = 全球通行证</span>
+        <span data-lang-th>มาตรฐานจีน = ใบผ่านทางทั่วโลก</span>
+      </h3>
+      <p>
+        <span data-lang-zh>按照中国大陆的内容标准制作，意味着内容是绿色的、健康的。能在中国发行的作品，一定能在全球任何平台发行。一次制作，全球分发——这就是我们的内容策略。</span>
+        <span data-lang-th>ถ่ายตามมาตรฐานเนื้อหาจีน = เนื้อหาสะอาด ปลอดภัย ฉายได้ทุกแพลตฟอร์ม ผ่านจีนได้ = ผ่านทั่วโลก ถ่ายครั้งเดียว เผยแพร่ได้ทุกที่ — นี่คือกลยุทธ์เนื้อหาของเรา</span>
+      </p>
+      <span class="tag cyan">
+        <span data-lang-zh>🌐 一次制作 全球发行</span>
+        <span data-lang-th>🌐 ถ่ายครั้งเดียว ฉายทั่วโลก</span>
+      </span>
+      <div class="insight-toggle" onclick="toggleInsight(this)">
+        <span data-lang-zh>💡 内容策略</span>
+        <span data-lang-th>💡 กลยุทธ์เนื้อหา</span>
       </div>
-
-      <div class="person-card">
-        <div class="role">THE EXECUTIVE · 帝国核心</div>
-        <div class="name">NANA (Li Qinyao / 李沁瑶)</div>
-        <div data-lang-zh>
-          <p class="bio">手握中国短剧市场"核心变现代码"的操盘手。世界模特大赛冠军，不只是站在镁光灯下的明星，更是深谙市场逻辑的战略家。她带来的不是经验，是经过千亿市场验证的赚钱图纸。直通中国顶尖导演圈层。</p>
-        </div>
-        <div data-lang-th>
-          <p class="bio">ผู้ถือ "รหัสทำเงิน" ของตลาดละครสั้นจีน แชมป์นางแบบโลก ไม่ใช่แค่ดาราที่ยืนอยู่ใต้แสงไฟ แต่เป็นนักกลยุทธ์ที่เข้าใจตรรกะตลาดอย่างลึกซึ้ง สิ่งที่เธอนำมาไม่ใช่แค่ประสบการณ์ แต่คือพิมพ์เขียวทำเงินที่ผ่านการพิสูจน์จากตลาดแสนล้าน เชื่อมตรงถึงวงการผู้กำกับระดับแนวหน้าของจีน</p>
-        </div>
-        <div class="tasks">
-          <h5 data-lang-zh>⚡ 紧急任务</h5>
-          <h5 data-lang-th>⚡ งานเร่งด่วน</h5>
-          <ul>
-            <li><span data-lang-zh>与浩天敲定课程体系、场地和预算</span><span data-lang-th>คุยกับห่าวเทียนปิดดีลหลักสูตร สถานที่ งบประมาณ</span></li>
-            <li><span data-lang-zh>制作中文版PPT（含中国市场数据）</span><span data-lang-th>ทำ PPT ภาษาจีน (พร้อมข้อมูลตลาดจีน)</span></li>
-            <li><span data-lang-zh>准备来泰路演的全部弹药</span><span data-lang-th>เตรียมกระสุนทั้งหมดสำหรับมาพรีเซนต์ที่ไทย</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="person-card">
-        <div class="role">THE PRODUCER · 制作总监</div>
-        <div class="name">浩天 (Haotian)</div>
-        <div data-lang-zh>
-          <p class="bio">中国影视圈的实战派。既是演员也是制片人，深耕行业多年，拥有从选角到杀青的全流程把控能力。他不是纸上谈兵的人，是真正在片场摸爬滚打出来的。训练营课程体系的核心设计者。</p>
-        </div>
-        <div data-lang-th>
-          <p class="bio">นักปฏิบัติตัวจริงในวงการหนังจีน เป็นทั้งนักแสดงและโปรดิวเซอร์ คลุกคลีในอุตสาหกรรมมาหลายปี ควบคุมได้ตั้งแต่ Casting ยัน Wrap ไม่ใช่คนที่พูดเก่งอย่างเดียว แต่เป็นคนที่ผ่านสนามรบในกองถ่ายมาจริงๆ เป็นผู้ออกแบบหลักสูตรค่ายฝึกคนหลัก</p>
-        </div>
-        <div class="tasks">
-          <h5 data-lang-zh>⚡ 紧急任务</h5>
-          <h5 data-lang-th>⚡ งานเร่งด่วน</h5>
-          <ul>
-            <li><span data-lang-zh>完善训练营课程体系与师资方案</span><span data-lang-th>ทำหลักสูตรค่ายฝึกและแผนทีมอาจารย์ให้สมบูรณ์</span></li>
-            <li><span data-lang-zh>确认中国拍摄场地与成本</span><span data-lang-th>ยืนยันสถานที่ถ่ายทำและต้นทุนในจีน</span></li>
-            <li><span data-lang-zh>推进AI动漫竞赛参赛方案</span><span data-lang-th>เดินหน้า Proposal แข่งขัน AI Animation</span></li>
-          </ul>
-        </div>
+      <div class="insight-content">
+        <span data-lang-zh>中国的内容审核是全球最严格的之一。通过中国审核的内容，在东南亚、欧美、日韩等市场基本上是"免审"的。这意味着我们的作品天然具备全球发行能力。更重要的是，这种"绿色内容"对演员的品牌形象也是加分——安全、健康、适合所有年龄段。</span>
+        <span data-lang-th>ระบบตรวจสอบเนื้อหาของจีนเข้มงวดที่สุดในโลก เนื้อหาที่ผ่านจีนได้ ในตลาดอาเซียน ยุโรป อเมริกา ญี่ปุ่น เกาหลี แทบจะ "ผ่านอัตโนมัติ" แปลว่าผลงานของเราพร้อมเผยแพร่ทั่วโลกตั้งแต่วันแรก ที่สำคัญกว่านั้น เนื้อหา "สะอาด" แบบนี้ยังเป็นการสร้างภาพลักษณ์ที่ดีให้นักแสดงด้วย — ปลอดภัย สุขภาพดี เหมาะกับทุกวัย</span>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<div class="divider"></div>
 
-  <!-- CRITICAL TIMELINE -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>CRITICAL PATH · 关键时间线</span>
-      <span data-lang-th>CRITICAL PATH · เส้นทางวิกฤต</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">倒计时已经开始。没有"以后再说"。</h2>
-      <p class="section-desc">从今天起到开营，每一天都是战斗日。错过窗口期，蓝海就变红海。</p>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">นับถอยหลังเริ่มแล้ว ไม่มี "ไว้ค่อยทำ"</h2>
-      <p class="section-desc">ตั้งแต่วันนี้จนถึงวันเปิดค่าย ทุกวันคือวันรบ พลาดหน้าต่างโอกาส Blue Ocean ก็จะกลายเป็น Red Ocean</p>
-    </div>
+<!-- FLYWHEEL -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>FLYWHEEL · 飞轮效应</span>
+    <span data-lang-th>FLYWHEEL · เอฟเฟกต์วงล้อ</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>一个飞轮，四个引擎——越转越快</span>
+    <span data-lang-th>Flywheel เดียว สี่เครื่องยนต์ — ยิ่งหมุน ยิ่งแรง</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>四条战线不是各自为战，而是一个互相加速的飞轮。训练营产出人才，人才拍出作品，作品吸引平台，平台带来资金，资金扩大训练营。每转一圈，势能翻倍。</span>
+    <span data-lang-th>สี่แนวรบไม่ได้แยกกันทำ แต่เป็น Flywheel ที่เร่งซึ่งกันและกัน ค่ายฝึกปั้นคน → คนถ่ายผลงาน → ผลงานดึงแพลตฟอร์ม → แพลตฟอร์มนำเงินมา → เงินขยายค่ายฝึก ยิ่งหมุน ยิ่งแรง</span>
+  </p>
 
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="date">D+0 → D+2 <span data-lang-zh>（2月14-16日）</span><span data-lang-th>(14-16 ก.พ.)</span></div>
-        <div data-lang-zh>
-          <h4>🔥 课程方案定稿</h4>
-          <p>Teem完成课程框架，Nana与浩天确认中国端细节（场地、师资、预算）。两天内必须出一份可以拿去谈合作的完整方案。没有借口。</p>
-        </div>
-        <div data-lang-th>
-          <h4>🔥 ปิดแผนหลักสูตร</h4>
-          <p>Teem ทำโครงสร้างหลักสูตร Nana กับห่าวเทียนยืนยันรายละเอียดฝั่งจีน (สถานที่ ทีมอาจารย์ งบ) ภายใน 2 วันต้องมีแผนที่พร้อมเอาไปคุยงานได้ ไม่มีข้อแก้ตัว</p>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="date">D+3 <span data-lang-zh>（2月17日）</span><span data-lang-th>(17 ก.พ.)</span></div>
-        <div data-lang-zh>
-          <h4>🏫 院校对接启动</h4>
-          <p>Teem带着方案去敲泰国大学的门。目标：与艺术/表演系建立合作，获得招生渠道和学术背书。</p>
-        </div>
-        <div data-lang-th>
-          <h4>🏫 เริ่มคุยกับมหาลัย</h4>
-          <p>Teem เอาแผนไปเคาะประตูมหาลัยในไทย เป้าหมาย: สร้างความร่วมมือกับคณะศิลปะ/การแสดง ได้ช่องทางรับสมัครและ Academic Endorsement</p>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="date"><span data-lang-zh>2月25日前</span><span data-lang-th>ก่อน 25 ก.พ.</span></div>
-        <div data-lang-zh>
-          <h4>✅ 全部准备就绪</h4>
-          <p>课程、场地、师资、招生渠道、PPT——所有弹药到位。开始正式招生和市场推广。</p>
-        </div>
-        <div data-lang-th>
-          <h4>✅ ทุกอย่างพร้อม</h4>
-          <p>หลักสูตร สถานที่ ทีมอาจารย์ ช่องทางรับสมัคร PPT — กระสุนทุกนัดพร้อม เริ่มรับสมัครและทำการตลาดอย่างเป็นทางการ</p>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="date"><span data-lang-zh>3月-4月</span><span data-lang-th>มี.ค. - เม.ย.</span></div>
-        <div data-lang-zh>
-          <h4>🎯 训练营开营 + 短剧开拍</h4>
-          <p>利用泰国大学放假期，开设2期训练营。同步筛选"带资进组"学员，启动短剧拍摄。现金流开始转动。</p>
-        </div>
-        <div data-lang-th>
-          <h4>🎯 เปิดค่ายฝึก + เริ่มถ่ายละครสั้น</h4>
-          <p>ใช้ช่วงปิดเทอมมหาลัยไทย เปิดค่ายฝึก 2 รุ่น คัดนักเรียน "带资进组" ไปพร้อมกัน เริ่มถ่ายละครสั้น กระแสเงินสดเริ่มหมุน</p>
-        </div>
+  <div class="stat-row">
+    <div class="stat-block">
+      <div class="number">01</div>
+      <div class="label">
+        <span data-lang-zh>训练营 · 现金引擎</span>
+        <span data-lang-th>ค่ายฝึก · เครื่องปั้มเงินสด</span>
       </div>
     </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- QUOTE -->
-  <section class="section">
-    <div class="quote-block">
-      <div data-lang-zh>
-        <p>"与其冒险花钱雇人，不如让人花钱来跟我们学。我们既收了学费，又筛选出了最好的人才，还能在正式签约前看到他们的真实水平。零风险，全是利。"</p>
-        <div class="author">— 会议共识</div>
-      </div>
-      <div data-lang-th>
-        <p>"แทนที่จะเสี่ยงจ้างคน ให้คนจ่ายเงินมาเรียนกับเรา เราได้ทั้งเงิน ได้ทั้งคนคุณภาพ แล้วยังได้ดูฝีมือจริงก่อนจ้างอีกด้วย ไม่ต้องเสี่ยงเลย มีแต่ได้"</p>
-        <div class="author">— มติที่ประชุม</div>
+    <div class="stat-block">
+      <div class="number">02</div>
+      <div class="label">
+        <span data-lang-zh>短剧 · 作品工厂</span>
+        <span data-lang-th>ละครสั้น · โรงงานผลงาน</span>
       </div>
     </div>
-  </section>
+    <div class="stat-block">
+      <div class="number">03</div>
+      <div class="label">
+        <span data-lang-zh>平台 · 分发网络</span>
+        <span data-lang-th>แพลตฟอร์ม · เครือข่ายกระจาย</span>
+      </div>
+    </div>
+    <div class="stat-block">
+      <div class="number">04</div>
+      <div class="label">
+        <span data-lang-zh>AI动漫 · 技术护城河</span>
+        <span data-lang-th>AI Animation · คูเมืองเทคโนโลยี</span>
+      </div>
+    </div>
+  </div>
 
-  <!-- FOOTER -->
-  <footer class="footer">
+  <div class="quote-block">
     <p>
-      <span data-lang-zh>三川 SANCHUAN · Mission Control · 由 <a href="https://www.myclover.com" target="_blank">Manus AI</a> 生成 · 2026年2月</span>
-      <span data-lang-th>三川 SANCHUAN · Mission Control · สร้างโดย <a href="https://www.myclover.com" target="_blank">Manus AI</a> · กุมภาพันธ์ 2026</span>
+      <span data-lang-zh>"与其冒险雇人，不如让人付费来学。我们既得到了资金，又得到了人才，还能在正式签约前看到他们的真实水平。零风险，全是收益。"</span>
+      <span data-lang-th>"แทนที่จะเสี่ยงจ้างคน ให้คนจ่ายเงินมาเรียนกับเรา เราได้ทั้งเงิน ได้ทั้งคนคุณภาพ แล้วยังได้ดูฝีมือจริงก่อนจ้างอีกด้วย ไม่ต้องเสี่ยงเลย มีแต่ได้"</span>
     </p>
-  </footer>
+    <div class="author">— Teem</div>
+  </div>
+</section>
 
-  <script src="app.js"></script>
+<div class="divider"></div>
+
+<!-- WAR COUNCIL -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>WAR COUNCIL · 核心团队</span>
+    <span data-lang-th>WAR COUNCIL · ทีมหลัก</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>三个人，一个帝国</span>
+    <span data-lang-th>สามคน หนึ่งอาณาจักร</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>每个人都是不可替代的拼图。战略、执行、制作——三位一体，缺一不可。</span>
+    <span data-lang-th>ทุกคนคือจิ๊กซอว์ที่ขาดไม่ได้ กลยุทธ์ บริหาร ผลิต — สามประสาน ขาดคนเดียวไม่ได้</span>
+  </p>
+
+  <div class="person-grid">
+    <div class="person-card">
+      <div class="role">CHAIRMAN · <span data-lang-zh>掌舵者</span><span data-lang-th>ผู้นำทัพ</span></div>
+      <div class="name">
+        <span data-lang-zh>Nana · 李沁瑶</span>
+        <span data-lang-th>Nana · หลี่ชิ่นเหยา</span>
+      </div>
+      <div class="bio">
+        <span data-lang-zh>世界模特冠军，知名演员与导演，深耕中国短剧市场多年。她不仅是三川的门面，更是整个帝国的灵魂——战略眼光、行业资源、执行魄力，集于一身。三川的每一步，都由她拍板定夺。</span>
+        <span data-lang-th>แชมป์นางแบบโลก นักแสดงและผู้กำกับชื่อดัง คร่ำหวอดในตลาดละครสั้นจีนมาหลายปี เธอไม่ใช่แค่หน้าตาของสามชวน แต่คือจิตวิญญาณของทั้งอาณาจักร — สายตาเชิงกลยุทธ์ คอนเนกชั่นในอุตสาหกรรม ความกล้าตัดสินใจ รวมอยู่ในคนเดียว ทุกก้าวของสามชวน เธอเป็นคนอนุมัติ</span>
+      </div>
+      <div class="tasks">
+        <h5><span data-lang-zh>关键职责</span><span data-lang-th>MISSION</span></h5>
+        <ul>
+          <li><span data-lang-zh>统筹训练营课程体系与师资</span><span data-lang-th>ดูแลหลักสูตรค่ายฝึกและทีมอาจารย์ทั้งหมด</span></li>
+          <li><span data-lang-zh>对接中国短剧市场资源</span><span data-lang-th>เชื่อมต่อทรัพยากรตลาดละครสั้นจีน</span></li>
+          <li><span data-lang-zh>品牌形象与战略决策</span><span data-lang-th>ภาพลักษณ์แบรนด์และตัดสินใจเชิงกลยุทธ์</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="role">STRATEGIST · <span data-lang-zh>军师</span><span data-lang-th>นักวางแผน</span></div>
+      <div class="name">Teem · Narin</div>
+      <div class="bio">
+        <span data-lang-zh>朱拉隆功大学传播学出身，曾任职阿里巴巴。三川的战略大脑——市场分析、商业模式设计、合作谈判，所有幕后的棋局都由他布局。Nana的亲族兄长，三川的隐形引擎。</span>
+        <span data-lang-th>จบจุฬาฯ สื่อสารมวลชน เคยทำงาน Alibaba สมองเชิงกลยุทธ์ของสามชวน — วิเคราะห์ตลาด ออกแบบโมเดลธุรกิจ เจรจาความร่วมมือ ทุกหมากหลังฉากเป็นคนวาง พี่ชายสายเลือดของ Nana เครื่องยนต์ที่มองไม่เห็นของสามชวน</span>
+      </div>
+      <div class="tasks">
+        <h5><span data-lang-zh>关键职责</span><span data-lang-th>MISSION</span></h5>
+        <ul>
+          <li><span data-lang-zh>泰国市场开拓与平台谈判</span><span data-lang-th>บุกตลาดไทยและเจรจาแพลตฟอร์ม</span></li>
+          <li><span data-lang-zh>商业模式与财务规划</span><span data-lang-th>ออกแบบโมเดลธุรกิจและแผนการเงิน</span></li>
+          <li><span data-lang-zh>教育机构合作与招生</span><span data-lang-th>ร่วมมือสถาบันการศึกษาและรับสมัครนักเรียน</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="role">PRODUCER · <span data-lang-zh>制作人</span><span data-lang-th>โปรดิวเซอร์</span></div>
+      <div class="name">
+        <span data-lang-zh>浩天 · Haotian</span>
+        <span data-lang-th>ห่าวเทียน · Haotian</span>
+      </div>
+      <div class="bio">
+        <span data-lang-zh>知名演员与制作人，Nana多年的挚友与合作伙伴，曾与Nana搭档出演多部作品。他带来的不只是制作经验，更是一套经过市场验证的训练营体系方案。友情与专业的完美结合。</span>
+        <span data-lang-th>ดาราและโปรดิวเซอร์ชื่อดัง เพื่อนสนิทและพาร์ทเนอร์ของ Nana มาหลายปี เคยเล่นหนังคู่กัน สิ่งที่เขาเอามาไม่ใช่แค่ประสบการณ์ผลิต แต่คือแผนค่ายฝึกทั้งระบบที่ผ่านการพิสูจน์จากตลาดจริง มิตรภาพ + ความเป็นมืออาชีพ ลงตัวสุดๆ</span>
+      </div>
+      <div class="tasks">
+        <h5><span data-lang-zh>关键职责</span><span data-lang-th>MISSION</span></h5>
+        <ul>
+          <li><span data-lang-zh>训练营课程设计与执行</span><span data-lang-th>ออกแบบและดำเนินการหลักสูตรค่ายฝึก</span></li>
+          <li><span data-lang-zh>短剧制作与导演统筹</span><span data-lang-th>ผลิตละครสั้นและประสานงานผู้กำกับ</span></li>
+          <li><span data-lang-zh>中国拍摄基地与资源对接</span><span data-lang-th>เชื่อมต่อฐานถ่ายทำและทรัพยากรในจีน</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CRITICAL PATH -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>CRITICAL PATH · 关键路径</span>
+    <span data-lang-th>CRITICAL PATH · เส้นทางวิกฤต</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>从今天到开营：每一天都算数</span>
+    <span data-lang-th>จากวันนี้ถึงวันเปิดค่าย: ทุกวันมีค่า</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>倒计时已经开始。错过窗口期，蓝海就变红海。没有"以后再说"。</span>
+    <span data-lang-th>นับถอยหลังเริ่มแล้ว พลาดหน้าต่างโอกาส Blue Ocean ก็จะกลายเป็น Red Ocean ไม่มี "ไว้ค่อยทำ"</span>
+  </p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="date">2026.02.14 — NOW</div>
+      <h4>
+        <span data-lang-zh>战略会议完成 · 方向锁定</span>
+        <span data-lang-th>ประชุมกลยุทธ์เสร็จ · ล็อคทิศทาง</span>
+      </h4>
+      <p>
+        <span data-lang-zh>三方达成共识：教育先行，短剧并行。训练营方案（浩天版）通过审核。四条战线同步启动。</span>
+        <span data-lang-th>สามฝ่ายตกลงกัน: การศึกษาก่อน ละครสั้นควบคู่ แผนค่ายฝึก (เวอร์ชั่นห่าวเทียน) ผ่านการอนุมัติ สี่แนวรบเริ่มพร้อมกัน</span>
+      </p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">2026.02.15 — 02.25</div>
+      <h4>
+        <span data-lang-zh>10天冲刺 · 完成所有筹备</span>
+        <span data-lang-th>สปรินท์ 10 วัน · เตรียมทุกอย่างให้เสร็จ</span>
+      </h4>
+      <p>
+        <span data-lang-zh>课程大纲、场地确认、师资对接、招生材料、PPT——所有弹药必须在2月25日前到位。Teem对接泰国院校，Nana与浩天锁定中国端资源。</span>
+        <span data-lang-th>หลักสูตร สถานที่ ทีมอาจารย์ เอกสารรับสมัคร PPT — กระสุนทุกนัดต้องพร้อมก่อน 25 ก.พ. Teem คุยกับมหาลัยไทย Nana กับห่าวเทียนล็อคทรัพยากรฝั่งจีน</span>
+      </p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">2026.03 — 04</div>
+      <h4>
+        <span data-lang-zh>第一期训练营 · 在中国开营</span>
+        <span data-lang-th>ค่ายฝึกรุ่นที่ 1 · เปิดค่ายที่จีน</span>
+      </h4>
+      <p>
+        <span data-lang-zh>利用泰国学校假期（3-4月），带第一批学员赴中国进行15天封闭式训练。同时启动"带资进组"短剧拍摄。现金流开始转动。</span>
+        <span data-lang-th>ใช้ช่วงปิดเทอมไทย (มี.ค.-เม.ย.) พานักเรียนรุ่นแรกไปจีน ฝึกแบบปิด 15 วัน พร้อมเริ่มถ่ายละครสั้น "带资进组" ควบคู่กัน กระแสเงินสดเริ่มหมุน</span>
+      </p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">2026.Q2 — Q3</div>
+      <h4>
+        <span data-lang-zh>平台攻势 · 作品上线 · 帝国扩张</span>
+        <span data-lang-th>บุกแพลตฟอร์ม · ผลงานออนไลน์ · อาณาจักรขยาย</span>
+      </h4>
+      <p>
+        <span data-lang-zh>短剧作品在中国及东南亚平台上线。同步与Grab、Shopee、Lazada等泰国平台谈判合作。第二期训练营开始招生。飞轮加速。</span>
+        <span data-lang-th>ผลงานละครสั้นออนไลน์ทั้งจีนและอาเซียน พร้อมเจรจาร่วมมือกับ Grab, Shopee, Lazada เปิดรับสมัครค่ายฝึกรุ่นที่ 2 Flywheel เริ่มเร่งความเร็ว</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div></div>
+  <a href="battle-plan.html" class="next">
+    <div>
+      <span class="nav-label"><span data-lang-zh>下一页</span><span data-lang-th>หน้าถัดไป</span></span>
+      <span data-lang-zh>作战计划 · 四线同步 →</span>
+      <span data-lang-th>แผนรบ · สี่แนวรบพร้อมกัน →</span>
+    </div>
+    <span class="arrow">→</span>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>三川 SANCHUAN © 2026 — <span data-lang-zh>战略文件 · 仅限内部</span><span data-lang-th>เอกสารกลยุทธ์ · เฉพาะภายใน</span></p>
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>

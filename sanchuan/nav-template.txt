@@ -1,0 +1,23 @@
+<!-- NAV -->
+<nav class="nav-bar">
+  <a href="index.html" class="nav-logo">三川 SANCHUAN <span class="sub">MISSION CONTROL</span></a>
+  <div class="nav-links">
+    <a href="index.html"><span data-lang-zh>总览</span><span data-lang-th>ภาพรวม</span></a>
+    <a href="battle-plan.html"><span data-lang-zh>作战计划</span><span data-lang-th>แผนรบ</span></a>
+    <a href="training-camp.html"><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></a>
+    <a href="vision.html"><span data-lang-zh>愿景</span><span data-lang-th>วิสัยทัศน์</span></a>
+  </div>
+  <button class="mobile-menu-btn" onclick="toggleMobileNav()">☰</button>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html"><span data-lang-zh>总览</span><span data-lang-th>ภาพรวม</span></a>
+  <a href="battle-plan.html"><span data-lang-zh>作战计划</span><span data-lang-th>แผนรบ</span></a>
+  <a href="training-camp.html"><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></a>
+  <a href="vision.html"><span data-lang-zh>愿景</span><span data-lang-th>วิสัยทัศน์</span></a>
+</div>
+
+<!-- LANG TOGGLE -->
+<div class="lang-toggle">
+  <button data-lang="zh">中文</button>
+  <button data-lang="th">ไทย</button>
+</div>

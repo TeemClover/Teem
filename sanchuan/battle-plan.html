@@ -8,30 +8,34 @@
 </head>
 <body data-lang="zh">
 
-  <!-- NAV -->
-  <nav class="nav-bar">
-    <a href="index.html" class="nav-logo">
-      三川 SANCHUAN
-      <span class="sub">MISSION CONTROL</span>
-    </a>
-    <div class="nav-links">
-      <a href="index.html" data-lang-zh>总览</a>
-      <a href="index.html" data-lang-th>ภาพรวม</a>
-      <a href="battle-plan.html" data-lang-zh>作战计划</a>
-      <a href="battle-plan.html" data-lang-th>แผนรบ</a>
-      <a href="training-camp.html" data-lang-zh>训练营蓝图</a>
-      <a href="training-camp.html" data-lang-th>ค่ายฝึก</a>
-    </div>
-  </nav>
-
-  <!-- LANG TOGGLE -->
-  <div class="lang-toggle">
-    <button data-lang="zh" class="active">中文</button>
-    <button data-lang="th">ไทย</button>
+<!-- NAV -->
+<nav class="nav-bar">
+  <a href="index.html" class="nav-logo">三川 SANCHUAN <span class="sub">MISSION CONTROL</span></a>
+  <div class="nav-links">
+    <a href="index.html"><span data-lang-zh>总览</span><span data-lang-th>ภาพรวม</span></a>
+    <a href="battle-plan.html"><span data-lang-zh>作战计划</span><span data-lang-th>แผนรบ</span></a>
+    <a href="training-camp.html"><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></a>
+    <a href="vision.html"><span data-lang-zh>愿景</span><span data-lang-th>วิสัยทัศน์</span></a>
   </div>
+  <button class="mobile-menu-btn" onclick="toggleMobileNav()">☰</button>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html"><span data-lang-zh>总览</span><span data-lang-th>ภาพรวม</span></a>
+  <a href="battle-plan.html"><span data-lang-zh>作战计划</span><span data-lang-th>แผนรบ</span></a>
+  <a href="training-camp.html"><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></a>
+  <a href="vision.html"><span data-lang-zh>愿景</span><span data-lang-th>วิสัยทัศน์</span></a>
+</div>
 
-  <!-- HERO -->
-  <section class="hero">
+<!-- LANG TOGGLE -->
+<div class="lang-toggle">
+  <button data-lang="zh">中文</button>
+  <button data-lang="th">ไทย</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" style="background-image: url('img/hero-battle.jpg')"></div>
+  <div class="hero-content">
     <div class="hero-badge">
       <span data-lang-zh>BATTLE PLAN · 作战计划</span>
       <span data-lang-th>BATTLE PLAN · แผนรบ</span>
@@ -44,513 +48,466 @@
       <span data-lang-zh>每条战线都不是孤立的。训练营产出人才和现金，短剧消化人才并产出作品，作品打开平台渠道，平台带来更多学员。这是一个自我加速的飞轮。</span>
       <span data-lang-th>ทุกแนวรบไม่ได้แยกกันทำ ค่ายฝึกสร้างคนและเงินสด ละครสั้นใช้คนและสร้างผลงาน ผลงานเปิดทางเข้าแพลตฟอร์ม แพลตฟอร์มดึงนักเรียนเพิ่ม นี่คือ Flywheel ที่เร่งตัวเอง</span>
     </p>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<!-- ========== FRONT 1: TRAINING ACADEMY ========== -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>FRONT 01 · 战线一</span>
+    <span data-lang-th>FRONT 01 · แนวรบที่ 1</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>🎓 演员训练营 — 现金流引擎</span>
+    <span data-lang-th>🎓 ค่ายฝึกนักแสดง — เครื่องยนต์สร้างเงินสด</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>这是整个战略的基石。不是"先做再说"，而是"先收钱再做"。学员缴费 → 我们用学费覆盖成本 → 学员获得技能和作品 → 我们获得人才储备和品牌口碑。所有人都赢。</span>
+    <span data-lang-th>นี่คือรากฐานของกลยุทธ์ทั้งหมด ไม่ใช่ "ทำก่อนค่อยว่า" แต่คือ "เก็บเงินก่อนค่อยทำ" นักเรียนจ่าย → เราใช้ค่าเรียนครอบคลุมต้นทุน → นักเรียนได้ทักษะและผลงาน → เราได้คลังคนและชื่อเสียง ทุกคนชนะ</span>
+  </p>
 
-  <!-- ========== FRONT 1: TRAINING ACADEMY ========== -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>FRONT 01 · 战线一</span>
-      <span data-lang-th>FRONT 01 · แนวรบที่ 1</span>
+  <div class="stat-row">
+    <div class="stat-block">
+      <div class="number">15</div>
+      <div class="label"><span data-lang-zh>天 · 封闭式训练</span><span data-lang-th>วัน · ฝึกแบบปิด</span></div>
     </div>
-    <div data-lang-zh>
-      <h2 class="section-title">🎓 演员训练营 — 现金流引擎</h2>
-      <p class="section-desc">这是整个战略的基石。不是"先做再说"，而是"先收钱再做"。学员缴费 → 我们用学费覆盖成本 → 学员获得技能和作品 → 我们获得人才储备和品牌口碑。所有人都赢。</p>
+    <div class="stat-block">
+      <div class="number">18+</div>
+      <div class="label"><span data-lang-zh>年龄门槛</span><span data-lang-th>อายุขั้นต่ำ</span></div>
     </div>
-    <div data-lang-th>
-      <h2 class="section-title">🎓 ค่ายฝึกนักแสดง — เครื่องยนต์สร้างเงินสด</h2>
-      <p class="section-desc">นี่คือรากฐานของกลยุทธ์ทั้งหมด ไม่ใช่ "ทำก่อนค่อยว่า" แต่คือ "เก็บเงินก่อนค่อยทำ" นักเรียนจ่าย → เราใช้ค่าเรียนครอบคลุมต้นทุน → นักเรียนได้ทักษะและผลงาน → เราได้คลังคนและชื่อเสียง ทุกคนชนะ</p>
+    <div class="stat-block">
+      <div class="number">~¥30K</div>
+      <div class="label"><span data-lang-zh>学费（含食宿）</span><span data-lang-th>ค่าเรียน (รวมที่พัก+อาหาร)</span></div>
     </div>
+    <div class="stat-block">
+      <div class="number">2</div>
+      <div class="label"><span data-lang-zh>期 · 3-4月开营</span><span data-lang-th>รุ่น · เปิด มี.ค.-เม.ย.</span></div>
+    </div>
+  </div>
 
-    <div class="stat-row">
-      <div class="stat-block">
-        <div class="number">15</div>
-        <div class="label"><span data-lang-zh>天 · 封闭式训练</span><span data-lang-th>วัน · ฝึกแบบปิด</span></div>
-      </div>
-      <div class="stat-block">
-        <div class="number">18+</div>
-        <div class="label"><span data-lang-zh>年龄门槛</span><span data-lang-th>อายุขั้นต่ำ</span></div>
-      </div>
-      <div class="stat-block">
-        <div class="number">~¥30K</div>
-        <div class="label"><span data-lang-zh>学费（含食宿）</span><span data-lang-th>ค่าเรียน (รวมที่พัก+อาหาร)</span></div>
-      </div>
-      <div class="stat-block">
-        <div class="number">2</div>
-        <div class="label"><span data-lang-zh>期 · 3-4月开营</span><span data-lang-th>รุ่น · เปิด มี.ค.-เม.ย.</span></div>
-      </div>
-    </div>
+  <h3 style="font-size:1.15rem; margin-bottom:16px; color:var(--accent-gold);">
+    <span data-lang-zh>为什么这个模式无敌？</span>
+    <span data-lang-th>ทำไมโมเดลนี้ถึงเอาชนะได้?</span>
+  </h3>
 
-    <div data-lang-zh>
-      <h3 style="font-size:1.05rem; margin-bottom:16px; color:var(--accent-gold);">为什么这个模式无敌？</h3>
+  <div class="card-grid">
+    <div class="card">
+      <h3>
+        <span data-lang-zh>YG模式的泰国版</span>
+        <span data-lang-th>โมเดล YG ฉบับไทย</span>
+      </h3>
+      <p>
+        <span data-lang-zh>就像YG从泰国选出了Lisa一样，我们从泰国选出下一代短剧明星。不同的是，我们不花钱培养——学员自己买单。</span>
+        <span data-lang-th>เหมือนที่ YG คัด Lisa จากไทย เราจะคัดดาราละครสั้นรุ่นใหม่จากไทย ต่างกันตรงที่เราไม่ต้องจ่ายค่าฝึก — นักเรียนจ่ายเอง</span>
+      </p>
+      <span class="tag green">
+        <span data-lang-zh>已验证模式</span>
+        <span data-lang-th>โมเดลที่พิสูจน์แล้ว</span>
+      </span>
     </div>
-    <div data-lang-th>
-      <h3 style="font-size:1.05rem; margin-bottom:16px; color:var(--accent-gold);">ทำไมโมเดลนี้ถึงเอาชนะได้?</h3>
+    <div class="card">
+      <h3>
+        <span data-lang-zh>泰国唯一</span>
+        <span data-lang-th>หนึ่งเดียวในไทย</span>
+      </h3>
+      <p>
+        <span data-lang-zh>目前泰国没有任何机构教"中国竖屏短剧表演"。我们是第一个。先发优势意味着我们定义标准、定义价格、定义市场。</span>
+        <span data-lang-th>ตอนนี้ไม่มีสถาบันไหนในไทยสอน "การแสดงละครสั้นแนวตั้งแบบจีน" เราเป็นเจ้าแรก First Mover Advantage หมายความว่าเราเป็นคนกำหนดมาตรฐาน กำหนดราคา กำหนดตลาด</span>
+      </p>
+      <span class="tag red">
+        <span data-lang-zh>先发优势</span>
+        <span data-lang-th>First Mover</span>
+      </span>
     </div>
+    <div class="card">
+      <h3>
+        <span data-lang-zh>病毒式传播</span>
+        <span data-lang-th>Viral Marketing</span>
+      </h3>
+      <p>
+        <span data-lang-zh>每个学员都是活广告。他们会在社交媒体分享训练过程，回国后成为我们的品牌大使。不花一分钱广告费，获得指数级传播。</span>
+        <span data-lang-th>นักเรียนทุกคนคือโฆษณาเคลื่อนที่ พวกเขาจะแชร์กระบวนการฝึกบน Social Media กลับไทยแล้วกลายเป็น Brand Ambassador ไม่ต้องจ่ายค่าโฆษณาสักบาท ได้การกระจายแบบทวีคูณ</span>
+      </p>
+      <span class="tag purple">
+        <span data-lang-zh>零成本获客</span>
+        <span data-lang-th>ได้ลูกค้าฟรี</span>
+      </span>
+    </div>
+  </div>
 
-    <div class="card-grid">
-      <div class="card">
-        <div data-lang-zh>
-          <h3>YG模式的泰国版</h3>
-          <p>就像YG从泰国选出了Lisa一样，我们从泰国选出下一代短剧明星。不同的是，我们不花钱培养——学员自己买单。</p>
-        </div>
-        <div data-lang-th>
-          <h3>โมเดล YG ฉบับไทย</h3>
-          <p>เหมือนที่ YG คัด Lisa จากไทย เราจะคัดดาราละครสั้นรุ่นใหม่จากไทย ต่างกันตรงที่เราไม่ต้องจ่ายค่าฝึก — นักเรียนจ่ายเอง</p>
-        </div>
-        <span class="tag green">
-          <span data-lang-zh>已验证模式</span>
-          <span data-lang-th>โมเดลที่พิสูจน์แล้ว</span>
-        </span>
-      </div>
-      <div class="card">
-        <div data-lang-zh>
-          <h3>泰国唯一</h3>
-          <p>目前泰国没有任何机构教"中国竖屏短剧表演"。我们是第一个。先发优势意味着我们定义标准、定义价格、定义市场。</p>
-        </div>
-        <div data-lang-th>
-          <h3>หนึ่งเดียวในไทย</h3>
-          <p>ตอนนี้ไม่มีสถาบันไหนในไทยสอน "การแสดงละครสั้นแนวตั้งแบบจีน" เราเป็นเจ้าแรก First Mover Advantage หมายความว่าเราเป็นคนกำหนดมาตรฐาน กำหนดราคา กำหนดตลาด</p>
-        </div>
-        <span class="tag red">
-          <span data-lang-zh>先发优势</span>
-          <span data-lang-th>First Mover</span>
-        </span>
-      </div>
-      <div class="card">
-        <div data-lang-zh>
-          <h3>病毒式传播</h3>
-          <p>每个学员都是活广告。他们会在社交媒体分享训练过程，回国后成为我们的品牌大使。不花一分钱广告费，获得指数级传播。</p>
-        </div>
-        <div data-lang-th>
-          <h3>Viral Marketing</h3>
-          <p>นักเรียนทุกคนคือโฆษณาเคลื่อนที่ พวกเขาจะแชร์กระบวนการฝึกบน Social Media กลับไทยแล้วกลายเป็น Brand Ambassador ไม่ต้องจ่ายค่าโฆษณาสักบาท ได้การกระจายแบบทวีคูณ</p>
-        </div>
-        <span class="tag purple">
-          <span data-lang-zh>零成本获客</span>
-          <span data-lang-th>ได้ลูกค้าฟรี</span>
-        </span>
-      </div>
-    </div>
+  <h3 style="font-size:1.15rem; margin:40px 0 16px; color:var(--accent-gold);">
+    <span data-lang-zh>候选训练基地</span>
+    <span data-lang-th>สถานที่ฝึกที่เป็นตัวเลือก</span>
+  </h3>
 
-    <div data-lang-zh>
-      <h3 style="font-size:1.05rem; margin:40px 0 16px; color:var(--accent-gold);">候选训练基地</h3>
-    </div>
-    <div data-lang-th>
-      <h3 style="font-size:1.05rem; margin:40px 0 16px; color:var(--accent-gold);">สถานที่ฝึกที่เป็นตัวเลือก</h3>
-    </div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th><span data-lang-zh>地点</span><span data-lang-th>สถานที่</span></th>
+        <th><span data-lang-zh>优势</span><span data-lang-th>จุดแข็ง</span></th>
+        <th><span data-lang-zh>考量</span><span data-lang-th>ข้อพิจารณา</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong><span data-lang-zh>杭州/浙江（横店）</span><span data-lang-th>หางโจว/เจ้อเจียง (เหิงเตี้ยน)</span></strong></td>
+        <td><span data-lang-zh>中国最大影视城，设施齐全，产业链成熟</span><span data-lang-th>เมืองหนังใหญ่สุดในจีน สิ่งอำนวยความสะดวกครบ อุตสาหกรรมเต็มรูปแบบ</span></td>
+        <td><span data-lang-zh>成本可能较高</span><span data-lang-th>ต้นทุนอาจสูงกว่า</span></td>
+      </tr>
+      <tr>
+        <td><strong><span data-lang-zh>西安（陕西）</span><span data-lang-th>ซีอาน (ส่านซี)</span></strong></td>
+        <td><span data-lang-zh>历史底蕴深厚，古装剧天然取景地</span><span data-lang-th>ประวัติศาสตร์ลึกซึ้ง สถานที่ถ่ายละครย้อนยุคชั้นเลิศ</span></td>
+        <td><span data-lang-zh>需评估配套设施</span><span data-lang-th>ต้องประเมินสิ่งอำนวยความสะดวก</span></td>
+      </tr>
+      <tr>
+        <td><strong><span data-lang-zh>四川/河南</span><span data-lang-th>เสฉวน/เหอหนาน</span></strong></td>
+        <td><span data-lang-zh>成本最低，自然景观丰富</span><span data-lang-th>ต้นทุนต่ำสุด ทิวทัศน์ธรรมชาติสวยงาม</span></td>
+        <td><span data-lang-zh>交通便利性待确认</span><span data-lang-th>ต้องยืนยันความสะดวกในการเดินทาง</span></td>
+      </tr>
+    </tbody>
+  </table>
 
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th><span data-lang-zh>地点</span><span data-lang-th>สถานที่</span></th>
-          <th><span data-lang-zh>优势</span><span data-lang-th>จุดแข็ง</span></th>
-          <th><span data-lang-zh>考量</span><span data-lang-th>ข้อพิจารณา</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong><span data-lang-zh>杭州/浙江（横店）</span><span data-lang-th>หางโจว/เจ้อเจียง (เหิงเตี้ยน)</span></strong></td>
-          <td><span data-lang-zh>中国最大影视城，设施齐全，产业链成熟</span><span data-lang-th>เมืองหนังใหญ่สุดในจีน สิ่งอำนวยความสะดวกครบ อุตสาหกรรมเต็มรูปแบบ</span></td>
-          <td><span data-lang-zh>成本可能较高</span><span data-lang-th>ต้นทุนอาจสูงกว่า</span></td>
-        </tr>
-        <tr>
-          <td><strong><span data-lang-zh>西安（陕西）</span><span data-lang-th>ซีอาน (ส่านซี)</span></strong></td>
-          <td><span data-lang-zh>历史底蕴深厚，古装剧天然取景地</span><span data-lang-th>ประวัติศาสตร์ลึกซึ้ง สถานที่ถ่ายละครย้อนยุคชั้นเลิศ</span></td>
-          <td><span data-lang-zh>需评估配套设施</span><span data-lang-th>ต้องประเมินสิ่งอำนวยความสะดวก</span></td>
-        </tr>
-        <tr>
-          <td><strong><span data-lang-zh>四川/河南</span><span data-lang-th>เสฉวน/เหอหนาน</span></strong></td>
-          <td><span data-lang-zh>成本最低，自然景观丰富</span><span data-lang-th>ต้นทุนต่ำสุด ทิวทัศน์ธรรมชาติสวยงาม</span></td>
-          <td><span data-lang-zh>交通便利性待确认</span><span data-lang-th>ต้องยืนยันความสะดวกในการเดินทาง</span></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="quote-block">
-      <div data-lang-zh>
-        <p>"选择标准很简单：哪里最便宜、设施够用、能拍戏，就去哪里。我们不是去度假，是去打仗。"</p>
-        <div class="author">— 会议决议</div>
-      </div>
-      <div data-lang-th>
-        <p>"เกณฑ์เลือกง่ายมาก: ที่ไหนถูกที่สุด สิ่งอำนวยความสะดวกพอใช้ ถ่ายหนังได้ ก็ไปที่นั่น เราไม่ได้ไปเที่ยว เราไปรบ"</p>
-        <div class="author">— มติที่ประชุม</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ========== FRONT 2: SHORT DRAMA ========== -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>FRONT 02 · 战线二</span>
-      <span data-lang-th>FRONT 02 · แนวรบที่ 2</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">🎬 带资进组短剧 — 作品工厂</h2>
-      <p class="section-desc">"带资进组"在中国影视圈是常见模式。学员自带资金参与拍摄，获得真实作品和演出经历。我们获得制作资金和内容产出。双赢，而且我们掌握所有版权。</p>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">🎬 ละครสั้น "จ่ายเงินมาเล่น" — โรงงานผลิตผลงาน</h2>
-      <p class="section-desc">"带资进组" (นำเงินเข้ากอง) เป็นโมเดลปกติในวงการหนังจีน นักเรียนนำเงินมาร่วมถ่าย ได้ผลงานจริงและประสบการณ์การแสดง เราได้ทุนสร้างและคอนเทนต์ Win-Win และเราถือลิขสิทธิ์ทั้งหมด</p>
-    </div>
-
-    <div data-lang-zh>
-      <h3 style="font-size:1.05rem; margin-bottom:16px; color:var(--accent-gold);">运作流程</h3>
-    </div>
-    <div data-lang-th>
-      <h3 style="font-size:1.05rem; margin-bottom:16px; color:var(--accent-gold);">ขั้นตอนการทำงาน</h3>
-    </div>
-
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="step-num">01</div>
-        <div data-lang-zh>
-          <h5>筛选学员</h5>
-          <p>从训练营中选出有资金和表演潜力的学员</p>
-        </div>
-        <div data-lang-th>
-          <h5>คัดนักเรียน</h5>
-          <p>เลือกจากค่ายฝึก คนที่มีเงินและมีแววการแสดง</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="step-num">02</div>
-        <div data-lang-zh>
-          <h5>组建剧组</h5>
-          <p>学员出资+出演，我们出导演+技术+渠道</p>
-        </div>
-        <div data-lang-th>
-          <h5>ตั้งกองถ่าย</h5>
-          <p>นักเรียนออกเงิน+แสดง เราออกผู้กำกับ+เทคนิค+ช่องทาง</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="step-num">03</div>
-        <div data-lang-zh>
-          <h5>中国标准制作</h5>
-          <p>在中国拍摄，按大陆审核标准制作绿色内容</p>
-        </div>
-        <div data-lang-th>
-          <h5>ถ่ายตามมาตรฐานจีน</h5>
-          <p>ถ่ายที่จีน ผลิตเนื้อหา Green Content ตามมาตรฐานจีนแผ่นดินใหญ่</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="step-num">04</div>
-        <div data-lang-zh>
-          <h5>全球上线</h5>
-          <p>1-2个月内在全球平台发行，持续产生收益</p>
-        </div>
-        <div data-lang-th>
-          <h5>ออนไลน์ทั่วโลก</h5>
-          <p>ภายใน 1-2 เดือน เผยแพร่บนแพลตฟอร์มทั่วโลก สร้างรายได้ต่อเนื่อง</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="card-grid" style="margin-top:32px;">
-      <div class="card">
-        <div data-lang-zh>
-          <h3>内容标准：中国通过 = 全球通过</h3>
-          <p>这是最聪明的一步棋。按照中国大陆最严格的内容审核标准制作，意味着作品自动符合全球所有市场的要求。绿色、健康、适合所有年龄段。一次制作，无限分发。</p>
-        </div>
-        <div data-lang-th>
-          <h3>มาตรฐานเนื้อหา: ผ่านจีน = ผ่านทั่วโลก</h3>
-          <p>นี่คือหมากที่ฉลาดที่สุด ผลิตตามมาตรฐานการตรวจสอบเนื้อหาที่เข้มงวดที่สุดของจีนแผ่นดินใหญ่ หมายความว่าผลงานจะผ่านทุกตลาดในโลกโดยอัตโนมัติ ปลอดภัย เหมาะกับทุกวัย ถ่ายครั้งเดียว เผยแพร่ได้ไม่จำกัด</p>
-        </div>
-      </div>
-      <div class="card">
-        <div data-lang-zh>
-          <h3>学员获得什么？</h3>
-          <p>真实的影视作品（不是学生作业）、在中国拍摄的国际经历、可以放进简历的专业演出记录、以及在全球平台被看到的机会。这就是他们愿意付费的原因。</p>
-        </div>
-        <div data-lang-th>
-          <h3>นักเรียนได้อะไร?</h3>
-          <p>ผลงานจริงในวงการ (ไม่ใช่งานนักศึกษา) ประสบการณ์ถ่ายทำระดับสากลที่จีน ประวัติการแสดงมืออาชีพใส่ Portfolio และโอกาสถูกเห็นบนแพลตฟอร์มทั่วโลก นี่คือเหตุผลที่พวกเขายินดีจ่าย</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ========== FRONT 3: PLATFORM DEALS ========== -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>FRONT 03 · 战线三</span>
-      <span data-lang-th>FRONT 03 · แนวรบที่ 3</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">📱 平台攻略 — 让巨头为我们买单</h2>
-      <p class="section-desc">中国的淘宝、拼多多、微信早就证明了：在电商/生活服务App里嵌入短剧，能显著提升用户停留时长和消费金额。泰国的超级App还没有人做这件事。我们要成为第一个告诉他们这个秘密的人。</p>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">📱 บุกแพลตฟอร์มยักษ์ — ให้คนใหญ่จ่ายให้เรา</h2>
-      <p class="section-desc">Taobao, Pinduoduo, WeChat ของจีนพิสูจน์มาแล้วว่า: ฝังละครสั้นในแอป E-commerce/บริการ ทำให้ผู้ใช้อยู่ในแอปนานขึ้นและใช้เงินมากขึ้นอย่างมีนัยสำคัญ Super App ในไทยยังไม่มีใครทำ เราจะเป็นคนแรกที่ไปบอกความลับนี้ให้พวกเขาฟัง</p>
-    </div>
-
-    <div data-lang-zh>
-      <h3 style="font-size:1.05rem; margin-bottom:16px; color:var(--accent-gold);">目标平台</h3>
-    </div>
-    <div data-lang-th>
-      <h3 style="font-size:1.05rem; margin-bottom:16px; color:var(--accent-gold);">แพลตฟอร์มเป้าหมาย</h3>
-    </div>
-
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th><span data-lang-zh>平台</span><span data-lang-th>แพลตฟอร์ม</span></th>
-          <th><span data-lang-zh>用户基础</span><span data-lang-th>ฐานผู้ใช้</span></th>
-          <th><span data-lang-zh>我们的价值主张</span><span data-lang-th>สิ่งที่เราเสนอ</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Grab</strong></td>
-          <td><span data-lang-zh>东南亚最大超级App</span><span data-lang-th>Super App ใหญ่สุดในอาเซียน</span></td>
-          <td><span data-lang-zh>等餐/等车时看短剧 → 停留时长↑ → 广告收入↑</span><span data-lang-th>ดูละครสั้นระหว่างรอส่งอาหาร/รอรถ → อยู่ในแอปนานขึ้น → รายได้โฆษณาเพิ่ม</span></td>
-        </tr>
-        <tr>
-          <td><strong>ThaiMart</strong></td>
-          <td><span data-lang-zh>กองสลากพลัส 用户群</span><span data-lang-th>ฐานผู้ใช้กองสลากพลัส</span></td>
-          <td><span data-lang-zh>内容引流 → 提升平台粘性 → 交叉销售</span><span data-lang-th>คอนเทนต์ดึงคน → เพิ่มความผูกพันกับแพลตฟอร์ม → Cross-sell</span></td>
-        </tr>
-        <tr>
-          <td><strong>Shopee / Lazada</strong></td>
-          <td><span data-lang-zh>泰国电商双巨头</span><span data-lang-th>2 ยักษ์ E-commerce ไทย</span></td>
-          <td><span data-lang-zh>短剧植入商品 → 边看边买 → GMV↑（中国已验证）</span><span data-lang-th>ฝังสินค้าในละครสั้น → ดูไป ซื้อไป → GMV เพิ่ม (จีนพิสูจน์แล้ว)</span></td>
-        </tr>
-        <tr>
-          <td><strong>TikTok</strong></td>
-          <td><span data-lang-zh>短视频霸主</span><span data-lang-th>เจ้าแห่งวิดีโอสั้น</span></td>
-          <td><span data-lang-zh>天然分发渠道 → 作品曝光 → 反哺训练营招生</span><span data-lang-th>ช่องทางเผยแพร่ตามธรรมชาติ → ผลงานได้ Exposure → ดึงนักเรียนเข้าค่ายฝึก</span></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="quote-block">
-      <div data-lang-zh>
-        <p>"核心话术就一句：'你们已经有几千万用户了，我们帮你们让这些用户每天多待30分钟，多花30块钱。你们出场地，我们出内容。'"</p>
-        <div class="author">— Teem 的平台攻略策略</div>
-      </div>
-      <div data-lang-th>
-        <p>"คำพูดหลักมีแค่ประโยคเดียว: 'คุณมีผู้ใช้หลายสิบล้านคนอยู่แล้ว เราช่วยให้พวกเขาอยู่ในแอปนานขึ้นวันละ 30 นาที ใช้เงินเพิ่มวันละ 30 บาท คุณออกพื้นที่ เราออกคอนเทนต์'"</p>
-        <div class="author">— กลยุทธ์บุกแพลตฟอร์มของ Teem</div>
-      </div>
-    </div>
-
-    <div data-lang-zh>
-      <h3 style="font-size:1.05rem; margin:32px 0 16px; color:var(--accent-gold);">执行计划</h3>
-    </div>
-    <div data-lang-th>
-      <h3 style="font-size:1.05rem; margin:32px 0 16px; color:var(--accent-gold);">แผนปฏิบัติการ</h3>
-    </div>
-
-    <div class="card-grid">
-      <div class="card">
-        <div data-lang-zh>
-          <h3>Nana：准备弹药</h3>
-          <p>制作中文版PPT，包含中国市场数据、成功案例、收入模型。用数据说话，让平台高管看到钱在哪里。</p>
-        </div>
-        <div data-lang-th>
-          <h3>Nana: เตรียมกระสุน</h3>
-          <p>ทำ PPT ภาษาจีน รวมข้อมูลตลาดจีน Case Study โมเดลรายได้ ใช้ตัวเลขพูด ให้ผู้บริหารแพลตฟอร์มเห็นว่าเงินอยู่ตรงไหน</p>
-        </div>
-      </div>
-      <div class="card">
-        <div data-lang-zh>
-          <h3>Teem：翻译+约战</h3>
-          <p>把PPT翻译成泰语，预约各平台高管会议。等Nana来泰国后，两人联手路演。一个讲数据，一个讲落地。</p>
-        </div>
-        <div data-lang-th>
-          <h3>Teem: แปล+นัดรบ</h3>
-          <p>แปล PPT เป็นไทย นัดประชุมผู้บริหารแต่ละแพลตฟอร์ม พอ Nana มาไทย สองคนจับคู่ไปพรีเซนต์ คนหนึ่งพูดตัวเลข อีกคนพูดแผนลงสนาม</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ========== FRONT 4: AI ANIMATION ========== -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>FRONT 04 · 战线四</span>
-      <span data-lang-th>FRONT 04 · แนวรบที่ 4</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">🤖 AI动漫真人剧 — 技术护城河</h2>
-      <p class="section-desc">这不只是一个竞赛项目，而是一个战略卡位。AI正在重塑影视制作的成本结构。谁先掌握AI动漫+真人的融合技术，谁就拥有下一个十年的制作成本优势。</p>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">🤖 AI Animation — คูเมืองด้านเทคโนโลยี</h2>
-      <p class="section-desc">นี่ไม่ใช่แค่โปรเจกต์แข่งขัน แต่เป็นการวาง Position เชิงกลยุทธ์ AI กำลังเปลี่ยนโครงสร้างต้นทุนการผลิตหนังทั้งหมด ใครเชี่ยวชาญเทคโนโลยีผสม AI Animation + คนจริงก่อน คนนั้นจะมีต้นทุนการผลิตที่ต่ำกว่าไปอีก 10 ปี</p>
-    </div>
-
-    <div class="stat-row">
-      <div class="stat-block">
-        <div class="number">2/10</div>
-        <div class="label"><span data-lang-zh>竞赛开始</span><span data-lang-th>เริ่มแข่งขัน</span></div>
-      </div>
-      <div class="stat-block">
-        <div class="number">4/5</div>
-        <div class="label"><span data-lang-zh>截止日期</span><span data-lang-th>Deadline</span></div>
-      </div>
-      <div class="stat-block">
-        <div class="number">USD</div>
-        <div class="label"><span data-lang-zh>奖金货币</span><span data-lang-th>สกุลเงินรางวัล</span></div>
-      </div>
-    </div>
-
-    <div class="card-grid">
-      <div class="card">
-        <div data-lang-zh>
-          <h3>如果获奖</h3>
-          <p>不仅是奖金收入，更重要的是品牌背书。"获奖AI动漫团队"这个标签，会让我们在投资人和合作伙伴面前的议价能力翻倍。</p>
-        </div>
-        <div data-lang-th>
-          <h3>ถ้าชนะรางวัล</h3>
-          <p>ไม่ใช่แค่เงินรางวัล สิ่งที่สำคัญกว่าคือ Brand Endorsement ป้าย "ทีม AI Animation ที่ได้รางวัล" จะทำให้อำนาจต่อรองของเรากับนักลงทุนและพาร์ทเนอร์เพิ่มขึ้นเป็นเท่าตัว</p>
-        </div>
-      </div>
-      <div class="card">
-        <div data-lang-zh>
-          <h3>长期价值</h3>
-          <p>AI制作能力是未来的核心竞争力。当别人还在用传统方式花大钱拍戏时，我们已经能用AI把成本压到十分之一。这就是降维打击。</p>
-        </div>
-        <div data-lang-th>
-          <h3>คุณค่าระยะยาว</h3>
-          <p>ความสามารถด้าน AI Production คือ Core Competency ของอนาคต ตอนที่คนอื่นยังถ่ายหนังแบบเดิมด้วยต้นทุนสูง เราจะกดต้นทุนลงเหลือ 1 ใน 10 ด้วย AI นี่คือการโจมตีจากมิติที่สูงกว่า</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- ========== INVESTOR STRATEGY ========== -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>FUNDING STRATEGY · 资金策略</span>
-      <span data-lang-th>FUNDING STRATEGY · กลยุทธ์เงินทุน</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">两种钱，两种谈法</h2>
-      <p class="section-desc">不是所有投资人都一样。我们把资金来源分成两类，用不同的策略对待。</p>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">เงิน 2 ประเภท คุย 2 แบบ</h2>
-      <p class="section-desc">นักลงทุนไม่ได้เหมือนกันทุกคน เราแบ่งแหล่งเงินเป็น 2 ประเภท ใช้กลยุทธ์ต่างกัน</p>
-    </div>
-
-    <div class="card-grid">
-      <div class="card">
-        <div class="card-icon">💰</div>
-        <div data-lang-zh>
-          <h3>利润型投资人</h3>
-          <p>像"บาส"这样的基金老板。他们要看到清晰的回报路径：投多少、多久回本、利润率多少。策略：等我们有了第一批作品和收入数据后再谈。用数据说话，不画饼。</p>
-        </div>
-        <div data-lang-th>
-          <h3>นักลงทุนเพื่อกำไร</h3>
-          <p>เช่น "บาส" เจ้าของกองทุน พวกเขาต้องเห็นเส้นทางคืนทุนชัดเจน: ลงเท่าไหร่ กี่เดือนคืน กำไรกี่เปอร์เซ็นต์ กลยุทธ์: รอให้เรามีผลงานและตัวเลขรายได้จริงก่อนค่อยคุย ใช้ Data พูด ไม่ขายฝัน</p>
-        </div>
-        <span class="tag">
-          <span data-lang-zh>时机：有作品后</span>
-          <span data-lang-th>จังหวะ: หลังมีผลงาน</span>
-        </span>
-      </div>
-      <div class="card">
-        <div class="card-icon">🤝</div>
-        <div data-lang-zh>
-          <h3>赞助商/品牌合作</h3>
-          <p>他们不要股权回报，要的是曝光和植入。短剧里喝的饮料、穿的衣服、用的手机——都是广告位。中国团队有成熟的植入变现模型，直接复制到泰国。</p>
-        </div>
-        <div data-lang-th>
-          <h3>สปอนเซอร์/แบรนด์</h3>
-          <p>พวกเขาไม่ต้องการหุ้น ต้องการ Exposure และ Product Placement เครื่องดื่มที่ดื่มในละคร เสื้อผ้าที่ใส่ มือถือที่ใช้ — ทุกอย่างคือพื้นที่โฆษณา ทีมจีนมีโมเดล Placement ที่สมบูรณ์แล้ว Copy มาใช้ในไทยได้เลย</p>
-        </div>
-        <span class="tag green">
-          <span data-lang-zh>时机：有渠道后</span>
-          <span data-lang-th>จังหวะ: หลังมีช่องทาง</span>
-        </span>
-      </div>
-    </div>
-  </section>
-
-  <div class="divider"></div>
-
-  <!-- FLYWHEEL -->
-  <section class="section">
-    <div class="section-label">
-      <span data-lang-zh>FLYWHEEL · 飞轮效应</span>
-      <span data-lang-th>FLYWHEEL · เอฟเฟกต์วงล้อ</span>
-    </div>
-    <div data-lang-zh>
-      <h2 class="section-title">一旦转起来，就停不下来</h2>
-    </div>
-    <div data-lang-th>
-      <h2 class="section-title">พอเริ่มหมุนแล้ว จะหยุดไม่ได้</h2>
-    </div>
-
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="step-num">🎓</div>
-        <div data-lang-zh>
-          <h5>训练营</h5>
-          <p>收学费 → 产出人才</p>
-        </div>
-        <div data-lang-th>
-          <h5>ค่ายฝึก</h5>
-          <p>เก็บค่าเรียน → ได้คน</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="step-num">🎬</div>
-        <div data-lang-zh>
-          <h5>短剧</h5>
-          <p>用人才+资金 → 产出作品</p>
-        </div>
-        <div data-lang-th>
-          <h5>ละครสั้น</h5>
-          <p>ใช้คน+เงิน → ได้ผลงาน</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="step-num">📱</div>
-        <div data-lang-zh>
-          <h5>平台</h5>
-          <p>用作品 → 打开渠道+收入</p>
-        </div>
-        <div data-lang-th>
-          <h5>แพลตฟอร์ม</h5>
-          <p>ใช้ผลงาน → เปิดช่องทาง+รายได้</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="step-num">📣</div>
-        <div data-lang-zh>
-          <h5>品牌</h5>
-          <p>用成绩 → 吸引更多学员+投资</p>
-        </div>
-        <div data-lang-th>
-          <h5>แบรนด์</h5>
-          <p>ใช้ผลงาน → ดึงนักเรียน+นักลงทุนเพิ่ม</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
+  <div class="quote-block">
     <p>
-      <span data-lang-zh>三川 SANCHUAN · Mission Control · 由 <a href="https://www.myclover.com" target="_blank">Manus AI</a> 生成 · 2026年2月</span>
-      <span data-lang-th>三川 SANCHUAN · Mission Control · สร้างโดย <a href="https://www.myclover.com" target="_blank">Manus AI</a> · กุมภาพันธ์ 2026</span>
+      <span data-lang-zh>"选择标准很简单：哪里最便宜、设施够用、能拍戏，就去哪里。我们不是去度假，是去打仗。"</span>
+      <span data-lang-th>"เกณฑ์เลือกง่ายมาก: ที่ไหนถูกที่สุด สิ่งอำนวยความสะดวกพอใช้ ถ่ายหนังได้ ก็ไปที่นั่น เราไม่ได้ไปเที่ยว เราไปรบ"</span>
     </p>
-  </footer>
+    <div class="author">
+      <span data-lang-zh>— 会议决议</span>
+      <span data-lang-th>— มติที่ประชุม</span>
+    </div>
+  </div>
+</section>
 
-  <script src="app.js"></script>
+<div class="divider"></div>
+
+<!-- ========== FRONT 2: SHORT DRAMA ========== -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>FRONT 02 · 战线二</span>
+    <span data-lang-th>FRONT 02 · แนวรบที่ 2</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>🎬 带资进组短剧 — 作品工厂</span>
+    <span data-lang-th>🎬 ละครสั้น "จ่ายเงินมาเล่น" — โรงงานผลิตผลงาน</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>"带资进组"在中国影视圈是常见模式。学员自带资金参与拍摄，获得真实作品和演出经历。我们获得制作资金和内容产出。双赢，而且我们掌握所有版权。</span>
+    <span data-lang-th>"带资进组" (นำเงินเข้ากอง) เป็นโมเดลปกติในวงการหนังจีน นักเรียนนำเงินมาร่วมถ่าย ได้ผลงานจริงและประสบการณ์การแสดง เราได้ทุนสร้างและคอนเทนต์ Win-Win และเราถือลิขสิทธิ์ทั้งหมด</span>
+  </p>
+
+  <h3 style="font-size:1.15rem; margin-bottom:16px; color:var(--accent-gold);">
+    <span data-lang-zh>运作流程</span>
+    <span data-lang-th>ขั้นตอนการทำงาน</span>
+  </h3>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="step-num">01</div>
+      <h5><span data-lang-zh>筛选学员</span><span data-lang-th>คัดนักเรียน</span></h5>
+      <p><span data-lang-zh>从训练营中选出有资金和表演潜力的学员</span><span data-lang-th>เลือกจากค่ายฝึก คนที่มีเงินและมีแววการแสดง</span></p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">02</div>
+      <h5><span data-lang-zh>组建剧组</span><span data-lang-th>ตั้งกองถ่าย</span></h5>
+      <p><span data-lang-zh>学员出资+出演，我们出导演+技术+渠道</span><span data-lang-th>นักเรียนออกเงิน+แสดง เราออกผู้กำกับ+เทคนิค+ช่องทาง</span></p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">03</div>
+      <h5><span data-lang-zh>中国标准制作</span><span data-lang-th>ถ่ายตามมาตรฐานจีน</span></h5>
+      <p><span data-lang-zh>在中国拍摄，按大陆审核标准制作绿色内容</span><span data-lang-th>ถ่ายที่จีน ผลิตเนื้อหา Green Content ตามมาตรฐานจีนแผ่นดินใหญ่</span></p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">04</div>
+      <h5><span data-lang-zh>全球上线</span><span data-lang-th>ออนไลน์ทั่วโลก</span></h5>
+      <p><span data-lang-zh>1-2个月内在全球平台发行，持续产生收益</span><span data-lang-th>ภายใน 1-2 เดือน เผยแพร่บนแพลตฟอร์มทั่วโลก สร้างรายได้ต่อเนื่อง</span></p>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-top:32px;">
+    <div class="card">
+      <h3>
+        <span data-lang-zh>内容标准：中国通过 = 全球通过</span>
+        <span data-lang-th>มาตรฐานเนื้อหา: ผ่านจีน = ผ่านทั่วโลก</span>
+      </h3>
+      <p>
+        <span data-lang-zh>这是最聪明的一步棋。按照中国大陆最严格的内容审核标准制作，意味着作品自动符合全球所有市场的要求。绿色、健康、适合所有年龄段。一次制作，无限分发。</span>
+        <span data-lang-th>นี่คือหมากที่ฉลาดที่สุด ผลิตตามมาตรฐานการตรวจสอบเนื้อหาที่เข้มงวดที่สุดของจีนแผ่นดินใหญ่ หมายความว่าผลงานจะผ่านทุกตลาดในโลกโดยอัตโนมัติ ปลอดภัย เหมาะกับทุกวัย ถ่ายครั้งเดียว เผยแพร่ได้ไม่จำกัด</span>
+      </p>
+    </div>
+    <div class="card">
+      <h3>
+        <span data-lang-zh>学员获得什么？</span>
+        <span data-lang-th>นักเรียนได้อะไร?</span>
+      </h3>
+      <p>
+        <span data-lang-zh>真实的影视作品（不是学生作业）、在中国拍摄的国际经历、可以放进简历的专业演出记录、以及在全球平台被看到的机会。这就是他们愿意付费的原因。</span>
+        <span data-lang-th>ผลงานจริงในวงการ (ไม่ใช่งานนักศึกษา) ประสบการณ์ถ่ายทำระดับสากลที่จีน ประวัติการแสดงมืออาชีพใส่ Portfolio และโอกาสถูกเห็นบนแพลตฟอร์มทั่วโลก นี่คือเหตุผลที่พวกเขายินดีจ่าย</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== FRONT 3: PLATFORM DEALS ========== -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>FRONT 03 · 战线三</span>
+    <span data-lang-th>FRONT 03 · แนวรบที่ 3</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>📱 平台攻略 — 让巨头为我们买单</span>
+    <span data-lang-th>📱 บุกแพลตฟอร์มยักษ์ — ให้คนใหญ่จ่ายให้เรา</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>中国的淘宝、拼多多、微信早就证明了：在电商/生活服务App里嵌入短剧，能显著提升用户停留时长和消费金额。泰国的超级App还没有人做这件事。我们要成为第一个告诉他们这个秘密的人。</span>
+    <span data-lang-th>Taobao, Pinduoduo, WeChat ของจีนพิสูจน์มาแล้วว่า: ฝังละครสั้นในแอป E-commerce/บริการ ทำให้ผู้ใช้อยู่ในแอปนานขึ้นและใช้เงินมากขึ้นอย่างมีนัยสำคัญ Super App ในไทยยังไม่มีใครทำ เราจะเป็นคนแรกที่ไปบอกความลับนี้ให้พวกเขาฟัง</span>
+  </p>
+
+  <h3 style="font-size:1.15rem; margin-bottom:16px; color:var(--accent-gold);">
+    <span data-lang-zh>目标平台</span>
+    <span data-lang-th>แพลตฟอร์มเป้าหมาย</span>
+  </h3>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th><span data-lang-zh>平台</span><span data-lang-th>แพลตฟอร์ม</span></th>
+        <th><span data-lang-zh>用户基础</span><span data-lang-th>ฐานผู้ใช้</span></th>
+        <th><span data-lang-zh>我们的价值主张</span><span data-lang-th>สิ่งที่เราเสนอ</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Grab</strong></td>
+        <td><span data-lang-zh>东南亚最大超级App</span><span data-lang-th>Super App ใหญ่สุดในอาเซียน</span></td>
+        <td><span data-lang-zh>等餐/等车时看短剧 → 停留时长↑ → 广告收入↑</span><span data-lang-th>ดูละครสั้นระหว่างรอส่งอาหาร/รอรถ → อยู่ในแอปนานขึ้น → รายได้โฆษณาเพิ่ม</span></td>
+      </tr>
+      <tr>
+        <td><strong>ThaiMart</strong></td>
+        <td><span data-lang-zh>กองสลากพลัส 用户群</span><span data-lang-th>ฐานผู้ใช้กองสลากพลัส</span></td>
+        <td><span data-lang-zh>内容引流 → 提升平台粘性 → 交叉销售</span><span data-lang-th>คอนเทนต์ดึงคน → เพิ่มความผูกพันกับแพลตฟอร์ม → Cross-sell</span></td>
+      </tr>
+      <tr>
+        <td><strong>Shopee / Lazada</strong></td>
+        <td><span data-lang-zh>泰国电商双巨头</span><span data-lang-th>2 ยักษ์ E-commerce ไทย</span></td>
+        <td><span data-lang-zh>短剧植入商品 → 边看边买 → GMV↑（中国已验证）</span><span data-lang-th>ฝังสินค้าในละครสั้น → ดูไป ซื้อไป → GMV เพิ่ม (จีนพิสูจน์แล้ว)</span></td>
+      </tr>
+      <tr>
+        <td><strong>TikTok</strong></td>
+        <td><span data-lang-zh>短视频霸主</span><span data-lang-th>เจ้าแห่งวิดีโอสั้น</span></td>
+        <td><span data-lang-zh>天然分发渠道 → 作品曝光 → 反哺训练营招生</span><span data-lang-th>ช่องทางเผยแพร่ตามธรรมชาติ → ผลงานได้ Exposure → ดึงนักเรียนเข้าค่ายฝึก</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="quote-block">
+    <p>
+      <span data-lang-zh>"核心话术就一句：'你们已经有几千万用户了，我们帮你们让这些用户每天多待30分钟，多花30块钱。你们出场地，我们出内容。'"</span>
+      <span data-lang-th>"คำพูดหลักมีแค่ประโยคเดียว: 'คุณมีผู้ใช้หลายสิบล้านคนอยู่แล้ว เราช่วยให้พวกเขาอยู่ในแอปนานขึ้นวันละ 30 นาที ใช้เงินเพิ่มวันละ 30 บาท คุณออกพื้นที่ เราออกคอนเทนต์'"</span>
+    </p>
+    <div class="author">— Teem</div>
+  </div>
+
+  <h3 style="font-size:1.15rem; margin:32px 0 16px; color:var(--accent-gold);">
+    <span data-lang-zh>执行计划</span>
+    <span data-lang-th>แผนปฏิบัติการ</span>
+  </h3>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>
+        <span data-lang-zh>Nana：准备弹药</span>
+        <span data-lang-th>Nana: เตรียมกระสุน</span>
+      </h3>
+      <p>
+        <span data-lang-zh>制作中文版PPT，包含中国市场数据、成功案例、收入模型。用数据说话，让平台高管看到钱在哪里。</span>
+        <span data-lang-th>ทำ PPT ภาษาจีน รวมข้อมูลตลาดจีน Case Study โมเดลรายได้ ใช้ตัวเลขพูด ให้ผู้บริหารแพลตฟอร์มเห็นว่าเงินอยู่ตรงไหน</span>
+      </p>
+    </div>
+    <div class="card">
+      <h3>
+        <span data-lang-zh>Teem：翻译+约战</span>
+        <span data-lang-th>Teem: แปล+นัดรบ</span>
+      </h3>
+      <p>
+        <span data-lang-zh>把PPT翻译成泰语，预约各平台高管会议。等Nana来泰国后，两人联手路演。一个讲数据，一个讲落地。</span>
+        <span data-lang-th>แปล PPT เป็นไทย นัดประชุมผู้บริหารแต่ละแพลตฟอร์ม พอ Nana มาไทย สองคนจับคู่ไปพรีเซนต์ คนหนึ่งพูดตัวเลข อีกคนพูดแผนลงสนาม</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== FRONT 4: AI ANIMATION ========== -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>FRONT 04 · 战线四</span>
+    <span data-lang-th>FRONT 04 · แนวรบที่ 4</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>🤖 AI动漫真人剧 — 技术护城河</span>
+    <span data-lang-th>🤖 AI Animation — คูเมืองด้านเทคโนโลยี</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>这不只是一个竞赛项目，而是一个战略卡位。AI正在重塑影视制作的成本结构。谁先掌握AI动漫+真人的融合技术，谁就拥有下一个十年的制作成本优势。</span>
+    <span data-lang-th>นี่ไม่ใช่แค่โปรเจกต์แข่งขัน แต่เป็นการวาง Position เชิงกลยุทธ์ AI กำลังเปลี่ยนโครงสร้างต้นทุนการผลิตหนังทั้งหมด ใครเชี่ยวชาญเทคโนโลยีผสม AI Animation + คนจริงก่อน คนนั้นจะมีต้นทุนการผลิตที่ต่ำกว่าไปอีก 10 ปี</span>
+  </p>
+
+  <div class="stat-row">
+    <div class="stat-block">
+      <div class="number">2/10</div>
+      <div class="label"><span data-lang-zh>竞赛开始</span><span data-lang-th>เริ่มแข่งขัน</span></div>
+    </div>
+    <div class="stat-block">
+      <div class="number">4/5</div>
+      <div class="label"><span data-lang-zh>截止日期</span><span data-lang-th>Deadline</span></div>
+    </div>
+    <div class="stat-block">
+      <div class="number">USD</div>
+      <div class="label"><span data-lang-zh>奖金货币</span><span data-lang-th>สกุลเงินรางวัล</span></div>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>
+        <span data-lang-zh>如果获奖</span>
+        <span data-lang-th>ถ้าชนะรางวัล</span>
+      </h3>
+      <p>
+        <span data-lang-zh>不仅是奖金收入，更重要的是品牌背书。"获奖AI动漫团队"这个标签，会让我们在投资人和合作伙伴面前的议价能力翻倍。</span>
+        <span data-lang-th>ไม่ใช่แค่เงินรางวัล สิ่งที่สำคัญกว่าคือ Brand Endorsement ป้าย "ทีม AI Animation ที่ได้รางวัล" จะทำให้อำนาจต่อรองของเรากับนักลงทุนและพาร์ทเนอร์เพิ่มขึ้นเป็นเท่าตัว</span>
+      </p>
+    </div>
+    <div class="card">
+      <h3>
+        <span data-lang-zh>长期价值</span>
+        <span data-lang-th>คุณค่าระยะยาว</span>
+      </h3>
+      <p>
+        <span data-lang-zh>AI制作能力是未来的核心竞争力。当别人还在用传统方式花大钱拍戏时，我们已经能用AI把成本压到十分之一。这就是降维打击。</span>
+        <span data-lang-th>ความสามารถด้าน AI Production คือ Core Competency ของอนาคต ตอนที่คนอื่นยังถ่ายหนังแบบเดิมด้วยต้นทุนสูง เราจะกดต้นทุนลงเหลือ 1 ใน 10 ด้วย AI นี่คือการโจมตีจากมิติที่สูงกว่า</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== INVESTOR STRATEGY ========== -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>FUNDING STRATEGY · 资金策略</span>
+    <span data-lang-th>FUNDING STRATEGY · กลยุทธ์เงินทุน</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>两种钱，两种谈法</span>
+    <span data-lang-th>เงิน 2 ประเภท คุย 2 แบบ</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>不是所有投资人都一样。我们把资金来源分成两类，用不同的策略对待。</span>
+    <span data-lang-th>นักลงทุนไม่ได้เหมือนกันทุกคน เราแบ่งแหล่งเงินเป็น 2 ประเภท ใช้กลยุทธ์ต่างกัน</span>
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h3>
+        <span data-lang-zh>利润型投资人</span>
+        <span data-lang-th>นักลงทุนเพื่อกำไร</span>
+      </h3>
+      <p>
+        <span data-lang-zh>像"บาส"这样的基金老板。他们要看到清晰的回报路径：投多少、多久回本、利润率多少。策略：等我们有了第一批作品和收入数据后再谈。用数据说话，不画饼。</span>
+        <span data-lang-th>เช่น "บาส" เจ้าของกองทุน พวกเขาต้องเห็นเส้นทางคืนทุนชัดเจน: ลงเท่าไหร่ กี่เดือนคืน กำไรกี่เปอร์เซ็นต์ กลยุทธ์: รอให้เรามีผลงานและตัวเลขรายได้จริงก่อนค่อยคุย ใช้ Data พูด ไม่ขายฝัน</span>
+      </p>
+      <span class="tag">
+        <span data-lang-zh>时机：有作品后</span>
+        <span data-lang-th>จังหวะ: หลังมีผลงาน</span>
+      </span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤝</div>
+      <h3>
+        <span data-lang-zh>赞助商/品牌合作</span>
+        <span data-lang-th>สปอนเซอร์/แบรนด์</span>
+      </h3>
+      <p>
+        <span data-lang-zh>他们不要股权回报，要的是曝光和植入。短剧里喝的饮料、穿的衣服、用的手机——都是广告位。中国团队有成熟的植入变现模型，直接复制到泰国。</span>
+        <span data-lang-th>พวกเขาไม่ต้องการหุ้น ต้องการ Exposure และ Product Placement เครื่องดื่มที่ดื่มในละคร เสื้อผ้าที่ใส่ มือถือที่ใช้ — ทุกอย่างคือพื้นที่โฆษณา ทีมจีนมีโมเดล Placement ที่สมบูรณ์แล้ว Copy มาใช้ในไทยได้เลย</span>
+      </p>
+      <span class="tag green">
+        <span data-lang-zh>时机：有渠道后</span>
+        <span data-lang-th>จังหวะ: หลังมีช่องทาง</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FLYWHEEL -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>FLYWHEEL · 飞轮效应</span>
+    <span data-lang-th>FLYWHEEL · เอฟเฟกต์วงล้อ</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>一旦转起来，就停不下来</span>
+    <span data-lang-th>พอเริ่มหมุนแล้ว จะหยุดไม่ได้</span>
+  </h2>
+
+  <div class="flow-steps">
+    <div class="flow-step">
+      <div class="step-num">🎓</div>
+      <h5><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></h5>
+      <p><span data-lang-zh>收学费 → 产出人才</span><span data-lang-th>เก็บค่าเรียน → ได้คน</span></p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">🎬</div>
+      <h5><span data-lang-zh>短剧</span><span data-lang-th>ละครสั้น</span></h5>
+      <p><span data-lang-zh>用人才+资金 → 产出作品</span><span data-lang-th>ใช้คน+เงิน → ได้ผลงาน</span></p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">📱</div>
+      <h5><span data-lang-zh>平台</span><span data-lang-th>แพลตฟอร์ม</span></h5>
+      <p><span data-lang-zh>用作品 → 打开渠道+收入</span><span data-lang-th>ใช้ผลงาน → เปิดช่องทาง+รายได้</span></p>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">📣</div>
+      <h5><span data-lang-zh>品牌</span><span data-lang-th>แบรนด์</span></h5>
+      <p><span data-lang-zh>用成绩 → 吸引更多学员+投资</span><span data-lang-th>ใช้ผลงาน → ดึงนักเรียน+นักลงทุนเพิ่ม</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <a href="index.html" class="prev">
+    <span class="arrow">←</span>
+    <div>
+      <span class="nav-label"><span data-lang-zh>上一页</span><span data-lang-th>หน้าก่อน</span></span>
+      <span data-lang-zh>← 总览</span>
+      <span data-lang-th>← ภาพรวม</span>
+    </div>
+  </a>
+  <a href="training-camp.html" class="next">
+    <div>
+      <span class="nav-label"><span data-lang-zh>下一页</span><span data-lang-th>หน้าถัดไป</span></span>
+      <span data-lang-zh>训练营蓝图 →</span>
+      <span data-lang-th>พิมพ์เขียวค่ายฝึก →</span>
+    </div>
+    <span class="arrow">→</span>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>三川 SANCHUAN © 2026 — <span data-lang-zh>战略文件 · 仅限内部</span><span data-lang-th>เอกสารกลยุทธ์ · เฉพาะภายใน</span></p>
+</footer>
+
+<script src="app.js"></script>
 </body>
 </html>
