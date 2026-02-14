@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1">
+<title>น้ำมันทองคำ — HomeChew | Liquid Gold by โฮมเจียววว</title>
+<meta name="description" content="น้ำมันหอมแดง Infused Oil เกรดเชฟ จากกระบวนการเจียวหอมแดงแท้ 100% น้ำมันบริสุทธิ์แรก ไม่ใช้ซ้ำ ราคา 149 บาท">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#0A0A0A;--dark:#111;--card:#1A1A1A;--border:#2A2A2A;
+  --gold:#FFD700;--gold-dim:#C9A84C;--amber:#D4A017;
+  --coral:#FF6B6B;--lime:#A8E06C;
+  --white:#F5F5F0;--gray:#999;--gray-light:#CCC;
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans Thai','Prompt',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden;line-height:1.7}
+a{color:var(--gold);text-decoration:none}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-brand{font-family:'Prompt',sans-serif;font-weight:800;font-size:1.2rem;color:var(--gold);letter-spacing:1px}
+.nav-brand span{color:var(--coral);font-size:0.7rem;margin-left:4px;vertical-align:super}
+.nav-links{display:flex;gap:1.5rem;align-items:center}
+.nav-links a{color:var(--gray-light);font-size:0.85rem;transition:color 0.3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:var(--gold);color:var(--black);padding:0.5rem 1.2rem;border-radius:50px;font-weight:700;font-size:0.85rem;transition:all 0.3s}
+.nav-cta:hover{background:var(--white);transform:scale(1.05)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:6rem 2rem 4rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(255,215,0,0.08) 0%,transparent 60%)}
+.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.hero-text h1{font-family:'Prompt',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1.15;margin-bottom:1rem}
+.hero-text h1 .gold{color:var(--gold);display:block}
+.hero-text h1 .sub{font-size:0.4em;color:var(--gray);font-weight:400;display:block;margin-top:0.5rem;letter-spacing:2px}
+.hero-text .tagline{font-size:1.15rem;color:var(--gray-light);margin-bottom:2rem;max-width:500px}
+.hero-text .tagline strong{color:var(--gold)}
+.hero-price{display:flex;align-items:baseline;gap:1rem;margin-bottom:2rem}
+.hero-price .amt{font-family:'Prompt',sans-serif;font-size:3rem;font-weight:900;color:var(--gold)}
+.hero-price .unit{color:var(--gray);font-size:1rem}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--amber));color:var(--black);padding:1rem 2.5rem;border-radius:50px;font-weight:700;font-size:1.1rem;display:inline-block;transition:all 0.3s;box-shadow:0 4px 20px rgba(255,215,0,0.3)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,215,0,0.4)}
+.btn-out{border:2px solid var(--border);color:var(--white);padding:1rem 2.5rem;border-radius:50px;font-weight:600;font-size:1rem;display:inline-block;transition:all 0.3s}
+.btn-out:hover{border-color:var(--gold);color:var(--gold)}
+.hero-img{position:relative}
+.hero-img img{width:100%;max-width:500px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.hero-badge{position:absolute;top:1rem;right:1rem;background:var(--coral);color:var(--white);padding:0.5rem 1rem;border-radius:50px;font-weight:700;font-size:0.8rem;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+/* SECTION COMMON */
+section{padding:5rem 2rem}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-tag{color:var(--gold);font-size:0.8rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem}
+.section-title{font-family:'Prompt',sans-serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;margin-bottom:1rem;line-height:1.25}
+.section-desc{color:var(--gray-light);font-size:1.05rem;max-width:700px;margin-bottom:3rem}
+.gold-line{width:60px;height:3px;background:var(--gold);margin-bottom:2rem;border-radius:2px}
+
+/* WHAT IS IT */
+.what-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.what-img img{width:100%;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,0.4)}
+.what-content .mama-quote{background:var(--card);border-left:4px solid var(--coral);padding:1.5rem;border-radius:0 12px 12px 0;margin:2rem 0;font-style:italic;color:var(--gray-light)}
+.what-content .mama-quote .mama{color:var(--coral);font-weight:700;font-style:normal;display:block;margin-bottom:0.5rem;font-size:0.85rem}
+
+/* SCIENCE */
+.sci-bg{background:var(--dark)}
+.sci-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+.sci-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all 0.3s}
+.sci-card:hover{border-color:var(--gold);transform:translateY(-4px)}
+.sci-icon{font-size:2.5rem;margin-bottom:1rem}
+.sci-card h3{font-family:'Prompt',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.75rem;color:var(--white)}
+.sci-card p{color:var(--gray-light);font-size:0.95rem;line-height:1.7}
+.sci-card .highlight{color:var(--gold);font-weight:600}
+
+/* VS COMPARISON */
+.vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;align-items:stretch}
+.vs-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;text-align:center}
+.vs-card.bad{border-color:rgba(255,107,107,0.3)}
+.vs-card.good{border-color:rgba(255,215,0,0.3);box-shadow:0 0 30px rgba(255,215,0,0.05)}
+.vs-card h3{font-family:'Prompt',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:1.5rem}
+.vs-card.bad h3{color:var(--coral)}
+.vs-card.good h3{color:var(--gold)}
+.vs-card ul{list-style:none;text-align:left}
+.vs-card ul li{padding:0.75rem 0;border-bottom:1px solid var(--border);color:var(--gray-light);font-size:0.95rem}
+.vs-card ul li:last-child{border:none}
+.vs-card.bad ul li::before{content:'✕ ';color:var(--coral);font-weight:700}
+.vs-card.good ul li::before{content:'✓ ';color:var(--gold);font-weight:700}
+.vs-divider{display:flex;align-items:center;justify-content:center;font-family:'Prompt',sans-serif;font-size:2rem;font-weight:900;color:var(--gold)}
+
+/* HOW TO USE */
+.use-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem}
+.use-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;text-align:center;transition:all 0.3s}
+.use-card:hover{border-color:var(--gold);transform:translateY(-4px)}
+.use-emoji{font-size:3rem;margin-bottom:1rem}
+.use-card h3{font-family:'Prompt',sans-serif;font-weight:700;margin-bottom:0.5rem}
+.use-card p{color:var(--gray-light);font-size:0.9rem}
+
+/* PRICING */
+.price-section{background:var(--dark)}
+.price-center{text-align:center}
+.price-hero{background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(212,160,23,0.05));border:2px solid var(--gold);border-radius:24px;padding:3rem;max-width:500px;margin:0 auto 3rem;position:relative}
+.price-hero .badge{position:absolute;top:-1rem;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--black);padding:0.4rem 1.5rem;border-radius:50px;font-weight:700;font-size:0.85rem}
+.price-hero .name{font-family:'Prompt',sans-serif;font-size:1.5rem;font-weight:800;margin-top:1rem;margin-bottom:0.5rem}
+.price-hero .amt{font-family:'Prompt',sans-serif;font-size:4rem;font-weight:900;color:var(--gold)}
+.price-hero .unit{color:var(--gray);font-size:1rem}
+.price-hero .detail{color:var(--gray-light);margin:1rem 0;font-size:0.95rem}
+.price-hero .detail li{padding:0.3rem 0;list-style:none}
+.price-hero .detail li::before{content:'✓ ';color:var(--gold);font-weight:700}
+.price-combo{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;max-width:800px;margin:0 auto}
+.combo-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;text-align:center;transition:all 0.3s}
+.combo-card:hover{border-color:var(--gold);transform:translateY(-4px)}
+.combo-card .name{font-family:'Prompt',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:0.5rem}
+.combo-card .amt{font-family:'Prompt',sans-serif;font-size:2.5rem;font-weight:900;color:var(--gold)}
+.combo-card .desc{color:var(--gray-light);font-size:0.9rem;margin:0.5rem 0 1rem}
+.combo-card .btn-sm{background:linear-gradient(135deg,var(--gold),var(--amber));color:var(--black);padding:0.75rem 2rem;border-radius:50px;font-weight:700;display:inline-block;transition:all 0.3s}
+.combo-card .btn-sm:hover{transform:scale(1.05)}
+
+/* FAQ */
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{width:100%;background:none;border:none;color:var(--white);font-family:'IBM Plex Sans Thai',sans-serif;font-size:1.05rem;font-weight:600;padding:1.25rem 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;text-align:left}
+.faq-q svg{transition:transform 0.3s;flex-shrink:0;margin-left:1rem}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.4s ease,padding 0.4s ease;color:var(--gray-light);font-size:0.95rem;line-height:1.7}
+.faq-item.open .faq-q svg{transform:rotate(180deg)}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:1.25rem}
+
+/* CTA FINAL */
+.cta-final{text-align:center;padding:5rem 2rem;background:linear-gradient(180deg,var(--dark),var(--black))}
+.cta-final h2{font-family:'Prompt',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;margin-bottom:1rem}
+.cta-final .gold{color:var(--gold)}
+.cta-final p{color:var(--gray-light);font-size:1.1rem;margin-bottom:2rem;max-width:600px;margin-left:auto;margin-right:auto}
+
+/* FOOTER */
+.footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--gray);font-size:0.8rem}
+.footer a{color:var(--gold)}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .hero-inner{grid-template-columns:1fr;text-align:center}
+  .hero-img{order:-1}
+  .hero-img img{max-width:300px;margin:0 auto;display:block}
+  .hero-btns{justify-content:center}
+  .hero-price{justify-content:center}
+  .what-grid{grid-template-columns:1fr}
+  .vs-grid{grid-template-columns:1fr;gap:1rem}
+  .vs-divider{transform:rotate(90deg)}
+  .nav-links{display:none}
+  .hero-text .tagline{margin-left:auto;margin-right:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-brand">HomeChew <span>น้ำมันทองคำ</span></a>
+  <div class="nav-links">
+    <a href="#science">วิทยาศาสตร์</a>
+    <a href="#compare">เปรียบเทียบ</a>
+    <a href="#howto">วิธีใช้</a>
+    <a href="#pricing">ราคา</a>
+    <a href="https://lin.ee/homechew" target="_blank" class="nav-cta">สั่งซื้อเลย</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text reveal">
+      <h1>
+        น้ำมันทองคำ
+        <span class="gold">Liquid Gold</span>
+        <span class="sub">Shallot-Infused Oil by HomeChew</span>
+      </h1>
+      <p class="tagline">
+        น้ำมันที่ผ่านการเจียวหอมแดงแท้ 100% — <strong>ไม่ใช่น้ำมันเหลือ</strong> แต่คือ <strong>"น้ำมันสุก"</strong> ที่อุ้มกลิ่นหอมหวานของหอมแดงไว้ทุกหยด เชฟเรียกมันว่า <strong>"Liquid Gold"</strong>
+      </p>
+      <div class="hero-price">
+        <span class="amt">฿149</span>
+        <span class="unit">/ ขวด 250ml</span>
+      </div>
+      <div class="hero-btns">
+        <a href="https://lin.ee/homechew" target="_blank" class="btn-gold">สั่งซื้อเลย</a>
+        <a href="#science" class="btn-out">ทำไมถึงพิเศษ?</a>
+      </div>
+    </div>
+    <div class="hero-img reveal">
+      <img src="https://private-us-east-1.manuscdn.com/sessionFile/7y2LBklHki1nwob3BJuE1H/sandbox/MLHaqfCKnq44V7MkMe15rQ-img-1_1771099974000_na1fn_aGMtZ29sZGVuLW9pbC1ib3R0bGU.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvN3kyTEJrbEhraTFud29iM0JKdUUxSC9zYW5kYm94L01MSGFxZkNLbnE0NFY3TWtNZTE1clEtaW1nLTFfMTc3MTA5OTk3NDAwMF9uYTFmbl9hR010WjI5c1pHVnVMVzlwYkMxaWIzUjBiR1UuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=tQYaantihV0TB2XW2ybH4WKSM5XQh72GrKuubKXU3funxJIU9HpHBY8sv9sr-qc7Ey1PJA1ePLqKXOfqowi385VcloOVh9kKfSIFxMssj9NEnzv5rBXxgmM2QBnjkQbJ0dbob~2HBH1ce7CiwpjTQ40iORYQiITnxqc78iq3XIeho1wL-f51ayzNX1Rdj~-U8CCfkSYqDYHtPtbEO9EGKnK2heRxYVBfH9QW32geDIG~QgxwDzyUMtf8H5J3rU8NyODtsdc7GmInxagVsWnIe975~jKf0ohRJHh5IeKIcqDT5V9K7wWk597EYaTj4kXFJeLmKAgdmCUIYqe3WxkRdg__" alt="น้ำมันทองคำ HomeChew" loading="eager">
+      <div class="hero-badge">ใหม่!</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS IT -->
+<section id="what">
+  <div class="section-inner">
+    <div class="what-grid">
+      <div class="what-img reveal">
+        <img src="https://private-us-east-1.manuscdn.com/sessionFile/7y2LBklHki1nwob3BJuE1H/sandbox/1xuUuBjIFbR1eZsDoJZuAC-img-2_1771098233000_na1fn_aGMtdmlyZ2luLW9pbA.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvN3kyTEJrbEhraTFud29iM0JKdUUxSC9zYW5kYm94LzF4dVV1QmpJRmJSMWVac0RvSlp1QUMtaW1nLTJfMTc3MTA5ODIzMzAwMF9uYTFmbl9hR010ZG1seVoybHVMVzlwYkEuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=V9E-ERGb3FTNHkxIE8ySP65lFlA4LQC3v-RTSEHUwXMzbfyYKeFS5NLGtKiup8MT4PVtTOjsVncyTg0tO0uZT2HGlGKqq~pv13zkb~FQn0GeJOt17jqhYSRoBjUAPtHNYSEmeiZC1Fd9JFUsnaIGb1BASqq3e-GiyByoRl4G-q~6z7nWVsmrxSTcvtWQ7AlQOqZzW0~8XBvMBqhnCKZCktMOrTu94aW9kSDBh6k-OKtwlO3KarOFnOOiaf6XmKRYi3bC5hzTlujXt4QowQmPXwo006IQSm8FDv3ZOUPvHX1QOX~JWXVskcwywmmaSuc~SZcI1-sWAIge8u6WLkILqA__" alt="น้ำมันหอมแดงบริสุทธิ์" loading="lazy">
+      </div>
+      <div class="what-content reveal">
+        <div class="section-tag">ไม่ใช่น้ำมันเหลือ</div>
+        <h2 class="section-title">น้ำมัน "สุก" ที่เชฟเรียกว่า<br><span style="color:var(--gold)">Seasoned Oil</span></h2>
+        <div class="gold-line"></div>
+        <p style="color:var(--gray-light);margin-bottom:1.5rem">
+          ทุกครั้งที่เราเจียวหอมแดง น้ำมันบริสุทธิ์แรกจะดูดซับ <strong style="color:var(--gold)">Essential Oil</strong> และสารรสชาติจากหอมแดงไว้ทั้งหมด กลายเป็น <strong style="color:var(--gold)">Infused Oil</strong> ที่มีกลิ่นหอมหวานลึก
+        </p>
+        <p style="color:var(--gray-light);margin-bottom:1.5rem">
+          เหมือนที่ฝรั่งทำ Truffle Oil หรือคนจีนทำน้ำมันพริก — แต่ของเราคือ <strong style="color:var(--gold)">น้ำมันหอมแดงแท้</strong> จากสูตร 40 ปี หาดใหญ่
+        </p>
+        <p style="color:var(--gray-light);margin-bottom:1.5rem">
+          เอาไปผัดข้าว ทอดไข่ ผัดผัก — อาหารจะมีกลิ่นหอมแดงหวานๆ ติดมาเลย โดยไม่ต้องเจียวหอมเอง!
+        </p>
+        <div class="mama-quote">
+          <span class="mama">แม่เจียวว่า...</span>
+          "น้ำมันนี้แม่ไม่เคยทิ้ง ทิ้งเมื่อไหร่แม่ตีเลย มันคือหัวใจของไก่ทอดหาดใหญ่ ไก่อร่อยไม่ใช่เพราะไก่ แต่เพราะทอดในน้ำมันนี้!"
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCIENCE -->
+<section id="science" class="sci-bg">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <div class="section-tag" style="text-align:center">FOOD SCIENCE</div>
+      <h2 class="section-title" style="text-align:center">ทำไมน้ำมันนี้ถึง<span style="color:var(--gold)"> "ดีกว่า" </span>น้ำมันใหม่?</h2>
+      <p class="section-desc" style="margin-left:auto;margin-right:auto;text-align:center">ไม่ใช่ไสยศาสตร์ มีเหตุผลทางเคมีรองรับทุกข้อ</p>
+    </div>
+    <div class="sci-cards">
+      <div class="sci-card reveal">
+        <div class="sci-icon">🔬</div>
+        <h3>Fat as Flavor Carrier</h3>
+        <p>กลิ่นหอมของหอมแดงเป็นสารที่ <span class="highlight">ละลายในไขมัน (Lipophilic)</span> เมื่อทอด ความร้อนจะดึง Essential Oil จากเนื้อหอมแดง "ย้ายบ้าน" มาอยู่ในน้ำมัน — น้ำมันจึงกลายเป็น <span class="highlight">"สารละลายหัวเชื้อหอมแดง"</span></p>
+      </div>
+      <div class="sci-card reveal">
+        <div class="sci-icon">🍳</div>
+        <h3>Maillard Reaction</h3>
+        <p>น้ำตาลธรรมชาติในหอมแดง + ความร้อน = <span class="highlight">Caramelization</span> เกิดกลิ่นรสซับซ้อน (Nutty, Sweet, Savory) ที่ละลายลงในน้ำมัน ไก่ทอดในน้ำมันนี้จึงมีรส <span class="highlight">"หวานปะแล่มๆ"</span> โดยไม่ต้องหมักน้ำตาล</p>
+      </div>
+      <div class="sci-card reveal">
+        <div class="sci-icon">🏆</div>
+        <h3>First Fry = Sweet Spot</h3>
+        <p>น้ำมันทอดซ้ำ 10 รอบ = ยาพิษ (เหม็นหืน) แต่ของเราคือ <span class="highlight">"First Fry" ทอดครั้งแรก</span> น้ำมันยังแข็งแรง ไม่เสื่อมสภาพ แต่ได้รับกลิ่นหอมมาเต็มๆ — <span class="highlight">จุดที่พีคที่สุดของน้ำมัน</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VS COMPARISON -->
+<section id="compare">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <div class="section-tag">เปรียบเทียบ</div>
+      <h2 class="section-title">น้ำมันใหม่ <span style="color:var(--coral)">vs</span> น้ำมันทองคำ</h2>
+    </div>
+    <div class="vs-grid reveal">
+      <div class="vs-card bad">
+        <h3>🫗 น้ำมันใหม่ (Fresh Oil)</h3>
+        <ul>
+          <li>รสชาติ "จืดสนิท" (Neutral)</li>
+          <li>หน้าที่แค่ทำให้สุก</li>
+          <li>อาหารออกมา "แบน" ไม่มีมิติ</li>
+          <li>ต้องปรุงรสเพิ่มเยอะ</li>
+          <li>ไม่มีกลิ่นหอมติดอาหาร</li>
+        </ul>
+      </div>
+      <div class="vs-divider">VS</div>
+      <div class="vs-card good">
+        <h3>🏅 น้ำมันทองคำ (Seasoned Oil)</h3>
+        <ul>
+          <li>รสชาติ "มีมิติ" (Complex) นัว หอมลึก</li>
+          <li>ทำให้สุก + ปรุงรสไปในตัว</li>
+          <li>อาหารมีกลิ่นหอมแดงหวานๆ ทันที</li>
+          <li>ผัดข้าวแค่ใส่น้ำมันนี้ก็หอมแล้ว</li>
+          <li>เชฟเรียกว่า "Liquid Gold"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO USE -->
+<section id="howto" class="sci-bg">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <div class="section-tag">วิธีใช้</div>
+      <h2 class="section-title">เอาไปทำอะไรได้บ้าง?</h2>
+      <p class="section-desc" style="margin-left:auto;margin-right:auto;text-align:center">แค่เปลี่ยนน้ำมันที่ใช้ อาหารก็อัพเลเวลทันที</p>
+    </div>
+    <div class="use-grid">
+      <div class="use-card reveal">
+        <div class="use-emoji">🍳</div>
+        <h3>ผัดข้าว / ผัดผัก</h3>
+        <p>ใช้แทนน้ำมันปกติ ข้าวผัดจะหอมกลิ่นหอมแดงทันที ไม่ต้องเจียวหอมเอง</p>
+      </div>
+      <div class="use-card reveal">
+        <div class="use-emoji">🥚</div>
+        <h3>ทอดไข่ดาว</h3>
+        <p>ไข่ดาวน้ำมันทองคำ ขอบกรอบ กลิ่นหอมหวาน เหมือนไข่ดาวร้านข้าวมันไก่</p>
+      </div>
+      <div class="use-card reveal">
+        <div class="use-emoji">🍗</div>
+        <h3>ทอดไก่ / ทอดหมู</h3>
+        <p>ความลับไก่ทอดหาดใหญ่ คือทอดในน้ำมันที่ผ่านหอมเจียว ไก่จึงหอมเป็นเอกลักษณ์</p>
+      </div>
+      <div class="use-card reveal">
+        <div class="use-emoji">🍜</div>
+        <h3>ราดบะหมี่ / มาม่า</h3>
+        <p>หยดน้ำมันทองคำ 1-2 ช้อน ลงในมาม่า หอมฟุ้งทันที อร่อยขึ้น 10 เท่า</p>
+      </div>
+      <div class="use-card reveal">
+        <div class="use-emoji">🥗</div>
+        <h3>ส้มตำ / ยำ</h3>
+        <p>ใส่แทนน้ำมันหอยนางรม ได้กลิ่นหอมแดงธรรมชาติ ไม่ต้องพึ่งผงชูรส</p>
+      </div>
+      <div class="use-card reveal">
+        <div class="use-emoji">🫕</div>
+        <h3>หมักเนื้อสัตว์</h3>
+        <p>หมักไก่ หมู กุ้ง ด้วยน้ำมันทองคำก่อนย่าง กลิ่นหอมแดงซึมเข้าเนื้อ</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="price-section">
+  <div class="section-inner price-center">
+    <div class="reveal">
+      <div class="section-tag" style="text-align:center">ราคา</div>
+      <h2 class="section-title" style="text-align:center">น้ำมันทองคำ <span style="color:var(--gold)">Liquid Gold</span></h2>
+      <p class="section-desc" style="margin-left:auto;margin-right:auto;text-align:center">น้ำมันหอมแดง Infused Oil เกรดเชฟ ขวด 250ml</p>
+    </div>
+
+    <div class="price-hero reveal">
+      <div class="badge">สินค้าใหม่!</div>
+      <div class="name">น้ำมันทองคำ 1 ขวด</div>
+      <div class="amt">฿149</div>
+      <div class="unit">/ ขวด 250ml + ค่าส่ง 40.-</div>
+      <ul class="detail">
+        <li>น้ำมันหอมแดง Infused Oil แท้ 100%</li>
+        <li>จากกระบวนการเจียวโฮมเจียววว™</li>
+        <li>น้ำมันบริสุทธิ์แรก (First Fry) ไม่ใช้ซ้ำ</li>
+        <li>ใช้ได้ทั้งผัด ทอด หมัก ราด</li>
+      </ul>
+      <a href="https://lin.ee/homechew" target="_blank" class="btn-gold" style="margin-top:1rem">สั่งซื้อเลย ฿149</a>
+    </div>
+
+    <div class="reveal" style="text-align:center;margin-bottom:2rem">
+      <h3 style="font-family:'Prompt',sans-serif;font-weight:700;font-size:1.3rem">หรือสั่งคู่กับโฮมเจียววว™</h3>
+      <p style="color:var(--gray-light);font-size:0.95rem">ได้ทั้งหอมเจียวกรอบ + น้ำมันทองคำ ครบเซ็ต!</p>
+    </div>
+
+    <div class="price-combo reveal">
+      <div class="combo-card">
+        <div class="name">เซ็ตคู่หู</div>
+        <div class="amt">฿330</div>
+        <div class="desc">โฮมเจียววว™ 1 ซอง + น้ำมันทองคำ 1 ขวด<br><span style="color:var(--lime)">ส่งฟรี! (ประหยัด 58.-)</span></div>
+        <a href="https://lin.ee/homechew" target="_blank" class="btn-sm">สั่งเซ็ตคู่หู</a>
+      </div>
+      <div class="combo-card" style="border-color:var(--gold)">
+        <div style="color:var(--gold);font-size:0.8rem;font-weight:700;margin-bottom:0.5rem">🏆 แนะนำ</div>
+        <div class="name">เซ็ตครัวทองคำ</div>
+        <div class="amt">฿699</div>
+        <div class="desc">โฮมเจียววว™ 3 ซอง + น้ำมันทองคำ 1 ขวด<br><span style="color:var(--lime)">ส่งฟรี! (ประหยัด 110.-)</span></div>
+        <a href="https://lin.ee/homechew" target="_blank" class="btn-sm">สั่งเซ็ตครัวทองคำ</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <div class="section-tag">คำถามที่พบบ่อย</div>
+      <h2 class="section-title">FAQ</h2>
+    </div>
+    <div id="faqList" class="reveal"></div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="reveal">
+    <h2>เปลี่ยนน้ำมัน<span class="gold"> เปลี่ยนรสชาติ</span></h2>
+    <p>แค่เปลี่ยนน้ำมันที่ใช้ อาหารทุกจานก็อัพเลเวลทันที น้ำมันทองคำ — ของดีจากครัวแม่เจียว สู่ครัวคุณ</p>
+    <a href="https://lin.ee/homechew" target="_blank" class="btn-gold">สั่งน้ำมันทองคำ ฿149</a>
+    <div style="margin-top:1rem">
+      <a href="index.html" style="color:var(--gray);font-size:0.9rem">← กลับหน้าหลัก HomeChew</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>© 2026 <a href="index.html">HomeChew โฮมเจียว</a> — เครื่องปรุงพรีเมียมจากหาดใหญ่</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const obs=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}});
+  },{threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+  // FAQ
+  const faqs=[
+    {q:'น้ำมันทองคำคืออะไร? ไม่ใช่น้ำมันเหลือทิ้งเหรอ?',a:'ไม่ใช่เลยครับ! น้ำมันทองคำคือ Infused Oil (น้ำมันอบกลิ่น) ที่ได้จากกระบวนการเจียวหอมแดงแท้ 100% ด้วยน้ำมันบริสุทธิ์แรก (First Fry) เหมือนที่ฝรั่งทำ Truffle Oil — เชฟเรียกว่า Seasoned Oil หรือ Liquid Gold ครับ'},
+    {q:'ทำไมถึงดีกว่าน้ำมันใหม่?',a:'น้ำมันใหม่รสชาติจืดสนิท แค่ทำให้อาหารสุก แต่น้ำมันทองคำอุ้มกลิ่นหอมหวานจากหอมแดงไว้ (Lipophilic compounds) เอาไปผัดข้าว ทอดไข่ อาหารจะมีกลิ่นหอมแดงติดมาทันที โดยไม่ต้องเจียวหอมเอง'},
+    {q:'ปลอดภัยไหม? ไม่ใช่น้ำมันทอดซ้ำ?',a:'ปลอดภัย 100% ครับ! น้ำมันทอดซ้ำ 10 รอบคือยาพิษ แต่ของเราคือ "First Fry" ทอดครั้งแรกเท่านั้น น้ำมันยังแข็งแรง ไม่เสื่อมสภาพ ไม่หืน นี่คือจุด Sweet Spot ที่พีคที่สุดของน้ำมัน'},
+    {q:'เก็บได้นานไหม?',a:'เก็บได้นาน 3-6 เดือนในที่เย็น ไม่โดนแดด เพราะเป็นน้ำมันบริสุทธิ์แรกที่ยังไม่เสื่อมสภาพ ไม่หืน แนะนำเก็บในตู้เย็นเพื่อรักษาคุณภาพสูงสุด'},
+    {q:'ใช้ทำอะไรได้บ้าง?',a:'ใช้ได้ทุกอย่างที่ใช้น้ำมันปกติ! ผัดข้าว ผัดผัก ทอดไข่ ทอดไก่ หมักเนื้อ ราดมาม่า ใส่ส้มตำ — แค่เปลี่ยนน้ำมัน อาหารก็อัพเลเวลทันที'},
+    {q:'ทำไมราคา 149 บาท?',a:'เพราะน้ำมันนี้ได้มาจากกระบวนการเจียวหอมแดงแท้ด้วยน้ำมันบริสุทธิ์ใหม่ทุกกระทะ ต้นทุนสูงกว่าน้ำมันทั่วไปมาก แต่คุณภาพเทียบเท่า Infused Oil ระดับเชฟที่ขายกันขวดละ 300-500 บาท'},
+  ];
+  const fl=document.getElementById('faqList');
+  faqs.forEach(f=>{
+    const d=document.createElement('div');d.className='faq-item';
+    d.innerHTML='<button class="faq-q" onclick="toggleFaq(this)"><span>'+f.q+'</span><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button><div class="faq-a">'+f.a+'</div>';
+    fl.appendChild(d);
+  });
+  function toggleFaq(btn){
+    const item=btn.parentElement,isOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!isOpen)item.classList.add('open');
+  }
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      const t=document.querySelector(a.getAttribute('href'));
+      if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+</script>
+</body>
+</html>
