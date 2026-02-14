@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>โฮมเจียววว HomeChew — อาณาจักรเครื่องปรุงพรีเมียม</title>
   <meta name="description" content="หอมเจียวที่สะอาดที่สุด เพราะอาบน้ำมันบริสุทธิ์แรก สูตรต้นตำรับ 40 ปี จากหาดใหญ่ — โฮมเจียววว™ by HomeChew" />
   <meta property="og:title" content="โฮมเจียววว™ — หอมเจียวที่สะอาดที่สุด" />
@@ -62,7 +65,7 @@
     .nav-links a:hover{color:var(--gold);transition:color 0.2s}
     .nav-cta{background:var(--gold);color:var(--bg);font-size:0.875rem;font-weight:700;padding:0.5rem 1.25rem;border-radius:2px;transition:all 0.2s}
     .nav-cta:hover{box-shadow:0 0 15px var(--gold-glow)}
-    @media(min-width:640px){.nav-links{display:flex}}
+    @media(min-width:640px){.nav-links{display:flex}.nav-fb-btn{display:inline-flex!important}}
 
     /* Hero */
     .hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -203,9 +206,11 @@
     .footer-copy{color:rgba(240,232,216,0.3);font-size:0.75rem}
 
     /* Mobile CTA */
-    .mobile-cta{position:fixed;bottom:0;left:0;right:0;z-index:40;padding:1rem;background:linear-gradient(to top,var(--bg),rgba(10,10,10,0.95),transparent);display:block}
+    .mobile-cta{position:fixed;bottom:0;left:0;right:0;z-index:40;padding:1rem;background:linear-gradient(to top,var(--bg),rgba(10,10,10,0.95),transparent);display:flex;gap:0.5rem}
     @media(min-width:768px){.mobile-cta{display:none}}
-    .mobile-cta button{width:100%;background:var(--gold);color:var(--bg);padding:1rem;border-radius:2px;font-weight:700;font-size:1.125rem;animation:pulseGold 2s ease-in-out infinite}
+    .mobile-cta a{flex:1;display:flex;align-items:center;justify-content:center;gap:0.5rem;padding:1rem;border-radius:2px;font-weight:700;font-size:1rem;text-align:center}
+    .mobile-cta .mc-fb{background:#1877F2;color:#fff}
+    .mobile-cta .mc-line{background:var(--gold);color:var(--bg);animation:pulseGold 2s ease-in-out infinite}
   </style>
 </head>
 <body>
@@ -221,13 +226,15 @@
       <span><span class="g">Home</span><span class="w">Chew</span></span>
     </a>
     <div class="nav-links">
-      <a href="#products">สินค้า</a>
-      <a href="#story">เรื่องราว</a>
-      <a href="#golden-oil">น้ำมันทองคำ</a>
-      <a href="#pricing">ราคา</a>
-      <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" style="color:rgba(240,232,216,0.5)">Facebook</a>
+      <a href="index.html">หน้าแรก</a>
+      <a href="mom-story.html">เรื่องแม่เจียว</a>
+      <a href="golden-oil.html">น้ำมันทองคำ</a>
+      <a href="quick.html">สรุปสั้นๆ</a>
     </div>
-    <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" class="nav-cta">สั่งเลย</a>
+    <div style="display:flex;align-items:center;gap:0.5rem">
+      <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" style="background:#1877F2;color:#fff;font-size:0.875rem;font-weight:700;padding:0.5rem 1rem;border-radius:2px;transition:all 0.2s;display:none" class="nav-fb-btn">Facebook</a>
+      <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" class="nav-cta">LINE</a>
+    </div>
   </div>
 </nav>
 
@@ -449,7 +456,11 @@
 
 <!-- MOBILE CTA -->
 <div class="mobile-cta">
-  <button onclick="window.open('https://lin.ee/p9cCC8u','_blank')">สั่งเลย — เริ่มต้น ฿199</button>
+  <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" class="mc-fb">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    Facebook
+  </a>
+  <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" class="mc-line">สั่งเลย LINE</a>
 </div>
 
 <script>
