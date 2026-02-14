@@ -66,6 +66,20 @@
     .nav-cta{background:var(--gold);color:var(--bg);font-size:0.875rem;font-weight:700;padding:0.5rem 1.25rem;border-radius:2px;transition:all 0.2s}
     .nav-cta:hover{box-shadow:0 0 15px var(--gold-glow)}
     @media(min-width:640px){.nav-links{display:flex}.nav-fb-btn{display:inline-flex!important}}
+    /* Hamburger menu */
+    .hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none;z-index:60}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--offwhite);transition:all 0.3s}
+    .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    .hamburger.active span:nth-child(2){opacity:0}
+    .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+    @media(min-width:640px){.hamburger{display:none}}
+    .mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,10,10,0.98);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,168,67,0.15);padding:1rem 0;z-index:49;animation:slideDown 0.3s ease}
+    .mobile-menu.open{display:block}
+    .mobile-menu a{display:block;padding:0.875rem 1.5rem;color:rgba(240,232,216,0.7);font-size:1.125rem;font-weight:500;text-decoration:none;transition:all 0.2s}
+    .mobile-menu a:hover,.mobile-menu a:active{color:var(--gold);background:rgba(212,168,67,0.05)}
+    .mobile-menu .mobile-cta-row{display:flex;gap:0.5rem;padding:0.875rem 1.5rem;margin-top:0.5rem}
+    .mobile-menu .mobile-cta-row a{flex:1;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-radius:6px;font-weight:700;font-size:1.125rem}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 
     /* Hero */
     .hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -249,11 +263,24 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
       <a href="quick.html">สรุปสั้นๆ</a>
     </div>
     <div style="display:flex;align-items:center;gap:0.5rem">
-      <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" style="background:#1877F2;color:#fff;font-size:0.875rem;font-weight:700;padding:0.5rem 1rem;border-radius:2px;transition:all 0.2s;display:none" class="nav-fb-btn">Facebook</a>
-      <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" class="nav-cta">LINE</a>
+      <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" onclick="trackLead('facebook_nav')" style="background:#1877F2;color:#fff;font-size:0.875rem;font-weight:700;padding:0.5rem 1rem;border-radius:2px;transition:all 0.2s;display:none" class="nav-fb-btn">Facebook</a>
+      <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" onclick="trackLead('line_nav')" class="nav-cta">LINE</a>
+      <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">หน้าแรก</a>
+  <a href="mom-story.html">เรื่องแม่เจียว</a>
+  <a href="golden-oil.html">น้ำมันทองคำ</a>
+  <a href="quick.html">สรุปสั้นๆ</a>
+  <div class="mobile-cta-row">
+    <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" onclick="trackLead('facebook_mobile')" style="background:#1877F2;color:#fff">Facebook</a>
+    <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" onclick="trackLead('line_mobile')" style="background:var(--gold);color:var(--bg)">LINE</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero" id="hero">
@@ -438,12 +465,12 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
     <h2 class="section-heading" style="color:var(--offwhite)">พร้อมเปิดซองดำ<span style="color:var(--gold)">หรือยัง?</span></h2>
     <p style="color:rgba(240,232,216,0.6);margin-top:1rem;font-size:1.125rem">ทักมาเลย แม่รอตอบอยู่ (จริงๆ ลูกตอบ แต่แม่คอยจ้องอยู่)</p>
     <div style="margin-top:2rem;display:flex;flex-direction:column;align-items:center;gap:1rem">
-      <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" class="btn-gold" style="font-size:1.25rem;padding:1.25rem 2.5rem;box-shadow:0 0 40px var(--gold-glow)">💬 สั่งผ่าน LINE เลย</a>
+      <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" onclick="trackLead('line_cta_main')" class="btn-gold" style="font-size:1.25rem;padding:1.25rem 2.5rem;box-shadow:0 0 40px var(--gold-glow)">💬 สั่งผ่าน LINE เลย</a>
       <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;margin-top:0.5rem">
         <a href="tel:0626432472" style="display:inline-flex;align-items:center;gap:0.5rem;color:var(--gold);font-size:0.95rem;border:1px solid rgba(212,168,67,0.2);padding:0.5rem 1rem;border-radius:999px;transition:all 0.3s">📞 062-643-2472</a>
         <a href="tel:0639353677" style="display:inline-flex;align-items:center;gap:0.5rem;color:var(--gold);font-size:0.95rem;border:1px solid rgba(212,168,67,0.2);padding:0.5rem 1rem;border-radius:999px;transition:all 0.3s">📞 063-935-3677</a>
       </div>
-      <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:0.5rem;color:#fff;background:#1877F2;padding:0.625rem 1.5rem;border-radius:999px;font-size:0.875rem;font-weight:600;transition:opacity 0.3s">
+      <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" onclick="trackLead('facebook_cta_main')" style="display:inline-flex;align-items:center;gap:0.5rem;color:#fff;background:#1877F2;padding:0.625rem 1.5rem;border-radius:999px;font-size:0.875rem;font-weight:600;transition:opacity 0.3s">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
         Facebook: โฮมเจียววว
       </a>
@@ -459,7 +486,7 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
     <div class="footer-logo">HomeChew โฮมเจียววว™</div>
     <p class="footer-desc">อาณาจักรเครื่องปรุงพรีเมียม | สะอาดเหมือนครัวที่บ้าน<br>ผลิตด้วยความรักโดยแม่เจียว | สูตรต้นตำรับ 40 ปี จากหาดใหญ่</p>
     <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.75rem;margin-bottom:1.5rem">
-      <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" class="line-btn">💬 LINE: @homechew</a>
+      <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" onclick="trackLead('line_footer')" class="line-btn">💬 LINE: @homechew</a>
       <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:0.5rem;background:#1877F2;color:#fff;padding:0.625rem 1.5rem;border-radius:999px;font-size:0.875rem;font-weight:600;transition:opacity 0.3s">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
         Facebook
@@ -473,14 +500,34 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
 
 <!-- MOBILE CTA -->
 <div class="mobile-cta">
-  <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" class="mc-fb">
+  <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" onclick="trackLead('facebook_mobile_cta')" class="mc-fb">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
     Facebook
   </a>
-  <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" class="mc-line">สั่งเลย LINE</a>
+  <a href="https://lin.ee/p9cCC8u" target="_blank" rel="noopener noreferrer" onclick="trackLead('line_mobile_cta')" class="mc-line">สั่งเลย LINE</a>
 </div>
 
 <script>
+  // Track Lead for Facebook Pixel
+  function trackLead(source){
+    if(window.fbq){window.fbq('track','Lead',{content_name:source})}
+  }
+
+  // Mobile hamburger menu toggle
+  function toggleMobileMenu(){
+    var menu=document.getElementById('mobileMenu');
+    var btn=document.getElementById('hamburgerBtn');
+    menu.classList.toggle('open');
+    btn.classList.toggle('active');
+  }
+  // Close mobile menu when clicking a link
+  document.addEventListener('click',function(e){
+    if(e.target.closest('.mobile-menu a:not([target="_blank"])')){ 
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.getElementById('hamburgerBtn').classList.remove('active');
+    }
+  });
+
   // Scroll Progress
   window.addEventListener('scroll',()=>{
     const h=document.documentElement.scrollHeight-window.innerHeight;
@@ -531,7 +578,7 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
   prods.forEach((p,i)=>{
     const d=document.createElement('div');d.className='reveal prod-card'+(p.avail?'':' soon');d.style.transitionDelay=(i*0.1)+'s';
     let h='<span class="prod-tag '+p.tagClass+'">'+p.tag+'</span><div class="prod-name">'+p.name+'</div><div class="prod-desc">'+p.desc+'</div><div class="prod-detail">'+p.detail+'</div>';
-    if(p.avail){h+='<div class="prod-foot"><div class="prod-price">'+p.price+'</div><a href="'+LINE+'" target="_blank" rel="noopener noreferrer" class="prod-btn">สั่งเลย</a></div>';if(p.link){h+='<a href="'+p.link+'" style="display:block;text-align:center;margin-top:0.75rem;color:var(--gold);font-size:0.85rem;opacity:0.7;transition:opacity 0.3s">ดูรายละเอียดเพิ่มเติม →</a>'}h+='<div class="bar"></div>'}
+    if(p.avail){h+='<div class="prod-foot"><div class="prod-price">'+p.price+'</div><a href="'+LINE+'" target="_blank" rel="noopener noreferrer" onclick="trackLead(\'line_product\')" class="prod-btn">สั่งเลย</a></div>';if(p.link){h+='<a href="'+p.link+'" style="display:block;text-align:center;margin-top:0.75rem;color:var(--gold);font-size:0.85rem;opacity:0.7;transition:opacity 0.3s">ดูรายละเอียดเพิ่มเติม →</a>'}h+='<div class="bar"></div>'}
     else{h+='<div class="prod-soon">เร็วๆ นี้</div>'}
     d.innerHTML=h;pg.appendChild(d);obs.observe(d);
   });
@@ -583,7 +630,7 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
     if(p.strike)h+='<span class="price-strike">'+p.strike+'.-</span>';
     h+='<span class="price-num">฿'+p.price+'</span></div>';
     h+='<ul class="price-items">';p.items.forEach(it=>{h+='<li>'+it+'</li>'});h+='</ul>';
-    var lineMsg=encodeURIComponent('สนใจสั่ง '+p.name+' ('+p.desc+') ราคา ฿'+p.price);h+='<a href="'+LINE+'?text='+lineMsg+'" target="_blank" rel="noopener noreferrer" class="price-cta '+(p.hl?'gold':'out')+'">'+(p.hl?'สั่งชุดนี้เลยค่ะ (แนะนำ)':'สั่ง'+p.name)+'</a>';
+    var lineMsg=encodeURIComponent('สนใจสั่ง '+p.name+' ('+p.desc+') ราคา ฿'+p.price);h+='<a href="'+LINE+'?text='+lineMsg+'" target="_blank" rel="noopener noreferrer" onclick="trackLead(\'line_pricing_'+p.name+'\')" class="price-cta '+(p.hl?'gold':'out')+'">'+(p.hl?'สั่งชุดนี้เลยค่ะ (แนะนำ)':'สั่ง'+p.name)+'</a>';
     d.innerHTML=h;prg.appendChild(d);obs.observe(d);
   });
 

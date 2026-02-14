@@ -157,9 +157,43 @@ section{padding:5rem 2rem}
   .nav-links{display:none}
   .hero-text .tagline{margin-left:auto;margin-right:auto}
 }
+    /* Hamburger menu */
+    .hamburger{display:flex;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none;z-index:60}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--offwhite);transition:all 0.3s}
+    .hamburger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    .hamburger.active span:nth-child(2){opacity:0}
+    .hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+    @media(min-width:640px){.hamburger{display:none}}
+    .mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(10,10,10,0.98);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,168,67,0.15);padding:1rem 0;z-index:49;animation:slideDown 0.3s ease}
+    .mobile-menu.open{display:block}
+    .mobile-menu a{display:block;padding:0.875rem 1.5rem;color:rgba(240,232,216,0.7);font-size:1.125rem;font-weight:500;text-decoration:none;transition:all 0.2s}
+    .mobile-menu a:hover,.mobile-menu a:active{color:var(--gold);background:rgba(212,168,67,0.05)}
+    .mobile-menu .mobile-cta-row{display:flex;gap:0.5rem;padding:0.875rem 1.5rem;margin-top:0.5rem}
+    .mobile-menu .mobile-cta-row a{flex:1;display:flex;align-items:center;justify-content:center;padding:0.75rem;border-radius:6px;font-weight:700;font-size:1.125rem}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 </style>
 <!-- Meta Pixel Code -->
 <script>
+
+  // Track Lead for Facebook Pixel
+  function trackLead(source){
+    if(window.fbq){window.fbq('track','Lead',{content_name:source})}
+  }
+
+  // Mobile hamburger menu toggle
+  function toggleMobileMenu(){
+    var menu=document.getElementById('mobileMenu');
+    var btn=document.getElementById('hamburgerBtn');
+    menu.classList.toggle('open');
+    btn.classList.toggle('active');
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('.mobile-menu a:not([target="_blank"])')){ 
+      document.getElementById('mobileMenu').classList.remove('open');
+      document.getElementById('hamburgerBtn').classList.remove('active');
+    }
+  });
+
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -186,8 +220,8 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
     <a href="mom-story.html">เรื่องแม่เจียว</a>
     <a href="golden-oil.html" style="color:var(--gold)">น้ำมันทองคำ</a>
     <a href="quick.html">สรุปสั้นๆ</a>
-    <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" style="background:#1877F2;color:#fff;padding:0.4rem 0.8rem;border-radius:2px;font-weight:700">Facebook</a>
-    <a href="https://lin.ee/p9cCC8u" target="_blank" class="nav-cta">LINE</a>
+    <a href="https://www.facebook.com/profile.php?id=61583788393847" target="_blank" rel="noopener noreferrer" onclick="trackLead('facebook_cta')" style="background:#1877F2;color:#fff;padding:0.4rem 0.8rem;border-radius:2px;font-weight:700">Facebook</a>
+    <a href="https://lin.ee/p9cCC8u" target="_blank" onclick="trackLead('line_nav')" class="nav-cta">LINE</a>
   </div>
 </nav>
 
@@ -208,7 +242,7 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
         <span class="unit">/ ขวด 250ml</span>
       </div>
       <div class="hero-btns">
-        <a href="https://lin.ee/p9cCC8u" target="_blank" class="btn-gold">สั่งซื้อเลย</a>
+        <a href="https://lin.ee/p9cCC8u" target="_blank" onclick="trackLead('line_cta_golden_oil')" class="btn-gold">สั่งซื้อเลย</a>
         <a href="#science" class="btn-out">ทำไมถึงพิเศษ?</a>
       </div>
     </div>
@@ -372,7 +406,7 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
         <li>น้ำมันบริสุทธิ์แรก (First Fry) ไม่ใช้ซ้ำ</li>
         <li>ใช้ได้ทั้งผัด ทอด หมัก ราด</li>
       </ul>
-      <a href="https://lin.ee/p9cCC8u" target="_blank" class="btn-gold" style="margin-top:1rem">สั่งซื้อเลย ฿149</a>
+      <a href="https://lin.ee/p9cCC8u" target="_blank" onclick="trackLead('line_cta_golden_oil')" class="btn-gold" style="margin-top:1rem">สั่งซื้อเลย ฿149</a>
     </div>
 
     <div class="reveal" style="text-align:center;margin-bottom:2rem">
@@ -385,14 +419,14 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
         <div class="name">เซ็ตคู่หู</div>
         <div class="amt">฿330</div>
         <div class="desc">โฮมเจียววว™ 1 ซอง + น้ำมันทองคำ 1 ขวด<br><span style="color:var(--lime)">ส่งฟรี! (ประหยัด 58.-)</span></div>
-        <a href="https://lin.ee/p9cCC8u" target="_blank" class="btn-sm">สั่งเซ็ตคู่หู</a>
+        <a href="https://lin.ee/p9cCC8u" target="_blank" onclick="trackLead('line_pricing_golden_oil')" class="btn-sm">สั่งเซ็ตคู่หู</a>
       </div>
       <div class="combo-card" style="border-color:var(--gold)">
         <div style="color:var(--gold);font-size:0.8rem;font-weight:700;margin-bottom:0.5rem">🏆 แนะนำ</div>
         <div class="name">เซ็ตครัวทองคำ</div>
         <div class="amt">฿699</div>
         <div class="desc">โฮมเจียววว™ 3 ซอง + น้ำมันทองคำ 1 ขวด<br><span style="color:var(--lime)">ส่งฟรี! (ประหยัด 110.-)</span></div>
-        <a href="https://lin.ee/p9cCC8u" target="_blank" class="btn-sm">สั่งเซ็ตครัวทองคำ</a>
+        <a href="https://lin.ee/p9cCC8u" target="_blank" onclick="trackLead('line_pricing_golden_oil')" class="btn-sm">สั่งเซ็ตครัวทองคำ</a>
       </div>
     </div>
   </div>
@@ -414,7 +448,7 @@ src="https://www.facebook.com/tr?id=2136657317102556&ev=PageView&noscript=1"
   <div class="reveal">
     <h2>เปลี่ยนน้ำมัน<span class="gold"> เปลี่ยนรสชาติ</span></h2>
     <p>แค่เปลี่ยนน้ำมันที่ใช้ อาหารทุกจานก็อัพเลเวลทันที น้ำมันทองคำ — ของดีจากครัวแม่เจียว สู่ครัวคุณ</p>
-    <a href="https://lin.ee/p9cCC8u" target="_blank" class="btn-gold">สั่งน้ำมันทองคำ ฿149</a>
+    <a href="https://lin.ee/p9cCC8u" target="_blank" onclick="trackLead('line_cta_golden_oil')" class="btn-gold">สั่งน้ำมันทองคำ ฿149</a>
     <div style="margin-top:1rem">
       <a href="index.html" style="color:var(--gray);font-size:0.9rem">← กลับหน้าหลัก HomeChew</a>
     </div>
