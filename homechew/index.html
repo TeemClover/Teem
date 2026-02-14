@@ -238,7 +238,7 @@
     <div class="hero-overlay"></div>
   </div>
   <div class="hero-content">
-    <div class="mom-badge">👩‍🍳 <span>แม่ว่า... ถ้าไม่อร่อย แม่ไม่ให้ขาย!</span></div>
+    <div class="mom-badge">👩‍🍳 <span>แม่ว่า... ถ้าไม่อร่อย แม่ไม่ให้ขายค่ะ!</span></div>
     <h1 class="hero-title"><span class="shimmer-text">โฮมเจียววว</span><span class="hero-tm">™</span></h1>
     <p class="hero-sub">หอมเจียวที่สะอาดที่สุด เพราะอาบน้ำมันบริสุทธิ์แรก</p>
     <p class="hero-recipe">สูตรต้นตำรับ 40 ปี จากหาดใหญ่</p>
@@ -257,7 +257,7 @@
     <div class="reveal warn-box">
       <p class="warn-title">⚠️ คำเตือนจากแม่</p>
       <p class="warn-text">แม่บอกเราตั้งแต่เด็ก...<br><br>สมัย 40 ปีก่อน ที่หาดใหญ่ หอมเจียวขาย<span class="c">ถุงละบาท</span>กันจริงๆ<br>แต่ถ้ากินของแม่แล้วสักครั้ง<br>พวกถุงละบาทนี่ เห็นใส่มาในจาน...<br><span class="c" style="font-size:1.375rem">เขี่ยออกเลยแหละ</span></p>
-      <div style="margin-top:1.25rem"><div class="mom-badge">👩‍🍳 <span>แม่ว่า... อย่ามาโทษแม่ทีหลังนะ ถ้ากลับไปกินของเดิมไม่ได้!</span></div></div>
+      <div style="margin-top:1.25rem"><div class="mom-badge">👩‍🍳 <span>แม่ว่า... อย่ามาโทษแม่ทีหลังนะคะ ถ้ากลับไปกินของเดิมไม่ได้ค่ะ!</span></div></div>
     </div>
   </div>
 </section>
@@ -384,9 +384,9 @@
   <div class="gold-line"></div>
   <div class="container" style="padding-top:4rem">
     <div class="reveal" style="text-align:center;margin-bottom:4rem">
-      <h2 class="section-heading" style="color:var(--offwhite)">เลือก<span style="color:var(--gold)">แพ็กเกจ</span>ของมึง</h2>
+      <h2 class="section-heading" style="color:var(--offwhite)">เลือก<span style="color:var(--gold)">แพ็กเกจ</span>ที่ใช่</h2>
       <p class="section-sub">ซองดำทึบ เก็บความกรอบได้นานที่สุด ไม่มีนานกว่านี้แล้ว</p>
-      <div style="margin-top:1rem"><div class="mom-badge">👩‍🍳 <span>แม่ว่า... ซื้อ 5 ซองนะ ประหยัดกว่า!</span></div></div>
+      <div style="margin-top:1rem"><div class="mom-badge">👩‍🍳 <span>แม่ว่า... ซื้อ 5 ซองนะคะ ประหยัดกว่าค่ะ!</span></div></div>
     </div>
     <div class="price-grid" id="priceGrid"></div>
     <div class="trust-row reveal">
@@ -449,7 +449,7 @@
 
 <!-- MOBILE CTA -->
 <div class="mobile-cta">
-  <button onclick="window.open('https://lin.ee/homechew','_blank')">สั่งเลย — เริ่มต้น ฿199</button>
+  <button onclick="window.open('https://lin.ee/p9cCC8u','_blank')">สั่งเลย — เริ่มต้น ฿199</button>
 </div>
 
 <script>
@@ -555,7 +555,7 @@
     if(p.strike)h+='<span class="price-strike">'+p.strike+'.-</span>';
     h+='<span class="price-num">฿'+p.price+'</span></div>';
     h+='<ul class="price-items">';p.items.forEach(it=>{h+='<li>'+it+'</li>'});h+='</ul>';
-    h+='<a href="'+LINE+'" target="_blank" rel="noopener noreferrer" class="price-cta '+(p.hl?'gold':'out')+'">'+(p.hl?'สั่งชุดนี้เลย (แนะนำ)':'สั่ง'+p.name)+'</a>';
+    var lineMsg=encodeURIComponent('สนใจสั่ง '+p.name+' ('+p.desc+') ราคา ฿'+p.price);h+='<a href="'+LINE+'?text='+lineMsg+'" target="_blank" rel="noopener noreferrer" class="price-cta '+(p.hl?'gold':'out')+'">'+(p.hl?'สั่งชุดนี้เลยค่ะ (แนะนำ)':'สั่ง'+p.name)+'</a>';
     d.innerHTML=h;prg.appendChild(d);obs.observe(d);
   });
 
