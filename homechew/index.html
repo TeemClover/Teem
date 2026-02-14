@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>โฮมเจียววว HomeChew — หอมเจียวพรีเมียม สูตร 40 ปี จากหาดใหญ่</title>
+  <meta name="description" content="หอมเจียวพรีเมียม สูตรต้นตำรับ 40 ปี จากหาดใหญ่ เนื้อหอมแดง 98% สลัดน้ำมันแห้งสนิท คัดเกรด A+ โดยแม่เจียว" />
+  <meta property="og:title" content="โฮมเจียววว HomeChew — หอมเจียวพรีเมียม" />
+  <meta property="og:description" content="สูตรลับ 40 ปี จากหาดใหญ่ เนื้อหอมแดง 98% สลัดน้ำมันแห้งสนิท" />
+  <meta property="og:image" content="https://files.manuscdn.com/user_upload_by_module/session_file/310519663334095011/CVVEZGRSYodKVFkq.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Prompt', sans-serif;
+      background: #111111;
+      color: #F5E6C8;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; border: none; cursor: pointer; }
+
+    /* ===== COLORS ===== */
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #DFC06A;
+      --gold-dark: #A68A30;
+      --cream: #F5E6C8;
+      --bg: #111111;
+      --red: #D94040;
+    }
+
+    /* ===== CONTAINER ===== */
+    .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 1rem; }
+    @media (min-width: 640px) { .container { padding: 0 1.5rem; } }
+    @media (min-width: 1024px) { .container { padding: 0 2rem; } }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes pulseGold {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.4); }
+      50% { box-shadow: 0 0 20px 10px rgba(201,168,76,0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+    @keyframes growLine {
+      from { width: 0; }
+      to { width: 60%; }
+    }
+
+    .animate-shimmer {
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    .animate-pulse-gold { animation: pulseGold 2s ease-in-out infinite; }
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== GOLD DIVIDER ===== */
+    .gold-divider { display: flex; justify-content: center; padding: 2rem 0; }
+    .gold-divider-line {
+      height: 1px;
+      width: 0;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .gold-divider-line.visible { animation: growLine 1.2s ease-in-out forwards; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      transition: all 0.5s ease;
+      padding: 1.25rem 0;
+      background: transparent;
+    }
+    .navbar.scrolled {
+      background: rgba(17,17,17,0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      padding: 0.75rem 0;
+    }
+    .navbar .container { display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { display: flex; align-items: center; gap: 0.5rem; background: none; }
+    .nav-logo span { font-size: 1.25rem; font-weight: 700; color: var(--gold); letter-spacing: 0.05em; }
+    .nav-cta {
+      background: var(--gold); color: var(--bg);
+      padding: 0.625rem 1.5rem; border-radius: 9999px;
+      font-weight: 600; font-size: 0.875rem;
+      transition: all 0.3s; animation: pulseGold 2s ease-in-out infinite;
+    }
+    .nav-cta:hover { background: var(--gold-light); transform: scale(1.05); }
+
+    /* ===== SCROLL PROGRESS ===== */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+      transform-origin: left; transform: scaleX(0);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg { position: absolute; inset: 0; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.5), #111111);
+    }
+    .hero-content { position: relative; z-index: 10; text-align: center; padding-top: 5rem; }
+    .hero-tag {
+      color: rgba(201,168,76,0.8); font-size: 0.875rem;
+      letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 1rem; font-weight: 500;
+    }
+    .hero h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.5rem; }
+    .hero h1 .white { color: #fff; -webkit-text-fill-color: #fff; }
+    .hero-sub { font-size: 1.125rem; color: rgba(245,230,200,0.8); margin-bottom: 2.5rem; max-width: 42rem; margin-left: auto; margin-right: auto; font-weight: 300; }
+    .hero-sub .gold { color: var(--gold); font-weight: 600; }
+    @media (min-width: 640px) { .hero h1 { font-size: 3.25rem; } .hero-sub { font-size: 1.25rem; } }
+    @media (min-width: 768px) { .hero h1 { font-size: 4.5rem; } }
+
+    /* ===== BADGES ===== */
+    .badge-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 3rem; }
+    .badge {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.05); backdrop-filter: blur(4px);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 9999px; padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
+    }
+    .badge svg { color: var(--gold); width: 1.25rem; height: 1.25rem; }
+
+    /* ===== CTA BUTTON ===== */
+    .cta-main {
+      display: inline-block; background: var(--gold); color: var(--bg);
+      padding: 1rem 2.5rem; border-radius: 9999px;
+      font-weight: 700; font-size: 1.125rem;
+      transition: all 0.3s; animation: pulseGold 2s ease-in-out infinite;
+    }
+    .cta-main:hover { background: var(--gold-light); transform: scale(1.05); }
+
+    .bounce-arrow { animation: bounce 2s infinite; margin-top: 4rem; text-align: center; }
+    .bounce-arrow svg { color: rgba(201,168,76,0.5); width: 2rem; height: 2rem; margin: 0 auto; }
+
+    /* ===== SECTION ===== */
+    .section { padding: 4rem 0; }
+    @media (min-width: 640px) { .section { padding: 6rem 0; } }
+    .section-title { font-size: 1.875rem; font-weight: 700; text-align: center; margin-bottom: 1rem; }
+    .section-title .gold { color: var(--gold); }
+    .section-sub { text-align: center; color: rgba(245,230,200,0.6); margin-bottom: 3rem; font-size: 1.125rem; }
+    @media (min-width: 640px) { .section-title { font-size: 2.25rem; } }
+
+    /* ===== WARNING ===== */
+    .warning-box {
+      position: relative; max-width: 48rem; margin: 0 auto;
+      border: 2px solid rgba(217,64,64,0.5); border-radius: 1rem;
+      padding: 2rem; background: linear-gradient(135deg, rgba(217,64,64,0.1), transparent);
+    }
+    @media (min-width: 640px) { .warning-box { padding: 3rem; } }
+    .warning-corner { position: absolute; width: 2rem; height: 2rem; border-color: var(--red); }
+    .warning-corner.tl { top: 0; left: 0; border-top: 2px solid; border-left: 2px solid; border-radius: 1rem 0 0 0; }
+    .warning-corner.tr { top: 0; right: 0; border-top: 2px solid; border-right: 2px solid; border-radius: 0 1rem 0 0; }
+    .warning-corner.bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; border-radius: 0 0 0 1rem; }
+    .warning-corner.br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; border-radius: 0 0 1rem 0; }
+    .warning-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .warning-header svg { width: 2rem; height: 2rem; color: var(--red); }
+    .warning-header h2 { font-size: 1.5rem; font-weight: 700; color: var(--red); }
+    @media (min-width: 640px) { .warning-header h2 { font-size: 1.875rem; } }
+    .warning-box p { color: rgba(245,230,200,0.85); font-size: 1.125rem; line-height: 1.8; margin-bottom: 1rem; }
+    .warning-box .gold { color: var(--gold); font-weight: 700; }
+    .warning-box .red-bold { color: var(--red); font-weight: 600; font-size: 1.25rem; padding-top: 0.5rem; }
+
+    /* ===== COMPARISON ===== */
+    .comparison-img { border-radius: 1rem; overflow: hidden; border: 1px solid rgba(201,168,76,0.1); margin-bottom: 3rem; }
+    .comparison-grid { display: grid; gap: 2rem; max-width: 64rem; margin: 0 auto; }
+    @media (min-width: 768px) { .comparison-grid { grid-template-columns: 1fr 1fr; } }
+    .comparison-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1rem; padding: 2rem; position: relative; overflow: hidden;
+    }
+    .comparison-card.good { background: rgba(201,168,76,0.05); border-color: rgba(201,168,76,0.3); }
+    .comparison-badge {
+      position: absolute; top: 1rem; right: 1rem;
+      font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 600;
+    }
+    .comparison-badge.bad { background: rgba(127,29,29,0.5); color: #FCA5A5; }
+    .comparison-badge.good { background: rgba(201,168,76,0.2); color: var(--gold); }
+    .comparison-item { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.25rem; margin-top: 0.5rem; }
+    .comparison-item svg { width: 1.25rem; height: 1.25rem; flex-shrink: 0; margin-top: 0.125rem; }
+    .comparison-item.bad svg { color: #F87171; }
+    .comparison-item.bad span { color: rgba(245,230,200,0.6); }
+    .comparison-item.good svg { color: var(--gold); }
+    .comparison-item.good .bold { color: var(--gold); font-weight: 600; }
+    .comparison-item.good .text { color: rgba(245,230,200,0.8); }
+
+    /* ===== STATS ===== */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 48rem; margin: 4rem auto 0; }
+    .stat-item { text-align: center; }
+    .stat-number { font-size: 1.875rem; font-weight: 800; color: var(--gold); }
+    .stat-label { color: rgba(245,230,200,0.5); font-size: 0.875rem; margin-top: 0.25rem; }
+    @media (min-width: 640px) { .stat-number { font-size: 2.25rem; } }
+
+    /* ===== STORY / GOLDEN OIL ===== */
+    .story-grid { display: grid; gap: 3rem; max-width: 72rem; margin: 0 auto; align-items: center; }
+    @media (min-width: 1024px) { .story-grid { grid-template-columns: 1fr 1fr; } }
+    .story-tag { color: rgba(201,168,76,0.8); font-size: 0.875rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem; font-weight: 500; }
+    .story-title { font-size: 1.875rem; font-weight: 700; line-height: 1.3; margin-bottom: 1.5rem; }
+    .story-title .gold { color: var(--gold); }
+    @media (min-width: 640px) { .story-title { font-size: 2.25rem; } }
+    .story-text { color: rgba(245,230,200,0.75); font-size: 1.125rem; line-height: 1.8; }
+    .story-text p { margin-bottom: 1rem; }
+    .story-text .gold { color: var(--gold); font-weight: 600; }
+    .trust-badges { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+    .trust-badge {
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold); font-size: 0.75rem; padding: 0.5rem 1rem;
+      border-radius: 9999px; font-weight: 600; letter-spacing: 0.05em;
+    }
+    .story-img { position: relative; }
+    .story-img-inner { border-radius: 1rem; overflow: hidden; border: 1px solid rgba(201,168,76,0.2); }
+    .story-img-badge {
+      position: absolute; bottom: -1rem; left: -1rem;
+      background: var(--gold); color: var(--bg);
+      padding: 0.75rem 1.5rem; border-radius: 0.75rem;
+      font-weight: 700; font-size: 0.875rem;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.2);
+    }
+    .story-img-glow {
+      position: absolute; inset: 0; border-radius: 1rem;
+      background: rgba(201,168,76,0.05); filter: blur(48px);
+      z-index: -1; transform: scale(1.1);
+    }
+
+    /* ===== BLOCKQUOTE ===== */
+    .gold-quote {
+      border-left: 4px solid var(--gold); padding-left: 1.5rem; padding-top: 0.5rem; padding-bottom: 0.5rem;
+      margin: 1.5rem 0; font-style: italic; color: rgba(245,230,200,0.9); font-size: 1.25rem;
+    }
+
+    /* ===== GOLDEN OIL INFO BOX ===== */
+    .info-box {
+      display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem;
+      background: rgba(201,168,76,0.05); border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 0.75rem; padding: 1rem;
+    }
+    .info-box svg { width: 2.5rem; height: 2.5rem; color: var(--gold); flex-shrink: 0; }
+    .info-box-title { color: var(--gold); font-weight: 600; }
+    .info-box-desc { color: rgba(245,230,200,0.6); font-size: 0.875rem; }
+
+    /* ===== MENU HACKS ===== */
+    .menu-img { border-radius: 1rem; overflow: hidden; border: 1px solid rgba(201,168,76,0.1); margin-bottom: 3rem; }
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-width: 56rem; margin: 0 auto; }
+    @media (min-width: 768px) { .menu-grid { grid-template-columns: repeat(4, 1fr); } }
+    .menu-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 0.75rem; padding: 1.25rem; text-align: center;
+      transition: all 0.3s;
+    }
+    .menu-card:hover { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.05); }
+    .menu-card .emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .menu-card .name { font-weight: 600; color: var(--cream); }
+    .menu-card .desc { color: rgba(245,230,200,0.5); font-size: 0.875rem; margin-top: 0.25rem; }
+
+    /* ===== REVIEWS ===== */
+    .reviews-grid { display: grid; gap: 1.5rem; max-width: 64rem; margin: 0 auto; }
+    @media (min-width: 640px) { .reviews-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .reviews-grid { grid-template-columns: repeat(3, 1fr); } }
+    .review-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 0.75rem; padding: 1.5rem; transition: all 0.3s;
+    }
+    .review-card:hover { border-color: rgba(201,168,76,0.3); }
+    .review-stars { display: flex; gap: 0.25rem; margin-bottom: 0.75rem; }
+    .review-stars svg { width: 1rem; height: 1rem; fill: var(--gold); color: var(--gold); }
+    .review-text { color: rgba(245,230,200,0.8); line-height: 1.6; margin-bottom: 1rem; }
+    .review-author { display: flex; align-items: center; gap: 0.5rem; }
+    .review-avatar {
+      width: 2rem; height: 2rem; border-radius: 9999px;
+      background: rgba(201,168,76,0.2); display: flex; align-items: center; justify-content: center;
+      color: var(--gold); font-size: 0.875rem; font-weight: 700;
+    }
+    .review-name { color: rgba(245,230,200,0.6); font-size: 0.875rem; }
+
+    /* ===== PRICING ===== */
+    .pricing-grid { display: grid; gap: 1.5rem; max-width: 64rem; margin: 0 auto; align-items: stretch; }
+    @media (min-width: 768px) { .pricing-grid { grid-template-columns: repeat(3, 1fr); } }
+    .price-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1rem; padding: 2rem; display: flex; flex-direction: column;
+      transition: all 0.3s;
+    }
+    .price-card:hover { border-color: rgba(201,168,76,0.3); }
+    .price-card.featured {
+      background: linear-gradient(to bottom, rgba(201,168,76,0.1), rgba(201,168,76,0.05));
+      border: 2px solid var(--gold); position: relative;
+      box-shadow: 0 10px 40px rgba(201,168,76,0.1);
+    }
+    @media (min-width: 768px) { .price-card.featured { transform: scale(1.05); } }
+    .price-badge-top {
+      position: absolute; top: -1rem; left: 50%; transform: translateX(-50%);
+      background: var(--gold); color: var(--bg);
+      padding: 0.375rem 1.5rem; border-radius: 9999px;
+      font-size: 0.875rem; font-weight: 700; white-space: nowrap;
+    }
+    .price-tier { color: rgba(245,230,200,0.6); font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .price-card.featured .price-tier { color: var(--gold); margin-top: 0.5rem; }
+    .price-amount { font-size: 3rem; font-weight: 800; color: var(--cream); margin-bottom: 0.25rem; }
+    .price-amount span { font-size: 1.125rem; font-weight: 400; color: rgba(245,230,200,0.5); }
+    .price-card.featured .price-amount { color: var(--gold); }
+    .price-amount .strike { color: rgba(245,230,200,0.4); text-decoration: line-through; font-size: 1.125rem; margin-left: 0.75rem; }
+    .price-desc { color: rgba(245,230,200,0.5); font-size: 0.875rem; margin-bottom: 1.5rem; }
+    .price-desc .gold { color: var(--gold); font-weight: 600; }
+    .price-features { list-style: none; flex: 1; margin-bottom: 2rem; }
+    .price-features li { display: flex; align-items: center; gap: 0.5rem; color: rgba(245,230,200,0.7); font-size: 0.875rem; margin-bottom: 0.75rem; }
+    .price-card.featured .price-features li { color: rgba(245,230,200,0.8); }
+    .price-features li svg { width: 1rem; height: 1rem; color: var(--gold); flex-shrink: 0; }
+    .price-btn {
+      width: 100%; padding: 0.875rem; border-radius: 0.75rem;
+      font-weight: 600; font-size: 1rem; transition: all 0.3s;
+      background: rgba(255,255,255,0.1); color: var(--cream); border: 1px solid rgba(255,255,255,0.2);
+    }
+    .price-btn:hover { background: rgba(255,255,255,0.2); }
+    .price-btn.featured {
+      background: var(--gold); color: var(--bg); border: none;
+      font-weight: 700; font-size: 1.125rem;
+      animation: pulseGold 2s ease-in-out infinite;
+    }
+    .price-btn.featured:hover { background: var(--gold-light); transform: scale(1.02); }
+
+    .trust-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 3rem; color: rgba(245,230,200,0.4); font-size: 0.875rem; }
+
+    /* ===== FAQ ===== */
+    .faq-list { max-width: 48rem; margin: 0 auto; }
+    .faq-item { border: 1px solid rgba(201,168,76,0.2); border-radius: 0.5rem; overflow: hidden; margin-bottom: 0.75rem; }
+    .faq-question {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem; text-align: left; background: transparent; color: var(--cream);
+      font-weight: 600; transition: background 0.3s;
+    }
+    .faq-question:hover { background: rgba(201,168,76,0.05); }
+    .faq-question svg { width: 1.25rem; height: 1.25rem; color: var(--gold); flex-shrink: 0; transition: transform 0.3s; }
+    .faq-question.open svg { transform: rotate(45deg); }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease;
+      padding: 0 1.25rem; color: rgba(245,230,200,0.7); line-height: 1.7;
+    }
+    .faq-answer.open { max-height: 300px; padding: 0 1.25rem 1.25rem; }
+
+    /* ===== FOOTER ===== */
+    .footer { border-top: 1px solid rgba(201,168,76,0.1); padding: 3rem 0; text-align: center; }
+    .footer-logo { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
+    .footer-logo span { font-size: 1.25rem; font-weight: 700; color: var(--gold); }
+    .footer-desc { color: rgba(245,230,200,0.4); font-size: 0.875rem; margin-bottom: 1.5rem; }
+    .line-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: #06C755; color: #fff;
+      padding: 0.625rem 1.5rem; border-radius: 9999px;
+      font-size: 0.875rem; font-weight: 600; transition: opacity 0.3s;
+    }
+    .line-btn:hover { opacity: 0.9; }
+    .footer-line { height: 1px; max-width: 20rem; margin: 1.5rem auto; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .footer-copy { color: rgba(245,230,200,0.3); font-size: 0.75rem; }
+
+    /* ===== FLOATING MOBILE CTA ===== */
+    .mobile-cta {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+      padding: 1rem; background: linear-gradient(to top, #111111, rgba(17,17,17,0.95), transparent);
+      display: block;
+    }
+    @media (min-width: 768px) { .mobile-cta { display: none; } }
+    .mobile-cta button {
+      width: 100%; background: var(--gold); color: var(--bg);
+      padding: 1rem; border-radius: 0.75rem;
+      font-weight: 700; font-size: 1.125rem;
+      animation: pulseGold 2s ease-in-out infinite;
+    }
+
+    /* ===== SVG ICONS (inline) ===== */
+    .icon { display: inline-block; vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <button class="nav-logo" onclick="document.getElementById('hero').scrollIntoView({behavior:'smooth'})">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold)"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+        <span>โฮมเจียววว</span>
+      </button>
+      <button class="nav-cta" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">สั่งซื้อเลย</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663334095011/CVVEZGRSYodKVFkq.jpg" alt="หอมเจียวพรีเมียม HomeChew" loading="eager" />
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content container">
+      <div class="fade-in">
+        <p class="hero-tag">Premium Craft Fried Shallots</p>
+      </div>
+      <div class="fade-in" style="transition-delay:0.2s">
+        <h1><span class="animate-shimmer">เปลี่ยนทุกคำ...</span><br><span class="white">ให้เป็นตำนาน</span></h1>
+      </div>
+      <div class="fade-in" style="transition-delay:0.4s">
+        <p class="hero-sub"><span class="gold">โฮมเจียววว (HomeChew)</span> สูตรลับ 40 ปี จากหาดใหญ่</p>
+      </div>
+      <div class="fade-in" style="transition-delay:0.6s">
+        <div class="badge-row">
+          <div class="badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.9C15.5 4.9 17 3.5 17 3.5s1.5 2.5 2 5.5a7 7 0 0 1-8 11Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+            <span>เนื้อหอมแดง 98%</span>
+          </div>
+          <div class="badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>
+            <span>สลัดน้ำมันแห้งสนิท</span>
+          </div>
+          <div class="badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+            <span>คัดเกรด A+ โดยแม่เจียว</span>
+          </div>
+        </div>
+      </div>
+      <div class="fade-in" style="transition-delay:0.8s">
+        <button class="cta-main" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">ลิ้มลองความกรอบ</button>
+      </div>
+      <div class="bounce-arrow">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- WARNING -->
+  <section class="section">
+    <div class="container">
+      <div class="warning-box fade-in">
+        <div class="warning-corner tl"></div>
+        <div class="warning-corner tr"></div>
+        <div class="warning-corner bl"></div>
+        <div class="warning-corner br"></div>
+        <div class="warning-header">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <h2>คำเตือน: โปรดอ่านก่อนสั่งซื้อ</h2>
+        </div>
+        <p>เราไม่อยากให้คุณสั่ง... ถ้ายังชอบกินแป้งทอดแบบเดิมๆ</p>
+        <p>เพราะความกรอบของ <span class="gold">"เนื้อหอมแดงแท้"</span> ที่เคลือบแป้งเพียง <span class="gold">"ระดับไมครอน"</span> จะทำให้ลิ้นของคุณเปลี่ยนไปตลอดกาล</p>
+        <p class="red-bold">ระวัง! คุณอาจกลับไปกินหอมเจียวทั่วไปไม่ได้อีกเลย</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"><div class="gold-divider-line fade-in"></div></div>
+
+  <!-- COMPARISON -->
+  <section class="section">
+    <div class="container">
+      <div class="fade-in">
+        <h2 class="section-title"><span class="gold">ทำไม</span> ต้องเป็นโฮมเจียววว?</h2>
+        <p class="section-sub">ความแตกต่างที่ลิ้นรู้</p>
+      </div>
+      <div class="comparison-img fade-in">
+        <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663334095011/wCiBVvOJGOXMRJMz.jpg" alt="เปรียบเทียบหอมเจียว" loading="lazy" />
+      </div>
+      <div class="comparison-grid">
+        <div class="comparison-card fade-in">
+          <span class="comparison-badge bad">หอมเจียวทั่วไป</span>
+          <div style="margin-top:2.5rem">
+            <div class="comparison-item bad">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              <span>แป้งหนา 50-70% เหมือนเคี้ยวแป้งทอด</span>
+            </div>
+            <div class="comparison-item bad">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              <span>อมน้ำมันเก่า เจ็บคอ เหม็นหืน</span>
+            </div>
+            <div class="comparison-item bad">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              <span>รสชาติปรุงแต่ง ไม่ใช่รสหอมแดงแท้</span>
+            </div>
+          </div>
+        </div>
+        <div class="comparison-card good fade-in" style="transition-delay:0.2s">
+          <span class="comparison-badge good">โฮมเจียววว</span>
+          <div style="margin-top:2.5rem">
+            <div class="comparison-item good">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+              <span><span class="bold">แป้งบางวิญญาณ</span> <span class="text">(&lt;2% เพื่อล็อคความกรอบ)</span></span>
+            </div>
+            <div class="comparison-item good">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+              <span><span class="bold">สลัดน้ำมันแห้งสนิท</span> <span class="text">(ไม่เลี่ยน ไม่เจ็บคอ)</span></span>
+            </div>
+            <div class="comparison-item good">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+              <span><span class="bold">หวานธรรมชาติ</span> <span class="text">(รสเนื้อหอมแดงแท้ 100%)</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stats-grid fade-in">
+        <div class="stat-item"><div class="stat-number" data-target="98" data-suffix="%">0%</div><div class="stat-label">เนื้อหอมแดงแท้</div></div>
+        <div class="stat-item"><div class="stat-number" data-target="40" data-suffix=" ปี">0 ปี</div><div class="stat-label">สูตรต้นตำรับ</div></div>
+        <div class="stat-item"><div class="stat-number" data-target="0" data-suffix="% น้ำมัน">0% น้ำมัน</div><div class="stat-label">สลัดแห้งสนิท</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"><div class="gold-divider-line fade-in"></div></div>
+
+  <!-- STORY -->
+  <section class="section">
+    <div class="container">
+      <div class="story-grid">
+        <div class="fade-in">
+          <p class="story-tag">Our Story</p>
+          <h2 class="story-title">จากครัวหลังบ้าน...<br><span class="gold">สู่โรงงานมาตรฐาน</span><br>เพื่อแม่</h2>
+          <div class="story-text">
+            <p>แม่เจียวหอมมาทั้งชีวิต กว่า <span class="gold">40 ปี</span> ที่หาดใหญ่ ด้วยสูตรลับที่ทำให้ไก่ทอดหาดใหญ่โด่งดังไปทั่วโลก</p>
+            <p>แม่จู้จี้ทุกขั้นตอน ตั้งแต่คัดหอมแดงเกรด A+ ทีละหัว จนถึงเช็คสีทองของหอมเจียวทุกกระทะ</p>
+            <p>เราจึงสร้าง <span class="gold">"ห้องผลิตมาตรฐานโรงงาน"</span> ให้แม่ เพื่อรักษาคุณภาพเดิม ในมาตรฐานใหม่ที่สะอาด ปลอดภัย และส่งถึงมือคุณได้ทุกวัน</p>
+          </div>
+          <div class="trust-badges">
+            <span class="trust-badge">QC โดยแม่</span>
+            <span class="trust-badge">มาตรฐานโรงงาน</span>
+            <span class="trust-badge">ไม่ใช้สารกันเสีย</span>
+          </div>
+        </div>
+        <div class="story-img fade-in" style="transition-delay:0.3s">
+          <div class="story-img-inner">
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663334095011/XrOTWhuEnPjuSVxy.jpg" alt="สินค้าหอมเจียวพรีเมียม HomeChew" loading="lazy" />
+          </div>
+          <div class="story-img-badge">Premium Grade A+</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"><div class="gold-divider-line fade-in"></div></div>
+
+  <!-- GOLDEN OIL -->
+  <section class="section">
+    <div class="container">
+      <div class="story-grid">
+        <div class="story-img fade-in">
+          <div class="story-img-inner">
+            <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663334095011/TuJaRIakyxaxgZuL.jpg" alt="น้ำมันทองคำ HomeChew" loading="lazy" />
+          </div>
+          <div class="story-img-glow"></div>
+        </div>
+        <div class="fade-in" style="transition-delay:0.3s">
+          <p class="story-tag">The Secret</p>
+          <h2 class="story-title">ความลับของ<br><span class="gold">น้ำมันทองคำ</span></h2>
+          <div class="story-text">
+            <p>ทำไมร้านไก่ทอดดังๆ ถึงแย่งกันซื้อ <span class="gold">น้ำมันก้นกระทะ</span> ของเรา?</p>
+            <p>เพราะมันดูดซับ <span class="gold">"หัวเชื้อความหอม"</span> ของหอมแดงไว้จนหมด</p>
+          </div>
+          <blockquote class="gold-quote">"ขนาดน้ำมันยังหอมขนาดนี้...<br>แล้วเนื้อในถุงจะขนาดไหน?"</blockquote>
+          <div class="info-box">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            <div>
+              <div class="info-box-title">น้ำมันทองคำ</div>
+              <div class="info-box-desc">By-product จากกระบวนการเจียวที่ร้านไก่ทอดต้องการตัว</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"><div class="gold-divider-line fade-in"></div></div>
+
+  <!-- MENU HACKS -->
+  <section class="section">
+    <div class="container">
+      <div class="fade-in">
+        <h2 class="section-title">แค่ฉีกซอง... <span class="gold">มื้อธรรมดาก็กลายเป็นมื้อพิเศษ</span></h2>
+        <p class="section-sub">กินกับอะไรก็อร่อย</p>
+      </div>
+      <div class="menu-img fade-in">
+        <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663334095011/FrFDjKHSbdfPXmRx.jpg" alt="เมนูที่ใช้หอมเจียว HomeChew" loading="lazy" />
+      </div>
+      <div class="menu-grid">
+        <div class="menu-card fade-in"><div class="emoji">🍚</div><div class="name">ข้าวไข่เจียว</div><div class="desc">ฟูกรอบ ตัดเลี่ยน</div></div>
+        <div class="menu-card fade-in" style="transition-delay:0.1s"><div class="emoji">🍜</div><div class="name">มาม่า/ก๋วยเตี๋ยว</div><div class="desc">ดูดน้ำซุป ชุ่มฉ่ำ</div></div>
+        <div class="menu-card fade-in" style="transition-delay:0.2s"><div class="emoji">🍗</div><div class="name">ไก่ทอดหาดใหญ่</div><div class="desc">กำเนิดตำนาน</div></div>
+        <div class="menu-card fade-in" style="transition-delay:0.3s"><div class="emoji">🥗</div><div class="name">ยำ/ส้มตำ</div><div class="desc">นัว กรุบกริบ</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"><div class="gold-divider-line fade-in"></div></div>
+
+  <!-- REVIEWS -->
+  <section class="section">
+    <div class="container">
+      <div class="fade-in">
+        <h2 class="section-title"><span class="gold">1,000</span>+ บ้าน... ยืนยันแล้ว</h2>
+        <p class="section-sub">เสียงจากคนที่ลองแล้ว</p>
+      </div>
+      <div class="reviews-grid" id="reviewsGrid"></div>
+    </div>
+  </section>
+
+  <div class="gold-divider"><div class="gold-divider-line fade-in"></div></div>
+
+  <!-- PRICING -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="fade-in">
+        <h2 class="section-title">เลือกความอร่อย <span class="gold">ส่งตรงถึงบ้าน</span></h2>
+        <p class="section-sub">จัดส่งทั่วไทย ภายใน 1-3 วัน</p>
+      </div>
+      <div class="pricing-grid" id="pricingGrid"></div>
+      <div class="trust-strip fade-in">
+        <span>🚚 จัดส่งทั่วไทย</span>
+        <span>📦 แพ็คอย่างดี</span>
+        <span>💯 ยินดีคืนเงิน</span>
+        <span>🔒 ชำระเงินปลอดภัย</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-divider"><div class="gold-divider-line fade-in"></div></div>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="fade-in">
+        <h2 class="section-title">คำถาม<span class="gold">ที่พบบ่อย</span></h2>
+      </div>
+      <div class="faq-list fade-in" id="faqList" style="margin-top:3rem"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--gold)"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+        <span>โฮมเจียววว</span>
+      </div>
+      <p class="footer-desc">ผลิตด้วยความรักโดยแม่เจียว | สูตรต้นตำรับ 40 ปี จากหาดใหญ่</p>
+      <a href="https://lin.ee/homechew" target="_blank" rel="noopener noreferrer" class="line-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        LINE: @homechew
+      </a>
+      <div class="footer-line"></div>
+      <p class="footer-copy">© 2025 HomeChew (โฮมเจียววว). All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- FLOATING MOBILE CTA -->
+  <div class="mobile-cta">
+    <button onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">สั่งซื้อเลย — เริ่มต้น 199.-</button>
+  </div>
+
+  <script>
+    // ===== SCROLL PROGRESS =====
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      const s = window.scrollY / h;
+      document.getElementById('scrollProgress').style.transform = 'scaleX(' + s + ')';
+    });
+
+    // ===== NAVBAR SCROLL =====
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // ===== INTERSECTION OBSERVER FOR FADE-IN =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Counter animation
+          if (entry.target.dataset.target !== undefined) {
+            animateCounter(entry.target);
+          }
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '-40px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ===== COUNTER ANIMATION =====
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      if (target === 0) { el.textContent = '0' + suffix; return; }
+      let current = 0;
+      const duration = 2000;
+      const step = target / (duration / 16);
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) { current = target; clearInterval(timer); }
+        el.textContent = Math.floor(current) + suffix;
+      }, 16);
+    }
+
+    // Observe stat counters
+    document.querySelectorAll('.stat-number[data-target]').forEach(el => {
+      el.classList.add('fade-in');
+      observer.observe(el);
+    });
+
+    // ===== REVIEWS =====
+    const reviews = [
+      { name: "คุณแอน", text: "กินแล้วหยุดไม่ได้ แฟนแย่งกินหมด! ต้องสั่งเพิ่มอีก 3 ถุง" },
+      { name: "คุณบอส", text: "หอมเจียวที่อร่อยที่สุดที่เคยกิน ไม่เลี่ยนเลย กรอบมากจริงๆ" },
+      { name: "คุณมิ้นท์", text: "ใส่มาม่าอร่อยสุดๆ ลูกชอบมาก ต้องมีติดบ้านตลอด" },
+      { name: "คุณเจ", text: "เป็นคนหาดใหญ่ ยืนยันว่านี่คือรสชาติแท้ๆ ของบ้านเรา" },
+      { name: "คุณนุ่น", text: "สั่งชุดครอบครัว 5 ถุง แจกญาติ ทุกคนติดใจหมด สั่งซ้ำแล้ว" },
+      { name: "คุณต้น", text: "ราคา 199 แต่คุ้มค่ามาก เทียบกับตลาดนัดคนละเรื่อง" },
+    ];
+    const starSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="var(--gold)" stroke="var(--gold)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+    const rg = document.getElementById('reviewsGrid');
+    reviews.forEach((r, i) => {
+      const card = document.createElement('div');
+      card.className = 'review-card fade-in';
+      card.style.transitionDelay = (i * 0.1) + 's';
+      card.innerHTML = '<div class="review-stars">' + starSvg.repeat(5) + '</div>' +
+        '<p class="review-text">"' + r.text + '"</p>' +
+        '<div class="review-author"><div class="review-avatar">' + r.name[3] + '</div><span class="review-name">' + r.name + '</span></div>';
+      rg.appendChild(card);
+      observer.observe(card);
+    });
+
+    // ===== PRICING =====
+    const LINE_URL = "https://lin.ee/homechew";
+    const packages = [
+      { tier: "ชุดลองชิม", price: "199", priceSuffix: ".-", desc: "1 ถุง + ค่าส่ง 40.-", features: ["หอมเจียวพรีเมียม 1 ถุง", "น้ำหนัก 150 กรัม"], featured: false },
+      { tier: "ชุดสุดคุ้ม", price: "570", priceSuffix: ".-", strike: "600.-", desc: '3 ถุง (ตกถุงละ 190.-) <span class="gold">ส่งฟรี!</span>', features: ["หอมเจียวพรีเมียม 3 ถุง", "ส่งฟรีทั่วไทย", "ประหยัด 30 บาท"], featured: true, btnText: "สั่งชุดสุดคุ้ม (แนะนำ)" },
+      { tier: "ชุดตุน", price: "950", priceSuffix: ".-", desc: '5 ถุง (ตกถุงละ 190.-) <span class="gold">ส่งฟรี!</span>', features: ["หอมเจียวพรีเมียม 5 ถุง", "ส่งฟรีทั่วไทย", "เหมาะสำหรับครอบครัว"], featured: false },
+    ];
+    const shieldSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>';
+    const pg = document.getElementById('pricingGrid');
+    packages.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'price-card fade-in' + (p.featured ? ' featured' : '');
+      card.style.transitionDelay = (i * 0.15) + 's';
+      let html = '';
+      if (p.featured) html += '<div class="price-badge-top">🏆 ขายดีที่สุด</div>';
+      html += '<div class="price-tier">' + p.tier + '</div>';
+      html += '<div class="price-amount">' + p.price + '<span>' + p.priceSuffix + '</span>';
+      if (p.strike) html += '<span class="strike">' + p.strike + '</span>';
+      html += '</div>';
+      html += '<div class="price-desc">' + p.desc + '</div>';
+      html += '<ul class="price-features">';
+      p.features.forEach(f => { html += '<li>' + shieldSvg + ' ' + f + '</li>'; });
+      html += '</ul>';
+      html += '<button class="price-btn' + (p.featured ? ' featured' : '') + '" onclick="window.open(\'' + LINE_URL + '\',\'_blank\')">' + (p.btnText || 'สั่ง' + p.tier) + '</button>';
+      card.innerHTML = html;
+      pg.appendChild(card);
+      observer.observe(card);
+    });
+
+    // ===== FAQ =====
+    const faqs = [
+      { q: "มีแป้งไหม?", a: "มีแป้งเคลือบบางๆ น้อยกว่า 2% เพื่อล็อคความกรอบให้คงทนนานขึ้น ไม่ใช่การชุบแป้งทอดแบบหอมเจียวทั่วไปที่มีแป้ง 50-70% เรียกว่า 'แป้งบางวิญญาณ' เพราะบางจนแทบมองไม่เห็น" },
+      { q: "เก็บได้นานไหม?", a: "เก็บได้นาน 2 เดือนในถุงซิปล็อค เมื่อเปิดแล้วควรปิดให้สนิทและเก็บในที่แห้ง หลีกเลี่ยงความชื้น จะคงความกรอบได้นาน" },
+      { q: "ทำไมราคา 199 บาท?", a: "เพราะเราใช้หอมแดงเกรด A+ คัดมือทุกหัว ไม่ใช้หอมแดงเกรดรอง กระบวนการผลิตทุกขั้นตอนผ่าน QC โดยแม่เจียวเอง สลัดน้ำมันแห้งสนิท ไม่เหมือนหอมเจียวตลาดนัดที่อมน้ำมันเก่า คุณจ่ายเพื่อ 'เนื้อหอมแดงแท้' ไม่ใช่ 'แป้งทอด'" },
+      { q: "จัดส่งอย่างไร?", a: "จัดส่งทั่วไทยผ่านขนส่งเอกชน ภายใน 1-3 วันทำการ แพ็คอย่างดีด้วยกล่องกันกระแทก สั่ง 3 ถุงขึ้นไปส่งฟรี!" },
+      { q: "สั่งซื้อผ่านช่องทางไหน?", a: "สั่งซื้อได้ผ่าน LINE Official: @homechew หรือกดปุ่ม 'สั่งซื้อเลย' บนเว็บไซต์นี้ได้เลยครับ ทีมงานจะตอบกลับภายใน 5 นาที" },
+    ];
+    const fl = document.getElementById('faqList');
+    faqs.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'faq-item';
+      item.innerHTML = '<button class="faq-question" onclick="toggleFaq(this)">' +
+        '<span>' + f.q + '</span>' +
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+        '</button>' +
+        '<div class="faq-answer">' + f.a + '</div>';
+      fl.appendChild(item);
+    });
+
+    function toggleFaq(btn) {
+      const answer = btn.nextElementSibling;
+      const isOpen = answer.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+      document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('open'));
+      if (!isOpen) {
+        answer.classList.add('open');
+        btn.classList.add('open');
+      }
+    }
+  </script>
+</body>
+</html>
