@@ -1,5 +1,5 @@
 /* ============================================
-   CHINA STAR CAMP — Shared JavaScript
+   SANCHUAN Academy — Shared JavaScript
    Countdown, Scroll Animations, FAQ, Floating CTA
    ============================================ */
 
@@ -39,7 +39,6 @@
       observer.observe(el);
     });
   } else {
-    // Fallback: show all elements immediately
     document.querySelectorAll('.fade-up').forEach(function (el) {
       el.classList.add('visible');
     });
@@ -50,7 +49,6 @@
     q.addEventListener('click', function () {
       var item = this.closest('.faq-item');
       if (!item) return;
-      // Close other open items
       document.querySelectorAll('.faq-item.open').forEach(function (openItem) {
         if (openItem !== item) openItem.classList.remove('open');
       });
@@ -72,7 +70,6 @@
       regObserver.observe(target);
     }
 
-    // Show floating CTA only after scrolling past hero
     var hero = document.querySelector('.hero');
     if (hero && 'IntersectionObserver' in window) {
       floatingCta.style.opacity = '0';
