@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanchuan Holdings | VIP 核心商务考察行程</title>
+    <title>Sanchuan Holdings | 核心商务考察行程</title>
     <style>
         :root {
             --bg-dark: #050505;
@@ -31,7 +31,7 @@
             line-height: 1.6;
         }
 
-        /* --- VIP WELCOME HEADER STYLES --- */
+        /* --- VIP WELCOME HEADER --- */
         .welcome-header {
             background: linear-gradient(135deg, #050505 0%, #1a1a1a 100%);
             padding: 60px 20px 50px;
@@ -63,7 +63,7 @@
         .welcome-title {
             position: relative;
             color: #ffffff;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 600;
             margin-bottom: 5px;
             letter-spacing: 2px;
@@ -80,7 +80,7 @@
         .welcome-name {
             position: relative;
             color: #ffffff;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 500;
             margin-bottom: 8px;
             letter-spacing: 1px;
@@ -88,12 +88,12 @@
         .welcome-name span {
             color: var(--gold-primary);
             font-weight: bold;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
         }
         .welcome-company {
             position: relative;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
@@ -108,9 +108,10 @@
         .intro-text {
             text-align: center;
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: 0.95rem;
             margin: 20px 0 40px;
-            padding: 0 20px;
+            padding: 0 10px;
+            line-height: 1.8;
         }
 
         .date-divider {
@@ -129,7 +130,7 @@
 
         .date-divider h2 {
             color: var(--gold-light);
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 600;
             letter-spacing: 1px;
         }
@@ -177,7 +178,7 @@
         }
 
         .title {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 15px;
             color: #ffffff;
@@ -197,6 +198,7 @@
             font-size: 0.95rem;
             color: #d1d5db;
             margin-bottom: 15px;
+            line-height: 1.6;
         }
 
         .detail-grid {
@@ -233,7 +235,7 @@
             color: #ffffff;
         }
 
-        /* --- PARKING LOT STYLES --- */
+        /* --- PARKING LOT & VISION STYLES --- */
         .parking-lot {
             background: repeating-linear-gradient(
                 -45deg,
@@ -243,10 +245,6 @@
                 rgba(0, 0, 0, 0) 20px
             );
             border: 1px dashed var(--gold-primary);
-        }
-
-        .parking-lot::before {
-            background-color: transparent;
         }
 
         .parking-lot .title {
@@ -268,15 +266,37 @@
             font-size: 0.9rem;
             color: #e5e7eb;
         }
+
+        .vision-card {
+            background: linear-gradient(135deg, #111 0%, #1a1500 100%);
+            border: 1px solid var(--gold-primary);
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 40px;
+        }
         
-        .parking-recommendation strong {
-            color: var(--gold-primary);
+        .vision-card::before {
+            display: none;
         }
 
-        /* Highlight classes for specific events */
-        .highlight-border {
-            border-color: rgba(212, 175, 55, 0.4);
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        .vision-card h3 {
+            color: var(--gold-primary);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .vision-card p {
+            font-size: 1rem;
+            color: #e5e5e5;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .vision-card .highlight {
+            color: var(--gold-light);
+            font-weight: bold;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -292,180 +312,122 @@
 
     <div class="container">
         <p class="intro-text">
-            本次行程不仅是商务考察，更是 Sanchuan Holdings (三川控股) 在中泰两国影视、商业与顶级人脉圈层中“确立主导权”的核心战役。以下为高管团队的详细战略部署。
+            本次行程的核心不仅是商务接洽，更是 Sanchuan (三川) 展现行业愿景、赋能中泰影视与科技合作的重要契机。我们将以从容、专业且极具前瞻性的姿态，与泰国顶尖学府及行业领袖展开深度对话。
         </p>
 
         <div class="date-divider">
-            <h2>2月26日 (周四) - 破局与定调之日</h2>
+            <h2>2月26日 (周四) - 启航与探索</h2>
         </div>
         
-        <div class="card highlight-border">
+        <div class="card">
             <div class="time-badge">中午 12:00</div>
             <div class="title">🏦 CTW 午餐 & 公司官方银行账户开立</div>
-            <div class="desc">Sanchuan Holdings 核心董事齐聚。前往四面佛祈福后，赴开泰银行 (KBANK) Central World 分行办理开户。</div>
-            <div class="detail-grid">
-                <div>
-                    <div class="section-title">核心准备</div>
-                    <div class="desc">携带公司印章及董事会决议。</div>
-                </div>
-            </div>
-            <div class="goal-box">
-                <div class="section-title">🎯 战略目标</div>
-                <div class="goal-text">获取官方账户，宣告公司资金运作已就绪，为下午的顶级谈判提供最强底气。</div>
-            </div>
+            <div class="desc">三川核心董事齐聚。前往四面佛祈福后，赴开泰银行 (KBANK) 办理开户。这是 Sanchuan 正式在泰国生根的标志，为后续的所有商业合作提供坚实的资金运作基础。</div>
         </div>
 
         <div class="card">
             <div class="time-badge">下午 16:00</div>
-            <div class="title">⚔️ 会见 P'Nook (China Star Camp)</div>
-            <div class="desc">地点：Central Eastville。中国明星夏令营项目深度谈判。</div>
+            <div class="title">🤝 会见 P'Nook (China Star Camp)</div>
+            <div class="desc">地点：Central Eastville。与项目泰方核心负责人 P'Nook 进行商业机会探索 (Opportunity Scouting)。</div>
             <div class="detail-grid">
                 <div>
-                    <div class="section-title">背景分析</div>
-                    <div class="desc">P'Nook 是该项目的泰方核心负责人。我们需要确保项目质量不被降低。</div>
+                    <div class="section-title">沟通原则</div>
+                    <div class="desc">P'Nook 精通中文，交流无障碍。我们不急于给出承诺，重点是评估双方理念是否契合。</div>
                 </div>
             </div>
             <div class="goal-box">
-                <div class="section-title">🎯 战略目标</div>
-                <div class="goal-text">坚守“高标准质量”合作红线，不妥协。展现我们的主导权，暗示若不达标，我们将把项目转移至斯巴顿大学 (SPU)。</div>
+                <div class="section-title">🎯 战略态度</div>
+                <div class="goal-text">秉持开放共赢的心态。若理念不合则从容放手；若决定合作，则必须坚守“高质量”的底线。我们不强势，但也绝不妥协对品质的要求。</div>
             </div>
         </div>
 
         <div class="card">
             <div class="time-badge">晚上 20:00</div>
             <div class="title">🎬 高管夜话：导演 Golf 与 Mint (Garena BD)</div>
-            <div class="desc">顶级配置的高管智囊团会议，为后续的制作与高校合作铺路。</div>
+            <div class="desc">为未来的影视制作与高校合作储备顶层智囊。</div>
             <div class="detail-grid">
                 <div>
                     <div class="section-title">导演 Golf</div>
-                    <div class="desc">泰国资深导演（有丰富影视制作及选角经验）。他将专注“影视制作”而非教学。</div>
+                    <div class="desc">泰国资深导演。我们将探讨影视制作（尤其中方微短剧出海）合作，他将专注创作而非教学。</div>
                 </div>
                 <div>
                     <div class="section-title">商务智囊 Mint</div>
-                    <div class="desc">游戏巨头 Garena 的商务拓展 (BD)，曾与 Teem 及 Golf 有深度合作。</div>
+                    <div class="desc">游戏巨头 Garena 商务拓展(BD)。她将以其敏锐的商业嗅觉，协助我们推演应对大学合作的完美方案。</div>
                 </div>
-            </div>
-            <div class="goal-box">
-                <div class="section-title">🎯 战略目标</div>
-                <div class="goal-text">锁定未来影视/微短剧出海的泰国顶尖制作团队资源。同时利用 Mint 的商务敏锐度，共同推演明天应对大学 (SPU) 的完美商业战略。</div>
             </div>
         </div>
 
         <div class="date-divider">
-            <h2>2月27日 (周五) - 官方背书与人才通道</h2>
+            <h2>2月27日 (周五) - 官方背书与学术赋能</h2>
         </div>
 
-        <div class="card highlight-border">
+        <div class="card">
             <div class="time-badge">下午 13:00 - 14:00+</div>
-            <div class="title">🎓 斯巴顿大学 (SPU) 官方访问 & 现场选角</div>
-            <div class="desc">参加 SPU 传媒学院 (SIM ACADEMY 7层) 为中国 MICRO DRAMA 团队准备的盛大欢迎仪式。</div>
+            <div class="title">🎓 斯巴顿大学 (Sripatum University) 官方访问</div>
+            <div class="desc">参加 SPU 传媒学院为我们准备的盛大欢迎仪式。<strong>SPU 是泰国极具声望的私立综合性大学，其传媒与数字内容专业在全泰名列前茅。</strong></div>
             <div class="detail-grid">
                 <div>
                     <div class="section-title">官方推进 (MOU)</div>
-                    <div class="desc">院方已正式索要中泰双方公司名称，准备将其作为大学级别的官方合作备忘录 (MOU) 进行汇报与推进。</div>
-                </div>
-                <div>
-                    <div class="section-title">后续议程</div>
-                    <div class="desc">仪式后将进行闭门会议，探讨未来合作，并直接对学生进行 Casting (选角)。</div>
+                    <div class="desc">院方已正式将此行升级为大学级别的官方合作备忘录 (MOU) 筹备工作。仪式后将进行现场 Casting (选角)。</div>
                 </div>
             </div>
             <div class="goal-box">
                 <div class="section-title">🎯 战略目标 (Win-Win)</div>
-                <div class="goal-text">落实双赢的官方战略合作。大学获得国际合作政绩，我们建立泰国顶尖影视人才的专属输送管道，同时确立公司在泰国的官方权威性。</div>
+                <div class="goal-text">建立双赢合作。大学获得国际合作政绩，而 Sanchuan 则打通了获取泰国顶尖传媒人才的官方专属通道。</div>
             </div>
+        </div>
+
+        <div class="date-divider">
+            <h2>2月28日 (周六) - 精英圈层的自然融入</h2>
         </div>
 
         <div class="card">
-            <div class="time-badge">傍晚 / 晚间</div>
-            <div class="title">🥂 私人商务社交 / 晚宴</div>
-            <div class="desc">自由安排时间。可与本次曼谷之行希望结识的商业伙伴进行轻松的饮酒与交流。</div>
-        </div>
-
-        <div class="date-divider">
-            <h2>2月28日 (周六) - 圈层降维打击</h2>
-        </div>
-
-        <div class="card highlight-border">
             <div class="time-badge">晚间</div>
             <div class="title">💎 P'Pheuk 顶级豪宅精英派对</div>
-            <div class="desc">泰国顶级企业家及全国最大企业继承人的内部私密聚会，顶级商业课程的社交场。</div>
-            <div class="detail-grid">
-                <div>
-                    <div class="section-title">战术布局 (The Setup)</div>
-                    <div class="desc">Teem 及其兄嫂将作为“引荐人”，自然地将话题引向娜娜对该课程的兴趣及中国商业趋势。</div>
-                </div>
-                <div>
-                    <div class="section-title">娜娜的角色</div>
-                    <div class="desc">扮演“掌握中国未来商业/科技趋势的顶尖专家”。输出极具价值的内部信息，震惊全场。</div>
-                </div>
-            </div>
+            <div class="desc">泰国顶级企业家及全国最大企业继承人的内部私密聚会。</div>
             <div class="goal-box">
-                <div class="section-title">🎯 核心战略 (欲擒故纵)</div>
-                <div class="goal-text">绝对不主动推销自己！通过展现无可替代的认知价值，让大佬(创始人)主动邀请你成为客座讲师 (Guest Speaker)。从而免去3个月苦读，直接打入泰国最核心的财阀与精英校友人脉圈！</div>
+                <div class="section-title">🎯 社交策略</div>
+                <div class="goal-text">自然地展现你对“中国商业与科技未来趋势”的深刻洞见。不需要刻意推销，让你的高认知价值吸引在场的商界领袖，促使他们主动邀请你成为客座讲师，从而轻松跃入泰国最核心的财阀人脉圈。</div>
             </div>
         </div>
 
         <div class="date-divider">
-            <h2>3月1日 (周日) - 网罗顶尖人才</h2>
+            <h2>3月1日 (周日) - 行业深耕</h2>
         </div>
 
         <div class="card">
             <div class="time-badge">晚上 19:00</div>
             <div class="title">🎥 朱拉隆功大学 (Chula) 电影系校友聚会</div>
-            <div class="desc">参加泰国第一学府的顶级影视圈校友网络聚会 (Reunion)。</div>
-            <div class="goal-box">
-                <div class="section-title">🎯 战略目标</div>
-                <div class="goal-text">分享 Sanchuan 的商业版图与愿景，挖掘并网罗泰国行业内最顶尖的创意与制作人才，扩充我们的内容制作军火库。</div>
-            </div>
+            <div class="desc">参加泰国第一学府的顶级影视圈校友网络聚会 (Reunion)。分享 Sanchuan 愿景，发掘潜在的优质内容创作者加入我们的生态。</div>
         </div>
 
         <div class="date-divider">
-            <h2>3月2日 (周一) - 顶层对话与指引</h2>
+            <h2>3月2日 (周一) - 汲取顶层智慧</h2>
         </div>
 
-        <div class="card highlight-border">
+        <div class="card">
             <div class="time-badge">晚上 18:00</div>
-            <div class="title">👑 会见 泰国排名第一制片人 P'Benz</div>
-            <div class="desc">与业界天花板级制片人 (亲如兄长的业内前辈) 进行一对一深度交流。</div>
-            <div class="detail-grid">
-                <div>
-                    <div class="section-title">沟通原则</div>
-                    <div class="desc">我们不寻求他的资金，而是分享我们的创业计划，寻求高维度的指导。</div>
-                </div>
-            </div>
-            <div class="goal-box">
-                <div class="section-title">🎯 战略目标</div>
-                <div class="goal-text">获取无价的业界洞察 (Insight) 和最高层级的战略避坑指南，借助巨头的视野审视我们的商业模式。</div>
-            </div>
+            <div class="title">👑 会见 泰国顶级制片人 P'Benz</div>
+            <div class="desc">与泰国排名第一的制片人 (亲如兄长) 进行深度交流。我们不谋求资金，只虚心听取行业天花板级别的洞察与建议，借巨头之眼审视我们的商业模式。</div>
         </div>
 
         <div class="date-divider">
-            <h2>3月3日 (周二) - 资源置换与精准社交</h2>
+            <h2>3月3日 (周二) - 跨界共赢与机动社交</h2>
         </div>
 
         <div class="card">
             <div class="time-badge">下午</div>
-            <div class="title">✨ 访问 Dr. Gift 医美诊所</div>
-            <div class="desc">前往权威皮肤科医生 Dr. Gift (Teem的亲姐姐) 的诊所。</div>
-            <div class="detail-grid">
-                <div>
-                    <div class="section-title">合作模式</div>
-                    <div class="desc">诊所提供免费顶级“明星级医美套餐” (Celebrity Package) 体验。娜娜拍摄中文测评(Review)短片作为交换。</div>
-                </div>
-            </div>
-            <div class="goal-box">
-                <div class="section-title">🎯 战略目标</div>
-                <div class="goal-text">零成本资源置换。享受高端服务的同时，利用我们的流量渠道帮助诊所未来打开中国高净值游客市场。</div>
-            </div>
+            <div class="title">✨ 访问 Dr. Gift 权威医美诊所</div>
+            <div class="desc">Dr. Gift (Teem的亲姐姐) 是极具声望的皮肤科医生。我们将体验“明星级医美套餐”，并以中文测评(Review)短片作为回馈，赋能诊所未来拓展中国高净值客户群体。</div>
         </div>
 
         <div class="card parking-lot">
             <div class="time-badge">晚间 18:00 之后</div>
             <div class="title">🅿️ 战略留白 (Parking Lot)</div>
-            <div class="desc">刻意预留的高端社交与机动时间段。</div>
+            <div class="desc">机动的高端社交时间段。</div>
             <div class="parking-recommendation">
-                <div class="section-title">💡 CEO 猎物建议 (给娜娜的提示)</div>
-                <p>强烈建议利用此时间段，单独邀约在 <strong>2月28日 (P'Pheuk 精英派对)</strong> 上结识的最具价值的泰国顶级财阀、企业继承人或潜在投资者。趁热打铁，进行一对一深度交流与利益绑定。</p>
+                <div class="section-title">💡 社交建议</div>
+                <p>这段时间特意留白。如果在 <strong>2月28日 (P'Pheuk 派对)</strong> 上结识了非常契合的商业巨头或潜在合作伙伴，可利用此时间段进行一对一的深度晚宴交流。</p>
             </div>
         </div>
 
@@ -475,18 +437,19 @@
 
         <div class="card parking-lot">
             <div class="time-badge">下午 13:00 - 14:00</div>
-            <div class="title">🍣 顶级 Omakase 告别午餐 (包场)</div>
-            <div class="desc">极难预订的顶级餐厅。会有一位懂中文的商业伙伴同行。<br><br><strong>特意保留了 1 个 VIP 空位 (Parking Lot)。</strong></div>
-            <div class="parking-recommendation">
-                <div class="section-title">💡 CEO 猎物建议</div>
-                <p>在离开泰国前的最后一击！填入此次行程中最值得深度捆绑的“大人物”。在绝对私密与顶级的用餐环境中，敲定最后的合作意向或深化私人友谊。</p>
-            </div>
+            <div class="title">🍣 顶级 Omakase 告别午餐</div>
+            <div class="desc">极难预订的顶级餐厅。会有懂中文的朋友同行。<br><br><strong>特意保留了 1 个 VIP 空位。</strong>这是在离开泰国前的绝佳机会，用来款待并深度绑定此次行程中最重要的一位战略级人脉。</div>
         </div>
 
-        <div class="card">
-            <div class="time-badge">下午 17:20</div>
-            <div class="title">✈️ 廊曼机场 (DMK) 贵宾送机</div>
-            <div class="desc">送娜娜搭乘航班回国。第一阶段泰国商务考察圆满结束，准备在中泰两地落地执行庞大的商业计划！</div>
+        <div class="card vision-card">
+            <h3>致 娜娜 董事长：我们的底牌与未来</h3>
+            <p>请记住，在这场跨国商业的博弈中，我们不是索取者，而是带来降维打击的<strong>“赋能者”</strong>。</p>
+            <p>Sanchuan (三川) 正在掌握着泰国整个国家尚未察觉的商业核武器：<br>
+                <span class="highlight">不可替代的 AI 技术</span>、<br>
+                <span class="highlight">深不可测的中泰人脉矩阵</span>、<br>
+                <span class="highlight">以及你刚刚斩获的 1亿播放量 (100 Million Views) 爆款作品背书！</span>
+            </p>
+            <p>我们正跨步迈向下一个伟大的时代。此次泰国之行，我们将亲手拉开东南亚 <strong>AI + 微短剧 (Micro Drama)</strong> 时代的序幕！</p>
         </div>
 
     </div>
