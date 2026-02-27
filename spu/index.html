@@ -412,6 +412,7 @@ img { max-width: 100%; height: auto; display: block; }
 .chart-container img {
   border-radius: var(--radius);
   width: 100%;
+  cursor: pointer;
 }
 
 /* ── FOMO Box ── */
@@ -452,26 +453,213 @@ img { max-width: 100%; height: auto; display: block; }
   line-height: 2;
 }
 
-/* ── Proof Gallery ── */
+/* ── Proof Gallery with Captions ── */
 .proof-gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   margin: 40px 0;
 }
-.proof-gallery img {
+.proof-item {
+  position: relative;
+  cursor: pointer;
   border-radius: var(--radius);
+  overflow: hidden;
   border: 1px solid var(--border-subtle);
   transition: var(--transition);
-  width: 100%;
-  height: 240px;
-  object-fit: cover;
 }
-.proof-gallery img:hover {
+.proof-item:hover {
   border-color: var(--border-accent);
   box-shadow: var(--glow-gold);
   transform: scale(1.03);
 }
+.proof-item img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  transition: var(--transition);
+}
+.proof-item .caption {
+  padding: 14px 16px;
+  background: var(--bg-card);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  border-top: 1px solid var(--border-subtle);
+}
+.proof-item .caption strong {
+  color: var(--accent-gold);
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+}
+.proof-item .zoom-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: var(--transition);
+}
+.proof-item:hover .zoom-icon {
+  opacity: 1;
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(20px);
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 40px;
+  cursor: pointer;
+}
+.lightbox.active {
+  display: flex;
+}
+.lightbox img {
+  max-width: 90vw;
+  max-height: 75vh;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 80px rgba(0,0,0,0.5);
+  object-fit: contain;
+}
+.lightbox .lb-caption {
+  margin-top: 20px;
+  text-align: center;
+  max-width: 700px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+.lightbox .lb-caption strong {
+  color: var(--accent-gold);
+  display: block;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+.lightbox .lb-close {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  font-size: 2rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+.lightbox .lb-close:hover {
+  color: var(--text-primary);
+}
+
+/* ── Carousel ── */
+.carousel-section {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin: 60px 0;
+}
+.carousel-track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.carousel-slide {
+  min-width: 100%;
+  position: relative;
+}
+.carousel-slide img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  filter: brightness(0.5) saturate(0.8);
+}
+.carousel-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.7) 100%);
+}
+.carousel-text {
+  text-align: center;
+  padding: 40px;
+  max-width: 700px;
+}
+.carousel-text h3 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+}
+.carousel-text p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.5);
+}
+.carousel-nav {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.carousel-dot.active {
+  background: var(--accent-gold);
+  width: 28px;
+  border-radius: 5px;
+}
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: var(--transition);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel-btn:hover {
+  background: rgba(232,184,48,0.3);
+  border-color: var(--accent-gold);
+}
+.carousel-btn.prev { left: 24px; }
+.carousel-btn.next { right: 24px; }
 
 /* ── Stats Cards ── */
 .stats-row {
@@ -788,11 +976,6 @@ img { max-width: 100%; height: auto; display: block; }
   font-weight: 800;
   margin-bottom: 6px;
 }
-.team-card .title-sub {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 14px;
-}
 .team-card p {
   font-size: 0.92rem;
   color: var(--text-secondary);
@@ -947,7 +1130,7 @@ img { max-width: 100%; height: auto; display: block; }
 /* ── References ── */
 .ref-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   margin-top: 28px;
 }
@@ -975,6 +1158,14 @@ img { max-width: 100%; height: auto; display: block; }
   font-size: 0.85rem;
   line-height: 1.7;
 }
+.ref-card .ref-summary {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
 
 /* ── Footer ── */
 .footer {
@@ -999,7 +1190,7 @@ img { max-width: 100%; height: auto; display: block; }
   .stats-row { grid-template-columns: 1fr; }
   .team-grid { grid-template-columns: 1fr; }
   .module-items { grid-template-columns: 1fr; }
-  .ref-grid { grid-template-columns: 1fr; }
+  .carousel-slide img { height: 400px; }
 }
 @media (max-width: 768px) {
   .section { padding: 60px 24px; }
@@ -1015,6 +1206,9 @@ img { max-width: 100%; height: auto; display: block; }
   .platform-tag { padding: 10px 18px; font-size: 0.8rem; }
   .quote-block { padding: 28px; }
   .module-card { padding: 28px; }
+  .carousel-slide img { height: 300px; }
+  .carousel-text h3 { font-size: 1.3rem; }
+  .carousel-btn { width: 36px; height: 36px; font-size: 0.9rem; }
 }
   </style>
 </head>
@@ -1050,7 +1244,7 @@ img { max-width: 100%; height: auto; display: block; }
      HERO
      ═══════════════════════════════════════════ -->
 <section class="hero" id="overview">
-  <div class="hero-bg" style="background-image: url('img/film-school-studio.jpg')"></div>
+  <div class="hero-bg" style="background-image: url('img/hero-bg.jpg')"></div>
   <div class="hero-content">
     <div class="hero-badge">
       <span style="color: var(--accent-gold);">三川 SANCHUAN</span>
@@ -1081,6 +1275,80 @@ img { max-width: 100%; height: auto; display: block; }
     </div>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════
+     VISION CAROUSEL
+     ═══════════════════════════════════════════ -->
+<div class="carousel-section">
+  <div class="carousel-track" id="carouselTrack">
+    <div class="carousel-slide">
+      <img src="img/carousel-acting-class.jpg" alt="ห้องเรียนการแสดง">
+      <div class="carousel-overlay">
+        <div class="carousel-text">
+          <h3>เรียนรู้จากผู้เชี่ยวชาญระดับแนวหน้า</h3>
+          <p>หลักสูตรการแสดงละครสั้นที่ออกแบบโดยทีมผลิตยอดวิว 2,000 ล้าน — เรียนจากคนที่ทำจริง ไม่ใช่แค่ทฤษฎี</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-slide">
+      <img src="img/carousel-behind-scenes.jpg" alt="เบื้องหลังการถ่ายทำ">
+      <div class="carousel-overlay">
+        <div class="carousel-text">
+          <h3>ถ่ายทำจริง มาตรฐานระดับสากล</h3>
+          <p>ใช้มหาวิทยาลัยศรีปทุมเป็นฉากหลัง ทีมจีนเป็นผู้กำกับ นักศึกษาเป็นนักแสดงนำ — ผลงานฉายบนแพลตฟอร์มทั่วโลก</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-slide">
+      <img src="img/carousel-xian-training.jpg" alt="ฝึกอบรมที่ซีอาน">
+      <div class="carousel-overlay">
+        <div class="carousel-text">
+          <h3>China Star Camp — 15 วันปั้นดาว</h3>
+          <p>ค่ายฝึกเข้มข้น 15 วันที่ซีอาน ประเทศจีน ครอบคลุมการแสดง กำกับ ถ่ายทำ ตัดต่อ — จบแคมป์ได้ใบรับรอง 2 ประเทศ</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-slide">
+      <img src="img/carousel-certification.jpg" alt="ใบรับรองระดับนานาชาติ">
+      <div class="carousel-overlay">
+        <div class="carousel-text">
+          <h3>Sino-Thai Dual Certification</h3>
+          <p>ใบรับรองที่ได้รับการยอมรับจากทั้งจีนและไทย — พาสปอร์ตสู่อาชีพระดับนานาชาติที่เปิดกว้างกว่าแค่ในประเทศ</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-slide">
+      <img src="img/carousel-platform-global.jpg" alt="แพลตฟอร์มระดับโลก">
+      <div class="carousel-overlay">
+        <div class="carousel-text">
+          <h3>จาก SPU สู่ผู้ชมทั่วโลก</h3>
+          <p>เผยแพร่ผลงานบน DramaBox, Douyin, ReelShort, iQIYI และแพลตฟอร์มชั้นนำ — เนื้อหาจาก SPU ไปถึงผู้ชมทุกทวีป</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-slide">
+      <img src="img/carousel-students-creative.jpg" alt="นักศึกษาสร้างสรรค์ผลงาน">
+      <div class="carousel-overlay">
+        <div class="carousel-text">
+          <h3>ดาวดวงใหม่ทุก 15 วัน</h3>
+          <p>นักศึกษาสามารถมีผลงาน Debut ฉายทั่วโลกได้ตั้งแต่ยังเรียนอยู่ — ความเร็วที่มีเพียงอุตสาหกรรมละครสั้นเท่านั้นที่ทำได้</p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-slide">
+      <img src="img/carousel-script-reading.jpg" alt="อ่านบทร่วมกัน">
+      <div class="carousel-overlay">
+        <div class="carousel-text">
+          <h3>สร้างเรื่องราวไทยให้โลกได้ชม</h3>
+          <p>ใช้เรื่องราวที่คนไทยคุ้นเคย — แคมปัส ระทึกขวัญ โรแมนติก — ผลิตด้วยมาตรฐานจีน ฉายให้ผู้ชมทั่วโลก</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+  <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+  <div class="carousel-nav" id="carouselNav"></div>
+</div>
 
 <!-- ═══════════════════════════════════════════
      MARKET OPPORTUNITY
@@ -1114,8 +1382,10 @@ img { max-width: 100%; height: auto; display: block; }
   </div>
 
   <div class="chart-container reveal">
-    <img src="img/market-size.jpg" alt="ขนาดตลาดละครสั้นจีน 2023-2026 — DataEye Research" loading="lazy">
-    <p style="text-align: center; font-size: 0.78rem; color: var(--text-muted); margin-top: 12px;">Source: DataEye Research Institute 2026</p>
+    <img src="img/market-size.jpg" alt="ขนาดตลาดละครสั้นจีน 2023-2026 — DataEye Research" loading="lazy" onclick="openLightbox(this.src, 'กราฟแสดงขนาดตลาดละครสั้นจีน', 'แหล่งข้อมูล: DataEye Research Institute 2026 — แสดงการเติบโตจาก 37,400 ล้านหยวน (ปี 2023) เป็น 121,000 ล้านหยวน (ปี 2026) คิดเป็นอัตราเติบโตเฉลี่ยกว่า 47% ต่อปี')">
+    <p style="text-align: center; font-size: 0.82rem; color: var(--text-muted); margin-top: 12px;">
+      คำอธิบาย: กราฟแสดงมูลค่าตลาดละครสั้นจีน ปี 2023-2026 จาก DataEye Research — เติบโตจาก 3.74 หมื่นล้านหยวน เป็น 1.21 แสนล้านหยวน (คลิกเพื่อขยาย)
+    </p>
   </div>
 
   <div class="fomo-box reveal">
@@ -1130,7 +1400,7 @@ img { max-width: 100%; height: auto; display: block; }
      SECTION IMAGE DIVIDER
      ═══════════════════════════════════════════ -->
 <div class="section-img">
-  <img src="img/thai-chinese-exchange.jpg" alt="โครงการแลกเปลี่ยนวัฒนธรรมเยาวชนไทย-จีน" loading="lazy">
+  <img src="img/thai-chinese-exchange.jpg" alt="ความร่วมมือด้านอุตสาหกรรมสร้างสรรค์ไทย-จีน" loading="lazy">
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -1146,16 +1416,37 @@ img { max-width: 100%; height: auto; display: block; }
   </div>
 
   <div class="proof-gallery reveal">
-    <img src="img/xiyou-2billion.jpg" alt="西游 错把玉帝当亲爹 — ยอดวิวทะลุ 2,100 ล้าน" loading="lazy">
-    <img src="img/manga-posters.jpg" alt="ผลงานมังงะละครสั้น AI — นวัตกรรมใหม่ของวงการ" loading="lazy">
-    <img src="img/chart-rankings.jpg" alt="อันดับ 1 บนทุกชาร์ต — Douyin, 红果, DramaBox" loading="lazy">
+    <div class="proof-item" onclick="openLightbox('img/xiyou-2billion.jpg', '《西游 错把玉帝当亲爹》 — ยอดวิวทะลุ 2,100 ล้าน', 'ภาพแสดงยอดวิวรวมของซีรีส์ \u0022西游 错把玉帝当亲爹\u0022 (ไซอิ๋ว: เมื่อจับยักษ์มาเป็นพ่อ) ซึ่งเป็นผลงานล่าสุดของทีม ทำยอดวิวรวมทุกแพลตฟอร์มทะลุ 2,100 ล้านครั้ง ครองอันดับ 1 ติดต่อกัน 10 วัน — ตัวเลข 2.1 พันล้านนี้คือหลักฐานว่าทีมนี้สร้างผลงานระดับ Top ของอุตสาหกรรมได้จริง')">
+      <div class="zoom-icon">&#128269;</div>
+      <img src="img/xiyou-2billion.jpg" alt="西游 错把玉帝当亲爹 — ยอดวิวทะลุ 2,100 ล้าน" loading="lazy">
+      <div class="caption">
+        <strong>ยอดวิว 2,100 ล้านครั้ง</strong>
+        ซีรีส์ "ไซอิ๋ว: เมื่อจับยักษ์มาเป็นพ่อ" (西游 错把玉帝当亲爹) — ผลงานล่าสุดของทีม ครองอันดับ 1 ทุกชาร์ตติดต่อกัน 10 วัน
+      </div>
+    </div>
+    <div class="proof-item" onclick="openLightbox('img/manga-posters.jpg', 'ผลงานมังงะละครสั้น AI — นวัตกรรมใหม่ของวงการ', 'ภาพโปสเตอร์ผลงานมังงะละครสั้นที่ใช้เทคโนโลยี AI Animation — เป็นนวัตกรรมใหม่ที่ผสมผสานคนจริงกับมังงะ ลดต้นทุนการผลิตเหลือเพียง 1/10 ของวิธีดั้งเดิม ทีมของเรามีเทคโนโลยีนี้พร้อมถ่ายทอดให้ SPU')">
+      <div class="zoom-icon">&#128269;</div>
+      <img src="img/manga-posters.jpg" alt="ผลงานมังงะละครสั้น AI" loading="lazy">
+      <div class="caption">
+        <strong>เทคโนโลยี AI Manga Drama</strong>
+        โปสเตอร์ผลงานมังงะละครสั้นที่ใช้เทคโนโลยี AI Animation — ผสมคนจริงกับมังงะ ลดต้นทุนเหลือ 1/10 ของวิธีดั้งเดิม
+      </div>
+    </div>
+    <div class="proof-item" onclick="openLightbox('img/chart-rankings.jpg', 'อันดับ 1 บนทุกชาร์ต — Douyin, 红果, DramaBox', 'ภาพหน้าจอจากแพลตฟอร์ม Douyin (抖音) แสดงอันดับชาร์ตยอดนิยม — ผลงานของทีมครองอันดับ 1 พร้อมกันบนหลายชาร์ต ได้แก่ 动态漫榜 (Douyin Native Manga Chart), 抖音热播 (Douyin Hot Play Chart) และ 红果漫剧榜 (Hongguo Manga Drama Chart) ซึ่งเป็นปรากฏการณ์ที่หาได้ยากมากในอุตสาหกรรม')">
+      <div class="zoom-icon">&#128269;</div>
+      <img src="img/chart-rankings.jpg" alt="อันดับ 1 บนทุกชาร์ต" loading="lazy">
+      <div class="caption">
+        <strong>อันดับ 1 พร้อมกัน 3 ชาร์ต</strong>
+        หน้าจอ Douyin (抖音) แสดงผลงานทีมครองอันดับ 1 บน Douyin Manga Chart, Hot Play Chart และ Hongguo Manga Drama Chart พร้อมกัน
+      </div>
+    </div>
   </div>
 
   <div class="stats-row reveal">
     <div class="stat-card">
       <h3>NANA — นักแสดงนำ</h3>
       <div class="big-num">350M+</div>
-      <p>ยอดวิวรวมจากผลงานแรก《副总夫人》</p>
+      <p>ยอดวิวรวมจากผลงานแรก《副总夫人》(ภรรยาลับรองประธาน)</p>
       <ul class="stat-list">
         <li><strong>160 ล้านวิว</strong> — วิดีโอเดียวบน Douyin ใน 10 วัน</li>
         <li><strong>60-70 ล้านวิว</strong> — ขั้นต่ำบนแพลตฟอร์มอื่น</li>
@@ -1167,9 +1458,9 @@ img { max-width: 100%; height: auto; display: block; }
       <div class="big-num">2.1B+</div>
       <p>ยอดวิวรวมทุกแพลตฟอร์ม — อันดับ 1 ติดต่อกัน 10 วัน</p>
       <ul class="stat-list">
-        <li><strong>อันดับ 1 动态漫榜</strong> — Douyin Native Manga Chart</li>
-        <li><strong>อันดับ 1 抖音热播</strong> — Douyin Hot Play Chart</li>
-        <li><strong>อันดับ 1 红果漫剧榜</strong> — Hongguo Manga Drama Chart</li>
+        <li><strong>อันดับ 1 动态漫榜</strong> — Douyin Native Manga Chart (ชาร์ตมังงะยอดนิยม)</li>
+        <li><strong>อันดับ 1 抖音热播</strong> — Douyin Hot Play Chart (ชาร์ตยอดเล่นสูงสุด)</li>
+        <li><strong>อันดับ 1 红果漫剧榜</strong> — Hongguo Manga Drama Chart (ชาร์ตมังงะดราม่า)</li>
         <li><strong>ครองชาร์ตต่อเนื่อง 10 วัน</strong> — ปรากฏการณ์ที่หาได้ยาก</li>
       </ul>
     </div>
@@ -1180,7 +1471,7 @@ img { max-width: 100%; height: auto; display: block; }
      SECTION IMAGE DIVIDER
      ═══════════════════════════════════════════ -->
 <div class="section-img">
-  <img src="img/asian-cameraman.jpg" alt="ทีมถ่ายทำมืออาชีพ — เบื้องหลังการผลิตละครสั้น" loading="lazy">
+  <img src="img/asian-film-production.jpg" alt="ทีมถ่ายทำมืออาชีพ — เบื้องหลังการผลิตละครสั้น" loading="lazy">
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -1313,13 +1604,13 @@ img { max-width: 100%; height: auto; display: block; }
 
   <!-- Platform Tags -->
   <div class="platform-row reveal">
-    <div class="platform-tag">🎬 DramaBox</div>
-    <div class="platform-tag">📺 Drama哇</div>
-    <div class="platform-tag">🎵 Douyin</div>
-    <div class="platform-tag">🍎 红果短剧</div>
-    <div class="platform-tag">📱 ReelShort</div>
-    <div class="platform-tag">🌐 iQIYI</div>
-    <div class="platform-tag">▶️ TikTok Global</div>
+    <div class="platform-tag">DramaBox</div>
+    <div class="platform-tag">Drama哇</div>
+    <div class="platform-tag">Douyin (抖音)</div>
+    <div class="platform-tag">红果短剧</div>
+    <div class="platform-tag">ReelShort</div>
+    <div class="platform-tag">iQIYI</div>
+    <div class="platform-tag">TikTok Global</div>
   </div>
 </section>
 
@@ -1340,28 +1631,28 @@ img { max-width: 100%; height: auto; display: block; }
       <thead>
         <tr>
           <th></th>
-          <th>🇨🇳 SANCHUAN นำเสนอ</th>
-          <th>🇹🇭 SPU สนับสนุน</th>
+          <th>SANCHUAN นำเสนอ</th>
+          <th>SPU สนับสนุน</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>🎬 การผลิต</td>
+          <td>การผลิต</td>
           <td>ระบบบทละครสั้นแนวตั้ง (ดราม่า/ระทึก/แฟนตาซี), ทีมถ่ายทำมืออาชีพ, ช่องทางจัดจำหน่ายข้ามแพลตฟอร์ม</td>
           <td>นักศึกษานักแสดง/ผู้กำกับ, สถานที่ถ่ายทำในมหาวิทยาลัย, มุมมองท้องถิ่นที่ตรงใจผู้ชมไทย</td>
         </tr>
         <tr>
-          <td>📚 การศึกษา</td>
+          <td>การศึกษา</td>
           <td>ทรัพยากรจากอุตสาหกรรมจริง (บท/ถ่ายทำ/เทคนิคการแสดง), โปรเจกต์ถ่ายทำจริง, โอกาสเซ็นสัญญาศิลปิน</td>
           <td>สถานที่และอุปกรณ์การสอน, บรรจุเข้าหลักสูตรบังคับ/เลือก, คัดเลือกนักศึกษาเข้าร่วมโปรเจกต์</td>
         </tr>
         <tr>
-          <td>🌏 การตลาด</td>
+          <td>การตลาด</td>
           <td>ความสามารถในการผลิตละครสั้นคุณภาพสูง, เทคโนโลยีเผยแพร่ทั่วโลก, แผน AI Animation</td>
           <td>เชื่อมต่อแพลตฟอร์มไทย, เครือข่ายสื่อและมหาวิทยาลัยในอาเซียน, ยกระดับชื่อเสียงในอุตสาหกรรม</td>
         </tr>
         <tr>
-          <td>⭐ บ่มเพาะศิลปิน</td>
+          <td>บ่มเพาะศิลปิน</td>
           <td>ระบบฝึกมาตรฐาน, ฐานถ่ายทำที่ซีอาน, เซ็นสัญญาศิลปิน, ฐานแฟนคลับ 2 ล้าน+</td>
           <td>คณาจารย์ช่วยสอน, เปิดพื้นที่ในมหาวิทยาลัยเป็นจุดฝึก, รับผิดชอบการคัดเลือกและประชาสัมพันธ์ในไทย</td>
         </tr>
@@ -1374,7 +1665,7 @@ img { max-width: 100%; height: auto; display: block; }
      SECTION IMAGE DIVIDER
      ═══════════════════════════════════════════ -->
 <div class="section-img">
-  <img src="img/graduation-celebration.jpg" alt="นักศึกษาเอเชียฉลองรับปริญญา — อนาคตที่สดใส" loading="lazy">
+  <img src="img/graduation-celebration.jpg" alt="นักศึกษาเอเชียฉลองความสำเร็จ — อนาคตที่สดใส" loading="lazy">
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -1391,32 +1682,32 @@ img { max-width: 100%; height: auto; display: block; }
 
   <div class="card-grid reveal">
     <div class="benefit-card">
-      <div class="benefit-icon">🎓</div>
+      <div class="benefit-icon">&#127891;</div>
       <h4>การศึกษาที่ก้าวทันอุตสาหกรรม</h4>
       <p>หลักสูตรที่บูรณาการกับอุตสาหกรรมจริง นักศึกษาจะได้เรียนรู้จากผู้เชี่ยวชาญระดับแนวหน้าของจีน ได้ลงมือทำจริง ไม่ใช่แค่ทฤษฎีในห้องเรียน</p>
     </div>
     <div class="benefit-card">
-      <div class="benefit-icon">🌟</div>
+      <div class="benefit-icon">&#127775;</div>
       <h4>นักศึกษาเป็นดาวดวงใหม่</h4>
       <p>นักศึกษาสามารถมีผลงาน Debut ฉายทั่วโลกได้ตั้งแต่ยังเรียนอยู่ — ไม่ต้องรอจบ ไม่ต้องรอโอกาส เพราะโอกาสอยู่ในรั้วมหาวิทยาลัย</p>
     </div>
     <div class="benefit-card">
-      <div class="benefit-icon">🏛️</div>
+      <div class="benefit-icon">&#127963;</div>
       <h4>SPU = ผู้นำด้านละครสั้นในอาเซียน</h4>
       <p>เป็นมหาวิทยาลัยแห่งแรกในเอเชียตะวันออกเฉียงใต้ที่มีหลักสูตรละครสั้นแนวตั้งอย่างเป็นทางการ — สร้างจุดขายที่ไม่มีใครเทียบได้</p>
     </div>
     <div class="benefit-card">
-      <div class="benefit-icon">🔑</div>
+      <div class="benefit-icon">&#128273;</div>
       <h4>กุญแจทองคำสู่ตลาดจีน</h4>
       <p>เข้าถึงเครือข่ายอุตสาหกรรมละครสั้นจีนที่มีบริษัทกว่า 5,000 แห่ง เทคโนโลยี AI Animation ล้ำสมัย และทีมผลิตระดับท็อปของจีน — ทั้งหมดนี้ผ่านความร่วมมือเดียว</p>
     </div>
     <div class="benefit-card">
-      <div class="benefit-icon">📈</div>
+      <div class="benefit-icon">&#128200;</div>
       <h4>ดึงดูดนักศึกษาใหม่</h4>
       <p>หลักสูตรที่มีโอกาสได้แสดงจริง ฉายจริง และเซ็นสัญญาจริง จะเป็นแม่เหล็กดึงดูดนักศึกษาที่มีความฝันด้านการแสดงจากทั่วประเทศ</p>
     </div>
     <div class="benefit-card">
-      <div class="benefit-icon">🤝</div>
+      <div class="benefit-icon">&#129309;</div>
       <h4>ใบรับรองระดับนานาชาติ</h4>
       <p>Sino-Thai Dual Certification ที่ได้รับการรับรองจากทั้งจีนและไทย เพิ่มมูลค่าให้กับปริญญาของ SPU และเปิดประตูอาชีพระดับสากลให้นักศึกษา</p>
     </div>
@@ -1505,9 +1796,9 @@ img { max-width: 100%; height: auto; display: block; }
       <h3>เริ่มต้นความร่วมมือ</h3>
       <p>ลงนาม MOU ระหว่าง SANCHUAN กับมหาวิทยาลัยศรีปทุม กำหนดกรอบความร่วมมือ ขอบเขตการทำงาน และเป้าหมายร่วมกัน</p>
       <div class="milestone-list">
-        <div class="milestone"><span class="milestone-dot">○</span> ลงนามบันทึกความเข้าใจ (MOU)</div>
-        <div class="milestone"><span class="milestone-dot">○</span> กำหนดคณะทำงานร่วมจากทั้งสองฝ่าย</div>
-        <div class="milestone"><span class="milestone-dot">○</span> คัดเลือกนักศึกษารุ่นแรกเข้าร่วม China Star Camp</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> ลงนามบันทึกความเข้าใจ (MOU)</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> กำหนดคณะทำงานร่วมจากทั้งสองฝ่าย</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> คัดเลือกนักศึกษารุ่นแรกเข้าร่วม China Star Camp</div>
       </div>
       <span class="phase-tag urgent-tag">เริ่มได้ทันที</span>
     </div>
@@ -1518,9 +1809,9 @@ img { max-width: 100%; height: auto; display: block; }
       <h3>ถ่ายทำละครสั้นนำร่อง</h3>
       <p>เริ่มถ่ายทำละครสั้นนำร่อง 2 เรื่อง (แนวแคมปัส/ระทึกขวัญ) โดยใช้ SPU เป็นฉากหลัง นักศึกษาเป็นนักแสดงนำ ทีมจีนเป็นผู้กำกับและเทคนิค</p>
       <div class="milestone-list">
-        <div class="milestone"><span class="milestone-dot">○</span> พัฒนาบทละครสั้น 2 เรื่อง (แคมปัส + ระทึกขวัญ)</div>
-        <div class="milestone"><span class="milestone-dot">○</span> ถ่ายทำในมหาวิทยาลัยศรีปทุม</div>
-        <div class="milestone"><span class="milestone-dot">○</span> ตัดต่อและเตรียมเผยแพร่</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> พัฒนาบทละครสั้น 2 เรื่อง (แคมปัส + ระทึกขวัญ)</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> ถ่ายทำในมหาวิทยาลัยศรีปทุม</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> ตัดต่อและเตรียมเผยแพร่</div>
       </div>
     </div>
 
@@ -1530,9 +1821,9 @@ img { max-width: 100%; height: auto; display: block; }
       <h3>เผยแพร่และขยายผล</h3>
       <p>เผยแพร่ผลงานบนแพลตฟอร์มไทยและจีน บูรณาการหลักสูตรละครสั้นเข้าสู่ระบบการเรียนการสอนอย่างเป็นทางการ เปิดรับนักศึกษารุ่นถัดไป</p>
       <div class="milestone-list">
-        <div class="milestone"><span class="milestone-dot">○</span> เผยแพร่ละครสั้นบน DramaBox, Drama哇 และแพลตฟอร์มจีน</div>
-        <div class="milestone"><span class="milestone-dot">○</span> บรรจุหลักสูตรละครสั้นเข้าระบบการเรียนการสอน</div>
-        <div class="milestone"><span class="milestone-dot">○</span> เปิดรับสมัครนักศึกษา China Star Camp รุ่นที่ 2</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> เผยแพร่ละครสั้นบน DramaBox, Drama哇 และแพลตฟอร์มจีน</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> บรรจุหลักสูตรละครสั้นเข้าระบบการเรียนการสอน</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> เปิดรับสมัครนักศึกษา China Star Camp รุ่นที่ 2</div>
       </div>
     </div>
 
@@ -1542,9 +1833,9 @@ img { max-width: 100%; height: auto; display: block; }
       <h3>สร้างศูนย์กลางละครสั้นอาเซียน</h3>
       <p>ร่วมกันสร้าง SPU ให้เป็นศูนย์กลางการผลิตและฝึกอบรมละครสั้นของอาเซียน ขยายความร่วมมือไปสู่มหาวิทยาลัยอื่นในภูมิภาค</p>
       <div class="milestone-list">
-        <div class="milestone"><span class="milestone-dot">○</span> จัดตั้งศูนย์ฝึกอบรมถาวรใน SPU</div>
-        <div class="milestone"><span class="milestone-dot">○</span> ผลิตละครสั้นอย่างน้อย 6 เรื่อง/ปี</div>
-        <div class="milestone"><span class="milestone-dot">○</span> ขยายเครือข่ายไปสู่มหาวิทยาลัยในอาเซียน</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> จัดตั้งศูนย์ฝึกอบรมถาวรใน SPU</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> ผลิตละครสั้นอย่างน้อย 6 เรื่อง/ปี</div>
+        <div class="milestone"><span class="milestone-dot">&#9675;</span> ขยายเครือข่ายไปสู่มหาวิทยาลัยในอาเซียน</div>
       </div>
     </div>
   </div>
@@ -1571,16 +1862,34 @@ img { max-width: 100%; height: auto; display: block; }
   <h2 class="section-title" style="font-size: 1.5rem;">แหล่งข้อมูลอ้างอิง</h2>
   <div class="ref-grid">
     <a href="https://www.myclover.com/school/" target="_blank" class="ref-card">
-      <h3>🏫 SANCHUAN Academy</h3>
-      <p>สถาบันสอนการแสดงละครสั้นแห่งแรกของไทย — หลักสูตร, ตารางเรียน, ราคา</p>
+      <h3>SANCHUAN Academy</h3>
+      <p>สถาบันสอนการแสดงละครสั้นแห่งแรกของไทย</p>
+      <div class="ref-summary">หลักสูตร China Star Camp 15 วัน, ตารางเรียน, ราคา และรายละเอียดการสมัคร</div>
     </a>
     <a href="https://www.myclover.com/school/course/" target="_blank" class="ref-card">
-      <h3>🎬 MyClover Studio</h3>
-      <p>The Gold Standard of Vertical Cinema — Co-Production, IP Licensing, Brand Integration</p>
+      <h3>MyClover Studio</h3>
+      <p>The Gold Standard of Vertical Cinema</p>
+      <div class="ref-summary">บริการ Co-Production, IP Licensing, Brand Integration — โมเดล Tri-City (Beijing-Hangzhou-Bangkok)</div>
+    </a>
+    <a href="https://www.myclover.com/school/china-star-camp/" target="_blank" class="ref-card">
+      <h3>China Star Camp — รายละเอียดคอร์ส</h3>
+      <p>หลักสูตรเข้มข้น 15 วัน ที่ซีอาน ประเทศจีน</p>
+      <div class="ref-summary">ครอบคลุม 4 โมดูล: การแสดง, การกำกับ, การถ่ายทำ และการตัดต่อ — จบแคมป์ได้ใบรับรอง 2 ประเทศ</div>
     </a>
     <a href="https://mp.weixin.qq.com/s/lhmqixySoaVo3XV6z0quRQ" target="_blank" class="ref-card">
-      <h3>📊 DataEye Industry Report</h3>
-      <p>รายงานอุตสาหกรรมละครสั้นจีน 2026 — ข้อมูลตลาด, แนวโน้ม, โอกาส</p>
+      <h3>DataEye — รายงานอุตสาหกรรมละครสั้น 2026</h3>
+      <p>บทความภาษาจีน (WeChat)</p>
+      <div class="ref-summary">สรุป: รายงานจาก DataEye Research สถาบันวิจัยชั้นนำด้านละครสั้นจีน วิเคราะห์ตลาดปี 2026 ชี้ว่ามูลค่าตลาดจะทะลุ 1.21 แสนล้านหยวน พร้อมแนวโน้มการขยายตัวสู่ตลาดต่างประเทศ โดยเฉพาะอาเซียน</div>
+    </a>
+    <a href="https://mp.weixin.qq.com/s/g8Vp3UWRSS6twhjvgx0LJQ" target="_blank" class="ref-card">
+      <h3>DataEye LINK 2026 Conference</h3>
+      <p>บทความภาษาจีน (WeChat)</p>
+      <div class="ref-summary">สรุป: งานประชุมอุตสาหกรรมละครสั้นระดับนานาชาติ DataEye LINK 2026 ที่เซินเจิ้น รวมผู้เล่นหลักในอุตสาหกรรมกว่า 5,000 บริษัท หารือแนวโน้มตลาด เทคโนโลยี AI ในการผลิต และโอกาสขยายตัวสู่ตลาดโลก</div>
+    </a>
+    <a href="https://www.myclover.com/school/about/" target="_blank" class="ref-card">
+      <h3>เกี่ยวกับ SANCHUAN</h3>
+      <p>วิสัยทัศน์และพันธกิจ</p>
+      <div class="ref-summary">ระบบนิเวศละครสั้นแนวตั้งครบวงจรแห่งแรกในอาเซียน — ฝึก, ผลิต, จัดจำหน่าย, บ่มเพาะศิลปิน</div>
     </a>
   </div>
 </section>
@@ -1595,6 +1904,18 @@ img { max-width: 100%; height: auto; display: block; }
     <a href="mailto:team@myclover.com">team@myclover.com</a> · <a href="https://www.myclover.com" target="_blank">www.myclover.com</a>
   </p>
 </footer>
+
+<!-- ═══════════════════════════════════════════
+     LIGHTBOX
+     ═══════════════════════════════════════════ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">&times;</button>
+  <img id="lbImg" src="" alt="">
+  <div class="lb-caption">
+    <strong id="lbTitle"></strong>
+    <span id="lbDesc"></span>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════
      SCRIPTS
@@ -1676,6 +1997,72 @@ window.addEventListener('scroll', () => {
       link.classList.add('active');
     }
   });
+});
+
+// ── Carousel ──
+let currentSlide = 0;
+const track = document.getElementById('carouselTrack');
+const slides = track.querySelectorAll('.carousel-slide');
+const totalSlides = slides.length;
+const navContainer = document.getElementById('carouselNav');
+
+// Create dots
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement('button');
+  dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => goToSlide(i);
+  navContainer.appendChild(dot);
+}
+
+function goToSlide(index) {
+  currentSlide = index;
+  track.style.transform = `translateX(-${index * 100}%)`;
+  document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === index);
+  });
+}
+
+function moveCarousel(dir) {
+  let next = currentSlide + dir;
+  if (next < 0) next = totalSlides - 1;
+  if (next >= totalSlides) next = 0;
+  goToSlide(next);
+}
+
+// Auto-play carousel
+let autoPlay = setInterval(() => moveCarousel(1), 5000);
+track.addEventListener('mouseenter', () => clearInterval(autoPlay));
+track.addEventListener('mouseleave', () => {
+  autoPlay = setInterval(() => moveCarousel(1), 5000);
+});
+
+// Touch support for carousel
+let touchStartX = 0;
+let touchEndX = 0;
+track.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+track.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  if (touchStartX - touchEndX > 50) moveCarousel(1);
+  if (touchEndX - touchStartX > 50) moveCarousel(-1);
+}, { passive: true });
+
+// ── Lightbox ──
+function openLightbox(src, title, desc) {
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lbTitle').textContent = title;
+  document.getElementById('lbDesc').textContent = desc;
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
 });
 </script>
 
