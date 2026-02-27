@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SANCHUAN × SAMART — The Next S-Curve: AI-Driven Content Technology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+/* ============================================
+   SANCHUAN × SAMART — STRATEGIC PARTNERSHIP
+   Premium Dark Theme with Electric Blue Accents
+   ============================================ */
+
+:root {
+  --bg-primary: #060610;
+  --bg-secondary: #0c0c1a;
+  --bg-card: #111128;
+  --bg-card-hover: #181838;
+  --accent-blue: #3b82f6;
+  --accent-blue-light: #60a5fa;
+  --accent-blue-dim: rgba(59,130,246,0.08);
+  --accent-cyan: #06b6d4;
+  --accent-gold: #e8b830;
+  --accent-gold-light: #f0d060;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --accent-purple: #a855f7;
+  --text-primary: #f0f0f8;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-accent: rgba(59,130,246,0.25);
+  --radius: 12px;
+  --radius-lg: 18px;
+  --glow-blue: 0 0 40px rgba(59,130,246,0.15);
+  --glow-cyan: 0 0 40px rgba(6,182,212,0.15);
+  --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans Thai', 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.8;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
+
+/* ── Scroll Animations ── */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity: 0; transform: translateX(-60px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(60px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+.reveal-scale { opacity: 0; transform: scale(0.9); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+/* ── Navbar ── */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(6,6,16,0.85); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 2rem; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.navbar-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800; font-size: 0.9rem; letter-spacing: 2px;
+  color: var(--accent-blue-light);
+}
+.navbar-brand span { color: var(--text-muted); margin: 0 6px; }
+.navbar-links { display: flex; gap: 1.5rem; }
+.navbar-links a {
+  font-size: 0.8rem; font-weight: 500; color: var(--text-secondary);
+  transition: var(--transition); letter-spacing: 0.5px;
+}
+.navbar-links a:hover { color: var(--accent-blue-light); }
+
+/* ── Hero ── */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 120px 2rem 80px;
+  background: linear-gradient(180deg, rgba(6,6,16,0.3) 0%, rgba(6,6,16,0.85) 60%, var(--bg-primary) 100%),
+              url('img/samart-hq.jpg') center/cover no-repeat;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(59,130,246,0.08) 0%, transparent 70%);
+}
+.hero-content { position: relative; z-index: 2; max-width: 900px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 50px; padding: 8px 24px; margin-bottom: 2rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+  letter-spacing: 3px; color: var(--accent-blue-light);
+}
+.hero-badge .divider { width: 1px; height: 16px; background: rgba(59,130,246,0.4); }
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.2rem); font-weight: 900;
+  line-height: 1.2; margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #f0f0f8 0%, #60a5fa 50%, #06b6d4 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero h1 .highlight {
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-subtitle {
+  font-size: 1.1rem; color: var(--text-secondary); max-width: 700px;
+  margin: 0 auto 2.5rem; line-height: 1.9;
+}
+.hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+  color: #fff; font-weight: 700; padding: 14px 32px;
+  border-radius: 50px; font-size: 0.95rem;
+  transition: var(--transition); border: none; cursor: pointer;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59,130,246,0.3); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--text-primary);
+  font-weight: 600; padding: 14px 32px;
+  border-radius: 50px; font-size: 0.95rem;
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: var(--transition); cursor: pointer;
+}
+.btn-secondary:hover { border-color: var(--accent-blue); background: rgba(59,130,246,0.05); }
+
+/* ── Stats Bar ── */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
+  max-width: 800px; margin: 0 auto;
+}
+.stat-item { text-align: center; }
+.stat-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.2rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-blue-light) 0%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ── Sections ── */
+.section { padding: 100px 2rem; max-width: 1200px; margin: 0 auto; }
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 4px; color: var(--accent-blue);
+  margin-bottom: 1rem; text-transform: uppercase;
+}
+.section-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800;
+  line-height: 1.3; margin-bottom: 1.5rem;
+}
+.section-subtitle {
+  font-size: 1.05rem; color: var(--text-secondary);
+  max-width: 700px; line-height: 1.9; margin-bottom: 3rem;
+}
+
+/* ── Quote Block ── */
+.quote-block {
+  background: linear-gradient(135deg, rgba(59,130,246,0.06) 0%, rgba(6,182,212,0.04) 100%);
+  border-left: 3px solid var(--accent-blue);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 2rem 2.5rem; margin: 2rem 0;
+  position: relative;
+}
+.quote-block::before {
+  content: '\201C'; position: absolute; top: -10px; left: 16px;
+  font-size: 4rem; color: rgba(59,130,246,0.2); font-family: serif;
+}
+.quote-text { font-size: 1.1rem; font-style: italic; color: var(--text-primary); line-height: 1.9; }
+.quote-author { font-size: 0.85rem; color: var(--accent-blue-light); margin-top: 1rem; font-weight: 600; }
+
+/* ── Cards Grid ── */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+.card {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); padding: 2rem;
+  transition: var(--transition); position: relative; overflow: hidden;
+}
+.card:hover {
+  border-color: var(--border-accent); transform: translateY(-4px);
+  box-shadow: var(--glow-blue);
+}
+.card-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; margin-bottom: 1.2rem;
+  background: var(--accent-blue-dim); color: var(--accent-blue-light);
+}
+.card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.8rem; }
+.card-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; }
+
+/* ── Synergy Table ── */
+.synergy-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  border-radius: var(--radius-lg); overflow: hidden;
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+}
+.synergy-table th {
+  background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(6,182,212,0.1) 100%);
+  padding: 1rem 1.5rem; font-weight: 700; font-size: 0.85rem;
+  letter-spacing: 1px; text-align: left; color: var(--accent-blue-light);
+  border-bottom: 1px solid var(--border-accent);
+}
+.synergy-table td {
+  padding: 1rem 1.5rem; font-size: 0.9rem; color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle); line-height: 1.7;
+}
+.synergy-table tr:last-child td { border-bottom: none; }
+.synergy-table tr:hover td { background: rgba(59,130,246,0.03); }
+.synergy-table .highlight-cell { color: var(--accent-cyan); font-weight: 600; }
+
+/* ── Market Data Section ── */
+.market-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin: 2rem 0; }
+.market-card {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); padding: 2rem; text-align: center;
+}
+.market-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.8rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.market-unit { font-size: 0.85rem; color: var(--accent-blue-light); font-weight: 600; margin-top: 4px; }
+.market-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
+
+/* ── Image Section ── */
+.img-showcase {
+  border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--border-subtle); margin: 2rem 0;
+  position: relative;
+}
+.img-showcase img { width: 100%; display: block; }
+.img-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(6,6,16,0.9));
+  padding: 2rem; font-size: 0.85rem; color: var(--text-secondary);
+}
+
+/* ── Timeline ── */
+.timeline { position: relative; padding-left: 3rem; margin: 2rem 0; }
+.timeline::before {
+  content: ''; position: absolute; left: 12px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(180deg, var(--accent-blue), var(--accent-cyan), transparent);
+}
+.timeline-item { position: relative; margin-bottom: 2.5rem; }
+.timeline-dot {
+  position: absolute; left: -3rem; top: 4px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--bg-primary); border: 2px solid var(--accent-blue);
+  display: flex; align-items: center; justify-content: center;
+}
+.timeline-dot::after {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-blue);
+}
+.timeline-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+.timeline-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; }
+
+/* ── The Ask Section ── */
+.ask-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+.ask-card {
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(59,130,246,0.04) 100%);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem; text-align: center; transition: var(--transition);
+}
+.ask-card:hover { border-color: var(--border-accent); box-shadow: var(--glow-blue); }
+.ask-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3rem; font-weight: 800; color: rgba(59,130,246,0.15);
+  margin-bottom: 1rem;
+}
+.ask-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--accent-blue-light); }
+.ask-text { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; }
+
+/* ── Vision Section ── */
+.vision-box {
+  background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(168,85,247,0.06) 50%, rgba(6,182,212,0.08) 100%);
+  border: 1px solid rgba(59,130,246,0.2); border-radius: var(--radius-lg);
+  padding: 4rem; text-align: center; position: relative; overflow: hidden;
+}
+.vision-box::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(59,130,246,0.05) 0%, transparent 70%);
+}
+.vision-title {
+  font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 900;
+  margin-bottom: 1.5rem; position: relative;
+  background: linear-gradient(135deg, #60a5fa 0%, #a855f7 50%, #06b6d4 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.vision-text {
+  font-size: 1.1rem; color: var(--text-secondary); max-width: 700px;
+  margin: 0 auto; line-height: 2; position: relative;
+}
+
+/* ── Proof Carousel ── */
+.carousel-container { position: relative; overflow: hidden; border-radius: var(--radius-lg); margin: 2rem 0; }
+.carousel-track { display: flex; transition: transform 0.5s ease; }
+.carousel-slide {
+  min-width: 100%; position: relative;
+}
+.carousel-slide img { width: 100%; height: 400px; object-fit: cover; }
+.carousel-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(6,6,16,0.95));
+  padding: 2rem; display: flex; align-items: flex-end;
+}
+.carousel-caption { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+.carousel-caption strong { color: var(--text-primary); }
+.carousel-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(6,6,16,0.7); border: 1px solid var(--border-subtle);
+  color: var(--text-primary); width: 44px; height: 44px;
+  border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); z-index: 5;
+}
+.carousel-btn:hover { background: rgba(59,130,246,0.2); border-color: var(--accent-blue); }
+.carousel-btn.prev { left: 1rem; }
+.carousel-btn.next { right: 1rem; }
+
+/* ── Footer ── */
+.footer {
+  padding: 60px 2rem; text-align: center;
+  border-top: 1px solid var(--border-subtle);
+}
+.footer-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; letter-spacing: 3px; color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.footer-links { display: flex; gap: 2rem; justify-content: center; margin-bottom: 1rem; }
+.footer-links a { font-size: 0.85rem; color: var(--text-secondary); transition: var(--transition); }
+.footer-links a:hover { color: var(--accent-blue-light); }
+.footer-copy { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .navbar-links { display: none; }
+  .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .market-grid { grid-template-columns: 1fr; }
+  .ask-grid { grid-template-columns: 1fr; }
+  .synergy-table { font-size: 0.8rem; }
+  .synergy-table th, .synergy-table td { padding: 0.8rem 1rem; }
+  .hero h1 { font-size: 2rem; }
+  .section { padding: 60px 1.5rem; }
+  .vision-box { padding: 2.5rem 1.5rem; }
+}
+
+/* ── Divider ── */
+.section-divider {
+  height: 1px; max-width: 1200px; margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
+}
+
+/* ── Glow Text ── */
+.glow-text {
+  text-shadow: 0 0 20px rgba(59,130,246,0.3);
+}
+
+/* ── Resource Cards ── */
+.resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
+.resource-card {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius); padding: 1.5rem; transition: var(--transition);
+  display: block;
+}
+.resource-card:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+.resource-card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; }
+.resource-card-text { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ── Animated counter ── */
+.count-up { display: inline-block; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<nav class="navbar">
+  <a href="#" class="navbar-brand">三川 SANCHUAN <span>×</span> SAMART</a>
+  <div class="navbar-links">
+    <a href="#opportunity">โอกาส</a>
+    <a href="#market">ตลาด</a>
+    <a href="#proof">ผลงาน</a>
+    <a href="#synergy">Synergy</a>
+    <a href="#ask">ข้อเสนอ</a>
+    <a href="#vision">วิสัยทัศน์</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      三川 SANCHUAN <div class="divider"></div> SAMART CORPORATION
+    </div>
+    <h1>
+      New S-Curve ของ<br>
+      <span class="highlight">SAMART</span>
+    </h1>
+    <p class="hero-subtitle">
+      ข้อเสนอความร่วมมือเชิงกลยุทธ์ระหว่างทีมผลิตละครสั้นอันดับ 1 ของจีน กับกลุ่มสามารถ — เพื่อร่วมสร้าง <strong>ASEAN's First AI-Drama Tech Hub</strong> ในอุตสาหกรรมคอนเทนต์ดิจิทัลมูลค่ากว่า <strong>5 แสนล้านบาท</strong>
+    </p>
+    <div class="hero-cta">
+      <a href="#synergy" class="btn-primary">ดู Strategic Synergy →</a>
+      <a href="#market" class="btn-secondary">ข้อมูลตลาด</a>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-number">¥100B+</div>
+        <div class="stat-label">มูลค่าตลาดละครสั้นจีน 2025</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2.1B</div>
+        <div class="stat-label">ยอดวิวผลงานล่าสุดของทีม</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">696M</div>
+        <div class="stat-label">ผู้ใช้ละครสั้นในจีน</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">฿14B</div>
+        <div class="stat-label">เป้ารายได้ SAMART 2026</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ THE OPPORTUNITY ═══════════════════ -->
+<section class="section reveal" id="opportunity">
+  <div class="section-label">STRATEGIC OPPORTUNITY</div>
+  <h2 class="section-title">ทำไมต้อง "ตอนนี้" — และทำไมต้อง "SAMART"</h2>
+  <p class="section-subtitle">
+    คุณวัฒน์ชัยประกาศเมื่อ 30 มกราคม 2026 ว่ากลุ่มสามารถกำลังมองหา <strong>New S-Curve</strong> และ <strong>พันธมิตรเชิงกลยุทธ์</strong> — เราคือคำตอบนั้น
+  </p>
+
+  <div class="quote-block reveal">
+    <p class="quote-text">
+      "เราไม่ต้องการเดินคนเดียว แต่จะหาพันธมิตรที่พร้อมเติบโตไปด้วยกัน เพื่อสร้าง New S-Curve ให้กับกลุ่มอย่างรวดเร็ว"
+    </p>
+    <p class="quote-author">— วัฒน์ชัย วิไลลักษณ์, รองประธานกรรมการบริหาร ฝ่ายกลยุทธ์องค์กร, SAMART Corp (30 ม.ค. 2026)</p>
+  </div>
+
+  <div class="cards-grid" style="margin-top: 3rem;">
+    <div class="card reveal">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">SAMART ต้องการ New S-Curve</div>
+      <div class="card-text">กลุ่มสามารถตั้งเป้ารายได้ ฿14,000 ล้าน ในปี 2026 และกำลังมองหาธุรกิจใหม่ผ่าน M&A — โดยเฉพาะด้าน AI และ IT ที่สามารถสร้างการเติบโตแบบก้าวกระโดด</div>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon">🚀</div>
+      <div class="card-title">ตลาดละครสั้น = ¥100B+ ในจีน</div>
+      <div class="card-text">อุตสาหกรรมละครสั้นจีนเติบโตจาก ¥37.4B เป็น ¥100B+ ภายใน 2 ปี — ใหญ่กว่าบ็อกซ์ออฟฟิศภาพยนตร์จีนเกือบ 2 เท่า และกำลังขยายตัวสู่ SEA</div>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">First Mover ใน SEA = ผูกขาดตลาด</div>
+      <div class="card-text">ยังไม่มีผู้เล่นรายใดในอาเซียนที่ครอบครองตลาดนี้ ใครเข้าก่อนจะได้เปรียบทั้งด้าน Talent Pipeline, IP Library และ Distribution Network</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ MARKET DATA ═══════════════════ -->
+<section class="section reveal" id="market">
+  <div class="section-label">MARKET INTELLIGENCE</div>
+  <h2 class="section-title">ตลาดละครสั้น — อุตสาหกรรมแสนล้าน</h2>
+  <p class="section-subtitle">
+    ข้อมูลจาก DataEye Research 2025 — สถาบันวิจัยชั้นนำด้านอุตสาหกรรมละครสั้นจีน ยืนยันว่านี่คือ "ขบวนรถไฟแสนล้าน" ที่กำลังออกจากสถานี
+  </p>
+
+  <div class="market-grid reveal">
+    <div class="market-card">
+      <div class="market-number">¥100B+</div>
+      <div class="market-unit">มูลค่าตลาดปี 2025</div>
+      <div class="market-desc">ประมาณ 5 แสนล้านบาท — ใหญ่กว่าบ็อกซ์ออฟฟิศภาพยนตร์จีนเกือบ 2 เท่า</div>
+    </div>
+    <div class="market-card">
+      <div class="market-number">¥120B+</div>
+      <div class="market-unit">คาดการณ์ปี 2026</div>
+      <div class="market-desc">DataEye ประเมินว่าตลาดจะเติบโตต่อเนื่อง ทะลุ 1.2 แสนล้านหยวน</div>
+    </div>
+    <div class="market-card">
+      <div class="market-number">696M</div>
+      <div class="market-unit">ผู้ใช้ในจีน (มิ.ย. 2025)</div>
+      <div class="market-desc">คิดเป็น 70% ของผู้ใช้อินเทอร์เน็ตจีนทั้งหมด — เพิ่มขึ้น 34 ล้านคนในครึ่งปีเดียว</div>
+    </div>
+    <div class="market-card">
+      <div class="market-number">200K+</div>
+      <div class="market-unit">ละครสั้นที่ผลิตในปี 2025</div>
+      <div class="market-desc">มากกว่า 16.2 หมื่นเรื่องเป็นเรื่องใหม่ — ตลาดที่ต้องการคอนเทนต์ไม่หยุด</div>
+    </div>
+  </div>
+
+  <div class="img-showcase reveal">
+    <img src="img/market-size.jpg" alt="Market Size Chart">
+    <div class="img-caption">
+      <strong>DataEye 2025:</strong> มูลค่าตลาดละครสั้นจีนทะลุ 1 แสนล้านหยวน — ใหญ่กว่าบ็อกซ์ออฟฟิศภาพยนตร์จีนเกือบ 2 เท่า
+    </div>
+  </div>
+
+  <div class="quote-block reveal" style="margin-top: 2rem;">
+    <p class="quote-text">
+      "ตลาดนี้ไม่ใช่แค่ 'เทรนด์' — มันคือการเปลี่ยนแปลงเชิงโครงสร้างของอุตสาหกรรมบันเทิง AI กำลังทำให้นักแสดง 50% ตกงาน แต่ในขณะเดียวกันก็สร้างโอกาสมหาศาลให้คนที่เข้าใจเทคโนโลยี"
+    </p>
+    <p class="quote-author">— NANA, Chairman SANCHUAN (ยอดวิวส่วนตัว 350M+)</p>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ PROOF / TRACK RECORD ═══════════════════ -->
+<section class="section reveal" id="proof">
+  <div class="section-label">PROVEN TRACK RECORD</div>
+  <h2 class="section-title">ผลงานที่พิสูจน์ด้วยตัวเลข</h2>
+  <p class="section-subtitle">
+    เราไม่ได้มาพร้อมแค่ไอเดีย — เรามาพร้อมผลงานที่ตลาดรับรองแล้วว่า "ทำเงินได้จริง" ด้วยยอดวิวรวมกว่า 2,000 ล้านครั้ง
+  </p>
+
+  <div class="carousel-container reveal">
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-slide">
+        <img src="img/xiyou-2billion.jpg" alt="西游 2.1 Billion Views">
+        <div class="carousel-overlay">
+          <div class="carousel-caption">
+            <strong>ยอดวิว 2,100 ล้านครั้ง</strong> — ซีรีส์ "ไซอิ๋ว: เมื่อจับยักษ์มาเป็นพ่อ" (西游 错把玉帝当亲爹) ผลงานล่าสุดของทีม ครองอันดับ 1 ทุกชาร์ตติดต่อกัน 10 วัน
+          </div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="img/manga-posters.jpg" alt="AI Manga Drama">
+        <div class="carousel-overlay">
+          <div class="carousel-caption">
+            <strong>เทคโนโลยี AI Manga Drama</strong> — ผสมคนจริงกับมังงะ ลดต้นทุนเหลือ 1/10 ของวิธีดั้งเดิม ครองอันดับ 1 บน Douyin Manga Chart, Hot Play Chart และ Hongguo Chart พร้อมกัน
+          </div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="img/chart-rankings.jpg" alt="Chart Rankings">
+        <div class="carousel-overlay">
+          <div class="carousel-caption">
+            <strong>อันดับ 1 พร้อมกัน 3 ชาร์ต</strong> — Douyin Manga Chart, Hot Play Chart และ Hongguo Manga Drama Chart — พิสูจน์ว่าทีมนี้ทำซ้ำได้ ไม่ใช่แค่ดวง
+          </div>
+        </div>
+      </div>
+      <div class="carousel-slide">
+        <img src="img/thai-cn-partnership.jpg" alt="Thai-China Partnership">
+        <div class="carousel-overlay">
+          <div class="carousel-caption">
+            <strong>ความร่วมมือไทย-จีน</strong> — SANCHUAN เป็นสะพานเชื่อมระหว่างเทคโนโลยีการผลิตจีนกับ Talent และ Story ของไทย สู่ตลาดอาเซียน
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-btn prev" onclick="moveCarousel(-1)">&#10094;</button>
+    <button class="carousel-btn next" onclick="moveCarousel(1)">&#10095;</button>
+  </div>
+
+  <div class="cards-grid" style="margin-top: 2rem;">
+    <div class="card reveal">
+      <div class="card-icon" style="background: rgba(232,184,48,0.1); color: var(--accent-gold);">🏆</div>
+      <div class="card-title">NANA — 350M+ Views</div>
+      <div class="card-text">ผลงานแรก《副总夫人》(ภรรยาลับรองประธาน) ทำยอดวิวรวม 350 ล้านครั้ง รวมถึงวิดีโอเดียวบน Douyin ที่ทำ 160 ล้านวิวใน 10 วัน</div>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon" style="background: rgba(34,197,94,0.1); color: var(--accent-green);">🎬</div>
+      <div class="card-title">ทีมผลิตระดับ Top 3 ของจีน</div>
+      <div class="card-text">ผู้กำกับ เผิง หยูซือ (彭玉思) — Master Director ที่มีผลงานรวมยอดวิวกว่า 2,000 ล้านครั้ง พร้อมบินมาไทยเพื่อ Pilot Project</div>
+    </div>
+    <div class="card reveal">
+      <div class="card-icon" style="background: rgba(168,85,247,0.1); color: var(--accent-purple);">🎓</div>
+      <div class="card-title">SPU Partnership — Confirmed</div>
+      <div class="card-text">มหาวิทยาลัยศรีปทุมตกลงร่วมมือแล้ว — ส่งนักศึกษาชั้นนำเข้า Pilot Project 7 วัน พร้อมเปิดหลักสูตร China Star Camp</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ SYNERGY ═══════════════════ -->
+<section class="section reveal" id="synergy">
+  <div class="section-label">STRATEGIC SYNERGY</div>
+  <h2 class="section-title">SAMART + SANCHUAN = AI-Drama Tech Hub</h2>
+  <p class="section-subtitle">
+    ไม่ใช่แค่ "ร่วมมือ" — แต่คือการสร้าง New S-Curve ที่ทั้งสองฝ่ายมีสิ่งที่อีกฝ่ายต้องการ
+  </p>
+
+  <table class="synergy-table reveal">
+    <thead>
+      <tr>
+        <th style="width: 30%;">SAMART มี</th>
+        <th style="width: 30%;">SANCHUAN มี</th>
+        <th style="width: 40%;">รวมกันได้</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Tech Infrastructure<br><small style="color:var(--text-muted)">AI, ICT, Cyber Security</small></td>
+        <td>Content IP + China Playbook<br><small style="color:var(--text-muted)">สูตรสำเร็จจากตลาด ¥100B</small></td>
+        <td class="highlight-cell">AI-Powered Content Engine — ระบบผลิตคอนเทนต์อัจฉริยะที่ทำนายเทรนด์และ personalize ได้</td>
+      </tr>
+      <tr>
+        <td>Corporate & Gov Network<br><small style="color:var(--text-muted)">ลูกค้าองค์กร + หน่วยงานรัฐ</small></td>
+        <td>Talent Pipeline<br><small style="color:var(--text-muted)">SPU + China Directors</small></td>
+        <td class="highlight-cell">B2B Content Revenue — สร้างคอนเทนต์ให้ลูกค้าองค์กรของ SAMART ทันที</td>
+      </tr>
+      <tr>
+        <td>Software Dev Capability<br><small style="color:var(--text-muted)">SAMTEL, Portalnet</small></td>
+        <td>Platform Vision<br><small style="color:var(--text-muted)">SEA Streaming Monopoly</small></td>
+        <td class="highlight-cell">ASEAN's First AI-Drama Tech Hub — ที่ Software Park แจ้งวัฒนะ</td>
+      </tr>
+      <tr>
+        <td>Capital & Credibility<br><small style="color:var(--text-muted)">SET-listed, 70+ ปี</small></td>
+        <td>China Speed Execution<br><small style="color:var(--text-muted)">7 วันจากไอเดียสู่หน้าจอ</small></td>
+        <td class="highlight-cell">New S-Curve สำหรับ SAMART — เข้าสู่ตลาด Digital Content ที่โตเร็วที่สุดในเอเชีย</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 3rem;">
+    <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem;" class="reveal">Synergy กับทุก Business Unit ของ SAMART</h3>
+    <div class="cards-grid">
+      <div class="card reveal">
+        <div class="card-icon">🔧</div>
+        <div class="card-title">SAMTEL — Digital ICT Solutions</div>
+        <div class="card-text">SAMTEL เน้น AI และ Cyber Security — SANCHUAN สร้าง massive datasets จากพฤติกรรมผู้ชม ร่วมกันสร้าง AI Engine ที่ทำนายเทรนด์คอนเทนต์และ personalize ประสบการณ์ผู้ชมได้แม่นยำ</div>
+      </div>
+      <div class="card reveal">
+        <div class="card-icon">📡</div>
+        <div class="card-title">SDC — Digital Communications</div>
+        <div class="card-text">SDC มีแพลตฟอร์มคอนเทนต์อย่าง Horoworld — SANCHUAN เพิ่ม vertical ใหม่ที่มี proven monetization model ทำให้ portfolio คอนเทนต์ของ SDC แข็งแกร่งขึ้นทันที ดัน revenue จาก ฿900M ไปอีกขั้น</div>
+      </div>
+      <div class="card reveal">
+        <div class="card-icon">🏗️</div>
+        <div class="card-title">Software Park Hub</div>
+        <div class="card-text">SAMART เป็น cornerstone ของ Software Park — ร่วมสร้าง "ASEAN Vertical AI-Drama Tech Hub" ที่นี่ ดึงดูด talent, startup และเม็ดเงินลงทุนจากทั้งจีนและอาเซียน สร้าง national strategic asset</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ THE ASK ═══════════════════ -->
+<section class="section reveal" id="ask">
+  <div class="section-label">THE PARTNERSHIP PROPOSAL</div>
+  <h2 class="section-title">สิ่งที่เราเสนอ — ไม่ใช่ขอเงิน แต่ขอเป็นพันธมิตร</h2>
+  <p class="section-subtitle">
+    นี่ไม่ใช่ pitch ขอทุน — นี่คือ pitch ขอ Strategic Alliance กับผู้นำที่มีวิสัยทัศน์ตรงกัน
+  </p>
+
+  <div class="ask-grid">
+    <div class="ask-card reveal">
+      <div class="ask-number">01</div>
+      <div class="ask-title">Strategic Guidance</div>
+      <div class="ask-text">เราต้องการ "Godfather" — คำแนะนำในการ navigate ธุรกิจและระบบนิเวศของไทย จากผู้ที่มีประสบการณ์กว่า 70 ปีในอุตสาหกรรมเทคโนโลยี มีค่ามากกว่าเงินทุนใดๆ</div>
+    </div>
+    <div class="ask-card reveal">
+      <div class="ask-number">02</div>
+      <div class="ask-title">Tech Co-Development</div>
+      <div class="ask-text">ร่วมพัฒนาแพลตฟอร์มผ่าน subsidiary ของ SAMART — ผสมผสาน Chinese tech stack (60-70%) กับ local R&D (30-40%) สร้างแพลตฟอร์มที่เป็นของไทย แต่มีเทคโนโลยีระดับโลก</div>
+    </div>
+    <div class="ask-card reveal">
+      <div class="ask-number">03</div>
+      <div class="ask-title">Network & Access</div>
+      <div class="ask-text">เปิดประตูสู่ลูกค้าองค์กรและหน่วยงานรัฐ — สร้าง B2B content ให้ enterprise clients ของ SAMART ทันที เป็น revenue stream ที่เห็นผลเร็ว พร้อมพิสูจน์ model</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ ROADMAP ═══════════════════ -->
+<section class="section reveal" id="roadmap">
+  <div class="section-label">EXECUTION ROADMAP</div>
+  <h2 class="section-title">แผนปฏิบัติการ — จากวันนี้สู่ SEA Monopoly</h2>
+
+  <div class="timeline">
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-title">Phase 1: Pilot Project (เดือนที่ 1-2)</div>
+      <div class="timeline-text">ผู้กำกับจีนบินมาไทย — ถ่ายทำ Pilot Drama กับนักศึกษา SPU 20 คน ใช้เวลา 7 วัน พิสูจน์ว่า "Model นี้ทำงานได้จริงในไทย" ใช้ Software Park เป็นฐาน</div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-title">Phase 2: Revenue Generation (เดือนที่ 3-6)</div>
+      <div class="timeline-text">เปิด SANCHUAN Academy — หลักสูตร China Star Camp 15 วัน สร้างรายได้จาก Student Tuition + B2B Brand Customization ให้ลูกค้าองค์กรของ SAMART ไม่ต้องพึ่ง VC</div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-title">Phase 3: Platform Build (เดือนที่ 6-12)</div>
+      <div class="timeline-text">ร่วมกับ SAMTEL/Portalnet พัฒนา AI-Powered Streaming Platform — ใช้ data จาก Phase 1-2 เป็น training data สร้าง recommendation engine ที่เข้าใจ SEA audience</div>
+    </div>
+    <div class="timeline-item reveal">
+      <div class="timeline-dot"></div>
+      <div class="timeline-title">Phase 4: SEA Expansion (ปีที่ 2+)</div>
+      <div class="timeline-text">ขยายสู่เวียดนาม อินโดนีเซีย ฟิลิปปินส์ — ใช้ Thailand เป็น Hub ผลิตคอนเทนต์ localize สำหรับแต่ละตลาด สร้าง monopoly ใน vertical short-drama ทั้งอาเซียน</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════ VISION ═══════════════════ -->
+<section class="section" id="vision">
+  <div class="vision-box reveal-scale">
+    <div class="section-label" style="text-align: center;">THE VISION</div>
+    <h2 class="vision-title">
+      ASEAN's First AI-Drama Tech Hub<br>
+      ที่ Software Park แจ้งวัฒนะ
+    </h2>
+    <p class="vision-text">
+      เป้าหมายของเราไม่ใช่แค่ทำละครสั้น — เป้าหมายคือสร้าง <strong>แพลตฟอร์ม Short-Drama ที่ใหญ่ที่สุดในอาเซียน</strong> ด้วยเทคโนโลยี AI ที่พัฒนาร่วมกับ SAMART ผลิตคอนเทนต์ด้วย Talent ไทย เผยแพร่สู่ผู้ชมกว่า 700 ล้านคนในภูมิภาค
+    </p>
+    <p class="vision-text" style="margin-top: 1.5rem;">
+      กับ <strong>SAMART</strong> เป็นพันธมิตรเชิงกลยุทธ์ — เราทำได้
+    </p>
+    <div style="margin-top: 2.5rem; position: relative;">
+      <a href="#ask" class="btn-primary" style="font-size: 1.1rem; padding: 16px 40px;">
+        เริ่มต้นความร่วมมือ →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ RESOURCES ═══════════════════ -->
+<section class="section reveal">
+  <div class="section-label">RESOURCES</div>
+  <h2 class="section-title" style="font-size: 1.5rem;">เอกสารประกอบ</h2>
+  <div class="resource-grid">
+    <a href="/spu/" class="resource-card" target="_blank">
+      <div class="resource-card-title">SANCHUAN × SPU Partnership</div>
+      <div class="resource-card-text">ข้อเสนอความร่วมมือกับมหาวิทยาลัยศรีปทุม — หลักสูตร, แผนถ่ายทำ, ผลงานทีม</div>
+    </a>
+    <a href="/sanchuan/" class="resource-card" target="_blank">
+      <div class="resource-card-title">SANCHUAN — Company Overview</div>
+      <div class="resource-card-text">วิสัยทัศน์ ระบบนิเวศ Battle Plan และ Revenue Model ของ SANCHUAN</div>
+    </a>
+    <a href="/school/" class="resource-card" target="_blank">
+      <div class="resource-card-title">SANCHUAN Academy</div>
+      <div class="resource-card-text">สถาบันสอนการแสดงละครสั้นแห่งแรกของไทย — China Star Camp 15 วัน</div>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="footer">
+  <div class="footer-brand">三川 SANCHUAN × SAMART CORPORATION</div>
+  <div class="footer-links">
+    <a href="mailto:team@myclover.com">team@myclover.com</a>
+    <a href="https://www.myclover.com" target="_blank">www.myclover.com</a>
+  </div>
+  <div class="footer-copy">
+    CONFIDENTIAL — Prepared exclusively for SAMART Corporation<br>
+    &copy; 2026 SANCHUAN Group. All rights reserved.
+  </div>
+</footer>
+
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+<script>
+// ── Scroll Reveal ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
+  observer.observe(el);
+});
+
+// ── Carousel ──
+let currentSlide = 0;
+const track = document.getElementById('carouselTrack');
+const slides = track ? track.children : [];
+const totalSlides = slides.length;
+
+function moveCarousel(direction) {
+  currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+  track.style.transform = `translateX(-${currentSlide * 100}%)`;
+}
+
+// Auto-advance carousel
+setInterval(() => moveCarousel(1), 5000);
+
+// ── Navbar scroll effect ──
+window.addEventListener('scroll', () => {
+  const navbar = document.querySelector('.navbar');
+  if (window.scrollY > 100) {
+    navbar.style.background = 'rgba(6,6,16,0.95)';
+  } else {
+    navbar.style.background = 'rgba(6,6,16,0.85)';
+  }
+});
+
+// ── Smooth scroll for nav links ──
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
