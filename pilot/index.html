@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sanchuan Holdings | The Micro Drama Empire</title>
-    <meta name="description" content="Sanchuan Holdings - อาณาจักร Micro Drama ข้ามพรมแดน ไทย-จีน | Investor Pitch Deck">
+    <meta name="description" content="Sanchuan Holdings - อาณาจักร Micro Drama ข้ามพรมแดน ไทย-จีน | Investor Pitch Deck 2026">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -101,723 +101,685 @@
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 16px;
-            background: linear-gradient(135deg, #fff 30%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
+        .hero h1 .gold { color: var(--gold); }
         .hero-sub {
             font-size: clamp(1rem, 2vw, 1.3rem);
-            color: var(--text-dim);
-            max-width: 600px;
-            margin: 0 auto 16px;
-            font-weight: 300;
-        }
-        .hero-tagline {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-            color: var(--gold);
+            color: var(--text-body);
             margin-bottom: 40px;
+            font-weight: 300;
         }
         .hero-stats {
             display: flex;
             justify-content: center;
             gap: 48px;
-            margin-top: 48px;
             flex-wrap: wrap;
         }
-        .hero-stat { text-align: center; }
-        .hero-stat .num {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+        .stat-item { text-align: center; }
+        .stat-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
             font-weight: 700;
             color: var(--gold);
-            display: block;
         }
-        .hero-stat .label { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-        .scroll-indicator {
-            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-            z-index: 10;
-            animation: bounce 2s infinite;
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
         }
-        .scroll-indicator i { color: var(--gold); font-size: 1.5rem; }
-        @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(10px); } }
         
         /* ===== SECTIONS ===== */
-        section { padding: 100px 0; position: relative; }
+        section { padding: 100px 0; }
         .section-label {
-            color: var(--gold);
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
             letter-spacing: 3px;
             text-transform: uppercase;
+            color: var(--gold);
             margin-bottom: 12px;
         }
-        .section-title {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-        .section-desc {
-            color: var(--text-body);
-            font-size: 1.05rem;
-            max-width: 700px;
-            margin-bottom: 48px;
-            line-height: 1.9;
-        }
         .gold-line {
-            width: 60px; height: 3px;
+            width: 60px;
+            height: 2px;
             background: linear-gradient(90deg, var(--gold), transparent);
             margin-bottom: 24px;
         }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+        .section-desc {
+            font-size: 1.05rem;
+            color: var(--text-body);
+            max-width: 700px;
+            margin-bottom: 48px;
+        }
         
-        /* ===== WHY BL SECTION ===== */
-        .why-bl { background: var(--bg-section); }
-        .market-grid {
+        /* ===== MARKET OPPORTUNITY ===== */
+        .market-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            margin-top: 40px;
+            margin-bottom: 40px;
         }
         .market-card {
             background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
-            border: 1px solid rgba(197,160,89,0.12);
+            border: 1px solid rgba(197,160,89,0.15);
             border-radius: 12px;
-            padding: 32px;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
+            padding: 32px 24px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
         }
-        .market-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--gold), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-        .market-card:hover { transform: translateY(-4px); border-color: rgba(197,160,89,0.3); }
-        .market-card:hover::before { opacity: 1; }
-        .market-card .icon {
-            width: 56px; height: 56px;
-            background: rgba(197,160,89,0.1);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            color: var(--gold);
-        }
-        .market-card h3 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
-        .market-card p { color: var(--text-dim); font-size: 0.9rem; line-height: 1.7; }
-        .market-card .stat-highlight {
-            display: inline-block;
-            background: rgba(197,160,89,0.1);
-            color: var(--gold);
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-top: 12px;
+        .market-card:hover { transform: translateY(-4px); border-color: rgba(197,160,89,0.4); }
+        .market-card .emoji { font-size: 2.5rem; display: block; margin-bottom: 16px; }
+        .market-card h4 { color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 1rem; margin-bottom: 12px; }
+        .market-card p { color: var(--text-body); font-size: 0.9rem; }
+        .market-quote {
+            background: rgba(197,160,89,0.08);
+            border-left: 3px solid var(--gold);
+            padding: 20px 28px;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-body);
+            font-style: italic;
+            font-size: 1rem;
         }
         
-        /* ===== STRATEGY SECTION ===== */
-        .strategy-section {
-            position: relative;
-            overflow: hidden;
-        }
-        .strategy-section::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: url('img/strategy-bg.jpg') center/cover no-repeat;
-            opacity: 0.15;
-        }
+        /* ===== STRATEGY ===== */
         .strategy-visual {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
-            gap: 0;
+            gap: 24px;
             align-items: center;
-            margin: 48px 0;
+            margin-bottom: 40px;
         }
-        .strategy-box {
-            background: rgba(20,34,64,0.7);
-            border: 1px solid rgba(197,160,89,0.2);
-            border-radius: 16px;
-            padding: 36px;
+        .version-box {
+            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
+            border: 1px solid rgba(197,160,89,0.15);
+            border-radius: 12px;
+            padding: 32px;
             text-align: center;
-            backdrop-filter: blur(10px);
         }
-        .strategy-box h3 { color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 1.2rem; margin-bottom: 8px; }
-        .strategy-box .version-tag {
-            display: inline-block;
-            padding: 4px 16px;
-            border-radius: 50px;
-            font-size: 0.75rem;
+        .version-box h4 { color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 1rem; margin-bottom: 12px; letter-spacing: 1px; }
+        .version-box .tag { display: inline-block; background: rgba(197,160,89,0.15); color: var(--gold); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; margin: 4px; }
+        .version-center {
+            text-align: center;
+            padding: 24px;
+        }
+        .version-center .icon { font-size: 3rem; color: var(--gold); margin-bottom: 12px; }
+        .version-center p { color: var(--text-body); font-size: 0.85rem; font-weight: 600; }
+        .strategy-bottom {
+            background: linear-gradient(135deg, rgba(197,160,89,0.1), rgba(197,160,89,0.02));
+            border: 1px solid rgba(197,160,89,0.2);
+            border-radius: 12px;
+            padding: 24px 32px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--gold);
             font-weight: 600;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
         }
-        .version-chinese { background: rgba(192,57,43,0.2); color: #e74c3c; border: 1px solid rgba(192,57,43,0.3); }
-        .version-bl { background: rgba(155,89,182,0.2); color: #bb6bd9; border: 1px solid rgba(155,89,182,0.3); }
-        .strategy-arrow {
-            display: flex; flex-direction: column; align-items: center; padding: 0 24px;
-        }
-        .strategy-arrow .shoot-badge {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--navy);
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-        .strategy-arrow .line { width: 2px; height: 40px; background: var(--gold); opacity: 0.3; }
-        .strategy-benefits {
+        
+        /* ===== CENSORSHIP HACKS ===== */
+        .hack-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
         }
-        .benefit-item {
-            display: flex; gap: 12px; align-items: flex-start;
-            padding: 20px;
-            background: rgba(20,34,64,0.4);
-            border-radius: 8px;
-            border: 1px solid rgba(197,160,89,0.08);
+        .hack-card {
+            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
+            border: 1px solid rgba(197,160,89,0.15);
+            border-radius: 12px;
+            padding: 32px 24px;
+            transition: transform 0.3s, border-color 0.3s;
         }
-        .benefit-item i { color: var(--gold); font-size: 1.2rem; margin-top: 4px; flex-shrink: 0; }
-        .benefit-item span { color: var(--text-body); font-size: 0.9rem; }
+        .hack-card:hover { transform: translateY(-4px); border-color: rgba(197,160,89,0.4); }
+        .hack-card .hack-icon { font-size: 2rem; margin-bottom: 16px; display: block; }
+        .hack-card h4 { color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.95rem; margin-bottom: 8px; }
+        .hack-card .problem { color: var(--red-accent); font-size: 0.85rem; margin-bottom: 12px; font-weight: 600; }
+        .hack-card .solution { color: var(--green-accent); font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+        .hack-card p { color: var(--text-body); font-size: 0.9rem; }
         
         /* ===== COMPARISON TABLE ===== */
-        .comparison { background: var(--bg-section); }
         .comparison-table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 40px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(197,160,89,0.15);
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 16px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(197,160,89,0.1);
+            font-size: 0.9rem;
         }
         .comparison-table thead th {
-            background: var(--navy-light);
-            padding: 20px 24px;
-            text-align: left;
+            background: rgba(20,34,64,0.8);
+            color: var(--gold);
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.8rem;
             letter-spacing: 1px;
             text-transform: uppercase;
-            color: var(--gold);
-            border-bottom: 2px solid rgba(197,160,89,0.2);
+            font-weight: 600;
         }
-        .comparison-table thead th:first-child { width: 35%; }
-        .comparison-table tbody td {
-            padding: 16px 24px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 0.9rem;
-            color: var(--text-body);
-        }
-        .comparison-table tbody tr:hover { background: rgba(197,160,89,0.03); }
-        .comparison-table .feature-name { font-weight: 500; color: var(--text-main); }
-        .check { color: var(--gold); font-weight: 700; }
-        .cross { color: var(--text-dim); opacity: 0.4; }
-        .highlight-col { background: rgba(197,160,89,0.05); }
+        .comparison-table tbody tr:hover { background: rgba(197,160,89,0.05); }
+        .feature-name { text-align: left; color: var(--text-body); font-weight: 500; }
+        .highlight-col { background: rgba(197,160,89,0.08); color: var(--gold); font-weight: 600; }
+        .check { color: var(--green-accent); font-weight: 700; }
+        .cross { color: var(--red-accent); }
         
-        /* ===== REVENUE MODEL ===== */
-        .revenue-streams {
+        /* ===== REVENUE ===== */
+        .revenue-section { background: var(--bg-section); }
+        .revenue-pillars {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            margin-top: 40px;
+            margin-bottom: 40px;
         }
-        .revenue-card {
-            background: linear-gradient(145deg, rgba(20,34,64,0.5), rgba(10,22,40,0.7));
-            border: 1px solid rgba(197,160,89,0.1);
+        .pillar-card {
+            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
+            border: 1px solid rgba(197,160,89,0.15);
             border-radius: 12px;
-            padding: 28px;
+            padding: 32px 24px;
             text-align: center;
-            transition: all 0.4s;
+            transition: transform 0.3s, border-color 0.3s;
         }
-        .revenue-card:hover { border-color: rgba(197,160,89,0.3); transform: translateY(-4px); }
-        .revenue-card .emoji { font-size: 2.5rem; margin-bottom: 16px; display: block; }
-        .revenue-card h4 { font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
-        .revenue-card p { color: var(--text-dim); font-size: 0.85rem; }
-        .revenue-card .revenue-pct {
-            display: inline-block;
-            background: rgba(197,160,89,0.1);
-            color: var(--gold);
-            padding: 4px 16px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin-top: 12px;
+        .pillar-card:hover { transform: translateY(-4px); border-color: rgba(197,160,89,0.4); }
+        .pillar-card .pillar-icon { font-size: 2.5rem; display: block; margin-bottom: 16px; }
+        .pillar-card h4 { color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 1rem; margin-bottom: 12px; }
+        .pillar-card ul { list-style: none; text-align: left; }
+        .pillar-card ul li { color: var(--text-body); font-size: 0.85rem; padding: 4px 0; padding-left: 16px; position: relative; }
+        .pillar-card ul li::before { content: ''; position: absolute; left: 0; top: 12px; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+        .pillar-card .margin-tag { display: inline-block; background: rgba(39,174,96,0.15); color: var(--green-accent); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; margin-top: 12px; font-weight: 600; }
+        .revenue-target {
+            background: linear-gradient(135deg, rgba(197,160,89,0.15), rgba(197,160,89,0.05));
+            border: 2px solid rgba(197,160,89,0.3);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
         }
+        .revenue-target h3 { color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+        .revenue-target .big-number { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--gold); }
+        .revenue-target .sub { color: var(--text-dim); font-size: 0.9rem; margin-top: 4px; }
         
         /* ===== TRACTION ===== */
-        .traction { background: var(--bg-section); }
         .traction-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            margin-top: 40px;
         }
         .traction-card {
+            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
+            border: 1px solid rgba(197,160,89,0.15);
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid rgba(197,160,89,0.12);
-            background: var(--navy-light);
-            transition: all 0.4s;
+            transition: transform 0.3s, border-color 0.3s;
         }
-        .traction-card:hover { transform: translateY(-4px); border-color: rgba(197,160,89,0.3); }
+        .traction-card:hover { transform: translateY(-4px); border-color: rgba(197,160,89,0.4); }
         .traction-card img {
             width: 100%;
             height: 220px;
-            object-fit: cover;
+            object-fit: contain;
+            background: rgba(10,22,40,0.5);
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
+        .traction-card img:hover { opacity: 0.85; }
         .traction-card .card-body { padding: 20px; }
-        .traction-card h4 { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
-        .traction-card p { color: var(--text-dim); font-size: 0.85rem; }
+        .traction-card h4 { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; color: var(--gold); margin-bottom: 8px; }
+        .traction-card p { color: var(--text-body); font-size: 0.85rem; }
         
         /* ===== FINANCIALS ===== */
+        .financials-section { background: var(--bg-section); }
         .financials-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-top: 40px;
+            gap: 24px;
+            margin-bottom: 40px;
         }
         .fin-card {
             background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
-            border: 1px solid rgba(197,160,89,0.12);
-            border-radius: 16px;
-            padding: 36px;
+            border: 1px solid rgba(197,160,89,0.15);
+            border-radius: 12px;
+            padding: 28px;
         }
-        .fin-card h3 { font-family: 'Montserrat', sans-serif; color: var(--gold); font-size: 1rem; font-weight: 600; margin-bottom: 24px; letter-spacing: 1px; text-transform: uppercase; }
-        .fin-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .fin-row:last-child { border-bottom: none; }
+        .fin-card h3 { font-family: 'Montserrat', sans-serif; font-size: 1rem; color: var(--text-main); margin-bottom: 20px; }
+        .fin-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .fin-row .label { color: var(--text-dim); font-size: 0.9rem; }
-        .fin-row .value { color: var(--text-main); font-weight: 600; font-size: 0.95rem; }
-        .fin-row .value.gold { color: var(--gold); }
+        .fin-row .value { font-weight: 600; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; }
         .fin-row .value.green { color: var(--green-accent); }
+        .fin-row .value.gold { color: var(--gold); }
         
         .timeline-section { margin-top: 48px; }
         .timeline {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             position: relative;
-            padding: 40px 0;
+            padding: 20px 0;
         }
         .timeline::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 5%;
-            right: 5%;
-            height: 3px;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
             background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
-            transform: translateY(-50%);
         }
         .timeline-item {
             text-align: center;
-            position: relative;
             flex: 1;
+            position: relative;
         }
         .timeline-dot {
-            width: 48px; height: 48px;
-            background: var(--navy);
-            border: 3px solid var(--gold);
+            width: 40px; height: 40px;
             border-radius: 50%;
+            background: var(--navy-light);
+            border: 2px solid var(--gold-dark);
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 16px;
+            margin: 0 auto 12px;
+            font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             font-size: 0.85rem;
-            color: var(--gold);
+            color: var(--text-dim);
             position: relative;
             z-index: 2;
         }
-        .timeline-dot.active { background: var(--gold); color: var(--navy); }
-        .timeline-item .tl-label { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 4px; }
-        .timeline-item .tl-title { font-size: 0.8rem; font-weight: 600; color: var(--text-main); }
-        .timeline-item .tl-highlight { color: var(--gold); font-weight: 700; font-size: 0.75rem; margin-top: 4px; }
+        .timeline-dot.active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+        .tl-label { font-size: 0.75rem; color: var(--text-dim); font-family: 'Montserrat', sans-serif; }
+        .tl-title { font-size: 0.8rem; color: var(--text-main); font-weight: 600; margin-top: 4px; }
+        .tl-highlight { font-size: 0.75rem; color: var(--gold); font-weight: 700; margin-top: 4px; }
+        
+        .chart-container {
+            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
+            border: 1px solid rgba(197,160,89,0.15);
+            border-radius: 12px;
+            padding: 28px;
+            margin-top: 40px;
+        }
         
         /* ===== PILOT PROJECT ===== */
-        .pilot-project { background: var(--bg-section); overflow: hidden; }
+        .pilot-project { background: var(--bg-dark); }
         .pilot-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 48px;
             align-items: center;
-            margin-top: 40px;
         }
-        .pilot-poster {
-            border-radius: 16px;
-            overflow: hidden;
-            border: 2px solid rgba(197,160,89,0.2);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            transition: all 0.5s;
+        .pilot-poster img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(197,160,89,0.2);
+            cursor: pointer;
+            transition: transform 0.3s;
         }
-        .pilot-poster:hover { transform: scale(1.02); border-color: rgba(197,160,89,0.5); }
-        .pilot-poster img { width: 100%; display: block; }
-        .pilot-info h3 { font-size: 1.8rem; margin-bottom: 8px; }
-        .pilot-info .subtitle { color: var(--gold); font-size: 1rem; font-weight: 500; margin-bottom: 20px; }
-        .pilot-info .concept {
-            background: rgba(20,34,64,0.6);
-            border-left: 3px solid var(--gold);
-            padding: 20px;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 24px;
+        .pilot-poster img:hover { transform: scale(1.02); }
+        .pilot-info .subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 16px;
         }
-        .pilot-info .concept p { color: var(--text-body); font-size: 0.95rem; font-style: italic; }
-        .genre-tags { display: flex; gap: 12px; flex-wrap: wrap; }
+        .concept { color: var(--text-body); font-size: 1rem; margin-bottom: 24px; line-height: 1.8; }
+        .genre-tags { display: flex; flex-wrap: wrap; gap: 12px; }
         .genre-tag {
-            display: flex; align-items: center; gap: 8px;
             background: rgba(197,160,89,0.1);
             border: 1px solid rgba(197,160,89,0.2);
+            color: var(--text-body);
             padding: 8px 16px;
-            border-radius: 50px;
+            border-radius: 6px;
             font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--gold);
+            font-family: 'Montserrat', sans-serif;
         }
+        .genre-tag i { color: var(--gold); margin-right: 6px; }
         
         /* ===== TEAM ===== */
+        .team-section { background: var(--bg-section); }
         .team-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 32px;
-            margin-top: 40px;
+            margin-bottom: 48px;
         }
         .team-card {
+            display: flex;
+            gap: 24px;
             background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
-            border: 1px solid rgba(197,160,89,0.12);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.4s;
+            border: 1px solid rgba(197,160,89,0.15);
+            border-radius: 12px;
+            padding: 28px;
+            transition: transform 0.3s, border-color 0.3s;
         }
-        .team-card:hover { border-color: rgba(197,160,89,0.3); transform: translateY(-4px); }
-        .team-card .photo-wrapper {
-            width: 100%;
-            height: 320px;
+        .team-card:hover { transform: translateY(-4px); border-color: rgba(197,160,89,0.4); }
+        .photo-wrapper {
+            flex-shrink: 0;
+            width: 120px;
+            height: 150px;
+            border-radius: 8px;
             overflow: hidden;
+            border: 2px solid rgba(197,160,89,0.2);
+            cursor: pointer;
         }
-        .team-card .photo-wrapper img {
+        .photo-wrapper img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s;
+            object-fit: contain;
+            background: rgba(10,22,40,0.5);
+            transition: opacity 0.3s;
         }
-        .team-card:hover .photo-wrapper img { transform: scale(1.05); }
-        .team-card .info { padding: 24px; }
-        .team-card .name { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
-        .team-card .role { color: var(--gold); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
-        .team-card .nickname {
-            display: inline-block;
-            background: rgba(197,160,89,0.1);
+        .photo-wrapper img:hover { opacity: 0.85; }
+        .team-card .info { flex: 1; }
+        .team-card .name { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: var(--text-main); margin-bottom: 4px; }
+        .team-card .role { color: var(--gold); font-size: 0.85rem; font-weight: 500; margin-bottom: 8px; }
+        .team-card .nickname { display: inline-block; background: rgba(197,160,89,0.1); color: var(--gold); padding: 2px 12px; border-radius: 20px; font-size: 0.75rem; margin-bottom: 12px; }
+        .team-card .bio { list-style: none; }
+        .team-card .bio li { color: var(--text-body); font-size: 0.8rem; padding: 3px 0; padding-left: 14px; position: relative; }
+        .team-card .bio li::before { content: ''; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; background: var(--gold); border-radius: 50%; }
+        
+        /* ===== CAPITAL SHIELD MODEL ===== */
+        .capital-shield { background: var(--bg-dark); }
+        .shield-highlight {
+            background: linear-gradient(135deg, rgba(197,160,89,0.12), rgba(197,160,89,0.03));
+            border: 2px solid rgba(197,160,89,0.25);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .shield-highlight .key-msg {
+            font-size: 1.2rem;
             color: var(--gold);
-            padding: 2px 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
-        .team-card .bio { color: var(--text-dim); font-size: 0.85rem; line-height: 1.7; }
-        .team-card .bio li { margin-bottom: 4px; list-style: none; }
-        .team-card .bio li::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+        .shield-highlight .key-sub { color: var(--text-body); font-size: 0.95rem; }
+        .shield-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .shield-card {
+            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
+            border: 1px solid rgba(197,160,89,0.15);
+            border-radius: 12px;
+            padding: 32px;
+        }
+        .shield-card .phase-label {
+            display: inline-block;
+            background: rgba(197,160,89,0.15);
+            color: var(--gold);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .shield-card h4 { color: var(--text-main); font-family: 'Montserrat', sans-serif; font-size: 1rem; margin-bottom: 12px; }
+        .shield-card p { color: var(--text-body); font-size: 0.9rem; }
+        .shield-card .ratio {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .ratio-box {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .ratio-box.investor { background: rgba(197,160,89,0.15); border: 1px solid rgba(197,160,89,0.3); }
+        .ratio-box.sanchuan { background: rgba(20,34,64,0.8); border: 1px solid rgba(255,255,255,0.1); }
+        .ratio-box .pct { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; }
+        .ratio-box.investor .pct { color: var(--gold); }
+        .ratio-box.sanchuan .pct { color: var(--text-dim); }
+        .ratio-box .who { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+        
+        .future-box {
+            background: rgba(39,174,96,0.08);
+            border: 1px solid rgba(39,174,96,0.2);
+            border-radius: 12px;
+            padding: 24px 32px;
+            text-align: center;
+        }
+        .future-box h4 { color: var(--green-accent); font-family: 'Montserrat', sans-serif; font-size: 0.9rem; margin-bottom: 8px; }
+        .future-box p { color: var(--text-body); font-size: 0.9rem; }
         
         /* ===== ROADMAP ===== */
         .roadmap { background: var(--bg-section); }
         .roadmap-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-top: 40px;
+            gap: 20px;
+            margin-bottom: 48px;
         }
         .roadmap-phase {
-            background: linear-gradient(145deg, rgba(20,34,64,0.5), rgba(10,22,40,0.7));
-            border: 1px solid rgba(197,160,89,0.1);
+            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
+            border: 1px solid rgba(197,160,89,0.15);
             border-radius: 12px;
-            padding: 28px;
-            position: relative;
-            transition: all 0.4s;
+            padding: 28px 20px;
+            text-align: center;
         }
-        .roadmap-phase:hover { border-color: rgba(197,160,89,0.3); }
-        .roadmap-phase .phase-num {
-            width: 40px; height: 40px;
-            background: rgba(197,160,89,0.1);
-            border: 2px solid var(--gold);
+        .phase-num {
+            width: 48px; height: 48px;
             border-radius: 50%;
+            background: var(--navy-light);
+            border: 2px solid var(--gold-dark);
             display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            color: var(--gold);
-            margin-bottom: 16px;
-            font-size: 0.9rem;
+            color: var(--text-dim);
         }
-        .roadmap-phase .phase-num.completed { background: var(--gold); color: var(--navy); }
-        .roadmap-phase h4 { font-family: 'Montserrat', sans-serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 12px; }
-        .roadmap-phase ul { list-style: none; }
-        .roadmap-phase ul li { color: var(--text-dim); font-size: 0.85rem; padding: 4px 0; }
-        .roadmap-phase .status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-top: 12px;
-        }
+        .phase-num.completed { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+        .roadmap-phase h4 { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; color: var(--text-main); margin-bottom: 12px; }
+        .roadmap-phase ul { list-style: none; text-align: left; margin-bottom: 16px; }
+        .roadmap-phase ul li { color: var(--text-body); font-size: 0.8rem; padding: 3px 0; padding-left: 14px; position: relative; }
+        .roadmap-phase ul li::before { content: ''; position: absolute; left: 0; top: 10px; width: 5px; height: 5px; background: var(--gold); border-radius: 50%; }
+        .status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
         .status-done { background: rgba(39,174,96,0.15); color: var(--green-accent); }
         .status-next { background: rgba(197,160,89,0.15); color: var(--gold); }
         
-        /* ===== INVESTMENT OPTIONS ===== */
-        .investment-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 32px;
-            margin-top: 40px;
-        }
-        .invest-card {
-            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
-            border: 1px solid rgba(197,160,89,0.15);
-            border-radius: 16px;
-            padding: 40px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s;
-        }
-        .invest-card:hover { border-color: rgba(197,160,89,0.4); transform: translateY(-4px); }
-        .invest-card .option-label {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--navy);
-            padding: 4px 16px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-        }
-        .invest-card h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 8px; }
-        .invest-card .invest-desc { color: var(--text-dim); font-size: 0.9rem; font-style: italic; margin-bottom: 20px; }
-        .invest-card ul { list-style: none; margin-bottom: 20px; }
-        .invest-card ul li { color: var(--text-body); font-size: 0.9rem; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .invest-card ul li:last-child { border-bottom: none; }
-        .invest-card .pros-box {
-            background: rgba(197,160,89,0.08);
-            border: 1px solid rgba(197,160,89,0.15);
-            border-radius: 8px;
-            padding: 16px;
-        }
-        .invest-card .pros-box h5 { color: var(--gold); font-size: 0.8rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .invest-card .pros-box p { color: var(--text-body); font-size: 0.85rem; }
-        
-        .strategic-note {
-            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
-            border: 1px solid rgba(197,160,89,0.2);
-            border-radius: 12px;
-            padding: 32px;
-            margin-top: 32px;
-        }
-        .strategic-note h4 { color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
-        .strategic-note p { color: var(--text-body); font-size: 0.9rem; line-height: 1.8; }
-        
-        /* ===== VISION QUOTE ===== */
         .vision-quote {
+            padding: 60px 0;
             text-align: center;
-            padding: 80px 24px;
-            background: linear-gradient(180deg, var(--bg-section), var(--bg-dark));
         }
         .vision-quote blockquote {
             font-family: 'Playfair Display', serif;
+            font-size: clamp(1.2rem, 2.5vw, 1.6rem);
             font-style: italic;
-            font-size: clamp(1.3rem, 3vw, 2rem);
             color: var(--gold);
             max-width: 800px;
             margin: 0 auto;
             line-height: 1.6;
-            position: relative;
-        }
-        .vision-quote blockquote::before {
-            content: '\201C';
-            font-size: 5rem;
-            color: rgba(197,160,89,0.2);
-            position: absolute;
-            top: -40px;
-            left: -20px;
         }
         
-        /* ===== CTA / CONTACT ===== */
+        /* ===== CTA ===== */
         .cta-section {
-            text-align: center;
-            padding: 100px 24px;
             position: relative;
-            overflow: hidden;
+            padding: 100px 0;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--navy-light) 50%, var(--bg-dark) 100%);
         }
-        .cta-section::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: radial-gradient(ellipse at center, rgba(197,160,89,0.08) 0%, transparent 70%);
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 32px 0;
         }
-        .cta-section h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 16px; }
-        .cta-section .cta-sub { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 40px; }
-        .cta-buttons { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 48px; }
         .btn-primary {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--navy);
-            padding: 16px 40px;
-            border-radius: 8px;
+            padding: 14px 36px;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: 700;
             font-size: 1rem;
             transition: all 0.3s;
-            display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(197,160,89,0.4); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(197,160,89,0.4); }
         .btn-secondary {
             background: transparent;
             border: 2px solid var(--gold);
             color: var(--gold);
-            padding: 14px 40px;
-            border-radius: 8px;
+            padding: 14px 36px;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
             font-size: 1rem;
             transition: all 0.3s;
         }
         .btn-secondary:hover { background: rgba(197,160,89,0.1); }
-        .contact-info { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
         .contact-item { text-align: center; }
         .contact-item i { color: var(--gold); font-size: 1.5rem; margin-bottom: 8px; display: block; }
-        .contact-item .contact-label { color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
-        .contact-item .contact-value { color: var(--text-main); font-size: 0.95rem; font-weight: 500; }
+        .contact-label { color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        .contact-value { color: var(--text-main); font-size: 0.9rem; font-weight: 500; margin-top: 4px; }
         
-        /* ===== FOOTER ===== */
         footer {
             text-align: center;
-            padding: 32px;
+            padding: 32px 0;
             border-top: 1px solid rgba(197,160,89,0.1);
             color: var(--text-dim);
             font-size: 0.8rem;
         }
         
-        /* ===== CHART CONTAINER ===== */
-        .chart-container {
-            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
-            border: 1px solid rgba(197,160,89,0.12);
-            border-radius: 16px;
-            padding: 32px;
-            margin-top: 40px;
-        }
-        
-        /* ===== COUNTER ANIMATION ===== */
-        .counter { display: inline-block; }
-        
-        /* ===== MOBILE RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-            .financials-wrapper { grid-template-columns: 1fr; }
-            .investment-options { grid-template-columns: 1fr; }
-            .roadmap-grid { grid-template-columns: repeat(2, 1fr); }
-            .team-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        
-        @media (max-width: 768px) {
-            section { padding: 60px 0; }
-            .nav-links { display: none; }
-            .nav-cta { display: none; }
-            .hamburger { display: block; }
-            
-            .hero-stats { gap: 24px; }
-            .hero-stat .num { font-size: 1.8rem; }
-            
-            .strategy-visual { grid-template-columns: 1fr; gap: 16px; }
-            .strategy-arrow { flex-direction: row; padding: 12px 0; }
-            .strategy-arrow .line { width: 40px; height: 2px; }
-            
-            .traction-grid { grid-template-columns: 1fr; }
-            .pilot-grid { grid-template-columns: 1fr; }
-            .team-grid { grid-template-columns: 1fr; }
-            .roadmap-grid { grid-template-columns: 1fr; }
-            
-            .timeline { flex-direction: column; gap: 24px; }
-            .timeline::before { display: none; }
-            
-            .comparison-table { font-size: 0.8rem; }
-            .comparison-table thead th, .comparison-table tbody td { padding: 12px; }
-            
-            .contact-info { flex-direction: column; gap: 24px; }
-        }
-        
-        @media (max-width: 480px) {
-            .container { padding: 0 16px; }
-            .market-grid { grid-template-columns: 1fr; }
-            .revenue-streams { grid-template-columns: 1fr; }
-            .strategy-benefits { grid-template-columns: 1fr; }
-        }
-        
-        /* ===== MOBILE NAV OVERLAY ===== */
-        .mobile-nav {
+        /* ===== LIGHTBOX ===== */
+        .lightbox-overlay {
             display: none;
-            position: fixed; inset: 0; z-index: 10000;
-            background: rgba(5,10,20,0.98);
-            backdrop-filter: blur(20px);
-            flex-direction: column;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+        .lightbox-overlay.active { display: flex; }
+        .lightbox-overlay img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 60px rgba(197,160,89,0.3);
+        }
+        .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            color: var(--gold);
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 100000;
+            background: rgba(0,0,0,0.5);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid rgba(197,160,89,0.3);
+        }
+        
+        /* ===== MOBILE NAV ===== */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(5,10,20,0.98);
+            z-index: 99998;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             gap: 24px;
         }
         .mobile-nav.active { display: flex; }
-        .mobile-nav a {
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 1.2rem;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
+        .mobile-nav a { color: var(--text-main); text-decoration: none; font-size: 1.2rem; font-weight: 500; }
         .mobile-nav a:hover { color: var(--gold); }
-        .mobile-nav .close-btn {
-            position: absolute; top: 20px; right: 20px;
-            background: none; border: none; color: var(--gold); font-size: 2rem; cursor: pointer;
-        }
+        .mobile-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: var(--gold); font-size: 2rem; cursor: pointer; }
         
-        /* ===== PARTICLE BG ===== */
-        .particles {
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .market-cards, .hack-grid, .revenue-pillars, .traction-grid { grid-template-columns: 1fr 1fr; }
+            .roadmap-grid { grid-template-columns: 1fr 1fr; }
+            .strategy-visual { grid-template-columns: 1fr; }
+            .version-center { order: -1; }
+        }
+        @media (max-width: 768px) {
+            .nav-links, .nav-cta { display: none; }
+            .hamburger { display: block; }
+            .hero-stats { gap: 24px; }
+            .market-cards, .hack-grid, .revenue-pillars, .traction-grid { grid-template-columns: 1fr; }
+            .financials-wrapper, .shield-grid, .team-grid, .pilot-grid { grid-template-columns: 1fr; }
+            .roadmap-grid { grid-template-columns: 1fr 1fr; }
+            .team-card { flex-direction: column; align-items: center; text-align: center; }
+            .team-card .bio { text-align: left; }
+            .contact-info { gap: 24px; }
+            .timeline { flex-wrap: wrap; gap: 16px; justify-content: center; }
+            .timeline::before { display: none; }
+            .nana-spotlight-grid { grid-template-columns: 1fr !important; }
+            .nana-brand-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 480px) {
+            .roadmap-grid { grid-template-columns: 1fr; }
+            section { padding: 60px 0; }
         }
     </style>
 </head>
 <body>
 
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+    <div class="lightbox-close" onclick="closeLightbox()"><i class="fas fa-times"></i></div>
+    <img id="lightbox-img" src="" alt="Expanded view">
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+    <button class="mobile-close" onclick="toggleMobileNav()"><i class="fas fa-times"></i></button>
+    <a href="#market" onclick="toggleMobileNav()">ตลาด</a>
+    <a href="#strategy" onclick="toggleMobileNav()">กลยุทธ์</a>
+    <a href="#hacks" onclick="toggleMobileNav()">Censorship Hacks</a>
+    <a href="#advantage" onclick="toggleMobileNav()">ข้อได้เปรียบ</a>
+    <a href="#revenue" onclick="toggleMobileNav()">รายได้</a>
+    <a href="#traction" onclick="toggleMobileNav()">ผลงาน</a>
+    <a href="#financials" onclick="toggleMobileNav()">การเงิน</a>
+    <a href="#pilot" onclick="toggleMobileNav()">Pilot Project</a>
+    <a href="#team" onclick="toggleMobileNav()">ทีมงาน</a>
+    <a href="#shield" onclick="toggleMobileNav()">ข้อเสนอการลงทุน</a>
+    <a href="#contact" onclick="toggleMobileNav()">ติดต่อ</a>
+</div>
+
 <!-- NAVIGATION -->
 <nav id="navbar">
     <div class="container">
-        <a href="#hero" class="nav-logo">
+        <a href="#" class="nav-logo">
             <img src="img/sanchuan-logo.png" alt="Sanchuan Holdings">
             <span>SANCHUAN</span>
         </a>
         <ul class="nav-links">
-            <li><a href="#why-bl">โอกาส</a></li>
+            <li><a href="#market">ตลาด</a></li>
             <li><a href="#strategy">กลยุทธ์</a></li>
             <li><a href="#traction">ผลงาน</a></li>
             <li><a href="#financials">การเงิน</a></li>
-            <li><a href="#pilot">โปรเจกต์</a></li>
             <li><a href="#team">ทีมงาน</a></li>
-            <li><a href="#investment">ลงทุน</a></li>
+            <li><a href="#shield">ข้อเสนอ</a></li>
         </ul>
-        <a href="#contact" class="nav-cta">ติดต่อลงทุน</a>
+        <a href="#contact" class="nav-cta">ลงทุนเลย</a>
         <button class="hamburger" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
     </div>
 </nav>
-
-<!-- MOBILE NAV -->
-<div class="mobile-nav" id="mobileNav">
-    <button class="close-btn" onclick="toggleMobileNav()"><i class="fas fa-times"></i></button>
-    <a href="#why-bl" onclick="toggleMobileNav()">โอกาสตลาด</a>
-    <a href="#strategy" onclick="toggleMobileNav()">กลยุทธ์</a>
-    <a href="#traction" onclick="toggleMobileNav()">ผลงาน</a>
-    <a href="#financials" onclick="toggleMobileNav()">การเงิน</a>
-    <a href="#pilot" onclick="toggleMobileNav()">โปรเจกต์แรก</a>
-    <a href="#team" onclick="toggleMobileNav()">ทีมงาน</a>
-    <a href="#investment" onclick="toggleMobileNav()">ทางเลือกลงทุน</a>
-    <a href="#contact" onclick="toggleMobileNav()" style="color: var(--gold);">ติดต่อลงทุน</a>
-</div>
 
 <!-- HERO -->
 <section class="hero" id="hero">
@@ -825,236 +787,261 @@
     <div class="hero-overlay"></div>
     <div class="hero-content" data-aos="fade-up" data-aos-duration="1200">
         <div class="hero-badge">INVESTOR PITCH DECK 2026</div>
-        <h1>The Micro Drama<br>Empire</h1>
-        <p class="hero-sub">Sanchuan Holdings &mdash; อาณาจักร Micro Drama ข้ามพรมแดน ไทย-จีน</p>
-        <p class="hero-tagline">"1 Shoot, 2 Versions &mdash; ถ่ายครั้งเดียว ขายได้ทั้งโลก"</p>
+        <h1>SANCHUAN <span class="gold">HOLDINGS</span></h1>
+        <p class="hero-sub">THE MICRO DRAMA EMPIRE &mdash; อาณาจักร Micro Drama ข้ามพรมแดน ไทย-จีน</p>
         <div class="hero-stats">
-            <div class="hero-stat" data-aos="fade-up" data-aos-delay="200">
-                <span class="num counter" data-target="2475000">0</span>
-                <span class="label">THB Investment</span>
+            <div class="stat-item">
+                <div class="stat-number counter" data-target="3000000">0</div>
+                <div class="stat-label">THB ระดมทุน</div>
             </div>
-            <div class="hero-stat" data-aos="fade-up" data-aos-delay="400">
-                <span class="num">4 <span style="font-size:1rem;">เดือน</span></span>
-                <span class="label">Break Even</span>
+            <div class="stat-item">
+                <div class="stat-number"><span class="counter" data-target="4">0</span> เดือน</div>
+                <div class="stat-label">จุดคืนทุน</div>
             </div>
-            <div class="hero-stat" data-aos="fade-up" data-aos-delay="600">
-                <span class="num">2x</span>
-                <span class="label">Revenue Streams</span>
+            <div class="stat-item">
+                <div class="stat-number counter" data-target="5000000">0</div>
+                <div class="stat-label">THB เป้ารายได้</div>
             </div>
         </div>
     </div>
-    <div class="scroll-indicator">
-        <i class="fas fa-chevron-down"></i>
-    </div>
 </section>
 
-<!-- WHY BL -->
-<section class="why-bl" id="why-bl">
+<!-- MARKET OPPORTUNITY -->
+<section class="market" id="market">
     <div class="container">
-        <div class="section-label" data-aos="fade-up">MARKET OPPORTUNITY</div>
+        <div class="section-label" data-aos="fade-up">WHY BL? WHY NOW?</div>
         <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ทำไมต้อง BL + Micro Drama?</h2>
-        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">
-            ตลาด BL (Boy Love) กำลังเติบโตแบบก้าวกระโดด ในขณะที่ Micro Drama กำลังเป็นเทรนด์ใหม่ที่กำลังระเบิดในจีนและเอเชียตะวันออกเฉียงใต้ Sanchuan Holdings คือผู้เล่นที่อยู่ตรงจุดตัดของทั้งสองเทรนด์
-        </p>
-        <div class="market-grid">
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ทำไมต้อง BL? ทำไมต้องตอนนี้?</h2>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">โอกาสทองของตลาดซีรีส์วายที่กำลังเติบโตอย่างก้าวกระโดด</p>
+        
+        <div class="market-cards">
             <div class="market-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="icon"><i class="fas fa-chart-line"></i></div>
-                <h3>ตลาด BL ทั่วโลก</h3>
-                <p>ตลาด BL ในเอเชียเติบโตกว่า 20% ต่อปี โดยมีไทยเป็นศูนย์กลางการผลิตคอนเทนต์ BL ระดับโลก</p>
-                <span class="stat-highlight">เติบโต 20%+ ต่อปี</span>
+                <span class="emoji">&#128176;</span>
+                <h4>High Spending Power</h4>
+                <p>ฐานแฟนคลับที่มีกำลังซื้อสูง พร้อมเปย์เพื่อสนับสนุนศิลปิน</p>
             </div>
             <div class="market-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="icon"><i class="fas fa-mobile-alt"></i></div>
-                <h3>Micro Drama กำลังระเบิด</h3>
-                <p>ตลาด Micro Drama ในจีนมีมูลค่ากว่า 37,000 ล้านหยวน (2024) และยังคงเติบโตอย่างต่อเนื่อง</p>
-                <span class="stat-highlight">37,000 ล้านหยวน</span>
+                <span class="emoji">&#127988;</span>
+                <h4>Thailand = Hub</h4>
+                <p>ไทยคือศูนย์กลางผลิต Content Y อันดับ 1 ของเอเชีย</p>
             </div>
             <div class="market-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="icon"><i class="fas fa-globe-asia"></i></div>
-                <h3>ช่องว่างตลาดที่ยังไม่มีใครเติม</h3>
-                <p>ยังไม่มีผู้ผลิตรายใดที่ทำ "BL Micro Drama" แบบข้ามชาติ ไทย-จีน อย่างเป็นระบบ นี่คือ Blue Ocean ที่แท้จริง</p>
-                <span class="stat-highlight">Blue Ocean Market</span>
+                <span class="emoji">&#127754;</span>
+                <h4>Blue Ocean</h4>
+                <p>ตลาดยังขาดแคลนซีรีส์วายแบบ "สั้น-กระชับ-จบไว" คุณภาพสูง</p>
             </div>
+        </div>
+        
+        <div class="market-quote" data-aos="fade-up" data-aos-delay="400">
+            "Shipper Culture (วัฒนธรรมคู่จิ้น) คือ Soft Power ที่ทรงพลังที่สุดในยุคนี้"
         </div>
     </div>
 </section>
 
-<!-- STRATEGY: 1 SHOOT 2 VERSIONS -->
-<section class="strategy-section" id="strategy">
-    <div class="container" style="position:relative; z-index:2;">
-        <div class="section-label" data-aos="fade-up">SECRET WEAPON</div>
+<!-- STRATEGY: 1 SHOOT, 2 VERSIONS -->
+<section class="strategy" id="strategy" style="background: var(--bg-section);">
+    <div class="container">
+        <div class="section-label" data-aos="fade-up">SECRET STRATEGY</div>
         <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">กลยุทธ์ "1 Shoot, 2 Versions"</h2>
-        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">
-            ถ่ายทำครั้งเดียว แต่ตัดต่อออกมาเป็น 2 เวอร์ชัน เพื่อเจาะ 2 ตลาดพร้อมกัน ลดต้นทุนการผลิตลง 40% ในขณะที่เพิ่มรายได้เป็น 2 เท่า
-        </p>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">กลยุทธ์ลับ: 1 Shoot, 2 Versions</h2>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ฉีกกฎการผลิตเดิมๆ ด้วยโมเดลที่ "ลดความเสี่ยง" และ "เพิ่มกำไร" สูงสุด</p>
         
         <div class="strategy-visual" data-aos="fade-up" data-aos-delay="400">
-            <div class="strategy-box">
-                <span class="version-tag version-chinese">VERSION A</span>
-                <h3>เวอร์ชันจีน</h3>
-                <p style="color: var(--text-dim); font-size: 0.9rem;">เน้น Drama + Action<br>สำหรับแพลตฟอร์มจีน<br>(Hongguo, Douyin)</p>
+            <div class="version-box">
+                <h4>&#127464;&#127475; CHINA VERSION</h4>
+                <p style="color: var(--text-body); font-size: 0.9rem; margin-bottom: 12px;">Bromance / BG</p>
+                <span class="tag">ผ่านเซ็นเซอร์จีน 100%</span>
+                <span class="tag">Mass Market</span>
+                <span class="tag">Hongguo Platform</span>
             </div>
-            <div class="strategy-arrow">
-                <div class="line"></div>
-                <div class="shoot-badge"><i class="fas fa-film"></i>&nbsp; 1 SHOOT</div>
-                <div class="line"></div>
+            <div class="version-center">
+                <div class="icon"><i class="fas fa-film"></i></div>
+                <p>1 PRODUCTION<br>= Single Budget</p>
             </div>
-            <div class="strategy-box">
-                <span class="version-tag version-bl">VERSION B</span>
-                <h3>เวอร์ชัน BL</h3>
-                <p style="color: var(--text-dim); font-size: 0.9rem;">เน้น Romance + Chemistry<br>สำหรับตลาดสากล<br>(YouTube, Viki, iQIYI)</p>
+            <div class="version-box">
+                <h4>&#127758; GLOBAL VERSION</h4>
+                <p style="color: var(--text-body); font-size: 0.9rem; margin-bottom: 12px;">Full BL Uncensored</p>
+                <span class="tag">High Engagement</span>
+                <span class="tag">Premium Copyright</span>
+                <span class="tag">YouTube / Viki / iQIYI</span>
             </div>
         </div>
         
-        <div class="strategy-benefits">
-            <div class="benefit-item" data-aos="fade-up" data-aos-delay="100">
-                <i class="fas fa-coins"></i>
-                <span><strong>ลดต้นทุน 40%</strong> &mdash; ถ่ายครั้งเดียว ไม่ต้องจ้างทีมซ้ำ</span>
+        <div class="strategy-bottom" data-aos="fade-up" data-aos-delay="500">
+            &#128161; จ่าย 1 ได้ 2 ตลาด &mdash; ลดต้นทุน 50% / เพิ่มโอกาสทำกำไร 200%
+        </div>
+    </div>
+</section>
+
+<!-- CENSORSHIP & PRODUCTION HACKS -->
+<section class="censorship-hacks" id="hacks">
+    <div class="container">
+        <div class="section-label" data-aos="fade-up">CENSORSHIP &amp; PRODUCTION HACKS</div>
+        <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">การจัดการเซ็นเซอร์และกำแพงภาษา</h2>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">คำตอบสำหรับทุกข้อสงสัยของนักลงทุน</p>
+        
+        <div class="hack-grid">
+            <div class="hack-card" data-aos="fade-up" data-aos-delay="100">
+                <span class="hack-icon">&#128683;</span>
+                <h4>กฎเหล็กของจีน (The China Rule)</h4>
+                <p class="problem"><i class="fas fa-exclamation-triangle"></i> ปัญหา: จีนแบนเนื้อหา BL 100%</p>
+                <p class="solution"><i class="fas fa-check-circle"></i> วิธีแก้เกม:</p>
+                <p>เวอร์ชันจีนตัดต่อใหม่ ลบฉาก 18+ ทั้งหมด ใส่ "นางเอกจีน" เข้ามาเดินเรื่อง &rarr; เปลี่ยนเป็น Bromance ผ่านเซ็นเซอร์ฉลุย</p>
             </div>
-            <div class="benefit-item" data-aos="fade-up" data-aos-delay="200">
-                <i class="fas fa-bullseye"></i>
-                <span><strong>เจาะ 2 ตลาด</strong> &mdash; จีน + สากล พร้อมกัน</span>
+            <div class="hack-card" data-aos="fade-up" data-aos-delay="200">
+                <span class="hack-icon">&#127758;</span>
+                <h4>กฎของตลาดโลก (The Global Demand)</h4>
+                <p class="problem"><i class="fas fa-exclamation-triangle"></i> ปัญหา: แฟนคลับอินเตอร์ต้องการฉาก R-Rated</p>
+                <p class="solution"><i class="fas fa-check-circle"></i> วิธีแก้เกม:</p>
+                <p>เวอร์ชัน Global จัดเต็มฉากเลิฟซีน Uncensored &rarr; ดึงดูดเม็ดเงินจากแฟนคลับต่างชาติ</p>
             </div>
-            <div class="benefit-item" data-aos="fade-up" data-aos-delay="300">
-                <i class="fas fa-shield-alt"></i>
-                <span><strong>กระจายความเสี่ยง</strong> &mdash; ไม่พึ่งตลาดเดียว</span>
-            </div>
-            <div class="benefit-item" data-aos="fade-up" data-aos-delay="400">
-                <i class="fas fa-rocket"></i>
-                <span><strong>Scalable</strong> &mdash; ขยายได้ไม่จำกัด ทำซ้ำได้ทุกเรื่อง</span>
+            <div class="hack-card" data-aos="fade-up" data-aos-delay="300">
+                <span class="hack-icon">&#127908;</span>
+                <h4>ทลายกำแพงภาษา (Bilingual Acting)</h4>
+                <p class="problem"><i class="fas fa-exclamation-triangle"></i> ปัญหา: นักแสดงไทย-จีนพูดคนละภาษา</p>
+                <p class="solution"><i class="fas fa-check-circle"></i> วิธีแก้เกม:</p>
+                <p>นักแสดงไทยพูดไทย นักแสดงจีนพูดจีน สื่อสารด้วยอารมณ์และภาษากาย &rarr; ใช้การพากย์เสียง (Dubbing) ระดับโปรใน Post-Production ประหยัดเวลา ได้งานคุณภาพสูงสุด</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- COMPARISON TABLE -->
-<section class="comparison" id="comparison">
+<!-- THE UNFAIR ADVANTAGE -->
+<section class="advantage" id="advantage" style="background: var(--bg-section);">
     <div class="container">
-        <div class="section-label" data-aos="fade-up">UNFAIR ADVANTAGE</div>
+        <div class="section-label" data-aos="fade-up">THE UNFAIR ADVANTAGE</div>
         <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ทำไมต้อง Sanchuan?</h2>
-        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">เปรียบเทียบกับคู่แข่งในตลาด &mdash; Sanchuan มีข้อได้เปรียบที่ไม่มีใครเทียบได้</p>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ความได้เปรียบที่ไม่แฟร์</h2>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">เปรียบเทียบให้เห็นชัดว่า Sanchuan ต่างจากคู่แข่งอย่างไร</p>
         
-        <div data-aos="fade-up" data-aos-delay="400">
+        <div data-aos="fade-up" data-aos-delay="400" style="overflow-x: auto;">
             <table class="comparison-table">
                 <thead>
                     <tr>
-                        <th>คุณสมบัติ</th>
-                        <th>ค่ายไทยทั่วไป</th>
-                        <th>ค่ายจีนทั่วไป</th>
-                        <th class="highlight-col">SANCHUAN &#9733;</th>
+                        <th style="text-align: left;">เปรียบเทียบ</th>
+                        <th>ซีรีส์ไทยแบบเดิม</th>
+                        <th class="highlight-col">SANCHUAN MICRO DRAMA</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="feature-name">ทีมงานจีนแท้ (Insider)</td>
-                        <td><span class="cross">&#10007;</span></td>
-                        <td><span class="check">&#10003;</span></td>
-                        <td class="highlight-col"><span class="check">&#10003; CEO คือคนจีน</span></td>
+                        <td class="feature-name">ต้นทุนรวม</td>
+                        <td><span class="cross">20,000,000+ THB</span></td>
+                        <td class="highlight-col"><span class="check">3,000,000 THB</span></td>
                     </tr>
                     <tr>
-                        <td class="feature-name">เข้าใจตลาด BL สากล</td>
-                        <td><span class="check">&#10003;</span></td>
-                        <td><span class="cross">&#10007;</span></td>
-                        <td class="highlight-col"><span class="check">&#10003; ทีมไทย+จีน</span></td>
+                        <td class="feature-name">ระยะเวลาผลิต</td>
+                        <td><span class="cross">6-8 เดือน</span></td>
+                        <td class="highlight-col"><span class="check">1-2 เดือน</span></td>
                     </tr>
                     <tr>
-                        <td class="feature-name">กลยุทธ์ 1 Shoot 2 Versions</td>
-                        <td><span class="cross">&#10007;</span></td>
-                        <td><span class="cross">&#10007;</span></td>
-                        <td class="highlight-col"><span class="check">&#10003; สิทธิบัตรกลยุทธ์</span></td>
+                        <td class="feature-name">ความเสี่ยง</td>
+                        <td><span class="cross">High (วัดดวงตอนฉาย)</span></td>
+                        <td class="highlight-col"><span class="check">Low (รู้ผลใน 1 สัปดาห์)</span></td>
                     </tr>
                     <tr>
-                        <td class="feature-name">Connection แพลตฟอร์มจีน</td>
-                        <td><span class="cross">&#10007;</span></td>
-                        <td><span class="check">&#10003;</span></td>
-                        <td class="highlight-col"><span class="check">&#10003; อันดับ 1 Hongguo</span></td>
+                        <td class="feature-name">คู่แข่ง</td>
+                        <td><span class="cross">Red Ocean (GMM, Ch3, One)</span></td>
+                        <td class="highlight-col"><span class="check">Blue Ocean (First Mover)</span></td>
                     </tr>
                     <tr>
-                        <td class="feature-name">ต้นทุนการผลิตต่ำ</td>
-                        <td><span class="cross">&#10007; สูง</span></td>
-                        <td><span class="check">&#10003;</span></td>
-                        <td class="highlight-col"><span class="check">&#10003; ต่ำสุดในตลาด</span></td>
+                        <td class="feature-name">จำนวนตลาด</td>
+                        <td><span class="cross">1 ตลาด (ไทย)</span></td>
+                        <td class="highlight-col"><span class="check">2 ตลาด (จีน + Global)</span></td>
                     </tr>
                     <tr>
-                        <td class="feature-name">Downside Protection สำหรับนักลงทุน</td>
-                        <td><span class="cross">&#10007;</span></td>
-                        <td><span class="cross">&#10007;</span></td>
+                        <td class="feature-name">Downside Protection</td>
+                        <td><span class="cross">&#10007; ไม่มี</span></td>
                         <td class="highlight-col"><span class="check">&#10003; Capital Shield Model</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    </div>
-</section>
-
-<!-- REVENUE MODEL -->
-<section class="revenue-section" id="revenue">
-    <div class="container">
-        <div class="section-label" data-aos="fade-up">REVENUE MODEL</div>
-        <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">โมเดลรายได้ที่หลากหลาย</h2>
-        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ไม่ได้พึ่งรายได้ทางเดียว แต่มีหลายช่องทางที่สร้างรายได้อย่างยั่งยืน</p>
         
-        <div class="revenue-streams">
-            <div class="revenue-card" data-aos="fade-up" data-aos-delay="100">
-                <span class="emoji">&#127909;</span>
-                <h4>Platform Licensing</h4>
-                <p>ขายลิขสิทธิ์ให้แพลตฟอร์ม Hongguo, Douyin, YouTube, Viki</p>
-                <span class="revenue-pct">รายได้หลัก</span>
-            </div>
-            <div class="revenue-card" data-aos="fade-up" data-aos-delay="200">
-                <span class="emoji">&#128176;</span>
-                <h4>Pay-Per-Episode</h4>
-                <p>ผู้ชมจ่ายเงินเพื่อปลดล็อคตอน (Micro-transaction Model)</p>
-                <span class="revenue-pct">Recurring Revenue</span>
-            </div>
-            <div class="revenue-card" data-aos="fade-up" data-aos-delay="300">
-                <span class="emoji">&#127915;</span>
-                <h4>IP Merchandise</h4>
-                <p>สินค้าจาก IP ตัวละคร, Fan Meeting, Photobook</p>
-                <span class="revenue-pct">Fan Economy</span>
-            </div>
-            <div class="revenue-card" data-aos="fade-up" data-aos-delay="400">
-                <span class="emoji">&#127758;</span>
-                <h4>Brand Sponsorship</h4>
-                <p>Product Placement และ Brand Collaboration ในเรื่อง</p>
-                <span class="revenue-pct">B2B Revenue</span>
-            </div>
+        <div class="market-quote" data-aos="fade-up" data-aos-delay="500">
+            "วงการนี้พี่ต้องรู้จักตัวจริง... ถ้านายทุนหน้าใหม่เดินเซอๆ เข้ามา โดนฟันหัวแบะครับ จ่ายแพงกว่าปกติ 2-3 เท่า... แต่ถ้ามากับผม เราคือคนใน เราคุมเกมได้" &mdash; <strong>Golf Actlab55</strong>
         </div>
     </div>
 </section>
 
-<!-- TRACTION & VALIDATION -->
+<!-- REVENUE MODEL: MONEY MAKING MACHINE -->
+<section class="revenue-section" id="revenue">
+    <div class="container">
+        <div class="section-label" data-aos="fade-up">MONEY MAKING MACHINE</div>
+        <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">เครื่องจักรสร้างเงิน</h2>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">3 เสาหลักแห่งรายได้ที่สร้างกระแสเงินสดต่อเนื่อง</p>
+        
+        <div class="revenue-pillars">
+            <div class="pillar-card" data-aos="fade-up" data-aos-delay="100">
+                <span class="pillar-icon">&#127909;</span>
+                <h4>PLATFORM REVENUE</h4>
+                <ul>
+                    <li>Pay-per-view (จีน)</li>
+                    <li>Subscription Share</li>
+                    <li>Ad Revenue (YouTube/TikTok)</li>
+                </ul>
+                <span class="margin-tag">รายได้หลัก</span>
+            </div>
+            <div class="pillar-card" data-aos="fade-up" data-aos-delay="200">
+                <span class="pillar-icon">&#128196;</span>
+                <h4>COPYRIGHT</h4>
+                <ul>
+                    <li>Global Licensing</li>
+                    <li>Remake Rights</li>
+                    <li>Sub-licensing to OTT</li>
+                </ul>
+                <span class="margin-tag">Passive Income</span>
+            </div>
+            <div class="pillar-card" data-aos="fade-up" data-aos-delay="300">
+                <span class="pillar-icon">&#128293;</span>
+                <h4>FAN ECONOMY</h4>
+                <ul>
+                    <li>Fan Meetings</li>
+                    <li>Merchandise</li>
+                    <li>Brand Endorsements</li>
+                </ul>
+                <span class="margin-tag">High Margin</span>
+            </div>
+        </div>
+        
+        <div class="revenue-target" data-aos="fade-up" data-aos-delay="400">
+            <h3>TARGET NET PROFIT / PROJECT (ปีแรก)</h3>
+            <div class="big-number">5,000,000 THB</div>
+            <div class="sub">Conservative Estimate: 3,000,000 THB (คืนทุน 100%)</div>
+        </div>
+    </div>
+</section>
+
+<!-- PROVEN SUCCESS -->
 <section class="traction" id="traction">
     <div class="container">
         <div class="section-label" data-aos="fade-up">PROVEN SUCCESS</div>
         <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
         <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ความสำเร็จที่พิสูจน์แล้ว</h2>
-        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ไม่ใช่แค่แผน แต่เรามีผลงานจริงที่พิสูจน์ว่าโมเดลนี้ใช้ได้จริง</p>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ไม่ใช่แค่แผนบนกระดาษ แต่คือความสำเร็จที่พิสูจน์แล้ว</p>
         
         <div class="traction-grid">
             <div class="traction-card" data-aos="fade-up" data-aos-delay="100">
-                <img src="img/ranking.png" alt="Hongguo Platform Ranking #1" loading="lazy">
+                <img src="img/ranking.png" alt="Hongguo Platform Ranking #1" loading="lazy" onclick="openLightbox(this)">
                 <div class="card-body">
-                    <h4>&#127942; อันดับ 1 บน Hongguo Platform</h4>
-                    <p>ผลงานของ Nana (CEO) ขึ้นอันดับ 1 บนแพลตฟอร์ม Hongguo ซึ่งเป็นแพลตฟอร์ม Micro Drama อันดับต้นของจีน</p>
+                    <h4>&#127942; NO.1 RANKING</h4>
+                    <p>ครองอันดับ 1 บน Hongguo Platform ด้วยคะแนนความนิยม 5,399 ล้าน &mdash; แพลตฟอร์ม Micro Drama อันดับต้นของจีน</p>
                 </div>
             </div>
             <div class="traction-card" data-aos="fade-up" data-aos-delay="200">
-                <img src="img/spu-event.png" alt="SPU SPUCA Event" loading="lazy">
+                <img src="img/spu-event.png" alt="SPU SPUCA Event" loading="lazy" onclick="openLightbox(this)">
                 <div class="card-body">
-                    <h4>&#127891; SPU x SPUCA Partnership</h4>
-                    <p>ร่วมมือกับมหาวิทยาลัยศรีปทุม จัดอีเวนต์ SPUCA สร้างเครือข่ายนักแสดงและทีมผลิตระดับมืออาชีพ</p>
+                    <h4>&#127891; ACADEMIC ENDORSEMENT</h4>
+                    <p>ได้รับการรับรองและความร่วมมือจากคณะนิเทศศาสตร์ ม.ศรีปทุม (SPU) จัดอีเวนต์ SPUCA สร้างเครือข่ายระดับมืออาชีพ</p>
                 </div>
             </div>
             <div class="traction-card" data-aos="fade-up" data-aos-delay="300">
-                <img src="img/nana-teem.png" alt="Nana & Teem - Founders" loading="lazy">
+                <img src="img/nana-teem.png" alt="Nana & Teem - Founders" loading="lazy" onclick="openLightbox(this)">
                 <div class="card-body">
-                    <h4>&#129309; ทีมผู้ก่อตั้งที่แข็งแกร่ง</h4>
-                    <p>Nana (คนจีน ผู้รู้ลึกตลาดจีน) + Teem (คนไทย นักกลยุทธ์ธุรกิจ) = ทีมที่สมบูรณ์แบบสำหรับตลาดข้ามชาติ</p>
+                    <h4>&#129309; REAL EXECUTION</h4>
+                    <p>ดำเนินการจริงมาแล้ว 6 เดือน พร้อมทีมงานและคอนเน็คชั่นระดับ A-List ทั้งในไทยและจีน</p>
                 </div>
             </div>
         </div>
@@ -1066,23 +1053,23 @@
     <div class="container">
         <div class="section-label" data-aos="fade-up">FINANCIAL PROJECTIONS</div>
         <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ตัวเลขที่น่าสนใจ</h2>
-        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ประมาณการทางการเงินสำหรับโปรเจกต์แรก "Blood & Gold" (20 ตอน)</p>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">เป้าหมายทางการเงิน</h2>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ลงทุน 3 ล้าน คืนทุนใน 4 เดือน</p>
         
         <div class="financials-wrapper" data-aos="fade-up" data-aos-delay="400">
             <div class="fin-card">
-                <h3><i class="fas fa-arrow-circle-down" style="color: #e74c3c;"></i>&nbsp; ต้นทุนการผลิต</h3>
-                <div class="fin-row"><span class="label">งบผลิตทั้งหมด</span><span class="value">3,000,000 THB</span></div>
-                <div class="fin-row"><span class="label">ต้นทุนต่อตอน</span><span class="value">150,000 THB</span></div>
-                <div class="fin-row"><span class="label">ระยะเวลาถ่ายทำ</span><span class="value">45 วัน</span></div>
-                <div class="fin-row"><span class="label">สถานที่ถ่ายทำ</span><span class="value">ซีอาน, ประเทศจีน</span></div>
+                <h3><i class="fas fa-arrow-circle-down" style="color: #e74c3c;"></i>&nbsp; Investment Allocation (3,000,000 THB)</h3>
+                <div class="fin-row"><span class="label">Production (ถ่ายทำ+ตัดต่อ)</span><span class="value">2,400,000 THB (80%)</span></div>
+                <div class="fin-row"><span class="label">Marketing (การตลาด)</span><span class="value">300,000 THB (10%)</span></div>
+                <div class="fin-row"><span class="label">Operations (ดำเนินงาน)</span><span class="value">300,000 THB (10%)</span></div>
+                <div class="fin-row"><span class="label">รวมทั้งหมด</span><span class="value gold">3,000,000 THB</span></div>
             </div>
             <div class="fin-card">
-                <h3><i class="fas fa-arrow-circle-up" style="color: #27ae60;"></i>&nbsp; ประมาณการรายได้</h3>
-                <div class="fin-row"><span class="label">รายได้จากแพลตฟอร์มจีน</span><span class="value green">2,500,000+ THB</span></div>
-                <div class="fin-row"><span class="label">รายได้จาก BL Version</span><span class="value green">1,500,000+ THB</span></div>
-                <div class="fin-row"><span class="label">รายได้รวมประมาณการ</span><span class="value gold">4,000,000+ THB</span></div>
-                <div class="fin-row"><span class="label">ROI ประมาณการ</span><span class="value gold">33%+</span></div>
+                <h3><i class="fas fa-arrow-circle-up" style="color: #27ae60;"></i>&nbsp; Revenue Target (Year 1)</h3>
+                <div class="fin-row"><span class="label">Conservative</span><span class="value green">3,000,000 THB</span></div>
+                <div class="fin-row"><span class="label">Target</span><span class="value green">5,000,000 THB</span></div>
+                <div class="fin-row"><span class="label">Net Profit Goal</span><span class="value gold">2,000,000+ THB</span></div>
+                <div class="fin-row"><span class="label">ROI (Target)</span><span class="value gold">67%+</span></div>
             </div>
         </div>
         
@@ -1093,33 +1080,23 @@
                 <div class="timeline-item">
                     <div class="timeline-dot active">1</div>
                     <div class="tl-label">Month 1-2</div>
-                    <div class="tl-title">Pre-Production</div>
+                    <div class="tl-title">Production &amp; Post</div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-dot">2</div>
-                    <div class="tl-label">Month 2-3</div>
-                    <div class="tl-title">Production</div>
+                    <div class="tl-label">Month 3</div>
+                    <div class="tl-title">Launch Series</div>
                 </div>
                 <div class="timeline-item">
-                    <div class="timeline-dot">3</div>
-                    <div class="tl-label">Month 3-4</div>
-                    <div class="tl-title">Post & Release</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot" style="background: var(--gold); color: var(--navy);">4</div>
+                    <div class="timeline-dot" style="background: var(--gold); color: var(--navy);">3</div>
                     <div class="tl-label">Month 4</div>
                     <div class="tl-title">Revenue Starts</div>
                     <div class="tl-highlight">&#9733; Break Even Point</div>
                 </div>
                 <div class="timeline-item">
-                    <div class="timeline-dot">5</div>
-                    <div class="tl-label">Month 5</div>
-                    <div class="tl-title">Profit Growth</div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-dot">6</div>
-                    <div class="tl-label">Month 6</div>
-                    <div class="tl-title">Scale & Expansion</div>
+                    <div class="timeline-dot">4</div>
+                    <div class="tl-label">Month 5-6</div>
+                    <div class="tl-title">Scale &amp; Expansion</div>
                     <div class="tl-highlight">&#128640; ขยายตลาด</div>
                 </div>
             </div>
@@ -1138,17 +1115,17 @@
     <div class="container">
         <div class="section-label" data-aos="fade-up">PILOT PROJECT</div>
         <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">โปรเจกต์แรก: The First Hit</h2>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">โปรเจกต์แรก: Blood &amp; Gold</h2>
         
         <div class="pilot-grid">
             <div class="pilot-poster" data-aos="fade-right" data-aos-duration="1000">
-                <img src="img/blood-gold-cinematic.jpg" alt="Blood & Gold - Coming Soon 2026" loading="lazy">
+                <img src="img/blood-gold-cinematic.jpg" alt="Blood & Gold - Coming Soon 2026" loading="lazy" onclick="openLightbox(this)">
             </div>
             <div class="pilot-info" data-aos="fade-left" data-aos-duration="1000">
-                <h3 class="serif">BLOOD & GOLD</h3>
+                <h3 class="serif" style="font-size: 2rem; margin-bottom: 8px;">BLOOD &amp; GOLD</h3>
                 <p class="subtitle">MAFIA FAMILY X BUSINESS POWER</p>
                 <div class="concept">
-                    <p>"Romeo & Juliet ฉบับ Boy Love" &mdash; เรื่องราวความรักต้องห้ามระหว่าง <strong>ทายาทมาเฟียผู้ทรงอิทธิพล</strong> และ <strong>CEO หนุ่มไฟแรง</strong> ที่เริ่มต้นด้วยความเป็นศัตรูทางธุรกิจ สู่ความสัมพันธ์ที่ต้องแลกด้วยชีวิตและอำนาจ</p>
+                    <p>"Romeo &amp; Juliet ฉบับ Boy Love" &mdash; เรื่องราวความรักต้องห้ามระหว่าง <strong>ทายาทมาเฟียผู้ทรงอิทธิพล</strong> และ <strong>CEO หนุ่มไฟแรง</strong> ที่เริ่มต้นด้วยความเป็นศัตรูทางธุรกิจ สู่ความสัมพันธ์ที่ต้องแลกด้วยชีวิตและอำนาจ</p>
                 </div>
                 <div class="genre-tags">
                     <div class="genre-tag"><i class="fas fa-fist-raised"></i> ACTION &mdash; High Stakes Conflict</div>
@@ -1161,7 +1138,7 @@
         
         <!-- Xi'an Filming Location -->
         <div style="margin-top: 60px; border-radius: 16px; overflow: hidden; border: 1px solid rgba(197,160,89,0.15);" data-aos="fade-up">
-            <img src="img/xian-filming.jpg" alt="Xi'an Filming Location" style="width: 100%; height: 360px; object-fit: cover; display: block;" loading="lazy">
+            <img src="img/xian-filming.jpg" alt="Xi'an Filming Location" style="width: 100%; max-height: 400px; object-fit: contain; display: block; background: rgba(10,22,40,0.5); cursor: pointer;" loading="lazy" onclick="openLightbox(this)">
             <div style="padding: 24px; background: rgba(20,34,64,0.6); text-align: center;">
                 <h4 style="font-family: 'Montserrat', sans-serif; color: var(--gold); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">FILMING LOCATION</h4>
                 <p style="color: var(--text-body); font-size: 1rem;">&#127983; ซีอาน (Xi'an) &mdash; เมืองหลวงโบราณแห่งจีน สถานที่ถ่ายทำที่เต็มไปด้วยความยิ่งใหญ่และวัฒนธรรมอันล้ำค่า</p>
@@ -1178,27 +1155,100 @@
         <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ทีมผู้นำทัพ</h2>
         <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ทีมที่ผสมผสาน "คนใน" ตลาดจีน กับ "นักกลยุทธ์" ไทย อย่างลงตัว</p>
         
+        <!-- NANA SPOTLIGHT -->
+        <div style="background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8)); border: 2px solid rgba(197,160,89,0.3); border-radius: 16px; padding: 40px; margin-bottom: 48px;" data-aos="fade-up">
+            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 40px; align-items: start;">
+                <div>
+                    <div style="border-radius: 12px; overflow: hidden; border: 2px solid rgba(197,160,89,0.3); cursor: pointer; margin-bottom: 16px;" onclick="openLightbox(this.querySelector('img'))">
+                        <img src="img/nana-headshot.jpg" alt="Nana (Li Qinyao) - CEO & Founder" loading="lazy" style="width: 100%; display: block; object-fit: contain; background: rgba(10,22,40,0.5);">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(197,160,89,0.2); cursor: pointer;" onclick="openLightbox(this.querySelector('img'))">
+                            <img src="img/nana-champion.jpg" alt="World Model Champion" loading="lazy" style="width: 100%; height: 100px; object-fit: contain; background: rgba(10,22,40,0.5);">
+                        </div>
+                        <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(197,160,89,0.2); cursor: pointer;" onclick="openLightbox(this.querySelector('img'))">
+                            <img src="img/nana-cinematic1.jpg" alt="Nana Drama Still" loading="lazy" style="width: 100%; height: 100px; object-fit: contain; background: rgba(10,22,40,0.5);">
+                        </div>
+                        <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(197,160,89,0.2); cursor: pointer;" onclick="openLightbox(this.querySelector('img'))">
+                            <img src="img/nana-period.jpg" alt="Nana Period Drama" loading="lazy" style="width: 100%; height: 100px; object-fit: contain; background: rgba(10,22,40,0.5);">
+                        </div>
+                        <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(197,160,89,0.2); cursor: pointer;" onclick="openLightbox(this.querySelector('img'))">
+                            <img src="img/nana-volvo.jpg" alt="Nana Volvo Collaboration" loading="lazy" style="width: 100%; height: 100px; object-fit: contain; background: rgba(10,22,40,0.5);">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <span style="background: rgba(197,160,89,0.2); color: var(--gold); padding: 4px 16px; border-radius: 20px; font-size: 0.75rem; font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 1px;">CEO & FOUNDER</span>
+                        <span style="background: rgba(197,160,89,0.1); color: var(--gold); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem;">"The Insider"</span>
+                    </div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text-main); margin-bottom: 4px;">Nana (ลี่ชินเยา / Li Qinyao)</h3>
+                    <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px;">170cm | สถาบันดนตรีซีอาน (Xi'an Conservatory of Music) | สาขาการแสดงดนตรี</p>
+                    
+                    <!-- Achievement Badges -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
+                        <span style="background: linear-gradient(135deg, rgba(197,160,89,0.2), rgba(197,160,89,0.1)); border: 1px solid rgba(197,160,89,0.3); color: var(--gold); padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;"><i class="fas fa-crown" style="margin-right: 4px;"></i> World Model Champion</span>
+                        <span style="background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.2); color: var(--green-accent); padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;"><i class="fas fa-film" style="margin-right: 4px;"></i> 30+ Drama Credits</span>
+                        <span style="background: rgba(52,152,219,0.1); border: 1px solid rgba(52,152,219,0.2); color: #3498db; padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;"><i class="fas fa-star" style="margin-right: 4px;"></i> #1 Hongguo Platform</span>
+                    </div>
+                    
+                    <p style="color: var(--text-body); font-size: 0.9rem; line-height: 1.8; margin-bottom: 20px;">นางเอกอันดับ 1 บน Hongguo Platform ผู้รู้ลึกตลาดจีน ลงมือทำ Market Research ด้วยตัวเอง มีฐานแฟนคลับและ Connection ระดับสูง ประสบการณ์ทั้งละครยาวและ Micro Drama มากกว่า 30 เรื่อง</p>
+                    
+                    <!-- Brand Collaborations -->
+                    <h4 style="font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;">Brand Collaborations</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+                        <div style="background: rgba(10,22,40,0.6); border: 1px solid rgba(197,160,89,0.15); border-radius: 8px; padding: 12px; text-align: center;">
+                            <p style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 4px;">VOLVO</p>
+                            <p style="font-size: 0.7rem; color: var(--text-dim);">ร่วมงานกับ เกาหยวนยวน (Gao Yuan Yuan)</p>
+                        </div>
+                        <div style="background: rgba(10,22,40,0.6); border: 1px solid rgba(197,160,89,0.15); border-radius: 8px; padding: 12px; text-align: center;">
+                            <p style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 4px;">CLARINS</p>
+                            <p style="font-size: 0.7rem; color: var(--text-dim);">Skincare Ambassador</p>
+                        </div>
+                        <div style="background: rgba(10,22,40,0.6); border: 1px solid rgba(197,160,89,0.15); border-radius: 8px; padding: 12px; text-align: center;">
+                            <p style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 4px;">ViVInevo</p>
+                            <p style="font-size: 0.7rem; color: var(--text-dim);">Perfume Partner</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Key Filmography -->
+                    <h4 style="font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;">Selected Filmography (30+ Credits)</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《特色旅行团》 Lead</span>
+                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《红豆生南国》 Crown Princess</span>
+                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《披荆斩棘的姐姐》 Guest Lead</span>
+                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《花都狂龙》 Lead</span>
+                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《盖世天骄》 Lead</span>
+                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《如果ai》 Lead</span>
+                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《神鱼幻龙》 Lead</span>
+                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">+23 more...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- VISIONARIES -->
         <h3 style="color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 24px; margin-top: 40px;" data-aos="fade-up">The Visionaries (ผู้นำทัพ)</h3>
         <div class="team-grid" data-aos="fade-up">
             <div class="team-card">
-                <div class="photo-wrapper"><img src="img/nana.png" alt="Nana (Li Qinyao)" loading="lazy"></div>
+                <div class="photo-wrapper" onclick="openLightbox(this.querySelector('img'))"><img src="img/nana.png" alt="Nana (Li Qinyao)" loading="lazy"></div>
                 <div class="info">
                     <h4 class="name">Nana (Li Qinyao)</h4>
-                    <p class="role">CEO & Founder</p>
+                    <p class="role">CEO &amp; Founder</p>
                     <span class="nickname">"The Insider"</span>
                     <ul class="bio">
                         <li>นางเอกอันดับ 1 บน Hongguo Platform</li>
                         <li>ผู้รู้ลึกตลาดจีน ลงมือทำ Market Research ด้วยตัวเอง</li>
                         <li>มีฐานแฟนคลับและ Connection ระดับสูง</li>
+                        <li>ประสบการณ์ 30+ เรื่อง | World Model Champion</li>
                     </ul>
                 </div>
             </div>
             <div class="team-card">
-                <div class="photo-wrapper"><img src="img/teem.png" alt="Teem (Narin)" loading="lazy"></div>
+                <div class="photo-wrapper" onclick="openLightbox(this.querySelector('img'))"><img src="img/teem.png" alt="Teem (Narin)" loading="lazy"></div>
                 <div class="info">
                     <h4 class="name">Teem (Narin)</h4>
-                    <p class="role">Co-Founder & Strategist</p>
+                    <p class="role">Co-Founder &amp; Strategist</p>
                     <span class="nickname">"The Bridge"</span>
                     <ul class="bio">
                         <li>นักวางกลยุทธ์ธุรกิจ (Business Strategist)</li>
@@ -1213,10 +1263,10 @@
         <h3 style="color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 24px; margin-top: 48px;" data-aos="fade-up">The Production Masters (ผู้คุมงานสร้าง)</h3>
         <div class="team-grid" data-aos="fade-up">
             <div class="team-card">
-                <div class="photo-wrapper"><img src="img/haohao.png" alt="Cao Haotian (Haohao)" loading="lazy"></div>
+                <div class="photo-wrapper" onclick="openLightbox(this.querySelector('img'))"><img src="img/haohao.png" alt="Cao Haotian (Haohao)" loading="lazy"></div>
                 <div class="info">
                     <h4 class="name">Cao Haotian (Haohao)</h4>
-                    <p class="role">Producer & Actor</p>
+                    <p class="role">Producer &amp; Actor</p>
                     <span class="nickname">"The Standard"</span>
                     <ul class="bio">
                         <li>โปรดิวเซอร์มืออาชีพจากจีน</li>
@@ -1227,10 +1277,10 @@
                 </div>
             </div>
             <div class="team-card">
-                <div class="photo-wrapper"><img src="img/golf.png" alt="Golf (Actlab55)" loading="lazy"></div>
+                <div class="photo-wrapper" onclick="openLightbox(this.querySelector('img'))"><img src="img/golf.png" alt="Golf (Actlab55)" loading="lazy"></div>
                 <div class="info">
                     <h4 class="name">Golf (Actlab55)</h4>
-                    <p class="role">Thai Director & Production Head</p>
+                    <p class="role">Thai Director &amp; Production Head</p>
                     <span class="nickname">"The Protector"</span>
                     <ul class="bio">
                         <li>ผู้กำกับและเจ้าของ ActLab55 (Acting School)</li>
@@ -1243,8 +1293,100 @@
     </div>
 </section>
 
+<!-- INVESTMENT STRATEGY OPTIONS -->
+<section class="capital-shield" id="shield">
+    <div class="container">
+        <div class="section-label" data-aos="fade-up">INVESTMENT STRATEGY OPTIONS</div>
+        <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">เลือกโมเดลผลตอบแทนที่ตรงกับคุณ</h2>
+        
+        <div class="shield-highlight" data-aos="fade-up" data-aos-delay="300">
+            <p class="key-msg">&#128737; "นักลงทุนคือลูกค้ากลุ่มแรกของ Sanchuan &mdash; ซื้อสินค้า ไม่ใช่ซื้อหุ้น ไม่ต้องผูกมัด"</p>
+            <p class="key-sub">ลงทุน 3,000,000 THB &rarr; ได้ Micro Drama Series 1 เรื่อง (2 Versions: จีน + Global) &rarr; เป้าหมายรายได้ 5,000,000 THB ใน 1 ปี</p>
+        </div>
+        
+        <div class="shield-grid" data-aos="fade-up" data-aos-delay="400">
+            <!-- OPTION A -->
+            <div class="shield-card" style="border-top: 3px solid var(--gold);">
+                <span class="phase-label" style="background: rgba(197,160,89,0.25);">OPTION A</span>
+                <h4 style="font-size: 1.15rem; margin-bottom: 4px;">The &ldquo;Visionary&rdquo; Model</h4>
+                <p style="color: var(--gold); font-size: 0.8rem; font-style: italic; margin-bottom: 16px;">เหมาะสำหรับนักลงทุนที่มองเห็นศักยภาพการเติบโตแบบก้าวกระโดดของ IP</p>
+                <p style="margin-bottom: 16px;">แบ่งรายได้สุทธิ (Net Profit) ในสัดส่วน <strong style="color: var(--gold);">40% (นักลงทุน) / 60% (Sanchuan)</strong> ทันทีตั้งแต่บาทแรก และคงสัดส่วนนี้ตลอดชีพ</p>
+                <div class="ratio">
+                    <div class="ratio-box investor">
+                        <div class="pct">40%</div>
+                        <div class="who">นักลงทุน</div>
+                    </div>
+                    <div class="ratio-box sanchuan">
+                        <div class="pct">60%</div>
+                        <div class="who">Sanchuan</div>
+                    </div>
+                </div>
+                <div style="margin-top: 16px; background: rgba(39,174,96,0.08); border: 1px solid rgba(39,174,96,0.2); border-radius: 8px; padding: 12px 16px;">
+                    <p style="color: var(--green-accent); font-size: 0.8rem; font-weight: 600; margin-bottom: 4px;"><i class="fas fa-check-circle"></i>&nbsp; จุดเด่น (Pros)</p>
+                    <p style="font-size: 0.8rem;">ได้รับสัดส่วนกำไรที่สูงกว่าในระยะยาว หากโปรเจกต์เกิดกระแส Viral และมีรายได้จาก Fan Economy ต่อเนื่อง</p>
+                </div>
+            </div>
+            
+            <!-- OPTION B -->
+            <div class="shield-card" style="border-top: 3px solid var(--green-accent);">
+                <span class="phase-label" style="background: rgba(39,174,96,0.2); color: var(--green-accent);">OPTION B</span>
+                <h4 style="font-size: 1.15rem; margin-bottom: 4px;">The &ldquo;Capital Shield&rdquo; Flip Model</h4>
+                <p style="color: var(--green-accent); font-size: 0.8rem; font-style: italic; margin-bottom: 16px;">เหมาะสำหรับนักลงทุนที่ต้องการ Downside Protection ระดับสูงสุด</p>
+                
+                <div style="margin-bottom: 16px;">
+                    <p style="font-weight: 600; color: var(--gold); font-size: 0.85rem; margin-bottom: 8px;"><i class="fas fa-shield-alt"></i>&nbsp; Phase 1: เร่งคืนทุน</p>
+                    <p style="font-size: 0.85rem; margin-bottom: 8px;">แบ่งรายได้สุทธิ <strong style="color: var(--gold);">70% ให้นักลงทุน / 30% ให้ Sanchuan</strong> จนกว่านักลงทุนจะได้เงินต้น 3,000,000 THB คืนครบ 100%</p>
+                    <div class="ratio">
+                        <div class="ratio-box investor">
+                            <div class="pct">70%</div>
+                            <div class="who">นักลงทุน</div>
+                        </div>
+                        <div class="ratio-box sanchuan">
+                            <div class="pct">30%</div>
+                            <div class="who">Sanchuan</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <p style="font-weight: 600; color: var(--gold); font-size: 0.85rem; margin-bottom: 8px;"><i class="fas fa-sync-alt"></i>&nbsp; Phase 2: พลิกสัดส่วน (Flip)</p>
+                    <p style="font-size: 0.85rem; margin-bottom: 8px;">สัดส่วนพลิกกลับเป็น <strong style="color: var(--gold);">30% ให้นักลงทุน / 70% ให้ Sanchuan</strong> ตลอดอายุ IP ที่เหลือ</p>
+                    <div class="ratio">
+                        <div class="ratio-box investor">
+                            <div class="pct">30%</div>
+                            <div class="who">นักลงทุน</div>
+                        </div>
+                        <div class="ratio-box sanchuan">
+                            <div class="pct">70%</div>
+                            <div class="who">Sanchuan</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(39,174,96,0.08); border: 1px solid rgba(39,174,96,0.2); border-radius: 8px; padding: 12px 16px;">
+                    <p style="color: var(--green-accent); font-size: 0.8rem; font-weight: 600; margin-bottom: 4px;"><i class="fas fa-check-circle"></i>&nbsp; จุดเด่น (Pros)</p>
+                    <p style="font-size: 0.8rem;">ได้เงินสดก้อนแรกคืนรวดเร็วที่สุด การันตีความปลอดภัยของเงินทุนขั้นสูงสุด (ความเสี่ยง = 0)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- STRATEGIC ADVANTAGE -->
+        <div style="background: linear-gradient(135deg, rgba(197,160,89,0.12), rgba(197,160,89,0.03)); border: 2px solid rgba(197,160,89,0.25); border-radius: 12px; padding: 32px; margin-bottom: 32px;" data-aos="fade-up" data-aos-delay="500">
+            <h4 style="color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;"><i class="fas fa-chess-king"></i>&nbsp; STRATEGIC ADVANTAGE</h4>
+            <p style="color: var(--text-body); font-size: 0.9rem; line-height: 1.8;">โครงสร้างข้อเสนอของ Sanchuan Holdings ถูกออกแบบมาเพื่อสร้างความสมดุลขั้นสูงสุด (Pareto Efficiency) โดยมอบ <strong style="color: var(--gold);">'การปกป้องความเสี่ยงขาลง' (Downside Protection)</strong> อย่างสมบูรณ์แบบให้นักลงทุน ควบคู่ไปกับการสร้าง <strong style="color: var(--gold);">'ผลประโยชน์ที่สอดคล้องกัน' (Aligned Incentives)</strong> ระหว่างนายทุนและทีมผลิต</p>
+            <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 12px;">Sanchuan Holdings เสนอความยืดหยุ่นที่สอดคล้องกับเป้าหมายทางการเงินของคุณ ทั้งสองโมเดลยังคงรักษาสิทธิ์ Priority Rights สำหรับการร่วมลงทุนในบริษัทลูก (Film Subsidiary) ในอนาคต</p>
+        </div>
+        
+        <div class="future-box" data-aos="fade-up" data-aos-delay="600">
+            <h4><i class="fas fa-handshake"></i>&nbsp; FUTURE PARTNERSHIP</h4>
+            <p>ถ้าทำงานแรกแล้วพึงพอใจ &rarr; เปิดบริษัทร่วมกัน (ตกลงกันทีหลัง ไม่ต้องผูกมัดตอนนี้) &mdash; เริ่มจากงานแรกก่อน ถ้าชอบค่อยคุยต่อ</p>
+        </div>
+    </div>
+</section>
+
 <!-- ROADMAP -->
-<section class="roadmap" id="roadmap">
+<section class="roadmap" id="roadmap" style="background: var(--bg-section);">
     <div class="container">
         <div class="section-label" data-aos="fade-up">EXECUTION ROADMAP</div>
         <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
@@ -1270,7 +1412,7 @@
                     <li>Post-Production</li>
                     <li>Editing (2 Versions)</li>
                 </ul>
-                <span class="status status-next">Next Month</span>
+                <span class="status status-next">Next</span>
             </div>
             <div class="roadmap-phase" data-aos="fade-up" data-aos-delay="300">
                 <div class="phase-num">3</div>
@@ -1288,7 +1430,7 @@
                 <ul>
                     <li>Actor Training Camp</li>
                     <li>IP Merchandise</li>
-                    <li>Series 2 & 3</li>
+                    <li>Series 2 &amp; 3</li>
                     <li>Ecosystem Growth</li>
                 </ul>
             </div>
@@ -1305,74 +1447,35 @@
     </div>
 </div>
 
-<!-- INVESTMENT OPTIONS -->
-<section class="investment-section" id="investment">
-    <div class="container">
-        <div class="section-label" data-aos="fade-up">INVESTMENT OPTIONS</div>
-        <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ทางเลือกการลงทุน</h2>
-        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">เลือกโมเดลผลตอบแทนที่ตรงกับระดับความเสี่ยงของคุณ</p>
-        
-        <div class="investment-options">
-            <div class="invest-card" data-aos="fade-up" data-aos-delay="100">
-                <span class="option-label">OPTION A</span>
-                <h3>The "Visionary" Model</h3>
-                <p class="invest-desc">"เหมาะสำหรับนักลงทุนที่มองเห็นศักยภาพการเติบโตแบบก้าวกระโดดของ IP"</p>
-                <ul>
-                    <li><strong>โครงสร้าง:</strong> แบ่งรายได้สุทธิ (Net Profit) ในสัดส่วน 40% (นักลงทุน) / 60% (Sanchuan)</li>
-                    <li>ทันทีตั้งแต่บาทแรก และคงสัดส่วนนี้ตลอดชีพ</li>
-                </ul>
-                <div class="pros-box">
-                    <h5>จุดเด่น (Pros)</h5>
-                    <p>ได้รับสัดส่วนกำไรที่สูงกว่าในระยะยาว หากโปรเจกต์เกิดกระแส Viral และมีรายได้จาก Fan Economy ต่อเนื่อง</p>
-                </div>
-            </div>
-            <div class="invest-card" data-aos="fade-up" data-aos-delay="200">
-                <span class="option-label">OPTION B</span>
-                <h3>The "Capital Shield" Flip Model</h3>
-                <p class="invest-desc">"เหมาะสำหรับนักลงทุนที่ต้องการ Downside Protection ระดับสูงสุด"</p>
-                <ul>
-                    <li><strong>Phase 1 (เร่งคืนทุน):</strong> แบ่งรายได้สุทธิ 70% ให้นักลงทุน / 30% ให้ Sanchuan จนกว่านักลงทุนจะได้เงินต้น 3,000,000 THB คืนครบ 100% (ความเสี่ยง = 0)</li>
-                    <li><strong>Phase 2 (หลังคืนทุน):</strong> สัดส่วนจะพลิกกลับ (Flip) เป็น 30% ให้นักลงทุน / 70% ให้ Sanchuan ตลอดอายุ IP ที่เหลือ</li>
-                </ul>
-                <div class="pros-box">
-                    <h5>จุดเด่น (Pros)</h5>
-                    <p>ได้เงินสดก้อนแรกคืนรวดเร็วที่สุด การันตีความปลอดภัยของเงินทุนขั้นสูงสุด</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="strategic-note" data-aos="fade-up" data-aos-delay="300">
-            <h4><i class="fas fa-chess-queen" style="color: var(--gold);"></i>&nbsp; Strategic Advantage</h4>
-            <p>โครงสร้างข้อเสนอของ Sanchuan Holdings ถูกออกแบบมาเพื่อสร้างความสมดุลขั้นสูงสุด (Pareto Efficiency) โดยมอบ 'การปกป้องความเสี่ยงขาลง' (Downside Protection) อย่างสมบูรณ์แบบให้นักลงทุน ควบคู่ไปกับการสร้าง 'ผลประโยชน์ที่สอดคล้องกัน' (Aligned Incentives) ระหว่างนายทุนและทีมผลิต นี่ไม่ใช่แค่การลงทุนในซีรีส์ แต่คือการเข้าถึงสินทรัพย์ที่ให้ 'ผลตอบแทนแบบก้าวกระโดดที่จำกัดความเสี่ยง' (Risk-Adjusted Asymmetrical ROI) ซึ่งปลอดภัยและคืนทุนรวดเร็วกว่าอุตสาหกรรมบันเทิงแบบดั้งเดิม</p>
-            <p style="margin-top: 16px;">Sanchuan Holdings เสนอความยืดหยุ่นที่สอดคล้องกับเป้าหมายทางการเงินของคุณ ทั้งสองโมเดลยังคงรักษาสิทธิ์ Priority Rights สำหรับการร่วมลงทุนในบริษัทลูก (Film Subsidiary) ในอนาคต</p>
-        </div>
-    </div>
-</section>
-
 <!-- CTA / CONTACT -->
 <section class="cta-section" id="contact">
     <div class="container" style="position:relative; z-index:2;">
-        <div class="section-label" data-aos="fade-up">LET'S BUILD THE EMPIRE</div>
+        <div class="section-label" data-aos="fade-up">JOIN THE EMPIRE</div>
         <div class="gold-line" data-aos="fade-up" data-aos-delay="100" style="margin: 0 auto 24px;"></div>
-        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200" style="text-align:center;">พร้อมเป็นส่วนหนึ่งของ<br>อาณาจักร Micro Drama?</h2>
-        <p class="cta-sub" data-aos="fade-up" data-aos-delay="300">ติดต่อเราวันนี้เพื่อรับข้อมูลเพิ่มเติมและนัดหมายประชุม</p>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200" style="text-align:center;">ร่วมเป็นส่วนหนึ่งของจักรวรรดิ<br>Micro Drama เรื่องแรกของไทย</h2>
+        <p style="text-align:center; color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 1.8rem; font-weight: 700; margin: 24px 0 8px;" data-aos="fade-up" data-aos-delay="250">3,000,000 THB</p>
+        <p style="text-align:center; color: var(--text-dim); font-size: 0.9rem; margin-bottom: 32px;" data-aos="fade-up" data-aos-delay="260">INVESTMENT OPPORTUNITY</p>
         
-        <div class="cta-buttons" data-aos="fade-up" data-aos-delay="400">
-            <a href="mailto:sanchuanholdings@gmail.com" class="btn-primary"><i class="fas fa-envelope"></i> ติดต่อทางอีเมล</a>
-            <a href="tel:+66-XXX-XXX-XXXX" class="btn-secondary"><i class="fas fa-phone"></i> โทรหาเรา</a>
+        <div class="cta-buttons" data-aos="fade-up" data-aos-delay="300">
+            <a href="tel:094-654-1591" class="btn-primary"><i class="fas fa-phone"></i> โทรหา Teem: 094-654-1591</a>
+            <a href="mailto:sanchuanholdings@gmail.com" class="btn-secondary"><i class="fas fa-envelope"></i> ติดต่อทางอีเมล</a>
         </div>
         
-        <div class="contact-info" data-aos="fade-up" data-aos-delay="500">
+        <div class="contact-info" data-aos="fade-up" data-aos-delay="400">
             <div class="contact-item">
-                <i class="fas fa-envelope"></i>
-                <div class="contact-label">Email</div>
-                <div class="contact-value">sanchuanholdings@gmail.com</div>
+                <i class="fas fa-user"></i>
+                <div class="contact-label">Contact Person</div>
+                <div class="contact-value">Teem (Narin)</div>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <div class="contact-label">Phone</div>
+                <div class="contact-value">094-654-1591</div>
             </div>
             <div class="contact-item">
                 <i class="fab fa-line"></i>
-                <div class="contact-label">Line</div>
-                <div class="contact-value">@sanchuan</div>
+                <div class="contact-label">Line &amp; WeChat</div>
+                <div class="contact-value">TeemClover</div>
             </div>
             <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
@@ -1405,6 +1508,21 @@
     function toggleMobileNav() {
         document.getElementById('mobileNav').classList.toggle('active');
     }
+    
+    // Lightbox
+    function openLightbox(imgEl) {
+        const overlay = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        lightboxImg.src = imgEl.src;
+        lightboxImg.alt = imgEl.alt;
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
     
     // Counter animation
     const counters = document.querySelectorAll('.counter');
@@ -1442,7 +1560,7 @@
                 datasets: [
                     {
                         label: 'ต้นทุนสะสม (THB)',
-                        data: [500000, 1500000, 2800000, 3000000, 3000000, 3000000],
+                        data: [1500000, 2800000, 3000000, 3000000, 3000000, 3000000],
                         backgroundColor: 'rgba(231, 76, 60, 0.6)',
                         borderColor: 'rgba(231, 76, 60, 1)',
                         borderWidth: 1,
@@ -1450,7 +1568,7 @@
                     },
                     {
                         label: 'รายได้สะสม (THB)',
-                        data: [0, 0, 500000, 3000000, 3500000, 4500000],
+                        data: [0, 0, 500000, 3000000, 4000000, 5000000],
                         backgroundColor: 'rgba(197, 160, 89, 0.7)',
                         borderColor: 'rgba(197, 160, 89, 1)',
                         borderWidth: 1,
@@ -1498,6 +1616,8 @@
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
+            // Close mobile nav if open
+            document.getElementById('mobileNav').classList.remove('active');
         });
     });
     
