@@ -549,6 +549,236 @@
         .future-box h4 { color: var(--green-accent); font-family: 'Montserrat', sans-serif; font-size: 0.9rem; margin-bottom: 8px; }
         .future-box p { color: var(--text-body); font-size: 0.9rem; }
         
+        /* ===== INVESTMENT SIMULATOR ===== */
+        .sim-section { background: var(--bg-dark); }
+        .sim-container {
+            background: linear-gradient(135deg, rgba(10,22,40,0.95), rgba(20,34,64,0.95));
+            border: 1px solid rgba(197,160,89,0.2);
+            border-radius: 16px;
+            padding: 48px 40px;
+            margin-top: 32px;
+        }
+        .sim-slider-wrap {
+            margin: 32px 0;
+            text-align: center;
+        }
+        .sim-slider-label {
+            font-size: 1rem;
+            color: var(--text-body);
+            margin-bottom: 12px;
+        }
+        .sim-value-display {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin: 16px 0;
+        }
+        .sim-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--navy-light), var(--gold));
+            outline: none;
+            cursor: pointer;
+        }
+        .sim-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gold);
+            border: 3px solid var(--navy);
+            box-shadow: 0 0 12px rgba(197,160,89,0.5);
+            cursor: pointer;
+        }
+        .sim-slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gold);
+            border: 3px solid var(--navy);
+            box-shadow: 0 0 12px rgba(197,160,89,0.5);
+            cursor: pointer;
+        }
+        .sim-range-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 8px;
+        }
+        .sim-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .sim-card {
+            background: rgba(5,10,20,0.6);
+            border: 1px solid rgba(197,160,89,0.15);
+            border-radius: 12px;
+            padding: 28px 24px;
+        }
+        .sim-card.option-a-sim { border-top: 3px solid var(--gold); }
+        .sim-card.option-b-sim { border-top: 3px solid var(--green-accent); }
+        .sim-card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .sim-card.option-a-sim .sim-card-title { color: var(--gold); }
+        .sim-card.option-b-sim .sim-card-title { color: var(--green-accent); }
+        .sim-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .sim-row:last-child { border-bottom: none; }
+        .sim-row-label {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        .sim-row-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .sim-row-value.highlight-gold { color: var(--gold); font-size: 1.2rem; }
+        .sim-row-value.highlight-green { color: var(--green-accent); font-size: 1.2rem; }
+        .sim-row-value.negative { color: var(--red-accent); }
+        .sim-note {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-top: 24px;
+            font-style: italic;
+        }
+        
+        /* ===== WHITEBOARD PARTNERSHIP ===== */
+        .wb-section { background: var(--bg-section); }
+        .wb-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 32px;
+        }
+        .wb-card {
+            background: rgba(10,22,40,0.6);
+            border: 1px solid rgba(197,160,89,0.12);
+            border-radius: 12px;
+            padding: 32px 28px;
+        }
+        .wb-card-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .wb-logo-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .wb-logo-whiteboard { background: #1a1a1a; color: #f5c518; font-family: 'Montserrat', sans-serif; font-size: 0.7rem; }
+        .wb-logo-masket { background: #6b3fa0; color: white; }
+        .wb-card-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .wb-card-type {
+            font-size: 0.8rem;
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .wb-card-desc {
+            color: var(--text-body);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .wb-brands-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .wb-brands-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .wb-brand-tag {
+            background: rgba(197,160,89,0.08);
+            border: 1px solid rgba(197,160,89,0.15);
+            color: var(--text-body);
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+        .wb-value-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 32px;
+        }
+        .wb-value-card {
+            background: rgba(10,22,40,0.6);
+            border: 1px solid rgba(197,160,89,0.12);
+            border-radius: 12px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        .wb-value-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        .wb-value-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+        .wb-value-desc {
+            color: var(--text-body);
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+        .wb-awards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 32px;
+        }
+        .wb-award-tag {
+            background: rgba(197,160,89,0.1);
+            border: 1px solid rgba(197,160,89,0.2);
+            color: var(--gold);
+            font-size: 0.75rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
         /* ===== ROADMAP ===== */
         .roadmap { background: var(--bg-section); }
         .roadmap-grid {
@@ -983,6 +1213,13 @@
             .ratio { gap: 8px; }
             .ratio-box .pct { font-size: 1.5rem; }
             .invest-strategic-box { padding: 20px; }
+            /* Simulator tablet */
+            .sim-container { padding: 32px 20px; }
+            .sim-value-display { font-size: 2rem; }
+            .sim-results { grid-template-columns: 1fr; gap: 16px; }
+            /* Whiteboard tablet */
+            .wb-grid { grid-template-columns: 1fr; }
+            .wb-value-grid { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 480px) {
             .roadmap-grid { grid-template-columns: 1fr; }
@@ -996,6 +1233,15 @@
             .nana-brand-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
             .nana-brand-card { padding: 8px 4px; }
             .brand-name { font-size: 0.7rem; }
+            /* Simulator mobile */
+            .sim-container { padding: 24px 16px; }
+            .sim-value-display { font-size: 1.8rem; }
+            .sim-results { grid-template-columns: 1fr; gap: 16px; }
+            .sim-card { padding: 20px 16px; }
+            /* Whiteboard mobile */
+            .wb-grid { grid-template-columns: 1fr; gap: 16px; }
+            .wb-value-grid { grid-template-columns: 1fr; gap: 12px; }
+            .wb-card { padding: 20px 16px; }
             .brand-desc { font-size: 0.58rem; }
             .film-tag { font-size: 0.62rem; padding: 3px 8px; }
             .shield-highlight { padding: 16px; }
@@ -1025,6 +1271,8 @@
     <a href="#pilot" onclick="toggleMobileNav()">Pilot Project</a>
     <a href="#team" onclick="toggleMobileNav()">ทีมงาน</a>
     <a href="#shield" onclick="toggleMobileNav()">ข้อเสนอการลงทุน</a>
+    <a href="#simulator" onclick="toggleMobileNav()">จำลองผลตอบแทน</a>
+    <a href="#partnership" onclick="toggleMobileNav()">พันธมิตร</a>
     <a href="#contact" onclick="toggleMobileNav()">ติดต่อ</a>
 </div>
 
@@ -1042,6 +1290,7 @@
             <li><a href="#financials">การเงิน</a></li>
             <li><a href="#team">ทีมงาน</a></li>
             <li><a href="#shield">ข้อเสนอ</a></li>
+            <li><a href="#simulator">Simulator</a></li>
         </ul>
         <a href="#contact" class="nav-cta">ลงทุนเลย</a>
         <button class="hamburger" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
@@ -1294,7 +1543,7 @@
                 <img src="img/ranking.png" alt="Hongguo Platform Ranking #1" loading="lazy" onclick="openLightbox(this)">
                 <div class="card-body">
                     <h4>&#127942; NO.1 RANKING</h4>
-                    <p>ครองอันดับ 1 บน Hongguo Platform ด้วยคะแนนความนิยม 5,399 ล้าน &mdash; แพลตฟอร์ม Micro Drama อันดับต้นของจีน</p>
+                    <p>ครองอันดับ 1 บน Hongguo Platform ด้วยคะแนนความนิยม 5,399 万 (หมื่น) &mdash; แพลตฟอร์ม Micro Drama อันดับต้นของจีน</p>
                 </div>
             </div>
             <div class="traction-card" data-aos="fade-up" data-aos-delay="200">
@@ -1440,7 +1689,7 @@
                             <img src="img/nana-period.jpg" alt="Nana Period Drama" loading="lazy">
                         </div>
                         <div class="nana-thumb" onclick="openLightbox(this.querySelector('img'))">
-                            <img src="img/nana-volvo.jpg" alt="Nana Volvo Collaboration" loading="lazy">
+                            <img src="img/nana-brand.jpg" alt="Nana Brand Collaboration" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -1541,7 +1790,7 @@
                 </div>
             </div>
             <div class="team-card">
-                <div class="photo-wrapper" onclick="openLightbox(this.querySelector('img'))"><img src="img/golf.png" alt="Golf (Actlab55)" loading="lazy"></div>
+                <div class="photo-wrapper" onclick="openLightbox(this.querySelector('img'))"><img src="img/golf-new.jpg" alt="Golf (Actlab55)" loading="lazy"></div>
                 <div class="info">
                     <h4 class="name">Golf (Actlab55)</h4>
                     <p class="role">Thai Director &amp; Production Head</p>
@@ -1630,7 +1879,7 @@
                 
                 <div class="option-pros">
                     <p class="pros-title"><i class="fas fa-check-circle"></i>&nbsp; จุดเด่น (Pros)</p>
-                    <p class="pros-desc">ได้เงินสดก้อนแรกคืนรวดเร็วที่สุด การันตีความปลอดภัยของเงินทุนขั้นสูงสุด (ความเสี่ยง = 0)</p>
+                    <p class="pros-desc">ได้เงินสดก้อนแรกคืนรวดเร็วที่สุด การันตีความปลอดภัยของเงินทุนขั้นสูงสุด</p>
                 </div>
             </div>
         </div>
@@ -1645,6 +1894,186 @@
         <div class="future-box" data-aos="fade-up" data-aos-delay="600">
             <h4><i class="fas fa-handshake"></i>&nbsp; FUTURE PARTNERSHIP</h4>
             <p>ถ้าทำงานแรกแล้วพึงพอใจ &rarr; เปิดบริษัทร่วมกัน (ตกลงกันทีหลัง ไม่ต้องผูกมัดตอนนี้) &mdash; เริ่มจากงานแรกก่อน ถ้าชอบค่อยคุยต่อ</p>
+        </div>
+    </div>
+</section>
+
+<!-- INVESTMENT SIMULATOR -->
+<section class="sim-section" id="simulator" style="padding: 80px 0;">
+    <div class="container">
+        <div class="section-label" data-aos="fade-up">INVESTMENT RETURN SIMULATOR</div>
+        <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">จำลองผลตอบแทนการลงทุน</h2>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ลาก Slider เพื่อดูว่าถ้าหนังทำรายได้เท่าไหร่ คุณจะได้รับผลตอบแทนเท่าไหร่ (ลงทุน 3,000,000 THB)</p>
+        
+        <div class="sim-container" data-aos="fade-up" data-aos-delay="400">
+            <div class="sim-slider-wrap">
+                <p class="sim-slider-label">รายได้สุทธิ (Net Profit) ของหนัง</p>
+                <div class="sim-value-display" id="simRevDisplay">5,000,000 THB</div>
+                <input type="range" class="sim-slider" id="simSlider" min="1000000" max="25000000" step="500000" value="5000000">
+                <div class="sim-range-labels">
+                    <span>1 ล้าน</span>
+                    <span>5 ล้าน</span>
+                    <span>10 ล้าน</span>
+                    <span>15 ล้าน</span>
+                    <span>20 ล้าน</span>
+                    <span>25 ล้าน</span>
+                </div>
+            </div>
+            
+            <div class="sim-results">
+                <!-- Option A Card -->
+                <div class="sim-card option-a-sim">
+                    <div class="sim-card-title"><i class="fas fa-gem"></i>&nbsp; Option A: The "Visionary" 40/60</div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">รายได้สุทธิทั้งหมด</span>
+                        <span class="sim-row-value" id="simA_totalRev">5,000,000</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">ส่วนของคุณ (40%)</span>
+                        <span class="sim-row-value highlight-gold" id="simA_yourShare">2,000,000</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">ส่วน Sanchuan (60%)</span>
+                        <span class="sim-row-value" id="simA_scShare">3,000,000</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">กำไร/ขาดทุน สุทธิ</span>
+                        <span class="sim-row-value" id="simA_profit">-1,000,000</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">ROI</span>
+                        <span class="sim-row-value" id="simA_roi">-33.3%</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">สถานะ</span>
+                        <span class="sim-row-value" id="simA_status">ยังไม่คืนทุน</span>
+                    </div>
+                </div>
+                
+                <!-- Option B Card -->
+                <div class="sim-card option-b-sim">
+                    <div class="sim-card-title"><i class="fas fa-shield-alt"></i>&nbsp; Option B: Capital Shield Flip 70/30→30/70</div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">รายได้สุทธิทั้งหมด</span>
+                        <span class="sim-row-value" id="simB_totalRev">5,000,000</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">Phase 1 (70/30) - คืนทุน</span>
+                        <span class="sim-row-value" id="simB_phase1">รับ 3,000,000 จาก 4,285,714</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">Phase 2 (30/70) - ส่วนที่เหลือ</span>
+                        <span class="sim-row-value" id="simB_phase2">รับ 214,286 จาก 714,286</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">รวมที่คุณได้รับ</span>
+                        <span class="sim-row-value highlight-green" id="simB_yourTotal">3,214,286</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">กำไร/ขาดทุน สุทธิ</span>
+                        <span class="sim-row-value" id="simB_profit">+214,286</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">ROI</span>
+                        <span class="sim-row-value" id="simB_roi">+7.1%</span>
+                    </div>
+                    <div class="sim-row">
+                        <span class="sim-row-label">สถานะ</span>
+                        <span class="sim-row-value" id="simB_status">คืนทุนแล้ว + กำไร</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="sim-note">หมายเหตุ: ตัวเลขนี้เป็นการประมาณการณ์เพื่อประกอบการตัดสินใจ ผลตอบแทนจริงอาจแตกต่างได้ | ลงทุน 3,000,000 THB</p>
+        </div>
+    </div>
+</section>
+
+<!-- WHITEBOARD PARTNERSHIP -->
+<section class="wb-section" id="partnership" style="padding: 80px 0;">
+    <div class="container">
+        <div class="section-label" data-aos="fade-up">SPONSOR &amp; BRAND PARTNERSHIP</div>
+        <div class="gold-line" data-aos="fade-up" data-aos-delay="100"></div>
+        <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">ช่องทางรายได้จาก Sponsor</h2>
+        <p class="section-desc" data-aos="fade-up" data-aos-delay="300">พันธมิตร Media Agency ชั้นนำของไทย หาสินค้า Tie-in วางในหนังของเรา</p>
+        
+        <div class="wb-grid" data-aos="fade-up" data-aos-delay="400">
+            <div class="wb-card">
+                <div class="wb-card-logo">
+                    <div class="wb-logo-box wb-logo-whiteboard">[ ]wb</div>
+                    <div>
+                        <div class="wb-card-name">Whiteboard</div>
+                        <div class="wb-card-type">Media Agency</div>
+                    </div>
+                </div>
+                <p class="wb-card-desc">เชี่ยวชาญด้าน Growth Hacking และ New Media ประสบการณ์กว่า 10 ปี เชื่อมต่อกับ Media Agency ชั้นนำทั่วไทย สามารถเข้าถึงแบรนด์ชั้นนำได้โดยตรง</p>
+                <div class="wb-brands-label">แบรนด์ที่เคยร่วมงาน</div>
+                <div class="wb-brands-list">
+                    <span class="wb-brand-tag">Audi</span>
+                    <span class="wb-brand-tag">KIA</span>
+                    <span class="wb-brand-tag">Nissan</span>
+                    <span class="wb-brand-tag">BYD</span>
+                    <span class="wb-brand-tag">Panasonic</span>
+                    <span class="wb-brand-tag">SCB</span>
+                    <span class="wb-brand-tag">VISA</span>
+                    <span class="wb-brand-tag">CP</span>
+                    <span class="wb-brand-tag">Toyota</span>
+                    <span class="wb-brand-tag">NIVEA</span>
+                    <span class="wb-brand-tag">Double A</span>
+                    <span class="wb-brand-tag">Coway</span>
+                </div>
+            </div>
+            
+            <div class="wb-card">
+                <div class="wb-card-logo">
+                    <div class="wb-logo-box wb-logo-masket"><i class="fas fa-elephant" style="font-size: 1.2rem;"></i></div>
+                    <div>
+                        <div class="wb-card-name">MASKET</div>
+                        <div class="wb-card-type">Full Service Agency</div>
+                    </div>
+                </div>
+                <p class="wb-card-desc">ผสมผสาน Deep Data ของ Consumer Insights กับ Strategic Thinking และ Innovation สร้าง Creative Solutions ที่ขับเคลื่อนธุรกิจจริง</p>
+                <div class="wb-brands-label">เครือข่าย Agency ที่เชื่อมต่อ</div>
+                <div class="wb-brands-list">
+                    <span class="wb-brand-tag">IPG MB</span>
+                    <span class="wb-brand-tag">OMG</span>
+                    <span class="wb-brand-tag">Publicis</span>
+                    <span class="wb-brand-tag">Dentsu</span>
+                    <span class="wb-brand-tag">WPP</span>
+                    <span class="wb-brand-tag">GroupM</span>
+                    <span class="wb-brand-tag">Mindshare</span>
+                    <span class="wb-brand-tag">CARAT</span>
+                    <span class="wb-brand-tag">OMD</span>
+                    <span class="wb-brand-tag">Wavemaker</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="wb-value-grid" data-aos="fade-up" data-aos-delay="500">
+            <div class="wb-value-card">
+                <div class="wb-value-icon">💰</div>
+                <div class="wb-value-title">Maximize Ad Value</div>
+                <p class="wb-value-desc">ตั้งแต่ Mass Reach ไปจนถึง Exclusive Brand Sponsorship ที่ Ad Network ทั่วไปทำไม่ได้</p>
+            </div>
+            <div class="wb-value-card">
+                <div class="wb-value-icon">🎯</div>
+                <div class="wb-value-title">Premium Placement</div>
+                <p class="wb-value-desc">วางสินค้าไทยในหนังโดยตรง (Product Placement / Tie-in) สร้าง Market Buzz ให้แบรนด์</p>
+            </div>
+            <div class="wb-value-card">
+                <div class="wb-value-icon">🤝</div>
+                <div class="wb-value-title">Predictable Income</div>
+                <p class="wb-value-desc">รายได้จาก Sponsor เป็นรายได้เสริมที่คาดการณ์ได้ล่วงหน้า ลดความเสี่ยงให้นักลงทุน</p>
+            </div>
+        </div>
+        
+        <div class="wb-awards" data-aos="fade-up" data-aos-delay="600">
+            <span class="wb-award-tag">Thailand's Martech Awards 2025</span>
+            <span class="wb-award-tag">Spikes Asia</span>
+            <span class="wb-award-tag">14th Thailand Social Awards</span>
+            <span class="wb-award-tag">Digital Advertising Association</span>
+            <span class="wb-award-tag">Bangkok Art Directors' Association</span>
         </div>
     </div>
 </section>
@@ -1892,6 +2321,107 @@
             hero.style.transform = `translateY(${window.scrollY * 0.3}px)`;
         }
     });
+    
+    // ===== INVESTMENT SIMULATOR =====
+    const INVESTMENT = 3000000;
+    const slider = document.getElementById('simSlider');
+    const revDisplay = document.getElementById('simRevDisplay');
+    
+    function fmt(n) {
+        return Math.round(n).toLocaleString('en-US');
+    }
+    
+    function updateSimulator(revenue) {
+        revenue = parseInt(revenue);
+        revDisplay.textContent = fmt(revenue) + ' THB';
+        
+        // === Option A: Visionary 40/60 ===
+        const aYourShare = revenue * 0.4;
+        const aScShare = revenue * 0.6;
+        const aProfit = aYourShare - INVESTMENT;
+        const aRoi = ((aProfit / INVESTMENT) * 100);
+        
+        document.getElementById('simA_totalRev').textContent = fmt(revenue);
+        document.getElementById('simA_yourShare').textContent = fmt(aYourShare);
+        document.getElementById('simA_scShare').textContent = fmt(aScShare);
+        
+        const aProfitEl = document.getElementById('simA_profit');
+        aProfitEl.textContent = (aProfit >= 0 ? '+' : '') + fmt(aProfit);
+        aProfitEl.className = 'sim-row-value ' + (aProfit >= 0 ? 'highlight-gold' : 'negative');
+        
+        const aRoiEl = document.getElementById('simA_roi');
+        aRoiEl.textContent = (aRoi >= 0 ? '+' : '') + aRoi.toFixed(1) + '%';
+        aRoiEl.className = 'sim-row-value ' + (aRoi >= 0 ? 'highlight-gold' : 'negative');
+        
+        const aStatusEl = document.getElementById('simA_status');
+        if (aProfit >= 0) {
+            aStatusEl.textContent = '\u2705 \u0e04\u0e37\u0e19\u0e17\u0e38\u0e19\u0e41\u0e25\u0e49\u0e27 + \u0e01\u0e33\u0e44\u0e23';
+            aStatusEl.className = 'sim-row-value highlight-gold';
+        } else {
+            aStatusEl.textContent = '\u26a0\ufe0f \u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e04\u0e37\u0e19\u0e17\u0e38\u0e19';
+            aStatusEl.className = 'sim-row-value negative';
+        }
+        
+        // === Option B: Capital Shield Flip 70/30 → 30/70 ===
+        // Phase 1: 70% to investor, 30% to Sanchuan, until investor gets 3M back
+        const phase1NeededFromRev = INVESTMENT / 0.7; // Revenue needed to recoup 3M at 70%
+        
+        let bPhase1Text, bPhase2Text, bYourTotal, bProfit;
+        
+        if (revenue <= phase1NeededFromRev) {
+            // Still in Phase 1 - haven't fully recouped yet
+            const yourPhase1 = revenue * 0.7;
+            bPhase1Text = '\u0e23\u0e31\u0e1a ' + fmt(yourPhase1) + ' (\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e04\u0e23\u0e1a 3M)';
+            bPhase2Text = '\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e40\u0e02\u0e49\u0e32 Phase 2';
+            bYourTotal = yourPhase1;
+        } else {
+            // Phase 1 complete, now in Phase 2
+            const phase1Revenue = phase1NeededFromRev;
+            const phase2Revenue = revenue - phase1Revenue;
+            const yourPhase1 = INVESTMENT; // Got full 3M back
+            const yourPhase2 = phase2Revenue * 0.3;
+            
+            bPhase1Text = '\u0e23\u0e31\u0e1a ' + fmt(yourPhase1) + ' \u0e08\u0e32\u0e01 ' + fmt(phase1Revenue);
+            bPhase2Text = '\u0e23\u0e31\u0e1a ' + fmt(yourPhase2) + ' \u0e08\u0e32\u0e01 ' + fmt(phase2Revenue);
+            bYourTotal = yourPhase1 + yourPhase2;
+        }
+        
+        bProfit = bYourTotal - INVESTMENT;
+        const bRoi = ((bProfit / INVESTMENT) * 100);
+        
+        document.getElementById('simB_totalRev').textContent = fmt(revenue);
+        document.getElementById('simB_phase1').textContent = bPhase1Text;
+        document.getElementById('simB_phase2').textContent = bPhase2Text;
+        document.getElementById('simB_yourTotal').textContent = fmt(bYourTotal);
+        
+        const bProfitEl = document.getElementById('simB_profit');
+        bProfitEl.textContent = (bProfit >= 0 ? '+' : '') + fmt(bProfit);
+        bProfitEl.className = 'sim-row-value ' + (bProfit >= 0 ? 'highlight-green' : 'negative');
+        
+        const bRoiEl = document.getElementById('simB_roi');
+        bRoiEl.textContent = (bRoi >= 0 ? '+' : '') + bRoi.toFixed(1) + '%';
+        bRoiEl.className = 'sim-row-value ' + (bRoi >= 0 ? 'highlight-green' : 'negative');
+        
+        const bStatusEl = document.getElementById('simB_status');
+        if (bProfit > 0) {
+            bStatusEl.textContent = '\u2705 \u0e04\u0e37\u0e19\u0e17\u0e38\u0e19\u0e41\u0e25\u0e49\u0e27 + \u0e01\u0e33\u0e44\u0e23';
+            bStatusEl.className = 'sim-row-value highlight-green';
+        } else if (bProfit === 0) {
+            bStatusEl.textContent = '\u2705 \u0e04\u0e37\u0e19\u0e17\u0e38\u0e19\u0e04\u0e23\u0e1a\u0e1e\u0e2d\u0e14\u0e35';
+            bStatusEl.className = 'sim-row-value highlight-green';
+        } else {
+            bStatusEl.textContent = '\u26a0\ufe0f \u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e04\u0e37\u0e19\u0e17\u0e38\u0e19\u0e04\u0e23\u0e1a';
+            bStatusEl.className = 'sim-row-value negative';
+        }
+    }
+    
+    if (slider) {
+        slider.addEventListener('input', function() {
+            updateSimulator(this.value);
+        });
+        // Initialize
+        updateSimulator(slider.value);
+    }
 </script>
 
 </body>
