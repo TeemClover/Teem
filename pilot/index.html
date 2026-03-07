@@ -709,12 +709,249 @@
         .mobile-nav a:hover { color: var(--gold); }
         .mobile-close { position: absolute; top: 20px; right: 24px; background: none; border: none; color: var(--gold); font-size: 2rem; cursor: pointer; }
         
+        /* ===== NANA SPOTLIGHT ===== */
+        .nana-spotlight {
+            background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8));
+            border: 2px solid rgba(197,160,89,0.3);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 48px;
+        }
+        .nana-spotlight-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+        .nana-headshot {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(197,160,89,0.3);
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+        .nana-headshot img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            aspect-ratio: 3/4;
+        }
+        .nana-thumbs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .nana-thumb {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(197,160,89,0.2);
+            cursor: pointer;
+        }
+        .nana-thumb img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+        .nana-badges-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .nana-role-badge {
+            background: rgba(197,160,89,0.2);
+            color: var(--gold);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .nana-nickname-badge {
+            background: rgba(197,160,89,0.1);
+            color: var(--gold);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        .nana-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        .nana-subtitle {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .nana-achievement-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .nana-achievement-badges span {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+        .nana-achievement-badges span i {
+            margin-right: 4px;
+        }
+        .badge-gold {
+            background: linear-gradient(135deg, rgba(197,160,89,0.2), rgba(197,160,89,0.1));
+            border: 1px solid rgba(197,160,89,0.3);
+            color: var(--gold);
+        }
+        .badge-green {
+            background: rgba(39,174,96,0.1);
+            border: 1px solid rgba(39,174,96,0.2);
+            color: var(--green-accent);
+        }
+        .badge-blue {
+            background: rgba(52,152,219,0.1);
+            border: 1px solid rgba(52,152,219,0.2);
+            color: #3498db;
+        }
+        .nana-bio {
+            color: var(--text-body);
+            font-size: 0.88rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .nana-section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.78rem;
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .nana-brand-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .nana-brand-card {
+            background: rgba(10,22,40,0.6);
+            border: 1px solid rgba(197,160,89,0.15);
+            border-radius: 8px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .brand-desc {
+            font-size: 0.68rem;
+            color: var(--text-dim);
+        }
+        .nana-filmography {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .film-tag {
+            background: rgba(197,160,89,0.08);
+            border: 1px solid rgba(197,160,89,0.15);
+            color: var(--text-body);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+
+        /* ===== INVESTMENT OPTIONS ===== */
+        .option-a { border-top: 3px solid var(--gold); }
+        .option-b { border-top: 3px solid var(--green-accent); }
+        .option-a-label { background: rgba(197,160,89,0.25); }
+        .option-b-label { background: rgba(39,174,96,0.2); color: var(--green-accent); }
+        .option-title { font-size: 1.15rem; margin-bottom: 4px; }
+
+        /* ===== INVESTMENT OPTIONS EXTRAS ===== */
+        .invest-strategic-box {
+            background: linear-gradient(135deg, rgba(197,160,89,0.12), rgba(197,160,89,0.03));
+            border: 2px solid rgba(197,160,89,0.25);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 32px;
+        }
+        .invest-strategic-box h4 {
+            color: var(--gold);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .invest-strategic-box p {
+            color: var(--text-body);
+            font-size: 0.88rem;
+            line-height: 1.8;
+        }
+        .invest-strategic-box .sub-note {
+            color: var(--text-dim);
+            font-size: 0.82rem;
+            margin-top: 12px;
+        }
+        .option-pros {
+            margin-top: 16px;
+            background: rgba(39,174,96,0.08);
+            border: 1px solid rgba(39,174,96,0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+        .option-pros .pros-title {
+            color: var(--green-accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .option-pros .pros-desc {
+            font-size: 0.8rem;
+        }
+        .phase-block {
+            margin-bottom: 16px;
+        }
+        .phase-block .phase-title {
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        .phase-block .phase-desc {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        .option-subtitle {
+            font-size: 0.8rem;
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+        .option-body {
+            margin-bottom: 16px;
+            font-size: 0.88rem;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .market-cards, .hack-grid, .revenue-pillars, .traction-grid { grid-template-columns: 1fr 1fr; }
             .roadmap-grid { grid-template-columns: 1fr 1fr; }
             .strategy-visual { grid-template-columns: 1fr; }
             .version-center { order: -1; }
+            .nana-spotlight-grid { grid-template-columns: 240px 1fr; gap: 24px; }
+            .nana-name { font-size: 1.5rem; }
         }
         @media (max-width: 768px) {
             .nav-links, .nav-cta { display: none; }
@@ -728,12 +965,42 @@
             .contact-info { gap: 24px; }
             .timeline { flex-wrap: wrap; gap: 16px; justify-content: center; }
             .timeline::before { display: none; }
-            .nana-spotlight-grid { grid-template-columns: 1fr !important; }
-            .nana-brand-grid { grid-template-columns: 1fr !important; }
+            /* Nana Spotlight Mobile */
+            .nana-spotlight { padding: 20px; }
+            .nana-spotlight-grid { grid-template-columns: 1fr; gap: 20px; }
+            .nana-photos { max-width: 100%; }
+            .nana-headshot img { aspect-ratio: 3/4; max-height: 400px; width: 100%; }
+            .nana-thumbs { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+            .nana-thumb img { height: 80px; }
+            .nana-name { font-size: 1.4rem; }
+            .nana-brand-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .nana-brand-card { padding: 10px 6px; }
+            .brand-name { font-size: 0.75rem; }
+            .brand-desc { font-size: 0.62rem; }
+            /* Investment Options Mobile */
+            .shield-card { padding: 20px; }
+            .shield-card h4 { font-size: 1rem; }
+            .ratio { gap: 8px; }
+            .ratio-box .pct { font-size: 1.5rem; }
+            .invest-strategic-box { padding: 20px; }
         }
         @media (max-width: 480px) {
             .roadmap-grid { grid-template-columns: 1fr; }
             section { padding: 60px 0; }
+            .nana-spotlight { padding: 16px; }
+            .nana-thumbs { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+            .nana-thumb img { height: 65px; }
+            .nana-achievement-badges { gap: 6px; }
+            .nana-achievement-badges span { font-size: 0.65rem; padding: 4px 8px; }
+            .nana-name { font-size: 1.25rem; }
+            .nana-brand-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .nana-brand-card { padding: 8px 4px; }
+            .brand-name { font-size: 0.7rem; }
+            .brand-desc { font-size: 0.58rem; }
+            .film-tag { font-size: 0.62rem; padding: 3px 8px; }
+            .shield-highlight { padding: 16px; }
+            .key-msg { font-size: 0.85rem; }
+            .key-sub { font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -1156,72 +1423,69 @@
         <p class="section-desc" data-aos="fade-up" data-aos-delay="300">ทีมที่ผสมผสาน "คนใน" ตลาดจีน กับ "นักกลยุทธ์" ไทย อย่างลงตัว</p>
         
         <!-- NANA SPOTLIGHT -->
-        <div style="background: linear-gradient(145deg, rgba(20,34,64,0.6), rgba(10,22,40,0.8)); border: 2px solid rgba(197,160,89,0.3); border-radius: 16px; padding: 40px; margin-bottom: 48px;" data-aos="fade-up">
-            <div style="display: grid; grid-template-columns: 280px 1fr; gap: 40px; align-items: start;">
-                <div>
-                    <div style="border-radius: 12px; overflow: hidden; border: 2px solid rgba(197,160,89,0.3); cursor: pointer; margin-bottom: 16px;" onclick="openLightbox(this.querySelector('img'))">
-                        <img src="img/nana-headshot.jpg" alt="Nana (Li Qinyao) - CEO & Founder" loading="lazy" style="width: 100%; display: block; object-fit: contain; background: rgba(10,22,40,0.5);">
+        <div class="nana-spotlight" data-aos="fade-up">
+            <div class="nana-spotlight-grid">
+                <div class="nana-photos">
+                    <div class="nana-headshot" onclick="openLightbox(this.querySelector('img'))">
+                        <img src="img/nana-headshot.jpg" alt="Nana (Li Qinyao) - CEO & Founder" loading="lazy">
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(197,160,89,0.2); cursor: pointer;" onclick="openLightbox(this.querySelector('img'))">
-                            <img src="img/nana-champion.jpg" alt="World Model Champion" loading="lazy" style="width: 100%; height: 100px; object-fit: contain; background: rgba(10,22,40,0.5);">
+                    <div class="nana-thumbs">
+                        <div class="nana-thumb" onclick="openLightbox(this.querySelector('img'))">
+                            <img src="img/nana-champion.jpg" alt="World Model Champion" loading="lazy">
                         </div>
-                        <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(197,160,89,0.2); cursor: pointer;" onclick="openLightbox(this.querySelector('img'))">
-                            <img src="img/nana-cinematic1.jpg" alt="Nana Drama Still" loading="lazy" style="width: 100%; height: 100px; object-fit: contain; background: rgba(10,22,40,0.5);">
+                        <div class="nana-thumb" onclick="openLightbox(this.querySelector('img'))">
+                            <img src="img/nana-cinematic1.jpg" alt="Nana Drama Still" loading="lazy">
                         </div>
-                        <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(197,160,89,0.2); cursor: pointer;" onclick="openLightbox(this.querySelector('img'))">
-                            <img src="img/nana-period.jpg" alt="Nana Period Drama" loading="lazy" style="width: 100%; height: 100px; object-fit: contain; background: rgba(10,22,40,0.5);">
+                        <div class="nana-thumb" onclick="openLightbox(this.querySelector('img'))">
+                            <img src="img/nana-period.jpg" alt="Nana Period Drama" loading="lazy">
                         </div>
-                        <div style="border-radius: 8px; overflow: hidden; border: 1px solid rgba(197,160,89,0.2); cursor: pointer;" onclick="openLightbox(this.querySelector('img'))">
-                            <img src="img/nana-volvo.jpg" alt="Nana Volvo Collaboration" loading="lazy" style="width: 100%; height: 100px; object-fit: contain; background: rgba(10,22,40,0.5);">
+                        <div class="nana-thumb" onclick="openLightbox(this.querySelector('img'))">
+                            <img src="img/nana-volvo.jpg" alt="Nana Volvo Collaboration" loading="lazy">
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                        <span style="background: rgba(197,160,89,0.2); color: var(--gold); padding: 4px 16px; border-radius: 20px; font-size: 0.75rem; font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 1px;">CEO & FOUNDER</span>
-                        <span style="background: rgba(197,160,89,0.1); color: var(--gold); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem;">"The Insider"</span>
+                <div class="nana-info">
+                    <div class="nana-badges-row">
+                        <span class="nana-role-badge">CEO & FOUNDER</span>
+                        <span class="nana-nickname-badge">"The Insider"</span>
                     </div>
-                    <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--text-main); margin-bottom: 4px;">Nana (ลี่ชินเยา / Li Qinyao)</h3>
-                    <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px;">170cm | สถาบันดนตรีซีอาน (Xi'an Conservatory of Music) | สาขาการแสดงดนตรี</p>
+                    <h3 class="nana-name">Nana (ลี่ชินเยา / Li Qinyao)</h3>
+                    <p class="nana-subtitle">170cm | สถาบันดนตรีซีอาน (Xi'an Conservatory of Music) | สาขาการแสดงดนตรี</p>
                     
-                    <!-- Achievement Badges -->
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;">
-                        <span style="background: linear-gradient(135deg, rgba(197,160,89,0.2), rgba(197,160,89,0.1)); border: 1px solid rgba(197,160,89,0.3); color: var(--gold); padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;"><i class="fas fa-crown" style="margin-right: 4px;"></i> World Model Champion</span>
-                        <span style="background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.2); color: var(--green-accent); padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;"><i class="fas fa-film" style="margin-right: 4px;"></i> 30+ Drama Credits</span>
-                        <span style="background: rgba(52,152,219,0.1); border: 1px solid rgba(52,152,219,0.2); color: #3498db; padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;"><i class="fas fa-star" style="margin-right: 4px;"></i> #1 Hongguo Platform</span>
+                    <div class="nana-achievement-badges">
+                        <span class="badge-gold"><i class="fas fa-crown"></i> World Model Champion</span>
+                        <span class="badge-green"><i class="fas fa-film"></i> 30+ Drama Credits</span>
+                        <span class="badge-blue"><i class="fas fa-star"></i> #1 Hongguo Platform</span>
                     </div>
                     
-                    <p style="color: var(--text-body); font-size: 0.9rem; line-height: 1.8; margin-bottom: 20px;">นางเอกอันดับ 1 บน Hongguo Platform ผู้รู้ลึกตลาดจีน ลงมือทำ Market Research ด้วยตัวเอง มีฐานแฟนคลับและ Connection ระดับสูง ประสบการณ์ทั้งละครยาวและ Micro Drama มากกว่า 30 เรื่อง</p>
+                    <p class="nana-bio">นางเอกอันดับ 1 บน Hongguo Platform ผู้รู้ลึกตลาดจีน ลงมือทำ Market Research ด้วยตัวเอง มีฐานแฟนคลับและ Connection ระดับสูง ประสบการณ์ทั้งละครยาวและ Micro Drama มากกว่า 30 เรื่อง</p>
                     
-                    <!-- Brand Collaborations -->
-                    <h4 style="font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;">Brand Collaborations</h4>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
-                        <div style="background: rgba(10,22,40,0.6); border: 1px solid rgba(197,160,89,0.15); border-radius: 8px; padding: 12px; text-align: center;">
-                            <p style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 4px;">VOLVO</p>
-                            <p style="font-size: 0.7rem; color: var(--text-dim);">ร่วมงานกับ เกาหยวนยวน (Gao Yuan Yuan)</p>
+                    <h4 class="nana-section-title">Brand Collaborations</h4>
+                    <div class="nana-brand-grid">
+                        <div class="nana-brand-card">
+                            <p class="brand-name">VOLVO</p>
+                            <p class="brand-desc">ร่วมงานกับ เกาหยวนยวน (Gao Yuan Yuan)</p>
                         </div>
-                        <div style="background: rgba(10,22,40,0.6); border: 1px solid rgba(197,160,89,0.15); border-radius: 8px; padding: 12px; text-align: center;">
-                            <p style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 4px;">CLARINS</p>
-                            <p style="font-size: 0.7rem; color: var(--text-dim);">Skincare Ambassador</p>
+                        <div class="nana-brand-card">
+                            <p class="brand-name">CLARINS</p>
+                            <p class="brand-desc">Skincare Ambassador</p>
                         </div>
-                        <div style="background: rgba(10,22,40,0.6); border: 1px solid rgba(197,160,89,0.15); border-radius: 8px; padding: 12px; text-align: center;">
-                            <p style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-bottom: 4px;">ViVInevo</p>
-                            <p style="font-size: 0.7rem; color: var(--text-dim);">Perfume Partner</p>
+                        <div class="nana-brand-card">
+                            <p class="brand-name">ViVInevo</p>
+                            <p class="brand-desc">Perfume Partner</p>
                         </div>
                     </div>
                     
-                    <!-- Key Filmography -->
-                    <h4 style="font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;">Selected Filmography (30+ Credits)</h4>
-                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《特色旅行团》 Lead</span>
-                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《红豆生南国》 Crown Princess</span>
-                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《披荆斩棘的姐姐》 Guest Lead</span>
-                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《花都狂龙》 Lead</span>
-                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《盖世天骄》 Lead</span>
-                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《如果ai》 Lead</span>
-                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">《神鱼幻龙》 Lead</span>
-                        <span style="background: rgba(197,160,89,0.08); border: 1px solid rgba(197,160,89,0.15); color: var(--text-body); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem;">+23 more...</span>
+                    <h4 class="nana-section-title">Selected Filmography (30+ Credits)</h4>
+                    <div class="nana-filmography">
+                        <span class="film-tag">《特色旅行团》 Lead</span>
+                        <span class="film-tag">《红豆生南国》 Crown Princess</span>
+                        <span class="film-tag">《披荆斩棘的姐姐》 Guest Lead</span>
+                        <span class="film-tag">《花都狂龙》 Lead</span>
+                        <span class="film-tag">《盖世天骄》 Lead</span>
+                        <span class="film-tag">《如果ai》 Lead</span>
+                        <span class="film-tag">《神鱼幻龙》 Lead</span>
+                        <span class="film-tag">+23 more...</span>
                     </div>
                 </div>
             </div>
@@ -1307,11 +1571,11 @@
         
         <div class="shield-grid" data-aos="fade-up" data-aos-delay="400">
             <!-- OPTION A -->
-            <div class="shield-card" style="border-top: 3px solid var(--gold);">
-                <span class="phase-label" style="background: rgba(197,160,89,0.25);">OPTION A</span>
-                <h4 style="font-size: 1.15rem; margin-bottom: 4px;">The &ldquo;Visionary&rdquo; Model</h4>
-                <p style="color: var(--gold); font-size: 0.8rem; font-style: italic; margin-bottom: 16px;">เหมาะสำหรับนักลงทุนที่มองเห็นศักยภาพการเติบโตแบบก้าวกระโดดของ IP</p>
-                <p style="margin-bottom: 16px;">แบ่งรายได้สุทธิ (Net Profit) ในสัดส่วน <strong style="color: var(--gold);">40% (นักลงทุน) / 60% (Sanchuan)</strong> ทันทีตั้งแต่บาทแรก และคงสัดส่วนนี้ตลอดชีพ</p>
+            <div class="shield-card option-a">
+                <span class="phase-label option-a-label">OPTION A</span>
+                <h4 class="option-title">The &ldquo;Visionary&rdquo; Model</h4>
+                <p class="option-subtitle" style="color: var(--gold);">เหมาะสำหรับนักลงทุนที่มองเห็นศักยภาพการเติบโตแบบก้าวกระโดดของ IP</p>
+                <p class="option-body">แบ่งรายได้สุทธิ (Net Profit) ในสัดส่วน <strong style="color: var(--gold);">40% (นักลงทุน) / 60% (Sanchuan)</strong> ทันทีตั้งแต่บาทแรก และคงสัดส่วนนี้ตลอดชีพ</p>
                 <div class="ratio">
                     <div class="ratio-box investor">
                         <div class="pct">40%</div>
@@ -1322,21 +1586,21 @@
                         <div class="who">Sanchuan</div>
                     </div>
                 </div>
-                <div style="margin-top: 16px; background: rgba(39,174,96,0.08); border: 1px solid rgba(39,174,96,0.2); border-radius: 8px; padding: 12px 16px;">
-                    <p style="color: var(--green-accent); font-size: 0.8rem; font-weight: 600; margin-bottom: 4px;"><i class="fas fa-check-circle"></i>&nbsp; จุดเด่น (Pros)</p>
-                    <p style="font-size: 0.8rem;">ได้รับสัดส่วนกำไรที่สูงกว่าในระยะยาว หากโปรเจกต์เกิดกระแส Viral และมีรายได้จาก Fan Economy ต่อเนื่อง</p>
+                <div class="option-pros">
+                    <p class="pros-title"><i class="fas fa-check-circle"></i>&nbsp; จุดเด่น (Pros)</p>
+                    <p class="pros-desc">ได้รับสัดส่วนกำไรที่สูงกว่าในระยะยาว หากโปรเจกต์เกิดกระแส Viral และมีรายได้จาก Fan Economy ต่อเนื่อง</p>
                 </div>
             </div>
             
             <!-- OPTION B -->
-            <div class="shield-card" style="border-top: 3px solid var(--green-accent);">
-                <span class="phase-label" style="background: rgba(39,174,96,0.2); color: var(--green-accent);">OPTION B</span>
-                <h4 style="font-size: 1.15rem; margin-bottom: 4px;">The &ldquo;Capital Shield&rdquo; Flip Model</h4>
-                <p style="color: var(--green-accent); font-size: 0.8rem; font-style: italic; margin-bottom: 16px;">เหมาะสำหรับนักลงทุนที่ต้องการ Downside Protection ระดับสูงสุด</p>
+            <div class="shield-card option-b">
+                <span class="phase-label option-b-label">OPTION B</span>
+                <h4 class="option-title">The &ldquo;Capital Shield&rdquo; Flip Model</h4>
+                <p class="option-subtitle" style="color: var(--green-accent);">เหมาะสำหรับนักลงทุนที่ต้องการ Downside Protection ระดับสูงสุด</p>
                 
-                <div style="margin-bottom: 16px;">
-                    <p style="font-weight: 600; color: var(--gold); font-size: 0.85rem; margin-bottom: 8px;"><i class="fas fa-shield-alt"></i>&nbsp; Phase 1: เร่งคืนทุน</p>
-                    <p style="font-size: 0.85rem; margin-bottom: 8px;">แบ่งรายได้สุทธิ <strong style="color: var(--gold);">70% ให้นักลงทุน / 30% ให้ Sanchuan</strong> จนกว่านักลงทุนจะได้เงินต้น 3,000,000 THB คืนครบ 100%</p>
+                <div class="phase-block">
+                    <p class="phase-title"><i class="fas fa-shield-alt"></i>&nbsp; Phase 1: เร่งคืนทุน</p>
+                    <p class="phase-desc">แบ่งรายได้สุทธิ <strong style="color: var(--gold);">70% ให้นักลงทุน / 30% ให้ Sanchuan</strong> จนกว่านักลงทุนจะได้เงินต้น 3,000,000 THB คืนครบ 100%</p>
                     <div class="ratio">
                         <div class="ratio-box investor">
                             <div class="pct">70%</div>
@@ -1349,9 +1613,9 @@
                     </div>
                 </div>
                 
-                <div style="margin-bottom: 16px;">
-                    <p style="font-weight: 600; color: var(--gold); font-size: 0.85rem; margin-bottom: 8px;"><i class="fas fa-sync-alt"></i>&nbsp; Phase 2: พลิกสัดส่วน (Flip)</p>
-                    <p style="font-size: 0.85rem; margin-bottom: 8px;">สัดส่วนพลิกกลับเป็น <strong style="color: var(--gold);">30% ให้นักลงทุน / 70% ให้ Sanchuan</strong> ตลอดอายุ IP ที่เหลือ</p>
+                <div class="phase-block">
+                    <p class="phase-title"><i class="fas fa-sync-alt"></i>&nbsp; Phase 2: พลิกสัดส่วน (Flip)</p>
+                    <p class="phase-desc">สัดส่วนพลิกกลับเป็น <strong style="color: var(--gold);">30% ให้นักลงทุน / 70% ให้ Sanchuan</strong> ตลอดอายุ IP ที่เหลือ</p>
                     <div class="ratio">
                         <div class="ratio-box investor">
                             <div class="pct">30%</div>
@@ -1364,18 +1628,18 @@
                     </div>
                 </div>
                 
-                <div style="background: rgba(39,174,96,0.08); border: 1px solid rgba(39,174,96,0.2); border-radius: 8px; padding: 12px 16px;">
-                    <p style="color: var(--green-accent); font-size: 0.8rem; font-weight: 600; margin-bottom: 4px;"><i class="fas fa-check-circle"></i>&nbsp; จุดเด่น (Pros)</p>
-                    <p style="font-size: 0.8rem;">ได้เงินสดก้อนแรกคืนรวดเร็วที่สุด การันตีความปลอดภัยของเงินทุนขั้นสูงสุด (ความเสี่ยง = 0)</p>
+                <div class="option-pros">
+                    <p class="pros-title"><i class="fas fa-check-circle"></i>&nbsp; จุดเด่น (Pros)</p>
+                    <p class="pros-desc">ได้เงินสดก้อนแรกคืนรวดเร็วที่สุด การันตีความปลอดภัยของเงินทุนขั้นสูงสุด (ความเสี่ยง = 0)</p>
                 </div>
             </div>
         </div>
         
         <!-- STRATEGIC ADVANTAGE -->
-        <div style="background: linear-gradient(135deg, rgba(197,160,89,0.12), rgba(197,160,89,0.03)); border: 2px solid rgba(197,160,89,0.25); border-radius: 12px; padding: 32px; margin-bottom: 32px;" data-aos="fade-up" data-aos-delay="500">
-            <h4 style="color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;"><i class="fas fa-chess-king"></i>&nbsp; STRATEGIC ADVANTAGE</h4>
-            <p style="color: var(--text-body); font-size: 0.9rem; line-height: 1.8;">โครงสร้างข้อเสนอของ Sanchuan Holdings ถูกออกแบบมาเพื่อสร้างความสมดุลขั้นสูงสุด (Pareto Efficiency) โดยมอบ <strong style="color: var(--gold);">'การปกป้องความเสี่ยงขาลง' (Downside Protection)</strong> อย่างสมบูรณ์แบบให้นักลงทุน ควบคู่ไปกับการสร้าง <strong style="color: var(--gold);">'ผลประโยชน์ที่สอดคล้องกัน' (Aligned Incentives)</strong> ระหว่างนายทุนและทีมผลิต</p>
-            <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 12px;">Sanchuan Holdings เสนอความยืดหยุ่นที่สอดคล้องกับเป้าหมายทางการเงินของคุณ ทั้งสองโมเดลยังคงรักษาสิทธิ์ Priority Rights สำหรับการร่วมลงทุนในบริษัทลูก (Film Subsidiary) ในอนาคต</p>
+        <div class="invest-strategic-box" data-aos="fade-up" data-aos-delay="500">
+            <h4><i class="fas fa-chess-king"></i>&nbsp; STRATEGIC ADVANTAGE</h4>
+            <p>โครงสร้างข้อเสนอของ Sanchuan Holdings ถูกออกแบบมาเพื่อสร้างความสมดุลขั้นสูงสุด (Pareto Efficiency) โดยมอบ <strong style="color: var(--gold);">'การปกป้องความเสี่ยงขาลง' (Downside Protection)</strong> อย่างสมบูรณ์แบบให้นักลงทุน ควบคู่ไปกับการสร้าง <strong style="color: var(--gold);">'ผลประโยชน์ที่สอดคล้องกัน' (Aligned Incentives)</strong> ระหว่างนายทุนและทีมผลิต</p>
+            <p class="sub-note">Sanchuan Holdings เสนอความยืดหยุ่นที่สอดคล้องกับเป้าหมายทางการเงินของคุณ ทั้งสองโมเดลยังคงรักษาสิทธิ์ Priority Rights สำหรับการร่วมลงทุนในบริษัทลูก (Film Subsidiary) ในอนาคต</p>
         </div>
         
         <div class="future-box" data-aos="fade-up" data-aos-delay="600">
