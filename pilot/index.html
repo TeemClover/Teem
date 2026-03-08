@@ -29,7 +29,7 @@
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; font-size: 16px; }
+        html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
         
         body {
             font-family: 'Noto Sans Thai', 'Montserrat', sans-serif;
@@ -247,12 +247,14 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 40px;
+            table-layout: fixed;
         }
         .comparison-table th, .comparison-table td {
             padding: 16px 20px;
             text-align: center;
             border-bottom: 1px solid rgba(197,160,89,0.1);
             font-size: 0.9rem;
+            word-break: break-word;
         }
         .comparison-table thead th {
             background: rgba(20,34,64,0.8);
@@ -402,6 +404,7 @@
         
         /* ===== PILOT PROJECT ===== */
         .pilot-project { background: var(--bg-dark); }
+        .pilot-info { max-width: 100%; overflow: hidden; word-wrap: break-word; }
         .pilot-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1187,6 +1190,10 @@
             .nav-links, .nav-cta { display: none; }
             .hamburger { display: block; }
             .hero-stats { gap: 24px; }
+            /* Comparison table mobile */
+            .comparison-table th, .comparison-table td { padding: 10px 8px; font-size: 0.75rem; }
+            .comparison-table thead th { font-size: 0.7rem; letter-spacing: 0; }
+            .feature-name { font-size: 0.75rem; }
             .market-cards, .hack-grid, .revenue-pillars, .traction-grid { grid-template-columns: 1fr; }
             .financials-wrapper, .shield-grid, .team-grid, .pilot-grid { grid-template-columns: 1fr; }
             .roadmap-grid { grid-template-columns: 1fr 1fr; }
@@ -1224,6 +1231,10 @@
         @media (max-width: 480px) {
             .roadmap-grid { grid-template-columns: 1fr; }
             section { padding: 60px 0; }
+            /* Comparison table smallest */
+            .comparison-table th, .comparison-table td { padding: 8px 6px; font-size: 0.7rem; }
+            .comparison-table thead th { font-size: 0.65rem; }
+            .container { padding: 0 16px; }
             .nana-spotlight { padding: 16px; }
             .nana-thumbs { grid-template-columns: repeat(4, 1fr); gap: 4px; }
             .nana-thumb img { height: 65px; }
@@ -1635,10 +1646,10 @@
         <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">โปรเจกต์แรก: Blood &amp; Gold</h2>
         
         <div class="pilot-grid">
-            <div class="pilot-poster" data-aos="fade-right" data-aos-duration="1000">
+            <div class="pilot-poster" data-aos="fade-up" data-aos-duration="1000">
                 <img src="img/blood-gold-cinematic.jpg" alt="Blood & Gold - Coming Soon 2026" loading="lazy" onclick="openLightbox(this)">
             </div>
-            <div class="pilot-info" data-aos="fade-left" data-aos-duration="1000">
+            <div class="pilot-info" data-aos="fade-up" data-aos-duration="800">
                 <h3 class="serif" style="font-size: 2rem; margin-bottom: 8px;">BLOOD &amp; GOLD</h3>
                 <p class="subtitle">MAFIA FAMILY X BUSINESS POWER</p>
                 <div class="concept">
