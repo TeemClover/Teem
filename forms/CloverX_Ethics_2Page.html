@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>กฎจรรยาบรรณตัวแทน Clover X</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page {
+    size: A4;
+    margin: 10mm 12mm 10mm 12mm;
+  }
+
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 7.8pt;
+    color: #1a1a2e;
+    background: #fff;
+    line-height: 1.4;
+  }
+
+  /* ===== TITLE ===== */
+  .doc-title {
+    text-align: center;
+    padding: 8px 0 4px 0;
+    border-bottom: 2.5px solid #1e40af;
+    margin-bottom: 8px;
+  }
+  .doc-title h1 {
+    font-size: 14pt;
+    font-weight: 800;
+    color: #1e40af;
+    letter-spacing: 1px;
+  }
+  .doc-title .subtitle {
+    font-size: 6.5pt;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  /* ===== SECTION HEADER ===== */
+  .sh {
+    background: linear-gradient(135deg, #1e40af, #2563eb);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin: 7px 0 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sh-num {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+    width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9pt; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sh-text { font-size: 9pt; font-weight: 700; }
+
+  /* ===== SUB HEADER ===== */
+  .sub {
+    background: #eff6ff;
+    border-left: 3px solid #2563eb;
+    padding: 2px 8px;
+    margin: 4px 0 3px 0;
+    font-weight: 700;
+    font-size: 7.8pt;
+    color: #1e3a5f;
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* ===== CONTENT ===== */
+  .c { padding: 0 4px; }
+
+  .item {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1.5px;
+    font-size: 7.5pt;
+    color: #334155;
+    line-height: 1.35;
+  }
+  .item-icon {
+    color: #2563eb;
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 10px;
+    text-align: center;
+    font-size: 7pt;
+  }
+
+  /* RED important text */
+  .red { color: #dc2626; font-weight: 600; }
+  .red .item-icon { color: #dc2626; }
+
+  /* ===== CARDS ===== */
+  .cards { display: flex; gap: 6px; margin: 4px 0; }
+  .card {
+    flex: 1;
+    background: #f0f7ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 4px;
+    padding: 5px 7px;
+    border-left: 3px solid #2563eb;
+  }
+  .card-t { font-weight: 700; font-size: 7.5pt; color: #1e40af; }
+  .card-b { font-size: 7pt; color: #475569; line-height: 1.3; margin-top: 2px; }
+
+  /* ===== TWO COL ===== */
+  .cols { display: flex; gap: 8px; }
+  .col { flex: 1; }
+
+  /* ===== TABLE ===== */
+  .tbl {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0;
+    font-size: 7pt;
+  }
+  .tbl th {
+    background: #1e40af;
+    color: white;
+    padding: 3px 6px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 7pt;
+  }
+  .tbl td {
+    padding: 3px 6px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 7pt;
+    color: #334155;
+    vertical-align: top;
+  }
+  .tbl tr:nth-child(even) { background: #f8fafc; }
+
+  .badge-y { background: #fef3c7; color: #92400e; padding: 0px 5px; border-radius: 8px; font-size: 6.5pt; font-weight: 600; }
+  .badge-r { background: #fee2e2; color: #991b1b; padding: 0px 5px; border-radius: 8px; font-size: 6.5pt; font-weight: 600; }
+
+  /* ===== FLOW ===== */
+  .flow { display: flex; align-items: center; justify-content: center; gap: 3px; margin: 4px 0; }
+  .flow-s {
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px;
+    padding: 3px 8px; font-size: 6.5pt; font-weight: 600; color: #1e40af; text-align: center;
+  }
+  .flow-a { color: #93c5fd; font-size: 10pt; font-weight: 700; }
+
+  /* ===== TIMELINE ===== */
+  .tl { display: flex; gap: 6px; margin: 4px 0; }
+  .tl-i {
+    flex: 1; background: #f8fafc; border: 1px solid #e2e8f0;
+    border-radius: 4px; padding: 4px 6px; text-align: center;
+  }
+  .tl-l { font-size: 6.5pt; color: #64748b; }
+  .tl-v { font-size: 9pt; font-weight: 700; color: #1e40af; }
+  .tl-d { font-size: 6pt; color: #94a3b8; }
+
+  /* ===== INFO/WARN BOX ===== */
+  .info-box {
+    background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px;
+    padding: 4px 8px; margin: 3px 0; font-size: 7.5pt;
+  }
+  .warn-box {
+    background: #fef2f2; border: 1px solid #fecaca; border-radius: 4px;
+    padding: 4px 8px; margin: 3px 0; font-size: 7.5pt;
+  }
+
+  .page-break { page-break-before: always; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    margin-top: 6px;
+    padding-top: 4px;
+    border-top: 1.5px solid #2563eb;
+    text-align: center;
+    font-size: 6pt;
+    color: #94a3b8;
+  }
+
+  /* Page 2 header */
+  .p2-header {
+    padding-bottom: 4px;
+    border-bottom: 2px solid #1e40af;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .p2-title { font-size: 9pt; font-weight: 700; color: #1e40af; }
+  .p2-sub { font-size: 6.5pt; color: #64748b; }
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1 ==================== -->
+<div class="doc-title">
+  <h1>กฎจรรยาบรรณตัวแทน Clover X</h1>
+  <div class="subtitle">อ้างอิงตาม พ.ร.บ.ขายตรงและตลาดแบบตรง พ.ศ. 2545 | กำกับดูแลโดย สำนักงานคณะกรรมการคุ้มครองผู้บริโภค (สคบ.)</div>
+</div>
+
+<!-- หมวด 1 -->
+<div class="sh"><div class="sh-num">1</div><div class="sh-text">หลักการดำเนินธุรกิจของ Clover X</div></div>
+<div class="cards">
+  <div class="card">
+    <div class="card-t">ความถูกต้องและโปร่งใส (Transparency)</div>
+    <div class="card-b">ให้ข้อมูลสินค้า ราคา เงื่อนไขครบถ้วน ไม่บิดเบือนหรือสร้างความเข้าใจผิด</div>
+  </div>
+  <div class="card">
+    <div class="card-t">ความรับผิดชอบต่อผู้บริโภค (Consumer Responsibility)</div>
+    <div class="card-b">คำนึงถึงประโยชน์ลูกค้าเป็นสำคัญ ให้บริการหลังการขายอย่างต่อเนื่อง</div>
+  </div>
+  <div class="card">
+    <div class="card-t">จริยธรรมในการสร้างรายได้ (Ethical Income)</div>
+    <div class="card-b">รายได้ต้องเกิดจากการจำหน่ายสินค้า/บริการจริง <span class="red">ไม่ใช้รูปแบบที่เข้าข่ายแชร์ลูกโซ่</span></div>
+  </div>
+</div>
+
+<!-- หมวด 2 -->
+<div class="sh"><div class="sh-num">2</div><div class="sh-text">การปฏิบัติต่อลูกค้า</div></div>
+<div class="cols">
+  <div class="col">
+    <div class="sub">2.1 การให้ข้อมูลสินค้า</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> อธิบายคุณสมบัติ วิธีใช้ และข้อจำกัดอย่างถูกต้อง</div>
+      <div class="item red"><span class="item-icon">✕</span> ห้ามกล่าวอ้างเกินจริง (Over-Claim)</div>
+      <div class="item red"><span class="item-icon">✕</span> ห้ามใช้ข้อความเข้าข่ายรักษาโรคโดยไม่ได้รับอนุญาต</div>
+    </div>
+    <div class="sub">2.2 การขายอย่างเป็นธรรม</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ไม่กดดัน บังคับ หรือใช้กลยุทธ์ไม่เหมาะสม</div>
+      <div class="item"><span class="item-icon">●</span> แจ้งราคา เงื่อนไขชำระเงิน และจัดส่งอย่างชัดเจน</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sub">2.3 การรับคืนสินค้า</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ลูกค้ามีสิทธิ์เปลี่ยนหรือคืนสินค้าตามนโยบายบริษัท</div>
+      <div class="item"><span class="item-icon">●</span> ตัวแทนต้องอำนวยความสะดวกในการดำเนินการ</div>
+    </div>
+    <div class="sub">2.4 บริการหลังการขาย</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ติดตามผลลัพธ์และให้คำแนะนำอย่างเหมาะสม</div>
+      <div class="item red"><span class="item-icon">✕</span> ไม่ทอดทิ้งลูกค้าหลังการขาย</div>
+    </div>
+  </div>
+</div>
+
+<!-- หมวด 3 -->
+<div class="sh"><div class="sh-num">3</div><div class="sh-text">การปฏิบัติต่อธุรกิจและแบรนด์</div></div>
+<div class="cols">
+  <div class="col">
+    <div class="sub">3.1 การใช้แบรนด์และสื่อ</div>
+    <div class="c">
+      <div class="item red"><span class="item-icon">✕</span> ห้ามใช้โลโก้ ชื่อบริษัท หรือสื่อทางการโดยไม่ได้รับอนุญาต</div>
+      <div class="item red"><span class="item-icon">✕</span> ห้ามสร้างเนื้อหาที่ทำให้เข้าใจผิดเกี่ยวกับแบรนด์</div>
+    </div>
+    <div class="sub">3.2 การโฆษณาและการสื่อสาร</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ต้องเป็นข้อมูลจริง ตรวจสอบได้</div>
+      <div class="item red"><span class="item-icon">✕</span> ห้ามใช้ผลลัพธ์ส่วนบุคคลเหมารวมเป็นผลลัพธ์ทั่วไป</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sub">3.3 การกำหนดราคา</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ต้องจำหน่ายสินค้าตามราคาที่บริษัทกำหนด</div>
+      <div class="item red"><span class="item-icon">✕</span> ห้ามตัดราคาเพื่อทำลายระบบธุรกิจ</div>
+    </div>
+  </div>
+</div>
+
+<!-- หมวด 4 -->
+<div class="sh"><div class="sh-num">4</div><div class="sh-text">การดำเนินธุรกิจของตัวแทน</div></div>
+<div class="cols">
+  <div class="col">
+    <div class="sub">4.1 การสมัครและแนะนำตัวแทน</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> แนะนำข้อมูลธุรกิจตามความเป็นจริง</div>
+      <div class="item red"><span class="item-icon">✕</span> ห้ามชักชวนโดยเน้นรายได้เกินจริง</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sub">4.2 การดูแลทีม (ถ้ามี)</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ให้คำแนะนำและสนับสนุนทีมอย่างเหมาะสม</div>
+      <div class="item red"><span class="item-icon">✕</span> ไม่เอาเปรียบหรือบังคับให้สต๊อกสินค้า</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sub">4.3 การเปลี่ยนสายงาน</div>
+    <div class="c">
+      <div class="item red"><span class="item-icon">✕</span> ห้ามชักชวนตัวแทนจากสายงานอื่นโดยไม่เหมาะสม</div>
+    </div>
+  </div>
+</div>
+
+<!-- หมวด 5 -->
+<div class="sh"><div class="sh-num">5</div><div class="sh-text">ข้อห้ามที่ถือเป็นความผิดร้ายแรง</div></div>
+<div class="warn-box" style="padding:3px 8px;">
+  <span class="red" style="font-size:7pt;font-weight:700;">ตัวแทนต้องไม่กระทำการดังต่อไปนี้ — ฝ่าฝืนอาจถูกยกเลิกสถานะทันที</span>
+</div>
+<div class="cols">
+  <div class="col">
+    <div class="sub">5.1 ด้านการขาย</div>
+    <div class="c">
+      <div class="item red"><span class="item-icon">✕</span> จำหน่ายสินค้าต่ำกว่าราคาที่กำหนด</div>
+      <div class="item red"><span class="item-icon">✕</span> จำหน่ายผ่านช่องทางที่ไม่ได้รับอนุญาต</div>
+    </div>
+    <div class="sub">5.2 ด้านการสื่อสาร</div>
+    <div class="c">
+      <div class="item red"><span class="item-icon">✕</span> กล่าวอ้างสรรพคุณเกินจริง</div>
+      <div class="item red"><span class="item-icon">✕</span> โฆษณาโดยไม่มีหลักฐานรองรับ</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sub">5.3 ด้านพฤติกรรม</div>
+    <div class="c">
+      <div class="item red"><span class="item-icon">✕</span> ทำให้เกิดความเสียหายต่อแบรนด์</div>
+      <div class="item red"><span class="item-icon">✕</span> ให้ข้อมูลเท็จต่อบริษัทหรือลูกค้า</div>
+    </div>
+    <div class="sub">5.4 ด้านกฎหมาย</div>
+    <div class="c">
+      <div class="item red"><span class="item-icon">✕</span> กระทำการที่เข้าข่ายแชร์ลูกโซ่</div>
+      <div class="item red"><span class="item-icon">✕</span> ฝ่าฝืนกฎหมายที่เกี่ยวข้อง</div>
+    </div>
+  </div>
+</div>
+
+<!-- หมวด 6 & 7 -->
+<div class="cols">
+  <div class="col">
+    <div class="sh" style="margin-top:5px;"><div class="sh-num">6</div><div class="sh-text">การคุ้มครองผู้บริโภค</div></div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> บริษัทมีนโยบายให้ลูกค้าคืนสินค้าได้ตามเงื่อนไข</div>
+      <div class="item"><span class="item-icon">●</span> มีช่องทางติดต่อชัดเจนและระบบรับเรื่องร้องเรียน</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sh" style="margin-top:5px;"><div class="sh-num">7</div><div class="sh-text">บทลงโทษ</div></div>
+    <div class="c">
+      <div class="item"><span class="item-icon">1.</span> ตักเตือนเป็นลายลักษณ์อักษร</div>
+      <div class="item"><span class="item-icon">2.</span> ระงับสิทธิ์ชั่วคราว</div>
+      <div class="item red"><span class="item-icon">3.</span> ยกเลิกสถานะตัวแทนทันที (กรณีร้ายแรง)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2 ==================== -->
+<div class="page-break"></div>
+<div class="p2-header">
+  <div class="p2-title">กฎจรรยาบรรณตัวแทน Clover X (ต่อ)</div>
+  <div class="p2-sub">อ้างอิงตาม พ.ร.บ.ขายตรงฯ พ.ศ. 2545 | สคบ.</div>
+</div>
+
+<!-- หมวด 8 -->
+<div class="sh" style="margin-top:0;"><div class="sh-num">8</div><div class="sh-text">การร้องเรียน และการพิจารณาทางจรรยาบรรณ</div></div>
+
+<div class="cols">
+  <div class="col">
+    <div class="sub">8.1 หลักการรับเรื่องร้องเรียน</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ความเป็นธรรม (Fairness) / ความโปร่งใส (Transparency) / การตรวจสอบได้ (Accountability)</div>
+    </div>
+    <div class="sub">8.2 ช่องทางการร้องเรียน</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> อีเมลบริษัท, Line Official, เบอร์โทรศัพท์บริษัท, แบบฟอร์มออนไลน์</div>
+    </div>
+    <div class="sub">8.3 ข้อมูลที่ใช้ในการร้องเรียน</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ชื่อ–นามสกุลผู้ร้องเรียน, ช่องทางติดต่อกลับ, ชื่อ/รหัสตัวแทน (ถ้ามี), รายละเอียดพฤติกรรม, หลักฐาน (ถ้ามี)</div>
+      <div class="item red"><span class="item-icon">!</span> หากข้อมูลไม่ครบ บริษัทอาจไม่รับพิจารณา</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sub">8.4 ขอบเขตเรื่องร้องเรียน</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> <strong>รับพิจารณา:</strong> การขายสินค้า/บริการ, พฤติกรรมตัวแทน, การสื่อสารเกี่ยวกับแบรนด์</div>
+      <div class="item red"><span class="item-icon">✕</span> <strong>ไม่พิจารณา:</strong> ข้อพิพาทส่วนตัว, เรื่องไม่เกี่ยวกับธุรกิจ, เรื่องนอกอำนาจบริษัท</div>
+    </div>
+    <div class="sub">8.5 กระบวนการพิจารณา</div>
+    <div class="flow">
+      <div class="flow-s">ตรวจสอบข้อมูล</div>
+      <div class="flow-a">→</div>
+      <div class="flow-s">แจ้งตัวแทนชี้แจง</div>
+      <div class="flow-a">→</div>
+      <div class="flow-s">พิจารณาโดยคณะกรรมการ</div>
+      <div class="flow-a">→</div>
+      <div class="flow-s">สรุปผล</div>
+    </div>
+    <div class="sub">8.6 ระยะเวลา</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ผู้ร้องเรียนควรแจ้งภายใน <strong>30 วัน</strong> นับจากวันเกิดเหตุ | บริษัทพิจารณาภายใน <strong>30–60 วัน</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="sub">8.7 การแจ้งผล</div>
+<div class="c">
+  <div class="item"><span class="item-icon">●</span> แจ้งผลผ่านช่องทางที่ผู้ร้องเรียนให้ไว้ (อีเมล, Line, โทรศัพท์) | <strong class="red">การตัดสินของบริษัทถือเป็นที่สุด</strong></div>
+</div>
+
+<div class="sub">8.8 ระดับความผิดและบทลงโทษ</div>
+<table class="tbl">
+  <thead>
+    <tr><th style="width:90px;">ระดับ</th><th>ตัวอย่างความผิด</th><th>บทลงโทษ</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><span class="badge-y">ความผิดทั่วไป</span></td><td>ให้ข้อมูลไม่ครบถ้วน, บริการหลังการขายไม่เหมาะสม</td><td>ตักเตือน, อบรมเพิ่มเติม, ระงับสิทธิ์ชั่วคราว</td></tr>
+    <tr><td><span class="badge-r">ความผิดร้ายแรง</span></td><td class="red">Over-claim / หลอกลวง, ขายตัดราคา, ทำลายระบบธุรกิจ, กระทำผิดกฎหมาย</td><td class="red">ระงับสิทธิ์ทันที, ระงับรายได้, ยกเลิกสถานะตัวแทน (Terminate)</td></tr>
+  </tbody>
+</table>
+
+<div class="cols">
+  <div class="col">
+    <div class="sub">8.9 มาตรการเพิ่มเติม</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ระงับโบนัส/สิทธิประโยชน์, Freeze รหัสตัวแทน, ดำเนินคดีตามกฎหมาย</div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sub">8.10 การสิ้นสุดสถานะตัวแทน</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ลาออก / ถูกยกเลิกจากฝ่าฝืนจรรยาบรรณ / ไม่ต่ออายุ / เสียชีวิต</div>
+    </div>
+  </div>
+</div>
+
+<div class="sub">8.11 อำนาจของบริษัท</div>
+<div class="c">
+  <div class="item"><span class="item-icon">●</span> ปรับปรุงกฎจรรยาบรรณตามความเหมาะสม, ลงโทษเพื่อปกป้องระบบธุรกิจ, ตัดสินข้อพิพาทเพื่อรักษาผลประโยชน์ส่วนรวม</div>
+  <div class="item" style="font-weight:600;color:#1e40af;"><span class="item-icon">●</span> โดยยึดหลัก "ความเป็นธรรมต่อผู้บริโภคและระบบธุรกิจ"</div>
+</div>
+
+<!-- หมวด 9 -->
+<div class="sh"><div class="sh-num">9</div><div class="sh-text">อายุสมาชิกภาพ การต่ออายุ และการลาออกของตัวแทน</div></div>
+
+<div class="cols">
+  <div class="col">
+    <div class="sub">9.1 อายุสมาชิกภาพ</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> สถานภาพตัวแทนมีระยะเวลา <strong>1 ปี</strong> นับจากวันอนุมัติ (กรอกข้อมูลครบ + ส่งเอกสาร + ได้รับอนุมัติ)</div>
+    </div>
+    <div class="sub">9.2 การต่ออายุสมาชิกภาพ</div>
+    <div class="tl">
+      <div class="tl-i" style="border-top:2px solid #22c55e;">
+        <div class="tl-l">ต่ออายุล่วงหน้า</div>
+        <div class="tl-v">30 วัน</div>
+        <div class="tl-d">ก่อนหมดอายุ</div>
+      </div>
+      <div class="tl-i" style="border-top:2px solid #f59e0b;">
+        <div class="tl-l">Grace Period</div>
+        <div class="tl-v">30 วัน</div>
+        <div class="tl-d">หลังหมดอายุ (สิทธิ์อาจถูกระงับ)</div>
+      </div>
+      <div class="tl-i" style="border-top:2px solid #dc2626;">
+        <div class="tl-l">เกินกำหนด</div>
+        <div class="tl-v" style="color:#dc2626;">สิ้นสุด</div>
+        <div class="tl-d">เกิน 30 วัน = สิ้นสุดอัตโนมัติ</div>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="sub">9.3 การลาออก</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> ต้องมีสถานะ Active, แจ้งลายลักษณ์อักษรผ่านช่องทางทางการเท่านั้น</div>
+    </div>
+    <div class="sub">9.4 ทีมและโครงสร้าง</div>
+    <div class="c">
+      <div class="item red"><span class="item-icon">!</span> โครงสร้างทีม/เครือข่ายไม่ถือเป็นทรัพย์สินของตัวแทนบุคคลใด บริษัทมีสิทธิ์บริหารจัดการ</div>
+    </div>
+    <div class="sub">9.5 สมัครใหม่หลังลาออก</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> เว้นระยะ <strong>ไม่น้อยกว่า 60 วัน</strong> ดำเนินการสมัครใหม่ทั้งหมด บริษัทมีสิทธิ์อนุมัติหรือไม่อนุมัติ</div>
+    </div>
+    <div class="sub">9.6–9.7 การพิจารณาอนุมัติ</div>
+    <div class="c">
+      <div class="item"><span class="item-icon">●</span> บริษัทสงวนสิทธิ์พิจารณาจากความถูกต้องของข้อมูล ความเหมาะสม และประวัติการกระทำ</div>
+      <div class="item red"><span class="item-icon">!</span> บริษัทมีสิทธิ์ปฏิเสธการต่ออายุหรือระงับสถานะหากฝ่าฝืนจรรยาบรรณ</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  กฎจรรยาบรรณตัวแทน Clover X | เอกสารนี้เป็นทรัพย์สินของบริษัท ห้ามทำซ้ำหรือเผยแพร่โดยไม่ได้รับอนุญาต | อ้างอิงตาม พ.ร.บ.ขายตรงฯ พ.ศ. 2545 กำกับดูแลโดย สคบ.
+</div>
+
+</body>
+</html>
