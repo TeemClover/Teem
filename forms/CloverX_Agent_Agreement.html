@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>CLOVER X - สัญญาแต่งตั้งตัวแทน</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @page {
+    size: A4;
+    margin: 8mm 10mm 6mm 10mm;
+  }
+
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 8.5pt;
+    color: #1a1a2e;
+    background: #fff;
+    line-height: 1.4;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, #0a1628 0%, #1a3a6c 50%, #2563eb 100%);
+    color: white;
+    padding: 12px 20px 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #93c5fd, #3b82f6, #1d4ed8);
+  }
+
+  .header-left { display: flex; align-items: center; gap: 10px; }
+
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #60a5fa, #2563eb);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; color: white;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+
+  .brand-name { font-size: 19pt; font-weight: 700; letter-spacing: 2.5px; line-height: 1; }
+  .brand-tagline { font-size: 6.5pt; opacity: 0.8; letter-spacing: 1.5px; font-weight: 300; }
+
+  .doc-id-box {
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 4px; padding: 4px 12px;
+    min-width: 155px; background: rgba(255,255,255,0.08); text-align: right;
+  }
+  .doc-id-label { font-size: 6.5pt; opacity: 0.7; }
+  .doc-id-value { font-size: 10pt; font-weight: 600; min-height: 16px; border-bottom: 1px dotted rgba(255,255,255,0.4); }
+
+  /* ===== TITLE ===== */
+  .title-bar {
+    background: linear-gradient(90deg, #eff6ff, #dbeafe);
+    padding: 7px 20px; text-align: center;
+    border-bottom: 1.5px solid #bfdbfe;
+  }
+  .title-bar h1 { font-size: 13pt; font-weight: 700; color: #1e3a5f; }
+  .title-bar .ref { font-size: 7pt; color: #64748b; margin-top: 2px; }
+
+  /* ===== PARTIES ===== */
+  .parties {
+    background: #f8fafc; border: 1px solid #e2e8f0;
+    border-radius: 4px; padding: 7px 16px; margin: 6px 0 4px 0;
+  }
+  .parties-title { font-weight: 700; color: #1e40af; font-size: 8.5pt; margin-bottom: 3px; }
+  .party-row { display: flex; gap: 6px; align-items: flex-end; margin-bottom: 3px; }
+  .party-label { font-weight: 600; color: #1e3a5f; white-space: nowrap; font-size: 8pt; }
+  .party-note { font-weight: 400; color: #64748b; font-size: 7pt; }
+  .party-line { flex: 1; border-bottom: 1px solid #94a3b8; min-height: 14px; }
+
+  /* ===== SECTION HEADER ===== */
+  .sh {
+    background: linear-gradient(90deg, #1e40af, #2563eb);
+    color: white; padding: 3px 14px;
+    font-size: 8.5pt; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 4px;
+  }
+  .sh .n {
+    background: rgba(255,255,255,0.2); border-radius: 2px;
+    width: 15px; height: 15px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 7.5pt; font-weight: 700;
+  }
+
+  /* ===== CLAUSE CONTENT ===== */
+  .cl {
+    padding: 4px 14px 3px 14px;
+    font-size: 7.8pt; line-height: 1.42; color: #334155;
+  }
+
+  .cl-2col {
+    display: flex; gap: 12px;
+    padding: 4px 14px 3px 14px;
+  }
+  .cl-col { flex: 1; font-size: 7.8pt; line-height: 1.42; color: #334155; }
+
+  .sub { margin-bottom: 2px; }
+  .sub-num { font-weight: 700; color: #1e3a5f; }
+  .warn { color: #dc2626; font-weight: 600; }
+
+  /* ===== ACCEPTANCE ===== */
+  .accept {
+    border: 2px solid #1e40af; border-radius: 5px;
+    padding: 7px 14px; margin: 5px 0;
+    background: #eff6ff;
+  }
+  .accept-title { font-weight: 700; color: #1e40af; font-size: 8.5pt; text-align: center; margin-bottom: 3px; }
+  .accept-text { font-size: 7.5pt; color: #334155; text-align: center; line-height: 1.4; }
+
+  /* ===== SIGNATURE ===== */
+  .sig-area { padding: 6px 0 3px 0; }
+  .sig-row { display: flex; gap: 36px; padding: 0 24px; }
+  .sig-block { flex: 1; text-align: center; }
+  .sig-line { border-bottom: 1px solid #475569; height: 28px; margin-bottom: 2px; }
+  .sig-label { font-size: 7.5pt; color: #475569; font-weight: 500; }
+  .sig-sub { font-size: 6pt; color: #94a3b8; }
+  .date-row { display: flex; gap: 36px; padding: 3px 24px 0 24px; }
+  .date-block { flex: 1; display: flex; align-items: flex-end; gap: 5px; }
+  .date-label { font-size: 7pt; color: #475569; white-space: nowrap; }
+  .date-line { flex: 1; border-bottom: 1px solid #94a3b8; min-height: 14px; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: linear-gradient(90deg, #0a1628, #1e3a5f);
+    color: rgba(255,255,255,0.6); padding: 4px 20px;
+    font-size: 5.5pt; text-align: center;
+    border-radius: 0 0 6px 6px; margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-icon">C</div>
+      <div>
+        <div class="brand-name">CLOVER X</div>
+        <div class="brand-tagline">THE INTELLIGENT HEALTH ECOSYSTEM</div>
+      </div>
+    </div>
+    <div class="doc-id-box">
+      <div class="doc-id-label">เลขที่สัญญา / Contract No.</div>
+      <div class="doc-id-value">&nbsp;</div>
+    </div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="title-bar">
+    <h1>สัญญาแต่งตั้งตัวแทน CLOVER X / Agent Appointment Agreement</h1>
+    <div class="ref">อ้างอิงตาม พระราชบัญญัติขายตรงและตลาดแบบตรง พ.ศ. 2545 &nbsp;|&nbsp; กำกับดูแลโดย สำนักงานคณะกรรมการคุ้มครองผู้บริโภค</div>
+  </div>
+
+  <!-- PARTIES -->
+  <div class="parties">
+    <div class="parties-title">ข้อ 1: คู่สัญญา / Contracting Parties</div>
+    <div class="party-row">
+      <span class="party-label">ฝ่ายที่ 1 : บริษัท Clover X จำกัด <span class="party-note">(ต่อไปเรียกว่า "บริษัท")</span></span>
+    </div>
+    <div class="party-row">
+      <span class="party-label">ฝ่ายที่ 2 : ชื่อตัวแทน <span class="party-note">(ต่อไปเรียกว่า "ตัวแทน")</span> :</span>
+      <span class="party-line"></span>
+      <span class="party-label" style="font-size:7pt;">Agent ID :</span>
+      <span class="party-line" style="max-width:90px;"></span>
+    </div>
+    <div style="font-size:7pt;color:#475569;margin-top:2px;">โดยทั้งสองฝ่ายตกลงทำสัญญาภายใต้เงื่อนไขดังต่อไปนี้</div>
+  </div>
+
+  <!-- CLAUSE 2: Qualifications -->
+  <div class="sh"><div class="n">2</div> คุณสมบัติของตัวแทน / Agent Qualifications</div>
+  <div class="cl">
+    <div class="sub"><span class="sub-num">2.1</span> ตัวแทนต้องมีอายุไม่ต่ำกว่า 20 ปีบริบูรณ์ หรืออายุ 18–20 ปี โดยได้รับความยินยอมจากผู้ปกครอง</div>
+    <div class="sub"><span class="sub-num">2.2</span> ต้องให้ข้อมูลที่ถูกต้อง ครบถ้วน และตรวจสอบได้</div>
+    <div class="sub"><span class="sub-num">2.3</span> ต้องยอมรับและปฏิบัติตามคู่มือจรรยาบรรณ กฎระเบียบบริษัท และแผนธุรกิจของบริษัท</div>
+  </div>
+
+  <!-- CLAUSE 3 & 4 -->
+  <div class="sh"><div class="n">3</div> สถานะของตัวแทน &nbsp;&nbsp;&nbsp;<div class="n">4</div> อายุสมาชิกภาพ</div>
+  <div class="cl-2col">
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">3.1</span> ตัวแทนมีสถานะเป็น "ผู้ประกอบธุรกิจอิสระ" ไม่ใช่พนักงานของบริษัท</div>
+      <div class="sub"><span class="sub-num">3.2</span> ไม่มีอำนาจผูกพันบริษัทในทางกฎหมาย</div>
+    </div>
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">4.1</span> สถานะตัวแทนมีอายุ 1 ปี นับจากวันที่ได้รับอนุมัติ</div>
+      <div class="sub"><span class="sub-num">4.2</span> การต่ออายุเป็นไปตามเงื่อนไขที่บริษัทกำหนด</div>
+    </div>
+  </div>
+
+  <!-- CLAUSE 5 -->
+  <div class="sh"><div class="n">5</div> รายได้และผลตอบแทน / Income & Compensation</div>
+  <div class="cl">
+    <div class="sub"><span class="sub-num">5.1</span> รายได้ของตัวแทนเกิดจากการจำหน่ายสินค้าและการให้บริการตามระบบบริษัทเท่านั้น</div>
+    <div class="sub warn">❗ ห้ามรับรายได้จากการชักชวนโดยไม่มีการขายสินค้า หรือดำเนินธุรกิจในลักษณะเข้าข่ายแชร์ลูกโซ่</div>
+    <div class="sub"><span class="sub-num">5.2</span> บริษัทสามารถปรับแผนผลตอบแทนได้ตามความเหมาะสม โดยจะแจ้งให้ทราบล่วงหน้า</div>
+  </div>
+
+  <!-- CLAUSE 6 & 7 -->
+  <div class="sh"><div class="n">6</div> การดำเนินธุรกิจ &nbsp;&nbsp;&nbsp;<div class="n">7</div> การคุ้มครองผู้บริโภค</div>
+  <div class="cl-2col">
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">6.1</span> ให้ข้อมูลสินค้าอย่างถูกต้อง ไม่กล่าวอ้างเกินจริง</div>
+      <div class="sub"><span class="sub-num">6.2</span> ห้ามโฆษณาเกินจริง (Over-claim) ขายตัดราคา ใช้ช่องทางขายที่ไม่ได้รับอนุญาต</div>
+      <div class="sub"><span class="sub-num">6.3</span> ปฏิบัติต่อลูกค้าอย่างเป็นธรรม และมีบริการหลังการขาย</div>
+    </div>
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">7.1</span> แจ้งข้อมูลสินค้า ราคา และเงื่อนไขอย่างชัดเจน</div>
+      <div class="sub"><span class="sub-num">7.2</span> ลูกค้ามีสิทธิ์คืนสินค้าตามนโยบายบริษัท</div>
+      <div class="sub"><span class="sub-num">7.3</span> ตัวแทนต้องอำนวยความสะดวกในการคืนสินค้า</div>
+    </div>
+  </div>
+
+  <!-- CLAUSE 8 & 9 -->
+  <div class="sh"><div class="n">8</div> การใช้แบรนด์และสื่อ &nbsp;&nbsp;&nbsp;<div class="n">9</div> การร้องเรียนและการตรวจสอบ</div>
+  <div class="cl-2col">
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">8.1</span> ห้ามใช้ชื่อ โลโก้ หรือสื่อของบริษัทโดยไม่ได้รับอนุญาต</div>
+      <div class="sub"><span class="sub-num">8.2</span> ห้ามสร้างเนื้อหาที่ทำให้เกิดความเข้าใจผิด</div>
+    </div>
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">9.1</span> บริษัทมีระบบรับเรื่องร้องเรียนจากลูกค้าและตัวแทน</div>
+      <div class="sub"><span class="sub-num">9.2</span> บริษัทมีสิทธิ์ตรวจสอบพฤติกรรมของตัวแทน</div>
+      <div class="sub"><span class="sub-num">9.3</span> ตัวแทนต้องให้ความร่วมมือในการตรวจสอบ</div>
+    </div>
+  </div>
+
+  <!-- CLAUSE 10, 11, 12 -->
+  <div class="sh"><div class="n">10</div> บทลงโทษ &nbsp;&nbsp;&nbsp;<div class="n">11</div> การลาออก &nbsp;&nbsp;&nbsp;<div class="n">12</div> การสมัครใหม่</div>
+  <div class="cl-2col">
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">ข้อ 10:</span> หากตัวแทนฝ่าฝืน บริษัทมีสิทธิ์ ตักเตือน / ระงับสิทธิ์ / ระงับรายได้ / ยกเลิกสถานะตัวแทนทันที</div>
+    </div>
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">ข้อ 11:</span> ตัวแทนสามารถลาออกได้โดยสมัครใจ โดยแจ้งเป็นลายลักษณ์อักษรผ่านช่องทางบริษัท</div>
+      <div class="sub"><span class="sub-num">ข้อ 12:</span> สมัครใหม่ได้หลังเว้นระยะเวลาไม่น้อยกว่า 60 วัน โดยอยู่ภายใต้การพิจารณาของบริษัท</div>
+    </div>
+  </div>
+
+  <!-- CLAUSE 13 & 14 -->
+  <div class="sh"><div class="n">13</div> การสิ้นสุดสัญญา &nbsp;&nbsp;&nbsp;<div class="n">14</div> อำนาจของบริษัท</div>
+  <div class="cl-2col">
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">ข้อ 13:</span> สัญญาสิ้นสุดเมื่อ ครบอายุสมาชิก / ตัวแทนลาออก / บริษัทยกเลิกสัญญา / ตัวแทนฝ่าฝืนกฎจรรยาบรรณ</div>
+    </div>
+    <div class="cl-col">
+      <div class="sub"><span class="sub-num">ข้อ 14:</span> บริษัทมีสิทธิ์ปรับปรุงกฎระเบียบ เปลี่ยนแผนธุรกิจ และดำเนินมาตรการเพื่อปกป้องระบบ โดยยึดหลักความเป็นธรรมต่อผู้บริโภคและตัวแทน</div>
+    </div>
+  </div>
+
+  <!-- ACCEPTANCE -->
+  <div class="accept">
+    <div class="accept-title">ข้อ 15: การยอมรับเงื่อนไข / Acceptance of Terms</div>
+    <div class="accept-text">ตัวแทนยืนยันว่าได้อ่านและเข้าใจเงื่อนไขทั้งหมดในสัญญาฉบับนี้ และยินยอมปฏิบัติตามทุกประการ<br/>The Agent confirms having read and understood all terms and conditions herein, and agrees to comply in full.</div>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="sig-area">
+    <div class="sig-row">
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-label">ลายเซ็นตัวแทน</div>
+        <div class="sig-sub">Agent's Signature</div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-label">ลายเซ็นบริษัท Clover X</div>
+        <div class="sig-sub">Company Authorized Signature</div>
+      </div>
+    </div>
+    <div class="date-row">
+      <div class="date-block">
+        <span class="date-label">วันที่ (Date) :</span>
+        <span class="date-line"></span>
+      </div>
+      <div class="date-block">
+        <span class="date-label">วันที่อนุมัติ (Approval Date) :</span>
+        <span class="date-line"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    CLOVER X — The Intelligent Health Ecosystem &nbsp;|&nbsp; เอกสารนี้เป็นทรัพย์สินของบริษัท ห้ามทำซ้ำหรือเผยแพร่โดยไม่ได้รับอนุญาต &nbsp;|&nbsp; สัญญาฉบับนี้มีผลผูกพันทางกฎหมายเมื่อลงนามครบทั้งสองฝ่าย
+  </div>
+
+</body>
+</html>
