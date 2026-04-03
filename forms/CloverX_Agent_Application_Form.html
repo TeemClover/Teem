@@ -11,50 +11,43 @@
 
   @page {
     size: A4;
-    margin: 0;
+    margin: 8mm 10mm 6mm 10mm;
   }
 
   body {
     font-family: 'Noto Sans Thai', sans-serif;
-    font-size: 8pt;
+    font-size: 9pt;
     color: #1a1a2e;
     background: #fff;
-    line-height: 1.4;
-  }
-
-  .page {
-    width: 210mm;
-    height: 297mm;
-    margin: 0 auto;
-    padding: 0;
-    position: relative;
-    overflow: hidden;
+    line-height: 1.35;
   }
 
   /* ===== HEADER ===== */
   .header {
     background: linear-gradient(135deg, #0a1628 0%, #1a3a6c 50%, #2563eb 100%);
     color: white;
-    padding: 10px 20px 8px 20px;
+    padding: 10px 18px 8px 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-radius: 6px 6px 0 0;
+    position: relative;
   }
 
   .header::after {
     content: '';
     position: absolute;
-    top: 48px;
+    bottom: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(90deg, #93c5fd, #3b82f6, #1d4ed8);
   }
 
   .header-left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   .logo-icon {
@@ -68,12 +61,13 @@
     font-size: 18px;
     font-weight: 700;
     color: white;
+    border: 2px solid rgba(255,255,255,0.3);
   }
 
   .brand-name {
-    font-size: 16pt;
+    font-size: 17pt;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     line-height: 1;
   }
 
@@ -86,7 +80,7 @@
 
   .agent-id-box {
     border: 1.5px solid rgba(255,255,255,0.4);
-    border-radius: 5px;
+    border-radius: 4px;
     padding: 3px 10px;
     min-width: 150px;
     background: rgba(255,255,255,0.08);
@@ -96,7 +90,6 @@
   .agent-id-label {
     font-size: 6pt;
     opacity: 0.7;
-    letter-spacing: 0.5px;
   }
 
   .agent-id-value {
@@ -109,29 +102,28 @@
   /* ===== TITLE BAR ===== */
   .title-bar {
     background: linear-gradient(90deg, #eff6ff, #dbeafe);
-    padding: 5px 20px;
+    padding: 5px 18px;
     text-align: center;
     border-bottom: 1px solid #bfdbfe;
   }
 
   .title-bar h1 {
-    font-size: 10.5pt;
+    font-size: 11pt;
     font-weight: 700;
     color: #1e3a5f;
-    margin-bottom: 1px;
   }
 
   .title-bar .subtitle {
-    font-size: 6.5pt;
+    font-size: 7pt;
     color: #475569;
   }
 
   /* ===== SECTION HEADERS ===== */
-  .section-header {
+  .sh {
     background: linear-gradient(90deg, #1e40af, #2563eb);
     color: white;
-    padding: 3px 14px;
-    font-size: 7.5pt;
+    padding: 2.5px 14px;
+    font-size: 8pt;
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -139,7 +131,7 @@
     margin-top: 2px;
   }
 
-  .section-header .num {
+  .sh .n {
     background: rgba(255,255,255,0.2);
     border-radius: 2px;
     width: 14px;
@@ -152,11 +144,11 @@
   }
 
   /* ===== FORM FIELDS ===== */
-  .sec-body {
-    padding: 4px 12px 2px 12px;
+  .sb {
+    padding: 4px 14px 2px 14px;
   }
 
-  .field-row {
+  .fr {
     display: flex;
     gap: 10px;
     margin-bottom: 3px;
@@ -170,21 +162,21 @@
     gap: 3px;
   }
 
-  .f .lbl {
+  .lbl {
     white-space: nowrap;
-    font-size: 7.5pt;
+    font-size: 8pt;
     font-weight: 600;
     color: #1e3a5f;
-    line-height: 1.3;
+    line-height: 1.2;
   }
 
-  .f .lbl .en {
+  .en {
     font-weight: 400;
     color: #64748b;
     font-size: 6.5pt;
   }
 
-  .f .line {
+  .line {
     flex: 1;
     border-bottom: 1px solid #94a3b8;
     min-height: 13px;
@@ -195,14 +187,13 @@
     gap: 10px;
     flex-wrap: wrap;
     align-items: center;
-    margin: 1px 0;
   }
 
   .opt {
     display: flex;
     align-items: center;
     gap: 2px;
-    font-size: 7pt;
+    font-size: 7.5pt;
   }
 
   .rb {
@@ -218,16 +209,16 @@
     width: 9px;
     height: 9px;
     border: 1px solid #64748b;
-    border-radius: 1.5px;
+    border-radius: 2px;
     display: inline-block;
     flex-shrink: 0;
   }
 
-  .addr-box {
+  .abox {
     border: 1px solid #cbd5e1;
     border-radius: 2px;
-    min-height: 20px;
-    padding: 2px 5px;
+    height: 20px;
+    padding: 1px 5px;
     background: #f8fafc;
     margin-bottom: 2px;
   }
@@ -236,11 +227,11 @@
     font-size: 5.5pt;
     color: #94a3b8;
     font-style: italic;
-    line-height: 1.3;
+    line-height: 1.2;
   }
 
-  /* ===== ACKNOWLEDGMENT BOX ===== */
-  .ack-box {
+  /* ===== ACK BOX ===== */
+  .ack {
     border: 1px solid #1e40af;
     border-radius: 3px;
     padding: 4px 8px;
@@ -248,36 +239,36 @@
     background: #eff6ff;
   }
 
-  .ack-item {
+  .ack-i {
     font-size: 6.5pt;
     margin-bottom: 1px;
     display: flex;
     gap: 3px;
-    line-height: 1.35;
+    line-height: 1.3;
   }
 
-  .ack-bullet {
+  .ack-b {
     color: #1e40af;
     font-weight: 700;
     flex-shrink: 0;
   }
 
   /* ===== RED NOTICE ===== */
-  .red-notice {
+  .red {
     color: #dc2626;
     font-weight: 700;
-    font-size: 7.5pt;
+    font-size: 8pt;
     text-align: center;
     padding: 4px 14px;
-    margin: 4px 16px;
+    margin: 4px 0;
     border: 1.5px solid #dc2626;
     border-radius: 3px;
     background: #fef2f2;
   }
 
   /* ===== SIGNATURE ===== */
-  .sig-section {
-    padding: 4px 16px 2px 16px;
+  .sig {
+    padding: 3px 0;
   }
 
   .sig-row {
@@ -285,92 +276,84 @@
     gap: 24px;
   }
 
-  .sig-block {
+  .sig-blk {
     flex: 1;
     text-align: center;
   }
 
-  .sig-line {
+  .sig-ln {
     border-bottom: 1px solid #475569;
-    min-height: 22px;
+    height: 22px;
     margin-bottom: 1px;
   }
 
-  .sig-label {
+  .sig-lbl {
     font-size: 6.5pt;
     color: #475569;
     font-weight: 500;
   }
 
-  .sig-label .en {
-    font-size: 5.5pt;
-    color: #94a3b8;
-  }
-
-  .company-row {
+  .co-row {
     background: #f1f5f9;
     border: 1px solid #e2e8f0;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 3px 8px;
-    margin-top: 3px;
+    margin-top: 2px;
     display: flex;
-    gap: 16px;
+    gap: 14px;
   }
 
   /* ===== CONDITIONS ===== */
-  .cond-header {
+  .cond-h {
     background: linear-gradient(90deg, #0f172a, #1e3a5f);
     color: white;
     padding: 4px 14px;
-    font-size: 8.5pt;
+    font-size: 9pt;
     font-weight: 700;
     text-align: center;
     letter-spacing: 0.5px;
+    margin-top: 3px;
   }
 
-  .cond-body {
-    padding: 4px 14px 4px 14px;
+  .cond-b {
+    padding: 5px 14px 4px 14px;
     background: #f8fafc;
     border-top: 2px solid #2563eb;
     column-count: 2;
     column-gap: 14px;
   }
 
-  .cond-item {
+  .ci {
     display: flex;
     gap: 3px;
-    margin-bottom: 1.5px;
-    font-size: 6pt;
+    margin-bottom: 2.5px;
+    font-size: 6.2pt;
     line-height: 1.35;
     color: #334155;
     break-inside: avoid;
   }
 
-  .cond-num {
+  .cn {
     font-weight: 700;
     color: #1e40af;
-    min-width: 14px;
+    min-width: 13px;
     flex-shrink: 0;
-    font-size: 6pt;
+    font-size: 6.2pt;
   }
 
   /* ===== FOOTER ===== */
-  .footer {
+  .foot {
     background: linear-gradient(90deg, #0a1628, #1e3a5f);
     color: rgba(255,255,255,0.6);
-    padding: 3px 20px;
+    padding: 3px 18px;
     font-size: 5pt;
     text-align: center;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    border-radius: 0 0 6px 6px;
+    margin-top: 2px;
   }
 </style>
 </head>
 <body>
-
-<div class="page">
 
   <!-- HEADER -->
   <div class="header">
@@ -393,71 +376,71 @@
     <div class="subtitle">ผู้สมัครต้องมีอายุ 20 ปีบริบูรณ์ขึ้นไป หรืออายุ 18–20 ปี โดยได้รับความยินยอมจากผู้ปกครอง</div>
   </div>
 
-  <!-- SECTION 1: Personal Info -->
-  <div class="section-header"><div class="num">1</div> ข้อมูลส่วนตัวผู้สมัคร / Personal Information</div>
-  <div class="sec-body">
-    <div class="field-row">
+  <!-- 1 Personal -->
+  <div class="sh"><div class="n">1</div> ข้อมูลส่วนตัวผู้สมัคร / Personal Information</div>
+  <div class="sb">
+    <div class="fr">
       <div class="f"><span class="lbl">เลขบัตรประชาชน / Passport No. <span class="en">(National ID / Passport No.)</span></span><span class="line"></span></div>
     </div>
-    <div style="margin-bottom: 3px;">
-      <span class="lbl" style="font-size:7.5pt;font-weight:600;color:#1e3a5f;">คำนำหน้า <span class="en" style="font-weight:400;color:#64748b;font-size:6.5pt;">(Title)</span> : </span>
+    <div style="margin-bottom:3px;">
+      <span class="lbl">คำนำหน้า <span class="en">(Title)</span> : </span>
       <span class="opts" style="display:inline-flex;">
         <span class="opt"><span class="rb"></span> นาย Mr.</span>
         <span class="opt"><span class="rb"></span> นาง Mrs.</span>
         <span class="opt"><span class="rb"></span> นางสาว Ms.</span>
-        <span class="opt"><span class="rb"></span> อื่นๆ <span style="font-size:6pt;color:#64748b;">(Other)</span> _______</span>
+        <span class="opt"><span class="rb"></span> อื่นๆ <span class="en">(Other)</span> _______</span>
       </span>
     </div>
-    <div class="field-row">
+    <div class="fr">
       <div class="f"><span class="lbl">ชื่อ-นามสกุล (ไทย)</span><span class="line"></span></div>
       <div class="f"><span class="lbl">Name-Surname <span class="en">(English)</span></span><span class="line"></span></div>
     </div>
-    <div class="field-row">
-      <div class="f" style="flex:2;"><span class="lbl">วันเดือนปีเกิด <span class="en">(Date of Birth)</span></span><span class="line" style="text-align:center;">&nbsp;</span></div>
-      <div class="f" style="flex:0.8;"><span class="lbl">อายุ <span class="en">(Age)</span></span><span class="line"></span><span class="lbl">ปี</span></div>
+    <div class="fr">
+      <div class="f" style="flex:2;"><span class="lbl">วันเดือนปีเกิด <span class="en">(Date of Birth)</span></span><span class="line"></span></div>
+      <div class="f" style="flex:0.7;"><span class="lbl">อายุ <span class="en">(Age)</span></span><span class="line"></span><span class="lbl">ปี</span></div>
       <div class="f" style="flex:1.2;"><span class="lbl">สัญชาติ <span class="en">(Nationality)</span></span><span class="line"></span></div>
     </div>
   </div>
 
-  <!-- SECTION 2: Contact -->
-  <div class="section-header"><div class="num">2</div> ข้อมูลการติดต่อ / Contact Information</div>
-  <div class="sec-body">
-    <div class="field-row">
+  <!-- 2 Contact -->
+  <div class="sh"><div class="n">2</div> ข้อมูลการติดต่อ / Contact Information</div>
+  <div class="sb">
+    <div class="fr">
       <div class="f"><span class="lbl">อีเมล <span class="en">(Email)</span></span><span class="line"></span></div>
       <div class="f"><span class="lbl">เบอร์โทรศัพท์ <span class="en">(Mobile)</span></span><span class="line"></span></div>
     </div>
   </div>
 
-  <!-- SECTION 3: Address -->
-  <div class="section-header"><div class="num">3</div> ที่อยู่ / Address</div>
-  <div class="sec-body">
-    <div class="lbl" style="margin-bottom:1px;font-size:7pt;">ที่อยู่ตามบัตรประชาชน <span class="en">(Permanent Address)</span></div>
-    <div class="addr-box"></div>
+  <!-- 3 Address -->
+  <div class="sh"><div class="n">3</div> ที่อยู่ / Address</div>
+  <div class="sb">
+    <div class="lbl" style="margin-bottom:1px;font-size:7.5pt;">ที่อยู่ตามบัตรประชาชน <span class="en">(Permanent Address)</span></div>
+    <div class="abox"></div>
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:1px;">
-      <span class="lbl" style="font-size:7pt;">ที่อยู่ปัจจุบัน <span class="en">(Current Address)</span> :</span>
+      <span class="lbl" style="font-size:7.5pt;">ที่อยู่ปัจจุบัน <span class="en">(Current Address)</span> :</span>
       <span class="opt"><span class="cb"></span> เหมือนที่อยู่ตามบัตร</span>
       <span class="opt"><span class="cb"></span> อื่นๆ :</span>
     </div>
-    <div class="addr-box"></div>
+    <div class="abox"></div>
   </div>
 
-  <!-- SECTION 4: Bank -->
-  <div class="section-header"><div class="num">4</div> ข้อมูลรับเงิน / Bank Information</div>
-  <div class="sec-body">
-    <div class="field-row">
+  <!-- 4 Bank -->
+  <div class="sh"><div class="n">4</div> ข้อมูลรับเงิน / Bank Information</div>
+  <div class="sb">
+    <div class="fr">
       <div class="f"><span class="lbl">ชื่อธนาคาร <span class="en">(Bank)</span></span><span class="line"></span></div>
       <div class="f"><span class="lbl">สาขา <span class="en">(Branch)</span></span><span class="line"></span></div>
     </div>
-    <div class="field-row">
+    <div class="fr">
       <div class="f"><span class="lbl">ชื่อบัญชี <span class="en">(Account Name)</span></span><span class="line"></span></div>
       <div class="f"><span class="lbl">เลขบัญชี <span class="en">(Account No.)</span></span><span class="line"></span></div>
     </div>
   </div>
 
-  <!-- SECTION 5: Referrer -->
-  <div class="section-header"><div class="num">5</div> ข้อมูลผู้แนะนำ / Referrer Information</div>
-  <div class="sec-body">
-    <div class="field-row">
+  <!-- 5 Referrer -->
+  <div class="sh"><div class="n">5</div> ข้อมูลผู้แนะนำ / Referrer Information</div>
+  <div class="sb">
+    <div class="fr">
       <div class="f" style="flex:2;"><span class="lbl">ชื่อ-นามสกุลผู้แนะนำ</span><span class="line"></span></div>
       <div class="f" style="flex:1;"><span class="lbl">Agent ID <span class="en">(ถ้ามี)</span></span><span class="line"></span></div>
       <div class="f" style="flex:1;"><span class="lbl">เบอร์โทร</span><span class="line"></span></div>
@@ -465,9 +448,9 @@
     <div class="note">* ผู้แนะนำมีหน้าที่ให้ข้อมูลและคำแนะนำเบื้องต้น ไม่ถือเป็นเจ้าของสายงานหรือสิทธิ์เหนือกว่าทางกฎหมาย บริษัทมีสิทธิ์บริหารจัดการโครงสร้างองค์กรเพื่อความเหมาะสม</div>
   </div>
 
-  <!-- SECTION 6: Documents -->
-  <div class="section-header"><div class="num">6</div> เอกสารประกอบการสมัคร / Required Documents</div>
-  <div class="sec-body">
+  <!-- 6 Documents -->
+  <div class="sh"><div class="n">6</div> เอกสารประกอบการสมัคร / Required Documents</div>
+  <div class="sb">
     <div class="opts" style="gap:14px;">
       <span class="opt"><span class="cb"></span> สำเนาบัตรประชาชน / Passport</span>
       <span class="opt"><span class="cb"></span> สำเนาหน้าบัญชีธนาคาร</span>
@@ -475,65 +458,63 @@
     </div>
   </div>
 
-  <!-- SECTION 7: Acknowledgment -->
-  <div class="section-header"><div class="num">7</div> คำรับรองและข้อตกลง / Acknowledgment & Agreement</div>
-  <div class="sec-body">
-    <div class="ack-box">
-      <div class="ack-item"><span class="ack-bullet">●</span> ข้าพเจ้าขอรับรองว่า ข้อมูลที่ให้ไว้เป็นความจริงทุกประการ / I hereby confirm that all information provided is correct.</div>
-      <div class="ack-item"><span class="ack-bullet">●</span> ข้าพเจ้าได้อ่านและเข้าใจเงื่อนไขของ Clover X แล้ว / I have read and understood all terms and conditions of Clover X.</div>
-      <div class="ack-item"><span class="ack-bullet">●</span> ข้าพเจ้าตกลงปฏิบัติตามคู่มือจรรยาบรรณ ข้อกำหนดบริษัท และกฎหมายที่เกี่ยวข้อง / I agree to comply with the Code of Conduct, Company Regulations, and applicable laws.</div>
-      <div class="ack-item"><span class="ack-bullet">●</span> รายได้เกิดจากการจำหน่ายสินค้าและบริการเท่านั้น / Income is derived solely from product and service sales.</div>
-      <div class="ack-item"><span class="ack-bullet">●</span> ข้าพเจ้ายินยอมให้บริษัทใช้ข้อมูลส่วนบุคคลเพื่อการดำเนินธุรกิจ / I consent to the Company's use of my personal data for business operations.</div>
+  <!-- 7 Acknowledgment -->
+  <div class="sh"><div class="n">7</div> คำรับรองและข้อตกลง / Acknowledgment & Agreement</div>
+  <div class="sb">
+    <div class="ack">
+      <div class="ack-i"><span class="ack-b">●</span> ข้าพเจ้าขอรับรองว่า ข้อมูลที่ให้ไว้เป็นความจริงทุกประการ / I hereby confirm that all information provided is correct.</div>
+      <div class="ack-i"><span class="ack-b">●</span> ข้าพเจ้าได้อ่านและเข้าใจเงื่อนไขของ Clover X แล้ว / I have read and understood all terms and conditions of Clover X.</div>
+      <div class="ack-i"><span class="ack-b">●</span> ข้าพเจ้าตกลงปฏิบัติตามคู่มือจรรยาบรรณ ข้อกำหนดบริษัท และกฎหมายที่เกี่ยวข้อง / I agree to comply with the Code of Conduct, Company Regulations, and applicable laws.</div>
+      <div class="ack-i"><span class="ack-b">●</span> รายได้เกิดจากการจำหน่ายสินค้าและบริการเท่านั้น / Income is derived solely from product and service sales.</div>
+      <div class="ack-i"><span class="ack-b">●</span> ข้าพเจ้ายินยอมให้บริษัทใช้ข้อมูลส่วนบุคคลเพื่อการดำเนินธุรกิจ / I consent to the Company's use of my personal data for business operations.</div>
     </div>
   </div>
 
   <!-- RED NOTICE -->
-  <div class="red-notice">*** ข้าพเจ้ารับทราบเงื่อนไขการสมัครเป็นตัวแทน CLOVER X ที่ระบุด้านล่างเรียบร้อยแล้ว ***</div>
+  <div class="red">*** ข้าพเจ้ารับทราบเงื่อนไขการสมัครเป็นตัวแทน CLOVER X ที่ระบุด้านล่างเรียบร้อยแล้ว ***</div>
 
   <!-- SIGNATURE -->
-  <div class="sig-section">
+  <div class="sig">
     <div class="sig-row">
-      <div class="sig-block">
-        <div class="sig-line"></div>
-        <div class="sig-label">ลายเซ็นผู้สมัคร <span class="en">/ Applicant's Signature</span></div>
+      <div class="sig-blk">
+        <div class="sig-ln"></div>
+        <div class="sig-lbl">ลายเซ็นผู้สมัคร / Applicant's Signature</div>
       </div>
-      <div class="sig-block">
-        <div class="sig-line"></div>
-        <div class="sig-label">วันที่ <span class="en">(Date)</span> _____ / _____ / _______</div>
+      <div class="sig-blk">
+        <div class="sig-ln"></div>
+        <div class="sig-lbl">วันที่ (Date) _____ / _____ / _______</div>
       </div>
     </div>
-    <div class="company-row">
+    <div class="co-row">
       <div class="f" style="flex:2;"><span class="lbl" style="font-size:6.5pt;color:#475569;">สำหรับบริษัท — อนุมัติโดย <span class="en">(Approved by)</span></span><span class="line"></span></div>
       <div class="f" style="flex:0.8;"><span class="lbl" style="font-size:6.5pt;color:#475569;">วันที่อนุมัติ</span><span class="line"></span></div>
     </div>
   </div>
 
   <!-- CONDITIONS -->
-  <div class="cond-header">เงื่อนไขในการเป็นตัวแทน CLOVER X / Agent Terms & Conditions</div>
-  <div class="cond-body">
-    <div class="cond-item"><span class="cond-num">1.</span><span>ตัวแทนต้องมีอายุไม่ต่ำกว่า 20 ปีบริบูรณ์ หรือ 18–20 ปี โดยได้รับความยินยอมจากผู้ปกครอง และต้องให้ข้อมูลที่ถูกต้องครบถ้วน</span></div>
-    <div class="cond-item"><span class="cond-num">2.</span><span>ตัวแทนต้องยอมรับและปฏิบัติตามกฎระเบียบ คู่มือจรรยาบรรณ และแผนธุรกิจของบริษัททุกประการ</span></div>
-    <div class="cond-item"><span class="cond-num">3.</span><span>ตัวแทนมีสถานะเป็นผู้ประกอบธุรกิจอิสระ ไม่ใช่พนักงานของบริษัท และไม่มีอำนาจผูกพันบริษัทในทางกฎหมาย</span></div>
-    <div class="cond-item"><span class="cond-num">4.</span><span>สถานะตัวแทนมีอายุ 1 ปี นับจากวันที่ได้รับอนุมัติ และต้องต่ออายุตามเงื่อนไขที่บริษัทกำหนด</span></div>
-    <div class="cond-item"><span class="cond-num">5.</span><span>รายได้ของตัวแทนต้องเกิดจากการจำหน่ายสินค้าและ/หรือบริการของบริษัทเท่านั้น ห้ามรับรายได้จากการชักชวนโดยไม่มีการขายสินค้า หรือดำเนินธุรกิจในลักษณะเข้าข่ายแชร์ลูกโซ่</span></div>
-    <div class="cond-item"><span class="cond-num">6.</span><span>บริษัทมีสิทธิ์ปรับปรุงแผนผลตอบแทน หรือเงื่อนไขทางธุรกิจ โดยจะแจ้งให้ตัวแทนทราบล่วงหน้า</span></div>
-    <div class="cond-item"><span class="cond-num">7.</span><span>ตัวแทนต้องให้ข้อมูลสินค้าอย่างถูกต้อง ไม่กล่าวอ้างเกินจริง (Over-claim) และไม่สร้างความเข้าใจผิดแก่ผู้บริโภค</span></div>
-    <div class="cond-item"><span class="cond-num">8.</span><span>ตัวแทนต้องไม่จำหน่ายสินค้าต่ำกว่าราคาที่บริษัทกำหนด และต้องใช้ช่องทางการขายที่ได้รับอนุญาตเท่านั้น</span></div>
-    <div class="cond-item"><span class="cond-num">9.</span><span>ตัวแทนต้องปฏิบัติต่อลูกค้าอย่างเป็นธรรม และมีความรับผิดชอบในการให้บริการหลังการขาย</span></div>
-    <div class="cond-item"><span class="cond-num">10.</span><span>ตัวแทนต้องแจ้งข้อมูลสินค้า ราคา และเงื่อนไขอย่างชัดเจน และอำนวยความสะดวกให้ลูกค้าสามารถใช้สิทธิ์คืนสินค้าได้ตามนโยบายบริษัท</span></div>
-    <div class="cond-item"><span class="cond-num">11.</span><span>ตัวแทนต้องไม่ใช้ชื่อ เครื่องหมายการค้า หรือสื่อของบริษัทโดยไม่ได้รับอนุญาต และต้องไม่สร้างเนื้อหาที่ทำให้เกิดความเข้าใจผิดเกี่ยวกับบริษัท</span></div>
-    <div class="cond-item"><span class="cond-num">12.</span><span>บริษัทมีระบบรับเรื่องร้องเรียน และมีสิทธิ์ตรวจสอบพฤติกรรมของตัวแทน โดยตัวแทนต้องให้ความร่วมมือในการตรวจสอบ</span></div>
-    <div class="cond-item"><span class="cond-num">13.</span><span>หากตัวแทนฝ่าฝืนเงื่อนไข บริษัทมีสิทธิ์ดำเนินการตามความเหมาะสม เช่น ตักเตือน ระงับสิทธิ์ ระงับรายได้ หรือยกเลิกสถานะตัวแทน</span></div>
-    <div class="cond-item"><span class="cond-num">14.</span><span>ตัวแทนสามารถลาออกได้โดยสมัครใจ และสามารถสมัครใหม่ได้หลังจากเว้นระยะเวลาไม่น้อยกว่า 60 วัน โดยอยู่ภายใต้การพิจารณาของบริษัท</span></div>
-    <div class="cond-item"><span class="cond-num">15.</span><span>บริษัทมีสิทธิ์ปรับปรุงกฎระเบียบ เงื่อนไข และแนวทางการดำเนินธุรกิจ เพื่อประโยชน์ต่อผู้บริโภคและความยั่งยืนของระบบ โดยตัวแทนตกลงยินยอมปฏิบัติตาม</span></div>
+  <div class="cond-h">เงื่อนไขในการเป็นตัวแทน CLOVER X / Agent Terms & Conditions</div>
+  <div class="cond-b">
+    <div class="ci"><span class="cn">1.</span><span>ตัวแทนต้องมีอายุไม่ต่ำกว่า 20 ปีบริบูรณ์ หรือ 18–20 ปี โดยได้รับความยินยอมจากผู้ปกครอง และต้องให้ข้อมูลที่ถูกต้องครบถ้วน</span></div>
+    <div class="ci"><span class="cn">2.</span><span>ตัวแทนต้องยอมรับและปฏิบัติตามกฎระเบียบ คู่มือจรรยาบรรณ และแผนธุรกิจของบริษัททุกประการ</span></div>
+    <div class="ci"><span class="cn">3.</span><span>ตัวแทนมีสถานะเป็นผู้ประกอบธุรกิจอิสระ ไม่ใช่พนักงานของบริษัท และไม่มีอำนาจผูกพันบริษัทในทางกฎหมาย</span></div>
+    <div class="ci"><span class="cn">4.</span><span>สถานะตัวแทนมีอายุ 1 ปี นับจากวันที่ได้รับอนุมัติ และต้องต่ออายุตามเงื่อนไขที่บริษัทกำหนด</span></div>
+    <div class="ci"><span class="cn">5.</span><span>รายได้ของตัวแทนต้องเกิดจากการจำหน่ายสินค้าและ/หรือบริการของบริษัทเท่านั้น ห้ามรับรายได้จากการชักชวนโดยไม่มีการขายสินค้า หรือดำเนินธุรกิจในลักษณะเข้าข่ายแชร์ลูกโซ่</span></div>
+    <div class="ci"><span class="cn">6.</span><span>บริษัทมีสิทธิ์ปรับปรุงแผนผลตอบแทน หรือเงื่อนไขทางธุรกิจ โดยจะแจ้งให้ตัวแทนทราบล่วงหน้า</span></div>
+    <div class="ci"><span class="cn">7.</span><span>ตัวแทนต้องให้ข้อมูลสินค้าอย่างถูกต้อง ไม่กล่าวอ้างเกินจริง (Over-claim) และไม่สร้างความเข้าใจผิดแก่ผู้บริโภค</span></div>
+    <div class="ci"><span class="cn">8.</span><span>ตัวแทนต้องไม่จำหน่ายสินค้าต่ำกว่าราคาที่บริษัทกำหนด และต้องใช้ช่องทางการขายที่ได้รับอนุญาตเท่านั้น</span></div>
+    <div class="ci"><span class="cn">9.</span><span>ตัวแทนต้องปฏิบัติต่อลูกค้าอย่างเป็นธรรม และมีความรับผิดชอบในการให้บริการหลังการขาย</span></div>
+    <div class="ci"><span class="cn">10.</span><span>ตัวแทนต้องแจ้งข้อมูลสินค้า ราคา และเงื่อนไขอย่างชัดเจน และอำนวยความสะดวกให้ลูกค้าสามารถใช้สิทธิ์คืนสินค้าได้ตามนโยบายบริษัท</span></div>
+    <div class="ci"><span class="cn">11.</span><span>ตัวแทนต้องไม่ใช้ชื่อ เครื่องหมายการค้า หรือสื่อของบริษัทโดยไม่ได้รับอนุญาต และต้องไม่สร้างเนื้อหาที่ทำให้เกิดความเข้าใจผิดเกี่ยวกับบริษัท</span></div>
+    <div class="ci"><span class="cn">12.</span><span>บริษัทมีระบบรับเรื่องร้องเรียน และมีสิทธิ์ตรวจสอบพฤติกรรมของตัวแทน โดยตัวแทนต้องให้ความร่วมมือในการตรวจสอบ</span></div>
+    <div class="ci"><span class="cn">13.</span><span>หากตัวแทนฝ่าฝืนเงื่อนไข บริษัทมีสิทธิ์ดำเนินการตามความเหมาะสม เช่น ตักเตือน ระงับสิทธิ์ ระงับรายได้ หรือยกเลิกสถานะตัวแทน</span></div>
+    <div class="ci"><span class="cn">14.</span><span>ตัวแทนสามารถลาออกได้โดยสมัครใจ และสามารถสมัครใหม่ได้หลังจากเว้นระยะเวลาไม่น้อยกว่า 60 วัน โดยอยู่ภายใต้การพิจารณาของบริษัท</span></div>
+    <div class="ci"><span class="cn">15.</span><span>บริษัทมีสิทธิ์ปรับปรุงกฎระเบียบ เงื่อนไข และแนวทางการดำเนินธุรกิจ เพื่อประโยชน์ต่อผู้บริโภคและความยั่งยืนของระบบ โดยตัวแทนตกลงยินยอมปฏิบัติตาม</span></div>
   </div>
 
   <!-- FOOTER -->
-  <div class="footer">
+  <div class="foot">
     CLOVER X — The Intelligent Health Ecosystem &nbsp;|&nbsp; เอกสารนี้เป็นทรัพย์สินของบริษัท ห้ามทำซ้ำหรือเผยแพร่โดยไม่ได้รับอนุญาต
   </div>
-
-</div>
 
 </body>
 </html>
