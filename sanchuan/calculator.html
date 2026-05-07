@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanchuan Profit Calculator | 三川利润计算器</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --gold: #D4AF37;
+            --text-main: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --accent: #e53935;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-top: 5px solid var(--gold);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--gold);
+            margin-top: 0;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 span {
+            display: block;
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        .slider-container {
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .slider-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        input[type=range] {
+            width: 100%;
+            -webkit-appearance: none;
+            background: transparent;
+            margin: 15px 0;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #333;
+            border-radius: 5px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 25px;
+            width: 25px;
+            border-radius: 50%;
+            background: var(--gold);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .revenue-display {
+            font-size: 42px;
+            font-weight: bold;
+            color: var(--gold);
+            margin-top: 15px;
+        }
+
+        .section-title {
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: var(--text-main);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #333;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        .highlight-card {
+            background: linear-gradient(145deg, #2a2a2a, #1f1a0d);
+            border: 1px solid var(--gold);
+        }
+
+        .formula-text {
+            font-size: 11px;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .revenue-display { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sanchuan Profit Calculator
+            <span>三川利润计算器 (V2 Agreement)</span>
+        </h1>
+
+        <div class="slider-container">
+            <div class="slider-label">Total Revenue (CNY) / 项目总收入 (人民币)</div>
+            <input type="range" id="revenueSlider" min="0" max="10000000" step="50000" value="3000000" oninput="calculateProfit()">
+            <div class="revenue-display" id="totalRevDisplay">¥ 3,000,000</div>
+        </div>
+
+        <div class="section-title">1. Corporate Distribution / 各方利润分配</div>
+        <div class="grid">
+            <div class="card highlight-card">
+                <div class="card-title">Party A: Sanchuan</div>
+                <span class="card-subtitle">甲方: 三川控股<br>(20% Mgt Fee + 40% Net Profit)</span>
+                <div class="card-value" id="partyA">¥ 0</div>
+                <div class="formula-text">52% of Total</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Party B: Nana Studio</div>
+                <span class="card-subtitle">乙方: 柠悦溪工作室<br>(25% Net Profit)</span>
+                <div class="card-value" id="partyB">¥ 0</div>
+                <div class="formula-text">20% of Total</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Party C: Broker</div>
+                <span class="card-subtitle">丙方: 居间方<br>(10% Net Profit)</span>
+                <div class="card-value" id="partyC">¥ 0</div>
+                <div class="formula-text">8% of Total</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Party D: Investor</div>
+                <span class="card-subtitle">丁方: 投资方<br>(25% Net Profit)</span>
+                <div class="card-value" id="partyD">¥ 0</div>
+                <div class="formula-text">20% of Total</div>
+            </div>
+        </div>
+
+        <div class="section-title">2. Family Wealth Distribution / 家族实际财富分配</div>
+        <div class="grid">
+            <div class="card highlight-card">
+                <div class="card-title">Nana (妹妹)</div>
+                <span class="card-subtitle">娜娜<br>(100% of Party B + 40% of Party A)</span>
+                <div class="card-value" id="nanaShare">¥ 0</div>
+                <div class="formula-text">40.8% of Total Revenue</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Teem (哥哥)</div>
+                <span class="card-subtitle">哥哥<br>(30% of Party A)</span>
+                <div class="card-value" id="bossShare">¥ 0</div>
+                <div class="formula-text">15.6% of Total Revenue</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Chieko (嫂子)</div>
+                <span class="card-subtitle">嫂子<br>(30% of Party A)</span>
+                <div class="card-value" id="wifeShare">¥ 0</div>
+                <div class="formula-text">15.6% of Total Revenue</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(value) {
+            return "¥ " + value.toLocaleString('en-US', { maximumFractionDigits: 0 });
+        }
+
+        function calculateProfit() {
+            // 1. Get Revenue
+            let R = parseFloat(document.getElementById("revenueSlider").value);
+            document.getElementById("totalRevDisplay").innerText = formatCurrency(R);
+
+            // 2. Contract Logic (V2)
+            // Management Fee (20% of R) goes to Party A
+            let mgtFee = R * 0.20;
+            // Net Profit (80% of R)
+            let netProfit = R * 0.80;
+
+            // Party Allocations
+            let partyA = mgtFee + (netProfit * 0.40); // 0.20R + 0.32R = 0.52R
+            let partyB = netProfit * 0.25;            // 0.20R
+            let partyC = netProfit * 0.10;            // 0.08R
+            let partyD = netProfit * 0.25;            // 0.20R
+
+            // Update DOM - Parties
+            document.getElementById("partyA").innerText = formatCurrency(partyA);
+            document.getElementById("partyB").innerText = formatCurrency(partyB);
+            document.getElementById("partyC").innerText = formatCurrency(partyC);
+            document.getElementById("partyD").innerText = formatCurrency(partyD);
+
+            // 3. Family Distribution Logic
+            // Nana gets 100% of Party B + 40% dividend from Party A
+            let nanaTotal = partyB + (partyA * 0.40);
+            // Boss gets 30% dividend from Party A
+            let bossTotal = partyA * 0.30;
+            // Wife gets 30% dividend from Party A
+            let wifeTotal = partyA * 0.30;
+
+            // Update DOM - Individuals
+            document.getElementById("nanaShare").innerText = formatCurrency(nanaTotal);
+            document.getElementById("bossShare").innerText = formatCurrency(bossTotal);
+            document.getElementById("wifeShare").innerText = formatCurrency(wifeTotal);
+        }
+
+        // Initialize on load
+        calculateProfit();
+    </script>
+
+</body>
+</html>
