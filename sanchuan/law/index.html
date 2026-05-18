@@ -2,34 +2,32 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, mobile-first=true">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sanchuan International Legal Advisory BU</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* MOBILE-FIRST GLOBAL RESET & PREMIUM THEME */
         * {
-            box-spacing: border-box;
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
             scroll-behavior: smooth;
         }
-        body {
+        body, html {
             background-color: #0d0f12;
             color: #e2e8f0;
             font-family: 'Urbanist', 'Noto Sans Thai', 'Noto Sans SC', sans-serif;
+            width: 100%;
             overflow-x: hidden;
             line-height: 1.6;
             font-size: 16px;
         }
         
-        /* LANGUAGE VISIBILITY CONTROLS */
         body.lang-th .cn-text { display: none !important; }
         body.lang-cn .th-text { display: none !important; }
 
-        /* FLOATING LANGUAGE SELECTOR (TH/CN) */
         .sticky-lang-bar {
             position: fixed;
             top: 20px;
@@ -65,7 +63,6 @@
             color: #0d0f12;
         }
 
-        /* LAYOUT & SCROLLING SECTIONS */
         .page-viewport {
             width: 100%;
             display: flex;
@@ -77,19 +74,14 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 60px 25px;
+            padding: 60px 20px;
             border-bottom: 1px solid #1c232e;
         }
 
-        /* INTRO & HERO LAYOUT (BLOCK 0) */
         .hero-section {
             background: radial-gradient(circle at center, #1a222d 0%, #0d0f12 70%);
             text-align: center;
             border-bottom: 2px solid #c5a059;
-        }
-        .hero-viewport img {
-            max-width: 150px;
-            margin-bottom: 20px;
         }
         .brand-subtext {
             font-size: 12px;
@@ -100,7 +92,7 @@
             margin-bottom: 10px;
         }
         .main-headline {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: 700;
             color: #ffffff;
             line-height: 1.3;
@@ -110,16 +102,15 @@
             color: #c5a059;
         }
         .lead-paragraph {
-            max-width: 90%;
+            max-width: 100%;
             margin: 0 auto;
             font-size: 16px;
             color: #a0aab5;
             font-weight: 300;
         }
 
-        /* SECTION HEADINGS */
         .section-node-heading {
-            font-size: 26px;
+            font-size: 24px;
             color: #ffffff;
             font-weight: 700;
             margin-bottom: 25px;
@@ -131,7 +122,6 @@
             color: #c5a059;
         }
 
-        /* IMAGE BLOCK STYLES */
         .blueprint-image-holder {
             width: 100%;
             margin-bottom: 25px;
@@ -147,13 +137,13 @@
             object-fit: cover;
         }
 
-        /* INTERACTIVE PROMPT CARD (WITH LANG DUAL-TOGGLE) */
         .interactive-prompt-card {
             background: #13171e;
             border: 1px solid #c5a059;
             border-radius: 8px;
             padding: 20px;
             margin-top: 20px;
+            width: 100%;
         }
         .prompt-header {
             display: flex;
@@ -196,9 +186,12 @@
             font-size: 13px;
             color: #cbd5e1;
             margin-bottom: 15px;
-            line-height: 1.4;
+            line-height: 1.5;
             display: none;
             white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            width: 100%;
         }
         .prompt-string-area.active {
             display: block;
@@ -218,7 +211,6 @@
             letter-spacing: 1px;
         }
 
-        /* TILED CONTENT PACK */
         .matrix-node-tile {
             background: #13171e;
             border: 1px solid #1c232e;
@@ -239,13 +231,13 @@
             font-weight: 600;
         }
 
-        /* FEATURE CALLOUT PACK */
         .feature-callout-banner {
             background: linear-gradient(90deg, #13171e 0%, #1a222d 100%);
             border-left: 3px solid #c5a059;
             padding: 25px;
             border-radius: 0 8px 8px 0;
             margin-top: 25px;
+            width: 100%;
         }
         .callout-inner-title {
             font-size: 16px;
@@ -255,29 +247,27 @@
             text-transform: uppercase;
         }
 
-        /* PRICING SHOWCASE PACK */
         .pricing-showcase-hub {
             text-align: center;
             background: radial-gradient(circle at center, #13171e 0%, #0d0f12 100%);
             border: 1px solid #1c232e;
             border-radius: 12px;
-            padding: 50px 25px;
+            padding: 40px 20px;
         }
         .giant-currency-indicator {
-            font-size: 60px;
+            font-size: 50px;
             font-weight: 700;
             color: #ffffff;
-            margin: 20px 0;
+            margin: 15px 0;
             letter-spacing: -2px;
         }
         .giant-currency-indicator span {
             color: #c5a059;
         }
 
-        /* CLOSURE BAR PACK */
         .corporate-closure-bar {
             text-align: center;
-            padding: 50px 25px;
+            padding: 40px 20px;
             font-size: 11px;
             color: #52637a;
             letter-spacing: 2px;
@@ -294,7 +284,7 @@
 
     <div class="page-viewport">
 
-        <header class="hero-viewport hero-section">
+        <header class="scroll-section hero-section">
             <div class="brand-subtext">Sanchuan Holdings</div>
             <h1 class="main-headline th-text">โครงการลับ <span>Project Sandbox</span><br>นวัตกรรมตรวจดวงนิติกรรม</h1>
             <h1 class="main-headline cn-text">机密项目 <span>Project Sandbox</span><br>法律行为运势审计创新</h1>
@@ -308,92 +298,118 @@
             <div class="blueprint-image-holder">
                 <img src="IMG_8038.jpeg" alt="Sanchuan Contract Spread">
             </div>
-            <p class="th-text">ภาพนี้คือกราฟพลังงานที่ผมตั้งไว้ตั้งแต่วันที่ 10 พฤษภาคม ก่อนที่เราจะบินมาเจอกัน มันไม่ใช่เรื่องบังเอิญ แต่มันคือระบบจำลองความเสี่ยงเชิงโครงสร้าง (Strategic Risk Test) ที่ล็อกสเปกปลายทางของเราไว้ที่ "ราชาถือเหรียญ" ความมั่งคั่งอันมั่นคงของซานชวน</p>
-            <p class="cn-text">这张图片是我在5月10日我们见面之前便设定的能量架构图。这绝非巧合，而是一套结构化风险模拟系统。它早已将我们的终点锁定在“星币国王”——代表着三川控股稳固且庞大的财富版图。</p>
+            <p class="th-text">ภาพนี้คือกราฟพลังงานที่ผมตั้งไว้ตั้งแต่วันที่ 10 พฤษภาคม ก่อนที่เราจะบินมาเจอกัน มันไม่ใช่เรื่องบังเอิญ แต่มันคือระบบจำลองความเสี่ยงเชิงโครงสร้าง (Strategic Risk Test) ของซานชวน</p>
+            <p class="cn-text">这张图片是我在5月10日我们见面之前便设定的能量架构图。这绝非巧合，而是一套结构化风险模拟系统 (Strategic Risk Test)。</p>
             
             <div class="interactive-prompt-card">
                 <div class="prompt-header">
                     <div class="prompt-title">Global Input Prompt</div>
                     <div class="prompt-lang-toggle">
-                        <button class="prompt-lang-btn active" onclick="switchPromptLang('en')">EN</button>
+                        <button class="prompt-lang-btn active" onclick="switchPromptLang('th')">TH</button>
                         <button class="prompt-lang-btn" onclick="switchPromptLang('cn')">CN</button>
                     </div>
                 </div>
-                <div class="prompt-string-area active" id="promptTextEn">Analyze this tarot image: Party A (Thai Lawyer) is the strategist, Party B (Chinese Actress) is the power. Their bond is Eight of Swords (restriction/legal audit), and the goal is King of Pentacles. What is the business outcome?</div>
-                <div class="prompt-string-area" id="promptTextCn">请分析这张塔罗牌阵：甲方（泰国律师）是战略家，乙方（中国演员）是核心力量。他们的纽带是星币八（限制/法律行为审计），目标是星币国王。这对商业合作将产生何种最终结果？</div>
+                <div class="prompt-string-area active" id="promptTextTh">โปรดวิเคราะห์รูปภาพการเปิดไพ่ทาโรต์ 4 ใบที่แนบมานี้ นี่คือการอ่านไพ่เชิงกลยุทธ์เกี่ยวกับความสัมพันธ์ในการทำงานและพาร์ทเนอร์ทางธุรกิจระหว่างบุคคลสองฝ่าย:
+- ฝ่าย A (Party A): นักกฎหมายและนักธุรกิจชาวไทยระดับสูง
+- ฝ่าย B (Party B): นักแสดงและนักธุรกิจหญิงชาวจีนที่มีชื่อเสียง
+
+โปรดตีความไพ่ทาโรต์ตามสัญลักษณ์ที่ปรากฏและความหมายมาตรฐาน แต่ให้ปรับการตีความให้เข้ากับบริบทของบุคคลทั้งสองและตำแหน่งเฉพาะที่กำหนดไว้ด้านล่างนี้อย่างเคร่งครัด:
+
+1. ไพ่ซ้ายสุด (พลังงาน A ➡️ B): แทนพลังงาน เจตนา ความซัพพอร์ต หรือทรัพยากรที่ฝ่าย A (นักกฎหมายชาวไทย) ส่งมอบไปยังฝ่าย B
+2. ไพ่ตรงกลาง (พลังงาน B ➡️ A): แทนพลังงาน เจตนา ความซัพพอร์ต หรือทรัพยากรที่ฝ่าย B (นักแสดงชาวจีน) ส่งมอบกลับมายังฝ่าย A
+3. ไพ่ขวามือสุด (สายใยสัมพันธ์): แทนเนื้อแท้ของสายใย ความสัมพันธ์ หรือไดนามิกพื้นฐานระหว่างฝ่าย B กับฝ่าย A
+4. ไพ่ด้านบนสุด (ความสำเร็จขั้นสูงสุด A+B): แทนปลายทาง ผลลัพธ์ และความสำเร็จขั้นสูงสุดที่จะถูกปลดล็อกเมื่อฝ่าย A และฝ่าย B รวมพลังและทำงานร่วมกันอย่างเต็มที่
+
+โปรดให้การวิเคราะห์เชิงกลยุทธ์ที่กระชับ เป็นกลาง และตรงไปตรงมาว่าการเปิดไพ่นี้ทำนายอนาคตของพาร์ทเนอร์ทางธุรกิจของพวกเขาไว้อย่างไร</div>
+                
+                <div class="prompt-string-area" id="promptTextCn">请分析附带的四张塔罗牌牌阵图像。这是一次针对以下两位大咖之间职场关系与商业合作的战略级占卜：
+- 甲方（Party A）：泰国高级律师兼企业家
+- 乙方（Party B）：中国知名女演员兼女企业家
+
+请结合塔罗牌的视觉符号与标准牌意进行解析，但必须严格将解读契合到这两人的背景以及以下定义的特定牌位中：
+
+1. 最左侧牌位（甲方 ➡️ 乙方的能量）：代表甲方（泰国律师）向乙方输送或投射的能量、意图、支持或资源。
+2. 中间牌位（乙方 ➡️ 甲方的能量）：代表乙方（中国女演员）向甲方输送或投射的能量、意图、支持或资源。
+3. 最右侧牌位（关系羁绊）：代表乙方与甲方之间核心的底层纽带、连接状态或互动动态。
+4. 最顶部牌位（A+B 最终成功）：代表当甲方与乙方完全融合彼此力量、并肩作战时，所能解锁的终极终点、成果与辉煌。
+
+请提供一份精炼、客观且具战略眼光的分析，预测这段商业合作关系的未来走向。</div>
                 <button class="action-copy-trigger" onclick="copySystemPrompt()"><i class="fa-regular fa-copy"></i> Copy Input Prompt</button>
             </div>
-            <p style="font-size: 13px; color: #c5a059; margin-top: 15px;" class="th-text">* นานาลองก๊อปปี้พร้อมต์ข้างบนนี้ แล้วโยนใส่ AI (ChatGPT/Claude) พร้อมรูปภาพนี้ดูนะครับ เพื่อให้นางเห็นระบบอ่านของคนนอกด้วยตัวเอง</p>
-            <p style="font-size: 13px; color: #c5a059; margin-top: 15px;" class="cn-text">* 请Nana尝试复制上方提示词，连同本文件目录下的这张图片一起发送给您常用的AI（ChatGPT/Claude），让您亲自见证第三方系统对于该能量架构的震撼解读。</p>
+            <p style="font-size: 13px; color: #c5a059; margin-top: 15px;" class="th-text">* นานาลองก๊อปปี้พร้อมต์ข้างบนนี้ แล้วโยนใส่ AI พร้อมรูปภาพนี้ดูนะครับ เพื่อให้นางเห็นระบบอ่านของคนนอกด้วยตัวเอง</p>
+            <p style="font-size: 13px; color: #c5a059; margin-top: 15px;" class="cn-text">* 请Nana尝试复制上方提示词，连同本文件目录下的这张图片一起发送给您常用的AI，让您亲自见证第三方系统对于该能量架构的震撼解读。</p>
         </section>
 
         <section class="scroll-section">
-            <h2 class="section-node-heading th-text"><span>02 /</span> กำเนิดซานชวน OS 2.0: จากวิกฤตสู่โอกาส</h2>
-            <h2 class="section-node-heading cn-text"><span>02 /</span> 三川 OS 2.0 的诞生：从危机到契机</h2>
-            <p class="th-text">หลังจากเซ็นสัญญาเสร็จสิ้นและผมได้นอนพักผ่อนจนสมองตื่นตัวเต็มที่ ความคิดเชิงลอจิกมันแล่นขึ้นมาทันที บอร์ดบริหารซานชวนของเราคือโฮลดิ้งที่เก็บสะสม "นิติกรรมสัญญา" เพื่อสร้างมูลค่าต่อในอนาคต ดังนั้น การมีสำนักงานที่ปรึกษากฎหมายพรีเมียมข้ามชาติ (Boutique Law Firm) เป็นของตัวเอง จะช่วยยกโปรไฟล์บริษัทเราให้อยู่ในระดับ Institutional Grade ทันที โดยที่เราไม่ต้องเพิ่มค่าใช้จ่ายและไม่มีภาระผูกพันอะไรเพิ่มเลย เพราะเรามีโครงสร้างพื้นฐานกันอยู่แล้ว</p>
-            <p class="cn-text">在合同签署完毕、我的大脑得到充分休息并彻底恢复清醒后，一套严密的商业逻辑应运而生。我们的三川控股本质上是一个致力于收集、整合并持续放大“法律合同价值”的控股母公司。因此，设立一个专属于我们自己的跨国高端精品法律咨询团队（Boutique Law Firm），将瞬间把我们公司的品牌形象拉升至“机构级（Institutional Grade）”。由于我们现有的底层架构早已搭建完毕，此举完全不会增加任何额外的运营成本或行政负担。</p>
+            <h2 class="section-node-heading th-text"><span>02 /</span> กำเนิดซานชวน OS 2.0</h2>
+            <h2 class="section-node-heading cn-text"><span>02 /</span> 三川 OS 2.0 的诞生</h2>
+            <p class="th-text">บอร์ดบริหารซานชวนของเราคือโฮลดิ้งที่เก็บสะสม "นิติกรรมสัญญา" เพื่อสร้างมูลค่าต่อในอนาคต ดังนั้น การมีสำนักงานที่ปรึกษากฎหมายพรีเมียมข้ามชาติ (Boutique Law Firm) เป็นของตัวเอง จะช่วยยกโปรไฟล์บริษัทเราให้อยู่ในระดับ Institutional Grade ทันที</p>
+            <p class="cn-text">我们的三川控股本质上是一个致力于收集、整合并持续放大“法律合同价值”的控股母公司。因此，设立一个专属于我们自己的跨国高端精品法律咨询团队（Boutique Law Firm），将瞬间把我们公司的品牌形象拉升至“机构级（Institutional Grade）”。</p>
 
             <div class="matrix-node-tile" style="margin-top: 25px;">
                 <div class="node-icon-frame"><i class="fa-solid fa-file-contract"></i></div>
-                <div class="node-tile-title th-text">Fairness & Execution Audit</div>
-                <div class="node-tile-title cn-text">公平与执行力审计</div>
-                <p class="th-text" style="font-size: 14px; color: #a0aab5;">เน้นการตรวจสอบและร่างสัญญาข้ามชาติที่มอบความยุติธรรมสูงสุดและบังคับใช้ได้จริงในระดับสากล ไม่ใช่แค่การแปลเอกสารโง่ๆ</p>
-                <p class="cn-text" style="font-size: 14px; color: #a0aab5;">专注于跨国合同的深度审计与起草。确保在全球范围内具备最高法律效力与实际执行力，绝非流于表面、毫无技术含量的文字翻译。</p>
+                <div class="node-tile-title th-text">Fairness & Execution</div>
+                <div class="node-tile-title cn-text">公平与执行力</div>
+                <p class="th-text" style="font-size: 14px; color: #a0aab5;">เน้นการตรวจสอบและร่างสัญญาข้ามชาติที่มอบความยุติธรรมสูงสุดและบังคับใช้ได้จริงในระดับสากล</p>
+                <p class="cn-text" style="font-size: 14px; color: #a0aab5;">专注于跨国合同的深度审计与起草。确保在全球范围内具备最高法律效力与实际执行力。</p>
             </div>
             <div class="matrix-node-tile">
                 <div class="node-icon-frame"><i class="fa-solid fa-microchip"></i></div>
                 <div class="node-tile-title th-text">AI-Powered Drafting</div>
                 <div class="node-tile-title cn-text">智能科技起草</div>
-                <p class="th-text" style="font-size: 14px; color: #a0aab5;">ใช้ระบบปัญญาประดิษฐ์สแกนลากโครงสร้างสัญญาตามวัตถุประสงค์ได้อย่างรวดเร็วและแม่นยำ ก่อนส่งให้คนคุมระบบตรวจสอบขั้นสุดท้าย</p>
-                <p class="cn-text" style="font-size: 14px; color: #a0aab5;">利用尖端人工智能系统，根据客户的底层核心诉求，在极短时间内精准搭建并生成合同骨架，随后交由核心管理层进行最终合规审计。</p>
+                <p class="th-text" style="font-size: 14px; color: #a0aab5;">ใช้ระบบปัญญาประดิษฐ์สแกนลากโครงสร้างสัญญาตามวัตถุประสงค์ได้อย่างรวดเร็วและแม่นยำ</p>
+                <p class="cn-text" style="font-size: 14px; color: #a0aab5;">利用尖端人工智能系统，根据客户的底层核心诉求，在极短时间内精准搭建并生成合同骨架。</p>
             </div>
         </section>
 
         <section class="scroll-section">
             <h2 class="section-node-heading th-text"><span>03 /</span> พลังแห่งการระดมทุนข้ามชาติ: ยิงแอดนกสองตัว</h2>
             <h2 class="section-node-heading cn-text"><span>03 /</span> 跨国资本赋能：一石二鸟的战略布局</h2>
-            <p class="th-text">Project Sandbox ไม่ใช่แค่บริการทางกฎหมาย แต่เป็น <strong>ช่องทางระดมทุนอัจฉริยะ (Fundraising Ecosystem)</strong> ของซานชวน เราไม่ได้แค่ให้คำปรึกษาทางกฎหมาย แต่เราใช้ Ecosystem ของเราเองในการ 'สปอต' (spot) และดึงดูดทุนและสปอนเซอร์เข้าสู่บริษัท Sanchuan holdings ผ่านทางกลุ่มลูกค้าที่เราดีลสัญญาด้วย โดยเรารู้ว่าใครมีเงินกี่ล้านจากสัญญาที่เราตรวจ และสามารถยิงแอด ครั้งเดียวได้นกสองตัว: ได้ลูกค้ากฎหมาย และได้นักลงทุน/สปอนเซอร์สำหรับหนังหรือโปรเจกต์ต่อไป</p>
-            <p class="cn-text">Project Sandbox 不仅仅是法律服务，更是三川控股的 <strong>智能资本赋能生态（Fundraising Ecosystem）</strong>。我们不仅提供法律咨询，更是利用我们独有的生态系统，从我们签署的法律合同客户群中“精准定位”并吸引资本与赞助商。我们通过审计合同条款，能够洞察客户的资金实力。通过一次精准投放广告，即可实现“一石二鸟”：既获得了法律客户，又为我们的电影或下一个项目锁定了潜在的投资人/赞助商。</p>
+            <p class="th-text">Project Sandbox ไม่ใช่แค่บริการทางกฎหมาย แต่เป็น <strong>ช่องทางระดมทุนอัจฉริยะ (Fundraising Ecosystem)</strong> ของซานชวน เราใช้ Ecosystem ของเราเองในการ 'สปอต' (spot) ทุนเข้าสู่ Sanchuan Holdings ผ่านกลุ่มลูกค้าที่เราดีลสัญญาด้วย โดยเรารู้ว่าใครมีเงินจากสัญญาที่เราตรวจ และสามารถยิงแอดครั้งเดียวได้นกสองตัว: ได้ลูกค้ากฎหมาย และได้นักลงทุน/สปอนเซอร์สำหรับหนังหรือโปรเจกต์ต่อไป</p>
+            <p class="cn-text">Project Sandbox 不仅仅是法律服务，更是三川控股的 <strong>智能资本赋能生态（Fundraising Ecosystem）</strong>。我们利用独有的生态系统，从签署的法律合同客户群中“精准定位”并吸引资本与赞助商。我们通过审计合同条款洞察客户的资金实力。一次精准对接即可实现“一石二鸟”：既获得了法律客户，又为我们的电影或下一个项目锁定了潜在的投资人/赞助商。</p>
 
             <div class="feature-callout-banner">
-                <div class="callout-inner-title th-text">Ecosystem การระดมทุน</div>
-                <div class="callout-inner-title cn-text">资本生态系统</div>
-                <p class="th-text" style="margin-bottom: 0;">เราจะนำเสนอพาวเวอร์ 4 ภาษา: ไทย • จีน • อังกฤษ • ญี่ปุ่น (โดยมีผม นานา และพี่สะใภ้เอโกะคอยเสริมทัพ) พร้อมนำเสนอนวัตกรรมปั๊มตราประทับข้างแบบ "ฉีเฝิงจาง" เพื่อปฏิวัติวงการสัญญาในไทยและผูกโยงเข้ากับระบบพลังงานในแบรนด์ของเราเพียงผู้เดียว!</p>
-                <p class="cn-text" style="margin-bottom: 0;">我们将依托泰国语 • 中国语 • 英国语 • 日本语（由我、Nana、以及嫂子Eko加入强化）的四语协同力量，同时引入中国的“骑缝章”防伪机制，颠覆并重新定义泰国市场对于合同安全的标准，并将其与我们的能量审计体系进行独家锚定！</p>
+                <div class="callout-inner-title th-text">นวัตกรรม "ฉีเฝิงจาง"</div>
+                <div class="callout-inner-title cn-text">“骑缝章”防伪机制</div>
+                <p class="th-text" style="margin-bottom: 0;">เราจะนำเสนอนวัตกรรมปั๊มตราประทับข้างแบบ "ฉีเฝิงจาง" เพื่อปฏิวัติวงการสัญญาในไทย และผูกโยงดวงสัญญาทุกหน้าเข้าด้วยกันเพื่อความสมบูรณ์สูงสุด!</p>
+                <p class="cn-text" style="margin-bottom: 0;">我们将引入中国的“骑缝章”机制，颠覆泰国市场对于合同安全的标准，从物理层面确保合同不可篡改，并将其与我们的能量审计体系进行独家锚定！</p>
             </div>
         </section>
 
         <section class="scroll-section">
             <h2 class="section-node-heading th-text"><span>04 /</span> โมเดลการคิดเงินและกองทุนทำบุญสร้างบารมี</h2>
             <h2 class="section-node-heading cn-text"><span>04 /</span> 阶梯式定价与三川功德基金</h2>
-            <p class="th-text">บริการเสริมพิเศษ <strong>The Sanchuan Protocol™</strong> (ออดิทดวงนิติกรรมด้วยไพ่ยิปซีและ AI) ผู้ว่าจ้างต้องเซ็นสัญญา NDA รักษาความลับขั้นเด็ดขาด ห้ามเอาโครงสร้างและคำถามลิขสิทธิ์ออกไปเผยแพร่ ลูกค้าสามารถเอาดราฟต์สัญญามาสแกนดวงได้ตั้งแต่ดราฟต์แรกที่ยังไม่แก้ ไปจนถึงร่างสุดท้ายที่ปั๊มตราประทับข้าง เพื่อทบทวนข้อความเสี่ยงร่วมกับ AI</p>
-            <p class="cn-text">特别附加服务 <strong>The Sanchuan Protocol™</strong>（塔罗与AI联动的法律行为审计）。客户必须提前签署极其严苛的商业秘密保护协议（NDA），严禁泄露专属三川的底层问诊逻辑。客户可以在合同最初稿、修订稿乃至最终敲定并加盖骑缝章的各个核心节点进行多轮复检，利用AI的客观算力反复倒推风险点。</p>
+            <p class="th-text">บริการเสริมพิเศษ <strong>The Sanchuan Protocol™</strong> ผู้ว่าจ้างต้องเซ็นสัญญา NDA รักษาความลับ ลูกค้าสามารถเอาดราฟต์สัญญามาสแกนดวงได้ตั้งแต่ดราฟต์แรก ไปจนถึงร่างสุดท้ายที่ปั๊มตราประทับข้าง เพื่อทบทวนข้อความเสี่ยง</p>
+            <p class="cn-text">特别附加服务 <strong>The Sanchuan Protocol™</strong>。客户必须提前签署商业秘密保护协议（NDA）。客户可以在合同最初稿乃至最终敲定并加盖骑缝章的各个核心节点进行多轮复检，反复倒推风险点。</p>
 
             <div class="pricing-showcase-hub">
-                <h3 class="th-text" style="color: #c5a059;">โครงสร้างอัตราค่าครูสิริมงคล</h3>
-                <h3 class="cn-text" style="color: #c5a059;">吉利商业开光润笔费架构</h3>
+                <h3 class="th-text" style="color: #c5a059;">อัตราค่าครูสิริมงคล</h3>
+                <h3 class="cn-text" style="color: #c5a059;">吉利商业开光润笔费</h3>
                 
                 <div class="giant-currency-indicator">THB <span>888 / 1,688</span></div>
                 
-                <p class="th-text" style="max-width: 700px; margin: 0 auto 20px auto; color: #a0aab5;">อัตรา <strong>888 บาท</strong> สำหรับการส่งมอบรูปภาพเล่มสัญญากับหน้าไพ่พร้อมรายงาน PDF และอัตรา <strong>1,688 บาท</strong> สำหรับ Live Video Call วิเคราะห์สดข้ามประเทศ</p>
-                <p class="cn-text" style="max-width: 700px; margin: 0 auto 20px auto; color: #a0aab5;">离线版（吉时照片、高阶审计PDF报告）定价 <strong>888 泰铢</strong>；海外实时视频（动态隐患拆解、互动、PDF报告）定价 <strong>1,688 泰铢</strong>。</p>
+                <p class="th-text" style="color: #a0aab5;"><strong>888 บาท</strong> สำหรับภาพเล่มสัญญา+รายงาน PDF และ <strong>1,688 บาท</strong> สำหรับ Live Video Call วิเคราะห์สด</p>
+                <p class="cn-text" style="color: #a0aab5;">离线版（吉时照片、PDF报告）定价 <strong>888 泰铢</strong>；实时视频（动态拆解、PDF报告）定价 <strong>1,688 泰铢</strong>。</p>
                 
-                <div style="margin-top: 35px; padding: 20px; background: rgba(197,160,89,0.05); border: 1px dashed #c5a059; border-radius: 8px;" class="th-text">
-                    <strong>กองทุนทำบุญซานชวน (Sanchuan Merit Fund):</strong> เงินพอร์ตนี้ไม่เกี่ยวกำไรขาดทุนบริษัท แต่ถือเป็น "ค่าครู" ที่พวกเราจะรวมศูนย์เข้าสู่กองทุนทำบุญส่วนตัว เพื่อนำไปสร้างบุญบารมีร่วมกันทั้งในไทยและจีน
+                <div style="margin-top: 25px; padding: 15px; background: rgba(197,160,89,0.05); border: 1px dashed #c5a059; border-radius: 8px;" class="th-text">
+                    <strong>Sanchuan Merit Fund:</strong> เงินส่วนนี้ถือเป็น "ค่าครู" เข้าสู่กองทุนทำบุญส่วนตัว เพื่อนำไปสร้างบุญบารมีร่วมกัน
                 </div>
-                <div style="margin-top: 35px; padding: 20px; background: rgba(197,160,89,0.05); border: 1px dashed #c5a059; border-radius: 8px;" class="cn-text">
-                    <strong>三川功德专项基金（Sanchuan Merit Fund）：</strong> 该衍生服务的所有收益均不计入控股公司的损益表，而是作为纯粹的“法界法金/ค่าครู”。我们将把这笔资金全数注入个人的功德基金，用于在中泰两国开展更大规模的功德布施。
+                <div style="margin-top: 25px; padding: 15px; background: rgba(197,160,89,0.05); border: 1px dashed #c5a059; border-radius: 8px;" class="cn-text">
+                    <strong>三川功德基金：</strong> 收益作为“法界法金”，全数注入个人功德基金，用于在中泰两国开展慈善布施。
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div style="text-align: center; margin-top: 50px;" class="th-text">
-            <h3>นานาเห็นด้วยกับโครงการ Sandbox ตัวนี้ของซานชวนไหมครับ? พรุ่งนี้เราไปลองของจริงที่เทียนถานกันนะ!</h3>
-        </div>
-        <div style="text-align: center; margin-top: 50px;" class="cn-text">
-            <h3>Nana对我们三川控股的这项全新闭环沙盒项目意下如何？明天我们一起去天坛启动预言吧！</h3>
-        </div>
-    </section>
+        <section class="scroll-section" style="min-height: 50vh;">
+            <div style="text-align: center;" class="th-text">
+                <h3>นานาเห็นด้วยกับโครงการ Sandbox ตัวนี้ไหมครับ?<br>พรุ่งนี้เราไปลองของจริงที่เทียนถานกันนะ!</h3>
+            </div>
+            <div style="text-align: center;" class="cn-text">
+                <h3>Nana对这项全新闭环沙盒项目意下如何？<br>明天我们一起去天坛启动预言吧！</h3>
+            </div>
+        </section>
+
+    </div>
 
     <footer class="corporate-closure-bar">
         Sanchuan Holdings Co., Ltd. • All Rights Reserved 2026
@@ -405,7 +421,7 @@
             if (document.getElementById('promptTextCn').style.display === 'block') {
                 promptText = document.getElementById('promptTextCn').innerText;
             } else {
-                promptText = document.getElementById('promptTextEn').innerText;
+                promptText = document.getElementById('promptTextTh').innerText;
             }
             navigator.clipboard.writeText(promptText).then(() => {
                 alert('Sanchuan Contract Prompt Copied! / 提示词已成功复制到剪贴板！');
@@ -416,17 +432,17 @@
         
         function switchPromptLang(lang) {
             const btns = document.querySelectorAll('.prompt-lang-btn');
-            const enBlock = document.getElementById('promptTextEn');
+            const thBlock = document.getElementById('promptTextTh');
             const cnBlock = document.getElementById('promptTextCn');
             
             btns.forEach(btn => btn.classList.remove('active'));
-            if (lang === 'en') {
-                document.querySelector('.prompt-lang-btn[onclick="switchPromptLang(\'en\')"]').classList.add('active');
-                enBlock.style.display = 'block';
+            if (lang === 'th') {
+                document.querySelector('.prompt-lang-btn[onclick="switchPromptLang(\'th\')"]').classList.add('active');
+                thBlock.style.display = 'block';
                 cnBlock.style.display = 'none';
             } else {
                 document.querySelector('.prompt-lang-btn[onclick="switchPromptLang(\'cn\')"]').classList.add('active');
-                enBlock.style.display = 'none';
+                thBlock.style.display = 'none';
                 cnBlock.style.display = 'block';
             }
         }
