@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三川 SANCHUAN — Mission Control</title>
+  <link rel="stylesheet" href="style.css?v=3.1">
+<style>
+/* Critical inline CSS — iPad Safari fallback */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{max-width:100vw!important;overflow-x:hidden!important;width:100%!important}
+a{color:inherit!important;text-decoration:none!important}
+a:visited{color:inherit!important}
+img{max-width:100%!important;height:auto!important;display:block}
+.section-img{width:100%!important;max-width:100vw!important;box-sizing:border-box!important}
+.section-img img{width:100%!important;max-width:100%!important;height:auto!important}
+.section{width:100%!important;max-width:100vw!important;box-sizing:border-box!important}
+.page-nav{width:100%!important;max-width:100vw!important;box-sizing:border-box!important}
+.page-nav a{color:inherit!important;text-decoration:none!important;display:flex!important}
+.hero-cta{color:#000!important;text-decoration:none!important}
+.hero-cta.outline{color:#e8b830!important;text-decoration:none!important}
+.card-grid{width:100%!important;max-width:100%!important}
+.hero{width:100%!important;max-width:100vw!important;overflow:hidden!important}
+.hero-content{width:100%!important;box-sizing:border-box!important}
+table{max-width:100%!important;width:100%!important}
+.nav-bar{width:100%!important;max-width:100vw!important;box-sizing:border-box!important}
+</style>
+</head>
+<body data-lang="zh">
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <a href="index.html" class="nav-logo">三川 SANCHUAN <span class="sub">MISSION CONTROL</span></a>
+  <div class="nav-links">
+    <a href="index.html"><span data-lang-zh>总览</span><span data-lang-th>ภาพรวม</span></a>
+    <a href="battle-plan.html"><span data-lang-zh>作战计划</span><span data-lang-th>แผนรบ</span></a>
+    <a href="training-camp.html"><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></a>
+    <a href="vision.html"><span data-lang-zh>愿景</span><span data-lang-th>วิสัยทัศน์</span></a>
+  </div>
+  <button class="mobile-menu-btn" onclick="toggleMobileNav()">☰</button>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="index.html"><span data-lang-zh>总览</span><span data-lang-th>ภาพรวม</span></a>
+  <a href="battle-plan.html"><span data-lang-zh>作战计划</span><span data-lang-th>แผนรบ</span></a>
+  <a href="training-camp.html"><span data-lang-zh>训练营</span><span data-lang-th>ค่ายฝึก</span></a>
+  <a href="vision.html"><span data-lang-zh>愿景</span><span data-lang-th>วิสัยทัศน์</span></a>
+</div>
+
+<!-- LANG TOGGLE -->
+<div class="lang-toggle">
+  <button data-lang="zh">中文</button>
+  <button data-lang="th">ไทย</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" style="background-image: url('img/hero-main.jpg')"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span data-lang-zh>SANCHUAN · 战略总部</span>
+      <span data-lang-th>SANCHUAN · MISSION CONTROL</span>
+    </div>
+    <h1>
+      <span data-lang-zh>泰国第一短剧表演学院</span>
+      <span data-lang-th>สถาบันการแสดงละครสั้น อันดับ 1 ของไทย</span>
+    </h1>
+    <p class="subtitle">
+      <span data-lang-zh>以中国千亿短剧市场的成功模式为蓝本，打造东南亚首个竖屏短剧演员封闭式训练体系。我们不只是在做一个培训班——我们在定义一个全新的行业标准。</span>
+      <span data-lang-th>เอาโมเดลที่พิสูจน์แล้วจากตลาดละครสั้นจีนแสนล้าน มาสร้างระบบฝึกนักแสดงละครสั้นแนวตั้งแบบปิดแห่งแรกในอาเซียน เราไม่ได้ทำแค่คลาสเรียน — เรากำลังวางมาตรฐานใหม่ให้ทั้งอุตสาหกรรม</span>
+    </p>
+    <div>
+      <a href="battle-plan.html" class="hero-cta">
+        <span data-lang-zh>查看作战计划 →</span>
+        <span data-lang-th>ดูแผนรบ →</span>
+      </a>
+      <a href="training-camp.html" class="hero-cta outline">
+        <span data-lang-zh>训练营蓝图</span>
+        <span data-lang-th>พิมพ์เขียวค่ายฝึก</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION IMAGE -->
+<div class="section-img compact">
+  <img src="img/section-first-mover.jpg" alt="First Mover Advantage">
+</div>
+
+<!-- WHY #1 -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>WHY #1 · 为什么是第一</span>
+    <span data-lang-th>WHY #1 · ทำไมต้องเป็นที่ 1</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>占领<span class="highlight">"第一"</span>的位置，其他一切自然跟来</span>
+    <span data-lang-th>ปักธงยึดตำแหน่ง <span class="highlight">"ที่ 1"</span> ให้ได้ แล้วทุกอย่างจะตามมาเอง</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>在泰国，竖屏短剧表演培训是一片完全空白的市场。第一个进入的人不需要竞争——只需要定义规则。当我们成为"泰国短剧表演学院"的代名词，所有的机会都会主动找上门来。</span>
+    <span data-lang-th>ตลาดฝึกนักแสดงละครสั้นแนวตั้งในไทย ตอนนี้ว่างเปล่า ไม่มีใครทำ คนที่เข้าไปก่อนไม่ต้องแข่ง — แค่วางกฎเกมเอง พอเราเป็นชื่อแรกที่คนนึกถึงเมื่อพูดถึง "สถาบันละครสั้น" ทุกโอกาสจะวิ่งเข้ามาหาเราเอง</span>
+  </p>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-icon">🏴</div>
+      <h3>
+        <span data-lang-zh>先发优势：快鱼吃慢鱼</span>
+        <span data-lang-th>First Mover: ปลาเร็วกินปลาช้า</span>
+      </h3>
+      <p>
+        <span data-lang-zh>短剧市场在中国已经验证了千亿规模，但在泰国还没有人做专业培训。我们不需要发明轮子——只需要把已经成功的模式搬过来，然后本地化。第一个做的人拿走80%的市场认知。</span>
+        <span data-lang-th>ตลาดละครสั้นในจีนพิสูจน์แล้วว่ามูลค่าแสนล้าน แต่ในไทยยังไม่มีใครทำฝึกอบรมจริงจัง เราไม่ต้องคิดค้นอะไรใหม่ — แค่เอาโมเดลที่สำเร็จแล้วมาปรับใช้ คนแรกที่ทำ กินตลาด 80% ของการรับรู้</span>
+      </p>
+      <span class="tag red">
+        <span data-lang-zh>⚡ 时间窗口有限</span>
+        <span data-lang-th>⚡ หน้าต่างโอกาสมีจำกัด</span>
+      </span>
+      <div class="insight-toggle" onclick="toggleInsight(this)">
+        <span data-lang-zh>💡 战略洞察</span>
+        <span data-lang-th>💡 มุมมองเชิงกลยุทธ์</span>
+      </div>
+      <div class="insight-content">
+        <span data-lang-zh>当一个品类还没有"第一名"的时候，第一个宣称自己是第一名的人，就自动成为第一名。这不是吹牛——这是定位理论的核心。我们不需要等到规模最大才说自己是第一，我们只需要第一个说出来，然后用行动证明。</span>
+        <span data-lang-th>เมื่อยังไม่มี "ที่ 1" ในหมวดหมู่ไหน คนแรกที่ประกาศว่าตัวเองคือที่ 1 ก็จะกลายเป็นที่ 1 โดยอัตโนมัติ นี่ไม่ใช่โม้ — นี่คือหัวใจของทฤษฎี Positioning เราไม่ต้องรอจนใหญ่ที่สุดถึงจะพูดได้ แค่พูดก่อน แล้วพิสูจน์ด้วยการกระทำ</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h3>
+        <span data-lang-zh>零风险模型：用别人的钱造梦</span>
+        <span data-lang-th>โมเดลเสี่ยงศูนย์: ใช้เงินคนอื่นสร้างฝัน</span>
+      </h3>
+      <p>
+        <span data-lang-zh>学员交学费 → 我们用学费运营 → 优秀学员进组拍戏 → 作品产生收入。整个链条是"先收钱，后花钱"。我们永远不会亏损，因为钱在我们动手之前就已经到账了。</span>
+        <span data-lang-th>นักเรียนจ่ายค่าเรียน → เราเอาค่าเรียนมาบริหาร → คนเก่งเข้ากองถ่าย → ผลงานสร้างรายได้ ทั้งระบบคือ "รับเงินก่อน จ่ายทีหลัง" ไม่มีทางขาดทุน เพราะเงินเข้ากระเป๋าก่อนที่เราจะขยับตัวทำอะไร</span>
+      </p>
+      <span class="tag green">
+        <span data-lang-zh>✅ 现金流为正</span>
+        <span data-lang-th>✅ กระแสเงินสดเป็นบวก</span>
+      </span>
+      <div class="insight-toggle" onclick="toggleInsight(this)">
+        <span data-lang-zh>💡 商业逻辑</span>
+        <span data-lang-th>💡 ตรรกะทางธุรกิจ</span>
+      </div>
+      <div class="insight-content">
+        <span data-lang-zh>传统影视制作的致命弱点是"先花钱，再祈祷能赚回来"。我们彻底颠覆了这个逻辑。学员缴费就是我们的启动资金，优秀学员就是我们的免费劳动力（而且他们还付了钱来工作）。这个模型在中国已经被验证过无数次。</span>
+        <span data-lang-th>จุดอ่อนร้ายแรงของการผลิตหนังแบบเดิมคือ "จ่ายก่อน แล้วภาวนาว่าจะได้คืน" เราพลิกตรรกะนี้ทั้งหมด ค่าเรียนของนักเรียนคือทุนตั้งต้นของเรา นักเรียนเก่งๆ คือแรงงานฟรี (แถมเขายังจ่ายเงินมาทำงานให้เราอีก) โมเดลนี้พิสูจน์แล้วในจีนนับไม่ถ้วนครั้ง</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-icon">🌏</div>
+      <h3>
+        <span data-lang-zh>中国标准 = 全球通行证</span>
+        <span data-lang-th>มาตรฐานจีน = ใบผ่านทางทั่วโลก</span>
+      </h3>
+      <p>
+        <span data-lang-zh>按照中国大陆的内容标准制作，意味着内容是绿色的、健康的。能在中国发行的作品，一定能在全球任何平台发行。一次制作，全球分发——这就是我们的内容策略。</span>
+        <span data-lang-th>ถ่ายตามมาตรฐานเนื้อหาจีน = เนื้อหาสะอาด ปลอดภัย ฉายได้ทุกแพลตฟอร์ม ผ่านจีนได้ = ผ่านทั่วโลก ถ่ายครั้งเดียว เผยแพร่ได้ทุกที่ — นี่คือกลยุทธ์เนื้อหาของเรา</span>
+      </p>
+      <span class="tag cyan">
+        <span data-lang-zh>🌐 一次制作 全球发行</span>
+        <span data-lang-th>🌐 ถ่ายครั้งเดียว ฉายทั่วโลก</span>
+      </span>
+      <div class="insight-toggle" onclick="toggleInsight(this)">
+        <span data-lang-zh>💡 内容策略</span>
+        <span data-lang-th>💡 กลยุทธ์เนื้อหา</span>
+      </div>
+      <div class="insight-content">
+        <span data-lang-zh>中国的内容审核是全球最严格的之一。通过中国审核的内容，在东南亚、欧美、日韩等市场基本上是"免审"的。这意味着我们的作品天然具备全球发行能力。更重要的是，这种"绿色内容"对演员的品牌形象也是加分——安全、健康、适合所有年龄段。</span>
+        <span data-lang-th>ระบบตรวจสอบเนื้อหาของจีนเข้มงวดที่สุดในโลก เนื้อหาที่ผ่านจีนได้ ในตลาดอาเซียน ยุโรป อเมริกา ญี่ปุ่น เกาหลี แทบจะ "ผ่านอัตโนมัติ" แปลว่าผลงานของเราพร้อมเผยแพร่ทั่วโลกตั้งแต่วันแรก ที่สำคัญกว่านั้น เนื้อหา "สะอาด" แบบนี้ยังเป็นการสร้างภาพลักษณ์ที่ดีให้นักแสดงด้วย — ปลอดภัย สุขภาพดี เหมาะกับทุกวัย</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION IMAGE -->
+<div class="section-img compact">
+  <img src="img/section-flywheel.jpg" alt="Flywheel Effect">
+</div>
+
+<div class="divider"></div>
+
+<!-- FLYWHEEL -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>FLYWHEEL · 飞轮效应</span>
+    <span data-lang-th>FLYWHEEL · เอฟเฟกต์วงล้อ</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>一个飞轮，四个引擎——<span class="highlight">越转越快</span></span>
+    <span data-lang-th>Flywheel เดียว สี่เครื่องยนต์ — <span class="highlight">ยิ่งหมุน ยิ่งแรง</span></span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>四条战线不是各自为战，而是一个互相加速的飞轮。训练营产出人才，人才拍出作品，作品吸引平台，平台带来资金，资金扩大训练营。每转一圈，势能翻倍。</span>
+    <span data-lang-th>สี่แนวรบไม่ได้แยกกันทำ แต่เป็น Flywheel ที่เร่งซึ่งกันและกัน ค่ายฝึกปั้นคน → คนถ่ายผลงาน → ผลงานดึงแพลตฟอร์ม → แพลตฟอร์มนำเงินมา → เงินขยายค่ายฝึก ยิ่งหมุน ยิ่งแรง</span>
+  </p>
+
+  <div class="stat-row">
+    <div class="stat-block">
+      <div class="number">01</div>
+      <div class="label">
+        <span data-lang-zh>训练营 · 现金引擎</span>
+        <span data-lang-th>ค่ายฝึก · เครื่องปั้มเงินสด</span>
+      </div>
+    </div>
+    <div class="stat-block">
+      <div class="number">02</div>
+      <div class="label">
+        <span data-lang-zh>短剧 · 作品工厂</span>
+        <span data-lang-th>ละครสั้น · โรงงานผลงาน</span>
+      </div>
+    </div>
+    <div class="stat-block">
+      <div class="number">03</div>
+      <div class="label">
+        <span data-lang-zh>平台 · 分发网络</span>
+        <span data-lang-th>แพลตฟอร์ม · เครือข่ายกระจาย</span>
+      </div>
+    </div>
+    <div class="stat-block">
+      <div class="number">04</div>
+      <div class="label">
+        <span data-lang-zh>AI动漫 · 技术护城河</span>
+        <span data-lang-th>AI Animation · คูเมืองเทคโนโลยี</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <p>
+      <span data-lang-zh>"与其冒险雇人，不如让人付费来学。我们既得到了资金，又得到了人才，还能在正式签约前看到他们的真实水平。零风险，全是收益。"</span>
+      <span data-lang-th>"แทนที่จะเสี่ยงจ้างคน ให้คนจ่ายเงินมาเรียนกับเรา เราได้ทั้งเงิน ได้ทั้งคนคุณภาพ แล้วยังได้ดูฝีมือจริงก่อนจ้างอีกด้วย ไม่ต้องเสี่ยงเลย มีแต่ได้"</span>
+    </p>
+    <div class="author">— Teem</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WAR COUNCIL -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>WAR COUNCIL · 核心团队</span>
+    <span data-lang-th>WAR COUNCIL · ทีมหลัก</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh><span class="highlight">三个人</span>，一个帝国</span>
+    <span data-lang-th><span class="highlight">สามคน</span> หนึ่งอาณาจักร</span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>每个人都是不可替代的拼图。战略、执行、制作——三位一体，缺一不可。</span>
+    <span data-lang-th>ทุกคนคือจิ๊กซอว์ที่ขาดไม่ได้ กลยุทธ์ บริหาร ผลิต — สามประสาน ขาดคนเดียวไม่ได้</span>
+  </p>
+
+  <div class="person-grid">
+    <div class="person-card">
+      <div class="role">CHAIRMAN · <span data-lang-zh>掌舵者</span><span data-lang-th>ผู้นำทัพ</span></div>
+      <div class="name">
+        <span data-lang-zh>Nana · 李沁瑶</span>
+        <span data-lang-th>Nana · หลี่ชิ่นเหยา</span>
+      </div>
+      <div class="bio">
+        <span data-lang-zh>世界模特冠军，知名演员与导演，深耕中国短剧市场多年。她不仅是三川的门面，更是整个帝国的灵魂——战略眼光、行业资源、执行魄力，集于一身。三川的每一步，都由她拍板定夺。</span>
+        <span data-lang-th>แชมป์นางแบบโลก นักแสดงและผู้กำกับชื่อดัง คร่ำหวอดในตลาดละครสั้นจีนมาหลายปี เธอไม่ใช่แค่หน้าตาของสามชวน แต่คือจิตวิญญาณของทั้งอาณาจักร — สายตาเชิงกลยุทธ์ คอนเนกชั่นในอุตสาหกรรม ความกล้าตัดสินใจ รวมอยู่ในคนเดียว ทุกก้าวของสามชวน เธอเป็นคนอนุมัติ</span>
+      </div>
+      <div class="tasks">
+        <h5><span data-lang-zh>关键职责</span><span data-lang-th>MISSION</span></h5>
+        <ul>
+          <li><span data-lang-zh>统筹训练营课程体系与师资</span><span data-lang-th>ดูแลหลักสูตรค่ายฝึกและทีมอาจารย์ทั้งหมด</span></li>
+          <li><span data-lang-zh>对接中国短剧市场资源</span><span data-lang-th>เชื่อมต่อทรัพยากรตลาดละครสั้นจีน</span></li>
+          <li><span data-lang-zh>品牌形象与战略决策</span><span data-lang-th>ภาพลักษณ์แบรนด์และตัดสินใจเชิงกลยุทธ์</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="role">STRATEGIST · <span data-lang-zh>军师</span><span data-lang-th>นักวางแผน</span></div>
+      <div class="name">Teem · Narin</div>
+      <div class="bio">
+        <span data-lang-zh>朱拉隆功大学传播学出身，曾任职阿里巴巴。三川的战略大脑——市场分析、商业模式设计、合作谈判，所有幕后的棋局都由他布局。Nana的亲族兄长，三川的隐形引擎。</span>
+        <span data-lang-th>จบจุฬาฯ สื่อสารมวลชน เคยทำงาน Alibaba สมองเชิงกลยุทธ์ของสามชวน — วิเคราะห์ตลาด ออกแบบโมเดลธุรกิจ เจรจาความร่วมมือ ทุกหมากหลังฉากเป็นคนวาง พี่ชายสายเลือดของ Nana เครื่องยนต์ที่มองไม่เห็นของสามชวน</span>
+      </div>
+      <div class="tasks">
+        <h5><span data-lang-zh>关键职责</span><span data-lang-th>MISSION</span></h5>
+        <ul>
+          <li><span data-lang-zh>泰国市场开拓与平台谈判</span><span data-lang-th>บุกตลาดไทยและเจรจาแพลตฟอร์ม</span></li>
+          <li><span data-lang-zh>商业模式与财务规划</span><span data-lang-th>ออกแบบโมเดลธุรกิจและแผนการเงิน</span></li>
+          <li><span data-lang-zh>教育机构合作与招生</span><span data-lang-th>ร่วมมือสถาบันการศึกษาและรับสมัครนักเรียน</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="person-card">
+      <div class="role">PRODUCER · <span data-lang-zh>制作人</span><span data-lang-th>โปรดิวเซอร์</span></div>
+      <div class="name">
+        <span data-lang-zh>浩天 · Haotian</span>
+        <span data-lang-th>ห่าวเทียน · Haotian</span>
+      </div>
+      <div class="bio">
+        <span data-lang-zh>知名演员与制作人，Nana多年的挚友与合作伙伴，曾与Nana搭档出演多部作品。他带来的不只是制作经验，更是一套经过市场验证的训练营体系方案。友情与专业的完美结合。</span>
+        <span data-lang-th>ดาราและโปรดิวเซอร์ชื่อดัง เพื่อนสนิทและพาร์ทเนอร์ของ Nana มาหลายปี เคยเล่นหนังคู่กัน สิ่งที่เขาเอามาไม่ใช่แค่ประสบการณ์ผลิต แต่คือแผนค่ายฝึกทั้งระบบที่ผ่านการพิสูจน์จากตลาดจริง มิตรภาพ + ความเป็นมืออาชีพ ลงตัวสุดๆ</span>
+      </div>
+      <div class="tasks">
+        <h5><span data-lang-zh>关键职责</span><span data-lang-th>MISSION</span></h5>
+        <ul>
+          <li><span data-lang-zh>训练营课程设计与执行</span><span data-lang-th>ออกแบบและดำเนินการหลักสูตรค่ายฝึก</span></li>
+          <li><span data-lang-zh>短剧制作与导演统筹</span><span data-lang-th>ผลิตละครสั้นและประสานงานผู้กำกับ</span></li>
+          <li><span data-lang-zh>中国拍摄基地与资源对接</span><span data-lang-th>เชื่อมต่อฐานถ่ายทำและทรัพยากรในจีน</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CRITICAL PATH -->
+<section class="section">
+  <div class="section-label">
+    <span data-lang-zh>CRITICAL PATH · 关键路径</span>
+    <span data-lang-th>CRITICAL PATH · เส้นทางวิกฤต</span>
+  </div>
+  <h2 class="section-title">
+    <span data-lang-zh>从今天到开营：<span class="highlight">每一天都算数</span></span>
+    <span data-lang-th>จากวันนี้ถึงวันเปิดค่าย: <span class="highlight">ทุกวันมีค่า</span></span>
+  </h2>
+  <p class="section-desc">
+    <span data-lang-zh>倒计时已经开始。错过窗口期，蓝海就变红海。没有"以后再说"。</span>
+    <span data-lang-th>นับถอยหลังเริ่มแล้ว พลาดหน้าต่างโอกาส Blue Ocean ก็จะกลายเป็น Red Ocean ไม่มี "ไว้ค่อยทำ"</span>
+  </p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="date">2026.02.14 — NOW</div>
+      <h4>
+        <span data-lang-zh>战略会议完成 · 方向锁定</span>
+        <span data-lang-th>ประชุมกลยุทธ์เสร็จ · ล็อคทิศทาง</span>
+      </h4>
+      <p>
+        <span data-lang-zh>三方达成共识：教育先行，短剧并行。训练营方案（浩天版）通过审核。四条战线同步启动。</span>
+        <span data-lang-th>สามฝ่ายตกลงกัน: การศึกษาก่อน ละครสั้นควบคู่ แผนค่ายฝึก (เวอร์ชั่นห่าวเทียน) ผ่านการอนุมัติ สี่แนวรบเริ่มพร้อมกัน</span>
+      </p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">2026.02.15 — 02.25</div>
+      <h4>
+        <span data-lang-zh>10天冲刺 · 完成所有筹备</span>
+        <span data-lang-th>สปรินท์ 10 วัน · เตรียมทุกอย่างให้เสร็จ</span>
+      </h4>
+      <p>
+        <span data-lang-zh>课程大纲、场地确认、师资对接、招生材料、PPT——所有弹药必须在2月25日前到位。Teem对接泰国院校，Nana与浩天锁定中国端资源。</span>
+        <span data-lang-th>หลักสูตร สถานที่ ทีมอาจารย์ เอกสารรับสมัคร PPT — กระสุนทุกนัดต้องพร้อมก่อน 25 ก.พ. Teem คุยกับมหาลัยไทย Nana กับห่าวเทียนล็อคทรัพยากรฝั่งจีน</span>
+      </p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">2026.03 — 04</div>
+      <h4>
+        <span data-lang-zh>第一期训练营 · 在中国开营</span>
+        <span data-lang-th>ค่ายฝึกรุ่นที่ 1 · เปิดค่ายที่จีน</span>
+      </h4>
+      <p>
+        <span data-lang-zh>利用泰国学校假期（3-4月），带第一批学员赴中国进行15天封闭式训练。同时启动"带资进组"短剧拍摄。现金流开始转动。</span>
+        <span data-lang-th>ใช้ช่วงปิดเทอมไทย (มี.ค.-เม.ย.) พานักเรียนรุ่นแรกไปจีน ฝึกแบบปิด 15 วัน พร้อมเริ่มถ่ายละครสั้น "带资进组" ควบคู่กัน กระแสเงินสดเริ่มหมุน</span>
+      </p>
+    </div>
+    <div class="timeline-item">
+      <div class="date">2026.Q2 — Q3</div>
+      <h4>
+        <span data-lang-zh>平台攻势 · 作品上线 · 帝国扩张</span>
+        <span data-lang-th>บุกแพลตฟอร์ม · ผลงานออนไลน์ · อาณาจักรขยาย</span>
+      </h4>
+      <p>
+        <span data-lang-zh>短剧作品在中国及东南亚平台上线。同步与Grab、Shopee、Lazada等泰国平台谈判合作。第二期训练营开始招生。飞轮加速。</span>
+        <span data-lang-th>ผลงานละครสั้นออนไลน์ทั้งจีนและอาเซียน พร้อมเจรจาร่วมมือกับ Grab, Shopee, Lazada เปิดรับสมัครค่ายฝึกรุ่นที่ 2 Flywheel เริ่มเร่งความเร็ว</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <div class="spacer"></div>
+  <a href="battle-plan.html" class="next">
+    <div>
+      <span class="nav-label"><span data-lang-zh>下一页</span><span data-lang-th>หน้าถัดไป</span></span>
+      <span class="nav-title"><span data-lang-zh>作战计划 · 四线同步</span><span data-lang-th>แผนรบ · สี่แนวรบพร้อมกัน</span></span>
+    </div>
+    <span class="arrow">→</span>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>三川 SANCHUAN © 2026 — <span data-lang-zh>战略文件 · 仅限内部</span><span data-lang-th>เอกสารกลยุทธ์ · เฉพาะภายใน</span></p>
+</footer>
+
+<script src="app.js?v=3.1"></script>
+</body>
+</html>
