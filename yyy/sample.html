@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎬 โรงฉายจำลอง — EP001 ศึกเผ็ดปะทะหวานที่เยาวราช | The YYY Diary</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yy:#e74c3c; --yy-deep:#C0392B;
+  --yr:#4da3e8; --yr-deep:#2E75B6;
+  --you:#e8c04a; --you-deep:#C9A227;
+  --bg:#0b0a0f; --ink:#f4f1ea; --dim:#9d97a8;
+  --card:rgba(255,255,255,.04); --line:rgba(255,255,255,.09);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:'Prompt','Noto Sans JP','Noto Sans SC',system-ui,sans-serif; overflow-x:hidden; line-height:1.55; min-height:100vh}
+::selection{background:var(--yy-deep); color:#fff}
+.aurora{position:fixed; inset:0; z-index:-2; overflow:hidden}
+.aurora span{position:absolute; width:55vmax; height:55vmax; border-radius:50%; filter:blur(90px); opacity:.12; animation:drift 30s ease-in-out infinite alternate}
+.aurora .a1{background:var(--yy-deep); top:-20vmax; left:-14vmax}
+.aurora .a2{background:var(--yr-deep); bottom:-24vmax; right:-14vmax; animation-delay:-12s}
+@keyframes drift{to{transform:translate(7vmax,5vmax) scale(1.12)}}
+
+nav{position:fixed; top:0; left:0; right:0; z-index:90; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px 4vw; backdrop-filter:blur(14px); background:rgba(11,10,15,.6); border-bottom:1px solid var(--line)}
+.logo{font-weight:900; font-size:1.05rem; text-decoration:none; color:var(--ink)}
+.logo b{background:linear-gradient(100deg,var(--yy),var(--you),var(--yr)); -webkit-background-clip:text; background-clip:text; color:transparent}
+nav .links{display:flex; gap:18px}
+nav .links a{color:var(--dim); text-decoration:none; font-size:.85rem}
+nav .links a:hover{color:var(--you)}
+.tag{font-size:.7rem; font-weight:700; letter-spacing:2px; color:#111; background:linear-gradient(100deg,var(--you),#f5d76e); padding:4px 12px; border-radius:99px}
+
+.wrap{max-width:1280px; margin:0 auto; padding:96px 3vw 60px; display:grid; grid-template-columns:minmax(230px,1fr) auto minmax(230px,1fr); gap:26px; align-items:start}
+@media(max-width:1080px){.wrap{grid-template-columns:1fr; justify-items:center}}
+
+.panel{border:1px solid var(--line); border-radius:20px; background:var(--card); padding:22px; width:100%; max-width:420px}
+.panel h3{font-size:.95rem; margin-bottom:12px}
+.panel .k{color:var(--you); font-size:.72rem; letter-spacing:2px; text-transform:uppercase; font-weight:700}
+.meta-row{display:flex; justify-content:space-between; font-size:.84rem; color:var(--dim); padding:6px 0; border-bottom:1px dashed var(--line)}
+.meta-row b{color:var(--ink)}
+.beats{margin-top:14px; display:flex; flex-direction:column; gap:8px}
+.beat{padding:10px 14px; border-radius:12px; border:1px solid var(--line); font-size:.82rem; color:var(--dim); transition:all .4s}
+.beat.on{border-color:var(--you); color:var(--ink); background:rgba(232,192,74,.08); transform:translateX(6px)}
+.beat.pass{opacity:.5}
+.beat .b-ico{margin-right:8px}
+.canon{margin-top:16px; font-size:.76rem; color:var(--dim)}
+.canon .c-item{padding:3px 0}
+.canon .c-item.ok{color:#2ecc71}
+
+.livebox{display:flex; flex-direction:column; gap:14px}
+.stat-big{border:1px solid var(--line); border-radius:16px; padding:16px 18px; background:rgba(255,255,255,.03)}
+.stat-big .n{font-size:1.9rem; font-weight:900; color:var(--you); font-variant-numeric:tabular-nums}
+.stat-big .t{font-size:.78rem; color:var(--dim)}
+.stat-big.live .n{color:#ff5f56}
+.pulse-dot{display:inline-block; width:8px; height:8px; border-radius:50%; background:#ff5f56; margin-right:6px; animation:blinkr 1.2s infinite}
+@keyframes blinkr{50%{opacity:.25}}
+.hint{font-size:.76rem; color:var(--dim); border:1px dashed var(--line); border-radius:12px; padding:12px 14px}
+
+/* ================= โทรศัพท์ ================= */
+.phone-col{display:flex; flex-direction:column; align-items:center; gap:16px}
+.phone{position:relative; height:min(76vh,740px); aspect-ratio:9/16; max-width:94vw; border-radius:40px; border:9px solid #16141d;
+  overflow:hidden; background:#050408; box-shadow:0 40px 100px -30px rgba(0,0,0,.9), 0 0 60px -20px rgba(201,162,39,.25)}
+.notch{position:absolute; top:10px; left:50%; transform:translateX(-50%); width:34%; height:16px; background:#16141d; border-radius:99px; z-index:60}
+
+.viewport{position:absolute; inset:0}
+.wobble{position:absolute; inset:-3%; animation:handheld 7s ease-in-out infinite alternate}
+@keyframes handheld{
+  0%{transform:translate(0,0) rotate(0deg)} 25%{transform:translate(.5%,.3%) rotate(.25deg)}
+  50%{transform:translate(-.4%,.5%) rotate(-.2deg)} 75%{transform:translate(.3%,-.4%) rotate(.15deg)}
+  100%{transform:translate(-.5%,-.2%) rotate(-.25deg)}
+}
+/* ฉากเยาวราช */
+.scene{position:absolute; inset:0; background:
+  radial-gradient(ellipse at 50% 118%, rgba(231,110,60,.30), transparent 55%),
+  linear-gradient(180deg, #0a0714 0%, #170b18 45%, #2a1114 78%, #3a1a12 100%)}
+.sign{position:absolute; writing-mode:vertical-rl; font-weight:900; padding:14px 6px; border-radius:8px; letter-spacing:6px; z-index:2; opacity:.92}
+.sign.s1{top:6%; left:7%; font-size:1.45rem; color:#ffd9a0; background:rgba(190,30,30,.85); border:2px solid #ffcf87; box-shadow:0 0 24px rgba(255,120,60,.8); text-shadow:0 0 12px #ffb066}
+.sign.s2{top:11%; right:8%; font-size:1.05rem; color:#ff8f8f; border:2px solid #ff6b6b; background:rgba(30,6,10,.7); box-shadow:0 0 20px rgba(255,80,80,.65); text-shadow:0 0 10px #ff5f5f; animation:flicker 4.5s infinite}
+.sign.s3{top:30%; left:16%; font-size:.85rem; color:#8fe3ff; border:2px solid #57c7ff; background:rgba(6,16,30,.7); box-shadow:0 0 18px rgba(87,199,255,.6); text-shadow:0 0 10px #57c7ff}
+.sign.s4{top:26%; right:20%; font-size:.8rem; color:#aaffc3; border:1px solid #58e08a; background:rgba(6,24,12,.7); box-shadow:0 0 14px rgba(88,224,138,.5)}
+@keyframes flicker{0%,100%{opacity:.92} 41%{opacity:.92} 42%{opacity:.3} 44%{opacity:.92} 78%{opacity:.92} 79%{opacity:.45} 80%{opacity:.92}}
+.wires{position:absolute; top:4.5%; left:-4%; right:-4%; height:5px; z-index:1;
+  background:repeating-linear-gradient(90deg, transparent 0 26px, #ffd479 26px 31px); filter:drop-shadow(0 0 6px #ffb84d); border-radius:99px; transform:rotate(-2.2deg)}
+.wires.w2{top:9%; transform:rotate(1.6deg); opacity:.6}
+.road{position:absolute; bottom:0; left:0; right:0; height:20%; background:linear-gradient(180deg, transparent, rgba(255,140,70,.14)); z-index:1}
+.steam{position:absolute; bottom:14%; width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.10); filter:blur(14px); animation:rise 6s linear infinite; z-index:2}
+.steam.st2{left:66%; animation-delay:-2.5s; width:38px}
+.steam.st3{left:20%; animation-delay:-4.2s; width:44px}
+@keyframes rise{from{transform:translateY(0) scale(.7); opacity:.55} to{transform:translateY(-330px) scale(1.7); opacity:0}}
+.bokeh{position:absolute; border-radius:50%; filter:blur(6px); opacity:.5; animation:bkh 9s ease-in-out infinite alternate; z-index:1}
+@keyframes bkh{to{transform:translateY(-24px)}}
+
+/* ออร่าผู้พูด */
+.aura{position:absolute; inset:0; z-index:3; transition:background 1s ease; pointer-events:none}
+.aura.wash-yy{background:radial-gradient(ellipse at 26% 66%, rgba(231,76,60,.42), transparent 58%)}
+.aura.wash-yr{background:radial-gradient(ellipse at 74% 66%, rgba(77,163,232,.42), transparent 58%)}
+.aura.wash-you{background:radial-gradient(ellipse at 50% 96%, rgba(232,192,74,.34), transparent 55%)}
+.aura.wash-duo{background:radial-gradient(ellipse at 26% 66%, rgba(231,76,60,.34), transparent 52%), radial-gradient(ellipse at 74% 66%, rgba(77,163,232,.34), transparent 52%)}
+.aura.dim{background:rgba(0,0,0,.5)}
+
+/* ตัวละคร (ออร์บ) */
+.actors{position:absolute; inset:0; z-index:4; pointer-events:none}
+.orb{position:absolute; bottom:31%; width:88px; height:88px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-weight:900; font-size:1.5rem; transition:transform .5s, box-shadow .5s, opacity .5s; opacity:.75}
+.orb.o-yy{left:12%; color:#fff; background:radial-gradient(circle at 32% 30%, #ff8a75, var(--yy-deep) 70%); box-shadow:0 0 26px rgba(231,76,60,.55)}
+.orb.o-yr{right:12%; color:#fff; background:radial-gradient(circle at 32% 30%, #9ccdf5, var(--yr-deep) 70%); box-shadow:0 0 26px rgba(77,163,232,.55)}
+.orb .tagname{position:absolute; bottom:-24px; font-size:.62rem; font-weight:600; letter-spacing:1px; white-space:nowrap; left:50%; transform:translateX(-50%); color:rgba(255,255,255,.85)}
+.orb.speaking{transform:scale(1.28) translateY(-10px); opacity:1; animation:talk .5s ease-in-out infinite alternate}
+@keyframes talk{to{transform:scale(1.34) translateY(-16px)}}
+.orb.speaking.o-yy{box-shadow:0 0 60px rgba(231,76,60,.95)}
+.orb.speaking.o-yr{box-shadow:0 0 60px rgba(77,163,232,.95)}
+
+/* กรอบ POV ของยู */
+.povframe{position:absolute; inset:0; z-index:5; pointer-events:none; box-shadow:inset 0 0 120px rgba(0,0,0,.65); transition:box-shadow .5s}
+.povframe.you-speaking{box-shadow:inset 0 0 120px rgba(0,0,0,.6), inset 0 0 0 4px rgba(232,192,74,.75), inset 0 0 70px rgba(232,192,74,.28)}
+.camui{position:absolute; inset:0; z-index:40; pointer-events:none; font-family:ui-monospace,Menlo,monospace}
+.rec{position:absolute; top:36px; left:16px; font-size:.68rem; color:#ffb3ab; letter-spacing:1px}
+.rec i{display:inline-block; width:9px; height:9px; border-radius:50%; background:#ff3b30; margin-right:6px; animation:blinkr 1s infinite}
+.camr{position:absolute; top:36px; right:14px; font-size:.62rem; color:rgba(255,255,255,.55); letter-spacing:1px}
+
+/* เอฟเฟกต์ */
+#fxlayer{position:absolute; inset:0; z-index:30; pointer-events:none; overflow:hidden}
+.fall{position:absolute; top:-10%; animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(120vh) rotate(340deg)}}
+.riseup{position:absolute; bottom:16%; animation:riseup 2.6s ease-out forwards}
+@keyframes riseup{to{transform:translateY(-380px) scale(1.6); opacity:0}}
+.burst{position:absolute; font-weight:900; animation:burst 1.6s ease-out forwards; text-shadow:0 2px 14px rgba(0,0,0,.6)}
+@keyframes burst{0%{transform:scale(.3) rotate(-8deg); opacity:0} 18%{transform:scale(1.25) rotate(3deg); opacity:1} 70%{transform:scale(1) rotate(-2deg); opacity:1} 100%{transform:scale(1.1) translateY(-40px); opacity:0}}
+.stamp{position:absolute; top:26%; left:50%; transform:translateX(-50%) rotate(-9deg); font-size:2.6rem; font-weight:900; color:#fff;
+  background:var(--yy-deep); padding:10px 26px; border-radius:14px; border:4px solid #fff; box-shadow:0 14px 50px rgba(0,0,0,.6);
+  animation:stampin 2.6s ease forwards; z-index:35}
+@keyframes stampin{0%{transform:translateX(-50%) scale(3) rotate(-9deg); opacity:0} 12%{transform:translateX(-50%) scale(1) rotate(-9deg); opacity:1} 82%{opacity:1} 100%{opacity:0}}
+.flashfx{position:absolute; inset:0; background:#fff; z-index:45; animation:flashk .5s ease-out forwards; pointer-events:none}
+@keyframes flashk{from{opacity:.9} to{opacity:0}}
+.viewport.shake-s{animation:shk .45s ease-in-out 2}
+.viewport.shake-b{animation:shk .3s ease-in-out 6}
+@keyframes shk{25%{transform:translate(-1.6%,1%) rotate(-.6deg)} 75%{transform:translate(1.6%,-1%) rotate(.6deg)}}
+.viewport.zoomp{animation:zp .7s ease-out}
+@keyframes zp{30%{transform:scale(1.07)}}
+
+/* danmaku */
+#danmaku{position:absolute; inset:0; z-index:32; pointer-events:none; overflow:hidden}
+.dm{position:absolute; white-space:nowrap; font-size:.78rem; font-weight:600; text-shadow:0 1px 6px rgba(0,0,0,.9); animation:dmfly linear forwards; opacity:.95}
+@keyframes dmfly{from{transform:translateX(0)} to{transform:translateX(calc(-100vw))}}
+
+/* ซับ 4 ภาษา */
+.subs{position:absolute; left:0; right:0; bottom:8.5%; z-index:36; padding:0 16px; text-align:center; pointer-events:none}
+.plate{display:inline-block; font-size:.72rem; font-weight:800; letter-spacing:1px; padding:4px 16px; border-radius:99px; color:#fff; margin-bottom:8px;
+  box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.plate.p-yy{background:linear-gradient(100deg,#8e2318,var(--yy))}
+.plate.p-yr{background:linear-gradient(100deg,#1b4a75,var(--yr))}
+.plate.p-you{background:linear-gradient(100deg,#7d651a,var(--you)); color:#111}
+.plate.p-duo{background:linear-gradient(100deg,var(--yy) 45%,var(--yr) 55%)}
+.actline{font-size:.68rem; color:rgba(255,255,255,.65); font-style:italic; margin-bottom:4px}
+.native{font-weight:900; line-height:1.3; text-shadow:0 2px 16px rgba(0,0,0,.85); margin-bottom:8px}
+.native.n-yy{color:#ffb4a8} .native.n-yr{color:#a8d4ff} .native.n-you{color:#ffe9a8} .native.n-duo{color:#fff}
+.others{display:flex; flex-direction:column; gap:2px}
+.others div{font-size:.72rem; color:rgba(255,255,255,.82); text-shadow:0 1px 8px rgba(0,0,0,.9)}
+.others .lang{opacity:.55; font-size:.85em; margin-right:6px}
+.subs .inner{animation:subin .45s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes subin{from{opacity:0; transform:translateY(26px) scale(.92)} to{opacity:1; transform:none}}
+.subs.peakline .native{animation:peakshake .4s ease-in-out 3}
+@keyframes peakshake{25%{transform:translateX(-6px) rotate(-1deg)} 75%{transform:translateX(6px) rotate(1deg)}}
+
+/* แถบขวาแบบแอปวิดีโอ */
+.rail{position:absolute; right:8px; bottom:22%; z-index:38; display:flex; flex-direction:column; gap:16px; align-items:center; pointer-events:none}
+.rail .ric{font-size:1.5rem; filter:drop-shadow(0 2px 8px rgba(0,0,0,.7)); text-align:center}
+.rail .rn{font-size:.6rem; color:#fff; text-shadow:0 1px 4px #000; font-variant-numeric:tabular-nums}
+.vinyl{width:38px; height:38px; border-radius:50%; background:conic-gradient(#222,#000,#222,#000); border:2px solid #333;
+  display:flex; align-items:center; justify-content:center; font-size:1rem; animation:spin 3.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.caption{position:absolute; left:12px; right:64px; bottom:2.6%; z-index:38; font-size:.66rem; color:rgba(255,255,255,.85); text-shadow:0 1px 5px #000; pointer-events:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.caption b{color:var(--you)}
+
+/* โปรเกรส + จังหวะ */
+.storybar{position:absolute; top:32px; left:12px; right:12px; height:4px; z-index:50; border-radius:99px; background:rgba(255,255,255,.22)}
+.storybar i{display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,var(--yy),var(--you),var(--yr))}
+.bmark{position:absolute; top:-2.5px; width:2.5px; height:9px; background:rgba(255,255,255,.65); border-radius:2px}
+
+/* การ์ดเปิด/จบ */
+.overlaycard{position:absolute; inset:0; z-index:70; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  background:rgba(5,4,10,.88); backdrop-filter:blur(8px); text-align:center; padding:24px; transition:opacity .6s}
+.overlaycard.hidden{opacity:0; pointer-events:none}
+.overlaycard .glyphs{font-size:2.6rem; font-weight:900}
+.overlaycard .glyphs .g1{color:var(--yy)} .overlaycard .glyphs .g2{color:var(--dim); font-size:.6em} .overlaycard .glyphs .g3{color:var(--yr)}
+.overlaycard h2{font-size:1.25rem}
+.overlaycard p{font-size:.8rem; color:var(--dim); max-width:280px}
+.bigplay{width:84px; height:84px; border-radius:50%; border:none; cursor:pointer; font-size:2rem; color:#fff;
+  background:linear-gradient(140deg,var(--yy-deep),#e0642f); box-shadow:0 0 50px rgba(231,76,60,.6); transition:transform .25s; pointer-events:auto}
+.bigplay:hover{transform:scale(1.12)}
+.endstats{display:flex; gap:18px; font-size:.8rem}
+.endstats b{display:block; font-size:1.25rem; color:var(--you)}
+.mini{padding:10px 22px; border-radius:99px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-family:inherit; font-size:.85rem; pointer-events:auto; text-decoration:none}
+.mini:hover{border-color:var(--you)}
+
+/* คอนโทรล */
+.controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center}
+.cbtn{border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:99px; padding:9px 18px; cursor:pointer; font-family:inherit; font-size:.9rem; transition:all .25s}
+.cbtn:hover{border-color:var(--you); color:var(--you)}
+.cbtn.on{background:linear-gradient(100deg,var(--you-deep),#d4b13c); color:#111; border-color:transparent; font-weight:700}
+.beatlabel{font-size:.78rem; color:var(--you); border:1px dashed rgba(232,192,74,.5); padding:6px 16px; border-radius:99px}
+</style>
+</head>
+<body>
+<div class="aurora"><span class="a1"></span><span class="a2"></span></div>
+
+<nav>
+  <a class="logo" href="index.html">← THE <b>YYY</b> DIARY</a>
+  <div class="links">
+    <a href="index.html">🏠 หน้าบ้าน</a>
+    <a href="roadmap.html">🧭 แผนที่สมบัติ</a>
+  </div>
+  <span class="tag">EPISODE SIMULATOR</span>
+</nav>
+
+<div class="wrap">
+
+  <!-- ซ้าย: ข้อมูลตอน -->
+  <div class="panel">
+    <div class="k">Now Screening</div>
+    <h3>EP001 — ศึกเผ็ดปะทะหวานที่เยาวราช</h3>
+    <div class="meta-row"><span>โลเคชัน</span><b>เยาวราช 唐人街 ヤワラート</b></div>
+    <div class="meta-row"><span>รูปแบบ</span><b>ซิตคอม POV · ซับ 4 ภาษาพร้อมกัน</b></div>
+    <div class="meta-row"><span>วิดีโอจริง</span><b>ไม่มี — จินตนาการ 100%</b></div>
+    <div class="beats" id="beatlist">
+      <div class="beat" data-b="0"><span class="b-ico">🎣</span>เปิดฮุค — เรียกยูใน 3 วิ</div>
+      <div class="beat" data-b="1"><span class="b-ico">⚔️</span>ปะทะ — เผ็ดชนหวาน</div>
+      <div class="beat" data-b="2"><span class="b-ico">🌋</span>จุดพีค — น้ำตาแห่งความเคารพ</div>
+      <div class="beat" data-b="3"><span class="b-ico">💸</span>ปิดตอน — ยู จ่ายเงิน</div>
+    </div>
+    <div class="canon" id="canonbox">
+      <div style="font-weight:700; margin-bottom:4px">✅ เช็คกฎจักรวาลแบบเรียลไทม์</div>
+      <div class="c-item" id="cn1">◻︎ เรียก "ยู" ใน 3 วินาทีแรก</div>
+      <div class="c-item" id="cn2">◻︎ เรียก "ยู" อย่างน้อย 2 ครั้ง</div>
+      <div class="c-item" id="cn3">◻︎ ความขัดแย้งเผ็ด-หวานครบวงจร</div>
+    </div>
+  </div>
+
+  <!-- กลาง: โทรศัพท์ -->
+  <div class="phone-col">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="storybar"><i id="pbar"></i></div>
+
+      <div class="viewport" id="viewport">
+        <div class="wobble">
+          <div class="scene">
+            <div class="wires"></div><div class="wires w2"></div>
+            <div class="sign s1">大金龍</div>
+            <div class="sign s2">燕窩魚翅</div>
+            <div class="sign s3">地獄麻辣</div>
+            <div class="sign s4">天使奶黃</div>
+            <div class="bokeh" style="top:18%;left:40%;width:12px;height:12px;background:#ffb84d"></div>
+            <div class="bokeh" style="top:44%;left:70%;width:9px;height:9px;background:#ff6b6b;animation-delay:-3s"></div>
+            <div class="bokeh" style="top:52%;left:30%;width:10px;height:10px;background:#57c7ff;animation-delay:-6s"></div>
+            <div class="steam" style="left:42%"></div><div class="steam st2"></div><div class="steam st3"></div>
+            <div class="road"></div>
+          </div>
+          <div class="aura" id="aura"></div>
+          <div class="actors">
+            <div class="orb o-yy" id="orbYY">瑶<span class="tagname">เหยาเหยา 瑶瑶</span></div>
+            <div class="orb o-yr" id="orbYR">ユリ<span class="tagname">ยูริ 尤莉</span></div>
+          </div>
+        </div>
+        <div class="povframe" id="povframe"></div>
+        <div class="camui">
+          <div class="rec"><i></i>REC <span id="rectime">00:00</span></div>
+          <div class="camr">YYY-CAM · 🔋 78%</div>
+        </div>
+        <div id="fxlayer"></div>
+        <div id="danmaku"></div>
+
+        <div class="subs" id="subs"></div>
+
+        <div class="rail">
+          <div><div class="ric">❤️</div><div class="rn" id="rlike">0</div></div>
+          <div><div class="ric">💬</div><div class="rn" id="rcmt">0</div></div>
+          <div><div class="ric">↗️</div><div class="rn" id="rshare">0</div></div>
+          <div class="vinyl">🌶️</div>
+        </div>
+        <div class="caption"><b>@yyy.diary</b> EP001 ศึกเผ็ดปะทะหวานที่เยาวราช 🌶️🍡 <b>#YYY</b> #TheYYYDiary #พี่ยูพาเที่ยว</div>
+      </div>
+
+      <!-- การ์ดเปิด -->
+      <div class="overlaycard" id="startcard">
+        <div class="glyphs"><span class="g1">瑶瑶</span> <span class="g2">×</span> <span class="g3">ユリ</span></div>
+        <h2>EP001 — ศึกเผ็ดปะทะหวาน<br>ที่เยาวราช</h2>
+        <p>โหมดจำลอง: ไม่มีภาพวิดีโอ มีแต่แสง สี เสียง ซับ 4 ภาษา และจินตนาการล้วนๆ — ลองดูว่า "อ่าน" ตอนนึงแล้วสนุกได้แค่ไหน</p>
+        <button class="bigplay" id="bigplay">▶</button>
+        <p style="font-size:.7rem">🔊 มีเสียงประกอบสังเคราะห์เบาๆ (ปิดได้ที่ปุ่มใต้จอ)</p>
+      </div>
+
+      <!-- การ์ดจบ -->
+      <div class="overlaycard hidden" id="endcard">
+        <div class="glyphs">🎬</div>
+        <h2>จบตอนจำลอง!</h2>
+        <div class="endstats">
+          <div><b id="fviews">—</b>วิว (จำลอง)</div>
+          <div><b id="flikes">—</b>หัวใจ</div>
+          <div><b id="fcmts">—</b>คอมเมนต์</div>
+        </div>
+        <p>นี่แค่ตัวหนังสือกับแสงสียังสนุกขนาดนี้ — ตอนถ่ายจริงที่มีหน้าคน มีอาหาร มีเสียงจริง จะขนาดไหน 🌶️🍡</p>
+        <button class="mini" id="replayBtn">🔁 ฉายอีกรอบ</button>
+        <a class="mini" href="roadmap.html">🧭 ไปดูแผนที่สมบัติ</a>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="cbtn" id="playBtn">▶︎ เล่น</button>
+      <button class="cbtn" id="restartBtn">⏮ เริ่มใหม่</button>
+      <button class="cbtn on" data-sp="1" id="sp1">1x</button>
+      <button class="cbtn" data-sp="1.5" id="sp15">1.5x</button>
+      <button class="cbtn" data-sp="2" id="sp2">2x</button>
+      <button class="cbtn" id="sndBtn">🔊 เสียง</button>
+    </div>
+    <div class="beatlabel" id="beatlabel">พร้อมฉาย — กด ▶ ได้เลย</div>
+  </div>
+
+  <!-- ขวา: สถิติไลฟ์ -->
+  <div class="panel livebox">
+    <div class="k">Live Simulation</div>
+    <div class="stat-big live"><div class="n"><span class="pulse-dot"></span><span id="sviews">0</span></div><div class="t">กำลังดูตอนนี้ (จำลองบรรยากาศไวรัล)</div></div>
+    <div class="stat-big"><div class="n" id="slikes">0</div><div class="t">❤️ หัวใจสะสม</div></div>
+    <div class="stat-big"><div class="n" id="scmts">0</div><div class="t">💬 คอมเมนต์ปลิวเข้ามา 4 ภาษา</div></div>
+    <div class="hint">💡 ทุกตัวเลข ทุกคอมเมนต์ในหน้านี้คือการจำลองเพื่อให้ทีมเห็น "ฟีลตอนคลิปติด" — ของจริงต้องไปทำให้เกิดด้วยกันตามแผนที่สมบัติ</div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   YYY EPISODE SIMULATOR — เครื่องฉายตอนด้วยตัวหนังสือ แสง สี เสียง
+   ============================================================ */
+
+/* ---------- บทตอน EP001 (4 ภาษา / 4 จังหวะ) ---------- */
+/* sp: YY|YR|YOU|DUO · beat: 0-3 · dur: ms · fx: เอฟเฟกต์ · sfx: เสียง */
+const SCRIPT = [
+ {sp:"YY", beat:0, dur:4600, act:"มองกล้อง 3 วิแรก",
+  zh:"小尤！镜头拿稳，今天姐姐要征服唐人街最辣的一摊。",
+  th:"ยู! ถือกล้องนิ่งๆ วันนี้เจ๊จะพิชิตร้านที่เผ็ดที่สุดในเยาวราช",
+  ja:"ユウ！カメラしっかり。今日は姉さんがヤワラートで一番辛い屋台を制覇する。",
+  en:"Yu! Hold that camera steady — today I'm conquering Chinatown's spiciest stall.",
+  fx:["zoom"], sfx:"popYY", callYou:true},
+ {sp:"YR", beat:0, dur:4200,
+  ja:"待って待って！その前に…あの伝説のカスタードまん、食べたい！",
+  th:"เดี๋ยวๆ! ก่อนอื่น…ยูริขอกินซาลาเปาคัสตาร์ดในตำนานก่อน!",
+  zh:"等等等等！在那之前…我要吃那个传说中的奶黄包！",
+  en:"Wait wait! First things first — I NEED that legendary custard bun!",
+  fx:["sparkle"], sfx:"popYR"},
+ {sp:"YOU", beat:0, dur:4200,
+  th:"และเงินในกระเป๋าผม ก็เริ่มสั่นกลัวตั้งแต่ยังไม่ลงรถครับ",
+  zh:"我钱包里的钱，还没下车就开始发抖了。",
+  ja:"僕の財布の中身は、車を降りる前から震えてました。",
+  en:"My wallet started trembling before we even got off the bus.",
+  fx:[], sfx:"popYOU"},
+
+ {sp:"YY", beat:1, dur:4400,
+  zh:"先说规则：一人选一摊，谁的摊位排队更长，谁赢。",
+  th:"กติกาก่อน: เลือกคนละร้าน ร้านใครคิวยาวกว่า คนนั้นชนะ",
+  ja:"まずルール：一人一つ屋台を選んで、行列が長い方の勝ち。",
+  en:"Rules first: we each pick one stall. Longest queue wins.",
+  fx:[], sfx:"popYY"},
+ {sp:"YR", beat:1, dur:3800,
+  ja:"いいよ！甘い物の行列、なめないでよね〜",
+  th:"ได้เลย! อย่าดูถูกพลังคิวของของหวานนะ~",
+  zh:"好啊！别小看甜品的排队实力哦〜",
+  en:"You're on! Never underestimate dessert queues~",
+  fx:["sparkle"], sfx:"popYR"},
+ {sp:"YY", beat:1, dur:4400,
+  zh:"看，这家【地狱麻辣】，辣椒堆得比老板还高。",
+  th:"ดูสิ ร้าน 'หมาล่านรก' พริกกองสูงกว่าเจ้าของร้านอีก",
+  ja:"見て、この『地獄麻辣』、唐辛子が店主より高く積んである。",
+  en:"Look — 'Hell Mala.' The chili pile is taller than the owner.",
+  fx:["chili"], sfx:"popYY"},
+ {sp:"YR", beat:1, dur:4200,
+  ja:"こっちは『天使のカスタード』！名前からもう勝ってる！",
+  th:"ฝั่งนี้ 'คัสตาร์ดนางฟ้า'! แค่ชื่อก็ชนะแล้ว!",
+  zh:"这边是【天使奶黄】！光名字就已经赢了！",
+  en:"And this is 'Angel Custard'! It wins on the name alone!",
+  fx:["sparkle"], sfx:"popYR"},
+ {sp:"YOU", beat:1, dur:4800,
+  th:"สรุปผมต้องต่อสองคิวพร้อมกันครับ ขาซ้ายคิวนรก ขาขวาคิวสวรรค์",
+  zh:"结果我得同时排两条队：左脚地狱，右脚天堂。",
+  ja:"結局、僕が両方の列に並ぶことに。左足は地獄、右足は天国。",
+  en:"So I'm queuing in BOTH lines. Left leg in hell, right leg in heaven.",
+  fx:["shakeS","laugh"], sfx:"popYOU"},
+
+ {sp:"YY", beat:2, dur:4400,
+  zh:"嗯…就这？我还以为…咳、咳咳…",
+  th:"อืม…แค่นี้เหรอ นึกว่าจะ…แค่ก แค่กๆ…",
+  ja:"ふん…これだけ？てっきり…ゴホッ、ゴホゴホ…",
+  en:"Hmph… that's it? I thought— *cough* *cough cough*…",
+  fx:["suspense"], sfx:"heart"},
+ {sp:"YR", beat:2, dur:3800,
+  ja:"ヤオヤオ！？目、真っ赤だよ！？涙出てる！！",
+  th:"เหยาเหยา!? ตาแดงมากแล้ว! น้ำตาไหลแล้วนะ!!",
+  zh:"瑶瑶！？眼睛好红！都流泪了！！",
+  en:"YaoYao!? Your eyes are BRIGHT RED! You're crying!!",
+  fx:["zoom"], sfx:"popYR"},
+ {sp:"YY", beat:2, dur:4600, peak:true,
+  zh:"这不是眼泪。是…是辣椒的敬意。",
+  th:"นี่ไม่ใช่น้ำตา มันคือ…ความเคารพจากพริก",
+  ja:"これは涙じゃない。…唐辛子からの敬意よ。",
+  en:"These aren't tears. It's… the chili paying its respects.",
+  fx:["chiliBig","laughBig"], sfx:"dun", callYou:false},
+ {sp:"YOU", beat:2, dur:4400,
+  th:"ครับ และนี่คือครั้งแรกในชีวิตที่ผมเห็น 'ความเคารพ' ไหลเป็นทางครับ",
+  zh:"对，这是我人生第一次看到'敬意'流成一条河。",
+  ja:"はい、'敬意'が川になって流れるのを人生で初めて見ました。",
+  en:"Folks — first time in my life watching 'respect' stream down a face.",
+  fx:["laugh"], sfx:"popYOU"},
+ {sp:"YR", beat:2, dur:4000,
+  ja:"ちょっとだけ…どんな味か気になる…ぺろ。",
+  th:"ขอนิดเดียว…อยากรู้ว่ารสชาติเป็นยังไง…เลียนิดนึง",
+  zh:"就一点点…好奇什么味道…舔一下。",
+  en:"Just a tiny taste… I'm curious… *lick*",
+  fx:["suspense"], sfx:"heart"},
+ {sp:"YR", beat:2, dur:4200, peak:true,
+  ja:"～～～っっ！！からいいいいい！！水！！みず！！！",
+  th:"~~~!! เผ็ดดดดดด!! น้ำ!! เอาน้ำมา!!!",
+  zh:"～～！！辣辣辣辣！！水！！快给我水！！！",
+  en:"~~~!! SPICYYYYY!! WATER!! WATER NOW!!!",
+  fx:["shakeB","flash","chili","splash"], sfx:"alarm"},
+ {sp:"YY", beat:2, dur:3800,
+  zh:"哈哈哈哈哈！谁让你舔的！哈哈哈！",
+  th:"555555! ก็ใครใช้ให้เลียล่ะ! ฮ่าๆๆ",
+  ja:"はははははは！誰が舐めろって言った！",
+  en:"HAHAHAHA! Nobody told you to lick it!",
+  fx:["laughBig"], sfx:"popYY"},
+ {sp:"YOU", beat:2, dur:4600,
+  th:"มือซ้ายผมถือกล้อง มือขวายื่นน้ำ — ทักษะที่ใส่ในเรซูเม่ไม่ได้ครับ",
+  zh:"我左手拿镜头，右手递水 — 这技能简历上没法写。",
+  ja:"左手でカメラ、右手で水。履歴書に書けないスキルです。",
+  en:"Left hand filming, right hand passing water — a skill no resume accepts.",
+  fx:["hearts"], sfx:"popYOU"},
+
+ {sp:"YOU", beat:3, dur:3600,
+  th:"ลุงครับ ทั้งหมด…เท่าไหร่ครับ?",
+  zh:"叔，一共…多少钱？",
+  ja:"おじさん、全部で…おいくらですか？",
+  en:"Uncle… how much for everything?",
+  fx:["suspense"], sfx:"heart"},
+ {sp:"DUO", beat:3, dur:3800, peak:true,
+  th:"เก้าร้อยแปดสิบ!?",
+  zh:"九百八十！？",
+  ja:"きゅうひゃくはちじゅう！？",
+  en:"NINE-EIGHTY BAHT!?",
+  fx:["stamp:฿980!?","zoom"], sfx:"dundun"},
+ {sp:"YY", beat:3, dur:3400, act:"ชี้นิ้วมาที่กล้อง",
+  zh:"小尤，结账。",
+  th:"ยู จ่ายเงิน",
+  ja:"ユウ、お会計。",
+  en:"Yu. Pay up.",
+  fx:["flash"], sfx:"cash", callYou:true},
+ {sp:"YR", beat:3, dur:4600,
+  ja:"ユウくん、ごめんね？でもデザートは別腹だから…もう一個いい？",
+  th:"ยู ขอโทษนะ~ แต่ของหวานมันคนละกระเพาะอะ…ขออีกอันได้ไหม?",
+  zh:"小尤对不起嘛～可是甜品是装在另一个胃的…再来一个行吗？",
+  en:"Sorry Yu~ but dessert goes to a separate stomach… one more? Please?",
+  fx:["hearts"], sfx:"popYR"},
+ {sp:"YOU", beat:3, dur:4600,
+  th:"ครับ กระเพาะน้องมีหลายใบ แต่กระเป๋าตังค์ผมมีใบเดียวครับ",
+  zh:"行，你的胃有好几个，可我的钱包只有一个。",
+  ja:"はい、君の胃袋はいくつもあるけど、僕の財布は一つです。",
+  en:"Sure. You have multiple stomachs. I have exactly one wallet.",
+  fx:["laugh"], sfx:"popYOU"},
+ {sp:"YY", beat:3, dur:4200, act:"มองกล้อง",
+  zh:"今天的结论：辣，赢了。行列？那个不算。",
+  th:"สรุปวันนี้: เผ็ด ชนะ ส่วนเรื่องคิวน่ะเหรอ…ไม่นับ",
+  ja:"今日の結論：辛い、勝ち。行列？あれはノーカウント。",
+  en:"Today's verdict: spicy wins. The queue thing? Doesn't count.",
+  fx:[], sfx:"popYY", callYou:false},
+ {sp:"YR", beat:3, dur:3600,
+  ja:"勝ってないよ！！ユウくん、ジャッジ！！",
+  th:"ไม่ได้ชนะย่ะ!! ยู ตัดสินเดี๋ยวนี้!!",
+  zh:"才没有赢！！小尤，你来评！！",
+  en:"You did NOT win!! Yu — judge us, right now!!",
+  fx:["zoom"], sfx:"popYR", callYou:true},
+ {sp:"YOU", beat:3, dur:5200,
+  th:"คำตัดสินอยู่ตอนหน้าครับ อยากรู้ว่าผมกล้าเลือกข้างไหน…กดติดตามรอได้เลยครับ",
+  zh:"判决下集揭晓。想知道我敢站哪边…先关注再说。",
+  ja:"判定は次回。僕がどっちを選ぶ勇気があるか…フォローして待ってて。",
+  en:"Verdict's in the next episode. Wanna see which side I dare pick? Hit follow.",
+  fx:["heartsBig","sparkle"], sfx:"cash"}
+];
+
+const BEAT_NAMES = ["🎣 เปิดฮุค — เรียกยูใน 3 วิ", "⚔️ ปะทะ — เผ็ดชนหวาน", "🌋 จุดพีค — น้ำตาแห่งความเคารพ", "💸 ปิดตอน — ยู จ่ายเงิน"];
+const SPEAKER = {
+  YY:  {plate:"瑶瑶 เหยาเหยา", cls:"yy",  native:"zh"},
+  YR:  {plate:"ユリ ยูริ",     cls:"yr",  native:"ja"},
+  YOU: {plate:"ยู (VO) 尤·ユウ", cls:"you", native:"th"},
+  DUO: {plate:"เหยาเหยา + ยูริ", cls:"duo", native:"th"},
+};
+const LANG_TAG = {th:"ไทย", zh:"中", ja:"日", en:"EN"};
+const TOTAL = SCRIPT.reduce((s,l)=>s+l.dur,0);
+
+/* ---------- คอมเมนต์จำลอง (danmaku) — เวลาเป็นวินาที ---------- */
+const DANMAKU = [
+ [3,"มาแล้วๆๆ 🔥","#fff"],[5,"姐姐气场两米八","#ff9d8f"],[7,"ユリちゃんかわいい〜","#9cd0ff"],
+ [10,"yu's wallet: 😭","#ffe9a8"],[13,"เปิดมา 3 วิ โดนเรียกละ 555","#fff"],[17,"规则一出就知道谁输了","#ff9d8f"],
+ [21,"ชื่อร้านหมาล่านรก คือต้องลอง","#fff"],[25,"『天使のカスタード』絶対勝つでしょ","#9cd0ff"],
+ [29,"left leg in hell LMAO","#b9f0c9"],[33,"มาละๆ ช็อตชิม","#fff"],[36,"眼睛红成刹车灯了哈哈哈","#ff9d8f"],
+ [40,"強がりヤオヤオ尊い…","#9cd0ff"],[44,"ความเคารพจากพริก 5555555","#ffe9a8"],
+ [47,"the chili paying respects I CANT 💀","#b9f0c9"],[50,"อย่าเลียยยยย","#fff"],[53,"フラグ立ったwww","#9cd0ff"],
+ [55,"要出事了要出事了","#ff9d8f"],[57,"SPICYYYY","#b9f0c9"],[58,"みずーーー！！","#9cd0ff"],
+ [60,"哈哈哈哈哈哈哈","#ff9d8f"],[63,"ยูยื่นน้ำไวมาก โปรเพลเยอร์","#ffe9a8"],[66,"多技能打工人小尤","#ff9d8f"],
+ [70,"980?! 💀💀","#fff"],[72,"RIP wallet-kun","#b9f0c9"],[75,"小尤，结账。← 名台詞誕生","#9cd0ff"],
+ [79,"ของหวานคนละกระเพาะ เห็นด้วยค่า","#fff"],[83,"ทีมเผ็ดโหวตตรงนี้ 🌶️","#ffe9a8"],
+ [86,"甜队举手！🍡","#ff9d8f"],[89,"จะเลือกข้างไหนนนน","#fff"],[93,"フォローした！","#9cd0ff"],[95,"followed!! 🔔","#b9f0c9"]
+];
+
+/* ---------- WebAudio: เสียงสังเคราะห์เบาๆ ไม่ใช้ไฟล์ ---------- */
+let AC = null, soundOn = true;
+function beep(freq, dur, type="sine", vol=.06, when=0){
+  if (!AC || !soundOn) return;
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(vol, AC.currentTime + when);
+  g.gain.exponentialRampToValueAtTime(.0001, AC.currentTime + when + dur);
+  o.connect(g); g.connect(AC.destination);
+  o.start(AC.currentTime + when); o.stop(AC.currentTime + when + dur + .05);
+}
+const SFX = {
+  popYY:  () => beep(196, .16, "sawtooth", .05),
+  popYR:  () => beep(784, .14, "sine", .05),
+  popYOU: () => beep(392, .15, "triangle", .05),
+  heart:  () => { beep(90, .12, "sine", .09); beep(70, .14, "sine", .08, .18); },
+  alarm:  () => { for (let i = 0; i < 5; i++) beep(600 + i*140, .09, "square", .04, i*.09); },
+  dun:    () => { beep(110, .5, "sawtooth", .07); },
+  dundun: () => { beep(110, .4, "sawtooth", .08); beep(82, .6, "sawtooth", .08, .3); },
+  cash:   () => { beep(1318, .1, "sine", .05); beep(1760, .18, "sine", .05, .1); },
+};
+
+/* ---------- อ้างอิง DOM ---------- */
+const $ = id => document.getElementById(id);
+const viewport = $("viewport"), aura = $("aura"), subs = $("subs"),
+      orbYY = $("orbYY"), orbYR = $("orbYR"), pov = $("povframe"),
+      fxlayer = $("fxlayer"), dmk = $("danmaku");
+
+/* ---------- เอฟเฟกต์ ---------- */
+function spawnFall(glyphs, n, sizeMin, sizeMax){
+  for (let i = 0; i < n; i++){
+    const el = document.createElement("div");
+    el.className = "fall";
+    el.textContent = glyphs[i % glyphs.length];
+    el.style.left = Math.random()*92 + "%";
+    el.style.fontSize = (sizeMin + Math.random()*(sizeMax-sizeMin)) + "px";
+    el.style.animationDuration = (2.2 + Math.random()*2) + "s";
+    el.style.animationDelay = (Math.random()*.8) + "s";
+    fxlayer.appendChild(el);
+    setTimeout(() => el.remove(), 5200);
+  }
+}
+function spawnRise(glyphs, n){
+  for (let i = 0; i < n; i++){
+    const el = document.createElement("div");
+    el.className = "riseup";
+    el.textContent = glyphs[i % glyphs.length];
+    el.style.left = (55 + Math.random()*36) + "%";
+    el.style.fontSize = (14 + Math.random()*16) + "px";
+    el.style.animationDelay = (Math.random()*1) + "s";
+    fxlayer.appendChild(el);
+    setTimeout(() => el.remove(), 3800);
+  }
+}
+function spawnBurst(texts, colors){
+  texts.forEach((t, i) => {
+    const el = document.createElement("div");
+    el.className = "burst";
+    el.textContent = t;
+    el.style.left = (12 + Math.random()*56) + "%";
+    el.style.top = (22 + Math.random()*30) + "%";
+    el.style.fontSize = (16 + Math.random()*18) + "px";
+    el.style.color = colors[i % colors.length];
+    el.style.animationDelay = (i*.14) + "s";
+    fxlayer.appendChild(el);
+    setTimeout(() => el.remove(), 2200);
+  });
+}
+function runFx(list){
+  list.forEach(fx => {
+    if (fx === "chili") spawnFall(["🌶️"], 7, 14, 26);
+    else if (fx === "chiliBig") spawnFall(["🌶️","🌶️","🔥"], 16, 16, 34);
+    else if (fx === "sparkle") spawnFall(["✨","🍡","🍮"], 7, 12, 22);
+    else if (fx === "hearts") spawnRise(["❤️","🧡"], 6);
+    else if (fx === "heartsBig") spawnRise(["❤️","💛","💙","✨"], 16);
+    else if (fx === "splash") spawnBurst(["💦","💦","💦"], ["#9cd0ff"]);
+    else if (fx === "laugh") spawnBurst(["555","哈哈","www"], ["#ffe9a8","#ff9d8f","#9cd0ff"]);
+    else if (fx === "laughBig") spawnBurst(["55555","哈哈哈哈","wwww","LOL"], ["#ffe9a8","#ff9d8f","#9cd0ff","#b9f0c9"]);
+    else if (fx === "flash"){ const f = document.createElement("div"); f.className = "flashfx"; viewport.appendChild(f); setTimeout(() => f.remove(), 600); }
+    else if (fx === "shakeS"){ viewport.classList.remove("shake-s"); void viewport.offsetWidth; viewport.classList.add("shake-s"); }
+    else if (fx === "shakeB"){ viewport.classList.remove("shake-b"); void viewport.offsetWidth; viewport.classList.add("shake-b"); }
+    else if (fx === "zoom"){ viewport.classList.remove("zoomp"); void viewport.offsetWidth; viewport.classList.add("zoomp"); }
+    else if (fx.startsWith("stamp:")){ const s = document.createElement("div"); s.className = "stamp"; s.textContent = fx.slice(6); viewport.appendChild(s); setTimeout(() => s.remove(), 2700); }
+  });
+}
+function fireDanmaku(text, color){
+  const el = document.createElement("div");
+  el.className = "dm";
+  el.textContent = text;
+  el.style.color = color || "#fff";
+  el.style.top = (8 + Math.random()*30) + "%";
+  el.style.left = "100%";
+  el.style.animationDuration = (5 + Math.random()*3) + "s";
+  dmk.appendChild(el);
+  setTimeout(() => el.remove(), 8500);
+}
+
+/* ---------- แสดงซับ 4 ภาษา ---------- */
+function renderLine(line){
+  const sp = SPEAKER[line.sp];
+  const order = ["th","zh","ja","en"];
+  const others = order.filter(l => l !== sp.native)
+    .map(l => `<div><span class="lang">${LANG_TAG[l]}</span>${line[l]}</div>`).join("");
+  subs.className = "subs" + (line.peak ? " peakline" : "");
+  subs.innerHTML = `<div class="inner">
+    <div class="plate p-${sp.cls}">${sp.plate}</div>
+    ${line.act ? `<div class="actline">( ${line.act} )</div>` : ""}
+    <div class="native n-${sp.cls}" style="font-size:${line[sp.native].length > 34 ? "1.02rem" : "1.18rem"}">${line[sp.native]}</div>
+    <div class="others">${others}</div>
+  </div>`;
+  /* ออร่า + ออร์บ */
+  aura.className = "aura wash-" + sp.cls + (line.fx.includes("suspense") ? " dim" : "");
+  orbYY.classList.toggle("speaking", line.sp === "YY" || line.sp === "DUO");
+  orbYR.classList.toggle("speaking", line.sp === "YR" || line.sp === "DUO");
+  pov.classList.toggle("you-speaking", line.sp === "YOU");
+  runFx(line.fx);
+  if (line.sfx && SFX[line.sfx]) SFX[line.sfx]();
+}
+
+/* ---------- เครื่องเล่น (นาฬิกาแบบ rAF รองรับ pause/speed) ---------- */
+let playing = false, speed = 1, elapsed = 0, lineIdx = -1, lastT = null;
+let dmFired = new Set(), canon = {first3: false, calls: 0};
+
+function findLine(t){
+  let acc = 0;
+  for (let i = 0; i < SCRIPT.length; i++){ acc += SCRIPT[i].dur; if (t < acc) return i; }
+  return SCRIPT.length;
+}
+function setBeatUI(b){
+  document.querySelectorAll("#beatlist .beat").forEach(el => {
+    const bi = +el.dataset.b;
+    el.classList.toggle("on", bi === b);
+    el.classList.toggle("pass", bi < b);
+  });
+  $("beatlabel").textContent = BEAT_NAMES[b] || "";
+}
+function fmt(n){ return n >= 1000000 ? (n/1000000).toFixed(1) + "M" : n >= 1000 ? (n/1000).toFixed(1) + "K" : Math.round(n); }
+function pad(n){ return String(n).padStart(2, "0"); }
+
+function tick(t){
+  if (lastT == null) lastT = t;
+  const dt = t - lastT; lastT = t;
+  if (playing){
+    elapsed = Math.min(elapsed + dt*speed, TOTAL);
+    const idx = findLine(elapsed);
+    if (idx !== lineIdx && idx < SCRIPT.length){
+      lineIdx = idx;
+      const line = SCRIPT[idx];
+      renderLine(line);
+      setBeatUI(line.beat);
+      /* เช็คกฎ canon แบบสด */
+      if (line.callYou){ canon.calls++; if (elapsed <= 6000) canon.first3 = true; }
+      $("cn1").textContent = (canon.first3 ? "✅" : "◻︎") + " เรียก \"ยู\" ใน 3 วินาทีแรก";
+      $("cn1").className = "c-item" + (canon.first3 ? " ok" : "");
+      $("cn2").textContent = (canon.calls >= 2 ? "✅" : "◻︎") + ` เรียก "ยู" อย่างน้อย 2 ครั้ง (${canon.calls})`;
+      $("cn2").className = "c-item" + (canon.calls >= 2 ? " ok" : "");
+      const done3 = line.beat >= 3;
+      $("cn3").textContent = (done3 ? "✅" : "◻︎") + " ความขัดแย้งเผ็ด-หวานครบวงจร";
+      $("cn3").className = "c-item" + (done3 ? " ok" : "");
+    }
+    /* progress + REC */
+    $("pbar").style.width = (elapsed/TOTAL*100) + "%";
+    const sec = Math.floor(elapsed/1000);
+    $("rectime").textContent = pad(Math.floor(sec/60)) + ":" + pad(sec%60);
+    /* danmaku ตามเวลา */
+    DANMAKU.forEach((d, i) => { if (!dmFired.has(i) && elapsed/1000 >= d[0]){ dmFired.add(i); fireDanmaku(d[1], d[2]); } });
+    /* ตัวเลขไลฟ์: โตตาม progress แบบ ease + สั่นนิดๆ */
+    const p = elapsed/TOTAL, ease = 1 - Math.pow(1-p, 2.2);
+    const views = 1200 + ease*1240000 + Math.sin(t/300)*40;
+    const likes = ease*98400, cmts = ease*4203, shares = ease*8120;
+    $("sviews").textContent = fmt(views); $("slikes").textContent = fmt(likes); $("scmts").textContent = fmt(cmts);
+    $("rlike").textContent = fmt(likes); $("rcmt").textContent = fmt(cmts); $("rshare").textContent = fmt(shares);
+    if (elapsed >= TOTAL) endShow();
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function startShow(){
+  if (!AC){ try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){} }
+  $("startcard").classList.add("hidden");
+  $("endcard").classList.add("hidden");
+  playing = true;
+  $("playBtn").textContent = "⏸ พัก";
+}
+function endShow(){
+  playing = false;
+  $("playBtn").textContent = "▶︎ เล่น";
+  $("fviews").textContent = "1.2M"; $("flikes").textContent = "98.4K"; $("fcmts").textContent = "4,203";
+  $("endcard").classList.remove("hidden");
+  $("beatlabel").textContent = "🎬 จบตอน — ฉายอีกรอบได้เลย";
+  spawnRise(["❤️","💛","💙","✨","🌶️","🍡"], 22);
+}
+function resetShow(){
+  elapsed = 0; lineIdx = -1; dmFired = new Set(); canon = {first3:false, calls:0};
+  subs.innerHTML = ""; aura.className = "aura";
+  orbYY.classList.remove("speaking"); orbYR.classList.remove("speaking"); pov.classList.remove("you-speaking");
+  $("pbar").style.width = "0%"; setBeatUI(-1);
+  $("beatlabel").textContent = "พร้อมฉาย — กด ▶ ได้เลย";
+}
+
+$("bigplay").addEventListener("click", startShow);
+$("replayBtn").addEventListener("click", () => { resetShow(); startShow(); });
+$("playBtn").addEventListener("click", () => {
+  if (elapsed >= TOTAL) { resetShow(); startShow(); return; }
+  if ($("startcard") && !$("startcard").classList.contains("hidden")) { startShow(); return; }
+  playing = !playing;
+  $("playBtn").textContent = playing ? "⏸ พัก" : "▶︎ เล่น";
+});
+$("restartBtn").addEventListener("click", () => { resetShow(); startShow(); });
+[["sp1",1],["sp15",1.5],["sp2",2]].forEach(([id, v]) => {
+  $(id).addEventListener("click", () => {
+    speed = v;
+    ["sp1","sp15","sp2"].forEach(x => $(x).classList.toggle("on", x === id));
+  });
+});
+$("sndBtn").addEventListener("click", () => {
+  soundOn = !soundOn;
+  $("sndBtn").textContent = soundOn ? "🔊 เสียง" : "🔇 ปิดเสียง";
+});
+
+/* จุดมาร์กจังหวะบน progress bar */
+(function(){
+  const bar = document.querySelector(".storybar");
+  let acc = 0;
+  SCRIPT.forEach((l, i) => {
+    acc += l.dur;
+    if (i < SCRIPT.length - 1 && SCRIPT[i+1] && SCRIPT[i+1].beat !== l.beat){
+      const m = document.createElement("span");
+      m.className = "bmark";
+      m.style.left = (acc/TOTAL*100) + "%";
+      bar.appendChild(m);
+    }
+  });
+})();
+</script>
+</body>
+</html>

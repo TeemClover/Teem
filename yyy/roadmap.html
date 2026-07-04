@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧭 แผนที่สมบัติ YYY — Internal Roadmap (ทีมเท่านั้น)</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --yy:#e74c3c; --yy-deep:#C0392B;
+  --yr:#4da3e8; --yr-deep:#2E75B6;
+  --you:#e8c04a; --you-deep:#C9A227;
+  --bg:#0b0a0f; --ink:#f4f1ea; --dim:#9d97a8;
+  --card:rgba(255,255,255,.04); --line:rgba(255,255,255,.09);
+  --ok:#2ecc71;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg); color:var(--ink); font-family:'Prompt','Noto Sans JP','Noto Sans SC',system-ui,sans-serif; overflow-x:hidden; line-height:1.65}
+::selection{background:var(--you-deep); color:#111}
+
+.aurora{position:fixed; inset:0; z-index:-2; overflow:hidden}
+.aurora span{position:absolute; width:55vmax; height:55vmax; border-radius:50%; filter:blur(90px); opacity:.13; animation:drift 30s ease-in-out infinite alternate}
+.aurora .a1{background:var(--you-deep); top:-18vmax; left:-12vmax}
+.aurora .a2{background:var(--yy-deep); bottom:-22vmax; right:-14vmax; animation-delay:-10s}
+.aurora .a3{background:var(--yr-deep); top:40%; left:60%; width:36vmax; height:36vmax; opacity:.09; animation-delay:-20s}
+@keyframes drift{from{transform:translate(0,0)} to{transform:translate(7vmax,5vmax) scale(1.12)}}
+.grain{position:fixed; inset:0; z-index:-1; opacity:.05; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");}
+
+nav{position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px 4vw; backdrop-filter:blur(14px); background:rgba(11,10,15,.6); border-bottom:1px solid var(--line)}
+.logo{font-weight:900; font-size:1.1rem; text-decoration:none; color:var(--ink); white-space:nowrap}
+.logo b{background:linear-gradient(100deg,var(--yy),var(--you),var(--yr)); -webkit-background-clip:text; background-clip:text; color:transparent}
+.internal-badge{font-size:.72rem; font-weight:700; letter-spacing:2px; color:#111; background:linear-gradient(100deg,var(--you),#f5d76e);
+  padding:4px 12px; border-radius:99px; animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.75}}
+nav .links{display:flex; gap:20px; flex-wrap:wrap}
+nav .links a{color:var(--dim); text-decoration:none; font-size:.85rem}
+nav .links a:hover{color:var(--you)}
+.lang-switch{display:flex; border:1px solid var(--line); border-radius:99px; overflow:hidden; background:var(--card)}
+.lang-switch button{border:none; background:transparent; color:var(--dim); font-family:inherit; font-weight:600; font-size:.8rem; padding:6px 14px; cursor:pointer; transition:all .25s}
+.lang-switch button.on{background:linear-gradient(100deg,var(--you-deep),#d4b13c); color:#111}
+.lang-switch button:not(.on):hover{color:var(--ink)}
+@media(max-width:900px){nav .links{display:none}}
+
+header{min-height:88svh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:130px 6vw 40px}
+h1{font-size:clamp(2.2rem,7.5vw,5rem); font-weight:900; line-height:1.1; margin:20px 0 8px}
+h1 .grad{background:linear-gradient(100deg,var(--yy),var(--you) 50%,var(--yr)); -webkit-background-clip:text; background-clip:text; color:transparent}
+.quote{max-width:700px; margin:20px auto 0; color:var(--dim); font-size:1.02rem; border-left:3px solid var(--you-deep); padding-left:18px; text-align:left}
+.quote b{color:var(--you)}
+.compass{margin-top:44px; width:min(560px,90vw)}
+.compass .lab{display:flex; justify-content:space-between; font-size:.85rem; color:var(--dim); margin-bottom:8px}
+.compass .lab b{color:var(--you)}
+.cbar{height:14px; border-radius:99px; background:rgba(255,255,255,.07); overflow:hidden; border:1px solid var(--line)}
+.cbar i{display:block; height:100%; width:0; border-radius:99px; background:linear-gradient(90deg,var(--yy-deep),var(--you),var(--yr)); transition:width 1s cubic-bezier(.2,.8,.2,1); box-shadow:0 0 18px rgba(232,192,74,.6)}
+
+section{padding:90px 6vw; max-width:1150px; margin:0 auto}
+.kicker{color:var(--you); font-weight:700; letter-spacing:3px; font-size:.8rem; text-transform:uppercase}
+h2{font-size:clamp(1.8rem,4.2vw,2.7rem); font-weight:800; margin:10px 0 12px}
+.lead{color:var(--dim); max-width:680px}
+.reveal{opacity:0; transform:translateY(34px); transition:opacity .8s ease, transform .8s ease}
+.reveal.in{opacity:1; transform:none}
+.note{font-size:.78rem; color:var(--dim); opacity:.8; margin-top:14px}
+
+/* ---------- วันพีช 3 ระดับ ---------- */
+.tiers{display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:22px; margin-top:50px}
+.tier{border:1px solid var(--line); border-radius:22px; padding:30px 26px; background:var(--card); position:relative; overflow:hidden; transition:transform .3s, border-color .3s}
+.tier:hover{transform:translateY(-8px)}
+.tier .flag{font-size:2rem}
+.tier h3{font-size:1.25rem; margin:10px 0 2px}
+.tier .when{font-size:.8rem; color:var(--dim); margin-bottom:14px}
+.tier ul{list-style:none}
+.tier li{font-size:.9rem; color:#c9c3d2; padding:6px 0 6px 26px; position:relative}
+.tier li::before{content:"◆"; position:absolute; left:4px; font-size:.6rem; top:12px}
+.tier.t1{border-top:3px solid var(--yr)} .tier.t1 li::before{color:var(--yr)}
+.tier.t2{border-top:3px solid var(--you)} .tier.t2 li::before{color:var(--you)}
+.tier.t3{border-top:3px solid var(--yy)} .tier.t3 li::before{color:var(--yy)}
+.tier.t3{background:linear-gradient(160deg,rgba(231,76,60,.08),var(--card))}
+
+/* ---------- เส้นทาง 5 เกาะ ---------- */
+.route{position:relative; margin-top:60px; padding-left:38px}
+.route::before{content:""; position:absolute; left:14px; top:0; bottom:0; width:0;
+  border-left:3px dotted rgba(232,192,74,.5)}
+.island{position:relative; margin-bottom:34px; border:1px solid var(--line); border-radius:20px; background:var(--card); padding:26px 28px; transition:transform .3s, border-color .3s}
+.island:hover{transform:translateX(8px); border-color:rgba(232,192,74,.4)}
+.island::before{content:attr(data-ico); position:absolute; left:-38px; top:22px; width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+  background:var(--bg); border:2px solid var(--you-deep); border-radius:50%; font-size:.95rem; box-shadow:0 0 16px rgba(201,162,39,.45)}
+.island.done{border-color:rgba(46,204,113,.35)}
+.island.done::before{border-color:var(--ok); box-shadow:0 0 16px rgba(46,204,113,.5)}
+.island .head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 14px}
+.island h3{font-size:1.3rem}
+.island .when{font-size:.78rem; color:#111; background:var(--you); border-radius:99px; padding:2px 12px; font-weight:700}
+.island.done .when{background:var(--ok)}
+.island .goal{color:#c9c3d2; margin:10px 0 16px; font-size:.95rem}
+.island .cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px}
+.island .col h4{font-size:.78rem; letter-spacing:1.5px; color:var(--dim); text-transform:uppercase; margin-bottom:8px}
+.island .col ul{list-style:none}
+.island .col li{font-size:.86rem; color:#c9c3d2; padding:3px 0 3px 20px; position:relative}
+.island .col li::before{content:"→"; position:absolute; left:0; color:var(--you)}
+.island .col.need li::before{content:"⚙︎"; color:var(--yr)}
+.island .col.loot li::before{content:"💰"; font-size:.7rem; top:6px}
+.kpis{display:flex; flex-wrap:wrap; gap:8px; margin-top:16px}
+.kpi{font-size:.76rem; padding:4px 12px; border-radius:99px; border:1px solid rgba(232,192,74,.4); color:var(--you)}
+
+/* ---------- สูตรเซนคู ---------- */
+.chains{display:flex; flex-direction:column; gap:26px; margin-top:50px}
+.chain{border:1px solid var(--line); border-radius:20px; padding:24px 26px; background:var(--card)}
+.chain .title{font-weight:700; margin-bottom:16px}
+.chain .flow{display:flex; flex-wrap:wrap; align-items:center; gap:10px}
+.chain .nodeX{padding:10px 16px; border-radius:14px; font-size:.85rem; border:1px solid var(--line); background:rgba(255,255,255,.03)}
+.chain .nodeX.goal{border-color:var(--yy); color:#fff; background:rgba(231,76,60,.14); font-weight:700}
+.chain .nodeX.have{border-color:var(--ok); color:var(--ok); font-weight:700}
+.chain .arrow{color:var(--you); font-weight:900}
+.chain .moral{margin-top:14px; font-size:.85rem; color:var(--you)}
+
+/* ---------- ผู้ชม ---------- */
+.worldbar{display:flex; height:16px; border-radius:99px; overflow:hidden; margin:44px 0 10px; border:1px solid var(--line)}
+.worldbar i{height:100%}
+.worldlegend{display:flex; flex-wrap:wrap; gap:16px; font-size:.8rem; color:var(--dim); margin-bottom:36px}
+.worldlegend b{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px}
+.crew{display:grid; grid-template-columns:repeat(auto-fit,minmax(255px,1fr)); gap:20px}
+.aud{border:1px solid var(--line); border-radius:20px; padding:26px 24px; background:var(--card); transition:transform .3s}
+.aud:hover{transform:translateY(-8px)}
+.aud .flag{font-size:1.9rem}
+.aud h3{margin:8px 0 2px; font-size:1.12rem}
+.aud .role{font-size:.78rem; color:#111; display:inline-block; border-radius:99px; padding:2px 12px; font-weight:700; margin-bottom:12px}
+.aud p{font-size:.86rem; color:#c9c3d2; margin-bottom:8px}
+.aud p b{color:var(--ink)}
+.aud.th-a .role{background:var(--you)} .aud.cn-a .role{background:#ff8b7d} .aud.jp-a .role{background:#9cc9f0} .aud.gl-a .role{background:#b9f0c9}
+
+/* ---------- เครื่องยนต์ทำเงิน ---------- */
+.streams{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; margin-top:50px}
+.stream{border:1px solid var(--line); border-radius:18px; padding:22px 24px; background:var(--card); transition:transform .3s, border-color .3s}
+.stream:hover{transform:translateY(-6px); border-color:rgba(232,192,74,.45)}
+.stream .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.stream h3{font-size:1.02rem}
+.stream .money{color:var(--you); font-weight:900; letter-spacing:1px; white-space:nowrap}
+.stream .meta{display:flex; flex-wrap:wrap; gap:6px; margin:10px 0}
+.stream .meta span{font-size:.72rem; padding:3px 10px; border-radius:99px; border:1px solid var(--line); color:var(--dim)}
+.stream .meta span.phase{border-color:rgba(232,192,74,.5); color:var(--you)}
+.stream p{font-size:.85rem; color:#c9c3d2}
+
+/* ---------- ตารางตัวละคร ---------- */
+.matrix{width:100%; border-collapse:collapse; margin-top:46px; font-size:.88rem}
+.matrix th,.matrix td{border:1px solid var(--line); padding:14px 16px; text-align:left; vertical-align:top}
+.matrix th{background:rgba(255,255,255,.05); font-size:.8rem; letter-spacing:1px; color:var(--dim); text-transform:uppercase}
+.matrix td:first-child{font-weight:800; white-space:nowrap}
+.matrix tr.ryy td:first-child{color:var(--yy)} .matrix tr.ryr td:first-child{color:var(--yr)} .matrix tr.ryou td:first-child{color:var(--you)}
+.matrix td{color:#c9c3d2}
+.tablewrap{overflow-x:auto}
+
+/* ---------- พายุ ---------- */
+.storms{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; margin-top:50px}
+.storm{border:1px solid rgba(231,76,60,.28); border-radius:18px; padding:22px 24px; background:rgba(231,76,60,.05)}
+.storm h3{font-size:1rem; color:#f1948a; margin-bottom:8px}
+.storm p{font-size:.85rem; color:#c9c3d2}
+.storm p b{color:var(--ok)}
+
+/* ---------- เช็คลิสต์ ---------- */
+.checklist{margin-top:46px; display:flex; flex-direction:column; gap:10px}
+.check{display:flex; gap:14px; align-items:flex-start; border:1px solid var(--line); border-radius:14px; padding:16px 18px; background:var(--card); cursor:pointer; transition:border-color .25s, opacity .25s}
+.check:hover{border-color:rgba(232,192,74,.45)}
+.check input{margin-top:5px; accent-color:var(--you-deep); width:17px; height:17px; cursor:pointer}
+.check .txt b{display:block; font-size:.95rem}
+.check .txt small{color:var(--dim); font-size:.8rem}
+.check.done{opacity:.55}
+.check.done .txt b{text-decoration:line-through}
+
+.final{text-align:center; padding:110px 6vw; background:radial-gradient(ellipse at 50% 130%, rgba(201,162,39,.2), transparent 60%)}
+.final h2{font-size:clamp(1.9rem,5vw,3.2rem)}
+.btn{display:inline-block; margin-top:30px; padding:15px 34px; border-radius:99px; font-weight:700; text-decoration:none; color:#fff;
+  background:linear-gradient(100deg,var(--yy-deep),#e0642f); box-shadow:0 8px 34px rgba(192,57,43,.45); transition:transform .25s}
+.btn:hover{transform:translateY(-3px)}
+footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; color:var(--dim); font-size:.82rem}
+</style>
+</head>
+<body>
+
+<div class="aurora"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+<div class="grain"></div>
+
+<nav>
+  <a class="logo" href="index.html">← THE <b>YYY</b> DIARY</a>
+  <div class="links">
+    <a href="#onepiece">🏴‍☠️ วันพีช</a>
+    <a href="#route">🗺️ 5 เกาะ</a>
+    <a href="#science">🧪 สูตรเซนคู</a>
+    <a href="#crew">🌍 ผู้ชม</a>
+    <a href="#money">💰 ทำเงิน</a>
+    <a href="#storm">⛈️ พายุ</a>
+    <a href="#orders">✅ 30 วันแรก</a>
+    <a href="sample.html" style="color:var(--you)">🎬 ตอนจำลอง</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="lang-switch" id="langSwitch">
+      <button data-lang="th">ไทย</button>
+      <button data-lang="zh">中文</button>
+    </div>
+    <span class="internal-badge">INTERNAL · ทีมเท่านั้น</span>
+  </div>
+</nav>
+
+<header>
+  <div class="internal-badge" style="animation:none">ลับสุดยอด — เปิดในวงทีมก่อน ห้ามหลุดจ้า</div>
+  <h1>แผนที่สมบัติ <span class="grad">YYY</span><br>มุ่งหน้าสู่แกรนด์ไลน์</h1>
+  <p class="quote">หลักคิดแบบเซนคู: <b>อยากได้อะไร ให้ไล่ย้อนกลับว่า "ต้องมีอะไรก่อน"</b> แล้วสร้างมันทีละชิ้นตามลำดับ ไม่ข้ามขั้น ไม่พึ่งปาฏิหาริย์ — ทุกอย่างในหน้านี้คือ ทำได้จริง <b>หนึ่งหมื่นล้านเปอร์เซ็นต์</b> ถ้าเดินตามแผนที</p>
+  <div class="compass">
+    <div class="lab"><span>🧭 ระยะทางสู่การออกเรือ (จากเช็คลิสต์ 30 วันแรกด้านล่าง)</span><b id="pct">0%</b></div>
+    <div class="cbar"><i id="pbar"></i></div>
+  </div>
+</header>
+
+<!-- ================= วันพีช ================= -->
+<section id="onepiece">
+  <div class="reveal">
+    <div class="kicker">One Piece — นิยามความสำเร็จ</div>
+    <h2>"วันพีช" ของเราหน้าตาเป็นแบบนี้</h2>
+    <p class="lead">เป้าที่ไม่มีตัวเลขคือความฝัน เป้าที่มีตัวเลขคือแผน — เราตั้ง 3 ระดับ ให้รู้ว่าตอนนี้เรืออยู่ตรงไหน และ "ชนะ" แปลว่าอะไร</p>
+  </div>
+  <div class="tiers">
+    <div class="tier t1 reveal">
+      <div class="flag">⛵</div>
+      <h3>ล็อกโพสแรก — "เรือไม่จม"</h3>
+      <div class="when">ภายใน 12 เดือน</div>
+      <ul>
+        <li>ผู้ติดตามรวม 4 แพลตฟอร์ม ≥ 100,000</li>
+        <li>รายได้เดือนละ ≥ 50,000฿ ครอบคลุมต้นทุนการผลิตทั้งหมด</li>
+        <li>สปอนเซอร์ประจำอย่างน้อย 1 ราย + งาน B2B หล่อเลี้ยงทีม</li>
+        <li>คลังฟุต HIGH VALUE ≥ 150 ชิ้น (สินทรัพย์ที่โตทุกสัปดาห์)</li>
+      </ul>
+    </div>
+    <div class="tier t2 reveal">
+      <div class="flag">🌊</div>
+      <h3>เข้าแกรนด์ไลน์ — "เป็นธุรกิจเต็มตัว"</h3>
+      <div class="when">ภายใน 24 เดือน</div>
+      <ul>
+        <li>ผู้ติดตามรวม ≥ 1,000,000 กระจายอย่างน้อย 2 ตลาดภาษา</li>
+        <li>รายได้ 6 หลัก/เดือน จาก ≥ 4 ช่องทาง (ไม่มีช่องทางไหนเกิน 50%)</li>
+        <li>สินค้าแบรนด์ตัวเองรุ่นแรกขายหมด + มีลูกค้าซื้อซ้ำ</li>
+        <li>ดีลคาแร็กเตอร์คอลแลบ/ไลเซนส์ฉบับแรกเซ็นสำเร็จ</li>
+      </ul>
+    </div>
+    <div class="tier t3 reveal">
+      <div class="flag">🏴‍☠️</div>
+      <h3>วันพีช — "IP ที่มีชีวิตของตัวเอง"</h3>
+      <div class="when">36–48 เดือน</div>
+      <ul>
+        <li>YYY เป็นคาแร็กเตอร์ IP ระดับภูมิภาค: คนจำตัวละครได้ ไม่ใช่แค่จำช่อง</li>
+        <li>รายได้ licensing + สินค้า ≥ 50% (เงินเข้าแม้ไม่ได้ถ่ายเพิ่ม)</li>
+        <li>ตัวละครมีชีวิตเกินตัวนักแสดง: สติกเกอร์ เว็บตูน แอนิเมชัน ป๊อปอัพสโตร์</li>
+        <li>มูลค่า IP สูงกว่ามูลค่าช่อง — ขายได้ ร่วมทุนได้ ต่อยอดได้</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">ตัวเลขทั้งหมดคือเป้าภายในทีม ปรับได้ทุกไตรมาสตามข้อมูลจริง — แต่ห้ามปรับเพราะขี้เกียจ ปรับได้เพราะดาต้าบอกเท่านั้น</p>
+</section>
+
+<!-- ================= เส้นทาง 5 เกาะ ================= -->
+<section id="route">
+  <div class="reveal">
+    <div class="kicker">The Route — เส้นทางเดินเรือ</div>
+    <h2>6 เกาะ จากท่าเรือถึงแกรนด์ไลน์</h2>
+    <p class="lead">แต่ละเกาะมี "ของที่ต้องมีก่อนขึ้นเกาะ" (สร้างจากเกาะก่อนหน้า) และ "สมบัติที่ได้กลับมา" — ห้ามข้ามเกาะ เรือจะจม</p>
+  </div>
+  <div class="route">
+
+    <div class="island done reveal" data-ico="⚓">
+      <div class="head"><h3>เกาะ 0 — ท่าเรือออกเดินทาง</h3><span class="when">เสร็จแล้ว ✓</span></div>
+      <p class="goal">สร้างโครงสร้างพื้นฐานให้ครบก่อนออกทะเล — ข้อนี้คนส่วนใหญ่ข้าม แล้วไปตายกลางทาง เราไม่</p>
+      <div class="cols">
+        <div class="col loot"><h4>สมบัติที่มีแล้ว</h4><ul>
+          <li>จักรวาล + กฎเหล็ก 5 ข้อ (บทตลกแบบทำซ้ำได้)</li>
+          <li>YYY Studio OS — วางแผน/คลังฟุต/จับคู่บท/ส่งออก 4 แพลตฟอร์ม</li>
+          <li>Reaction Bank 30 ชิ้น (HIGH VALUE 15)</li>
+          <li>เว็บพอร์ตโฟลิโอ 3 ภาษา + หน้าแผนที่นี้</li>
+        </ul></div>
+        <div class="col"><h4>แปลว่าอะไร</h4><ul>
+          <li>ต้นทุนต่อคลิปต่ำกว่าคู่แข่งตั้งแต่วันแรก</li>
+          <li>ถ่าย 1 วัน ได้วัตถุดิบตัดหลายตอน</li>
+          <li>ออกเรือได้ทันที ไม่ต้องรออะไรอีก</li>
+        </ul></div>
+      </div>
+    </div>
+
+    <div class="island reveal" data-ico="🧪">
+      <div class="head"><h3>เกาะ 1 — เกาะพิสูจน์สูตร</h3><span class="when">เดือน 1–3</span></div>
+      <p class="goal">เป้าเดียว: หา <b>format-market fit</b> — มุกไหน ตลาดไหน แพลตฟอร์มไหน "ติด" ที่สุด ใช้ปริมาณ+ดาต้า ไม่ใช้ความรู้สึก</p>
+      <div class="cols">
+        <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
+          <li>ลงคลิป 3–4 ตอน/สัปดาห์ × 4 แพลตฟอร์ม (รวม ~40–48 ตอน)</li>
+          <li>สลับ hook เปิด 3 วิ หลายสูตร แล้วเทียบ retention</li>
+          <li>ประชุมดาต้าทุกจันทร์: อะไรเวิร์กทำซ้ำ อะไรแป้กตัดทิ้ง</li>
+          <li>เก็บทุกช็อตเข้าคลัง Studio OS — ยิงคลิปใหม่จากฟุตเก่า</li>
+        </ul></div>
+        <div class="col loot"><h4>สมบัติที่ได้</h4><ul>
+          <li>รู้ "สูตรไวรัล" เฉพาะของช่องเราต่อแต่ละตลาด</li>
+          <li>ฐานผู้ชมกลุ่มแรกที่กลับมาดูซ้ำ</li>
+        </ul></div>
+      </div>
+      <div class="kpis"><span class="kpi">ดูจบ 3 วิแรก ≥ 65%</span><span class="kpi">1 คลิปทะลุ 500K วิว</span><span class="kpi">10K followers ในแพลตฟอร์มใดแพลตฟอร์มหนึ่ง</span><span class="kpi">คลังฟุต ≥ 80 ชิ้น</span></div>
+    </div>
+
+    <div class="island reveal" data-ico="❤️">
+      <div class="head"><h3>เกาะ 2 — เกาะแฟนด้อม</h3><span class="when">เดือน 3–9</span></div>
+      <p class="goal">เปลี่ยน "คนไถผ่าน" เป็น "แฟน" — คนดูมาเพราะมุก แต่อยู่ต่อเพราะรักตัวละคร และแฟนเท่านั้นที่จ่ายเงิน</p>
+      <div class="cols">
+        <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
+          <li>ปั้นมุกประจำ/แคตช์เฟรสให้คนเล่นตาม (มีม "ยู จ่ายเงิน")</li>
+          <li>ซีรีส์ตอนต่อ + ความสัมพันธ์ตัวละครค่อยๆ เปิด (lore drop)</li>
+          <li>ตอบคอมเมนต์เป็นเสียงตัวละคร 3 ภาษา — คอมเมนต์คือคอนเทนต์</li>
+          <li>เปิดคอมมูนิตี้: กลุ่มแฟน + ไลฟ์รายสัปดาห์</li>
+        </ul></div>
+        <div class="col loot"><h4>สมบัติที่ได้</h4><ul>
+          <li>แฟนด้อมที่สร้างคอนเทนต์เอง (แฟนอาร์ต/duet) = โฆษณาฟรี</li>
+          <li>อำนาจต่อรองกับสปอนเซอร์ (engagement คือของจริง)</li>
+        </ul></div>
+      </div>
+      <div class="kpis"><span class="kpi">100K followers รวม</span><span class="kpi">engagement ≥ 8%</span><span class="kpi">แฟนอาร์ต/มีมเกิดเองชิ้นแรก</span><span class="kpi">ยอดดูจากแฟนเก่า ≥ 30%</span></div>
+    </div>
+
+    <div class="island reveal" data-ico="🪙">
+      <div class="head"><h3>เกาะ 3 — เกาะเบรี่แรก</h3><span class="when">เดือน 6–12</span></div>
+      <p class="goal">เปิดเครื่องยนต์รายได้ 3–4 ตัวแรกพร้อมกัน — เป้าไม่ใช่รวย เป้าคือ <b>รายได้ ≥ ต้นทุน</b> ให้เรือแล่นได้ไม่ต้องควักเนื้อ</p>
+      <div class="cols">
+        <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
+          <li>Media kit + rate card 3 ภาษา (ใช้เคสคลิปพีคเป็นหลักฐาน)</li>
+          <li>สมัคร creator program ทุกแพลตฟอร์มที่เข้าเกณฑ์</li>
+          <li>ติดตะกร้า affiliate กับของกิน/ของใช้ที่โผล่ในคลิปอยู่แล้ว</li>
+          <li>แพ็กเกจสปอนเซอร์ "1 ดีล ได้ 4 ตลาด 4 ภาษา" — จุดขายที่คู่แข่งไม่มี</li>
+        </ul></div>
+        <div class="col loot"><h4>สมบัติที่ได้</h4><ul>
+          <li>กระแสเงินสดเป็นบวก — ทีมอยู่ได้ด้วยตัวเอง</li>
+          <li>เคสสตัดี้เชิงพาณิชย์สำหรับปิดดีลใหญ่ขึ้น</li>
+        </ul></div>
+      </div>
+      <div class="kpis"><span class="kpi">สปอนเซอร์ ≥ 3 ราย</span><span class="kpi">รายได้ครอบคลุมต้นทุน 100%</span><span class="kpi">affiliate ≥ 10% ของรายได้</span><span class="kpi">ราคาตอนสปอนเซอร์ขึ้น 2 เท่าจากดีลแรก</span></div>
+    </div>
+
+    <div class="island reveal" data-ico="🛍️">
+      <div class="head"><h3>เกาะ 4 — เกาะ X-Commerce</h3><span class="when">ปี 1–2</span></div>
+      <p class="goal">เปลี่ยนแฟนเป็นลูกค้า — ขายของที่ "คือตัวละคร" ไม่ใช่ของแปะโลโก้ ความขัดแย้งเผ็ด-หวานกลายเป็นสินค้าคู่</p>
+      <div class="cols">
+        <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
+          <li>สินค้านำร่อง: ซอสเผ็ดสูตรเหยาเหยา × ขนมหวานสูตรยูริ (เซ็ตคู่ "ซื้อทีมไหนก็แพ้ใจอีกทีม")</li>
+          <li>สติกเกอร์ LINE/WeChat 3 ภาษา — ทุนต่ำ ขายได้ทั้ง 3 ตลาด</li>
+          <li>ไลฟ์คอมเมิร์ซฉบับซิตคอม: สงครามเผ็ดหวานเวอร์ชันขายของ</li>
+          <li>Pre-order ก่อนผลิตจริง — ให้แฟนโหวตสินค้า ลดเสี่ยงสต็อก</li>
+        </ul></div>
+        <div class="col loot"><h4>สมบัติที่ได้</h4><ul>
+          <li>ข้อมูลลูกค้าของตัวเอง (ไม่ต้องยืมจมูกแพลตฟอร์มหายใจ)</li>
+          <li>หลักฐานว่า IP ขายของได้จริง → ตั๋วขึ้นเกาะ 5</li>
+        </ul></div>
+      </div>
+      <div class="kpis"><span class="kpi">สินค้ารุ่นแรกขายหมด</span><span class="kpi">ลูกค้าซื้อซ้ำ ≥ 20%</span><span class="kpi">รายได้สินค้า ≥ 25% ของรายได้รวม</span></div>
+    </div>
+
+    <div class="island reveal" data-ico="👑">
+      <div class="head"><h3>เกาะ 5 — แกรนด์ไลน์: IP Licensing</h3><span class="when">ปี 2+</span></div>
+      <p class="goal">ขั้นสุดของธุรกิจคาแร็กเตอร์: <b>ตัวละครออกไปทำงานแทนเรา</b> — แบรนด์อื่นจ่ายเงินเพื่อยืมเหยาเหยา ยูริ ยู ไปอยู่บนของของเขา</p>
+      <div class="cols">
+        <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
+          <li>Character bible + style guide ระดับไลเซนส์ (มีแล้วครึ่งหนึ่งจาก canon)</li>
+          <li>พอร์ตยอดขายสินค้า + เคสสปอนเซอร์ = หลักฐานมูลค่า IP</li>
+          <li>หาพาร์ตเนอร์/เอเจนซี่ไลเซนส์ในไทย จีน ญี่ปุ่น</li>
+          <li>ขยายร่าง IP: เว็บตูน/แอนิเมชันสั้น ให้ตัวละครอยู่เกินตัวนักแสดง</li>
+        </ul></div>
+        <div class="col loot"><h4>สมบัติที่ได้ = วันพีช</h4><ul>
+          <li>รายได้ passive จากไลเซนส์ — เงินเข้าแม้ทีมพักร้อน</li>
+          <li>IP มีมูลค่าประเมินได้ ขาย/ร่วมทุน/ต่อยอดได้ทุกทาง</li>
+        </ul></div>
+      </div>
+      <div class="kpis"><span class="kpi">ดีลไลเซนส์แรกเซ็นสำเร็จ</span><span class="kpi">รายได้ไม่ต้องถ่ายเพิ่ม ≥ 30%</span><span class="kpi">ป๊อปอัพ/คอลแลบแบรนด์ใหญ่ 1 ครั้ง/ปี</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= สูตรเซนคู ================= -->
+<section id="science">
+  <div class="reveal">
+    <div class="kicker">Science Roadmap — ไล่ย้อนแบบเซนคู</div>
+    <h2>อยากได้ปลายทาง ให้ไล่ย้อนกลับมาหาสิ่งที่มีแล้ว</h2>
+    <p class="lead">วิธีอ่าน: เริ่มจากของที่อยากได้ (แดง) ไล่ย้อนซ้ายว่าต้องมีอะไรก่อน จนเจอของที่เรามีแล้ว (เขียว) — ถ้าเส้นไหนย้อนแล้วเจอสีเขียว แปลว่าทำได้แน่ หนึ่งหมื่นล้านเปอร์เซ็นต์</p>
+  </div>
+  <div class="chains">
+    <div class="chain reveal">
+      <div class="title">🎯 เส้นทางที่ 1: สปอนเซอร์จ่ายหลักแสน</div>
+      <div class="flow">
+        <span class="nodeX goal">ดีลสปอนเซอร์หลักแสน</span><span class="arrow">←</span>
+        <span class="nodeX">rate card + เคสสตัดี้</span><span class="arrow">←</span>
+        <span class="nodeX">คลิปพีค 1M วิว</span><span class="arrow">←</span>
+        <span class="nodeX">ปริมาณ 40+ ตอน + ดาต้า</span><span class="arrow">←</span>
+        <span class="nodeX have">ระบบผลิตเร็ว ✓ มีแล้ว!</span>
+      </div>
+      <div class="moral">→ สิ่งเดียวที่ขวางเราจากดีลแสนแรกคือ "จำนวนตอน" — ถ่ายเถอะ</div>
+    </div>
+    <div class="chain reveal">
+      <div class="title">🛍️ เส้นทางที่ 2: สินค้าขายหมดใน 1 สัปดาห์</div>
+      <div class="flow">
+        <span class="nodeX goal">สินค้า sold out</span><span class="arrow">←</span>
+        <span class="nodeX">แฟนที่อยาก "เป็นเจ้าของ" ตัวละคร</span><span class="arrow">←</span>
+        <span class="nodeX">คาแร็กเตอร์ที่คนรัก+จำได้</span><span class="arrow">←</span>
+        <span class="nodeX">มุกประจำ+ความสม่ำเสมอ</span><span class="arrow">←</span>
+        <span class="nodeX have">กฎจักรวาล 5 ข้อ ✓ มีแล้ว!</span>
+      </div>
+      <div class="moral">→ กฎชุดเดิม+ชุด Signature ไม่ใช่ข้อจำกัด มันคือเครื่องผลิตความจำได้ (brand recall)</div>
+    </div>
+    <div class="chain reveal">
+      <div class="title">👑 เส้นทางที่ 3: ดีลไลเซนส์ (วันพีช)</div>
+      <div class="flow">
+        <span class="nodeX goal">แบรนด์ใหญ่ขอไลเซนส์ตัวละคร</span><span class="arrow">←</span>
+        <span class="nodeX">หลักฐาน IP ทำเงิน (ยอดขายสินค้า)</span><span class="arrow">←</span>
+        <span class="nodeX">แฟนด้อม 3 ตลาด</span><span class="arrow">←</span>
+        <span class="nodeX">คอนเทนต์สม่ำเสมอ 4 แพลตฟอร์ม</span><span class="arrow">←</span>
+        <span class="nodeX have">Studio OS + Omnichannel ✓ มีแล้ว!</span>
+      </div>
+      <div class="moral">→ ทุกเส้นทางย้อนกลับมาจบที่จุดเดียวกัน: <b>ลงคลิปสม่ำเสมอสัปดาห์นี้</b> — งานที่สำคัญที่สุดคืองานที่ธรรมดาที่สุด</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ผู้ชม ================= -->
+<section id="crew">
+  <div class="reveal">
+    <div class="kicker">The Crew — กองเรือผู้ชมทั่วโลก</div>
+    <h2>ใครดูเรา มาจากไหน และทำไมถึงหยุดนิ้ว</h2>
+    <p class="lead">จุดแข็งเชิงโครงสร้างของ YYY: ตัวละคร 3 ตัว = ประตูเข้า 3 วัฒนธรรม ไม่ใช่ช่องไทยที่แปลซับ แต่เป็นช่องที่ "พูดภาษาแม่ของคนดู" ตั้งแต่ต้นทาง</p>
+  </div>
+  <div class="worldbar reveal">
+    <i style="width:40%;background:var(--you-deep)" title="ไทย"></i>
+    <i style="width:30%;background:var(--yy-deep)" title="จีน"></i>
+    <i style="width:15%;background:var(--yr-deep)" title="ญี่ปุ่น"></i>
+    <i style="width:15%;background:#3f8f5f" title="Global"></i>
+  </div>
+  <div class="worldlegend reveal">
+    <span><b style="background:var(--you-deep)"></b>ไทย ~40%</span>
+    <span><b style="background:var(--yy-deep)"></b>จีน ~30%</span>
+    <span><b style="background:var(--yr-deep)"></b>ญี่ปุ่น ~15%</span>
+    <span><b style="background:#3f8f5f"></b>Global/EN ~15%</span>
+    <span style="opacity:.7">(สัดส่วนเป้าหมายปีแรก — วัดจริงทุกเดือนแล้วปรับ)</span>
+  </div>
+  <div class="crew">
+    <div class="aud th-a reveal">
+      <div class="flag">🇹🇭</div><h3>ไทย — ฐานทัพหลัก</h3><span class="role">VOLUME + ENGAGEMENT</span>
+      <p><b>ใคร:</b> วัย 18–34 สายกินเที่ยว ชอบมุกต่างวัฒนธรรม เสพคู่จิ้น/แก๊งเพื่อน — ตลาดโซเชียลระดับ ~50 ล้านบัญชี ที่เราพูดภาษาเดียวกับเขาแบบเนทีฟ</p>
+      <p><b>ประตูเข้า:</b> เสียง VO ของยู — คนไทยดูแล้วรู้สึกว่า "เราคือยู" คนถือกล้อง คนจ่ายเงิน คนบ่นในใจ</p>
+      <p><b>แพลตฟอร์ม:</b> TikTok + FB Reels · <b>บทบาทธุรกิจ:</b> ฐานยอดวิว สปอนเซอร์ท้องถิ่น affiliate ของกิน</p>
+    </div>
+    <div class="aud cn-a reveal">
+      <div class="flag">🇨🇳</div><h3>จีน — มหาสมุทรที่ใหญ่ที่สุด</h3><span class="role">SCALE + COMMERCE</span>
+      <p><b>ใคร:</b> ผู้ใช้ Douyin หลายร้อยล้านที่อินคอนเทนต์ 曼谷生活 — คนจีนที่เคยมา/กำลังจะมาเที่ยวไทย (ระดับหลายล้านคนต่อปี) นักเรียนจีนในไทย และสายส่องชีวิตสาวจีนเก่งในต่างแดน</p>
+      <p><b>ประตูเข้า:</b> เหยาเหยา — สาวจีนสวย เฟียส ใช้ชีวิตที่กรุงเทพฯ = แฟนตาซีที่คนจีนดูแล้วภูมิใจ+อยากตาม</p>
+      <p><b>แพลตฟอร์ม:</b> Douyin · <b>บทบาทธุรกิจ:</b> สเกลมหาศาล ไลฟ์คอมเมิร์ซแรงสุด สินค้าไทยขายคนจีนได้ตรง</p>
+    </div>
+    <div class="aud jp-a reveal">
+      <div class="flag">🇯🇵</div><h3>ญี่ปุ่น — เกาะพันธมิตร</h3><span class="role">BRAND LOVE + MERCH</span>
+      <p><b>ใคร:</b> คนญี่ปุ่นสายรักเมืองไทย (ไปเที่ยวไทยปีละ ~1 ล้านคน) สายของน่ารัก สายอาหาร และวัฒนธรรม "เอาใจช่วยเด็กสาวพยายาม" ที่ฝังใน DNA คอนเทนต์ญี่ปุ่น</p>
+      <p><b>ประตูเข้า:</b> ยูริ — เสียงญี่ปุ่นแท้ ความละมุน+โดนแกล้งเบาๆ = คาแร็กเตอร์สูตรที่ตลาดญี่ปุ่นรักเสมอ</p>
+      <p><b>แพลตฟอร์ม:</b> TikTok JP + IG · <b>บทบาทธุรกิจ:</b> กำลังซื้อสูง สติกเกอร์/เมิร์ชขายดี มาตรฐานความน่ารักระดับโลก</p>
+    </div>
+    <div class="aud gl-a reveal">
+      <div class="flag">🌏</div><h3>Global/EN — น่านน้ำเปิด</h3><span class="role">PRESTIGE + DEALS</span>
+      <p><b>ใคร:</b> expat ในกรุงเทพฯ, ชาวเอเชียในต่างแดน, สาย street food ทั่วโลก (ตลาดเดียวกับช่องรีวิวอาหารระดับล้านซับ) ที่หิวคอนเทนต์กรุงเทพฯ ของแท้</p>
+      <p><b>ประตูเข้า:</b> ความ exotic ของทีม 3 ภาษาในเมืองเดียว — ไม่มีใครทำแบบนี้เป็นซิตคอม</p>
+      <p><b>แพลตฟอร์ม:</b> IG Reels (+ YouTube Shorts เฟส 2) · <b>บทบาทธุรกิจ:</b> ดีลอินเตอร์ การท่องเที่ยว ทำให้ IP ดู world-class เวลาเจรจา</p>
+    </div>
+  </div>
+  <p class="note">ตัวเลขตลาดเป็นการประมาณระดับขนาด (order of magnitude) ไว้ใช้คุยทิศทาง ไม่ใช่ตัวเลขอ้างอิงวิชาการ — ก่อนทำ pitch deck ให้ดึงตัวเลขปีล่าสุดอีกรอบ</p>
+</section>
+
+<!-- ================= ทำเงิน ================= -->
+<section id="money">
+  <div class="reveal">
+    <div class="kicker">Money Engine — เครื่องยนต์ทำเงิน</div>
+    <h2>9 ท่อรายได้จาก 3 ตัวละคร</h2>
+    <p class="lead">หลักการ: ไม่พึ่งท่อไหนเกิน 50% และทุกท่อต้อง "เกิดจากตัวละคร" ไม่ใช่แปะโลโก้ขายของมั่ว — เรียงตามลำดับปลดล็อกจริง</p>
+  </div>
+  <div class="streams">
+    <div class="stream reveal"><div class="top"><h3>1. ส่วนแบ่งแพลตฟอร์ม / Creator Fund</h3><div class="money">฿</div></div>
+      <div class="meta"><span class="phase">ปลดล็อก: เกาะ 1</span><span>ทุกตัวละคร</span></div>
+      <p>เงินขนมจากยอดวิว TikTok/FB/IG bonus program — อย่าหวังเป็นรายได้หลัก แต่เปิดให้ครบทุกอันเพราะเป็นเงินฟรีจากงานที่ทำอยู่แล้ว</p></div>
+    <div class="stream reveal"><div class="top"><h3>2. สปอนเซอร์ / Advertorial</h3><div class="money">฿฿฿</div></div>
+      <div class="meta"><span class="phase">ปลดล็อก: เกาะ 3</span><span>จุดขาย: 1 ดีล = 4 ตลาด</span></div>
+      <p>กระดูกสันหลังรายได้ช่วงปี 1–2 — จุดแข็งที่คู่แข่งไม่มี: แบรนด์จ่ายครั้งเดียวได้คอนเทนต์ 4 ภาษา 4 แพลตฟอร์ม และหมวดสปอนเซอร์ไม่ชนกันเอง: เผ็ด/หรู → เหยาเหยา, หวาน/คาเฟ่/อาร์ต → ยูริ, แอปจ่ายเงิน/ประหยัด/แก็ดเจ็ต → ยู</p></div>
+    <div class="stream reveal"><div class="top"><h3>3. Affiliate / TikTok Shop</h3><div class="money">฿฿</div></div>
+      <div class="meta"><span class="phase">ปลดล็อก: เกาะ 3</span><span>ของที่โผล่ในคลิปอยู่แล้ว</span></div>
+      <p>ตะกร้าใต้คลิป = ของกินของใช้ที่ตัวละครกินจริงในตอนนั้น ("ซอสที่เหยาเหยาเทหมดขวด" ขายตัวมันเอง) — รายได้ passive ต่อคลิปเก่าไปเรื่อยๆ</p></div>
+    <div class="stream reveal"><div class="top"><h3>4. สินค้าแบรนด์ตัวเอง</h3><div class="money">฿฿฿</div></div>
+      <div class="meta"><span class="phase">ปลดล็อก: เกาะ 4</span><span>YY×YR เซ็ตคู่</span></div>
+      <p>ซอสเผ็ดสูตรเหยาเหยา × ขนมหวานสูตรยูริ ขายเป็นเซ็ตคู่กัด — แคมเปญ "ยูจ่าย" = โค้ดส่วนลด ให้มุกในจอกลายเป็นกลไกการตลาดนอกจอ Pre-order ก่อนผลิตเสมอ</p></div>
+    <div class="stream reveal"><div class="top"><h3>5. ดิจิทัลกู้ดส์ / สติกเกอร์</h3><div class="money">฿</div></div>
+      <div class="meta"><span class="phase">ปลดล็อก: เกาะ 2–3</span><span>ทุนต่ำสุด เริ่มไวสุด</span></div>
+      <p>สติกเกอร์ LINE (ตลาดไทย+ญี่ปุ่นใหญ่มาก) + WeChat (จีน) 3 ภาษาจากมุกประจำ — ต้นทุนวาดครั้งเดียว ขายตลอดกาล และเป็นก้าวแรกของ "ตัวละครอยู่เกินตัวนักแสดง"</p></div>
+    <div class="stream reveal"><div class="top"><h3>6. เมมเบอร์ชิป / แฟนคลับ</h3><div class="money">฿฿</div></div>
+      <div class="meta"><span class="phase">ปลดล็อก: เกาะ 2</span><span>ขายมุมมองของยู</span></div>
+      <p>คอนเทนต์หลังกล้องแบบเสียเงิน: "มุมมองยูฉบับเต็ม" เบื้องหลังที่ยูบ่นได้เต็มที่ + โหวตเมนู/โลเคชันตอนถัดไป — แฟนตัวจริงยอมจ่ายเพื่อใกล้ชิดกว่าเดิม</p></div>
+    <div class="stream reveal"><div class="top"><h3>7. ไลฟ์คอมเมิร์ซ</h3><div class="money">฿฿฿</div></div>
+      <div class="meta"><span class="phase">ปลดล็อก: เกาะ 4</span><span>แรงสุดที่ตลาดจีน</span></div>
+      <p>สงครามเผ็ด-หวานเวอร์ชันไลฟ์ขายของ — เหยาเหยาเชียร์ทีมเผ็ด ยูริเชียร์ทีมหวาน คนดูโหวตด้วยการกดซื้อ ยูอ่านยอดแบบหน้าซีด — ซิตคอม+การขายในตัวเดียวกัน</p></div>
+    <div class="stream reveal"><div class="top"><h3>8. Character Licensing / คอลแลบ</h3><div class="money">฿฿฿฿</div></div>
+      <div class="meta"><span class="phase">ปลดล็อก: เกาะ 5</span><span>วันพีชของจริง</span></div>
+      <p>แบรนด์จ่ายเพื่อเอาตัวละครไปอยู่บนแพ็กเกจ/แคมเปญ (เมนู "เผ็ดระดับเหยาเหยา" ในเชนร้านอาหาร, ป๊อปอัพคาเฟ่ธีมเผ็ด×หวาน) — รายได้ที่ไม่ต้องถ่ายเพิ่มแม้แต่เฟรมเดียว</p></div>
+    <div class="stream reveal"><div class="top"><h3>9. B2B: รับสร้าง IP + ระบบ</h3><div class="money">฿฿</div></div>
+      <div class="meta"><span class="phase">เริ่มได้ทันที</span><span>ท่อหล่อเลี้ยงระหว่างทาง</span></div>
+      <p>หน้า index.html เปิดขายอยู่แล้ว: รับสร้างคาแร็กเตอร์+ระบบโปรดักชันให้แบรนด์ โดยใช้ YYY เป็นเคสโชว์ — เงินสดเข้าเร็ว เลี้ยงทีมช่วงเกาะ 1–2 ที่คอนเทนต์ยังไม่ทำเงิน</p></div>
+  </div>
+</section>
+
+<!-- ================= ตารางตัวละคร × เงิน ================= -->
+<section id="matrix">
+  <div class="reveal">
+    <div class="kicker">Character × Money Matrix</div>
+    <h2>ใครหาเงินทางไหน — ไม่แย่งกัน ไม่ทับเส้นกัน</h2>
+  </div>
+  <div class="tablewrap reveal">
+    <table class="matrix">
+      <tr><th>ตัวละคร</th><th>หมวดสปอนเซอร์</th><th>สินค้า</th><th>คอนเทนต์ขายได้</th><th>ตลาดหลัก</th></tr>
+      <tr class="ryy"><td>เหยาเหยา 瑶瑶</td><td>อาหารเผ็ด/หมาล่า · แฟชั่น/ความหรู · ธุรกิจ/ฟินเทค</td><td>ซอสเผ็ดซิกเนเจอร์ · เครื่องปรุงหมาล่า</td><td>ชาเลนจ์ความเผ็ด · บทเรียน CEO ปนมุก · รีวิวของหรูแบบปากแข็ง</td><td>จีน (Douyin) + ไทย</td></tr>
+      <tr class="ryr"><td>ยูริ ユリ</td><td>คาเฟ่/ขนม · เครื่องเขียน/งานคราฟต์ · เครื่องสำอางสายละมุน</td><td>ขนมหวานสูตรยูริ · สติกเกอร์/ของน่ารัก · art print</td><td>คาเฟ่ฮอปปิ้ง · สเก็ตช์กรุงเทพฯ · ASMR ทำขนม</td><td>ญี่ปุ่น + Global (IG)</td></tr>
+      <tr class="ryou"><td>ยู 尤/ユウ</td><td>แอปจ่ายเงิน/แบงก์ · ประกัน · แก็ดเจ็ต/กล้อง · โปรประหยัด</td><td>โค้ดส่วนลด "ยูจ่าย" · เมิร์ชสายมีม (เสื้อ "ทีมจ่ายเงิน")</td><td>เบื้องหลัง/POV เต็ม · มุกกระเป๋าแบน · vlog งบจำกัด</td><td>ไทย (TikTok/FB)</td></tr>
+    </table>
+  </div>
+  <p class="note">กติกา: สปอนเซอร์ต้อง "เข้าปาก" ตัวละครได้แบบไม่ฝืนบท — ถ้าเขียนมุกไม่ออกภายใน 10 นาที แปลว่าดีลนั้นไม่ใช่ของเรา ปฏิเสธได้</p>
+</section>
+
+<!-- ================= พายุ ================= -->
+<section id="storm">
+  <div class="reveal">
+    <div class="kicker">Storm Warning — พายุที่รู้ล่วงหน้า</div>
+    <h2>เรือจมได้ 5 แบบ เรากันไว้แล้วทุกแบบ</h2>
+  </div>
+  <div class="storms">
+    <div class="storm reveal"><h3>⛈️ ตัวละครผูกกับนักแสดงคนเดียว</h3>
+      <p>ถ้านักแสดงถอนตัว IP พังทั้งลำ — <b>ทางกัน:</b> สัญญาชัดตั้งแต่วันแรกว่า IP เป็นของทีม + เร่งทำสติกเกอร์/เว็บตูน/แอนิเมชันให้ตัวละคร "มีร่างสอง" ที่ไม่ต้องใช้ตัวคนเร็วที่สุด</p></div>
+    <div class="storm reveal"><h3>⛈️ แพลตฟอร์มเปลี่ยนอัลกอริทึม</h3>
+      <p>ยอดวิวหายข้ามคืนโดยไม่ผิดอะไร — <b>ทางกัน:</b> ยืน 4 แพลตฟอร์มตั้งแต่ต้น (ทำอยู่แล้ว) + รีบเปลี่ยนแฟนเป็น "ช่องทางตรง": กลุ่ม, LINE OA, เมมเบอร์ชิป ที่อัลกอแตะไม่ได้</p></div>
+    <div class="storm reveal"><h3>⛈️ มุกซ้ำจนคนเบื่อ</h3>
+      <p>สูตรเดิมที่เคยเวิร์กจะเสื่อมเสมอ — <b>ทางกัน:</b> ระบบ Tier ของตอน (A/B/C/D) บังคับผสมของใหม่ทุกสัปดาห์ + ดาต้าประชุมจันทร์ชี้จุดเสื่อมก่อนคนดูรู้สึก + lore ตัวละครที่ค่อยๆ เปิดให้มีของให้ติดตามเสมอ</p></div>
+    <div class="storm reveal"><h3>⛈️ ดราม่าข้ามวัฒนธรรม</h3>
+      <p>ช่อง 3 สัญชาติ = พื้นที่ดราม่า 3 เท่า — <b>ทางกัน:</b> กฎเหล็กคอนเทนต์: ไม่แตะการเมือง/ชาติพันธุ์/ศาสนา, มุกทุกตอนผ่านเจ้าของภาษาก่อนโพสต์, มุกทั้งหมดหักมุมเข้าตัวละคร (หัวเราะ "เรา" ไม่ใช่หัวเราะ "เขา")</p></div>
+    <div class="storm reveal"><h3>⛈️ เงินหมดก่อนถึงเกาะ 3</h3>
+      <p>คอนเทนต์ยังไม่ทำเงินใน 6 เดือนแรกแน่นอน — <b>ทางกัน:</b> ต้นทุนต่อคลิปถูกกดด้วยระบบ reuse ของ Studio OS + ท่อ B2B (ท่อ 9) เปิดรับเงินสดตั้งแต่วันแรก + ไม่จ้างเพิ่มจนกว่ารายได้จะครอบคลุมต้นทุน 2 เดือนติด</p></div>
+  </div>
+</section>
+
+<!-- ================= เช็คลิสต์ ================= -->
+<section id="orders">
+  <div class="reveal">
+    <div class="kicker">Sailing Orders — คำสั่งเดินเรือ</div>
+    <h2>30 วันแรก: ติ๊กให้ครบแล้วออกเรือ</h2>
+    <p class="lead">เข็มทิศด้านบนสุดของหน้าจะวิ่งตามที่ติ๊ก — บันทึกไว้ในเครื่องนี้อัตโนมัติ (localStorage) เปิดกลับมาดูความคืบหน้าได้ตลอด</p>
+  </div>
+  <div class="checklist" id="cklist">
+    <label class="check"><input type="checkbox" data-k="c1"><span class="txt"><b>ล็อกตารางถ่าย: จอง 2 วันถ่าย/สัปดาห์ ลงปฏิทินทีมยาว 4 สัปดาห์</b><small>ใช้ Smart Shoot วางแผนล่วงหน้าทุกคิว — วินัยคือเชื้อเพลิงของเรือลำนี้</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c2"><span class="txt"><b>ถ่ายตอนที่ 1–8 (สูตร: 2 โลเคชันเดิมซ้ำได้ ประหยัดคิว)</b><small>เป้าเดือนแรก 12–16 ตอน — ทุกช็อตเข้าคลัง Studio OS ทันทีหลังถ่าย</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c3"><span class="txt"><b>เปิดบัญชีครบ 4 แพลตฟอร์ม ชื่อ/รูป/ไบโอ 3 ภาษาเซ็ตเดียวกัน</b><small>TikTok, Douyin, IG, FB — จอง username ให้ตรงกันทุกที่ กันคนปลอม</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c4"><span class="txt"><b>ลงคลิปแรกพร้อมกัน 4 แพลตฟอร์ม ด้วย metadata จาก Omnichannel</b><small>วันเปิดตัวคือวันเก็บดาต้าวันแรก ไม่ใช่วันสมบูรณ์แบบ</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c5"><span class="txt"><b>ตั้งประชุมดาต้าทุกวันจันทร์ 30 นาที (ห้ามเกิน)</b><small>ดู 3 ตัวเลขพอ: ดูจบ 3 วิ / วิวเฉลี่ย / follower ใหม่ — ตัดสินใจ 1 อย่างต่อสัปดาห์</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c6"><span class="txt"><b>เซ็นข้อตกลงทีม: IP เป็นของโปรเจกต์ + ส่วนแบ่งชัดเจน</b><small>ทำตอนยังไม่มีเงินง่ายกว่าทำตอนมีเงิน — กันพายุลูกที่ 1 ตั้งแต่ท่าเรือ</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c7"><span class="txt"><b>ลิสต์สปอนเซอร์ในฝัน 20 ราย แยกตามหมวดของ 3 ตัวละคร</b><small>ยังไม่ต้องติดต่อ แค่ลิสต์ไว้ — พอมีคลิปพีคจะได้ยิงได้ทันที</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c8"><span class="txt"><b>เปิดท่อ B2B: แชร์ index.html ให้คนรู้จัก 10 คนแรก</b><small>เงินสดท่อแรกอาจมาจากคนที่เห็นเว็บแล้วทักมา — ต้นทุนการแชร์ = ศูนย์บาท</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c9"><span class="txt"><b>ร่างสติกเกอร์ LINE เซ็ตแรก 8 แบบจากมุกประจำ</b><small>ยังไม่ต้องวาดจริง แค่ล็อกมุก — "ยู จ่ายเงิน" ต้องเป็นหนึ่งในนั้น</small></span></label>
+    <label class="check"><input type="checkbox" data-k="c10"><span class="txt"><b>รีวิวแผนที่ฉบับนี้กับทีมครบทุกคน แล้วโหวตแก้ 1 จุด</b><small>แผนที่ที่ทีมไม่ได้ช่วยวาด ไม่มีใครอยากเดินตาม — แก้ร่วมกันอย่างน้อย 1 จุดให้เป็นของทุกคน</small></span></label>
+  </div>
+</section>
+
+<div class="final">
+  <div class="reveal">
+    <h2>ทะเลไม่เคยปรานีใคร<br><span style="background:linear-gradient(100deg,var(--yy),var(--you),var(--yr));-webkit-background-clip:text;background-clip:text;color:transparent">แต่เรือของเรามีทั้งแผนที่และเครื่องยนต์</span></h2>
+    <p style="color:var(--dim);max-width:560px;margin:18px auto 0">เกาะ 0 ผ่านแล้ว เหลือแค่ออกเรือ — งานที่สำคัญที่สุดของสัปดาห์นี้คืองานที่ธรรมดาที่สุด: ถ่าย ตัด ลง วนไป</p>
+    <a class="btn" href="index.html">← กลับหน้าบ้าน แล้วไปถ่ายกัน!</a>
+  </div>
+</div>
+
+<footer>
+  <div>🧭 Internal Roadmap · อัปเดตล่าสุด ก.ค. 2026 · รีวิวทุกไตรมาส</div>
+  <div>ทะเลเดียวกัน เรือลำเดียวกัน — #YYY</div>
+</footer>
+
+<script>
+/* เผยเซกชันเมื่อเลื่อนถึง */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) e.target.classList.add('in');
+}), {threshold:.18});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* เช็คลิสต์ + เข็มทิศ (บันทึกใน localStorage) */
+const KEY = "yyy_roadmap_checks";
+const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
+const boxes = document.querySelectorAll('#cklist input');
+function refresh(){
+  let done = 0;
+  boxes.forEach(b => {
+    b.closest('.check').classList.toggle('done', b.checked);
+    if (b.checked) done++;
+  });
+  const pct = Math.round(done / boxes.length * 100);
+  document.getElementById('pct').textContent = pct + "%";
+  document.getElementById('pbar').style.width = pct + "%";
+}
+boxes.forEach(b => {
+  b.checked = !!saved[b.dataset.k];
+  b.addEventListener('change', () => {
+    saved[b.dataset.k] = b.checked;
+    localStorage.setItem(KEY, JSON.stringify(saved));
+    refresh();
+  });
+});
+refresh();
+
+/* ================= สลับภาษา ไทย/中文 =================
+   ภาษาไทยเก็บจาก DOM ตอนโหลด (TH_CACHE) ส่วนจีนอยู่ใน ZH ด้านล่าง */
+const PAGE_TITLE = {
+  th: "🧭 แผนที่สมบัติ YYY — Internal Roadmap (ทีมเท่านั้น)",
+  zh: "🧭 YYY 藏宝图 — 内部路线图（仅限团队）"
+};
+const ZH = [
+["nav .links a:nth-of-type(1)", "🏴‍☠️ 终极宝藏"],
+["nav .links a:nth-of-type(2)", "🗺️ 航线六岛"],
+["nav .links a:nth-of-type(3)", "🧪 千空公式"],
+["nav .links a:nth-of-type(4)", "🌍 观众"],
+["nav .links a:nth-of-type(5)", "💰 赚钱"],
+["nav .links a:nth-of-type(6)", "⛈️ 风暴"],
+["nav .links a:nth-of-type(7)", "✅ 头30天"],
+["nav .links a:nth-of-type(8)", "🎬 模拟剧集"],
+["nav .internal-badge", "INTERNAL · 仅限团队"],
+["header .internal-badge", "绝密 —— 先在团队里传阅，不许外流哦"],
+["header h1", '<span class="grad">YYY</span> 藏宝图<br>直冲伟大航路'],
+["header .quote", '千空式思维：<b>想要什么，就倒推"得先有什么"</b>，然后按顺序一块一块把它造出来。不跳步，不靠奇迹 —— 这页里的每一件事都做得到，<b>一百亿percent</b>，只要照着地图走'],
+[".compass .lab span", "🧭 出航进度（根据下方「头30天清单」的勾选）"],
+
+["#onepiece .kicker", "One Piece — 成功的定义"],
+["#onepiece h2", "我们的「终极宝藏」长这样"],
+["#onepiece .lead", "没有数字的目标叫梦想，有数字的目标才叫计划 —— 我们设三个等级，让全队知道船现在开到哪，以及「赢」到底是什么意思"],
+[".tiers .tier:nth-of-type(1)", '<div class="flag">⛵</div><h3>第一个记录指针 —— 「船不沉」</h3><div class="when">12个月内</div><ul><li>四平台粉丝合计 ≥ 100,000</li><li>月收入 ≥ 50,000泰铢，覆盖全部制作成本</li><li>至少1个长期赞助商 + B2B业务养活团队</li><li>HIGH VALUE素材 ≥ 150条（每周都在增值的资产）</li></ul>'],
+[".tiers .tier:nth-of-type(2)", '<div class="flag">🌊</div><h3>驶入伟大航路 —— 「成为真正的生意」</h3><div class="when">24个月内</div><ul><li>粉丝合计 ≥ 1,000,000，至少分布在2个语言市场</li><li>月收入六位数（泰铢），来自 ≥ 4 个渠道（任何单一渠道不超50%）</li><li>自有品牌首批商品售罄 + 有回头客</li><li>签下第一份角色联名/授权协议</li></ul>'],
+[".tiers .tier:nth-of-type(3)", '<div class="flag">🏴‍☠️</div><h3>终极宝藏 —— 「拥有自己生命的IP」</h3><div class="when">36–48个月</div><ul><li>YYY成为区域级角色IP：人们记住的是角色，不只是频道</li><li>授权+商品收入 ≥ 50%（不拍新片钱也进账）</li><li>角色活得比演员久：表情包、条漫、动画、快闪店</li><li>IP估值高于频道本身 —— 可出售、可合资、可无限延伸</li></ul>'],
+["#onepiece .note", "所有数字都是团队内部目标，每季度可根据真实数据调整 —— 但不许因为懒而调，只许因为数据而调"],
+
+["#route .kicker", "The Route — 航行路线"],
+["#route h2", "从港口到伟大航路的6座岛"],
+["#route .lead", "每座岛都有「上岛前必须备齐的东西」（由上一座岛产出）和「带回来的宝藏」 —— 不许跳岛，会翻船"],
+[".route .island:nth-of-type(1)", '<div class="head"><h3>第0岛 —— 出发的港口</h3><span class="when">已完成 ✓</span></div><p class="goal">出海前把基础设施全部建好 —— 大多数人跳过这步，然后死在半路。我们不会</p><div class="cols"><div class="col loot"><h4>已有的宝藏</h4><ul><li>世界观 + 五条铁律（可复制的喜剧公式）</li><li>YYY Studio OS —— 策划/素材库/剧本匹配/四平台输出</li><li>反应素材库30条（HIGH VALUE 15条）</li><li>三语作品集官网 + 这张藏宝图</li></ul></div><div class="col"><h4>意味着什么</h4><ul><li>从第一天起，单条成本就低于竞争对手</li><li>拍1天，素材够剪好几集</li><li>随时可以出海，不用再等任何东西</li></ul></div></div>'],
+[".route .island:nth-of-type(2)", '<div class="head"><h3>第1岛 —— 公式验证岛</h3><span class="when">第1–3个月</span></div><p class="goal">唯一目标：找到 <b>format-market fit</b> —— 哪种梗、哪个市场、哪个平台最「上头」。用数量+数据说话，不靠感觉</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>每周3–4集 × 4平台（累计约40–48集）</li><li>轮换多种前3秒开场钩子，对比完播率</li><li>每周一开数据会：有效的复制，扑街的砍掉</li><li>所有镜头入库Studio OS —— 用旧素材剪出新视频</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>属于我们频道的、分市场的「爆款公式」</li><li>第一批会回来复看的观众</li></ul></div></div><div class="kpis"><span class="kpi">前3秒完播 ≥ 65%</span><span class="kpi">1条突破50万播放</span><span class="kpi">任一平台1万粉</span><span class="kpi">素材库 ≥ 80条</span></div>'],
+[".route .island:nth-of-type(3)", '<div class="head"><h3>第2岛 —— 粉丝岛</h3><span class="when">第3–9个月</span></div><p class="goal">把「刷过去的人」变成「粉丝」 —— 观众因为梗而来，因为爱角色而留下。而且只有粉丝才会花钱</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>打造固定梗/口头禅让人跟着玩（「小尤，结账」表情包）</li><li>连续剧情 + 角色关系慢慢展开（lore drop）</li><li>用角色的声音三语回复评论 —— 评论区也是内容</li><li>建社群：粉丝群 + 每周直播</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>会自己产出内容的粉圈（同人图/合拍）= 免费广告</li><li>面对赞助商的议价权（engagement才是硬通货）</li></ul></div></div><div class="kpis"><span class="kpi">合计10万粉</span><span class="kpi">互动率 ≥ 8%</span><span class="kpi">第一张自发同人图/梗图</span><span class="kpi">老粉播放占比 ≥ 30%</span></div>'],
+[".route .island:nth-of-type(4)", '<div class="head"><h3>第3岛 —— 第一枚贝里岛</h3><span class="when">第6–12个月</span></div><p class="goal">同时点燃3–4台收入引擎 —— 目标不是暴富，而是<b>收入 ≥ 成本</b>，让船不烧自己的钱也能航行</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>三语Media kit + 报价单（用爆款案例当证据）</li><li>够格的平台创作者计划全部报名</li><li>给视频里本来就出现的吃喝用品挂上带货车</li><li>主打赞助套餐「签1单 = 拿下4个市场4种语言」 —— 对手没有的卖点</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>现金流转正 —— 团队自己养活自己</li><li>用来谈更大订单的商业案例</li></ul></div></div><div class="kpis"><span class="kpi">赞助商 ≥ 3家</span><span class="kpi">收入覆盖成本100%</span><span class="kpi">带货 ≥ 收入的10%</span><span class="kpi">单集赞助价比首单翻倍</span></div>'],
+[".route .island:nth-of-type(5)", '<div class="head"><h3>第4岛 —— X-Commerce岛</h3><span class="when">第1–2年</span></div><p class="goal">把粉丝变成顾客 —— 卖「本身就是角色」的商品，不是贴个logo了事。辣甜之争变成成对的商品</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>首发商品：瑶瑶秘制辣酱 × 尤莉甜点（CP套装「买哪队都输给另一队」）</li><li>LINE/微信三语表情包 —— 成本低，三个市场都能卖</li><li>情景喜剧式直播带货：辣甜大战带货版</li><li>永远先预售再生产 —— 让粉丝投票选品，压库存风险</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>属于自己的客户数据（不用借平台的鼻子呼吸）</li><li>IP能卖货的铁证 → 登上第5岛的船票</li></ul></div></div><div class="kpis"><span class="kpi">首批商品售罄</span><span class="kpi">复购率 ≥ 20%</span><span class="kpi">商品收入 ≥ 总收入25%</span></div>'],
+[".route .island:nth-of-type(6)", '<div class="head"><h3>第5岛 —— 伟大航路：IP授权</h3><span class="when">第2年+</span></div><p class="goal">角色生意的终极形态：<b>让角色替我们出去打工</b> —— 别的品牌花钱把瑶瑶、尤莉、小尤借去放在他们的产品上</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>授权级Character bible + style guide（canon里已有一半）</li><li>商品销量 + 赞助案例集 = IP价值的证据</li><li>在泰中日寻找授权代理/合作伙伴</li><li>扩展IP形态：条漫/短动画，让角色活得比演员久</li></ul></div><div class="col loot"><h4>带走的宝藏 = 终极宝藏</h4><ul><li>授权带来的被动收入 —— 团队度假钱也进账</li><li>IP有可评估的价值，出售/合资/延伸随便选</li></ul></div></div><div class="kpis"><span class="kpi">签下第一份授权</span><span class="kpi">不拍新片的收入 ≥ 30%</span><span class="kpi">每年1次大牌快闪/联名</span></div>'],
+
+["#science .kicker", "Science Roadmap — 千空式倒推"],
+["#science h2", "想要终点，就倒推回我们已经有的东西"],
+["#science .lead", "读法：从想要的东西（红色）开始，往左倒推「得先有什么」，直到碰到我们已经有的（绿色）—— 只要哪条线倒推能碰到绿色，就一定做得到，一百亿percent"],
+[".chains .chain:nth-of-type(1)", '<div class="title">🎯 路线一：六位数的赞助单</div><div class="flow"><span class="nodeX goal">六位数赞助合约</span><span class="arrow">←</span><span class="nodeX">报价单 + 商业案例</span><span class="arrow">←</span><span class="nodeX">百万播放爆款</span><span class="arrow">←</span><span class="nodeX">40+集的量 + 数据</span><span class="arrow">←</span><span class="nodeX have">高速生产系统 ✓ 已有！</span></div><div class="moral">→ 挡在我们和第一张大单之间的只有「集数」 —— 去拍吧</div>'],
+[".chains .chain:nth-of-type(2)", '<div class="title">🛍️ 路线二：商品一周售罄</div><div class="flow"><span class="nodeX goal">商品 sold out</span><span class="arrow">←</span><span class="nodeX">想「拥有」角色的粉丝</span><span class="arrow">←</span><span class="nodeX">被爱且被记住的角色</span><span class="arrow">←</span><span class="nodeX">固定梗 + 持续更新</span><span class="arrow">←</span><span class="nodeX have">五条铁律 ✓ 已有！</span></div><div class="moral">→ 同一套规则+同一套服装不是限制，它是「品牌记忆」的制造机</div>'],
+[".chains .chain:nth-of-type(3)", '<div class="title">👑 路线三：授权大单（终极宝藏）</div><div class="flow"><span class="nodeX goal">大牌来求角色授权</span><span class="arrow">←</span><span class="nodeX">IP能赚钱的证据（商品销量）</span><span class="arrow">←</span><span class="nodeX">三个市场的粉圈</span><span class="arrow">←</span><span class="nodeX">四平台持续更新</span><span class="arrow">←</span><span class="nodeX have">Studio OS + Omnichannel ✓ 已有！</span></div><div class="moral">→ 所有路线倒推到最后都是同一件事：<b>这周把视频按时发出去</b> —— 最重要的工作就是最平凡的那件</div>'],
+
+["#crew .kicker", "The Crew — 全球观众舰队"],
+["#crew h2", "谁在看我们、来自哪里、为什么会停下手指"],
+["#crew .lead", "YYY的结构性优势：3个角色 = 通往3种文化的3扇门。我们不是配了字幕的泰国频道，而是从源头就「说观众母语」的频道"],
+[".worldlegend", '<span><b style="background:var(--you-deep)"></b>泰国 ~40%</span><span><b style="background:var(--yy-deep)"></b>中国 ~30%</span><span><b style="background:var(--yr-deep)"></b>日本 ~15%</span><span><b style="background:#3f8f5f"></b>全球/英语 ~15%</span><span style="opacity:.7">（第一年的目标比例 —— 每月实测再调整）</span>'],
+[".crew .aud:nth-of-type(1)", '<div class="flag">🇹🇭</div><h3>泰国 —— 主基地</h3><span class="role">VOLUME + ENGAGEMENT</span><p><b>是谁：</b>18–34岁吃喝玩乐党，爱跨文化梗、嗑CP/朋友团 —— 约5000万社交账号的市场，我们和他们说同一种母语</p><p><b>入口：</b>小尤的旁白 —— 泰国人看了觉得「我就是小尤」：扛机器的、付钱的、心里吐槽的那个人</p><p><b>平台：</b>TikTok + FB Reels · <b>商业角色：</b>播放量基本盘、本地赞助、吃喝带货</p>'],
+[".crew .aud:nth-of-type(2)", '<div class="flag">🇨🇳</div><h3>中国 —— 最大的海洋</h3><span class="role">SCALE + COMMERCE</span><p><b>是谁：</b>抖音上亿级的「曼谷生活」内容受众 —— 来过/要来泰国的游客（每年数百万级）、在泰留学生、爱看中国女生在海外发光的观众</p><p><b>入口：</b>瑶瑶 —— 在曼谷生活的飒爽中国女明星 = 让中国观众又骄傲又想追的人设</p><p><b>平台：</b>抖音 · <b>商业角色：</b>体量天花板最高、直播带货最猛、泰国商品直卖中国客</p>'],
+[".crew .aud:nth-of-type(3)", '<div class="flag">🇯🇵</div><h3>日本 —— 同盟之岛</h3><span class="role">BRAND LOVE + MERCH</span><p><b>是谁：</b>爱泰国的日本人（每年约百万人来泰）、可爱物爱好者、美食党，加上日本内容DNA里「为努力的女孩应援」的传统</p><p><b>入口：</b>尤莉 —— 地道的日语声线，软萌+偶尔被欺负 = 日本市场永远吃的角色配方</p><p><b>平台：</b>TikTok JP + IG · <b>商业角色：</b>购买力高、表情包/周边卖得动、世界级的可爱审美背书</p>'],
+[".crew .aud:nth-of-type(4)", '<div class="flag">🌏</div><h3>全球/英语 —— 公海</h3><span class="role">PRESTIGE + DEALS</span><p><b>是谁：</b>曼谷的外国居民、海外亚裔、全球street food爱好者（和百万订阅美食频道同一批观众），渴望看到地道的曼谷</p><p><b>入口：</b>一个城市里三种语言的团队 —— 没有人把这个拍成情景喜剧，就我们</p><p><b>平台：</b>IG Reels（+第二阶段YouTube Shorts）· <b>商业角色：</b>国际订单、旅游局合作、谈判时让IP看起来world-class</p>'],
+["#crew .note", "市场数字为量级估算（order of magnitude），用来讨论方向，不是学术引用 —— 做pitch deck前请再拉一次最新年度数据"],
+
+["#money .kicker", "Money Engine — 赚钱引擎"],
+["#money h2", "3个角色的9条收入管道"],
+["#money .lead", "原则：任何一条管道不超过总收入的50%，而且每条管道都必须「长在角色身上」，不是贴logo乱卖 —— 按真实解锁顺序排列"],
+[".streams .stream:nth-of-type(1)", '<div class="top"><h3>1. 平台分成 / 创作者基金</h3><div class="money">฿</div></div><div class="meta"><span class="phase">解锁：第1岛</span><span>全角色</span></div><p>TikTok/FB/IG激励计划的播放量零花钱 —— 别指望当主粮，但每个都要开通，因为这是本来就在做的事送的免费钱</p>'],
+[".streams .stream:nth-of-type(2)", '<div class="top"><h3>2. 赞助 / 软广</h3><div class="money">฿฿฿</div></div><div class="meta"><span class="phase">解锁：第3岛</span><span>卖点：1单=4个市场</span></div><p>第1–2年的收入脊梁 —— 对手没有的杀手锏：品牌付一次钱，拿到4种语言4个平台的内容。而且赞助品类互不打架：辣/奢华 → 瑶瑶，甜品/咖啡馆/艺术 → 尤莉，支付App/省钱/数码 → 小尤</p>'],
+[".streams .stream:nth-of-type(3)", '<div class="top"><h3>3. 带货 / TikTok Shop</h3><div class="money">฿฿</div></div><div class="meta"><span class="phase">解锁：第3岛</span><span>视频里本来就有的东西</span></div><p>视频下方的购物车 = 角色当集真的在吃的东西（「瑶瑶倒空一整瓶的辣酱」自己会卖自己）—— 旧视频持续产生被动收入</p>'],
+[".streams .stream:nth-of-type(4)", '<div class="top"><h3>4. 自有品牌商品</h3><div class="money">฿฿฿</div></div><div class="meta"><span class="phase">解锁：第4岛</span><span>YY×YR CP套装</span></div><p>瑶瑶秘制辣酱 × 尤莉手作甜点，成对出售互相拉扯 —— 「小尤买单」变成折扣码，让屏幕里的梗变成屏幕外的营销机制。永远先预售再生产</p>'],
+[".streams .stream:nth-of-type(5)", '<div class="top"><h3>5. 数字商品 / 表情包</h3><div class="money">฿</div></div><div class="meta"><span class="phase">解锁：第2–3岛</span><span>成本最低 起步最快</span></div><p>LINE表情包（泰国+日本市场巨大）+ 微信表情包（中国），全从固定梗里出 —— 画一次卖到天荒地老，也是「角色活得比演员久」的第一步</p>'],
+[".streams .stream:nth-of-type(6)", '<div class="top"><h3>6. 会员制 / 粉丝俱乐部</h3><div class="money">฿฿</div></div><div class="meta"><span class="phase">解锁：第2岛</span><span>卖小尤的视角</span></div><p>付费幕后内容：「小尤完整视角」—— 他可以尽情吐槽的幕后 + 投票决定下集的菜单/地点 —— 真爱粉愿意为更近的距离付钱</p>'],
+[".streams .stream:nth-of-type(7)", '<div class="top"><h3>7. 直播带货</h3><div class="money">฿฿฿</div></div><div class="meta"><span class="phase">解锁：第4岛</span><span>中国市场威力最大</span></div><p>辣甜大战直播带货版 —— 瑶瑶带辣队，尤莉带甜队，观众用下单投票，小尤脸色发白地念销量 —— 情景喜剧和销售同体</p>'],
+[".streams .stream:nth-of-type(8)", '<div class="top"><h3>8. 角色授权 / 联名</h3><div class="money">฿฿฿฿</div></div><div class="meta"><span class="phase">解锁：第5岛</span><span>真正的终极宝藏</span></div><p>品牌付钱把角色放上包装/campaign（连锁餐厅的「瑶瑶辣度」菜单、辣×甜主题快闪咖啡馆）—— 一帧都不用多拍的收入</p>'],
+[".streams .stream:nth-of-type(9)", '<div class="top"><h3>9. B2B：代建IP + 系统</h3><div class="money">฿฿</div></div><div class="meta"><span class="phase">立即可做</span><span>航行途中的补给管道</span></div><p>index.html已经在开门迎客：用YYY当展示案例，替品牌打造角色+制作系统 —— 回款快，在第1–2岛内容还不赚钱的阶段养活团队</p>'],
+
+["#matrix .kicker", "Character × Money Matrix"],
+["#matrix h2", "谁在哪条路上赚钱 —— 不抢活、不越线"],
+[".matrix", '<tr><th>角色</th><th>赞助品类</th><th>商品</th><th>可售内容</th><th>主战场</th></tr><tr class="ryy"><td>瑶瑶 เหยาเหยา</td><td>辣味食品/麻辣 · 时尚/轻奢 · 商业/金融科技</td><td>招牌辣酱 · 麻辣调味料</td><td>吃辣挑战 · 带梗的CEO课 · 嘴硬式奢侈品测评</td><td>中国（抖音）+ 泰国</td></tr><tr class="ryr"><td>尤莉 ユリ</td><td>咖啡馆/甜品 · 文具/手作 · 温柔系美妆</td><td>尤莉甜点 · 表情包/可爱周边 · art print</td><td>咖啡馆探店 · 曼谷速写 · 甜点ASMR</td><td>日本 + 全球（IG）</td></tr><tr class="ryou"><td>小尤 ยู</td><td>支付App/银行 · 保险 · 数码/相机 · 省钱优惠</td><td>「小尤买单」折扣码 · 梗系周边（「买单队」 T恤）</td><td>幕后/完整POV · 钱包干瘪梗 · 穷游vlog</td><td>泰国（TikTok/FB）</td></tr>'],
+["#matrix .note", "规矩：赞助必须能「进角色的嘴」而不出戏 —— 如果10分钟内编不出这单的梗，说明这单不属于我们，可以拒"],
+
+["#storm .kicker", "Storm Warning — 提前看见的风暴"],
+["#storm h2", "船会沉的5种方式，我们全都提前设了防"],
+[".storms .storm:nth-of-type(1)", '<h3>⛈️ 角色绑死在一个演员身上</h3><p>演员退出，整艘船的IP就沉 —— <b>防法：</b>第一天就签清楚IP归项目所有 + 尽快做表情包/条漫/动画，给角色一个不依赖真人的「第二身体」</p>'],
+[".storms .storm:nth-of-type(2)", '<h3>⛈️ 平台改算法</h3><p>什么都没做错，播放量一夜蒸发 —— <b>防法：</b>从第一天就站稳4个平台（已在做）+ 尽快把粉丝转成「直连渠道」：粉丝群、LINE OA、会员制，算法碰不到的地方</p>'],
+[".storms .storm:nth-of-type(3)", '<h3>⛈️ 梗用到腻</h3><p>曾经有效的公式一定会衰减 —— <b>防法：</b>剧集Tier制（A/B/C/D）强制每周掺新东西 + 周一数据会在观众感觉到之前发现衰减点 + 角色lore慢慢放，永远留点东西可追</p>'],
+[".storms .storm:nth-of-type(4)", '<h3>⛈️ 跨文化翻车</h3><p>三国团队 = 三倍翻车面积 —— <b>防法：</b>内容铁律：不碰政治/民族/宗教；每条视频发布前由母语者过一遍；所有笑点都拐回角色自己身上（笑「我们」，不笑「别人」）</p>'],
+[".storms .storm:nth-of-type(5)", '<h3>⛈️ 钱在到达第3岛之前烧完</h3><p>头6个月内容肯定不赚钱 —— <b>防法：</b>用Studio OS的素材复用把单条成本压到最低 + 第9条管道（B2B）从第一天就收现金 + 收入连续2个月覆盖成本之前不加人</p>'],
+
+["#orders .kicker", "Sailing Orders — 航行指令"],
+["#orders h2", "头30天：全部打勾就出海"],
+["#orders .lead", "页面顶部的罗盘会跟着勾选跑 —— 自动存在这台设备里（localStorage），随时回来看进度"],
+[".check:nth-of-type(1) .txt", '<b>锁定拍摄日程：每周2个拍摄日，排进团队日历，连排4周</b><small>每次拍摄前用Smart Shoot出计划 —— 纪律就是这艘船的燃料</small>'],
+[".check:nth-of-type(2) .txt", '<b>拍完第1–8集（诀窍：2个地点重复用，省通告）</b><small>首月目标12–16集 —— 每个镜头拍完立刻入库Studio OS</small>'],
+[".check:nth-of-type(3) .txt", '<b>4个平台全部开号，名字/头像/简介三语统一</b><small>TikTok、抖音、IG、FB —— 用户名全平台抢注一致，防冒牌</small>'],
+[".check:nth-of-type(4) .txt", '<b>用Omnichannel的metadata在4平台同时发第一条</b><small>发布日是收数据的第一天，不是完美的那一天</small>'],
+[".check:nth-of-type(5) .txt", '<b>定死每周一30分钟数据会（不许超时）</b><small>只看3个数：前3秒完播 / 平均播放 / 新增粉丝 —— 每周只做1个决定</small>'],
+[".check:nth-of-type(6) .txt", '<b>签团队协议：IP归项目 + 分成写清楚</b><small>没钱的时候签比有钱的时候容易 —— 在港口就防住第1号风暴</small>'],
+[".check:nth-of-type(7) .txt", '<b>列出20个梦想赞助商，按3个角色的品类分好</b><small>还不用联系，先列着 —— 等爆款一出立刻开火</small>'],
+[".check:nth-of-type(8) .txt", '<b>打开B2B管道：把index.html分享给最先想到的10个人</b><small>第一笔现金可能来自看到网站就来聊的人 —— 分享成本 = 0泰铢</small>'],
+[".check:nth-of-type(9) .txt", '<b>从固定梗起草第一套8个LINE表情包</b><small>还不用真画，先锁定梗 —— 「小尤，结账」必须是其中之一</small>'],
+[".check:nth-of-type(10) .txt", '<b>全员过一遍这张藏宝图，投票修改至少1处</b><small>没参与画的地图没人想跟着走 —— 至少共同修改1处，让它属于每个人</small>'],
+
+[".final h2", '大海从不对谁仁慈<br><span style="background:linear-gradient(100deg,var(--yy),var(--you),var(--yr));-webkit-background-clip:text;background-clip:text;color:transparent">但我们的船既有地图又有引擎</span>'],
+[".final p", "第0岛已经通关，只差出海 —— 这周最重要的工作就是最平凡的那件：拍、剪、发，循环"],
+[".final .btn", "← 回主页，然后开拍！"],
+["footer div:nth-of-type(1)", "🧭 内部路线图 · 最近更新 2026年7月 · 每季度复盘"],
+["footer div:nth-of-type(2)", "同一片海，同一艘船 —— #YYY"]
+];
+
+let TH_CACHE = null;
+function setLang(l){
+  if (!TH_CACHE)
+    TH_CACHE = ZH.map(([sel]) => { const el = document.querySelector(sel); return [sel, el ? el.innerHTML : null]; });
+  const src = (l === 'zh') ? ZH : TH_CACHE;
+  src.forEach(([sel, html]) => {
+    const el = document.querySelector(sel);
+    if (el && html != null) el.innerHTML = html;
+  });
+  document.documentElement.lang = (l === 'zh') ? 'zh' : 'th';
+  document.title = PAGE_TITLE[l];
+  localStorage.setItem('yyy_roadmap_lang', l);
+  document.querySelectorAll('#langSwitch button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
+}
+document.querySelectorAll('#langSwitch button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+setLang(localStorage.getItem('yyy_roadmap_lang') || 'th');
+</script>
+</body>
+</html>

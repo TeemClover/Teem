@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+yyy/.venv/
+
+# YYY Studio OS — runtime-generated (recreated by app.py on first run)
+yyy/yyy_studio.db
+yyy/projects/
