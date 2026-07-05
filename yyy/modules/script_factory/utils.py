@@ -40,7 +40,7 @@ def validate_script(script: dict) -> list:
     speakers = set()
     for beat in beats:
         for line in beat.get("lines", []):
-            for key, label in (("line_th", "ไทย"), ("line_zh", "จีน"), ("line_en", "อังกฤษ")):
+            for key, label in (("line_th", "ไทย"), ("line_zh", "จีน"), ("line_ja", "ญี่ปุ่น")):
                 if not line.get(key):
                     errors.append(f"ไลน์ขาดภาษา{label}")
             # ตรวจ Pinyin ในข้อความจีน: อักษรละตินติดกัน >= 2 ตัว (ยกเว้นตัวใหญ่ล้วนอย่าง BTS/YYY)
@@ -51,10 +51,10 @@ def validate_script(script: dict) -> list:
                     break
             speakers.add(line.get("speaker"))
 
-    if "CLOVER" not in speakers:
-        errors.append("Clover ต้องปรากฏในบท")
-    if "XIRCLE" not in speakers:
-        errors.append("Xircle ต้องปรากฏในบท")
+    if "YY" not in speakers:
+        errors.append("瑶瑶 (YY/Ruby) ต้องปรากฏในบท")
+    if "YR" not in speakers:
+        errors.append("尤莉 (YR/Yuri) ต้องปรากฏในบท")
 
     if beats and beats[0].get("beat_name") != "hook":
         errors.append("Beat แรกต้องเป็น 'hook'")

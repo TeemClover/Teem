@@ -1,27 +1,17 @@
 # -*- coding: utf-8 -*-
 """
 modules/script_factory/world_bible.py — World Bible ของ Script Factory
-ตัวละครฝั่ง international (Clover/Xircle) ต่อยอดจากจักรวาลเดิม — ห้ามมี Pinyin เด็ดขาด
+ตัวละครดึงจาก core/canon.py (แหล่งความจริงเดียว) — ไม่นิยามซ้ำ เพื่อกันข้อมูลขัดกัน
+บทที่ปั่นออกมาใช้ตัวละครชุดเดียวกับทั้งระบบ: 瑶瑶(จีน เผ็ด) / ยูริ(ญี่ปุ่น หวาน) / ยู(ไทย ตากล้อง)
+ภาษาบทพูด = ไทย / จีน / ญี่ปุ่น (ตามภาษาแม่ของตัวละครแต่ละคน) — ห้ามมี Pinyin เด็ดขาด
 """
+from core.canon import CHARACTERS as _CANON
 
-CHARACTERS_SF = {
-    "CLOVER": {
-        "name_th": "โคลเวอร์", "name_zh": "四叶草", "name_en": "Clover",
-        "nationality": "Thai",
-        "personality": "สาวไทยตัวเล็กน่ารัก ดูหวานแต่จริงๆ แสบ พูดตรง ชอบของเผ็ด กินเก่ง กล้าลอง",
-        "comedy_role": "ตัวเผ็ด — ดูหวานแต่ลงมือเผ็ดกว่าพริก",
-        "signature_look": "เดรสดอกไม้สีพาสเทล + ผมถักเปีย (Signature — ทุกคลิป)",
-        "spice_level": 10, "color": "#FF6B9D",
-    },
-    "XIRCLE": {
-        "name_th": "เซอร์เคิล", "name_zh": "小圈", "name_en": "Xircle",
-        "nationality": "Chinese",
-        "personality": "สาวจีนสายแฟชั่น มั่นใจ ชอบวางแผน ดูเท่แต่กลัวเผ็ด กินหวานเก่ง หลงทางเก่งกว่า",
-        "comedy_role": "ตัวหวาน — ดูเท่แต่กินเผ็ดไม่ได้เลย",
-        "signature_look": "เสื้อครอปสีดำ + กางเกงขากว้าง + แว่นกันแดด (Signature — ทุกคลิป)",
-        "spice_level": 0, "color": "#4ECDC4",
-    },
-}
+# ตัวละคร 2 สาวหน้ากล้อง (YY, YR) + ยู (YOU) เป็นตากล้อง POV — ทุกตัวมาจาก canon
+CHARACTERS_SF = {tag: _CANON[tag] for tag in ("YY", "YR", "YOU")}
+
+# ตัวละครหลักที่ใช้ในบท (2 สาวที่พูดหน้ากล้อง)
+ONSCREEN = ("YY", "YR")
 
 LOCATIONS_SF = [
     {"id": "night_market",  "th": "ตลาดนัดกลางคืน", "zh": "夜市",       "en": "Night Market",        "archetype": "market"},
@@ -91,22 +81,30 @@ SCORE_COLS = {
 COMPACT_WORLD_BIBLE = """
 # THE YYY DIARY — WORLD BIBLE (COMPACT)
 
-## CHARACTERS
-CLOVER (โคลเวอร์/四叶草): Thai girl, looks sweet but secretly savage. Spice level 10. Pastel flower dress + braids. Brutally honest, fearless foodie. Comedy role: the unexpected spicy one.
+## CHARACTERS (two on-camera leads + one POV cameraman)
+YY — 瑶瑶 / เหยาเหยา (English stage name: Ruby): CHINESE woman. Fierce, glamorous, luxurious, sharp-tongued CEO energy. Spice level 10 — obsessed with spicy food, fearless, never admits defeat even with tears streaming. Signature: modern red qipao. She speaks CHINESE natively. Comedy role: the elegant one who is secretly a spice demon.
 
-XIRCLE (เซอร์เคิล/小圈): Chinese girl, looks cool but can't handle spice. Spice level 0. Black crop top + wide pants + sunglasses. Fashion-forward planner whose plans always fail. Comedy role: the unexpected sweet one.
+YR — 尤莉 / ยูริ (English stage name: Yuri): JAPANESE woman. Soft, gentle, delicate artist. Spice level 0 — cannot handle even half a chili. Sweet-tooth. Signature: earth-tone artist outfit. She speaks JAPANESE natively. Comedy role: the calm sweet one whose composure shatters the instant she tastes spice.
+
+YOU — 尤 / ยู (English stage name: Yu): THAI man. The POV cameraman — NEVER appears on camera, exists only through sarcastic voice-over (added later) and the hand that reaches into frame to pay. He speaks THAI. Comedy role: cameraman + human wallet.
 
 ## CORE JOKE
-The reversal: Thai girl = spice demon, Chinese girl = can't eat spice. This subversion IS the show.
+Spice 10 (Ruby) vs Spice 0 (Yuri) — the fierce glamorous Chinese woman loves brutal spice, the gentle Japanese artist can't handle any. Their clash IS the show. Yu films it all and pays for everything.
+
+## LANGUAGE (each character speaks their mother tongue; the other languages are subtitles)
+- Ruby (YY) speaks Chinese (line_zh is her real spoken line)
+- Yuri (YR) speaks Japanese (line_ja is her real spoken line)
+- Yu (YOU) speaks Thai (line_th is his real spoken line) — VO only
+Everyone understands everyone 100%. No lost-in-translation gags.
 
 ## 12 BANGKOK LOCATIONS
 Night Market, Chinatown (Yaowarat), Cafe, Supermarket, BTS, Tuk-Tuk, Lumpini Park, Muay Thai Gym, Thai Massage, Chatuchak Market, 7-Eleven, Home Kitchen
 
 ## RULES
 - Each language version must feel NATIVE (not translated)
-- No Pinyin/romanization ever
+- No Pinyin/romanization ever — Chinese in simplified characters only
 - Signature outfits only (footage reuse)
-- Hook in first 3 seconds (camera look + bold statement)
+- Hook in first 3 seconds (camera look + bold statement, ideally calling "Yu")
 - Sweet vs Spicy clash in every episode
 - Warm bickering, never mean — they're best friends
 - #YYY on every platform

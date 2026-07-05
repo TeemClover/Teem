@@ -55,7 +55,7 @@ def render_script_card(row: dict, key_prefix: str = ""):
                     st.markdown(
                         f"<div style='border-left:4px solid {color};padding:2px 10px;margin:4px 0'>"
                         f"<b style='color:{color}'>{ln.get('speaker')}</b>{act}<br>"
-                        f"TH: {ln.get('line_th')}<br>ZH: {ln.get('line_zh')}<br>EN: {ln.get('line_en')}</div>",
+                        f"TH: {ln.get('line_th')}<br>ZH: {ln.get('line_zh')}<br>JA: {ln.get('line_ja')}</div>",
                         unsafe_allow_html=True)
             nar = sc.get("narration", {})
             if nar.get("closing_cta_th"):

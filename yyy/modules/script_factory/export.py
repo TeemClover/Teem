@@ -63,7 +63,7 @@ def export_markdown(batch_id: int) -> Path:
                 lines.append(f"- **{ln.get('speaker')}**{act}")
                 lines.append(f"  - TH: {ln.get('line_th')}")
                 lines.append(f"  - ZH: {ln.get('line_zh')}")
-                lines.append(f"  - EN: {ln.get('line_en')}")
+                lines.append(f"  - JA: {ln.get('line_ja')}")
     # แนบ pattern analysis ต่อท้ายถ้ามี
     pa = db.query("SELECT analysis_json FROM pattern_analysis WHERE batch_id = ? ORDER BY id DESC LIMIT 1",
                   (batch_id,))
