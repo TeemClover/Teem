@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 
 class DialogueLine(BaseModel):
-    speaker: str = Field(description="รหัสตัวละคร: 'YY' (瑶瑶/Ruby) หรือ 'YR' (尤莉/Yuri)")
+    speaker: str = Field(description="รหัสตัวละคร: 'YY' (瑶瑶/Yaoyao) หรือ 'YR' (尤莉/Yuri)")
     line_th: str = Field(description="บทภาษาไทย")
     line_zh: str = Field(description="บทภาษาจีน (อักษรตัวย่อเท่านั้น ห้าม Pinyin)")
     line_ja: str = Field(description="บทภาษาญี่ปุ่น")

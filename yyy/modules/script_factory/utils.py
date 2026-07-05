@@ -52,7 +52,7 @@ def validate_script(script: dict) -> list:
             speakers.add(line.get("speaker"))
 
     if "YY" not in speakers:
-        errors.append("瑶瑶 (YY/Ruby) ต้องปรากฏในบท")
+        errors.append("瑶瑶 (YY/Yaoyao) ต้องปรากฏในบท")
     if "YR" not in speakers:
         errors.append("尤莉 (YR/Yuri) ต้องปรากฏในบท")
 

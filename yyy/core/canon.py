@@ -16,7 +16,7 @@ core/canon.py — PROJECT CANON ของ YYY Studio OS
 
 CHARACTERS = {
     "YY": {
-        "name_th": "เหยาเหยา", "name_zh": "瑶瑶", "name_ja": "ヤオヤオ", "name_en": "Ruby",
+        "name_th": "เหยาเหยา", "name_zh": "瑶瑶", "name_ja": "ヤオヤオ", "name_en": "Yaoyao",
         "lang": "zh", "nationality": "จีน / Chinese", "spice": 10, "mbti": "INTJ",
         "persona": "ดาราสาว CEO จีน เฟียส หรูหรา ปากแข็ง เผ็ดระดับ 10",
         "comedy_role": "ตัวเผ็ด — ดูหรูเย็นชาแต่ลงมือเผ็ดกว่าพริก",

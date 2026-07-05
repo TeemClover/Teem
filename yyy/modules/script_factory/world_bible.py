@@ -82,17 +82,17 @@ COMPACT_WORLD_BIBLE = """
 # THE YYY DIARY — WORLD BIBLE (COMPACT)
 
 ## CHARACTERS (two on-camera leads + one POV cameraman)
-YY — 瑶瑶 / เหยาเหยา (English stage name: Ruby): CHINESE woman. Fierce, glamorous, luxurious, sharp-tongued CEO energy. Spice level 10 — obsessed with spicy food, fearless, never admits defeat even with tears streaming. Signature: modern red qipao. She speaks CHINESE natively. Comedy role: the elegant one who is secretly a spice demon.
+YY — 瑶瑶 / เหยาเหยา (English stage name: Yaoyao): CHINESE woman. Fierce, glamorous, luxurious, sharp-tongued CEO energy. Spice level 10 — obsessed with spicy food, fearless, never admits defeat even with tears streaming. Signature: modern red qipao. She speaks CHINESE natively. Comedy role: the elegant one who is secretly a spice demon.
 
 YR — 尤莉 / ยูริ (English stage name: Yuri): JAPANESE woman. Soft, gentle, delicate artist. Spice level 0 — cannot handle even half a chili. Sweet-tooth. Signature: earth-tone artist outfit. She speaks JAPANESE natively. Comedy role: the calm sweet one whose composure shatters the instant she tastes spice.
 
 YOU — 尤 / ยู (English stage name: Yu): THAI man. The POV cameraman — NEVER appears on camera, exists only through sarcastic voice-over (added later) and the hand that reaches into frame to pay. He speaks THAI. Comedy role: cameraman + human wallet.
 
 ## CORE JOKE
-Spice 10 (Ruby) vs Spice 0 (Yuri) — the fierce glamorous Chinese woman loves brutal spice, the gentle Japanese artist can't handle any. Their clash IS the show. Yu films it all and pays for everything.
+Spice 10 (Yaoyao) vs Spice 0 (Yuri) — the fierce glamorous Chinese woman loves brutal spice, the gentle Japanese artist can't handle any. Their clash IS the show. Yu films it all and pays for everything.
 
 ## LANGUAGE (each character speaks their mother tongue; the other languages are subtitles)
-- Ruby (YY) speaks Chinese (line_zh is her real spoken line)
+- Yaoyao (YY) speaks Chinese (line_zh is her real spoken line)
 - Yuri (YR) speaks Japanese (line_ja is her real spoken line)
 - Yu (YOU) speaks Thai (line_th is his real spoken line) — VO only
 Everyone understands everyone 100%. No lost-in-translation gags.

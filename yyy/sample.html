@@ -150,24 +150,39 @@ nav .links a:hover{color:var(--you)}
 .dm{position:absolute; white-space:nowrap; font-size:.78rem; font-weight:600; text-shadow:0 1px 6px rgba(0,0,0,.9); animation:dmfly linear forwards; opacity:.95}
 @keyframes dmfly{from{transform:translateX(0)} to{transform:translateX(calc(-100vw))}}
 
-/* ซับ 4 ภาษา */
-.subs{position:absolute; left:0; right:0; bottom:8.5%; z-index:36; padding:0 16px; text-align:center; pointer-events:none}
-.plate{display:inline-block; font-size:.72rem; font-weight:800; letter-spacing:1px; padding:4px 16px; border-radius:99px; color:#fff; margin-bottom:8px;
-  box-shadow:0 4px 18px rgba(0,0,0,.5)}
-.plate.p-yy{background:linear-gradient(100deg,#8e2318,var(--yy))}
-.plate.p-yr{background:linear-gradient(100deg,#1b4a75,var(--yr))}
-.plate.p-you{background:linear-gradient(100deg,#7d651a,var(--you)); color:#111}
-.plate.p-duo{background:linear-gradient(100deg,var(--yy) 45%,var(--yr) 55%)}
-.actline{font-size:.68rem; color:rgba(255,255,255,.65); font-style:italic; margin-bottom:4px}
-.native{font-weight:900; line-height:1.3; text-shadow:0 2px 16px rgba(0,0,0,.85); margin-bottom:8px}
-.native.n-yy{color:#ffb4a8} .native.n-yr{color:#a8d4ff} .native.n-you{color:#ffe9a8} .native.n-duo{color:#fff}
-.others{display:flex; flex-direction:column; gap:2px}
-.others div{font-size:.72rem; color:rgba(255,255,255,.82); text-shadow:0 1px 8px rgba(0,0,0,.9)}
-.others .lang{opacity:.55; font-size:.85em; margin-right:6px}
-.subs .inner{animation:subin .45s cubic-bezier(.2,.9,.3,1.2)}
-@keyframes subin{from{opacity:0; transform:translateY(26px) scale(.92)} to{opacity:1; transform:none}}
-.subs.peakline .native{animation:peakshake .4s ease-in-out 3}
+/* ซับดีไซน์ใหม่: 2 ภาษาเด่นตำแหน่งตายตัว + คำพูดจริงตัวจิ๋ว — อ่านง่ายสำหรับคนอ่านภาษาเดียว */
+.subs{position:absolute; left:0; right:0; bottom:7%; z-index:36; padding:0 14px; text-align:center; pointer-events:none}
+/* ชิปบอกว่าใครพูด (สี = ตัวละคร) */
+.sub-chip{display:inline-flex; align-items:center; gap:6px; font-size:.62rem; font-weight:700; letter-spacing:.4px;
+  padding:3px 12px; border-radius:99px; color:#fff; margin-bottom:7px; box-shadow:0 3px 14px rgba(0,0,0,.55)}
+.sub-chip .act{opacity:.8; font-weight:400; font-style:italic}
+.sub-chip.p-yy{background:linear-gradient(100deg,#8e2318,var(--yy))}
+.sub-chip.p-yr{background:linear-gradient(100deg,#1b4a75,var(--yr))}
+.sub-chip.p-you{background:linear-gradient(100deg,#7d651a,var(--you)); color:#111}
+.sub-chip.p-duo{background:linear-gradient(100deg,var(--yy) 45%,var(--yr) 55%)}
+/* คำพูดจริง (ภาษาแม่คนพูด) — จิ๋ว จาง มีไมค์ */
+.sub-spoken{font-size:.64rem; color:rgba(255,255,255,.52); font-style:italic; margin-bottom:6px;
+  text-shadow:0 1px 6px rgba(0,0,0,.9)}
+.sub-spoken .mic{opacity:.6; margin-right:3px; font-style:normal}
+/* 2 ภาษาเด่น — ตำแหน่งเดิมเสมอ ไม่ว่าใครพูด */
+.sub-primary{font-weight:900; font-size:1.3rem; line-height:1.26; color:#fff; margin-bottom:5px;
+  text-shadow:0 2px 3px #000, 0 2px 18px rgba(0,0,0,.95)}
+.sub-secondary{font-weight:700; font-size:.92rem; line-height:1.3; color:#ffe08a;
+  text-shadow:0 2px 3px #000, 0 2px 12px rgba(0,0,0,.95)}
+@media(max-width:420px){ .sub-primary{font-size:1.14rem} .sub-secondary{font-size:.86rem} }
+.subs .inner{animation:subin .4s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes subin{from{opacity:0; transform:translateY(22px) scale(.94)} to{opacity:1; transform:none}}
+.subs.peakline .sub-primary{animation:peakshake .4s ease-in-out 3}
 @keyframes peakshake{25%{transform:translateX(-6px) rotate(-1deg)} 75%{transform:translateX(6px) rotate(1deg)}}
+/* ป้ายโหมดแพลตฟอร์มมุมจอ */
+.platbadge{position:absolute; top:56px; left:14px; z-index:37; font-size:.6rem; font-weight:700; letter-spacing:.5px;
+  padding:3px 10px; border-radius:99px; background:rgba(0,0,0,.45); color:var(--you); border:1px solid rgba(232,192,74,.4); pointer-events:none}
+/* ปุ่มสลับแพลตฟอร์มซับ */
+.platform-toggle{display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:4px}
+.platform-toggle .pf{border:1px solid var(--line); background:var(--card); color:var(--dim); border-radius:99px;
+  padding:8px 16px; cursor:pointer; font-family:inherit; font-size:.82rem; transition:all .2s}
+.platform-toggle .pf.on{background:linear-gradient(100deg,var(--yy-deep),#e0642f); color:#fff; border-color:transparent; font-weight:700}
+.pf-label{font-size:.72rem; color:var(--dim); text-align:center; margin-top:8px}
 
 /* แถบขวาแบบแอปวิดีโอ */
 .rail{position:absolute; right:8px; bottom:22%; z-index:38; display:flex; flex-direction:column; gap:16px; align-items:center; pointer-events:none}
@@ -281,6 +296,7 @@ nav .links a:hover{color:var(--you)}
           <div class="rec"><i></i>REC <span id="rectime">00:00</span></div>
           <div class="camr">YYY-CAM · 🔋 78%</div>
         </div>
+        <div class="platbadge" id="platbadge">📱 TikTok / IG · ซับ ไทย + EN</div>
         <div id="fxlayer"></div>
         <div id="danmaku"></div>
 
@@ -327,6 +343,11 @@ nav .links a:hover{color:var(--you)}
       <button class="cbtn" data-sp="2" id="sp2">2x</button>
       <button class="cbtn" id="sndBtn" data-i18n="ctrl_sound">🔊 เสียง</button>
     </div>
+    <div class="platform-toggle" id="platformToggle">
+      <button class="pf on" data-pf="tiktok">📱 TikTok / IG</button>
+      <button class="pf" data-pf="douyin">🐉 Douyin 抖音</button>
+    </div>
+    <div class="pf-label" id="pfLabel" data-i18n="pf_hint">ซับ 2 ภาษาเด่นตามตลาด: TikTok/IG = ไทย+อังกฤษ · Douyin = จีน+อังกฤษ</div>
     <div class="beatlabel" id="beatlabel">พร้อมฉาย — กด ▶ ได้เลย</div>
   </div>
 
@@ -512,12 +533,18 @@ const PLAY_TXT = {th: {pause: "⏸ พัก", play: "▶︎ เล่น"}, zh:
 const SND_TXT = {th: {on: "🔊 เสียง", off: "🔇 ปิดเสียง"}, zh: {on: "🔊 声音", off: "🔇 已静音"}};
 let UI_LANG = localStorage.getItem("yyy_sample_lang") || "th";
 const SPEAKER = {
-  YY:  {plate:"瑶瑶 เหยาเหยา", cls:"yy",  native:"zh"},
-  YR:  {plate:"ユリ ยูริ",     cls:"yr",  native:"ja"},
-  YOU: {plate:"ยู (VO) 尤·ユウ", cls:"you", native:"th"},
-  DUO: {plate:"เหยาเหยา + ยูริ", cls:"duo", native:"th"},
+  YY:  {name_en:"Yaoyao", name_zh:"瑶瑶", name_th:"เหยาเหยา", cls:"yy",  native:"zh"},
+  YR:  {name_en:"Yuri",   name_zh:"尤莉", name_th:"ยูริ",     cls:"yr",  native:"ja"},
+  YOU: {name_en:"Yu",     name_zh:"尤",   name_th:"ยู",       cls:"you", native:"th"},
+  DUO: {name_en:"Yaoyao + Yuri", name_zh:"瑶瑶 + 尤莉", name_th:"เหยาเหยา + ยูริ", cls:"duo", native:"zh"},
 };
 const LANG_TAG = {th:"ไทย", zh:"中", ja:"日", en:"EN"};
+/* โหมดซับตามแพลตฟอร์ม: 2 ภาษาเด่น (primary ใหญ่สุด + secondary) — ตำแหน่งตายตัวเสมอ */
+const PLATFORMS = {
+  tiktok: {primary:"th", secondary:"en", badge:"📱 TikTok / IG · ซับ ไทย + EN", badge_zh:"📱 TikTok / IG · 泰语 + 英语字幕"},
+  douyin: {primary:"zh", secondary:"en", badge:"🐉 Douyin 抖音 · ซับ จีน + EN", badge_zh:"🐉 抖音 · 中文 + 英语字幕"},
+};
+let PLATFORM = localStorage.getItem("yyy_sample_platform") || "tiktok";
 const TOTAL = SCRIPT.reduce((s,l)=>s+l.dur,0);
 
 /* ---------- คอมเมนต์จำลอง (danmaku) — เวลาเป็นวินาที ---------- */
@@ -632,19 +659,29 @@ function fireDanmaku(text, color){
   setTimeout(() => el.remove(), 8500);
 }
 
-/* ---------- แสดงซับ 4 ภาษา ---------- */
-function renderLine(line){
+/* ---------- แสดงซับแบบ 2 ภาษาเด่นตำแหน่งตายตัว + คำพูดจริงตัวจิ๋ว ---------- */
+let currentLine = null;
+/* วาดเฉพาะตัวซับ (แยกออกมาเพื่อ re-render ตอนสลับแพลตฟอร์มโดยไม่เล่นเอฟเฟกต์ซ้ำ) */
+function renderSubs(line){
   const sp = SPEAKER[line.sp];
-  const order = ["th","zh","ja","en"];
-  const others = order.filter(l => l !== sp.native)
-    .map(l => `<div><span class="lang">${LANG_TAG[l]}</span>${line[l]}</div>`).join("");
+  const pf = PLATFORMS[PLATFORM];
+  const chipName = `${sp.name_en} ${sp.name_zh}`;
+  // คำพูดจริง (ภาษาแม่คนพูด) แสดงจิ๋วเฉพาะตอนที่ภาษานั้นไม่ใช่ 1 ใน 2 ภาษาเด่น (กันรก/กันซ้ำ)
+  const showSpoken = line.sp !== "DUO" && sp.native !== pf.primary && sp.native !== pf.secondary;
+  const spokenHtml = showSpoken
+    ? `<div class="sub-spoken"><span class="mic">🎙</span>${line[sp.native]} <span style="opacity:.6">(${LANG_TAG[sp.native]})</span></div>` : "";
   subs.className = "subs" + (line.peak ? " peakline" : "");
   subs.innerHTML = `<div class="inner">
-    <div class="plate p-${sp.cls}">${sp.plate}</div>
-    ${line.act ? `<div class="actline">( ${line.act} )</div>` : ""}
-    <div class="native n-${sp.cls}" style="font-size:${line[sp.native].length > 34 ? "1.02rem" : "1.18rem"}">${line[sp.native]}</div>
-    <div class="others">${others}</div>
+    <div class="sub-chip p-${sp.cls}">${chipName}${line.act ? ` <span class="act">· ${line.act}</span>` : ""}</div>
+    ${spokenHtml}
+    <div class="sub-primary">${line[pf.primary]}</div>
+    <div class="sub-secondary">${line[pf.secondary]}</div>
   </div>`;
+}
+function renderLine(line){
+  const sp = SPEAKER[line.sp];
+  currentLine = line;
+  renderSubs(line);
   /* ออร่า + ออร์บ */
   aura.className = "aura wash-" + sp.cls + (line.fx.includes("suspense") ? " dim" : "");
   orbYY.classList.toggle("speaking", line.sp === "YY" || line.sp === "DUO");
@@ -731,6 +768,7 @@ function endShow(){
 }
 function resetShow(){
   elapsed = 0; lineIdx = -1; dmFired = new Set(); canon = {first3:false, calls:0};
+  currentLine = null;
   subs.innerHTML = ""; aura.className = "aura";
   orbYY.classList.remove("speaking"); orbYR.classList.remove("speaking"); pov.classList.remove("you-speaking");
   $("pbar").style.width = "0%"; setBeatUI(-1);
@@ -762,7 +800,7 @@ const UI_I18N = {
 th: {
   nav_home: "🏠 หน้าบ้าน", nav_map: "🧭 แผนที่สมบัติ",
   ep_title: "EP001 — ศึกเผ็ดปะทะหวานที่เยาวราช",
-  meta_loc: "โลเคชัน", meta_fmt: "รูปแบบ", meta_fmt_v: "ซิตคอม POV · ซับ 4 ภาษาพร้อมกัน",
+  meta_loc: "โลเคชัน", meta_fmt: "รูปแบบ", meta_fmt_v: "ซิตคอม POV · ซับ 2 ภาษาเด่นตามแพลตฟอร์ม",
   meta_real: "วิดีโอจริง", meta_real_v: "ไม่มี — จินตนาการ 100%",
   beat0: "เปิดฮุค — เรียกยูใน 3 วิ", beat1: "ปะทะ — เผ็ดชนหวาน",
   beat2: "จุดพีค — น้ำตาแห่งความเคารพ", beat3: "ปิดตอน — ยู จ่ายเงิน",
@@ -770,7 +808,7 @@ th: {
   cn1_label: 'เรียก "ยู" ใน 3 วินาทีแรก', cn2_label: 'เรียก "ยู" อย่างน้อย 2 ครั้ง',
   cn3_label: "ความขัดแย้งเผ็ด-หวานครบวงจร",
   start_h2: "EP001 — ศึกเผ็ดปะทะหวาน<br>ที่เยาวราช",
-  start_p: 'โหมดจำลอง: ไม่มีภาพวิดีโอ มีแต่แสง สี เสียง ซับ 4 ภาษา และจินตนาการล้วนๆ — ลองดูว่า "อ่าน" ตอนนึงแล้วสนุกได้แค่ไหน',
+  start_p: 'โหมดจำลอง: ไม่มีภาพวิดีโอ มีแต่แสง สี เสียง และซับ 2 ภาษาเด่น (ไทย+อังกฤษ) — ลองดูว่า "อ่านซับอย่างเดียว" ตอนนึงแล้วสนุกได้แค่ไหน',
   start_sound: "🔊 มีเสียงประกอบสังเคราะห์เบาๆ (ปิดได้ที่ปุ่มใต้จอ)",
   end_h2: "จบตอนจำลอง!", end_views: "วิว (จำลอง)", end_likes: "หัวใจ", end_cmts: "คอมเมนต์",
   end_p: "นี่แค่ตัวหนังสือกับแสงสียังสนุกขนาดนี้ — ตอนถ่ายจริงที่มีหน้าคน มีอาหาร มีเสียงจริง จะขนาดไหน 🌶️🍡",
@@ -779,11 +817,12 @@ th: {
   live_viewing: "กำลังดูตอนนี้ (จำลองบรรยากาศไวรัล)", live_likes: "❤️ หัวใจสะสม",
   live_cmts: "💬 คอมเมนต์ปลิวเข้ามา 4 ภาษา",
   live_hint: '💡 ทุกตัวเลข ทุกคอมเมนต์ในหน้านี้คือการจำลองเพื่อให้ทีมเห็น "ฟีลตอนคลิปติด" — ของจริงต้องไปทำให้เกิดด้วยกันตามแผนที่สมบัติ',
+  pf_hint: "ซับ 2 ภาษาเด่นตามตลาด: TikTok/IG = ไทย+อังกฤษ · Douyin = จีน+อังกฤษ (อ่านง่าย ตำแหน่งเดิมเสมอ)",
 },
 zh: {
   nav_home: "🏠 主页", nav_map: "🧭 藏宝图",
   ep_title: "EP001 —— 唐人街辣甜大战",
-  meta_loc: "拍摄地点", meta_fmt: "形式", meta_fmt_v: "POV情景喜剧 · 四语字幕同步显示",
+  meta_loc: "拍摄地点", meta_fmt: "形式", meta_fmt_v: "POV情景喜剧 · 按平台显示双语字幕",
   meta_real: "真实素材", meta_real_v: "没有 —— 100%靠想象",
   beat0: "开场钩子 — 3秒内喊小尤", beat1: "冲突 — 辣甜对撞",
   beat2: "高潮 — 致敬之泪", beat3: "结尾 — 小尤，结账",
@@ -791,7 +830,7 @@ zh: {
   cn1_label: '3秒内喊"小尤"', cn2_label: '至少喊2次"小尤"',
   cn3_label: "辣甜冲突完整走完",
   start_h2: "EP001 —— 唐人街<br>辣甜大战",
-  start_p: "模拟模式：没有视频画面，只有灯光、色彩、声音、四语字幕，纯靠想象力 —— 试试看光是「读」一集能有多好玩",
+  start_p: "模拟模式：没有视频画面，只有灯光、色彩、声音，以及两条主字幕（中文+英语）—— 试试看「只读字幕」一集能有多好玩",
   start_sound: "🔊 带有轻量合成音效（可在屏幕下方按钮关闭）",
   end_h2: "模拟剧集结束！", end_views: "次观看（模拟）", end_likes: "个赞", end_cmts: "条评论",
   end_p: "光靠文字和灯光效果就这么好玩了 —— 等真人实拍、真食物、真声音出来，会是什么程度？🌶️🍡",
@@ -800,6 +839,7 @@ zh: {
   live_viewing: "正在观看（模拟爆款氛围）", live_likes: "❤️ 累计点赞",
   live_cmts: "💬 四语评论飞入中",
   live_hint: '💡 这页面上的所有数字和评论都是模拟出来的，让团队感受一下「爆款的感觉」—— 真实数据要靠大家一起按藏宝图去实现',
+  pf_hint: "按市场显示2种主字幕：TikTok/IG = 泰语+英语 · 抖音 = 中文+英语（位置固定，好读）",
 }
 };
 
@@ -816,9 +856,26 @@ function applyUiLang(lang){
   $("sndBtn").textContent = SND_TXT[lang][soundOn ? "on" : "off"];
   $("playBtn").textContent = PLAY_TXT[lang][playing ? "pause" : "play"];
   $("beatlabel").textContent = elapsed > 0 ? BEAT_NAMES[lang][SCRIPT[Math.max(lineIdx,0)]?.beat ?? 0] : CANON_TXT[lang].ready;
+  updatePlatformBadge();
 }
 document.querySelectorAll("#langSwitch button").forEach(b => b.addEventListener("click", () => applyUiLang(b.dataset.lang)));
+
+/* ================= สลับโหมดซับตามแพลตฟอร์ม (TikTok/IG ↔ Douyin) ================= */
+function updatePlatformBadge(){
+  const pf = PLATFORMS[PLATFORM];
+  $("platbadge").textContent = UI_LANG === "zh" ? pf.badge_zh : pf.badge;
+}
+function applyPlatform(pf){
+  PLATFORM = pf;
+  localStorage.setItem("yyy_sample_platform", pf);
+  document.querySelectorAll("#platformToggle .pf").forEach(b => b.classList.toggle("on", b.dataset.pf === pf));
+  updatePlatformBadge();
+  if (currentLine) renderSubs(currentLine);  // เปลี่ยนซับทันทีโดยไม่เล่นเอฟเฟกต์ซ้ำ
+}
+document.querySelectorAll("#platformToggle .pf").forEach(b => b.addEventListener("click", () => applyPlatform(b.dataset.pf)));
+
 applyUiLang(UI_LANG);
+applyPlatform(PLATFORM);
 
 /* จุดมาร์กจังหวะบน progress bar */
 (function(){
