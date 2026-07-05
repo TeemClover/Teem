@@ -10,3 +10,4 @@ yyy/.venv/
 # YYY Studio OS — runtime-generated (recreated by app.py on first run)
 yyy/yyy_studio.db
 yyy/projects/
+yyy/.env

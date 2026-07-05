@@ -4,6 +4,7 @@ modules/smart_shoot.py — MODULE 1: Smart Shoot
 สร้างแผนถ่ายจากโลเคชัน: HOOK ตลกสถานการณ์ + MICRO-SCRIPT 3 ภาษา 8-12 บรรทัด + B-ROLL CHECKLIST
 ตรรกะ rule-based ล้วน (สุ่มผสมจากคลัง template ใน data/seed_hooks.json) — ไม่มี API ภายนอก
 ทุก hook มาจากสูตร: เหยาเหยาอยากเผ็ด × ยูริอยากหวาน × ยูต้องจ่าย/แก้ปัญหา
+UI แสดง 2 ภาษา (ไทย + จีน) ทุกจุด — บทสามภาษา (ไทย/จีน/ญี่ปุ่น) ของตัวคอนเทนต์ไม่แตะ
 """
 import random
 
@@ -11,6 +12,14 @@ import streamlit as st
 
 from core import db
 from core.canon import CHARACTERS, SPEAKER_LANG, UNIVERSE_RULES
+
+# ป้ายจังหวะบท: key ภาษาไทยใช้เทียบภายในเหมือนเดิม ค่านี้ใช้แสดงผลบนจอ (ไทย + จีน)
+BEAT_LABEL_ZH = {
+    "เปิดฮุค 3 วิ (มองกล้องเรียกยู)": "开场钩子 3秒（看镜头喊小尤）",
+    "ความขัดแย้งเผ็ด-หวาน": "辣甜冲突",
+    "จุดพีค": "高潮",
+    "ปิด + เรียกยู": "结尾 + 喊小尤",
+}
 
 
 def _fill(text: str, loc: dict) -> str:
@@ -68,20 +77,21 @@ def render_plan(plan: dict):
     """แสดงแผนถ่ายบนหน้าจอ"""
     st.markdown(f"### 📍 {plan['location']}")
     i1, i2, i3 = st.columns(3)
-    i1.markdown(f"**เวลาที่เหมาะ:** {plan['best_time']}")
-    i2.markdown(f"**เรื่องขออนุญาต:** {plan['permit_note']}")
-    i3.markdown(f"**ระดับเสียงรบกวน:** {plan['noise_level']}")
+    i1.markdown(f"**เวลาที่เหมาะ / 拍摄时间:** {plan['best_time']}")
+    i2.markdown(f"**เรื่องขออนุญาต / 许可须知:** {plan['permit_note']}")
+    i3.markdown(f"**ระดับเสียงรบกวน / 噪音水平:** {plan['noise_level']}")
 
-    st.markdown("#### 🎣 HOOK ตลกสถานการณ์")
+    st.markdown("#### 🎣 HOOK ตลกสถานการณ์ / 情景笑点钩子")
     st.info(plan["hook"])
 
-    st.markdown(f"#### 📜 MICRO-SCRIPT ({len(plan['script'])} บรรทัด — 3 ภาษา)")
-    st.caption("ผู้พูดพูดภาษาแม่ตัวเอง (ตัวหนา) อีกสองภาษาใช้เป็นซับ | ทุกคนเข้าใจกัน 100%")
+    st.markdown(f"#### 📜 MICRO-SCRIPT ({len(plan['script'])} บรรทัด / 行 — 3 ภาษา / 三语)")
+    st.caption("ผู้พูดพูดภาษาแม่ตัวเอง (ตัวหนา) อีกสองภาษาใช้เป็นซับ | ทุกคนเข้าใจกัน 100% "
+               "（说话人用母语，粗体；另两种语言当字幕，彼此百分百听得懂）")
     beat_now = None
     for i, line in enumerate(plan["script"], 1):
         if line["beat"] != beat_now:
             beat_now = line["beat"]
-            st.markdown(f"**— {beat_now} —**")
+            st.markdown(f"**— {beat_now} / {BEAT_LABEL_ZH.get(beat_now, '')} —**")
         c = CHARACTERS[line["sp"]]
         native = SPEAKER_LANG[line["sp"]]
         act = f" *({line['act']})*" if line.get("act") else ""
@@ -96,7 +106,7 @@ def render_plan(plan: dict):
             unsafe_allow_html=True,
         )
 
-    st.markdown(f"#### 🎥 B-ROLL CHECKLIST ({len(plan['broll'])} ช็อต)")
+    st.markdown(f"#### 🎥 B-ROLL CHECKLIST ({len(plan['broll'])} ช็อต / 个镜头)")
     for shot in plan["broll"]:
         st.checkbox(shot, key=f"broll_{plan['location']}_{shot}")
 
@@ -124,9 +134,11 @@ def save_as_episode(plan: dict, tier: str) -> tuple:
 def render():
     """หน้า 'วางแผนถ่าย (Smart Shoot)'"""
     st.title("🎬 วางแผนถ่าย (Smart Shoot)")
-    st.caption("เลือกโลเคชัน → ได้ HOOK + บท 3 ภาษา + B-roll checklist ครบใน 1 คลิก")
+    st.caption("拍摄计划工厂")
+    st.caption("เลือกโลเคชัน → ได้ HOOK + บท 3 ภาษา + B-roll checklist ครบใน 1 คลิก | "
+               "选地点 → 一键获得钩子、三语剧本、B-roll清单")
 
-    with st.expander("📕 กฎจักรวาล YYY (อ่านก่อนถ่ายทุกครั้ง)"):
+    with st.expander("📕 กฎจักรวาล YYY (อ่านก่อนถ่ายทุกครั้ง) / YYY 世界观铁律（每次拍摄前必读）"):
         for r in UNIVERSE_RULES:
             st.markdown(f"- {r}")
 
@@ -134,12 +146,12 @@ def render():
     names = [l["name_th"] for l in locations]
     c1, c2, c3 = st.columns([3, 1, 1])
     with c1:
-        chosen = st.selectbox("เลือกโลเคชัน", names)
+        chosen = st.selectbox("เลือกโลเคชัน / 选择地点", names)
     with c2:
-        tier = st.selectbox("Tier ตอน", ["A", "B", "C", "D"], index=1)
+        tier = st.selectbox("Tier ตอน / 剧集等级", ["A", "B", "C", "D"], index=1)
     with c3:
         st.write("")
-        gen = st.button("🎲 สร้างแผนถ่าย", type="primary")
+        gen = st.button("🎲 สร้างแผนถ่าย / 生成计划", type="primary")
 
     if gen:
         loc = next(l for l in locations if l["name_th"] == chosen)
@@ -147,13 +159,14 @@ def render():
 
     plan = st.session_state.get("shoot_plan")
     if not plan:
-        st.info("เลือกโลเคชันแล้วกด 'สร้างแผนถ่าย' — กดซ้ำได้เพื่อสุ่มชุดใหม่")
+        st.info("เลือกโลเคชันแล้วกด 'สร้างแผนถ่าย' — กดซ้ำได้เพื่อสุ่มชุดใหม่ / "
+                 "选好地点后点「生成计划」，可重复点击获得新版本")
         return
 
     render_plan(plan)
 
     st.divider()
-    if st.button("💾 บันทึกเป็นตอน (สร้างโฟลเดอร์อัตโนมัติ)"):
+    if st.button("💾 บันทึกเป็นตอน (สร้างโฟลเดอร์อัตโนมัติ) / 保存为一集（自动建文件夹）"):
         code, folder = save_as_episode(plan, tier)
-        st.success(f"บันทึกตอน {code} แล้ว — โฟลเดอร์: `{folder}`")
+        st.success(f"บันทึกตอน {code} แล้ว — โฟลเดอร์: `{folder}` / 已保存第 {code} 集")
         st.session_state["last_episode_code"] = code

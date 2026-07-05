@@ -1,0 +1,113 @@
+# -*- coding: utf-8 -*-
+"""
+modules/script_factory/world_bible.py — World Bible ของ Script Factory
+ตัวละครฝั่ง international (Clover/Xircle) ต่อยอดจากจักรวาลเดิม — ห้ามมี Pinyin เด็ดขาด
+"""
+
+CHARACTERS_SF = {
+    "CLOVER": {
+        "name_th": "โคลเวอร์", "name_zh": "四叶草", "name_en": "Clover",
+        "nationality": "Thai",
+        "personality": "สาวไทยตัวเล็กน่ารัก ดูหวานแต่จริงๆ แสบ พูดตรง ชอบของเผ็ด กินเก่ง กล้าลอง",
+        "comedy_role": "ตัวเผ็ด — ดูหวานแต่ลงมือเผ็ดกว่าพริก",
+        "signature_look": "เดรสดอกไม้สีพาสเทล + ผมถักเปีย (Signature — ทุกคลิป)",
+        "spice_level": 10, "color": "#FF6B9D",
+    },
+    "XIRCLE": {
+        "name_th": "เซอร์เคิล", "name_zh": "小圈", "name_en": "Xircle",
+        "nationality": "Chinese",
+        "personality": "สาวจีนสายแฟชั่น มั่นใจ ชอบวางแผน ดูเท่แต่กลัวเผ็ด กินหวานเก่ง หลงทางเก่งกว่า",
+        "comedy_role": "ตัวหวาน — ดูเท่แต่กินเผ็ดไม่ได้เลย",
+        "signature_look": "เสื้อครอปสีดำ + กางเกงขากว้าง + แว่นกันแดด (Signature — ทุกคลิป)",
+        "spice_level": 0, "color": "#4ECDC4",
+    },
+}
+
+LOCATIONS_SF = [
+    {"id": "night_market",  "th": "ตลาดนัดกลางคืน", "zh": "夜市",       "en": "Night Market",        "archetype": "market"},
+    {"id": "yaowarat",      "th": "เยาวราช",         "zh": "唐人街",     "en": "Chinatown",           "archetype": "market"},
+    {"id": "cafe",          "th": "คาเฟ่",           "zh": "咖啡店",     "en": "Cafe",                "archetype": "cafe"},
+    {"id": "supermarket",   "th": "ซูเปอร์มาร์เก็ต", "zh": "超市",       "en": "Supermarket",         "archetype": "store"},
+    {"id": "bts",           "th": "รถไฟฟ้า BTS",     "zh": "轻轨",       "en": "BTS Skytrain",        "archetype": "transit"},
+    {"id": "tuktuk",        "th": "ตุ๊กตุ๊ก",        "zh": "嘟嘟车",     "en": "Tuk-Tuk Ride",        "archetype": "transit"},
+    {"id": "park",          "th": "สวนลุมพินี",      "zh": "伦披尼公园", "en": "Lumpini Park",        "archetype": "park"},
+    {"id": "muaythai",      "th": "ยิมมวยไทย",       "zh": "泰拳馆",     "en": "Muay Thai Gym",       "archetype": "activity"},
+    {"id": "massage",       "th": "ร้านนวดไทย",      "zh": "泰式按摩店", "en": "Thai Massage Parlor", "archetype": "activity"},
+    {"id": "chatuchak",     "th": "จตุจักร",         "zh": "乍都乍市场", "en": "Chatuchak Market",    "archetype": "market"},
+    {"id": "convenience",   "th": "เซเว่น",          "zh": "便利店",     "en": "7-Eleven",            "archetype": "store"},
+    {"id": "condo_kitchen", "th": "คอนโด/ครัว",      "zh": "公寓厨房",   "en": "Home Kitchen",        "archetype": "home"},
+]
+
+THEMES = [
+    {"id": "food_adventure", "th": "ผจญภัยอาหาร",   "zh": "美食冒险", "en": "Food Adventure"},
+    {"id": "culture_clash",  "th": "วัฒนธรรมปะทะ",   "zh": "文化碰撞", "en": "Culture Clash"},
+    {"id": "challenge",      "th": "ชาเลนจ์",        "zh": "挑战赛",   "en": "Challenge"},
+    {"id": "shopping_haul",  "th": "ช้อปปิ้ง",       "zh": "购物",     "en": "Shopping Haul"},
+    {"id": "cooking_battle", "th": "ศึกครัว",        "zh": "厨房大战", "en": "Cooking Battle"},
+    {"id": "travel_explore", "th": "ท่องเที่ยว",     "zh": "探索旅行", "en": "Travel & Explore"},
+    {"id": "daily_life",     "th": "ชีวิตประจำวัน",  "zh": "日常生活", "en": "Daily Life"},
+    {"id": "special_event",  "th": "เทศกาล/อีเวนต์", "zh": "节日活动", "en": "Festival / Event"},
+    {"id": "mukbang_react",  "th": "กินโชว์/รีแอค",  "zh": "吃播反应", "en": "Mukbang & React"},
+    {"id": "friendship",     "th": "มิตรภาพ",        "zh": "友情时刻", "en": "Friendship Moment"},
+]
+
+COMEDY_BEATS = [
+    "taste_clash", "role_reversal", "escalation", "secret_reveal", "teamwork_fail",
+    "outsider_judge", "budget_crisis", "lost_adventure", "competition", "heartfelt_twist",
+]
+
+EMOTIONAL_ARCS = [
+    "chaotic_to_sweet", "confident_to_humbled", "rivals_to_allies", "calm_to_chaos", "sweet_to_spicy",
+]
+
+# น้ำหนักคะแนน 12 เกณฑ์ (รวม 1.0)
+WEIGHTS = {
+    "viral_potential": 0.12, "comedy_quality": 0.12, "visual_appeal": 0.08,
+    "character_chemistry": 0.10, "cultural_relevance_th": 0.08, "cultural_relevance_zh": 0.08,
+    "cultural_relevance_intl": 0.08, "hook_strength": 0.10, "rewatch_value": 0.06,
+    "brand_alignment": 0.06, "location_utilization": 0.06, "language_naturalness": 0.06,
+}
+
+# ป้ายชื่อเกณฑ์ 2 ภาษา ไทย + จีน (ใช้ใน UI)
+CRITERIA_TH = {
+    "viral_potential": "โอกาสไวรัล/爆款潜力", "comedy_quality": "ความตลก/喜剧质量",
+    "visual_appeal": "ความสวยของภาพ/画面吸引力",
+    "character_chemistry": "เคมีตัวละคร/角色化学反应", "cultural_relevance_th": "โดนใจคนไทย/泰国文化共鸣",
+    "cultural_relevance_zh": "โดนใจคนจีน/中国文化共鸣", "cultural_relevance_intl": "โดนใจอินเตอร์/国际文化共鸣",
+    "hook_strength": "พลังฮุค 3 วิ/开场钩子力度", "rewatch_value": "ดูซ้ำได้/可重复观看",
+    "brand_alignment": "ตรงแบรนด์/品牌契合度",
+    "location_utilization": "ใช้โลเคชันคุ้ม/地点利用率", "language_naturalness": "ภาษาเนทีฟ/语言自然度",
+}
+
+# แมปชื่อเกณฑ์ → คอลัมน์ DB
+SCORE_COLS = {
+    "viral_potential": "score_viral", "comedy_quality": "score_comedy", "visual_appeal": "score_visual",
+    "character_chemistry": "score_chemistry", "cultural_relevance_th": "score_cultural_th",
+    "cultural_relevance_zh": "score_cultural_zh", "cultural_relevance_intl": "score_cultural_intl",
+    "hook_strength": "score_hook", "rewatch_value": "score_rewatch", "brand_alignment": "score_brand",
+    "location_utilization": "score_location", "language_naturalness": "score_language",
+}
+
+COMPACT_WORLD_BIBLE = """
+# THE YYY DIARY — WORLD BIBLE (COMPACT)
+
+## CHARACTERS
+CLOVER (โคลเวอร์/四叶草): Thai girl, looks sweet but secretly savage. Spice level 10. Pastel flower dress + braids. Brutally honest, fearless foodie. Comedy role: the unexpected spicy one.
+
+XIRCLE (เซอร์เคิล/小圈): Chinese girl, looks cool but can't handle spice. Spice level 0. Black crop top + wide pants + sunglasses. Fashion-forward planner whose plans always fail. Comedy role: the unexpected sweet one.
+
+## CORE JOKE
+The reversal: Thai girl = spice demon, Chinese girl = can't eat spice. This subversion IS the show.
+
+## 12 BANGKOK LOCATIONS
+Night Market, Chinatown (Yaowarat), Cafe, Supermarket, BTS, Tuk-Tuk, Lumpini Park, Muay Thai Gym, Thai Massage, Chatuchak Market, 7-Eleven, Home Kitchen
+
+## RULES
+- Each language version must feel NATIVE (not translated)
+- No Pinyin/romanization ever
+- Signature outfits only (footage reuse)
+- Hook in first 3 seconds (camera look + bold statement)
+- Sweet vs Spicy clash in every episode
+- Warm bickering, never mean — they're best friends
+- #YYY on every platform
+"""

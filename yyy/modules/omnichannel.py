@@ -129,37 +129,43 @@ def export_metadata(ep: dict, all_meta: dict) -> list:
 def render():
     """หน้า 'ส่งออก (Omnichannel)'"""
     st.title("🚀 ส่งออก (Omnichannel)")
-    st.caption(f"1 ตอน → 4 แพลตฟอร์ม | ทุกโพสต์ต้องมี {HASHTAG_CORE} ไม่มีข้อยกเว้น")
+    st.caption("全渠道导出")
+    st.caption(f"1 ตอน → 4 แพลตฟอร์ม | ทุกโพสต์ต้องมี {HASHTAG_CORE} ไม่มีข้อยกเว้น / "
+               f"1集 → 4个平台 | 每条帖子必须有 {HASHTAG_CORE}，无一例外")
 
     episodes = db.query("SELECT * FROM episodes ORDER BY id DESC")
     if not episodes:
-        st.warning("ยังไม่มีตอนในระบบ — ไปที่หน้า 'วางแผนถ่าย' แล้วกด 'บันทึกเป็นตอน' ก่อน")
+        st.warning("ยังไม่มีตอนในระบบ — ไปที่หน้า 'วางแผนถ่าย' แล้วกด 'บันทึกเป็นตอน' ก่อน / "
+                   "系统里还没有集数 —— 先去「拍摄计划」页点击「保存为一集」")
         return
 
     labels = [f"{e['code']} — {e['title_th']} ({e['location']})" for e in episodes]
-    ep = episodes[labels.index(st.selectbox("เลือกตอน", labels))]
+    ep = episodes[labels.index(st.selectbox("เลือกตอน / 选择集数", labels))]
 
     c1, c2 = st.columns(2)
     with c1:
-        if st.button("📁 สร้าง/ตรวจโครงโฟลเดอร์", width="stretch"):
+        if st.button("📁 สร้าง/ตรวจโครงโฟลเดอร์ / 生成或检查文件夹", width="stretch"):
             base = episode_folder(ep)
-            st.success(f"โฟลเดอร์พร้อม: `{base}`")
+            st.success(f"โฟลเดอร์พร้อม / 文件夹已就绪: `{base}`")
             for sub in sorted(p.relative_to(base) for p in base.rglob("*") if p.is_dir()):
                 st.markdown(f"- 📂 `{sub}`")
     with c2:
-        gen = st.button("📝 สร้าง metadata + export .txt อัตโนมัติ", type="primary", width="stretch")
+        gen = st.button("📝 สร้าง metadata + export .txt อัตโนมัติ / 生成文案并自动导出.txt",
+                        type="primary", width="stretch")
 
     if gen:
         all_meta = generate_metadata(ep)
         files = export_metadata(ep, all_meta)
         st.session_state["omni_meta"] = (ep["id"], all_meta)
-        st.success(f"สร้าง metadata และบันทึกเป็น .txt แล้ว {len(files)} ไฟล์ใน 04_Exports")
+        st.success(f"สร้าง metadata และบันทึกเป็น .txt แล้ว {len(files)} ไฟล์ใน 04_Exports / "
+                   f"已生成文案，{len(files)} 个.txt文件已保存到 04_Exports")
 
     cached = st.session_state.get("omni_meta")
     if cached and cached[0] == ep["id"]:
         all_meta = cached[1]
-        t1, t2, t3, t4 = st.tabs(["TikTok (ไทย)", "Douyin (จีน)", "IG Reels", "FB Reels"])
+        t1, t2, t3, t4 = st.tabs(["TikTok (ไทย/泰语)", "Douyin (จีน/中文)", "IG Reels (EN)", "FB Reels (ไทย/泰语)"])
         for tab, platform in zip((t1, t2, t3, t4), PLATFORM_DIRS):
             with tab:
                 st.code(metadata_text(platform, all_meta[platform]), language=None)
-        st.caption("กดไอคอนมุมขวาบนของกล่องเพื่อคัดลอกทั้งชุด — ไฟล์ .txt ถูกเซฟใน 04_Exports แล้ว")
+        st.caption("กดไอคอนมุมขวาบนของกล่องเพื่อคัดลอกทั้งชุด — ไฟล์ .txt ถูกเซฟใน 04_Exports แล้ว / "
+                   "点击框右上角图标即可复制全部内容 —— .txt 文件已保存在 04_Exports 中")

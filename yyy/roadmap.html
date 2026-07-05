@@ -52,7 +52,10 @@ h1{font-size:clamp(2.2rem,7.5vw,5rem); font-weight:900; line-height:1.1; margin:
 h1 .grad{background:linear-gradient(100deg,var(--yy),var(--you) 50%,var(--yr)); -webkit-background-clip:text; background-clip:text; color:transparent}
 .quote{max-width:700px; margin:20px auto 0; color:var(--dim); font-size:1.02rem; border-left:3px solid var(--you-deep); padding-left:18px; text-align:left}
 .quote b{color:var(--you)}
-.compass{margin-top:44px; width:min(560px,90vw)}
+.deadline{margin-top:22px; max-width:700px; font-size:.95rem; color:#ffd9a0; background:rgba(231,76,60,.12);
+  border:1px solid rgba(231,76,60,.4); border-radius:14px; padding:12px 20px}
+.deadline b{color:#fff}
+.compass{margin-top:34px; width:min(560px,90vw)}
 .compass .lab{display:flex; justify-content:space-between; font-size:.85rem; color:var(--dim); margin-bottom:8px}
 .compass .lab b{color:var(--you)}
 .cbar{height:14px; border-radius:99px; background:rgba(255,255,255,.07); overflow:hidden; border:1px solid var(--line)}
@@ -194,6 +197,7 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
     <a href="#storm">⛈️ พายุ</a>
     <a href="#orders">✅ 30 วันแรก</a>
     <a href="sample.html" style="color:var(--you)">🎬 ตอนจำลอง</a>
+    <a href="hq.html" style="color:var(--you)">🛰️ HQ</a>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="lang-switch" id="langSwitch">
@@ -208,6 +212,7 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
   <div class="internal-badge" style="animation:none">ลับสุดยอด — เปิดในวงทีมก่อน ห้ามหลุดจ้า</div>
   <h1>แผนที่สมบัติ <span class="grad">YYY</span><br>มุ่งหน้าสู่แกรนด์ไลน์</h1>
   <p class="quote">หลักคิดแบบเซนคู: <b>อยากได้อะไร ให้ไล่ย้อนกลับว่า "ต้องมีอะไรก่อน"</b> แล้วสร้างมันทีละชิ้นตามลำดับ ไม่ข้ามขั้น ไม่พึ่งปาฏิหาริย์ — ทุกอย่างในหน้านี้คือ ทำได้จริง <b>หนึ่งหมื่นล้านเปอร์เซ็นต์</b> ถ้าเดินตามแผนที</p>
+  <div class="deadline">🔥 <b>เป้าเดียวปีนี้: แตะรายได้หลักแสนบาท/เดือน ภายในสิ้นปี 2026</b> — เหลือเวลา <b id="daysleft">—</b> วัน ไม่มีเวลาให้อ้อยอิ่งแล้ว</div>
   <div class="compass">
     <div class="lab"><span>🧭 ระยะทางสู่การออกเรือ (จากเช็คลิสต์ 30 วันแรกด้านล่าง)</span><b id="pct">0%</b></div>
     <div class="cbar"><i id="pbar"></i></div>
@@ -225,21 +230,21 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
     <div class="tier t1 reveal">
       <div class="flag">⛵</div>
       <h3>ล็อกโพสแรก — "เรือไม่จม"</h3>
-      <div class="when">ภายใน 12 เดือน</div>
+      <div class="when">ภายในสิ้นปี 2026 (~6 เดือน)</div>
       <ul>
+        <li>🔥 รายได้เดือนละ ≥ 100,000฿ (หลักแสน) ครอบคลุมต้นทุนการผลิตทั้งหมด — เป้าเดียวปีนี้</li>
         <li>ผู้ติดตามรวม 4 แพลตฟอร์ม ≥ 100,000</li>
-        <li>รายได้เดือนละ ≥ 50,000฿ ครอบคลุมต้นทุนการผลิตทั้งหมด</li>
-        <li>สปอนเซอร์ประจำอย่างน้อย 1 ราย + งาน B2B หล่อเลี้ยงทีม</li>
+        <li>สปอนเซอร์ประจำอย่างน้อย 2 ราย + งาน B2B หล่อเลี้ยงทีม</li>
         <li>คลังฟุต HIGH VALUE ≥ 150 ชิ้น (สินทรัพย์ที่โตทุกสัปดาห์)</li>
       </ul>
     </div>
     <div class="tier t2 reveal">
       <div class="flag">🌊</div>
       <h3>เข้าแกรนด์ไลน์ — "เป็นธุรกิจเต็มตัว"</h3>
-      <div class="when">ภายใน 24 เดือน</div>
+      <div class="when">ภายในกลางปี 2027 (~12 เดือน)</div>
       <ul>
         <li>ผู้ติดตามรวม ≥ 1,000,000 กระจายอย่างน้อย 2 ตลาดภาษา</li>
-        <li>รายได้ 6 หลัก/เดือน จาก ≥ 4 ช่องทาง (ไม่มีช่องทางไหนเกิน 50%)</li>
+        <li>รายได้ ≥ 300,000฿/เดือน จาก ≥ 4 ช่องทาง (ไม่มีช่องทางไหนเกิน 50%)</li>
         <li>สินค้าแบรนด์ตัวเองรุ่นแรกขายหมด + มีลูกค้าซื้อซ้ำ</li>
         <li>ดีลคาแร็กเตอร์คอลแลบ/ไลเซนส์ฉบับแรกเซ็นสำเร็จ</li>
       </ul>
@@ -247,7 +252,7 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
     <div class="tier t3 reveal">
       <div class="flag">🏴‍☠️</div>
       <h3>วันพีช — "IP ที่มีชีวิตของตัวเอง"</h3>
-      <div class="when">36–48 เดือน</div>
+      <div class="when">ปี 2027–2028 (~24 เดือน)</div>
       <ul>
         <li>YYY เป็นคาแร็กเตอร์ IP ระดับภูมิภาค: คนจำตัวละครได้ ไม่ใช่แค่จำช่อง</li>
         <li>รายได้ licensing + สินค้า ≥ 50% (เงินเข้าแม้ไม่ได้ถ่ายเพิ่ม)</li>
@@ -287,7 +292,7 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
     </div>
 
     <div class="island reveal" data-ico="🧪">
-      <div class="head"><h3>เกาะ 1 — เกาะพิสูจน์สูตร</h3><span class="when">เดือน 1–3</span></div>
+      <div class="head"><h3>เกาะ 1 — เกาะพิสูจน์สูตร</h3><span class="when">เดือน 1–2 (ก.ค.–ส.ค. 2026)</span></div>
       <p class="goal">เป้าเดียว: หา <b>format-market fit</b> — มุกไหน ตลาดไหน แพลตฟอร์มไหน "ติด" ที่สุด ใช้ปริมาณ+ดาต้า ไม่ใช้ความรู้สึก</p>
       <div class="cols">
         <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
@@ -305,7 +310,7 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
     </div>
 
     <div class="island reveal" data-ico="❤️">
-      <div class="head"><h3>เกาะ 2 — เกาะแฟนด้อม</h3><span class="when">เดือน 3–9</span></div>
+      <div class="head"><h3>เกาะ 2 — เกาะแฟนด้อม</h3><span class="when">เดือน 2–4 (ส.ค.–ต.ค. 2026)</span></div>
       <p class="goal">เปลี่ยน "คนไถผ่าน" เป็น "แฟน" — คนดูมาเพราะมุก แต่อยู่ต่อเพราะรักตัวละคร และแฟนเท่านั้นที่จ่ายเงิน</p>
       <div class="cols">
         <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
@@ -323,8 +328,8 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
     </div>
 
     <div class="island reveal" data-ico="🪙">
-      <div class="head"><h3>เกาะ 3 — เกาะเบรี่แรก</h3><span class="when">เดือน 6–12</span></div>
-      <p class="goal">เปิดเครื่องยนต์รายได้ 3–4 ตัวแรกพร้อมกัน — เป้าไม่ใช่รวย เป้าคือ <b>รายได้ ≥ ต้นทุน</b> ให้เรือแล่นได้ไม่ต้องควักเนื้อ</p>
+      <div class="head"><h3>เกาะ 3 — เกาะเบรี่แรก 🔥</h3><span class="when">เดือน 3–6 (ก.ย.–ธ.ค. 2026)</span></div>
+      <p class="goal">เกาะที่ตัดสินเกมทั้งปี — เปิดเครื่องยนต์รายได้ 3–4 ตัวแรกพร้อมกัน เป้าคือ <b>รายได้แตะหลักแสนบาท/เดือนภายในสิ้นปีนี้</b> ไม่ใช่แค่คุ้มทุน</p>
       <div class="cols">
         <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
           <li>Media kit + rate card 3 ภาษา (ใช้เคสคลิปพีคเป็นหลักฐาน)</li>
@@ -337,11 +342,11 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
           <li>เคสสตัดี้เชิงพาณิชย์สำหรับปิดดีลใหญ่ขึ้น</li>
         </ul></div>
       </div>
-      <div class="kpis"><span class="kpi">สปอนเซอร์ ≥ 3 ราย</span><span class="kpi">รายได้ครอบคลุมต้นทุน 100%</span><span class="kpi">affiliate ≥ 10% ของรายได้</span><span class="kpi">ราคาตอนสปอนเซอร์ขึ้น 2 เท่าจากดีลแรก</span></div>
+      <div class="kpis"><span class="kpi">🔥 รายได้ ≥ 100,000฿/เดือน</span><span class="kpi">สปอนเซอร์ ≥ 3 ราย</span><span class="kpi">affiliate ≥ 10% ของรายได้</span><span class="kpi">ราคาตอนสปอนเซอร์ขึ้น 2 เท่าจากดีลแรก</span></div>
     </div>
 
     <div class="island reveal" data-ico="🛍️">
-      <div class="head"><h3>เกาะ 4 — เกาะ X-Commerce</h3><span class="when">ปี 1–2</span></div>
+      <div class="head"><h3>เกาะ 4 — เกาะ X-Commerce</h3><span class="when">เดือน 6–12 (ต้นปี 2027)</span></div>
       <p class="goal">เปลี่ยนแฟนเป็นลูกค้า — ขายของที่ "คือตัวละคร" ไม่ใช่ของแปะโลโก้ ความขัดแย้งเผ็ด-หวานกลายเป็นสินค้าคู่</p>
       <div class="cols">
         <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
@@ -359,7 +364,7 @@ footer{border-top:1px solid var(--line); padding:28px 6vw; display:flex; justify
     </div>
 
     <div class="island reveal" data-ico="👑">
-      <div class="head"><h3>เกาะ 5 — แกรนด์ไลน์: IP Licensing</h3><span class="when">ปี 2+</span></div>
+      <div class="head"><h3>เกาะ 5 — แกรนด์ไลน์: IP Licensing</h3><span class="when">ปี 2027–2028</span></div>
       <p class="goal">ขั้นสุดของธุรกิจคาแร็กเตอร์: <b>ตัวละครออกไปทำงานแทนเรา</b> — แบรนด์อื่นจ่ายเงินเพื่อยืมเหยาเหยา ยูริ ยู ไปอยู่บนของของเขา</p>
       <div class="cols">
         <div class="col need"><h4>ต้องทำบนเกาะนี้</h4><ul>
@@ -631,25 +636,26 @@ const ZH = [
 ["header .internal-badge", "绝密 —— 先在团队里传阅，不许外流哦"],
 ["header h1", '<span class="grad">YYY</span> 藏宝图<br>直冲伟大航路'],
 ["header .quote", '千空式思维：<b>想要什么，就倒推"得先有什么"</b>，然后按顺序一块一块把它造出来。不跳步，不靠奇迹 —— 这页里的每一件事都做得到，<b>一百亿percent</b>，只要照着地图走'],
+["header .deadline", '🔥 <b>今年唯一目标：月收入冲到六位数（泰铢），必须在2026年底前达成</b> —— 只剩 <b id="daysleft">—</b> 天，没有拖延的余地了'],
 [".compass .lab span", "🧭 出航进度（根据下方「头30天清单」的勾选）"],
 
 ["#onepiece .kicker", "One Piece — 成功的定义"],
 ["#onepiece h2", "我们的「终极宝藏」长这样"],
 ["#onepiece .lead", "没有数字的目标叫梦想，有数字的目标才叫计划 —— 我们设三个等级，让全队知道船现在开到哪，以及「赢」到底是什么意思"],
-[".tiers .tier:nth-of-type(1)", '<div class="flag">⛵</div><h3>第一个记录指针 —— 「船不沉」</h3><div class="when">12个月内</div><ul><li>四平台粉丝合计 ≥ 100,000</li><li>月收入 ≥ 50,000泰铢，覆盖全部制作成本</li><li>至少1个长期赞助商 + B2B业务养活团队</li><li>HIGH VALUE素材 ≥ 150条（每周都在增值的资产）</li></ul>'],
-[".tiers .tier:nth-of-type(2)", '<div class="flag">🌊</div><h3>驶入伟大航路 —— 「成为真正的生意」</h3><div class="when">24个月内</div><ul><li>粉丝合计 ≥ 1,000,000，至少分布在2个语言市场</li><li>月收入六位数（泰铢），来自 ≥ 4 个渠道（任何单一渠道不超50%）</li><li>自有品牌首批商品售罄 + 有回头客</li><li>签下第一份角色联名/授权协议</li></ul>'],
-[".tiers .tier:nth-of-type(3)", '<div class="flag">🏴‍☠️</div><h3>终极宝藏 —— 「拥有自己生命的IP」</h3><div class="when">36–48个月</div><ul><li>YYY成为区域级角色IP：人们记住的是角色，不只是频道</li><li>授权+商品收入 ≥ 50%（不拍新片钱也进账）</li><li>角色活得比演员久：表情包、条漫、动画、快闪店</li><li>IP估值高于频道本身 —— 可出售、可合资、可无限延伸</li></ul>'],
+[".tiers .tier:nth-of-type(1)", '<div class="flag">⛵</div><h3>第一个记录指针 —— 「船不沉」</h3><div class="when">2026年底前（~6个月）</div><ul><li>🔥 月收入 ≥ 100,000泰铢（六位数），覆盖全部制作成本 —— 今年唯一目标</li><li>四平台粉丝合计 ≥ 100,000</li><li>至少2个长期赞助商 + B2B业务养活团队</li><li>HIGH VALUE素材 ≥ 150条（每周都在增值的资产）</li></ul>'],
+[".tiers .tier:nth-of-type(2)", '<div class="flag">🌊</div><h3>驶入伟大航路 —— 「成为真正的生意」</h3><div class="when">2027年年中前（~12个月）</div><ul><li>粉丝合计 ≥ 1,000,000，至少分布在2个语言市场</li><li>月收入 ≥ 300,000泰铢，来自 ≥ 4 个渠道（任何单一渠道不超50%）</li><li>自有品牌首批商品售罄 + 有回头客</li><li>签下第一份角色联名/授权协议</li></ul>'],
+[".tiers .tier:nth-of-type(3)", '<div class="flag">🏴‍☠️</div><h3>终极宝藏 —— 「拥有自己生命的IP」</h3><div class="when">2027–2028年（~24个月）</div><ul><li>YYY成为区域级角色IP：人们记住的是角色，不只是频道</li><li>授权+商品收入 ≥ 50%（不拍新片钱也进账）</li><li>角色活得比演员久：表情包、条漫、动画、快闪店</li><li>IP估值高于频道本身 —— 可出售、可合资、可无限延伸</li></ul>'],
 ["#onepiece .note", "所有数字都是团队内部目标，每季度可根据真实数据调整 —— 但不许因为懒而调，只许因为数据而调"],
 
 ["#route .kicker", "The Route — 航行路线"],
 ["#route h2", "从港口到伟大航路的6座岛"],
 ["#route .lead", "每座岛都有「上岛前必须备齐的东西」（由上一座岛产出）和「带回来的宝藏」 —— 不许跳岛，会翻船"],
 [".route .island:nth-of-type(1)", '<div class="head"><h3>第0岛 —— 出发的港口</h3><span class="when">已完成 ✓</span></div><p class="goal">出海前把基础设施全部建好 —— 大多数人跳过这步，然后死在半路。我们不会</p><div class="cols"><div class="col loot"><h4>已有的宝藏</h4><ul><li>世界观 + 五条铁律（可复制的喜剧公式）</li><li>YYY Studio OS —— 策划/素材库/剧本匹配/四平台输出</li><li>反应素材库30条（HIGH VALUE 15条）</li><li>三语作品集官网 + 这张藏宝图</li></ul></div><div class="col"><h4>意味着什么</h4><ul><li>从第一天起，单条成本就低于竞争对手</li><li>拍1天，素材够剪好几集</li><li>随时可以出海，不用再等任何东西</li></ul></div></div>'],
-[".route .island:nth-of-type(2)", '<div class="head"><h3>第1岛 —— 公式验证岛</h3><span class="when">第1–3个月</span></div><p class="goal">唯一目标：找到 <b>format-market fit</b> —— 哪种梗、哪个市场、哪个平台最「上头」。用数量+数据说话，不靠感觉</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>每周3–4集 × 4平台（累计约40–48集）</li><li>轮换多种前3秒开场钩子，对比完播率</li><li>每周一开数据会：有效的复制，扑街的砍掉</li><li>所有镜头入库Studio OS —— 用旧素材剪出新视频</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>属于我们频道的、分市场的「爆款公式」</li><li>第一批会回来复看的观众</li></ul></div></div><div class="kpis"><span class="kpi">前3秒完播 ≥ 65%</span><span class="kpi">1条突破50万播放</span><span class="kpi">任一平台1万粉</span><span class="kpi">素材库 ≥ 80条</span></div>'],
-[".route .island:nth-of-type(3)", '<div class="head"><h3>第2岛 —— 粉丝岛</h3><span class="when">第3–9个月</span></div><p class="goal">把「刷过去的人」变成「粉丝」 —— 观众因为梗而来，因为爱角色而留下。而且只有粉丝才会花钱</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>打造固定梗/口头禅让人跟着玩（「小尤，结账」表情包）</li><li>连续剧情 + 角色关系慢慢展开（lore drop）</li><li>用角色的声音三语回复评论 —— 评论区也是内容</li><li>建社群：粉丝群 + 每周直播</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>会自己产出内容的粉圈（同人图/合拍）= 免费广告</li><li>面对赞助商的议价权（engagement才是硬通货）</li></ul></div></div><div class="kpis"><span class="kpi">合计10万粉</span><span class="kpi">互动率 ≥ 8%</span><span class="kpi">第一张自发同人图/梗图</span><span class="kpi">老粉播放占比 ≥ 30%</span></div>'],
-[".route .island:nth-of-type(4)", '<div class="head"><h3>第3岛 —— 第一枚贝里岛</h3><span class="when">第6–12个月</span></div><p class="goal">同时点燃3–4台收入引擎 —— 目标不是暴富，而是<b>收入 ≥ 成本</b>，让船不烧自己的钱也能航行</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>三语Media kit + 报价单（用爆款案例当证据）</li><li>够格的平台创作者计划全部报名</li><li>给视频里本来就出现的吃喝用品挂上带货车</li><li>主打赞助套餐「签1单 = 拿下4个市场4种语言」 —— 对手没有的卖点</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>现金流转正 —— 团队自己养活自己</li><li>用来谈更大订单的商业案例</li></ul></div></div><div class="kpis"><span class="kpi">赞助商 ≥ 3家</span><span class="kpi">收入覆盖成本100%</span><span class="kpi">带货 ≥ 收入的10%</span><span class="kpi">单集赞助价比首单翻倍</span></div>'],
-[".route .island:nth-of-type(5)", '<div class="head"><h3>第4岛 —— X-Commerce岛</h3><span class="when">第1–2年</span></div><p class="goal">把粉丝变成顾客 —— 卖「本身就是角色」的商品，不是贴个logo了事。辣甜之争变成成对的商品</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>首发商品：瑶瑶秘制辣酱 × 尤莉甜点（CP套装「买哪队都输给另一队」）</li><li>LINE/微信三语表情包 —— 成本低，三个市场都能卖</li><li>情景喜剧式直播带货：辣甜大战带货版</li><li>永远先预售再生产 —— 让粉丝投票选品，压库存风险</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>属于自己的客户数据（不用借平台的鼻子呼吸）</li><li>IP能卖货的铁证 → 登上第5岛的船票</li></ul></div></div><div class="kpis"><span class="kpi">首批商品售罄</span><span class="kpi">复购率 ≥ 20%</span><span class="kpi">商品收入 ≥ 总收入25%</span></div>'],
-[".route .island:nth-of-type(6)", '<div class="head"><h3>第5岛 —— 伟大航路：IP授权</h3><span class="when">第2年+</span></div><p class="goal">角色生意的终极形态：<b>让角色替我们出去打工</b> —— 别的品牌花钱把瑶瑶、尤莉、小尤借去放在他们的产品上</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>授权级Character bible + style guide（canon里已有一半）</li><li>商品销量 + 赞助案例集 = IP价值的证据</li><li>在泰中日寻找授权代理/合作伙伴</li><li>扩展IP形态：条漫/短动画，让角色活得比演员久</li></ul></div><div class="col loot"><h4>带走的宝藏 = 终极宝藏</h4><ul><li>授权带来的被动收入 —— 团队度假钱也进账</li><li>IP有可评估的价值，出售/合资/延伸随便选</li></ul></div></div><div class="kpis"><span class="kpi">签下第一份授权</span><span class="kpi">不拍新片的收入 ≥ 30%</span><span class="kpi">每年1次大牌快闪/联名</span></div>'],
+[".route .island:nth-of-type(2)", '<div class="head"><h3>第1岛 —— 公式验证岛</h3><span class="when">第1–2个月（7–8月）</span></div><p class="goal">唯一目标：找到 <b>format-market fit</b> —— 哪种梗、哪个市场、哪个平台最「上头」。用数量+数据说话，不靠感觉</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>每周3–4集 × 4平台（累计约40–48集）</li><li>轮换多种前3秒开场钩子，对比完播率</li><li>每周一开数据会：有效的复制，扑街的砍掉</li><li>所有镜头入库Studio OS —— 用旧素材剪出新视频</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>属于我们频道的、分市场的「爆款公式」</li><li>第一批会回来复看的观众</li></ul></div></div><div class="kpis"><span class="kpi">前3秒完播 ≥ 65%</span><span class="kpi">1条突破50万播放</span><span class="kpi">任一平台1万粉</span><span class="kpi">素材库 ≥ 80条</span></div>'],
+[".route .island:nth-of-type(3)", '<div class="head"><h3>第2岛 —— 粉丝岛</h3><span class="when">第2–4个月（8–10月）</span></div><p class="goal">把「刷过去的人」变成「粉丝」 —— 观众因为梗而来，因为爱角色而留下。而且只有粉丝才会花钱</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>打造固定梗/口头禅让人跟着玩（「小尤，结账」表情包）</li><li>连续剧情 + 角色关系慢慢展开（lore drop）</li><li>用角色的声音三语回复评论 —— 评论区也是内容</li><li>建社群：粉丝群 + 每周直播</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>会自己产出内容的粉圈（同人图/合拍）= 免费广告</li><li>面对赞助商的议价权（engagement才是硬通货）</li></ul></div></div><div class="kpis"><span class="kpi">合计10万粉</span><span class="kpi">互动率 ≥ 8%</span><span class="kpi">第一张自发同人图/梗图</span><span class="kpi">老粉播放占比 ≥ 30%</span></div>'],
+[".route .island:nth-of-type(4)", '<div class="head"><h3>第3岛 —— 第一枚贝里岛 🔥</h3><span class="when">第3–6个月（9–12月）</span></div><p class="goal">决定全年成败的一岛 —— 同时点燃3–4台收入引擎，目标是<b>月收入在今年年底前冲到六位数（泰铢）</b>，不只是收支平衡</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>三语Media kit + 报价单（用爆款案例当证据）</li><li>够格的平台创作者计划全部报名</li><li>给视频里本来就出现的吃喝用品挂上带货车</li><li>主打赞助套餐「签1单 = 拿下4个市场4种语言」 —— 对手没有的卖点</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>现金流转正 —— 团队自己养活自己</li><li>用来谈更大订单的商业案例</li></ul></div></div><div class="kpis"><span class="kpi">🔥 月收入 ≥ 100,000泰铢</span><span class="kpi">赞助商 ≥ 3家</span><span class="kpi">带货 ≥ 收入的10%</span><span class="kpi">单集赞助价比首单翻倍</span></div>'],
+[".route .island:nth-of-type(5)", '<div class="head"><h3>第4岛 —— X-Commerce岛</h3><span class="when">第6–12个月（2027年初）</span></div><p class="goal">把粉丝变成顾客 —— 卖「本身就是角色」的商品，不是贴个logo了事。辣甜之争变成成对的商品</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>首发商品：瑶瑶秘制辣酱 × 尤莉甜点（CP套装「买哪队都输给另一队」）</li><li>LINE/微信三语表情包 —— 成本低，三个市场都能卖</li><li>情景喜剧式直播带货：辣甜大战带货版</li><li>永远先预售再生产 —— 让粉丝投票选品，压库存风险</li></ul></div><div class="col loot"><h4>带走的宝藏</h4><ul><li>属于自己的客户数据（不用借平台的鼻子呼吸）</li><li>IP能卖货的铁证 → 登上第5岛的船票</li></ul></div></div><div class="kpis"><span class="kpi">首批商品售罄</span><span class="kpi">复购率 ≥ 20%</span><span class="kpi">商品收入 ≥ 总收入25%</span></div>'],
+[".route .island:nth-of-type(6)", '<div class="head"><h3>第5岛 —— 伟大航路：IP授权</h3><span class="when">2027–2028年</span></div><p class="goal">角色生意的终极形态：<b>让角色替我们出去打工</b> —— 别的品牌花钱把瑶瑶、尤莉、小尤借去放在他们的产品上</p><div class="cols"><div class="col need"><h4>岛上任务</h4><ul><li>授权级Character bible + style guide（canon里已有一半）</li><li>商品销量 + 赞助案例集 = IP价值的证据</li><li>在泰中日寻找授权代理/合作伙伴</li><li>扩展IP形态：条漫/短动画，让角色活得比演员久</li></ul></div><div class="col loot"><h4>带走的宝藏 = 终极宝藏</h4><ul><li>授权带来的被动收入 —— 团队度假钱也进账</li><li>IP有可评估的价值，出售/合资/延伸随便选</li></ul></div></div><div class="kpis"><span class="kpi">签下第一份授权</span><span class="kpi">不拍新片的收入 ≥ 30%</span><span class="kpi">每年1次大牌快闪/联名</span></div>'],
 
 ["#science .kicker", "Science Roadmap — 千空式倒推"],
 ["#science h2", "想要终点，就倒推回我们已经有的东西"],
@@ -728,6 +734,13 @@ function setLang(l){
   document.title = PAGE_TITLE[l];
   localStorage.setItem('yyy_roadmap_lang', l);
   document.querySelectorAll('#langSwitch button').forEach(b => b.classList.toggle('on', b.dataset.lang === l));
+  updateDaysLeft();
+}
+function updateDaysLeft(){
+  const end = new Date(2026, 11, 31, 23, 59, 59);
+  const days = Math.max(0, Math.ceil((end - new Date()) / 86400000));
+  const el = document.getElementById('daysleft');
+  if (el) el.textContent = days;
 }
 document.querySelectorAll('#langSwitch button').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
 setLang(localStorage.getItem('yyy_roadmap_lang') || 'th');
