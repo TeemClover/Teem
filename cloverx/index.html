@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>🍀 Sanchuan × Clover X — ข้อเสนอความร่วมมือ</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#06140e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06140e; --bg2:#0a1f16;
+  --clover:#34d399; --clover-deep:#0f8a5f; --clover-dark:#0b5c40;
+  --gold:#e8c04a; --gold-deep:#C9A227;
+  --ink:#f2f7f4; --dim:#93a89d;
+  --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.10);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg); color:var(--ink); font-family:'Prompt',system-ui,sans-serif;
+  font-size:17px; line-height:1.65; overflow-x:hidden}
+::selection{background:var(--clover-deep); color:#fff}
+
+/* ---------- พื้นหลัง ---------- */
+.aurora{position:fixed; inset:0; z-index:-2; overflow:hidden}
+.aurora span{position:absolute; width:65vmax; height:65vmax; border-radius:50%; filter:blur(90px); opacity:.14; animation:drift 26s ease-in-out infinite alternate}
+.aurora .a1{background:var(--clover-dark); top:-24vmax; left:-18vmax}
+.aurora .a2{background:#123d2c; bottom:-28vmax; right:-16vmax; animation-delay:-9s}
+.aurora .a3{background:var(--gold-deep); top:40%; left:60%; width:34vmax; height:34vmax; opacity:.07; animation-delay:-17s}
+@keyframes drift{to{transform:translate(6vmax,4vmax) scale(1.14)}}
+.grain{position:fixed; inset:0; z-index:-1; opacity:.05; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
+
+/* ---------- โครง ---------- */
+.wrap{max-width:760px; margin:0 auto; padding:0 20px}
+section{padding:72px 0}
+.kicker{color:var(--clover); font-weight:800; letter-spacing:3px; font-size:.82rem; text-transform:uppercase}
+h2{font-size:clamp(1.75rem,6.2vw,2.6rem); font-weight:900; line-height:1.22; margin:10px 0 14px}
+h2 .g{color:var(--gold)}
+h2 .c{color:var(--clover)}
+.lead{color:var(--dim); font-size:clamp(1rem,3.4vw,1.15rem)}
+.reveal{opacity:0; transform:translateY(30px); transition:opacity .7s ease, transform .7s ease}
+.reveal.in{opacity:1; transform:none}
+.note{font-size:.82rem; color:var(--dim); opacity:.85; margin-top:16px; border-left:3px solid var(--line); padding-left:12px}
+
+/* ---------- แถบบน ---------- */
+nav{position:fixed; top:0; left:0; right:0; z-index:60; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px 18px; backdrop-filter:blur(16px); background:rgba(6,20,14,.66); border-bottom:1px solid var(--line)}
+.logo{font-weight:900; font-size:1rem; text-decoration:none; color:var(--ink); letter-spacing:.4px; white-space:nowrap}
+.logo b{color:var(--clover)}
+.navchip{font-size:.68rem; font-weight:700; letter-spacing:1.6px; color:#06140e; background:linear-gradient(100deg,var(--gold),#f5d76e); padding:5px 13px; border-radius:99px; white-space:nowrap}
+@media(max-width:480px){.navchip{font-size:.56rem; letter-spacing:.8px; padding:4px 10px}}
+
+/* ---------- ฮีโร่ ---------- */
+header{min-height:96svh; display:flex; flex-direction:column; justify-content:center; padding:110px 0 56px; text-align:left}
+.hero-k{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px}
+.hero-k .pill{font-size:.74rem; font-weight:700; letter-spacing:1.2px; padding:6px 14px; border-radius:99px; border:1px solid var(--line); background:var(--card); color:var(--dim)}
+.hero-k .pill.hot{border-color:rgba(52,211,153,.5); color:var(--clover)}
+h1{font-size:clamp(2.3rem,9.5vw,4.1rem); font-weight:900; line-height:1.14; margin-bottom:18px}
+h1 .c{color:var(--clover)} h1 .g{color:var(--gold)}
+.hero-sub{font-size:clamp(1.05rem,3.9vw,1.3rem); color:var(--dim); max-width:640px}
+.hero-sub b{color:var(--ink)}
+.hero-cta{display:flex; gap:12px; flex-wrap:wrap; margin-top:34px}
+.btn{display:inline-block; padding:16px 30px; border-radius:99px; font-weight:800; font-size:1.02rem; text-decoration:none; transition:transform .22s, box-shadow .22s}
+.btn.p{color:#06140e; background:linear-gradient(100deg,var(--clover),#6ee7b7); box-shadow:0 10px 36px rgba(52,211,153,.35)}
+.btn.p:active{transform:scale(.97)}
+.btn.o{color:var(--ink); border:1px solid var(--line); background:var(--card)}
+.made{margin-top:40px; font-size:.8rem; color:var(--dim)}
+
+/* ---------- การ์ดทั่วไป ---------- */
+.cards{display:grid; grid-template-columns:1fr; gap:16px; margin-top:38px}
+@media(min-width:640px){.cards.c2{grid-template-columns:1fr 1fr} .cards.c3{grid-template-columns:repeat(3,1fr)}}
+.card{border:1px solid var(--line); border-radius:22px; background:var(--card); padding:26px 24px; transition:transform .25s, border-color .25s}
+.card:active{transform:scale(.985)}
+.card .ico{font-size:2rem}
+.card h3{font-size:1.28rem; font-weight:800; margin:10px 0 6px; line-height:1.3}
+.card p{font-size:.98rem; color:#c3d4ca}
+.card p b{color:var(--ink)}
+.card .tag{display:inline-block; font-size:.7rem; font-weight:800; letter-spacing:1px; padding:4px 12px; border-radius:99px; margin-bottom:10px}
+.tag.green{background:rgba(52,211,153,.15); color:var(--clover); border:1px solid rgba(52,211,153,.4)}
+.tag.gold{background:rgba(232,192,74,.13); color:var(--gold); border:1px solid rgba(232,192,74,.4)}
+.tag.grey{background:rgba(255,255,255,.06); color:var(--dim); border:1px solid var(--line)}
+
+/* ---------- fit 3 ช่อง ---------- */
+.fit .card{border-top:4px solid var(--clover-deep)}
+.fit .card:nth-child(2){border-top-color:var(--gold-deep)}
+.punch{margin-top:30px; font-size:clamp(1.15rem,4.4vw,1.5rem); font-weight:800; color:var(--gold); text-align:center; padding:24px 18px;
+  border:1px dashed rgba(232,192,74,.45); border-radius:20px; background:rgba(232,192,74,.05)}
+
+/* ---------- ทีม ---------- */
+.member{display:flex; gap:18px; align-items:flex-start}
+.member .av{flex:none; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.35rem; color:#fff}
+.m-tom .av{background:linear-gradient(140deg,#0b5c40,var(--clover))}
+.m-narin .av{background:linear-gradient(140deg,#7d651a,var(--gold))}
+.m-eko .av{background:linear-gradient(140deg,#1b4a75,#4da3e8)}
+.m-nana .av{background:linear-gradient(140deg,#8e2318,#e74c3c)}
+.member h3{margin-top:0}
+.member small{display:block; color:var(--dim); font-size:.8rem; font-weight:600; margin-bottom:6px}
+
+/* ---------- KEEN ---------- */
+.keen-hero{border:1px solid rgba(232,192,74,.35); border-radius:26px; padding:30px 26px; background:
+  radial-gradient(ellipse at 80% -20%, rgba(232,192,74,.14), transparent 55%), var(--card); margin-top:36px}
+.keen-num{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin:14px 0 6px}
+.keen-num .from{font-size:clamp(2rem,8vw,3rem); font-weight:900; color:var(--dim); text-decoration:line-through; text-decoration-thickness:4px; text-decoration-color:var(--clover)}
+.keen-num .arrow{font-size:1.6rem; color:var(--dim)}
+.keen-num .now{font-size:clamp(2.6rem,11vw,4rem); font-weight:900; color:var(--ink)}
+.keen-num .goal{font-size:clamp(2.6rem,11vw,4rem); font-weight:900; color:var(--gold); text-shadow:0 0 40px rgba(232,192,74,.4)}
+.keen-num .unit{font-size:1rem; color:var(--dim)}
+.mile{display:flex; gap:8px; margin-top:22px; overflow-x:auto; padding-bottom:8px; -webkit-overflow-scrolling:touch}
+.mile span{flex:none; font-size:.85rem; font-weight:700; padding:9px 16px; border-radius:99px; border:1px solid var(--line); color:var(--dim); background:rgba(255,255,255,.03)}
+.mile span.done{border-color:rgba(52,211,153,.55); color:var(--clover)}
+.mile span.final{border-color:rgba(232,192,74,.6); color:var(--gold)}
+.whylist{list-style:none; margin-top:26px; display:flex; flex-direction:column; gap:14px}
+.whylist li{border:1px solid var(--line); border-radius:18px; padding:18px 20px; background:var(--card); font-size:.98rem; color:#c3d4ca}
+.whylist li b{color:var(--ink); display:block; margin-bottom:3px; font-size:1.05rem}
+.whylist li .n{color:var(--clover); font-weight:900; margin-right:8px}
+
+/* ---------- แผน A/B ---------- */
+.matrix{width:100%; border-collapse:collapse; margin-top:30px; font-size:.95rem}
+.matrix th,.matrix td{border:1px solid var(--line); padding:14px 12px; text-align:left}
+.matrix th{background:rgba(255,255,255,.05); font-size:.78rem; letter-spacing:1px; color:var(--dim); text-transform:uppercase}
+.matrix td.ok{color:var(--clover); font-weight:800}
+.matrix td.no{color:var(--dim)}
+.planb{margin-top:26px; border:1px solid rgba(52,211,153,.3); border-radius:22px; padding:26px 24px; background:rgba(52,211,153,.05)}
+.planb h3{font-size:1.2rem; margin-bottom:10px}
+.planb p{font-size:.97rem; color:#c3d4ca}
+
+/* ---------- โมเดลร่วมมือ ---------- */
+.deal .card.rec{border-color:rgba(232,192,74,.55); background:linear-gradient(160deg,rgba(232,192,74,.08),var(--card)); position:relative}
+.deal .card.rec::after{content:"แนะนำ"; position:absolute; top:14px; right:14px; font-size:.66rem; font-weight:800; letter-spacing:1px;
+  background:var(--gold); color:#06140e; padding:4px 12px; border-radius:99px}
+
+/* ---------- โรดแมป ---------- */
+.route{position:relative; margin-top:38px; padding-left:34px}
+.route::before{content:""; position:absolute; left:12px; top:6px; bottom:6px; border-left:3px dotted rgba(52,211,153,.45)}
+.step{position:relative; margin-bottom:26px; border:1px solid var(--line); border-radius:20px; background:var(--card); padding:22px 22px}
+.step::before{content:attr(data-n); position:absolute; left:-34px; top:20px; width:27px; height:27px; display:flex; align-items:center; justify-content:center;
+  background:var(--bg); border:2px solid var(--clover-deep); border-radius:50%; font-size:.8rem; font-weight:900; color:var(--clover)}
+.step h3{font-size:1.12rem; margin-bottom:4px}
+.step .when{display:inline-block; font-size:.72rem; font-weight:800; color:#06140e; background:var(--clover); border-radius:99px; padding:2px 12px; margin-bottom:10px}
+.step ul{list-style:none}
+.step li{font-size:.93rem; color:#c3d4ca; padding:4px 0 4px 22px; position:relative}
+.step li::before{content:"✓"; position:absolute; left:0; color:var(--clover); font-weight:900}
+.kpis{display:flex; flex-wrap:wrap; gap:8px; margin-top:26px}
+.kpi{font-size:.8rem; font-weight:700; padding:8px 16px; border-radius:99px; border:1px solid rgba(232,192,74,.45); color:var(--gold)}
+
+/* ---------- proof ---------- */
+.proof{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:34px}
+.proof a{display:block; text-decoration:none; color:var(--ink); border:1px solid var(--line); border-radius:18px; padding:18px 16px; background:var(--card); transition:transform .2s}
+.proof a:active{transform:scale(.97)}
+.proof .pi{font-size:1.5rem}
+.proof b{display:block; font-size:.92rem; margin-top:6px}
+.proof small{color:var(--dim); font-size:.72rem}
+
+/* ---------- คำถาม ---------- */
+.qa{list-style:none; margin-top:30px; counter-reset:q}
+.qa li{counter-increment:q; border-bottom:1px dashed var(--line); padding:16px 4px 16px 44px; position:relative; font-size:1rem; color:#c3d4ca}
+.qa li::before{content:counter(q); position:absolute; left:0; top:14px; width:30px; height:30px; display:flex; align-items:center; justify-content:center;
+  border:1.5px solid var(--gold-deep); color:var(--gold); border-radius:50%; font-weight:800; font-size:.85rem}
+
+/* ---------- ปิดท้าย ---------- */
+.final{text-align:center; padding:90px 0 70px}
+.final h2{font-size:clamp(1.9rem,7vw,3rem)}
+footer{border-top:1px solid var(--line); padding:26px 20px calc(26px + var(--safe-b)); text-align:center; color:var(--dim); font-size:.8rem}
+footer b{color:var(--clover)}
+</style>
+</head>
+<body>
+<div class="aurora"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+<div class="grain"></div>
+
+<nav>
+  <a class="logo" href="#top">SANCHUAN <b>×</b> CLOVER X</a>
+  <span class="navchip">PARTNERSHIP PROPOSAL</span>
+</nav>
+
+<div class="wrap">
+
+<header id="top">
+  <div class="hero-k">
+    <span class="pill hot">🍀 CLOVER X</span>
+    <span class="pill">SANCHUAN 三川</span>
+    <span class="pill">กรกฎาคม 2026</span>
+  </div>
+  <h1>เราขอเป็น<br><span class="c">"คลังแสงดิจิทัล"</span><br>ให้กองทัพ <span class="g">Clover X</span></h1>
+  <p class="hero-sub">พี่ทอมสร้าง<b>กองทัพและสินค้า</b>ที่พิสูจน์แล้วระดับสองหมื่นล้าน —
+     เราขอทำหน้าที่ที่ HQ ต้องมีแต่ยังไม่มีใครทำ: <b>โรงงานคอนเทนต์กลาง ระบบตัวแทนดิจิทัล
+     และเคสจริงที่วัดผลได้</b> เพื่อพา X-Commerce เข้าสู่ยุคที่ 3 อย่างสมบูรณ์</p>
+  <div class="hero-cta">
+    <a class="btn p" href="#keen">ดู Project KEEN 🔥</a>
+    <a class="btn o" href="#plan">แผนความร่วมมือ</a>
+  </div>
+  <div class="made">จัดทำโดย นรินทร์ ลีลาภรณ์ · Sanchuan Co., Ltd. · สร้างทั้งหน้านี้ด้วยระบบของเราเอง</div>
+</header>
+
+<!-- ================= THE FIT ================= -->
+<section id="fit">
+  <div class="reveal">
+    <div class="kicker">The Fit — ทำไมต้องจับมือกัน</div>
+    <h2>เข้าใจภาพใน <span class="c">30 วินาที</span></h2>
+  </div>
+  <div class="cards c3 fit">
+    <div class="card reveal">
+      <div class="ico">🏰</div>
+      <h3>พี่ทอมมี</h3>
+      <p>กองทัพผู้นำ 20 ปี · สินค้า HabitX / RoutineX · โมเดล X-Commerce จ่าย 2 ชั้นที่คิดมาดีแล้ว · เครดิตระดับ 20,000 ล้าน</p>
+    </div>
+    <div class="card reveal">
+      <div class="ico">🕳️</div>
+      <h3>ช่องว่างที่ EP.5 ชี้เอง</h3>
+      <p>ตัวแทนยุคใหม่ต้องการ<b>คอนเทนต์พร้อมใช้ + ระบบพี่เลี้ยง + เครื่องมือดิจิทัล</b> — HQ ต้องเป็น "คลังแสง" ที่ส่งเสบียงไม่ขาด แต่คลังแสงต้องมีคนสร้าง</p>
+    </div>
+    <div class="card reveal">
+      <div class="ico">⚙️</div>
+      <h3>เรามี</h3>
+      <p>ทีมวิศวกรระบบ+สื่อที่<b>สร้างของจริงแล้ว</b>: ระบบผลิตคอนเทนต์, ชุดฟอร์มตัวแทนครบวงจร, เว็บ 6 หน้า — ทั้งหมดในเวลาไม่กี่วัน ด้วยต้นทุนที่เล็กมาก</p>
+    </div>
+  </div>
+  <div class="punch reveal">"กองทัพที่ชนะ ไม่ใช่กองทัพที่ใหญ่ที่สุด<br>แต่คือกองทัพที่<b>เสบียงไม่เคยขาด</b>"</div>
+</section>
+
+<!-- ================= ทีม ================= -->
+<section id="team">
+  <div class="reveal">
+    <div class="kicker">The Alliance — กำลังพล</div>
+    <h2>ทีมเดียว <span class="c">ปิดครบทุกหน้าที่</span></h2>
+    <p class="lead">แต่ละคนยืนในจุดที่ตัวเองแข็งที่สุด — ไม่มีใครต้องฝืนเป็นในสิ่งที่ตัวเองไม่ใช่</p>
+  </div>
+  <div class="cards">
+    <div class="card reveal"><div class="member m-tom">
+      <div class="av">ท</div>
+      <div><small>THE GENERAL · HQ</small><h3>พี่ทอม ธเนศ ลีลาภรณ์</h3>
+      <p>แม่ทัพและเจ้าของ Clover X — วิสัยทัศน์ สินค้า เครือข่ายผู้นำ และประสบการณ์สร้างทีมหมื่นคน ยอดขายสะสม 20,000 ล้านบาท</p></div>
+    </div></div>
+    <div class="card reveal"><div class="member m-narin">
+      <div class="av">น</div>
+      <div><small>SYSTEMS & MEDIA ENGINE</small><h3>นรินทร์ ลีลาภรณ์ (ทีม)</h3>
+      <p>วิศวกรระบบ + โปรดักชัน — สร้างโรงงานคอนเทนต์, ระบบตัวแทนดิจิทัล, ฟันเนล, เว็บ และเครื่องมือ AI ทั้งหมด <b>คนแปลง "วิสัยทัศน์พี่ทอม" ให้เป็นระบบที่จับต้องได้</b></p></div>
+    </div></div>
+    <div class="card reveal"><div class="member m-eko">
+      <div class="av">เ</div>
+      <div><small>PRODUCER · CREATIVE OPS</small><h3>เอโกะ (Chieko)</h3>
+      <p>โปรดิวเซอร์หลังบ้าน — คุมคุณภาพงานผลิต สไตล์ภาพ และงานปฏิบัติการ ลูกครึ่งไทย-ญี่ปุ่น = <b>สะพานสู่ตลาดญี่ปุ่นในอนาคต</b> โดยไม่ต้องออกหน้ากล้อง</p></div>
+    </div></div>
+    <div class="card reveal"><div class="member m-nana">
+      <div class="av">นา</div>
+      <div><small>STAR POWER · CHINA BRIDGE (BOOSTER)</small><h3>นานา (李沁瑶)</h3>
+      <p>นักแสดงนำซีรีส์สั้นมืออาชีพจากจีน — พลังดาราและสะพานสู่ตลาดจีน <b>ใช้เป็น "ตัวเสริม" ของแผน ไม่ใช่แกน</b> ระบบทั้งหมดเดินได้เต็มรูปแบบโดยไม่ต้องพึ่งพา (ดูแผนสำรองด้านล่าง)</p></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ================= 4 โปรเจกต์ ================= -->
+<section id="plan">
+  <div class="reveal">
+    <div class="kicker">The Plan — สิ่งที่เราจะสร้างให้ Clover X</div>
+    <h2>4 โปรเจกต์ <span class="g">ภายใต้ความร่วมมือเดียว</span></h2>
+  </div>
+  <div class="cards">
+    <div class="card reveal">
+      <span class="tag green">P1 · แกนหลัก</span>
+      <div class="ico">🏭</div>
+      <h3>X-Media Engine — โรงงานคอนเทนต์กลาง</h3>
+      <p>ระบบผลิตคลิปกลางให้ทั้งกองทัพ: คลิปสินค้า, คลิปความรู้สุขภาพ, คลิป OPP, เทมเพลตพร้อมใช้ —
+      ตัวแทน<b>ไม่ต้องคิดเอง แค่เลือก → ใส่หน้า/เสียงตัวเอง → โพสต์</b>
+      จัดคลังค้นหาได้ ใช้ซ้ำได้ วัดผลได้ (ดัดแปลงจากระบบ Studio OS ที่เราสร้างเสร็จแล้ว)</p>
+    </div>
+    <div class="card reveal">
+      <span class="tag gold">P2 · เรือธง</span>
+      <div class="ico">🔥</div>
+      <h3>Project KEEN — ภารกิจเลขสองหลัก</h3>
+      <p>สารคดีลดน้ำหนัก<b>ของจริง วัดผลจริง</b> ที่ออกแบบมาให้เป็นหลักฐานมีชีวิตของ RoutineX 28 วัน
+      และเป็นฟอร์แมตต้นแบบให้ตัวแทนทุกคนทำตาม — รายละเอียดเต็มด้านล่าง ↓</p>
+    </div>
+    <div class="card reveal">
+      <span class="tag green">P3 · โครงสร้าง</span>
+      <div class="ico">🚪</div>
+      <h3>X-Onboard — เส้นทางตัวแทนดิจิทัล</h3>
+      <p>สมัคร → เซ็นสัญญา → เรียนพื้นฐาน → รับชุดคอนเทนต์ → <b>เริ่มขายได้ภายใน 48 ชั่วโมง</b>
+      แก้จุดตายของ Affiliate ("ความโดดเดี่ยว") ด้วยระบบพี่เลี้ยงที่ scale ได้
+      — ชุดเอกสาร (ใบสมัคร/สัญญา/จรรยาบรรณ สคบ./ใบเสร็จ) <b>สร้างเสร็จแล้ว ✓</b></p>
+    </div>
+    <div class="card reveal">
+      <span class="tag grey">P4 · ตัวเสริม (ทางเลือก)</span>
+      <div class="ico">🎬</div>
+      <h3>YYY × Clover X — Branded Entertainment</h3>
+      <p>จักรวาลคอนเทนต์ YYY เป็น<b>ท่อบนสุดของกรวย</b>: ซิตคอมสั้นที่ฝังสินค้า HabitX อย่างเนียน
+      + สะพานตลาดจีนผ่านนานาเมื่อพร้อม — <b>เปิด-ปิดได้โดยไม่กระทบ P1–P3</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROJECT KEEN ================= -->
+<section id="keen">
+  <div class="reveal">
+    <div class="kicker">Project KEEN — The Living Proof</div>
+    <h2>ภารกิจ<span class="g">เลขสองหลัก</span> 🎯</h2>
+    <p class="lead">"คีน" น้องชายในบ้านของเราเอง เริ่มต้นที่ 145 กก. วันนี้ 132 กก. —
+    และเขาตั้งเป้าด้วยตัวเอง: <b style="color:var(--ink)">ทำให้น้ำหนักขึ้นต้นด้วยเลข 9</b></p>
+  </div>
+
+  <div class="keen-hero reveal">
+    <span class="tag gold">REAL STORY · REAL DATA</span>
+    <div class="keen-num">
+      <span class="from">145</span>
+      <span class="arrow">→</span>
+      <span class="now">132</span>
+      <span class="arrow">→</span>
+      <span class="goal">&lt;100</span>
+      <span class="unit">กก.</span>
+    </div>
+    <p style="color:#c3d4ca; font-size:.97rem">ลดมาแล้ว 13 กก. ด้วยตัวเอง — เหลืออีก ~33 กก. สู่เป้าหมาย
+    เดินทางด้วยหลักสุขภาพนำ (ประมาณ 10–14 ซีซัน ≈ 1 ปี ไม่เร่ง ไม่ฝืน มีผู้เชี่ยวชาญดูแล)</p>
+    <div class="mile">
+      <span class="done">145 ✓</span><span class="done">132 (วันนี้)</span><span>125</span><span>118</span><span>110</span><span>104</span><span class="final">99.x 🏁</span>
+    </div>
+  </div>
+
+  <div class="reveal" style="margin-top:44px">
+    <h2 style="font-size:clamp(1.4rem,5vw,1.9rem)">ทำไมรอบนี้<span class="c">ไม่เหมือนครั้งก่อน</span></h2>
+    <p class="lead">เราเคยทำช่องลดน้ำหนักแล้วหยุดที่ 10 ตอน — เราเรียนรู้จากมันแล้ว และรอบนี้โครงสร้างต่างระดับ DNA</p>
+  </div>
+  <ul class="whylist">
+    <li class="reveal"><b><span class="n">1</span>แรงจูงใจจริง ไม่ผูกกับยอดวิว</b>
+      คีนอยากลดเพื่อตัวเอง ไม่ว่าคลิปดังหรือไม่ การเดินทางก็เดินต่อ — คอนเทนต์คือ "ผลพลอยได้" ของชีวิตจริง ไม่ใช่ภาระที่ต้องฝืนทำ</li>
+    <li class="reveal"><b><span class="n">2</span>อยู่บ้านเดียวกัน = ความต่อเนื่องเชิงโครงสร้าง</b>
+      ไม่ต้องนัดคิว ไม่ต้องเดินทาง กล้องอยู่ในบ้าน — จุดที่เคยทำให้ทุกช่องของเราหยุด ถูกถอดออกจากสมการ</li>
+    <li class="reveal"><b><span class="n">3</span>ฟอร์แมตซีซัน 28 วัน = ตรงกับ RoutineX เป๊ะ</b>
+      1 ซีซัน = 1 รอบ RoutineX = 4 ครั้งชั่งน้ำหนัก + คลิปสั้นรายวัน มีจุดเริ่ม-จุดจบชัดเจน ไม่ burnout
+      และ<b>ตัวสินค้าคือโครงเรื่องโดยธรรมชาติ</b></li>
+    <li class="reveal"><b><span class="n">4</span>ดาราของเรื่องคือ "ตัวเลข" ไม่ใช่คน</b>
+      คีนไม่ต้องหล่อ ไม่ต้องมีเสน่ห์ดารา — จุดพีคของทุกตอนคือขึ้นตาชั่ง เลขจริงจาก Xircle Scale
+      นี่คือ "ยุคที่ 3 Data-Driven" ของพี่ทอมในรูปแบบคอนเทนต์</li>
+    <li class="reveal"><b><span class="n">5</span>ล้มได้ = ยิ่งจริง</b>
+      สัปดาห์ไหนน้ำหนักขึ้น เราไม่ตัดทิ้ง เราเล่ามัน — ความไม่สมบูรณ์แบบคือสิ่งที่ทำให้คนเชื่อและเอาใจช่วย
+      (และไม่ผิดกฎ เพราะเราไม่เคยการันตีผลลัพธ์)</li>
+  </ul>
+
+  <div class="reveal" style="margin-top:44px">
+    <h2 style="font-size:clamp(1.4rem,5vw,1.9rem)">มูลค่าธุรกิจ <span class="g">4 ชั้น</span> จากเรื่องเดียว</h2>
+  </div>
+  <div class="cards c2">
+    <div class="card reveal"><div class="ico">🧾</div><h3>1. หลักฐานมีชีวิตของสินค้า</h3>
+      <p>RoutineX 28 วัน ถูกใช้จริง วัดจริง โชว์จริง — น่าเชื่อกว่าโฆษณาทุกชิ้น (ภายใต้กรอบ "ผลลัพธ์เฉพาะบุคคล")</p></div>
+    <div class="card reveal"><div class="ico">🧲</div><h3>2. แม่เหล็กรับสมัครตัวแทน</h3>
+      <p>คนที่ติดตามคีนคือคนที่อยากลดเอง = ลูกค้า และบางส่วนอยากช่วยคนอื่นลด = ว่าที่ X-Visor เดินเข้าฟันเนลเอง</p></div>
+    <div class="card reveal"><div class="ico">🎓</div><h3>3. คีนโตเป็น X-Visor ตัวจริง</h3>
+      <p>จบภารกิจ คีนคือ "ที่ปรึกษาที่ทำเองมาแล้วทั้งตัว" — เส้นทางอาชีพของน้อง และเคสสำเร็จที่จับต้องได้ที่สุดของบริษัท</p></div>
+    <div class="card reveal"><div class="ico">♻️</div><h3>4. ฟอร์แมตต้นแบบให้ทั้งกองทัพ</h3>
+      <p><b>นี่คือชั้นที่มีค่าที่สุด:</b> "โปรเจกต์ลดของตัวเอง 28 วัน" กลายเป็นสูตรที่ตัวแทนทุกคนก็อปได้
+      — ทุกตัวแทนคือเคสจริงของตัวเอง = กลไก Duplication ยุคใหม่</p></div>
+  </div>
+
+  <p class="note reveal">กรอบความปลอดภัย: แสดงผลเป็น "ผลลัพธ์เฉพาะบุคคล" เสมอ · ไม่การันตีตัวเลข · ควบคู่การคุมอาหารและออกกำลังกาย ·
+  มีการปรึกษาผู้เชี่ยวชาญด้านสุขภาพ · ไม่ผูกเคลมสินค้ากับเป้าน้ำหนัก · เผยแพร่เรื่องราวโดยความยินยอมของคีน — ตรงตามแนวจรรยาบรรณ สคบ. ที่ร่างไว้แล้ว</p>
+</section>
+
+<!-- ================= แผน A / B ================= -->
+<section id="resilience">
+  <div class="reveal">
+    <div class="kicker">Business Continuity — ความทนทานของแผน</div>
+    <h2>แผนที่ดี คือแผนที่<span class="c">ใครถอนก็ไม่ล้ม</span></h2>
+    <p class="lead">เราออกแบบให้ทุกโปรเจกต์แกนหลัก ยืนด้วยทรัพยากรที่ควบคุมได้ 100% — ตัวเสริมคือโบนัส ไม่ใช่เสาเข็ม</p>
+  </div>
+  <div style="overflow-x:auto">
+  <table class="matrix reveal">
+    <tr><th>โปรเจกต์</th><th>พึ่งนานา?</th><th>ผู้รับผิดชอบหลัก</th></tr>
+    <tr><td>P1 X-Media Engine</td><td class="ok">ไม่</td><td>นรินทร์ + เอโกะ</td></tr>
+    <tr><td>P2 Project KEEN</td><td class="ok">ไม่</td><td>คีน + นรินทร์ + เอโกะ</td></tr>
+    <tr><td>P3 X-Onboard</td><td class="ok">ไม่</td><td>นรินทร์ + ทีม HQ</td></tr>
+    <tr><td>P4 YYY Booster</td><td class="no">ใช่ (บางส่วน)</td><td>นานา + ทีมผลิต</td></tr>
+  </table>
+  </div>
+  <div class="planb reveal">
+    <h3>🛡️ แผนสำรอง: กรณีนานาถอนตัว</h3>
+    <p><b>ผลกระทบ:</b> P1–P3 เดินต่อ 100% ไม่สะดุดแม้แต่วันเดียว · P4 พักหรือปรับรูปแบบ<br><br>
+    <b>สิ่งที่หายไป:</b> พลังดาราและสะพานตลาดจีน<br><br>
+    <b>การชดเชย:</b> (1) ให้ "ผลลัพธ์จริง" เป็นดาราแทน — เคสคีนและเคสตัวแทนคือแม่เหล็กที่ยั่งยืนกว่ากระแสดารา
+    (2) จ้างพรีเซนเตอร์แบบจ็อบต่อครั้งเมื่อแคมเปญต้องการ — จ่ายตามงาน ไม่มี dependency
+    (3) ตลาดจีนเลื่อนเป็นเฟสอนาคต เข้าเมื่อพร้อมด้วยพาร์ตเนอร์ที่เหมาะสม</p>
+  </div>
+</section>
+
+<!-- ================= โมเดลความร่วมมือ ================= -->
+<section id="deal">
+  <div class="reveal">
+    <div class="kicker">Partnership Models — รูปแบบความร่วมมือ</div>
+    <h2>3 ทางเลือก <span class="g">เปิดคุยตรงไปตรงมา</span></h2>
+    <p class="lead">เราเสนอโครงไว้ 3 แบบ — ตัวเลขจริงคุยกันในวงปิด สิ่งเดียวที่เราขอคือ<b style="color:var(--ink)">ความชัดเจนตั้งแต่วันแรก</b> เพื่อให้ทำงานกันยาวๆ ได้สบายใจทั้งสองฝั่ง</p>
+  </div>
+  <div class="cards deal">
+    <div class="card reveal">
+      <span class="tag grey">MODEL A</span>
+      <h3>Studio Partner</h3>
+      <p>Sanchuan เป็นสตูดิโอคู่สัญญา — ค่าบริการรายเดือน (Retainer) + โบนัสตามผลงาน
+      <br><b>เหมาะเมื่อ:</b> HQ อยากคุมทุกอย่างเอง จ้างเราผลิต</p>
+    </div>
+    <div class="card rec reveal">
+      <span class="tag gold">MODEL B</span>
+      <h3>Media-first X-Gen</h3>
+      <p>Sanchuan ถือสถานะ X-Gen "สังกัดสื่อ" ตามกติกา X-Commerce ที่มีอยู่แล้ว —
+      ใช้คอนเทนต์และฟันเนลสร้างสังกัดของตัวเอง รับค่าบริหาร 5% ตามระบบ + ปั้น X-Lead/X-Visor ด้วยเครื่องมือของเรา
+      <br><b>เหมาะเพราะ:</b> ไม่ต้องออกกติกาใหม่ ใช้โครงพี่ทอมเดิม แรงจูงใจ align กันอัตโนมัติ — เราขายดี เราได้ HQ ได้</p>
+    </div>
+    <div class="card reveal">
+      <span class="tag grey">MODEL C</span>
+      <h3>Hybrid</h3>
+      <p>Retainer ขนาดเล็ก (คุ้มต้นทุนขั้นต่ำ) + สถานะสังกัดสื่อ + ส่วนแบ่งจากระบบที่เราสร้างให้ส่วนกลาง
+      <br><b>เหมาะเมื่อ:</b> ทั้งสองฝั่งอยากผูกระยะยาวแบบ win-win เต็มรูปแบบ</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= โรดแมป 90 วัน ================= -->
+<section id="roadmap">
+  <div class="reveal">
+    <div class="kicker">90-Day Roadmap</div>
+    <h2>เริ่มได้ใน <span class="c">7 วัน</span> เห็นผลใน <span class="g">90 วัน</span></h2>
+  </div>
+  <div class="route">
+    <div class="step reveal" data-n="1">
+      <h3>จับมือ + วางราก</h3><span class="when">วันที่ 1–14</span>
+      <ul>
+        <li>สรุปรูปแบบความร่วมมือ + ขอบเขตงาน เป็นลายลักษณ์อักษร</li>
+        <li>ตรวจทะเบียน อย. และกำหนด "ขอบเขตเคลมที่พูดได้" ของทุกสินค้า (เส้นชีวิตของทั้งแผน)</li>
+        <li>Keen Day-0: ชั่งจริง ถ่าย baseline เปิดภารกิจ</li>
+        <li>Content OS v1 พร้อมใช้ (ดัดแปลงจาก Studio OS)</li>
+      </ul>
+    </div>
+    <div class="step reveal" data-n="2">
+      <h3>ยิงกระสุนนัดแรก</h3><span class="when">วันที่ 15–45</span>
+      <ul>
+        <li>Keen ซีซัน 1 (28 วัน) จบ + คลิปเปิดผล weigh-in ใหญ่</li>
+        <li>คลังคอนเทนต์กลางชุดแรก 50 ชิ้น แจกกองทัพ</li>
+        <li>X-Onboard เปิดใช้จริง — ตัวแทนนำร่อง 10–20 คนแรกเข้าระบบ</li>
+      </ul>
+    </div>
+    <div class="step reveal" data-n="3">
+      <h3>ขยายผล + วัดจริง</h3><span class="when">วันที่ 46–90</span>
+      <ul>
+        <li>Keen ซีซัน 2–3 + เปิดฟอร์แมต "โปรเจกต์ลดของตัวเอง" ให้ตัวแทนรุ่นแรกทำตาม</li>
+        <li>สเกลคลังคอนเทนต์เป็น 100+ ชิ้น จัดหมวดตามสินค้า/สถานการณ์ขาย</li>
+        <li>รายงานดาต้าฉบับเต็ม: อะไรเวิร์ก อะไรไม่เวิร์ก → ปรับโมเดลรอบถัดไป</li>
+      </ul>
+    </div>
+  </div>
+  <div class="kpis reveal">
+    <span class="kpi">คลิปกลาง ≥ 100 ชิ้น</span>
+    <span class="kpi">ตัวแทนเริ่มขายได้ใน ≤ 48 ชม.</span>
+    <span class="kpi">Keen −6 ถึง −8 กก. (สุขภาพนำ)</span>
+    <span class="kpi">ตัวแทนนำร่อง ≥ 20 คน</span>
+  </div>
+</section>
+
+<!-- ================= PROOF ================= -->
+<section id="proof">
+  <div class="reveal">
+    <div class="kicker">Proof of Execution</div>
+    <h2>เราไม่ได้พูดเปล่า — <span class="c">ของสร้างเสร็จแล้ว</span></h2>
+    <p class="lead">ทั้งหมดนี้สร้างในเวลาไม่กี่วัน ด้วยระบบ AI ที่เราควบคุมเอง — นี่คือความเร็วที่เราจะส่งมอบให้ Clover X</p>
+  </div>
+  <div class="proof reveal">
+    <a href="https://github.com/TeemClover/Teem/tree/main/yyy"><span class="pi">🏭</span><b>Studio OS</b><small>ระบบผลิตคอนเทนต์ครบวงจร (ต้นแบบ Content OS)</small></a>
+    <a href="../forms/CloverX_Agent_Application_Form.html"><span class="pi">📋</span><b>ชุดฟอร์มตัวแทน Clover X</b><small>ใบสมัคร · สัญญา · จรรยาบรรณ สคบ. · ใบเสร็จ ✓</small></a>
+    <a href="../yyy/roadmap.html"><span class="pi">🧭</span><b>แผนที่กลยุทธ์ธุรกิจ</b><small>โรดแมป 2 ภาษา ไทย/中文 พร้อมเช็คลิสต์ปฏิบัติ</small></a>
+    <a href="#top"><span class="pi">🍀</span><b>หน้าที่กำลังอ่านอยู่นี้</b><small>ออกแบบ+เขียน+ขึ้นออนไลน์ ภายในวันเดียว</small></a>
+  </div>
+</section>
+
+<!-- ================= คำถามที่ต้องตอบร่วมกัน ================= -->
+<section id="questions">
+  <div class="reveal">
+    <div class="kicker">Open Questions — คุยกันบนโต๊ะ</div>
+    <h2>5 เรื่องที่ต้อง<span class="g">ชัดก่อนออกตัว</span></h2>
+  </div>
+  <ol class="qa reveal">
+    <li>ทะเบียน อย. ของ HabitX ทุกตัว ครบและพร้อมโชว์เมื่อไหร่ — และขอบเขตเคลมที่กฎหมายอนุญาตของแต่ละตัวคืออะไร</li>
+    <li>ไทม์ไลน์จริงของสินค้า/แอป Xircle/Band/Scale — อะไรพร้อมขายวันนี้ อะไรคือแผนอนาคต (เราจะได้สื่อสารไม่เกินจริง)</li>
+    <li>รูปแบบความร่วมมือ (Model A/B/C) และตัวเลขส่วนแบ่ง — เขียนเป็นลายลักษณ์อักษรตั้งแต่วันแรก</li>
+    <li>การใช้เรื่องราวคีนกับแบรนด์ HabitX/RoutineX — กรอบการสื่อสารที่ทั้งสองฝั่งสบายใจและถูกกฎหมาย</li>
+    <li>งบเริ่มต้นที่ HQ พร้อมสนับสนุน (สินค้าตัวอย่าง, ค่าโฆษณานำร่อง, อุปกรณ์) — เพื่อกำหนดสโคป 90 วันแรกให้ตรงความจริง</li>
+  </ol>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="final">
+  <div class="reveal">
+    <h2>ถ้าตกลงกันวันนี้<br><span class="c">เราเริ่มงานภายใน 7 วัน</span> 🍀</h2>
+    <p class="lead" style="margin:18px auto 0; max-width:520px">กองทัพมีแล้ว สินค้ามีแล้ว วิสัยทัศน์มีแล้ว —
+    ขาดแค่คลังแสงดิจิทัลที่ผลิตเสบียงได้ทุกวัน และเราสร้างมันเสร็จไปครึ่งทางแล้ว</p>
+    <div class="hero-cta" style="justify-content:center">
+      <a class="btn p" href="#top">คุยกันเลย พี่ทอม 🤝</a>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <b>SANCHUAN 三川</b> × CLOVER X · จัดทำโดย นรินทร์ ลีลาภรณ์ · กรกฎาคม 2026<br>
+  เอกสารภายในสำหรับการหารือ — ตัวเลขและเงื่อนไขทั้งหมดเป็นข้อเสนอเริ่มต้น ปรับได้ตามการตกลงร่วมกัน
+</footer>
+
+<script>
+/* เผยทีละส่วนเมื่อเลื่อนถึง */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) e.target.classList.add('in');
+}), {threshold:.15});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
