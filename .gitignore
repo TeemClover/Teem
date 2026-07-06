@@ -11,3 +11,7 @@ yyy/.venv/
 yyy/yyy_studio.db
 yyy/projects/
 yyy/.env
+
+# เอกสารภายใน/ไฟล์ใหญ่ ห้ามขึ้น repo สาธารณะ
+yyy/CloverX for OPP.pdf
+yyy/คู่มือ*.docx
