@@ -157,48 +157,34 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .cls .back code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.6;color:#d7f5e2;white-space:pre-wrap;overflow:auto}
 .cls .back .tap{margin-top:auto;padding-top:8px;font-size:10.5px;color:rgb(255 255 255/.42)}
 
-/* ---------- Smart Resume (dual-state) ---------- */
-.sr{background:var(--sr-bg);transition:background-color .4s ease}
-.sr[data-mode="pro"]{--sr-bg:#12151b;--sr-card:#181d25;--sr-text:#f2ede2;--sr-accent:#c9a24b;--sr-dim:rgba(242,237,226,.6);--sr-line:rgba(201,162,75,.3);--sr-glow:rgba(201,162,75,.12)}
-.sr[data-mode="life"]{--sr-bg:#06120a;--sr-card:#0b1d11;--sr-text:#eaffec;--sr-accent:#4ade80;--sr-dim:rgba(234,255,236,.6);--sr-line:rgba(74,222,128,.3);--sr-glow:rgba(74,222,128,.14)}
-.sr .eyebrow,.sr .h2{transition:color .4s}
-.sr .eyebrow{color:var(--sr-accent)}
-.sw{display:flex;align-items:center;gap:14px;margin:26px 0;cursor:pointer;user-select:none;color:var(--sr-dim);font-weight:600;font-size:14.5px;width:max-content;max-width:100%}
-.sw .track{width:64px;height:32px;border-radius:999px;background:var(--sr-card);border:1px solid var(--sr-line);position:relative;transition:background-color .4s,border-color .4s;flex:none}
-.sw .knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--sr-accent);transition:transform .4s cubic-bezier(.22,1,.36,1),background-color .4s;will-change:transform}
-.sr[data-mode="life"] .sw .knob{transform:translateX(32px)}
-.sw span{transition:color .4s}
-.sr[data-mode="pro"] .sw-l{color:var(--sr-accent)}
-.sr[data-mode="life"] .sw-r{color:var(--sr-accent)}
-.sr-card{background:var(--sr-card);border:1px solid var(--sr-line);border-radius:20px;padding:28px;color:var(--sr-text);box-shadow:0 30px 60px -30px rgb(0 0 0/.6),0 0 90px var(--sr-glow);transition:background-color .4s,border-color .4s,box-shadow .4s,color .4s}
-@media(max-width:560px){.sr-card{padding:20px 18px}}
-.sr-states{display:grid}
-.sr .st{grid-area:1/1;display:flex;flex-direction:column;gap:20px;transition:opacity .4s ease,transform .4s ease;will-change:opacity,transform}
-.sr[data-mode="pro"] .st.life,.sr[data-mode="life"] .st.pro{opacity:0;pointer-events:none;transform:translateY(12px)}
-.sr .id{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.sr .ph{width:76px;height:76px;border-radius:16px;border:2px dashed var(--sr-line);display:grid;place-items:center;text-align:center;font-size:17px;color:var(--sr-dim);flex:none;line-height:1.1;transition:border-color .4s,color .4s}
-.sr .ph small{font-size:9px;line-height:1.3;display:block;margin-top:3px}
-.sr .nm{font-size:22px;font-weight:700}
-.sr .lv{color:var(--sr-accent);font-size:14px;transition:color .4s}
-.sr .rl{font-size:13.5px;color:var(--sr-dim);margin-top:2px;transition:color .4s}
-.sr .md{margin-left:auto;font-size:10.5px;font-weight:700;letter-spacing:.14em;color:var(--sr-accent);border:1px solid var(--sr-line);border-radius:999px;padding:5px 12px;white-space:nowrap;transition:color .4s,border-color .4s}
-@media(max-width:560px){.sr .md{margin-left:0}}
-.sr .rows{display:grid}
-.sr .row{padding:13px 0;border-top:1px solid var(--sr-line);display:grid;gap:2px;transition:border-color .4s}
-.sr .row b{font-family:"Bai Jamjuree";font-size:15.5px}
-.sr .row span{font-size:13px;color:var(--sr-dim);transition:color .4s}
-.sr .kpis{display:flex;gap:8px;flex-wrap:wrap}
-.sr .kpis span{font-size:12px;font-weight:600;border:1px solid var(--sr-line);color:var(--sr-dim);border-radius:999px;padding:6px 12px;transition:border-color .4s,color .4s}
-.sr .bar{height:8px;border-radius:99px;background:rgb(255 255 255/.09);overflow:hidden;flex:1;min-width:80px}
-.sr .bar i{display:block;height:100%;border-radius:99px;background:var(--sr-accent);transform-origin:left;transform:scaleX(var(--v,0));transition:transform .8s cubic-bezier(.22,1,.36,1) .15s,background-color .4s;will-change:transform}
-.sr[data-mode="pro"] .st.life .bar i{transform:scaleX(0);transition-delay:0s}
-.sr .xp{display:flex;align-items:center;gap:12px;font-family:"Bai Jamjuree";font-weight:700;font-size:13px;color:var(--sr-accent)}
-.sr .xp .xv{color:var(--sr-dim);font-weight:600;font-size:12px;white-space:nowrap}
-.sr .skills{display:grid;gap:13px}
-.sr .sk span{font-size:13px;display:block;margin-bottom:6px}
+/* ---------- คลังไอเท็ม: การ์ดเกมพลิกได้ ---------- */
+.items{background:#0d2417;background-image:radial-gradient(800px 420px at 50% -10%,rgb(27 106 66/.45),transparent 65%),radial-gradient(500px 300px at 90% 110%,rgb(190 148 66/.1),transparent 60%)}
+.items .eyebrow{color:rgb(var(--gold))}
+.cardrow{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px;max-width:860px}
+@media(max-width:760px){.cardrow{grid-template-columns:1fr;max-width:270px;margin-inline:auto}}
+.gamecard{perspective:1100px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.gc-inner{position:relative;width:100%;aspect-ratio:63/88;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);will-change:transform}
+.gamecard:not(.flip):hover .gc-inner{transform:translateY(-10px) rotateX(3deg)}
+.gamecard.flip .gc-inner{transform:rotateY(180deg)}
+.gc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;overflow:hidden;border:2px solid rgb(190 148 66/.75);box-shadow:0 22px 44px -20px rgb(0 0 0/.65),0 0 40px rgb(190 148 66/.06)}
+.gc-back{pointer-events:none}
+.gamecard.flip .gc-front{pointer-events:none}
+.gamecard.flip .gc-back{pointer-events:auto}
+.gc-front{background:linear-gradient(165deg,#124228,#071a10);display:flex;flex-direction:column}
+.gc-front img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gc-art{flex:1;display:grid;place-items:center;font-size:58px;position:relative;z-index:1;filter:drop-shadow(0 8px 18px rgb(0 0 0/.5))}
+.gc-title{position:relative;z-index:1;background:linear-gradient(transparent,rgb(0 0 0/.8));padding:34px 14px 14px;text-align:center;color:#fff;font-size:15px;font-weight:700;letter-spacing:.08em}
+.gc-title small{display:block;font-family:"Anuphan",sans-serif;font-size:10.5px;color:rgb(190 148 66);font-weight:600;letter-spacing:.1em;margin-top:4px}
+.gc-back{transform:rotateY(180deg);background:linear-gradient(165deg,#123324,#0a2818);color:#fff;padding:20px 18px 16px;display:flex;flex-direction:column;gap:9px}
+.gc-back b{font-size:15.5px;color:rgb(190 148 66)}
+.gc-back p{font-size:12.5px;color:rgb(255 255 255/.82);flex:1;line-height:1.65}
+.gc-btn{display:block;text-align:center;background:rgb(190 148 66);color:#08130c;border-radius:10px;padding:11px;font-weight:700;font-size:13.5px;transition:transform .15s}
+.gc-btn:hover{transform:translateY(-2px)}
+.gc-btn.lock{background:rgb(255 255 255/.1);color:rgb(255 255 255/.55);cursor:default}
+.items .tiphint{margin-top:18px;font-size:12.5px;color:rgb(255 255 255/.45)}
 
 /* ---------- Bridge (quest CTA) ---------- */
-.bridge{margin-top:26px;background:#0a0f0c;border:1px solid var(--sr-line);border-radius:16px;padding:24px 26px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;transition:border-color .4s}
+.bridge{--sr-accent:#4ade80;--sr-line:rgba(74,222,128,.3);margin-top:30px;background:#0a0f0c;border:1px solid var(--sr-line);border-radius:16px;padding:24px 26px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 .bridge .bl{font-size:12px;color:var(--sr-accent);margin-bottom:10px;transition:color .4s}
 .bridge .bq{font-family:"Anuphan",sans-serif;font-size:16.5px;font-weight:600;color:#fff}
 .bridge ol{list-style:none;margin:14px 0 20px;display:grid;gap:8px}
@@ -252,7 +238,7 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
     <a href="#story">เรื่องของบ้าน</a>
     <a href="#classes">ห้องเรียน AI</a>
     <a href="#teem">คนสร้างบ้าน</a>
-    <a href="#resume">ไอเท็มเด็ด</a>
+    <a href="#items">ไอเท็มเด็ด</a>
     <a href="#open">เปิดไพ่ทั้งมือ</a>
   </div>
 </div></nav>
@@ -367,56 +353,60 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
   </div>
 </div></section>
 
-<!-- ---------- Smart Resume (Live Demo) ---------- -->
-<section class="sr" id="resume" data-mode="pro"><div class="wrap">
-  <span class="eyebrow reveal">ไอเท็มที่คุณจะประดิษฐ์ได้ · Live Demo</span>
-  <h2 class="h2 disp reveal" style="color:var(--sr-text)">สร้าง Smart Resume ของตัวเอง</h2>
-  <p class="sub reveal" style="color:var(--sr-dim)">เรซูเม่ที่มีสวิตช์สองโหมดในใบเดียว — คนเดียวกัน สองพลัง ลองเลื่อนสวิตช์ดู แล้วนึกภาพว่าเป็นชื่อของ<b style="color:var(--sr-accent)">คุณ</b>อยู่บนการ์ดใบนี้</p>
+<!-- ---------- คลังไอเท็ม (การ์ดเกม กดเข้าไปอ่านแต่ละหน้า) ---------- -->
+<section class="items" id="items"><div class="wrap">
+  <span class="eyebrow reveal">คลังไอเท็มของบ้าน · แตะการ์ดเพื่อพลิก 🎴</span>
+  <h2 class="h2 disp reveal" style="color:#fff">ไอเท็มเด็ด — ใครเจอ คนนั้นโชคดี</h2>
+  <p class="sub reveal" style="color:rgb(255 255 255/.68)">ของดีที่บ้านแจกฟรี ทำเป็นการ์ดให้เลือกหยิบ — พลิกดูด้านหลังก่อน แล้วค่อยเปิดเข้าไปดูของจริงทีละหน้า</p>
 
-  <div class="sw reveal" id="srSwitch" role="switch" aria-checked="false" tabindex="0">
-    <span class="sw-l">💼 โหมดทำงาน</span>
-    <span class="track"><i class="knob"></i></span>
-    <span class="sw-r">🎮 โหมดชีวิต</span>
-  </div>
-
-  <div class="sr-card reveal">
-    <div class="sr-states">
-      <div class="st pro">
-        <div class="id">
-          <div class="ph">📷<small>รูปสูท<br>มืออาชีพ</small></div>
-          <div>
-            <div class="nm disp">ทีม นรินทร์ ลีลาภรณ์</div>
-            <div class="rl">System Architect · คนออกแบบระบบให้งานของคนธรรมดาง่ายขึ้น</div>
-          </div>
-          <span class="md">MODE: PROFESSIONAL</span>
+  <div class="cardrow">
+    <!-- รูปหน้าการ์ด: วางไฟล์ img/card-resume.jpg -->
+    <div class="gamecard reveal">
+      <div class="gc-inner">
+        <div class="gc-face gc-front">
+          <img src="img/card-resume.jpg" alt="" onerror="this.style.display='none'">
+          <div class="gc-art">🎴</div>
+          <div class="gc-title disp">SMART RESUME<small>ไอเท็มหายาก · เดโม่สด</small></div>
         </div>
-        <div class="rows">
-          <div class="row"><b>Corporate Strategist · Ex-VP</b><span>Training Director @Lazada · VP @Youpik — สร้าง framework ปั้นคนเป็นระบบ ขยายได้ วัดผลได้</span></div>
-          <div class="row"><b>Law &amp; PDPA Compliance</b><span>ออกแบบระบบข้อมูลสมาชิกให้ถูกกฎหมายตั้งแต่วันแรก — ระบบที่โตได้โดยไม่ต้องกลัวย้อนหลัง</span></div>
-          <div class="row"><b>Structural Architect</b><span>ผ่าโครงสร้างแผนองค์กรหลักหมื่นคน หาบั๊กก่อนพัง — ออกแบบกติกาที่ทีมโตแล้วไม่ล่ม</span></div>
+        <div class="gc-face gc-back">
+          <b class="disp">เรซูเม่สองโหมดในใบเดียว</b>
+          <p>ไพ่ที่พลิกไปมาระหว่าง "โหมดงาน" กับ "โหมดชีวิต" ของทีมเจ้าของบ้าน — ดูของจริงก่อน แล้วมาเรียนทำของตัวเองฟรีในบ้านนี้</p>
+          <a class="gc-btn disp" href="resume/">เปิดหน้านี้ →</a>
         </div>
-        <div class="kpis"><span>⚙️ 20 ปี สร้างระบบให้คนหลักหมื่น</span><span>🏠 6,631 ศิษย์เก่าในบ้านนี้</span><span>⚡ เว็บทั้งหลังนี้ = AI + 1 คน</span></div>
       </div>
-      <div class="st life">
-        <div class="id">
-          <div class="ph">📷<small>รูปสนามแข่ง<br>การ์ดเกม</small></div>
-          <div>
-            <div class="nm disp">TEEM 🍀 <span class="lv">LV.42</span></div>
-            <div class="rl">Class: INTP — System Architect · Guild Master of Clover X</div>
-          </div>
-          <span class="md">MODE: LIFESTYLE</span>
+    </div>
+    <!-- รูปหน้าการ์ด: วางไฟล์ img/card-class.jpg -->
+    <div class="gamecard reveal">
+      <div class="gc-inner">
+        <div class="gc-face gc-front">
+          <img src="img/card-class.jpg" alt="" onerror="this.style.display='none'">
+          <div class="gc-art">🎓</div>
+          <div class="gc-title disp">ห้องเรียน AI<small>ไอเท็มเริ่มต้น · ฟรีตลอดชีพ</small></div>
         </div>
-        <div class="xp"><span>XP</span><div class="bar"><i style="--v:.84"></i></div><span class="xv">84,000 / 100,000</span></div>
-        <div class="skills">
-          <div class="sk"><span>🎲 Game Master — ออกแบบบอร์ดเกม (Certified)</span><div class="bar"><i style="--v:.95"></i></div></div>
-          <div class="sk"><span>🧠 Systemic Thinking — อาจารย์รับเชิญ ม.รัฐ/เอกชน</span><div class="bar"><i style="--v:.9"></i></div></div>
-          <div class="sk"><span>🎤 Seminar Facilitator — Licensed</span><div class="bar"><i style="--v:.88"></i></div></div>
-          <div class="sk"><span>⚔️ Flesh &amp; Blood — World Tournament Competitor</span><div class="bar"><i style="--v:.8"></i></div></div>
+        <div class="gc-face gc-back">
+          <b class="disp">6 สกิล AI เบื้องต้น</b>
+          <p>ภาพ คลิป สรุปประชุม คลังพร้อมท์ — อาชีพไหนก็หยิบไปใช้ได้ คลาสแรกเปิดภายใน 7 วันหลังเปิดบ้าน</p>
+          <a class="gc-btn disp" href="#classes">ไปห้องเรียน →</a>
         </div>
-        <div class="kpis"><span>🏗️ นักสร้าง ecosystem พฤติกรรม</span><span>🎯 เกม = เครื่องมือการเรียนรู้ของจริง</span><span>🔥 สายกลยุทธ์ พลังงานสูง</span></div>
+      </div>
+    </div>
+    <!-- รูปหน้าการ์ด: วางไฟล์ img/card-guild.jpg -->
+    <div class="gamecard reveal">
+      <div class="gc-inner">
+        <div class="gc-face gc-front">
+          <img src="img/card-guild.jpg" alt="" onerror="this.style.display='none'">
+          <div class="gc-art">⚔️</div>
+          <div class="gc-title disp">GUILD X<small>ไอเท็มลับ · ยังไม่ปลดล็อก</small></div>
+        </div>
+        <div class="gc-face gc-back">
+          <b class="disp">ทุ่งฝึกของกิลด์</b>
+          <p>เส้นทางเติบโตแบบเกม — เควส ยศ กติกาชัดเจน ไม่มีใครต้องเล่นเกมนี้คนเดียว ประตูเปิดหลัง 8/8</p>
+          <span class="gc-btn lock disp">🔒 ปลดล็อกเร็ว ๆ นี้</span>
+        </div>
       </div>
     </div>
   </div>
+  <p class="tiphint reveal">💡 การ์ดพวกนี้ (และเว็บทั้งหลังนี้) สร้างด้วย HTML + CSS ล้วน ๆ — อีกหนึ่งสกิลที่คุณจะได้เรียนในบ้าน</p>
 
   <div class="bridge reveal">
     <div class="bl">$ myclover quest --init</div>
@@ -526,20 +516,13 @@ document.querySelectorAll('.cls').forEach(function(c){
   c.addEventListener('click',function(){ c.classList.toggle('flip'); });
 });
 
-/* ═══ Smart Resume: สวิตช์สองโหมด ═══ */
-(function(){
-  var sr=document.getElementById('resume'),sw=document.getElementById('srSwitch');
-  if(!sr||!sw)return;
-  function flip(){
-    var life=sr.getAttribute('data-mode')==='life';
-    sr.setAttribute('data-mode',life?'pro':'life');
-    sw.setAttribute('aria-checked',String(!life));
-  }
-  sw.addEventListener('click',flip);
-  sw.addEventListener('keydown',function(e){
-    if(e.key===' '||e.key==='Enter'){e.preventDefault();flip();}
+/* ═══ การ์ดเกมคลังไอเท็ม: แตะเพื่อพลิก (ลิงก์ด้านหลังกดแยกได้) ═══ */
+document.querySelectorAll('.gamecard').forEach(function(c){
+  c.addEventListener('click',function(e){
+    if(e.target.closest('a'))return;
+    c.classList.toggle('flip');
   });
-})();
+});
 
 /* ═══ reveal ตอน scroll ═══ */
 (function(){

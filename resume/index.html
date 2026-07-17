@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ทีม นรินทร์ ลีลาภรณ์ — Smart Resume</title>
+<!-- ═══════════════════════════════════════════════════════════════
+     SMART RESUME — ตัวอย่างสำหรับชาว myclover
+     สลับได้ 2 โหมด: โหมดงาน (แบบแปลน) ⇄ โหมดชีวิต (สมุดภาพ)
+     ✏️ วิธีทำของคุณเอง: ไล่หา comment ที่มี ✏️ แล้วแก้ข้อความตรงนั้น
+     ═══════════════════════════════════════════════════════════════ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Mali:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── โทนสีสองโลก (CSS variables สลับด้วย class ที่ body) ── */
+:root{
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+body.pro{
+  --bg:#0e1626; --bg2:#101d33; --card:#15233d; --ink:#dbe6f7; --mut:#7d90b5;
+  --acc:#5fd7a8; --acc2:#f0c85a; --line:rgba(95,215,168,.16);
+  --head:"Sora","IBM Plex Sans Thai",sans-serif;
+  --hand:"IBM Plex Sans Thai",sans-serif;
+}
+body.life{
+  --bg:#8a6a4f; --bg2:#f6efe2; --card:#fffdf6; --ink:#3b2f24; --mut:#8a7963;
+  --acc:#0f9d6b; --acc2:#c0392b; --line:#e5d9c3;
+  --head:"Mali","IBM Plex Sans Thai",sans-serif;
+  --hand:"Mali",cursive;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"IBM Plex Sans Thai",sans-serif; color:var(--ink);
+  background:var(--bg); line-height:1.7; font-size:16px;
+  transition:background .6s var(--ease), color .6s var(--ease);
+  min-height:100vh;
+}
+/* พื้นหลังสองโลก: กริดแบบแปลน vs พื้นไม้ */
+body.pro{
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size:32px 32px;
+}
+body.life{
+  background-image:repeating-linear-gradient(90deg,
+    #8a6a4f 0 42px, #82624a 42px 44px, #8f705a 44px 86px, #7d5f47 86px 88px);
+}
+.wrap{max-width:680px;margin:0 auto;padding:1.2rem 1rem 4rem}
+
+/* ── กระดาษหลัก ── */
+.sheet{
+  background:var(--bg2); border-radius:14px; padding:2rem 1.4rem 2.4rem;
+  transition:background .6s var(--ease);
+  box-shadow:0 18px 50px rgba(0,0,0,.35);
+  position:relative; overflow:hidden;
+}
+body.life .sheet{box-shadow:0 14px 40px rgba(59,47,36,.45)}
+body.life .sheet::before,body.life .sheet::after{ /* เทปกาวมุมกระดาษ */
+  content:""; position:absolute; width:110px; height:30px; background:#e8d48baa;
+  transform:rotate(-40deg); top:14px; left:-30px;
+}
+body.life .sheet::after{transform:rotate(40deg); left:auto; right:-30px}
+
+/* ── Hero ── */
+.eyebrow{font-size:.75rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--acc); font-weight:700; font-family:"Sora",sans-serif}
+h1{font-family:var(--head); font-size:2rem; line-height:1.25; margin:.4rem 0 .2rem}
+.role{color:var(--mut); font-weight:500; min-height:3.4em}
+.role b{color:var(--acc)}
+
+/* ── ไพ่พลิกโหมด: signature ของหน้านี้ ── */
+.deck{display:flex; align-items:center; gap:1rem; margin:1.6rem 0 .4rem}
+.flipcard{
+  width:96px; height:134px; perspective:800px; cursor:pointer; border:none;
+  background:none; flex:none;
+}
+.flipcard:focus-visible{outline:3px solid var(--acc); outline-offset:4px; border-radius:12px}
+.flipcard .inner{
+  width:100%; height:100%; position:relative;
+  transition:transform .35s var(--ease);
+}
+.flipcard.spin .inner{transform:rotateY(90deg)}
+.face{
+  position:absolute; inset:0; border-radius:12px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:.3rem; font-weight:700; font-size:.8rem; border:2px solid;
+}
+.face .big{font-size:2rem; line-height:1}
+.face.front{background:#15233d; color:#5fd7a8; border-color:#5fd7a8}
+.face.back{background:#fffdf6; color:#0f9d6b; border-color:#0f9d6b;
+  font-family:"Mali",cursive}
+.deck .hint{font-size:.85rem; color:var(--mut)}
+.deck .hint b{color:var(--acc)}
+
+/* ── ส่วนเนื้อหาที่สลับโหมด ── */
+.mode-block{display:none; animation:fadeUp .5s var(--ease)}
+body.pro  .only-pro{display:block}
+body.life .only-life{display:block}
+@keyframes fadeUp{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+
+h2{font-family:var(--head); font-size:1.2rem; margin:2rem 0 .8rem;
+  padding-bottom:.35rem; border-bottom:2px solid var(--line)}
+
+/* ── โหมดงาน: timeline แบบเวอร์ชันระบบ ── */
+.ver{display:grid; grid-template-columns:64px 1fr; gap:.7rem; margin:.9rem 0}
+.ver .tag{
+  font-family:"Sora",sans-serif; font-weight:700; font-size:.8rem; color:var(--acc2);
+  border:1px solid var(--acc2); border-radius:8px; height:fit-content;
+  text-align:center; padding:.2rem .1rem;
+}
+.ver p{font-size:.94rem}
+.ver b{color:var(--acc)}
+.chips{display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.6rem}
+.chip{font-size:.8rem; font-weight:600; border:1px solid var(--acc);
+  color:var(--acc); border-radius:999px; padding:.25rem .75rem}
+.belief{
+  border-left:4px solid var(--acc); background:var(--card);
+  padding:1rem 1.2rem; border-radius:0 12px 12px 0; margin-top:1.4rem;
+  font-size:.95rem; transition:background .6s var(--ease);
+}
+
+/* ── โหมดชีวิต: โน้ต scrapbook ── */
+.notes{display:grid; grid-template-columns:1fr 1fr; gap:.9rem}
+.note{
+  background:var(--card); border-radius:4px; padding:1rem .9rem .9rem;
+  box-shadow:0 6px 16px rgba(59,47,36,.18); position:relative;
+  font-size:.9rem;
+}
+.note::before{content:""; position:absolute; top:-8px; left:50%;
+  transform:translateX(-50%) rotate(-2deg); width:64px; height:18px;
+  background:#e8d48bcc}
+.note:nth-child(odd){transform:rotate(-1.6deg)}
+.note:nth-child(even){transform:rotate(1.4deg)}
+.note .emo{font-size:1.5rem; display:block; margin-bottom:.3rem}
+.note b{font-family:var(--hand)}
+.stamp{
+  display:inline-block; margin-top:1.4rem; padding:.5rem 1rem;
+  border:3px solid var(--acc2); color:var(--acc2); border-radius:8px;
+  font-family:var(--hand); font-weight:700; transform:rotate(-4deg);
+}
+
+/* ── Follow CTA (โชว์ทั้งสองโหมด) ── */
+.follow{margin-top:2.2rem}
+.btns{display:flex; flex-direction:column; gap:.7rem; margin-top:.8rem}
+.btn{
+  display:block; text-align:center; padding:.85rem 1rem; border-radius:12px;
+  text-decoration:none; font-weight:700; font-size:.95rem;
+  border:2px solid var(--acc); color:var(--acc); transition:all .25s var(--ease);
+}
+.btn.primary{background:var(--acc); color:var(--bg2)}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible{outline:3px solid var(--acc2); outline-offset:3px}
+.foot{margin-top:2.4rem; font-size:.8rem; color:var(--mut); text-align:center}
+.foot b{color:var(--acc)}
+
+@media(min-width:560px){
+  h1{font-size:2.4rem}
+  .sheet{padding:2.6rem 2.4rem 3rem}
+}
+
+/* ── ลิงก์กลับบ้าน ── */
+.back{display:inline-block;margin:0 0 .7rem .2rem;color:#fff;opacity:.75;font-size:.85rem;font-weight:600;text-decoration:none}
+.back:hover{opacity:1}
+body.life .back{color:#fffdf6}
+
+/* ── รูปโปรไฟล์สองโหมด ── */
+.portrait{float:right;width:118px;margin:.2rem 0 .7rem 1rem}
+.portrait img{width:100%;display:none}
+body.pro .portrait .pp-pro{display:block;border-radius:12px;border:2px solid var(--acc);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+body.life .portrait .pp-life{display:block;border:6px solid #fffdf6;border-bottom-width:22px;border-radius:2px;box-shadow:0 8px 20px rgba(59,47,36,.35);transform:rotate(2.5deg)}
+@media(max-width:420px){.portrait{width:96px}}
+
+.hm{display:none}
+body.pro .hm-pro{display:inline}
+body.life .hm-life{display:inline}
+.face{transition:none}
+body.pro .face.back{opacity:0}
+body.life .face.front{opacity:0}
+body.life h1{font-size:1.85rem}
+.nowrap{white-space:nowrap}
+@media(min-width:560px){body.life h1{font-size:2.2rem}}
+
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important; animation:none!important}
+}
+</style>
+</head>
+<body class="pro">
+<div class="wrap">
+  <a class="back" href="../">← กลับบ้าน myclover 🍀</a>
+  <main class="sheet">
+
+    <!-- ═══ HERO ═══ -->
+    <!-- ✏️ รูปสองโหมด: วางไฟล์ img/teem-pro.jpg (สูท) และ img/teem-life.jpg (สนามแข่งการ์ด) ที่ root ของเว็บ -->
+    <div class="portrait">
+      <img class="pp-pro" src="../img/teem-pro.jpg" alt="ทีม — โหมดทำงาน" onerror="this.closest('.portrait').style.display='none'">
+      <img class="pp-life" src="../img/teem-life.jpg" alt="ทีม — โหมดชีวิต" onerror="this.style.display='none'">
+    </div>
+    <div class="eyebrow" id="eyebrow">SYSTEM ARCHITECT · CLOVER GROUP</div>
+    <!-- ✏️ แก้ชื่อของคุณตรงนี้ -->
+    <h1>ทีม — นรินทร์ <span class="nowrap">ลีลาภรณ์</span></h1>
+    <p class="role only-pro mode-block">
+      คนออกแบบ<b>ระบบคน ระบบสอน ระบบงาน</b> มา 20 ปี —
+      จาก Diamond Star อายุ 22 สู่คนวางระบบให้องค์กรระดับประเทศ
+      และตอนนี้: ผู้สร้าง myclover
+    </p>
+    <p class="role only-life mode-block">
+      เด็กที่เคยเล่นเกมคนเดียว โตมาสร้างกิลด์ให้ไม่มีใครต้องเล่นคนเดียว —
+      ติดการ์ดเกม กินตามเมีย และเชื่อว่า<b>ใครเจอเรา คนนั้นโชคดี</b>
+    </p>
+
+    <!-- ═══ ไพ่พลิกโหมด ═══ -->
+    <div class="deck">
+      <button class="flipcard" id="flip" role="switch" aria-checked="false"
+              aria-label="สลับโหมดโปรไฟล์ ระหว่างโหมดงานและโหมดชีวิต">
+        <span class="inner">
+          <span class="face front"><span class="big">🏛️</span>โหมดงาน</span>
+          <span class="face back"><span class="big">🍀</span>โหมดชีวิต</span>
+        </span>
+      </button>
+      <p class="hint">แตะไพ่เพื่อ<b>เปิดอีกด้าน</b>ของผม<br>
+        <span class="hm hm-pro">— ตอนนี้คุณเห็นด้านทำงานอยู่</span>
+        <span class="hm hm-life">— ตอนนี้คุณเห็นด้านชีวิตอยู่</span>
+      </p>
+    </div>
+
+    <!-- ═══ โหมดงาน: เส้นทางแบบ version ระบบ ═══ -->
+    <section class="only-pro mode-block">
+      <h2>Release Notes ของชีวิต</h2>
+      <!-- ✏️ ไล่แก้เส้นทางของคุณ: v แรกคือจุดเริ่ม ไม่ต้องครบทุกปี เอาที่เปลี่ยนชีวิต -->
+      <div class="ver"><span class="tag">v0.1</span>
+        <p>เด็กสอบ Entrance <b>คณิตศาสตร์ 100 เต็ม ที่ 1 ของประเทศ</b> — เลือกเรียนนิเทศ จุฬาฯ เพราะรู้ว่าตัวเลขเก่งแล้ว แต่คนยังยาก</p></div>
+      <div class="ver"><span class="tag">v1.0</span>
+        <p>เริ่มธุรกิจเครือข่ายอายุ 19 — <b>Diamond Star ตอนอายุ 22</b> มีบทสัมภาษณ์เต็มหน้าในหนังสือพิมพ์วงการปี 2554</p></div>
+      <div class="ver"><span class="tag">v2.0</span>
+        <p>ผันตัวเป็น<b>คนสร้างสื่อและระบบของ Clover Group</b> — อยู่เบื้องหลังความสำเร็จของคนนับพันตลอดเกือบสองทศวรรษ</p></div>
+      <div class="ver"><span class="tag">v3.0</span>
+        <p>ภาคองค์กร: Training Director <b>Lazada</b> · VP <b>Youpik Thailand</b> (วางระบบปั้นครีเอเตอร์ทั้งแพลตฟอร์ม) · Senior PM <b>Alibaba</b> · ผู้บริหารสายพัฒนาคนอีกหลายองค์กร</p></div>
+      <div class="ver"><span class="tag">v4.0</span>
+        <p>ร่วมทุนไทย-จีน ส่งซีรีส์เข้า <b>VIU และ iQIYI</b> · ออกทีวีเรื่อง social commerce · สอน AI, Metaverse และ game thinking ให้นักเรียน-นักศึกษา</p></div>
+      <div class="ver"><span class="tag">v5.0</span>
+        <p><b>ปัจจุบัน:</b> ผู้สร้างชุมชน myclover · ที่ปรึกษาเชิงกลยุทธ์ Clover X · นักศึกษากฎหมาย — เพราะทีมที่ดีต้องปลอดภัยด้วย ไม่ใช่แค่โต</p></div>
+
+      <div class="chips">
+        <!-- ✏️ ทักษะเด่นของคุณ 4-6 อัน พอ -->
+        <span class="chip">ออกแบบระบบทีม</span><span class="chip">วิเคราะห์แผนรายได้</span>
+        <span class="chip">PDPA & Compliance</span><span class="chip">AI Workflow</span>
+        <span class="chip">ไทย·จีน·ญี่ปุ่น</span>
+      </div>
+
+      <div class="belief">💡 <b>หลักที่ผมถือ:</b> ระบบที่ดีต้องหมุนต่อได้แม้คนสร้างหายไปสองสัปดาห์ —
+        ผมจึงไม่สร้างทีมที่พึ่งผม แต่สร้างระบบที่ทุกคนพึ่งได้</div>
+    </section>
+
+    <!-- ═══ โหมดชีวิต: โต๊ะไม้ + โน้ต ═══ -->
+    <section class="only-life mode-block">
+      <h2>บนโต๊ะของผม</h2>
+      <div class="notes">
+        <!-- ✏️ ใส่ด้านที่คนไม่ค่อยเห็นของคุณ 4-6 ใบ ยิ่งจริงยิ่งดี -->
+        <div class="note"><span class="emo">🃏</span><b>นักแข่งการ์ดเกม</b><br>
+          Flesh and Blood สายแข่งจริงจัง — กลยุทธ์บนโต๊ะสอนธุรกิจมากกว่าตำราบางเล่ม</div>
+        <div class="note"><span class="emo">⚔️</span><b>เกมเมอร์ตัวจริง</b><br>
+          Path of Exile 2 — ชอบเกมที่ระบบลึกจนต้องนั่งวาด skill tree</div>
+        <div class="note"><span class="emo">🍜</span><b>กินตามเมีย</b><br>
+          ภรรยาผมเป็นล่ามญี่ปุ่นสายบันเทิงและนักกินตัวยง — ผมมีหน้าที่ตามไปหิ้วของ</div>
+        <div class="note"><span class="emo">🎲</span><b>ลีดบอร์ดเกม</b><br>
+          ชอบพาคนเล่นเกมแนว Cashflow — เห็นนิสัยการเงินคนใน 2 ชั่วโมง</div>
+        <div class="note"><span class="emo">🎮</span><b>จุดเริ่มต้น</b><br>
+          เด็กที่ถูกห้ามไม่ให้เพื่อนคบ เลยเล่นเกมคนเดียวทั้งวัน — เกมออนไลน์คือที่แรกที่ผมมีเพื่อน</div>
+        <div class="note"><span class="emo">🍀</span><b>สิ่งที่กำลังสร้าง</b><br>
+          กิลด์ที่ไม่มีใครต้องเล่นเกมชีวิตคนเดียว — ชื่อมันว่า myclover</div>
+      </div>
+      <span class="stamp">ใครเจอเรา คนนั้นโชคดี ๛</span>
+    </section>
+
+    <!-- ═══ FOLLOW (ทั้งสองโหมด) ═══ -->
+    <section class="follow">
+      <h2 id="follow-h">อยากรู้จักกันต่อ</h2>
+      <div class="btns">
+        <!-- ✏️ เปลี่ยน href เป็นลิงก์จริงของคุณ -->
+        <a class="btn primary" href="../">🏠 กลับบ้าน myclover — ชุมชนฟรีของพวกเรา</a>
+        <a class="btn" href="#" data-guildx>⚔️ เปิดประตู Guild X — ทีมที่เส้นทางเหมือนเกม</a>
+        <a class="btn" href="#" data-line>💬 ทัก LINE — คุยกันตัวต่อตัว</a>
+      </div>
+    </section>
+
+    <p class="foot">หน้านี้สร้างจากไฟล์ HTML ไฟล์เดียว —
+      <b>อยากมี Smart Resume ของตัวเอง? ผมสอนฟรีใน myclover</b> 🍀</p>
+  </main>
+</div>
+
+<script>
+// ═══ สลับโหมด: ทั้งหน้าเปลี่ยนโลกด้วย class เดียวที่ body ═══
+// (จำสถานะไว้ในตัวแปรระหว่างเปิดหน้า — ไม่เก็บลงเครื่องผู้ใช้)
+const flip = document.getElementById('flip');
+const eyebrow = document.getElementById('eyebrow');
+let mode = 'pro';
+
+flip.addEventListener('click', () => {
+  flip.classList.add('spin');                    // หมุนไพ่ถึง 90° (ตั้งขอบ)
+  setTimeout(() => {
+    mode = (mode === 'pro') ? 'life' : 'pro';    // สลับโลกตอนไพ่ตั้งขอบพอดี
+    document.body.className = mode;
+    flip.setAttribute('aria-checked', mode === 'life');
+    flip.classList.remove('spin');               // หมุนกลับ โชว์หน้าใหม่
+  // ✏️ ข้อความหัวมุมของสองโหมด แก้ให้เป็นของคุณ
+  eyebrow.textContent = (mode === 'pro')
+    ? 'SYSTEM ARCHITECT · CLOVER GROUP'
+    : 'GUILD MASTER · MYCLOVER 🍀';
+  }, 360);
+});
+</script>
+</body>
+</html>
