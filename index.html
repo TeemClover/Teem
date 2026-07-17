@@ -148,6 +148,67 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .op b{font-family:"Bai Jamjuree";display:block;font-size:16px;margin:10px 0 6px}
 .op p{font-size:13.5px;color:rgb(255 255 255/.72)}
 
+/* ---------- การ์ดคลาส: เปิดดูพร้อมท์ (meta flip) ---------- */
+.meta-note{display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.22);border-radius:999px;padding:9px 18px;font-size:13.5px;font-weight:600;color:rgb(var(--green))}
+.cls{position:relative;overflow:hidden;cursor:pointer}
+.cls .back{position:absolute;inset:0;z-index:2;background:#071a10;border-radius:16px;padding:18px 18px 13px;display:flex;flex-direction:column;opacity:0;transform:translateY(14px);transition:opacity .35s ease,transform .35s ease;will-change:opacity,transform}
+.cls:hover .back,.cls.flip .back{opacity:1;transform:none}
+.cls .back .pl{font-family:"Bai Jamjuree";font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--gold));margin-bottom:8px}
+.cls .back code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.6;color:#d7f5e2;white-space:pre-wrap;overflow:auto}
+.cls .back .tap{margin-top:auto;padding-top:8px;font-size:10.5px;color:rgb(255 255 255/.42)}
+
+/* ---------- Smart Resume (dual-state) ---------- */
+.sr{background:var(--sr-bg);transition:background-color .4s ease}
+.sr[data-mode="pro"]{--sr-bg:#12151b;--sr-card:#181d25;--sr-text:#f2ede2;--sr-accent:#c9a24b;--sr-dim:rgba(242,237,226,.6);--sr-line:rgba(201,162,75,.3);--sr-glow:rgba(201,162,75,.12)}
+.sr[data-mode="life"]{--sr-bg:#06120a;--sr-card:#0b1d11;--sr-text:#eaffec;--sr-accent:#4ade80;--sr-dim:rgba(234,255,236,.6);--sr-line:rgba(74,222,128,.3);--sr-glow:rgba(74,222,128,.14)}
+.sr .eyebrow,.sr .h2{transition:color .4s}
+.sr .eyebrow{color:var(--sr-accent)}
+.sw{display:flex;align-items:center;gap:14px;margin:26px 0;cursor:pointer;user-select:none;color:var(--sr-dim);font-weight:600;font-size:14.5px;width:max-content;max-width:100%}
+.sw .track{width:64px;height:32px;border-radius:999px;background:var(--sr-card);border:1px solid var(--sr-line);position:relative;transition:background-color .4s,border-color .4s;flex:none}
+.sw .knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--sr-accent);transition:transform .4s cubic-bezier(.22,1,.36,1),background-color .4s;will-change:transform}
+.sr[data-mode="life"] .sw .knob{transform:translateX(32px)}
+.sw span{transition:color .4s}
+.sr[data-mode="pro"] .sw-l{color:var(--sr-accent)}
+.sr[data-mode="life"] .sw-r{color:var(--sr-accent)}
+.sr-card{background:var(--sr-card);border:1px solid var(--sr-line);border-radius:20px;padding:28px;color:var(--sr-text);box-shadow:0 30px 60px -30px rgb(0 0 0/.6),0 0 90px var(--sr-glow);transition:background-color .4s,border-color .4s,box-shadow .4s,color .4s}
+@media(max-width:560px){.sr-card{padding:20px 18px}}
+.sr-states{display:grid}
+.sr .st{grid-area:1/1;display:flex;flex-direction:column;gap:20px;transition:opacity .4s ease,transform .4s ease;will-change:opacity,transform}
+.sr[data-mode="pro"] .st.life,.sr[data-mode="life"] .st.pro{opacity:0;pointer-events:none;transform:translateY(12px)}
+.sr .id{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.sr .ph{width:76px;height:76px;border-radius:16px;border:2px dashed var(--sr-line);display:grid;place-items:center;text-align:center;font-size:17px;color:var(--sr-dim);flex:none;line-height:1.1;transition:border-color .4s,color .4s}
+.sr .ph small{font-size:9px;line-height:1.3;display:block;margin-top:3px}
+.sr .nm{font-size:22px;font-weight:700}
+.sr .lv{color:var(--sr-accent);font-size:14px;transition:color .4s}
+.sr .rl{font-size:13.5px;color:var(--sr-dim);margin-top:2px;transition:color .4s}
+.sr .md{margin-left:auto;font-size:10.5px;font-weight:700;letter-spacing:.14em;color:var(--sr-accent);border:1px solid var(--sr-line);border-radius:999px;padding:5px 12px;white-space:nowrap;transition:color .4s,border-color .4s}
+@media(max-width:560px){.sr .md{margin-left:0}}
+.sr .rows{display:grid}
+.sr .row{padding:13px 0;border-top:1px solid var(--sr-line);display:grid;gap:2px;transition:border-color .4s}
+.sr .row b{font-family:"Bai Jamjuree";font-size:15.5px}
+.sr .row span{font-size:13px;color:var(--sr-dim);transition:color .4s}
+.sr .kpis{display:flex;gap:8px;flex-wrap:wrap}
+.sr .kpis span{font-size:12px;font-weight:600;border:1px solid var(--sr-line);color:var(--sr-dim);border-radius:999px;padding:6px 12px;transition:border-color .4s,color .4s}
+.sr .bar{height:8px;border-radius:99px;background:rgb(255 255 255/.09);overflow:hidden;flex:1;min-width:80px}
+.sr .bar i{display:block;height:100%;border-radius:99px;background:var(--sr-accent);transform-origin:left;transform:scaleX(var(--v,0));transition:transform .8s cubic-bezier(.22,1,.36,1) .15s,background-color .4s;will-change:transform}
+.sr[data-mode="pro"] .st.life .bar i{transform:scaleX(0);transition-delay:0s}
+.sr .xp{display:flex;align-items:center;gap:12px;font-family:"Bai Jamjuree";font-weight:700;font-size:13px;color:var(--sr-accent)}
+.sr .xp .xv{color:var(--sr-dim);font-weight:600;font-size:12px;white-space:nowrap}
+.sr .skills{display:grid;gap:13px}
+.sr .sk span{font-size:13px;display:block;margin-bottom:6px}
+
+/* ---------- Bridge (quest CTA) ---------- */
+.bridge{margin-top:26px;background:#0a0f0c;border:1px solid var(--sr-line);border-radius:16px;padding:24px 26px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;transition:border-color .4s}
+.bridge .bl{font-size:12px;color:var(--sr-accent);margin-bottom:10px;transition:color .4s}
+.bridge .bq{font-family:"Anuphan",sans-serif;font-size:16.5px;font-weight:600;color:#fff}
+.bridge ol{list-style:none;margin:14px 0 20px;display:grid;gap:8px}
+.bridge li{font-family:"Anuphan",sans-serif;font-size:14px;color:rgb(255 255 255/.75)}
+.bridge li b{font-family:ui-monospace,monospace;color:var(--sr-accent);margin-right:8px;font-size:12px;transition:color .4s}
+.qbtn{display:inline-block;background:var(--sr-accent);color:#0a0f0c;border-radius:10px;padding:12px 24px;font-weight:700;font-size:15px;transition:transform .15s ease,background-color .4s;will-change:transform}
+.qbtn:hover{transform:translateY(-2px)}
+.cur{display:inline-block;width:9px;height:18px;background:var(--sr-accent);margin-left:12px;vertical-align:middle;animation:blink 1.1s steps(1) infinite;transition:background-color .4s}
+@keyframes blink{50%{opacity:0}}
+
 /* ---------- footer ---------- */
 footer{padding:44px 0 60px;text-align:center;color:rgb(var(--muted));font-size:13.5px}
 footer .clover-foot{font-size:28px;cursor:pointer;user-select:none;display:inline-block;transition:.2s}
@@ -191,6 +252,7 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
     <a href="#story">เรื่องของบ้าน</a>
     <a href="#classes">ห้องเรียน AI</a>
     <a href="#teem">คนสร้างบ้าน</a>
+    <a href="#resume">ไอเท็มเด็ด</a>
     <a href="#open">เปิดไพ่ทั้งมือ</a>
   </div>
 </div></nav>
@@ -207,6 +269,7 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
     <span class="chip">🏠 เข้าบ้านฟรี ตลอดชีพ</span>
     <span class="chip">⏱️ เริ่มแค่วันละ 10 นาที</span>
     <span class="chip">🍀 ใครเจอเรา คนนั้นโชคดี</span>
+    <span class="chip">🔧 เว็บนี้สร้างด้วย AI ที่เราจะสอนกัน</span>
   </div>
 </div></header>
 
@@ -258,13 +321,22 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
   <span class="eyebrow reveal">ห้องเรียนของบ้าน · เปิดฟรี</span>
   <h2 class="h2 disp reveal">ทักษะ AI เบื้องต้น — อาชีพไหนก็หยิบไปใช้ได้</h2>
   <p class="sub reveal">ไม่ต้องเขียนโค้ดเป็น ไม่ต้องเก่งคอม ขอแค่มีมือถือหรือโน้ตบุ๊กหนึ่งเครื่อง — เลือกหยิบทีละสกิล</p>
+  <div class="meta-note reveal">🔧 ความลับ: เว็บที่คุณดูอยู่นี้ทั้งหน้า สร้างด้วยทักษะชุดนี้ — ชี้หรือแตะการ์ด เพื่อเปิดดู "พร้อมท์จริง" ที่ใช้</div>
   <div class="grid3">
-    <div class="cls reveal"><span class="ico">🧰</span><h4 class="disp">AI ฟรีที่ควรมีติดเครื่อง</h4><p>รู้จักเครื่องมือ AI ใช้ฟรีตัวหลัก ๆ ว่าตัวไหนเหมาะกับงานแบบไหน — เริ่มจากศูนย์ได้เลย</p><span class="free">คลาสแรกของบ้าน</span></div>
-    <div class="cls reveal"><span class="ico">🖼️</span><h4 class="disp">ทำภาพด้วย AI</h4><p>โปสเตอร์ร้าน รูปโปรไฟล์ ภาพประกอบโพสต์ — สั่งเป็นภาษาไทยให้ได้ภาพที่ต้องการ</p><span class="free">ฟรี</span></div>
-    <div class="cls reveal"><span class="ico">🎬</span><h4 class="disp">ทำคลิปสั้นด้วย AI</h4><p>คิดสคริปต์ ทำเสียงพากย์ ตัดต่อเบื้องต้น — คอนเทนต์คลิปแรกของคุณจบในวันเดียว</p><span class="free">ฟรี</span></div>
-    <div class="cls reveal"><span class="ico">📝</span><h4 class="disp">สรุปประชุม & เอกสาร</h4><p>อัดเสียงประชุม โยนเอกสารยาว ๆ ให้ AI สรุปเป็นข้อ ๆ — งานที่เคยใช้เวลาชั่วโมง เหลือไม่กี่นาที</p><span class="free">ฟรี</span></div>
-    <div class="cls reveal"><span class="ico">💬</span><h4 class="disp">คลังพร้อมท์แจกฟรี</h4><p>รวมคำสั่งสำเร็จรูปสำหรับทุกอาชีพ — ก๊อปไปวาง ปรับนิดเดียว ใช้ได้เลย</p><span class="free">แจกฟรี</span></div>
-    <div class="cls reveal"><span class="ico">🌐</span><h4 class="disp">สร้างเว็บแรกของตัวเอง</h4><p>ขั้นถัดไปสำหรับคนที่อยากไปต่อ — สั่ง AI สร้างเว็บของตัวเองโดยไม่ต้องเขียนโค้ดสักบรรทัด</p><span class="soon">เร็ว ๆ นี้</span></div>
+    <div class="cls reveal"><span class="ico">🧰</span><h4 class="disp">AI ฟรีที่ควรมีติดเครื่อง</h4><p>รู้จักเครื่องมือ AI ใช้ฟรีตัวหลัก ๆ ว่าตัวไหนเหมาะกับงานแบบไหน — เริ่มจากศูนย์ได้เลย</p><span class="free">คลาสแรกของบ้าน</span>
+      <div class="back"><span class="pl">Prompt ที่ใช้สร้างสกิลนี้</span><code>"ฉันเป็นมือใหม่ ไม่เคยใช้ AI เลย งานประจำของฉันคือ [อาชีพของคุณ] — แนะนำเครื่องมือ AI ฟรีที่เหมาะกับฉัน 3 ตัว พร้อมสอนใช้ทีละขั้นแบบจับมือทำ"</code><span class="tap">🍀 พร้อมท์จริง — ก๊อปไปลองได้เลยคืนนี้</span></div></div>
+    <div class="cls reveal"><span class="ico">🖼️</span><h4 class="disp">ทำภาพด้วย AI</h4><p>โปสเตอร์ร้าน รูปโปรไฟล์ ภาพประกอบโพสต์ — สั่งเป็นภาษาไทยให้ได้ภาพที่ต้องการ</p><span class="free">ฟรี</span>
+      <div class="back"><span class="pl">Prompt ที่ใช้สร้างสกิลนี้</span><code>"สร้างภาพโปสเตอร์โปรโมทร้าน [ชื่อร้าน] โทนอบอุ่น แสงเช้า มีข้อความว่า 'เปิดแล้ววันนี้' สไตล์มินิมอล สัดส่วน 4:5 สำหรับโพสต์ IG"</code><span class="tap">🍀 พร้อมท์จริง — ก๊อปไปลองได้เลยคืนนี้</span></div></div>
+    <div class="cls reveal"><span class="ico">🎬</span><h4 class="disp">ทำคลิปสั้นด้วย AI</h4><p>คิดสคริปต์ ทำเสียงพากย์ ตัดต่อเบื้องต้น — คอนเทนต์คลิปแรกของคุณจบในวันเดียว</p><span class="free">ฟรี</span>
+      <div class="back"><span class="pl">Prompt ที่ใช้สร้างสกิลนี้</span><code>"เขียนสคริปต์คลิป 30 วินาที แนะนำ [สินค้า/บริการ] น้ำเสียงเป็นกันเอง มี hook 3 วิแรก + บอกไอเดียภาพประกอบทีละช็อต"</code><span class="tap">🍀 พร้อมท์จริง — ก๊อปไปลองได้เลยคืนนี้</span></div></div>
+    <div class="cls reveal"><span class="ico">📝</span><h4 class="disp">สรุปประชุม & เอกสาร</h4><p>อัดเสียงประชุม โยนเอกสารยาว ๆ ให้ AI สรุปเป็นข้อ ๆ — งานที่เคยใช้เวลาชั่วโมง เหลือไม่กี่นาที</p><span class="free">ฟรี</span>
+      <div class="back"><span class="pl">Prompt ที่ใช้สร้างสกิลนี้</span><code>"นี่คือบันทึกประชุม 1 ชั่วโมง — สรุปเป็น 5 หัวข้อ พร้อมตาราง action item ว่าใครต้องทำอะไร ภายในเมื่อไหร่"</code><span class="tap">🍀 พร้อมท์จริง — ก๊อปไปลองได้เลยคืนนี้</span></div></div>
+    <div class="cls reveal"><span class="ico">💬</span><h4 class="disp">คลังพร้อมท์แจกฟรี</h4><p>รวมคำสั่งสำเร็จรูปสำหรับทุกอาชีพ — ก๊อปไปวาง ปรับนิดเดียว ใช้ได้เลย</p><span class="free">แจกฟรี</span>
+      <div class="back"><span class="pl">Prompt ที่ใช้สร้างสกิลนี้</span><code>"เขียนพร้อมท์ให้ฉัน 10 แบบ สำหรับอาชีพ [ของคุณ] ที่ช่วยลดงานซ้ำ ๆ ในแต่ละวัน เรียงจากใช้ง่ายสุดไปยากสุด"</code><span class="tap">🍀 พร้อมท์จริง — ก๊อปไปลองได้เลยคืนนี้</span></div></div>
+    <div class="cls reveal"><span class="ico">🌐</span><h4 class="disp">สร้างเว็บแรกของตัวเอง</h4><p>ขั้นถัดไปสำหรับคนที่อยากไปต่อ — สั่ง AI สร้างเว็บของตัวเองโดยไม่ต้องเขียนโค้ดสักบรรทัด</p><span class="soon">เร็ว ๆ นี้</span>
+      <div class="back"><span class="pl">Prompt ที่ใช้สร้างสกิลนี้</span><code>"สร้างเว็บหน้าเดียวให้ร้านของฉัน มีชื่อร้าน เมนู แผนที่ ปุ่มไลน์ ธีมสีเขียวอบอุ่น ใช้บนมือถือได้"
+
+← เว็บที่คุณยืนอยู่ตอนนี้ ก็เกิดจากพร้อมท์แบบนี้แหละ</code><span class="tap">🍀 พร้อมท์จริง — ก๊อปไปลองได้เลยคืนนี้</span></div></div>
   </div>
   <div class="ten reveal">⏱️ <b>กติกาของบ้าน:</b> ไม่ต้องรีบ ไม่ต้องเก่งในวันเดียว — เริ่มแค่ <b>วันละ 10 นาที</b> แล้วมาแชร์กันว่าวันนี้ใช้ 8 ชั่วโมงของตัวเองทำอะไร ให้ชีวิตเราก้าวหน้าขึ้นทุก ๆ วัน</div>
 </div></section>
@@ -292,6 +364,69 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
     <div class="op reveal"><span class="ic">🏠</span><b class="disp">บ้านนี้ฟรี ตลอดชีพ</b><p>ห้องเรียน AI คลังพร้อมท์ และการเป็นสมาชิกบ้าน ไม่มีค่าใช้จ่าย ไม่มีวันหมดอายุ — อยู่บ้านนี้เฉย ๆ ตลอดไปก็ได้ ไม่มีใครว่า</p></div>
     <div class="op reveal"><span class="ic">🎟️</span><b class="disp">กิจกรรมพิเศษบางอย่างมีค่าใช้จ่าย</b><p>เช่นเวิร์กชอปลงลึกหรืออีเวนต์พบตัวจริง — ถ้ามี เราจะบอกราคาชัด ๆ ก่อนเสมอ ไม่มีเซอร์ไพรส์ ไม่มีการบังคับ</p></div>
     <div class="op reveal"><span class="ic">🚪</span><b class="disp">เจ้าของบ้านทำธุรกิจอยู่ด้วย</b><p>ทีมทำทีมธุรกิจของตัวเองอยู่ — ใครสนใจค่อยเดินมาถามเองที่ประตูบานนั้น ใครไม่สนใจ ก็อยู่บ้านนี้ได้ตลอดไป <b>ไม่มีใครตามตื้อแน่นอน</b></p></div>
+  </div>
+</div></section>
+
+<!-- ---------- Smart Resume (Live Demo) ---------- -->
+<section class="sr" id="resume" data-mode="pro"><div class="wrap">
+  <span class="eyebrow reveal">ไอเท็มที่คุณจะประดิษฐ์ได้ · Live Demo</span>
+  <h2 class="h2 disp reveal" style="color:var(--sr-text)">สร้าง Smart Resume ของตัวเอง</h2>
+  <p class="sub reveal" style="color:var(--sr-dim)">เรซูเม่ที่มีสวิตช์สองโหมดในใบเดียว — คนเดียวกัน สองพลัง ลองเลื่อนสวิตช์ดู แล้วนึกภาพว่าเป็นชื่อของ<b style="color:var(--sr-accent)">คุณ</b>อยู่บนการ์ดใบนี้</p>
+
+  <div class="sw reveal" id="srSwitch" role="switch" aria-checked="false" tabindex="0">
+    <span class="sw-l">💼 โหมดทำงาน</span>
+    <span class="track"><i class="knob"></i></span>
+    <span class="sw-r">🎮 โหมดชีวิต</span>
+  </div>
+
+  <div class="sr-card reveal">
+    <div class="sr-states">
+      <div class="st pro">
+        <div class="id">
+          <div class="ph">📷<small>รูปสูท<br>มืออาชีพ</small></div>
+          <div>
+            <div class="nm disp">ทีม นรินทร์ ลีลาภรณ์</div>
+            <div class="rl">System Architect · คนออกแบบระบบให้งานของคนธรรมดาง่ายขึ้น</div>
+          </div>
+          <span class="md">MODE: PROFESSIONAL</span>
+        </div>
+        <div class="rows">
+          <div class="row"><b>Corporate Strategist · Ex-VP</b><span>Training Director @Lazada · VP @Youpik — สร้าง framework ปั้นคนเป็นระบบ ขยายได้ วัดผลได้</span></div>
+          <div class="row"><b>Law &amp; PDPA Compliance</b><span>ออกแบบระบบข้อมูลสมาชิกให้ถูกกฎหมายตั้งแต่วันแรก — ระบบที่โตได้โดยไม่ต้องกลัวย้อนหลัง</span></div>
+          <div class="row"><b>Structural Architect</b><span>ผ่าโครงสร้างแผนองค์กรหลักหมื่นคน หาบั๊กก่อนพัง — ออกแบบกติกาที่ทีมโตแล้วไม่ล่ม</span></div>
+        </div>
+        <div class="kpis"><span>⚙️ 20 ปี สร้างระบบให้คนหลักหมื่น</span><span>🏠 6,631 ศิษย์เก่าในบ้านนี้</span><span>⚡ เว็บทั้งหลังนี้ = AI + 1 คน</span></div>
+      </div>
+      <div class="st life">
+        <div class="id">
+          <div class="ph">📷<small>รูปสนามแข่ง<br>การ์ดเกม</small></div>
+          <div>
+            <div class="nm disp">TEEM 🍀 <span class="lv">LV.42</span></div>
+            <div class="rl">Class: INTP — System Architect · Guild Master of Clover X</div>
+          </div>
+          <span class="md">MODE: LIFESTYLE</span>
+        </div>
+        <div class="xp"><span>XP</span><div class="bar"><i style="--v:.84"></i></div><span class="xv">84,000 / 100,000</span></div>
+        <div class="skills">
+          <div class="sk"><span>🎲 Game Master — ออกแบบบอร์ดเกม (Certified)</span><div class="bar"><i style="--v:.95"></i></div></div>
+          <div class="sk"><span>🧠 Systemic Thinking — อาจารย์รับเชิญ ม.รัฐ/เอกชน</span><div class="bar"><i style="--v:.9"></i></div></div>
+          <div class="sk"><span>🎤 Seminar Facilitator — Licensed</span><div class="bar"><i style="--v:.88"></i></div></div>
+          <div class="sk"><span>⚔️ Flesh &amp; Blood — World Tournament Competitor</span><div class="bar"><i style="--v:.8"></i></div></div>
+        </div>
+        <div class="kpis"><span>🏗️ นักสร้าง ecosystem พฤติกรรม</span><span>🎯 เกม = เครื่องมือการเรียนรู้ของจริง</span><span>🔥 สายกลยุทธ์ พลังงานสูง</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bridge reveal">
+    <div class="bl">$ myclover quest --init</div>
+    <p class="bq">อยากมี Smart Resume แบบนี้เป็นของตัวเอง?</p>
+    <ol>
+      <li><b>STEP 1</b> เข้าคลาสฟรีของบ้าน — เริ่มจากสกิลที่ใช้ได้พรุ่งนี้เช้า</li>
+      <li><b>STEP 2</b> ผ่านภารกิจ RoutineX — 28 วัน วันละ 10 นาที</li>
+      <li><b>STEP 3</b> ปลดล็อกประตูกิลด์ 🚪</li>
+    </ol>
+    <a class="qbtn disp" href="mailto:team@myclover.com?subject=Quest%200%20%E2%80%94%20%E0%B8%82%E0%B8%AD%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B8%A0%E0%B8%B2%E0%B8%A3%E0%B8%81%E0%B8%B4%E0%B8%88%E0%B9%81%E0%B8%A3%E0%B8%81">▶ เริ่ม Quest 0 เลย</a><span class="cur"></span>
   </div>
 </div></section>
 
@@ -384,6 +519,26 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
   }
   eggify('gateClover','gateEgg');
   eggify('footClover','footEgg');
+})();
+
+/* ═══ การ์ดคลาส: แตะเพื่อเปิดพร้อมท์ (มือถือไม่มี hover) ═══ */
+document.querySelectorAll('.cls').forEach(function(c){
+  c.addEventListener('click',function(){ c.classList.toggle('flip'); });
+});
+
+/* ═══ Smart Resume: สวิตช์สองโหมด ═══ */
+(function(){
+  var sr=document.getElementById('resume'),sw=document.getElementById('srSwitch');
+  if(!sr||!sw)return;
+  function flip(){
+    var life=sr.getAttribute('data-mode')==='life';
+    sr.setAttribute('data-mode',life?'pro':'life');
+    sw.setAttribute('aria-checked',String(!life));
+  }
+  sw.addEventListener('click',flip);
+  sw.addEventListener('keydown',function(e){
+    if(e.key===' '||e.key==='Enter'){e.preventDefault();flip();}
+  });
 })();
 
 /* ═══ reveal ตอน scroll ═══ */
