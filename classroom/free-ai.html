@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI ฟรีที่ควรมีติดเครื่อง · ห้องเรียน AI ของบ้าน myclover</title>
+<meta name="description" content="คลาสแรกสุดสำหรับคนที่ไม่เคยใช้ AI เลย — จบคลาสนี้ คุณจะมีผู้ช่วย AI ฟรี 2 ตัวพร้อมใช้ในเครื่อง และส่งคำสั่งแรกสำเร็จด้วยตัวเอง">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
+a{text-decoration:none;color:inherit}
+img{max-width:100%}
+.wrap{max-width:800px;margin:0 auto;padding:0 20px}
+nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.94);backdrop-filter:blur(8px);border-bottom:1px solid rgb(var(--ink)/.08)}
+nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+.bk{font-family:"Bai Jamjuree",sans-serif;font-weight:700;color:rgb(var(--green))}
+.bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
+.bk2:hover{color:rgb(var(--green))}
+.head{background:rgb(var(--deep));color:#fff;border-radius:20px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative}
+.heroimg{margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
+.heroimg img{width:100%;height:100%;object-fit:cover;display:block}
+.lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
+.head h1{font-size:clamp(24px,4.5vw,32px);margin:12px 0 8px;line-height:1.3}
+.head>p{color:rgb(255 255 255/.8);font-size:15.5px;max-width:58ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.15);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.85)}
+h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;margin:34px 0 14px;display:flex;align-items:center;gap:11px}
+h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none}
+.card{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:6px 22px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.item{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgb(var(--ink)/.06)}
+.item:last-child{border:0}
+.item .bx{width:23px;height:23px;border:2px solid rgb(27 106 66/.4);border-radius:7px;flex:none;margin-top:3px}
+.item .ic{font-size:19px;flex:none;margin-top:1px;width:23px;text-align:center}
+.item b{font-weight:600}
+.item small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:2px}
+.item a,.step a{color:rgb(var(--green));font-weight:600}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.step>div{flex:1;min-width:0}
+.step .num{width:28px;height:28px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;flex:none;margin-top:2px}
+.step b{font-weight:600}
+.step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px}
+.step code,.item code,.note code{background:rgb(var(--ink)/.06);border-radius:5px;padding:1px 7px;font-size:13px}
+.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#071a10;color:#d7f5e2;border-radius:12px;padding:15px 52px 15px 16px;margin-top:12px;line-height:1.7;white-space:pre-wrap}
+.note{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:14px;padding:15px 20px;margin-top:16px;font-size:14.5px}
+.quest{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.25);border-radius:16px;padding:20px 24px;margin-top:36px;font-size:15px}
+.quest .qshare{display:block;margin-top:8px;font-size:13px;color:rgb(var(--muted))}
+.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
+.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:.15s}
+.nx:hover{transform:translateY(-2px)}
+.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.4)}
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
+.cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:7px;padding:5px 11px;cursor:pointer;opacity:.92}
+.cpx:hover{opacity:1}
+@media(max-width:520px){.head{padding:28px 22px}.heroimg{margin:-28px -22px 18px;height:150px}}
+</style>
+</head>
+<body>
+<nav class="top"><div class="wrap">
+  <a class="bk disp" href="../">🍀 myclover</a>
+  <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
+</div></nav>
+<div class="wrap">
+
+<header class="head">
+  <!-- 📷 รูปหัวคลาส: วางไฟล์ img/lesson-1.jpg (ดูรายละเอียดใน IMAGES.md) -->
+  <div class="heroimg"><img src="../img/lesson-1.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+  <span class="lv">LV.1 · คลาสแรกของบ้าน</span>
+  <h1 class="disp">AI ฟรีที่ควรมีติดเครื่อง</h1>
+  <p>คลาสแรกสุดสำหรับคนที่ไม่เคยใช้ AI เลย — จบคลาสนี้ คุณจะมีผู้ช่วย AI ฟรี 2 ตัวพร้อมใช้ในเครื่อง และส่งคำสั่งแรกสำเร็จด้วยตัวเอง</p>
+  <div class="meta"><span>⏱️ ~10 นาที</span><span>💸 ฟรี 100%</span><span>📱 มือถือหรือคอมก็ได้</span><span>🌱 ไม่ต้องมีพื้นฐาน</span></div>
+</header>
+
+<h2><span class="n">1</span>รู้จักผู้ช่วย 2 ตัวของเรา</h2>
+<div class="card">
+  <div class="item"><span class="ic">✨</span><div><b>Gemini — ผู้ช่วยคุยได้ทุกเรื่อง</b><small>ถาม-ตอบ เขียนข้อความ คิดไอเดีย สร้างภาพ แปลภาษา — เหมือนมีผู้ช่วยเก่ง ๆ นั่งข้างตัวตลอดเวลา ใช้ฟรีด้วยบัญชี Google</small></div></div>
+  <div class="item"><span class="ic">📚</span><div><b>NotebookLM — บรรณารักษ์ส่วนตัว</b><small>โยนเอกสาร ไฟล์ ลิงก์ ให้มันอ่าน แล้วถามอะไรก็ได้จาก "ของของเรา" — มันตอบพร้อมชี้ว่าเอามาจากหน้าไหน ไม่มั่ว ใช้ฟรีเหมือนกัน</small></div></div>
+  <div class="item"><span class="ic">🤔</span><div><b>ใช้ตัวไหนตอนไหน?</b><small>จำง่าย ๆ: เรื่องทั่วไปในโลก → Gemini · เรื่องในเอกสารของเรา → NotebookLM</small></div></div>
+</div>
+
+<h2><span class="n">2</span>เตรียมของ (มีครบแล้วข้ามได้เลย)</h2>
+<div class="card">
+  <div class="item"><div class="bx"></div><div><b>บัญชี Google (Gmail)</b><small>ตัวเดียวใช้ได้ทั้ง Gemini และ NotebookLM — ถ้ายังไม่มี สมัครฟรีที่ <a href="https://accounts.google.com" target="_blank" rel="noopener">accounts.google.com</a></small></div></div>
+  <div class="item"><div class="bx"></div><div><b>มือถือ หรือคอมพิวเตอร์ 1 เครื่อง</b><small>เครื่องไหนก็ได้ที่ต่อเน็ตได้</small></div></div>
+</div>
+
+<h2><span class="n">3</span>เปิด Gemini แล้วส่งคำสั่งแรก</h2>
+<div class="steps">
+  <div class="step"><span class="num">1</span><div><b>เปิด <a href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a> แล้วล็อกอินด้วยบัญชี Google</b><small>บนมือถือ: โหลดแอป "Google Gemini" จาก App Store / Play Store ก็ได้ สะดวกกว่า</small></div></div>
+  <div class="step"><span class="num">2</span><div><b>ก๊อปคำสั่งนี้ไปวางในช่องแชท แล้วกดส่ง</b>
+  <div class="prompt">สวัสดี ฉันเพิ่งเคยใช้ AI ครั้งแรก งานประจำของฉันคือ [เติมอาชีพของคุณ เช่น ขายของออนไลน์ / พนักงานออฟฟิศ / แม่บ้าน]
+ช่วยแนะนำ 3 อย่างที่คุณช่วยงานฉันได้ พร้อมตัวอย่างสั้น ๆ ที่ทำให้ดูเลย</div>
+  <small>เปลี่ยนข้อความใน [วงเล็บ] เป็นของคุณเองก่อนส่ง — นี่คือกติกาเดียวกันทุกพร้อมท์ในบ้านนี้</small></div></div>
+  <div class="step"><span class="num">3</span><div><b>คุยต่อได้เหมือนคุยกับคน</b><small>ไม่ต้องพิมพ์สวย ไม่ต้องกลัวผิด — ถ้าคำตอบยังไม่ถูกใจ บอกมันตรง ๆ ว่า "สั้นกว่านี้" "เป็นกันเองกว่านี้" "ยกตัวอย่างเพิ่ม" มันจะปรับให้ทันที</small></div></div>
+</div>
+
+<h2><span class="n">4</span>เปิด NotebookLM รอไว้</h2>
+<div class="steps">
+  <div class="step"><span class="num">1</span><div><b>เปิด <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a> ล็อกอินบัญชีเดิม</b><small>วันนี้แค่เปิดให้เห็นหน้าตาพอ — คลาส LV.4 เราจะใช้มันสรุปเอกสารจริงกัน</small></div></div>
+</div>
+
+<h2><span class="n">5</span>กติกาความปลอดภัย (สำคัญ ท่องไว้)</h2>
+<div class="card">
+  <div class="item"><span class="ic">🚫</span><div><b>อย่าพิมพ์ข้อมูลลับลงไป</b><small>เลขบัตรประชาชน รหัสผ่าน เลขบัญชี ความลับบริษัท — AI ไม่จำเป็นต้องรู้สิ่งเหล่านี้เลย</small></div></div>
+  <div class="item"><span class="ic">🧐</span><div><b>AI ตอบผิดได้</b><small>เรื่องสำคัญ (เงิน สุขภาพ กฎหมาย) ให้เช็คซ้ำก่อนใช้เสมอ — AI คือผู้ช่วยคิด ไม่ใช่ผู้ตัดสินแทนเรา</small></div></div>
+</div>
+
+<div class="quest">🎯 <b>เควสท้ายคลาส:</b> เอาคำสั่งใน ข้อ 3 ไปส่งจริง แล้วเลือกคำแนะนำ 1 ข้อที่ Gemini ให้มา ลองใช้กับงานของคุณพรุ่งนี้เช้า<span class="qshare">ทำเสร็จแล้วเอามาอวดกันในบ้านได้เลย — ใช้เวลาแค่วันละ 10 นาทีก็พอ 🍀</span></div>
+<div class="nextrow">
+  <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
+  <a class="nx" href="image-ai.html">คลาสถัดไป: ทำภาพด้วย AI →</a>
+</div>
+
+<footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
+</div>
+
+<script>
+document.querySelectorAll('.prompt').forEach(function(el){
+  var b=document.createElement('button');b.type='button';b.className='cpx';b.textContent='คัดลอก';
+  b.onclick=function(){
+    var c=el.cloneNode(true);c.querySelectorAll('button').forEach(function(x){x.remove()});
+    navigator.clipboard.writeText(c.innerText.trim()).then(function(){
+      b.textContent='✓ คัดลอกแล้ว';setTimeout(function(){b.textContent='คัดลอก'},1200);
+    });
+  };
+  el.appendChild(b);
+});
+</script>
+
+</body>
+</html>

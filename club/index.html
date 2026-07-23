@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ไม่ต้องเหมือนใคร · myclover club</title>
+<meta name="description" content="สุขภาพดี มีความสุข และอิสระ — ในแบบที่ไม่ต้องเหมือนใคร ชุมชนของคนที่หาความสุขจากสิ่งที่รัก กิน นอน ใช้พลังเป็น โดยไม่ต้องทรมาน">
+<meta property="og:title" content="ไม่ต้องเหมือนใคร · myclover club">
+<meta property="og:description" content="สุขภาพดี มีความสุข อิสระ — ในแบบที่ไม่ต้องเหมือนใคร">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:18 40 28;--paper:248 246 240;--card:255 255 255;
+  --green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100;--line:18 40 28;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;-webkit-font-smoothing:antialiased}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+section{padding:60px 0}
+
+nav{position:sticky;top:0;z-index:100;background:rgb(var(--paper)/.92);backdrop-filter:blur(10px);border-bottom:1px solid rgb(var(--line)/.08)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:"Bai Jamjuree";font-weight:700;font-size:18px}
+.logo em{font-style:normal;color:rgb(var(--green))}
+.navlinks{display:flex;gap:20px;font-size:14px;font-weight:600}
+.navlinks a{color:rgb(var(--muted))}
+.navlinks a:hover{color:rgb(var(--green))}
+@media(max-width:600px){.navlinks a:not(.key){display:none}}
+
+/* hero */
+.hero{padding:76px 0 60px;background:
+  radial-gradient(720px 380px at 10% -10%,rgb(27 106 66/.10),transparent 60%),
+  radial-gradient(520px 320px at 96% 6%,rgb(190 148 66/.12),transparent 60%)}
+.eyebrow{font-family:"Bai Jamjuree";font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--gold))}
+.hero h1{font-size:clamp(34px,6.4vw,60px);font-weight:700;line-height:1.12;margin:14px 0 18px;max-width:16ch}
+.hero h1 em{font-style:normal;color:rgb(var(--green))}
+.hero .lead{font-size:17.5px;color:rgb(var(--ink)/.74);max-width:56ch}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:14px 26px;font-weight:700;font-size:15px;font-family:"Bai Jamjuree";border:1px solid rgb(var(--line)/.15);background:#fff;transition:.15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px -14px rgb(18 40 28/.35)}
+.btn-primary{background:rgb(var(--green));border-color:rgb(var(--green));color:#fff}
+
+/* champion strip */
+.champ{background:rgb(var(--deep));color:#fff;border-radius:18px;padding:22px 28px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;
+  background-image:radial-gradient(460px 200px at 6% -40%,rgb(190 148 66/.35),transparent 60%)}
+.champ .medal{font-size:40px;flex:none}
+.champ .t b{font-family:"Bai Jamjuree";color:#fff;font-size:17px}
+.champ .t p{color:rgb(255 255 255/.78);font-size:14px;margin-top:3px}
+.champ .tag{margin-left:auto;font-size:12px;font-weight:700;color:rgb(190 148 66);border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:6px 14px;white-space:nowrap}
+@media(max-width:640px){.champ .tag{margin-left:0}}
+
+.h2{font-size:clamp(24px,3.6vw,34px);font-weight:700;margin:8px 0 10px}
+.sub{color:rgb(var(--muted));font-size:16px;max-width:60ch}
+
+/* two classes */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px}
+@media(max-width:720px){.duo{grid-template-columns:1fr}}
+.pc{background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:18px;padding:28px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.pc .emo{font-size:34px}
+.pc .cls{font-family:"Bai Jamjuree";font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgb(var(--gold));margin-top:12px}
+.pc h3{font-family:"Bai Jamjuree";font-size:22px;margin:4px 0 8px}
+.pc p{font-size:14.5px;color:rgb(var(--ink)/.68)}
+.pc .role{margin-top:14px;font-size:13px;color:rgb(var(--muted));border-top:1px solid rgb(var(--line)/.08);padding-top:12px}
+.plus{display:grid;place-items:center;font-family:"Bai Jamjuree";font-size:22px;color:rgb(var(--green));font-weight:700}
+@media(min-width:721px){.plus{display:none}}
+
+/* beliefs */
+.beliefs{background:rgb(var(--green)/.05);border-top:1px solid rgb(var(--line)/.07);border-bottom:1px solid rgb(var(--line)/.07)}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+@media(max-width:760px){.bgrid{grid-template-columns:1fr}}
+.bc{background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:16px;padding:24px}
+.bc .no{font-family:"Bai Jamjuree";font-size:13px;font-weight:700;color:rgb(var(--gold))}
+.bc b{display:block;font-family:"Bai Jamjuree";font-size:17px;margin:8px 0 6px}
+.bc p{font-size:13.5px;color:rgb(var(--muted))}
+
+/* vs table */
+.vs{margin-top:28px;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:16px;overflow:hidden}
+.vs .row{display:grid;grid-template-columns:1fr 1fr;font-size:14px}
+.vs .row.head{background:rgb(var(--deep));color:#fff;font-family:"Bai Jamjuree";font-weight:700}
+.vs .row>div{padding:14px 18px;border-bottom:1px solid rgb(var(--line)/.08)}
+.vs .row>div:first-child{border-right:1px solid rgb(var(--line)/.08);color:rgb(var(--muted))}
+.vs .row.head>div,.vs .row.head>div:last-child{color:#fff;border-color:rgb(255 255 255/.14)}
+.vs .row>div:last-child{color:rgb(var(--ink));font-weight:600}
+.vs .row:last-child>div{border-bottom:0}
+
+/* pillars */
+.pil{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+@media(max-width:760px){.pil{grid-template-columns:1fr}}
+.pl{background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:16px;padding:24px;transition:.15s}
+.pl:hover{transform:translateY(-3px);box-shadow:0 18px 38px -24px rgb(18 40 28/.4);border-color:rgb(27 106 66/.35)}
+.pl .emo{font-size:28px}
+.pl h4{font-family:"Bai Jamjuree";font-size:17px;margin:10px 0 6px}
+.pl p{font-size:13.5px;color:rgb(var(--muted))}
+.pl .free{display:inline-block;margin-top:12px;font-size:11px;font-weight:700;color:#15803d;background:rgb(21 128 61/.09);border-radius:7px;padding:3px 10px}
+
+/* invite / cards on table */
+.invite{background:rgb(var(--deep));color:#fff}
+.invite .h2{color:#fff}
+.invite .sub{color:rgb(255 255 255/.72)}
+.og{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:30px}
+@media(max-width:760px){.og{grid-template-columns:1fr}}
+.oc{background:rgb(255 255 255/.06);border:1px solid rgb(255 255 255/.13);border-radius:16px;padding:22px}
+.oc .ic{font-size:22px}
+.oc b{display:block;font-family:"Bai Jamjuree";font-size:15.5px;margin:10px 0 6px}
+.oc p{font-size:13px;color:rgb(255 255 255/.74)}
+.finalcta{margin-top:32px;text-align:center}
+.finalcta .btn-gold{background:rgb(var(--gold));color:#08130c;border:0}
+
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:36px 0 48px}
+footer a{color:rgb(var(--green));font-weight:600}
+
+/* reveal ทำงานเฉพาะเมื่อ JS พร้อม (body.js) — ถ้า JS/observer พัง เนื้อหายังเห็นเสมอ */
+body.js .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+body.js .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){body.js .reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo disp" href="../">🍀 my<em>clover</em> · club</a>
+  <div class="navlinks">
+    <a href="#believe">สิ่งที่เราเชื่อ</a>
+    <a href="#share">เราแบ่งปันอะไร</a>
+    <a class="key" href="#join" style="color:rgb(var(--green))">ร่วมกับเรา</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <span class="eyebrow">myclover club · สุขภาพ · ความสุข · อิสรภาพ</span>
+  <h1 class="disp">สุขภาพดี มีความสุข และ<em>อิสระ</em><br>ในแบบที่ไม่ต้องเหมือนใคร</h1>
+  <p class="lead">เราไม่เชื่อว่าต้องอดอาหารและทรมานในยิมถึงจะสุขภาพดี — เราเชื่อว่าคนเราแข็งแรงและมีความสุขได้ ด้วยการ <b>กินเป็น นอนเป็น ใช้พลังเป็น</b> ในแบบชีวิตที่เรารักจริง ๆ</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#join">🍀 มาร่วมทางกับเรา</a>
+    <a class="btn" href="#share">ดูสิ่งที่เราแบ่งปันฟรี</a>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div class="champ reveal">
+    <span class="medal">🏆</span>
+    <div class="t">
+      <b>วันนี้เราเพิ่งพาทีมคว้าแชมป์ Flesh and Blood 3v3</b>
+      <p>หลายคนมองว่าเล่นเกมคือเรื่องไร้สาระ — แต่สำหรับเรามันคือ community · กีฬาของสมอง · และรางวัลจริง นี่คือตัวอย่างมีชีวิตว่า "ความสุขที่ไม่ต้องเหมือนใคร" หน้าตาเป็นยังไง</p>
+    </div>
+    <span class="tag">Champion 2026</span>
+  </div>
+</div>
+
+<!-- สองคลาส -->
+<section id="who"><div class="wrap">
+  <span class="eyebrow reveal">คนสองคนที่อยู่เบื้องหลัง</span>
+  <h2 class="h2 disp reveal">สองคลาส รวมเป็นสูตรที่ไม่มีใครมี</h2>
+  <p class="sub reveal">เราไม่ใช่โค้ชฟิตเนสหุ่นล่ำที่กินอกไก่ต้ม — เราคือคนธรรมดาสองคนที่บังเอิญอยู่ท็อปของวงการที่ตัวเองรัก และสุขภาพดีได้โดยไม่ต้องฝืนเป็นคนอื่น</p>
+  <div class="duo">
+    <div class="pc reveal">
+      <div class="emo">🍜</div>
+      <div class="cls">Taste Master</div>
+      <h3 class="disp">เอโกะ · สายกิน</h3>
+      <p>นักกินตัวจริงที่เลือกอาหารเป็นศิลปะ — รู้ว่ากินอะไร ที่ไหน ยังไง ให้อร่อยได้โดยไม่พังสุขภาพ ความรู้เรื่อง "เลือกกินให้ถูก" ที่ไม่ต้องนับแคลจนเครียด</p>
+      <div class="role">สอนให้คุณกินอย่างมีความสุข ไม่ใช่กินอย่างมีโทษ</div>
+    </div>
+    <div class="plus">✕</div>
+    <div class="pc reveal">
+      <div class="emo">🎮</div>
+      <div class="cls">Mind Master</div>
+      <h3 class="disp">ทีม · สายคิด</h3>
+      <p>เกมเมอร์และนักกลยุทธ์ระดับแชมป์ ที่แทบไม่เคยออกกำลังกาย แต่หุ่นไม่เสียและดูไม่แก่เกินวัย — เพราะใช้ชีวิต active ตามธรรมชาติจากสิ่งที่รัก</p>
+      <div class="role">พิสูจน์ว่าคุณไม่ต้องเกลียดตัวเองในยิมเพื่อสุขภาพดี</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- สิ่งที่เราเชื่อ -->
+<section class="beliefs" id="believe"><div class="wrap">
+  <span class="eyebrow reveal">จุดยืนของเรา</span>
+  <h2 class="h2 disp reveal">สุขภาพดี ไม่ได้แปลว่าต้องทรมาน</h2>
+  <p class="sub reveal">ตลาดสุขภาพเกือบทั้งหมดพูดเสียงเดียวกัน: อด · เบิร์น · ฝืน เราเลือกยืนคนละที่</p>
+  <div class="bgrid">
+    <div class="bc reveal"><div class="no">01</div><b class="disp">กินเป็น ดีกว่าอดตาย</b><p>ไม่มีใครทนกินไก่ต้มผักนึ่งได้ทั้งชีวิต ระบบที่ดีคือระบบที่คุณอยู่กับมันได้ และยังได้ผล</p></div>
+    <div class="bc reveal"><div class="no">02</div><b class="disp">ใช้พลังในแบบของคุณ</b><p>ไม่ต้องเข้ายิมก็เผาผลาญได้ ถ้าคุณมีสิ่งที่รักจนขยับและใช้ชีวิตเต็มที่ทุกวัน (มีชื่อวิทยาศาสตร์ว่า NEAT)</p></div>
+    <div class="bc reveal"><div class="no">03</div><b class="disp">มีความสุขคือส่วนหนึ่งของสุขภาพ</b><p>ครอบครัว เพื่อน สิ่งที่รัก การเดินทาง — ความสุขไม่ใช่รางวัลหลังมีสุขภาพดี แต่คือส่วนประกอบของมัน</p></div>
+  </div>
+  <div class="vs reveal">
+    <div class="row head"><div>ตลาดสุขภาพทั่วไป</div><div>ทางของ myclover club</div></div>
+    <div class="row"><div>ต้องมีวินัยเหล็ก อดอาหาร</div><div>กินเป็น เลือกเป็น ไม่ต้องอด</div></div>
+    <div class="row"><div>หุ่นดี = ตัวชี้วัด</div><div>สุขภาพดี + มีความสุข = ตัวชี้วัด</div></div>
+    <div class="row"><div>ออกกำลังกายคือทางเดียว</div><div>ใช้พลังในแบบของคุณเอง</div></div>
+    <div class="row"><div>ต้องเป็นเหมือนคนในโฆษณา</div><div>เป็นตัวเอง — ไม่ต้องเหมือนใคร</div></div>
+  </div>
+</div></section>
+
+<!-- เราแบ่งปันอะไรฟรี -->
+<section id="share"><div class="wrap">
+  <span class="eyebrow reveal">ของขวัญของบ้าน · ฟรี</span>
+  <h2 class="h2 disp reveal">ต่อให้ไม่ซื้ออะไรจากเราเลย — คุณก็ควรได้สิ่งนี้กลับไป</h2>
+  <p class="sub reveal">ความรู้พื้นฐาน 3 เสาที่เปลี่ยนชีวิตได้ ที่เราตั้งใจแบ่งปันให้ทุกคนที่แวะเข้ามาในบ้าน</p>
+  <div class="pil">
+    <div class="pl reveal"><div class="emo">🍜</div><h4 class="disp">กิน</h4><p>เลือกกินให้ถูก อร่อยได้ไม่ต้องนับแคลจนเครียด — โดยคนที่รักการกินจริง ๆ</p><span class="free">เร็ว ๆ นี้</span></div>
+    <div class="pl reveal"><div class="emo">😴</div><h4 class="disp">นอน</h4><p>เสาที่คนมองข้ามที่สุด แต่ทรงพลังที่สุด — นอนดีคือตัวคุมความหิวและพลังงานทั้งวัน</p><span class="free">เร็ว ๆ นี้</span></div>
+    <div class="pl reveal"><div class="emo">⚡</div><h4 class="disp">ใช้พลัง</h4><p>เผาผลาญในแบบชีวิตจริง ไม่ต้องไปยิม — สำหรับคนที่ไม่เคยชอบออกกำลังกาย</p><span class="free">เร็ว ๆ นี้</span></div>
+  </div>
+</div></section>
+
+<!-- ร่วมกับเรา + เปิดไพ่ทั้งมือ -->
+<section class="invite" id="join"><div class="wrap">
+  <span class="eyebrow reveal">มาร่วมทางกัน · เปิดไพ่ทั้งมือ</span>
+  <h2 class="h2 disp reveal">เราชวนคุณมาทำอะไร</h2>
+  <p class="sub reveal">บ้านหลังนี้อยู่กันยาว ๆ เราเลยพูดตรง ๆ ตั้งแต่แรกว่าเราเป็นใครและชวนอะไร</p>
+  <div class="og">
+    <div class="oc reveal"><span class="ic">🎁</span><b class="disp">เข้ามาเรียนรู้ฟรีก่อน</b><p>ความรู้เรื่องกิน นอน ใช้พลัง — หยิบไปใช้ได้เลย ไม่มีเงื่อนไข อยู่แค่นี้ตลอดไปก็ได้</p></div>
+    <div class="oc reveal"><span class="ic">🤝</span><b class="disp">ใครอยากไปไกลกว่านั้น</b><p>เรามีทีมที่เดินเรื่องสุขภาพและอิสรภาพไปด้วยกัน — ใครสนใจค่อยเดินมาถามเองที่ประตูนั้น</p></div>
+    <div class="oc reveal"><span class="ic">🧭</span><b class="disp">เป้าหมายที่เราอยากได้จริง</b><p>อิสรภาพทางการเงินและเวลา เพื่อพาครอบครัวและทีมไปในที่ที่รัก — และชวนคนที่ฝันแบบเดียวกันมาเดินด้วย</p></div>
+  </div>
+  <div class="finalcta reveal">
+    <a class="btn btn-gold disp" href="mailto:team@myclover.com?subject=%E0%B8%AA%E0%B8%99%E0%B9%83%E0%B8%88%20myclover%20club">🍀 คุยกับเราสักหน่อย</a>
+  </div>
+</div></section>
+
+<footer>
+  myclover.com · club — สุขภาพดี มีความสุข อิสระ ในแบบที่ไม่ต้องเหมือนใคร<br>
+  <a href="../">← กลับบ้าน myclover</a> · <a href="lab/">ห้องแล็บผู้สร้าง 🔒</a>
+</footer>
+
+<script>
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  // ถ้าไม่มี IntersectionObserver ก็โชว์ทุกอย่างเลย (ไม่เปิดโหมด js) — เนื้อหาต้องไม่หาย
+  if(!('IntersectionObserver' in window)){return;}
+  document.body.classList.add('js');
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.08});
+  els.forEach(function(el){io.observe(el);});
+  // กันเหนียว: ถ้าอะไรยังไม่ขึ้นใน 3 วิ ให้โชว์เลย
+  setTimeout(function(){els.forEach(function(el){el.classList.add('in');});},3000);
+})();
+</script>
+</body>
+</html>
