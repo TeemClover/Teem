@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ข้อมูลของคุณ · myclover</title>
+<meta name="description" content="myclover เก็บข้อมูลอะไรบ้าง เก็บไปทำอะไร เก็บนานแค่ไหน และคุณขอลบได้ยังไง — เขียนให้อ่านรู้เรื่องในหน้าเดียว">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--green-deep:10 40 24;--gold:190 148 66;--muted:96 108 100;--line:18 40 28}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.8;-webkit-font-smoothing:antialiased}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
+a{color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:2px;border-radius:6px}
+
+nav{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.93);backdrop-filter:blur(10px);border-bottom:1px solid rgb(var(--line)/.08)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1060px}
+.logo{font-family:"Bai Jamjuree";font-weight:700;font-size:18px;text-decoration:none}
+.logo em{font-style:normal;color:rgb(var(--green))}
+.navback{font-size:14px;font-weight:600;color:rgb(var(--muted));text-decoration:none}
+
+header.top{padding:52px 0 26px}
+.eyebrow{font-family:"Bai Jamjuree";font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--gold))}
+header.top h1{font-size:clamp(28px,5.2vw,42px);font-weight:700;line-height:1.18;margin:12px 0 14px}
+header.top h1 em{font-style:normal;color:rgb(var(--green))}
+header.top .lead{font-size:17px;color:rgb(var(--ink)/.75)}
+.updated{font-size:13px;color:rgb(var(--muted));margin-top:14px}
+
+section{padding:26px 0}
+h2{font-family:"Bai Jamjuree";font-size:21px;margin:26px 0 10px;display:flex;align-items:center;gap:11px}
+h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:14px;flex:none;font-weight:700}
+p{margin:10px 0;font-size:16px}
+ul{margin:10px 0 10px 22px;font-size:16px}
+li{margin:6px 0}
+
+.card{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:16px;padding:6px 22px;margin-top:12px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.row{padding:13px 0;border-bottom:1px solid rgb(var(--line)/.07);display:flex;gap:14px;align-items:flex-start}
+.row:last-child{border-bottom:0}
+.row b{font-family:"Bai Jamjuree";flex:none;min-width:132px}
+.row span{color:rgb(var(--ink)/.75);font-size:15px}
+@media(max-width:560px){.row{flex-direction:column;gap:2px}.row b{min-width:0}}
+
+.never{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:16px;padding:18px 22px;margin-top:14px}
+.never b{font-family:"Bai Jamjuree";display:block;margin-bottom:6px}
+.never ul{margin-bottom:0}
+
+.good{background:rgb(27 106 66/.06);border:1px solid rgb(27 106 66/.2);border-radius:16px;padding:18px 22px;margin-top:14px}
+.good b{font-family:"Bai Jamjuree";color:rgb(var(--green))}
+
+.contact{background:rgb(var(--green-deep));color:#fff;border-radius:20px;padding:28px 30px;margin:34px 0 10px;
+  background-image:radial-gradient(460px 220px at 88% -20%,rgb(27 106 66/.5),transparent 60%)}
+.contact h3{font-family:"Bai Jamjuree";font-size:19px;margin-bottom:8px}
+.contact p{color:rgb(255 255 255/.8);font-size:15px}
+.contact a.btn{display:inline-block;margin-top:16px;background:rgb(var(--gold));color:rgb(var(--green-deep));border-radius:12px;padding:12px 22px;font-family:"Bai Jamjuree";font-weight:700;font-size:15px;text-decoration:none}
+
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:38px 0 52px}
+footer a{color:rgb(var(--green));font-weight:600}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo disp" href="../">🍀 my<em>clover</em></a>
+  <a class="navback" href="../">← กลับหน้าบ้าน</a>
+</div></nav>
+
+<header class="top"><div class="wrap">
+  <span class="eyebrow">ข้อมูลส่วนบุคคล</span>
+  <h1 class="disp">ข้อมูลของคุณ <em>อยู่กับเราแบบไหน</em></h1>
+  <p class="lead">บ้านนี้เก็บข้อมูลน้อยที่สุดเท่าที่จำเป็น และบอกตรง ๆ ว่าเก็บอะไรไปทำอะไร — อ่านหน้านี้จบใน 2 นาที ไม่มีตัวหนังสือเล็ก ๆ ซ่อนไว้</p>
+  <p class="updated">ปรับปรุงล่าสุด: 24 กรกฎาคม 2569</p>
+</div></header>
+
+<div class="wrap">
+
+  <section>
+    <h2 class="disp"><span class="n">1</span>ใครเป็นคนเก็บ</h2>
+    <p>myclover.com ดูแลโดยเจ้าของบ้านเป็นการส่วนตัว ติดต่อได้ที่ <a href="mailto:team@myclover.com">team@myclover.com</a> — ทุกอีเมลที่เขียนมาถึงคนจริง ไม่ใช่ระบบตอบอัตโนมัติ</p>
+  </section>
+
+  <section>
+    <h2 class="disp"><span class="n">2</span>เราเก็บอะไรบ้าง</h2>
+    <p>ถ้าคุณลงทะเบียนรับการ์ดประจำตัว เราเก็บเท่านี้ ไม่มีมากกว่านี้:</p>
+    <div class="card">
+      <div class="row"><b>ชื่อ / ชื่อเล่น</b><span>ไว้เรียกคุณให้ถูก และพิมพ์ลงบนการ์ดประจำตัวของคุณ</span></div>
+      <div class="row"><b>อีเมล</b><span>ไว้ส่งประกาศของบ้าน เช่น คลาสใหม่ ของฟรีชิ้นใหม่ กิจกรรมที่จะถึง</span></div>
+      <div class="row"><b>สายที่คุณเลือก</b><span>ไว้ส่งเรื่องที่คุณสนใจจริง ๆ แทนที่จะส่งทุกอย่างให้ทุกคน</span></div>
+      <div class="row"><b>ตราประจำตัว</b><span>เช่น ศิษย์เก่า ผู้ค้นพบ ชาวกิลด์ — ไว้แสดงบนการ์ดของคุณ</span></div>
+      <div class="row"><b>เลขสมาชิก</b><span>เลขประจำการ์ดของคุณ เช่น MC-2569-0001</span></div>
+      <div class="row"><b>วันเวลาที่คุณกดยินยอม</b><span>ไว้เป็นหลักฐานว่าคุณอนุญาตให้เราส่งอีเมลถึงคุณเมื่อไหร่</span></div>
+      <div class="row"><b>คุณเพิ่มเพื่อน LINE แล้วหรือยัง</b><span>ไว้ไม่ให้เราชวนซ้ำจนน่ารำคาญ</span></div>
+    </div>
+
+    <div class="never">
+      <b>⚠️ สิ่งที่เราไม่เก็บเด็ดขาด</b>
+      <ul>
+        <li>เบอร์โทรศัพท์</li>
+        <li>ที่อยู่</li>
+        <li>วันเกิด</li>
+        <li>น้ำหนัก ส่วนสูง หรือข้อมูลสุขภาพใด ๆ ทั้งสิ้น</li>
+      </ul>
+      <p style="margin-bottom:0;font-size:15px">แม้แต่ในส่วนที่คุยเรื่องสุขภาพ เราก็ไม่มีช่องให้กรอกข้อมูลพวกนี้ตั้งแต่แรก</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="disp"><span class="n">3</span>รูปที่คุณใส่ในการ์ด ไม่ได้ถูกส่งมาหาเรา</h2>
+    <div class="good">
+      <p style="margin-top:0"><b>เครื่องมือทำการ์ดประจำตัวทำงานในเครื่องของคุณเองทั้งหมด</b></p>
+      <p>รูปที่คุณเลือกใส่การ์ดถูกวาดขึ้นในเบราว์เซอร์ของคุณ ไม่ถูกอัปโหลดมาที่เซิร์ฟเวอร์ของเรา และเราไม่มีสำเนารูปนั้นอยู่เลย เช่นเดียวกับชื่อเล่นและประโยคที่คุณพิมพ์ก่อนลงทะเบียน — ทั้งหมดถูกเก็บไว้ในเบราว์เซอร์ของคุณเท่านั้น (ที่เรียกว่า localStorage) ล้างข้อมูลเบราว์เซอร์เมื่อไหร่ ก็หายไปเมื่อนั้น</p>
+      <p style="margin-bottom:0">เครื่องมือทุกชิ้นในบ้านนี้ยึดกติกาเดียวกัน: ไม่ส่งข้อมูลส่วนตัวหรือข้อมูลสุขภาพของใครขึ้นเซิร์ฟเวอร์</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="disp"><span class="n">4</span>เราเอาไปทำอะไร</h2>
+    <ul>
+      <li>ส่งอีเมลประกาศของบ้าน — คลาสใหม่ ของฟรีชิ้นใหม่ กิจกรรมที่จะถึง</li>
+      <li>ส่งเรื่องที่ตรงกับสายที่คุณเลือก แทนที่จะส่งทุกอย่างให้ทุกคน</li>
+      <li>ออกเลขสมาชิกและตราบนการ์ดประจำตัวของคุณ</li>
+    </ul>
+    <p><b>เราไม่ขาย ไม่แลก ไม่ให้เช่า ไม่ส่งต่อรายชื่อของคุณให้ใครทั้งนั้น</b> ไม่ว่าจะเป็นบริษัท พันธมิตร หรือคนรู้จัก</p>
+    <p>และเราไม่เอารายชื่อจากที่นี่ไปทักชวนเรื่องธุรกิจโดยที่คุณไม่ได้เริ่มถามก่อน — เรื่องธุรกิจคุยกันเฉพาะในพื้นที่ของมันเอง หรือตอนที่คุณทักมาถามเองเท่านั้น</p>
+  </section>
+
+  <section>
+    <h2 class="disp"><span class="n">5</span>เก็บไว้นานแค่ไหน</h2>
+    <p>เก็บไว้จนกว่าคุณจะบอกให้ลบ หรือจนกว่าบ้านหลังนี้จะปิดตัว อย่างใดอย่างหนึ่งมาถึงก่อน ถ้าคุณกดยกเลิกรับอีเมล เราจะหยุดส่งทันที และถ้าคุณขอให้ลบ เราจะลบออกจริง ๆ</p>
+  </section>
+
+  <section>
+    <h2 class="disp"><span class="n">6</span>สิทธิของคุณ</h2>
+    <p>ตามกฎหมายคุ้มครองข้อมูลส่วนบุคคลของไทย (PDPA) คุณมีสิทธิเหล่านี้ และใช้ได้จริงโดยส่งอีเมลมาบอกคำเดียว:</p>
+    <ul>
+      <li><b>ขอดู</b> — ขอให้เราบอกว่าเรามีข้อมูลอะไรของคุณอยู่บ้าง</li>
+      <li><b>ขอแก้</b> — ชื่อผิด อีเมลเปลี่ยน เปลี่ยนสาย บอกได้ตลอด</li>
+      <li><b>ขอลบ</b> — ให้ลบออกทั้งหมด เราลบให้แล้วยืนยันกลับ</li>
+      <li><b>ขอหยุดส่ง</b> — ยกเลิกรับอีเมลได้ทุกเมื่อ ทุกฉบับมีลิงก์ยกเลิกอยู่ท้ายอีเมล</li>
+      <li><b>ถอนความยินยอม</b> — ถอนได้ตลอดเวลา และไม่กระทบสิ่งที่เกิดขึ้นไปแล้วก่อนหน้านั้น</li>
+    </ul>
+    <p>ความรู้และเครื่องมือฟรีทุกอย่างในบ้านนี้ยังเป็นของคุณเหมือนเดิม ต่อให้คุณขอลบข้อมูลออกไปแล้วก็ตาม</p>
+  </section>
+
+  <section>
+    <h2 class="disp"><span class="n">7</span>คุกกี้และการติดตาม</h2>
+    <p>เว็บนี้ไม่ใช้คุกกี้เพื่อโฆษณา และไม่มีตัวติดตามข้ามเว็บของบริษัทโฆษณาใด ๆ สิ่งที่เก็บในเบราว์เซอร์ของคุณคือค่าที่ทำให้เว็บใช้งานได้เท่านั้น เช่น สายที่คุณเลือก ชื่อบนการ์ด และการที่คุณผ่านประตูบ้านมาแล้ว</p>
+    <p>เว็บนี้เรียกฟอนต์จาก Google Fonts เพื่อให้ตัวหนังสือไทยอ่านสวย ซึ่งทำให้ Google เห็นการเรียกไฟล์ฟอนต์ตามปกติของการโหลดหน้าเว็บ</p>
+  </section>
+
+  <section>
+    <h2 class="disp"><span class="n">8</span>ถ้ามีการเปลี่ยนแปลง</h2>
+    <p>ถ้าวันหนึ่งเราเก็บข้อมูลเพิ่มหรือเปลี่ยนวิธีใช้ เราจะแก้หน้านี้พร้อมลงวันที่ และถ้าเป็นเรื่องใหญ่ เราจะส่งอีเมลบอกคุณก่อน ไม่เปลี่ยนเงียบ ๆ</p>
+  </section>
+
+  <div class="contact">
+    <h3 class="disp">อยากขอดู ขอแก้ หรือขอลบข้อมูล?</h3>
+    <p>เขียนมาบรรทัดเดียวก็พอครับ ไม่ต้องมีแบบฟอร์ม ไม่ต้องอธิบายเหตุผล เราจัดการให้ภายใน 30 วัน และส่วนใหญ่เร็วกว่านั้นมาก</p>
+    <a class="btn" href="mailto:team@myclover.com?subject=%E0%B8%82%E0%B8%AD%E0%B8%88%E0%B8%B1%E0%B8%94%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%82%E0%B9%89%E0%B8%AD%E0%B8%A1%E0%B8%B9%E0%B8%A5%E0%B8%AA%E0%B9%88%E0%B8%A7%E0%B8%99%E0%B8%95%E0%B8%B1%E0%B8%A7">✉️ team@myclover.com</a>
+  </div>
+
+</div>
+
+<footer>
+  <p>🍀 myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p>
+  <p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="../register/">ลงทะเบียนรับการ์ดประจำตัว</a></p>
+</footer>
+
+</body>
+</html>
