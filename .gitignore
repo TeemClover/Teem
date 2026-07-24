@@ -15,3 +15,12 @@ yyy/.env
 # เอกสารภายใน/ไฟล์ใหญ่ ห้ามขึ้น repo สาธารณะ
 yyy/CloverX for OPP.pdf
 yyy/คู่มือ*.docx
+
+# เอกสารส่งต่อ/บริบทภายใน — ห้ามขึ้น repo เด็ดขาด
+HANDOFF.md
+**/HANDOFF.md
+START-HERE.txt
+reference/
+**/reference/
+PLAN.md
+PLAN-V*.md

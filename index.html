@@ -418,7 +418,7 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
     <p class="bq">อยากมี Smart Resume แบบนี้เป็นของตัวเอง?</p>
     <ol>
       <li><b>STEP 1</b> เข้าคลาสฟรีของบ้าน — เริ่มจากสกิลที่ใช้ได้พรุ่งนี้เช้า</li>
-      <li><b>STEP 2</b> ผ่านภารกิจ RoutineX — 28 วัน วันละ 10 นาที</li>
+      <li><b>STEP 2</b> ผ่านภารกิจ 28 วันของบ้าน — วันละ 10 นาที</li>
       <li><b>STEP 3</b> ปลดล็อกประตูกิลด์ 🚪</li>
     </ol>
     <a class="qbtn disp" href="mailto:team@myclover.com?subject=Quest%200%20%E2%80%94%20%E0%B8%82%E0%B8%AD%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B8%A0%E0%B8%B2%E0%B8%A3%E0%B8%81%E0%B8%B4%E0%B8%88%E0%B9%81%E0%B8%A3%E0%B8%81">▶ เริ่ม Quest 0 เลย</a><span class="cur"></span>
@@ -504,12 +504,19 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
     gate.appendChild(f);
   }
 
-  /* easter egg: กดโคลเวอร์ 4 ครั้ง */
+  /* easter egg: กดโคลเวอร์ 4 ครั้ง → ได้ตรา "ผู้ค้นพบ" ไปขึ้นบนการ์ดประจำตัว */
+  function grantSeeker(){
+    try{
+      var t=JSON.parse(localStorage.getItem('mc_titles')||'[]');
+      if(!Array.isArray(t))t=[];
+      if(t.indexOf('SEEKER')<0){t.push('SEEKER');localStorage.setItem('mc_titles',JSON.stringify(t));}
+    }catch(e){}
+  }
   function eggify(id,eggId){
     var n=0,el=document.getElementById(id);
     if(!el)return;
     el.addEventListener('click',function(){
-      if(++n>=4){document.getElementById(eggId).style.display='block';n=0;}
+      if(++n>=4){document.getElementById(eggId).style.display='block';n=0;grantSeeker();}
     });
   }
   eggify('gateClover','gateEgg');
