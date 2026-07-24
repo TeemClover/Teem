@@ -283,7 +283,8 @@ body.life h1{font-size:1.85rem}
         <!-- ✏️ เปลี่ยน href เป็นลิงก์จริงของคุณ -->
         <a class="btn primary" href="../register/">🍀 ลงทะเบียนรับการ์ดประจำตัว</a>
         <a class="btn" href="../">🏠 กลับบ้าน myclover — ชุมชนฟรีของพวกเรา</a>
-        <a class="btn" href="#" data-guildx>⚔️ เปิดประตู Guild X — ทีมที่เส้นทางเหมือนเกม</a>
+        <a class="btn" data-guildx data-guildx-start="../card/">⚔️ เปิดประตู Guild X — ทีมที่เส้นทางเหมือนเกม</a>
+        <small data-guildx-note style="display:block;font-size:12px;opacity:.7"></small>
         <a class="btn" href="#" data-line>💬 ทัก LINE — คุยกันตัวต่อตัว</a>
       </div>
     </section>
@@ -315,5 +316,7 @@ flip.addEventListener('click', () => {
   }, 360);
 });
 </script>
+<script defer src="../assets/config.js"></script>
+<script defer src="../assets/guildx.js"></script>
 </body>
 </html>

@@ -791,6 +791,8 @@ var inApp=/Line|FBAN|FBAV|Instagram|Micromessenger/i.test(navigator.userAgent);
 
 function download(kind){
   makeBlob(kind).then(function(blob){
+    /* หยิบของฟรีของบ้านไปใช้แล้ว — ใช้เป็นเงื่อนไขหนึ่งของประตูกิลด์ */
+    try{ localStorage.setItem('mc_opened','1'); }catch(e){}
     var url=URL.createObjectURL(blob);
     /* ไอโฟน/เบราว์เซอร์ในแอป มักไม่รองรับการสั่งดาวน์โหลดตรง ๆ → เปิดรูปให้กดค้างบันทึกเอง */
     if(isIOS||inApp){

@@ -406,7 +406,8 @@ footer .egg2{display:none;margin-top:12px;font-size:13px;color:rgb(var(--gold));
         <div class="gc-face gc-back">
           <b class="disp">ทุ่งฝึกของกิลด์</b>
           <p>เส้นทางเติบโตแบบเกม — เควส ยศ กติกาชัดเจน ไม่มีใครต้องเล่นเกมนี้คนเดียว ประตูเปิดหลัง 8/8</p>
-          <span class="gc-btn lock disp">🔒 ปลดล็อกเร็ว ๆ นี้</span>
+          <span class="gc-btn lock disp" data-guildx data-guildx-start="card/">🔒 ปลดล็อกเร็ว ๆ นี้</span>
+          <small data-guildx-note style="display:block;margin-top:8px;font-size:11.5px;opacity:.7"></small>
         </div>
       </div>
     </div>
@@ -545,5 +546,7 @@ document.querySelectorAll('.gamecard').forEach(function(c){
   document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
 })();
 </script>
+<script defer src="assets/config.js"></script>
+<script defer src="assets/guildx.js"></script>
 </body>
 </html>
