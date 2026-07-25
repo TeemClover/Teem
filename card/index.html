@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>การ์ดประจำตัว · myclover</title>
+<meta name="description" content="สร้างการ์ดประจำตัวของคุณเองใน 1 นาที — เลือกสายที่ใช่ ใส่ชื่อและประโยคของคุณ แล้วบันทึกเป็นรูปไปใช้ได้เลย ฟรี ไม่ต้องสมัคร">
+<meta property="og:title" content="การ์ดประจำตัว · myclover">
+<meta property="og:description" content="เลือกสายที่ใช่ ใส่ชื่อของคุณ แล้วบันทึกการ์ดเป็นรูปได้เลย — รูปของคุณไม่ถูกส่งออกจากเครื่อง">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:18 40 28;
+  --paper:248 246 240;
+  --card:255 255 255;
+  --green:27 106 66;
+  --green-deep:10 40 24;
+  --gold:190 148 66;
+  --muted:96 108 100;
+  --line:18 40 28;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.7;-webkit-font-smoothing:antialiased}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:2px;border-radius:6px}
+
+nav{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.93);backdrop-filter:blur(10px);border-bottom:1px solid rgb(var(--line)/.08)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-family:"Bai Jamjuree";font-weight:700;font-size:18px}
+.logo em{font-style:normal;color:rgb(var(--green))}
+.navback{font-size:14px;font-weight:600;color:rgb(var(--muted))}
+.navback:hover{color:rgb(var(--green))}
+
+header.top{padding:52px 0 30px;background:
+  radial-gradient(760px 380px at 12% -10%,rgb(27 106 66/.10),transparent 60%),
+  radial-gradient(520px 320px at 95% 4%,rgb(190 148 66/.13),transparent 60%)}
+.eyebrow{font-family:"Bai Jamjuree";font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--gold))}
+header.top h1{font-size:clamp(30px,5.6vw,46px);font-weight:700;line-height:1.16;margin:12px 0 14px}
+header.top h1 em{font-style:normal;color:rgb(var(--green))}
+header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
+
+.layout{display:grid;grid-template-columns:1fr 380px;gap:36px;align-items:start;padding:20px 0 70px}
+@media(max-width:900px){.layout{grid-template-columns:1fr;gap:28px}}
+
+.step{margin-bottom:34px}
+.step .num{display:inline-flex;align-items:center;gap:9px;font-family:"Bai Jamjuree";font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--green))}
+.step .num i{width:24px;height:24px;border-radius:8px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-style:normal;font-size:13px;flex:none}
+.step h2{font-family:"Bai Jamjuree";font-size:21px;margin:10px 0 4px}
+.step .hint{font-size:14px;color:rgb(var(--muted));margin-bottom:16px}
+
+/* เลือกสาย */
+.classes{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+@media(max-width:760px){.classes{grid-template-columns:repeat(2,1fr)}}
+.cbtn{background:#fff;border:2px solid rgb(var(--line)/.1);border-radius:16px;padding:18px 12px;text-align:center;cursor:pointer;transition:.15s;font-family:inherit;color:inherit;display:block;width:100%}
+.cbtn:hover{transform:translateY(-3px);box-shadow:0 16px 32px -22px rgb(18 40 28/.5)}
+.cbtn .emo{font-size:30px;line-height:1}
+.cbtn b{display:block;font-family:"Bai Jamjuree";font-size:16px;margin-top:9px}
+.cbtn span{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;color:rgb(var(--muted));margin-top:2px}
+.cbtn[aria-pressed="true"]{border-color:var(--ac);background:var(--acbg)}
+.cbtn[aria-pressed="true"] span{color:var(--ac)}
+
+/* ฟอร์ม */
+.field{margin-bottom:18px}
+.field label{display:block;font-family:"Bai Jamjuree";font-weight:600;font-size:14.5px;margin-bottom:7px}
+.field .cnt{float:right;font-family:"Anuphan";font-weight:400;font-size:12.5px;color:rgb(var(--muted))}
+.field input[type=text]{width:100%;background:#fff;border:1px solid rgb(var(--line)/.16);border-radius:12px;padding:13px 15px;font-family:"Anuphan";font-size:15.5px;color:inherit;outline:none;transition:.15s}
+.field input[type=text]:focus{border-color:rgb(var(--green)/.7);box-shadow:0 0 0 3px rgb(27 106 66/.1)}
+.filerow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.fbtn{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid rgb(var(--line)/.16);border-radius:12px;padding:12px 18px;font-family:"Bai Jamjuree";font-weight:600;font-size:14.5px;cursor:pointer;transition:.15s;color:inherit}
+.fbtn:hover{border-color:rgb(var(--green)/.6);transform:translateY(-2px)}
+.fbtn.sm{padding:9px 14px;font-size:13.5px}
+.safe{display:flex;gap:8px;align-items:flex-start;margin-top:10px;font-size:13px;color:rgb(var(--muted));background:rgb(27 106 66/.05);border:1px solid rgb(27 106 66/.15);border-radius:11px;padding:10px 13px}
+.safe b{color:rgb(var(--green))}
+
+/* ตรา */
+.badges{display:grid;gap:10px}
+.bd{display:flex;gap:13px;align-items:center;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:13px 16px}
+.bd.off{opacity:.55;background:transparent;border-style:dashed}
+.bd .ic{font-size:22px;flex:none}
+.bd .tx{flex:1;min-width:0}
+.bd .tx b{display:block;font-family:"Bai Jamjuree";font-size:15px}
+.bd .tx small{display:block;font-size:12.5px;color:rgb(var(--muted));line-height:1.5}
+.bd .on{font-size:11.5px;font-weight:700;color:rgb(var(--green));background:rgb(27 106 66/.1);border-radius:7px;padding:4px 10px;flex:none}
+.coderow{display:flex;gap:8px;margin-top:10px}
+.coderow input{flex:1;background:#fff;border:1px solid rgb(var(--line)/.16);border-radius:11px;padding:10px 14px;font-family:"Anuphan";font-size:14.5px;outline:none}
+.coderow input:focus{border-color:rgb(var(--gold))}
+.coderow button{background:rgb(var(--green-deep));color:#fff;border:0;border-radius:11px;padding:10px 18px;font-family:"Bai Jamjuree";font-weight:700;font-size:14px;cursor:pointer}
+.codemsg{font-size:13px;margin-top:8px;min-height:18px}
+.codemsg.ok{color:rgb(var(--green));font-weight:600}
+.codemsg.no{color:#b45309}
+
+/* พรีวิว */
+.side{position:sticky;top:80px}
+@media(max-width:900px){.side{position:static}}
+.pvbox{background:rgb(var(--green-deep));border-radius:22px;padding:20px;background-image:radial-gradient(420px 240px at 80% -20%,rgb(27 106 66/.55),transparent 60%)}
+.pvbox canvas{display:block;width:100%;height:auto;border-radius:14px}
+.pvcap{text-align:center;color:rgb(255 255 255/.62);font-size:12.5px;margin-top:12px}
+.acts{display:grid;gap:9px;margin-top:14px}
+.abtn{display:flex;align-items:center;justify-content:center;gap:9px;border-radius:13px;padding:14px 18px;font-family:"Bai Jamjuree";font-weight:700;font-size:15px;cursor:pointer;border:1px solid rgb(var(--line)/.14);background:#fff;color:inherit;transition:.15s;width:100%}
+.abtn:hover{transform:translateY(-2px);box-shadow:0 14px 28px -18px rgb(18 40 28/.5)}
+.abtn.main{background:rgb(var(--green));border-color:rgb(var(--green));color:#fff}
+.abtn.gold{background:rgb(var(--gold));border-color:rgb(var(--gold));color:rgb(var(--green-deep))}
+.abtn[hidden]{display:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.iosnote{font-size:12.5px;color:rgb(var(--muted));margin-top:10px;line-height:1.6}
+.savemsg{font-size:13px;color:rgb(var(--green));font-weight:600;min-height:18px;margin-top:8px;text-align:center}
+
+.regbox{margin-top:16px;background:#fff;border:1px solid rgb(190 148 66/.4);border-radius:16px;padding:18px 20px}
+.regbox b{display:block;font-family:"Bai Jamjuree";font-size:15.5px;margin-bottom:5px}
+.regbox p{font-size:13.5px;color:rgb(var(--muted))}
+.regbox a{display:inline-block;margin-top:12px;background:rgb(var(--gold));color:rgb(var(--green-deep));border-radius:11px;padding:11px 18px;font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px}
+
+/* คู่มือ */
+.manual{background:rgb(27 106 66/.05);border-top:1px solid rgb(var(--line)/.07);border-bottom:1px solid rgb(var(--line)/.07);padding:46px 0}
+.manual h2{font-family:"Bai Jamjuree";font-size:22px;margin-bottom:6px}
+.manual .sub{color:rgb(var(--muted));font-size:15px;margin-bottom:22px}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:760px){.mgrid{grid-template-columns:1fr}}
+.mc{background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:15px;padding:20px}
+.mc .n{font-family:"Bai Jamjuree";font-size:13px;font-weight:700;color:rgb(var(--gold))}
+.mc b{display:block;font-family:"Bai Jamjuree";font-size:16px;margin:7px 0 5px}
+.mc p{font-size:13.5px;color:rgb(var(--muted))}
+
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:38px 0 52px}
+footer a{color:rgb(var(--green));font-weight:600}
+
+noscript .nojs{background:#fff;border:2px solid rgb(190 148 66/.5);border-radius:16px;padding:22px;margin:24px 0;font-size:15px}
+noscript .nojs b{font-family:"Bai Jamjuree";display:block;margin-bottom:6px;font-size:17px}
+
+body.js .reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+body.js .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){body.js .reveal{opacity:1;transform:none;transition:none}
+  .cbtn:hover,.abtn:hover,.fbtn:hover{transform:none}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="logo disp" href="../">🍀 my<em>clover</em></a>
+  <a class="navback" href="../">← กลับหน้าบ้าน</a>
+</div></nav>
+
+<header class="top"><div class="wrap">
+  <span class="eyebrow">เครื่องมือของบ้าน · ชิ้นที่ 1</span>
+  <h1 class="disp">การ์ด<em>ประจำตัว</em>ของคุณ<br>ทำเสร็จใน 1 นาที</h1>
+  <p>เลือกสายที่ใช่ ใส่ชื่อกับหนึ่งประโยคของคุณ แล้วบันทึกเป็นรูปไปใช้ได้เลย — ใช้ฟรี ไม่ต้องสมัคร ไม่ต้องลงโปรแกรมอะไรทั้งนั้น</p>
+</div></header>
+
+<noscript><div class="wrap"><div class="nojs">
+  <b>🍀 หน้านี้ต้องเปิดจาวาสคริปต์ก่อน</b>
+  เครื่องมือนี้วาดการ์ดขึ้นในเครื่องของคุณเอง เลยต้องใช้จาวาสคริปต์ทำงาน
+  กรุณาเปิดจาวาสคริปต์ในเบราว์เซอร์แล้วโหลดหน้านี้ใหม่อีกครั้ง
+  หากเปิดจากในแอป (เช่น LINE) ลองกดเมนูมุมขวาบนแล้วเลือก "เปิดในเบราว์เซอร์" ดูครับ
+</div></div></noscript>
+
+<div class="wrap"><div class="layout">
+
+  <!-- ═══ ฝั่งซ้าย: ขั้นตอน ═══ -->
+  <div>
+    <div class="step">
+      <span class="num"><i>1</i>ขั้นที่หนึ่ง</span>
+      <h2 class="disp">เลือกสายของคุณ</h2>
+      <p class="hint">เลือกอันที่ตรงกับตัวคุณที่สุด — เปลี่ยนทีหลังได้ตลอด ไม่มีผิดถูก</p>
+      <div class="classes" id="classes"></div>
+    </div>
+
+    <div class="step">
+      <span class="num"><i>2</i>ขั้นที่สอง</span>
+      <h2 class="disp">ใส่ชื่อและประโยคของคุณ</h2>
+      <p class="hint">ชื่อเล่นกับหนึ่งประโยคที่เป็นตัวคุณ · รูปจะใส่หรือไม่ใส่ก็ได้</p>
+
+      <div class="field">
+        <label for="nick">ชื่อเล่นบนการ์ด <span class="cnt"><span id="nickCnt">0</span>/14</span></label>
+        <input type="text" id="nick" maxlength="14" placeholder="เช่น ทีม · Narin" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label for="line">หนึ่งประโยคของคุณ <span class="cnt"><span id="lineCnt">0</span>/40</span></label>
+        <input type="text" id="line" maxlength="40" placeholder="เช่น ผมสร้างเครื่องมือให้ทีมได้เปรียบ" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label>รูปของคุณ (ไม่ใส่ก็ได้)</label>
+        <div class="filerow">
+          <label class="fbtn" for="photo">📷 เลือกรูป</label>
+          <input type="file" id="photo" accept="image/*" hidden>
+          <button type="button" class="fbtn sm" id="clearPhoto" hidden>ลบรูปออก</button>
+          <span id="photoName" style="font-size:13px;color:rgb(var(--muted))"></span>
+        </div>
+        <div class="safe">
+          <span>🔒</span>
+          <span><b>รูปของคุณไม่ถูกส่งออกจากเครื่องนี้</b> — การ์ดถูกวาดขึ้นในเบราว์เซอร์ของคุณเองทั้งหมด ไม่มีการอัปโหลดรูปไปเก็บที่ไหน</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="num"><i>3</i>ขั้นที่สาม</span>
+      <h2 class="disp">ตราประจำตัว</h2>
+      <p class="hint">ตราที่ได้มาจะขึ้นบนการ์ดเอง — ยังไม่มีก็ทำการ์ดได้ตามปกติ</p>
+      <div class="badges" id="badges"></div>
+      <div class="coderow">
+        <input type="text" id="guildCode" placeholder="มีรหัสจากกิลด์? กรอกตรงนี้" autocomplete="off">
+        <button type="button" id="guildBtn" class="disp">ใช้รหัส</button>
+      </div>
+      <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- ═══ ฝั่งขวา: การ์ด ═══ -->
+  <div class="side">
+    <div class="pvbox">
+      <canvas id="pv" width="1080" height="1350" role="img" aria-label="ตัวอย่างการ์ดประจำตัวของคุณ"></canvas>
+      <p class="pvcap">การ์ดจะเปลี่ยนตามที่คุณกรอกทันที</p>
+    </div>
+
+    <div class="acts">
+      <button type="button" class="abtn main" id="dlPortrait">⬇️ บันทึกการ์ด (แนวตั้ง)</button>
+      <div class="two">
+        <button type="button" class="abtn" id="dlLandscape">🖥 แนวนอน</button>
+        <button type="button" class="abtn" id="openTab">🔎 เปิดรูป</button>
+      </div>
+      <div class="two">
+        <button type="button" class="abtn" id="copyBtn" hidden>📋 คัดลอกรูป</button>
+        <button type="button" class="abtn" id="shareBtn" hidden>📤 แชร์</button>
+      </div>
+      <p class="savemsg" id="saveMsg" role="status" aria-live="polite"></p>
+      <p class="iosnote" id="iosNote">ใช้ไอโฟนหรือเปิดจากในแอป LINE? กด <b>“เปิดรูป”</b> แล้วกดค้างที่รูปเพื่อบันทึกลงเครื่องได้เลยครับ</p>
+    </div>
+
+    <div class="regbox">
+      <b>อยากได้เลขสมาชิกจริงบนการ์ด?</b>
+      <p>ตอนนี้การ์ดของคุณขึ้นเลขชั่วคราวอยู่ ลงทะเบียนแล้วจะได้เลขประจำตัวจริงของบ้าน พร้อมตราศิษย์เก่าถ้าคุณอยู่กับเรามาตั้งแต่ยุคนั้น</p>
+      <a href="../register/">รับเลขสมาชิกจริง →</a>
+    </div>
+  </div>
+
+</div></div>
+
+<!-- ═══ คู่มือสั้น ═══ -->
+<section class="manual"><div class="wrap">
+  <h2 class="disp reveal">วิธีใช้แบบเร็ว ๆ</h2>
+  <p class="sub reveal">อ่าน 20 วินาที ใช้ได้เลย</p>
+  <div class="mgrid">
+    <div class="mc reveal"><div class="n">01</div><b class="disp">ทำการ์ด</b><p>เลือกสาย → พิมพ์ชื่อเล่นกับหนึ่งประโยค → ใส่รูปถ้ามี การ์ดทางขวาจะเปลี่ยนให้เห็นทันทีทุกครั้งที่พิมพ์</p></div>
+    <div class="mc reveal"><div class="n">02</div><b class="disp">เก็บรูปไปใช้</b><p>แนวตั้งไว้โพสต์หรือส่งใน LINE · แนวนอนไว้ใส่สไลด์ตอนพรีเซนต์ · บนไอโฟนให้กด “เปิดรูป” แล้วกดค้างที่รูปเพื่อบันทึก</p></div>
+    <div class="mc reveal"><div class="n">03</div><b class="disp">กลับมาแก้ทีหลังได้</b><p>สิ่งที่กรอกถูกเก็บไว้ในเครื่องของคุณเอง เปิดหน้านี้อีกครั้งการ์ดใบเดิมจะยังอยู่ ไม่ต้องทำใหม่</p></div>
+  </div>
+</div></section>
+
+<footer>
+  <p>🍀 myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p>
+  <p style="margin-top:6px">การ์ดใบนี้สร้างและเก็บอยู่ในเครื่องของคุณเองทั้งหมด</p>
+  <p style="margin-top:6px"><a href="../register/">ลงทะเบียนรับเลขสมาชิก</a> · <a href="../privacy/">ข้อมูลของคุณ</a> · <a href="../">กลับหน้าบ้าน</a></p>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ═══════════════════════════════════════════════════════════
+   ค่าคงที่ของการ์ด
+   ═══════════════════════════════════════════════════════════ */
+var CLASSES={
+  THINKER:{th:'สายคิด',      emo:'🧠', ac:'#2E4A8F'},
+  TASTER :{th:'สายกิน',      emo:'🍜', ac:'#C4622D'},
+  KEEPER :{th:'สายคลีน',     emo:'💪', ac:'#1F8A70'},
+  MAKER  :{th:'สายประดิษฐ์', emo:'🧰', ac:'#4B5A67'}
+};
+var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
+var TITLES={
+  ALUMNI:{emo:'🍀',th:'ศิษย์เก่า', how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้ยุค 2553–2555'},
+  SEEKER:{emo:'🔍',th:'ผู้ค้นพบ',  how:'ได้จากการเจอห้องลับของบ้าน ลองกดโคลเวอร์ที่หน้าแรกดู'},
+  GUILD :{emo:'⚔️',th:'ชาวกิลด์',  how:'ได้จากรหัสที่แจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่'}
+};
+
+/* รหัสกิลด์ — เปลี่ยนรหัส: แก้ 2 ค่านี้เป็น sha256 + djb2 ของรหัสใหม่
+   (ค่าปัจจุบันเป็นรหัสตั้งต้นสำหรับทดสอบ ให้เปลี่ยนก่อนแจกจริง) */
+var GUILD_SHA='4eb990514f06a4910fc2537f34fc780ddde5bb5c66f9b902aa7e09131527ac43';
+var GUILD_DJB='1404206110';
+
+var GREEN='rgb(27,106,66)', GOLD='rgb(190,148,66)', CREAM='#F8F5EE', DEEP='rgb(10,40,24)';
+
+/* ═══════════════════════════════════════════════════════════
+   สถานะ + ที่เก็บในเครื่อง
+   ═══════════════════════════════════════════════════════════ */
+var ls={
+  get:function(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } },
+  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+function readTitles(){
+  try{ var a=JSON.parse(ls.get('mc_titles','[]')); return Array.isArray(a)?a.filter(function(t){return TITLES[t];}):[]; }
+  catch(e){ return []; }
+}
+var st={
+  cls   : CLASSES[ls.get('mc_class','')] ? ls.get('mc_class','') : 'THINKER',
+  nick  : ls.get('mc_nick',''),
+  line  : ls.get('mc_line',''),
+  titles: readTitles(),
+  member: ls.get('mc_member',''),
+  img   : null
+};
+
+/* ═══════════════════════════════════════════════════════════
+   ตัวช่วยวาด
+   ═══════════════════════════════════════════════════════════ */
+function rr(c,x,y,w,h,r){
+  r=Math.min(r,w/2,h/2);
+  c.beginPath();
+  c.moveTo(x+r,y);
+  c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r);
+  c.arcTo(x,y+h,x,y,r);     c.arcTo(x,y,x+w,y,r);
+  c.closePath();
+}
+function hexA(hex,a){
+  var n=parseInt(hex.slice(1),16);
+  return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';
+}
+function font(c,w,size,fam){ c.font=w+' '+size+'px "'+fam+'", "Anuphan", sans-serif'; }
+function fit(c,text,maxW,size,w,fam){
+  font(c,w,size,fam);
+  while(size>9 && c.measureText(text).width>maxW){ size-=0.5; font(c,w,size,fam); }
+  return size;
+}
+/* ตัดบรรทัดภาษาไทย — ใช้ตัวตัดคำของเบราว์เซอร์ถ้ามี ไม่งั้นตัดตามกลุ่มอักขระ
+   (ห้ามตัดกลางสระ/วรรณยุกต์ ไม่งั้นตัวหนังสือจะเพี้ยน) */
+function pieces(s){
+  try{
+    if(window.Intl && Intl.Segmenter){
+      var seg=new Intl.Segmenter('th',{granularity:'word'});
+      var out=[]; var it=seg.segment(s);
+      for(var p of it){ out.push(p.segment); }
+      if(out.length) return out;
+    }
+  }catch(e){}
+  try{
+    if(window.Intl && Intl.Segmenter){
+      var g=new Intl.Segmenter('th',{granularity:'grapheme'}), o2=[];
+      for(var q of g.segment(s)){ o2.push(q.segment); }
+      return o2;
+    }
+  }catch(e){}
+  return s.split('');
+}
+function wrap(c,text,maxW,maxLines){
+  var parts=pieces(text), lines=[], cur='';
+  for(var i=0;i<parts.length;i++){
+    var t=cur+parts[i];
+    if(c.measureText(t).width>maxW && cur){
+      lines.push(cur); cur=parts[i];
+      if(lines.length===maxLines-1){
+        var rest=parts.slice(i).join('');
+        while(rest && c.measureText(rest).width>maxW){ rest=rest.slice(0,-1); }
+        lines.push(rest); return lines;
+      }
+    } else { cur=t; }
+  }
+  if(cur) lines.push(cur);
+  return lines.slice(0,maxLines);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   วาดการ์ด (พิกัดทั้งหมดอยู่ในระบบ 540×675 แล้วค่อย scale)
+   ═══════════════════════════════════════════════════════════ */
+var CW=540, CH=675;
+
+function drawClover(c,x,y,size,color,alpha){
+  c.save(); c.globalAlpha=alpha; c.fillStyle=color;
+  c.translate(x,y);
+  var r=size/2;
+  for(var i=0;i<4;i++){
+    c.save(); c.rotate(i*Math.PI/2);
+    c.beginPath(); c.ellipse(0,-r*0.62,r*0.46,r*0.62,0,0,Math.PI*2); c.fill();
+    c.restore();
+  }
+  c.beginPath(); c.moveTo(0,r*0.2);
+  c.quadraticCurveTo(r*0.1,r*0.8,-r*0.05,r*1.15);
+  c.lineWidth=Math.max(1,size*0.05); c.strokeStyle=color; c.stroke();
+  c.restore();
+}
+
+function drawCardArt(c,st){
+  var cls=CLASSES[st.cls]||CLASSES.THINKER;
+  var foil=st.titles.indexOf('GUILD')>=0;
+  var FR=13, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
+  var CP=20, x0=FR+CP, x1=CW-FR-CP, cw=x1-x0;
+
+  /* ---- กรอบ ---- */
+  rr(c,0,0,CW,CH,30);
+  if(foil){
+    var fg=c.createLinearGradient(0,0,CW,CH);
+    fg.addColorStop(0,'#8A6A22'); fg.addColorStop(.22,'#F0DCA0');
+    fg.addColorStop(.42,'#BE9442'); fg.addColorStop(.6,'#FBF0C9');
+    fg.addColorStop(.78,'#C8A24E'); fg.addColorStop(1,'#8A6A22');
+    c.fillStyle=fg;
+  } else {
+    var dg=c.createLinearGradient(0,0,0,CH);
+    dg.addColorStop(0,'rgb(16,58,34)'); dg.addColorStop(1,'rgb(8,32,19)');
+    c.fillStyle=dg;
+  }
+  c.fill();
+
+  /* ---- พื้นในการ์ด ---- */
+  rr(c,ix,iy,iw,ih,20); c.fillStyle=CREAM; c.fill();
+
+  /* ---- แถบหัว ---- */
+  var hy=FR+CP, hh=46;
+  rr(c,x0,hy,cw,hh,12); c.fillStyle=cls.ac; c.fill();
+  c.save(); rr(c,x0,hy,cw,hh,12); c.clip();
+  var hg=c.createLinearGradient(x0,hy,x1,hy+hh);
+  hg.addColorStop(0,'rgba(255,255,255,.18)'); hg.addColorStop(1,'rgba(255,255,255,0)');
+  c.fillStyle=hg; c.fillRect(x0,hy,cw,hh);
+  c.restore();
+
+  c.textBaseline='middle';
+  c.fillStyle='#fff'; c.textAlign='left';
+  font(c,'400',24,'Anuphan');
+  c.fillText(cls.emo,x0+14,hy+hh/2+1);
+  var nameSize=fit(c,cls.th,cw*0.44,20,'700','Bai Jamjuree');
+  font(c,'700',nameSize,'Bai Jamjuree');
+  c.fillText(cls.th,x0+48,hy+hh/2);
+
+  var mid=st.member||'MC-2569-????';
+  c.textAlign='right';
+  c.globalAlpha=st.member?1:.62;
+  font(c,'600',16,'Bai Jamjuree');
+  c.fillText(mid,x1-14,hy+hh/2);
+  c.globalAlpha=1;
+
+  /* ---- ช่องรูป 4:5 ---- */
+  var py=hy+hh+14, ph=359, pw=Math.round(ph*4/5), px=Math.round((CW-pw)/2);
+  c.save();
+  rr(c,px,py,pw,ph,14); c.clip();
+  if(st.img){
+    var iR=st.img.width/st.img.height, bR=pw/ph, dw,dh,dx,dy;
+    if(iR>bR){ dh=ph; dw=ph*iR; dx=px-(dw-pw)/2; dy=py; }
+    else     { dw=pw; dh=pw/iR; dx=px; dy=py-(dh-ph)/2; }
+    c.drawImage(st.img,dx,dy,dw,dh);
+  } else {
+    var pg=c.createLinearGradient(px,py,px+pw,py+ph);
+    pg.addColorStop(0,hexA(cls.ac,.92)); pg.addColorStop(1,hexA(cls.ac,.62));
+    c.fillStyle=pg; c.fillRect(px,py,pw,ph);
+    for(var gy=0;gy<6;gy++) for(var gx=0;gx<5;gx++){
+      drawClover(c,px+18+gx*((pw-36)/4),py+30+gy*((ph-60)/5),26,'#ffffff',.09);
+    }
+    drawClover(c,px+pw/2,py+ph/2-6,132,'#ffffff',.26);
+  }
+  c.restore();
+  rr(c,px,py,pw,ph,14);
+  c.strokeStyle=hexA(cls.ac,.55); c.lineWidth=2.5; c.stroke();
+
+  /* ---- ชื่อเล่น ---- */
+  var ay=py+ph;
+  var nick=(st.nick||'ชื่อของคุณ').slice(0,14);
+  c.textAlign='center'; c.fillStyle= st.nick?'rgb(18,40,28)':'rgba(18,40,28,.32)';
+  var ns=fit(c,nick,cw,30,'700','Bai Jamjuree');
+  font(c,'700',ns,'Bai Jamjuree');
+  c.fillText(nick,CW/2,ay+16+17);
+
+  /* ---- เส้นคั่น 1 ---- */
+  c.strokeStyle='rgba(18,40,28,.14)'; c.lineWidth=1;
+  c.beginPath(); c.moveTo(x0,ay+60.5); c.lineTo(x1,ay+60.5); c.stroke();
+
+  /* ---- ตรา ---- */
+  var ty=ay+70, th=28;
+  if(st.titles.length){
+    var chips=st.titles.slice(0,3).map(function(k){ return {emo:TITLES[k].emo,th:TITLES[k].th}; });
+    font(c,'600',14,'Anuphan');
+    var widths=chips.map(function(ch){ return 26+c.measureText(ch.th).width+16; });
+    var total=widths.reduce(function(a,b){return a+b;},0)+(chips.length-1)*8;
+    var sx=(CW-total)/2;
+    chips.forEach(function(ch,i){
+      rr(c,sx,ty,widths[i],th,9);
+      c.fillStyle='rgba(27,106,66,.09)'; c.fill();
+      c.strokeStyle='rgba(27,106,66,.28)'; c.lineWidth=1; c.stroke();
+      c.textAlign='left'; c.textBaseline='middle';
+      font(c,'400',15,'Anuphan'); c.fillStyle='rgb(18,40,28)';
+      c.fillText(ch.emo,sx+8,ty+th/2+1);
+      font(c,'600',14,'Anuphan'); c.fillStyle=GREEN;
+      c.fillText(ch.th,sx+28,ty+th/2);
+      sx+=widths[i]+8;
+    });
+  } else {
+    c.textAlign='center'; c.fillStyle='rgba(18,40,28,.3)';
+    font(c,'700',13,'Bai Jamjuree');
+    var kw=st.cls.split('').join(' ');
+    c.fillText(kw,CW/2,ty+th/2);
+  }
+
+  /* ---- เส้นคั่น 2 ---- */
+  c.strokeStyle='rgba(18,40,28,.14)'; c.lineWidth=1;
+  c.beginPath(); c.moveTo(x0,ty+th+10.5); c.lineTo(x1,ty+th+10.5); c.stroke();
+
+  /* ---- หนึ่งประโยค ---- */
+  var qy=ty+th+21;
+  var quote=(st.line||'').slice(0,40);
+  c.textAlign='center';
+  if(quote){
+    font(c,'500',19,'Anuphan');
+    var ls2=wrap(c,'“'+quote+'”',cw,2);
+    var lh=23, sy=qy+22-((ls2.length-1)*lh)/2;
+    c.fillStyle='rgba(18,40,28,.82)';
+    ls2.forEach(function(l,i){ c.fillText(l,CW/2,sy+i*lh); });
+  } else {
+    font(c,'400',17,'Anuphan'); c.fillStyle='rgba(18,40,28,.28)';
+    c.fillText('“ประโยคของคุณจะอยู่ตรงนี้”',CW/2,qy+22);
+  }
+
+  /* ---- ท้ายการ์ด ---- */
+  var fy=qy+54;
+  c.textAlign='left'; font(c,'600',13.5,'Bai Jamjuree'); c.fillStyle=GREEN;
+  c.fillText('🍀 myclover.com',x0,fy+9);
+  c.textAlign='right'; font(c,'700',12,'Bai Jamjuree'); c.fillStyle='rgba(18,40,28,.42)';
+  c.fillText('S I N C E   2 0 1 0',x1,fy+9);
+
+  /* ---- ประกายทอง + ป้าย HERO (เฉพาะการ์ดฮีโร่) ---- */
+  if(foil){
+    c.save();
+    rr(c,ix,iy,iw,ih,20); c.clip();
+    var sh=c.createLinearGradient(0,CH*0.1,CW,CH*0.62);
+    sh.addColorStop(0,'rgba(255,255,255,0)');
+    sh.addColorStop(.46,'rgba(255,242,206,.07)');
+    sh.addColorStop(.5,'rgba(255,255,255,.13)');
+    sh.addColorStop(.54,'rgba(255,238,188,.07)');
+    sh.addColorStop(1,'rgba(255,255,255,0)');
+    c.fillStyle=sh; c.fillRect(0,0,CW,CH);
+    c.restore();
+
+    var bw=118,bh=27,bx=(CW-bw)/2,by=CH-FR-14;
+    rr(c,bx,by,bw,bh,9);
+    c.fillStyle='rgb(10,40,24)'; c.fill();
+    c.strokeStyle=GOLD; c.lineWidth=2; c.stroke();
+    c.textAlign='center'; c.textBaseline='middle';
+    font(c,'700',13.5,'Bai Jamjuree'); c.fillStyle=GOLD;
+    c.fillText('★  H E R O',CW/2,by+bh/2+.5);
+  }
+}
+
+function drawPortrait(cv,st){
+  var c=cv.getContext('2d');
+  c.setTransform(1,0,0,1,0,0);
+  c.clearRect(0,0,cv.width,cv.height);
+  var S=cv.width/CW;
+  c.save(); c.scale(S,S);
+  drawCardArt(c,st);
+  c.restore();
+}
+
+function drawLandscape(cv,st){
+  var c=cv.getContext('2d'), W=cv.width, H=cv.height;
+  var cls=CLASSES[st.cls]||CLASSES.THINKER;
+  c.setTransform(1,0,0,1,0,0);
+
+  c.fillStyle=CREAM; c.fillRect(0,0,W,H);
+  var g1=c.createRadialGradient(W*0.14,-H*0.1,0,W*0.14,-H*0.1,W*0.7);
+  g1.addColorStop(0,'rgba(27,106,66,.16)'); g1.addColorStop(1,'rgba(27,106,66,0)');
+  c.fillStyle=g1; c.fillRect(0,0,W,H);
+  var g2=c.createRadialGradient(W*0.95,H*0.06,0,W*0.95,H*0.06,W*0.55);
+  g2.addColorStop(0,hexA(cls.ac,.16)); g2.addColorStop(1,hexA(cls.ac,0));
+  c.fillStyle=g2; c.fillRect(0,0,W,H);
+
+  /* การ์ดใบเดิม ย่อมาวางซ้าย */
+  var ch2=900, cw2=Math.round(ch2*CW/CH), cx=140, cy=(H-ch2)/2;
+  var off=document.createElement('canvas');
+  off.width=cw2*2; off.height=ch2*2;
+  drawPortrait(off,st);
+  c.save();
+  c.shadowColor='rgba(10,40,24,.35)'; c.shadowBlur=48; c.shadowOffsetY=18;
+  c.drawImage(off,cx,cy,cw2,ch2);
+  c.restore();
+
+  /* แผงข้อมูลขวา — วัดความสูงก่อน แล้วจัดให้อยู่กลางแนวตั้ง จะได้ไม่โล่งครึ่งล่าง */
+  var px=cx+cw2+92, pw=W-px-140;
+  c.textBaseline='middle'; c.textAlign='left';
+
+  var nick=(st.nick||'ชื่อของคุณ').slice(0,14);
+  var ns=fit(c,nick,pw,92,'700','Bai Jamjuree');
+  var qLines=[];
+  if(st.line){
+    font(c,'500',30,'Anuphan');
+    qLines=wrap(c,'“'+st.line.slice(0,40)+'”',pw,3);
+  }
+
+  var blockH=46+34+ns+30+30;                        /* สาย + ชื่อ + เลขสมาชิก */
+  if(st.titles.length) blockH+=40+50;
+  if(qLines.length)    blockH+=40+qLines.length*44;
+  var ty=cy+Math.max(40,(ch2-92-blockH)/2);
+
+  font(c,'400',40,'Anuphan'); c.fillStyle=cls.ac;
+  c.fillText(cls.emo,px,ty+24);
+  font(c,'700',34,'Bai Jamjuree'); c.fillStyle=cls.ac;
+  c.fillText(cls.th,px+58,ty+22);
+  ty+=46+34;
+
+  c.fillStyle= st.nick?'rgb(18,40,28)':'rgba(18,40,28,.3)';
+  font(c,'700',ns,'Bai Jamjuree');
+  c.fillText(nick,px,ty+ns/2);
+  ty+=ns+30;
+
+  c.globalAlpha=st.member?1:.55;
+  font(c,'600',27,'Bai Jamjuree'); c.fillStyle=GREEN;
+  c.fillText(st.member||'MC-2569-????',px,ty+15);
+  c.globalAlpha=1;
+  ty+=30;
+
+  if(st.titles.length){
+    ty+=40;
+    var sx=px;
+    st.titles.slice(0,3).forEach(function(k){
+      var t=TITLES[k];
+      font(c,'600',23,'Anuphan');
+      var w=44+c.measureText(t.th).width+26;
+      rr(c,sx,ty,w,50,13);
+      c.fillStyle='rgba(27,106,66,.09)'; c.fill();
+      c.strokeStyle='rgba(27,106,66,.3)'; c.lineWidth=1.5; c.stroke();
+      font(c,'400',24,'Anuphan'); c.fillStyle='rgb(18,40,28)';
+      c.fillText(t.emo,sx+14,ty+26);
+      font(c,'600',23,'Anuphan'); c.fillStyle=GREEN;
+      c.fillText(t.th,sx+46,ty+25);
+      sx+=w+12;
+    });
+    ty+=50;
+  }
+
+  if(qLines.length){
+    ty+=40;
+    font(c,'500',30,'Anuphan'); c.fillStyle='rgba(18,40,28,.8)';
+    qLines.forEach(function(l,i){ c.fillText(l,px,ty+22+i*44); });
+  }
+
+  c.strokeStyle='rgba(18,40,28,.16)'; c.lineWidth=2;
+  c.beginPath(); c.moveTo(px,cy+ch2-92); c.lineTo(px+pw,cy+ch2-92); c.stroke();
+  font(c,'700',25,'Bai Jamjuree'); c.fillStyle=GREEN;
+  c.fillText('🍀 myclover.com',px,cy+ch2-52);
+  c.textAlign='right'; font(c,'700',20,'Bai Jamjuree'); c.fillStyle='rgba(18,40,28,.4)';
+  c.fillText('S I N C E   2 0 1 0',px+pw,cy+ch2-52);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ฟอนต์ต้องพร้อมก่อนวาด ไม่งั้นสระบน/วรรณยุกต์ไทยเพี้ยน
+   ═══════════════════════════════════════════════════════════ */
+var TH='บ้าน โชคดี ตั้งแต่ ผู้ค้นพบ สายประดิษฐ์';
+var fontsReady=null;
+function ensureFonts(){
+  if(fontsReady) return fontsReady;
+  fontsReady=(function(){
+    if(!document.fonts) return Promise.resolve();
+    var want=[
+      '400 40px "Anuphan"','500 40px "Anuphan"','600 40px "Anuphan"','700 40px "Anuphan"',
+      '600 40px "Bai Jamjuree"','700 40px "Bai Jamjuree"'
+    ].map(function(f){
+      try{ return document.fonts.load(f,TH); }catch(e){ return Promise.resolve(); }
+    });
+    return Promise.all(want)
+      .then(function(){ return document.fonts.ready; })
+      .catch(function(){});
+  })();
+  return fontsReady;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   หน้าจอ
+   ═══════════════════════════════════════════════════════════ */
+var pv=document.getElementById('pv');
+var elClasses=document.getElementById('classes');
+var elBadges=document.getElementById('badges');
+var nickI=document.getElementById('nick'), lineI=document.getElementById('line');
+
+function render(){
+  ensureFonts().then(function(){ drawPortrait(pv,st); });
+}
+
+/* --- ปุ่มเลือกสาย --- */
+ORDER.forEach(function(k){
+  var c=CLASSES[k];
+  var b=document.createElement('button');
+  b.type='button'; b.className='cbtn'; b.setAttribute('aria-pressed', st.cls===k?'true':'false');
+  b.style.setProperty('--ac',c.ac); b.style.setProperty('--acbg',hexA(c.ac,.07));
+  b.innerHTML='<span class="emo">'+c.emo+'</span><b class="disp">'+c.th+'</b><span>'+k+'</span>';
+  b.addEventListener('click',function(){
+    st.cls=k; ls.set('mc_class',k);
+    Array.prototype.forEach.call(elClasses.children,function(x){ x.setAttribute('aria-pressed','false'); });
+    b.setAttribute('aria-pressed','true');
+    render();
+  });
+  elClasses.appendChild(b);
+});
+
+/* --- ตรา --- */
+function paintBadges(){
+  elBadges.innerHTML='';
+  ['ALUMNI','SEEKER','GUILD'].forEach(function(k){
+    var t=TITLES[k], has=st.titles.indexOf(k)>=0;
+    var d=document.createElement('div');
+    d.className='bd'+(has?'':' off');
+    d.innerHTML='<span class="ic">'+t.emo+'</span><span class="tx"><b class="disp">'+t.th+'</b><small>'+
+      (has?'อยู่บนการ์ดของคุณแล้ว':t.how)+'</small></span>'+(has?'<span class="on">ได้แล้ว</span>':'');
+    elBadges.appendChild(d);
+  });
+}
+paintBadges();
+
+/* --- ชื่อ + ประโยค --- */
+function bindText(input,key,counter){
+  input.value=st[key]||'';
+  document.getElementById(counter).textContent=String(input.value.length);
+  input.addEventListener('input',function(){
+    st[key]=input.value;
+    ls.set(key==='nick'?'mc_nick':'mc_line',input.value);
+    document.getElementById(counter).textContent=String(input.value.length);
+    render();
+  });
+}
+bindText(nickI,'nick','nickCnt');
+bindText(lineI,'line','lineCnt');
+
+/* --- รูป (อยู่ในเครื่องล้วน ไม่มีการอัปโหลด) --- */
+var photoI=document.getElementById('photo'),
+    clearB=document.getElementById('clearPhoto'),
+    pName=document.getElementById('photoName');
+photoI.addEventListener('change',function(){
+  var f=photoI.files&&photoI.files[0];
+  if(!f) return;
+  var fr=new FileReader();
+  fr.onload=function(){
+    var im=new Image();
+    im.onload=function(){ st.img=im; clearB.hidden=false; pName.textContent=f.name.slice(0,22); render(); };
+    im.onerror=function(){ pName.textContent='เปิดรูปนี้ไม่ได้ ลองรูปอื่นครับ'; };
+    im.src=fr.result;
+  };
+  fr.readAsDataURL(f);
+});
+clearB.addEventListener('click',function(){
+  st.img=null; photoI.value=''; clearB.hidden=true; pName.textContent=''; render();
+});
+
+/* --- รหัสกิลด์ --- */
+function djb2(s){ var h=5381; for(var i=0;i<s.length;i++){ h=((h*33)+s.charCodeAt(i))>>>0; } return String(h); }
+function sha256(s){
+  if(!(window.crypto&&crypto.subtle&&window.isSecureContext!==false)) return Promise.reject();
+  return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){
+    return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
+  });
+}
+var codeMsg=document.getElementById('codeMsg');
+document.getElementById('guildBtn').addEventListener('click',function(){
+  var v=document.getElementById('guildCode').value.trim().toLowerCase();
+  if(!v){ codeMsg.className='codemsg'; codeMsg.textContent=''; return; }
+  sha256(v).then(function(h){ return h===GUILD_SHA; })
+           .catch(function(){ return djb2(v)===GUILD_DJB; })
+           .then(function(ok){
+    if(ok){
+      if(st.titles.indexOf('GUILD')<0){ st.titles.push('GUILD'); ls.set('mc_titles',JSON.stringify(st.titles)); }
+      codeMsg.className='codemsg ok';
+      codeMsg.textContent='⚔️ ยินดีต้อนรับชาวกิลด์ — การ์ดของคุณเป็นการ์ดฮีโร่กรอบทองแล้ว';
+      paintBadges(); render();
+    } else {
+      codeMsg.className='codemsg no';
+      codeMsg.textContent='รหัสยังไม่ถูก ลองเช็กอีกครั้งนะครับ';
+    }
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════
+   บันทึก / คัดลอก / แชร์
+   ═══════════════════════════════════════════════════════════ */
+function makeBlob(kind){
+  return ensureFonts().then(function(){
+    var cv=document.createElement('canvas');
+    if(kind==='landscape'){ cv.width=1920; cv.height=1080; drawLandscape(cv,st); }
+    else                  { cv.width=1080; cv.height=1350; drawPortrait(cv,st); }
+    return new Promise(function(res,rej){
+      if(cv.toBlob) cv.toBlob(function(b){ b?res(b):rej(); },'image/png');
+      else rej();
+    });
+  });
+}
+function fileName(kind){
+  var n=(st.nick||'myclover').replace(/[^฀-๿a-zA-Z0-9]+/g,'-').slice(0,20)||'myclover';
+  return 'myclover-card-'+n+'-'+(kind==='landscape'?'1920x1080':'1080x1350')+'.png';
+}
+var saveMsg=document.getElementById('saveMsg');
+function say(t){ saveMsg.textContent=t; if(t) setTimeout(function(){ if(saveMsg.textContent===t) saveMsg.textContent=''; },4200); }
+
+var isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+var inApp=/Line|FBAN|FBAV|Instagram|Micromessenger/i.test(navigator.userAgent);
+
+function download(kind){
+  makeBlob(kind).then(function(blob){
+    /* หยิบของฟรีของบ้านไปใช้แล้ว — ใช้เป็นเงื่อนไขหนึ่งของประตูกิลด์ */
+    try{ localStorage.setItem('mc_opened','1'); }catch(e){}
+    var url=URL.createObjectURL(blob);
+    /* ไอโฟน/เบราว์เซอร์ในแอป มักไม่รองรับการสั่งดาวน์โหลดตรง ๆ → เปิดรูปให้กดค้างบันทึกเอง */
+    if(isIOS||inApp){
+      var w=window.open(url,'_blank');
+      if(!w){ location.href=url; }
+      say('เปิดรูปแล้ว — กดค้างที่รูปเพื่อบันทึกลงเครื่องครับ');
+      setTimeout(function(){ URL.revokeObjectURL(url); },60000);
+      return;
+    }
+    var a=document.createElement('a');
+    a.href=url; a.download=fileName(kind);
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); },4000);
+    say('บันทึกการ์ดเรียบร้อยแล้ว 🍀');
+  }).catch(function(){ say('บันทึกไม่สำเร็จ ลองใหม่อีกครั้งครับ'); });
+}
+document.getElementById('dlPortrait').addEventListener('click',function(){ download('portrait'); });
+document.getElementById('dlLandscape').addEventListener('click',function(){ download('landscape'); });
+document.getElementById('openTab').addEventListener('click',function(){
+  makeBlob('portrait').then(function(blob){
+    var url=URL.createObjectURL(blob);
+    var w=window.open(url,'_blank');
+    if(!w){ location.href=url; }
+    say('กดค้างที่รูปเพื่อบันทึกลงเครื่องได้เลยครับ');
+    setTimeout(function(){ URL.revokeObjectURL(url); },60000);
+  });
+});
+if(!isIOS&&!inApp){ document.getElementById('iosNote').style.display='none'; }
+
+/* คัดลอกรูป */
+var copyBtn=document.getElementById('copyBtn');
+if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write){
+  copyBtn.hidden=false;
+  copyBtn.addEventListener('click',function(){
+    makeBlob('portrait').then(function(blob){
+      return navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);
+    }).then(function(){ say('คัดลอกรูปแล้ว วางในแชตได้เลย 📋'); })
+      .catch(function(){ say('คัดลอกไม่ได้ ลองกดบันทึกแทนครับ'); });
+  });
+}
+/* แชร์ */
+var shareBtn=document.getElementById('shareBtn');
+if(navigator.share && navigator.canShare){
+  shareBtn.hidden=false;
+  shareBtn.addEventListener('click',function(){
+    makeBlob('portrait').then(function(blob){
+      var f=new File([blob],fileName('portrait'),{type:'image/png'});
+      if(navigator.canShare({files:[f]})) return navigator.share({files:[f],title:'การ์ดประจำตัว myclover'});
+      say('เครื่องนี้แชร์รูปตรง ๆ ไม่ได้ ลองกดบันทึกแทนครับ');
+    }).catch(function(){});
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   เริ่มทำงาน
+   ═══════════════════════════════════════════════════════════ */
+render();
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(render); }
+
+/* reveal — เนื้อหาต้องเห็นได้เสมอแม้สคริปต์ส่วนนี้พัง */
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)) return;
+  document.body.classList.add('js');
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.08});
+  Array.prototype.forEach.call(els,function(el){ io.observe(el); });
+  setTimeout(function(){ Array.prototype.forEach.call(els,function(el){ el.classList.add('in'); }); },3000);
+})();
+
+})();
+</script>
+</body>
+</html>
