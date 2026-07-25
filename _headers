@@ -1,0 +1,9 @@
+# Cloudflare Pages — ส่วนหัวของแต่ละเส้นทาง
+
+# ของเก่าที่ย้ายมาเก็บไว้ — ยังเปิดด้วย URL ตรงได้ แต่ไม่ให้ Google เก็บไปขึ้นผลค้นหา
+/archive/*
+  X-Robots-Tag: noindex, nofollow
+
+# หลังบ้านของ club — ไม่ให้ขึ้นผลค้นหาเช่นกัน
+/club/lab/*
+  X-Robots-Tag: noindex, nofollow
