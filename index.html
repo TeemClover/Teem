@@ -79,6 +79,30 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .navlinks .go:hover{color:#fff;filter:brightness(1.1)}
 @media(max-width:760px){.navlinks a:not(.go){display:none}}
 
+/* ═══════════ แบนเนอร์การ์ตูน — ต้องเห็นทันทีไม่ต้องเลื่อน ═══════════ */
+.forge-banner{position:relative;display:block;overflow:hidden;background:rgb(var(--deep));
+  border-bottom:1px solid rgb(190 148 66/.3)}
+.forge-banner .bg{position:absolute;inset:0}
+.forge-banner .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 34%;opacity:.55}
+.forge-banner .veil{position:absolute;inset:0;
+  background:linear-gradient(90deg,rgb(10 40 24/.94) 0%,rgb(10 40 24/.78) 46%,rgb(10 40 24/.42) 100%)}
+.forge-banner .in{position:relative;display:flex;align-items:center;gap:16px;padding:16px 22px;
+  max-width:1080px;margin:0 auto;color:#fff}
+.forge-banner .tx{flex:1;min-width:0}
+.forge-banner .kick{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:rgb(var(--gold))}
+.forge-banner b{display:block;font-family:"Bai Jamjuree";font-size:clamp(16px,2.5vw,21px);line-height:1.28;margin-top:3px}
+.forge-banner small{display:block;font-size:12.5px;color:rgb(255 255 255/.72);margin-top:3px;line-height:1.5}
+.forge-banner .cta{flex:none;background:rgb(var(--gold));color:rgb(var(--deep));border-radius:11px;
+  padding:11px 18px;font-family:"Bai Jamjuree";font-weight:700;font-size:14px;white-space:nowrap;
+  min-height:44px;display:inline-flex;align-items:center;transition:transform .18s,filter .18s}
+.forge-banner:hover .cta{transform:translateY(-2px);filter:brightness(1.08)}
+@media(max-width:560px){
+  .forge-banner .in{padding:13px 18px;gap:12px}
+  .forge-banner small{display:none}
+  .forge-banner .cta{padding:10px 14px;font-size:13px}
+}
+
 /* ═══════════ hero ═══════════ */
 .hero{padding:clamp(56px,8vw,96px) 0 clamp(40px,6vw,70px);position:relative;overflow:hidden;
   background:radial-gradient(760px 420px at 8% -14%,rgb(27 106 66/.13),transparent 62%),
@@ -158,9 +182,9 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
     repeating-linear-gradient(45deg,rgb(255 255 255/.014) 0 2px,transparent 2px 5px)}
 .hand-sec .h2{color:#fff}
 .hand-sec .sub{color:rgb(255 255 255/.68)}
-.hand-sec .wrap{max-width:1190px}
-.hand{display:flex;justify-content:center;gap:13px;flex-wrap:wrap;margin-top:44px;perspective:1400px}
-.pc{position:relative;width:clamp(155px,18.6vw,197px);background:rgb(var(--paper));color:rgb(var(--ink));
+.hand-sec .wrap{max-width:1260px}
+.hand{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:44px;perspective:1400px}
+.pc{position:relative;width:clamp(152px,15.8vw,188px);background:rgb(var(--paper));color:rgb(var(--ink));
   border-radius:18px;padding:20px 18px 18px;border:2px solid rgb(255 255 255/.16);
   box-shadow:0 26px 46px -26px rgb(0 0 0/.65);display:flex;flex-direction:column;gap:7px;
   transform-style:preserve-3d;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
@@ -294,12 +318,30 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <a class="logo disp" href="#top">🍀 my<em>clover</em></a>
   <div class="navlinks">
     <a href="#glhf">#glhf</a>
+    <a href="forge/">การ์ตูน</a>
     <a href="#hand">ห้องในบ้าน</a>
     <a href="club/">club</a>
     <a href="#open">เปิดไพ่ทั้งมือ</a>
     <a class="go disp" href="register/">ลงทะเบียน</a>
   </div>
 </div></nav>
+
+<!-- ── ทางเข้าอ่านการ์ตูน: อยู่บนสุด เห็นทันทีไม่ต้องเลื่อน ── -->
+<a class="forge-banner" href="forge/">
+  <span class="bg"><picture>
+    <source type="image/webp" srcset="forge/img/banner.webp">
+    <img src="forge/img/banner.jpg" alt="" width="1024" height="380" loading="eager" decoding="async">
+  </picture></span>
+  <span class="veil"></span>
+  <span class="in">
+    <span class="tx">
+      <span class="kick">การ์ตูนใหม่ · อ่านฟรีทุกตอน</span>
+      <b class="disp">เรื่องเล่าจากโรงตีเหล็ก</b>
+      <small>19 ปีในวงการธุรกิจเครือข่าย เล่าจากมุมของคนที่ไม่เคยขายเก่ง — 11 ตอน กับอีก 1 ตอนพิเศษ</small>
+    </span>
+    <span class="cta disp">▶ เริ่มอ่าน</span>
+  </span>
+</a>
 
 <!-- ── hero ── -->
 <header class="hero" id="top"><div class="wrap">
@@ -377,34 +419,43 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">ทำการ์ดเลย →</span>
     </a>
 
-    <a class="pc reveal" style="--d:.1s" href="classroom/">
+    <a class="pc reveal" style="--d:.1s" href="forge/">
+      <span class="free disp">ใหม่</span>
+      <div class="top"><span>READ</span><span>02</span></div>
+      <div class="art">📖</div>
+      <h3 class="disp">เรื่องเล่าจากโรงตีเหล็ก</h3>
+      <p>การ์ตูน 11 ตอน กับอีก 1 ตอนพิเศษ — 19 ปีในวงการธุรกิจเครือข่าย จากมุมคนที่ไม่เคยขายเก่ง</p>
+      <span class="go disp">อ่านเลย →</span>
+    </a>
+
+    <a class="pc reveal" style="--d:.15s" href="classroom/">
       <span class="free disp">ฟรีตลอดชีพ</span>
-      <div class="top"><span>LEARN</span><span>02</span></div>
+      <div class="top"><span>LEARN</span><span>03</span></div>
       <div class="art">📚</div>
       <h3 class="disp">ห้องเรียน AI</h3>
       <p>6 คลาส ตั้งแต่เครื่องมือฟรีที่ควรมีติดเครื่อง ไปจนถึงสร้างเว็บแรกของตัวเอง</p>
       <span class="go disp">เข้าห้องเรียน →</span>
     </a>
 
-    <a class="pc reveal" style="--d:.15s" href="resume/">
-      <div class="top"><span>SHOW</span><span>03</span></div>
+    <a class="pc reveal" style="--d:.2s" href="resume/">
+      <div class="top"><span>SHOW</span><span>04</span></div>
       <div class="art">🧭</div>
       <h3 class="disp">Smart Resume</h3>
       <p>เรซูเม่ที่พลิกได้สองโหมด — โหมดงาน กับโหมดชีวิต ตัวอย่างของสิ่งที่คุณทำเองได้</p>
       <span class="go disp">เปิดดู →</span>
     </a>
 
-    <a class="pc reveal" style="--d:.2s" href="club/">
-      <div class="top"><span>CLUB</span><span>04</span></div>
+    <a class="pc reveal" style="--d:.25s" href="club/">
+      <div class="top"><span>CLUB</span><span>05</span></div>
       <div class="art">🍀</div>
       <h3 class="disp">myclover club</h3>
       <p>สุขภาพดี มีความสุข ในแบบที่ไม่ต้องเหมือนใคร — กินเป็น นอนเป็น ใช้พลังเป็น</p>
       <span class="go disp">แวะดู →</span>
     </a>
 
-    <div class="pc locked reveal" style="--d:.25s" id="guildCard">
+    <div class="pc locked reveal" style="--d:.3s" id="guildCard">
       <span class="glow"></span>
-      <div class="top"><span>GUILD</span><span>05</span></div>
+      <div class="top"><span>GUILD</span><span>06</span></div>
       <div class="art">⚔️</div>
       <h3 class="disp">Guild X</h3>
       <p>ห้องที่เราคุยกันจริงจัง — เปิดหลังบ้านเปิด และเปิดให้คนที่เดินมากับบ้านแล้ว</p>
@@ -478,6 +529,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 <footer><div class="wrap">
   <span class="clover-foot" id="footClover" title="ลองกดดูสี่ครั้ง">🍀</span>
   <div class="foot-links">
+    <a href="forge/">เรื่องเล่าจากโรงตีเหล็ก</a>
     <a href="card/">การ์ดประจำตัว</a>
     <a href="classroom/">ห้องเรียน AI</a>
     <a href="resume/">Smart Resume</a>
