@@ -192,6 +192,11 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .pc .top{display:flex;align-items:center;justify-content:space-between;font-family:"Bai Jamjuree";font-size:11px;font-weight:700;
   letter-spacing:.1em;color:rgb(var(--muted))}
 .pc .art{font-size:42px;line-height:1;margin:10px 0 6px;filter:drop-shadow(0 6px 12px rgb(18 40 28/.22))}
+/* ช่องรูปการ์ด: วางไฟล์ตาม IMAGES.md แล้วขึ้นเอง ถ้าไม่มีไฟล์อิโมจิจะโชว์แทน ไม่มีรูปแตก */
+.pc .art img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:11px;margin-bottom:2px;
+  box-shadow:0 8px 20px -12px rgb(0 0 0/.55)}
+.pc .art img + .emo{display:none}
+.pc.locked .art img{opacity:.9}
 .pc h3{font-family:"Bai Jamjuree";font-size:17.5px;line-height:1.3}
 .pc p{font-size:13px;color:rgb(var(--muted));flex:1}
 .pc .go{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--green));margin-top:6px}
@@ -413,7 +418,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a class="pc reveal" style="--d:.05s" href="card/">
       <span class="free disp">เริ่มตรงนี้</span>
       <div class="top"><span>TOOL</span><span>01</span></div>
-      <div class="art">🎴</div>
+      <div class="art"><img src="img/card-tool.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🎴</span></div>
       <h3 class="disp">การ์ดประจำตัว</h3>
       <p>เลือกสายของคุณ ใส่ชื่อกับหนึ่งประโยค แล้วบันทึกเป็นรูปไปอวดได้เลย ใช้เวลา 1 นาที</p>
       <span class="go disp">ทำการ์ดเลย →</span>
@@ -422,7 +427,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a class="pc reveal" style="--d:.1s" href="forge/">
       <span class="free disp">ใหม่</span>
       <div class="top"><span>READ</span><span>02</span></div>
-      <div class="art">📖</div>
+      <div class="art"><img src="img/card-forge.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📖</span></div>
       <h3 class="disp">เรื่องเล่าจากโรงตีเหล็ก</h3>
       <p>การ์ตูน 11 ตอน กับอีก 1 ตอนพิเศษ — 19 ปีในวงการธุรกิจเครือข่าย จากมุมคนที่ไม่เคยขายเก่ง</p>
       <span class="go disp">อ่านเลย →</span>
@@ -431,7 +436,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a class="pc reveal" style="--d:.15s" href="classroom/">
       <span class="free disp">ฟรีตลอดชีพ</span>
       <div class="top"><span>LEARN</span><span>03</span></div>
-      <div class="art">📚</div>
+      <div class="art"><img src="img/card-class.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📚</span></div>
       <h3 class="disp">ห้องเรียน AI</h3>
       <p>6 คลาส ตั้งแต่เครื่องมือฟรีที่ควรมีติดเครื่อง ไปจนถึงสร้างเว็บแรกของตัวเอง</p>
       <span class="go disp">เข้าห้องเรียน →</span>
@@ -439,7 +444,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 
     <a class="pc reveal" style="--d:.2s" href="resume/">
       <div class="top"><span>SHOW</span><span>04</span></div>
-      <div class="art">🧭</div>
+      <div class="art"><img src="img/card-resume.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🧭</span></div>
       <h3 class="disp">Smart Resume</h3>
       <p>เรซูเม่ที่พลิกได้สองโหมด — โหมดงาน กับโหมดชีวิต ตัวอย่างของสิ่งที่คุณทำเองได้</p>
       <span class="go disp">เปิดดู →</span>
@@ -447,7 +452,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 
     <a class="pc reveal" style="--d:.25s" href="club/">
       <div class="top"><span>CLUB</span><span>05</span></div>
-      <div class="art">🍀</div>
+      <div class="art"><img src="img/card-club.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🍀</span></div>
       <h3 class="disp">myclover club</h3>
       <p>สุขภาพดี มีความสุข ในแบบที่ไม่ต้องเหมือนใคร — กินเป็น นอนเป็น ใช้พลังเป็น</p>
       <span class="go disp">แวะดู →</span>
@@ -456,7 +461,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <div class="pc locked reveal" style="--d:.3s" id="guildCard">
       <span class="glow"></span>
       <div class="top"><span>GUILD</span><span>06</span></div>
-      <div class="art">⚔️</div>
+      <div class="art"><img src="img/card-guild.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">⚔️</span></div>
       <h3 class="disp">Guild X</h3>
       <p>ห้องที่เราคุยกันจริงจัง — เปิดหลังบ้านเปิด และเปิดให้คนที่เดินมากับบ้านแล้ว</p>
       <span class="go disp" data-guildx data-guildx-start="card/">🔒 ปลดล็อกเร็ว ๆ นี้</span>

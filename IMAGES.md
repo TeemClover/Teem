@@ -1,64 +1,120 @@
 # 📷 IMAGES.md — คลังรูปของเว็บ myclover.com
 
 > **ไฟล์นี้คือแผนที่รูปทั้งเว็บ** — บอกว่าเว็บต้องการรูปอะไร วางที่ไหน ชื่อไฟล์อะไร
-> ทุกช่องรูปในเว็บถูกเขียนไว้แบบ "รอรูป" อยู่แล้ว: **แค่วางไฟล์รูปตามชื่อในตารางลงโฟลเดอร์ `img/` แล้ว push — รูปจะขึ้นเองทันที ไม่ต้องแก้โค้ดแม้แต่บรรทัดเดียว** (ถ้ายังไม่มีไฟล์ เว็บจะซ่อนช่องนั้นหรือโชว์ลายพื้น/อิโมจิแทนโดยอัตโนมัติ ไม่มีรูปแตก)
+> ทุกช่องรูปในเว็บเขียนไว้แบบ "รอรูป" อยู่แล้ว: **แค่วางไฟล์ตามชื่อในตารางลงโฟลเดอร์ `img/` แล้ว push — รูปขึ้นเองทันที ไม่ต้องแก้โค้ดสักบรรทัด** (ยังไม่มีไฟล์ เว็บจะโชว์อิโมจิหรือพื้นไล่สีแทนให้เอง ไม่มีรูปแตก)
 >
-> อัปเดตไฟล์นี้ทุกครั้งที่เพิ่มช่องรูปใหม่ในเว็บ — เปลี่ยนสถานะ ⬜ → ✅ เมื่อใส่รูปแล้ว
-
-## กติการูปทั้งเว็บ
-
-- **ฟอร์แมต:** `.jpg` (รูปถ่าย/รูปเจน) — ตั้งชื่อไฟล์ตามตารางเป๊ะ ๆ ตัวพิมพ์เล็กทั้งหมด
-- **ขนาดไฟล์:** ไม่เกิน ~400KB ต่อรูป (เว็บจะได้โหลดไว) — ย่อได้ที่ squoosh.app ฟรี
-- **โทนรวมของแบรนด์:** เขียวโคลเวอร์ · ทอง · ครีมอบอุ่น — ภาพควรให้ความรู้สึก "โรงประดิษฐ์ของนักประดิษฐ์ + บ้านที่อบอุ่น + ไอเท็มเกมพรีเมียม" ไม่เอาโทนหวานแหววหรือ corporate แข็ง ๆ
-- **รูปคน:** ขอ consent คนในรูปก่อนใช้เสมอ (กติกาบ้านเรื่อง PDPA)
+> ใส่รูปแล้วเปลี่ยนสถานะ ⬜ → ✅ ในตารางด้วย จะได้รู้ว่าเหลืออะไร
 
 ---
 
-## 1) หน้าแรก `/index.html`
+## 🎨 ทิศทางภาพร่วม — อ่านก่อนเจนภาพแรก
 
-| สถานะ | ไฟล์ | ใช้ตรงไหน | สัดส่วน | โจทย์ภาพ / พร้อมท์เจน |
+ทั้งเว็บต้องดูเหมือนมาจากมือคนเดียวกัน เลยล็อกไว้ 4 ข้อ:
+
+| หัวข้อ | กติกา |
+|---|---|
+| **โทนสี** | เขียวโคลเวอร์เข้ม `#1B6A42` · ทอง `#BE9442` · ครีม `#F8F5EE` · เขียวเกือบดำ `#0A2818` |
+| **แสง** | แสงเช้าหรือแสงเย็นนุ่ม ๆ อบอุ่น ไม่ใช้แสงนีออนแข็ง |
+| **สไตล์** | ภาพวาดระบายมือ พรีเมียม อารมณ์เดียวกับการ์ตูนในเว็บ ไม่เอา 3D มันวาว ไม่เอาคลิปอาร์ต |
+| **ห้ามมี** | **ตัวหนังสือทุกชนิด** · โลโก้ · ลายน้ำ · หน้าคนจริงที่จำได้ |
+
+### 🔑 ท้ายพร้อมท์ — ก๊อปต่อท้ายทุกภาพ
+
+```
+warm hand-painted premium illustration, soft golden hour light,
+deep emerald green and antique gold palette on warm cream, cinematic depth,
+clean composition with generous empty space,
+absolutely no text, no letters, no logo, no watermark
+```
+
+> **ทำไมห้ามมีตัวหนังสือ:** เครื่องเจนภาพเขียนภาษาไทยไม่เคยถูก สระกับวรรณยุกต์เพี้ยนเสมอ
+> ข้อความบนเว็บเป็นตัวอักษรจริงหมดแล้ว ภาพมีหน้าที่ทำให้สวยอย่างเดียว
+
+---
+
+## 1) หน้าแรก — การ์ด 6 ใบ ในส่วน "จั่วมือแรกของคุณ"
+
+**ขนาด 880 × 660 px (4:3) · JPG · ไม่เกิน 300 KB ต่อไฟล์**
+
+| สถานะ | ไฟล์ | การ์ดใบไหน | พร้อมท์ (ต่อท้ายด้วยบล็อกด้านบน) |
+|---|---|---|---|
+| ⬜ | `img/card-tool.jpg` | 01 การ์ดประจำตัว | `a single ornate trading card lying on a warm wooden table, its face glowing with soft gold light, a four-leaf clover embossed on the back, a few blank cards fanned beside it` |
+| ⬜ | `img/card-forge.jpg` | 02 เรื่องเล่าจากโรงตีเหล็ก | `an open comic book on a workbench beside a blacksmith hammer, warm lamp light falling across the pages, faint sparks in the dark background` |
+| ⬜ | `img/card-class.jpg` | 03 ห้องเรียน AI | `a cozy wooden inventor desk seen from above, open laptop glowing softly, notebook and pencil, small potted clover catching the morning sun` |
+| ⬜ | `img/card-resume.jpg` | 04 Smart Resume | `a single sheet of cream paper on a dark desk softly lit, folded so its two halves show two different worlds, one crisp and architectural, one warm and handwritten` |
+| ⬜ | `img/card-club.jpg` | 05 myclover club | `a simple home-cooked meal on a wooden table by a window, morning light, a pair of well-used running shoes resting nearby, calm and unfussy` |
+| ⬜ | `img/card-guild.jpg` | 06 Guild X (ใบล็อก) | `a heavy wooden door with iron bands and a large brass padlock, warm gold light leaking through the seams from the room beyond, dark and inviting` |
+
+> ใบ Guild X เป็นการ์ดล็อก เว็บจะคลุมเงาเข้ม + ตราซีลทับให้เอง ภาพเลยมืดได้เต็มที่
+
+---
+
+## 2) หน้าแรก — ภาพตอนแชร์ลิงก์
+
+| สถานะ | ไฟล์ | ขนาด | ใช้ตอนไหน | พร้อมท์ |
 |---|---|---|---|---|
-| ⬜ | `img/card-resume.jpg` | หน้าการ์ดเกม "SMART RESUME" (คลังไอเท็ม) | แนวตั้ง 63:88 (เช่น 630×880) | รูปทีมครึ่งตัวถือการ์ด/ไพ่ ดูเป็นตัวละครเกมพรีเมียม ฉากหลังเขียวเข้ม-ทอง — EN prompt: "trading card game character portrait, confident Thai man holding a glowing card, dark emerald and gold backdrop, premium fantasy card art, vertical 63:88" |
-| ⬜ | `img/card-class.jpg` | หน้าการ์ดเกม "ห้องเรียน AI" | แนวตั้ง 63:88 | โต๊ะไม้นักประดิษฐ์ โน้ตบุ๊กเปิดอยู่ แสงเช้า ต้นโคลเวอร์ในกระถาง — "warm inventor's wooden desk with open laptop and small clover plant, golden morning light, cozy premium illustration, vertical" |
-| ⬜ | `img/card-guild.jpg` | หน้าการ์ดเกม "GUILD X" (ใบล็อก) | แนวตั้ง 63:88 | หีบสมบัติ/ประตูเรืองแสงเขียว-ทอง มีโซ่คล้องกุญแจ ลึกลับพรีเมียม — "locked treasure chest glowing green and gold light, chained with padlock, dark fantasy premium style, vertical" |
+| ⬜ | `img/og-home.jpg` | **1200 × 630** | ส่งลิงก์หน้าแรกใน LINE / เฟซบุ๊ก | `a four-leaf clover resting on a worn wooden table beside two mugs, warm evening light from a window, welcoming and quiet, wide composition with generous empty space on the left` |
 
-*หมายเหตุ: การ์ด 3 ใบนี้ ถ้าไม่มีรูป เว็บโชว์อิโมจิ 🎴 🎓 ⚔️ บนพื้นไล่สีแทน — ใช้งานได้ปกติ*
+> ⚠️ ช่องนี้ยังไม่ได้ต่อในโค้ด — ทำเสร็จแล้วบอกผม เดี๋ยวต่อ `og:image` ให้
 
-## 2) หน้า Smart Resume `/resume/`
-
-| สถานะ | ไฟล์ | ใช้ตรงไหน | สัดส่วน | โจทย์ภาพ |
-|---|---|---|---|---|
-| ⬜ | `img/teem-pro.jpg` | รูปโปรไฟล์ "โหมดงาน" (กรอบเหลี่ยมขอบเขียว) | 1:1 หรือแนวตั้งเล็กน้อย | ทีมใส่สูท/เสื้อเรียบ พื้นหลังเข้มเรียบ แสงขอบทอง มู้ด executive นิ่งมั่นใจ |
-| ⬜ | `img/teem-life.jpg` | รูปโปรไฟล์ "โหมดชีวิต" (กรอบโพลารอยด์เอียง) | 1:1 | ทีมที่โต๊ะแข่งการ์ดเกม Flesh and Blood หรือกำลังพาเล่นบอร์ดเกม ยิ้ม สนุก มีการ์ด/เพลย์แมทในเฟรม |
-
-*ถ้ายังไม่มีรูป ช่องโปรไฟล์จะซ่อนตัวเอง — หน้าใช้งานได้ปกติ*
+---
 
 ## 3) ห้องเรียน AI `/classroom/`
 
-| สถานะ | ไฟล์ | ใช้ตรงไหน | สัดส่วน | โจทย์ภาพ |
-|---|---|---|---|---|
-| ⬜ | `img/classroom-hero.jpg` | แบนเนอร์หัวหน้ารวมห้องเรียน | แนวนอน ~16:6 (เช่น 1600×600) | ห้องเรียน/เวิร์กช็อปอบอุ่น คนหลากวัยนั่งเรียนกับโน้ตบุ๊ก แสงเช้า มีสีเขียว-ทองแทรก |
-| ⬜ | `img/lesson-1.jpg` | หัวคลาส LV.1 — AI ฟรีที่ควรมีติดเครื่อง | แนวนอน ~16:6 | มือถือ+โน้ตบุ๊กบนโต๊ะสะอาด หน้าจอเรืองแสงนุ่ม ๆ ฟีล "เปิดกล่องของขวัญเทคโนโลยี" |
-| ⬜ | `img/lesson-2.jpg` | หัวคลาส LV.2 — ทำภาพด้วย AI | แนวนอน ~16:6 | จานสี/แปรงดิจิทัลผสมแสงเวทมนตร์เขียว-ทอง ภาพกำลังก่อตัวจากแสง |
-| ⬜ | `img/lesson-3.jpg` | หัวคลาส LV.3 — ทำคลิปสั้น | แนวนอน ~16:6 | มือถือบนขาตั้งกำลังถ่าย ไฟวงแหวน ฉากทำคอนเทนต์ที่บ้าน อบอุ่นไม่เว่อร์ |
-| ⬜ | `img/lesson-4.jpg` | หัวคลาส LV.4 — NotebookLM | แนวนอน ~16:6 | กองเอกสารแปลงร่างเป็นแสงระเบียบเรียบร้อย / สมุดโน้ตเรืองแสง ฟีล "บรรณารักษ์เวทมนตร์" |
-| ⬜ | `img/lesson-5.jpg` | หัวคลาส LV.5 — คลังพร้อมท์ | แนวนอน ~16:6 | ชั้นเก็บม้วนคัมภีร์/ลิ้นชักไอเท็มเรืองแสง เหมือนคลังแสงในเกม RPG โทนเขียวทอง |
-| ⬜ | `img/lesson-6.jpg` | หัวคลาส LV.6 — สร้างเว็บแรก | แนวนอน ~16:6 | หน้าจอเบราว์เซอร์กำลังประกอบร่างจากบล็อกเรืองแสง มงกุฎ/ธงบอสใหญ่เล็ก ๆ มุมภาพ |
+**ขนาด 1600 × 600 px (16:6) · JPG · ไม่เกิน 350 KB ต่อไฟล์**
 
-*ถ้ายังไม่มีรูป หัวคลาสโชว์พื้นไล่สีเขียวเข้มแทน — สวยอยู่แล้ว ไม่พัง*
-
-## 4) รูปที่วางแผนไว้สำหรับเฟสถัดไป (ยังไม่มีช่องในเว็บ — อย่าเพิ่งทำก็ได้)
-
-| สถานะ | ไฟล์ (จองชื่อไว้) | จะใช้ที่ไหน | หมายเหตุ |
+| สถานะ | ไฟล์ | ใช้ตรงไหน | พร้อมท์ |
 |---|---|---|---|
-| ⬜ | `img/home-2010-1.jpg`, `img/home-2010-2.jpg` | section 8/8/8 ฝั่ง "เมื่อวันนั้น 2010" สไตล์โพลารอยด์ | รูปจริงยุค Clover เก่า — **ต้องขอ consent คนในรูปก่อน** |
-| ⬜ | `img/workshop-hero.jpg` | พื้นหลัง hero หน้าแรก / จดหมายจากทีม | โรงประดิษฐ์แสงเช้า 16:9 |
-| ⬜ | `img/og-home.jpg` | ภาพพรีวิวตอนแชร์ลิงก์ลง LINE/เฟซบุ๊ก (og:image) | 1200×630 — มีโลโก้/โคลเวอร์ + คำว่า myclover ตัวใหญ่ |
+| ⬜ | `img/classroom-hero.jpg` | แบนเนอร์หัวห้องเรียน | `a warm community workshop room, people of mixed ages sitting with laptops at long wooden tables, morning light through tall windows, wide banner composition` |
+| ⬜ | `img/lesson-1.jpg` | LV.1 AI ฟรีที่ควรมีติดเครื่อง | `a phone and a laptop side by side on a clean desk, screens glowing with soft warm light, like a gift just unwrapped, wide banner composition` |
+| ⬜ | `img/lesson-2.jpg` | LV.2 ทำภาพด้วย AI | `a painter palette and brushes dissolving into motes of golden light that reassemble into a landscape, wide banner composition` |
+| ⬜ | `img/lesson-3.jpg` | LV.3 ทำคลิปสั้นด้วย AI | `a phone on a small tripod filming a corner of a warm living room, soft ring light, homely and unpretentious, wide banner composition` |
+| ⬜ | `img/lesson-4.jpg` | LV.4 สรุปประชุม & เอกสาร | `a messy stack of papers on the left transforming into neat glowing lines of light on the right, like a magic librarian at work, wide banner composition` |
+| ⬜ | `img/lesson-5.jpg` | LV.5 คลังพร้อมท์แจกฟรี | `an apothecary wall of small wooden drawers, a few pulled open with warm gold light spilling out, like an RPG item vault, wide banner composition` |
+| ⬜ | `img/lesson-6.jpg` | LV.6 สร้างเว็บแรกของตัวเอง | `glowing blocks floating together to assemble a simple browser window, a small flag planted on top like a summit, wide banner composition` |
 
 ---
 
+## 4) หน้า club `/club/`
+
+| สถานะ | ไฟล์ | ขนาด | ใช้ตรงไหน | พร้อมท์ |
+|---|---|---|---|---|
+| ⬜ | `img/club-hero.jpg` | **1600 × 600** | แบนเนอร์หัวหน้า club | `a bright kitchen table by a window with simple fresh food and a glass of water, a pair of well-used sneakers on the floor nearby, unstyled and real, wide banner composition` |
+
+> **เส้น compliance:** ห้ามภาพหุ่นฟิต ห้ามภาพก่อน–หลัง ห้ามภาพอาหารเสริมหรือสินค้าใด ๆ
+
+---
+
+## 5) รูปถ่ายจริง — งานของคนถ่าย ไม่ใช่ AI
+
+| สถานะ | ไฟล์ | ขนาด | ใช้ตรงไหน | โจทย์ |
+|---|---|---|---|---|
+| ⬜ | `img/teem-pro.jpg` | **800 × 800** (1:1) | Smart Resume โหมดงาน | ทีมใส่เสื้อเรียบ พื้นหลังเข้มเรียบ แสงนิ่ง มู้ดมั่นใจ ไม่ต้องยิ้มกว้าง |
+| ⬜ | `img/teem-life.jpg` | **800 × 800** (1:1) | Smart Resume โหมดชีวิต | ทีมที่โต๊ะแข่งการ์ด มีเพลย์แมท/การ์ดในเฟรม ยิ้มจริง ไม่จัดท่า |
+
+---
+
+## 6) รูปยุคเก่า — ต้องขอ consent ก่อนเสมอ
+
+| สถานะ | ไฟล์ | หมายเหตุ |
+|---|---|---|
+| ⬜ | `img/home-2010-1.jpg`, `img/home-2010-2.jpg` | รูปจริงยุค Clover 2553–2555 · **ต้องได้รับอนุญาตจากทุกคนในรูปก่อนขึ้นเว็บ** ติดต่อไม่ได้ = ไม่ใช้ |
+
+---
+
+## ✅ กติกาไฟล์
+
+1. **ชื่อไฟล์ตรงเป๊ะ ตัวพิมพ์เล็กทั้งหมด** — `card-tool.jpg` ไม่ใช่ `Card-Tool.JPG`
+2. **JPG เท่านั้น** สำหรับช่องพวกนี้ (โค้ดอ้าง `.jpg` ตรง ๆ)
+3. **ย่อให้ไม่เกินขนาดที่กำหนดก่อนวาง** — ย่อฟรีได้ที่ squoosh.app
+4. วางเสร็จ **เปิดหน้าเว็บดูจริงหนึ่งรอบ** แล้วเปลี่ยน ⬜ เป็น ✅
+5. อยากเปลี่ยนสัดส่วน บอกผม อย่าฝืนยัดภาพผิดสัดส่วนลงช่อง เดี๋ยวโดนครอปเสียของ
+
+## 📌 ภาพที่มีแล้ว ไม่ต้องทำ
+
+- `forge/img/*` — การ์ตูนครบ 12 ตอน พร้อมภาพปกและภาพแชร์รายตอน แปลงจากไฟล์ต้นฉบับแล้ว
+- `forge/img/banner.jpg` — แบนเนอร์การ์ตูนบนหน้าแรก ตัดจากช่องฝูงชนตอนพระอาทิตย์ตก
+
 ## บันทึกการอัปเดต
 
-| วันที่ | อะไร |
-|---|---|
-| 2026-07-17 | สร้างไฟล์นี้ครั้งแรก — รวมช่องรูปหน้าแรก (การ์ดเกม 3), resume (2), ห้องเรียน (7), และแผนเฟสถัดไป |
+- **26 ก.ค. 2569** — ปรับให้ตรงกับหน้าแรกที่เขียนใหม่: การ์ด 6 ใบเปลี่ยนจาก 63:88 เป็น 4:3 และเปลี่ยนชื่อไฟล์ · เพิ่มช่อง `club-hero`, `og-home` · เพิ่มทิศทางภาพร่วมกับท้ายพร้อมท์มาตรฐาน
