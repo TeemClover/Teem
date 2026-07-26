@@ -47,6 +47,9 @@ footer a{color:rgb(var(--green));font-weight:600}
   border-radius:13px;padding:15px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:16px;margin-top:26px;
   min-height:44px;transition:transform .18s,filter .18s}
 .start:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.startrow{display:flex;gap:11px;flex-wrap:wrap;align-items:center}
+.start.ghost{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255/.4)}
+.start.ghost:hover{border-color:rgb(var(--gold));background:rgb(190 148 66/.12)}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;padding:clamp(28px,5vw,46px) 0 10px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:980px){.grid{grid-template-columns:repeat(4,1fr)}}
@@ -70,7 +73,10 @@ footer a{color:rgb(var(--green));font-weight:600}
   <span class="eyebrow">อ่านฟรี · ไม่ต้องสมัคร</span>
   <h1 class="disp">เรื่องเล่าจากโรงตีเหล็ก</h1>
   <p>19 ปีในวงการธุรกิจเครือข่าย เล่าจากมุมของคนที่ไม่เคยขายเก่ง — 11 ตอน กับอีก 1 ตอนพิเศษ อ่านจบได้ในหนึ่งนั่ง</p>
-  <a class="start disp" href="ep0-my-own-machine/">▶ เริ่มอ่านจากตอนแรก</a>
+  <div class="startrow">
+    <a class="start disp" href="ep0-my-own-machine/">▶ เริ่มอ่านจากตอนแรก</a>
+    <a class="start ghost disp" href="all/">⇣ อ่านรวดเดียวจบ</a>
+  </div>
 </div></section>
 
 <main class="wrap"><div class="grid">
