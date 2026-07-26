@@ -32,6 +32,10 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .navlinks a:hover{color:rgb(var(--green))}
 @media(max-width:600px){.navlinks a:not(.key){display:none}}
 
+/* แบนเนอร์หัวหน้า — ไม่มีไฟล์ก็หายไปเฉย ๆ ไม่มีรูปแตก */
+.clubbanner{display:block;width:100%;height:clamp(150px,26vw,300px);object-fit:cover;
+  border-bottom:1px solid rgb(var(--line)/.1)}
+
 /* hero */
 .hero{padding:76px 0 60px;background:
   radial-gradient(720px 380px at 10% -10%,rgb(27 106 66/.10),transparent 60%),
@@ -130,6 +134,8 @@ body.js .reveal.in{opacity:1;transform:none}
     <a class="key" href="#join" style="color:rgb(var(--green))">ร่วมกับเรา</a>
   </div>
 </div></nav>
+
+<img class="clubbanner" src="../img/club-hero.jpg" alt="" loading="eager" decoding="async" onerror="this.remove()">
 
 <header class="hero"><div class="wrap">
   <span class="eyebrow">myclover club · สุขภาพ · ความสุข · อิสรภาพ</span>
