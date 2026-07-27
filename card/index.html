@@ -86,6 +86,15 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .bd .tx b{display:block;font-family:"Bai Jamjuree";font-size:15px}
 .bd .tx small{display:block;font-size:12.5px;color:rgb(var(--muted));line-height:1.5}
 .bd .on{font-size:11.5px;font-weight:700;color:rgb(var(--green));background:rgb(27 106 66/.1);border-radius:7px;padding:4px 10px;flex:none}
+.bd .get{font-size:11.5px;font-weight:700;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:7px;padding:4px 10px;flex:none;white-space:nowrap;transition:.15s}
+.bd .get:hover{background:rgb(190 148 66/.14);border-color:rgb(var(--gold))}
+.bhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.bcount{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(var(--muted));white-space:nowrap}
+.bcount.full{color:rgb(var(--gold))}
+.btrack{flex:1;height:6px;border-radius:999px;background:rgb(var(--line)/.1);overflow:hidden}
+.btrack i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .5s ease}
+.bnote{font-size:12.5px;color:rgb(var(--muted));margin-top:10px}
+.bnote.full{color:rgb(var(--gold));font-weight:600}
 .coderow{display:flex;gap:8px;margin-top:10px}
 .coderow input{flex:1;background:#fff;border:1px solid rgb(var(--line)/.16);border-radius:11px;padding:10px 14px;font-family:"Anuphan";font-size:14.5px;outline:none}
 .coderow input:focus{border-color:rgb(var(--gold))}
@@ -199,7 +208,13 @@ body.js .reveal.in{opacity:1;transform:none}
       <span class="num"><i>3</i>ขั้นที่สาม</span>
       <h2 class="disp">ตราประจำตัว</h2>
       <p class="hint">ตราที่ได้มาจะขึ้นบนการ์ดเอง — ยังไม่มีก็ทำการ์ดได้ตามปกติ</p>
+      <div class="bhead">
+        <span class="bcount" id="bcount">ปลดแล้ว 0/5</span>
+        <div class="btrack"><i id="bbar"></i></div>
+      </div>
       <div class="badges" id="badges"></div>
+      <p class="bnote" id="bhint">ทุกตราหาได้จากในเว็บนี้ทั้งหมด ไม่ต้องจ่ายอะไร แค่เดินดูให้ทั่ว</p>
+      <p class="bnote full" id="ball" hidden>🏆 ครบทุกตราแล้ว — คุณเดินดูบ้านหลังนี้จนทั่วจริง ๆ</p>
       <div class="coderow">
         <input type="text" id="guildCode" placeholder="มีรหัส? กรอกตรงนี้" autocomplete="off">
         <button type="button" id="guildBtn" class="disp">ใช้รหัส</button>
@@ -264,13 +279,21 @@ var CLASSES={
   MAKER  :{th:'สายประดิษฐ์', emo:'🧰', ac:'#4B5A67', tag:'MAKER', who:'ชอบสร้างของ อยากให้เครื่องมือทำงานแทนได้'}
 };
 var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
+/* ตราประจำตัว — ตารางนี้ใช้ "แสดงผล" เท่านั้น
+   ส่วนการปลดอัตโนมัติเมื่อทำครบ อยู่ใน assets/quest.js */
 var TITLES={
-  ALUMNI:{emo:'🍀',th:'ศิษย์เก่า',     how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้ยุค 2553–2555'},
-  SEEKER:{emo:'🔍',th:'ผู้ค้นพบ',       how:'ได้จากการเจอห้องลับของบ้าน ลองกดโคลเวอร์ที่หน้าแรกดู'},
-  FORGE :{emo:'⚒️',th:'ผ่านโรงตีเหล็ก', how:'อ่านการ์ตูนให้ครบทุกตอน แล้วเอารหัสที่ได้มาใส่ — ปลดกรอบไฟ'},
-  GUILD :{emo:'⚔️',th:'ชาวกิลด์',       how:'ได้จากรหัสที่แจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่'}
+  SEEKER :{emo:'🔍',th:'ผู้ค้นพบ',       how:'มีห้องลับซ่อนอยู่ในบ้าน ลองกดโคลเวอร์ที่หน้าแรกดู',
+           go:'../', goTx:'ไปหาที่หน้าแรก'},
+  FORGE  :{emo:'⚒️',th:'ผ่านโรงตีเหล็ก', how:'อ่านการ์ตูนให้ครบทั้ง 12 ตอน — ปลดกรอบไฟบนการ์ด',
+           go:'../forge/', goTx:'ไปอ่านการ์ตูน'},
+  SCHOLAR:{emo:'🎓',th:'ติดอาวุธครบมือ', how:'เรียนห้องเรียน AI ให้ครบทั้ง 6 คลาส',
+           go:'../classroom/', goTx:'ไปเข้าห้องเรียน'},
+  ALUMNI :{emo:'🍀',th:'ศิษย์เก่า',       how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้ยุค 2553–2555',
+           go:'../register/', goTx:'ไปลงทะเบียน'},
+  GUILD  :{emo:'⚔️',th:'ชาวกิลด์',       how:'รหัสแจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่ พร้อมเลขประจำตัว',
+           go:'', goTx:''}
 };
-var TITLE_ORDER=['ALUMNI','SEEKER','FORGE','GUILD'];
+var TITLE_ORDER=['SEEKER','FORGE','SCHOLAR','ALUMNI','GUILD'];
 
 /* รหัสปลดตรา — เปลี่ยนรหัส: แก้ sha/djb เป็นค่าของรหัสใหม่ (ตัวพิมพ์เล็ก)
    เก็บเป็นค่าแฮชเพราะไฟล์นี้เปิดดูซอร์สได้ — ไม่ได้กันคนตั้งใจงัด
@@ -278,6 +301,8 @@ var TITLE_ORDER=['ALUMNI','SEEKER','FORGE','GUILD'];
 var CODES=[
   {t:'FORGE', sha:'0f30c1d806510be3ff6917a32faf1c9f3ae5ca4295387df6ab523ccb2f6257a6', djb:'439369380',
    ok:'⚒️ ยินดีด้วยครับ คุณอ่านครบทุกตอนแล้ว — การ์ดของคุณได้กรอบไฟกับตรา “ผ่านโรงตีเหล็ก”'},
+  {t:'SCHOLAR', sha:'0e5bfd5cdf5170ae3b30adfe1958d05ceab48461d2b23563622aa34d73bfddca', djb:'1121960971',
+   ok:'🎓 เรียนครบทั้ง 6 คลาสแล้ว — ได้ตรา “ติดอาวุธครบมือ” ขึ้นการ์ดเรียบร้อย'},
   {t:'GUILD', sha:'4eb990514f06a4910fc2537f34fc780ddde5bb5c66f9b902aa7e09131527ac43', djb:'1404206110',
    ok:'⚔️ ยินดีต้อนรับชาวกิลด์ — การ์ดของคุณเป็นการ์ดฮีโร่กรอบทองแล้ว'}
 ];
@@ -462,11 +487,21 @@ function drawCardArt(c,st){
 
   /* ── บล็อกข้อความล่าง วางแบบการ์ดเกมจริง ── */
   var quote=(st.line||'').slice(0,40);
-  var chips=st.titles.slice(0,3).map(function(k){ return TITLES[k]; });
+  /* ตราบนการ์ด — เรียงตราที่หายากไว้ก่อน แล้วตัดที่เหลือถ้าเกิน */
+  var CHIP_ORDER=['GUILD','FORGE','SCHOLAR','SEEKER','ALUMNI'];
+  var chips=CHIP_ORDER.filter(function(k){ return st.titles.indexOf(k)>=0 && TITLES[k]; })
+                      .slice(0,4).map(function(k){ return TITLES[k]; });
   var qLines=[];
   if(quote){ font(c,'500',20,'Anuphan'); qLines=wrap(c,'“'+quote+'”',cw,2); }
 
-  var footH=30, blockH=54+30+(chips.length?38:0)+(qLines.length?qLines.length*26+16:0);
+  /* ตราขึ้นบรรทัดใหม่ได้ถ้าใส่ไม่พอ — วัดความกว้างจริงก่อน จะได้กันที่ถูก */
+  font(c,'600',13.5,'Anuphan');
+  var chipRows=0, rowW=0;
+  chips.forEach(function(t){
+    var w=24+c.measureText(t.th).width+16;
+    if(chipRows===0 || rowW+w>cw){ chipRows++; rowW=w+7; } else { rowW+=w+7; }
+  });
+  var footH=30, blockH=54+30+(chipRows?chipRows*32+6:0)+(qLines.length?qLines.length*26+16:0);
   var by=CH-FR-24-footH-blockH;
 
   /* ชื่อ */
@@ -490,20 +525,21 @@ function drawCardArt(c,st){
 
   /* ตรา — วางเหมือนบรรทัดความสามารถ */
   if(chips.length){
-    var sx=x0;
-    chips.forEach(function(t){
+    var sx=x0, cyy=by;
+    chips.forEach(function(t,i){
       font(c,'600',13.5,'Anuphan');
       var w=24+c.measureText(t.th).width+16;
-      rr(c,sx,by,w,26,8);
+      if(i>0 && sx+w>x1){ sx=x0; cyy+=32; }     /* เต็มแถวแล้ว ขึ้นแถวใหม่ */
+      rr(c,sx,cyy,w,26,8);
       c.fillStyle='rgba(255,255,255,.13)'; c.fill();
       c.strokeStyle='rgba(190,148,66,.45)'; c.lineWidth=1; c.stroke();
       font(c,'400',13,'Anuphan'); c.fillStyle='#fff';
-      c.fillText(t.emo,sx+7,by+14);
+      c.fillText(t.emo,sx+7,cyy+14);
       font(c,'600',13.5,'Anuphan'); c.fillStyle='rgba(255,255,255,.92)';
-      c.fillText(t.th,sx+25,by+13);
+      c.fillText(t.th,sx+25,cyy+13);
       sx+=w+7;
     });
-    by+=38;
+    by=cyy+38;
   }
 
   /* ข้อความบรรยาย — flavor text แบบการ์ดเกม */
@@ -664,7 +700,11 @@ function ensureFonts(){
    ═══════════════════════════════════════════════════════════ */
 var pv=document.getElementById('pv');
 var elClasses=document.getElementById('classes');
-var elBadges=document.getElementById('badges');
+var elBadges=document.getElementById('badges'),
+    elCount =document.getElementById('bcount'),
+    elBar   =document.getElementById('bbar'),
+    elHint  =document.getElementById('bhint'),
+    elAll   =document.getElementById('ball');
 var nickI=document.getElementById('nick'), lineI=document.getElementById('line');
 
 function render(){
@@ -690,14 +730,25 @@ ORDER.forEach(function(k){
 /* --- ตรา --- */
 function paintBadges(){
   elBadges.innerHTML='';
+  var got=0;
   TITLE_ORDER.forEach(function(k){
     var t=TITLES[k], has=st.titles.indexOf(k)>=0;
+    if(has) got++;
     var d=document.createElement('div');
     d.className='bd'+(has?'':' off');
+    /* ตราที่ยังไม่ได้ บอกทางไปเอาด้วย — ไม่ใช่แค่บอกว่ายังไม่มี */
+    var right = has ? '<span class="on">ได้แล้ว</span>'
+              : (t.go ? '<a class="get disp" href="'+t.go+'">'+t.goTx+' →</a>' : '');
     d.innerHTML='<span class="ic">'+t.emo+'</span><span class="tx"><b class="disp">'+t.th+'</b><small>'+
-      (has?'อยู่บนการ์ดของคุณแล้ว':t.how)+'</small></span>'+(has?'<span class="on">ได้แล้ว</span>':'');
+      (has?'อยู่บนการ์ดของคุณแล้ว':t.how)+'</small></span>'+right;
     elBadges.appendChild(d);
   });
+  var n=TITLE_ORDER.length;
+  elCount.textContent='ปลดแล้ว '+got+'/'+n;
+  elCount.className='bcount'+(got>=n?' full':'');
+  elBar.style.width=Math.round(got/n*100)+'%';
+  elHint.hidden = got>=n;
+  elAll.hidden  = got<n;
 }
 paintBadges();
 
@@ -772,11 +823,13 @@ document.getElementById('guildBtn').addEventListener('click',function(){
   tryCode(v,0);
 });
 
-/* อ่านจบบนเครื่องเดียวกัน ก็ไม่ต้องพิมพ์รหัสซ้ำ — ให้ตราไปเลย
-   (รหัสมีไว้สำหรับคนที่อ่านคนละเครื่องกับที่ทำการ์ด) */
-if(ls.get('mc_forge_done','')==='1' && st.titles.indexOf('FORGE')<0){
-  grant('FORGE','⚒️ เราเห็นว่าคุณอ่านการ์ตูนครบทุกตอนแล้ว — ใส่ตรา “ผ่านโรงตีเหล็ก” ให้เรียบร้อย');
-}
+/* ทำครบบนเครื่องเดียวกัน ก็ไม่ต้องพิมพ์รหัสซ้ำ — ให้ตราไปเลย
+   (รหัสมีไว้สำหรับคนที่อ่าน/เรียนคนละเครื่องกับที่ทำการ์ด) */
+[['mc_forge_done','FORGE',  '⚒️ เราเห็นว่าคุณอ่านการ์ตูนครบทุกตอนแล้ว — ใส่ตรา “ผ่านโรงตีเหล็ก” ให้เรียบร้อย'],
+ ['mc_learn_done','SCHOLAR','🎓 เราเห็นว่าคุณเรียนครบทั้ง 6 คลาสแล้ว — ใส่ตรา “ติดอาวุธครบมือ” ให้เรียบร้อย']
+].forEach(function(r){
+  if(ls.get(r[0],'')==='1' && st.titles.indexOf(r[1])<0) grant(r[1],r[2]);
+});
 
 /* ═══════════════════════════════════════════════════════════
    บันทึก / คัดลอก / แชร์

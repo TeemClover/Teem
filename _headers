@@ -7,3 +7,7 @@
 # หลังบ้านของ club — ไม่ให้ขึ้นผลค้นหาเช่นกัน
 /club/lab/*
   X-Robots-Tag: noindex, nofollow
+
+# Walkthrough — เปิดให้คนที่อ่านการ์ตูนจบแล้วเท่านั้น ไม่ควรโผล่ในผลค้นหา
+/walkthrough/*
+  X-Robots-Tag: noindex, nofollow

@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover</title>
+<meta name="description" content="หน้าสำหรับคนที่อ่านการ์ตูนจบครบทุกตอนแล้ว — กลไก แนวคิด และโครงสร้างของบ้านหลังนี้ พร้อมพจนานุกรมแปลศัพท์เกมเป็นศัพท์ธุรกิจ">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A2818">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.78;-webkit-font-smoothing:antialiased}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
+a{color:inherit;text-decoration:none}
+img,svg{max-width:100%;display:block}
+[hidden]{display:none!important}
+.wrap{max-width:840px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
+
+/* ── ประตูล็อก ── */
+#lock{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:rgb(var(--deep));color:#fff;padding:30px 20px;text-align:center;
+  background-image:radial-gradient(680px 340px at 20% -10%,rgb(27 106 66/.5),transparent 62%),
+                   radial-gradient(500px 300px at 90% 108%,rgb(190 148 66/.18),transparent 60%)}
+#lock .in{max-width:460px}
+#lock .seal{width:74px;height:74px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;
+  background:rgb(190 148 66/.13);border:1px solid rgb(190 148 66/.45);font-size:32px}
+#lock h1{font-family:"Bai Jamjuree";font-size:clamp(24px,5vw,34px);line-height:1.24;margin-bottom:14px}
+#lock p{color:rgb(255 255 255/.78);font-size:15.5px}
+#lock .pgw{margin:26px auto 0;max-width:320px}
+#lock .track{height:7px;border-radius:999px;background:rgb(255 255 255/.15);overflow:hidden}
+#lock .track i{display:block;height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .6s ease}
+#lock .tx{display:inline-block;margin-top:9px;font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(255 255 255/.75)}
+#lock .go{display:inline-flex;align-items:center;gap:8px;background:rgb(var(--gold));color:rgb(var(--deep));
+  border-radius:13px;padding:14px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
+  margin-top:24px;min-height:44px;transition:transform .18s,filter .18s}
+#lock .go:hover{transform:translateY(-2px);filter:brightness(1.07)}
+#lock .back{display:block;margin-top:18px;font-size:13px;color:rgb(255 255 255/.5)}
+
+/* ── ตัวหน้า ── */
+#doc{visibility:hidden}
+.bar{position:sticky;top:0;z-index:60;background:rgb(var(--deep));color:#fff;border-bottom:1px solid rgb(190 148 66/.28)}
+.bar .wrap{display:flex;align-items:center;gap:12px;min-height:56px;max-width:1020px}
+.bar .home{font-family:"Bai Jamjuree";font-weight:700;font-size:15px;min-height:44px;display:inline-flex;align-items:center}
+.bar .home em{font-style:normal;color:rgb(var(--gold))}
+.bar .ttl{margin-left:auto;font-family:"Bai Jamjuree";font-size:13px;color:rgb(var(--gold));letter-spacing:.1em}
+
+.hero{background:rgb(var(--deep));color:#fff;padding:clamp(40px,7vw,74px) 0 clamp(34px,6vw,58px);
+  background-image:radial-gradient(720px 380px at 14% -16%,rgb(27 106 66/.55),transparent 62%),
+                   radial-gradient(540px 330px at 92% 112%,rgb(190 148 66/.2),transparent 60%)}
+.hero .eyebrow{display:inline-block;font-family:"Bai Jamjuree";font-size:11.5px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.45);border-radius:999px;padding:5px 13px}
+.hero h1{font-family:"Bai Jamjuree";font-size:clamp(28px,5.6vw,46px);line-height:1.16;margin:16px 0 14px}
+.hero h1 em{font-style:normal;color:rgb(var(--gold))}
+.hero p{color:rgb(255 255 255/.8);font-size:16.5px;max-width:56ch}
+
+section{padding:clamp(38px,6vw,64px) 0}
+section + section{border-top:1px solid rgb(var(--ink)/.08)}
+.kicker{font-family:"Bai Jamjuree";font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--green))}
+h2{font-family:"Bai Jamjuree";font-size:clamp(23px,4.2vw,33px);line-height:1.24;margin:11px 0 14px}
+h3{font-family:"Bai Jamjuree";font-size:19px;margin:26px 0 8px}
+p + p{margin-top:14px}
+.lead{font-size:17px}
+em.hi{font-style:normal;color:rgb(var(--green));font-weight:600}
+strong{font-weight:700}
+
+/* ── พจนานุกรม ── */
+.term{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;overflow:hidden;margin-top:18px;
+  box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.term > .hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 22px 0}
+.term .en{font-family:"Bai Jamjuree";font-weight:700;font-size:20px;letter-spacing:.04em;color:rgb(var(--deep))}
+.term .th{font-size:14px;color:rgb(var(--muted))}
+.term .bd{padding:10px 22px 22px}
+.term .bd p{font-size:15px}
+.term .arrow{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin:16px 0 4px}
+@media(max-width:620px){.term .arrow{grid-template-columns:1fr;gap:8px}}
+.term .cell{border-radius:13px;padding:13px 15px;font-size:14px;line-height:1.65}
+.term .cell b{display:block;font-family:"Bai Jamjuree";font-size:11.5px;letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:5px}
+.term .g{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.18)}
+.term .g b{color:rgb(var(--green))}
+.term .b{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.32)}
+.term .b b{color:#8a6a22}
+.term .mid{display:grid;place-items:center;font-size:20px;color:rgb(var(--gold))}
+@media(max-width:620px){.term .mid{transform:rotate(90deg)}}
+.term .same{margin-top:12px;font-size:14px;background:rgb(var(--deep));color:rgb(255 255 255/.86);
+  border-radius:12px;padding:12px 16px}
+.term .same b{color:rgb(var(--gold))}
+
+/* ── ภาพประกอบ ── */
+figure{margin:24px 0 6px;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;
+  padding:22px 20px 16px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.figscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
+.figscroll svg{min-width:560px;width:100%;height:auto;margin:0 auto}
+.figscroll::-webkit-scrollbar{height:6px}
+.figscroll::-webkit-scrollbar-thumb{background:rgb(18 40 28/.2);border-radius:99px}
+.swipe{display:none;font-size:11.5px;color:rgb(var(--muted));text-align:center;margin-top:8px}
+@media(max-width:600px){.swipe{display:block}}
+figcaption{margin-top:12px;font-size:13px;color:rgb(var(--muted));text-align:center;line-height:1.65}
+.mech{margin-top:16px;background:rgb(27 106 66/.06);border:1px solid rgb(27 106 66/.18);border-radius:14px;padding:15px 18px}
+.mech b.disp{display:block;font-size:14px;color:rgb(var(--green));margin-bottom:8px}
+.mech ul{list-style:none;display:grid;gap:7px}
+.mech li{font-size:14px;padding-left:16px;position:relative;line-height:1.6}
+.mech li::before{content:"•";position:absolute;left:0;color:rgb(var(--gold));font-weight:700}
+.mech li b{color:rgb(var(--ink))}
+.svgtx{font-family:"Bai Jamjuree",sans-serif;font-weight:700}
+.svgtx.sm{font-weight:600}
+
+/* ── กล่องเน้น ── */
+.note{background:rgb(27 106 66/.06);border:1px solid rgb(27 106 66/.2);border-radius:16px;padding:18px 22px;margin-top:20px;font-size:15px}
+.note b{color:rgb(var(--green))}
+.dark{background:linear-gradient(160deg,rgb(10 40 24),rgb(18 62 38));color:#fff;border-radius:20px;
+  padding:clamp(24px,4.4vw,36px);margin-top:24px;border:1px solid rgb(190 148 66/.35)}
+.dark h3{margin-top:0;color:#fff}
+.dark p{color:rgb(255 255 255/.8)}
+.dark b{color:rgb(var(--gold))}
+
+.stack{display:grid;gap:12px;margin-top:18px}
+.row{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid rgb(var(--ink)/.09);
+  border-radius:14px;padding:15px 18px}
+.row .n{flex:none;width:28px;height:28px;border-radius:9px;background:rgb(var(--green));color:#fff;
+  display:grid;place-items:center;font-family:"Bai Jamjuree";font-weight:700;font-size:13px}
+.row .tx b{display:block;font-family:"Bai Jamjuree";font-size:15.5px;margin-bottom:2px}
+.row .tx span{font-size:14px;color:rgb(var(--muted))}
+
+.cta{text-align:center;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:9px;background:rgb(var(--gold));color:rgb(var(--deep));
+  border-radius:13px;padding:15px 28px;font-family:"Bai Jamjuree";font-weight:700;font-size:16px;
+  min-height:44px;transition:transform .18s,filter .18s}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.btn.ghost{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255/.4)}
+.btn.ghost:hover{border-color:rgb(var(--gold));background:rgb(190 148 66/.14)}
+
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 48px}
+footer a{color:rgb(var(--green));font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- ═══ ยังอ่านการ์ตูนไม่จบ ═══ -->
+<div id="lock">
+  <div class="in">
+    <div class="seal">🔒</div>
+    <h1 class="disp">หน้านี้เปิดให้คนที่อ่านจบแล้ว</h1>
+    <p>ไม่ได้กั๊กเพื่อให้ดูหวงครับ — เนื้อหาข้างในเป็นการถอดกลไกของเรื่องที่คุณเพิ่งอ่าน
+       ถ้ายังไม่ได้อ่าน มันจะเป็นแค่คำศัพท์กองหนึ่งที่ไม่มีความหมาย</p>
+    <div class="pgw">
+      <div class="track"><i data-mc-bar="forge"></i></div>
+      <span class="tx" data-mc-progress="forge" hidden></span>
+    </div>
+    <a class="go disp" data-mc-continue="forge:../forge/" href="../forge/">▶ อ่านต่อจากที่ค้างไว้</a>
+    <a class="go disp" data-mc-undone="forge" href="../forge/">📖 ไปอ่านการ์ตูน</a>
+    <a class="back" href="../">← กลับหน้าบ้าน</a>
+  </div>
+</div>
+
+<!-- ═══ อ่านจบแล้ว ═══ -->
+<div id="doc">
+
+<header class="bar"><div class="wrap">
+  <a class="home disp" href="../">🍀 my<em>clover</em></a>
+  <span class="ttl disp">WALKTHROUGH</span>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <span class="eyebrow">ปลดล็อกแล้ว · สำหรับคนที่อ่านจบครบทุกตอน</span>
+  <h1 class="disp">คู่มือแปล<em>ภาษาเกม</em><br>เป็นภาษาธุรกิจ</h1>
+  <p>คุณเพิ่งอ่านเรื่องของคนที่ใช้วิธีคิดแบบคนเล่นเกมมาทำธุรกิจจบไปแล้ว
+     หน้านี้คือการถอดออกมาให้เห็นว่ามันไม่ใช่การเปรียบเปรยเล่น ๆ —
+     คำในเกมกับคำในธุรกิจ หลายคำมันคือ<em style="font-style:normal;color:rgb(190 148 66)">เรื่องเดียวกัน</em>
+     แค่คนละสนาม</p>
+</div></div>
+
+<!-- ── 1. ทำไมต้องแปล ── -->
+<section><div class="wrap">
+  <span class="kicker">01 · เปิดเกม</span>
+  <h2 class="disp">ทำไมคนที่เล่นเกมเป็น ถึงเรียนธุรกิจได้เร็ว</h2>
+  <p class="lead">ไม่ใช่เพราะเกมสอนธุรกิจ แต่เพราะเกมสอน<em class="hi">วิธีเข้าหาเรื่องที่ยังไม่รู้</em>
+     คนที่เล่นเกมมาเยอะจะเจอสถานการณ์เดิมซ้ำ ๆ จนกลายเป็นนิสัย</p>
+
+  <figure>
+    <div class="figscroll"><svg viewBox="0 0 640 220" role="img" aria-label="วงจรสี่ขั้นของคนเล่นเกม: ลอง สังเกต ปรับ แล้วลองอีก">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="rgb(190,148,66)"/>
+        </marker>
+      </defs>
+      <g>
+        <circle cx="80"  cy="110" r="46" fill="rgb(27,106,66)" opacity=".1"/>
+        <circle cx="80"  cy="110" r="46" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
+        <text class="svgtx" x="80" y="104" text-anchor="middle" font-size="15" fill="rgb(18,40,28)">ลอง</text>
+        <text class="svgtx sm" x="80" y="124" text-anchor="middle" font-size="11" fill="rgb(96,108,100)">ตายก็ได้</text>
+
+        <circle cx="240" cy="110" r="46" fill="rgb(27,106,66)" opacity=".1"/>
+        <circle cx="240" cy="110" r="46" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
+        <text class="svgtx" x="240" y="104" text-anchor="middle" font-size="15" fill="rgb(18,40,28)">สังเกต</text>
+        <text class="svgtx sm" x="240" y="124" text-anchor="middle" font-size="11" fill="rgb(96,108,100)">ตายเพราะอะไร</text>
+
+        <circle cx="400" cy="110" r="46" fill="rgb(27,106,66)" opacity=".1"/>
+        <circle cx="400" cy="110" r="46" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
+        <text class="svgtx" x="400" y="104" text-anchor="middle" font-size="15" fill="rgb(18,40,28)">ปรับ</text>
+        <text class="svgtx sm" x="400" y="124" text-anchor="middle" font-size="11" fill="rgb(96,108,100)">เปลี่ยนวิธี</text>
+
+        <circle cx="560" cy="110" r="46" fill="rgb(190,148,66)" opacity=".16"/>
+        <circle cx="560" cy="110" r="46" fill="none" stroke="rgb(190,148,66)" stroke-width="1.5"/>
+        <text class="svgtx" x="560" y="104" text-anchor="middle" font-size="15" fill="rgb(18,40,28)">เก่งขึ้น</text>
+        <text class="svgtx sm" x="560" y="124" text-anchor="middle" font-size="11" fill="rgb(96,108,100)">วัดได้</text>
+
+        <line x1="130" y1="110" x2="186" y2="110" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar)"/>
+        <line x1="290" y1="110" x2="346" y2="110" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar)"/>
+        <line x1="450" y1="110" x2="506" y2="110" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar)"/>
+        <path d="M560 60 C560 20, 80 20, 80 60" fill="none" stroke="rgb(190,148,66)" stroke-width="2"
+              stroke-dasharray="5 5" marker-end="url(#ar)"/>
+        <text class="svgtx sm" x="320" y="30" text-anchor="middle" font-size="11.5" fill="rgb(96,108,100)">แล้ววนอีก</text>
+      </g>
+    </svg></div>
+    <p class="swipe">← ปัดดูภาพทางขวาได้ →</p>
+    <figcaption>วงจรนี้คือทั้งหมดที่เกมสอน และมันคือวงจรเดียวกับที่ธุรกิจใช้ — ต่างกันแค่เกมให้ตายฟรี</figcaption>
+  </figure>
+
+  <p>ในเกม คุณตายแล้วเกิดใหม่ได้ ค่าเสียหายคือเวลาไม่กี่นาที คุณเลยกล้าลอง กล้าผิด
+     และเรียนรู้เร็วมาก พอมาทำธุรกิจ คนส่วนใหญ่กลับกลัวผิดจนไม่กล้าลองอะไรเลย
+     ทั้งที่หลายเรื่อง<em class="hi">ต้นทุนของการลองมันต่ำกว่าที่คิดมาก</em></p>
+  <p>คนที่เอาวิธีคิดแบบคนเล่นเกมมาใช้ ไม่ได้แปลว่าเล่น ๆ ไม่จริงจัง
+     แต่แปลว่าเขามองว่าทุกอย่างคือระบบที่<strong>อ่านออกได้ ปรับได้ และเก่งขึ้นได้</strong>
+     ไม่ใช่พรสวรรค์ที่มีหรือไม่มี</p>
+</div></section>
+
+<!-- ── 2. พจนานุกรม ── -->
+<section><div class="wrap">
+  <span class="kicker">02 · พจนานุกรม</span>
+  <h2 class="disp">คำที่คุณใช้อยู่แล้วในเกม แปลเป็นคำที่เขาใช้ในห้องประชุม</h2>
+  <p class="lead">คำพวกนี้ไม่ใช่การเปรียบเทียบ — หลายคำมันข้ามมาจากอีกฝั่งจริง ๆ
+     และพอรู้ว่ามันคือคำเดียวกัน คุณจะฟังคนอื่นคุยงานรู้เรื่องขึ้นทันที</p>
+
+  <div class="term">
+    <div class="hd"><span class="en">DECK</span><span class="th">สำรับไพ่</span></div>
+    <div class="bd">
+      <div class="arrow">
+        <div class="cell g"><b>ในเกม</b>ชุดไพ่ที่คุณเลือกมาลงสนาม ไม่ใช่ไพ่ทั้งหมดที่มี
+          — เลือกมาเฉพาะใบที่ทำงานร่วมกันได้ และตัดใบที่ดีแต่ไม่เข้ากันทิ้ง</div>
+        <div class="mid">→</div>
+        <div class="cell b"><b>ในธุรกิจ</b>ชุดสไลด์ที่คุณใช้เล่าเรื่อง — pitch deck, sales deck,
+          แฟ้มสปอนเซอร์ที่เปิดคุยกับลูกค้า ก็คือเด็คที่เรียงมาแล้วทั้งนั้น</div>
+      </div>
+      <div class="same"><b>จุดร่วม:</b> ทั้งสองอย่างคือ “ของที่คุณเลือกมาลงสนาม” — คุณค่าไม่ได้อยู่ที่มีเยอะ
+        แต่อยู่ที่<b>เลือกอะไรออก</b> เด็คที่ยัดทุกอย่างลงไปคือเด็คที่แพ้ เหมือนสไลด์ 80 หน้าที่ไม่มีใครจำอะไรได้เลย</div>
+      <p style="margin-top:14px">เวลาใครพูดว่า “ขอดูเด็คหน่อย” เขาไม่ได้ขอดูไพ่ เขาขอดูว่า
+        <strong>คุณเรียงเรื่องมายังไง ตัดอะไรทิ้ง และเหลืออะไรไว้</strong></p>
+    </div>
+  </div>
+
+  <div class="term">
+    <div class="hd"><span class="en">META</span><span class="th">Most Effective Tactic Available</span></div>
+    <div class="bd">
+      <div class="arrow">
+        <div class="cell g"><b>ในเกม</b>วิธีเล่นที่ได้ผลที่สุด<u>ในตอนนี้</u> ไม่ใช่ตลอดไป —
+          พอผู้พัฒนาแก้สมดุลรอบใหม่ เมต้าก็เปลี่ยน คนที่ยึดของเดิมไว้จะตกรุ่นทันที</div>
+        <div class="mid">→</div>
+        <div class="cell b"><b>ในธุรกิจ</b>ช่องทางหรือวิธีที่ได้ผลที่สุดในตลาดตอนนี้ —
+          เมื่อก่อนคือใบปลิว แล้วเป็นเฟซบุ๊ก แล้วเป็นไลฟ์ แล้วเป็นคลิปสั้น แล้วก็เปลี่ยนอีก</div>
+      </div>
+      <div class="same"><b>จุดร่วม:</b> เมต้าไม่ใช่ความจริงถาวร มันคือ<b>คำตอบที่ดีที่สุดของช่วงเวลาหนึ่ง</b>
+        คนที่เก่งจริงไม่ใช่คนที่รู้เมต้า แต่คือคนที่<b>รู้ว่าเมต้ากำลังจะเปลี่ยน</b> และปรับก่อนคนอื่น</div>
+
+      <figure style="box-shadow:none;border:0;padding:18px 0 0;background:none">
+        <div class="figscroll"><svg viewBox="0 0 640 200" role="img" aria-label="เส้นกราฟแสดงว่าเมต้าเปลี่ยนเป็นช่วง ๆ คนที่ปรับตัวเร็วจะไปต่อได้">
+          <line x1="40" y1="170" x2="612" y2="170" stroke="rgb(18,40,28)" stroke-opacity=".18" stroke-width="1.5"/>
+          <line x1="40" y1="20"  x2="40"  y2="170" stroke="rgb(18,40,28)" stroke-opacity=".18" stroke-width="1.5"/>
+          <text class="svgtx sm" x="34" y="26" text-anchor="end" font-size="10.5" fill="rgb(96,108,100)">ผล</text>
+          <text class="svgtx sm" x="612" y="188" text-anchor="end" font-size="10.5" fill="rgb(96,108,100)">เวลา</text>
+
+          <path d="M40 150 Q100 60 160 66 L170 66 Q176 140 200 152" fill="none" stroke="rgb(27,106,66)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M200 152 Q260 56 320 62 L330 62 Q336 138 360 150" fill="none" stroke="rgb(27,106,66)" stroke-width="2.5" stroke-linecap="round" opacity=".72"/>
+          <path d="M360 150 Q420 50 480 58 L490 58 Q496 136 520 148" fill="none" stroke="rgb(27,106,66)" stroke-width="2.5" stroke-linecap="round" opacity=".5"/>
+          <path d="M520 148 Q560 70 600 46" fill="none" stroke="rgb(190,148,66)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 5"/>
+
+          <g fill="rgb(96,108,100)">
+            <text class="svgtx sm" x="120" y="186" text-anchor="middle" font-size="10.5">เมต้า 1</text>
+            <text class="svgtx sm" x="280" y="186" text-anchor="middle" font-size="10.5">เมต้า 2</text>
+            <text class="svgtx sm" x="440" y="186" text-anchor="middle" font-size="10.5">เมต้า 3</text>
+          </g>
+          <text class="svgtx" x="600" y="34" text-anchor="end" font-size="11.5" fill="rgb(190,148,66)">ถัดไป?</text>
+          <g stroke="rgb(18,40,28)" stroke-opacity=".14" stroke-dasharray="3 4">
+            <line x1="200" y1="30" x2="200" y2="170"/>
+            <line x1="360" y1="30" x2="360" y2="170"/>
+            <line x1="520" y1="30" x2="520" y2="170"/>
+          </g>
+        </svg></div>
+    <p class="swipe">← ปัดดูภาพทางขวาได้ →</p>
+        <figcaption>ทุกเมต้ามีวันหมดอายุ คนที่รอจนกราฟตกแล้วค่อยขยับ จะเริ่มรอบใหม่ช้ากว่าเสมอ</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="term">
+    <div class="hd"><span class="en">PROGRESSION</span><span class="th">เส้นทางการเก่งขึ้น</span></div>
+    <div class="bd">
+      <div class="arrow">
+        <div class="cell g"><b>ในเกม</b>ระบบที่ทำให้รู้ว่าเล่นไปแล้วได้อะไร — เลเวล ค่าประสบการณ์
+          ของที่ปลดล็อก เกมที่ดีจะทำให้คุณรู้ตัวว่า<u>วันนี้เก่งกว่าเมื่อวาน</u></div>
+        <div class="mid">→</div>
+        <div class="cell b"><b>ในธุรกิจ</b>เส้นทางที่คนในทีมมองเห็นว่าตัวเองจะโตไปทางไหน
+          ทักษะอะไรที่ต้องได้ต่อ และวัดยังไงว่าได้แล้ว</div>
+      </div>
+      <div class="same"><b>จุดร่วม:</b> คนไม่ได้เลิกเล่นเพราะเกมยาก คนเลิกเล่นเพราะ<b>เล่นแล้วไม่รู้ว่าได้อะไร</b>
+        ทีมก็เหมือนกัน คนไม่ได้ลาออกเพราะงานหนัก แต่เพราะทำไปแล้วไม่เห็นว่าตัวเองไปถึงไหน</div>
+      <p style="margin-top:14px">นี่คือเหตุผลที่บ้านหลังนี้มีแถบความคืบหน้า มีตรา มีการ์ด —
+        ไม่ใช่ลูกเล่น แต่เพราะ<strong>สิ่งที่มองเห็นความคืบหน้าได้ คือสิ่งที่คนทำต่อ</strong></p>
+    </div>
+  </div>
+
+  <div class="term">
+    <div class="hd"><span class="en">BUILD</span><span class="th">การจัดตัวละคร</span></div>
+    <div class="bd">
+      <div class="arrow">
+        <div class="cell g"><b>ในเกม</b>การเลือกว่าจะลงค่าสเตตัสตรงไหน เอาสกิลอะไร ใส่ของชิ้นไหน
+          — บิลด์ที่เก่งคือบิลด์ที่<u>ทุกชิ้นส่งกัน</u> ไม่ใช่บิลด์ที่เอาของแรงที่สุดมากองรวมกัน</div>
+        <div class="mid">→</div>
+        <div class="cell b"><b>ในธุรกิจ</b>การจัดตัวเองและจัดทีม — ใครถนัดอะไร วางใครไว้ตรงไหน
+          และยอมทิ้งอะไรเพื่อให้ที่เหลือทำงานเข้าขากัน</div>
+      </div>
+      <div class="same"><b>จุดร่วม:</b> ไม่มีบิลด์ที่ดีที่สุด มีแต่<b>บิลด์ที่เข้ากับวิธีเล่นของคุณ</b>
+        คนที่พยายามลอกบิลด์คนอื่นทั้งดุ้นมักจะเล่นไม่ออก เพราะมือไม่ใช่มือเดียวกัน</div>
+    </div>
+  </div>
+
+  <div class="term">
+    <div class="hd"><span class="en">GRIND</span><span class="th">งานซ้ำที่ต้องผ่าน</span></div>
+    <div class="bd">
+      <div class="arrow">
+        <div class="cell g"><b>ในเกม</b>งานซ้ำ ๆ ที่ต้องทำเพื่อสะสม — ตีมอนเดิม เก็บของเดิม
+          จำเป็นแต่ไม่สนุก เกมที่ออกแบบดีจะหาทางลดมันลง</div>
+        <div class="mid">→</div>
+        <div class="cell b"><b>ในธุรกิจ</b>งานประจำที่กินเวลาแต่ไม่ได้เพิ่มมูลค่า —
+          พิมพ์ข้อมูลซ้ำ ตอบคำถามเดิม ทำรายงานแบบเดิมทุกเดือน</div>
+      </div>
+      <div class="same"><b>จุดร่วม:</b> เกรนด์ไม่ได้แปลว่าต้องทน มันคือ<b>สัญญาณว่าตรงนี้ควรมีระบบมาแทน</b>
+        และวันนี้ AI คือของที่มารับเกรนด์ไปทำแทนได้จริง — นั่นคือทั้งหมดที่ห้องเรียนของบ้านนี้สอน</div>
+    </div>
+  </div>
+
+  <div class="term">
+    <div class="hd"><span class="en">PARTY &amp; GUILD</span><span class="th">ปาร์ตี้ กับ กิลด์</span></div>
+    <div class="bd">
+      <div class="arrow">
+        <div class="cell g"><b>ในเกม</b>ปาร์ตี้คือกลุ่มเฉพาะกิจ ตีเสร็จก็แยกย้าย
+          ส่วนกิลด์คือบ้าน — อยู่ด้วยกันข้ามภารกิจ สอนคนใหม่ แบ่งของ และอยู่ต่อแม้ไม่มีอะไรจะตี</div>
+        <div class="mid">→</div>
+        <div class="cell b"><b>ในธุรกิจ</b>ปาร์ตี้คือทีมโปรเจกต์ที่รวมกันเพื่องานหนึ่ง
+          กิลด์คือกลุ่มคนที่ยังอยู่ด้วยกันหลังโปรเจกต์จบแล้ว</div>
+      </div>
+      <div class="same"><b>จุดร่วม:</b> ปาร์ตี้วัดกันที่<b>ผลของภารกิจ</b> กิลด์วัดกันที่
+        <b>คนในกิลด์โตขึ้นไหม</b> — สองอย่างนี้ต้องการการดูแลคนละแบบ และคนมักเอามาปนกัน</div>
+    </div>
+  </div>
+
+  <div class="term">
+    <div class="hd"><span class="en">PATCH · NERF · BUFF</span><span class="th">กติกาเปลี่ยน</span></div>
+    <div class="bd">
+      <div class="arrow">
+        <div class="cell g"><b>ในเกม</b>ผู้พัฒนาปรับสมดุลใหม่ ของที่เคยแรงถูกลดพลัง (nerf)
+          ของที่เคยอ่อนถูกเพิ่มให้ (buff) — ไม่มีใครถามคุณก่อน</div>
+        <div class="mid">→</div>
+        <div class="cell b"><b>ในธุรกิจ</b>แพลตฟอร์มเปลี่ยนอัลกอริทึม กฎหมายเปลี่ยน
+          ต้นทุนขึ้น คู่แข่งเข้ามาใหม่ — ก็ไม่มีใครถามคุณก่อนเหมือนกัน</div>
+      </div>
+      <div class="same"><b>จุดร่วม:</b> คนที่โวยว่า “ทำไมเปลี่ยน” จะเสียเวลาไปหนึ่งรอบเสมอ
+        คนที่ถามว่า “<b>แล้วตอนนี้อะไรแรงขึ้น</b>” จะได้เปรียบตั้งแต่วันแรกของแพตช์</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>ลองสังเกตดู</b> — ทั้งเจ็ดคำข้างบนนี้ ไม่มีคำไหนเลยที่ต้องเล่นเกมเป็นถึงจะเข้าใจ
+    เพราะมันไม่ได้เป็นเรื่องของเกม มันเป็นเรื่องของ<b>ระบบที่มีคนอยู่ในนั้น</b> — ซึ่งธุรกิจก็คือแบบนั้น
+  </div>
+</div></section>
+
+<!-- ── 3. บ้านหลังนี้ถูกสร้างยังไง ── -->
+<section><div class="wrap">
+  <span class="kicker">03 · โครงสร้าง</span>
+  <h2 class="disp">บ้านหลังนี้เอง ก็ถูกออกแบบเป็นเกม</h2>
+  <p class="lead">ทุกอย่างที่คุณเจอมาตั้งแต่หน้าแรก ไม่ได้ใส่มาเพราะน่ารัก
+     แต่ใส่มาเพราะมันเป็นกลไกที่ทำให้คนอยากเดินต่อ — และตอนนี้คุณเดินมาจนสุดสายแล้ว</p>
+
+  <figure>
+    <div class="figscroll"><svg viewBox="0 0 640 130" role="img" aria-label="แผนผังเส้นทางของผู้เข้าชม จากอ่านการ์ตูน ไปเรียน ไปทำการ์ด แล้วเข้ากิลด์">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="rgb(190,148,66)"/>
+        </marker>
+      </defs>
+      <g>
+        <rect x="24"  y="40" width="132" height="72" rx="14" fill="rgb(27,106,66)" opacity=".1"/>
+        <rect x="24"  y="40" width="132" height="72" rx="14" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
+        <text class="svgtx" x="90" y="70" text-anchor="middle" font-size="14" fill="rgb(18,40,28)">📖 อ่าน</text>
+        <text class="svgtx sm" x="90" y="92" text-anchor="middle" font-size="10.5" fill="rgb(96,108,100)">12 ตอน</text>
+
+        <rect x="196" y="40" width="132" height="72" rx="14" fill="rgb(27,106,66)" opacity=".1"/>
+        <rect x="196" y="40" width="132" height="72" rx="14" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
+        <text class="svgtx" x="262" y="70" text-anchor="middle" font-size="14" fill="rgb(18,40,28)">🎓 เรียน</text>
+        <text class="svgtx sm" x="262" y="92" text-anchor="middle" font-size="10.5" fill="rgb(96,108,100)">6 คลาส</text>
+
+        <rect x="368" y="40" width="132" height="72" rx="14" fill="rgb(190,148,66)" opacity=".16"/>
+        <rect x="368" y="40" width="132" height="72" rx="14" fill="none" stroke="rgb(190,148,66)" stroke-width="1.5"/>
+        <text class="svgtx" x="434" y="70" text-anchor="middle" font-size="14" fill="rgb(18,40,28)">🃏 การ์ด</text>
+        <text class="svgtx sm" x="434" y="92" text-anchor="middle" font-size="10.5" fill="rgb(96,108,100)">ตราที่สะสมมา</text>
+
+        <rect x="540" y="40" width="80" height="72" rx="14" fill="rgb(10,40,24)"/>
+        <text class="svgtx" x="580" y="70" text-anchor="middle" font-size="14" fill="#fff">⚔️</text>
+        <text class="svgtx sm" x="580" y="92" text-anchor="middle" font-size="10.5" fill="rgb(190,148,66)">กิลด์</text>
+
+        <line x1="160" y1="76" x2="190" y2="76" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar2)"/>
+        <line x1="332" y1="76" x2="362" y2="76" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar2)"/>
+        <line x1="504" y1="76" x2="534" y2="76" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar2)"/>
+
+      </g>
+    </svg></div>
+    <p class="swipe">← ปัดดูภาพทางขวาได้ →</p>
+    <figcaption>ไม่มีขั้นไหนบังคับ ทุกขั้นเปิดให้เดินกลับได้ตลอด — แต่ละขั้นแค่ทำให้ขั้นถัดไปน่าเดินขึ้น</figcaption>
+    <div class="mech">
+      <b class="disp">กลไกที่ทำงานอยู่เบื้องหลัง</b>
+      <ul>
+        <li><b>แถบความคืบหน้า</b> — ให้เห็นว่าเดินมาถึงไหนแล้ว (progression)</li>
+        <li><b>ตราและรหัส</b> — ให้สิ่งที่ทำไปแล้วมีหลักฐานเอาไปโชว์ได้</li>
+        <li><b>การ์ด</b> — รวมทุกอย่างเป็นของชิ้นเดียวที่เป็นของคุณจริง ๆ</li>
+      </ul>
+    </div>
+  </figure>
+
+  <div class="stack">
+    <div class="row"><span class="n">1</span><span class="tx"><b>ประตูหน้าบ้านมีรหัส</b>
+      <span>คนที่ผ่านเข้ามาได้ คือคนที่ตั้งใจจะเข้ามา — ไม่ใช่คนที่หลงเข้ามาแล้วปิดทิ้ง</span></span></div>
+    <div class="row"><span class="n">2</span><span class="tx"><b>ของฟรีทั้งหมดให้ก่อน ไม่ขออะไรแลก</b>
+      <span>ห้องเรียน เครื่องมือ การ์ตูน — ไม่มีอันไหนต้องกรอกอีเมลก่อน เพราะถ้าของดีจริง คนจะกลับมาเอง</span></span></div>
+    <div class="row"><span class="n">3</span><span class="tx"><b>ความคืบหน้าเก็บไว้ในเครื่องคุณเอง</b>
+      <span>ไม่มีบัญชี ไม่มีเซิร์ฟเวอร์เก็บพฤติกรรม ล้างเบราว์เซอร์เมื่อไหร่ก็หายไปกับคุณ</span></span></div>
+    <div class="row"><span class="n">4</span><span class="tx"><b>ตราปลดล็อกจากการทำจริง</b>
+      <span>อ่านจบถึงได้ เรียนจบถึงได้ — ไม่ใช่กดรับ นี่คือเหตุผลที่มันมีความหมายพอจะเอาไปแปะบนการ์ด</span></span></div>
+    <div class="row"><span class="n">5</span><span class="tx"><b>กิลด์อยู่ปลายทาง ไม่ใช่ต้นทาง</b>
+      <span>เพราะการชวนคนเข้ากลุ่มตั้งแต่ยังไม่รู้จักกัน คือสิ่งที่ทำให้คนเบื่อการถูกชวนไปทุกอย่าง</span></span></div>
+  </div>
+</div></section>
+
+<!-- ── 4. สร้างด้วย AI ── -->
+<section><div class="wrap">
+  <span class="kicker">04 · เบื้องหลัง</span>
+  <h2 class="disp">ทั้งหลังนี้สร้างด้วยเครื่องมือ AI</h2>
+  <p class="lead">เว็บที่คุณกำลังอ่าน การ์ตูนที่คุณเพิ่งอ่านจบ ระบบความคืบหน้า การ์ดที่วาดขึ้นในเบราว์เซอร์ของคุณ
+     ภาพประกอบ ไปจนถึงตัวหนังสือทุกบรรทัด — <em class="hi">ทำด้วยเครื่องมือ AI ทั้งหมด</em></p>
+
+  <div class="dark">
+    <h3 class="disp">ทำไมถึงบอกตรง ๆ</h3>
+    <p>เพราะนี่คือประเด็นทั้งหมดของบ้านหลังนี้ครับ ไม่ได้จะอวดว่าทำได้
+       แต่จะให้เห็นด้วยตาว่า <b>คนคนเดียวที่ไม่ได้จบสายโปรแกรมเมอร์ ทำของขนาดนี้ได้แล้วในวันนี้</b></p>
+    <p style="margin-top:14px">เมื่อสิบปีก่อน สิ่งที่คุณเพิ่งเลื่อนดูมาทั้งหมดต้องใช้ทีมงานหลายคนและเวลาหลายเดือน
+       ตอนนี้มันคือของที่<b>คนในกิลด์เราหยิบไปทำเองได้</b> — และห้องเรียน 6 คลาสในบ้านนี้
+       ก็คือเครื่องมือชุดเดียวกับที่ใช้สร้างมันขึ้นมา</p>
+    <p style="margin-top:14px"><b>นี่แหละคือของที่คุณจะได้กลับไป</b> ไม่ใช่กำลังใจ ไม่ใช่คำคม
+       แต่เป็นความสามารถที่วัดผลได้ว่าคุณทำอะไรได้เพิ่มขึ้นบ้าง</p>
+  </div>
+
+  <h3 class="disp">เครื่องมือที่ใช้จริง ทั้งหมดมีสอนในบ้าน</h3>
+  <div class="stack">
+    <div class="row"><span class="n">📖</span><span class="tx"><b>ภาพการ์ตูนทุกตอน</b>
+      <span>สร้างจาก AI ภาพ แล้วคัดและตัดต่อเอง — วิธีเดียวกับที่สอนในคลาส LV.2</span></span></div>
+    <div class="row"><span class="n">🧠</span><span class="tx"><b>โครงเรื่องและบทพูด</b>
+      <span>เขียนร่วมกับ AI จากเรื่องจริงที่เกิดขึ้น ไม่ได้ให้ AI แต่งขึ้นเอง — วิธีสั่งงานอยู่ใน LV.1 กับ LV.6</span></span></div>
+    <div class="row"><span class="n">💻</span><span class="tx"><b>ตัวเว็บทั้งหมด</b>
+      <span>เขียนด้วย AI ช่วยเขียนโค้ด ตั้งแต่หน้าแรกจนถึงหน้าที่คุณกำลังอ่านนี้ — LV.6 สอนวิธีเริ่ม</span></span></div>
+    <div class="row"><span class="n">🎬</span><span class="tx"><b>คลิปและภาพประกอบ</b>
+      <span>ตัดจากของที่มีอยู่แล้วด้วยเครื่องมือฟรี — LV.3</span></span></div>
+  </div>
+
+  <div class="note">
+    <b>ข้อเดียวที่ AI ทำแทนไม่ได้</b> — เรื่องที่เล่า 19 ปีที่ผ่านมา คนที่เดินมาด้วยกัน
+    และสิ่งที่ตัดสินใจผิดแล้วต้องจ่ายจริง ๆ ตรงนั้นไม่มีเครื่องมือไหนสร้างให้ได้
+    AI ย่นเวลาให้เราได้ แต่<b>ประสบการณ์ยังต้องเดินเอาเอง</b>
+  </div>
+</div></section>
+
+<!-- ── 5. ปิดเกม ── -->
+<section><div class="wrap">
+  <span class="kicker">05 · ปิดเกม</span>
+  <h2 class="disp">ธุรกิจ ชีวิต และเกม เป็นเรื่องเดียวกันได้</h2>
+  <p class="lead">ถ้าอ่านมาถึงตรงนี้ คุณน่าจะเห็นแล้วว่ามันไม่ใช่การเอาเกมมาเปรียบเปรยให้ดูเท่
+     ทั้งสามอย่างคือระบบที่มีกติกา มีคนอยู่ในนั้น มีวันที่ทำได้ดี และมีวันที่พัง</p>
+  <p>ต่างกันตรงที่เกมออกแบบมาให้คุณรู้ตัวเสมอว่าเก่งขึ้นแค่ไหน ส่วนชีวิตกับงานไม่มีแถบบอก
+     คนเลยรู้สึกว่าทำไปเรื่อย ๆ โดยไม่รู้ว่าไปถึงไหน — <strong>สิ่งที่กิลด์เราทำ คือช่วยกันสร้างแถบนั้นให้กัน</strong></p>
+  <p>เราไม่ได้มาเพื่อจะบอกว่าใครควรทำอะไรกับชีวิต แค่เชื่อว่าเวลาเล่นด้วยกันหลายคน
+     มันไปได้ไกลกว่า และที่สำคัญคือ<em class="hi">มันสนุกกว่ามาก</em></p>
+
+  <div class="dark" style="text-align:center">
+    <p style="font-size:15px;color:rgb(255 255 255/.7)">ก่อนเกมจะเริ่ม เกมเมอร์ทั้งโลกพูดคำเดียวกัน
+      แม้แต่กับคนที่กำลังจะเล่นแข่งกับเรา</p>
+    <p style="font-family:'Bai Jamjuree';font-weight:700;font-size:clamp(24px,5vw,38px);color:rgb(var(--gold));margin-top:14px">
+      #glhf</p>
+    <p style="font-size:15px;margin-top:6px">Good Luck, Have Fun — ขอให้โชคดี และขอให้สนุก</p>
+    <p style="font-size:14.5px;margin-top:18px;color:rgb(255 255 255/.72)">
+      ใครเจอเรา คนนั้นโชคดี — และเราอยากให้คุณสนุกไปกับมันด้วย</p>
+    <div class="cta">
+      <a class="btn" href="../card/">🃏 ไปทำการ์ดของคุณ</a>
+    </div>
+    <div class="cta" style="margin-top:12px">
+      <a class="btn ghost" href="../#glhf">🍀 กลับไปดูบ้านอีกรอบ</a>
+    </div>
+  </div>
+</div></section>
+
+<footer data-mc-end>
+  <p>🍀 myclover.com · walkthrough</p>
+  <p style="margin-top:6px"><a href="../forge/">ทุกตอน</a> · <a href="../classroom/">ห้องเรียน</a> · <a href="../">กลับหน้าบ้าน</a> · <a href="../privacy/">ข้อมูลของคุณ</a></p>
+</footer>
+
+</div><!-- /#doc -->
+
+<script defer src="../assets/quest.js"></script>
+<script>
+/* หน้านี้เปิดให้คนที่อ่านการ์ตูนจบครบทุกตอน
+   เป็นการล็อกฝั่งเบราว์เซอร์ — กันคนที่ยังไม่ได้อ่านไม่ให้เจอสปอยล์
+   ไม่ใช่ระบบความปลอดภัย ใครเปิดซอร์สดูก็เห็นได้ ซึ่งไม่เป็นไร */
+document.addEventListener('DOMContentLoaded',function(){
+  var open=false;
+  try{ open = localStorage.getItem('mc_forge_done')==='1'; }catch(e){}
+  if(open){
+    document.getElementById('lock').hidden=true;
+    document.getElementById('doc').style.visibility='visible';
+    document.title='Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover';
+  }
+});
+</script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+</body>
+</html>

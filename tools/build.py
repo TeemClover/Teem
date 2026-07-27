@@ -138,121 +138,243 @@ def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical=''):
 '''
 
 # ─────────────────────────────────────────────────────────────
-# ความคืบหน้าการอ่าน — assets/progress.js
-# ตารางตอนอยู่ในไฟล์นี้ ก็เลยสร้างไฟล์นี้จากที่นี่ที่เดียว
+# เควสต์ของบ้าน — assets/quest.js
+#
+# ตารางตอนการ์ตูนอยู่ในไฟล์นี้อยู่แล้ว เลยให้ไฟล์นี้เป็นเจ้าของ
+# "ความคืบหน้า + ตราประจำตัว" ของทั้งเว็บไปเลย จะได้มีที่เดียว
+#
+# เพิ่มตราใหม่ต้องแก้ 2 ที่: TRACKS ข้างล่างนี้ (ไว้ปลดอัตโนมัติ)
+# และ TITLES ใน card/index.html (ไว้แสดงผลบนการ์ด)
 # ─────────────────────────────────────────────────────────────
-FINISH_CODE = 'TENTHSTEP'   # = ชื่อตอนสุดท้าย · ใส่ในหน้าทำการ์ดเพื่อรับตรา ⚒️
-eps_js = ','.join(f"'{slug}'" for _, _, _, slug, _ in EPISODES)
 
-PROGRESS_JS = '''/* ═══════════════════════════════════════════════════════════════
-   myclover — ความคืบหน้าการอ่าน /forge/
+# (slug, ชื่อบท) เรียงตามลำดับเรียน — ไฟล์จริงคือ classroom/<slug>.html
+LESSONS = [
+    ("free-ai",     "เครื่องมือฟรีที่ควรมีติดเครื่อง"),
+    ("prompts",     "สั่งงาน AI ให้ได้ดั่งใจ"),
+    ("image-ai",    "ทำภาพเอง ไม่ต้องจ้าง"),
+    ("notebooklm",  "อ่านแทนคุณทั้งกอง"),
+    ("clip-ai",     "คลิปสั้นจากของที่มีอยู่แล้ว"),
+    ("first-web",   "เว็บแรกของคุณ"),
+]
 
-   ⚠️ สร้างอัตโนมัติจาก tools/build_forge.py — อย่าแก้ไฟล์นี้ตรง ๆ
+# รหัสที่ได้ตอนทำครบ = ชื่อของสิ่งสุดท้ายในเส้นนั้น จะได้รู้สึกว่าได้มาจริง ๆ
+FORGE_CODE  = 'TENTHSTEP'   # = ตอนสุดท้ายของการ์ตูน
+LEARN_CODE  = 'FIRSTWEB'    # = บทสุดท้ายของห้องเรียน
 
-   เก็บอยู่ในเครื่องของผู้อ่านล้วน (localStorage) ไม่ส่งออกไปไหน
+TRACKS = {
+    'forge': {'key': 'mc_read',  'done': 'mc_forge_done', 'title': 'FORGE',
+              'unit': 'ตอน', 'what': 'อ่าน',
+              'items': [slug for _, _, _, slug, _ in EPISODES]},
+    'learn': {'key': 'mc_learn', 'done': 'mc_learn_done', 'title': 'SCHOLAR',
+              'unit': 'คลาส', 'what': 'เรียน',
+              'items': [slug for slug, _ in LESSONS]},
+}
+
+tracks_js = ',\n    '.join(
+    "%s:{key:'%s',done:'%s',title:'%s',unit:'%s',what:'%s',items:[%s]}" % (
+        name, t['key'], t['done'], t['title'], t['unit'], t['what'],
+        ','.join("'%s'" % i for i in t['items']))
+    for name, t in TRACKS.items())
+
+QUEST_JS = '''/* ═══════════════════════════════════════════════════════════════
+   myclover — ความคืบหน้า + ตราประจำตัวของทั้งเว็บ
+
+   ⚠️ สร้างอัตโนมัติจาก tools/build.py — อย่าแก้ไฟล์นี้ตรง ๆ
+
+   เก็บอยู่ในเครื่องของผู้ใช้ล้วน (localStorage) ไม่ส่งออกไปไหน
    ล้างข้อมูลเบราว์เซอร์เมื่อไหร่ ความคืบหน้าก็หายไปด้วย
 
-   จุดเกาะใน HTML (ทาสีให้เองอัตโนมัติ)
-     [data-mc-progress]  ข้อความ "อ่านแล้ว 3/12 ตอน" · ซ่อนถ้ายังไม่เริ่ม
-     [data-mc-bar]       แถบความคืบหน้า — ปรับ width เป็น %
-     [data-mc-continue]  ลิงก์ "อ่านต่อ" — ค่าใน attribute คือ path นำหน้า slug
-     [data-mc-demote=k]  ใส่คลาส k ให้เมื่อเริ่มอ่านแล้ว (ลดความเด่นของปุ่มเริ่มต้น)
-     [data-mc-done]      บล็อกที่โผล่เมื่ออ่านครบทุกตอน
-     [data-mc-undone]    บล็อกที่ซ่อนเมื่ออ่านครบแล้ว (ตั้งต้นต้องมองเห็น)
-     [data-mc-any]       บล็อกที่โผล่เมื่อเริ่มอ่านแล้วอย่างน้อย 1 ตอน
-     [data-mc-read=slug] ใส่คลาส .read ให้เมื่ออ่านตอนนั้นแล้ว
+   ── เส้นความคืบหน้า ──
+   forge = อ่านการ์ตูน  ·  learn = เรียนห้องเรียน
+   ทำครบเส้นไหน ปลดตราของเส้นนั้นให้เอง
+
+   ── บอกหน้าเว็บว่าหน้านี้คือของอะไร ──
+   <meta name="mc-item" content="forge:ep0-my-own-machine">
+   แล้วเมื่อผู้ใช้เลื่อนมาถึง [data-mc-end] (ถ้าไม่มีก็ footer)
+   จะนับว่าทำชิ้นนั้นเสร็จ — เลื่อนถึงท้ายจริง ๆ ไม่ใช่แค่เปิดหน้า
+
+   ── จุดเกาะใน HTML (ทาสีให้เองอัตโนมัติ) ──
+   ค่าที่ขึ้นต้นด้วยชื่อเส้น เช่น "forge" หรือ "learn"
+     [data-mc-progress=forge]      "อ่านแล้ว 3/12 ตอน" · ซ่อนถ้ายังไม่เริ่ม
+     [data-mc-bar=forge]           แถบความคืบหน้า — ปรับ width เป็น %
+     [data-mc-continue=forge:../]  ลิงก์ "ทำต่อ" — หลัง : คือ path นำหน้า
+     [data-mc-demote=forge:ghost]  ใส่คลาส ghost เมื่อเริ่มแล้ว (ลดความเด่น)
+     [data-mc-done=forge]          บล็อกที่โผล่เมื่อครบ
+     [data-mc-undone=forge]        บล็อกที่ซ่อนเมื่อครบ (ตั้งต้นต้องมองเห็น)
+     [data-mc-any=forge]           บล็อกที่โผล่เมื่อเริ่มแล้วอย่างน้อย 1 ชิ้น
+     [data-mc-item=forge:slug]     ใส่คลาส .done ให้เมื่อทำชิ้นนั้นแล้ว
+     [data-mc-title=FORGE]         บล็อกที่โผล่เมื่อได้ตรานั้นแล้ว
+     [data-mc-notitle=FORGE]       บล็อกที่ซ่อนเมื่อได้ตรานั้นแล้ว
    ═══════════════════════════════════════════════════════════════ */
 (function(){
-  var EPS=[%EPS%];               /* เรียงตามลำดับอ่าน */
-  var KEY='mc_read', DONE='mc_forge_done';
+  var TRACKS={
+    %TRACKS%
+  };
+  var TKEY='mc_titles';
 
-  function get(){
-    try{
-      return (localStorage.getItem(KEY)||'').split(',')
-        .filter(function(s){ return EPS.indexOf(s)>=0; });
-    }catch(e){ return []; }
-  }
-  function put(a){
-    try{
-      localStorage.setItem(KEY,a.join(','));
-      if(a.length>=EPS.length) localStorage.setItem(DONE,'1');
-    }catch(e){}
-  }
+  function ls(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+  function save(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
   function each(sel,fn){
     var l=document.querySelectorAll(sel);
     for(var i=0;i<l.length;i++) fn(l[i]);
   }
-
-  var API={
-    eps      : EPS,
-    total    : EPS.length,
-    list     : get,
-    count    : function(){ return get().length; },
-    has      : function(s){ return get().indexOf(s)>=0; },
-    complete : function(){ return get().length>=EPS.length; },
-    mark     : function(s){
-      if(EPS.indexOf(s)<0) return false;
-      var a=get();
-      if(a.indexOf(s)>=0) return false;
-      a.push(s); put(a); paint();
-      return true;
-    },
-    next     : function(){
-      var a=get();
-      for(var i=0;i<EPS.length;i++) if(a.indexOf(EPS[i])<0) return EPS[i];
-      return null;
-    },
-    reset    : function(){
-      try{ localStorage.removeItem(KEY); localStorage.removeItem(DONE); }catch(e){}
-      paint();
-    }
-  };
-  window.MC_READ=API;
-
-  function paint(){
-    var n=API.count(), t=EPS.length, done=n>=t, nx=API.next();
-    each('[data-mc-progress]',function(el){
-      el.textContent = done ? ('อ่านครบทั้ง '+t+' ตอนแล้ว') : ('อ่านแล้ว '+n+'/'+t+' ตอน');
-      el.hidden = n===0;
-      el.className = el.className.replace(/\\s*is-done/,'') + (done?' is-done':'');
-    });
-    each('[data-mc-bar]',function(el){ el.style.width=Math.round(n/t*100)+'%'; });
-    each('[data-mc-continue]',function(el){
-      if(!nx || n===0){ el.hidden=true; return; }
-      el.hidden=false;
-      el.setAttribute('href', el.getAttribute('data-mc-continue')+nx+'/');
-    });
-    each('[data-mc-demote]',function(el){
-      var k=el.getAttribute('data-mc-demote');
-      el.className = el.className.replace(new RegExp('\\s*'+k+'\\b'),'') + (n>0?' '+k:'');
-    });
-    each('[data-mc-done]',  function(el){ el.hidden=!done; });
-    each('[data-mc-undone]',function(el){ el.hidden=done;  });
-    each('[data-mc-any]',   function(el){ el.hidden=n===0; });
-    each('[data-mc-read]',function(el){
-      var r=API.has(el.getAttribute('data-mc-read'));
-      el.className = el.className.replace(/\\s*read\\b/,'') + (r?' read':'');
-    });
+  function addCls(el,c,on){
+    var re=new RegExp('(^|\\\\s)'+c+'(?=\\\\s|$)','g');
+    el.className=(el.className.replace(re,' ').replace(/\\s+/g,' ').replace(/^ | $/g,''))+(on?' '+c:'');
+  }
+  function split(v,def){
+    var i=(v||'').indexOf(':');
+    return i<0 ? [v||def, ''] : [v.slice(0,i), v.slice(i+1)];
   }
 
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',paint);
-  else paint();
+  /* ── ตราประจำตัว ── */
+  function titles(){
+    try{ var a=JSON.parse(ls(TKEY,'[]')); return Array.isArray(a)?a:[]; }
+    catch(e){ return []; }
+  }
+  function hasTitle(k){ return titles().indexOf(k)>=0; }
+  function grant(k){
+    var a=titles();
+    if(a.indexOf(k)>=0) return false;
+    a.push(k); save(TKEY,JSON.stringify(a));
+    return true;
+  }
+
+  /* ── เส้นความคืบหน้า ── */
+  function T(name){
+    var t=TRACKS[name];
+    if(!t) return null;
+    function get(){
+      return ls(t.key,'').split(',').filter(function(s){ return t.items.indexOf(s)>=0; });
+    }
+    return {
+      cfg      : t,
+      items    : t.items,
+      total    : t.items.length,
+      list     : get,
+      count    : function(){ return get().length; },
+      has      : function(s){ return get().indexOf(s)>=0; },
+      complete : function(){ return get().length>=t.items.length; },
+      next     : function(){
+        var a=get();
+        for(var i=0;i<t.items.length;i++) if(a.indexOf(t.items[i])<0) return t.items[i];
+        return null;
+      },
+      mark     : function(s){
+        if(t.items.indexOf(s)<0) return false;
+        var a=get();
+        if(a.indexOf(s)>=0) return false;
+        a.push(s); save(t.key,a.join(','));
+        if(a.length>=t.items.length){ save(t.done,'1'); grant(t.title); }
+        paint();
+        return true;
+      },
+      reset    : function(){
+        try{ localStorage.removeItem(t.key); localStorage.removeItem(t.done); }catch(e){}
+        paint();
+      }
+    };
+  }
+
+  /* ตราเคยได้แล้วแต่ localStorage ของตราหาย — ซ่อมให้เงียบ ๆ */
+  function heal(){
+    for(var n in TRACKS) if(ls(TRACKS[n].done,'')==='1') grant(TRACKS[n].title);
+  }
+
+  var API={ TRACKS:TRACKS, track:T, titles:titles, hasTitle:hasTitle, grant:function(k){
+    var isNew=grant(k); if(isNew) paint(); return isNew; }, paint:function(){ paint(); } };
+  window.MC_QUEST=API;
+
+  /* ── ทาสีทุกจุดเกาะ ── */
+  function paint(){
+    each('[data-mc-progress]',function(el){
+      var t=T(el.getAttribute('data-mc-progress')); if(!t) return;
+      var n=t.count(), z=t.total, d=n>=z;
+      el.textContent = d ? (t.cfg.what+'ครบทั้ง '+z+' '+t.cfg.unit+'แล้ว')
+                         : (t.cfg.what+'แล้ว '+n+'/'+z+' '+t.cfg.unit);
+      el.hidden = n===0;
+      addCls(el,'is-done',d);
+    });
+    each('[data-mc-bar]',function(el){
+      var t=T(el.getAttribute('data-mc-bar')); if(!t) return;
+      el.style.width=Math.round(t.count()/t.total*100)+'%';
+    });
+    each('[data-mc-continue]',function(el){
+      var p=split(el.getAttribute('data-mc-continue')), t=T(p[0]); if(!t) return;
+      var nx=t.next();
+      if(!nx || t.count()===0){ el.hidden=true; return; }
+      el.hidden=false;
+      el.setAttribute('href', p[1]+nx+(p[1].indexOf('.html')<0 && p[1].slice(-1)!=='#' ? '/' : ''));
+    });
+    each('[data-mc-demote]',function(el){
+      var p=split(el.getAttribute('data-mc-demote')), t=T(p[0]); if(!t) return;
+      addCls(el,p[1]||'ghost',t.count()>0);
+    });
+    each('[data-mc-done]',function(el){
+      var t=T(el.getAttribute('data-mc-done')); if(!t) return;
+      el.hidden=!t.complete();
+    });
+    each('[data-mc-undone]',function(el){
+      var t=T(el.getAttribute('data-mc-undone')); if(!t) return;
+      el.hidden=t.complete();
+    });
+    each('[data-mc-any]',function(el){
+      var t=T(el.getAttribute('data-mc-any')); if(!t) return;
+      el.hidden=t.count()===0;
+    });
+    each('[data-mc-item]',function(el){
+      var p=split(el.getAttribute('data-mc-item')), t=T(p[0]); if(!t) return;
+      addCls(el,'done',t.has(p[1]));
+    });
+    each('[data-mc-title]',  function(el){ el.hidden=!hasTitle(el.getAttribute('data-mc-title')); });
+    each('[data-mc-notitle]',function(el){ el.hidden= hasTitle(el.getAttribute('data-mc-notitle')); });
+  }
+
+  /* ── หน้านี้คือชิ้นไหน แล้วอ่านถึงท้ายรึยัง ── */
+  function watch(){
+    var m=document.querySelector('meta[name="mc-item"]');
+    if(!m) return;
+    var p=split(m.getAttribute('content')), t=T(p[0]);
+    if(!t || !p[1]) return;
+    var end=document.querySelector('[data-mc-end]')||document.querySelector('footer');
+    var fired=false;
+    function fire(){ if(fired) return; fired=true; t.mark(p[1]); }
+    if(end && window.IntersectionObserver){
+      new IntersectionObserver(function(es,o){
+        if(es[0].isIntersecting){ o.disconnect(); fire(); }
+      },{rootMargin:'0px 0px -12% 0px'}).observe(end);
+    } else {
+      fire();   /* เบราว์เซอร์เก่า — นับให้เลยดีกว่าไม่นับ */
+    }
+    /* แตะภาพไปตอนต่อไป = อ่านตอนนี้จบแล้วเหมือนกัน */
+    var tn=document.querySelector('.tapnext');
+    if(tn) tn.addEventListener('click',fire);
+  }
+
+  function boot(){ heal(); paint(); watch(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
+  else boot();
 })();
-'''.replace('%EPS%', eps_js)
+'''.replace('%TRACKS%', tracks_js)
 
 os.makedirs(os.path.join(ROOT, 'assets'), exist_ok=True)
-open(os.path.join(ROOT, 'assets', 'progress.js'), 'w', encoding='utf-8').write(PROGRESS_JS)
+open(os.path.join(ROOT, 'assets', 'quest.js'), 'w', encoding='utf-8').write(QUEST_JS)
+
+# ไฟล์เดิมถูกแทนที่ด้วย quest.js แล้ว
+_old = os.path.join(ROOT, 'assets', 'progress.js')
+if os.path.exists(_old):
+    os.remove(_old)
 
 # บล็อก "อ่านจบแล้ว" — ใช้ทั้งหน้ารวมและหน้าตอน (ต่างกันแค่ path)
 def finish_block(up):
-    return f'''<div class="finish" data-mc-done hidden>
+    return f'''<div class="finish" data-mc-done="forge" hidden>
     <span class="fl">⚒️ อ่านครบทุกตอนแล้ว</span>
     <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
     <p>ตั้งแต่เครื่องเครื่องแรก จนถึงก้าวที่ 10 — ครบทั้ง 12 ตอน<br>
        ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
     <div class="codebox">
       <span class="lb">รหัสของคุณ</span>
-      <code id="fcode">{FINISH_CODE}</code>
+      <code id="fcode">{FORGE_CODE}</code>
       <button type="button" class="cp" id="fcopy">คัดลอก</button>
     </div>
     <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ผ่านโรงตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ</p>
@@ -266,7 +388,9 @@ def finish_block(up):
       <p>กิลด์ของเราเลยมีไว้แบบนั้น ไม่ได้มีไว้ขายอะไรกับคุณ
          แต่มีไว้ให้คนที่อยากโตทั้งเรื่องงานและเรื่องชีวิต มาโตไปด้วยกัน<br>
          <b>ใครเจอเรา คนนั้นโชคดี — #glhf</b></p>
-      <a class="fbtn ghost disp" href="{up}#glhf">🍀 ดูว่าบ้านนี้มีอะไรบ้าง</a>
+      <a class="fbtn ghost disp" href="{up}walkthrough/">🗺️ เปิด Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ</a>
+      <p class="sm">หน้านี้เปิดให้เฉพาะคนที่อ่านจบ — ถอดกลไกของเรื่องที่คุณเพิ่งอ่าน
+         และเล่าว่าบ้านหลังนี้สร้างขึ้นมายังไง</p>
     </div>
   </div>'''
 
@@ -370,7 +494,7 @@ cards = []
 for i, (key, num, title, slug, special) in enumerate(EPISODES):
     m = meta[key]
     badge = ' <span class="sp">ตอนพิเศษ</span>' if special else ''
-    cards.append(f'''    <a class="ep" href="{slug}/" data-mc-read="{slug}">
+    cards.append(f'''    <a class="ep" href="{slug}/" data-mc-item="forge:{slug}">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/{key}-thumb.webp">
@@ -394,12 +518,12 @@ index_body = f'''<header class="bar"><div class="wrap">
   <h1 class="disp">{SERIES}</h1>
   <p>19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านเกมให้ออก หา META ให้เจอ แล้วพาทั้งทีมไปต่อ<br>11 ตอน กับอีก 1 ตอนพิเศษ</p>
   <div class="startrow">
-    <a class="start disp" data-mc-continue="" href="{EPISODES[0][3]}/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
-    <a class="start disp" data-mc-demote="ghost" href="{EPISODES[0][3]}/">เริ่มอ่านจากตอนแรก</a>
+    <a class="start disp" data-mc-continue="forge:" href="{EPISODES[0][3]}/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
+    <a class="start disp" data-mc-demote="forge:ghost" href="{EPISODES[0][3]}/">เริ่มอ่านจากตอนแรก</a>
   </div>
   <div class="prog">
-    <div class="track"><i data-mc-bar></i></div>
-    <span class="tx" data-mc-progress hidden></span>
+    <div class="track"><i data-mc-bar="forge"></i></div>
+    <span class="tx" data-mc-progress="forge" hidden></span>
   </div>
 </div></section>
 
@@ -408,7 +532,7 @@ index_body = f'''<header class="bar"><div class="wrap">
 {chr(10).join(cards)}
   </div>
   {finish_block('../')}
-  <p class="rstw" data-mc-any hidden><button type="button" class="rst" id="rstBtn">ล้างความคืบหน้าการอ่าน</button></p>
+  <p class="rstw" data-mc-any="forge" hidden><button type="button" class="rst" id="rstBtn">ล้างความคืบหน้าการอ่าน</button></p>
 </main>
 
 <footer>
@@ -420,11 +544,11 @@ open(f'{DEST}/index.html', 'w', encoding='utf-8').write(page(
     f'{SERIES} — อ่านฟรีบน myclover',
     '19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ อ่านฟรีทุกตอน ไม่ต้องสมัคร',
     f'{SITE}/forge/img/09s-og.jpg', index_body, INDEX_CSS,
-    '<script defer src="../assets/progress.js"></script>\n<script>' + COPY_JS + '''
+    '<script defer src="../assets/quest.js"></script>\n<script>' + COPY_JS + '''
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.getElementById('rstBtn');
   if(b) b.addEventListener('click',function(){
-    if(confirm('ล้างความคืบหน้าการอ่านทั้งหมด? เครื่องหมายที่อ่านแล้วจะหายไป')) window.MC_READ.reset();
+    if(confirm('ล้างความคืบหน้าการอ่านทั้งหมด? เครื่องหมายที่อ่านแล้วจะหายไป')) window.MC_QUEST.track('forge').reset();
   });
 });
 </script>\n''',
@@ -478,7 +602,7 @@ for i, (key, num, title, slug, special) in enumerate(EPISODES):
 
     end = ''
     if not next_ep:
-        end = '''<div class="endnote" data-mc-undone>
+        end = '''<div class="endnote" data-mc-undone="forge">
         <b class="disp">🍀 ถึงตอนสุดท้ายแล้วครับ ขอบคุณที่อ่านมาถึงตรงนี้</b>
         ถ้ายังเก็บไม่ครบทุกตอน ย้อนกลับไปเก็บได้เลย — อ่านครบเมื่อไหร่มีของให้
         <div class="row" style="margin-top:16px">
@@ -517,11 +641,11 @@ for i, (key, num, title, slug, special) in enumerate(EPISODES):
   </picture>{tap_c}
 </main>
 
-<nav class="wrap nav" id="endmark">
+<nav class="wrap nav" data-mc-end>
   <div class="row">
       {nav}
   </div>
-  <p class="epprog"><span class="tx" data-mc-progress hidden></span></p>
+  <p class="epprog"><span class="tx" data-mc-progress="forge" hidden></span></p>
   {end}
   {finish_block('../../')}
   <p class="kb">{tap_hint}</p>
@@ -532,7 +656,7 @@ for i, (key, num, title, slug, special) in enumerate(EPISODES):
   <p style="margin-top:6px"><a href="../">ทุกตอน</a> · <a href="../../">กลับหน้าบ้าน</a> · <a href="../../privacy/">ข้อมูลของคุณ</a></p>
 </footer>'''
 
-    js = '<script defer src="../../assets/progress.js"></script>\n<script>' + '''
+    js = '<script defer src="../../assets/quest.js"></script>\n<script>' + '''
 document.addEventListener('keydown',function(e){
   if(e.altKey||e.ctrlKey||e.metaKey) return;
   var t=e.target.tagName;
@@ -542,33 +666,13 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight') go=document.querySelector('[data-next]');
   if(go){ e.preventDefault(); location.href=go.getAttribute('href'); }
 });
-''' + COPY_JS + '''
-/* นับว่าอ่านตอนนี้แล้ว เมื่อเลื่อนมาถึงท้ายตอนจริง ๆ */
-(function(){
-  var SLUG='%SLUG%';
-  document.addEventListener('DOMContentLoaded',function(){
-    var P=window.MC_READ; if(!P) return;
-    var done=false;
-    function mark(){ if(done) return; done=true; P.mark(SLUG); }
-    var end=document.getElementById('endmark');
-    if(end && window.IntersectionObserver){
-      new IntersectionObserver(function(es,o){
-        if(es[0].isIntersecting){ o.disconnect(); mark(); }
-      },{rootMargin:'0px 0px -12% 0px'}).observe(end);
-    } else {
-      mark();   /* เบราว์เซอร์เก่า — นับให้เลยดีกว่าไม่นับ */
-    }
-    /* แตะภาพเพื่อไปตอนต่อไป = อ่านตอนนี้จบแล้วเหมือนกัน */
-    var tn=document.querySelector('.tapnext');
-    if(tn) tn.addEventListener('click',mark);
-  });
-})();
-</script>
-'''.replace('%SLUG%', slug)
+''' + COPY_JS + '</script>\n'
+    # การนับว่าอ่านจบตอนนี้ quest.js จัดการเองจาก <meta name="mc-item">
     open(f'{d}/index.html', 'w', encoding='utf-8').write(page(
         f'ตอนที่ {num}: {title} — {SERIES} | myclover',
         f'{SERIES} ตอนที่ {num} — {title} · อ่านฟรี ไม่ต้องสมัคร',
         f'{SITE}/forge/img/{key}-og.jpg', body, READ_CSS, js,
-        canonical=f'<link rel="canonical" href="{SITE}/forge/{slug}/">\n'))
+        canonical=(f'<link rel="canonical" href="{SITE}/forge/{slug}/">\n'
+                   f'<meta name="mc-item" content="forge:{slug}">\n')))
 
 print(f'สร้างหน้าเว็บ {len(EPISODES)+1} หน้า')

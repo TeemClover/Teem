@@ -11,6 +11,7 @@
 <meta property="og:image" content="https://myclover.com/forge/img/09s-og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://myclover.com/forge/ep9-5-the-guild-i-imagined/">
+<meta name="mc-item" content="forge:ep9-5-the-guild-i-imagined">
 <meta name="theme-color" content="#0A2818">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
@@ -128,15 +129,15 @@ footer a{color:rgb(var(--green));font-weight:600}
   </picture></a>
 </main>
 
-<nav class="wrap nav" id="endmark">
+<nav class="wrap nav" data-mc-end>
   <div class="row">
       <a class="nb disp" href="../ep9-open-the-screen/" rel="prev" data-prev>← ตอนก่อนหน้า</a>
       <a class="nb disp" href="../">ดูทุกตอน</a>
       <a class="nb main disp" href="../ep10-the-tenth-step/" rel="next" data-next>ตอนต่อไป →</a>
   </div>
-  <p class="epprog"><span class="tx" data-mc-progress hidden></span></p>
+  <p class="epprog"><span class="tx" data-mc-progress="forge" hidden></span></p>
   
-  <div class="finish" data-mc-done hidden>
+  <div class="finish" data-mc-done="forge" hidden>
     <span class="fl">⚒️ อ่านครบทุกตอนแล้ว</span>
     <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
     <p>ตั้งแต่เครื่องเครื่องแรก จนถึงก้าวที่ 10 — ครบทั้ง 12 ตอน<br>
@@ -157,7 +158,9 @@ footer a{color:rgb(var(--green));font-weight:600}
       <p>กิลด์ของเราเลยมีไว้แบบนั้น ไม่ได้มีไว้ขายอะไรกับคุณ
          แต่มีไว้ให้คนที่อยากโตทั้งเรื่องงานและเรื่องชีวิต มาโตไปด้วยกัน<br>
          <b>ใครเจอเรา คนนั้นโชคดี — #glhf</b></p>
-      <a class="fbtn ghost disp" href="../../#glhf">🍀 ดูว่าบ้านนี้มีอะไรบ้าง</a>
+      <a class="fbtn ghost disp" href="../../walkthrough/">🗺️ เปิด Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ</a>
+      <p class="sm">หน้านี้เปิดให้เฉพาะคนที่อ่านจบ — ถอดกลไกของเรื่องที่คุณเพิ่งอ่าน
+         และเล่าว่าบ้านหลังนี้สร้างขึ้นมายังไง</p>
     </div>
   </div>
   <p class="kb">แตะที่ภาพเพื่อไปตอนต่อไป · หรือกดลูกศร ← → บนคีย์บอร์ด</p>
@@ -167,7 +170,7 @@ footer a{color:rgb(var(--green));font-weight:600}
   <p>🍀 เรื่องเล่าจากโรงตีเหล็ก · myclover.com</p>
   <p style="margin-top:6px"><a href="../">ทุกตอน</a> · <a href="../../">กลับหน้าบ้าน</a> · <a href="../../privacy/">ข้อมูลของคุณ</a></p>
 </footer>
-<script defer src="../../assets/progress.js"></script>
+<script defer src="../../assets/quest.js"></script>
 <script>
 document.addEventListener('keydown',function(e){
   if(e.altKey||e.ctrlKey||e.metaKey) return;
@@ -188,27 +191,6 @@ document.addEventListener('keydown',function(e){
     if(navigator.clipboard&&navigator.clipboard.writeText){
       navigator.clipboard.writeText(t).then(ok,function(){ b.textContent=t; });
     } else { b.textContent=t; }
-  });
-})();
-
-/* นับว่าอ่านตอนนี้แล้ว เมื่อเลื่อนมาถึงท้ายตอนจริง ๆ */
-(function(){
-  var SLUG='ep9-5-the-guild-i-imagined';
-  document.addEventListener('DOMContentLoaded',function(){
-    var P=window.MC_READ; if(!P) return;
-    var done=false;
-    function mark(){ if(done) return; done=true; P.mark(SLUG); }
-    var end=document.getElementById('endmark');
-    if(end && window.IntersectionObserver){
-      new IntersectionObserver(function(es,o){
-        if(es[0].isIntersecting){ o.disconnect(); mark(); }
-      },{rootMargin:'0px 0px -12% 0px'}).observe(end);
-    } else {
-      mark();   /* เบราว์เซอร์เก่า — นับให้เลยดีกว่าไม่นับ */
-    }
-    /* แตะภาพเพื่อไปตอนต่อไป = อ่านตอนนี้จบแล้วเหมือนกัน */
-    var tn=document.querySelector('.tapnext');
-    if(tn) tn.addEventListener('click',mark);
   });
 })();
 </script>
