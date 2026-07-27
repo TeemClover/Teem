@@ -55,13 +55,13 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 /* เลือกสาย */
 .classes{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
 @media(max-width:760px){.classes{grid-template-columns:repeat(2,1fr)}}
-.cbtn{background:#fff;border:2px solid rgb(var(--line)/.1);border-radius:16px;padding:18px 12px;text-align:center;cursor:pointer;transition:.15s;font-family:inherit;color:inherit;display:block;width:100%}
+.cbtn{background:#fff;border:2px solid rgb(var(--line)/.1);border-radius:16px;padding:18px 15px;text-align:left;cursor:pointer;transition:.15s;font-family:inherit;color:inherit;display:block;width:100%}
 .cbtn:hover{transform:translateY(-3px);box-shadow:0 16px 32px -22px rgb(18 40 28/.5)}
 .cbtn .emo{font-size:30px;line-height:1}
 .cbtn b{display:block;font-family:"Bai Jamjuree";font-size:16px;margin-top:9px}
-.cbtn span{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;color:rgb(var(--muted));margin-top:2px}
+.cbtn .who{display:block;font-size:12px;font-weight:400;color:rgb(var(--muted));margin-top:5px;line-height:1.55}
 .cbtn[aria-pressed="true"]{border-color:var(--ac);background:var(--acbg)}
-.cbtn[aria-pressed="true"] span{color:var(--ac)}
+
 
 /* ฟอร์ม */
 .field{margin-bottom:18px}
@@ -109,10 +109,6 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .iosnote{font-size:12.5px;color:rgb(var(--muted));margin-top:10px;line-height:1.6}
 .savemsg{font-size:13px;color:rgb(var(--green));font-weight:600;min-height:18px;margin-top:8px;text-align:center}
 
-.regbox{margin-top:16px;background:#fff;border:1px solid rgb(190 148 66/.4);border-radius:16px;padding:18px 20px}
-.regbox b{display:block;font-family:"Bai Jamjuree";font-size:15.5px;margin-bottom:5px}
-.regbox p{font-size:13.5px;color:rgb(var(--muted))}
-.regbox a{display:inline-block;margin-top:12px;background:rgb(var(--gold));color:rgb(var(--green-deep));border-radius:11px;padding:11px 18px;font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px}
 
 /* คู่มือ */
 .manual{background:rgb(27 106 66/.05);border-top:1px solid rgb(var(--line)/.07);border-bottom:1px solid rgb(var(--line)/.07);padding:46px 0}
@@ -231,12 +227,6 @@ body.js .reveal.in{opacity:1;transform:none}
       <p class="savemsg" id="saveMsg" role="status" aria-live="polite"></p>
       <p class="iosnote" id="iosNote">ใช้ไอโฟนหรือเปิดจากในแอป LINE? กด <b>“เปิดรูป”</b> แล้วกดค้างที่รูปเพื่อบันทึกลงเครื่องได้เลยครับ</p>
     </div>
-
-    <div class="regbox">
-      <b>อยากได้เลขสมาชิกจริงบนการ์ด?</b>
-      <p>ตอนนี้การ์ดของคุณขึ้นเลขชั่วคราวอยู่ ลงทะเบียนแล้วจะได้เลขประจำตัวจริงของบ้าน พร้อมตราศิษย์เก่าถ้าคุณอยู่กับเรามาตั้งแต่ยุคนั้น</p>
-      <a href="../register/">รับเลขสมาชิกจริง →</a>
-    </div>
   </div>
 
 </div></div>
@@ -266,10 +256,10 @@ body.js .reveal.in{opacity:1;transform:none}
    ค่าคงที่ของการ์ด
    ═══════════════════════════════════════════════════════════ */
 var CLASSES={
-  THINKER:{th:'สายคิด',      emo:'🧠', ac:'#2E4A8F'},
-  TASTER :{th:'สายกิน',      emo:'🍜', ac:'#C4622D'},
-  KEEPER :{th:'สายคลีน',     emo:'💪', ac:'#1F8A70'},
-  MAKER  :{th:'สายประดิษฐ์', emo:'🧰', ac:'#4B5A67'}
+  THINKER:{th:'สายคิด',      emo:'🧠', ac:'#2E4A8F', who:'ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ'},
+  TASTER :{th:'สายกิน',      emo:'🍜', ac:'#C4622D', who:'รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ'},
+  KEEPER :{th:'สายคลีน',     emo:'💪', ac:'#1F8A70', who:'มีวินัยอยู่แล้ว ขาดแค่ระบบที่วัดผลได้'},
+  MAKER  :{th:'สายประดิษฐ์', emo:'🧰', ac:'#4B5A67', who:'ชอบสร้างของ อยากให้เครื่องมือทำงานแทนได้'}
 };
 var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
 var TITLES={
@@ -424,12 +414,12 @@ function drawCardArt(c,st){
   font(c,'700',nameSize,'Bai Jamjuree');
   c.fillText(cls.th,x0+48,hy+hh/2);
 
-  var mid=st.member||'MC-2569-????';
-  c.textAlign='right';
-  c.globalAlpha=st.member?1:.62;
-  font(c,'600',16,'Bai Jamjuree');
-  c.fillText(mid,x1-14,hy+hh/2);
-  c.globalAlpha=1;
+  /* เลขประจำตัวออกให้เฉพาะชาวกิลด์ — คนทั่วไปไม่มีเลข ไม่ต้องโชว์ช่องว่างให้สงสัย */
+  if(foil && st.member){
+    c.textAlign='right';
+    font(c,'600',16,'Bai Jamjuree');
+    c.fillText(st.member,x1-14,hy+hh/2);
+  }
 
   /* ---- ช่องรูป 4:5 ---- */
   var py=hy+hh+14, ph=359, pw=Math.round(ph*4/5), px=Math.round((CW-pw)/2);
@@ -601,10 +591,10 @@ function drawLandscape(cv,st){
   c.fillText(nick,px,ty+ns/2);
   ty+=ns+30;
 
-  c.globalAlpha=st.member?1:.55;
-  font(c,'600',27,'Bai Jamjuree'); c.fillStyle=GREEN;
-  c.fillText(st.member||'MC-2569-????',px,ty+15);
-  c.globalAlpha=1;
+  if(st.titles.indexOf('GUILD')>=0 && st.member){
+    font(c,'600',27,'Bai Jamjuree'); c.fillStyle=GREEN;
+    c.fillText(st.member,px,ty+15);
+  }
   ty+=30;
 
   if(st.titles.length){
@@ -680,7 +670,7 @@ ORDER.forEach(function(k){
   var b=document.createElement('button');
   b.type='button'; b.className='cbtn'; b.setAttribute('aria-pressed', st.cls===k?'true':'false');
   b.style.setProperty('--ac',c.ac); b.style.setProperty('--acbg',hexA(c.ac,.07));
-  b.innerHTML='<span class="emo">'+c.emo+'</span><b class="disp">'+c.th+'</b><span>'+k+'</span>';
+  b.innerHTML='<span class="emo">'+c.emo+'</span><b class="disp">'+c.th+'</b><span class="who">'+c.who+'</span>';
   b.addEventListener('click',function(){
     st.cls=k; ls.set('mc_class',k);
     Array.prototype.forEach.call(elClasses.children,function(x){ x.setAttribute('aria-pressed','false'); });

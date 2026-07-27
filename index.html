@@ -7,6 +7,10 @@
 <meta name="description" content="บ้านของชาว Clover ตั้งแต่ปี 2010 · เราเชื่อใน #glhf — Good Luck, Have Fun คำอวยพรที่เกมเมอร์ทั้งโลกพูดก่อนเริ่มเกม แม้แต่กับคู่แข่ง · ห้องเรียน AI ฟรี เครื่องมือฟรี และบ้านที่กลับมาได้เสมอ">
 <meta property="og:title" content="myclover — ใครเจอเรา คนนั้นโชคดี">
 <meta property="og:description" content="#glhf · Good Luck, Have Fun — เพราะโชคดีที่สนุกด้วย คือโชคที่ไปต่อได้ทุกวัน">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://myclover.com/">
+<meta property="og:image" content="https://myclover.com/img/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0A2818">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
@@ -40,8 +44,9 @@ section{padding:clamp(64px,9vw,110px) 0}
   background-image:radial-gradient(900px 520px at 50% -12%,rgb(27 106 66/.6),transparent 66%),
                    radial-gradient(620px 420px at 92% 112%,rgb(190 148 66/.18),transparent 62%)}
 #gate .inner{position:relative;z-index:2;text-align:center;max-width:470px;padding:32px 26px;width:100%}
-#gate .clover{font-size:66px;display:inline-block;animation:sway 4s ease-in-out infinite;cursor:pointer;user-select:none;
-  filter:drop-shadow(0 8px 22px rgb(0 0 0/.4))}
+#gate .clover{display:inline-block;animation:sway 4s ease-in-out infinite;cursor:pointer;user-select:none;
+  filter:drop-shadow(0 10px 24px rgb(0 0 0/.45)) drop-shadow(0 0 18px rgb(111 203 147/.28))}
+#gate .clover svg{display:block}
 @keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
 #gate h1{font-size:clamp(25px,5vw,33px);font-weight:700;margin-top:18px;line-height:1.3}
 #gate .sub{color:rgb(255 255 255/.76);margin-top:10px;font-size:15.5px}
@@ -88,6 +93,8 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
   background:linear-gradient(90deg,rgb(10 40 24/.94) 0%,rgb(10 40 24/.78) 46%,rgb(10 40 24/.42) 100%)}
 .forge-banner .in{position:relative;display:flex;align-items:center;gap:16px;padding:16px 22px;
   max-width:1080px;margin:0 auto;color:#fff}
+.forge-banner .thumb{flex:none;width:104px;height:78px;object-fit:cover;border-radius:10px;
+  border:1.5px solid rgb(190 148 66/.55);box-shadow:0 10px 22px -10px rgb(0 0 0/.75)}
 .forge-banner .tx{flex:1;min-width:0}
 .forge-banner .kick{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.16em;
   text-transform:uppercase;color:rgb(var(--gold))}
@@ -101,7 +108,40 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
   .forge-banner .in{padding:13px 18px;gap:12px}
   .forge-banner small{display:none}
   .forge-banner .cta{padding:10px 14px;font-size:13px}
+  .forge-banner .thumb{width:74px;height:56px}
 }
+
+
+/* ═══════════ ด่านเลือกสาย ═══════════ */
+.picker{background:rgb(27 106 66/.055);border-top:1px solid rgb(var(--line)/.07);border-bottom:1px solid rgb(var(--line)/.07);
+  padding:clamp(48px,7vw,80px) 0}
+.pickgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}
+@media(max-width:860px){.pickgrid{grid-template-columns:repeat(2,1fr)}}
+.pk{background:#fff;border:2px solid rgb(var(--line)/.1);border-radius:18px;padding:22px 18px;text-align:left;
+  cursor:pointer;font-family:inherit;color:inherit;transition:transform .18s,box-shadow .18s,border-color .18s;width:100%}
+.pk:hover{transform:translateY(-4px);box-shadow:0 20px 40px -26px rgb(18 40 28/.5)}
+.pk .e{font-size:30px;line-height:1}
+.pk b{display:block;font-family:"Bai Jamjuree";font-size:17px;margin:10px 0 5px}
+.pk span{display:block;font-size:13.5px;color:rgb(var(--muted));line-height:1.6}
+.pk[aria-pressed=true]{border-color:var(--ac);background:var(--acbg)}
+.pk[aria-pressed=true] b{color:var(--ac)}
+.picked{display:none;margin-top:26px;background:#fff;border:1px solid rgb(var(--line)/.11);border-radius:20px;
+  padding:clamp(22px,3.5vw,32px);box-shadow:0 2px 8px rgb(18 40 28/.05)}
+.picked.on{display:block;animation:pop .45s cubic-bezier(.22,1,.36,1)}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.picked .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.picked .top .e{font-size:32px}
+.picked .top b{font-family:"Bai Jamjuree";font-size:20px}
+.picked .swap{margin-left:auto;font-size:13px;font-weight:600;color:rgb(var(--muted));background:transparent;
+  border:1px solid rgb(var(--line)/.18);border-radius:999px;padding:8px 15px;cursor:pointer;font-family:inherit;min-height:40px}
+.picked .swap:hover{border-color:rgb(var(--green)/.55);color:rgb(var(--green))}
+.picked .lead{font-size:16px;color:rgb(var(--ink)/.78);margin:12px 0 4px}
+.gifts{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:18px}
+@media(max-width:760px){.gifts{grid-template-columns:1fr}}
+.gift{display:block;background:rgb(27 106 66/.05);border:1px solid rgb(27 106 66/.16);border-radius:14px;padding:15px 17px;transition:.16s}
+.gift:hover{background:rgb(27 106 66/.09);border-color:rgb(27 106 66/.4);transform:translateY(-2px)}
+.gift b{display:block;font-family:"Bai Jamjuree";font-size:15px}
+.gift small{display:block;font-size:12.5px;color:rgb(var(--muted));margin-top:2px}
 
 /* ═══════════ hero ═══════════ */
 .hero{padding:clamp(56px,8vw,96px) 0 clamp(40px,6vw,70px);position:relative;overflow:hidden;
@@ -234,10 +274,12 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 /* ═══════════ จดหมาย ═══════════ */
 .letter-sec{background:
   radial-gradient(620px 340px at 88% -10%,rgb(190 148 66/.13),transparent 60%)}
-.letter{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:22px;padding:clamp(28px,5vw,52px);
+.letter{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:22px;padding:clamp(28px,5vw,52px);padding-top:clamp(48px,6vw,62px);
   box-shadow:0 3px 10px rgb(18 40 28/.05);max-width:760px;margin:34px auto 0;position:relative}
-.letter::before{content:"🍀";position:absolute;top:-18px;left:clamp(28px,5vw,52px);font-size:34px;
-  background:rgb(var(--paper));padding:0 10px}
+.letter .seal{position:absolute;top:-28px;left:clamp(24px,5vw,48px);width:58px;height:58px;border-radius:50%;
+  background:#fff;border:2px solid rgb(190 148 66/.5);display:grid;place-items:center;
+  box-shadow:0 12px 26px -14px rgb(18 40 28/.55)}
+.letter .seal svg{width:33px;height:34px;display:block}
 .letter p{font-size:16.5px;margin:15px 0;color:rgb(var(--ink)/.84)}
 .letter p:first-of-type{margin-top:0}
 .letter b{color:rgb(var(--green))}
@@ -292,12 +334,26 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 </head>
 <body class="locked">
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="cvg" x1="0" y1="0" x2=".8" y2="1">
+    <stop offset="0" stop-color="#7FD8A2"/><stop offset=".45" stop-color="#31955C"/><stop offset="1" stop-color="#0E4A2C"/>
+  </linearGradient>
+  <path id="cvl" d="M0 0 C -5 -9 -19 -11 -19 -23 C -19 -32 -10 -35 -4.5 -29.5 C -2.5 -27.5 -1 -26.5 0 -24.5 C 1 -26.5 2.5 -27.5 4.5 -29.5 C 10 -35 19 -32 19 -23 C 19 -11 5 -9 0 0 Z"/>
+  <g id="clover-mark">
+    <path d="M0 16 C 5 30 2 42 -7 50" stroke="#2C8A55" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    <g fill="url(#cvg)" stroke="#0E4A2C" stroke-width="1.2" stroke-linejoin="round" transform="rotate(45)">
+      <use href="#cvl"/><use href="#cvl" transform="rotate(90)"/>
+      <use href="#cvl" transform="rotate(180)"/><use href="#cvl" transform="rotate(270)"/>
+    </g>
+  </g>
+</defs></svg>
+
 <div id="prog"></div>
 
 <!-- ═══════════ ประตูบ้าน ═══════════ -->
 <div id="gate">
   <div class="inner">
-    <span class="clover" id="gateClover" title="ลองกดดูสี่ครั้ง">🍀</span>
+    <span class="clover" id="gateClover" role="img" aria-label="โคลเวอร์สี่แฉก" title="ลองกดดูสี่ครั้ง"><svg viewBox="-52 -50 104 108" width="80" height="83" aria-hidden="true"><use href="#clover-mark"/></svg></span>
     <h1 class="disp">บ้านหลังนี้เปิดอีกครั้ง<br>8 สิงหาคม</h1>
     <p class="sub">ใครมีกุญแจ เข้าก่อนได้เลย</p>
     <div class="count" aria-live="polite">
@@ -339,6 +395,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   </picture></span>
   <span class="veil"></span>
   <span class="in">
+    <img class="thumb" src="forge/img/promo.jpg" alt="" width="480" height="360" loading="eager" decoding="async" onerror="this.remove()">
     <span class="tx">
       <span class="kick">การ์ตูนใหม่ · อ่านฟรีทุกตอน</span>
       <b class="disp">เรื่องเล่าจากโรงตีเหล็ก</b>
@@ -363,6 +420,16 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <span class="chip">🏠 กลับมาเมื่อไหร่ก็ได้</span>
   </div>
 </div></header>
+
+
+<!-- ── ด่านเลือกสาย ── -->
+<section class="picker" id="pick"><div class="wrap">
+  <span class="eyebrow reveal">เลือกได้ ไม่เลือกก็ได้</span>
+  <h2 class="h2 disp reveal" style="--d:.05s">วันนี้อะไรพามาที่นี่?</h2>
+  <p class="sub reveal" style="--d:.09s">เลือกอันที่ใกล้ตัวที่สุด เดี๋ยวเราหยิบของในบ้านที่ตรงกับคุณมาวางให้ — เปลี่ยนใจทีหลังได้ตลอด และห้องอื่นก็ยังเข้าได้เหมือนเดิมทุกห้อง</p>
+  <div class="pickgrid" id="pickGrid"></div>
+  <div class="picked" id="picked"></div>
+</div></section>
 
 <!-- ── ริบบิ้น ── -->
 <div class="ribbon" aria-hidden="true"><div class="track">
@@ -475,7 +542,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a class="ls reveal" style="--d:.04s" href="classroom/free-ai.html"><span class="lv">LV.1</span><span><b>AI ฟรีที่ควรมีติดเครื่อง</b><small>Gemini + NotebookLM เริ่มจากศูนย์</small></span></a>
     <a class="ls reveal" style="--d:.08s" href="classroom/image-ai.html"><span class="lv">LV.2</span><span><b>ทำภาพด้วย AI</b><small>ภาพที่ใช้งานได้จริง</small></span></a>
     <a class="ls reveal" style="--d:.12s" href="classroom/clip-ai.html"><span class="lv">LV.3</span><span><b>ทำคลิปสั้นด้วย AI</b><small>ตัดคลิปแรกให้จบ</small></span></a>
-    <a class="ls reveal" style="--d:.16s" href="classroom/notebooklm.html"><span class="lv">LV.4</span><span><b>สรุปประชุม &amp; เอกสาร</b><small>อ่านน้อยลง เข้าใจมากขึ้น</small></span></a>
+    <a class="ls reveal" style="--d:.16s" href="classroom/notebooklm.html"><span class="lv">LV.4</span><span><b>สรุปประชุม &amp; ทำอินโฟกราฟิก</b><small>ใส่ได้ทั้งไฟล์ เสียง และคลิปยูทูป</small></span></a>
     <a class="ls reveal" style="--d:.2s" href="classroom/prompts.html"><span class="lv">LV.5</span><span><b>คลังพร้อมท์แจกฟรี</b><small>ก๊อปไปใช้ได้เลย</small></span></a>
     <a class="ls reveal" style="--d:.24s" href="classroom/first-web.html"><span class="lv">LV.6</span><span><b>สร้างเว็บแรกของตัวเอง</b><small>ด่านสุดท้ายของห้องเรียน</small></span></a>
   </div>
@@ -486,6 +553,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <span class="eyebrow reveal">จดหมายจากเจ้าของบ้าน</span>
   <h2 class="h2 disp reveal" style="--d:.06s">ทำไมถึงกลับมาเปิดบ้านหลังนี้</h2>
   <div class="letter reveal" style="--d:.1s">
+    <span class="seal" aria-hidden="true"><svg viewBox="-52 -50 104 108"><use href="#clover-mark"/></svg></span>
     <p>สวัสดีครับ</p>
     <p>โดเมนนี้อายุ 13 ปีแล้ว สมัยนั้นมันคือที่ที่พวกเรามาเจอกัน คุยกัน แล้ววันหนึ่งชีวิตก็พาแต่ละคนแยกย้ายไปตามทางของตัวเอง</p>
     <p>ผมเป็นคนที่โตมากับเกมการ์ด และเพิ่งได้รู้อีกครั้งว่า<b>ความรู้สึกตอนชนหมัดกับใครสักคนก่อนเริ่มเกมมันดีแค่ไหน</b> — มันไม่เกี่ยวกับว่าใครจะชนะเลย มันคือการที่เราสองคนพร้อมจะสนุกไปด้วยกัน</p>
@@ -658,6 +726,89 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     Array.prototype.forEach.call(els,function(el){ el.classList.add('in'); });
     var b=document.getElementById('bump'); if(b) b.classList.add('hit');
   },3500);
+})();
+
+
+/* ═══════════════════════════════════════════════════════
+   ด่านเลือกสาย — เลือกแล้วบ้านจัดของให้ตรงคน
+   ไม่เลือกก็เห็นทุกอย่างครบเหมือนเดิม ไม่มีการล็อกทาง
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var PATHS={
+    THINKER:{th:'สายคิด',emo:'🧠',ac:'#2E4A8F',
+      hook:'อยากเจอคนที่คิดเป็นระบบเหมือนกัน',
+      who:'คนที่ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ',
+      lead:'คุณคิดเยอะอยู่แล้ว สิ่งที่ขาดคือคนที่คิดเป็นระบบพอจะคุยด้วยได้ และเครื่องมือที่ช่วยจัดระเบียบความคิด',
+      gifts:[['classroom/notebooklm.html','สรุปประชุมและทำอินโฟกราฟิก','โยนเสียงหรือเอกสารเข้าไป ได้ภาพเดียวที่ส่งต่อได้'],
+             ['forge/','เรื่องเล่าจากโรงตีเหล็ก','19 ปีของคนที่คิดมากกว่าขาย — อ่านฟรีทั้ง 12 ตอน'],
+             ['card/','ทำการ์ดประจำตัว','บอกคนอื่นได้ใน 1 ภาพว่าคุณเป็นสายไหน']]},
+    TASTER:{th:'สายกิน',emo:'🍜',ac:'#C4622D',
+      hook:'อยากกินอร่อยแบบไม่รู้สึกผิด',
+      who:'คนที่รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ',
+      lead:'บ้านนี้ไม่เชื่อเรื่องอดอาหาร เราเชื่อว่ากินเป็นดีกว่าอดตาย และเรื่องกินเป็นเสาแรกที่เรากำลังทำอยู่',
+      gifts:[['club/','แวะดู myclover club','จุดยืนเรื่องสุขภาพในแบบที่ไม่ต้องเหมือนใคร'],
+             ['classroom/','ห้องเรียน AI','6 คลาสฟรี ใช้ได้กับทุกเรื่องรวมถึงเรื่องกิน'],
+             ['card/','ทำการ์ดประจำตัว','ปักธงว่าคุณคือสายกิน']]},
+    KEEPER:{th:'สายคลีน',emo:'💪',ac:'#1F8A70',
+      hook:'อยากมีระบบที่วัดผลได้',
+      who:'คนที่มีวินัยอยู่แล้ว ขาดแค่ระบบที่เห็นผลชัด',
+      lead:'คุณไม่ได้ขาดความตั้งใจ คุณขาดระบบที่วัดได้ว่าทำไปแล้วได้อะไร — เรากำลังทำเครื่องมือส่วนนั้นอยู่',
+      gifts:[['club/','แวะดู myclover club','กิน นอน ใช้พลัง — สามเสาที่วัดผลได้จริง'],
+             ['classroom/','ห้องเรียน AI','ให้ AI ช่วยจดและสรุปสิ่งที่คุณทำทุกวัน'],
+             ['card/','ทำการ์ดประจำตัว','เริ่มจากปักหมุดว่าคุณคือใคร']]},
+    MAKER:{th:'สายประดิษฐ์',emo:'🧰',ac:'#4B5A67',
+      hook:'อยากใช้ AI ให้เป็นในงานจริง',
+      who:'คนที่ชอบสร้างของ และอยากให้เครื่องมือทำงานแทนได้',
+      lead:'คุณมาถูกห้องแล้ว ห้องเรียนของบ้านนี้สร้างมาเพื่อคุณโดยตรง เริ่มจากคลาสแรกได้เลยวันนี้',
+      gifts:[['classroom/free-ai.html','คลาสแรก: AI ฟรีที่ควรมีติดเครื่อง','เริ่มจากศูนย์ จบใน 10 นาที'],
+             ['classroom/first-web.html','สร้างเว็บแรกของตัวเอง','ด่านสุดท้ายของห้องเรียน'],
+             ['card/','ทำการ์ดประจำตัว','เครื่องมือชิ้นแรกของบ้าน ลองใช้เลย']]}
+  };
+  var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
+  var grid=document.getElementById('pickGrid'), box=document.getElementById('picked');
+  if(!grid) return;
+  function get(){ try{ return localStorage.getItem('mc_class')||''; }catch(e){ return ''; } }
+  function set(v){ try{ localStorage.setItem('mc_class',v); }catch(e){} }
+
+  ORDER.forEach(function(k){
+    var d=PATHS[k], b=document.createElement('button');
+    b.type='button'; b.className='pk'; b.dataset.k=k;
+    b.style.setProperty('--ac',d.ac);
+    b.style.setProperty('--acbg',d.ac.replace('#','rgba(').replace(/^rgba\((..)(..)(..)$/,function(m,r,g,bl){
+      return 'rgba('+parseInt(r,16)+','+parseInt(g,16)+','+parseInt(bl,16)+',.07)';}));
+    b.setAttribute('aria-pressed','false');
+    b.innerHTML='<span class="e">'+d.emo+'</span><b class="disp">'+d.hook+'</b><span>'+d.who+'</span>';
+    b.addEventListener('click',function(){ choose(k,true); });
+    grid.appendChild(b);
+  });
+
+  function choose(k,scroll){
+    var d=PATHS[k];
+    set(k);
+    Array.prototype.forEach.call(grid.children,function(x){
+      x.setAttribute('aria-pressed', x.dataset.k===k?'true':'false');
+    });
+    box.innerHTML='<div class="top"><span class="e">'+d.emo+'</span><b class="disp">คุณเลือก'+d.th+'</b>'+
+      '<button type="button" class="swap" id="swapPath">เปลี่ยนสาย</button></div>'+
+      '<p class="lead">'+d.lead+'</p><div class="gifts">'+
+      d.gifts.map(function(g){ return '<a class="gift" href="'+g[0]+'"><b class="disp">'+g[1]+'</b><small>'+g[2]+'</small></a>'; }).join('')+
+      '</div>';
+    box.classList.add('on');
+    document.getElementById('swapPath').addEventListener('click',function(){
+      box.classList.remove('on');
+      Array.prototype.forEach.call(grid.children,function(x){ x.setAttribute('aria-pressed','false'); });
+      try{ localStorage.removeItem('mc_class'); }catch(e){}
+      grid.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+    /* การ์ดของสายนั้นเลื่อนขึ้นมาอยู่ต้นมือ — ใบอื่นยังอยู่ครบ */
+    var map={THINKER:'classroom/',TASTER:'club/',KEEPER:'club/',MAKER:'classroom/'};
+    document.querySelectorAll('.hand .pc').forEach(function(c){ c.style.order=''; });
+    var want=document.querySelector('.hand .pc[href="'+map[k]+'"]');
+    if(want) want.style.order='-1';
+    if(scroll) box.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  var cur=get();
+  if(PATHS[cur]) choose(cur,false);
 })();
 
 /* ═══════════════════════════════════════════════════════
