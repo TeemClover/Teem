@@ -588,8 +588,10 @@ READ_CSS = '''
 .strip{background:rgb(var(--deep));font-size:0;line-height:0}
 .strip picture{display:block}
 .strip img{width:100%;height:auto;margin:0 auto;display:block}
-/* ช่องต่อกันสนิท ไม่มีรอยต่อ · scroll-margin กันช่องโดนแถบบนบังตอนกระโดด */
-.panel{display:block;cursor:pointer;scroll-margin-top:56px;
+/* ช่องต่อกันสนิท ไม่มีรอยต่อ · scroll-margin กันช่องโดนแถบบนบังตอนกระโดด
+   ตรึงกว้างสุดที่ 1024px = ความกว้างจริงของไฟล์ต้นฉบับ
+   กว้างกว่านี้คือขยายเกินความละเอียดที่มี และบนจอคอมภาพจะสูงจนต้องย่อหน้าต่างถึงจะอ่านได้ */
+.panel{display:block;cursor:pointer;scroll-margin-top:56px;max-width:1024px;margin:0 auto;
   -webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .tapnext{display:block;cursor:pointer;-webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .nav{padding:22px 0 8px}
