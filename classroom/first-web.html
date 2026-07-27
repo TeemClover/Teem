@@ -58,6 +58,27 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 .cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:7px;padding:5px 11px;cursor:pointer;opacity:.92}
 .cpx:hover{opacity:1}
 @media(max-width:520px){.head{padding:28px 22px}.heroimg{margin:-28px -22px 18px;height:150px}}
+
+/* ── ช่องช่วยงาน ── */
+.tool{background:#fff;border:2px solid rgb(27 106 66/.22);border-radius:18px;padding:22px 24px;margin-top:16px;
+  box-shadow:0 2px 8px rgb(18 40 28/.05)}
+.tool .th{display:flex;align-items:center;gap:10px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:17px}
+.tool .th span{font-size:22px}
+.tool>p{font-size:14px;color:rgb(var(--muted));margin-top:6px}
+.gf{display:grid;gap:12px;margin-top:16px}
+@media(min-width:640px){.gf.two{grid-template-columns:1fr 1fr}}
+.gf label{display:block;font-family:"Bai Jamjuree",sans-serif;font-weight:600;font-size:13.5px;margin-bottom:5px}
+.gf input,.gf textarea,.gf select{width:100%;background:rgb(var(--paper));border:1px solid rgb(var(--ink)/.16);
+  border-radius:10px;padding:11px 13px;font-family:"Anuphan",sans-serif;font-size:14.5px;color:inherit;outline:none}
+.gf input:focus,.gf textarea:focus,.gf select:focus{border-color:rgb(var(--green)/.7);box-shadow:0 0 0 3px rgb(27 106 66/.1)}
+.gf textarea{min-height:76px;resize:vertical;line-height:1.6}
+.qlist{counter-reset:q;margin-top:14px;display:grid;gap:9px}
+.qi{display:flex;gap:11px;align-items:flex-start;background:rgb(27 106 66/.05);border:1px solid rgb(27 106 66/.16);
+  border-radius:12px;padding:12px 15px;font-size:14.5px}
+.qi::before{counter-increment:q;content:counter(q);flex:none;width:23px;height:23px;border-radius:50%;
+  background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;
+  font-weight:700;font-size:12.5px;margin-top:1px}
+.qi small{display:block;color:rgb(var(--muted));font-size:12.5px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -83,6 +104,7 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 </div>
 
 <h2><span class="n">2</span>สั่งสร้างเว็บใบแรก (ก๊อปทั้งก้อนได้เลย)</h2>
+<p class="tx">นี่คือทางพื้นฐาน — เติมในวงเล็บเอง ถ้าขี้เกียจเติม ข้ามไปข้อ 3 กับ 4 ได้เลย มีเครื่องช่วยให้แล้ว</p>
 <div class="steps">
   <div class="step"><span class="num">1</span><div><b>วางพร้อมท์นี้ในโหมด Canvas</b>
   <div class="prompt">สร้างหน้าเว็บแนะนำตัว 1 หน้า ด้วย HTML ไฟล์เดียว:
@@ -96,14 +118,98 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   <div class="step"><span class="num">3</span><div><b>เซฟเก็บไว้</b><small>ดาวน์โหลด/ก๊อปโค้ดเก็บไว้เป็นไฟล์ <code>.html</code> — เปิดด้วยเบราว์เซอร์ได้ทุกเครื่อง นี่คือเว็บของคุณจริง ๆ แล้ว</small></div></div>
 </div>
 
-<h2><span class="n">3</span>แล้วเอาขึ้นเน็ตให้คนอื่นเห็นยังไง?</h2>
+
+<h2><span class="n">3</span>ช่องที่ 1 — เครื่องแต่งพร้อมท์ให้อัตโนมัติ</h2>
+<div class="tool">
+  <div class="th"><span>⚡</span>กรอกช่องว่าง แล้วกดคัดลอกไปวางได้เลย</div>
+  <p>ไม่ต้องจำโครงพร้อมท์ ไม่ต้องกลัวลืมบอกอะไร — กรอกเท่าที่มี ช่องไหนว่างมันจะข้ามให้เอง</p>
+  <div class="gf two">
+    <div><label for="gName">ชื่อที่จะให้ขึ้นเว็บ</label><input id="gName" placeholder="เช่น ทีม นรินทร์"></div>
+    <div><label for="gRole">ทำอะไร / อาชีพ</label><input id="gRole" placeholder="เช่น ครูสอนใช้ AI"></div>
+  </div>
+  <div class="gf">
+    <div><label for="gOne">แนะนำตัวสั้น ๆ 1–2 ประโยค</label><textarea id="gOne" placeholder="เช่น ผมสอนคนวัยทำงานใช้ AI ให้ทำงานเสร็จเร็วขึ้น โดยไม่ต้องเป็นสายเทค"></textarea></div>
+    <div><label for="gHelp">ช่วยคนอื่นได้ 3 อย่าง (บรรทัดละข้อ)</label><textarea id="gHelp" placeholder="สรุปประชุมให้เหลือหน้าเดียว&#10;ทำภาพประกอบเองได้&#10;สร้างเว็บแนะนำตัวใน 1 วัน"></textarea></div>
+  </div>
+  <div class="gf two">
+    <div><label for="gContact">ช่องทางติดต่อ</label><input id="gContact" placeholder="LINE: @xxx หรือ อีเมล"></div>
+    <div><label for="gTone">โทนที่อยากได้</label>
+      <select id="gTone">
+        <option>เขียวครีม อบอุ่น น่าเชื่อถือ</option>
+        <option>ขาวสะอาด มินิมอล ทางการ</option>
+        <option>เข้มหรูหรา ทอง-ดำ</option>
+        <option>สดใส เป็นกันเอง</option>
+      </select></div>
+  </div>
+  <div class="prompt" style="margin-top:16px"><span id="genOut">— กรอกด้านบนแล้วพร้อมท์จะขึ้นตรงนี้ —</span></div>
+</div>
+
+<h2><span class="n">4</span>ช่องที่ 2 — ขี้เกียจพิมพ์? พูดใส่มือถือแทน</h2>
+<p class="tx">นี่คือท่าที่ประหยัดแรงที่สุดในคลาสนี้ และต่อยอดจาก <a href="notebooklm.html">คลาส LV.4</a> โดยตรง — <b>คุณไม่ต้องเรียบเรียงอะไรเลย แค่พูด</b> แล้วให้ AI ถอดออกมาเป็นพร้อมท์ให้</p>
+<div class="tool">
+  <div class="th"><span>🎙️</span>กดอัดเสียง แล้วตอบ 8 ข้อนี้ตามสบาย</div>
+  <p>พูดวนได้ พูดผิดแล้วพูดใหม่ได้ พูดภาษาพูดได้เลย ไม่ต้องเป็นทางการ · ใช้เวลาประมาณ 3–5 นาที</p>
+  <div class="qlist">
+    <div class="qi"><div>คุณชื่ออะไร อยากให้คนเรียกว่าอะไร</div></div>
+    <div class="qi"><div>ทุกวันนี้ทำอะไรอยู่ เล่าแบบเล่าให้เพื่อนฟัง<small>ไม่ต้องใช้ชื่อตำแหน่งทางการ</small></div></div>
+    <div class="qi"><div>คนแบบไหนที่ควรมาเจอคุณ แล้วเขาจะได้อะไรกลับไป</div></div>
+    <div class="qi"><div>สามอย่างที่คุณช่วยเขาได้จริง ๆ คืออะไร</div></div>
+    <div class="qi"><div>มีอะไรที่คุณทำมานานจนคนอื่นมักถามคุณเรื่องนี้<small>ข้อนี้แหละที่ทำให้เว็บคุณไม่เหมือนใคร</small></div></div>
+    <div class="qi"><div>อยากให้คนที่เปิดเว็บคุณรู้สึกยังไง<small>อบอุ่น? มืออาชีพ? สนุก?</small></div></div>
+    <div class="qi"><div>อยากให้เขาทำอะไรต่อหลังอ่านจบ ทักไลน์ โทรหา หรือจองคิว</div></div>
+    <div class="qi"><div>ติดต่อคุณได้ทางไหนบ้าง</div></div>
+  </div>
+  <p style="margin-top:16px;font-size:14px"><b>แล้วส่งไฟล์เสียงเข้า Gemini พร้อมพร้อมท์นี้:</b></p>
+  <div class="prompt">ไฟล์เสียงนี้คือผมพูดแนะนำตัวเองแบบไม่ได้เรียบเรียง ช่วยทำ 2 อย่างตามลำดับ:
+
+1) ฟังแล้วสรุปออกมาเป็นข้อมูลดังนี้ — ชื่อ, อาชีพหรือสิ่งที่ทำ, ประโยคแนะนำตัว 1-2 ประโยคที่ฟังแล้วเห็นภาพ, สิ่งที่ช่วยคนอื่นได้ 3 ข้อ, จุดที่ทำให้ต่างจากคนอื่น, อารมณ์ของเว็บที่ควรเป็น, สิ่งที่อยากให้คนอ่านทำต่อ, ช่องทางติดต่อ
+   ถ้าข้อไหนผมพูดไม่ชัดหรือไม่ได้พูด ให้บอกว่า "ยังไม่มีข้อมูล" อย่าแต่งเพิ่มเอง
+
+2) แล้วเขียนพร้อมท์สำหรับสร้างเว็บ 1 หน้าใน Canvas ให้ผม โดยใช้ข้อมูลจากข้อ 1
+   ขอเป็น HTML ไฟล์เดียว ใช้บนมือถือได้สวย มีปุ่มติดต่อชัด 1 ปุ่ม
+   เขียนพร้อมท์เป็นภาษาไทย ในกล่องโค้ดที่ผมก๊อปได้ทั้งก้อน</div>
+  <p style="font-size:13.5px;color:rgb(var(--muted));margin-top:10px">💡 ข้อ 1 สำคัญมาก — บังคับให้มันบอกว่าอะไร "ยังไม่มีข้อมูล" แทนที่จะแต่งเติมเอง ไม่งั้นเว็บคุณจะมีเรื่องที่คุณไม่เคยพูดอยู่ในนั้น</p>
+</div>
+
+<h2><span class="n">5</span>ของจริง: เรซูเม่ที่พลิกได้สองด้าน</h2>
+<p class="tx">หน้า <a href="../resume/">Smart Resume</a> ของบ้านนี้ — ที่กดไพ่แล้วทั้งหน้าพลิกจาก "โหมดงาน" เป็น "โหมดชีวิต" — สร้างด้วยวิธีเดียวกับที่คุณเพิ่งเรียนไปทั้งหมด เป็น HTML ไฟล์เดียว ไม่มีอะไรลับ <b>เอาไปทำของตัวเองได้เลย</b></p>
+<div class="card">
+  <div class="item"><span class="ic">🎯</span><div><b>ทำไมต้องสองด้าน</b><small>เรซูเม่ปกติเล่าได้แค่ว่าคุณทำงานอะไร แต่คนจะจำคุณได้จากตัวตนอีกด้าน — ด้านที่เล่าว่าคุณเป็นคนยังไง ชอบอะไร ให้ค่ากับอะไร · สองด้านนี้ไม่ควรอยู่หน้าเดียวกันแบบปนกัน แต่ควรสลับดูได้</small></div></div>
+  <div class="item"><span class="ic">🃏</span><div><b>หัวใจอยู่ที่ปุ่มพลิก</b><small>ใช้ปุ่มเดียวสลับ class ที่ &lt;body&gt; แล้วให้ CSS เปลี่ยนสี ฟอนต์ พื้นหลัง และสลับเนื้อหาสองชุด — โครงเดียว เนื้อสองแบบ</small></div></div>
+</div>
+<div class="steps" style="margin-top:14px">
+  <div class="step"><span class="num">1</span><div><b>วางพร้อมท์นี้ในโหมด Canvas</b>
+  <div class="prompt">สร้างเรซูเม่ออนไลน์ 1 หน้า เป็น HTML ไฟล์เดียว (CSS กับ JS อยู่ในไฟล์เดียวกัน) ที่พลิกได้ 2 โหมด:
+
+โหมดที่ 1 "งาน" — เล่าเส้นทางการทำงาน
+- ประวัติแบบไทม์ไลน์ ไล่จากใหม่ไปเก่า แต่ละช่วงบอกว่าทำอะไรและเปลี่ยนอะไรได้
+- ทักษะเป็นป้ายเล็ก ๆ เรียงกัน
+- โทน: เรียบ มืออาชีพ พื้นเข้ม ตัวอักษรคม
+
+โหมดที่ 2 "ชีวิต" — เล่าว่าเป็นคนแบบไหน
+- โน้ตแปะเป็นใบ ๆ เหมือนสมุดภาพ เล่าสิ่งที่รัก งานอดิเรก คนสำคัญ ความเชื่อ
+- โทน: อบอุ่น พื้นกระดาษ/ไม้ ตัวอักษรลายมือ เอียงเล็กน้อยเหมือนแปะจริง
+
+กติกาสำคัญ:
+- มีปุ่มรูปไพ่ 1 ใบ กดแล้วพลิกทั้งหน้าไปอีกโหมด พร้อมทรานซิชันนุ่ม ๆ
+- สลับด้วยการเปลี่ยน class ที่ body แล้วให้ CSS จัดการที่เหลือ อย่าโหลดหน้าใหม่
+- ทั้งสองโหมดต้องอ่านง่ายบนมือถือ ตัวหนังสือไม่เล็กเกิน 16px
+- เคารพ prefers-reduced-motion ถ้าผู้ใช้ปิดอนิเมชันให้สลับทันทีไม่ต้องมีเอฟเฟกต์
+- ใส่ข้อมูลตัวอย่างไว้ก่อน แล้วทำคอมเมนต์ในโค้ดชี้ว่าให้ผมแก้ตรงไหนบ้าง
+
+ข้อมูลของผม: [วางผลลัพธ์จากข้อ 4 ตรงนี้ หรือพิมพ์เองก็ได้]</div></div></div>
+  <div class="step"><span class="num">2</span><div><b>สั่งแก้ทีละจุดจนถูกใจ</b><small>"โหมดชีวิตขอพื้นไม้เข้มกว่านี้" · "เพิ่มโน้ตอีกใบเรื่องงานอดิเรก" · "ปุ่มพลิกขอใหญ่ขึ้นบนมือถือ" — ทีละเรื่องเหมือนเดิม</small></div></div>
+  <div class="step"><span class="num">3</span><div><b>อยากดูของจริงก่อนก็ได้</b><small>เปิด <a href="../resume/">หน้า Smart Resume</a> แล้วกดปุ่มไพ่ดู · อยากรู้ว่าข้างในเขียนยังไง กดคลิกขวา → View Page Source อ่านได้เลย ไม่ได้ปิดอะไรไว้</small></div></div>
+</div>
+
+<h2><span class="n">6</span>แล้วเอาขึ้นเน็ตให้คนอื่นเห็นยังไง?</h2>
 <div class="card">
   <div class="item"><span class="ic">🔗</span><div><b>ทางลัด: ปุ่มแชร์ของ Canvas</b><small>Gemini แชร์ลิงก์ผลงานให้คนอื่นเปิดดูได้เลยในบางกรณี — ง่ายสุดสำหรับอวดเพื่อน</small></div></div>
   <div class="item"><span class="ic">🚀</span><div><b>ทางโปร: มี "โดเมนของตัวเอง" แบบ myclover.com</b><small>อันนี้คือเนื้อหาคลาสสดของบ้าน — สอนต่อยอดจากหน้านี้ไปถึงเว็บจริงหลายหน้า มีระบบ อัปเดตได้ตลอด รอประกาศในบ้านเร็ว ๆ นี้</small></div></div>
 </div>
 <div class="note">🏆 <b>คุณมาถึงด่านสุดท้ายแล้ว:</b> ใครทำครบทั้ง 6 คลาส คุณไม่ใช่ "คนไม่เป็น AI" อีกต่อไป — คุณคือคนที่ใช้ AI สร้างของเป็นแล้ว และนี่เป็นแค่จุดเริ่มต้นของทุ่งโคลเวอร์ 🍀</div>
 
-<div class="quest">🎯 <b>เควสท้ายคลาส:</b> สร้างเว็บแนะนำตัว (หรือแนะนำร้าน) ของคุณเอง 1 หน้า ด้วยพร้อมท์ในข้อ 2 แล้วแชร์ให้คนใกล้ตัวดู 1 คน<span class="qshare">ทำเสร็จแล้วเอามาอวดกันในบ้านได้เลย — ใช้เวลาแค่วันละ 10 นาทีก็พอ 🍀</span></div>
+<div class="quest">🎯 <b>เควสท้ายคลาส:</b> กดอัดเสียงตอบ 8 คำถามในข้อ 4 (ใช้เวลา 5 นาที) ส่งเข้า Gemini แล้วให้มันเขียนพร้อมท์ให้ จากนั้นเอาไปสร้างเว็บใน Canvas — จากปากเปล่าเป็นเว็บจริง โดยที่คุณแทบไม่ได้พิมพ์อะไรเลย<span class="qshare">ทำเสร็จแล้วเอามาอวดกันในบ้านได้เลย — ใช้เวลาแค่วันละ 10 นาทีก็พอ 🍀</span></div>
 <div class="nextrow">
   <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
   <a class="nx" href="../">🏠 กลับบ้าน myclover</a>
@@ -113,6 +219,34 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 </div>
 
 <script>
+/* ── เครื่องแต่งพร้อมท์: กรอกช่องไหน ใส่บรรทัดนั้น ช่องว่างข้ามให้ ── */
+(function(){
+  var ids=['gName','gRole','gOne','gHelp','gContact','gTone'], out=document.getElementById('genOut');
+  if(!out) return;
+  function v(id){ var el=document.getElementById(id); return el? el.value.trim():''; }
+  function build(){
+    var L=['สร้างหน้าเว็บแนะนำตัว 1 หน้า ด้วย HTML ไฟล์เดียว (CSS กับ JS อยู่ในไฟล์เดียวกัน):'];
+    if(v('gName'))  L.push('- ชื่อที่แสดง: '+v('gName'));
+    if(v('gRole'))  L.push('- อาชีพ/สิ่งที่ทำ: '+v('gRole'));
+    if(v('gOne'))   L.push('- ประโยคแนะนำตัว: '+v('gOne').replace(/\s*\n\s*/g,' '));
+    if(v('gHelp')){
+      var h=v('gHelp').split(/\n+/).map(function(x){return x.trim();}).filter(Boolean);
+      if(h.length) L.push('- สิ่งที่ช่วยคุณได้: '+h.map(function(x,i){return (i+1)+') '+x;}).join('  '));
+    }
+    if(v('gContact')) L.push('- ช่องทางติดต่อ: '+v('gContact'));
+    L.push('- โทน: '+(v('gTone')||'เขียวครีม อบอุ่น น่าเชื่อถือ'));
+    L.push('- ต้องอ่านง่ายบนมือถือ ตัวหนังสือไม่เล็กกว่า 16px');
+    L.push('- มีปุ่มกดติดต่อชัด ๆ 1 ปุ่ม อยู่ในตำแหน่งที่กดง่ายบนมือถือ');
+    L.push('- ใส่คอมเมนต์ในโค้ดบอกว่าผมควรแก้ข้อความตรงไหนบ้าง');
+    var filled=ids.slice(0,5).some(function(i){return v(i);});
+    out.textContent = filled ? L.join('\n') : '— กรอกด้านบนแล้วพร้อมท์จะขึ้นตรงนี้ —';
+  }
+  ids.forEach(function(i){
+    var el=document.getElementById(i);
+    if(el) el.addEventListener('input',build), el.addEventListener('change',build);
+  });
+  build();
+})();
 document.querySelectorAll('.prompt').forEach(function(el){
   var b=document.createElement('button');b.type='button';b.className='cpx';b.textContent='คัดลอก';
   b.onclick=function(){
