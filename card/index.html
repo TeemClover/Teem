@@ -210,7 +210,7 @@ body.js .reveal.in{opacity:1;transform:none}
   <!-- ═══ ฝั่งขวา: การ์ด ═══ -->
   <div class="side">
     <div class="pvbox">
-      <canvas id="pv" width="1080" height="1350" role="img" aria-label="ตัวอย่างการ์ดประจำตัวของคุณ"></canvas>
+      <canvas id="pv" width="1260" height="1760" role="img" aria-label="ตัวอย่างการ์ดประจำตัวของคุณ"></canvas>
       <p class="pvcap">การ์ดจะเปลี่ยนตามที่คุณกรอกทันที</p>
     </div>
 
@@ -256,10 +256,10 @@ body.js .reveal.in{opacity:1;transform:none}
    ค่าคงที่ของการ์ด
    ═══════════════════════════════════════════════════════════ */
 var CLASSES={
-  THINKER:{th:'สายคิด',      emo:'🧠', ac:'#2E4A8F', who:'ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ'},
-  TASTER :{th:'สายกิน',      emo:'🍜', ac:'#C4622D', who:'รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ'},
-  KEEPER :{th:'สายคลีน',     emo:'💪', ac:'#1F8A70', who:'มีวินัยอยู่แล้ว ขาดแค่ระบบที่วัดผลได้'},
-  MAKER  :{th:'สายประดิษฐ์', emo:'🧰', ac:'#4B5A67', who:'ชอบสร้างของ อยากให้เครื่องมือทำงานแทนได้'}
+  THINKER:{th:'สายคิด',      emo:'🧠', ac:'#2E4A8F', tag:'THINKER', who:'ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ'},
+  TASTER :{th:'สายกิน',      emo:'🍜', ac:'#C4622D', tag:'TASTER', who:'รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ'},
+  KEEPER :{th:'สายคลีน',     emo:'💪', ac:'#1F8A70', tag:'KEEPER', who:'มีวินัยอยู่แล้ว ขาดแค่ระบบที่วัดผลได้'},
+  MAKER  :{th:'สายประดิษฐ์', emo:'🧰', ac:'#4B5A67', tag:'MAKER', who:'ชอบสร้างของ อยากให้เครื่องมือทำงานแทนได้'}
 };
 var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
 var TITLES={
@@ -356,7 +356,9 @@ function wrap(c,text,maxW,maxLines){
 /* ═══════════════════════════════════════════════════════════
    วาดการ์ด (พิกัดทั้งหมดอยู่ในระบบ 540×675 แล้วค่อย scale)
    ═══════════════════════════════════════════════════════════ */
-var CW=540, CH=675;
+/* สัดส่วนการ์ดจริง 63×88 มม. เท่า MTG / Flesh and Blood — เผื่อวันหนึ่งสั่งพิมพ์ได้เลย
+   ส่งออก 1260×1760 = ประมาณ 500 DPI ตอนย่อลงขนาดการ์ดจริง เหลือเฟือสำหรับงานพิมพ์ */
+var CW=630, CH=880;
 
 function drawClover(c,x,y,size,color,alpha){
   c.save(); c.globalAlpha=alpha; c.fillStyle=color;
@@ -376,157 +378,146 @@ function drawClover(c,x,y,size,color,alpha){
 function drawCardArt(c,st){
   var cls=CLASSES[st.cls]||CLASSES.THINKER;
   var foil=st.titles.indexOf('GUILD')>=0;
-  var FR=13, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
-  var CP=20, x0=FR+CP, x1=CW-FR-CP, cw=x1-x0;
+  var FR=16, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
+  var PAD=34, x0=PAD, x1=CW-PAD, cw=x1-x0;
 
-  /* ---- กรอบ ---- */
-  rr(c,0,0,CW,CH,30);
+  /* ── กรอบการ์ด ── */
+  rr(c,0,0,CW,CH,34);
   if(foil){
     var fg=c.createLinearGradient(0,0,CW,CH);
-    fg.addColorStop(0,'#8A6A22'); fg.addColorStop(.22,'#F0DCA0');
-    fg.addColorStop(.42,'#BE9442'); fg.addColorStop(.6,'#FBF0C9');
-    fg.addColorStop(.78,'#C8A24E'); fg.addColorStop(1,'#8A6A22');
+    fg.addColorStop(0,'#8A6A22'); fg.addColorStop(.2,'#F2E0A8'); fg.addColorStop(.4,'#BE9442');
+    fg.addColorStop(.58,'#FBF3D2'); fg.addColorStop(.78,'#C8A24E'); fg.addColorStop(1,'#7E5F1E');
     c.fillStyle=fg;
   } else {
-    var dg=c.createLinearGradient(0,0,0,CH);
-    dg.addColorStop(0,'rgb(16,58,34)'); dg.addColorStop(1,'rgb(8,32,19)');
+    var dg=c.createLinearGradient(0,0,CW*.4,CH);
+    dg.addColorStop(0,'rgb(20,66,40)'); dg.addColorStop(1,'rgb(7,28,17)');
     c.fillStyle=dg;
   }
   c.fill();
 
-  /* ---- พื้นในการ์ด ---- */
-  rr(c,ix,iy,iw,ih,20); c.fillStyle=CREAM; c.fill();
+  /* ── ภาพเต็มใบ ── */
+  c.save();
+  rr(c,ix,iy,iw,ih,24); c.clip();
+  if(st.img){
+    var iR=st.img.width/st.img.height, bR=iw/ih, dw,dh,dx,dy;
+    if(iR>bR){ dh=ih; dw=ih*iR; dx=ix-(dw-iw)/2; dy=iy; }
+    else     { dw=iw; dh=iw/iR; dx=ix; dy=iy-(dh-ih)/2; }
+    c.drawImage(st.img,dx,dy,dw,dh);
+  } else {
+    var pg=c.createLinearGradient(ix,iy,ix+iw,iy+ih);
+    pg.addColorStop(0,hexA(cls.ac,.95)); pg.addColorStop(1,'rgba(10,32,20,.98)');
+    c.fillStyle=pg; c.fillRect(ix,iy,iw,ih);
+    for(var gy=0;gy<9;gy++) for(var gx=0;gx<6;gx++)
+      drawClover(c,ix+30+gx*((iw-60)/5),iy+50+gy*((ih-100)/8),30,'#ffffff',.07);
+    drawClover(c,CW/2,iy+ih*0.34,190,'#ffffff',.16);
+  }
 
-  /* ---- แถบหัว ---- */
-  var hy=FR+CP, hh=46;
-  rr(c,x0,hy,cw,hh,12); c.fillStyle=cls.ac; c.fill();
-  c.save(); rr(c,x0,hy,cw,hh,12); c.clip();
-  var hg=c.createLinearGradient(x0,hy,x1,hy+hh);
-  hg.addColorStop(0,'rgba(255,255,255,.18)'); hg.addColorStop(1,'rgba(255,255,255,0)');
-  c.fillStyle=hg; c.fillRect(x0,hy,cw,hh);
+  /* ── ม่านมืดด้านล่าง ให้ตัวหนังสืออ่านออกบนรูปทุกแบบ ── */
+  var sc=c.createLinearGradient(0,ih*0.34,0,CH);
+  sc.addColorStop(0,'rgba(6,22,13,0)');
+  sc.addColorStop(.38,'rgba(6,22,13,.55)');
+  sc.addColorStop(.62,'rgba(6,22,13,.88)');
+  sc.addColorStop(1,'rgba(5,18,11,.97)');
+  c.fillStyle=sc; c.fillRect(ix,iy,iw,ih);
+  var tc=c.createLinearGradient(0,iy,0,iy+150);
+  tc.addColorStop(0,'rgba(6,22,13,.72)'); tc.addColorStop(1,'rgba(6,22,13,0)');
+  c.fillStyle=tc; c.fillRect(ix,iy,iw,150);
   c.restore();
 
   c.textBaseline='middle';
-  c.fillStyle='#fff'; c.textAlign='left';
-  font(c,'400',24,'Anuphan');
-  c.fillText(cls.emo,x0+14,hy+hh/2+1);
-  var nameSize=fit(c,cls.th,cw*0.44,20,'700','Bai Jamjuree');
-  font(c,'700',nameSize,'Bai Jamjuree');
-  c.fillText(cls.th,x0+48,hy+hh/2);
 
-  /* เลขประจำตัวออกให้เฉพาะชาวกิลด์ — คนทั่วไปไม่มีเลข ไม่ต้องโชว์ช่องว่างให้สงสัย */
+  /* ── ป้ายสายบนหัวการ์ด ── */
+  var cy=iy+34;
+  font(c,'700',19,'Bai Jamjuree');
+  var chipW=52+c.measureText(cls.th).width+22;
+  rr(c,x0-8,cy-19,chipW,38,19);
+  c.fillStyle=hexA(cls.ac,.95); c.fill();
+  c.strokeStyle='rgba(255,255,255,.28)'; c.lineWidth=1.5; c.stroke();
+  c.textAlign='left'; font(c,'400',22,'Anuphan'); c.fillStyle='#fff';
+  c.fillText(cls.emo,x0+8,cy+1);
+  font(c,'700',19,'Bai Jamjuree'); c.fillStyle='#fff';
+  c.fillText(cls.th,x0+42,cy);
+
+  /* เลขประจำตัว — ออกให้เฉพาะชาวกิลด์ */
   if(foil && st.member){
-    c.textAlign='right';
-    font(c,'600',16,'Bai Jamjuree');
-    c.fillText(st.member,x1-14,hy+hh/2);
+    c.textAlign='right'; font(c,'700',17,'Bai Jamjuree'); c.fillStyle=GOLD;
+    c.fillText(st.member,x1,cy);
   }
 
-  /* ---- ช่องรูป 4:5 ---- */
-  var py=hy+hh+14, ph=359, pw=Math.round(ph*4/5), px=Math.round((CW-pw)/2);
-  c.save();
-  rr(c,px,py,pw,ph,14); c.clip();
-  if(st.img){
-    var iR=st.img.width/st.img.height, bR=pw/ph, dw,dh,dx,dy;
-    if(iR>bR){ dh=ph; dw=ph*iR; dx=px-(dw-pw)/2; dy=py; }
-    else     { dw=pw; dh=pw/iR; dx=px; dy=py-(dh-ph)/2; }
-    c.drawImage(st.img,dx,dy,dw,dh);
-  } else {
-    var pg=c.createLinearGradient(px,py,px+pw,py+ph);
-    pg.addColorStop(0,hexA(cls.ac,.92)); pg.addColorStop(1,hexA(cls.ac,.62));
-    c.fillStyle=pg; c.fillRect(px,py,pw,ph);
-    for(var gy=0;gy<6;gy++) for(var gx=0;gx<5;gx++){
-      drawClover(c,px+18+gx*((pw-36)/4),py+30+gy*((ph-60)/5),26,'#ffffff',.09);
-    }
-    drawClover(c,px+pw/2,py+ph/2-6,132,'#ffffff',.26);
-  }
-  c.restore();
-  rr(c,px,py,pw,ph,14);
-  c.strokeStyle=hexA(cls.ac,.55); c.lineWidth=2.5; c.stroke();
-
-  /* ---- ชื่อเล่น ---- */
-  var ay=py+ph;
-  var nick=(st.nick||'ชื่อของคุณ').slice(0,14);
-  c.textAlign='center'; c.fillStyle= st.nick?'rgb(18,40,28)':'rgba(18,40,28,.32)';
-  var ns=fit(c,nick,cw,30,'700','Bai Jamjuree');
-  font(c,'700',ns,'Bai Jamjuree');
-  c.fillText(nick,CW/2,ay+16+17);
-
-  /* ---- เส้นคั่น 1 ---- */
-  c.strokeStyle='rgba(18,40,28,.14)'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(x0,ay+60.5); c.lineTo(x1,ay+60.5); c.stroke();
-
-  /* ---- ตรา ---- */
-  var ty=ay+70, th=28;
-  if(st.titles.length){
-    var chips=st.titles.slice(0,3).map(function(k){ return {emo:TITLES[k].emo,th:TITLES[k].th}; });
-    font(c,'600',14,'Anuphan');
-    var widths=chips.map(function(ch){ return 26+c.measureText(ch.th).width+16; });
-    var total=widths.reduce(function(a,b){return a+b;},0)+(chips.length-1)*8;
-    var sx=(CW-total)/2;
-    chips.forEach(function(ch,i){
-      rr(c,sx,ty,widths[i],th,9);
-      c.fillStyle='rgba(27,106,66,.09)'; c.fill();
-      c.strokeStyle='rgba(27,106,66,.28)'; c.lineWidth=1; c.stroke();
-      c.textAlign='left'; c.textBaseline='middle';
-      font(c,'400',15,'Anuphan'); c.fillStyle='rgb(18,40,28)';
-      c.fillText(ch.emo,sx+8,ty+th/2+1);
-      font(c,'600',14,'Anuphan'); c.fillStyle=GREEN;
-      c.fillText(ch.th,sx+28,ty+th/2);
-      sx+=widths[i]+8;
-    });
-  } else {
-    c.textAlign='center'; c.fillStyle='rgba(18,40,28,.3)';
-    font(c,'700',13,'Bai Jamjuree');
-    var kw=st.cls.split('').join(' ');
-    c.fillText(kw,CW/2,ty+th/2);
-  }
-
-  /* ---- เส้นคั่น 2 ---- */
-  c.strokeStyle='rgba(18,40,28,.14)'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(x0,ty+th+10.5); c.lineTo(x1,ty+th+10.5); c.stroke();
-
-  /* ---- หนึ่งประโยค ---- */
-  var qy=ty+th+21;
+  /* ── บล็อกข้อความล่าง วางแบบการ์ดเกมจริง ── */
   var quote=(st.line||'').slice(0,40);
-  c.textAlign='center';
-  if(quote){
-    font(c,'500',19,'Anuphan');
-    var ls2=wrap(c,'“'+quote+'”',cw,2);
-    var lh=23, sy=qy+22-((ls2.length-1)*lh)/2;
-    c.fillStyle='rgba(18,40,28,.82)';
-    ls2.forEach(function(l,i){ c.fillText(l,CW/2,sy+i*lh); });
-  } else {
-    font(c,'400',17,'Anuphan'); c.fillStyle='rgba(18,40,28,.28)';
-    c.fillText('“ประโยคของคุณจะอยู่ตรงนี้”',CW/2,qy+22);
+  var chips=st.titles.slice(0,3).map(function(k){ return TITLES[k]; });
+  var qLines=[];
+  if(quote){ font(c,'500',20,'Anuphan'); qLines=wrap(c,'“'+quote+'”',cw,2); }
+
+  var footH=30, blockH=54+30+(chips.length?38:0)+(qLines.length?qLines.length*26+16:0);
+  var by=CH-FR-24-footH-blockH;
+
+  /* ชื่อ */
+  var nick=(st.nick||'ชื่อของคุณ').slice(0,14);
+  c.textAlign='left'; c.fillStyle= st.nick?'#fff':'rgba(255,255,255,.42)';
+  var ns=fit(c,nick,cw,46,'700','Bai Jamjuree');
+  font(c,'700',ns,'Bai Jamjuree');
+  c.fillText(nick,x0,by+26);
+  by+=54;
+
+  /* บรรทัดประเภท — หัวใจของความเป็นการ์ดเกม */
+  c.strokeStyle='rgba(190,148,66,.55)'; c.lineWidth=1.5;
+  c.beginPath(); c.moveTo(x0,by-2); c.lineTo(x1,by-2); c.stroke();
+  font(c,'700',14.5,'Bai Jamjuree'); c.fillStyle=GOLD;
+  c.fillText('ชาวโคลเวอร์ · '+cls.th,x0,by+15);
+  c.textAlign='right'; font(c,'700',13,'Bai Jamjuree');
+  c.fillStyle= foil?GOLD:'rgba(255,255,255,.45)';
+  c.fillText(foil?'★ HERO':cls.tag,x1,by+15);
+  c.textAlign='left';
+  by+=30;
+
+  /* ตรา — วางเหมือนบรรทัดความสามารถ */
+  if(chips.length){
+    var sx=x0;
+    chips.forEach(function(t){
+      font(c,'600',13.5,'Anuphan');
+      var w=24+c.measureText(t.th).width+16;
+      rr(c,sx,by,w,26,8);
+      c.fillStyle='rgba(255,255,255,.13)'; c.fill();
+      c.strokeStyle='rgba(190,148,66,.45)'; c.lineWidth=1; c.stroke();
+      font(c,'400',13,'Anuphan'); c.fillStyle='#fff';
+      c.fillText(t.emo,sx+7,by+14);
+      font(c,'600',13.5,'Anuphan'); c.fillStyle='rgba(255,255,255,.92)';
+      c.fillText(t.th,sx+25,by+13);
+      sx+=w+7;
+    });
+    by+=38;
   }
 
-  /* ---- ท้ายการ์ด ---- */
-  var fy=qy+54;
-  c.textAlign='left'; font(c,'600',13.5,'Bai Jamjuree'); c.fillStyle=GREEN;
-  c.fillText('🍀 myclover.com',x0,fy+9);
-  c.textAlign='right'; font(c,'700',12,'Bai Jamjuree'); c.fillStyle='rgba(18,40,28,.42)';
-  c.fillText('S I N C E   2 0 1 0',x1,fy+9);
+  /* ข้อความบรรยาย — flavor text แบบการ์ดเกม */
+  if(qLines.length){
+    by+=6;
+    font(c,'500',20,'Anuphan'); c.fillStyle='rgba(255,255,255,.9)';
+    qLines.forEach(function(l,i){ c.fillText(l,x0,by+i*26+10); });
+    by+=qLines.length*26+10;
+  }
 
-  /* ---- ประกายทอง + ป้าย HERO (เฉพาะการ์ดฮีโร่) ---- */
+  /* ── แถบท้ายการ์ด ── */
+  var fy=CH-FR-30;
+  c.strokeStyle='rgba(255,255,255,.16)'; c.lineWidth=1;
+  c.beginPath(); c.moveTo(x0,fy-12); c.lineTo(x1,fy-12); c.stroke();
+  c.textAlign='left'; font(c,'700',13.5,'Bai Jamjuree'); c.fillStyle='rgba(255,255,255,.78)';
+  c.fillText('🍀 myclover.com',x0,fy+4);
+  c.textAlign='right'; font(c,'700',11.5,'Bai Jamjuree'); c.fillStyle='rgba(255,255,255,.5)';
+  c.fillText('S I N C E   2 0 1 0',x1,fy+4);
+
+  /* ── ประกายทองของการ์ดฮีโร่ ── */
   if(foil){
-    c.save();
-    rr(c,ix,iy,iw,ih,20); c.clip();
-    var sh=c.createLinearGradient(0,CH*0.1,CW,CH*0.62);
+    c.save(); rr(c,ix,iy,iw,ih,24); c.clip();
+    var sh=c.createLinearGradient(0,CH*.08,CW,CH*.6);
     sh.addColorStop(0,'rgba(255,255,255,0)');
-    sh.addColorStop(.46,'rgba(255,242,206,.07)');
-    sh.addColorStop(.5,'rgba(255,255,255,.13)');
-    sh.addColorStop(.54,'rgba(255,238,188,.07)');
+    sh.addColorStop(.46,'rgba(255,242,206,.08)');
+    sh.addColorStop(.5,'rgba(255,255,255,.15)');
+    sh.addColorStop(.54,'rgba(255,238,188,.08)');
     sh.addColorStop(1,'rgba(255,255,255,0)');
     c.fillStyle=sh; c.fillRect(0,0,CW,CH);
     c.restore();
-
-    var bw=118,bh=27,bx=(CW-bw)/2,by=CH-FR-14;
-    rr(c,bx,by,bw,bh,9);
-    c.fillStyle='rgb(10,40,24)'; c.fill();
-    c.strokeStyle=GOLD; c.lineWidth=2; c.stroke();
-    c.textAlign='center'; c.textBaseline='middle';
-    font(c,'700',13.5,'Bai Jamjuree'); c.fillStyle=GOLD;
-    c.fillText('★  H E R O',CW/2,by+bh/2+.5);
   }
 }
 
@@ -762,7 +753,7 @@ function makeBlob(kind){
   return ensureFonts().then(function(){
     var cv=document.createElement('canvas');
     if(kind==='landscape'){ cv.width=1920; cv.height=1080; drawLandscape(cv,st); }
-    else                  { cv.width=1080; cv.height=1350; drawPortrait(cv,st); }
+    else                  { cv.width=1260; cv.height=1760; drawPortrait(cv,st); }
     return new Promise(function(res,rej){
       if(cv.toBlob) cv.toBlob(function(b){ b?res(b):rej(); },'image/png');
       else rej();
@@ -771,7 +762,7 @@ function makeBlob(kind){
 }
 function fileName(kind){
   var n=(st.nick||'myclover').replace(/[^฀-๿a-zA-Z0-9]+/g,'-').slice(0,20)||'myclover';
-  return 'myclover-card-'+n+'-'+(kind==='landscape'?'1920x1080':'1080x1350')+'.png';
+  return 'myclover-card-'+n+'-'+(kind==='landscape'?'1920x1080':'1260x1760')+'.png';
 }
 var saveMsg=document.getElementById('saveMsg');
 function say(t){ saveMsg.textContent=t; if(t) setTimeout(function(){ if(saveMsg.textContent===t) saveMsg.textContent=''; },4200); }
