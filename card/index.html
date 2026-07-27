@@ -9,6 +9,7 @@
 <meta property="og:description" content="เลือกสายที่ใช่ ใส่ชื่อของคุณ แล้วบันทึกการ์ดเป็นรูปได้เลย — รูปของคุณไม่ถูกส่งออกจากเครื่อง">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="../assets/config.js"></script>
 <style>
 :root{
   --ink:18 40 28;
@@ -25,6 +26,7 @@ html{scroll-behavior:smooth}
 body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.7;-webkit-font-smoothing:antialiased}
 .disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
 a{color:inherit;text-decoration:none}
+[hidden]{display:none!important}
 .wrap{max-width:1060px;margin:0 auto;padding:0 22px}
 :focus-visible{outline:3px solid rgb(var(--gold));outline-offset:2px;border-radius:6px}
 
@@ -85,6 +87,15 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .bd .tx b{display:block;font-family:"Bai Jamjuree";font-size:15px}
 .bd .tx small{display:block;font-size:12.5px;color:rgb(var(--muted));line-height:1.5}
 .bd .on{font-size:11.5px;font-weight:700;color:rgb(var(--green));background:rgb(27 106 66/.1);border-radius:7px;padding:4px 10px;flex:none}
+.bd .get{font-size:11.5px;font-weight:700;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:7px;padding:4px 10px;flex:none;white-space:nowrap;transition:.15s}
+.bd .get:hover{background:rgb(190 148 66/.14);border-color:rgb(var(--gold))}
+.bhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.bcount{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(var(--muted));white-space:nowrap}
+.bcount.full{color:rgb(var(--gold))}
+.btrack{flex:1;height:6px;border-radius:999px;background:rgb(var(--line)/.1);overflow:hidden}
+.btrack i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .5s ease}
+.bnote{font-size:12.5px;color:rgb(var(--muted));margin-top:10px}
+.bnote.full{color:rgb(var(--gold));font-weight:600}
 .coderow{display:flex;gap:8px;margin-top:10px}
 .coderow input{flex:1;background:#fff;border:1px solid rgb(var(--line)/.16);border-radius:11px;padding:10px 14px;font-family:"Anuphan";font-size:14.5px;outline:none}
 .coderow input:focus{border-color:rgb(var(--gold))}
@@ -92,6 +103,44 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .codemsg{font-size:13px;margin-top:8px;min-height:18px}
 .codemsg.ok{color:rgb(var(--green));font-weight:600}
 .codemsg.no{color:#b45309}
+
+/* เลือกโหมด: ทำการ์ด หรือ ลงทะเบียน */
+.modepick{margin-bottom:30px}
+.mtitle{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:15px;margin-bottom:12px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:620px){.mgrid{grid-template-columns:1fr}}
+.mo{display:flex;flex-direction:column;gap:6px;text-align:left;width:100%;cursor:pointer;
+  background:#fff;border:2px solid rgb(var(--line)/.1);border-radius:16px;padding:17px 18px;
+  font-family:inherit;color:inherit;line-height:1.6;transition:.16s}
+.mo:hover{transform:translateY(-2px);box-shadow:0 16px 32px -22px rgb(18 40 28/.5)}
+.mo .e{font-size:25px;line-height:1}
+.mo b{font-family:"Bai Jamjuree";font-size:15.5px}
+.mo span:not(.e){font-size:12.5px;color:rgb(var(--muted))}
+.mo[aria-pressed="true"]{border-color:rgb(var(--green));background:rgb(27 106 66/.06)}
+.mo[aria-pressed="true"] b{color:rgb(var(--green))}
+
+/* ขั้นลงทะเบียน */
+#regStep{scroll-margin-top:76px}   /* กันหัวข้อโดนแถบบนบัง */
+.regwhat{display:flex;flex-direction:column;gap:6px;background:rgb(190 148 66/.1);
+  border:1px solid rgb(190 148 66/.4);border-radius:14px;padding:15px 18px;margin-bottom:20px}
+.regwhat b{font-size:14.5px;color:#8a6a22}
+.regwhat span{font-size:13px;color:rgb(var(--muted));line-height:1.7}
+.field select{width:100%;background:#fff;border:1px solid rgb(var(--line)/.16);border-radius:12px;
+  padding:13px 15px;font-family:"Anuphan";font-size:15.5px;color:inherit;outline:none}
+.field select:focus{border-color:rgb(var(--green)/.7);box-shadow:0 0 0 3px rgb(27 106 66/.1)}
+.opt{display:flex;gap:11px;align-items:flex-start;background:#fff;border:1px solid rgb(var(--line)/.12);
+  border-radius:13px;padding:14px 16px;margin-bottom:12px}
+.opt input[type=checkbox]{width:20px;height:20px;flex:none;margin-top:2px;accent-color:rgb(var(--green));cursor:pointer}
+.opt label{font-size:13.5px;line-height:1.65;cursor:pointer}
+.opt label b{display:block;font-family:"Bai Jamjuree";font-size:14.5px;margin-bottom:2px}
+.opt label span{color:rgb(var(--muted));font-size:12.5px}
+.opt label a{color:rgb(var(--green));font-weight:600;text-decoration:underline}
+.regbtn{width:100%;background:rgb(var(--green));color:#fff;border:0;border-radius:13px;
+  padding:15px 20px;font-family:"Bai Jamjuree";font-weight:700;font-size:16px;cursor:pointer;
+  min-height:48px;margin-top:6px;transition:.16s}
+.regbtn:hover{filter:brightness(1.08);transform:translateY(-2px)}
+.regbtn:disabled{opacity:.55;cursor:default;transform:none}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
 /* พรีวิว */
 .side{position:sticky;top:80px}
@@ -157,6 +206,22 @@ body.js .reveal.in{opacity:1;transform:none}
 
   <!-- ═══ ฝั่งซ้าย: ขั้นตอน ═══ -->
   <div>
+    <div class="modepick" id="modePick">
+      <span class="mtitle disp">อยากทำอะไรในหน้านี้ครับ</span>
+      <div class="mgrid">
+        <button type="button" class="mo" data-mode="card" aria-pressed="true">
+          <span class="e">🃏</span>
+          <b class="disp">ทำการ์ดอย่างเดียว</b>
+          <span>ทำเสร็จแล้วบันทึกเป็นรูปไปใช้ได้เลย ไม่ต้องกรอกอะไรเพิ่ม</span>
+        </button>
+        <button type="button" class="mo" data-mode="reg" aria-pressed="false">
+          <span class="e">🍀</span>
+          <b class="disp">ลงทะเบียนเข้าระบบสมาชิก</b>
+          <span>บันทึกการ์ดของคุณเข้าระบบสมาชิกของบ้าน — ทำการ์ดได้ครบเหมือนเดิมทุกอย่าง</span>
+        </button>
+      </div>
+    </div>
+
     <div class="step">
       <span class="num"><i>1</i>ขั้นที่หนึ่ง</span>
       <h2 class="disp">เลือกสายของคุณ</h2>
@@ -198,19 +263,85 @@ body.js .reveal.in{opacity:1;transform:none}
       <span class="num"><i>3</i>ขั้นที่สาม</span>
       <h2 class="disp">ตราประจำตัว</h2>
       <p class="hint">ตราที่ได้มาจะขึ้นบนการ์ดเอง — ยังไม่มีก็ทำการ์ดได้ตามปกติ</p>
+      <div class="bhead">
+        <span class="bcount" id="bcount">ปลดแล้ว 0/5</span>
+        <div class="btrack"><i id="bbar"></i></div>
+      </div>
       <div class="badges" id="badges"></div>
+      <p class="bnote" id="bhint">ทุกตราหาได้จากในเว็บนี้ทั้งหมด ไม่ต้องจ่ายอะไร แค่เดินดูให้ทั่ว</p>
+      <p class="bnote full" id="ball" hidden>🏆 ครบทุกตราแล้ว — คุณเดินดูบ้านหลังนี้จนทั่วจริง ๆ</p>
       <div class="coderow">
-        <input type="text" id="guildCode" placeholder="มีรหัสจากกิลด์? กรอกตรงนี้" autocomplete="off">
+        <input type="text" id="guildCode" placeholder="มีรหัส? กรอกตรงนี้" autocomplete="off">
         <button type="button" id="guildBtn" class="disp">ใช้รหัส</button>
       </div>
       <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
+      <p class="hint" style="margin-top:12px">ยังไม่มีรหัสเลยใช่ไหมครับ — <a href="../forge/">อ่านการ์ตูนให้ครบทุกตอน</a> แล้วจะได้รหัสแรกไปใส่ตรงนี้</p>
+    </div>
+
+    <!-- ═══ ขั้นที่สี่ — เฉพาะคนที่เลือกลงทะเบียน ═══ -->
+    <div class="step" id="regStep" hidden>
+      <span class="num"><i>4</i>ขั้นที่สี่</span>
+      <h2 class="disp">ลงทะเบียนเข้าระบบสมาชิก</h2>
+
+      <div class="regwhat">
+        <b class="disp">📇 การลงทะเบียนจะบันทึกการ์ดของคุณเข้าระบบสมาชิกของบ้าน</b>
+        <span>ชื่อ สาย ตรา และประโยคบนการ์ด จะถูกเก็บไว้เป็นทะเบียนของบ้าน
+              เพื่อให้เรารู้จักคุณเวลาเจอกันในกิลด์ หรือเวลามีกิจกรรม —
+              ถ้าไม่อยากบันทึก เลือก “ทำการ์ดอย่างเดียว” ด้านบนได้เลย การ์ดก็ยังทำได้ครบทุกอย่าง</span>
+      </div>
+
+      <form id="regForm" novalidate>
+        <div class="field">
+          <label for="rname">ชื่อของคุณ</label>
+          <input type="text" id="rname" maxlength="60" autocomplete="name" placeholder="ชื่อจริงหรือชื่อที่ให้เราเรียก">
+        </div>
+
+        <div class="field">
+          <label for="remail">อีเมล</label>
+          <input type="text" id="remail" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@example.com">
+        </div>
+
+        <div class="field">
+          <label for="rera">คุณรู้จัก myclover ยุคไหน</label>
+          <select id="rera">
+            <option value="">— เลือกสักอัน —</option>
+            <option value="2553">อยู่กับบ้านนี้มาตั้งแต่ปี 2553</option>
+            <option value="2554">รู้จักช่วงปี 2554</option>
+            <option value="2555">รู้จักช่วงปี 2555</option>
+            <option value="new">เพิ่งมาเจอบ้านนี้ตอนนี้เอง</option>
+          </select>
+          <p class="hint" style="margin-top:7px">ใครอยู่กับเรามาตั้งแต่ยุค 2553–2555 จะได้ตรา 🍀 ศิษย์เก่า ติดบนการ์ดให้เลย</p>
+        </div>
+
+        <div class="opt">
+          <input type="checkbox" id="rnews">
+          <label for="rnews"><b>อยากรับข่าวสารของบ้านทางอีเมลด้วย</b>
+            <span>มีคลาสใหม่ เครื่องมือใหม่ หรือกิจกรรมเมื่อไหร่ เราจะบอก —
+                  ไม่ติ๊กก็ลงทะเบียนได้ตามปกติ เราจะไม่ส่งอะไรไปเลย</span></label>
+        </div>
+
+        <div class="opt">
+          <input type="checkbox" id="rconsent">
+          <label for="rconsent"><b>ยินยอมให้ myclover เก็บข้อมูลนี้ไว้เป็นทะเบียนสมาชิก</b>
+            <span>ขอลบหรือขอแก้ได้ทุกเมื่อ · <a href="../privacy/" target="_blank" rel="noopener">อ่านว่าเราเก็บอะไรบ้าง</a></span></label>
+        </div>
+
+        <!-- กันบอท: คนมองไม่เห็น ถ้ามีค่าแปลว่าเป็นบอท -->
+        <div class="hp" aria-hidden="true"><label for="website">อย่ากรอกช่องนี้</label>
+          <input type="text" id="website" tabindex="-1" autocomplete="off"></div>
+
+        <button type="submit" class="regbtn disp" id="regBtn">🍀 ลงทะเบียน</button>
+        <div class="codemsg" id="regMsg" role="status" aria-live="polite"></div>
+        <p class="hint" style="margin-top:10px">เราเก็บแค่ชื่อ อีเมล สาย ตรา และข้อความบนการ์ดของคุณ —
+          <b>ไม่เก็บเบอร์โทร ที่อยู่ วันเกิด หรือข้อมูลสุขภาพใด ๆ</b></p>
+      </form>
     </div>
   </div>
 
   <!-- ═══ ฝั่งขวา: การ์ด ═══ -->
   <div class="side">
     <div class="pvbox">
-      <canvas id="pv" width="1080" height="1350" role="img" aria-label="ตัวอย่างการ์ดประจำตัวของคุณ"></canvas>
+      <canvas id="pv" width="1260" height="1760" role="img" aria-label="ตัวอย่างการ์ดประจำตัวของคุณ"></canvas>
       <p class="pvcap">การ์ดจะเปลี่ยนตามที่คุณกรอกทันที</p>
     </div>
 
@@ -245,7 +376,7 @@ body.js .reveal.in{opacity:1;transform:none}
 <footer>
   <p>🍀 myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p>
   <p style="margin-top:6px">การ์ดใบนี้สร้างและเก็บอยู่ในเครื่องของคุณเองทั้งหมด</p>
-  <p style="margin-top:6px"><a href="../register/">ลงทะเบียนรับเลขสมาชิก</a> · <a href="../privacy/">ข้อมูลของคุณ</a> · <a href="../">กลับหน้าบ้าน</a></p>
+  <p style="margin-top:6px"><a href="#register">ลงทะเบียนเข้าระบบสมาชิก</a> · <a href="../privacy/">ข้อมูลของคุณ</a> · <a href="../">กลับหน้าบ้าน</a></p>
 </footer>
 
 <script>
@@ -256,22 +387,39 @@ body.js .reveal.in{opacity:1;transform:none}
    ค่าคงที่ของการ์ด
    ═══════════════════════════════════════════════════════════ */
 var CLASSES={
-  THINKER:{th:'สายคิด',      emo:'🧠', ac:'#2E4A8F', who:'ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ'},
-  TASTER :{th:'สายกิน',      emo:'🍜', ac:'#C4622D', who:'รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ'},
-  KEEPER :{th:'สายคลีน',     emo:'💪', ac:'#1F8A70', who:'มีวินัยอยู่แล้ว ขาดแค่ระบบที่วัดผลได้'},
-  MAKER  :{th:'สายประดิษฐ์', emo:'🧰', ac:'#4B5A67', who:'ชอบสร้างของ อยากให้เครื่องมือทำงานแทนได้'}
+  THINKER:{th:'สายคิด',      emo:'🧠', ac:'#2E4A8F', tag:'THINKER', who:'ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ'},
+  TASTER :{th:'สายกิน',      emo:'🍜', ac:'#C4622D', tag:'TASTER', who:'รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ'},
+  KEEPER :{th:'สายคลีน',     emo:'💪', ac:'#1F8A70', tag:'KEEPER', who:'มีวินัยอยู่แล้ว ขาดแค่ระบบที่วัดผลได้'},
+  MAKER  :{th:'สายประดิษฐ์', emo:'🧰', ac:'#4B5A67', tag:'MAKER', who:'ชอบสร้างของ อยากให้เครื่องมือทำงานแทนได้'}
 };
 var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
+/* ตราประจำตัว — ตารางนี้ใช้ "แสดงผล" เท่านั้น
+   ส่วนการปลดอัตโนมัติเมื่อทำครบ อยู่ใน assets/quest.js */
 var TITLES={
-  ALUMNI:{emo:'🍀',th:'ศิษย์เก่า', how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้ยุค 2553–2555'},
-  SEEKER:{emo:'🔍',th:'ผู้ค้นพบ',  how:'ได้จากการเจอห้องลับของบ้าน ลองกดโคลเวอร์ที่หน้าแรกดู'},
-  GUILD :{emo:'⚔️',th:'ชาวกิลด์',  how:'ได้จากรหัสที่แจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่'}
+  SEEKER :{emo:'🔍',th:'ผู้ค้นพบ',       how:'มีห้องลับซ่อนอยู่ในบ้าน ลองกดโคลเวอร์ที่หน้าแรกดู',
+           go:'../', goTx:'ไปหาที่หน้าแรก'},
+  FORGE  :{emo:'⚒️',th:'ผ่านโรงตีเหล็ก', how:'อ่านการ์ตูนให้ครบทั้ง 12 ตอน — ปลดกรอบไฟบนการ์ด',
+           go:'../forge/', goTx:'ไปอ่านการ์ตูน'},
+  SCHOLAR:{emo:'🎓',th:'ติดอาวุธครบมือ', how:'เรียนห้องเรียน AI ให้ครบทั้ง 6 คลาส',
+           go:'../classroom/', goTx:'ไปเข้าห้องเรียน'},
+  ALUMNI :{emo:'🍀',th:'ศิษย์เก่า',       how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้ยุค 2553–2555',
+           go:'#register', goTx:'ไปลงทะเบียน'},
+  GUILD  :{emo:'⚔️',th:'ชาวกิลด์',       how:'รหัสแจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่ พร้อมเลขประจำตัว',
+           go:'', goTx:''}
 };
+var TITLE_ORDER=['SEEKER','FORGE','SCHOLAR','ALUMNI','GUILD'];
 
-/* รหัสกิลด์ — เปลี่ยนรหัส: แก้ 2 ค่านี้เป็น sha256 + djb2 ของรหัสใหม่
-   (ค่าปัจจุบันเป็นรหัสตั้งต้นสำหรับทดสอบ ให้เปลี่ยนก่อนแจกจริง) */
-var GUILD_SHA='4eb990514f06a4910fc2537f34fc780ddde5bb5c66f9b902aa7e09131527ac43';
-var GUILD_DJB='1404206110';
+/* รหัสปลดตรา — เปลี่ยนรหัส: แก้ sha/djb เป็นค่าของรหัสใหม่ (ตัวพิมพ์เล็ก)
+   เก็บเป็นค่าแฮชเพราะไฟล์นี้เปิดดูซอร์สได้ — ไม่ได้กันคนตั้งใจงัด
+   แค่ไม่ให้รหัสลอยอยู่กลางหน้าเว็บให้เห็นก่อนถึงเวลา */
+var CODES=[
+  {t:'FORGE', sha:'0f30c1d806510be3ff6917a32faf1c9f3ae5ca4295387df6ab523ccb2f6257a6', djb:'439369380',
+   ok:'⚒️ ยินดีด้วยครับ คุณอ่านครบทุกตอนแล้ว — การ์ดของคุณได้กรอบไฟกับตรา “ผ่านโรงตีเหล็ก”'},
+  {t:'SCHOLAR', sha:'0e5bfd5cdf5170ae3b30adfe1958d05ceab48461d2b23563622aa34d73bfddca', djb:'1121960971',
+   ok:'🎓 เรียนครบทั้ง 6 คลาสแล้ว — ได้ตรา “ติดอาวุธครบมือ” ขึ้นการ์ดเรียบร้อย'},
+  {t:'GUILD', sha:'4eb990514f06a4910fc2537f34fc780ddde5bb5c66f9b902aa7e09131527ac43', djb:'1404206110',
+   ok:'⚔️ ยินดีต้อนรับชาวกิลด์ — การ์ดของคุณเป็นการ์ดฮีโร่กรอบทองแล้ว'}
+];
 
 var GREEN='rgb(27,106,66)', GOLD='rgb(190,148,66)', CREAM='#F8F5EE', DEEP='rgb(10,40,24)';
 
@@ -356,7 +504,9 @@ function wrap(c,text,maxW,maxLines){
 /* ═══════════════════════════════════════════════════════════
    วาดการ์ด (พิกัดทั้งหมดอยู่ในระบบ 540×675 แล้วค่อย scale)
    ═══════════════════════════════════════════════════════════ */
-var CW=540, CH=675;
+/* สัดส่วนการ์ดจริง 63×88 มม. เท่า MTG / Flesh and Blood — เผื่อวันหนึ่งสั่งพิมพ์ได้เลย
+   ส่งออก 1260×1760 = ประมาณ 500 DPI ตอนย่อลงขนาดการ์ดจริง เหลือเฟือสำหรับงานพิมพ์ */
+var CW=630, CH=880;
 
 function drawClover(c,x,y,size,color,alpha){
   c.save(); c.globalAlpha=alpha; c.fillStyle=color;
@@ -375,158 +525,165 @@ function drawClover(c,x,y,size,color,alpha){
 
 function drawCardArt(c,st){
   var cls=CLASSES[st.cls]||CLASSES.THINKER;
-  var foil=st.titles.indexOf('GUILD')>=0;
-  var FR=13, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
-  var CP=20, x0=FR+CP, x1=CW-FR-CP, cw=x1-x0;
+  /* ขั้นของกรอบ: เขียว → กรอบไฟ (อ่านจบ) → กรอบทองฮีโร่ (ชาวกิลด์) */
+  var foil =st.titles.indexOf('GUILD')>=0;
+  var ember=!foil && st.titles.indexOf('FORGE')>=0;
+  var FR=16, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
+  var PAD=34, x0=PAD, x1=CW-PAD, cw=x1-x0;
 
-  /* ---- กรอบ ---- */
-  rr(c,0,0,CW,CH,30);
+  /* ── กรอบการ์ด ── */
+  rr(c,0,0,CW,CH,34);
   if(foil){
     var fg=c.createLinearGradient(0,0,CW,CH);
-    fg.addColorStop(0,'#8A6A22'); fg.addColorStop(.22,'#F0DCA0');
-    fg.addColorStop(.42,'#BE9442'); fg.addColorStop(.6,'#FBF0C9');
-    fg.addColorStop(.78,'#C8A24E'); fg.addColorStop(1,'#8A6A22');
+    fg.addColorStop(0,'#8A6A22'); fg.addColorStop(.2,'#F2E0A8'); fg.addColorStop(.4,'#BE9442');
+    fg.addColorStop(.58,'#FBF3D2'); fg.addColorStop(.78,'#C8A24E'); fg.addColorStop(1,'#7E5F1E');
     c.fillStyle=fg;
+  } else if(ember){
+    var eg=c.createLinearGradient(0,0,CW,CH);
+    eg.addColorStop(0,'#4A2410'); eg.addColorStop(.26,'#C9682B'); eg.addColorStop(.5,'#8E3F16');
+    eg.addColorStop(.72,'#E08A3C'); eg.addColorStop(1,'#3E1E0D');
+    c.fillStyle=eg;
   } else {
-    var dg=c.createLinearGradient(0,0,0,CH);
-    dg.addColorStop(0,'rgb(16,58,34)'); dg.addColorStop(1,'rgb(8,32,19)');
+    var dg=c.createLinearGradient(0,0,CW*.4,CH);
+    dg.addColorStop(0,'rgb(20,66,40)'); dg.addColorStop(1,'rgb(7,28,17)');
     c.fillStyle=dg;
   }
   c.fill();
 
-  /* ---- พื้นในการ์ด ---- */
-  rr(c,ix,iy,iw,ih,20); c.fillStyle=CREAM; c.fill();
+  /* ── ภาพเต็มใบ ── */
+  c.save();
+  rr(c,ix,iy,iw,ih,24); c.clip();
+  if(st.img){
+    var iR=st.img.width/st.img.height, bR=iw/ih, dw,dh,dx,dy;
+    if(iR>bR){ dh=ih; dw=ih*iR; dx=ix-(dw-iw)/2; dy=iy; }
+    else     { dw=iw; dh=iw/iR; dx=ix; dy=iy-(dh-ih)/2; }
+    c.drawImage(st.img,dx,dy,dw,dh);
+  } else {
+    var pg=c.createLinearGradient(ix,iy,ix+iw,iy+ih);
+    pg.addColorStop(0,hexA(cls.ac,.95)); pg.addColorStop(1,'rgba(10,32,20,.98)');
+    c.fillStyle=pg; c.fillRect(ix,iy,iw,ih);
+    for(var gy=0;gy<9;gy++) for(var gx=0;gx<6;gx++)
+      drawClover(c,ix+30+gx*((iw-60)/5),iy+50+gy*((ih-100)/8),30,'#ffffff',.07);
+    drawClover(c,CW/2,iy+ih*0.34,190,'#ffffff',.16);
+  }
 
-  /* ---- แถบหัว ---- */
-  var hy=FR+CP, hh=46;
-  rr(c,x0,hy,cw,hh,12); c.fillStyle=cls.ac; c.fill();
-  c.save(); rr(c,x0,hy,cw,hh,12); c.clip();
-  var hg=c.createLinearGradient(x0,hy,x1,hy+hh);
-  hg.addColorStop(0,'rgba(255,255,255,.18)'); hg.addColorStop(1,'rgba(255,255,255,0)');
-  c.fillStyle=hg; c.fillRect(x0,hy,cw,hh);
+  /* ── ม่านมืดด้านล่าง ให้ตัวหนังสืออ่านออกบนรูปทุกแบบ ── */
+  var sc=c.createLinearGradient(0,ih*0.34,0,CH);
+  sc.addColorStop(0,'rgba(6,22,13,0)');
+  sc.addColorStop(.38,'rgba(6,22,13,.55)');
+  sc.addColorStop(.62,'rgba(6,22,13,.88)');
+  sc.addColorStop(1,'rgba(5,18,11,.97)');
+  c.fillStyle=sc; c.fillRect(ix,iy,iw,ih);
+  var tc=c.createLinearGradient(0,iy,0,iy+150);
+  tc.addColorStop(0,'rgba(6,22,13,.72)'); tc.addColorStop(1,'rgba(6,22,13,0)');
+  c.fillStyle=tc; c.fillRect(ix,iy,iw,150);
   c.restore();
 
   c.textBaseline='middle';
-  c.fillStyle='#fff'; c.textAlign='left';
-  font(c,'400',24,'Anuphan');
-  c.fillText(cls.emo,x0+14,hy+hh/2+1);
-  var nameSize=fit(c,cls.th,cw*0.44,20,'700','Bai Jamjuree');
-  font(c,'700',nameSize,'Bai Jamjuree');
-  c.fillText(cls.th,x0+48,hy+hh/2);
 
-  /* เลขประจำตัวออกให้เฉพาะชาวกิลด์ — คนทั่วไปไม่มีเลข ไม่ต้องโชว์ช่องว่างให้สงสัย */
+  /* ── ป้ายสายบนหัวการ์ด ── */
+  var cy=iy+34;
+  font(c,'700',19,'Bai Jamjuree');
+  var chipW=52+c.measureText(cls.th).width+22;
+  rr(c,x0-8,cy-19,chipW,38,19);
+  c.fillStyle=hexA(cls.ac,.95); c.fill();
+  c.strokeStyle='rgba(255,255,255,.28)'; c.lineWidth=1.5; c.stroke();
+  c.textAlign='left'; font(c,'400',22,'Anuphan'); c.fillStyle='#fff';
+  c.fillText(cls.emo,x0+8,cy+1);
+  font(c,'700',19,'Bai Jamjuree'); c.fillStyle='#fff';
+  c.fillText(cls.th,x0+42,cy);
+
+  /* เลขประจำตัว — ออกให้เฉพาะชาวกิลด์ */
   if(foil && st.member){
-    c.textAlign='right';
-    font(c,'600',16,'Bai Jamjuree');
-    c.fillText(st.member,x1-14,hy+hh/2);
+    c.textAlign='right'; font(c,'700',17,'Bai Jamjuree'); c.fillStyle=GOLD;
+    c.fillText(st.member,x1,cy);
   }
 
-  /* ---- ช่องรูป 4:5 ---- */
-  var py=hy+hh+14, ph=359, pw=Math.round(ph*4/5), px=Math.round((CW-pw)/2);
-  c.save();
-  rr(c,px,py,pw,ph,14); c.clip();
-  if(st.img){
-    var iR=st.img.width/st.img.height, bR=pw/ph, dw,dh,dx,dy;
-    if(iR>bR){ dh=ph; dw=ph*iR; dx=px-(dw-pw)/2; dy=py; }
-    else     { dw=pw; dh=pw/iR; dx=px; dy=py-(dh-ph)/2; }
-    c.drawImage(st.img,dx,dy,dw,dh);
-  } else {
-    var pg=c.createLinearGradient(px,py,px+pw,py+ph);
-    pg.addColorStop(0,hexA(cls.ac,.92)); pg.addColorStop(1,hexA(cls.ac,.62));
-    c.fillStyle=pg; c.fillRect(px,py,pw,ph);
-    for(var gy=0;gy<6;gy++) for(var gx=0;gx<5;gx++){
-      drawClover(c,px+18+gx*((pw-36)/4),py+30+gy*((ph-60)/5),26,'#ffffff',.09);
-    }
-    drawClover(c,px+pw/2,py+ph/2-6,132,'#ffffff',.26);
-  }
-  c.restore();
-  rr(c,px,py,pw,ph,14);
-  c.strokeStyle=hexA(cls.ac,.55); c.lineWidth=2.5; c.stroke();
-
-  /* ---- ชื่อเล่น ---- */
-  var ay=py+ph;
-  var nick=(st.nick||'ชื่อของคุณ').slice(0,14);
-  c.textAlign='center'; c.fillStyle= st.nick?'rgb(18,40,28)':'rgba(18,40,28,.32)';
-  var ns=fit(c,nick,cw,30,'700','Bai Jamjuree');
-  font(c,'700',ns,'Bai Jamjuree');
-  c.fillText(nick,CW/2,ay+16+17);
-
-  /* ---- เส้นคั่น 1 ---- */
-  c.strokeStyle='rgba(18,40,28,.14)'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(x0,ay+60.5); c.lineTo(x1,ay+60.5); c.stroke();
-
-  /* ---- ตรา ---- */
-  var ty=ay+70, th=28;
-  if(st.titles.length){
-    var chips=st.titles.slice(0,3).map(function(k){ return {emo:TITLES[k].emo,th:TITLES[k].th}; });
-    font(c,'600',14,'Anuphan');
-    var widths=chips.map(function(ch){ return 26+c.measureText(ch.th).width+16; });
-    var total=widths.reduce(function(a,b){return a+b;},0)+(chips.length-1)*8;
-    var sx=(CW-total)/2;
-    chips.forEach(function(ch,i){
-      rr(c,sx,ty,widths[i],th,9);
-      c.fillStyle='rgba(27,106,66,.09)'; c.fill();
-      c.strokeStyle='rgba(27,106,66,.28)'; c.lineWidth=1; c.stroke();
-      c.textAlign='left'; c.textBaseline='middle';
-      font(c,'400',15,'Anuphan'); c.fillStyle='rgb(18,40,28)';
-      c.fillText(ch.emo,sx+8,ty+th/2+1);
-      font(c,'600',14,'Anuphan'); c.fillStyle=GREEN;
-      c.fillText(ch.th,sx+28,ty+th/2);
-      sx+=widths[i]+8;
-    });
-  } else {
-    c.textAlign='center'; c.fillStyle='rgba(18,40,28,.3)';
-    font(c,'700',13,'Bai Jamjuree');
-    var kw=st.cls.split('').join(' ');
-    c.fillText(kw,CW/2,ty+th/2);
-  }
-
-  /* ---- เส้นคั่น 2 ---- */
-  c.strokeStyle='rgba(18,40,28,.14)'; c.lineWidth=1;
-  c.beginPath(); c.moveTo(x0,ty+th+10.5); c.lineTo(x1,ty+th+10.5); c.stroke();
-
-  /* ---- หนึ่งประโยค ---- */
-  var qy=ty+th+21;
+  /* ── บล็อกข้อความล่าง วางแบบการ์ดเกมจริง ── */
   var quote=(st.line||'').slice(0,40);
-  c.textAlign='center';
-  if(quote){
-    font(c,'500',19,'Anuphan');
-    var ls2=wrap(c,'“'+quote+'”',cw,2);
-    var lh=23, sy=qy+22-((ls2.length-1)*lh)/2;
-    c.fillStyle='rgba(18,40,28,.82)';
-    ls2.forEach(function(l,i){ c.fillText(l,CW/2,sy+i*lh); });
-  } else {
-    font(c,'400',17,'Anuphan'); c.fillStyle='rgba(18,40,28,.28)';
-    c.fillText('“ประโยคของคุณจะอยู่ตรงนี้”',CW/2,qy+22);
+  /* ตราบนการ์ด — เรียงตราที่หายากไว้ก่อน แล้วตัดที่เหลือถ้าเกิน */
+  var CHIP_ORDER=['GUILD','FORGE','SCHOLAR','SEEKER','ALUMNI'];
+  var chips=CHIP_ORDER.filter(function(k){ return st.titles.indexOf(k)>=0 && TITLES[k]; })
+                      .slice(0,4).map(function(k){ return TITLES[k]; });
+  var qLines=[];
+  if(quote){ font(c,'500',20,'Anuphan'); qLines=wrap(c,'“'+quote+'”',cw,2); }
+
+  /* ตราขึ้นบรรทัดใหม่ได้ถ้าใส่ไม่พอ — วัดความกว้างจริงก่อน จะได้กันที่ถูก */
+  font(c,'600',13.5,'Anuphan');
+  var chipRows=0, rowW=0;
+  chips.forEach(function(t){
+    var w=24+c.measureText(t.th).width+16;
+    if(chipRows===0 || rowW+w>cw){ chipRows++; rowW=w+7; } else { rowW+=w+7; }
+  });
+  var footH=30, blockH=54+30+(chipRows?chipRows*32+6:0)+(qLines.length?qLines.length*26+16:0);
+  var by=CH-FR-24-footH-blockH;
+
+  /* ชื่อ */
+  var nick=(st.nick||'ชื่อของคุณ').slice(0,14);
+  c.textAlign='left'; c.fillStyle= st.nick?'#fff':'rgba(255,255,255,.42)';
+  var ns=fit(c,nick,cw,46,'700','Bai Jamjuree');
+  font(c,'700',ns,'Bai Jamjuree');
+  c.fillText(nick,x0,by+26);
+  by+=54;
+
+  /* บรรทัดประเภท — หัวใจของความเป็นการ์ดเกม */
+  c.strokeStyle='rgba(190,148,66,.55)'; c.lineWidth=1.5;
+  c.beginPath(); c.moveTo(x0,by-2); c.lineTo(x1,by-2); c.stroke();
+  font(c,'700',14.5,'Bai Jamjuree'); c.fillStyle=GOLD;
+  c.fillText('ชาวโคลเวอร์ · '+cls.th,x0,by+15);
+  c.textAlign='right'; font(c,'700',13,'Bai Jamjuree');
+  c.fillStyle= foil?GOLD:(ember?'#E8A063':'rgba(255,255,255,.45)');
+  c.fillText(foil?'★ HERO':(ember?'◈ FORGED':cls.tag),x1,by+15);
+  c.textAlign='left';
+  by+=30;
+
+  /* ตรา — วางเหมือนบรรทัดความสามารถ */
+  if(chips.length){
+    var sx=x0, cyy=by;
+    chips.forEach(function(t,i){
+      font(c,'600',13.5,'Anuphan');
+      var w=24+c.measureText(t.th).width+16;
+      if(i>0 && sx+w>x1){ sx=x0; cyy+=32; }     /* เต็มแถวแล้ว ขึ้นแถวใหม่ */
+      rr(c,sx,cyy,w,26,8);
+      c.fillStyle='rgba(255,255,255,.13)'; c.fill();
+      c.strokeStyle='rgba(190,148,66,.45)'; c.lineWidth=1; c.stroke();
+      font(c,'400',13,'Anuphan'); c.fillStyle='#fff';
+      c.fillText(t.emo,sx+7,cyy+14);
+      font(c,'600',13.5,'Anuphan'); c.fillStyle='rgba(255,255,255,.92)';
+      c.fillText(t.th,sx+25,cyy+13);
+      sx+=w+7;
+    });
+    by=cyy+38;
   }
 
-  /* ---- ท้ายการ์ด ---- */
-  var fy=qy+54;
-  c.textAlign='left'; font(c,'600',13.5,'Bai Jamjuree'); c.fillStyle=GREEN;
-  c.fillText('🍀 myclover.com',x0,fy+9);
-  c.textAlign='right'; font(c,'700',12,'Bai Jamjuree'); c.fillStyle='rgba(18,40,28,.42)';
-  c.fillText('S I N C E   2 0 1 0',x1,fy+9);
+  /* ข้อความบรรยาย — flavor text แบบการ์ดเกม */
+  if(qLines.length){
+    by+=6;
+    font(c,'500',20,'Anuphan'); c.fillStyle='rgba(255,255,255,.9)';
+    qLines.forEach(function(l,i){ c.fillText(l,x0,by+i*26+10); });
+    by+=qLines.length*26+10;
+  }
 
-  /* ---- ประกายทอง + ป้าย HERO (เฉพาะการ์ดฮีโร่) ---- */
+  /* ── แถบท้ายการ์ด ── */
+  var fy=CH-FR-30;
+  c.strokeStyle='rgba(255,255,255,.16)'; c.lineWidth=1;
+  c.beginPath(); c.moveTo(x0,fy-12); c.lineTo(x1,fy-12); c.stroke();
+  c.textAlign='left'; font(c,'700',13.5,'Bai Jamjuree'); c.fillStyle='rgba(255,255,255,.78)';
+  c.fillText('🍀 myclover.com',x0,fy+4);
+  c.textAlign='right'; font(c,'700',11.5,'Bai Jamjuree'); c.fillStyle='rgba(255,255,255,.5)';
+  c.fillText('S I N C E   2 0 1 0',x1,fy+4);
+
+  /* ── ประกายทองของการ์ดฮีโร่ ── */
   if(foil){
-    c.save();
-    rr(c,ix,iy,iw,ih,20); c.clip();
-    var sh=c.createLinearGradient(0,CH*0.1,CW,CH*0.62);
+    c.save(); rr(c,ix,iy,iw,ih,24); c.clip();
+    var sh=c.createLinearGradient(0,CH*.08,CW,CH*.6);
     sh.addColorStop(0,'rgba(255,255,255,0)');
-    sh.addColorStop(.46,'rgba(255,242,206,.07)');
-    sh.addColorStop(.5,'rgba(255,255,255,.13)');
-    sh.addColorStop(.54,'rgba(255,238,188,.07)');
+    sh.addColorStop(.46,'rgba(255,242,206,.08)');
+    sh.addColorStop(.5,'rgba(255,255,255,.15)');
+    sh.addColorStop(.54,'rgba(255,238,188,.08)');
     sh.addColorStop(1,'rgba(255,255,255,0)');
     c.fillStyle=sh; c.fillRect(0,0,CW,CH);
     c.restore();
-
-    var bw=118,bh=27,bx=(CW-bw)/2,by=CH-FR-14;
-    rr(c,bx,by,bw,bh,9);
-    c.fillStyle='rgb(10,40,24)'; c.fill();
-    c.strokeStyle=GOLD; c.lineWidth=2; c.stroke();
-    c.textAlign='center'; c.textBaseline='middle';
-    font(c,'700',13.5,'Bai Jamjuree'); c.fillStyle=GOLD;
-    c.fillText('★  H E R O',CW/2,by+bh/2+.5);
   }
 }
 
@@ -657,7 +814,11 @@ function ensureFonts(){
    ═══════════════════════════════════════════════════════════ */
 var pv=document.getElementById('pv');
 var elClasses=document.getElementById('classes');
-var elBadges=document.getElementById('badges');
+var elBadges=document.getElementById('badges'),
+    elCount =document.getElementById('bcount'),
+    elBar   =document.getElementById('bbar'),
+    elHint  =document.getElementById('bhint'),
+    elAll   =document.getElementById('ball');
 var nickI=document.getElementById('nick'), lineI=document.getElementById('line');
 
 function render(){
@@ -683,14 +844,25 @@ ORDER.forEach(function(k){
 /* --- ตรา --- */
 function paintBadges(){
   elBadges.innerHTML='';
-  ['ALUMNI','SEEKER','GUILD'].forEach(function(k){
+  var got=0;
+  TITLE_ORDER.forEach(function(k){
     var t=TITLES[k], has=st.titles.indexOf(k)>=0;
+    if(has) got++;
     var d=document.createElement('div');
     d.className='bd'+(has?'':' off');
+    /* ตราที่ยังไม่ได้ บอกทางไปเอาด้วย — ไม่ใช่แค่บอกว่ายังไม่มี */
+    var right = has ? '<span class="on">ได้แล้ว</span>'
+              : (t.go ? '<a class="get disp" href="'+t.go+'">'+t.goTx+' →</a>' : '');
     d.innerHTML='<span class="ic">'+t.emo+'</span><span class="tx"><b class="disp">'+t.th+'</b><small>'+
-      (has?'อยู่บนการ์ดของคุณแล้ว':t.how)+'</small></span>'+(has?'<span class="on">ได้แล้ว</span>':'');
+      (has?'อยู่บนการ์ดของคุณแล้ว':t.how)+'</small></span>'+right;
     elBadges.appendChild(d);
   });
+  var n=TITLE_ORDER.length;
+  elCount.textContent='ปลดแล้ว '+got+'/'+n;
+  elCount.className='bcount'+(got>=n?' full':'');
+  elBar.style.width=Math.round(got/n*100)+'%';
+  elHint.hidden = got>=n;
+  elAll.hidden  = got<n;
 }
 paintBadges();
 
@@ -737,22 +909,165 @@ function sha256(s){
   });
 }
 var codeMsg=document.getElementById('codeMsg');
+
+function grant(key,msg){
+  if(st.titles.indexOf(key)<0){
+    st.titles.push(key);
+    ls.set('mc_titles',JSON.stringify(st.titles));
+  }
+  if(msg){ codeMsg.className='codemsg ok'; codeMsg.textContent=msg; }
+  paintBadges(); render();
+}
+
+/* ตรวจรหัสทีละใบ — เจอใบไหนก่อนก็ให้ตรานั้น */
+function tryCode(v,i){
+  if(i>=CODES.length){
+    codeMsg.className='codemsg no';
+    codeMsg.textContent='รหัสยังไม่ถูก ลองเช็กอีกครั้งนะครับ';
+    return;
+  }
+  var c=CODES[i];
+  sha256(v).then(function(h){ return h===c.sha; })
+           .catch(function(){ return djb2(v)===c.djb; })
+           .then(function(ok){ ok ? grant(c.t,c.ok) : tryCode(v,i+1); });
+}
 document.getElementById('guildBtn').addEventListener('click',function(){
   var v=document.getElementById('guildCode').value.trim().toLowerCase();
   if(!v){ codeMsg.className='codemsg'; codeMsg.textContent=''; return; }
-  sha256(v).then(function(h){ return h===GUILD_SHA; })
-           .catch(function(){ return djb2(v)===GUILD_DJB; })
-           .then(function(ok){
-    if(ok){
-      if(st.titles.indexOf('GUILD')<0){ st.titles.push('GUILD'); ls.set('mc_titles',JSON.stringify(st.titles)); }
-      codeMsg.className='codemsg ok';
-      codeMsg.textContent='⚔️ ยินดีต้อนรับชาวกิลด์ — การ์ดของคุณเป็นการ์ดฮีโร่กรอบทองแล้ว';
-      paintBadges(); render();
-    } else {
-      codeMsg.className='codemsg no';
-      codeMsg.textContent='รหัสยังไม่ถูก ลองเช็กอีกครั้งนะครับ';
-    }
+  tryCode(v,0);
+});
+
+/* ทำครบบนเครื่องเดียวกัน ก็ไม่ต้องพิมพ์รหัสซ้ำ — ให้ตราไปเลย
+   (รหัสมีไว้สำหรับคนที่อ่าน/เรียนคนละเครื่องกับที่ทำการ์ด) */
+[['mc_forge_done','FORGE',  '⚒️ เราเห็นว่าคุณอ่านการ์ตูนครบทุกตอนแล้ว — ใส่ตรา “ผ่านโรงตีเหล็ก” ให้เรียบร้อย'],
+ ['mc_learn_done','SCHOLAR','🎓 เราเห็นว่าคุณเรียนครบทั้ง 6 คลาสแล้ว — ใส่ตรา “ติดอาวุธครบมือ” ให้เรียบร้อย']
+].forEach(function(r){
+  if(ls.get(r[0],'')==='1' && st.titles.indexOf(r[1])<0) grant(r[1],r[2]);
+});
+
+/* ═══════════════════════════════════════════════════════════
+   โหมดของหน้า: ทำการ์ดอย่างเดียว หรือ ลงทะเบียนเข้าระบบสมาชิก
+   ═══════════════════════════════════════════════════════════ */
+var TEAM_EMAIL='team@myclover.com';
+/* ปลายทางรับข้อมูลลงทะเบียน — เว้นว่างไว้ = ส่งทางอีเมลแทน
+   ตั้งค่าได้ที่ assets/config.js เมื่อต่อระบบหลังบ้านเสร็จ */
+var REG_ENDPOINT=(window.MC_CONFIG&&window.MC_CONFIG.REGISTER_ENDPOINT)||'';
+
+var regStep=document.getElementById('regStep'),
+    modeBtns=document.querySelectorAll('.mo');
+
+function setMode(m,remember){
+  regStep.hidden = m!=='reg';
+  Array.prototype.forEach.call(modeBtns,function(b){
+    b.setAttribute('aria-pressed', b.getAttribute('data-mode')===m ? 'true':'false');
   });
+  if(remember) ls.set('mc_mode',m);
+  if(m==='reg' && remember) regStep.scrollIntoView({behavior:'smooth',block:'start'});
+}
+Array.prototype.forEach.call(modeBtns,function(b){
+  b.addEventListener('click',function(){ setMode(b.getAttribute('data-mode'),true); });
+});
+/* จำโหมดไว้ · มาจากลิงก์ /card/#register ก็เข้าโหมดลงทะเบียนเลย */
+function fromHash(){ return location.hash==='#register'||location.hash==='#reg'; }
+setMode(fromHash() ? 'reg' : (ls.get('mc_mode','')==='reg' ? 'reg' : 'card'), false);
+if(fromHash()) setTimeout(function(){ regStep.scrollIntoView({behavior:'smooth',block:'start'}); },220);
+/* ลิงก์ #register ที่อยู่ในหน้าเดียวกัน ก็ต้องสลับโหมดให้ด้วย */
+window.addEventListener('hashchange',function(){ if(fromHash()) setMode('reg',true); });
+
+/* ═══════════════════════════════════════════════════════════
+   ลงทะเบียน
+   ═══════════════════════════════════════════════════════════ */
+var regForm=document.getElementById('regForm'),
+    rname=document.getElementById('rname'),
+    remail=document.getElementById('remail'),
+    rera=document.getElementById('rera'),
+    rnews=document.getElementById('rnews'),
+    rconsent=document.getElementById('rconsent'),
+    regBtn=document.getElementById('regBtn'),
+    regMsg=document.getElementById('regMsg');
+
+rname.value = ls.get('mc_name','');
+remail.value= ls.get('mc_email','');
+
+function emailOk(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+
+function regPayload(){
+  return {
+    name    : rname.value.trim(),
+    email   : remail.value.trim(),
+    era     : rera.value,
+    news    : rnews.checked,
+    nickname: st.nick,
+    line    : st.line,
+    cls     : st.cls,
+    clsTh   : (CLASSES[st.cls]||{}).th || '',
+    titles  : st.titles.slice(),
+    at      : new Date().toISOString()
+  };
+}
+
+function regMailto(d){
+  var body='ลงทะเบียนสมาชิก myclover\n\n'+
+    'ชื่อ: '+d.name+'\n'+
+    'อีเมล: '+d.email+'\n'+
+    'ชื่อบนการ์ด: '+(d.nickname||'—')+'\n'+
+    'สาย: '+d.clsTh+'\n'+
+    'ตรา: '+(d.titles.length?d.titles.join(', '):'—')+'\n'+
+    'ประโยคบนการ์ด: '+(d.line||'—')+'\n'+
+    'รู้จักยุค: '+(d.era||'—')+'\n'+
+    'รับข่าวสาร: '+(d.news?'รับ':'ไม่รับ')+'\n'+
+    'เวลา: '+d.at+'\n';
+  return 'mailto:'+TEAM_EMAIL+'?subject='+encodeURIComponent('ลงทะเบียน myclover — '+(d.nickname||d.name))+
+         '&body='+encodeURIComponent(body);
+}
+
+function regDone(d,viaMail){
+  ls.set('mc_name',d.name); ls.set('mc_email',d.email);
+  /* ยุค 2553–2555 = ศิษย์เก่าตัวจริง */
+  if(d.era==='2553'||d.era==='2554'||d.era==='2555') grant('ALUMNI','');
+  regMsg.className='codemsg ok';
+  if(viaMail){
+    /* ยังไม่มีหลังบ้าน — ต้องให้ผู้ใช้กดส่งอีเมลเอง เลยยังไม่ควรบอกว่าเสร็จแล้ว */
+    regMsg.innerHTML='📧 เราเปิดอีเมลที่กรอกไว้ให้แล้ว — <b>กดส่งอีกทีเพื่อยืนยันการลงทะเบียน</b><br>'+
+      'ถ้าอีเมลไม่เปิดขึ้นมา เขียนมาหาเราตรง ๆ ที่ <a href="mailto:'+TEAM_EMAIL+'">'+TEAM_EMAIL+'</a> ก็ได้ครับ';
+    regBtn.textContent='📧 เปิดอีเมลอีกครั้ง';
+    regBtn.disabled=false;
+  } else {
+    ls.set('mc_registered','1');
+    regMsg.innerHTML='🍀 ลงทะเบียนเรียบร้อย — การ์ดของคุณถูกบันทึกเข้าระบบสมาชิกแล้ว'+
+      (d.news?' และเราจะส่งข่าวของบ้านไปที่อีเมลนี้':' เราจะไม่ส่งอีเมลอะไรไปนะครับ')+
+      '<br>บันทึกการ์ดเป็นรูปเก็บไว้ได้เลยที่ปุ่มด้านขวา';
+    regBtn.textContent='🍀 ลงทะเบียนแล้ว';
+    regBtn.disabled=true;
+  }
+  paintBadges(); render();
+}
+
+regForm.addEventListener('submit',function(e){
+  e.preventDefault();
+  if(document.getElementById('website').value) return;   /* บอท */
+  var d=regPayload();
+  if(!d.name){ regMsg.className='codemsg no'; regMsg.textContent='ใส่ชื่อของคุณก่อนนะครับ'; rname.focus(); return; }
+  if(!emailOk(d.email)){ regMsg.className='codemsg no'; regMsg.textContent='อีเมลยังไม่ถูกรูปแบบ ลองเช็กอีกครั้งครับ'; remail.focus(); return; }
+  if(!rconsent.checked){ regMsg.className='codemsg no'; regMsg.textContent='ต้องติ๊กยินยอมให้เก็บข้อมูลก่อน ถึงจะลงทะเบียนได้ครับ'; return; }
+
+  regMsg.className='codemsg'; regMsg.textContent='กำลังส่ง…';
+  regBtn.disabled=true;
+
+  if(!REG_ENDPOINT){
+    /* ยังไม่มีหลังบ้าน — เปิดอีเมลให้ส่งมาหาเราแทน จะได้ไม่หายไปเฉย ๆ */
+    regDone(d,true);
+    window.location.href=regMailto(d);
+    return;
+  }
+  fetch(REG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r; })
+    .then(function(){ regDone(d); })
+    .catch(function(){
+      regBtn.disabled=false;
+      regMsg.className='codemsg no';
+      regMsg.innerHTML='ส่งไม่สำเร็จ ลองใหม่อีกครั้ง หรือเขียนมาหาเราตรง ๆ ที่ <a href="mailto:'+TEAM_EMAIL+'">'+TEAM_EMAIL+'</a> ครับ';
+    });
 });
 
 /* ═══════════════════════════════════════════════════════════
@@ -762,7 +1077,7 @@ function makeBlob(kind){
   return ensureFonts().then(function(){
     var cv=document.createElement('canvas');
     if(kind==='landscape'){ cv.width=1920; cv.height=1080; drawLandscape(cv,st); }
-    else                  { cv.width=1080; cv.height=1350; drawPortrait(cv,st); }
+    else                  { cv.width=1260; cv.height=1760; drawPortrait(cv,st); }
     return new Promise(function(res,rej){
       if(cv.toBlob) cv.toBlob(function(b){ b?res(b):rej(); },'image/png');
       else rej();
@@ -771,7 +1086,7 @@ function makeBlob(kind){
 }
 function fileName(kind){
   var n=(st.nick||'myclover').replace(/[^฀-๿a-zA-Z0-9]+/g,'-').slice(0,20)||'myclover';
-  return 'myclover-card-'+n+'-'+(kind==='landscape'?'1920x1080':'1080x1350')+'.png';
+  return 'myclover-card-'+n+'-'+(kind==='landscape'?'1920x1080':'1260x1760')+'.png';
 }
 var saveMsg=document.getElementById('saveMsg');
 function say(t){ saveMsg.textContent=t; if(t) setTimeout(function(){ if(saveMsg.textContent===t) saveMsg.textContent=''; },4200); }
@@ -856,5 +1171,6 @@ if(document.fonts && document.fonts.ready){ document.fonts.ready.then(render); }
 
 })();
 </script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
 </body>
 </html>
