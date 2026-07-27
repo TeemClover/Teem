@@ -147,6 +147,47 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 /* ═══════════ 8/8/8 ═══════════ */
 .h2{font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1.24;margin:12px 0 12px}
 .sub{color:rgb(var(--muted));font-size:16.5px;max-width:60ch}
+
+/* ═══════════ ด่านเลือกสาย ═══════════ */
+.picker{background:
+  radial-gradient(680px 340px at 8% -12%,rgb(27 106 66/.09),transparent 62%),
+  radial-gradient(520px 320px at 96% 108%,rgb(190 148 66/.11),transparent 60%)}
+.pickgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:28px}
+@media(max-width:640px){.pickgrid{grid-template-columns:1fr}}
+@media(min-width:1000px){.pickgrid{grid-template-columns:repeat(4,1fr)}}
+.pk{display:flex;flex-direction:column;gap:7px;text-align:left;width:100%;cursor:pointer;
+  background:rgb(var(--paper2,255 255 255));border:2px solid rgb(var(--ink)/.1);border-radius:17px;
+  padding:19px 18px;font-family:inherit;color:inherit;line-height:1.6;
+  transition:transform .18s,box-shadow .18s,border-color .18s,background .18s}
+.pk:hover{transform:translateY(-3px);box-shadow:0 20px 38px -24px rgb(18 40 28/.5);border-color:var(--ac)}
+.pk .e{font-size:27px;line-height:1}
+.pk b{font-family:"Bai Jamjuree";font-size:16px;line-height:1.35;color:rgb(var(--ink))}
+.pk span:not(.e){font-size:13px;color:rgb(var(--muted))}
+.pk[aria-pressed="true"]{border-color:var(--ac);background:var(--acbg)}
+.pk[aria-pressed="true"] b{color:var(--ac)}
+
+.picked{display:none;margin-top:22px;background:#fff;border:1px solid rgb(var(--ink)/.1);
+  border-radius:20px;padding:clamp(20px,3.4vw,28px);box-shadow:0 22px 46px -32px rgb(18 40 28/.55)}
+.picked.on{display:block;animation:pickIn .38s ease both}
+@keyframes pickIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.picked .top{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.picked .top .e{font-size:26px;line-height:1}
+.picked .top b{font-family:"Bai Jamjuree";font-size:clamp(18px,3vw,22px);flex:1;min-width:0}
+.swap{background:none;border:1px solid rgb(var(--ink)/.16);border-radius:999px;color:rgb(var(--muted));
+  font-family:"Bai Jamjuree";font-weight:600;font-size:12.5px;padding:8px 15px;cursor:pointer;
+  min-height:38px;white-space:nowrap;transition:.15s}
+.swap:hover{border-color:rgb(var(--green));color:rgb(var(--green))}
+.picked .lead{margin-top:12px;font-size:15.5px;color:rgb(var(--ink)/.8);line-height:1.75}
+.gifts{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:20px}
+@media(max-width:760px){.gifts{grid-template-columns:1fr}}
+.gift{display:flex;flex-direction:column;gap:4px;background:rgb(27 106 66/.05);
+  border:1px solid rgb(27 106 66/.16);border-radius:14px;padding:15px 17px;
+  transition:transform .18s,border-color .18s,background .18s}
+.gift:hover{transform:translateY(-2px);border-color:rgb(var(--green));background:rgb(27 106 66/.09)}
+.gift b{font-family:"Bai Jamjuree";font-size:15px;line-height:1.4}
+.gift small{font-size:12.5px;color:rgb(var(--muted));line-height:1.6}
+.gift::after{content:"เปิดดู →";font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
+  color:rgb(var(--green));margin-top:6px}
 .eights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
 @media(max-width:760px){.eights{grid-template-columns:1fr}}
 .eight{background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:20px;padding:28px;transition:transform .2s,box-shadow .2s}
@@ -333,7 +374,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a href="#hand">ห้องในบ้าน</a>
     <a href="club/">club</a>
     <a href="#open">เปิดไพ่ทั้งมือ</a>
-    <a class="go disp" href="register/">ลงทะเบียน</a>
+    <a class="go disp" href="card/#register">ลงทะเบียน</a>
   </div>
 </div></nav>
 
@@ -526,7 +567,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <h3 class="disp">อยากให้เราส่งข่าวถึงคุณไหม</h3>
     <p>ทิ้งอีเมลไว้ แล้วเราจะบอกเวลามีคลาสใหม่ การ์ตูนตอนใหม่ หรือกิจกรรมที่จะถึง — ยกเลิกได้ทุกเมื่อ ความรู้ฟรีในบ้านยังเป็นของคุณเหมือนเดิม</p>
     <div class="cta-row">
-      <a class="btn btn-gold disp" href="register/">🍀 ลงทะเบียนรับข่าวของบ้าน</a>
+      <a class="btn btn-gold disp" href="card/#register">🍀 ลงทะเบียนรับข่าวของบ้าน</a>
       <a class="btn disp" href="forge/">ยังไม่พร้อม — ไปอ่านการ์ตูนก่อน</a>
     </div>
   </div>
@@ -540,7 +581,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a href="classroom/">ห้องเรียน AI</a>
     <a href="resume/">Smart Resume</a>
     <a href="club/">club</a>
-    <a href="register/">ลงทะเบียน</a>
+    <a href="card/#register">ลงทะเบียน</a>
     <a href="privacy/">ข้อมูลของคุณ</a>
   </div>
   <p>myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p>
