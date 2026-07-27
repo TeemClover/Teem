@@ -84,65 +84,6 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .navlinks .go:hover{color:#fff;filter:brightness(1.1)}
 @media(max-width:760px){.navlinks a:not(.go){display:none}}
 
-/* ═══════════ แบนเนอร์การ์ตูน — ต้องเห็นทันทีไม่ต้องเลื่อน ═══════════ */
-.forge-banner{position:relative;display:block;overflow:hidden;background:rgb(var(--deep));
-  border-bottom:1px solid rgb(190 148 66/.3)}
-.forge-banner .bg{position:absolute;inset:0}
-.forge-banner .bg img{width:100%;height:100%;object-fit:cover;object-position:50% 34%;opacity:.55}
-.forge-banner .veil{position:absolute;inset:0;
-  background:linear-gradient(90deg,rgb(10 40 24/.94) 0%,rgb(10 40 24/.78) 46%,rgb(10 40 24/.42) 100%)}
-.forge-banner .in{position:relative;display:flex;align-items:center;gap:16px;padding:16px 22px;
-  max-width:1080px;margin:0 auto;color:#fff}
-.forge-banner .thumb{flex:none;width:104px;height:78px;object-fit:cover;border-radius:10px;
-  border:1.5px solid rgb(190 148 66/.55);box-shadow:0 10px 22px -10px rgb(0 0 0/.75)}
-.forge-banner .tx{flex:1;min-width:0}
-.forge-banner .kick{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.16em;
-  text-transform:uppercase;color:rgb(var(--gold))}
-.forge-banner b{display:block;font-family:"Bai Jamjuree";font-size:clamp(16px,2.5vw,21px);line-height:1.28;margin-top:3px}
-.forge-banner small{display:block;font-size:12.5px;color:rgb(255 255 255/.72);margin-top:3px;line-height:1.5}
-.forge-banner .cta{flex:none;background:rgb(var(--gold));color:rgb(var(--deep));border-radius:11px;
-  padding:11px 18px;font-family:"Bai Jamjuree";font-weight:700;font-size:14px;white-space:nowrap;
-  min-height:44px;display:inline-flex;align-items:center;transition:transform .18s,filter .18s}
-.forge-banner:hover .cta{transform:translateY(-2px);filter:brightness(1.08)}
-@media(max-width:560px){
-  .forge-banner .in{padding:13px 18px;gap:12px}
-  .forge-banner small{display:none}
-  .forge-banner .cta{padding:10px 14px;font-size:13px}
-  .forge-banner .thumb{width:74px;height:56px}
-}
-
-
-/* ═══════════ ด่านเลือกสาย ═══════════ */
-.picker{background:rgb(27 106 66/.055);border-top:1px solid rgb(var(--line)/.07);border-bottom:1px solid rgb(var(--line)/.07);
-  padding:clamp(48px,7vw,80px) 0}
-.pickgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}
-@media(max-width:860px){.pickgrid{grid-template-columns:repeat(2,1fr)}}
-.pk{background:#fff;border:2px solid rgb(var(--line)/.1);border-radius:18px;padding:22px 18px;text-align:left;
-  cursor:pointer;font-family:inherit;color:inherit;transition:transform .18s,box-shadow .18s,border-color .18s;width:100%}
-.pk:hover{transform:translateY(-4px);box-shadow:0 20px 40px -26px rgb(18 40 28/.5)}
-.pk .e{font-size:30px;line-height:1}
-.pk b{display:block;font-family:"Bai Jamjuree";font-size:17px;margin:10px 0 5px}
-.pk span{display:block;font-size:13.5px;color:rgb(var(--muted));line-height:1.6}
-.pk[aria-pressed=true]{border-color:var(--ac);background:var(--acbg)}
-.pk[aria-pressed=true] b{color:var(--ac)}
-.picked{display:none;margin-top:26px;background:#fff;border:1px solid rgb(var(--line)/.11);border-radius:20px;
-  padding:clamp(22px,3.5vw,32px);box-shadow:0 2px 8px rgb(18 40 28/.05)}
-.picked.on{display:block;animation:pop .45s cubic-bezier(.22,1,.36,1)}
-@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.picked .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.picked .top .e{font-size:32px}
-.picked .top b{font-family:"Bai Jamjuree";font-size:20px}
-.picked .swap{margin-left:auto;font-size:13px;font-weight:600;color:rgb(var(--muted));background:transparent;
-  border:1px solid rgb(var(--line)/.18);border-radius:999px;padding:8px 15px;cursor:pointer;font-family:inherit;min-height:40px}
-.picked .swap:hover{border-color:rgb(var(--green)/.55);color:rgb(var(--green))}
-.picked .lead{font-size:16px;color:rgb(var(--ink)/.78);margin:12px 0 4px}
-.gifts{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:18px}
-@media(max-width:760px){.gifts{grid-template-columns:1fr}}
-.gift{display:block;background:rgb(27 106 66/.05);border:1px solid rgb(27 106 66/.16);border-radius:14px;padding:15px 17px;transition:.16s}
-.gift:hover{background:rgb(27 106 66/.09);border-color:rgb(27 106 66/.4);transform:translateY(-2px)}
-.gift b{display:block;font-family:"Bai Jamjuree";font-size:15px}
-.gift small{display:block;font-size:12.5px;color:rgb(var(--muted));margin-top:2px}
-
 /* ═══════════ hero ═══════════ */
 .hero{padding:clamp(56px,8vw,96px) 0 clamp(40px,6vw,70px);position:relative;overflow:hidden;
   background:radial-gradient(760px 420px at 8% -14%,rgb(27 106 66/.13),transparent 62%),
@@ -391,32 +332,14 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   </div>
 </div></nav>
 
-<!-- ── ทางเข้าอ่านการ์ตูน: อยู่บนสุด เห็นทันทีไม่ต้องเลื่อน ── -->
-<a class="forge-banner" href="forge/">
-  <span class="bg"><picture>
-    <source type="image/webp" srcset="forge/img/banner.webp">
-    <img src="forge/img/banner.jpg" alt="" width="1024" height="380" loading="eager" decoding="async">
-  </picture></span>
-  <span class="veil"></span>
-  <span class="in">
-    <img class="thumb" src="forge/img/promo.jpg" alt="" width="480" height="360" loading="eager" decoding="async" onerror="this.remove()">
-    <span class="tx">
-      <span class="kick">การ์ตูนใหม่ · อ่านฟรีทุกตอน</span>
-      <b class="disp">เรื่องเล่าจากโรงตีเหล็ก</b>
-      <small>19 ปีในวงการธุรกิจเครือข่าย เล่าจากมุมของคนที่ไม่เคยขายเก่ง — 11 ตอน กับอีก 1 ตอนพิเศษ</small>
-    </span>
-    <span class="cta disp">▶ เริ่มอ่าน</span>
-  </span>
-</a>
-
 <!-- ── hero ── -->
 <header class="hero" id="top"><div class="wrap">
   <span class="glhfchip disp reveal"><i>#</i>glhf · Good Luck, Have Fun</span>
   <h1 class="disp reveal" style="--d:.08s">ใครเจอเรา<br>คนนั้น<em>โชคดี</em></h1>
   <p class="lead reveal" style="--d:.16s">บ้านของชาว Clover ตั้งแต่ปี 2010 กลับมาเปิดอีกครั้ง — ที่นี่มีห้องเรียนที่เรียนฟรีตลอดชีพ เครื่องมือที่หยิบไปใช้ได้เลย และคนที่ยินดีเมื่อคุณโชคดี</p>
   <div class="cta-row reveal" style="--d:.24s">
-    <a class="btn btn-primary disp" href="card/">🎴 ทำการ์ดประจำตัว 1 นาที</a>
-    <a class="btn disp" href="#glhf">#glhf คืออะไร ↓</a>
+    <a class="btn btn-primary disp" href="forge/">📖 อ่านการ์ตูน — เรื่องเล่าจากโรงตีเหล็ก</a>
+    <a class="btn disp" href="classroom/">📚 ห้องเรียนฟรี 6 บท</a>
   </div>
   <div class="meta reveal" style="--d:.3s">
     <span class="chip">🍀 ฟรีตลอดชีพ ไม่มีเงื่อนไข</span>
@@ -486,18 +409,9 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <p class="sub reveal" style="--d:.1s">ทุกใบเปิดได้เลยวันนี้ ไม่ต้องสมัคร ไม่ต้องจ่าย หยิบใบไหนก่อนก็ได้ — ไม่มีลำดับที่ถูกต้อง</p>
 
   <div class="hand">
-    <a class="pc reveal" style="--d:.05s" href="card/">
-      <span class="free disp">เริ่มตรงนี้</span>
-      <div class="top"><span>TOOL</span><span>01</span></div>
-      <div class="art"><img src="img/card-tool.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🎴</span></div>
-      <h3 class="disp">การ์ดประจำตัว</h3>
-      <p>เลือกสายของคุณ ใส่ชื่อกับหนึ่งประโยค แล้วบันทึกเป็นรูปไปอวดได้เลย ใช้เวลา 1 นาที</p>
-      <span class="go disp">ทำการ์ดเลย →</span>
-    </a>
-
     <a class="pc reveal" style="--d:.1s" href="forge/">
-      <span class="free disp">ใหม่</span>
-      <div class="top"><span>READ</span><span>02</span></div>
+      <span class="free disp">เริ่มตรงนี้</span>
+      <div class="top"><span>READ</span><span>01</span></div>
       <div class="art"><img src="img/card-forge.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📖</span></div>
       <h3 class="disp">เรื่องเล่าจากโรงตีเหล็ก</h3>
       <p>การ์ตูน 11 ตอน กับอีก 1 ตอนพิเศษ — 19 ปีในวงการธุรกิจเครือข่าย จากมุมคนที่ไม่เคยขายเก่ง</p>
@@ -506,7 +420,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 
     <a class="pc reveal" style="--d:.15s" href="classroom/">
       <span class="free disp">ฟรีตลอดชีพ</span>
-      <div class="top"><span>LEARN</span><span>03</span></div>
+      <div class="top"><span>LEARN</span><span>02</span></div>
       <div class="art"><img src="img/card-class.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📚</span></div>
       <h3 class="disp">ห้องเรียน AI</h3>
       <p>6 คลาส ตั้งแต่เครื่องมือฟรีที่ควรมีติดเครื่อง ไปจนถึงสร้างเว็บแรกของตัวเอง</p>
@@ -514,7 +428,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     </a>
 
     <a class="pc reveal" style="--d:.2s" href="resume/">
-      <div class="top"><span>SHOW</span><span>04</span></div>
+      <div class="top"><span>SHOW</span><span>03</span></div>
       <div class="art"><img src="img/card-resume.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🧭</span></div>
       <h3 class="disp">Smart Resume</h3>
       <p>เรซูเม่ที่พลิกได้สองโหมด — โหมดงาน กับโหมดชีวิต ตัวอย่างของสิ่งที่คุณทำเองได้</p>
@@ -522,11 +436,19 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     </a>
 
     <a class="pc reveal" style="--d:.25s" href="club/">
-      <div class="top"><span>CLUB</span><span>05</span></div>
+      <div class="top"><span>CLUB</span><span>04</span></div>
       <div class="art"><img src="img/card-club.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🍀</span></div>
       <h3 class="disp">myclover club</h3>
       <p>สุขภาพดี มีความสุข ในแบบที่ไม่ต้องเหมือนใคร — กินเป็น นอนเป็น ใช้พลังเป็น</p>
       <span class="go disp">แวะดู →</span>
+    </a>
+
+    <a class="pc reveal" style="--d:.25s" href="card/">
+      <div class="top"><span>TOOL</span><span>05</span></div>
+      <div class="art"><img src="img/card-tool.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🎴</span></div>
+      <h3 class="disp">การ์ดประจำตัว</h3>
+      <p>ปักธงว่าคุณเป็นสายไหน — สัดส่วนการ์ดจริงเท่า MTG พร้อมโชว์ตอนประตูกิลด์เปิด 8 สิงหา</p>
+      <span class="go disp">ปักธงของคุณ →</span>
     </a>
 
     <div class="pc locked reveal" style="--d:.3s" id="guildCard">
@@ -559,7 +481,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <div class="letter reveal" style="--d:.1s">
     <span class="seal" aria-hidden="true"><svg viewBox="-52 -50 104 108"><use href="#clover-mark"/></svg></span>
     <p>สวัสดีครับ</p>
-    <p>โดเมนนี้อายุ 13 ปีแล้ว สมัยนั้นมันคือที่ที่พวกเรามาเจอกัน คุยกัน แล้ววันหนึ่งชีวิตก็พาแต่ละคนแยกย้ายไปตามทางของตัวเอง</p>
+    <p>โดเมนนี้อายุ 16 ปีแล้ว สมัยนั้นมันคือที่ที่พวกเรามาเจอกัน คุยกัน แล้ววันหนึ่งชีวิตก็พาแต่ละคนแยกย้ายไปตามทางของตัวเอง</p>
     <p>ผมเป็นคนที่โตมากับเกมการ์ด และเพิ่งได้รู้อีกครั้งว่า<b>ความรู้สึกตอนชนหมัดกับใครสักคนก่อนเริ่มเกมมันดีแค่ไหน</b> — มันไม่เกี่ยวกับว่าใครจะชนะเลย มันคือการที่เราสองคนพร้อมจะสนุกไปด้วยกัน</p>
     <p>ผมเลยอยากทำที่แบบนั้นขึ้นมาอีกที่หนึ่ง ที่ที่คุณเดินเข้ามาแล้วได้อะไรกลับไปจริง ๆ ไม่ว่าคุณจะอยู่ต่อหรือไม่อยู่ก็ตาม <b>ความรู้ทุกอย่างในบ้านนี้ฟรี และจะฟรีตลอดไป</b></p>
     <p>ถ้าวันนี้คุณเจอบ้านหลังนี้ — ผมถือว่าเราโชคดีทั้งคู่ครับ</p>
@@ -595,10 +517,10 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 <section class="join"><div class="wrap">
   <div class="joinbox reveal">
     <h3 class="disp">อยากให้เราส่งข่าวถึงคุณไหม</h3>
-    <p>ลงทะเบียนไว้ แล้วเราจะบอกเวลามีคลาสใหม่ เครื่องมือใหม่ หรือกิจกรรมที่จะถึง · คุณจะได้เลขสมาชิกจริงบนการ์ดประจำตัวด้วย</p>
+    <p>ทิ้งอีเมลไว้ แล้วเราจะบอกเวลามีคลาสใหม่ การ์ตูนตอนใหม่ หรือกิจกรรมที่จะถึง — ยกเลิกได้ทุกเมื่อ ความรู้ฟรีในบ้านยังเป็นของคุณเหมือนเดิม</p>
     <div class="cta-row">
-      <a class="btn btn-gold disp" href="register/">🍀 ลงทะเบียนรับการ์ดประจำตัว</a>
-      <a class="btn disp" href="card/">ลองทำการ์ดก่อนก็ได้</a>
+      <a class="btn btn-gold disp" href="register/">🍀 ลงทะเบียนรับข่าวของบ้าน</a>
+      <a class="btn disp" href="forge/">ยังไม่พร้อม — ไปอ่านการ์ตูนก่อน</a>
     </div>
   </div>
 </div></section>
