@@ -11,52 +11,81 @@ DEST = os.path.join(ROOT, 'forge')
 IMG  = os.path.join(DEST, 'img')
 SITE = 'https://myclover.com'
 
-# (ไฟล์ต้นทาง, เลขตอนที่แสดง, ชื่อตอน, slug, เป็นตอนพิเศษไหม)
+# ตารางตอน — (คีย์, เลขตอนที่แสดง, ชื่อตอน, slug, ตอนพิเศษไหม, ไฟล์ต้นฉบับ)
+#
+# ไฟล์ต้นฉบับเป็น "ลิสต์ของช่อง" เรียงจากบนลงล่าง
+#   ตอนที่รีมาสเตอร์แล้ว = 4 ช่องแนวตั้ง แตะช่องท้ายไปตอนต่อไป
+#   ตอนเก่าที่ยังไม่ได้รีมาสเตอร์ = ภาพยาวใบเดียว
+# ตอนไหนยังไม่มีไฟล์ต้นฉบับในเครื่อง จะข้ามการแปลงภาพและใช้ของที่แปลงไว้แล้ว
 EPISODES = [
-    ("00",  "0",   "เครื่องของตัวเอง",        "ep0-my-own-machine",         False),
-    ("01",  "1",   "เดือนที่ 5",              "ep1-month-five",             False),
-    ("02",  "2",   "เสียงฝีเท้า",             "ep2-footsteps",              False),
-    ("03",  "3",   "กลิ่นแผ่นสด",             "ep3-fresh-disc",             False),
-    ("04",  "4",   "จัดเด็ค",                 "ep4-deckbuilding",           False),
-    ("05",  "5",   "โรงงานปั๊มฝัน",           "ep5-dream-factory",          False),
-    ("06",  "6",   "10 → 1000",               "ep6-ten-to-thousand",        False),
-    ("07",  "7",   "ช่างที่ขาดทุน",           "ep7-the-smith-who-lost",     False),
-    ("08",  "8",   "คนที่ขึ้นมาจากหาดใหญ่",   "ep8-the-one-from-hatyai",    False),
-    ("09",  "9",   "เปิดจอ",                  "ep9-open-the-screen",        False),
-    ("09s", "9.5", "กิลด์ที่ผมวาดไว้ในหัว",   "ep9-5-the-guild-i-imagined", True),
-    ("10",  "10",  "ก้าวที่ 10",              "ep10-the-tenth-step",        False),
+    ("00",  "0",   "เครื่องของตัวเอง",        "ep0-my-own-machine",         False,
+     ["001.jpeg", "002.jpeg", "003.jpeg", "004.jpeg"]),
+    ("01",  "1",   "เดือนที่ 5",              "ep1-month-five",             False,
+     ["011.jpg", "012.jpeg", "013.jpeg", "014.jpeg"]),
+    ("02",  "2",   "เสียงฝีเท้า",             "ep2-footsteps",              False, ["02.png"]),
+    ("03",  "3",   "กลิ่นแผ่นสด",             "ep3-fresh-disc",             False, ["03.png"]),
+    ("04",  "4",   "จัดเด็ค",                 "ep4-deckbuilding",           False, ["04.png"]),
+    ("05",  "5",   "โรงงานปั๊มฝัน",           "ep5-dream-factory",          False, ["05.png"]),
+    ("06",  "6",   "10 → 1000",               "ep6-ten-to-thousand",        False, ["06.png"]),
+    ("07",  "7",   "ช่างที่ขาดทุน",           "ep7-the-smith-who-lost",     False, ["07.png"]),
+    ("08",  "8",   "คนที่ขึ้นมาจากหาดใหญ่",   "ep8-the-one-from-hatyai",    False, ["08.png"]),
+    ("09",  "9",   "เปิดจอ",                  "ep9-open-the-screen",        False, ["09.png"]),
+    ("09s", "9.5", "กิลด์ที่ผมวาดไว้ในหัว",   "ep9-5-the-guild-i-imagined", True,  ["09s.png"]),
+    ("10",  "10",  "ก้าวที่ 10",              "ep10-the-tenth-step",        False, ["10.png"]),
 ]
 
 os.makedirs(IMG, exist_ok=True)
 SKIP_IMG = os.environ.get('SKIP_IMG') == '1'
+
+
+def panel_keys(key, srcs):
+    """ชื่อไฟล์ของแต่ละช่อง — ตอนช่องเดียวใช้ชื่อเดิม จะได้ไม่ต้องแปลงภาพเก่าใหม่หมด"""
+    if len(srcs) == 1:
+        return [key]
+    return [f'{key}-p{i+1}' for i in range(len(srcs))]
+
 
 # ─────────────────────────────────────────────────────────────
 # ภาพ
 # ─────────────────────────────────────────────────────────────
 meta = {}
 total = 0
-for key, num, title, slug, special in EPISODES:
-    if SKIP_IMG:
-        # สร้างเฉพาะหน้าเว็บ — อ่านขนาดจากภาพที่แปลงไว้แล้ว ไม่ต้องมีไฟล์ต้นฉบับ
-        w, h = Image.open(f'{IMG}/{key}.jpg').size
+built = 0
+for key, num, title, slug, special, srcs in EPISODES:
+    pk = panel_keys(key, srcs)
+    have = all(os.path.exists(os.path.join(SRC, f)) for f in srcs)
+
+    if SKIP_IMG or not have:
+        # ไม่มีต้นฉบับ (หรือสั่งข้าม) — อ่านขนาดจากภาพที่แปลงไว้แล้ว
+        meta[key] = {
+            'panels': [dict(zip(('w', 'h'), Image.open(f'{IMG}/{k}.jpg').size)) | {'k': k} for k in pk],
+        }
         tw, th = Image.open(f'{IMG}/{key}-thumb.jpg').size
-        meta[key] = {'w': w, 'h': h, 'tw': tw, 'th': th}
+        meta[key]['tw'], meta[key]['th'] = tw, th
         continue
 
-    im = Image.open(os.path.join(SRC, f'{key}.png')).convert('RGB')
-    w, h = im.size
-    meta[key] = {'w': w, 'h': h}
+    built += 1
+    panels = []
+    first = None
+    for k, srcname in zip(pk, srcs):
+        im = Image.open(os.path.join(SRC, srcname)).convert('RGB')
+        w, h = im.size
+        if first is None:
+            first = im
+        panels.append({'k': k, 'w': w, 'h': h})
 
-    # เต็มตอน — webp 1024 (หลัก) / 640 (จอเล็ก) / jpg สำรอง
-    im.save(f'{IMG}/{key}-1024.webp', 'WEBP', quality=85, method=6)
-    im.resize((640, round(h * 640 / w)), Image.LANCZOS)\
-      .save(f'{IMG}/{key}-640.webp', 'WEBP', quality=85, method=6)
-    im.save(f'{IMG}/{key}.jpg', 'JPEG', quality=85, optimize=True, progressive=True)
+        # webp 1024 (หลัก) / 640 (จอเล็ก) / jpg สำรอง
+        im.save(f'{IMG}/{k}-1024.webp', 'WEBP', quality=85, method=6)
+        im.resize((640, round(h * 640 / w)), Image.LANCZOS)\
+          .save(f'{IMG}/{k}-640.webp', 'WEBP', quality=85, method=6)
+        im.save(f'{IMG}/{k}.jpg', 'JPEG', quality=85, optimize=True, progressive=True)
+    meta[key] = {'panels': panels}
 
-    # ภาพปก = ช่องแรกของตอน
-    panel = im.crop((0, 0, w, h // 4))
-    pw, ph = panel.size
-    thumb = panel.resize((560, round(ph * 560 / pw)), Image.LANCZOS)
+    # ภาพปก = ช่องแรกของตอน · ตอนภาพยาวใบเดียวให้ครอปเอาหนึ่งในสี่บน
+    fw, fh = first.size
+    cover = first if len(srcs) > 1 else first.crop((0, 0, fw, fh // 4))
+    pw, ph = cover.size
+    thumb = cover.resize((560, round(ph * 560 / pw)), Image.LANCZOS)
     thumb.save(f'{IMG}/{key}-thumb.webp', 'WEBP', quality=82, method=6)
     thumb.save(f'{IMG}/{key}-thumb.jpg', 'JPEG', quality=82, optimize=True, progressive=True)
     meta[key]['tw'], meta[key]['th'] = thumb.size
@@ -64,12 +93,12 @@ for key, num, title, slug, special in EPISODES:
     # ภาพสำหรับแชร์ 1200x630 — ครอปกลางช่องแรกให้เต็มกรอบ
     og = Image.new('RGB', (1200, 630))
     scale = max(1200 / pw, 630 / ph)
-    r = panel.resize((round(pw * scale), round(ph * scale)), Image.LANCZOS)
+    r = cover.resize((round(pw * scale), round(ph * scale)), Image.LANCZOS)
     og.paste(r, ((1200 - r.width) // 2, (630 - r.height) // 2))
     og.save(f'{IMG}/{key}-og.jpg', 'JPEG', quality=86, optimize=True, progressive=True)
 
 # แบนเนอร์หน้าแรก — ช่อง 4 ของตอนพิเศษ (ฝูงชนเดินตอนพระอาทิตย์ตก) เลี่ยงกรอบข้อความ
-if not SKIP_IMG:
+if not SKIP_IMG and os.path.exists(os.path.join(SRC, '09s.png')):
     s = Image.open(os.path.join(SRC, '09s.png')).convert('RGB')
     sw, sh = s.size
     p4 = s.crop((0, sh * 3 // 4, sw, sh))
@@ -79,7 +108,7 @@ if not SKIP_IMG:
 
 for f in os.listdir(IMG):
     total += os.path.getsize(os.path.join(IMG, f))
-print(f'ภาพทั้งหมด {len(os.listdir(IMG))} ไฟล์  รวม {total/1048576:.1f} MB')
+print(f'ภาพทั้งหมด {len(os.listdir(IMG))} ไฟล์  รวม {total/1048576:.1f} MB  (แปลงใหม่ {built} ตอน)')
 
 # ─────────────────────────────────────────────────────────────
 # หน้าเว็บ
@@ -164,7 +193,7 @@ LEARN_CODE  = 'FIRSTWEB'    # = บทสุดท้ายของห้อง
 TRACKS = {
     'forge': {'key': 'mc_read',  'done': 'mc_forge_done', 'title': 'FORGE',
               'unit': 'ตอน', 'what': 'อ่าน',
-              'items': [slug for _, _, _, slug, _ in EPISODES]},
+              'items': [slug for _, _, _, slug, _, _ in EPISODES]},
     'learn': {'key': 'mc_learn', 'done': 'mc_learn_done', 'title': 'SCHOLAR',
               'unit': 'คลาส', 'what': 'เรียน',
               'items': [slug for slug, _ in LESSONS]},
@@ -491,7 +520,7 @@ INDEX_CSS = '''
 ''' + FINISH_CSS
 
 cards = []
-for i, (key, num, title, slug, special) in enumerate(EPISODES):
+for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     m = meta[key]
     badge = ' <span class="sp">ตอนพิเศษ</span>' if special else ''
     cards.append(f'''    <a class="ep" href="{slug}/" data-mc-item="forge:{slug}">
@@ -559,6 +588,9 @@ READ_CSS = '''
 .strip{background:rgb(var(--deep));font-size:0;line-height:0}
 .strip picture{display:block}
 .strip img{width:100%;height:auto;margin:0 auto;display:block}
+/* ช่องต่อกันสนิท ไม่มีรอยต่อ · scroll-margin กันช่องโดนแถบบนบังตอนกระโดด */
+.panel{display:block;cursor:pointer;scroll-margin-top:56px;
+  -webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .tapnext{display:block;cursor:pointer;-webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .nav{padding:22px 0 8px}
 .row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
@@ -585,7 +617,7 @@ READ_CSS = '''
 .epprog .tx.is-done{color:rgb(var(--green))}
 ''' + FINISH_CSS
 
-for i, (key, num, title, slug, special) in enumerate(EPISODES):
+for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     m = meta[key]
     prev_ep = EPISODES[i - 1] if i > 0 else None
     next_ep = EPISODES[i + 1] if i < len(EPISODES) - 1 else None
@@ -613,15 +645,41 @@ for i, (key, num, title, slug, special) in enumerate(EPISODES):
 
     badge = ' <span class="sp">ตอนพิเศษ</span>' if special else ''
     alt = f'{SERIES} ตอนที่ {num} — {E(title)}'
-    # แตะที่ภาพ = ไปตอนถัดไป (มาตรฐานเว็บตูน) — ใช้ลิงก์จริง เบราว์เซอร์จะไม่สับสนกับการปัดเลื่อน
-    if next_ep:
-        tap_o = (f'<a class="tapnext" href="../{next_ep[3]}/" '
-                 f'aria-label="อ่านตอนต่อไป — ตอนที่ {next_ep[1]} {E(next_ep[2])}">')
-        tap_c = '</a>'
+
+    # ── ช่องภาพ ──
+    # แตะช่องที่ยังไม่ใช่ช่องท้าย = เลื่อนลงไปช่องถัดไป (ใช้ #anchor ล้วน ไม่ต้องพึ่ง JS)
+    # แตะช่องท้าย = ไปตอนถัดไป ตามมาตรฐานเว็บตูน
+    panels = m['panels']
+    last = len(panels) - 1
+    strip = []
+    for pi, pn in enumerate(panels):
+        pk, pw, ph = pn['k'], pn['w'], pn['h']
+        eager = pi == 0
+        palt = alt if len(panels) == 1 else f'{alt} — ช่องที่ {pi+1}'
+        pic = (f'<picture>\n'
+               f'      <source type="image/webp" media="(max-width:640px)" srcset="../img/{pk}-640.webp">\n'
+               f'      <source type="image/webp" srcset="../img/{pk}-1024.webp">\n'
+               f'      <img src="../img/{pk}.jpg" width="{pw}" height="{ph}"\n'
+               f'           loading="{"eager" if eager else "lazy"}"'
+               f'{" fetchpriority=" + chr(34) + "high" + chr(34) if eager else ""}'
+               f' decoding="async" alt="{palt}">\n'
+               f'    </picture>')
+        if pi < last:
+            strip.append(f'  <a class="panel" id="p{pi+1}" href="#p{pi+2}" '
+                         f'aria-label="เลื่อนไปช่องที่ {pi+2}">{pic}</a>')
+        elif next_ep:
+            strip.append(f'  <a class="panel tapnext" id="p{pi+1}" href="../{next_ep[3]}/" '
+                         f'aria-label="อ่านตอนต่อไป — ตอนที่ {next_ep[1]} {E(next_ep[2])}">{pic}</a>')
+        else:
+            strip.append(f'  <div class="panel" id="p{pi+1}">{pic}</div>')
+    strip = '\n'.join(strip)
+
+    if len(panels) > 1:
+        tap_hint = ('แตะที่ภาพเพื่อเลื่อนไปช่องถัดไป · ช่องสุดท้ายพาไปตอนต่อไป · หรือกดลูกศร ← → บนคีย์บอร์ด'
+                    if next_ep else 'จบซีรีส์แล้ว — กดลูกศร ← เพื่อย้อนกลับตอนก่อนหน้า')
     else:
-        tap_o = tap_c = ''
-    tap_hint = ('แตะที่ภาพเพื่อไปตอนต่อไป · หรือกดลูกศร ← → บนคีย์บอร์ด'
-                if next_ep else 'จบซีรีส์แล้ว — กดลูกศร ← เพื่อย้อนกลับตอนก่อนหน้า')
+        tap_hint = ('แตะที่ภาพเพื่อไปตอนต่อไป · หรือกดลูกศร ← → บนคีย์บอร์ด'
+                    if next_ep else 'จบซีรีส์แล้ว — กดลูกศร ← เพื่อย้อนกลับตอนก่อนหน้า')
     body = f'''<header class="bar"><div class="wrap">
   <a class="home disp" href="../">← ทุกตอน</a>
   <span class="ttl">ตอนที่ {num}<b>{E(title)}</b></span>
@@ -633,12 +691,7 @@ for i, (key, num, title, slug, special) in enumerate(EPISODES):
 </div>
 
 <main class="strip">
-  {tap_o}<picture>
-    <source type="image/webp" media="(max-width:640px)" srcset="../img/{key}-640.webp">
-    <source type="image/webp" srcset="../img/{key}-1024.webp">
-    <img src="../img/{key}.jpg" width="{m['w']}" height="{m['h']}"
-         loading="eager" fetchpriority="high" decoding="async" alt="{alt}">
-  </picture>{tap_c}
+{strip}
 </main>
 
 <nav class="wrap nav" data-mc-end>
