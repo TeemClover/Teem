@@ -7,6 +7,10 @@
 <meta name="description" content="บ้านของชาว Clover ตั้งแต่ปี 2010 · เราเชื่อใน #glhf — Good Luck, Have Fun คำอวยพรที่เกมเมอร์ทั้งโลกพูดก่อนเริ่มเกม แม้แต่กับคู่แข่ง · ห้องเรียน AI ฟรี เครื่องมือฟรี และบ้านที่กลับมาได้เสมอ">
 <meta property="og:title" content="myclover — ใครเจอเรา คนนั้นโชคดี">
 <meta property="og:description" content="#glhf · Good Luck, Have Fun — เพราะโชคดีที่สนุกด้วย คือโชคที่ไปต่อได้ทุกวัน">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://myclover.com/">
+<meta property="og:image" content="https://myclover.com/img/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0A2818">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
@@ -40,8 +44,9 @@ section{padding:clamp(64px,9vw,110px) 0}
   background-image:radial-gradient(900px 520px at 50% -12%,rgb(27 106 66/.6),transparent 66%),
                    radial-gradient(620px 420px at 92% 112%,rgb(190 148 66/.18),transparent 62%)}
 #gate .inner{position:relative;z-index:2;text-align:center;max-width:470px;padding:32px 26px;width:100%}
-#gate .clover{font-size:66px;display:inline-block;animation:sway 4s ease-in-out infinite;cursor:pointer;user-select:none;
-  filter:drop-shadow(0 8px 22px rgb(0 0 0/.4))}
+#gate .clover{display:inline-block;animation:sway 4s ease-in-out infinite;cursor:pointer;user-select:none;
+  filter:drop-shadow(0 10px 24px rgb(0 0 0/.45)) drop-shadow(0 0 18px rgb(111 203 147/.28))}
+#gate .clover svg{display:block}
 @keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
 #gate h1{font-size:clamp(25px,5vw,33px);font-weight:700;margin-top:18px;line-height:1.3}
 #gate .sub{color:rgb(255 255 255/.76);margin-top:10px;font-size:15.5px}
@@ -88,6 +93,8 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
   background:linear-gradient(90deg,rgb(10 40 24/.94) 0%,rgb(10 40 24/.78) 46%,rgb(10 40 24/.42) 100%)}
 .forge-banner .in{position:relative;display:flex;align-items:center;gap:16px;padding:16px 22px;
   max-width:1080px;margin:0 auto;color:#fff}
+.forge-banner .thumb{flex:none;width:104px;height:78px;object-fit:cover;border-radius:10px;
+  border:1.5px solid rgb(190 148 66/.55);box-shadow:0 10px 22px -10px rgb(0 0 0/.75)}
 .forge-banner .tx{flex:1;min-width:0}
 .forge-banner .kick{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.16em;
   text-transform:uppercase;color:rgb(var(--gold))}
@@ -101,6 +108,7 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
   .forge-banner .in{padding:13px 18px;gap:12px}
   .forge-banner small{display:none}
   .forge-banner .cta{padding:10px 14px;font-size:13px}
+  .forge-banner .thumb{width:74px;height:56px}
 }
 
 /* ═══════════ hero ═══════════ */
@@ -234,10 +242,12 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 /* ═══════════ จดหมาย ═══════════ */
 .letter-sec{background:
   radial-gradient(620px 340px at 88% -10%,rgb(190 148 66/.13),transparent 60%)}
-.letter{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:22px;padding:clamp(28px,5vw,52px);
+.letter{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:22px;padding:clamp(28px,5vw,52px);padding-top:clamp(48px,6vw,62px);
   box-shadow:0 3px 10px rgb(18 40 28/.05);max-width:760px;margin:34px auto 0;position:relative}
-.letter::before{content:"🍀";position:absolute;top:-18px;left:clamp(28px,5vw,52px);font-size:34px;
-  background:rgb(var(--paper));padding:0 10px}
+.letter .seal{position:absolute;top:-28px;left:clamp(24px,5vw,48px);width:58px;height:58px;border-radius:50%;
+  background:#fff;border:2px solid rgb(190 148 66/.5);display:grid;place-items:center;
+  box-shadow:0 12px 26px -14px rgb(18 40 28/.55)}
+.letter .seal svg{width:33px;height:34px;display:block}
 .letter p{font-size:16.5px;margin:15px 0;color:rgb(var(--ink)/.84)}
 .letter p:first-of-type{margin-top:0}
 .letter b{color:rgb(var(--green))}
@@ -292,12 +302,26 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 </head>
 <body class="locked">
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="cvg" x1="0" y1="0" x2=".8" y2="1">
+    <stop offset="0" stop-color="#7FD8A2"/><stop offset=".45" stop-color="#31955C"/><stop offset="1" stop-color="#0E4A2C"/>
+  </linearGradient>
+  <path id="cvl" d="M0 0 C -5 -9 -19 -11 -19 -23 C -19 -32 -10 -35 -4.5 -29.5 C -2.5 -27.5 -1 -26.5 0 -24.5 C 1 -26.5 2.5 -27.5 4.5 -29.5 C 10 -35 19 -32 19 -23 C 19 -11 5 -9 0 0 Z"/>
+  <g id="clover-mark">
+    <path d="M0 16 C 5 30 2 42 -7 50" stroke="#2C8A55" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    <g fill="url(#cvg)" stroke="#0E4A2C" stroke-width="1.2" stroke-linejoin="round" transform="rotate(45)">
+      <use href="#cvl"/><use href="#cvl" transform="rotate(90)"/>
+      <use href="#cvl" transform="rotate(180)"/><use href="#cvl" transform="rotate(270)"/>
+    </g>
+  </g>
+</defs></svg>
+
 <div id="prog"></div>
 
 <!-- ═══════════ ประตูบ้าน ═══════════ -->
 <div id="gate">
   <div class="inner">
-    <span class="clover" id="gateClover" title="ลองกดดูสี่ครั้ง">🍀</span>
+    <span class="clover" id="gateClover" role="img" aria-label="โคลเวอร์สี่แฉก" title="ลองกดดูสี่ครั้ง"><svg viewBox="-52 -50 104 108" width="80" height="83" aria-hidden="true"><use href="#clover-mark"/></svg></span>
     <h1 class="disp">บ้านหลังนี้เปิดอีกครั้ง<br>8 สิงหาคม</h1>
     <p class="sub">ใครมีกุญแจ เข้าก่อนได้เลย</p>
     <div class="count" aria-live="polite">
@@ -339,6 +363,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   </picture></span>
   <span class="veil"></span>
   <span class="in">
+    <img class="thumb" src="forge/img/promo.jpg" alt="" width="480" height="360" loading="eager" decoding="async" onerror="this.remove()">
     <span class="tx">
       <span class="kick">การ์ตูนใหม่ · อ่านฟรีทุกตอน</span>
       <b class="disp">เรื่องเล่าจากโรงตีเหล็ก</b>
@@ -475,7 +500,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a class="ls reveal" style="--d:.04s" href="classroom/free-ai.html"><span class="lv">LV.1</span><span><b>AI ฟรีที่ควรมีติดเครื่อง</b><small>Gemini + NotebookLM เริ่มจากศูนย์</small></span></a>
     <a class="ls reveal" style="--d:.08s" href="classroom/image-ai.html"><span class="lv">LV.2</span><span><b>ทำภาพด้วย AI</b><small>ภาพที่ใช้งานได้จริง</small></span></a>
     <a class="ls reveal" style="--d:.12s" href="classroom/clip-ai.html"><span class="lv">LV.3</span><span><b>ทำคลิปสั้นด้วย AI</b><small>ตัดคลิปแรกให้จบ</small></span></a>
-    <a class="ls reveal" style="--d:.16s" href="classroom/notebooklm.html"><span class="lv">LV.4</span><span><b>สรุปประชุม &amp; เอกสาร</b><small>อ่านน้อยลง เข้าใจมากขึ้น</small></span></a>
+    <a class="ls reveal" style="--d:.16s" href="classroom/notebooklm.html"><span class="lv">LV.4</span><span><b>สรุปประชุม &amp; ทำอินโฟกราฟิก</b><small>ใส่ได้ทั้งไฟล์ เสียง และคลิปยูทูป</small></span></a>
     <a class="ls reveal" style="--d:.2s" href="classroom/prompts.html"><span class="lv">LV.5</span><span><b>คลังพร้อมท์แจกฟรี</b><small>ก๊อปไปใช้ได้เลย</small></span></a>
     <a class="ls reveal" style="--d:.24s" href="classroom/first-web.html"><span class="lv">LV.6</span><span><b>สร้างเว็บแรกของตัวเอง</b><small>ด่านสุดท้ายของห้องเรียน</small></span></a>
   </div>
@@ -486,6 +511,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <span class="eyebrow reveal">จดหมายจากเจ้าของบ้าน</span>
   <h2 class="h2 disp reveal" style="--d:.06s">ทำไมถึงกลับมาเปิดบ้านหลังนี้</h2>
   <div class="letter reveal" style="--d:.1s">
+    <span class="seal" aria-hidden="true"><svg viewBox="-52 -50 104 108"><use href="#clover-mark"/></svg></span>
     <p>สวัสดีครับ</p>
     <p>โดเมนนี้อายุ 13 ปีแล้ว สมัยนั้นมันคือที่ที่พวกเรามาเจอกัน คุยกัน แล้ววันหนึ่งชีวิตก็พาแต่ละคนแยกย้ายไปตามทางของตัวเอง</p>
     <p>ผมเป็นคนที่โตมากับเกมการ์ด และเพิ่งได้รู้อีกครั้งว่า<b>ความรู้สึกตอนชนหมัดกับใครสักคนก่อนเริ่มเกมมันดีแค่ไหน</b> — มันไม่เกี่ยวกับว่าใครจะชนะเลย มันคือการที่เราสองคนพร้อมจะสนุกไปด้วยกัน</p>
