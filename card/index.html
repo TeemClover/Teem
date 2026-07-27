@@ -25,6 +25,7 @@ html{scroll-behavior:smooth}
 body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.7;-webkit-font-smoothing:antialiased}
 .disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
 a{color:inherit;text-decoration:none}
+[hidden]{display:none!important}
 .wrap{max-width:1060px;margin:0 auto;padding:0 22px}
 :focus-visible{outline:3px solid rgb(var(--gold));outline-offset:2px;border-radius:6px}
 
@@ -200,10 +201,11 @@ body.js .reveal.in{opacity:1;transform:none}
       <p class="hint">ตราที่ได้มาจะขึ้นบนการ์ดเอง — ยังไม่มีก็ทำการ์ดได้ตามปกติ</p>
       <div class="badges" id="badges"></div>
       <div class="coderow">
-        <input type="text" id="guildCode" placeholder="มีรหัสจากกิลด์? กรอกตรงนี้" autocomplete="off">
+        <input type="text" id="guildCode" placeholder="มีรหัส? กรอกตรงนี้" autocomplete="off">
         <button type="button" id="guildBtn" class="disp">ใช้รหัส</button>
       </div>
       <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
+      <p class="hint" style="margin-top:12px">ยังไม่มีรหัสเลยใช่ไหมครับ — <a href="../forge/">อ่านการ์ตูนให้ครบทุกตอน</a> แล้วจะได้รหัสแรกไปใส่ตรงนี้</p>
     </div>
   </div>
 
@@ -263,15 +265,22 @@ var CLASSES={
 };
 var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
 var TITLES={
-  ALUMNI:{emo:'🍀',th:'ศิษย์เก่า', how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้ยุค 2553–2555'},
-  SEEKER:{emo:'🔍',th:'ผู้ค้นพบ',  how:'ได้จากการเจอห้องลับของบ้าน ลองกดโคลเวอร์ที่หน้าแรกดู'},
-  GUILD :{emo:'⚔️',th:'ชาวกิลด์',  how:'ได้จากรหัสที่แจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่'}
+  ALUMNI:{emo:'🍀',th:'ศิษย์เก่า',     how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้ยุค 2553–2555'},
+  SEEKER:{emo:'🔍',th:'ผู้ค้นพบ',       how:'ได้จากการเจอห้องลับของบ้าน ลองกดโคลเวอร์ที่หน้าแรกดู'},
+  FORGE :{emo:'⚒️',th:'ผ่านโรงตีเหล็ก', how:'อ่านการ์ตูนให้ครบทุกตอน แล้วเอารหัสที่ได้มาใส่ — ปลดกรอบไฟ'},
+  GUILD :{emo:'⚔️',th:'ชาวกิลด์',       how:'ได้จากรหัสที่แจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่'}
 };
+var TITLE_ORDER=['ALUMNI','SEEKER','FORGE','GUILD'];
 
-/* รหัสกิลด์ — เปลี่ยนรหัส: แก้ 2 ค่านี้เป็น sha256 + djb2 ของรหัสใหม่
-   (ค่าปัจจุบันเป็นรหัสตั้งต้นสำหรับทดสอบ ให้เปลี่ยนก่อนแจกจริง) */
-var GUILD_SHA='4eb990514f06a4910fc2537f34fc780ddde5bb5c66f9b902aa7e09131527ac43';
-var GUILD_DJB='1404206110';
+/* รหัสปลดตรา — เปลี่ยนรหัส: แก้ sha/djb เป็นค่าของรหัสใหม่ (ตัวพิมพ์เล็ก)
+   เก็บเป็นค่าแฮชเพราะไฟล์นี้เปิดดูซอร์สได้ — ไม่ได้กันคนตั้งใจงัด
+   แค่ไม่ให้รหัสลอยอยู่กลางหน้าเว็บให้เห็นก่อนถึงเวลา */
+var CODES=[
+  {t:'FORGE', sha:'0f30c1d806510be3ff6917a32faf1c9f3ae5ca4295387df6ab523ccb2f6257a6', djb:'439369380',
+   ok:'⚒️ ยินดีด้วยครับ คุณอ่านครบทุกตอนแล้ว — การ์ดของคุณได้กรอบไฟกับตรา “ผ่านโรงตีเหล็ก”'},
+  {t:'GUILD', sha:'4eb990514f06a4910fc2537f34fc780ddde5bb5c66f9b902aa7e09131527ac43', djb:'1404206110',
+   ok:'⚔️ ยินดีต้อนรับชาวกิลด์ — การ์ดของคุณเป็นการ์ดฮีโร่กรอบทองแล้ว'}
+];
 
 var GREEN='rgb(27,106,66)', GOLD='rgb(190,148,66)', CREAM='#F8F5EE', DEEP='rgb(10,40,24)';
 
@@ -377,7 +386,9 @@ function drawClover(c,x,y,size,color,alpha){
 
 function drawCardArt(c,st){
   var cls=CLASSES[st.cls]||CLASSES.THINKER;
-  var foil=st.titles.indexOf('GUILD')>=0;
+  /* ขั้นของกรอบ: เขียว → กรอบไฟ (อ่านจบ) → กรอบทองฮีโร่ (ชาวกิลด์) */
+  var foil =st.titles.indexOf('GUILD')>=0;
+  var ember=!foil && st.titles.indexOf('FORGE')>=0;
   var FR=16, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
   var PAD=34, x0=PAD, x1=CW-PAD, cw=x1-x0;
 
@@ -388,6 +399,11 @@ function drawCardArt(c,st){
     fg.addColorStop(0,'#8A6A22'); fg.addColorStop(.2,'#F2E0A8'); fg.addColorStop(.4,'#BE9442');
     fg.addColorStop(.58,'#FBF3D2'); fg.addColorStop(.78,'#C8A24E'); fg.addColorStop(1,'#7E5F1E');
     c.fillStyle=fg;
+  } else if(ember){
+    var eg=c.createLinearGradient(0,0,CW,CH);
+    eg.addColorStop(0,'#4A2410'); eg.addColorStop(.26,'#C9682B'); eg.addColorStop(.5,'#8E3F16');
+    eg.addColorStop(.72,'#E08A3C'); eg.addColorStop(1,'#3E1E0D');
+    c.fillStyle=eg;
   } else {
     var dg=c.createLinearGradient(0,0,CW*.4,CH);
     dg.addColorStop(0,'rgb(20,66,40)'); dg.addColorStop(1,'rgb(7,28,17)');
@@ -467,8 +483,8 @@ function drawCardArt(c,st){
   font(c,'700',14.5,'Bai Jamjuree'); c.fillStyle=GOLD;
   c.fillText('ชาวโคลเวอร์ · '+cls.th,x0,by+15);
   c.textAlign='right'; font(c,'700',13,'Bai Jamjuree');
-  c.fillStyle= foil?GOLD:'rgba(255,255,255,.45)';
-  c.fillText(foil?'★ HERO':cls.tag,x1,by+15);
+  c.fillStyle= foil?GOLD:(ember?'#E8A063':'rgba(255,255,255,.45)');
+  c.fillText(foil?'★ HERO':(ember?'◈ FORGED':cls.tag),x1,by+15);
   c.textAlign='left';
   by+=30;
 
@@ -674,7 +690,7 @@ ORDER.forEach(function(k){
 /* --- ตรา --- */
 function paintBadges(){
   elBadges.innerHTML='';
-  ['ALUMNI','SEEKER','GUILD'].forEach(function(k){
+  TITLE_ORDER.forEach(function(k){
     var t=TITLES[k], has=st.titles.indexOf(k)>=0;
     var d=document.createElement('div');
     d.className='bd'+(has?'':' off');
@@ -728,23 +744,39 @@ function sha256(s){
   });
 }
 var codeMsg=document.getElementById('codeMsg');
+
+function grant(key,msg){
+  if(st.titles.indexOf(key)<0){
+    st.titles.push(key);
+    ls.set('mc_titles',JSON.stringify(st.titles));
+  }
+  if(msg){ codeMsg.className='codemsg ok'; codeMsg.textContent=msg; }
+  paintBadges(); render();
+}
+
+/* ตรวจรหัสทีละใบ — เจอใบไหนก่อนก็ให้ตรานั้น */
+function tryCode(v,i){
+  if(i>=CODES.length){
+    codeMsg.className='codemsg no';
+    codeMsg.textContent='รหัสยังไม่ถูก ลองเช็กอีกครั้งนะครับ';
+    return;
+  }
+  var c=CODES[i];
+  sha256(v).then(function(h){ return h===c.sha; })
+           .catch(function(){ return djb2(v)===c.djb; })
+           .then(function(ok){ ok ? grant(c.t,c.ok) : tryCode(v,i+1); });
+}
 document.getElementById('guildBtn').addEventListener('click',function(){
   var v=document.getElementById('guildCode').value.trim().toLowerCase();
   if(!v){ codeMsg.className='codemsg'; codeMsg.textContent=''; return; }
-  sha256(v).then(function(h){ return h===GUILD_SHA; })
-           .catch(function(){ return djb2(v)===GUILD_DJB; })
-           .then(function(ok){
-    if(ok){
-      if(st.titles.indexOf('GUILD')<0){ st.titles.push('GUILD'); ls.set('mc_titles',JSON.stringify(st.titles)); }
-      codeMsg.className='codemsg ok';
-      codeMsg.textContent='⚔️ ยินดีต้อนรับชาวกิลด์ — การ์ดของคุณเป็นการ์ดฮีโร่กรอบทองแล้ว';
-      paintBadges(); render();
-    } else {
-      codeMsg.className='codemsg no';
-      codeMsg.textContent='รหัสยังไม่ถูก ลองเช็กอีกครั้งนะครับ';
-    }
-  });
+  tryCode(v,0);
 });
+
+/* อ่านจบบนเครื่องเดียวกัน ก็ไม่ต้องพิมพ์รหัสซ้ำ — ให้ตราไปเลย
+   (รหัสมีไว้สำหรับคนที่อ่านคนละเครื่องกับที่ทำการ์ด) */
+if(ls.get('mc_forge_done','')==='1' && st.titles.indexOf('FORGE')<0){
+  grant('FORGE','⚒️ เราเห็นว่าคุณอ่านการ์ตูนครบทุกตอนแล้ว — ใส่ตรา “ผ่านโรงตีเหล็ก” ให้เรียบร้อย');
+}
 
 /* ═══════════════════════════════════════════════════════════
    บันทึก / คัดลอก / แชร์

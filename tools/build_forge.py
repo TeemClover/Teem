@@ -95,6 +95,7 @@ body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var
 .disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
+[hidden]{display:none!important}
 .wrap{max-width:1020px;margin:0 auto;padding:0 20px}
 :focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
 .bar{position:sticky;top:0;z-index:60;background:rgb(var(--deep));color:#fff;border-bottom:1px solid rgb(190 148 66/.28)}
@@ -136,6 +137,176 @@ def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical=''):
 </html>
 '''
 
+# ─────────────────────────────────────────────────────────────
+# ความคืบหน้าการอ่าน — assets/progress.js
+# ตารางตอนอยู่ในไฟล์นี้ ก็เลยสร้างไฟล์นี้จากที่นี่ที่เดียว
+# ─────────────────────────────────────────────────────────────
+FINISH_CODE = 'TENTHSTEP'   # = ชื่อตอนสุดท้าย · ใส่ในหน้าทำการ์ดเพื่อรับตรา ⚒️
+eps_js = ','.join(f"'{slug}'" for _, _, _, slug, _ in EPISODES)
+
+PROGRESS_JS = '''/* ═══════════════════════════════════════════════════════════════
+   myclover — ความคืบหน้าการอ่าน /forge/
+
+   ⚠️ สร้างอัตโนมัติจาก tools/build_forge.py — อย่าแก้ไฟล์นี้ตรง ๆ
+
+   เก็บอยู่ในเครื่องของผู้อ่านล้วน (localStorage) ไม่ส่งออกไปไหน
+   ล้างข้อมูลเบราว์เซอร์เมื่อไหร่ ความคืบหน้าก็หายไปด้วย
+
+   จุดเกาะใน HTML (ทาสีให้เองอัตโนมัติ)
+     [data-mc-progress]  ข้อความ "อ่านแล้ว 3/12 ตอน" · ซ่อนถ้ายังไม่เริ่ม
+     [data-mc-bar]       แถบความคืบหน้า — ปรับ width เป็น %
+     [data-mc-continue]  ลิงก์ "อ่านต่อ" — ค่าใน attribute คือ path นำหน้า slug
+     [data-mc-demote=k]  ใส่คลาส k ให้เมื่อเริ่มอ่านแล้ว (ลดความเด่นของปุ่มเริ่มต้น)
+     [data-mc-done]      บล็อกที่โผล่เมื่ออ่านครบทุกตอน
+     [data-mc-undone]    บล็อกที่ซ่อนเมื่ออ่านครบแล้ว (ตั้งต้นต้องมองเห็น)
+     [data-mc-any]       บล็อกที่โผล่เมื่อเริ่มอ่านแล้วอย่างน้อย 1 ตอน
+     [data-mc-read=slug] ใส่คลาส .read ให้เมื่ออ่านตอนนั้นแล้ว
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  var EPS=[%EPS%];               /* เรียงตามลำดับอ่าน */
+  var KEY='mc_read', DONE='mc_forge_done';
+
+  function get(){
+    try{
+      return (localStorage.getItem(KEY)||'').split(',')
+        .filter(function(s){ return EPS.indexOf(s)>=0; });
+    }catch(e){ return []; }
+  }
+  function put(a){
+    try{
+      localStorage.setItem(KEY,a.join(','));
+      if(a.length>=EPS.length) localStorage.setItem(DONE,'1');
+    }catch(e){}
+  }
+  function each(sel,fn){
+    var l=document.querySelectorAll(sel);
+    for(var i=0;i<l.length;i++) fn(l[i]);
+  }
+
+  var API={
+    eps      : EPS,
+    total    : EPS.length,
+    list     : get,
+    count    : function(){ return get().length; },
+    has      : function(s){ return get().indexOf(s)>=0; },
+    complete : function(){ return get().length>=EPS.length; },
+    mark     : function(s){
+      if(EPS.indexOf(s)<0) return false;
+      var a=get();
+      if(a.indexOf(s)>=0) return false;
+      a.push(s); put(a); paint();
+      return true;
+    },
+    next     : function(){
+      var a=get();
+      for(var i=0;i<EPS.length;i++) if(a.indexOf(EPS[i])<0) return EPS[i];
+      return null;
+    },
+    reset    : function(){
+      try{ localStorage.removeItem(KEY); localStorage.removeItem(DONE); }catch(e){}
+      paint();
+    }
+  };
+  window.MC_READ=API;
+
+  function paint(){
+    var n=API.count(), t=EPS.length, done=n>=t, nx=API.next();
+    each('[data-mc-progress]',function(el){
+      el.textContent = done ? ('อ่านครบทั้ง '+t+' ตอนแล้ว') : ('อ่านแล้ว '+n+'/'+t+' ตอน');
+      el.hidden = n===0;
+      el.className = el.className.replace(/\\s*is-done/,'') + (done?' is-done':'');
+    });
+    each('[data-mc-bar]',function(el){ el.style.width=Math.round(n/t*100)+'%'; });
+    each('[data-mc-continue]',function(el){
+      if(!nx || n===0){ el.hidden=true; return; }
+      el.hidden=false;
+      el.setAttribute('href', el.getAttribute('data-mc-continue')+nx+'/');
+    });
+    each('[data-mc-demote]',function(el){
+      var k=el.getAttribute('data-mc-demote');
+      el.className = el.className.replace(new RegExp('\\s*'+k+'\\b'),'') + (n>0?' '+k:'');
+    });
+    each('[data-mc-done]',  function(el){ el.hidden=!done; });
+    each('[data-mc-undone]',function(el){ el.hidden=done;  });
+    each('[data-mc-any]',   function(el){ el.hidden=n===0; });
+    each('[data-mc-read]',function(el){
+      var r=API.has(el.getAttribute('data-mc-read'));
+      el.className = el.className.replace(/\\s*read\\b/,'') + (r?' read':'');
+    });
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',paint);
+  else paint();
+})();
+'''.replace('%EPS%', eps_js)
+
+os.makedirs(os.path.join(ROOT, 'assets'), exist_ok=True)
+open(os.path.join(ROOT, 'assets', 'progress.js'), 'w', encoding='utf-8').write(PROGRESS_JS)
+
+# บล็อก "อ่านจบแล้ว" — ใช้ทั้งหน้ารวมและหน้าตอน (ต่างกันแค่ path)
+def finish_block(up):
+    return f'''<div class="finish" data-mc-done hidden>
+    <span class="fl">⚒️ อ่านครบทุกตอนแล้ว</span>
+    <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
+    <p>ตั้งแต่เครื่องเครื่องแรก จนถึงก้าวที่ 10 — ครบทั้ง 12 ตอน<br>
+       ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
+    <div class="codebox">
+      <span class="lb">รหัสของคุณ</span>
+      <code id="fcode">{FINISH_CODE}</code>
+      <button type="button" class="cp" id="fcopy">คัดลอก</button>
+    </div>
+    <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ผ่านโรงตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ</p>
+    <a class="fbtn disp" href="{up}card/">⚡ ไปทำการ์ดของคุณ</a>
+  </div>'''
+
+FINISH_CSS = '''
+.finish{background:linear-gradient(160deg,rgb(10 40 24),rgb(18 62 38));color:#fff;border-radius:20px;
+  padding:clamp(24px,4.4vw,34px);margin-top:22px;text-align:center;
+  border:1px solid rgb(190 148 66/.4);box-shadow:0 26px 54px -34px rgb(10 40 24/.85)}
+.finish .fl{display:inline-block;font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;
+  letter-spacing:.14em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.45);
+  border-radius:999px;padding:5px 13px}
+.finish b.disp{display:block;font-family:"Bai Jamjuree";font-size:clamp(19px,3.4vw,25px);margin:14px 0 8px}
+.finish p{color:rgb(255 255 255/.78);font-size:15px;line-height:1.7}
+.finish .sm{font-size:13.5px;color:rgb(255 255 255/.68);margin-top:12px}
+.finish .sm b{color:rgb(var(--gold))}
+.codebox{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  background:rgb(255 255 255/.07);border:1px dashed rgb(190 148 66/.55);border-radius:14px;
+  padding:12px 16px;margin-top:18px}
+.codebox .lb{font-size:12.5px;color:rgb(255 255 255/.6)}
+.codebox code{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(20px,3.6vw,26px);
+  letter-spacing:.14em;color:rgb(var(--gold))}
+.codebox .cp{background:rgb(255 255 255/.12);border:1px solid rgb(255 255 255/.24);color:#fff;
+  border-radius:9px;padding:8px 13px;font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
+  cursor:pointer;min-height:36px}
+.codebox .cp:hover{background:rgb(190 148 66/.3);border-color:rgb(var(--gold))}
+.fbtn{display:inline-flex;align-items:center;gap:8px;background:rgb(var(--gold));color:rgb(var(--deep));
+  border-radius:13px;padding:14px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
+  margin-top:18px;min-height:44px;transition:transform .18s,filter .18s}
+.fbtn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.prog{margin-top:22px;max-width:340px}
+.prog .track{height:7px;border-radius:999px;background:rgb(255 255 255/.15);overflow:hidden}
+.prog .track i{display:block;height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .5s ease}
+.prog .tx{display:inline-block;margin-top:8px;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:12.5px;color:rgb(255 255 255/.75)}
+.prog .tx.is-done{color:rgb(var(--gold))}
+'''
+
+COPY_JS = '''
+(function(){
+  var b=document.getElementById('fcopy'), c=document.getElementById('fcode');
+  if(!b||!c) return;
+  b.addEventListener('click',function(){
+    var t=c.textContent, ok=function(){ b.textContent='คัดลอกแล้ว ✓';
+      setTimeout(function(){ b.textContent='คัดลอก'; },1800); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(ok,function(){ b.textContent=t; });
+    } else { b.textContent=t; }
+  });
+})();
+'''
+
 # ── หน้ารวมทุกตอน ──
 INDEX_CSS = '''
 .head{background:rgb(var(--deep));color:#fff;padding:clamp(34px,6vw,58px) 0 clamp(30px,5vw,48px);
@@ -162,13 +333,24 @@ INDEX_CSS = '''
 .ep .bd{padding:13px 15px 15px;display:flex;flex-direction:column;gap:3px;flex:1}
 .ep .no{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.08em;color:rgb(var(--gold))}
 .ep b{font-family:"Bai Jamjuree";font-size:15.5px;line-height:1.35}
-'''
+.ep.read{border-color:rgb(27 106 66/.42)}
+.ep.read .im{position:relative}
+.ep.read .im::after{content:"✓";position:absolute;top:8px;right:8px;width:26px;height:26px;
+  display:flex;align-items:center;justify-content:center;border-radius:50%;
+  background:rgb(var(--green));color:#fff;font-size:14px;font-weight:700;
+  box-shadow:0 4px 10px -3px rgb(10 40 24/.6)}
+.ep.read .im img{opacity:.72}
+.rstw{text-align:center;padding:6px 0 4px}
+.rst{background:none;border:0;color:rgb(var(--muted));font-size:12.5px;text-decoration:underline;
+  cursor:pointer;padding:10px;min-height:44px}
+.rst:hover{color:rgb(var(--green))}
+''' + FINISH_CSS
 
 cards = []
 for i, (key, num, title, slug, special) in enumerate(EPISODES):
     m = meta[key]
     badge = ' <span class="sp">ตอนพิเศษ</span>' if special else ''
-    cards.append(f'''    <a class="ep" href="{slug}/">
+    cards.append(f'''    <a class="ep" href="{slug}/" data-mc-read="{slug}">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/{key}-thumb.webp">
@@ -191,12 +373,23 @@ index_body = f'''<header class="bar"><div class="wrap">
   <span class="eyebrow">อ่านฟรี · ไม่ต้องสมัคร</span>
   <h1 class="disp">{SERIES}</h1>
   <p>19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านเกมให้ออก หา META ให้เจอ แล้วพาทั้งทีมไปต่อ<br>11 ตอน กับอีก 1 ตอนพิเศษ</p>
-  <a class="start disp" href="{EPISODES[0][3]}/">▶ เริ่มอ่านจากตอนแรก</a>
+  <div class="startrow">
+    <a class="start disp" data-mc-continue="" href="{EPISODES[0][3]}/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
+    <a class="start disp" data-mc-demote="ghost" href="{EPISODES[0][3]}/">เริ่มอ่านจากตอนแรก</a>
+  </div>
+  <div class="prog">
+    <div class="track"><i data-mc-bar></i></div>
+    <span class="tx" data-mc-progress hidden></span>
+  </div>
 </div></section>
 
-<main class="wrap"><div class="grid">
+<main class="wrap">
+  <div class="grid">
 {chr(10).join(cards)}
-</div></main>
+  </div>
+  {finish_block('../')}
+  <p class="rstw" data-mc-any hidden><button type="button" class="rst" id="rstBtn">ล้างความคืบหน้าการอ่าน</button></p>
+</main>
 
 <footer>
   <p>🍀 myclover.com — อ่านฟรี ไม่มีเงื่อนไข</p>
@@ -207,6 +400,14 @@ open(f'{DEST}/index.html', 'w', encoding='utf-8').write(page(
     f'{SERIES} — อ่านฟรีบน myclover',
     '19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ อ่านฟรีทุกตอน ไม่ต้องสมัคร',
     f'{SITE}/forge/img/09s-og.jpg', index_body, INDEX_CSS,
+    '<script defer src="../assets/progress.js"></script>\n<script>' + COPY_JS + '''
+document.addEventListener('DOMContentLoaded',function(){
+  var b=document.getElementById('rstBtn');
+  if(b) b.addEventListener('click',function(){
+    if(confirm('ล้างความคืบหน้าการอ่านทั้งหมด? เครื่องหมายที่อ่านแล้วจะหายไป')) window.MC_READ.reset();
+  });
+});
+</script>\n''',
     canonical=f'<link rel="canonical" href="{SITE}/forge/">\n'))
 
 # ── หน้าอ่านแต่ละตอน ──
@@ -235,7 +436,10 @@ READ_CSS = '''
 .endnote{background:rgb(27 106 66/.06);border:1px solid rgb(27 106 66/.2);border-radius:16px;
   padding:20px 24px;margin-top:20px;text-align:center;font-size:15px}
 .endnote b{font-family:"Bai Jamjuree";display:block;margin-bottom:5px;font-size:16.5px}
-'''
+.epprog{text-align:center;padding:14px 0 2px}
+.epprog .tx{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(var(--muted))}
+.epprog .tx.is-done{color:rgb(var(--green))}
+''' + FINISH_CSS
 
 for i, (key, num, title, slug, special) in enumerate(EPISODES):
     m = meta[key]
@@ -254,9 +458,9 @@ for i, (key, num, title, slug, special) in enumerate(EPISODES):
 
     end = ''
     if not next_ep:
-        end = '''<div class="endnote">
-        <b class="disp">🍀 จบแล้วครับ ขอบคุณที่อ่านจนจบ</b>
-        อ่านซ้ำตอนไหนก็ได้ หรือแวะดูห้องอื่น ๆ ในบ้านต่อได้เลย
+        end = '''<div class="endnote" data-mc-undone>
+        <b class="disp">🍀 ถึงตอนสุดท้ายแล้วครับ ขอบคุณที่อ่านมาถึงตรงนี้</b>
+        ถ้ายังเก็บไม่ครบทุกตอน ย้อนกลับไปเก็บได้เลย — อ่านครบเมื่อไหร่มีของให้
         <div class="row" style="margin-top:16px">
           <a class="nb gold disp" href="../">กลับไปหน้ารวมทุกตอน</a>
           <a class="nb disp" href="../../">แวะดูบ้าน myclover</a>
@@ -293,11 +497,13 @@ for i, (key, num, title, slug, special) in enumerate(EPISODES):
   </picture>{tap_c}
 </main>
 
-<nav class="wrap nav">
+<nav class="wrap nav" id="endmark">
   <div class="row">
       {nav}
   </div>
+  <p class="epprog"><span class="tx" data-mc-progress hidden></span></p>
   {end}
+  {finish_block('../../')}
   <p class="kb">{tap_hint}</p>
 </nav>
 
@@ -306,7 +512,7 @@ for i, (key, num, title, slug, special) in enumerate(EPISODES):
   <p style="margin-top:6px"><a href="../">ทุกตอน</a> · <a href="../../">กลับหน้าบ้าน</a> · <a href="../../privacy/">ข้อมูลของคุณ</a></p>
 </footer>'''
 
-    js = '''<script>
+    js = '<script defer src="../../assets/progress.js"></script>\n<script>' + '''
 document.addEventListener('keydown',function(e){
   if(e.altKey||e.ctrlKey||e.metaKey) return;
   var t=e.target.tagName;
@@ -316,8 +522,29 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight') go=document.querySelector('[data-next]');
   if(go){ e.preventDefault(); location.href=go.getAttribute('href'); }
 });
+''' + COPY_JS + '''
+/* นับว่าอ่านตอนนี้แล้ว เมื่อเลื่อนมาถึงท้ายตอนจริง ๆ */
+(function(){
+  var SLUG='%SLUG%';
+  document.addEventListener('DOMContentLoaded',function(){
+    var P=window.MC_READ; if(!P) return;
+    var done=false;
+    function mark(){ if(done) return; done=true; P.mark(SLUG); }
+    var end=document.getElementById('endmark');
+    if(end && window.IntersectionObserver){
+      new IntersectionObserver(function(es,o){
+        if(es[0].isIntersecting){ o.disconnect(); mark(); }
+      },{rootMargin:'0px 0px -12% 0px'}).observe(end);
+    } else {
+      mark();   /* เบราว์เซอร์เก่า — นับให้เลยดีกว่าไม่นับ */
+    }
+    /* แตะภาพเพื่อไปตอนต่อไป = อ่านตอนนี้จบแล้วเหมือนกัน */
+    var tn=document.querySelector('.tapnext');
+    if(tn) tn.addEventListener('click',mark);
+  });
+})();
 </script>
-'''
+'''.replace('%SLUG%', slug)
     open(f'{d}/index.html', 'w', encoding='utf-8').write(page(
         f'ตอนที่ {num}: {title} — {SERIES} | myclover',
         f'{SERIES} ตอนที่ {num} — {title} · อ่านฟรี ไม่ต้องสมัคร',
