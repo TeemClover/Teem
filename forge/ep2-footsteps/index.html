@@ -42,6 +42,9 @@ footer a{color:rgb(var(--green));font-weight:600}
 .strip{background:rgb(var(--deep));font-size:0;line-height:0}
 .strip picture{display:block}
 .strip img{width:100%;height:auto;margin:0 auto;display:block}
+/* ช่องต่อกันสนิท ไม่มีรอยต่อ · scroll-margin กันช่องโดนแถบบนบังตอนกระโดด */
+.panel{display:block;cursor:pointer;scroll-margin-top:56px;
+  -webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .tapnext{display:block;cursor:pointer;-webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .nav{padding:22px 0 8px}
 .row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
@@ -121,12 +124,12 @@ footer a{color:rgb(var(--green));font-weight:600}
 </div>
 
 <main class="strip">
-  <a class="tapnext" href="../ep3-fresh-disc/" aria-label="อ่านตอนต่อไป — ตอนที่ 3 กลิ่นแผ่นสด"><picture>
-    <source type="image/webp" media="(max-width:640px)" srcset="../img/02-640.webp">
-    <source type="image/webp" srcset="../img/02-1024.webp">
-    <img src="../img/02.jpg" width="1024" height="2220"
-         loading="eager" fetchpriority="high" decoding="async" alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 2 — เสียงฝีเท้า">
-  </picture></a>
+  <a class="panel tapnext" id="p1" href="../ep3-fresh-disc/" aria-label="อ่านตอนต่อไป — ตอนที่ 3 กลิ่นแผ่นสด"><picture>
+      <source type="image/webp" media="(max-width:640px)" srcset="../img/02-640.webp">
+      <source type="image/webp" srcset="../img/02-1024.webp">
+      <img src="../img/02.jpg" width="1024" height="2220"
+           loading="eager" fetchpriority="high" decoding="async" alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 2 — เสียงฝีเท้า">
+    </picture></a>
 </main>
 
 <nav class="wrap nav" data-mc-end>

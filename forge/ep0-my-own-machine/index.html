@@ -42,6 +42,9 @@ footer a{color:rgb(var(--green));font-weight:600}
 .strip{background:rgb(var(--deep));font-size:0;line-height:0}
 .strip picture{display:block}
 .strip img{width:100%;height:auto;margin:0 auto;display:block}
+/* ช่องต่อกันสนิท ไม่มีรอยต่อ · scroll-margin กันช่องโดนแถบบนบังตอนกระโดด */
+.panel{display:block;cursor:pointer;scroll-margin-top:56px;
+  -webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .tapnext{display:block;cursor:pointer;-webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .nav{padding:22px 0 8px}
 .row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
@@ -121,12 +124,30 @@ footer a{color:rgb(var(--green));font-weight:600}
 </div>
 
 <main class="strip">
-  <a class="tapnext" href="../ep1-month-five/" aria-label="อ่านตอนต่อไป — ตอนที่ 1 เดือนที่ 5"><picture>
-    <source type="image/webp" media="(max-width:640px)" srcset="../img/00-640.webp">
-    <source type="image/webp" srcset="../img/00-1024.webp">
-    <img src="../img/00.jpg" width="1024" height="2158"
-         loading="eager" fetchpriority="high" decoding="async" alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 0 — เครื่องของตัวเอง">
-  </picture></a>
+  <a class="panel" id="p1" href="#p2" aria-label="เลื่อนไปช่องที่ 2"><picture>
+      <source type="image/webp" media="(max-width:640px)" srcset="../img/00-p1-640.webp">
+      <source type="image/webp" srcset="../img/00-p1-1024.webp">
+      <img src="../img/00-p1.jpg" width="1024" height="1545"
+           loading="eager" fetchpriority="high" decoding="async" alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 0 — เครื่องของตัวเอง — ช่องที่ 1">
+    </picture></a>
+  <a class="panel" id="p2" href="#p3" aria-label="เลื่อนไปช่องที่ 3"><picture>
+      <source type="image/webp" media="(max-width:640px)" srcset="../img/00-p2-640.webp">
+      <source type="image/webp" srcset="../img/00-p2-1024.webp">
+      <img src="../img/00-p2.jpg" width="1024" height="1542"
+           loading="lazy" decoding="async" alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 0 — เครื่องของตัวเอง — ช่องที่ 2">
+    </picture></a>
+  <a class="panel" id="p3" href="#p4" aria-label="เลื่อนไปช่องที่ 4"><picture>
+      <source type="image/webp" media="(max-width:640px)" srcset="../img/00-p3-640.webp">
+      <source type="image/webp" srcset="../img/00-p3-1024.webp">
+      <img src="../img/00-p3.jpg" width="1024" height="1426"
+           loading="lazy" decoding="async" alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 0 — เครื่องของตัวเอง — ช่องที่ 3">
+    </picture></a>
+  <a class="panel tapnext" id="p4" href="../ep1-month-five/" aria-label="อ่านตอนต่อไป — ตอนที่ 1 เดือนที่ 5"><picture>
+      <source type="image/webp" media="(max-width:640px)" srcset="../img/00-p4-640.webp">
+      <source type="image/webp" srcset="../img/00-p4-1024.webp">
+      <img src="../img/00-p4.jpg" width="1024" height="1539"
+           loading="lazy" decoding="async" alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 0 — เครื่องของตัวเอง — ช่องที่ 4">
+    </picture></a>
 </main>
 
 <nav class="wrap nav" data-mc-end>
@@ -162,7 +183,7 @@ footer a{color:rgb(var(--green));font-weight:600}
          และเล่าว่าบ้านหลังนี้สร้างขึ้นมายังไง</p>
     </div>
   </div>
-  <p class="kb">แตะที่ภาพเพื่อไปตอนต่อไป · หรือกดลูกศร ← → บนคีย์บอร์ด</p>
+  <p class="kb">แตะที่ภาพเพื่อเลื่อนไปช่องถัดไป · ช่องสุดท้ายพาไปตอนต่อไป · หรือกดลูกศร ← → บนคีย์บอร์ด</p>
 </nav>
 
 <footer>
