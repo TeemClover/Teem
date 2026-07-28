@@ -31,7 +31,7 @@
 (function(){
   var TRACKS={
     forge:{key:'mc_read',done:'mc_forge_done',title:'FORGE',unit:'ตอน',what:'อ่าน',items:['ep0-my-own-machine','ep1-month-five','ep2-footsteps','ep3-fresh-disc','ep4-deckbuilding','ep5-dream-factory','ep6-ten-to-thousand','ep7-the-smith-who-lost','ep8-the-one-from-hatyai','ep9-open-the-screen','ep9-5-the-guild-i-imagined','ep10-the-tenth-step']},
-    learn:{key:'mc_learn',done:'mc_learn_done',title:'SCHOLAR',unit:'คลาส',what:'เรียน',items:['free-ai','prompts','image-ai','notebooklm','clip-ai','first-web']}
+    learn:{key:'mc_learn',done:'mc_learn_done',title:'SCHOLAR',unit:'บท',what:'เรียน',items:['free-ai','image-ai','clip-ai','notebooklm','prompts','first-web']}
   };
   var TKEY='mc_titles';
 
