@@ -188,6 +188,12 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .gift small{font-size:12.5px;color:rgb(var(--muted));line-height:1.6}
 .gift::after{content:"เปิดดู →";font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
   color:rgb(var(--green));margin-top:6px}
+.fullpath{display:block;margin-top:14px;text-align:center;background:var(--ac,rgb(var(--green)));
+  color:#fff;border-radius:13px;padding:14px 20px;font-weight:700;font-size:14.5px;line-height:1.5;
+  transition:transform .18s,box-shadow .18s}
+.fullpath:hover{transform:translateY(-2px);box-shadow:0 16px 32px -18px rgb(18 40 28/.55)}
+.pickmore{margin-top:18px;text-align:center;font-size:14px;color:rgb(var(--muted))}
+.pickmore a{color:rgb(var(--green));font-weight:700}
 .eights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
 @media(max-width:760px){.eights{grid-template-columns:1fr}}
 .eight{background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:20px;padding:28px;transition:transform .2s,box-shadow .2s}
@@ -403,6 +409,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <p class="sub reveal" style="--d:.09s">เลือกอันที่ใกล้ตัวที่สุด เดี๋ยวเราหยิบของในบ้านที่ตรงกับคุณมาวางให้ — เปลี่ยนใจทีหลังได้ตลอด และห้องอื่นก็ยังเข้าได้เหมือนเดิมทุกห้อง</p>
   <div class="pickgrid" id="pickGrid"></div>
   <div class="picked" id="picked"></div>
+  <p class="pickmore reveal" style="--d:.13s">ยังไม่แน่ใจว่าตัวเองสายไหน? <a href="paths/">อ่านทั้งสี่สายแบบเต็ม →</a></p>
 </div></section>
 
 <!-- ── ริบบิ้น ── -->
@@ -576,6 +583,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 <footer><div class="wrap">
   <span class="clover-foot" id="footClover" title="ลองกดดูสี่ครั้ง">🍀</span>
   <div class="foot-links">
+    <a href="paths/">เลือกสายของคุณ</a>
     <a href="forge/">เรื่องเล่าจากโรงตีเหล็ก</a>
     <a href="card/">การ์ดประจำตัว</a>
     <a href="classroom/">ห้องเรียน AI</a>
@@ -762,11 +770,14 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     Array.prototype.forEach.call(grid.children,function(x){
       x.setAttribute('aria-pressed', x.dataset.k===k?'true':'false');
     });
+    box.style.setProperty('--ac',d.ac);
     box.innerHTML='<div class="top"><span class="e">'+d.emo+'</span><b class="disp">คุณเลือก'+d.th+'</b>'+
       '<button type="button" class="swap" id="swapPath">เปลี่ยนสาย</button></div>'+
       '<p class="lead">'+d.lead+'</p><div class="gifts">'+
       d.gifts.map(function(g){ return '<a class="gift" href="'+g[0]+'"><b class="disp">'+g[1]+'</b><small>'+g[2]+'</small></a>'; }).join('')+
-      '</div>';
+      '</div>'+
+      /* หน้าเต็มของสายนี้ — ป้ายบอกทาง ลำดับที่แนะนำ และของที่ตรงกับคน */
+      '<a class="fullpath disp" href="paths/'+k.toLowerCase()+'/">ดูเส้นทางของ'+d.th+'แบบเต็ม — สามก้าวถัดไปเรียงมาให้แล้ว →</a>';
     box.classList.add('on');
     document.getElementById('swapPath').addEventListener('click',function(){
       box.classList.remove('on');

@@ -731,3 +731,448 @@ document.addEventListener('keydown',function(e){
                    f'<meta name="mc-item" content="forge:{slug}">\n')))
 
 print(f'สร้างหน้าเว็บ {len(EPISODES)+1} หน้า')
+
+
+# ─────────────────────────────────────────────────────────────
+# หน้าของแต่ละสาย — /paths/
+#
+# หน้าแรกมีด่านเลือกสายอยู่แล้ว แต่เลือกเสร็จเห็นแค่ลิงก์สามอัน
+# หน้าพวกนี้คือ "ที่ที่แต่ละสายเดินต่อ" — ลำดับที่แนะนำ + ของที่ตรงกับคน
+#
+# ⚠️ ชื่อสาย/อีโมจิ/สี ต้องตรงกับ 2 ที่:
+#    CLASSES ใน card/index.html  (ใช้วาดการ์ด)
+#    PATHS   ใน index.html       (ด่านเลือกสายหน้าแรก)
+#
+# ขั้นในเส้นทางผูกกับความคืบหน้าได้ 3 แบบ
+#    ('item',  'learn:notebooklm')  ทำบทนั้นแล้วขั้นนี้ติ๊กเขียว
+#    ('track', 'forge')             ครบทั้งเส้นแล้วขึ้นป้าย "ครบแล้ว"
+#    ('none',  '')                  ไม่ผูกกับอะไร
+# ─────────────────────────────────────────────────────────────
+
+CARD_GIFT = ('../../card/', 'ทำการ์ดประจำตัว',
+             'บอกคนอื่นได้ใน 1 ภาพว่าคุณเป็นสายไหน และเก็บตราที่ปลดได้ไว้บนนั้น')
+CLASS_GIFT = ('../../classroom/', 'ห้องเรียน AI ทั้ง 6 บท',
+              'เรียนฟรี บทละประมาณ 10 นาที ทำตามได้เลยไม่ต้องมีพื้นฐาน')
+WALK_GIFT = ('../../walkthrough/', 'ห้องบทสรุป 🔒',
+             'เปิดให้คนที่อ่านการ์ตูนครบทั้ง 12 ตอน — แปลภาษาเกมเป็นภาษาธุรกิจ '
+             'และเปิดเบื้องหลังว่าเว็บนี้สร้างขึ้นมายังไง')
+
+PATHS = [
+ {'key':'THINKER','slug':'thinker','th':'สายคิด','emo':'🧠','ac':'#2E4A8F',
+  'hook':'อยากเจอคนที่คิดเป็นระบบเหมือนกัน',
+  'who':'ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ',
+  'h1':'คิดจนเห็นทั้งกระดาน<br>แล้วค่อยขยับตัวแรก',
+  'lead':'คุณไม่ได้ขาดไอเดีย — คุณมีเยอะจนล้นด้วยซ้ำ สิ่งที่ขาดคือที่เก็บความคิด'
+         'ที่หยิบกลับมาใช้ต่อได้จริง กับคนที่คิดเป็นระบบพอจะคุยด้วยได้',
+  'signs':['เห็นปัญหาของงานตั้งแต่ยังไม่เริ่ม แล้วโดนหาว่าคิดมาก',
+           'มีโน้ต ไฟล์ และไอเดียเก็บไว้เต็มเครื่อง แต่ยังไม่ได้ลงมือสักอัน',
+           'สนุกกับการถอดบทเรียนหลังจบงาน มากกว่าตอนทำงานเสียอีก'],
+  'strong':'คุณมองเห็นภาพรวมและลำดับก่อนหลังโดยไม่ต้องมีใครสอน คนแบบนี้หายาก '
+           'และเป็นคนที่ทีมวิ่งไปหาเสมอเวลาสิ่งต่าง ๆ เริ่มยุ่ง',
+  'stuck':'รอให้คิดครบก่อนค่อยเริ่ม แล้วก็ไม่ได้เริ่มสักที ทางออกไม่ใช่คิดให้น้อยลง '
+          'แต่คือมีที่ให้ความคิดออกไปอยู่นอกหัว แล้วให้เครื่องมือทำงานต่อจากตรงนั้น',
+  'route':[
+    ('track','forge','อ่านเรื่องเล่าจากโรงตีเหล็ก',
+     '12 ตอน อ่านฟรี ไม่ต้องสมัคร — 19 ปีของคนที่คิดมากกว่าขาย '
+     'รวมถึงตอนที่คิดเยอะแล้วยังพลาดอยู่ดี','../../forge/','เริ่มอ่านตอนแรก'),
+    ('item','learn:notebooklm','⭐ LV.4 สร้าง Source ครั้งเดียว ใช้ต่อได้ทั้งงาน',
+     'บทติดดาวของห้องเรียน — ย้ายสิ่งที่อยู่ในหัวลงไฟล์เดียว '
+     'แล้วให้ AI แตกออกเป็นสไลด์ ภาพ เสียง และวิดีโอ ต่อจากตรงนั้น',
+     '../../classroom/notebooklm.html','เข้าบทติดดาว'),
+    ('item','learn:prompts','LV.5 Smart Prompt Vault',
+     'คลังพรอมต์พร้อมใช้ และวิธีสร้าง AI คู่หูที่รู้จักงานของคุณ — '
+     'สำหรับคนที่อยากให้คำถามคมขึ้น ไม่ใช่ถามให้เยอะขึ้น',
+     '../../classroom/prompts.html','เปิดคลังพรอมต์')],
+  'gifts':[CLASS_GIFT, WALK_GIFT, CARD_GIFT]},
+
+ {'key':'TASTER','slug':'taster','th':'สายกิน','emo':'🍜','ac':'#C4622D',
+  'hook':'อยากกินอร่อยแบบไม่รู้สึกผิด',
+  'who':'รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ',
+  'h1':'กินให้อร่อย<br>โดยไม่ต้องรู้สึกผิดทีหลัง',
+  'lead':'บ้านนี้ไม่เชื่อเรื่องอดอาหาร เราเชื่อว่ากินเป็นดีกว่าอดตาย '
+         'และเรื่องกินคือเสาแรกที่เรากำลังทำอยู่',
+  'signs':['วางแผนทริปจากร้านที่อยากกิน ก่อนจะเลือกที่พักด้วยซ้ำ',
+           'เคยอดจนผอมมาแล้ว แล้วก็กลับมาหนักกว่าเดิม',
+           'ไม่เชื่อว่าคนเราจะกินอกไก่ต้มกับผักนึ่งไปได้ทั้งชีวิต'],
+  'strong':'คุณรู้จักความสุขของตัวเองจริง ๆ และไม่ยอมแลกมันทิ้งง่าย ๆ '
+           'ระบบสุขภาพที่อยู่กับคนได้นานต้องสร้างบนความสุข ไม่ใช่บนการฝืน',
+  'stuck':'รู้เรื่องกินเยอะ แต่ความรู้กระจายอยู่คนละที่ พอถึงเวลาเลือกจริง '
+          'เลยเลือกจากความหิว ไม่ได้เลือกจากสิ่งที่รู้',
+  'route':[
+    ('none','','แวะดูจุดยืนของ myclover club',
+     'กิน นอน ใช้พลัง — สามเสาที่เราเชื่อ และเหตุผลว่าทำไมเราไม่เดินทางเดียว'
+     'กับตลาดสุขภาพทั่วไป','../../club/','เข้าห้อง club'),
+    ('item','learn:free-ai','LV.1 เริ่มใช้ AI ให้เป็น',
+     'ลองกับเรื่องใกล้ตัวก่อน เช่น อ่านฉลาก จัดมื้อทั้งอาทิตย์ '
+     'หรือหาของกินแถวที่กำลังจะไป — เริ่มจากศูนย์ ใช้เวลาประมาณ 10 นาที',
+     '../../classroom/free-ai.html','เริ่มบทแรก'),
+    ('item','learn:notebooklm','⭐ LV.4 เก็บสิ่งที่รู้ไว้ที่เดียว',
+     'บทติดดาว — รวมสิ่งที่คุณรู้เรื่องกินไว้ในไฟล์เดียว '
+     'แล้วให้ AI ตอบจากของของคุณเอง ไม่ใช่ตอบจากอินเทอร์เน็ตทั่วไป',
+     '../../classroom/notebooklm.html','เข้าบทติดดาว')],
+  'note':'เนื้อหาสามเสา (กิน · นอน · ใช้พลัง) กำลังทยอยลง — '
+         'ระหว่างนี้ห้องเรียนใช้ได้เต็มที่แล้ว และใช้กับเรื่องกินได้ตรง ๆ',
+  'gifts':[('../../club/','แวะดู myclover club',
+            'จุดยืนเรื่องสุขภาพในแบบที่ไม่ต้องเหมือนใคร'), CLASS_GIFT, CARD_GIFT]},
+
+ {'key':'KEEPER','slug':'keeper','th':'สายคลีน','emo':'💪','ac':'#1F8A70',
+  'hook':'อยากมีระบบที่วัดผลได้',
+  'who':'มีวินัยอยู่แล้ว ขาดแค่ระบบที่เห็นผลชัด',
+  'h1':'คุณไม่ได้ขาดความตั้งใจ<br>คุณขาดระบบที่วัดได้',
+  'lead':'ทำได้อยู่แล้ว แต่ไม่รู้ว่าทำไปแล้วได้อะไร — เราเลยสนใจส่วนที่วัดผลได้ '
+         'มากกว่าส่วนที่ปลุกใจ',
+  'signs':['เคยทำต่อเนื่องได้เป็นเดือน แล้วหลุดตอนชีวิตยุ่งขึ้นมาพอดี',
+           'จดไว้หลายที่ ทั้งแอป ทั้งสมุด ทั้งโน้ตในมือถือ จนไม่รู้ต้องดูอันไหน',
+           'อยากเห็นเป็นตัวเลขว่าเดือนนี้ดีขึ้นกว่าเดือนก่อนตรงไหน'],
+  'strong':'คุณทำต่อเนื่องได้จริง ซึ่งคนส่วนใหญ่ติดตั้งแต่ก้าวแรก '
+           'เหลือแค่ทำให้สิ่งที่ทำอยู่ทุกวันมองเห็นเป็นตัวเลขได้',
+  'stuck':'พอวัดไม่ได้ ก็ไม่รู้ว่าควรทำต่อหรือควรเปลี่ยน สุดท้ายเลยเลิก '
+          'ทั้งที่มันอาจกำลังได้ผลอยู่',
+  'route':[
+    ('none','','แวะดูจุดยืนของ myclover club',
+     'กิน นอน ใช้พลัง — สามเสาที่เราเชื่อ และเกณฑ์ที่เราใช้วัดว่าอะไรเรียกว่าดีขึ้น',
+     '../../club/','เข้าห้อง club'),
+    ('item','learn:notebooklm','⭐ LV.4 เขียนกติกาของตัวเองลงไฟล์เดียว',
+     'บทติดดาว — พอกติกาอยู่ในไฟล์เดียว AI จะตอบตามกติกาของคุณได้ '
+     'และคุณจะเห็นเองว่าตรงไหนที่เขียนไว้แต่ไม่เคยทำ',
+     '../../classroom/notebooklm.html','เข้าบทติดดาว'),
+    ('item','learn:prompts','LV.5 พรอมต์ที่ใช้ซ้ำได้ทุกวัน',
+     'สรุปวันนี้ · เทียบกับอาทิตย์ที่แล้ว · หาจุดที่หลุดบ่อย — '
+     'ชุดคำถามเดิมที่ถามซ้ำได้ทุกวัน คือสิ่งที่ทำให้ข้อมูลเทียบกันได้',
+     '../../classroom/prompts.html','เปิดคลังพรอมต์')],
+  'note':'เครื่องมือติดตามผลของบ้านยังทำอยู่ ระหว่างนี้เราแนะนำให้ใช้ AI '
+         'กับไฟล์ของตัวเองไปก่อน — ซึ่งปรับตามใจคุณได้มากกว่าแอปสำเร็จรูปด้วยซ้ำ',
+  'gifts':[('../../club/','แวะดู myclover club',
+            'กิน นอน ใช้พลัง — สามเสาที่วัดผลได้จริง'), CLASS_GIFT, CARD_GIFT]},
+
+ {'key':'MAKER','slug':'maker','th':'สายประดิษฐ์','emo':'🧰','ac':'#4B5A67',
+  'hook':'อยากใช้ AI ให้เป็นในงานจริง',
+  'who':'ชอบสร้างของ และอยากให้เครื่องมือทำงานแทนได้',
+  'h1':'ให้เครื่องมือทำงานแทน<br>แล้วเอาเวลาไปสร้างของ',
+  'lead':'ห้องเรียนของบ้านนี้สร้างมาเพื่อคุณโดยตรง — ไม่ต้องเขียนโค้ดเป็น '
+         'ไม่ต้องจ่ายก่อน เริ่มบทแรกได้เลยวันนี้',
+  'signs':['เปิด AI ไว้ทุกวัน แต่ยังใช้แค่ถาม–ตอบ ยังไม่ได้ใช้มันสร้างของ',
+           'อยากมีเว็บหรือเครื่องมือของตัวเอง แต่ติดว่าไม่ได้เรียนสายเขียนโปรแกรม',
+           'เห็นของสวย ๆ แล้วอยากรู้ว่าเบื้องหลังทำยังไง มากกว่าอยากได้ของชิ้นนั้น'],
+  'strong':'คุณลงมือก่อนแล้วค่อยเข้าใจ ซึ่งเป็นวิธีที่เร็วที่สุดกับเครื่องมือ AI '
+           'เพราะมันเปลี่ยนเร็วเกินกว่าจะรอเรียนให้ครบก่อนค่อยใช้',
+  'stuck':'สร้างของได้เยอะ แต่ไม่ได้เก็บวิธีที่ใช้เอาไว้ '
+          'พอกลับมาทำอีกทีเลยต้องออกตามหาใหม่ตั้งแต่ต้น',
+  'route':[
+    ('item','learn:free-ai','LV.1 AI ฟรีที่ควรมีติดเครื่อง',
+     'รู้ว่าตัวไหนเก่งเรื่องอะไร แล้วเลือกใช้ให้ถูกงาน — เริ่มจากศูนย์ '
+     'ใช้เวลาประมาณ 10 นาที','../../classroom/free-ai.html','เริ่มบทแรก'),
+    ('item','learn:notebooklm','⭐ LV.4 สร้าง Source ของตัวเอง',
+     'บทติดดาว — เก็บวิธีทำงานของคุณไว้ในไฟล์เดียว '
+     'แล้วงานชิ้นต่อไปเริ่มจากไฟล์นั้นแทนที่จะเริ่มจากศูนย์ทุกครั้ง',
+     '../../classroom/notebooklm.html','เข้าบทติดดาว'),
+    ('item','learn:first-web','LV.6 สร้างเว็บแรกของตัวเอง',
+     'ด่านสุดท้ายของห้องเรียน — จบบทนี้แล้วคุณจะมีเว็บของตัวเองอยู่บนอินเทอร์เน็ตจริง ๆ',
+     '../../classroom/first-web.html','ไปด่านสุดท้าย')],
+  'gifts':[CLASS_GIFT, WALK_GIFT, CARD_GIFT]},
+]
+
+
+def hex_rgb(h):
+    """#2E4A8F → '46 74 143' — จะได้ใส่ความโปร่งใสด้วย rgb(var(--ac)/.1) ได้"""
+    n = int(h.lstrip('#'), 16)
+    return f'{(n >> 16) & 255} {(n >> 8) & 255} {n & 255}'
+
+
+PATH_CSS = '''
+.phero{padding:52px 0 40px;background:
+  radial-gradient(700px 340px at 6% -22%,rgb(var(--ac)/.16),transparent 62%),
+  radial-gradient(420px 260px at 97% 0%,rgb(var(--gold)/.13),transparent 60%)}
+.phero .emo{font-size:46px;line-height:1}
+.ptag{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:rgb(var(--ac));
+  background:rgb(var(--ac)/.10);border:1px solid rgb(var(--ac)/.3);border-radius:999px;padding:6px 14px}
+.phero h1{font-size:clamp(29px,5.4vw,48px);font-weight:700;line-height:1.16;margin:16px 0 14px}
+.phero .lead{font-size:16.5px;color:rgb(var(--ink)/.76);max-width:58ch}
+.sect{padding:44px 0}
+.sect+.sect{padding-top:0}
+.sect h2{font-family:"Bai Jamjuree";font-size:clamp(21px,3.4vw,29px);font-weight:700;line-height:1.28}
+.sect .sub{color:rgb(var(--ink)/.68);margin-top:9px;max-width:60ch;font-size:15px}
+.eyebrow{font-family:"Bai Jamjuree";font-size:12px;font-weight:700;letter-spacing:.13em;
+  text-transform:uppercase;color:rgb(var(--gold))}
+.signs{display:grid;gap:9px;margin-top:20px}
+.sign{display:flex;gap:11px;align-items:flex-start;background:#fff;border:1px solid rgb(var(--ink)/.09);
+  border-radius:14px;padding:14px 16px;font-size:15px}
+.sign i{font-style:normal;color:rgb(var(--ac));font-weight:700;flex:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:20px}
+@media(max-width:720px){.two{grid-template-columns:1fr}}
+.box{border-radius:16px;padding:19px 21px;border:1px solid rgb(var(--ink)/.1);background:#fff}
+.box.acc{background:rgb(var(--ac)/.06);border-color:rgb(var(--ac)/.24)}
+.box b{display:block;font-family:"Bai Jamjuree";font-size:15.5px;margin-bottom:7px}
+.box p{font-size:14.5px;color:rgb(var(--ink)/.76)}
+.route{margin-top:20px;display:grid;gap:11px}
+.step{position:relative;display:block;background:#fff;border:1px solid rgb(var(--ink)/.1);
+  border-radius:16px;padding:17px 20px 17px 60px;transition:transform .18s,box-shadow .18s,border-color .18s}
+.step:hover{transform:translateY(-2px);box-shadow:0 16px 32px -20px rgb(18 40 28/.42);
+  border-color:rgb(var(--ac)/.4)}
+.step .n{position:absolute;left:17px;top:17px;width:30px;height:30px;border-radius:9px;display:grid;
+  place-items:center;font-family:"Bai Jamjuree";font-weight:700;font-size:14px;
+  background:rgb(var(--ac)/.12);color:rgb(var(--ac))}
+.step b{font-family:"Bai Jamjuree";font-size:16px;display:block;line-height:1.4}
+.step p{font-size:14.5px;color:rgb(var(--ink)/.72);margin-top:5px}
+.step .go{display:inline-block;margin-top:9px;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:13.5px;color:rgb(var(--ac))}
+.step.done{background:rgb(27 106 66/.05);border-color:rgb(27 106 66/.32)}
+.step.done .n{background:rgb(var(--green));color:#fff}
+.step.done .n i{display:none}
+.step.done .n::after{content:"✓"}
+.ok{display:inline-block;margin-left:7px;font-size:11px;font-weight:700;font-family:"Bai Jamjuree";
+  color:rgb(var(--green));border:1px solid rgb(var(--green)/.42);border-radius:999px;
+  padding:2px 9px;vertical-align:middle}
+.pgline{margin-top:13px;font-size:13px;color:rgb(var(--muted))}
+.note{margin-top:18px;background:rgb(var(--gold)/.09);border:1px solid rgb(var(--gold)/.32);
+  border-radius:14px;padding:14px 17px;font-size:14px;color:rgb(var(--ink)/.8)}
+.note b{font-family:"Bai Jamjuree";color:rgb(var(--ink))}
+.gifts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:11px;margin-top:20px}
+.gift{background:#fff;border:1px solid rgb(var(--ink)/.1);border-radius:16px;padding:17px 19px;
+  transition:transform .18s,box-shadow .18s,border-color .18s}
+.gift:hover{transform:translateY(-3px);box-shadow:0 18px 34px -22px rgb(18 40 28/.45);
+  border-color:rgb(var(--ac)/.38)}
+.gift b{font-family:"Bai Jamjuree";font-size:15px;display:block;line-height:1.4}
+.gift small{display:block;color:rgb(var(--ink)/.68);font-size:13.5px;margin-top:6px;line-height:1.6}
+.gift::after{content:"เปิดดู →";display:block;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:12.5px;color:rgb(var(--ac));margin-top:8px}
+.flag{margin-top:8px;background:rgb(var(--deep));color:#fff;border-radius:20px;
+  padding:clamp(22px,3.4vw,30px);
+  background-image:radial-gradient(560px 240px at 6% -34%,rgb(var(--ac)/.55),transparent 64%)}
+.flag b{font-family:"Bai Jamjuree";font-size:18px;display:block}
+.flag p{color:rgb(255 255 255/.78);font-size:14.5px;margin-top:7px;max-width:54ch}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:13px 22px;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px;border:1px solid rgb(255 255 255/.24);
+  color:#fff;background:transparent;cursor:pointer;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-2px);background:rgb(255 255 255/.07)}
+.btn.gold{background:rgb(var(--gold));border-color:rgb(var(--gold));color:rgb(var(--deep))}
+.btn.gold:hover{background:rgb(var(--gold))}
+.flagged{margin-top:14px;font-size:14px;color:rgb(190 148 66);font-weight:600}
+.pcards{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:22px}
+@media(max-width:760px){.pcards{grid-template-columns:1fr}}
+.pcard{display:block;background:#fff;border:1px solid rgb(var(--ink)/.1);
+  border-left:5px solid rgb(var(--c));border-radius:16px;padding:20px 22px;
+  transition:transform .18s,box-shadow .18s}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 20px 40px -24px rgb(18 40 28/.48)}
+.pcard .e{font-size:31px;line-height:1}
+.pcard .nm{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;
+  letter-spacing:.13em;text-transform:uppercase;color:rgb(var(--c));margin-top:9px}
+.pcard h3{font-family:"Bai Jamjuree";font-size:18px;line-height:1.4;margin-top:3px;font-weight:700}
+.pcard p{font-size:14.5px;color:rgb(var(--ink)/.7);margin-top:8px}
+.pcard .go{display:inline-block;margin-top:11px;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:13.5px;color:rgb(var(--c))}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:20px}
+@media(max-width:820px){.three{grid-template-columns:1fr}}
+.others{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:18px}
+.oth{background:#fff;border:1px solid rgb(var(--ink)/.1);border-radius:14px;padding:15px 16px;
+  transition:transform .18s,border-color .18s}
+.oth:hover{transform:translateY(-2px);border-color:rgb(var(--ink)/.3)}
+.oth .e{font-size:23px;line-height:1}
+.oth b{display:block;font-family:"Bai Jamjuree";font-size:14.5px;margin-top:6px;line-height:1.4}
+.oth small{display:block;color:rgb(var(--ink)/.66);font-size:12.5px;margin-top:4px;line-height:1.55}
+'''
+
+FLAG_JS = '''
+(function(){
+  var K='%s', b=document.getElementById('flagBtn'), m=document.getElementById('flagMsg');
+  function on(){ try{ return localStorage.getItem('mc_class')===K; }catch(e){ return false; } }
+  function paint(){ if(b) b.hidden=on(); if(m) m.hidden=!on(); }
+  if(b) b.addEventListener('click',function(){
+    try{ localStorage.setItem('mc_class',K); }catch(e){}
+    paint();
+  });
+  paint();
+})();
+'''
+
+
+def path_page(p):
+    others = [o for o in PATHS if o['key'] != p['key']]
+
+    signs = '\n'.join(
+        f'    <div class="sign"><i>✓</i><span>{E(s)}</span></div>' for s in p['signs'])
+
+    steps = []
+    for i, (kind, ref, label, why, href, cta) in enumerate(p['route'], 1):
+        attr = f' data-mc-item="{ref}"' if kind == 'item' else ''
+        badge = (f'<span class="ok" data-mc-done="{ref}" hidden>ครบแล้ว</span>'
+                 if kind == 'track' else '')
+        steps.append(
+            f'    <a class="step" href="{href}"{attr}>\n'
+            f'      <span class="n"><i>{i}</i></span>\n'
+            f'      <b class="disp">{label}{badge}</b>\n'
+            f'      <p>{why}</p>\n'
+            f'      <span class="go">{cta} →</span>\n'
+            f'    </a>')
+    steps = '\n'.join(steps)
+
+    gifts = '\n'.join(
+        f'    <a class="gift" href="{h}"><b class="disp">{t}</b><small>{d}</small></a>'
+        for h, t, d in p['gifts'])
+
+    others_html = '\n'.join(
+        f'    <a class="oth" href="../{o["slug"]}/"><span class="e">{o["emo"]}</span>'
+        f'<b class="disp">{o["th"]}</b><small>{E(o["who"])}</small></a>' for o in others)
+
+    note = (f'  <div class="note"><b>พูดกันตรง ๆ:</b> {p["note"]}</div>\n'
+            if p.get('note') else '')
+
+    body = f'''<nav class="bar"><div class="wrap">
+  <a class="home disp" href="../../">🍀 my<em>clover</em></a>
+  <span class="ttl"><b>{p['emo']} {p['th']}</b>เส้นทางของคุณในบ้านหลังนี้</span>
+</div></nav>
+
+<header class="phero"><div class="wrap">
+  <div class="emo">{p['emo']}</div>
+  <span class="ptag">{p['key']} · {p['th']}</span>
+  <h1 class="disp">{p['h1']}</h1>
+  <p class="lead">{p['lead']}</p>
+</div></header>
+
+<section class="sect"><div class="wrap">
+  <span class="eyebrow">ฟังดูคุ้นไหม</span>
+  <h2 class="disp">ถ้าสามข้อนี้ใช่ คุณมาถูกหน้าแล้ว</h2>
+  <p class="sub">ไม่มีแบบทดสอบ ไม่มีคะแนน — อ่านแล้วรู้สึกว่าใช่ก็พอ</p>
+  <div class="signs">
+{signs}
+  </div>
+  <div class="two">
+    <div class="box acc"><b class="disp">สิ่งที่คุณได้เปรียบ</b><p>{p['strong']}</p></div>
+    <div class="box"><b class="disp">จุดที่สายนี้มักติด</b><p>{p['stuck']}</p></div>
+  </div>
+</div></section>
+
+<section class="sect"><div class="wrap">
+  <span class="eyebrow">เส้นทางที่เราแนะนำ</span>
+  <h2 class="disp">สามก้าวถัดไป เรียงมาให้แล้ว</h2>
+  <p class="sub">ไม่ใช่ข้อบังคับ ข้ามหรือสลับได้ตามใจ — ทำอันไหนแล้วมันจะติ๊กเขียวให้เอง
+  เก็บอยู่ในเครื่องคุณล้วน ไม่ได้ส่งไปไหน</p>
+  <div class="route">
+{steps}
+  </div>
+  <p class="pgline"><span data-mc-progress="learn" hidden></span></p>
+{note}</div></section>
+
+<section class="sect"><div class="wrap">
+  <span class="eyebrow">ของในบ้านที่ตรงกับสายนี้</span>
+  <h2 class="disp">หยิบไปใช้ได้เลย ไม่มีเงื่อนไข</h2>
+  <div class="gifts">
+{gifts}
+  </div>
+</div></section>
+
+<section class="sect"><div class="wrap">
+  <div class="flag">
+    <b class="disp">ปักธงว่าคุณคือ{p['th']}</b>
+    <p>จำไว้ในเครื่องของคุณเอง แล้วหน้าอื่นในบ้านจะหยิบของที่ตรงกับคุณขึ้นมาก่อน
+    รวมถึงการ์ดประจำตัวที่จะขึ้นสาย{p['th']}ให้อัตโนมัติ — เปลี่ยนใจทีหลังได้ตลอด</p>
+    <p class="flagged" id="flagMsg" hidden>🍀 ปักธงเรียบร้อย — คุณคือ{p['th']}</p>
+    <div class="btnrow">
+      <button type="button" class="btn" id="flagBtn">ปักธงว่าฉันคือ{p['th']}</button>
+      <a class="btn gold" href="../../card/">ไปทำการ์ดประจำตัว</a>
+    </div>
+  </div>
+</div></section>
+
+<section class="sect"><div class="wrap" data-mc-end>
+  <span class="eyebrow">ไม่ใช่สายนี้ก็ไม่เป็นไร</span>
+  <h2 class="disp">ดูสายอื่นได้ ห้องทุกห้องเปิดเหมือนเดิม</h2>
+  <p class="sub">สายเป็นแค่ทางลัดให้เราหยิบของถูกอันมาวางตรงหน้าคุณ ไม่ได้ล็อกอะไรทั้งนั้น</p>
+  <div class="others">
+{others_html}
+  </div>
+</div></section>
+
+<footer>
+  <p>🍀 myclover.com · เลือกได้ ไม่เลือกก็ได้ · เปลี่ยนใจทีหลังได้ตลอด</p>
+  <p style="margin-top:6px"><a href="../">ดูทุกสาย</a> · <a href="../../">กลับหน้าบ้าน</a> ·
+     <a href="../../card/">ทำการ์ด</a> · <a href="../../privacy/">ข้อมูลของคุณ</a></p>
+</footer>'''
+
+    js = ('<script defer src="../../assets/quest.js"></script>\n<script>'
+          + FLAG_JS % p['key'] + '</script>\n')
+    css = f':root{{--ac:{hex_rgb(p["ac"])}}}\n' + PATH_CSS
+    return page(
+        f'{p["emo"]} {p["th"]} — เส้นทางของคุณ | myclover',
+        f'{p["hook"]} — {p["who"]} · เส้นทางที่แนะนำสำหรับ{p["th"]}ในบ้าน myclover',
+        f'{SITE}/img/og-home.jpg', body, css, js,
+        canonical=f'<link rel="canonical" href="{SITE}/paths/{p["slug"]}/">\n')
+
+
+def paths_index():
+    cards = '\n'.join(
+        f'''    <a class="pcard" href="{p['slug']}/" style="--c:{hex_rgb(p['ac'])}">
+      <span class="e">{p['emo']}</span>
+      <span class="nm">{p['key']}</span>
+      <h3 class="disp">{p['th']} — {E(p['hook'])}</h3>
+      <p>{E(p['who'])}</p>
+      <span class="go">ดูเส้นทางของ{p['th']} →</span>
+    </a>''' for p in PATHS)
+
+    body = f'''<nav class="bar"><div class="wrap">
+  <a class="home disp" href="../">🍀 my<em>clover</em></a>
+  <span class="ttl"><b>สายทั้งหมด</b>เลือกได้ ไม่เลือกก็ได้</span>
+</div></nav>
+
+<header class="phero"><div class="wrap">
+  <div class="emo">🧭</div>
+  <span class="ptag">เลือกสาย</span>
+  <h1 class="disp">วันนี้อะไรพามาที่นี่?</h1>
+  <p class="lead">เลือกอันที่ใกล้ตัวที่สุด แล้วเราจะหยิบของในบ้านที่ตรงกับคุณมาวางให้
+  พร้อมลำดับที่แนะนำว่าควรเริ่มตรงไหน — ไม่ได้ล็อกทาง ห้องอื่นยังเข้าได้เหมือนเดิมทุกห้อง
+  และเปลี่ยนใจทีหลังได้ตลอด</p>
+</div></header>
+
+<section class="sect"><div class="wrap">
+  <span class="eyebrow">สี่สายของบ้าน</span>
+  <h2 class="disp">อ่านสองบรรทัด แล้วเลือกอันที่ใช่ที่สุด</h2>
+  <p class="sub">ไม่ต้องเลือกให้ถูก เลือกให้ใกล้ตัวก็พอ ที่เหลือเราจัดให้</p>
+  <div class="pcards">
+{cards}
+  </div>
+</div></section>
+
+<section class="sect"><div class="wrap" data-mc-end>
+  <span class="eyebrow">เลือกแล้วเกิดอะไรขึ้น</span>
+  <h2 class="disp">เปลี่ยนแค่ลำดับของ ไม่ได้เปลี่ยนสิทธิ์</h2>
+  <div class="three">
+    <div class="box"><b class="disp">🧭 ได้ลำดับที่แนะนำ</b>
+      <p>สามก้าวถัดไปที่เรียงมาให้แล้ว ว่าควรเริ่มตรงไหนแล้วไปต่อยังไง
+      ทำอันไหนแล้วมันจะติ๊กเขียวให้เอง</p></div>
+    <div class="box"><b class="disp">🃏 ขึ้นบนการ์ดประจำตัว</b>
+      <p>การ์ดของคุณจะพิมพ์สายที่เลือกไว้ให้อัตโนมัติ พร้อมสีประจำสาย
+      เปลี่ยนสายทีหลังการ์ดก็เปลี่ยนตาม</p></div>
+    <div class="box"><b class="disp">🔓 ไม่มีอะไรถูกล็อก</b>
+      <p>ทุกห้องยังเข้าได้เหมือนเดิมทั้งหมด ไม่ว่าจะเลือกสายไหน
+      หรือไม่เลือกเลยก็ตาม</p></div>
+  </div>
+  <div class="note"><b>สายคืออะไร:</b> เป็นแค่ป้ายที่เราใช้จัดของให้ตรงคน
+  ไม่ใช่ระดับ ไม่ใช่การสอบ และไม่มีสายไหนดีกว่าสายไหน
+  สิ่งที่เลือกไว้เก็บอยู่ในเครื่องของคุณเองล้วน ไม่ได้ส่งไปไหน</div>
+</div></section>
+
+<footer>
+  <p>🍀 myclover.com · Good Luck, Have Fun</p>
+  <p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="../card/">ทำการ์ด</a> ·
+     <a href="../classroom/">ห้องเรียน AI</a> · <a href="../forge/">การ์ตูน</a></p>
+</footer>'''
+
+    css = f':root{{--ac:{hex_rgb("#1B6A42")}}}\n' + PATH_CSS
+    return page('เลือกสายของคุณ | myclover',
+                'สี่สายของบ้าน myclover — สายคิด สายกิน สายคลีน สายประดิษฐ์ '
+                'เลือกแล้วเราจะหยิบของที่ตรงกับคุณมาวางให้ พร้อมลำดับที่แนะนำ',
+                f'{SITE}/img/og-home.jpg', body, css, '',
+                canonical=f'<link rel="canonical" href="{SITE}/paths/">\n')
+
+
+PDEST = os.path.join(ROOT, 'paths')
+os.makedirs(PDEST, exist_ok=True)
+open(os.path.join(PDEST, 'index.html'), 'w', encoding='utf-8').write(paths_index())
+for p in PATHS:
+    d = os.path.join(PDEST, p['slug'])
+    os.makedirs(d, exist_ok=True)
+    open(os.path.join(d, 'index.html'), 'w', encoding='utf-8').write(path_page(p))
+
+print(f'สร้างหน้าสาย {len(PATHS)+1} หน้า')
