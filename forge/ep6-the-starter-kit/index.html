@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ตอนที่ 6: ชุดเริ่มต้นของผู้เล่นใหม่ — เรื่องเล่าจากโรงตีเหล็ก | myclover</title>
+<meta name="description" content="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 6 — ชุดเริ่มต้นของผู้เล่นใหม่ · อ่านฟรี ไม่ต้องสมัคร">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ตอนที่ 6: ชุดเริ่มต้นของผู้เล่นใหม่ — เรื่องเล่าจากโรงตีเหล็ก | myclover">
+<meta property="og:description" content="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 6 — ชุดเริ่มต้นของผู้เล่นใหม่ · อ่านฟรี ไม่ต้องสมัคร">
+<meta property="og:image" content="https://myclover.com/forge/img/06-og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://myclover.com/forge/ep6-the-starter-kit/">
+<meta name="mc-item" content="forge:ep6-the-starter-kit">
+<meta name="theme-color" content="#0A2818">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;-webkit-font-smoothing:antialiased}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+.wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
+.bar{position:sticky;top:0;z-index:60;background:rgb(var(--deep));color:#fff;border-bottom:1px solid rgb(190 148 66/.28)}
+.bar .wrap{display:flex;align-items:center;gap:12px;min-height:56px;padding-top:8px;padding-bottom:8px}
+.bar .home{font-family:"Bai Jamjuree";font-weight:700;font-size:15px;white-space:nowrap;
+  min-height:44px;display:inline-flex;align-items:center;padding:0 4px}
+.bar .home em{font-style:normal;color:rgb(var(--gold))}
+.bar .ttl{margin-left:auto;text-align:right;font-size:13px;color:rgb(255 255 255/.72);min-width:0}
+.bar .ttl b{display:block;font-family:"Bai Jamjuree";font-size:14.5px;color:#fff;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 48px}
+footer a{color:rgb(var(--green));font-weight:600}
+.sp{display:inline-block;background:rgb(var(--gold));color:rgb(var(--deep));font-family:"Bai Jamjuree";font-weight:700;
+  font-size:10.5px;border-radius:6px;padding:2px 8px;letter-spacing:.04em;vertical-align:middle}
+
+.strip{background:rgb(var(--deep));font-size:0;line-height:0}
+.strip picture{display:block}
+.strip img{width:100%;height:auto;margin:0 auto;display:block}
+/* ช่องต่อกันสนิท ไม่มีรอยต่อ · scroll-margin กันช่องโดนแถบบนบังตอนกระโดด
+   ตรึงกว้างสุดที่ 1024px = ความกว้างจริงของไฟล์ต้นฉบับ
+   กว้างกว่านี้คือขยายเกินความละเอียดที่มี และบนจอคอมภาพจะสูงจนต้องย่อหน้าต่างถึงจะอ่านได้ */
+.panel{display:block;cursor:pointer;scroll-margin-top:56px;max-width:1024px;margin:0 auto;
+  -webkit-tap-highlight-color:rgb(190 148 66/.18)}
+.tapnext{display:block;cursor:pointer;-webkit-tap-highlight-color:rgb(190 148 66/.18)}
+.nav{padding:22px 0 8px}
+.row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.nb{flex:1 1 auto;min-width:132px;min-height:52px;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:#fff;border:1px solid rgb(var(--ink)/.14);border-radius:13px;padding:12px 18px;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:15px;transition:transform .18s,box-shadow .18s,border-color .18s}
+.nb:hover{transform:translateY(-2px);box-shadow:0 16px 30px -20px rgb(18 40 28/.5);border-color:rgb(27 106 66/.4)}
+.nb.main{background:rgb(var(--green));border-color:rgb(var(--green));color:#fff}
+.nb.gold{background:rgb(var(--gold));border-color:rgb(var(--gold));color:rgb(var(--deep))}
+.allbtn{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(var(--gold));
+  border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:0 13px;white-space:nowrap;
+  min-height:44px;display:inline-flex;align-items:center;transition:.16s}
+.allbtn:hover{background:rgb(190 148 66/.14)}
+@media(max-width:600px){.bar .ttl{display:none}}
+.epttl{padding:26px 0 4px}
+.epttl .no{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;letter-spacing:.1em;color:rgb(var(--gold))}
+.epttl h1{font-family:"Bai Jamjuree";font-size:clamp(23px,4.2vw,34px);line-height:1.24;margin-top:6px}
+.kb{text-align:center;font-size:12.5px;color:rgb(var(--muted));margin-top:14px}
+.endnote{background:rgb(27 106 66/.06);border:1px solid rgb(27 106 66/.2);border-radius:16px;
+  padding:20px 24px;margin-top:20px;text-align:center;font-size:15px}
+.endnote b{font-family:"Bai Jamjuree";display:block;margin-bottom:5px;font-size:16.5px}
+.epprog{text-align:center;padding:14px 0 2px}
+.epprog .tx{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(var(--muted))}
+.epprog .tx.is-done{color:rgb(var(--green))}
+
+.finish{background:linear-gradient(160deg,rgb(10 40 24),rgb(18 62 38));color:#fff;border-radius:20px;
+  padding:clamp(24px,4.4vw,34px);margin-top:22px;text-align:center;
+  border:1px solid rgb(190 148 66/.4);box-shadow:0 26px 54px -34px rgb(10 40 24/.85)}
+.finish .fl{display:inline-block;font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;
+  letter-spacing:.14em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.45);
+  border-radius:999px;padding:5px 13px}
+.finish b.disp{display:block;font-family:"Bai Jamjuree";font-size:clamp(19px,3.4vw,25px);margin:14px 0 8px}
+.finish p{color:rgb(255 255 255/.78);font-size:15px;line-height:1.7}
+.finish .sm{font-size:13.5px;color:rgb(255 255 255/.68);margin-top:12px}
+.finish .sm b{color:rgb(var(--gold))}
+.codebox{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  background:rgb(255 255 255/.07);border:1px dashed rgb(190 148 66/.55);border-radius:14px;
+  padding:12px 16px;margin-top:18px}
+.codebox .lb{font-size:12.5px;color:rgb(255 255 255/.6)}
+.codebox code{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(20px,3.6vw,26px);
+  letter-spacing:.14em;color:rgb(var(--gold))}
+.codebox .cp{background:rgb(255 255 255/.12);border:1px solid rgb(255 255 255/.24);color:#fff;
+  border-radius:9px;padding:8px 13px;font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
+  cursor:pointer;min-height:36px}
+.codebox .cp:hover{background:rgb(190 148 66/.3);border-color:rgb(var(--gold))}
+.fbtn{display:inline-flex;align-items:center;gap:8px;background:rgb(var(--gold));color:rgb(var(--deep));
+  border-radius:13px;padding:14px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
+  margin-top:18px;min-height:44px;transition:transform .18s,filter .18s}
+.fbtn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+.fbtn.ghost{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255/.38)}
+.fbtn.ghost:hover{border-color:rgb(var(--gold));background:rgb(190 148 66/.14)}
+.nextup{margin-top:30px}
+.nextup .hr{display:flex;align-items:center;gap:12px;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:11.5px;letter-spacing:.16em;color:rgb(255 255 255/.5)}
+.nextup .hr i{flex:1;height:1px;background:rgb(255 255 255/.18)}
+.nextup p{margin-top:14px;font-size:14.5px}
+.nextup p + p{margin-top:12px}
+.nextup p b{color:rgb(var(--gold))}
+.prog{margin-top:22px;max-width:340px}
+.prog .track{height:7px;border-radius:999px;background:rgb(255 255 255/.15);overflow:hidden}
+.prog .track i{display:block;height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .5s ease}
+.prog .tx{display:inline-block;margin-top:8px;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:12.5px;color:rgb(255 255 255/.75)}
+.prog .tx.is-done{color:rgb(var(--gold))}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="home disp" href="../">← ทุกตอน</a>
+  <span class="ttl">ตอนที่ 6<b>ชุดเริ่มต้นของผู้เล่นใหม่</b></span>
+</div></header>
+
+<div class="wrap epttl">
+  <span class="no">ตอนที่ 6</span>
+  <h1 class="disp">ชุดเริ่มต้นของผู้เล่นใหม่</h1>
+</div>
+
+<main class="strip">
+  <a class="panel tapnext" id="p1" href="../ep7-a-voice-that-went-further/" aria-label="อ่านตอนต่อไป — ตอนที่ 7 เสียงที่ไปไกลกว่าเรา"><picture>
+      <source type="image/webp" media="(max-width:640px)" srcset="../img/06-640.webp">
+      <source type="image/webp" srcset="../img/06-1024.webp">
+      <img src="../img/06.jpg" width="1024" height="2048"
+           loading="eager" fetchpriority="high" decoding="async" alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 6 — ชุดเริ่มต้นของผู้เล่นใหม่">
+    </picture></a>
+</main>
+
+<nav class="wrap nav" data-mc-end>
+  <div class="row">
+      <a class="nb disp" href="../ep5-from-answers-to-a-system/" rel="prev" data-prev>← ตอนก่อนหน้า</a>
+      <a class="nb disp" href="../">ดูทุกตอน</a>
+      <a class="nb main disp" href="../ep7-a-voice-that-went-further/" rel="next" data-next>ตอนต่อไป →</a>
+  </div>
+  <p class="epprog"><span class="tx" data-mc-progress="forge" hidden></span></p>
+  
+  <div class="finish" data-mc-done="forge" hidden>
+    <span class="fl">⚒️ อ่านครบทุกตอนแล้ว</span>
+    <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
+    <p>ตั้งแต่ “ทุกคนมีสิทธิ์ลงเล่น” จนถึง “เกมใหม่ ลีกใหม่” — ครบทั้ง 12 ตอน<br>
+       ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
+    <div class="codebox">
+      <span class="lb">รหัสของคุณ</span>
+      <code id="fcode">TENTHSTEP</code>
+      <button type="button" class="cp" id="fcopy">คัดลอก</button>
+    </div>
+    <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ผ่านโรงตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ</p>
+    <a class="fbtn disp" href="../../card/">⚡ ไปทำการ์ดของคุณ</a>
+
+    <div class="nextup">
+      <span class="hr"><i></i>แล้วไงต่อ<i></i></span>
+      <p>เรื่องที่คุณเพิ่งอ่านจบ ไม่ได้จบที่ตัวผมคนเดียว<br>
+         วิธีคิดแบบคนเล่นเกม — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ — ใช้กับธุรกิจอะไรก็ได้
+         และมันสนุกกว่ามากเวลาเล่นกันหลายคน</p>
+      <p>กิลด์ของเราเลยมีไว้แบบนั้น ไม่ได้มีไว้ขายอะไรกับคุณ
+         แต่มีไว้ให้คนที่อยากโตทั้งเรื่องงานและเรื่องชีวิต มาโตไปด้วยกัน<br>
+         <b>ใครเจอเรา คนนั้นโชคดี — #glhf</b></p>
+      <a class="fbtn ghost disp" href="../../walkthrough/">🗺️ เปิด Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ</a>
+      <p class="sm">หน้านี้เปิดให้เฉพาะคนที่อ่านจบ — ถอดกลไกของเรื่องที่คุณเพิ่งอ่าน
+         และเล่าว่าบ้านหลังนี้สร้างขึ้นมายังไง</p>
+    </div>
+  </div>
+  <p class="kb">แตะที่ภาพเพื่อไปตอนต่อไป · หรือกดลูกศร ← → บนคีย์บอร์ด</p>
+</nav>
+
+<footer>
+  <p>🍀 เรื่องเล่าจากโรงตีเหล็ก · myclover.com</p>
+  <p style="margin-top:6px"><a href="../">ทุกตอน</a> · <a href="../../">กลับหน้าบ้าน</a> · <a href="../../privacy/">ข้อมูลของคุณ</a></p>
+</footer>
+<script defer src="../../assets/quest.js"></script>
+<script>
+document.addEventListener('keydown',function(e){
+  if(e.altKey||e.ctrlKey||e.metaKey) return;
+  var t=e.target.tagName;
+  if(t==='INPUT'||t==='TEXTAREA') return;
+  var go=null;
+  if(e.key==='ArrowLeft')  go=document.querySelector('[data-prev]');
+  if(e.key==='ArrowRight') go=document.querySelector('[data-next]');
+  if(go){ e.preventDefault(); location.href=go.getAttribute('href'); }
+});
+
+(function(){
+  var b=document.getElementById('fcopy'), c=document.getElementById('fcode');
+  if(!b||!c) return;
+  b.addEventListener('click',function(){
+    var t=c.textContent, ok=function(){ b.textContent='คัดลอกแล้ว ✓';
+      setTimeout(function(){ b.textContent='คัดลอก'; },1800); };
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(ok,function(){ b.textContent=t; });
+    } else { b.textContent=t; }
+  });
+})();
+</script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+</body>
+</html>

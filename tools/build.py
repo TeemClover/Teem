@@ -17,21 +17,42 @@ SITE = 'https://myclover.com'
 #   ตอนที่รีมาสเตอร์แล้ว = 4 ช่องแนวตั้ง แตะช่องท้ายไปตอนต่อไป
 #   ตอนเก่าที่ยังไม่ได้รีมาสเตอร์ = ภาพยาวใบเดียว
 # ตอนไหนยังไม่มีไฟล์ต้นฉบับในเครื่อง จะข้ามการแปลงภาพและใช้ของที่แปลงไว้แล้ว
+#
+# คีย์ = เลขตอน ใช้ตั้งชื่อไฟล์ใน forge/img/ ด้วย (เช่น 04.jpg, 01-p2.jpg)
 EPISODES = [
-    ("00",  "0",   "เครื่องของตัวเอง",        "ep0-my-own-machine",         False,
-     ["001.jpeg", "002.jpeg", "003.jpeg", "004.jpeg"]),
-    ("01",  "1",   "เดือนที่ 5",              "ep1-month-five",             False,
-     ["011.jpg", "012.jpeg", "013.jpeg", "014.jpeg"]),
-    ("02",  "2",   "เสียงฝีเท้า",             "ep2-footsteps",              False, ["02.png"]),
-    ("03",  "3",   "กลิ่นแผ่นสด",             "ep3-fresh-disc",             False, ["03.png"]),
-    ("04",  "4",   "จัดเด็ค",                 "ep4-deckbuilding",           False, ["04.png"]),
-    ("05",  "5",   "โรงงานปั๊มฝัน",           "ep5-dream-factory",          False, ["05.png"]),
-    ("06",  "6",   "10 → 1000",               "ep6-ten-to-thousand",        False, ["06.png"]),
-    ("07",  "7",   "ช่างที่ขาดทุน",           "ep7-the-smith-who-lost",     False, ["07.png"]),
-    ("08",  "8",   "คนที่ขึ้นมาจากหาดใหญ่",   "ep8-the-one-from-hatyai",    False, ["08.png"]),
-    ("09",  "9",   "เปิดจอ",                  "ep9-open-the-screen",        False, ["09.png"]),
-    ("09s", "9.5", "กิลด์ที่ผมวาดไว้ในหัว",   "ep9-5-the-guild-i-imagined", True,  ["09s.png"]),
-    ("10",  "10",  "ก้าวที่ 10",              "ep10-the-tenth-step",        False, ["10.png"]),
+    ("01", "1",  "ทุกคนมีสิทธิ์ลงเล่น",       "ep1-everyone-gets-to-play",   False,
+     ["011.jpg", "012.jpg", "013.jpg", "014.jpg"]),
+    ("02", "2",  "ไอเท็มชิ้นแรก",             "ep2-the-first-item",          False,
+     ["021.jpg", "022.jpg", "023.jpg", "024.jpg"]),
+    ("03", "3",  "ของที่กลับมาพร้อมรอยใช้",   "ep3-the-item-that-came-back", False,
+     ["031.jpg", "032.jpg", "033.jpg", "034.jpg"]),
+    ("04", "4",  "สิ่งที่เดินทางแทนเรา",      "ep4-what-traveled-without-us",  False, ["04.png"]),
+    ("05", "5",  "จากคำตอบสู่ระบบ",           "ep5-from-answers-to-a-system",  False, ["05.png"]),
+    ("06", "6",  "ชุดเริ่มต้นของผู้เล่นใหม่", "ep6-the-starter-kit",           False, ["06.png"]),
+    ("07", "7",  "เสียงที่ไปไกลกว่าเรา",      "ep7-a-voice-that-went-further", False, ["07.png"]),
+    ("08", "8",  "ช่างตีเหล็กหลังเวที",       "ep8-the-blacksmith-backstage",  False, ["08.png"]),
+    ("09", "9",  "ของที่ดีต้องไปถึงมือคน",    "ep9-tools-must-reach-people",   False, ["09.png"]),
+    ("10", "10", "ครั้งนี้ผมไม่ปิดจอ",        "ep10-this-time-i-left-the-screen-on", False, ["10.png"]),
+    ("11", "11", "แต่ละคนมี Class ของตัวเอง", "ep11-everyone-has-their-own-class",   False, ["09s.png"]),
+    ("12", "12", "เกมใหม่ ลีกใหม่",           "ep12-a-new-game-a-new-league",        False, ["10.png"]),
+]
+
+# เรียงเลขตอนใหม่เป็น 1–12 (เดิมเริ่มที่ 0 และมีตอน 9.5)
+# คนที่อ่านค้างไว้ก่อนเปลี่ยนต้องไม่เสียความคืบหน้า และลิงก์เก่าต้องยังเปิดได้
+# ตารางนี้เลยถูกใช้ 2 ที่: ย้ายค่าใน localStorage (quest.js) และทำ _redirects
+OLD_TO_NEW = [
+    ("ep0-my-own-machine",         "ep1-everyone-gets-to-play"),
+    ("ep1-month-five",             "ep2-the-first-item"),
+    ("ep2-footsteps",              "ep3-the-item-that-came-back"),
+    ("ep3-fresh-disc",             "ep4-what-traveled-without-us"),
+    ("ep4-deckbuilding",           "ep5-from-answers-to-a-system"),
+    ("ep5-dream-factory",          "ep6-the-starter-kit"),
+    ("ep6-ten-to-thousand",        "ep7-a-voice-that-went-further"),
+    ("ep7-the-smith-who-lost",     "ep8-the-blacksmith-backstage"),
+    ("ep8-the-one-from-hatyai",    "ep9-tools-must-reach-people"),
+    ("ep9-open-the-screen",        "ep10-this-time-i-left-the-screen-on"),
+    ("ep9-5-the-guild-i-imagined", "ep11-everyone-has-their-own-class"),
+    ("ep10-the-tenth-step",        "ep12-a-new-game-a-new-league"),
 ]
 
 os.makedirs(IMG, exist_ok=True)
@@ -97,9 +118,10 @@ for key, num, title, slug, special, srcs in EPISODES:
     og.paste(r, ((1200 - r.width) // 2, (630 - r.height) // 2))
     og.save(f'{IMG}/{key}-og.jpg', 'JPEG', quality=86, optimize=True, progressive=True)
 
-# แบนเนอร์หน้าแรก — ช่อง 4 ของตอนพิเศษ (ฝูงชนเดินตอนพระอาทิตย์ตก) เลี่ยงกรอบข้อความ
-if not SKIP_IMG and os.path.exists(os.path.join(SRC, '09s.png')):
-    s = Image.open(os.path.join(SRC, '09s.png')).convert('RGB')
+# แบนเนอร์หน้าแรก — ช่อง 4 ของตอนที่ 11 (ฝูงชนเดินตอนพระอาทิตย์ตก) เลี่ยงกรอบข้อความ
+BANNER_SRC = next(s[0] for k, _, _, _, _, s in EPISODES if k == '11')
+if not SKIP_IMG and os.path.exists(os.path.join(SRC, BANNER_SRC)):
+    s = Image.open(os.path.join(SRC, BANNER_SRC)).convert('RGB')
     sw, sh = s.size
     p4 = s.crop((0, sh * 3 // 4, sw, sh))
     band = p4.crop((0, 62, sw, min(p4.height, 62 + 380)))
@@ -187,7 +209,7 @@ LESSONS = [
 ]
 
 # รหัสที่ได้ตอนทำครบ = ชื่อของสิ่งสุดท้ายในเส้นนั้น จะได้รู้สึกว่าได้มาจริง ๆ
-FORGE_CODE  = 'TENTHSTEP'   # = ตอนสุดท้ายของการ์ตูน
+FORGE_CODE  = 'TENTHSTEP'   # ค่าเดิม — เปลี่ยนเมื่อไหร่ต้องแก้แฮชใน card/index.html ด้วย
 LEARN_CODE  = 'FIRSTWEB'    # = บทสุดท้ายของห้องเรียน
 
 TRACKS = {
@@ -205,6 +227,8 @@ tracks_js = ',\n    '.join(
         ','.join("'%s'" % i for i in t['items']))
     for name, t in TRACKS.items())
 
+RENAMED_JS = ','.join("'%s':'%s'" % (o, n) for o, n in OLD_TO_NEW)
+
 QUEST_JS = '''/* ═══════════════════════════════════════════════════════════════
    myclover — ความคืบหน้า + ตราประจำตัวของทั้งเว็บ
 
@@ -218,7 +242,7 @@ QUEST_JS = '''/* ═════════════════════
    ทำครบเส้นไหน ปลดตราของเส้นนั้นให้เอง
 
    ── บอกหน้าเว็บว่าหน้านี้คือของอะไร ──
-   <meta name="mc-item" content="forge:ep0-my-own-machine">
+   <meta name="mc-item" content="forge:ep1-everyone-gets-to-play">
    แล้วเมื่อผู้ใช้เลื่อนมาถึง [data-mc-end] (ถ้าไม่มีก็ footer)
    จะนับว่าทำชิ้นนั้นเสร็จ — เลื่อนถึงท้ายจริง ๆ ไม่ใช่แค่เปิดหน้า
 
@@ -380,11 +404,29 @@ QUEST_JS = '''/* ═════════════════════
     if(tn) tn.addEventListener('click',fire);
   }
 
-  function boot(){ heal(); paint(); watch(); }
+  /* ── ย้ายความคืบหน้าเก่ามาชื่อใหม่ ──
+     ตอนการ์ตูนถูกเรียงเลขใหม่เป็น 1–12 (เดิมเริ่มที่ 0 และมีตอน 9.5)
+     คนที่อ่านค้างไว้ก่อนหน้านั้นต้องไม่เสียของ — แปลงครั้งเดียวแล้วปักธงไว้ */
+  var RENAMED={%RENAMED%};
+  function migrate(){
+    if(ls('mc_read_v2','')==='1') return;
+    var raw=ls('mc_read','');
+    if(raw){
+      var out=[], seen={};
+      raw.split(',').forEach(function(s){
+        var k=RENAMED[s]||s;
+        if(k && !seen[k]){ seen[k]=1; out.push(k); }
+      });
+      save('mc_read',out.join(','));
+    }
+    save('mc_read_v2','1');
+  }
+
+  function boot(){ migrate(); heal(); paint(); watch(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
   else boot();
 })();
-'''.replace('%TRACKS%', tracks_js)
+'''.replace('%TRACKS%', tracks_js).replace('%RENAMED%', RENAMED_JS)
 
 os.makedirs(os.path.join(ROOT, 'assets'), exist_ok=True)
 open(os.path.join(ROOT, 'assets', 'quest.js'), 'w', encoding='utf-8').write(QUEST_JS)
@@ -399,7 +441,7 @@ def finish_block(up):
     return f'''<div class="finish" data-mc-done="forge" hidden>
     <span class="fl">⚒️ อ่านครบทุกตอนแล้ว</span>
     <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
-    <p>ตั้งแต่เครื่องเครื่องแรก จนถึงก้าวที่ 10 — ครบทั้ง 12 ตอน<br>
+    <p>ตั้งแต่ “{EPISODES[0][2]}” จนถึง “{EPISODES[-1][2]}” — ครบทั้ง {len(EPISODES)} ตอน<br>
        ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
     <div class="codebox">
       <span class="lb">รหัสของคุณ</span>
@@ -545,7 +587,7 @@ index_body = f'''<header class="bar"><div class="wrap">
 <section class="head"><div class="wrap">
   <span class="eyebrow">อ่านฟรี · ไม่ต้องสมัคร</span>
   <h1 class="disp">{SERIES}</h1>
-  <p>19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านเกมให้ออก หา META ให้เจอ แล้วพาทั้งทีมไปต่อ<br>11 ตอน กับอีก 1 ตอนพิเศษ</p>
+  <p>19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านเกมให้ออก หา META ให้เจอ แล้วพาทั้งทีมไปต่อ<br>12 ตอน อ่านฟรีทั้งหมด</p>
   <div class="startrow">
     <a class="start disp" data-mc-continue="forge:" href="{EPISODES[0][3]}/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
     <a class="start disp" data-mc-demote="forge:ghost" href="{EPISODES[0][3]}/">เริ่มอ่านจากตอนแรก</a>
@@ -572,7 +614,7 @@ index_body = f'''<header class="bar"><div class="wrap">
 open(f'{DEST}/index.html', 'w', encoding='utf-8').write(page(
     f'{SERIES} — อ่านฟรีบน myclover',
     '19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ อ่านฟรีทุกตอน ไม่ต้องสมัคร',
-    f'{SITE}/forge/img/09s-og.jpg', index_body, INDEX_CSS,
+    f'{SITE}/forge/img/11-og.jpg', index_body, INDEX_CSS,
     '<script defer src="../assets/quest.js"></script>\n<script>' + COPY_JS + '''
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.getElementById('rstBtn');
@@ -761,7 +803,7 @@ PATHS = [
  {'key':'THINKER','slug':'thinker','th':'สายคิด','emo':'🧠','ac':'#2E4A8F',
   'hook':'อยากเจอคนที่คิดเป็นระบบเหมือนกัน',
   'who':'ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ',
-  'h1':'คิดจนเห็นทั้งกระดาน<br>แล้วค่อยขยับตัวแรก',
+  'h1':'คิดจนเห็นทั้งกระดาน<br>แล้วค่อยเริ่มขยับตัว',
   'lead':'คุณไม่ได้ขาดไอเดีย — คุณมีเยอะจนล้นด้วยซ้ำ สิ่งที่ขาดคือที่เก็บความคิด'
          'ที่หยิบกลับมาใช้ต่อได้จริง กับคนที่คิดเป็นระบบพอจะคุยด้วยได้',
   'signs':['เห็นปัญหาของงานตั้งแต่ยังไม่เริ่ม แล้วโดนหาว่าคิดมาก',
@@ -1176,3 +1218,16 @@ for p in PATHS:
     open(os.path.join(d, 'index.html'), 'w', encoding='utf-8').write(path_page(p))
 
 print(f'สร้างหน้าสาย {len(PATHS)+1} หน้า')
+
+
+# ─────────────────────────────────────────────────────────────
+# _redirects — ลิงก์ตอนเก่าที่คนแชร์ไว้ต้องยังเปิดได้
+# Cloudflare Pages อ่านไฟล์นี้เอง ไม่ต้องตั้งอะไรเพิ่ม
+# ─────────────────────────────────────────────────────────────
+lines = ['# สร้างอัตโนมัติจาก tools/build.py — อย่าแก้ไฟล์นี้ตรง ๆ',
+         '# ตอนการ์ตูนถูกเรียงเลขใหม่เป็น 1–12 ลิงก์เดิมพามาที่ตอนเดียวกัน', '']
+lines += [f'/forge/{o}/{" " * max(1, 38 - len(o))}/forge/{n}/  301' for o, n in OLD_TO_NEW]
+lines += ['', '# หน้าลงทะเบียนถูกรวมเข้าหน้าทำการ์ดแล้ว',
+          '/register/*                              /card/#register  301', '']
+open(os.path.join(ROOT, '_redirects'), 'w', encoding='utf-8').write('\n'.join(lines))
+print('เขียน _redirects แล้ว')
