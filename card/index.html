@@ -53,6 +53,8 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .step .num i{width:24px;height:24px;border-radius:8px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-style:normal;font-size:13px;flex:none}
 .step h2{font-family:"Bai Jamjuree";font-size:21px;margin:10px 0 4px}
 .step .hint{font-size:14px;color:rgb(var(--muted));margin-bottom:16px}
+.step .pathlink{margin:14px 0 0}
+.step .pathlink a{color:rgb(var(--green));font-weight:700;white-space:nowrap}
 
 /* เลือกสาย */
 .classes{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
@@ -227,6 +229,7 @@ body.js .reveal.in{opacity:1;transform:none}
       <h2 class="disp">เลือกสายของคุณ</h2>
       <p class="hint">เลือกอันที่ตรงกับตัวคุณที่สุด — เปลี่ยนทีหลังได้ตลอด ไม่มีผิดถูก</p>
       <div class="classes" id="classes"></div>
+      <p class="hint pathlink" id="pathLink"></p>
     </div>
 
     <div class="step">
@@ -826,6 +829,14 @@ function render(){
 }
 
 /* --- ปุ่มเลือกสาย --- */
+/* ใต้ปุ่มมีทางไปหน้าเต็มของสายนั้น — คนที่เพิ่งเลือกสายมักอยากรู้ว่าแล้วไงต่อ */
+var elPathLink=document.getElementById('pathLink');
+function paintPathLink(){
+  if(!elPathLink) return;
+  var c=CLASSES[st.cls]||CLASSES.THINKER;
+  elPathLink.innerHTML='อยากรู้ว่า'+c.th+'ควรเริ่มตรงไหนก่อน? '+
+    '<a href="../paths/'+st.cls.toLowerCase()+'/">ดูเส้นทางของ'+c.th+' →</a>';
+}
 ORDER.forEach(function(k){
   var c=CLASSES[k];
   var b=document.createElement('button');
@@ -836,10 +847,12 @@ ORDER.forEach(function(k){
     st.cls=k; ls.set('mc_class',k);
     Array.prototype.forEach.call(elClasses.children,function(x){ x.setAttribute('aria-pressed','false'); });
     b.setAttribute('aria-pressed','true');
+    paintPathLink();
     render();
   });
   elClasses.appendChild(b);
 });
+paintPathLink();
 
 /* --- ตรา --- */
 function paintBadges(){
