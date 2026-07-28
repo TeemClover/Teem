@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="mc-item" content="learn:notebooklm">
-<title>สรุปประชุมและเอกสาร ด้วย NotebookLM · ห้องเรียน AI ของบ้าน myclover</title>
-<meta name="description" content="โยนเอกสารยาว ๆ ให้ AI อ่านแทน แล้วถามเอาเฉพาะที่อยากรู้ — มันตอบพร้อมบอกว่าเอามาจากตรงไหนในไฟล์ งานที่เคยกินเวลาเป็นชั่วโมง เหลือไม่กี่นาที">
+<title>NotebookLM: ไฟล์เดียว แตกแขนงได้ทั้งงาน · ห้องเรียน AI ของบ้าน myclover</title>
+<meta name="description" content="เอาข้อมูลหนึ่งชุดให้ AI เข้าใจ แล้วดูมันแตกออกเป็นอินโฟกราฟิก สไลด์ วิดีโอ เสียงสรุป และ Mind Map — จาก Source เดียว และเริ่มได้จากมือถือเครื่องเดียว">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -15,50 +15,176 @@ html{scroll-behavior:smooth}
 body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
 .disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
 a{text-decoration:none;color:inherit}
-img{max-width:100%}
+img{max-width:100%;height:auto}   /* height:auto สำคัญ — ไม่งั้น attribute height ในแท็กจะชนะ CSS แล้วภาพยืด */
+[hidden]{display:none!important}
 .wrap{max-width:800px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:2px;border-radius:8px}
 nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.94);backdrop-filter:blur(8px);border-bottom:1px solid rgb(var(--ink)/.08)}
 nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
 .bk{font-family:"Bai Jamjuree",sans-serif;font-weight:700;color:rgb(var(--green))}
 .bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
 .bk2:hover{color:rgb(var(--green))}
-.head{background:rgb(var(--deep));color:#fff;border-radius:20px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative}
-.heroimg{margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
+
+/* ── หัวคลาส ── */
+.head{background:rgb(var(--deep));color:#fff;border-radius:20px;padding:34px;margin:26px 0 10px;
+  background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative}
+.heroimg{margin:-34px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
 .heroimg img{width:100%;height:100%;object-fit:cover;display:block}
 .lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
 .head h1{font-size:clamp(24px,4.5vw,32px);margin:12px 0 8px;line-height:1.3}
 .head>p{color:rgb(255 255 255/.8);font-size:15.5px;max-width:58ch}
 .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
 .meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.15);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.85)}
+
+/* ── ภาพ Source แตกแขนง (CSS ล้วน) ── */
+.tree{margin-top:24px;padding-top:22px;border-top:1px solid rgb(255 255 255/.14)}
+.tree .core{display:inline-flex;align-items:center;gap:9px;background:rgb(190 148 66/.16);border:1px dashed rgb(190 148 66/.6);
+  border-radius:12px;padding:10px 16px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;color:rgb(var(--gold))}
+.tree .fan{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;position:relative;padding-top:16px}
+.tree .fan::before{content:"";position:absolute;top:0;left:24px;width:2px;height:16px;background:rgb(190 148 66/.5)}
+.tree .fan span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.09);border:1px solid rgb(255 255 255/.18);
+  border-radius:999px;padding:6px 13px;color:#fff;animation:pop .5s both}
+.tree .fan span:nth-child(1){animation-delay:.05s}.tree .fan span:nth-child(2){animation-delay:.13s}
+.tree .fan span:nth-child(3){animation-delay:.21s}.tree .fan span:nth-child(4){animation-delay:.29s}
+.tree .fan span:nth-child(5){animation-delay:.37s}.tree .fan span:nth-child(6){animation-delay:.45s}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.tree .fan span{animation:none}}
+
 h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;margin:34px 0 14px;display:flex;align-items:center;gap:11px}
 h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none}
+p.tx{margin-bottom:14px}
 .card{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:6px 22px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
 .item{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgb(var(--ink)/.06)}
 .item:last-child{border:0}
-.item .bx{width:23px;height:23px;border:2px solid rgb(27 106 66/.4);border-radius:7px;flex:none;margin-top:3px}
 .item .ic{font-size:19px;flex:none;margin-top:1px;width:23px;text-align:center}
 .item b{font-weight:600}
 .item small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:2px}
-.item a,.step a{color:rgb(var(--green));font-weight:600}
+.item a,.step a,.note a{color:rgb(var(--green));font-weight:600;text-decoration:underline}
 .steps{display:flex;flex-direction:column;gap:10px}
 .step{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 1px 3px rgb(18 40 28/.05)}
 .step>div{flex:1;min-width:0}
 .step .num{width:28px;height:28px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;flex:none;margin-top:2px}
 .step b{font-weight:600}
 .step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px}
-.step code,.item code,.note code{background:rgb(var(--ink)/.06);border-radius:5px;padding:1px 7px;font-size:13px}
+.step code,.item code,.note code,p code{background:rgb(var(--ink)/.06);border-radius:5px;padding:1px 7px;font-size:13px;font-family:ui-monospace,Menlo,Consolas,monospace}
 .prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#071a10;color:#d7f5e2;border-radius:12px;padding:15px 52px 15px 16px;margin-top:12px;line-height:1.7;white-space:pre-wrap}
+.cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:7px;padding:5px 11px;cursor:pointer;opacity:.92}
+.cpx:hover{opacity:1}
 .note{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:14px;padding:15px 20px;margin-top:16px;font-size:14.5px}
-.quest{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.25);border-radius:16px;padding:20px 24px;margin-top:36px;font-size:15px}
-.quest .qshare{display:block;margin-top:8px;font-size:13px;color:rgb(var(--muted))}
+.note.g{background:rgb(27 106 66/.06);border-color:rgb(27 106 66/.25)}
+
+/* ── สะพานจากบทที่ 1 ── */
+.bridge{display:flex;gap:14px;align-items:flex-start;background:rgb(27 106 66/.06);border:1px solid rgb(27 106 66/.25);
+  border-radius:16px;padding:17px 20px;margin-top:18px;font-size:14.5px}
+.bridge .e{font-size:22px;flex:none}
+.bridge a{display:inline-block;margin-top:7px;color:rgb(var(--green));font-weight:700;text-decoration:underline}
+
+/* ── สามทาง ── */
+.ways{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+@media(max-width:700px){.ways{grid-template-columns:1fr}}
+.way{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:17px 19px;box-shadow:0 1px 3px rgb(18 40 28/.05);display:flex;flex-direction:column;gap:5px}
+.way .tag{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.1em;color:rgb(var(--gold))}
+.way b{font-family:"Bai Jamjuree",sans-serif;font-size:15.5px}
+.way ol{margin:6px 0 0 17px;font-size:13.5px;color:rgb(var(--muted));line-height:1.75}
+.way.hi{border-color:rgb(190 148 66/.5);background:rgb(190 148 66/.07)}
+
+/* ── ปุ่มดาวน์โหลด/คัดลอกไฟล์ ── */
+.getsrc{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.gb{display:inline-flex;align-items:center;gap:8px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14.5px;
+  border-radius:12px;padding:13px 20px;min-height:46px;cursor:pointer;border:1px solid rgb(27 106 66/.4);background:#fff;color:rgb(var(--green));transition:.15s}
+.gb:hover{transform:translateY(-2px)}
+.gb.main{background:rgb(var(--green));border-color:rgb(var(--green));color:#fff}
+.srcmsg{font-size:13px;color:rgb(var(--green));font-weight:600;min-height:18px;margin-top:8px}
+
+/* ── สองฝั่ง browser/app ── */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:700px){.two{grid-template-columns:1fr}}
+
+/* ── แกลเลอรี ── */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:4px}
+@media(max-width:700px){
+  .gal{display:flex;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;margin:0 -20px;padding:0 20px 8px}
+  .gal figure{flex:0 0 78%;scroll-snap-align:center}
+}
+.gal figure{margin:0}
+.gal button.thumb{display:block;width:100%;padding:0;border:1px solid rgb(var(--ink)/.12);border-radius:14px;overflow:hidden;
+  background:#fff;cursor:zoom-in;box-shadow:0 1px 3px rgb(18 40 28/.06);transition:.16s}
+.gal button.thumb:hover{transform:translateY(-3px);border-color:rgb(var(--green)/.5)}
+.gal img{display:block;width:100%;height:auto;aspect-ratio:1100/1971;object-fit:cover;object-position:top}
+.gal figcaption{font-size:12.5px;color:rgb(var(--muted));margin-top:7px;line-height:1.6}
+.galhint{display:none;font-size:12px;color:rgb(var(--muted));text-align:center;margin-top:2px}
+@media(max-width:700px){.galhint{display:block}}
+
+/* ── กล่องเปิดภาพใหญ่ ── */
+dialog#lb{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;width:100%;height:100%}
+dialog#lb::backdrop{background:rgb(6 22 13/.92)}
+#lb .lbin{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
+#lb img{max-width:min(100%,760px);max-height:calc(100vh - 110px);width:auto;height:auto;border-radius:12px;background:#fff}
+#lb .lbcap{color:rgb(255 255 255/.8);font-size:13.5px;text-align:center;max-width:60ch}
+#lb .lbx{position:fixed;top:12px;right:12px;min-width:46px;min-height:46px;border-radius:50%;border:1px solid rgb(255 255 255/.3);
+  background:rgb(255 255 255/.14);color:#fff;font-size:20px;cursor:pointer;line-height:1}
+#lb .lbx:hover{background:rgb(255 255 255/.26)}
+
+/* ── การ์ดสไลด์ ── */
+.deck{display:flex;gap:16px;align-items:center;background:#fff;border:1px solid rgb(var(--ink)/.09);
+  border-radius:16px;padding:16px;box-shadow:0 1px 3px rgb(18 40 28/.05);margin-top:14px}
+@media(max-width:620px){.deck{flex-direction:column;align-items:stretch}}
+.deck img{width:230px;height:auto;flex:none;border-radius:10px;border:1px solid rgb(var(--ink)/.1)}
+@media(max-width:620px){.deck img{width:100%}}
+.deck b{font-family:"Bai Jamjuree",sans-serif;font-size:16px}
+.deck p{font-size:13.5px;color:rgb(var(--muted));margin:5px 0 11px}
+.deck .row{display:flex;gap:9px;flex-wrap:wrap}
+.deck .row a{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13.5px;border-radius:10px;padding:10px 16px;min-height:42px;
+  display:inline-flex;align-items:center;border:1px solid rgb(27 106 66/.4);color:rgb(var(--green));transition:.15s}
+.deck .row a.main{background:rgb(var(--green));color:#fff;border-color:rgb(var(--green))}
+.deck .row a:hover{transform:translateY(-2px)}
+
+/* ── มือถือ ── */
+.phone{display:flex;gap:20px;align-items:flex-start;background:#fff;border:1px solid rgb(var(--ink)/.09);
+  border-radius:18px;padding:18px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+@media(max-width:700px){.phone{flex-direction:column}}
+.phone img{width:210px;height:auto;flex:none;border-radius:14px;border:1px solid rgb(var(--ink)/.12)}
+@media(max-width:700px){.phone img{width:min(100%,240px);height:auto;margin:0 auto}}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 10px}
+.chips span{font-size:12.5px;font-weight:600;background:rgb(27 106 66/.08);border:1px solid rgb(27 106 66/.22);
+  border-radius:999px;padding:5px 12px;color:rgb(var(--green))}
+
+/* ── แถบพับเก็บ ── */
+details.fold{background:#fff;border:1px solid rgb(var(--ink)/.11);border-radius:16px;margin-top:11px;overflow:hidden;
+  box-shadow:0 1px 3px rgb(18 40 28/.05)}
+details.fold > summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:11px;
+  font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15.5px;min-height:54px}
+details.fold > summary::-webkit-details-marker{display:none}
+details.fold > summary::after{content:"+";margin-left:auto;font-size:20px;color:rgb(var(--green));font-weight:700;flex:none}
+details.fold[open] > summary::after{content:"–"}
+details.fold > summary:hover{background:rgb(27 106 66/.04)}
+details.fold > summary small{display:block;font-family:"Anuphan";font-weight:400;font-size:13px;color:rgb(var(--muted));margin-top:2px}
+details.fold .fin{padding:2px 20px 20px}
+details.fold .fin > *:first-child{margin-top:0}
+details.fold.warn{border-color:rgb(190 148 66/.45);background:rgb(190 148 66/.07)}
+details.fold.warn > summary:hover{background:rgb(190 148 66/.1)}
+
+.ucard{padding:13px 0;border-bottom:1px solid rgb(var(--ink)/.07)}
+.ucard:last-child{border:0;padding-bottom:0}
+.ucard b{font-family:"Bai Jamjuree",sans-serif;font-size:15px}
+.ucard .io{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:7px;font-size:13.5px}
+@media(max-width:560px){.ucard .io{grid-template-columns:1fr}}
+.ucard .io div{background:rgb(var(--ink)/.035);border-radius:10px;padding:9px 13px;line-height:1.65}
+.ucard .io em{font-style:normal;display:block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:11.5px;
+  letter-spacing:.1em;color:rgb(var(--muted));margin-bottom:2px}
+
+.quest{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.25);border-radius:16px;padding:20px 24px;margin-top:34px;font-size:15px}
+.quest ol{margin:10px 0 0 19px;line-height:1.85}
+.quest .unlock{display:inline-block;margin-top:14px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:12.5px;
+  letter-spacing:.12em;background:rgb(var(--deep));color:rgb(var(--gold));border-radius:999px;padding:7px 16px}
+.quest .qshare{display:block;margin-top:10px;font-size:13px;color:rgb(var(--muted))}
 .nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
 .nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:.15s}
 .nx:hover{transform:translateY(-2px)}
 .nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.4)}
 footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
-.cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:7px;padding:5px 11px;cursor:pointer;opacity:.92}
-.cpx:hover{opacity:1}
-@media(max-width:520px){.head{padding:28px 22px}.heroimg{margin:-28px -22px 18px;height:150px}}
+@media(max-width:520px){.head{padding:26px 22px}.heroimg{margin:-26px -22px 18px;height:150px}}
 </style>
 </head>
 <body>
@@ -69,69 +195,262 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 <div class="wrap">
 
 <header class="head">
-  <!-- 📷 รูปหัวคลาส: วางไฟล์ img/lesson-4.jpg (ดูรายละเอียดใน IMAGES.md) -->
   <div class="heroimg"><img src="../img/lesson-4.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
-  <span class="lv">LV.4 · อาวุธลับสายเอกสาร</span>
-  <h1 class="disp">สรุปประชุมและเอกสาร ด้วย NotebookLM</h1>
-  <p>โยนเอกสารยาว ๆ ให้ AI อ่านแทน แล้วถามเอาเฉพาะที่อยากรู้ — มันตอบพร้อมบอกว่าเอามาจากตรงไหนในไฟล์ งานที่เคยกินเวลาเป็นชั่วโมง เหลือไม่กี่นาที</p>
-  <div class="meta"><span>⏱️ ~10 นาที</span><span>💸 ฟรี</span><span>📚 ตอบจากไฟล์เรา ไม่มั่ว</span><span>🎧 มีเสียงสรุปให้ฟังด้วย</span></div>
+  <span class="lv">LV.4 · Knowledge Multiplier</span>
+  <h1 class="disp">NotebookLM: ไฟล์เดียว แตกแขนงได้ทั้งงาน</h1>
+  <p>เอาข้อมูลหนึ่งชุดให้ AI เข้าใจ แล้วดูมันแตกออกเป็นอินโฟกราฟิก สไลด์ วิดีโอ เสียงสรุป และ Mind Map — จาก Source เดียว และเริ่มได้จากมือถือเครื่องเดียว</p>
+  <div class="meta"><span>⏱️ ลองจริงได้ใน 10–15 นาที</span><span>💸 เริ่มใช้ฟรี</span><span>📄 ใช้ข้อมูลของตัวเอง</span><span>📱 ทำจากมือถือได้</span></div>
+
+  <div class="tree" aria-hidden="true">
+    <span class="core">📄 your-knowledge.md</span>
+    <div class="fan">
+      <span>🖼️ Infographic</span><span>📊 Slide Deck</span><span>🎬 Video</span>
+      <span>🎧 Audio</span><span>🧠 Mind Map</span>
+    </div>
+  </div>
 </header>
 
-<h2><span class="n">1</span>ทำไมต้อง NotebookLM ไม่ใช่แชท AI ธรรมดา?</h2>
+<div class="bridge">
+  <span class="e">🔗</span>
+  <div><b>ต่อจากคลาสแรกโดยตรง</b><br>
+    บทที่ 1 ช่วยให้คุณคุยกับ AI เป็น — บทนี้จะช่วยให้คุณเอาสิ่งที่คุยไว้ มาทำเป็น <b>Source</b> ที่ใช้ต่อได้เรื่อย ๆ
+    <a href="free-ai.html">← ทบทวน LV.1 เครื่องมือฟรีที่ควรมีติดเครื่อง</a></div>
+</div>
+
+<h2><span class="n">1</span>ปัญหาไม่ใช่ไม่มีข้อมูล แต่ข้อมูลยังไม่เป็น Source</h2>
+<p class="tx">โน้ตกระจัดกระจาย · แชตกับ AI หลายห้อง · เอกสารหลายเวอร์ชัน · คลิปที่เซฟไว้แต่ไม่เคยกลับไปดู · ความรู้ในหัวที่ยังไม่เคยเรียบเรียง — <b>ของมีอยู่แล้วทั้งนั้น แค่ยังไม่อยู่ในรูปที่ AI ต่อยอดได้</b></p>
 <div class="card">
-  <div class="item"><span class="ic">🎯</span><div><b>มันตอบจาก "ไฟล์ของเรา" เท่านั้น</b><small>ไม่เอาความรู้มั่ว ๆ จากที่อื่นมาปน — เหมาะกับงานที่ผิดไม่ได้ เช่น สัญญา รายงาน เอกสารราชการ</small></div></div>
-  <div class="item"><span class="ic">📌</span><div><b>ทุกคำตอบมีอ้างอิง</b><small>กดดูได้เลยว่าคำตอบนี้มาจากหน้าไหน ย่อหน้าไหนของไฟล์ — เช็คกลับได้ 100%</small></div></div>
+  <div class="item"><span class="ic">🌪️</span><div><b>ก่อน</b><small>ข้อมูลกระจัดกระจาย ถามอะไรก็ได้คำตอบกว้าง ๆ เพราะ AI ไม่รู้ว่าเรื่องของคุณคืออะไร</small></div></div>
+  <div class="item"><span class="ic">📄</span><div><b>หลัง</b><small>รวบเป็นไฟล์เดียวที่มีหัวข้อและบริบท — AI อ่านแล้วรู้เลยว่ากำลังพูดถึงอะไร ใครเกี่ยวข้อง และเป้าหมายคืออะไร</small></div></div>
+  <div class="item"><span class="ic">✨</span><div><b>ผล</b><small>สั่งครั้งเดียวได้ของหลายแบบ ไม่ต้องเล่าเรื่องเดิมใหม่ทุกครั้งที่เปิดแชตใหม่</small></div></div>
+</div>
+<div class="note g">💡 <b>เปลี่ยนคำถามตั้งต้น</b> — อย่าเริ่มจาก “AI ทำอะไรได้บ้าง” ให้เริ่มจาก <b>“เรามีความรู้อะไรอยู่ ที่อยากให้มันช่วยต่อยอด”</b></div>
+
+<h2><span class="n">2</span>Source ที่ดีหน้าตาเป็นยังไง</h2>
+<p class="tx">ไฟล์ตัวอย่างของบทนี้เขียนไว้ตามหลักนี้ทั้งหมด — ดาวน์โหลดไปเปิดดูควบคู่กันได้เลย</p>
+<div class="card">
+  <div class="item"><span class="ic">1️⃣</span><div><b>มีโครงสร้างและแยกหัวข้อชัด</b><small>เรื่องละหัวข้อ ไม่ใช่ข้อความยาวก้อนเดียว</small></div></div>
+  <div class="item"><span class="ic">2️⃣</span><div><b>มีบริบทพอ</b><small>บอกว่าเรื่องนี้คืออะไร เกิดขึ้นทำไม เกี่ยวกับใคร</small></div></div>
+  <div class="item"><span class="ic">3️⃣</span><div><b>ไม่ซ่อนความหมายไว้ในคำกว้าง ๆ</b><small>เขียนให้ตรง ระบุสิ่งที่เชื่อและสิ่งที่ต้องการจริง ๆ</small></div></div>
+  <div class="item"><span class="ic">4️⃣</span><div><b>แก้ไขและอัปเดตได้ · อ่านได้ทั้งคนและ AI</b><small>เป็นไฟล์ข้อความ ไม่ใช่ภาพหรือ PDF ที่แก้ยาก</small></div></div>
 </div>
 
-<h2><span class="n">2</span>สร้างโน้ตบุ๊กเล่มแรก</h2>
-<div class="steps">
-  <div class="step"><span class="num">1</span><div><b>เปิด <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a> → กดสร้างโน้ตบุ๊กใหม่</b><small>ล็อกอินบัญชี Google เดิมจาก LV.1</small></div></div>
-  <div class="step"><span class="num">2</span><div><b>เพิ่ม "แหล่งข้อมูล" (Sources)</b><small>ลากไฟล์ PDF / Google Docs / ลิงก์เว็บใส่เข้าไป — เริ่มจากไฟล์เดียวก่อนก็ได้ เช่น เอกสารงานที่ต้องอ่านอยู่พอดี</small></div></div>
-  <div class="step"><span class="num">3</span><div><b>รอมันอ่านแป๊บเดียว แล้วเริ่มถามได้เลย</b><small>มันจะสรุปภาพรวมให้ก่อนอัตโนมัติ</small></div></div>
+<p class="tx" style="margin-top:16px">รูปแบบที่ตอบทั้งสี่ข้อนี้ได้ง่ายที่สุดคือ <code>.md</code> (Markdown) — <b>มันคือไฟล์ข้อความธรรมดา</b> ที่ใส่ <code>#</code> ข้างหน้าเพื่อบอกว่านี่คือหัวข้อ แค่นั้นเอง ไม่ต้องลงโปรแกรม เปิดด้วย Notepad ก็ได้ แก้เมื่อไหร่ก็ได้ และทั้งคนกับ AI อ่านรู้เรื่องเหมือนกัน</p>
+
+<details class="fold">
+  <summary>🔎 ผ่าไฟล์ตัวอย่างดูทีละส่วน<small>สามส่วนที่ทำให้ไฟล์ธรรมดากลายเป็น Source ที่ AI ใช้ได้จริง</small></summary>
+  <div class="fin">
+    <p class="tx"><b>ส่วนที่ 1 — ป้ายบอกตัวตนของไฟล์</b> วางบนสุด คั่นด้วย <code>---</code> หัวท้าย เป็นการบอก AI ตั้งแต่บรรทัดแรกว่ากำลังอ่านอะไรอยู่</p>
+    <div class="prompt">---
+title: "myclover — GLHF Growth Community"
+subtitle: "สังคมที่ทำให้การเรียนรู้ การสร้าง และการเติบโต ง่ายขึ้นและสนุกขึ้น"
+language: "th"
+founded: 2010
+keywords:
+  - myclover
+  - GLHF
+  - GrowthOS
+---</div>
+
+    <p class="tx" style="margin-top:16px"><b>ส่วนที่ 2 — เนื้อหาแยกเป็นหัวข้อ</b> <code>#</code> คือหัวข้อใหญ่ <code>##</code> คือหัวข้อย่อย เท่านี้ AI ก็รู้แล้วว่าเรื่องไหนอยู่ใต้เรื่องไหน</p>
+    <div class="prompt"># GrowthOS 7C
+## 1. Clarity — เห็นให้ชัด
+## 2. Choice — เลือกก้าวถัดไป
+## 3. Creation — สร้างให้เกิด</div>
+
+    <p class="tx" style="margin-top:16px"><b>ส่วนที่ 3 — บอก AI ว่าห้ามเพี้ยน และให้เขียนด้วยโทนไหน</b> ตรงนี้แหละที่คนส่วนใหญ่ไม่ได้ใส่ และเป็นเหตุผลที่ Output ออกมาไม่เหมือนที่คิด ในไฟล์ตัวอย่างมีสองบล็อกนี้อยู่ท้ายไฟล์</p>
+    <div class="card">
+      <div class="item"><span class="ic">📌</span><div><b>Key Messages</b><small>ประโยคที่ต้องคงความหมายไว้ ไม่ว่าจะแตกออกเป็น Output แบบไหน — กันไม่ให้ AI เล่าเพี้ยนไปเรื่อย ๆ</small></div></div>
+      <div class="item"><span class="ic">🎨</span><div><b>Tone for AI-Generated Content</b><small>บอกโทนที่ต้องการเป็นข้อ ๆ เช่น เป็นมิตร กระชับ ไม่ขายตรง ไม่สัญญาเกินจริง ให้เกียรติผู้เริ่มต้น — เขียนไว้ครั้งเดียวในไฟล์ ทุก Output จะเดินตามเอง ไม่ต้องสั่งซ้ำทุกครั้ง</small></div></div>
+      <div class="item"><span class="ic">💬</span><div><b>One-Sentence Definition</b><small>สรุปทั้งเรื่องเป็นประโยคเดียว เอาไว้ให้ AI หยิบไปใช้ตอนต้องเปิดเรื่องสั้น ๆ</small></div></div>
+    </div>
+    <div class="note g" style="margin-top:14px">🍀 นี่คือความต่างระหว่าง “ไฟล์ที่มีข้อมูล” กับ “<b>Source ที่สั่งงานแทนเราได้</b>” — คุณเขียนโทนกับข้อความหลักไว้ในไฟล์ครั้งเดียว แล้วทุกอินโฟกราฟิก ทุกสไลด์ ทุกคลิป จะพูดเสียงเดียวกันหมด</div>
+  </div>
+</details>
+
+<div class="note">✍️ <b>ไม่อยากเขียนเอง? ให้ AI ทำให้</b> — เอาข้อมูลที่มีไปวางในแชตจากคลาส LV.1 แล้วสั่งแบบนี้
+<div class="prompt">ช่วยจัดข้อมูลต่อไปนี้เป็นไฟล์ Markdown สำหรับใช้เป็น Source ใน NotebookLM
+
+โครงที่ต้องการ:
+1. ส่วนหัวคั่นด้วย --- ใส่ title, subtitle, language, keywords
+2. เนื้อหาแยกหัวข้อด้วย # และ ## ให้ชัด
+3. ท้ายไฟล์ใส่ Key Messages (ประโยคที่ห้ามเพี้ยน) และ Tone (โทนที่อยากให้ AI ใช้เขียนต่อ)
+
+ห้ามเพิ่มข้อมูลที่ฉันไม่ได้ให้ ถ้าตรงไหนยังขาด ให้เขียนว่า "ยังไม่มีข้อมูล"
+
+[วางข้อมูลของคุณตรงนี้]</div></div>
+
+<h2><span class="n">3</span>เริ่มได้ 3 ทาง เลือกทางที่ใกล้ตัวที่สุด</h2>
+<div class="ways">
+  <div class="way">
+    <span class="tag">ทาง A</span>
+    <b>ใช้ข้อมูลของตัวเอง</b>
+    <ol><li>เอาข้อมูลไปคุยกับ AI</li><li>สั่งให้จัดเป็น Markdown</li><li>บันทึกเป็นไฟล์ <code>.md</code></li><li>นำเข้า NotebookLM</li></ol>
+  </div>
+  <div class="way">
+    <span class="tag">ทาง B</span>
+    <b>ใช้คำตอบที่มีอยู่แล้ว</b>
+    <ol><li>เปิดคำตอบจาก AI หรือเอกสารของคุณ</li><li>Copy ข้อความทั้งก้อน</li><li>เพิ่ม Source แบบ <b>Copied text</b></li><li>Paste แล้วตั้งชื่อ</li></ol>
+  </div>
+  <div class="way hi">
+    <span class="tag">ทาง C</span>
+    <b>ลองด้วยไฟล์ตัวอย่างก่อน</b>
+    <p style="font-size:13.5px;color:rgb(var(--muted));margin-top:6px">ยังไม่มีข้อมูลของตัวเองไม่เป็นไร ใช้ไฟล์นี้ลองก่อน แล้วค่อยกลับมาทำ Source ของคุณ</p>
+  </div>
 </div>
 
-<div class="note">🎙️ <b>ไม่ใช่แค่ไฟล์เอกสารนะ — ใส่เสียงกับคลิปได้ด้วย</b><br>
-ตรงนี้แหละที่คนส่วนใหญ่ไม่รู้ และเป็นจุดที่ประหยัดเวลาที่สุด:
-<div class="steps" style="margin-top:12px">
-  <div class="step"><span class="num">🎤</span><div><b>ไฟล์เสียงที่อัดไว้</b><small>อัดประชุมด้วยมือถือแล้วโยนไฟล์เข้าไปตรง ๆ ไม่ต้องนั่งถอดเทปเอง — ประชุมชั่วโมงนึงเหลือสรุปหน้าเดียว</small></div></div>
-  <div class="step"><span class="num">💡</span><div><b>อัดไอเดียตัวเอง</b><small>คิดอะไรออกตอนขับรถ อาบน้ำ เดินเล่น — กดอัดเสียงพูดทิ้งไว้เลย ไม่ต้องเรียบเรียง พูดวนก็ได้ แล้วให้มันจัดระเบียบความคิดให้ทีหลัง</small></div></div>
-  <div class="step"><span class="num">▶️</span><div><b>ลิงก์ YouTube</b><small>วางลิงก์คลิปที่อยากดูแต่ยาว 2 ชั่วโมง ให้มันสรุปให้ก่อน แล้วค่อยตัดสินใจว่าจะดูเต็มไหม · สัมมนา รีวิว สอนงาน ใช้ได้หมด</small></div></div>
+<div class="getsrc">
+  <a class="gb main" href="lv4/myclover_GLHF_7C_GrowthOS_Source.md" download>⬇️ ดาวน์โหลด Source ตัวอย่าง (.md)</a>
+  <button type="button" class="gb" id="copySrc">📋 คัดลอกข้อความทั้งไฟล์</button>
 </div>
-<small style="display:block;margin-top:10px">รวมหลายอย่างในเล่มเดียวได้ด้วย เช่น ใส่เสียงประชุม + สไลด์ + คลิปอ้างอิง แล้วถามข้ามทั้งสามอันพร้อมกัน</small>
+<p class="srcmsg" id="srcMsg" role="status" aria-live="polite"></p>
+<p style="font-size:13px;color:rgb(var(--muted))">ปุ่มคัดลอกมีไว้สำหรับคนที่ใช้แอป NotebookLM แล้วอัปโหลดไฟล์ <code>.md</code> ไม่ได้ — กดแล้ววางในช่อง <b>Copied text</b> ได้เลย ไม่ต้องเปิดไฟล์</p>
+
+<h2><span class="n">4</span>Browser กับ App ใส่ไฟล์ไม่เหมือนกัน</h2>
+<div class="two">
+  <div class="step"><span class="num">💻</span><div><b>ผ่าน Browser</b>
+    <small>เปิด <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a> → สร้าง Notebook → เพิ่ม Source → <b>อัปโหลดไฟล์ <code>.md</code> ได้ตรง ๆ</b><br>ใช้ได้ทั้งบนคอมและบน browser ของมือถือ ถ้าบัญชีนั้นแสดงตัวเลือกอัปโหลดไฟล์</small></div></div>
+  <div class="step"><span class="num">📱</span><div><b>ผ่านแอป NotebookLM</b>
+    <small>หากหน้าเพิ่ม Source <b>ไม่พบ</b>ตัวเลือกอัปโหลด <code>.md</code> — กดปุ่ม “คัดลอกข้อความทั้งไฟล์” ด้านบน แล้วเลือก <b>Copied text</b> → Paste → ตั้งชื่อ Source</small></div></div>
+</div>
+<div class="note g">🟰 <b>สองวิธีนี้ให้ AI อ่านข้อความชุดเดียวกัน</b> ผลลัพธ์จึงใช้งานต่อได้เหมือนกัน ต่างกันแค่วิธีนำข้อมูลเข้า — <b>อัปโหลด <code>.md</code> ไม่ได้ ไม่ได้แปลว่าใช้ไม่ได้</b><br>
+<small style="color:rgb(var(--muted))">หน้าตาเมนูอาจต่างกันตามอุปกรณ์ บัญชี ภาษา และเวอร์ชันที่อัปเดต ถ้าไม่เจอตามที่เขียน ลองไล่ดูปุ่มเพิ่ม Source ในหน้านั้นอีกที</small></div>
+
+<h2><span class="n">5</span>ของจริง: Source เดียว เล่าได้หลายเรื่อง</h2>
+<p class="tx">ภาพทั้งสามและสไลด์ข้างล่างนี้ <b>สร้างจากไฟล์ตัวอย่างไฟล์เดียวกัน</b>ที่คุณเพิ่งดาวน์โหลดไป ข้อมูลต้นทางเหมือนเดิมทุกตัวอักษร สิ่งที่เปลี่ยนคือภาษา สไตล์ กลุ่มคนที่อ่าน และวิธีเล่า — สังเกตว่าทั้งสี่ชิ้น<b>ยังพูดเรื่องเดียวกันด้วยโทนเดียวกัน</b> เพราะโทนถูกเขียนไว้ในไฟล์แล้ว</p>
+
+<div class="gal">
+  <figure>
+    <button type="button" class="thumb" data-full="../img/lv4/info-growthos.jpg" data-cap="GrowthOS 7C — โทนน่ารักสำหรับคนเริ่มต้น สร้างจาก Source ตัวอย่างของบทเรียนนี้">
+      <img src="../img/lv4/info-growthos.jpg" width="1100" height="1971" loading="lazy" decoding="async"
+           alt="อินโฟกราฟิกภาษาไทยโทนพาสเทล อธิบาย GrowthOS 7C เป็น 4 ขั้นตอน">
+    </button>
+    <figcaption>เรื่องเดียวกัน — โทนน่ารักสำหรับคนเริ่มต้น</figcaption>
+  </figure>
+  <figure>
+    <button type="button" class="thumb" data-full="../img/lv4/info-overview.jpg" data-cap="ภาพรวม myclover — โทนเรียบ อ่านเร็ว สร้างจาก Source เดียวกัน">
+      <img src="../img/lv4/info-overview.jpg" width="1100" height="1971" loading="lazy" decoding="async"
+           alt="อินโฟกราฟิกภาษาไทยโทนเรียบง่าย สรุปแนวคิด myclover สี่ประเด็น">
+    </button>
+    <figcaption>เรื่องเดียวกัน — โทนชัดและอ่านเร็ว</figcaption>
+  </figure>
+  <figure>
+    <button type="button" class="thumb" data-full="../img/lv4/info-bloom.jpg" data-cap="Bloom with Myclover — เปลี่ยนเป็นภาษาอังกฤษ จาก Source ภาษาไทยชุดเดิม">
+      <img src="../img/lv4/info-bloom.jpg" width="1100" height="1971" loading="lazy" decoding="async"
+           alt="อินโฟกราฟิกภาษาอังกฤษสไตล์น่ารัก ชื่อ Bloom with Myclover อธิบายวงจร 7C">
+    </button>
+    <figcaption>เรื่องเดียวกัน — เปลี่ยนภาษาและวิธีเล่า</figcaption>
+  </figure>
+</div>
+<p class="galhint">← ปัดดูภาพถัดไป · แตะที่ภาพเพื่อดูขนาดเต็ม →</p>
+
+<div class="deck">
+  <img src="../img/lv4/deck-cover.jpg" width="1000" height="558" loading="lazy" decoding="async"
+       alt="หน้าปกสไลด์ myclover Growth Blueprint">
+  <div>
+    <b class="disp">📊 Growth Blueprint — สไลด์ 10 หน้า</b>
+    <p>จาก Source เดียวกัน NotebookLM จัดออกมาเป็นสไลด์ครบชุด ตั้งแต่ปัญหา แนวคิด GLHF, GrowthOS 7C, Guild X, บทบาทของ AI ไปจนถึงบทสรุป</p>
+    <div class="row">
+      <a class="main" href="lv4/myclover-growth-blueprint.pdf" target="_blank" rel="noopener">เปิดดูสไลด์ →</a>
+      <a href="lv4/myclover-growth-blueprint.pdf" download>⬇️ ดาวน์โหลด PDF</a>
+    </div>
+  </div>
 </div>
 
-<h2><span class="n">3</span>คำถามที่ควรลองถาม (ก๊อปได้)</h2>
-<div class="steps">
-  <div class="step"><span class="num">📋</span><div><b>สรุปแบบผู้บริหาร</b>
-  <div class="prompt">สรุปเอกสารนี้เป็นภาษาง่าย ๆ 5 ข้อ เรียงจากสำคัญที่สุด พร้อมบอกว่าแต่ละข้อ ฉันควรทำอะไรต่อ</div></div></div>
-  <div class="step"><span class="num">🔍</span><div><b>หาจุดที่ต้องระวัง</b>
-  <div class="prompt">ในเอกสารนี้ มีเงื่อนไข ตัวเลข หรือกำหนดเวลาอะไรที่ฉันพลาดไม่ได้บ้าง ลิสต์มาให้ครบ</div></div></div>
-  <div class="step"><span class="num">🗓️</span><div><b>สรุปประชุมเป็นงานที่ต้องทำ</b>
-  <div class="prompt">จากบันทึกการประชุมนี้ ช่วยทำตาราง: ใครรับผิดชอบอะไร ต้องเสร็จเมื่อไหร่ และเรื่องไหนยังไม่ได้ข้อสรุป</div>
-  <small>ทริค: อัดเสียงประชุมแล้วให้ Gemini ถอดความก่อน หรือใช้ Google Docs พิมพ์ตามเสียง แล้วค่อยเอาไฟล์มาเข้า NotebookLM</small></div></div>
+<details class="fold warn">
+  <summary>⚠️ ของที่ AI ทำ มีพลาดได้ — และในสไลด์ชุดนี้ก็มี<small>เปิดดูว่าพลาดตรงไหน และแก้ยังไงให้ไม่เสียเวลา</small></summary>
+  <div class="fin">
+    <p class="tx">ลองเปิดสไลด์หน้าที่ 5 (วงจร GrowthOS 7C) แล้วไล่เลขตามเส้นดู — <b>ลำดับเลขรอบวงจรเรียงไม่ตรงกับที่ควรเป็น</b> ทั้งที่ข้อความในแต่ละขั้นถูกหมด นี่คือของจริงที่ออกมาจากการสั่งสร้างครั้งแรก และเราตั้งใจไม่แก้ เพื่อให้เห็นกับตา</p>
+    <div class="card">
+      <div class="item"><span class="ic">🔁</span><div><b>วิธีแก้ที่เร็วที่สุดคือสั่งสร้างใหม่</b><small>ไม่ต้องนั่งแก้ทีละจุด กดสร้างอีกครั้งแล้วบอกสิ่งที่ต้องการเพิ่ม เช่น “เรียงเลข 1 ถึง 7 ตามเข็มนาฬิกา” — รอบสองมักตรงขึ้นมาก</small></div></div>
+      <div class="item"><span class="ic">🔤</span><div><b>สะกดไทยผิดก็เจอบ่อย</b><small>โดยเฉพาะสระและวรรณยุกต์ในภาพที่ AI วาด สั่งใหม่หรือสั่งให้ตรวจการสะกดอีกรอบก่อนใช้จริง</small></div></div>
+      <div class="item"><span class="ic">🔢</span><div><b>ตัวเลขกับชื่อคน ต้องเช็กเองเสมอ</b><small>ของที่ออกมาสวยจะถูกเชื่อทันทีโดยไม่มีใครตรวจ — ตรงนี้อันตรายกว่าคำผิด</small></div></div>
+    </div>
+    <div class="note" style="margin-top:14px">🍀 <b>ทำแล้วพลาดไม่ต้องกังวลเลย</b> — คนที่ใช้ AI เก่งไม่ใช่คนที่สั่งครั้งเดียวได้ของสมบูรณ์ แต่คือคนที่<b>กล้าปล่อย Version แรก แล้วสั่งรอบสองไว</b> ต้นทุนของการลองใหม่คือไม่กี่วินาที</div>
+  </div>
+</details>
+
+<h2><span class="n">6</span>มือถือเครื่องเดียว ก็มี Studio ส่วนตัวได้</h2>
+<div class="phone">
+  <img src="../img/lv4/studio-mobile.jpg" width="760" height="1644" loading="lazy" decoding="async"
+       alt="หน้าจอ Studio ของ NotebookLM บนมือถือ แสดงเมนู Audio Overview, Slide Deck, Video Overview, Mind Map, Reports, Flashcards, Quiz, Infographic และ Data Table">
+  <div>
+    <p class="tx">ทั้งหมดที่คุณเห็นในบทนี้ — อินโฟกราฟิกสามภาพ สไลด์สิบหน้า — <b>สั่งจากมือถือเครื่องเดียว</b> ไม่ได้เปิดคอมเลย จาก Source ชุดเดียว คุณเลือกได้ว่าจะให้มันออกมาเป็นอะไร โดยไม่ต้องเริ่มทำใหม่จากศูนย์ทุกครั้ง</p>
+    <div class="chips">
+      <span>🎧 Audio Overview</span><span>📊 Slide Deck</span><span>🎬 Video Overview</span>
+      <span>🧠 Mind Map</span><span>📝 Reports</span><span>🃏 Flashcards</span>
+      <span>❓ Quiz</span><span>🖼️ Infographic</span><span>📋 Data Table</span>
+    </div>
+    <small style="color:rgb(var(--muted));font-size:13px">เมนูที่เห็นอาจต่างกันตามบัญชี ภาษา อุปกรณ์ และเวอร์ชันของ NotebookLM — ไม่ใช่ทุกบัญชีจะมีครบทุกอย่างพร้อมกัน</small>
+  </div>
 </div>
 
-<h2><span class="n">4</span>ของเด็ด: เปลี่ยนกองข้อมูลให้เป็นของที่ดูรู้เรื่อง</h2>
-<p class="tx">ในโน้ตบุ๊กจะมีแผง <b>Studio</b> อยู่ข้าง ๆ — ตรงนั้นคือที่ที่มันเปลี่ยนกองเอกสารของคุณเป็นของชิ้นใหม่ได้หลายแบบ กดปุ่มเดียวจบ (เมนูอาจขยับที่ตามรุ่น ลองไล่ดูในแผงนั้น)</p>
-<div class="steps">
-  <div class="step"><span class="num">🎧</span><div><b>เสียงสรุปเหมือนพอดแคสต์</b><small>ทำ "รายการคุยกัน" สรุปเอกสารให้ฟังได้เลย — เหมาะกับตอนขับรถ ออกกำลังกาย หรือคนที่ขี้เกียจอ่าน (เลือกภาษาไทยได้)</small></div></div>
-  <div class="step"><span class="num">🧠</span><div><b>แผนผังความคิด (Mind Map)</b><small>เห็นภาพรวมว่าเรื่องทั้งหมดแตกออกเป็นกี่กิ่ง อะไรโยงกับอะไร — ดีมากตอนต้องเล่าให้คนอื่นฟังต่อ</small></div></div>
-  <div class="step"><span class="num">📊</span><div><b>อินโฟกราฟิก</b><small>สรุปทั้งเล่มออกมาเป็นภาพเดียวที่ส่งต่อได้ — อันนี้คือของที่เอาไปใช้ต่อได้จริงที่สุด ดูวิธีข้างล่าง</small></div></div>
+<h2><span class="n">7</span>ลงมือทำ</h2>
+
+<details class="fold">
+  <summary>🖼️ ทำอินโฟกราฟิกน่ารัก ๆ จาก Source<small>4 ขั้นตอน พร้อมพร้อมท์ที่ก๊อปไปใช้ได้เลย</small></summary>
+  <div class="fin">
+    <div class="steps">
+      <div class="step"><span class="num">1</span><div><b>เพิ่ม Source</b><small>ไฟล์ตัวอย่างด้านบน หรือไฟล์ของคุณเอง</small></div></div>
+      <div class="step"><span class="num">2</span><div><b>เปิดแผง Studio</b><small>อยู่ในโน้ตบุ๊กที่สร้างไว้</small></div></div>
+      <div class="step"><span class="num">3</span><div><b>เลือก Infographic</b><small>ถ้าไม่เจอ ลองไล่ดูรายการอื่นในแผงนั้น ชื่อเมนูต่างกันได้ตามเวอร์ชัน</small></div></div>
+      <div class="step"><span class="num">4</span><div><b>บอกรูปแบบที่อยากได้</b>
+        <div class="prompt">สร้างอินโฟกราฟิกแนวตั้งภาษาไทย สไตล์น่ารัก สดใส และอ่านง่าย
+ใช้ตัวละครหรือไอคอนที่เป็นมิตรกับผู้เริ่มต้น
+เลือกเฉพาะประเด็นที่สำคัญจาก Source
+ลดข้อความให้สั้น แต่ห้ามเปลี่ยนความหมาย
+ให้หนึ่งภาพเล่าหนึ่งเรื่อง และตรวจสะกดภาษาไทยให้ชัดเจน</div></div></div>
+    </div>
+    <div class="note" style="margin-top:14px">✅ อินโฟกราฟิกที่สวยไม่ได้แปลว่าข้อมูลถูกเสมอ — <b>ตรวจชื่อ ตัวเลข และข้อสรุปกับ Source ก่อนเอาไปใช้จริง</b></div>
+  </div>
+</details>
+
+<details class="fold">
+  <summary>🎙️ ไม่อยากพิมพ์? พูดกับมันเลย<small>ใช้ไมค์บนมือถือสั่งทำวิดีโอสรุปสั้น</small></summary>
+  <div class="fin">
+    <p class="tx">แตะช่องที่ใช้พิมพ์คำสั่ง แล้วกดปุ่มไมค์ของคีย์บอร์ดมือถือ พูดด้วยภาษาธรรมดาไปเลย — <b>ไม่ต้องจำพร้อมท์ให้เป๊ะ</b> พูดวนหรือแก้กลางคันก็ได้ ถ้าใน UI มีตัวเลือกความยาว เลือกแบบสั้นไว้ก่อนจะดูง่ายกว่า</p>
+    <div class="prompt">ช่วยทำวิดีโอสรุปสั้นสำหรับคนที่ไม่เคยรู้เรื่องนี้มาก่อน
+เริ่มด้วยคำถามที่ทำให้สงสัย
+อธิบายด้วยภาษาง่าย
+ใช้ตัวอย่างจากชีวิตจริง
+และจบด้วยสิ่งหนึ่งอย่างที่คนดูเอาไปลองได้ทันที</div>
+  </div>
+</details>
+
+<details class="fold">
+  <summary>💼 เอาไปใช้กับงานอะไรได้บ้าง<small>5 แบบงาน — Source อะไร ได้ Output อะไร</small></summary>
+  <div class="fin">
+    <div class="ucard"><b>1 · ประชุมและโปรเจกต์</b>
+      <div class="io"><div><em>Source</em>บันทึกประชุม · Proposal · Timeline · เอกสารอ้างอิง</div><div><em>Output</em>สรุป · Action items · Slide briefing · FAQ ของทีม</div></div></div>
+    <div class="ucard"><b>2 · ธุรกิจและแบรนด์</b>
+      <div class="io"><div><em>Source</em>ข้อมูลแบรนด์ · บริการ · ลูกค้า · คำถามที่พบบ่อย · Case study</div><div><em>Output</em>Presentation · Infographic · Onboarding · Script · มุมคอนเทนต์</div></div></div>
+    <div class="ucard"><b>3 · การเรียนและการสอบ</b>
+      <div class="io"><div><em>Source</em>เอกสารเรียน · Lecture note · หนังสือ · บทความ</div><div><em>Output</em>Mind Map · Flashcards · Quiz · Audio recap · Study guide</div></div></div>
+    <div class="ucard"><b>4 · งานสร้างสรรค์และคอนเทนต์</b>
+      <div class="io"><div><em>Source</em>Research · โน้ตตัวละคร · Brand voice · โครงเรื่อง</div><div><em>Output</em>หลายมุมการเล่า · เวอร์ชันไทย/อังกฤษ · โครงคลิปสั้น · Visual summary</div></div></div>
+    <div class="ucard"><b>5 · ความรู้และประสบการณ์ของตัวเอง</b>
+      <div class="io"><div><em>Source</em>บันทึก · เสียงที่พูดไว้ · วิธีทำงาน · บทเรียนจากสิ่งที่เคยลอง</div><div><em>Output</em>คู่มือ · Checklist · Template · บทความ · ของที่ส่งต่อให้คนอื่นได้</div></div></div>
+    <div class="note g" style="margin-top:14px">งานต่างกัน แต่ Pattern เดียวกัน:<br><b>รวบรวม → จัดเป็น Source → ให้ AI ย่อย → เลือก Output → ตรวจ → นำไปใช้</b></div>
+  </div>
+</details>
+
+<div class="note">🔒 <b>ก่อนอัปโหลดอะไรก็ตาม</b> — อย่าเอาข้อมูลลูกค้า ข้อมูลสุขภาพ ข้อมูลส่วนบุคคล สัญญาลับ หรือเอกสารบริษัทขึ้นไปถ้ายังไม่ได้รับอนุญาต เริ่มจากข้อมูลสาธารณะ ข้อมูลสมมติ หรือของตัวเองก่อน · AI ช่วยย่อยและทำ Draft ให้ แต่<b>คนที่รับผิดชอบงานสุดท้ายคือเรา</b></div>
+
+<div class="quest">🎯 <b>QUEST: ปลดล็อก Knowledge Multiplier</b>
+  <ol>
+    <li>ดาวน์โหลด Source ตัวอย่าง หรือทำ <code>.md</code> ของตัวเองจากคลาส LV.1</li>
+    <li>เพิ่มเข้า NotebookLM (อัปโหลด หรือวางเป็น Copied text)</li>
+    <li>สร้าง <b>Infographic</b> 1 ภาพ</li>
+    <li>สร้าง <b>Video Overview</b> หรือ <b>Audio Overview</b> อีก 1 ชิ้น</li>
+    <li>เทียบดูว่าสองอย่างนี้เลือกเล่าอะไรต่างกัน</li>
+    <li>เขียนไว้หนึ่งประโยค: “ถ้าเปลี่ยน Source นี้เป็นข้อมูลของฉัน ฉันจะเอาไปสร้างอะไรต่อ?”</li>
+  </ol>
+  <span class="unlock">✨ SKILL UNLOCKED — SOURCE MULTIPLIER</span>
+  <span class="qshare">เอามาอวดกันได้เลย: “Source เดียวของฉัน แตกออกมาเป็น ______ และ ______ · สิ่งต่อไปที่อยากลองคือ ______ 🍀”</span>
 </div>
 
-<h2><span class="n">5</span>ทำอินโฟกราฟิกจากสิ่งที่คุณมีอยู่แล้ว</h2>
-<p class="tx">คนส่วนใหญ่ติดตรงที่ "ไม่รู้จะเริ่มวาดยังไง" — แต่จริง ๆ คุณไม่ต้องวาด คุณแค่ต้องมี<b>เนื้อหาที่เรียบเรียงมาดีแล้ว</b> ที่เหลือให้เครื่องมือทำ</p>
-<div class="steps">
-  <div class="step"><span class="num">1</span><div><b>ให้ NotebookLM ย่อยเนื้อหาให้ก่อน</b>
-  <div class="prompt">ช่วยย่อยเนื้อหาทั้งหมดนี้ให้พร้อมทำอินโฟกราฟิก 1 ภาพ ขอเป็น: หัวเรื่องสั้น ๆ 1 บรรทัด, ประเด็นหลัก 5 ข้อ ข้อละไม่เกิน 12 คำ, ตัวเลขหรือข้อเท็จจริงที่ควรเน้น 3 ตัว, และประโยคปิดท้าย 1 บรรทัด</div>
-  <small>เคล็ดลับ: บังคับจำนวนคำแบบนี้แหละสำคัญ ถ้าไม่บอก มันจะเขียนยาวจนใส่ภาพไม่ลง</small></div></div>
-  <div class="step"><span class="num">2</span><div><b>ถ้าในแผง Studio มีปุ่มอินโฟกราฟิก — กดเลย</b><small>มันจะจัดหน้าให้เสร็จเป็นภาพ ดาวน์โหลดไปใช้ได้ทันที · ยังไม่ถูกใจก็สั่งแก้ได้ เช่น "ขอโทนเขียว-ทอง" หรือ "ขอแบบมีไอคอน"</small></div></div>
-  <div class="step"><span class="num">3</span><div><b>ถ้าไม่มีปุ่มนั้น ก็ยังทำได้อยู่ดี</b><small>ก๊อปโครงที่ได้จากข้อ 1 ไปวางใน Canva แล้วเลือกเทมเพลต Infographic ปรับสีให้ตรงแบรนด์ — หรือเอาโครงนั้นไปให้ Gemini ช่วยออกแบบภาพให้ก็ได้ (ทบทวนคลาส LV.2)</small></div></div>
-</div>
-<div class="note">✅ <b>กฎเหล็กของอินโฟกราฟิกที่คนอ่านรู้เรื่อง:</b> หนึ่งภาพเล่าหนึ่งเรื่องพอ · ตัวเลขต้องมาจากแหล่งข้อมูลจริงในเล่ม ไม่ใช่ที่ AI เดาเอง — <b>เช็กทุกตัวเลขก่อนส่งต่อเสมอ</b> เพราะพอทำเป็นภาพสวย ๆ แล้วคนจะเชื่อทันทีโดยไม่ตรวจ</div>
-<div class="note">🔒 <b>เตือนอีกครั้ง:</b> เอกสารลับของบริษัทหรือข้อมูลส่วนบุคคลของลูกค้า อย่าเพิ่งเอาขึ้นไปโดยไม่ได้รับอนุญาต — เริ่มจากเอกสารสาธารณะหรือของตัวเองก่อน</div>
+<div class="note g" style="margin-top:18px">คุณไม่จำเป็นต้องเริ่มจากข้อมูลที่สมบูรณ์ — <b>เริ่มจากสิ่งที่คุณรู้ แล้วค่อยทำ Source ของคุณให้ดีขึ้นทีละ Version</b></div>
 
-<div class="quest">🎯 <b>เควสท้ายคลาส:</b> อัดเสียงตัวเองพูดเรื่องที่คิดอยู่ 5 นาที (ไม่ต้องเรียบเรียง พูดวนได้) โยนเข้า NotebookLM แล้วสั่งทำอินโฟกราฟิก 1 ภาพจากเสียงนั้น — จากความคิดที่ยังไม่เป็นรูปเป็นร่าง กลายเป็นภาพที่ส่งให้คนอื่นดูได้ ภายในสิบนาที<span class="qshare">ทำเสร็จแล้วเอามาอวดกันในบ้านได้เลย — ใช้เวลาแค่วันละ 10 นาทีก็พอ 🍀</span></div>
 <div class="nextrow">
   <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
   <a class="nx" href="prompts.html">คลาสถัดไป: คลังพร้อมท์ →</a>
@@ -140,7 +459,16 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 <footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
 </div>
 
+<dialog id="lb" aria-label="ดูภาพขนาดเต็ม">
+  <div class="lbin">
+    <button type="button" class="lbx" id="lbClose" aria-label="ปิด">✕</button>
+    <img id="lbImg" src="" alt="">
+    <p class="lbcap" id="lbCap"></p>
+  </div>
+</dialog>
+
 <script>
+/* ── ปุ่มคัดลอกพร้อมท์ ── */
 document.querySelectorAll('.prompt').forEach(function(el){
   var b=document.createElement('button');b.type='button';b.className='cpx';b.textContent='คัดลอก';
   b.onclick=function(){
@@ -151,6 +479,50 @@ document.querySelectorAll('.prompt').forEach(function(el){
   };
   el.appendChild(b);
 });
+
+/* ── คัดลอกทั้งไฟล์ Source ──
+   ดึงไฟล์จริงมาตอนกด จะได้ไม่ต้องเก็บข้อความซ้ำสองที่ให้หลุดกันทีหลัง
+   และหน้าเว็บก็ไม่ต้องแบกข้อความยาว ๆ ไว้ตั้งแต่แรก */
+(function(){
+  var btn=document.getElementById('copySrc'), msg=document.getElementById('srcMsg');
+  var URL='lv4/myclover_GLHF_7C_GrowthOS_Source.md', cache=null;
+  if(!btn) return;
+  btn.addEventListener('click',function(){
+    msg.textContent='กำลังดึงข้อความ…';
+    (cache ? Promise.resolve(cache) : fetch(URL).then(function(r){
+      if(!r.ok) throw new Error(r.status); return r.text();
+    }).then(function(t){ cache=t; return t; }))
+    .then(function(t){
+      return navigator.clipboard.writeText(t).then(function(){
+        msg.textContent='✓ คัดลอกแล้ว '+t.length.toLocaleString('th-TH')+' ตัวอักษร — ไปวางในช่อง Copied text ของ NotebookLM ได้เลย';
+        btn.textContent='✓ คัดลอกแล้ว';
+        setTimeout(function(){ btn.textContent='📋 คัดลอกข้อความทั้งไฟล์'; },2000);
+      });
+    })
+    .catch(function(){
+      msg.innerHTML='คัดลอกอัตโนมัติไม่ได้ในเบราว์เซอร์นี้ — <a href="'+URL+'" target="_blank" rel="noopener">เปิดไฟล์แล้วคัดลอกเองได้ตรงนี้</a>';
+    });
+  });
+})();
+
+/* ── เปิดภาพขนาดเต็ม ── */
+(function(){
+  var lb=document.getElementById('lb'), im=document.getElementById('lbImg'),
+      cap=document.getElementById('lbCap'), last=null;
+  if(!lb || !lb.showModal) return;               /* เบราว์เซอร์เก่า: ปล่อยให้เป็นภาพธรรมดา */
+  document.querySelectorAll('.gal .thumb').forEach(function(b){
+    b.addEventListener('click',function(){
+      last=b;
+      im.src=b.getAttribute('data-full');
+      im.alt=b.querySelector('img').alt;
+      cap.textContent=b.getAttribute('data-cap')||'';
+      lb.showModal();
+    });
+  });
+  document.getElementById('lbClose').addEventListener('click',function(){ lb.close(); });
+  lb.addEventListener('click',function(e){ if(e.target===lb) lb.close(); });
+  lb.addEventListener('close',function(){ im.src=''; if(last) last.focus(); });
+})();
 </script>
 
 <script defer src="../assets/quest.js"></script>
