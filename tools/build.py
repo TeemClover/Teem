@@ -209,7 +209,7 @@ LESSONS = [
 ]
 
 # รหัสที่ได้ตอนทำครบ = ชื่อของสิ่งสุดท้ายในเส้นนั้น จะได้รู้สึกว่าได้มาจริง ๆ
-FORGE_CODE  = 'TENTHSTEP'   # ค่าเดิม — เปลี่ยนเมื่อไหร่ต้องแก้แฮชใน card/index.html ด้วย
+FORGE_CODE  = 'CLOVERX'     # เปลี่ยนเมื่อไหร่ต้องแก้แฮชใน card/index.html ด้วย
 LEARN_CODE  = 'FIRSTWEB'    # = บทสุดท้ายของห้องเรียน
 
 TRACKS = {
