@@ -69,8 +69,8 @@ absolutely no text, no letters, no logo, no watermark
 | ⬜ | `img/lesson-1.jpg` | LV.1 AI ฟรีที่ควรมีติดเครื่อง | `a phone and a laptop side by side on a clean desk, screens glowing with soft warm light, like a gift just unwrapped, wide banner composition` |
 | ⬜ | `img/lesson-2.jpg` | LV.2 ทำภาพด้วย AI | `a painter palette and brushes dissolving into motes of golden light that reassemble into a landscape, wide banner composition` |
 | ⬜ | `img/lesson-3.jpg` | LV.3 ทำคลิปสั้นด้วย AI | `a phone on a small tripod filming a corner of a warm living room, soft ring light, homely and unpretentious, wide banner composition` |
-| ⬜ | `img/lesson-4.jpg` | LV.4 สรุปประชุม & เอกสาร | `a messy stack of papers on the left transforming into neat glowing lines of light on the right, like a magic librarian at work, wide banner composition` |
-| ⬜ | `img/lesson-5.jpg` | LV.5 คลังพร้อมท์แจกฟรี | `an apothecary wall of small wooden drawers, a few pulled open with warm gold light spilling out, like an RPG item vault, wide banner composition` |
+| ⬜ | `img/lesson-4.jpg` | LV.4 ⭐ สร้าง Source ครั้งเดียว ใช้ต่อได้ทั้งงาน | `a messy stack of papers on the left transforming into neat glowing lines of light on the right, like a magic librarian at work, wide banner composition` |
+| ⬜ | `img/lesson-5.jpg` | LV.5 Smart Prompt Vault | `an apothecary wall of small wooden drawers, a few pulled open with warm gold light spilling out, like an RPG item vault, wide banner composition` |
 | ⬜ | `img/lesson-6.jpg` | LV.6 สร้างเว็บแรกของตัวเอง | `glowing blocks floating together to assemble a simple browser window, a small flag planted on top like a summit, wide banner composition` |
 
 ---

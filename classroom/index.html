@@ -59,7 +59,70 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 .cpx:hover{opacity:1}
 @media(max-width:520px){.head{padding:28px 22px}.heroimg{margin:-28px -22px 18px;height:150px}}
 
-.pathnote{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:14px;padding:14px 20px;margin-top:18px;font-size:14px;color:rgb(var(--muted))}
+.pathnote{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:17px 20px;margin-top:18px;
+  box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.pathnote .ph{display:flex;gap:11px;align-items:flex-start}
+.pathnote .ph .e{font-size:20px;flex:none;line-height:1.4}
+.pathnote h3{font-family:"Bai Jamjuree",sans-serif;font-size:16px;line-height:1.4}
+.pathnote .sub{font-size:13.5px;color:rgb(var(--muted));margin-top:5px;line-height:1.7}
+.pathnote .sub b{color:#8a6a22}
+.pmore{display:inline-flex;align-items:center;gap:8px;margin-top:13px;min-height:44px;padding:11px 18px;cursor:pointer;
+  font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;border-radius:12px;
+  background:rgb(190 148 66/.12);border:1px solid rgb(190 148 66/.45);color:#8a6a22;transition:.15s}
+.pmore:hover{background:rgb(190 148 66/.22)}
+.pmore .ar{transition:transform .2s}
+.pathnote[data-open="1"] .pmore .ar{transform:rotate(180deg)}
+.ptime{display:block;font-size:12px;color:rgb(var(--muted));margin-top:7px}
+#pathBody{overflow:hidden;transition:height .32s ease}
+@media(prefers-reduced-motion:reduce){#pathBody{transition:none}.pmore .ar{transition:none}}
+.pbin{padding-top:20px;margin-top:18px;border-top:1px solid rgb(var(--ink)/.09)}
+.pbin h4{font-family:"Bai Jamjuree",sans-serif;font-size:17px;line-height:1.4;margin:26px 0 9px}
+.pbin h4:first-child{margin-top:0}
+.pbin p{font-size:14.5px;line-height:1.8;margin-bottom:10px}
+.pbin p.lead{color:rgb(var(--ink)/.82)}
+.pbin .quiet{font-size:13.5px;color:rgb(var(--muted))}
+.steps6{display:grid;gap:8px;margin:12px 0 4px}
+.st6{display:flex;gap:11px;align-items:flex-start;background:rgb(var(--ink)/.03);border:1px solid rgb(var(--ink)/.07);
+  border-radius:12px;padding:11px 14px}
+.st6.star{background:rgb(190 148 66/.09);border-color:rgb(190 148 66/.4)}
+.st6 .k{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:12px;color:rgb(var(--green));flex:none;min-width:42px}
+.st6.star .k{color:#8a6a22}
+.st6 b{font-size:14px;font-weight:600;display:block}
+.st6 small{display:block;font-size:12.5px;color:rgb(var(--muted));line-height:1.6;margin-top:1px}
+.cmp{display:grid;gap:8px;margin:12px 0}
+.cmpr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){.cmpr{grid-template-columns:1fr;gap:0;border:1px solid rgb(var(--ink)/.09);border-radius:12px;overflow:hidden}}
+.cmpc{border-radius:12px;padding:11px 14px;font-size:13.5px;line-height:1.6}
+.cmpc.a{background:rgb(var(--ink)/.04);color:rgb(var(--muted))}
+.cmpc.b{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.18)}
+@media(max-width:560px){.cmpc{border-radius:0;border:0}.cmpc.a{border-bottom:1px dashed rgb(var(--ink)/.14)}}
+.cmpc .who{display:block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.08em;
+  opacity:.7;margin-bottom:3px}
+.cmpc.b .who{color:rgb(var(--green));opacity:1}
+.gains{display:grid;gap:7px;margin:12px 0}
+.gain{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:11px;padding:10px 14px;font-size:13.5px}
+.gain .k{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:11.5px;color:rgb(var(--gold));flex:none;min-width:40px}
+.gain b{font-weight:600}
+.four{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+@media(max-width:560px){.four{grid-template-columns:1fr}}
+.fourc{background:rgb(27 106 66/.05);border:1px solid rgb(27 106 66/.16);border-radius:12px;padding:11px 14px;font-size:13.5px;line-height:1.6}
+.fourc b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:14px;margin-bottom:2px}
+.days{display:grid;gap:6px;margin:12px 0}
+.day{display:flex;gap:11px;align-items:center;font-size:13.5px;padding:8px 0;border-bottom:1px dashed rgb(var(--ink)/.09)}
+.day:last-child{border:0}
+.day .d{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:11.5px;color:#fff;background:rgb(var(--green));
+  border-radius:8px;min-width:56px;text-align:center;padding:4px 7px;flex:none}
+.pcta{background:linear-gradient(158deg,rgb(10 40 24),rgb(20 66 40));color:#fff;border-radius:16px;padding:22px;margin-top:22px;
+  text-align:center;border:1px solid rgb(190 148 66/.35)}
+.pcta h4{font-family:"Bai Jamjuree",sans-serif;font-size:clamp(17px,3.2vw,21px);line-height:1.4;margin:0 0 9px;color:#fff}
+.pcta p{font-size:14px;color:rgb(255 255 255/.8);line-height:1.75}
+.pcta .row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.pcta a,.pcta button{min-height:46px;display:inline-flex;align-items:center;justify-content:center;
+  font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14.5px;border-radius:12px;padding:13px 22px;cursor:pointer;transition:.15s}
+.pcta .go{background:rgb(var(--green));color:#fff;border:1px solid rgb(var(--green))}
+.pcta .ghost{background:transparent;color:#fff;border:1px solid rgb(255 255 255/.35)}
+.pcta a:hover,.pcta button:hover{transform:translateY(-2px)}
+.pcta .fine{display:block;font-size:12.5px;color:rgb(255 255 255/.6);margin-top:13px}
 .lsgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
 @media(max-width:640px){.lsgrid{grid-template-columns:1fr}}
 .ls{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:.16s;box-shadow:0 1px 3px rgb(18 40 28/.05)}
@@ -69,6 +132,10 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 .lsemo{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;filter:drop-shadow(0 6px 14px rgb(0 0 0/.4))}
 .lsbody{padding:16px 18px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
 .lslv{font-size:11px;font-weight:700;letter-spacing:.1em;color:rgb(var(--gold))}
+.lslv em.starred{font-style:normal;background:rgb(var(--gold));color:rgb(var(--deep));border-radius:5px;padding:2px 7px;letter-spacing:.04em}
+.ls.star{border-color:rgb(190 148 66/.55);box-shadow:0 0 0 1px rgb(190 148 66/.2),0 14px 30px -22px rgb(190 148 66/.55)}
+.ls.star .lsimg::after{content:"⭐";position:absolute;top:8px;left:9px;font-size:15px;z-index:2;
+  filter:drop-shadow(0 2px 4px rgb(10 40 24/.6))}
 .lslv em{font-style:normal;color:rgb(var(--muted));font-family:"Anuphan",sans-serif;letter-spacing:0;font-weight:600;margin-left:6px}
 .lsbody b{font-size:16.5px}
 .lsbody p{font-size:13px;color:rgb(var(--muted));flex:1}
@@ -127,14 +194,99 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   <div class="heroimg"><img src="../img/classroom-hero.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
   <span class="lv">ห้องเรียนของบ้าน · ฟรีตลอดชีพ</span>
   <h1 class="disp">ห้องเรียน AI — เก็บทีละเลเวล เหมือนเล่นเกม</h1>
-  <p>6 คลาสทักษะ AI เบื้องต้นด้วยเครื่องมือ<b style="color:#fff">ฟรี</b>ทั้งหมด (Gemini · NotebookLM · CapCut · Canva) — ไม่ต้องเขียนโค้ดเป็น ไม่ต้องเก่งคอม แต่ละคลาสจบใน ~10 นาที ทำตามได้ทันที</p>
-  <div class="meta"><span>🌱 เริ่มจากศูนย์ได้</span><span>⏱️ คลาสละ ~10 นาที</span><span>🎯 มีเควสท้ายคลาสทุกอัน</span></div>
+  <p>6 บทเรียนทักษะ AI เบื้องต้นด้วยเครื่องมือ<b style="color:#fff">ฟรี</b>ทั้งหมด (Gemini · NotebookLM · CapCut · Canva) — ไม่ต้องเขียนโค้ดเป็น ไม่ต้องเก่งคอม เริ่มต้นได้ในประมาณ 10 นาทีต่อบท ทำตามได้ทันที</p>
+  <div class="meta"><span>🌱 เริ่มจากศูนย์ได้</span><span>⏱️ เริ่มบทละประมาณ 10 นาที</span><span>🎯 มีภารกิจให้ลงมือจริง</span></div>
   <div class="cprog">
     <div class="track"><i data-mc-bar="learn"></i></div>
     <span class="tx" data-mc-progress="learn" hidden></span>
   </div>
 </header>
-<div class="pathnote">🗺️ <span><b>เส้นทางแนะนำ:</b> เรียงตาม LV.1 → LV.6 สำหรับมือใหม่ — แต่ใครรีบใช้เรื่องไหน ข้ามไปหยิบคลาสนั้นก่อนเลยก็ได้ ไม่ผิดกติกา</span></div>
+<div class="pathnote" id="pathCard" data-open="0">
+  <div class="ph">
+    <span class="e" aria-hidden="true">🗺️</span>
+    <div>
+      <h3 class="disp">เส้นทางแนะนำ: วันละ 10 นาที จากศูนย์ไปถึงเว็บแรก</h3>
+      <p class="sub">6 บทนี้ครอบคลุมทักษะที่<b>เมื่อนำไปแยกเรียนเป็นหลายคอร์ส อาจมีมูลค่ารวมถึงหลักหมื่นบาท</b> แต่ที่นี่ออกแบบให้คุณเรียนฟรี ลงมือทำได้ทันที และกลับมาใช้ซ้ำได้ตลอด</p>
+      <button type="button" class="pmore" id="pathBtn" aria-expanded="false" aria-controls="pathBody">
+        <span id="pathBtnTx">กลัวเรียนเองไม่ไหว? ลองอ่านตรงนี้ก่อน</span><span class="ar" aria-hidden="true">↓</span>
+      </button>
+      <span class="ptime" id="pathTime">ใช้เวลาอ่านประมาณ 1 นาที</span>
+    </div>
+  </div>
+
+  <div id="pathBody" style="height:0" role="region" aria-labelledby="pathBtn">
+    <div class="pbin">
+      <h4 class="disp">คุณไม่ได้ต้องเรียนเก่ง<br>คุณแค่ต้องลงมือทีละ 10 นาที</h4>
+      <p class="lead">หลายคนรู้สึกว่าการเรียน AI ต้องมีคนจับมือทำ หรือต้องนั่งดูวิดีโอยาว ๆ จึงจะเข้าใจ — ความรู้สึกนั้นไม่ผิดเลย เพราะเครื่องมือใหม่ดูเหมือนมีปุ่มและคำศัพท์เต็มไปหมด</p>
+      <p class="lead">แต่ห้องเรียนนี้ถูกออกแบบมาอีกแบบหนึ่ง เราไม่ได้อยากให้คุณ “ดูคนอื่นทำเป็น” — <b>เราอยากให้คุณทำของชิ้นแรกของตัวเองเสร็จตั้งแต่วันนี้</b></p>
+
+      <h4 class="disp">🎓 ถ้าแยกเรียนข้างนอก อาจกลายเป็นหลายคอร์ส</h4>
+      <div class="steps6">
+        <div class="st6"><span class="k">LV.1</span><div><b>เริ่มใช้ AI</b><small>ตั้งเครื่องมือและคุยกับ AI ให้รู้เรื่อง</small></div></div>
+        <div class="st6"><span class="k">LV.2</span><div><b>สร้างภาพ</b><small>เปลี่ยนความคิดให้เป็นภาพที่นำไปใช้ได้จริง</small></div></div>
+        <div class="st6"><span class="k">LV.3</span><div><b>สร้างวิดีโอ</b><small>ทำคลิปสั้นชิ้นแรกให้เสร็จ</small></div></div>
+        <div class="st6 star"><span class="k">LV.4 ⭐</span><div><b>สร้าง Source</b><small>จัดข้อมูลหนึ่งชุดให้ AI แตกเป็นภาพ สไลด์ เสียง และงานหลายรูปแบบ</small></div></div>
+        <div class="st6"><span class="k">LV.5</span><div><b>สร้าง AI คู่หู</b><small>ใช้ Prompt และ Genesis Prompt ตั้งวิธีร่วมงานตลอด Session</small></div></div>
+        <div class="st6"><span class="k">LV.6</span><div><b>สร้างเว็บแรก</b><small>รวมทุกทักษะให้กลายเป็นสิ่งที่คนอื่นเปิดใช้งานได้จริง</small></div></div>
+      </div>
+      <p class="quiet">หากแยกตามทักษะ หัวข้อเหล่านี้มักถูกนำไปทำเป็นหลายคลาส หลายเวิร์กช็อป หรือหลายคอร์ส — แต่ที่นี่ถูกเชื่อมเป็นเส้นทางเดียว เพื่อให้สิ่งที่เรียนในบทก่อนหน้า กลายเป็นวัตถุดิบของบทถัดไป</p>
+
+      <h4 class="disp">🎮 วิดีโอทำให้เราเห็น แต่การลงมือทำทำให้เราใช้เป็น</h4>
+      <p>วิดีโอเหมาะกับการดูภาพรวม แต่ปัญหาคือเรามักรู้สึกว่าเข้าใจตอนดู แล้วจำไม่ได้เมื่อต้องเปิดเครื่องมือทำเอง บทเรียนบนเว็บนี้จึงลดการอธิบายยาว แล้วเปลี่ยนเป็นขั้นตอนสั้น ๆ ที่คุณเปิดเครื่องมือจริง ทำตามจริง และเห็นผลลัพธ์ของตัวเองทันที</p>
+      <div class="cmp">
+        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>เดินตามจังหวะของผู้สอน</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>เรียนตามจังหวะของตัวเอง</div></div>
+        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>ต้องย้อนหาเวลาในคลิป</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>กลับมาอ่านตรงขั้นที่ติดได้ทันที</div></div>
+        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>เห็นตัวอย่างของคนอื่น</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>สร้างผลงานจากข้อมูลของตัวเอง</div></div>
+        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>อาจล้าสมัยเมื่อหน้าจอเปลี่ยน</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>เน้นหลักคิดที่ใช้ต่อได้ แม้เมนูเปลี่ยน</div></div>
+        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>ดูจบแล้วอาจยังไม่ได้ลงมือ</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>ทุกบทมีภารกิจให้สร้างของจริง</div></div>
+      </div>
+
+      <h4 class="disp">🛠️ เป้าหมายไม่ใช่ให้คุณทำตามเราได้ แต่คือให้คุณไปต่อเองได้</h4>
+      <p>การมีคนอยู่ข้าง ๆ ช่วยให้เริ่มต้นง่ายขึ้น แต่บางครั้งเราทำตามได้เฉพาะตอนที่เขายังอยู่ เมื่อหน้าจอเปลี่ยน เจอปัญหาใหม่ หรืออยากทำงานอีกแบบ เราอาจต้องรอให้มีคนมาบอกขั้นต่อไปอีกครั้ง</p>
+      <p>ห้องเรียนนี้จึงไม่ได้จับมือคุณไปตลอดทาง แต่<b>วางทางเดินให้ชัด ทำปุ่มให้กดได้จริง แจกตัวอย่างให้ลอง และสอนวิธีคิดที่ช่วยให้คุณแก้ปัญหาต่อเองได้</b></p>
+      <div class="four">
+        <div class="fourc"><b>ทำซ้ำได้</b>กลับมาทดลองใหม่กี่ครั้งก็ได้</div>
+        <div class="fourc"><b>ผิดได้โดยไม่กดดัน</b>ไม่มีใครรอ ไม่มีใครตัดสิน</div>
+        <div class="fourc"><b>ใช้กับงานตัวเองทันที</b>ไม่ต้องทำตามโจทย์ของผู้สอนอย่างเดียว</div>
+        <div class="fourc"><b>สร้างความมั่นใจระยะยาว</b>จาก “ทำตามได้” ไปสู่ “หาทางต่อเองเป็น”</div>
+      </div>
+      <p class="quiet">การมีครู วิดีโอ หรือเพื่อนช่วยยังมีคุณค่าเสมอ — สิ่งที่เราอยากเพิ่มให้คุณ คือความสามารถในการเริ่ม ทดลอง และไปต่อได้ด้วยตัวเอง</p>
+
+      <h4 class="disp">🌱 ทุกบทต้องมีบางอย่างกลับบ้าน</h4>
+      <div class="gains">
+        <div class="gain"><span class="k">LV.1</span><b>Chat แรกที่ใช้งานได้จริง</b></div>
+        <div class="gain"><span class="k">LV.2</span><b>ภาพชิ้นแรก</b></div>
+        <div class="gain"><span class="k">LV.3</span><b>คลิปสั้นชิ้นแรก</b></div>
+        <div class="gain"><span class="k">LV.4</span><b>Source ที่แตกเป็นหลาย Output</b></div>
+        <div class="gain"><span class="k">LV.5</span><b>Prompt และ AI คู่หูประจำงาน</b></div>
+        <div class="gain"><span class="k">LV.6</span><b>เว็บแรกที่เปิดให้คนอื่นดูได้</b></div>
+      </div>
+      <p class="quiet">คุณจึงไม่ได้เรียนครบแล้วได้เพียงความรู้ — แต่จะมีผลงาน เครื่องมือ และระบบของตัวเองเพิ่มขึ้นทีละชิ้น</p>
+
+      <h4 class="disp">⏱️ ไม่ต้องรอวันว่าง เริ่มวันนี้แค่ 10 นาที</h4>
+      <p class="quiet" style="margin-bottom:6px">แผนเริ่มต้น 6 วัน — ไม่ใช่กำหนดส่ง</p>
+      <div class="days">
+        <div class="day"><span class="d">วันที่ 1</span>เปิด LV.1 และส่งคำสั่งแรก</div>
+        <div class="day"><span class="d">วันที่ 2</span>สร้างภาพหนึ่งภาพ</div>
+        <div class="day"><span class="d">วันที่ 3</span>ทำคลิปหนึ่งคลิป</div>
+        <div class="day"><span class="d">วันที่ 4</span>เปลี่ยนข้อมูลหนึ่งชุดเป็น Source</div>
+        <div class="day"><span class="d">วันที่ 5</span>สร้าง AI คู่หูหนึ่งแบบ</div>
+        <div class="day"><span class="d">วันที่ 6</span>เปิดเว็บแรกของตัวเอง</div>
+      </div>
+      <p class="quiet">บางบทอาจใช้เกิน 10 นาทีถ้าคุณกำลังสนุกและอยากทำต่อ แต่คุณไม่จำเป็นต้องทำให้สมบูรณ์ในครั้งเดียว — วันละหนึ่งก้าวเล็ก ๆ ก็เพียงพอให้คุณเดินจาก “ไม่เคยใช้ AI” ไปถึง “มีผลงานที่คนอื่นเปิดดูได้”</p>
+
+      <div class="pcta">
+        <h4 class="disp">ไม่ต้องสมัครคอร์สใหม่<br>ไม่ต้องเตรียมตัวให้พร้อมกว่านี้</h4>
+        <p>มือถือหรือคอมพิวเตอร์ที่คุณใช้อยู่ก็พอ เลือกเวลาว่าง 10 นาที แล้วเริ่มจากบทแรก<br>เมื่อทำของชิ้นแรกสำเร็จ บทต่อไปจะไม่ดูยากเหมือนเดิมอีก</p>
+        <div class="row">
+          <a class="go" id="pathGo" href="free-ai.html">เริ่ม LV.1 — ใช้เวลาแค่ 10 นาที →</a>
+          <button type="button" class="ghost" id="pathSeeAll">ดูเส้นทางทั้ง 6 บท</button>
+        </div>
+        <span class="fine">ฟรีตลอดชีพ · ไม่มีบัตรเครดิต · กลับมาทำต่อเมื่อไหร่ก็ได้</span>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="lsgrid">
   <a class="ls" href="free-ai.html" data-mc-item="learn:free-ai">
     <!-- 📷 รูปคลาส: img/lesson-1.jpg -->
@@ -166,13 +318,13 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
-  <a class="ls" href="notebooklm.html" data-mc-item="learn:notebooklm">
+  <a class="ls star" href="notebooklm.html" data-mc-item="learn:notebooklm">
     <!-- 📷 รูปคลาส: img/lesson-4.jpg -->
     <div class="lsimg"><img src="../img/lesson-4.jpg" alt="" onerror="this.style.display='none'"><span class="lsemo">📚</span></div>
     <div class="lsbody">
-      <span class="lslv disp">LV.4 <em>ฟรี</em></span>
-      <b class="disp">ไฟล์เดียว แตกแขนงได้ทั้งงาน</b>
-      <p>เอาข้อมูลหนึ่งชุดให้ AI เข้าใจ แล้วดูมันแตกเป็นอินโฟกราฟิก สไลด์ วิดีโอ และเสียงสรุป — ทำจากมือถือได้</p>
+      <span class="lslv disp">LV.4 <em class="starred">⭐ บทติดดาว</em></span>
+      <b class="disp">เปลี่ยนข้อมูลของคุณ<br>ให้ AI ทำงานต่อได้ทั้งระบบ</b>
+      <p>สร้าง Source ครั้งเดียว แล้วแตกเป็นภาพ สไลด์ วิดีโอ เสียง และงานอีกหลายรูปแบบ — <b>ทุกคนควรทำเป็น</b></p>
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
@@ -181,8 +333,8 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
     <div class="lsimg"><img src="../img/lesson-5.jpg" alt="" onerror="this.style.display='none'"><span class="lsemo">💬</span></div>
     <div class="lsbody">
       <span class="lslv disp">LV.5 <em>อัปเดตเรื่อย ๆ</em></span>
-      <b class="disp">คลังพร้อมท์แจกฟรี</b>
-      <p>คำสั่งสำเร็จรูปทุกสถานการณ์ — ออฟฟิศ ค้าขาย เรียน ชีวิตประจำวัน</p>
+      <b class="disp">Smart Prompt Vault</b>
+      <p>บอกงานที่กำลังจะทำ แล้วคลังจะหยิบ Prompt ที่ตรงให้ — พร้อมตัวสร้าง AI คู่หูประจำงานของคุณ</p>
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
@@ -222,6 +374,73 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 
 <script>/* เข้าห้องเรียนแล้ว = หยิบของฟรีของบ้านไปใช้ (เงื่อนไขหนึ่งของประตูกิลด์) */
 try{localStorage.setItem('mc_opened','1');}catch(e){}</script>
+<script>
+/* ── การ์ดเส้นทางแนะนำ: กดขยาย/ย่อ ──
+   ใช้ height จริงตอนเปิด เพื่อให้ transition ลื่นและไม่กระตุก
+   แล้วปล่อยเป็น auto หลังเปิดเสร็จ เผื่อเนื้อหาข้างในสูงเปลี่ยน */
+(function(){
+  var card=document.getElementById('pathCard'), btn=document.getElementById('pathBtn'),
+      body=document.getElementById('pathBody'), tx=document.getElementById('pathBtnTx'),
+      time=document.getElementById('pathTime');
+  if(!card||!btn||!body) return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var open=false, tid;
+
+  function setOpen(v){
+    open=v;
+    clearTimeout(tid);
+    btn.setAttribute('aria-expanded', v?'true':'false');
+    card.dataset.open = v?'1':'0';
+    tx.textContent = v ? 'เข้าใจแล้ว ย่อกลับ' : 'กลัวเรียนเองไม่ไหว? ลองอ่านตรงนี้ก่อน';
+    time.hidden = v;
+    var h = body.firstElementChild.offsetHeight;
+    if(v){
+      body.style.height = reduce ? 'auto' : h+'px';
+      if(!reduce) tid=setTimeout(function(){ if(open) body.style.height='auto'; },340);
+    } else {
+      if(!reduce){ body.style.height = h+'px'; body.offsetHeight; }
+      body.style.height='0';
+    }
+    try{ sessionStorage.setItem('mc_path', v?'1':'0'); }catch(e){}
+  }
+  btn.addEventListener('click', function(){
+    setOpen(!open);
+    /* ปิดแล้วให้หน้ากลับมาใกล้ปุ่มเดิม ไม่ให้กระโดดหาย */
+    if(!open){
+      var top=card.getBoundingClientRect().top;
+      if(top<0) card.scrollIntoView({behavior: reduce?'auto':'smooth', block:'start'});
+    }
+  });
+  document.getElementById('pathSeeAll').addEventListener('click', function(){
+    setOpen(false);
+    var g=document.querySelector('.lsgrid');
+    if(g) g.scrollIntoView({behavior: reduce?'auto':'smooth', block:'start'});
+  });
+
+  /* ปุ่มหลักชี้บทถัดไปที่ยังไม่จบ ถ้าระบบความคืบหน้าเดิมบอกได้ */
+  function aimCTA(){
+    var go=document.getElementById('pathGo');
+    var Q=window.MC_QUEST; if(!go||!Q) return;
+    var t=Q.track('learn'); if(!t) return;
+    var next=t.next(), n=t.count();
+    if(n===0) return;                                /* ยังไม่เริ่ม = คงปุ่มเดิม */
+    if(!next){                                       /* เรียนครบแล้ว — ส่งไปรับตราต่อ ไม่ใช่ชวนกลับไป LV.1 */
+      go.setAttribute('href','../card/');
+      go.textContent = '🎓 เรียนครบแล้ว — ไปรับตราบนการ์ด →';
+      return;
+    }
+    var LBL={'free-ai':'LV.1 เริ่มใช้ AI','prompts':'LV.5 สร้าง AI คู่หู','image-ai':'LV.2 สร้างภาพ',
+             'notebooklm':'LV.4 — บทติดดาว','clip-ai':'LV.3 สร้างวิดีโอ','first-web':'LV.6 สร้างเว็บแรก'};
+    go.setAttribute('href', next+'.html');
+    go.textContent = 'เรียนต่อ ' + (LBL[next]||next) + ' →';
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',aimCTA);
+  else aimCTA();
+  window.addEventListener('load', aimCTA);
+
+  try{ if(sessionStorage.getItem('mc_path')==='1') setOpen(true); }catch(e){}
+})();
+</script>
 <script defer src="../assets/quest.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded',function(){

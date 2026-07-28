@@ -178,12 +178,12 @@ def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical=''):
 
 # (slug, ชื่อบท) เรียงตามลำดับเรียน — ไฟล์จริงคือ classroom/<slug>.html
 LESSONS = [
-    ("free-ai",     "เครื่องมือฟรีที่ควรมีติดเครื่อง"),
-    ("prompts",     "สั่งงาน AI ให้ได้ดั่งใจ"),
-    ("image-ai",    "ทำภาพเอง ไม่ต้องจ้าง"),
-    ("notebooklm",  "ไฟล์เดียว แตกแขนงได้ทั้งงาน"),
-    ("clip-ai",     "คลิปสั้นจากของที่มีอยู่แล้ว"),
-    ("first-web",   "เว็บแรกของคุณ"),
+    ("free-ai",     "LV.1 เริ่มใช้ AI"),
+    ("image-ai",    "LV.2 สร้างภาพ"),
+    ("clip-ai",     "LV.3 สร้างวิดีโอ"),
+    ("notebooklm",  "LV.4 สร้าง Source — บทติดดาว"),
+    ("prompts",     "LV.5 สร้าง AI คู่หู"),
+    ("first-web",   "LV.6 สร้างเว็บแรก"),
 ]
 
 # รหัสที่ได้ตอนทำครบ = ชื่อของสิ่งสุดท้ายในเส้นนั้น จะได้รู้สึกว่าได้มาจริง ๆ
@@ -195,7 +195,7 @@ TRACKS = {
               'unit': 'ตอน', 'what': 'อ่าน',
               'items': [slug for _, _, _, slug, _, _ in EPISODES]},
     'learn': {'key': 'mc_learn', 'done': 'mc_learn_done', 'title': 'SCHOLAR',
-              'unit': 'คลาส', 'what': 'เรียน',
+              'unit': 'บท', 'what': 'เรียน',
               'items': [slug for slug, _ in LESSONS]},
 }
 
