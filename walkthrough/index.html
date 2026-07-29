@@ -70,6 +70,9 @@ em.hi{font-style:normal;color:rgb(var(--green));font-weight:600}
 strong{font-weight:700}
 
 /* ── พจนานุกรม ── */
+.gloss{display:flex;flex-wrap:wrap;gap:9px 14px;margin-top:20px;
+  background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px 22px}
+.gloss button{font-family:"Bai Jamjuree",sans-serif;font-size:14.5px}
 .term{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;overflow:hidden;margin-top:18px;
   box-shadow:0 1px 3px rgb(18 40 28/.05)}
 .term > .hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 22px 0}
@@ -264,7 +267,7 @@ footer a{color:rgb(var(--green));font-weight:600}
   <p class="lead">คำพวกนี้ไม่ใช่การเปรียบเทียบ — หลายคำมันข้ามมาจากอีกฝั่งจริง ๆ
      และพอรู้ว่ามันคือคำเดียวกัน คุณจะฟังคนอื่นคุยงานรู้เรื่องขึ้นทันที</p>
 
-  <div class="term">
+  <div class="term" id="deck">
     <div class="hd"><span class="en">DECK</span><span class="th">สำรับไพ่</span></div>
     <div class="bd">
       <div class="arrow">
@@ -281,7 +284,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="meta">
     <div class="hd"><span class="en">META</span><span class="th">Most Effective Tactic Available</span></div>
     <div class="bd">
       <div class="arrow">
@@ -324,7 +327,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="progression">
     <div class="hd"><span class="en">PROGRESSION</span><span class="th">เส้นทางการเก่งขึ้น</span></div>
     <div class="bd">
       <div class="arrow">
@@ -341,7 +344,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="build">
     <div class="hd"><span class="en">BUILD</span><span class="th">การจัดตัวละคร</span></div>
     <div class="bd">
       <div class="arrow">
@@ -356,7 +359,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="grind">
     <div class="hd"><span class="en">GRIND</span><span class="th">งานซ้ำที่ต้องผ่าน</span></div>
     <div class="bd">
       <div class="arrow">
@@ -371,7 +374,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="party">
     <div class="hd"><span class="en">PARTY &amp; GUILD</span><span class="th">ปาร์ตี้ กับ กิลด์</span></div>
     <div class="bd">
       <div class="arrow">
@@ -386,7 +389,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="patch">
     <div class="hd"><span class="en">PATCH · NERF · BUFF</span><span class="th">กติกาเปลี่ยน</span></div>
     <div class="bd">
       <div class="arrow">
@@ -538,6 +541,41 @@ footer a{color:rgb(var(--green));font-weight:600}
   </div>
 </div></section>
 
+<!-- ── อภิธานศัพท์ในเกม — มีเฉพาะหน้านี้กับบทที่ 7 ── -->
+<section><div class="wrap">
+  <h2 class="disp">อภิธานศัพท์</h2>
+  <p class="lead">คำที่เหลือในบ้านนี้ รวมไว้ที่เดียว — แตะคำไหนก็ได้ ขึ้นให้ทั้งความหมายทั่วไป
+     และความหมายที่เราใช้ในบ้านนี้ ไม่ต้องจำ เดินผ่านมาเปิดดูตอนไหนก็ได้</p>
+  <div class="gloss">
+    <button type="button" data-kw="CLASS">CLASS</button>
+    <button type="button" data-kw="ITEM">ITEM</button>
+    <button type="button" data-kw="QUEST">QUEST</button>
+    <button type="button" data-kw="MAIN QUEST">MAIN QUEST</button>
+    <button type="button" data-kw="SIDE QUEST">SIDE QUEST</button>
+    <button type="button" data-kw="LOADOUT">LOADOUT</button>
+    <button type="button" data-kw="BUILD">BUILD</button>
+    <button type="button" data-kw="META">META</button>
+    <button type="button" data-kw="PROGRESSION">PROGRESSION</button>
+    <button type="button" data-kw="DECK">DECK</button>
+    <button type="button" data-kw="GRIND">GRIND</button>
+    <button type="button" data-kw="SOURCE">SOURCE</button>
+    <button type="button" data-kw="MULTIPLY">MULTIPLY</button>
+    <button type="button" data-kw="SHARE">SHARE</button>
+    <button type="button" data-kw="ACHIEVEMENT">ACHIEVEMENT</button>
+    <button type="button" data-kw="TITLE">TITLE</button>
+    <button type="button" data-kw="PARTY">PARTY</button>
+    <button type="button" data-kw="GUILD">GUILD</button>
+    <button type="button" data-kw="GM">GM</button>
+    <button type="button" data-kw="WALKTHROUGH">WALKTHROUGH</button>
+    <button type="button" data-kw="BUFF">BUFF</button>
+    <button type="button" data-kw="NERF">NERF</button>
+    <button type="button" data-kw="PATCH">PATCH</button>
+    <button type="button" data-kw="MIN-MAX">MIN-MAX</button>
+    <button type="button" data-kw="SAVE">SAVE</button>
+    <button type="button" data-kw="SYNC">SYNC</button>
+  </div>
+</div></section>
+
 <footer data-mc-end>
   <p>🍀 myclover.com · walkthrough</p>
   <p style="margin-top:6px"><a href="../forge/">ทุกตอน</a> · <a href="../classroom/">ห้องเรียน</a> · <a href="../">กลับหน้าบ้าน</a> · <a href="../privacy/">ข้อมูลของคุณ</a></p>
@@ -546,6 +584,8 @@ footer a{color:rgb(var(--green));font-weight:600}
 </div><!-- /#doc -->
 
 <script defer src="../assets/quest.js"></script>
+<!-- อภิธานศัพท์ — ใส่เฉพาะหน้านี้กับบทที่ 7 เท่านั้น หน้าอื่นตั้งใจไม่ใช้ -->
+<script defer src="../assets/terms.js"></script>
 <script>
 /* หน้านี้เปิดให้คนที่อ่านการ์ตูนจบครบทุกตอน
    เป็นการล็อกฝั่งเบราว์เซอร์ — กันคนที่ยังไม่ได้อ่านไม่ให้เจอสปอยล์

@@ -212,6 +212,13 @@ footer{text-align:center;color:rgb(255 255 255/.42);font-size:12.5px;padding:44p
 footer a{color:rgb(var(--gold));font-weight:600}
 footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
 
+/* หน้านี้พื้นเข้ม คำศัพท์เลยใช้สีทองแทนเขียว จะได้ contrast พอ */
+.chapter{--kwc:190 148 66}
+.kwlist button{font-family:"Bai Jamjuree";font-weight:700;font-size:13px;
+  border:1px solid rgb(255 255 255/.2);border-radius:99px;padding:6px 14px;
+  color:rgb(var(--paper));border-bottom-style:solid}
+.kwlist button::after{background:rgb(190 148 66)}
+.loop .st b button{letter-spacing:.14em}
 @media(min-width:760px){ .loop{grid-template-columns:1fr 1fr} }
 /* จอแคบ ชื่อสกิลกินความกว้างจนคำอธิบายเหลือ 3 คำต่อบรรทัด — ให้ขึ้นบรรทัดใหม่แทน */
 @media(max-width:560px){
@@ -330,9 +337,9 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
       <div class="st"><b class="mono">LOGIN</b><p>เข้าไปในระบบ และรู้ว่ากำลังจะใช้เครื่องมือนี้ทำอะไร</p></div>
       <div class="st"><b class="mono">CREATE</b><p>สร้างผลลัพธ์แรกให้เกิดขึ้นก่อน ของชิ้นแรกยังไม่ต้องสมบูรณ์</p></div>
       <div class="st"><b class="mono">APPLY</b><p>เอาผลลัพธ์ออกไปใช้กับโลกจริง เพราะของที่ดูดีในหน้าจอ แต่ใช้จริงไม่ได้ ยังไม่จบ Quest</p></div>
-      <div class="st"><b class="mono">SOURCE</b><p>สร้างต้นฉบับ ข้อมูล และกติกาของตัวเอง เพื่อไม่ต้องเริ่มอธิบายใหม่จากศูนย์ทุกครั้ง</p></div>
-      <div class="st"><b class="mono">MULTIPLY</b><p>เปลี่ยนสิ่งที่เคยทำได้ 1 ครั้ง ให้ทำซ้ำ ขยายผล หรือส่งต่อได้ง่ายขึ้น</p></div>
-      <div class="st"><b class="mono">SHARE</b><p>ทำให้สิ่งที่คุณสร้างเดินทางต่อ แม้เจ้าของความรู้จะไม่ได้อยู่ตรงนั้น</p></div>
+      <div class="st"><b class="mono"><button type="button" data-kw="SOURCE">SOURCE</button></b><p>สร้างต้นฉบับ ข้อมูล และกติกาของตัวเอง เพื่อไม่ต้องเริ่มอธิบายใหม่จากศูนย์ทุกครั้ง</p></div>
+      <div class="st"><b class="mono"><button type="button" data-kw="MULTIPLY">MULTIPLY</button></b><p>เปลี่ยนสิ่งที่เคยทำได้ 1 ครั้ง ให้ทำซ้ำ ขยายผล หรือส่งต่อได้ง่ายขึ้น</p></div>
+      <div class="st"><b class="mono"><button type="button" data-kw="SHARE">SHARE</button></b><p>ทำให้สิ่งที่คุณสร้างเดินทางต่อ แม้เจ้าของความรู้จะไม่ได้อยู่ตรงนั้น</p></div>
     </div>
 
     <!-- เฉลยของบท 4 × บท 5 -->
@@ -380,7 +387,7 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
     </div>
     <p>คุณเรียกมันว่า</p>
     <div class="kwlist">
-      <span>Loadout</span><span>Build</span><span>META</span><span>Main Quest</span><span>Side Quest</span>
+      <button type="button" data-kw="LOADOUT">Loadout</button><button type="button" data-kw="BUILD">Build</button><button type="button" data-kw="META">META</button><button type="button" data-kw="MAIN QUEST">Main Quest</button><button type="button" data-kw="SIDE QUEST">Side Quest</button>
     </div>
     <p>คำเหล่านี้สั้น แต่ข้างในมี Mechanic ทั้งชุดอยู่แล้ว</p>
     <p class="tight">เวลาคุยกับ AI ก็เหมือนกัน ถ้าคุณบอกว่า</p>
@@ -393,8 +400,9 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
       ส่วนคำเฉพาะของบ้าน เช่น Source, Multiply หรือ First Item
       คุณเพียงกำหนดความหมายให้มัน 1 ครั้งใน Source ของคุณ
       หลังจากนั้นคุณกับ AI ก็ใช้ภาษาชุดเดียวกันได้</p>
-    <p>นี่คือเหตุผลที่บางคำในบ้านนี้มีสีต่างออกไป บางคำแตะแล้วเปิดคำอธิบาย
-      และบางคำกลับมาให้เห็นซ้ำในหลายหน้า</p>
+    <p>นี่คือเหตุผลที่บางคำในหน้านี้มีสีต่างออกไปและแตะแล้วเปิดคำอธิบายได้
+      เราใส่ไว้แค่สองที่ — ตรงนี้ กับ <button type="button" data-kw="WALKTHROUGH">Walkthrough</button>
+      เพราะคำพวกนี้ควรโผล่ตอนคุณพร้อมอ่านมันแล้ว ไม่ใช่โผล่ขวางตั้งแต่หน้าแรก</p>
     <p>เราไม่ได้ต้องการให้คุณพูดเหมือนเกมเมอร์</p>
     <p class="tight">เราอยากให้คุณเห็นว่า
       <strong>การตั้งชื่อสิ่งที่เกิดซ้ำได้ดี ช่วยประหยัดเวลาชีวิตได้มากแค่ไหน</strong></p>
@@ -423,8 +431,11 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
     <p>เว็บที่คุณกำลังอ่าน การ์ตูน ระบบ Progress การ์ดประจำตัว ข้อความ ภาพ
       และกติกาที่เชื่อมทุกหน้าเข้าด้วยกัน</p>
     <p class="tight">ไม่ได้เกิดจากเครื่องมือวิเศษ 1 ตัว</p>
-    <p><strong>มันเกิดจากการจัด Party</strong> แต่ละคนเล่น Class ของตัวเอง</p>
-    <p>ไม่มีคะแนนจัดอันดับว่าใครเก่งที่สุด นี่เป็นเพียง Loadout ที่ GM ใช้สร้างบ้านหลังนี้</p>
+    <p><strong>มันเกิดจากการจัด <button type="button" data-kw="PARTY">Party</button></strong>
+      แต่ละคนเล่น <button type="button" data-kw="CLASS">Class</button> ของตัวเอง</p>
+    <p>ไม่มีคะแนนจัดอันดับว่าใครเก่งที่สุด นี่เป็นเพียง
+      <button type="button" data-kw="LOADOUT">Loadout</button> ที่
+      <button type="button" data-kw="GM">GM</button> ใช้สร้างบ้านหลังนี้</p>
 
     <button type="button" class="party-open disp" id="partyBtn"
             aria-haspopup="dialog">⚔️ ชมปาร์ตี้ที่ใช้สร้างบ้านหลังนี้</button>
@@ -470,7 +481,7 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
     <div class="reveal-box" style="margin-top:34px">
       <span class="tag mono">GUILD X</span>
       <h3 class="disp">X ไม่ได้แปลว่า Extra</h3>
-      <p><span class="kbd">X = Multiplier</span> — ตัวคูณ</p>
+      <p><span class="kbd">X = <button type="button" data-kw="MULTIPLY">Multiplier</button></span> — ตัวคูณ</p>
       <p>ห้องที่ชื่อ Guild X ตั้งชื่อจากสิ่งเดียวที่เราสนใจจริง ๆ คือตัวคูณ
         ไม่ใช่การทำเยอะขึ้น แต่คือการทำครั้งเดียวแล้วให้มันทำงานต่อได้หลายรอบ</p>
       <p>Source คือตัวคูณ · Workflow คือตัวคูณ · Keyword ที่ตั้งไว้ดีก็เป็นตัวคูณ</p>
@@ -573,6 +584,8 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
 </div>
 
 <script src="../../assets/quest.js" defer></script>
+<!-- อภิธานศัพท์ — ใส่เฉพาะหน้านี้กับ Walkthrough เท่านั้น หน้าอื่นตั้งใจไม่ใช้ -->
+<script src="../../assets/terms.js" defer></script>
 <script>
 /* ═══════════════════════════════════════════════════════
    บทที่ 7 — Boss Stage
