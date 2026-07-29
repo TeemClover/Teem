@@ -535,9 +535,22 @@ body.js .pickgrid.shown > .pk{animation:dealOut .6s cubic-bezier(.22,1,.36,1) bo
 footer{text-align:center;padding:52px 0 60px;color:rgb(var(--muted));font-size:13px}
 .foot-links{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;margin:16px 0 20px;font-weight:600}
 .foot-links a{color:rgb(var(--green))}
-.clover-foot{font-size:30px;display:inline-block;cursor:pointer;user-select:none;transition:transform .3s}
+/* โคลเวอร์ลับท้ายหน้า — 1 ใน 10 ต่อการกดหนึ่งครั้ง */
+.clover-foot{font-size:34px;line-height:1;display:inline-block;cursor:pointer;user-select:none;
+  background:none;border:0;padding:6px 10px;border-radius:50%;transition:transform .3s}
 .clover-foot:hover{transform:rotate(14deg) scale(1.1)}
-.egg2{display:none;color:rgb(var(--gold));font-weight:600;margin-top:12px;font-size:13px}
+.clover-foot:focus-visible{outline:2px solid rgb(var(--gold));outline-offset:3px}
+.clover-foot.pop{animation:cvPop .42s cubic-bezier(.22,1,.36,1)}
+.clover-foot.won{filter:drop-shadow(0 0 14px rgb(190 148 66/.85))}
+.clover-foot.winpop{animation:cvWin .9s cubic-bezier(.22,1,.36,1)}
+@keyframes cvPop{0%{transform:scale(1)}42%{transform:scale(1.28) rotate(-12deg)}100%{transform:scale(1)}}
+@keyframes cvWin{0%{transform:scale(1)}30%{transform:scale(1.55) rotate(16deg)}60%{transform:scale(1.15) rotate(-8deg)}100%{transform:scale(1)}}
+.sec-help{font-size:12.5px;color:rgb(var(--muted));margin-top:2px}
+.sec-n{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;margin-top:7px;color:rgb(var(--muted))}
+.sec-n b{font-size:21px;color:rgb(var(--ink))}
+.sec-n.won{color:rgb(var(--gold))}
+.sec-n.won b{color:rgb(var(--gold));font-size:25px}
+.egg2{display:none;color:rgb(var(--gold));font-weight:600;margin:12px auto 0;font-size:13px;max-width:46ch;line-height:1.65}
 
 /* ═══════════ reveal ═══════════ */
 body.js .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
@@ -551,6 +564,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   .bump .l,.bump .r,.bump:hover .l,.bump:hover .r{transform:none;transition:none}
   .bump .tap::after{animation:none}
   .bump.hit .spark{animation:none}
+  .clover-foot,.clover-foot.pop,.clover-foot.winpop,.clover-foot:hover{animation:none;transform:none}
   body.js .glhfbody{transition:none}
   body.js .glhf.opened .stg{animation:none}
   /* คนที่ตั้งค่าเครื่องว่าไม่อยากเห็นภาพขยับ — โชว์ผลลัพธ์เลย ไม่ต้องมีแอนิเมชัน */
@@ -613,7 +627,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     </form>
     <div class="wrong" id="wrongMsg" role="status" aria-live="polite"></div>
     <p class="hint">ใครเจอเรา คนนั้นโชคดี</p>
-    <p class="egg" id="gateEgg">🍀 คุณเจอความลับแรกของบ้าน — จำคำนี้ไว้: <b>"โชคดีมีจริง"</b></p>
+    <p class="egg" id="gateEgg">🍀 ช่างสังเกตนี่ — ในบ้านมีโคลเวอร์อีกใบซ่อนอยู่ที่ท้ายหน้าแรก กดได้ทีละครั้ง เจอจริงประมาณ 1 ใน 10</p>
   </div>
 </div>
 
@@ -810,7 +824,8 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <div class="chain" aria-hidden="true"><span>⛓️ ล็อกอยู่</span></div>
     </div>
   </div>
-  <p class="hand-note reveal">🍀 ทุกอย่างข้างบนนี้ฟรีจริง ไม่มีบัตรเครดิต ไม่มีทดลองใช้ 7 วัน</p>
+  <p class="hand-note reveal">🍀 ทุกอย่างข้างบนนี้ฟรีจริง ไม่มีบัตรเครดิต ไม่มีทดลองใช้ 7 วัน<br>
+    <small style="color:rgb(var(--muted));font-weight:500">เลข 01–06 ติดอยู่กับใบนั้น ๆ ไม่ได้ติดกับตำแหน่ง — กองถูกสับใหม่ทุกครั้ง เลขเลยไม่เรียง</small></p>
 
   <div class="lessons">
     <a class="ls reveal" style="--d:.04s" href="classroom/free-ai.html"><span class="lv">LV.1</span><span><b>AI ฟรีที่ควรมีติดเครื่อง</b><small>Gemini + NotebookLM เริ่มจากศูนย์</small></span></a>
@@ -953,7 +968,10 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 </div></section>
 
 <footer><div class="wrap">
-  <span class="clover-foot" id="footClover" title="ลองกดดูสี่ครั้ง">🍀</span>
+  <button type="button" class="clover-foot" id="footClover" data-ga="secret_clover"
+          aria-describedby="secretHelp">🍀</button>
+  <p class="sec-help" id="secretHelp">โคลเวอร์สี่แฉกมีจริงประมาณ 1 ใน 10 — กดดูสิว่าคุณต้องกดกี่ครั้ง</p>
+  <p class="sec-n" id="secretN" role="status" aria-live="polite" hidden></p>
   <div class="foot-links">
     <a href="paths/">เลือกสายของคุณ</a>
     <a href="forge/">เรื่องเล่าจากโรงตีเหล็ก</a>
@@ -966,7 +984,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   </div>
   <p>myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p>
   <p style="margin-top:5px">คุยกับเจ้าของบ้าน: <a href="mailto:team@myclover.com" style="color:rgb(var(--green));font-weight:600">team@myclover.com</a></p>
-  <p class="egg2" id="footEgg">🍀 ผู้ค้นพบห้องลับ — คุณได้ตรา "ผู้ค้นพบ" ไปติดบนการ์ดประจำตัวแล้ว ลองไปดูที่ <a href="card/" style="color:rgb(var(--gold));text-decoration:underline">เครื่องทำการ์ด</a></p>
+  <p class="egg2" id="footEgg">🍀 เจอโคลเวอร์สี่แฉกแล้ว — ได้ตรา “ผู้ค้นพบ” ไปติดบน<a href="card/" style="color:rgb(var(--gold));text-decoration:underline">การ์ดประจำตัว</a> พร้อมเลขจำนวนครั้งของคุณ<br>จำคำนี้ไว้: <b>“โชคดีมีจริง”</b></p>
   <p style="margin-top:18px;color:rgb(var(--ink)/.34);font-size:12px">© 2010–2026 myclover · #glhf — Good Luck, Have Fun</p>
 </div></footer>
 
@@ -1039,7 +1057,43 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     }
   }
 
-  /* easter egg: กดโคลเวอร์ 4 ครั้ง → ได้ตรา "ผู้ค้นพบ" ไปขึ้นบนการ์ดประจำตัว */
+  /* โคลเวอร์หน้าประตู — กด 4 ครั้งได้แค่คำใบ้ ไม่ได้ตรา
+     ตราจริงอยู่ที่โคลเวอร์ท้ายหน้าแรก ต้องดวงถึงเท่านั้น */
+  var gc=document.getElementById('gateClover'), gn=0;
+  if(gc) gc.addEventListener('click',function(){
+    if(++gn>=4){ document.getElementById('gateEgg').style.display='block'; gn=0; }
+  });
+})();
+
+/* สุ่มด้วย crypto ถ้าเบราว์เซอร์มีให้ ไม่มีก็ถอยไปใช้ Math.random
+   ใช้ร่วมกันทั้งโคลเวอร์ลับและการสับไพ่ จะได้ไม่เขียนซ้ำสองที่ */
+window.mcRandom=function(){
+  try{
+    if(window.crypto && window.crypto.getRandomValues){
+      var a=new Uint32Array(1); window.crypto.getRandomValues(a);
+      return a[0]/4294967296;
+    }
+  }catch(e){}
+  return Math.random();
+};
+
+/* ═══════════════════════════════════════════════════════
+   🍀 โคลเวอร์ลับ — โอกาสเจอ 1 ใน 10 ต่อการกดหนึ่งครั้ง
+   ยังไม่กดจะไม่เห็นตัวเลข กดพลาดนับเพิ่ม เจอแล้วเลขหยุดนิ่งเป็นสีทอง
+   เลขนี้คือของเล่นให้เอาไปอวดกัน — ได้ 1 คือดวงดี ได้ 47 ก็ตลกไปอีกแบบ
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var btn=document.getElementById('footClover');
+  if(!btn) return;
+  var out=document.getElementById('secretN'), egg=document.getElementById('footEgg');
+  var HIT=0.1;
+
+  function get(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+  function put(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+  var n=parseInt(get('mc_seek_n','0'),10); if(!(n>0)) n=0;
+  var hit=get('mc_seek_hit','')==='1';
+
   function grantSeeker(){
     try{
       var t=JSON.parse(localStorage.getItem('mc_titles')||'[]');
@@ -1047,15 +1101,43 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       if(t.indexOf('SEEKER')<0){ t.push('SEEKER'); localStorage.setItem('mc_titles',JSON.stringify(t)); }
     }catch(e){}
   }
-  function eggify(id,eggId){
-    var n=0, el=document.getElementById(id);
-    if(!el) return;
-    el.addEventListener('click',function(){
-      if(++n>=4){ document.getElementById(eggId).style.display='block'; n=0; grantSeeker(); }
-    });
+
+  function paint(){
+    if(!n){ out.hidden=true; out.innerHTML=''; return; }
+    out.hidden=false;
+    out.className='sec-n'+(hit?' won':'');
+    out.innerHTML = hit
+      ? 'เจอโคลเวอร์สี่แฉกตอนกดครั้งที่ <b>'+n+'</b> 🍀'
+      : 'กดไปแล้ว <b>'+n+'</b> ครั้ง — ยังไม่เจอ';
+    if(hit){ egg.style.display='block'; btn.classList.add('won'); }
   }
-  eggify('gateClover','gateEgg');
-  eggify('footClover','footEgg');
+
+  /* แอนิเมชันสั้น ๆ ต้องถอดคลาสก่อนใส่ใหม่ ไม่งั้นกดรัวแล้วไม่เล่นซ้ำ */
+  var t=null;
+  function pop(cls){
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    btn.classList.remove('pop','winpop');
+    void btn.offsetWidth;
+    btn.classList.add(cls);
+    clearTimeout(t);
+    t=setTimeout(function(){ btn.classList.remove('pop','winpop'); },1000);
+  }
+
+  btn.addEventListener('click',function(){
+    if(hit){ pop('pop'); return; }          /* เจอแล้ว เลขหยุดนิ่ง กดต่อก็ไม่ขยับ */
+    n++; put('mc_seek_n',String(n));
+    if(window.mcRandom() < HIT){
+      hit=true; put('mc_seek_hit','1'); put('mc_seek_at',String(Date.now()));
+      grantSeeker();
+      pop('winpop');
+      if(window.mcEvent) window.mcEvent('secret_found',{item:String(n)});
+    } else {
+      pop('pop');
+    }
+    paint();
+  });
+
+  paint();
 })();
 
 /* ═══════════════════════════════════════════════════════
@@ -1112,9 +1194,28 @@ document.addEventListener('click',function(e){
 (function(){
   function add(el,c){ if(el && el.className.indexOf(c)<0) el.className+=' '+c; }
 
+  /* สับกองจริงด้วย Fisher–Yates ทุกครั้งที่แจก รวมถึงมือแรก
+     เลข 01–06 พิมพ์ติดอยู่กับใบนั้น ๆ ไม่ได้ติดกับตำแหน่ง
+     เลขที่ออกมาไม่เรียงคือหลักฐานว่ากองถูกสับ ไม่ใช่หน้าเว็บพัง */
+  function shuffle(deck){
+    var cards=Array.prototype.slice.call(deck.children);
+    if(cards.length<2) return;
+    for(var i=cards.length-1;i>0;i--){
+      var j=Math.floor(window.mcRandom()*(i+1));
+      var tmp=cards[i]; cards[i]=cards[j]; cards[j]=tmp;
+    }
+    var frag=document.createDocumentFragment();
+    cards.forEach(function(c,i){
+      c.style.setProperty('--dl',(i*0.09).toFixed(2)+'s');  /* ไล่จังหวะแจกตามลำดับใหม่ */
+      frag.appendChild(c);
+    });
+    deck.appendChild(frag);
+  }
+
   /* แจกไพ่ — เล่นซ้ำได้ ต้องถอดคลาสแล้วบังคับให้เบราว์เซอร์คำนวณใหม่ก่อน
      ไม่งั้นแอนิเมชันจะไม่เริ่มรอบสอง */
   function deal(el){
+    shuffle(el);
     el.className=el.className.replace(/\s*dealt/,'');
     void el.offsetWidth;
     add(el,'dealt');
@@ -1273,8 +1374,8 @@ document.addEventListener('click',function(e){
       document.querySelectorAll('.hand .pc').forEach(function(c){ c.classList.remove('match'); });
       grid.scrollIntoView({behavior:'smooth',block:'center'});
     });
-    /* ไฮไลต์การ์ดที่ตรงกับสาย — ไม่สลับลำดับ เพราะการ์ดมีเลข 01-06 พิมพ์อยู่
-       สลับที่แล้วเลขจะเรียงมั่วจนดูเหมือนหน้าเว็บพัง */
+    /* ไฮไลต์การ์ดที่ตรงกับสาย — แค่ทำเครื่องหมายบนใบนั้น ห้ามย้ายขึ้นใบแรก
+       ลำดับต้องเป็นของการสับไพ่ล้วน ๆ ระบบแค่ช่วยชี้ว่าใบไหนเหมาะกับคุณ */
     var map={THINKER:'forge/',TASTER:'club/',KEEPER:'club/',MAKER:'classroom/'};
     document.querySelectorAll('.hand .pc').forEach(function(c){ c.classList.remove('match'); });
     var want=document.querySelector('.hand .pc[href="'+map[k]+'"]');
