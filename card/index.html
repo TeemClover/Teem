@@ -172,6 +172,37 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .mc b{display:block;font-family:"Bai Jamjuree";font-size:16px;margin:7px 0 5px}
 .mc p{font-size:13.5px;color:rgb(var(--muted))}
 
+/* ═══════════ เพลงประจำบ้าน + แถบควบคุม ═══════════
+   ลอยอยู่มุมล่างซ้าย ไม่ทับปุ่มบันทึกการ์ดที่อยู่ในเนื้อหน้า
+   เบราว์เซอร์สมัยนี้ห้ามเล่นเสียงเองก่อนผู้ใช้แตะหน้าจอ
+   ถ้าโดนห้ามจะขึ้นปุ่มชวนกดแทน ไม่ใช่เงียบไปเฉย ๆ โดยไม่บอกอะไร */
+.hud{position:fixed;left:14px;bottom:14px;z-index:80;display:flex;align-items:center;gap:10px;
+  background:rgb(var(--deep)/.94);color:#fff;border:1px solid rgb(190 148 66/.42);
+  border-radius:999px;padding:9px 16px 9px 11px;cursor:pointer;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:13px;
+  box-shadow:0 14px 30px -16px rgb(0 0 0/.6);backdrop-filter:blur(8px);
+  transition:transform .18s,border-color .18s}
+.hud:hover{transform:translateY(-2px);border-color:rgb(var(--gold))}
+.hud:active{transform:translateY(0) scale(.97)}
+.hud .ico{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:rgb(190 148 66/.2);font-size:14px}
+.hud .lbl{white-space:nowrap}
+.hud .eq{display:none;align-items:flex-end;gap:2px;height:14px}
+.hud .eq i{width:3px;border-radius:2px;background:rgb(var(--gold));height:5px;
+  animation:eqBar .9s ease-in-out infinite}
+.hud .eq i:nth-child(2){animation-delay:.15s}
+.hud .eq i:nth-child(3){animation-delay:.3s}
+.hud .eq i:nth-child(4){animation-delay:.45s}
+@keyframes eqBar{0%,100%{height:4px}50%{height:14px}}
+.hud.playing .eq{display:flex}
+.hud.playing .ico{background:rgb(190 148 66/.34)}
+/* ยังไม่ได้เล่นเพราะเบราว์เซอร์ห้าม — กะพริบชวนให้กด */
+.hud.blocked{animation:hudCall 2s ease-in-out infinite}
+@keyframes hudCall{0%,100%{box-shadow:0 14px 30px -16px rgb(0 0 0/.6)}
+                   50%{box-shadow:0 14px 30px -16px rgb(0 0 0/.6),0 0 0 6px rgb(190 148 66/.18)}}
+@media(max-width:520px){.hud{left:10px;bottom:10px;padding:8px 14px 8px 9px;font-size:12.5px}}
+@media(prefers-reduced-motion:reduce){.hud.blocked{animation:none}.hud .eq i{animation:none;height:9px}}
+
 footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:38px 0 52px}
 footer a{color:rgb(var(--green));font-weight:600}
 
@@ -275,7 +306,7 @@ body.js .reveal.in{opacity:1;transform:none}
       <p class="bnote full" id="ball" hidden>🏆 ครบทุกตราแล้ว — คุณเดินดูบ้านหลังนี้จนทั่วจริง ๆ</p>
       <div class="coderow">
         <input type="text" id="guildCode" placeholder="มีรหัส? กรอกตรงนี้" autocomplete="off">
-        <button type="button" id="guildBtn" class="disp">ใช้รหัส</button>
+        <button type="button" id="guildBtn" data-ga="code_try" class="disp">ใช้รหัส</button>
       </div>
       <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
       <p class="hint" style="margin-top:12px">ยังไม่มีรหัสเลยใช่ไหมครับ — <a href="../forge/">อ่านการ์ตูนให้ครบทุกตอน</a> แล้วจะได้รหัสแรกไปใส่ตรงนี้</p>
@@ -337,7 +368,7 @@ body.js .reveal.in{opacity:1;transform:none}
         <div class="hp" aria-hidden="true"><label for="website">อย่ากรอกช่องนี้</label>
           <input type="text" id="website" tabindex="-1" autocomplete="off"></div>
 
-        <button type="submit" class="regbtn disp" id="regBtn">🍀 ลงทะเบียน</button>
+        <button type="submit" class="regbtn disp" id="regBtn" data-ga="register_submit">🍀 ลงทะเบียน</button>
         <div class="codemsg" id="regMsg" role="status" aria-live="polite"></div>
         <p class="hint" style="margin-top:10px">เราเก็บแค่ชื่อ อีเมล สาย ตรา และข้อความบนการ์ดของคุณ —
           <b>ไม่เก็บเบอร์โทร ที่อยู่ วันเกิด หรือข้อมูลสุขภาพใด ๆ</b></p>
@@ -353,9 +384,9 @@ body.js .reveal.in{opacity:1;transform:none}
     </div>
 
     <div class="acts">
-      <button type="button" class="abtn main" id="dlPortrait">⬇️ บันทึกการ์ด (แนวตั้ง)</button>
+      <button type="button" class="abtn main" id="dlPortrait" data-ga="card_save:portrait">⬇️ บันทึกการ์ด (แนวตั้ง)</button>
       <div class="two">
-        <button type="button" class="abtn" id="dlLandscape">🖥 แนวนอน</button>
+        <button type="button" class="abtn" id="dlLandscape" data-ga="card_save:landscape">🖥 แนวนอน</button>
         <button type="button" class="abtn" id="openTab">🔎 เปิดรูป</button>
       </div>
       <div class="two">
@@ -380,6 +411,15 @@ body.js .reveal.in{opacity:1;transform:none}
   </div>
 </div></section>
 
+
+<!-- เพลงประจำบ้าน — preload="none" จะได้ไม่กินเน็ตของคนที่ไม่อยากฟัง -->
+<audio id="song" src="../assets/audio/clover-song.mp3" loop preload="none"></audio>
+<button type="button" class="hud" id="musicBtn" data-ga="music" aria-pressed="false">
+  <span class="ico" id="musicIco" aria-hidden="true">▶</span>
+  <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <span class="lbl" id="musicLbl">เปิดเพลงประจำบ้าน</span>
+</button>
+
 <footer>
   <p>🍀 myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p>
   <p style="margin-top:6px">การ์ดใบนี้สร้างและเก็บอยู่ในเครื่องของคุณเองทั้งหมด</p>
@@ -387,6 +427,22 @@ body.js .reveal.in{opacity:1;transform:none}
 </footer>
 
 <script>
+/* ส่งเหตุการณ์ไป Google Analytics — ใช้ดูว่าคนใช้ปุ่มไหนบ้าง ไม่ส่งข้อมูลส่วนตัว */
+window.mcEvent=function(name,params){
+  try{ if(typeof gtag==='function') gtag('event',name,params||{}); }catch(e){}
+};
+document.addEventListener('click',function(e){
+  var el=e.target;
+  while(el && el!==document.body){
+    var tag=el.getAttribute && el.getAttribute('data-ga');
+    if(tag){
+      var i=tag.indexOf(':');
+      window.mcEvent(i<0?tag:tag.slice(0,i), i<0?{}:{item:tag.slice(i+1)});
+      return;
+    }
+    el=el.parentNode;
+  }
+},{passive:true});
 (function(){
 "use strict";
 
@@ -1042,7 +1098,7 @@ function regMailto(d){
          '&body='+encodeURIComponent(body);
 }
 
-function regDone(d,viaMail){
+function regDone(d,viaMail,memberNo){
   ls.set('mc_name',d.name); ls.set('mc_email',d.email);
   /* รู้จักบ้านนี้มาก่อนปี 2023 = ศิษย์เก่าตัวจริง
      "จำไม่ได้" ก็นับ เพราะเขายืนยันเองว่ารู้จักบ้านนี้มาก่อน แค่จำปีไม่ได้ */
@@ -1057,7 +1113,8 @@ function regDone(d,viaMail){
   } else {
     ls.set('mc_registered','1');
     regMsg.innerHTML='🍀 ลงทะเบียนเรียบร้อย — การ์ดของคุณถูกบันทึกเข้าระบบสมาชิกแล้ว'+
-      (d.news?' และเราจะส่งข่าวของบ้านไปที่อีเมลนี้':' เราจะไม่ส่งอีเมลอะไรไปนะครับ')+
+      (/^MC-\d{4}-\d+$/.test(memberNo||'')?' เลขสมาชิกของคุณคือ <b>'+memberNo+'</b>':'')+
+      (d.news?'<br>เราจะส่งข่าวของบ้านไปที่อีเมลนี้':'<br>เราจะไม่ส่งอีเมลอะไรไปนะครับ')+
       '<br>บันทึกการ์ดเป็นรูปเก็บไว้ได้เลยที่ปุ่มด้านขวา';
     regBtn.textContent='🍀 ลงทะเบียนแล้ว';
     regBtn.disabled=true;
@@ -1082,13 +1139,28 @@ regForm.addEventListener('submit',function(e){
     window.location.href=regMailto(d);
     return;
   }
+  d.consent=true;                       /* ฝั่งเซิร์ฟเวอร์บังคับให้มีค่านี้ */
   fetch(REG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
-    .then(function(r){ if(!r.ok) throw new Error(r.status); return r; })
-    .then(function(){ regDone(d); })
-    .catch(function(){
-      regBtn.disabled=false;
-      regMsg.className='codemsg no';
-      regMsg.innerHTML='ส่งไม่สำเร็จ ลองใหม่อีกครั้ง หรือเขียนมาหาเราตรง ๆ ที่ <a href="mailto:'+TEAM_EMAIL+'">'+TEAM_EMAIL+'</a> ครับ';
+    .then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){
+        if(!r.ok || !j.ok){ var e=new Error(j.error||r.status); e.info=j; e.status=r.status; throw e; }
+        return j;
+      });
+    })
+    .then(function(j){ regDone(d,false,j.member_no); })
+    .catch(function(e){
+      var s=e&&e.status;
+      /* กรอกผิดเอง (400) หรือกดรัวเกินไป (429) — บอกให้แก้ ไม่ต้องเด้งอีเมล */
+      if(s===400||s===429){
+        regBtn.disabled=false;
+        regMsg.className='codemsg no';
+        regMsg.textContent=(e.info&&e.info.message)||'ส่งไม่สำเร็จ ลองเช็กข้อมูลอีกครั้งนะครับ';
+        return;
+      }
+      /* หลังบ้านล่ม เน็ตมีปัญหา หรือยังไม่ได้ผูกฐานข้อมูล
+         ไม่ปล่อยให้การลงทะเบียนหายไปเฉย ๆ — สลับไปทางอีเมลให้เลย */
+      regDone(d,true);
+      window.location.href=regMailto(d);
     });
 });
 
@@ -1192,6 +1264,86 @@ if(document.fonts && document.fonts.ready){ document.fonts.ready.then(render); }
 })();
 
 })();
+</script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   เพลงประจำบ้าน
+
+   เบราว์เซอร์ทุกวันนี้ห้ามเล่นเสียงเองก่อนที่ผู้ใช้จะแตะหน้าจอ
+   เราเลยลองเล่นก่อน ถ้าโดนห้ามค่อยรอจังหวะที่ผู้ใช้แตะอะไรสักอย่าง
+   แล้วเริ่มให้เอง — และปุ่มจะกะพริบชวนกดไว้ระหว่างนั้น
+
+   ใครกดปิดแล้ว รอบหน้าจะไม่เล่นให้อีก จนกว่าจะกดเปิดเอง
+   ═══════════════════════════════════════════════════════════ */
+(function(){
+  var au=document.getElementById('song'), btn=document.getElementById('musicBtn'),
+      ico=document.getElementById('musicIco'), lbl=document.getElementById('musicLbl');
+  if(!au||!btn) return;
+
+  var want=false;
+  function pref(){ try{ return localStorage.getItem('mc_music')||''; }catch(e){ return ''; } }
+  function save(v){ try{ localStorage.setItem('mc_music',v); }catch(e){} }
+  function cls(c,on){
+    var re=new RegExp('(^|\\s)'+c+'(?=\\s|$)','g');
+    btn.className=btn.className.replace(re,' ').replace(/\s+/g,' ').replace(/^ | $/g,'')+(on?' '+c:'');
+  }
+  function paint(state){
+    var on=state==='playing';
+    cls('playing',on);
+    cls('blocked',state==='blocked');
+    ico.textContent = on ? '⏸' : '▶';
+    lbl.textContent = on ? 'เพลงประจำบ้าน · กดเพื่อหยุด'
+                         : (state==='blocked' ? 'แตะเพื่อเปิดเพลงประจำบ้าน' : 'เปิดเพลงประจำบ้าน');
+    btn.setAttribute('aria-pressed',on?'true':'false');
+  }
+
+  function play(fromUser){
+    if(fromUser) save('on');
+    var pr=au.play();
+    if(pr && pr.then){
+      pr.then(function(){ paint('playing'); })
+        .catch(function(){ want=false; paint('blocked'); armGesture(); });
+    } else { paint('playing'); }
+  }
+  function pause(){ au.pause(); paint('paused'); save('off'); }
+
+  /* เล่นให้อัตโนมัติตอนผู้ใช้แตะอะไรก็ได้ครั้งแรก — ผูกครั้งเดียวแล้วถอดทิ้ง */
+  var armed=false;
+  function armGesture(){
+    if(armed) return;
+    armed=true;
+    function go(){
+      document.removeEventListener('pointerdown',go);
+      document.removeEventListener('keydown',go);
+      if(pref()!=='off') play(false);
+    }
+    document.addEventListener('pointerdown',go,{once:true});
+    document.addEventListener('keydown',go,{once:true});
+  }
+
+  /* เก็บ "ความตั้งใจ" ไว้เอง ไม่อ่าน au.paused ตอนกด
+     เพราะ play() เป็นงานที่ใช้เวลา ถ้ากดรัว ๆ แล้วอ่านสถานะจริงจะสลับผิดจังหวะ */
+  btn.addEventListener('click',function(){
+    want=!want;
+    if(want){ play(true); window.mcEvent&&window.mcEvent('music',{item:'play'}); }
+    else    { pause();    window.mcEvent&&window.mcEvent('music',{item:'pause'}); }
+  });
+  /* สถานะที่โชว์ยึดจากตัวเล่นจริงเสมอ กันกรณีระบบสั่งหยุดเอง */
+  au.addEventListener('play', function(){ want=true;  paint('playing'); });
+  au.addEventListener('pause',function(){ want=false; paint('paused'); });
+
+  paint('paused');
+  if(pref()!=='off') play(false);   /* ลองเล่นเลย ถ้าโดนห้ามจะไปรอจังหวะแตะเอง */
+})();
+</script>
+
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
 </script>
 <!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
 </body>

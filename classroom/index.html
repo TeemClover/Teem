@@ -18,7 +18,8 @@ img{max-width:100%}
 .wrap{max-width:800px;margin:0 auto;padding:0 20px}
 nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.94);backdrop-filter:blur(8px);border-bottom:1px solid rgb(var(--ink)/.08)}
 nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
-.bk{font-family:"Bai Jamjuree",sans-serif;font-weight:700;color:rgb(var(--green))}
+.bk{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:18px;color:rgb(var(--ink))}
+.bk em{font-style:normal;color:rgb(var(--green))}
 .bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
 .bk2:hover{color:rgb(var(--green))}
 .head{background:rgb(var(--deep));color:#fff;border-radius:20px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative}
@@ -184,7 +185,7 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 </head>
 <body>
 <nav class="top"><div class="wrap">
-  <a class="bk disp" href="../">🍀 myclover</a>
+  <a class="bk disp" href="../">🍀 my<em>clover</em></a>
   <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
 </div></nav>
 <div class="wrap">
@@ -454,6 +455,14 @@ document.addEventListener('DOMContentLoaded',function(){
     } else { b.textContent=t; }
   });
 });
+</script>
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
 </script>
 <!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
 </body>
