@@ -173,6 +173,9 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   border-radius:9px;padding:8px 13px;font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
   cursor:pointer;min-height:36px}
 .cbox .cp:hover{background:rgb(190 148 66/.3);border-color:rgb(var(--gold))}
+.cmeta{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.cmeta span{font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.04em;
+  border:1px solid rgb(190 148 66/.45);border-radius:99px;padding:6px 14px;color:rgb(var(--gold))}
 .cgo{display:inline-flex;align-items:center;gap:8px;background:rgb(var(--gold));color:rgb(var(--deep));
   border-radius:13px;padding:14px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
   margin-top:18px;min-height:44px;transition:transform .18s,filter .18s}
@@ -350,18 +353,21 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
     </div>
   </a>
 </div>
+<!-- เรียนครบ 6 บทแล้วไม่ได้ตราทันที — สิ่งที่ได้คือด่านบอสที่ไม่อยู่ในแผนการสอน
+     เผยแบบสงบ ๆ ไม่มีแฟลช ไม่มีเสียง ตามกฎของด่าน -->
 <div class="cfinish" data-mc-done="learn" hidden>
   <span class="fl">🎓 เรียนครบทั้ง 6 คลาสแล้ว</span>
-  <b class="hd disp">ตอนนี้คุณติดอาวุธครบมือแล้ว</b>
-  <p>ตั้งแต่เครื่องมือฟรีที่ควรมีติดเครื่อง จนถึงเว็บแรกที่คุณสร้างเอง<br>
-     ทุกอย่างในบ้านหลังนี้ก็สร้างด้วยเครื่องมือชุดเดียวกับที่คุณเพิ่งเรียนจบ</p>
-  <div class="cbox">
-    <span class="lb">รหัสของคุณ</span>
-    <code id="lcode">FIRSTWEB</code>
-    <button type="button" class="cp" id="lcopy">คัดลอก</button>
+  <b class="hd disp">BOSS STAGE UNLOCKED</b>
+  <p>บทที่ไม่ได้อยู่ในแผนการสอน<br><br>
+     ด่านนี้ไม่มีวิดีโอ ไม่มี Prompt ให้คัดลอก ไม่มีแบบฝึกหัด<br>
+     มีเพียงการอ่านเงียบ ๆ ให้จบ</p>
+  <div class="cmeta">
+    <span>⏱ 8–10 นาที</span>
+    <span>📖 อ่านอย่างเดียว</span>
+    <span>🏅 Reward: AWAKEN</span>
   </div>
-  <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>🎓 ติดอาวุธครบมือ</b> ขึ้นบนการ์ดของคุณ</p>
-  <a class="cgo disp" href="../card/">⚡ ไปทำการ์ดของคุณ</a>
+  <p class="sm">อ่านจบแล้วจะได้ตรา <b>🌅 ผู้ตื่นรู้</b> ขึ้นบนการ์ดของคุณ</p>
+  <a class="cgo disp" href="awaken/">เข้าสู่ด่านสุดท้าย →</a>
 </div>
 
 <div class="livecard">
@@ -443,19 +449,6 @@ try{localStorage.setItem('mc_opened','1');}catch(e){}</script>
 })();
 </script>
 <script defer src="../assets/quest.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  var b=document.getElementById('lcopy'), c=document.getElementById('lcode');
-  if(!b||!c) return;
-  b.addEventListener('click',function(){
-    var t=c.textContent, ok=function(){ b.textContent='คัดลอกแล้ว \u2713';
-      setTimeout(function(){ b.textContent='คัดลอก'; },1800); };
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).then(ok,function(){ b.textContent=t; });
-    } else { b.textContent=t; }
-  });
-});
-</script>
 <!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
 <script type="text/javascript">
 (function(c,l,a,r,i,t,y){

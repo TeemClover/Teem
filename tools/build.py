@@ -227,13 +227,16 @@ LESSONS = [
 
 # รหัสที่ได้ตอนทำครบ = ชื่อของสิ่งสุดท้ายในเส้นนั้น จะได้รู้สึกว่าได้มาจริง ๆ
 FORGE_CODE  = 'CLOVERX'     # เปลี่ยนเมื่อไหร่ต้องแก้แฮชใน card/index.html ด้วย
-LEARN_CODE  = 'FIRSTWEB'    # = บทสุดท้ายของห้องเรียน
+# เรียนครบ 6 บทแล้วไม่ได้ตราทันที — มันปลด "ด่านบอส" บทที่ 7 แทน
+# ตราจริงชื่อ Awakened ได้จากการอ่านบทที่ 7 จบ ด้วยรหัส AWAKEN
+LEARN_CODE  = 'AWAKEN'      # = รหัสท้ายบทที่ 7 (ไม่ใช่ของห้องเรียน 6 บท)
 
 TRACKS = {
     'forge': {'key': 'mc_read',  'done': 'mc_forge_done', 'title': 'FORGE',
               'unit': 'ตอน', 'what': 'อ่าน',
               'items': [slug for _, _, _, slug, _, _ in EPISODES]},
-    'learn': {'key': 'mc_learn', 'done': 'mc_learn_done', 'title': 'SCHOLAR',
+    # ห้องเรียน 6 บทไม่แจกตราเอง — ปลดด่านบอสบทที่ 7 แทน ตราไปได้ที่นั่น
+    'learn': {'key': 'mc_learn', 'done': 'mc_learn_done', 'title': '',
               'unit': 'บท', 'what': 'เรียน',
               'items': [slug for slug, _ in LESSONS]},
 }
@@ -336,7 +339,7 @@ QUEST_JS = '''/* ═════════════════════
         var a=get();
         if(a.indexOf(s)>=0) return false;
         a.push(s); save(t.key,a.join(','));
-        if(a.length>=t.items.length){ save(t.done,'1'); grant(t.title); }
+        if(a.length>=t.items.length){ save(t.done,'1'); if(t.title) grant(t.title); }
         paint();
         return true;
       },
@@ -349,7 +352,7 @@ QUEST_JS = '''/* ═════════════════════
 
   /* ตราเคยได้แล้วแต่ localStorage ของตราหาย — ซ่อมให้เงียบ ๆ */
   function heal(){
-    for(var n in TRACKS) if(ls(TRACKS[n].done,'')==='1') grant(TRACKS[n].title);
+    for(var n in TRACKS) if(TRACKS[n].title && ls(TRACKS[n].done,'')==='1') grant(TRACKS[n].title);
   }
 
   var API={ TRACKS:TRACKS, track:T, titles:titles, hasTitle:hasTitle, grant:function(k){
