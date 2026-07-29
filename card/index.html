@@ -308,12 +308,16 @@ body.js .reveal.in{opacity:1;transform:none}
           <label for="rera">คุณรู้จัก myclover ยุคไหน</label>
           <select id="rera">
             <option value="">— เลือกสักอัน —</option>
-            <option value="2553">อยู่กับบ้านนี้มาตั้งแต่ปี 2553</option>
-            <option value="2554">รู้จักช่วงปี 2554</option>
-            <option value="2555">รู้จักช่วงปี 2555</option>
-            <option value="new">เพิ่งมาเจอบ้านนี้ตอนนี้เอง</option>
+            <option value="2007-2009">2007–2009 · ยุคบุกเบิก</option>
+            <option value="2010-2013">2010–2013 · ยุคดวงดาว</option>
+            <option value="2014-2015">2014–2015 · ยุคดวงอาทิตย์</option>
+            <option value="2016-2019">2016–2019 · ยุคตำนาน</option>
+            <option value="2020-2022">2020–2022 · ยุคโควิด</option>
+            <option value="2023+">หลังปี 2023 เป็นต้นมา</option>
+            <option value="forgot">จำไม่ได้แล้ว</option>
+            <option value="new">เพิ่งรู้จักบ้านนี้ตอนนี้เอง</option>
           </select>
-          <p class="hint" style="margin-top:7px">ใครอยู่กับเรามาตั้งแต่ยุค 2553–2555 จะได้ตรา 🍀 ศิษย์เก่า ติดบนการ์ดให้เลย</p>
+          <p class="hint" style="margin-top:7px">ใครรู้จักบ้านนี้มาก่อนปี 2023 จะได้ตรา 🍀 ศิษย์เก่า ติดบนการ์ดให้เลย · ยุคที่เลือกไม่ได้พิมพ์ลงการ์ด เราเก็บไว้ดูเฉย ๆ ว่าใครมาจากช่วงไหนบ้าง</p>
         </div>
 
         <div class="opt">
@@ -405,7 +409,7 @@ var TITLES={
            go:'../forge/', goTx:'ไปอ่านการ์ตูน'},
   SCHOLAR:{emo:'🎓',th:'ติดอาวุธครบมือ', how:'เรียนห้องเรียน AI ให้ครบทั้ง 6 คลาส',
            go:'../classroom/', goTx:'ไปเข้าห้องเรียน'},
-  ALUMNI :{emo:'🍀',th:'ศิษย์เก่า',       how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้ยุค 2553–2555',
+  ALUMNI :{emo:'🍀',th:'ศิษย์เก่า',       how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้มาก่อนปี 2023',
            go:'#register', goTx:'ไปลงทะเบียน'},
   GUILD  :{emo:'⚔️',th:'ชาวกิลด์',       how:'รหัสแจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่ พร้อมเลขประจำตัว',
            go:'', goTx:''}
@@ -1004,11 +1008,15 @@ remail.value= ls.get('mc_email','');
 
 function emailOk(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
 
+/* ยุคที่นับว่าเป็นศิษย์เก่า — ต้องตรงกับ <option value> ในฟอร์ม */
+var ALUMNI_ERAS=['2007-2009','2010-2013','2014-2015','2016-2019','2020-2022','forgot'];
+
 function regPayload(){
   return {
     name    : rname.value.trim(),
     email   : remail.value.trim(),
     era     : rera.value,
+    eraTh   : rera.value ? rera.options[rera.selectedIndex].text : '',
     news    : rnews.checked,
     nickname: st.nick,
     line    : st.line,
@@ -1027,7 +1035,7 @@ function regMailto(d){
     'สาย: '+d.clsTh+'\n'+
     'ตรา: '+(d.titles.length?d.titles.join(', '):'—')+'\n'+
     'ประโยคบนการ์ด: '+(d.line||'—')+'\n'+
-    'รู้จักยุค: '+(d.era||'—')+'\n'+
+    'รู้จักยุค: '+(d.eraTh||'—')+'\n'+
     'รับข่าวสาร: '+(d.news?'รับ':'ไม่รับ')+'\n'+
     'เวลา: '+d.at+'\n';
   return 'mailto:'+TEAM_EMAIL+'?subject='+encodeURIComponent('ลงทะเบียน myclover — '+(d.nickname||d.name))+
@@ -1036,8 +1044,9 @@ function regMailto(d){
 
 function regDone(d,viaMail){
   ls.set('mc_name',d.name); ls.set('mc_email',d.email);
-  /* ยุค 2553–2555 = ศิษย์เก่าตัวจริง */
-  if(d.era==='2553'||d.era==='2554'||d.era==='2555') grant('ALUMNI','');
+  /* รู้จักบ้านนี้มาก่อนปี 2023 = ศิษย์เก่าตัวจริง
+     "จำไม่ได้" ก็นับ เพราะเขายืนยันเองว่ารู้จักบ้านนี้มาก่อน แค่จำปีไม่ได้ */
+  if(ALUMNI_ERAS.indexOf(d.era)>=0) grant('ALUMNI','');
   regMsg.className='codemsg ok';
   if(viaMail){
     /* ยังไม่มีหลังบ้าน — ต้องให้ผู้ใช้กดส่งอีเมลเอง เลยยังไม่ควรบอกว่าเสร็จแล้ว */
