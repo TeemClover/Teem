@@ -325,7 +325,14 @@ body.js .revealer:active{transform:translateY(0) scale(.985)}
 .revealer.gone{display:none!important}
 /* ก่อนกด กล่องเนื้อหาต้องยุบไปเลย ไม่งั้นจะเหลือช่องว่างโล่ง ๆ ใต้ปุ่ม */
 body.js .hand:not(.shown),body.js .roadline:not(.shown),
-body.js .og:not(.shown),body.js .clockwrap:not(.shown){display:none}
+body.js .og:not(.shown),body.js .clockwrap:not(.shown),
+body.js .pickgrid:not(.shown),body.js .eights:not(.shown){display:none}
+body.js .pickgrid.shown{display:grid}
+body.js .eights.shown{display:grid}
+/* สามใบล่างของนาฬิกาโผล่ตามหลังวงกลม */
+body.js .eights.shown > .eight{animation:stepIn .6s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+/* ปุ่มสายไล่โผล่ทีละใบ */
+body.js .pickgrid.shown > .pk{animation:dealOut .6s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
 
 /* ═══════════ ทางที่เราวางไว้ — 3 ด่าน ═══════════ */
 .road{background:linear-gradient(180deg,transparent,rgb(27 106 66/.05))}
@@ -553,6 +560,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   body.js .clockwrap .clock .a1,body.js .clockwrap .clock .a2,
   body.js .clockwrap .clock .a3{stroke-dasharray:184 381.5;animation:none}
   body.js .hand.shown,body.js .og.shown{display:flex}
+  body.js .eights.shown > .eight,body.js .pickgrid.shown > .pk{animation:none;opacity:1;transform:none}
   body.js .roadline.shown,body.js .clockwrap.shown{display:block}
   .revealer .rv-e,.revealer .rv-hint{animation:none}
   body.js .revealer:hover{transform:none}
@@ -647,6 +655,12 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <span class="eyebrow reveal">เลือกได้ ไม่เลือกก็ได้</span>
   <h2 class="h2 disp reveal" style="--d:.05s">วันนี้อะไรพามาที่นี่?</h2>
   <p class="sub reveal" style="--d:.09s">เลือกอันที่ใกล้ตัวที่สุด เดี๋ยวเราหยิบของในบ้านที่ตรงกับคุณมาวางให้ — เปลี่ยนใจทีหลังได้ตลอด และห้องอื่นก็ยังเข้าได้เหมือนเดิมทุกห้อง</p>
+  <button type="button" class="revealer" data-reveal="pickGrid" data-ga="reveal:picker">
+    <span class="rv-e" aria-hidden="true">🧭</span>
+    <b class="disp"><span class="tapword"></span>เพื่อเลือกสายของคุณ</b>
+    <small>สี่สาย เลือกอันที่ใกล้ตัวที่สุด แล้วเราจะหยิบของในบ้านที่ตรงกับคุณมาวางให้</small>
+    <span class="rv-hint" aria-hidden="true">เลือกสาย ▸</span>
+  </button>
   <div class="pickgrid" id="pickGrid"></div>
   <div class="picked" id="picked"></div>
   <p class="pickmore reveal" style="--d:.13s">ยังไม่แน่ใจว่าตัวเองสายไหน? <a href="paths/">อ่านทั้งสี่สายแบบเต็ม →</a></p>
@@ -667,7 +681,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 
   <p class="glhfcue reveal" style="--d:.09s" id="glhfCue">ยังไม่ต้องอ่านอะไรตอนนี้ — เอามือมาชนกันก่อน แล้วเดี๋ยวเล่าให้ฟัง</p>
 
-  <button type="button" class="bump reveal" style="--d:.12s" id="bump" aria-expanded="false" aria-controls="glhfBody">
+  <button type="button" class="bump reveal" style="--d:.12s" id="bump" data-ga="fist_bump" aria-expanded="false" aria-controls="glhfBody">
     <span class="fists" aria-hidden="true"><span class="l">🤜</span><span class="spark">✨</span><span class="r">🤛</span></span>
     <span class="tap disp">แตะเพื่อชนหมัดกับเรา</span>
   </button>
@@ -695,7 +709,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <h2 class="h2 disp reveal" style="--d:.06s">⏳ วันหนึ่งมี 24 ชั่วโมง<br>แต่มีอยู่ 8 ที่เปลี่ยนชีวิตได้</h2>
   <p class="sub reveal" style="--d:.1s">ทุกคนได้เวลาเท่ากันหมด สิ่งที่ทำให้ชีวิตเราต่างกันคือเราทำอะไรกับ 8 ชั่วโมงที่เหลือ</p>
 
-  <button type="button" class="revealer" data-reveal="clockWrap">
+  <button type="button" class="revealer" data-reveal="clockWrap" data-ga="reveal:clock">
     <span class="rv-e" aria-hidden="true">⏳</span>
     <b class="disp"><span class="tapword"></span>เพื่อดูว่าวันหนึ่งหายไปกับอะไรบ้าง</b>
     <small>วงกลม 24 ชั่วโมง แบ่งให้เห็นว่าเหลือเป็นของเราจริง ๆ กี่ชั่วโมง และเราขอแค่ไหนจากตรงนั้น</small>
@@ -722,7 +736,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     </ul>
   </div>
 
-  <div class="eights">
+  <div class="eights" id="eights">
     <div class="eight reveal" style="--d:.06s"><div class="n disp">8</div><b class="disp">ทำงาน</b><p>เวลาที่เราแลกไปเพื่อให้ชีวิตเดินต่อได้ — จำเป็น และไม่มีอะไรผิด</p></div>
     <div class="eight reveal" style="--d:.12s"><div class="n disp">8</div><b class="disp">นอน</b><p>เวลาที่ร่างกายซ่อมตัวเอง คนที่ตัดตรงนี้ทิ้งมักจ่ายคืนแพงกว่าเดิมเสมอ</p></div>
     <div class="eight hl reveal" style="--d:.18s"><div class="n disp">8</div><b class="disp">ของเรา</b><p>8 ชั่วโมงนี้แหละที่เป็นของเราจริง ๆ · บ้านหลังนี้สร้างมาเพื่อ 8 ชั่วโมงนั้น เริ่มวันละ 10 นาทีก็พอ</p></div>
@@ -735,14 +749,14 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <h2 class="h2 disp reveal" style="--d:.06s">🎴 จั่วมือแรกของคุณ</h2>
   <p class="sub reveal" style="--d:.1s">ทุกใบเปิดได้เลยวันนี้ ไม่ต้องสมัคร ไม่ต้องจ่าย หยิบใบไหนก่อนก็ได้ — ไม่มีลำดับที่ถูกต้อง</p>
 
-  <button type="button" class="revealer" data-reveal="handDeck">
+  <button type="button" class="revealer" data-reveal="handDeck" data-ga="reveal:hand">
     <span class="rv-e" aria-hidden="true">🎴</span>
     <b class="disp"><span class="tapword"></span>เพื่อจั่วมือแรกของคุณ</b>
     <small>ห้องทั้งหมดในบ้านอยู่ในกองนี้ 6 ใบ — เปิดได้เลยวันนี้ทุกใบ ไม่ต้องสมัคร ไม่ต้องจ่าย</small>
     <span class="rv-hint" aria-hidden="true">แจกไพ่ ▸</span>
   </button>
   <div class="hand" id="handDeck">
-    <a class="pc" style="--dl:0s;--rot:-9deg" href="forge/">
+    <a class="pc" style="--dl:0s;--rot:-9deg" href="forge/" data-ga="room:forge">
       <span class="free disp">เริ่มตรงนี้</span>
       <div class="top"><span>READ</span><span>01</span></div>
       <div class="art"><img src="img/card-forge.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📖</span></div>
@@ -752,7 +766,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">อ่านเลย →</span>
     </a>
 
-    <a class="pc" style="--dl:.09s;--rot:6deg" href="classroom/">
+    <a class="pc" style="--dl:.09s;--rot:6deg" href="classroom/" data-ga="room:classroom">
       <span class="free disp">ฟรีตลอดชีพ</span>
       <div class="top"><span>LEARN</span><span>02</span></div>
       <div class="art"><img src="img/card-class.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📚</span></div>
@@ -761,7 +775,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">เข้าห้องเรียน →</span>
     </a>
 
-    <a class="pc" style="--dl:.18s;--rot:-5deg" href="resume/">
+    <a class="pc" style="--dl:.18s;--rot:-5deg" href="resume/" data-ga="room:resume">
       <div class="top"><span>SHOW</span><span>03</span></div>
       <div class="art"><img src="img/card-resume.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🧭</span></div>
       <h3 class="disp">Smart Resume</h3>
@@ -769,7 +783,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">เปิดดู →</span>
     </a>
 
-    <a class="pc" style="--dl:.27s;--rot:8deg" href="club/">
+    <a class="pc" style="--dl:.27s;--rot:8deg" href="club/" data-ga="room:club">
       <div class="top"><span>CLUB</span><span>04</span></div>
       <div class="art"><img src="img/card-club.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🍀</span></div>
       <h3 class="disp">myclover club</h3>
@@ -777,7 +791,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">แวะดู →</span>
     </a>
 
-    <a class="pc" style="--dl:.36s;--rot:-7deg" href="card/">
+    <a class="pc" style="--dl:.36s;--rot:-7deg" href="card/" data-ga="room:card">
       <div class="top"><span>TOOL</span><span>05</span></div>
       <div class="art"><img src="img/card-tool.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🎴</span></div>
       <h3 class="disp">การ์ดประจำตัว</h3>
@@ -785,7 +799,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">ปักธงของคุณ →</span>
     </a>
 
-    <div class="pc locked" style="--dl:.45s;--rot:5deg" id="guildCard">
+    <div class="pc locked" style="--dl:.45s;--rot:5deg" id="guildCard" data-ga="room:guild">
       <span class="glow"></span>
       <div class="top"><span>GUILD</span><span>06</span></div>
       <div class="art"><img src="img/card-guild.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">⚔️</span></div>
@@ -807,7 +821,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a class="ls reveal" style="--d:.24s" href="classroom/first-web.html"><span class="lv">LV.6</span><span><b>สร้างเว็บแรกของตัวเอง</b><small>ด่านสุดท้ายของห้องเรียน</small></span></a>
   </div>
   <div class="dealrow reveal" style="--d:.3s">
-    <button type="button" class="tapbtn" id="dealBtn"><span class="e">🎴</span>สับไพ่แล้วแจกใหม่</button>
+    <button type="button" class="tapbtn" id="dealBtn" data-ga="deal_again"><span class="e">🎴</span>สับไพ่แล้วแจกใหม่</button>
   </div>
 </div></section>
 
@@ -817,7 +831,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <h2 class="h2 disp reveal" style="--d:.06s">🗺️ ทางที่เราวางไว้ให้ — สามด่าน</h2>
   <p class="sub reveal" style="--d:.1s">ไม่ใช่ข้อบังคับ จะข้ามด่านแรกมาเริ่มที่ห้องเรียนเลยก็ได้ — แต่ถ้าเดินตามนี้ ตอนไปถึงด่านสุดท้ายคุณจะมีของติดมือไปด้วย ไม่ได้ไปมือเปล่า</p>
 
-  <button type="button" class="revealer" data-reveal="roadline">
+  <button type="button" class="revealer" data-reveal="roadline" data-ga="reveal:road">
     <span class="rv-e" aria-hidden="true">🗺️</span>
     <b class="disp"><span class="tapword"></span>เพื่อกางแผนที่สามด่าน</b>
     <small>ลำดับที่เราวางไว้ให้ ว่าควรเริ่มตรงไหนแล้วไปต่อยังไง — พร้อมความคืบหน้าของคุณเอง</small>
@@ -832,7 +846,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
         <div class="rbar"><i data-mc-bar="forge"></i></div>
         <div class="rmeta">
           <span class="rst" data-mc-progress="forge" hidden></span>
-          <a class="rgo" href="forge/">ไปอ่าน →</a>
+          <a class="rgo" href="forge/" data-ga="road_go:forge">ไปอ่าน →</a>
         </div>
       </div>
     </li>
@@ -845,7 +859,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
         <div class="rbar"><i data-mc-bar="learn"></i></div>
         <div class="rmeta">
           <span class="rst" data-mc-progress="learn" hidden></span>
-          <a class="rgo" href="classroom/">ไปเรียน →</a>
+          <a class="rgo" href="classroom/" data-ga="road_go:classroom">ไปเรียน →</a>
         </div>
       </div>
     </li>
@@ -862,7 +876,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
           <span data-mc-title="SCHOLAR" hidden>🎓 ติดอาวุธครบมือ — ปลดแล้ว</span>
         </div>
         <div class="rmeta">
-          <a class="rgo" href="card/">ไปทำการ์ด →</a>
+          <a class="rgo" href="card/" data-ga="road_go:card">ไปทำการ์ด →</a>
         </div>
       </div>
     </li>
@@ -875,7 +889,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <span class="eyebrow reveal">จดหมายจากเจ้าของบ้าน</span>
   <h2 class="h2 disp reveal" style="--d:.06s">🍀 ทำไมถึงกลับมาเปิดบ้านหลังนี้</h2>
   <div class="letterwrap reveal" id="letterWrap" style="--d:.1s">
-  <button type="button" class="envelope" id="letterBtn" aria-expanded="false" aria-controls="letterBody">
+  <button type="button" class="envelope" id="letterBtn" data-ga="letter_open" aria-expanded="false" aria-controls="letterBody">
     <span class="flap" aria-hidden="true">🍀</span>
     <b class="disp">จดหมายปิดผนึกจากเจ้าของบ้าน</b>
     <small>แตะเพื่อแกะซองอ่าน — ยาวประมาณหนึ่งนาที</small>
@@ -901,7 +915,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <span class="eyebrow reveal">เปิดไพ่ทั้งมือ</span>
   <h2 class="h2 disp reveal" style="--d:.06s">🃏 บอกกันตรง ๆ ตั้งแต่แรก<br>ว่าเจ้าของบ้านทำอะไรอยู่</h2>
   <p class="sub reveal" style="--d:.1s">บ้านหลังนี้จะอยู่กันยาว ๆ เราเลยไม่อยากให้มีอะไรค้างคาใจกันทีหลัง</p>
-  <button type="button" class="revealer" data-reveal="openHand">
+  <button type="button" class="revealer" data-reveal="openHand" data-ga="reveal:openhand">
     <span class="rv-e" aria-hidden="true">🃏</span>
     <b class="disp"><span class="tapword"></span>เพื่อเปิดไพ่ของเจ้าของบ้าน</b>
     <small>สามใบนี้คือทุกอย่างที่เราทำอยู่ ไม่มีอะไรซ่อนไว้ข้างหลัง</small>
@@ -1074,6 +1088,27 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
    ไม่มีการฟัง scroll ไม่มี setInterval ไม่มี IntersectionObserver
    หน้าเลยไม่ต้องคำนวณอะไรเลยจนกว่าจะมีคนกด
    ═══════════════════════════════════════════════════════ */
+/* ส่งเหตุการณ์ไป Google Analytics — ใช้ดูว่าคนกดตรงไหนมากที่สุด
+   ไม่ส่งข้อมูลส่วนตัวอะไรเลย ส่งแค่ชื่อจุดที่ถูกกด */
+window.mcEvent=function(name,params){
+  try{ if(typeof gtag==='function') gtag('event',name,params||{}); }catch(e){}
+};
+
+/* ดักคลิกทีเดียวทั้งหน้า — อะไรที่มี data-ga="ชื่อเหตุการณ์:ค่า" จะถูกนับให้เอง
+   ใช้ตัวดักตัวเดียวที่ document แทนการผูกทีละปุ่ม จะได้ไม่กินแรงเครื่อง */
+document.addEventListener('click',function(e){
+  var el=e.target;
+  while(el && el!==document.body){
+    var tag=el.getAttribute && el.getAttribute('data-ga');
+    if(tag){
+      var i=tag.indexOf(':');
+      window.mcEvent(i<0?tag:tag.slice(0,i), i<0?{}:{item:tag.slice(i+1)});
+      return;
+    }
+    el=el.parentNode;
+  }
+},{passive:true});
+
 (function(){
   function add(el,c){ if(el && el.className.indexOf(c)<0) el.className+=' '+c; }
 
@@ -1086,7 +1121,17 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   }
 
   var RUN={
-    clockWrap: function(el){ add(el,'go'); },
+    clockWrap: function(el){
+      add(el,'go');
+      var e=document.getElementById('eights');
+      if(e){ add(e,'shown');
+        var k=e.children;
+        for(var i=0;i<k.length;i++) k[i].style.setProperty('--dl',(1.35+i*0.14)+'s'); }
+    },
+    pickGrid : function(el){
+      var k=el.children;
+      for(var i=0;i<k.length;i++) k[i].style.setProperty('--dl',(i*0.08)+'s');
+    },
     handDeck : deal,
     roadline : function(el){ add(el,'go'); },
     openHand : function(el){ add(el,'flipped'); }
@@ -1203,6 +1248,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       return 'rgba('+parseInt(r,16)+','+parseInt(g,16)+','+parseInt(bl,16)+',.07)';}));
     b.setAttribute('aria-pressed','false');
     b.innerHTML='<span class="e">'+d.emo+'</span><b class="disp">'+d.hook+'</b><span>'+d.who+'</span>';
+    b.setAttribute('data-ga','path_pick:'+k);
     b.addEventListener('click',function(){ choose(k,true); });
     grid.appendChild(b);
   });
@@ -1220,7 +1266,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       d.gifts.map(function(g){ return '<a class="gift" href="'+g[0]+'"><b class="disp">'+g[1]+'</b><small>'+g[2]+'</small></a>'; }).join('')+
       '</div>'+
       /* หน้าเต็มของสายนี้ — ป้ายบอกทาง ลำดับที่แนะนำ และของที่ตรงกับคน */
-      '<a class="fullpath disp" href="paths/'+k.toLowerCase()+'/">ดูเส้นทางของ'+d.th+'แบบเต็ม — สามก้าวถัดไปเรียงมาให้แล้ว →</a>';
+      '<a class="fullpath disp" data-ga="path_full" href="paths/'+k.toLowerCase()+'/">ดูเส้นทางของ'+d.th+'แบบเต็ม — สามก้าวถัดไปเรียงมาให้แล้ว →</a>';
     box.classList.add('on');
     document.getElementById('swapPath').addEventListener('click',function(){
       box.classList.remove('on');
