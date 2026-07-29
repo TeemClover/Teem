@@ -253,6 +253,7 @@ QUEST_JS = '''/* ═════════════════════
      [data-mc-bar=forge]           แถบความคืบหน้า — ปรับ width เป็น %
      [data-mc-continue=forge:../]  ลิงก์ "ทำต่อ" — หลัง : คือ path นำหน้า
      [data-mc-demote=forge:ghost]  ใส่คลาส ghost เมื่อเริ่มแล้ว (ลดความเด่น)
+     [data-mc-doneclass=forge:done] ใส่คลาส done เมื่อทำครบทั้งเส้น
      [data-mc-done=forge]          บล็อกที่โผล่เมื่อครบ
      [data-mc-undone=forge]        บล็อกที่ซ่อนเมื่อครบ (ตั้งต้นต้องมองเห็น)
      [data-mc-any=forge]           บล็อกที่โผล่เมื่อเริ่มแล้วอย่างน้อย 1 ชิ้น
@@ -363,6 +364,10 @@ QUEST_JS = '''/* ═════════════════════
     each('[data-mc-demote]',function(el){
       var p=split(el.getAttribute('data-mc-demote')), t=T(p[0]); if(!t) return;
       addCls(el,p[1]||'ghost',t.count()>0);
+    });
+    each('[data-mc-doneclass]',function(el){
+      var p=split(el.getAttribute('data-mc-doneclass')), t=T(p[0]); if(!t) return;
+      addCls(el,p[1]||'done',t.complete());
     });
     each('[data-mc-done]',function(el){
       var t=T(el.getAttribute('data-mc-done')); if(!t) return;
