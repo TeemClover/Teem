@@ -31,7 +31,7 @@
    ═══════════════════════════════════════════════════════════════ */
 (function(){
   var TRACKS={
-    forge:{key:'mc_read',done:'mc_forge_done',title:'FORGE',unit:'ตอน',what:'อ่าน',items:['ep1-everyone-gets-to-play','ep2-the-first-item','ep3-the-item-that-came-back','ep4-what-traveled-without-us','ep5-from-answers-to-a-system','ep6-the-starter-kit','ep7-a-voice-that-went-further','ep8-the-blacksmith-backstage','ep9-tools-must-reach-people','ep10-this-time-i-left-the-screen-on','ep11-everyone-has-their-own-class','ep12-a-new-game-a-new-league']},
+    forge:{key:'mc_read',done:'mc_forge_done',title:'BLACKSMITH',unit:'ตอน',what:'อ่าน',items:['ep1-everyone-gets-to-play','ep2-the-first-item','ep3-the-item-that-came-back','ep4-what-traveled-without-us','ep5-from-answers-to-a-system','ep6-the-starter-kit','ep7-a-voice-that-went-further','ep8-the-blacksmith-backstage','ep9-tools-must-reach-people','ep10-this-time-i-left-the-screen-on','ep11-everyone-has-their-own-class','ep12-a-new-game-a-new-league']},
     learn:{key:'mc_learn',done:'mc_learn_done',title:'',unit:'บท',what:'เรียน',items:['free-ai','image-ai','clip-ai','notebooklm','prompts','first-web']}
   };
   var TKEY='mc_titles';

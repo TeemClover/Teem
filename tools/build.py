@@ -226,13 +226,13 @@ LESSONS = [
 ]
 
 # รหัสที่ได้ตอนทำครบ = ชื่อของสิ่งสุดท้ายในเส้นนั้น จะได้รู้สึกว่าได้มาจริง ๆ
-FORGE_CODE  = 'CLOVERX'     # เปลี่ยนเมื่อไหร่ต้องแก้แฮชใน card/index.html ด้วย
+FORGE_CODE  = 'BLACKSMITH'  # เปลี่ยนเมื่อไหร่ต้องแก้แฮชใน card/index.html ด้วย
 # เรียนครบ 6 บทแล้วไม่ได้ตราทันที — มันปลด "ด่านบอส" บทที่ 7 แทน
 # ตราจริงชื่อ Awakened ได้จากการอ่านบทที่ 7 จบ ด้วยรหัส AWAKEN
 LEARN_CODE  = 'AWAKEN'      # = รหัสท้ายบทที่ 7 (ไม่ใช่ของห้องเรียน 6 บท)
 
 TRACKS = {
-    'forge': {'key': 'mc_read',  'done': 'mc_forge_done', 'title': 'FORGE',
+    'forge': {'key': 'mc_read',  'done': 'mc_forge_done', 'title': 'BLACKSMITH',
               'unit': 'ตอน', 'what': 'อ่าน',
               'items': [slug for _, _, _, slug, _, _ in EPISODES]},
     # ห้องเรียน 6 บทไม่แจกตราเอง — ปลดด่านบอสบทที่ 7 แทน ตราไปได้ที่นั่น
@@ -493,7 +493,8 @@ def finish_block(up):
       <code id="fcode">{FORGE_CODE}</code>
       <button type="button" class="cp" id="fcopy">คัดลอก</button>
     </div>
-    <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ผ่านโรงตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ</p>
+    <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ช่างตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ<br>
+       และรหัสนี้ยังใช้เปิด Walkthrough บนเครื่องใหม่ได้ด้วย</p>
     <a class="fbtn disp" href="{up}card/">⚡ ไปทำการ์ดของคุณ</a>
 
     <div class="nextup">

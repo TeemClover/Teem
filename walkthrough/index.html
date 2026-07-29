@@ -156,8 +156,34 @@ footer a{color:rgb(var(--green));font-weight:600}
     <a class="go disp" data-mc-continue="forge:../forge/" href="../forge/">▶ อ่านต่อจากที่ค้างไว้</a>
     <a class="go disp" data-mc-undone="forge" href="../forge/">📖 ไปอ่านการ์ตูน</a>
     <a class="back" href="../">← กลับหน้าบ้าน</a>
+
+    <!-- อ่านจบมาแล้วแต่คนละเครื่อง — กรอกรหัสท้ายเล่มเพื่อเปิดหน้านี้ได้เลย -->
+    <div class="recover">
+      <p>อ่านจบมาแล้วแต่คนละเครื่อง? กรอกรหัสที่ได้ตอนอ่านจบ</p>
+      <div class="rcrow">
+        <input type="text" id="wcode" placeholder="รหัสท้ายเล่ม" autocomplete="off"
+               aria-label="รหัสที่ได้ตอนอ่านการ์ตูนจบ">
+        <button type="button" class="disp" id="wbtn" data-ga="wt_code">เปิดหน้านี้</button>
+      </div>
+      <p class="rcmsg" id="wmsg" role="status" aria-live="polite"></p>
+    </div>
   </div>
 </div>
+
+<style>
+.recover{margin-top:26px;padding-top:20px;border-top:1px solid rgb(255 255 255/.14);
+  max-width:400px;margin-left:auto;margin-right:auto}
+.recover>p{font-size:13.5px;color:rgb(255 255 255/.6);margin-bottom:10px}
+.rcrow{display:flex;gap:8px;flex-wrap:wrap}
+.rcrow input{flex:1;min-width:150px;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.22);
+  border-radius:11px;padding:12px 14px;color:#fff;font-family:"Anuphan",sans-serif;font-size:15px;min-height:46px}
+.rcrow input::placeholder{color:rgb(255 255 255/.4)}
+.rcrow button{background:rgb(190 148 66);color:rgb(10 40 24);border:0;border-radius:11px;
+  padding:12px 20px;font-weight:700;font-size:14.5px;cursor:pointer;min-height:46px}
+.rcmsg{margin-top:9px;font-size:13.5px;min-height:1.2em}
+.rcmsg.ok{color:rgb(190 148 66);font-weight:600}
+.rcmsg.no{color:#E88}
+</style>
 
 <!-- ═══ อ่านจบแล้ว ═══ -->
 <div id="doc">
@@ -525,13 +551,53 @@ footer a{color:rgb(var(--green));font-weight:600}
    เป็นการล็อกฝั่งเบราว์เซอร์ — กันคนที่ยังไม่ได้อ่านไม่ให้เจอสปอยล์
    ไม่ใช่ระบบความปลอดภัย ใครเปิดซอร์สดูก็เห็นได้ ซึ่งไม่เป็นไร */
 document.addEventListener('DOMContentLoaded',function(){
-  var open=false;
-  try{ open = localStorage.getItem('mc_forge_done')==='1'; }catch(e){}
-  if(open){
+  function ls(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+  function has(t){
+    try{ var a=JSON.parse(ls('mc_titles','[]')); return Array.isArray(a)&&a.indexOf(t)>=0; }
+    catch(e){ return false; }
+  }
+  function unlock(){
     document.getElementById('lock').hidden=true;
     document.getElementById('doc').style.visibility='visible';
     document.title='Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover';
   }
+  if(ls('mc_forge_done','')==='1' || has('BLACKSMITH')){ unlock(); return; }
+
+  /* กู้สิทธิ์ด้วยรหัสท้ายเล่ม — เก็บเป็นแฮชเพราะไฟล์นี้เปิดซอร์สดูได้
+     ไม่ได้กันคนตั้งใจงัด แค่ไม่ให้รหัสลอยอยู่กลางหน้าให้เห็นก่อนถึงเวลา */
+  var SHA='8eae6c54657e94be77a206e430054386a7391f99e2cea017b16d90661037a1ee', DJB='837210823';
+  function djb2(s){ var h=5381; for(var i=0;i<s.length;i++){ h=((h*33)+s.charCodeAt(i))>>>0; } return String(h); }
+  function sha256(s){
+    if(!(window.crypto&&crypto.subtle&&window.isSecureContext!==false)) return Promise.reject();
+    return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){
+      return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
+    });
+  }
+  var inp=document.getElementById('wcode'), btn=document.getElementById('wbtn'),
+      msg=document.getElementById('wmsg');
+  function grant(){
+    try{
+      var a=JSON.parse(ls('mc_titles','[]'));
+      if(!Array.isArray(a)) a=[];
+      if(a.indexOf('BLACKSMITH')<0){ a.push('BLACKSMITH'); localStorage.setItem('mc_titles',JSON.stringify(a)); }
+      localStorage.setItem('mc_forge_done','1');
+    }catch(e){}
+    msg.className='rcmsg ok';
+    msg.textContent='⚒️ ถูกต้อง — เปิดให้แล้ว';
+    setTimeout(unlock,500);
+  }
+  function tryCode(){
+    var v=inp.value.trim().toLowerCase();
+    if(!v){ msg.className='rcmsg'; msg.textContent=''; return; }
+    sha256(v).then(function(h){ return h===SHA; })
+             .catch(function(){ return djb2(v)===DJB; })
+             .then(function(ok){
+               if(ok) grant();
+               else { msg.className='rcmsg no'; msg.textContent='ยังไม่ใช่รหัสนี้ — รหัสอยู่ท้ายตอนสุดท้ายของการ์ตูน'; }
+             });
+  }
+  btn.addEventListener('click',tryCode);
+  inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); tryCode(); } });
 });
 </script>
 <!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
