@@ -196,6 +196,103 @@ body.js .reveal.in .clock .a3{animation:arcIn 1.1s .25s cubic-bezier(.22,1,.36,1
   border-radius:13px;padding:12px 14px;margin-top:3px}
 @media(max-width:700px){.clockwrap{justify-content:center}.clegend{min-width:100%}}
 
+/* ═══════════════════════════════════════════════════════
+   ลูกเล่นของหน้าแรก
+   ทุกอันขยับแค่ transform กับ opacity เท่านั้น เบราว์เซอร์จะได้ไม่ต้องคำนวณ
+   ตำแหน่งใหม่ทั้งหน้า (สาเหตุหลักที่ทำให้เว็บกระตุก)
+   ทุกอันซ่อนเฉพาะตอน body.js — ถ้า JS ไม่ทำงาน เนื้อหาต้องอยู่ครบ
+   ═══════════════════════════════════════════════════════ */
+
+/* ปุ่มอิโมจิที่ใช้ร่วมกันทุกส่วน */
+.tapbtn{display:inline-flex;align-items:center;gap:9px;border:1px solid rgb(var(--green)/.35);
+  background:#fff;color:rgb(var(--ink));border-radius:999px;padding:12px 22px;cursor:pointer;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px;
+  box-shadow:0 10px 24px -16px rgb(18 40 28/.5);transition:transform .18s,box-shadow .18s,border-color .18s}
+.tapbtn:hover{transform:translateY(-2px);border-color:rgb(var(--green));box-shadow:0 16px 30px -16px rgb(18 40 28/.55)}
+.tapbtn:active{transform:translateY(0) scale(.97)}
+.tapbtn .e{font-size:19px;line-height:1;animation:btnNudge 2.4s ease-in-out infinite}
+@keyframes btnNudge{0%,88%,100%{transform:none}92%{transform:translateY(-3px) rotate(-8deg)}96%{transform:translateY(-1px) rotate(5deg)}}
+.tapbtn.gone{display:none}
+.hand-sec .tapbtn{background:rgb(255 255 255/.1);color:#fff;border-color:rgb(255 255 255/.3)}
+.hand-sec .tapbtn:hover{background:rgb(255 255 255/.16);border-color:rgb(var(--gold))}
+
+/* ── นาฬิกา 24 ชม. — วาดวงทีละช่วง ── */
+body.js .clock .a1,body.js .clock .a2,body.js .clock .a3{stroke-dasharray:0 565.5}
+body.js .reveal.in .clock .a1{animation:arcDraw 1.5s .1s cubic-bezier(.22,1,.36,1) forwards}
+body.js .reveal.in .clock .a2{animation:arcDraw 1.5s .55s cubic-bezier(.22,1,.36,1) forwards}
+body.js .reveal.in .clock .a3{animation:arcDraw 1.5s 1s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes arcDraw{from{stroke-dasharray:0 565.5}to{stroke-dasharray:184 381.5}}
+/* ขีด 10 นาที — โผล่ทีหลังสุด แล้วกะพริบเป็นสีเขียวเรียกสายตา */
+body.js .clock .tk,body.js .clock .tkhalo{opacity:0}
+body.js .reveal.in .clock .tk{animation:tickIn .5s 2.1s cubic-bezier(.34,1.56,.64,1) forwards,
+                                        tickGlow 2.6s 2.6s ease-in-out infinite}
+body.js .reveal.in .clock .tkhalo{animation:haloPulse 2.6s 2.6s ease-in-out infinite}
+@keyframes tickIn{from{opacity:0}to{opacity:1}}
+@keyframes tickGlow{0%,100%{stroke:#fff}50%{stroke:rgb(120 230 160)}}
+@keyframes haloPulse{0%,100%{opacity:0;stroke-width:24}45%{opacity:.55;stroke-width:38}}
+.clock .tkhalo{stroke:rgb(120 230 160);stroke-dasharray:3.9 561.6;stroke-dashoffset:-392}
+.clegend .hi{position:relative;overflow:hidden}
+body.js .reveal.in .clegend .hi::after{content:"";position:absolute;inset:0;border-radius:13px;
+  background:rgb(120 230 160/.28);opacity:0;animation:hiPulse 2.6s 2.6s ease-in-out infinite;pointer-events:none}
+@keyframes hiPulse{0%,100%{opacity:0}45%{opacity:1}}
+
+/* ── จั่วมือแรก — แจกไพ่ออกจากกอง ── */
+body.js .hand .pc{opacity:0}
+body.js .hand.dealt .pc{animation:dealOut .68s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+@keyframes dealOut{
+  from{opacity:0;transform:translate3d(0,120px,0) rotate(var(--rot,-8deg)) scale(.86)}
+  60% {opacity:1}
+  to  {opacity:1;transform:none}
+}
+.dealrow{display:flex;justify-content:center;margin-top:30px}
+
+/* ── สามด่าน — เส้นเชื่อมค่อย ๆ ลากลง การ์ดไหลเข้า ── */
+.rd .rn{position:relative;overflow:hidden}
+.rd .rn .rem{position:absolute;inset:0;display:grid;place-items:center;font-size:17px;
+  opacity:0;transform:translateY(60%);transition:opacity .3s,transform .45s cubic-bezier(.34,1.56,.64,1)}
+body.js .roadline.go .rd .rn .rem{opacity:1;transform:none;transition-delay:calc(var(--dl,0s) + .25s)}
+body.js .roadline.go .rd .rn i{opacity:0;transition:opacity .25s;transition-delay:calc(var(--dl,0s) + .25s)}
+body.js .roadline .rd{opacity:0}
+body.js .roadline.go .rd{animation:stepIn .6s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+@keyframes stepIn{from{opacity:0;transform:translate3d(-26px,0,0)}to{opacity:1;transform:none}}
+.rd::after{transform:scaleY(0);transform-origin:top}
+body.js .roadline.go .rd::after{animation:lineDrop .4s ease-out both;animation-delay:calc(var(--dl,0s) + .45s)}
+@keyframes lineDrop{to{transform:scaleY(1)}}
+
+/* ── จดหมาย — กดแล้วซองเปิด ── */
+.letterwrap{max-width:760px;margin:34px auto 0}
+.envelope{display:block;width:100%;background:rgb(var(--paper));border:1px solid rgb(var(--line)/.12);
+  border-radius:20px;padding:30px 26px 26px;cursor:pointer;text-align:center;position:relative;
+  box-shadow:0 16px 34px -24px rgb(18 40 28/.5);transition:transform .2s,box-shadow .2s}
+.envelope:hover{transform:translateY(-3px);box-shadow:0 22px 40px -22px rgb(18 40 28/.55)}
+.envelope .flap{font-size:44px;line-height:1;display:block;
+  animation:sealBeat 3s ease-in-out infinite;transform-origin:center}
+@keyframes sealBeat{0%,90%,100%{transform:none}94%{transform:scale(1.14) rotate(-6deg)}97%{transform:scale(1.05)}}
+.envelope b{display:block;font-family:"Bai Jamjuree";font-size:17px;margin-top:12px}
+.envelope small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:4px}
+body.js .letterwrap .letter{display:none}
+body.js .letterwrap.open .letter{display:block;animation:unfold .7s cubic-bezier(.22,1,.36,1) both}
+body.js .letterwrap.open .envelope{display:none}
+@keyframes unfold{from{opacity:0;transform:translate3d(0,-18px,0) scaleY(.9);transform-origin:top}
+                  to{opacity:1;transform:none}}
+body.js .letterwrap.open .letter p{animation:lineUp .5s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+@keyframes lineUp{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+
+/* ── เปิดไพ่ทั้งมือ — พลิกไพ่ทีละใบ ── */
+.og{perspective:1200px}
+.oc{transform-style:preserve-3d;backface-visibility:hidden}
+body.js .og .oc{opacity:0}
+body.js .og.flipped .oc{animation:flipUp .7s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+@keyframes flipUp{
+  from{opacity:0;transform:rotateY(-88deg) translate3d(0,14px,0)}
+  55% {opacity:1}
+  to  {opacity:1;transform:none}
+}
+.oc .ic{display:inline-block;transform-origin:center}
+body.js .og.flipped .oc .ic{animation:icPop .5s cubic-bezier(.34,1.56,.64,1) both;
+  animation-delay:calc(var(--dl,0s) + .35s)}
+@keyframes icPop{from{transform:scale(.4) rotate(-18deg)}to{transform:none}}
+
 /* ═══════════ ทางที่เราวางไว้ — 3 ด่าน ═══════════ */
 .road{background:linear-gradient(180deg,transparent,rgb(27 106 66/.05))}
 .roadline{list-style:none;display:grid;gap:13px;margin-top:26px;counter-reset:rd}
@@ -415,6 +512,19 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   .bump.hit .spark{animation:none}
   body.js .glhfbody{transition:none}
   body.js .glhf.opened .stg{animation:none}
+  /* คนที่ตั้งค่าเครื่องว่าไม่อยากเห็นภาพขยับ — โชว์ผลลัพธ์เลย ไม่ต้องมีแอนิเมชัน */
+  body.js .hand .pc,body.js .roadline .rd,body.js .og .oc{opacity:1;animation:none}
+  body.js .clock .a1,body.js .clock .a2,body.js .clock .a3{stroke-dasharray:184 381.5;animation:none}
+  body.js .clock .tk{opacity:1;animation:none}
+  body.js .clock .tkhalo{opacity:0;animation:none}
+  body.js .reveal.in .clegend .hi::after{animation:none}
+  body.js .roadline.go .rd .rn .rem,body.js .roadline.go .rd::after{animation:none;transition:none}
+  body.js .letterwrap.open .letter,body.js .letterwrap.open .letter p,
+  body.js .og.flipped .oc .ic{animation:none}
+  .tapbtn .e,.envelope .flap{animation:none}
+  .rd::after{transform:none}
+  .rd .rn .rem{position:static;opacity:1;transform:none}
+  .rd .rn i{display:none}
 }
 </style>
 </head>
@@ -541,7 +651,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 <!-- ── 8/8/8 ── -->
 <section><div class="wrap">
   <span class="eyebrow reveal">ปรัชญาของบ้าน</span>
-  <h2 class="h2 disp reveal" style="--d:.06s">วันหนึ่งมี 24 ชั่วโมง<br>แต่มีอยู่ 8 ที่เปลี่ยนชีวิตได้</h2>
+  <h2 class="h2 disp reveal" style="--d:.06s">⏳ วันหนึ่งมี 24 ชั่วโมง<br>แต่มีอยู่ 8 ที่เปลี่ยนชีวิตได้</h2>
   <p class="sub reveal" style="--d:.1s">ทุกคนได้เวลาเท่ากันหมด สิ่งที่ทำให้ชีวิตเราต่างกันคือเราทำอะไรกับ 8 ชั่วโมงที่เหลือ</p>
 
   <div class="clockwrap reveal" style="--d:.14s">
@@ -551,7 +661,8 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
         <circle class="a1" cx="120" cy="120" r="90"/>
         <circle class="a2" cx="120" cy="120" r="90"/>
         <circle class="a3" cx="120" cy="120" r="90"/>
-        <circle class="tk" cx="120" cy="120" r="90"/>
+        <circle class="tkhalo" cx="120" cy="120" r="90"/>
+      <circle class="tk" cx="120" cy="120" r="90"/>
       </g>
       <text class="cbig" x="120" y="118">24</text>
       <text class="csm" x="120" y="140">ชั่วโมงเท่ากันทุกคน</text>
@@ -574,11 +685,11 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 <!-- ── มือแรก: ทางไปทุกห้อง ── -->
 <section class="hand-sec" id="hand"><div class="wrap">
   <span class="eyebrow reveal">ห้องต่าง ๆ ในบ้าน</span>
-  <h2 class="h2 disp reveal" style="--d:.06s">จั่วมือแรกของคุณ</h2>
+  <h2 class="h2 disp reveal" style="--d:.06s">🎴 จั่วมือแรกของคุณ</h2>
   <p class="sub reveal" style="--d:.1s">ทุกใบเปิดได้เลยวันนี้ ไม่ต้องสมัคร ไม่ต้องจ่าย หยิบใบไหนก่อนก็ได้ — ไม่มีลำดับที่ถูกต้อง</p>
 
-  <div class="hand">
-    <a class="pc reveal" style="--d:.1s" href="forge/">
+  <div class="hand" id="handDeck">
+    <a class="pc" style="--dl:0s;--rot:-9deg" href="forge/">
       <span class="free disp">เริ่มตรงนี้</span>
       <div class="top"><span>READ</span><span>01</span></div>
       <div class="art"><img src="img/card-forge.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📖</span></div>
@@ -588,7 +699,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">อ่านเลย →</span>
     </a>
 
-    <a class="pc reveal" style="--d:.15s" href="classroom/">
+    <a class="pc" style="--dl:.09s;--rot:6deg" href="classroom/">
       <span class="free disp">ฟรีตลอดชีพ</span>
       <div class="top"><span>LEARN</span><span>02</span></div>
       <div class="art"><img src="img/card-class.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📚</span></div>
@@ -597,7 +708,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">เข้าห้องเรียน →</span>
     </a>
 
-    <a class="pc reveal" style="--d:.2s" href="resume/">
+    <a class="pc" style="--dl:.18s;--rot:-5deg" href="resume/">
       <div class="top"><span>SHOW</span><span>03</span></div>
       <div class="art"><img src="img/card-resume.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🧭</span></div>
       <h3 class="disp">Smart Resume</h3>
@@ -605,7 +716,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">เปิดดู →</span>
     </a>
 
-    <a class="pc reveal" style="--d:.25s" href="club/">
+    <a class="pc" style="--dl:.27s;--rot:8deg" href="club/">
       <div class="top"><span>CLUB</span><span>04</span></div>
       <div class="art"><img src="img/card-club.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🍀</span></div>
       <h3 class="disp">myclover club</h3>
@@ -613,7 +724,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">แวะดู →</span>
     </a>
 
-    <a class="pc reveal" style="--d:.25s" href="card/">
+    <a class="pc" style="--dl:.36s;--rot:-7deg" href="card/">
       <div class="top"><span>TOOL</span><span>05</span></div>
       <div class="art"><img src="img/card-tool.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🎴</span></div>
       <h3 class="disp">การ์ดประจำตัว</h3>
@@ -621,7 +732,7 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       <span class="go disp">ปักธงของคุณ →</span>
     </a>
 
-    <div class="pc locked reveal" style="--d:.3s" id="guildCard">
+    <div class="pc locked" style="--dl:.45s;--rot:5deg" id="guildCard">
       <span class="glow"></span>
       <div class="top"><span>GUILD</span><span>06</span></div>
       <div class="art"><img src="img/card-guild.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">⚔️</span></div>
@@ -642,17 +753,20 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a class="ls reveal" style="--d:.2s" href="classroom/prompts.html"><span class="lv">LV.5</span><span><b>Smart Prompt Vault</b><small>บอกงานมา เดี๋ยวหยิบ Prompt ที่ตรงให้ พร้อมตัวสร้าง AI คู่หูประจำงาน</small></span></a>
     <a class="ls reveal" style="--d:.24s" href="classroom/first-web.html"><span class="lv">LV.6</span><span><b>สร้างเว็บแรกของตัวเอง</b><small>ด่านสุดท้ายของห้องเรียน</small></span></a>
   </div>
+  <div class="dealrow reveal" style="--d:.3s">
+    <button type="button" class="tapbtn" id="dealBtn"><span class="e">🎴</span>สับไพ่แล้วแจกใหม่</button>
+  </div>
 </div></section>
 
 <!-- ── ทางที่เราวางไว้ — 3 ด่าน ── -->
 <section class="road" id="road"><div class="wrap">
   <span class="eyebrow reveal">ถ้าไม่รู้จะหยิบใบไหนก่อน</span>
-  <h2 class="h2 disp reveal" style="--d:.06s">ทางที่เราวางไว้ให้ — สามด่าน</h2>
+  <h2 class="h2 disp reveal" style="--d:.06s">🗺️ ทางที่เราวางไว้ให้ — สามด่าน</h2>
   <p class="sub reveal" style="--d:.1s">ไม่ใช่ข้อบังคับ จะข้ามด่านแรกมาเริ่มที่ห้องเรียนเลยก็ได้ — แต่ถ้าเดินตามนี้ ตอนไปถึงด่านสุดท้ายคุณจะมีของติดมือไปด้วย ไม่ได้ไปมือเปล่า</p>
 
-  <ol class="roadline">
-    <li class="rd reveal" style="--d:.06s" data-mc-doneclass="forge:done">
-      <span class="rn">1</span>
+  <ol class="roadline" id="roadline">
+    <li class="rd" style="--dl:0s" data-mc-doneclass="forge:done">
+      <span class="rn"><i>1</i><span class="rem">📖</span></span>
       <div>
         <b class="disp">📖 อ่านการ์ตูน 12 ตอน</b>
         <p>เรื่องจริง 19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านจบแล้วจะเห็นเองว่าทำไมต้องมีเครื่องมือ</p>
@@ -664,8 +778,8 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       </div>
     </li>
 
-    <li class="rd reveal" style="--d:.12s" data-mc-doneclass="learn:done">
-      <span class="rn">2</span>
+    <li class="rd" style="--dl:.14s" data-mc-doneclass="learn:done">
+      <span class="rn"><i>2</i><span class="rem">🎓</span></span>
       <div>
         <b class="disp">🎓 เข้าห้องเรียน AI 6 บท</b>
         <p>จากแรงบันดาลใจมาเป็นของที่ทำเป็นจริง ๆ บทละประมาณ 10 นาที ทำตามได้เลยไม่ต้องมีพื้นฐาน — เข้าตรงนี้ก่อนโดยไม่อ่านการ์ตูนก็ได้</p>
@@ -677,8 +791,8 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       </div>
     </li>
 
-    <li class="rd reveal" style="--d:.18s">
-      <span class="rn">3</span>
+    <li class="rd" style="--dl:.28s">
+      <span class="rn"><i>3</i><span class="rem">🃏</span></span>
       <div>
         <b class="disp">🃏 ค่อยมาทำการ์ดประจำตัว</b>
         <p>ด่านนี้อยู่ท้ายสุดเพราะมันสนุกตอนมีของมาใส่ — ตราที่ปลดได้จากสองด่านบนจะขึ้นบนการ์ด พร้อมกรอบที่เปลี่ยนไปตามสิ่งที่คุณทำมา</p>
@@ -700,35 +814,42 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
 <!-- ── จดหมาย ── -->
 <section class="letter-sec"><div class="wrap">
   <span class="eyebrow reveal">จดหมายจากเจ้าของบ้าน</span>
-  <h2 class="h2 disp reveal" style="--d:.06s">ทำไมถึงกลับมาเปิดบ้านหลังนี้</h2>
-  <div class="letter reveal" style="--d:.1s">
+  <h2 class="h2 disp reveal" style="--d:.06s">🍀 ทำไมถึงกลับมาเปิดบ้านหลังนี้</h2>
+  <div class="letterwrap reveal" id="letterWrap" style="--d:.1s">
+  <button type="button" class="envelope" id="letterBtn" aria-expanded="false" aria-controls="letterBody">
+    <span class="flap" aria-hidden="true">🍀</span>
+    <b class="disp">จดหมายปิดผนึกจากเจ้าของบ้าน</b>
+    <small>แตะเพื่อแกะซองอ่าน — ยาวประมาณหนึ่งนาที</small>
+  </button>
+  <div class="letter" id="letterBody">
     <span class="seal" aria-hidden="true"><svg viewBox="-52 -50 104 108"><use href="#clover-mark"/></svg></span>
-    <p>สวัสดีครับ</p>
-    <p>โดเมนนี้อายุ 16 ปีแล้ว สมัยนั้นมันคือที่ที่พวกเรามาเจอกัน คุยกัน แล้ววันหนึ่งชีวิตก็พาแต่ละคนแยกย้ายไปตามทางของตัวเอง</p>
-    <p>ผมเป็นคนที่โตมากับเกมการ์ด และเพิ่งได้รู้อีกครั้งว่า<b>ความรู้สึกตอนชนหมัดกับใครสักคนก่อนเริ่มเกมมันดีแค่ไหน</b> — มันไม่เกี่ยวกับว่าใครจะชนะเลย มันคือการที่เราสองคนพร้อมจะสนุกไปด้วยกัน</p>
-    <p>ผมเลยอยากทำที่แบบนั้นขึ้นมาอีกที่หนึ่ง ที่ที่คุณเดินเข้ามาแล้วได้อะไรกลับไปจริง ๆ ไม่ว่าคุณจะอยู่ต่อหรือไม่อยู่ก็ตาม <b>ความรู้ทุกอย่างในบ้านนี้ฟรี และจะฟรีตลอดไป</b></p>
-    <p>ถ้าวันนี้คุณเจอบ้านหลังนี้ — ผมถือว่าเราโชคดีทั้งคู่ครับ</p>
+    <p style="--dl:0.12s">สวัสดีครับ</p>
+    <p style="--dl:0.19s">โดเมนนี้อายุ 16 ปีแล้ว สมัยนั้นมันคือที่ที่พวกเรามาเจอกัน คุยกัน แล้ววันหนึ่งชีวิตก็พาแต่ละคนแยกย้ายไปตามทางของตัวเอง</p>
+    <p style="--dl:0.26s">ผมเป็นคนที่โตมากับเกมการ์ด และเพิ่งได้รู้อีกครั้งว่า<b>ความรู้สึกตอนชนหมัดกับใครสักคนก่อนเริ่มเกมมันดีแค่ไหน</b> — มันไม่เกี่ยวกับว่าใครจะชนะเลย มันคือการที่เราสองคนพร้อมจะสนุกไปด้วยกัน</p>
+    <p style="--dl:0.33s">ผมเลยอยากทำที่แบบนั้นขึ้นมาอีกที่หนึ่ง ที่ที่คุณเดินเข้ามาแล้วได้อะไรกลับไปจริง ๆ ไม่ว่าคุณจะอยู่ต่อหรือไม่อยู่ก็ตาม <b>ความรู้ทุกอย่างในบ้านนี้ฟรี และจะฟรีตลอดไป</b></p>
+    <p style="--dl:0.40s">ถ้าวันนี้คุณเจอบ้านหลังนี้ — ผมถือว่าเราโชคดีทั้งคู่ครับ</p>
     <p class="sign disp">🍀 ทีม<small>เจ้าของบ้าน myclover</small></p>
+  </div>
   </div>
 </div></section>
 
 <!-- ── เปิดไพ่ทั้งมือ ── -->
 <section class="open-sec" id="open"><div class="wrap">
   <span class="eyebrow reveal">เปิดไพ่ทั้งมือ</span>
-  <h2 class="h2 disp reveal" style="--d:.06s">บอกกันตรง ๆ ตั้งแต่แรก<br>ว่าเจ้าของบ้านทำอะไรอยู่</h2>
+  <h2 class="h2 disp reveal" style="--d:.06s">🃏 บอกกันตรง ๆ ตั้งแต่แรก<br>ว่าเจ้าของบ้านทำอะไรอยู่</h2>
   <p class="sub reveal" style="--d:.1s">บ้านหลังนี้จะอยู่กันยาว ๆ เราเลยไม่อยากให้มีอะไรค้างคาใจกันทีหลัง</p>
-  <div class="og">
-    <div class="oc reveal" style="--d:.06s">
+  <div class="og" id="openHand">
+    <div class="oc" style="--dl:0s">
       <span class="ic">🎁</span>
       <b class="disp">ของฟรี คือฟรีจริง</b>
       <p>ห้องเรียน เครื่องมือ คลังพร้อมท์ ทุกอย่างหยิบไปใช้ได้เลย ไม่มีเงื่อนไข ไม่ต้องแลกกับอะไรทั้งนั้น อยู่แค่ตรงนี้ตลอดไปก็ได้</p>
     </div>
-    <div class="oc reveal" style="--d:.12s">
+    <div class="oc" style="--dl:.16s">
       <span class="ic">🤝</span>
       <b class="disp">ผมทำธุรกิจอยู่จริง</b>
       <p>ผมทำธุรกิจสุขภาพที่อัปเกรดด้วยเทคโนโลยี AI อยู่ และทีมของผมสร้างเครื่องมือของตัวเองเพิ่มขึ้นมาเอง ถ้าคุณสนใจ ประตูกิลด์อยู่ตรงนั้น เดินเข้ามาถามได้เลย</p>
     </div>
-    <div class="oc warm reveal" style="--d:.18s">
+    <div class="oc warm" style="--dl:.32s">
       <span class="ic">🚪</span>
       <b class="disp">ถ้าไม่สนใจ ก็ไม่มีใครตามตื้อ</b>
       <p>ไม่มีการโทรหา ไม่มีการทักไปชวน ความรู้และเครื่องมือฟรีในบ้านนี้ยังเป็นของคุณเหมือนเดิมทุกประการ นี่คือกติกาที่เราตั้งไว้เอง</p>
@@ -874,6 +995,63 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   setTimeout(function(){
     Array.prototype.forEach.call(els,function(el){ el.classList.add('in'); });
   },3500);
+})();
+
+
+/* ═══════════════════════════════════════════════════════
+   ลูกเล่นของหน้าแรก — แจกไพ่ · สามด่าน · จดหมาย · เปิดไพ่ทั้งมือ
+
+   ใช้ IntersectionObserver ตัวเดียวคุมทั้งหมด ยิงครั้งเดียวแล้วเลิกมอง
+   ไม่มี setInterval ไม่มีการฟัง scroll เลย หน้าเลยไม่หนืด
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  if(!('IntersectionObserver' in window)) return;   /* เบราว์เซอร์เก่า — เห็นครบอยู่แล้ว */
+
+  var io=new IntersectionObserver(function(es,o){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      o.unobserve(e.target);
+      var run=e.target.__mcRun;
+      if(run) run();
+    });
+  },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
+
+  function onSeen(el,fn){ if(!el) return; el.__mcRun=fn; io.observe(el); }
+  function add(el,c){ if(el.className.indexOf(c)<0) el.className+=' '+c; }
+
+  /* ── แจกไพ่ ──
+     เล่นซ้ำได้ ต้องถอดคลาสแล้วบังคับให้เบราว์เซอร์คำนวณใหม่ก่อน
+     ไม่งั้นแอนิเมชันจะไม่เริ่มรอบสอง */
+  var deck=document.getElementById('handDeck'), dealBtn=document.getElementById('dealBtn');
+  function deal(){
+    if(!deck) return;
+    deck.className=deck.className.replace(/\s*dealt/,'');
+    void deck.offsetWidth;
+    add(deck,'dealt');
+  }
+  onSeen(deck,deal);
+  if(dealBtn) dealBtn.addEventListener('click',deal);
+
+  /* ── สามด่าน ── */
+  var road=document.getElementById('roadline');
+  onSeen(road,function(){ add(road,'go'); });
+
+  /* ── เปิดไพ่ทั้งมือ ── */
+  var openHand=document.getElementById('openHand');
+  onSeen(openHand,function(){ add(openHand,'flipped'); });
+
+  /* ── จดหมาย — กดแกะซองถึงจะอ่านได้ ──
+     เป็นเนื้อหาเล่าเรื่อง ไม่ใช่ทางเดินของเว็บ ซ่อนไว้ก่อนได้ไม่เสียหาย
+     เคยแกะแล้วรอบหน้าเปิดค้างไว้ให้เลย */
+  var lw=document.getElementById('letterWrap'), lb=document.getElementById('letterBtn');
+  function openLetter(){
+    if(!lw || lw.className.indexOf('open')>=0) return;
+    add(lw,'open');
+    if(lb) lb.setAttribute('aria-expanded','true');
+    try{ localStorage.setItem('mc_letter','1'); }catch(e){}
+  }
+  if(lb) lb.addEventListener('click',openLetter);
+  try{ if(localStorage.getItem('mc_letter')==='1') openLetter(); }catch(e){}
 })();
 
 
