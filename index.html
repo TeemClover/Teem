@@ -1131,6 +1131,7 @@ document.addEventListener('click',function(e){
     pickGrid : function(el){
       var k=el.children;
       for(var i=0;i<k.length;i++) k[i].style.setProperty('--dl',(i*0.08)+'s');
+      if(window.mcInitPick) window.mcInitPick();   /* ค่อยกางสายที่เคยเลือกไว้ตอนนี้ */
     },
     handDeck : deal,
     roadline : function(el){ add(el,'go'); },
@@ -1162,16 +1163,14 @@ document.addEventListener('click',function(e){
   }
 
   /* จดหมาย — กดแกะซองถึงจะอ่านได้
-     เคยแกะแล้วรอบหน้าเปิดค้างไว้ให้เลย */
+     เปิดหน้าใหม่ทุกครั้งซองจะปิดกลับ ไม่ค้างไว้ที่เปิดแล้ว */
   var lw=document.getElementById('letterWrap'), lb=document.getElementById('letterBtn');
   function openLetter(){
     if(!lw || lw.className.indexOf('open')>=0) return;
     add(lw,'open');
     if(lb) lb.setAttribute('aria-expanded','true');
-    try{ localStorage.setItem('mc_letter','1'); }catch(e){}
   }
   if(lb) lb.addEventListener('click',openLetter);
-  try{ if(localStorage.getItem('mc_letter')==='1') openLetter(); }catch(e){}
 })();
 
 
@@ -1185,17 +1184,16 @@ document.addEventListener('click',function(e){
       b=document.getElementById('bump'),
       cue=document.getElementById('glhfCue');
   if(!sec||!b) return;
-  function open(first){
+  /* ไม่จำว่าเคยชนแล้ว — เปิดหน้าใหม่ทุกครั้งต้องย่อกลับ
+     เพื่อให้ทุกส่วนสั้นเวลาคนเลื่อนผ่าน และยังชวนให้อยากกดอีก */
+  function open(){
     if(sec.className.indexOf('opened')>=0) return;
     b.className+=' hit';
     sec.className+=' opened';
     b.setAttribute('aria-expanded','true');
-    if(cue) cue.textContent = first ? '🤜🤛 ชนแล้ว — Good Luck, Have Fun ครับ'
-                                    : 'เราเคยชนหมัดกันไปแล้ว — Good Luck, Have Fun ครับ';
-    try{ localStorage.setItem('mc_glhf','1'); }catch(e){}
+    if(cue) cue.textContent='🤜🤛 ชนแล้ว — Good Luck, Have Fun ครับ';
   }
-  b.addEventListener('click',function(){ open(true); });
-  try{ if(localStorage.getItem('mc_glhf')==='1') open(false); }catch(e){}
+  b.addEventListener('click',open);
 })();
 
 
@@ -1283,8 +1281,12 @@ document.addEventListener('click',function(e){
     if(want) want.classList.add('match');
     if(scroll) box.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
-  var cur=get();
-  if(PATHS[cur]) choose(cur,false);
+  /* เคยเลือกสายไว้แล้วก็ยังต้องกดเข็มทิศก่อน ไม่งั้นแผนที่จะค้างโชว์
+     ตั้งแต่เลื่อนผ่าน ทั้งที่ยังไม่ได้กดอะไรเลย */
+  window.mcInitPick=function(){
+    var cur=get();
+    if(PATHS[cur]) choose(cur,false);
+  };
 })();
 
 /* ═══════════════════════════════════════════════════════
@@ -1330,6 +1332,14 @@ document.addEventListener('DOMContentLoaded',function(){
 <script defer src="assets/quest.js"></script>
 <script defer src="assets/config.js"></script>
 <script defer src="assets/guildx.js"></script>
+<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "xtx73cs6w1");
+</script>
 <!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
 <script>
