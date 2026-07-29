@@ -124,13 +124,35 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 .glhf p + p{margin-top:15px}
 .glhf b{color:#fff}
 
-.bump{display:flex;align-items:center;justify-content:center;gap:6px;margin:38px 0 30px;font-size:clamp(44px,9vw,74px);line-height:1}
+/* ชนหมัดก่อนถึงจะเล่าให้ฟัง — ไม่ยัดเยียดให้อ่านตั้งแต่ยังไม่อยากอ่าน */
+.bump{display:block;width:100%;background:none;border:0;color:inherit;font-family:inherit;
+  margin:34px 0 8px;padding:14px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bump .fists{display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:clamp(44px,9vw,74px);line-height:1}
 .bump .l,.bump .r{display:inline-block;transition:transform .8s cubic-bezier(.22,1,.36,1)}
 .bump .l{transform:translateX(-46px) rotate(-14deg)}
 .bump .r{transform:translateX(46px) rotate(14deg)}
-.bump.hit .l,.bump.hit .r{transform:none}
+.bump:hover .l{transform:translateX(-34px) rotate(-14deg)}
+.bump:hover .r{transform:translateX(34px) rotate(14deg)}
+.bump.hit .l,.bump.hit .r,.bump.hit:hover .l,.bump.hit:hover .r{transform:none}
 .bump .spark{position:relative;width:0;font-size:26px;opacity:0;transition:opacity .3s .55s}
-.bump.hit .spark{opacity:1}
+.bump.hit .spark{opacity:1;animation:sparkPop .7s .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes sparkPop{0%{transform:scale(.3)}55%{transform:scale(1.5)}100%{transform:scale(1)}}
+.bump .tap{display:block;margin-top:14px;font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;
+  letter-spacing:.06em;color:rgb(var(--gold));transition:opacity .3s}
+.bump .tap::after{content:"";display:block;width:34px;height:2px;margin:9px auto 0;border-radius:2px;
+  background:rgb(190 148 66/.55);animation:tapBob 1.6s ease-in-out infinite}
+@keyframes tapBob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(4px);opacity:1}}
+.bump.hit .tap{opacity:0;pointer-events:none}
+.glhfcue{color:rgb(255 255 255/.7);font-size:15.5px;font-family:"Bai Jamjuree";font-weight:600}
+
+/* เนื้อหาซ่อนไว้จนกว่าจะชนหมัด — ถ้า JS ไม่ทำงาน body.js ไม่ถูกใส่ เนื้อหาก็โผล่ตามปกติ */
+body.js .glhfbody{display:grid;grid-template-rows:0fr;opacity:0;
+  transition:grid-template-rows .85s cubic-bezier(.22,1,.36,1),opacity .5s .15s}
+body.js .glhf.opened .glhfbody{grid-template-rows:1fr;opacity:1}
+.glhfbody > .inner{min-height:0;overflow:hidden}
+body.js .glhf.opened .stg{animation:stgIn .65s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--s,0s)}
+@keyframes stgIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 
 .letters{display:flex;gap:clamp(10px,2.4vw,26px);justify-content:center;flex-wrap:wrap;margin:6px 0 8px}
 .lt{background:rgb(255 255 255/.055);border:1px solid rgb(255 255 255/.14);border-radius:18px;padding:20px 22px;min-width:150px;text-align:center;
@@ -147,6 +169,69 @@ nav .wrap{display:flex;align-items:center;justify-content:space-between;height:6
 /* ═══════════ 8/8/8 ═══════════ */
 .h2{font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1.24;margin:12px 0 12px}
 .sub{color:rgb(var(--muted));font-size:16.5px;max-width:60ch}
+
+/* วงกลม 24 ชั่วโมง — เส้นรอบวง 2πr = 565.5 · หนึ่งช่วง 8 ชม. = 188.5 (เว้นร่อง 4.5)
+   ขีด 10 นาที = 565.5 × 10/1440 ≈ 3.9 */
+.clockwrap{display:flex;align-items:center;gap:clamp(20px,4vw,44px);margin-top:30px;flex-wrap:wrap}
+.clock{width:clamp(200px,34vw,260px);height:auto;flex:none}
+.clock circle{stroke-linecap:butt}
+.clock .a1{stroke:rgb(var(--ink)/.16);stroke-dasharray:184 381.5;stroke-dashoffset:0}
+.clock .a2{stroke:rgb(var(--deep)/.85);stroke-dasharray:184 381.5;stroke-dashoffset:-188.5}
+.clock .a3{stroke:rgb(var(--gold));stroke-dasharray:184 381.5;stroke-dashoffset:-377}
+.clock .tk{stroke:#fff;stroke-dasharray:3.9 561.6;stroke-dashoffset:-392}
+.clock .cbig{font-family:"Bai Jamjuree";font-weight:700;font-size:44px;fill:rgb(var(--ink));text-anchor:middle}
+.clock .csm{font-family:"Anuphan";font-size:13px;fill:rgb(var(--muted));text-anchor:middle}
+body.js .reveal.in .clock .a3{animation:arcIn 1.1s .25s cubic-bezier(.22,1,.36,1) both}
+@keyframes arcIn{from{stroke-dasharray:0 565.5}to{stroke-dasharray:184 381.5}}
+.clegend{list-style:none;display:grid;gap:11px;flex:1;min-width:240px}
+.clegend li{display:grid;grid-template-columns:16px 1fr;gap:0 12px;align-items:start}
+.clegend i{width:14px;height:14px;border-radius:4px;margin-top:6px;grid-row:span 2}
+.clegend .k1{background:rgb(var(--ink)/.16)}
+.clegend .k2{background:rgb(var(--deep)/.85)}
+.clegend .k3{background:rgb(var(--gold))}
+.clegend .k4{background:linear-gradient(90deg,rgb(var(--gold)) 0 38%,#fff 38% 62%,rgb(var(--gold)) 62% 100%)}
+.clegend b{font-size:16px;line-height:1.4}
+.clegend span{font-size:14px;color:rgb(var(--muted));line-height:1.6}
+.clegend .hi{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.3);
+  border-radius:13px;padding:12px 14px;margin-top:3px}
+@media(max-width:700px){.clockwrap{justify-content:center}.clegend{min-width:100%}}
+
+/* ═══════════ ทางที่เราวางไว้ — 3 ด่าน ═══════════ */
+.road{background:linear-gradient(180deg,transparent,rgb(27 106 66/.05))}
+.roadline{list-style:none;display:grid;gap:13px;margin-top:26px;counter-reset:rd}
+.rd{position:relative;display:grid;grid-template-columns:auto 1fr;gap:16px;
+  background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:19px;padding:20px 22px;
+  transition:border-color .2s,box-shadow .2s}
+.rd::after{content:"";position:absolute;left:39px;top:100%;width:2px;height:13px;
+  background:rgb(var(--green)/.25)}
+.rd:last-child::after{display:none}
+.rn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:16px;
+  background:rgb(27 106 66/.1);color:rgb(var(--green))}
+.rd.done{border-color:rgb(27 106 66/.4);background:rgb(27 106 66/.04)}
+.rd.done .rn{background:rgb(var(--green));color:#fff;font-size:0}
+.rd.done .rn::after{content:"✓";font-size:18px}
+.rd b{font-family:"Bai Jamjuree";font-size:17px;line-height:1.4;display:block}
+.rd p{font-size:14.5px;color:rgb(var(--muted));margin-top:5px;line-height:1.7}
+.rbar{height:7px;border-radius:99px;background:rgb(var(--ink)/.08);overflow:hidden;margin-top:13px}
+.rbar i{display:block;height:100%;width:0;border-radius:99px;background:rgb(var(--green));
+  transition:width .8s cubic-bezier(.22,1,.36,1)}
+.rmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.rst{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(var(--green));
+  background:rgb(27 106 66/.09);border-radius:99px;padding:5px 12px}
+.rst.is-done{background:rgb(var(--green));color:#fff}
+.rgo{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--green));
+  margin-left:auto;white-space:nowrap}
+.rd:hover{border-color:rgb(var(--green)/.45);box-shadow:0 16px 32px -22px rgb(18 40 28/.4)}
+.rprize{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.rprize span{font-size:12.5px;font-weight:700;font-family:"Bai Jamjuree";
+  border:1px solid rgb(190 148 66/.45);color:rgb(var(--gold));border-radius:99px;padding:5px 12px}
+.roadnote{margin-top:18px;font-size:14px;color:rgb(var(--muted));text-align:center}
+@media(max-width:520px){
+  .rd{grid-template-columns:1fr;gap:10px}
+  .rd::after{left:22px}
+  .rgo{margin-left:0}
+}
 
 /* ═══════════ ด่านเลือกสาย ═══════════ */
 .picker{background:
@@ -325,7 +410,11 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   .ribbon .track{animation:none}
   #gate .clover,#gate .float{animation:none}
   .btn:hover,.eight:hover,.pc:hover,.ls:hover,.lt:hover{transform:none}
-  .bump .l,.bump .r{transform:none;transition:none}
+  .bump .l,.bump .r,.bump:hover .l,.bump:hover .r{transform:none;transition:none}
+  .bump .tap::after{animation:none}
+  .bump.hit .spark{animation:none}
+  body.js .glhfbody{transition:none}
+  body.js .glhf.opened .stg{animation:none}
 }
 </style>
 </head>
@@ -425,23 +514,28 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <span class="eyebrow reveal">คำอวยพรของพวกเรา</span>
   <h2 class="disp reveal" style="--d:.06s">ก่อนเกมจะเริ่ม<br>เราชนหมัดกัน แล้วพูดคำเดียวกัน</h2>
 
-  <div class="bump reveal" id="bump" aria-hidden="true">
-    <span class="l">🤜</span><span class="spark">✨</span><span class="r">🤛</span>
-  </div>
+  <p class="glhfcue reveal" style="--d:.09s" id="glhfCue">ยังไม่ต้องอ่านอะไรตอนนี้ — เอามือมาชนกันก่อน แล้วเดี๋ยวเล่าให้ฟัง</p>
 
-  <div class="letters reveal" style="--d:.1s">
-    <div class="lt"><b class="disp">GL</b><span>Good Luck</span><small>ขอให้โชคดีนะ</small></div>
-    <div class="lt"><b class="disp">HF</b><span>Have Fun</span><small>แล้วก็ขอให้สนุกด้วย</small></div>
-  </div>
+  <button type="button" class="bump reveal" style="--d:.12s" id="bump" aria-expanded="false" aria-controls="glhfBody">
+    <span class="fists" aria-hidden="true"><span class="l">🤜</span><span class="spark">✨</span><span class="r">🤛</span></span>
+    <span class="tap disp">แตะเพื่อชนหมัดกับเรา</span>
+  </button>
 
-  <p class="reveal" style="--d:.14s">เกมเมอร์ทั้งโลกพูดคำนี้ก่อนเริ่มเกม และที่สวยที่สุดคือ — <b>เราพูดกับคู่แข่งด้วย</b> ไม่ใช่แค่กับเพื่อนร่วมทีม ชนหมัดกันเบา ๆ ยิ้มให้กัน แล้วค่อยจั่วไพ่มือแรก</p>
-  <p class="reveal" style="--d:.17s">มันเป็นการบอกอีกฝ่ายว่า <b>“ฉันอยากให้เธอเล่นได้เต็มที่”</b> เพราะเกมที่ดีไม่ได้แปลว่าต้องมีใครแพ้ยับ แต่แปลว่าทั้งสองฝั่งได้เล่นเกมที่ดีที่สุดของตัวเอง</p>
-  <p class="reveal" style="--d:.2s">เราเลยอยากส่งต่อวัฒนธรรมนี้ออกไปนอกโต๊ะการ์ด — <b>อยากให้คนที่เดินมาเจอเรา โชคดี และสนุก</b></p>
+  <div class="glhfbody" id="glhfBody"><div class="inner">
+    <div class="letters stg" style="--s:.05s">
+      <div class="lt"><b class="disp">GL</b><span>Good Luck</span><small>ขอให้โชคดีนะ</small></div>
+      <div class="lt"><b class="disp">HF</b><span>Have Fun</span><small>แล้วก็ขอให้สนุกด้วย</small></div>
+    </div>
 
-  <div class="pullq disp reveal" style="--d:.24s">
-    เพราะโชคดีเฉย ๆ มันจบเร็ว<br>แต่โชคดีที่<b>สนุก</b>ด้วย มันไปต่อได้ทุกวัน ไม่มีเบื่อ
-    <small>— นี่คือเหตุผลที่บ้านหลังนี้มีอยู่</small>
-  </div>
+    <p class="stg" style="--s:.16s">เกมเมอร์ทั้งโลกพูดคำนี้ก่อนเริ่มเกม และที่สวยที่สุดคือ — <b>เราพูดกับคู่แข่งด้วย</b> ไม่ใช่แค่กับเพื่อนร่วมทีม ชนหมัดกันเบา ๆ ยิ้มให้กัน แล้วค่อยจั่วไพ่มือแรก</p>
+    <p class="stg" style="--s:.24s">มันเป็นการบอกอีกฝ่ายว่า <b>“ฉันอยากให้เธอเล่นได้เต็มที่”</b> เพราะเกมที่ดีไม่ได้แปลว่าต้องมีใครแพ้ยับ แต่แปลว่าทั้งสองฝั่งได้เล่นเกมที่ดีที่สุดของตัวเอง</p>
+    <p class="stg" style="--s:.32s">เราเลยอยากส่งต่อวัฒนธรรมนี้ออกไปนอกโต๊ะการ์ด — <b>อยากให้คนที่เดินมาเจอเรา โชคดี และสนุก</b></p>
+
+    <div class="pullq disp stg" style="--s:.4s">
+      เพราะโชคดีเฉย ๆ มันจบเร็ว<br>แต่โชคดีที่<b>สนุก</b>ด้วย มันไปต่อได้ทุกวัน ไม่มีเบื่อ
+      <small>— นี่คือเหตุผลที่บ้านหลังนี้มีอยู่</small>
+    </div>
+  </div></div>
 </div></section>
 
 <!-- ── 8/8/8 ── -->
@@ -449,6 +543,27 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   <span class="eyebrow reveal">ปรัชญาของบ้าน</span>
   <h2 class="h2 disp reveal" style="--d:.06s">วันหนึ่งมี 24 ชั่วโมง<br>แต่มีอยู่ 8 ที่เปลี่ยนชีวิตได้</h2>
   <p class="sub reveal" style="--d:.1s">ทุกคนได้เวลาเท่ากันหมด สิ่งที่ทำให้ชีวิตเราต่างกันคือเราทำอะไรกับ 8 ชั่วโมงที่เหลือ</p>
+
+  <div class="clockwrap reveal" style="--d:.14s">
+    <svg class="clock" viewBox="0 0 240 240" role="img"
+         aria-label="วงกลม 24 ชั่วโมง แบ่งเป็นทำงาน 8 ชั่วโมง นอน 8 ชั่วโมง และเป็นของเราอีก 8 ชั่วโมง โดยมีขีดเล็ก ๆ แทน 10 นาทีแรกของช่วงที่เป็นของเรา">
+      <g transform="rotate(-90 120 120)" fill="none" stroke-width="24">
+        <circle class="a1" cx="120" cy="120" r="90"/>
+        <circle class="a2" cx="120" cy="120" r="90"/>
+        <circle class="a3" cx="120" cy="120" r="90"/>
+        <circle class="tk" cx="120" cy="120" r="90"/>
+      </g>
+      <text class="cbig" x="120" y="118">24</text>
+      <text class="csm" x="120" y="140">ชั่วโมงเท่ากันทุกคน</text>
+    </svg>
+    <ul class="clegend">
+      <li><i class="k1"></i><b class="disp">8 ทำงาน</b><span>แลกไปเพื่อให้ชีวิตเดินต่อได้</span></li>
+      <li><i class="k2"></i><b class="disp">8 นอน</b><span>ร่างกายซ่อมตัวเองอยู่ตรงนี้</span></li>
+      <li><i class="k3"></i><b class="disp">8 ของเรา</b><span>ช่วงเดียวที่เราเลือกเองได้จริง</span></li>
+      <li class="hi"><i class="k4"></i><b class="disp">ขีดเล็ก ๆ นั่นคือ 10 นาที</b><span>บ้านนี้ขอแค่เท่านั้นต่อวัน — เล็กกว่าที่คิดเยอะ</span></li>
+    </ul>
+  </div>
+
   <div class="eights">
     <div class="eight reveal" style="--d:.06s"><div class="n disp">8</div><b class="disp">ทำงาน</b><p>เวลาที่เราแลกไปเพื่อให้ชีวิตเดินต่อได้ — จำเป็น และไม่มีอะไรผิด</p></div>
     <div class="eight reveal" style="--d:.12s"><div class="n disp">8</div><b class="disp">นอน</b><p>เวลาที่ร่างกายซ่อมตัวเอง คนที่ตัดตรงนี้ทิ้งมักจ่ายคืนแพงกว่าเดิมเสมอ</p></div>
@@ -527,6 +642,59 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
     <a class="ls reveal" style="--d:.2s" href="classroom/prompts.html"><span class="lv">LV.5</span><span><b>Smart Prompt Vault</b><small>บอกงานมา เดี๋ยวหยิบ Prompt ที่ตรงให้ พร้อมตัวสร้าง AI คู่หูประจำงาน</small></span></a>
     <a class="ls reveal" style="--d:.24s" href="classroom/first-web.html"><span class="lv">LV.6</span><span><b>สร้างเว็บแรกของตัวเอง</b><small>ด่านสุดท้ายของห้องเรียน</small></span></a>
   </div>
+</div></section>
+
+<!-- ── ทางที่เราวางไว้ — 3 ด่าน ── -->
+<section class="road" id="road"><div class="wrap">
+  <span class="eyebrow reveal">ถ้าไม่รู้จะหยิบใบไหนก่อน</span>
+  <h2 class="h2 disp reveal" style="--d:.06s">ทางที่เราวางไว้ให้ — สามด่าน</h2>
+  <p class="sub reveal" style="--d:.1s">ไม่ใช่ข้อบังคับ จะข้ามด่านแรกมาเริ่มที่ห้องเรียนเลยก็ได้ — แต่ถ้าเดินตามนี้ ตอนไปถึงด่านสุดท้ายคุณจะมีของติดมือไปด้วย ไม่ได้ไปมือเปล่า</p>
+
+  <ol class="roadline">
+    <li class="rd reveal" style="--d:.06s" data-mc-doneclass="forge:done">
+      <span class="rn">1</span>
+      <div>
+        <b class="disp">📖 อ่านการ์ตูน 12 ตอน</b>
+        <p>เรื่องจริง 19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านจบแล้วจะเห็นเองว่าทำไมต้องมีเครื่องมือ</p>
+        <div class="rbar"><i data-mc-bar="forge"></i></div>
+        <div class="rmeta">
+          <span class="rst" data-mc-progress="forge" hidden></span>
+          <a class="rgo" href="forge/">ไปอ่าน →</a>
+        </div>
+      </div>
+    </li>
+
+    <li class="rd reveal" style="--d:.12s" data-mc-doneclass="learn:done">
+      <span class="rn">2</span>
+      <div>
+        <b class="disp">🎓 เข้าห้องเรียน AI 6 บท</b>
+        <p>จากแรงบันดาลใจมาเป็นของที่ทำเป็นจริง ๆ บทละประมาณ 10 นาที ทำตามได้เลยไม่ต้องมีพื้นฐาน — เข้าตรงนี้ก่อนโดยไม่อ่านการ์ตูนก็ได้</p>
+        <div class="rbar"><i data-mc-bar="learn"></i></div>
+        <div class="rmeta">
+          <span class="rst" data-mc-progress="learn" hidden></span>
+          <a class="rgo" href="classroom/">ไปเรียน →</a>
+        </div>
+      </div>
+    </li>
+
+    <li class="rd reveal" style="--d:.18s">
+      <span class="rn">3</span>
+      <div>
+        <b class="disp">🃏 ค่อยมาทำการ์ดประจำตัว</b>
+        <p>ด่านนี้อยู่ท้ายสุดเพราะมันสนุกตอนมีของมาใส่ — ตราที่ปลดได้จากสองด่านบนจะขึ้นบนการ์ด พร้อมกรอบที่เปลี่ยนไปตามสิ่งที่คุณทำมา</p>
+        <div class="rprize">
+          <span data-mc-notitle="FORGE">⚒️ ตราผ่านโรงตีเหล็ก · ยังไม่ปลด</span>
+          <span data-mc-title="FORGE" hidden>⚒️ ผ่านโรงตีเหล็ก — ปลดแล้ว</span>
+          <span data-mc-notitle="SCHOLAR">🎓 ตราติดอาวุธครบมือ · ยังไม่ปลด</span>
+          <span data-mc-title="SCHOLAR" hidden>🎓 ติดอาวุธครบมือ — ปลดแล้ว</span>
+        </div>
+        <div class="rmeta">
+          <a class="rgo" href="card/">ไปทำการ์ด →</a>
+        </div>
+      </div>
+    </li>
+  </ol>
+  <p class="roadnote reveal" style="--d:.24s">ความคืบหน้าเก็บอยู่ในเครื่องของคุณเองล้วน ไม่ได้ส่งไปไหน · <a href="paths/" style="color:rgb(var(--green));font-weight:700">หรือเลือกสายของคุณก่อนก็ได้ →</a></p>
 </div></section>
 
 <!-- ── จดหมาย ── -->
@@ -698,7 +866,6 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
       if(e.isIntersecting){
         e.target.classList.add('in');
         io.unobserve(e.target);
-        if(e.target.id==='bump') e.target.classList.add('hit');
       }
     });
   },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
@@ -706,8 +873,31 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
   /* กันเหนียว: ถ้าอะไรยังไม่ขึ้นใน 3.5 วิ ให้โชว์เลย */
   setTimeout(function(){
     Array.prototype.forEach.call(els,function(el){ el.classList.add('in'); });
-    var b=document.getElementById('bump'); if(b) b.classList.add('hit');
   },3500);
+})();
+
+
+/* ═══════════════════════════════════════════════════════
+   ชนหมัดก่อนถึงจะเล่า — #glhf
+   ยังไม่ชนก็ยังไม่ต้องอ่าน จะได้ไม่รู้สึกโดนยัดเยียด
+   เคยชนแล้วรอบหน้าเปิดให้เลย ไม่ต้องมาชนใหม่ทุกครั้ง
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var sec=document.getElementById('glhf'),
+      b=document.getElementById('bump'),
+      cue=document.getElementById('glhfCue');
+  if(!sec||!b) return;
+  function open(first){
+    if(sec.className.indexOf('opened')>=0) return;
+    b.className+=' hit';
+    sec.className+=' opened';
+    b.setAttribute('aria-expanded','true');
+    if(cue) cue.textContent = first ? '🤜🤛 ชนแล้ว — Good Luck, Have Fun ครับ'
+                                    : 'เราเคยชนหมัดกันไปแล้ว — Good Luck, Have Fun ครับ';
+    try{ localStorage.setItem('mc_glhf','1'); }catch(e){}
+  }
+  b.addEventListener('click',function(){ open(true); });
+  try{ if(localStorage.getItem('mc_glhf')==='1') open(false); }catch(e){}
 })();
 
 
