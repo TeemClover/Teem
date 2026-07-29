@@ -364,6 +364,11 @@ body.js .pickgrid.shown > .pk{animation:dealOut .6s cubic-bezier(.22,1,.36,1) bo
 .rprize{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
 .rprize span{font-size:12.5px;font-weight:700;font-family:"Bai Jamjuree";
   border:1px solid rgb(190 148 66/.45);color:rgb(var(--gold));border-radius:99px;padding:5px 12px}
+/* ป้ายด่านบอส — เผยแบบสงบ ไม่ให้ layout กระโดดจนคนงง */
+.rboss{margin-top:11px;font-size:13px;line-height:1.75;border:1px solid rgb(190 148 66/.5);
+  border-radius:12px;padding:10px 13px;background:rgb(190 148 66/.09);color:rgb(var(--ink))}
+.rboss b{font-family:"Bai Jamjuree";letter-spacing:.06em;color:rgb(var(--gold))}
+.rboss a{font-family:"Bai Jamjuree";font-weight:700;color:rgb(var(--green));white-space:nowrap}
 .roadnote{margin-top:18px;font-size:14px;color:rgb(var(--muted));text-align:center}
 @media(max-width:520px){
   .rd{grid-template-columns:1fr;gap:10px}
@@ -872,6 +877,9 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
         <b class="disp">🎓 เข้าห้องเรียน AI 6 บท</b>
         <p>จากแรงบันดาลใจมาเป็นของที่ทำเป็นจริง ๆ บทละประมาณ 10 นาที ทำตามได้เลยไม่ต้องมีพื้นฐาน — เข้าตรงนี้ก่อนโดยไม่อ่านการ์ตูนก็ได้</p>
         <div class="rbar"><i data-mc-bar="learn"></i></div>
+        <!-- ด่านบอสไม่โผล่จนกว่าจะเรียนครบ ก่อนหน้านั้นบ้านยังพูดว่า "6 บท" เหมือนเดิม -->
+        <p class="rboss" data-mc-done="learn" hidden>🌅 <b>BOSS STAGE UNLOCKED</b> — บทที่ 7 ที่ไม่ได้อยู่ในแผนการสอน
+          <a href="classroom/awaken/" data-ga="road_go:awaken">เข้าด่านสุดท้าย →</a></p>
         <div class="rmeta">
           <span class="rst" data-mc-progress="learn" hidden></span>
           <a class="rgo" href="classroom/" data-ga="road_go:classroom">ไปเรียน →</a>
@@ -887,8 +895,8 @@ body.js .reveal[style*="--d"]{transition-delay:var(--d)}
         <div class="rprize">
           <span data-mc-notitle="FORGE">⚒️ ตราผ่านโรงตีเหล็ก · ยังไม่ปลด</span>
           <span data-mc-title="FORGE" hidden>⚒️ ผ่านโรงตีเหล็ก — ปลดแล้ว</span>
-          <span data-mc-notitle="SCHOLAR">🎓 ตราติดอาวุธครบมือ · ยังไม่ปลด</span>
-          <span data-mc-title="SCHOLAR" hidden>🎓 ติดอาวุธครบมือ — ปลดแล้ว</span>
+          <span data-mc-notitle="AWAKENED">🌅 ตราผู้ตื่นรู้ · ยังไม่ปลด</span>
+          <span data-mc-title="AWAKENED" hidden>🌅 ผู้ตื่นรู้ — ปลดแล้ว</span>
         </div>
         <div class="rmeta">
           <a class="rgo" href="card/" data-ga="road_go:card">ไปทำการ์ด →</a>

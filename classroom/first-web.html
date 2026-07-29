@@ -52,6 +52,18 @@ h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));colo
 .note{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:14px;padding:15px 20px;margin-top:16px;font-size:14.5px}
 .quest{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.25);border-radius:16px;padding:20px 24px;margin-top:36px;font-size:15px}
 .quest .qshare{display:block;margin-top:8px;font-size:13px;color:rgb(var(--muted))}
+/* ด่านบอสท้ายบทที่ 6 — โทนเข้มกว่าบทเรียน ให้รู้ว่าเปลี่ยนจังหวะแล้ว */
+.bossbox{margin:34px 0 6px;border:1px solid rgb(190 148 66/.5);border-radius:18px;padding:24px 22px;
+  background:linear-gradient(180deg,rgb(10 40 24/.96),rgb(6 25 14/.96));color:rgb(248 246 240);text-align:center}
+.bosstag{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:11px;letter-spacing:.22em;
+  color:rgb(var(--gold));display:block}
+.bossbox b{display:block;font-size:20px;margin-top:9px}
+.bossbox p{margin-top:10px;font-size:15px;color:rgb(255 255 255/.74);line-height:1.9}
+.bossmeta{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.bossmeta span{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:12px;
+  border:1px solid rgb(190 148 66/.45);border-radius:99px;padding:6px 14px;color:rgb(var(--gold))}
+.bossgo{display:inline-block;margin-top:18px;background:rgb(var(--gold));color:rgb(10 40 24);
+  font-weight:700;font-size:15.5px;border-radius:12px;padding:14px 28px;min-height:48px}
 .nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
 .nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:.15s}
 .nx:hover{transform:translateY(-2px)}
@@ -212,6 +224,16 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 <div class="note">🏆 <b>คุณมาถึงด่านสุดท้ายแล้ว:</b> ใครทำครบทั้ง 6 คลาส คุณไม่ใช่ "คนไม่เป็น AI" อีกต่อไป — คุณคือคนที่ใช้ AI สร้างของเป็นแล้ว และนี่เป็นแค่จุดเริ่มต้นของทุ่งโคลเวอร์ 🍀</div>
 
 <div class="quest">🎯 <b>เควสท้ายคลาส:</b> กดอัดเสียงตอบ 8 คำถามในข้อ 4 (ใช้เวลา 5 นาที) ส่งเข้า Gemini แล้วให้มันเขียนพร้อมท์ให้ จากนั้นเอาไปสร้างเว็บใน Canvas — จากปากเปล่าเป็นเว็บจริง โดยที่คุณแทบไม่ได้พิมพ์อะไรเลย<span class="qshare">ทำเสร็จแล้วเอามาอวดกันในบ้านได้เลย — ใช้เวลาแค่วันละ 10 นาทีก็พอ 🍀</span></div>
+<!-- ด่านบอส — โผล่เมื่อเรียนครบทั้ง 6 บทเท่านั้น เผยแบบสงบ ไม่มีแฟลช -->
+<div class="bossbox" data-mc-done="learn" hidden>
+  <span class="bosstag">BOSS STAGE UNLOCKED</span>
+  <b class="disp">บทที่ไม่ได้อยู่ในแผนการสอน</b>
+  <p>ด่านนี้ไม่มีวิดีโอ ไม่มี Prompt ให้คัดลอก ไม่มีแบบฝึกหัด<br>
+     มีเพียงการอ่านเงียบ ๆ ให้จบ</p>
+  <div class="bossmeta"><span>⏱ 8–10 นาที</span><span>🏅 Reward: AWAKEN</span></div>
+  <a class="bossgo disp" href="awaken/">เข้าสู่ด่านสุดท้าย →</a>
+</div>
+
 <div class="nextrow">
   <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
   <a class="nx" href="../">🏠 กลับบ้าน myclover</a>
