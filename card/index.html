@@ -1042,7 +1042,7 @@ function regMailto(d){
          '&body='+encodeURIComponent(body);
 }
 
-function regDone(d,viaMail){
+function regDone(d,viaMail,memberNo){
   ls.set('mc_name',d.name); ls.set('mc_email',d.email);
   /* รู้จักบ้านนี้มาก่อนปี 2023 = ศิษย์เก่าตัวจริง
      "จำไม่ได้" ก็นับ เพราะเขายืนยันเองว่ารู้จักบ้านนี้มาก่อน แค่จำปีไม่ได้ */
@@ -1057,7 +1057,8 @@ function regDone(d,viaMail){
   } else {
     ls.set('mc_registered','1');
     regMsg.innerHTML='🍀 ลงทะเบียนเรียบร้อย — การ์ดของคุณถูกบันทึกเข้าระบบสมาชิกแล้ว'+
-      (d.news?' และเราจะส่งข่าวของบ้านไปที่อีเมลนี้':' เราจะไม่ส่งอีเมลอะไรไปนะครับ')+
+      (/^MC-\d{4}-\d+$/.test(memberNo||'')?' เลขสมาชิกของคุณคือ <b>'+memberNo+'</b>':'')+
+      (d.news?'<br>เราจะส่งข่าวของบ้านไปที่อีเมลนี้':'<br>เราจะไม่ส่งอีเมลอะไรไปนะครับ')+
       '<br>บันทึกการ์ดเป็นรูปเก็บไว้ได้เลยที่ปุ่มด้านขวา';
     regBtn.textContent='🍀 ลงทะเบียนแล้ว';
     regBtn.disabled=true;
@@ -1082,13 +1083,28 @@ regForm.addEventListener('submit',function(e){
     window.location.href=regMailto(d);
     return;
   }
+  d.consent=true;                       /* ฝั่งเซิร์ฟเวอร์บังคับให้มีค่านี้ */
   fetch(REG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
-    .then(function(r){ if(!r.ok) throw new Error(r.status); return r; })
-    .then(function(){ regDone(d); })
-    .catch(function(){
-      regBtn.disabled=false;
-      regMsg.className='codemsg no';
-      regMsg.innerHTML='ส่งไม่สำเร็จ ลองใหม่อีกครั้ง หรือเขียนมาหาเราตรง ๆ ที่ <a href="mailto:'+TEAM_EMAIL+'">'+TEAM_EMAIL+'</a> ครับ';
+    .then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){
+        if(!r.ok || !j.ok){ var e=new Error(j.error||r.status); e.info=j; e.status=r.status; throw e; }
+        return j;
+      });
+    })
+    .then(function(j){ regDone(d,false,j.member_no); })
+    .catch(function(e){
+      var s=e&&e.status;
+      /* กรอกผิดเอง (400) หรือกดรัวเกินไป (429) — บอกให้แก้ ไม่ต้องเด้งอีเมล */
+      if(s===400||s===429){
+        regBtn.disabled=false;
+        regMsg.className='codemsg no';
+        regMsg.textContent=(e.info&&e.info.message)||'ส่งไม่สำเร็จ ลองเช็กข้อมูลอีกครั้งนะครับ';
+        return;
+      }
+      /* หลังบ้านล่ม เน็ตมีปัญหา หรือยังไม่ได้ผูกฐานข้อมูล
+         ไม่ปล่อยให้การลงทะเบียนหายไปเฉย ๆ — สลับไปทางอีเมลให้เลย */
+      regDone(d,true);
+      window.location.href=regMailto(d);
     });
 });
 
@@ -1192,6 +1208,14 @@ if(document.fonts && document.fonts.ready){ document.fonts.ready.then(render); }
 })();
 
 })();
+</script>
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
 </script>
 <!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
 </body>
