@@ -172,36 +172,44 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .mc b{display:block;font-family:"Bai Jamjuree";font-size:16px;margin:7px 0 5px}
 .mc p{font-size:13.5px;color:rgb(var(--muted))}
 
-/* ═══════════ เพลงประจำบ้าน + แถบควบคุม ═══════════
-   ลอยอยู่มุมล่างซ้าย ไม่ทับปุ่มบันทึกการ์ดที่อยู่ในเนื้อหน้า
-   เบราว์เซอร์สมัยนี้ห้ามเล่นเสียงเองก่อนผู้ใช้แตะหน้าจอ
-   ถ้าโดนห้ามจะขึ้นปุ่มชวนกดแทน ไม่ใช่เงียบไปเฉย ๆ โดยไม่บอกอะไร */
-.hud{position:fixed;left:14px;bottom:14px;z-index:80;display:flex;align-items:center;gap:10px;
-  background:rgb(var(--deep)/.94);color:#fff;border:1px solid rgb(190 148 66/.42);
-  border-radius:999px;padding:9px 16px 9px 11px;cursor:pointer;
-  font-family:"Bai Jamjuree";font-weight:700;font-size:13px;
-  box-shadow:0 14px 30px -16px rgb(0 0 0/.6);backdrop-filter:blur(8px);
-  transition:transform .18s,border-color .18s}
-.hud:hover{transform:translateY(-2px);border-color:rgb(var(--gold))}
-.hud:active{transform:translateY(0) scale(.97)}
-.hud .ico{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;
-  background:rgb(190 148 66/.2);font-size:14px}
-.hud .lbl{white-space:nowrap}
-.hud .eq{display:none;align-items:flex-end;gap:2px;height:14px}
-.hud .eq i{width:3px;border-radius:2px;background:rgb(var(--gold));height:5px;
+/* ═══════════ เพลงประจำบ้าน + ปุ่มควบคุม ═══════════
+   พื้นครีมตัวหนังสือสีหมึก อ่านออกชัดกว่าพื้นเขียวเข้มตัวหนังสือขาว
+   ไม่เล่นเองตั้งแต่เปิดหน้า ให้คนกดเอง ปุ่มเลยต้องชวนกดให้ได้ */
+.hud{position:fixed;left:14px;bottom:14px;z-index:80;display:flex;align-items:center;gap:11px;
+  background:rgb(var(--paper));color:rgb(var(--ink));border:1px solid rgb(var(--ink)/.12);
+  border-radius:999px;padding:8px 20px 8px 8px;cursor:pointer;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;
+  box-shadow:0 16px 34px -14px rgb(18 40 28/.42);
+  transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,border-color .18s}
+.hud:hover{transform:translateY(-3px);border-color:rgb(var(--gold));
+  box-shadow:0 22px 42px -14px rgb(18 40 28/.5)}
+.hud:active{transform:translateY(-1px) scale(.97)}
+.hud .ico{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:rgb(var(--gold));color:#fff;font-size:15px;line-height:1;
+  box-shadow:0 0 0 0 rgb(190 148 66/.5);animation:hudRing 2.6s ease-out infinite}
+@keyframes hudRing{0%{box-shadow:0 0 0 0 rgb(190 148 66/.55)}
+                   70%{box-shadow:0 0 0 12px rgb(190 148 66/0)}
+                   100%{box-shadow:0 0 0 0 rgb(190 148 66/0)}}
+.hud .lbl{white-space:nowrap;line-height:1.3}
+.hud .lbl small{display:block;font-family:"Anuphan";font-weight:500;font-size:11.5px;
+  color:rgb(var(--muted));margin-top:1px}
+.hud .eq{display:none;align-items:flex-end;gap:2.5px;height:15px;margin-left:-3px}
+.hud .eq i{width:3px;border-radius:2px;background:rgb(var(--green));height:5px;
   animation:eqBar .9s ease-in-out infinite}
 .hud .eq i:nth-child(2){animation-delay:.15s}
 .hud .eq i:nth-child(3){animation-delay:.3s}
 .hud .eq i:nth-child(4){animation-delay:.45s}
-@keyframes eqBar{0%,100%{height:4px}50%{height:14px}}
+@keyframes eqBar{0%,100%{height:4px}50%{height:15px}}
+/* กำลังเล่นอยู่ — เปลี่ยนเป็นเขียว หยุดกะพริบ เพราะไม่ต้องชวนกดแล้ว */
+.hud.playing{border-color:rgb(var(--green)/.4)}
 .hud.playing .eq{display:flex}
-.hud.playing .ico{background:rgb(190 148 66/.34)}
-/* ยังไม่ได้เล่นเพราะเบราว์เซอร์ห้าม — กะพริบชวนให้กด */
-.hud.blocked{animation:hudCall 2s ease-in-out infinite}
-@keyframes hudCall{0%,100%{box-shadow:0 14px 30px -16px rgb(0 0 0/.6)}
-                   50%{box-shadow:0 14px 30px -16px rgb(0 0 0/.6),0 0 0 6px rgb(190 148 66/.18)}}
-@media(max-width:520px){.hud{left:10px;bottom:10px;padding:8px 14px 8px 9px;font-size:12.5px}}
-@media(prefers-reduced-motion:reduce){.hud.blocked{animation:none}.hud .eq i{animation:none;height:9px}}
+.hud.playing .ico{background:rgb(var(--green));animation:none;box-shadow:none}
+@media(max-width:520px){
+  .hud{left:10px;bottom:10px;padding:7px 16px 7px 7px;font-size:12.5px;gap:9px}
+  .hud .ico{width:32px;height:32px;font-size:14px}
+  .hud .lbl small{display:none}
+}
+@media(prefers-reduced-motion:reduce){.hud .ico{animation:none}.hud .eq i{animation:none;height:9px}}
 
 footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:38px 0 52px}
 footer a{color:rgb(var(--green));font-weight:600}
@@ -414,10 +422,10 @@ body.js .reveal.in{opacity:1;transform:none}
 
 <!-- เพลงประจำบ้าน — preload="none" จะได้ไม่กินเน็ตของคนที่ไม่อยากฟัง -->
 <audio id="song" src="../assets/audio/clover-song.mp3" loop preload="none"></audio>
-<button type="button" class="hud" id="musicBtn" data-ga="music" aria-pressed="false">
-  <span class="ico" id="musicIco" aria-hidden="true">▶</span>
+<button type="button" class="hud" id="musicBtn" aria-pressed="false">
+  <span class="ico" id="musicIco" aria-hidden="true">🎵</span>
   <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-  <span class="lbl" id="musicLbl">เปิดเพลงประจำบ้าน</span>
+  <span class="lbl" id="musicLbl">เปิดเพลงประจำบ้าน<small>เพลงของ myclover · ทำเองกับ AI</small></span>
 </button>
 
 <footer>
@@ -1269,74 +1277,56 @@ if(document.fonts && document.fonts.ready){ document.fonts.ready.then(render); }
 /* ═══════════════════════════════════════════════════════════
    เพลงประจำบ้าน
 
-   เบราว์เซอร์ทุกวันนี้ห้ามเล่นเสียงเองก่อนที่ผู้ใช้จะแตะหน้าจอ
-   เราเลยลองเล่นก่อน ถ้าโดนห้ามค่อยรอจังหวะที่ผู้ใช้แตะอะไรสักอย่าง
-   แล้วเริ่มให้เอง — และปุ่มจะกะพริบชวนกดไว้ระหว่างนั้น
+   ไม่เล่นเองตั้งแต่เปิดหน้า — คนกดเอง
+   (เบราว์เซอร์สมัยนี้ห้ามเล่นเสียงเองอยู่แล้ว และเสียงที่โผล่มาเอง
+    ก็รบกวนคนที่เปิดเว็บอยู่ในที่เงียบ ๆ)
 
-   ใครกดปิดแล้ว รอบหน้าจะไม่เล่นให้อีก จนกว่าจะกดเปิดเอง
+   สถานะปุ่มยึดจากตัวเล่นจริง กดรัว ๆ ก็ไม่สลับผิดจังหวะ
    ═══════════════════════════════════════════════════════════ */
 (function(){
   var au=document.getElementById('song'), btn=document.getElementById('musicBtn'),
       ico=document.getElementById('musicIco'), lbl=document.getElementById('musicLbl');
   if(!au||!btn) return;
 
-  var want=false;
-  function pref(){ try{ return localStorage.getItem('mc_music')||''; }catch(e){ return ''; } }
-  function save(v){ try{ localStorage.setItem('mc_music',v); }catch(e){} }
+  var SUB='<small>เพลงของ myclover · ทำเองกับ AI</small>';
   function cls(c,on){
     var re=new RegExp('(^|\\s)'+c+'(?=\\s|$)','g');
     btn.className=btn.className.replace(re,' ').replace(/\s+/g,' ').replace(/^ | $/g,'')+(on?' '+c:'');
   }
-  function paint(state){
-    var on=state==='playing';
+  function paint(on){
     cls('playing',on);
-    cls('blocked',state==='blocked');
-    ico.textContent = on ? '⏸' : '▶';
-    lbl.textContent = on ? 'เพลงประจำบ้าน · กดเพื่อหยุด'
-                         : (state==='blocked' ? 'แตะเพื่อเปิดเพลงประจำบ้าน' : 'เปิดเพลงประจำบ้าน');
+    ico.textContent = on ? '⏸' : '🎵';
+    lbl.innerHTML   = (on ? 'กำลังเล่น · แตะเพื่อหยุด' : 'เปิดเพลงประจำบ้าน') + SUB;
     btn.setAttribute('aria-pressed',on?'true':'false');
   }
 
-  function play(fromUser){
-    if(fromUser) save('on');
-    var pr=au.play();
-    if(pr && pr.then){
-      pr.then(function(){ paint('playing'); })
-        .catch(function(){ want=false; paint('blocked'); armGesture(); });
-    } else { paint('playing'); }
-  }
-  function pause(){ au.pause(); paint('paused'); save('off'); }
-
-  /* เล่นให้อัตโนมัติตอนผู้ใช้แตะอะไรก็ได้ครั้งแรก — ผูกครั้งเดียวแล้วถอดทิ้ง */
-  var armed=false;
-  function armGesture(){
-    if(armed) return;
-    armed=true;
-    function go(){
-      document.removeEventListener('pointerdown',go);
-      document.removeEventListener('keydown',go);
-      if(pref()!=='off') play(false);
-    }
-    document.addEventListener('pointerdown',go,{once:true});
-    document.addEventListener('keydown',go,{once:true});
-  }
-
-  /* เก็บ "ความตั้งใจ" ไว้เอง ไม่อ่าน au.paused ตอนกด
-     เพราะ play() เป็นงานที่ใช้เวลา ถ้ากดรัว ๆ แล้วอ่านสถานะจริงจะสลับผิดจังหวะ */
+  var want=false;
   btn.addEventListener('click',function(){
     want=!want;
-    if(want){ play(true); window.mcEvent&&window.mcEvent('music',{item:'play'}); }
-    else    { pause();    window.mcEvent&&window.mcEvent('music',{item:'pause'}); }
+    if(want){
+      var pr=au.play();
+      if(pr && pr.then) pr.catch(function(){ want=false; paint(false); });
+      window.mcEvent&&window.mcEvent('music',{item:'play'});
+    } else {
+      au.pause();
+      window.mcEvent&&window.mcEvent('music',{item:'pause'});
+    }
   });
-  /* สถานะที่โชว์ยึดจากตัวเล่นจริงเสมอ กันกรณีระบบสั่งหยุดเอง */
-  au.addEventListener('play', function(){ want=true;  paint('playing'); });
-  au.addEventListener('pause',function(){ want=false; paint('paused'); });
+  au.addEventListener('play', function(){ want=true;  paint(true); });
+  au.addEventListener('pause',function(){ want=false; paint(false); });
 
-  paint('paused');
-  if(pref()!=='off') play(false);   /* ลองเล่นเลย ถ้าโดนห้ามจะไปรอจังหวะแตะเอง */
+  paint(false);
 })();
 </script>
 
+<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "xtx73cs6w1");
+</script>
 <!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
 <script>
