@@ -142,7 +142,12 @@ function init(){
   st.textContent=CSS;
   document.head.appendChild(st);
 
-  var tip=null, back=null, cur=null, pinned=false;
+  var tip=null, back=null, cur=null, pinned=false, shutT=null;
+
+  /* หน่วงตอนปิดนิดหนึ่ง ไม่งั้นพอเลื่อนเมาส์จากคำไปหากล่อง
+     มันจะหลุดออกจากคำก่อน กล่องปิดทันที แล้วกดลิงก์ "อ่านเพิ่ม" ไม่ได้เลย */
+  function holdOpen(){ clearTimeout(shutT); }
+  function shutSoon(){ clearTimeout(shutT); shutT=setTimeout(close,220); }
 
   function key(el){
     return (el.getAttribute('data-kw')||el.textContent||'').trim().toUpperCase();
@@ -175,6 +180,7 @@ function init(){
   }
 
   function close(){
+    clearTimeout(shutT);
     if(!tip) return;
     tip.remove(); tip=null;
     if(back){ back.remove(); back=null; }
@@ -185,6 +191,7 @@ function init(){
   function open(el,pin){
     var k=key(el), t=TERMS[k];
     if(!t) return;
+    holdOpen();
     if(cur===el && tip){ if(pin) pinned=true; return; }
     close();
     cur=el; pinned=!!pin;
@@ -204,6 +211,18 @@ function init(){
     }
     document.body.appendChild(tip);
     tip.querySelector('.x').addEventListener('click',function(){ close(); el.focus(); });
+    /* เลื่อนเมาส์เข้ามาในกล่องแล้วต้องไม่ปิด จะได้อ่านจบและกดลิงก์ได้ */
+    tip.addEventListener('mouseenter',holdOpen);
+    tip.addEventListener('mouseleave',function(){ if(!pinned) shutSoon(); });
+    /* โฟกัสหลุดออกจากกล่องไปที่อื่นที่ไม่ใช่คำต้นทาง = ปิด */
+    tip.addEventListener('focusout',function(){
+      setTimeout(function(){
+        if(!tip) return;
+        var a=document.activeElement;
+        if(tip.contains(a) || a===el) return;
+        close();
+      },0);
+    });
     if(!sheet) place(el);
     el.setAttribute('aria-expanded','true');
   }
@@ -221,13 +240,28 @@ function init(){
       if(cur===el && pinned) close(); else open(el,true);
     });
     el.addEventListener('keydown',function(e){
-      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); }
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); return; }
+      /* กล่องถูกต่อไว้ท้าย body ลำดับ Tab เลยไม่ได้ไปต่อที่ลิงก์ในกล่องเอง
+         ต้องพาไปให้ ไม่งั้นคนใช้คีย์บอร์ดกด "อ่านเพิ่ม" ไม่ได้เลย */
+      if(e.key==='Tab' && !e.shiftKey && tip && cur===el){
+        var go=tip.querySelector('.go');
+        if(go){ e.preventDefault(); pinned=true; holdOpen(); go.focus(); }
+      }
     });
     if(!sheetMode()){
       el.addEventListener('mouseenter',function(){ if(!pinned) open(el,false); });
-      el.addEventListener('mouseleave',function(){ if(!pinned) close(); });
+      el.addEventListener('mouseleave',function(){ if(!pinned) shutSoon(); });
       el.addEventListener('focus',function(){ if(!pinned) open(el,false); });
-      el.addEventListener('blur',function(){ if(!pinned) close(); });
+      el.addEventListener('blur',function(){
+        setTimeout(function(){
+          if(pinned) return;
+          /* โฟกัสย้ายไปคำอื่นแล้ว กล่องที่เปิดอยู่เป็นของคำใหม่ ห้ามไปปิดของเขา */
+          if(cur!==el) return;
+          /* โฟกัสหลุดเข้าไปในกล่องเอง (เช่นกด Tab ไปที่ลิงก์อ่านเพิ่ม) ก็ต้องไม่ปิด */
+          if(tip && tip.contains(document.activeElement)) return;
+          close();
+        },0);
+      });
     }
   });
 

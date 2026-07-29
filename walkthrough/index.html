@@ -70,6 +70,28 @@ em.hi{font-style:normal;color:rgb(var(--green));font-weight:600}
 strong{font-weight:700}
 
 /* ── พจนานุกรม ── */
+/* ปาร์ตี้ที่ใช้สร้างบ้าน — การ์ดคนละใบ มีอวาตาร์กับหน้าที่ */
+.crew{display:grid;gap:10px;margin-top:16px}
+@media(min-width:620px){.crew{grid-template-columns:1fr 1fr}}
+.cm{display:flex;gap:13px;align-items:center;background:#fff;border:1px solid rgb(var(--ink)/.09);
+  border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.cm .ava{width:54px;height:54px;flex:none;border-radius:14px;overflow:hidden;display:grid;
+  place-items:center;background:rgb(27 106 66/.08);border:1px solid rgb(190 148 66/.35)}
+.cm .ava img{width:100%;height:100%;object-fit:cover;display:block}
+/* ยังไม่มีภาพก็ต้องดูตั้งใจ ไม่ใช่รูปแตก */
+.cm .ava .fb{font-size:26px;line-height:1}
+.cm .ava img+.fb{display:none}
+.cm b{display:block;font-size:16.5px}
+.cm .duty{display:block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px;
+  color:rgb(var(--green));margin-top:1px}
+.cm small{display:block;font-size:12.5px;color:rgb(var(--muted));line-height:1.65;margin-top:4px}
+.rtag{display:inline-block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:10.5px;
+  letter-spacing:.16em;color:rgb(var(--gold));margin-bottom:8px}
+ol.relay{list-style:none;counter-reset:r;margin-top:14px;display:grid;gap:9px}
+ol.relay li{counter-increment:r;position:relative;padding-left:34px;line-height:1.85}
+ol.relay li::before{content:counter(r);position:absolute;left:0;top:2px;width:23px;height:23px;
+  border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));
+  font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:12.5px;display:grid;place-items:center}
 .gloss{display:flex;flex-wrap:wrap;gap:9px 14px;margin-top:20px;
   background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px 22px}
 .gloss button{font-family:"Bai Jamjuree",sans-serif;font-size:14.5px}
@@ -504,6 +526,54 @@ footer a{color:rgb(var(--green));font-weight:600}
       <span>เขียนด้วย AI ช่วยเขียนโค้ด ตั้งแต่หน้าแรกจนถึงหน้าที่คุณกำลังอ่านนี้ — LV.6 สอนวิธีเริ่ม</span></span></div>
     <div class="row"><span class="n">🎬</span><span class="tx"><b>คลิปและภาพประกอบ</b>
       <span>ตัดจากของที่มีอยู่แล้วด้วยเครื่องมือฟรี — LV.3</span></span></div>
+  </div>
+
+
+  <h3 class="disp" id="crew">ปาร์ตี้ที่ใช้สร้างบ้านหลังนี้</h3>
+  <p>ไม่ได้ใช้ AI ตัวเดียวทำทุกอย่าง เพราะแต่ละตัวถนัดคนละเรื่องจริง ๆ
+     วิธีที่ได้ผลกว่าคือ<b>ให้หน้าที่มันไปเลย</b> แล้วส่งงานให้ตรงกับที่มันถนัด</p>
+  <div class="crew">
+    <div class="cm">
+      <span class="ava"><img src="../img/party-teem.png" alt="" loading="lazy" decoding="async"
+            onerror="this.remove()"><span class="fb" aria-hidden="true">🧑‍🏭</span></span>
+      <div><b class="disp">Teem</b><span class="duty">คิด และ สั่งการ</span>
+        <small>คนเดียวในปาร์ตี้ที่ตัดสินใจได้ว่าอะไรได้ไปต่อ</small></div>
+    </div>
+    <div class="cm">
+      <span class="ava"><img src="../img/party-claude.png" alt="" loading="lazy" decoding="async"
+            onerror="this.remove()"><span class="fb" aria-hidden="true">🛠️</span></span>
+      <div><b class="disp">Claude</b><span class="duty">สร้าง และ ซ่อม</span>
+        <small>เปลี่ยนแบบร่างเป็นของที่รันได้ แล้วคอยไล่จุดที่พัง</small></div>
+    </div>
+    <div class="cm">
+      <span class="ava"><img src="../img/party-gpt.png" alt="" loading="lazy" decoding="async"
+            onerror="this.remove()"><span class="fb" aria-hidden="true">🎨</span></span>
+      <div><b class="disp">ChatGPT</b><span class="duty">วาด และ เขียน</span>
+        <small>ทำภาพ ร้อยเรื่อง และดูว่าโลกนี้ยังไม่ขัดกันเอง</small></div>
+    </div>
+    <div class="cm">
+      <span class="ava"><img src="../img/party-gemini.png" alt="" loading="lazy" decoding="async"
+            onerror="this.remove()"><span class="fb" aria-hidden="true">⚡</span></span>
+      <div><b class="disp">Gemini</b><span class="duty">แตกไอเดีย และ เถียง</span>
+        <small>เปิดกระดานให้กว้าง แล้วซัดไอเดียจนเห็นว่ามันพังตรงไหน</small></div>
+    </div>
+  </div>
+
+  <div class="dark" style="margin-top:20px">
+    <span class="rtag">เทคนิคที่อยากแชร์</span>
+    <h3 class="disp">ให้ AI สามตัวคุยกันเอง โดยมีคุณเป็นคนเดินสาร</h3>
+    <p>มันไม่ได้ต่อกันเองอยู่แล้ว แต่คุณต่อให้มันได้ — และนี่คือจุดที่ปาร์ตี้เริ่มทำงานเหมือนปาร์ตี้จริง
+       ไม่ใช่แค่มีเครื่องมือหลายตัวเปิดค้างไว้หลายแท็บ</p>
+    <ol class="relay">
+      <li>ให้ตัวหนึ่งตอบหรือร่างงานออกมาก่อน</li>
+      <li>ก๊อปคำตอบนั้นไปวางให้อีกตัว แล้วบอกตรง ๆ ว่า
+        <b>“นี่คือสิ่งที่อีกตัวตอบมา คุณเห็นด้วยไหม ตรงไหนพัง”</b></li>
+      <li>สั่งให้มัน<b>เขียนข้อความถึงอีกตัวโดยตรง</b> ไม่ใช่เขียนรายงานถึงคุณ</li>
+      <li>คุณเดินสารกลับไปกลับมา และเป็นคนตัดสินว่ารอบไหนพอ</li>
+    </ol>
+    <p style="margin-top:14px">ที่มันได้ผลเพราะตัวที่เก่งเถียงจะเจอรูที่ตัวที่เก่งสร้างมองข้าม
+       และตัวที่เก่งเล่าจะทำให้ของที่ถูกต้องกลายเป็นของที่คนอ่านรู้เรื่อง<br>
+       คุณไม่ได้กำลังหาคำตอบที่ดีที่สุดจากตัวเดียว — <b>คุณกำลังจัดประชุมที่คุณเป็นคนคุมวาระ</b></p>
   </div>
 
   <div class="note">

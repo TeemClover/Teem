@@ -150,6 +150,30 @@ img{max-width:100%;height:auto;display:block}
   font-size:13.5px;color:rgb(255 255 255/.72);line-height:1.8}
 .md .guard b{color:rgb(var(--gold))}
 .pc4{margin-top:18px;display:grid;gap:14px}
+.pmem .top{display:flex;align-items:center;gap:14px}
+.ava{width:64px;height:64px;flex:none;border-radius:16px;overflow:hidden;position:relative;
+  background:rgb(255 255 255/.07);border:1px solid rgb(190 148 66/.4);display:grid;place-items:center}
+.ava img{width:100%;height:100%;object-fit:cover;display:block}
+/* ยังไม่มีภาพก็ต้องดูตั้งใจ ไม่ใช่รูปแตก — ใช้อีโมจิยืนแทนไปก่อน */
+.ava .fb{font-size:30px;line-height:1}
+.ava img+.fb{display:none}
+.pmem .duty{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--paper));
+  margin-top:3px}
+.pmem .duty em{font-style:normal;color:rgb(var(--gold))}
+.relay{margin-top:20px;border:1px solid rgb(190 148 66/.45);border-radius:16px;padding:20px 18px;
+  background:linear-gradient(180deg,rgb(190 148 66/.12),rgb(190 148 66/.02))}
+.relay .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.18em;
+  color:rgb(var(--gold));display:block}
+.relay h3{font-family:"Bai Jamjuree";font-weight:700;font-size:17px;margin-top:7px;line-height:1.45}
+.relay p{margin-top:10px;font-size:14.5px;color:rgb(255 255 255/.8);line-height:1.9}
+.relay ol{list-style:none;counter-reset:r;margin-top:13px;display:grid;gap:9px}
+.relay li{counter-increment:r;position:relative;padding-left:34px;font-size:14.5px;
+  color:rgb(255 255 255/.82);line-height:1.8}
+.relay li::before{content:counter(r);position:absolute;left:0;top:1px;width:23px;height:23px;
+  border-radius:50%;background:rgb(190 148 66);color:#06190E;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:12.5px;display:grid;place-items:center}
+.relay .why{margin-top:14px;padding-top:12px;border-top:1px solid rgb(255 255 255/.14);
+  font-size:14px;color:rgb(255 255 255/.7);line-height:1.9}
 .pmem{border:1px solid rgb(255 255 255/.15);border-radius:16px;padding:18px;background:rgb(255 255 255/.04)}
 .pmem .nm{font-family:"Bai Jamjuree";font-weight:700;font-size:19px;letter-spacing:.04em}
 .pmem .role{font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.12em;
@@ -519,61 +543,86 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
     <div class="pc4">
 
       <div class="pmem">
-        <div class="nm disp">TEEM</div>
-        <div class="role mono">MASTER BLACKSMITH / GAME MASTER</div>
-        <span class="lb mono">SKILLS</span>
-        <div class="skills">
-          <div class="sk"><b>READ THE META</b><span>อ่านว่าตอนนี้อะไรกำลังได้ผล แล้วเลือกว่าจะไม่ทำอะไรบ้าง</span></div>
-          <div class="sk"><b>DECK BUILD</b><span>จัดของที่มีอยู่ให้กลายเป็นชุดที่เล่นได้จริง</span></div>
-          <div class="sk"><b>FORGE ITEM</b><span>ตีของชิ้นใหม่จนใช้งานได้ ไม่ใช่แค่ดูดีในหน้าจอ</span></div>
-          <div class="sk"><b>FINAL CALL</b><span>ตัดสินใจครั้งสุดท้ายว่าอะไรได้ไปต่อ และอะไรพอแค่นี้</span></div>
+        <div class="top">
+          <span class="ava"><img src="../../img/party-teem.png" alt="" loading="lazy" decoding="async"
+                onerror="this.remove()"><span class="fb" aria-hidden="true">🧑‍🏭</span></span>
+          <div>
+            <div class="nm disp">TEEM</div>
+            <div class="role mono">MASTER BLACKSMITH / GAME MASTER</div>
+            <div class="duty disp"><em>คิด</em> และ <em>สั่งการ</em></div>
+          </div>
         </div>
+        <span class="lb mono">SKILLS</span>
+        <div class="skills"><div class="sk"><b>READ THE META</b><span>อ่านว่าตอนนี้อะไรกำลังได้ผล แล้วเลือกว่าจะไม่ทำอะไรบ้าง</span></div><div class="sk"><b>DECK BUILD</b><span>จัดของที่มีอยู่ให้กลายเป็นชุดที่เล่นได้จริง</span></div><div class="sk"><b>FORGE ITEM</b><span>ตีของชิ้นใหม่จนใช้งานได้ ไม่ใช่แค่ดูดีในหน้าจอ</span></div><div class="sk"><b>FINAL CALL</b><span>ตัดสินใจครั้งสุดท้ายว่าอะไรได้ไปต่อ และอะไรพอแค่นี้</span></div></div>
         <span class="lb mono">WATCH OUT</span>
         <p class="watch">ช่างที่ใช้เวลานานมากกว่าจะเรียนรู้ว่า Skill ที่ใช้ตีเหล็กควรมีค่าจ้างอย่างไร</p>
       </div>
 
       <div class="pmem">
-        <div class="nm disp">CLAUDE</div>
-        <div class="role mono">ARTIFICER / GUARDIAN</div>
-        <span class="lb mono">SKILLS</span>
-        <div class="skills">
-          <div class="sk"><b>BLUEPRINT→BUILD</b><span>เปลี่ยนแบบร่างเป็นระบบที่รันได้จริง</span></div>
-          <div class="sk"><b>DEBUG</b><span>ไล่หาจุดที่พังแล้วซ่อมให้กลับมาทำงาน</span></div>
-          <div class="sk"><b>STRUCTURE SCAN</b><span>ตรวจโครงสร้างว่าต่อของใหม่เข้าไปแล้วจะไม่ล้มทั้งหลัง</span></div>
-          <div class="sk"><b>GUARD BREAK</b><span>เบรกเมื่อการสร้างเร็วเกินกว่าระบบจะรับไหว</span></div>
+        <div class="top">
+          <span class="ava"><img src="../../img/party-claude.png" alt="" loading="lazy" decoding="async"
+                onerror="this.remove()"><span class="fb" aria-hidden="true">🛠️</span></span>
+          <div>
+            <div class="nm disp">CLAUDE</div>
+            <div class="role mono">ARTIFICER / GUARDIAN</div>
+            <div class="duty disp"><em>สร้าง</em> และ <em>ซ่อม</em></div>
+          </div>
         </div>
+        <span class="lb mono">SKILLS</span>
+        <div class="skills"><div class="sk"><b>BLUEPRINT→BUILD</b><span>เปลี่ยนแบบร่างเป็นระบบที่รันได้จริง</span></div><div class="sk"><b>DEBUG</b><span>ไล่หาจุดที่พังแล้วซ่อมให้กลับมาทำงาน</span></div><div class="sk"><b>STRUCTURE SCAN</b><span>ตรวจโครงสร้างว่าต่อของใหม่เข้าไปแล้วจะไม่ล้มทั้งหลัง</span></div><div class="sk"><b>GUARD BREAK</b><span>เบรกเมื่อการสร้างเร็วเกินกว่าระบบจะรับไหว</span></div></div>
         <span class="lb mono">WATCH OUT</span>
         <p class="watch">ระวังตัวจนบางทีช้ากว่าที่ต้องการ และถ้าคุณให้บริบทไม่พอ มันจะถามก่อนลงมือ</p>
       </div>
 
       <div class="pmem">
-        <div class="nm disp">GPT</div>
-        <div class="role mono">ILLUSIONIST BARD</div>
-        <span class="lb mono">SKILLS</span>
-        <div class="skills">
-          <div class="sk"><b>VISION CAST</b><span>ร่ายภาพของโลกให้เห็นก่อนลงมือสร้าง</span></div>
-          <div class="sk"><b>STORY WEAVE</b><span>ร้อยเรื่องกระจัดกระจายให้ต่อกันติด</span></div>
-          <div class="sk"><b>CANON KEEP</b><span>จำกติกาของโลกไว้ ไม่ให้เนื้อเรื่องขัดกันเอง</span></div>
-          <div class="sk"><b>TONE SHIFT</b><span>แปลงสารดิบให้เป็นมิตรก่อนส่งถึงมือผู้เล่น</span></div>
+        <div class="top">
+          <span class="ava"><img src="../../img/party-gpt.png" alt="" loading="lazy" decoding="async"
+                onerror="this.remove()"><span class="fb" aria-hidden="true">🎨</span></span>
+          <div>
+            <div class="nm disp">CHATGPT</div>
+            <div class="role mono">ILLUSIONIST BARD</div>
+            <div class="duty disp"><em>วาด</em> และ <em>เขียน</em></div>
+          </div>
         </div>
+        <span class="lb mono">SKILLS</span>
+        <div class="skills"><div class="sk"><b>VISION CAST</b><span>ร่ายภาพของโลกให้เห็นก่อนลงมือสร้าง</span></div><div class="sk"><b>STORY WEAVE</b><span>ร้อยเรื่องกระจัดกระจายให้ต่อกันติด</span></div><div class="sk"><b>CANON KEEP</b><span>จำกติกาของโลกไว้ ไม่ให้เนื้อเรื่องขัดกันเอง</span></div><div class="sk"><b>TONE SHIFT</b><span>แปลงสารดิบให้เป็นมิตรก่อนส่งถึงมือผู้เล่น</span></div></div>
         <span class="lb mono">WATCH OUT</span>
         <p class="watch">เล่าเก่งจนบางทีฟังดูมั่นใจเกินกว่าที่ควร ข้อเท็จจริงต้องเช็กเองอีกชั้น</p>
       </div>
 
       <div class="pmem">
-        <div class="nm disp">GEMINI</div>
-        <div class="role mono">BERSERKER ANALYST</div>
-        <span class="lb mono">SKILLS</span>
-        <div class="skills">
-          <div class="sk"><b>OPEN MAP</b><span>เปิดแผนที่ให้เห็นทั้งกระดานก่อนเดิน</span></div>
-          <div class="sk"><b>LOGIC SMASH</b><span>ทุบตรรกะที่ติดอยู่จนมันขยับได้อีกครั้ง</span></div>
-          <div class="sk"><b>STRESS TEST</b><span>ซัดไอเดียให้แรงจนเห็นว่ามันจะพังตรงไหน</span></div>
-          <div class="sk"><b>SCALE BURST</b><span>ระเบิดสเกลให้เห็นความเป็นไปได้ที่ใหญ่กว่าเดิม</span></div>
+        <div class="top">
+          <span class="ava"><img src="../../img/party-gemini.png" alt="" loading="lazy" decoding="async"
+                onerror="this.remove()"><span class="fb" aria-hidden="true">⚡</span></span>
+          <div>
+            <div class="nm disp">GEMINI</div>
+            <div class="role mono">BERSERKER ANALYST</div>
+            <div class="duty disp"><em>แตกไอเดีย</em> และ <em>เถียง</em></div>
+          </div>
         </div>
+        <span class="lb mono">SKILLS</span>
+        <div class="skills"><div class="sk"><b>OPEN MAP</b><span>เปิดแผนที่ให้เห็นทั้งกระดานก่อนเดิน</span></div><div class="sk"><b>LOGIC SMASH</b><span>ทุบตรรกะที่ติดอยู่จนมันขยับได้อีกครั้ง</span></div><div class="sk"><b>STRESS TEST</b><span>ซัดไอเดียให้แรงจนเห็นว่ามันจะพังตรงไหน</span></div><div class="sk"><b>SCALE BURST</b><span>ระเบิดสเกลให้เห็นความเป็นไปได้ที่ใหญ่กว่าเดิม</span></div></div>
         <span class="lb mono">WATCH OUT</span>
         <p class="watch">แรงและกว้าง แต่ต้องมีคนคอยตัดให้เหลือเท่าที่ทำจริงได้ในเวลาที่มี</p>
       </div>
 
+      <div class="relay">
+        <span class="tag mono">PARTY TECHNIQUE · RELAY</span>
+        <h3 class="disp">ให้ AI คุยกันเอง โดยมีคุณเป็นคนเดินสาร</h3>
+        <p>ทั้งสามตัวไม่ได้ต่อกันเองอยู่แล้ว แต่คุณต่อให้มันได้ —
+          และตรงนี้แหละที่ปาร์ตี้เริ่มทำงานเหมือนปาร์ตี้จริง</p>
+        <ol>
+          <li>ให้ตัวหนึ่งตอบคำถามหรือร่างงานออกมาก่อน</li>
+          <li>ก๊อปคำตอบนั้นไปวางให้อีกตัว แล้วบอกตรง ๆ ว่า
+            “นี่คือสิ่งที่อีกตัวตอบมา คุณเห็นด้วยไหม ตรงไหนพัง”</li>
+          <li>สั่งให้มัน<strong>เขียนข้อความถึงอีกตัวโดยตรง</strong> ไม่ใช่เขียนถึงคุณ</li>
+          <li>คุณเป็นคนเดินสารกลับไปกลับมา และเป็นคนตัดสินว่ารอบไหนพอ</li>
+        </ol>
+        <p class="why">ที่มันได้ผลเพราะแต่ละตัวถนัดคนละอย่างจริง ๆ —
+          ตัวที่เก่งเถียงจะเจอรูที่ตัวที่เก่งสร้างมองข้าม และตัวที่เก่งเล่าจะทำให้ของที่ถูกต้อง
+          กลายเป็นของที่คนอ่านรู้เรื่อง คุณไม่ได้กำลังหาคำตอบที่ดีที่สุดจากตัวเดียว
+          <strong>คุณกำลังจัดประชุมที่คุณเป็นคนคุมวาระ</strong></p>
+      </div>
     </div>
   </div>
 </div>
