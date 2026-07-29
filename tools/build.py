@@ -413,11 +413,31 @@ QUEST_JS = '''/* ═════════════════════
     if(!t || !p[1]) return;
     var end=document.querySelector('[data-mc-end]')||document.querySelector('footer');
     var fired=false;
-    function fire(){ if(fired) return; fired=true; t.mark(p[1]); }
+    function fire(){ if(fired) return; fired=true; t.mark(p[1]); off(); }
+
+    /* นับเมื่ออ่านไปถึง 70% ของหน้าด้วย ไม่ใช่รอให้ถึงบรรทัดสุดท้ายเป๊ะ ๆ
+       คนอ่านจบเนื้อหาแล้วมักกดย้อนกลับก่อนจะเลื่อนผ่านฟุตเตอร์ */
+    var tick=false;
+    function onScroll(){
+      if(tick) return;
+      tick=true;
+      requestAnimationFrame(function(){
+        tick=false;
+        var d=document.documentElement, b=document.body;
+        var h=Math.max(d.scrollHeight,b.scrollHeight)-window.innerHeight;
+        if(h<=0){ fire(); return; }              /* หน้าสั้นจนไม่ต้องเลื่อน */
+        var y=window.pageYOffset||d.scrollTop||0;
+        if(y/h>=0.7) fire();
+      });
+    }
+    function off(){ window.removeEventListener('scroll',onScroll); }
+
     if(end && window.IntersectionObserver){
       new IntersectionObserver(function(es,o){
         if(es[0].isIntersecting){ o.disconnect(); fire(); }
       },{rootMargin:'0px 0px -12% 0px'}).observe(end);
+      window.addEventListener('scroll',onScroll,{passive:true});
+      onScroll();                                 /* เผื่อหน้าสั้นหรือเปิดมาแล้วอยู่ท้ายเลย */
     } else {
       fire();   /* เบราว์เซอร์เก่า — นับให้เลยดีกว่าไม่นับ */
     }

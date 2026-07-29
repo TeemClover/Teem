@@ -158,6 +158,8 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .abtn[hidden]{display:none}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .iosnote{font-size:12.5px;color:rgb(var(--muted));margin-top:10px;line-height:1.6}
+.toreg{margin-top:12px;font-size:14px;color:rgb(var(--muted));line-height:1.7}
+.toreg a{color:rgb(var(--green));font-weight:700;white-space:nowrap}
 .savemsg{font-size:13px;color:rgb(var(--green));font-weight:600;min-height:18px;margin-top:8px;text-align:center}
 
 
@@ -253,12 +255,12 @@ body.js .reveal.in{opacity:1;transform:none}
         <button type="button" class="mo" data-mode="card" aria-pressed="true">
           <span class="e">🃏</span>
           <b class="disp">ทำการ์ดอย่างเดียว</b>
-          <span>ทำเสร็จแล้วบันทึกเป็นรูปไปใช้ได้เลย ไม่ต้องกรอกอะไรเพิ่ม</span>
+          <span>ทำเสร็จแล้วบันทึกเป็นรูปไปใช้ได้เลย ไม่ต้องกรอกอะไรเพิ่ม · ยังไม่มีเลขสมาชิก</span>
         </button>
         <button type="button" class="mo" data-mode="reg" aria-pressed="false">
           <span class="e">🍀</span>
           <b class="disp">ลงทะเบียนเข้าระบบสมาชิก</b>
-          <span>บันทึกการ์ดของคุณเข้าระบบสมาชิกของบ้าน — ทำการ์ดได้ครบเหมือนเดิมทุกอย่าง</span>
+          <span>ได้<b>เลขสมาชิกประจำตัว</b>ขึ้นบนการ์ดทันที และการ์ดถูกเก็บเข้าทะเบียนของบ้าน</span>
         </button>
       </div>
     </div>
@@ -402,6 +404,8 @@ body.js .reveal.in{opacity:1;transform:none}
         <button type="button" class="abtn" id="shareBtn" hidden>📤 แชร์</button>
       </div>
       <p class="savemsg" id="saveMsg" role="status" aria-live="polite"></p>
+      <p class="toreg" id="toReg" hidden>อยากได้ <b>เลขสมาชิก</b> ขึ้นบนการ์ดด้วยไหมครับ —
+        <a href="#register" id="toRegLink">ลงทะเบียนเก็บการ์ดเข้าระบบ →</a></p>
       <p class="iosnote" id="iosNote">ใช้ไอโฟนหรือเปิดจากในแอป LINE? กด <b>“เปิดรูป”</b> แล้วกดค้างที่รูปเพื่อบันทึกลงเครื่องได้เลยครับ</p>
     </div>
   </div>
@@ -664,9 +668,11 @@ function drawCardArt(c,st){
   font(c,'700',19,'Bai Jamjuree'); c.fillStyle='#fff';
   c.fillText(cls.th,x0+42,cy);
 
-  /* เลขประจำตัว — ออกให้เฉพาะชาวกิลด์ */
-  if(foil && st.member){
-    c.textAlign='right'; font(c,'700',17,'Bai Jamjuree'); c.fillStyle=GOLD;
+  /* เลขประจำตัว — ใครลงทะเบียนแล้วก็ได้เลย ไม่ต้องรอเป็นชาวกิลด์
+     ชาวกิลด์ได้สีทอง คนอื่นสีครีม จะได้ยังต่างกันอยู่ */
+  if(st.member){
+    c.textAlign='right'; font(c,'700',17,'Bai Jamjuree');
+    c.fillStyle = foil ? GOLD : 'rgba(255,255,255,.82)';
     c.fillText(st.member,x1,cy);
   }
 
@@ -819,7 +825,7 @@ function drawLandscape(cv,st){
   c.fillText(nick,px,ty+ns/2);
   ty+=ns+30;
 
-  if(st.titles.indexOf('GUILD')>=0 && st.member){
+  if(st.member){
     font(c,'600',27,'Bai Jamjuree'); c.fillStyle=GREEN;
     c.fillText(st.member,px,ty+15);
   }
@@ -1037,8 +1043,10 @@ var REG_ENDPOINT=(window.MC_CONFIG&&window.MC_CONFIG.REGISTER_ENDPOINT)||'';
 var regStep=document.getElementById('regStep'),
     modeBtns=document.querySelectorAll('.mo');
 
+var toReg=document.getElementById('toReg');
 function setMode(m,remember){
   regStep.hidden = m!=='reg';
+  if(toReg) toReg.hidden = (m==='reg') || ls.get('mc_registered','')==='1';
   Array.prototype.forEach.call(modeBtns,function(b){
     b.setAttribute('aria-pressed', b.getAttribute('data-mode')===m ? 'true':'false');
   });
@@ -1108,6 +1116,8 @@ function regMailto(d){
 
 function regDone(d,viaMail,memberNo){
   ls.set('mc_name',d.name); ls.set('mc_email',d.email);
+  /* ลงทะเบียนสำเร็จ = ได้เลขสมาชิกขึ้นการ์ดเลย ไม่ต้องรอปลดตราอะไรก่อน */
+  if(/^MC-\d{4}-\d+$/.test(memberNo||'')){ ls.set('mc_member',memberNo); st.member=memberNo; }
   /* รู้จักบ้านนี้มาก่อนปี 2023 = ศิษย์เก่าตัวจริง
      "จำไม่ได้" ก็นับ เพราะเขายืนยันเองว่ารู้จักบ้านนี้มาก่อน แค่จำปีไม่ได้ */
   if(ALUMNI_ERAS.indexOf(d.era)>=0) grant('ALUMNI','');
