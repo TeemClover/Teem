@@ -471,8 +471,8 @@ var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
 /* ตราประจำตัว — ตารางนี้ใช้ "แสดงผล" เท่านั้น
    ส่วนการปลดอัตโนมัติเมื่อทำครบ อยู่ใน assets/quest.js */
 var TITLES={
-  SEEKER :{emo:'🔍',th:'ผู้ค้นพบ',       how:'มีห้องลับซ่อนอยู่ในบ้าน ลองกดโคลเวอร์ที่หน้าแรกดู',
-           go:'../', goTx:'ไปหาที่หน้าแรก'},
+  SEEKER :{emo:'🔍',th:'ผู้ค้นพบ',       how:'ท้ายหน้าแรกมีโคลเวอร์ให้กด เจอจริงประมาณ 1 ใน 10 — เลขจำนวนครั้งจะขึ้นบนการ์ดด้วย',
+           go:'../', goTx:'ไปลองดวงที่หน้าแรก'},
   FORGE  :{emo:'⚒️',th:'ผ่านโรงตีเหล็ก', how:'อ่านการ์ตูนให้ครบทั้ง 12 ตอน — ปลดกรอบไฟบนการ์ด',
            go:'../forge/', goTx:'ไปอ่านการ์ตูน'},
   SCHOLAR:{emo:'🎓',th:'ติดอาวุธครบมือ', how:'เรียนห้องเรียน AI ให้ครบทั้ง 6 คลาส',
@@ -508,6 +508,13 @@ var ls={
 function readTitles(){
   try{ var a=JSON.parse(ls.get('mc_titles','[]')); return Array.isArray(a)?a.filter(function(t){return TITLES[t];}):[]; }
   catch(e){ return []; }
+}
+/* จำนวนครั้งที่กดโคลเวอร์ท้ายหน้าแรกกว่าจะเจอ — นับเฉพาะคนที่เจอแล้วเท่านั้น
+   ยังไม่เจอก็ยังไม่มีเลขให้อวด */
+function seekN(){
+  if(ls.get('mc_seek_hit','')!=='1') return 0;
+  var n=parseInt(ls.get('mc_seek_n','0'),10);
+  return n>0?n:0;
 }
 var st={
   cls   : CLASSES[ls.get('mc_class','')] ? ls.get('mc_class','') : 'THINKER',
@@ -681,7 +688,11 @@ function drawCardArt(c,st){
   /* ตราบนการ์ด — เรียงตราที่หายากไว้ก่อน แล้วตัดที่เหลือถ้าเกิน */
   var CHIP_ORDER=['GUILD','FORGE','SCHOLAR','SEEKER','ALUMNI'];
   var chips=CHIP_ORDER.filter(function(k){ return st.titles.indexOf(k)>=0 && TITLES[k]; })
-                      .slice(0,4).map(function(k){ return TITLES[k]; });
+                      .slice(0,4).map(function(k){
+                        /* ผู้ค้นพบพ่วงจำนวนครั้งที่กดกว่าจะเจอ — เอาไว้อวดกันว่าดวงใครดีกว่า */
+                        var t=TITLES[k], n=(k==='SEEKER')?seekN():0;
+                        return {emo:t.emo, th:t.th+(n?' · '+n:'')};
+                      });
   var qLines=[];
   if(quote){ font(c,'500',20,'Anuphan'); qLines=wrap(c,'“'+quote+'”',cw,2); }
 
@@ -940,8 +951,12 @@ function paintBadges(){
     /* ตราที่ยังไม่ได้ บอกทางไปเอาด้วย — ไม่ใช่แค่บอกว่ายังไม่มี */
     var right = has ? '<span class="on">ได้แล้ว</span>'
               : (t.go ? '<a class="get disp" href="'+t.go+'">'+t.goTx+' →</a>' : '');
-    d.innerHTML='<span class="ic">'+t.emo+'</span><span class="tx"><b class="disp">'+t.th+'</b><small>'+
-      (has?'อยู่บนการ์ดของคุณแล้ว':t.how)+'</small></span>'+right;
+    var n=(k==='SEEKER')?seekN():0;
+    var done = has ? (n?'เจอตอนกดครั้งที่ '+n+' — เลขนี้ขึ้นบนการ์ดให้เอาไปอวดได้'
+                       :'อยู่บนการ์ดของคุณแล้ว')
+                   : t.how;
+    d.innerHTML='<span class="ic">'+t.emo+'</span><span class="tx"><b class="disp">'+t.th+
+      (n?' · '+n:'')+'</b><small>'+done+'</small></span>'+right;
     elBadges.appendChild(d);
   });
   var n=TITLE_ORDER.length;
