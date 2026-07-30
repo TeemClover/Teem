@@ -226,13 +226,13 @@ LESSONS = [
 ]
 
 # รหัสที่ได้ตอนทำครบ = ชื่อของสิ่งสุดท้ายในเส้นนั้น จะได้รู้สึกว่าได้มาจริง ๆ
-FORGE_CODE  = 'CLOVERX'     # เปลี่ยนเมื่อไหร่ต้องแก้แฮชใน card/index.html ด้วย
+FORGE_CODE  = 'BLACKSMITH'  # เปลี่ยนเมื่อไหร่ต้องแก้แฮชใน card/index.html ด้วย
 # เรียนครบ 6 บทแล้วไม่ได้ตราทันที — มันปลด "ด่านบอส" บทที่ 7 แทน
 # ตราจริงชื่อ Awakened ได้จากการอ่านบทที่ 7 จบ ด้วยรหัส AWAKEN
 LEARN_CODE  = 'AWAKEN'      # = รหัสท้ายบทที่ 7 (ไม่ใช่ของห้องเรียน 6 บท)
 
 TRACKS = {
-    'forge': {'key': 'mc_read',  'done': 'mc_forge_done', 'title': 'FORGE',
+    'forge': {'key': 'mc_read',  'done': 'mc_forge_done', 'title': 'BLACKSMITH',
               'unit': 'ตอน', 'what': 'อ่าน',
               'items': [slug for _, _, _, slug, _, _ in EPISODES]},
     # ห้องเรียน 6 บทไม่แจกตราเอง — ปลดด่านบอสบทที่ 7 แทน ตราไปได้ที่นั่น
@@ -493,7 +493,8 @@ def finish_block(up):
       <code id="fcode">{FORGE_CODE}</code>
       <button type="button" class="cp" id="fcopy">คัดลอก</button>
     </div>
-    <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ผ่านโรงตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ</p>
+    <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ช่างตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ<br>
+       และรหัสนี้ยังใช้เปิด Walkthrough บนเครื่องใหม่ได้ด้วย</p>
     <a class="fbtn disp" href="{up}card/">⚡ ไปทำการ์ดของคุณ</a>
 
     <div class="nextup">
@@ -504,9 +505,17 @@ def finish_block(up):
       <p>กิลด์ของเราเลยมีไว้แบบนั้น ไม่ได้มีไว้ขายอะไรกับคุณ
          แต่มีไว้ให้คนที่อยากโตทั้งเรื่องงานและเรื่องชีวิต มาโตไปด้วยกัน<br>
          <b>ใครเจอเรา คนนั้นโชคดี — #glhf</b></p>
-      <a class="fbtn ghost disp" href="{up}walkthrough/">🗺️ เปิด Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ</a>
-      <p class="sm">หน้านี้เปิดให้เฉพาะคนที่อ่านจบ — ถอดกลไกของเรื่องที่คุณเพิ่งอ่าน
-         และเล่าว่าบ้านหลังนี้สร้างขึ้นมายังไง</p>
+      <a class="wtcard" href="{up}walkthrough/" data-ga="go_walkthrough">
+        <span class="wtseal" aria-hidden="true">🗺️</span>
+        <span class="wtbody">
+          <span class="wttag">UNLOCKED · ห้องบทสรุป</span>
+          <b class="disp">Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ</b>
+          <span class="wtsm">คำที่คนเล่นเกมใช้กันจนชิน กับคำที่คนทำธุรกิจใช้ — หลายคำมันคือคำเดียวกัน
+            หน้านี้ถอดให้ดูทีละคำ พร้อมอภิธานศัพท์ทั้งชุดของบ้านนี้</span>
+          <span class="wtmeta"><i>7 คำหลัก</i><i>26 คำในอภิธานศัพท์</i><i>อ่าน 8 นาที</i></span>
+        </span>
+        <span class="wtgo disp">เปิดอ่าน →</span>
+      </a>
     </div>
   </div>'''
 
@@ -535,6 +544,29 @@ FINISH_CSS = '''
   border-radius:13px;padding:14px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
   margin-top:18px;min-height:44px;transition:transform .18s,filter .18s}
 .fbtn:hover{transform:translateY(-2px);filter:brightness(1.07)}
+/* ประตูเข้า Walkthrough — เป็นของรางวัลที่เพิ่งปลด ไม่ใช่ลิงก์จาง ๆ ท้ายหน้า */
+.wtcard{display:grid;grid-template-columns:52px 1fr auto;align-items:start;gap:14px 16px;text-align:left;margin-top:8px;
+  background:linear-gradient(135deg,rgb(190 148 66/.2),rgb(190 148 66/.05));
+  border:1.5px solid rgb(190 148 66/.55);border-radius:18px;padding:20px;color:#fff;
+  box-shadow:0 20px 44px -26px rgb(190 148 66/.75);transition:transform .25s,box-shadow .25s,border-color .25s}
+.wtcard:hover{transform:translateY(-3px);border-color:rgb(var(--gold));
+  box-shadow:0 28px 54px -24px rgb(190 148 66/.9)}
+.wtseal{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
+  font-size:26px;background:rgb(190 148 66/.22);border:1px solid rgb(190 148 66/.5)}
+.wtbody{min-width:0}
+.wttag{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.16em;
+  color:rgb(var(--gold))}
+.wtcard b{display:block;font-size:17px;line-height:1.4;margin-top:5px}
+.wtsm{display:block;font-size:13.5px;line-height:1.8;color:rgb(255 255 255/.72);margin-top:7px}
+.wtmeta{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.wtmeta i{font-style:normal;font-family:"Bai Jamjuree";font-weight:700;font-size:11px;
+  border:1px solid rgb(255 255 255/.22);border-radius:99px;padding:4px 11px;color:rgb(255 255 255/.78)}
+.wtgo{align-self:center;font-size:14px;font-weight:700;color:rgb(var(--gold));white-space:nowrap}
+/* จอแคบ ปุ่มลงไปอยู่บรรทัดล่างใต้ข้อความ ไม่งั้นมันไปบีบตัวหนังสือจนเหลือคอลัมน์ผอม ๆ */
+@media(max-width:620px){
+  .wtcard{grid-template-columns:52px 1fr}
+  .wtgo{grid-column:2;align-self:start}
+}
 .fbtn.ghost{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255/.38)}
 .fbtn.ghost:hover{border-color:rgb(var(--gold));background:rgb(190 148 66/.14)}
 .nextup{margin-top:30px}

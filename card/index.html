@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>การ์ดประจำตัว · myclover</title>
 <meta name="description" content="สร้างการ์ดประจำตัวของคุณเองใน 1 นาที — เลือกสายที่ใช่ ใส่ชื่อและประโยคของคุณ แล้วบันทึกเป็นรูปไปใช้ได้เลย ฟรี ไม่ต้องสมัคร">
+<meta property="og:type" content="website">
+<meta property="og:title" content="การ์ดประจำตัวชาวโคลเวอร์ | myclover">
+<meta property="og:description" content="ปักธงว่าคุณเป็นสายไหน แล้วรับการ์ดประจำตัวของคุณเอง">
+<meta property="og:image" content="https://myclover.com/img/og-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:title" content="การ์ดประจำตัว · myclover">
 <meta property="og:description" content="เลือกสายที่ใช่ ใส่ชื่อของคุณ แล้วบันทึกการ์ดเป็นรูปได้เลย — รูปของคุณไม่ถูกส่งออกจากเครื่อง">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,6 +87,21 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 
 /* ตรา */
 .badges{display:grid;gap:10px}
+.opt{margin-top:20px;padding-top:18px;border-top:1px solid rgb(var(--line)/.1)}
+/* select จำความกว้างจากตัวเลือกที่ยาวที่สุด ถ้าไม่บังคับไว้มันจะดันทั้งหน้าให้กว้างเกินจอ */
+.opt select{width:100%;min-width:0;max-width:100%}
+.olb{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;margin-bottom:8px}
+.frames{display:flex;gap:9px;flex-wrap:wrap}
+.fr{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgb(var(--line)/.18);
+  background:#fff;border-radius:12px;padding:9px 13px;cursor:pointer;min-height:46px;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--ink));
+  white-space:nowrap;max-width:100%}
+.fr .sw{width:20px;height:26px;border-radius:4px;flex:none;border:2px solid}
+.fr[aria-pressed="true"]{border-color:rgb(var(--gold));background:rgb(190 148 66/.12)}
+.bgrp{display:flex;align-items:baseline;gap:9px;margin:4px 2px 0;flex-wrap:wrap}
+.bgrp:not(:first-child){margin-top:12px}
+.bgrp b{font-size:12.5px;letter-spacing:.08em;color:rgb(var(--gold))}
+.bgrp span{font-size:12px;color:rgb(var(--muted))}
 .bd{display:flex;gap:13px;align-items:center;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:13px 16px}
 .bd.off{opacity:.55;background:transparent;border-style:dashed}
 .bd .ic{font-size:22px;flex:none}
@@ -308,7 +328,7 @@ body.js .reveal.in{opacity:1;transform:none}
       <h2 class="disp">ตราประจำตัว</h2>
       <p class="hint">ตราที่ได้มาจะขึ้นบนการ์ดเอง — ยังไม่มีก็ทำการ์ดได้ตามปกติ</p>
       <div class="bhead">
-        <span class="bcount" id="bcount">ปลดแล้ว 0/5</span>
+        <span class="bcount" id="bcount">ตราหลัก 0/3</span>
         <div class="btrack"><i id="bbar"></i></div>
       </div>
       <div class="badges" id="badges"></div>
@@ -320,6 +340,28 @@ body.js .reveal.in{opacity:1;transform:none}
       </div>
       <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
       <p class="hint" style="margin-top:12px">ยังไม่มีรหัสเลยใช่ไหมครับ — <a href="../forge/">อ่านการ์ตูนให้ครบทุกตอน</a> แล้วจะได้รหัสแรกไปใส่ตรงนี้</p>
+
+      <div class="opt">
+        <label class="olb" for="rera">คุณรู้จัก myclover ยุคไหน</label>
+        <select id="rera">
+          <option value="">— เลือกสักอัน —</option>
+          <option value="2007-2009">🍀 2007–2009 · ยุคบุกเบิก</option>
+          <option value="2010-2013">⭐ 2010–2013 · ยุคดวงดาว</option>
+          <option value="2014-2015">☀️ 2014–2015 · ยุคดวงอาทิตย์</option>
+          <option value="2016-2019">7️⃣ 2016–2019 · ยุคตำนาน</option>
+          <option value="2020-2022">💉 2020–2022 · ยุคโควิด</option>
+          <option value="2023+">✨ หลังปี 2023 เป็นต้นมา</option>
+          <option value="forgot">🤖 จำไม่ได้แล้ว</option>
+          <option value="new">🤖 เพิ่งรู้จักบ้านนี้ตอนนี้เอง</option>
+        </select>
+        <p class="hint" style="margin-top:7px">ขึ้นเป็นตราปีเล็ก ๆ ที่มุมขวาบนของการ์ด — อีโมจิกับปีแรกของยุคนั้น ไม่ได้เขียนชื่อยุค</p>
+      </div>
+
+      <div class="opt" id="frameOpt" hidden>
+        <span class="olb">กรอบการ์ด</span>
+        <div class="frames" id="frames"></div>
+        <p class="hint" style="margin-top:7px">กรอบที่ปลดแล้วเลือกใช้อันไหนก็ได้ ไม่ต้องใช้อันล่าสุดเสมอไป</p>
+      </div>
     </div>
 
     <!-- ═══ ขั้นที่สี่ — เฉพาะคนที่เลือกลงทะเบียน ═══ -->
@@ -345,21 +387,6 @@ body.js .reveal.in{opacity:1;transform:none}
           <input type="text" id="remail" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@example.com">
         </div>
 
-        <div class="field">
-          <label for="rera">คุณรู้จัก myclover ยุคไหน</label>
-          <select id="rera">
-            <option value="">— เลือกสักอัน —</option>
-            <option value="2007-2009">2007–2009 · ยุคบุกเบิก</option>
-            <option value="2010-2013">2010–2013 · ยุคดวงดาว</option>
-            <option value="2014-2015">2014–2015 · ยุคดวงอาทิตย์</option>
-            <option value="2016-2019">2016–2019 · ยุคตำนาน</option>
-            <option value="2020-2022">2020–2022 · ยุคโควิด</option>
-            <option value="2023+">หลังปี 2023 เป็นต้นมา</option>
-            <option value="forgot">จำไม่ได้แล้ว</option>
-            <option value="new">เพิ่งรู้จักบ้านนี้ตอนนี้เอง</option>
-          </select>
-          <p class="hint" style="margin-top:7px">ใครรู้จักบ้านนี้มาก่อนปี 2023 จะได้ตรา 🍀 ศิษย์เก่า ติดบนการ์ดให้เลย · ยุคที่เลือกไม่ได้พิมพ์ลงการ์ด เราเก็บไว้ดูเฉย ๆ ว่าใครมาจากช่วงไหนบ้าง</p>
-        </div>
 
         <div class="opt">
           <input type="checkbox" id="rnews">
@@ -429,7 +456,7 @@ body.js .reveal.in{opacity:1;transform:none}
 <button type="button" class="hud" id="musicBtn" aria-pressed="false">
   <span class="ico" id="musicIco" aria-hidden="true">🎵</span>
   <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-  <span class="lbl" id="musicLbl">เปิดเพลงประจำบ้าน<small>เพลงของ myclover · ทำเองกับ AI</small></span>
+  <span class="lbl" id="musicLbl">เปิดเพลงประจำบ้าน<small>Clover Song · คนแต่ง คนร้อง ไม่ได้ใช้ AI</small></span>
 </button>
 
 <footer>
@@ -470,30 +497,61 @@ var CLASSES={
 var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
 /* ตราประจำตัว — ตารางนี้ใช้ "แสดงผล" เท่านั้น
    ส่วนการปลดอัตโนมัติเมื่อทำครบ อยู่ใน assets/quest.js */
-var TITLES={
-  SEEKER :{emo:'🔍',th:'ผู้ค้นพบ',       how:'ท้ายหน้าแรกมีโคลเวอร์ให้กด เจอจริงประมาณ 1 ใน 10 — เลขจำนวนครั้งจะขึ้นบนการ์ดด้วย',
-           go:'../', goTx:'ไปลองดวงที่หน้าแรก'},
-  FORGE  :{emo:'⚒️',th:'ผ่านโรงตีเหล็ก', how:'อ่านการ์ตูนให้ครบทั้ง 12 ตอน — ปลดกรอบไฟบนการ์ด',
+/* ตราหลัก (Sigil) มีสามช่องเท่านั้น = หมุดหมายใหญ่สามอันของบ้าน
+   ศิษย์เก่าไม่เป็นตราแล้ว กลายเป็นตราปีเล็ก ๆ ที่มุมการ์ดแทน */
+var SIGILS={
+  BLACKSMITH:{emo:'⚒️',th:'ช่างตีเหล็ก', how:'อ่านการ์ตูนให้ครบทั้ง 12 ตอน — ปลดกรอบไฟบนการ์ด',
            go:'../forge/', goTx:'ไปอ่านการ์ตูน'},
-  AWAKENED:{emo:'🌅',th:'ผู้ตื่นรู้',    how:'เรียนครบ 6 บทจะปลดด่านบอส บทที่ 7 — อ่านให้จบแล้วตรานี้เป็นของคุณ',
+  AWAKENED  :{emo:'🌅',th:'ผู้ตื่นรู้',  how:'เรียนครบ 6 บทจะปลดด่านบอส บทที่ 7 — อ่านให้จบแล้วตรานี้เป็นของคุณ',
            go:'../classroom/awaken/', goTx:'ไปด่านสุดท้าย'},
-  ALUMNI :{emo:'🍀',th:'ศิษย์เก่า',       how:'ได้ตอนลงทะเบียน ถ้าคุณรู้จักบ้านนี้มาก่อนปี 2023',
-           go:'#register', goTx:'ไปลงทะเบียน'},
-  GUILD  :{emo:'⚔️',th:'ชาวกิลด์',       how:'รหัสแจกในกิลด์ — ปลดกรอบทองเป็นการ์ดฮีโร่ พร้อมเลขประจำตัว',
+  HERO      :{emo:'⚔️',th:'ฮีโร่',       how:'รหัสอยู่ใน Guild X — ปลดกรอบทองเป็นการ์ดฮีโร่ พร้อมเลขประจำตัว',
            go:'', goTx:''}
 };
-var TITLE_ORDER=['SEEKER','FORGE','AWAKENED','ALUMNI','GUILD'];
+/* ไตเติ้ลสะท้อนวิธีเล่น ไม่ใช่หมุดหมายหลัก จึงไม่กินช่องตรา */
+var TITLES={
+  SEEKER :{emo:'🔍',th:'ผู้ค้นพบ',       how:'ท้ายหน้าแรกมีโคลเวอร์ให้กด เจอจริงประมาณ 1 ใน 10 — เลขจำนวนครั้งจะขึ้นบนการ์ดด้วย',
+           go:'../', goTx:'ไปลองดวงที่หน้าแรก'}
+};
+/* แท็กจบเกม — ได้จากตอนพิเศษลับเท่านั้น
+   ไม่กินช่องตราหลัก และห้ามโชว์ช่องว่างรอไว้ก่อนปลด เพราะจะเป็นการสปอยล์ว่ามีอะไรซ่อนอยู่ */
+var SECRET={
+  GLHF:{emo:'👊🏻',th:'GLHF',
+        how:'', go:'', goTx:''}   /* บนการ์ดวาดเป็น 👊🏻 ติดกับ GLHF = 👊🏻GLHF พอดี */
+};
+var SIGIL_ORDER=['BLACKSMITH','AWAKENED','HERO'];
+var TITLE_ORDER=['SEEKER'];
+var SECRET_ORDER=['GLHF'];
+/* ตารางรวมไว้ค้นหาอย่างเดียว — ตอนแสดงผลยังแยกสองกลุ่ม */
+var BADGE={};
+[SIGILS,TITLES,SECRET].forEach(function(m){ for(var k in m) BADGE[k]=m[k]; });
+
+/* ยุคที่รู้จักบ้านนี้ → ตราปีบนการ์ด: อีโมจิหนึ่งตัวกับปีแรกของยุคนั้น
+   ไม่เรียกชื่อยุค เพราะชื่อที่ตั้งไว้มีความหมายอยู่ในอีโมจิแล้ว
+   จำไม่ได้ / เพิ่งรู้จัก = ไม่ปั๊มอะไรลงการ์ด */
+var ERA_STAMP={
+  '2007-2009':['🍀','2007'],
+  '2010-2013':['⭐','2010'],
+  '2014-2015':['☀️','2014'],
+  '2016-2019':['7️⃣','2016'],
+  '2020-2022':['💉','2020'],
+  '2023+'    :['✨','2023'],
+  /* จำไม่ได้หรือเพิ่งรู้จัก ก็ยังได้ตราปี — เป็นปีที่พิมพ์การ์ดแทน */
+  'forgot'   :['🤖','2026'],
+  'new'      :['🤖','2026']
+};
 
 /* รหัสปลดตรา — เปลี่ยนรหัส: แก้ sha/djb เป็นค่าของรหัสใหม่ (ตัวพิมพ์เล็ก)
    เก็บเป็นค่าแฮชเพราะไฟล์นี้เปิดดูซอร์สได้ — ไม่ได้กันคนตั้งใจงัด
    แค่ไม่ให้รหัสลอยอยู่กลางหน้าเว็บให้เห็นก่อนถึงเวลา */
 var CODES=[
-  {t:'FORGE', sha:'37a476f81df3d95044819c120599a0fc0a29075f3936dbcd162c72bcb4277fc0', djb:'3431813480',
-   ok:'⚒️ ยินดีด้วยครับ คุณอ่านครบทุกตอนแล้ว — การ์ดของคุณได้กรอบไฟกับตรา “ผ่านโรงตีเหล็ก”'},
+  {t:'BLACKSMITH', sha:'8eae6c54657e94be77a206e430054386a7391f99e2cea017b16d90661037a1ee', djb:'837210823',
+   ok:'⚒️ ยินดีด้วยครับ คุณอ่านครบทุกตอนแล้ว — การ์ดของคุณได้กรอบไฟกับตรา “ช่างตีเหล็ก”'},
   {t:'AWAKENED', sha:'cdd35a708cf7fbc0a70f4d0f7ec42dcc269a97e1894726d8e175a2d830d336cd', djb:'4072919836',
    ok:'🌅 คุณอ่านบทที่ 7 จบแล้ว — ได้ตรา “ผู้ตื่นรู้” ขึ้นการ์ดเรียบร้อย'},
-  {t:'GUILD', sha:'4eb990514f06a4910fc2537f34fc780ddde5bb5c66f9b902aa7e09131527ac43', djb:'1404206110',
-   ok:'⚔️ ยินดีต้อนรับชาวกิลด์ — การ์ดของคุณเป็นการ์ดฮีโร่กรอบทองแล้ว'}
+  {t:'GLHF', sha:'b5da47ec8b4451ca8bedd01b0efe8258db9f71a6f52204664bc0389dcf7ca20c', djb:'1042463000',
+   ok:'🤜🏻🤛🏻 WELL PLAYED — แท็กจบเกมขึ้นการ์ดของคุณแล้ว'},
+  {t:'HERO', sha:'14691f815147dd1991e3a16e7e14a73bed2eb7c90bf84240ef2a3fecae8306a1', djb:'2157322410',
+   ok:'⚔️ Hero ไม่ได้แปลว่าต้องไปกอบกู้ใคร — ในชีวิตของคุณ คุณคือตัวละครหลัก การ์ดของคุณเป็นกรอบทองแล้ว'}
 ];
 
 var GREEN='rgb(27,106,66)', GOLD='rgb(190,148,66)', CREAM='#F8F5EE', DEEP='rgb(10,40,24)';
@@ -506,7 +564,7 @@ var ls={
   set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 };
 function readTitles(){
-  try{ var a=JSON.parse(ls.get('mc_titles','[]')); return Array.isArray(a)?a.filter(function(t){return TITLES[t];}):[]; }
+  try{ var a=JSON.parse(ls.get('mc_titles','[]')); return Array.isArray(a)?a.filter(function(t){return BADGE[t];}):[]; }
   catch(e){ return []; }
 }
 /* จำนวนครั้งที่กดโคลเวอร์ท้ายหน้าแรกกว่าจะเจอ — นับเฉพาะคนที่เจอแล้วเท่านั้น
@@ -516,12 +574,23 @@ function seekN(){
   var n=parseInt(ls.get('mc_seek_n','0'),10);
   return n>0?n:0;
 }
+/* กรอบไหนปลดแล้วบ้าง เรียงจากพื้นฐานไปหายากสุด */
+function frameChoices(){
+  var a=['green'];
+  if(st.titles.indexOf('BLACKSMITH')>=0) a.push('ember');
+  if(st.titles.indexOf('HERO')>=0) a.push('hero');
+  return a;
+}
+var FRAME_TH={green:['กรอบเขียว','#1B6A42'],ember:['กรอบไฟ','#E8A063'],hero:['กรอบทองฮีโร่','#BE9442']};
+
 var st={
   cls   : CLASSES[ls.get('mc_class','')] ? ls.get('mc_class','') : 'THINKER',
+  frame : ls.get('mc_frame',''),
   nick  : ls.get('mc_nick',''),
   line  : ls.get('mc_line',''),
   titles: readTitles(),
   member: ls.get('mc_member',''),
+  era   : ls.get('mc_era',''),
   img   : null
 };
 
@@ -608,8 +677,13 @@ function drawClover(c,x,y,size,color,alpha){
 function drawCardArt(c,st){
   var cls=CLASSES[st.cls]||CLASSES.THINKER;
   /* ขั้นของกรอบ: เขียว → กรอบไฟ (อ่านจบ) → กรอบทองฮีโร่ (ชาวกิลด์) */
-  var foil =st.titles.indexOf('GUILD')>=0;
-  var ember=!foil && st.titles.indexOf('FORGE')>=0;
+  /* กรอบที่ปลดแล้วเลือกใช้อันไหนก็ได้ ไม่ต้องใช้อันล่าสุดเสมอไป
+     ไม่ได้เลือกไว้ = ใช้อันดีที่สุดที่มีเป็นค่าตั้งต้น */
+  var can=frameChoices();
+  /* ห้ามตั้งชื่อว่า pick — ในฟังก์ชันนี้มี pick() ของชิปตราอยู่แล้ว */
+  var frameKey=st.frame && can.indexOf(st.frame)>=0 ? st.frame : can[can.length-1];
+  var foil = frameKey==='hero';
+  var ember= frameKey==='ember';
   var FR=16, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
   var PAD=34, x0=PAD, x1=CW-PAD, cw=x1-x0;
 
@@ -683,16 +757,41 @@ function drawCardArt(c,st){
     c.fillText(st.member,x1,cy);
   }
 
+  /* ตราปี — อีโมจิกับปีแรกของยุคที่เขารู้จักบ้านนี้ เล็กและจาง ไม่แย่งสายตา
+     วางใต้เลขสมาชิก ถ้าไม่มีเลขก็ขึ้นตรงตำแหน่งเดียวกัน */
+  var era=ERA_STAMP[st.era];
+  if(era){
+    /* วาดอีโมจิกับปีแยกกัน และกันช่องอีโมจิไว้ตายตัว
+       เพราะ measureText ของอีโมจิบางตัว (7️⃣ ☀️) คืนค่าสั้นกว่าที่วาดจริง
+       ถ้าใช้ textAlign right กับข้อความรวม อีโมจิจะดันเลขทะลุขอบการ์ด */
+    var ey = st.member ? cy+23 : cy;
+    var EMO=22, GAP=4;
+    c.fillStyle='rgba(255,255,255,.62)';
+    font(c,'700',15,'Bai Jamjuree');
+    c.textAlign='right';
+    c.fillText(era[1], x1, ey);
+    var wy=c.measureText(era[1]).width;
+    c.textAlign='center';
+    font(c,'400',17,'Anuphan');
+    c.fillText(era[0], x1-wy-GAP-EMO/2, ey);
+    c.textAlign='left';
+  }
+
   /* ── บล็อกข้อความล่าง วางแบบการ์ดเกมจริง ── */
   var quote=(st.line||'').slice(0,40);
   /* ตราบนการ์ด — เรียงตราที่หายากไว้ก่อน แล้วตัดที่เหลือถ้าเกิน */
-  var CHIP_ORDER=['GUILD','FORGE','AWAKENED','SEEKER','ALUMNI'];
-  var chips=CHIP_ORDER.filter(function(k){ return st.titles.indexOf(k)>=0 && TITLES[k]; })
-                      .slice(0,4).map(function(k){
-                        /* ผู้ค้นพบพ่วงจำนวนครั้งที่กดกว่าจะเจอ — เอาไว้อวดกันว่าดวงใครดีกว่า */
-                        var t=TITLES[k], n=(k==='SEEKER')?seekN():0;
-                        return {emo:t.emo, th:t.th+(n?' · '+n:'')};
-                      });
+  /* ตราหลักมาก่อนเสมอ แล้วไตเติ้ลต่อท้าย — ไตเติ้ลใช้กรอบจาง ๆ จะได้แยกออกจากตรา */
+  function pick(order,map,kind){
+    return order.filter(function(k){ return st.titles.indexOf(k)>=0 && map[k]; })
+                .map(function(k){
+                  /* ผู้ค้นพบพ่วงจำนวนครั้งที่กดกว่าจะเจอ — เอาไว้อวดกันว่าดวงใครดีกว่า */
+                  var t=map[k], n=(k==='SEEKER')?seekN():0;
+                  return {emo:t.emo, th:t.th+(n?' · '+n:''), kind:kind};
+                });
+  }
+  var chips=pick(SECRET_ORDER,SECRET,'x')
+              .concat(pick(SIGIL_ORDER,SIGILS,'s'))
+              .concat(pick(TITLE_ORDER,TITLES,'t')).slice(0,5);
   var qLines=[];
   if(quote){ font(c,'500',20,'Anuphan'); qLines=wrap(c,'“'+quote+'”',cw,2); }
 
@@ -733,8 +832,12 @@ function drawCardArt(c,st){
       var w=24+c.measureText(t.th).width+16;
       if(i>0 && sx+w>x1){ sx=x0; cyy+=32; }     /* เต็มแถวแล้ว ขึ้นแถวใหม่ */
       rr(c,sx,cyy,w,26,8);
-      c.fillStyle='rgba(255,255,255,.13)'; c.fill();
-      c.strokeStyle='rgba(190,148,66,.45)'; c.lineWidth=1; c.stroke();
+      c.fillStyle= t.kind==='t' ? 'rgba(255,255,255,.08)'
+                 : t.kind==='x' ? 'rgba(190,148,66,.26)' : 'rgba(255,255,255,.13)';
+      c.fill();
+      c.strokeStyle= t.kind==='t' ? 'rgba(255,255,255,.3)'
+                   : t.kind==='x' ? GOLD : 'rgba(190,148,66,.45)';
+      c.lineWidth= t.kind==='x' ? 1.5 : 1; c.stroke();
       font(c,'400',13,'Anuphan'); c.fillStyle='#fff';
       c.fillText(t.emo,sx+7,cyy+14);
       font(c,'600',13.5,'Anuphan'); c.fillStyle='rgba(255,255,255,.92)';
@@ -943,28 +1046,41 @@ paintPathLink();
 function paintBadges(){
   elBadges.innerHTML='';
   var got=0;
-  TITLE_ORDER.forEach(function(k){
-    var t=TITLES[k], has=st.titles.indexOf(k)>=0;
-    if(has) got++;
-    var d=document.createElement('div');
-    d.className='bd'+(has?'':' off');
-    /* ตราที่ยังไม่ได้ บอกทางไปเอาด้วย — ไม่ใช่แค่บอกว่ายังไม่มี */
-    var right = has ? '<span class="on">ได้แล้ว</span>'
-              : (t.go ? '<a class="get disp" href="'+t.go+'">'+t.goTx+' →</a>' : '');
-    var n=(k==='SEEKER')?seekN():0;
-    var done = has ? (n?'เจอตอนกดครั้งที่ '+n+' — เลขนี้ขึ้นบนการ์ดให้เอาไปอวดได้'
-                       :'อยู่บนการ์ดของคุณแล้ว')
-                   : t.how;
-    d.innerHTML='<span class="ic">'+t.emo+'</span><span class="tx"><b class="disp">'+t.th+
-      (n?' · '+n:'')+'</b><small>'+done+'</small></span>'+right;
-    elBadges.appendChild(d);
-  });
-  var n=TITLE_ORDER.length;
-  elCount.textContent='ปลดแล้ว '+got+'/'+n;
-  elCount.className='bcount'+(got>=n?' full':'');
-  elBar.style.width=Math.round(got/n*100)+'%';
-  elHint.hidden = got>=n;
-  elAll.hidden  = got<n;
+  function group(label,note,order,map){
+    var h=document.createElement('p');
+    h.className='bgrp';
+    h.innerHTML='<b class="disp">'+label+'</b><span>'+note+'</span>';
+    elBadges.appendChild(h);
+    order.forEach(function(k){
+      var t=map[k], has=st.titles.indexOf(k)>=0;
+      if(has) got++;
+      var d=document.createElement('div');
+      d.className='bd'+(has?'':' off');
+      /* ตราที่ยังไม่ได้ บอกทางไปเอาด้วย — ไม่ใช่แค่บอกว่ายังไม่มี */
+      var right = has ? '<span class="on">ได้แล้ว</span>'
+                : (t.go ? '<a class="get disp" href="'+t.go+'">'+t.goTx+' →</a>' : '');
+      var n=(k==='SEEKER')?seekN():0;
+      var done = has ? (n?'เจอตอนกดครั้งที่ '+n+' — เลขนี้ขึ้นบนการ์ดให้เอาไปอวดได้'
+                         :'อยู่บนการ์ดของคุณแล้ว')
+                     : t.how;
+      d.innerHTML='<span class="ic">'+t.emo+'</span><span class="tx"><b class="disp">'+t.th+
+        (n?' · '+n:'')+'</b><small>'+done+'</small></span>'+right;
+      elBadges.appendChild(d);
+    });
+  }
+  group('ตราหลัก','สามหมุดหมายใหญ่ของบ้าน',SIGIL_ORDER,SIGILS);
+  group('ไตเติ้ล','ได้จากวิธีเล่นของคุณเอง ไม่กินช่องตรา',TITLE_ORDER,TITLES);
+  /* กลุ่มนี้โผล่เฉพาะคนที่ปลดแล้ว ก่อนหน้านั้นห้ามมีแม้แต่ช่องว่างให้เดา */
+  if(st.titles.indexOf('GLHF')>=0) group('แท็กจบเกม','ของคนที่หาเจอเองจนครบทุกอย่าง',SECRET_ORDER,SECRET);
+
+  /* นับเฉพาะตราหลัก — ไตเติ้ลเป็นของแถม ไม่ควรทำให้รู้สึกว่ายังเก็บไม่ครบ */
+  var sg=SIGIL_ORDER.filter(function(k){ return st.titles.indexOf(k)>=0; }).length;
+  var n=SIGIL_ORDER.length;
+  elCount.textContent='ตราหลัก '+sg+'/'+n;
+  elCount.className='bcount'+(sg>=n?' full':'');
+  elBar.style.width=Math.round(sg/n*100)+'%';
+  elHint.hidden = sg>=n;
+  elAll.hidden  = sg<n;
 }
 paintBadges();
 
@@ -1016,6 +1132,7 @@ function grant(key,msg){
   if(st.titles.indexOf(key)<0){
     st.titles.push(key);
     ls.set('mc_titles',JSON.stringify(st.titles));
+    if(typeof paintFrames==='function') paintFrames();
   }
   if(msg){ codeMsg.className='codemsg ok'; codeMsg.textContent=msg; }
   paintBadges(); render();
@@ -1041,7 +1158,42 @@ document.getElementById('guildBtn').addEventListener('click',function(){
 
 /* ทำครบบนเครื่องเดียวกัน ก็ไม่ต้องพิมพ์รหัสซ้ำ — ให้ตราไปเลย
    (รหัสมีไว้สำหรับคนที่อ่าน/เรียนคนละเครื่องกับที่ทำการ์ด) */
-[['mc_forge_done','FORGE',  '⚒️ เราเห็นว่าคุณอ่านการ์ตูนครบทุกตอนแล้ว — ใส่ตรา “ผ่านโรงตีเหล็ก” ให้เรียบร้อย'],
+/* ยุคเก็บทันทีที่เลือก ไม่ต้องลงทะเบียนก็ได้ตราปี */
+(function(){
+  var sel=document.getElementById('rera');
+  if(!sel) return;
+  if(st.era) sel.value=st.era;
+  sel.addEventListener('change',function(){
+    st.era=sel.value;
+    ls.set('mc_era',sel.value);
+    render();
+  });
+})();
+
+/* ตัวเลือกกรอบ — โผล่เมื่อปลดได้มากกว่าหนึ่งแบบเท่านั้น */
+function paintFrames(){
+  var wrap=document.getElementById('frameOpt'), box=document.getElementById('frames');
+  if(!wrap) return;
+  var can=frameChoices();
+  wrap.hidden = can.length<2;
+  if(wrap.hidden) return;
+  var cur = st.frame && can.indexOf(st.frame)>=0 ? st.frame : can[can.length-1];
+  box.innerHTML='';
+  can.forEach(function(k){
+    var b=document.createElement('button');
+    b.type='button'; b.className='fr';
+    b.setAttribute('aria-pressed', k===cur?'true':'false');
+    b.innerHTML='<span class="sw" style="border-color:'+FRAME_TH[k][1]+'"></span>'+FRAME_TH[k][0];
+    b.addEventListener('click',function(){
+      st.frame=k; ls.set('mc_frame',k);
+      paintFrames(); render();
+    });
+    box.appendChild(b);
+  });
+}
+paintFrames();
+
+[['mc_forge_done','BLACKSMITH','⚒️ เราเห็นว่าคุณอ่านการ์ตูนครบทุกตอนแล้ว — ใส่ตรา “ช่างตีเหล็ก” ให้เรียบร้อย'],
  ['mc_ch7_done','AWAKENED','🌅 เราเห็นว่าคุณอ่านบทที่ 7 จบแล้ว — ใส่ตรา “ผู้ตื่นรู้” ให้เรียบร้อย']
 ].forEach(function(r){
   if(ls.get(r[0],'')==='1' && st.titles.indexOf(r[1])<0) grant(r[1],r[2]);
@@ -1095,15 +1247,16 @@ remail.value= ls.get('mc_email','');
 
 function emailOk(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
 
-/* ยุคที่นับว่าเป็นศิษย์เก่า — ต้องตรงกับ <option value> ในฟอร์ม */
-var ALUMNI_ERAS=['2007-2009','2010-2013','2014-2015','2016-2019','2020-2022','forgot'];
 
 function regPayload(){
   return {
     name    : rname.value.trim(),
     email   : remail.value.trim(),
-    era     : rera.value,
-    eraTh   : rera.value ? rera.options[rera.selectedIndex].text : '',
+    era     : st.era,
+    eraTh   : (function(){
+      var o=rera && st.era ? rera.querySelector('option[value="'+st.era+'"]') : null;
+      return o ? o.textContent.trim() : '';
+    })(),
     news    : rnews.checked,
     nickname: st.nick,
     line    : st.line,
@@ -1133,9 +1286,6 @@ function regDone(d,viaMail,memberNo){
   ls.set('mc_name',d.name); ls.set('mc_email',d.email);
   /* ลงทะเบียนสำเร็จ = ได้เลขสมาชิกขึ้นการ์ดเลย ไม่ต้องรอปลดตราอะไรก่อน */
   if(/^MC-\d{4}-\d+$/.test(memberNo||'')){ ls.set('mc_member',memberNo); st.member=memberNo; }
-  /* รู้จักบ้านนี้มาก่อนปี 2023 = ศิษย์เก่าตัวจริง
-     "จำไม่ได้" ก็นับ เพราะเขายืนยันเองว่ารู้จักบ้านนี้มาก่อน แค่จำปีไม่ได้ */
-  if(ALUMNI_ERAS.indexOf(d.era)>=0) grant('ALUMNI','');
   regMsg.className='codemsg ok';
   if(viaMail){
     /* ยังไม่มีหลังบ้าน — ต้องให้ผู้ใช้กดส่งอีเมลเอง เลยยังไม่ควรบอกว่าเสร็จแล้ว */
@@ -1313,7 +1463,7 @@ if(document.fonts && document.fonts.ready){ document.fonts.ready.then(render); }
       ico=document.getElementById('musicIco'), lbl=document.getElementById('musicLbl');
   if(!au||!btn) return;
 
-  var SUB='<small>เพลงของ myclover · ทำเองกับ AI</small>';
+  var SUB='<small>Clover Song · คนแต่ง คนร้อง ไม่ได้ใช้ AI</small>';
   function cls(c,on){
     var re=new RegExp('(^|\\s)'+c+'(?=\\s|$)','g');
     btn.className=btn.className.replace(re,' ').replace(/\s+/g,' ').replace(/^ | $/g,'')+(on?' '+c:'');

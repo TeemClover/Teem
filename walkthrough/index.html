@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover</title>
 <meta name="description" content="หน้าสำหรับคนที่อ่านการ์ตูนจบครบทุกตอนแล้ว — กลไก แนวคิด และโครงสร้างของบ้านหลังนี้ พร้อมพจนานุกรมแปลศัพท์เกมเป็นศัพท์ธุรกิจ">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover">
+<meta property="og:description" content="คำที่คนเล่นเกมใช้ กับคำที่คนทำธุรกิจใช้ — หลายคำมันคือคำเดียวกัน">
+<meta property="og:image" content="https://myclover.com/img/og-walkthrough.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0A2818">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70,6 +75,39 @@ em.hi{font-style:normal;color:rgb(var(--green));font-weight:600}
 strong{font-weight:700}
 
 /* ── พจนานุกรม ── */
+/* ปาร์ตี้ที่ใช้สร้างบ้าน — การ์ดคนละใบ มีอวาตาร์กับหน้าที่ */
+.crew{display:grid;gap:10px;margin-top:16px}
+@media(min-width:620px){.crew{grid-template-columns:1fr 1fr}}
+.cm{display:flex;gap:13px;align-items:center;background:#fff;border:1px solid rgb(var(--ink)/.09);
+  border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.cm{border-left:3px solid var(--ac,rgb(var(--green)))}
+.cm.lead{border-color:rgb(var(--gold));box-shadow:0 0 0 1px rgb(190 148 66/.35),0 1px 3px rgb(18 40 28/.05)}
+.cm .ava{width:82px;height:82px;flex:none;border-radius:14px;overflow:hidden;display:grid;
+  place-items:center;background:rgb(27 106 66/.08);border:2px solid var(--ac,rgb(190 148 66/.5))}
+.cm.lead .ava{border-color:rgb(var(--gold))}
+.ldtag{display:inline-block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:9.5px;
+  letter-spacing:.1em;color:#fff;background:#8a6a22;border-radius:99px;padding:3px 8px;
+  vertical-align:2px;margin-left:6px}
+.clschip{display:inline-flex;align-items:center;gap:5px;margin-top:4px;font-family:"Bai Jamjuree",sans-serif;
+  font-weight:700;font-size:11.5px;border-radius:99px;padding:3px 10px 3px 7px;color:#fff;
+  background:var(--ac,rgb(var(--green)))}
+.clschip i{font-style:normal;font-size:12.5px}
+.cm .ava picture{display:contents}
+.ava img{width:100%;height:100%;object-fit:cover;display:block}
+/* ยังไม่มีภาพก็ต้องดูตั้งใจ ไม่ใช่รูปแตก */
+.cm .ava .fb{font-size:34px;line-height:1}
+.cm .ava picture+.fb{display:none}
+.cm b{display:block;font-size:16.5px}
+.cm .duty{display:block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px;
+  color:rgb(var(--green));margin-top:1px}
+.cm small{display:block;font-size:12.5px;color:rgb(var(--muted));line-height:1.65;margin-top:4px}
+.rtag{display:inline-block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:10.5px;
+  letter-spacing:.16em;color:rgb(var(--gold));margin-bottom:8px}
+ol.relay{list-style:none;counter-reset:r;margin-top:14px;display:grid;gap:9px}
+ol.relay li{counter-increment:r;position:relative;padding-left:34px;line-height:1.85}
+ol.relay li::before{content:counter(r);position:absolute;left:0;top:2px;width:23px;height:23px;
+  border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));
+  font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:12.5px;display:grid;place-items:center}
 .term{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;overflow:hidden;margin-top:18px;
   box-shadow:0 1px 3px rgb(18 40 28/.05)}
 .term > .hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 22px 0}
@@ -156,8 +194,34 @@ footer a{color:rgb(var(--green));font-weight:600}
     <a class="go disp" data-mc-continue="forge:../forge/" href="../forge/">▶ อ่านต่อจากที่ค้างไว้</a>
     <a class="go disp" data-mc-undone="forge" href="../forge/">📖 ไปอ่านการ์ตูน</a>
     <a class="back" href="../">← กลับหน้าบ้าน</a>
+
+    <!-- อ่านจบมาแล้วแต่คนละเครื่อง — กรอกรหัสท้ายเล่มเพื่อเปิดหน้านี้ได้เลย -->
+    <div class="recover">
+      <p>อ่านจบมาแล้วแต่คนละเครื่อง? กรอกรหัสที่ได้ตอนอ่านจบ</p>
+      <div class="rcrow">
+        <input type="text" id="wcode" placeholder="รหัสท้ายเล่ม" autocomplete="off"
+               aria-label="รหัสที่ได้ตอนอ่านการ์ตูนจบ">
+        <button type="button" class="disp" id="wbtn" data-ga="wt_code">เปิดหน้านี้</button>
+      </div>
+      <p class="rcmsg" id="wmsg" role="status" aria-live="polite"></p>
+    </div>
   </div>
 </div>
+
+<style>
+.recover{margin-top:26px;padding-top:20px;border-top:1px solid rgb(255 255 255/.14);
+  max-width:400px;margin-left:auto;margin-right:auto}
+.recover>p{font-size:13.5px;color:rgb(255 255 255/.6);margin-bottom:10px}
+.rcrow{display:flex;gap:8px;flex-wrap:wrap}
+.rcrow input{flex:1;min-width:150px;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.22);
+  border-radius:11px;padding:12px 14px;color:#fff;font-family:"Anuphan",sans-serif;font-size:15px;min-height:46px}
+.rcrow input::placeholder{color:rgb(255 255 255/.4)}
+.rcrow button{background:rgb(190 148 66);color:rgb(10 40 24);border:0;border-radius:11px;
+  padding:12px 20px;font-weight:700;font-size:14.5px;cursor:pointer;min-height:46px}
+.rcmsg{margin-top:9px;font-size:13.5px;min-height:1.2em}
+.rcmsg.ok{color:rgb(190 148 66);font-weight:600}
+.rcmsg.no{color:#E88}
+</style>
 
 <!-- ═══ อ่านจบแล้ว ═══ -->
 <div id="doc">
@@ -238,7 +302,7 @@ footer a{color:rgb(var(--green));font-weight:600}
   <p class="lead">คำพวกนี้ไม่ใช่การเปรียบเทียบ — หลายคำมันข้ามมาจากอีกฝั่งจริง ๆ
      และพอรู้ว่ามันคือคำเดียวกัน คุณจะฟังคนอื่นคุยงานรู้เรื่องขึ้นทันที</p>
 
-  <div class="term">
+  <div class="term" id="deck">
     <div class="hd"><span class="en">DECK</span><span class="th">สำรับไพ่</span></div>
     <div class="bd">
       <div class="arrow">
@@ -255,7 +319,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="meta">
     <div class="hd"><span class="en">META</span><span class="th">Most Effective Tactic Available</span></div>
     <div class="bd">
       <div class="arrow">
@@ -298,7 +362,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="progression">
     <div class="hd"><span class="en">PROGRESSION</span><span class="th">เส้นทางการเก่งขึ้น</span></div>
     <div class="bd">
       <div class="arrow">
@@ -315,7 +379,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="build">
     <div class="hd"><span class="en">BUILD</span><span class="th">การจัดตัวละคร</span></div>
     <div class="bd">
       <div class="arrow">
@@ -330,7 +394,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="grind">
     <div class="hd"><span class="en">GRIND</span><span class="th">งานซ้ำที่ต้องผ่าน</span></div>
     <div class="bd">
       <div class="arrow">
@@ -345,7 +409,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="party">
     <div class="hd"><span class="en">PARTY &amp; GUILD</span><span class="th">ปาร์ตี้ กับ กิลด์</span></div>
     <div class="bd">
       <div class="arrow">
@@ -360,7 +424,7 @@ footer a{color:rgb(var(--green));font-weight:600}
     </div>
   </div>
 
-  <div class="term">
+  <div class="term" id="patch">
     <div class="hd"><span class="en">PATCH · NERF · BUFF</span><span class="th">กติกาเปลี่ยน</span></div>
     <div class="bd">
       <div class="arrow">
@@ -379,6 +443,11 @@ footer a{color:rgb(var(--green));font-weight:600}
     <b>ลองสังเกตดู</b> — ทั้งเจ็ดคำข้างบนนี้ ไม่มีคำไหนเลยที่ต้องเล่นเกมเป็นถึงจะเข้าใจ
     เพราะมันไม่ได้เป็นเรื่องของเกม มันเป็นเรื่องของ<b>ระบบที่มีคนอยู่ในนั้น</b> — ซึ่งธุรกิจก็คือแบบนั้น
   </div>
+  <p style="margin-top:16px">คำอื่นที่โผล่ตามหน้าต่าง ๆ ในบ้านนี้ก็มาจากที่เดียวกัน —
+    <button type="button" data-kw="CLASS">คลาส</button> ที่บอกว่าคุณถนัดทางไหน <button type="button" data-kw="QUEST">เควสต์</button>ที่รู้ว่าจบเมื่อไหร่
+    <button type="button" data-kw="ITEM">ไอเทม</button>ที่เอาออกไปใช้ได้จริง <button type="button" data-kw="LOADOUT">โหลดเอาต์</button>ที่เตรียมไปกับงานหนึ่งงาน
+    <button type="button" data-kw="SOURCE">ซอร์ส</button>ที่โตไปกับคุณ และ <button type="button" data-kw="MULTIPLY">ตัวคูณ</button>ที่ทำให้ของชิ้นเดียวทำงานได้หลายรอบ<br>
+    <span style="color:rgb(var(--muted));font-size:14px">คำที่มีเส้นใต้จุด แตะหรือชี้เมาส์ค้างไว้แล้วมีคำอธิบายขึ้นให้</span></p>
 </div></section>
 
 <!-- ── 3. บ้านหลังนี้ถูกสร้างยังไง ── -->
@@ -477,10 +546,56 @@ footer a{color:rgb(var(--green));font-weight:600}
       <span>ตัดจากของที่มีอยู่แล้วด้วยเครื่องมือฟรี — LV.3</span></span></div>
   </div>
 
+
+  <h3 class="disp" id="crew">ปาร์ตี้ที่ใช้สร้างบ้านหลังนี้</h3>
+  <p>ไม่ได้ใช้ AI ตัวเดียวทำทุกอย่าง เพราะแต่ละตัวถนัดคนละเรื่องจริง ๆ
+     วิธีที่ได้ผลกว่าคือ<b>ให้หน้าที่มันไปเลย</b> แล้วส่งงานให้ตรงกับที่มันถนัด</p>
+  <div class="crew">
+    <div class="cm lead" style="--ac:#2E4A8F">
+      <span class="ava"><picture><source type="image/webp" srcset="../img/party-teem.webp"><img src="../img/party-teem.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🧑‍🏭</span></span>
+      <div><b class="disp">Teem <span class="ldtag">👑 หัวหน้าปาร์ตี้</span></b><span class="clschip"><i aria-hidden="true">🧠</i>สายคิด</span><span class="duty">คิด และ สั่งการ</span>
+        <small>คนเดียวในปาร์ตี้ที่ตัดสินใจได้ว่าอะไรได้ไปต่อ</small></div>
+    </div>
+    <div class="cm" style="--ac:#4B5A67">
+      <span class="ava"><picture><source type="image/webp" srcset="../img/party-claude.webp"><img src="../img/party-claude.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🛠️</span></span>
+      <div><b class="disp">Claude</b><span class="clschip"><i aria-hidden="true">🧰</i>สายประดิษฐ์</span><span class="duty">สร้าง และ ซ่อม</span>
+        <small>เปลี่ยนแบบร่างเป็นของที่รันได้ แล้วคอยไล่จุดที่พัง</small></div>
+    </div>
+    <div class="cm" style="--ac:#1F8A70">
+      <span class="ava"><picture><source type="image/webp" srcset="../img/party-gpt.webp"><img src="../img/party-gpt.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🎨</span></span>
+      <div><b class="disp">ChatGPT</b><span class="clschip"><i aria-hidden="true">💪</i>สายคลีน</span><span class="duty">วาด และ เขียน</span>
+        <small>ทำภาพ ร้อยเรื่อง และดูว่าโลกนี้ยังไม่ขัดกันเอง</small></div>
+    </div>
+    <div class="cm" style="--ac:#C4622D">
+      <span class="ava"><picture><source type="image/webp" srcset="../img/party-gemini.webp"><img src="../img/party-gemini.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">⚡</span></span>
+      <div><b class="disp">Gemini</b><span class="clschip"><i aria-hidden="true">🍜</i>สายกิน</span><span class="duty">แตกไอเดีย และ เถียง</span>
+        <small>เปิดกระดานให้กว้าง แล้วซัดไอเดียจนเห็นว่ามันพังตรงไหน</small></div>
+    </div>
+  </div>
+
+  <div class="dark" style="margin-top:20px">
+    <span class="rtag">เทคนิคที่อยากแชร์</span>
+    <h3 class="disp">ให้ AI สามตัวคุยกันเอง โดยมีคุณเป็นคนเดินสาร</h3>
+    <p>มันไม่ได้ต่อกันเองอยู่แล้ว แต่คุณต่อให้มันได้ — และนี่คือจุดที่ปาร์ตี้เริ่มทำงานเหมือนปาร์ตี้จริง
+       ไม่ใช่แค่มีเครื่องมือหลายตัวเปิดค้างไว้หลายแท็บ</p>
+    <ol class="relay">
+      <li>ให้ตัวหนึ่งตอบหรือร่างงานออกมาก่อน</li>
+      <li>ก๊อปคำตอบนั้นไปวางให้อีกตัว แล้วบอกตรง ๆ ว่า
+        <b>“นี่คือสิ่งที่อีกตัวตอบมา คุณเห็นด้วยไหม ตรงไหนพัง”</b></li>
+      <li>สั่งให้มัน<b>เขียนข้อความถึงอีกตัวโดยตรง</b> ไม่ใช่เขียนรายงานถึงคุณ</li>
+      <li>คุณเดินสารกลับไปกลับมา และเป็นคนตัดสินว่ารอบไหนพอ</li>
+    </ol>
+    <p style="margin-top:14px">ที่มันได้ผลเพราะตัวที่เก่งเถียงจะเจอรูที่ตัวที่เก่งสร้างมองข้าม
+       และตัวที่เก่งเล่าจะทำให้ของที่ถูกต้องกลายเป็นของที่คนอ่านรู้เรื่อง<br>
+       คุณไม่ได้กำลังหาคำตอบที่ดีที่สุดจากตัวเดียว — <b>คุณกำลังจัดประชุมที่คุณเป็นคนคุมวาระ</b></p>
+  </div>
+
   <div class="note">
     <b>ข้อเดียวที่ AI ทำแทนไม่ได้</b> — เรื่องที่เล่า 19 ปีที่ผ่านมา คนที่เดินมาด้วยกัน
     และสิ่งที่ตัดสินใจผิดแล้วต้องจ่ายจริง ๆ ตรงนั้นไม่มีเครื่องมือไหนสร้างให้ได้
-    AI ย่นเวลาให้เราได้ แต่<b>ประสบการณ์ยังต้องเดินเอาเอง</b>
+    AI ย่นเวลาให้เราได้ แต่<b>ประสบการณ์ยังต้องเดินเอาเอง</b><br><br>
+    🎵 <b>และมีอีกหนึ่งอย่างที่ไม่ได้ทำกับ AI เลย</b> — <b>Clover Song</b> เพลงประจำบ้านที่เปิดฟังได้
+    ในหน้าทำการ์ด เพลงนี้คนแต่งเอง และเวอร์ชันที่มีเสียงร้องก็คนร้องเอง
   </div>
 </div></section>
 
@@ -520,18 +635,60 @@ footer a{color:rgb(var(--green));font-weight:600}
 </div><!-- /#doc -->
 
 <script defer src="../assets/quest.js"></script>
+<!-- อภิธานศัพท์ — ใส่เฉพาะโซนท้ายเกม (หน้านี้ · บทที่ 7 · บทส่งท้ายตอนพิเศษ) -->
+<script defer src="../assets/terms.js"></script>
 <script>
 /* หน้านี้เปิดให้คนที่อ่านการ์ตูนจบครบทุกตอน
    เป็นการล็อกฝั่งเบราว์เซอร์ — กันคนที่ยังไม่ได้อ่านไม่ให้เจอสปอยล์
    ไม่ใช่ระบบความปลอดภัย ใครเปิดซอร์สดูก็เห็นได้ ซึ่งไม่เป็นไร */
 document.addEventListener('DOMContentLoaded',function(){
-  var open=false;
-  try{ open = localStorage.getItem('mc_forge_done')==='1'; }catch(e){}
-  if(open){
+  function ls(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+  function has(t){
+    try{ var a=JSON.parse(ls('mc_titles','[]')); return Array.isArray(a)&&a.indexOf(t)>=0; }
+    catch(e){ return false; }
+  }
+  function unlock(){
     document.getElementById('lock').hidden=true;
     document.getElementById('doc').style.visibility='visible';
     document.title='Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover';
   }
+  if(ls('mc_forge_done','')==='1' || has('BLACKSMITH')){ unlock(); return; }
+
+  /* กู้สิทธิ์ด้วยรหัสท้ายเล่ม — เก็บเป็นแฮชเพราะไฟล์นี้เปิดซอร์สดูได้
+     ไม่ได้กันคนตั้งใจงัด แค่ไม่ให้รหัสลอยอยู่กลางหน้าให้เห็นก่อนถึงเวลา */
+  var SHA='8eae6c54657e94be77a206e430054386a7391f99e2cea017b16d90661037a1ee', DJB='837210823';
+  function djb2(s){ var h=5381; for(var i=0;i<s.length;i++){ h=((h*33)+s.charCodeAt(i))>>>0; } return String(h); }
+  function sha256(s){
+    if(!(window.crypto&&crypto.subtle&&window.isSecureContext!==false)) return Promise.reject();
+    return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){
+      return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
+    });
+  }
+  var inp=document.getElementById('wcode'), btn=document.getElementById('wbtn'),
+      msg=document.getElementById('wmsg');
+  function grant(){
+    try{
+      var a=JSON.parse(ls('mc_titles','[]'));
+      if(!Array.isArray(a)) a=[];
+      if(a.indexOf('BLACKSMITH')<0){ a.push('BLACKSMITH'); localStorage.setItem('mc_titles',JSON.stringify(a)); }
+      localStorage.setItem('mc_forge_done','1');
+    }catch(e){}
+    msg.className='rcmsg ok';
+    msg.textContent='⚒️ ถูกต้อง — เปิดให้แล้ว';
+    setTimeout(unlock,500);
+  }
+  function tryCode(){
+    var v=inp.value.trim().toLowerCase();
+    if(!v){ msg.className='rcmsg'; msg.textContent=''; return; }
+    sha256(v).then(function(h){ return h===SHA; })
+             .catch(function(){ return djb2(v)===DJB; })
+             .then(function(ok){
+               if(ok) grant();
+               else { msg.className='rcmsg no'; msg.textContent='ยังไม่ใช่รหัสนี้ — รหัสอยู่ท้ายตอนสุดท้ายของการ์ตูน'; }
+             });
+  }
+  btn.addEventListener('click',tryCode);
+  inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); tryCode(); } });
 });
 </script>
 <!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->

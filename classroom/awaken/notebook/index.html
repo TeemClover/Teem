@@ -8,25 +8,26 @@
      เข้าได้จากบทที่เจ็ดเท่านั้น จึงห้ามให้ search engine เก็บ -->
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer-when-downgrade">
-<meta name="theme-color" content="#0A2818">
+<meta name="theme-color" content="#06190E">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:"Anuphan",sans-serif;background:rgb(var(--deep));color:rgb(var(--paper));
-  line-height:1.75;-webkit-font-smoothing:antialiased}
+body{font-family:"Anuphan",sans-serif;background:#06190E;color:rgb(var(--paper));
+  line-height:1.9;-webkit-font-smoothing:antialiased}
 .disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
-.mono{font-family:"Bai Jamjuree",monospace;letter-spacing:.09em}
+.mono{font-family:"Bai Jamjuree",monospace;letter-spacing:.1em}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;height:auto;display:block}
 [hidden]{display:none!important}
 .wrap{max-width:760px;margin:0 auto;padding:0 20px}
+.read{max-width:640px;margin:0 auto;padding:0 22px}
 :focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
 
 /* ── แถบบน ── */
-.bar{position:sticky;top:0;z-index:60;background:rgb(6 26 15/.94);backdrop-filter:blur(8px);
+.bar{position:sticky;top:0;z-index:60;background:rgb(6 25 14/.94);backdrop-filter:blur(8px);
   border-bottom:1px solid rgb(190 148 66/.24)}
 .bar .wrap{display:flex;align-items:center;gap:12px;min-height:56px}
 .bar .back{font-family:"Bai Jamjuree";font-weight:700;font-size:14px;min-height:44px;
@@ -36,59 +37,67 @@ img{max-width:100%;height:auto;display:block}
 .bar .ttl b{display:block;font-family:"Bai Jamjuree";font-size:13.5px;color:rgb(var(--gold))}
 
 /* ── ปกสมุด ── */
-.cover{padding:56px 0 34px;text-align:center}
+.cover{padding:52px 0 30px;text-align:center}
 .nbk{display:inline-block;background:#C9BFA4;color:#2A2418;border-radius:4px 12px 12px 4px;
-  padding:30px 40px 34px;box-shadow:0 34px 60px -28px rgb(0 0 0/.8),inset 3px 0 0 rgb(0 0 0/.16);
-  border:1px solid rgb(0 0 0/.2);max-width:340px;transform:rotate(-1.4deg);position:relative}
+  padding:28px 38px 32px;box-shadow:0 34px 60px -28px rgb(0 0 0/.8),inset 3px 0 0 rgb(0 0 0/.16);
+  border:1px solid rgb(0 0 0/.2);max-width:330px;transform:rotate(-1.4deg);position:relative}
 .nbk::before{content:"";position:absolute;left:12px;top:0;bottom:0;width:1px;background:rgb(180 60 60/.35)}
 .nbk .lbl{font-size:11.5px;letter-spacing:.18em;color:rgb(42 36 24/.55);font-family:"Bai Jamjuree";font-weight:700}
-.nbk .who{font-family:"Bai Jamjuree";font-weight:700;font-size:31px;margin-top:10px;line-height:1.2}
+.nbk .who{font-family:"Bai Jamjuree";font-weight:700;font-size:30px;margin-top:10px;line-height:1.2}
 .nbk .sub{font-size:13px;color:rgb(42 36 24/.62);margin-top:6px}
-.cover h1{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(24px,6vw,34px);margin-top:30px}
+.cover h1{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(23px,6vw,32px);margin-top:28px}
 .cover .flav{font-size:14.5px;color:rgb(255 255 255/.62);margin-top:10px;max-width:44ch;
   margin-left:auto;margin-right:auto}
 
 /* ── ตัวนับหน้าที่อ่านได้ ── */
-.meter{max-width:760px;margin:26px auto 0;padding:0 20px}
+.meter{max-width:760px;margin:22px auto 0;padding:0 20px}
 .meter .row{display:flex;align-items:center;gap:12px;font-family:"Bai Jamjuree";font-weight:700;
   font-size:12.5px;letter-spacing:.08em;color:rgb(var(--gold))}
 .meter .track{flex:1;height:5px;border-radius:99px;background:rgb(255 255 255/.12);overflow:hidden}
-.meter .track i{display:block;height:100%;background:rgb(var(--gold));width:11%;
+.meter .track i{display:block;height:100%;background:rgb(var(--gold));width:10%;
   transition:width .9s cubic-bezier(.22,1,.36,1)}
 
 /* ── ช่องการ์ตูน ── */
-.pages{margin-top:26px}
-.panel{background:rgb(4 20 12);position:relative;margin:0 auto;max-width:760px}
+.pages{margin-top:22px}
+.panel{background:rgb(4 20 12);margin:0 auto;max-width:760px;position:relative}
 .panel img{width:100%}
-.panel + .panel{margin-top:0}
 /* ยังไม่มีไฟล์ภาพ — โชว์กรอบรอไว้ ไม่ปล่อยให้เห็นรูปแตก */
-.panel.wait{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+.panel.wait{aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;
   border:1px dashed rgb(190 148 66/.34);border-radius:10px;margin-bottom:10px}
-.panel.wait img{display:none}
+.panel.wait picture{display:none}
 .panel.wait::after{content:attr(data-wait);font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
   letter-spacing:.08em;color:rgb(190 148 66/.62);text-align:center;padding:0 18px;white-space:pre-line}
 .scroll-anchor{scroll-margin-top:74px}
 
 /* ── หน้าที่เสียหาย + กล่องสกิล ── */
-.tornwrap{margin-top:14px;transition:opacity .9s ease,transform .9s cubic-bezier(.22,1,.36,1)}
-.tornwrap.fade{opacity:0;transform:scale(.985);pointer-events:none}
-.skill{margin:18px auto 0;max-width:560px;background:rgb(255 255 255/.05);
+.tornwrap{margin-top:12px;transition:opacity .9s ease,filter .9s ease}
+.tornwrap.mending{filter:drop-shadow(0 0 22px rgb(190 148 66/.55))}
+.tornwrap.fade{opacity:0;pointer-events:none}
+/* เส้นทองวิ่งตามรอยฉีกตอนกำลังซ่อม */
+.seam{position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:linear-gradient(103deg,transparent 44%,rgb(255 236 180/.9) 50%,transparent 56%);
+  mix-blend-mode:screen}
+.tornwrap.mending .seam{animation:seamRun 1.1s ease-in-out}
+@keyframes seamRun{0%{opacity:0;transform:translateY(-18%)}
+  30%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateY(18%)}}
+
+.gate{margin:18px auto 0;max-width:560px;background:rgb(255 255 255/.05);
   border:1px solid rgb(190 148 66/.4);border-radius:16px;padding:22px 22px 24px;text-align:center}
-.skill .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.16em;
+.gate .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.16em;
   color:rgb(var(--gold));display:block}
-.skill h2{font-family:"Bai Jamjuree";font-weight:700;font-size:20px;margin-top:8px}
-.skill p{font-size:14px;color:rgb(255 255 255/.68);margin-top:8px}
-.skill .why{font-size:13px;color:rgb(255 255 255/.5);margin-top:12px;font-style:italic}
+.gate h2{font-family:"Bai Jamjuree";font-weight:700;font-size:20px;margin-top:8px}
+.gate p{font-size:14.5px;color:rgb(255 255 255/.7);margin-top:9px;line-height:1.85}
+.gate .why{font-size:13.5px;color:rgb(255 255 255/.5);margin-top:12px;font-style:italic}
 .rbtn{margin-top:18px;display:inline-flex;align-items:center;gap:9px;background:rgb(var(--gold));
   color:rgb(var(--deep));font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
   border:0;border-radius:12px;padding:14px 26px;cursor:pointer;min-height:48px;
   box-shadow:0 18px 34px -18px rgb(190 148 66/.9);transition:transform .25s,box-shadow .25s}
-.rbtn:hover{transform:translateY(-2px);box-shadow:0 24px 40px -18px rgb(190 148 66/.95)}
-.rbtn:active{transform:translateY(0)}
-.rbtn .e{font-size:18px}
-.rbtn[disabled]{opacity:.6;cursor:default;transform:none}
-.locked-note{font-size:13.5px;color:rgb(255 255 255/.56);margin-top:10px}
-.locked-note a{color:rgb(var(--gold));font-weight:600;text-decoration:underline}
+.rbtn:hover{transform:translateY(-2px)}
+.rbtn[disabled]{opacity:.55;cursor:default;transform:none}
+.gate .go{display:inline-block;margin-top:16px;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:14.5px;border:1px solid rgb(255 255 255/.28);border-radius:11px;padding:12px 20px;
+  min-height:44px;color:rgb(255 255 255/.85)}
+.gate .go:hover{border-color:rgb(var(--gold));color:rgb(var(--gold))}
 
 /* ── ผลลัพธ์หลังซ่อม ── */
 .done{max-width:560px;margin:22px auto 0;text-align:center;border:1px solid rgb(27 106 66/.6);
@@ -96,39 +105,111 @@ img{max-width:100%;height:auto;display:block}
 .done .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.16em;color:rgb(var(--gold))}
 .done .cnt{font-family:"Bai Jamjuree";font-weight:700;font-size:17px;margin-top:6px}
 .done blockquote{font-size:14px;color:rgb(255 255 255/.72);margin-top:12px;line-height:1.8}
-.replay{margin-top:14px;background:none;border:1px solid rgb(255 255 255/.24);color:rgb(255 255 255/.7);
-  font-family:"Bai Jamjuree";font-weight:600;font-size:12.5px;border-radius:10px;padding:9px 16px;
-  cursor:pointer;min-height:40px}
-.replay:hover{border-color:rgb(var(--gold));color:rgb(var(--gold))}
 
-/* ── ป้ายจบตอนลับ ── */
-.ending{max-width:620px;margin:40px auto 0;text-align:center;padding:34px 22px 36px;
-  border-radius:20px;background:linear-gradient(180deg,rgb(190 148 66/.16),rgb(190 148 66/.03));
-  border:1px solid rgb(190 148 66/.45)}
-.ending .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.2em;color:rgb(var(--gold))}
-.ending h2{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(30px,8vw,44px);margin-top:10px}
-.ending .sub{font-size:15px;color:rgb(255 255 255/.76);margin-top:8px}
-.ending ul{list-style:none;margin:20px auto 0;max-width:360px;text-align:left;font-size:14px}
-.ending li{padding:7px 0 7px 26px;position:relative;color:rgb(255 255 255/.8)}
-.ending li::before{content:"✓";position:absolute;left:0;color:rgb(var(--gold));font-weight:700}
-.ending .rate{font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.14em;
-  color:rgb(var(--gold));margin-top:20px}
-.ending .rate small{display:block;font-family:"Anuphan";font-weight:400;letter-spacing:0;
-  font-size:11.5px;color:rgb(255 255 255/.42);margin-top:4px}
-.whisper{max-width:520px;margin:26px auto 0;text-align:center;font-size:14px;line-height:1.85;
-  color:rgb(255 255 255/.58);font-style:italic}
+/* ── บทส่งท้าย ── */
+.after{padding:52px 0 0}
+.after h2{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(21px,5.4vw,27px);
+  line-height:1.4;margin-top:46px}
+.after h2:first-of-type{margin-top:0}
+.after p{margin-top:17px;font-size:16.5px;color:rgb(255 255 255/.82)}
+.after p.tight{margin-top:8px}
+.after strong{color:rgb(var(--paper));font-weight:600}
+.after .beat span{display:block}
+.after .beat{margin-top:18px;line-height:2.15;font-size:16.5px;color:rgb(255 255 255/.86)}
+.endtag{text-align:center;padding:34px 0 6px}
+.endtag .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.2em;color:rgb(var(--gold))}
+.endtag h1{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(30px,8vw,44px);margin-top:10px}
+.hr{margin:40px auto;max-width:180px;border:0;border-top:1px solid rgb(255 255 255/.14)}
+
+.video{margin-top:20px;position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;
+  background:#000;border:1px solid rgb(255 255 255/.14)}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlink{display:inline-block;margin-top:11px;font-size:13.5px;color:rgb(var(--gold));
+  border-bottom:1px solid rgb(190 148 66/.5);min-height:44px;line-height:44px}
+
+/* ── ลูกเต๋า 20 หน้า ── */
+.dice{margin-top:24px;border:1px solid rgb(190 148 66/.45);border-radius:18px;padding:22px;
+  background:linear-gradient(180deg,rgb(190 148 66/.12),rgb(190 148 66/.02));text-align:center}
+.dice .lb{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.2em;color:rgb(var(--gold))}
+.d20{margin:14px auto 0;width:120px;height:120px;position:relative;cursor:pointer;background:none;border:0;padding:0}
+.d20 svg{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 24px rgb(0 0 0/.6))}
+.d20 .num{position:absolute;inset:0;display:grid;place-items:center;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:38px;color:rgb(var(--deep));pointer-events:none}
+.d20.rolling svg{animation:d20spin .55s cubic-bezier(.3,.9,.4,1)}
+@keyframes d20spin{0%{transform:rotate(0) scale(1)}55%{transform:rotate(200deg) scale(1.12)}
+  100%{transform:rotate(360deg) scale(1)}}
+.dice .say{margin-top:12px;font-size:15px;color:rgb(255 255 255/.82);min-height:1.9em}
+.dice .say b{color:rgb(var(--gold))}
+.dice .hint{margin-top:6px;font-size:12.5px;color:rgb(255 255 255/.45)}
+.d20.crit .num{color:#5A3E00}
+
+/* ── รหัสสุดท้าย + ชนหมัด ── */
+.finalbox{margin:44px auto 0;max-width:560px;border:1px solid rgb(190 148 66/.55);border-radius:20px;
+  padding:26px 22px 28px;text-align:center;
+  background:linear-gradient(180deg,rgb(190 148 66/.16),rgb(190 148 66/.03))}
+.finalbox .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.2em;color:rgb(var(--gold))}
+.finalbox code{display:block;font-family:"Bai Jamjuree",monospace;font-weight:700;
+  font-size:clamp(26px,7vw,34px);letter-spacing:.2em;color:rgb(var(--gold));margin-top:10px}
+.finalbox p{margin-top:12px;font-size:14.5px;color:rgb(255 255 255/.75);line-height:1.85}
+.bump{margin-top:20px;background:rgb(255 255 255/.07);border:1.5px solid rgb(190 148 66/.5);
+  border-radius:16px;padding:18px 26px;cursor:pointer;min-height:96px;min-width:200px;
+  display:inline-flex;flex-direction:column;align-items:center;gap:6px;color:#fff;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:15px;transition:border-color .25s,background .25s}
+.bump:hover,.bump:focus-visible{border-color:rgb(var(--gold));background:rgb(190 148 66/.14)}
+.bump .fists{font-size:38px;line-height:1;display:flex;align-items:center}
+.bump .fists .r{margin-left:26px;opacity:0;transform:translateX(16px);
+  transition:opacity .3s,transform .3s}
+.bump:hover .fists .r,.bump:focus-visible .fists .r{opacity:1;transform:translateX(0)}
+.bump.hit .fists .r{opacity:1;transform:translateX(0);margin-left:2px}
+.bump[disabled]{cursor:default}
+
+/* ── ถ้วยแพลตินัม ── */
+.trophy{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;
+  padding:24px;text-align:center;overflow-y:auto;
+  background:radial-gradient(circle at 50% 38%,#1A4A30 0%,#071A0F 72%)}
+.trophy .in{max-width:460px;width:100%;padding:20px 0}
+.trophy .site{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.24em;
+  color:rgb(255 255 255/.6)}
+.trophy .plat{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(13px,3.6vw,15px);
+  letter-spacing:.26em;margin-top:10px;
+  background:linear-gradient(100deg,#9FB3AE,#F2F6F4 35%,#C8D6D1 55%,#F2F6F4 78%,#9FB3AE);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.trophy .wp{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(30px,9vw,44px);
+  letter-spacing:.05em;margin-top:4px;
+  background:linear-gradient(100deg,#BE9442,#F6E7B8 40%,#BE9442 70%,#F6E7B8);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.trophy .cvr{margin:18px auto 0;width:132px;height:132px}
+.trophy p{margin-top:16px;font-size:15px;color:rgb(255 255 255/.82);line-height:1.95}
+.trophy .ft{margin-top:18px;border:1px solid rgb(190 148 66/.5);border-radius:14px;
+  padding:14px;background:rgb(190 148 66/.1)}
+.trophy .ft .lb{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.2em;
+  color:rgb(255 255 255/.55)}
+.trophy .ft b{display:block;font-family:"Bai Jamjuree";font-size:26px;margin-top:5px;color:rgb(var(--gold))}
+.trophy .btn{margin-top:22px;display:inline-flex;align-items:center;justify-content:center;
+  background:rgb(var(--gold));color:rgb(var(--deep));font-family:"Bai Jamjuree";font-weight:700;
+  font-size:15.5px;border:0;border-radius:13px;padding:15px 28px;cursor:pointer;min-height:50px}
+.trophy .close{margin-top:12px;display:block;background:none;border:0;color:rgb(255 255 255/.55);
+  font-family:"Bai Jamjuree";font-weight:600;font-size:13.5px;cursor:pointer;min-height:44px;width:100%}
+.trophy .in{animation:tIn .8s cubic-bezier(.22,1,.36,1)}
+@keyframes tIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.trophy .cvr .sheen{animation:sheen 3.4s ease-in-out infinite}
+@keyframes sheen{0%,100%{opacity:.25}50%{opacity:.7}}
 
 footer{text-align:center;color:rgb(255 255 255/.45);font-size:12.5px;padding:44px 0 56px;margin-top:38px;
   border-top:1px solid rgb(255 255 255/.1)}
 footer a{color:rgb(var(--gold));font-weight:600}
 footer .exits{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+#endSentinel{height:1px}
 
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .tornwrap,.tornwrap.fade{transition:none}
+  .tornwrap,.tornwrap.fade,.tornwrap.mending{transition:none;filter:none}
+  .tornwrap.mending .seam{animation:none}
   .meter .track i{transition:none}
   .rbtn:hover{transform:none}
-  .nbk{transform:none}
+  .d20.rolling svg{animation:none}
+  .bump .fists .r{transition:none}
+  .trophy .in,.trophy .cvr .sheen{animation:none}
 }
 </style>
 </head>
@@ -147,101 +228,66 @@ footer .exits{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;ma
     <div class="sub">เจอในกล่องเก่าที่บ้าน</div>
   </div>
   <h1 class="disp">คุณเปิดสมุดเล่มนี้</h1>
-  <p class="flav">เล่มนี้ไม่มีในสารบัญ ไม่นับรวมสิบสองตอน และไม่มีตราหรือรหัสอะไรให้เก็บ<br>สิ่งที่ได้คือเรื่องที่อยู่ข้างใน</p>
+  <p class="flav">เล่มนี้ไม่มีในสารบัญ ไม่นับรวมสิบสองตอน<br>สิ่งที่ได้คือเรื่องที่อยู่ข้างใน</p>
 </div></section>
 
 <!-- ═══════════ ตัวนับหน้าที่อ่านได้ ═══════════ -->
 <div class="meter">
   <div class="row">
-    <span class="mono" id="pgCount">Pages readable: 1 / 9</span>
+    <span class="mono" id="pgCount">Pages readable: 1 / 10</span>
     <span class="track"><i id="pgBar"></i></span>
   </div>
 </div>
 
-<!-- ═══════════ ช่องที่ 1 — อ่านได้เสมอ ═══════════ -->
+<!-- ═══════════ หน้าที่ 1 — อ่านได้เสมอ ═══════════ -->
 <div class="pages wrap">
-  <figure class="panel" data-wait="ช่องที่ 1&#10;รอไฟล์ img/nb-01.jpg">
-    <img src="img/nb-01.jpg" alt="ช่องที่ 1 ของตอนพิเศษในสมุดของ ด.ช.นรินทร์"
-         decoding="async" onerror="this.parentNode.classList.add('wait')">
+  <figure class="panel" data-wait="หน้าที่ 1&#10;รอไฟล์ img/nb-01.jpg">
+    <picture>
+      <source type="image/webp" srcset="img/nb-01.webp">
+      <img src="img/nb-01.jpg" width="1024" height="1819" decoding="async"
+           alt="หน้าแรกของสมุด — ด.ช.นรินทร์ อายุ 9 ขวบ เขียนเกมลงในสมุดเรียนให้เพื่อนในห้องเล่น"
+           onerror="this.closest('.panel').classList.add('wait')">
+    </picture>
   </figure>
 </div>
 
-<!-- ═══════════ หน้าที่เสียหาย — ปิดช่อง 2–9 ไว้ ═══════════ -->
+<!-- ═══════════ หน้าที่เสียหาย — ปิดหน้า 2–10 ไว้ ═══════════ -->
 <div class="wrap">
   <div class="tornwrap" id="tornWrap">
-    <figure class="panel" data-wait="หน้าสมุดที่เสียหาย&#10;รอไฟล์ img/nb-torn.jpg">
-      <img src="img/nb-torn.jpg" alt="หน้าสมุดที่ซีดจางและขาดจนอ่านไม่ออก"
-           loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
+    <figure class="panel" data-wait="หน้าสมุดที่เสียหาย&#10;รอไฟล์ img/nb-02s.jpg">
+      <picture>
+        <source type="image/webp" srcset="img/nb-02s.webp">
+        <img src="img/nb-02s.jpg" width="1024" height="1536" loading="lazy" decoding="async"
+             alt="หน้าสมุดที่ซีดจางและขาดจนอ่านไม่ออก"
+             onerror="this.closest('.panel').classList.add('wait')">
+      </picture>
+      <span class="seam" aria-hidden="true"></span>
     </figure>
 
     <!-- สถานะ A — ยังไม่จบโรงตีเหล็ก · ห้ามสปอยล์อะไรทั้งนั้น -->
-    <div class="skill" id="stateA">
-      <span class="tag mono">PAGES DAMAGED</span>
-      <h2 class="disp">หน้าที่เหลืออ่านไม่ออกแล้ว</h2>
-      <p>กระดาษซีดจนตัวหนังสือหาย เวลาทำงานของมันมาก่อนคุณหลายปี</p>
-      <p class="locked-note">ตอนนี้คุณยังไม่มีวิธีซ่อมมัน —
-        คนที่<a href="../../../forge/">อ่านเรื่องเล่าจากโรงตีเหล็กจนจบ</a>จะรู้ว่าต้องทำยังไงกับของเก่าที่ยังมีค่า</p>
+    <div class="gate" id="stateA">
+      <span class="tag mono">OLD ITEM CONDITION · DAMAGED</span>
+      <h2 class="disp">หน้าถัดไปเสียหายหนัก</h2>
+      <p>หมึกส่วนใหญ่เลือนจนอ่านไม่ออก</p>
+      <p class="why">ช่างที่ผ่านโรงตีเหล็ก อาจมี Skill ที่ใช้ซ่อมของเก่าได้</p>
+      <a class="go disp" href="../../../forge/">กลับไปยัง The Forge</a>
     </div>
 
-    <!-- สถานะ B — มี BLACKSMITH แล้ว แต่ต้องกดซ่อมเอง ไม่เปิดให้อัตโนมัติ -->
-    <div class="skill" id="stateB" hidden>
-      <span class="tag mono">SKILL AVAILABLE: RESTORE</span>
+    <!-- สถานะ B — มีสกิลแล้ว แต่ต้องกดใช้เอง ไม่เปิดให้อัตโนมัติ -->
+    <div class="gate" id="stateB" hidden>
+      <span class="tag mono">SKILL AVAILABLE · RESTORE</span>
       <h2 class="disp">ซ่อมแซมสิ่งที่เวลาเคยทำให้เลือนหาย</h2>
       <p>คุณผ่านโรงตีเหล็กมาแล้ว — สกิลนี้เป็นของคุณ</p>
       <p class="why">สมุดหลังซ่อมยังต้องดูเก่า สกิลทำให้มันอ่านได้ ไม่ได้ลบร่องรอยของอดีต</p>
-      <button type="button" class="rbtn disp" id="restoreBtn"><span class="e" aria-hidden="true">🔨</span>ซ่อมสมุด</button>
+      <button type="button" class="rbtn disp" id="restoreBtn">
+        <span aria-hidden="true">🔨</span>USE SKILL — ซ่อมสมุด</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════ ช่อง 2–9 — โผล่ตรงนี้หลังใช้ RESTORE ═══════════ -->
-<div class="pages wrap" id="restored" hidden>
-  <figure class="panel scroll-anchor" id="panel2" tabindex="-1" data-wait="ช่องที่ 2&#10;รอไฟล์ img/nb-02.jpg">
-    <img src="img/nb-02.jpg" alt="ช่องที่ 2 ของตอนพิเศษ" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
-  </figure>
-  <figure class="panel" data-wait="ช่องที่ 3&#10;รอไฟล์ img/nb-03.jpg">
-    <img src="img/nb-03.jpg" alt="ช่องที่ 3 ของตอนพิเศษ" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
-  </figure>
-  <figure class="panel" data-wait="ช่องที่ 4&#10;รอไฟล์ img/nb-04.jpg">
-    <img src="img/nb-04.jpg" alt="ช่องที่ 4 ของตอนพิเศษ" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
-  </figure>
-  <figure class="panel" data-wait="ช่องที่ 5&#10;รอไฟล์ img/nb-05.jpg">
-    <img src="img/nb-05.jpg" alt="ช่องที่ 5 ของตอนพิเศษ" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
-  </figure>
-  <figure class="panel" data-wait="ช่องที่ 6&#10;รอไฟล์ img/nb-06.jpg">
-    <img src="img/nb-06.jpg" alt="ช่องที่ 6 ของตอนพิเศษ" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
-  </figure>
-  <figure class="panel" data-wait="ช่องที่ 7&#10;รอไฟล์ img/nb-07.jpg">
-    <img src="img/nb-07.jpg" alt="ช่องที่ 7 ของตอนพิเศษ" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
-  </figure>
-  <figure class="panel" data-wait="ช่องที่ 8&#10;รอไฟล์ img/nb-08.jpg">
-    <img src="img/nb-08.jpg" alt="ช่องที่ 8 ของตอนพิเศษ" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
-  </figure>
-  <figure class="panel" data-wait="ช่องที่ 9&#10;รอไฟล์ img/nb-09.jpg">
-    <img src="img/nb-09.jpg" alt="ช่องที่ 9 ของตอนพิเศษ" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('wait')">
-  </figure>
-
-  <div class="done">
-    <span class="tag mono">RESTORATION COMPLETE</span>
-    <div class="cnt mono">Pages readable: 9 / 9</div>
-    <blockquote>“ของเก่าไม่จำเป็นต้องกลับมาใหม่<br>แค่ซ่อมจนเรื่องของมันถูกอ่านได้อีกครั้ง”</blockquote>
-    <button type="button" class="replay disp" id="replayBtn">ดูจังหวะซ่อมอีกครั้ง</button>
-  </div>
-
-  <div class="ending">
-    <span class="tag mono">SECRET ENDING FOUND</span>
-    <h2 class="disp">เพื่อนเล่น</h2>
-    <p class="sub">“เกมคือภาษาที่ผมใช้คุยกับคนอื่น”</p>
-    <ul>
-      <li>คุณสังเกตเห็นสมุดเล่มนี้</li>
-      <li>คุณเคลียร์เรื่องเล่าจากโรงตีเหล็กจนจบ</li>
-      <li>และคุณเลือกใช้ RESTORE ด้วยตัวเอง</li>
-    </ul>
-    <p class="rate mono">SECRET PATH: &lt;1%<span><small>ตัวเลขนี้เป็นบรรยากาศของเกม ยังไม่ใช่สถิติจริง</small></span></p>
-  </div>
-
-  <p class="whisper">“อย่าเพิ่งบอกใครล่ะ<br>ปล่อยให้เพื่อนของคุณได้พบสมุดเล่มนี้ด้วยตัวเอง”</p>
-</div>
+<!-- หน้า 2–10 กับบทส่งท้ายไม่อยู่ใน DOM จนกว่าจะซ่อมสำเร็จ
+     สคริปต์จะสร้างขึ้นตรงนี้ — ไม่ได้ซ่อนด้วย CSS เพราะแบบนั้นเปิดดูซอร์สก็เห็นหมด -->
+<div id="restored" aria-live="polite"></div>
 
 <footer><div class="wrap">
   <div class="exits">
@@ -253,100 +299,241 @@ footer .exits{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;ma
   <p>myclover.com · หน้านี้ไม่อยู่ในสารบัญ</p>
 </div></footer>
 
+<script src="../../../assets/quest.js" defer></script>
+<script src="../../../assets/terms.js" defer></script>
 <script>
 /* ═══════════════════════════════════════════════════════
-   สมุดเล่มเก่า — ระบบสถานะสามขั้น
+   สมุดเล่มเก่า — ตอนพิเศษลับ
 
-   A  ยังไม่จบโรงตีเหล็ก   → อ่านได้ช่องเดียว ห้ามสปอยล์
-   B  จบแล้ว (BLACKSMITH)  → ขึ้น SKILL AVAILABLE: RESTORE แต่ต้องกดเอง
-   C  กดซ่อมแล้ว           → ช่อง 2–9 โผล่ในหน้าเดิม จำไว้ ไม่ต้องซ่อมซ้ำ
+   ผูกกับสถานะเดิมของเว็บ ไม่สร้างระบบใหม่ซ้อน
+     forgeComplete        → mc_forge_done / ตรา BLACKSMITH (ชื่อเดิม FORGE ก็รับ)
+     notebookDiscovered   → mc_nb_seen
+     notebookRestored     → mc_nb_restored
+     secretEndingCompleted→ mc_secret_end
+     แท็กจบเกม            → ชื่อแท็กอยู่ในไฟล์เนื้อหา ให้ผ่าน MC_QUEST.grant ตัวเดิม
 
-   ตอนพิเศษนี้ไม่แจกตรา ไม่แจกรหัส และไม่แตะ mc_read ของสิบสองตอนหลัก
+   หน้า 2–10 กับบทส่งท้ายไม่อยู่ใน DOM จนกว่าจะซ่อมสำเร็จ
    ═══════════════════════════════════════════════════════ */
 (function(){
-  var KEY='mc_nb_restored';
-  var torn=document.getElementById('tornWrap'),
-      A=document.getElementById('stateA'), B=document.getElementById('stateB'),
-      rest=document.getElementById('restored'),
-      btn=document.getElementById('restoreBtn'),
-      replay=document.getElementById('replayBtn'),
-      cnt=document.getElementById('pgCount'), bar=document.getElementById('pgBar');
+'use strict';
+var K_REST='mc_nb_restored', K_SEEN='mc_nb_seen', K_END='mc_secret_end';
+/* ชื่อแท็กกับรหัสสุดท้ายอยู่ในไฟล์เนื้อหา ไม่ใช่ในหน้านี้
+   คนที่ยังไม่ซ่อมสมุดเปิดซอร์สหน้านี้แล้วจะไม่เจอว่ามีอะไรรออยู่ */
+function TAG(){ return (window.MC_PLAYMATE||{}).tag; }
 
-  function get(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
-  function put(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function ls(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+function save(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+function reduced(){ return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+/* ใช้ชั้น analytics เดิมของเว็บ ไม่เพิ่มเจ้าใหม่ */
+function ev(n){ try{ if(typeof gtag==='function') gtag('event',n); }catch(e){} }
 
-  /* ผ่านโรงตีเหล็ก = ได้สกิล RESTORE
-     ยอมรับได้ทั้งชื่อตราเดิมและชื่อใหม่ ตอนเปลี่ยนชื่อจะได้ไม่มีใครเสียสิทธิ์ */
-  function hasBlacksmith(){
-    if(get('mc_forge_done','')==='1') return true;
-    try{
-      var t=JSON.parse(get('mc_titles','[]'));
-      return Array.isArray(t) && (t.indexOf('BLACKSMITH')>=0 || t.indexOf('FORGE')>=0);
-    }catch(e){ return false; }
+function titles(){
+  try{ var a=JSON.parse(ls('mc_titles','[]')); return Array.isArray(a)?a:[]; }catch(e){ return []; }
+}
+function hasForge(){
+  if(ls('mc_forge_done','')==='1') return true;
+  var t=titles();
+  return t.indexOf('BLACKSMITH')>=0 || t.indexOf('FORGE')>=0;
+}
+function grantTag(){
+  var tag=TAG();
+  if(!tag) return;
+  if(window.MC_QUEST && window.MC_QUEST.grant) window.MC_QUEST.grant(tag);
+  else{
+    var t=titles();
+    if(t.indexOf(tag)<0){ t.push(tag); save('mc_titles',JSON.stringify(t)); }
   }
-  function reduced(){
-    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }
-  function meter(n){
-    cnt.textContent='Pages readable: '+n+' / 9';
-    bar.style.width=Math.round(n/9*100)+'%';
-  }
+}
 
-  /* เปิดช่อง 2–9 ในหน้าเดิม ไม่โหลดใหม่
-     anim=true คือเพิ่งกดซ่อม · false คือกลับมาอ่านรอบสอง */
-  function reveal(anim){
-    function show(){
-      torn.hidden=true;
-      rest.hidden=false;
-      meter(9);
-      if(anim){
-        var p2=document.getElementById('panel2');
+var torn=document.getElementById('tornWrap'), A=document.getElementById('stateA'),
+    B=document.getElementById('stateB'), btn=document.getElementById('restoreBtn'),
+    host=document.getElementById('restored'),
+    cnt=document.getElementById('pgCount'), bar=document.getElementById('pgBar');
+
+function meter(n){
+  cnt.textContent='Pages readable: '+n+' / 10';
+  bar.style.width=Math.round(n/10*100)+'%';
+}
+
+/* โหลดเนื้อหาหลังซ่อมจากไฟล์แยก — คนที่ยังไม่ซ่อมเปิดซอร์สหน้านี้แล้วต้องไม่เจออะไร */
+var loading=null;
+function loadStory(){
+  if(window.MC_PLAYMATE) return Promise.resolve();
+  if(loading) return loading;
+  loading=new Promise(function(res,rej){
+    var el=document.createElement('script');
+    el.src='../../../assets/playmate.js';
+    el.onload=res;
+    el.onerror=function(){ loading=null; rej(new Error('load failed')); };
+    document.head.appendChild(el);
+  });
+  return loading;
+}
+
+/* ═══════════ เปิดหน้า 2–10 ═══════════ */
+var wired=false;
+function reveal(anim){
+  /* เริ่มแอนิเมชันซ่อมทันทีที่กด ไม่ต้องรอไฟล์เนื้อหาโหลดเสร็จก่อน
+     แล้วค่อยโชว์ตอนที่ทั้งสองอย่างพร้อม จะได้ไม่มีจังหวะค้าง */
+  var minWait = (anim && !reduced()) ? 1700 : 0;
+  if(anim && !reduced()){
+    torn.classList.add('mending');
+    setTimeout(function(){ torn.classList.add('fade'); },900);
+  }
+  var t0=Date.now();
+  loadStory().then(function(){
+    setTimeout(show, Math.max(0, minWait-(Date.now()-t0)));
+  }).catch(fail);
+
+  function show(){
+    torn.hidden=true;
+    host.innerHTML=window.MC_PLAYMATE.pages();
+    meter(10);
+    wire();
+    if(anim){
+      var p2=document.getElementById('panel2');
+      if(p2){
         p2.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'start'});
         p2.focus({preventScroll:true});
       }
     }
-    if(anim && !reduced()){
-      torn.classList.add('fade');
-      setTimeout(show,900);
-    } else {
-      show();
+  }
+  function fail(){
+    /* โหลดไม่ได้ก็ต้องบอกตรง ๆ ไม่ใช่ปล่อยให้หน้าค้างเปล่า ๆ */
+    torn.classList.remove('mending','fade');
+    host.innerHTML='<div class="wrap"><div class="gate"><span class="tag mono">CONNECTION ERROR</span>'+
+      '<h2 class="disp">โหลดหน้าที่ซ่อมแล้วไม่สำเร็จ</h2>'+
+      '<p>ลองรีเฟรชอีกครั้ง — สถานะการซ่อมของคุณถูกบันทึกไว้แล้ว ไม่ต้องซ่อมใหม่</p></div></div>';
+  }
+}
+
+/* ═══════════ ท้ายบท → รหัส → ชนหมัด → ถ้วย ═══════════ */
+function wire(){
+  if(wired) return; wired=true;
+
+  /* ลูกเต๋า 20 หน้า — ทอยเล่น ๆ ไม่เก็บผล */
+  var d=document.getElementById('d20'), dn=document.getElementById('d20num'),
+      ds=document.getElementById('d20say');
+  if(d){
+    dn.textContent='20';
+    d.addEventListener('click',function(){
+      var n;
+      try{
+        var a=new Uint32Array(1); crypto.getRandomValues(a);
+        n=(a[0]%20)+1;
+      }catch(e){ n=Math.floor(Math.random()*20)+1; }
+      if(!reduced()){
+        d.classList.remove('rolling'); void d.offsetWidth; d.classList.add('rolling');
+      }
+      setTimeout(function(){
+        dn.textContent=String(n);
+        d.classList.toggle('crit',n===20);
+        ds.innerHTML = n===20 ? 'ทอยได้ <b>20</b> — Critical Success 🍀'
+                     : n===1  ? 'ทอยได้ <b>1</b> — รอบนี้พลาด ทอยใหม่ได้'
+                     : n>=17  ? 'ทอยได้ <b>'+n+'</b> — พอผ่านเควสต์แล้ว จะหยุดตรงนี้ก็ได้'
+                              : 'ทอยได้ <b>'+n+'</b> — ยังไม่พอก็ทอยต่อ หรือแก้เฉพาะจุดที่ยังไม่เข้าที่';
+      }, reduced()?0:420);
+    });
+  }
+
+  var fb=document.getElementById('finalBox');
+  function showFinal(){
+    if(!fb || !fb.hidden) return;
+    fb.hidden=false;
+    if(ls(K_END,'')!=='1'){ save(K_END,'1'); ev('playmate_afterword_completed'); }
+    ev('playmate_code_revealed');
+  }
+  if(ls(K_END,'')==='1') showFinal();
+  else {
+    var s=document.getElementById('endSentinel');
+    if(s && 'IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting) showFinal(); });
+      },{threshold:0}).observe(s);
+    } else if(s){
+      window.addEventListener('scroll',function(){
+        if(s.getBoundingClientRect().top < window.innerHeight) showFinal();
+      },{passive:true});
     }
   }
 
-  if(get(KEY,'')==='1'){
-    reveal(false);                      /* ซ่อมไปแล้ว กลับมาอ่านได้เลย */
-  } else {
-    meter(1);
-    if(hasBlacksmith()){ A.hidden=true; B.hidden=false; }
+  var bump=document.getElementById('bumpBtn'), btx=document.getElementById('bumpTx');
+  if(bump){
+    if(TAG() && titles().indexOf(TAG())>=0) bumped(true);
+    bump.addEventListener('click',function(){
+      if(bump.disabled) return;
+      bump.disabled=true;
+      ev('playmate_fist_bump_clicked');
+      grantTag();
+      bumped(false);
+      openTrophy();
+    });
   }
+  function bumped(quiet){
+    bump.classList.add('hit');
+    bump.disabled=true;
+    btx.textContent='WELL PLAYED';
+    if(!quiet) ev('playmate_platinum_unlocked');
+  }
+}
 
-  if(btn) btn.addEventListener('click',function(){
-    btn.disabled=true;
-    put(KEY,'1');
-    reveal(true);
-  });
+/* ═══════════ ถ้วย ═══════════ */
+var tp=null, lastFocus=null;
+function openTrophy(){
+  lastFocus=document.activeElement;
+  tp=document.createElement('div');
+  tp.className='trophy';
+  tp.innerHTML=window.MC_PLAYMATE.trophy();
+  document.body.appendChild(tp);
+  document.body.style.overflow='hidden';
+  document.getElementById('tpClose').addEventListener('click',closeTrophy);
+  document.getElementById('tpClose').focus();
+}
+function closeTrophy(){
+  if(!tp) return;
+  tp.remove(); tp=null;
+  document.body.style.overflow='';
+  if(lastFocus && lastFocus.focus) lastFocus.focus();
+}
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape' || !tp) return;
+  e.preventDefault(); closeTrophy();
+});
 
-  /* ดูจังหวะซ่อมซ้ำ — ของเล่นล้วน ๆ ไม่เปลี่ยนสถานะที่บันทึกไว้ */
-  if(replay) replay.addEventListener('click',function(){
-    rest.hidden=true;
-    torn.hidden=false;
-    torn.classList.remove('fade');
-    if(B) { A.hidden=true; B.hidden=false; }
-    if(btn) btn.disabled=false;
-    meter(1);
-    torn.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'center'});
-  });
+/* ═══════════ เริ่มทำงาน ═══════════ */
+if(ls(K_SEEN,'')!=='1'){ save(K_SEEN,'1'); ev('playmate_notebook_opened'); }
 
-  /* กลับบทที่เจ็ดแล้วต้องอยู่ตรงที่เดิมที่เขาจากมา
-     ถ้ามาจากหน้านั้นจริงให้ถอยประวัติ เบราว์เซอร์คืนตำแหน่ง scroll ให้เอง */
-  var back=document.getElementById('back');
-  if(back) back.addEventListener('click',function(e){
-    if(history.length>1 && (document.referrer||'').indexOf('/classroom/awaken')>=0){
-      e.preventDefault();
-      history.back();
-    }
-  });
+if(ls(K_REST,'')==='1'){
+  reveal(false);                       /* ซ่อมไปแล้ว กลับมาอ่านได้เลย */
+} else {
+  meter(1);
+  if(hasForge()){ A.hidden=true; B.hidden=false; }
+  ev('playmate_restore_gate_seen');
+}
+
+if(btn) btn.addEventListener('click',function(){
+  btn.disabled=true;
+  save(K_REST,'1');
+  ev('playmate_restore_used');
+  reveal(true);
+});
+
+/* กลับบทที่เจ็ดแล้วต้องอยู่ตรงที่เดิมที่เขาจากมา */
+var back=document.getElementById('back');
+if(back) back.addEventListener('click',function(e){
+  if(history.length>1 && (document.referrer||'').indexOf('/classroom/awaken')>=0){
+    e.preventDefault(); history.back();
+  }
+});
 })();
+</script>
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้ชั้นเดิมของเว็บ ไม่เพิ่มเจ้าใหม่ -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
 </script>
 </body>
 </html>
