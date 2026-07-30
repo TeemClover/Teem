@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>คลังของสะสม | myclover</title>
+<meta name="description" content="แผนที่ของสิ่งที่คุณเก็บมาได้ระหว่างเดินในบ้านหลังนี้ — ช่องไหนยังมืดอยู่ แปลว่ายังมีอะไรรออยู่ตรงนั้น">
+<meta property="og:type" content="article">
+<meta property="og:title" content="คลังของสะสม | myclover">
+<meta property="og:description" content="แผนที่ของสิ่งที่คุณเก็บมาได้ระหว่างเดินในบ้านหลังนี้ — ช่องไหนยังมืดอยู่ แปลว่ายังมีอะไรรออยู่ตรงนั้น">
+<meta property="og:image" content="https://myclover.com/img/og-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://myclover.com/collection/">
+<meta name="theme-color" content="#0A2818">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;color:#fff;line-height:1.75;-webkit-font-smoothing:antialiased;
+  background:rgb(var(--deep));
+  background-image:radial-gradient(760px 380px at 12% -6%,rgb(27 106 66/.5),transparent 62%),
+                   radial-gradient(620px 340px at 92% 8%,rgb(190 148 66/.16),transparent 64%)}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;height:auto;display:block}
+[hidden]{display:none!important}
+.wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
+
+.bar{position:sticky;top:0;z-index:60;background:rgb(var(--deep));border-bottom:1px solid rgb(190 148 66/.28)}
+.bar .wrap{display:flex;align-items:center;gap:12px;min-height:56px;padding-top:8px;padding-bottom:8px}
+.bar .home{font-family:"Bai Jamjuree";font-weight:700;font-size:15px;white-space:nowrap;
+  min-height:44px;display:inline-flex;align-items:center;padding:0 4px}
+.bar .home em{font-style:normal;color:rgb(var(--gold))}
+.bar .ttl{margin-left:auto;text-align:right;font-size:13px;color:rgb(255 255 255/.72);min-width:0}
+.bar .ttl b{display:block;font-family:"Bai Jamjuree";font-size:14.5px;color:#fff;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.hero{padding:clamp(34px,6vw,58px) 0 8px;text-align:center}
+.hero .emo{font-size:40px;line-height:1}
+.tag{display:inline-block;font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.16em;
+  color:rgb(var(--gold));border:1px solid rgb(190 148 66/.45);border-radius:999px;padding:5px 14px;margin-top:12px}
+.hero h1{font-family:"Bai Jamjuree";font-size:clamp(26px,5.2vw,38px);line-height:1.28;margin-top:14px}
+.hero .lead{color:rgb(255 255 255/.76);font-size:15.5px;max-width:56ch;margin:12px auto 0}
+
+/* แถบนับ — ตัวเลขคือของที่เก็บได้จริง ไม่ใช่หน้าที่เคยเปิด */
+.meter{max-width:420px;margin:26px auto 0}
+.meter .track{height:8px;border-radius:999px;background:rgb(255 255 255/.14);overflow:hidden}
+.meter .track i{display:block;height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .6s ease}
+.meter .num{display:block;margin-top:10px;font-family:"Bai Jamjuree";font-weight:700;font-size:13px;
+  color:rgb(255 255 255/.78);letter-spacing:.02em}
+.meter .num b{color:rgb(var(--gold))}
+
+.sect{padding:30px 0 10px}
+.eyebrow{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.16em;
+  color:rgb(var(--gold));text-transform:uppercase}
+.sect h2{font-family:"Bai Jamjuree";font-size:clamp(19px,3.4vw,24px);margin-top:8px}
+.sect .sub{color:rgb(255 255 255/.7);font-size:14.5px;margin-top:7px;max-width:60ch}
+
+.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:22px}
+@media(max-width:720px){.cgrid{grid-template-columns:1fr}}
+
+/* ช่องเก็บของ — ทั้งปลดแล้วและยังมืด ใช้โครงเดียวกัน จะได้เรียงเป็นตารางเสมอกัน */
+.slot{display:block;width:100%;text-align:left;font:inherit;color:inherit;
+  background:rgb(255 255 255/.04);border:1px solid rgb(255 255 255/.12);border-radius:18px;
+  overflow:hidden;transition:transform .18s,border-color .18s,box-shadow .18s}
+.slot .shot{aspect-ratio:1200/630;background:#071a10;position:relative;display:grid;place-items:center}
+.slot .shot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.slot .body{padding:15px 17px 17px}
+.slot .nm{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:16px;line-height:1.4}
+.slot .hint{display:block;font-size:13.5px;color:rgb(255 255 255/.66);margin-top:5px;line-height:1.6}
+.slot .hint .w{font-style:normal}
+.slot.got .hint .w{color:rgb(var(--green));font-weight:700}
+
+/* ยังมืดอยู่ — บอกว่าต้องทำอะไรถึงจะได้ ช่องว่างคือสิ่งที่ทำให้อยากไล่เก็บ */
+.slot.lock .shot::after{content:"🔒";font-size:30px;opacity:.32;filter:grayscale(1)}
+.slot.lock .shot{background-image:repeating-linear-gradient(135deg,rgb(255 255 255/.03) 0 9px,transparent 9px 18px)}
+.slot.lock .nm{color:rgb(255 255 255/.58)}
+.slot.lock .hint b{color:rgb(var(--gold));font-weight:700}
+
+/* ปลดแล้ว — กดเปิดดูเต็มใบได้ */
+.slot.got{cursor:pointer;border-color:rgb(190 148 66/.45);
+  box-shadow:0 0 0 1px rgb(190 148 66/.14),0 18px 38px -28px rgb(0 0 0/.9)}
+.slot.got:hover{transform:translateY(-4px);border-color:rgb(190 148 66/.85)}
+.slot.got .shot::before{content:"✓";position:absolute;top:10px;right:10px;z-index:2;
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;
+  background:rgb(var(--green));color:#fff;font-size:14px;font-weight:700;
+  box-shadow:0 4px 10px -3px rgb(0 0 0/.7)}
+.slot.got .open{display:inline-block;margin-top:9px;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:13px;color:rgb(var(--gold))}
+
+/* ของลับ — ยังไม่ได้ก็ยังไม่บอกว่าคืออะไร */
+.slot.secret.lock .shot::after{content:"?";font-family:"Bai Jamjuree";font-weight:700;font-size:34px;
+  color:rgb(190 148 66/.4);opacity:1;filter:none}
+.slot.secret.got{border-color:rgb(190 148 66/.7)}
+.slot.secret .shot{background:#0d0b06;
+  background-image:radial-gradient(220px 120px at 50% 50%,rgb(190 148 66/.16),transparent 70%)}
+.slot.secret.got .shot::after{content:attr(data-e);font-size:44px;filter:drop-shadow(0 6px 16px rgb(0 0 0/.7))}
+
+/* กล่องเปิดดูภาพเต็ม */
+.lb{position:fixed;inset:0;z-index:200;background:rgb(4 12 8/.93);
+  display:flex;align-items:center;justify-content:center;padding:18px}
+.lb .in{max-width:960px;width:100%}
+.lb img{width:100%;border-radius:14px;border:1px solid rgb(190 148 66/.4);
+  box-shadow:0 40px 90px -40px rgb(0 0 0/.95)}
+.lb .cap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.lb .cap b{font-family:"Bai Jamjuree";font-size:17px}
+.lb .cap a{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--gold));
+  border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:7px 15px}
+.lb .cap a:hover{background:rgb(190 148 66/.14)}
+.lb .x{margin-left:auto;background:transparent;border:1px solid rgb(255 255 255/.28);color:#fff;
+  font:inherit;font-size:13.5px;border-radius:999px;padding:7px 15px;cursor:pointer;min-height:38px}
+.lb .x:hover{background:rgb(255 255 255/.08)}
+
+.note{background:rgb(255 255 255/.05);border:1px solid rgb(255 255 255/.12);border-radius:16px;
+  padding:18px 20px;margin-top:26px;font-size:14px;color:rgb(255 255 255/.74);line-height:1.75}
+.note b{color:#fff}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:13px 22px;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px;border:1px solid rgb(255 255 255/.24);
+  color:#fff;background:transparent;cursor:pointer;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-2px);background:rgb(255 255 255/.07)}
+.btn.gold{background:rgb(var(--gold));border-color:rgb(var(--gold));color:rgb(var(--deep))}
+
+footer{text-align:center;color:rgb(255 255 255/.55);font-size:12.5px;padding:38px 0 48px}
+footer a{color:rgb(var(--gold));font-weight:600}
+
+@media(prefers-reduced-motion:reduce){
+  .slot,.slot.got:hover,.btn:hover{transition:none;transform:none}
+  .meter .track i{transition:none}
+}
+</style>
+</head>
+<body>
+<nav class="bar"><div class="wrap">
+  <a class="home disp" href="../">🍀 my<em>clover</em></a>
+  <span class="ttl"><b>คลังของสะสม</b>ของที่เก็บมาได้ระหว่างทาง</span>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="emo">📔</div>
+  <span class="tag">COLLECTION</span>
+  <h1 class="disp">สิ่งที่คุณเก็บมาได้ระหว่างทาง</h1>
+  <p class="lead">ทุกช่องในนี้ปลดด้วย “ทำอะไรบางอย่างจนจบ” ไม่ใช่แค่เคยเปิดหน้านั้น
+  ช่องไหนยังมืดอยู่ แปลว่ายังมีของรออยู่ตรงนั้น</p>
+
+  <div class="meter">
+    <div class="track"><i id="mfill"></i></div>
+    <span class="num" id="mnum">เก็บได้ <b>0</b> จาก 11 ช่อง</span>
+  </div>
+</div></header>
+
+<section class="sect"><div class="wrap">
+  <span class="eyebrow">ของสะสมหลัก</span>
+  <h2 class="disp">แปดช่องจากแปดห้องในบ้าน</h2>
+  <p class="sub">กดที่ช่องที่ปลดแล้ว เพื่อเปิดดูภาพเต็มใบ</p>
+
+  <!-- ทุกช่องเริ่มต้นเป็น "ยังมืด" ในไฟล์ HTML แล้วให้สคริปต์ปลดทีหลัง
+       ถ้าสคริปต์พัง หน้านี้ยังอ่านรู้เรื่อง แค่ยังไม่มีอะไรปลด
+       ภาพจะถูกใส่ตอนปลดเท่านั้น ช่องที่ยังมืดจึงไม่โหลดภาพเลย -->
+  <div class="cgrid" id="grid">
+
+    <div class="slot lock" data-k="home" data-img="home" data-go="../"
+         data-nm="หน้าบ้าน myclover">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">หน้าบ้าน myclover</span>
+        <span class="hint"><i class="w">ปลดเมื่อ</i> <b>อ่านการ์ตูนตอนแรกจบ หรือ เรียนบทแรกจบ</b></span>
+      </div>
+    </div>
+
+    <div class="slot lock" data-k="club" data-img="club" data-go="../club/"
+         data-nm="myclover CLUB">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">myclover CLUB</span>
+        <span class="hint"><i class="w">ปลดเมื่อ</i> <b>มีเลขสมาชิกของบ้าน</b></span>
+      </div>
+    </div>
+
+    <div class="slot lock" data-k="classroom" data-img="classroom" data-go="../classroom/"
+         data-nm="ห้องเรียน AI">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">ห้องเรียน AI</span>
+        <span class="hint"><i class="w">ปลดเมื่อ</i> <b>เรียนครบทั้ง 6 บท</b></span>
+      </div>
+    </div>
+
+    <div class="slot lock" data-k="paths" data-img="paths" data-go="../paths/"
+         data-nm="สายของคุณ">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">สายของคุณ</span>
+        <span class="hint"><i class="w">ปลดเมื่อ</i> <b>เลือกสายของตัวเองแล้ว</b></span>
+      </div>
+    </div>
+
+    <div class="slot lock" data-k="resume" data-img="resume" data-go="../resume/"
+         data-nm="Smart Resume">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">Smart Resume</span>
+        <span class="hint"><i class="w">ปลดเมื่อ</i> <b>อ่านการ์ตูนครบทั้ง 12 ตอน</b></span>
+      </div>
+    </div>
+
+    <div class="slot lock" data-k="walkthrough" data-img="walkthrough" data-go="../walkthrough/"
+         data-nm="Walkthrough">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">Walkthrough</span>
+        <span class="hint"><i class="w">ปลดเมื่อ</i> <b>ได้ตราช่างตีเหล็ก</b></span>
+      </div>
+    </div>
+
+    <div class="slot lock" data-k="awaken" data-img="awaken" data-go="../classroom/awaken/"
+         data-nm="บทที่ 7 — ด่านบอส">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">บทที่ 7 — ด่านบอส</span>
+        <span class="hint"><i class="w">ปลดเมื่อ</i> <b>ผ่านด่านบอสจนจบ</b></span>
+      </div>
+    </div>
+
+    <div class="slot lock" data-k="card" data-img="card" data-go="../card/"
+         data-nm="ตราประจำตัว">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">ตราประจำตัว</span>
+        <span class="hint"><i class="w">ปลดเมื่อ</i> <b>ปลดตราหลักครบทั้ง 3 ตรา</b></span>
+      </div>
+    </div>
+
+  </div>
+</div></section>
+
+<section class="sect"><div class="wrap">
+  <span class="eyebrow">ช่องที่ไม่มีในแผนที่</span>
+  <h2 class="disp">สามช่องที่ยังไม่บอกว่าคืออะไร</h2>
+  <p class="sub">ไม่มีใบ้ ไม่มีทางลัด เจอเองเท่านั้น — เจอแล้วค่อยรู้ว่าเก็บอะไรได้</p>
+
+  <div class="cgrid">
+    <div class="slot secret lock" data-k="seek" data-e="🍀" data-nm="โคลเวอร์ที่ซ่อนอยู่"
+         data-hint="เจอโคลเวอร์ลับที่หน้าบ้าน">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">???</span>
+        <span class="hint">ยังไม่เจอ</span>
+      </div>
+    </div>
+
+    <div class="slot secret lock" data-k="notebook" data-e="📓" data-nm="สมุดที่ซ่อมแล้ว"
+         data-hint="ซ่อมสมุดที่หายไปจนกลับมาอ่านได้">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">???</span>
+        <span class="hint">ยังไม่เจอ</span>
+      </div>
+    </div>
+
+    <div class="slot secret lock" data-k="end" data-e="🏆" data-nm="ตอนพิเศษสุดท้าย"
+         data-hint="อ่านตอนพิเศษสุดท้ายจนจบ">
+      <div class="shot"></div>
+      <div class="body">
+        <span class="nm">???</span>
+        <span class="hint">ยังไม่เจอ</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>ของสะสมเก็บอยู่ในเครื่องของคุณล้วน ๆ</b> — ไม่ได้ส่งไปไหน ไม่มีใครเห็นนอกจากคุณ
+    ถ้าล้างข้อมูลเบราว์เซอร์หรือย้ายเครื่อง ช่องจะกลับไปมืดหมด
+    แต่ถ้ายังจำรหัสที่เคยได้ เอาไปกรอกที่หน้าตราประจำตัวก็กู้กลับมาได้
+  </div>
+
+  <div class="btnrow">
+    <a class="btn gold" href="../card/">ไปหน้าตราประจำตัว →</a>
+    <a class="btn" href="../">กลับหน้าบ้าน</a>
+  </div>
+</div></section>
+
+<footer>
+  <p>🍀 myclover.com · Good Luck, Have Fun</p>
+  <p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="../card/">ตราประจำตัว</a> ·
+     <a href="../classroom/">ห้องเรียน AI</a> · <a href="../forge/">การ์ตูน</a></p>
+</footer>
+
+<script src="../assets/quest.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   คลังของสะสม
+
+   หน้านี้ไม่เก็บอะไรใหม่เลย มันแค่ "อ่าน" ความคืบหน้าที่มีอยู่แล้ว
+   แล้วแปลว่าช่องไหนควรเปิด — เจตนาคือทุกช่องต้องแลกมาด้วยการทำอะไรจนจบ
+   ไม่ใช่แค่เคยเปิดหน้านั้นผ่าน ๆ (ซึ่งคนที่มาจาก Google ก็ได้ฟรี)
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  function ls(k){ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } }
+  function track(n){
+    var q=window.MC_QUEST;
+    return q && q.track ? q.track(n) : null;
+  }
+  function has(t){
+    var q=window.MC_QUEST;
+    return !!(q && q.hasTitle && q.hasTitle(t));
+  }
+  function count(n){ var t=track(n); return t?t.count():0; }
+  function done(n){ var t=track(n); return !!(t&&t.complete()); }
+
+  var SIGILS=['BLACKSMITH','AWAKENED','HERO'];
+
+  var CHECK={
+    home       : function(){ return count('forge')>0 || count('learn')>0; },
+    club       : function(){ return /^MC-\d{4}-\d+$/.test(ls('mc_member')); },
+    classroom  : function(){ return done('learn'); },
+    paths      : function(){ return !!ls('mc_class'); },
+    resume     : function(){ return done('forge'); },
+    walkthrough: function(){ return has('BLACKSMITH'); },
+    awaken     : function(){ return ls('mc_ch7_done')==='1'; },
+    card       : function(){ return SIGILS.every(has); },
+    seek       : function(){ return ls('mc_seek_hit')==='1'; },
+    notebook   : function(){ return ls('mc_nb_restored')==='1'; },
+    /* ตั้งใจไม่อ้างชื่อตราของตอนลับตรงนี้ ซอร์สของหน้านี้จะได้ไม่บอกใบ้อะไรเลย
+       ใครกรอกรหัสลับที่หน้าตราประจำตัว หน้านั้นจะปักธงนี้ให้เอง */
+    end        : function(){ return ls('mc_secret_end')==='1'; }
+  };
+
+  var slots=Array.prototype.slice.call(document.querySelectorAll('.slot'));
+
+  function unlock(el){
+    var k=el.getAttribute('data-k');
+    el.classList.remove('lock');
+    el.classList.add('got');
+
+    var nm=el.getAttribute('data-nm')||'';
+    var body=el.querySelector('.body');
+
+    /* ของลับเพิ่งเปิดเผยชื่อตอนนี้ ก่อนหน้านั้นเป็น ??? */
+    if(el.classList.contains('secret')){
+      body.querySelector('.nm').textContent=nm;
+      body.querySelector('.hint').textContent=el.getAttribute('data-hint')||'';
+      /* ยังไม่มีภาพของช่องลับ ใช้อีโมจิใหญ่ไปก่อน ใส่ตอนปลดจะได้ไม่โผล่ในซอร์ส */
+      el.querySelector('.shot').setAttribute('data-e',el.getAttribute('data-e')||'🍀');
+      return;
+    }
+
+    /* ภาพเพิ่งถูกใส่ตอนปลด — ช่องที่ยังมืดจึงไม่กินแบนด์วิดท์เลย */
+    var img=el.getAttribute('data-img');
+    if(img){
+      var pic=document.createElement('picture');
+      var s=document.createElement('source');
+      s.type='image/webp'; s.srcset='../img/col-'+img+'.webp';
+      var i=document.createElement('img');
+      i.src='../img/col-'+img+'.jpg';
+      i.alt=nm;
+      i.loading='lazy'; i.decoding='async';
+      i.width=640; i.height=336;
+      pic.appendChild(s); pic.appendChild(i);
+      el.querySelector('.shot').appendChild(pic);
+    }
+
+    /* ปลดแล้วเงื่อนไขยังอยู่ แต่เปลี่ยนคำนำจาก "ปลดเมื่อ" เป็น "ปลดแล้ว"
+       จะได้อ่านเป็นบันทึกว่าทำอะไรมา ไม่ใช่ใบสั่งงานที่ยังค้าง */
+    var w=body.querySelector('.hint .w');
+    if(w) w.textContent='✓ ปลดแล้ว —';
+
+    var go=document.createElement('span');
+    go.className='open';
+    go.textContent='เปิดดูภาพเต็ม →';
+    body.appendChild(go);
+
+    /* ปลดแล้วถึงจะกดได้ ทำให้เป็นปุ่มจริง ๆ เพื่อให้ Tab ถึงและ Enter ได้ */
+    el.setAttribute('role','button');
+    el.setAttribute('tabindex','0');
+    el.setAttribute('aria-label','เปิดดูภาพเต็มของ'+nm);
+    el.addEventListener('click',function(){ show(el); });
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){ e.preventDefault(); show(el); }
+    });
+  }
+
+  /* ── กล่องดูภาพเต็ม ── */
+  var lb=null, lastFocus=null;
+  function show(el){
+    var nm=el.getAttribute('data-nm')||'';
+    var img=el.getAttribute('data-img');
+    var go=el.getAttribute('data-go')||'../';
+    lastFocus=el;
+
+    lb=document.createElement('div');
+    lb.className='lb';
+    lb.setAttribute('role','dialog');
+    lb.setAttribute('aria-modal','true');
+    lb.setAttribute('aria-label',nm);
+    lb.innerHTML='<div class="in">'
+      + '<img src="../img/og-'+img+'.jpg" alt="ภาพเต็ม — '+nm+'">'
+      + '<div class="cap"><b class="disp">'+nm+'</b>'
+      + '<a href="'+go+'">ไปที่หน้านั้น →</a>'
+      + '<button type="button" class="x">ปิด</button></div></div>';
+    document.body.appendChild(lb);
+    document.body.style.overflow='hidden';
+
+    lb.querySelector('.x').focus();
+    lb.addEventListener('click',function(e){
+      if(e.target===lb || e.target.className==='x') hide();
+    });
+    document.addEventListener('keydown',esc);
+  }
+  function esc(e){ if(e.key==='Escape') hide(); }
+  function hide(){
+    if(!lb) return;
+    document.removeEventListener('keydown',esc);
+    lb.parentNode.removeChild(lb);
+    lb=null;
+    document.body.style.overflow='';
+    if(lastFocus) lastFocus.focus();
+  }
+
+  /* ── นับแล้วทาสี ── */
+  function paint(){
+    var got=0;
+    slots.forEach(function(el){
+      var k=el.getAttribute('data-k');
+      var fn=CHECK[k];
+      if(!fn) return;
+      var ok=false;
+      try{ ok=fn(); }catch(e){ ok=false; }
+      if(!ok) return;
+      got++;
+      if(!el.classList.contains('got')) unlock(el);
+    });
+    var pct=Math.round(got/slots.length*100);
+    var fill=document.getElementById('mfill');
+    if(fill) fill.style.width=pct+'%';
+    var num=document.getElementById('mnum');
+    if(num) num.innerHTML='เก็บได้ <b>'+got+'</b> จาก '+slots.length+' ช่อง';
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',paint);
+  else paint();
+})();
+</script>
+<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "xtx73cs6w1");
+</script>
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
+</script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+</body>
+</html>

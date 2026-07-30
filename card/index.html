@@ -340,6 +340,7 @@ body.js .reveal.in{opacity:1;transform:none}
       </div>
       <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
       <p class="hint" style="margin-top:12px">ยังไม่มีรหัสเลยใช่ไหมครับ — <a href="../forge/">อ่านการ์ตูนให้ครบทุกตอน</a> แล้วจะได้รหัสแรกไปใส่ตรงนี้</p>
+      <p class="hint" style="margin-top:8px">📔 อยากดูว่าเก็บอะไรมาได้บ้างระหว่างทาง — <a href="../collection/">เปิดคลังของสะสม</a></p>
 
       <div class="opt">
         <label class="olb" for="rera">คุณรู้จัก myclover ยุคไหน</label>
@@ -1133,6 +1134,9 @@ function grant(key,msg){
     st.titles.push(key);
     ls.set('mc_titles',JSON.stringify(st.titles));
     if(typeof paintFrames==='function') paintFrames();
+    /* ปักธงไว้ให้คลังของสะสมด้วย — คนที่ทำจบคนละเครื่องแล้วมากรอกรหัสที่นี่
+       ควรได้ช่องในคลังเหมือนกับคนที่ทำจบบนเครื่องนี้ */
+    if(key==='GLHF') ls.set('mc_secret_end','1');
   }
   if(msg){ codeMsg.className='codemsg ok'; codeMsg.textContent=msg; }
   paintBadges(); render();
