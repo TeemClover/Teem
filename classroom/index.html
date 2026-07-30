@@ -140,7 +140,9 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 .lslv{font-size:11px;font-weight:700;letter-spacing:.1em;color:rgb(var(--gold))}
 .lslv em.starred{font-style:normal;background:rgb(var(--gold));color:rgb(var(--deep));border-radius:5px;padding:2px 7px;letter-spacing:.04em}
 .ls.star{border-color:rgb(190 148 66/.55);box-shadow:0 0 0 1px rgb(190 148 66/.2),0 14px 30px -22px rgb(190 148 66/.55)}
-.ls.star .lsimg::after{content:"⭐";position:absolute;top:8px;left:9px;font-size:15px;z-index:2;
+/* ดาวใช้ ::before ส่วนติ๊กว่าเรียนจบใช้ ::after — บทติดดาวจะได้ติดทั้งสองอันพร้อมกัน
+   ถ้าใช้ ::after ทั้งคู่ ค่า left ของดาวจะค้างอยู่แล้วดันติ๊กไปอยู่มุมซ้ายบทเดียว */
+.ls.star .lsimg::before{content:"⭐";position:absolute;top:8px;left:9px;font-size:15px;z-index:2;
   filter:drop-shadow(0 2px 4px rgb(10 40 24/.6))}
 .lslv em{font-style:normal;color:rgb(var(--muted));font-family:"Anuphan",sans-serif;letter-spacing:0;font-weight:600;margin-left:6px}
 .lsbody b{font-size:16.5px}
