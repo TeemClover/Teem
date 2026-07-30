@@ -25,7 +25,7 @@ const ERA_TH = {
   'new'      : 'เพิ่งรู้จักบ้านนี้ตอนนี้เอง'
 };
 const CLASSES = ['THINKER', 'TASTER', 'KEEPER', 'MAKER'];
-const TITLES  = ['SEEKER', 'BLACKSMITH', 'AWAKENED', 'HERO'];
+const TITLES  = ['SEEKER', 'BLACKSMITH', 'AWAKENED', 'HERO', 'GLHF'];
 
 const LIMIT_PER_HOUR = 6;
 

@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>การ์ดประจำตัว · myclover</title>
 <meta name="description" content="สร้างการ์ดประจำตัวของคุณเองใน 1 นาที — เลือกสายที่ใช่ ใส่ชื่อและประโยคของคุณ แล้วบันทึกเป็นรูปไปใช้ได้เลย ฟรี ไม่ต้องสมัคร">
+<meta property="og:type" content="website">
+<meta property="og:title" content="การ์ดประจำตัวชาวโคลเวอร์ | myclover">
+<meta property="og:description" content="ปักธงว่าคุณเป็นสายไหน แล้วรับการ์ดประจำตัวของคุณเอง">
+<meta property="og:image" content="https://myclover.com/img/og-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:title" content="การ์ดประจำตัว · myclover">
 <meta property="og:description" content="เลือกสายที่ใช่ ใส่ชื่อของคุณ แล้วบันทึกการ์ดเป็นรูปได้เลย — รูปของคุณไม่ถูกส่งออกจากเครื่อง">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -489,22 +494,32 @@ var TITLES={
   SEEKER :{emo:'🔍',th:'ผู้ค้นพบ',       how:'ท้ายหน้าแรกมีโคลเวอร์ให้กด เจอจริงประมาณ 1 ใน 10 — เลขจำนวนครั้งจะขึ้นบนการ์ดด้วย',
            go:'../', goTx:'ไปลองดวงที่หน้าแรก'}
 };
+/* แท็กจบเกม — ได้จากตอนพิเศษลับเท่านั้น
+   ไม่กินช่องตราหลัก และห้ามโชว์ช่องว่างรอไว้ก่อนปลด เพราะจะเป็นการสปอยล์ว่ามีอะไรซ่อนอยู่ */
+var SECRET={
+  GLHF:{emo:'👊🏻',th:'GLHF',
+        how:'', go:'', goTx:''}   /* บนการ์ดวาดเป็น 👊🏻 ติดกับ GLHF = 👊🏻GLHF พอดี */
+};
 var SIGIL_ORDER=['BLACKSMITH','AWAKENED','HERO'];
 var TITLE_ORDER=['SEEKER'];
+var SECRET_ORDER=['GLHF'];
 /* ตารางรวมไว้ค้นหาอย่างเดียว — ตอนแสดงผลยังแยกสองกลุ่ม */
 var BADGE={};
-[SIGILS,TITLES].forEach(function(m){ for(var k in m) BADGE[k]=m[k]; });
+[SIGILS,TITLES,SECRET].forEach(function(m){ for(var k in m) BADGE[k]=m[k]; });
 
 /* ยุคที่รู้จักบ้านนี้ → ตราปีบนการ์ด: อีโมจิหนึ่งตัวกับปีแรกของยุคนั้น
    ไม่เรียกชื่อยุค เพราะชื่อที่ตั้งไว้มีความหมายอยู่ในอีโมจิแล้ว
    จำไม่ได้ / เพิ่งรู้จัก = ไม่ปั๊มอะไรลงการ์ด */
 var ERA_STAMP={
-  '2007-2009':['⛏️','2007'],
+  '2007-2009':['🍀','2007'],
   '2010-2013':['⭐','2010'],
   '2014-2015':['☀️','2014'],
-  '2016-2019':['🐉','2016'],
-  '2020-2022':['😷','2020'],
-  '2023+'    :['✨','2023']
+  '2016-2019':['7️⃣','2016'],
+  '2020-2022':['💉','2020'],
+  '2023+'    :['✨','2023'],
+  /* จำไม่ได้หรือเพิ่งรู้จัก ก็ยังได้ตราปี — เป็นปีที่พิมพ์การ์ดแทน */
+  'forgot'   :['🤖','2026'],
+  'new'      :['🤖','2026']
 };
 
 /* รหัสปลดตรา — เปลี่ยนรหัส: แก้ sha/djb เป็นค่าของรหัสใหม่ (ตัวพิมพ์เล็ก)
@@ -515,6 +530,8 @@ var CODES=[
    ok:'⚒️ ยินดีด้วยครับ คุณอ่านครบทุกตอนแล้ว — การ์ดของคุณได้กรอบไฟกับตรา “ช่างตีเหล็ก”'},
   {t:'AWAKENED', sha:'cdd35a708cf7fbc0a70f4d0f7ec42dcc269a97e1894726d8e175a2d830d336cd', djb:'4072919836',
    ok:'🌅 คุณอ่านบทที่ 7 จบแล้ว — ได้ตรา “ผู้ตื่นรู้” ขึ้นการ์ดเรียบร้อย'},
+  {t:'GLHF', sha:'b5da47ec8b4451ca8bedd01b0efe8258db9f71a6f52204664bc0389dcf7ca20c', djb:'1042463000',
+   ok:'🤜🏻🤛🏻 WELL PLAYED — แท็กจบเกมขึ้นการ์ดของคุณแล้ว'},
   {t:'HERO', sha:'ae6c79d10f1fd410650790e63186ec108fa106325b52fbd88de21a43540e6f2c', djb:'2090324915',
    ok:'⚔️ Hero ไม่ได้แปลว่าต้องไปกอบกู้ใคร — ในชีวิตของคุณ คุณคือตัวละครหลัก การ์ดของคุณเป็นกรอบทองแล้ว'}
 ];
@@ -728,7 +745,9 @@ function drawCardArt(c,st){
                   return {emo:t.emo, th:t.th+(n?' · '+n:''), kind:kind};
                 });
   }
-  var chips=pick(SIGIL_ORDER,SIGILS,'s').concat(pick(TITLE_ORDER,TITLES,'t')).slice(0,4);
+  var chips=pick(SECRET_ORDER,SECRET,'x')
+              .concat(pick(SIGIL_ORDER,SIGILS,'s'))
+              .concat(pick(TITLE_ORDER,TITLES,'t')).slice(0,5);
   var qLines=[];
   if(quote){ font(c,'500',20,'Anuphan'); qLines=wrap(c,'“'+quote+'”',cw,2); }
 
@@ -769,10 +788,12 @@ function drawCardArt(c,st){
       var w=24+c.measureText(t.th).width+16;
       if(i>0 && sx+w>x1){ sx=x0; cyy+=32; }     /* เต็มแถวแล้ว ขึ้นแถวใหม่ */
       rr(c,sx,cyy,w,26,8);
-      c.fillStyle= t.kind==='t' ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.13)';
+      c.fillStyle= t.kind==='t' ? 'rgba(255,255,255,.08)'
+                 : t.kind==='x' ? 'rgba(190,148,66,.26)' : 'rgba(255,255,255,.13)';
       c.fill();
-      c.strokeStyle= t.kind==='t' ? 'rgba(255,255,255,.3)' : 'rgba(190,148,66,.45)';
-      c.lineWidth=1; c.stroke();
+      c.strokeStyle= t.kind==='t' ? 'rgba(255,255,255,.3)'
+                   : t.kind==='x' ? GOLD : 'rgba(190,148,66,.45)';
+      c.lineWidth= t.kind==='x' ? 1.5 : 1; c.stroke();
       font(c,'400',13,'Anuphan'); c.fillStyle='#fff';
       c.fillText(t.emo,sx+7,cyy+14);
       font(c,'600',13.5,'Anuphan'); c.fillStyle='rgba(255,255,255,.92)';
@@ -1005,6 +1026,8 @@ function paintBadges(){
   }
   group('ตราหลัก','สามหมุดหมายใหญ่ของบ้าน',SIGIL_ORDER,SIGILS);
   group('ไตเติ้ล','ได้จากวิธีเล่นของคุณเอง ไม่กินช่องตรา',TITLE_ORDER,TITLES);
+  /* กลุ่มนี้โผล่เฉพาะคนที่ปลดแล้ว ก่อนหน้านั้นห้ามมีแม้แต่ช่องว่างให้เดา */
+  if(st.titles.indexOf('GLHF')>=0) group('แท็กจบเกม','ของคนที่หาเจอเองจนครบทุกอย่าง',SECRET_ORDER,SECRET);
 
   /* นับเฉพาะตราหลัก — ไตเติ้ลเป็นของแถม ไม่ควรทำให้รู้สึกว่ายังเก็บไม่ครบ */
   var sg=SIGIL_ORDER.filter(function(k){ return st.titles.indexOf(k)>=0; }).length;
