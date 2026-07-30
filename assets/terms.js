@@ -20,7 +20,7 @@ var W='/walkthrough/';
 var TERMS={
   CLASS:{th:'คลาส',
     short:'แนวทางของตัวละคร ที่บอกว่าถนัดอะไรและควรเริ่มจากตรงไหน',
-    mc:'สายที่คุณเลือกตอนจับเข็มทิศหน้าแรก — สายคิด สายกิน สายคลีน สายประดิษฐ์ ใช้จัดลำดับว่าควรหยิบอะไรก่อน'},
+    mc:'สายที่คุณเลือกตอนจับเข็มทิศหน้าแรก ใช้จัดลำดับว่าควรหยิบอะไรก่อน'},
   ITEM:{th:'ไอเทม',
     short:'ของที่เก็บได้แล้วเอาไปใช้ต่อในภารกิจอื่นได้',
     mc:'ของที่คุณทำเสร็จแล้วเอาออกไปใช้กับงานจริงได้ ไม่ใช่ความรู้ที่ค้างอยู่ในหัว'},
@@ -37,32 +37,32 @@ var TERMS={
     short:'ของที่เลือกหยิบไปใช้กับภารกิจหนึ่งงาน',
     mc:'เครื่องมือ ไฟล์ คน และขั้นตอนที่คุณเลือกมาใช้กับ Quest ตรงหน้า'},
   BUILD:{th:'การจัดตัวละคร',
-    short:'วิธีลงแต้มและเลือกของ ให้ตัวละครเก่งไปทางใดทางหนึ่งจริง ๆ',
+    short:'วิธีลงแต้มและเลือกของ ให้เก่งไปทางใดทางหนึ่งจริง ๆ',
     mc:'การเลือกว่าจะเก่งเรื่องอะไร แล้วยอมไม่เก่งเรื่องอื่น', go:W+'#build'},
   META:{th:'เมตา · Most Effective Tactic Available',
     short:'วิธีที่ได้ผลที่สุดในตอนนี้ ไม่ใช่ตลอดไป',
-    mc:'อ่านว่าตอนนี้เครื่องมือ ช่องทาง และวิธีทำงานแบบไหนกำลังได้ผล แล้วเลือกใช้อันนั้น', go:W+'#meta'},
+    mc:'อ่านว่าตอนนี้เครื่องมือและวิธีทำงานแบบไหนกำลังได้ผล แล้วใช้อันนั้น', go:W+'#meta'},
   PROGRESSION:{th:'เส้นทางการเก่งขึ้น',
     short:'ลำดับที่ทำให้เก่งขึ้นเป็นขั้น ไม่ใช่เก่งขึ้นแบบสุ่ม',
     mc:'ลำดับของบ้านนี้ — อ่านให้เห็นภาพ ลงมือทำ แล้วค่อยทำให้เป็นระบบ', go:W+'#progression'},
   SOURCE:{th:'ต้นฉบับ',
-    short:'ข้อมูลและกติกาของคุณเองที่หยิบมาใช้ซ้ำได้ ไม่ต้องเริ่มอธิบายใหม่ทุกครั้ง',
+    short:'ข้อมูลและกติกาของคุณเอง ที่หยิบมาใช้ซ้ำได้ไม่ต้องเริ่มใหม่',
     mc:'ไฟล์ที่คุณสร้างไว้ในบท 4 แนบไปกับงานทีไร AI ก็รู้จักงานคุณทันที'},
   MULTIPLY:{th:'ตัวคูณ',
     short:'เปลี่ยนของที่เคยทำได้ครั้งเดียว ให้ทำซ้ำหรือขยายผลได้',
     mc:'ตัว X ใน Guild X มาจากคำนี้ — ทำครั้งเดียวแล้วให้มันทำงานต่อได้หลายรอบ'},
   SHARE:{th:'ส่งต่อ',
-    short:'ทำให้สิ่งที่สร้างเดินทางต่อได้ แม้เจ้าของความรู้จะไม่ได้อยู่ตรงนั้น',
+    short:'ทำให้ของที่สร้างเดินทางต่อได้ แม้เจ้าของไม่ได้อยู่ตรงนั้น',
     mc:'ขั้นสุดท้ายของ Loop — ของที่ดีต้องไปถึงมือคนอื่นได้ด้วยตัวมันเอง'},
   ACHIEVEMENT:{th:'ตรา',
     short:'หลักฐานว่าเคยผ่านหมุดหมายที่มีความหมาย',
-    mc:'ตราหลักสามช่องบนการ์ด — ช่างตีเหล็ก ผู้ตื่นรู้ ฮีโร่ เป็นใบเสร็จของเส้นทาง ไม่ใช่ยศเหนือใคร'},
+    mc:'ตราหลักสามช่องบนการ์ด เป็นใบเสร็จของเส้นทาง ไม่ใช่ยศเหนือใคร'},
   TITLE:{th:'ไตเติ้ล',
     short:'ฉายาที่สะท้อนวิธีเล่นของคุณ ไม่ใช่หมุดหมายหลัก',
     mc:'อย่างผู้ค้นพบ ที่ได้จากการไปเจอของที่ซ่อนไว้ — ไม่กินช่องตราหลัก'},
   PARTY:{th:'ปาร์ตี้',
     short:'กลุ่มเล็กที่ลงสนามด้วยกัน แต่ละคนรับคนละหน้าที่',
-    mc:'ชุด AI ที่ใช้สร้างบ้านหลังนี้ — เลือก Class ให้เครื่องมือ แล้วส่งงานให้ตรงกับสกิลของมัน', go:W+'#party'},
+    mc:'ชุด AI ที่ใช้สร้างบ้านหลังนี้ — ให้หน้าที่มันไป แล้วส่งงานให้ตรงสกิล', go:W+'#party'},
   GUILD:{th:'กิลด์',
     short:'ชุมชนใหญ่ที่ยังอยู่ต่อ แม้ภารกิจหนึ่ง ๆ จะจบไปแล้ว',
     mc:'Guild X — ห้องที่คุยกันจริงจัง เปิดให้คนที่เดินมากับบ้านแล้ว', go:W+'#party'},
@@ -71,13 +71,13 @@ var TERMS={
     mc:'เจ้าของบ้าน — คนเขียนจดหมายที่คุณอ่านที่หน้าแรก'},
   WALKTHROUGH:{th:'คู่มือเดินเกม',
     short:'คำอธิบายทั้งเส้น เขียนโดยคนที่เล่นจบมาแล้ว',
-    mc:'หน้าที่เปิดให้หลังอ่านการ์ตูนจบ — ถอดกลไกของเรื่องที่เพิ่งอ่านออกมาเป็นภาษาธุรกิจ', go:W},
+    mc:'หน้าที่เปิดให้หลังอ่านการ์ตูนจบ — ถอดกลไกของเรื่องเป็นภาษาธุรกิจ', go:W},
   GRIND:{th:'งานซ้ำที่ต้องผ่าน',
     short:'ช่วงที่ต้องทำซ้ำ ๆ กว่าจะได้ของหรือได้เลเวล',
-    mc:'งานที่ไม่สนุกแต่ตัดไม่ได้ — สิ่งที่ควรเปลี่ยนเป็นระบบก่อนใครเพื่อน', go:W+'#grind'},
+    mc:'งานที่ไม่สนุกแต่ตัดไม่ได้ — ควรเปลี่ยนเป็นระบบก่อนใครเพื่อน', go:W+'#grind'},
   DECK:{th:'สำรับ',
     short:'ชุดไพ่ที่เลือกมาลงสนาม ไม่ใช่ไพ่ทั้งหมดที่มี',
-    mc:'ของที่คุณเลือกมาลงสนามจริง คุณค่าอยู่ที่เลือกอะไรออก ไม่ใช่มีเยอะ', go:W+'#deck'},
+    mc:'ของที่เลือกมาลงสนามจริง คุณค่าอยู่ที่เลือกอะไรออก ไม่ใช่มีเยอะ', go:W+'#deck'},
   BUFF:{th:'บัฟ',
     short:'การปรับให้แรงขึ้น หรือของที่ใส่แล้วเก่งขึ้นชั่วคราว',
     mc:'อะไรก็ตามที่ทำให้รอบนี้ทำงานง่ายกว่าเดิม', go:W+'#patch'},
@@ -106,9 +106,10 @@ var CSS=[
 '  vertical-align:.12em;border-radius:50%;background:currentColor;opacity:.55}',
 '.kw:hover,.kw[aria-expanded="true"]{opacity:.82}',
 '.kw:focus-visible{outline:2px solid rgb(190 148 66);outline-offset:2px;border-radius:4px}',
-'.kwtip{position:absolute;z-index:120;max-width:320px;background:#0B2416;color:#F8F6F0;',
-'  border:1px solid rgb(190 148 66/.45);border-radius:14px;padding:14px 16px;',
-'  box-shadow:0 22px 44px -20px rgb(0 0 0/.8);font-family:"Anuphan",sans-serif;',
+'.kwtip{position:absolute;z-index:120;max-width:360px;background:#143122;color:#F8F6F0;',
+'  border:1px solid rgb(190 148 66/.6);border-radius:14px;padding:15px 17px;',
+'  box-shadow:0 4px 10px rgb(0 0 0/.35),0 24px 48px -18px rgb(0 0 0/.9);',
+'  font-family:"Anuphan",sans-serif;',
 '  font-size:14px;line-height:1.7;text-align:left}',
 '.kwtip .en{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;color:rgb(190 148 66)}',
 '.kwtip .th{font-size:12.5px;color:rgb(255 255 255/.6);margin-top:1px}',
@@ -118,8 +119,14 @@ var CSS=[
 '  color:rgb(190 148 66);margin-bottom:3px}',
 '.kwtip .go{display:inline-block;margin-top:11px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;',
 '  font-size:13px;color:rgb(190 148 66);border-bottom:1px solid rgb(190 148 66/.5)}',
+'.kwtip .arw{position:absolute;width:12px;height:12px;background:#143122;',
+'  border-left:1px solid rgb(190 148 66/.6);border-top:1px solid rgb(190 148 66/.6);',
+'  transform:rotate(45deg)}',
+'.kwtip.up .arw{border-left:0;border-top:0;border-right:1px solid rgb(190 148 66/.6);',
+'  border-bottom:1px solid rgb(190 148 66/.6)}',
 '.kwtip .x{display:none}',
 /* จอสัมผัส — ใช้แผ่นเลื่อนขึ้นจากล่างจอ ไม่ใช้ tooltip จิ๋วที่บังย่อหน้า */
+'.kwtip.sheet .arw{display:none}',
 '.kwtip.sheet{position:fixed;left:0;right:0;bottom:0;top:auto;max-width:none;',
 '  border-radius:20px 20px 0 0;padding:22px 20px calc(24px + env(safe-area-inset-bottom));',
 '  border-left:0;border-right:0;border-bottom:0;font-size:15px}',
@@ -161,22 +168,33 @@ function init(){
           '<p class="short">'+t.short+'</p>'+
           '<div class="mcl"><b>ในบ้านนี้</b>'+t.mc+'</div>';
     if(t.go) h+='<a class="go" href="'+t.go+'">อ่านเพิ่มใน Walkthrough →</a>';
-    return h+'<button type="button" class="x" aria-label="ปิด">✕</button>';
+    return h+'<i class="arw" aria-hidden="true"></i>'+
+             '<button type="button" class="x" aria-label="ปิด">✕</button>';
   }
 
   function place(el){
     /* วางใต้คำ ถ้าชนขอบล่างก็สลับไปอยู่ด้านบน และหนีบไม่ให้ล้นซ้ายขวา */
     var r=el.getBoundingClientRect();
     var sx=window.pageXOffset, sy=window.pageYOffset;
+    tip.classList.remove('up');
     tip.style.left='0px'; tip.style.top='0px';
     var tw=tip.offsetWidth, th=tip.offsetHeight, pad=10;
-    var x=r.left+sx+r.width/2-tw/2;
+    var cx=r.left+sx+r.width/2;                       /* กึ่งกลางของคำ */
+    var x=cx-tw/2;
     x=Math.max(sx+pad, Math.min(x, sx+document.documentElement.clientWidth-tw-pad));
-    var below=r.bottom+sy+9;
-    var above=r.top+sy-th-9;
-    var fitsBelow=(r.bottom+th+9) <= window.innerHeight;
+    var fitsBelow=(r.bottom+th+12) <= window.innerHeight;
+    var below=(fitsBelow || r.top-th-12 < 0);
     tip.style.left=Math.round(x)+'px';
-    tip.style.top=Math.round(fitsBelow||above<sy ? below : above)+'px';
+    tip.style.top=Math.round(below ? r.bottom+sy+11 : r.top+sy-th-11)+'px';
+    if(!below) tip.classList.add('up');
+
+    /* ลูกศรชี้กลับไปที่คำ — หนีบให้อยู่ในกล่องเสมอ ไม่งั้นมันจะลอยออกไปข้างนอก */
+    var arw=tip.querySelector('.arw');
+    if(arw){
+      var ax=Math.max(14, Math.min(cx-x-6, tw-26));
+      arw.style.left=Math.round(ax)+'px';
+      arw.style.top = below ? '-7px' : (th-6)+'px';
+    }
   }
 
   function close(){
