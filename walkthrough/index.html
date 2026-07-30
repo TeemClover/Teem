@@ -108,9 +108,6 @@ ol.relay li{counter-increment:r;position:relative;padding-left:34px;line-height:
 ol.relay li::before{content:counter(r);position:absolute;left:0;top:2px;width:23px;height:23px;
   border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));
   font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:12.5px;display:grid;place-items:center}
-.gloss{display:flex;flex-wrap:wrap;gap:9px 14px;margin-top:20px;
-  background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px 22px}
-.gloss button{font-family:"Bai Jamjuree",sans-serif;font-size:14.5px}
 .term{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;overflow:hidden;margin-top:18px;
   box-shadow:0 1px 3px rgb(18 40 28/.05)}
 .term > .hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 22px 0}
@@ -446,6 +443,11 @@ footer a{color:rgb(var(--green));font-weight:600}
     <b>ลองสังเกตดู</b> — ทั้งเจ็ดคำข้างบนนี้ ไม่มีคำไหนเลยที่ต้องเล่นเกมเป็นถึงจะเข้าใจ
     เพราะมันไม่ได้เป็นเรื่องของเกม มันเป็นเรื่องของ<b>ระบบที่มีคนอยู่ในนั้น</b> — ซึ่งธุรกิจก็คือแบบนั้น
   </div>
+  <p style="margin-top:16px">คำอื่นที่โผล่ตามหน้าต่าง ๆ ในบ้านนี้ก็มาจากที่เดียวกัน —
+    <button type="button" data-kw="CLASS">คลาส</button> ที่บอกว่าคุณถนัดทางไหน <button type="button" data-kw="QUEST">เควสต์</button>ที่รู้ว่าจบเมื่อไหร่
+    <button type="button" data-kw="ITEM">ไอเทม</button>ที่เอาออกไปใช้ได้จริง <button type="button" data-kw="LOADOUT">โหลดเอาต์</button>ที่เตรียมไปกับงานหนึ่งงาน
+    <button type="button" data-kw="SOURCE">ซอร์ส</button>ที่โตไปกับคุณ และ <button type="button" data-kw="MULTIPLY">ตัวคูณ</button>ที่ทำให้ของชิ้นเดียวทำงานได้หลายรอบ<br>
+    <span style="color:rgb(var(--muted));font-size:14px">คำที่มีเส้นใต้จุด แตะหรือชี้เมาส์ค้างไว้แล้วมีคำอธิบายขึ้นให้</span></p>
 </div></section>
 
 <!-- ── 3. บ้านหลังนี้ถูกสร้างยังไง ── -->
@@ -591,7 +593,9 @@ footer a{color:rgb(var(--green));font-weight:600}
   <div class="note">
     <b>ข้อเดียวที่ AI ทำแทนไม่ได้</b> — เรื่องที่เล่า 19 ปีที่ผ่านมา คนที่เดินมาด้วยกัน
     และสิ่งที่ตัดสินใจผิดแล้วต้องจ่ายจริง ๆ ตรงนั้นไม่มีเครื่องมือไหนสร้างให้ได้
-    AI ย่นเวลาให้เราได้ แต่<b>ประสบการณ์ยังต้องเดินเอาเอง</b>
+    AI ย่นเวลาให้เราได้ แต่<b>ประสบการณ์ยังต้องเดินเอาเอง</b><br><br>
+    🎵 <b>และมีอีกหนึ่งอย่างที่ไม่ได้ทำกับ AI เลย</b> — <b>Clover Song</b> เพลงประจำบ้านที่เปิดฟังได้
+    ในหน้าทำการ์ด เพลงนี้คนแต่งเอง และเวอร์ชันที่มีเสียงร้องก็คนร้องเอง
   </div>
 </div></section>
 
@@ -620,41 +624,6 @@ footer a{color:rgb(var(--green));font-weight:600}
     <div class="cta" style="margin-top:12px">
       <a class="btn ghost" href="../#glhf">🍀 กลับไปดูบ้านอีกรอบ</a>
     </div>
-  </div>
-</div></section>
-
-<!-- ── อภิธานศัพท์ในเกม — มีเฉพาะหน้านี้กับบทที่ 7 ── -->
-<section><div class="wrap">
-  <h2 class="disp">อภิธานศัพท์</h2>
-  <p class="lead">คำที่เหลือในบ้านนี้ รวมไว้ที่เดียว — แตะคำไหนก็ได้ ขึ้นให้ทั้งความหมายทั่วไป
-     และความหมายที่เราใช้ในบ้านนี้ ไม่ต้องจำ เดินผ่านมาเปิดดูตอนไหนก็ได้</p>
-  <div class="gloss">
-    <button type="button" data-kw="CLASS">CLASS</button>
-    <button type="button" data-kw="ITEM">ITEM</button>
-    <button type="button" data-kw="QUEST">QUEST</button>
-    <button type="button" data-kw="MAIN QUEST">MAIN QUEST</button>
-    <button type="button" data-kw="SIDE QUEST">SIDE QUEST</button>
-    <button type="button" data-kw="LOADOUT">LOADOUT</button>
-    <button type="button" data-kw="BUILD">BUILD</button>
-    <button type="button" data-kw="META">META</button>
-    <button type="button" data-kw="PROGRESSION">PROGRESSION</button>
-    <button type="button" data-kw="DECK">DECK</button>
-    <button type="button" data-kw="GRIND">GRIND</button>
-    <button type="button" data-kw="SOURCE">SOURCE</button>
-    <button type="button" data-kw="MULTIPLY">MULTIPLY</button>
-    <button type="button" data-kw="SHARE">SHARE</button>
-    <button type="button" data-kw="ACHIEVEMENT">ACHIEVEMENT</button>
-    <button type="button" data-kw="TITLE">TITLE</button>
-    <button type="button" data-kw="PARTY">PARTY</button>
-    <button type="button" data-kw="GUILD">GUILD</button>
-    <button type="button" data-kw="GM">GM</button>
-    <button type="button" data-kw="WALKTHROUGH">WALKTHROUGH</button>
-    <button type="button" data-kw="BUFF">BUFF</button>
-    <button type="button" data-kw="NERF">NERF</button>
-    <button type="button" data-kw="PATCH">PATCH</button>
-    <button type="button" data-kw="MIN-MAX">MIN-MAX</button>
-    <button type="button" data-kw="SAVE">SAVE</button>
-    <button type="button" data-kw="SYNC">SYNC</button>
   </div>
 </div></section>
 

@@ -102,9 +102,6 @@ img{max-width:100%;height:auto;display:block}
 .reveal-box p{margin-top:12px;font-size:15.5px;color:rgb(255 255 255/.82);line-height:1.95}
 .reveal-box .kbd{font-family:"Bai Jamjuree";font-weight:700;color:rgb(var(--gold))}
 
-.kwlist{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
-.kwlist span{font-family:"Bai Jamjuree";font-weight:700;font-size:13px;border:1px solid rgb(255 255 255/.2);
-  border-radius:99px;padding:6px 14px;color:rgb(255 255 255/.85)}
 .quote{margin-top:22px;border-left:2px solid rgb(190 148 66/.6);padding-left:18px;
   font-size:16px;color:rgb(255 255 255/.76);font-style:italic}
 .pre{margin-top:20px;background:rgb(0 0 0/.3);border:1px solid rgb(255 255 255/.12);border-radius:12px;
@@ -273,10 +270,6 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
 
 /* หน้านี้พื้นเข้ม คำศัพท์เลยใช้สีทองแทนเขียว จะได้ contrast พอ */
 .chapter{--kwc:190 148 66}
-.kwlist button{font-family:"Bai Jamjuree";font-weight:700;font-size:13px;
-  border:1px solid rgb(255 255 255/.2);border-radius:99px;padding:6px 14px;
-  color:rgb(var(--paper));border-bottom-style:solid}
-.kwlist button::after{background:rgb(190 148 66)}
 .loop .st b button{letter-spacing:.14em}
 @media(min-width:760px){ .loop{grid-template-columns:1fr 1fr} }
 /* จอแคบ ชื่อสกิลกินความกว้างจนคำอธิบายเหลือ 3 คำต่อบรรทัด — ให้ขึ้นบรรทัดใหม่แทน */
@@ -380,6 +373,16 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
     <p class="tight"><strong>คุณกำลังเล่น Tutorial ของเกมเดียวกัน</strong></p>
     <p>เกมที่ไม่ได้ให้แต้มเพราะคุณคลิกเก่ง
       แต่ให้ Item ที่คุณนำออกไปใช้กับงานและชีวิตจริงได้</p>
+    <div class="reveal-box" style="margin-top:32px">
+      <span class="tag mono">ทำไมบทนี้ถึงมีแต่ตัวหนังสือ</span>
+      <h3 class="disp">การทำงานกับ AI คือการเขียน พูด และอ่าน</h3>
+      <p>และเวลาส่วนใหญ่ของคุณจะหมดไปกับ <strong>การอ่านกับการคิด</strong>
+        ไม่ใช่การกดปุ่ม</p>
+      <p>เราจึงทำบทนี้มาให้คุณได้ฝึกอ่านและคิด เพราะเชื่อว่าในระยะยาว
+        มันประหยัดเวลาของคุณได้มากกว่าการดูคลิปสอนอีกสิบคลิป</p>
+      <p>หน้านี้เลยไม่มีภาพประกอบเลยสักใบ — อยากให้คุณได้ใช้เวลาอยู่กับตัวหนังสือ
+        ซึ่งเป็นภาษาเดียวกับที่ AI จะโต้ตอบกับคุณจริง ๆ</p>
+    </div>
     <p class="clear mono" data-clear="1">▪ PHASE CLEAR</p>
   </section>
 
@@ -449,11 +452,8 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
       <span>ภารกิจไหนจำเป็นต่อเนื้อเรื่อง</span>
       <span>ภารกิจไหนทำเพิ่มก็ได้</span>
     </div>
-    <p>คุณเรียกมันว่า</p>
-    <div class="kwlist">
-      <button type="button" data-kw="LOADOUT">Loadout</button><button type="button" data-kw="BUILD">Build</button><button type="button" data-kw="META">META</button><button type="button" data-kw="MAIN QUEST">Main Quest</button><button type="button" data-kw="SIDE QUEST">Side Quest</button>
-    </div>
-    <p>คำเหล่านี้สั้น แต่ข้างในมี Mechanic ทั้งชุดอยู่แล้ว</p>
+    <p>คุณเรียกมันสั้น ๆ ว่า <button type="button" data-kw="LOADOUT">Loadout</button> · <button type="button" data-kw="BUILD">Build</button> · <button type="button" data-kw="META">META</button> · <button type="button" data-kw="MAIN QUEST">Main Quest</button> · <button type="button" data-kw="SIDE QUEST">Side Quest</button></p>
+    <p class="tight">คำเหล่านี้สั้น แต่ข้างในมี Mechanic ทั้งชุดอยู่แล้ว</p>
     <p class="tight">เวลาคุยกับ AI ก็เหมือนกัน ถ้าคุณบอกว่า</p>
     <p class="quote">ช่วยจัด Loadout สำหรับการถ่ายคลิป 1 วัน</p>
     <p>AI ส่วนใหญ่เข้าใจทันทีว่าควรจัดของจำเป็น เครื่องมือ ไฟล์ คน ขั้นตอน และของสำรอง

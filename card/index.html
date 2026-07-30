@@ -87,6 +87,17 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 
 /* ตรา */
 .badges{display:grid;gap:10px}
+.opt{margin-top:20px;padding-top:18px;border-top:1px solid rgb(var(--line)/.1)}
+/* select จำความกว้างจากตัวเลือกที่ยาวที่สุด ถ้าไม่บังคับไว้มันจะดันทั้งหน้าให้กว้างเกินจอ */
+.opt select{width:100%;min-width:0;max-width:100%}
+.olb{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;margin-bottom:8px}
+.frames{display:flex;gap:9px;flex-wrap:wrap}
+.fr{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgb(var(--line)/.18);
+  background:#fff;border-radius:12px;padding:9px 13px;cursor:pointer;min-height:46px;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--ink));
+  white-space:nowrap;max-width:100%}
+.fr .sw{width:20px;height:26px;border-radius:4px;flex:none;border:2px solid}
+.fr[aria-pressed="true"]{border-color:rgb(var(--gold));background:rgb(190 148 66/.12)}
 .bgrp{display:flex;align-items:baseline;gap:9px;margin:4px 2px 0;flex-wrap:wrap}
 .bgrp:not(:first-child){margin-top:12px}
 .bgrp b{font-size:12.5px;letter-spacing:.08em;color:rgb(var(--gold))}
@@ -329,6 +340,28 @@ body.js .reveal.in{opacity:1;transform:none}
       </div>
       <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
       <p class="hint" style="margin-top:12px">ยังไม่มีรหัสเลยใช่ไหมครับ — <a href="../forge/">อ่านการ์ตูนให้ครบทุกตอน</a> แล้วจะได้รหัสแรกไปใส่ตรงนี้</p>
+
+      <div class="opt">
+        <label class="olb" for="rera">คุณรู้จัก myclover ยุคไหน</label>
+        <select id="rera">
+          <option value="">— เลือกสักอัน —</option>
+          <option value="2007-2009">🍀 2007–2009 · ยุคบุกเบิก</option>
+          <option value="2010-2013">⭐ 2010–2013 · ยุคดวงดาว</option>
+          <option value="2014-2015">☀️ 2014–2015 · ยุคดวงอาทิตย์</option>
+          <option value="2016-2019">7️⃣ 2016–2019 · ยุคตำนาน</option>
+          <option value="2020-2022">💉 2020–2022 · ยุคโควิด</option>
+          <option value="2023+">✨ หลังปี 2023 เป็นต้นมา</option>
+          <option value="forgot">🤖 จำไม่ได้แล้ว</option>
+          <option value="new">🤖 เพิ่งรู้จักบ้านนี้ตอนนี้เอง</option>
+        </select>
+        <p class="hint" style="margin-top:7px">ขึ้นเป็นตราปีเล็ก ๆ ที่มุมขวาบนของการ์ด — อีโมจิกับปีแรกของยุคนั้น ไม่ได้เขียนชื่อยุค</p>
+      </div>
+
+      <div class="opt" id="frameOpt" hidden>
+        <span class="olb">กรอบการ์ด</span>
+        <div class="frames" id="frames"></div>
+        <p class="hint" style="margin-top:7px">กรอบที่ปลดแล้วเลือกใช้อันไหนก็ได้ ไม่ต้องใช้อันล่าสุดเสมอไป</p>
+      </div>
     </div>
 
     <!-- ═══ ขั้นที่สี่ — เฉพาะคนที่เลือกลงทะเบียน ═══ -->
@@ -354,21 +387,6 @@ body.js .reveal.in{opacity:1;transform:none}
           <input type="text" id="remail" maxlength="120" autocomplete="email" inputmode="email" placeholder="you@example.com">
         </div>
 
-        <div class="field">
-          <label for="rera">คุณรู้จัก myclover ยุคไหน</label>
-          <select id="rera">
-            <option value="">— เลือกสักอัน —</option>
-            <option value="2007-2009">2007–2009 · ยุคบุกเบิก</option>
-            <option value="2010-2013">2010–2013 · ยุคดวงดาว</option>
-            <option value="2014-2015">2014–2015 · ยุคดวงอาทิตย์</option>
-            <option value="2016-2019">2016–2019 · ยุคตำนาน</option>
-            <option value="2020-2022">2020–2022 · ยุคโควิด</option>
-            <option value="2023+">หลังปี 2023 เป็นต้นมา</option>
-            <option value="forgot">จำไม่ได้แล้ว</option>
-            <option value="new">เพิ่งรู้จักบ้านนี้ตอนนี้เอง</option>
-          </select>
-          <p class="hint" style="margin-top:7px">ใครรู้จักบ้านนี้มาก่อนปี 2023 จะได้ตรา 🍀 ศิษย์เก่า ติดบนการ์ดให้เลย · ยุคที่เลือกไม่ได้พิมพ์ลงการ์ด เราเก็บไว้ดูเฉย ๆ ว่าใครมาจากช่วงไหนบ้าง</p>
-        </div>
 
         <div class="opt">
           <input type="checkbox" id="rnews">
@@ -438,7 +456,7 @@ body.js .reveal.in{opacity:1;transform:none}
 <button type="button" class="hud" id="musicBtn" aria-pressed="false">
   <span class="ico" id="musicIco" aria-hidden="true">🎵</span>
   <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-  <span class="lbl" id="musicLbl">เปิดเพลงประจำบ้าน<small>เพลงของ myclover · ทำเองกับ AI</small></span>
+  <span class="lbl" id="musicLbl">เปิดเพลงประจำบ้าน<small>Clover Song · คนแต่ง คนร้อง ไม่ได้ใช้ AI</small></span>
 </button>
 
 <footer>
@@ -532,7 +550,7 @@ var CODES=[
    ok:'🌅 คุณอ่านบทที่ 7 จบแล้ว — ได้ตรา “ผู้ตื่นรู้” ขึ้นการ์ดเรียบร้อย'},
   {t:'GLHF', sha:'b5da47ec8b4451ca8bedd01b0efe8258db9f71a6f52204664bc0389dcf7ca20c', djb:'1042463000',
    ok:'🤜🏻🤛🏻 WELL PLAYED — แท็กจบเกมขึ้นการ์ดของคุณแล้ว'},
-  {t:'HERO', sha:'ae6c79d10f1fd410650790e63186ec108fa106325b52fbd88de21a43540e6f2c', djb:'2090324915',
+  {t:'HERO', sha:'14691f815147dd1991e3a16e7e14a73bed2eb7c90bf84240ef2a3fecae8306a1', djb:'2157322410',
    ok:'⚔️ Hero ไม่ได้แปลว่าต้องไปกอบกู้ใคร — ในชีวิตของคุณ คุณคือตัวละครหลัก การ์ดของคุณเป็นกรอบทองแล้ว'}
 ];
 
@@ -556,8 +574,18 @@ function seekN(){
   var n=parseInt(ls.get('mc_seek_n','0'),10);
   return n>0?n:0;
 }
+/* กรอบไหนปลดแล้วบ้าง เรียงจากพื้นฐานไปหายากสุด */
+function frameChoices(){
+  var a=['green'];
+  if(st.titles.indexOf('BLACKSMITH')>=0) a.push('ember');
+  if(st.titles.indexOf('HERO')>=0) a.push('hero');
+  return a;
+}
+var FRAME_TH={green:['กรอบเขียว','#1B6A42'],ember:['กรอบไฟ','#E8A063'],hero:['กรอบทองฮีโร่','#BE9442']};
+
 var st={
   cls   : CLASSES[ls.get('mc_class','')] ? ls.get('mc_class','') : 'THINKER',
+  frame : ls.get('mc_frame',''),
   nick  : ls.get('mc_nick',''),
   line  : ls.get('mc_line',''),
   titles: readTitles(),
@@ -649,8 +677,13 @@ function drawClover(c,x,y,size,color,alpha){
 function drawCardArt(c,st){
   var cls=CLASSES[st.cls]||CLASSES.THINKER;
   /* ขั้นของกรอบ: เขียว → กรอบไฟ (อ่านจบ) → กรอบทองฮีโร่ (ชาวกิลด์) */
-  var foil =st.titles.indexOf('HERO')>=0;
-  var ember=!foil && st.titles.indexOf('BLACKSMITH')>=0;
+  /* กรอบที่ปลดแล้วเลือกใช้อันไหนก็ได้ ไม่ต้องใช้อันล่าสุดเสมอไป
+     ไม่ได้เลือกไว้ = ใช้อันดีที่สุดที่มีเป็นค่าตั้งต้น */
+  var can=frameChoices();
+  /* ห้ามตั้งชื่อว่า pick — ในฟังก์ชันนี้มี pick() ของชิปตราอยู่แล้ว */
+  var frameKey=st.frame && can.indexOf(st.frame)>=0 ? st.frame : can[can.length-1];
+  var foil = frameKey==='hero';
+  var ember= frameKey==='ember';
   var FR=16, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
   var PAD=34, x0=PAD, x1=CW-PAD, cw=x1-x0;
 
@@ -728,9 +761,20 @@ function drawCardArt(c,st){
      วางใต้เลขสมาชิก ถ้าไม่มีเลขก็ขึ้นตรงตำแหน่งเดียวกัน */
   var era=ERA_STAMP[st.era];
   if(era){
-    c.textAlign='right'; font(c,'700',12.5,'Bai Jamjuree');
-    c.fillStyle='rgba(255,255,255,.5)';
-    c.fillText(era[0]+' '+era[1], x1, st.member ? cy+21 : cy);
+    /* วาดอีโมจิกับปีแยกกัน และกันช่องอีโมจิไว้ตายตัว
+       เพราะ measureText ของอีโมจิบางตัว (7️⃣ ☀️) คืนค่าสั้นกว่าที่วาดจริง
+       ถ้าใช้ textAlign right กับข้อความรวม อีโมจิจะดันเลขทะลุขอบการ์ด */
+    var ey = st.member ? cy+23 : cy;
+    var EMO=22, GAP=4;
+    c.fillStyle='rgba(255,255,255,.62)';
+    font(c,'700',15,'Bai Jamjuree');
+    c.textAlign='right';
+    c.fillText(era[1], x1, ey);
+    var wy=c.measureText(era[1]).width;
+    c.textAlign='center';
+    font(c,'400',17,'Anuphan');
+    c.fillText(era[0], x1-wy-GAP-EMO/2, ey);
+    c.textAlign='left';
   }
 
   /* ── บล็อกข้อความล่าง วางแบบการ์ดเกมจริง ── */
@@ -1088,6 +1132,7 @@ function grant(key,msg){
   if(st.titles.indexOf(key)<0){
     st.titles.push(key);
     ls.set('mc_titles',JSON.stringify(st.titles));
+    if(typeof paintFrames==='function') paintFrames();
   }
   if(msg){ codeMsg.className='codemsg ok'; codeMsg.textContent=msg; }
   paintBadges(); render();
@@ -1113,7 +1158,7 @@ document.getElementById('guildBtn').addEventListener('click',function(){
 
 /* ทำครบบนเครื่องเดียวกัน ก็ไม่ต้องพิมพ์รหัสซ้ำ — ให้ตราไปเลย
    (รหัสมีไว้สำหรับคนที่อ่าน/เรียนคนละเครื่องกับที่ทำการ์ด) */
-/* ยุคเก็บทันทีที่เลือก ไม่ต้องรอกดลงทะเบียน — ตราปีจะได้ขึ้นการ์ดให้เห็นเลย */
+/* ยุคเก็บทันทีที่เลือก ไม่ต้องลงทะเบียนก็ได้ตราปี */
 (function(){
   var sel=document.getElementById('rera');
   if(!sel) return;
@@ -1124,6 +1169,29 @@ document.getElementById('guildBtn').addEventListener('click',function(){
     render();
   });
 })();
+
+/* ตัวเลือกกรอบ — โผล่เมื่อปลดได้มากกว่าหนึ่งแบบเท่านั้น */
+function paintFrames(){
+  var wrap=document.getElementById('frameOpt'), box=document.getElementById('frames');
+  if(!wrap) return;
+  var can=frameChoices();
+  wrap.hidden = can.length<2;
+  if(wrap.hidden) return;
+  var cur = st.frame && can.indexOf(st.frame)>=0 ? st.frame : can[can.length-1];
+  box.innerHTML='';
+  can.forEach(function(k){
+    var b=document.createElement('button');
+    b.type='button'; b.className='fr';
+    b.setAttribute('aria-pressed', k===cur?'true':'false');
+    b.innerHTML='<span class="sw" style="border-color:'+FRAME_TH[k][1]+'"></span>'+FRAME_TH[k][0];
+    b.addEventListener('click',function(){
+      st.frame=k; ls.set('mc_frame',k);
+      paintFrames(); render();
+    });
+    box.appendChild(b);
+  });
+}
+paintFrames();
 
 [['mc_forge_done','BLACKSMITH','⚒️ เราเห็นว่าคุณอ่านการ์ตูนครบทุกตอนแล้ว — ใส่ตรา “ช่างตีเหล็ก” ให้เรียบร้อย'],
  ['mc_ch7_done','AWAKENED','🌅 เราเห็นว่าคุณอ่านบทที่ 7 จบแล้ว — ใส่ตรา “ผู้ตื่นรู้” ให้เรียบร้อย']
@@ -1184,8 +1252,11 @@ function regPayload(){
   return {
     name    : rname.value.trim(),
     email   : remail.value.trim(),
-    era     : rera.value,
-    eraTh   : rera.value ? rera.options[rera.selectedIndex].text : '',
+    era     : st.era,
+    eraTh   : (function(){
+      var o=rera && st.era ? rera.querySelector('option[value="'+st.era+'"]') : null;
+      return o ? o.textContent.trim() : '';
+    })(),
     news    : rnews.checked,
     nickname: st.nick,
     line    : st.line,
@@ -1392,7 +1463,7 @@ if(document.fonts && document.fonts.ready){ document.fonts.ready.then(render); }
       ico=document.getElementById('musicIco'), lbl=document.getElementById('musicLbl');
   if(!au||!btn) return;
 
-  var SUB='<small>เพลงของ myclover · ทำเองกับ AI</small>';
+  var SUB='<small>Clover Song · คนแต่ง คนร้อง ไม่ได้ใช้ AI</small>';
   function cls(c,on){
     var re=new RegExp('(^|\\s)'+c+'(?=\\s|$)','g');
     btn.className=btn.className.replace(re,' ').replace(/\s+/g,' ').replace(/^ | $/g,'')+(on?' '+c:'');
