@@ -55,6 +55,11 @@ h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));colo
 /* ด่านบอสท้ายบทที่ 6 — โทนเข้มกว่าบทเรียน ให้รู้ว่าเปลี่ยนจังหวะแล้ว */
 .bossbox{margin:34px 0 6px;border:1px solid rgb(190 148 66/.5);border-radius:18px;padding:24px 22px;
   background:linear-gradient(180deg,rgb(10 40 24/.96),rgb(6 25 14/.96));color:rgb(248 246 240);text-align:center}
+/* ภาพเปิดตัวด่าน — ให้เห็นก่อนกดเข้า จะได้รู้สึกว่าปลดอะไรที่ไม่ได้มาถึงกันทุกคน
+   โหลดแบบ lazy และกล่องนี้ถูกซ่อนอยู่จนกว่าจะเรียนครบ คนที่ยังไม่ถึงจึงไม่กินแบนด์วิดท์ */
+.bossart{display:block;margin:-6px 0 18px;border-radius:14px;overflow:hidden;
+  border:1px solid rgb(190 148 66/.42);box-shadow:0 20px 44px -30px rgb(0 0 0/.9)}
+.bossart img{width:100%;height:auto;display:block}
 .bosstag{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:11px;letter-spacing:.22em;
   color:rgb(var(--gold));display:block}
 .bossbox b{display:block;font-size:20px;margin-top:9px}
@@ -226,6 +231,12 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 <div class="quest">🎯 <b>เควสท้ายคลาส:</b> กดอัดเสียงตอบ 8 คำถามในข้อ 4 (ใช้เวลา 5 นาที) ส่งเข้า Gemini แล้วให้มันเขียนพร้อมท์ให้ จากนั้นเอาไปสร้างเว็บใน Canvas — จากปากเปล่าเป็นเว็บจริง โดยที่คุณแทบไม่ได้พิมพ์อะไรเลย<span class="qshare">ทำเสร็จแล้วเอามาอวดกันในบ้านได้เลย — ใช้เวลาแค่วันละ 10 นาทีก็พอ 🍀</span></div>
 <!-- ด่านบอส — โผล่เมื่อเรียนครบทั้ง 6 บทเท่านั้น เผยแบบสงบ ไม่มีแฟลช -->
 <div class="bossbox" data-mc-done="learn" hidden>
+  <picture class="bossart">
+    <source type="image/webp" media="(max-width:640px)" srcset="../img/awaken-gate-640.webp">
+    <source type="image/webp" srcset="../img/awaken-gate-1024.webp">
+    <img src="../img/awaken-gate.jpg" width="1024" height="538" loading="lazy" decoding="async"
+         alt="บทที่ 7 ด่านบอส — ความเงียบ และตัวอักษร">
+  </picture>
   <span class="bosstag">BOSS STAGE UNLOCKED</span>
   <b class="disp">บทที่ไม่ได้อยู่ในแผนการสอน</b>
   <p>ด่านนี้ไม่มีวิดีโอ ไม่มี Prompt ให้คัดลอก ไม่มีแบบฝึกหัด<br>
