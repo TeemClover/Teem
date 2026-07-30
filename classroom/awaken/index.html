@@ -149,17 +149,47 @@ img{max-width:100%;height:auto;display:block}
 .md .guard{margin-top:12px;border:1px dashed rgb(190 148 66/.45);border-radius:12px;padding:13px 15px;
   font-size:13.5px;color:rgb(255 255 255/.72);line-height:1.8}
 .md .guard b{color:rgb(var(--gold))}
-.pc4{margin-top:18px;display:grid;gap:14px}
-.pmem .top{display:flex;align-items:center;gap:14px}
-.ava{width:64px;height:64px;flex:none;border-radius:16px;overflow:hidden;position:relative;
-  background:rgb(255 255 255/.07);border:1px solid rgb(190 148 66/.4);display:grid;place-items:center}
+.pbar{display:flex;align-items:center;gap:10px;margin-top:16px;padding:9px 14px;
+  border:1px solid rgb(190 148 66/.4);border-radius:11px;background:rgb(190 148 66/.09)}
+.pbar b{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.2em;color:rgb(var(--gold))}
+.pbar .slots{margin-left:auto;display:flex;gap:4px}
+.pbar .slots i{width:9px;height:9px;border-radius:2px;background:rgb(var(--gold));transform:rotate(45deg)}
+
+.pc4{margin-top:14px;display:grid;gap:13px}
+/* การ์ดสมาชิก — กรอบซ้ายเป็นสีประจำสายของตัวนั้น */
+.pmem{border:1px solid rgb(255 255 255/.15);border-left:3px solid var(--ac,rgb(190 148 66));
+  border-radius:16px;padding:16px;background:linear-gradient(100deg,color-mix(in srgb,var(--ac) 13%,transparent),rgb(255 255 255/.03))}
+.pmem.lead{border:1.5px solid rgb(190 148 66/.65);border-left-width:3px;
+  box-shadow:0 0 0 1px rgb(190 148 66/.2) inset,0 18px 40px -26px rgb(190 148 66/.85)}
+.pmem .top{display:flex;align-items:flex-start;gap:14px}
+
+/* ภาพประจำตัว — กรอบสองชั้นแบบการ์ดเกม มีมุมทองสี่มุมให้หัวหน้าปาร์ตี้ */
+.ava{width:112px;height:112px;flex:none;border-radius:14px;overflow:hidden;position:relative;
+  background:rgb(255 255 255/.06);border:2px solid var(--ac,rgb(190 148 66));display:grid;place-items:center;
+  box-shadow:0 0 0 1px rgb(0 0 0/.5),0 10px 26px -14px rgb(0 0 0/.9)}
+.ava picture{display:contents}
 .ava img{width:100%;height:100%;object-fit:cover;display:block}
 /* ยังไม่มีภาพก็ต้องดูตั้งใจ ไม่ใช่รูปแตก — ใช้อีโมจิยืนแทนไปก่อน */
-.ava .fb{font-size:30px;line-height:1}
-.ava img+.fb{display:none}
-.pmem .duty{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--paper));
-  margin-top:3px}
+.ava .fb{font-size:46px;line-height:1}
+.ava picture+.fb{display:none}
+.pmem.lead .ava{border-color:rgb(var(--gold));width:124px;height:124px}
+.pmem.lead .ava::after{content:"";position:absolute;inset:3px;border-radius:9px;pointer-events:none;
+  border:1px solid rgb(190 148 66/.55)}
+
+.pmem .who{flex:1;min-width:0}
+.nmrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pmem .nm{font-family:"Bai Jamjuree";font-weight:700;font-size:19px;letter-spacing:.04em}
+.ldtag{font-family:"Bai Jamjuree";font-weight:700;font-size:9.5px;letter-spacing:.14em;
+  color:rgb(10 40 24);background:rgb(var(--gold));border-radius:99px;padding:3px 9px}
+.pmem .role{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.11em;
+  color:rgb(var(--gold));margin-top:3px}
+.clschip{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:12.5px;border-radius:99px;padding:4px 12px 4px 8px;color:#fff;
+  background:color-mix(in srgb,var(--ac) 65%,transparent);border:1px solid rgb(255 255 255/.28)}
+.clschip i{font-style:normal;font-size:14px}
+.pmem .duty{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--paper));margin-top:7px}
 .pmem .duty em{font-style:normal;color:rgb(var(--gold))}
+
 .relay{margin-top:20px;border:1px solid rgb(190 148 66/.45);border-radius:16px;padding:20px 18px;
   background:linear-gradient(180deg,rgb(190 148 66/.12),rgb(190 148 66/.02))}
 .relay .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.18em;
@@ -245,6 +275,11 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
 .loop .st b button{letter-spacing:.14em}
 @media(min-width:760px){ .loop{grid-template-columns:1fr 1fr} }
 /* จอแคบ ชื่อสกิลกินความกว้างจนคำอธิบายเหลือ 3 คำต่อบรรทัด — ให้ขึ้นบรรทัดใหม่แทน */
+/* จอกว้างขึ้น ภาพใหญ่ขึ้นอีก งานศิลป์จะได้ไม่จม */
+@media(min-width:560px){
+  .ava{width:136px;height:136px}
+  .pmem.lead .ava{width:150px;height:150px}
+}
 @media(max-width:560px){
   .sk{display:block}
   .sk b{min-width:0;display:block;margin-bottom:2px}
@@ -540,15 +575,20 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
       <b>นี่คือ Build ที่ผมจัดเอง ไม่ใช่คะแนนทดสอบ</b><br>
       เครื่องมือแต่ละตัวเปลี่ยนเร็ว และคนอื่นอาจจัด Party ต่างจากผมได้
     </div>
+    <div class="pbar">
+      <b class="mono">ACTIVE PARTY</b>
+      <span style="font-size:13px;color:rgb(255 255 255/.7)">4 คน · คนละสาย</span>
+      <span class="slots" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    </div>
     <div class="pc4">
 
-      <div class="pmem">
+      <div class="pmem lead" style="--ac:#2E4A8F">
         <div class="top">
-          <span class="ava"><img src="../../img/party-teem.png" alt="" loading="lazy" decoding="async"
-                onerror="this.remove()"><span class="fb" aria-hidden="true">🧑‍🏭</span></span>
-          <div>
-            <div class="nm disp">TEEM</div>
+          <span class="ava"><picture><source type="image/webp" srcset="../../img/party-teem.webp"><img src="../../img/party-teem.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🧑‍🏭</span></span>
+          <div class="who">
+            <div class="nmrow"><span class="nm disp">TEEM</span><span class="ldtag">👑 PARTY LEADER</span></div>
             <div class="role mono">MASTER BLACKSMITH / GAME MASTER</div>
+            <span class="clschip"><i aria-hidden="true">🧠</i>สายคิด</span>
             <div class="duty disp"><em>คิด</em> และ <em>สั่งการ</em></div>
           </div>
         </div>
@@ -558,13 +598,13 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
         <p class="watch">ช่างที่ใช้เวลานานมากกว่าจะเรียนรู้ว่า Skill ที่ใช้ตีเหล็กควรมีค่าจ้างอย่างไร</p>
       </div>
 
-      <div class="pmem">
+      <div class="pmem" style="--ac:#4B5A67">
         <div class="top">
-          <span class="ava"><img src="../../img/party-claude.png" alt="" loading="lazy" decoding="async"
-                onerror="this.remove()"><span class="fb" aria-hidden="true">🛠️</span></span>
-          <div>
-            <div class="nm disp">CLAUDE</div>
+          <span class="ava"><picture><source type="image/webp" srcset="../../img/party-claude.webp"><img src="../../img/party-claude.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🛠️</span></span>
+          <div class="who">
+            <div class="nmrow"><span class="nm disp">CLAUDE</span></div>
             <div class="role mono">ARTIFICER / GUARDIAN</div>
+            <span class="clschip"><i aria-hidden="true">🧰</i>สายประดิษฐ์</span>
             <div class="duty disp"><em>สร้าง</em> และ <em>ซ่อม</em></div>
           </div>
         </div>
@@ -574,13 +614,13 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
         <p class="watch">ระวังตัวจนบางทีช้ากว่าที่ต้องการ และถ้าคุณให้บริบทไม่พอ มันจะถามก่อนลงมือ</p>
       </div>
 
-      <div class="pmem">
+      <div class="pmem" style="--ac:#1F8A70">
         <div class="top">
-          <span class="ava"><img src="../../img/party-gpt.png" alt="" loading="lazy" decoding="async"
-                onerror="this.remove()"><span class="fb" aria-hidden="true">🎨</span></span>
-          <div>
-            <div class="nm disp">CHATGPT</div>
+          <span class="ava"><picture><source type="image/webp" srcset="../../img/party-gpt.webp"><img src="../../img/party-gpt.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🎨</span></span>
+          <div class="who">
+            <div class="nmrow"><span class="nm disp">CHATGPT</span></div>
             <div class="role mono">ILLUSIONIST BARD</div>
+            <span class="clschip"><i aria-hidden="true">💪</i>สายคลีน</span>
             <div class="duty disp"><em>วาด</em> และ <em>เขียน</em></div>
           </div>
         </div>
@@ -590,13 +630,13 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
         <p class="watch">เล่าเก่งจนบางทีฟังดูมั่นใจเกินกว่าที่ควร ข้อเท็จจริงต้องเช็กเองอีกชั้น</p>
       </div>
 
-      <div class="pmem">
+      <div class="pmem" style="--ac:#C4622D">
         <div class="top">
-          <span class="ava"><img src="../../img/party-gemini.png" alt="" loading="lazy" decoding="async"
-                onerror="this.remove()"><span class="fb" aria-hidden="true">⚡</span></span>
-          <div>
-            <div class="nm disp">GEMINI</div>
+          <span class="ava"><picture><source type="image/webp" srcset="../../img/party-gemini.webp"><img src="../../img/party-gemini.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">⚡</span></span>
+          <div class="who">
+            <div class="nmrow"><span class="nm disp">GEMINI</span></div>
             <div class="role mono">BERSERKER ANALYST</div>
+            <span class="clschip"><i aria-hidden="true">🍜</i>สายกิน</span>
             <div class="duty disp"><em>แตกไอเดีย</em> และ <em>เถียง</em></div>
           </div>
         </div>
