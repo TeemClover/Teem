@@ -163,12 +163,14 @@ var CSS=[
 ].join('\n');
 
 function init(){
-  var nodes=document.querySelectorAll('[data-kw]');
-  if(!nodes.length) return;              /* หน้าไหนไม่ได้ใช้ ก็ไม่ต้องแตะ DOM เลย */
-
-  var st=document.createElement('style');
-  st.textContent=CSS;
-  document.head.appendChild(st);
+  var styled=false;
+  function addCSS(){
+    if(styled) return;
+    styled=true;
+    var st=document.createElement('style');
+    st.textContent=CSS;
+    document.head.appendChild(st);
+  }
 
   var tip=null, back=null, cur=null, pinned=false, shutT=null;
 
@@ -266,9 +268,22 @@ function init(){
     el.setAttribute('aria-expanded','true');
   }
 
-  Array.prototype.forEach.call(nodes,function(el){
+  /* หน้าไหนสร้างเนื้อหาทีหลัง (เช่นบทส่งท้ายของตอนพิเศษที่โผล่หลังใช้สกิล)
+     ก็ต้องได้ทั้งสไตล์และพฤติกรรมเหมือนกัน เรียก scan ซ้ำได้ไม่ซ้ำซ้อน */
+  function scan(root){
+    var list=(root||document).querySelectorAll('[data-kw]');
+    if(!list.length) return 0;
+    var n=0;
+    Array.prototype.forEach.call(list,function(el){ if(wire(el)) n++; });
+    return n;
+  }
+
+  function wire(el){
+    if(el.dataset.kwReady) return false;
     var k=key(el);
-    if(!TERMS[k]) return;               /* ไม่มีในอภิธานศัพท์ ปล่อยเป็นข้อความธรรมดา */
+    if(!TERMS[k]) return false;          /* ไม่มีในอภิธานศัพท์ ปล่อยเป็นข้อความธรรมดา */
+    el.dataset.kwReady='1';
+    addCSS();
     el.classList.add('kw');
     if(el.tagName!=='BUTTON') el.setAttribute('tabindex','0');
     el.setAttribute('aria-expanded','false');
@@ -302,7 +317,21 @@ function init(){
         },0);
       });
     }
-  });
+    return true;
+  }
+
+  scan();
+
+  /* คอยดูว่ามีคำใหม่ถูกเพิ่มเข้ามาไหม จะได้ไม่ต้องให้แต่ละหน้าคอยเรียกเอง */
+  if(window.MutationObserver && document.body){
+    var pending=false;
+    new MutationObserver(function(){
+      if(pending) return;
+      pending=true;
+      setTimeout(function(){ pending=false; scan(); },0);
+    }).observe(document.body,{childList:true,subtree:true});
+  }
+  window.MC_KW={ scan:scan };
 
   document.addEventListener('keydown',function(e){
     if(e.key==='Escape' && tip){ var el=cur; close(); if(el) el.focus(); }
