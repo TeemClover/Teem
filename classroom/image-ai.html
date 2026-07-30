@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="mc-item" content="learn:image-ai">
+<title>ทำภาพด้วย AI — จากภาพในหัวสู่งานที่ใช้ได้จริง · ห้องเรียน AI ของบ้าน myclover</title>
+<meta name="description" content="เรียนสร้างภาพด้วย AI ตั้งแต่พื้นฐาน ไปจนถึงการใช้รูปตัวเอง รูปสินค้า การ์ตูนเล่าเรื่อง และ Carousel โดยมี HARD MODE ให้เลือกปลดล็อก">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100;--red:170 66 48}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+button{font:inherit}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
+a{text-decoration:none;color:inherit}
+img{max-width:100%}
+.wrap{max-width:800px;margin:0 auto;padding:0 20px}
+nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.94);backdrop-filter:blur(8px);border-bottom:1px solid rgb(var(--ink)/.08)}
+nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+.bk{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:18px;color:rgb(var(--ink))}
+.bk em{font-style:normal;color:rgb(var(--green))}
+.bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
+.bk2:hover{color:rgb(var(--green))}
+.head{background:rgb(var(--deep));color:#fff;border-radius:20px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative}
+.heroimg{margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
+.heroimg img{width:100%;height:100%;object-fit:cover;display:block}
+.lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
+.head h1{font-size:clamp(25px,4.7vw,34px);margin:12px 0 8px;line-height:1.28}
+.head>p{color:rgb(255 255 255/.82);font-size:15.5px;max-width:61ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.15);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.87)}
+h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;margin:36px 0 14px;display:flex;align-items:center;gap:11px}
+h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none}
+.card{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:6px 22px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.item{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgb(var(--ink)/.06)}
+.item:last-child{border:0}
+.item .ic{font-size:19px;flex:none;margin-top:1px;width:25px;text-align:center}
+.item b{font-weight:600}
+.item small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:2px}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.step>div{flex:1;min-width:0}
+.step .num{width:29px;height:29px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px;flex:none;margin-top:2px}
+.step b{font-weight:600}
+.step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px}
+.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#071a10;color:#d7f5e2;border-radius:12px;padding:15px 58px 15px 16px;margin-top:12px;line-height:1.72;white-space:pre-wrap}
+.cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:7px;padding:5px 11px;cursor:pointer;opacity:.92}
+.cpx:hover{opacity:1}
+.note{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:14px;padding:16px 20px;margin-top:16px;font-size:14.5px}
+.core{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:linear-gradient(135deg,rgb(27 106 66/.1),rgb(190 148 66/.1));border:1px solid rgb(27 106 66/.25);border-radius:16px;padding:19px 21px;margin:18px 0 8px}
+.core .big{font-size:28px;line-height:1.3}
+.core b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:17px;margin-bottom:3px}
+.core p{font-size:14px;color:rgb(var(--muted))}
+.formula{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
+.formula div{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:12px;padding:10px 8px;text-align:center;font-size:11.5px;line-height:1.45}
+.formula b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:12px;color:rgb(var(--green));margin-bottom:2px}
+.routes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.route{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:18px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.route .tag{display:inline-block;font-family:"Bai Jamjuree",sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:rgb(var(--green));background:rgb(27 106 66/.08);border-radius:999px;padding:4px 9px;margin-bottom:9px}
+.route h3{font-family:"Bai Jamjuree",sans-serif;font-size:16px;line-height:1.4;margin-bottom:5px}
+.route p{font-size:13.5px;color:rgb(var(--muted));line-height:1.65}
+.route .mini{margin-top:10px;padding-top:9px;border-top:1px dashed rgb(var(--ink)/.1);font-size:12.5px;color:rgb(var(--ink)/.78)}
+.truth{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:18px 20px}
+.truth .side b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;margin-bottom:2px}
+.truth .side span{font-size:13px;color:rgb(var(--muted))}
+.truth .plus{font-family:"Bai Jamjuree",sans-serif;font-size:24px;font-weight:700;color:rgb(var(--gold))}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.rule{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:13px;padding:13px 15px;font-size:13.5px;line-height:1.65}
+.rule b{display:block;font-size:13.5px;margin-bottom:1px}
+.hard{margin-top:38px;border:1px solid rgb(190 148 66/.55);border-radius:20px;background:linear-gradient(150deg,#071a10,#113b25);color:#fff;overflow:hidden;box-shadow:0 12px 35px rgb(7 26 16/.15)}
+.hardtop{padding:25px 24px;text-align:center;background-image:radial-gradient(500px 180px at 50% -25%,rgb(190 148 66/.28),transparent 65%)}
+.lock{font-size:33px;display:block;margin-bottom:5px}
+.hardtop .eyebrow{font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;color:rgb(var(--gold))}
+.hardtop h2{display:block;color:#fff;font-size:clamp(21px,4vw,28px);margin:6px 0 5px}
+.hardtop p{font-size:14px;color:rgb(255 255 255/.72);max-width:56ch;margin:0 auto}
+.unlock{margin-top:17px;border:1px solid rgb(190 148 66/.6);background:rgb(var(--gold));color:#071a10;border-radius:12px;padding:12px 19px;cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-weight:700;transition:.18s}
+.unlock:hover{transform:translateY(-2px);filter:brightness(1.04)}
+.unlock.done{background:rgb(27 106 66);border-color:rgb(255 255 255/.2);color:#fff}
+.hardbody{display:none;padding:0 24px 25px}
+.hard[data-open="1"] .hardbody{display:block}
+.hardline{height:1px;background:rgb(255 255 255/.13);margin-bottom:22px}
+.modegrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mode{border:1px solid rgb(255 255 255/.13);background:rgb(255 255 255/.06);border-radius:13px;padding:13px 14px}
+.mode b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:14px;color:#fff}
+.mode span{display:block;font-size:12.5px;color:rgb(255 255 255/.65);margin-top:2px;line-height:1.55}
+.hardsteps{counter-reset:hstep;display:grid;gap:9px;margin-top:17px}
+.hstep{counter-increment:hstep;display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:start;border:1px solid rgb(255 255 255/.11);border-radius:13px;padding:13px 14px;background:rgb(0 0 0/.12)}
+.hstep::before{content:counter(hstep);width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:rgb(var(--gold));color:#071a10;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px}
+.hstep b{display:block;font-size:14px}
+.hstep small{display:block;color:rgb(255 255 255/.62);font-size:12.5px;line-height:1.6;margin-top:2px}
+.hard .prompt{background:#020b06;border:1px solid rgb(255 255 255/.12);margin-top:17px}
+.finish{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-top:18px;background:rgb(190 148 66/.11);border:1px solid rgb(190 148 66/.32);border-radius:14px;padding:15px 16px}
+.finish p{font-size:13px;color:rgb(255 255 255/.7)}
+.finish button{flex:none;border:0;border-radius:10px;padding:10px 14px;background:#fff;color:#071a10;font-family:"Bai Jamjuree",sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.achievement{display:none;margin-top:13px;text-align:center;border:1px solid rgb(190 148 66/.5);border-radius:13px;padding:14px;background:rgb(190 148 66/.13);font-family:"Bai Jamjuree",sans-serif;color:rgb(var(--gold))}
+.achievement.show{display:block}
+.quest{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.25);border-radius:16px;padding:20px 24px;margin-top:30px;font-size:15px}
+.quest .qshare{display:block;margin-top:8px;font-size:13px;color:rgb(var(--muted))}
+.skip{display:block;margin-top:10px;font-size:12.5px;color:rgb(var(--muted))}
+.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
+.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:.15s}
+.nx:hover{transform:translateY(-2px)}
+.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.4)}
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
+@media(max-width:620px){
+  .head{padding:28px 22px}.heroimg{margin:-28px -22px 18px;height:150px}
+  .formula{grid-template-columns:1fr 1fr}.formula div:last-child{grid-column:1/-1}
+  .routes,.rules,.modegrid{grid-template-columns:1fr}
+  .truth{grid-template-columns:1fr;text-align:center}.truth .plus{line-height:1}
+  .finish{align-items:stretch;flex-direction:column}.finish button{width:100%}
+}
+</style>
+</head>
+<body>
+<nav class="top"><div class="wrap">
+  <a class="bk disp" href="../">🍀 my<em>clover</em></a>
+  <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
+</div></nav>
+
+<div class="wrap">
+<header class="head">
+  <div class="heroimg"><img src="../img/lesson-2.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+  <span class="lv">LV.2 · VISUAL CREATOR</span>
+  <h1 class="disp">ทำภาพด้วย AI — จากภาพในหัว สู่งานที่ใช้ได้จริง</h1>
+  <p>เริ่มจากสร้างภาพง่าย ๆ แล้วอัปเกรดไปถึงการใช้รูปตัวเอง รูปสินค้า การ์ตูนเล่าเรื่อง และภาพชุด Carousel โดยไม่ทิ้งความจริงของต้นฉบับ</p>
+  <div class="meta"><span>⏱️ พื้นฐาน ~10 นาที</span><span>💸 ฟรี</span><span>🖼️ ได้งานจริงกลับไป</span><span>🔒 มี HARD MODE</span></div>
+</header>
+
+<div class="core">
+  <span class="big">💡</span>
+  <div>
+    <b>แก่นของบทนี้มีประโยคเดียว</b>
+    <p><strong>ภาพจริงคือหลักฐาน — AI คือพลังขยาย</strong> เราไม่ได้ใช้ AI เพื่อทำทุกอย่างปลอม แต่ใช้มันช่วยจัดฉาก เปลี่ยนสไตล์ เล่าเรื่อง และทำให้งาน 1 ชิ้นเดินทางไปได้ไกลกว่าเดิม</p>
+  </div>
+</div>
+
+<h2><span class="n">1</span>สร้างภาพแรกให้สำเร็จก่อน</h2>
+<div class="steps">
+  <div class="step"><span class="num">1</span><div><b>เปิด Gemini แล้วเริ่มด้วยคำว่า “สร้างภาพ...”</b><small>ไม่ต้องรู้ศัพท์เทคนิค แค่บอกให้ชัดว่าภาพมีอะไร รู้สึกแบบไหน และเอาไปใช้ที่ไหน</small></div></div>
+  <div class="step"><span class="num">2</span><div><b>ลองคำสั่งนี้ แล้วสังเกตว่าแต่ละส่วนทำหน้าที่อะไร</b>
+    <div class="prompt">สร้างภาพ แมวส้มใส่แว่นกันแดด นั่งจิบกาแฟในคาเฟ่ริมทะเล แสงเย็นอบอุ่น สไตล์ภาพถ่ายจริง สำหรับโพสต์แนวตั้ง</div>
+    <small>ได้ภาพแล้ว เท่ากับผ่านพื้นฐาน ต่อไปเราจะทำให้มัน “ตรงใจ” และ “ใช้จริง” มากขึ้น</small>
+  </div></div>
+</div>
+
+<h2><span class="n">2</span>สูตรสั่งภาพ 5 ช่อง</h2>
+<div class="formula">
+  <div><b>1 · งานอะไร</b>ภาพถ่าย<br>โปสเตอร์<br>การ์ตูน</div>
+  <div><b>2 · มีอะไร</b>คน<br>สินค้า<br>สถานที่</div>
+  <div><b>3 · ทำอะไร</b>ท่าทาง<br>เหตุการณ์<br>เรื่องราว</div>
+  <div><b>4 · รู้สึกแบบไหน</b>แสง<br>อารมณ์<br>สไตล์</div>
+  <div><b>5 · ใช้ที่ไหน</b>แนวตั้ง<br>สี่เหลี่ยม<br>Carousel</div>
+</div>
+<div class="note">🧩 <b>จำง่าย:</b> งานอะไร + มีอะไร + กำลังทำอะไร + รู้สึกแบบไหน + เอาไปใช้ที่ไหน</div>
+
+<h2><span class="n">3</span>ภาพจริง + AI ทำอะไรได้บ้าง?</h2>
+<div class="truth">
+  <div class="side"><b>📷 ภาพจริง</b><span>ตัวตนจริง · สินค้าจริง · สถานที่จริง · ความน่าเชื่อถือ</span></div>
+  <div class="plus">+</div>
+  <div class="side"><b>✨ AI</b><span>จัดฉาก · เปลี่ยนบรรยากาศ · แตกเรื่อง · ทำภาพชุด · ขยายไอเดีย</span></div>
+</div>
+
+<h2><span class="n">4</span>เลือกสายที่ตรงกับงานของคุณ</h2>
+<div class="routes">
+  <article class="route">
+    <span class="tag">REAL PERSON</span>
+    <h3>👤 ใช้รูปตัวเอง</h3>
+    <p>อัปโหลดรูปที่เห็นหน้าและเสื้อผ้าชัด แล้วขอให้ AI เปลี่ยนฉาก แสง หรือสไตล์ โดยย้ำให้รักษาใบหน้าและลักษณะเดิม</p>
+    <div class="mini">เหมาะกับ: โปรไฟล์ · ภาพแนะนำตัว · Personal Brand</div>
+  </article>
+  <article class="route">
+    <span class="tag">REAL PRODUCT</span>
+    <h3>📦 ใช้รูปสินค้าจริง</h3>
+    <p>ให้สินค้าจริงเป็นพระเอก แล้วใช้ AI ช่วยเก็บพื้นหลัง จัดแสง หรือวางในฉากโฆษณา โดยห้ามเปลี่ยนฉลาก รูปทรง และสีสินค้า</p>
+    <div class="mini">เหมาะกับ: ภาพขาย · เมนู · Catalog · รีวิว</div>
+  </article>
+  <article class="route">
+    <span class="tag">STORY MODE</span>
+    <h3>🎬 ทำการ์ตูนเล่าเรื่อง</h3>
+    <p>เริ่มจากตัวละครหรือภาพอ้างอิง 1 ภาพ แล้วแตกเป็นเหตุการณ์ 3–4 ช่อง พร้อมกำหนดเสื้อผ้า สี และหน้าตาให้ต่อเนื่องทุกช่อง</p>
+    <div class="mini">เหมาะกับ: เรื่องเล่าแบรนด์ · How-to · Before/After</div>
+  </article>
+  <article class="route">
+    <span class="tag">CAROUSEL</span>
+    <h3>🗂️ ทำภาพชุดแบบ Carousel</h3>
+    <p>อย่าสั่งทีละภาพแบบแยกกัน ให้ AI วางโครงทั้งชุดก่อน: ปก → ปัญหา → วิธีแก้ → ตัวอย่าง → ชวนลงมือ แล้วค่อยทำภาพด้วยภาษาภาพเดียวกัน</p>
+    <div class="mini">เหมาะกับ: Facebook · Instagram · LinkedIn · ความรู้</div>
+  </article>
+</div>
+
+<h2><span class="n">5</span>พร้อมท์ใช้งานจริง 4 แบบ</h2>
+<div class="steps">
+  <div class="step"><span class="num">👤</span><div><b>รูปตัวเอง — เปลี่ยนฉาก แต่ไม่เปลี่ยนตัวตน</b>
+    <div class="prompt">ใช้ภาพที่ฉันแนบเป็นภาพอ้างอิง รักษาใบหน้า ทรงผม รูปร่าง และเสื้อผ้าหลักให้ใกล้เคียงต้นฉบับ เปลี่ยนฉากเป็น [สถานที่] แสง [บรรยากาศ] จัดองค์ประกอบสำหรับ [รูปโปรไฟล์/โพสต์แนวตั้ง] ห้ามเพิ่มตัวหนังสือหรือโลโก้</div>
+  </div></div>
+
+  <div class="step"><span class="num">📦</span><div><b>สินค้าจริง — อัปเกรดฉากโดยไม่บิดเบือนสินค้า</b>
+    <div class="prompt">ใช้สินค้าจากภาพที่แนบเป็นตัวแบบหลัก รักษารูปทรง สี ฉลาก และรายละเอียดสินค้าให้ตรงกับต้นฉบับ จัดวางในฉาก [ครัวสะอาด/โต๊ะทำงาน/ธรรมชาติ] แสงโฆษณานุ่ม ดูน่าเชื่อถือ เว้นพื้นที่ว่างสำหรับใส่ข้อความภายหลัง ห้ามสร้างข้อความใหม่บนฉลาก</div>
+  </div></div>
+
+  <div class="step"><span class="num">🎬</span><div><b>การ์ตูนเล่าเรื่อง — ตัวละครต้องต่อเนื่อง</b>
+    <div class="prompt">สร้างภาพการ์ตูนเล่าเรื่อง 4 ช่องจากหัวข้อ [เรื่อง] ตัวละครหลักอ้างอิงจากภาพที่แนบ รักษาหน้าตา ทรงผม เสื้อผ้า และโทนสีให้เหมือนกันทุกช่อง
+ช่อง 1: ปัญหา
+ช่อง 2: พยายามแก้
+ช่อง 3: พบวิธีใหม่
+ช่อง 4: ผลลัพธ์
+ไม่มีข้อความในภาพ เว้นพื้นที่สำหรับใส่คำพูดภายหลัง</div>
+  </div></div>
+
+  <div class="step"><span class="num">🗂️</span><div><b>Carousel — วางทั้งชุดก่อนสร้างภาพ</b>
+    <div class="prompt">ช่วยวางโครง Carousel 5 หน้าเรื่อง [หัวข้อ] สำหรับ [กลุ่มคนดู]
+หน้า 1: ประโยคเปิดที่หยุดนิ้ว
+หน้า 2: ปัญหาที่คนดูเจอ
+หน้า 3: วิธีคิดหรือวิธีแก้
+หน้า 4: ตัวอย่างจากภาพจริงที่ฉันแนบ
+หน้า 5: สรุปและชวนลงมือ
+กำหนดแนวภาพ สี องค์ประกอบ และพื้นที่วางข้อความให้ต่อเนื่องกันทั้งชุด จากนั้นเขียนคำสั่งสร้างภาพแยกสำหรับแต่ละหน้า โดยไม่ใส่ตัวหนังสือลงในภาพ</div>
+  </div></div>
+</div>
+
+<h2><span class="n">6</span>กติกาก่อนใช้ภาพจริง</h2>
+<div class="rules">
+  <div class="rule"><b>🔐 อย่าอัปโหลดข้อมูลลับ</b>บัตรประชาชน เอกสารลูกค้า ที่อยู่ หรือภาพที่ไม่อยากให้ระบบประมวลผล</div>
+  <div class="rule"><b>🤝 ใช้รูปคนอื่นต้องได้รับอนุญาต</b>โดยเฉพาะภาพเด็ก ลูกค้า และภาพที่อาจทำให้เขาเข้าใจผิดหรือเสียหาย</div>
+  <div class="rule"><b>📦 อย่าปล่อยให้ AI เปลี่ยนสินค้า</b>ตรวจฉลาก สี รูปร่าง จำนวน และคุณสมบัติให้ตรงของจริงก่อนโพสต์</div>
+  <div class="rule"><b>✍️ ตัวหนังสือใส่ทีหลัง</b>ให้ AI ทำภาพและเว้นพื้นที่ แล้วพิมพ์ข้อความใน Canva หรือแอปที่แก้ไขได้</div>
+</div>
+
+<section class="hard" id="hardMode" data-open="0">
+  <div class="hardtop">
+    <span class="lock" id="lockIcon">🔒</span>
+    <span class="eyebrow">OPTIONAL CHALLENGE</span>
+    <h2 class="disp">HARD MODE · 1 SOURCE → 1 CONTENT SET</h2>
+    <p>บทนี้ผ่านได้โดยไม่ต้องทำส่วนนี้ แต่ถ้าปลดล็อก คุณจะได้ลองเปลี่ยนภาพจริง 1 ภาพ ให้กลายเป็นงานคอนเทนต์ทั้งชุด</p>
+    <button class="unlock" id="unlockHard" type="button">ปลดล็อก HARD MODE</button>
+  </div>
+
+  <div class="hardbody" id="hardBody">
+    <div class="hardline"></div>
+    <div class="modegrid">
+      <div class="mode"><b>🗂️ เลือก A · Carousel 4 หน้า</b><span>ปก → ปัญหา → วิธีแก้ → ชวนลงมือ</span></div>
+      <div class="mode"><b>🎬 เลือก B · การ์ตูน 4 ช่อง</b><span>เริ่มเรื่อง → อุปสรรค → จุดเปลี่ยน → ผลลัพธ์</span></div>
+    </div>
+
+    <div class="hardsteps">
+      <div class="hstep"><div><b>เลือก Source จริง 1 ภาพ</b><small>รูปตัวเอง สินค้า ร้าน อาหาร ห้องทำงาน หรือสิ่งที่คุณทำจริง</small></div></div>
+      <div class="hstep"><div><b>ให้ AI อ่านภาพก่อน อย่าเพิ่งสร้าง</b><small>ถามว่าภาพนี้มีอะไร จุดเด่นคืออะไร และอะไรต้องรักษาไว้ไม่ให้เปลี่ยน</small></div></div>
+      <div class="hstep"><div><b>เลือก A หรือ B แล้ววางโครงทั้งชุด</b><small>กำหนดหน้าที่ของแต่ละภาพก่อน เพื่อไม่ให้ได้ภาพสวยแต่เล่าเรื่องไม่ต่อกัน</small></div></div>
+      <div class="hstep"><div><b>สร้างและตรวจความต่อเนื่อง</b><small>หน้า ตัวละคร สินค้า เสื้อผ้า สี แสง และสัดส่วนต้องไม่เปลี่ยนมั่วระหว่างภาพ</small></div></div>
+    </div>
+
+    <div class="prompt">ดูภาพที่ฉันแนบ แล้วตอบก่อนว่า:
+1. ภาพนี้มีจุดเด่นอะไร
+2. อะไรคือรายละเอียดที่ต้องรักษาไว้ ห้าม AI เปลี่ยน
+3. ภาพนี้เหมาะจะเล่าเป็น Carousel 4 หน้า หรือการ์ตูน 4 ช่องมากกว่า เพราะอะไร
+4. วางโครงเรื่องทั้งชุดให้ฉัน โดยใช้ภาพจริงนี้เป็น Source หลัก
+ยังไม่ต้องสร้างภาพ จนกว่าฉันจะอนุมัติโครง</div>
+
+    <div class="finish">
+      <p>สร้างงานครบ 1 ชุดแล้ว กดรับ Achievement ได้เลย สถานะจะถูกจำไว้ในเครื่องนี้</p>
+      <button type="button" id="finishHard">ฉันทำ HARD MODE สำเร็จ</button>
+    </div>
+    <div class="achievement" id="achievement">🏆 ACHIEVEMENT UNLOCKED · VISUAL ALCHEMIST</div>
+  </div>
+</section>
+
+<div class="quest">🎯 <b>เควสหลัก — เลือกทำแค่ 1 อย่าง:</b> ใช้สูตร 5 ช่องสร้างภาพใหม่ 1 ภาพ หรือใช้ภาพจริง 1 ภาพกับพร้อมท์สายใดสายหนึ่งด้านบน<span class="qshare">เป้าหมายไม่ใช่ภาพที่เพอร์เฟกต์ แต่คือภาพที่คุณอธิบายได้ว่า “ทำไมถึงสั่งแบบนี้” 🍀</span><span class="skip">HARD MODE เป็นเควสเสริม ไม่ทำก็ผ่านบทนี้และไปต่อได้ตามปกติ</span></div>
+
+<div class="nextrow">
+  <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
+  <a class="nx" href="clip-ai.html">คลาสถัดไป: ทำคลิปสั้น →</a>
+</div>
+
+<footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
+</div>
+
+<script>
+document.querySelectorAll('.prompt').forEach(function(el){
+  var b=document.createElement('button');
+  b.type='button';
+  b.className='cpx';
+  b.textContent='คัดลอก';
+  b.onclick=function(){
+    var c=el.cloneNode(true);
+    c.querySelectorAll('button').forEach(function(x){x.remove()});
+    navigator.clipboard.writeText(c.innerText.trim()).then(function(){
+      b.textContent='✓ คัดลอกแล้ว';
+      setTimeout(function(){b.textContent='คัดลอก'},1200);
+    });
+  };
+  el.appendChild(b);
+});
+
+(function(){
+  var hard=document.getElementById('hardMode');
+  var unlock=document.getElementById('unlockHard');
+  var icon=document.getElementById('lockIcon');
+  var finish=document.getElementById('finishHard');
+  var achievement=document.getElementById('achievement');
+
+  function openHard(shouldScroll){
+    hard.dataset.open='1';
+    icon.textContent='🔓';
+    unlock.textContent='✓ ปลดล็อกแล้ว · เปิด HARD MODE';
+    unlock.classList.add('done');
+    try{localStorage.setItem('mc-image-hard-unlocked','1')}catch(e){}
+    if(shouldScroll){
+      setTimeout(function(){
+        document.getElementById('hardBody').scrollIntoView({behavior:'smooth',block:'start'});
+      },80);
+    }
+  }
+
+  function showAchievement(){
+    achievement.classList.add('show');
+    finish.textContent='✓ รับ Achievement แล้ว';
+    finish.disabled=true;
+    try{localStorage.setItem('mc-image-hard-complete','1')}catch(e){}
+  }
+
+  unlock.addEventListener('click',function(){
+    if(hard.dataset.open==='1'){
+      document.getElementById('hardBody').scrollIntoView({behavior:'smooth',block:'start'});
+    }else{
+      openHard(true);
+    }
+  });
+
+  finish.addEventListener('click',showAchievement);
+
+  try{
+    if(localStorage.getItem('mc-image-hard-unlocked')==='1')openHard(false);
+    if(localStorage.getItem('mc-image-hard-complete')==='1')showAchievement();
+  }catch(e){}
+})();
+</script>
+
+<script defer src="../assets/quest.js"></script>
+<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "xtx73cs6w1");
+</script>
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
+</script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+</body>
+</html>
