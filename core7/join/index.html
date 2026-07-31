@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เข้าห้อง — myClover: CORE7</title>
+<meta name="theme-color" content="#0A2818">
+<link rel="stylesheet" href="/core7/css/core7.css">
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap-slim">
+    <p class="eyebrow">Join a Room</p>
+    <h2 class="disp">เข้าห้องด้วย Room Code</h2>
+    <div class="panel" style="margin-top:20px">
+      <div class="field">
+        <label for="jname">ชื่อของคุณบนโต๊ะ</label>
+        <input id="jname" maxlength="24">
+      </div>
+      <div class="field">
+        <label for="jcode">Room Code</label>
+        <input id="jcode" placeholder="CLVR-XXXX" autocapitalize="characters" autocomplete="off"
+          style="font-family:'Bai Jamjuree';letter-spacing:2px;font-size:18px">
+        <p class="hint">โค้ดหน้าตาแบบ CLVR-8821 — ได้จากคนที่สร้างห้อง</p>
+      </div>
+      <button class="btn btn-gold btn-lg btn-block" id="go">เข้าห้อง →</button>
+    </div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, toast } from '/core7/js/ui.js';
+import { getGuest, setGuestName, track } from '/core7/js/store.js';
+renderShell({});
+const nameEl = document.getElementById('jname');
+nameEl.value = getGuest().name;
+document.getElementById('go').addEventListener('click', () => {
+  let code = document.getElementById('jcode').value.trim().toUpperCase();
+  if (!code) { toast('ใส่ Room Code ก่อน'); return; }
+  if (!code.startsWith('CLVR-') && /^[A-Z0-9]{4}$/.test(code)) code = 'CLVR-' + code;
+  if (!/^CLVR-[A-Z0-9]{4}$/.test(code)) { toast('Room Code ไม่ถูกต้อง — ตัวอย่าง: CLVR-8821'); return; }
+  setGuestName(nameEl.value);
+  track('core7_room_join');
+  location.href = `/core7/room/?c=${encodeURIComponent(code)}&role=guest`;
+});
+</script>
+</body>
+</html>
