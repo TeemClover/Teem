@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>เรื่องเล่าจากโรงตีเหล็ก — อ่านฟรีบน myclover</title>
-<meta name="description" content="19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ อ่านฟรีทุกตอน ไม่ต้องสมัคร">
+<meta name="description" content="เรื่องจริงของคนที่เคยต้องสร้างทุกอย่างคนเดียว จนถึงวันที่ AI คืนเวลาให้ชีวิต — 7 ตอนจบ พร้อมตอนพิเศษ Version แรก อ่านฟรี ไม่ต้องสมัคร">
 <meta property="og:type" content="article">
 <meta property="og:title" content="เรื่องเล่าจากโรงตีเหล็ก — อ่านฟรีบน myclover">
-<meta property="og:description" content="19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ อ่านฟรีทุกตอน ไม่ต้องสมัคร">
-<meta property="og:image" content="https://www.myclover.com/forge/img/11-og.jpg">
+<meta property="og:description" content="เรื่องจริงของคนที่เคยต้องสร้างทุกอย่างคนเดียว จนถึงวันที่ AI คืนเวลาให้ชีวิต — 7 ตอนจบ พร้อมตอนพิเศษ Version แรก">
+<meta property="og:image" content="https://www.myclover.com/forge/img/07-og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://www.myclover.com/forge/">
 <meta name="theme-color" content="#0A2818">
@@ -60,6 +60,14 @@ footer a{color:rgb(var(--green));font-weight:600}
 .ep .bd{padding:13px 15px 15px;display:flex;flex-direction:column;gap:3px;flex:1}
 .ep .no{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.08em;color:rgb(var(--gold))}
 .ep b{font-family:"Bai Jamjuree";font-size:15.5px;line-height:1.35}
+.ep .sub{font-size:12px;color:rgb(var(--muted));line-height:1.55;margin-top:3px}
+.ep.special{position:relative;background:linear-gradient(155deg,#fff,rgb(190 148 66/.08));border-color:rgb(190 148 66/.34)}
+.ep.special .no{color:rgb(var(--green))}
+.ep.special::before{content:"BONUS";position:absolute;z-index:2;top:9px;left:9px;background:rgb(var(--deep));color:rgb(var(--gold));font-family:"Bai Jamjuree";font-weight:700;font-size:9.5px;letter-spacing:.12em;border:1px solid rgb(190 148 66/.45);border-radius:999px;padding:4px 9px}
+.ep.special.is-locked{filter:saturate(.72)}
+.ep.special.is-locked .im{position:relative}
+.ep.special.is-locked .im::after{content:"🔒 จบตอนที่ 7 เพื่อปลดล็อก";position:absolute;inset:auto 9px 9px 9px;background:rgb(10 40 24/.9);color:#fff;font-family:"Bai Jamjuree";font-weight:700;font-size:11px;line-height:1.4;border:1px solid rgb(190 148 66/.5);border-radius:9px;padding:8px 10px;text-align:center}
+.ep.special.is-unlocked{border-color:rgb(var(--gold));box-shadow:0 18px 38px -28px rgb(190 148 66/.9)}
 .ep.read{border-color:rgb(27 106 66/.42)}
 .ep.read .im{position:relative}
 .ep.read .im::after{content:"✓";position:absolute;top:8px;right:8px;width:26px;height:26px;
@@ -67,6 +75,13 @@ footer a{color:rgb(var(--green));font-weight:600}
   background:rgb(var(--green));color:#fff;font-size:14px;font-weight:700;
   box-shadow:0 4px 10px -3px rgb(10 40 24/.6)}
 .ep.read .im img{opacity:.72}
+.finishactions{display:grid;gap:12px;margin-top:20px;text-align:left}
+.finishactions .wtcard{margin-top:0}
+.bonuslink{display:flex;align-items:center;justify-content:space-between;gap:14px;background:rgb(255 255 255/.07);border:1px solid rgb(255 255 255/.2);border-radius:15px;padding:16px 18px;color:#fff;transition:.18s}
+.bonuslink:hover{transform:translateY(-2px);border-color:rgb(var(--gold));background:rgb(190 148 66/.12)}
+.bonuslink b{display:block;font-family:"Bai Jamjuree";font-size:15px}
+.bonuslink small{display:block;color:rgb(255 255 255/.62);font-size:12.5px;margin-top:3px}
+.bonuslink .arr{color:rgb(var(--gold));font-size:20px}
 .rstw{text-align:center;padding:6px 0 4px}
 .rst{background:none;border:0;color:rgb(var(--muted));font-size:12.5px;text-decoration:underline;
   cursor:pointer;padding:10px;min-height:44px}
@@ -147,20 +162,20 @@ footer a{color:rgb(var(--green));font-weight:600}
 <section class="head"><div class="wrap">
   <span class="eyebrow">อ่านฟรี · ไม่ต้องสมัคร</span>
   <h1 class="disp">เรื่องเล่าจากโรงตีเหล็ก</h1>
-  <p>19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านเกมให้ออก หา META ให้เจอ แล้วพาทั้งทีมไปต่อ<br>12 ตอน อ่านฟรีทั้งหมด</p>
+  <p>เรื่องจริงของคนที่เคยต้องสร้างทุกอย่างอยู่หน้าคอมคนเดียว<br>จนถึงวันที่ AI คืนเวลาให้ชีวิต — <b>7 ตอนจบ</b> พร้อมตอนพิเศษ Version แรก</p>
   <div class="startrow">
-    <a class="start disp" data-mc-continue="forge:" href="ep1-everyone-gets-to-play/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
-    <a class="start disp" data-mc-demote="forge:ghost" href="ep1-everyone-gets-to-play/">เริ่มอ่านจากตอนแรก</a>
+    <a class="start disp" id="continueBtn" href="ep1-everyone-gets-to-play/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
+    <a class="start disp" id="startBtn" href="ep1-everyone-gets-to-play/">เริ่มอ่านจากตอนแรก</a>
   </div>
   <div class="prog">
-    <div class="track"><i data-mc-bar="forge"></i></div>
-    <span class="tx" data-mc-progress="forge" hidden></span>
+    <div class="track"><i id="forgeBar"></i></div>
+    <span class="tx" id="forgeProgress" hidden></span>
   </div>
 </div></section>
 
 <main class="wrap">
   <div class="grid">
-    <a class="ep" href="ep1-everyone-gets-to-play/" data-mc-item="forge:ep1-everyone-gets-to-play">
+    <a class="ep" href="ep1-everyone-gets-to-play/" data-episode="ep1-everyone-gets-to-play">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/01-thumb.webp">
@@ -173,7 +188,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">ทุกคนมีสิทธิ์ลงเล่น</b>
       </div>
     </a>
-    <a class="ep" href="ep2-the-first-item/" data-mc-item="forge:ep2-the-first-item">
+    <a class="ep" href="ep2-the-first-item/" data-episode="ep2-the-first-item">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/02-thumb.webp">
@@ -186,7 +201,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">ไอเท็มชิ้นแรก</b>
       </div>
     </a>
-    <a class="ep" href="ep3-the-item-that-came-back/" data-mc-item="forge:ep3-the-item-that-came-back">
+    <a class="ep" href="ep3-the-item-that-came-back/" data-episode="ep3-the-item-that-came-back">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/03-thumb.webp">
@@ -199,7 +214,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">ของที่กลับมาพร้อมรอยใช้</b>
       </div>
     </a>
-    <a class="ep" href="ep4-what-traveled-without-us/" data-mc-item="forge:ep4-what-traveled-without-us">
+    <a class="ep" href="ep4-what-traveled-without-us/" data-episode="ep4-what-traveled-without-us">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/04-thumb.webp">
@@ -212,7 +227,7 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">สิ่งที่เดินทางแทนเรา</b>
       </div>
     </a>
-    <a class="ep" href="ep5-from-answers-to-a-system/" data-mc-item="forge:ep5-from-answers-to-a-system">
+    <a class="ep" href="ep5-from-answers-to-a-system/" data-episode="ep5-from-answers-to-a-system">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/05-thumb.webp">
@@ -225,160 +240,159 @@ footer a{color:rgb(var(--green));font-weight:600}
         <b class="disp">จากคำตอบสู่ระบบ</b>
       </div>
     </a>
-    <a class="ep" href="ep6-the-starter-kit/" data-mc-item="forge:ep6-the-starter-kit">
+    <a class="ep" href="ep6-the-starter-kit/" data-episode="ep6-the-starter-kit">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/06-thumb.webp">
           <img src="img/06-thumb.jpg" width="560" height="840" loading="lazy" decoding="async"
-               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 6 — ชุดเริ่มต้นของผู้เล่นใหม่">
+               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 6 — สำหรับคนที่มาทีหลัง">
         </picture>
       </div>
       <div class="bd">
         <span class="no">ตอนที่ 6</span>
-        <b class="disp">ชุดเริ่มต้นของผู้เล่นใหม่</b>
+        <b class="disp">สำหรับคนที่มาทีหลัง</b>
       </div>
     </a>
-    <a class="ep" href="ep7-a-voice-that-went-further/" data-mc-item="forge:ep7-a-voice-that-went-further">
+    <a class="ep" href="ep7-a-voice-that-went-further/" data-episode="ep7-a-voice-that-went-further">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/07-thumb.webp">
           <img src="img/07-thumb.jpg" width="560" height="302" loading="lazy" decoding="async"
-               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 7 — เสียงที่ไปไกลกว่าเรา">
+               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 7 — เวลาที่ได้คืนมา">
         </picture>
       </div>
       <div class="bd">
-        <span class="no">ตอนที่ 7</span>
-        <b class="disp">เสียงที่ไปไกลกว่าเรา</b>
+        <span class="no">ตอนที่ 7 · ตอนจบ</span>
+        <b class="disp">เวลาที่ได้คืนมา</b>
       </div>
     </a>
-    <a class="ep" href="ep8-the-blacksmith-backstage/" data-mc-item="forge:ep8-the-blacksmith-backstage">
+    <a class="ep special is-locked" id="specialCard" href="ep7-a-voice-that-went-further/" aria-label="ตอนพิเศษ Version แรก ปลดล็อกหลังอ่านตอนที่ 7 จบ">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/08-thumb.webp">
           <img src="img/08-thumb.jpg" width="560" height="280" loading="lazy" decoding="async"
-               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 8 — ช่างตีเหล็กหลังเวที">
+               alt="ตอนพิเศษ — Version แรกของเรื่องเล่าจากโรงตีเหล็ก">
         </picture>
       </div>
       <div class="bd">
-        <span class="no">ตอนที่ 8</span>
-        <b class="disp">ช่างตีเหล็กหลังเวที</b>
-      </div>
-    </a>
-    <a class="ep" href="ep9-tools-must-reach-people/" data-mc-item="forge:ep9-tools-must-reach-people">
-      <div class="im">
-        <picture>
-          <source type="image/webp" srcset="img/09-thumb.webp">
-          <img src="img/09-thumb.jpg" width="560" height="302" loading="lazy" decoding="async"
-               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 9 — ของที่ดีต้องไปถึงมือคน">
-        </picture>
-      </div>
-      <div class="bd">
-        <span class="no">ตอนที่ 9</span>
-        <b class="disp">ของที่ดีต้องไปถึงมือคน</b>
-      </div>
-    </a>
-    <a class="ep" href="ep10-this-time-i-left-the-screen-on/" data-mc-item="forge:ep10-this-time-i-left-the-screen-on">
-      <div class="im">
-        <picture>
-          <source type="image/webp" srcset="img/10-thumb.webp">
-          <img src="img/10-thumb.jpg" width="560" height="302" loading="lazy" decoding="async"
-               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 10 — ครั้งนี้ผมไม่ปิดจอ">
-        </picture>
-      </div>
-      <div class="bd">
-        <span class="no">ตอนที่ 10</span>
-        <b class="disp">ครั้งนี้ผมไม่ปิดจอ</b>
-      </div>
-    </a>
-    <a class="ep" href="ep11-everyone-has-their-own-class/" data-mc-item="forge:ep11-everyone-has-their-own-class">
-      <div class="im">
-        <picture>
-          <source type="image/webp" srcset="img/11-thumb.webp">
-          <img src="img/11-thumb.jpg" width="560" height="274" loading="lazy" decoding="async"
-               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 11 — แต่ละคนมี Class ของตัวเอง">
-        </picture>
-      </div>
-      <div class="bd">
-        <span class="no">ตอนที่ 11</span>
-        <b class="disp">แต่ละคนมี Class ของตัวเอง</b>
-      </div>
-    </a>
-    <a class="ep" href="ep12-a-new-game-a-new-league/" data-mc-item="forge:ep12-a-new-game-a-new-league">
-      <div class="im">
-        <picture>
-          <source type="image/webp" srcset="img/12-thumb.webp">
-          <img src="img/12-thumb.jpg" width="560" height="280" loading="lazy" decoding="async"
-               alt="เรื่องเล่าจากโรงตีเหล็ก ตอนที่ 12 — เกมใหม่ ลีกใหม่">
-        </picture>
-      </div>
-      <div class="bd">
-        <span class="no">ตอนที่ 12</span>
-        <b class="disp">เกมใหม่ ลีกใหม่</b>
+        <span class="no" id="specialState">ตอนพิเศษ · ยังไม่ปลดล็อก</span>
+        <b class="disp">Version แรก</b>
+        <span class="sub">12 ภาพต้นฉบับ ก่อนถูกรื้อและสร้างใหม่เป็นเรื่องที่คุณกำลังอ่าน</span>
       </div>
     </a>
   </div>
-  <div class="finish" data-mc-done="forge" hidden>
-    <span class="fl">⚒️ อ่านครบทุกตอนแล้ว</span>
-    <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
-    <p>ตั้งแต่ “ทุกคนมีสิทธิ์ลงเล่น” จนถึง “เกมใหม่ ลีกใหม่” — ครบทั้ง 12 ตอน<br>
-       ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
-    <div class="codebox">
-      <span class="lb">รหัสของคุณ</span>
-      <code id="fcode">BLACKSMITH</code>
-      <button type="button" class="cp" id="fcopy">คัดลอก</button>
-    </div>
-    <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ช่างตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ<br>
-       และรหัสนี้ยังใช้เปิด Walkthrough บนเครื่องใหม่ได้ด้วย</p>
-    <a class="fbtn disp" href="../card/">⚡ ไปทำการ์ดของคุณ</a>
+  <div class="finish" id="forgeFinish" hidden>
+    <span class="fl">⚒️ FORGE COMPLETE · 7 ตอนจบ</span>
+    <b class="disp">เรื่องของผมจบตรงนี้ — Quest แรกของคุณเริ่มต่อจากตรงนี้</b>
+    <p>สิ่งที่เคยใช้เวลาหลายปี วันนี้เริ่มได้จากโทรศัพท์เครื่องเดียว<br>
+       ดูทางเดินก่อน แล้วค่อยเริ่มสร้าง Item ชิ้นแรกของคุณ</p>
 
-    <div class="nextup">
-      <span class="hr"><i></i>แล้วไงต่อ<i></i></span>
-      <p>เรื่องที่คุณเพิ่งอ่านจบ ไม่ได้จบที่ตัวผมคนเดียว<br>
-         วิธีคิดแบบคนเล่นเกมคือ อ่าน Quest หา Class จัด Loadout แล้วฝึกจนคนละ Build เล่นด้วยกันได้
-         — หลักนี้ย้ายไปใช้กับงานและชีวิตได้เหมือนกัน</p>
-      <p>กิลด์ของเราเลยมีไว้แบบนั้น ไม่ได้มีไว้ขายอะไรกับคุณ
-         แต่มีไว้ให้คนที่อยากโตทั้งเรื่องงานและเรื่องชีวิต มาโตไปด้วยกัน<br>
-         <b>ใครเจอเรา คนนั้นโชคดี — #glhf</b></p>
+    <div class="finishactions">
       <a class="wtcard" href="../walkthrough/" data-ga="go_walkthrough">
         <span class="wtseal" aria-hidden="true">🗺️</span>
         <span class="wtbody">
-          <span class="wttag">UNLOCKED · ห้องบทสรุป</span>
-          <b class="disp">Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ</b>
-          <span class="wtsm">คำที่คนเล่นเกมใช้กันจนชิน กับคำที่คนทำธุรกิจใช้ — หลายคำมันคือคำเดียวกัน
-            หน้านี้ถอดให้ดูทีละคำ พร้อมอภิธานศัพท์ทั้งชุดของบ้านนี้</span>
-          <span class="wtmeta"><i>7 คำหลัก</i><i>26 คำในอภิธานศัพท์</i><i>อ่าน 8 นาที</i></span>
+          <span class="wttag">ทางไปต่อ · แนะนำให้ดูอันนี้ก่อน</span>
+          <b class="disp">Walkthrough — ก่อนเริ่ม 6 บทเรียน AI</b>
+          <span class="wtsm">ดูภาพรวม วิธีคิด และลำดับการเรียนสั้น ๆ แล้วคุณจะรู้ว่าควรเริ่มสร้างอะไรเป็นชิ้นแรก</span>
+          <span class="wtmeta"><i>เริ่มง่าย</i><i>ดูจบเร็ว</i><i>ต่อเข้าบทที่ 1</i></span>
         </span>
-        <span class="wtgo disp">เปิดอ่าน →</span>
+        <span class="wtgo disp">เปิดทางไปต่อ →</span>
+      </a>
+
+      <a class="bonuslink" href="original/">
+        <span>
+          <b>🎁 ตอนพิเศษปลดล็อกแล้ว — Version แรก</b>
+          <small>เลือกอ่านได้ 12 ภาพแบบยาว หรือข้ามไปเริ่มเรียนได้เลย</small>
+        </span>
+        <span class="arr" aria-hidden="true">→</span>
       </a>
     </div>
   </div>
-  <p class="rstw" data-mc-any="forge" hidden><button type="button" class="rst" id="rstBtn">ล้างความคืบหน้าการอ่าน</button></p>
+  <p class="rstw" id="resetWrap" hidden><button type="button" class="rst" id="rstBtn">ล้างความคืบหน้าการอ่าน</button></p>
 </main>
 
 <footer>
   <p>🍀 myclover.com — อ่านฟรี ไม่มีเงื่อนไข</p>
   <p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="../privacy/">ข้อมูลของคุณ</a></p>
 </footer>
-<script defer src="../assets/quest.js"></script>
 <script>
 (function(){
-  var b=document.getElementById('fcopy'), c=document.getElementById('fcode');
-  if(!b||!c) return;
-  b.addEventListener('click',function(){
-    var t=c.textContent, ok=function(){ b.textContent='คัดลอกแล้ว ✓';
-      setTimeout(function(){ b.textContent='คัดลอก'; },1800); };
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(t).then(ok,function(){ b.textContent=t; });
-    } else { b.textContent=t; }
+  var ITEMS=[
+    'ep1-everyone-gets-to-play',
+    'ep2-the-first-item',
+    'ep3-the-item-that-came-back',
+    'ep4-what-traveled-without-us',
+    'ep5-from-answers-to-a-system',
+    'ep6-the-starter-kit',
+    'ep7-a-voice-that-went-further'
+  ];
+  var PREFIX='';
+
+  function readList(){
+    try{
+      return (localStorage.getItem('mc_read')||'').split(',').filter(Boolean);
+    }catch(e){ return []; }
+  }
+  function saveList(list){
+    try{ localStorage.setItem('mc_read',list.join(',')); }catch(e){}
+  }
+  function has(list,slug){ return list.indexOf(slug)>=0; }
+
+  function paint(){
+    var all=readList(), read=ITEMS.filter(function(slug){ return has(all,slug); });
+    var count=read.length, total=ITEMS.length, complete=count===total;
+
+    document.querySelectorAll('[data-episode]').forEach(function(card){
+      card.classList.toggle('read',has(read,card.getAttribute('data-episode')));
+    });
+
+    var progress=document.getElementById('forgeProgress');
+    var bar=document.getElementById('forgeBar');
+    if(progress){
+      progress.hidden=count===0;
+      progress.textContent=complete ? 'อ่านครบทั้ง 7 ตอนแล้ว' : 'อ่านแล้ว '+count+'/7 ตอน';
+      progress.classList.toggle('is-done',complete);
+    }
+    if(bar) bar.style.width=Math.round(count/total*100)+'%';
+
+    var next=ITEMS.find(function(slug){ return !has(read,slug); });
+    var cont=document.getElementById('continueBtn');
+    var start=document.getElementById('startBtn');
+    if(cont){
+      cont.hidden=count===0 || !next;
+      if(next) cont.href=PREFIX+next+'/';
+    }
+    if(start) start.classList.toggle('ghost',count>0);
+
+    var special=document.getElementById('specialCard');
+    var specialState=document.getElementById('specialState');
+    var unlocked=has(read,'ep7-a-voice-that-went-further');
+    if(special){
+      special.classList.toggle('is-locked',!unlocked);
+      special.classList.toggle('is-unlocked',unlocked);
+      special.href=unlocked ? 'original/' : 'ep7-a-voice-that-went-further/';
+      special.setAttribute('aria-label',unlocked ? 'เปิดตอนพิเศษ Version แรก' : 'ตอนพิเศษ Version แรก ปลดล็อกหลังอ่านตอนที่ 7 จบ');
+    }
+    if(specialState) specialState.textContent=unlocked ? 'ตอนพิเศษ · ปลดล็อกแล้ว' : 'ตอนพิเศษ · ยังไม่ปลดล็อก';
+
+    var finish=document.getElementById('forgeFinish');
+    if(finish) finish.hidden=!complete;
+    var reset=document.getElementById('resetWrap');
+    if(reset) reset.hidden=count===0;
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    paint();
+    var reset=document.getElementById('rstBtn');
+    if(reset) reset.addEventListener('click',function(){
+      if(!confirm('ล้างความคืบหน้าการอ่านทั้ง 7 ตอน?')) return;
+      var all=readList().filter(function(slug){ return ITEMS.indexOf(slug)<0; });
+      saveList(all);
+      try{ localStorage.removeItem('mc_forge_done'); }catch(e){}
+      paint();
+    });
   });
 })();
-
-document.addEventListener('DOMContentLoaded',function(){
-  var b=document.getElementById('rstBtn');
-  if(b) b.addEventListener('click',function(){
-    if(confirm('ล้างความคืบหน้าการอ่านทั้งหมด? เครื่องหมายที่อ่านแล้วจะหายไป')) window.MC_QUEST.track('forge').reset();
-  });
-});
 </script>
 <!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
 <script type="text/javascript">
