@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ผลการแข่งขัน — myClover: CORE7</title>
 <meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
 .res-hero{background:radial-gradient(700px 400px at 50% -10%,rgb(27 106 66/.55),transparent 65%),rgb(var(--deep));color:#fff;text-align:center;padding:56px 18px 40px}
@@ -68,8 +69,9 @@ if (!snap || !snap.state) {
 }
 
 const auth = MatchAuthority.restore(snap.state);
-const me = store.getGuest().id;
-const view = auth.viewFor(me) || auth.viewFor(snap.state.players.a.id);
+const me = qs.get('pid') || store.getGuest().id;
+const view = auth.viewFor(me) || auth.viewFor(store.getGuest().id)
+  || auth.viewFor(snap.state.players.a.id);
 const r = view.result;
 
 const HOWTEXT = {

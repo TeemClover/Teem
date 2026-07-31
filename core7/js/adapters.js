@@ -20,7 +20,7 @@
    ═══════════════════════════════════════════════════════════════ */
 import { MatchAuthority, PHASE } from './engine.js';
 import { Core7Bot } from './bot.js';
-import { saveMatchSnapshot, loadMatchSnapshot, getGuest } from './store.js';
+import { saveMatchSnapshot, loadMatchSnapshot, getGuest, getTabPlayerId } from './store.js';
 
 let actionSeq = 0;
 const newActionId = () => `a-${Date.now().toString(36)}-${(++actionSeq).toString(36)}`;
@@ -130,7 +130,7 @@ export class RoomHost {
   constructor({ code, hostName }) {
     this.code = code;
     this.ch = new RoomChannel(code);
-    this.hostId = getGuest().id;
+    this.hostId = getTabPlayerId();
     this.players = {
       a: { id: this.hostId, name: hostName, ready: false, cards: null, connected: true },
       b: null,
@@ -289,7 +289,7 @@ export class RoomGuest {
   constructor({ code, name }) {
     this.code = code;
     this.ch = new RoomChannel(code);
-    this.playerId = getGuest().id;
+    this.playerId = getTabPlayerId();
     this.name = name;
     this.roomState = null;
     this.matchId = null;

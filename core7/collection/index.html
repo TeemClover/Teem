@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Collection — FIRST HAND · myClover: CORE7</title>
+<meta name="description" content="การ์ดความหมาย 28 ใบของชุด FIRST HAND — สีละ 7 ใบ เลือก 7 ใบที่เป็นคุณ">
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px}
+.filters button{border:1px solid rgb(var(--line)/.18);background:#fff;border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;min-height:40px}
+.filters button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
+.colhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.completion{font-family:"Bai Jamjuree";font-weight:700;color:rgb(var(--green))}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap">
+    <p class="eyebrow">Collection · FIRST HAND — มือแรก</p>
+    <div class="colhead">
+      <h2 class="disp">การ์ดความหมาย 28 ใบ</h2>
+      <span class="completion" id="completion"></span>
+    </div>
+    <p class="lead">สีละ 7 ใบ ไม่มีตัวเลข ไม่มีค่าพลัง — แตะการ์ดเพื่ออ่านเรื่องราว
+      กด ☆ เพื่อ Favorite แล้วใช้สร้างมือ 7 ใบที่เป็นคุณ</p>
+    <div class="panel" id="unlockNote" style="margin-top:16px" hidden>
+      <b>โหมด Guest:</b> คุณเล่นด้วยการ์ด Generic 4 สีได้เต็มรูปแบบอยู่แล้ว —
+      เปิดโหมด Collection เพื่อชมและใช้การ์ดภาพทั้ง 28 ใบในเครื่องนี้
+      (บัญชี Member ถาวรข้ามอุปกรณ์จะเปิดพร้อม Server จริง)
+      <div style="margin-top:12px"><button class="btn btn-gold" id="unlockBtn">เปิดโหมด Collection</button></div>
+    </div>
+    <div class="filters" id="filters" role="group" aria-label="กรองการ์ด"></div>
+    <div class="card-grid" id="grid" style="margin-top:14px"></div>
+
+    <h2 class="disp" style="margin-top:44px;font-size:22px">การ์ด Generic — ใช้ได้ทุกคนตลอดไป</h2>
+    <p style="font-size:14px;color:rgb(var(--muted))">ค่าเท่ากับการ์ดภาพทุกประการ — Guest ใช้ชุดนี้แข่งกับใครก็ได้อย่างยุติธรรม</p>
+    <div class="card-grid" id="genGrid" style="margin-top:14px;max-width:640px"></div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, el, toast } from '/core7/js/ui.js';
+import { FIRST_HAND, GENERIC_CARDS, COLOR_META } from '/core7/js/cards.js';
+import { cardSVG, genericCardSVG } from '/core7/js/art.js';
+import * as store from '/core7/js/store.js';
+
+renderShell({ active: 'collection' });
+store.track('core7_collection_view');
+const member = store.isLocalMember();
+document.getElementById('unlockNote').hidden = member;
+document.getElementById('completion').textContent = member ? '28 / 28 ✓' : 'ยังไม่ได้เปิดโหมด Collection';
+document.getElementById('unlockBtn')?.addEventListener('click', () => {
+  store.setLocalMember(true); location.reload();
+});
+
+const FILTERS = ['All', 'Red', 'Blue', 'Green', 'Gray', 'Favorites'];
+let filter = 'All';
+const fHost = document.getElementById('filters');
+for (const f of FILTERS) {
+  const b = el('button', { 'aria-pressed': String(f === filter) }, f);
+  b.addEventListener('click', () => {
+    filter = f;
+    [...fHost.children].forEach((x, i) => x.setAttribute('aria-pressed', String(FILTERS[i] === filter)));
+    render();
+  });
+  fHost.append(b);
+}
+
+const grid = document.getElementById('grid');
+function render() {
+  const favs = store.getFavorites();
+  grid.innerHTML = '';
+  const cards = FIRST_HAND.filter(c => {
+    if (filter === 'Favorites') return favs.includes(c.id);
+    if (filter !== 'All') return c.color === filter.toUpperCase();
+    return true;
+  });
+  if (!cards.length) { grid.append(el('p', { style: 'color:rgb(var(--muted))' }, 'ยังไม่มีการ์ดในหมวดนี้')); return; }
+  for (const c of cards) {
+    const cell = el('div', { class: 'card-cell' });
+    const link = el('a', { href: `/core7/cards/?id=${c.id}`, 'aria-label': `ดูการ์ด ${c.en} ${c.th}` });
+    link.innerHTML = cardSVG(c.id, { width: 200 });
+    if (!member) link.firstElementChild.style.opacity = '.45';
+    const fav = el('button', { class: 'fav' + (favs.includes(c.id) ? ' on' : ''), 'aria-label': `Favorite ${c.en}`, 'aria-pressed': String(favs.includes(c.id)) }, favs.includes(c.id) ? '★' : '☆');
+    fav.addEventListener('click', () => {
+      store.toggleFavorite(c.id);
+      store.track('core7_card_favorite');
+      render();
+    });
+    cell.append(link, fav);
+    grid.append(cell);
+  }
+}
+render();
+
+const gg = document.getElementById('genGrid');
+for (const c of GENERIC_CARDS) {
+  const cell = el('div', { class: 'card-cell' });
+  cell.innerHTML = genericCardSVG(c.color, { width: 200 });
+  gg.append(cell);
+}
+</script>
+</body>
+</html>

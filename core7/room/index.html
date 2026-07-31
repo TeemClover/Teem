@@ -7,6 +7,7 @@
 <meta property="og:title" content="มาเล่น myClover: CORE7 กัน!">
 <meta property="og:description" content="เลือก 7 ใบ แล้วมาอ่านใจกัน — เกมการ์ดที่เรียนรู้ได้เร็วเหมือนเป่ายิ้งฉุบ">
 <meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
 .lobby-seat{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:16px 18px;margin-top:12px}
@@ -49,11 +50,12 @@ if (!/^CLVR-[A-Z0-9]{4}$/.test(code)) {
 document.getElementById('codeShow').textContent = code;
 document.title = `ห้อง ${code} — myClover: CORE7`;
 
-/* host จำห้องของตัวเองไว้ — refresh แล้วกลับมาเป็น host เดิม */
-const HOSTKEY = 'c7:hosting';
+/* host จำห้องของตัวเองไว้ต่อแท็บ (sessionStorage) — refresh แท็บเดิมกลับมาเป็น host
+   ใช้ localStorage ไม่ได้: อีกแท็บบนเครื่องเดียวกันจะถูกดันเป็น host ไปด้วย */
+const HOSTKEY = 'c7hosting';
 try {
-  if (role !== 'host' && localStorage.getItem(HOSTKEY) === code) role = 'host';
-  if (role === 'host') localStorage.setItem(HOSTKEY, code);
+  if (role !== 'host' && sessionStorage.getItem(HOSTKEY) === code) role = 'host';
+  if (role === 'host') sessionStorage.setItem(HOSTKEY, code);
 } catch { /* ok */ }
 
 const seats = document.getElementById('seats');
@@ -143,14 +145,9 @@ function startMatchUI() {
       matchFinished = true;
       store.recordMatch('casual', view, view.opponent.name);
       store.track('core7_match_complete');
-      /* เก็บ snapshot สำหรับหน้า result (guest ไม่มี authority — เก็บ view) */
-      const mid = session.matchId || 'room-' + code;
-      if (role === 'guest') {
-        store.saveMatchSnapshot('gv-' + mid, { kind: 'guest-view', view });
-        location.href = `/core7/result/?m=room-${encodeURIComponent(code)}&mode=casual&room=${encodeURIComponent(code)}&gv=gv-${mid}`;
-      } else {
-        location.href = `/core7/result/?m=room-${encodeURIComponent(code)}&mode=casual&room=${encodeURIComponent(code)}`;
-      }
+      /* หน้า result อ่าน snapshot ของ host (localStorage แชร์กันในเครื่อง)
+         แล้วดูจากมุมของ pid เรา */
+      location.href = `/core7/result/?m=room-${encodeURIComponent(code)}&mode=casual&room=${encodeURIComponent(code)}&pid=${encodeURIComponent(store.getTabPlayerId())}`;
     },
   });
 }
@@ -165,6 +162,8 @@ function backToLobby() {
 /* ── สร้าง session ตามบทบาท ── */
 if (role === 'host') {
   session = new RoomHost({ code, hostName: me.name });
+  /* กลับเข้าห้องหลัง Match จบ = Rematch: ล้างมือ เปิดให้เลือกใหม่ (ไม่มี Deck Lock) */
+  if (session.authority?.state.phase === 'MATCH_RESULT') session.rematch();
   session.onChange(state => {
     if (state.matchStarted) startMatchUI();
     else { backToLobby(); renderLobby(state); }

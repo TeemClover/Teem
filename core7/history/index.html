@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Match History — myClover: CORE7</title>
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.hrow{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:12px;padding:12px 16px;margin-top:10px;font-size:14px;flex-wrap:wrap}
+.hrow .res{font-family:"Bai Jamjuree";font-weight:700;width:52px}
+.res.W{color:rgb(var(--green))}.res.L{color:rgb(var(--c-red))}.res.D{color:rgb(var(--muted))}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap-slim">
+    <p class="eyebrow">Match History · เก็บในเครื่องนี้ (50 เกมล่าสุด)</p>
+    <h2 class="disp">ประวัติการเล่น</h2>
+    <div id="list"></div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, el } from '/core7/js/ui.js';
+import { getHistory } from '/core7/js/store.js';
+renderShell({});
+const list = document.getElementById('list');
+const hist = getHistory();
+if (!hist.length) {
+  list.append(el('p', { style: 'margin-top:16px;color:rgb(var(--muted))' }, 'ยังไม่มีประวัติ — ',
+    el('a', { href: '/core7/play/', style: 'text-decoration:underline' }, 'ไปเล่นเกมแรกกัน')));
+}
+const TXT = { WIN: 'ชนะ', LOSS: 'แพ้', DRAW: 'เสมอ' };
+for (const h of hist) {
+  list.append(el('div', { class: 'hrow' },
+    el('span', { class: 'res ' + h.result[0] }, TXT[h.result] || h.result),
+    el('b', {}, h.score),
+    el('span', {}, `vs ${h.opponent}`),
+    el('span', { style: 'color:rgb(var(--muted))' }, h.mode === 'bot' ? '🤖 Bot' : '🏠 Casual'),
+    el('span', { style: 'color:rgb(var(--muted))' }, `${h.rounds} รอบ`),
+    el('span', { style: 'margin-left:auto;color:rgb(var(--muted));font-size:12.5px' },
+      new Date(h.at).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' })),
+  ));
+}
+</script>
+</body>
+</html>

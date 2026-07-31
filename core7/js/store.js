@@ -41,6 +41,20 @@ export function setGuestName(name) {
   return g;
 }
 
+/* ── ตัวตนต่อแท็บ (สำหรับห้อง Local ที่เปิด 2 แท็บบนเครื่องเดียว) ──
+   localStorage แชร์กันทุกแท็บ — ถ้าใช้ id เดียวกัน host กับ guest จะชนกัน
+   sessionStorage แยกต่อแท็บและรอด Refresh จึงใช้เป็น player id บนโต๊ะ */
+export function getTabPlayerId() {
+  try {
+    let t = sessionStorage.getItem('c7tab_pid');
+    if (!t) {
+      t = getGuest().id + '-' + Math.random().toString(36).slice(2, 6);
+      sessionStorage.setItem('c7tab_pid', t);
+    }
+    return t;
+  } catch { return getGuest().id; }
+}
+
 /* ── บัญชีทดลองในเครื่อง (Local Member Preview) ──
    ปลดล็อกภาพการ์ด FIRST HAND เพื่อทดลอง Collection / Hand Builder
    เก็บในเครื่องเท่านั้น — Member จริงจะมาพร้อม Backend (ดู README) */

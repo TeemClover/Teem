@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Print Tools — myClover: CORE7</title>
+<meta name="description" content="พิมพ์การ์ด CORE7 ใช้เอง — ขนาดมาตรฐาน 63×88 mm วาง A4 ได้ 9 ใบ พร้อม Crop Marks">
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.pick{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+@page{size:A4;margin:10mm}
+.sheetwrap{margin-top:24px;overflow-x:auto}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec no-print">
+  <div class="wrap">
+    <p class="eyebrow">Print Tools · Personal Use</p>
+    <h2 class="disp">พิมพ์การ์ดไปเล่นบนโต๊ะจริง</h2>
+    <p class="lead">ขนาดมาตรฐาน 63 × 88 mm — A4 หนึ่งแผ่นวางได้ 9 ใบ พร้อมเส้นตัด
+      พิมพ์แล้วใส่ซองการ์ดสีได้ทันที ใช้ส่วนตัวและเล่นในกลุ่มเพื่อนได้เต็มที่ (ไม่ใช่เพื่อจำหน่าย)</p>
+    <div class="pick">
+      <button class="btn btn-gold" id="printHand">🖨 พิมพ์มือ 7 ใบล่าสุด</button>
+      <button class="btn" id="printGen">พิมพ์ Generic 4 สี ×2 + หลังการ์ด</button>
+      <button class="btn" id="printAll">พิมพ์ทั้ง Collection (28 ใบ · 4 แผ่น)</button>
+      <button class="btn" id="printBacks">พิมพ์หลังการ์ด 9 ใบ</button>
+    </div>
+    <div class="panel" style="margin-top:18px">
+      <b>เคล็ดลับ:</b>
+      <ul style="padding-left:20px;font-size:14.5px;margin-top:6px;line-height:2">
+        <li>พิมพ์บนกระดาษ 250–300 gsm หรือพิมพ์กระดาษธรรมดาแล้วใส่ซองสีทับการ์ดเก่า</li>
+        <li>พิมพ์หน้า-หลัง: พิมพ์หน้าการ์ดก่อน แล้วป้อนกระดาษกลับเพื่อพิมพ์หลังการ์ดให้ตรงตำแหน่ง</li>
+        <li>ตั้งค่าการพิมพ์เป็น 100% / Actual size — อย่าใช้ Fit to page</li>
+        <li>Spec เต็ม (Bleed 3 mm สำหรับโรงพิมพ์) อยู่ใน <code>core7/assets/ASSET-MANIFEST.md</code></li>
+      </ul>
+    </div>
+  </div>
+</main>
+<div class="sheetwrap" id="sheets"></div>
+<footer class="c7foot no-print" id="c7foot"></footer>
+<script type="module">
+import { renderShell, toast } from '/core7/js/ui.js';
+import { FIRST_HAND, cardById } from '/core7/js/cards.js';
+import { cardSVG, genericCardSVG, cardBackSVG } from '/core7/js/art.js';
+import * as store from '/core7/js/store.js';
+
+renderShell({});
+const sheets = document.getElementById('sheets');
+
+function renderSheets(ids) {
+  sheets.innerHTML = '';
+  for (let i = 0; i < ids.length; i += 9) {
+    const sheet = document.createElement('div');
+    sheet.className = 'print-sheet';
+    for (const id of ids.slice(i, i + 9)) {
+      const cell = document.createElement('div');
+      cell.className = 'print-card';
+      cell.innerHTML = id === 'BACK' ? cardBackSVG({ width: 300 })
+        : (cardById(id).generic ? genericCardSVG(cardById(id).color, { width: 300 })
+          : cardSVG(id, { width: 300 }));
+      sheet.append(cell);
+    }
+    sheets.append(sheet);
+  }
+}
+function go(ids) {
+  store.track('core7_print_start');
+  renderSheets(ids);
+  setTimeout(() => window.print(), 250);
+}
+document.getElementById('printHand').addEventListener('click', () => {
+  const hand = store.getHand();
+  if (!hand || hand.length !== 7) { toast('ยังไม่มีมือ 7 ใบ — ไปเลือกก่อน'); return; }
+  go([...hand, 'BACK', 'BACK']);
+});
+document.getElementById('printGen').addEventListener('click', () =>
+  go(['gen-red', 'gen-blue', 'gen-green', 'gen-gray', 'gen-red', 'gen-blue', 'gen-green', 'gen-gray', 'BACK']));
+document.getElementById('printAll').addEventListener('click', () => go(FIRST_HAND.map(c => c.id)));
+document.getElementById('printBacks').addEventListener('click', () => go(Array(9).fill('BACK')));
+
+/* พิมพ์ใบเดียวจากหน้า Card Detail */
+const single = new URLSearchParams(location.search).get('card');
+if (single && cardById(single)) renderSheets([single]);
+</script>
+</body>
+</html>

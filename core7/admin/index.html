@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin — myClover: CORE7</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap-slim">
+    <p class="eyebrow">Admin · เฉพาะผู้มีสิทธิ์</p>
+    <h2 class="disp">Admin Console</h2>
+    <div class="panel" style="margin-top:20px">
+      <b class="disp">ยังไม่เปิดใช้งาน — ต้องการ Backend จริงและระบบยืนยันตัวตน</b>
+      <p style="font-size:14.5px;margin-top:8px;line-height:1.9">
+        หน้านี้เป็นจุดยึดของ Route <code>/core7/admin/</code> ตามสถาปัตยกรรม —
+        ความสามารถของ Admin (จัดการการ์ด / Event / Season / Grant / Match Review /
+        Recalculate Rating พร้อม Audit Log ทุกรายการ) ถูกกำหนดไว้แล้วใน
+        <code>core7/backend/API.md</code> และ Schema ใน <code>core7/backend/schema.sql</code></p>
+      <p style="font-size:14.5px;margin-top:8px">
+        เมื่อ Backend พร้อม หน้านี้จะตรวจสิทธิ์ผ่าน AuthAdapter ก่อนแสดงเครื่องมือใด ๆ
+        — ไม่มีทางลัดฝั่ง Client</p>
+    </div>
+    <a class="btn" style="margin-top:18px" href="/core7/">กลับหน้าหลัก</a>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell } from '/core7/js/ui.js';
+renderShell({ minimal: true });
+</script>
+</body>
+</html>
