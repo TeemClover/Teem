@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>บทที่ 7 — ความเงียบ และ ตัวอักษร | ห้องเรียน AI myclover</title>
-<meta name="description" content="ด่านสุดท้ายของห้องเรียน AI — บทที่ไม่ได้อยู่ในแผนการสอน ไม่มีวิดีโอ ไม่มีแบบฝึกหัด มีเพียงการอ่านเงียบ ๆ ให้จบ">
+<meta name="description" content="บทสรุปห้องเรียน AI — 6 บทที่ผ่านมาไม่ใช่ 6 เครื่องมือ แต่คือ Workflow เดียว: Login, Create, Apply, Source, Multiply และ Share">
 <meta property="og:type" content="website">
 <meta property="og:title" content="บทที่ 7 — ความเงียบ และ ตัวอักษร | myclover">
-<meta property="og:description" content="ด่านสุดท้ายของห้องเรียน AI บทที่ไม่ได้อยู่ในแผนการสอน">
+<meta property="og:description" content="6 บทที่ผ่านมาไม่ใช่ 6 เครื่องมือ แต่คือ Workflow เดียวที่ย้ายไปใช้กับงานอะไรก็ได้">
 <meta property="og:image" content="https://www.myclover.com/img/og-awaken.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
@@ -42,14 +42,11 @@ img{max-width:100%;height:auto;display:block}
 .phasedots span.on{background:rgb(var(--gold))}
 
 /* ═══════════ หน้าก่อนเข้าบอส ═══════════ */
-.encounter{padding:0 0 80px;text-align:center}
+.encounter{min-height:calc(100vh - 54px);padding:72px 0 80px;text-align:center;display:grid;place-items:center;
+  background:radial-gradient(620px 360px at 50% 22%,rgb(190 148 66/.08),transparent 72%)}
 .enc-tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.24em;color:rgb(var(--gold))}
-.enc-art{display:block;width:100%;max-width:1200px;margin:0 auto;overflow:hidden;
-  border-bottom:1px solid rgb(190 148 66/.28);box-shadow:0 28px 70px -42px rgb(190 148 66/.45);
-  background:#020704}
-.enc-art img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
-.enc-copy{padding-top:46px}
-@media(max-width:600px){.enc-copy{padding-top:34px}}
+.enc-copy{padding-top:0}
+@media(max-width:600px){.encounter{padding:52px 0 68px}}
 .encounter h1{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(26px,7vw,38px);
   margin-top:14px;line-height:1.3}
 .enc-body{margin-top:22px;font-size:16px;color:rgb(255 255 255/.74);line-height:2.05}
@@ -97,6 +94,16 @@ img{max-width:100%;height:auto;display:block}
 .loop .st b{font-family:"Bai Jamjuree";font-weight:700;font-size:13px;letter-spacing:.14em;
   color:rgb(var(--gold));display:block}
 .loop .st p{margin-top:5px;font-size:15px;color:rgb(255 255 255/.74);line-height:1.8}
+.loop .st .lv{display:inline-block;margin-right:8px;color:rgb(255 255 255/.52);font-size:11px;letter-spacing:.08em}
+.cycle{margin-top:18px;border:1px solid rgb(190 148 66/.5);border-radius:18px;padding:22px 20px;
+  background:linear-gradient(180deg,rgb(190 148 66/.13),rgb(190 148 66/.035));text-align:center}
+.cycleline{display:flex;justify-content:center;flex-wrap:wrap;gap:7px 12px;color:rgb(var(--gold));
+  font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.08em}
+.cycleline span{display:inline-flex;align-items:center;gap:12px}
+.cycleline span:not(:last-child)::after{content:"→";color:rgb(255 255 255/.35)}
+.cycleline span:last-child::after{content:"↻";color:rgb(255 255 255/.55)}
+.cycle h3{font-family:"Bai Jamjuree";font-size:19px;line-height:1.5;margin-top:15px}
+.cycle p{font-size:15.5px;color:rgb(255 255 255/.8);line-height:1.9;margin-top:10px}
 
 .reveal-box{margin-top:30px;border:1px solid rgb(190 148 66/.5);border-radius:18px;padding:24px 22px;
   background:linear-gradient(180deg,rgb(190 148 66/.13),rgb(190 148 66/.03))}
@@ -312,21 +319,14 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
 
 <!-- ═══════════════ หน้าก่อนเข้าบอส ═══════════════ -->
 <main id="gate" class="encounter">
-  <picture class="enc-art">
-    <source type="image/webp" media="(max-width:640px)" srcset="../../img/awaken-hero-640.webp">
-    <source type="image/webp" srcset="../../img/awaken-hero-1024.webp">
-    <img src="../../img/awaken-hero.jpg" width="1600" height="900"
-         loading="eager" fetchpriority="high" decoding="async"
-         alt="ประตูห้องโถงมืดที่มีแสงเส้นเดียวลอดเข้ามา ก่อนเข้าสู่ด่านสุดท้าย">
-  </picture>
   <div class="wrap enc-copy">
   <span class="enc-tag mono">FINAL ENCOUNTER</span>
   <h1 class="disp">ด่านนี้ไม่มีอะไรให้ทำ</h1>
   <div class="enc-body">
     <p>คุณไม่ต้องเปิด AI<br>ไม่ต้องพิมพ์ตาม<br>และไม่ต้องตอบคำถาม</p>
     <p style="margin-top:18px"><em>แค่หาที่เงียบ ๆ แล้วอ่านให้จบ</em></p>
-    <p style="margin-top:18px">สิ่งที่คุณกำลังจะเจอไม่ใช่ความรู้ชิ้นใหม่<br>
-      แต่มันจะเปลี่ยนความหมายของ 6 บทที่คุณเพิ่งผ่านมาทั้งหมด</p>
+    <p style="margin-top:18px">สิ่งที่คุณกำลังจะเจอไม่ใช่เครื่องมือชิ้นที่ 7<br>
+      แต่มันคือ Workflow ที่ซ่อนอยู่ใน 6 บทที่คุณเพิ่งผ่านมา</p>
   </div>
   <div class="enc-meta">
     <span class="disp">⏱ 8–10 นาที</span>
@@ -393,7 +393,7 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
         ไม่ใช่การกดปุ่ม</p>
       <p>เราจึงทำบทนี้มาให้คุณได้ฝึกอ่านและคิด เพราะเชื่อว่าในระยะยาว
         มันประหยัดเวลาของคุณได้มากกว่าการดูคลิปสอนอีกสิบคลิป</p>
-      <p>หลังผ่านประตูเข้ามา ช่วงอ่านต่อจากนี้จึงตั้งใจไม่แทรกภาพอีก —
+      <p>หน้านี้จึงตั้งใจไม่ใช้ภาพเปิด และไม่แทรกภาพในตัวบท —
         อยากให้คุณได้อยู่กับตัวหนังสือ ซึ่งเป็นภาษาเดียวกับที่ AI จะโต้ตอบกับคุณจริง ๆ</p>
     </div>
     <p class="clear mono" data-clear="1">▪ PHASE CLEAR</p>
@@ -402,32 +402,33 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
   <!-- ── PHASE 2 ── -->
   <section class="phase" data-phase="2">
     <span class="pn mono">PHASE 2</span>
-    <h2 class="disp">บอสของด่านนี้คือการอ่าน</h2>
-    <p>AI ไม่ได้เริ่มต้นด้วยภาพสวย ไม่ได้เริ่มจากปุ่มวิเศษ และไม่ได้เริ่มจากคำตอบ</p>
-    <p class="tight">มันเริ่มจากสิ่งที่คุณส่งเข้าไป</p>
-    <div class="beat">
-      <span>คำ</span><span>ประโยค</span><span>บริบท</span>
-      <span>ตัวอย่าง</span><span>เงื่อนไข</span>
-      <span>และสิ่งที่คุณบอกว่า “ยังไม่ใช่”</span>
-    </div>
-    <p>6 บทที่ผ่านมา คุณอาจคิดว่ากำลังเรียนเครื่องมือหลายตัว</p>
-    <p class="tight">แต่จริง ๆ แล้วคุณกำลังฝึก Loop เดียวกันซ้ำ ๆ</p>
+    <h2 class="disp">6 บทที่ผ่านมา คือ Workflow เดียวกัน</h2>
+    <p>แต่ละบทดูเหมือนสอนคนละเครื่องมือ แต่จริง ๆ แล้วแต่ละ LV กำลังวาง 1 ด่าน
+      ลงในวงจรทำงานเดียวกัน</p>
 
     <div class="loop">
-      <div class="st"><b class="mono">LOGIN</b><p>เข้าไปในระบบ และรู้ว่ากำลังจะใช้เครื่องมือนี้ทำอะไร</p></div>
-      <div class="st"><b class="mono">CREATE</b><p>สร้างผลลัพธ์แรกให้เกิดขึ้นก่อน ของชิ้นแรกยังไม่ต้องสมบูรณ์</p></div>
-      <div class="st"><b class="mono">APPLY</b><p>เอาผลลัพธ์ออกไปใช้กับโลกจริง เพราะของที่ดูดีในหน้าจอ แต่ใช้จริงไม่ได้ ยังไม่จบ Quest</p></div>
-      <div class="st"><b class="mono"><button type="button" data-kw="SOURCE">SOURCE</button></b><p>สร้างต้นฉบับ ข้อมูล และกติกาของตัวเอง เพื่อไม่ต้องเริ่มอธิบายใหม่จากศูนย์ทุกครั้ง</p></div>
-      <div class="st"><b class="mono"><button type="button" data-kw="MULTIPLY">MULTIPLY</button></b><p>เปลี่ยนสิ่งที่เคยทำได้ 1 ครั้ง ให้ทำซ้ำ ขยายผล หรือส่งต่อได้ง่ายขึ้น</p></div>
-      <div class="st"><b class="mono"><button type="button" data-kw="SHARE">SHARE</button></b><p>ทำให้สิ่งที่คุณสร้างเดินทางต่อ แม้เจ้าของความรู้จะไม่ได้อยู่ตรงนั้น</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.1</span>LOGIN</b><p><strong>เข้า เริ่ม แล้ว Save</strong><br>ล็อกอิน เริ่มคุยกับระบบ และเก็บ Context สำคัญเป็น Save เพื่อกลับมาทำต่อได้โดยไม่ต้องเริ่มใหม่</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.2</span>CREATE</b><p><strong>ลองสร้างผลงานชิ้นแรก</strong><br>เปลี่ยนความคิดให้กลายเป็นของที่มองเห็นและแก้ได้ Version แรกยังไม่ต้องสมบูรณ์</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.3</span>APPLY</b><p><strong>เอาไปปรับใช้กับชีวิตจริง</strong><br>ให้ผลงานเจองาน คน และข้อจำกัดจริง เพราะของที่สวยในหน้าจอแต่ใช้ไม่ได้ ยังไม่จบ Quest</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.4</span><button type="button" data-kw="SOURCE">SOURCE</button></b><p><strong>แตกงานจากสิ่งที่ Save ไว้</strong><br>จัด Save ที่ผ่านการใช้จริงให้เป็นต้นฉบับกลาง แล้วให้ AI แตกออกเป็นงานหลายรูปแบบโดยยังยึด Source เดียวกัน</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.5</span><button type="button" data-kw="MULTIPLY">MULTIPLY</button></b><p><strong>ให้เครื่องมืออ่าน Save แล้วทำงานซ้ำ</strong><br>เปลี่ยน Prompt และ Workflow ให้เป็น Loadout ที่อ่าน Save แล้วหยิบ Source ไปทำงานต่อได้ ไม่ต้องป้อนบริบทใหม่ทีละช่องทุกครั้ง</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.6</span><button type="button" data-kw="SHARE">SHARE</button></b><p><strong>ส่งมอบงานที่สร้างต่อ</strong><br>ทำให้ผลงานเปิด ใช้ และต่อยอดได้โดยคนอื่น งานจึงเดินทางต่อแม้คนสร้างไม่ได้ยืนอธิบายอยู่ตรงนั้น</p></div>
+    </div>
+
+    <div class="cycle">
+      <div class="cycleline mono"><span>LOGIN</span><span>CREATE</span><span>APPLY</span><span>SOURCE</span><span>MULTIPLY</span><span>SHARE</span></div>
+      <h3 class="disp">นี่ไม่ใช่บันได 6 ขั้นที่เดินจบแล้วทิ้ง</h3>
+      <p>มันคือ Cycle ที่วนใช้กับงานไหนก็ได้ — งานที่ Share ออกไปจะสร้างผลลัพธ์และ Feedback ใหม่
+        สิ่งนั้นกลับมาอัปเดต Save และ Source ก่อนเริ่มรอบถัดไป</p>
     </div>
 
     <!-- เฉลยของบท 4 × บท 5 -->
     <div class="reveal-box">
       <span class="tag mono">★ WORKFLOW MULTIPLIER</span>
-      <h3 class="disp">เฉลยที่ซ่อนอยู่ระหว่างบท 4 กับบท 5</h3>
-      <p>บท 4 ให้คุณสร้าง <span class="kbd">Source</span> — ต้นฉบับที่รู้จักงานของคุณ<br>
-         บท 5 ให้คุณมี <span class="kbd">คลัง Prompt</span> — ท่าที่หยิบมาใช้ซ้ำได้</p>
+      <h3 class="disp">เฉลยที่ซ่อนอยู่ระหว่าง Save, Source และเครื่องมือ</h3>
+      <p><span class="kbd">Save</span> คือความจำของงานที่ช่วยให้คุณกลับมาเริ่มต่อได้<br>
+         <span class="kbd">Source</span> คือ Save ที่ถูกตรวจและจัดโครงสร้าง จนพร้อมเป็นต้นฉบับกลาง<br>
+         <span class="kbd">Multiplier</span> คือ Prompt หรือ Workflow ที่หยิบ Source นั้นไปสร้างงานซ้ำได้</p>
       <p>คนส่วนใหญ่ใช้สองอย่างนี้แยกกัน แล้วก็นั่งเติมคำในช่องว่างทีละช่องทุกครั้ง</p>
       <p><strong>วิธีที่เร็วกว่านั้นคือ ไม่ต้องเติมเลย</strong><br>
          ก๊อป Prompt มาทั้งอัน ปล่อยวงเล็บว่างไว้อย่างนั้น
@@ -438,18 +439,16 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
         คุณจะมองการทำงานด้วย AI ไม่เหมือนเดิมอีกต่อไป</p>
     </div>
 
-    <p>คุณไม่ได้เรียนให้จำว่าปุ่มอยู่ตรงไหน</p>
+    <p>เมื่อระบบเปลี่ยน อย่าถามก่อนว่าปุ่มอยู่ไหน</p>
+    <p class="tight"><strong>ให้ถามว่างานของเราติดอยู่ด่านไหน</strong></p>
     <div class="beat">
-      <span>ปุ่มเปลี่ยนได้</span><span>หน้าตาโปรแกรมเปลี่ยนได้</span><span>ชื่อโมเดลเปลี่ยนได้</span>
+      <span>ยังไม่มีของให้ลอง — กลับไป CREATE</span>
+      <span>มีของแล้ว แต่ยังไม่รู้ว่าใช้จริงได้ไหม — ไป APPLY</span>
+      <span>ทำได้แล้ว แต่ต้องเริ่มใหม่ทุกครั้ง — สร้าง SOURCE และ MULTIPLY</span>
+      <span>งานยังอยู่กับคนทำคนเดียว — ทำให้ SHARE ได้</span>
     </div>
-    <p class="tight"><strong>แต่ Loop นี้ยังใช้ได้</strong></p>
-    <p>สิ่งที่คุณกำลังฝึกมาตลอดคือการอ่านสิ่งที่ระบบต้องการ
-      และบอกสิ่งที่คุณต้องการกลับไปให้ชัดขึ้นเรื่อย ๆ</p>
-    <p>ด่านนี้จึงไม่มีวิดีโอ ไม่มีเสียงพูด และไม่มีคนยืนสอนอยู่ตรงหน้า</p>
-    <p class="tight">เพราะบอสของด่านนี้คือสิ่งที่คุณทำมาตลอดโดยไม่รู้ตัว</p>
-    <div class="beat"><span><strong>อ่านเงียบ ๆ</strong></span>
-      <span><strong>ทำความเข้าใจ</strong></span>
-      <span><strong>แล้วเชื่อมสิ่งที่อยู่ตรงหน้าเข้าด้วยกัน</strong></span></div>
+    <p>ปุ่มเปลี่ยนได้ หน้าตาโปรแกรมเปลี่ยนได้ ชื่อโมเดลเปลี่ยนได้</p>
+    <p class="tight"><strong>แต่คนที่มองเห็น Cycle จะจับเครื่องมือใหม่ใส่ในด่านเดิม และปรับตัวต่อได้ทันที</strong></p>
     <p class="clear mono" data-clear="2">▪ PHASE CLEAR</p>
   </section>
 
@@ -538,17 +537,16 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
     <h2 class="disp">สิ่งที่คุณเพิ่งเรียนจบ</h2>
     <p style="margin-top:16px;font-size:16.5px;color:rgb(255 255 255/.8)">คุณไม่ได้เรียน AI 6 เครื่องมือ</p>
     <p style="margin-top:8px;font-size:16.5px;color:rgb(255 255 255/.8)">
-      คุณเรียน Gameplay Loop ที่ใช้ได้กับ AI หลายตัว</p>
+      คุณเรียน Workflow 6 ด่านที่ใช้กับงานไหนก็ได้</p>
     <p style="margin-top:18px;font-size:16.5px;color:rgb(255 255 255/.8)">
       คุณไม่ได้จำ Prompt วิเศษ คุณเรียนรู้ว่า</p>
     <ul>
-      <li>ต้องให้ Context อย่างไร</li>
-      <li>ต้องสร้าง Version แรกเมื่อไร</li>
-      <li>ต้องตรวจจากการใช้จริงอย่างไร</li>
-      <li>ต้องเก็บอะไรเป็น Source</li>
-      <li>ต้องเปลี่ยนงานซ้ำเป็นระบบอย่างไร</li>
-      <li>ต้องส่งต่อสิ่งที่สร้างอย่างไร</li>
-      <li>และต้องเรียก Mechanic ที่ต้องการด้วยภาษาแบบไหน</li>
+      <li>LOGIN — เข้าใจระบบ เริ่มงาน และเก็บ Save</li>
+      <li>CREATE — ทำ Version แรกให้เกิดขึ้น</li>
+      <li>APPLY — เอาไปชนกับชีวิตจริง</li>
+      <li>SOURCE — เก็บสิ่งที่ใช้ได้เป็นต้นฉบับกลาง</li>
+      <li>MULTIPLY — สร้างเครื่องมือให้ทำซ้ำและขยายผล</li>
+      <li>SHARE — ส่งมอบให้คนอื่นใช้และทำต่อ</li>
     </ul>
     <p style="margin-top:20px;font-size:16.5px;color:rgb(255 255 255/.8)">
       สิ่งเหล่านี้ไม่ได้อยู่ในโปรแกรมใดโปรแกรมหนึ่ง</p>
