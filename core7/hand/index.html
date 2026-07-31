@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เลือกมือ 7 ใบ — myClover: CORE7</title>
+<meta name="description" content="Build Your Hand — เลือกการ์ด 7 ใบที่เป็นคุณ สีใดกี่ใบก็ได้ ไม่มีเด็ค ไม่มี Deck Lock">
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:16px}
+.pick-cell{position:relative;border:0;background:none;padding:0;border-radius:10px;transition:transform .15s}
+.pick-cell svg{width:100%;height:auto;display:block;border-radius:8px}
+.pick-cell .cnt{position:absolute;top:6px;left:6px;background:rgb(var(--gold));color:rgb(var(--deep));font-family:"Bai Jamjuree";font-weight:700;border-radius:999px;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgb(0 0 0/.3)}
+.pick-cell.picked{outline:3px solid rgb(var(--gold));outline-offset:2px}
+.pick-cell:hover{transform:translateY(-3px)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.filters button{border:1px solid rgb(var(--line)/.18);background:#fff;border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;min-height:40px}
+.filters button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
+.member-cta{background:linear-gradient(120deg,rgb(var(--felt)),rgb(var(--deep)));color:#fff;border-radius:var(--radius);padding:20px 22px;margin-top:20px}
+.presetrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap">
+    <p class="eyebrow">Build Your Hand</p>
+    <h2 class="disp">เลือกมือ 7 ใบ</h2>
+    <p class="lead">สีใดกี่ใบก็ได้ ให้รวมครบ 7 — เปลี่ยนใหม่ได้ทุก Match ไม่มี Deck Lock</p>
+
+    <div id="guestMode">
+      <div class="panel" style="margin-top:20px" id="counters"></div>
+      <div class="member-cta" id="memberCta">
+        <b class="disp">อยากเลือกจากการ์ดภาพ FIRST HAND ทั้ง 28 ใบ?</b>
+        <p style="font-size:13.5px;color:rgb(255 255 255/.8);margin-top:6px">
+          เปิดโหมด Collection ในเครื่องนี้เพื่อทดลองการ์ดความหมายครบชุด
+          (บัญชี Member ถาวรจะเปิดพร้อมระบบ Server จริง — สถิติและ Collection ในเครื่องไม่หายไปไหน)</p>
+        <button class="btn btn-gold" style="margin-top:12px" id="enableMember">เปิดโหมด Collection</button>
+      </div>
+    </div>
+
+    <div id="memberMode" hidden>
+      <div class="filters" id="filters" role="group" aria-label="กรองการ์ด"></div>
+      <div class="presetrow" id="presets"></div>
+      <div class="pick-grid" id="grid"></div>
+    </div>
+
+    <div class="hb-total">
+      <span class="t" id="total">0 / 7</span>
+      <span id="mix" style="font-size:13px;color:rgb(255 255 255/.75);flex:1"></span>
+      <button class="btn btn-gold" id="ready" disabled>พร้อมเล่น →</button>
+    </div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, toast, el } from '/core7/js/ui.js';
+import { COLOR_META, FIRST_HAND, GENERIC_CARDS, cardById } from '/core7/js/cards.js';
+import { colorIcon, cardSVG, genericCardSVG } from '/core7/js/art.js';
+import * as store from '/core7/js/store.js';
+
+renderShell({});
+const qs = new URLSearchParams(location.search);
+const next = qs.get('next') || 'bot';
+const member = store.isLocalMember();
+
+/* ── สถานะการเลือก ── */
+let counts = { RED: 2, BLUE: 2, GREEN: 2, GRAY: 1 };        // guest
+let picked = [];                                              // member: card ids (ซ้ำได้ไหม? การ์ดคนละใบ — ไม่ซ้ำ id)
+const savedHand = store.getHand();
+if (savedHand) {
+  if (member && savedHand.every(id => cardById(id) && !cardById(id).generic)) picked = [...savedHand];
+  else if (!member && savedHand.every(id => cardById(id)?.generic)) {
+    counts = { RED: 0, BLUE: 0, GREEN: 0, GRAY: 0 };
+    for (const id of savedHand) counts[cardById(id).color]++;
+  }
+}
+
+const totalEl = document.getElementById('total');
+const mixEl = document.getElementById('mix');
+const readyBtn = document.getElementById('ready');
+
+function currentCards() {
+  if (member) return [...picked];
+  const GEN = { RED: 'gen-red', BLUE: 'gen-blue', GREEN: 'gen-green', GRAY: 'gen-gray' };
+  const out = [];
+  for (const [c, n] of Object.entries(counts)) for (let i = 0; i < n; i++) out.push(GEN[c]);
+  return out;
+}
+function refreshTotal() {
+  const cards = currentCards();
+  totalEl.textContent = `${cards.length} / 7`;
+  const m = {};
+  for (const id of cards) { const c = cardById(id).color; m[c] = (m[c] || 0) + 1; }
+  mixEl.textContent = Object.entries(m).map(([c, n]) => `${COLOR_META[c].emoji}${n}`).join('  ');
+  readyBtn.disabled = cards.length !== 7;
+}
+
+/* ── Guest counters ── */
+if (!member) {
+  const host = document.getElementById('counters');
+  for (const color of ['RED', 'BLUE', 'GREEN', 'GRAY']) {
+    const meta = COLOR_META[color];
+    const row = el('div', { class: 'hb-counter' });
+    row.append(el('span', { class: `chip chip-${color.toLowerCase()}`, style: 'width:44px;height:44px', html: colorIcon(color, 24) }));
+    row.append(el('div', { class: 'cinfo' },
+      el('div', { class: 'cname' }, `${meta.nameEn.toUpperCase()} · ${meta.nameTh}`),
+      el('div', { class: 'csub' }, `${meta.className} ${meta.classTh} — ${meta.beatsTh}`)));
+    const minus = el('button', { class: 'hb-btn', 'aria-label': `ลดจำนวนสี${meta.nameTh}` }, '−');
+    const num = el('span', { class: 'num', 'aria-live': 'polite' }, String(counts[color]));
+    const plus = el('button', { class: 'hb-btn', 'aria-label': `เพิ่มจำนวนสี${meta.nameTh}` }, '+');
+    minus.addEventListener('click', () => { if (counts[color] > 0) { counts[color]--; num.textContent = counts[color]; refreshTotal(); } });
+    plus.addEventListener('click', () => {
+      if (currentCards().length >= 7) { toast('ครบ 7 ใบแล้ว — ลดสีอื่นก่อน'); return; }
+      counts[color]++; num.textContent = counts[color]; refreshTotal();
+    });
+    row.append(minus, num, plus);
+    host.append(row);
+  }
+  document.getElementById('enableMember').addEventListener('click', () => {
+    store.setLocalMember(true);
+    location.reload();
+  });
+}
+
+/* ── Member picker ── */
+if (member) {
+  document.getElementById('guestMode').hidden = true;
+  document.getElementById('memberMode').hidden = false;
+  const grid = document.getElementById('grid');
+  const filters = document.getElementById('filters');
+  let filter = 'All';
+  const FILTERS = ['All', 'Red', 'Blue', 'Green', 'Gray', 'Favorites'];
+  for (const f of FILTERS) {
+    const b = el('button', { 'aria-pressed': String(f === filter) }, f);
+    b.addEventListener('click', () => { filter = f; renderFilters(); renderGrid(); });
+    filters.append(b);
+  }
+  function renderFilters() {
+    [...filters.children].forEach((b, i) => b.setAttribute('aria-pressed', String(FILTERS[i] === filter)));
+  }
+  function visibleCards() {
+    const favs = store.getFavorites();
+    return FIRST_HAND.filter(c => {
+      if (filter === 'Favorites') return favs.includes(c.id);
+      if (['Red', 'Blue', 'Green', 'Gray'].includes(filter)) return c.color === filter.toUpperCase();
+      return true;
+    });
+  }
+  function renderGrid() {
+    grid.innerHTML = '';
+    for (const c of visibleCards()) {
+      const cell = el('button', { class: 'pick-cell' + (picked.includes(c.id) ? ' picked' : ''), 'aria-pressed': String(picked.includes(c.id)), 'aria-label': `${c.en} ${c.th} สี${COLOR_META[c.color].nameTh}` });
+      cell.innerHTML = cardSVG(c.id, { width: 150 });
+      if (picked.includes(c.id)) cell.prepend(el('span', { class: 'cnt' }, '✓'));
+      cell.addEventListener('click', () => {
+        if (picked.includes(c.id)) picked = picked.filter(x => x !== c.id);
+        else if (picked.length >= 7) { toast('ครบ 7 ใบแล้ว — เอาใบอื่นออกก่อน'); return; }
+        else picked.push(c.id);
+        renderGrid(); refreshTotal();
+      });
+      grid.append(cell);
+    }
+  }
+  renderGrid();
+
+  /* Presets */
+  const pHost = document.getElementById('presets');
+  function renderPresets() {
+    pHost.innerHTML = '';
+    for (const p of store.getPresets()) {
+      const b = el('button', { class: 'btn', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, `▶ ${p.name}`);
+      b.addEventListener('click', () => { picked = [...p.cards]; renderGrid(); refreshTotal(); toast(`ใช้มือ "${p.name}"`); });
+      const d = el('button', { class: 'btn', style: 'padding:8px 10px;min-height:40px;font-size:13px', 'aria-label': `ลบ preset ${p.name}` }, '✕');
+      d.addEventListener('click', () => { store.deletePreset(p.id); renderPresets(); });
+      pHost.append(b, d);
+    }
+    const save = el('button', { class: 'btn btn-dark', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, '💾 บันทึกมือนี้เป็น Preset');
+    save.addEventListener('click', () => {
+      if (picked.length !== 7) { toast('เลือกให้ครบ 7 ใบก่อน'); return; }
+      const name = prompt('ตั้งชื่อมือชุดนี้:', 'มือของฉัน');
+      if (name) { store.savePreset(name, picked); renderPresets(); }
+    });
+    pHost.append(save);
+  }
+  renderPresets();
+}
+
+refreshTotal();
+
+/* ── Ready → ไปต่อ ── */
+readyBtn.addEventListener('click', () => {
+  const cards = currentCards();
+  if (cards.length !== 7) return;
+  store.setHand(cards);
+  store.track('core7_hand_complete');
+  if (next === 'bot') {
+    const level = qs.get('level') || 'friendly';
+    location.href = `/core7/bot/?level=${level}&fresh=1`;
+  } else if (next === 'room') {
+    const code = qs.get('code') || '';
+    const role = qs.get('role') || 'guest';
+    location.href = `/core7/room/?c=${encodeURIComponent(code)}&role=${role}&hand=1`;
+  } else {
+    location.href = '/core7/play/';
+  }
+});
+</script>
+</body>
+</html>

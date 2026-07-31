@@ -1323,6 +1323,13 @@ lines = ['# สร้างอัตโนมัติจาก tools/build.py �
          '# ตอนการ์ตูนถูกเรียงเลขใหม่เป็น 1–12 ลิงก์เดิมพามาที่ตอนเดียวกัน', '']
 lines += [f'/forge/{o}/{" " * max(1, 38 - len(o))}/forge/{n}/  301' for o, n in OLD_TO_NEW]
 lines += ['', '# หน้าลงทะเบียนถูกรวมเข้าหน้าทำการ์ดแล้ว',
-          '/register/*                              /card/#register  301', '']
+          '/register/*                              /card/#register  301', '',
+          '# CORE7 — เส้นทางที่มีพารามิเตอร์ (room code / match id / card id / handle)',
+          '# rewrite 200 ไปที่หน้าเดียว แล้ว JS อ่านค่าจาก path เอง',
+          '/core7/room/*                            /core7/room/index.html  200',
+          '/core7/match/*                           /core7/room/index.html  200',
+          '/core7/result/*                          /core7/result/index.html  200',
+          '/core7/cards/*                           /core7/cards/index.html  200',
+          '/core7/profile/*                         /core7/profile/index.html  200', '']
 open(os.path.join(ROOT, '_redirects'), 'w', encoding='utf-8').write('\n'.join(lines))
 print('เขียน _redirects แล้ว')

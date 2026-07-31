@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ผลการแข่งขัน — myClover: CORE7</title>
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.res-hero{background:radial-gradient(700px 400px at 50% -10%,rgb(27 106 66/.55),transparent 65%),rgb(var(--deep));color:#fff;text-align:center;padding:56px 18px 40px}
+.res-hero h1{font-family:"Bai Jamjuree";font-size:clamp(30px,7vw,46px)}
+.res-hero .score{font-family:"Bai Jamjuree";font-size:clamp(22px,5vw,30px);color:rgb(var(--gold-l));margin-top:8px}
+.res-hero .how{font-size:14px;color:rgb(255 255 255/.75);margin-top:6px}
+.timeline{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.tl-row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:12px;padding:10px 14px;font-size:14px;flex-wrap:wrap}
+.tl-row.turning{border-color:rgb(var(--gold));box-shadow:0 0 0 2px rgb(var(--gold)/.25)}
+.tl-chip{display:inline-flex;align-items:center;gap:5px;border-radius:8px;padding:3px 8px;color:#fff;font-family:"Bai Jamjuree";font-weight:600;font-size:12.5px}
+.prompt-card{background:rgb(var(--gold)/.1);border:1px solid rgb(var(--gold)/.3);border-radius:12px;padding:16px 20px;margin-top:10px;font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<header class="res-hero" id="hero"></header>
+<main class="sec" style="padding-top:28px">
+  <div class="wrap-slim">
+    <div class="actions" id="actions"></div>
+
+    <h2 class="disp" style="margin-top:34px;font-size:22px">Round Timeline</h2>
+    <div class="timeline" id="timeline"></div>
+
+    <h2 class="disp" style="margin-top:34px;font-size:22px">ชวนคุยหลังเกม</h2>
+    <p style="font-size:13.5px;color:rgb(var(--muted))">เกมจบแล้ว แต่บทสนทนาเพิ่งเริ่ม — ลองถามกันดู</p>
+    <div class="prompt-card">การ์ดใบไหนในมือ 7 ใบนี้เป็นตัวคุณที่สุด?</div>
+    <div class="prompt-card">ทำไมคุณเลือกทิ้งใบนั้น?</div>
+    <div class="prompt-card">มีใบไหนที่คุณไม่อยากเสียเลย?</div>
+
+    <div class="panel" style="margin-top:30px" id="signup">
+      <b class="disp">สมัครเพื่อเก็บเรื่องราวของมือ 7 ใบนี้</b>
+      <p style="font-size:14px;margin-top:6px;color:rgb(var(--ink)/.75)">
+        บัญชี Member จะเก็บสถิติ Rank Collection และประวัติข้ามอุปกรณ์ —
+        ระบบสมัครจะเปิดพร้อม Server จริง <b>ไม่สมัครก็เล่นต่อได้เสมอ</b>
+        (สถิติของคุณถูกเก็บในเครื่องนี้แล้ว ดูได้ที่ <a href="/core7/profile/" style="text-decoration:underline">โปรไฟล์</a>)</p>
+    </div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, el, toast, copyText } from '/core7/js/ui.js';
+import { MatchAuthority } from '/core7/js/engine.js';
+import { COLOR_META, cardById } from '/core7/js/cards.js';
+import * as store from '/core7/js/store.js';
+
+renderShell({});
+const qs = new URLSearchParams(location.search);
+const matchId = qs.get('m');
+const mode = qs.get('mode') || 'bot';
+const level = qs.get('level') || 'friendly';
+const roomCode = qs.get('room') || '';
+
+const snap = matchId && store.loadMatchSnapshot(matchId);
+const hero = document.getElementById('hero');
+if (!snap || !snap.state) {
+  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how">ผลอาจถูกล้างไปแล้ว</p>';
+  document.getElementById('actions').append(
+    el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
+  throw new Error('no snapshot');
+}
+
+const auth = MatchAuthority.restore(snap.state);
+const me = qs.get('pid') || store.getGuest().id;
+const view = auth.viewFor(me) || auth.viewFor(store.getGuest().id)
+  || auth.viewFor(snap.state.players.a.id);
+const r = view.result;
+
+const HOWTEXT = {
+  THREE_WINS: 'ชนะครบ 3 Round',
+  EXHAUSTION: 'อีกฝ่ายไม่มีการ์ดเหลือ',
+  TIEBREAK_LAST_ROUND: 'Tie Break — รอบสุดท้ายชี้ขาด',
+  TIEBREAK_FINAL_GRAY: 'Tie Break — กฎ Final Gray: เทาแพ้ใบสุดท้าย',
+  TIEBREAK_HISTORY: 'Tie Break — ย้อนประวัติรอบที่มีผู้ชนะ',
+  DRAW: 'เสมอทุกรอบ — ผลที่เกิดได้ยากมาก',
+  FORFEIT: 'อีกฝ่ายยอมแพ้',
+};
+let title, sub;
+if (r.draw) { title = '🤝 DRAW'; sub = HOWTEXT.DRAW; }
+else if (r.youWon) { title = '🏆 คุณชนะ!'; sub = HOWTEXT[r.resultType] || ''; }
+else { title = 'คู่แข่งชนะ'; sub = HOWTEXT[r.resultType] || ''; }
+hero.innerHTML = `
+  <h1>${title}</h1>
+  <div class="score">${view.you.name} ${r.roundWins[view.seat]} — ${r.roundWins[view.seat === 'a' ? 'b' : 'a']} ${view.opponent.name}</div>
+  <div class="how">${sub} · ${view.rounds.length} Rounds · Rules v${view.rulesVersion}</div>`;
+
+/* Timeline + Turning Point (รอบชนะสุดท้ายที่ชี้ผล หรือรอบที่ตัดสิน tiebreak) */
+const tl = document.getElementById('timeline');
+let turningIdx = -1;
+if (r.resultType === 'TIEBREAK_HISTORY') {
+  for (let i = view.rounds.length - 1; i >= 0; i--) {
+    if (view.rounds[i].result !== 'TIE') { turningIdx = i; break; }
+  }
+} else if (!r.draw) turningIdx = view.rounds.length - 1;
+
+view.rounds.forEach((round, i) => {
+  const row = el('div', { class: 'tl-row' + (i === turningIdx ? ' turning' : '') });
+  const chip = (c, label) => el('span', {
+    class: 'tl-chip', style: `background:${COLOR_META[c.color].hex}`,
+  }, `${COLOR_META[c.color].emoji} ${cardById(c.cardId)?.en || c.color}`);
+  row.append(
+    el('b', { class: 'disp', style: 'width:34px' }, `R${round.n}`),
+    chip(round.you), el('span', { style: 'color:rgb(var(--muted))' }, 'vs'), chip(round.opp),
+    el('span', { style: 'font-weight:700' },
+      round.result === 'TIE' ? 'เสมอ' : (round.youWon ? 'คุณชนะ' : `${view.opponent.name} ชนะ`)),
+  );
+  for (const d of round.discards) {
+    row.append(el('span', { style: 'font-size:12.5px;color:rgb(var(--muted))' },
+      `🗑 ${d.yours ? 'คุณ' : view.opponent.name}ทิ้ง ${cardById(d.cardId)?.en || d.color}`));
+  }
+  if (i === turningIdx) row.append(el('span', { class: 'tag tag-gold' }, 'Turning Point'));
+  tl.append(row);
+});
+
+/* Actions */
+const actions = document.getElementById('actions');
+if (mode === 'bot') {
+  actions.append(
+    el('a', { class: 'btn btn-gold', href: `/core7/hand/?next=bot&level=${level}` }, '🔄 Rematch — เลือกมือใหม่'),
+    el('a', { class: 'btn', href: `/core7/bot/?level=${level}&fresh=1` }, '⚡ เล่นมือเดิมทันที'),
+    el('a', { class: 'btn', href: '/core7/play/' }, 'เปลี่ยนโหมด'),
+  );
+} else {
+  actions.append(
+    el('a', { class: 'btn btn-gold', href: `/core7/room/?c=${encodeURIComponent(roomCode)}` }, '🔄 กลับห้องเดิม — Rematch'),
+    el('a', { class: 'btn', href: '/core7/play/' }, 'เปลี่ยนโหมด'),
+  );
+}
+const share = el('button', { class: 'btn btn-dark' }, '📋 แชร์ผลลง Discord');
+share.addEventListener('click', async () => {
+  const txt = `myClover: CORE7 — ${r.draw ? 'เสมอ!' : (r.youWon ? 'ชนะ' : 'แพ้')} ${r.roundWins[view.seat]}–${r.roundWins[view.seat === 'a' ? 'b' : 'a']} กับ ${view.opponent.name} (${view.rounds.length} รอบ)\nมาเล่นกัน → https://www.myclover.com/core7/`;
+  await copyText(txt);
+  store.track('core7_discord_share');
+  toast('คัดลอกข้อความแล้ว — วางใน Discord ได้เลย');
+});
+actions.append(share);
+store.track('core7_match_complete_view');
+</script>
+</body>
+</html>

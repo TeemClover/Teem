@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>กติกา CORE7 (TH/EN) — myClover</title>
+<meta name="description" content="กติกาฉบับเต็มของ myClover: CORE7 — วงสี การทิ้งเพิ่ม เงื่อนไขชนะ และ Tie Break พร้อมภาษาอังกฤษ ใช้การ์ดอะไรก็ได้">
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.langsw{display:flex;gap:8px;margin:18px 0}
+.langsw button{border:1px solid rgb(var(--line)/.2);background:#fff;border-radius:999px;padding:9px 22px;font-weight:700;font-family:"Bai Jamjuree";min-height:44px}
+.langsw button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
+.rule-block{margin-bottom:14px}
+.rule-block h3{font-family:"Bai Jamjuree";margin-bottom:8px;font-size:18px}
+.rule-block ol,.rule-block ul{padding-left:22px;font-size:15px;display:flex;flex-direction:column;gap:5px}
+.kbox{background:rgb(var(--deep));color:#fff;border-radius:12px;padding:14px 18px;font-family:"Bai Jamjuree";font-size:14.5px;line-height:1.9;margin:10px 0}
+.kbox b{color:rgb(var(--gold-l))}
+.cycwrap{display:flex;justify-content:center;margin:16px 0}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap-slim">
+    <p class="eyebrow">Rules · CORE7_RULES_VERSION 1.0.0</p>
+    <h2 class="disp">กติกา CORE7</h2>
+    <div class="langsw" role="group" aria-label="เลือกภาษา">
+      <button id="thBtn" aria-pressed="true">ภาษาไทย</button>
+      <button id="enBtn" aria-pressed="false">English</button>
+    </div>
+
+    <div id="th">
+      <div class="panel rule-block">
+        <h3>เกมนี้ใช้ข้อมูลบนการ์ดเพียงอย่างเดียว: สี</h3>
+        <p style="font-size:15px">ใช้การ์ดอะไรก็ได้ — การ์ดของเรา กระดาษสี หรือการ์ดจากเกมอื่นใส่ซองสี
+        ขอเพียงทุกคนรู้ว่าแต่ละใบแทนสีอะไร ภาพและความหายากไม่มีผลต่อเกมเลย</p>
+        <div class="cycwrap" id="cyc"></div>
+        <div class="kbox">
+          🔴 <b>แดง TASTER</b> ชนะ 🟢 เขียว<br>
+          🟢 <b>เขียว KEEPER</b> ชนะ 🔵 ฟ้า<br>
+          🔵 <b>ฟ้า THINKER</b> ชนะ 🔴 แดง<br>
+          ⚙️ <b>เทา MAKER</b> เสมอกับทุกสี (Block)
+        </div>
+      </div>
+
+      <div class="panel rule-block">
+        <h3>เริ่มเกม</h3>
+        <ul>
+          <li>ผู้เล่น 2 คน แต่ละคน<b>เลือกการ์ด 7 ใบ</b> — สีใดกี่ใบก็ได้</li>
+          <li>ไม่มีเด็ค ไม่มีกองจั่ว ไม่มีการสุ่มมือ — เห็นมือตัวเองครบ 7 ใบตั้งแต่ต้น</li>
+          <li>คู่แข่งไม่เห็นมือของอีกฝ่าย</li>
+          <li>ก่อน Match ใหม่ทุกครั้ง เปลี่ยนมือ 7 ใบได้อย่างอิสระ — ไม่มี Deck Lock</li>
+        </ul>
+      </div>
+
+      <div class="panel rule-block">
+        <h3>แต่ละรอบ (Round)</h3>
+        <ol>
+          <li>ทั้งคู่เลือกการ์ดลับจากมือคนละ 1 ใบ แล้วกด Lock</li>
+          <li>เปิดพร้อมกัน — ตัดสินผลจากสี</li>
+          <li>การ์ดที่ลงทั้ง 2 ใบย้ายไปกองใช้แล้ว<b>แบบหงายหน้า</b></li>
+          <li><b>ผู้ชนะ</b> เสียเฉพาะใบที่ลง และได้ Round Win 1 ครั้ง</li>
+          <li><b>ผู้แพ้</b> เสียใบที่ลง และต้อง<b>เลือกทิ้งจากมือเพิ่มอีก 1 ใบ</b>แบบหงายหน้า</li>
+          <li><b>เสมอ</b> (สีเดียวกัน หรือมีสีเทา) — เสียคนละใบที่ลงเท่านั้น ไม่มีใครทิ้งเพิ่ม</li>
+        </ol>
+      </div>
+
+      <div class="panel rule-block">
+        <h3>ชนะ Match เมื่อ (ตรวจตามลำดับ)</h3>
+        <ol>
+          <li><b>ชนะครบ 3 Round</b> — จบทันที</li>
+          <li><b>คู่แข่งไม่มีการ์ดเหลือ</b> ส่วนคุณยังมี — คุณชนะ</li>
+          <li><b>หมดมือพร้อมกัน</b> — ใช้ Tie Break ด้านล่าง</li>
+        </ol>
+      </div>
+
+      <div class="panel rule-block">
+        <h3>Tie Break (เมื่อหมดมือพร้อมกัน)</h3>
+        <ol>
+          <li>รอบสุดท้ายมีผู้ชนะตามวงสี → ผู้ชนะรอบนั้นชนะ Match</li>
+          <li><b>กฎ Final Gray:</b> ถ้าเป็นใบสุดท้ายของทั้งคู่ สีเทา<b>แพ้</b>ทุกสีที่ไม่ใช่เทา
+            — เครื่องมือซื้อเวลาได้ แต่เลือกชัยชนะครั้งสุดท้ายแทนมนุษย์ไม่ได้</li>
+          <li>รอบสุดท้ายสีเดียวกัน (รวมเทา vs เทา) → ย้อนดูประวัติจากรอบล่าสุดไปเก่าสุด
+            ข้ามรอบเสมอ — ใครชนะรอบแรกที่พบ คนนั้นชนะ Match</li>
+          <li>เสมอทุกรอบ → <b>Match Result = DRAW</b> (เกิดได้ยากมาก และไม่ใช่ข้อผิดพลาด)</li>
+        </ol>
+      </div>
+
+      <div class="panel rule-block">
+        <h3>ความยุติธรรม</h3>
+        <ul>
+          <li>Guest และ Member มีโอกาสชนะเท่ากันเมื่อเลือกสีเหมือนกัน</li>
+          <li>ภาพการ์ด ความหายาก Collection และสถานะสมาชิก ไม่มีผลต่อกติกา</li>
+          <li>ไม่มีค่าพลัง ไม่มี Skill ไม่มีการจั่ว ไม่มี RNG ที่ตัดสินเกม</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="en" hidden>
+      <div class="panel rule-block">
+        <h3>The only information a card carries is its color</h3>
+        <p style="font-size:15px">You never need to buy our cards to play CORE7.
+        Print your own, use colored paper, sleeve any cards you already own, or bring cards
+        from another game. As long as every card clearly represents one of the four colors, you can play.</p>
+        <div class="kbox">
+          🔴 <b>RED (TASTER)</b> beats 🟢 GREEN<br>
+          🟢 <b>GREEN (KEEPER)</b> beats 🔵 BLUE<br>
+          🔵 <b>BLUE (THINKER)</b> beats 🔴 RED<br>
+          ⚙️ <b>GRAY (MAKER)</b> ties with every color (Block)
+        </div>
+      </div>
+      <div class="panel rule-block">
+        <h3>Setup</h3>
+        <ul>
+          <li>2 players. Each picks <b>7 cards</b> — any mix of colors.</li>
+          <li>No deck, no draw pile, no randomness. You see all 7 of your cards from the start.</li>
+          <li>Your opponent never sees your hand.</li>
+          <li>Before every new match you may rebuild your 7 freely — there is no deck lock.</li>
+        </ul>
+      </div>
+      <div class="panel rule-block">
+        <h3>Each round</h3>
+        <ol>
+          <li>Both players secretly choose 1 card and lock it in.</li>
+          <li>Reveal simultaneously — colors decide the result.</li>
+          <li>Both played cards go to the face-up pile.</li>
+          <li><b>Winner</b> loses only the played card and scores 1 Round Win.</li>
+          <li><b>Loser</b> loses the played card and must <b>discard 1 more card face-up</b> from hand.</li>
+          <li><b>Tie</b> (same color, or any gray) — each loses only the played card. No extra discard.</li>
+        </ol>
+      </div>
+      <div class="panel rule-block">
+        <h3>Winning the match (checked in order)</h3>
+        <ol>
+          <li><b>3 Round Wins</b> — instant victory.</li>
+          <li><b>Opponent has no cards left</b> while you still do — you win.</li>
+          <li><b>Both hands empty at once</b> — use the tiebreaker below.</li>
+        </ol>
+      </div>
+      <div class="panel rule-block">
+        <h3>Tiebreaker (both hands empty)</h3>
+        <ol>
+          <li>If the final round had a normal color winner → they win the match.</li>
+          <li><b>Final Gray rule:</b> if it is both players' last card, GRAY <b>loses</b> to every
+            non-gray color — a tool can buy time, but it cannot choose the final victory for you.</li>
+          <li>Same color in the final round (including gray vs gray) → walk back through the round
+            history, newest to oldest, skipping ties. First decisive round wins the match.</li>
+          <li>Every round tied → <b>the match is a DRAW</b> (very rare — and not an error).</li>
+        </ol>
+      </div>
+      <div class="panel rule-block">
+        <h3>Fairness</h3>
+        <ul>
+          <li>Guests and Members have identical odds with identical colors.</li>
+          <li>Art, rarity, collection and membership never affect the rules.</li>
+          <li>No stats, no skills, no drawing, no game-deciding RNG.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:26px">
+      <a class="btn btn-gold btn-lg" href="/core7/tutorial/">ลองเล่นจริงใน Tutorial</a>
+    </div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell } from '/core7/js/ui.js';
+import { colorCycleSVG } from '/core7/js/art.js';
+renderShell({ active: 'rules' });
+document.getElementById('cyc').innerHTML = colorCycleSVG(300);
+const th = document.getElementById('th'), en = document.getElementById('en');
+const thBtn = document.getElementById('thBtn'), enBtn = document.getElementById('enBtn');
+function sw(lang) {
+  th.hidden = lang !== 'th'; en.hidden = lang !== 'en';
+  thBtn.setAttribute('aria-pressed', lang === 'th');
+  enBtn.setAttribute('aria-pressed', lang === 'en');
+}
+thBtn.addEventListener('click', () => sw('th'));
+enBtn.addEventListener('click', () => sw('en'));
+</script>
+</body>
+</html>

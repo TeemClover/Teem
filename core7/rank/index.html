@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ranking — myClover: CORE7</title>
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.tiers{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-top:18px}
+.tier{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:16px;text-align:center}
+.tier b{font-family:"Bai Jamjuree";display:block;font-size:16px}
+.tier span{font-size:12.5px;color:rgb(var(--muted))}
+.tier .ic{font-size:26px;display:block;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap">
+    <p class="eyebrow">Ranking &amp; Seasons</p>
+    <h2 class="disp">Ranked Match</h2>
+    <p class="lead">Rating ใช้ระบบ <b>Glicko-2</b> — รองรับผู้เล่นใหม่และคนที่หายไปนาน
+      เปลี่ยนเฉพาะจาก Official Ranked Queue เท่านั้น: Casual, Bot และห้องส่วนตัวไม่มีผลต่อ Rating เด็ดขาด</p>
+
+    <div class="panel" style="margin-top:20px;background:rgb(var(--gold)/.08);border-color:rgb(var(--gold)/.35)">
+      <b class="disp">สถานะ: รอ Server จริง</b>
+      <p style="font-size:14.5px;margin-top:6px">Ranked Queue ต้องการ Backend ที่เป็น Server-authoritative
+        (Matchmaking, Reconnect, Anti-abuse, Season) — Logic ทั้งหมดพร้อมและผ่านการทดสอบแล้วในโค้ด
+        (<code>core7/js/ranking.js</code>) เหลือเพียงเชื่อม Backend ตาม
+        <code>core7/backend/API.md</code> · ระหว่างนี้เล่น Casual และ Bot ได้เต็มรูปแบบ</p>
+    </div>
+
+    <h3 class="disp" style="margin-top:34px">Tier ทั้ง 6 — เกียรติยศ ไม่ใช่พลัง</h3>
+    <p style="font-size:14px;color:rgb(var(--muted))">Tier เป็น Cosmetic เท่านั้น ไม่มีผลต่อกติกาเกมใด ๆ</p>
+    <div class="tiers" id="tiers"></div>
+
+    <h3 class="disp" style="margin-top:34px">สถิติของคุณ (ในเครื่องนี้)</h3>
+    <div class="statgrid" id="localStats" style="margin-top:12px"></div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, el } from '/core7/js/ui.js';
+import { TIERS } from '/core7/js/ranking.js';
+import * as store from '/core7/js/store.js';
+
+renderShell({ active: 'rank' });
+const ICONS = { SEED: '🌰', ROOT: '🌱', SPROUT: '🌿', LEAF: '🍀', BLOOM: '🌸', 'FOUR-LEAF': '🍀✨' };
+const tHost = document.getElementById('tiers');
+for (const t of TIERS) {
+  tHost.append(el('div', { class: 'tier' },
+    el('span', { class: 'ic' }, ICONS[t.name] || '🍀'),
+    el('b', {}, t.name),
+    el('span', {}, `${t.th}${Number.isFinite(t.min) ? ` · ${t.min}+` : ''}`)));
+}
+const S = store.getAllStats();
+const winRate = S.all.matchesPlayed ? Math.round(100 * S.all.matchesWon / S.all.matchesPlayed) : 0;
+const ls = document.getElementById('localStats');
+for (const [label, val] of [
+  ['Matches (Casual+Bot)', S.all.matchesPlayed], ['ชนะ', S.all.matchesWon],
+  ['Win Rate', winRate + '%'], ['Best Streak', S.all.bestStreak],
+]) ls.append(el('div', { class: 'stat' }, el('b', {}, String(val)), el('span', {}, label)));
+</script>
+</body>
+</html>

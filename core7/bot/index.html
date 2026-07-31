@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เล่นกับบอท — myClover: CORE7</title>
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+</head>
+<body>
+<div id="match"></div>
+<script type="module">
+import { LocalBotClient } from '/core7/js/adapters.js';
+import { mountMatch } from '/core7/js/match-ui.js';
+import * as store from '/core7/js/store.js';
+
+const qs = new URLSearchParams(location.search);
+const level = ['friendly', 'reader', 'mindgame'].includes(qs.get('level')) ? qs.get('level') : 'friendly';
+const fresh = qs.get('fresh') === '1';
+
+let hand = store.getHand();
+if (!hand || hand.length !== 7) {
+  location.replace(`/core7/hand/?next=bot&level=${level}`);
+  throw new Error('no hand');
+}
+
+/* Resume หลัง Refresh: จำ matchId ปัจจุบันไว้ */
+const CUR = 'c7:cur_bot';
+let matchId = null;
+if (!fresh) {
+  try { matchId = localStorage.getItem(CUR); } catch { /* ok */ }
+  const snap = matchId && store.loadMatchSnapshot(matchId);
+  if (!snap || snap.state?.phase === 'MATCH_RESULT') matchId = null;
+}
+if (!matchId) {
+  matchId = 'bm-' + Date.now().toString(36);
+  try { localStorage.setItem(CUR, matchId); } catch { /* ok */ }
+  history.replaceState(null, '', `/core7/bot/?level=${level}`);   // กัน fresh=1 ค้างตอน refresh
+  store.track('core7_bot_match_start');
+}
+
+const client = new LocalBotClient({
+  matchId,
+  humanCards: hand,
+  level,
+  resume: !fresh,
+});
+
+mountMatch(document.getElementById('match'), client, {
+  oppLabel: `· ${ { friendly: 'Friendly', reader: 'Reader', mindgame: 'Mind Game' }[level] }`,
+  onFinished(view) {
+    store.recordMatch('bot', view, view.opponent.name);
+    store.track('core7_bot_match_complete');
+    try { localStorage.removeItem(CUR); } catch { /* ok */ }
+    location.href = `/core7/result/?m=${matchId}&mode=bot&level=${level}`;
+  },
+});
+</script>
+</body>
+</html>

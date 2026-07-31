@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lobby — myClover: CORE7</title>
+<meta property="og:title" content="มาเล่น myClover: CORE7 กัน!">
+<meta property="og:description" content="เลือก 7 ใบ แล้วมาอ่านใจกัน — เกมการ์ดที่เรียนรู้ได้เร็วเหมือนเป่ายิ้งฉุบ">
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.lobby-seat{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:16px 18px;margin-top:12px}
+.lobby-seat .avatar{width:44px;height:44px;border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));display:flex;align-items:center;justify-content:center;font-weight:700;font-family:"Bai Jamjuree";font-size:18px}
+.lobby-seat .st{margin-left:auto}
+.codebig{font-family:"Bai Jamjuree";font-size:clamp(30px,8vw,44px);letter-spacing:3px;color:rgb(var(--green));font-weight:700}
+</style>
+</head>
+<body>
+<div id="lobbyWrap">
+  <nav class="c7nav" id="c7nav"></nav>
+  <main class="sec">
+    <div class="wrap-slim" id="lobby">
+      <p class="eyebrow">Lobby · Casual — ไม่มีผลต่อ Rating</p>
+      <h2 class="disp">ห้อง <span class="codebig" id="codeShow"></span></h2>
+      <div id="seats"></div>
+      <div id="lobbyMsg" style="margin-top:16px;font-size:14.5px;color:rgb(var(--muted))"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px" id="lobbyActions"></div>
+    </div>
+  </main>
+  <footer class="c7foot" id="c7foot"></footer>
+</div>
+<div id="match" hidden></div>
+<script type="module">
+import { renderShell, el, toast, copyText, pathSegment } from '/core7/js/ui.js';
+import { RoomHost, RoomGuest } from '/core7/js/adapters.js';
+import { mountMatch } from '/core7/js/match-ui.js';
+import * as store from '/core7/js/store.js';
+
+renderShell({ minimal: true });
+const qs = new URLSearchParams(location.search);
+const code = (pathSegment('room') || '').toUpperCase();
+let role = qs.get('role') || 'guest';
+
+if (!/^CLVR-[A-Z0-9]{4}$/.test(code)) {
+  document.getElementById('lobby').innerHTML =
+    '<h2 class="disp">ไม่พบห้องนี้</h2><p>Room Code ไม่ถูกต้อง</p><a class="btn btn-gold" style="margin-top:14px" href="/core7/join/">ลองใหม่</a>';
+  throw new Error('bad code');
+}
+document.getElementById('codeShow').textContent = code;
+document.title = `ห้อง ${code} — myClover: CORE7`;
+
+/* host จำห้องของตัวเองไว้ต่อแท็บ (sessionStorage) — refresh แท็บเดิมกลับมาเป็น host
+   ใช้ localStorage ไม่ได้: อีกแท็บบนเครื่องเดียวกันจะถูกดันเป็น host ไปด้วย */
+const HOSTKEY = 'c7hosting';
+try {
+  if (role !== 'host' && sessionStorage.getItem(HOSTKEY) === code) role = 'host';
+  if (role === 'host') sessionStorage.setItem(HOSTKEY, code);
+} catch { /* ok */ }
+
+const seats = document.getElementById('seats');
+const lobbyMsg = document.getElementById('lobbyMsg');
+const lobbyActions = document.getElementById('lobbyActions');
+const me = store.getGuest();
+let session = null;         // RoomHost | RoomGuest
+let mounted = false;
+let matchFinished = false;
+
+function seatRow(name, sub, ready) {
+  const row = el('div', { class: 'lobby-seat' });
+  row.append(
+    el('span', { class: 'avatar' }, name ? name[0].toUpperCase() : '?'),
+    el('div', {}, el('b', {}, name || 'รอผู้เล่น…'), el('div', { style: 'font-size:12.5px;color:rgb(var(--muted))' }, sub)),
+    el('span', { class: 'st ' + (ready ? 'tag' : 'tag tag-soon') }, ready ? '✓ พร้อม' : 'ยังไม่พร้อม'),
+  );
+  return row;
+}
+
+function renderLobby(state) {
+  if (state.full) {
+    document.getElementById('lobby').innerHTML =
+      '<h2 class="disp">ห้องเต็มแล้ว</h2><p>โต๊ะนี้มีผู้เล่นครบ 2 คน</p><a class="btn btn-gold" style="margin-top:14px" href="/core7/create/">สร้างห้องใหม่</a>';
+    return;
+  }
+  seats.innerHTML = '';
+  seats.append(seatRow(state.host?.name, 'เจ้าของห้อง', state.host?.ready));
+  seats.append(seatRow(state.guest?.name, 'ผู้มาเยือน', state.guest?.ready));
+
+  lobbyActions.innerHTML = '';
+  const iAmReady = role === 'host' ? state.host?.ready : state.guest?.ready;
+
+  /* ปุ่มแชร์ (host) */
+  if (role === 'host') {
+    const link = `${location.origin}/core7/room/?c=${encodeURIComponent(code)}`;
+    const copyLink = el('button', { class: 'btn' }, '🔗 คัดลอกลิงก์ห้อง');
+    copyLink.addEventListener('click', async () => { await copyText(link); toast('คัดลอกลิงก์แล้ว'); });
+    const copyDc = el('button', { class: 'btn btn-dark' }, '💬 Copy for Discord');
+    copyDc.addEventListener('click', async () => {
+      await copyText(`${me.name} ชวนคุณเล่น myClover: CORE7\nRoom: ${code}\nเลือก 7 ใบ แล้วมาอ่านใจกัน\n${link}`);
+      store.track('core7_discord_share');
+      toast('คัดลอกข้อความชวนแล้ว — วางใน Discord ได้เลย');
+    });
+    lobbyActions.append(copyLink, copyDc);
+  }
+
+  if (!iAmReady) {
+    const pick = el('a', {
+      class: 'btn btn-gold',
+      href: `/core7/hand/?next=room&code=${encodeURIComponent(code)}&role=${role}`,
+    }, '🃏 เลือกมือ 7 ใบ');
+    lobbyActions.append(pick);
+    const saved = store.getHand();
+    if (saved && saved.length === 7) {
+      const useOld = el('button', { class: 'btn' }, '⚡ ใช้มือชุดล่าสุด');
+      useOld.addEventListener('click', () => submitHand(saved));
+      lobbyActions.append(useOld);
+    }
+    lobbyMsg.textContent = state.guest || role === 'guest'
+      ? 'เลือกมือ 7 ใบเพื่อพร้อมเล่น — เริ่มทันทีที่ทั้งคู่พร้อม'
+      : 'แชร์ลิงก์ให้เพื่อน แล้วเลือกมือรอได้เลย (ห้อง Local: เปิดลิงก์ในอีกแท็บของเครื่องนี้)';
+  } else {
+    lobbyMsg.textContent = state.guest && state.host?.ready && state.guest?.ready
+      ? 'เริ่มเกม!' : 'พร้อมแล้ว — รออีกฝ่าย…';
+  }
+}
+
+function submitHand(cards) {
+  if (role === 'host') session.setHostHand(cards);
+  else session.setHand(cards);
+  toast('ส่งมือแล้ว — พร้อมเล่น');
+}
+
+function startMatchUI() {
+  if (mounted) return;
+  mounted = true;
+  matchFinished = false;
+  document.getElementById('lobbyWrap').hidden = true;
+  const matchEl = document.getElementById('match');
+  matchEl.hidden = false;
+  matchEl.innerHTML = '';
+  const client = role === 'host' ? session.client() : session.client();
+  mountMatch(matchEl, client, {
+    onFinished(view) {
+      if (matchFinished) return;
+      matchFinished = true;
+      store.recordMatch('casual', view, view.opponent.name);
+      store.track('core7_match_complete');
+      /* หน้า result อ่าน snapshot ของ host (localStorage แชร์กันในเครื่อง)
+         แล้วดูจากมุมของ pid เรา */
+      location.href = `/core7/result/?m=room-${encodeURIComponent(code)}&mode=casual&room=${encodeURIComponent(code)}&pid=${encodeURIComponent(store.getTabPlayerId())}`;
+    },
+  });
+}
+
+function backToLobby() {
+  mounted = false;
+  document.getElementById('lobbyWrap').hidden = false;
+  const m = document.getElementById('match');
+  m.hidden = true; m.innerHTML = ''; m.className = '';
+}
+
+/* ── สร้าง session ตามบทบาท ── */
+if (role === 'host') {
+  session = new RoomHost({ code, hostName: me.name });
+  /* กลับเข้าห้องหลัง Match จบ = Rematch: ล้างมือ เปิดให้เลือกใหม่ (ไม่มี Deck Lock) */
+  if (session.authority?.state.phase === 'MATCH_RESULT') session.rematch();
+  session.onChange(state => {
+    if (state.matchStarted) startMatchUI();
+    else { backToLobby(); renderLobby(state); }
+  });
+  renderLobby(session.roomState());
+  if (session.roomState().matchStarted) startMatchUI();
+  /* กลับมาจาก hand builder พร้อมมือ */
+  if (qs.get('hand') === '1') {
+    const h = store.getHand();
+    if (h && h.length === 7 && !session.roomState().host.ready) submitHand(h);
+  }
+} else {
+  session = new RoomGuest({ code, name: me.name });
+  let gotState = false;
+  session.onRoom(state => {
+    gotState = true;
+    if (state.full) { renderLobby(state); return; }
+    if (state.matchStarted && state.matchId) startMatchUI();
+    else { backToLobby(); renderLobby(state); }
+  });
+  renderLobby({ host: null, guest: { name: me.name, ready: false } });
+  lobbyMsg.textContent = 'กำลังหาห้อง…';
+  setTimeout(() => {
+    if (!gotState) {
+      lobbyMsg.innerHTML = '<b>ยังติดต่อห้องไม่ได้</b> — ห้อง Local ต้องเปิดอยู่ในแท็บอื่นของอุปกรณ์เดียวกัน '
+        + 'ถ้าเจ้าของห้องอยู่คนละเครื่อง ต้องรอระบบออนไลน์ข้ามอุปกรณ์ (Server จริง) เปิดก่อน '
+        + '<a href="/core7/play/" style="text-decoration:underline">กลับหน้าเลือกโหมด</a>';
+    }
+  }, 2500);
+  if (qs.get('hand') === '1') {
+    const h = store.getHand();
+    if (h && h.length === 7) {
+      const trySubmit = () => { if (gotState) submitHand(h); else setTimeout(trySubmit, 500); };
+      trySubmit();
+    }
+  }
+}
+
+/* Rematch จากหน้า result: host กลับเข้าห้อง → เสนอเลือกมือใหม่อัตโนมัติผ่าน onChange */
+window.addEventListener('pagehide', () => { if (role === 'guest') session.close?.(); });
+</script>
+</body>
+</html>

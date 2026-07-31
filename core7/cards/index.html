@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Card Detail — myClover: CORE7</title>
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.detail{display:grid;gap:28px;grid-template-columns:1fr;align-items:start;margin-top:20px}
+@media(min-width:760px){.detail{grid-template-columns:minmax(240px,340px) 1fr}}
+.bigcard svg{width:100%;height:auto;filter:drop-shadow(0 18px 34px rgb(10 40 24/.3))}
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.story{font-size:16.5px;line-height:1.9;border-left:3px solid rgb(var(--gold));padding-left:16px;margin-top:14px}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap" id="main"></div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, el, pathSegment } from '/core7/js/ui.js';
+import { cardById, COLOR_META, FIRST_HAND } from '/core7/js/cards.js';
+import { cardSVG } from '/core7/js/art.js';
+import * as store from '/core7/js/store.js';
+
+renderShell({ active: 'collection' });
+const id = pathSegment('cards');
+const card = cardById(id);
+const main = document.getElementById('main');
+if (!card || card.generic) {
+  main.innerHTML = '<h2 class="disp">ไม่พบการ์ดนี้</h2><a class="btn btn-gold" style="margin-top:14px" href="/core7/collection/">กลับ Collection</a>';
+  throw new Error('no card');
+}
+const meta = COLOR_META[card.color];
+document.title = `${card.en} · ${card.th} — myClover: CORE7`;
+const favs = store.getFavorites();
+
+main.innerHTML = `
+  <p class="eyebrow">FIRST HAND · ${String(card.no).padStart(2, '0')} / 28</p>
+  <div class="detail">
+    <div class="bigcard">${cardSVG(card.id, { width: 340 })}</div>
+    <div>
+      <h2 class="disp" style="font-size:34px">${card.en}</h2>
+      <p style="font-size:19px;color:${meta.deep}">${card.th}</p>
+      <div class="meta-row">
+        <span class="tag" style="background:${meta.soft};color:${meta.deep}">${meta.emoji} ${meta.nameEn.toUpperCase()} · ${meta.className} ${meta.classTh}</span>
+        <span class="tag tag-gold">${meta.beatsTh}</span>
+      </div>
+      <p style="font-size:14px;color:rgb(var(--muted))">ภาพ: ${card.artTh}</p>
+      <blockquote class="story">${card.story}</blockquote>
+      <p style="font-size:13.5px;color:rgb(var(--muted));margin-top:16px">
+        ในเกม การ์ดใบนี้มีค่าเท่ากับสี${meta.nameTh}ทุกใบ — ความหมายเป็นของคุณ ชัยชนะมาจากการอ่านเกม</p>
+      <div class="meta-row" style="margin-top:20px">
+        <button class="btn" id="favBtn">${favs.includes(card.id) ? '★ เอาออกจาก Favorites' : '☆ เพิ่มใน Favorites'}</button>
+        <a class="btn btn-gold" href="/core7/hand/?next=bot&level=friendly">ใช้ใบนี้ในมือ 7 ใบ</a>
+        <a class="btn" href="/core7/print/?card=${card.id}">🖨 พิมพ์ใบนี้</a>
+      </div>
+      <div class="meta-row" style="margin-top:8px" id="pn"></div>
+    </div>
+  </div>`;
+document.getElementById('favBtn').addEventListener('click', () => {
+  store.toggleFavorite(card.id); location.reload();
+});
+/* ใบก่อน/ถัดไป */
+const idx = FIRST_HAND.findIndex(c => c.id === card.id);
+const pn = document.getElementById('pn');
+if (idx > 0) pn.append(el('a', { class: 'btn', href: `/core7/cards/?id=${FIRST_HAND[idx - 1].id}` }, `← ${FIRST_HAND[idx - 1].en}`));
+if (idx < FIRST_HAND.length - 1) pn.append(el('a', { class: 'btn', href: `/core7/cards/?id=${FIRST_HAND[idx + 1].id}` }, `${FIRST_HAND[idx + 1].en} →`));
+pn.append(el('a', { class: 'btn', href: '/core7/collection/' }, 'ทั้งชุด'));
+</script>
+</body>
+</html>

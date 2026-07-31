@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>โปรไฟล์ — myClover: CORE7</title>
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.pf-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
+.pf-head .avatar{width:72px;height:72px;border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));display:flex;align-items:center;justify-content:center;font-family:"Bai Jamjuree";font-weight:700;font-size:30px}
+.showcase{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.showcase svg{width:76px;height:auto;border-radius:6px}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap">
+    <p class="eyebrow">Profile · เก็บในเครื่องนี้</p>
+    <div class="pf-head">
+      <span class="avatar" id="av"></span>
+      <div>
+        <h2 class="disp" id="pname" style="margin-bottom:2px"></h2>
+        <div id="pmeta" style="font-size:13.5px;color:rgb(var(--muted))"></div>
+      </div>
+      <button class="btn" id="rename" style="margin-left:auto">✏️ เปลี่ยนชื่อ</button>
+    </div>
+
+    <h3 class="disp" style="margin-top:30px">มือ 7 ใบล่าสุดของคุณ</h3>
+    <div class="showcase" id="showcase"></div>
+
+    <h3 class="disp" style="margin-top:30px">สถิติรวม</h3>
+    <div class="statgrid" id="stats" style="margin-top:12px"></div>
+
+    <h3 class="disp" style="margin-top:30px">แยกตามโหมด</h3>
+    <div class="statgrid" id="modeStats" style="margin-top:12px"></div>
+
+    <div class="panel" style="margin-top:30px">
+      <b class="disp">โปรไฟล์ถาวรข้ามอุปกรณ์</b>
+      <p style="font-size:14px;margin-top:6px;color:rgb(var(--ink)/.75)">
+        Handle สาธารณะ, Achievement, Event Badge, Discord Link และ Privacy Settings
+        จะเปิดพร้อมบัญชี Member บน Server จริง — สถิติในเครื่องนี้ยังเป็นของคุณเสมอ</p>
+    </div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, el } from '/core7/js/ui.js';
+import { COLOR_META, cardById } from '/core7/js/cards.js';
+import { cardSVG, genericCardSVG } from '/core7/js/art.js';
+import * as store from '/core7/js/store.js';
+
+renderShell({ active: 'profile' });
+const g = store.getGuest();
+document.getElementById('av').textContent = g.name[0].toUpperCase();
+document.getElementById('pname').textContent = g.name;
+const joined = new Date(g.createdAt);
+const S = store.getAllStats();
+const favColor = Object.entries(S.all.colorPlays).sort((a, b) => b[1] - a[1])[0];
+document.getElementById('pmeta').textContent =
+  `Guest (เครื่องนี้) · เริ่มเล่น ${joined.toLocaleDateString('th-TH')}`
+  + (favColor ? ` · สายที่เล่นบ่อย: ${COLOR_META[favColor[0]].emoji} ${COLOR_META[favColor[0]].classTh}` : '');
+document.getElementById('rename').addEventListener('click', () => {
+  const n = prompt('ชื่อบนโต๊ะ:', g.name);
+  if (n) { store.setGuestName(n); location.reload(); }
+});
+
+const sc = document.getElementById('showcase');
+const hand = store.getHand();
+if (hand) for (const id of hand) {
+  const c = cardById(id);
+  const d = el('span', { html: c.generic ? genericCardSVG(c.color, { width: 76 }) : cardSVG(id, { width: 76, showNumber: false }) });
+  sc.append(d);
+} else sc.append(el('p', { style: 'color:rgb(var(--muted));font-size:14px' }, 'ยังไม่เคยเลือกมือ — ', el('a', { href: '/core7/hand/', style: 'text-decoration:underline' }, 'เลือกเลย')));
+
+const mostPlayed = Object.entries(S.all.cardPlays).sort((a, b) => b[1] - a[1])[0];
+const mostDiscarded = Object.entries(S.all.cardDiscards).sort((a, b) => b[1] - a[1])[0];
+const winRate = S.all.matchesPlayed ? Math.round(100 * S.all.matchesWon / S.all.matchesPlayed) : 0;
+const cardName = id => { const c = cardById(id); return c ? (c.generic ? COLOR_META[c.color].nameTh : c.en) : '—'; };
+const stats = [
+  ['Matches', S.all.matchesPlayed], ['ชนะ', S.all.matchesWon], ['แพ้', S.all.matchesLost],
+  ['เสมอ', S.all.draws], ['Win Rate', winRate + '%'], ['Round Wins', S.all.roundsWon],
+  ['Streak ปัจจุบัน', S.bot.currentStreak + S.casual.currentStreak > 0 ? Math.max(S.bot.currentStreak, S.casual.currentStreak) : 0],
+  ['Best Streak', S.all.bestStreak],
+  ['Tiebreak Wins', S.all.tiebreakWins], ['Final Gray Losses', S.all.finalGrayLosses],
+  ['คู่แข่งไม่ซ้ำ', S.all.opponents.length],
+  ['ใบที่ลงบ่อย', mostPlayed ? cardName(mostPlayed[0]) : '—'],
+  ['ใบที่ทิ้งบ่อย', mostDiscarded ? cardName(mostDiscarded[0]) : '—'],
+];
+const sHost = document.getElementById('stats');
+for (const [label, val] of stats) sHost.append(el('div', { class: 'stat' }, el('b', {}, String(val)), el('span', {}, label)));
+
+const mHost = document.getElementById('modeStats');
+for (const [mode, s] of [['🤖 Bot', S.bot], ['🏠 Casual', S.casual]]) {
+  mHost.append(el('div', { class: 'stat' },
+    el('b', {}, `${s.matchesWon}–${s.matchesLost}${s.draws ? `–${s.draws}` : ''}`),
+    el('span', {}, `${mode} (${s.matchesPlayed} เกม)`)));
+}
+mHost.append(el('div', { class: 'stat' }, el('b', {}, '—'), el('span', {}, '🏆 Ranked (รอ Server จริง)')));
+</script>
+</body>
+</html>

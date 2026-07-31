@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>เลือกโหมด — myClover: CORE7</title>
+<meta name="description" content="เล่นกับบอท สร้างห้องชวนเพื่อน หรือเข้าห้องด้วย Room Code — myClover: CORE7 เล่นฟรีไม่ต้องสมัคร">
+<meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.modes{display:grid;gap:16px;grid-template-columns:1fr;margin-top:26px}
+@media(min-width:760px){.modes{grid-template-columns:repeat(2,1fr)}}
+.mode{display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.mode h3{font-family:"Bai Jamjuree";font-size:20px}
+.mode p{font-size:14.5px;color:rgb(var(--ink)/.75);flex:1}
+.mode .row{display:flex;gap:10px;flex-wrap:wrap}
+.namebar{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:14px;padding:12px 16px;margin-top:22px;flex-wrap:wrap}
+.namebar input{flex:1;min-width:160px;border:1px solid rgb(var(--line)/.15);border-radius:10px;padding:11px 14px;font:inherit}
+</style>
+</head>
+<body>
+<nav class="c7nav" id="c7nav"></nav>
+<main class="sec">
+  <div class="wrap">
+    <p class="eyebrow">Play</p>
+    <h2 class="disp">วันนี้อยากนั่งโต๊ะแบบไหน</h2>
+
+    <div class="namebar">
+      <span style="font-weight:700">ชื่อบนโต๊ะ:</span>
+      <input id="gname" maxlength="24" aria-label="ชื่อที่แสดงบนโต๊ะ">
+      <button class="btn" id="saveName" style="padding:11px 18px;min-height:44px">บันทึก</button>
+    </div>
+
+    <div class="modes">
+      <div class="panel mode">
+        <h3>🤖 เล่นกับบอท</h3>
+        <p>เริ่มได้ทันที ไม่ต้องรอใคร — เลือกระดับได้ 3 แบบ: Friendly สุ่มยุติธรรม,
+           Reader อ่านข้อมูลหงายหน้า, Mind Game อ่าน Pattern การเลือกของคุณ</p>
+        <div class="row">
+          <a class="btn btn-green" href="/core7/hand/?next=bot&level=friendly">Friendly</a>
+          <a class="btn" href="/core7/hand/?next=bot&level=reader">Reader</a>
+          <a class="btn btn-dark" href="/core7/hand/?next=bot&level=mindgame">Mind Game</a>
+        </div>
+      </div>
+      <div class="panel mode">
+        <h3>🏠 สร้างห้องชวนเพื่อน</h3>
+        <p>ได้ Room Code และลิงก์สำหรับส่งใน Discord หรือแชทไหนก็ได้ —
+           เพื่อนกดลิงก์ ตั้งชื่อ แล้วเจอกันบนโต๊ะ ไม่มีผลต่อ Rating</p>
+        <div class="row"><a class="btn btn-gold" href="/core7/create/">สร้างห้อง</a></div>
+      </div>
+      <div class="panel mode">
+        <h3>🔑 เข้าห้องด้วย Room Code</h3>
+        <p>เพื่อนส่งโค้ดมาแล้ว? ใส่โค้ดแล้วเข้าโต๊ะได้เลย</p>
+        <div class="row"><a class="btn" href="/core7/join/">เข้าห้อง</a></div>
+      </div>
+      <div class="panel mode">
+        <h3>🎓 ยังไม่เคยเล่น?</h3>
+        <p>Tutorial แบบเล่นจริง สอนวงสี การทิ้งเพิ่ม และกฎ Final Gray ใน 30 วินาที</p>
+        <div class="row"><a class="btn" href="/core7/tutorial/">เรียนรู้ใน 30 วินาที</a></div>
+      </div>
+      <div class="panel mode">
+        <h3>🏆 Ranked Match <span class="tag tag-soon">รอ Backend จริง</span></h3>
+        <p>Ranked Queue พร้อม Rating Glicko-2 และ Season — จะเปิดเมื่อระบบ Multiplayer
+           Server จริงออนไลน์ (ดูสถานะใน <a href="/core7/rank/" style="text-decoration:underline">หน้า Ranking</a>)</p>
+      </div>
+    </div>
+  </div>
+</main>
+<footer class="c7foot" id="c7foot"></footer>
+<script type="module">
+import { renderShell, toast } from '/core7/js/ui.js';
+import { getGuest, setGuestName } from '/core7/js/store.js';
+renderShell({ active: 'play' });
+const input = document.getElementById('gname');
+input.value = getGuest().name;
+document.getElementById('saveName').addEventListener('click', () => {
+  setGuestName(input.value);
+  toast('บันทึกชื่อแล้ว: ' + getGuest().name);
+});
+</script>
+</body>
+</html>

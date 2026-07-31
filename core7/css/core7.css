@@ -1,0 +1,289 @@
+/* ═══════════════════════════════════════════════════════════════
+   myClover: CORE7 — Design System
+   โทนเดียวกับบ้าน myclover.com: Deep Emerald · Warm Cream · Antique Gold
+   Mobile-first · Touch target ≥ 44px · รองรับ Reduced Motion
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --ink: 18 40 28;
+  --paper: 248 246 240;
+  --green: 27 106 66;
+  --deep: 10 40 24;
+  --felt: 14 62 38;
+  --gold: 190 148 66;
+  --gold-l: 227 197 126;
+  --muted: 96 108 100;
+  --line: 18 40 28;
+  /* สีเกม */
+  --c-red: 200 68 44;   --c-red-deep: 143 43 26;
+  --c-green: 46 125 79; --c-green-deep: 27 82 51;
+  --c-blue: 44 107 168; --c-blue-deep: 27 68 112;
+  --c-gray: 110 115 120;--c-gray-deep: 67 71 76;
+  --radius: 14px;
+  --shadow: 0 18px 40px -22px rgb(10 40 24 / .5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Anuphan", sans-serif;
+  background: rgb(var(--paper));
+  color: rgb(var(--ink));
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100dvh;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.disp { font-family: "Bai Jamjuree", sans-serif; letter-spacing: -.015em; }
+a { color: inherit; text-decoration: none; }
+img, svg { max-width: 100%; }
+button { font: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 18px; }
+.wrap-slim { max-width: 760px; margin: 0 auto; padding: 0 18px; }
+:focus-visible { outline: 3px solid rgb(var(--gold)); outline-offset: 3px; border-radius: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ── Nav ── */
+.c7nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgb(var(--deep));
+  color: #fff;
+  border-bottom: 1px solid rgb(var(--gold) / .35);
+}
+.c7nav .bar { display: flex; align-items: center; gap: 12px; height: 60px; }
+.c7nav .logo { display: flex; align-items: center; gap: 9px; font-family: "Bai Jamjuree"; font-weight: 700; font-size: 17px; }
+.c7nav .logo em { font-style: normal; color: rgb(var(--gold-l)); }
+.c7nav .links { margin-left: auto; display: flex; gap: 4px; align-items: center; font-size: 14px; font-weight: 600; }
+.c7nav .links a { color: rgb(255 255 255 / .78); padding: 10px 12px; border-radius: 10px; min-height: 44px; display: inline-flex; align-items: center; }
+.c7nav .links a:hover, .c7nav .links a[aria-current="page"] { color: #fff; background: rgb(255 255 255 / .1); }
+.c7nav .links .play { background: rgb(var(--gold)); color: rgb(var(--deep)); padding: 10px 18px; }
+.c7nav .links .play:hover { background: rgb(var(--gold-l)); color: rgb(var(--deep)); }
+@media (max-width: 720px) { .c7nav .links a:not(.play):not(.keep) { display: none; } }
+
+/* ── ปุ่ม ── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  border-radius: 13px; padding: 14px 26px; min-height: 48px;
+  font-weight: 700; font-size: 15.5px; font-family: "Bai Jamjuree";
+  border: 1px solid rgb(var(--line) / .14); background: #fff; color: rgb(var(--ink));
+  transition: transform .18s, box-shadow .18s, filter .18s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn:active { transform: translateY(0); }
+.btn-gold { background: rgb(var(--gold)); color: rgb(var(--deep)); border-color: transparent; }
+.btn-green { background: rgb(var(--green)); color: #fff; border-color: transparent; }
+.btn-dark { background: rgb(var(--deep)); color: #fff; border-color: transparent; }
+.btn-ghost { background: transparent; border-color: rgb(255 255 255 / .35); color: #fff; }
+.btn-lg { padding: 17px 34px; font-size: 17px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-block { width: 100%; }
+
+/* ── การ์ด UI ── */
+.panel {
+  background: #fff; border: 1px solid rgb(var(--line) / .1);
+  border-radius: var(--radius); padding: 22px; box-shadow: 0 10px 30px -24px rgb(10 40 24 / .4);
+}
+.panel-dark { background: rgb(var(--felt)); color: #fff; border-color: rgb(var(--gold) / .3); }
+
+/* ── ชิปสี (Generic) ── */
+.chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; color: #fff; flex: none;
+  border: 2px solid rgb(255 255 255 / .7); box-shadow: 0 3px 8px rgb(0 0 0 / .25);
+}
+.chip-red { background: rgb(var(--c-red)); }
+.chip-green { background: rgb(var(--c-green)); }
+.chip-blue { background: rgb(var(--c-blue)); }
+.chip-gray { background: rgb(var(--c-gray)); }
+
+/* ── หน้าเกม (Match) ── */
+.match-shell {
+  min-height: 100dvh; display: flex; flex-direction: column;
+  background:
+    radial-gradient(900px 520px at 50% -10%, rgb(27 106 66 / .55), transparent 65%),
+    rgb(var(--deep));
+  color: #fff;
+}
+.match-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px calc(6px); gap: 10px; font-size: 13.5px;
+}
+.match-top .pl { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.match-top .pl .nm { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 32vw; }
+.match-top .avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex: none;
+  background: rgb(var(--gold)); color: rgb(var(--deep));
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: "Bai Jamjuree";
+}
+.match-top .meta { font-size: 12px; color: rgb(255 255 255 / .72); display: flex; gap: 8px; }
+.pips { display: inline-flex; gap: 3px; }
+.pips i { width: 9px; height: 9px; border-radius: 50%; background: rgb(255 255 255 / .25); }
+.pips i.on { background: rgb(var(--gold-l)); box-shadow: 0 0 6px rgb(var(--gold-l)); }
+.conn { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; flex: none; }
+.conn.off { background: #f87171; }
+
+.match-stage {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 8px 14px; position: relative; min-height: 0;
+}
+.stage-cards { display: flex; gap: 18px; align-items: center; justify-content: center; }
+.stage-slot { width: min(31vw, 150px); aspect-ratio: 300/420; perspective: 900px; }
+.stage-slot .flip { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform .45s; }
+.stage-slot.revealed .flip { transform: rotateY(180deg); }
+.stage-slot .face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 10px; overflow: hidden; }
+.stage-slot .front { transform: rotateY(180deg); }
+.stage-vs { font-family: "Bai Jamjuree"; font-weight: 700; font-size: 15px; color: rgb(var(--gold-l)); text-align: center; }
+.round-result {
+  margin-top: 12px; text-align: center; font-family: "Bai Jamjuree"; font-weight: 700;
+  font-size: clamp(17px, 4.5vw, 22px); min-height: 32px;
+}
+.round-result .sub { display: block; font-family: "Anuphan"; font-weight: 400; font-size: 13.5px; color: rgb(255 255 255 / .75); }
+
+.match-hand {
+  padding: 8px 10px calc(12px + env(safe-area-inset-bottom));
+  background: rgb(0 0 0 / .25); border-top: 1px solid rgb(var(--gold) / .3);
+}
+.hand-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
+.hand-card {
+  width: 52px; height: 72px; border-radius: 8px; border: 2px solid rgb(255 255 255 / .35);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  color: #fff; font-family: "Bai Jamjuree"; font-weight: 700; font-size: 10px;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+  padding: 0; position: relative;
+}
+.hand-card svg { pointer-events: none; }
+.hand-card.sel { border-color: rgb(var(--gold-l)); transform: translateY(-8px); box-shadow: 0 8px 18px rgb(0 0 0 / .4), 0 0 0 3px rgb(var(--gold) / .5); }
+.hand-card:disabled { opacity: .35; }
+.hand-card.red { background: linear-gradient(160deg, rgb(var(--c-red)), rgb(var(--c-red-deep))); }
+.hand-card.green { background: linear-gradient(160deg, rgb(var(--c-green)), rgb(var(--c-green-deep))); }
+.hand-card.blue { background: linear-gradient(160deg, rgb(var(--c-blue)), rgb(var(--c-blue-deep))); }
+.hand-card.gray { background: linear-gradient(160deg, rgb(var(--c-gray)), rgb(var(--c-gray-deep))); }
+.match-actions { display: flex; gap: 10px; justify-content: center; align-items: center; }
+.match-msg { text-align: center; font-size: 13.5px; color: rgb(255 255 255 / .85); min-height: 22px; margin-bottom: 6px; }
+
+/* ── History drawer ── */
+.drawer-toggle {
+  position: absolute; top: 6px; right: 10px; z-index: 5;
+  background: rgb(0 0 0 / .35); color: #fff; border: 1px solid rgb(255 255 255 / .25);
+  border-radius: 10px; padding: 8px 13px; font-size: 12.5px; font-weight: 600; min-height: 44px;
+}
+.drawer {
+  position: fixed; inset: 0; z-index: 300; background: rgb(10 40 24 / .96);
+  color: #fff; overflow-y: auto; padding: 18px 16px calc(24px + env(safe-area-inset-bottom));
+}
+.drawer h2 { font-family: "Bai Jamjuree"; margin-bottom: 14px; }
+.hist-round { border-bottom: 1px solid rgb(255 255 255 / .12); padding: 10px 0; display: flex; gap: 12px; align-items: center; font-size: 13.5px; flex-wrap: wrap; }
+.hist-chip { display: inline-flex; align-items: center; gap: 6px; background: rgb(255 255 255 / .08); border-radius: 9px; padding: 4px 9px; }
+
+/* ── Hand builder ── */
+.hb-counter { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgb(var(--line) / .08); }
+.hb-counter .cinfo { flex: 1; min-width: 0; }
+.hb-counter .cname { font-weight: 700; font-family: "Bai Jamjuree"; }
+.hb-counter .csub { font-size: 12.5px; color: rgb(var(--muted)); }
+.hb-counter .num { font-family: "Bai Jamjuree"; font-weight: 700; font-size: 22px; width: 34px; text-align: center; }
+.hb-btn {
+  width: 46px; height: 46px; border-radius: 12px; border: 1px solid rgb(var(--line) / .15);
+  background: #fff; font-size: 22px; font-weight: 700; font-family: "Bai Jamjuree";
+  display: flex; align-items: center; justify-content: center;
+}
+.hb-btn:disabled { opacity: .3; }
+.hb-total {
+  position: sticky; bottom: 0; background: rgb(var(--deep)); color: #fff;
+  border-radius: var(--radius); padding: 14px 18px; margin-top: 18px;
+  display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow);
+}
+.hb-total .t { font-family: "Bai Jamjuree"; font-weight: 700; font-size: 19px; }
+
+/* ── Card grid (Collection) ── */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+.card-cell { position: relative; border-radius: 12px; transition: transform .18s; }
+.card-cell:hover { transform: translateY(-4px); }
+.card-cell svg { width: 100%; height: auto; display: block; border-radius: 10px; }
+.card-cell .fav {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  background: rgb(0 0 0 / .4); border: 0; border-radius: 50%;
+  width: 34px; height: 34px; color: #fff; font-size: 16px;
+}
+.card-cell .fav.on { color: rgb(var(--gold-l)); }
+
+/* ── Section หัวข้อ ── */
+.sec { padding: clamp(48px, 8vw, 90px) 0; }
+.sec h2 { font-family: "Bai Jamjuree"; font-size: clamp(24px, 4.6vw, 34px); line-height: 1.25; margin-bottom: 14px; }
+.sec .lead { color: rgb(var(--ink) / .75); max-width: 60ch; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px; font-family: "Bai Jamjuree";
+  font-weight: 700; font-size: 12.5px; letter-spacing: .14em; color: rgb(var(--green));
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.eyebrow::before { content: ""; width: 22px; height: 2px; background: rgb(var(--gold)); }
+
+/* ── ตาราง / รายการ ── */
+.statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+.stat { background: #fff; border: 1px solid rgb(var(--line) / .09); border-radius: 12px; padding: 14px 16px; }
+.stat b { font-family: "Bai Jamjuree"; font-size: 24px; display: block; line-height: 1.2; }
+.stat span { font-size: 12.5px; color: rgb(var(--muted)); }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%) translateY(20px); opacity: 0; z-index: 500;
+  background: rgb(var(--deep)); color: #fff; border: 1px solid rgb(var(--gold) / .5);
+  border-radius: 12px; padding: 12px 20px; font-size: 14px; pointer-events: none;
+  transition: opacity .25s, transform .25s; max-width: 90vw; text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Modal ── */
+.modal-back { position: fixed; inset: 0; z-index: 400; background: rgb(0 0 0 / .55); display: flex; align-items: center; justify-content: center; padding: 18px; }
+.modal { background: rgb(var(--paper)); color: rgb(var(--ink)); border-radius: 16px; padding: 24px; max-width: 440px; width: 100%; max-height: 86dvh; overflow-y: auto; }
+.modal h3 { font-family: "Bai Jamjuree"; margin-bottom: 10px; }
+
+/* ── ฟอร์ม ── */
+.field { margin-bottom: 16px; }
+.field label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+.field input, .field select {
+  width: 100%; border: 1px solid rgb(var(--line) / .2); border-radius: 12px;
+  padding: 13px 16px; font: inherit; background: #fff; min-height: 48px;
+}
+.field input:focus { border-color: rgb(var(--gold)); outline: none; }
+.field .hint { font-size: 12.5px; color: rgb(var(--muted)); margin-top: 5px; }
+
+/* ── Footer ── */
+.c7foot {
+  background: rgb(var(--deep)); color: rgb(255 255 255 / .75);
+  padding: 36px 0 calc(40px + env(safe-area-inset-bottom)); font-size: 13.5px; margin-top: 40px;
+}
+.c7foot a { color: rgb(var(--gold-l)); }
+.c7foot .cols { display: flex; gap: 28px; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+
+/* ── Badge / Tag ── */
+.tag {
+  display: inline-flex; align-items: center; gap: 6px; border-radius: 999px;
+  padding: 4px 12px; font-size: 12px; font-weight: 700; font-family: "Bai Jamjuree";
+  background: rgb(var(--green) / .1); color: rgb(var(--green));
+}
+.tag-gold { background: rgb(var(--gold) / .16); color: #8a6a2c; }
+.tag-soon { background: rgb(var(--muted) / .14); color: rgb(var(--muted)); }
+
+/* ── Reveal animations ── */
+@keyframes popIn { from { transform: scale(.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes riseIn { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+.anim-pop { animation: popIn .35s cubic-bezier(.2, 1.4, .4, 1); }
+.anim-rise { animation: riseIn .4s ease; }
+.cyc-node { transition: transform .2s; transform-box: fill-box; transform-origin: center; }
+.cyc-node.pulse { transform: scale(1.12); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  .stage-slot .flip { transition: none; }
+}
+
+/* ── Print (ใช้ในหน้า /core7/print/) ── */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff; }
+  .print-sheet { width: 210mm; margin: 0; }
+}
+.print-sheet { display: grid; grid-template-columns: repeat(3, 63mm); gap: 0; justify-content: center; }
+.print-card { width: 63mm; height: 88mm; overflow: hidden; outline: .3mm dashed #bbb; }
+.print-card svg { width: 63mm; height: 88mm; }
