@@ -1,1 +1,349 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ตอนพิเศษ: Version แรก — ก่อนจะมาเป็นเรื่องเล่าจากโรงตีเหล็ก | myclover</title>
+<meta name="description" content="เบื้องหลัง Version แรกของเรื่องเล่าจากโรงตีเหล็ก — 12 ตอนต้นฉบับก่อนถูกรื้อ สร้างใหม่ และกลายเป็นการ์ตูนฉบับปัจจุบัน">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ตอนพิเศษ: Version แรก — ก่อนจะมาเป็นเรื่องเล่าจากโรงตีเหล็ก">
+<meta property="og:description" content="ทุก Version กลายเป็น Feedback ของ Version ถัดไปได้ ลองดูฉบับแรกทั้ง 12 ตอน และเบื้องหลังวิธีสร้างการ์ตูนด้วย 6 บทเรียน AI">
+<meta property="og:image" content="https://www.myclover.com/forge/original/01.jpeg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://www.myclover.com/forge/original/">
+<meta name="theme-color" content="#0A2818">
+<style>
+:root{
+  --ink:18 40 28;
+  --paper:248 246 240;
+  --green:27 106 66;
+  --deep:10 40 24;
+  --gold:190 148 66;
+  --muted:96 108 100;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Anuphan",sans-serif;
+  background:rgb(var(--paper));
+  color:rgb(var(--ink));
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
 
+.bar{
+  position:sticky;top:0;z-index:60;
+  background:rgb(var(--deep));color:#fff;
+  border-bottom:1px solid rgb(190 148 66/.28);
+}
+.bar .wrap{display:flex;align-items:center;gap:12px;min-height:56px;padding-top:8px;padding-bottom:8px}
+.bar .home{
+  font-family:"Bai Jamjuree";font-weight:700;font-size:15px;white-space:nowrap;
+  min-height:44px;display:inline-flex;align-items:center;padding:0 4px;
+}
+.bar .ttl{margin-left:auto;text-align:right;font-size:13px;color:rgb(255 255 255/.7);min-width:0}
+.bar .ttl b{display:block;font-family:"Bai Jamjuree";font-size:14.5px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.hero{
+  color:#fff;
+  padding:clamp(38px,7vw,72px) 0 clamp(34px,6vw,62px);
+  background:
+    radial-gradient(760px 420px at 8% -12%,rgb(27 106 66/.64),transparent 62%),
+    radial-gradient(620px 360px at 94% 108%,rgb(190 148 66/.23),transparent 64%),
+    rgb(var(--deep));
+}
+.hero .badge{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid rgb(190 148 66/.48);border-radius:999px;
+  padding:5px 12px;color:rgb(var(--gold));
+  font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.12em;
+}
+.hero h1{font-family:"Bai Jamjuree";font-size:clamp(30px,6vw,50px);line-height:1.15;margin:16px 0 14px;max-width:18ch}
+.hero .lead{font-size:clamp(16px,2.4vw,19px);color:rgb(255 255 255/.84);max-width:64ch}
+.hero .optional{margin-top:15px;font-size:13.5px;color:rgb(255 255 255/.62)}
+
+.story{padding:clamp(30px,6vw,58px) 0 18px}
+.story-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:stretch}
+@media(max-width:780px){.story-grid{grid-template-columns:1fr}}
+.card{
+  background:#fff;border:1px solid rgb(var(--ink)/.1);border-radius:20px;
+  padding:clamp(22px,4vw,34px);box-shadow:0 24px 52px -38px rgb(18 40 28/.55);
+}
+.card .kicker{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.14em;color:rgb(var(--gold))}
+.card h2{font-family:"Bai Jamjuree";font-size:clamp(23px,4vw,32px);line-height:1.25;margin:9px 0 13px}
+.card p{font-size:15.5px;color:rgb(var(--ink)/.82)}
+.card p+p{margin-top:12px}
+.quote{
+  display:flex;flex-direction:column;justify-content:center;
+  background:linear-gradient(155deg,rgb(10 40 24),rgb(19 67 41));color:#fff;
+  border-color:rgb(190 148 66/.35);
+}
+.quote strong{font-family:"Bai Jamjuree";font-size:clamp(22px,4vw,31px);line-height:1.45;color:rgb(var(--gold))}
+.quote p{color:rgb(255 255 255/.73);margin-top:13px}
+
+.lesson{padding:18px 0 8px}
+.lesson-box{
+  background:linear-gradient(160deg,#fff,rgb(27 106 66/.045));
+  border:1px solid rgb(27 106 66/.18);border-radius:22px;
+  padding:clamp(23px,4vw,36px);
+}
+.lesson-head{text-align:center;max-width:760px;margin:0 auto}
+.lesson-head .kicker{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.14em;color:rgb(var(--green))}
+.lesson-head h2{font-family:"Bai Jamjuree";font-size:clamp(24px,4.6vw,36px);line-height:1.25;margin:8px 0 11px}
+.lesson-head p{color:rgb(var(--muted));font-size:15px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:24px}
+@media(max-width:720px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.steps{grid-template-columns:1fr}}
+.step{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;padding:15px 16px;min-height:105px}
+.step .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgb(var(--green));color:#fff;font-family:"Bai Jamjuree";font-weight:700;font-size:12px}
+.step b{display:block;font-family:"Bai Jamjuree";font-size:15px;line-height:1.4;margin-top:8px}
+.step span{display:block;color:rgb(var(--muted));font-size:12.5px;line-height:1.55;margin-top:3px}
+
+.walkthrough-image-cta{
+  width:min(100%,680px);margin:26px auto 8px;
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+  cursor:pointer;border-radius:20px;
+  transition:transform .22s ease,filter .22s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.walkthrough-image-cta:hover{transform:translateY(-4px);filter:brightness(1.06)}
+.walkthrough-image-cta img{width:100%;height:auto;border-radius:18px;box-shadow:0 24px 52px -26px rgb(10 40 24/.75)}
+.walkthrough-hint{
+  display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:5px 14px;
+  border-radius:999px;background:rgb(27 106 66/.08);border:1px solid rgb(27 106 66/.25);
+  color:rgb(var(--green));font-family:"Bai Jamjuree";font-size:12.5px;font-weight:700;
+}
+.skiprow{text-align:center;margin-top:12px}
+.skiprow a{display:inline-flex;align-items:center;min-height:44px;padding:8px 15px;color:rgb(var(--green));font-family:"Bai Jamjuree";font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:4px}
+
+.jump{padding:24px 0 30px}
+.jumpbox{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+.jump a{
+  display:inline-flex;align-items:center;justify-content:center;min-width:42px;min-height:42px;
+  border-radius:11px;background:#fff;border:1px solid rgb(var(--ink)/.12);
+  font-family:"Bai Jamjuree";font-size:12px;font-weight:700;
+  transition:transform .16s,border-color .16s,background .16s;
+}
+.jump a:hover{transform:translateY(-2px);border-color:rgb(var(--gold));background:rgb(190 148 66/.08)}
+.jump p{text-align:center;color:rgb(var(--muted));font-size:12.5px;margin-top:10px}
+
+.reader{background:rgb(var(--deep));padding:1px 0 0}
+.episode{scroll-margin-top:56px}
+.ephead{
+  max-width:820px;margin:0 auto;
+  display:flex;align-items:center;gap:15px;
+  padding:clamp(22px,4.5vw,34px) 20px 16px;color:#fff;
+}
+.ephead .num{
+  flex:0 0 auto;display:grid;place-items:center;width:48px;height:48px;border-radius:14px;
+  border:1px solid rgb(190 148 66/.5);background:rgb(190 148 66/.13);
+  color:rgb(var(--gold));font-family:"Bai Jamjuree";font-weight:700;font-size:13px;
+}
+.ephead .tx{min-width:0}
+.ephead small{display:block;font-family:"Bai Jamjuree";font-size:10.5px;letter-spacing:.14em;color:rgb(255 255 255/.5)}
+.ephead h2{font-family:"Bai Jamjuree";font-size:clamp(20px,4vw,28px);line-height:1.32;margin-top:3px}
+.original-img{width:100%;height:auto;max-width:820px;margin:0 auto;background:#111}
+.sep{max-width:820px;height:1px;margin:0 auto;background:linear-gradient(90deg,transparent,rgb(190 148 66/.36),transparent)}
+
+.after{padding:clamp(38px,7vw,68px) 0;background:rgb(var(--paper))}
+.afterbox{
+  background:linear-gradient(160deg,rgb(10 40 24),rgb(18 62 38));color:#fff;
+  border:1px solid rgb(190 148 66/.4);border-radius:22px;
+  padding:clamp(26px,5vw,42px);text-align:center;
+  box-shadow:0 28px 58px -36px rgb(10 40 24/.8);
+}
+.afterbox .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.14em;color:rgb(var(--gold))}
+.afterbox h2{font-family:"Bai Jamjuree";font-size:clamp(24px,4.5vw,35px);line-height:1.3;margin:10px 0 12px}
+.afterbox p{max-width:700px;margin:0 auto;color:rgb(255 255 255/.75);font-size:15px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:22px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:50px;
+  border-radius:13px;padding:12px 22px;font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px;
+  transition:transform .18s,filter .18s,border-color .18s;
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.btn.main{background:rgb(var(--gold));color:rgb(var(--deep))}
+.btn.ghost{border:1px solid rgb(255 255 255/.32);color:#fff;background:rgb(255 255 255/.06)}
+
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 48px}
+footer a{color:rgb(var(--green));font-weight:600}
+@media(max-width:600px){.bar .ttl{display:none}.ephead{padding-left:15px;padding-right:15px}.original-img{width:100%}}
+</style>
+<link rel="stylesheet" href="/assets/readable.css">
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="home disp" href="../">← ทุกตอน</a>
+  <span class="ttl">ตอนพิเศษ<b>Version แรก</b></span>
+</div></header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="badge">🔓 SPECIAL UNLOCKED · OPTIONAL</span>
+    <h1 class="disp">ก่อนจะมาเป็น<br>“เรื่องเล่าจากโรงตีเหล็ก”</h1>
+    <p class="lead">นี่คือ Version แรกของการ์ตูนเรื่องนี้ — 12 ตอนที่เกิดขึ้นก่อนจะถูกรื้อ เรียบเรียง และสร้างใหม่ จนกลายเป็นฉบับ 7 ตอนที่คุณเพิ่งอ่านจบ</p>
+    <p class="optional">หน้านี้เป็นเนื้อหาเสริม จะข้ามไปเริ่มเรียนเลยก็ได้ แต่ถ้าอยากเห็นว่า “ของจริง” พัฒนาจาก Version แรกอย่างไร เลื่อนอ่านต่อได้เลย</p>
+  </div>
+</section>
+
+<main>
+  <section class="story">
+    <div class="wrap story-grid">
+      <article class="card">
+        <span class="kicker">BEHIND THE SCENES</span>
+        <h2 class="disp">Version แรกไม่ได้ถูกลบทิ้ง</h2>
+        <p>ฉบับนี้มีทั้งส่วนที่เล่ายาวเกินไป ภาพที่ยังไม่คงที่ และแก่นเรื่องที่ยังพยายามพูดหลายอย่างพร้อมกัน แต่ถ้าไม่มีมัน ฉบับที่คุณเพิ่งอ่านก็เกิดขึ้นไม่ได้</p>
+        <p>ผมสร้างมันให้จบก่อน แล้วใช้ทุกจุดที่ยังไม่เวิร์กเป็น Feedback รื้อใหม่ทีละตอน จนเรื่องเปลี่ยนจาก “ประวัติของ Clover” มาเป็นเรื่องของคนธรรมดาที่สร้างทางไว้ให้คนที่มาทีหลัง</p>
+      </article>
+      <aside class="card quote">
+        <strong class="disp">ของชิ้นแรก<br>ไม่ต้องเป็นของชิ้นสุดท้าย</strong>
+        <p>มันแค่ต้องมีอยู่จริงมากพอ ให้เราเห็นว่าควรเก็บอะไร ตัดอะไร และสร้าง Version ถัดไปอย่างไร</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="lesson">
+    <div class="wrap">
+      <div class="lesson-box">
+        <div class="lesson-head">
+          <span class="kicker">6 บทเรียน · THE REAL TOOLSET</span>
+          <h2 class="disp">วิชาที่ใช้สร้างการ์ตูนทั้งเรื่อง<br>คือ 6 บทเดียวกับที่คุณกำลังจะเรียน</h2>
+          <p>ไม่ได้ใช้แค่สร้างภาพ แต่ใช้ตั้งแต่คิดเรื่อง จัดข้อมูล เขียนบท แก้ Version ไปจนถึงทำเว็บที่คุณกำลังอ่านอยู่ตอนนี้</p>
+        </div>
+        <div class="steps" aria-label="กระบวนการสร้างการ์ตูนด้วย 6 บทเรียน AI">
+          <div class="step"><span class="n">1</span><b>คุยให้เห็นปัญหา</b><span>เริ่มจากสิ่งที่อยากเล่าและคนที่อยากช่วย</span></div>
+          <div class="step"><span class="n">2</span><b>รวบรวมและจัดข้อมูล</b><span>เปลี่ยนความทรงจำกระจัดกระจายให้เป็นวัตถุดิบ</span></div>
+          <div class="step"><span class="n">3</span><b>เขียนบทและคำสั่ง</b><span>บอกบริบท เป้าหมาย และข้อจำกัดให้ชัด</span></div>
+          <div class="step"><span class="n">4</span><b>สร้างภาพและสื่อ</b><span>ทำสิ่งที่อยู่ในหัวให้ออกมาเป็น Version แรก</span></div>
+          <div class="step"><span class="n">5</span><b>ตรวจ แก้ และทำซ้ำ</b><span>ใช้ข้อผิดพลาดเป็น Feedback แทนการเริ่มใหม่หมด</span></div>
+          <div class="step"><span class="n">6</span><b>ทำให้คนอื่นใช้ได้จริง</b><span>นำผลงานขึ้นเว็บ ทดสอบ และส่งต่อให้คนอ่าน</span></div>
+        </div>
+
+        <a class="walkthrough-image-cta" href="../../walkthrough/" aria-label="เปิด Walkthrough ก่อนเริ่ม 6 บทเรียน AI">
+          <img src="/forge/img/walkthough-button.png"
+               alt="เปิด Walkthrough — ดูเส้นทางก่อนเริ่ม 6 บทเรียน AI"
+               loading="eager" decoding="async">
+          <span class="walkthrough-hint">กดภาพเพื่อดูเส้นทางก่อนเริ่ม →</span>
+        </a>
+        <p class="skiprow"><a href="../../classroom/free-ai.html">พร้อมแล้ว — เริ่มบทที่ 1 ทันที →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="jump wrap" aria-label="ข้ามไปยังตอนของ Version แรก">
+    <div class="jumpbox">
+      <a href="#ep01">01</a><a href="#ep02">02</a><a href="#ep03">03</a><a href="#ep04">04</a>
+      <a href="#ep05">05</a><a href="#ep06">06</a><a href="#ep07">07</a><a href="#ep08">08</a>
+      <a href="#ep09">09</a><a href="#ep10">10</a><a href="#ep11">11</a><a href="#ep12">12</a>
+    </div>
+    <p>Version แรก · 12 ตอน · อ่านต่อเนื่องในหน้าเดียว</p>
+  </nav>
+
+  <section class="reader" aria-label="การ์ตูน Version แรก 12 ตอน">
+    <article class="episode" id="ep01">
+      <header class="ephead"><span class="num">01</span><div class="tx"><small>VERSION แรก · ตอนที่ 1</small><h2 class="disp">ทุกคนมีสิทธิ์ลงเล่น</h2></div></header>
+      <img class="original-img" src="01.jpeg" loading="eager" fetchpriority="high" decoding="async" alt="Version แรก ตอนที่ 1 — ทุกคนมีสิทธิ์ลงเล่น">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep02">
+      <header class="ephead"><span class="num">02</span><div class="tx"><small>VERSION แรก · ตอนที่ 2</small><h2 class="disp">ไอเท็มชิ้นแรก</h2></div></header>
+      <img class="original-img" src="02.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 2 — ไอเท็มชิ้นแรก">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep03">
+      <header class="ephead"><span class="num">03</span><div class="tx"><small>VERSION แรก · ตอนที่ 3</small><h2 class="disp">ของที่กลับมาพร้อมรอยใช้</h2></div></header>
+      <img class="original-img" src="03.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 3 — ของที่กลับมาพร้อมรอยใช้">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep04">
+      <header class="ephead"><span class="num">04</span><div class="tx"><small>VERSION แรก · ตอนที่ 4</small><h2 class="disp">สิ่งที่เดินทางแทนเรา</h2></div></header>
+      <img class="original-img" src="04.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 4 — สิ่งที่เดินทางแทนเรา">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep05">
+      <header class="ephead"><span class="num">05</span><div class="tx"><small>VERSION แรก · ตอนที่ 5</small><h2 class="disp">จากคำตอบสู่ระบบ</h2></div></header>
+      <img class="original-img" src="05.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 5 — จากคำตอบสู่ระบบ">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep06">
+      <header class="ephead"><span class="num">06</span><div class="tx"><small>VERSION แรก · ตอนที่ 6</small><h2 class="disp">ชุดเริ่มต้นของผู้เล่นใหม่</h2></div></header>
+      <img class="original-img" src="06.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 6 — ชุดเริ่มต้นของผู้เล่นใหม่">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep07">
+      <header class="ephead"><span class="num">07</span><div class="tx"><small>VERSION แรก · ตอนที่ 7</small><h2 class="disp">เสียงที่ไปไกลกว่าเรา</h2></div></header>
+      <img class="original-img" src="07.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 7 — เสียงที่ไปไกลกว่าเรา">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep08">
+      <header class="ephead"><span class="num">08</span><div class="tx"><small>VERSION แรก · ตอนที่ 8</small><h2 class="disp">ช่างตีเหล็กหลังเวที</h2></div></header>
+      <img class="original-img" src="08.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 8 — ช่างตีเหล็กหลังเวที">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep09">
+      <header class="ephead"><span class="num">09</span><div class="tx"><small>VERSION แรก · ตอนที่ 9</small><h2 class="disp">ของที่ดีต้องไปถึงมือคน</h2></div></header>
+      <img class="original-img" src="09.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 9 — ของที่ดีต้องไปถึงมือคน">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep10">
+      <header class="ephead"><span class="num">10</span><div class="tx"><small>VERSION แรก · ตอนที่ 10</small><h2 class="disp">ครั้งนี้ผมไม่ปิดจอ</h2></div></header>
+      <img class="original-img" src="10.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 10 — ครั้งนี้ผมไม่ปิดจอ">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep11">
+      <header class="ephead"><span class="num">11</span><div class="tx"><small>VERSION แรก · ตอนที่ 11</small><h2 class="disp">แต่ละคนมี Class ของตัวเอง</h2></div></header>
+      <img class="original-img" src="11.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 11 — แต่ละคนมี Class ของตัวเอง">
+      <div class="sep"></div>
+    </article>
+    <article class="episode" id="ep12">
+      <header class="ephead"><span class="num">12</span><div class="tx"><small>VERSION แรก · ตอนที่ 12</small><h2 class="disp">เกมใหม่ ลีกใหม่</h2></div></header>
+      <img class="original-img" src="12.jpeg" loading="lazy" decoding="async" alt="Version แรก ตอนที่ 12 — เกมใหม่ ลีกใหม่">
+    </article>
+  </section>
+
+  <section class="after">
+    <div class="wrap">
+      <div class="afterbox">
+        <span class="tag">VERSION COMPLETE</span>
+        <h2 class="disp">Version แรกจบตรงนี้<br>แต่สิ่งที่เรียนรู้จากมันยังเดินต่อ</h2>
+        <p>ความต่างระหว่างการ์ตูนชุดนี้กับฉบับที่คุณเพิ่งอ่าน ไม่ได้เกิดจากการรอให้พร้อมกว่าเดิม แต่มาจากการทำให้เสร็จ รับ Feedback แล้วสร้าง Version ถัดไป ถ้าคุณมีบางอย่างที่อยากสร้าง 6 บทเรียนแรกถูกทำไว้เพื่อช่วยให้คุณเริ่มแบบเดียวกัน</p>
+        <div class="actions">
+          <a class="btn main" href="../../walkthrough/">🗺️ ดู Walkthrough ก่อนเริ่ม</a>
+          <a class="btn ghost" href="../../classroom/free-ai.html">เริ่มบทที่ 1 →</a>
+          <a class="btn ghost" href="../">← กลับไปทุกตอน</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>🍀 เรื่องเล่าจากโรงตีเหล็ก · Version แรก</p>
+  <p style="margin-top:6px"><a href="../">ทุกตอน</a> · <a href="../../walkthrough/">Walkthrough</a> · <a href="../../">กลับหน้าบ้าน</a></p>
+</footer>
+
+<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "xtx73cs6w1");
+</script>
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
+</script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>
+</body>
+</html>
