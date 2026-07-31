@@ -7,8 +7,6 @@
 <meta name="theme-color" content="#0a2818">
 <title>AI ฟรีที่ควรมีติดเครื่อง · ห้องเรียน AI ของบ้าน myclover</title>
 <meta name="description" content="คลาสแรกสุดสำหรับคนที่ไม่เคยใช้ AI เลย — จบคลาสนี้ คุณจะมีผู้ช่วย AI ฟรี 2 ตัวพร้อมใช้ในเครื่อง และส่งคำสั่งแรกสำเร็จด้วยตัวเอง">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -159,6 +157,7 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
 </style>
+<link rel="stylesheet" href="/assets/readable.css">
 </head>
 <body>
 <a class="skip-link" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
@@ -184,8 +183,8 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 
 <h2><span class="n">1</span>รู้จักผู้ช่วย 2 ตัวของเรา</h2>
 <div class="card">
-  <div class="item"><span class="ic">✨</span><div><b>Gemini — ผู้ช่วยคุยได้ทุกเรื่อง</b><small>ถาม-ตอบ เขียนข้อความ คิดไอเดีย สร้างภาพ แปลภาษา — เหมือนมีผู้ช่วยเก่ง ๆ นั่งข้างตัวตลอดเวลา ใช้ฟรีด้วยบัญชี Google</small></div></div>
-  <div class="item"><span class="ic">📚</span><div><b>NotebookLM — บรรณารักษ์ส่วนตัว</b><small>โยนเอกสาร ไฟล์ ลิงก์ ให้มันอ่าน แล้วถามอะไรก็ได้จาก "ของของเรา" — มันตอบพร้อมชี้ว่าเอามาจากหน้าไหน ไม่มั่ว ใช้ฟรีเหมือนกัน</small></div></div>
+  <div class="item"><span class="ic">✨</span><div><b>Gemini — ผู้ช่วยคุยได้หลายเรื่อง</b><small>ถาม-ตอบ เขียนข้อความ คิดไอเดีย สร้างภาพ แปลภาษา — ใช้เริ่มงานทั่วไปได้เร็ว และมีโหมดฟรีด้วยบัญชี Google</small></div></div>
+  <div class="item"><span class="ic">📚</span><div><b>NotebookLM — บรรณารักษ์ส่วนตัว</b><small>ใส่เอกสาร ไฟล์ หรือลิงก์ แล้วถามจาก "ของของเรา" — มันแสดงแหล่งอ้างอิงให้ย้อนตรวจได้ แต่คำตอบสำคัญก็ยังต้องเปิดต้นฉบับเช็กเอง</small></div></div>
   <div class="item"><span class="ic">🤔</span><div><b>ใช้ตัวไหนตอนไหน?</b><small>จำง่าย ๆ: เรื่องทั่วไปในโลก → Gemini · เรื่องในเอกสารของเรา → NotebookLM</small></div></div>
 </div>
 
@@ -201,7 +200,7 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   <div class="step"><span class="num">2</span><div><b>ก๊อปคำสั่งนี้ไปวางในช่องแชท แล้วกดส่ง</b>
   <div class="prompt">สวัสดี ฉันเพิ่งเคยใช้ AI ครั้งแรก งานประจำของฉันคือ [เติมอาชีพของคุณ เช่น ขายของออนไลน์ / พนักงานออฟฟิศ / แม่บ้าน]
 ช่วยแนะนำ 3 อย่างที่คุณช่วยงานฉันได้ พร้อมตัวอย่างสั้น ๆ ที่ทำให้ดูเลย</div>
-  <small>เปลี่ยนข้อความใน [วงเล็บ] เป็นของคุณเองก่อนส่ง — นี่คือกติกาเดียวกันทุกพร้อมท์ในบ้านนี้</small></div></div>
+  <small>เปลี่ยนข้อความใน [วงเล็บ] เป็นของคุณเองก่อนส่ง — นี่คือกติกาเดียวกันทุก Prompt ในบ้านนี้</small></div></div>
   <div class="step"><span class="num">3</span><div><b>คุยต่อได้เหมือนคุยกับคน</b><small>ไม่ต้องพิมพ์สวย ไม่ต้องกลัวผิด — ถ้าคำตอบยังไม่ถูกใจ บอกมันตรง ๆ ว่า "สั้นกว่านี้" "เป็นกันเองกว่านี้" "ยกตัวอย่างเพิ่ม" มันจะปรับให้ทันที</small></div></div>
 </div>
 

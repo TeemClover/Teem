@@ -9,7 +9,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC  = os.environ.get('FORGE_SRC') or os.path.join(ROOT, '.forge-src')
 DEST = os.path.join(ROOT, 'forge')
 IMG  = os.path.join(DEST, 'img')
-SITE = 'https://myclover.com'
+SITE = 'https://www.myclover.com'
 
 # ตารางตอน — (คีย์, เลขตอนที่แสดง, ชื่อตอน, slug, ตอนพิเศษไหม, ไฟล์ต้นฉบับ)
 #
@@ -30,7 +30,8 @@ EPISODES = [
      ["041.jpg", "042.jpg", "043.jpg", "044.jpg"]),
     ("05", "5",  "จากคำตอบสู่ระบบ",           "ep5-from-answers-to-a-system",  False,
      ["051.jpg", "052.jpg", "053.jpg", "054.jpg"]),
-    ("06", "6",  "ชุดเริ่มต้นของผู้เล่นใหม่", "ep6-the-starter-kit",           False, ["06.png"]),
+    ("06", "6",  "ชุดเริ่มต้นของผู้เล่นใหม่", "ep6-the-starter-kit",           False,
+     ["061.jpg", "062.jpg", "063.jpg", "064.jpg"]),
     ("07", "7",  "เสียงที่ไปไกลกว่าเรา",      "ep7-a-voice-that-went-further", False, ["07.png"]),
     ("08", "8",  "ช่างตีเหล็กหลังเวที",       "ep8-the-blacksmith-backstage",  False, ["08.png"]),
     ("09", "9",  "ของที่ดีต้องไปถึงมือคน",    "ep9-tools-must-reach-people",   False, ["09.png"]),
@@ -179,9 +180,8 @@ def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical=''):
 <meta property="og:image" content="{ogimg}">
 <meta name="twitter:card" content="summary_large_image">
 {canonical}<meta name="theme-color" content="#0A2818">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Bai+Jamjuree:wght@500;600;700&display=swap" rel="stylesheet">
 <style>{CSS}{extra_css}</style>
+<link rel="stylesheet" href="/assets/readable.css">
 </head>
 <body>
 {body}
@@ -501,8 +501,8 @@ def finish_block(up):
     <div class="nextup">
       <span class="hr"><i></i>แล้วไงต่อ<i></i></span>
       <p>เรื่องที่คุณเพิ่งอ่านจบ ไม่ได้จบที่ตัวผมคนเดียว<br>
-         วิธีคิดแบบคนเล่นเกม — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ — ใช้กับธุรกิจอะไรก็ได้
-         และมันสนุกกว่ามากเวลาเล่นกันหลายคน</p>
+         วิธีคิดแบบคนเล่นเกมคือ อ่าน Quest หา Class จัด Loadout แล้วฝึกจนคนละ Build เล่นด้วยกันได้
+         — หลักนี้ย้ายไปใช้กับงานและชีวิตได้เหมือนกัน</p>
       <p>กิลด์ของเราเลยมีไว้แบบนั้น ไม่ได้มีไว้ขายอะไรกับคุณ
          แต่มีไว้ให้คนที่อยากโตทั้งเรื่องงานและเรื่องชีวิต มาโตไปด้วยกัน<br>
          <b>ใครเจอเรา คนนั้นโชคดี — #glhf</b></p>
@@ -709,9 +709,9 @@ READ_CSS = '''
 .strip picture{display:block}
 .strip img{width:100%;height:auto;margin:0 auto;display:block}
 /* ช่องต่อกันสนิท ไม่มีรอยต่อ · scroll-margin กันช่องโดนแถบบนบังตอนกระโดด
-   ตรึงกว้างสุดที่ 1024px = ความกว้างจริงของไฟล์ต้นฉบับ
-   กว้างกว่านี้คือขยายเกินความละเอียดที่มี และบนจอคอมภาพจะสูงจนต้องย่อหน้าต่างถึงจะอ่านได้ */
-.panel{display:block;cursor:pointer;scroll-margin-top:56px;max-width:1024px;margin:0 auto;
+   ตรึงกว้างสุดที่ 820px เพื่อให้เห็นหนึ่งช่องได้ครบขึ้นบนจอคอม
+   ไฟล์ต้นฉบับยังคง 1024px เพื่อรักษาความคมชัดบนจอความละเอียดสูง */
+.panel{display:block;cursor:pointer;scroll-margin-top:56px;max-width:820px;margin:0 auto;
   -webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .tapnext{display:block;cursor:pointer;-webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .nav{padding:22px 0 8px}
@@ -872,7 +872,7 @@ print(f'สร้างหน้าเว็บ {len(EPISODES)+1} หน้า')
 CARD_GIFT = ('../../card/', 'ทำการ์ดประจำตัว',
              'บอกคนอื่นได้ใน 1 ภาพว่าคุณเป็นสายไหน และเก็บตราที่ปลดได้ไว้บนนั้น')
 CLASS_GIFT = ('../../classroom/', 'ห้องเรียน AI ทั้ง 6 บท',
-              'เรียนฟรี บทละประมาณ 10 นาที ทำตามได้เลยไม่ต้องมีพื้นฐาน')
+              'เรียนฟรี เริ่มบทละประมาณ 10 นาที แล้วกลับมาทำต่อได้โดยไม่ต้องมีพื้นฐาน')
 WALK_GIFT = ('../../walkthrough/', 'ห้องบทสรุป 🔒',
              'เปิดให้คนที่อ่านการ์ตูนครบทั้ง 12 ตอน — แปลภาษาเกมเป็นภาษาธุรกิจ '
              'และเปิดเบื้องหลังว่าเว็บนี้สร้างขึ้นมายังไง')
@@ -909,8 +909,8 @@ PATHS = [
   'hook':'อยากกินอร่อยแบบไม่รู้สึกผิด',
   'who':'รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ',
   'h1':'กินให้อร่อย<br>โดยไม่ต้องรู้สึกผิดทีหลัง',
-  'lead':'บ้านนี้ไม่เชื่อเรื่องอดอาหาร เราเชื่อว่ากินเป็นดีกว่าอดตาย '
-         'และเรื่องกินคือเสาแรกที่เรากำลังทำอยู่',
+  'lead':'บ้านนี้ไม่เชื่อว่าสุขภาพต้องเริ่มจากการฝืนอด เราเชื่อว่ากินเป็น '
+         'และค่อย ๆ สร้างกติกาที่อยู่กับชีวิตจริงได้ดีกว่า',
   'signs':['วางแผนทริปจากร้านที่อยากกิน ก่อนจะเลือกที่พักด้วยซ้ำ',
            'เคยอดจนผอมมาแล้ว แล้วก็กลับมาหนักกว่าเดิม',
            'ไม่เชื่อว่าคนเราจะกินอกไก่ต้มกับผักนึ่งไปได้ทั้งชีวิต'],
@@ -970,7 +970,7 @@ PATHS = [
   'who':'ชอบสร้างของ และอยากให้เครื่องมือทำงานแทนได้',
   'h1':'ให้เครื่องมือทำงานแทน<br>แล้วเอาเวลาไปสร้างของ',
   'lead':'ห้องเรียนของบ้านนี้สร้างมาเพื่อคุณโดยตรง — ไม่ต้องเขียนโค้ดเป็น '
-         'ไม่ต้องจ่ายก่อน เริ่มบทแรกได้เลยวันนี้',
+         'ไม่ต้องจ่ายก่อน เริ่มด้วย 10 นาทีแรกได้เลย',
   'signs':['เปิด AI ไว้ทุกวัน แต่ยังใช้แค่ถาม–ตอบ ยังไม่ได้ใช้มันสร้างของ',
            'อยากมีเว็บหรือเครื่องมือของตัวเอง แต่ติดว่าไม่ได้เรียนสายเขียนโปรแกรม',
            'เห็นของสวย ๆ แล้วอยากรู้ว่าเบื้องหลังทำยังไง มากกว่าอยากได้ของชิ้นนั้น'],
@@ -1000,9 +1000,14 @@ def hex_rgb(h):
 
 
 PATH_CSS = '''
-.phero{padding:52px 0 40px;background:
+.phero{padding:0 0 48px;background:
   radial-gradient(700px 340px at 6% -22%,rgb(var(--ac)/.16),transparent 62%),
   radial-gradient(420px 260px at 97% 0%,rgb(var(--gold)/.13),transparent 60%)}
+.hero-art{display:block;width:100%;max-width:1200px;margin:0 auto;overflow:hidden;
+  box-shadow:0 24px 52px -38px rgb(var(--ac)/.8);background:rgb(var(--deep))}
+.hero-art img{width:100%;height:auto;aspect-ratio:2/1;object-fit:cover}
+.hero-copy{padding-top:44px}
+@media(max-width:600px){.hero-copy{padding-top:32px}}
 .phero .emo{font-size:46px;line-height:1}
 .ptag{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:"Bai Jamjuree";
   font-weight:700;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:rgb(var(--ac));
@@ -1144,7 +1149,13 @@ def path_page(p):
   <span class="ttl"><b>{p['emo']} {p['th']}</b>เส้นทางของคุณในบ้านหลังนี้</span>
 </div></nav>
 
-<header class="phero"><div class="wrap">
+<header class="phero">
+  <picture class="hero-art">
+    <img src="../../img/path-{p['slug']}.jpg" width="1200" height="600"
+         loading="eager" fetchpriority="high" decoding="async"
+         alt="{p['th']} — {E(p['who'])}">
+  </picture>
+  <div class="wrap hero-copy">
   <div class="emo">{p['emo']}</div>
   <span class="ptag">{p['key']} · {p['th']}</span>
   <h1 class="disp">{p['h1']}</h1>
@@ -1187,7 +1198,7 @@ def path_page(p):
   <div class="flag">
     <b class="disp">ปักธงว่าคุณคือ{p['th']}</b>
     <p>จำไว้ในเครื่องของคุณเอง แล้วหน้าอื่นในบ้านจะหยิบของที่ตรงกับคุณขึ้นมาก่อน
-    รวมถึงการ์ดประจำตัวที่จะขึ้นสาย{p['th']}ให้อัตโนมัติ — เปลี่ยนใจทีหลังได้ตลอด</p>
+    รวมถึงการ์ดประจำตัวที่จะขึ้น{p['th']}ให้อัตโนมัติ — เปลี่ยนใจทีหลังได้ตลอด</p>
     <p class="flagged" id="flagMsg" hidden>🍀 ปักธงเรียบร้อย — คุณคือ{p['th']}</p>
     <div class="btnrow">
       <button type="button" class="btn" id="flagBtn">ปักธงว่าฉันคือ{p['th']}</button>
@@ -1236,7 +1247,13 @@ def paths_index():
   <span class="ttl"><b>สายทั้งหมด</b>เลือกได้ ไม่เลือกก็ได้</span>
 </div></nav>
 
-<header class="phero"><div class="wrap">
+<header class="phero">
+  <picture class="hero-art">
+    <img src="../img/paths-hero.jpg" width="1600" height="700"
+         loading="eager" fetchpriority="high" decoding="async"
+         alt="ทางแยก 4 สายของบ้าน myclover — สายคิด สายกิน สายคลีน และสายประดิษฐ์">
+  </picture>
+  <div class="wrap hero-copy">
   <div class="emo">🧭</div>
   <span class="ptag">เลือกสาย</span>
   <h1 class="disp">วันนี้อะไรพามาที่นี่?</h1>
