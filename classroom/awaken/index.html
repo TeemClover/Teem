@@ -44,12 +44,14 @@ img{max-width:100%;height:auto;display:block}
 .phasedots span.on{background:rgb(var(--gold))}
 
 /* ═══════════ หน้าก่อนเข้าบอส ═══════════ */
-.encounter{padding:60px 0 80px;text-align:center}
+.encounter{padding:0 0 80px;text-align:center}
 .enc-tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.24em;color:rgb(var(--gold))}
-.enc-art{display:block;margin:22px auto 30px;border-radius:18px;overflow:hidden;
-  border:1px solid rgb(190 148 66/.28);box-shadow:0 28px 70px -34px rgb(190 148 66/.45);
+.enc-art{display:block;width:100%;max-width:1200px;margin:0 auto;overflow:hidden;
+  border-bottom:1px solid rgb(190 148 66/.28);box-shadow:0 28px 70px -42px rgb(190 148 66/.45);
   background:#020704}
 .enc-art img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.enc-copy{padding-top:46px}
+@media(max-width:600px){.enc-copy{padding-top:34px}}
 .encounter h1{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(26px,7vw,38px);
   margin-top:14px;line-height:1.3}
 .enc-body{margin-top:22px;font-size:16px;color:rgb(255 255 255/.74);line-height:2.05}
@@ -310,8 +312,7 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
 </header>
 
 <!-- ═══════════════ หน้าก่อนเข้าบอส ═══════════════ -->
-<main id="gate" class="encounter"><div class="wrap">
-  <span class="enc-tag mono">FINAL ENCOUNTER</span>
+<main id="gate" class="encounter">
   <picture class="enc-art">
     <source type="image/webp" media="(max-width:640px)" srcset="../../img/awaken-hero-640.webp">
     <source type="image/webp" srcset="../../img/awaken-hero-1024.webp">
@@ -319,6 +320,8 @@ footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;ma
          loading="eager" fetchpriority="high" decoding="async"
          alt="ประตูห้องโถงมืดที่มีแสงเส้นเดียวลอดเข้ามา ก่อนเข้าสู่ด่านสุดท้าย">
   </picture>
+  <div class="wrap enc-copy">
+  <span class="enc-tag mono">FINAL ENCOUNTER</span>
   <h1 class="disp">ด่านนี้ไม่มีอะไรให้ทำ</h1>
   <div class="enc-body">
     <p>คุณไม่ต้องเปิด AI<br>ไม่ต้องพิมพ์ตาม<br>และไม่ต้องตอบคำถาม</p>

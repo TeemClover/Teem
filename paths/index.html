@@ -39,12 +39,14 @@ footer a{color:rgb(var(--green));font-weight:600}
   font-size:10.5px;border-radius:6px;padding:2px 8px;letter-spacing:.04em;vertical-align:middle}
 :root{--ac:27 106 66}
 
-.phero{padding:52px 0 40px;background:
+.phero{padding:0 0 48px;background:
   radial-gradient(700px 340px at 6% -22%,rgb(var(--ac)/.16),transparent 62%),
   radial-gradient(420px 260px at 97% 0%,rgb(var(--gold)/.13),transparent 60%)}
-.hero-art{margin:0 0 28px;border-radius:20px;overflow:hidden;
-  box-shadow:0 24px 52px -34px rgb(10 40 24/.7);background:rgb(var(--deep))}
+.hero-art{display:block;width:100%;max-width:1600px;margin:0 auto;overflow:hidden;
+  box-shadow:0 24px 52px -38px rgb(10 40 24/.7);background:rgb(var(--deep))}
 .hero-art img{width:100%;height:auto;aspect-ratio:16/7;object-fit:cover}
+.hero-copy{padding-top:44px}
+@media(max-width:600px){.hero-copy{padding-top:32px}}
 .phero .emo{font-size:46px;line-height:1}
 .ptag{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-family:"Bai Jamjuree";
   font-weight:700;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:rgb(var(--ac));
@@ -142,12 +144,13 @@ footer a{color:rgb(var(--green));font-weight:600}
   <span class="ttl"><b>สายทั้งหมด</b>เลือกได้ ไม่เลือกก็ได้</span>
 </div></nav>
 
-<header class="phero"><div class="wrap">
+<header class="phero">
   <picture class="hero-art">
     <img src="../img/paths-hero.jpg" width="1600" height="700"
          loading="eager" fetchpriority="high" decoding="async"
          alt="ทางแยก 4 สายของบ้าน myclover — สายคิด สายกิน สายคลีน และสายประดิษฐ์">
   </picture>
+  <div class="wrap hero-copy">
   <div class="emo">🧭</div>
   <span class="ptag">เลือกสาย</span>
   <h1 class="disp">วันนี้อะไรพามาที่นี่?</h1>
