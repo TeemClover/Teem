@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="mc-item" content="learn:clip-ai">
+<meta name="theme-color" content="#0a2818">
 <title>ทำคลิปสั้นด้วย AI — จากไอเดียถึงโพสต์ในวันเดียว · ห้องเรียน AI ของบ้าน myclover</title>
 <meta name="description" content="ให้ AI ช่วยตั้งแต่คิดสคริปต์ แตกช็อตถ่าย จนถึงแคปชัน — คุณมีหน้าที่แค่กดถ่ายกับมือถือเครื่องเดิม">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,29 +12,36 @@
 <style>
 :root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;scroll-padding-top:74px}
+body{font-family:"Anuphan",sans-serif;background:radial-gradient(900px 460px at 50% -220px,rgb(190 148 66/.12),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit}
+button,summary,a{-webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation}
 .disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
 a{text-decoration:none;color:inherit}
 img{max-width:100%}
-.wrap{max-width:800px;margin:0 auto;padding:0 20px}
-nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.94);backdrop-filter:blur(8px);border-bottom:1px solid rgb(var(--ink)/.08)}
+.wrap{width:100%;max-width:800px;margin:0 auto;padding:0 20px}
+.skip-link{position:fixed;left:16px;top:10px;z-index:100;transform:translateY(-160%);background:#fff;color:rgb(var(--deep));border:2px solid rgb(var(--gold));border-radius:9px;padding:8px 12px;font-weight:700;transition:transform .18s}
+.skip-link:focus{transform:translateY(0)}
+nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgb(var(--ink)/.08);box-shadow:0 5px 20px rgb(10 40 24/.035)}
 nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
 .bk{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:18px;color:rgb(var(--ink))}
 .bk em{font-style:normal;color:rgb(var(--green))}
 .bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
 .bk2:hover{color:rgb(var(--green))}
-.head{background:rgb(var(--deep));color:#fff;border-radius:20px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative}
-.heroimg{margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
+.head{background:rgb(var(--deep));color:#fff;border:1px solid rgb(255 255 255/.08);border-radius:22px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative;box-shadow:0 18px 46px rgb(10 40 24/.14)}
+.heroimg{position:relative;margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
+.heroimg::after{content:"";position:absolute;inset:auto 0 0;height:38%;background:linear-gradient(transparent,rgb(var(--deep)/.34));pointer-events:none}
 .heroimg img{width:100%;height:100%;object-fit:cover;display:block}
 .lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
 .head h1{font-size:clamp(24px,4.5vw,32px);margin:12px 0 8px;line-height:1.3}
 .head>p{color:rgb(255 255 255/.8);font-size:15.5px;max-width:58ch}
 .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
 .meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.15);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.85)}
-h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;margin:34px 0 14px;display:flex;align-items:center;gap:11px}
-h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none}
-.card{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:6px 22px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;margin:38px 0 14px;display:flex;align-items:center;gap:11px;line-height:1.45}
+main.wrap>h2::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgb(var(--green)/.24),transparent)}
+h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none;box-shadow:0 5px 14px rgb(27 106 66/.2)}
+.card{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:6px 22px;box-shadow:0 8px 24px rgb(18 40 28/.055)}
 .item{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgb(var(--ink)/.06)}
 .item:last-child{border:0}
 .item .bx{width:23px;height:23px;border:2px solid rgb(27 106 66/.4);border-radius:7px;flex:none;margin-top:3px}
@@ -42,46 +50,73 @@ h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));colo
 .item small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:2px}
 .item a,.step a{color:rgb(var(--green));font-weight:600}
 .steps{display:flex;flex-direction:column;gap:10px}
-.step{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:16px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 1px 3px rgb(18 40 28/.05)}
+.step{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:17px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 8px 24px rgb(18 40 28/.055)}
 .step>div{flex:1;min-width:0}
 .step .num{width:28px;height:28px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;flex:none;margin-top:2px}
 .step b{font-weight:600}
 .step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px}
 .step code,.item code,.note code{background:rgb(var(--ink)/.06);border-radius:5px;padding:1px 7px;font-size:13px}
-.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#071a10;color:#d7f5e2;border-radius:12px;padding:15px 52px 15px 16px;margin-top:12px;line-height:1.7;white-space:pre-wrap}
+.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#071a10;color:#d7f5e2;border:1px solid rgb(190 148 66/.18);border-radius:13px;padding:16px 66px 16px 17px;margin-top:12px;line-height:1.72;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 1px 0 rgb(255 255 255/.055),0 7px 18px rgb(7 26 16/.1)}
 .note{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:14px;padding:15px 20px;margin-top:16px;font-size:14.5px}
-.quest{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.25);border-radius:16px;padding:20px 24px;margin-top:36px;font-size:15px}
+.quest{position:relative;overflow:hidden;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.08));border:1px solid rgb(27 106 66/.25);border-radius:17px;padding:20px 24px 20px 27px;margin-top:36px;font-size:15px;box-shadow:0 8px 24px rgb(18 40 28/.05)}
+.quest::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:rgb(var(--gold))}
 .quest .qshare{display:block;margin-top:8px;font-size:13px;color:rgb(var(--muted))}
 .nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
-.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:.15s}
+.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:transform .18s,box-shadow .18s,border-color .18s;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgb(27 106 66/.14)}
 .nx:hover{transform:translateY(-2px)}
-.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.4)}
+.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.32);box-shadow:0 8px 20px rgb(18 40 28/.045)}
 footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
-.cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:7px;padding:5px 11px;cursor:pointer;opacity:.92}
+.cpx{position:absolute;top:9px;right:9px;min-height:31px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:1px solid rgb(255 255 255/.16);border-radius:8px;padding:5px 11px;cursor:pointer;opacity:.94;transition:transform .16s,filter .16s}
 .cpx:hover{opacity:1}
-.shortcut{margin:18px 0 8px;border:1px dashed rgb(190 148 66/.6);border-radius:16px;background:linear-gradient(135deg,rgb(190 148 66/.12),rgb(27 106 66/.06));overflow:hidden}
-.shortcut summary{list-style:none;cursor:pointer;padding:16px 20px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;color:rgb(var(--deep));display:flex;align-items:center;justify-content:space-between;gap:12px}
+.shortcut{margin:18px 0 8px;border:1px solid rgb(190 148 66/.45);border-radius:17px;background:linear-gradient(135deg,rgb(190 148 66/.13),rgb(27 106 66/.07));overflow:hidden;box-shadow:0 8px 24px rgb(18 40 28/.045)}
+.shortcut summary{list-style:none;cursor:pointer;padding:17px 20px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;color:rgb(var(--deep));display:flex;align-items:center;justify-content:space-between;gap:12px}
 .shortcut summary::-webkit-details-marker{display:none}
-.shortcut summary::after{content:"เปิดดู +";font-size:12px;color:rgb(var(--green))}
+.shortcut summary::after{content:"เปิดดู +";font-size:12px;color:#fff;background:rgb(var(--green));border-radius:999px;padding:4px 10px;white-space:nowrap}
 .shortcut[open] summary::after{content:"ซ่อน −"}
 .shortcut .inside{border-top:1px solid rgb(190 148 66/.28);padding:17px 20px 20px;font-size:14.5px}
 .shortcut .inside p+p{margin-top:8px}
 .shortcut .mini{color:rgb(var(--muted))}
 .shortcut .shortcut-prompt{font-family:ui-monospace,Menlo,Consolas,monospace;background:#071a10;color:#d7f5e2;border-radius:10px;padding:13px 15px;margin-top:12px;line-height:1.7}
 .shortcut .pass{display:block;margin-top:12px;font-weight:700;color:rgb(var(--green))}
-@media(max-width:520px){.head{padding:28px 22px}.heroimg{margin:-28px -22px 18px;height:150px}}
+@media(hover:hover){
+  .card,.step{transition:transform .18s,border-color .18s,box-shadow .18s}
+  .card:hover,.step:hover{transform:translateY(-2px);border-color:rgb(var(--green)/.2);box-shadow:0 12px 30px rgb(18 40 28/.075)}
+  .cpx:hover{transform:translateY(-1px);filter:brightness(1.05)}
+}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px}
+::selection{background:rgb(190 148 66/.3);color:rgb(var(--deep))}
+@media(max-width:520px){
+  .wrap{padding:0 16px}
+  nav.top .wrap{height:52px}
+  .bk{font-size:17px}.bk2{font-size:12.5px}
+  .head{padding:27px 20px;border-radius:18px;margin-top:16px}
+  .heroimg{margin:-27px -20px 18px;height:146px}
+  .head h1{font-size:25px}
+  .meta{gap:6px}.meta span{padding:4px 10px;font-size:11.5px}
+  h2{font-size:18px;margin-top:32px;align-items:flex-start}
+  main.wrap>h2::after{margin-top:14px}
+  .card{padding:4px 17px}.step{padding:15px 16px;gap:11px}
+  .prompt{padding:47px 14px 15px;font-size:12.5px}
+  .shortcut summary,.shortcut .inside{padding-left:16px;padding-right:16px}
+  .quest{padding:18px 19px 18px 22px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
 <nav class="top"><div class="wrap">
   <a class="bk disp" href="../">🍀 my<em>clover</em></a>
   <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
 </div></nav>
-<div class="wrap">
+<main class="wrap" id="main">
 
 <header class="head">
   <!-- 📷 รูปหัวคลาส: วางไฟล์ img/lesson-3.jpg (ดูรายละเอียดใน IMAGES.md) -->
-  <div class="heroimg"><img src="../img/lesson-3.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
+  <div class="heroimg"><img src="../img/lesson-3.jpg" alt="" width="1600" height="600" fetchpriority="high" decoding="async" onerror="this.parentElement.style.display='none'"></div>
   <span class="lv">LV.3 · คอนเทนต์วิดีโอ</span>
   <h1 class="disp">ทำคลิปสั้นด้วย AI — จากไอเดียถึงโพสต์ในวันเดียว</h1>
   <p>ให้ AI ช่วยตั้งแต่คิดสคริปต์ แตกช็อตถ่าย จนถึงแคปชัน — คุณมีหน้าที่แค่กดถ่ายกับมือถือเครื่องเดิม</p>
@@ -137,16 +172,23 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 </div>
 
 <footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
-</div>
+</main>
 
 <script>
 document.querySelectorAll('.prompt').forEach(function(el){
   var b=document.createElement('button');b.type='button';b.className='cpx';b.textContent='คัดลอก';
-  b.onclick=function(){
+  b.setAttribute('aria-label','คัดลอกพร้อมท์');
+  b.setAttribute('aria-live','polite');
+  b.onclick=async function(){
     var c=el.cloneNode(true);c.querySelectorAll('button').forEach(function(x){x.remove()});
-    navigator.clipboard.writeText(c.innerText.trim()).then(function(){
-      b.textContent='✓ คัดลอกแล้ว';setTimeout(function(){b.textContent='คัดลอก'},1200);
-    });
+    var text=c.innerText.trim(),ok=false;
+    try{await navigator.clipboard.writeText(text);ok=true}catch(e){
+      var t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
+      try{ok=document.execCommand('copy')}catch(err){}
+      t.remove();
+    }
+    b.textContent=ok?'✓ คัดลอกแล้ว':'คัดลอกไม่สำเร็จ';
+    setTimeout(function(){b.textContent='คัดลอก'},1400);
   };
   el.appendChild(b);
 });
