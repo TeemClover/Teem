@@ -104,6 +104,89 @@ img{max-width:100%;display:block}
 .step b{display:block;font-family:"Bai Jamjuree";font-size:15px;line-height:1.4;margin-top:8px}
 .step span{display:block;color:rgb(var(--muted));font-size:12.5px;line-height:1.55;margin-top:3px}
 
+/* ตัวอย่างจริง — ใช้รูปจริงสร้าง Character Profile ให้หน้าตาและความสัมพันธ์คงที่ */
+.character-case{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);
+  gap:20px;
+  align-items:center;
+  margin-top:24px;
+  padding:clamp(18px,3.4vw,28px);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgb(10 40 24),rgb(20 72 44));
+  border:1px solid rgb(190 148 66/.38);
+  color:#fff;
+  overflow:hidden;
+}
+.character-case .visual{
+  border-radius:14px;
+  overflow:hidden;
+  background:rgb(255 255 255/.06);
+  border:1px solid rgb(255 255 255/.12);
+}
+.character-case img{width:100%;height:auto}
+.character-copy .tag{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:4px 10px;
+  border-radius:999px;
+  color:rgb(var(--gold));
+  border:1px solid rgb(190 148 66/.42);
+  background:rgb(190 148 66/.1);
+  font-family:"Bai Jamjuree";
+  font-weight:700;
+  font-size:10.5px;
+  letter-spacing:.12em;
+}
+.character-copy h3{
+  font-family:"Bai Jamjuree";
+  font-size:clamp(20px,3.2vw,28px);
+  line-height:1.3;
+  margin:10px 0 10px;
+}
+.character-copy p{
+  color:rgb(255 255 255/.76);
+  font-size:14.5px;
+}
+.character-copy p+p{margin-top:10px}
+.character-copy strong{color:#fff}
+.character-list{
+  display:grid;
+  gap:8px;
+  margin-top:14px;
+}
+.character-list span{
+  position:relative;
+  display:block;
+  padding-left:22px;
+  color:rgb(255 255 255/.84);
+  font-size:13.5px;
+  line-height:1.55;
+}
+.character-list span::before{
+  content:"✓";
+  position:absolute;
+  left:0;
+  top:0;
+  color:rgb(var(--gold));
+  font-weight:700;
+}
+.character-note{
+  margin-top:14px;
+  padding:11px 13px;
+  border-radius:12px;
+  background:rgb(255 255 255/.07);
+  border:1px solid rgb(255 255 255/.12);
+  color:rgb(255 255 255/.82);
+  font-size:13px;
+}
+@media(max-width:780px){
+  .character-case{grid-template-columns:1fr}
+  .character-case .visual{order:2}
+  .character-copy{order:1}
+}
+
 .walkthrough-image-cta{
   width:min(100%,680px);margin:26px auto 8px;
   display:flex;flex-direction:column;align-items:center;gap:9px;
@@ -223,6 +306,29 @@ footer a{color:rgb(var(--green));font-weight:600}
           <div class="step"><span class="n">5</span><b>ตรวจ แก้ และทำซ้ำ</b><span>ใช้ข้อผิดพลาดเป็น Feedback แทนการเริ่มใหม่หมด</span></div>
           <div class="step"><span class="n">6</span><b>ทำให้คนอื่นใช้ได้จริง</b><span>นำผลงานขึ้นเว็บ ทดสอบ และส่งต่อให้คนอ่าน</span></div>
         </div>
+
+        <section class="character-case" aria-labelledby="character-profile-title">
+          <div class="visual">
+            <img src="family2026.jpg"
+                 loading="lazy"
+                 decoding="async"
+                 width="1456"
+                 height="1024"
+                 alt="Character Profile ครอบครัวปี 2026 ที่สร้างจากภาพถ่ายจริง เพื่อกำหนดหน้าตา อายุ ทรงผม และความสัมพันธ์ให้คงที่ตลอดเรื่อง">
+          </div>
+          <div class="character-copy">
+            <span class="tag">LESSON IN PRACTICE · CHARACTER CONSISTENCY</span>
+            <h3 id="character-profile-title" class="disp">ใช้รูปจริงเป็น Reference<br>ก่อนเริ่มสร้างตัวละคร</h3>
+            <p>ตัวละครจะนิ่งไม่ได้ด้วยคำว่า <strong>“ขอคนเดิม”</strong> อย่างเดียว ผมจึงเริ่มจากรูปถ่ายจริง แล้วให้ AI ช่วยสรุปออกมาเป็น Character Profile ที่ทุกภาพใช้ร่วมกัน</p>
+            <div class="character-list">
+              <span>ล็อกโครงหน้า ทรงผม อายุ และสัดส่วนของแต่ละคน</span>
+              <span>กำหนดเสื้อผ้า บุคลิก สีหน้า และบทบาทในครอบครัว</span>
+              <span>แยกให้ชัดว่าลูกคนโตอายุ 12 และลูกคนเล็กอายุ 9</span>
+              <span>ใช้ Profile เดิมอ้างอิงทุกครั้ง ก่อนสั่งสร้าง Panel ถัดไป</span>
+            </div>
+            <p class="character-note">นี่ไม่ใช่การให้ AI จำหน้าเอง แต่คือการเตรียม Brief ที่ชัดพอ ให้ทุก Version มีจุดอ้างอิงเดียวกัน — ทักษะเดียวกับบทเรียนเรื่องบริบท คำสั่ง และการตรวจแก้</p>
+          </div>
+        </section>
 
         <p class="skiprow"><a href="../../classroom/free-ai.html">พร้อมแล้ว — เริ่มบทที่ 1 ทันที →</a></p>
       </div>
