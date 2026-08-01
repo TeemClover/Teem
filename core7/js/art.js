@@ -622,7 +622,9 @@ export function colorCycleSVG(size = 300) {
   return `<svg width="${size}" height="${size * 0.87}" viewBox="0 0 300 260" role="img"
     aria-label="วงสี: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเสมอทุกสี">
     <defs>
-      <linearGradient id="${id}-au" x1="0" y1="0" x2="1" y2="0">
+      <linearGradient id="${id}-au"
+      gradientUnits="userSpaceOnUse"
+      x1="0" y1="0" x2="300" y2="0">
         <stop offset="0%" stop-color="${GOLDL}"/><stop offset="100%" stop-color="${GOLD}"/>
       </linearGradient>
       <marker id="${id}-ah" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto">
