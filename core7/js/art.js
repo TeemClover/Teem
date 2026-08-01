@@ -601,12 +601,16 @@ export function colorCycleSVG(size = 300) {
   const C = COLOR_META;
   const pos = { RED: [150, 52], GREEN: [238, 208], BLUE: [62, 208] };
   const id = nid('cy');
+  /* group นอกถือตำแหน่ง (attribute transform) — group ในรับ animation จาก CSS
+     ห้ามรวมกัน: CSS transform จะทับ translate แล้ววงสีหลุดไปมุมจอ */
   const node = (color, x, y) => `
-    <g class="cyc-node" data-color="${color}" transform="translate(${x},${y})" style="color:#fff">
-      <circle r="40" fill="${C[color].hex}" stroke="${BRAND.gold}" stroke-width="2.5"/>
-      <g transform="translate(-15,-22)">${colorIcon(color, 30)}</g>
-      <text y="22" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-        font-size="13" font-weight="700" fill="#fff">${C[color].nameEn.toUpperCase()}</text>
+    <g transform="translate(${x},${y})">
+      <g class="cyc-node" data-color="${color}" style="color:#fff">
+        <circle r="40" fill="${C[color].hex}" stroke="${BRAND.gold}" stroke-width="2.5"/>
+        <g transform="translate(-15,-22)">${colorIcon(color, 30)}</g>
+        <text y="22" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
+          font-size="13" font-weight="700" fill="#fff">${C[color].nameEn.toUpperCase()}</text>
+      </g>
     </g>`;
   const arrow = (x1, y1, x2, y2) => {
     const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy);
@@ -629,11 +633,13 @@ export function colorCycleSVG(size = 300) {
     ${arrow(...pos.GREEN, ...pos.BLUE)}
     ${arrow(...pos.BLUE, ...pos.RED)}
     ${node('RED', ...pos.RED)}${node('GREEN', ...pos.GREEN)}${node('BLUE', ...pos.BLUE)}
-    <g class="cyc-node" data-color="GRAY" transform="translate(150,160)" style="color:#fff">
-      <circle r="32" fill="${C.GRAY.hex}" stroke="${BRAND.gold}" stroke-width="2"/>
-      <g transform="translate(-12,-18)">${colorIcon('GRAY', 24)}</g>
-      <text y="18" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-        font-size="11" font-weight="700" fill="#fff">GRAY = BLOCK</text>
+    <g transform="translate(150,160)">
+      <g class="cyc-node" data-color="GRAY" style="color:#fff">
+        <circle r="32" fill="${C.GRAY.hex}" stroke="${BRAND.gold}" stroke-width="2"/>
+        <g transform="translate(-12,-18)">${colorIcon('GRAY', 24)}</g>
+        <text y="18" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
+          font-size="11" font-weight="700" fill="#fff">GRAY = BLOCK</text>
+      </g>
     </g>
   </svg>`;
 }
