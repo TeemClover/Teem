@@ -134,7 +134,10 @@ window.HALL_COPY.th={
       MAKER:{emoji:"⚙️",th:"สายประดิษฐ์",en:"Maker"}
     };
     var pathTitle=document.getElementById("pathResultTitle");
-    if(pathTitle&&pathMap[key])pathTitle.textContent=pathMap[key].emoji+" "+pathMap[key][lang()];
+    if(pathTitle&&pathMap[key]){
+      var nextTitle=pathMap[key].emoji+" "+pathMap[key][lang()];
+      if(pathTitle.textContent!==nextTitle)pathTitle.textContent=nextTitle;
+    }
 
     var hit=false,n=0;
     try{hit=localStorage.getItem("mc_seek_hit")==="1";n=parseInt(localStorage.getItem("mc_seek_n")||"0",10)||0}catch(e){}
@@ -160,8 +163,6 @@ window.HALL_COPY.th={
     document.querySelectorAll("[data-lang],.path-choice,#seekerBtn").forEach(function(el){el.addEventListener("click",queue)});
     window.addEventListener("storage",queue);
     document.addEventListener("visibilitychange",function(){if(!document.hidden)queue()});
-    var title=document.getElementById("pathResultTitle");
-    if(title&&window.MutationObserver)new MutationObserver(queue).observe(title,{childList:true,characterData:true,subtree:true});
     var active=document.querySelector("[data-lang].active")||document.querySelector('[data-lang="th"]');
     if(active)active.click();else queue();
   }
