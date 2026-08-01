@@ -36,6 +36,15 @@
     <div class="prompt-card">ทำไมคุณเลือกทิ้งใบนั้น?</div>
     <div class="prompt-card">มีใบไหนที่คุณไม่อยากเสียเลย?</div>
 
+    <div class="panel" id="nightUnlock" hidden
+      style="margin-top:30px;background:#161814;color:#fff;border-color:rgb(var(--gold)/.5)">
+      <b class="disp">🖤 ปลดล็อคแล้ว: กรอบดำ — ผู้ชนะเกม</b>
+      <p style="font-size:14px;margin-top:6px;color:rgb(255 255 255/.8)">
+        ชัยชนะของคุณปลดล็อคกรอบสีใหม่ให้การ์ดประจำตัวบนเว็บ myClover —
+        ไปที่หน้าทำการ์ดแล้วเลือก "กรอบดำ" ได้เลย</p>
+      <a class="btn btn-gold" style="margin-top:12px" href="/card/">🃏 ไปแต่งการ์ดของฉัน</a>
+    </div>
+
     <div class="panel" style="margin-top:30px" id="signup">
       <b class="disp">สมัครเพื่อเก็บเรื่องราวของมือ 7 ใบนี้</b>
       <p style="font-size:14px;margin-top:6px;color:rgb(var(--ink)/.75)">
@@ -143,6 +152,18 @@ share.addEventListener('click', async () => {
 });
 actions.append(share);
 store.track('core7_match_complete_view');
+
+/* ชนะ = ปลดล็อคกรอบดำของการ์ดประจำตัว (หน้า /card/ อ่านสถิติชนะจากเครื่องนี้เอง) */
+if (r.youWon) {
+  const box = document.getElementById('nightUnlock');
+  box.hidden = false;
+  try {
+    if (!localStorage.getItem('c7:night_frame_seen')) {
+      localStorage.setItem('c7:night_frame_seen', '1');
+      box.classList.add('anim-pop');
+    }
+  } catch { /* ok */ }
+}
 </script>
 </body>
 </html>

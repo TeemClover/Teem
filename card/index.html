@@ -482,12 +482,12 @@ body.js .reveal.in{opacity:1;transform:none}
     </a>
     <div class="gp-copy">
       <span class="eyebrow reveal">myClover : First Hand</span>
-      <h2 class="disp reveal">การ์ดที่คุณทำในหน้านี้<br>กำลังกลายเป็น<em>เกมจริง</em></h2>
-      <p class="reveal">เกมการ์ดของบ้าน myClover ออกแบบมาตั้งแต่ปี 2023 —
-        เลือกมือ 7 ใบที่เป็นคุณ เปิดพร้อมกัน อ่านเกมและอ่านคน
-        เรียนรู้ได้เร็วเหมือนเป่ายิ้งฉุบ เล่นฟรี ไม่ต้องซื้ออะไรทั้งนั้น</p>
-      <p class="reveal" style="margin-top:10px">โหมดแรกที่เปิดให้เล่นแล้ววันนี้คือ <b>CORE7</b> —
-        เล่นกับบอทได้ทันที หรือสร้างห้องชวนเพื่อน</p>
+      <h2 class="disp reveal">การ์ดที่คุณทำในหน้านี้<em>เป็นเกม</em><br>พิมพ์ออกมาเล่นได้จริง ๆ</h2>
+      <p class="reveal">ทดลองเล่นได้ในเว็บนี้เลย — เลือกมือ 7 ใบที่เป็นคุณ เปิดพร้อมกัน
+        อ่านเกมและอ่านคน เรียนรู้ได้เร็วเหมือนเป่ายิ้งฉุบ เล่นฟรี ไม่ต้องซื้ออะไรทั้งนั้น
+        โหมดแรกที่เปิดแล้วคือ <b>CORE7</b> — เล่นกับบอทได้ทันที หรือสร้างห้องชวนเพื่อน</p>
+      <p class="reveal" style="margin-top:10px">🖤 ชนะเกมแรกเมื่อไหร่
+        การ์ดประจำตัวในหน้านี้จะปลดล็อค<b>กรอบดำ</b>ให้เลือกใช้ได้เลย</p>
       <div class="gp-cta reveal">
         <a class="gp-play disp" href="/core7/" data-ga="core7_try">🎴 ทดลองเล่นเกมเลย</a>
         <a class="gp-rules disp" href="/core7/rules/">อ่านกติกา 30 วินาที</a>
@@ -620,14 +620,24 @@ function seekN(){
   var n=parseInt(ls.get('mc_seek_n','0'),10);
   return n>0?n:0;
 }
+/* ชนะเกม myClover (CORE7) แล้วหรือยัง — เกมเก็บสถิติในเครื่องเดียวกันนี้ */
+function coreWin(){
+  try{
+    var b=JSON.parse(localStorage.getItem('c7:stats_bot')||'{}');
+    var c=JSON.parse(localStorage.getItem('c7:stats_casual')||'{}');
+    return ((b.matchesWon||0)+(c.matchesWon||0))>0;
+  }catch(e){ return false; }
+}
 /* กรอบไหนปลดแล้วบ้าง เรียงจากพื้นฐานไปหายากสุด */
 function frameChoices(){
   var a=['green'];
+  if(coreWin()) a.push('night');
   if(st.titles.indexOf('BLACKSMITH')>=0) a.push('ember');
   if(st.titles.indexOf('HERO')>=0) a.push('hero');
   return a;
 }
-var FRAME_TH={green:['กรอบเขียว','#1B6A42'],ember:['กรอบไฟ','#E8A063'],hero:['กรอบทองฮีโร่','#BE9442']};
+var FRAME_TH={green:['กรอบเขียว','#1B6A42'],night:['กรอบดำ · ผู้ชนะเกม','#20241F'],
+  ember:['กรอบไฟ','#E8A063'],hero:['กรอบทองฮีโร่','#BE9442']};
 
 var st={
   cls   : CLASSES[ls.get('mc_class','')] ? ls.get('mc_class','') : 'THINKER',
@@ -730,6 +740,7 @@ function drawCardArt(c,st){
   var frameKey=st.frame && can.indexOf(st.frame)>=0 ? st.frame : can[can.length-1];
   var foil = frameKey==='hero';
   var ember= frameKey==='ember';
+  var night= frameKey==='night';
   var FR=16, ix=FR, iy=FR, iw=CW-FR*2, ih=CH-FR*2;
   var PAD=34, x0=PAD, x1=CW-PAD, cw=x1-x0;
 
@@ -745,6 +756,12 @@ function drawCardArt(c,st){
     eg.addColorStop(0,'#4A2410'); eg.addColorStop(.26,'#C9682B'); eg.addColorStop(.5,'#8E3F16');
     eg.addColorStop(.72,'#E08A3C'); eg.addColorStop(1,'#3E1E0D');
     c.fillStyle=eg;
+  } else if(night){
+    /* กรอบดำผู้ชนะเกม — ถ่านดำเงาขอบทองจาง */
+    var ng=c.createLinearGradient(0,0,CW*.5,CH);
+    ng.addColorStop(0,'#33362F'); ng.addColorStop(.3,'#181A16');
+    ng.addColorStop(.62,'#0A0B09'); ng.addColorStop(.82,'#23251F'); ng.addColorStop(1,'#000');
+    c.fillStyle=ng;
   } else {
     var dg=c.createLinearGradient(0,0,CW*.4,CH);
     dg.addColorStop(0,'rgb(20,66,40)'); dg.addColorStop(1,'rgb(7,28,17)');
