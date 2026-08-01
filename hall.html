@@ -13,7 +13,7 @@
 <meta property="og:url" content="https://www.myclover.com/hall.html">
 <meta property="og:title" content="หยิบเข็มทิศ แล้วเริ่ม Main Quest ของบ้าน myClover 🍀">
 <meta property="og:description" content="เข้าใจเหตุผล → ลงมือสร้าง → เก็บหลักฐาน พร้อมเกม CORE7 โลกพลังงาน RGBG และของที่ซ่อนอยู่ในบ้าน">
-<meta property="og:image" content="https://www.myclover.com/img/og-paths.jpg">
+<meta property="og:image" content="https://www.myclover.com/img/og-home.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#071d12">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -23,7 +23,8 @@
 :root{
   --deep:#071d12;--deep2:#0a2818;--green:#1b6a42;--gold:#be9442;--gold2:#ead08c;
   --paper:#f8f6f0;--ink:#12281c;--muted:#69756d;--line:rgba(18,40,28,.12);
-  --red:#b73538;--red2:#6d1d22;--blue:#2f67b5;--blue2:#12335c;--gray:#61656d;--gray2:#34373c
+  --red:#b73538;--red2:#6d1d22;--blue:#2f67b5;--blue2:#12335c;--gray:#61656d;--gray2:#34373c;
+  --shadow:0 28px 60px -42px rgba(8,28,17,.78)
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -31,7 +32,7 @@ body{margin:0;font-family:"Anuphan",system-ui,-apple-system,BlinkMacSystemFont,"
 body.js .after-ritual{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .85s cubic-bezier(.22,1,.36,1),opacity .45s .1s}
 body.js.glhf-open .after-ritual{grid-template-rows:1fr;opacity:1}
 .after-ritual>.inner{min-height:0;overflow:hidden}
-a{color:inherit;text-decoration:none}button{font:inherit}
+a{color:inherit;text-decoration:none}button{font:inherit;border:0}
 .wrap{width:min(1120px,calc(100% - 32px));margin:auto}
 .disp{font-family:"Bai Jamjuree",system-ui;letter-spacing:-.025em}
 #scrollProg{position:fixed;z-index:120;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .08s linear}
@@ -64,7 +65,7 @@ a{color:inherit;text-decoration:none}button{font:inherit}
 .glhf small{color:var(--gold2);font-family:"Bai Jamjuree",system-ui;font-weight:800;letter-spacing:.15em}
 .glhf h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(26px,4vw,42px);line-height:1.15;margin:7px 0 8px}
 .glhf p{margin:0;color:rgba(255,255,255,.7);max-width:58ch}
-.bump{min-width:250px;border:0;background:transparent;color:#fff;cursor:pointer;padding:8px}
+.bump{min-width:250px;background:transparent;color:#fff;cursor:pointer;padding:8px}
 .fists{display:flex;align-items:center;justify-content:center;gap:4px;font-size:56px;line-height:1}
 .fists .l,.fists .r{display:inline-block;transition:transform .75s cubic-bezier(.22,1,.36,1)}
 .fists .l{transform:translateX(-35px) rotate(-12deg)}
@@ -76,7 +77,6 @@ a{color:inherit;text-decoration:none}button{font:inherit}
 .bump.hit .spark{opacity:1;animation:pop .7s .45s both}
 @keyframes pop{0%{transform:scale(.3)}55%{transform:scale(1.5)}100%{transform:scale(1)}}
 .tap{display:block;margin-top:9px;color:var(--gold2);font-family:"Bai Jamjuree",system-ui;font-weight:800;font-size:13px;letter-spacing:.05em}
-.bump.hit .tap{opacity:.7}
 section{padding:clamp(58px,8vw,94px) 0}
 .eyebrow{display:block;color:#85641f;font-family:"Bai Jamjuree",system-ui;font-weight:800;font-size:12px;letter-spacing:.15em;text-transform:uppercase}
 h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-height:1.15;letter-spacing:-.035em;margin:9px 0 12px}
@@ -102,32 +102,28 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 .qstatus{display:block;margin-top:15px;font-size:13px;font-weight:800;color:#85641f}
 .qgo{display:inline-flex;margin-top:13px;font-weight:800;color:var(--green);font-size:14px}
 .inventory-link{display:inline-flex;align-items:center;gap:8px;margin-top:20px;color:var(--green);font-weight:800}
-.term{position:relative;display:inline;border:0;padding:0;background:transparent;color:inherit;font-weight:800;text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:1.5px;text-underline-offset:4px;cursor:help}
-.term::after{content:attr(data-tip);position:absolute;z-index:40;left:50%;bottom:calc(100% + 10px);transform:translateX(-50%) translateY(4px);width:min(260px,78vw);padding:11px 13px;border-radius:12px;background:var(--deep);color:#fff;font-size:12.5px;font-weight:500;line-height:1.55;box-shadow:0 14px 32px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:.17s}
-.term::before{content:"";position:absolute;left:50%;bottom:calc(100% + 4px);border:6px solid transparent;border-top-color:var(--deep);transform:translateX(-50%);opacity:0;transition:.17s}
-.term:hover::after,.term:focus::after,.term.open::after,.term:hover::before,.term:focus::before,.term.open::before{opacity:1;transform:translateX(-50%) translateY(0)}
+.term{display:inline;border:0;padding:0;background:transparent;color:inherit;font-weight:800;text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:1.5px;text-underline-offset:4px;cursor:help}
+.tip-box{position:fixed;z-index:140;max-width:min(280px,82vw);padding:11px 13px;border-radius:12px;background:var(--deep);color:#fff;font-size:12.5px;font-weight:500;line-height:1.55;box-shadow:0 14px 32px rgba(0,0,0,.28);opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .16s,transform .16s}
+.tip-box.show{opacity:1;transform:translateY(0)}
 .highlights{background:#fff}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
-.feature{position:relative;min-height:460px;border-radius:25px;overflow:hidden;color:#fff;display:flex;align-items:flex-end;box-shadow:0 28px 60px -42px rgba(8,28,17,.7);transition:transform .22s,box-shadow .22s}
-.feature:hover{transform:translateY(-7px);box-shadow:0 38px 70px -40px rgba(8,28,17,.8)}
-.feature .art{position:absolute;inset:0;background-position:center;background-size:cover;transition:transform .5s}
-.feature:hover .art{transform:scale(1.035)}
-.feature::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(2,11,6,.04) 24%,rgba(3,15,8,.92) 86%)}
-.feature .body{position:relative;z-index:2;padding:23px}
-.forge .art{background-image:url("img/card-forge.jpg")}
-.classroom .art{background-image:url("img/card-class.jpg")}
-.core7 .art{background-image:linear-gradient(135deg,rgba(6,20,14,.05),rgba(6,20,14,.32)),url("img/hall-core7.png"),radial-gradient(circle at 50% 35%,#1b5f44,#08150f 72%);background-size:cover,78% auto,cover;background-repeat:no-repeat;background-position:center,center 40%,center}
-.ftag{font-size:11px;font-weight:800;letter-spacing:.15em;color:var(--gold2)}
-.feature h3{font-family:"Bai Jamjuree",system-ui;font-size:27px;line-height:1.2;margin:6px 0 8px}
-.feature p{margin:0;color:rgba(255,255,255,.76);font-size:14px}
-.feature .go{display:inline-flex;margin-top:15px;padding:10px 14px;border-radius:999px;background:#fff;color:var(--deep);font-size:13px;font-weight:800}
-.core7 .go{background:var(--gold2)}
+.story-card{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .22s,box-shadow .22s}
+.story-card:hover{transform:translateY(-6px);box-shadow:0 38px 70px -40px rgba(8,28,17,.8)}
+.story-media{padding:16px 16px 0}
+.story-frame{display:grid;place-items:center;background:linear-gradient(180deg,#fff,#f1ede1);border:1px solid rgba(18,40,28,.08);border-radius:18px;min-height:260px;overflow:hidden}
+.story-frame img{display:block;max-width:100%;max-height:100%;width:100%;height:auto;object-fit:contain}
+.story-body{padding:18px 18px 20px}
+.story-tag{font-size:11px;font-weight:800;letter-spacing:.15em;color:#85641f}
+.story-card h3{font-family:"Bai Jamjuree",system-ui;font-size:27px;line-height:1.2;margin:6px 0 8px}
+.story-card p{margin:0;color:var(--muted);font-size:14px}
+.story-go{display:inline-flex;margin-top:15px;padding:10px 14px;border-radius:999px;background:var(--deep);color:#fff;font-size:13px;font-weight:800}
+.core7 .story-go{background:var(--gold);color:var(--deep)}
 .energy{background:var(--deep);color:#fff}
 .energy .eyebrow{color:var(--gold2)}.energy .sub{color:rgba(255,255,255,.67)}
 .energy-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
-.energy-card{position:relative;min-height:360px;border-radius:24px;padding:20px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(255,255,255,.15);transition:transform .22s,filter .22s}
+.energy-card{position:relative;min-height:360px;border-radius:24px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid rgba(255,255,255,.15);transition:transform .22s,filter .22s,box-shadow .22s;box-shadow:var(--shadow);overflow:visible}
 .energy-card:hover{transform:translateY(-6px);filter:brightness(1.05)}
-.energy-card::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.22),transparent 55%)}
+.energy-card::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(to top,rgba(0,0,0,.22),transparent 55%);pointer-events:none}
 .energy-card>*{position:relative;z-index:2}
 .energy-card.red{background:linear-gradient(145deg,var(--red2),var(--red))}
 .energy-card.green{background:linear-gradient(145deg,#17461f,#2f8a49)}
@@ -138,21 +134,31 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 .energy-card p{color:rgba(255,255,255,.84);margin:0;font-size:14px}
 .stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
 .stats .term,.stats span{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.13);font-size:12px;color:#fff;text-decoration-color:rgba(255,255,255,.8)}
+.energy-go{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-weight:800;color:#fff;font-size:13px}
 .energy-note{margin-top:20px;padding:18px 20px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.78)}
+.paths-portal{background:linear-gradient(180deg,#fff,var(--paper))}
+.portal-card{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:20px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:26px;padding:18px;box-shadow:var(--shadow);margin-top:28px}
+.portal-media{display:grid;place-items:center;background:linear-gradient(180deg,#fff,#f0ede2);border:1px solid rgba(18,40,28,.08);border-radius:20px;overflow:hidden;min-height:280px}
+.portal-media img{display:block;max-width:100%;max-height:100%;width:100%;height:auto;object-fit:contain}
+.portal-copy h3{font-family:"Bai Jamjuree",system-ui;font-size:31px;line-height:1.15;margin:0 0 10px}
+.portal-copy p{margin:0;color:var(--muted)}
+.portal-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.portal-links a{padding:11px 14px;border-radius:999px;background:var(--deep);color:#fff;font-weight:800;font-size:13px}
+.portal-links a.soft{background:#fff;color:var(--green);border:1px solid var(--line)}
 .rooms{background:linear-gradient(180deg,#fff,var(--paper))}
 .room-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
-.room{padding:17px 18px;border-radius:18px;background:#fff;border:1px solid var(--line);transition:transform .18s,border-color .18s}
+.room{padding:17px 18px;border-radius:18px;background:#fff;border:1px solid var(--line);transition:transform .18s,border-color .18s;box-shadow:0 12px 34px -28px rgba(8,28,17,.42)}
 .room:hover{transform:translateY(-4px);border-color:rgba(27,106,66,.4)}
 .room b{display:block;font-family:"Bai Jamjuree",system-ui;margin-bottom:3px}
 .room span{font-size:13px;color:var(--muted)}
 .first{padding-top:20px}
-.first details{background:#fff;border:1px solid var(--line);border-radius:19px;overflow:hidden}
+.first details{background:#fff;border:1px solid var(--line);border-radius:19px;overflow:hidden;box-shadow:0 14px 34px -28px rgba(8,28,17,.42)}
 .first summary{list-style:none;cursor:pointer;padding:17px 19px;font-family:"Bai Jamjuree",system-ui;font-weight:800}
 .first summary::-webkit-details-marker{display:none}
 .first .inside{padding:0 19px 19px;color:var(--muted);font-size:14px}
 .first .inside a{display:inline-flex;margin-top:10px;color:var(--green);font-weight:800}
 .footer{position:relative;text-align:center;background:var(--paper);padding:54px 0 66px}
-.secret{border:0;background:transparent;font-size:42px;cursor:pointer;padding:10px;transition:transform .2s,filter .2s}
+.secret{background:transparent;font-size:42px;cursor:pointer;padding:10px;transition:transform .2s,filter .2s}
 .secret:hover{transform:rotate(10deg) scale(1.08)}
 .secret:disabled{cursor:default;transform:none;filter:drop-shadow(0 0 13px rgba(190,148,66,.8))}
 .seeker-title{font-family:"Bai Jamjuree",system-ui;font-size:20px;font-weight:800;margin-top:2px}
@@ -161,7 +167,8 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 .footlinks{display:flex;justify-content:center;gap:12px 20px;flex-wrap:wrap;margin-top:24px;font-size:13px}
 .footlinks a{color:var(--green);font-weight:800}
 @media(max-width:900px){
-  .hero-grid{grid-template-columns:1fr;text-align:center}.hero h1{margin-left:auto;margin-right:auto}.hero .lead{margin:auto}
+  .hero-grid,.portal-card{grid-template-columns:1fr;text-align:center}
+  .hero h1{margin-left:auto;margin-right:auto}.hero .lead,.portal-copy p{margin:auto}
   .compass{width:min(270px,70vw)}
   .energy-grid{grid-template-columns:repeat(2,1fr)}
 }
@@ -169,16 +176,17 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   .glhf-grid{grid-template-columns:1fr;text-align:center}.glhf p{margin:auto}.bump{min-width:0}
   .quest-head{display:block}.overall{text-align:left;margin-top:15px}
   .qgrid{grid-template-columns:1fr}
-  .cards{display:flex;overflow:auto;scroll-snap-type:x mandatory;padding-bottom:8px}.feature{min-width:86%;scroll-snap-align:start}
+  .cards{grid-template-columns:1fr}
+  .story-frame{min-height:224px}
   .room-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:520px){
   .wrap{width:min(100% - 24px,1120px)}
   .hero{padding-top:44px}.hero h1{font-size:39px}.compass{width:220px}
-  .energy-grid{display:flex;overflow:auto;scroll-snap-type:x mandatory}.energy-card{min-width:84%;scroll-snap-align:start}
+  .energy-grid{grid-template-columns:1fr}
   .room-grid{grid-template-columns:1fr}
 }
-@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.needle{animation:none}.energy-card,.feature,.room,.qstep{transition:none}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.needle{animation:none}.energy-card,.story-card,.room,.qstep{transition:none}}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"CollectionPage","url":"https://www.myclover.com/hall.html","name":"บ้าน myClover — Main Quest การ์ตูน บทเรียน และเกม CORE7","inLanguage":"th-TH"}
@@ -192,6 +200,7 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
     <div class="navlinks">
       <a href="#quest">Main Quest</a>
       <a href="#energy">RGBG</a>
+      <a href="paths/">Paths</a>
       <a href="collection/" class="gold">🎒 Inventory</a>
     </div>
   </div>
@@ -222,8 +231,7 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   </div>
 </section>
 
-<div class="after-ritual">
-<div class="inner">
+<div class="after-ritual"><div class="inner">
 
 <section class="quest" id="quest">
   <div class="wrap">
@@ -259,7 +267,7 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
         <span class="qgo">ไปทำการ์ด →</span>
       </a>
     </div>
-    <a class="inventory-link" href="collection/">🎒 เปิด <span class="term" role="button" tabindex="0" data-tip="Inventory คือกล่องเก็บของของบ้าน แยกจาก Main Quest และรวม Achievement, Badge และของลับที่ปลดได้ทั้งหมด">Inventory</span> ของบ้าน →</a>
+    <a class="inventory-link" href="collection/">🎒 เปิด <span class="term" tabindex="0" data-tip="Inventory คือกล่องเก็บของของบ้าน แยกจาก Main Quest และรวม Achievement, Badge และของลับที่ปลดได้ทั้งหมด">Inventory</span> ของบ้าน →</a>
   </div>
 </section>
 
@@ -269,31 +277,37 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
     <h2>เริ่มจากเรื่องเล่า ลงมือทำ แล้วดูผลลัพธ์จริง</h2>
     <p class="sub">สามชิ้นนี้บอกได้เร็วที่สุดว่าเวลาในบ้านหลังนี้คุ้มกับคุณไหม</p>
     <div class="cards">
-      <a class="feature forge" href="forge/">
-        <div class="art"></div>
-        <div class="body">
-          <span class="ftag">WHY AI? · 7 ตอน</span>
+      <a class="story-card forge" href="forge/">
+        <div class="story-media">
+          <div class="story-frame"><img src="img/hall-why.jpg" alt="WHY AI — เรื่องเล่าในโรงตีเหล็ก"></div>
+        </div>
+        <div class="story-body">
+          <span class="story-tag">WHY AI? · 7 ตอน</span>
           <h3>เริ่มจากเรื่องเล่า</h3>
           <p>เรื่องจริงที่พาไปดูว่า AI ไม่ได้มีไว้แค่ทำงานเร็วขึ้น แต่มันช่วยคืนเวลาให้ชีวิตได้อย่างไร</p>
-          <span class="go">อ่านตอนแรก →</span>
+          <span class="story-go">อ่านตอนแรก →</span>
         </div>
       </a>
-      <a class="feature classroom" href="classroom/">
-        <div class="art"></div>
-        <div class="body">
-          <span class="ftag">6 FREE LESSONS</span>
+      <a class="story-card classroom" href="classroom/">
+        <div class="story-media">
+          <div class="story-frame"><img src="img/hall-classroom.jpg" alt="ห้องเรียน AI ฟรี 6 บท"></div>
+        </div>
+        <div class="story-body">
+          <span class="story-tag">6 FREE LESSONS</span>
           <h3>เปลี่ยนความเข้าใจให้เป็นของจริง</h3>
           <p>เริ่มจากศูนย์ ใช้เครื่องมือฟรี และสร้างผลลัพธ์ชิ้นแรกได้โดยไม่ต้องรอให้พร้อมทุกอย่าง</p>
-          <span class="go">เริ่มบทแรก →</span>
+          <span class="story-go">เริ่มบทแรก →</span>
         </div>
       </a>
-      <a class="feature core7" href="core7/">
-        <div class="art"></div>
-        <div class="body">
-          <span class="ftag">CORE7 · PROOF OF CREATION</span>
+      <a class="story-card core7" href="core7/">
+        <div class="story-media">
+          <div class="story-frame"><img src="img/hall-core7.jpg" alt="CORE7 เกมที่สร้างจาก Prompt ครั้งเดียว"></div>
+        </div>
+        <div class="story-body">
+          <span class="story-tag">CORE7 · PROOF OF CREATION</span>
           <h3>เกมที่เริ่มจาก Prompt ครั้งเดียว</h3>
-          <p>ใช้หลักการจากบทเรียนฟรีทั้ง 6 บทสร้าง <span class="term" role="button" tabindex="0" data-tip="Source คือเนื้อหาต้นทางที่จัดให้ AI เข้าใจและนำไปแตกต่อเป็นระบบ ภาพ หรือเกมได้">Source</span> แล้วพัฒนาจนกลายเป็นเกมที่เล่นได้จริง</p>
-          <span class="go">ลองเล่น CORE7 →</span>
+          <p>ใช้หลักการจากบทเรียนฟรีทั้ง 6 บทสร้าง <span class="term" tabindex="0" data-tip="Source คือเนื้อหาต้นทางที่จัดให้ AI เข้าใจและนำไปแตกต่อเป็นระบบ ภาพ หรือเกมได้">Source</span> แล้วพัฒนาจนกลายเป็นเกมที่เล่นได้จริง</p>
+          <span class="story-go">ลองเล่น CORE7 →</span>
         </div>
       </a>
     </div>
@@ -306,52 +320,88 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
     <h2>ทุกคนมีพลังในแบบของตัวเอง</h2>
     <p class="sub">แดง เขียว และฟ้า คือพลังพื้นฐานที่ทุกคนมีในสัดส่วนต่างกัน ส่วนสีเทาคือพลังของเครื่องมือที่เราเรียนรู้และเพิ่มให้ตัวเองได้</p>
     <div class="energy-grid">
-      <article class="energy-card red">
+      <a class="energy-card red" href="paths/#taster">
         <div>
           <span class="energy-code">🔴 TASTER</span>
           <h3>สายกิน</h3>
           <p>พลังของความอยากลองและชีวิตจริง จุดไฟให้เราเริ่มลงมือจากสิ่งใกล้ตัว</p>
         </div>
-        <div class="stats">
-          <button class="term" type="button" data-tip="STR คือพลังลงมือ แรงขับ และความกล้าที่ทำให้คนเริ่มทำสิ่งที่อยากทำ ไม่ได้หมายถึงกล้ามหรือความแข็งแรงอย่างเดียว">STR</button>
-          <span>ไฟ</span><span>แรงขับ</span>
+        <div>
+          <div class="stats">
+            <span class="term" tabindex="0" data-tip="STR คือพลังลงมือ แรงขับ และความกล้าที่ทำให้คนเริ่มทำสิ่งที่อยากทำ ไม่ได้หมายถึงกล้ามหรือความแข็งแรงอย่างเดียว">STR</span>
+            <span>ไฟ</span><span>แรงขับ</span>
+          </div>
+          <span class="energy-go">อ่านต่อสายนี้ →</span>
         </div>
-      </article>
-      <article class="energy-card green">
+      </a>
+      <a class="energy-card green" href="paths/#keeper">
         <div>
           <span class="energy-code">🟢 KEEPER</span>
           <h3>สายคลีน</h3>
           <p>พลังของการดูแลจังหวะและความสมดุล ทำสิ่งสำคัญให้ต่อเนื่องจนเห็นผล</p>
         </div>
-        <div class="stats">
-          <button class="term" type="button" data-tip="DEX คือความคล่องตัวในการดูแลรายละเอียด ปรับจังหวะ และทำสิ่งต่าง ๆ ให้ต่อเนื่อง ไม่ได้หมายถึงความเร็วอย่างเดียว">DEX</button>
-          <span>ธรรมชาติ</span><span>ความต่อเนื่อง</span>
+        <div>
+          <div class="stats">
+            <span class="term" tabindex="0" data-tip="DEX คือความคล่องตัวในการดูแลรายละเอียด ปรับจังหวะ และทำสิ่งต่าง ๆ ให้ต่อเนื่อง ไม่ได้หมายถึงความเร็วอย่างเดียว">DEX</span>
+            <span>ธรรมชาติ</span><span>ความต่อเนื่อง</span>
+          </div>
+          <span class="energy-go">อ่านต่อสายนี้ →</span>
         </div>
-      </article>
-      <article class="energy-card blue">
+      </a>
+      <a class="energy-card blue" href="paths/#thinker">
         <div>
           <span class="energy-code">🔵 THINKER</span>
           <h3>สายคิด</h3>
           <p>พลังของการทำความเข้าใจ มองภาพรวม และจัดเรื่องซับซ้อนให้ชัดขึ้น</p>
         </div>
-        <div class="stats">
-          <button class="term" type="button" data-tip="INT คือพลังทำความเข้าใจ เชื่อมโยงข้อมูล และจัดความคิดให้ชัด ทุกคนใช้ได้ ไม่จำเป็นต้องเป็นคนวิชาการ">INT</button>
-          <span>น้ำ</span><span>ความชัดเจน</span>
+        <div>
+          <div class="stats">
+            <span class="term" tabindex="0" data-tip="INT คือพลังทำความเข้าใจ เชื่อมโยงข้อมูล และจัดความคิดให้ชัด ทุกคนใช้ได้ ไม่จำเป็นต้องเป็นคนวิชาการ">INT</span>
+            <span>น้ำ</span><span>ความชัดเจน</span>
+          </div>
+          <span class="energy-go">อ่านต่อสายนี้ →</span>
         </div>
-      </article>
-      <article class="energy-card gray">
+      </a>
+      <a class="energy-card gray" href="paths/#maker">
         <div>
           <span class="energy-code">⚙️ MAKER</span>
           <h3>สายประดิษฐ์</h3>
           <p>พลังของเครื่องมือ สิ่งประดิษฐ์ และ AI ที่ช่วยให้พลังสามสีแรกกลายเป็นของที่ใช้ได้จริง</p>
         </div>
-        <div class="stats">
-          <button class="term" type="button" data-tip="Construct คือพลังสร้างเครื่องมือ ระบบ และสิ่งประดิษฐ์เพื่อช่วยให้สิ่งที่เราเป็นอยู่แล้วทำงานได้ไกลขึ้น">Construct</button>
-          <span>เครื่องมือ</span><span>AI</span>
+        <div>
+          <div class="stats">
+            <span class="term" tabindex="0" data-tip="Construct คือพลังสร้างเครื่องมือ ระบบ และสิ่งประดิษฐ์เพื่อช่วยให้สิ่งที่เราเป็นอยู่แล้วทำงานได้ไกลขึ้น">Construct</span>
+            <span>เครื่องมือ</span><span>AI</span>
+          </div>
+          <span class="energy-go">อ่านต่อสายนี้ →</span>
         </div>
-      </article>
+      </a>
     </div>
     <div class="energy-note">คุณเปลี่ยนสายได้ ผสมสายได้ และเพิ่มพลังสีเทาได้เสมอ เพราะการเรียน AI ไม่ได้เปลี่ยนว่าคุณเป็นใคร—มันเพิ่มเครื่องมือให้สิ่งที่คุณเป็นอยู่แล้ว</div>
+  </div>
+</section>
+
+<section class="paths-portal">
+  <div class="wrap">
+    <span class="eyebrow">อ่านต่อแบบไม่รีบ</span>
+    <h2>ยังมีหน้าเส้นทางรวม และคำอธิบายแต่ละสาย</h2>
+    <p class="sub">ส่วนนี้ไม่ได้เป็นทางหลักของบ้าน แต่ถ้าอยากอ่านต่อว่าทางไหนเหมาะกับตัวเอง หรืออยากเดินชมภาพรวมของ 4 สาย ก็เข้าไปได้</p>
+    <div class="portal-card">
+      <div class="portal-media">
+        <img src="img/paths-hero.jpg" alt="หน้าเส้นทางรวมของ myClover">
+      </div>
+      <div class="portal-copy">
+        <h3>เปิดหน้า Paths</h3>
+        <p>ดูทั้ง 4 สายรวมกันก่อน หรือกดเข้าไปอ่านต่อแต่ละ Path แบบเต็มหน้าได้ตามสบาย</p>
+        <div class="portal-links">
+          <a href="paths/">ดูหน้าเส้นทางรวม →</a>
+          <a class="soft" href="paths/#taster">Taster</a>
+          <a class="soft" href="paths/#keeper">Keeper</a>
+          <a class="soft" href="paths/#thinker">Thinker</a>
+          <a class="soft" href="paths/#maker">Maker</a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -391,14 +441,14 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
     <div class="seeker-count" id="seekerCount" role="status" aria-live="polite"></div>
     <div class="footlinks">
       <a href="/">หน้าบ้าน</a>
+      <a href="paths/">Paths</a>
       <a href="collection/">Inventory</a>
       <a href="privacy/">ข้อมูลของคุณ</a>
     </div>
   </div>
 </footer>
 
-</div>
-</div>
+</div></div>
 
 <script>
 (function(){
@@ -453,18 +503,48 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   window.addEventListener("storage",paintQuest);
   document.addEventListener("visibilitychange",function(){if(!document.hidden)paintQuest()});
 
-  var terms=document.querySelectorAll(".term");
-  terms.forEach(function(t){
-    t.addEventListener("click",function(e){
-      e.preventDefault();e.stopPropagation();
-      terms.forEach(function(x){if(x!==t)x.classList.remove("open")});
-      t.classList.toggle("open");
+  // Floating tooltip (not clipped by cards)
+  var tip=document.createElement("div");
+  tip.className="tip-box";
+  document.body.appendChild(tip);
+  var active=null;
+  function placeTip(target){
+    var r=target.getBoundingClientRect();
+    tip.textContent=target.getAttribute("data-tip")||"";
+    tip.classList.add("show");
+    // measure after content update
+    requestAnimationFrame(function(){
+      var pad=12, tw=tip.offsetWidth, th=tip.offsetHeight;
+      var left=Math.min(window.innerWidth-tw-pad, Math.max(pad, r.left + (r.width/2) - (tw/2)));
+      var top=r.top - th - 12;
+      if(top < 10) top = r.bottom + 12;
+      tip.style.left=left+"px";
+      tip.style.top=top+"px";
     });
-    t.addEventListener("keydown",function(e){
-      if(e.key==="Enter"||e.key===" "){e.preventDefault();t.click()}
+  }
+  function hideTip(){
+    tip.classList.remove("show");
+    active=null;
+  }
+  document.querySelectorAll(".term").forEach(function(el){
+    el.addEventListener("mouseenter",function(){active=el;placeTip(el)});
+    el.addEventListener("mouseleave",hideTip);
+    el.addEventListener("focus",function(){active=el;placeTip(el)});
+    el.addEventListener("blur",hideTip);
+    el.addEventListener("click",function(e){
+      e.preventDefault();e.stopPropagation();
+      if(active===el && tip.classList.contains("show")){hideTip();return;}
+      active=el;placeTip(el);
+    });
+    el.addEventListener("keydown",function(e){
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click();}
     });
   });
-  document.addEventListener("click",function(){terms.forEach(function(x){x.classList.remove("open")})});
+  window.addEventListener("scroll",function(){if(active)placeTip(active)},{passive:true});
+  window.addEventListener("resize",function(){if(active)placeTip(active)});
+  document.addEventListener("click",function(e){
+    if(!e.target.classList.contains("term")) hideTip();
+  });
 
   var btn=document.getElementById("seekerBtn");
   var title=document.getElementById("seekerTitle");
