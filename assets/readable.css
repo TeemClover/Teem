@@ -84,6 +84,108 @@ body.life .role,body.life .hint{color:var(--mut)!important}
   max-width:72ch;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Inventory · Achievement Album
+   ภาพในแกลเลอรีไม่ควรถูกอีโมจิหรือ gradient บัง
+   ใช้ asset จริงของแต่ละห้องเป็นภาพปก และย้ายไอคอนไปไว้หน้าชื่อ
+   ───────────────────────────────────────────────────────────── */
+#album .shot{
+  background-size:cover!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+}
+#album .shot::after{display:none!important}
+#album .shot img{display:none!important}
+#album .fallback{display:none!important}
+#album .slot.locked:not(.secret) .shot{
+  background-color:#263c30!important;
+  background-blend-mode:multiply!important;
+}
+#album .slot.secret.locked .shot{
+  background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 9px,transparent 9px 18px)!important;
+  background-color:#071a10!important;
+  background-blend-mode:normal!important;
+}
+#album .name{
+  display:flex!important;
+  align-items:flex-start;
+  gap:8px;
+}
+#album .name::before{
+  content:"✦";
+  flex:none;
+  width:1.25em;
+  text-align:center;
+  line-height:1.35;
+}
+#album .slot.secret.locked .name::before{content:"❔"!important}
+
+/* เรื่องเล่าจากโรงตีเหล็ก — ใช้ภาพแชร์รายตอนเป็นปกเดียวกับตอนขยาย */
+#album .slot[data-id="forge-1"] .shot{background-image:url('/forge/img/01-og.jpg')!important}
+#album .slot[data-id="forge-2"] .shot{background-image:url('/forge/img/02-og.jpg')!important}
+#album .slot[data-id="forge-3"] .shot{background-image:url('/forge/img/03-og.jpg')!important}
+#album .slot[data-id="forge-4"] .shot{background-image:url('/forge/img/04-og.jpg')!important}
+#album .slot[data-id="forge-5"] .shot{background-image:url('/forge/img/05-og.jpg')!important}
+#album .slot[data-id="forge-6"] .shot{background-image:url('/forge/img/06-og.jpg')!important}
+#album .slot[data-id="forge-7"] .shot{background-image:url('/forge/img/07-og.jpg')!important}
+#album .slot[data-id="forge-special"] .shot{background-image:url('/forge/original/01.jpeg')!important}
+#album .slot[data-id^="forge-"] .name::before{content:"📖"}
+#album .slot[data-id="forge-special"] .name::before{content:"🎁"}
+
+/* 6 บทเรียน — ใช้แบนเนอร์จริงที่อยู่บนหัวแต่ละบท */
+#album .slot[data-id="lesson-1"] .shot{background-image:url('/img/lesson-1.jpg')!important}
+#album .slot[data-id="lesson-2"] .shot{background-image:url('/img/lesson-2.jpg')!important}
+#album .slot[data-id="lesson-3"] .shot{background-image:url('/img/lesson-3.jpg')!important}
+#album .slot[data-id="lesson-4"] .shot{background-image:url('/img/lesson-4.jpg')!important}
+#album .slot[data-id="lesson-5"] .shot{background-image:url('/img/lesson-5.jpg')!important}
+#album .slot[data-id="lesson-6"] .shot{background-image:url('/img/lesson-6.jpg')!important}
+#album .slot[data-id="awaken"] .shot{background-image:url('/img/og-awaken.jpg')!important}
+#album .slot[data-id="lesson-1"] .name::before{content:"✨"}
+#album .slot[data-id="lesson-2"] .name::before{content:"🖼️"}
+#album .slot[data-id="lesson-3"] .name::before{content:"🎬"}
+#album .slot[data-id="lesson-4"] .name::before{content:"📚"}
+#album .slot[data-id="lesson-5"] .name::before{content:"🧠"}
+#album .slot[data-id="lesson-6"] .name::before{content:"🌐"}
+#album .slot[data-id="awaken"] .name::before{content:"🌅"}
+
+/* ห้องและหลักฐาน — First Step ใช้ og-home เหมือนภาพตอนเปิดขยาย */
+#album .slot[data-id="home"] .shot{background-image:url('/img/og-home.jpg')!important}
+#album .slot[data-id="path"] .shot{background-image:url('/img/og-paths.jpg')!important}
+#album .slot[data-id="club"] .shot{background-image:url('/img/og-club.jpg')!important}
+#album .slot[data-id="resume"] .shot{background-image:url('/img/og-resume.jpg')!important}
+#album .slot[data-id="walkthrough"] .shot{background-image:url('/img/og-walkthrough.jpg')!important}
+#album .slot[data-id="card"] .shot{background-image:url('/img/og-card.jpg')!important}
+#album .slot[data-id="home"] .name::before{content:"🍀"}
+#album .slot[data-id="path"] .name::before{content:"🧭"}
+#album .slot[data-id="club"] .name::before{content:"🍜"}
+#album .slot[data-id="resume"] .name::before{content:"🧾"}
+#album .slot[data-id="walkthrough"] .name::before{content:"🗺️"}
+#album .slot[data-id="card"] .name::before{content:"🎴"}
+
+/* ตราและเส้นทางลับ — ใช้ภาพจากเควสจริงเท่าที่มีอยู่แล้ว */
+#album .slot[data-id="blacksmith"] .shot{background-image:url('/forge/img/07-og.jpg')!important}
+#album .slot[data-id="awakened"] .shot{background-image:url('/img/og-awaken.jpg')!important}
+#album .slot[data-id="hero"] .shot{background-image:url('/img/og-card.jpg')!important}
+#album .slot[data-id="notebook-found"].unlocked .shot{background-image:url('/classroom/awaken/notebook/img/nb-01.jpg')!important}
+#album .slot[data-id="notebook-restored"].unlocked .shot{background-image:url('/classroom/awaken/notebook/img/nb-02.jpg')!important}
+#album .slot[data-id="secret-end"].unlocked .shot{background-image:url('/classroom/awaken/notebook/img/nb-09.jpg')!important}
+#album .slot[data-id="glhf"].unlocked .shot{background-image:url('/classroom/awaken/notebook/img/nb-10.jpg')!important}
+#album .slot[data-id="blacksmith"] .name::before{content:"⚒️"}
+#album .slot[data-id="awakened"] .name::before{content:"🌅"}
+#album .slot[data-id="hero"] .name::before{content:"⚔️"}
+#album .slot[data-id="seeker"] .name::before{content:"🔍"}
+#album .slot[data-id="notebook-found"] .name::before{content:"📔"}
+#album .slot[data-id="notebook-restored"] .name::before{content:"📓"}
+#album .slot[data-id="secret-end"] .name::before{content:"🏆"}
+#album .slot[data-id="glhf"] .name::before{content:"👊🏻"}
+
+/* CORE7 — ตอนนี้ใช้ Hero asset เดียวกันก่อน จนกว่าจะมีภาพ Achievement แยก */
+#album .slot[data-id^="c7-"] .shot{background-image:url('/img/hall-core7.jpg')!important}
+#album .slot[data-id="c7-tutorial"] .name::before{content:"🧠"}
+#album .slot[data-id="c7-hand"] .name::before{content:"🖐️"}
+#album .slot[data-id="c7-match"] .name::before{content:"⚔️"}
+#album .slot[data-id="c7-win"] .name::before{content:"🏅"}
+
 @media(min-width:900px){
   html{font-size:19px}
 }
