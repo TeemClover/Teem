@@ -25,6 +25,7 @@ window.HALL_COPY.th={
       coreTitle:"เกมที่คนคิดกติกา แล้วขึ้นจาก Prompt เดียว",
       coreDesc:'ใช้หลักการจากบทเรียนฟรีทั้ง 6 บท แล้วพัฒนาจนกลายเป็นเกมที่เล่นได้จริงบนหน้าเว็บ เราท้าให้คุณมาลองแข่งกับ AI',
       coreCta:"ลองเล่น CORE7 →",
+      energyEyebrow:"🔴🟢🔵⚙️ · 4 ค่าสถานะที่อัพเลเวลได้ในบ้านหลังนี้",
       energyTitle:"เลือกพลังที่ใกล้ตัวคุณที่สุด",
       energyDesc:"เลือกเพื่อให้บ้านจำว่าควรแนะนำอะไรให้คุณก่อนเท่านั้น ไม่ได้ล็อกตัวตน ไม่ได้ล็อกห้อง และเปลี่ยนสายได้ตลอด",
       selected:"เลือกแล้ว ✓",
@@ -41,6 +42,7 @@ window.HALL_COPY.th={
       roomsEyebrow:"Sub Quest · Daily Play",
       roomsTitle:"ถ้าอยากสำรวจต่อ ยังมีห้องอื่นอีก",
       roomsDesc:'คิดซะว่าบ้าน myclover.com หลังนี้คือเกม <span class="term game-term" tabindex="0" data-tip="Open World คือเกมที่ไม่บังคับให้ทุกคนเดินทางเดียวกัน คุณเลือก Main Quest, Sub Quest หรือห้องที่สนใจก่อนได้ แล้วกลับมาเล่นต่อจากเดิมเมื่อไรก็ได้">Open World</span> — ค่อย ๆ เล่นแค่ <span class="term game-term" tabindex="0" data-tip="10 นาที คือประมาณ 0.7% ของหนึ่งวัน\n70 นาทีต่อสัปดาห์\nราว 5 ชั่วโมงต่อเดือน\nไม่ต้องเร่งให้จบ ขอแค่กลับมาเล่นต่อทีละนิด">วันละ 10 นาที</span> ก็พอ แต่ถ้าอยากสนุกกว่า กดเข้า <span class="term game-term" tabindex="0" data-tip="Guild คือพื้นที่ชุมชนของ myClover บน Discord สำหรับหาคนคุย แชร์ความคืบหน้า ถามคำถาม และรวมทีมเล่นหรือสร้างงานด้วยกัน">Guild</span> หา <span class="term game-term" tabindex="0" data-tip="Party คือกลุ่มเพื่อนร่วมทางแบบในเกม RPG ใน myClover หมายถึงคนที่ช่วยกันเรียน แชร์ผลงาน เตือนกันกลับมาทำเควส และทำให้การเดินทางไม่ต้องเงียบอยู่คนเดียว">Party</span> เลย อย่าเล่นคนเดียว',
+      inventoryName:"กล่องเก็บของ",
       invDesc:"Achievement, Badge และของที่ปลดล็อกแล้ว",
       resumeDesc:"เปลี่ยนประสบการณ์ให้กลายเป็นเรื่องที่คนเข้าใจ",
       clubDesc:"สุขภาพ อาหาร และการดูแลชีวิตจริง",
@@ -52,31 +54,45 @@ window.HALL_COPY.th={
       firstCta:"ดูหน้าแรก First Version →",
       home:"หน้าบ้าน",privacy:"ข้อมูลของคุณ",
       seekerTitle:"ใบนี้ยังไม่ครบสี่แฉก",seekerCopy:"ลองกดดูว่าคุณต้องใช้กี่ครั้ง",
-      seekerFound:"คุณพบ Seeker แล้ว",seekerSaved:"ตรานี้ถูกเก็บไว้ใน Inventory ของคุณเรียบร้อย",seekerTry:"ครั้งที่ {n} — ยังไม่ครบ ลองอีกครั้ง"
+      seekerFound:"คุณพบ Seeker แล้ว",seekerSaved:"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง",seekerTry:"ครั้งที่ {n} — ยังไม่ครบ ลองอีกครั้ง"
     };
 
-// V4.7 mobile navigation, path-image and bilingual copy patch.
+// V4.8 final Hall polish: navigation icon, four stats, selected-path icon and Seeker count.
 (function(){
   var style=document.createElement("style");
-  style.id="hall-v47-mobile-patch";
+  style.id="hall-v48-final-patch";
   style.textContent='\
 .navlinks>a[href="#quest"]{display:none!important}\
 .navlinks{align-items:center!important;overflow:visible!important}\
-.navlinks a.gold{width:44px!important;height:44px!important;min-width:44px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:0!important;line-height:1!important;overflow:hidden!important}\
-.navlinks a.gold::before{content:"🎒";font-size:20px;line-height:1}\
+.navlinks a.gold{width:44px!important;height:44px!important;min-width:44px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:0!important;line-height:1!important;overflow:visible!important}\
+.navlinks a.gold::before{content:"🎒";display:block;font-size:32px;line-height:1;transform:scale(1.12) translateY(1px);transform-origin:center}\
 .lang-switch{height:44px!important}\
 .lang-switch button{width:42px!important;height:36px!important;padding:0!important}\
 .path-choice[data-class="TASTER"] .path-art{background-image:url("/img/path-taster.jpg")!important}\
 .path-choice[data-class="KEEPER"] .path-art{background-image:url("/img/path-keeper.jpg")!important}\
 .path-choice[data-class="THINKER"] .path-art{background-image:url("/img/path-thinker.jpg")!important}\
 .path-choice[data-class="MAKER"] .path-art{background-image:url("/img/path-maker.jpg")!important}\
-@media(max-width:520px){.nav .wrap{min-height:58px!important;gap:7px!important}.logo{font-size:20px!important}.navlinks{gap:6px!important}.lang-switch{height:42px!important}.lang-switch button{width:38px!important;height:34px!important;font-size:11px!important}.navlinks a.gold{width:42px!important;height:42px!important;min-width:42px!important}.navlinks a.gold::before{font-size:19px}}';
+@media(max-width:520px){.nav .wrap{min-height:58px!important;gap:7px!important}.logo{font-size:20px!important}.navlinks{gap:6px!important}.lang-switch{height:42px!important}.lang-switch button{width:38px!important;height:34px!important;font-size:11px!important}.navlinks a.gold{width:42px!important;height:42px!important;min-width:42px!important}.navlinks a.gold::before{font-size:30px;transform:scale(1.12) translateY(1px)}}';
   document.head.appendChild(style);
 
-  function finishPatch(){
-    var copy=window.HALL_COPY||{};
-    if(copy.en){
-      Object.assign(copy.en,{
+  function lang(){
+    try{return localStorage.getItem("mc_lang")==="en"?"en":"th"}catch(e){return"th"}
+  }
+  function copy(){
+    var all=window.HALL_COPY||{};
+    return all[lang()]||all.th||{};
+  }
+  function format(value,vars){
+    Object.keys(vars||{}).forEach(function(key){value=String(value).replace(new RegExp("\\{"+key+"\\}","g"),vars[key])});
+    return value;
+  }
+  function selectedKey(){
+    try{return localStorage.getItem("mc_class")||""}catch(e){return""}
+  }
+  function applyFinalUI(){
+    var c=copy(),isTh=lang()==="th";
+    if(window.HALL_COPY&&window.HALL_COPY.en){
+      Object.assign(window.HALL_COPY.en,{
         whyTag:"WHY AI? · 7 EPISODES",
         whyTitle:"Read the Webtoon and Understand What AI Is For",
         whyDesc:"A true story told as a full-color comic—easy and fun to read—showing that AI is not only about working faster, but about giving time back to your life.",
@@ -88,14 +104,67 @@ window.HALL_COPY.th={
         coreTag:"CORE7 · PROOF OF CREATION",
         coreTitle:"A Human Made the Rules. One Prompt Built the Game.",
         coreDesc:"Built from the principles in all six free lessons, then developed into a real browser game. We challenge you to face the AI.",
-        coreCta:"Play CORE7 →"
+        coreCta:"Play CORE7 →",
+        energyEyebrow:"🔴🟢🔵⚙️ · 4 STATS YOU CAN LEVEL UP IN THIS HOUSE",
+        inventoryName:"Inventory",
+        seekerFound:"You Found Seeker",
+        seekerSaved:"You found the four-leaf clover in {n} tries."
+      });
+      c=copy();
+    }
+    var energy=document.querySelector(".energy .eyebrow");
+    if(energy)energy.textContent=c.energyEyebrow||"";
+
+    var bag=document.querySelector('.navlinks a.gold');
+    if(bag){
+      var bagName=c.inventoryName||(isTh?"กล่องเก็บของ":"Inventory");
+      bag.setAttribute("aria-label",bagName);
+      bag.setAttribute("title",bagName);
+    }
+    var roomBag=document.querySelector('.room[href="collection/"] b');
+    if(roomBag)roomBag.textContent="🎒 "+(c.inventoryName||(isTh?"กล่องเก็บของ":"Inventory"));
+    var footerBag=document.querySelector('.footlinks a[href="collection/"]');
+    if(footerBag)footerBag.textContent=c.inventoryName||(isTh?"กล่องเก็บของ":"Inventory");
+
+    var key=selectedKey();
+    var pathMap={
+      TASTER:{emoji:"🔴",th:"สายกิน",en:"Taster"},
+      KEEPER:{emoji:"🟢",th:"สายคลีน",en:"Keeper"},
+      THINKER:{emoji:"🔵",th:"สายคิด",en:"Thinker"},
+      MAKER:{emoji:"⚙️",th:"สายประดิษฐ์",en:"Maker"}
+    };
+    var pathTitle=document.getElementById("pathResultTitle");
+    if(pathTitle&&pathMap[key])pathTitle.textContent=pathMap[key].emoji+" "+pathMap[key][lang()];
+
+    var hit=false,n=0;
+    try{hit=localStorage.getItem("mc_seek_hit")==="1";n=parseInt(localStorage.getItem("mc_seek_n")||"0",10)||0}catch(e){}
+    if(hit){
+      var seekerTitle=document.getElementById("seekerTitle");
+      var seekerCopy=document.getElementById("seekerCopy");
+      var seekerCount=document.getElementById("seekerCount");
+      if(seekerTitle)seekerTitle.textContent=c.seekerFound||(isTh?"คุณพบ Seeker แล้ว":"You Found Seeker");
+      if(seekerCopy)seekerCopy.textContent=format(c.seekerSaved||(isTh?"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง":"You found the four-leaf clover in {n} tries."),{n:n});
+      if(seekerCount)seekerCount.textContent="";
+    }
+  }
+  function queue(){setTimeout(applyFinalUI,0)}
+  function boot(){
+    if(window.HALL_COPY&&window.HALL_COPY.en){
+      Object.assign(window.HALL_COPY.en,{
+        energyEyebrow:"🔴🟢🔵⚙️ · 4 STATS YOU CAN LEVEL UP IN THIS HOUSE",
+        inventoryName:"Inventory",
+        seekerFound:"You Found Seeker",
+        seekerSaved:"You found the four-leaf clover in {n} tries."
       });
     }
-    var bag=document.querySelector('.navlinks a.gold');
-    if(bag){bag.setAttribute('aria-label','Inventory');bag.setAttribute('title','Inventory')}
-    var active=document.querySelector('[data-lang].active')||document.querySelector('[data-lang="th"]');
-    if(active)active.click();
+    document.querySelectorAll("[data-lang],.path-choice,#seekerBtn").forEach(function(el){el.addEventListener("click",queue)});
+    window.addEventListener("storage",queue);
+    document.addEventListener("visibilitychange",function(){if(!document.hidden)queue()});
+    var title=document.getElementById("pathResultTitle");
+    if(title&&window.MutationObserver)new MutationObserver(queue).observe(title,{childList:true,characterData:true,subtree:true});
+    var active=document.querySelector("[data-lang].active")||document.querySelector('[data-lang="th"]');
+    if(active)active.click();else queue();
   }
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",finishPatch,{once:true});
-  else setTimeout(finishPatch,0);
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});
+  else boot();
 })();
