@@ -21,23 +21,28 @@ export const BRAND = {
 let uid = 0;
 const nid = p => `${p}${(++uid).toString(36)}`;
 
-/* ═══ โลโก้โคลเวอร์ 4 แฉก — สมมาตร ขอบ Metallic ═══ */
+/* ═══ โลโก้ myClover — โคลเวอร์ 4 แฉกรูปหัวใจ ═══
+   ใบเป็นหัวใจ ปลายชี้เข้ากลาง: แดงบนซ้าย ฟ้าบนขวา เขียวล่างซ้าย เทาล่างขวา
+   ตามภาพต้นแบบของแบรนด์ (ใช้ทั้ง Nav, Favicon และหลังการ์ดทุกใบ) */
 export function cloverLogo(size = 64, { ring = true } = {}) {
   const id = nid('cl');
-  const leaf = (rot, c1, c2) => `
-    <g transform="rotate(${rot} 50 50)">
-      <path d="M50 47 C50 30 38 20 29 20 C18 20 12 28 12 36 C12 48 26 56 47 50 Z"
-        fill="url(#${id}-${rot})" stroke="url(#${id}-au)" stroke-width="1.6"/>
-      <path d="M46 46 C40 36 32 29 24 26" stroke="rgba(255,255,255,.35)"
-        stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  /* หัวใจ: ปลายอยู่ที่ origin ตัวใบชี้ขึ้น (-y) — หมุนเข้าตำแหน่งทีละใบ */
+  const HEART = 'M0 0 C -20 -14 -30 -26 -30 -38 C -30 -50 -21 -57 -12 -57 ' +
+    'C -5.5 -57 -1.5 -53 0 -47 C 1.5 -53 5.5 -57 12 -57 C 21 -57 30 -50 30 -38 ' +
+    'C 30 -26 20 -14 0 0 Z';
+  const leaf = (rot, key) => `
+    <g transform="translate(50 50) rotate(${rot}) translate(0 -2.5) scale(.7)">
+      <path d="${HEART}" fill="url(#${id}-${key})" stroke="url(#${id}-au)" stroke-width="3.4"/>
+      <path d="M-20 -44 C -14 -50 -6 -52 0 -50" stroke="rgba(255,255,255,.4)"
+        stroke-width="3.5" fill="none" stroke-linecap="round"/>
     </g>`;
-  const grad = (rot, c1, c2) => `
-    <radialGradient id="${id}-${rot}" cx="35%" cy="30%" r="90%">
+  const grad = (key, c1, c2) => `
+    <radialGradient id="${id}-${key}" cx="38%" cy="26%" r="95%">
       <stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/>
     </radialGradient>`;
   const C = COLOR_META;
   return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" role="img"
-    aria-label="โลโก้ myClover โคลเวอร์ 4 แฉก 4 สี">
+    aria-label="โลโก้ myClover โคลเวอร์ 4 แฉกรูปหัวใจ 4 สี">
     <defs>
       <linearGradient id="${id}-au" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stop-color="${BRAND.goldLight}"/>
@@ -45,15 +50,15 @@ export function cloverLogo(size = 64, { ring = true } = {}) {
         <stop offset="70%" stop-color="#8a6a2c"/>
         <stop offset="100%" stop-color="${BRAND.goldLight}"/>
       </linearGradient>
-      ${grad(0, '#e06a50', C.RED.deep)}
-      ${grad(90, '#5f96cf', C.BLUE.deep)}
-      ${grad(180, '#57a97b', C.GREEN.deep)}
-      ${grad(270, '#9aa0a6', C.GRAY.deep)}
+      ${grad('red', '#e8604a', C.RED.deep)}
+      ${grad('blue', '#5f9ede', C.BLUE.deep)}
+      ${grad('green', '#4fae78', C.GREEN.deep)}
+      ${grad('gray', '#b9bfc6', '#5d6268')}
     </defs>
     ${ring ? `<circle cx="50" cy="50" r="48" fill="none" stroke="url(#${id}-au)" stroke-width="2"/>` : ''}
-    ${leaf(0)}${leaf(90)}${leaf(180)}${leaf(270)}
-    <circle cx="50" cy="50" r="5.2" fill="url(#${id}-au)"/>
-    <circle cx="48.6" cy="48.6" r="1.6" fill="rgba(255,255,255,.7)"/>
+    ${leaf(-45, 'red')}${leaf(45, 'blue')}${leaf(225, 'green')}${leaf(135, 'gray')}
+    <circle cx="50" cy="50" r="4.6" fill="url(#${id}-au)"/>
+    <circle cx="48.8" cy="48.8" r="1.5" fill="rgba(255,255,255,.75)"/>
   </svg>`;
 }
 
@@ -527,32 +532,67 @@ export function genericCardSVG(color, { width = 300 } = {}) {
   </svg>`;
 }
 
-/* ═══ หลังการ์ด — สมมาตร ใช้ได้ทุกสี เดาหน้าไพ่ไม่ได้ ═══ */
+/* ═══ หลังการ์ด — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง ═══
+   ชื่อบนหลังการ์ดคือ "myClover" เท่านั้น (CORE7 เป็นชื่อโหมดของเกม
+   ไม่ใช่ชื่อการ์ด — ห้ามพิมพ์บนใบ) ใช้แบบเดียวกันทุกใบ เดาหน้าไพ่ไม่ได้ */
 export function cardBackSVG({ width = 300 } = {}) {
   const id = nid('cb');
+  /* หนามเพชรของวงเข็มทิศ: ยาวแกนหลัก สั้นแกนทแยง */
+  const spike = (rot, len) => `
+    <path d="M0 -${len} L6 -78 L0 -70 L-6 -78 Z" transform="rotate(${rot})"
+      fill="url(#${id}-au)"/>`;
   return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420"
-    role="img" aria-label="หลังการ์ด myClover: CORE7">
+    role="img" aria-label="หลังการ์ด myClover">
     <defs>
-      <radialGradient id="${id}-bg" cx="50%" cy="50%" r="75%">
-        <stop offset="0%" stop-color="${BRAND.felt}"/><stop offset="100%" stop-color="${BRAND.emerald}"/>
+      <radialGradient id="${id}-bg" cx="50%" cy="46%" r="80%">
+        <stop offset="0%" stop-color="#11402A"/><stop offset="100%" stop-color="#071B10"/>
       </radialGradient>
       <linearGradient id="${id}-au" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stop-color="${GOLDL}"/><stop offset="45%" stop-color="${GOLD}"/>
         <stop offset="70%" stop-color="#8a6a2c"/><stop offset="100%" stop-color="${GOLDL}"/>
       </linearGradient>
-      <pattern id="${id}-wv" width="26" height="26" patternUnits="userSpaceOnUse">
-        <path d="M0 13 Q6.5 6 13 13 Q19.5 20 26 13" stroke="rgba(190,148,66,.14)"
-          stroke-width="1.5" fill="none"/>
+      <pattern id="${id}-qf" width="34" height="34" patternUnits="userSpaceOnUse">
+        <g fill="none" stroke="rgba(190,148,66,.10)" stroke-width="1.3">
+          <circle cx="17" cy="10" r="6"/><circle cx="10" cy="17" r="6"/>
+          <circle cx="24" cy="17" r="6"/><circle cx="17" cy="24" r="6"/>
+        </g>
       </pattern>
     </defs>
-    <rect x="2" y="2" width="296" height="416" rx="18" fill="${BRAND.charcoal}"/>
+    <rect x="2" y="2" width="296" height="416" rx="18" fill="#0B0E0B"/>
     <rect x="2" y="2" width="296" height="416" rx="18" fill="none" stroke="url(#${id}-au)" stroke-width="4"/>
-    <rect x="12" y="12" width="276" height="396" rx="12" fill="url(#${id}-bg)"/>
-    <rect x="12" y="12" width="276" height="396" rx="12" fill="url(#${id}-wv)"/>
-    <rect x="22" y="22" width="256" height="376" rx="9" fill="none" stroke="url(#${id}-au)" stroke-width="1.6"/>
-    <g transform="translate(94,154)">${cloverLogo(112)}</g>
-    <text x="150" y="300" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-      font-size="15" font-weight="700" letter-spacing="4" fill="${GOLDL}">CORE7</text>
+    <rect x="11" y="11" width="278" height="398" rx="13" fill="url(#${id}-bg)"/>
+    <rect x="11" y="11" width="278" height="398" rx="13" fill="url(#${id}-qf)"/>
+    <rect x="20" y="20" width="260" height="380" rx="10" fill="none" stroke="url(#${id}-au)" stroke-width="1.7"/>
+    <rect x="25" y="25" width="250" height="370" rx="8" fill="none" stroke="rgba(190,148,66,.35)" stroke-width=".8"/>
+
+    <!-- มุมการ์ด: ใบโคลเวอร์เล็ก 4 มุม -->
+    ${[[38, 38, 0], [262, 38, 90], [262, 382, 180], [38, 382, 270]].map(([x, y, r]) => `
+      <g transform="translate(${x} ${y}) rotate(${r})" fill="url(#${id}-au)">
+        <circle cx="0" cy="-4.5" r="3.4"/><circle cx="-4.5" cy="1" r="3.4"/>
+        <circle cx="4.5" cy="1" r="3.4"/><path d="M-1 3 L1 3 L2.5 10 L-2.5 10 Z"/>
+      </g>`).join('')}
+
+    <!-- วงเข็มทิศ -->
+    <g transform="translate(150 185)">
+      <circle r="104" fill="none" stroke="rgba(227,197,126,.5)" stroke-width="1.4"/>
+      <circle r="96" fill="none" stroke="rgba(190,148,66,.28)" stroke-width=".9"/>
+      ${spike(0, 128)}${spike(90, 128)}${spike(180, 128)}${spike(270, 128)}
+      ${[45, 135, 225, 315].map(r => `
+        <path d="M0 -104 L3.5 -93 L0 -86 L-3.5 -93 Z" transform="rotate(${r})" fill="url(#${id}-au)"/>`).join('')}
+      <circle r="120" fill="none" stroke="rgba(190,148,66,.16)" stroke-width=".8"/>
+    </g>
+
+    <!-- ตราหัวใจโคลเวอร์ -->
+    <g transform="translate(78,113)">${cloverLogo(144, { ring: false })}</g>
+
+    <!-- ชื่อการ์ด: myClover เท่านั้น -->
+    <text x="150" y="352" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
+      font-size="26" font-weight="700" fill="url(#${id}-au)">myClover</text>
+    <g transform="translate(150 368)" fill="url(#${id}-au)">
+      <path d="M-26 0 H-8 M8 0 H26" stroke="url(#${id}-au)" stroke-width="1.2"/>
+      <circle cx="0" cy="-2.2" r="2"/><circle cx="-2.6" cy="1" r="2"/>
+      <circle cx="2.6" cy="1" r="2"/><path d="M-.6 2 L.6 2 L1.4 6 L-1.4 6 Z"/>
+    </g>
   </svg>`;
 }
 

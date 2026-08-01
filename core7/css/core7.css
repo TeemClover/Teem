@@ -172,8 +172,31 @@ button { font: inherit; cursor: pointer; }
   color: #fff; overflow-y: auto; padding: 18px 16px calc(24px + env(safe-area-inset-bottom));
 }
 .drawer h2 { font-family: "Bai Jamjuree"; margin-bottom: 14px; }
-.hist-round { border-bottom: 1px solid rgb(255 255 255 / .12); padding: 10px 0; display: flex; gap: 12px; align-items: center; font-size: 13.5px; flex-wrap: wrap; }
-.hist-chip { display: inline-flex; align-items: center; gap: 6px; background: rgb(255 255 255 / .08); border-radius: 9px; padding: 4px 9px; }
+/* กองหงายแบบแบ่งครึ่ง: คุณซ้าย · เส้นกลาง · คู่แข่งขวา */
+.hist2 { position: relative; margin-top: 6px; }
+.hist2::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgb(var(--gold) / .45); }
+.hhead { display: grid; grid-template-columns: 1fr 1fr; font-family: "Bai Jamjuree"; font-weight: 700; font-size: 14.5px; padding-bottom: 10px; border-bottom: 1px solid rgb(255 255 255 / .18); margin-bottom: 4px; }
+.hhead span:first-child { text-align: left; padding-right: 14px; color: rgb(var(--gold-l)); }
+.hhead span:last-child { text-align: right; padding-left: 14px; }
+.hround { position: relative; text-align: center; margin: 12px 0 6px; }
+.rpill { display: inline-block; position: relative; background: rgb(var(--deep)); border: 1px solid rgb(255 255 255 / .25); border-radius: 999px; padding: 3px 14px; font-family: "Bai Jamjuree"; font-weight: 700; font-size: 12.5px; }
+.rpill.win { color: #8fe6b0; border-color: rgb(143 230 176 / .5); }
+.rpill.lose { color: #fca5a5; border-color: rgb(252 165 165 / .5); }
+.rpill.tie { color: rgb(255 255 255 / .75); }
+.hcells { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 6px; }
+.hc { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; min-height: 4px; }
+.hc.l { justify-content: flex-end; padding-right: 14px; }
+.hc.r { justify-content: flex-start; padding-left: 14px; }
+.hchip { display: inline-flex; align-items: center; gap: 5px; border-radius: 10px; padding: 6px 11px; color: #fff; font-family: "Bai Jamjuree"; font-weight: 600; font-size: 13px; border: 2px solid rgb(255 255 255 / .85); box-shadow: 0 2px 8px rgb(0 0 0 / .35); white-space: nowrap; }
+.hchip.discard { border-style: dashed; opacity: .88; }
+
+/* ผลใหญ่กลางจอเมื่อจบ Match */
+.end-overlay { position: fixed; inset: 0; z-index: 260; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgb(10 40 24 / .88); backdrop-filter: blur(3px); text-align: center; padding: 20px; }
+.end-overlay b { font-size: clamp(60px, 22vw, 120px); line-height: 1; letter-spacing: .04em; }
+.end-overlay span { font-size: clamp(16px, 4.5vw, 21px); color: rgb(255 255 255 / .88); font-weight: 600; }
+.end-overlay.win b { color: rgb(var(--gold-l)); text-shadow: 0 0 44px rgb(190 148 66 / .65); }
+.end-overlay.lose b { color: #fca5a5; }
+.end-overlay.draw b { color: #d7dbd7; }
 
 /* ── Hand builder ── */
 .hb-counter { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgb(var(--line) / .08); }

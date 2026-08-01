@@ -11,11 +11,12 @@ Asset ทั้งหมดของเกมเป็น **งานต้น�
 
 | Asset | ฟังก์ชัน | ขนาดฐาน | การใช้งาน | สถานะ |
 |---|---|---|---|---|
-| โลโก้โคลเวอร์ 4 แฉก Metallic | `cloverLogo(size)` | 100×100 viewBox | Nav, Card Back, Favicon-ready | ✅ Final V1 |
+| โลโก้โคลเวอร์ 4 แฉกรูปหัวใจ Metallic (แดง-ฟ้า-เขียว-เทา ตามภาพต้นแบบแบรนด์) | `cloverLogo(size)` | 100×100 viewBox | Nav, Card Back, Favicon | ✅ Final V1 |
 | Wordmark `myClover · CORE7` | HTML + font stack | — | Nav ทุกหน้า | ✅ Final V1 |
 | หน้าการ์ด FIRST HAND 28 ใบ | `cardSVG(id)` + `SCENES` | 300×420 (63:88) | Collection, Match, Print | ✅ ภาพประกอบ V1 (สไตล์ Minimal-Warm — ยกระดับเป็นภาพวาดเต็มได้ใน V2 โดยเปลี่ยนเฉพาะ `SCENES`) |
 | Generic Card 4 สี | `genericCardSVG(color)` | 300×420 | Guest ทุกโหมด | ✅ Final V1 |
-| หลังการ์ดมาตรฐาน | `cardBackSVG()` | 300×420 | Match, Print | ✅ Final V1 — สมมาตร เดาหน้าไพ่ไม่ได้ |
+| หลังการ์ดมาตรฐาน — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง, ชื่อบนใบคือ `myClover` เท่านั้น (CORE7 เป็นชื่อโหมด ห้ามพิมพ์บนการ์ด) | `cardBackSVG()` | 300×420 | Match, Print | ✅ Final V1 — แบบเดียวทุกใบ เดาหน้าไพ่ไม่ได้ |
+| โปสเตอร์ myClover : First Hand (Coming Soon) | ไฟล์ภาพจากผู้ก่อตั้ง | `img/core7-poster-{640,1024}.webp` + jpg | หน้า `/card/` ส่วนชวนเล่นเกม | ✅ ภาพจริง |
 | Icon ประจำสี (flame/eye/leaf/gear) | `colorIcon(color)` | 24×24 | ทุก UI ที่แสดงสี | ✅ Final V1 |
 | Pattern ประจำสี (bite/thought/shield/block) | `patternDefs()` | pattern tile | แถบการ์ด, Accessibility | ✅ Final V1 |
 | วงสี Interactive | `colorCycleSVG()` | 300×260 | Landing, Rules | ✅ Final V1 |
