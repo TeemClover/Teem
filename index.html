@@ -1,21 +1,216 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>myclover — เริ่มโดยไม่ต้องเริ่มจากศูนย์</title><meta name="description" content="เปิดบ้าน myclover ดูวิดีโอ 44 วินาที แล้วเลือกว่าจะเริ่มจาก WHY AI? หรือเริ่มลองทำ AI ชิ้นแรก"><meta property="og:title" content="myclover — เริ่มโดยไม่ต้องเริ่มจากศูนย์"><meta property="og:description" content="ดูวิดีโอเปิดบ้าน แล้วเลือกจุดเริ่มของคุณ"><meta property="og:image" content="https://www.myclover.com/img/og-home.jpg"><meta name="theme-color" content="#071d12"><link rel="stylesheet" href="/assets/readable.css"><style>
-:root{--d:#071d12;--d2:#0a2818;--g:#1b6a42;--gold:#be9442;--p:#f8f6f0;--i:#12281c;--m:#647168}*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:"Anuphan",system-ui;background:var(--p);color:var(--i);line-height:1.65;overflow-x:hidden}body.locked{overflow:hidden}.disp{font-family:"Bai Jamjuree",system-ui;letter-spacing:-.02em}a{text-decoration:none;color:inherit}img,video{display:block;max-width:100%}button{font:inherit}.wrap{width:min(1080px,calc(100% - 40px));margin:auto}:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:10px}
-#gate{position:fixed;inset:0;z-index:99;display:grid;place-items:center;text-align:center;color:#fff;background:radial-gradient(800px 440px at 50% -10%,#1b6a4299,transparent 65%),var(--d)}#gate .in{width:min(470px,90%)}#gate .cv{border:0;background:none;font-size:70px;cursor:pointer;animation:sway 4s ease-in-out infinite}@keyframes sway{50%{transform:rotate(7deg)}0%,100%{transform:rotate(-7deg)}}#gate h1{font-size:clamp(25px,5vw,34px);line-height:1.3;margin-top:10px}#gate .sub{opacity:.72}.count{display:flex;justify-content:center;gap:8px;margin:22px 0}.count div{width:78px;padding:10px 0;border:1px solid #ffffff26;background:#ffffff12;border-radius:13px}.count b{display:block;font-size:25px;line-height:1.1}.count span{font-size:11px;opacity:.55}.key{display:flex;gap:8px}.key input{min-width:0;flex:1;padding:13px;border:1px solid #ffffff38;background:#ffffff12;color:#fff;border-radius:11px}.key button{border:0;padding:12px 18px;border-radius:11px;background:var(--gold);color:var(--d);font-weight:800}.wrong{min-height:20px;color:#fca5a5;font-size:13px;margin-top:8px}.hint{font-size:12px;opacity:.45}.gateegg{display:none;color:#eac77b;font-size:12px;margin-top:10px}#home{visibility:hidden}body.open #home{visibility:visible}body.open #gate{display:none}
-.hero{position:relative;min-height:100svh;overflow:hidden;background:var(--d);color:#fff;isolation:isolate}.hero:before{content:"";position:absolute;inset:-25px;background:url('img/og-home.jpg') center/cover;filter:blur(25px) brightness(.35);transform:scale(1.08);z-index:-3}.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#04120b22,#04120b08 42%,#04120be8);z-index:-1}.bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:-2}.top{position:absolute;z-index:2;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:calc(18px + env(safe-area-inset-top)) clamp(20px,4vw,52px)}.logo{font-weight:800;font-size:19px}.logo em{font-style:normal;color:#92d7ad}.hall{padding:8px 13px;border:1px solid #ffffff45;background:#071d1266;backdrop-filter:blur(10px);border-radius:999px;font-size:13px;font-weight:800}.copy{position:absolute;z-index:2;left:50%;bottom:max(25px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(760px,calc(100% - 36px));text-align:center}.kicker{display:inline-flex;padding:6px 12px;border:1px solid #ffffff3b;background:#071d1288;backdrop-filter:blur(10px);border-radius:999px;font-size:12px;font-weight:800}.copy h1{font-size:clamp(31px,6vw,58px);line-height:1.08;max-width:14ch;margin:13px auto 9px;text-shadow:0 4px 22px #0008}.copy p{max-width:53ch;margin:auto;color:#ffffffcf}.actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:18px}.actions>*{min-height:47px;padding:11px 19px;border-radius:999px;font-weight:800}.play{border:1px solid var(--gold);background:var(--gold);color:var(--d);cursor:pointer}.jump{border:1px solid #ffffff4a;background:#071d1277;backdrop-filter:blur(10px)}.note{font-size:11px!important;opacity:.62;margin-top:8px!important}@media(max-width:700px){.hero:before{display:none}.bgv{object-fit:cover}.copy>p:not(.note){display:none}.copy h1{font-size:32px}.hall{font-size:0}.hall:after{content:"โถง";font-size:13px}}
-.modal{position:fixed;inset:0;z-index:110;display:none;place-items:center;padding:18px;background:#020a06f2;backdrop-filter:blur(12px)}.modal.on{display:grid}.modal .box{position:relative;height:min(92svh,1380px);max-width:100%}.modal video{height:100%;border-radius:16px;background:#000}.close{position:absolute;right:8px;top:8px;z-index:2;width:43px;height:43px;border-radius:50%;border:1px solid #ffffff45;background:#0009;color:#fff;font-size:22px;cursor:pointer}
-section{padding:clamp(62px,9vw,100px) 0}.eye{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--g)}h2{font-size:clamp(27px,4.7vw,44px);line-height:1.18;margin-top:9px}.sub2{max-width:58ch;color:var(--m);margin-top:9px}.start{text-align:center;background:radial-gradient(650px 280px at 50% 0,#1b6a421c,transparent 70%)}.start .sub2{margin-inline:auto}.twoway{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px;text-align:left}.way{position:relative;min-height:405px;overflow:hidden;border-radius:24px;color:#fff;display:flex;align-items:flex-end;box-shadow:0 25px 55px -38px #071d12;transition:.2s}.way:hover{transform:translateY(-5px)}.way img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.way:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent,#05120be8 78%)}.way .txt{position:relative;z-index:1;padding:25px}.tag{font-size:11px;font-weight:800;letter-spacing:.09em;color:#f0ce85}.way h3{font-size:clamp(22px,3vw,30px);line-height:1.2;margin:6px 0}.way p{font-size:14px;color:#ffffffc7}.go{display:inline-flex;margin-top:14px;padding:9px 14px;border-radius:999px;background:#fff;color:var(--d);font-weight:800;font-size:13px}.do .go{background:var(--gold)}@media(max-width:720px){.twoway{grid-template-columns:1fr}.way{min-height:340px}}
-.get{background:#fff}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:26px}.result{border:1px solid #12281c1c;border-radius:18px;overflow:hidden;background:var(--p)}.result img{width:100%;aspect-ratio:16/10;object-fit:cover}.result div{padding:17px}.result b{font-size:17px}.result p{font-size:13px;color:var(--m);margin-top:3px}@media(max-width:720px){.three{display:flex;overflow:auto}.result{min-width:82%}}
-.paths{background:var(--d2);color:#fff}.paths .eye{color:#e8c36f}.paths .sub2{color:#ffffffa8}.four{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:26px}.path{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:17px;border:1px solid #ffffff1f}.path img{width:100%;height:100%;object-fit:cover}.path:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,#030e08e8)}.path div{position:absolute;z-index:1;left:15px;bottom:14px}.path span{font-size:10px;color:#e8c36f;font-weight:800}.path b{display:block}.hallbox{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:23px;padding:19px 21px;border:1px solid #ffffff26;border-radius:17px;background:#ffffff0d}.hallbox p{font-size:13px;color:#ffffffa8}.hallbox a{flex:none;padding:10px 15px;border-radius:999px;background:var(--gold);color:var(--d);font-weight:800;font-size:13px}@media(max-width:820px){.four{display:flex;overflow:auto}.path{min-width:68%}.hallbox{align-items:flex-start;flex-direction:column}}
-.glhf{padding:48px 0;text-align:center;background:#102d1d;color:#fff}.glhf strong{color:#e9c675}.glhf p{font-size:14px;color:#ffffffad}footer{text-align:center;padding:50px 0 60px;color:var(--m);font-size:12px}.secret{border:0;background:none;font-size:36px;cursor:pointer;padding:8px;transition:.2s}.secret:hover{transform:rotate(12deg) scale(1.08)}.secret.won{filter:drop-shadow(0 0 12px #be9442cc)}.secn{margin-top:5px}.secn b{font-size:19px;color:var(--i)}.egg{display:none;color:#8a6a28;margin:10px auto;max-width:46ch}.links{display:flex;justify-content:center;gap:8px 16px;flex-wrap:wrap;margin:20px 0 12px}.links a{color:var(--g);font-weight:800}
-</style></head><body class="locked"><div id="gate"><div class="in"><button class="cv" id="gateCv" aria-label="โคลเวอร์หน้าประตู">🍀</button><h1 class="disp">บ้านหลังนี้เปิดอีกครั้ง<br>8 สิงหาคม</h1><p class="sub">ใครมีกุญแจ เข้าก่อนได้เลย</p><div class="count"><div><b id="cd">–</b><span>วัน</span></div><div><b id="ch">–</b><span>ชั่วโมง</span></div><div><b id="cm">–</b><span>นาที</span></div><div><b id="cs">–</b><span>วินาที</span></div></div><form class="key" id="keyForm"><input type="password" id="keyInput" placeholder="ถ้าคุณมีกุญแจบ้าน…"><button>เปิดประตู</button></form><div class="wrong" id="wrong"></div><p class="hint">ใครเจอเรา คนนั้นโชคดี</p><p class="gateegg" id="gateEgg">☘️ ที่ท้ายหน้ามีโคลเวอร์ซ่อนอยู่ ลองกดจนกว่าจะครบสี่แฉก</p></div></div>
-<div id="home"><header class="hero"><video class="bgv" id="bgv" autoplay muted playsinline preload="metadata" poster="img/og-home.jpg"><source src="media/home-opening-bg.mp4" type="video/mp4"></video><div class="top"><a class="logo disp" href="#">🍀 my<em>clover</em></a><a class="hall disp" href="hall.html" data-ga="hero:hall">สำรวจโถงทางเดิน →</a></div><div class="copy"><span class="kicker disp">บ้านที่ช่วยให้คุณเริ่ม โดยไม่ต้องเริ่มจากศูนย์</span><h1 class="disp">เปิดบ้าน แล้วเลือกจุดเริ่มของคุณ</h1><p>ดูภาพรวมก่อน แล้วเลือกว่าจะรู้เหตุผลให้ชัด หรือเริ่มลองทำ AI ชิ้นแรกเลย</p><div class="actions"><button class="play disp" id="openV" data-ga="hero:full_video">▶ เปิดเสียง · ดูเต็ม 44 วินาที</button><a class="jump disp" href="#start" data-ga="hero:compass">↓ หยิบเข็มทิศ</a></div><p class="note">วิดีโอพื้นหลังไม่มีเสียง · กดปุ่มเพื่อดูเวอร์ชันเต็ม</p></div></header>
-<div class="modal" id="modal" hidden><div class="box"><button class="close" id="closeV">×</button><video id="fullV" controls playsinline preload="none" poster="img/og-home.jpg"></video></div></div><main><section class="start" id="start"><div class="wrap"><span class="eye disp">เข็มทิศของคุณ</span><h2 class="disp">วันนี้อยากเริ่มแบบไหน?</h2><p class="sub2">ไม่ต้องเลือกให้ถูกตลอดไป เลือกแค่จุดเริ่มที่เหมาะกับคุณตอนนี้</p><div class="twoway"><a class="way" href="forge/" data-ga="start:why"><img src="img/card-forge.jpg" alt="WHY AI?"><div class="txt"><span class="tag disp">WHY · รู้ก่อนว่าทำไม</span><h3 class="disp">อ่าน WHY AI? ก่อน</h3><p>เรื่องเล่า 7 ตอน ว่า AI ช่วยเปลี่ยนประสบการณ์ให้เป็นเครื่องมือ และคืนเวลาให้ชีวิตได้อย่างไร</p><span class="go disp">เริ่มอ่านตอนแรก →</span></div></a><a class="way do" href="classroom/free-ai.html" data-ga="start:do"><img src="img/card-class.jpg" alt="ห้องเรียน AI"><div class="txt"><span class="tag disp">DO · อยากลองทำเลย</span><h3 class="disp">สร้างผลลัพธ์แรกใน 10 นาที</h3><p>ไม่ต้องมีพื้นฐาน ใช้เครื่องมือฟรี แล้วลงมือทำชิ้นแรกไปพร้อมกัน</p><span class="go disp">เริ่มบทแรก →</span></div></a></div></div></section>
-<section class="get"><div class="wrap"><span class="eye disp">ไม่ได้กลับไปมือเปล่า</span><h2 class="disp">เข้ามาแล้ว คุณจะได้อะไรกลับไป</h2><div class="three"><article class="result"><img src="img/card-forge.jpg" alt="เรื่องเล่า"><div><b class="disp">เหตุผลที่ชัดขึ้น</b><p>เห็นว่า AI ช่วยชีวิตและงานของคุณตรงไหน</p></div></article><article class="result"><img src="img/card-class.jpg" alt="ห้องเรียน"><div><b class="disp">ทักษะจากการทำจริง</b><p>ภาพ คลิป Source Prompt และเว็บไซต์ ไม่ใช่แค่ทฤษฎี</p></div></article><article class="result"><img src="img/card-tool.jpg" alt="การ์ดประจำตัว"><div><b class="disp">ของที่เป็นของคุณเอง</b><p>ผลงาน การ์ด และความคืบหน้าที่เอาไปใช้ต่อได้</p></div></article></div></div></section>
-<section class="paths"><div class="wrap"><span class="eye disp">เมื่อพร้อมสำรวจมากขึ้น</span><h2 class="disp">เดินบ้านหลังนี้ตามสไตล์ของคุณ</h2><p class="sub2">สี่สายไม่ได้ล็อกห้อง แค่ช่วยจัดลำดับของที่น่าจะตรงกับคุณ</p><div class="four"><a class="path" href="paths/thinker/"><img src="img/path-thinker.jpg" alt="สายคิด"><div><span>THINKER</span><b>🧠 สายคิด</b></div></a><a class="path" href="paths/taster/"><img src="img/path-taster.jpg" alt="สายกิน"><div><span>TASTER</span><b>🍜 สายกิน</b></div></a><a class="path" href="paths/keeper/"><img src="img/path-keeper.jpg" alt="สายคลีน"><div><span>KEEPER</span><b>💪 สายคลีน</b></div></a><a class="path" href="paths/maker/"><img src="img/path-maker.jpg" alt="สายประดิษฐ์"><div><span>MAKER</span><b>🧰 สายประดิษฐ์</b></div></a></div><div class="hallbox"><div><b class="disp">ของเดิมทั้งบ้านยังอยู่ครบ</b><p>เข็มทิศ 4 สาย ห้องทั้งหมด #glhf และเส้นทางสามด่าน ถูกย้ายไปไว้ในโถงทางเดิน</p></div><a class="disp" href="hall.html" data-ga="hall:open">เปิดโถงทางเดิน →</a></div></div></section><section class="glhf"><div class="wrap"><strong class="disp">#glhf · Good Luck, Have Fun</strong><p>หยิบของที่ต้องการ แล้วเล่นเกมของตัวเองให้เต็มที่</p></div></section></main>
-<footer><div class="wrap"><button class="secret" id="secret" aria-label="โคลเวอร์ลับ">☘️</button><p>ใบนี้ยังไม่ครบสี่แฉก — ลองกดดูว่าคุณต้องใช้กี่ครั้ง</p><p class="secn" id="secn" hidden></p><p class="egg" id="egg">🍀 เจอแล้ว — ได้ตรา <b>SEEKER</b> ไปติดบน<a href="card/" style="text-decoration:underline">การ์ดประจำตัว</a><br>จำคำนี้ไว้: <b>“โชคดีมีจริง”</b></p><div class="links"><a href="forge/">WHY AI?</a><a href="classroom/">ห้องเรียน</a><a href="paths/">เลือกสาย</a><a href="hall.html">โถงทางเดิน</a><a href="card/">การ์ด</a></div><p>myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p></div></footer></div>
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>myClover — เรียน AI ฟรีผ่านเรื่องเล่า บทเรียน และเกม</title>
+<meta name="description" content="ใครเจอ myClover คนนั้นโชคดี 🍀 เปิดบ้านใน 44 วินาที แล้วเริ่มจากการ์ตูน WHY AI? บทเรียน AI ฟรี 6 บท เกม CORE7 และของที่หยิบกลับไปใช้ได้จริง">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="canonical" href="https://www.myclover.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="myClover">
+<meta property="og:locale" content="th_TH">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://www.myclover.com/">
+<meta property="og:title" content="ใครเจอ myClover คนนั้นโชคดี 🍀">
+<meta property="og:description" content="เปิดบ้านแล้วหยิบสิ่งที่คุณกำลังตามหา—เรื่องเล่า บทเรียน AI ฟรี เกม และของที่นำกลับไปใช้ได้จริง">
+<meta property="og:image" content="https://www.myclover.com/img/og-home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ใครเจอ myClover คนนั้นโชคดี 🍀">
+<meta name="twitter:description" content="เปิดบ้านใน 44 วินาที แล้วหยิบเข็มทิศเริ่มทางของคุณ">
+<meta name="twitter:image" content="https://www.myclover.com/img/og-home.jpg">
+<meta name="theme-color" content="#071d12">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="stylesheet" href="/assets/readable.css">
+<style>
+:root{
+  --deep:#071d12;--deep2:#0b2a19;--gold:#d1a64b;--gold2:#f1d18a;
+  --cream:#fbf6ea;--ink:#10251a;--line:rgba(255,255,255,.15)
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--deep);color:#fff}
+body{font-family:"Anuphan",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,a{font:inherit}a{color:inherit;text-decoration:none}
+button{border:0}
+.page{position:relative;height:100svh;min-height:100svh;overflow:hidden;isolation:isolate}
+.ambient{position:absolute;inset:-4%;background:
+  linear-gradient(90deg,rgba(3,14,8,.88),rgba(3,14,8,.32) 52%,rgba(3,14,8,.58)),
+  url("img/home-opening-poster.jpg") center/cover no-repeat;
+  filter:blur(18px) saturate(.82);transform:scale(1.08);z-index:-3}
+.shade{position:absolute;inset:0;background:
+  radial-gradient(circle at 72% 45%,transparent 0 24%,rgba(3,14,8,.24) 48%,rgba(3,14,8,.72) 100%),
+  linear-gradient(to bottom,rgba(0,0,0,.13),rgba(0,0,0,.25));z-index:-2}
+.topbar{position:absolute;z-index:10;top:0;left:0;right:0;padding:max(14px,env(safe-area-inset-top)) clamp(18px,4vw,52px) 0;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Bai Jamjuree",system-ui;font-weight:800;font-size:18px;letter-spacing:-.02em}
+.brand img{width:34px;height:34px;border-radius:11px;box-shadow:0 10px 28px rgba(0,0,0,.3)}
+.brand em{font-style:normal;color:#85d6a3}
+.lang{display:flex;padding:5px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(7,29,18,.68);backdrop-filter:blur(12px)}
+.lang button{min-width:47px;padding:9px 13px;border-radius:999px;background:transparent;color:rgba(255,255,255,.62);font-weight:800;cursor:pointer}
+.lang button.active{background:var(--cream);color:var(--deep)}
+.layout{height:100%;display:grid;grid-template-columns:minmax(330px,.82fr) minmax(320px,1.18fr);gap:clamp(28px,4vw,76px);align-items:center;width:min(1240px,calc(100% - 72px));margin:auto;padding-top:68px}
+.copy{position:relative;z-index:4;max-width:560px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;background:rgba(251,246,234,.1);border:1px solid rgba(251,246,234,.18);backdrop-filter:blur(10px);color:var(--gold2);font-weight:700}
+h1{font-family:"Bai Jamjuree",system-ui;font-size:clamp(42px,5.4vw,78px);line-height:.98;letter-spacing:-.055em;margin:20px 0 16px;max-width:8.5ch;text-wrap:balance}
+.lead{font-size:clamp(17px,1.5vw,21px);line-height:1.7;color:rgba(255,255,255,.82);max-width:34ch;margin:0}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{min-height:54px;padding:14px 22px;border-radius:16px;display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:"Bai Jamjuree",system-ui;font-weight:800;cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s}
+.btn:hover{transform:translateY(-3px)}
+.btn-primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:var(--deep);box-shadow:0 18px 42px -24px rgba(209,166,75,.95)}
+.btn-secondary{background:rgba(5,25,14,.64);color:#fff;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(12px)}
+.hint{margin-top:13px;color:rgba(255,255,255,.56);font-size:13px}
+.stage{height:min(92svh,900px);display:grid;place-items:center;position:relative}
+.stage::before{content:"";position:absolute;width:min(460px,88%);height:86%;border-radius:42px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);box-shadow:0 36px 100px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(14px)}
+.stage video{position:relative;z-index:2;height:calc(100% - 34px);max-height:860px;width:auto;max-width:100%;object-fit:contain;border-radius:28px;background:#000;box-shadow:0 28px 70px rgba(0,0,0,.45)}
+.stage-label{position:absolute;z-index:3;bottom:28px;left:50%;transform:translateX(-50%);padding:7px 12px;border-radius:999px;background:rgba(7,29,18,.74);border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(12px);font-size:12px;color:rgba(255,255,255,.75);white-space:nowrap}
+.modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;background:rgba(2,10,6,.92);backdrop-filter:blur(15px);padding:18px}
+.modal.open{display:grid}
+.dialog{position:relative;height:min(92svh,980px);max-width:100%}
+.dialog video{height:100%;max-width:100%;border-radius:22px;background:#000;box-shadow:0 40px 100px rgba(0,0,0,.5)}
+.close{position:absolute;right:10px;top:10px;z-index:2;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.64);color:#fff;font-size:21px;cursor:pointer;border:1px solid rgba(255,255,255,.25)}
+@media(max-width:760px){
+  .ambient{display:none}
+  .shade{background:linear-gradient(to bottom,rgba(4,15,9,.12) 10%,rgba(4,15,9,.18) 46%,rgba(4,15,9,.88) 82%,rgba(4,15,9,.98))}
+  .layout{display:block;width:100%;padding:0;height:100%}
+  .stage{position:absolute;inset:0;height:100%;display:block}
+  .stage::before,.stage-label{display:none}
+  .stage video{width:100%;height:100%;max-height:none;object-fit:cover;border-radius:0;box-shadow:none}
+  .copy{position:absolute;z-index:5;left:20px;right:20px;bottom:max(22px,env(safe-area-inset-bottom));max-width:none;text-align:center}
+  .eyebrow{font-size:13px}
+  h1{font-size:clamp(36px,10.8vw,54px);line-height:1.02;max-width:10ch;margin:14px auto 10px}
+  .lead{font-size:15.5px;max-width:31ch;margin:auto;color:rgba(255,255,255,.84)}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+  .btn{min-height:56px;padding:12px 11px;font-size:15px;border-radius:17px}
+  .hint{display:none}
+}
+@media(max-width:420px){
+  .topbar{padding-left:15px;padding-right:15px}.brand span{display:none}
+  .actions{grid-template-columns:1fr}.btn{min-height:52px}
+  h1{font-size:38px}.lead{font-size:14.5px}
+}
+@media(prefers-reduced-motion:reduce){.btn{transition:none}}
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@graph":[
+    {"@type":"WebSite","@id":"https://www.myclover.com/#website","url":"https://www.myclover.com/","name":"myClover","alternateName":["บ้าน myClover","myclover.com"],"inLanguage":["th-TH","en"]},
+    {"@type":"Organization","@id":"https://www.myclover.com/#organization","name":"myClover","url":"https://www.myclover.com/","logo":{"@type":"ImageObject","url":"https://www.myclover.com/icons/icon-512.png"},"slogan":"ใครเจอเรา คนนั้นโชคดี"},
+    {"@type":"WebPage","@id":"https://www.myclover.com/#webpage","url":"https://www.myclover.com/","name":"myClover — เรียน AI ฟรีผ่านเรื่องเล่า บทเรียน และเกม","isPartOf":{"@id":"https://www.myclover.com/#website"},"about":{"@id":"https://www.myclover.com/#organization"},"inLanguage":"th-TH"}
+  ]
+}
+</script>
+</head>
+<body>
+<main class="page">
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="shade" aria-hidden="true"></div>
+
+  <nav class="topbar">
+    <a class="brand" href="/" aria-label="myClover home">
+      <img src="/icons/icon-192.png" alt="">
+      <span>my<em>Clover</em></span>
+    </a>
+    <div class="lang" aria-label="Language">
+      <button type="button" class="active" data-lang="th">TH</button>
+      <button type="button" data-lang="en">EN</button>
+    </div>
+  </nav>
+
+  <div class="layout">
+    <section class="copy" aria-labelledby="homeTitle">
+      <span class="eyebrow" data-i18n="eyebrow">🍀 ใครเจอเรา คนนั้นโชคดี</span>
+      <h1 id="homeTitle" data-i18n="title">เปิดบ้านใน 44 วินาที</h1>
+      <p class="lead" data-i18n="lead">ข้างในมีทั้งเรื่องเล่า บทเรียน เกม และของที่หยิบกลับไปใช้ได้จริง</p>
+      <div class="actions">
+        <button class="btn btn-primary" id="openVideo" type="button" data-i18n="watch">▶ ดูคลิปเปิดบ้าน</button>
+        <a class="btn btn-secondary" href="hall.html" data-i18n="compass">🧭 หยิบเข็มทิศ</a>
+      </div>
+      <p class="hint" data-i18n="hint">ดูคลิปก่อน หรือเข้าไปเริ่มเล่นในบ้านได้เลย</p>
+    </section>
+
+    <section class="stage" aria-label="วิดีโอเปิดบ้าน">
+      <video id="bgVideo" autoplay muted loop playsinline preload="metadata" poster="img/home-opening-poster.jpg">
+        <source src="media/home-opening-bg.mp4" type="video/mp4">
+      </video>
+      <span class="stage-label" data-i18n="stage">คลิปแนะนำบ้าน · 44 วินาที</span>
+    </section>
+  </div>
+</main>
+
+<div class="modal" id="videoModal" aria-hidden="true">
+  <div class="dialog" role="dialog" aria-modal="true" aria-label="คลิปเปิดบ้าน 44 วินาที">
+    <button class="close" id="closeVideo" aria-label="ปิด">✕</button>
+    <video id="fullVideo" controls playsinline preload="none" poster="img/home-opening-poster.jpg">
+      <source src="media/home-opening-full.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+
 <script>
-(function(){var T=Date.parse('2026-08-08T00:00:00+07:00'),S='735701f285cb9253fcff9649a0f7a09f27e5b5967030ded8baba4c5731683636',b=document.body,v=document.getElementById('bgv');function open(){b.classList.remove('locked');b.classList.add('open');v&&v.play().catch(function(){})}try{if(Date.now()>=T||localStorage.mc_key==='1')open()}catch(e){if(Date.now()>=T)open()}function pad(n){return n<10?'0'+n:n}function tick(){var x=Math.max(0,T-Date.now()),s=x/1000|0;if(!x)open();cd.textContent=s/86400|0;ch.textContent=pad(s%86400/3600|0);cm.textContent=pad(s%3600/60|0);cs.textContent=pad(s%60)}tick();setInterval(tick,1000);keyForm.onsubmit=function(e){e.preventDefault();crypto.subtle.digest('SHA-256',new TextEncoder().encode(keyInput.value.trim().toLowerCase())).then(function(a){var h=[...new Uint8Array(a)].map(x=>x.toString(16).padStart(2,'0')).join('');if(h===S){localStorage.mc_key='1';open()}else{wrong.textContent='กุญแจยังไม่ถูก ลองอีกครั้งนะครับ';keyInput.select()}})};var n=0;gateCv.onclick=function(){if(++n===4){gateEgg.style.display='block';n=0}}})();
-window.mcEvent=function(n,p){try{gtag('event',n,p||{})}catch(e){}};document.addEventListener('click',function(e){for(var x=e.target;x&&x!==document.body;x=x.parentNode){var t=x.getAttribute&&x.getAttribute('data-ga');if(t){var i=t.indexOf(':');mcEvent(i<0?t:t.slice(0,i),i<0?{}:{item:t.slice(i+1)});break}}});
-(function(){var m=modal,f=fullV,b=bgv;openV.onclick=function(){if(!f.src){f.src='media/home-opening-full.mp4';f.load()}m.hidden=false;m.classList.add('on');document.body.style.overflow='hidden';b.pause();f.play().catch(function(){});mcEvent('hero_video_full_open')};function shut(){f.pause();m.classList.remove('on');m.hidden=true;document.body.style.overflow='';b.play().catch(function(){})}closeV.onclick=shut;m.onclick=function(e){if(e.target===m)shut()};document.onkeydown=function(e){if(e.key==='Escape'&&m.classList.contains('on'))shut()}})();
-(function(){var B=secret,N=secn,E=egg,H=.1,n=+(localStorage.mc_seek_n||0),hit=localStorage.mc_seek_hit==='1';function grant(){var t=[];try{t=JSON.parse(localStorage.mc_titles||'[]')}catch(e){}if(!Array.isArray(t))t=[];if(!t.includes('SEEKER')){t.push('SEEKER');localStorage.mc_titles=JSON.stringify(t)}}function paint(){B.textContent=hit?'🍀':'☘️';B.classList.toggle('won',hit);if(!n){N.hidden=true;return}N.hidden=false;N.innerHTML=hit?'เจอตอนกดครั้งที่ <b>'+n+'</b> 🍀':'กดไปแล้ว <b>'+n+'</b> ครั้ง — ยังไม่ครบสี่แฉก';if(hit)E.style.display='block'}B.onclick=function(){if(hit)return;n++;localStorage.mc_seek_n=n;if(Math.random()<H){hit=true;localStorage.mc_seek_hit='1';grant();mcEvent('secret_found',{item:String(n)})}paint()};paint()})();
-</script><script defer src="assets/quest.js"></script><script defer src="assets/config.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});</script></body></html>
+(function(){
+  var TEXT={
+    th:{
+      eyebrow:"🍀 ใครเจอเรา คนนั้นโชคดี",
+      title:"เปิดบ้านใน 44 วินาที",
+      lead:"ข้างในมีทั้งเรื่องเล่า บทเรียน เกม และของที่หยิบกลับไปใช้ได้จริง",
+      watch:"▶ ดูคลิปเปิดบ้าน",
+      compass:"🧭 หยิบเข็มทิศ",
+      hint:"ดูคลิปก่อน หรือเข้าไปเริ่มเล่นในบ้านได้เลย",
+      stage:"คลิปแนะนำบ้าน · 44 วินาที"
+    },
+    en:{
+      eyebrow:"🍀 Those who find us leave with something lucky",
+      title:"Open the house in 44 seconds",
+      lead:"Inside are stories, lessons, a game, and useful things you can take with you.",
+      watch:"▶ Watch the house intro",
+      compass:"🧭 Pick up the compass",
+      hint:"Watch first, or step inside and start playing.",
+      stage:"House introduction · 44 seconds"
+    }
+  };
+  function setLang(lang){
+    document.documentElement.lang=lang;
+    document.querySelectorAll("[data-lang]").forEach(function(b){
+      b.classList.toggle("active",b.dataset.lang===lang);
+    });
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      el.textContent=TEXT[lang][el.dataset.i18n];
+    });
+    try{localStorage.setItem("mc_lang",lang)}catch(e){}
+  }
+  document.querySelectorAll("[data-lang]").forEach(function(b){
+    b.addEventListener("click",function(){setLang(b.dataset.lang)});
+  });
+  var lang="th";
+  try{lang=localStorage.getItem("mc_lang")||"th"}catch(e){}
+  setLang(lang);
+
+  var modal=document.getElementById("videoModal");
+  var full=document.getElementById("fullVideo");
+  var bg=document.getElementById("bgVideo");
+  function openModal(){
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden","false");
+    bg.pause();
+    full.play().catch(function(){});
+  }
+  function closeModal(){
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden","true");
+    full.pause();
+    full.currentTime=0;
+    bg.play().catch(function(){});
+  }
+  document.getElementById("openVideo").addEventListener("click",openModal);
+  document.getElementById("closeVideo").addEventListener("click",closeModal);
+  modal.addEventListener("click",function(e){if(e.target===modal)closeModal()});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape"&&modal.classList.contains("open"))closeModal()});
+})();
+</script>
+</body>
+</html>
