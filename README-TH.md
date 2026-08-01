@@ -1,57 +1,25 @@
-# myClover Entry V4
+# myClover Entry V4.3 — Clean Hall
 
-ไฟล์ในชุดนี้:
-- `index.html` — ประตูบ้านแบบหนึ่งเฟรม วิดีโอ fit-height บน desktop และเต็มจอบน mobile
-- `hall.html` — GLHF ritual, Main Quest progress, การ์ตูน, ห้องเรียน, CORE7, RGBG, Sub Quest และ Seeker
-- `img/hall-core7.png` — ภาพหลังการ์ด CORE7 จากไฟล์อ้างอิงที่ให้มา
+อัปโหลดไฟล์:
+- `index.html`
+- `hall.html`
 
-## Progress keys ที่ใช้งาน
-- การ์ตูน: `mc_read` — 7 ตอน
-- ห้องเรียน: `mc_learn` — 6 บท
-- หลักฐาน: `mc_opened=1` หลังบันทึกการ์ด
-- GLHF: `mc_glhf_seen=1`
-- Seeker: `mc_seek_n`, `mc_seek_hit`, และตรา `SEEKER` ใน `mc_titles`
+ภาพต่อไปนี้มีอยู่ใน `main` แล้วและไม่ได้รวมซ้ำในแพ็ก:
+- `img/path-taster.jpg`
+- `img/path-keeper.jpg`
+- `img/path-thinker.jpg`
+- `img/path-maker.jpg`
+- `img/hall-why.jpg`
+- `img/hall-classroom.jpg`
+- `img/hall-core7.jpg`
 
-## ลำดับ RGBG
-1. 🔴 TASTER
-2. 🟢 KEEPER
-3. 🔵 THINKER
-4. ⚙️ MAKER
-
-## Upload
-อัป `index.html`, `hall.html` และ `img/hall-core7.png` ไปยัง root ของ repository ตาม path เดิม
-
-
-## V4.1 changes
-- แก้ tooltip เป็น floating tooltip วางนอก card เพื่อไม่ให้ชนกรอบหรือถูกตัดบนมือถือ
-- การ์ด 4 สายกดได้จริง ไป `paths/` พร้อม anchor (`#taster`, `#keeper`, `#thinker`, `#maker`)
-- เพิ่ม section “Paths” แบบไม่เด่น แต่เข้าอ่านต่อได้
-- ใช้ภาพจริงจาก `img/` ในการ์ด WHY AI / ห้องเรียน / CORE7 และหน้า Paths
-- เปลี่ยนการ์ดภาพเป็นแบบโชว์ภาพเต็มใบ (`object-fit: contain`) ไม่ครอป
-- เพิ่มลิงก์ `Paths` ใน nav และ footer
-- ต้องมีไฟล์ภาพใน `img/`:
-  - `hall-why.jpg`
-  - `hall-classroom.jpg`
-  - `hall-core7.jpg`
-  - `paths-hero.jpg`
-
-
-## V4.2 changes
-- เอา section Paths ที่ซ้ำออก เหลือช่วงเลือกสายเพียงครั้งเดียว
-- คืนระบบเลือกสายแบบ Hall เก่า:
-  - แตะภาพเพื่อเลือก
-  - บันทึกค่า `mc_class`
-  - ไฮไลต์สายที่เลือก
-  - แสดงปุ่มเข้าหน้าสายนั้น
-  - เปลี่ยนสายได้ตลอดและไม่ล็อกห้องอื่น
-- ใช้ภาพจาก main โดยครอปเฉพาะฝั่งภาพ ไม่แสดงข้อความเล็กในภาพ:
-  - `img/path-taster.jpg`
-  - `img/path-keeper.jpg`
-  - `img/path-thinker.jpg`
-  - `img/path-maker.jpg`
-- หน้ารวม `paths/` เหลือเป็นลิงก์รองใต้ตัวเลือก ไม่อยู่ใน nav
-- Tooltip แสดงคำเต็ม คำแปล และความหมาย:
-  - STR · Strength · พลังลงมือ
-  - DEX · Dexterity · ความคล่องตัว
-  - INT · Intelligence · พลังความเข้าใจ
-  - Construct · พลังการสร้าง
+## เปลี่ยนจาก V4.2
+- ทำช่วงเลือกสายเป็น visual-first
+- ใช้ภาพฝั่งซ้ายของ hero แต่ละสาย โดยซ่อนข้อความที่ฝังอยู่ในภาพ
+- ลดข้อความในการ์ดและผลการเลือก
+- STR / DEX / INT / Construct ยังเปิด floating tooltip ได้
+- เก็บระบบเลือกสาย `mc_class` และปุ่มเข้าหน้าแต่ละสาย
+- เอา Walkthrough และ AWAKEN ออกจาก Sub Quest เพราะเป็นห้องลับ
+- Sub Quest เหลือ Inventory, Smart Resume, myClover Club และ Guild X
+- เปลี่ยนกล่องขยายเดิมเป็น section ตรง ๆ ชื่อ `หน้าแรก First Version`
+- อธิบายเหตุผลให้กลับมาดู First Version หลังเรียนจบ
