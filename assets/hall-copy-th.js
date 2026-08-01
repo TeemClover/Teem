@@ -13,17 +13,17 @@ window.HALL_COPY.th={
       highlightsEyebrow:"3 จุดเริ่มต้นของบ้าน",
       highlightsTitle:"เข้าใจว่าทำไม ใช้ AI ให้เป็น แล้วดูของจริง",
       highlightsSub:"3 หน้านี้บอกได้เร็วที่สุดว่าเวลาในบ้านหลังนี้คุ้มกับคุณไหม",
-      whyTag:"WHY AI? · WEBTOON 7 ตอน",
+      whyTag:"WHY AI? · 7 EPISODES",
       whyTitle:"อ่าน Webtoon แล้วเข้าใจว่า AI มีไว้ทำไม",
-      whyDesc:"เรื่องจริงในรูปแบบ Webtoon ที่อ่านง่าย สนุก และพาไปเห็นว่า AI ไม่ได้มีไว้แค่ทำงานเร็วขึ้น แต่มันช่วยคืนเวลาให้ชีวิตได้อย่างไร",
+      whyDesc:"เรื่องจริงในรูปแบบการ์ตูนสี อ่านง่าย สนุก และพาไปเห็นว่า AI ไม่ได้มีไว้แค่ทำงานเร็วขึ้น แต่มันช่วยคืนเวลาให้ชีวิตได้อย่างไร",
       whyCta:"อ่าน Webtoon ตอนแรก →",
-      classTag:"6 FREE LESSONS",
+      classTag:"AI MISSION · 6 FREE LESSONS",
       classTitle:"เรียนหลักคิด AI แล้วนำไปใช้ได้กับทุกเรื่อง",
       classDesc:"6 ภารกิจสั้น ๆ ที่สอนหลักคิดซึ่งนำกลับมาใช้ซ้ำได้ ไม่ว่าจะวางแผนงาน สร้างเว็บไซต์ ทำคอนเทนต์ หรือออกแบบมื้ออาหารให้เหมาะกับตัวเอง",
       classCta:"เริ่มภารกิจแรก →",
       coreTag:"CORE7 · PROOF OF CREATION",
-      coreTitle:"เกมที่เกิดจาก Prompt ครั้งเดียว",
-      coreDesc:'ใช้หลักการจากบทเรียนฟรีทั้ง 6 บทเป็น <span class="term" tabindex="0" data-tip="Source คือเนื้อหาต้นทางที่จัดให้ AI เข้าใจและนำไปพัฒนาต่อเป็นระบบ ภาพ หรือเกมได้">Source</span> แล้วพัฒนาต่อจนกลายเป็นเกมที่เล่นได้จริง',
+      coreTitle:"เกมที่คนคิดกติกา แล้วขึ้นจาก Prompt เดียว",
+      coreDesc:'ใช้หลักการจากบทเรียนฟรีทั้ง 6 บท แล้วพัฒนาจนกลายเป็นเกมที่เล่นได้จริงบนหน้าเว็บ เราท้าให้คุณมาลองแข่งกับ AI',
       coreCta:"ลองเล่น CORE7 →",
       energyTitle:"เลือกพลังที่ใกล้ตัวคุณที่สุด",
       energyDesc:"เลือกเพื่อให้บ้านจำว่าควรแนะนำอะไรให้คุณก่อนเท่านั้น ไม่ได้ล็อกตัวตน ไม่ได้ล็อกห้อง และเปลี่ยนสายได้ตลอด",
@@ -54,3 +54,48 @@ window.HALL_COPY.th={
       seekerTitle:"ใบนี้ยังไม่ครบสี่แฉก",seekerCopy:"ลองกดดูว่าคุณต้องใช้กี่ครั้ง",
       seekerFound:"คุณพบ Seeker แล้ว",seekerSaved:"ตรานี้ถูกเก็บไว้ใน Inventory ของคุณเรียบร้อย",seekerTry:"ครั้งที่ {n} — ยังไม่ครบ ลองอีกครั้ง"
     };
+
+// V4.7 mobile navigation, path-image and bilingual copy patch.
+(function(){
+  var style=document.createElement("style");
+  style.id="hall-v47-mobile-patch";
+  style.textContent='\
+.navlinks>a[href="#quest"]{display:none!important}\
+.navlinks{align-items:center!important;overflow:visible!important}\
+.navlinks a.gold{width:44px!important;height:44px!important;min-width:44px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:0!important;line-height:1!important;overflow:hidden!important}\
+.navlinks a.gold::before{content:"🎒";font-size:20px;line-height:1}\
+.lang-switch{height:44px!important}\
+.lang-switch button{width:42px!important;height:36px!important;padding:0!important}\
+.path-choice[data-class="TASTER"] .path-art{background-image:url("/img/path-taster.jpg")!important}\
+.path-choice[data-class="KEEPER"] .path-art{background-image:url("/img/path-keeper.jpg")!important}\
+.path-choice[data-class="THINKER"] .path-art{background-image:url("/img/path-thinker.jpg")!important}\
+.path-choice[data-class="MAKER"] .path-art{background-image:url("/img/path-maker.jpg")!important}\
+@media(max-width:520px){.nav .wrap{min-height:58px!important;gap:7px!important}.logo{font-size:20px!important}.navlinks{gap:6px!important}.lang-switch{height:42px!important}.lang-switch button{width:38px!important;height:34px!important;font-size:11px!important}.navlinks a.gold{width:42px!important;height:42px!important;min-width:42px!important}.navlinks a.gold::before{font-size:19px}}';
+  document.head.appendChild(style);
+
+  function finishPatch(){
+    var copy=window.HALL_COPY||{};
+    if(copy.en){
+      Object.assign(copy.en,{
+        whyTag:"WHY AI? · 7 EPISODES",
+        whyTitle:"Read the Webtoon and Understand What AI Is For",
+        whyDesc:"A true story told as a full-color comic—easy and fun to read—showing that AI is not only about working faster, but about giving time back to your life.",
+        whyCta:"Read Episode 1 →",
+        classTag:"AI MISSION · 6 FREE LESSONS",
+        classTitle:"Learn the Thinking Behind AI—and Apply It to Anything",
+        classDesc:"Six short missions teach reusable ways of thinking, from planning work and building websites to creating content and designing meals for yourself.",
+        classCta:"Start Mission 1 →",
+        coreTag:"CORE7 · PROOF OF CREATION",
+        coreTitle:"A Human Made the Rules. One Prompt Built the Game.",
+        coreDesc:"Built from the principles in all six free lessons, then developed into a real browser game. We challenge you to face the AI.",
+        coreCta:"Play CORE7 →"
+      });
+    }
+    var bag=document.querySelector('.navlinks a.gold');
+    if(bag){bag.setAttribute('aria-label','Inventory');bag.setAttribute('title','Inventory')}
+    var active=document.querySelector('[data-lang].active')||document.querySelector('[data-lang="th"]');
+    if(active)active.click();
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",finishPatch,{once:true});
+  else setTimeout(finishPatch,0);
+})();
