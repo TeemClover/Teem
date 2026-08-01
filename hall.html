@@ -337,9 +337,9 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
 .story-card{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .22s,box-shadow .22s}
 .story-card:hover{transform:translateY(-6px);box-shadow:0 38px 70px -40px rgba(8,28,17,.8)}
-.story-media{padding:16px 16px 0}
-.story-frame{display:grid;place-items:center;background:linear-gradient(180deg,#fff,#f1ede1);border:1px solid rgba(18,40,28,.08);border-radius:18px;min-height:260px;overflow:hidden}
-.story-frame img{display:block;max-width:100%;max-height:100%;width:100%;height:auto;object-fit:contain}
+.story-media{padding:0}
+.story-frame{display:block;aspect-ratio:4/3;background:none;border:0;border-radius:24px 24px 0 0;min-height:0;overflow:hidden}
+.story-frame img{display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover}
 .story-body{padding:18px 18px 20px}
 .story-tag{font-size:11px;font-weight:800;letter-spacing:.15em;color:#85641f}
 .story-card h3{font-family:"Bai Jamjuree",system-ui;font-size:27px;line-height:1.2;margin:6px 0 8px}
@@ -374,7 +374,7 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 .paths-quiet a{color:var(--gold2);font-weight:800;text-decoration:underline;text-underline-offset:4px}
 .rooms{background:linear-gradient(180deg,#fff,var(--paper))}
 .open-world-copy{font-size:clamp(15px,1.6vw,18px);line-height:1.75}
-.game-term{color:var(--green);text-decoration-color:rgba(27,106,66,.55)}
+.game-term{color:var(--green);text-decoration-color:rgba(27,106,66,.55)}.context-term{text-decoration-thickness:1.5px;text-underline-offset:5px}.context-term-light{color:inherit;text-decoration-color:rgba(234,208,140,.76)}.room-term{color:inherit;text-decoration-color:rgba(27,106,66,.42)}.room small{font-size:11px;color:var(--muted);font-weight:700}
 .room-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:25px}
 .room{position:relative;padding:19px 48px 19px 20px;border-radius:18px;background:#fff;border:1px solid var(--line);transition:transform .18s,border-color .18s,box-shadow .18s;box-shadow:0 14px 34px -29px rgba(8,28,17,.45)}
 .room::after{content:"→";position:absolute;right:20px;top:50%;transform:translateY(-50%);color:rgba(27,106,66,.42);font-weight:900;transition:transform .18s,color .18s}.room:hover::after{transform:translate(4px,-50%);color:var(--green)}.room:hover{transform:translateY(-4px);border-color:rgba(27,106,66,.36);box-shadow:0 23px 42px -31px rgba(8,28,17,.58)}
@@ -412,7 +412,6 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   .quest-head{display:block}.overall{text-align:left;margin-top:15px}
   .qgrid{grid-template-columns:1fr}
   .cards{grid-template-columns:1fr}
-  .story-frame{min-height:224px}
   .room-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:520px){
@@ -450,7 +449,7 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
     <div>
       <span class="kicker">🧭 คุณหยิบเข็มทิศมาแล้ว</span>
       <h1>ในบ้านนี้ ไม่มีทางที่ผิด</h1>
-      <p class="lead">เลือกเริ่มจากสิ่งที่ใกล้ตัวที่สุด หรือเดินตาม Main Quest ที่เราวางไว้ให้ก็ได้ ทุกเส้นทางพากลับมาหาของที่ใช้ได้จริง</p>
+      <p class="lead">เลือกเริ่มจากสิ่งที่ใกล้ตัวที่สุด หรือเดินตาม <span class="term context-term" tabindex="0" data-tip="Main Quest คือเส้นทางหลัก 3 ขั้นของบ้าน: อ่าน WHY AI? เพื่อเข้าใจเหตุผล → เรียน 6 บทเพื่อลงมือสร้าง → ทำการ์ดเพื่อเก็บหลักฐาน ระบบจะจำความคืบหน้าและปักเควสถัดไปให้เสมอ">Main Quest</span> ที่เราวางไว้ให้ก็ได้ ทุกเส้นทางพากลับมาหาของที่ใช้ได้จริง</p>
     </div>
     <div class="compass" aria-hidden="true"><span class="needle">🧭</span></div>
   </div>
@@ -460,7 +459,7 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   <div class="wrap glhf-grid">
     <div>
       <small>GOOD LUCK, HAVE FUN</small>
-      <h2>ก่อนเริ่มเกม เราชนหมัดกันก่อน</h2>
+      <h2>ก่อนเริ่มเกม เรา<span class="term context-term context-term-light" tabindex="0" data-tip="ชนหมัดคือพิธีเริ่มเกมของบ้าน และเป็นความหมายของ GLHF — Good Luck, Have Fun ขอให้โชคดี สนุกกับทางที่เลือก และไม่ต้องเล่นให้สมบูรณ์ตั้งแต่ครั้งแรก">ชนหมัด</span>กันก่อน</h2>
       <p>คำอวยพรก่อนเริ่มเล่น: ขอให้โชคดี และอย่าลืมสนุกกับทางที่คุณเลือก</p>
     </div>
     <button class="bump" id="bump" type="button" aria-label="ชนหมัดเพื่อเริ่ม">
@@ -540,7 +539,7 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   <div class="wrap">
     <span class="eyebrow">ของหลักที่หยิบได้ทันที</span>
     <h2>เริ่มจากเรื่องเล่า ลงมือทำ แล้วดูผลลัพธ์จริง</h2>
-    <p class="sub">สามชิ้นนี้บอกได้เร็วที่สุดว่าเวลาในบ้านหลังนี้คุ้มกับคุณไหม</p>
+    <p class="sub">3 หน้านี้บอกได้เร็วที่สุดว่าเวลาในบ้านหลังนี้คุ้มกับคุณไหม</p>
     <div class="cards">
       <a class="story-card forge" href="forge/">
         <div class="story-media">
@@ -659,12 +658,15 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   <div class="wrap">
     <span class="eyebrow">Sub Quest · Daily Play</span>
     <h2>ถ้าอยากสำรวจต่อ ยังมีห้องอื่นอีก</h2>
-    <p class="sub open-world-copy">คิดซะว่าบ้าน myclover.com หลังนี้คือเกม <span class="term game-term" tabindex="0" data-tip="Open World คือเกมที่ไม่บังคับให้ทุกคนเดินทางเดียวกัน คุณเลือก Main Quest, Sub Quest หรือห้องที่สนใจก่อนได้ แล้วกลับมาเล่นต่อจากเดิมเมื่อไรก็ได้">Open World</span> — ค่อย ๆ เล่นแค่ <span class="term game-term" tabindex="0" data-tip="10 นาที คือประมาณ 0.7% ของหนึ่งวัน · 70 นาทีต่อสัปดาห์ · ราว 5 ชั่วโมงต่อเดือน&#10;ไม่ต้องเร่งให้จบ ขอแค่กลับมาเล่นต่อทีละนิด">วันละ 10 นาที</span> ก็พอ</p>
+    <p class="sub open-world-copy">คิดซะว่าบ้าน myclover.com หลังนี้คือเกม <span class="term game-term" tabindex="0" data-tip="Open World คือเกมที่ไม่บังคับให้ทุกคนเดินทางเดียวกัน คุณเลือก Main Quest, Sub Quest หรือห้องที่สนใจก่อนได้ แล้วกลับมาเล่นต่อจากเดิมเมื่อไรก็ได้">Open World</span> — ค่อย ๆ เล่นแค่ <span class="term game-term" tabindex="0" data-tip="10 นาที คือประมาณ 0.7% ของหนึ่งวัน
+70 นาทีต่อสัปดาห์
+ราว 5 ชั่วโมงต่อเดือน
+ไม่ต้องเร่งให้จบ ขอแค่กลับมาเล่นต่อทีละนิด">วันละ 10 นาที</span> ก็พอ แต่ถ้าอยากสนุกกว่า กดเข้า <span class="term game-term" tabindex="0" data-tip="Guild คือพื้นที่ชุมชนของ myClover บน Discord สำหรับหาคนคุย แชร์ความคืบหน้า ถามคำถาม และรวมทีมเล่นหรือสร้างงานด้วยกัน">Guild</span> หา <span class="term game-term" tabindex="0" data-tip="Party คือกลุ่มเพื่อนร่วมทางแบบในเกม RPG ใน myClover หมายถึงคนที่ช่วยกันเรียน แชร์ผลงาน เตือนกันกลับมาทำเควส และทำให้การเดินทางไม่ต้องเงียบอยู่คนเดียว">Party</span> เลย อย่าเล่นคนเดียว</p>
     <div class="room-grid">
       <a class="room" href="collection/"><b>🎒 Inventory</b><span>Achievement, Badge และของที่ปลดล็อกแล้ว</span></a>
       <a class="room" href="resume/"><b>🧾 Smart Resume</b><span>เปลี่ยนประสบการณ์ให้กลายเป็นเรื่องที่คนเข้าใจ</span></a>
       <a class="room" href="club/"><b>🍀 myClover Club</b><span>สุขภาพ อาหาร และการดูแลชีวิตจริง</span></a>
-      <a class="room" href="guild/"><b>🔒 Guild X</b><span>พื้นที่ปลายทางสำหรับคนที่อยากเล่นเป็นปาร์ตี้</span></a>
+      <a class="room" href="guild/"><b>🔒 <span class="term room-term" tabindex="0" data-tip="Guild คือพื้นที่ชุมชนของ myClover บน Discord สำหรับหาคนคุย แชร์ความคืบหน้า ถามคำถาม และรวมทีมเล่นหรือสร้างงานด้วยกัน">Guild X</span> <small>· Discord</small></b><span>เข้าไปหา <span class="term room-term" tabindex="0" data-tip="Party คือกลุ่มเพื่อนร่วมทางแบบในเกม RPG ใน myClover หมายถึงคนที่ช่วยกันเรียน แชร์ผลงาน เตือนกันกลับมาทำเควส และทำให้การเดินทางไม่ต้องเงียบอยู่คนเดียว">Party</span> แล้วเล่นต่อด้วยกัน</span></a>
     </div>
   </div>
 </section>
@@ -673,7 +675,7 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   <div class="wrap first-row">
     <div>
       <span class="eyebrow">หลังเรียนจบแล้ว</span>
-      <h2>กลับมาดูหน้าแรก First Version</h2>
+      <h2>กลับมาดูหน้าแรก <span class="term context-term" tabindex="0" data-tip="First Version คือหน้าแรกเวอร์ชันแรกที่เราเก็บไว้โดยไม่ลบทิ้ง แนะนำให้กลับมาดูหลังเรียนจบ เพื่อเปรียบเทียบงานชิ้นแรกกับงานปัจจุบัน และเห็นว่าการเริ่มจากของที่ยังไม่สมบูรณ์พาเราไปได้ไกลแค่ไหน">First Version</span></h2>
       <p>เราเก็บหน้าแรกชิ้นแรกไว้ให้คุณดูหลังเรียนจบ เพราะการเห็นระยะห่างระหว่างงานชิ้นแรกกับงานปัจจุบัน จะช่วยให้เห็นชัดว่า งานที่ยังไม่สมบูรณ์สามารถค่อย ๆ เติบโตได้อย่างไรเมื่อเราเริ่มสร้างด้วย AI</p>
     </div>
     <a class="first-go" href="hall-full.html">ดูหน้าแรก First Version →</a>
