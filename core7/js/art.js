@@ -462,11 +462,25 @@ export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
   return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420"
     role="img" aria-label="การ์ด ${card.en} (${card.th}) สี${meta.nameTh} สาย ${meta.className}">
     <defs>
-      <linearGradient id="${id}-au" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="${GOLDL}"/><stop offset="40%" stop-color="${GOLD}"/>
-        <stop offset="65%" stop-color="#8a6a2c"/><stop offset="100%" stop-color="${GOLDL}"/>
+      <linearGradient
+        id="${id}-au"
+        gradientUnits="userSpaceOnUse"
+        x1="0"
+        y1="0"
+        x2="300"
+        y2="0">
+        <stop offset="0%" stop-color="${GOLDL}"/>
+        <stop offset="100%" stop-color="${GOLD}"/>
       </linearGradient>
-      <clipPath id="${id}-art"><rect x="26" y="64" width="248" height="248" rx="10"/></clipPath>
+
+      <marker id="${id}-ah"
+        markerWidth="9"
+        markerHeight="9"
+        refX="6"
+        refY="4.5"
+        orient="auto">
+        <path d="M0 0 L8 4.5 L0 9 Z" fill="${GOLD}"/>
+      </marker>
     </defs>
     <rect x="2" y="2" width="296" height="416" rx="18" fill="${BRAND.charcoal}"/>
     <rect x="2" y="2" width="296" height="416" rx="18" fill="none" stroke="url(#${id}-au)" stroke-width="4"/>
