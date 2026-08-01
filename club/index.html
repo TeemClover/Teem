@@ -238,6 +238,7 @@ body.js .reveal.in{opacity:1;transform:none}
 
 <script>
 (function(){
+  try{localStorage.setItem('mc_club_seen','1');}catch(e){}
   var els=document.querySelectorAll('.reveal');
   // ถ้าไม่มี IntersectionObserver ก็โชว์ทุกอย่างเลย (ไม่เปิดโหมด js) — เนื้อหาต้องไม่หาย
   if(!('IntersectionObserver' in window)){return;}
