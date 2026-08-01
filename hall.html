@@ -101,9 +101,8 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 .qstep p{margin:0;color:var(--muted);font-size:14px}
 .qstatus{display:block;margin-top:15px;font-size:13px;font-weight:800;color:#85641f}
 .qgo{display:inline-flex;margin-top:13px;font-weight:800;color:var(--green);font-size:14px}
-.inventory-link{display:inline-flex;align-items:center;gap:8px;margin-top:20px;color:var(--green);font-weight:800}
 .term{display:inline;border:0;padding:0;background:transparent;color:inherit;font-weight:800;text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:1.5px;text-underline-offset:4px;cursor:help}
-.tip-box{position:fixed;z-index:140;max-width:min(280px,82vw);padding:11px 13px;border-radius:12px;background:var(--deep);color:#fff;font-size:12.5px;font-weight:500;line-height:1.55;box-shadow:0 14px 32px rgba(0,0,0,.28);opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .16s,transform .16s}
+.tip-box{position:fixed;z-index:140;max-width:min(310px,84vw);padding:11px 13px;border-radius:12px;background:var(--deep);color:#fff;font-size:12.5px;font-weight:500;line-height:1.55;white-space:pre-line;box-shadow:0 14px 32px rgba(0,0,0,.28);opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .16s,transform .16s}
 .tip-box.show{opacity:1;transform:translateY(0)}
 .highlights{background:#fff}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
@@ -138,18 +137,18 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 .stat-term{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;font-size:12px;font-weight:800;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px;cursor:help}
 .path-meta>span:not(.stat-term){padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.09);font-size:12px;color:rgba(255,255,255,.78)}
 .path-result{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:21px;padding:18px 0 0;border-top:1px solid rgba(255,255,255,.15)}
-.path-result b{display:block;font-family:"Bai Jamjuree",system-ui;font-size:18px}
-.path-result p{margin:3px 0 0;color:rgba(255,255,255,.62);font-size:13px}
+.path-result-label{display:block;color:rgba(255,255,255,.5);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.path-result b{display:block;font-family:"Bai Jamjuree",system-ui;font-size:20px;margin-top:2px}
 .path-enter{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 18px;border-radius:13px;background:var(--gold2);color:var(--deep);font-family:"Bai Jamjuree",system-ui;font-weight:800;white-space:nowrap;transition:transform .18s}
 .path-enter:hover{transform:translateY(-2px)}
 .path-enter[aria-disabled="true"]{pointer-events:none;opacity:.42;filter:grayscale(.3)}
 .paths-quiet{margin-top:18px;text-align:center;color:rgba(255,255,255,.6);font-size:13px}
 .paths-quiet a{color:var(--gold2);font-weight:800;text-decoration:underline;text-underline-offset:4px}
-.energy-note{margin-top:22px;padding-top:20px;border-top:1px solid rgba(255,255,255,.13);color:rgba(255,255,255,.7);font-size:14px}
 .rooms{background:linear-gradient(180deg,#fff,var(--paper))}
+.open-world-copy{font-size:clamp(15px,1.6vw,18px);line-height:1.75}
+.game-term{color:var(--green);text-decoration-color:rgba(27,106,66,.55)}
 .room-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:25px}
-.room{padding:19px 20px;border-radius:18px;background:#fff;border:1px solid var(--line);transition:transform .18s,border-color .18s,box-shadow .18s;box-shadow:0 14px 34px -29px rgba(8,28,17,.45)}
-.room:hover{transform:translateY(-4px);border-color:rgba(27,106,66,.36);box-shadow:0 23px 42px -31px rgba(8,28,17,.58)}
+.room{position:relative;padding:19px 48px 19px 20px;border-radius:18px;background:#fff;border:1px solid var(--line);transition:transform .18s,border-color .18s,box-shadow .18s;box-shadow:0 14px 34px -29px rgba(8,28,17,.45)}
+.room::after{content:"→";position:absolute;right:20px;top:50%;transform:translateY(-50%);color:rgba(27,106,66,.42);font-weight:900;transition:transform .18s,color .18s}.room:hover::after{transform:translate(4px,-50%);color:var(--green)}.room:hover{transform:translateY(-4px);border-color:rgba(27,106,66,.36);box-shadow:0 23px 42px -31px rgba(8,28,17,.58)}
 .room b{display:block;font-family:"Bai Jamjuree",system-ui;font-size:18px;margin-bottom:4px}
 .room span{font-size:13px;color:var(--muted)}
 .first{padding:18px 0 clamp(58px,8vw,92px);background:var(--paper)}
@@ -279,7 +278,6 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
         <span class="qgo">ไปทำการ์ด →</span>
       </a>
     </div>
-    <a class="inventory-link" href="collection/">🎒 เปิด <span class="term" tabindex="0" data-tip="Inventory คือกล่องเก็บของของบ้าน แยกจาก Main Quest และรวม Achievement, Badge และของลับที่ปลดได้ทั้งหมด">Inventory</span> ของบ้าน →</a>
   </div>
 </section>
 
@@ -392,23 +390,21 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 
     <div class="path-result" id="pathResult">
       <div>
-        <b id="pathResultTitle">ยังไม่ได้เลือกสาย</b>
-        <p id="pathResultCopy">แตะภาพหนึ่งใบ บ้านจะจำไว้ให้ และคุณเปลี่ยนใจได้ตลอด</p>
+        <span class="path-result-label">สายที่เลือก</span>
+        <b id="pathResultTitle">ยังไม่ได้เลือก</b>
       </div>
       <a class="path-enter" id="pathEnter" href="paths/" aria-disabled="true">เข้าสู่เส้นทาง →</a>
     </div>
 
     <p class="paths-quiet">ยังไม่อยากเลือกก็ไม่เป็นไร — <a href="paths/">เปิดหน้ารวมทั้ง 4 สาย</a> เพื่ออ่านเทียบกันก่อนได้</p>
-
-    <div class="energy-note">แดง เขียว และฟ้า คือพลังพื้นฐานที่ทุกคนมีในสัดส่วนต่างกัน ส่วนสีเทาคือพลังของเครื่องมือที่เรียนรู้และเพิ่มให้ตัวเองได้ การเรียน AI ไม่ได้เปลี่ยนว่าคุณเป็นใคร—มันเพิ่มเครื่องมือให้สิ่งที่คุณเป็นอยู่แล้ว</div>
   </div>
 </section>
 
 <section class="rooms">
   <div class="wrap">
-    <span class="eyebrow">Sub Quest</span>
+    <span class="eyebrow">Sub Quest · Daily Play</span>
     <h2>ถ้าอยากสำรวจต่อ ยังมีห้องอื่นอีก</h2>
-    <p class="sub">ไม่ต้องเก็บทุกอย่างในครั้งเดียว หยิบของที่ตรงกับคุณก่อน แล้วค่อยกลับมาเดินต่อได้</p>
+    <p class="sub open-world-copy">คิดซะว่าบ้าน myclover.com หลังนี้คือเกม <span class="term game-term" tabindex="0" data-tip="Open World คือเกมที่ไม่บังคับให้ทุกคนเดินทางเดียวกัน คุณเลือก Main Quest, Sub Quest หรือห้องที่สนใจก่อนได้ แล้วกลับมาเล่นต่อจากเดิมเมื่อไรก็ได้">Open World</span> — ค่อย ๆ เล่นแค่ <span class="term game-term" tabindex="0" data-tip="10 นาที คือประมาณ 0.7% ของหนึ่งวัน · 70 นาทีต่อสัปดาห์ · ราว 5 ชั่วโมงต่อเดือน&#10;ไม่ต้องเร่งให้จบ ขอแค่กลับมาเล่นต่อทีละนิด">วันละ 10 นาที</span> ก็พอ</p>
     <div class="room-grid">
       <a class="room" href="collection/"><b>🎒 Inventory</b><span>Achievement, Badge และของที่ปลดล็อกแล้ว</span></a>
       <a class="room" href="resume/"><b>🧾 Smart Resume</b><span>เปลี่ยนประสบการณ์ให้กลายเป็นเรื่องที่คนเข้าใจ</span></a>
@@ -551,21 +547,18 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   };
   var pathBtns=Array.prototype.slice.call(document.querySelectorAll(".path-choice"));
   var pathTitle=document.getElementById("pathResultTitle");
-  var pathCopy=document.getElementById("pathResultCopy");
   var pathEnter=document.getElementById("pathEnter");
   function paintPath(key,scroll){
     var data=PATHS[key];
     pathBtns.forEach(function(b){b.setAttribute("aria-pressed",b.dataset.class===key?"true":"false")});
     if(!data){
-      pathTitle.textContent="ยังไม่ได้เลือกสาย";
-      pathCopy.textContent="แตะภาพหนึ่งใบ บ้านจะจำสายนี้ไว้ให้ คุณเปลี่ยนใจได้ตลอด";
+      pathTitle.textContent="ยังไม่ได้เลือก";
       pathEnter.href="paths/";
       pathEnter.setAttribute("aria-disabled","true");
       return;
     }
     try{localStorage.setItem("mc_class",key)}catch(e){}
-    pathTitle.textContent="คุณเลือก "+data.name;
-    pathCopy.textContent=data.copy+" — สายนี้เป็นเพียงจุดเริ่ม ไม่ได้ล็อกทางอื่น";
+    pathTitle.textContent=data.name;
     pathEnter.href=data.url;
     pathEnter.removeAttribute("aria-disabled");
     if(scroll)document.getElementById("pathResult").scrollIntoView({behavior:"smooth",block:"nearest"});
