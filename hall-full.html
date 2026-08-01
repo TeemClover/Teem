@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>โถงทางเดิน | myclover</title>
+<meta name="description" content="โถงทางเดินของ myclover — เลือกสาย สำรวจห้อง และดูเส้นทางทั้งหมดของบ้าน">
+<link rel="canonical" href="https://www.myclover.com/hall.html">
+<meta property="og:title" content="myclover — ใครเจอเรา คนนั้นโชคดี">
+<meta property="og:description" content="#glhf · Good Luck, Have Fun — เพราะโชคดีที่สนุกด้วย คือโชคที่ไปต่อได้ทุกวัน">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.myclover.com/">
+<meta property="og:image" content="https://www.myclover.com/img/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0A2818">
+<style>
+:root{
+  --ink:18 40 28;
+  --paper:248 246 240;
+  --green:27 106 66;
+  --deep:10 40 24;
+  --gold:190 148 66;
+  --muted:96 108 100;
+  --line:18 40 28;
+  --felt:14 62 38;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+[hidden]{display:none!important}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+section{padding:clamp(64px,9vw,110px) 0}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
+
+/* ── แถบความคืบหน้าเวลาเลื่อน ── */
+#prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:900;
+  background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .1s linear}
+
+/* ═══════════ ประตูบ้าน ═══════════ */
+#gate{position:fixed;inset:0;z-index:1000;background:rgb(var(--deep));color:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background-image:radial-gradient(900px 520px at 50% -12%,rgb(27 106 66/.6),transparent 66%),
+                   radial-gradient(620px 420px at 92% 112%,rgb(190 148 66/.18),transparent 62%)}
+#gate .inner{position:relative;z-index:2;text-align:center;max-width:470px;padding:32px 26px;width:100%}
+#gate .clover{display:inline-block;animation:sway 4s ease-in-out infinite;cursor:pointer;user-select:none;
+  filter:drop-shadow(0 10px 24px rgb(0 0 0/.45)) drop-shadow(0 0 18px rgb(111 203 147/.28))}
+#gate .clover svg{display:block}
+@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+#gate h1{font-size:clamp(25px,5vw,33px);font-weight:700;margin-top:18px;line-height:1.3}
+#gate .sub{color:rgb(255 255 255/.76);margin-top:10px;font-size:15.5px}
+#gate .count{display:flex;justify-content:center;gap:10px;margin:26px 0 6px}
+#gate .count div{background:rgb(255 255 255/.07);border:1px solid rgb(255 255 255/.15);border-radius:14px;padding:12px 0;width:84px}
+#gate .count b{font-family:"Bai Jamjuree";font-size:27px;display:block;line-height:1.1}
+#gate .count span{font-size:11.5px;color:rgb(255 255 255/.6)}
+#gate .keyrow{display:flex;gap:10px;margin-top:24px}
+#gate input{flex:1;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.22);border-radius:12px;padding:13px 16px;color:#fff;font-family:"Anuphan";font-size:15.5px;outline:none;transition:.15s}
+#gate input::placeholder{color:rgb(255 255 255/.42)}
+#gate input:focus{border-color:rgb(190 148 66/.85);background:rgb(255 255 255/.13)}
+#gate button{background:rgb(var(--gold));color:rgb(var(--deep));border:0;border-radius:12px;padding:13px 22px;font-family:"Bai Jamjuree";font-weight:700;font-size:15px;cursor:pointer;transition:.15s}
+#gate button:hover{filter:brightness(1.1)}
+#gate .hint{font-size:13px;color:rgb(255 255 255/.5);margin-top:15px;letter-spacing:.02em}
+#gate .wrong{color:#fca5a5;font-size:13.5px;margin-top:10px;min-height:20px}
+#gate.shake .keyrow{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#gate .float{position:absolute;font-size:22px;opacity:.15;animation:rise linear infinite;pointer-events:none}
+@keyframes rise{from{transform:translateY(106vh) rotate(0)}to{transform:translateY(-12vh) rotate(360deg)}}
+#gate .egg{font-size:12.5px;color:rgb(190 148 66/.95);margin-top:16px;display:none}
+body.locked{overflow:hidden}
+#home{visibility:hidden}
+body.open #home{visibility:visible}
+body.open #gate{display:none}
+
+/* ═══════════ nav ═══════════ */
+nav{position:sticky;top:0;z-index:100;background:rgb(var(--paper)/.9);backdrop-filter:blur(12px);border-bottom:1px solid rgb(var(--line)/.08)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:14px}
+.logo{font-family:"Bai Jamjuree";font-weight:700;font-size:18px;white-space:nowrap}
+.logo em{font-style:normal;color:rgb(var(--green))}
+.navlinks{display:flex;gap:20px;font-size:14.5px;font-weight:600;align-items:center}
+.navlinks a{color:rgb(var(--muted));transition:.15s}
+.navlinks a:hover{color:rgb(var(--green))}
+.navlinks .go{background:rgb(var(--green));color:#fff;border-radius:10px;padding:9px 17px}
+.navlinks .go:hover{color:#fff;filter:brightness(1.1)}
+@media(max-width:760px){.navlinks a:not(.go){display:none}}
+
+/* ═══════════ hero ═══════════ */
+.hero{padding:clamp(56px,8vw,96px) 0 clamp(40px,6vw,70px);position:relative;overflow:hidden;
+  background:radial-gradient(760px 420px at 8% -14%,rgb(27 106 66/.13),transparent 62%),
+             radial-gradient(560px 360px at 96% 2%,rgb(190 148 66/.15),transparent 60%)}
+.glhfchip{display:inline-flex;align-items:center;gap:9px;background:rgb(var(--deep));color:#fff;border-radius:999px;
+  padding:8px 18px;font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;letter-spacing:.06em}
+.glhfchip i{font-style:normal;color:rgb(var(--gold))}
+.hero h1{font-size:clamp(38px,7.4vw,72px);font-weight:700;line-height:1.08;margin:20px 0 20px;max-width:15ch}
+.hero h1 em{font-style:normal;color:rgb(var(--green));position:relative;white-space:nowrap}
+.hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.16em;background:rgb(190 148 66/.34);border-radius:4px;z-index:-1}
+.hero .lead{font-size:clamp(16.5px,1.9vw,19px);color:rgb(var(--ink)/.74);max-width:54ch}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:9px;border-radius:13px;padding:15px 26px;font-weight:700;font-size:15.5px;
+  font-family:"Bai Jamjuree";border:1px solid rgb(var(--line)/.14);background:#fff;transition:transform .18s,box-shadow .18s,filter .18s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 18px 34px -20px rgb(18 40 28/.5)}
+.btn-primary{background:rgb(var(--green));border-color:rgb(var(--green));color:#fff}
+.btn-gold{background:rgb(var(--gold));border-color:rgb(var(--gold));color:rgb(var(--deep))}
+.meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:28px}
+.chip{font-size:13px;font-weight:600;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:999px;padding:7px 15px;color:rgb(var(--ink)/.7)}
+
+/* ── ริบบิ้น glhf ── */
+.ribbon{background:rgb(var(--deep));color:rgb(var(--gold));overflow:hidden;padding:13px 0;
+  border-top:1px solid rgb(190 148 66/.25);border-bottom:1px solid rgb(190 148 66/.25)}
+.ribbon .track{display:flex;gap:44px;white-space:nowrap;font-family:"Bai Jamjuree";font-weight:700;font-size:14px;letter-spacing:.18em;
+  animation:slide 32s linear infinite;width:max-content}
+.ribbon span{opacity:.85}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ═══════════ #glhf story ═══════════ */
+.glhf{background:rgb(var(--deep));color:#fff;position:relative;overflow:hidden;
+  background-image:radial-gradient(760px 420px at 12% -10%,rgb(27 106 66/.55),transparent 62%),
+                   radial-gradient(600px 380px at 92% 108%,rgb(190 148 66/.16),transparent 60%)}
+.glhf .eyebrow{color:rgb(var(--gold))}
+.eyebrow{font-family:"Bai Jamjuree";font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--gold))}
+.glhf h2{font-size:clamp(28px,4.6vw,46px);font-weight:700;line-height:1.22;margin:14px 0 20px;max-width:19ch}
+.glhf p{color:rgb(255 255 255/.8);font-size:17px;max-width:56ch}
+.glhf p + p{margin-top:15px}
+.glhf b{color:#fff}
+
+/* ชนหมัดก่อนถึงจะเล่าให้ฟัง — ไม่ยัดเยียดให้อ่านตั้งแต่ยังไม่อยากอ่าน */
+.bump{display:block;width:100%;background:none;border:0;color:inherit;font-family:inherit;
+  margin:34px 0 8px;padding:14px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bump .fists{display:flex;align-items:center;justify-content:center;gap:6px;
+  font-size:clamp(44px,9vw,74px);line-height:1}
+.bump .l,.bump .r{display:inline-block;transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.bump .l{transform:translateX(-46px) rotate(-14deg)}
+.bump .r{transform:translateX(46px) rotate(14deg)}
+.bump:hover .l{transform:translateX(-34px) rotate(-14deg)}
+.bump:hover .r{transform:translateX(34px) rotate(14deg)}
+.bump.hit .l,.bump.hit .r,.bump.hit:hover .l,.bump.hit:hover .r{transform:none}
+.bump .spark{position:relative;width:0;font-size:26px;opacity:0;transition:opacity .3s .55s}
+.bump.hit .spark{opacity:1;animation:sparkPop .7s .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes sparkPop{0%{transform:scale(.3)}55%{transform:scale(1.5)}100%{transform:scale(1)}}
+.bump .tap{display:block;margin-top:14px;font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;
+  letter-spacing:.06em;color:rgb(var(--gold));transition:opacity .3s}
+.bump .tap::after{content:"";display:block;width:34px;height:2px;margin:9px auto 0;border-radius:2px;
+  background:rgb(190 148 66/.55);animation:tapBob 1.6s ease-in-out infinite}
+@keyframes tapBob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(4px);opacity:1}}
+.bump.hit .tap{opacity:0;pointer-events:none}
+.glhfcue{color:rgb(255 255 255/.7);font-size:15.5px;font-family:"Bai Jamjuree";font-weight:600}
+
+/* เนื้อหาซ่อนไว้จนกว่าจะชนหมัด — ถ้า JS ไม่ทำงาน body.js ไม่ถูกใส่ เนื้อหาก็โผล่ตามปกติ */
+body.js .glhfbody{display:grid;grid-template-rows:0fr;opacity:0;
+  transition:grid-template-rows .85s cubic-bezier(.22,1,.36,1),opacity .5s .15s}
+body.js .glhf.opened .glhfbody{grid-template-rows:1fr;opacity:1}
+.glhfbody > .inner{min-height:0;overflow:hidden}
+body.js .glhf.opened .stg{animation:stgIn .65s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--s,0s)}
+@keyframes stgIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+.letters{display:flex;gap:clamp(10px,2.4vw,26px);justify-content:center;flex-wrap:wrap;margin:6px 0 8px}
+.lt{background:rgb(255 255 255/.055);border:1px solid rgb(255 255 255/.14);border-radius:18px;padding:20px 22px;min-width:150px;text-align:center;
+  transition:transform .5s cubic-bezier(.22,1,.36,1),border-color .3s,background .3s}
+.lt:hover{transform:translateY(-6px);border-color:rgb(190 148 66/.5);background:rgb(190 148 66/.08)}
+.lt b{display:block;font-family:"Bai Jamjuree";font-size:clamp(30px,5vw,42px);color:rgb(var(--gold));line-height:1}
+.lt span{display:block;font-size:14px;color:rgb(255 255 255/.72);margin-top:8px}
+.lt small{display:block;font-size:12.5px;color:rgb(255 255 255/.5);margin-top:3px}
+
+.pullq{border-left:3px solid rgb(var(--gold));padding:8px 0 8px 20px;margin:34px 0 0;
+  font-size:clamp(18px,2.4vw,23px);line-height:1.6;color:#fff;max-width:44ch}
+.pullq small{display:block;font-size:13.5px;color:rgb(255 255 255/.55);margin-top:10px;font-family:"Bai Jamjuree";letter-spacing:.04em}
+
+/* ═══════════ 8/8/8 ═══════════ */
+.h2{font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1.24;margin:12px 0 12px}
+.sub{color:rgb(var(--muted));font-size:16.5px;max-width:60ch}
+
+/* วงกลม 24 ชั่วโมง — เส้นรอบวง 2πr = 565.5 · หนึ่งช่วง 8 ชม. = 188.5 (เว้นร่อง 4.5)
+   ขีด 10 นาที = 565.5 × 10/1440 ≈ 3.9 */
+.clockwrap{display:flex;align-items:center;gap:clamp(20px,4vw,44px);margin-top:30px;flex-wrap:wrap}
+.clock{width:clamp(200px,34vw,260px);height:auto;flex:none}
+.clock circle{stroke-linecap:butt}
+.clock .a1{stroke:rgb(var(--ink)/.16);stroke-dasharray:184 381.5;stroke-dashoffset:0}
+.clock .a2{stroke:rgb(var(--deep)/.85);stroke-dasharray:184 381.5;stroke-dashoffset:-188.5}
+.clock .a3{stroke:rgb(var(--gold));stroke-dasharray:184 381.5;stroke-dashoffset:-377}
+.clock .tk{stroke:#fff;stroke-dasharray:3.9 561.6;stroke-dashoffset:-392}
+.clock .cbig{font-family:"Bai Jamjuree";font-weight:700;font-size:44px;fill:rgb(var(--ink));text-anchor:middle}
+.clock .csm{font-family:"Anuphan";font-size:13px;fill:rgb(var(--muted));text-anchor:middle}
+body.js .clockwrap.go .clock .a3{animation:arcIn 1.1s .25s cubic-bezier(.22,1,.36,1) both}
+@keyframes arcIn{from{stroke-dasharray:0 565.5}to{stroke-dasharray:184 381.5}}
+.clegend{list-style:none;display:grid;gap:11px;flex:1;min-width:240px}
+.clegend li{display:grid;grid-template-columns:16px 1fr;gap:0 12px;align-items:start}
+.clegend i{width:14px;height:14px;border-radius:4px;margin-top:6px;grid-row:span 2}
+.clegend .k1{background:rgb(var(--ink)/.16)}
+.clegend .k2{background:rgb(var(--deep)/.85)}
+.clegend .k3{background:rgb(var(--gold))}
+.clegend .k4{background:linear-gradient(90deg,rgb(var(--gold)) 0 38%,#fff 38% 62%,rgb(var(--gold)) 62% 100%)}
+.clegend b{font-size:16px;line-height:1.4}
+.clegend span{font-size:14px;color:rgb(var(--muted));line-height:1.6}
+.clegend .hi{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.3);
+  border-radius:13px;padding:12px 14px;margin-top:3px}
+@media(max-width:700px){.clockwrap{justify-content:center}.clegend{min-width:100%}}
+
+/* ═══════════════════════════════════════════════════════
+   ลูกเล่นของหน้าแรก
+   ทุกอันขยับแค่ transform กับ opacity เท่านั้น เบราว์เซอร์จะได้ไม่ต้องคำนวณ
+   ตำแหน่งใหม่ทั้งหน้า (สาเหตุหลักที่ทำให้เว็บกระตุก)
+   ทุกอันซ่อนเฉพาะตอน body.js — ถ้า JS ไม่ทำงาน เนื้อหาต้องอยู่ครบ
+   ═══════════════════════════════════════════════════════ */
+
+/* ปุ่มอิโมจิที่ใช้ร่วมกันทุกส่วน */
+.tapbtn{display:inline-flex;align-items:center;gap:9px;border:1px solid rgb(var(--green)/.35);
+  background:#fff;color:rgb(var(--ink));border-radius:999px;padding:12px 22px;cursor:pointer;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px;
+  box-shadow:0 10px 24px -16px rgb(18 40 28/.5);transition:transform .18s,box-shadow .18s,border-color .18s}
+.tapbtn:hover{transform:translateY(-2px);border-color:rgb(var(--green));box-shadow:0 16px 30px -16px rgb(18 40 28/.55)}
+.tapbtn:active{transform:translateY(0) scale(.97)}
+.tapbtn .e{font-size:19px;line-height:1;animation:btnNudge 2.4s ease-in-out infinite}
+@keyframes btnNudge{0%,88%,100%{transform:none}92%{transform:translateY(-3px) rotate(-8deg)}96%{transform:translateY(-1px) rotate(5deg)}}
+.tapbtn.gone{display:none}
+.hand-sec .tapbtn{background:rgb(255 255 255/.1);color:#fff;border-color:rgb(255 255 255/.3)}
+.hand-sec .tapbtn:hover{background:rgb(255 255 255/.16);border-color:rgb(var(--gold))}
+
+/* ── นาฬิกา 24 ชม. — วาดวงทีละช่วง ── */
+body.js .clockwrap:not(.go) .clock .a1,body.js .clockwrap:not(.go) .clock .a2,
+body.js .clockwrap:not(.go) .clock .a3{stroke-dasharray:0 565.5}
+body.js .clockwrap.go .clock .a1{animation:arcDraw 1.5s .1s cubic-bezier(.22,1,.36,1) forwards}
+body.js .clockwrap.go .clock .a2{animation:arcDraw 1.5s .55s cubic-bezier(.22,1,.36,1) forwards}
+body.js .clockwrap.go .clock .a3{animation:arcDraw 1.5s 1s cubic-bezier(.22,1,.36,1) forwards}
+@keyframes arcDraw{from{stroke-dasharray:0 565.5}to{stroke-dasharray:184 381.5}}
+/* ขีด 10 นาที — โผล่ทีหลังสุด แล้วกะพริบเป็นสีเขียวเรียกสายตา */
+body.js .clock .tk,body.js .clock .tkhalo{opacity:0}
+body.js .clockwrap.go .clock .tk{animation:tickIn .5s 2.1s cubic-bezier(.34,1.56,.64,1) forwards,
+                                        tickGlow 2.6s 2.6s ease-in-out infinite}
+body.js .clockwrap.go .clock .tkhalo{animation:haloPulse 2.6s 2.6s ease-in-out infinite}
+@keyframes tickIn{from{opacity:0}to{opacity:1}}
+@keyframes tickGlow{0%,100%{stroke:#fff}50%{stroke:rgb(120 230 160)}}
+@keyframes haloPulse{0%,100%{opacity:0;stroke-width:24}45%{opacity:.55;stroke-width:38}}
+.clock .tkhalo{stroke:rgb(120 230 160);stroke-dasharray:3.9 561.6;stroke-dashoffset:-392}
+.clegend .hi{position:relative;overflow:hidden}
+body.js .clockwrap.go .clegend .hi::after{content:"";position:absolute;inset:0;border-radius:13px;
+  background:rgb(120 230 160/.28);opacity:0;animation:hiPulse 2.6s 2.6s ease-in-out infinite;pointer-events:none}
+@keyframes hiPulse{0%,100%{opacity:0}45%{opacity:1}}
+
+/* ── จั่วมือแรก — แจกไพ่ออกจากกอง ── */
+body.js .hand .pc{opacity:0}
+body.js .hand.dealt .pc{animation:dealOut .68s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+@keyframes dealOut{
+  from{opacity:0;transform:translate3d(0,120px,0) rotate(var(--rot,-8deg)) scale(.86)}
+  60% {opacity:1}
+  to  {opacity:1;transform:none}
+}
+.dealrow{display:flex;justify-content:center;margin-top:30px}
+
+/* ── สามด่าน — เส้นเชื่อมค่อย ๆ ลากลง การ์ดไหลเข้า ── */
+.rd .rn{position:relative;overflow:hidden}
+.rd .rn .rem{position:absolute;inset:0;display:grid;place-items:center;font-size:17px;
+  opacity:0;transform:translateY(60%);transition:opacity .3s,transform .45s cubic-bezier(.34,1.56,.64,1)}
+body.js .roadline.go .rd .rn .rem{opacity:1;transform:none;transition-delay:calc(var(--dl,0s) + .25s)}
+body.js .roadline.go .rd .rn i{opacity:0;transition:opacity .25s;transition-delay:calc(var(--dl,0s) + .25s)}
+body.js .roadline .rd{opacity:0}
+body.js .roadline.go .rd{animation:stepIn .6s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+@keyframes stepIn{from{opacity:0;transform:translate3d(-26px,0,0)}to{opacity:1;transform:none}}
+.rd::after{transform:scaleY(0);transform-origin:top}
+body.js .roadline.go .rd::after{animation:lineDrop .4s ease-out both;animation-delay:calc(var(--dl,0s) + .45s)}
+@keyframes lineDrop{to{transform:scaleY(1)}}
+
+/* ── จดหมาย — กดแล้วซองเปิด ── */
+.letterwrap{max-width:760px;margin:34px auto 0}
+.envelope{display:block;width:100%;background:rgb(var(--paper));border:1px solid rgb(var(--line)/.12);
+  border-radius:20px;padding:30px 26px 26px;cursor:pointer;text-align:center;position:relative;
+  box-shadow:0 16px 34px -24px rgb(18 40 28/.5);transition:transform .2s,box-shadow .2s}
+.envelope:hover{transform:translateY(-3px);box-shadow:0 22px 40px -22px rgb(18 40 28/.55)}
+.envelope .flap{font-size:44px;line-height:1;display:block;
+  animation:sealBeat 3s ease-in-out infinite;transform-origin:center}
+@keyframes sealBeat{0%,90%,100%{transform:none}94%{transform:scale(1.14) rotate(-6deg)}97%{transform:scale(1.05)}}
+.envelope b{display:block;font-family:"Bai Jamjuree";font-size:17px;margin-top:12px}
+.envelope small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:4px}
+body.js .letterwrap .letter{display:none}
+body.js .letterwrap.open .letter{display:block;animation:unfold .7s cubic-bezier(.22,1,.36,1) both}
+body.js .letterwrap.open .envelope{display:none}
+@keyframes unfold{from{opacity:0;transform:translate3d(0,-18px,0) scaleY(.9);transform-origin:top}
+                  to{opacity:1;transform:none}}
+body.js .letterwrap.open .letter p{animation:lineUp .5s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+@keyframes lineUp{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+
+/* ── เปิดไพ่ทั้งมือ — พลิกไพ่ทีละใบ ── */
+.og{perspective:1200px}
+.oc{transform-style:preserve-3d;backface-visibility:hidden}
+body.js .og .oc{opacity:0}
+body.js .og.flipped .oc{animation:flipUp .7s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+@keyframes flipUp{
+  from{opacity:0;transform:rotateY(-88deg) translate3d(0,14px,0)}
+  55% {opacity:1}
+  to  {opacity:1;transform:none}
+}
+.oc .ic{display:inline-block;transform-origin:center}
+body.js .og.flipped .oc .ic{animation:icPop .5s cubic-bezier(.34,1.56,.64,1) both;
+  animation-delay:calc(var(--dl,0s) + .35s)}
+@keyframes icPop{from{transform:scale(.4) rotate(-18deg)}to{transform:none}}
+
+
+/* ── แผ่นชวนกด — เนื้อหาอยู่หลังปุ่มนี้ กดแล้วค่อยเล่นแอนิเมชัน ──
+   ไม่มี JS = ไม่โผล่ปุ่มนี้ และเนื้อหาโชว์ตามปกติ */
+.revealer{display:none}
+body.js .revealer{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;
+  margin:34px 0 0;padding:30px 22px;cursor:pointer;text-align:center;color:inherit;
+  font-family:inherit;border:2px dashed rgb(var(--green)/.4);border-radius:22px;
+  background:rgb(27 106 66/.04);
+  transition:transform .2s cubic-bezier(.22,1,.36,1),border-color .2s,background .2s}
+body.js .revealer:hover{transform:translateY(-3px);border-color:rgb(var(--green));background:rgb(27 106 66/.08)}
+body.js .revealer:active{transform:translateY(0) scale(.985)}
+.hand-sec .revealer{border-color:rgb(255 255 255/.32);background:rgb(255 255 255/.06);color:#fff}
+.hand-sec .revealer:hover{border-color:rgb(var(--gold));background:rgb(255 255 255/.11)}
+.revealer .rv-e{font-size:46px;line-height:1;display:block;
+  animation:rvBeat 1.9s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes rvBeat{0%,62%,100%{transform:none}70%{transform:translateY(-9px) scale(1.08)}80%{transform:translateY(0) scale(.97)}88%{transform:translateY(-3px)}}
+.revealer b{font-family:"Bai Jamjuree";font-size:clamp(17px,2.4vw,20px);line-height:1.4;margin-top:4px}
+.revealer small{font-size:13.5px;color:rgb(var(--muted));line-height:1.6;max-width:44ch}
+.hand-sec .revealer small{color:rgb(255 255 255/.66)}
+.revealer .rv-hint{margin-top:11px;font-family:"Bai Jamjuree";font-weight:700;font-size:13px;
+  letter-spacing:.05em;color:rgb(var(--green));
+  border:1px solid rgb(var(--green)/.35);border-radius:999px;padding:7px 17px;
+  animation:rvGlow 1.9s ease-in-out infinite}
+.hand-sec .revealer .rv-hint{color:rgb(var(--gold));border-color:rgb(190 148 66/.5)}
+@keyframes rvGlow{0%,100%{opacity:.62}50%{opacity:1}}
+/* มือถือใช้คำว่าแตะ เมาส์ใช้คำว่าคลิก */
+.tapword::before{content:"แตะ"}
+@media(hover:hover) and (pointer:fine){.tapword::before{content:"คลิก"}}
+.revealer.gone{display:none!important}
+/* ก่อนกด กล่องเนื้อหาต้องยุบไปเลย ไม่งั้นจะเหลือช่องว่างโล่ง ๆ ใต้ปุ่ม */
+body.js .hand:not(.shown),body.js .roadline:not(.shown),
+body.js .og:not(.shown),body.js .clockwrap:not(.shown),
+body.js .pickgrid:not(.shown),body.js .eights:not(.shown){display:none}
+body.js .pickgrid.shown{display:grid}
+body.js .eights.shown{display:grid}
+/* สามใบล่างของนาฬิกาโผล่ตามหลังวงกลม */
+body.js .eights.shown > .eight{animation:stepIn .6s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+/* ปุ่มสายไล่โผล่ทีละใบ */
+body.js .pickgrid.shown > .pk{animation:dealOut .6s cubic-bezier(.22,1,.36,1) both;animation-delay:var(--dl,0s)}
+
+/* ═══════════ ทางที่เราวางไว้ — 3 ด่าน ═══════════ */
+.road{background:linear-gradient(180deg,transparent,rgb(27 106 66/.05))}
+.roadline{list-style:none;display:grid;gap:13px;margin-top:26px;counter-reset:rd}
+.rd{position:relative;display:grid;grid-template-columns:auto 1fr;gap:16px;
+  background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:19px;padding:20px 22px;
+  transition:border-color .2s,box-shadow .2s}
+.rd::after{content:"";position:absolute;left:39px;top:100%;width:2px;height:13px;
+  background:rgb(var(--green)/.25)}
+.rd:last-child::after{display:none}
+.rn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:16px;
+  background:rgb(27 106 66/.1);color:rgb(var(--green))}
+.rd.done{border-color:rgb(27 106 66/.4);background:rgb(27 106 66/.04)}
+.rd.done .rn{background:rgb(var(--green));color:#fff;font-size:0}
+.rd.done .rn::after{content:"✓";font-size:18px}
+.rd b{font-family:"Bai Jamjuree";font-size:17px;line-height:1.4;display:block}
+.rd p{font-size:14.5px;color:rgb(var(--muted));margin-top:5px;line-height:1.7}
+.rbar{height:7px;border-radius:99px;background:rgb(var(--ink)/.08);overflow:hidden;margin-top:13px}
+.rbar i{display:block;height:100%;width:0;border-radius:99px;background:rgb(var(--green));
+  transition:width .8s cubic-bezier(.22,1,.36,1)}
+.rmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.rst{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(var(--green));
+  background:rgb(27 106 66/.09);border-radius:99px;padding:5px 12px}
+.rst.is-done{background:rgb(var(--green));color:#fff}
+.rgo{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--green));
+  margin-left:auto;white-space:nowrap}
+.rd:hover{border-color:rgb(var(--green)/.45);box-shadow:0 16px 32px -22px rgb(18 40 28/.4)}
+.rprize{display:flex;gap:9px;flex-wrap:wrap;margin-top:11px}
+.rprize span{font-size:12.5px;font-weight:700;font-family:"Bai Jamjuree";
+  border:1px solid rgb(190 148 66/.45);color:rgb(var(--gold));border-radius:99px;padding:5px 12px}
+/* ป้ายด่านบอส — เผยแบบสงบ ไม่ให้ layout กระโดดจนคนงง */
+.rboss{margin-top:11px;font-size:13px;line-height:1.75;border:1px solid rgb(190 148 66/.5);
+  border-radius:12px;padding:10px 13px;background:rgb(190 148 66/.09);color:rgb(var(--ink))}
+/* ภาพเปิดตัวด่าน — โผล่พร้อมกล่องนี้ตอนเรียนครบ โหลดแบบ lazy
+   คนที่ยังเรียนไม่ครบ กล่องถูกซ่อนอยู่ ภาพจึงไม่ถูกโหลด */
+.rboss .rart{display:block;margin:-2px 0 11px;max-width:460px;border-radius:10px;overflow:hidden;
+  border:1px solid rgb(190 148 66/.4);box-shadow:0 16px 34px -26px rgb(10 40 24/.9)}
+.rboss .rart img{width:100%;height:auto;display:block}
+/* .rd b เป็น block อยู่แล้ว หัวข้อนี้เลยขึ้นบรรทัดของตัวเอง — เอาอีโมจิไว้ในนั้นด้วย
+   จะได้ไม่ค้างเป็นตัวเดียวโดด ๆ บนบรรทัดก่อนหน้า */
+.rboss b{font-family:"Bai Jamjuree";letter-spacing:.06em;color:rgb(var(--gold));font-size:14px;margin-bottom:2px}
+.rboss a{font-family:"Bai Jamjuree";font-weight:700;color:rgb(var(--green));white-space:nowrap}
+.roadnote{margin-top:18px;font-size:14px;color:rgb(var(--muted));text-align:center}
+@media(max-width:520px){
+  .rd{grid-template-columns:1fr;gap:10px}
+  .rd::after{left:22px}
+  .rgo{margin-left:0}
+}
+
+/* ═══════════ ด่านเลือกสาย ═══════════ */
+.picker{background:
+  radial-gradient(680px 340px at 8% -12%,rgb(27 106 66/.09),transparent 62%),
+  radial-gradient(520px 320px at 96% 108%,rgb(190 148 66/.11),transparent 60%)}
+.pickgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:28px}
+@media(max-width:640px){.pickgrid{grid-template-columns:1fr}}
+@media(min-width:1000px){.pickgrid{grid-template-columns:repeat(4,1fr)}}
+.pk{display:flex;flex-direction:column;gap:7px;text-align:left;width:100%;cursor:pointer;
+  background:rgb(var(--paper2,255 255 255));border:2px solid rgb(var(--ink)/.1);border-radius:17px;
+  padding:19px 18px;font-family:inherit;color:inherit;line-height:1.6;
+  transition:transform .18s,box-shadow .18s,border-color .18s,background .18s}
+.pk:hover{transform:translateY(-3px);box-shadow:0 20px 38px -24px rgb(18 40 28/.5);border-color:var(--ac)}
+.pk .e{font-size:27px;line-height:1}
+.pk b{font-family:"Bai Jamjuree";font-size:16px;line-height:1.35;color:rgb(var(--ink))}
+.pk span:not(.e){font-size:13px;color:rgb(var(--muted))}
+.pk[aria-pressed="true"]{border-color:var(--ac);background:var(--acbg)}
+.pk[aria-pressed="true"] b{color:var(--ac)}
+
+.picked{display:none;margin-top:22px;background:#fff;border:1px solid rgb(var(--ink)/.1);
+  border-radius:20px;padding:clamp(20px,3.4vw,28px);box-shadow:0 22px 46px -32px rgb(18 40 28/.55)}
+.picked.on{display:block;animation:pickIn .38s ease both}
+@keyframes pickIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.picked .top{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.picked .top .e{font-size:26px;line-height:1}
+.picked .top b{font-family:"Bai Jamjuree";font-size:clamp(18px,3vw,22px);flex:1;min-width:0}
+.swap{background:none;border:1px solid rgb(var(--ink)/.16);border-radius:999px;color:rgb(var(--muted));
+  font-family:"Bai Jamjuree";font-weight:600;font-size:12.5px;padding:8px 15px;cursor:pointer;
+  min-height:38px;white-space:nowrap;transition:.15s}
+.swap:hover{border-color:rgb(var(--green));color:rgb(var(--green))}
+.picked .lead{margin-top:12px;font-size:15.5px;color:rgb(var(--ink)/.8);line-height:1.75}
+.gifts{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:20px}
+@media(max-width:760px){.gifts{grid-template-columns:1fr}}
+.gift{display:flex;flex-direction:column;gap:4px;background:rgb(27 106 66/.05);
+  border:1px solid rgb(27 106 66/.16);border-radius:14px;padding:15px 17px;
+  transition:transform .18s,border-color .18s,background .18s}
+.gift:hover{transform:translateY(-2px);border-color:rgb(var(--green));background:rgb(27 106 66/.09)}
+.gift b{font-family:"Bai Jamjuree";font-size:15px;line-height:1.4}
+.gift small{font-size:12.5px;color:rgb(var(--muted));line-height:1.6}
+.gift::after{content:"เปิดดู →";font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
+  color:rgb(var(--green));margin-top:6px}
+.fullpath{display:block;margin-top:14px;text-align:center;background:var(--ac,rgb(var(--green)));
+  color:#fff;border-radius:13px;padding:14px 20px;font-weight:700;font-size:14.5px;line-height:1.5;
+  transition:transform .18s,box-shadow .18s}
+.fullpath:hover{transform:translateY(-2px);box-shadow:0 16px 32px -18px rgb(18 40 28/.55)}
+.pickmore{margin-top:18px;text-align:center;font-size:14px;color:rgb(var(--muted))}
+.pickmore a{color:rgb(var(--green));font-weight:700}
+.eights{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+@media(max-width:760px){.eights{grid-template-columns:1fr}}
+.eight{background:#fff;border:1px solid rgb(var(--line)/.09);border-radius:20px;padding:28px;transition:transform .2s,box-shadow .2s}
+.eight:hover{transform:translateY(-4px);box-shadow:0 22px 44px -28px rgb(18 40 28/.45)}
+.eight .n{font-family:"Bai Jamjuree";font-size:50px;font-weight:700;color:rgb(var(--ink)/.14);line-height:1}
+.eight.hl{background:rgb(var(--deep));color:#fff;border-color:rgb(var(--deep))}
+.eight.hl .n{color:rgb(190 148 66/.9)}
+.eight b{font-size:17.5px;display:block;margin:12px 0 7px;font-family:"Bai Jamjuree"}
+.eight p{font-size:14.5px;color:rgb(var(--muted))}
+.eight.hl p{color:rgb(255 255 255/.76)}
+
+/* ═══════════ มือแรก (การ์ด hub) ═══════════ */
+.hand-sec{background:rgb(var(--felt));color:#fff;position:relative;overflow:hidden;
+  background-image:radial-gradient(760px 400px at 50% -20%,rgb(27 106 66/.6),transparent 62%),
+    repeating-linear-gradient(45deg,rgb(255 255 255/.014) 0 2px,transparent 2px 5px)}
+.hand-sec .h2{color:#fff}
+.hand-sec .sub{color:rgb(255 255 255/.68)}
+.hand-sec .wrap{max-width:1260px}
+.hand{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:44px;perspective:1400px}
+.pc{position:relative;width:clamp(152px,15.8vw,188px);background:rgb(var(--paper));color:rgb(var(--ink));
+  border-radius:18px;padding:20px 18px 18px;border:2px solid rgb(255 255 255/.16);
+  box-shadow:0 26px 46px -26px rgb(0 0 0/.65);display:flex;flex-direction:column;gap:7px;
+  transform-style:preserve-3d;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s}
+.pc:hover{box-shadow:0 34px 60px -26px rgb(0 0 0/.7);z-index:3}
+.pc .top{display:flex;align-items:center;justify-content:space-between;font-family:"Bai Jamjuree";font-size:11px;font-weight:700;
+  letter-spacing:.1em;color:rgb(var(--muted))}
+.pc .art{font-size:42px;line-height:1;margin:10px 0 6px;filter:drop-shadow(0 6px 12px rgb(18 40 28/.22))}
+/* ช่องรูปการ์ด: วางไฟล์ตาม IMAGES.md แล้วขึ้นเอง ถ้าไม่มีไฟล์อิโมจิจะโชว์แทน ไม่มีรูปแตก */
+.pc .art img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:11px;margin-bottom:2px;
+  box-shadow:0 8px 20px -12px rgb(0 0 0/.55)}
+.pc .art img + .emo{display:none}
+.pc.locked .art img{opacity:.9}
+.pc h3{font-family:"Bai Jamjuree";font-size:17.5px;line-height:1.3}
+.pc p{font-size:13px;color:rgb(var(--muted));flex:1}
+.pc .go{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--green));margin-top:6px}
+.pc .prg{align-self:flex-start;margin-top:6px;font-family:"Bai Jamjuree";font-weight:700;font-size:11px;
+  color:rgb(var(--gold));background:rgb(190 148 66/.14);border:1px solid rgb(190 148 66/.35);
+  border-radius:999px;padding:3px 9px}
+.pc .prg.is-done{color:rgb(var(--green));background:rgb(27 106 66/.12);border-color:rgb(27 106 66/.4)}
+.pc.match{box-shadow:0 0 0 3px rgb(190 148 66/.85),0 26px 46px -26px rgb(0 0 0/.65)}
+.pc.match::after{content:"ตรงกับสายคุณ";position:absolute;left:50%;bottom:-11px;transform:translateX(-50%);
+  background:rgb(var(--gold));color:rgb(var(--deep));font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;
+  border-radius:999px;padding:3px 11px;white-space:nowrap;box-shadow:0 6px 14px -6px rgb(0 0 0/.55)}
+.pc .free{position:absolute;top:-9px;right:-6px;background:rgb(var(--gold));color:rgb(var(--deep));font-family:"Bai Jamjuree";
+  font-weight:700;font-size:10.5px;border-radius:7px;padding:3px 9px;letter-spacing:.04em;box-shadow:0 6px 14px -6px rgb(0 0 0/.5)}
+
+/* การ์ดกิลด์ที่ยังล็อกโซ่ */
+.pc.locked{background:rgb(8 32 19);color:#fff;border-color:rgb(190 148 66/.3)}
+.pc.locked .top,.pc.locked p{color:rgb(255 255 255/.55)}
+.pc.locked h3{color:rgb(var(--gold))}
+.pc.locked .go{color:rgb(var(--gold))}
+.chain{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding-top:74px;
+  background:linear-gradient(rgb(4 18 11/.42),rgb(4 18 11/.12));border-radius:16px;
+  transition:opacity .7s ease,transform .7s cubic-bezier(.3,1.4,.5,1)}
+.chain span{display:inline-flex;align-items:center;gap:7px;font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
+  color:rgb(var(--gold));letter-spacing:.06em;background:rgb(4 18 11/.94);border:1.5px solid rgb(190 148 66/.55);
+  border-radius:999px;padding:7px 15px;transform:rotate(-7deg);box-shadow:0 12px 26px -10px rgb(0 0 0/.8)}
+.pc.released .chain{opacity:0;transform:translateY(26px) rotate(9deg);pointer-events:none}
+.pc.locked .glow{position:absolute;inset:-2px;border-radius:18px;pointer-events:none;opacity:0;
+  box-shadow:0 0 0 2px rgb(190 148 66/.7),0 0 34px 6px rgb(190 148 66/.35);transition:opacity .8s .3s}
+.pc.released .glow{opacity:1}
+.hand-note{text-align:center;margin-top:30px;font-size:13.5px;color:rgb(255 255 255/.55)}
+
+/* ── แถบ 6 คลาส ── */
+.lessons{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:34px}
+@media(max-width:820px){.lessons{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.lessons{grid-template-columns:1fr}}
+.ls{background:rgb(255 255 255/.06);border:1px solid rgb(255 255 255/.13);border-radius:14px;padding:15px 17px;
+  display:flex;gap:12px;align-items:flex-start;transition:.18s}
+.ls:hover{background:rgb(255 255 255/.11);border-color:rgb(190 148 66/.45);transform:translateY(-3px)}
+.ls .lv{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;color:rgb(var(--gold));flex:none;padding-top:3px;letter-spacing:.05em}
+.ls b{display:block;font-family:"Bai Jamjuree";font-size:14.5px;color:#fff}
+.ls small{display:block;font-size:12px;color:rgb(255 255 255/.58);margin-top:1px}
+
+/* ═══════════ จดหมาย ═══════════ */
+.letter-sec{background:
+  radial-gradient(620px 340px at 88% -10%,rgb(190 148 66/.13),transparent 60%)}
+.letter{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:22px;padding:clamp(28px,5vw,52px);padding-top:clamp(48px,6vw,62px);
+  box-shadow:0 3px 10px rgb(18 40 28/.05);max-width:760px;margin:34px auto 0;position:relative}
+.letter .seal{position:absolute;top:-28px;left:clamp(24px,5vw,48px);width:58px;height:58px;border-radius:50%;
+  background:#fff;border:2px solid rgb(190 148 66/.5);display:grid;place-items:center;
+  box-shadow:0 12px 26px -14px rgb(18 40 28/.55)}
+.letter .seal svg{width:33px;height:34px;display:block}
+.letter p{font-size:16.5px;margin:15px 0;color:rgb(var(--ink)/.84)}
+.letter p:first-of-type{margin-top:0}
+.letter b{color:rgb(var(--green))}
+.sign{margin-top:26px;font-family:"Bai Jamjuree";font-weight:700;font-size:16px}
+.sign small{display:block;font-family:"Anuphan";font-weight:400;font-size:13.5px;color:rgb(var(--muted));margin-top:3px}
+
+/* ═══════════ เปิดไพ่ทั้งมือ ═══════════ */
+.open-sec{background:rgb(27 106 66/.055);border-top:1px solid rgb(var(--line)/.07);border-bottom:1px solid rgb(var(--line)/.07)}
+.og{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px}
+@media(max-width:820px){.og{grid-template-columns:1fr}}
+.oc{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:18px;padding:24px 26px}
+.oc .ic{font-size:24px}
+.oc b{display:block;font-family:"Bai Jamjuree";font-size:16.5px;margin:11px 0 7px}
+.oc p{font-size:14px;color:rgb(var(--muted))}
+.oc.warm{background:rgb(var(--deep));color:#fff;border-color:rgb(var(--deep))}
+.oc.warm p{color:rgb(255 255 255/.76)}
+
+/* ═══════════ ลงทะเบียน ═══════════ */
+.join{text-align:center}
+.join .h2{max-width:20ch;margin-left:auto;margin-right:auto}
+.join .sub{margin:0 auto}
+.joinbox{background:rgb(var(--deep));color:#fff;border-radius:26px;padding:clamp(32px,5vw,56px);margin-top:36px;
+  background-image:radial-gradient(560px 280px at 12% -30%,rgb(27 106 66/.6),transparent 62%),
+                   radial-gradient(420px 240px at 92% 120%,rgb(190 148 66/.2),transparent 60%)}
+.joinbox h3{font-family:"Bai Jamjuree";font-size:clamp(23px,3.4vw,32px);line-height:1.3;margin-bottom:12px}
+.joinbox p{color:rgb(255 255 255/.78);font-size:16px;max-width:48ch;margin:0 auto}
+.joinbox .cta-row{justify-content:center}
+/* ปุ่มพื้นขาวอยู่บนกล่องเขียวเข้ม ต้องบังคับสีตัวอักษร ไม่งั้นสืบทอดสีขาวมาแล้วอ่านไม่ออก */
+.joinbox .btn{color:rgb(var(--ink))}
+.joinbox .btn-gold{color:rgb(var(--deep))}
+
+/* ═══════════ footer ═══════════ */
+footer{text-align:center;padding:52px 0 60px;color:rgb(var(--muted));font-size:13px}
+.foot-links{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;margin:16px 0 20px;font-weight:600}
+.foot-links a{color:rgb(var(--green))}
+/* โคลเวอร์ลับท้ายหน้า — 1 ใน 10 ต่อการกดหนึ่งครั้ง */
+.clover-foot{font-size:34px;line-height:1;display:inline-block;cursor:pointer;user-select:none;
+  background:none;border:0;padding:6px 10px;border-radius:50%;transition:transform .3s}
+.clover-foot:hover{transform:rotate(14deg) scale(1.1)}
+.clover-foot:focus-visible{outline:2px solid rgb(var(--gold));outline-offset:3px}
+.clover-foot.pop{animation:cvPop .42s cubic-bezier(.22,1,.36,1)}
+.clover-foot.won{filter:drop-shadow(0 0 14px rgb(190 148 66/.85))}
+.clover-foot.winpop{animation:cvWin .9s cubic-bezier(.22,1,.36,1)}
+@keyframes cvPop{0%{transform:scale(1)}42%{transform:scale(1.28) rotate(-12deg)}100%{transform:scale(1)}}
+@keyframes cvWin{0%{transform:scale(1)}30%{transform:scale(1.55) rotate(16deg)}60%{transform:scale(1.15) rotate(-8deg)}100%{transform:scale(1)}}
+.sec-help{font-size:12.5px;color:rgb(var(--muted));margin-top:2px}
+.sec-n{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;margin-top:7px;color:rgb(var(--muted))}
+.sec-n b{font-size:21px;color:rgb(var(--ink))}
+.sec-n.won{color:rgb(var(--gold))}
+.sec-n.won b{color:rgb(var(--gold));font-size:25px}
+.egg2{display:none;color:rgb(var(--gold));font-weight:600;margin:12px auto 0;font-size:13px;max-width:46ch;line-height:1.65}
+
+/* ═══════════ reveal ═══════════ */
+body.js .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+body.js .reveal.in{opacity:1;transform:none}
+body.js .reveal[style*="--d"]{transition-delay:var(--d)}
+@media(prefers-reduced-motion:reduce){
+  body.js .reveal{opacity:1;transform:none;transition:none}
+  .ribbon .track{animation:none}
+  #gate .clover,#gate .float{animation:none}
+  .btn:hover,.eight:hover,.pc:hover,.ls:hover,.lt:hover{transform:none}
+  .bump .l,.bump .r,.bump:hover .l,.bump:hover .r{transform:none;transition:none}
+  .bump .tap::after{animation:none}
+  .bump.hit .spark{animation:none}
+  .clover-foot,.clover-foot.pop,.clover-foot.winpop,.clover-foot:hover{animation:none;transform:none}
+  body.js .glhfbody{transition:none}
+  body.js .glhf.opened .stg{animation:none}
+  /* คนที่ตั้งค่าเครื่องว่าไม่อยากเห็นภาพขยับ — โชว์ผลลัพธ์เลย ไม่ต้องมีแอนิเมชัน */
+  body.js .hand .pc,body.js .hand.dealt .pc,
+  body.js .roadline .rd,body.js .roadline.go .rd,
+  body.js .og .oc,body.js .og.flipped .oc{opacity:1;transform:none;animation:none}
+  body.js .clockwrap .clock .a1,body.js .clockwrap .clock .a2,
+  body.js .clockwrap .clock .a3{stroke-dasharray:184 381.5;animation:none}
+  body.js .hand.shown,body.js .og.shown{display:flex}
+  body.js .eights.shown > .eight,body.js .pickgrid.shown > .pk{animation:none;opacity:1;transform:none}
+  body.js .roadline.shown,body.js .clockwrap.shown{display:block}
+  .revealer .rv-e,.revealer .rv-hint{animation:none}
+  body.js .revealer:hover{transform:none}
+  body.js .clock .tk{opacity:1;animation:none}
+  body.js .clock .tkhalo{opacity:0;animation:none}
+  body.js .clockwrap.go .clegend .hi::after{animation:none}
+  body.js .roadline.go .rd .rn .rem,body.js .roadline.go .rd::after{animation:none;transition:none}
+  body.js .letterwrap.open .letter,body.js .letterwrap.open .letter p,
+  body.js .og.flipped .oc .ic{animation:none}
+  .tapbtn .e,.envelope .flap{animation:none}
+  .rd::after{transform:none}
+  .rd .rn .rem{position:static;opacity:1;transform:none}
+  .rd .rn i{display:none}
+}
+</style>
+<link rel="stylesheet" href="/assets/readable.css">
+</head>
+<body class="locked">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="cvg" x1="0" y1="0" x2=".8" y2="1">
+    <stop offset="0" stop-color="#7FD8A2"/><stop offset=".45" stop-color="#31955C"/><stop offset="1" stop-color="#0E4A2C"/>
+  </linearGradient>
+  <path id="cvl" d="M0 0 C -5 -9 -19 -11 -19 -23 C -19 -32 -10 -35 -4.5 -29.5 C -2.5 -27.5 -1 -26.5 0 -24.5 C 1 -26.5 2.5 -27.5 4.5 -29.5 C 10 -35 19 -32 19 -23 C 19 -11 5 -9 0 0 Z"/>
+  <g id="clover-mark">
+    <path d="M0 16 C 5 30 2 42 -7 50" stroke="#2C8A55" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    <g fill="url(#cvg)" stroke="#0E4A2C" stroke-width="1.2" stroke-linejoin="round" transform="rotate(45)">
+      <use href="#cvl"/><use href="#cvl" transform="rotate(90)"/>
+      <use href="#cvl" transform="rotate(180)"/><use href="#cvl" transform="rotate(270)"/>
+    </g>
+  </g>
+</defs></svg>
+
+<div id="prog"></div>
+
+<!-- ═══════════ ประตูบ้าน ═══════════ -->
+<div id="gate">
+  <div class="inner">
+    <span class="clover" id="gateClover" role="img" aria-label="โคลเวอร์สี่แฉก" title="ลองกดดูสี่ครั้ง"><svg viewBox="-52 -50 104 108" width="80" height="83" aria-hidden="true"><use href="#clover-mark"/></svg></span>
+    <h1 class="disp">บ้านหลังนี้เปิดอีกครั้ง<br>8 สิงหาคม</h1>
+    <p class="sub">ใครมีกุญแจ เข้าก่อนได้เลย</p>
+    <div class="count" aria-live="polite">
+      <div><b id="cd">–</b><span>วัน</span></div>
+      <div><b id="ch">–</b><span>ชั่วโมง</span></div>
+      <div><b id="cm">–</b><span>นาที</span></div>
+      <div><b id="cs">–</b><span>วินาที</span></div>
+    </div>
+    <form class="keyrow" id="keyForm">
+      <input type="password" id="keyInput" placeholder="ถ้าคุณมีกุญแจบ้าน…" autocomplete="off" aria-label="กุญแจบ้าน">
+      <button type="submit" class="disp">เปิดประตู</button>
+    </form>
+    <div class="wrong" id="wrongMsg" role="status" aria-live="polite"></div>
+    <p class="hint">ใครเจอเรา คนนั้นโชคดี</p>
+    <p class="egg" id="gateEgg">🍀 ช่างสังเกตนี่ — ในบ้านมีโคลเวอร์อีกใบซ่อนอยู่ที่ท้ายหน้าแรก กดได้ทีละครั้ง เจอจริงประมาณ 1 ใน 10</p>
+  </div>
+</div>
+
+<!-- ═══════════ บ้าน ═══════════ -->
+<div id="home">
+
+<nav><div class="wrap">
+  <a class="logo disp" href="#top">🍀 my<em>clover</em></a>
+  <div class="navlinks">
+    <a href="#glhf">#glhf</a>
+    <a href="forge/">การ์ตูน</a>
+    <a href="#hand">ห้องในบ้าน</a>
+    <a href="club/">club</a>
+    <a href="#open">เปิดไพ่ทั้งมือ</a>
+    <a class="go disp" href="card/#register">ลงทะเบียน</a>
+  </div>
+</div></nav>
+
+<!-- ── hero ── -->
+<header class="hero" id="top"><div class="wrap">
+  <span class="glhfchip disp reveal"><i>#</i>glhf · Good Luck, Have Fun</span>
+  <h1 class="disp reveal" style="--d:.08s">ใครเจอเรา<br>คนนั้น<em>โชคดี</em></h1>
+    <p class="lead reveal" style="--d:.16s">เริ่มสร้างผลลัพธ์ชิ้นแรกด้วย AI ได้ใน <b>10 นาที</b> จากห้องเรียนฟรี 6 บท ก่อนเริ่ม เราแนะนำให้<b>อ่านการ์ตูน WHY AI?</b> — เพื่อดูว่า AI <b>คืนเวลาชีวิต</b>ให้คุณได้อย่างไร</p>
+
+  <div class="cta-row reveal" style="--d:.24s">
+    <a class="btn btn-primary disp" href="forge/">📖 อ่าน WHY AI? ก่อนเริ่ม →</a>
+    <a class="btn btn-primary disp" href="classroom/">⚡ เริ่มเรียน AI ฟรี 6 บท →</a>
+    <a class="btn disp" data-mc-continue="forge:forge/" href="forge/" hidden>▶ อ่านการ์ตูนต่อจากที่ค้างไว้</a>
+  </div>
+
+  <div class="meta reveal" style="--d:.3s">
+    <span class="chip">⏱️ เริ่มใช้ได้ใน 10 นาที</span>
+    <span class="chip">🍀 เรียนฟรีตลอดชีพ</span>
+    <span class="chip">📖 การ์ตูน 7 ตอนจบ</span>
+  </div>
+</div></header>
+
+
+<!-- ── ด่านเลือกสาย ── -->
+<section class="picker" id="pick"><div class="wrap">
+  <span class="eyebrow reveal">เลือกได้ ไม่เลือกก็ได้</span>
+  <h2 class="h2 disp reveal" style="--d:.05s">วันนี้อะไรพามาที่นี่?</h2>
+  <p class="sub reveal" style="--d:.09s">เลือกอันที่ใกล้ตัวที่สุด เดี๋ยวเราหยิบของในบ้านที่ตรงกับคุณมาวางให้ — เปลี่ยนใจทีหลังได้ตลอด และห้องอื่นก็ยังเข้าได้เหมือนเดิมทุกห้อง</p>
+  <button type="button" class="revealer" data-reveal="pickGrid" data-ga="reveal:picker">
+    <span class="rv-e" aria-hidden="true">🧭</span>
+    <b class="disp"><span class="tapword"></span>เพื่อเลือกสายของคุณ</b>
+    <small>สี่สาย เลือกอันที่ใกล้ตัวที่สุด แล้วเราจะหยิบของในบ้านที่ตรงกับคุณมาวางให้</small>
+    <span class="rv-hint" aria-hidden="true">เลือกสาย ▸</span>
+  </button>
+  <div class="pickgrid" id="pickGrid"></div>
+  <div class="picked" id="picked"></div>
+  <p class="pickmore reveal" style="--d:.13s">ยังไม่แน่ใจว่าตัวเองสายไหน? <a href="paths/">อ่านทั้งสี่สายแบบเต็ม →</a></p>
+</div></section>
+
+<!-- ── ริบบิ้น ── -->
+<div class="ribbon" aria-hidden="true"><div class="track">
+  <span>GOOD LUCK · HAVE FUN</span><span>🍀</span><span>ใครเจอเรา คนนั้นโชคดี</span><span>🍀</span>
+  <span>GOOD LUCK · HAVE FUN</span><span>🍀</span><span>ใครเจอเรา คนนั้นโชคดี</span><span>🍀</span>
+  <span>GOOD LUCK · HAVE FUN</span><span>🍀</span><span>ใครเจอเรา คนนั้นโชคดี</span><span>🍀</span>
+  <span>GOOD LUCK · HAVE FUN</span><span>🍀</span><span>ใครเจอเรา คนนั้นโชคดี</span><span>🍀</span>
+</div></div>
+
+<!-- ── #glhf ── -->
+<section class="glhf" id="glhf"><div class="wrap">
+  <span class="eyebrow reveal">คำอวยพรของพวกเรา</span>
+  <h2 class="disp reveal" style="--d:.06s">ก่อนเกมจะเริ่ม<br>เราชนหมัดกัน แล้วพูดคำเดียวกัน</h2>
+
+  <p class="glhfcue reveal" style="--d:.09s" id="glhfCue">ยังไม่ต้องอ่านอะไรตอนนี้ — เอามือมาชนกันก่อน แล้วเดี๋ยวเล่าให้ฟัง</p>
+
+  <button type="button" class="bump reveal" style="--d:.12s" id="bump" data-ga="fist_bump" aria-expanded="false" aria-controls="glhfBody">
+    <span class="fists" aria-hidden="true"><span class="l">🤜</span><span class="spark">✨</span><span class="r">🤛</span></span>
+    <span class="tap disp">แตะเพื่อชนหมัดกับเรา</span>
+  </button>
+
+  <div class="glhfbody" id="glhfBody"><div class="inner">
+    <div class="letters stg" style="--s:.05s">
+      <div class="lt"><b class="disp">GL</b><span>Good Luck</span><small>ขอให้โชคดีนะ</small></div>
+      <div class="lt"><b class="disp">HF</b><span>Have Fun</span><small>แล้วก็ขอให้สนุกด้วย</small></div>
+    </div>
+
+    <p class="stg" style="--s:.16s">เกมเมอร์ทั้งโลกพูดคำนี้ก่อนเริ่มเกม และที่สวยที่สุดคือ — <b>เราพูดกับคู่แข่งด้วย</b> ไม่ใช่แค่กับเพื่อนร่วมทีม ชนหมัดกันเบา ๆ ยิ้มให้กัน แล้วค่อยจั่วไพ่มือแรก</p>
+    <p class="stg" style="--s:.24s">มันเป็นการบอกอีกฝ่ายว่า <b>“ฉันอยากให้เธอเล่นได้เต็มที่”</b> เพราะเกมที่ดีไม่ได้แปลว่าต้องมีใครแพ้ยับ แต่แปลว่าทั้งสองฝั่งได้เล่นเกมที่ดีที่สุดของตัวเอง</p>
+    <p class="stg" style="--s:.32s">เราเลยอยากส่งต่อวัฒนธรรมนี้ออกไปนอกโต๊ะการ์ด — <b>อยากให้คนที่เดินมาเจอเรา โชคดี และสนุก</b></p>
+
+    <div class="pullq disp stg" style="--s:.4s">
+      เพราะโชคดีเฉย ๆ มันจบเร็ว<br>แต่โชคดีที่<b>สนุก</b>ด้วย มันไปต่อได้ทุกวัน ไม่มีเบื่อ
+      <small>— นี่คือเหตุผลที่บ้านหลังนี้มีอยู่</small>
+    </div>
+  </div></div>
+</div></section>
+
+<!-- ── 8/8/8 ── -->
+<section><div class="wrap">
+  <span class="eyebrow reveal">ปรัชญาของบ้าน</span>
+  <h2 class="h2 disp reveal" style="--d:.06s">⏳ วันหนึ่งมี 24 ชั่วโมง<br>แต่มีอยู่ 8 ที่เปลี่ยนชีวิตได้</h2>
+  <p class="sub reveal" style="--d:.1s">ทุกคนได้เวลาเท่ากันหมด สิ่งที่ทำให้ชีวิตเราต่างกันคือเราทำอะไรกับ 8 ชั่วโมงที่เหลือ</p>
+
+  <button type="button" class="revealer" data-reveal="clockWrap" data-ga="reveal:clock">
+    <span class="rv-e" aria-hidden="true">⏳</span>
+    <b class="disp"><span class="tapword"></span>เพื่อดูว่าวันหนึ่งหายไปกับอะไรบ้าง</b>
+    <small>วงกลม 24 ชั่วโมง แบ่งให้เห็นว่าเหลือเป็นของเราจริง ๆ กี่ชั่วโมง และเราขอแค่ไหนจากตรงนั้น</small>
+    <span class="rv-hint" aria-hidden="true">กดตรงนี้ ▸</span>
+  </button>
+  <div class="clockwrap reveal" id="clockWrap" style="--d:.14s">
+    <svg class="clock" viewBox="0 0 240 240" role="img"
+         aria-label="วงกลม 24 ชั่วโมง แบ่งเป็นทำงาน 8 ชั่วโมง นอน 8 ชั่วโมง และเป็นของเราอีก 8 ชั่วโมง โดยมีขีดเล็ก ๆ แทน 10 นาทีแรกของช่วงที่เป็นของเรา">
+      <g transform="rotate(-90 120 120)" fill="none" stroke-width="24">
+        <circle class="a1" cx="120" cy="120" r="90"/>
+        <circle class="a2" cx="120" cy="120" r="90"/>
+        <circle class="a3" cx="120" cy="120" r="90"/>
+        <circle class="tkhalo" cx="120" cy="120" r="90"/>
+      <circle class="tk" cx="120" cy="120" r="90"/>
+      </g>
+      <text class="cbig" x="120" y="118">24</text>
+      <text class="csm" x="120" y="140">ชั่วโมงเท่ากันทุกคน</text>
+    </svg>
+    <ul class="clegend">
+      <li><i class="k1"></i><b class="disp">8 ทำงาน</b><span>แลกไปเพื่อให้ชีวิตเดินต่อได้</span></li>
+      <li><i class="k2"></i><b class="disp">8 นอน</b><span>ร่างกายซ่อมตัวเองอยู่ตรงนี้</span></li>
+      <li><i class="k3"></i><b class="disp">8 ของเรา</b><span>ช่วงเดียวที่เราเลือกเองได้จริง</span></li>
+      <li class="hi"><i class="k4"></i><b class="disp">ขีดเล็ก ๆ นั่นคือ 10 นาที</b><span>บ้านนี้ขอแค่เท่านั้นต่อวัน — เล็กกว่าที่คิดเยอะ</span></li>
+    </ul>
+  </div>
+
+  <div class="eights" id="eights">
+    <div class="eight reveal" style="--d:.06s"><div class="n disp">8</div><b class="disp">ทำงาน</b><p>เวลาที่เราแลกไปเพื่อให้ชีวิตเดินต่อได้ — จำเป็น และไม่มีอะไรผิด</p></div>
+    <div class="eight reveal" style="--d:.12s"><div class="n disp">8</div><b class="disp">นอน</b><p>เวลาที่ร่างกายซ่อมตัวเอง คนที่ตัดตรงนี้ทิ้งมักจ่ายคืนแพงกว่าเดิมเสมอ</p></div>
+    <div class="eight hl reveal" style="--d:.18s"><div class="n disp">8</div><b class="disp">ของเรา</b><p>8 ชั่วโมงนี้แหละที่เป็นของเราจริง ๆ · บ้านหลังนี้สร้างมาเพื่อ 8 ชั่วโมงนั้น เริ่มวันละ 10 นาทีก็พอ</p></div>
+  </div>
+</div></section>
+
+<!-- ── มือแรก: ทางไปทุกห้อง ── -->
+<section class="hand-sec" id="hand"><div class="wrap">
+  <span class="eyebrow reveal">ห้องต่าง ๆ ในบ้าน</span>
+  <h2 class="h2 disp reveal" style="--d:.06s">🎴 จั่วมือแรกของคุณ</h2>
+  <p class="sub reveal" style="--d:.1s">ทุกใบเปิดได้เลยวันนี้ ไม่ต้องสมัคร ไม่ต้องจ่าย หยิบใบไหนก่อนก็ได้ — ไม่มีลำดับที่ถูกต้อง</p>
+
+  <button type="button" class="revealer" data-reveal="handDeck" data-ga="reveal:hand">
+    <span class="rv-e" aria-hidden="true">🎴</span>
+    <b class="disp"><span class="tapword"></span>เพื่อจั่วมือแรกของคุณ</b>
+    <small>ห้องทั้งหมดในบ้านอยู่ในกองนี้ 6 ใบ — เปิดได้เลยวันนี้ทุกใบ ไม่ต้องสมัคร ไม่ต้องจ่าย</small>
+    <span class="rv-hint" aria-hidden="true">แจกไพ่ ▸</span>
+  </button>
+  <div class="hand" id="handDeck">
+    <a class="pc" style="--dl:0s;--rot:-9deg" href="forge/" data-ga="room:forge">
+      <span class="free disp">เริ่มตรงนี้</span>
+      <div class="top"><span>READ</span><span>01</span></div>
+      <div class="art"><img src="img/card-forge.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📖</span></div>
+      <h3 class="disp">เรื่องเล่าจากโรงตีเหล็ก</h3>
+      <p>19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านเกมให้ออก ปรับวิธีเล่น แล้วพาทั้งทีมไปต่อ</p>
+      <span class="prg disp" data-mc-progress="forge" hidden></span>
+      <span class="go disp">อ่านเลย →</span>
+    </a>
+
+    <a class="pc" style="--dl:.09s;--rot:6deg" href="classroom/" data-ga="room:classroom">
+      <span class="free disp">ฟรีตลอดชีพ</span>
+      <div class="top"><span>LEARN</span><span>02</span></div>
+      <div class="art"><img src="img/card-class.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">📚</span></div>
+      <h3 class="disp">ห้องเรียน AI</h3>
+      <p>6 คลาส ตั้งแต่เครื่องมือฟรีที่ควรมีติดเครื่อง ไปจนถึงสร้างเว็บแรกของตัวเอง</p>
+      <span class="go disp">เข้าห้องเรียน →</span>
+    </a>
+
+    <a class="pc" style="--dl:.18s;--rot:-5deg" href="resume/" data-ga="room:resume">
+      <div class="top"><span>SHOW</span><span>03</span></div>
+      <div class="art"><img src="img/card-resume.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🧭</span></div>
+      <h3 class="disp">Smart Resume</h3>
+      <p>เรซูเม่สองโหมดที่บอกทั้งผลงาน วิธีคิด และวิธีสร้าง Party ให้คนละ Class เล่นด้วยกันได้</p>
+      <span class="go disp">เปิดดู →</span>
+    </a>
+
+    <a class="pc" style="--dl:.27s;--rot:8deg" href="club/" data-ga="room:club">
+      <div class="top"><span>CLUB</span><span>04</span></div>
+      <div class="art"><img src="img/card-club.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🍀</span></div>
+      <h3 class="disp">myclover club</h3>
+      <p>สุขภาพดี มีความสุข ในแบบที่ไม่ต้องเหมือนใคร — กินเป็น นอนเป็น ใช้พลังเป็น</p>
+      <span class="go disp">แวะดู →</span>
+    </a>
+
+    <a class="pc" style="--dl:.36s;--rot:-7deg" href="card/" data-ga="room:card">
+      <div class="top"><span>TOOL</span><span>05</span></div>
+      <div class="art"><img src="img/card-tool.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">🎴</span></div>
+      <h3 class="disp">การ์ดประจำตัว</h3>
+      <p>ปักธงว่าคุณเป็นสายไหน — สัดส่วนการ์ดจริงเท่า MTG เก็บ Class และตราที่ปลดได้ไว้ในใบเดียว</p>
+      <span class="go disp">ปักธงของคุณ →</span>
+    </a>
+
+    <div class="pc locked" style="--dl:.45s;--rot:5deg" id="guildCard" data-ga="room:guild">
+      <span class="glow"></span>
+      <div class="top"><span>GUILD</span><span>06</span></div>
+      <div class="art"><img src="img/card-guild.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()"><span class="emo">⚔️</span></div>
+      <h3 class="disp">Guild X</h3>
+      <p>ห้องที่คนละ Class มาแบ่งของ ฝึกเป็น Party และสร้าง Quest ที่มีความหมายกับชีวิตตัวเอง</p>
+      <span class="go disp" data-guildx data-guildx-start="card/">🔒 ปลดล็อกเร็ว ๆ นี้</span>
+      <small data-guildx-note style="display:block;margin-top:6px;font-size:11px;color:rgb(255 255 255/.5)"></small>
+      <div class="chain" aria-hidden="true"><span>⛓️ ล็อกอยู่</span></div>
+    </div>
+  </div>
+  <p class="hand-note reveal">🍀 ทุกอย่างข้างบนนี้ฟรีจริง ไม่มีบัตรเครดิต ไม่มีทดลองใช้ 7 วัน<br>
+
+  <div class="dealrow reveal" style="--d:.3s">
+    <button type="button" class="tapbtn" id="dealBtn" data-ga="deal_again"><span class="e">🎴</span>สับไพ่แล้วแจกใหม่</button>
+  </div>
+</div></section>
+
+<!-- ── ทางที่เราวางไว้ — 3 ด่าน ── -->
+<section class="road" id="road"><div class="wrap">
+  <span class="eyebrow reveal">ถ้าไม่รู้จะหยิบใบไหนก่อน</span>
+  <h2 class="h2 disp reveal" style="--d:.06s">🗺️ ทางที่เราวางไว้ให้ — สามด่าน</h2>
+  <p class="sub reveal" style="--d:.1s">ไม่ใช่ข้อบังคับ จะข้ามด่านแรกมาเริ่มที่ห้องเรียนเลยก็ได้ — แต่ถ้าเดินตามนี้ ตอนไปถึงด่านสุดท้ายคุณจะมีของติดมือไปด้วย ไม่ได้ไปมือเปล่า</p>
+
+  <button type="button" class="revealer" data-reveal="roadline" data-ga="reveal:road">
+    <span class="rv-e" aria-hidden="true">🗺️</span>
+    <b class="disp"><span class="tapword"></span>เพื่อกางแผนที่สามด่าน</b>
+    <small>ลำดับที่เราวางไว้ให้ ว่าควรเริ่มตรงไหนแล้วไปต่อยังไง — พร้อมความคืบหน้าของคุณเอง</small>
+    <span class="rv-hint" aria-hidden="true">กางแผนที่ ▸</span>
+  </button>
+  <ol class="roadline" id="roadline">
+    <li class="rd" style="--dl:0s" data-mc-doneclass="forge:done">
+      <span class="rn"><i>1</i><span class="rem">📖</span></span>
+      <div>
+        <b class="disp">(WHY?) 📖 อ่านการ์ตูน 7 ตอน</b>
+        <p>เรื่องจริง 19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านจบแล้วจะเห็นเองว่าทำไมต้องมีเครื่องมือ</p>
+        <div class="rbar"><i data-mc-bar="forge"></i></div>
+        <div class="rmeta">
+          <span class="rst" data-mc-progress="forge" hidden></span>
+          <a class="rgo" href="forge/" data-ga="road_go:forge">ไปอ่าน →</a>
+        </div>
+      </div>
+    </li>
+
+    <li class="rd" style="--dl:.14s" data-mc-doneclass="learn:done">
+      <span class="rn"><i>2</i><span class="rem">🎓</span></span>
+      <div>
+        <b class="disp">(HOW?) 🎓 เข้าห้องเรียน AI 6 บท</b>
+        <p>จากแรงบันดาลใจมาเป็นของที่ทำได้จริง เริ่มบทละประมาณ 10 นาที แล้วกลับมาทำต่อได้โดยไม่ต้องมีพื้นฐาน — เข้าตรงนี้ก่อนโดยไม่อ่านการ์ตูนก็ได้</p>
+        <div class="rbar"><i data-mc-bar="learn"></i></div>
+        <!-- ด่านบอสไม่โผล่จนกว่าจะเรียนครบ ก่อนหน้านั้นบ้านยังพูดว่า "6 บท" เหมือนเดิม -->
+        <p class="rboss" data-mc-done="learn" hidden><picture class="rart">
+            <source type="image/webp" media="(max-width:640px)" srcset="img/awaken-hero-640.webp">
+            <source type="image/webp" srcset="img/awaken-hero-1024.webp">
+            <img src="img/awaken-hero.jpg" width="1600" height="900" loading="lazy" decoding="async"
+                 alt="ประตูห้องโถงมืดที่มีแสงเส้นเดียวลอดเข้ามา ก่อนเข้าสู่ด่านสุดท้าย">
+          </picture><b>🌅 BOSS STAGE UNLOCKED</b>บทที่ 7 ที่ไม่ได้อยู่ในแผนการสอน
+          <a href="classroom/awaken/" data-ga="road_go:awaken">เข้าด่านสุดท้าย →</a></p>
+        <div class="rmeta">
+          <span class="rst" data-mc-progress="learn" hidden></span>
+          <a class="rgo" href="classroom/" data-ga="road_go:classroom">ไปเรียน →</a>
+        </div>
+      </div>
+    </li>
+
+    <li class="rd" style="--dl:.28s">
+      <span class="rn"><i>3</i><span class="rem">🃏</span></span>
+      <div>
+        <b class="disp">(SAVE) 🃏 ค่อยมาทำการ์ดประจำตัว</b>
+        <p>ด่านนี้อยู่ท้ายสุดเพราะมันสนุกตอนมีของมาใส่ — ตราที่ปลดได้จากสองด่านบนจะขึ้นบนการ์ด พร้อมกรอบที่เปลี่ยนไปตามสิ่งที่คุณทำมา</p>
+        <div class="rprize">
+          <span data-mc-notitle="BLACKSMITH">⚒️ ตราช่างตีเหล็ก · ยังไม่ปลด</span>
+          <span data-mc-title="BLACKSMITH" hidden>⚒️ ช่างตีเหล็ก — ปลดแล้ว</span>
+          <span data-mc-notitle="AWAKENED">🌅 ตราผู้ตื่นรู้ · ยังไม่ปลด</span>
+          <span data-mc-title="AWAKENED" hidden>🌅 ผู้ตื่นรู้ — ปลดแล้ว</span>
+        </div>
+        <div class="rmeta">
+          <a class="rgo" href="card/" data-ga="road_go:card">ไปทำการ์ด →</a>
+          <a class="rgo" href="collection/" data-ga="road_go:collection">📔 คลังของสะสม (Your Collection) →</a>
+        </div>
+      </div>
+    </li>
+  </ol>
+  <p class="roadnote reveal" style="--d:.24s">ความคืบหน้าเก็บอยู่ในเครื่องของคุณเองล้วน ไม่ได้ส่งไปไหน · <a href="paths/" style="color:rgb(var(--green));font-weight:700">หรือเลือกสายของคุณก่อนก็ได้ →</a></p>
+</div></section>
+
+<!-- ── จดหมาย ── -->
+<section class="letter-sec"><div class="wrap">
+  <span class="eyebrow reveal">จดหมายจากเจ้าของบ้าน</span>
+  <h2 class="h2 disp reveal" style="--d:.06s">🍀 ทำไมถึงกลับมาเปิดบ้านหลังนี้</h2>
+  <div class="letterwrap reveal" id="letterWrap" style="--d:.1s">
+  <button type="button" class="envelope" id="letterBtn" data-ga="letter_open" aria-expanded="false" aria-controls="letterBody">
+    <span class="flap" aria-hidden="true">🍀</span>
+    <b class="disp">จดหมายปิดผนึกจากเจ้าของบ้าน</b>
+    <small>แตะเพื่อแกะซองอ่าน — ยาวประมาณหนึ่งนาที</small>
+  </button>
+  <div class="letter" id="letterBody">
+    <span class="seal" aria-hidden="true"><svg viewBox="-52 -50 104 108"><use href="#clover-mark"/></svg></span>
+    <p style="--dl:0.12s">สวัสดีครับ</p>
+    <p style="--dl:0.19s">จากปี 2010 โดเมนนี้ก็อายุ 16 ปีแล้ว</p>
+    <p style="--dl:0.26s">สมัยนั้นมันคือที่ที่พวกเรามาเจอกัน คุยกัน แล้ววันหนึ่งชีวิตก็พาแต่ละคนแยกย้ายไปตามทางของตัวเอง</p>
+    <p style="--dl:0.33s">จากยุคแรกที่เป็นเว็บบอร์ด พัฒนาเป็น Social Media ของกลุ่มเราเอง จนไปถึงห้องเสียงที่จุได้ 1,000 คน</p>
+    <p style="--dl:0.40s">วันนี้เรามาถึงยุค AI — <b>ผมปลุกบ้านหลังนี้ขึ้นมาใหม่จากการสั่งงาน AI ด้วยโทรศัพท์มือถือ</b></p>
+    <p style="--dl:0.47s">เลยอยากส่งต่อ Skill นี้ให้กับเพื่อน ๆ ในบ้าน เหมือนที่ได้ทำมาตลอด</p>
+    <p style="--dl:0.54s">และอยากให้ที่นี่ เป็นที่คุณเดินเข้ามาแล้วได้อะไรกลับไปจริง ๆ เหมือนเดิม</p>
+    <p style="--dl:0.61s">ไม่ว่าคุณจะอยู่ต่อหรือไม่อยู่ก็ตาม <b>ความรู้ทุกอย่างในบ้านนี้ แจกฟรี</b> ให้คุณเอาไปต่อยอดกับอะไรก็ได้</p>
+    <p style="--dl:0.68s">ถ้าวันนี้คุณเจอบ้านหลังนี้ — ผมถือว่าเราโชคดีทั้งคู่ครับ</p>
+    <p class="sign disp">🍀 TeemClover<small>เจ้าของบ้าน myclover</small></p>
+  </div>
+  </div>
+</div></section>
+
+<!-- ── เปิดไพ่ทั้งมือ ── -->
+<section class="open-sec" id="open"><div class="wrap">
+  <span class="eyebrow reveal">เปิดไพ่ทั้งมือ</span>
+  <h2 class="h2 disp reveal" style="--d:.06s">🃏 บอกกันตรง ๆ ตั้งแต่แรก<br>ว่าเจ้าของบ้านทำอะไรอยู่</h2>
+  <p class="sub reveal" style="--d:.1s">บ้านหลังนี้จะอยู่กันยาว ๆ เราเลยไม่อยากให้มีอะไรค้างคาใจกันทีหลัง</p>
+  <button type="button" class="revealer" data-reveal="openHand" data-ga="reveal:openhand">
+    <span class="rv-e" aria-hidden="true">🃏</span>
+    <b class="disp"><span class="tapword"></span>เพื่อเปิดไพ่ของเจ้าของบ้าน</b>
+    <small>สามใบนี้คือทุกอย่างที่เราทำอยู่ ไม่มีอะไรซ่อนไว้ข้างหลัง</small>
+    <span class="rv-hint" aria-hidden="true">เปิดไพ่ ▸</span>
+  </button>
+  <div class="og" id="openHand">
+    <div class="oc" style="--dl:0s">
+      <span class="ic">🎁</span>
+      <b class="disp">ของฟรี คือฟรีจริง</b>
+      <p>ห้องเรียน เครื่องมือ คลังพร้อมท์ ทุกอย่างหยิบไปใช้ได้เลย ไม่มีเงื่อนไข ไม่ต้องแลกกับอะไรทั้งนั้น อยู่แค่ตรงนี้ตลอดไปก็ได้</p>
+    </div>
+    <div class="oc" style="--dl:.16s">
+      <span class="ic">🤝</span>
+      <b class="disp">ผมทำธุรกิจอยู่จริง</b>
+      <p>ผมทำธุรกิจสุขภาพที่อัปเกรดด้วยเทคโนโลยี AI อยู่ และทีมของผมสร้างเครื่องมือของตัวเองเพิ่มขึ้นมาเอง ถ้าคุณสนใจ ประตูกิลด์อยู่ตรงนั้น เดินเข้ามาถามได้เลย</p>
+    </div>
+    <div class="oc warm" style="--dl:.32s">
+      <span class="ic">🚪</span>
+      <b class="disp">ถ้าไม่สนใจ ก็ไม่มีใครตามตื้อ</b>
+      <p>ไม่มีการโทรหา ไม่มีการทักไปชวน ความรู้และเครื่องมือฟรีในบ้านนี้ยังเป็นของคุณเหมือนเดิมทุกประการ นี่คือกติกาที่เราตั้งไว้เอง</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- ── ลงทะเบียน ── -->
+<section class="join"><div class="wrap">
+  <div class="joinbox reveal">
+    <h3 class="disp">อยากให้เราส่งข่าวถึงคุณไหม</h3>
+    <p>ทิ้งอีเมลไว้ แล้วเราจะบอกเวลามีคลาสใหม่ การ์ตูนตอนใหม่ หรือกิจกรรมที่จะถึง — ยกเลิกได้ทุกเมื่อ ความรู้ฟรีในบ้านยังเป็นของคุณเหมือนเดิม</p>
+    <div class="cta-row">
+      <a class="btn btn-gold disp" href="card/#register">🍀 ลงทะเบียนรับข่าวของบ้าน</a>
+      <a class="btn disp" href="forge/">ยังไม่พร้อม — ไปอ่านการ์ตูนก่อน</a>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <button type="button" class="clover-foot" id="footClover" data-ga="secret_clover"
+          aria-describedby="secretHelp">☘️</button>
+  <p class="sec-help" id="secretHelp">ใบนี้ยังไม่ครบสี่แฉก — ลองกดดูว่าคุณต้องใช้กี่ครั้ง</p>
+  <p class="sec-n" id="secretN" role="status" aria-live="polite" hidden></p>
+  <div class="foot-links">
+    <a href="paths/">เลือกสายของคุณ</a>
+    <a href="forge/">เรื่องเล่าจากโรงตีเหล็ก</a>
+    <a href="card/">การ์ดประจำตัว</a>
+    <a href="classroom/">ห้องเรียน AI</a>
+    <a href="resume/">Smart Resume</a>
+    <a href="club/">club</a>
+    <a href="card/#register">ลงทะเบียน</a>
+    <a href="privacy/">ข้อมูลของคุณ</a>
+  </div>
+  <p>myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p>
+  <p style="margin-top:5px">คุยกับเจ้าของบ้าน: <a href="mailto:team@myclover.com" style="color:rgb(var(--green));font-weight:600">team@myclover.com</a></p>
+  <p class="egg2" id="footEgg">🍀 เจอโคลเวอร์สี่แฉกแล้ว — ได้ตรา “SEEKER” ไปติดบน<a href="card/" style="color:rgb(var(--gold));text-decoration:underline">การ์ดประจำตัว</a> พร้อมเลขจำนวนครั้งของคุณ<br>จำคำนี้ไว้: <b>“โชคดีมีจริง”</b></p>
+  <p style="margin-top:18px;color:rgb(var(--ink)/.34);font-size:12px">© 2010–2026 myclover · #glhf — Good Luck, Have Fun</p>
+</div></footer>
+
+</div><!-- /#home -->
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   ประตูบ้าน + countdown
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var OPEN_AT = new Date('2026-08-08T00:00:00+07:00').getTime();
+  var KEY_SHA = '735701f285cb9253fcff9649a0f7a09f27e5b5967030ded8baba4c5731683636';
+  var KEY_DJB = '4109086781';
+  var body=document.body;
+
+  function openHome(){ body.classList.remove('locked'); body.classList.add('open'); }
+  function djb2(s){ var h=5381; for(var i=0;i<s.length;i++){ h=((h*33)+s.charCodeAt(i))>>>0; } return String(h); }
+  function sha256(s){
+    if(!(window.crypto&&crypto.subtle&&window.isSecureContext!==false)) return Promise.reject();
+    return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){
+      return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
+    });
+  }
+  function check(v){
+    var s=v.trim().toLowerCase();
+    return sha256(s).then(function(h){return h===KEY_SHA;}).catch(function(){return djb2(s)===KEY_DJB;});
+  }
+
+  if(Date.now()>=OPEN_AT || localStorage.getItem('mc_key')==='1'){ openHome(); }
+
+  function pad(n){ return n<10?'0'+n:''+n; }
+  function tick(){
+    var d=OPEN_AT-Date.now();
+    if(d<=0){ d=0; openHome(); }
+    var s=Math.floor(d/1000);
+    document.getElementById('cd').textContent=Math.floor(s/86400);
+    document.getElementById('ch').textContent=pad(Math.floor(s%86400/3600));
+    document.getElementById('cm').textContent=pad(Math.floor(s%3600/60));
+    document.getElementById('cs').textContent=pad(s%60);
+  }
+  tick(); setInterval(tick,1000);
+
+  document.getElementById('keyForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var inp=document.getElementById('keyInput');
+    check(inp.value).then(function(ok){
+      if(ok){
+        localStorage.setItem('mc_key','1');
+        document.getElementById('wrongMsg').textContent='';
+        openHome();
+      } else {
+        var g=document.getElementById('gate');
+        g.classList.remove('shake'); void g.offsetWidth; g.classList.add('shake');
+        document.getElementById('wrongMsg').textContent='กุญแจยังไม่ถูก ลองอีกครั้งนะครับ';
+        inp.select();
+      }
+    });
+  });
+
+  /* โคลเวอร์ลอยในประตู */
+  var gate=document.getElementById('gate');
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    for(var i=0;i<9;i++){
+      var f=document.createElement('span');
+      f.className='float'; f.textContent='🍀';
+      f.style.left=(Math.random()*100)+'%';
+      f.style.animationDuration=(13+Math.random()*13)+'s';
+      f.style.animationDelay=(-Math.random()*22)+'s';
+      gate.appendChild(f);
+    }
+  }
+
+  /* โคลเวอร์หน้าประตู — กด 4 ครั้งได้แค่คำใบ้ ไม่ได้ตรา
+     ตราจริงอยู่ที่โคลเวอร์ท้ายหน้าแรก ต้องดวงถึงเท่านั้น */
+  var gc=document.getElementById('gateClover'), gn=0;
+  if(gc) gc.addEventListener('click',function(){
+    if(++gn>=4){ document.getElementById('gateEgg').style.display='block'; gn=0; }
+  });
+})();
+
+/* สุ่มด้วย crypto ถ้าเบราว์เซอร์มีให้ ไม่มีก็ถอยไปใช้ Math.random
+   ใช้ร่วมกันทั้งโคลเวอร์ลับและการสับไพ่ จะได้ไม่เขียนซ้ำสองที่ */
+window.mcRandom=function(){
+  try{
+    if(window.crypto && window.crypto.getRandomValues){
+      var a=new Uint32Array(1); window.crypto.getRandomValues(a);
+      return a[0]/4294967296;
+    }
+  }catch(e){}
+  return Math.random();
+};
+
+/* ═══════════════════════════════════════════════════════
+   ☘️ → 🍀 โคลเวอร์ลับ — โอกาสเจอ 1 ใน 10 ต่อการกดหนึ่งครั้ง
+   ยังไม่กดจะไม่เห็นตัวเลข กดพลาดนับเพิ่ม เจอแล้วเลขหยุดนิ่งเป็นสีทอง
+   เลขนี้คือของเล่นให้เอาไปอวดกัน — ได้ 1 คือดวงดี ได้ 47 ก็ตลกไปอีกแบบ
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var btn=document.getElementById('footClover');
+  if(!btn) return;
+  var out=document.getElementById('secretN'), egg=document.getElementById('footEgg');
+  var HIT=0.1;
+
+  function get(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+  function put(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+  var n=parseInt(get('mc_seek_n','0'),10); if(!(n>0)) n=0;
+  var hit=get('mc_seek_hit','')==='1';
+
+  function grantSeeker(){
+    try{
+      var t=JSON.parse(localStorage.getItem('mc_titles')||'[]');
+      if(!Array.isArray(t)) t=[];
+      if(t.indexOf('SEEKER')<0){ t.push('SEEKER'); localStorage.setItem('mc_titles',JSON.stringify(t)); }
+    }catch(e){}
+  }
+
+  function paint(){
+    if(!n){ out.hidden=true; out.innerHTML=''; return; }
+    out.hidden=false;
+    out.className='sec-n'+(hit?' won':'');
+    out.innerHTML = hit
+      ? 'เจอโคลเวอร์สี่แฉกตอนกดครั้งที่ <b>'+n+'</b> 🍀'
+      : 'กดไปแล้ว <b>'+n+'</b> ครั้ง — ยังไม่เจอ';
+    btn.textContent=hit?'🍀':'☘️';
+    if(hit){ egg.style.display='block'; btn.classList.add('won'); }
+  }
+
+  /* แอนิเมชันสั้น ๆ ต้องถอดคลาสก่อนใส่ใหม่ ไม่งั้นกดรัวแล้วไม่เล่นซ้ำ */
+  var t=null;
+  function pop(cls){
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    btn.classList.remove('pop','winpop');
+    void btn.offsetWidth;
+    btn.classList.add(cls);
+    clearTimeout(t);
+    t=setTimeout(function(){ btn.classList.remove('pop','winpop'); },1000);
+  }
+
+  btn.addEventListener('click',function(){
+    if(hit){ pop('pop'); return; }          /* เจอแล้ว เลขหยุดนิ่ง กดต่อก็ไม่ขยับ */
+    n++; put('mc_seek_n',String(n));
+    if(window.mcRandom() < HIT){
+      hit=true; put('mc_seek_hit','1'); put('mc_seek_at',String(Date.now()));
+      grantSeeker();
+      pop('winpop');
+      if(window.mcEvent) window.mcEvent('secret_found',{item:String(n)});
+    } else {
+      pop('pop');
+    }
+    paint();
+  });
+
+  paint();
+})();
+
+/* ═══════════════════════════════════════════════════════
+   เนื้อหาค่อย ๆ ปรากฏ — ต้องเห็นเสมอแม้สคริปต์พัง
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)) return;
+  document.body.classList.add('js');
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+  Array.prototype.forEach.call(els,function(el){ io.observe(el); });
+  /* กันเหนียว: ถ้าอะไรยังไม่ขึ้นใน 3.5 วิ ให้โชว์เลย */
+  setTimeout(function(){
+    Array.prototype.forEach.call(els,function(el){ el.classList.add('in'); });
+  },3500);
+})();
+
+
+/* ═══════════════════════════════════════════════════════
+   ลูกเล่นของหน้าแรก — ต้องกดถึงจะเล่น
+
+   ทุกส่วนซ่อนไว้หลังแผ่นชวนกด (.revealer) กดแล้วค่อยเล่นแอนิเมชัน
+   ไม่มีการฟัง scroll ไม่มี setInterval ไม่มี IntersectionObserver
+   หน้าเลยไม่ต้องคำนวณอะไรเลยจนกว่าจะมีคนกด
+   ═══════════════════════════════════════════════════════ */
+/* ส่งเหตุการณ์ไป Google Analytics — ใช้ดูว่าคนกดตรงไหนมากที่สุด
+   ไม่ส่งข้อมูลส่วนตัวอะไรเลย ส่งแค่ชื่อจุดที่ถูกกด */
+window.mcEvent=function(name,params){
+  try{ if(typeof gtag==='function') gtag('event',name,params||{}); }catch(e){}
+};
+
+/* ดักคลิกทีเดียวทั้งหน้า — อะไรที่มี data-ga="ชื่อเหตุการณ์:ค่า" จะถูกนับให้เอง
+   ใช้ตัวดักตัวเดียวที่ document แทนการผูกทีละปุ่ม จะได้ไม่กินแรงเครื่อง */
+document.addEventListener('click',function(e){
+  var el=e.target;
+  while(el && el!==document.body){
+    var tag=el.getAttribute && el.getAttribute('data-ga');
+    if(tag){
+      var i=tag.indexOf(':');
+      window.mcEvent(i<0?tag:tag.slice(0,i), i<0?{}:{item:tag.slice(i+1)});
+      return;
+    }
+    el=el.parentNode;
+  }
+},{passive:true});
+
+(function(){
+  function add(el,c){ if(el && el.className.indexOf(c)<0) el.className+=' '+c; }
+
+  /* สับกองจริงด้วย Fisher–Yates ทุกครั้งที่แจก รวมถึงมือแรก
+     เลข 01–06 พิมพ์ติดอยู่กับใบนั้น ๆ ไม่ได้ติดกับตำแหน่ง
+     เลขที่ออกมาไม่เรียงคือหลักฐานว่ากองถูกสับ ไม่ใช่หน้าเว็บพัง */
+  function shuffle(deck){
+    var cards=Array.prototype.slice.call(deck.children);
+    if(cards.length<2) return;
+    for(var i=cards.length-1;i>0;i--){
+      var j=Math.floor(window.mcRandom()*(i+1));
+      var tmp=cards[i]; cards[i]=cards[j]; cards[j]=tmp;
+    }
+    var frag=document.createDocumentFragment();
+    cards.forEach(function(c,i){
+      c.style.setProperty('--dl',(i*0.09).toFixed(2)+'s');  /* ไล่จังหวะแจกตามลำดับใหม่ */
+      frag.appendChild(c);
+    });
+    deck.appendChild(frag);
+  }
+
+  /* แจกไพ่ — เล่นซ้ำได้ ต้องถอดคลาสแล้วบังคับให้เบราว์เซอร์คำนวณใหม่ก่อน
+     ไม่งั้นแอนิเมชันจะไม่เริ่มรอบสอง */
+  function deal(el){
+    shuffle(el);
+    el.className=el.className.replace(/\s*dealt/,'');
+    void el.offsetWidth;
+    add(el,'dealt');
+  }
+
+  var RUN={
+    clockWrap: function(el){
+      add(el,'go');
+      var e=document.getElementById('eights');
+      if(e){ add(e,'shown');
+        var k=e.children;
+        for(var i=0;i<k.length;i++) k[i].style.setProperty('--dl',(1.35+i*0.14)+'s'); }
+    },
+    pickGrid : function(el){
+      var k=el.children;
+      for(var i=0;i<k.length;i++) k[i].style.setProperty('--dl',(i*0.08)+'s');
+      if(window.mcInitPick) window.mcInitPick();   /* ค่อยกางสายที่เคยเลือกไว้ตอนนี้ */
+    },
+    handDeck : deal,
+    roadline : function(el){ add(el,'go'); },
+    openHand : function(el){ add(el,'flipped'); }
+  };
+
+  var list=document.querySelectorAll('.revealer');
+  for(var i=0;i<list.length;i++){
+    (function(btn){
+      btn.addEventListener('click',function(){
+        var el=document.getElementById(btn.getAttribute('data-reveal'));
+        if(!el) return;
+        add(btn,'gone');
+        add(el,'shown');
+        void el.offsetWidth;
+        var run=RUN[btn.getAttribute('data-reveal')];
+        if(run) run(el);
+      });
+    })(list[i]);
+  }
+
+  /* ปุ่มสับไพ่แจกใหม่ — โผล่หลังจากแจกไพ่ไปแล้วเท่านั้น */
+  var deck=document.getElementById('handDeck'), dealBtn=document.getElementById('dealBtn');
+  if(dealBtn){
+    dealBtn.hidden=true;
+    dealBtn.addEventListener('click',function(){ deal(deck); });
+    var rv=document.querySelector('.revealer[data-reveal="handDeck"]');
+    if(rv) rv.addEventListener('click',function(){ dealBtn.hidden=false; });
+  }
+
+  /* จดหมาย — กดแกะซองถึงจะอ่านได้
+     เปิดหน้าใหม่ทุกครั้งซองจะปิดกลับ ไม่ค้างไว้ที่เปิดแล้ว */
+  var lw=document.getElementById('letterWrap'), lb=document.getElementById('letterBtn');
+  function openLetter(){
+    if(!lw || lw.className.indexOf('open')>=0) return;
+    add(lw,'open');
+    if(lb) lb.setAttribute('aria-expanded','true');
+  }
+  if(lb) lb.addEventListener('click',openLetter);
+})();
+
+
+/* ═══════════════════════════════════════════════════════
+   ชนหมัดก่อนถึงจะเล่า — #glhf
+   ยังไม่ชนก็ยังไม่ต้องอ่าน จะได้ไม่รู้สึกโดนยัดเยียด
+   เคยชนแล้วรอบหน้าเปิดให้เลย ไม่ต้องมาชนใหม่ทุกครั้ง
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var sec=document.getElementById('glhf'),
+      b=document.getElementById('bump'),
+      cue=document.getElementById('glhfCue');
+  if(!sec||!b) return;
+  /* ไม่จำว่าเคยชนแล้ว — เปิดหน้าใหม่ทุกครั้งต้องย่อกลับ
+     เพื่อให้ทุกส่วนสั้นเวลาคนเลื่อนผ่าน และยังชวนให้อยากกดอีก */
+  function open(){
+    if(sec.className.indexOf('opened')>=0) return;
+    b.className+=' hit';
+    sec.className+=' opened';
+    b.setAttribute('aria-expanded','true');
+    if(cue) cue.textContent='🤜🤛 ชนแล้ว — Good Luck, Have Fun ครับ';
+  }
+  b.addEventListener('click',open);
+})();
+
+
+/* ═══════════════════════════════════════════════════════
+   ด่านเลือกสาย — เลือกแล้วบ้านจัดของให้ตรงคน
+   ไม่เลือกก็เห็นทุกอย่างครบเหมือนเดิม ไม่มีการล็อกทาง
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var PATHS={
+    THINKER:{th:'สายคิด',emo:'🧠',ac:'#2E4A8F',
+      hook:'อยากเจอคนที่คิดเป็นระบบเหมือนกัน',
+      who:'คนที่ชอบวางแผน ถอดบทเรียน มองภาพรวมก่อนลงมือ',
+      lead:'คุณคิดเยอะอยู่แล้ว สิ่งที่ขาดคือคนที่คิดเป็นระบบพอจะคุยด้วยได้ และเครื่องมือที่ช่วยจัดระเบียบความคิด',
+      gifts:[['classroom/notebooklm.html','⭐ เปลี่ยนข้อมูลของคุณ ให้ AI ทำงานต่อได้ทั้งระบบ','สร้าง Source ครั้งเดียว แล้วแตกเป็นภาพ สไลด์ วิดีโอ เสียง และงานอีกหลายรูปแบบ'],
+             ['forge/','เรื่องเล่าจากโรงตีเหล็ก','19 ปีของคนที่คิดมากกว่าขาย — อ่านฟรีทั้ง 7 ตอน'],
+             ['card/','ทำการ์ดประจำตัว','บอกคนอื่นได้ใน 1 ภาพว่าคุณเป็นสายไหน']]},
+    TASTER:{th:'สายกิน',emo:'🍜',ac:'#C4622D',
+      hook:'อยากกินอร่อยแบบไม่รู้สึกผิด',
+      who:'คนที่รักการกินจริง ๆ และไม่อยากเลิกรักมันเพื่อสุขภาพ',
+      lead:'บ้านนี้ไม่เชื่อว่าสุขภาพต้องเริ่มจากการฝืนอด เราเชื่อว่ากินเป็น และค่อย ๆ สร้างกติกาที่อยู่กับชีวิตจริงได้ดีกว่า',
+      gifts:[['club/','แวะดู myclover club','จุดยืนเรื่องสุขภาพในแบบที่ไม่ต้องเหมือนใคร'],
+             ['classroom/','ห้องเรียน AI','6 คลาสฟรี ใช้ได้กับทุกเรื่องรวมถึงเรื่องกิน'],
+             ['card/','ทำการ์ดประจำตัว','ปักธงว่าคุณคือสายกิน']]},
+    KEEPER:{th:'สายคลีน',emo:'💪',ac:'#1F8A70',
+      hook:'อยากมีระบบที่วัดผลได้',
+      who:'คนที่มีวินัยอยู่แล้ว ขาดแค่ระบบที่เห็นผลชัด',
+      lead:'คุณไม่ได้ขาดความตั้งใจ คุณขาดระบบที่วัดได้ว่าทำไปแล้วได้อะไร — เรากำลังสร้างเครื่องมือส่วนนั้นจากข้อมูลที่ใช้จริง',
+      gifts:[['club/','แวะดู myclover club','กิน นอน ใช้พลัง — สามเสาที่วัดผลได้จริง'],
+             ['classroom/','ห้องเรียน AI','ให้ AI ช่วยจดและสรุปสิ่งที่คุณทำทุกวัน'],
+             ['card/','ทำการ์ดประจำตัว','เริ่มจากปักหมุดว่าคุณคือใคร']]},
+    MAKER:{th:'สายประดิษฐ์',emo:'🧰',ac:'#4B5A67',
+      hook:'อยากใช้ AI ให้เป็นในงานจริง',
+      who:'คนที่ชอบสร้างของ และอยากให้เครื่องมือทำงานแทนได้',
+      lead:'คุณมาถูกห้องแล้ว ห้องเรียนของบ้านนี้สร้างมาเพื่อคุณโดยตรง เริ่มด้วย 10 นาทีแรกได้เลย',
+      gifts:[['classroom/free-ai.html','คลาสแรก: AI ฟรีที่ควรมีติดเครื่อง','เริ่มจากศูนย์และส่งคำสั่งแรกในประมาณ 10 นาที'],
+             ['classroom/first-web.html','สร้างเว็บแรกของตัวเอง','ด่านสุดท้ายของห้องเรียน'],
+             ['card/','ทำการ์ดประจำตัว','เครื่องมือชิ้นแรกของบ้าน ลองใช้เลย']]}
+  };
+  var ORDER=['THINKER','TASTER','KEEPER','MAKER'];
+  var grid=document.getElementById('pickGrid'), box=document.getElementById('picked');
+  if(!grid) return;
+  function get(){ try{ return localStorage.getItem('mc_class')||''; }catch(e){ return ''; } }
+  function set(v){ try{ localStorage.setItem('mc_class',v); }catch(e){} }
+
+  ORDER.forEach(function(k){
+    var d=PATHS[k], b=document.createElement('button');
+    b.type='button'; b.className='pk'; b.dataset.k=k;
+    b.style.setProperty('--ac',d.ac);
+    b.style.setProperty('--acbg',d.ac.replace('#','rgba(').replace(/^rgba\((..)(..)(..)$/,function(m,r,g,bl){
+      return 'rgba('+parseInt(r,16)+','+parseInt(g,16)+','+parseInt(bl,16)+',.07)';}));
+    b.setAttribute('aria-pressed','false');
+    b.innerHTML='<span class="e">'+d.emo+'</span><b class="disp">'+d.hook+'</b><span>'+d.who+'</span>';
+    b.setAttribute('data-ga','path_pick:'+k);
+    b.addEventListener('click',function(){ choose(k,true); });
+    grid.appendChild(b);
+  });
+
+  function choose(k,scroll){
+    var d=PATHS[k];
+    set(k);
+    Array.prototype.forEach.call(grid.children,function(x){
+      x.setAttribute('aria-pressed', x.dataset.k===k?'true':'false');
+    });
+    box.style.setProperty('--ac',d.ac);
+    box.innerHTML='<div class="top"><span class="e">'+d.emo+'</span><b class="disp">คุณเลือก'+d.th+'</b>'+
+      '<button type="button" class="swap" id="swapPath">เปลี่ยนสาย</button></div>'+
+      '<p class="lead">'+d.lead+'</p><div class="gifts">'+
+      d.gifts.map(function(g){ return '<a class="gift" href="'+g[0]+'"><b class="disp">'+g[1]+'</b><small>'+g[2]+'</small></a>'; }).join('')+
+      '</div>'+
+      /* หน้าเต็มของสายนี้ — ป้ายบอกทาง ลำดับที่แนะนำ และของที่ตรงกับคน */
+      '<a class="fullpath disp" data-ga="path_full" href="paths/'+k.toLowerCase()+'/">ดูเส้นทางของ'+d.th+'แบบเต็ม — สามก้าวถัดไปเรียงมาให้แล้ว →</a>';
+    box.classList.add('on');
+    document.getElementById('swapPath').addEventListener('click',function(){
+      box.classList.remove('on');
+      Array.prototype.forEach.call(grid.children,function(x){ x.setAttribute('aria-pressed','false'); });
+      try{ localStorage.removeItem('mc_class'); }catch(e){}
+      document.querySelectorAll('.hand .pc').forEach(function(c){ c.classList.remove('match'); });
+      grid.scrollIntoView({behavior:'smooth',block:'center'});
+    });
+    /* ไฮไลต์การ์ดที่ตรงกับสาย — แค่ทำเครื่องหมายบนใบนั้น ห้ามย้ายขึ้นใบแรก
+       ลำดับต้องเป็นของการสับไพ่ล้วน ๆ ระบบแค่ช่วยชี้ว่าใบไหนเหมาะกับคุณ */
+    var map={THINKER:'forge/',TASTER:'club/',KEEPER:'club/',MAKER:'classroom/'};
+    document.querySelectorAll('.hand .pc').forEach(function(c){ c.classList.remove('match'); });
+    var want=document.querySelector('.hand .pc[href="'+map[k]+'"]');
+    if(want) want.classList.add('match');
+    if(scroll) box.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  /* เคยเลือกสายไว้แล้วก็ยังต้องกดเข็มทิศก่อน ไม่งั้นแผนที่จะค้างโชว์
+     ตั้งแต่เลื่อนผ่าน ทั้งที่ยังไม่ได้กดอะไรเลย */
+  window.mcInitPick=function(){
+    var cur=get();
+    if(PATHS[cur]) choose(cur,false);
+  };
+})();
+
+/* ═══════════════════════════════════════════════════════
+   แถบความคืบหน้า + การ์ดเอียงตามเมาส์
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var prog=document.getElementById('prog'), ticking=false;
+  function upd(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    prog.style.width=(h>0?(window.scrollY/h)*100:0)+'%';
+    ticking=false;
+  }
+  window.addEventListener('scroll',function(){
+    if(!ticking){ ticking=true; requestAnimationFrame(upd); }
+  },{passive:true});
+  upd();
+
+  if(window.matchMedia('(hover: hover)').matches &&
+     !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelectorAll('.pc').forEach(function(c){
+      c.addEventListener('pointermove',function(e){
+        var r=c.getBoundingClientRect();
+        var x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+        c.style.transform='translateY(-8px) rotateX('+(-y*9)+'deg) rotateY('+(x*11)+'deg)';
+      });
+      c.addEventListener('pointerleave',function(){ c.style.transform=''; });
+    });
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════
+   การ์ด Guild X — โซ่คลายเมื่อถึงเวลาเปิดบ้าน
+   (จังหวะใหญ่ที่สุดของหน้านี้ มีที่เดียว)
+   ═══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',function(){
+  var card=document.getElementById('guildCard');
+  if(!card || !window.MC_GUILD) return;
+  if(window.MC_GUILD.isUnlocked()){
+    setTimeout(function(){ card.classList.add('released'); },600);
+  }
+});
+</script>
+<script defer src="assets/quest.js"></script>
+<script defer src="assets/config.js"></script>
+<script defer src="assets/guildx.js"></script>
+<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "xtx73cs6w1");
+</script>
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
+</script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+</body>
+</html>
