@@ -29,32 +29,33 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
   const member = isLocalMember();
 
   root.classList.add('match-shell');
+  /* ฝั่งผู้เล่นอยู่ซ้ายเสมอ — คู่แข่งอยู่ขวาเสมอ (ทั้งแถบบนและโต๊ะกลาง) */
   root.innerHTML = `
     <div class="match-top">
       <div class="pl">
-        <span class="avatar" id="oppAv">?</span>
-        <div>
-          <div class="nm" id="oppName">…</div>
-          <div class="meta"><span id="oppCards"></span><span class="pips" id="oppPips"></span></div>
-        </div>
-        <span class="conn" id="connDot" title="สถานะการเชื่อมต่อ"></span>
-      </div>
-      <div class="pl" style="flex-direction:row-reverse;text-align:right">
         <span class="avatar" id="youAv">?</span>
         <div>
           <div class="nm" id="youName">…</div>
-          <div class="meta" style="justify-content:flex-end"><span class="pips" id="youPips"></span><span id="youCards"></span></div>
+          <div class="meta"><span id="youCards"></span><span class="pips" id="youPips"></span></div>
         </div>
+      </div>
+      <div class="pl" style="flex-direction:row-reverse;text-align:right">
+        <span class="avatar" id="oppAv">?</span>
+        <div>
+          <div class="nm" id="oppName">…</div>
+          <div class="meta" style="justify-content:flex-end"><span class="pips" id="oppPips"></span><span id="oppCards"></span></div>
+        </div>
+        <span class="conn" id="connDot" title="สถานะการเชื่อมต่อ"></span>
       </div>
     </div>
     <div class="match-stage">
       <button class="drawer-toggle" id="histBtn" aria-label="เปิดประวัติการเล่น">📜 กองหงาย</button>
       <div class="stage-cards">
-        <div class="stage-slot" id="slotOpp" aria-live="polite">
+        <div class="stage-slot" id="slotYou">
           <div class="flip"><div class="face back"></div><div class="face front"></div></div>
         </div>
         <div class="stage-vs">VS<br><span id="roundNo" style="font-size:12px;color:rgb(255 255 255/.6)"></span></div>
-        <div class="stage-slot" id="slotYou">
+        <div class="stage-slot" id="slotOpp" aria-live="polite">
           <div class="flip"><div class="face back"></div><div class="face front"></div></div>
         </div>
       </div>
@@ -213,27 +214,64 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
   function finishMatch() {
     if (finished) return;
     finished = true;
-    setTimeout(() => onFinished && onFinished(view), reducedMotion() ? 200 : 1400);
+    /* ผลใหญ่กลางจอก่อนไปหน้าสรุป */
+    const r = view.result;
+    const word = r.draw ? 'DRAW' : (r.youWon ? 'WIN' : 'LOSE');
+    const sub = r.draw ? '🤝 เสมอ — เกิดได้ยากมาก'
+      : (r.youWon ? '🏆 คุณชนะ!' : `${view.opponent.name} ชนะ`);
+    const overlay = el('div', {
+      class: `end-overlay ${word.toLowerCase()}`, role: 'alert',
+    },
+      el('b', { class: 'disp anim-pop' }, word),
+      el('span', {}, sub));
+    root.append(overlay);
+    haptic(r.youWon ? [20, 60, 20, 60, 40] : 30);
+    setTimeout(() => onFinished && onFinished(view), reducedMotion() ? 700 : 2000);
   }
 
-  /* ── History drawer ── */
+  /* ── History drawer — แบ่งครึ่งซ้าย (คุณ) / ขวา (คู่แข่ง) มีเส้นกลาง ── */
   $('#histBtn', root).addEventListener('click', () => openHistory());
+
+  function historyChip(c, { discard = false } = {}) {
+    const meta = COLOR_META[c.color];
+    const card = cardById(c.cardId);
+    const name = card && !card.generic ? card.en : meta.nameEn.toUpperCase();
+    return el('span', {
+      class: 'hchip' + (discard ? ' discard' : ''),
+      style: `background:${meta.hex}`,
+      'aria-label': `${discard ? 'ทิ้ง ' : ''}${name} สี${meta.nameTh}`,
+    }, `${discard ? '🗑 ' : ''}${meta.emoji} ${name}`);
+  }
+
   function openHistory() {
     const d = el('div', { class: 'drawer', role: 'dialog', 'aria-label': 'ประวัติการเล่น' });
     const inner = el('div', { class: 'wrap-slim' });
     inner.append(el('h2', { class: 'disp' }, '📜 กองหงาย — ทุกใบที่ใช้แล้ว'));
     if (!view.rounds.length) inner.append(el('p', {}, 'ยังไม่มีรอบที่จบ'));
-    for (const r of [...view.rounds].reverse()) {
-      const row = el('div', { class: 'hist-round' });
-      row.append(el('b', { class: 'disp' }, `R${r.n}`));
-      const chip = (c, who) => el('span', { class: 'hist-chip', html: `${colorIcon(c.color, 14)} ${who} · ${cardById(c.cardId)?.en || c.color}` });
-      row.append(chip(r.you, 'คุณ'), el('span', {}, 'vs'), chip(r.opp, view.opponent.name));
-      row.append(el('span', { style: 'color:rgb(227 197 126)' },
-        r.result === 'TIE' ? 'เสมอ' : (r.youWon ? 'คุณชนะ' : 'คู่แข่งชนะ')));
-      for (const dc of r.discards) {
-        row.append(el('span', { class: 'hist-chip', style: 'opacity:.75', html: `🗑 ${dc.yours ? 'คุณ' : view.opponent.name}ทิ้ง · ${colorIcon(dc.color, 13)} ${cardById(dc.cardId)?.en || dc.color}` }));
+    else {
+      const table = el('div', { class: 'hist2' });
+      /* ชื่อครั้งเดียวที่แถวบนสุด — คุณซ้าย คู่แข่งขวา */
+      table.append(el('div', { class: 'hhead' },
+        el('span', {}, `${view.you.name} (คุณ)`),
+        el('span', {}, view.opponent.name)));
+      /* เรียง R1 → ล่าสุด อ่านเป็นบัญชีนับสีได้ง่าย */
+      for (const r of view.rounds) {
+        const resCls = r.result === 'TIE' ? 'tie' : (r.youWon ? 'win' : 'lose');
+        const resTxt = r.result === 'TIE' ? 'เสมอ' : (r.youWon ? 'คุณชนะ' : 'แพ้');
+        table.append(el('div', { class: 'hround' },
+          el('span', { class: `rpill ${resCls}` }, `R${r.n} · ${resTxt}`)));
+        table.append(el('div', { class: 'hcells' },
+          el('div', { class: 'hc l' }, historyChip(r.you)),
+          el('div', { class: 'hc r' }, historyChip(r.opp))));
+        /* ใบที่ทิ้งเพิ่มอยู่ฝั่งของเจ้าของการ์ดเสมอ */
+        if (r.discards.length) {
+          const l = el('div', { class: 'hc l' });
+          const rt = el('div', { class: 'hc r' });
+          for (const dc of r.discards) (dc.yours ? l : rt).append(historyChip(dc, { discard: true }));
+          table.append(el('div', { class: 'hcells' }, l, rt));
+        }
       }
-      inner.append(row);
+      inner.append(table);
     }
     const closeBtn = el('button', { class: 'btn btn-gold', style: 'margin-top:18px' }, 'ปิด');
     const ffBtn = el('button', { class: 'btn btn-ghost', style: 'margin-top:18px;margin-left:10px' }, '🏳️ ยอมแพ้');
