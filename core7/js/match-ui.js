@@ -197,15 +197,19 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
       slotYou.classList.add('revealed');
       slotOpp.classList.add('revealed');
       haptic([10, 40, 18]);
+      /* คำผลรอบ WIN / LOSE / DRAW กลางจอ — เด่นแต่ไม่เท่าตอนจบเกม */
       const rr = $('#roundResult', root);
       const cy = round.you.color, co = round.opp.color;
       if (round.result === 'TIE') {
-        rr.innerHTML = (cy === co ? RESULT_TEXT.TIE_SAME(cy) : RESULT_TEXT.TIE_GRAY())
+        rr.innerHTML = '<span class="rr-word draw anim-pop">DRAW</span>'
+          + (cy === co ? RESULT_TEXT.TIE_SAME(cy) : RESULT_TEXT.TIE_GRAY())
           + '<span class="sub">เสมอ — เสียคนละใบที่ลง ไม่มีใครทิ้งเพิ่ม</span>';
       } else if (round.youWon) {
-        rr.innerHTML = `🎉 ${RESULT_TEXT.WIN(cy, co)}<span class="sub">คุณได้ Round Win — คู่แข่งต้องทิ้งเพิ่ม 1 ใบ</span>`;
+        rr.innerHTML = '<span class="rr-word win anim-pop">WIN</span>'
+          + `🎉 ${RESULT_TEXT.WIN(cy, co)}<span class="sub">คุณได้ Round Win — คู่แข่งต้องทิ้งเพิ่ม 1 ใบ</span>`;
       } else {
-        rr.innerHTML = `${RESULT_TEXT.WIN(co, cy)}<span class="sub">คู่แข่งได้ Round Win — คุณต้องทิ้งเพิ่ม 1 ใบ</span>`;
+        rr.innerHTML = '<span class="rr-word lose anim-pop">LOSE</span>'
+          + `${RESULT_TEXT.WIN(co, cy)}<span class="sub">คู่แข่งได้ Round Win — คุณต้องทิ้งเพิ่ม 1 ใบ</span>`;
       }
     };
     reducedMotion() ? doFlip() : setTimeout(doFlip, 60);

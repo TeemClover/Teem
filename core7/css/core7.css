@@ -138,6 +138,11 @@ button { font: inherit; cursor: pointer; }
   font-size: clamp(17px, 4.5vw, 22px); min-height: 32px;
 }
 .round-result .sub { display: block; font-family: "Anuphan"; font-weight: 400; font-size: 13.5px; color: rgb(255 255 255 / .75); }
+/* คำผลรายรอบ — ใหญ่กว่าข้อความอธิบาย แต่เล็กกว่า end-overlay ตอนจบเกม */
+.round-result .rr-word { display: block; font-family: "Bai Jamjuree"; font-weight: 700; font-size: clamp(26px, 8vw, 38px); letter-spacing: .06em; line-height: 1.15; }
+.rr-word.win { color: rgb(var(--gold-l)); text-shadow: 0 0 22px rgb(190 148 66 / .5); }
+.rr-word.lose { color: #fca5a5; }
+.rr-word.draw { color: #d7dbd7; }
 
 .match-hand {
   padding: 8px 10px calc(12px + env(safe-area-inset-bottom));
