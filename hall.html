@@ -81,26 +81,255 @@ section{padding:clamp(58px,8vw,94px) 0}
 .eyebrow{display:block;color:#85641f;font-family:"Bai Jamjuree",system-ui;font-weight:800;font-size:12px;letter-spacing:.15em;text-transform:uppercase}
 h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-height:1.15;letter-spacing:-.035em;margin:9px 0 12px}
 .sub{max-width:62ch;color:var(--muted);margin:0}
-.quest{background:linear-gradient(180deg,#fff,var(--paper))}
-.quest-head{display:flex;align-items:end;justify-content:space-between;gap:20px}
-.overall{text-align:right;min-width:170px}
-.overall b{display:block;font-family:"Bai Jamjuree",system-ui;font-size:26px;color:var(--green)}
-.overall span{font-size:12px;color:var(--muted)}
-.qtrack{height:9px;border-radius:999px;background:rgba(18,40,28,.09);overflow:hidden;margin:26px 0 22px}
-.qtrack i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:inherit;transition:width .55s ease}
-.qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.qstep{position:relative;background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;overflow:hidden;transition:transform .18s,border-color .18s,box-shadow .18s}
-.qstep:hover{transform:translateY(-4px);box-shadow:0 24px 44px -32px rgba(18,40,28,.55)}
-.qstep.current{border-color:rgba(190,148,66,.75);box-shadow:0 0 0 3px rgba(190,148,66,.09)}
-.qstep.done{border-color:rgba(27,106,66,.45)}
-.qnum{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.qnum span:first-child{font-family:"Bai Jamjuree",system-ui;font-weight:800;font-size:12px;color:#85641f}
-.qcheck{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:rgba(18,40,28,.07);color:var(--muted);font-size:13px}
-.qstep.done .qcheck{background:var(--green);color:#fff}
-.qstep h3{font-family:"Bai Jamjuree",system-ui;font-size:21px;line-height:1.3;margin:14px 0 6px}
-.qstep p{margin:0;color:var(--muted);font-size:14px}
-.qstatus{display:block;margin-top:15px;font-size:13px;font-weight:800;color:#85641f}
-.qgo{display:inline-flex;margin-top:13px;font-weight:800;color:var(--green);font-size:14px}
+.quest{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(760px 340px at 86% 0%,rgba(190,148,66,.10),transparent 66%),
+    linear-gradient(180deg,#fff,var(--paper))
+}
+.quest-hud{
+  --quest-accent:var(--green);
+  position:relative;
+  border:1px solid rgba(18,40,28,.12);
+  border-radius:28px;
+  padding:clamp(22px,4vw,38px);
+  background:rgba(255,255,255,.88);
+  box-shadow:0 32px 76px -54px rgba(8,28,17,.7);
+  transition:border-color .3s,box-shadow .3s,background .3s
+}
+.quest-hud[data-state="complete"]{
+  --quest-accent:var(--green);
+  border-color:rgba(27,106,66,.32);
+  background:
+    radial-gradient(520px 220px at 92% 0%,rgba(27,106,66,.08),transparent 70%),
+    #fff
+}
+.quest-hud[data-state="secret"]{
+  --quest-accent:var(--gold);
+  color:#fff;
+  border-color:rgba(234,208,140,.42);
+  background:
+    radial-gradient(520px 260px at 90% 0%,rgba(190,148,66,.26),transparent 68%),
+    radial-gradient(480px 240px at 0% 100%,rgba(27,106,66,.24),transparent 68%),
+    linear-gradient(145deg,#071d12,#0b2c1a);
+  box-shadow:0 38px 90px -48px rgba(0,0,0,.92),inset 0 1px 0 rgba(255,255,255,.06)
+}
+.quest-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:26px;align-items:start}
+.quest-hud .eyebrow{color:#85641f}
+.quest-hud[data-state="secret"] .eyebrow{color:var(--gold2)}
+.quest-hud h2{
+  margin:8px 0 8px;
+  max-width:16ch;
+  font-size:clamp(31px,5vw,52px)
+}
+.quest-lead{max-width:62ch;margin:0;color:var(--muted);font-size:15px}
+.quest-hud[data-state="secret"] .quest-lead{color:rgba(255,255,255,.7)}
+.overall{text-align:right;min-width:128px;padding-top:3px}
+.overall b{
+  display:block;
+  font-family:"Bai Jamjuree",system-ui;
+  font-size:clamp(28px,4vw,42px);
+  line-height:1;
+  color:var(--quest-accent)
+}
+.quest-hud[data-state="secret"] .overall b{color:var(--gold2)}
+.overall span{display:block;margin-top:7px;font-size:12px;color:var(--muted)}
+.quest-hud[data-state="secret"] .overall span{color:rgba(255,255,255,.58)}
+.qtrack{
+  height:8px;
+  border-radius:999px;
+  background:rgba(18,40,28,.09);
+  overflow:hidden;
+  margin:25px 0 20px
+}
+.quest-hud[data-state="secret"] .qtrack{background:rgba(255,255,255,.12)}
+.qtrack i{
+  display:block;
+  height:100%;
+  width:0;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--green),var(--gold));
+  transition:width .55s ease
+}
+.quest-route{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:18px
+}
+.qnode{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  min-width:0;
+  padding:12px 14px;
+  border:1px solid rgba(18,40,28,.1);
+  border-radius:16px;
+  background:rgba(248,246,240,.72)
+}
+.quest-hud[data-state="secret"] .qnode{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.055)
+}
+.qnode.current{
+  border-color:rgba(190,148,66,.6);
+  box-shadow:0 0 0 3px rgba(190,148,66,.08)
+}
+.qnode.done{border-color:rgba(27,106,66,.28)}
+.qnode-icon{
+  width:35px;
+  height:35px;
+  flex:none;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 8px 20px -16px rgba(0,0,0,.7)
+}
+.quest-hud[data-state="secret"] .qnode-icon{background:rgba(255,255,255,.11)}
+.qnode-copy{min-width:0}
+.qnode-copy b{
+  display:block;
+  font-family:"Bai Jamjuree",system-ui;
+  font-size:13px;
+  line-height:1.25
+}
+.qnode-copy span{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:11.5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+.quest-hud[data-state="secret"] .qnode-copy span{color:rgba(255,255,255,.54)}
+.qnode-mark{
+  margin-left:auto;
+  width:23px;
+  height:23px;
+  flex:none;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(18,40,28,.07);
+  color:var(--muted);
+  font-size:11px;
+  font-weight:900
+}
+.qnode.done .qnode-mark{background:var(--green);color:#fff}
+.active-quest{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:16px;
+  align-items:center;
+  padding:18px;
+  border-radius:20px;
+  background:var(--deep);
+  color:#fff;
+  box-shadow:0 24px 50px -38px rgba(8,28,17,.9)
+}
+.quest-hud[data-state="complete"] .active-quest{
+  background:linear-gradient(135deg,#0d3c23,#17603a)
+}
+.quest-hud[data-state="secret"] .active-quest{
+  background:rgba(255,255,255,.075);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:none
+}
+.active-icon{
+  width:54px;
+  height:54px;
+  display:grid;
+  place-items:center;
+  border-radius:17px;
+  background:rgba(255,255,255,.1);
+  font-size:26px
+}
+.active-label{
+  display:block;
+  color:var(--gold2);
+  font-family:"Bai Jamjuree",system-ui;
+  font-size:10.5px;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase
+}
+.active-quest h3{
+  margin:4px 0 3px;
+  font-family:"Bai Jamjuree",system-ui;
+  font-size:clamp(19px,2.5vw,25px);
+  line-height:1.25
+}
+.active-quest p{margin:0;color:rgba(255,255,255,.64);font-size:13px}
+.quest-cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:50px;
+  padding:13px 18px;
+  border-radius:14px;
+  background:var(--gold2);
+  color:var(--deep);
+  font-family:"Bai Jamjuree",system-ui;
+  font-weight:800;
+  white-space:nowrap;
+  transition:transform .18s,box-shadow .18s
+}
+.quest-cta:hover{transform:translateY(-3px);box-shadow:0 15px 30px -18px rgba(234,208,140,.85)}
+.quest-rewards{
+  display:none;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:17px
+}
+.quest-hud[data-state="complete"] .quest-rewards,
+.quest-hud[data-state="secret"] .quest-rewards{display:flex}
+.reward-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 11px;
+  border-radius:999px;
+  border:1px solid rgba(18,40,28,.1);
+  background:#fff;
+  color:var(--ink);
+  font-size:12px;
+  font-weight:800
+}
+.quest-hud[data-state="secret"] .reward-chip{
+  border-color:rgba(255,255,255,.13);
+  background:rgba(255,255,255,.075);
+  color:#fff
+}
+.secret-banner{
+  display:none;
+  align-items:center;
+  gap:12px;
+  margin-top:17px;
+  padding-top:17px;
+  border-top:1px solid rgba(255,255,255,.13)
+}
+.quest-hud[data-state="secret"] .secret-banner{display:flex}
+.secret-trophy{
+  font-size:34px;
+  filter:drop-shadow(0 8px 18px rgba(190,148,66,.45))
+}
+.secret-banner b{
+  display:block;
+  font-family:"Bai Jamjuree",system-ui;
+  color:var(--gold2);
+  font-size:15px
+}
+.secret-banner span{display:block;color:rgba(255,255,255,.62);font-size:12px}
+@media(max-width:760px){
+  .quest-top{grid-template-columns:1fr}
+  .overall{text-align:left;padding-top:0}
+  .quest-route{grid-template-columns:1fr}
+  .active-quest{grid-template-columns:auto minmax(0,1fr)}
+  .quest-cta{grid-column:1/-1;width:100%}
+}
 .term{display:inline;border:0;padding:0;background:transparent;color:inherit;font-weight:800;text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:1.5px;text-underline-offset:4px;cursor:help}
 .tip-box{position:fixed;z-index:140;max-width:min(310px,84vw);padding:11px 13px;border-radius:12px;background:var(--deep);color:#fff;font-size:12.5px;font-weight:500;line-height:1.55;white-space:pre-line;box-shadow:0 14px 32px rgba(0,0,0,.28);opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .16s,transform .16s}
 .tip-box.show{opacity:1;transform:translateY(0)}
@@ -246,37 +475,64 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
 
 <section class="quest" id="quest">
   <div class="wrap">
-    <div class="quest-head">
-      <div>
-        <span class="eyebrow">Main Quest ของบ้าน</span>
-        <h2>เข้าใจเหตุผล → ลงมือสร้าง → เก็บหลักฐาน</h2>
-        <p class="sub">Progress นี้อัปเดตจากสิ่งที่คุณทำจริงในเครื่องนี้ อ่านจบ เรียนจบ และบันทึกการ์ดเมื่อไหร่ เส้นทางจะขยับเมื่อนั้น</p>
+    <div class="quest-hud" id="questHud" data-state="active">
+      <div class="quest-top">
+        <div>
+          <span class="eyebrow" id="questEyebrow">Main Quest Tracker</span>
+          <h2 id="questTitle">กำลังหาเควสถัดไป…</h2>
+          <p class="quest-lead" id="questLead">บ้านกำลังอ่านความคืบหน้าในเครื่องนี้ เพื่อปักหมุดภารกิจที่ควรทำต่อให้คุณ</p>
+        </div>
+        <div class="overall">
+          <b id="overallPct">0%</b>
+          <span id="overallText">ยังไม่ได้เริ่ม</span>
+        </div>
       </div>
-      <div class="overall"><b id="overallPct">0%</b><span id="overallText">ยังไม่ได้เริ่ม</span></div>
-    </div>
-    <div class="qtrack"><i id="questFill"></i></div>
-    <div class="qgrid">
-      <a class="qstep" id="qWhy" href="forge/">
-        <div class="qnum"><span>01 · WHY</span><span class="qcheck">○</span></div>
-        <h3>เข้าใจเหตุผล</h3>
-        <p>อ่าน WHY AI? ให้ครบ 7 ตอน แล้วดูว่า AI ช่วยคืนเวลาให้ชีวิตได้อย่างไร</p>
-        <span class="qstatus" id="whyStatus">อ่านแล้ว 0/7 ตอน</span>
-        <span class="qgo">ไปอ่านการ์ตูน →</span>
-      </a>
-      <a class="qstep" id="qHow" href="classroom/">
-        <div class="qnum"><span>02 · HOW</span><span class="qcheck">○</span></div>
-        <h3>ลงมือสร้าง</h3>
-        <p>เรียนฟรี 6 บท ตั้งแต่ใช้ AI คิด ไปจนถึงสร้างของที่คนอื่นเปิดดูได้จริง</p>
-        <span class="qstatus" id="howStatus">เรียนแล้ว 0/6 บท</span>
-        <span class="qgo">เข้าห้องเรียน →</span>
-      </a>
-      <a class="qstep" id="qProof" href="card/">
-        <div class="qnum"><span>03 · PROOF</span><span class="qcheck">○</span></div>
-        <h3>เก็บหลักฐาน</h3>
-        <p>สร้างและบันทึกการ์ดประจำตัว เพื่อเก็บร่องรอยว่าคุณเดินมาถึงตรงไหนแล้ว</p>
-        <span class="qstatus" id="proofStatus">ยังไม่ได้บันทึกการ์ด</span>
-        <span class="qgo">ไปทำการ์ด →</span>
-      </a>
+
+      <div class="qtrack" aria-label="Main Quest progress">
+        <i id="questFill"></i>
+      </div>
+
+      <div class="quest-route" aria-label="ลำดับ Main Quest">
+        <div class="qnode" id="qWhy">
+          <span class="qnode-icon">📖</span>
+          <span class="qnode-copy"><b>WHY · เข้าใจเหตุผล</b><span id="whyStatus">0/7 ตอน</span></span>
+          <span class="qnode-mark">○</span>
+        </div>
+        <div class="qnode" id="qHow">
+          <span class="qnode-icon">⚡</span>
+          <span class="qnode-copy"><b>HOW · ลงมือสร้าง</b><span id="howStatus">0/6 บท</span></span>
+          <span class="qnode-mark">○</span>
+        </div>
+        <div class="qnode" id="qProof">
+          <span class="qnode-icon">🎴</span>
+          <span class="qnode-copy"><b>PROOF · เก็บหลักฐาน</b><span id="proofStatus">ยังไม่มีการ์ด</span></span>
+          <span class="qnode-mark">○</span>
+        </div>
+      </div>
+
+      <div class="active-quest">
+        <div class="active-icon" id="activeIcon">🧭</div>
+        <div>
+          <span class="active-label" id="activeLabel">ภารกิจถัดไป</span>
+          <h3 id="activeTitle">กำลังค้นหาเควสที่ค้างอยู่</h3>
+          <p id="activeDesc">รอสักครู่ บ้านกำลังจัดลำดับเส้นทางให้คุณ</p>
+        </div>
+        <a class="quest-cta" id="activeCta" href="forge/">เริ่มภารกิจ →</a>
+      </div>
+
+      <div class="quest-rewards" id="questRewards" aria-label="Main Quest rewards">
+        <span class="reward-chip">📖 WHY 7/7</span>
+        <span class="reward-chip">⚡ HOW 6/6</span>
+        <span class="reward-chip">🎴 PROOF SAVED</span>
+      </div>
+
+      <div class="secret-banner" id="secretBanner">
+        <span class="secret-trophy">🏆</span>
+        <span>
+          <b>PLATINUM TROPHY · WELL PLAYED</b>
+          <span>สมุดถูกซ่อม · อ่าน Secret Ending จบ · ตรา 👊🏻GLHF ถูกบันทึกแล้ว</span>
+        </span>
+      </div>
     </div>
   </div>
 </section>
@@ -464,35 +720,233 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
     "ep4-what-traveled-without-us","ep5-from-answers-to-a-system",
     "ep6-the-starter-kit","ep7-a-voice-that-went-further"
   ];
+  var READ_URLS=[
+    "forge/ep1-everyone-gets-to-play/",
+    "forge/ep2-the-first-item/",
+    "forge/ep3-the-item-that-came-back/",
+    "forge/ep4-what-traveled-without-us/",
+    "forge/ep5-from-answers-to-a-system/",
+    "forge/ep6-the-starter-kit/",
+    "forge/ep7-a-voice-that-went-further/"
+  ];
   var LEARN=["free-ai","image-ai","clip-ai","notebooklm","prompts","first-web"];
-  function ls(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
-  function count(k,items){
-    var raw=ls(k,"").split(",").filter(Boolean);
-    return items.filter(function(x){return raw.indexOf(x)>=0}).length;
+  var LEARN_URLS=[
+    "classroom/free-ai.html",
+    "classroom/image-ai.html",
+    "classroom/clip-ai.html",
+    "classroom/notebooklm.html",
+    "classroom/prompts.html",
+    "classroom/first-web.html"
+  ];
+
+  function ls(k,d){
+    try{
+      var v=localStorage.getItem(k);
+      return v===null?d:v;
+    }catch(e){return d}
   }
+  function values(k){
+    return ls(k,"").split(",").filter(Boolean);
+  }
+  function countDone(k,items){
+    var raw=values(k);
+    return items.filter(function(item){return raw.indexOf(item)>=0}).length;
+  }
+  function firstMissing(k,items){
+    var raw=values(k);
+    for(var i=0;i<items.length;i++){
+      if(raw.indexOf(items[i])<0)return i;
+    }
+    return -1;
+  }
+  function titles(){
+    try{
+      var list=JSON.parse(ls("mc_titles","[]"));
+      return Array.isArray(list)?list:[];
+    }catch(e){return []}
+  }
+  function setNode(id,done,current){
+    var node=document.getElementById(id);
+    node.classList.toggle("done",done);
+    node.classList.toggle("current",current);
+    node.querySelector(".qnode-mark").textContent=done?"✓":current?"→":"○";
+  }
+  function setActive(icon,label,title,desc,url,cta){
+    document.getElementById("activeIcon").textContent=icon;
+    document.getElementById("activeLabel").textContent=label;
+    document.getElementById("activeTitle").textContent=title;
+    document.getElementById("activeDesc").textContent=desc;
+    var link=document.getElementById("activeCta");
+    link.href=url;
+    link.textContent=cta;
+  }
+
   function paintQuest(){
-    var r=count("mc_read",READ),l=count("mc_learn",LEARN),c=ls("mc_opened","")==="1"?1:0;
-    var total=r+l+c,pct=Math.round(total/14*100);
+    var readCount=countDone("mc_read",READ);
+    var learnCount=countDone("mc_learn",LEARN);
+    var cardDone=ls("mc_opened","")==="1";
+    var total=readCount+learnCount+(cardDone?1:0);
+    var pct=Math.round(total/14*100);
+
+    var restored=ls("mc_nb_restored","")==="1";
+    var secretEnd=ls("mc_secret_end","")==="1";
+    var hasGLHF=titles().indexOf("GLHF")>=0;
+    var secretComplete=restored&&secretEnd&&hasGLHF;
+    var secretSeen=ls("mc_nb_seen","")==="1"||restored||secretEnd||hasGLHF;
+    var mainComplete=readCount===7&&learnCount===6&&cardDone;
+
+    var hud=document.getElementById("questHud");
+    var title=document.getElementById("questTitle");
+    var lead=document.getElementById("questLead");
+    var eyebrow=document.getElementById("questEyebrow");
+
     document.getElementById("questFill").style.width=pct+"%";
-    document.getElementById("overallPct").textContent=pct+"%";
-    document.getElementById("overallText").textContent=pct===100?"Main Quest ครบแล้ว":"เก็บได้ "+total+"/14 จุด";
-    document.getElementById("whyStatus").textContent=r>=7?"อ่านครบ 7 ตอนแล้ว":"อ่านแล้ว "+r+"/7 ตอน";
-    document.getElementById("howStatus").textContent=l>=6?"เรียนครบ 6 บทแล้ว":"เรียนแล้ว "+l+"/6 บท";
-    document.getElementById("proofStatus").textContent=c?"บันทึกการ์ดแล้ว":"ยังไม่ได้บันทึกการ์ด";
-    var steps=[
-      [document.getElementById("qWhy"),r>=7,r<7],
-      [document.getElementById("qHow"),l>=6,r>=7&&l<6],
-      [document.getElementById("qProof"),!!c,r>=7&&l>=6&&!c]
-    ];
-    steps.forEach(function(s){
-      s[0].classList.toggle("done",s[1]);
-      s[0].classList.toggle("current",s[2]);
-      s[0].querySelector(".qcheck").textContent=s[1]?"✓":"○";
-    });
+    document.getElementById("overallPct").textContent=secretComplete?"TRUE END":pct+"%";
+    document.getElementById("overallText").textContent=secretComplete
+      ?"Secret Ending ครบแล้ว"
+      :mainComplete
+        ?"Main Quest ครบแล้ว"
+        :"เก็บได้ "+total+"/14 จุด";
+
+    document.getElementById("whyStatus").textContent=readCount+"/7 ตอน";
+    document.getElementById("howStatus").textContent=learnCount+"/6 บท";
+    document.getElementById("proofStatus").textContent=cardDone?"บันทึกการ์ดแล้ว":"ยังไม่มีการ์ด";
+
+    var nextRead=firstMissing("mc_read",READ);
+    var nextLearn=firstMissing("mc_learn",LEARN);
+
+    setNode("qWhy",readCount===7,readCount<7);
+    setNode("qHow",learnCount===6,readCount===7&&learnCount<6);
+    setNode("qProof",cardDone,readCount===7&&learnCount===6&&!cardDone);
+
+    hud.dataset.state="active";
+    eyebrow.textContent="Main Quest Tracker";
+
+    if(readCount<7){
+      var episode=nextRead+1;
+      title.textContent="เควสหลักถัดไป";
+      lead.textContent="บ้านพบตอนที่คุณยังอ่านไม่จบ และปักหมุดไว้ให้แล้ว";
+      setActive(
+        "📖",
+        readCount===0?"ภารกิจแรก":"ทำเควสต่อ",
+        "อ่าน WHY AI? ตอนที่ "+episode,
+        "ตอนที่ "+episode+" จาก 7 · อ่านจบแล้ว Tracker จะเลื่อนไปตอนถัดไปเอง",
+        READ_URLS[nextRead],
+        "อ่านตอนที่ "+episode+" →"
+      );
+      return;
+    }
+
+    if(learnCount<6){
+      var lesson=nextLearn+1;
+      title.textContent="เควสหลักถัดไป";
+      lead.textContent="WHY ผ่านแล้ว ต่อไปเปลี่ยนความเข้าใจให้กลายเป็นของที่ใช้ได้จริง";
+      setActive(
+        "⚡",
+        "ทำเควสต่อ",
+        "เรียนบทที่ "+lesson+" จาก 6",
+        "เรียนจบบทนี้แล้ว Tracker จะปักหมุดบทถัดไปให้ทันที",
+        LEARN_URLS[nextLearn],
+        "เรียนบทที่ "+lesson+" →"
+      );
+      return;
+    }
+
+    if(!cardDone){
+      title.textContent="ภารกิจสุดท้าย";
+      lead.textContent="เหลือเพียงเก็บหลักฐานว่าคุณเดินทางมาถึงตรงนี้แล้ว";
+      setActive(
+        "🎴",
+        "Final Main Quest",
+        "สร้างและบันทึกการ์ดประจำตัว",
+        "การบันทึกการ์ดจะปิด Main Quest อย่างสมบูรณ์",
+        "card/",
+        "สร้างการ์ด →"
+      );
+      return;
+    }
+
+    // Main Quest complete: ถ้าพบทางลับแล้ว Tracker จะพาไปจนถึง True End
+    if(secretSeen&&!secretComplete){
+      hud.dataset.state="complete";
+      eyebrow.textContent="Main Quest Completed · Secret Route";
+
+      if(!restored){
+        title.textContent="พบเควสลับ";
+        lead.textContent="Main Quest จบแล้ว แต่สมุดเล่มเก่ายังรอให้คุณใช้สกิล RESTORE";
+        setActive(
+          "📔",
+          "Secret Quest",
+          "ซ่อมสมุดเล่มเก่า",
+          "กลับไปใช้ RESTORE เพื่อเปิดหน้าที่เสียหายและเรื่องราวที่ซ่อนอยู่",
+          "classroom/awaken/notebook/",
+          "กลับไปซ่อมสมุด →"
+        );
+        return;
+      }
+
+      if(!secretEnd){
+        title.textContent="Secret Route กำลังดำเนินอยู่";
+        lead.textContent="สมุดถูกซ่อมแล้ว เหลืออ่านเรื่องที่กลับคืนมาจนถึงบทส่งท้าย";
+        setActive(
+          "🌙",
+          "Secret Quest",
+          "อ่านเรื่องที่ซ่อมแล้วจนจบ",
+          "เลื่อนอ่านต่อไปจนพบรหัสสุดท้ายของเส้นทางลับ",
+          "classroom/awaken/notebook/",
+          "อ่านตอนจบต่อ →"
+        );
+        return;
+      }
+
+      title.textContent="เหลือการกระทำสุดท้าย";
+      lead.textContent="คุณพบ Secret Ending แล้ว เหลือเพียงชนหมัดเพื่อรับรางวัลสุดท้าย";
+      setActive(
+        "🤜🏻",
+        "Final Secret Quest",
+        "ชนหมัดและรับ Platinum Trophy",
+        "การชนหมัดจะบันทึกตรา GLHF และปิดเส้นทางลับอย่างสมบูรณ์",
+        "classroom/awaken/notebook/",
+        "กลับไปชนหมัด →"
+      );
+      return;
+    }
+
+    if(secretComplete){
+      hud.dataset.state="secret";
+      eyebrow.textContent="True Ending";
+      title.textContent="Secret Ending Unlocked";
+      lead.textContent="คุณเคลียร์เนื้อเรื่องหลัก ซ่อมสมุด อ่านบทส่งท้าย และรับรางวัลสุดท้ายครบแล้ว";
+      setActive(
+        "🏆",
+        "Platinum Trophy",
+        "WELL PLAYED · 👊🏻GLHF",
+        "ฉากจบลับและตราสุดท้ายถูกบันทึกไว้ในเครื่องนี้แล้ว",
+        "classroom/awaken/notebook/",
+        "กลับไปดูฉากจบลับ →"
+      );
+      return;
+    }
+
+    hud.dataset.state="complete";
+    eyebrow.textContent="Quest Complete";
+    title.textContent="Main Quest Completed";
+    lead.textContent="คุณเข้าใจเหตุผล ลงมือสร้าง และเก็บหลักฐานของตัวเองครบแล้ว";
+    setActive(
+      "🏆",
+      "Main Quest Complete",
+      "เส้นทางหลักของบ้านจบสมบูรณ์",
+      "การ์ตูน 7 ตอน · บทเรียน 6 บท · การ์ดหลักฐาน 1 ใบ",
+      "card/",
+      "ดูการ์ดของฉัน →"
+    );
   }
+
   paintQuest();
   window.addEventListener("storage",paintQuest);
-  document.addEventListener("visibilitychange",function(){if(!document.hidden)paintQuest()});
+  document.addEventListener("visibilitychange",function(){
+    if(!document.hidden)paintQuest();
+  });
 
   // Floating tooltip (not clipped by cards)
   var tip=document.createElement("div");
