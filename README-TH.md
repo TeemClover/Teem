@@ -34,3 +34,24 @@
   - `hall-classroom.jpg`
   - `hall-core7.jpg`
   - `paths-hero.jpg`
+
+
+## V4.2 changes
+- เอา section Paths ที่ซ้ำออก เหลือช่วงเลือกสายเพียงครั้งเดียว
+- คืนระบบเลือกสายแบบ Hall เก่า:
+  - แตะภาพเพื่อเลือก
+  - บันทึกค่า `mc_class`
+  - ไฮไลต์สายที่เลือก
+  - แสดงปุ่มเข้าหน้าสายนั้น
+  - เปลี่ยนสายได้ตลอดและไม่ล็อกห้องอื่น
+- ใช้ภาพจาก main โดยครอปเฉพาะฝั่งภาพ ไม่แสดงข้อความเล็กในภาพ:
+  - `img/path-taster.jpg`
+  - `img/path-keeper.jpg`
+  - `img/path-thinker.jpg`
+  - `img/path-maker.jpg`
+- หน้ารวม `paths/` เหลือเป็นลิงก์รองใต้ตัวเลือก ไม่อยู่ใน nav
+- Tooltip แสดงคำเต็ม คำแปล และความหมาย:
+  - STR · Strength · พลังลงมือ
+  - DEX · Dexterity · ความคล่องตัว
+  - INT · Intelligence · พลังความเข้าใจ
+  - Construct · พลังการสร้าง
