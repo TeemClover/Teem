@@ -98,8 +98,8 @@ const HOWTEXT = {
 };
 let title, sub;
 if (r.draw) { title = '🤝 DRAW'; sub = HOWTEXT.DRAW; }
-else if (r.youWon) { title = '🏆 คุณชนะ!'; sub = HOWTEXT[r.resultType] || ''; }
-else { title = 'คู่แข่งชนะ'; sub = HOWTEXT[r.resultType] || ''; }
+else if (r.youWon) { title = '🏆 YOU WIN'; sub = HOWTEXT[r.resultType] || ''; }
+else { title = 'YOU LOSE'; sub = HOWTEXT[r.resultType] || ''; }
 hero.innerHTML = `
   <h1>${title}</h1>
   <div class="score">${view.you.name} ${r.roundWins[view.seat]} — ${r.roundWins[view.seat === 'a' ? 'b' : 'a']} ${view.opponent.name}</div>

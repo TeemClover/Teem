@@ -17,6 +17,14 @@
 .mode .row{display:flex;gap:10px;flex-wrap:wrap}
 .namebar{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:14px;padding:12px 16px;margin-top:22px;flex-wrap:wrap}
 .namebar input{flex:1;min-width:160px;border:1px solid rgb(var(--line)/.15);border-radius:10px;padding:11px 14px;font:inherit}
+.play-lobby{margin-top:26px;background:rgb(var(--gold)/.07);border-color:rgb(var(--gold)/.28)}
+.play-lobby-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.play-room-list{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.play-room{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:12px;padding:12px 14px}
+.play-room-code{font:700 20px "Bai Jamjuree";letter-spacing:3px;color:rgb(var(--green))}
+.play-room-main{flex:1;min-width:0}.play-room-main b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.play-room-main small{color:rgb(var(--muted))}
+.play-lobby-empty{text-align:center;color:rgb(var(--muted));padding:18px 8px}
+@media(max-width:560px){.play-room{flex-wrap:wrap}.play-room .btn{width:100%}.play-lobby-head{align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -31,6 +39,15 @@
       <input id="gname" maxlength="24" aria-label="ชื่อที่แสดงบนโต๊ะ">
       <button class="btn" id="saveName" style="padding:11px 18px;min-height:44px">บันทึก</button>
     </div>
+
+    <section class="panel play-lobby" aria-labelledby="lobbyTitle">
+      <div class="play-lobby-head">
+        <div><p class="eyebrow">Public Lobby · Online</p><h3 class="disp" id="lobbyTitle">ห้องที่กำลังรอผู้เล่น</h3></div>
+        <button class="btn" id="refreshLobby">↻ Refresh</button>
+      </div>
+      <p id="lobbyStatus" role="status" style="font-size:13px;color:rgb(var(--muted));min-height:18px;margin-top:6px"></p>
+      <div class="play-room-list" id="playRooms" aria-live="polite"></div>
+    </section>
 
     <div class="modes">
       <div class="panel mode">
@@ -67,7 +84,9 @@
 <footer class="c7foot" id="c7foot"></footer>
 <script type="module">
 import { renderShell, toast } from '/core7/js/ui.js';
-import { getGuest, setGuestName } from '/core7/js/store.js';
+import { RemoteRooms } from '/core7/js/adapters.js';
+import { getGuest, setGuestName, track } from '/core7/js/store.js';
+import { playSfx } from '/core7/js/audio.js';
 renderShell({ active: 'play' });
 const input = document.getElementById('gname');
 input.value = getGuest().name;
@@ -75,6 +94,61 @@ document.getElementById('saveName').addEventListener('click', () => {
   setGuestName(input.value);
   toast('บันทึกชื่อแล้ว: ' + getGuest().name);
 });
+
+const roomsApi = new RemoteRooms();
+const roomsEl = document.getElementById('playRooms');
+const lobbyStatus = document.getElementById('lobbyStatus');
+const refreshLobby = document.getElementById('refreshLobby');
+
+async function joinRoom(code, button) {
+  setGuestName(input.value);
+  button.disabled = true;
+  lobbyStatus.textContent = `กำลังเข้าห้อง ${code}…`;
+  try {
+    await roomsApi.join(code, getGuest().name);
+    track('core7_room_join');
+    playSfx('join');
+    location.href = `/core7/room/?c=${code}`;
+  } catch (error) {
+    playSfx('error');
+    const messages = { ROOM_NOT_FOUND:'ไม่พบห้องหรือห้องหมดอายุแล้ว', ROOM_FULL:'ห้องนี้มีผู้เล่นครบแล้ว' };
+    lobbyStatus.textContent = messages[error.code] || `เข้าห้องไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`;
+    button.disabled = false;
+    loadLobby();
+  }
+}
+
+async function loadLobby() {
+  refreshLobby.disabled = true;
+  lobbyStatus.textContent = 'กำลังอัปเดต Lobby…';
+  roomsEl.innerHTML = '<div class="play-lobby-empty">กำลังโหลดห้อง…</div>';
+  try {
+    const rooms = await roomsApi.list();
+    roomsEl.innerHTML = '';
+    lobbyStatus.textContent = rooms.length ? `${rooms.length} ห้องกำลังรอ` : 'ยังไม่มีห้องสาธารณะ';
+    if (!rooms.length) {
+      roomsEl.innerHTML = '<div class="play-lobby-empty">ยังไม่มีห้อง — สร้างห้อง Public แล้วชื่อจะขึ้นตรงนี้</div>';
+    }
+    for (const room of rooms) {
+      const row = document.createElement('div'); row.className = 'play-room';
+      const code = document.createElement('span'); code.className = 'play-room-code'; code.textContent = room.code;
+      const main = document.createElement('div'); main.className = 'play-room-main';
+      const host = document.createElement('b'); host.textContent = room.hostName;
+      const meta = document.createElement('small'); meta.textContent = `${room.modeLabel} · Waiting`;
+      const join = document.createElement('button'); join.className = 'btn btn-green'; join.textContent = 'Join';
+      join.addEventListener('click', () => joinRoom(room.code, join));
+      main.append(host, meta); row.append(code, main, join); roomsEl.append(row);
+    }
+  } catch (error) {
+    lobbyStatus.textContent = `โหลด Lobby ไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`;
+    roomsEl.innerHTML = '<div class="play-lobby-empty">กด Refresh เพื่อลองอีกครั้ง</div>';
+  } finally {
+    refreshLobby.disabled = false;
+  }
+}
+
+refreshLobby.addEventListener('click', loadLobby);
+loadLobby();
 </script>
 </body>
 </html>

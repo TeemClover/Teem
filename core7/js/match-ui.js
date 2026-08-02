@@ -26,6 +26,7 @@ const RESULT_TEXT = {
 export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
   let view = null;
   let finished = false;
+  let finishTimer = null;
   let revealShown = 0;      // จำนวนรอบที่เล่น animation แล้ว
   const member = isLocalMember();
 
@@ -49,18 +50,25 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
         <span class="conn" id="connDot" title="สถานะการเชื่อมต่อ"></span>
       </div>
     </div>
-    <div class="match-stage">
-      <button class="drawer-toggle" id="histBtn" aria-label="เปิดประวัติการเล่น">📜 กองหงาย</button>
-      <div class="stage-cards">
-        <div class="stage-slot" id="slotYou">
-          <div class="flip"><div class="face back"></div><div class="face front"></div></div>
+    <div class="match-board">
+      <div class="match-stage">
+        <button class="drawer-toggle" id="histBtn" aria-label="เปิดประวัติการเล่น">📜 กองหงาย</button>
+        <div class="stage-cards">
+          <div class="stage-slot" id="slotYou">
+            <div class="flip"><div class="face back"></div><div class="face front"></div></div>
+          </div>
+          <div class="stage-vs">VS<br><span id="roundNo" style="font-size:12px;color:rgb(255 255 255/.6)"></span></div>
+          <div class="stage-slot" id="slotOpp" aria-live="polite">
+            <div class="flip"><div class="face back"></div><div class="face front"></div></div>
+          </div>
         </div>
-        <div class="stage-vs">VS<br><span id="roundNo" style="font-size:12px;color:rgb(255 255 255/.6)"></span></div>
-        <div class="stage-slot" id="slotOpp" aria-live="polite">
-          <div class="flip"><div class="face back"></div><div class="face front"></div></div>
-        </div>
+        <div class="round-result" id="roundResult" aria-live="assertive"></div>
+        <div class="round-discard" id="roundDiscard" aria-live="polite"></div>
       </div>
-      <div class="round-result" id="roundResult" aria-live="assertive"></div>
+      <aside class="history-rail" aria-label="กองหงายทุกใบที่ใช้แล้ว">
+        <h2 class="disp">📜 กองหงาย</h2>
+        <div id="historyRail"></div>
+      </aside>
     </div>
     <div class="match-hand">
       <p class="match-msg" id="msg"></p>
@@ -146,8 +154,10 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     const inReveal = v.rounds.length > revealShown && lastRound;
     if (inReveal) {
       revealShown = v.rounds.length;
-      showReveal(lastRound);
+      showReveal(lastRound, v);
     }
+    renderLatestDiscard(lastRound);
+    renderHistory($('#historyRail', root));
 
     /* มือ + ข้อความ */
     const handHost = $('#hand', root);
@@ -155,7 +165,13 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     const msg = $('#msg', root);
     const inHand = v.you.hand.filter(c => c.status === 'IN_HAND');
 
-    if (v.result) { finishMatch(); return; }
+    if (v.result) {
+      msg.textContent = 'จบ Round แล้ว — กำลังสรุปผล Match…';
+      lockBtn.disabled = true;
+      lockBtn.textContent = 'ผล Match…';
+      scheduleFinish(inReveal);
+      return;
+    }
 
     if (v.discardRequired) {
       msg.innerHTML = '<b style="color:#fca5a5">แพ้รอบนี้ — เลือกทิ้งจากมือเพิ่ม 1 ใบ (หงายหน้า)</b>';
@@ -191,7 +207,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     }
   }
 
-  function showReveal(round) {
+  function showReveal(round, currentView) {
     const setFace = (slot, cardId) => { $('.front', slot).innerHTML = cardFace(cardId); };
     setFace(slotYou, round.you.cardId);
     setFace(slotOpp, round.opp.cardId);
@@ -210,13 +226,31 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
           + '<span class="sub">เสมอ — เสียคนละใบที่ลง ไม่มีใครทิ้งเพิ่ม</span>';
       } else if (round.youWon) {
         rr.innerHTML = '<span class="rr-word win anim-pop">WIN</span>'
-          + `🎉 ${RESULT_TEXT.WIN(cy, co)}<span class="sub">คุณได้ Round Win — คู่แข่งต้องทิ้งเพิ่ม 1 ใบ</span>`;
+          + `🎉 ${RESULT_TEXT.WIN(cy, co)}<span class="sub">คุณได้ Round Win${currentView.waitingOpponentDiscard ? ' — คู่แข่งต้องทิ้งเพิ่ม 1 ใบ' : ''}</span>`;
       } else {
         rr.innerHTML = '<span class="rr-word lose anim-pop">LOSE</span>'
-          + `${RESULT_TEXT.WIN(co, cy)}<span class="sub">คู่แข่งได้ Round Win — คุณต้องทิ้งเพิ่ม 1 ใบ</span>`;
+          + `${RESULT_TEXT.WIN(co, cy)}<span class="sub">คู่แข่งได้ Round Win${currentView.discardRequired ? ' — คุณต้องทิ้งเพิ่ม 1 ใบ' : ''}</span>`;
       }
     };
     reducedMotion() ? doFlip() : setTimeout(doFlip, 60);
+  }
+
+  function renderLatestDiscard(round) {
+    const host = $('#roundDiscard', root);
+    host.innerHTML = '';
+    if (!round?.discards?.length) return;
+    const label = round.discards[0].yours ? 'YOU DISCARDED' : `${view.opponent.name} DISCARDED`;
+    host.append(el('b', {}, label), ...round.discards.map(card => historyChip(card, { discard: true })));
+  }
+
+  function scheduleFinish(justRevealed) {
+    if (finished || finishTimer) return;
+    /* ให้ผู้เล่นเห็นการพลิกไพ่ ผล Round และใบทิ้ง ก่อนประกาศผล Match */
+    const wait = reducedMotion() ? 1100 : (justRevealed ? 2800 : 1800);
+    finishTimer = setTimeout(() => {
+      finishTimer = null;
+      finishMatch();
+    }, wait);
   }
 
   function finishMatch() {
@@ -224,14 +258,22 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     finished = true;
     /* ผลใหญ่กลางจอก่อนไปหน้าสรุป */
     const r = view.result;
-    const word = r.draw ? 'DRAW' : (r.youWon ? 'WIN' : 'LOSE');
+    const word = r.draw ? 'DRAW' : (r.youWon ? 'YOU WIN' : 'YOU LOSE');
+    const resultClass = r.draw ? 'draw' : (r.youWon ? 'win' : 'lose');
     const sub = r.draw ? '🤝 เสมอ — เกิดได้ยากมาก'
-      : (r.youWon ? '🏆 คุณชนะ!' : `${view.opponent.name} ชนะ`);
+      : (r.youWon ? '🏆 ชนะ Match นี้' : 'จบ Match นี้แล้ว');
     const overlay = el('div', {
-      class: `end-overlay ${word.toLowerCase()}`, role: 'alert',
+      class: `end-overlay ${resultClass}`, role: 'alert',
     },
       el('b', { class: 'disp anim-pop' }, word),
       el('span', {}, sub));
+    const lastRound = view.rounds[view.rounds.length - 1];
+    if (lastRound?.discards?.length) {
+      const discardedBy = lastRound.discards[0].yours ? 'YOU DISCARDED' : `${view.opponent.name} DISCARDED`;
+      overlay.append(el('div', { class: 'end-discard' },
+        el('small', {}, discardedBy),
+        ...lastRound.discards.map(card => historyChip(card, { discard: true }))));
+    }
     root.append(overlay);
     haptic(r.youWon ? [20, 60, 20, 60, 40] : 30);
     playSfx(r.draw ? 'draw' : (r.youWon ? 'win' : 'lose'));
@@ -252,36 +294,40 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     }, `${discard ? '🗑 ' : ''}${meta.emoji} ${name}`);
   }
 
+  function buildHistoryTable() {
+    if (!view.rounds.length) return el('p', { class: 'history-empty' }, 'ยังไม่มีรอบที่จบ');
+    const table = el('div', { class: 'hist2' });
+    table.append(el('div', { class: 'hhead' },
+      el('span', {}, `${view.you.name} (คุณ)`),
+      el('span', {}, view.opponent.name)));
+    for (const r of view.rounds) {
+      const resCls = r.result === 'TIE' ? 'tie' : (r.youWon ? 'win' : 'lose');
+      const resTxt = r.result === 'TIE' ? 'เสมอ' : (r.youWon ? 'คุณชนะ' : 'แพ้');
+      table.append(el('div', { class: 'hround' },
+        el('span', { class: `rpill ${resCls}` }, `R${r.n} · ${resTxt}`)));
+      table.append(el('div', { class: 'hcells' },
+        el('div', { class: 'hc l' }, historyChip(r.you)),
+        el('div', { class: 'hc r' }, historyChip(r.opp))));
+      if (r.discards.length) {
+        const l = el('div', { class: 'hc l' });
+        const rt = el('div', { class: 'hc r' });
+        for (const dc of r.discards) (dc.yours ? l : rt).append(historyChip(dc, { discard: true }));
+        table.append(el('div', { class: 'hcells discard-row' }, l, rt));
+      }
+    }
+    return table;
+  }
+
+  function renderHistory(host) {
+    host.innerHTML = '';
+    host.append(buildHistoryTable());
+  }
+
   function openHistory() {
     const d = el('div', { class: 'drawer', role: 'dialog', 'aria-label': 'ประวัติการเล่น' });
     const inner = el('div', { class: 'wrap-slim' });
     inner.append(el('h2', { class: 'disp' }, '📜 กองหงาย — ทุกใบที่ใช้แล้ว'));
-    if (!view.rounds.length) inner.append(el('p', {}, 'ยังไม่มีรอบที่จบ'));
-    else {
-      const table = el('div', { class: 'hist2' });
-      /* ชื่อครั้งเดียวที่แถวบนสุด — คุณซ้าย คู่แข่งขวา */
-      table.append(el('div', { class: 'hhead' },
-        el('span', {}, `${view.you.name} (คุณ)`),
-        el('span', {}, view.opponent.name)));
-      /* เรียง R1 → ล่าสุด อ่านเป็นบัญชีนับสีได้ง่าย */
-      for (const r of view.rounds) {
-        const resCls = r.result === 'TIE' ? 'tie' : (r.youWon ? 'win' : 'lose');
-        const resTxt = r.result === 'TIE' ? 'เสมอ' : (r.youWon ? 'คุณชนะ' : 'แพ้');
-        table.append(el('div', { class: 'hround' },
-          el('span', { class: `rpill ${resCls}` }, `R${r.n} · ${resTxt}`)));
-        table.append(el('div', { class: 'hcells' },
-          el('div', { class: 'hc l' }, historyChip(r.you)),
-          el('div', { class: 'hc r' }, historyChip(r.opp))));
-        /* ใบที่ทิ้งเพิ่มอยู่ฝั่งของเจ้าของการ์ดเสมอ */
-        if (r.discards.length) {
-          const l = el('div', { class: 'hc l' });
-          const rt = el('div', { class: 'hc r' });
-          for (const dc of r.discards) (dc.yours ? l : rt).append(historyChip(dc, { discard: true }));
-          table.append(el('div', { class: 'hcells' }, l, rt));
-        }
-      }
-      inner.append(table);
-    }
+    inner.append(buildHistoryTable());
     const closeBtn = el('button', { class: 'btn btn-gold', style: 'margin-top:18px' }, 'ปิด');
     const ffBtn = el('button', { class: 'btn btn-ghost', style: 'margin-top:18px;margin-left:10px' }, '🏳️ ยอมแพ้');
     closeBtn.addEventListener('click', () => d.remove());

@@ -15,6 +15,11 @@
 - Tutorial แสดงผู้เล่นฝั่งซ้าย เพิ่ม TH/EN toggle และอธิบาย Quick/BO3/BO5
 - รีเฟรช FIRST HAND ทั้ง 28 ใบเป็น procedural SVG `ART v0.3.0`
 - เพิ่ม reconnect polling, opaque bearer token, hashed room credentials, idempotent action และ state version
+- ปรับจังหวะรอบสุดท้ายให้พลิกไพ่และอ่านผล Round ก่อนประกาศผล Match
+- จอกว้างแสดงกองหงายถาวร ส่วนจอแคบใช้ drawer แบบ mobile
+- แสดงใบทิ้งของผู้แพ้ค้างบนโต๊ะ, ในกองหงาย และบนจอผล Match
+- เปลี่ยนข้อความจบเกมเป็น `YOU WIN`, `YOU LOSE` และ `DRAW`
+- แสดง Public Lobby พร้อม Refresh/Join บนหน้า `/core7/play/`
 
 ## 2026-08-01 — Manual Cosmetic / Face-up Fix
 
@@ -27,4 +32,3 @@
 - วางกติกา ไพ่ 4 สี Hand Builder และ flow การเล่นพื้นฐาน
 
 > เลขเวอร์ชันข้ามจาก v0.1/manual patch เป็น v0.3 Beta ตามชื่อ release ที่กำหนด ไม่มีการสร้าง v0.2 ย้อนหลัง
-

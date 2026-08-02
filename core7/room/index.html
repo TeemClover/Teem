@@ -112,7 +112,7 @@ function renderSummary(data) {
     const grid = el('div', { class:'summary-grid' }); grid.append(sideSummary(`${r.you.name} (คุณ)`, countSide(latest.rounds, 'you')), sideSummary(r.opponent.name, countSide(latest.rounds, 'opp'))); content.append(grid);
   }
   if (r.seriesEnded) {
-    content.prepend(el('h2', { class:'disp', style:'text-align:center' }, r.youWonSeries ? '🏆 คุณชนะ Series!' : `${r.opponent.name} ชนะ Series`));
+    content.prepend(el('h2', { class:'disp', style:'text-align:center' }, r.youWonSeries ? '🏆 YOU WIN' : 'YOU LOSE'));
     if (data.startingHands) {
       const hands = el('div', { class:'match-block' }, el('h3', { class:'disp' }, 'Starting Hands — เปิดเผยหลังจบ Series'));
       const grid = el('div', { class:'summary-grid' });

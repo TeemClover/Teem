@@ -127,6 +127,7 @@ button { font: inherit; cursor: pointer; }
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 8px 14px; position: relative; min-height: 0;
 }
+.match-board { flex: 1; display: flex; min-height: 0; }
 .stage-cards { display: flex; gap: 18px; align-items: center; justify-content: center; }
 .stage-slot { width: min(31vw, 150px); aspect-ratio: 300/420; perspective: 900px; }
 .stage-slot .flip { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform .45s; }
@@ -144,6 +145,8 @@ button { font: inherit; cursor: pointer; }
 .rr-word.win { color: rgb(var(--gold-l)); text-shadow: 0 0 22px rgb(190 148 66 / .5); }
 .rr-word.lose { color: #fca5a5; }
 .rr-word.draw { color: #d7dbd7; }
+.round-discard { min-height: 38px; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; font: 700 12px "Bai Jamjuree"; color: rgb(255 255 255 / .8); }
+.round-discard:empty { display: none; }
 
 .match-hand {
   padding: 8px 10px calc(12px + env(safe-area-inset-bottom));
@@ -178,6 +181,8 @@ button { font: inherit; cursor: pointer; }
   color: #fff; overflow-y: auto; padding: 18px 16px calc(24px + env(safe-area-inset-bottom));
 }
 .drawer h2 { font-family: "Bai Jamjuree"; margin-bottom: 14px; }
+.history-rail { display: none; }
+.history-empty { color: rgb(255 255 255 / .65); font-size: 13px; padding: 18px 0; text-align: center; }
 /* กองหงายแบบแบ่งครึ่ง: คุณซ้าย · เส้นกลาง · คู่แข่งขวา */
 .hist2 { position: relative; margin-top: 6px; }
 .hist2::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgb(var(--gold) / .45); }
@@ -195,11 +200,27 @@ button { font: inherit; cursor: pointer; }
 .hc.r { justify-content: flex-start; padding-left: 14px; }
 .hchip { display: inline-flex; align-items: center; gap: 5px; border-radius: 10px; padding: 6px 11px; color: #fff; font-family: "Bai Jamjuree"; font-weight: 600; font-size: 13px; border: 2px solid rgb(255 255 255 / .85); box-shadow: 0 2px 8px rgb(0 0 0 / .35); white-space: nowrap; }
 .hchip.discard { border-style: dashed; opacity: .88; }
+.discard-row { padding-bottom: 3px; }
+
+/* จอกว้างเห็นกองหงายตลอด; จอแคบกลับไปใช้ drawer แบบ mobile */
+@media (min-width: 960px) and (min-height: 600px) {
+  .match-board { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 430px); }
+  .match-stage { width: 100%; }
+  .drawer-toggle { display: none; }
+  .history-rail {
+    display: block; overflow-y: auto; padding: 20px 18px 28px;
+    background: rgb(0 0 0 / .2); border-left: 1px solid rgb(var(--gold) / .3);
+  }
+  .history-rail h2 { font-size: 20px; margin-bottom: 12px; }
+  .history-rail .hchip { font-size: 12px; padding: 5px 8px; }
+}
 
 /* ผลใหญ่กลางจอเมื่อจบ Match */
 .end-overlay { position: fixed; inset: 0; z-index: 260; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgb(10 40 24 / .88); backdrop-filter: blur(3px); text-align: center; padding: 20px; }
-.end-overlay b { font-size: clamp(60px, 22vw, 120px); line-height: 1; letter-spacing: .04em; }
+.end-overlay b { font-size: clamp(54px, 16vw, 112px); line-height: 1; letter-spacing: .04em; }
 .end-overlay span { font-size: clamp(16px, 4.5vw, 21px); color: rgb(255 255 255 / .88); font-weight: 600; }
+.end-discard { display: flex; align-items: center; justify-content: center; gap: 9px; flex-wrap: wrap; margin-top: 8px; }
+.end-discard small { width: 100%; font: 700 12px "Bai Jamjuree"; letter-spacing: .06em; color: rgb(255 255 255 / .72); }
 .end-overlay.win b { color: rgb(var(--gold-l)); text-shadow: 0 0 44px rgb(190 148 66 / .65); }
 .end-overlay.lose b { color: #fca5a5; }
 .end-overlay.draw b { color: #d7dbd7; }
