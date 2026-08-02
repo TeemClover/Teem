@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Lucky four-leaf clover</title>
+  <desc id="desc">A hand picks a four-leaf clover from a sunlit clover field and says Lucky.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff2a8"/>
+      <stop offset="0.38" stop-color="#d8d96a"/>
+      <stop offset="1" stop-color="#315f24"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.12" cy="0.08" r="0.62">
+      <stop offset="0" stop-color="#fff8cf" stop-opacity="0.98"/>
+      <stop offset="0.25" stop-color="#ffd759" stop-opacity="0.78"/>
+      <stop offset="1" stop-color="#ffd759" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#66a637"/>
+      <stop offset="0.55" stop-color="#2f7829"/>
+      <stop offset="1" stop-color="#15531e"/>
+    </linearGradient>
+    <linearGradient id="leafHi" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9ccc52"/>
+      <stop offset="1" stop-color="#4a8d32"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6c28f"/>
+      <stop offset="0.55" stop-color="#d98a54"/>
+      <stop offset="1" stop-color="#a95835"/>
+    </linearGradient>
+    <linearGradient id="sleeve" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1df"/>
+      <stop offset="1" stop-color="#c9baa0"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#0b2313" flood-opacity="0.42"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="900" fill="url(#sky)"/>
+  <rect width="1200" height="900" fill="url(#sun)"/>
+  <circle cx="130" cy="95" r="145" fill="#fff8d1" opacity="0.62" filter="url(#soft)"/>
+
+  <g opacity="0.34" filter="url(#soft)">
+    <circle cx="270" cy="145" r="44" fill="#f7e99d"/>
+    <circle cx="430" cy="95" r="34" fill="#fff7c8"/>
+    <circle cx="790" cy="140" r="50" fill="#e9e48e"/>
+    <circle cx="1050" cy="110" r="36" fill="#fff4ba"/>
+  </g>
+
+  <g id="field">
+    <rect y="390" width="1200" height="510" fill="#245522"/>
+    <path d="M0 520 C210 445 380 500 570 452 S940 420 1200 500 V900 H0Z" fill="#36732c"/>
+    <path d="M0 640 C190 585 365 630 560 590 S930 560 1200 635 V900 H0Z" fill="#1f5b27"/>
+
+    <g fill="url(#leaf)" stroke="#143d1b" stroke-width="5" opacity="0.96">
+      <g transform="translate(120 520) rotate(-12)"><path d="M0 0 C-64 -72 -148 -12 -112 52 C-87 99 -31 85 0 32 C31 85 87 99 112 52 C148 -12 64 -72 0 0Z"/></g>
+      <g transform="translate(320 655) rotate(13)"><path d="M0 0 C-64 -72 -148 -12 -112 52 C-87 99 -31 85 0 32 C31 85 87 99 112 52 C148 -12 64 -72 0 0Z"/></g>
+      <g transform="translate(500 515) rotate(-6)"><path d="M0 0 C-64 -72 -148 -12 -112 52 C-87 99 -31 85 0 32 C31 85 87 99 112 52 C148 -12 64 -72 0 0Z"/></g>
+      <g transform="translate(720 700) rotate(18)"><path d="M0 0 C-64 -72 -148 -12 -112 52 C-87 99 -31 85 0 32 C31 85 87 99 112 52 C148 -12 64 -72 0 0Z"/></g>
+      <g transform="translate(1000 540) rotate(-16)"><path d="M0 0 C-64 -72 -148 -12 -112 52 C-87 99 -31 85 0 32 C31 85 87 99 112 52 C148 -12 64 -72 0 0Z"/></g>
+      <g transform="translate(100 800) rotate(8)"><path d="M0 0 C-64 -72 -148 -12 -112 52 C-87 99 -31 85 0 32 C31 85 87 99 112 52 C148 -12 64 -72 0 0Z"/></g>
+      <g transform="translate(920 820) rotate(-4)"><path d="M0 0 C-64 -72 -148 -12 -112 52 C-87 99 -31 85 0 32 C31 85 87 99 112 52 C148 -12 64 -72 0 0Z"/></g>
+    </g>
+
+    <g fill="#f8edd0" opacity="0.92">
+      <g transform="translate(180 405)"><circle r="17"/><circle cx="20" cy="5" r="16"/><circle cx="10" cy="22" r="16"/><circle cx="-12" cy="20" r="15"/></g>
+      <g transform="translate(420 440)"><circle r="14"/><circle cx="16" cy="3" r="13"/><circle cx="9" cy="17" r="13"/><circle cx="-10" cy="16" r="12"/></g>
+      <g transform="translate(1090 455)"><circle r="18"/><circle cx="21" cy="4" r="17"/><circle cx="11" cy="23" r="17"/><circle cx="-13" cy="21" r="16"/></g>
+      <g transform="translate(110 720)"><circle r="15"/><circle cx="18" cy="4" r="14"/><circle cx="9" cy="19" r="14"/><circle cx="-11" cy="18" r="13"/></g>
+    </g>
+  </g>
+
+  <g id="picked-clover" transform="translate(565 380)" filter="url(#shadow)">
+    <path d="M20 138 C15 260 7 350 -2 446" stroke="#2a6d28" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <g fill="url(#leafHi)" stroke="#174c20" stroke-width="9">
+      <path d="M0 2 C-122 -78 -220 18 -170 118 C-132 194 -44 172 0 78 C45 172 133 194 171 118 C220 18 122 -78 0 2Z" transform="rotate(-45)"/>
+      <path d="M0 2 C-122 -78 -220 18 -170 118 C-132 194 -44 172 0 78 C45 172 133 194 171 118 C220 18 122 -78 0 2Z" transform="rotate(45)"/>
+    </g>
+    <circle r="24" fill="#d8e78d" stroke="#174c20" stroke-width="8"/>
+    <path d="M-114 -8 C-62 -26 -23 -24 0 1" stroke="#c9e37b" stroke-width="10" stroke-linecap="round" opacity="0.65"/>
+    <path d="M8 -111 C25 -68 25 -27 2 0" stroke="#c9e37b" stroke-width="10" stroke-linecap="round" opacity="0.65"/>
+  </g>
+
+  <g id="hand" filter="url(#shadow)">
+    <path d="M1200 900 H830 C805 850 802 805 824 762 C848 715 900 676 958 646 C1021 613 1083 590 1200 586Z" fill="url(#sleeve)" stroke="#7f674d" stroke-width="8"/>
+    <path d="M1200 768 C1130 754 1072 724 1018 682 C975 649 934 610 883 597 C835 585 804 599 792 628 C778 662 799 695 842 711 C881 726 922 736 958 757 C1012 788 1066 824 1200 862Z" fill="url(#skin)" stroke="#773f2c" stroke-width="9"/>
+    <path d="M906 590 C854 558 804 540 760 544 C720 548 696 571 700 602 C704 633 738 647 778 650 C822 654 856 674 885 698" fill="url(#skin)" stroke="#773f2c" stroke-width="9"/>
+    <path d="M780 652 C748 648 724 658 717 679 C709 702 728 721 758 725 C802 731 834 748 861 774" fill="url(#skin)" stroke="#773f2c" stroke-width="9"/>
+    <path d="M852 706 C824 695 796 703 790 727 C784 752 808 770 839 777 C871 784 901 799 924 824" fill="url(#skin)" stroke="#773f2c" stroke-width="9"/>
+    <path d="M879 595 C852 570 821 552 790 551" stroke="#ffd5aa" stroke-width="12" stroke-linecap="round" opacity="0.5"/>
+    <path d="M950 684 C1001 713 1048 752 1090 794" stroke="#ffd5aa" stroke-width="13" stroke-linecap="round" opacity="0.34"/>
+  </g>
+
+  <g id="bubble" transform="translate(700 48)" filter="url(#shadow)">
+    <path d="M40 0 H370 C425 0 462 39 462 91 V176 C462 228 425 266 370 266 H178 L110 326 L126 266 H40 C-15 266 -52 228 -52 176 V91 C-52 39 -15 0 40 0Z" fill="#fff7dc" stroke="#503b28" stroke-width="12"/>
+    <text x="204" y="157" text-anchor="middle" font-family="Trebuchet MS, Arial, sans-serif" font-size="88" font-weight="700" fill="#4a3525">Lucky</text>
+  </g>
+
+  <g fill="#fff6b7" opacity="0.8">
+    <circle cx="150" cy="180" r="8"/><circle cx="245" cy="112" r="6"/><circle cx="352" cy="218" r="7"/>
+    <circle cx="540" cy="115" r="6"/><circle cx="628" cy="215" r="9"/><circle cx="1120" cy="214" r="7"/>
+  </g>
+</svg>
