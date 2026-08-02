@@ -84,7 +84,7 @@ item({id:'resume',kind:'ROOM UNLOCK',name:'Smart Resume',icon:'🧾',on:forgeDon
 item({id:'walkthrough',kind:'GUIDE UNLOCK',name:'Walkthrough',icon:'🗺️',on:forgeDone||hasTitle('BLACKSMITH'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../walkthrough/',image:'../img/og-walkthrough.jpg'}),
 item({id:'card',kind:'PROOF SAVED',name:'การ์ดประจำตัวใบแรก',icon:'🎴',on:cardDone,hint:'สร้างและบันทึกการ์ดประจำตัว',go:'../card/',image:'../img/og-card.jpg'})]});
 groups.push({id:'badges',eyebrow:'BADGES & SECRET ROUTE',title:'ตราและของที่พบระหว่างทาง',desc:'บางชิ้นบอกเงื่อนไขตรง ๆ บางชิ้นจะไม่เปิดเผยชื่อจนกว่าคุณจะพบเอง',items:[
-item({id:'blacksmith',kind:'SIGIL',name:'ช่างตีเหล็ก',icon:'⚒️',on:forgeDone||hasTitle('BLACKSMITH'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../forge/',image:'../forge/img/07-p1.jpg?v=20260802-current'}),
+item({id:'blacksmith',kind:'SIGIL',name:'ช่างตีเหล็ก',icon:'⚒️',on:forgeDone||hasTitle('BLACKSMITH'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../forge/',image:'../forge/img/07-thumb.webp?v=20260802-sigil'}),
 item({id:'awakened',kind:'SIGIL',name:'ผู้ตื่นรู้',icon:'🌅',on:ch7Done,hint:'ผ่านบทที่ 7 · ด่านบอส',go:'../classroom/awaken/',image:'../img/og-awaken.jpg'}),
 item({id:'hero',kind:'SIGIL',name:'ฮีโร่',icon:'⚔️',on:hasTitle('HERO'),hint:'ปลดรหัสจาก Guild X',go:'../card/',image:'../img/og-card.jpg'}),
 item({id:'seeker',kind:'TITLE',name:'ผู้ค้นพบ',icon:'🔍',on:raw('mc_seek_hit','')==='1'||hasTitle('SEEKER'),hint:'พบโคลเวอร์ที่ซ่อนอยู่ท้ายหน้า Hall',go:'../hall.html',image:'../img/achievement-seeker.webp'}),
@@ -101,7 +101,7 @@ var filter='all',lastUnlocked=raw('mc_collection_last_count','');
 var allItems=[];groups.forEach(function(g){g.items.forEach(function(x){allItems.push(x)})});
 var unlockedCount=allItems.filter(function(x){return x.on}).length;
 try{localStorage.setItem('mc_collection_last_count',String(unlockedCount))}catch(e){}
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]})}
 function cardHTML(x){
   var shown=x.on?x.name:(x.secret?(x.lockedName||'???'):x.name);
   var state=x.on?'✓':'🔒';
