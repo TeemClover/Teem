@@ -1,5 +1,6 @@
 import './kickstarter-distilled-base.js?v=20260803-base';
 import './kickstarter-canon-v3.js?v=20260803-canon-v3';
+import './kickstarter-canon-v4.js?v=20260803-rgbg-v4';
 
 (function(){
   'use strict';
