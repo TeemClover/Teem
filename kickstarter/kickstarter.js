@@ -1,240 +1,80 @@
+import './kickstarter-base.js?v=20260802-core-copy';
+
 (function(){
   'use strict';
 
-  const HERO_IDS = [
-    'fh-red-courage',
-    'fh-blue-clarity',
-    'fh-green-balance',
-    'fh-gray-build',
-    'fh-red-joy',
-    'fh-blue-strategy',
-    'fh-green-recovery'
-  ];
-
-  const POCKET_IDS = [
-    'fh-red-desire',
-    'fh-blue-perspective',
-    'fh-green-discipline',
-    'fh-gray-observe',
-    'fh-red-warmth',
-    'fh-blue-choice',
-    'fh-green-commitment'
-  ];
-
   const ENERGY_COPY = {
     RED: {
-      label: 'RED · DRIVE',
-      headline: 'What makes you move?',
-      body: 'Desire, Joy, Taste, Passion, Courage, Warmth and Celebration — the fire that gives a decision emotional weight.'
+      label: 'RED · BODY',
+      headline: 'What makes you feel and move?',
+      body: 'Desire, Joy, Taste, Passion, Courage, Warmth and Celebration — the living energy that lets you feel, want and act.'
     },
     BLUE: {
       label: 'BLUE · MIND',
-      headline: 'What helps you see?',
+      headline: 'What helps you see and choose?',
       body: 'Clarity, Perspective, Wisdom, Curiosity, Strategy, Reflection and Choice — the mind that turns noise into direction.'
     },
     GREEN: {
-      label: 'GREEN · GROWTH',
-      headline: 'What helps you continue?',
-      body: 'Discipline, Consistency, Balance, Patience, Care, Recovery and Commitment — the living systems that make progress sustainable.'
+      label: 'GREEN · SOUL',
+      headline: 'What helps you care, endure and become?',
+      body: 'Discipline, Consistency, Balance, Patience, Care, Recovery and Commitment — the inner roots that let a life keep growing.'
     },
     GRAY: {
       label: 'GRAY · CRAFT',
-      headline: 'What makes the idea real?',
-      body: 'Observe, Measure, Build, Repair, Connect, Adapt and Iterate — the tools that turn intention into something the world can use.'
+      headline: 'What helps you turn meaning into reality?',
+      body: 'Observe, Measure, Build, Repair, Connect, Adapt and Iterate — the craft that gives intention a form the world can use.'
     }
   };
 
-  function setProgress(){
-    const doc = document.documentElement;
-    const max = Math.max(1, doc.scrollHeight - innerHeight);
-    const pct = Math.min(100, Math.max(0, scrollY / max * 100));
-    const bar = document.querySelector('.scroll-progress span');
-    if(bar) bar.style.width = pct + '%';
+  function setText(selector, value){
+    const node = document.querySelector(selector);
+    if(node) node.textContent = value;
   }
 
-  function initReveal(){
-    const items = document.querySelectorAll('.reveal');
-    if(!('IntersectionObserver' in window)){
-      items.forEach(el => el.classList.add('is-visible'));
-      return;
-    }
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting){
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {threshold:.12, rootMargin:'0px 0px -6% 0px'});
-    items.forEach(el => observer.observe(el));
-  }
+  function applyCampaignCopy(){
+    const og = document.querySelector('meta[property="og:description"]');
+    if(og) og.setAttribute('content', 'One deck. Any opponent. Anywhere. Learn in ten seconds, carry seven cards, and play with the world.');
 
-  function fallbackCard(name, color){
-    const el = document.createElement('div');
-    el.className = 'fallback-card ' + String(color || '').toLowerCase();
-    el.innerHTML = '<b>' + name + '</b><span>myClover · CORE7</span>';
-    return el;
-  }
+    setText('.hero-lead', 'A beautiful 32-card box that lets you open a real game with anyone in ten seconds — even if they do not own a deck, know the rules, or speak the same language.');
+    setText('.micro-proof', '28 energy cards · 4 rule cards · 10-second teach · 1 deck for the whole table');
 
-  async function initCardArt(){
-    try{
-      const [cardsModule, artModule] = await Promise.all([
-        import('/core7/js/cards.js'),
-        import('/core7/js/art.js')
-      ]);
-      const {FIRST_HAND} = cardsModule;
-      const {cardSVG, cloverLogo} = artModule;
+    const promise = document.querySelector('#promise .promise-grid article:first-child strong');
+    if(promise) promise.textContent = '10 sec';
 
-      const navLogo = document.getElementById('navLogo');
-      const finalLogo = document.getElementById('finalLogo');
-      if(navLogo) navLogo.innerHTML = cloverLogo(34);
-      if(finalLogo) finalLogo.innerHTML = cloverLogo(86);
+    const labels = {
+      RED: 'RED · BODY',
+      BLUE: 'BLUE · MIND',
+      GREEN: 'GREEN · SOUL',
+      GRAY: 'GRAY · CRAFT'
+    };
 
-      const hero = document.getElementById('heroCards');
-      HERO_IDS.forEach((id, index) => {
-        const card = document.createElement('div');
-        card.className = 'hero-card';
-        card.dataset.index = index;
-        card.innerHTML = cardSVG(id, {width:300});
-        hero && hero.appendChild(card);
-      });
-
-      const pocket = document.getElementById('pocketCards');
-      POCKET_IDS.forEach(id => {
-        const card = document.createElement('div');
-        card.className = 'mini-card';
-        card.innerHTML = cardSVG(id, {width:220, showNumber:false});
-        pocket && pocket.appendChild(card);
-      });
-
-      const gallery = document.getElementById('cardGallery');
-      FIRST_HAND.forEach(cardData => {
-        const card = document.createElement('article');
-        card.className = 'gallery-card';
-        card.dataset.energy = cardData.color;
-        card.dataset.name = cardData.en;
-        card.setAttribute('aria-label', cardData.en + ' — ' + cardData.th);
-        card.innerHTML = cardSVG(cardData.id, {width:230});
-        gallery && gallery.appendChild(card);
-      });
-    }catch(error){
-      console.error('Unable to load CORE7 card renderer.', error);
-      const hero = document.getElementById('heroCards');
-      ['COURAGE','CLARITY','BALANCE','BUILD','JOY','STRATEGY','RECOVERY'].forEach((name,index) => {
-        const colors = ['RED','BLUE','GREEN','GRAY','RED','BLUE','GREEN'];
-        const wrap = document.createElement('div');
-        wrap.className = 'hero-card';
-        wrap.appendChild(fallbackCard(name, colors[index]));
-        hero && hero.appendChild(wrap);
-      });
-    }
-  }
-
-  function initEnergySelector(){
-    const buttons = document.querySelectorAll('.energy-button');
-    const label = document.getElementById('energyLabel');
-    const headline = document.getElementById('energyHeadline');
-    const body = document.getElementById('energyBody');
-
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        const energy = button.dataset.energy;
-        const copy = ENERGY_COPY[energy];
-        if(!copy) return;
-        buttons.forEach(btn => btn.classList.toggle('active', btn === button));
-        if(label) label.textContent = copy.label;
-        if(headline) headline.textContent = copy.headline;
-        if(body) body.textContent = copy.body;
-        document.querySelectorAll('.gallery-card').forEach(card => {
-          card.classList.toggle('is-muted', card.dataset.energy !== energy);
-        });
-        window.setTimeout(() => {
-          document.querySelectorAll('.gallery-card').forEach(card => card.classList.remove('is-muted'));
-        }, 1800);
-      });
-    });
-  }
-
-  function initPledges(){
-    const cards = Array.from(document.querySelectorAll('.pledge'));
-    const panel = document.getElementById('pledgeSelection');
-    const nameEl = document.getElementById('selectedPledge');
-    const priceEl = document.getElementById('selectedPrice');
-    const clear = document.getElementById('clearPledge');
-    const storageKey = 'mc_kickstarter_pledge_preview';
-
-    function select(name, price, shouldScroll){
-      cards.forEach(card => {
-        const active = card.dataset.pledge === name;
-        card.classList.toggle('is-selected', active);
-        const button = card.querySelector('.select-pledge');
-        if(button) button.textContent = active ? 'Selected ✓' : 'Choose ' + card.dataset.pledge;
-      });
-      if(nameEl) nameEl.textContent = name;
-      if(priceEl) priceEl.textContent = price;
-      if(panel) panel.hidden = false;
-      try{ localStorage.setItem(storageKey, JSON.stringify({name,price})); }catch(_){ }
-      if(shouldScroll && panel) panel.scrollIntoView({behavior:'smooth',block:'center'});
-    }
-
-    cards.forEach(card => {
-      const button = card.querySelector('.select-pledge');
-      if(!button) return;
-      button.addEventListener('click', () => select(card.dataset.pledge, card.dataset.price, true));
+    document.querySelectorAll('.energy-button').forEach(button => {
+      const energy = button.dataset.energy;
+      if(labels[energy]) button.innerHTML = '<span>●</span> ' + labels[energy];
     });
 
-    if(clear){
-      clear.addEventListener('click', () => {
-        cards.forEach(card => card.classList.remove('is-selected'));
-        cards.forEach(card => {
-          const button = card.querySelector('.select-pledge');
-          if(button) button.textContent = 'Choose ' + card.dataset.pledge;
-        });
-        if(panel) panel.hidden = true;
-        try{ localStorage.removeItem(storageKey); }catch(_){ }
-      });
-    }
+    const heading = document.querySelector('.language .section-heading h2');
+    if(heading) heading.innerHTML = 'Four colors. Four parts of being human.<br><em>Body. Mind. Soul. Craft.</em>';
 
-    try{
-      const saved = JSON.parse(localStorage.getItem(storageKey));
-      if(saved && saved.name && cards.some(card => card.dataset.pledge === saved.name)){
-        select(saved.name, saved.price, false);
-      }
-    }catch(_){ }
+    const active = document.querySelector('.energy-button.active') || document.querySelector('.energy-button');
+    if(active) applyEnergy(active.dataset.energy);
   }
 
-  function initHeroTilt(){
-    const stage = document.querySelector('.hero-stage');
-    const cards = document.getElementById('heroCards');
-    if(!stage || !cards || matchMedia('(pointer:coarse)').matches) return;
-    stage.addEventListener('pointermove', event => {
-      const rect = stage.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - .5;
-      const y = (event.clientY - rect.top) / rect.height - .5;
-      cards.style.transform = 'rotateY(' + (x * 7) + 'deg) rotateX(' + (-y * 5) + 'deg)';
-    });
-    stage.addEventListener('pointerleave', () => { cards.style.transform = ''; });
+  function applyEnergy(energy){
+    const copy = ENERGY_COPY[energy];
+    if(!copy) return;
+    setText('#energyLabel', copy.label);
+    setText('#energyHeadline', copy.headline);
+    setText('#energyBody', copy.body);
   }
 
-  function initDetails(){
-    document.querySelectorAll('.faq-list details').forEach(detail => {
-      detail.addEventListener('toggle', () => {
-        if(!detail.open) return;
-        document.querySelectorAll('.faq-list details').forEach(other => {
-          if(other !== detail) other.open = false;
-        });
+  document.addEventListener('DOMContentLoaded', function(){
+    applyCampaignCopy();
+
+    document.querySelectorAll('.energy-button').forEach(button => {
+      button.addEventListener('click', function(){
+        window.setTimeout(function(){ applyEnergy(button.dataset.energy); }, 0);
       });
     });
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    initReveal();
-    initEnergySelector();
-    initPledges();
-    initDetails();
-    initCardArt().then(initHeroTilt);
-    setProgress();
-    addEventListener('scroll', setProgress, {passive:true});
-    addEventListener('resize', setProgress, {passive:true});
   });
 })();
