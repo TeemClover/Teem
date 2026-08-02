@@ -29,7 +29,15 @@
 @media(min-width:880px){.hero-grid{grid-template-columns:1.15fr .85fr}}
 .hero-cycle{display:flex;flex-direction:column;align-items:center;gap:10px}
 .hero-cycle .cap{font-size:13px;color:rgb(255 255 255/.72);text-align:center;max-width:46ch}
-.rules-overview{display:block;width:min(100%,440px);height:auto;box-sizing:border-box;object-fit:contain;background:#071b10;border:6px solid #0b1712;border-radius:26px;padding:6px;box-shadow:0 22px 54px rgb(0 0 0/.38),0 0 0 1px rgb(var(--gold-l)/.55)}
+.rules-flip{display:block;width:min(100%,440px);aspect-ratio:5/7;padding:0;border:0;border-radius:26px;background:transparent;perspective:1200px;cursor:pointer;appearance:none;-webkit-appearance:none;filter:drop-shadow(0 22px 28px rgb(0 0 0/.34))}
+.rules-flip-inner{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.75,.2,1)}
+.rules-flip.is-flipped .rules-flip-inner{transform:rotateY(180deg)}
+.rules-flip-face{position:absolute;inset:0;display:block;overflow:hidden;border:6px solid #0b1712;border-radius:26px;background:#071b10;backface-visibility:hidden;box-shadow:0 0 0 1px rgb(var(--gold-l)/.55)}
+.rules-flip-face img{display:block;width:100%;height:100%;object-fit:cover}
+.rules-flip-face.rules{transform:rotateY(180deg);padding:6px}
+.rules-flip-face.rules img{object-fit:contain}
+.rules-flip:focus-visible{outline:3px solid rgb(var(--gold-l));outline-offset:6px}
+@media(prefers-reduced-motion:reduce){.rules-flip-inner{transition:none}}
 .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
 .step3{display:grid;gap:16px;grid-template-columns:1fr}
 @media(min-width:720px){.step3{grid-template-columns:repeat(3,1fr)}}
@@ -59,7 +67,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="tag tag-gold">v0.4.3 · FIRST HAND — ชุดแรก · เล่นฟรี</span>
+      <span class="tag tag-gold">v0.4.4 · FIRST HAND — ชุดแรก · เล่นฟรี</span>
       <h1 class="disp">my<span class="c7">Clover</span>: CORE7</h1>
       <p class="promise">7 ใบ ไม่มีเด็ค ไม่มีดวง<br>มีแค่สิ่งที่คุณเลือก<br>และคนที่นั่งตรงข้าม</p>
       <p class="promise-en">Seven cards. No deck. No draw. Just your choices and the person across the table.</p>
@@ -70,9 +78,14 @@
       </div>
     </div>
     <div class="hero-cycle">
-      <img class="rules-overview" src="/core7/assets/core7-rules-overview.png"
-        alt="CORE7: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะครบสามรอบ และ Final Gray แพ้สีจริง">
-      <p class="cap">กติกาหลักทั้งหมดในภาพเดียว · Complete rules at a glance</p>
+      <button class="rules-flip" id="rulesFlip" type="button" aria-pressed="false" aria-label="พลิกการ์ดเพื่อดูกติกา CORE7">
+        <span class="rules-flip-inner">
+          <span class="rules-flip-face cover"><img src="/core7/assets/card-back-core7.png" alt="หลังการ์ด myClover CORE7"></span>
+          <span class="rules-flip-face rules"><img src="/core7/assets/core7-rules-overview.png"
+            alt="CORE7: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะครบสามรอบ และ Final Gray แพ้สีจริง"></span>
+        </span>
+      </button>
+      <p class="cap" id="rulesFlipHint" aria-live="polite">แตะการ์ดเพื่อเปิดกติกา · Tap to reveal</p>
     </div>
   </div>
 </header>
@@ -244,6 +257,19 @@ import { track } from '/core7/js/store.js';
 
 renderShell({ active: '' });
 track('core7_landing_view');
+
+/* การ์ดกติกาเริ่มคว่ำ — กด/Enter/Space เพื่อพลิกดูและคว่ำคืน */
+const rulesFlip = document.getElementById('rulesFlip');
+const rulesFlipHint = document.getElementById('rulesFlipHint');
+rulesFlip.addEventListener('click', () => {
+  const open = rulesFlip.classList.toggle('is-flipped');
+  rulesFlip.setAttribute('aria-pressed', String(open));
+  rulesFlip.setAttribute('aria-label', open ? 'คว่ำการ์ดกติกา CORE7' : 'พลิกการ์ดเพื่อดูกติกา CORE7');
+  rulesFlipHint.textContent = open
+    ? 'แตะอีกครั้งเพื่อคว่ำ · Tap to flip back'
+    : 'แตะการ์ดเพื่อเปิดกติกา · Tap to reveal';
+  track(open ? 'core7_rules_card_reveal' : 'core7_rules_card_hide');
+});
 
 /* การ์ดตัวอย่างพัดบนหน้าแรก */
 const showcase = ['fh-red-passion', 'fh-blue-choice', 'fh-green-commitment', 'fh-gray-repair', 'fh-red-joy'];

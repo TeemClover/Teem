@@ -139,6 +139,31 @@ test('landing and tutorial use one static rules overview PNG', () => {
   assert.match(tutorial, /visual: true/);
 });
 
+test('landing rules card starts face-down and flips both ways accessibly', () => {
+  const landing = read('index.html');
+  assert.match(landing, /id="rulesFlip"/);
+  assert.match(landing, /aria-pressed="false"/);
+  assert.match(landing, /card-back-core7\.png/);
+  assert.match(landing, /classList\.toggle\('is-flipped'\)/);
+  assert.match(landing, /Tap to flip back/);
+  assert.match(landing, /prefers-reduced-motion:reduce/);
+});
+
+test('rules image has a rounded physical-card frame', () => {
+  const rules = read('rules/index.html');
+  assert.match(rules, /\.rules-hero-img[\s\S]*border-radius:26px/);
+  assert.match(rules, /\.rules-hero-img[\s\S]*border:6px solid/);
+});
+
+test('about page keeps Four Roots lore separate from gameplay', () => {
+  const about = read('about/index.html');
+  assert.match(about, /RED<\/span><h3>BODY/);
+  assert.match(about, /BLUE<\/span><h3>MIND/);
+  assert.match(about, /GREEN<\/span><h3>SOUL/);
+  assert.match(about, /GRAY<\/span><h3>CRAFT/);
+  assert.match(about, /ไม่ใช่กติกาที่ต้องจำ/);
+});
+
 test('result cards support hover, focus and pinned click previews', () => {
   const result = read('result/index.html');
   assert.match(result, /function cardPeek\(/);

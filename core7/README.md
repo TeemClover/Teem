@@ -6,7 +6,16 @@
 โมดูลนี้ Self-contained ทั้งหมดอยู่ใต้ `/core7/` — ไม่แตะหน้าอื่นของ
 myclover.com ไม่มี Build Step ไม่มี Dependency ภายนอก (Vanilla ES Modules)
 
-## เล่นอะไรได้แล้วบ้าง (v0.4.3)
+## เล่นอะไรได้แล้วบ้าง (v0.4.4)
+
+## Lore Canon — Four Roots
+
+- 🔴 RED = **BODY**
+- 🔵 BLUE = **MIND**
+- 🟢 GREEN = **SOUL**
+- ⚙️ GRAY = **CRAFT**
+
+`Body · Mind · Soul` คือสามมิติที่รวมเป็นตัวเรา และ `Craft` คือพลังแห่งการสร้างที่เปลี่ยนสิ่งภายในให้เกิดขึ้นจริง แกนนี้เป็น Lore/semantic layer ไม่ใช่ข้อมูลที่ผู้เล่นต้องจำเพื่อ Resolve เกม CORE7 Classic
 
 | ระบบ | สถานะ |
 |---|---|
@@ -32,7 +41,7 @@ myclover.com ไม่มี Build Step ไม่มี Dependency ภายน�
 ```
 core7/
 ├── js/
-│   ├── rules.js        Rules Engine — pure functions, CORE7_RULES_VERSION 1.0.0
+│   ├── rules.js        Rules Engine — pure functions, CORE7_RULES_VERSION 1.1.0
 │   ├── cards.js        Seed 28 ใบ FIRST HAND + Generic 4 สี
 │   ├── engine.js       MatchAuthority — "Server" ของ Match (hidden state,
 │   │                   idempotent actions, per-player views, snapshot restore)

@@ -1,5 +1,12 @@
 # myClover: CORE7 — Patch Notes
 
+## 2026-08-02 — v0.4.4 Lore Foundation
+
+- หน้าแรกเริ่มด้วยการ์ดกติกาคว่ำ และกดเพื่อพลิกดูกติกาหรือคว่ำกลับได้ พร้อม keyboard และ reduced-motion support
+- ใส่กรอบมนแบบการ์ดจริงให้ภาพบนหน้า Rules
+- ล็อก Lore Canon: `RED = Body`, `BLUE = Mind`, `GREEN = Soul`, `GRAY = Craft`
+- เพิ่ม Lore บนหน้า About โดยแยกออกจากกติกาและหน้าเล่น เพื่อไม่เพิ่มภาระให้ผู้เล่น
+
 ## 2026-08-02 — v0.4.3 Conversation Starter
 
 - คืนภาพกติกาแบบเดิมที่สื่อสารแกนเกมได้ทันที และเอา All Tie ออกจากคำอธิบายกติกาที่ผู้เล่นเห็น

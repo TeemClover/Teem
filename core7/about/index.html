@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>เรื่องของเกมนี้ — myClover: CORE7</title>
-<meta name="description" content="เจตนารมณ์ของ myClover: CORE7 — เกมที่ทุกคนเล่นได้ ออกแบบตั้งแต่ปี 2023 และทดลองเล่นในครอบครัวมาตั้งแต่วันแรก">
+<meta name="description" content="เจตนารมณ์และ Lore ของ myClover: CORE7 — Body, Mind, Soul และ Craft ภาษาสี่สีที่เปิดโต๊ะไว้ให้ทุกคน">
 <meta name="theme-color" content="#0A2818">
 <link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
 <link rel="stylesheet" href="/core7/css/core7.css">
@@ -15,6 +15,21 @@
 .table-vals{margin-top:36px;display:grid;gap:10px;grid-template-columns:1fr}
 @media(min-width:720px){.table-vals{grid-template-columns:1fr 1fr}}
 .table-vals .panel{font-size:14.5px}
+.lore{margin-top:52px;padding-top:46px;border-top:1px solid rgb(var(--gold)/.28)}
+.lore-intro{font-size:clamp(20px,3.5vw,29px);line-height:1.55;max-width:31ch;margin:12px 0 10px}
+.lore-en{color:rgb(var(--muted));font-size:14px;max-width:60ch}
+.lore-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:26px}
+@media(min-width:680px){.lore-grid{grid-template-columns:1fr 1fr}}
+.lore-card{position:relative;overflow:hidden;min-height:190px;padding:24px;border-radius:18px;color:#fff;border:1px solid rgb(255 255 255/.18);box-shadow:0 12px 30px rgb(10 40 24/.12)}
+.lore-card::after{content:"";position:absolute;width:150px;height:150px;border-radius:50%;right:-52px;bottom:-62px;background:rgb(255 255 255/.08)}
+.lore-card.red{background:linear-gradient(145deg,#8f281b,#cc412a)}
+.lore-card.blue{background:linear-gradient(145deg,#174f7f,#3277b5)}
+.lore-card.green{background:linear-gradient(145deg,#155932,#328557)}
+.lore-card.gray{background:linear-gradient(145deg,#3e4246,#73777b)}
+.lore-key{font:700 12px "Bai Jamjuree";letter-spacing:.16em;color:rgb(255 255 255/.7)}
+.lore-card h3{font:700 clamp(27px,5vw,38px) "Bai Jamjuree";margin:5px 0 8px}
+.lore-card p{font-size:14.5px;line-height:1.75;max-width:34ch;color:rgb(255 255 255/.88)}
+.lore-synthesis{margin-top:18px;padding:22px 24px;border:1px solid rgb(var(--gold)/.3);border-radius:16px;background:rgb(var(--gold-l)/.12);font-size:16px;line-height:1.9}
 </style>
 </head>
 <body>
@@ -49,6 +64,35 @@
       <div class="panel">⏱ จบเร็วพอให้สลับคู่ — ออกแบบมาเพื่อ Ice Breaking ให้คนแปลกหน้าได้เริ่มคุยกัน</div>
       <div class="panel">🚪 คนที่จากไปกลับมาได้เสมอ — ไม่มีใครถูกบังคับให้เล่นเพียงเกมเดียวหรือสังกัดที่เดียว</div>
     </div>
+
+    <section class="lore" aria-labelledby="loreTitle">
+      <p class="eyebrow">The Four Roots · Lore Canon</p>
+      <h2 class="disp" id="loreTitle">สามอย่างที่รวมเป็นตัวเรา<br>และหนึ่งพลังแห่งการสร้าง</h2>
+      <p class="lore-intro">Body · Mind · Soul ประกอบกันเป็นมนุษย์หนึ่งคน<br>Craft ทำให้สิ่งที่อยู่ข้างในถือกำเนิดขึ้นในโลกจริง</p>
+      <p class="lore-en">Three dimensions form the self. One power turns the inner world into something real.</p>
+
+      <div class="lore-grid">
+        <article class="lore-card red">
+          <span class="lore-key">🔴 RED</span><h3>BODY</h3>
+          <p>ร่างกาย ความรู้สึก ความอยาก รสนิยม ความกล้า ความอบอุ่น และแรงที่ทำให้เราขยับเข้าหาชีวิต</p>
+        </article>
+        <article class="lore-card blue">
+          <span class="lore-key">🔵 BLUE</span><h3>MIND</h3>
+          <p>ความคิด มุมมอง คำถาม ปัญญา กลยุทธ์ การทบทวน และความสามารถในการเลือกทิศทาง</p>
+        </article>
+        <article class="lore-card green">
+          <span class="lore-key">🟢 GREEN</span><h3>SOUL</h3>
+          <p>สิ่งที่หล่อเลี้ยงเราให้เติบโต ดูแล ฟื้นตัว รักษาสมดุล อดทน และอยู่กับสิ่งที่เลือกอย่างมีความหมาย</p>
+        </article>
+        <article class="lore-card gray">
+          <span class="lore-key">⚙️ GRAY</span><h3>CRAFT</h3>
+          <p>พลังแห่งการสังเกต วัดผล สร้าง ซ่อม เชื่อมต่อ ปรับตัว และทำซ้ำ—มือที่เปลี่ยนความคิดให้เป็นของจริง</p>
+        </article>
+      </div>
+
+      <div class="lore-synthesis"><b>BODY รู้สึก · MIND มองเห็น · SOUL ให้ความหมาย · CRAFT ทำให้เกิดขึ้น</b><br>
+      นี่คือ Lore ของการ์ด ไม่ใช่กติกาที่ต้องจำ คุณเล่น CORE7 ได้โดยรู้เพียงสีและภาพ ส่วนความหมายนี้รออยู่เมื่อคุณอยากคุยให้ลึกขึ้น</div>
+    </section>
 
     <div style="text-align:center;margin-top:36px">
       <a class="btn btn-gold btn-lg" href="/core7/play/">มานั่งโต๊ะกัน</a>

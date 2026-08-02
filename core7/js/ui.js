@@ -58,7 +58,7 @@ export function renderShell({ active = '', minimal = false } = {}) {
     foot.innerHTML = `
       <div class="wrap cols">
         <div>
-          <strong class="disp">myClover: CORE7 <small>v0.4.3</small></strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
+          <strong class="disp">myClover: CORE7 <small>v0.4.4</small></strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
           เล่นฟรีด้วยการ์ดอะไรก็ได้ · <a href="/core7/open-play/">Open Play</a> · <a href="/core7/about/">เรื่องของเกมนี้</a>
         </div>
         <div>
