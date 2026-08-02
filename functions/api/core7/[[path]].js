@@ -3,7 +3,13 @@ import {
   readyNextMatch, seatForHash, setHand, validCode, viewFor,
 } from '../../../core7/backend/room-service.js';
 
-const JSON_HEADERS = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' };
+const JSON_HEADERS = {
+  'content-type': 'application/json; charset=utf-8',
+  'cache-control': 'no-store',
+  'access-control-allow-origin': '*',
+  'access-control-allow-headers': 'authorization, content-type',
+  'access-control-allow-methods': 'GET, POST, OPTIONS',
+};
 const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), {
   status, headers: { ...JSON_HEADERS, ...extra },
 });

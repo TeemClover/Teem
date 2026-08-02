@@ -22,7 +22,10 @@
 6. เปิด `/core7/create/` สร้าง Public Quick room และใช้อีกอุปกรณ์ Join จาก `/core7/join/`
 7. ทดสอบ Quick, BO3, BO5, refresh/reconnect และ disconnect คนละ network
 
-Pages จะ bundle catch-all function ที่ `functions/api/core7/[[path]].js` อัตโนมัติ ตัว client ใช้ same-origin `/api/core7` เป็นค่าเริ่มต้น จึงไม่มี client secret
+Pages จะ bundle catch-all function ที่ `functions/api/core7/[[path]].js` อัตโนมัติ
+บน `teem.pages.dev` client ใช้ same-origin `/api/core7`; บน `www.myclover.com`
+ซึ่งเสิร์ฟ static site ผ่าน Vercel client จะเรียก `https://teem.pages.dev/api/core7`
+อัตโนมัติผ่าน CORS ไม่มี client secret
 
 ## Production checklist
 
@@ -58,4 +61,3 @@ DELETE FROM c7_beta_rooms WHERE expires_at < CAST(strftime('%s','now') AS INTEGE
 2. หากต้องหยุดเฉพาะ multiplayer ให้เอา D1 binding ออกจาก production; API จะตอบ `CORE7_DB_NOT_CONFIGURED` และ Bot/Tutorial ยังทำงาน
 3. อย่าลบ database ระหว่าง incident เก็บไว้ตรวจ state ตาม retention policy
 4. art set อยู่ใน `core7/js/art.js` และมี `CORE7_ART_VERSION`; rollback code จะคืนภาพเดิมโดยไม่กระทบ card IDs
-

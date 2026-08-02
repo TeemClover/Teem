@@ -405,7 +405,9 @@ async function apiFetch(base, path, { method = 'GET', token, body } = {}) {
 }
 
 export class RemoteRooms {
-  constructor({ base = globalThis.C7_CONFIG?.API_BASE || '/api/core7' } = {}) {
+  constructor({ base = globalThis.C7_CONFIG?.API_BASE
+    || (/^(www\.)?myclover\.com$/.test(globalThis.location?.hostname || '')
+      ? 'https://teem.pages.dev/api/core7' : '/api/core7') } = {}) {
     this.base = base.replace(/\/$/, '');
   }
 
