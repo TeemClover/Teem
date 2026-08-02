@@ -54,6 +54,14 @@ OLD_TO_NEW = [
     ("ep10-the-tenth-step",        "original"),
 ]
 
+RETIRED_FORGE_SLUGS = [
+    "ep8-the-blacksmith-backstage",
+    "ep9-tools-must-reach-people",
+    "ep10-this-time-i-left-the-screen-on",
+    "ep11-everyone-has-their-own-class",
+    "ep12-a-new-game-a-new-league",
+]
+
 os.makedirs(IMG, exist_ok=True)
 SKIP_IMG = os.environ.get('SKIP_IMG') == '1'
 
@@ -661,7 +669,7 @@ index_body = f'''<header class="bar"><div class="wrap">
 <section class="head"><div class="wrap">
   <span class="eyebrow">อ่านฟรี · ไม่ต้องสมัคร</span>
   <h1 class="disp">{SERIES}</h1>
-  <p>19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — อ่านเกมให้ออก หา META ให้เจอ แล้วพาทั้งทีมไปต่อ<br>12 ตอน อ่านฟรีทั้งหมด</p>
+  <p>เรื่องจริงของคนที่เคยต้องสร้างทุกอย่างอยู่หน้าคอมคนเดียว<br>จนถึงวันที่ AI คืนเวลาให้ชีวิต — <b>7 ตอนจบ</b></p>
   <div class="startrow">
     <a class="start disp" data-mc-continue="forge:" href="{EPISODES[0][3]}/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
     <a class="start disp" data-mc-demote="forge:ghost" href="{EPISODES[0][3]}/">เริ่มอ่านจากตอนแรก</a>
@@ -688,7 +696,7 @@ index_body = f'''<header class="bar"><div class="wrap">
 open(f'{DEST}/index.html', 'w', encoding='utf-8').write(page(
     f'{SERIES} — อ่านฟรีบน myclover',
     '19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ อ่านฟรีทุกตอน ไม่ต้องสมัคร',
-    f'{SITE}/forge/img/11-og.jpg', index_body, INDEX_CSS,
+    f'{SITE}/forge/img/07-og.jpg', index_body, INDEX_CSS,
     '<script defer src="../assets/quest.js"></script>\n<script>' + COPY_JS + '''
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.getElementById('rstBtn');
@@ -889,7 +897,7 @@ PATHS = [
           'แต่คือมีที่ให้ความคิดออกไปอยู่นอกหัว แล้วให้เครื่องมือทำงานต่อจากตรงนั้น',
   'route':[
     ('track','forge','อ่านเรื่องเล่าจากโรงตีเหล็ก',
-     '12 ตอน อ่านฟรี ไม่ต้องสมัคร — 19 ปีของคนที่คิดมากกว่าขาย '
+     '7 ตอนจบ อ่านฟรี ไม่ต้องสมัคร — เรื่องจริงของคนที่เคยต้องสร้างทุกอย่างคนเดียว '
      'รวมถึงตอนที่คิดเยอะแล้วยังพลาดอยู่ดี','../../forge/','เริ่มอ่านตอนแรก'),
     ('item','learn:notebooklm','⭐ LV.4 สร้าง Source ครั้งเดียว ใช้ต่อได้ทั้งงาน',
      'บทติดดาวของห้องเรียน — ย้ายสิ่งที่อยู่ในหัวลงไฟล์เดียว '
@@ -1318,6 +1326,9 @@ print(f'สร้างหน้าสาย {len(PATHS)+1} หน้า')
 lines = ['# สร้างอัตโนมัติจาก tools/build.py — อย่าแก้ไฟล์นี้ตรง ๆ',
          '# รองรับลิงก์จากโครงตอนเก่า', '']
 lines += [f'/forge/{o}/{" " * max(1, 38 - len(o))}/forge/{n}/  301' for o, n in OLD_TO_NEW]
+lines += ['', '# ตอน 8–12 จากโครงเก่า เก็บไว้ใน Version แรก ไม่ให้ชนกับชุดใหม่ 7 ตอน']
+lines += [f'/forge/{slug}/*{" " * max(1, 38 - len(slug))}/forge/original/  301'
+          for slug in RETIRED_FORGE_SLUGS]
 lines += ['', '# หน้าลงทะเบียนถูกรวมเข้าหน้าทำการ์ดแล้ว',
           '/register/*                              /card/#register  301', '',
           '# CORE7 — เส้นทางที่มีพารามิเตอร์ (room code / match id / card id / handle)',
