@@ -101,7 +101,7 @@ var filter='all',lastUnlocked=raw('mc_collection_last_count','');
 var allItems=[];groups.forEach(function(g){g.items.forEach(function(x){allItems.push(x)})});
 var unlockedCount=allItems.filter(function(x){return x.on}).length;
 try{localStorage.setItem('mc_collection_last_count',String(unlockedCount))}catch(e){}
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]})}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function cardHTML(x){
   var shown=x.on?x.name:(x.secret?(x.lockedName||'???'):x.name);
   var state=x.on?'✓':'🔒';
