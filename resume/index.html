@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ทีม นรินทร์ ลีลาภรณ์ — Game System Designer · Learning Experience Architect</title>
-<meta name="description" content="ทีม นรินทร์ — นักออกแบบเกม ระบบการเรียนรู้ และ AI Workflow ผู้เปลี่ยนประสบการณ์ให้กลายเป็นเครื่องมือที่คนอื่นหยิบไปใช้ต่อได้จริง">
+<meta name="description" content="Playable Resume ของทีม นรินทร์ — สลับดู Career และ Lifestyle พร้อมผลงาน ประสบการณ์ ภาษา และสนามที่ทำให้วิธีคิดยังมีชีวิต">
 <meta property="og:type" content="profile">
-<meta property="og:title" content="ทีม นรินทร์ — Playable Resume">
-<meta property="og:description" content="Game System Designer · Learning Experience Architect · Party Architecture — ดูผลงานที่กดเข้าไปเล่นได้จริง">
+<meta property="og:title" content="ทีม นรินทร์ — Career × Lifestyle">
+<meta property="og:description" content="Game System Designer · Learning Experience Architect — คนที่ช่วยขยายเสียงให้ความคิดดี จัดระบบ และทำให้คนอื่นหยิบไปใช้ต่อได้">
 <meta property="og:image" content="https://www.myclover.com/img/og-resume.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://www.myclover.com/resume/">
@@ -15,207 +15,112 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{
-  --deep:#071d12;--deep2:#0b2a1b;--green:#1f8a5a;--mint:#77ddb1;
-  --gold:#d7b56d;--cream:#f7f1e3;--paper:#fffaf0;--ink:#13261a;
-  --muted:#647268;--line:rgba(255,255,255,.14);--shadow:0 28px 80px -42px rgba(0,0,0,.8);
-  --ease:cubic-bezier(.22,.8,.26,1);--sans:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
-  --display:"Manrope","IBM Plex Sans Thai",system-ui,sans-serif;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;text-size-adjust:100%;-webkit-text-size-adjust:100%}
-body{font-family:var(--sans);background:var(--deep);color:#fff;line-height:1.78;font-size:19px;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(1160px,calc(100% - 32px));margin:auto}.section{padding:clamp(68px,9vw,116px) 0}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-family:var(--display);font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.eyebrow::before{content:"";width:28px;height:1px;background:currentColor}.title{font-family:var(--display);font-size:clamp(2.05rem,4.8vw,4rem);line-height:1.09;letter-spacing:-.035em}.sub{max-width:68ch;color:rgba(255,255,255,.72);font-size:1.04rem}.muted{color:rgba(255,255,255,.65)}
-:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:10px}
-
-/* NAV */
-.nav{position:sticky;top:0;z-index:100;background:rgba(7,29,18,.9);backdrop-filter:blur(18px);border-bottom:1px solid rgba(215,181,109,.17)}
-.navin{min-height:66px;display:flex;align-items:center;gap:18px}.brand{font-family:var(--display);font-weight:800;letter-spacing:-.02em}.brand b{color:var(--gold)}.navlinks{margin-left:auto;display:flex;align-items:center;gap:8px}.navlinks a{padding:8px 11px;border-radius:999px;color:rgba(255,255,255,.74);font-size:.76rem;font-weight:700}.navlinks a:hover{color:#fff;background:rgba(255,255,255,.08)}.navlinks .v1{border:1px solid rgba(215,181,109,.38);color:var(--gold)}
-
-/* HERO */
-.hero{position:relative;min-height:calc(100svh - 66px);display:flex;align-items:center;padding:clamp(52px,8vw,100px) 0 72px;overflow:hidden;background:
-radial-gradient(720px 520px at 82% 18%,rgba(215,181,109,.16),transparent 68%),
-radial-gradient(620px 440px at 3% 15%,rgba(31,138,90,.4),transparent 70%),
-linear-gradient(145deg,#06180f 0%,#0a2b1b 62%,#102419 100%)}
-.hero::after{content:"";position:absolute;inset:auto -8% -30% 30%;height:58%;background:radial-gradient(ellipse,rgba(119,221,177,.12),transparent 68%);filter:blur(18px)}
-.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:clamp(36px,6vw,82px);align-items:center}
-.hero h1{font-family:var(--display);font-size:clamp(2.85rem,7.2vw,6.4rem);line-height:.96;letter-spacing:-.055em;margin:16px 0 22px;max-width:820px}.hero h1 span{display:block;color:var(--gold)}
-.hero-lead{max-width:730px;font-size:clamp(1.12rem,2vw,1.36rem);color:rgba(255,255,255,.84);line-height:1.72}.hero-lead b{color:var(--mint)}
-.hero-note{max-width:720px;margin-top:18px;padding-left:18px;border-left:3px solid rgba(215,181,109,.72);color:rgba(255,255,255,.68);font-size:.93rem}
-.hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:12px 20px;border:1px solid rgba(255,255,255,.2);border-radius:13px;font-weight:800;font-size:.88rem;transition:.2s var(--ease)}.btn:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.5)}.btn.primary{background:var(--gold);border-color:var(--gold);color:#172016}
-.socials{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:20px}.socials span{font-size:.78rem;color:rgba(255,255,255,.52);margin-right:4px}.social{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);font-size:.78rem;font-weight:800}.social:hover{background:rgba(255,255,255,.13)}
-
-.profile-stage{position:relative;min-height:600px}.profile-glow{position:absolute;inset:8% 2% 4%;border-radius:50%;background:radial-gradient(circle,rgba(215,181,109,.25),rgba(31,138,90,.12) 52%,transparent 72%);filter:blur(24px)}
-.profile-card{position:absolute;inset:0;overflow:hidden;border-radius:32px;border:1px solid rgba(255,255,255,.2);background:#10241a;box-shadow:0 44px 100px -48px #000;transform:rotate(1.4deg);transition:.55s var(--ease)}
-body.life-mode .profile-card{transform:rotate(-1.2deg);background:#4d392e}.profile-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .45s var(--ease),transform .8s var(--ease)}.profile-card .life-img{opacity:0}.profile-card:hover img{transform:scale(1.025)}body.life-mode .profile-card .work-img{opacity:0}body.life-mode .profile-card .life-img{opacity:1}
-.profile-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,rgba(3,15,9,.9) 100%)}
-.mode-panel{position:absolute;z-index:4;left:20px;right:20px;bottom:20px;padding:18px;border:1px solid rgba(255,255,255,.2);border-radius:19px;background:rgba(7,29,18,.8);backdrop-filter:blur(15px)}body.life-mode .mode-panel{background:rgba(61,42,31,.82)}
-.mode-tabs{display:flex;gap:7px}.mode-tab{flex:1;border:0;border-radius:10px;padding:10px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.66);font-family:var(--display);font-weight:800;font-size:.72rem;cursor:pointer}.mode-tab[aria-pressed="true"]{background:var(--gold);color:#172016}.mode-copy{margin-top:12px}.mode-copy b{display:block;font-size:1.03rem}.mode-copy p{font-size:.83rem;color:rgba(255,255,255,.74);line-height:1.58;margin-top:3px}
-.float-badge{position:absolute;z-index:5;top:28px;right:-18px;padding:11px 15px;border-radius:14px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);font-family:var(--display);font-size:.72rem;font-weight:800;transform:rotate(4deg)}body.life-mode .float-badge{transform:rotate(-3deg);background:#ffe9c8}
-
-.stats{position:relative;z-index:2;margin-top:-34px}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(255,255,255,.14);border-radius:20px;background:rgba(6,24,15,.86);backdrop-filter:blur(14px);overflow:hidden;box-shadow:var(--shadow)}.stat{padding:23px 20px;border-right:1px solid rgba(255,255,255,.1)}.stat:last-child{border:0}.stat strong{display:block;color:var(--gold);font-family:var(--display);font-size:1.46rem;line-height:1.15}.stat span{display:block;margin-top:6px;color:rgba(255,255,255,.64);font-size:.78rem;font-weight:600}
-
-/* COMMON LIGHT */
-.light{background:var(--cream);color:var(--ink)}.light .eyebrow{color:#9a6e1c}.light .sub,.light .muted{color:#657068}.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:36px}.section-head .copy{max-width:760px}.section-head h2{margin-top:11px}.section-head p{margin-top:15px}
-
-/* NOW */
-.now{background:#fffaf0;color:var(--ink);padding:54px 0 62px}.now-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.now-card{padding:25px;border-radius:20px;background:#fff;border:1px solid rgba(19,38,26,.13);box-shadow:0 18px 50px -38px rgba(0,0,0,.5)}.now-card span{display:block;color:#9a6e1c;font-family:var(--display);font-size:.7rem;font-weight:800;letter-spacing:.12em}.now-card h2{font-family:var(--display);font-size:1.32rem;margin:7px 0 4px}.now-card p{color:#657068;font-size:.92rem}.now-note{margin-top:17px;padding:17px 19px;border-radius:15px;background:#edf7f1;color:#355143;font-size:.9rem}.now-note b{color:#17643f}
-
-/* PROOF */
-.proof-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.proof{position:relative;min-height:440px;display:flex;align-items:end;overflow:hidden;border-radius:24px;background:#102419;color:#fff;box-shadow:0 22px 60px -38px rgba(19,38,26,.7);transition:.25s var(--ease)}.proof:hover{transform:translateY(-7px);box-shadow:0 32px 80px -42px rgba(19,38,26,.8)}.proof img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}.proof:hover img{transform:scale(1.035)}.proof::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,16,10,.02) 25%,rgba(4,16,10,.92) 88%)}.proof-body{position:relative;z-index:2;padding:25px}.proof-tag{font-family:var(--display);font-size:.68rem;font-weight:800;letter-spacing:.13em;color:var(--gold)}.proof h3{font-family:var(--display);font-size:clamp(1.45rem,3vw,2.2rem);line-height:1.12;margin:8px 0}.proof p{color:rgba(255,255,255,.77);font-size:.94rem;max-width:56ch}.proof-go{display:inline-flex;margin-top:14px;color:var(--gold);font-size:.82rem;font-weight:800}
-
-/* VALUE */
-.dark{background:linear-gradient(180deg,#071d12,#0a291a);color:#fff}.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.value{padding:27px;border:1px solid rgba(255,255,255,.13);border-radius:20px;background:rgba(255,255,255,.045);transition:.2s var(--ease)}.value:hover{background:rgba(255,255,255,.075);transform:translateY(-4px)}.value .icon{font-size:1.8rem}.value h3{font-family:var(--display);font-size:1.08rem;margin:12px 0 8px}.value p{color:rgba(255,255,255,.67);font-size:.92rem}.value small{display:block;color:var(--mint);font-family:var(--display);font-size:.68rem;font-weight:800;margin-top:14px}
-
-/* METHOD */
-.method{background:#fffaf0;color:var(--ink)}.method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:35px}.method-step{position:relative;padding:25px 20px;border:1px solid rgba(19,38,26,.13);border-radius:18px;background:#fff;overflow:hidden}.method-step::before{content:attr(data-n);position:absolute;right:12px;top:-16px;color:rgba(31,138,90,.08);font-family:var(--display);font-size:5.2rem;font-weight:800;line-height:1}.method-step .mini{color:#9a6e1c;font-family:var(--display);font-size:.68rem;font-weight:800;letter-spacing:.12em}.method-step h3{font-family:var(--display);font-size:1.02rem;margin:10px 0 8px}.method-step p{font-size:.88rem;color:#68736b}.belief{margin-top:23px;padding:22px 24px;border-left:5px solid var(--green);border-radius:0 16px 16px 0;background:#edf7f1;font-size:.97rem}.belief b{color:#17643f}
-
-/* EXPERIENCE */
-.record{background:#0a2418;color:#fff}.record-intro{max-width:800px;margin-top:18px;color:rgba(255,255,255,.72);font-size:1rem}.record-intro b{color:var(--gold)}.record-list{display:grid;gap:13px;margin-top:36px}.record-row{display:grid;grid-template-columns:150px 1fr;gap:22px;padding:22px 24px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.04)}.record-ver{color:var(--gold);font-family:var(--display);font-size:.78rem;font-weight:800;line-height:1.55}.record-row h3{font-family:var(--display);font-size:1.02rem;margin-bottom:5px}.record-row p{font-size:.92rem;color:rgba(255,255,255,.72)}.record-row b{color:#fff}.record-row .roles{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.role-chip{padding:6px 9px;border-radius:999px;background:rgba(119,221,177,.1);border:1px solid rgba(119,221,177,.23);color:var(--mint);font-size:.72rem;font-weight:700}
-.education{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:34px}.edu{padding:21px;border-radius:17px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.035)}.edu span{color:var(--gold);font-family:var(--display);font-size:.68rem;font-weight:800;letter-spacing:.11em}.edu h3{font-family:var(--display);font-size:1rem;margin:8px 0 5px}.edu p{font-size:.84rem;color:rgba(255,255,255,.68)}
-.skills{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.skill{padding:8px 11px;border-radius:999px;border:1px solid rgba(119,221,177,.34);color:var(--mint);font-size:.75rem;font-weight:700}
-
-/* CURRENT BUILD */
-.builds{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:34px}.build{padding:26px;border-radius:20px;background:#fff;border:1px solid rgba(19,38,26,.12);box-shadow:0 18px 40px -34px rgba(0,0,0,.5)}.build .btag{font-family:var(--display);font-size:.67rem;font-weight:800;letter-spacing:.12em;color:#9a6e1c}.build h3{font-family:var(--display);font-size:1.3rem;margin:8px 0}.build p{font-size:.9rem;color:#68736b}.build b{color:#17643f}.build .quote{display:block;margin-top:14px;padding-top:13px;border-top:1px solid rgba(19,38,26,.1);font-size:.78rem;font-weight:700;color:#32483a}
-
-/* LIFE */
-.life-section{background:linear-gradient(145deg,#634936,#8b684d);color:#fff;position:relative;overflow:hidden}.life-section::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 58px,rgba(0,0,0,.035) 58px 60px)}.life-grid{position:relative;z-index:2;display:grid;grid-template-columns:.8fr 1.2fr;gap:36px;align-items:center}.life-photo{position:relative}.life-photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border:12px solid #fff7e8;border-bottom-width:46px;box-shadow:0 28px 70px -38px #000;transform:rotate(-2deg)}.life-photo::after{content:"LIFE BUILD";position:absolute;bottom:12px;left:50%;transform:translateX(-50%) rotate(-2deg);color:#5d4636;font-family:var(--display);font-size:.72rem;font-weight:800;letter-spacing:.12em}.notes{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.note{position:relative;padding:22px;background:#fff7df;color:#4c3a2c;border-radius:5px;box-shadow:0 13px 30px -23px #000;transform:rotate(-.7deg)}.note:nth-child(even){transform:rotate(1deg);background:#f7edcf}.note::before{content:"";position:absolute;top:-8px;left:50%;width:74px;height:17px;transform:translateX(-50%) rotate(-3deg);background:rgba(230,207,133,.76)}.note b{display:block;margin:6px 0;font-size:.98rem}.note p{font-size:.86rem;color:#6f5b49}.note .emo{font-size:1.48rem}.stamp{display:inline-block;margin-top:24px;padding:8px 15px;border:3px solid #f3c3ab;border-radius:9px;color:#ffe7d9;font-weight:800;transform:rotate(-2deg)}
-
-/* CONTACT */
-.contact{background:#06170f;color:#fff;text-align:center}.contact .title{max-width:880px;margin:12px auto 0}.contact .sub{margin:18px auto 0}.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:850px;margin:30px auto 0}.contact-card{padding:21px;border:1px solid rgba(255,255,255,.15);border-radius:17px;background:rgba(255,255,255,.05);transition:.2s}.contact-card:hover{transform:translateY(-4px);background:rgba(255,255,255,.09)}.contact-card b{display:block;font-family:var(--display);font-size:1rem}.contact-card span{display:block;color:var(--gold);font-size:.8rem;margin-top:4px}.archive-card{max-width:850px;margin:19px auto 0}.archive-card a{display:inline-flex;padding:12px 16px;border:1px dashed rgba(215,181,109,.5);border-radius:14px;color:var(--gold);font-size:.82rem;font-weight:800}.archive-card a:hover{background:rgba(215,181,109,.08)}
-footer{padding:30px 0 44px;background:#06170f;color:rgba(255,255,255,.48);text-align:center;font-size:.76rem}
-
-.reveal{opacity:0;transform:translateY(24px);transition:.7s var(--ease)}.reveal.show{opacity:1;transform:none}
-@media(max-width:920px){.hero-grid{grid-template-columns:1fr}.profile-stage{min-height:570px;max-width:620px;width:100%;margin:auto}.stats-grid{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.1)}.proof-grid{grid-template-columns:1fr}.value-grid,.builds,.education{grid-template-columns:1fr}.method-grid{grid-template-columns:repeat(2,1fr)}.life-grid{grid-template-columns:1fr}.life-photo{max-width:430px;margin:auto}.section-head{align-items:start;flex-direction:column}.navlinks a:not(.v1){display:none}}
-@media(max-width:620px){body{font-size:18px}.wrap{width:min(100% - 24px,1160px)}.hero{min-height:auto}.hero h1{font-size:clamp(2.65rem,14vw,4.4rem)}.profile-stage{min-height:500px}.float-badge{right:8px}.stats{margin-top:-15px}.method-grid,.notes,.contact-grid,.now-grid{grid-template-columns:1fr}.record-row{grid-template-columns:1fr;gap:7px}.proof{min-height:390px}.hero-actions .btn{width:100%}.socials{align-items:stretch}.social{flex:1;justify-content:center}.section{padding:66px 0}}
-@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
-</style>
+<link rel="stylesheet" href="./resume.css?v=20260802-career-life">
 </head>
-<body class="work-mode">
-<nav class="nav"><div class="wrap navin"><a class="brand" href="../">🍀 my<b>Clover</b></a><div class="navlinks"><a href="#proof">ผลงาน</a><a href="#experience">ประสบการณ์</a><a href="#contact">ติดต่อ</a><a class="v1" href="./first-version/">First Version ↗</a></div></div></nav>
+<body class="career-mode">
+<nav class="nav"><div class="wrap navin">
+  <a class="brand" href="../">🍀 my<b>Clover</b></a>
+  <div class="navright">
+    <div class="mode-switch" role="group" aria-label="เลือกดู Career หรือ Lifestyle">
+      <button class="switch-btn" type="button" data-mode="career" aria-pressed="true">CAREER</button>
+      <button class="switch-btn" type="button" data-mode="lifestyle" aria-pressed="false">LIFESTYLE</button>
+    </div>
+    <a class="version-link" href="./first-version/">First Version ↗</a>
+  </div>
+</div></nav>
 
-<header class="hero">
+<header class="hero mode-view career-view">
   <div class="wrap hero-grid">
-    <div class="hero-copy reveal">
-      <span class="eyebrow">GAME SYSTEM DESIGNER · LEARNING EXPERIENCE ARCHITECT</span>
-      <h1>ทีม — นรินทร์<span>ลีลาภรณ์</span></h1>
-      <p class="hero-lead">ผมชอบเปลี่ยน<b>เรื่องที่ยากและความรู้ที่อยู่ในหัวคน</b> ให้กลายเป็นเกม เครื่องมือ และระบบที่คนอื่นอยากลองและหยิบไปใช้ต่อได้จริง</p>
-      <p class="hero-note">เส้นทางของผมไม่ได้เป็นเส้นตรง และผมไม่อยากทำให้มันดูตรงเกินจริง ผมเปลี่ยนสนามมาหลายครั้ง แต่กลับมาที่โจทย์เดิมเสมอ — ทำอย่างไรให้คนเข้าใจ ลงมือ เล่นด้วยกัน และส่งต่อสิ่งที่สร้างได้</p>
-      <div class="hero-actions"><a class="btn primary" href="#proof">เปิดดูของที่สร้าง →</a></div>
+    <div class="reveal">
+      <span class="eyebrow">CAREER BUILD</span>
+      <h1>Game System Designer<span>Learning Experience Architect</span></h1>
+      <p class="hero-lead">ผมช่วยคนที่มีความรู้และความคิดดีอยู่แล้ว ให้เสียงของเขาไปได้ไกลขึ้น — ด้วยการ<b>จัดความคิดให้เป็นระบบ</b> แล้วเปลี่ยนมันเป็นเกม บทเรียน เครื่องมือ และประสบการณ์ที่คนอื่นหยิบไปใช้ต่อได้จริง</p>
+      <p class="hero-note">ผมผ่านงาน Brand, Training, Technology, General Management และธุรกิจของตัวเอง เส้นทางไม่ตรง แต่กลับมาที่โจทย์เดิมเสมอ: ทำอย่างไรให้ความรู้ไม่หยุดอยู่ที่คนเก่งเพียงคนเดียว</p>
+      <div class="hero-actions"><a class="btn primary" href="#career-proof">ดูผลงานและประสบการณ์ →</a></div>
       <div class="socials"><span>@teemclover</span><a class="social" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer">LINE</a><a class="social" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer">Instagram</a><a class="social" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer">Facebook</a></div>
     </div>
-    <div class="profile-stage reveal">
-      <div class="profile-glow"></div>
-      <div class="profile-card">
-        <img class="work-img" src="../img/teem-pro.jpg" alt="ทีม นรินทร์ ในโหมดทำงาน">
-        <img class="life-img" src="../img/teem-life.jpg" alt="ทีม นรินทร์ ในโหมดชีวิต">
-        <div class="mode-panel">
-          <div class="mode-tabs" role="group" aria-label="เลือกด้านของทีม"><button class="mode-tab" type="button" data-mode="work" aria-pressed="true">WORK BUILD</button><button class="mode-tab" type="button" data-mode="life" aria-pressed="false">LIFE BUILD</button></div>
-          <div class="mode-copy" id="modeCopy"><b>Party Architect · System Builder</b><p>อ่าน Quest หา Class วาง Role แล้วสร้างระบบให้คนละ Build เล่นด้วยกันได้</p></div>
-        </div>
-      </div>
-      <div class="float-badge" id="floatBadge">MY METHOD · PARTY ARCHITECTURE</div>
-    </div>
+    <div class="hero-media reveal"><div class="hero-photo"><img src="../img/resume-career-stage.webp" alt="ทีมยืนพูดบนเวทีต่อหน้าผู้ฟังจำนวนมาก"><div class="hero-caption"><b>จากหลังเวที สู่เวทีผู้ฟังระดับหลักหมื่น</b><p>สิ่งที่ผมสนใจไม่ใช่แค่การพูดดัง แต่คือการทำให้ข้อความเดินทางไปถึงคนจำนวนมากโดยยังไม่เสียแก่น</p></div></div><div class="float-badge">SYSTEM BUILDER · SPEAKER · AMPLIFIER</div></div>
   </div>
 </header>
+<div class="stats mode-view career-view"><div class="wrap stats-grid reveal"><div class="stat"><strong>2007–2026</strong><span>สนามจริงจากสื่อสู่ AI</span></div><div class="stat"><strong>หลักหมื่น</strong><span>ผู้ฟังในเวทีขนาดใหญ่</span></div><div class="stat"><strong>5 สนาม</strong><span>Brand · Training · Tech · GM · Founder</span></div><div class="stat"><strong>1 แกน</strong><span>ทำความคิดให้ส่งต่อได้</span></div></div></div>
 
-<div class="stats"><div class="wrap stats-grid reveal"><div class="stat"><strong>2007–Present</strong><span>สนามจริงกับคน เนื้อหา และระบบ</span></div><div class="stat"><strong>7 ตอน</strong><span>ประสบการณ์ที่กลายเป็นเรื่องเล่า</span></div><div class="stat"><strong>6 บท</strong><span>AI Lesson ที่คนเริ่มทำตามได้</span></div><div class="stat"><strong>1 เกม</strong><span>CORE7 ที่เปลี่ยนค่านิยมให้เล่นได้</span></div></div></div>
-
-<section class="now"><div class="wrap">
-  <div class="now-grid">
-    <article class="now-card reveal"><span>2026–PRESENT</span><h2>Game Master · myClover</h2><p>ออกแบบบ้านแบบเล่นได้ เรื่องเล่า บทเรียน เกม และระบบที่ช่วยให้คนสร้างผลลัพธ์ชิ้นแรกของตัวเอง</p></article>
-    <article class="now-card reveal"><span>2026–PRESENT</span><h2>CEO · Sanchuan Holdings</h2><p>ดูภาพรวมธุรกิจ วางทิศทาง และเชื่อมคน ระบบ กับโอกาสให้เดินไปด้วยกันได้ในระยะยาว</p></article>
+<header class="hero mode-view lifestyle-view">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <span class="eyebrow">LIFESTYLE BUILD</span>
+      <h1>Player · Explorer<span>Lifelong Beginner</span></h1>
+      <p class="hero-lead">นอกเวลางาน ผมชอบเข้าไปอยู่ในสนามที่ยังไม่รู้คำตอบ — จากกระโดดร่ม ดำน้ำ สโนว์บอร์ด ไปจนถึง Pro Tour ของเกมการ์ด เพราะช่วงที่ต้อง<b>เริ่มเรียนใหม่</b> ทำให้ผมรู้สึกมีชีวิต</p>
+      <p class="hero-note">ไม่ได้ทำทุกอย่างเพื่อเก็บ Achievement แค่ชอบเห็นว่าตัวเองจะอ่านสนามใหม่ ปรับ Build และสนุกกับการยังไม่เก่งได้แค่ไหน</p>
+      <div class="hero-actions"><a class="btn primary" href="#life-gallery">เปิด Lifestyle Loadout →</a></div>
+      <div class="socials"><span>@teemclover</span><a class="social" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer">LINE</a><a class="social" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer">Instagram</a><a class="social" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer">Facebook</a></div>
+    </div>
+    <div class="hero-media reveal"><div class="hero-photo"><img src="../img/resume-life-skydive.webp" alt="ทีมกระโดดร่มเหนือ Palm Jumeirah"><div class="hero-caption"><b>ความกลัวอยู่ครบ แต่ขึ้นเครื่องแล้วก็ต้องกระโดด</b><p>สนามใหม่ไม่ได้ทำให้ผมมั่นใจขึ้นทันที แต่มันทำให้รู้ว่าความกลัวกับความสนุกอยู่พร้อมกันได้</p></div></div><div class="float-badge">PLAY · EXPLORE · LEARN AGAIN</div></div>
   </div>
-  <p class="now-note reveal"><b>สถานะปัจจุบัน:</b> ผมไม่ได้ทำงานประจำกับองค์กรอื่นแล้ว งานหลักอยู่ที่ 2 บทบาทนี้ และเลือกคุยกับโปรเจกต์ที่ต้องเปลี่ยนความรู้หรือโจทย์ซับซ้อนให้กลายเป็นประสบการณ์ที่คนใช้ได้จริง</p>
-</div></section>
+</header>
+<div class="stats mode-view lifestyle-view"><div class="wrap stats-grid reveal"><div class="stat"><strong>5 สนาม</strong><span>ที่ต้องเริ่มเรียนใหม่</span></div><div class="stat"><strong>META เปลี่ยน</strong><span>ก็เปลี่ยน Build ตาม</span></div><div class="stat"><strong>ล้มได้</strong><span>แต่เก็บข้อมูลกลับมา</span></div><div class="stat"><strong>เล่นจริง</strong><span>มากกว่านั่งดูข้างสนาม</span></div></div></div>
 
-<section class="section light" id="proof"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">PLAYABLE PROOF</span><h2 class="title">ไม่ต้องเชื่อจากข้อความ<br>กดเข้าไปลองของจริงได้เลย</h2><p class="sub">ผลงานแต่ละชิ้นเริ่มจากโจทย์เดียวกัน: ทำอย่างไรให้ความคิดไม่ได้อยู่แค่ในหัวเจ้าของ แต่เดินทางต่อไปถึงมือคนอื่นได้</p></div></div>
-  <div class="proof-grid">
-    <a class="proof reveal" href="../forge/"><img src="../img/hall-why.jpg" alt="เรื่องเล่าจากโรงตีเหล็ก"><div class="proof-body"><span class="proof-tag">STORY SYSTEM · 7 EPISODES</span><h3>Tales from the Forge</h3><p>ประสบการณ์เกือบ 20 ปี ถูกแปลงเป็นเรื่องเล่าที่มี Progress, Unlock และตอนพิเศษ เพื่อให้คนเข้าใจ WHY ก่อนเข้าสู่เครื่องมือ</p><span class="proof-go">อ่านเรื่องจริง →</span></div></a>
-    <a class="proof reveal" href="../classroom/"><img src="../img/hall-classroom.jpg" alt="ห้องเรียน AI ฟรี 6 บท"><div class="proof-body"><span class="proof-tag">LEARNING EXPERIENCE · 6 LESSONS</span><h3>6 Free AI Lessons</h3><p>กระบวนการที่ใช้สร้างเว็บไซต์นี้ ถูกจัดใหม่เป็นบทเรียนสั้นที่พาคนจากการลอง AI ไปถึงผลลัพธ์ชิ้นแรก</p><span class="proof-go">เข้าเรียนฟรี →</span></div></a>
-    <a class="proof reveal" href="../core7/"><img src="../img/hall-core7.jpg" alt="เกม myClover CORE7"><div class="proof-body"><span class="proof-tag">GAME DESIGN · HUMAN VS AI</span><h3>myClover: CORE7</h3><p>ค่านิยมของชุมชนถูกเปลี่ยนเป็นเกมตัดสินใจ 7 ใบ กติกาเรียบง่าย แต่เปิดพื้นที่ให้คนอ่านเกม อ่านคน และเลือกจุดยืนของตัวเอง</p><span class="proof-go">ทดลองเล่น →</span></div></a>
-    <a class="proof reveal" href="../hall.html"><img src="../img/og-home.jpg" alt="บ้าน myClover"><div class="proof-body"><span class="proof-tag">INTERACTIVE HOUSE · QUEST & INVENTORY</span><h3>myClover House</h3><p>เว็บไซต์ข้อมูลธรรมดาถูกออกแบบใหม่ให้เป็นบ้านแบบเล่นได้ มีเข็มทิศ Main Quest การ์ดประจำตัว Inventory และ Secret Route</p><span class="proof-go">เดินเข้าบ้าน →</span></div></a>
-  </div>
-</div></section>
-
-<section class="section dark"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">WHAT I BUILD</span><h2 class="title">คุยกับผมเมื่อโจทย์ยังเป็นก้อน<br>แต่ต้องทำให้คนอื่นหยิบไปใช้ได้</h2></div></div>
-  <div class="value-grid">
-    <div class="value reveal"><span class="icon">🎮</span><h3>Game & Workshop Design</h3><p>เปลี่ยนเนื้อหาหนัก กระบวนการ หรือบทสนทนายาก ๆ ให้กลายเป็นเกม เวิร์กช็อป และประสบการณ์ที่คนมีส่วนร่วมจริง</p><small>RULES · CHOICE · FEEDBACK · SOCIAL PLAY</small></div>
-    <div class="value reveal"><span class="icon">🧭</span><h3>Learning & Training System</h3><p>ถอดความรู้จากคนเก่งคนเดียวให้เป็น Source, Starter Kit, Workflow และสนามฝึกที่ทีมใช้ซ้ำ ส่งต่อ และพัฒนาต่อได้</p><small>SOURCE · LOADOUT · PRACTICE · TRANSFER</small></div>
-    <div class="value reveal"><span class="icon">🤖</span><h3>AI Workflow & Product Story</h3><p>จัด AI หลายตัวให้เป็น Party ช่วยคิด สร้าง ตรวจ และผลิตงาน โดยมนุษย์ยังถือโจทย์ ตัดสินใจ และรับผิดชอบผลลัพธ์สุดท้าย</p><small>HUMAN DIRECTION · AI PARTY · REAL OUTPUT</small></div>
-  </div>
-</div></section>
-
-<section class="section method"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">MY METHOD · PARTY ARCHITECTURE</span><h2 class="title">ผมไม่ได้เริ่มจากเครื่องมือ<br>ผมเริ่มจากเกมที่ทุกคนกำลังเล่น</h2><p class="sub">ตำแหน่งงานบอกไม่ครบว่าคนหนึ่งคนเล่นได้อย่างไร ผมจึงอ่าน Quest, Class และจังหวะส่งไม้ก่อนออกแบบระบบ</p></div></div>
-  <div class="method-grid"><div class="method-step reveal" data-n="1"><span class="mini">01 · QUEST</span><h3>ทำให้เห็นปลายทางเดียวกัน</h3><p>นิยามว่าชนะคืออะไร อะไรไม่ใช่งานของรอบนี้ และหลักฐานแบบไหนบอกว่า Quest จบแล้ว</p></div><div class="method-step reveal" data-n="2"><span class="mini">02 · CLASS</span><h3>อ่านคนก่อนตั้งตำแหน่ง</h3><p>หา Stat, Skill และวิธีเล่นที่แต่ละคนมีจริง ไม่บังคับให้คนเก่งคนละแบบใช้ Build เดียวกัน</p></div><div class="method-step reveal" data-n="3"><span class="mini">03 · SYSTEM</span><h3>สร้าง Loadout ที่หยิบไปใช้ได้</h3><p>เปลี่ยนความรู้เป็น Source, Workflow, Deck และเครื่องมือที่ทีมใช้ซ้ำได้โดยไม่ต้องรอเจ้าของความรู้</p></div><div class="method-step reveal" data-n="4"><span class="mini">04 · TRAIN</span><h3>ฝึก ส่งต่อ แล้วปรับ Build</h3><p>ทดลองกับงานจริง ดูจุดที่หลุด ให้ Feedback และปรับจนระบบเดินต่อได้แม้คนสร้างถอยออกมา</p></div></div>
-  <div class="belief reveal"><b>หลักที่ผมถือ:</b> ทีมที่ดีไม่ใช่ทีมที่ทุกคนเก่งเหมือนกัน แต่คือทีมที่รู้ว่าใครเล่น Class ไหน กำลังทำ Quest อะไร และส่งไม้ต่อให้กันตรงไหน</div>
-</div></section>
-
-<section class="section record" id="experience"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">SELECTED EXPERIENCE</span><h2 class="title">ถ้ามองเป็นรายบริษัท ผมเปลี่ยนสนามหลายครั้ง<br>ถ้ามองเป็น Quest เดียว แกนงานต่อเนื่องมาตลอด</h2><p class="record-intro">จากสื่อและการสอน ไปสู่ระบบ ทีม องค์กร และผลิตภัณฑ์ของตัวเอง — <b>ผมไม่ได้ซ่อนการเปลี่ยนแปลง แต่จัดให้เห็นว่าทุกช่วงพาผมมาสร้างอะไรในวันนี้</b></p></div></div>
-  <div class="record-list">
-    <article class="record-row reveal"><div class="record-ver">2007–2019<br>BUILD FROM ZERO</div><div><h3>สื่อ แบรนด์ และระบบส่งต่อ</h3><p>เริ่มทำงานตั้งแต่อายุ 19 สร้างสื่อ หลักสูตร และเครื่องมือฝึกคนในธุรกิจเครือข่าย ก่อนขยับจากคนทำงานหน้าเวทีมาเป็นคนออกแบบระบบหลังบ้าน</p><div class="roles"><span class="role-chip">Clover Group · Brand Manager</span><span class="role-chip">Aim Stars Network · Marketing Executive</span><span class="role-chip">Legacy Corp · Marketing Director</span></div></div></article>
-    <article class="record-row reveal"><div class="record-ver">2019–2021<br>LEARNING AT SCALE</div><div><h3>Vice President · Training & Development</h3><p>ดูระบบฝึกคนและการพัฒนาทีมใน Lazada Thailand (Youpik) เรียนรู้การทำให้ความรู้และมาตรฐานเดินทางในองค์กรที่โตเร็ว</p><div class="roles"><span class="role-chip">Lazada Thailand (Youpik)</span></div></div></article>
-    <article class="record-row reveal"><div class="record-ver">2021–2022<br>TECH & OPERATIONS</div><div><h3>General Manager · Technology</h3><p>รับผิดชอบภาพรวมเทคโนโลยีและการทำงานข้ามทีมที่ In-Tech Steel เชื่อมโจทย์ธุรกิจกับระบบที่คนหน้างานใช้ได้จริง</p><div class="roles"><span class="role-chip">In-Tech Steel</span></div></div></article>
-    <article class="record-row reveal"><div class="record-ver">2022–2023<br>GENERAL MANAGEMENT</div><div><h3>General Manager</h3><p>ขยับมาดูภาพรวมองค์กรและการประสานหลายฟังก์ชันที่ Nusasiri ทำให้มุมมองเรื่องระบบไม่หยุดอยู่แค่ Training หรือ Technology</p><div class="roles"><span class="role-chip">Nusasiri</span></div></div></article>
-    <article class="record-row reveal"><div class="record-ver">2023–2025<br>INDEPENDENT BUILD</div><div><h3>กลับมาสร้างแบบโปรเจกต์</h3><p>หลังออกจากงานประจำ เลือกทำงานเป็นโปรเจกต์ด้านสื่อไทย–จีน เกมและเวิร์กช็อป การเรียนรู้ด้วย AI และระบบที่ทำให้คนสร้างของได้ด้วยตัวเอง</p></div></article>
-    <article class="record-row reveal"><div class="record-ver">2026–PRESENT<br>FOUNDER MODE</div><div><h3>Game Master · CEO</h3><p>สร้าง myClover เป็นบ้านแบบเล่นได้ และบริหาร Sanchuan Holdings โดยรวมประสบการณ์จากหลายสนามกลับมาเป็นระบบที่มีทั้งคน เรื่องเล่า เกม และทางเลือก</p><div class="roles"><span class="role-chip">myClover · Game Master</span><span class="role-chip">Sanchuan Holdings · CEO</span></div></div></article>
-  </div>
-
-  <div class="education">
-    <article class="edu reveal"><span>HIGH SCHOOL</span><h3>โรงเรียนเตรียมอุดมศึกษา</h3><p>จุดเริ่มต้นก่อนเลือกเส้นทางด้านการสื่อสาร คน และความคิดสร้างสรรค์</p></article>
-    <article class="edu reveal"><span>2007–2011</span><h3>จุฬาลงกรณ์มหาวิทยาลัย</h3><p>ปริญญาตรี Speech Communication and Rhetoric — นิเทศศาสตร์</p></article>
-    <article class="edu reveal"><span>EXECUTIVE PROGRAMS</span><h3>Sripatum University</h3><p>DEF4 · The Story 4 · The Connext 1 — Digital Communication, Storytelling และ Business Connection</p></article>
-  </div>
-
-  <div class="skills reveal"><span class="skill">Game System Design</span><span class="skill">Learning Experience</span><span class="skill">Party Architecture</span><span class="skill">Training System</span><span class="skill">AI Workflow</span><span class="skill">Community Product</span><span class="skill">PDPA & Compliance</span><span class="skill">ไทย · English</span></div>
+<main class="mode-view career-view">
+<section class="section" id="career-proof"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">WHAT I DO BEST</span><h2 class="title">ขยายเสียงให้คนเก่ง<br>โดยไม่ทำให้เสียงนั้นเสียรูป</h2><p class="sub">ผมอยู่ได้ทั้งฝั่งคนคิด ฝั่งคนสร้าง และฝั่งคนต้องเอาไปใช้จริง จึงมักถูกเรียกเข้าไปตอนที่ความคิดยังเป็นก้อน แต่ต้องเดินทางต่อทั้งทีมและองค์กร</p></div></div>
+  <div class="value-grid"><div class="value reveal"><span class="icon">📣</span><h3>Amplify Good Ideas</h3><p>ช่วยคนที่รู้จริงจัดเรื่องที่อยู่ในหัวให้คนจำนวนมากเข้าใจ โดยยังรักษาแก่นและน้ำเสียงของเจ้าของความคิด</p><small>VOICE · STORY · AUDIENCE</small></div><div class="value reveal"><span class="icon">🧭</span><h3>Turn Knowledge into Systems</h3><p>เปลี่ยนประสบการณ์เป็น Source, Curriculum, Starter Kit, Workflow หรือ Game System ที่คนอื่นหยิบไปใช้ต่อได้</p><small>SOURCE · STRUCTURE · TRANSFER</small></div><div class="value reveal"><span class="icon">🎮</span><h3>Design Learning that Moves</h3><p>ออกแบบการเรียนให้มีการเลือก การลอง Feedback และผลลัพธ์จริง มากกว่าการนั่งฟังแล้วหวังว่าจะจำได้</p><small>CHOICE · PRACTICE · FEEDBACK</small></div></div>
 </div></section>
 
 <section class="section light"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">CURRENT BUILD · 2026</span><h2 class="title">3 พื้นที่ที่ร่วมมือกันได้<br>แต่ไม่เป็นเจ้าของกัน</h2></div></div>
-  <div class="builds"><div class="build reveal"><span class="btag">OPEN HOUSE</span><h3>myClover</h3><p>บ้านแบบเล่นได้ที่คนเข้ามาเรียน สร้างของ เล่นเกม พัก หรือหยิบเครื่องมือแล้วออกไปได้ โดยไม่ต้องเดินตามเจ้าของบ้าน</p><span class="quote">ใครเจอเรา คนนั้นโชคดี</span></div><div class="build reveal"><span class="btag">SERIOUS BUILD SPACE</span><h3>Guild X</h3><p>พื้นที่ของคนที่เลือกจะลงมือจริง มี Starter Save, Source, Quest และ Patch ร่วมกัน แต่ยังเคารพ Class และ Build ของแต่ละคน</p><span class="quote">เราแบ่ง Operating System ไม่ได้ส่งต่อ Identity</span></div><div class="build reveal"><span class="btag">OPT-IN BUSINESS PATH</span><h3>Clover X</h3><p>เส้นทางธุรกิจที่ร่วมมือกับชุมชนได้ แต่ต้องเป็นทางเลือก ไม่ใช่เงื่อนไขการเป็นสมาชิกหรือเหตุผลที่บ้านนี้มีอยู่</p><span class="quote"><b>แหล่งรายได้ของผู้ก่อตั้ง ไม่ใช่เจ้าของชุมชน</b></span></div></div>
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">PROOF OF REACH</span><h2 class="title">จากเวที สื่อ และระบบ Training<br>ไปจนถึงของที่คนกดเล่นได้เอง</h2></div></div>
+  <div class="proof-split"><article class="proof-photo reveal"><img src="../img/resume-career-stage.webp" alt="เวทีที่มีผู้ฟังจำนวนมาก"><div class="proof-copy"><span>PUBLIC SPEAKING · LARGE AUDIENCE</span><h3>พูดต่อหน้าคนหลักหมื่น</h3><p>ประสบการณ์นี้สอนว่าความชัดเจนสำคัญกว่าคำที่ดูเก่ง และข้อความที่ดีต้องพาคนจำนวนมากเห็นภาพเดียวกันได้</p></div></article><article class="proof-photo small reveal"><img src="../img/resume-career-tv.webp" alt="ภาพทีมออกโทรทัศน์"><div class="proof-copy"><span>NATIONAL MEDIA</span><h3>เล่าเรื่องยากให้คนทั่วไปเข้าใจ</h3><p>งานสื่อช่วยฝึกให้ผมตัดสิ่งที่ไม่จำเป็นออก แล้วเหลือแก่นที่คนดูจำและนำไปใช้ต่อได้</p></div></article></div>
 </div></section>
 
-<section class="section life-section"><div class="wrap life-grid">
-  <div class="life-photo reveal"><img src="../img/teem-life.jpg" alt="ทีมในสนามการ์ดเกม"></div>
-  <div><span class="eyebrow reveal">LIFE BUILD</span><h2 class="title reveal" style="margin:12px 0 28px">อีกด้านที่ทำให้งานของผม<br>ไม่กลายเป็นแค่ Diagram</h2><div class="notes"><div class="note reveal"><span class="emo">🃏</span><b>นักแข่งการ์ดเกม</b><p>Flesh and Blood สอนว่า Deck ที่แรงไม่พอ คนเล่นต้องอ่านเกม ฝึก และรู้จังหวะของตัวเอง</p></div><div class="note reveal"><span class="emo">⚔️</span><b>เกมเมอร์สายระบบ</b><p>ชอบเกมที่ลึกพอให้ต้องวาด Skill Tree และเรียนรู้จาก Build ที่พังจริง</p></div><div class="note reveal"><span class="emo">🍜</span><b>กินตามเอโกะ</b><p>ภรรยาเป็นล่ามญี่ปุ่นสายบันเทิงและนักกินตัวยง ผมมีหน้าที่ตามไปชิมและหิ้วของ</p></div><div class="note reveal"><span class="emo">🔨</span><b>คนทำ Version แรก</b><p>ไม่รอให้สมบูรณ์ สร้างของที่เดินได้ก่อน แล้วใช้ข้อผิดพลาดเป็นข้อมูลของ Version ต่อไป</p></div><div class="note reveal"><span class="emo">🤖</span><b>ทำงานกับ AI Party</b><p>ใช้ AI หลายตัวช่วยคิด สร้าง และตรวจ แต่คนถือค้อนและตัดสินใจสุดท้ายยังเป็นมนุษย์</p></div><div class="note reveal"><span class="emo">🎮</span><b>เด็กที่เคยเล่นคนเดียว</b><p>เกมออนไลน์คือที่แรกที่ทำให้รู้ว่า Party เปลี่ยนทั้งผลลัพธ์และความหมายของเกมได้</p></div></div><span class="stamp reveal">ใครเจอเรา คนนั้นโชคดี ๛</span></div>
+<section class="section" id="career"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">SELECTED CAREER</span><h2 class="title">งานเปลี่ยนหลายครั้ง<br>แต่โจทย์หลักไม่เคยเปลี่ยน</h2><p class="sub">นี่ไม่ใช่รายชื่อทุกตำแหน่ง แต่เป็นสนามสำคัญที่ทำให้วิธีคิดของผมค่อย ๆ ชัดขึ้น</p></div></div>
+  <div class="timeline">
+    <article class="job reveal"><div class="job-time">2026–PRESENT</div><div><h3>Game Master — myClover</h3><p>ออกแบบบ้านแบบเล่นได้ ห้องเรียน AI เกม CORE7, Inventory, Secret Route และระบบที่ช่วยให้คนเริ่มสร้างของของตัวเอง</p></div></article>
+    <article class="job reveal"><div class="job-time">2026–PRESENT</div><div><h3>CEO — Sanchuan Holdings</h3><p>ดูทิศทางภาพรวมของธุรกิจและโครงการที่ต้องเชื่อมคน ระบบ เทคโนโลยี และการตัดสินใจระยะยาว</p></div></article>
+    <article class="job reveal"><div class="job-time">2022–2023</div><div><h3>General Manager — Nusasiri</h3><p>ทำงานข้ามหลายธุรกิจและช่วยเชื่อมโจทย์ของผู้บริหารกับการปฏิบัติจริงในองค์กร</p></div></article>
+    <article class="job reveal"><div class="job-time">2021–2022</div><div><h3>General Manager — HR & Technology, In-Tech Steel</h3><p>ดูงานพัฒนาคน โครงสร้าง และเทคโนโลยีในช่วงที่องค์กรต้องการจัดระบบให้พร้อมเติบโต</p></div></article>
+    <article class="job reveal"><div class="job-time">2019–2021</div><div><h3>VP Training & Development — Lazada Thailand / Youpik</h3><p>ออกแบบ Training, Learning Flow และเครื่องมือที่ช่วยให้คนจำนวนมากเริ่มต้นและเรียนรู้ด้วยตัวเองได้</p></div></article>
+    <article class="job reveal"><div class="job-time">2007–2019</div><div><h3>Clover Group · Aim Stars · Legacy Corp</h3><p>สนามตั้งต้นของ Brand, Multimedia, Curriculum, Team Building และการเปลี่ยนความรู้ของคนเก่งให้เดินทางต่อไปได้ไกลกว่าเจ้าของความรู้</p></div></article>
+  </div>
+  <div class="current-note reveal"><b>สถานะปัจจุบัน:</b> ผมไม่ได้ทำงานประจำกับองค์กรอื่นแล้ว งานหลักคือการสร้าง myClover และดู Sanchuan Holdings พร้อมรับโจทย์ที่ตรงกับสิ่งที่ทำได้ดีที่สุด: ระบบการเรียนรู้ เกม การสื่อสาร และการขยายผลความคิด</div>
 </div></section>
+
+<section class="section light"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">PLAYABLE PROOF</span><h2 class="title">ไม่ต้องเชื่อจาก Resume<br>กดเข้าไปลองของจริงได้เลย</h2></div></div>
+  <div class="project-grid"><a class="project reveal" href="../forge/"><img src="../img/hall-why.jpg" alt="เรื่องเล่าจากโรงตีเหล็ก"><div class="project-body"><span class="project-tag">STORY SYSTEM · 7 EPISODES</span><h3>Tales from the Forge</h3><p>ประสบการณ์เกือบ 20 ปีถูกจัดใหม่เป็นเรื่องเล่าที่มี Progress, Unlock และตอนพิเศษ</p><span class="project-go">อ่านเรื่องจริง →</span></div></a><a class="project reveal" href="../classroom/"><img src="../img/hall-classroom.jpg" alt="ห้องเรียน AI"><div class="project-body"><span class="project-tag">LEARNING EXPERIENCE · 6 LESSONS</span><h3>6 Free AI Lessons</h3><p>กระบวนการที่ใช้สร้างเว็บไซต์ ถูกถอดเป็นบทเรียนที่พาคนไปถึงผลงานชิ้นแรก</p><span class="project-go">เข้าเรียนฟรี →</span></div></a><a class="project reveal" href="../core7/"><img src="../img/hall-core7.jpg" alt="เกม CORE7"><div class="project-body"><span class="project-tag">GAME SYSTEM · HUMAN VS AI</span><h3>myClover: CORE7</h3><p>ค่านิยมของชุมชนกลายเป็นเกมตัดสินใจที่อ่านง่าย แต่มีพื้นที่ให้คิดและอ่านคน</p><span class="project-go">ทดลองเล่น →</span></div></a><a class="project reveal" href="../hall.html"><img src="../img/og-home.jpg" alt="บ้าน myClover"><div class="project-body"><span class="project-tag">INTERACTIVE HOUSE</span><h3>myClover House</h3><p>เว็บไซต์ข้อมูลถูกเปลี่ยนให้เป็นบ้านแบบเล่นได้ มี Quest, Inventory, Card และ Secret Route</p><span class="project-go">เดินเข้าบ้าน →</span></div></a></div>
+</div></section>
+
+<section class="section light"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">LANGUAGES & LOGIC</span><h2 class="title">ภาษาที่ใช้คุยกับคน<br>และภาษาที่ใช้คิดกับระบบ</h2><p class="sub">Math ไม่ใช่ภาษาพูด แต่เป็นภาษาหนึ่งที่ผมใช้มองโครงสร้าง ความสัมพันธ์ และความน่าจะเป็น</p></div></div>
+  <div class="language-grid"><div class="language-card reveal"><h3>Languages & Logic</h3><p>ระดับนี้เป็นการประเมินตัวเองเพื่อให้คนรู้ว่าใช้ผมกับงานแบบไหนได้ ไม่ใช่ใบรับรองความสมบูรณ์แบบ</p><div class="ratings"><div class="rating"><b>Math / Logic</b><span class="stars" aria-label="5 จาก 5">★★★★★</span><small>5/5</small></div><div class="rating"><b>Thai</b><span class="stars" aria-label="5 จาก 5">★★★★★</span><small>5/5</small></div><div class="rating"><b>English</b><span class="stars" aria-label="5 จาก 5">★★★★★</span><small>5/5</small></div><div class="rating"><b>Japanese</b><span class="stars" aria-label="3 จาก 5">★★★<span class="off">☆☆</span></span><small>3/5</small></div><div class="rating"><b>Chinese</b><span class="stars" aria-label="2 จาก 5">★★<span class="off">☆☆☆</span></span><small>2/5</small></div></div></div><div class="language-card reveal"><h3>Education</h3><div class="education-list"><div class="edu"><b>Triam Udom Suksa School</b><span>มัธยมศึกษา</span></div><div class="edu"><b>Chulalongkorn University</b><span>นิเทศศาสตร์ · วาทวิทยาและการสื่อสาร</span></div><div class="edu"><b>Sripatum University</b><span>นิติศาสตร์ (กำลังศึกษา)</span></div><div class="edu"><b>Selected Programs</b><span>DEF4 · The Story 4 · The Connext 1</span></div></div></div></div>
+</div></section>
+</main>
+
+<main class="mode-view lifestyle-view">
+<section class="section" id="life-gallery"><div class="wrap">
+  <div class="section-head reveal"><div class="copy life-intro"><span class="eyebrow">LIFESTYLE LOADOUT</span><h2 class="title">ไม่ได้ชอบเพราะทำได้เก่งทุกอย่าง<br>ชอบเพราะทุกสนามบังคับให้เริ่มใหม่</h2><p class="sub">แต่ละกิจกรรมมีระบบ จังหวะ ความเสี่ยง และวิธีอ่านสถานการณ์ต่างกัน พอเข้าไปเล่นจริง ผมเลยได้ทั้งความสนุกและข้อมูลกลับมาปรับวิธีคิดของตัวเอง</p></div></div>
+  <div class="life-gallery">
+    <article class="life-card reveal"><img src="../img/resume-life-skydive.webp" alt="กระโดดร่มเหนือ Palm Jumeirah"><div class="life-card-copy"><span>SKY DIVING</span><h3>กลัวอยู่ แต่ก็กระโดด</h3><p>ไม่ได้ทำให้ความกลัวหายไป แค่สอนว่าบางครั้งเราต้องตัดสินใจก่อนที่ความมั่นใจจะมาถึง</p></div></article>
+    <article class="life-card reveal"><img src="../img/resume-life-protour.webp" alt="เดินทางไปแข่ง Flesh and Blood Pro Tour London"><div class="life-card-copy"><span>TCG PRO TOUR</span><h3>ชอบเกมที่ยังไม่มีคำตอบตายตัว</h3><p>สนุกที่สุดตอน META ยังไม่นิ่ง ทุกคนเห็นข้อมูลคล้ายกัน แต่ต่างกันที่การเตรียมตัว อ่านเกม และยอมรับ Build ที่พัง</p></div></article>
+    <article class="life-card reveal"><img src="../img/resume-life-snowboard.webp" alt="เล่นสโนว์บอร์ดบนภูเขาหิมะ"><div class="life-card-copy"><span>SNOWBOARDING</span><h3>ล้มคือ Feedback ที่เร็วมาก</h3><p>บนหิมะไม่มีเวลาอธิบายยาว ร่างกายบอกทันทีว่าน้ำหนักผิด จังหวะผิด แล้วให้ลองใหม่อีกครั้ง</p></div></article>
+    <article class="life-card reveal"><img src="../img/resume-life-scuba.webp" alt="ดำน้ำดูปะการัง"><div class="life-card-copy"><span>SCUBA DIVING</span><h3>ยิ่งลงลึก ยิ่งต้องนิ่ง</h3><p>ความตื่นเต้นใช้พลังงานเยอะ การหายใจช้า อ่านอุปกรณ์ และเคารพข้อจำกัด สำคัญกว่าการรีบไปให้ไกล</p></div></article>
+    <article class="life-card reveal"><img src="../img/resume-life-boardgame.webp" alt="จัดสัมมนาผ่านบอร์ดเกม"><div class="life-card-copy"><span>BOARDGAME SEMINAR</span><h3>งานอดิเรกที่ไหลกลับมาเป็นงาน</h3><p>เกมช่วยเปิดบทสนทนา ให้คนเห็นผลของการตัดสินใจ และทำให้ห้องเรียนไม่ต้องมีคนพูดอยู่ฝ่ายเดียว</p></div></article>
+  </div>
+</div></section>
+
+<section class="section light"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">WHAT IT SAYS ABOUT ME</span><h2 class="title">ไม่ใช่คนกล้าไปหมด<br>แต่เป็นคนที่ชอบเรียนจากสนามจริง</h2></div></div>
+  <div class="lesson-grid"><div class="life-lesson reveal"><span class="n">01 · CURIOSITY</span><h3>ชอบของที่ยังไม่เข้าใจ</h3><p>ความรู้สึกว่า “ยังไม่รู้” ไม่ได้น่ากลัวเสมอไป บางทีมันคือส่วนที่สนุกที่สุดของเกม</p></div><div class="life-lesson reveal"><span class="n">02 · PRACTICE</span><h3>เชื่อการลองมากกว่าภาพลักษณ์</h3><p>ทำจริงแล้วพัง ยังให้ข้อมูลมากกว่านั่งอธิบายว่าตัวเองน่าจะทำได้</p></div><div class="life-lesson reveal"><span class="n">03 · ADAPTATION</span><h3>ไม่ผูกตัวเองกับ Build เดิม</h3><p>ถ้าสนามเปลี่ยน วิธีเล่นก็เปลี่ยนได้ โดยไม่จำเป็นต้องทิ้งแก่นของตัวเอง</p></div><div class="life-lesson reveal"><span class="n">04 · PARTY</span><h3>สนุกขึ้นเมื่อคนเล่นต่างกัน</h3><p>ทั้งเกม งาน และชีวิตน่าสนใจกว่าเดิม เมื่อคนไม่ต้องเก่งเหมือนกันแต่ยังไปด้วยกันได้</p></div></div>
+  <div class="loadout reveal"><span class="chip">Flesh and Blood</span><span class="chip">Board Games</span><span class="chip">Travel</span><span class="chip">Food with Eiko</span><span class="chip">AI Party</span><span class="chip">Law Student</span><span class="chip">Version 1 Builder</span><span class="chip">#glhf</span></div>
+</div></section>
+</main>
 
 <section class="section contact" id="contact"><div class="wrap">
-  <span class="eyebrow reveal">LET'S TALK</span><h2 class="title reveal">ถ้าโจทย์ของคุณมีทั้งคน เนื้อหา และระบบ<br>น่าจะมีเรื่องให้เราคุยกัน</h2><p class="sub reveal">ติดต่อชื่อเดียวกันทั้งหมด: <b style="color:var(--gold)">@teemclover</b></p>
+  <span class="eyebrow reveal">LET'S TALK</span><h2 class="title reveal"><span class="mode-view career-view">ถ้าโจทย์ของคุณมีทั้งคน เนื้อหา และระบบ<br>น่าจะมีเรื่องให้เราคุยกัน</span><span class="mode-view lifestyle-view">ถ้าชอบเกม การเดินทาง หรือสนามที่ต้องเริ่มใหม่<br>ก็น่าจะคุยกันสนุก</span></h2><p class="sub reveal">ชื่อเดียวกันทุกช่องทาง: <b style="color:var(--accent)">@teemclover</b></p>
   <div class="contact-grid"><a class="contact-card reveal" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer"><b>LINE</b><span>@teemclover →</span></a><a class="contact-card reveal" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer"><b>Instagram</b><span>@teemclover →</span></a><a class="contact-card reveal" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer"><b>Facebook</b><span>@teemclover →</span></a></div>
-  <div class="archive-card reveal"><a href="./first-version/">Smart Resume · First Version →</a></div>
+  <a class="first-link reveal" href="./first-version/">Smart Resume · First Version →</a>
 </div></section>
-<footer><div class="wrap">🍀 myClover · Playable Resume · Good Luck, Have Fun</div></footer>
+<footer><div class="wrap">🍀 myClover · Career × Lifestyle · Good Luck, Have Fun</div></footer>
 
-<script>
-(function(){
-  var tabs=document.querySelectorAll('.mode-tab');
-  var modeCopy=document.getElementById('modeCopy');
-  var badge=document.getElementById('floatBadge');
-  var copy={
-    work:{title:'Party Architect · System Builder',text:'อ่าน Quest หา Class วาง Role แล้วสร้างระบบให้คนละ Build เล่นด้วยกันได้',badge:'MY METHOD · PARTY ARCHITECTURE'},
-    life:{title:'Blacksmith · Player · Husband',text:'เกม การ์ด อาหาร และ Version ที่พัง คือสนามที่ทำให้งานออกแบบยังมีชีวิตจริง',badge:'LIFE BUILD · HUMAN FINAL CALL'}
-  };
-  tabs.forEach(function(tab){tab.addEventListener('click',function(){
-    var mode=tab.dataset.mode;
-    document.body.classList.toggle('life-mode',mode==='life');
-    document.body.classList.toggle('work-mode',mode==='work');
-    tabs.forEach(function(x){x.setAttribute('aria-pressed',x===tab?'true':'false')});
-    modeCopy.innerHTML='<b>'+copy[mode].title+'</b><p>'+copy[mode].text+'</p>';
-    badge.textContent=copy[mode].badge;
-  })});
-
-  var els=document.querySelectorAll('.reveal');
-  if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('show')});return}
-  var io=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('show');io.unobserve(entry.target)}})},{threshold:.08,rootMargin:'0px 0px -40px'});
-  els.forEach(function(el){io.observe(el)});
-})();
-</script>
+<script src="./resume.js?v=20260802-career-life" defer></script>
 <script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","xtx73cs6w1");</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});</script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>

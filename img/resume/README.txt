@@ -1,1 +1,0 @@
-Resume image assets are stored as optimized WebP files.
