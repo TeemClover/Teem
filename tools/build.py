@@ -30,17 +30,13 @@ EPISODES = [
      ["041.jpg", "042.jpg", "043.jpg", "044.jpg"]),
     ("05", "5",  "จากคำตอบสู่ระบบ",           "ep5-from-answers-to-a-system",  False,
      ["051.jpg", "052.jpg", "053.jpg", "054.jpg"]),
-    ("06", "6",  "ชุดเริ่มต้นของผู้เล่นใหม่", "ep6-the-starter-kit",           False,
+    ("06", "6",  "สำหรับคนที่มาทีหลัง",       "ep6-the-starter-kit",           False,
      ["061.jpg", "062.jpg", "063.jpg", "064.jpg"]),
-    ("07", "7",  "เสียงที่ไปไกลกว่าเรา",      "ep7-a-voice-that-went-further", False, ["07.png"]),
-    ("08", "8",  "ช่างตีเหล็กหลังเวที",       "ep8-the-blacksmith-backstage",  False, ["08.png"]),
-    ("09", "9",  "ของที่ดีต้องไปถึงมือคน",    "ep9-tools-must-reach-people",   False, ["09.png"]),
-    ("10", "10", "ครั้งนี้ผมไม่ปิดจอ",        "ep10-this-time-i-left-the-screen-on", False, ["10.png"]),
-    ("11", "11", "แต่ละคนมี Class ของตัวเอง", "ep11-everyone-has-their-own-class",   False, ["09s.png"]),
-    ("12", "12", "เกมใหม่ ลีกใหม่",           "ep12-a-new-game-a-new-league",        False, ["10.png"]),
+    ("07", "7",  "เวลาที่ได้คืนมา",            "ep7-a-voice-that-went-further", False,
+     ["071.jpg", "072.jpg", "073.jpg", "074.jpg"]),
 ]
 
-# เรียงเลขตอนใหม่เป็น 1–12 (เดิมเริ่มที่ 0 และมีตอน 9.5)
+# รองรับลิงก์และ Save จากโครงเก่า ก่อนสรุปเรื่องใหม่เป็น 7 ตอน
 # คนที่อ่านค้างไว้ก่อนเปลี่ยนต้องไม่เสียความคืบหน้า และลิงก์เก่าต้องยังเปิดได้
 # ตารางนี้เลยถูกใช้ 2 ที่: ย้ายค่าใน localStorage (quest.js) และทำ _redirects
 OLD_TO_NEW = [
@@ -51,11 +47,11 @@ OLD_TO_NEW = [
     ("ep4-deckbuilding",           "ep5-from-answers-to-a-system"),
     ("ep5-dream-factory",          "ep6-the-starter-kit"),
     ("ep6-ten-to-thousand",        "ep7-a-voice-that-went-further"),
-    ("ep7-the-smith-who-lost",     "ep8-the-blacksmith-backstage"),
-    ("ep8-the-one-from-hatyai",    "ep9-tools-must-reach-people"),
-    ("ep9-open-the-screen",        "ep10-this-time-i-left-the-screen-on"),
-    ("ep9-5-the-guild-i-imagined", "ep11-everyone-has-their-own-class"),
-    ("ep10-the-tenth-step",        "ep12-a-new-game-a-new-league"),
+    ("ep7-the-smith-who-lost",     "original"),
+    ("ep8-the-one-from-hatyai",    "original"),
+    ("ep9-open-the-screen",        "original"),
+    ("ep9-5-the-guild-i-imagined", "original"),
+    ("ep10-the-tenth-step",        "original"),
 ]
 
 os.makedirs(IMG, exist_ok=True)
@@ -121,8 +117,8 @@ for key, num, title, slug, special, srcs in EPISODES:
     og.paste(r, ((1200 - r.width) // 2, (630 - r.height) // 2))
     og.save(f'{IMG}/{key}-og.jpg', 'JPEG', quality=86, optimize=True, progressive=True)
 
-# แบนเนอร์หน้าแรก — ช่อง 4 ของตอนที่ 11 (ฝูงชนเดินตอนพระอาทิตย์ตก) เลี่ยงกรอบข้อความ
-BANNER_SRC = next(s[0] for k, _, _, _, _, s in EPISODES if k == '11')
+# แบนเนอร์หน้าแรก — ใช้ช่องสุดท้ายของตอนจบ
+BANNER_SRC = EPISODES[-1][5][-1]
 if not SKIP_IMG and os.path.exists(os.path.join(SRC, BANNER_SRC)):
     s = Image.open(os.path.join(SRC, BANNER_SRC)).convert('RGB')
     sw, sh = s.size
@@ -269,7 +265,7 @@ QUEST_JS = '''/* ═════════════════════
 
    ── จุดเกาะใน HTML (ทาสีให้เองอัตโนมัติ) ──
    ค่าที่ขึ้นต้นด้วยชื่อเส้น เช่น "forge" หรือ "learn"
-     [data-mc-progress=forge]      "อ่านแล้ว 3/12 ตอน" · ซ่อนถ้ายังไม่เริ่ม
+     [data-mc-progress=forge]      "อ่านแล้ว 3/7 ตอน" · ซ่อนถ้ายังไม่เริ่ม
      [data-mc-bar=forge]           แถบความคืบหน้า — ปรับ width เป็น %
      [data-mc-continue=forge:../]  ลิงก์ "ทำต่อ" — หลัง : คือ path นำหน้า
      [data-mc-demote=forge:ghost]  ใส่คลาส ghost เมื่อเริ่มแล้ว (ลดความเด่น)
@@ -451,7 +447,7 @@ QUEST_JS = '''/* ═════════════════════
   }
 
   /* ── ย้ายความคืบหน้าเก่ามาชื่อใหม่ ──
-     ตอนการ์ตูนถูกเรียงเลขใหม่เป็น 1–12 (เดิมเริ่มที่ 0 และมีตอน 9.5)
+     เรื่องเดิมถูกรวมและเรียบเรียงใหม่เป็น 7 ตอน
      คนที่อ่านค้างไว้ก่อนหน้านั้นต้องไม่เสียของ — แปลงครั้งเดียวแล้วปักธงไว้ */
   var RENAMED={%RENAMED%};
   function migrate(){
@@ -874,7 +870,7 @@ CARD_GIFT = ('../../card/', 'ทำการ์ดประจำตัว',
 CLASS_GIFT = ('../../classroom/', 'ห้องเรียน AI ทั้ง 6 บท',
               'เรียนฟรี เริ่มบทละประมาณ 10 นาที แล้วกลับมาทำต่อได้โดยไม่ต้องมีพื้นฐาน')
 WALK_GIFT = ('../../walkthrough/', 'ห้องบทสรุป 🔒',
-             'เปิดให้คนที่อ่านการ์ตูนครบทั้ง 12 ตอน — แปลภาษาเกมเป็นภาษาธุรกิจ '
+             'เปิดให้คนที่อ่านการ์ตูนครบทั้ง 7 ตอน — แปลภาษาเกมเป็นภาษาธุรกิจ '
              'และเปิดเบื้องหลังว่าเว็บนี้สร้างขึ้นมายังไง')
 
 PATHS = [
@@ -1320,7 +1316,7 @@ print(f'สร้างหน้าสาย {len(PATHS)+1} หน้า')
 # Cloudflare Pages อ่านไฟล์นี้เอง ไม่ต้องตั้งอะไรเพิ่ม
 # ─────────────────────────────────────────────────────────────
 lines = ['# สร้างอัตโนมัติจาก tools/build.py — อย่าแก้ไฟล์นี้ตรง ๆ',
-         '# ตอนการ์ตูนถูกเรียงเลขใหม่เป็น 1–12 ลิงก์เดิมพามาที่ตอนเดียวกัน', '']
+         '# รองรับลิงก์จากโครงตอนเก่า', '']
 lines += [f'/forge/{o}/{" " * max(1, 38 - len(o))}/forge/{n}/  301' for o, n in OLD_TO_NEW]
 lines += ['', '# หน้าลงทะเบียนถูกรวมเข้าหน้าทำการ์ดแล้ว',
           '/register/*                              /card/#register  301', '',
