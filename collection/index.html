@@ -51,6 +51,7 @@ footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-si
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.wrap{width:min(100% - 24px,1120px)}.bar-title{display:none}.group-head{align-items:start}.grid{grid-template-columns:1fr}.hero{padding-top:35px}.ach-card{border-radius:17px}.group.bonus{padding:24px 12px 14px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.track i,.ach-card{transition:none}.ach-card.is-link:hover{transform:none}}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
+<link rel="stylesheet" href="/assets/line-oa.css">
 </head>
 <body>
 <nav class="bar"><div class="wrap"><a class="home" href="../">🍀 my<em>Clover</em></a><span class="bar-title"><b>Inventory</b>Achievement Album</span></div></nav>
@@ -62,6 +63,15 @@ footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-si
   <div class="filters" aria-label="กรอง Achievement"><button class="filter" data-filter="all" aria-pressed="true">ทั้งหมด</button><button class="filter" data-filter="unlocked" aria-pressed="false">ปลดแล้ว</button><button class="filter" data-filter="locked" aria-pressed="false">ยังไม่ปลด</button></div>
 </div></header>
 <main class="album"><div class="wrap" id="album"></div></main>
+
+<aside class="mc-line-invite mc-line-invite--dark" aria-label="ติดตาม Quest ใหม่ทาง LINE">
+  <div class="mc-line-invite__copy">
+    <span class="mc-line-invite__eyebrow">มีช่องใหม่ให้ปลดล็อกเสมอ</span>
+    <b>ไม่พลาด Quest และ Achievement ชุดถัดไป</b>
+    <p>แอด LINE บ้าน myClover ไว้ แล้วเราจะแจ้งเมื่อมีของใหม่ให้กลับมาเก็บ</p>
+  </div>
+  <a class="mc-line-invite__btn" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer"><img src="/assets/LINE_Brand_icon.png" alt="" width="40" height="40">แอด LINE บ้าน myClover</a>
+</aside>
 <!-- คนละไฟล์กับหน้า Card: หน้านี้เป็น Clover Song เวอร์ชันมีเสียงร้อง -->
 <audio id="collectionSong" src="../assets/audio/clover-song-vocal.mp3" loop preload="none"></audio>
 <button type="button" class="hud" id="collectionMusicBtn" aria-pressed="false">
