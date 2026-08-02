@@ -25,11 +25,13 @@ export function el(tag, attrs = {}, ...children) {
 
 /* ── Nav + Footer ── */
 export function renderShell({ active = '', minimal = false } = {}) {
+  const onCore7Home = location.pathname === '/core7/' || location.pathname === '/core7/index.html';
+  const logoHref = onCore7Home ? '/' : '/core7/';
   const nav = $('#c7nav');
   if (nav) {
     nav.innerHTML = `
       <div class="wrap bar">
-        <a class="logo" href="/" aria-label="กลับหน้าแรก myClover">
+        <a class="logo" href="${logoHref}" aria-label="${onCore7Home ? 'กลับหน้าแรก myClover' : 'กลับหน้าแรก CORE7'}">
           ${cloverLogo(30)}
           <span>my<em>Clover</em>&thinsp;· CORE7</span>
         </a>
@@ -56,7 +58,7 @@ export function renderShell({ active = '', minimal = false } = {}) {
     foot.innerHTML = `
       <div class="wrap cols">
         <div>
-          <strong class="disp">myClover: CORE7 <small>v0.3 Beta</small></strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
+          <strong class="disp">myClover: CORE7 <small>v0.4</small></strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
           เล่นฟรีด้วยการ์ดอะไรก็ได้ · <a href="/core7/open-play/">Open Play</a> · <a href="/core7/about/">เรื่องของเกมนี้</a>
         </div>
         <div>

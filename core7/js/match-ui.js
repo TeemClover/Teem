@@ -13,7 +13,7 @@
    ═══════════════════════════════════════════════════════════════ */
 import { $, el, toast, haptic, reducedMotion } from './ui.js';
 import { COLOR_META, cardById } from './cards.js';
-import { colorIcon, cardSVG, cardBackSVG, genericCardSVG } from './art.js';
+import { cardSVG, cardBackSVG, genericCardSVG, cardArtHref } from './art.js';
 import { isLocalMember } from './store.js';
 import { playSfx } from './audio.js';
 
@@ -57,7 +57,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     <div class="match-board">
       <div class="match-stage">
         <button class="drawer-toggle" id="histBtn" aria-label="เปิด Discard" aria-expanded="false">🗑️ Discard</button>
-        <div class="rule-line" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก"><span>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
+        <div class="rule-line" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก"><span>🔴 &gt; 🟢 &gt; 💧 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
         <div class="stage-cards">
           <div class="stage-slot" id="slotYou">
             <div class="flip"><div class="face back"></div><div class="face front"></div></div>
@@ -107,12 +107,14 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     const meta = COLOR_META[c.color];
     const card = cardById(c.cardId);
     const label = card.generic ? meta.nameEn.toUpperCase() : card.en;
+    const artHref = cardArtHref(c.cardId);
     const btn = el('button', {
       class: `hand-card ${c.color.toLowerCase()}`,
       'data-iid': c.iid,
       'aria-label': `${label} สี${meta.nameTh}${mode === 'discard' ? ' — เลือกเพื่อทิ้ง' : ''}`,
       'aria-pressed': String(view.you.selected === c.iid),
-      html: `<span style="display:flex">${colorIcon(c.color, 18)}</span><span>${label.slice(0, 9)}</span>`,
+      style: `--hand-color:${meta.hex};--hand-art:url("${artHref}")`,
+      html: `<span class="hand-card-name">${label}</span>`,
     });
     if (view.you.selected === c.iid && mode === 'select') btn.classList.add('sel');
     let pointerId = null;

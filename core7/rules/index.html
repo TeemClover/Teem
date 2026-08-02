@@ -39,8 +39,8 @@
         <div class="cycwrap" id="cyc"></div>
         <div class="kbox">
           🔴 <b>แดง TASTER</b> ชนะ 🟢 เขียว<br>
-          🟢 <b>เขียว KEEPER</b> ชนะ 🔵 ฟ้า<br>
-          🔵 <b>ฟ้า THINKER</b> ชนะ 🔴 แดง<br>
+          🟢 <b>เขียว KEEPER</b> ชนะ 💧 ฟ้า<br>
+          💧 <b>ฟ้า THINKER</b> ชนะ 🔴 แดง<br>
           ⚙️ <b>เทา MAKER</b> เสมอกับทุกสี (Block)
         </div>
       </div>
@@ -104,10 +104,11 @@
         <p style="font-size:15px">You never need to buy our cards to play CORE7.
         Print your own, use colored paper, sleeve any cards you already own, or bring cards
         from another game. As long as every card clearly represents one of the four colors, you can play.</p>
+        <div class="cycwrap" id="cycEn"></div>
         <div class="kbox">
           🔴 <b>RED (TASTER)</b> beats 🟢 GREEN<br>
-          🟢 <b>GREEN (KEEPER)</b> beats 🔵 BLUE<br>
-          🔵 <b>BLUE (THINKER)</b> beats 🔴 RED<br>
+          🟢 <b>GREEN (KEEPER)</b> beats 💧 BLUE<br>
+          💧 <b>BLUE (THINKER)</b> beats 🔴 RED<br>
           ⚙️ <b>GRAY (MAKER)</b> ties with every color (Block)
         </div>
       </div>
@@ -171,6 +172,7 @@ import { renderShell } from '/core7/js/ui.js';
 import { colorCycleSVG } from '/core7/js/art.js';
 renderShell({ active: 'rules' });
 document.getElementById('cyc').innerHTML = colorCycleSVG(300);
+document.getElementById('cycEn').innerHTML = colorCycleSVG(300);
 const th = document.getElementById('th'), en = document.getElementById('en');
 const thBtn = document.getElementById('thBtn'), enBtn = document.getElementById('enBtn');
 function sw(lang) {

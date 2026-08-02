@@ -12,14 +12,38 @@
 
 import { COLOR_META, cardById } from './cards.js';
 
-export const CORE7_ART_VERSION = '0.4.0-pilot';
+export const CORE7_ART_VERSION = '0.4.0';
 
-/* ภาพเต็มใบชุดทดลอง — สีละ 1 ใบ ก่อนขยายอีก 24 ใบหลังคอนเฟิร์ม */
-export const PILOT_CARD_ART = {
+/* FIRST HAND v0.4 — ภาพเต็มใบครบ 28 ใบ */
+export const FIRST_HAND_ART = {
+  'fh-red-desire': '/core7/assets/cards/fh-red-desire.webp',
   'fh-red-joy': '/core7/assets/cards/fh-red-joy.webp',
+  'fh-red-taste': '/core7/assets/cards/fh-red-taste.webp',
+  'fh-red-passion': '/core7/assets/cards/fh-red-passion.webp',
+  'fh-red-courage': '/core7/assets/cards/fh-red-courage.webp',
+  'fh-red-warmth': '/core7/assets/cards/fh-red-warmth.webp',
+  'fh-red-celebration': '/core7/assets/cards/fh-red-celebration.webp',
+  'fh-blue-clarity': '/core7/assets/cards/fh-blue-clarity.webp',
+  'fh-blue-perspective': '/core7/assets/cards/fh-blue-perspective.webp',
+  'fh-blue-wisdom': '/core7/assets/cards/fh-blue-wisdom.webp',
   'fh-blue-curiosity': '/core7/assets/cards/fh-blue-curiosity.webp',
+  'fh-blue-strategy': '/core7/assets/cards/fh-blue-strategy.webp',
+  'fh-blue-reflection': '/core7/assets/cards/fh-blue-reflection.webp',
+  'fh-blue-choice': '/core7/assets/cards/fh-blue-choice.webp',
+  'fh-green-discipline': '/core7/assets/cards/fh-green-discipline.webp',
+  'fh-green-consistency': '/core7/assets/cards/fh-green-consistency.webp',
+  'fh-green-balance': '/core7/assets/cards/fh-green-balance.webp',
   'fh-green-patience': '/core7/assets/cards/fh-green-patience.webp',
+  'fh-green-care': '/core7/assets/cards/fh-green-care.webp',
+  'fh-green-recovery': '/core7/assets/cards/fh-green-recovery.webp',
+  'fh-green-commitment': '/core7/assets/cards/fh-green-commitment.webp',
+  'fh-gray-observe': '/core7/assets/cards/fh-gray-observe.webp',
+  'fh-gray-measure': '/core7/assets/cards/fh-gray-measure.webp',
   'fh-gray-build': '/core7/assets/cards/fh-gray-build.webp',
+  'fh-gray-repair': '/core7/assets/cards/fh-gray-repair.webp',
+  'fh-gray-connect': '/core7/assets/cards/fh-gray-connect.webp',
+  'fh-gray-adapt': '/core7/assets/cards/fh-gray-adapt.webp',
+  'fh-gray-iterate': '/core7/assets/cards/fh-gray-iterate.webp',
 };
 
 export const GENERIC_CARD_ART = {
@@ -28,6 +52,12 @@ export const GENERIC_CARD_ART = {
   GREEN: '/core7/assets/cards/gen-green.webp',
   GRAY: '/core7/assets/cards/gen-gray.webp',
 };
+
+export function cardArtHref(cardId) {
+  const card = cardById(cardId);
+  if (!card) return '';
+  return card.generic ? GENERIC_CARD_ART[card.color] : FIRST_HAND_ART[cardId];
+}
 
 /* ── สีหลักของแบรนด์ ── */
 export const BRAND = {
@@ -84,8 +114,8 @@ export function colorIcon(color, size = 20) {
   const paths = {
     /* flame — TASTER */
     RED: '<path d="M12 3 C13 7 17 8.5 17 13 A5 5 0 0 1 7 13 C7 10 9 8.6 9.5 6.5 C10.6 8 11.5 8.6 11.5 10.5 C12.8 9.4 12.4 5.8 12 3 Z"/>',
-    /* eye — THINKER */
-    BLUE: '<path d="M12 6 C7 6 3.6 9.4 2.4 12 C3.6 14.6 7 18 12 18 C17 18 20.4 14.6 21.6 12 C20.4 9.4 17 6 12 6 Z M12 15.4 A3.4 3.4 0 1 1 12 8.6 A3.4 3.4 0 0 1 12 15.4 Z"/>',
+    /* water drop — THINKER */
+    BLUE: '<path d="M12 2.5 C10.2 5.5 5.8 9.6 5.8 14 A6.2 6.2 0 0 0 18.2 14 C18.2 9.6 13.8 5.5 12 2.5 Z M8.6 14.2 C8.8 16.3 10.1 17.4 12 17.7 C9.5 18.1 7.6 16.6 7.6 14.4 C7.6 13.2 8.1 12.2 8.8 11.2 C8.6 12.3 8.5 13.3 8.6 14.2 Z"/>',
     /* leaf — KEEPER */
     GREEN: '<path d="M19 5 C11 5 5.6 9.4 5.6 15.6 C5.6 17 5.9 18.2 6.3 19 L8 17.4 C7.8 16.8 7.7 16.2 7.7 15.6 C7.7 10.8 12 7.3 19 7.1 C18.6 12.6 15.9 16.6 10.6 17.6 L9 19.1 C9.9 19.4 10.9 19.6 12 19.6 C17.1 19.6 20.8 15 21 5.2 Z M4 21 C7 17.8 10 14.8 14.5 11.5 C10.4 13.6 6.9 16.4 3.2 20.2 Z"/>',
     /* gear — MAKER */
@@ -222,7 +252,7 @@ const SCENES = {
     <path d="M186 132 L189 140 L197 141 L191 146 L193 154 L186 150 L179 154 L181 146 L175 141 L183 140 Z" fill="${GOLDL}"/>`;
   },
 
-  /* ── 🔵 THINKER ── */
+  /* ── 💧 THINKER ── */
   'fh-blue-clarity': () => {
     const g = nid('s');
     return `${sceneBg(g, '#BFD9EE', '#7FB0D8')}
@@ -477,8 +507,8 @@ function fullBleedCardSVG(card, artHref, { width = 300, showNumber = true, gener
   const titleSize = title.length > 10 ? 25 : (title.length > 8 ? 28 : 32);
   const subtitle = generic ? meta.nameTh : card.th;
   const footer = generic
-    ? `OPEN PLAY · GENERIC · ART v${CORE7_ART_VERSION}`
-    : `FIRST HAND · ${String(card.no).padStart(2, '0')} / 28 · ART v${CORE7_ART_VERSION}`;
+    ? 'GENERIC'
+    : `FIRST HAND · ${String(card.no).padStart(2, '0')} / 28`;
 
   return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420" data-art-version="${CORE7_ART_VERSION}"
     role="img" aria-label="การ์ด ${title} (${subtitle}) สี${meta.nameTh} สาย ${meta.className}">
@@ -495,11 +525,6 @@ function fullBleedCardSVG(card, artHref, { width = 300, showNumber = true, gener
         <stop offset="78%" stop-color="#06120C" stop-opacity=".74"/>
         <stop offset="100%" stop-color="#06120C" stop-opacity=".98"/>
       </linearGradient>
-      <linearGradient id="${id}-wash" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="${meta.hex}" stop-opacity=".68"/>
-        <stop offset="45%" stop-color="${meta.hex}" stop-opacity="0"/>
-        <stop offset="100%" stop-color="${meta.deep}" stop-opacity=".28"/>
-      </linearGradient>
       <filter id="${id}-shadow" x="-30%" y="-30%" width="160%" height="160%">
         <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity=".8"/>
       </filter>
@@ -507,21 +532,16 @@ function fullBleedCardSVG(card, artHref, { width = 300, showNumber = true, gener
 
     <rect x="2" y="2" width="296" height="416" rx="19" fill="${BRAND.charcoal}"/>
     <g clip-path="url(#${id}-clip)">
+      <!-- สีสำรองขึ้นทันทีก่อนภาพโหลด -->
+      <rect x="12" y="12" width="276" height="396" fill="${meta.deep}"/>
       <image href="${artHref}" x="12" y="12" width="276" height="396" preserveAspectRatio="xMidYMid slice"/>
-      <rect x="12" y="12" width="276" height="396" fill="url(#${id}-wash)"/>
       <rect x="12" y="12" width="276" height="396" fill="url(#${id}-shade)"/>
-      <rect x="12" y="12" width="9" height="396" fill="${meta.hex}" fill-opacity=".96"/>
     </g>
 
-    <!-- ข้อมูลสาย: ตำแหน่งเดียวกันทุกใบ -->
+    <!-- มุมบนเหลือเพียงวงกลมสี + icon -->
     <g filter="url(#${id}-shadow)">
-      <rect x="27" y="25" width="112" height="30" rx="15" fill="${meta.deep}" fill-opacity=".92"
-        stroke="${GOLDL}" stroke-opacity=".75"/>
+      <circle cx="45" cy="40" r="15" fill="${meta.hex}" stroke="${GOLDL}" stroke-width="1.4"/>
       <g transform="translate(36,31)" style="color:#fff">${colorIcon(card.color, 18)}</g>
-      <text x="61" y="45" font-family="'Bai Jamjuree',sans-serif" font-size="13"
-        font-weight="700" letter-spacing=".7" fill="#fff">${meta.className}</text>
-      <text x="274" y="45" text-anchor="end" font-family="'Bai Jamjuree',sans-serif"
-        font-size="12" font-weight="700" letter-spacing="1.3" fill="#fff">${meta.nameEn.toUpperCase()}</text>
     </g>
 
     <!-- ชื่ออังกฤษเด่น ภาษาไทยตาม -->
@@ -532,10 +552,8 @@ function fullBleedCardSVG(card, artHref, { width = 300, showNumber = true, gener
         font-size="17" font-weight="600" fill="${GOLDL}">${subtitle}</text>
     </g>
 
-    <!-- Pattern ประจำสีช่วยแยกใบโดยไม่พึ่งสีเพียงอย่างเดียว -->
-    ${patternDefs(`${id}-p`)}
-    <rect x="48" y="374" width="204" height="7" rx="3.5" fill="url(#${id}-p-${card.color})"
-      stroke="#fff" stroke-opacity=".4" stroke-width=".8"/>
+    <rect x="48" y="374" width="204" height="5" rx="2.5" fill="${meta.hex}"
+      stroke="#fff" stroke-opacity=".35" stroke-width=".7"/>
     ${showNumber ? `<text x="150" y="397" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
       font-size="7.8" font-weight="600" letter-spacing=".8" fill="#fff" fill-opacity=".72">${footer}</text>` : ''}
 
@@ -548,70 +566,8 @@ function fullBleedCardSVG(card, artHref, { width = 300, showNumber = true, gener
 export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
   const card = cardById(cardId);
   if (!card) return '';
-  const meta = COLOR_META[card.color];
-  const id = nid('cd');
   if (card.generic) return genericCardSVG(card.color, { width });
-  if (PILOT_CARD_ART[cardId]) {
-    return fullBleedCardSVG(card, PILOT_CARD_ART[cardId], { width, showNumber });
-  }
-  return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420" data-art-version="${CORE7_ART_VERSION}"
-    role="img" aria-label="การ์ด ${card.en} (${card.th}) สี${meta.nameTh} สาย ${meta.className}">
-    <defs>
-      <linearGradient
-        id="${id}-au"
-        gradientUnits="userSpaceOnUse"
-        x1="0"
-        y1="0"
-        x2="300"
-        y2="0">
-        <stop offset="0%" stop-color="${GOLDL}"/>
-        <stop offset="100%" stop-color="${GOLD}"/>
-      </linearGradient>
-
-      <marker id="${id}-ah"
-        markerWidth="9"
-        markerHeight="9"
-        refX="6"
-        refY="4.5"
-        orient="auto">
-        <path d="M0 0 L8 4.5 L0 9 Z" fill="${GOLD}"/>
-      </marker>
-      <filter id="${id}-depth" x="-10%" y="-10%" width="120%" height="125%">
-        <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="${meta.deep}" flood-opacity=".24"/>
-      </filter>
-      <clipPath id="${id}-art"><rect x="26" y="64" width="248" height="248" rx="10"/></clipPath>
-    </defs>
-    <rect x="2" y="2" width="296" height="416" rx="18" fill="${BRAND.charcoal}"/>
-    <rect x="2" y="2" width="296" height="416" rx="18" fill="none" stroke="url(#${id}-au)" stroke-width="4"/>
-    <rect x="12" y="12" width="276" height="396" rx="12" fill="${BRAND.cream}"/>
-    <rect x="12" y="12" width="276" height="396" rx="12" fill="none" stroke="${meta.hex}" stroke-width="2.5"/>
-
-    <!-- แถบหัว: icon สาย + ชื่อสาย -->
-    <g transform="translate(26,24)" fill="${meta.hex}">
-      <g transform="translate(0,2) scale(1.15)">${colorIcon(card.color, 20)}</g>
-      <text x="30" y="18" font-family="'Bai Jamjuree',sans-serif" font-size="15"
-        font-weight="700" fill="${meta.deep}">${meta.className}</text>
-    </g>
-    <text x="274" y="42" text-anchor="end" font-family="'Bai Jamjuree',sans-serif"
-      font-size="12" font-weight="600" fill="${meta.hex}">${meta.nameEn.toUpperCase()} · ${meta.classTh}</text>
-
-    <!-- ภาพ -->
-    <g clip-path="url(#${id}-art)" filter="url(#${id}-depth)"><g transform="translate(26,64) scale(1.0333)">${sceneSVG(cardId)}</g></g>
-    <rect x="26" y="64" width="248" height="248" rx="10" fill="none" stroke="url(#${id}-au)" stroke-width="2.5"/>
-
-    <!-- ชื่อการ์ด -->
-    <text x="150" y="352" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-      font-size="27" font-weight="700" fill="${BRAND.charcoal}">${card.en}</text>
-    <text x="150" y="378" text-anchor="middle" font-family="'Anuphan',sans-serif"
-      font-size="17" fill="${meta.deep}">${card.th}</text>
-
-    <!-- แถบ Pattern ประจำสี (Accessibility) -->
-    ${patternDefs(`${id}-p`)}
-    <rect x="26" y="384" width="248" height="7" rx="3.5" fill="url(#${id}-p-${card.color})"/>
-
-    ${showNumber ? `<text x="150" y="403" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-      font-size="8.5" letter-spacing="1" fill="#9aa094">FIRST HAND · ${String(card.no).padStart(2, '0')} / 28 · ART v${CORE7_ART_VERSION}</text>` : ''}
-  </svg>`;
+  return fullBleedCardSVG(card, FIRST_HAND_ART[cardId], { width, showNumber });
 }
 
 /* ═══ Generic Card — สำหรับ Guest ═══ */

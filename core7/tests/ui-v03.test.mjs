@@ -42,7 +42,7 @@ test('play landing page contains a live public lobby with refresh and join', () 
 test('match table teaches public rules and counts revealed colors for both sides', () => {
   const ui = read('js/match-ui.js');
   const css = read('css/core7.css');
-  assert.match(ui, /🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴/);
+  assert.match(ui, /🔴 &gt; 🟢 &gt; 💧 &gt; 🔴/);
   assert.doesNotMatch(ui, /id="ruleArrow"/);
   assert.match(ui, /id="youPublicCounts"/);
   assert.match(ui, /id="oppPublicCounts"/);
@@ -71,8 +71,26 @@ test('timeline aligns both sides and puts dashed discards underneath', () => {
   assert.match(source, /tl-chip\.discard\{border-style:dashed/);
 });
 
-test('CORE7 logo returns to the myClover index', () => {
-  assert.match(read('js/ui.js'), /class="logo" href="\/"/);
+test('CORE7 logo returns to game home except from the game home itself', () => {
+  const ui = read('js/ui.js');
+  assert.match(ui, /const logoHref = onCore7Home \? '\/' : '\/core7\/'/);
+  assert.match(ui, /class="logo" href="\$\{logoHref\}"/);
+});
+
+test('English rules retain the color-cycle diagram', () => {
+  const rules = read('rules/index.html');
+  assert.match(rules, /id="cycEn"/);
+  assert.match(rules, /getElementById\('cycEn'\)\.innerHTML = colorCycleSVG/);
+});
+
+test('small hand cards use artwork with an English-only label and color fallback', () => {
+  const ui = read('js/match-ui.js');
+  const css = read('css/core7.css');
+  assert.match(ui, /cardArtHref\(c\.cardId\)/);
+  assert.match(ui, /class="hand-card-name"/);
+  assert.doesNotMatch(ui, /colorIcon\(c\.color, 18\)/);
+  assert.match(css, /background-color: var\(--hand-color/);
+  assert.match(css, /var\(--hand-art\)/);
 });
 
 test('result surfaces use YOU WIN and YOU LOSE', () => {

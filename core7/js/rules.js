@@ -3,7 +3,7 @@
    Pure functions เท่านั้น ห้ามมี UI / Network / Storage ในไฟล์นี้
 
    กติกาฉบับล็อก:
-   🔴 RED  > 🟢 GREEN > 🔵 BLUE > 🔴 RED   ⚙️ GRAY = เสมอทุกสี
+   🔴 RED  > 🟢 GREEN > 💧 BLUE > 🔴 RED   ⚙️ GRAY = เสมอทุกสี
    ผู้ชนะ Round เสีย 1 ใบ (ใบที่ลง) — ผู้แพ้เสีย 2 ใบ (ใบที่ลง + ทิ้งเพิ่ม 1)
    เสมอ: เสียคนละ 1 ใบ ไม่มี Round Win
 

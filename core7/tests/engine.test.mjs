@@ -7,7 +7,7 @@ import { MatchAuthority, PHASE } from '../js/engine.js';
 import { Core7Bot, seededRng } from '../js/bot.js';
 import { FIRST_HAND } from '../js/cards.js';
 import {
-  CORE7_ART_VERSION, PILOT_CARD_ART, GENERIC_CARD_ART,
+  CORE7_ART_VERSION, FIRST_HAND_ART, GENERIC_CARD_ART,
   sceneSVG, cardSVG, genericCardSVG,
 } from '../js/art.js';
 
@@ -286,12 +286,14 @@ for (const level of ['easy', 'hard']) {
   });
 }
 
-test('v0.4 pilot uses 4 full-bleed cards, 4 Generic cards, and keeps 28 SVG fallbacks', () => {
-  assert.equal(CORE7_ART_VERSION, '0.4.0-pilot');
-  assert.equal(Object.keys(PILOT_CARD_ART).length, 4);
+test('v0.4 uses 28 full-bleed FIRST HAND cards and 4 Generic cards', () => {
+  assert.equal(CORE7_ART_VERSION, '0.4.0');
+  assert.equal(Object.keys(FIRST_HAND_ART).length, 28);
   assert.equal(Object.keys(GENERIC_CARD_ART).length, 4);
-  for (const [cardId, href] of Object.entries(PILOT_CARD_ART)) {
-    assert.match(cardSVG(cardId), new RegExp(`href="${href}"`));
+  for (const [cardId, href] of Object.entries(FIRST_HAND_ART)) {
+    const svg = cardSVG(cardId);
+    assert.match(svg, new RegExp(`href="${href}"`));
+    assert.doesNotMatch(svg, /ART v/);
   }
   for (const [color, href] of Object.entries(GENERIC_CARD_ART)) {
     assert.match(genericCardSVG(color), new RegExp(`href="${href}"`));
