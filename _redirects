@@ -8,11 +8,11 @@
 /forge/ep4-deckbuilding/                      /forge/ep5-from-answers-to-a-system/  301
 /forge/ep5-dream-factory/                     /forge/ep6-the-starter-kit/  301
 /forge/ep6-ten-to-thousand/                   /forge/ep7-a-voice-that-went-further/  301
-/forge/ep7-the-smith-who-lost/                /forge/ep8-the-blacksmith-backstage/  301
-/forge/ep8-the-one-from-hatyai/               /forge/ep9-tools-must-reach-people/  301
-/forge/ep9-open-the-screen/                   /forge/ep10-this-time-i-left-the-screen-on/  301
-/forge/ep9-5-the-guild-i-imagined/            /forge/ep11-everyone-has-their-own-class/  301
-/forge/ep10-the-tenth-step/                   /forge/ep12-a-new-game-a-new-league/  301
+/forge/ep7-the-smith-who-lost/                /forge/original/  301
+/forge/ep8-the-one-from-hatyai/               /forge/original/  301
+/forge/ep9-open-the-screen/                   /forge/original/  301
+/forge/ep9-5-the-guild-i-imagined/            /forge/original/  301
+/forge/ep10-the-tenth-step/                   /forge/original/  301
 
 # หน้าลงทะเบียนถูกรวมเข้าหน้าทำการ์ดแล้ว
 /register/*                              /card/#register  301
