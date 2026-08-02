@@ -1,0 +1,58 @@
+/* Selected Kickstarter story images: founder collaboration and controlled production. */
+.ks-story-figure{
+  margin:0;
+  overflow:hidden;
+  border-radius:24px;
+  border:1px solid rgba(190,148,66,.28);
+  background:#082b1c;
+  box-shadow:0 22px 60px rgba(0,0,0,.18);
+}
+.ks-story-figure img{
+  display:block;
+  width:100%;
+  aspect-ratio:16/10;
+  object-fit:cover;
+  object-position:center;
+}
+.ks-story-figure figcaption{
+  padding:18px 20px 22px;
+  display:grid;
+  gap:6px;
+  background:#fff;
+  color:#102117;
+}
+.ks-story-figure figcaption strong{
+  font-family:var(--display,Georgia,serif);
+  font-size:clamp(20px,2vw,28px);
+  line-height:1.08;
+}
+.ks-story-figure figcaption span{
+  font-size:14px;
+  line-height:1.55;
+  color:rgba(16,33,23,.68);
+}
+.founder .ks-story-figure,
+.risks .ks-story-figure{
+  grid-column:1/-1;
+  width:100%;
+}
+.founder .ks-story-figure{
+  margin:8px 0 34px;
+}
+.risks .ks-story-figure{
+  margin-top:18px;
+  border-color:rgba(216,177,91,.35);
+  box-shadow:0 24px 70px rgba(0,0,0,.32);
+}
+.risks .ks-story-figure figcaption{
+  background:#082b1c;
+  color:#fff;
+}
+.risks .ks-story-figure figcaption span{
+  color:rgba(255,255,255,.7);
+}
+@media(max-width:640px){
+  .ks-story-figure{border-radius:18px}
+  .ks-story-figure figcaption{padding:16px 17px 19px}
+  .founder .ks-story-figure{margin-bottom:24px}
+}
