@@ -166,7 +166,7 @@ body.life .role,body.life .hint{color:var(--mut)!important}
 #album .slot[data-id="blacksmith"] .shot{background-image:url('/forge/img/07-og.jpg')!important}
 #album .slot[data-id="awakened"] .shot{background-image:url('/img/og-awaken.jpg')!important}
 #album .slot[data-id="hero"] .shot{background-image:url('/img/og-card.jpg')!important}
-#album .slot[data-id="seeker"].unlocked .shot{background-image:url('/img/achievement-seeker.svg')!important}
+#album .slot[data-id="seeker"].unlocked .shot{background-image:url('/img/achievement-seeker-v2.svg')!important}
 #album .slot[data-id="notebook-found"].unlocked .shot{background-image:url('/classroom/awaken/notebook/img/nb-01.jpg')!important}
 #album .slot[data-id="notebook-restored"].unlocked .shot{background-image:url('/classroom/awaken/notebook/img/nb-02.jpg')!important}
 #album .slot[data-id="secret-end"].unlocked .shot{background-image:url('/classroom/awaken/notebook/img/nb-09.jpg')!important}
