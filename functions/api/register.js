@@ -47,16 +47,16 @@ async function sha256(s) {
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-/* MC-<ปี พ.ศ.>-<ลำดับ 4 หลัก>
-   ใช้ลำดับที่นับจากเลขที่ออกไปแล้ว ไม่ใช่ id ของแถว เพราะ SQLite กิน id
-   ทิ้งทุกครั้งที่มีการลงทะเบียนซ้ำ เลขจะกระโดดจนดูเหมือนนับผิด */
+/* MY-<ปี ค.ศ.>-<ลำดับ 4 หลัก>
+   แยกลำดับตามปี และไม่นำ id ของแถวมาใช้ เพื่อให้เลขบนการ์ดอ่านง่ายและคงที่ */
 async function nextMemberNo(db, iso) {
-  const be = new Date(iso).getUTCFullYear() + 543;
+  const year = new Date(iso).getUTCFullYear();
+  const prefix = 'MY-' + year + '-';
   const row = await db.prepare(
-    'SELECT MAX(CAST(substr(member_no, 9) AS INTEGER)) AS mx FROM members WHERE member_no IS NOT NULL'
-  ).first();
+    'SELECT MAX(CAST(substr(member_no, 9) AS INTEGER)) AS mx FROM members WHERE member_no LIKE ?1'
+  ).bind(prefix + '%').first();
   const n = ((row && row.mx) || 0) + 1;
-  return 'MC-' + be + '-' + String(n).padStart(4, '0');
+  return prefix + String(n).padStart(4, '0');
 }
 
 /* ยิงถี่เกินไปไหม — เก็บแค่ค่าแฮชของ IP ต่อชั่วโมง แล้วลบของเก่าทิ้ง */

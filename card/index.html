@@ -1351,7 +1351,7 @@ function regMailto(d){
 function regDone(d,viaMail,memberNo){
   ls.set('mc_name',d.name); ls.set('mc_email',d.email);
   /* ลงทะเบียนสำเร็จ = ได้เลขสมาชิกขึ้นการ์ดเลย ไม่ต้องรอปลดตราอะไรก่อน */
-  if(/^MC-\d{4}-\d+$/.test(memberNo||'')){ ls.set('mc_member',memberNo); st.member=memberNo; }
+  if(/^(?:MY|MC)-\d{4}-\d+$/.test(memberNo||'')){ ls.set('mc_member',memberNo); st.member=memberNo; }
   regMsg.className='codemsg ok';
   if(viaMail){
     /* ยังไม่มีหลังบ้าน — ต้องให้ผู้ใช้กดส่งอีเมลเอง เลยยังไม่ควรบอกว่าเสร็จแล้ว */
@@ -1362,7 +1362,7 @@ function regDone(d,viaMail,memberNo){
   } else {
     ls.set('mc_registered','1');
     regMsg.innerHTML='🍀 ลงทะเบียนเรียบร้อย — การ์ดของคุณถูกบันทึกเข้าระบบสมาชิกแล้ว'+
-      (/^MC-\d{4}-\d+$/.test(memberNo||'')?' เลขสมาชิกของคุณคือ <b>'+memberNo+'</b>':'')+
+      (/^(?:MY|MC)-\d{4}-\d+$/.test(memberNo||'')?' เลขสมาชิกของคุณคือ <b>'+memberNo+'</b>':'')+
       (d.news?'<br>เราจะส่งข่าวของบ้านไปที่อีเมลนี้':'<br>เราจะไม่ส่งอีเมลอะไรไปนะครับ')+
       '<br>บันทึกการ์ดเป็นรูปเก็บไว้ได้เลยที่ปุ่มด้านขวา';
     regBtn.textContent='🍀 ลงทะเบียนแล้ว';

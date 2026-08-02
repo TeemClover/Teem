@@ -10,7 +10,7 @@
 
 CREATE TABLE IF NOT EXISTS members (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  member_no  TEXT UNIQUE,              -- MC-2569-0001
+  member_no  TEXT UNIQUE,              -- MY-2026-0001
   created_at TEXT NOT NULL,            -- ISO 8601 UTC
   updated_at TEXT NOT NULL,
   email      TEXT NOT NULL UNIQUE,     -- ลงซ้ำ = อัปเดตของเดิม ไม่เพิ่มแถว
