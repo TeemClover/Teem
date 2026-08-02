@@ -29,6 +29,15 @@ a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(1120px,
 .ach-body{display:flex;flex:1;flex-direction:column;padding:15px 16px 17px}.kind{color:var(--gold2);font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.ach-name{display:flex;align-items:flex-start;gap:8px;font-size:17px;line-height:1.35;margin-top:5px}.name-icon{flex:none;width:1.25em;text-align:center}.hint{color:rgba(255,255,255,.63);font-size:13px;line-height:1.55;margin-top:5px}.ach-card.locked .ach-name{color:rgba(255,255,255,.56)}.ach-card.locked .hint b{color:var(--gold2)}.ach-card.unlocked .hint b{color:#8fe0ae}.go{display:inline-flex;align-items:center;gap:6px;margin-top:auto;padding-top:12px;color:var(--gold2);font-size:12px;font-weight:800}
 .empty{padding:36px 18px;text-align:center;color:rgba(255,255,255,.62);border:1px dashed rgba(255,255,255,.15);border-radius:18px;margin-top:18px}.note{margin-top:34px;padding:18px 20px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13.5px}.note b{color:#fff}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:19px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 18px;border:1px solid rgba(255,255,255,.22);border-radius:12px;font-weight:800;font-size:13px}.btn.gold{background:var(--gold2);border-color:var(--gold2);color:var(--deep2)}
 footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-size:12px}footer a{color:var(--gold2);font-weight:700}
+
+/* เพลงประจำบ้าน — player แบบเดียวกับหน้า Card แต่ใช้ไฟล์เวอร์ชันมีเสียงร้อง */
+.hud{position:fixed;left:14px;bottom:14px;z-index:80;display:flex;align-items:center;gap:11px;background:var(--paper,#f8f6f0);color:#12281c;border:1px solid rgba(18,40,28,.12);border-radius:999px;padding:8px 20px 8px 8px;cursor:pointer;font-weight:800;font-size:13.5px;box-shadow:0 16px 34px -14px rgba(18,40,28,.62);transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,border-color .18s}
+.hud:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 22px 42px -14px rgba(18,40,28,.7)}.hud:active{transform:translateY(-1px) scale(.97)}
+.hud .ico{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--gold);color:#fff;font-size:15px;line-height:1;box-shadow:0 0 0 0 rgba(190,148,66,.5);animation:hudRing 2.6s ease-out infinite}
+@keyframes hudRing{0%{box-shadow:0 0 0 0 rgba(190,148,66,.55)}70%{box-shadow:0 0 0 12px rgba(190,148,66,0)}100%{box-shadow:0 0 0 0 rgba(190,148,66,0)}}
+.hud .lbl{white-space:nowrap;line-height:1.3}.hud .lbl small{display:block;font-weight:500;font-size:11.5px;color:#637068;margin-top:1px}.hud .eq{display:none;align-items:flex-end;gap:2.5px;height:15px;margin-left:-3px}.hud .eq i{width:3px;border-radius:2px;background:var(--green);height:5px;animation:eqBar .9s ease-in-out infinite}.hud .eq i:nth-child(2){animation-delay:.15s}.hud .eq i:nth-child(3){animation-delay:.3s}.hud .eq i:nth-child(4){animation-delay:.45s}@keyframes eqBar{0%,100%{height:4px}50%{height:15px}}
+.hud.playing{border-color:rgba(27,106,66,.4)}.hud.playing .eq{display:flex}.hud.playing .ico{background:var(--green);animation:none;box-shadow:none}
+@media(max-width:600px){.hud{left:10px;bottom:10px;padding:7px 16px 7px 7px;font-size:12.5px;gap:9px}.hud .ico{width:32px;height:32px;font-size:14px}.hud .lbl small{display:none}}
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.wrap{width:min(100% - 24px,1120px)}.bar-title{display:none}.group-head{align-items:start}.grid{grid-template-columns:1fr}.hero{padding-top:35px}.ach-card{border-radius:17px}.group.bonus{padding:24px 12px 14px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.track i,.ach-card{transition:none}.ach-card.is-link:hover{transform:none}}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
@@ -43,6 +52,13 @@ footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-si
   <div class="filters" aria-label="กรอง Achievement"><button class="filter" data-filter="all" aria-pressed="true">ทั้งหมด</button><button class="filter" data-filter="unlocked" aria-pressed="false">ปลดแล้ว</button><button class="filter" data-filter="locked" aria-pressed="false">ยังไม่ปลด</button></div>
 </div></header>
 <main class="album"><div class="wrap" id="album"></div></main>
+<!-- คนละไฟล์กับหน้า Card: หน้านี้เป็น Clover Song เวอร์ชันมีเสียงร้อง -->
+<audio id="collectionSong" src="../assets/audio/clover-song-vocal.mp3" loop preload="none"></audio>
+<button type="button" class="hud" id="collectionMusicBtn" aria-pressed="false">
+  <span class="ico" id="collectionMusicIco" aria-hidden="true">🎵</span>
+  <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <span class="lbl" id="collectionMusicLbl">เปิดเพลงประจำบ้าน<small>Clover Song · เวอร์ชันมีเสียงร้อง</small></span>
+</button>
 <footer><p>🍀 myClover.com · Good Luck, Have Fun</p><p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="../card/">การ์ดของฉัน</a> · <a href="../core7/">CORE7</a></p></footer>
 <script>
 (function(){
@@ -137,6 +153,19 @@ function render(){
 }
 document.querySelectorAll('.filter').forEach(function(b){b.addEventListener('click',function(){filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});render()})});
 var pct=Math.round(unlockedCount/allItems.length*100);document.getElementById('totalFill').style.width=pct+'%';document.getElementById('totalCopy').innerHTML='เก็บได้ <b>'+unlockedCount+'</b> จาก '+allItems.length+' Achievement · '+pct+'%';render();
+})();
+</script>
+<script>
+/* เพลงประจำบ้านเวอร์ชันมีเสียงร้อง — ไม่ autoplay และไม่โหลดจนกว่าผู้ใช้จะกด */
+(function(){
+  var au=document.getElementById('collectionSong'),btn=document.getElementById('collectionMusicBtn'),
+      ico=document.getElementById('collectionMusicIco'),lbl=document.getElementById('collectionMusicLbl');
+  if(!au||!btn)return;
+  var sub='<small>Clover Song · เวอร์ชันมีเสียงร้อง</small>',want=false;
+  function cls(c,on){var re=new RegExp('(^|\\s)'+c+'(?=\\s|$)','g');btn.className=btn.className.replace(re,' ').replace(/\\s+/g,' ').replace(/^ | $/g,'')+(on?' '+c:'')}
+  function paint(on){cls('playing',on);ico.textContent=on?'⏸':'🎵';lbl.innerHTML=(on?'กำลังเล่น · แตะเพื่อหยุด':'เปิดเพลงประจำบ้าน')+sub;btn.setAttribute('aria-pressed',on?'true':'false')}
+  btn.addEventListener('click',function(){want=!want;if(want){var pr=au.play();if(pr&&pr.then)pr.catch(function(){want=false;paint(false)});window.mcEvent&&window.mcEvent('music',{item:'collection-vocal-play'})}else{au.pause();window.mcEvent&&window.mcEvent('music',{item:'collection-vocal-pause'})}});
+  au.addEventListener('play',function(){want=true;paint(true)});au.addEventListener('pause',function(){want=false;paint(false)});paint(false);
 })();
 </script>
 <!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
