@@ -1,361 +1,210 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ทีม นรินทร์ ลีลาภรณ์ — Smart Resume</title>
-<meta name="description" content="Smart Resume ของทีม นรินทร์ — Party Architect และ System Builder ที่อ่าน Class วาง Role และสร้างระบบให้ทีมฝึกจนเล่นด้วยกันได้">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ทีม นรินทร์ — Party Architect | Smart Resume">
-<meta property="og:description" content="ไม่ได้สร้างทีมให้ทุกคนเล่นเหมือนกัน แต่หา Class วาง Role และสร้างระบบให้คนละ Build เล่น Quest เดียวกันได้">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ทีม นรินทร์ ลีลาภรณ์ — Game System Designer · Learning Experience Architect</title>
+<meta name="description" content="ทีม นรินทร์ — นักออกแบบเกม ระบบการเรียนรู้ และ AI Workflow ผู้เปลี่ยนประสบการณ์ให้กลายเป็นเครื่องมือที่คนอื่นหยิบไปใช้ต่อได้จริง">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="ทีม นรินทร์ — Playable Resume">
+<meta property="og:description" content="Game System Designer · Learning Experience Architect · Party Architecture — ดูผลงานที่กดเข้าไปเล่นได้จริง">
 <meta property="og:image" content="https://www.myclover.com/img/og-resume.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://www.myclover.com/resume/">
-<!-- ═══════════════════════════════════════════════════════════════
-     SMART RESUME — ตัวอย่างสำหรับชาว myclover
-     สลับได้ 2 โหมด: โหมดงาน (แบบแปลน) ⇄ โหมดชีวิต (สมุดภาพ)
-     ✏️ วิธีทำของคุณเอง: ไล่หา comment ที่มี ✏️ แล้วแก้ข้อความตรงนั้น
-     ═══════════════════════════════════════════════════════════════ -->
+<meta name="theme-color" content="#082417">
 <style>
-/* ── โทนสีสองโลก (CSS variables สลับด้วย class ที่ body) ── */
 :root{
-  --ease:cubic-bezier(.4,0,.2,1);
+  --deep:#071d12;--deep2:#0b2a1b;--green:#1f8a5a;--mint:#77ddb1;
+  --gold:#d7b56d;--cream:#f7f1e3;--paper:#fffaf0;--ink:#13261a;
+  --muted:#647268;--line:rgba(255,255,255,.14);--shadow:0 28px 80px -42px rgba(0,0,0,.8);
+  --ease:cubic-bezier(.22,.8,.26,1);
 }
-body.pro{
-  --bg:#0e1626; --bg2:#101d33; --card:#15233d; --ink:#dbe6f7; --mut:#7d90b5;
-  --acc:#5fd7a8; --acc2:#f0c85a; --line:rgba(95,215,168,.16);
-  --head:"Sora","IBM Plex Sans Thai",sans-serif;
-  --hand:"IBM Plex Sans Thai",sans-serif;
-}
-body.life{
-  --bg:#8a6a4f; --bg2:#f6efe2; --card:#fffdf6; --ink:#3b2f24; --mut:#8a7963;
-  --acc:#0f9d6b; --acc2:#c0392b; --line:#e5d9c3;
-  --head:"Mali","IBM Plex Sans Thai",sans-serif;
-  --hand:"Mali",cursive;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  font-family:"IBM Plex Sans Thai",sans-serif; color:var(--ink);
-  background:var(--bg); line-height:1.7; font-size:16px;
-  transition:background .6s var(--ease), color .6s var(--ease);
-  min-height:100vh;
-}
-/* พื้นหลังสองโลก: กริดแบบแปลน vs พื้นไม้ */
-body.pro{
-  background-image:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size:32px 32px;
-}
-body.life{
-  background-image:repeating-linear-gradient(90deg,
-    #8a6a4f 0 42px, #82624a 42px 44px, #8f705a 44px 86px, #7d5f47 86px 88px);
-}
-.wrap{max-width:680px;margin:0 auto;padding:1.2rem 1rem 4rem}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",Tahoma,Arial,sans-serif;background:var(--deep);color:#fff;line-height:1.75;font-size:18px;overflow-x:hidden}
+a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(1160px,calc(100% - 32px));margin:auto}.section{padding:clamp(64px,9vw,112px) 0}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:.76rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.eyebrow::before{content:"";width:28px;height:1px;background:currentColor}.title{font-size:clamp(2rem,4.8vw,4rem);line-height:1.08;letter-spacing:-.035em}.sub{max-width:66ch;color:rgba(255,255,255,.7);font-size:1rem}.muted{color:rgba(255,255,255,.62)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:4px;border-radius:10px}
 
-/* ── กระดาษหลัก ── */
-.sheet{
-  background:var(--bg2); border-radius:14px; padding:2rem 1.4rem 2.4rem;
-  transition:background .6s var(--ease);
-  box-shadow:0 18px 50px rgba(0,0,0,.35);
-  position:relative; overflow:hidden;
-}
-body.life .sheet{box-shadow:0 14px 40px rgba(59,47,36,.45)}
-body.life .sheet::before,body.life .sheet::after{ /* เทปกาวมุมกระดาษ */
-  content:""; position:absolute; width:110px; height:30px; background:#e8d48baa;
-  transform:rotate(-40deg); top:14px; left:-30px;
-}
-body.life .sheet::after{transform:rotate(40deg); left:auto; right:-30px}
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(7,29,18,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(215,181,109,.17)}
+.navin{min-height:66px;display:flex;align-items:center;gap:18px}.brand{font-weight:900;letter-spacing:-.02em}.brand b{color:var(--gold)}.navlinks{margin-left:auto;display:flex;align-items:center;gap:8px}.navlinks a{padding:8px 11px;border-radius:999px;color:rgba(255,255,255,.72);font-size:.78rem;font-weight:700}.navlinks a:hover{color:#fff;background:rgba(255,255,255,.08)}.navlinks .v1{border:1px solid rgba(215,181,109,.38);color:var(--gold)}
 
-/* ── Hero ── */
-.eyebrow{font-size:.75rem; letter-spacing:.18em; text-transform:uppercase;
-  color:var(--acc); font-weight:700; font-family:"Sora",sans-serif}
-h1{font-family:var(--head); font-size:2rem; line-height:1.25; margin:.4rem 0 .2rem}
-.role{color:var(--mut); font-weight:500; min-height:3.4em}
-.role b{color:var(--acc)}
+/* HERO */
+.hero{position:relative;min-height:calc(100svh - 66px);display:flex;align-items:center;padding:clamp(50px,8vw,100px) 0 70px;overflow:hidden;background:
+radial-gradient(720px 520px at 82% 18%,rgba(215,181,109,.16),transparent 68%),
+radial-gradient(620px 440px at 3% 15%,rgba(31,138,90,.4),transparent 70%),
+linear-gradient(145deg,#06180f 0%,#0a2b1b 62%,#102419 100%)}
+.hero::after{content:"";position:absolute;inset:auto -8% -30% 30%;height:58%;background:radial-gradient(ellipse,rgba(119,221,177,.12),transparent 68%);filter:blur(18px)}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:clamp(36px,6vw,82px);align-items:center}
+.hero h1{font-size:clamp(2.85rem,7.2vw,6.4rem);line-height:.96;letter-spacing:-.055em;margin:16px 0 22px;max-width:820px}.hero h1 span{display:block;color:var(--gold)}
+.hero-lead{max-width:710px;font-size:clamp(1.08rem,2vw,1.32rem);color:rgba(255,255,255,.8);line-height:1.7}.hero-lead b{color:var(--mint)}
+.hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:12px 18px;border:1px solid rgba(255,255,255,.2);border-radius:13px;font-weight:800;font-size:.86rem;transition:.2s var(--ease)}.btn:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.5)}.btn.primary{background:var(--gold);border-color:var(--gold);color:#172016}.btn.ghost{background:rgba(255,255,255,.06)}
+.socials{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:20px}.socials span{font-size:.75rem;color:rgba(255,255,255,.5);margin-right:4px}.social{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);font-size:.75rem;font-weight:800}.social:hover{background:rgba(255,255,255,.13)}
 
-/* ── ไพ่พลิกโหมด: signature ของหน้านี้ ── */
-.deck{display:flex; align-items:center; gap:1rem; margin:1.6rem 0 .4rem}
-.flipcard{
-  width:96px; height:134px; perspective:800px; cursor:pointer; border:none;
-  background:none; flex:none;
-}
-.flipcard:focus-visible{outline:3px solid var(--acc); outline-offset:4px; border-radius:12px}
-.flipcard .inner{
-  width:100%; height:100%; position:relative;
-  transition:transform .35s var(--ease);
-}
-.flipcard.spin .inner{transform:rotateY(90deg)}
-.face{
-  position:absolute; inset:0; border-radius:12px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:.3rem; font-weight:700; font-size:.8rem; border:2px solid;
-}
-.face .big{font-size:2rem; line-height:1}
-.face.front{background:#15233d; color:#5fd7a8; border-color:#5fd7a8}
-.face.back{background:#fffdf6; color:#0f9d6b; border-color:#0f9d6b;
-  font-family:"Mali",cursive}
-.deck .hint{font-size:.85rem; color:var(--mut)}
-.deck .hint b{color:var(--acc)}
+.profile-stage{position:relative;min-height:600px}.profile-glow{position:absolute;inset:8% 2% 4%;border-radius:50%;background:radial-gradient(circle,rgba(215,181,109,.25),rgba(31,138,90,.12) 52%,transparent 72%);filter:blur(24px)}
+.profile-card{position:absolute;inset:0;overflow:hidden;border-radius:32px;border:1px solid rgba(255,255,255,.2);background:#10241a;box-shadow:0 44px 100px -48px #000;transform:rotate(1.4deg);transition:.55s var(--ease)}
+body.life-mode .profile-card{transform:rotate(-1.2deg);background:#4d392e}
+.profile-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .45s var(--ease),transform .8s var(--ease)}.profile-card .life-img{opacity:0}.profile-card:hover img{transform:scale(1.025)}body.life-mode .profile-card .work-img{opacity:0}body.life-mode .profile-card .life-img{opacity:1}
+.profile-card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,rgba(3,15,9,.9) 100%)}
+.mode-panel{position:absolute;z-index:4;left:20px;right:20px;bottom:20px;padding:17px;border:1px solid rgba(255,255,255,.2);border-radius:19px;background:rgba(7,29,18,.78);backdrop-filter:blur(15px)}body.life-mode .mode-panel{background:rgba(61,42,31,.8)}
+.mode-tabs{display:flex;gap:7px}.mode-tab{flex:1;border:0;border-radius:10px;padding:9px 10px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.62);font-weight:850;font-size:.73rem;cursor:pointer}.mode-tab[aria-pressed="true"]{background:var(--gold);color:#172016}.mode-copy{margin-top:12px}.mode-copy b{display:block;font-size:1rem}.mode-copy p{font-size:.78rem;color:rgba(255,255,255,.7);line-height:1.55;margin-top:3px}
+.float-badge{position:absolute;z-index:5;top:28px;right:-18px;padding:11px 15px;border-radius:14px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow);font-size:.75rem;font-weight:900;transform:rotate(4deg)}body.life-mode .float-badge{transform:rotate(-3deg);background:#ffe9c8}
 
-/* ── ส่วนเนื้อหาที่สลับโหมด ── */
-.mode-block{display:none; animation:fadeUp .5s var(--ease)}
-body.pro  .only-pro{display:block}
-body.life .only-life{display:block}
-@keyframes fadeUp{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+.stats{position:relative;z-index:2;margin-top:-34px}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(255,255,255,.14);border-radius:20px;background:rgba(6,24,15,.85);backdrop-filter:blur(14px);overflow:hidden;box-shadow:var(--shadow)}.stat{padding:22px 20px;border-right:1px solid rgba(255,255,255,.1)}.stat:last-child{border:0}.stat strong{display:block;color:var(--gold);font-size:1.55rem;line-height:1.1}.stat span{display:block;margin-top:5px;color:rgba(255,255,255,.6);font-size:.74rem;font-weight:700}
 
-h2{font-family:var(--head); font-size:1.2rem; margin:2rem 0 .8rem;
-  padding-bottom:.35rem; border-bottom:2px solid var(--line)}
+/* LIGHT SECTIONS */
+.light{background:var(--cream);color:var(--ink)}.light .eyebrow{color:#9a6e1c}.light .sub,.light .muted{color:#657068}.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:34px}.section-head .copy{max-width:720px}.section-head h2{margin-top:11px}.section-head p{margin-top:14px}
 
-/* ── โหมดงาน: timeline แบบเวอร์ชันระบบ ── */
-.ver{display:grid; grid-template-columns:64px 1fr; gap:.7rem; margin:.9rem 0}
-.ver .tag{
-  font-family:"Sora",sans-serif; font-weight:700; font-size:.8rem; color:var(--acc2);
-  border:1px solid var(--acc2); border-radius:8px; height:fit-content;
-  text-align:center; padding:.2rem .1rem;
-}
-.ver p{font-size:.94rem}
-.ver b{color:var(--acc)}
-.chips{display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.6rem}
-.chip{font-size:.8rem; font-weight:600; border:1px solid var(--acc);
-  color:var(--acc); border-radius:999px; padding:.25rem .75rem}
-.belief{
-  border-left:4px solid var(--acc); background:var(--card);
-  padding:1rem 1.2rem; border-radius:0 12px 12px 0; margin-top:1.4rem;
-  font-size:.95rem; transition:background .6s var(--ease);
-}
-.partyflow{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1rem}
-.party-step{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem}
-.party-step .n{display:block;color:var(--acc2);font:700 .72rem "Sora",sans-serif;letter-spacing:.1em}
-.party-step b{display:block;color:var(--acc);font-family:var(--head);font-size:.92rem;margin:.2rem 0}
-.party-step p{font-size:.84rem;color:var(--mut)}
-.fieldnote{margin:1rem 0 1.4rem;padding:1rem 1.1rem;border:1px solid var(--acc2);border-radius:12px;background:var(--card)}
-.fieldnote .tagline{display:block;color:var(--acc2);font:700 .7rem "Sora",sans-serif;letter-spacing:.11em}
-.fieldnote b{display:block;color:var(--ink);margin:.35rem 0 .2rem}
-.fieldnote p{font-size:.88rem;color:var(--mut)}
+/* PROOF */
+.proof-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.proof{position:relative;min-height:440px;display:flex;align-items:end;overflow:hidden;border-radius:24px;background:#102419;color:#fff;box-shadow:0 22px 60px -38px rgba(19,38,26,.7);transition:.25s var(--ease)}.proof:hover{transform:translateY(-7px);box-shadow:0 32px 80px -42px rgba(19,38,26,.8)}.proof img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease)}.proof:hover img{transform:scale(1.035)}.proof::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,16,10,.02) 25%,rgba(4,16,10,.92) 88%)}.proof-body{position:relative;z-index:2;padding:24px}.proof-tag{font-size:.68rem;font-weight:900;letter-spacing:.14em;color:var(--gold)}.proof h3{font-size:clamp(1.45rem,3vw,2.2rem);line-height:1.1;margin:7px 0}.proof p{color:rgba(255,255,255,.73);font-size:.86rem;max-width:54ch}.proof-go{display:inline-flex;margin-top:14px;color:var(--gold);font-size:.78rem;font-weight:900}
 
-/* ── โหมดชีวิต: โน้ต scrapbook ── */
-.notes{display:grid; grid-template-columns:1fr 1fr; gap:.9rem}
-.note{
-  background:var(--card); border-radius:4px; padding:1rem .9rem .9rem;
-  box-shadow:0 6px 16px rgba(59,47,36,.18); position:relative;
-  font-size:.9rem;
-}
-.note::before{content:""; position:absolute; top:-8px; left:50%;
-  transform:translateX(-50%) rotate(-2deg); width:64px; height:18px;
-  background:#e8d48bcc}
-.note:nth-child(odd){transform:rotate(-1.6deg)}
-.note:nth-child(even){transform:rotate(1.4deg)}
-.note .emo{font-size:1.5rem; display:block; margin-bottom:.3rem}
-.note b{font-family:var(--hand)}
-.stamp{
-  display:inline-block; margin-top:1.4rem; padding:.5rem 1rem;
-  border:3px solid var(--acc2); color:var(--acc2); border-radius:8px;
-  font-family:var(--hand); font-weight:700; transform:rotate(-4deg);
-}
+/* VALUE */
+.dark{background:linear-gradient(180deg,#071d12,#0a291a);color:#fff}.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.value{padding:25px;border:1px solid rgba(255,255,255,.13);border-radius:20px;background:rgba(255,255,255,.045);transition:.2s var(--ease)}.value:hover{background:rgba(255,255,255,.075);transform:translateY(-4px)}.value .icon{font-size:1.75rem}.value h3{font-size:1.1rem;margin:12px 0 7px}.value p{color:rgba(255,255,255,.63);font-size:.84rem}.value small{display:block;color:var(--mint);font-size:.7rem;font-weight:800;margin-top:13px}
 
-/* ── Follow CTA (โชว์ทั้งสองโหมด) ── */
-.follow{margin-top:2.2rem}
-.btns{display:flex; flex-direction:column; gap:.7rem; margin-top:.8rem}
-.btn{
-  display:block; text-align:center; padding:.85rem 1rem; border-radius:12px;
-  text-decoration:none; font-weight:700; font-size:.95rem;
-  border:2px solid var(--acc); color:var(--acc); transition:all .25s var(--ease);
-}
-.btn.primary{background:var(--acc); color:var(--bg2)}
-.btn:hover{transform:translateY(-2px)}
-.btn:focus-visible{outline:3px solid var(--acc2); outline-offset:3px}
-.foot{margin-top:2.4rem; font-size:.8rem; color:var(--mut); text-align:center}
-.foot b{color:var(--acc)}
+/* METHOD */
+.method{background:#fffaf0;color:var(--ink)}.method-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:34px}.method-step{position:relative;padding:24px 19px;border:1px solid rgba(19,38,26,.13);border-radius:18px;background:#fff;overflow:hidden}.method-step::before{content:attr(data-n);position:absolute;right:12px;top:-16px;color:rgba(31,138,90,.08);font-size:5.2rem;font-weight:950;line-height:1}.method-step .mini{color:#9a6e1c;font-size:.68rem;font-weight:900;letter-spacing:.13em}.method-step h3{font-size:1.05rem;margin:10px 0 7px}.method-step p{font-size:.8rem;color:#68736b}
+.belief{margin-top:23px;padding:22px 24px;border-left:5px solid var(--green);border-radius:0 16px 16px 0;background:#edf7f1;font-size:.94rem}.belief b{color:#17643f}
 
-@media(min-width:560px){
-  h1{font-size:2.4rem}
-  .sheet{padding:2.6rem 2.4rem 3rem}
-}
-@media(max-width:520px){.partyflow{grid-template-columns:1fr}}
+/* RECORD */
+.record{background:#0a2418;color:#fff}.record-list{display:grid;gap:12px;margin-top:35px}.record-row{display:grid;grid-template-columns:110px 1fr;gap:18px;padding:20px 22px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.04)}.record-ver{color:var(--gold);font-weight:900}.record-row p{font-size:.86rem;color:rgba(255,255,255,.7)}.record-row b{color:#fff}
+.skills{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.skill{padding:8px 11px;border-radius:999px;border:1px solid rgba(119,221,177,.34);color:var(--mint);font-size:.72rem;font-weight:800}
 
-/* ── ลิงก์กลับบ้าน ── */
-.back{display:inline-block;margin:0 0 .7rem .2rem;color:#fff;opacity:.75;font-size:.85rem;font-weight:600;text-decoration:none}
-.back:hover{opacity:1}
-body.life .back{color:#fffdf6}
+/* CURRENT BUILD */
+.builds{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:34px}.build{padding:25px;border-radius:20px;background:#fff;border:1px solid rgba(19,38,26,.12);box-shadow:0 18px 40px -34px rgba(0,0,0,.5)}.build .btag{font-size:.67rem;font-weight:900;letter-spacing:.13em;color:#9a6e1c}.build h3{font-size:1.3rem;margin:8px 0}.build p{font-size:.82rem;color:#68736b}.build b{color:#17643f}.build .quote{display:block;margin-top:14px;padding-top:13px;border-top:1px solid rgba(19,38,26,.1);font-size:.74rem;font-weight:800;color:#32483a}
 
-/* ── รูปโปรไฟล์สองโหมด ── */
-.portrait{float:right;width:118px;margin:.2rem 0 .7rem 1rem}
-.portrait img{width:100%;display:none}
-body.pro .portrait .pp-pro{display:block;border-radius:12px;border:2px solid var(--acc);box-shadow:0 10px 24px rgba(0,0,0,.35)}
-body.life .portrait .pp-life{display:block;border:6px solid #fffdf6;border-bottom-width:22px;border-radius:2px;box-shadow:0 8px 20px rgba(59,47,36,.35);transform:rotate(2.5deg)}
-@media(max-width:420px){.portrait{width:96px}}
+/* LIFE */
+.life-section{background:linear-gradient(145deg,#634936,#8b684d);color:#fff;position:relative;overflow:hidden}.life-section::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 58px,rgba(0,0,0,.035) 58px 60px)}.life-grid{position:relative;z-index:2;display:grid;grid-template-columns:.8fr 1.2fr;gap:34px;align-items:center}.life-photo{position:relative}.life-photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border:12px solid #fff7e8;border-bottom-width:46px;box-shadow:0 28px 70px -38px #000;transform:rotate(-2deg)}.life-photo::after{content:"LIFE BUILD";position:absolute;bottom:12px;left:50%;transform:translateX(-50%) rotate(-2deg);color:#5d4636;font-size:.74rem;font-weight:900;letter-spacing:.13em}.notes{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.note{position:relative;padding:21px;background:#fff7df;color:#4c3a2c;border-radius:5px;box-shadow:0 13px 30px -23px #000;transform:rotate(-.7deg)}.note:nth-child(even){transform:rotate(1deg);background:#f7edcf}.note::before{content:"";position:absolute;top:-8px;left:50%;width:74px;height:17px;transform:translateX(-50%) rotate(-3deg);background:rgba(230,207,133,.76)}.note b{display:block;margin:5px 0;font-size:.95rem}.note p{font-size:.77rem;color:#6f5b49}.note .emo{font-size:1.45rem}.stamp{display:inline-block;margin-top:24px;padding:8px 15px;border:3px solid #f3c3ab;border-radius:9px;color:#ffe7d9;font-weight:900;transform:rotate(-2deg)}
 
-.hm{display:none}
-body.pro .hm-pro{display:inline}
-body.life .hm-life{display:inline}
-.face{transition:none}
-body.pro .face.back{opacity:0}
-body.life .face.front{opacity:0}
-body.life h1{font-size:1.85rem}
-.nowrap{white-space:nowrap}
-@media(min-width:560px){body.life h1{font-size:2.2rem}}
+/* CONTACT */
+.contact{background:#06170f;color:#fff;text-align:center}.contact .title{max-width:850px;margin:12px auto 0}.contact .sub{margin:18px auto 0}.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:850px;margin:30px auto 0}.contact-card{padding:20px;border:1px solid rgba(255,255,255,.15);border-radius:17px;background:rgba(255,255,255,.05);transition:.2s}.contact-card:hover{transform:translateY(-4px);background:rgba(255,255,255,.09)}.contact-card b{display:block;font-size:1rem}.contact-card span{display:block;color:var(--gold);font-size:.76rem;margin-top:4px}.archive-card{max-width:850px;margin:18px auto 0;padding:18px 20px;border:1px dashed rgba(215,181,109,.5);border-radius:16px;color:rgba(255,255,255,.66);font-size:.8rem}.archive-card a{color:var(--gold);font-weight:900}.copy-status{min-height:26px;margin-top:13px;color:var(--mint);font-size:.75rem}
+footer{padding:30px 0 44px;background:#06170f;color:rgba(255,255,255,.45);text-align:center;font-size:.72rem}
 
-@media(prefers-reduced-motion:reduce){
-  *{transition:none!important; animation:none!important}
-}
+.reveal{opacity:0;transform:translateY(24px);transition:.7s var(--ease)}.reveal.show{opacity:1;transform:none}
+@media(max-width:920px){.hero-grid{grid-template-columns:1fr}.profile-stage{min-height:570px;max-width:620px;width:100%;margin:auto}.stats-grid{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.1)}.proof-grid{grid-template-columns:1fr}.value-grid,.builds{grid-template-columns:1fr}.method-grid{grid-template-columns:repeat(2,1fr)}.life-grid{grid-template-columns:1fr}.life-photo{max-width:430px;margin:auto}.section-head{align-items:start;flex-direction:column}.navlinks a:not(.v1){display:none}}
+@media(max-width:620px){body{font-size:17px}.wrap{width:min(100% - 24px,1160px)}.hero{min-height:auto}.hero h1{font-size:clamp(2.65rem,14vw,4.4rem)}.profile-stage{min-height:500px}.float-badge{right:8px}.stats{margin-top:-15px}.method-grid,.notes,.contact-grid{grid-template-columns:1fr}.record-row{grid-template-columns:1fr;gap:5px}.proof{min-height:390px}.hero-actions .btn{width:100%}.socials{align-items:stretch}.social{flex:1;justify-content:center}.section{padding:64px 0}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 </style>
-<link rel="stylesheet" href="/assets/readable.css">
 </head>
-<body class="pro">
-<div class="wrap">
-  <a class="back" href="../">← กลับบ้าน myclover 🍀</a>
-  <main class="sheet">
+<body class="work-mode">
+<nav class="nav"><div class="wrap navin"><a class="brand" href="../">🍀 my<b>Clover</b></a><div class="navlinks"><a href="#proof">ผลงานที่เล่นได้</a><a href="#record">เส้นทาง</a><a href="#contact">ติดต่อ</a><a class="v1" href="./first-version/">First Version ↗</a></div></div></nav>
 
-    <!-- ═══ HERO ═══ -->
-    <!-- ✏️ รูปสองโหมด: วางไฟล์ img/teem-pro.jpg (สูท) และ img/teem-life.jpg (สนามแข่งการ์ด) ที่ root ของเว็บ -->
-    <div class="portrait">
-      <img class="pp-pro" src="../img/teem-pro.jpg" alt="ทีม — โหมดทำงาน" onerror="this.closest('.portrait').style.display='none'">
-      <img class="pp-life" src="../img/teem-life.jpg" alt="ทีม — โหมดชีวิต" onerror="this.style.display='none'">
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy reveal">
+      <span class="eyebrow">GAME SYSTEM DESIGNER · LEARNING EXPERIENCE ARCHITECT</span>
+      <h1>ทีม — นรินทร์<span>ลีลาภรณ์</span></h1>
+      <p class="hero-lead">ผมเปลี่ยน<b>ประสบการณ์และความรู้ที่อยู่ในหัวคน</b> ให้กลายเป็นเกม เครื่องมือ และระบบที่คนอื่นหยิบไปใช้ต่อได้จริง — ตั้งแต่ Starter Kit และ Training System ไปจนถึง AI Classroom, myClover และ CORE7</p>
+      <div class="hero-actions"><a class="btn primary" href="#proof">เปิดดูของที่สร้าง →</a><a class="btn ghost" href="../card/">🎴 สร้างการ์ดของคุณ</a><button class="btn ghost" type="button" id="copyProfile">🔗 คัดลอกลิงก์แนะนำตัว</button></div>
+      <div class="socials"><span>@teemclover</span><a class="social" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer">LINE</a><a class="social" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer">Instagram</a><a class="social" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer">Facebook</a></div>
+      <div class="copy-status" id="copyStatus" role="status" aria-live="polite"></div>
     </div>
-    <div class="eyebrow" id="eyebrow">PARTY ARCHITECT · SYSTEM BUILDER</div>
-    <!-- ✏️ แก้ชื่อของคุณตรงนี้ -->
-    <h1>ทีม — นรินทร์ <span class="nowrap">ลีลาภรณ์</span></h1>
-    <p class="role only-pro mode-block">
-      ผมอ่าน Quest หา Class ของแต่ละคน แล้วออกแบบ<b> Role · Training · System</b>
-      ให้คนละ Build เล่นด้วยกันได้ — ประสบการณ์เกือบ 20 ปีจาก Clover Group
-      องค์กรระดับประเทศ และสิ่งที่กำลังสร้างต่อใน myclover
-    </p>
-    <p class="role only-life mode-block">
-      เด็กที่เคยเล่นเกมคนเดียว โตมารู้ว่า Party ที่ดีไม่ต้องมีคนเหมือนกัน —
-      แค่ทุกคนรู้ Class ของตัวเอง ฝึกจนส่งต่อกันได้ และเชื่อว่า<b>ใครเจอเรา คนนั้นโชคดี</b>
-    </p>
-
-    <!-- ═══ ไพ่พลิกโหมด ═══ -->
-    <div class="deck">
-      <button class="flipcard" id="flip" role="switch" aria-checked="false"
-              aria-label="สลับโหมดโปรไฟล์ ระหว่างโหมดงานและโหมดชีวิต">
-        <span class="inner">
-          <span class="face front"><span class="big">🏛️</span>โหมดงาน</span>
-          <span class="face back"><span class="big">🍀</span>โหมดชีวิต</span>
-        </span>
-      </button>
-      <p class="hint">แตะไพ่เพื่อ<b>เปิดอีกด้าน</b>ของผม<br>
-        <span class="hm hm-pro">— ตอนนี้คุณเห็นด้านทำงานอยู่</span>
-        <span class="hm hm-life">— ตอนนี้คุณเห็นด้านชีวิตอยู่</span>
-      </p>
+    <div class="profile-stage reveal">
+      <div class="profile-glow"></div>
+      <div class="profile-card">
+        <img class="work-img" src="../img/teem-pro.jpg" alt="ทีม นรินทร์ ในโหมดทำงาน">
+        <img class="life-img" src="../img/teem-life.jpg" alt="ทีม นรินทร์ ในโหมดชีวิต">
+        <div class="mode-panel">
+          <div class="mode-tabs" role="group" aria-label="เลือกด้านของทีม"><button class="mode-tab" type="button" data-mode="work" aria-pressed="true">WORK BUILD</button><button class="mode-tab" type="button" data-mode="life" aria-pressed="false">LIFE BUILD</button></div>
+          <div class="mode-copy" id="modeCopy"><b>Party Architect · System Builder</b><p>อ่าน Quest หา Class วาง Role แล้วสร้างระบบให้คนละ Build เล่นด้วยกันได้</p></div>
+        </div>
+      </div>
+      <div class="float-badge" id="floatBadge">MY METHOD · PARTY ARCHITECTURE</div>
     </div>
+  </div>
+</header>
 
-    <!-- ═══ โหมดงาน: เส้นทางแบบ version ระบบ ═══ -->
-    <section class="only-pro mode-block">
-      <h2>ผมสร้าง Party อย่างไร</h2>
-      <div class="partyflow">
-        <div class="party-step"><span class="n">01 · QUEST</span><b>ทำให้ทุกคนเห็นปลายทางเดียวกัน</b><p>นิยามก่อนว่าชนะคืออะไร อะไรไม่ใช่งานของรอบนี้ และหลักฐานแบบไหนบอกว่า Quest จบแล้ว</p></div>
-        <div class="party-step"><span class="n">02 · CLASS</span><b>อ่านคนก่อนตั้งตำแหน่ง</b><p>หา Stat, Skill และวิธีเล่นที่แต่ละคนมีจริง ไม่บังคับให้คนเก่งคนละแบบใช้ Build เดียวกัน</p></div>
-        <div class="party-step"><span class="n">03 · SYSTEM</span><b>สร้าง Loadout ที่หยิบไปเล่นได้</b><p>เปลี่ยนความรู้เป็น Source, Workflow, Deck และเครื่องมือที่ทีมใช้ซ้ำได้โดยไม่ต้องรอคนเก่งที่สุด</p></div>
-        <div class="party-step"><span class="n">04 · TRAIN</span><b>ฝึก ส่งต่อ แล้วปรับ Build</b><p>ซ้อมจากงานจริง ดูจุดที่หลุด ให้ feedback และปรับระบบจน Party เดินต่อได้แม้หัวหน้าถอยออกมา</p></div>
-      </div>
+<div class="stats"><div class="wrap stats-grid reveal"><div class="stat"><strong>2007–2026</strong><span>สนามจริงจากรุ่นแรกถึง AI</span></div><div class="stat"><strong>7 ตอน</strong><span>ประสบการณ์ที่กลายเป็นเรื่องเล่า</span></div><div class="stat"><strong>6 บท</strong><span>AI Lesson ที่คนเริ่มทำตามได้</span></div><div class="stat"><strong>1 เกม</strong><span>CORE7 ที่เปลี่ยนค่านิยมให้เล่นได้</span></div></div></div>
 
-      <h2>หลักฐานจากสนามจริง</h2>
-      <!-- ✏️ ไล่แก้เส้นทางของคุณ: v แรกคือจุดเริ่ม ไม่ต้องครบทุกปี เอาที่เปลี่ยนชีวิต -->
-      <div class="ver"><span class="tag">v0.1</span>
-        <p>สอบ Entrance <b>คณิตศาสตร์ 100 เต็ม ที่ 1 ของประเทศ</b> แต่เลือกเรียนนิเทศ จุฬาฯ เพราะเริ่มรู้ว่าโจทย์ที่ยากกว่าตัวเลขคือการทำให้คนเข้าใจและเล่นด้วยกันได้</p></div>
-      <div class="ver"><span class="tag">v1.0</span>
-        <p>เริ่มทำธุรกิจตอนอายุ 19 และขึ้น <b>Diamond Star ตอนอายุ 22</b> — สนามแรกที่สอนว่าแรงของคนคนเดียวพาทีมออกตัวได้ แต่ระบบเท่านั้นที่ทำให้คนอื่นเล่นต่อ</p></div>
-      <div class="ver"><span class="tag">v2.0</span>
-        <p>เปลี่ยนจากคนขึ้นเวทีมาเป็น<b>คนสร้างสื่อ ระบบสอน และ Starter Kit ของ Clover Group</b> — ทำให้ความรู้เดินทางต่อได้แม้เจ้าของความรู้ไม่ได้อยู่ตรงนั้น</p></div>
-      <div class="ver"><span class="tag">v3.0</span>
-        <p>นำวิธีคิดเดียวกันไปใช้ในองค์กร: Training Director <b>Lazada</b> · VP <b>Youpik Thailand</b> · Senior PM <b>Alibaba</b> — วางคน วางงาน และสร้างระบบพัฒนาคนในสเกลที่ใหญ่ขึ้น</p></div>
-      <div class="ver"><span class="tag">v4.0</span>
-        <p>ข้ามสนามไปงานไทย–จีน ส่งซีรีส์เข้า <b>VIU และ iQIYI</b> · ทำงาน social commerce · สอน AI, Metaverse และ game thinking — เปลี่ยนเครื่องมือทุกครั้ง แต่ใช้หลักอ่าน Class และออกแบบ Party เหมือนเดิม</p></div>
-      <div class="ver"><span class="tag">v5.0</span>
-        <p><b>Current Build:</b> สร้าง myclover เป็น GrowthOS · วางระบบ Clover X · เรียนกฎหมายเพื่อออกแบบทีมที่โตได้โดยไม่ทิ้งความปลอดภัยและสิทธิของคนไว้ข้างหลัง</p></div>
+<section class="section light" id="proof"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">PLAYABLE PROOF</span><h2 class="title">ไม่ต้องเชื่อจากข้อความ<br>กดเข้าไปลองของจริงได้เลย</h2><p class="sub">ผลงานแต่ละชิ้นเริ่มจากโจทย์เดียวกัน: ทำอย่างไรให้ความคิดไม่ได้อยู่แค่ในหัวเจ้าของ แต่เดินทางต่อไปถึงมือคนอื่นได้</p></div></div>
+  <div class="proof-grid">
+    <a class="proof reveal" href="../forge/"><img src="../img/hall-why.jpg" alt="เรื่องเล่าจากโรงตีเหล็ก"><div class="proof-body"><span class="proof-tag">STORY SYSTEM · 7 EPISODES</span><h3>Tales from the Forge</h3><p>ประสบการณ์เกือบ 20 ปี ถูกแปลงเป็นเรื่องเล่าที่มี Progress, Unlock และตอนพิเศษ — ทำให้คนเข้าใจ WHY ก่อนเข้าสู่เครื่องมือ</p><span class="proof-go">อ่านเรื่องจริง →</span></div></a>
+    <a class="proof reveal" href="../classroom/"><img src="../img/hall-classroom.jpg" alt="ห้องเรียน AI ฟรี 6 บท"><div class="proof-body"><span class="proof-tag">LEARNING EXPERIENCE · 6 LESSONS</span><h3>6 Free AI Lessons</h3><p>กระบวนการที่ใช้สร้างเว็บไซต์นี้ ถูกจัดใหม่เป็นบทเรียนสั้นที่พาคนจากการลอง AI ไปถึงการสร้างผลลัพธ์ชิ้นแรก</p><span class="proof-go">เข้าเรียนฟรี →</span></div></a>
+    <a class="proof reveal" href="../core7/"><img src="../img/hall-core7.jpg" alt="เกม myClover CORE7"><div class="proof-body"><span class="proof-tag">GAME DESIGN · HUMAN VS AI</span><h3>myClover: CORE7</h3><p>ค่านิยมของชุมชนถูกเปลี่ยนเป็นเกมตัดสินใจ 7 ใบ — กติกาเรียบง่าย แต่เปิดพื้นที่ให้คนอ่านเกม อ่านคน และเลือกว่าตัวเองยืนอยู่ตรงไหน</p><span class="proof-go">ทดลองเล่น →</span></div></a>
+    <a class="proof reveal" href="../hall.html"><img src="../img/og-home.jpg" alt="บ้าน myClover"><div class="proof-body"><span class="proof-tag">INTERACTIVE HOUSE · QUEST & INVENTORY</span><h3>myClover House</h3><p>เว็บไซต์ข้อมูลธรรมดาถูกออกแบบใหม่ให้เป็นบ้านแบบเล่นได้ มีเข็มทิศ Main Quest, การ์ดประจำตัว, Inventory และ Secret Route</p><span class="proof-go">เดินเข้าบ้าน →</span></div></a>
+  </div>
+</div></section>
 
-      <div class="chips">
-        <!-- ✏️ ทักษะเด่นของคุณ 4-6 อัน พอ -->
-        <span class="chip">Party Architecture</span><span class="chip">Class & Role Design</span>
-        <span class="chip">Training System</span><span class="chip">AI Workflow</span>
-        <span class="chip">PDPA & Compliance</span><span class="chip">ไทย · จีน · ญี่ปุ่น</span>
-      </div>
+<section class="section dark"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">WHAT I BUILD</span><h2 class="title">คุยกับผมเมื่อโจทย์ยังเป็นก้อน<br>แต่ต้องทำให้คนอื่นหยิบไปใช้ได้</h2></div></div>
+  <div class="value-grid">
+    <div class="value reveal"><span class="icon">🎮</span><h3>Game & Workshop Design</h3><p>เปลี่ยนเนื้อหาหนัก กระบวนการ หรือบทสนทนายาก ๆ ให้กลายเป็นเกม เวิร์กช็อป และประสบการณ์ที่คนมีส่วนร่วมจริง</p><small>RULES · CHOICE · FEEDBACK · SOCIAL PLAY</small></div>
+    <div class="value reveal"><span class="icon">🧭</span><h3>Learning & Training System</h3><p>ถอดความรู้จากคนเก่งคนเดียวให้เป็น Source, Starter Kit, Workflow และสนามฝึกที่ทีมใช้ซ้ำ ส่งต่อ และพัฒนาต่อได้</p><small>SOURCE · LOADOUT · PRACTICE · TRANSFER</small></div>
+    <div class="value reveal"><span class="icon">🤖</span><h3>AI Workflow & Product Story</h3><p>จัด AI หลายตัวให้เป็น Party ช่วยคิด สร้าง ตรวจ และผลิตงาน โดยมนุษย์ยังถือโจทย์ ตัดสินใจ และรับผิดชอบผลลัพธ์สุดท้าย</p><small>HUMAN DIRECTION · AI PARTY · REAL OUTPUT</small></div>
+  </div>
+</div></section>
 
-      <div class="belief">💡 <b>หลักที่ผมถือ:</b> ทีมที่ดีไม่ใช่ทีมที่ทุกคนเก่งเหมือนกัน แต่คือทีมที่รู้ว่าใครเล่น Class ไหน กำลังทำ Quest อะไร และส่งไม้ต่อให้กันตรงไหน — ระบบที่ดีต้องเดินต่อได้แม้คนสร้างถอยออกมาจากกลางวง</div>
-    </section>
+<section class="section method"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">MY METHOD · PARTY ARCHITECTURE</span><h2 class="title">ผมไม่ได้เริ่มจากเครื่องมือ<br>ผมเริ่มจากเกมที่ทุกคนกำลังเล่น</h2><p class="sub">ตำแหน่งงานบอกไม่ครบว่าคนหนึ่งคนเล่นได้อย่างไร ผมจึงอ่าน Quest, Class และจังหวะส่งไม้ก่อนออกแบบระบบ</p></div></div>
+  <div class="method-grid"><div class="method-step reveal" data-n="1"><span class="mini">01 · QUEST</span><h3>ทำให้เห็นปลายทางเดียวกัน</h3><p>นิยามว่าชนะคืออะไร อะไรไม่ใช่งานของรอบนี้ และหลักฐานแบบไหนบอกว่า Quest จบแล้ว</p></div><div class="method-step reveal" data-n="2"><span class="mini">02 · CLASS</span><h3>อ่านคนก่อนตั้งตำแหน่ง</h3><p>หา Stat, Skill และวิธีเล่นที่แต่ละคนมีจริง ไม่บังคับให้คนเก่งคนละแบบใช้ Build เดียวกัน</p></div><div class="method-step reveal" data-n="3"><span class="mini">03 · SYSTEM</span><h3>สร้าง Loadout ที่หยิบไปใช้ได้</h3><p>เปลี่ยนความรู้เป็น Source, Workflow, Deck และเครื่องมือที่ทีมใช้ซ้ำได้โดยไม่ต้องรอเจ้าของความรู้</p></div><div class="method-step reveal" data-n="4"><span class="mini">04 · TRAIN</span><h3>ฝึก ส่งต่อ แล้วปรับ Build</h3><p>ทดลองกับงานจริง ดูจุดที่หลุด ให้ Feedback และปรับจนระบบเดินต่อได้แม้คนสร้างถอยออกมา</p></div></div>
+  <div class="belief reveal"><b>หลักที่ผมถือ:</b> ทีมที่ดีไม่ใช่ทีมที่ทุกคนเก่งเหมือนกัน แต่คือทีมที่รู้ว่าใครเล่น Class ไหน กำลังทำ Quest อะไร และส่งไม้ต่อให้กันตรงไหน</div>
+</div></section>
 
-    <!-- ═══ โหมดชีวิต: โต๊ะไม้ + โน้ต ═══ -->
-    <section class="only-life mode-block">
-      <h2>บนโต๊ะของผม</h2>
-      <div class="notes">
-        <!-- ✏️ ใส่ด้านที่คนไม่ค่อยเห็นของคุณ 4-6 ใบ ยิ่งจริงยิ่งดี -->
-        <div class="note"><span class="emo">🃏</span><b>นักแข่งการ์ดเกม</b><br>
-          Flesh and Blood สอนให้เห็นว่า Deck ที่แรงอย่างเดียวไม่พอ คนเล่นต้องอ่านเกม ฝึก และรู้หน้าที่ของตัวเองในทีม</div>
-        <div class="note"><span class="emo">⚔️</span><b>เกมเมอร์ตัวจริง</b><br>
-          Path of Exile 2 — ชอบเกมที่ระบบลึกจนต้องนั่งวาด skill tree</div>
-        <div class="note"><span class="emo">🍜</span><b>กินตามเมีย</b><br>
-          ภรรยาผมเป็นล่ามญี่ปุ่นสายบันเทิงและนักกินตัวยง — ผมมีหน้าที่ตามไปหิ้วของ</div>
-        <div class="note"><span class="emo">🎲</span><b>ลีดบอร์ดเกม</b><br>
-          ชอบพาคนเล่นเกมแนว Cashflow — เห็นนิสัยการเงินคนใน 2 ชั่วโมง</div>
-        <div class="note"><span class="emo">🎮</span><b>จุดเริ่มต้น</b><br>
-          เด็กที่เคยถูกห้ามไม่ให้เพื่อนคบและเล่นเกมคนเดียวทั้งวัน — เกมออนไลน์คือที่แรกที่ทำให้รู้ว่า Party เปลี่ยนความหมายของเกมได้</div>
-        <div class="note"><span class="emo">🍀</span><b>สิ่งที่กำลังสร้าง</b><br>
-          บ้านที่ช่วยให้คนหา Class สร้างของ และตั้ง Party ของตัวเองได้ — ชื่อมันว่า myclover</div>
-      </div>
-      <span class="stamp">ใครเจอเรา คนนั้นโชคดี ๛</span>
-    </section>
+<section class="section record" id="record"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">SELECTED FIELD RECORD</span><h2 class="title">เครื่องมือเปลี่ยนมาตลอด<br>แต่แกนของงานไม่เคยเปลี่ยน</h2></div></div>
+  <div class="record-list">
+    <div class="record-row reveal"><div class="record-ver">v0.1 · จุดตั้งต้น</div><p>สอบ Entrance <b>คณิตศาสตร์ 100 เต็ม ที่ 1 ของประเทศ</b> แต่เลือกเรียนนิเทศ จุฬาฯ เพราะเริ่มรู้ว่าโจทย์ที่ยากกว่าตัวเลขคือการทำให้คนเข้าใจและเล่นด้วยกันได้</p></div>
+    <div class="record-row reveal"><div class="record-ver">v1.0 · สนามคน</div><p>เริ่มทำธุรกิจตอนอายุ 19 และขึ้น <b>Diamond Star ตอนอายุ 22</b> — เรียนรู้ว่าแรงของคนคนเดียวพาทีมออกตัวได้ แต่ระบบเท่านั้นที่ทำให้คนอื่นเล่นต่อ</p></div>
+    <div class="record-row reveal"><div class="record-ver">v2.0 · ระบบส่งต่อ</div><p>สร้างสื่อ ระบบสอน และ <b>Starter Kit ของ Clover Group</b> ทำให้ความรู้เดินทางต่อได้ แม้เจ้าของความรู้ไม่ได้อยู่ตรงนั้น</p></div>
+    <div class="record-row reveal"><div class="record-ver">v3.0 · องค์กร</div><p>นำวิธีคิดไปใช้ในบทบาท Training Director <b>Lazada</b> · VP <b>Youpik Thailand</b> · Senior PM <b>Alibaba</b> เพื่อวางคน วางงาน และระบบพัฒนาทีมในสเกลใหญ่ขึ้น</p></div>
+    <div class="record-row reveal"><div class="record-ver">v4.0 · ไทย–จีน</div><p>ส่งซีรีส์เข้า <b>VIU และ iQIYI</b> · ทำ social commerce · สอน AI, Metaverse และ game thinking — เปลี่ยนสนามและเครื่องมือ แต่ยังออกแบบจากคนและระบบเหมือนเดิม</p></div>
+    <div class="record-row reveal"><div class="record-ver">v5.0 · 2026</div><p>สร้าง <b>myClover</b> เป็นบ้านแบบเล่นได้ พัฒนา <b>Guild X</b> สำหรับคนที่เลือกลงมือจริง วาง <b>Clover X</b> เป็นเส้นทางธุรกิจแบบสมัครใจ และเรียนกฎหมายเพื่อให้ระบบที่โตขึ้นไม่ทิ้งสิทธิของคนไว้ข้างหลัง</p></div>
+  </div>
+  <div class="skills reveal"><span class="skill">Game System Design</span><span class="skill">Learning Experience</span><span class="skill">Party Architecture</span><span class="skill">Training System</span><span class="skill">AI Workflow</span><span class="skill">Community Product</span><span class="skill">PDPA & Compliance</span><span class="skill">ไทย · จีน · ญี่ปุ่น</span></div>
+</div></section>
 
-    <!-- ═══ FOLLOW (ทั้งสองโหมด) ═══ -->
-    <section class="follow">
-      <h2 id="follow-h">อยากรู้จักกันต่อ</h2>
-      <div class="btns">
-        <!-- ✏️ เปลี่ยน href เป็นลิงก์จริงของคุณ -->
-        <a class="btn primary" href="../card/#register">🍀 ลงทะเบียนรับการ์ดประจำตัว</a>
-        <a class="btn" href="../">🏠 กลับบ้าน myclover — ชุมชนฟรีของพวกเรา</a>
-        <a class="btn" data-guildx data-guildx-start="../card/">⚔️ เปิดประตู Guild X — คนละ Class เดิน Quest เดียวกัน</a>
-        <small data-guildx-note style="display:block;font-size:12px;opacity:.7"></small>
-        <a class="btn" href="#" data-line>💬 ทัก LINE — คุยกันตัวต่อตัว</a>
-      </div>
-    </section>
+<section class="section light"><div class="wrap">
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow">CURRENT BUILD · 2026</span><h2 class="title">3 พื้นที่ที่ร่วมมือกันได้<br>แต่ไม่เป็นเจ้าของกัน</h2></div></div>
+  <div class="builds"><div class="build reveal"><span class="btag">OPEN HOUSE</span><h3>myClover</h3><p>บ้านแบบเล่นได้ที่คนเข้ามาเรียน สร้างของ เล่นเกม พัก หรือหยิบเครื่องมือแล้วออกไปได้ โดยไม่ต้องเดินตามเจ้าของบ้าน</p><span class="quote">ใครเจอเรา คนนั้นโชคดี</span></div><div class="build reveal"><span class="btag">SERIOUS BUILD SPACE</span><h3>Guild X</h3><p>พื้นที่ของคนที่เลือกจะลงมือจริง มี Starter Save, Source, Quest และ Patch ร่วมกัน แต่ยังเคารพ Class และ Build ของแต่ละคน</p><span class="quote">เราแบ่ง Operating System ไม่ได้ส่งต่อ Identity</span></div><div class="build reveal"><span class="btag">OPT-IN BUSINESS PATH</span><h3>Clover X</h3><p>เส้นทางธุรกิจที่ร่วมมือกับชุมชนได้ แต่ต้องเป็นทางเลือก ไม่ใช่เงื่อนไขการเป็นสมาชิกหรือเหตุผลที่บ้านนี้มีอยู่</p><span class="quote"><b>แหล่งรายได้ของผู้ก่อตั้ง ไม่ใช่เจ้าของชุมชน</b></span></div></div>
+</div></section>
 
-    <p class="foot">หน้านี้สร้างจากไฟล์ HTML ไฟล์เดียว —
-      <b>อยากมี Smart Resume ของตัวเอง? ผมสอนฟรีใน myclover</b> 🍀<br>
-      <a href="../privacy/">ข้อมูลของคุณ</a></p>
-  </main>
-</div>
+<section class="section life-section"><div class="wrap life-grid">
+  <div class="life-photo reveal"><img src="../img/teem-life.jpg" alt="ทีมในสนามการ์ดเกม"></div>
+  <div><span class="eyebrow reveal">LIFE BUILD</span><h2 class="title reveal" style="margin:12px 0 28px">อีกด้านที่ทำให้งานของผม<br>ไม่กลายเป็นแค่ Diagram</h2><div class="notes"><div class="note reveal"><span class="emo">🃏</span><b>นักแข่งการ์ดเกม</b><p>Flesh and Blood สอนว่า Deck ที่แรงไม่พอ คนเล่นต้องอ่านเกม ฝึก และรู้จังหวะของตัวเอง</p></div><div class="note reveal"><span class="emo">⚔️</span><b>เกมเมอร์สายระบบ</b><p>ชอบเกมที่ลึกพอให้ต้องวาด Skill Tree และเรียนรู้จาก Build ที่พังจริง</p></div><div class="note reveal"><span class="emo">🍜</span><b>กินตามเอโกะ</b><p>ภรรยาเป็นล่ามญี่ปุ่นสายบันเทิงและนักกินตัวยง ผมมีหน้าที่ตามไปชิมและหิ้วของ</p></div><div class="note reveal"><span class="emo">🔨</span><b>คนทำ Version แรก</b><p>ไม่รอให้สมบูรณ์ สร้างของที่เดินได้ก่อน แล้วใช้ข้อผิดพลาดเป็นข้อมูลของ Version ต่อไป</p></div><div class="note reveal"><span class="emo">🤖</span><b>ทำงานกับ AI Party</b><p>ใช้ AI หลายตัวช่วยคิด สร้าง และตรวจ แต่คนถือค้อนและตัดสินใจสุดท้ายยังเป็นมนุษย์</p></div><div class="note reveal"><span class="emo">🎮</span><b>เด็กที่เคยเล่นคนเดียว</b><p>เกมออนไลน์คือที่แรกที่ทำให้รู้ว่า Party เปลี่ยนทั้งผลลัพธ์และความหมายของเกมได้</p></div></div><span class="stamp reveal">ใครเจอเรา คนนั้นโชคดี ๛</span></div>
+</div></section>
+
+<section class="section contact" id="contact"><div class="wrap">
+  <span class="eyebrow reveal">LET'S TALK</span><h2 class="title reveal">ถ้าโจทย์ของคุณมีทั้งคน เนื้อหา และระบบ<br>น่าจะมีเรื่องให้เราคุยกัน</h2><p class="sub reveal">ติดต่อชื่อเดียวกันทั้งหมด: <b style="color:var(--gold)">@teemclover</b></p>
+  <div class="contact-grid"><a class="contact-card reveal" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer"><b>LINE</b><span>@teemclover →</span></a><a class="contact-card reveal" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer"><b>Instagram</b><span>@teemclover →</span></a><a class="contact-card reveal" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer"><b>Facebook</b><span>@teemclover →</span></a></div>
+  <div class="archive-card reveal">หน้านี้คือ Version ปัจจุบัน แต่กูไม่ลบจุดเริ่มต้น — <a href="./first-version/">เปิดดู Smart Resume · First Version เพื่อเทียบพัฒนาการ →</a></div>
+</div></section>
+<footer><div class="wrap">🍀 myClover · Playable Resume · Good Luck, Have Fun</div></footer>
 
 <script>
-// ═══ สลับโหมด: ทั้งหน้าเปลี่ยนโลกด้วย class เดียวที่ body ═══
-// (จำสถานะไว้ในตัวแปรระหว่างเปิดหน้า — ไม่เก็บลงเครื่องผู้ใช้)
-const flip = document.getElementById('flip');
-const eyebrow = document.getElementById('eyebrow');
-let mode = 'pro';
+(function(){
+  var tabs=document.querySelectorAll('.mode-tab');
+  var modeCopy=document.getElementById('modeCopy');
+  var badge=document.getElementById('floatBadge');
+  var copy={
+    work:{title:'Party Architect · System Builder',text:'อ่าน Quest หา Class วาง Role แล้วสร้างระบบให้คนละ Build เล่นด้วยกันได้',badge:'MY METHOD · PARTY ARCHITECTURE'},
+    life:{title:'Blacksmith · Player · Husband',text:'เกม การ์ด อาหาร และ Version ที่พัง คือสนามที่ทำให้งานออกแบบยังมีชีวิตจริง',badge:'LIFE BUILD · HUMAN FINAL CALL'}
+  };
+  tabs.forEach(function(tab){tab.addEventListener('click',function(){
+    var mode=tab.dataset.mode;
+    document.body.classList.toggle('life-mode',mode==='life');
+    document.body.classList.toggle('work-mode',mode==='work');
+    tabs.forEach(function(x){x.setAttribute('aria-pressed',x===tab?'true':'false')});
+    modeCopy.innerHTML='<b>'+copy[mode].title+'</b><p>'+copy[mode].text+'</p>';
+    badge.textContent=copy[mode].badge;
+  })});
 
-flip.addEventListener('click', () => {
-  flip.classList.add('spin');                    // หมุนไพ่ถึง 90° (ตั้งขอบ)
-  setTimeout(() => {
-    mode = (mode === 'pro') ? 'life' : 'pro';    // สลับโลกตอนไพ่ตั้งขอบพอดี
-    document.body.className = mode;
-    flip.setAttribute('aria-checked', mode === 'life');
-    flip.classList.remove('spin');               // หมุนกลับ โชว์หน้าใหม่
-  // ✏️ ข้อความหัวมุมของสองโหมด แก้ให้เป็นของคุณ
-  eyebrow.textContent = (mode === 'pro')
-    ? 'PARTY ARCHITECT · SYSTEM BUILDER'
-    : 'BLACKSMITH · MYCLOVER 🍀';
-  }, 360);
-});
+  var copyBtn=document.getElementById('copyProfile'),status=document.getElementById('copyStatus');
+  copyBtn.addEventListener('click',async function(){
+    var url='https://www.myclover.com/resume/';
+    try{await navigator.clipboard.writeText(url);status.textContent='คัดลอกลิงก์แนะนำตัวแล้ว ✓'}catch(e){
+      var input=document.createElement('input');input.value=url;document.body.appendChild(input);input.select();document.execCommand('copy');input.remove();status.textContent='คัดลอกลิงก์แนะนำตัวแล้ว ✓';
+    }
+    setTimeout(function(){status.textContent=''},2600);
+  });
+
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('show')});return}
+  var io=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add('show');io.unobserve(entry.target)}})},{threshold:.08,rootMargin:'0px 0px -40px'});
+  els.forEach(function(el){io.observe(el)});
+})();
 </script>
-<script defer src="../assets/config.js"></script>
-<script defer src="../assets/guildx.js"></script>
-<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
-<script type="text/javascript">
-(function(c,l,a,r,i,t,y){
-  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "xtx73cs6w1");
-</script>
-<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
-<script>
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-gtag('js',new Date());
-gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
-</script>
-<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+<script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","xtx73cs6w1");</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>
 </body>
 </html>
