@@ -19,11 +19,11 @@ Frame, Character หรือภาพจำของ TCG แบรนด์อ�
 | Wordmark `myClover · CORE7` | HTML + font stack | — | Nav ทุกหน้า | ✅ Final V1 |
 | หน้าการ์ด FIRST HAND 28 ใบ | `cardSVG(id)` + WebP | 300×420 (63:88) | Collection, Match, Print | ✅ ART v0.4 ภาพเต็มใบครบ 28 ใบ |
 | Generic Card 4 สี | `genericCardSVG(color)` + WebP | 300×420 | Guest ทุกโหมด | ✅ ART v0.4 ครบ 4 สี |
-| หลังการ์ดมาตรฐาน — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง, ชื่อบนใบคือ `myClover` เท่านั้น (CORE7 เป็นชื่อโหมด ห้ามพิมพ์บนการ์ด) | `cardBackSVG()` | 300×420 | Match, Print | ✅ Final V1 — แบบเดียวทุกใบ เดาหน้าไพ่ไม่ได้ |
+| หลังการ์ดจริง — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง | `card-back-core7.png` via `cardBackSVG()` | 750×1050 (2.5×3.5 in) | Match, Tutorial, Print | ✅ Final V2 — มาตรฐาน MTG / FAB |
 | โปสเตอร์ myClover : First Hand (Coming Soon) | ไฟล์ภาพจากผู้ก่อตั้ง | `img/core7-poster-{640,1024}.webp` + jpg | หน้า `/card/` ส่วนชวนเล่นเกม | ✅ ภาพจริง |
 | Icon ประจำสี (flame/drop/leaf/gear) | `colorIcon(color)` | 24×24 | หน้าการ์ดและภาพสอนกติกา | ✅ Final V1 |
 | Pattern ประจำสี (bite/thought/shield/block) | `patternDefs()` | pattern tile | แถบการ์ด, Accessibility | ✅ Final V1 |
-| ภาพสรุปกติกาใบเดียว | `core7-rules-overview.png` | 1024×1536 | Landing, Rules, Tutorial, Match | ✅ v0.4.2 |
+| ภาพสรุปกติกาใบเดียว | `core7-rules-overview.png` | 800×1200 | Landing, Rules, Tutorial, Match | ✅ Original restored v0.4.3 |
 | วงสี Static | `colorCycleSVG()` | 300×260 | Rules TH/EN | ✅ Final V1 |
 | Table Background | CSS gradient (`core7.css` .match-shell) | — | หน้า Match | ✅ Final V1 |
 | Open Graph Image | — | 1200×630 | Social share | ⏳ ใช้ meta ข้อความก่อน — สร้างภาพเมื่อมีเครื่องมือเรนเดอร์ PNG ฝั่ง Server |

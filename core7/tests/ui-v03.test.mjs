@@ -80,7 +80,8 @@ test('CORE7 logo returns to game home except from the game home itself', () => {
 test('English rules retain the static rules overview image', () => {
   const rules = read('rules/index.html');
   assert.match(rules, /id="en"[\s\S]*core7-rules-overview\.png/);
-  assert.match(rules, /fewer GRAY cards/);
+  assert.match(rules, /FINAL GRAY|Final Gray/);
+  assert.doesNotMatch(rules, /fewer GRAY cards/);
 });
 
 test('small hand cards use artwork with an English-only label and color fallback', () => {
@@ -115,9 +116,16 @@ test('match table has an expandable Rules control opposite Discard', () => {
   const css = read('css/core7.css');
   assert.match(ui, /id="rulesBtn"/);
   assert.match(ui, /id="rulesPopover"/);
-  assert.match(ui, /TIEBREAK_FEWER_GRAY|เทาน้อยกว่าชนะ/);
+  assert.match(ui, /ผู้แพ้ทิ้งเพิ่ม 1 ใบ/);
   assert.match(css, /\.rules-toggle[\s\S]*left: 10px/);
   assert.match(css, /\.drawer-toggle[\s\S]*right: 10px/);
+});
+
+test('card back uses the real standard-size CORE7 asset', () => {
+  const art = read('js/art.js');
+  assert.match(art, /card-back-core7\.png/);
+  assert.match(art, /height = Math\.round\(width \* 1\.4\)/);
+  assert.match(art, /หลังการ์ด myClover CORE7/);
 });
 
 test('landing and tutorial use one static rules overview PNG', () => {

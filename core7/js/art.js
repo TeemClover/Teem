@@ -581,7 +581,7 @@ export function genericCardSVG(color, { width = 300 } = {}) {
 /* ═══ หลังการ์ด — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง ═══
    ชื่อบนหลังการ์ดคือ "myClover" เท่านั้น (CORE7 เป็นชื่อโหมดของเกม
    ไม่ใช่ชื่อการ์ด — ห้ามพิมพ์บนใบ) ใช้แบบเดียวกันทุกใบ เดาหน้าไพ่ไม่ได้ */
-export function cardBackSVG({ width = 300 } = {}) {
+function legacyCardBackSVG({ width = 300 } = {}) {
   const id = nid('cb');
   /* หนามเพชรของวงเข็มทิศ: ยาวแกนหลัก สั้นแกนทแยง */
   const spike = (rot, len) => `
@@ -639,6 +639,18 @@ export function cardBackSVG({ width = 300 } = {}) {
       <circle cx="0" cy="-2.2" r="2"/><circle cx="-2.6" cy="1" r="2"/>
       <circle cx="2.6" cy="1" r="2"/><path d="M-.6 2 L.6 2 L1.4 6 L-1.4 6 Z"/>
     </g>
+  </svg>`;
+}
+
+/* หลังการ์ดจริงของ CORE7 — 2.5 × 3.5 นิ้ว (5:7), asset เดียวกันทั้งจอและงานพิมพ์ */
+export function cardBackSVG({ width = 300 } = {}) {
+  const id = nid('cb-photo');
+  const height = Math.round(width * 1.4);
+  return `<svg width="${width}" height="${height}" viewBox="0 0 300 420"
+    role="img" aria-label="หลังการ์ด myClover CORE7">
+    <defs><clipPath id="${id}-clip"><rect width="300" height="420" rx="18"/></clipPath></defs>
+    <image href="/core7/assets/card-back-core7.png" width="300" height="420"
+      preserveAspectRatio="none" clip-path="url(#${id}-clip)"/>
   </svg>`;
 }
 

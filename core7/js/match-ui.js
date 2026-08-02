@@ -60,8 +60,8 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
         <button class="drawer-toggle" id="histBtn" aria-label="เปิด Discard" aria-expanded="false">🗑️ Discard</button>
         <div class="match-rules-popover" id="rulesPopover" hidden role="dialog" aria-label="กติกา CORE7">
           <div class="match-rules-head"><b class="disp">CORE7 Rules</b><button type="button" id="rulesClose" aria-label="ปิด Rules">✕</button></div>
-          <img src="/core7/assets/core7-rules-overview.png" alt="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block เสมอทุกตาเทาน้อยกว่าชนะ">
-          <p>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴 · ⚙️ = BLOCK<br>เสมอทุกตา: เปิดมือ แล้วคนที่มีเทาน้อยกว่าชนะ · เทาเท่ากัน = DRAW</p>
+          <img src="/core7/assets/core7-rules-overview.png" alt="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ และ Final Gray">
+          <p>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴 · ⚙️ = BLOCK<br>ผู้แพ้ทิ้งเพิ่ม 1 ใบ · ชนะครบ 3 รอบ</p>
           <a href="/core7/rules/" target="_blank" rel="noopener">อ่านกติกาเต็ม TH / EN ↗</a>
         </div>
         <div class="rule-line" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก"><span>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>

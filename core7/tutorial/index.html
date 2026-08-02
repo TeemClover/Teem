@@ -47,7 +47,7 @@ body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transp
 </div>
 <div class="tut-stage">
   <img class="tut-rule-visual" id="ruleVisual" src="/core7/assets/core7-rules-overview.png" hidden
-    alt="กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่ม ชนะสามรอบ Final Gray และเสมอทุกตาเทาน้อยกว่าชนะ">
+    alt="กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่ม ชนะสามรอบ และ Final Gray">
   <div class="tut-cards" id="tutorialCards">
     <div><small id="youLabel" style="display:block;margin-bottom:6px">คุณ · ซ้ายเสมอ</small><div class="tut-slot" id="slotYou"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
     <b class="disp" style="color:rgb(var(--gold-l))">VS</b>
@@ -84,8 +84,8 @@ document.getElementById('skip').textContent = isEn ? 'Skip tutorial →' : 'ข�
 document.getElementById('youLabel').textContent = isEn ? 'YOU · always left' : 'คุณ · ซ้ายเสมอ';
 document.getElementById('oppLabel').textContent = isEn ? 'OPPONENT · right' : 'คู่แข่ง · ขวา';
 ruleVisual.alt = isEn
-  ? 'CORE7 overview: color cycle, loser discards one extra, win three rounds, Final Gray, and fewer starting Gray wins if every round ties'
-  : 'กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ Final Gray และเสมอทุกตาเทาน้อยกว่าชนะ';
+  ? 'CORE7 overview: color cycle, loser discards one extra, win three rounds, and Final Gray'
+  : 'กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ และ Final Gray';
 slotYou.querySelector('.back').innerHTML = cardBackSVG({ width: 140 });
 slotBot.querySelector('.back').innerHTML = cardBackSVG({ width: 140 });
 
@@ -125,7 +125,7 @@ const STEPS_TH = [
     text: 'ชนะ Match เมื่อ: ชนะครบ 3 รอบ หรือคู่แข่งการ์ดหมดมือ',
     want: null, bot: null,
     explain: 'เท่านี้ก็เล่นเป็นแล้ว! 🎉',
-    explainSub: 'ถ้าเสมอทุกตา จะเปิดมือทั้งคู่และคนที่เริ่มด้วยเทาน้อยกว่าชนะ; เทาเท่ากันจริงจึง DRAW — ต่อไปเลือกมือ 7 ใบแล้วลองสนามจริง',
+    explainSub: 'ต่อไป: เลือกมือ 7 ใบของคุณเอง — สีใดกี่ใบก็ได้ แล้วใช้เกมเป็นข้ออ้างดี ๆ ในการเปิดบทสนทนา',
     visual: true,
   },
 ];
@@ -135,7 +135,7 @@ const STEPS_EN = [
   { text:'What if both colors match? Tap RED again.', want:'RED', bot:'RED', explain:'DRAW — matching colors tie.', explainSub:'Both lose only the played card. No additional discard.' },
   { text:'Try the block card. Tap GRAY.', want:'GRAY', bot:'BLUE', explain:'BLOCK — GRAY ties every normal color.', explainSub:'GRAY buys time, but never wins a normal Round.' },
   { text:'Final Gray rule', want:null, bot:null, explain:'If GRAY is your final card, it loses to a real color.', explainSub:'A tool can buy time, but cannot make the final choice for you.' },
-  { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. Quick is one Match; BO3/BO5 keep the same Starting Hand.', explainSub:'If every round ties, reveal both hands: fewer starting GRAY wins; equal GRAY is a DRAW.', visual:true },
+  { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. Quick is one Match; BO3/BO5 keep the same Starting Hand.', explainSub:'Now choose your seven cards and use the game as an easy way to start a conversation.', visual:true },
 ];
 const STEPS = isEn ? STEPS_EN : STEPS_TH;
 let step = 0;
