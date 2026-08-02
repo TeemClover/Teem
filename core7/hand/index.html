@@ -107,7 +107,7 @@ if (!member) {
     row.append(el('span', { class: `chip chip-${color.toLowerCase()}`, style: 'width:44px;height:44px', html: colorIcon(color, 24) }));
     row.append(el('div', { class: 'cinfo' },
       el('div', { class: 'cname' }, `${meta.nameEn.toUpperCase()} · ${meta.nameTh}`),
-      el('div', { class: 'csub' }, `${meta.className} ${meta.classTh} — ${meta.beatsTh}`)));
+      el('div', { class: 'csub' }, `${meta.nameEn} · ${meta.nameTh} — ${meta.beatsTh}`)));
     const minus = el('button', { class: 'hb-btn', 'aria-label': `ลดจำนวนสี${meta.nameTh}` }, '−');
     const num = el('span', { class: 'num', 'aria-live': 'polite' }, String(counts[color]));
     const plus = el('button', { class: 'hb-btn', 'aria-label': `เพิ่มจำนวนสี${meta.nameTh}` }, '+');

@@ -23,7 +23,7 @@ Frame, Character หรือภาพจำของ TCG แบรนด์อ�
 | โปสเตอร์ myClover : First Hand (Coming Soon) | ไฟล์ภาพจากผู้ก่อตั้ง | `img/core7-poster-{640,1024}.webp` + jpg | หน้า `/card/` ส่วนชวนเล่นเกม | ✅ ภาพจริง |
 | Icon ประจำสี (flame/drop/leaf/gear) | `colorIcon(color)` | 24×24 | หน้าการ์ดและภาพสอนกติกา | ✅ Final V1 |
 | Pattern ประจำสี (bite/thought/shield/block) | `patternDefs()` | pattern tile | แถบการ์ด, Accessibility | ✅ Final V1 |
-| ภาพสรุปกติกาใบเดียว | `core7-rules-overview.png` | 800×1200 | Landing, Tutorial | ✅ v0.4.1 |
+| ภาพสรุปกติกาใบเดียว | `core7-rules-overview.png` | 1024×1536 | Landing, Rules, Tutorial, Match | ✅ v0.4.2 |
 | วงสี Static | `colorCycleSVG()` | 300×260 | Rules TH/EN | ✅ Final V1 |
 | Table Background | CSS gradient (`core7.css` .match-shell) | — | หน้า Match | ✅ Final V1 |
 | Open Graph Image | — | 1200×630 | Social share | ⏳ ใช้ meta ข้อความก่อน — สร้างภาพเมื่อมีเครื่องมือเรนเดอร์ PNG ฝั่ง Server |

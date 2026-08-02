@@ -190,6 +190,16 @@ test('Full-tie match ends as DRAW', () => {
   assert.equal(m.state.result.resultType, 'DRAW');
 });
 
+test('Every round tied → player with fewer starting GRAY wins', () => {
+  const m = newMatch('RRRRRRR', 'XXRRRRR');
+  for (let i = 1; i <= 7; i++) playRound(m, `a${i}`, `b${i}`);
+  assert.equal(m.state.phase, PHASE.MATCH_RESULT);
+  assert.equal(m.state.result.draw, false);
+  assert.equal(m.state.result.resultType, 'TIEBREAK_FEWER_GRAY');
+  assert.equal(m.state.result.winnerId, 'pa');
+  assert.deepEqual(m.state.result.startingGrayCounts, { a: 0, b: 2 });
+});
+
 test('Final Gray: gray last card loses the match', () => {
   /* ทั้งคู่เสมอกัน 6 รอบแรก (สีเดียวกัน) รอบสุดท้าย A=GRAY B=RED */
   const m = newMatch('RRRRRRX', 'RRRRRRR');

@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import {
   CORE7_RULES_VERSION, resolveColor, resolveRound,
   checkThreeWins, checkHandExhaustion,
-  resolveFinalGray, resolveHistoryTiebreak, resolveMatch,
+  resolveFinalGray, resolveHistoryTiebreak, resolveFewerGray, resolveMatch,
   validateHand, MATCH_RESULT_TYPE,
 } from '../js/rules.js';
 
@@ -158,8 +158,10 @@ test('History walks newest → oldest and skips ties', () => {
     { result: 'TIE' },
   ]), 'A');
 });
-test('All history ties returns null → match is a DRAW', () => {
+test('All history ties → fewer starting GRAY wins', () => {
   assert.equal(resolveHistoryTiebreak([{ result: 'TIE' }, { result: 'TIE' }]), null);
+  assert.equal(resolveFewerGray({ a: 1, b: 3 }), 'A');
+  assert.equal(resolveFewerGray({ a: 4, b: 2 }), 'B');
   const res = resolveMatch({
     roundWins: { a: 0, b: 0 },
     handCounts: { a: 0, b: 0 },
@@ -167,6 +169,17 @@ test('All history ties returns null → match is a DRAW', () => {
       { a: 'RED', b: 'RED', result: 'TIE' },
       { a: 'GRAY', b: 'GRAY', result: 'TIE' },
     ],
+    startingGrayCounts: { a: 1, b: 2 },
+  });
+  assert.equal(res.winner, 'A');
+  assert.equal(res.draw, false);
+  assert.equal(res.resultType, MATCH_RESULT_TYPE.FEWER_GRAY);
+});
+test('All history ties and equal starting GRAY → DRAW', () => {
+  const res = resolveMatch({
+    roundWins: { a: 0, b: 0 }, handCounts: { a: 0, b: 0 },
+    rounds: [{ a: 'RED', b: 'RED', result: 'TIE' }],
+    startingGrayCounts: { a: 2, b: 2 },
   });
   assert.equal(res.winner, null);
   assert.equal(res.draw, true);
@@ -189,5 +202,5 @@ test('Hand must have exactly 7 valid colors', () => {
 });
 
 /* ── Rules version ── */
-test('Rules version is locked at 1.0.0', () =>
-  assert.equal(CORE7_RULES_VERSION, '1.0.0'));
+test('Rules version is locked at 1.1.0', () =>
+  assert.equal(CORE7_RULES_VERSION, '1.1.0'));

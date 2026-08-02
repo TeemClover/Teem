@@ -112,13 +112,13 @@ export function cloverLogo(size = 64, { ring = true } = {}) {
 /* ═══ Icon ประจำสี (เส้นเดียวกันทั้งชุด — ใช้ currentColor) ═══ */
 export function colorIcon(color, size = 20) {
   const paths = {
-    /* flame — TASTER */
+    /* flame — RED */
     RED: '<path d="M12 3 C13 7 17 8.5 17 13 A5 5 0 0 1 7 13 C7 10 9 8.6 9.5 6.5 C10.6 8 11.5 8.6 11.5 10.5 C12.8 9.4 12.4 5.8 12 3 Z"/>',
-    /* water drop — THINKER */
+    /* water drop — BLUE */
     BLUE: '<path d="M12 2.5 C10.2 5.5 5.8 9.6 5.8 14 A6.2 6.2 0 0 0 18.2 14 C18.2 9.6 13.8 5.5 12 2.5 Z M8.6 14.2 C8.8 16.3 10.1 17.4 12 17.7 C9.5 18.1 7.6 16.6 7.6 14.4 C7.6 13.2 8.1 12.2 8.8 11.2 C8.6 12.3 8.5 13.3 8.6 14.2 Z"/>',
-    /* leaf — KEEPER */
+    /* leaf — GREEN */
     GREEN: '<path d="M19 5 C11 5 5.6 9.4 5.6 15.6 C5.6 17 5.9 18.2 6.3 19 L8 17.4 C7.8 16.8 7.7 16.2 7.7 15.6 C7.7 10.8 12 7.3 19 7.1 C18.6 12.6 15.9 16.6 10.6 17.6 L9 19.1 C9.9 19.4 10.9 19.6 12 19.6 C17.1 19.6 20.8 15 21 5.2 Z M4 21 C7 17.8 10 14.8 14.5 11.5 C10.4 13.6 6.9 16.4 3.2 20.2 Z"/>',
-    /* gear — MAKER */
+    /* gear — GRAY */
     GRAY: '<path d="M12 8.6 A3.4 3.4 0 1 0 12 15.4 A3.4 3.4 0 0 0 12 8.6 Z M12 10.6 A1.4 1.4 0 1 1 12 13.4 A1.4 1.4 0 0 1 12 10.6 Z M10.7 3 L10.3 5.4 C9.6 5.7 9 6 8.4 6.5 L6.1 5.7 L4.8 8 L6.6 9.5 C6.5 10.3 6.5 11 6.6 11.7 L4.8 13.2 L6.1 15.5 L8.4 14.7 C9 15.2 9.6 15.6 10.3 15.8 L10.7 18.2 H13.3 L13.7 15.8 C14.4 15.6 15 15.2 15.6 14.7 L17.9 15.5 L19.2 13.2 L17.4 11.7 C17.5 11 17.5 10.3 17.4 9.5 L19.2 8 L17.9 5.7 L15.6 6.5 C15 6 14.4 5.7 13.7 5.4 L13.3 3 Z" transform="translate(0 1.5)"/>',
   };
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor"
@@ -162,7 +162,7 @@ function sceneBg(id, top, bottom) {
 }
 
 const SCENES = {
-  /* ── 🔴 TASTER ── */
+  /* ── 🔴 RED ── */
   'fh-red-desire': () => {
     const g = nid('s');
     return `${sceneBg(g, '#F7E3D8', '#E8BFA8')}
@@ -252,7 +252,7 @@ const SCENES = {
     <path d="M186 132 L189 140 L197 141 L191 146 L193 154 L186 150 L179 154 L181 146 L175 141 L183 140 Z" fill="${GOLDL}"/>`;
   },
 
-  /* ── 💧 THINKER ── */
+  /* ── 💧 BLUE ── */
   'fh-blue-clarity': () => {
     const g = nid('s');
     return `${sceneBg(g, '#BFD9EE', '#7FB0D8')}
@@ -328,7 +328,7 @@ const SCENES = {
       stroke="rgba(255,255,255,.4)" stroke-width="3" stroke-linecap="round"/>`).join('')}`;
   },
 
-  /* ── 🟢 KEEPER ── */
+  /* ── 🟢 GREEN ── */
   'fh-green-discipline': () => {
     const g = nid('s');
     return `${sceneBg(g, '#12314F', '#3E6E8E')}
@@ -413,7 +413,7 @@ const SCENES = {
         transform="rotate(${-28 - i * 3} ${x} ${y})" fill="${CREAM}" opacity=".9"/>`).join('')}`;
   },
 
-  /* ── ⚙️ MAKER ── */
+  /* ── ⚙️ GRAY ── */
   'fh-gray-observe': () => {
     const g = nid('s');
     return `${sceneBg(g, '#EDEEEA', '#CDD1CE')}
@@ -511,7 +511,7 @@ function fullBleedCardSVG(card, artHref, { width = 300, showNumber = true, gener
     : `FIRST HAND · ${String(card.no).padStart(2, '0')} / 28`;
 
   return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420" data-art-version="${CORE7_ART_VERSION}"
-    role="img" aria-label="การ์ด ${title} (${subtitle}) สี${meta.nameTh} สาย ${meta.className}">
+    role="img" aria-label="การ์ด ${title} (${subtitle}) สี${meta.nameTh}">
     <defs>
       <clipPath id="${id}-clip"><rect x="12" y="12" width="276" height="396" rx="13"/></clipPath>
       <linearGradient id="${id}-gold" x1="0" y1="0" x2="1" y2="1">
@@ -696,5 +696,5 @@ export function colorCycleSVG(size = 300) {
 export function colorChip(color, size = 40) {
   const meta = COLOR_META[color];
   return `<span class="chip chip-${color.toLowerCase()}" style="width:${size}px;height:${size}px"
-    role="img" aria-label="สี${meta.nameTh} สาย ${meta.className}">${colorIcon(color, Math.round(size * 0.55))}</span>`;
+    role="img" aria-label="สี${meta.nameTh}">${colorIcon(color, Math.round(size * 0.55))}</span>`;
 }

@@ -61,7 +61,7 @@ const S = store.getAllStats();
 const favColor = Object.entries(S.all.colorPlays).sort((a, b) => b[1] - a[1])[0];
 document.getElementById('pmeta').textContent =
   `Guest (เครื่องนี้) · เริ่มเล่น ${joined.toLocaleDateString('th-TH')}`
-  + (favColor ? ` · สายที่เล่นบ่อย: ${COLOR_META[favColor[0]].emoji} ${COLOR_META[favColor[0]].classTh}` : '');
+  + (favColor ? ` · สีที่เล่นบ่อย: ${COLOR_META[favColor[0]].emoji} ${COLOR_META[favColor[0]].nameTh}` : '');
 document.getElementById('rename').addEventListener('click', () => {
   const n = prompt('ชื่อบนโต๊ะ:', g.name);
   if (n) { store.setGuestName(n); location.reload(); }

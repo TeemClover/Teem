@@ -99,7 +99,8 @@ const HOWTEXT = {
   TIEBREAK_LAST_ROUND: 'Tie Break — รอบสุดท้ายชี้ขาด',
   TIEBREAK_FINAL_GRAY: 'Tie Break — กฎ Final Gray: เทาแพ้ใบสุดท้าย',
   TIEBREAK_HISTORY: 'Tie Break — ย้อนประวัติรอบที่มีผู้ชนะ',
-  DRAW: 'เสมอทุกรอบ — ผลที่เกิดได้ยากมาก',
+  TIEBREAK_FEWER_GRAY: 'เสมอทุกตา — เปิดมือแล้ว ฝ่ายที่เริ่มด้วยเทาน้อยกว่าชนะ',
+  DRAW: 'เสมอทุกตาและจำนวนเทาเท่ากัน — ใจตรงกันพอดี',
   FORFEIT: 'อีกฝ่ายยอมแพ้',
 };
 let title, sub;
@@ -202,7 +203,7 @@ if (r.resultType === 'TIEBREAK_HISTORY') {
   for (let i = view.rounds.length - 1; i >= 0; i--) {
     if (view.rounds[i].result !== 'TIE') { turningIdx = i; break; }
   }
-} else if (!r.draw) turningIdx = view.rounds.length - 1;
+} else if (!r.draw && r.resultType !== 'TIEBREAK_FEWER_GRAY') turningIdx = view.rounds.length - 1;
 
 view.rounds.forEach((round, i) => {
   const row = el('div', { class: 'tl-row' + (i === turningIdx ? ' turning' : '') });

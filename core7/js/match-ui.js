@@ -56,7 +56,14 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     </div>
     <div class="match-board">
       <div class="match-stage">
+        <button class="rules-toggle" id="rulesBtn" aria-label="เปิด Rules" aria-expanded="false">📖 Rules</button>
         <button class="drawer-toggle" id="histBtn" aria-label="เปิด Discard" aria-expanded="false">🗑️ Discard</button>
+        <div class="match-rules-popover" id="rulesPopover" hidden role="dialog" aria-label="กติกา CORE7">
+          <div class="match-rules-head"><b class="disp">CORE7 Rules</b><button type="button" id="rulesClose" aria-label="ปิด Rules">✕</button></div>
+          <img src="/core7/assets/core7-rules-overview.png" alt="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block เสมอทุกตาเทาน้อยกว่าชนะ">
+          <p>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴 · ⚙️ = BLOCK<br>เสมอทุกตา: เปิดมือ แล้วคนที่มีเทาน้อยกว่าชนะ · เทาเท่ากัน = DRAW</p>
+          <a href="/core7/rules/" target="_blank" rel="noopener">อ่านกติกาเต็ม TH / EN ↗</a>
+        </div>
         <div class="rule-line" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก"><span>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
         <div class="stage-cards">
           <div class="stage-slot" id="slotYou">
@@ -374,6 +381,19 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
 
   /* ── Discard — จอกว้างเปิดเป็น rail; จอแคบเปิดเป็น drawer ── */
   const histBtn = $('#histBtn', root);
+  const rulesBtn = $('#rulesBtn', root);
+  const rulesPopover = $('#rulesPopover', root);
+  function setRulesOpen(open) {
+    rulesPopover.hidden = !open;
+    rulesBtn.setAttribute('aria-expanded', String(open));
+    rulesBtn.setAttribute('aria-label', open ? 'ซ่อน Rules' : 'เปิด Rules');
+    rulesBtn.textContent = open ? '✕ Hide Rules' : '📖 Rules';
+  }
+  rulesBtn.addEventListener('click', () => setRulesOpen(rulesPopover.hidden));
+  $('#rulesClose', root).addEventListener('click', () => setRulesOpen(false));
+  root.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !rulesPopover.hidden) setRulesOpen(false);
+  });
   const wideDiscard = () => window.matchMedia('(min-width: 960px) and (min-height: 600px)').matches;
   function setDiscardRail(open) {
     root.classList.toggle('discard-open', open);

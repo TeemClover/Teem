@@ -77,10 +77,10 @@ test('CORE7 logo returns to game home except from the game home itself', () => {
   assert.match(ui, /class="logo" href="\$\{logoHref\}"/);
 });
 
-test('English rules retain the color-cycle diagram', () => {
+test('English rules retain the static rules overview image', () => {
   const rules = read('rules/index.html');
-  assert.match(rules, /id="cycEn"/);
-  assert.match(rules, /getElementById\('cycEn'\)\.innerHTML = colorCycleSVG/);
+  assert.match(rules, /id="en"[\s\S]*core7-rules-overview\.png/);
+  assert.match(rules, /fewer GRAY cards/);
 });
 
 test('small hand cards use artwork with an English-only label and color fallback', () => {
@@ -106,8 +106,18 @@ test('blue text emoji stays a plain circle while card icon stays a water drop', 
   const cards = read('js/cards.js');
   const art = read('js/art.js');
   assert.match(cards, /color: 'BLUE', emoji: '🔵'/);
-  assert.match(art, /water drop — THINKER/);
+  assert.match(art, /water drop — BLUE/);
   assert.match(art, /BLUE: '<path d="M12 2\.5/);
+});
+
+test('match table has an expandable Rules control opposite Discard', () => {
+  const ui = read('js/match-ui.js');
+  const css = read('css/core7.css');
+  assert.match(ui, /id="rulesBtn"/);
+  assert.match(ui, /id="rulesPopover"/);
+  assert.match(ui, /TIEBREAK_FEWER_GRAY|เทาน้อยกว่าชนะ/);
+  assert.match(css, /\.rules-toggle[\s\S]*left: 10px/);
+  assert.match(css, /\.drawer-toggle[\s\S]*right: 10px/);
 });
 
 test('landing and tutorial use one static rules overview PNG', () => {

@@ -29,7 +29,7 @@
 @media(min-width:880px){.hero-grid{grid-template-columns:1.15fr .85fr}}
 .hero-cycle{display:flex;flex-direction:column;align-items:center;gap:10px}
 .hero-cycle .cap{font-size:13px;color:rgb(255 255 255/.72);text-align:center;max-width:46ch}
-.rules-overview{display:block;width:min(100%,440px);max-height:610px;object-fit:contain;border-radius:18px;box-shadow:0 22px 54px rgb(0 0 0/.32);border:1px solid rgb(var(--gold-l)/.42)}
+.rules-overview{display:block;width:min(100%,440px);height:auto;object-fit:contain;box-shadow:0 22px 54px rgb(0 0 0/.32)}
 .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
 .step3{display:grid;gap:16px;grid-template-columns:1fr}
 @media(min-width:720px){.step3{grid-template-columns:repeat(3,1fr)}}
@@ -59,7 +59,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="tag tag-gold">v0.4.1 · FIRST HAND — ชุดแรก · เล่นฟรี</span>
+      <span class="tag tag-gold">v0.4.2 · FIRST HAND — ชุดแรก · เล่นฟรี</span>
       <h1 class="disp">my<span class="c7">Clover</span>: CORE7</h1>
       <p class="promise">7 ใบ ไม่มีเด็ค ไม่มีดวง<br>มีแค่สิ่งที่คุณเลือก<br>และคนที่นั่งตรงข้าม</p>
       <p class="promise-en">Seven cards. No deck. No draw. Just your choices and the person across the table.</p>
@@ -71,7 +71,7 @@
     </div>
     <div class="hero-cycle">
       <img class="rules-overview" src="/core7/assets/core7-rules-overview.png"
-        alt="CORE7: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะครบสามรอบ และ Final Gray แพ้สีจริง">
+        alt="CORE7: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะครบสามรอบ Final Gray แพ้สีจริง และถ้าเสมอทุกตาเทาน้อยกว่าชนะ">
       <p class="cap">กติกาหลักทั้งหมดในภาพเดียว · Complete rules at a glance</p>
     </div>
   </div>
@@ -215,7 +215,7 @@
       <details><summary>เกมหนึ่งใช้เวลานานไหม</summary>
         <p>ส่วนใหญ่จบใน 3–7 รอบ ประมาณ 2–5 นาที — ตั้งใจออกแบบให้จบเร็ว สลับคู่ได้เร็ว เหมาะกับ Ice Breaking</p></details>
       <details><summary>สีเทาไว้ทำอะไร</summary>
-        <p>สีเทา (MAKER) เสมอกับทุกสี — ใช้ Block เพื่อซื้อเวลาและอ่านคู่แข่ง
+        <p>สีเทาเสมอกับทุกสี — ใช้ Block เพื่อซื้อเวลาและอ่านคู่แข่ง
         แต่ระวัง: ถ้าเป็นใบสุดท้ายของทั้งคู่ สีเทาจะแพ้ทุกสีที่ไม่ใช่เทา (กฎ Final Gray)</p></details>
       <details><summary>myClover เป็นสมาชิกของบริษัทอะไรหรือเปล่า</summary>
         <p>ไม่ — myClover คือชื่อเกมและเว็บไซต์ของเราเอง การเป็น Member หมายถึงบัญชีเว็บไซต์นี้เท่านั้น

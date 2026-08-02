@@ -231,6 +231,10 @@ export class MatchAuthority {
       roundWins: { a: s.players.a.roundWins, b: s.players.b.roundWins },
       handCounts: { a: this._handCount('a'), b: this._handCount('b') },
       rounds: s.rounds.map(r => ({ a: r.a.color, b: r.b.color, result: r.result })),
+      startingGrayCounts: {
+        a: s.players.a.hand.filter(c => c.color === 'GRAY').length,
+        b: s.players.b.hand.filter(c => c.color === 'GRAY').length,
+      },
     });
 
     if (outcome) {
@@ -243,6 +247,10 @@ export class MatchAuthority {
         resultType: outcome.resultType,
         draw: outcome.draw,
         roundWins: { a: s.players.a.roundWins, b: s.players.b.roundWins },
+        startingGrayCounts: {
+          a: s.players.a.hand.filter(c => c.color === 'GRAY').length,
+          b: s.players.b.hand.filter(c => c.color === 'GRAY').length,
+        },
       };
       this._emit('match.completed', s.result);
       return;

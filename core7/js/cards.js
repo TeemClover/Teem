@@ -8,7 +8,7 @@
 /* สี 4 สาย — Accessibility: ห้ามพึ่งสีอย่างเดียว ทุกสีมี icon + pattern + ชื่อ */
 export const COLOR_META = {
   RED: {
-    color: 'RED', emoji: '🔴', className: 'TASTER', classTh: 'สายกิน',
+    color: 'RED', emoji: '🔴',
     nameTh: 'แดง', nameEn: 'Red',
     icon: 'flame', pattern: 'bite',
     hex: '#C8442C', deep: '#8F2B1A', soft: '#F4D9D2',
@@ -16,7 +16,7 @@ export const COLOR_META = {
     beats: 'GREEN', beatsTh: 'ชนะเขียว',
   },
   GREEN: {
-    color: 'GREEN', emoji: '🟢', className: 'KEEPER', classTh: 'สายคลีน',
+    color: 'GREEN', emoji: '🟢',
     nameTh: 'เขียว', nameEn: 'Green',
     icon: 'leaf', pattern: 'shield',
     hex: '#2E7D4F', deep: '#1B5233', soft: '#D8EBDF',
@@ -24,7 +24,7 @@ export const COLOR_META = {
     beats: 'BLUE', beatsTh: 'ชนะฟ้า',
   },
   BLUE: {
-    color: 'BLUE', emoji: '🔵', className: 'THINKER', classTh: 'สายคิด',
+    color: 'BLUE', emoji: '🔵',
     nameTh: 'ฟ้า', nameEn: 'Blue',
     icon: 'droplet', pattern: 'thought',
     hex: '#2C6BA8', deep: '#1B4470', soft: '#D6E4F2',
@@ -32,7 +32,7 @@ export const COLOR_META = {
     beats: 'RED', beatsTh: 'ชนะแดง',
   },
   GRAY: {
-    color: 'GRAY', emoji: '⚙️', className: 'MAKER', classTh: 'สายประดิษฐ์',
+    color: 'GRAY', emoji: '⚙️',
     nameTh: 'เทา', nameEn: 'Gray',
     icon: 'gear', pattern: 'block',
     hex: '#6E7378', deep: '#43474C', soft: '#E4E6E8',
@@ -54,7 +54,7 @@ export const COLLECTION_FIRST_HAND = {
    art = คีย์ฉากภาพต้นฉบับใน art.js (procedural SVG)
    story = เรื่องราวสั้นบนหน้า Card Detail (ไม่บังคับอ่านตอนเล่น) */
 export const FIRST_HAND = [
-  /* ── 🔴 TASTER — สายกิน ── */
+  /* ── 🔴 RED ── */
   { id: 'fh-red-desire', no: 1, color: 'RED', en: 'Desire', th: 'ความอยาก',
     artTh: 'มือเอื้อมไปหาอาหารจานโปรด',
     story: 'ก่อนทุกการเริ่มต้น มีความอยากอยู่หนึ่งอย่างเสมอ' },
@@ -77,7 +77,7 @@ export const FIRST_HAND = [
     artTh: 'โต๊ะอาหารใต้แสงไฟเทศกาล',
     story: 'การฉลองคือการบอกกันว่า เรามาถึงตรงนี้ด้วยกันแล้ว' },
 
-  /* ── 🔵 THINKER — สายคิด ── */
+  /* ── 🔵 BLUE ── */
   { id: 'fh-blue-clarity', no: 8, color: 'BLUE', en: 'Clarity', th: 'ความชัดเจน',
     artTh: 'เมฆเปิดออกเห็นท้องฟ้าใส',
     story: 'เมฆไม่เคยเป็นของถาวร ท้องฟ้าใสรออยู่เสมอ' },
@@ -100,7 +100,7 @@ export const FIRST_HAND = [
     artTh: 'ทางแยกที่มีแสงหลายทาง',
     story: 'ทุกทางแยกมีแสงของมันเอง สิ่งเดียวที่ต้องทำคือเลือก' },
 
-  /* ── 🟢 KEEPER — สายคลีน ── */
+  /* ── 🟢 GREEN ── */
   { id: 'fh-green-discipline', no: 15, color: 'GREEN', en: 'Discipline', th: 'วินัย',
     artTh: 'รองเท้าที่เตรียมไว้ก่อนพระอาทิตย์ขึ้น',
     story: 'วินัยไม่ใช่เสียงปลุก แต่เป็นรองเท้าที่วางไว้ตั้งแต่เมื่อคืน' },
@@ -123,7 +123,7 @@ export const FIRST_HAND = [
     artTh: 'รอยเท้าต่อเนื่องไปถึงยอดเขา',
     story: 'ยอดเขาไม่เคยเดินมาหาใคร รอยเท้าต้องเดินไปเอง' },
 
-  /* ── ⚙️ MAKER — สายประดิษฐ์ ── */
+  /* ── ⚙️ GRAY ── */
   { id: 'fh-gray-observe', no: 22, color: 'GRAY', en: 'Observe', th: 'สังเกต',
     artTh: 'แว่นขยายเหนือชิ้นงาน',
     story: 'ก่อนแก้อะไรได้ ต้องเห็นมันชัด ๆ ก่อน' },

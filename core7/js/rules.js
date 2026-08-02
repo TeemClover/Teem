@@ -13,7 +13,7 @@
    3) หมดมือพร้อมกัน → Tie Break (§6 ของ Brief)
    ═══════════════════════════════════════════════════════════════ */
 
-export const CORE7_RULES_VERSION = '1.0.0';
+export const CORE7_RULES_VERSION = '1.1.0';
 
 export const COLORS = ['RED', 'GREEN', 'BLUE', 'GRAY'];
 
@@ -28,7 +28,8 @@ export const MATCH_RESULT_TYPE = {
   LAST_ROUND: 'TIEBREAK_LAST_ROUND',  // หมดมือพร้อมกัน — รอบสุดท้ายชี้ขาด
   FINAL_GRAY: 'TIEBREAK_FINAL_GRAY',  // หมดมือพร้อมกัน — กฎ Final Gray
   HISTORY: 'TIEBREAK_HISTORY',        // หมดมือพร้อมกัน — ย้อนประวัติ
-  DRAW: 'DRAW',                       // เสมอทุก Round
+  FEWER_GRAY: 'TIEBREAK_FEWER_GRAY',  // เสมอทุก Round — เทาเริ่มต้นน้อยกว่าชนะ
+  DRAW: 'DRAW',                       // เสมอทุก Round และเทาเริ่มต้นเท่ากัน
   FORFEIT: 'FORFEIT',
   DISCONNECT: 'DISCONNECT_LOSS',
 };
@@ -110,12 +111,22 @@ export function resolveHistoryTiebreak(rounds) {
   return null;
 }
 
+/* เสมอทุก Round → เปิด Starting Hand และให้คนที่เริ่มด้วย GRAY น้อยกว่าชนะ */
+export function resolveFewerGray(startingGrayCounts = {}) {
+  const a = Number(startingGrayCounts.a ?? 0);
+  const b = Number(startingGrayCounts.b ?? 0);
+  if (a < b) return 'A';
+  if (b < a) return 'B';
+  return null;
+}
+
 /* ── resolveMatch(state) ──
    ตรวจเงื่อนไขจบ Match หลังจบ Resolution ของแต่ละ Round ตามลำดับ Priority
    state = {
      roundWins: { a, b },
      handCounts: { a, b },
      rounds: [{ a: COLOR, b: COLOR, result }],   // ประวัติทุกรอบที่จบแล้ว
+     startingGrayCounts: { a, b },               // จำนวน GRAY ในมือ 7 ใบตอนเริ่ม
    }
    → null (ยังไม่จบ) หรือ
      { winner: 'A'|'B'|null, resultType, draw: bool } */
@@ -146,7 +157,13 @@ export function resolveMatch(state) {
   const hist = resolveHistoryTiebreak(state.rounds);
   if (hist) return { winner: hist, resultType: MATCH_RESULT_TYPE.HISTORY, draw: false };
 
-  /* 6.4 เสมอทุก Round → DRAW (ผลจริง ไม่ใช่ Error) */
+  /* 6.4 เสมอทุก Round → เปิดมือ คนที่เริ่มด้วย GRAY น้อยกว่าชนะ */
+  const fewerGray = resolveFewerGray(state.startingGrayCounts);
+  if (fewerGray) {
+    return { winner: fewerGray, resultType: MATCH_RESULT_TYPE.FEWER_GRAY, draw: false };
+  }
+
+  /* 6.5 ทุกอย่างเท่ากันจริง → DRAW (ผลจริง ไม่ใช่ Error) */
   return { winner: null, resultType: MATCH_RESULT_TYPE.DRAW, draw: true };
 }
 
