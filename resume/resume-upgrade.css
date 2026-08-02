@@ -66,6 +66,7 @@
 }
 .legal-story .title{margin:12px 0 20px;max-width:13ch}
 .legal-lead{max-width:66ch;color:rgba(255,255,255,.8);font-size:1.05rem}
+.legal-lead b{color:var(--accent);font-family:var(--display)}
 .legal-facts{display:grid;gap:11px;margin-top:25px}
 .legal-facts>div{
   padding:17px 18px;
@@ -95,11 +96,70 @@ html[lang="en"] .lang-en{display:block!important}
 html[lang="en"] .legal-zoom .lang-th{display:none!important}
 html[lang="th"] .legal-zoom .lang-en{display:none!important}
 
+.mobile-mode-dock{display:none}
+
 @media(max-width:900px){
   .legal-proof-grid{grid-template-columns:1fr}
   .legal-document{width:min(620px,100%);margin:auto;transform:none}
   .legal-story .title{max-width:16ch}
 }
+
+@media(max-width:700px){
+  body{padding-bottom:calc(82px + env(safe-area-inset-bottom))}
+  .navin{min-height:62px;flex-wrap:nowrap}
+  .navright{margin-left:auto;gap:7px}
+  .nav .mode-switch{display:none!important}
+  .nav .version-link{display:none!important}
+  .nav .lang{margin-left:auto}
+
+  .mobile-mode-dock{
+    position:fixed;
+    z-index:180;
+    left:12px;
+    right:12px;
+    bottom:calc(10px + env(safe-area-inset-bottom));
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    padding:5px;
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:999px;
+    background:rgba(7,29,18,.92);
+    box-shadow:0 18px 46px -18px rgba(0,0,0,.85);
+    backdrop-filter:blur(18px);
+    isolation:isolate;
+    transition:background .45s var(--ease),border-color .45s var(--ease);
+  }
+  body.lifestyle-mode .mobile-mode-dock{
+    background:rgba(23,30,42,.94);
+    border-color:rgba(139,216,235,.28);
+  }
+  .mobile-mode-indicator{
+    position:absolute;
+    z-index:-1;
+    inset:5px auto 5px 5px;
+    width:calc(50% - 5px);
+    border-radius:999px;
+    background:var(--accent);
+    box-shadow:0 10px 28px -16px rgba(0,0,0,.9);
+    transition:transform .48s var(--ease),background .45s var(--ease);
+  }
+  .mobile-mode-dock.is-lifestyle .mobile-mode-indicator{transform:translateX(100%)}
+  .mobile-mode-dock button{
+    min-height:48px;
+    border:0;
+    border-radius:999px;
+    background:transparent;
+    color:rgba(255,255,255,.62);
+    font-family:var(--display);
+    font-size:.76rem;
+    font-weight:800;
+    letter-spacing:.04em;
+    cursor:pointer;
+  }
+  .mobile-mode-dock button[aria-pressed="true"]{color:#172016}
+  body.lifestyle-mode .mobile-mode-dock button[aria-pressed="true"]{color:#222a34}
+}
+
 @media(max-width:600px){
   .legal-document{padding:10px;border-radius:20px}
   .legal-document img{max-height:none;border-radius:12px}
