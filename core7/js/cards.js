@@ -24,7 +24,7 @@ export const COLOR_META = {
     beats: 'BLUE', beatsTh: 'ชนะฟ้า',
   },
   BLUE: {
-    color: 'BLUE', emoji: '💧', className: 'THINKER', classTh: 'สายคิด',
+    color: 'BLUE', emoji: '🔵', className: 'THINKER', classTh: 'สายคิด',
     nameTh: 'ฟ้า', nameEn: 'Blue',
     icon: 'droplet', pattern: 'thought',
     hex: '#2C6BA8', deep: '#1B4470', soft: '#D6E4F2',
@@ -77,7 +77,7 @@ export const FIRST_HAND = [
     artTh: 'โต๊ะอาหารใต้แสงไฟเทศกาล',
     story: 'การฉลองคือการบอกกันว่า เรามาถึงตรงนี้ด้วยกันแล้ว' },
 
-  /* ── 💧 THINKER — สายคิด ── */
+  /* ── 🔵 THINKER — สายคิด ── */
   { id: 'fh-blue-clarity', no: 8, color: 'BLUE', en: 'Clarity', th: 'ความชัดเจน',
     artTh: 'เมฆเปิดออกเห็นท้องฟ้าใส',
     story: 'เมฆไม่เคยเป็นของถาวร ท้องฟ้าใสรออยู่เสมอ' },

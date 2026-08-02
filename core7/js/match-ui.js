@@ -57,7 +57,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     <div class="match-board">
       <div class="match-stage">
         <button class="drawer-toggle" id="histBtn" aria-label="เปิด Discard" aria-expanded="false">🗑️ Discard</button>
-        <div class="rule-line" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก"><span>🔴 &gt; 🟢 &gt; 💧 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
+        <div class="rule-line" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก"><span>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
         <div class="stage-cards">
           <div class="stage-slot" id="slotYou">
             <div class="flip"><div class="face back"></div><div class="face front"></div></div>

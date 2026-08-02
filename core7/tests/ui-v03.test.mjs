@@ -42,7 +42,7 @@ test('play landing page contains a live public lobby with refresh and join', () 
 test('match table teaches public rules and counts revealed colors for both sides', () => {
   const ui = read('js/match-ui.js');
   const css = read('css/core7.css');
-  assert.match(ui, /🔴 &gt; 🟢 &gt; 💧 &gt; 🔴/);
+  assert.match(ui, /🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴/);
   assert.doesNotMatch(ui, /id="ruleArrow"/);
   assert.match(ui, /id="youPublicCounts"/);
   assert.match(ui, /id="oppPublicCounts"/);
@@ -100,4 +100,40 @@ test('result surfaces use YOU WIN and YOU LOSE', () => {
     assert.match(source, /YOU WIN/);
     assert.match(source, /YOU LOSE/);
   }
+});
+
+test('blue text emoji stays a plain circle while card icon stays a water drop', () => {
+  const cards = read('js/cards.js');
+  const art = read('js/art.js');
+  assert.match(cards, /color: 'BLUE', emoji: '🔵'/);
+  assert.match(art, /water drop — THINKER/);
+  assert.match(art, /BLUE: '<path d="M12 2\.5/);
+});
+
+test('landing and tutorial use one static rules overview PNG', () => {
+  const landing = read('index.html');
+  const tutorial = read('tutorial/index.html');
+  assert.match(landing, /core7-rules-overview\.png/);
+  assert.doesNotMatch(landing, /colorCycleSVG/);
+  assert.doesNotMatch(landing, /cyc-node/);
+  assert.match(tutorial, /id="ruleVisual"/);
+  assert.match(tutorial, /core7-rules-overview\.png/);
+  assert.match(tutorial, /visual: true/);
+});
+
+test('result cards support hover, focus and pinned click previews', () => {
+  const result = read('result/index.html');
+  assert.match(result, /function cardPeek\(/);
+  assert.match(result, /mouseenter/);
+  assert.match(result, /focus/);
+  assert.match(result, /previewPinned/);
+  assert.match(result, /cardSVG\(cardId/);
+  assert.match(result, /class:`\$\{className\} card-peek`/);
+});
+
+test('collection card detail supports keyboard arrow navigation', () => {
+  const card = read('cards/index.html');
+  assert.match(card, /event\.key === 'ArrowLeft'/);
+  assert.match(card, /event\.key === 'ArrowRight'/);
+  assert.match(card, /class:'keyhint'/);
 });
