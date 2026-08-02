@@ -12,6 +12,8 @@
 
 import { COLOR_META, cardById } from './cards.js';
 
+export const CORE7_ART_VERSION = '0.3.0';
+
 /* ── สีหลักของแบรนด์ ── */
 export const BRAND = {
   emerald: '#0A2818', felt: '#0E3E26', cream: '#F8F6F0',
@@ -459,7 +461,7 @@ export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
   const meta = COLOR_META[card.color];
   const id = nid('cd');
   if (card.generic) return genericCardSVG(card.color, { width });
-  return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420"
+  return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420" data-art-version="${CORE7_ART_VERSION}"
     role="img" aria-label="การ์ด ${card.en} (${card.th}) สี${meta.nameTh} สาย ${meta.className}">
     <defs>
       <linearGradient
@@ -481,6 +483,10 @@ export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
         orient="auto">
         <path d="M0 0 L8 4.5 L0 9 Z" fill="${GOLD}"/>
       </marker>
+      <filter id="${id}-depth" x="-10%" y="-10%" width="120%" height="125%">
+        <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="${meta.deep}" flood-opacity=".24"/>
+      </filter>
+      <clipPath id="${id}-art"><rect x="26" y="64" width="248" height="248" rx="10"/></clipPath>
     </defs>
     <rect x="2" y="2" width="296" height="416" rx="18" fill="${BRAND.charcoal}"/>
     <rect x="2" y="2" width="296" height="416" rx="18" fill="none" stroke="url(#${id}-au)" stroke-width="4"/>
@@ -497,7 +503,7 @@ export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
       font-size="12" font-weight="600" fill="${meta.hex}">${meta.nameEn.toUpperCase()} · ${meta.classTh}</text>
 
     <!-- ภาพ -->
-    <g clip-path="url(#${id}-art)"><g transform="translate(26,64) scale(1.0333)">${sceneSVG(cardId)}</g></g>
+    <g clip-path="url(#${id}-art)" filter="url(#${id}-depth)"><g transform="translate(26,64) scale(1.0333)">${sceneSVG(cardId)}</g></g>
     <rect x="26" y="64" width="248" height="248" rx="10" fill="none" stroke="url(#${id}-au)" stroke-width="2.5"/>
 
     <!-- ชื่อการ์ด -->
@@ -511,7 +517,7 @@ export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
     <rect x="26" y="384" width="248" height="7" rx="3.5" fill="url(#${id}-p-${card.color})"/>
 
     ${showNumber ? `<text x="150" y="403" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-      font-size="8.5" letter-spacing="1" fill="#9aa094">FIRST HAND · ${String(card.no).padStart(2, '0')} / 28</text>` : ''}
+      font-size="8.5" letter-spacing="1" fill="#9aa094">FIRST HAND · ${String(card.no).padStart(2, '0')} / 28 · ART v${CORE7_ART_VERSION}</text>` : ''}
   </svg>`;
 }
 

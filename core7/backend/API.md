@@ -1,5 +1,27 @@
 # myClover: CORE7 — Backend API Contract
 
+> v0.3 Beta implementation อยู่ที่ `functions/api/core7/[[path]].js` และ
+> `core7/backend/room-service.js` ใช้ same-origin polling เพื่อ reconnect/sync บน
+> Cloudflare Pages + D1 ส่วนสัญญา WebSocket ด้านล่างเป็น upgrade path เมื่อย้ายห้อง
+> ไป Durable Objects โดย client interface ไม่ต้องเปลี่ยน
+
+## v0.3 Beta Room endpoints (implemented)
+
+```text
+GET  /api/core7/health
+GET  /api/core7/rooms
+POST /api/core7/rooms                         { displayName, visibility, mode }
+POST /api/core7/rooms/:code/join              { displayName }
+GET  /api/core7/rooms/:code/state             Bearer <room token>
+POST /api/core7/rooms/:code/hand              { cards }
+POST /api/core7/rooms/:code/action            { action }
+POST /api/core7/rooms/:code/next
+POST /api/core7/rooms/:code/leave
+```
+
+`mode` คือ `quick | bo3 | bo5` และ `code` เป็น string ตัวเลข 4 หลัก ต้องรักษา
+เลขศูนย์นำหน้า Token ดิบไม่เก็บในฐานข้อมูล; state เก็บเฉพาะ SHA-256 hash
+
 สัญญา API ระหว่าง Client (`/core7/`) กับ Backend จริง
 Client ฝั่งเว็บพร้อมใช้สัญญานี้แล้วผ่านชั้น Adapter (`core7/js/adapters.js`)
 

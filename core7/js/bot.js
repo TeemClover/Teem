@@ -6,9 +6,8 @@
    (มือคู่แข่งไม่อยู่ใน view — โกงไม่ได้โดยโครงสร้าง)
 
    ระดับ:
-   - friendly   สุ่มยุติธรรมจากมือตัวเอง เหมาะกับมือใหม่ / Tutorial
-   - reader     อ่านเฉพาะข้อมูลหงายหน้า ประเมินสีที่คู่แข่งน่าจะเหลือ
-   - mindgame   อ่าน Pattern การเลือกหลังชนะ/แพ้/เสมอ + ทิ้งเพื่อซ่อนข้อมูล
+   - easy   สุ่มยุติธรรมจากมือตัวเอง
+   - hard   อ่านเฉพาะข้อมูลหงายหน้าและ Pattern โดยไม่เห็นมือคู่แข่ง
    ═══════════════════════════════════════════════════════════════ */
 
 import { HAND_SIZE } from './rules.js';
@@ -54,7 +53,7 @@ function opponentRevealedColors(view) {
 }
 
 export class Core7Bot {
-  constructor({ level = 'friendly', seed = Date.now() } = {}) {
+  constructor({ level = 'easy', seed = Date.now() } = {}) {
     this.level = level;
     this.rng = seededRng(seed);
     this.log = [];          // Bot Decision Log สำหรับ Debug (ไม่โชว์ระหว่างเกม)
@@ -65,10 +64,8 @@ export class Core7Bot {
     const hand = inHand(view);
     if (hand.length === 0) return null;
     let choice, reason;
-    if (this.level === 'friendly') {
+    if (this.level === 'easy') {
       ({ choice, reason } = this._friendly(hand));
-    } else if (this.level === 'reader') {
-      ({ choice, reason } = this._reader(view, hand));
     } else {
       ({ choice, reason } = this._mindgame(view, hand));
     }
@@ -76,7 +73,7 @@ export class Core7Bot {
     return choice.iid;
   }
 
-  /* friendly — สุ่มจากสีที่มี แบบกระจายเท่ากันต่อ "สี" ไม่ใช่ต่อใบ
+  /* EASY — สุ่มจากสีที่มี แบบกระจายเท่ากันต่อ "สี" ไม่ใช่ต่อใบ
      เพื่อให้มือที่ถือหลายใบสีเดียวไม่กลายเป็นบอทเดาง่าย */
   _friendly(hand) {
     const colors = [...new Set(hand.map(c => c.color))];
@@ -88,7 +85,7 @@ export class Core7Bot {
     };
   }
 
-  /* reader — ประเมินสีที่คู่แข่ง "น่าจะยังเหลือ" จากข้อมูลหงายหน้า
+  /* HARD base model — ประเมินสีที่คู่แข่ง "น่าจะยังเหลือ" จากข้อมูลหงายหน้า
      สมมุติฐานเริ่มต้น: มือคนทั่วไปกระจายทุกสีเท่า ๆ กัน (7/4 ต่อสี)
      แล้วหักออกตามที่เปิดแล้ว → เลือกสีที่ชนะสีที่คาดว่าเหลือมากสุด */
   _reader(view, hand) {
@@ -106,7 +103,7 @@ export class Core7Bot {
     return { choice, reason: `est ${JSON.stringify(est)}` };
   }
 
-  /* mindgame — โมเดล Markov อย่างง่ายบนข้อมูลหงายหน้า:
+  /* HARD — โมเดล Markov อย่างง่ายบนข้อมูลหงายหน้า:
      "หลังผลรอบแบบนี้ คู่แข่งชอบลงสีอะไรต่อ" + ผสม reader เป็นฐาน */
   _mindgame(view, hand) {
     /* สร้างตารางเปลี่ยนผ่านจากประวัติจริงของ Match นี้ */
@@ -152,19 +149,11 @@ export class Core7Bot {
     const hand = inHand(view);
     if (hand.length === 0) return null;
     let choice, reason;
-    if (this.level === 'friendly') {
+    if (this.level === 'easy') {
       choice = hand[Math.floor(this.rng() * hand.length)];
       reason = 'random discard';
-    } else if (this.level === 'reader') {
-      /* ทิ้งสีที่ถือซ้ำมากสุด — รักษาความหลากหลายของมือ */
-      const counts = {};
-      for (const c of hand) counts[c.color] = (counts[c.color] || 0) + 1;
-      const most = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
-      const options = hand.filter(c => c.color === most);
-      choice = options[Math.floor(this.rng() * options.length)];
-      reason = `discard duplicate ${most}`;
     } else {
-      /* mindgame — ทิ้งเพื่อซ่อนข้อมูล: ทิ้งสีที่ "เปิดไปแล้วเยอะ"
+      /* HARD — ทิ้งเพื่อซ่อนข้อมูล: ทิ้งสีที่ "เปิดไปแล้วเยอะ"
          เพื่อไม่เผยว่าสีลับที่เหลือคืออะไร */
       const mine = [];
       for (const r of view.rounds) {

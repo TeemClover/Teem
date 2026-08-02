@@ -40,6 +40,27 @@ CREATE TABLE IF NOT EXISTS c7_guest_sessions (
   created_at         TEXT NOT NULL
 );
 
+-- ── v0.3 Beta rooms (authoritative state; room code is reusable after expiry) ──
+CREATE TABLE IF NOT EXISTS c7_beta_rooms (
+  room_code  TEXT PRIMARY KEY CHECK(length(room_code) = 4),
+  room_id    TEXT UNIQUE NOT NULL,
+  status     TEXT NOT NULL,
+  visibility TEXT NOT NULL CHECK(visibility IN ('public', 'unlisted')),
+  mode       TEXT NOT NULL CHECK(mode IN ('quick', 'bo3', 'bo5')),
+  state_json TEXT NOT NULL,
+  version    INTEGER NOT NULL DEFAULT 1,
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  expires_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_c7_beta_rooms_lobby
+  ON c7_beta_rooms(visibility, status, expires_at, created_at);
+CREATE TABLE IF NOT EXISTS c7_beta_rate_limits (
+  bucket     TEXT PRIMARY KEY,
+  hits       INTEGER NOT NULL DEFAULT 1,
+  expires_at INTEGER NOT NULL
+);
+
 -- ── การ์ดและ Collection ──
 CREATE TABLE IF NOT EXISTS c7_collections (
   id             TEXT PRIMARY KEY,          -- 'first-hand'
@@ -105,7 +126,7 @@ CREATE TABLE IF NOT EXISTS c7_hand_preset_cards (
 -- ── ห้องและ Match ──
 CREATE TABLE IF NOT EXISTS c7_rooms (
   id           TEXT PRIMARY KEY,
-  room_code    TEXT UNIQUE NOT NULL,       -- CLVR-XXXX
+  room_code    TEXT UNIQUE NOT NULL,       -- legacy room records; v0.3 uses c7_beta_rooms (4 digits)
   room_type    TEXT NOT NULL DEFAULT 'CASUAL',   -- CASUAL | RANKED | EVENT
   visibility   TEXT NOT NULL DEFAULT 'PRIVATE',  -- PUBLIC | UNLISTED | PRIVATE
   host_user_id TEXT NOT NULL,

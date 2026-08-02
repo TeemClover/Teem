@@ -41,13 +41,13 @@ body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transp
 <body>
 <div class="tut-top">
   <b class="disp">🎓 เรียนรู้ CORE7</b>
-  <a href="/core7/hand/?next=bot&level=friendly" id="skip">ข้าม Tutorial →</a>
+  <div style="display:flex;gap:10px;align-items:center"><button class="btn btn-ghost" id="lang" style="min-height:38px;padding:6px 10px">EN</button><a href="/core7/hand/?next=bot&level=easy" id="skip">ข้าม Tutorial →</a></div>
 </div>
 <div class="tut-stage">
   <div class="tut-cards">
-    <div class="tut-slot" id="slotBot"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div>
+    <div><small id="youLabel" style="display:block;margin-bottom:6px">คุณ · ซ้ายเสมอ</small><div class="tut-slot" id="slotYou"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
     <b class="disp" style="color:rgb(var(--gold-l))">VS</b>
-    <div class="tut-slot" id="slotYou"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div>
+    <div><small id="oppLabel" style="display:block;margin-bottom:6px">คู่แข่ง · ขวา</small><div class="tut-slot" id="slotBot"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
   </div>
   <div class="tut-msg" id="msg" aria-live="assertive"></div>
   <div class="tut-sub" id="sub"></div>
@@ -69,11 +69,25 @@ const sub = document.getElementById('sub');
 const choices = document.getElementById('choices');
 const nextRow = document.getElementById('nextRow');
 const dots = document.getElementById('dots');
+const params = new URLSearchParams(location.search);
+const isEn = params.get('lang') === 'en';
+document.documentElement.lang = isEn ? 'en' : 'th';
+document.getElementById('lang').textContent = isEn ? 'TH' : 'EN';
+document.getElementById('lang').addEventListener('click', () => location.search = isEn ? '' : '?lang=en');
+document.getElementById('skip').textContent = isEn ? 'Skip tutorial →' : 'ข้าม Tutorial →';
+document.getElementById('youLabel').textContent = isEn ? 'YOU · always left' : 'คุณ · ซ้ายเสมอ';
+document.getElementById('oppLabel').textContent = isEn ? 'OPPONENT · right' : 'คู่แข่ง · ขวา';
 slotYou.querySelector('.back').innerHTML = cardBackSVG({ width: 140 });
 slotBot.querySelector('.back').innerHTML = cardBackSVG({ width: 140 });
 
 /* บทเรียน: [ข้อความ, สีที่ให้กด(null=ปุ่มไปต่อ), สีที่บอทเปิด, คำอธิบายหลังเปิด] */
-const STEPS = [
+const STEPS_TH = [
+  {
+    text: 'ไม่ว่าคุณจะสร้างหรือเข้าห้อง การ์ดของคุณอยู่ฝั่งซ้ายบนเครื่องนี้เสมอ',
+    want: null, bot: null,
+    explain: 'คุณ = ซ้าย · คู่แข่ง = ขวา',
+    explainSub: 'ทั้งสองคนจึงเห็นตัวเองอยู่ซ้ายบนหน้าจอของตัวเอง โดยผลเกมยังตรงกันจาก Server เดียวกัน',
+  },
   {
     text: 'ทั้งคู่เลือกการ์ดลับแล้วเปิดพร้อมกัน — ลองกด 🔴 RED ดู',
     want: 'RED', bot: 'GREEN',
@@ -105,6 +119,15 @@ const STEPS = [
     explainSub: 'ต่อไป: เลือกมือ 7 ใบของคุณเอง — สีใดกี่ใบก็ได้ แล้วลองสนามจริงกับบอท',
   },
 ];
+const STEPS_EN = [
+  { text:'Your cards are always on the left on this device.', want:null, bot:null, explain:'YOU = left · OPPONENT = right', explainSub:'Both players see themselves on the left while sharing the same server-authoritative result.' },
+  { text:'Both choose secretly, then reveal together. Tap RED.', want:'RED', bot:'GREEN', explain:'RED beats GREEN — you win the Round.', explainSub:'The loser loses the played card and reveals one additional discarded card.' },
+  { text:'What if both colors match? Tap RED again.', want:'RED', bot:'RED', explain:'DRAW — matching colors tie.', explainSub:'Both lose only the played card. No additional discard.' },
+  { text:'Try the block card. Tap GRAY.', want:'GRAY', bot:'BLUE', explain:'BLOCK — GRAY ties every normal color.', explainSub:'GRAY buys time, but never wins a normal Round.' },
+  { text:'Final Gray rule', want:null, bot:null, explain:'If GRAY is your final card, it loses to a real color.', explainSub:'A tool can buy time, but cannot make the final choice for you.' },
+  { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. Quick is one Match; BO3/BO5 keep the same Starting Hand.', explainSub:'After the Series, both complete Starting Hands and color summaries are revealed.' },
+];
+const STEPS = isEn ? STEPS_EN : STEPS_TH;
 let step = 0;
 
 function renderDots() {
@@ -139,14 +162,14 @@ function runStep() {
   if (!s.want) {   /* ขั้นอธิบายอย่างเดียว */
     msg.textContent = s.text;
     sub.textContent = '';
-    const show = el('button', { class: 'btn btn-gold' }, step === STEPS.length - 1 ? 'ไปเลือกมือ 7 ใบ →' : 'เข้าใจแล้ว ต่อเลย');
+    const show = el('button', { class: 'btn btn-gold' }, step === STEPS.length - 1 ? (isEn ? 'Build my 7-card hand →' : 'ไปเลือกมือ 7 ใบ →') : (isEn ? 'Got it — next' : 'เข้าใจแล้ว ต่อเลย'));
     show.addEventListener('click', () => advance());
     msg.textContent = s.explain;
     sub.textContent = s.explainSub;
     if (step === STEPS.length - 1) {
       setTutorialCompleted();
       track('core7_tutorial_complete');
-      show.addEventListener('click', () => location.href = '/core7/hand/?next=bot&level=friendly');
+      show.addEventListener('click', () => location.href = '/core7/hand/?next=bot&level=easy');
     }
     nextRow.append(show);
     return;
@@ -165,7 +188,7 @@ function runStep() {
         haptic([10, 40, 18]);
         msg.textContent = s.explain;
         sub.textContent = s.explainSub;
-        const nxt = el('button', { class: 'btn btn-gold' }, 'ต่อไป →');
+        const nxt = el('button', { class: 'btn btn-gold' }, isEn ? 'Next →' : 'ต่อไป →');
         nxt.addEventListener('click', () => advance());
         nextRow.append(nxt);
       };

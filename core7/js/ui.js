@@ -3,6 +3,7 @@
    Nav / Footer / Toast / helper เล็ก ๆ ที่ทุกหน้าใช้ร่วมกัน
    ═══════════════════════════════════════════════════════════════ */
 import { cloverLogo } from './art.js';
+import { isMuted, toggleMuted } from './audio.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -39,15 +40,23 @@ export function renderShell({ active = '', minimal = false } = {}) {
           <a href="/core7/rank/" ${active === 'rank' ? 'aria-current="page"' : ''}>Ranking</a>
           <a href="/core7/profile/" ${active === 'profile' ? 'aria-current="page"' : ''}>โปรไฟล์</a>
           <a class="play keep" href="/core7/play/">เล่นเลย</a>
+          <button class="sfx-toggle" id="c7Sfx" aria-label="เปิดหรือปิดเสียงเอฟเฟกต์"></button>
         </div>`}
       </div>`;
+    const sound = $('#c7Sfx');
+    if (sound) {
+      const sync = () => { sound.textContent = isMuted() ? '🔇' : '🔊'; sound.title = isMuted() ? 'เปิดเสียง' : 'ปิดเสียง'; };
+      sync();
+      sound.addEventListener('click', () => { toggleMuted(); sync(); });
+      window.addEventListener('core7:mute', sync, { once: true });
+    }
   }
   const foot = $('#c7foot');
   if (foot) {
     foot.innerHTML = `
       <div class="wrap cols">
         <div>
-          <strong class="disp">myClover: CORE7</strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
+          <strong class="disp">myClover: CORE7 <small>v0.3 Beta</small></strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
           เล่นฟรีด้วยการ์ดอะไรก็ได้ · <a href="/core7/open-play/">Open Play</a> · <a href="/core7/about/">เรื่องของเกมนี้</a>
         </div>
         <div>
@@ -91,10 +100,9 @@ export function modal(contentNode, { closable = true } = {}) {
 
 /* ── Room code / share helpers ── */
 export function newRoomCode() {
-  const abc = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';   // ตัดตัวที่อ่านสับสน
-  let s = '';
-  for (let i = 0; i < 4; i++) s += abc[Math.floor(Math.random() * abc.length)];
-  return 'CLVR-' + s;
+  const values = new Uint16Array(1);
+  crypto.getRandomValues(values);
+  return String(values[0] % 10000).padStart(4, '0');
 }
 
 export async function copyText(text) {
@@ -110,7 +118,7 @@ export async function copyText(text) {
 
 /* ── URL param / path segment ── */
 export function pathSegment(afterDir) {
-  /* /core7/room/CLVR-8821/ → 'CLVR-8821' — รองรับทั้ง path และ ?c= */
+  /* /core7/room/0042/ → '0042' — รองรับทั้ง path และ ?c= */
   const parts = location.pathname.split('/').filter(Boolean);
   const i = parts.indexOf(afterDir);
   if (i >= 0 && parts[i + 1] && parts[i + 1] !== 'index.html') {

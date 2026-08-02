@@ -3,58 +3,64 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>สร้างห้อง — myClover: CORE7</title>
+<title>สร้างห้องออนไลน์ — myClover: CORE7</title>
 <meta name="theme-color" content="#0A2818">
 <link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
 <link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.choice{cursor:pointer;border:1px solid rgb(var(--line)/.14);border-radius:12px;padding:14px;background:#fff}.choice:has(input:checked){border-color:rgb(var(--green));box-shadow:0 0 0 2px rgb(var(--green)/.18)}.choice input{margin-right:6px}.status{font-size:13.5px;color:rgb(var(--muted));min-height:22px;margin:12px 0}@media(max-width:560px){.choices{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <nav class="c7nav" id="c7nav"></nav>
-<main class="sec">
-  <div class="wrap-slim">
-    <p class="eyebrow">Create a Room</p>
-    <h2 class="disp">สร้างห้องให้เพื่อน</h2>
-
-    <div class="panel" style="margin-top:20px">
-      <div class="field">
-        <label for="hname">ชื่อของคุณบนโต๊ะ</label>
-        <input id="hname" maxlength="24">
-      </div>
-      <div class="field">
-        <label>Room Code ของคุณ</label>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <b class="disp" id="code" style="font-size:30px;letter-spacing:2px;color:rgb(var(--green))"></b>
-          <button class="btn" id="reroll" style="padding:9px 14px;min-height:44px">🎲 สุ่มใหม่</button>
-        </div>
-      </div>
-      <div class="panel" style="background:rgb(var(--gold)/.08);border-color:rgb(var(--gold)/.3);margin-bottom:16px">
-        <b>ห้องเวอร์ชันนี้เป็นแบบ Local</b>
-        <p style="font-size:13.5px;margin-top:4px">ทำงานบนอุปกรณ์เดียวกัน — เปิดลิงก์ห้องในอีกแท็บ/หน้าต่าง
-        หรือส่งเครื่องให้เพื่อนนั่งข้าง ๆ เล่นแบบผลัดกัน ระบบออนไลน์ข้ามอุปกรณ์จะเปิดเมื่อ
-        Server จริงพร้อม (<a href="/core7/rank/" style="text-decoration:underline">ดูสถานะ</a>)</p>
-      </div>
-      <button class="btn btn-gold btn-lg btn-block" id="go">เปิดห้อง →</button>
+<main class="sec"><div class="wrap-slim">
+  <p class="eyebrow">v0.3 Beta · Online Multiplayer</p>
+  <h2 class="disp">สร้างห้องให้เพื่อน</h2>
+  <div class="panel" style="margin-top:20px">
+    <div class="field"><label for="hname">ชื่อของคุณบนโต๊ะ</label><input id="hname" maxlength="24"></div>
+    <div class="field"><label>รูปแบบ Series</label><div class="choices">
+      <label class="choice"><input type="radio" name="mode" value="quick" checked><b>Quick</b><small style="display:block">1 Match</small></label>
+      <label class="choice"><input type="radio" name="mode" value="bo3"><b>BO3</b><small style="display:block">ชนะ 2 Match</small></label>
+      <label class="choice"><input type="radio" name="mode" value="bo5"><b>BO5</b><small style="display:block">ชนะ 3 Match</small></label>
+    </div></div>
+    <div class="field"><label for="visibility">การมองเห็นห้อง</label><select id="visibility">
+      <option value="public">Public — แสดงใน Lobby</option><option value="unlisted">Unlisted — เข้าได้ด้วยรหัสเท่านั้น</option>
+    </select></div>
+    <div class="panel" style="background:rgb(var(--gold)/.08);border-color:rgb(var(--gold)/.3);margin-bottom:12px">
+      <b>รหัสห้องเป็นตัวเลข 4 หลัก</b><p style="font-size:13.5px;margin-top:4px">Server จะจองรหัสที่ว่างให้ ห้องรอหมดอายุอัตโนมัติ และใช้เล่นข้ามอุปกรณ์ได้</p>
     </div>
+    <p class="status" id="status" role="status"></p>
+    <button class="btn btn-gold btn-lg btn-block" id="go">สร้างห้องออนไลน์ →</button>
   </div>
-</main>
+</div></main>
 <footer class="c7foot" id="c7foot"></footer>
 <script type="module">
-import { renderShell, newRoomCode } from '/core7/js/ui.js';
+import { renderShell } from '/core7/js/ui.js';
+import { RemoteRooms } from '/core7/js/adapters.js';
 import { getGuest, setGuestName, track } from '/core7/js/store.js';
+import { playSfx } from '/core7/js/audio.js';
 renderShell({});
-const codeEl = document.getElementById('code');
+const rooms = new RemoteRooms();
 const nameEl = document.getElementById('hname');
+const go = document.getElementById('go');
+const status = document.getElementById('status');
 nameEl.value = getGuest().name;
-let code = newRoomCode();
-codeEl.textContent = code;
-document.getElementById('reroll').addEventListener('click', () => {
-  code = newRoomCode(); codeEl.textContent = code;
-});
-document.getElementById('go').addEventListener('click', () => {
+go.addEventListener('click', async () => {
+  go.disabled = true; status.textContent = 'กำลังจองห้อง…';
   setGuestName(nameEl.value);
-  track('core7_room_create');
-  location.href = `/core7/room/?c=${encodeURIComponent(code)}&role=host`;
+  try {
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const visibility = document.getElementById('visibility').value;
+    const data = await rooms.create({ displayName: getGuest().name, visibility, mode });
+    track('core7_room_create'); playSfx('join');
+    location.href = `/core7/room/?c=${encodeURIComponent(data.code)}`;
+  } catch (error) {
+    playSfx('error');
+    status.textContent = error.code === 'CORE7_DB_NOT_CONFIGURED'
+      ? 'Backend ยังไม่ได้ผูกฐานข้อมูล production — ดู CORE7_DEPLOY.md'
+      : `สร้างห้องไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`;
+    go.disabled = false;
+  }
 });
 </script>
-</body>
-</html>
+</body></html>

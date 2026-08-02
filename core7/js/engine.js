@@ -308,6 +308,10 @@ export class MatchAuthority {
       })),
       discardRequired: s.phase === PHASE.DISCARD_REQUIRED && s.discardBy === seat,
       waitingOpponentDiscard: s.phase === PHASE.DISCARD_REQUIRED && s.discardBy !== seat,
+      startingHands: s.phase === PHASE.MATCH_RESULT ? {
+        you: me.hand.map(c => ({ cardId: c.cardId, color: c.color, status: c.status })),
+        opponent: opp.hand.map(c => ({ cardId: c.cardId, color: c.color, status: c.status })),
+      } : null,
       result: s.result ? {
         ...s.result,
         youWon: s.result.winnerSeat === seat,

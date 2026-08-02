@@ -16,7 +16,7 @@ import { mountMatch } from '/core7/js/match-ui.js';
 import * as store from '/core7/js/store.js';
 
 const qs = new URLSearchParams(location.search);
-const level = ['friendly', 'reader', 'mindgame'].includes(qs.get('level')) ? qs.get('level') : 'friendly';
+const level = ['easy', 'hard'].includes(qs.get('level')) ? qs.get('level') : 'easy';
 const fresh = qs.get('fresh') === '1';
 
 let hand = store.getHand();
@@ -48,7 +48,7 @@ const client = new LocalBotClient({
 });
 
 mountMatch(document.getElementById('match'), client, {
-  oppLabel: `· ${ { friendly: 'Friendly', reader: 'Reader', mindgame: 'Mind Game' }[level] }`,
+  oppLabel: `· ${level.toUpperCase()}`,
   onFinished(view) {
     store.recordMatch('bot', view, view.opponent.name);
     store.track('core7_bot_match_complete');

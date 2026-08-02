@@ -18,6 +18,7 @@
 .tl-chip{display:inline-flex;align-items:center;gap:5px;border-radius:8px;padding:3px 8px;color:#fff;font-family:"Bai Jamjuree";font-weight:600;font-size:12.5px}
 .prompt-card{background:rgb(var(--gold)/.1);border:1px solid rgb(var(--gold)/.3);border-radius:12px;padding:16px 20px;margin-top:10px;font-size:15px}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.sum-side{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:12px;padding:15px}.sum-colors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.sum-color{text-align:center;border-radius:8px;padding:7px 2px;color:#fff;font-size:12px}.sum-card{display:inline-flex;color:#fff;border-radius:7px;padding:3px 7px;margin:3px;font-size:12px}@media(max-width:600px){.sum-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -26,6 +27,9 @@
 <main class="sec" style="padding-top:28px">
   <div class="wrap-slim">
     <div class="actions" id="actions"></div>
+
+    <h2 class="disp" style="margin-top:34px;font-size:22px">สรุปการ์ดตามฝั่งและสี</h2>
+    <div class="sum-grid" id="summary"></div>
 
     <h2 class="disp" style="margin-top:34px;font-size:22px">Round Timeline</h2>
     <div class="timeline" id="timeline"></div>
@@ -65,7 +69,7 @@ renderShell({});
 const qs = new URLSearchParams(location.search);
 const matchId = qs.get('m');
 const mode = qs.get('mode') || 'bot';
-const level = qs.get('level') || 'friendly';
+const level = qs.get('level') || 'easy';
 const roomCode = qs.get('room') || '';
 
 const snap = matchId && store.loadMatchSnapshot(matchId);
@@ -100,6 +104,34 @@ hero.innerHTML = `
   <h1>${title}</h1>
   <div class="score">${view.you.name} ${r.roundWins[view.seat]} — ${r.roundWins[view.seat === 'a' ? 'b' : 'a']} ${view.opponent.name}</div>
   <div class="how">${sub} · ${view.rounds.length} Rounds · Rules v${view.rulesVersion}</div>`;
+
+function stats(side) {
+  const colors = { RED:0, BLUE:0, GREEN:0, GRAY:0 };
+  const played = [], discarded = [];
+  for (const round of view.rounds) {
+    const card = round[side]; played.push(card); colors[card.color] += 1;
+    for (const dc of round.discards) {
+      const belongs = side === 'you' ? dc.yours : !dc.yours;
+      if (belongs) { discarded.push(dc); colors[dc.color] += 1; }
+    }
+  }
+  return { colors, played, discarded };
+}
+function summarySide(title, data) {
+  const box = el('div', { class:'sum-side' }, el('h3', { class:'disp' }, title));
+  const colors = el('div', { class:'sum-colors' });
+  for (const color of ['RED','BLUE','GREEN','GRAY']) colors.append(el('div', { class:'sum-color', style:`background:${COLOR_META[color].hex}` }, `${COLOR_META[color].emoji} ${data.colors[color]}`));
+  box.append(colors);
+  const line = (label, cards, discard=false) => {
+    const row = el('div', { style:'margin-top:8px;font-size:12px' }, el('b', {}, label + ' '));
+    if (!cards.length) row.append('—');
+    for (const card of cards) row.append(el('span', { class:'sum-card', style:`background:${COLOR_META[card.color].hex}` }, `${discard ? '🗑 ' : ''}${cardById(card.cardId)?.en || card.color}`));
+    return row;
+  };
+  box.append(line('PLAYED', data.played), line('DISCARDED', data.discarded, true));
+  return box;
+}
+document.getElementById('summary').append(summarySide(`${view.you.name} (คุณ)`, stats('you')), summarySide(view.opponent.name, stats('opp')));
 
 /* Timeline + Turning Point (รอบชนะสุดท้ายที่ชี้ผล หรือรอบที่ตัดสิน tiebreak) */
 const tl = document.getElementById('timeline');

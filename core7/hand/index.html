@@ -197,7 +197,7 @@ readyBtn.addEventListener('click', () => {
   store.setHand(cards);
   store.track('core7_hand_complete');
   if (next === 'bot') {
-    const level = qs.get('level') || 'friendly';
+    const level = qs.get('level') || 'easy';
     location.href = `/core7/bot/?level=${level}&fresh=1`;
   } else if (next === 'room') {
     const code = qs.get('code') || '';

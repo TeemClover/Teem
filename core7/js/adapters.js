@@ -15,8 +15,7 @@
    - LocalBotClient   : Authority รันในหน้าเดียวกัน + บอท — ออฟไลน์สมบูรณ์
    - RoomChannel      : ห้องผ่าน BroadcastChannel — อุปกรณ์เดียวกัน (2 แท็บ)
                         เป็น Mock Server Adapter ที่พิสูจน์ Contract ของ Realtime
-   - RemoteAdapter    : โครงสำหรับ Backend จริง (ดู core7/backend/API.md)
-                        ยังไม่เปิดใช้ — จะ throw ชัดเจนถ้าไม่มี ENDPOINT
+   - RemoteRooms      : Backend v0.3 Beta (D1 + server-authoritative polling)
    ═══════════════════════════════════════════════════════════════ */
 import { MatchAuthority, PHASE } from './engine.js';
 import { Core7Bot } from './bot.js';
@@ -27,7 +26,7 @@ const newActionId = () => `a-${Date.now().toString(36)}-${(++actionSeq).toString
 
 /* ═══ 1) Bot — Local Authority ═══ */
 export class LocalBotClient {
-  constructor({ matchId, humanCards, level = 'friendly', resume = false }) {
+  constructor({ matchId, humanCards, level = 'easy', resume = false }) {
     this.playerId = getGuest().id;
     this.botId = 'bot-' + level;
     this.matchId = matchId;
@@ -63,7 +62,7 @@ export class LocalBotClient {
   }
 
   _botName(level) {
-    return { friendly: 'บอทใจดี', reader: 'บอทนักอ่าน', mindgame: 'บอทอ่านใจ' }[level] || 'บอท';
+    return { easy: 'บอท EASY', hard: 'บอท HARD' }[level] || 'บอท';
   }
 
   _persist() {
@@ -382,19 +381,157 @@ export class RoomGuest {
   close() { clearInterval(this._pingTimer); this.ch.close(); }
 }
 
-/* ═══ 3) Remote — โครงสำหรับ Backend จริง ═══
-   เมื่อ Backend พร้อม: ตั้ง window.C7_CONFIG = { API_BASE, WS_BASE }
-   แล้ว implement คลาสนี้ตาม core7/backend/API.md — UI ไม่ต้องแก้ */
-export class RemoteAdapter {
-  constructor() {
-    const cfg = globalThis.C7_CONFIG;
-    if (!cfg || !cfg.API_BASE) {
-      throw new Error(
-        'CORE7 RemoteAdapter: ยังไม่ได้ตั้งค่า Backend — ดู core7/README.md '
-        + 'ระบบออนไลน์ข้ามอุปกรณ์จะเปิดเมื่อ Server จริงพร้อม',
-      );
-    }
-    this.base = cfg.API_BASE;
+/* ═══ 3) Remote rooms — v0.3 Beta ═══ */
+const roomTokenKey = code => `c7:remote-room:${code}`;
+
+async function apiFetch(base, path, { method = 'GET', token, body } = {}) {
+  const response = await fetch(`${base}${path}`, {
+    method,
+    headers: {
+      ...(body ? { 'content-type': 'application/json' } : {}),
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  let data;
+  try { data = await response.json(); } catch { data = { ok: false, error: 'INVALID_SERVER_RESPONSE' }; }
+  if (!response.ok) {
+    const error = new Error(data.error || `HTTP_${response.status}`);
+    error.code = data.error || `HTTP_${response.status}`;
+    error.status = response.status;
+    throw error;
   }
-  /* TODO(backend): createRoom / joinRoom / WebSocket match channel ตาม API.md */
+  return data;
+}
+
+export class RemoteRooms {
+  constructor({ base = globalThis.C7_CONFIG?.API_BASE || '/api/core7' } = {}) {
+    this.base = base.replace(/\/$/, '');
+  }
+
+  async health() {
+    try { return (await apiFetch(this.base, '/health')).ok; } catch { return false; }
+  }
+
+  async list() { return (await apiFetch(this.base, '/rooms')).rooms || []; }
+
+  async create({ displayName, visibility, mode }) {
+    const data = await apiFetch(this.base, '/rooms', {
+      method: 'POST', body: { displayName, visibility, mode },
+    });
+    this.saveToken(data.code, data.token);
+    return data;
+  }
+
+  async join(code, displayName) {
+    const data = await apiFetch(this.base, `/rooms/${encodeURIComponent(code)}/join`, {
+      method: 'POST', body: { displayName },
+    });
+    this.saveToken(code, data.token);
+    return data;
+  }
+
+  saveToken(code, token) {
+    try { localStorage.setItem(roomTokenKey(code), token); } catch { /* private mode */ }
+  }
+
+  token(code) {
+    try { return localStorage.getItem(roomTokenKey(code)); } catch { return null; }
+  }
+
+  session(code) {
+    const token = this.token(code);
+    if (!token) throw new Error('ROOM_SESSION_NOT_FOUND');
+    return new RemoteRoomSession({ base: this.base, code, token });
+  }
+}
+
+export class RemoteRoomSession {
+  constructor({ base, code, token, pollMs = 900 }) {
+    this.base = base;
+    this.code = code;
+    this.token = token;
+    this.pollMs = pollMs;
+    this.state = null;
+    this.version = 0;
+    this.online = true;
+    this.listeners = new Set();
+    this.matchListeners = new Set();
+    this.closed = false;
+    this.pollTimer = null;
+  }
+
+  async request(path, options = {}) {
+    try {
+      const data = await apiFetch(this.base, `/rooms/${encodeURIComponent(this.code)}${path}`, {
+        ...options, token: this.token,
+      });
+      this.online = true;
+      this._accept(data);
+      return data;
+    } catch (error) {
+      this.online = false;
+      this._notify({ type: 'connection', error: error.code });
+      throw error;
+    }
+  }
+
+  _accept(data) {
+    if (!data?.room) return;
+    const changed = data.version !== this.version || JSON.stringify(data.room) !== JSON.stringify(this.state?.room);
+    this.state = data;
+    this.version = data.version || this.version;
+    if (changed) this._notify({ type: 'state', version: this.version });
+  }
+
+  _notify(event) {
+    for (const fn of this.listeners) fn(this.state, event);
+    for (const fn of this.matchListeners) fn(event);
+  }
+
+  async refresh() { return this.request('/state'); }
+  async setHand(cards) { return this.request('/hand', { method: 'POST', body: { cards } }); }
+  async readyNext() { return this.request('/next', { method: 'POST', body: {} }); }
+  async leave() { return this.request('/leave', { method: 'POST', body: {} }); }
+
+  subscribe(fn) {
+    this.listeners.add(fn);
+    if (!this.pollTimer) this._poll();
+    return () => this.listeners.delete(fn);
+  }
+
+  _poll() {
+    if (this.closed) return;
+    this.refresh().catch(() => {});
+    this.pollTimer = setTimeout(() => this._poll(), this.pollMs);
+  }
+
+  client() {
+    const room = this;
+    return {
+      playerId: 'remote-local',
+      async send(action) {
+        try {
+          const data = await room.request('/action', { method: 'POST', body: { action: { ...action, action_id: newActionId() } } });
+          return data.ok ? { ok: true } : data;
+        } catch (error) { return { ok: false, error: error.code || 'NETWORK_ERROR' }; }
+      },
+      async getView() {
+        if (!room.state) await room.refresh();
+        return room.state?.matchView || null;
+      },
+      subscribe(fn) {
+        room.matchListeners.add(fn);
+        if (!room.pollTimer) room._poll();
+        return () => room.matchListeners.delete(fn);
+      },
+      connectionState() { return room.online ? 'on' : 'off'; },
+    };
+  }
+
+  close() {
+    this.closed = true;
+    clearTimeout(this.pollTimer);
+    this.pollTimer = null;
+  }
 }

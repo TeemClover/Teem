@@ -15,6 +15,7 @@ import { $, el, toast, haptic, reducedMotion } from './ui.js';
 import { COLOR_META, cardById } from './cards.js';
 import { colorIcon, cardSVG, cardBackSVG, genericCardSVG } from './art.js';
 import { isLocalMember } from './store.js';
+import { playSfx } from './audio.js';
 
 const RESULT_TEXT = {
   WIN: (c1, c2) => `${COLOR_META[c1].emoji} ${COLOR_META[c1].nameTh} ชนะ ${COLOR_META[c2].nameTh}!`,
@@ -103,6 +104,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     if (view.you.selected === c.iid && mode === 'select') btn.classList.add('sel');
     btn.addEventListener('click', async () => {
       haptic(8);
+      playSfx('select');
       if (mode === 'select') {
         const res = await client.send({ type: 'select_card', cardInstanceId: c.iid });
         if (res.ok) refresh();
@@ -110,6 +112,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
       } else if (mode === 'discard') {
         const res = await client.send({ type: 'discard_card', cardInstanceId: c.iid });
         if (!res.ok) toast('ทิ้งใบนี้ไม่ได้');
+        else playSfx('discard');
         refresh();
       }
     });
@@ -197,6 +200,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
       slotYou.classList.add('revealed');
       slotOpp.classList.add('revealed');
       haptic([10, 40, 18]);
+      playSfx(round.result === 'TIE' ? 'draw' : (round.youWon ? 'win' : 'lose'));
       /* คำผลรอบ WIN / LOSE / DRAW กลางจอ — เด่นแต่ไม่เท่าตอนจบเกม */
       const rr = $('#roundResult', root);
       const cy = round.you.color, co = round.opp.color;
@@ -230,6 +234,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
       el('span', {}, sub));
     root.append(overlay);
     haptic(r.youWon ? [20, 60, 20, 60, 40] : 30);
+    playSfx(r.draw ? 'draw' : (r.youWon ? 'win' : 'lose'));
     setTimeout(() => onFinished && onFinished(view), reducedMotion() ? 700 : 2000);
   }
 
@@ -291,6 +296,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
   /* ── Lock ── */
   lockBtn.addEventListener('click', async () => {
     haptic(15);
+    playSfx('lock');
     const res = await client.send({ type: 'lock_choice' });
     if (!res.ok && res.error) toast('ยังเลือกการ์ดไม่ได้: ' + res.error);
     refresh();

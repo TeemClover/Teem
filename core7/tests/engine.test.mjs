@@ -5,6 +5,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { MatchAuthority, PHASE } from '../js/engine.js';
 import { Core7Bot, seededRng } from '../js/bot.js';
+import { FIRST_HAND } from '../js/cards.js';
+import { CORE7_ART_VERSION, sceneSVG } from '../js/art.js';
 
 const G = { R: 'gen-red', G: 'gen-green', B: 'gen-blue', X: 'gen-gray' };
 const hand = spec => spec.split('').map(ch => G[ch]);
@@ -243,7 +245,7 @@ test('History tiebreak: constructed genuine both-empty case', () => {
 });
 
 /* ── Bot integration: บอทเล่นกันเองจนจบ ทุกระดับ ─ deterministic ── */
-for (const level of ['friendly', 'reader', 'mindgame']) {
+for (const level of ['easy', 'hard']) {
   test(`Bot (${level}) can finish 50 seeded matches without stalling`, () => {
     for (let seed = 1; seed <= 50; seed++) {
       const rng = seededRng(seed * 7919);
@@ -280,3 +282,9 @@ for (const level of ['friendly', 'reader', 'mindgame']) {
     }
   });
 }
+
+test('v0.3 art set contains a renderable scene for all 28 cards', () => {
+  assert.equal(CORE7_ART_VERSION, '0.3.0');
+  assert.equal(FIRST_HAND.length, 28);
+  for (const card of FIRST_HAND) assert.ok(sceneSVG(card.id).length > 80, card.id);
+});

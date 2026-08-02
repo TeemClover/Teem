@@ -1,50 +1,65 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>เข้าห้อง — myClover: CORE7</title>
-<meta name="theme-color" content="#0A2818">
-<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
-<link rel="stylesheet" href="/core7/css/core7.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Public Lobby — myClover: CORE7</title><meta name="theme-color" content="#0A2818">
+<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg"><link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+.join-row{display:flex;gap:10px;align-items:end}.join-row .field{flex:1;margin:0}.room-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}.room-item{display:flex;gap:12px;align-items:center;padding:14px 16px;background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:13px}.room-code{font:700 22px "Bai Jamjuree";letter-spacing:3px;color:rgb(var(--green))}.room-main{flex:1}.empty{text-align:center;padding:28px;color:rgb(var(--muted))}@media(max-width:560px){.join-row{align-items:stretch;flex-direction:column}.room-item{flex-wrap:wrap}.room-item .btn{width:100%}}
+</style>
 </head>
-<body>
-<nav class="c7nav" id="c7nav"></nav>
-<main class="sec">
-  <div class="wrap-slim">
-    <p class="eyebrow">Join a Room</p>
-    <h2 class="disp">เข้าห้องด้วย Room Code</h2>
-    <div class="panel" style="margin-top:20px">
-      <div class="field">
-        <label for="jname">ชื่อของคุณบนโต๊ะ</label>
-        <input id="jname" maxlength="24">
-      </div>
-      <div class="field">
-        <label for="jcode">Room Code</label>
-        <input id="jcode" placeholder="CLVR-XXXX" autocapitalize="characters" autocomplete="off"
-          style="font-family:'Bai Jamjuree';letter-spacing:2px;font-size:18px">
-        <p class="hint">โค้ดหน้าตาแบบ CLVR-8821 — ได้จากคนที่สร้างห้อง</p>
-      </div>
-      <button class="btn btn-gold btn-lg btn-block" id="go">เข้าห้อง →</button>
-    </div>
+<body><nav class="c7nav" id="c7nav"></nav><main class="sec"><div class="wrap-slim">
+  <p class="eyebrow">v0.3 Beta · Public Lobby</p><h2 class="disp">เข้าห้องออนไลน์</h2>
+  <div class="panel" style="margin-top:20px">
+    <div class="field"><label for="jname">ชื่อของคุณบนโต๊ะ</label><input id="jname" maxlength="24"></div>
+    <div class="join-row"><div class="field"><label for="jcode">รหัสห้อง 4 หลัก</label><input id="jcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0042" autocomplete="one-time-code" style="font-family:'Bai Jamjuree';letter-spacing:4px;font-size:20px"></div><button class="btn btn-gold" id="joinCode">Join</button></div>
+    <p id="joinStatus" role="status" style="font-size:13.5px;color:rgb(var(--muted));min-height:20px;margin-top:10px"></p>
   </div>
-</main>
-<footer class="c7foot" id="c7foot"></footer>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:12px"><div><p class="eyebrow">Waiting Rooms</p><h3 class="disp">ห้องสาธารณะ</h3></div><button class="btn" id="refresh">↻ Refresh</button></div>
+  <div class="room-list" id="rooms" aria-live="polite"></div>
+</div></main><footer class="c7foot" id="c7foot"></footer>
 <script type="module">
-import { renderShell, toast } from '/core7/js/ui.js';
+import { renderShell } from '/core7/js/ui.js';
+import { RemoteRooms } from '/core7/js/adapters.js';
 import { getGuest, setGuestName, track } from '/core7/js/store.js';
+import { playSfx } from '/core7/js/audio.js';
 renderShell({});
-const nameEl = document.getElementById('jname');
-nameEl.value = getGuest().name;
-document.getElementById('go').addEventListener('click', () => {
-  let code = document.getElementById('jcode').value.trim().toUpperCase();
-  if (!code) { toast('ใส่ Room Code ก่อน'); return; }
-  if (!code.startsWith('CLVR-') && /^[A-Z0-9]{4}$/.test(code)) code = 'CLVR-' + code;
-  if (!/^CLVR-[A-Z0-9]{4}$/.test(code)) { toast('Room Code ไม่ถูกต้อง — ตัวอย่าง: CLVR-8821'); return; }
-  setGuestName(nameEl.value);
-  track('core7_room_join');
-  location.href = `/core7/room/?c=${encodeURIComponent(code)}&role=guest`;
-});
-</script>
-</body>
-</html>
+const api = new RemoteRooms();
+const nameEl = document.getElementById('jname'); nameEl.value = getGuest().name;
+const codeEl = document.getElementById('jcode'); const status = document.getElementById('joinStatus');
+const invitedCode = new URLSearchParams(location.search).get('code') || '';
+if (/^\d{4}$/.test(invitedCode)) codeEl.value = invitedCode;
+codeEl.addEventListener('input', () => { codeEl.value = codeEl.value.replace(/\D/g, '').slice(0, 4); });
+async function join(code) {
+  if (!/^\d{4}$/.test(code)) { status.textContent = 'กรุณาใส่ตัวเลขให้ครบ 4 หลัก'; return; }
+  setGuestName(nameEl.value); status.textContent = `กำลังเข้าห้อง ${code}…`;
+  try { await api.join(code, getGuest().name); track('core7_room_join'); playSfx('join'); location.href = `/core7/room/?c=${code}`; }
+  catch (error) {
+    playSfx('error');
+    const messages = { ROOM_NOT_FOUND:'ไม่พบห้องหรือห้องหมดอายุแล้ว', ROOM_FULL:'ห้องนี้มีผู้เล่นครบแล้ว', CORE7_DB_NOT_CONFIGURED:'Backend production ยังไม่พร้อม' };
+    status.textContent = messages[error.code] || `เข้าห้องไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`;
+    refresh();
+  }
+}
+document.getElementById('joinCode').addEventListener('click', () => join(codeEl.value));
+codeEl.addEventListener('keydown', event => { if (event.key === 'Enter') join(codeEl.value); });
+const list = document.getElementById('rooms'); const refreshBtn = document.getElementById('refresh');
+async function refresh() {
+  refreshBtn.disabled = true; list.innerHTML = '<div class="empty">กำลังโหลดห้อง…</div>';
+  try {
+    const rooms = await api.list(); list.innerHTML = '';
+    if (!rooms.length) { list.innerHTML = '<div class="empty panel">ยังไม่มีห้องสาธารณะ — สร้างห้องใหม่ได้เลย<br><a class="btn btn-gold" style="margin-top:12px" href="/core7/create/">สร้างห้อง</a></div>'; }
+    for (const room of rooms) {
+      const row = document.createElement('div'); row.className = 'room-item';
+      const code = document.createElement('span'); code.className = 'room-code'; code.textContent = room.code;
+      const main = document.createElement('div'); main.className = 'room-main';
+      const host = document.createElement('b'); host.textContent = room.hostName;
+      const meta = document.createElement('div'); meta.style.cssText = 'font-size:12.5px;color:rgb(var(--muted))'; meta.textContent = `${room.modeLabel} · Waiting`;
+      main.append(host, meta); const button = document.createElement('button'); button.className = 'btn btn-green'; button.textContent = 'Join'; button.addEventListener('click', () => join(room.code));
+      row.append(code, main, button); list.append(row);
+    }
+  } catch (error) { list.innerHTML = `<div class="empty panel">โหลด Lobby ไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})</div>`; }
+  finally { refreshBtn.disabled = false; }
+}
+refreshBtn.addEventListener('click', refresh); refresh();
+</script></body></html>

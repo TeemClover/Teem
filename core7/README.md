@@ -6,21 +6,23 @@
 โมดูลนี้ Self-contained ทั้งหมดอยู่ใต้ `/core7/` — ไม่แตะหน้าอื่นของ
 myclover.com ไม่มี Build Step ไม่มี Dependency ภายนอก (Vanilla ES Modules)
 
-## เล่นอะไรได้แล้วบ้าง (V1 — ทำงานจริง ไม่ใช่ Mockup)
+## เล่นอะไรได้แล้วบ้าง (v0.3 Beta)
 
 | ระบบ | สถานะ |
 |---|---|
 | Landing / Rules TH-EN / Interactive Tutorial | ✅ |
 | Hand Builder — Guest (Generic 4 สี) + โหมด Collection (28 ใบ + Preset) | ✅ |
-| เล่นกับบอท 3 ระดับ (Friendly / Reader / Mind Game) จบ Match จริง | ✅ |
+| เล่นกับบอท 2 ระดับ (EASY / HARD) จบ Match จริง | ✅ |
 | Simultaneous Reveal + ทิ้งเพิ่ม + Tie Break ครบ (Final Gray, History, Draw) | ✅ |
 | Refresh / กลับเข้า Match เดิม (Snapshot restore) | ✅ |
-| ห้อง + Room Code + Lobby + Rematch (ไม่มี Deck Lock) | ✅ ในอุปกรณ์เดียวกัน (2 แท็บ) ผ่าน BroadcastChannel |
+| Multiplayer ข้ามอุปกรณ์ + รหัส 4 หลัก + Public Lobby | ✅ โค้ดพร้อม; production ต้อง bind D1 ตาม `DEPLOY-v0.3.md` |
+| Quick / BO3 / BO5 + Starting Hand lock ตลอด Series | ✅ |
+| Sound effects + mute / Summary แยกฝั่ง สี ไพ่เล่น ไพ่ทิ้ง | ✅ |
 | Result Page: Timeline, Turning Point, Share to Discord, ชวนคุยหลังเกม | ✅ |
 | Collection + Card Detail + Favorite + สถิติ + History + Profile (ในเครื่อง) | ✅ |
 | Print Tools — A4 9-up 63×88 mm + เส้นตัด | ✅ |
 | Rules Engine + Glicko-2 + Bot — Unit/Integration Tests 55 เคส | ✅ |
-| **Multiplayer ข้ามอุปกรณ์ / บัญชี Member / Ranked Queue** | ⏳ รอ Backend จริง — Contract + Schema + Logic พร้อมหมดแล้ว (ดูด้านล่าง) |
+| **บัญชี Member / Ranked Queue** | ⏳ Phase ถัดไป; Casual multiplayer ไม่ต้องสมัคร |
 
 หลักที่ยึดตลอด: ไม่มีปุ่มหลอก — ทุกอย่างที่ยังไม่ทำงานติดป้าย
 "รอ Server จริง" ชัดเจน และเกมออฟไลน์/ในเครื่องเล่นได้จริงครบวงจร
@@ -34,7 +36,7 @@ core7/
 │   ├── cards.js        Seed 28 ใบ FIRST HAND + Generic 4 สี
 │   ├── engine.js       MatchAuthority — "Server" ของ Match (hidden state,
 │   │                   idempotent actions, per-player views, snapshot restore)
-│   ├── bot.js          บอท 3 ระดับ — deterministic, ไม่เห็น hidden state
+│   ├── bot.js          บอท EASY/HARD — deterministic, ไม่เห็น hidden state
 │   ├── ranking.js      Glicko-2 + Tier (SEED→FOUR-LEAF) + config
 │   ├── adapters.js     LocalBotClient / RoomHost / RoomGuest / RemoteAdapter
 │   ├── art.js          Asset ต้นฉบับทั้งหมด (Procedural SVG)
@@ -98,14 +100,12 @@ Durable Object ได้ตรง ๆ เป็น Reference Implementation ข�
 
 ## Known Limitations (V1)
 
-1. **Multiplayer ข้ามอุปกรณ์ยังไม่เปิด** — ห้องทำงานผ่าน BroadcastChannel
-   (แท็บเดียวกัน/เครื่องเดียวกัน) จนกว่าจะมี Backend — UI บอกผู้เล่นตรง ๆ
+1. Multiplayer ต้องมี Cloudflare Pages + D1 binding ชื่อ `DB`; local static server เล่น Bot/Tutorial ได้ แต่สร้างห้อง production ไม่ได้
 2. บัญชี Member / Ranked / Leaderboard / Achievement / Event Unlock /
    People Cards — Schema และ Contract พร้อม แต่ต้องมี Server
 3. ภาพการ์ดเป็นสไตล์ Minimal-Warm (SVG ต้นฉบับ) — แผนยกระดับอยู่ใน
    ASSET-MANIFEST.md โดยไม่ต้องแก้โครงการ์ด
-4. เสียงยังไม่มี (เกมเล่นได้เต็มรูปแบบโดยไม่มีเสียงตามสเปค) — Haptic มีแล้ว
-5. Open Graph ต่อห้อง/ต่อผล ใช้ข้อความ meta กลาง — ภาพ OG ต้องเรนเดอร์ฝั่ง Server
+4. Open Graph ต่อห้อง/ต่อผลใช้ข้อความ meta กลาง — ภาพ OG เฉพาะผลยังไม่ถูกเรนเดอร์ฝั่ง Server
 
 ## Next Phase
 
