@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>myClover — เรียน AI ฟรีผ่านเรื่องเล่า บทเรียน และเกม</title>
 <meta name="description" content="ใครเจอ myClover คนนั้นโชคดี 🍀 เปิดบ้านใน 44 วินาที แล้วเริ่มจากการ์ตูน WHY AI? บทเรียน AI ฟรี 6 บท เกม CORE7 และของที่หยิบกลับไปใช้ได้จริง">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -94,6 +94,18 @@ h1{font-family:"Bai Jamjuree",system-ui;font-size:clamp(42px,5.4vw,78px);line-he
 }
 @media(prefers-reduced-motion:reduce){.btn{transition:none}}
 </style>
+<style id="home-fullscreen-final">
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:manipulation}
+.page{height:100dvh;min-height:100dvh}
+.layout{position:relative!important;display:block!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important}
+.stage{position:absolute!important;inset:0!important;height:100%!important;display:block!important}
+.stage::before,.stage-label{display:none!important}
+.stage video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover!important;border-radius:0!important;box-shadow:none!important}
+.copy{position:absolute!important;z-index:5!important;left:clamp(24px,6vw,86px)!important;right:auto!important;bottom:clamp(28px,7vh,78px)!important;max-width:560px!important;text-align:left!important}
+@media(max-width:760px){
+  .copy{left:20px!important;right:20px!important;bottom:max(22px,env(safe-area-inset-bottom))!important;max-width:none!important;text-align:center!important}
+}
+</style>
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -153,6 +165,10 @@ h1{font-family:"Bai Jamjuree",system-ui;font-size:clamp(42px,5.4vw,78px);line-he
 
 <script>
 (function(){
+  document.addEventListener("gesturestart",function(e){e.preventDefault()},{passive:false});
+  document.addEventListener("gesturechange",function(e){e.preventDefault()},{passive:false});
+  document.addEventListener("gestureend",function(e){e.preventDefault()},{passive:false});
+
   var TEXT={
     th:{
       eyebrow:"🍀 ใครเจอเรา คนนั้นโชคดี",
