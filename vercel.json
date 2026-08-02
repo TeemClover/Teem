@@ -1,0 +1,11 @@
+{
+  "headers": [
+    {
+      "source": "/core7/assets/core7-rules-overview.png",
+      "headers": [
+        { "key": "Content-Type", "value": "image/svg+xml; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
+  ]
+}

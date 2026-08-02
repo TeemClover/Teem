@@ -1,0 +1,56 @@
+/* CORE7 campaign — distilled story and format system.
+   This layer is intentionally last: it removes duplicate storytelling,
+   preserves the mobile navigation, and gives each idea one clear home. */
+
+.origin-copy::after{content:none!important;display:none!important}
+.origin-proof{margin-top:1.25rem!important;padding:1rem 1.15rem;border-left:4px solid var(--gold);background:rgba(255,255,255,.48);border-radius:0 16px 16px 0;font-weight:750}
+.rules-poster img{display:block;width:100%;aspect-ratio:5/7;object-fit:contain!important;border-radius:16px;background:#f7f0df}
+.format-guide{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:clamp(2rem,5vw,4rem)}
+.format-guide article{min-width:0;padding:clamp(1.2rem,3vw,2rem);border-radius:24px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.055)}
+.format-guide article.standard{border-color:rgba(210,169,79,.55);background:linear-gradient(145deg,rgba(210,169,79,.15),rgba(255,255,255,.04));box-shadow:0 22px 60px -42px rgba(240,213,143,.9)}
+.format-guide span{display:block;color:var(--gold);font-size:.72rem;line-height:1.35;font-weight:950;letter-spacing:.12em;text-transform:uppercase}
+.format-guide h3{margin:.65rem 0 .55rem;color:#fff;font-size:clamp(1.35rem,3vw,2.15rem);line-height:1.12;letter-spacing:-.025em}
+.format-guide p{margin:0;color:rgba(255,255,255,.72);line-height:1.65}
+.memory{position:relative;overflow:hidden;padding:clamp(5rem,10vw,9rem) 0;background:radial-gradient(circle at 18% 18%,rgba(200,68,44,.16),transparent 30%),radial-gradient(circle at 82% 78%,rgba(44,107,168,.17),transparent 32%),#071d13;color:#fff}
+.memory::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 45%,rgba(210,169,79,.055) 50%,transparent 55%)}
+.memory-grid{position:relative;display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(2rem,7vw,7rem);align-items:start}
+.memory h2{margin:0;font-size:clamp(2.5rem,6vw,5.8rem);line-height:.96;letter-spacing:-.05em}
+.memory h2 em{color:var(--gold);font-style:italic}
+.memory-copy{min-width:0;padding-top:.3rem}
+.memory-copy p{margin:0 0 1.2rem;color:rgba(255,255,255,.8);font-size:clamp(1rem,2vw,1.2rem);line-height:1.75}
+.memory-copy blockquote{margin:1.7rem 0;padding:1rem 0 1rem 1.25rem;border-left:4px solid var(--gold);font-size:clamp(1.2rem,2.5vw,1.75rem);line-height:1.45;font-weight:850}
+.memory-copy>strong{display:inline-block;color:var(--gold);font-size:1rem;letter-spacing:.03em}
+.ksv2-use:nth-child(n+5){display:none!important}
+.ksv2-uses-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+#ksv2CardFront{background:#f7f0df}
+.ksv2-flip-card{aspect-ratio:5/7!important}
+.ksv2-flip-face img,.ksv2-flip-face svg{object-fit:contain!important;background:#f7f0df}
+.ksv2-flip-back img{object-fit:cover!important;background:#0b2d1d}
+.risks h2 em{color:var(--gold);font-style:italic}
+.founder{position:relative;overflow:hidden;padding:clamp(5rem,10vw,9rem) 0;background:radial-gradient(circle at 90% 12%,rgba(210,169,79,.14),transparent 28%),linear-gradient(180deg,#fbf7ee,#efe6d5);color:#102319}
+.founder-grid{display:grid;grid-template-columns:.88fr 1.12fr;gap:clamp(2rem,7vw,7rem);align-items:start}
+.founder-head,.founder-story{min-width:0}
+.founder h2{margin:0;font-size:clamp(2.5rem,6vw,5.5rem);line-height:.98;letter-spacing:-.052em}
+.founder h2 em{color:#8b5e17;font-style:italic}
+.founder-head>p:last-child{margin-top:1.5rem;max-width:34rem;font-size:1.12rem;line-height:1.7;font-weight:800}
+.founder-story p{margin:0 0 1.2rem;color:#3f5046;font-size:clamp(1rem,1.8vw,1.12rem);line-height:1.78}
+.founder-story blockquote{margin:1.8rem 0 0;padding:1.15rem 0 1.15rem 1.35rem;border-left:4px solid var(--gold);color:#0b291b;font-size:clamp(1.25rem,2.6vw,1.85rem);line-height:1.45;font-weight:900}
+.founder-proof{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.85rem;margin-top:.5rem}
+.founder-proof article{min-width:0;padding:1.2rem;border:1px solid rgba(16,45,29,.14);border-radius:20px;background:rgba(255,255,255,.6);box-shadow:0 22px 60px -48px rgba(7,39,24,.75)}
+.founder-proof b{display:block;color:#0c4028;font-size:clamp(1.7rem,4vw,3.2rem);line-height:.95;letter-spacing:-.05em}
+.founder-proof span{display:block;margin-top:.65rem;color:#657068;font-size:.75rem;line-height:1.4;font-weight:850;letter-spacing:.055em;text-transform:uppercase}
+.final-cta{border-top:1px solid rgba(210,169,79,.2)}
+@media(max-width:980px){.memory-grid,.founder-grid{grid-template-columns:1fr;gap:2.4rem}.founder-proof{grid-template-columns:repeat(2,minmax(0,1fr))}.ksv2-uses-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){
+  .format-guide{grid-template-columns:1fr;margin-top:2rem}.format-guide article{padding:1.15rem;border-radius:19px}
+  .memory{padding:68px 0}.memory-grid{gap:1.7rem}.memory h2{font-size:clamp(2.08rem,9.4vw,3rem);line-height:1.04}.memory-copy p{font-size:.94rem;line-height:1.7}.memory-copy blockquote{font-size:1.14rem;margin:1.35rem 0}
+  .founder{padding:68px 0 92px}.founder-grid{gap:1.7rem}.founder h2{font-size:clamp(2.05rem,9.2vw,3rem);line-height:1.06}.founder-head>p:last-child{font-size:1rem;line-height:1.65}.founder-story p{font-size:.94rem;line-height:1.72}.founder-story blockquote{font-size:1.14rem;padding-left:1rem}.founder-proof{gap:.7rem}.founder-proof article{padding:1rem;border-radius:17px}.founder-proof span{font-size:.65rem}
+  .rules-poster{padding:8px!important}
+  html[lang="th"] .carry-copy h2{max-width:100%!important;font-size:clamp(2rem,9vw,2.7rem)!important;line-height:1.12!important;letter-spacing:-.03em!important}
+  html[lang="th"] .carry-copy h2::after{content:none!important;display:none!important}
+  html[lang="th"] #memory h2,html[lang="th"] #founder h2{font-size:clamp(1.92rem,8.8vw,2.7rem)!important;line-height:1.17!important;letter-spacing:-.025em!important}
+  html[lang="th"] .format-guide h3{font-size:1.35rem;line-height:1.25}
+  .ksv2-uses-grid{grid-template-columns:1fr!important}.ksv2-use:nth-child(n+5){display:none!important}
+}
+@media(max-width:390px){.founder-proof{grid-template-columns:1fr 1fr}.founder-proof b{font-size:1.62rem}.memory-copy blockquote,.founder-story blockquote{font-size:1.04rem}}
+@media(prefers-reduced-motion:reduce){.ksv2-flip-card{transition:none!important}}
