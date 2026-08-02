@@ -52,5 +52,5 @@ window.HALL_COPY.en={
       firstCta:"View the First Version →",
       home:"Home",privacy:"Your data",
       seekerTitle:"This leaf still has only three hearts",seekerCopy:"Tap it and see how many tries luck takes",
-      seekerFound:"You found Seeker",seekerSaved:"The badge has been saved to your Inventory.",seekerTry:"Attempt {n} — not yet. Try again."
+      seekerFound:"“Seeker” Unlocked",seekerSaved:"You found the four-leaf clover in {n} tries.",seekerTry:"Attempt {n} — not yet. Try again."
     };
