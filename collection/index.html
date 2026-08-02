@@ -22,14 +22,14 @@ a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(1120px,
 .bar .wrap{min-height:60px;display:flex;align-items:center;gap:14px}.home{font-weight:800;white-space:nowrap}.home em{font-style:normal;color:var(--gold2)}.bar-title{margin-left:auto;text-align:right;color:rgba(255,255,255,.62);font-size:12px}.bar-title b{display:block;color:#fff;font-size:14px}
 .hero{text-align:center;padding:clamp(42px,7vw,76px) 0 28px}.hero-icon{font-size:48px;line-height:1}.tag{display:inline-flex;margin-top:15px;padding:6px 14px;border:1px solid rgba(234,208,140,.44);border-radius:999px;color:var(--gold2);font-size:11px;font-weight:800;letter-spacing:.15em}.hero h1{font-size:clamp(31px,5.8vw,52px);line-height:1.12;margin:15px 0 12px}.lead{max-width:66ch;margin:auto;color:rgba(255,255,255,.72);font-size:15.5px}.meter{max-width:520px;margin:27px auto 0}.track{height:9px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.13)}.track i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--green),var(--gold2));transition:width .55s ease}.meter-copy{margin-top:10px;color:rgba(255,255,255,.72);font-size:13px}.meter-copy b{color:var(--gold2)}
 .filters{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:22px}.filter{border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:12px;font-weight:800}.filter[aria-pressed="true"]{background:var(--gold2);border-color:var(--gold2);color:var(--deep2)}
-.album{padding:18px 0 74px}.group{padding:34px 0 9px}.group-head{display:flex;align-items:end;justify-content:space-between;gap:18px;padding-bottom:13px;border-bottom:1px solid rgba(255,255,255,.12)}.eyebrow{color:var(--gold2);font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.group h2{font-size:clamp(22px,3.8vw,31px);line-height:1.2;margin-top:6px}.group-desc{color:rgba(255,255,255,.61);font-size:13.5px;margin-top:5px}.group-count{flex:none;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 12px;color:rgba(255,255,255,.68);font-size:12px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:18px}
-.ach-card{position:relative;display:flex;min-width:0;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:19px;background:rgba(255,255,255,.055);color:#fff;text-align:left;transition:transform .2s,border-color .2s,box-shadow .2s}.ach-card.is-link{cursor:pointer}.ach-card.is-link:hover{transform:translateY(-5px);border-color:rgba(234,208,140,.86);box-shadow:0 34px 64px -40px rgba(0,0,0,1)}.ach-card.unlocked{border-color:rgba(234,208,140,.44);box-shadow:0 24px 50px -38px rgba(0,0,0,.9)}
+.album{padding:18px 0 74px}.group{padding:34px 0 9px}.group.bonus{margin-top:16px;padding:30px 20px 20px;border:1px solid rgba(234,208,140,.28);border-radius:24px;background:linear-gradient(145deg,rgba(190,148,66,.08),rgba(255,255,255,.025))}.group-head{display:flex;align-items:end;justify-content:space-between;gap:18px;padding-bottom:13px;border-bottom:1px solid rgba(255,255,255,.12)}.eyebrow{color:var(--gold2);font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.group h2{font-size:clamp(22px,3.8vw,31px);line-height:1.2;margin-top:6px}.group-desc{color:rgba(255,255,255,.61);font-size:13.5px;margin-top:5px}.group-count{flex:none;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 12px;color:rgba(255,255,255,.68);font-size:12px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:18px}
+.ach-card{position:relative;display:flex;min-width:0;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:19px;background:rgba(255,255,255,.055);color:#fff;text-align:left;transition:transform .2s,border-color .2s,box-shadow .2s}.ach-card.is-link{cursor:pointer}.ach-card.is-link:hover{transform:translateY(-5px);border-color:rgba(234,208,140,.86);box-shadow:0 34px 64px -40px rgba(0,0,0,1)}.ach-card.unlocked{border-color:rgba(234,208,140,.44);box-shadow:0 24px 50px -38px rgba(0,0,0,.9)}.ach-card.bonus-card{border-color:rgba(234,208,140,.7);box-shadow:0 24px 62px -36px rgba(190,148,66,.42)}
 .ach-art{position:relative;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(circle at 50% 44%,rgba(190,148,66,.15),transparent 54%),#071a10}.ach-art img{display:block;width:100%;height:100%;object-fit:cover}.ach-card.locked:not(.secret) .ach-art img{filter:brightness(.28) saturate(.65)}.ach-card.secret.locked .ach-art{background:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 9px,transparent 9px 18px),#071a10}.ach-card.secret.locked .ach-art img{display:none}
 .state{position:absolute;z-index:3;top:10px;right:10px;display:grid;place-items:center;min-width:29px;height:29px;padding:0 7px;border-radius:999px;background:rgba(2,13,7,.82);border:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:900}.ach-card.unlocked .state{background:var(--green)}.new{position:absolute;z-index:4;left:10px;top:10px;padding:5px 9px;border-radius:999px;background:var(--gold2);color:var(--deep2);font-size:9px;font-weight:900;letter-spacing:.08em}
 .ach-body{display:flex;flex:1;flex-direction:column;padding:15px 16px 17px}.kind{color:var(--gold2);font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.ach-name{display:flex;align-items:flex-start;gap:8px;font-size:17px;line-height:1.35;margin-top:5px}.name-icon{flex:none;width:1.25em;text-align:center}.hint{color:rgba(255,255,255,.63);font-size:13px;line-height:1.55;margin-top:5px}.ach-card.locked .ach-name{color:rgba(255,255,255,.56)}.ach-card.locked .hint b{color:var(--gold2)}.ach-card.unlocked .hint b{color:#8fe0ae}.go{display:inline-flex;align-items:center;gap:6px;margin-top:auto;padding-top:12px;color:var(--gold2);font-size:12px;font-weight:800}
 .empty{padding:36px 18px;text-align:center;color:rgba(255,255,255,.62);border:1px dashed rgba(255,255,255,.15);border-radius:18px;margin-top:18px}.note{margin-top:34px;padding:18px 20px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13.5px}.note b{color:#fff}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:19px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 18px;border:1px solid rgba(255,255,255,.22);border-radius:12px;font-weight:800;font-size:13px}.btn.gold{background:var(--gold2);border-color:var(--gold2);color:var(--deep2)}
 footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-size:12px}footer a{color:var(--gold2);font-weight:700}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.wrap{width:min(100% - 24px,1120px)}.bar-title{display:none}.group-head{align-items:start}.grid{grid-template-columns:1fr}.hero{padding-top:35px}.ach-card{border-radius:17px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.track i,.ach-card{transition:none}.ach-card.is-link:hover{transform:none}}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.wrap{width:min(100% - 24px,1120px)}.bar-title{display:none}.group-head{align-items:start}.grid{grid-template-columns:1fr}.hero{padding-top:35px}.ach-card{border-radius:17px}.group.bonus{padding:24px 12px 14px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.track i,.ach-card{transition:none}.ach-card.is-link:hover{transform:none}}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
 </head>
@@ -67,6 +67,8 @@ var clubDone=raw('mc_club_seen','')==='1';
 var ch7Done=raw('mc_ch7_done','')==='1'||hasTitle('AWAKENED');
 var hand=json('c7:hand',null);var handDone=Array.isArray(hand)&&hand.length===7;
 var tutorialDone=json('c7:tutorial_completed',false)===true;
+var genesisDone=raw('mc_genesis_found','')==='1'||hasTitle('GENESIS');
+var genesisNew=raw('mc_genesis_new','')==='1';
 var started=forgeCount>0||learnCount>0||classDone||cardDone||clubDone||c7.played>0;
 var groups=[];
 function item(o){return o}
@@ -97,8 +99,11 @@ item({id:'c7-tutorial',kind:'CORE7',name:'เข้าใจกติกา',ico
 item({id:'c7-hand',kind:'CORE7',name:'มือแรกของฉัน',icon:'🖐️',on:handDone,hint:'เลือกการ์ดให้ครบ 7 ใบ',go:'../core7/hand/',image:'../img/hall-core7.jpg'}),
 item({id:'c7-match',kind:'CORE7',name:'ดวลครั้งแรก',icon:'⚔️',on:c7.played>0,hint:'เล่น Match แรกจนจบ',go:'../core7/',image:'../img/hall-core7.jpg'}),
 item({id:'c7-win',kind:'CORE7 · BLACK FRAME',name:'ชัยชนะครั้งแรก',icon:'🏅',on:c7.won>0,hint:'ชนะ CORE7 อย่างน้อย 1 Match',go:'../core7/',image:'../img/hall-core7.jpg'})]});
+if(genesisDone)groups.push({id:'genesis',bonus:true,eyebrow:'HIDDEN ORIGIN · BONUS',title:'ของที่ไม่อยู่ในสารบัญ',desc:'ช่องพิเศษนี้ปรากฏหลังจากพบสิ่งที่ผู้สร้างซ่อนไว้ และไม่ถูกนับรวมใน 33 Achievement หลัก',items:[
+item({id:'genesis-scroll',bonus:true,kind:'FORBIDDEN GENESIS · BONUS',name:'คุณเจอ Genesis Prompt ที่ใช้สร้างวิหารแห่งนี้',icon:'📜',on:true,hint:'เลือกทุกหมวดในคลังพรอมพ์ แล้วเปิดม้วนคาถาที่ซ่อนอยู่',go:'../classroom/prompts.html?scroll=forbidden',image:'../img/achievement-genesis-scroll.svg',newBonus:genesisNew})
+]});
 var filter='all',lastUnlocked=raw('mc_collection_last_count','');
-var allItems=[];groups.forEach(function(g){g.items.forEach(function(x){allItems.push(x)})});
+var allItems=[];groups.forEach(function(g){g.items.forEach(function(x){if(!x.bonus)allItems.push(x)})});
 var unlockedCount=allItems.filter(function(x){return x.on}).length;
 try{localStorage.setItem('mc_collection_last_count',String(unlockedCount))}catch(e){}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -108,8 +113,9 @@ function cardHTML(x){
   var canLink=!!x.go&&(!x.secret||x.on);
   var tag=canLink?'a':'article';
   var attrs=canLink?' href="'+esc(x.go)+'"':'';
-  var cls='ach-card '+(x.on?'unlocked':'locked')+(x.secret?' secret':'')+(canLink?' is-link':'');
-  var newTag=x.on&&lastUnlocked!==''&&unlockedCount>Number(lastUnlocked)?'<span class="new">NEW</span>':'';
+  var cls='ach-card '+(x.on?'unlocked':'locked')+(x.secret?' secret':'')+(canLink?' is-link':'')+(x.bonus?' bonus-card':'');
+  var regularNew=x.on&&!x.bonus&&lastUnlocked!==''&&unlockedCount>Number(lastUnlocked);
+  var newTag=(regularNew||x.newBonus)?'<span class="new">NEW</span>':'';
   var image=(!x.secret||x.on)&&x.image?'<img src="'+esc(x.image)+'" alt="" loading="lazy" decoding="async" onerror="this.remove()">':'';
   var hint=x.on?'<b>✓ ปลดแล้ว</b> — '+x.hint:'<b>ปลดเมื่อ</b> '+x.hint;
   return '<'+tag+' class="'+cls+'"'+attrs+' data-id="'+esc(x.id)+'">'+newTag+'<div class="ach-art">'+image+'<span class="state">'+state+'</span></div><div class="ach-body"><span class="kind">'+esc(x.kind)+'</span><b class="ach-name"><span class="name-icon">'+x.icon+'</span><span>'+esc(shown)+'</span></b><span class="hint">'+hint+'</span>'+(canLink?'<span class="go">ไปที่เควส →</span>':'')+'</div></'+tag+'>';
@@ -120,12 +126,14 @@ function render(){
     var visible=g.items.filter(function(x){return filter==='all'||(filter==='unlocked'?x.on:!x.on)});
     if(!visible.length)return;visibleTotal+=visible.length;
     var got=g.items.filter(function(x){return x.on}).length;
-    var sec=document.createElement('section');sec.className='group';
+    var sec=document.createElement('section');sec.className='group'+(g.bonus?' bonus':'');
     sec.innerHTML='<div class="group-head"><div><span class="eyebrow">'+g.eyebrow+'</span><h2>'+g.title+'</h2><p class="group-desc">'+g.desc+'</p></div><span class="group-count">'+got+'/'+g.items.length+'</span></div><div class="grid">'+visible.map(cardHTML).join('')+'</div>';
     root.appendChild(sec);
   });
   if(!visibleTotal)root.innerHTML='<div class="empty">ยังไม่มีช่องในตัวกรองนี้</div>';
   root.insertAdjacentHTML('beforeend','<div class="note"><b>Save ทั้งหมดอยู่ในเครื่องของคุณ</b> — หน้า Inventory แค่อ่าน Local Storage ของเว็บ ไม่ได้ส่งประวัติการเล่นหรือข้อมูลส่วนตัวออกไป หากล้างข้อมูล Browser หรือเปลี่ยนเครื่อง อัลบั้มนี้จะเริ่มใหม่ตาม Save ของเครื่องนั้น</div><div class="actions"><a class="btn gold" href="../hall.html">กลับไปทำ Main Quest →</a><a class="btn" href="../core7/">เล่น CORE7</a><a class="btn" href="../card/">ดูการ์ดของฉัน</a></div>');
+  var bonus=document.querySelector('[data-id="genesis-scroll"]');
+  if(bonus)bonus.addEventListener('click',function(){try{localStorage.removeItem('mc_genesis_new')}catch(e){}});
 }
 document.querySelectorAll('.filter').forEach(function(b){b.addEventListener('click',function(){filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});render()})});
 var pct=Math.round(unlockedCount/allItems.length*100);document.getElementById('totalFill').style.width=pct+'%';document.getElementById('totalCopy').innerHTML='เก็บได้ <b>'+unlockedCount+'</b> จาก '+allItems.length+' Achievement · '+pct+'%';render();
