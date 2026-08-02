@@ -15,112 +15,143 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./resume.css?v=20260802-career-life">
+<link rel="stylesheet" href="./resume.css?v=20260802-switch-i18n">
 </head>
 <body class="career-mode">
-<nav class="nav"><div class="wrap navin">
-  <a class="brand" href="../">🍀 my<b>Clover</b></a>
-  <div class="navright">
-    <div class="mode-switch" role="group" aria-label="เลือกดู Career หรือ Lifestyle">
-      <button class="switch-btn" type="button" data-mode="career" aria-pressed="true">CAREER</button>
-      <button class="switch-btn" type="button" data-mode="lifestyle" aria-pressed="false">LIFESTYLE</button>
+<div class="switch-wipe" aria-hidden="true"><span></span></div>
+<nav class="nav">
+  <div class="wrap navin">
+    <a class="brand" href="../" aria-label="myClover home">🍀 my<b>Clover</b></a>
+    <div class="navright">
+      <div class="mode-switch" role="group" data-i18n-aria="modeLabel">
+        <span class="mode-indicator" aria-hidden="true"></span>
+        <button class="switch-btn" type="button" data-mode="career" aria-pressed="true" data-i18n="careerTab">CAREER</button>
+        <button class="switch-btn" type="button" data-mode="lifestyle" aria-pressed="false" data-i18n="lifeTab">LIFESTYLE</button>
+      </div>
+      <div class="lang" data-i18n-aria="languageLabel">
+        <button type="button" class="active" data-lang="th">TH</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a class="version-link" href="./first-version/" data-i18n="firstVersion">First Version ↗</a>
     </div>
-    <a class="version-link" href="./first-version/">First Version ↗</a>
   </div>
-</div></nav>
+</nav>
 
-<header class="hero mode-view career-view">
+<div id="careerWorld" class="world mode-view career-view" data-world="career">
+<header class="hero">
   <div class="wrap hero-grid">
     <div class="reveal">
-      <span class="eyebrow">CAREER BUILD</span>
-      <h1>Game System Designer<span>Learning Experience Architect</span></h1>
-      <p class="hero-lead">ผมช่วยคนที่มีความรู้และความคิดดีอยู่แล้ว ให้เสียงของเขาไปได้ไกลขึ้น — ด้วยการ<b>จัดความคิดให้เป็นระบบ</b> แล้วเปลี่ยนมันเป็นเกม บทเรียน เครื่องมือ และประสบการณ์ที่คนอื่นหยิบไปใช้ต่อได้จริง</p>
-      <p class="hero-note">ผมผ่านงาน Brand, Training, Technology, General Management และธุรกิจของตัวเอง เส้นทางไม่ตรง แต่กลับมาที่โจทย์เดิมเสมอ: ทำอย่างไรให้ความรู้ไม่หยุดอยู่ที่คนเก่งเพียงคนเดียว</p>
-      <div class="hero-actions"><a class="btn primary" href="#career-proof">ดูผลงานและประสบการณ์ →</a></div>
+      <span class="eyebrow" data-i18n="careerBuild">CAREER BUILD</span>
+      <h1><span data-i18n="careerTitle1">Game System Designer</span><em data-i18n="careerTitle2">Learning Experience Architect</em></h1>
+      <p class="hero-lead" data-i18n-html="careerLead">ผมช่วยคนที่มีความรู้และความคิดดีอยู่แล้ว ให้เสียงของเขาไปได้ไกลขึ้น — ด้วยการ<b>จัดความคิดให้เป็นระบบ</b> แล้วเปลี่ยนมันเป็นเกม บทเรียน เครื่องมือ และประสบการณ์ที่คนอื่นหยิบไปใช้ต่อได้จริง</p>
+      <p class="hero-note" data-i18n="careerNote">ผมผ่านงาน Brand, Training, Technology, General Management และธุรกิจของตัวเอง เส้นทางไม่ตรง แต่กลับมาที่โจทย์เดิมเสมอ: ทำอย่างไรให้ความรู้ไม่หยุดอยู่ที่คนเก่งเพียงคนเดียว</p>
+      <div class="hero-actions"><a class="btn primary" href="#career-proof" data-i18n="careerCta">ดูผลงานและประสบการณ์ →</a></div>
       <div class="socials"><span>@teemclover</span><a class="social" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer">LINE</a><a class="social" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer">Instagram</a><a class="social" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer">Facebook</a></div>
     </div>
-    <div class="hero-media reveal"><div class="hero-photo"><img src="../img/resume-career-stage.webp" alt="ทีมยืนพูดบนเวทีต่อหน้าผู้ฟังจำนวนมาก"><div class="hero-caption"><b>จากหลังเวที สู่เวทีผู้ฟังระดับหลักหมื่น</b><p>สิ่งที่ผมสนใจไม่ใช่แค่การพูดดัง แต่คือการทำให้ข้อความเดินทางไปถึงคนจำนวนมากโดยยังไม่เสียแก่น</p></div></div><div class="float-badge">SYSTEM BUILDER · SPEAKER · AMPLIFIER</div></div>
-  </div>
-</header>
-<div class="stats mode-view career-view"><div class="wrap stats-grid reveal"><div class="stat"><strong>2007–2026</strong><span>สนามจริงจากสื่อสู่ AI</span></div><div class="stat"><strong>หลักหมื่น</strong><span>ผู้ฟังในเวทีขนาดใหญ่</span></div><div class="stat"><strong>5 สนาม</strong><span>Brand · Training · Tech · GM · Founder</span></div><div class="stat"><strong>1 แกน</strong><span>ทำความคิดให้ส่งต่อได้</span></div></div></div>
-
-<header class="hero mode-view lifestyle-view">
-  <div class="wrap hero-grid">
-    <div class="reveal">
-      <span class="eyebrow">LIFESTYLE BUILD</span>
-      <h1>Player · Explorer<span>Lifelong Beginner</span></h1>
-      <p class="hero-lead">นอกเวลางาน ผมชอบเข้าไปอยู่ในสนามที่ยังไม่รู้คำตอบ — จากกระโดดร่ม ดำน้ำ สโนว์บอร์ด ไปจนถึง Pro Tour ของเกมการ์ด เพราะช่วงที่ต้อง<b>เริ่มเรียนใหม่</b> ทำให้ผมรู้สึกมีชีวิต</p>
-      <p class="hero-note">ไม่ได้ทำทุกอย่างเพื่อเก็บ Achievement แค่ชอบเห็นว่าตัวเองจะอ่านสนามใหม่ ปรับ Build และสนุกกับการยังไม่เก่งได้แค่ไหน</p>
-      <div class="hero-actions"><a class="btn primary" href="#life-gallery">เปิด Lifestyle Loadout →</a></div>
-      <div class="socials"><span>@teemclover</span><a class="social" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer">LINE</a><a class="social" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer">Instagram</a><a class="social" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer">Facebook</a></div>
+    <div class="hero-media reveal">
+      <figure class="hero-photo"><img src="../img/resume-career-stage.webp?v=20260802" alt="ทีมยืนพูดบนเวทีต่อหน้าผู้ฟังจำนวนมาก"><figcaption class="hero-caption"><b data-i18n="careerPhotoTitle">จากหลังเวที สู่เวทีผู้ฟังระดับหลักหมื่น</b><p data-i18n="careerPhotoCopy">สิ่งที่ผมสนใจไม่ใช่แค่การพูดดัง แต่คือการทำให้ข้อความเดินทางไปถึงคนจำนวนมากโดยยังไม่เสียแก่น</p></figcaption></figure>
+      <div class="float-badge" data-i18n="careerBadge">SYSTEM BUILDER · SPEAKER · AMPLIFIER</div>
     </div>
-    <div class="hero-media reveal"><div class="hero-photo"><img src="../img/resume-life-skydive.webp" alt="ทีมกระโดดร่มเหนือ Palm Jumeirah"><div class="hero-caption"><b>ความกลัวอยู่ครบ แต่ขึ้นเครื่องแล้วก็ต้องกระโดด</b><p>สนามใหม่ไม่ได้ทำให้ผมมั่นใจขึ้นทันที แต่มันทำให้รู้ว่าความกลัวกับความสนุกอยู่พร้อมกันได้</p></div></div><div class="float-badge">PLAY · EXPLORE · LEARN AGAIN</div></div>
   </div>
 </header>
-<div class="stats mode-view lifestyle-view"><div class="wrap stats-grid reveal"><div class="stat"><strong>5 สนาม</strong><span>ที่ต้องเริ่มเรียนใหม่</span></div><div class="stat"><strong>META เปลี่ยน</strong><span>ก็เปลี่ยน Build ตาม</span></div><div class="stat"><strong>ล้มได้</strong><span>แต่เก็บข้อมูลกลับมา</span></div><div class="stat"><strong>เล่นจริง</strong><span>มากกว่านั่งดูข้างสนาม</span></div></div></div>
+<div class="stats"><div class="wrap stats-grid reveal"><div class="stat"><strong>2007–2026</strong><span data-i18n="careerStat1">สนามจริงจากสื่อสู่ AI</span></div><div class="stat"><strong data-i18n="careerStat2Strong">หลักหมื่น</strong><span data-i18n="careerStat2">ผู้ฟังในเวทีขนาดใหญ่</span></div><div class="stat"><strong>5</strong><span data-i18n="careerStat3">สนามงานที่เชื่อมต่อกัน</span></div><div class="stat"><strong>1</strong><span data-i18n="careerStat4">แกน: ทำความคิดให้ส่งต่อได้</span></div></div></div>
 
-<main class="mode-view career-view">
+<main>
 <section class="section" id="career-proof"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">WHAT I DO BEST</span><h2 class="title">ขยายเสียงให้คนเก่ง<br>โดยไม่ทำให้เสียงนั้นเสียรูป</h2><p class="sub">ผมอยู่ได้ทั้งฝั่งคนคิด ฝั่งคนสร้าง และฝั่งคนต้องเอาไปใช้จริง จึงมักถูกเรียกเข้าไปตอนที่ความคิดยังเป็นก้อน แต่ต้องเดินทางต่อทั้งทีมและองค์กร</p></div></div>
-  <div class="value-grid"><div class="value reveal"><span class="icon">📣</span><h3>Amplify Good Ideas</h3><p>ช่วยคนที่รู้จริงจัดเรื่องที่อยู่ในหัวให้คนจำนวนมากเข้าใจ โดยยังรักษาแก่นและน้ำเสียงของเจ้าของความคิด</p><small>VOICE · STORY · AUDIENCE</small></div><div class="value reveal"><span class="icon">🧭</span><h3>Turn Knowledge into Systems</h3><p>เปลี่ยนประสบการณ์เป็น Source, Curriculum, Starter Kit, Workflow หรือ Game System ที่คนอื่นหยิบไปใช้ต่อได้</p><small>SOURCE · STRUCTURE · TRANSFER</small></div><div class="value reveal"><span class="icon">🎮</span><h3>Design Learning that Moves</h3><p>ออกแบบการเรียนให้มีการเลือก การลอง Feedback และผลลัพธ์จริง มากกว่าการนั่งฟังแล้วหวังว่าจะจำได้</p><small>CHOICE · PRACTICE · FEEDBACK</small></div></div>
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow" data-i18n="bestEyebrow">WHAT I DO BEST</span><h2 class="title" data-i18n-html="bestTitle">ขยายเสียงให้คนเก่ง<br>โดยไม่ทำให้เสียงนั้นเสียรูป</h2><p class="sub" data-i18n="bestSub">ผมอยู่ได้ทั้งฝั่งคนคิด ฝั่งคนสร้าง และฝั่งคนต้องเอาไปใช้จริง จึงมักถูกเรียกเข้าไปตอนที่ความคิดยังเป็นก้อน แต่ต้องเดินทางต่อทั้งทีมและองค์กร</p></div></div>
+  <div class="value-grid">
+    <article class="value reveal"><span class="icon">📣</span><h3 data-i18n="value1Title">Amplify Good Ideas</h3><p data-i18n="value1Copy">ช่วยคนที่รู้จริงจัดเรื่องที่อยู่ในหัวให้คนจำนวนมากเข้าใจ โดยยังรักษาแก่นและน้ำเสียงของเจ้าของความคิด</p><small>VOICE · STORY · AUDIENCE</small></article>
+    <article class="value reveal"><span class="icon">🧭</span><h3 data-i18n="value2Title">Turn Knowledge into Systems</h3><p data-i18n="value2Copy">เปลี่ยนประสบการณ์เป็น Source, Curriculum, Starter Kit, Workflow หรือ Game System ที่คนอื่นหยิบไปใช้ต่อได้</p><small>SOURCE · STRUCTURE · TRANSFER</small></article>
+    <article class="value reveal"><span class="icon">🎮</span><h3 data-i18n="value3Title">Design Learning that Moves</h3><p data-i18n="value3Copy">ออกแบบการเรียนให้มีการเลือก การลอง Feedback และผลลัพธ์จริง มากกว่าการนั่งฟังแล้วหวังว่าจะจำได้</p><small>CHOICE · PRACTICE · FEEDBACK</small></article>
+  </div>
 </div></section>
 
 <section class="section light"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">PROOF OF REACH</span><h2 class="title">จากเวที สื่อ และระบบ Training<br>ไปจนถึงของที่คนกดเล่นได้เอง</h2></div></div>
-  <div class="proof-split"><article class="proof-photo reveal"><img src="../img/resume-career-stage.webp" alt="เวทีที่มีผู้ฟังจำนวนมาก"><div class="proof-copy"><span>PUBLIC SPEAKING · LARGE AUDIENCE</span><h3>พูดต่อหน้าคนหลักหมื่น</h3><p>ประสบการณ์นี้สอนว่าความชัดเจนสำคัญกว่าคำที่ดูเก่ง และข้อความที่ดีต้องพาคนจำนวนมากเห็นภาพเดียวกันได้</p></div></article><article class="proof-photo small reveal"><img src="../img/resume-career-tv.webp" alt="ภาพทีมออกโทรทัศน์"><div class="proof-copy"><span>NATIONAL MEDIA</span><h3>เล่าเรื่องยากให้คนทั่วไปเข้าใจ</h3><p>งานสื่อช่วยฝึกให้ผมตัดสิ่งที่ไม่จำเป็นออก แล้วเหลือแก่นที่คนดูจำและนำไปใช้ต่อได้</p></div></article></div>
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow" data-i18n="reachEyebrow">PROOF OF REACH</span><h2 class="title" data-i18n-html="reachTitle">จากสื่อและห้อง Training<br>สู่ระบบที่คนเรียนต่อได้เอง</h2></div></div>
+  <div class="proof-split">
+    <article class="proof-photo reveal"><img src="../img/resume-career-tv.webp?v=20260802" alt="ภาพทีมออกโทรทัศน์"><div class="proof-copy"><span>NATIONAL MEDIA</span><h3 data-i18n="mediaTitle">เล่าเรื่องยากให้คนทั่วไปเข้าใจ</h3><p data-i18n="mediaCopy">งานสื่อช่วยฝึกให้ผมตัดสิ่งที่ไม่จำเป็นออก แล้วเหลือแก่นที่คนดูจำและนำไปใช้ต่อได้</p></div></article>
+    <article class="proof-photo reveal"><img src="../img/hall-classroom.jpg?v=20260802" alt="ภาพระบบห้องเรียน AI"><div class="proof-copy"><span>LEARNING SYSTEM</span><h3 data-i18n="learningProofTitle">ทำให้ความรู้เดินทางได้โดยไม่ต้องมีเจ้าของยืนอยู่ข้าง ๆ</h3><p data-i18n="learningProofCopy">จากการสอนบนเวที สู่ Source, Workflow และบทเรียนที่คนเปิดเรียน ทดลอง และสร้างผลลัพธ์แรกได้ด้วยตัวเอง</p></div></article>
+  </div>
 </div></section>
 
 <section class="section" id="career"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">SELECTED CAREER</span><h2 class="title">งานเปลี่ยนหลายครั้ง<br>แต่โจทย์หลักไม่เคยเปลี่ยน</h2><p class="sub">นี่ไม่ใช่รายชื่อทุกตำแหน่ง แต่เป็นสนามสำคัญที่ทำให้วิธีคิดของผมค่อย ๆ ชัดขึ้น</p></div></div>
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow" data-i18n="careerHistoryEyebrow">SELECTED CAREER</span><h2 class="title" data-i18n-html="careerHistoryTitle">งานเปลี่ยนหลายครั้ง<br>แต่โจทย์หลักไม่เคยเปลี่ยน</h2><p class="sub" data-i18n="careerHistorySub">นี่ไม่ใช่รายชื่อทุกตำแหน่ง แต่เป็นสนามสำคัญที่ทำให้วิธีคิดของผมค่อย ๆ ชัดขึ้น</p></div></div>
   <div class="timeline">
-    <article class="job reveal"><div class="job-time">2026–PRESENT</div><div><h3>Game Master — myClover</h3><p>ออกแบบบ้านแบบเล่นได้ ห้องเรียน AI เกม CORE7, Inventory, Secret Route และระบบที่ช่วยให้คนเริ่มสร้างของของตัวเอง</p></div></article>
-    <article class="job reveal"><div class="job-time">2026–PRESENT</div><div><h3>CEO — Sanchuan Holdings</h3><p>ดูทิศทางภาพรวมของธุรกิจและโครงการที่ต้องเชื่อมคน ระบบ เทคโนโลยี และการตัดสินใจระยะยาว</p></div></article>
-    <article class="job reveal"><div class="job-time">2022–2023</div><div><h3>General Manager — Nusasiri</h3><p>ทำงานข้ามหลายธุรกิจและช่วยเชื่อมโจทย์ของผู้บริหารกับการปฏิบัติจริงในองค์กร</p></div></article>
-    <article class="job reveal"><div class="job-time">2021–2022</div><div><h3>General Manager — HR & Technology, In-Tech Steel</h3><p>ดูงานพัฒนาคน โครงสร้าง และเทคโนโลยีในช่วงที่องค์กรต้องการจัดระบบให้พร้อมเติบโต</p></div></article>
-    <article class="job reveal"><div class="job-time">2019–2021</div><div><h3>VP Training & Development — Lazada Thailand / Youpik</h3><p>ออกแบบ Training, Learning Flow และเครื่องมือที่ช่วยให้คนจำนวนมากเริ่มต้นและเรียนรู้ด้วยตัวเองได้</p></div></article>
-    <article class="job reveal"><div class="job-time">2007–2019</div><div><h3>Clover Group · Aim Stars · Legacy Corp</h3><p>สนามตั้งต้นของ Brand, Multimedia, Curriculum, Team Building และการเปลี่ยนความรู้ของคนเก่งให้เดินทางต่อไปได้ไกลกว่าเจ้าของความรู้</p></div></article>
+    <article class="job reveal"><div class="job-time">2026–PRESENT</div><div><h3>Game Master — myClover</h3><p data-i18n="job1">ออกแบบบ้านแบบเล่นได้ ห้องเรียน AI เกม CORE7, Inventory, Secret Route และระบบที่ช่วยให้คนเริ่มสร้างของของตัวเอง</p></div></article>
+    <article class="job reveal"><div class="job-time">2026–PRESENT</div><div><h3>CEO — Sanchuan Holdings</h3><p data-i18n="job2">ดูทิศทางภาพรวมของธุรกิจและโครงการที่ต้องเชื่อมคน ระบบ เทคโนโลยี และการตัดสินใจระยะยาว</p></div></article>
+    <article class="job reveal"><div class="job-time">2022–2023</div><div><h3>General Manager — Nusasiri</h3><p data-i18n="job3">ทำงานข้ามหลายธุรกิจและช่วยเชื่อมโจทย์ของผู้บริหารกับการปฏิบัติจริงในองค์กร</p></div></article>
+    <article class="job reveal"><div class="job-time">2021–2022</div><div><h3>General Manager — HR & Technology, In-Tech Steel</h3><p data-i18n="job4">ดูงานพัฒนาคน โครงสร้าง และเทคโนโลยีในช่วงที่องค์กรต้องการจัดระบบให้พร้อมเติบโต</p></div></article>
+    <article class="job reveal"><div class="job-time">2019–2021</div><div><h3>VP Training & Development — Lazada Thailand / Youpik</h3><p data-i18n="job5">ออกแบบ Training, Learning Flow และเครื่องมือที่ช่วยให้คนจำนวนมากเริ่มต้นและเรียนรู้ด้วยตัวเองได้</p></div></article>
+    <article class="job reveal"><div class="job-time">2007–2019</div><div><h3>Clover Group · Aim Stars · Legacy Corp</h3><p data-i18n="job6">สนามตั้งต้นของ Brand, Multimedia, Curriculum, Team Building และการเปลี่ยนความรู้ของคนเก่งให้เดินทางต่อไปได้ไกลกว่าเจ้าของความรู้</p></div></article>
   </div>
-  <div class="current-note reveal"><b>สถานะปัจจุบัน:</b> ผมไม่ได้ทำงานประจำกับองค์กรอื่นแล้ว งานหลักคือการสร้าง myClover และดู Sanchuan Holdings พร้อมรับโจทย์ที่ตรงกับสิ่งที่ทำได้ดีที่สุด: ระบบการเรียนรู้ เกม การสื่อสาร และการขยายผลความคิด</div>
+  <div class="current-note reveal"><b data-i18n="currentLabel">สถานะปัจจุบัน:</b> <span data-i18n="currentCopy">ผมไม่ได้ทำงานประจำกับองค์กรอื่นแล้ว งานหลักคือการสร้าง myClover และดู Sanchuan Holdings พร้อมรับโจทย์ที่ตรงกับสิ่งที่ทำได้ดีที่สุด: ระบบการเรียนรู้ เกม การสื่อสาร และการขยายผลความคิด</span></div>
 </div></section>
 
 <section class="section light"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">PLAYABLE PROOF</span><h2 class="title">ไม่ต้องเชื่อจาก Resume<br>กดเข้าไปลองของจริงได้เลย</h2></div></div>
-  <div class="project-grid"><a class="project reveal" href="../forge/"><img src="../img/hall-why.jpg" alt="เรื่องเล่าจากโรงตีเหล็ก"><div class="project-body"><span class="project-tag">STORY SYSTEM · 7 EPISODES</span><h3>Tales from the Forge</h3><p>ประสบการณ์เกือบ 20 ปีถูกจัดใหม่เป็นเรื่องเล่าที่มี Progress, Unlock และตอนพิเศษ</p><span class="project-go">อ่านเรื่องจริง →</span></div></a><a class="project reveal" href="../classroom/"><img src="../img/hall-classroom.jpg" alt="ห้องเรียน AI"><div class="project-body"><span class="project-tag">LEARNING EXPERIENCE · 6 LESSONS</span><h3>6 Free AI Lessons</h3><p>กระบวนการที่ใช้สร้างเว็บไซต์ ถูกถอดเป็นบทเรียนที่พาคนไปถึงผลงานชิ้นแรก</p><span class="project-go">เข้าเรียนฟรี →</span></div></a><a class="project reveal" href="../core7/"><img src="../img/hall-core7.jpg" alt="เกม CORE7"><div class="project-body"><span class="project-tag">GAME SYSTEM · HUMAN VS AI</span><h3>myClover: CORE7</h3><p>ค่านิยมของชุมชนกลายเป็นเกมตัดสินใจที่อ่านง่าย แต่มีพื้นที่ให้คิดและอ่านคน</p><span class="project-go">ทดลองเล่น →</span></div></a><a class="project reveal" href="../hall.html"><img src="../img/og-home.jpg" alt="บ้าน myClover"><div class="project-body"><span class="project-tag">INTERACTIVE HOUSE</span><h3>myClover House</h3><p>เว็บไซต์ข้อมูลถูกเปลี่ยนให้เป็นบ้านแบบเล่นได้ มี Quest, Inventory, Card และ Secret Route</p><span class="project-go">เดินเข้าบ้าน →</span></div></a></div>
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow" data-i18n="proofEyebrow">PLAYABLE PROOF</span><h2 class="title" data-i18n-html="proofTitle">ไม่ต้องเชื่อจาก Resume<br>กดเข้าไปลองของจริงได้เลย</h2></div></div>
+  <div class="project-grid">
+    <a class="project reveal p-forge" href="../forge/"><span class="project-icon">⚒️</span><div class="project-body"><span class="project-tag">STORY SYSTEM · 7 EPISODES</span><h3>Tales from the Forge</h3><p data-i18n="project1">ประสบการณ์เกือบ 20 ปีถูกจัดใหม่เป็นเรื่องเล่าที่มี Progress, Unlock และตอนพิเศษ</p><span class="project-go" data-i18n="project1Go">อ่านเรื่องจริง →</span></div></a>
+    <a class="project reveal p-class" href="../classroom/"><span class="project-icon">⚡</span><div class="project-body"><span class="project-tag">LEARNING EXPERIENCE · 6 LESSONS</span><h3>6 Free AI Lessons</h3><p data-i18n="project2">กระบวนการที่ใช้สร้างเว็บไซต์ ถูกถอดเป็นบทเรียนที่พาคนไปถึงผลงานชิ้นแรก</p><span class="project-go" data-i18n="project2Go">เข้าเรียนฟรี →</span></div></a>
+    <a class="project reveal p-core" href="../core7/"><span class="project-icon">🎴</span><div class="project-body"><span class="project-tag">GAME SYSTEM · HUMAN VS AI</span><h3>myClover: CORE7</h3><p data-i18n="project3">ค่านิยมของชุมชนกลายเป็นเกมตัดสินใจที่อ่านง่าย แต่มีพื้นที่ให้คิดและอ่านคน</p><span class="project-go" data-i18n="project3Go">ทดลองเล่น →</span></div></a>
+    <a class="project reveal p-house" href="../hall.html"><span class="project-icon">🍀</span><div class="project-body"><span class="project-tag">INTERACTIVE HOUSE</span><h3>myClover House</h3><p data-i18n="project4">เว็บไซต์ข้อมูลถูกเปลี่ยนให้เป็นบ้านแบบเล่นได้ มี Quest, Inventory, Card และ Secret Route</p><span class="project-go" data-i18n="project4Go">เดินเข้าบ้าน →</span></div></a>
+  </div>
 </div></section>
 
 <section class="section light"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">LANGUAGES & LOGIC</span><h2 class="title">ภาษาที่ใช้คุยกับคน<br>และภาษาที่ใช้คิดกับระบบ</h2><p class="sub">Math ไม่ใช่ภาษาพูด แต่เป็นภาษาหนึ่งที่ผมใช้มองโครงสร้าง ความสัมพันธ์ และความน่าจะเป็น</p></div></div>
-  <div class="language-grid"><div class="language-card reveal"><h3>Languages & Logic</h3><p>ระดับนี้เป็นการประเมินตัวเองเพื่อให้คนรู้ว่าใช้ผมกับงานแบบไหนได้ ไม่ใช่ใบรับรองความสมบูรณ์แบบ</p><div class="ratings"><div class="rating"><b>Math / Logic</b><span class="stars" aria-label="5 จาก 5">★★★★★</span><small>5/5</small></div><div class="rating"><b>Thai</b><span class="stars" aria-label="5 จาก 5">★★★★★</span><small>5/5</small></div><div class="rating"><b>English</b><span class="stars" aria-label="5 จาก 5">★★★★★</span><small>5/5</small></div><div class="rating"><b>Japanese</b><span class="stars" aria-label="3 จาก 5">★★★<span class="off">☆☆</span></span><small>3/5</small></div><div class="rating"><b>Chinese</b><span class="stars" aria-label="2 จาก 5">★★<span class="off">☆☆☆</span></span><small>2/5</small></div></div></div><div class="language-card reveal"><h3>Education</h3><div class="education-list"><div class="edu"><b>Triam Udom Suksa School</b><span>มัธยมศึกษา</span></div><div class="edu"><b>Chulalongkorn University</b><span>นิเทศศาสตร์ · วาทวิทยาและการสื่อสาร</span></div><div class="edu"><b>Sripatum University</b><span>นิติศาสตร์ (กำลังศึกษา)</span></div><div class="edu"><b>Selected Programs</b><span>DEF4 · The Story 4 · The Connext 1</span></div></div></div></div>
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow" data-i18n="languageEyebrow">LANGUAGES & LOGIC</span><h2 class="title" data-i18n-html="languageTitle">ภาษาที่ใช้คุยกับคน<br>และภาษาที่ใช้คิดกับระบบ</h2><p class="sub" data-i18n="languageSub">Math ไม่ใช่ภาษาพูด แต่เป็นภาษาหนึ่งที่ผมใช้มองโครงสร้าง ความสัมพันธ์ และความน่าจะเป็น</p></div></div>
+  <div class="language-grid"><div class="language-card reveal"><h3 data-i18n="languageCardTitle">Languages & Logic</h3><p data-i18n="languageCardCopy">ระดับนี้เป็นการประเมินตัวเองเพื่อให้คนรู้ว่าใช้ผมกับงานแบบไหนได้ ไม่ใช่ใบรับรองความสมบูรณ์แบบ</p><div class="ratings"><div class="rating"><b>Math / Logic</b><span class="stars" aria-label="5/5">★★★★★</span><small>5/5</small></div><div class="rating"><b>Thai</b><span class="stars" aria-label="5/5">★★★★★</span><small>5/5</small></div><div class="rating"><b>English</b><span class="stars" aria-label="5/5">★★★★★</span><small>5/5</small></div><div class="rating"><b>Japanese</b><span class="stars" aria-label="3/5">★★★<span class="off">☆☆</span></span><small>3/5</small></div><div class="rating"><b>Chinese</b><span class="stars" aria-label="2/5">★★<span class="off">☆☆☆</span></span><small>2/5</small></div></div></div><div class="language-card reveal"><h3 data-i18n="educationTitle">Education</h3><div class="education-list"><div class="edu"><b>Triam Udom Suksa School</b><span data-i18n="edu1">มัธยมศึกษา</span></div><div class="edu"><b>Chulalongkorn University</b><span data-i18n="edu2">นิเทศศาสตร์ · วาทวิทยาและการสื่อสาร</span></div><div class="edu"><b>Sripatum University</b><span data-i18n="edu3">นิติศาสตร์ (กำลังศึกษา)</span></div><div class="edu"><b>Selected Programs</b><span>DEF4 · The Story 4 · The Connext 1</span></div></div></div></div>
 </div></section>
 </main>
+</div>
 
-<main class="mode-view lifestyle-view">
+<div id="lifestyleWorld" class="world mode-view lifestyle-view" data-world="lifestyle" hidden>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <span class="eyebrow" data-i18n="lifeBuild">LIFESTYLE BUILD</span>
+      <h1><span data-i18n="lifeTitle1">Player · Explorer</span><em data-i18n="lifeTitle2">Lifelong Beginner</em></h1>
+      <p class="hero-lead" data-i18n-html="lifeLead">นอกเวลางาน ผมชอบเข้าไปอยู่ในสนามที่ยังไม่รู้คำตอบ — จากกระโดดร่ม ดำน้ำ สโนว์บอร์ด ไปจนถึง Pro Tour ของเกมการ์ด เพราะช่วงที่ต้อง<b>เริ่มเรียนใหม่</b> ทำให้ผมรู้สึกมีชีวิต</p>
+      <p class="hero-note" data-i18n="lifeNote">ไม่ได้ทำทุกอย่างเพื่อเก็บ Achievement แค่ชอบเห็นว่าตัวเองจะอ่านสนามใหม่ ปรับ Build และสนุกกับการยังไม่เก่งได้แค่ไหน</p>
+      <div class="hero-actions"><a class="btn primary" href="#life-gallery" data-i18n="lifeCta">เปิด Lifestyle Loadout →</a></div>
+      <div class="socials"><span>@teemclover</span><a class="social" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer">LINE</a><a class="social" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer">Instagram</a><a class="social" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer">Facebook</a></div>
+    </div>
+    <div class="hero-media reveal">
+      <figure class="hero-photo"><img src="../img/resume-life-skydive.webp?v=20260802" alt="ทีมกระโดดร่มเหนือ Palm Jumeirah"><figcaption class="hero-caption"><b data-i18n="lifePhotoTitle">ความกลัวอยู่ครบ แต่ขึ้นเครื่องแล้วก็ต้องกระโดด</b><p data-i18n="lifePhotoCopy">สนามใหม่ไม่ได้ทำให้ผมมั่นใจขึ้นทันที แต่มันทำให้รู้ว่าความกลัวกับความสนุกอยู่พร้อมกันได้</p></figcaption></figure>
+      <div class="float-badge" data-i18n="lifeBadge">PLAY · EXPLORE · LEARN AGAIN</div>
+    </div>
+  </div>
+</header>
+<div class="stats"><div class="wrap stats-grid reveal"><div class="stat"><strong>5</strong><span data-i18n="lifeStat1">สนามที่ต้องเริ่มเรียนใหม่</span></div><div class="stat"><strong>META</strong><span data-i18n="lifeStat2">เปลี่ยนเมื่อไร ก็ปรับ Build</span></div><div class="stat"><strong data-i18n="lifeStat3Strong">ล้มได้</strong><span data-i18n="lifeStat3">แล้วเก็บข้อมูลกลับมา</span></div><div class="stat"><strong data-i18n="lifeStat4Strong">เล่นจริง</strong><span data-i18n="lifeStat4">มากกว่านั่งดูข้างสนาม</span></div></div></div>
+
+<main>
 <section class="section" id="life-gallery"><div class="wrap">
-  <div class="section-head reveal"><div class="copy life-intro"><span class="eyebrow">LIFESTYLE LOADOUT</span><h2 class="title">ไม่ได้ชอบเพราะทำได้เก่งทุกอย่าง<br>ชอบเพราะทุกสนามบังคับให้เริ่มใหม่</h2><p class="sub">แต่ละกิจกรรมมีระบบ จังหวะ ความเสี่ยง และวิธีอ่านสถานการณ์ต่างกัน พอเข้าไปเล่นจริง ผมเลยได้ทั้งความสนุกและข้อมูลกลับมาปรับวิธีคิดของตัวเอง</p></div></div>
+  <div class="section-head reveal"><div class="copy life-intro"><span class="eyebrow" data-i18n="loadoutEyebrow">LIFESTYLE LOADOUT</span><h2 class="title" data-i18n-html="loadoutTitle">ไม่ได้ชอบเพราะทำได้เก่งทุกอย่าง<br>ชอบเพราะทุกสนามบังคับให้เริ่มใหม่</h2><p class="sub" data-i18n="loadoutSub">Skydiving อยู่บนปกของฝั่งนี้ ส่วนอีก 4 สนามข้างล่างมีระบบ จังหวะ ความเสี่ยง และวิธีอ่านสถานการณ์ต่างกัน พอเข้าไปเล่นจริง ผมจึงได้ทั้งความสนุกและข้อมูลกลับมาปรับวิธีคิด</p></div></div>
   <div class="life-gallery">
-    <article class="life-card reveal"><img src="../img/resume-life-skydive.webp" alt="กระโดดร่มเหนือ Palm Jumeirah"><div class="life-card-copy"><span>SKY DIVING</span><h3>กลัวอยู่ แต่ก็กระโดด</h3><p>ไม่ได้ทำให้ความกลัวหายไป แค่สอนว่าบางครั้งเราต้องตัดสินใจก่อนที่ความมั่นใจจะมาถึง</p></div></article>
-    <article class="life-card reveal"><img src="../img/resume-life-protour.webp" alt="เดินทางไปแข่ง Flesh and Blood Pro Tour London"><div class="life-card-copy"><span>TCG PRO TOUR</span><h3>ชอบเกมที่ยังไม่มีคำตอบตายตัว</h3><p>สนุกที่สุดตอน META ยังไม่นิ่ง ทุกคนเห็นข้อมูลคล้ายกัน แต่ต่างกันที่การเตรียมตัว อ่านเกม และยอมรับ Build ที่พัง</p></div></article>
-    <article class="life-card reveal"><img src="../img/resume-life-snowboard.webp" alt="เล่นสโนว์บอร์ดบนภูเขาหิมะ"><div class="life-card-copy"><span>SNOWBOARDING</span><h3>ล้มคือ Feedback ที่เร็วมาก</h3><p>บนหิมะไม่มีเวลาอธิบายยาว ร่างกายบอกทันทีว่าน้ำหนักผิด จังหวะผิด แล้วให้ลองใหม่อีกครั้ง</p></div></article>
-    <article class="life-card reveal"><img src="../img/resume-life-scuba.webp" alt="ดำน้ำดูปะการัง"><div class="life-card-copy"><span>SCUBA DIVING</span><h3>ยิ่งลงลึก ยิ่งต้องนิ่ง</h3><p>ความตื่นเต้นใช้พลังงานเยอะ การหายใจช้า อ่านอุปกรณ์ และเคารพข้อจำกัด สำคัญกว่าการรีบไปให้ไกล</p></div></article>
-    <article class="life-card reveal"><img src="../img/resume-life-boardgame.webp" alt="จัดสัมมนาผ่านบอร์ดเกม"><div class="life-card-copy"><span>BOARDGAME SEMINAR</span><h3>งานอดิเรกที่ไหลกลับมาเป็นงาน</h3><p>เกมช่วยเปิดบทสนทนา ให้คนเห็นผลของการตัดสินใจ และทำให้ห้องเรียนไม่ต้องมีคนพูดอยู่ฝ่ายเดียว</p></div></article>
+    <article class="life-card reveal"><img src="../img/resume-life-protour.webp?v=20260802" alt="เดินทางไปแข่ง Flesh and Blood Pro Tour London"><div class="life-card-copy"><span>TCG PRO TOUR</span><h3 data-i18n="proTourTitle">ชอบเกมที่ยังไม่มีคำตอบตายตัว</h3><p data-i18n="proTourCopy">สนุกที่สุดตอน META ยังไม่นิ่ง ทุกคนเห็นข้อมูลคล้ายกัน แต่ต่างกันที่การเตรียมตัว อ่านเกม และยอมรับ Build ที่พัง</p></div></article>
+    <article class="life-card reveal"><img src="../img/resume-life-snowboard.webp?v=20260802" alt="เล่นสโนว์บอร์ดบนภูเขาหิมะ"><div class="life-card-copy"><span>SNOWBOARDING</span><h3 data-i18n="snowTitle">ล้มคือ Feedback ที่เร็วมาก</h3><p data-i18n="snowCopy">บนหิมะไม่มีเวลาอธิบายยาว ร่างกายบอกทันทีว่าน้ำหนักผิด จังหวะผิด แล้วให้ลองใหม่อีกครั้ง</p></div></article>
+    <article class="life-card reveal"><img src="../img/resume-life-scuba.webp?v=20260802" alt="ดำน้ำดูปะการัง"><div class="life-card-copy"><span>SCUBA DIVING</span><h3 data-i18n="scubaTitle">ยิ่งลงลึก ยิ่งต้องนิ่ง</h3><p data-i18n="scubaCopy">ความตื่นเต้นใช้พลังงานเยอะ การหายใจช้า อ่านอุปกรณ์ และเคารพข้อจำกัด สำคัญกว่าการรีบไปให้ไกล</p></div></article>
+    <article class="life-card reveal"><img src="../img/resume-life-boardgame.webp?v=20260802" alt="จัดสัมมนาผ่านบอร์ดเกม"><div class="life-card-copy"><span>BOARDGAME SEMINAR</span><h3 data-i18n="boardgameTitle">งานอดิเรกที่ไหลกลับมาเป็นงาน</h3><p data-i18n="boardgameCopy">เกมช่วยเปิดบทสนทนา ให้คนเห็นผลของการตัดสินใจ และทำให้ห้องเรียนไม่ต้องมีคนพูดอยู่ฝ่ายเดียว</p></div></article>
   </div>
 </div></section>
 
 <section class="section light"><div class="wrap">
-  <div class="section-head reveal"><div class="copy"><span class="eyebrow">WHAT IT SAYS ABOUT ME</span><h2 class="title">ไม่ใช่คนกล้าไปหมด<br>แต่เป็นคนที่ชอบเรียนจากสนามจริง</h2></div></div>
-  <div class="lesson-grid"><div class="life-lesson reveal"><span class="n">01 · CURIOSITY</span><h3>ชอบของที่ยังไม่เข้าใจ</h3><p>ความรู้สึกว่า “ยังไม่รู้” ไม่ได้น่ากลัวเสมอไป บางทีมันคือส่วนที่สนุกที่สุดของเกม</p></div><div class="life-lesson reveal"><span class="n">02 · PRACTICE</span><h3>เชื่อการลองมากกว่าภาพลักษณ์</h3><p>ทำจริงแล้วพัง ยังให้ข้อมูลมากกว่านั่งอธิบายว่าตัวเองน่าจะทำได้</p></div><div class="life-lesson reveal"><span class="n">03 · ADAPTATION</span><h3>ไม่ผูกตัวเองกับ Build เดิม</h3><p>ถ้าสนามเปลี่ยน วิธีเล่นก็เปลี่ยนได้ โดยไม่จำเป็นต้องทิ้งแก่นของตัวเอง</p></div><div class="life-lesson reveal"><span class="n">04 · PARTY</span><h3>สนุกขึ้นเมื่อคนเล่นต่างกัน</h3><p>ทั้งเกม งาน และชีวิตน่าสนใจกว่าเดิม เมื่อคนไม่ต้องเก่งเหมือนกันแต่ยังไปด้วยกันได้</p></div></div>
+  <div class="section-head reveal"><div class="copy"><span class="eyebrow" data-i18n="lifeMeaningEyebrow">WHAT IT SAYS ABOUT ME</span><h2 class="title" data-i18n-html="lifeMeaningTitle">ไม่ใช่คนกล้าไปหมด<br>แต่เป็นคนที่ชอบเรียนจากสนามจริง</h2></div></div>
+  <div class="lesson-grid"><div class="life-lesson reveal"><span class="n">01 · CURIOSITY</span><h3 data-i18n="lesson1Title">ชอบของที่ยังไม่เข้าใจ</h3><p data-i18n="lesson1Copy">ความรู้สึกว่า “ยังไม่รู้” ไม่ได้น่ากลัวเสมอไป บางทีมันคือส่วนที่สนุกที่สุดของเกม</p></div><div class="life-lesson reveal"><span class="n">02 · PRACTICE</span><h3 data-i18n="lesson2Title">เชื่อการลองมากกว่าภาพลักษณ์</h3><p data-i18n="lesson2Copy">ทำจริงแล้วพัง ยังให้ข้อมูลมากกว่านั่งอธิบายว่าตัวเองน่าจะทำได้</p></div><div class="life-lesson reveal"><span class="n">03 · ADAPTATION</span><h3 data-i18n="lesson3Title">ไม่ผูกตัวเองกับ Build เดิม</h3><p data-i18n="lesson3Copy">ถ้าสนามเปลี่ยน วิธีเล่นก็เปลี่ยนได้ โดยไม่จำเป็นต้องทิ้งแก่นของตัวเอง</p></div><div class="life-lesson reveal"><span class="n">04 · PARTY</span><h3 data-i18n="lesson4Title">สนุกขึ้นเมื่อคนเล่นต่างกัน</h3><p data-i18n="lesson4Copy">ทั้งเกม งาน และชีวิตน่าสนใจกว่าเดิม เมื่อคนไม่ต้องเก่งเหมือนกันแต่ยังไปด้วยกันได้</p></div></div>
   <div class="loadout reveal"><span class="chip">Flesh and Blood</span><span class="chip">Board Games</span><span class="chip">Travel</span><span class="chip">Food with Eiko</span><span class="chip">AI Party</span><span class="chip">Law Student</span><span class="chip">Version 1 Builder</span><span class="chip">#glhf</span></div>
 </div></section>
 </main>
+</div>
 
 <section class="section contact" id="contact"><div class="wrap">
-  <span class="eyebrow reveal">LET'S TALK</span><h2 class="title reveal"><span class="mode-view career-view">ถ้าโจทย์ของคุณมีทั้งคน เนื้อหา และระบบ<br>น่าจะมีเรื่องให้เราคุยกัน</span><span class="mode-view lifestyle-view">ถ้าชอบเกม การเดินทาง หรือสนามที่ต้องเริ่มใหม่<br>ก็น่าจะคุยกันสนุก</span></h2><p class="sub reveal">ชื่อเดียวกันทุกช่องทาง: <b style="color:var(--accent)">@teemclover</b></p>
+  <span class="eyebrow reveal" data-i18n="contactEyebrow">LET'S TALK</span>
+  <h2 class="title reveal"><span class="contact-career" data-i18n-html="contactCareer">ถ้าโจทย์ของคุณมีทั้งคน เนื้อหา และระบบ<br>น่าจะมีเรื่องให้เราคุยกัน</span><span class="contact-life" data-i18n-html="contactLife">ถ้าชอบเกม การเดินทาง หรือสนามที่ต้องเริ่มใหม่<br>ก็น่าจะคุยกันสนุก</span></h2>
+  <p class="sub reveal"><span data-i18n="sameHandle">ชื่อเดียวกันทุกช่องทาง:</span> <b>@teemclover</b></p>
   <div class="contact-grid"><a class="contact-card reveal" href="https://line.me/ti/p/~teemclover" target="_blank" rel="noopener noreferrer"><b>LINE</b><span>@teemclover →</span></a><a class="contact-card reveal" href="https://www.instagram.com/teemclover/" target="_blank" rel="noopener noreferrer"><b>Instagram</b><span>@teemclover →</span></a><a class="contact-card reveal" href="https://www.facebook.com/teemclover" target="_blank" rel="noopener noreferrer"><b>Facebook</b><span>@teemclover →</span></a></div>
-  <a class="first-link reveal" href="./first-version/">Smart Resume · First Version →</a>
+  <a class="first-link reveal" href="./first-version/" data-i18n="firstLink">Smart Resume · First Version →</a>
 </div></section>
 <footer><div class="wrap">🍀 myClover · Career × Lifestyle · Good Luck, Have Fun</div></footer>
 
-<script src="./resume.js?v=20260802-career-life" defer></script>
+<script src="./resume.js?v=20260802-switch-i18n" defer></script>
 <script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","xtx73cs6w1");</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});</script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>
