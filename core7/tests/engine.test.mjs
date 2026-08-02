@@ -6,7 +6,10 @@ import assert from 'node:assert/strict';
 import { MatchAuthority, PHASE } from '../js/engine.js';
 import { Core7Bot, seededRng } from '../js/bot.js';
 import { FIRST_HAND } from '../js/cards.js';
-import { CORE7_ART_VERSION, sceneSVG } from '../js/art.js';
+import {
+  CORE7_ART_VERSION, PILOT_CARD_ART, GENERIC_CARD_ART,
+  sceneSVG, cardSVG, genericCardSVG,
+} from '../js/art.js';
 
 const G = { R: 'gen-red', G: 'gen-green', B: 'gen-blue', X: 'gen-gray' };
 const hand = spec => spec.split('').map(ch => G[ch]);
@@ -283,8 +286,16 @@ for (const level of ['easy', 'hard']) {
   });
 }
 
-test('v0.3 art set contains a renderable scene for all 28 cards', () => {
-  assert.equal(CORE7_ART_VERSION, '0.3.0');
+test('v0.4 pilot uses 4 full-bleed cards, 4 Generic cards, and keeps 28 SVG fallbacks', () => {
+  assert.equal(CORE7_ART_VERSION, '0.4.0-pilot');
+  assert.equal(Object.keys(PILOT_CARD_ART).length, 4);
+  assert.equal(Object.keys(GENERIC_CARD_ART).length, 4);
+  for (const [cardId, href] of Object.entries(PILOT_CARD_ART)) {
+    assert.match(cardSVG(cardId), new RegExp(`href="${href}"`));
+  }
+  for (const [color, href] of Object.entries(GENERIC_CARD_ART)) {
+    assert.match(genericCardSVG(color), new RegExp(`href="${href}"`));
+  }
   assert.equal(FIRST_HAND.length, 28);
   for (const card of FIRST_HAND) assert.ok(sceneSVG(card.id).length > 80, card.id);
 });

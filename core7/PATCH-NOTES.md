@@ -25,6 +25,7 @@
 - รวมช่อง Room Code ไว้ใน Public Lobby และตัดปุ่มเข้าห้องที่ซ้ำออก
 - จัด Round Timeline แบบสมมาตร โดยวางใบทิ้งกรอบเส้นประใต้ฝั่งเจ้าของการ์ด
 - โลโก้ myClover มุมซ้ายบนกลับไปหน้า Index หลัก
+- เพิ่ม ART v0.4 Pilot: ภาพเต็มใบ `JOY`, `CURIOSITY`, `PATIENCE`, `BUILD` และ Generic 4 สีบน template สองภาษาเดียวกัน
 
 ## 2026-08-01 — Manual Cosmetic / Face-up Fix
 

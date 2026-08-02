@@ -12,7 +12,22 @@
 
 import { COLOR_META, cardById } from './cards.js';
 
-export const CORE7_ART_VERSION = '0.3.0';
+export const CORE7_ART_VERSION = '0.4.0-pilot';
+
+/* ภาพเต็มใบชุดทดลอง — สีละ 1 ใบ ก่อนขยายอีก 24 ใบหลังคอนเฟิร์ม */
+export const PILOT_CARD_ART = {
+  'fh-red-joy': '/core7/assets/cards/fh-red-joy.webp',
+  'fh-blue-curiosity': '/core7/assets/cards/fh-blue-curiosity.webp',
+  'fh-green-patience': '/core7/assets/cards/fh-green-patience.webp',
+  'fh-gray-build': '/core7/assets/cards/fh-gray-build.webp',
+};
+
+export const GENERIC_CARD_ART = {
+  RED: '/core7/assets/cards/gen-red.webp',
+  BLUE: '/core7/assets/cards/gen-blue.webp',
+  GREEN: '/core7/assets/cards/gen-green.webp',
+  GRAY: '/core7/assets/cards/gen-gray.webp',
+};
 
 /* ── สีหลักของแบรนด์ ── */
 export const BRAND = {
@@ -454,6 +469,81 @@ export function sceneSVG(cardId) {
   return fn ? fn() : '';
 }
 
+/* ═══ Template ภาพเต็มใบ — ใช้ร่วมกันทั้ง FIRST HAND Pilot และ Generic ═══ */
+function fullBleedCardSVG(card, artHref, { width = 300, showNumber = true, generic = false } = {}) {
+  const meta = COLOR_META[card.color];
+  const id = nid('fb');
+  const title = generic ? meta.nameEn.toUpperCase() : card.en.toUpperCase();
+  const titleSize = title.length > 10 ? 25 : (title.length > 8 ? 28 : 32);
+  const subtitle = generic ? meta.nameTh : card.th;
+  const footer = generic
+    ? `OPEN PLAY · GENERIC · ART v${CORE7_ART_VERSION}`
+    : `FIRST HAND · ${String(card.no).padStart(2, '0')} / 28 · ART v${CORE7_ART_VERSION}`;
+
+  return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420" data-art-version="${CORE7_ART_VERSION}"
+    role="img" aria-label="การ์ด ${title} (${subtitle}) สี${meta.nameTh} สาย ${meta.className}">
+    <defs>
+      <clipPath id="${id}-clip"><rect x="12" y="12" width="276" height="396" rx="13"/></clipPath>
+      <linearGradient id="${id}-gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${GOLDL}"/><stop offset="45%" stop-color="${GOLD}"/>
+        <stop offset="72%" stop-color="#76561F"/><stop offset="100%" stop-color="${GOLDL}"/>
+      </linearGradient>
+      <linearGradient id="${id}-shade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#06120C" stop-opacity=".76"/>
+        <stop offset="24%" stop-color="#06120C" stop-opacity=".04"/>
+        <stop offset="55%" stop-color="#06120C" stop-opacity=".02"/>
+        <stop offset="78%" stop-color="#06120C" stop-opacity=".74"/>
+        <stop offset="100%" stop-color="#06120C" stop-opacity=".98"/>
+      </linearGradient>
+      <linearGradient id="${id}-wash" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="${meta.hex}" stop-opacity=".68"/>
+        <stop offset="45%" stop-color="${meta.hex}" stop-opacity="0"/>
+        <stop offset="100%" stop-color="${meta.deep}" stop-opacity=".28"/>
+      </linearGradient>
+      <filter id="${id}-shadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity=".8"/>
+      </filter>
+    </defs>
+
+    <rect x="2" y="2" width="296" height="416" rx="19" fill="${BRAND.charcoal}"/>
+    <g clip-path="url(#${id}-clip)">
+      <image href="${artHref}" x="12" y="12" width="276" height="396" preserveAspectRatio="xMidYMid slice"/>
+      <rect x="12" y="12" width="276" height="396" fill="url(#${id}-wash)"/>
+      <rect x="12" y="12" width="276" height="396" fill="url(#${id}-shade)"/>
+      <rect x="12" y="12" width="9" height="396" fill="${meta.hex}" fill-opacity=".96"/>
+    </g>
+
+    <!-- ข้อมูลสาย: ตำแหน่งเดียวกันทุกใบ -->
+    <g filter="url(#${id}-shadow)">
+      <rect x="27" y="25" width="112" height="30" rx="15" fill="${meta.deep}" fill-opacity=".92"
+        stroke="${GOLDL}" stroke-opacity=".75"/>
+      <g transform="translate(36,31)" style="color:#fff">${colorIcon(card.color, 18)}</g>
+      <text x="61" y="45" font-family="'Bai Jamjuree',sans-serif" font-size="13"
+        font-weight="700" letter-spacing=".7" fill="#fff">${meta.className}</text>
+      <text x="274" y="45" text-anchor="end" font-family="'Bai Jamjuree',sans-serif"
+        font-size="12" font-weight="700" letter-spacing="1.3" fill="#fff">${meta.nameEn.toUpperCase()}</text>
+    </g>
+
+    <!-- ชื่ออังกฤษเด่น ภาษาไทยตาม -->
+    <g filter="url(#${id}-shadow)">
+      <text x="150" y="337" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
+        font-size="${titleSize}" font-weight="700" letter-spacing="1.1" fill="#fff">${title}</text>
+      <text x="150" y="362" text-anchor="middle" font-family="'Anuphan',sans-serif"
+        font-size="17" font-weight="600" fill="${GOLDL}">${subtitle}</text>
+    </g>
+
+    <!-- Pattern ประจำสีช่วยแยกใบโดยไม่พึ่งสีเพียงอย่างเดียว -->
+    ${patternDefs(`${id}-p`)}
+    <rect x="48" y="374" width="204" height="7" rx="3.5" fill="url(#${id}-p-${card.color})"
+      stroke="#fff" stroke-opacity=".4" stroke-width=".8"/>
+    ${showNumber ? `<text x="150" y="397" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
+      font-size="7.8" font-weight="600" letter-spacing=".8" fill="#fff" fill-opacity=".72">${footer}</text>` : ''}
+
+    <rect x="12" y="12" width="276" height="396" rx="13" fill="none" stroke="${meta.hex}" stroke-width="2.2"/>
+    <rect x="2" y="2" width="296" height="416" rx="19" fill="none" stroke="url(#${id}-gold)" stroke-width="4"/>
+  </svg>`;
+}
+
 /* ═══ หน้าการ์ดเต็มใบ — viewBox 300 × 420 (63:88) ═══ */
 export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
   const card = cardById(cardId);
@@ -461,6 +551,9 @@ export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
   const meta = COLOR_META[card.color];
   const id = nid('cd');
   if (card.generic) return genericCardSVG(card.color, { width });
+  if (PILOT_CARD_ART[cardId]) {
+    return fullBleedCardSVG(card, PILOT_CARD_ART[cardId], { width, showNumber });
+  }
   return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420" data-art-version="${CORE7_ART_VERSION}"
     role="img" aria-label="การ์ด ${card.en} (${card.th}) สี${meta.nameTh} สาย ${meta.className}">
     <defs>
@@ -524,32 +617,9 @@ export function cardSVG(cardId, { width = 300, showNumber = true } = {}) {
 /* ═══ Generic Card — สำหรับ Guest ═══ */
 export function genericCardSVG(color, { width = 300 } = {}) {
   const meta = COLOR_META[color];
-  const id = nid('gc');
-  return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420"
-    role="img" aria-label="การ์ดสี${meta.nameTh} สาย ${meta.className}">
-    <defs>
-      <radialGradient id="${id}-bg" cx="50%" cy="38%" r="80%">
-        <stop offset="0%" stop-color="${meta.hex}"/><stop offset="100%" stop-color="${meta.deep}"/>
-      </radialGradient>
-      <linearGradient id="${id}-au" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="${GOLDL}"/><stop offset="45%" stop-color="${GOLD}"/>
-        <stop offset="70%" stop-color="#8a6a2c"/><stop offset="100%" stop-color="${GOLDL}"/>
-      </linearGradient>
-    </defs>
-    <rect x="2" y="2" width="296" height="416" rx="18" fill="${BRAND.charcoal}"/>
-    <rect x="2" y="2" width="296" height="416" rx="18" fill="none" stroke="url(#${id}-au)" stroke-width="4"/>
-    <rect x="12" y="12" width="276" height="396" rx="12" fill="url(#${id}-bg)"/>
-    ${patternDefs(`${id}-p`)}
-    <rect x="12" y="12" width="276" height="396" rx="12" fill="url(#${id}-p-${color})" opacity=".13"/>
-    <g transform="translate(114,124)" style="color:#fff">${colorIcon(color, 72)}</g>
-    <text x="150" y="256" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-      font-size="34" font-weight="700" fill="#fff">${meta.nameEn.toUpperCase()}</text>
-    <text x="150" y="286" text-anchor="middle" font-family="'Anuphan',sans-serif"
-      font-size="18" fill="rgba(255,255,255,.92)">${meta.nameTh} · ${meta.classTh}</text>
-    <text x="150" y="330" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-      font-size="13" font-weight="600" fill="rgba(255,255,255,.8)">${meta.className}</text>
-    <rect x="70" y="352" width="160" height="8" rx="4" fill="url(#${id}-p-${color})" stroke="rgba(255,255,255,.5)" stroke-width="1"/>
-  </svg>`;
+  if (!meta) return '';
+  return fullBleedCardSVG({ color, en: meta.nameEn, th: meta.nameTh, generic: true },
+    GENERIC_CARD_ART[color], { width, generic: true });
 }
 
 /* ═══ หลังการ์ด — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง ═══

@@ -4,8 +4,9 @@ Asset ทั้งหมดของเกมเป็น **งานต้น�
 ในไฟล์ `core7/js/art.js` — ไม่เลียนแบบ Trade Dress, Frame, Character
 หรือภาพจำของ TCG แบรนด์อื่น และไม่มีไฟล์ภายนอกที่ติดลิขสิทธิ์
 
-**Active art set: `FIRST HAND / ART v0.3.0`** — รีเฟรชครบ 28 ฉากด้วยกรอบทอง,
-depth layer และเลขกำกับ version ในวันที่ 2026-08-02 ตัวเกมอ้างการ์ดด้วย `cardId`
+**Active art set: `FIRST HAND / ART v0.4.0-pilot`** — ทดลองภาพเต็มใบ 4 ใบ
+(`JOY`, `CURIOSITY`, `PATIENCE`, `BUILD`) และ Generic 4 สีด้วย template เดียวกัน
+ขณะที่อีก 24 ใบยังใช้ procedural SVG v0.3.0 จนกว่าจะคอนเฟิร์มทิศทาง ตัวเกมอ้างการ์ดด้วย `cardId`
 ไม่อ้างลำดับไฟล์ จึง rollback เป็น art set ก่อนหน้าได้โดยไม่กระทบกติกา
 
 การเรนเดอร์เป็น Vector ทำให้คมทุกขนาด โหลดเร็ว (ไม่มีไฟล์ภาพให้ดาวน์โหลด)
@@ -17,8 +18,8 @@ depth layer และเลขกำกับ version ในวันที่ 2
 |---|---|---|---|---|
 | โลโก้โคลเวอร์ 4 แฉกรูปหัวใจ Metallic (แดง-ฟ้า-เขียว-เทา ตามภาพต้นแบบแบรนด์) | `cloverLogo(size)` | 100×100 viewBox | Nav, Card Back, Favicon | ✅ Final V1 |
 | Wordmark `myClover · CORE7` | HTML + font stack | — | Nav ทุกหน้า | ✅ Final V1 |
-| หน้าการ์ด FIRST HAND 28 ใบ | `cardSVG(id)` + `SCENES` | 300×420 (63:88) | Collection, Match, Print | ✅ ART v0.3.0 — 28 ฉากเฉพาะใบ, SVG คมทุกขนาด, versioned |
-| Generic Card 4 สี | `genericCardSVG(color)` | 300×420 | Guest ทุกโหมด | ✅ Final V1 |
+| หน้าการ์ด FIRST HAND 28 ใบ | `cardSVG(id)` + WebP pilot / `SCENES` fallback | 300×420 (63:88) | Collection, Match, Print | 🧪 ART v0.4 Pilot 4 ใบ + SVG เดิม 24 ใบ |
+| Generic Card 4 สี | `genericCardSVG(color)` + WebP | 300×420 | Guest ทุกโหมด | 🧪 ART v0.4 Pilot ครบ 4 สี |
 | หลังการ์ดมาตรฐาน — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง, ชื่อบนใบคือ `myClover` เท่านั้น (CORE7 เป็นชื่อโหมด ห้ามพิมพ์บนการ์ด) | `cardBackSVG()` | 300×420 | Match, Print | ✅ Final V1 — แบบเดียวทุกใบ เดาหน้าไพ่ไม่ได้ |
 | โปสเตอร์ myClover : First Hand (Coming Soon) | ไฟล์ภาพจากผู้ก่อตั้ง | `img/core7-poster-{640,1024}.webp` + jpg | หน้า `/card/` ส่วนชวนเล่นเกม | ✅ ภาพจริง |
 | Icon ประจำสี (flame/eye/leaf/gear) | `colorIcon(color)` | 24×24 | ทุก UI ที่แสดงสี | ✅ Final V1 |
@@ -42,5 +43,5 @@ depth layer และเลขกำกับ version ในวันที่ 2
 Production Prompt ต่อใบอยู่ในข้อมูลการ์ด (`cards.js` ฟิลด์ `artTh`) เช่น
 "มือเอื้อมไปหาอาหารจานโปรด" — สไตล์ที่ล็อก: อบอุ่น ร่วมสมัย ไม่ใช่คาสิโน
 ไม่ใช่การ์ตูนเด็กเกินไป โทนสีตาม `COLOR_META` + Cream/Gold ของแบรนด์
-เมื่อได้ภาพจริง: วางไฟล์ที่ `core7/assets/cards/<id>.webp` แล้วให้
-`cardSVG` ฝังภาพแทน `SCENES` — โครงการ์ด (Frame/ชื่อ/Pattern) ไม่ต้องแก้
+ภาพจริงวางที่ `core7/assets/cards/<id>.webp` และ `cardSVG` ฝังภาพผ่าน
+full-bleed template กลาง (Frame/ชื่ออังกฤษ/ไทย/Pattern) จึงขยายอีก 24 ใบได้โดยไม่แก้ layout
