@@ -54,7 +54,7 @@ window.HALL_COPY.th={
       firstCta:"ดูหน้าแรก First Version →",
       home:"หน้าบ้าน",privacy:"ข้อมูลของคุณ",
       seekerTitle:"ใบนี้ยังไม่ครบสี่แฉก",seekerCopy:"ลองกดดูว่าคุณต้องใช้กี่ครั้ง",
-      seekerFound:"คุณพบ Seeker แล้ว",seekerSaved:"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง",seekerTry:"ครั้งที่ {n} — ยังไม่ครบ ลองอีกครั้ง"
+      seekerFound:"ปลดล็อค “Seeker” แล้ว",seekerSaved:"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง",seekerTry:"ครั้งที่ {n} — ยังไม่ครบ ลองอีกครั้ง"
     };
 
 // V4.8 final Hall polish: navigation icon, four stats, selected-path icon and Seeker count.
@@ -107,7 +107,7 @@ window.HALL_COPY.th={
         coreCta:"Play CORE7 →",
         energyEyebrow:"🔴🟢🔵⚙️ · 4 STATS YOU CAN LEVEL UP IN THIS HOUSE",
         inventoryName:"Inventory",
-        seekerFound:"You Found Seeker",
+        seekerFound:"“Seeker” Unlocked",
         seekerSaved:"You found the four-leaf clover in {n} tries."
       });
       c=copy();
@@ -145,7 +145,7 @@ window.HALL_COPY.th={
       var seekerTitle=document.getElementById("seekerTitle");
       var seekerCopy=document.getElementById("seekerCopy");
       var seekerCount=document.getElementById("seekerCount");
-      if(seekerTitle)seekerTitle.textContent=c.seekerFound||(isTh?"คุณพบ Seeker แล้ว":"You Found Seeker");
+      if(seekerTitle)seekerTitle.textContent=c.seekerFound||(isTh?"ปลดล็อค “Seeker” แล้ว":"“Seeker” Unlocked");
       if(seekerCopy)seekerCopy.textContent=format(c.seekerSaved||(isTh?"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง":"You found the four-leaf clover in {n} tries."),{n:n});
       if(seekerCount)seekerCount.textContent="";
     }
@@ -156,7 +156,7 @@ window.HALL_COPY.th={
       Object.assign(window.HALL_COPY.en,{
         energyEyebrow:"🔴🟢🔵⚙️ · 4 STATS YOU CAN LEVEL UP IN THIS HOUSE",
         inventoryName:"Inventory",
-        seekerFound:"You Found Seeker",
+        seekerFound:"“Seeker” Unlocked",
         seekerSaved:"You found the four-leaf clover in {n} tries."
       });
     }
