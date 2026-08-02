@@ -17,7 +17,7 @@
 
    ── จุดเกาะใน HTML (ทาสีให้เองอัตโนมัติ) ──
    ค่าที่ขึ้นต้นด้วยชื่อเส้น เช่น "forge" หรือ "learn"
-     [data-mc-progress=forge]      "อ่านแล้ว 3/12 ตอน" · ซ่อนถ้ายังไม่เริ่ม
+     [data-mc-progress=forge]      "อ่านแล้ว 3/7 ตอน" · ซ่อนถ้ายังไม่เริ่ม
      [data-mc-bar=forge]           แถบความคืบหน้า — ปรับ width เป็น %
      [data-mc-continue=forge:../]  ลิงก์ "ทำต่อ" — หลัง : คือ path นำหน้า
      [data-mc-demote=forge:ghost]  ใส่คลาส ghost เมื่อเริ่มแล้ว (ลดความเด่น)
@@ -31,7 +31,7 @@
    ═══════════════════════════════════════════════════════════════ */
 (function(){
   var TRACKS={
-    forge:{key:'mc_read',done:'mc_forge_done',title:'BLACKSMITH',unit:'ตอน',what:'อ่าน',items:['ep1-everyone-gets-to-play','ep2-the-first-item','ep3-the-item-that-came-back','ep4-what-traveled-without-us','ep5-from-answers-to-a-system','ep6-the-starter-kit','ep7-a-voice-that-went-further','ep8-the-blacksmith-backstage','ep9-tools-must-reach-people','ep10-this-time-i-left-the-screen-on','ep11-everyone-has-their-own-class','ep12-a-new-game-a-new-league']},
+    forge:{key:'mc_read',done:'mc_forge_done',title:'BLACKSMITH',unit:'ตอน',what:'อ่าน',items:['ep1-everyone-gets-to-play','ep2-the-first-item','ep3-the-item-that-came-back','ep4-what-traveled-without-us','ep5-from-answers-to-a-system','ep6-the-starter-kit','ep7-a-voice-that-went-further']},
     learn:{key:'mc_learn',done:'mc_learn_done',title:'',unit:'บท',what:'เรียน',items:['free-ai','image-ai','clip-ai','notebooklm','prompts','first-web']}
   };
   var TKEY='mc_titles';
@@ -200,7 +200,7 @@
   }
 
   /* ── ย้ายความคืบหน้าเก่ามาชื่อใหม่ ──
-     ตอนการ์ตูนถูกเรียงเลขใหม่เป็น 1–12 (เดิมเริ่มที่ 0 และมีตอน 9.5)
+     รองรับ Save จากโครงตอนเก่า ก่อนสรุปเรื่องใหม่เป็น 7 ตอน
      คนที่อ่านค้างไว้ก่อนหน้านั้นต้องไม่เสียของ — แปลงครั้งเดียวแล้วปักธงไว้ */
   var RENAMED={'ep0-my-own-machine':'ep1-everyone-gets-to-play','ep1-month-five':'ep2-the-first-item','ep2-footsteps':'ep3-the-item-that-came-back','ep3-fresh-disc':'ep4-what-traveled-without-us','ep4-deckbuilding':'ep5-from-answers-to-a-system','ep5-dream-factory':'ep6-the-starter-kit','ep6-ten-to-thousand':'ep7-a-voice-that-went-further','ep7-the-smith-who-lost':'ep8-the-blacksmith-backstage','ep8-the-one-from-hatyai':'ep9-tools-must-reach-people','ep9-open-the-screen':'ep10-this-time-i-left-the-screen-on','ep9-5-the-guild-i-imagined':'ep11-everyone-has-their-own-class','ep10-the-tenth-step':'ep12-a-new-game-a-new-league'};
   function migrate(){
