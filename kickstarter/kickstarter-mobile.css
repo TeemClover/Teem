@@ -1,0 +1,141 @@
+/* Mobile-first refinement for the Kickstarter campaign.
+   Loaded after the desktop campaign styles so the mobile page can be
+   composed differently instead of merely scaled down. */
+
+@media (max-width:760px){
+  html,body{width:100%;max-width:100%;overflow-x:clip}
+  body{padding-bottom:72px}
+  main,.hero,.language,.ksv2-section{max-width:100%;overflow-x:clip}
+  .wrap{width:calc(100% - 32px)!important;max-width:100%;margin-inline:auto}
+  .hero-copy,.hero-stage,.section-heading,.rules-copy,.carry-copy,.ksv2-online-grid>*,.ksv2-tournament-grid>*,.ksv2-cardback-grid>*,.ksv2-uses-head>*{min-width:0}
+
+  /* Navigation stays compact inside embedded mobile browsers. */
+  .campaign-nav{position:absolute}
+  .nav-inner{width:calc(100% - 24px);min-height:62px;gap:8px}
+  .brand{gap:7px;font-size:.76rem;min-width:0}
+  .brand-mark{width:30px;height:30px;flex:0 0 30px}
+  .brand-mark svg{width:28px;height:28px}
+  .brand>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ksv2-nav-tools{margin-left:auto;gap:5px;flex:0 0 auto}
+  .ksv2-lang{padding:2px}
+  .ksv2-lang button{padding:.34rem .43rem;font-size:9px}
+  .nav-cta,.ksv2-play-nav{display:none!important}
+
+  /* The mobile hero is a deliberate editorial layout, not the desktop grid squeezed smaller. */
+  .hero{min-height:auto;padding:92px 0 52px;display:block}
+  .hero-grid{display:flex!important;flex-direction:column;gap:18px;width:100%}
+  .hero-copy{text-align:left;width:100%}
+  .campaign-kicker{font-size:.59rem;line-height:1.4;letter-spacing:.13em;margin-bottom:13px}
+  .campaign-kicker span{width:22px}
+  .hero h1{font-size:clamp(2.78rem,11.7vw,3.7rem)!important;line-height:.92;letter-spacing:-.052em;max-width:100%;overflow-wrap:normal;word-break:normal}
+  .hero h1 em{display:inline}
+  .hero-lead{max-width:31rem;margin:19px 0 0;font-size:.96rem;line-height:1.55}
+  .hero-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:9px;width:100%;margin-top:24px}
+  .hero-actions .button{width:100%;min-width:0;min-height:48px;padding:11px 9px;border-radius:12px;font-size:.77rem;line-height:1.2;text-align:center}
+  .hero-actions .ksv2-play-hero{grid-column:1/-1;order:-1;background:#fff;color:#0a2b1c;border-color:#fff;box-shadow:0 14px 35px -24px rgba(255,255,255,.8)}
+  .micro-proof{margin-top:15px;font-size:.64rem;line-height:1.55;letter-spacing:.025em}
+  .ksv2-hero-badge{gap:6px;margin-top:12px}
+  .ksv2-hero-badge span{padding:.38rem .56rem;font-size:.63rem}
+  .hero-stage{width:100%;min-height:330px!important;margin-top:0;overflow:hidden;place-items:center}
+  .hero-cards{width:455px!important;max-width:none!important;height:390px!important;transform:scale(.69)!important;transform-origin:center center}
+  .hero-card{width:190px!important}
+  .hero-seal{width:100px;right:1%;bottom:5%;border-width:1px}
+  .hero-seal span,.hero-seal small{font-size:.43rem}
+  .hero-seal b{font-size:.85rem;margin:4px 0}
+  .hero-scroll{display:none}
+
+  /* Compact proof band. */
+  .promise-grid{grid-template-columns:1fr 1fr}
+  .promise-grid article{padding:19px 10px}
+  .promise-grid strong{font-size:1.45rem}
+  .promise-grid span{font-size:.59rem;line-height:1.35}
+
+  /* Section rhythm and type tuned for a phone reading distance. */
+  .origin,.game,.carry,.language,.box,.open-play,.ai,.pledges,.stretch,.future,.timeline,.risks,.faq,.final-cta,
+  .ksv2-online,.ksv2-tournament,.ksv2-cardback,.ksv2-cores,.ksv2-uses{padding:68px 0}
+  .origin-copy h2,.section-heading h2,.carry h2,.open-copy h2,.ai h2,.future h2,.risk-grid h2,.faq h2,.ksv2-title{font-size:clamp(2.05rem,10.5vw,3rem)!important;line-height:1.01;letter-spacing:-.042em}
+  .section-heading{margin-bottom:34px}
+  .section-heading>p:last-child,.ksv2-lead{font-size:.96rem;line-height:1.6}
+  .origin-number{font-size:3.8rem}
+  .origin-copy blockquote{margin:25px 0;padding:18px 0 18px 20px;font-size:1.35rem}
+
+  /* Ten-second rules become a clean three-column strip. */
+  .cycle{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+  .cycle-arrow{display:none!important}
+  .cycle-item{padding:12px 5px!important;border-radius:13px}
+  .cycle-item b{font-size:.84rem}
+  .cycle-item span{font-size:.54rem!important;line-height:1.25}
+  .gray-rule{padding:13px 15px}
+  .how-list{margin-top:20px}
+  .how-list li{grid-template-columns:38px 1fr!important;gap:10px;padding:14px 0}
+  .how-list li>span{font-size:.68rem}
+  .rules-poster{padding:8px;border-radius:19px}
+
+  /* Pocket and flip-card visuals are centered and never escape the viewport. */
+  .pocket-visual{min-height:390px!important;overflow:hidden}
+  .pocket-card-back{width:155px!important;left:2%!important}
+  .pocket-seven{width:360px!important;height:380px!important;margin-left:12px!important;transform:scale(.72)!important;transform-origin:center}
+  .pocket-note{width:98px!important;height:98px!important;right:0}
+  .pocket-note b{font-size:2.4rem!important}
+  .ksv2-flip-stage{min-height:365px}
+  .ksv2-flip-card{width:min(255px,72vw)}
+  .ksv2-cardback-copy blockquote{font-size:1.03rem;margin:1.15rem 0}
+
+  /* Energy controls become four equal touch targets. */
+  .energy-selector{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:25px 0 16px}
+  .energy-button{width:100%;min-width:0;padding:10px 7px;font-size:.64rem;white-space:nowrap}
+  .energy-story{grid-template-columns:1fr!important;gap:10px;padding:20px 0 25px}
+  .energy-story h3{font-size:1.55rem;line-height:1.12}
+  .energy-story p{font-size:.91rem;line-height:1.55}
+
+  /* Show the complete First Hand on mobile in an elegant two-column catalogue. */
+  .card-gallery{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px 10px!important;margin-top:27px!important;width:100%}
+  .gallery-card,.gallery-card:nth-child(n+17){display:block!important;min-width:0;width:100%;filter:drop-shadow(0 10px 9px rgba(0,0,0,.24))}
+  .gallery-card:hover{transform:none;filter:drop-shadow(0 10px 9px rgba(0,0,0,.24))}
+  .gallery-card svg{width:100%;height:auto}
+  .gallery-caption{max-width:30ch;margin:20px auto 0;font-size:.57rem;line-height:1.55;letter-spacing:.1em}
+
+  /* Campaign v2 modules stack with smaller, calmer surfaces. */
+  .ksv2-online-grid,.ksv2-tournament-grid,.ksv2-cardback-grid,.ksv2-uses-head{grid-template-columns:1fr!important;gap:30px}
+  .ksv2-online-panel{padding:17px;border-radius:22px}
+  .ksv2-online-list{grid-template-columns:1fr;gap:8px}
+  .ksv2-scoreboard{padding:18px;border-radius:22px;box-shadow:7px 8px 0 rgba(210,169,79,.34)}
+  .ksv2-scoreboard-top{align-items:flex-start;font-size:.7rem}
+  .ksv2-bo5{font-size:4.8rem}
+  .ksv2-core-grid,.ksv2-uses-grid{grid-template-columns:1fr!important}
+  .ksv2-core-card{min-height:245px;padding:18px;border-radius:22px}
+  .ksv2-use{min-height:0;padding:18px}
+  .ksv2-unlimited{align-items:flex-start;flex-direction:column;padding:21px;border-radius:22px}
+  .ksv2-unlimited strong{font-size:2.2rem}
+
+  /* Product, pledge and timeline cards breathe as single-column stories. */
+  .box-grid,.production-spec,.pledge-grid,.future-cards,.ai-use-grid,.timeline-grid{grid-template-columns:1fr!important}
+  .box-item{padding:27px 0}
+  .production-spec{gap:0}
+  .production-spec div{padding:17px 0;text-align:left}
+  .pledge{border-radius:20px}
+  .stretch-line::before{left:31px}
+  .stretch-goal{grid-template-columns:70px minmax(0,1fr)!important;gap:10px}
+  .stretch-goal>span{width:62px;height:62px;font-size:.72rem}
+  .timeline-grid article{padding:24px!important}
+
+  /* A compact sticky pledge bar that respects iPhone safe areas. */
+  .mobile-cta{left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;filter:drop-shadow(0 12px 22px rgba(0,0,0,.34))}
+  .mobile-cta a{min-height:50px!important;padding:8px 14px!important;border-radius:13px!important}
+  .mobile-cta span{font-size:.54rem!important;letter-spacing:.12em}
+  .mobile-cta b{font-size:.82rem!important}
+  .final-cta{padding-bottom:98px!important}
+}
+
+@media (max-width:390px){
+  .wrap{width:calc(100% - 26px)!important}
+  .hero h1{font-size:clamp(2.62rem,11.45vw,3.2rem)!important}
+  .hero-actions .button{font-size:.72rem;padding-inline:7px}
+  .hero-cards{transform:scale(.64)!important}
+  .energy-button{font-size:.59rem}
+  .card-gallery{gap:10px 8px!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .hero-cards{transform:none!important}
+}
