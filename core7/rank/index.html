@@ -24,14 +24,6 @@
     <p class="lead">Rating ใช้ระบบ <b>Glicko-2</b> — รองรับผู้เล่นใหม่และคนที่หายไปนาน
       เปลี่ยนเฉพาะจาก Official Ranked Queue เท่านั้น: Casual, Bot และห้องส่วนตัวไม่มีผลต่อ Rating เด็ดขาด</p>
 
-    <div class="panel" style="margin-top:20px;background:rgb(var(--gold)/.08);border-color:rgb(var(--gold)/.35)">
-      <b class="disp">สถานะ: รอ Server จริง</b>
-      <p style="font-size:14.5px;margin-top:6px">Ranked Queue ต้องการ Backend ที่เป็น Server-authoritative
-        (Matchmaking, Reconnect, Anti-abuse, Season) — Logic ทั้งหมดพร้อมและผ่านการทดสอบแล้วในโค้ด
-        (<code>core7/js/ranking.js</code>) เหลือเพียงเชื่อม Backend ตาม
-        <code>core7/backend/API.md</code> · ระหว่างนี้เล่น Casual และ Bot ได้เต็มรูปแบบ</p>
-    </div>
-
     <h3 class="disp" style="margin-top:34px">Tier ทั้ง 6 — เกียรติยศ ไม่ใช่พลัง</h3>
     <p style="font-size:14px;color:rgb(var(--muted))">Tier เป็น Cosmetic เท่านั้น ไม่มีผลต่อกติกาเกมใด ๆ</p>
     <div class="tiers" id="tiers"></div>
@@ -47,7 +39,7 @@ import { TIERS } from '/core7/js/ranking.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({ active: 'rank' });
-const ICONS = { SEED: '🌰', ROOT: '🌱', SPROUT: '🌿', LEAF: '🍀', BLOOM: '🌸', 'FOUR-LEAF': '🍀✨' };
+const ICONS = { SEED: '🌰', ROOT: '🌱', SPROUT: '🌿', LEAF: '🍃', BLOOM: '🌸', 'FOUR-LEAF': '🍀' };
 const tHost = document.getElementById('tiers');
 for (const t of TIERS) {
   tHost.append(el('div', { class: 'tier' },
