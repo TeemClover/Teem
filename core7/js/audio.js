@@ -1,6 +1,12 @@
 const KEY = 'c7:sfx-muted';
 let context = null;
 
+function audioContext() {
+  context ||= new (window.AudioContext || window.webkitAudioContext)();
+  if (context.state === 'suspended') context.resume();
+  return context;
+}
+
 export function isMuted() {
   try { return localStorage.getItem(KEY) === '1'; } catch { return false; }
 }
@@ -32,19 +38,61 @@ const PATTERNS = {
 export function playSfx(name) {
   if (isMuted() || !PATTERNS[name]) return;
   try {
-    context ||= new (window.AudioContext || window.webkitAudioContext)();
-    if (context.state === 'suspended') context.resume();
-    let at = context.currentTime;
+    const audio = audioContext();
+    let at = audio.currentTime;
     for (const [frequency, duration, gainValue] of PATTERNS[name]) {
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
+      const oscillator = audio.createOscillator();
+      const gain = audio.createGain();
       oscillator.type = 'sine'; oscillator.frequency.value = frequency;
       gain.gain.setValueAtTime(0.0001, at);
       gain.gain.exponentialRampToValueAtTime(gainValue, at + .01);
       gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
-      oscillator.connect(gain).connect(context.destination);
+      oscillator.connect(gain).connect(audio.destination);
       oscillator.start(at); oscillator.stop(at + duration + .02);
       at += duration + .025;
     }
   } catch { /* Audio is cosmetic; gameplay must continue. */ }
+}
+
+/* Paper sweep through the turn, followed by the card touching the table. */
+export function playCardFlip(reverse = false) {
+  if (isMuted()) return;
+  try {
+    const audio = audioContext();
+    const start = audio.currentTime;
+    const duration = .46;
+    const buffer = audio.createBuffer(1, Math.ceil(audio.sampleRate * duration), audio.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const envelope = Math.sin(Math.PI * i / data.length);
+      data[i] = (Math.random() * 2 - 1) * envelope;
+    }
+
+    const paper = audio.createBufferSource();
+    const paperFilter = audio.createBiquadFilter();
+    const paperGain = audio.createGain();
+    paper.buffer = buffer;
+    paper.playbackRate.value = reverse ? .94 : 1.04;
+    paperFilter.type = 'bandpass';
+    paperFilter.Q.value = .72;
+    paperFilter.frequency.setValueAtTime(reverse ? 2600 : 1900, start);
+    paperFilter.frequency.exponentialRampToValueAtTime(reverse ? 1150 : 3400, start + .34);
+    paperGain.gain.setValueAtTime(.0001, start);
+    paperGain.gain.exponentialRampToValueAtTime(.16, start + .045);
+    paperGain.gain.exponentialRampToValueAtTime(.055, start + .25);
+    paperGain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+    paper.connect(paperFilter).connect(paperGain).connect(audio.destination);
+    paper.start(start); paper.stop(start + duration);
+
+    const tap = audio.createOscillator();
+    const tapGain = audio.createGain();
+    tap.type = 'triangle';
+    tap.frequency.setValueAtTime(150, start + .38);
+    tap.frequency.exponentialRampToValueAtTime(72, start + .47);
+    tapGain.gain.setValueAtTime(.0001, start + .37);
+    tapGain.gain.exponentialRampToValueAtTime(.14, start + .385);
+    tapGain.gain.exponentialRampToValueAtTime(.0001, start + .49);
+    tap.connect(tapGain).connect(audio.destination);
+    tap.start(start + .37); tap.stop(start + .5);
+  } catch { /* Audio is cosmetic; the card must always keep flipping. */ }
 }

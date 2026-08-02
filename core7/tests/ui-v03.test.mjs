@@ -141,11 +141,18 @@ test('landing and tutorial use one static rules overview PNG', () => {
 
 test('landing rules card starts face-down and flips both ways accessibly', () => {
   const landing = read('index.html');
+  const audio = read('js/audio.js');
   assert.match(landing, /id="rulesFlip"/);
   assert.match(landing, /aria-pressed="false"/);
   assert.match(landing, /card-back-core7\.png/);
   assert.match(landing, /classList\.toggle\('is-flipped'\)/);
   assert.match(landing, /Tap to flip back/);
+  assert.match(landing, /playCardFlip\(!open\)/);
+  assert.match(landing, /rules-flip-face\.rules\{transform:rotateY\(180deg\)\}/);
+  assert.doesNotMatch(landing, /rules-flip-face\.rules\{[^}]*padding/);
+  assert.match(audio, /export function playCardFlip/);
+  assert.match(audio, /createBuffer\(1,/);
+  assert.match(audio, /paperFilter\.type = 'bandpass'/);
   assert.match(landing, /prefers-reduced-motion:reduce/);
 });
 

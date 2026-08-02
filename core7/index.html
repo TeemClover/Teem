@@ -32,10 +32,9 @@
 .rules-flip{display:block;width:min(100%,440px);aspect-ratio:5/7;padding:0;border:0;border-radius:26px;background:transparent;perspective:1200px;cursor:pointer;appearance:none;-webkit-appearance:none;filter:drop-shadow(0 22px 28px rgb(0 0 0/.34))}
 .rules-flip-inner{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.75,.2,1)}
 .rules-flip.is-flipped .rules-flip-inner{transform:rotateY(180deg)}
-.rules-flip-face{position:absolute;inset:0;display:block;overflow:hidden;border:6px solid #0b1712;border-radius:26px;background:#071b10;backface-visibility:hidden;box-shadow:0 0 0 1px rgb(var(--gold-l)/.55)}
+.rules-flip-face{position:absolute;inset:0;display:block;overflow:hidden;border:0;border-radius:26px;background:#071b10;backface-visibility:hidden;box-shadow:0 0 0 1px rgb(var(--gold-l)/.55)}
 .rules-flip-face img{display:block;width:100%;height:100%;object-fit:cover}
-.rules-flip-face.rules{transform:rotateY(180deg);padding:6px}
-.rules-flip-face.rules img{object-fit:contain}
+.rules-flip-face.rules{transform:rotateY(180deg)}
 .rules-flip:focus-visible{outline:3px solid rgb(var(--gold-l));outline-offset:6px}
 @media(prefers-reduced-motion:reduce){.rules-flip-inner{transition:none}}
 .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
@@ -67,7 +66,7 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="tag tag-gold">v0.4.4 · FIRST HAND — ชุดแรก · เล่นฟรี</span>
+      <span class="tag tag-gold">v0.4.5 · FIRST HAND — ชุดแรก · เล่นฟรี</span>
       <h1 class="disp">my<span class="c7">Clover</span>: CORE7</h1>
       <p class="promise">7 ใบ ไม่มีเด็ค ไม่มีดวง<br>มีแค่สิ่งที่คุณเลือก<br>และคนที่นั่งตรงข้าม</p>
       <p class="promise-en">Seven cards. No deck. No draw. Just your choices and the person across the table.</p>
@@ -254,6 +253,7 @@
 import { renderShell } from '/core7/js/ui.js';
 import { cardSVG } from '/core7/js/art.js';
 import { track } from '/core7/js/store.js';
+import { playCardFlip } from '/core7/js/audio.js';
 
 renderShell({ active: '' });
 track('core7_landing_view');
@@ -263,6 +263,7 @@ const rulesFlip = document.getElementById('rulesFlip');
 const rulesFlipHint = document.getElementById('rulesFlipHint');
 rulesFlip.addEventListener('click', () => {
   const open = rulesFlip.classList.toggle('is-flipped');
+  playCardFlip(!open);
   rulesFlip.setAttribute('aria-pressed', String(open));
   rulesFlip.setAttribute('aria-label', open ? 'คว่ำการ์ดกติกา CORE7' : 'พลิกการ์ดเพื่อดูกติกา CORE7');
   rulesFlipHint.textContent = open

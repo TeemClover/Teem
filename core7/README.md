@@ -6,7 +6,7 @@
 โมดูลนี้ Self-contained ทั้งหมดอยู่ใต้ `/core7/` — ไม่แตะหน้าอื่นของ
 myclover.com ไม่มี Build Step ไม่มี Dependency ภายนอก (Vanilla ES Modules)
 
-## เล่นอะไรได้แล้วบ้าง (v0.4.4)
+## เล่นอะไรได้แล้วบ้าง (v0.4.5)
 
 ## Lore Canon — Four Roots
 
