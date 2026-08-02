@@ -50,9 +50,30 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
         <span class="conn" id="connDot" title="สถานะการเชื่อมต่อ"></span>
       </div>
     </div>
+    <div class="public-counts" aria-label="จำนวนไพ่ที่เปิดเผยแล้ว">
+      <div class="public-count-side you" id="youPublicCounts"></div>
+      <div class="public-count-side opp" id="oppPublicCounts"></div>
+    </div>
     <div class="match-board">
       <div class="match-stage">
         <button class="drawer-toggle" id="histBtn" aria-label="เปิดประวัติการเล่น">📜 กองหงาย</button>
+        <div class="table-rules" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก">
+          <svg viewBox="0 0 520 300" role="img" aria-hidden="true">
+            <defs><marker id="ruleArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker></defs>
+            <path class="rule-arrow" d="M300 72 C370 80 413 115 425 166"></path>
+            <path class="rule-arrow" d="M385 225 C315 266 205 266 135 225"></path>
+            <path class="rule-arrow" d="M95 166 C108 114 151 80 220 72"></path>
+            <circle class="rule-node red" cx="260" cy="58" r="48"></circle>
+            <circle class="rule-node green" cx="425" cy="205" r="48"></circle>
+            <circle class="rule-node blue" cx="95" cy="205" r="48"></circle>
+            <circle class="rule-node gray" cx="260" cy="168" r="38"></circle>
+            <text x="260" y="51" class="rule-icon">🔥</text><text x="260" y="75">RED</text>
+            <text x="425" y="198" class="rule-icon">🍃</text><text x="425" y="222">GREEN</text>
+            <text x="95" y="198" class="rule-icon">👁</text><text x="95" y="222">BLUE</text>
+            <text x="260" y="161" class="rule-icon">⚙️</text><text x="260" y="184">BLOCK</text>
+          </svg>
+          <div class="rule-line"><span>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
+        </div>
         <div class="stage-cards">
           <div class="stage-slot" id="slotYou">
             <div class="flip"><div class="face back"></div><div class="face front"></div></div>
@@ -110,7 +131,68 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
       html: `<span style="display:flex">${colorIcon(c.color, 18)}</span><span>${label.slice(0, 9)}</span>`,
     });
     if (view.you.selected === c.iid && mode === 'select') btn.classList.add('sel');
-    btn.addEventListener('click', async () => {
+    let pointerId = null;
+    let startX = 0;
+    let startY = 0;
+    let suppressClick = false;
+    let committing = false;
+
+    const resetDrag = () => {
+      pointerId = null;
+      btn.classList.remove('dragging');
+      btn.style.removeProperty('--fling-x');
+      btn.style.removeProperty('--fling-y');
+    };
+
+    if (mode === 'select' || mode === 'discard') {
+      btn.addEventListener('pointerdown', event => {
+        if (committing || event.button > 0) return;
+        pointerId = event.pointerId;
+        startX = event.clientX;
+        startY = event.clientY;
+        btn.setPointerCapture?.(pointerId);
+      });
+      btn.addEventListener('pointermove', event => {
+        if (event.pointerId !== pointerId) return;
+        const dy = Math.min(0, event.clientY - startY);
+        if (dy > -6) return;
+        event.preventDefault();
+        btn.classList.add('dragging');
+        btn.style.setProperty('--fling-x', `${(event.clientX - startX) * .35}px`);
+        btn.style.setProperty('--fling-y', `${Math.max(-120, dy)}px`);
+      });
+      btn.addEventListener('pointerup', async event => {
+        if (event.pointerId !== pointerId || committing) return;
+        const fling = event.clientY - startY <= -58;
+        if (!fling) { resetDrag(); return; }
+        suppressClick = true;
+        committing = true;
+        btn.classList.remove('dragging');
+        btn.classList.add('fling-out');
+        haptic([8, 25, 14]);
+        playSfx('fling');
+        let res;
+        if (mode === 'select') {
+          res = await client.send({ type: 'select_card', cardInstanceId: c.iid });
+          if (res.ok) res = await client.send({ type: 'lock_choice' });
+        } else {
+          res = await client.send({ type: 'discard_card', cardInstanceId: c.iid });
+        }
+        if (!res?.ok) {
+          btn.classList.remove('fling-out');
+          toast(mode === 'discard' ? 'ทิ้งใบนี้ไม่ได้' : 'ลงการ์ดไม่ได้');
+          playSfx('error');
+        }
+        resetDrag();
+        committing = false;
+        setTimeout(() => { suppressClick = false; }, 0);
+        refresh();
+      });
+      btn.addEventListener('pointercancel', resetDrag);
+    }
+
+    btn.addEventListener('click', async event => {
+      if (suppressClick) { event.preventDefault(); return; }
       haptic(8);
       playSfx('select');
       if (mode === 'select') {
@@ -125,6 +207,28 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
       }
     });
     return btn;
+  }
+
+  function publicColorCounts(side) {
+    const counts = { RED: 0, BLUE: 0, GREEN: 0, GRAY: 0 };
+    for (const round of view.rounds) {
+      const played = round[side];
+      if (played?.color) counts[played.color] += 1;
+      for (const discarded of round.discards) {
+        const belongs = side === 'you' ? discarded.yours : !discarded.yours;
+        if (belongs) counts[discarded.color] += 1;
+      }
+    }
+    return counts;
+  }
+
+  function renderPublicCounts(host, label, counts) {
+    host.innerHTML = '';
+    host.append(el('b', { class: 'public-count-label' }, label));
+    for (const color of ['RED', 'BLUE', 'GREEN', 'GRAY']) {
+      host.append(el('span', { title: `${COLOR_META[color].nameTh}ออกแล้ว ${counts[color]} ใบ` },
+        `${COLOR_META[color].emoji}${counts[color]}`));
+    }
   }
 
   async function refresh() {
@@ -142,6 +246,8 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     const youCount = v.you.hand.filter(c => c.status === 'IN_HAND').length;
     $('#oppCards', root).textContent = `🂠 ${v.opponent.handCount}`;
     $('#youCards', root).textContent = `🂠 ${youCount}`;
+    renderPublicCounts($('#youPublicCounts', root), 'คุณ · OUT', publicColorCounts('you'));
+    renderPublicCounts($('#oppPublicCounts', root), 'คู่แข่ง · OUT', publicColorCounts('opp'));
     pips(v.opponent.roundWins, $('#oppPips', root));
     pips(v.you.roundWins, $('#youPips', root));
     $('#roundNo', root).textContent = `ROUND ${v.roundNumber}`;
@@ -199,7 +305,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
         lockBtn.disabled = true;
         lockBtn.textContent = '⏳ รอคู่แข่ง…';
       } else {
-        msg.textContent = 'เลือกการ์ดลับ 1 ใบ แล้วกด Lock';
+        msg.textContent = 'แตะเพื่อเลือกแล้ว Lock หรือปัดการ์ดขึ้นเพื่อเล่นทันที';
         inHand.forEach(c => handHost.append(handTile(c, 'select')));
         lockBtn.disabled = !v.you.selected;
         lockBtn.textContent = '🔒 Lock';

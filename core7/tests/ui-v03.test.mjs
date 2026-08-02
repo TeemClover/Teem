@@ -30,8 +30,44 @@ test('play landing page contains a live public lobby with refresh and join', () 
   const source = read('play/index.html');
   assert.match(source, /id="playRooms"/);
   assert.match(source, /id="refreshLobby"/);
+  assert.match(source, /id="quickCode"/);
+  assert.doesNotMatch(source, /href="\/core7\/join\/">เข้าห้อง/);
   assert.match(source, /roomsApi\.list\(\)/);
   assert.match(source, /roomsApi\.join\(code/);
+});
+
+test('match table teaches public rules and counts revealed colors for both sides', () => {
+  const ui = read('js/match-ui.js');
+  const css = read('css/core7.css');
+  assert.match(ui, /class="table-rules"/);
+  assert.match(ui, /🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴/);
+  assert.match(ui, /id="youPublicCounts"/);
+  assert.match(ui, /id="oppPublicCounts"/);
+  assert.match(ui, /publicColorCounts\('you'\)/);
+  assert.match(css, /\.public-counts \{ display: grid; grid-template-columns: 1fr 1fr/);
+});
+
+test('cards support an upward fling with sound and immediate lock', () => {
+  const ui = read('js/match-ui.js');
+  const audio = read('js/audio.js');
+  assert.match(ui, /pointerup/);
+  assert.match(ui, /event\.clientY - startY <= -58/);
+  assert.match(ui, /type: 'lock_choice'/);
+  assert.match(ui, /playSfx\('fling'\)/);
+  assert.match(audio, /fling:/);
+});
+
+test('timeline aligns both sides and puts dashed discards underneath', () => {
+  const source = read('result/index.html');
+  assert.match(source, /class:'tl-cards'/);
+  assert.match(source, /class:'tl-discards'/);
+  assert.match(source, /tl-side you/);
+  assert.match(source, /tl-side opp/);
+  assert.match(source, /tl-chip\.discard\{border-style:dashed/);
+});
+
+test('CORE7 logo returns to the myClover index', () => {
+  assert.match(read('js/ui.js'), /class="logo" href="\/"/);
 });
 
 test('result surfaces use YOU WIN and YOU LOSE', () => {

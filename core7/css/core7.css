@@ -123,12 +123,27 @@ button { font: inherit; cursor: pointer; }
 .conn { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; flex: none; }
 .conn.off { background: #f87171; }
 
+.public-counts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 14px 7px; }
+.public-count-side { display: flex; align-items: center; gap: 7px; min-width: 0; font: 700 12px "Bai Jamjuree"; color: rgb(255 255 255 / .9); }
+.public-count-side.opp { justify-content: flex-end; text-align: right; }
+.public-count-label { color: rgb(var(--gold-l)); font-size: 10px; letter-spacing: .04em; white-space: nowrap; }
+.public-count-side span { white-space: nowrap; }
+
 .match-stage {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 8px 14px; position: relative; min-height: 0;
 }
 .match-board { flex: 1; display: flex; min-height: 0; }
+.table-rules { position: absolute; inset: 2px 8px 42px; display: flex; align-items: center; justify-content: center; pointer-events: none; overflow: hidden; }
+.table-rules svg { width: min(72vw, 520px); height: auto; opacity: .14; filter: saturate(.8); }
+.table-rules .rule-arrow { fill: none; stroke: rgb(var(--gold-l)); stroke-width: 8; stroke-linecap: round; marker-end: url(#ruleArrow); }
+.table-rules marker path { fill: rgb(var(--gold-l)); }
+.table-rules .rule-node { stroke: rgb(var(--gold-l)); stroke-width: 6; }
+.table-rules .rule-node.red { fill: rgb(var(--c-red)); }.table-rules .rule-node.green { fill: rgb(var(--c-green)); }.table-rules .rule-node.blue { fill: rgb(var(--c-blue)); }.table-rules .rule-node.gray { fill: rgb(var(--c-gray)); }
+.table-rules text { fill: #fff; text-anchor: middle; font: 700 17px "Bai Jamjuree"; }.table-rules .rule-icon { font-size: 24px; }
+.rule-line { position: absolute; bottom: 0; display: flex; gap: 14px; align-items: center; justify-content: center; border: 1px solid rgb(var(--gold-l) / .28); background: rgb(3 24 14 / .5); border-radius: 999px; padding: 5px 13px; color: rgb(255 255 255 / .72); font: 700 11px "Bai Jamjuree"; letter-spacing: .03em; }
 .stage-cards { display: flex; gap: 18px; align-items: center; justify-content: center; }
+.stage-cards, .round-result, .round-discard { position: relative; z-index: 1; }
 .stage-slot { width: min(31vw, 150px); aspect-ratio: 300/420; perspective: 900px; }
 .stage-slot .flip { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform .45s; }
 .stage-slot.revealed .flip { transform: rotateY(180deg); }
@@ -158,10 +173,12 @@ button { font: inherit; cursor: pointer; }
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   color: #fff; font-family: "Bai Jamjuree"; font-weight: 700; font-size: 10px;
   transition: transform .15s, border-color .15s, box-shadow .15s;
-  padding: 0; position: relative;
+  padding: 0; position: relative; touch-action: none; user-select: none; -webkit-user-select: none;
 }
 .hand-card svg { pointer-events: none; }
 .hand-card.sel { border-color: rgb(var(--gold-l)); transform: translateY(-8px); box-shadow: 0 8px 18px rgb(0 0 0 / .4), 0 0 0 3px rgb(var(--gold) / .5); }
+.hand-card.dragging { transform: translate(var(--fling-x, 0), var(--fling-y, 0)) scale(1.04); transition: none; z-index: 5; box-shadow: 0 14px 28px rgb(0 0 0 / .48); }
+.hand-card.fling-out { transform: translateY(-180px) scale(.82) rotate(-5deg); opacity: 0; transition: transform .28s ease-out, opacity .24s ease-out; }
 .hand-card:disabled { opacity: .35; }
 .hand-card.red { background: linear-gradient(160deg, rgb(var(--c-red)), rgb(var(--c-red-deep))); }
 .hand-card.green { background: linear-gradient(160deg, rgb(var(--c-green)), rgb(var(--c-green-deep))); }
@@ -213,6 +230,15 @@ button { font: inherit; cursor: pointer; }
   }
   .history-rail h2 { font-size: 20px; margin-bottom: 12px; }
   .history-rail .hchip { font-size: 12px; padding: 5px 8px; }
+}
+
+@media (max-width: 600px) {
+  .public-counts { padding-inline: 8px; gap: 4px; }
+  .public-count-side { gap: 4px; font-size: 11px; }
+  .public-count-label { font-size: 8.5px; }
+  .table-rules { inset: 22px 4px 48px; }
+  .table-rules svg { width: 390px; opacity: .1; }
+  .rule-line { gap: 8px; padding: 4px 9px; font-size: 9.5px; }
 }
 
 /* ผลใหญ่กลางจอเมื่อจบ Match */

@@ -29,7 +29,7 @@ export function renderShell({ active = '', minimal = false } = {}) {
   if (nav) {
     nav.innerHTML = `
       <div class="wrap bar">
-        <a class="logo" href="/core7/">
+        <a class="logo" href="/" aria-label="กลับหน้าแรก myClover">
           ${cloverLogo(30)}
           <span>my<em>Clover</em>&thinsp;· CORE7</span>
         </a>

@@ -19,12 +19,13 @@
 .namebar input{flex:1;min-width:160px;border:1px solid rgb(var(--line)/.15);border-radius:10px;padding:11px 14px;font:inherit}
 .play-lobby{margin-top:26px;background:rgb(var(--gold)/.07);border-color:rgb(var(--gold)/.28)}
 .play-lobby-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.quick-join{display:flex;align-items:end;gap:10px;margin-top:14px}.quick-join .field{flex:1;margin:0}.quick-join input{font:700 20px "Bai Jamjuree";letter-spacing:4px}
 .play-room-list{display:flex;flex-direction:column;gap:9px;margin-top:14px}
 .play-room{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:12px;padding:12px 14px}
 .play-room-code{font:700 20px "Bai Jamjuree";letter-spacing:3px;color:rgb(var(--green))}
 .play-room-main{flex:1;min-width:0}.play-room-main b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.play-room-main small{color:rgb(var(--muted))}
 .play-lobby-empty{text-align:center;color:rgb(var(--muted));padding:18px 8px}
-@media(max-width:560px){.play-room{flex-wrap:wrap}.play-room .btn{width:100%}.play-lobby-head{align-items:flex-start}}
+@media(max-width:560px){.play-room{flex-wrap:wrap}.play-room .btn{width:100%}.play-lobby-head{align-items:flex-start}.quick-join{align-items:stretch;flex-direction:column}.quick-join .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -45,6 +46,10 @@
         <div><p class="eyebrow">Public Lobby · Online</p><h3 class="disp" id="lobbyTitle">ห้องที่กำลังรอผู้เล่น</h3></div>
         <button class="btn" id="refreshLobby">↻ Refresh</button>
       </div>
+      <div class="quick-join">
+        <div class="field"><label for="quickCode">Room Code 4 หลัก</label><input id="quickCode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0042" autocomplete="one-time-code"></div>
+        <button class="btn btn-gold" id="joinCode">Join Room</button>
+      </div>
       <p id="lobbyStatus" role="status" style="font-size:13px;color:rgb(var(--muted));min-height:18px;margin-top:6px"></p>
       <div class="play-room-list" id="playRooms" aria-live="polite"></div>
     </section>
@@ -62,11 +67,6 @@
         <h3>🏠 สร้างห้องชวนเพื่อน</h3>
         <p>สร้างห้องออนไลน์ด้วยรหัสตัวเลข 4 หลัก เลือก Quick, BO3 หรือ BO5 และเปิดเป็นห้อง Public ได้</p>
         <div class="row"><a class="btn btn-gold" href="/core7/create/">สร้างห้อง</a></div>
-      </div>
-      <div class="panel mode">
-        <h3>🔑 เข้าห้องด้วย Room Code</h3>
-        <p>ใส่โค้ด 4 หลัก หรือเลือกห้องที่กำลังรอจาก Public Lobby</p>
-        <div class="row"><a class="btn" href="/core7/join/">เข้าห้อง</a></div>
       </div>
       <div class="panel mode">
         <h3>🎓 ยังไม่เคยเล่น?</h3>
@@ -99,8 +99,12 @@ const roomsApi = new RemoteRooms();
 const roomsEl = document.getElementById('playRooms');
 const lobbyStatus = document.getElementById('lobbyStatus');
 const refreshLobby = document.getElementById('refreshLobby');
+const quickCode = document.getElementById('quickCode');
+const joinCode = document.getElementById('joinCode');
+quickCode.addEventListener('input', () => { quickCode.value = quickCode.value.replace(/\D/g, '').slice(0, 4); });
 
 async function joinRoom(code, button) {
+  if (!/^\d{4}$/.test(code)) { lobbyStatus.textContent = 'กรุณาใส่ Room Code ให้ครบ 4 หลัก'; quickCode.focus(); return; }
   setGuestName(input.value);
   button.disabled = true;
   lobbyStatus.textContent = `กำลังเข้าห้อง ${code}…`;
@@ -114,7 +118,6 @@ async function joinRoom(code, button) {
     const messages = { ROOM_NOT_FOUND:'ไม่พบห้องหรือห้องหมดอายุแล้ว', ROOM_FULL:'ห้องนี้มีผู้เล่นครบแล้ว' };
     lobbyStatus.textContent = messages[error.code] || `เข้าห้องไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`;
     button.disabled = false;
-    loadLobby();
   }
 }
 
@@ -148,6 +151,8 @@ async function loadLobby() {
 }
 
 refreshLobby.addEventListener('click', loadLobby);
+joinCode.addEventListener('click', () => joinRoom(quickCode.value, joinCode));
+quickCode.addEventListener('keydown', event => { if (event.key === 'Enter') joinRoom(quickCode.value, joinCode); });
 loadLobby();
 </script>
 </body>
