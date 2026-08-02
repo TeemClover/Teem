@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t d">
+<title id="t">Forbidden Genesis Scroll</title>
+<desc id="d">An ancient glowing scroll hidden in a dark green vault, surrounded by multilingual glyphs and a four-leaf clover seal.</desc>
+<defs>
+  <radialGradient id="bg" cx="50%" cy="42%" r="72%"><stop offset="0" stop-color="#315d3c"/><stop offset=".52" stop-color="#102d1c"/><stop offset="1" stop-color="#06140d"/></radialGradient>
+  <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3e4b2"/><stop offset=".5" stop-color="#c9a95d"/><stop offset="1" stop-color="#8a6324"/></linearGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#5b3511"/><stop offset=".5" stop-color="#d1a443"/><stop offset="1" stop-color="#5b3511"/></linearGradient>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="28" stdDeviation="22" flood-color="#000" flood-opacity=".58"/></filter>
+</defs>
+<rect width="1200" height="675" fill="url(#bg)"/>
+<g opacity=".16" fill="#e8ce7a" font-family="serif" font-size="35">
+  <text x="80" y="110">核心思想 · 정체성 · ПРАВИЛА</text>
+  <text x="710" y="145">真理 · логика · भाषा</text>
+  <text x="68" y="590">AKTIVATSIYA · GENESIS · 2025</text>
+  <text x="765" y="555">秘密 · Tối mật · DIREKTIVA</text>
+</g>
+<ellipse cx="600" cy="353" rx="320" ry="195" fill="#d8b34d" opacity=".12" filter="url(#glow)"/>
+<g filter="url(#shadow)">
+  <path d="M354 176c-34 0-61 27-61 61s27 61 61 61h40v198h-40c-34 0-61 27-61 61s27 61 61 61h492c34 0 61-27 61-61s-27-61-61-61h-40V298h40c34 0 61-27 61-61s-27-61-61-61H354z" fill="url(#edge)"/>
+  <path d="M386 205h428c-25 17-38 39-38 67v229c0 28 13 51 38 68H386c25-17 38-40 38-68V272c0-28-13-50-38-67z" fill="url(#paper)" stroke="#f3d77a" stroke-width="4"/>
+  <path d="M425 286h350M425 326h350M425 366h288M425 406h350M425 446h305" stroke="#654417" stroke-width="10" stroke-linecap="round" opacity=".7"/>
+  <text x="600" y="251" text-anchor="middle" fill="#4d3212" font-family="Georgia,serif" font-size="31" font-weight="700" letter-spacing="5">GENESIS PROTOCOL</text>
+</g>
+<g transform="translate(600 527)" filter="url(#glow)">
+  <circle r="57" fill="#0a2818" stroke="#e5c35e" stroke-width="5"/>
+  <g fill="#62ad66" stroke="#d6bd61" stroke-width="2">
+    <path d="M-4-4C-37-54-76-28-58 4c12 22 40 19 54 4z"/>
+    <path d="M4-4C37-54 76-28 58 4 46 26 18 23 4 8z"/>
+    <path d="M-4 4C-37 54-76 28-58-4c12-22 40-19 54-4z"/>
+    <path d="M4 4C37 54 76 28 58-4 46-26 18-23 4-8z"/>
+  </g>
+  <circle r="7" fill="#e5c35e"/>
+</g>
+<text x="600" y="635" text-anchor="middle" fill="#efd78b" font-family="system-ui,sans-serif" font-size="25" font-weight="800" letter-spacing="8">FORBIDDEN ORIGIN</text>
+</svg>
