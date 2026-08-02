@@ -1,10 +1,22 @@
 {
-  "headers": [
+  "redirects": [
+    {
+      "source": "/core7/assets/card-back-core7.png",
+      "destination": "/core7/assets/card-back-core7.webp",
+      "permanent": true
+    },
     {
       "source": "/core7/assets/core7-rules-overview.png",
+      "destination": "/core7/assets/core7-rules-overview.webp",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/core7/assets/(card-back-core7|core7-rules-overview).webp",
       "headers": [
-        { "key": "Content-Type", "value": "image/svg+xml; charset=utf-8" },
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        { "key": "Content-Type", "value": "image/webp" },
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     }
   ]
