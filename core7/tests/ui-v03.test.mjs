@@ -15,7 +15,7 @@ test('match result waits for the final round reveal and uses clear player copy',
   assert.match(source, /YOU LOSE/);
 });
 
-test('wide match layout keeps the face-up pile and discarded card visible', () => {
+test('wide match layout can toggle Discard and recent discarded card stays visible', () => {
   const ui = read('js/match-ui.js');
   const css = read('css/core7.css');
   assert.match(ui, /class="history-rail"/);
@@ -23,7 +23,10 @@ test('wide match layout keeps the face-up pile and discarded card visible', () =
   assert.match(ui, /renderLatestDiscard\(lastRound\)/);
   assert.match(ui, /class: 'end-discard'/);
   assert.match(css, /@media \(min-width: 960px\) and \(min-height: 600px\)/);
-  assert.match(css, /\.history-rail \{\s*display: block/);
+  assert.match(ui, /classList\.toggle\('discard-open'/);
+  assert.match(ui, /🗑️ Discard/);
+  assert.match(css, /\.match-shell\.discard-open \.history-rail \{\s*display: block/);
+  assert.match(css, /\.match-shell\.discard-open \.match-board/);
 });
 
 test('play landing page contains a live public lobby with refresh and join', () => {
@@ -39,11 +42,13 @@ test('play landing page contains a live public lobby with refresh and join', () 
 test('match table teaches public rules and counts revealed colors for both sides', () => {
   const ui = read('js/match-ui.js');
   const css = read('css/core7.css');
-  assert.match(ui, /class="table-rules"/);
   assert.match(ui, /🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴/);
+  assert.doesNotMatch(ui, /id="ruleArrow"/);
   assert.match(ui, /id="youPublicCounts"/);
   assert.match(ui, /id="oppPublicCounts"/);
   assert.match(ui, /publicColorCounts\('you'\)/);
+  assert.match(ui, /renderPublicCounts\(\$\('#youPublicCounts', root\), 'OUT'/);
+  assert.match(ui, /renderPublicCounts\(\$\('#oppPublicCounts', root\), 'OUT'/);
   assert.match(css, /\.public-counts \{ display: grid; grid-template-columns: 1fr 1fr/);
 });
 

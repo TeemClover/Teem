@@ -56,24 +56,8 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     </div>
     <div class="match-board">
       <div class="match-stage">
-        <button class="drawer-toggle" id="histBtn" aria-label="เปิดประวัติการเล่น">📜 กองหงาย</button>
-        <div class="table-rules" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก">
-          <svg viewBox="0 0 520 300" role="img" aria-hidden="true">
-            <defs><marker id="ruleArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker></defs>
-            <path class="rule-arrow" d="M300 72 C370 80 413 115 425 166"></path>
-            <path class="rule-arrow" d="M385 225 C315 266 205 266 135 225"></path>
-            <path class="rule-arrow" d="M95 166 C108 114 151 80 220 72"></path>
-            <circle class="rule-node red" cx="260" cy="58" r="48"></circle>
-            <circle class="rule-node green" cx="425" cy="205" r="48"></circle>
-            <circle class="rule-node blue" cx="95" cy="205" r="48"></circle>
-            <circle class="rule-node gray" cx="260" cy="168" r="38"></circle>
-            <text x="260" y="51" class="rule-icon">🔥</text><text x="260" y="75">RED</text>
-            <text x="425" y="198" class="rule-icon">🍃</text><text x="425" y="222">GREEN</text>
-            <text x="95" y="198" class="rule-icon">👁</text><text x="95" y="222">BLUE</text>
-            <text x="260" y="161" class="rule-icon">⚙️</text><text x="260" y="184">BLOCK</text>
-          </svg>
-          <div class="rule-line"><span>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
-        </div>
+        <button class="drawer-toggle" id="histBtn" aria-label="เปิด Discard" aria-expanded="false">🗑️ Discard</button>
+        <div class="rule-line" aria-label="แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก"><span>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
         <div class="stage-cards">
           <div class="stage-slot" id="slotYou">
             <div class="flip"><div class="face back"></div><div class="face front"></div></div>
@@ -86,8 +70,8 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
         <div class="round-result" id="roundResult" aria-live="assertive"></div>
         <div class="round-discard" id="roundDiscard" aria-live="polite"></div>
       </div>
-      <aside class="history-rail" aria-label="กองหงายทุกใบที่ใช้แล้ว">
-        <h2 class="disp">📜 กองหงาย</h2>
+      <aside class="history-rail" aria-label="Discard ทุกใบที่ออกแล้ว">
+        <h2 class="disp">🗑️ Discard</h2>
         <div id="historyRail"></div>
       </aside>
     </div>
@@ -246,8 +230,8 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     const youCount = v.you.hand.filter(c => c.status === 'IN_HAND').length;
     $('#oppCards', root).textContent = `🂠 ${v.opponent.handCount}`;
     $('#youCards', root).textContent = `🂠 ${youCount}`;
-    renderPublicCounts($('#youPublicCounts', root), 'คุณ · OUT', publicColorCounts('you'));
-    renderPublicCounts($('#oppPublicCounts', root), 'คู่แข่ง · OUT', publicColorCounts('opp'));
+    renderPublicCounts($('#youPublicCounts', root), 'OUT', publicColorCounts('you'));
+    renderPublicCounts($('#oppPublicCounts', root), 'OUT', publicColorCounts('opp'));
     pips(v.opponent.roundWins, $('#oppPips', root));
     pips(v.you.roundWins, $('#youPips', root));
     $('#roundNo', root).textContent = `ROUND ${v.roundNumber}`;
@@ -386,8 +370,22 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     setTimeout(() => onFinished && onFinished(view), reducedMotion() ? 700 : 2000);
   }
 
-  /* ── History drawer — แบ่งครึ่งซ้าย (คุณ) / ขวา (คู่แข่ง) มีเส้นกลาง ── */
-  $('#histBtn', root).addEventListener('click', () => openHistory());
+  /* ── Discard — จอกว้างเปิดเป็น rail; จอแคบเปิดเป็น drawer ── */
+  const histBtn = $('#histBtn', root);
+  const wideDiscard = () => window.matchMedia('(min-width: 960px) and (min-height: 600px)').matches;
+  function setDiscardRail(open) {
+    root.classList.toggle('discard-open', open);
+    histBtn.setAttribute('aria-expanded', String(open));
+    histBtn.setAttribute('aria-label', open ? 'ซ่อน Discard' : 'เปิด Discard');
+    histBtn.textContent = open ? '✕ Hide Discard' : '🗑️ Discard';
+  }
+  histBtn.addEventListener('click', () => {
+    if (wideDiscard()) setDiscardRail(!root.classList.contains('discard-open'));
+    else openHistory();
+  });
+  window.addEventListener('resize', () => {
+    if (!wideDiscard()) setDiscardRail(false);
+  });
 
   function historyChip(c, { discard = false } = {}) {
     const meta = COLOR_META[c.color];
@@ -430,9 +428,9 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
   }
 
   function openHistory() {
-    const d = el('div', { class: 'drawer', role: 'dialog', 'aria-label': 'ประวัติการเล่น' });
+    const d = el('div', { class: 'drawer', role: 'dialog', 'aria-label': 'Discard' });
     const inner = el('div', { class: 'wrap-slim' });
-    inner.append(el('h2', { class: 'disp' }, '📜 กองหงาย — ทุกใบที่ใช้แล้ว'));
+    inner.append(el('h2', { class: 'disp' }, '🗑️ Discard — ไพ่ที่ออกแล้ว'));
     inner.append(buildHistoryTable());
     const closeBtn = el('button', { class: 'btn btn-gold', style: 'margin-top:18px' }, 'ปิด');
     const ffBtn = el('button', { class: 'btn btn-ghost', style: 'margin-top:18px;margin-left:10px' }, '🏳️ ยอมแพ้');
