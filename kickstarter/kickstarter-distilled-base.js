@@ -254,7 +254,7 @@
   }
 
   function lockRuleCardFront(){
-    const src = '/core7/assets/core7-rules-overview.png?v=20260803-distilled';
+    const src = '/core7/assets/core7-rules-overview.webp?v=20260803-distilled';
     document.querySelectorAll('img[src*="core7-rules-overview"]').forEach(img => { img.src=src; img.style.objectFit='contain'; });
     const front = document.getElementById('ksv2CardFront');
     if(!front) return;

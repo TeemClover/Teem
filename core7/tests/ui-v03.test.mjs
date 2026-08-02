@@ -79,7 +79,7 @@ test('CORE7 logo returns to game home except from the game home itself', () => {
 
 test('English rules retain the static rules overview image', () => {
   const rules = read('rules/index.html');
-  assert.match(rules, /id="en"[\s\S]*core7-rules-overview\.png/);
+  assert.match(rules, /id="en"[\s\S]*core7-rules-overview\.webp/);
   assert.match(rules, /FINAL GRAY|Final Gray/);
   assert.doesNotMatch(rules, /fewer GRAY cards/);
 });
@@ -128,14 +128,14 @@ test('card back uses the real standard-size CORE7 asset', () => {
   assert.match(art, /หลังการ์ด myClover CORE7/);
 });
 
-test('landing and tutorial use one static rules overview PNG', () => {
+test('landing and tutorial use one optimized rules overview WebP', () => {
   const landing = read('index.html');
   const tutorial = read('tutorial/index.html');
-  assert.match(landing, /core7-rules-overview\.png/);
+  assert.match(landing, /core7-rules-overview\.webp/);
   assert.doesNotMatch(landing, /colorCycleSVG/);
   assert.doesNotMatch(landing, /cyc-node/);
   assert.match(tutorial, /id="ruleVisual"/);
-  assert.match(tutorial, /core7-rules-overview\.png/);
+  assert.match(tutorial, /core7-rules-overview\.webp/);
   assert.match(tutorial, /visual: true/);
 });
 
@@ -144,7 +144,7 @@ test('landing rules card starts face-down and flips both ways accessibly', () =>
   const audio = read('js/audio.js');
   assert.match(landing, /id="rulesFlip"/);
   assert.match(landing, /aria-pressed="false"/);
-  assert.match(landing, /card-back-core7\.png/);
+  assert.match(landing, /card-back-core7\.webp/);
   assert.match(landing, /classList\.toggle\('is-flipped'\)/);
   assert.match(landing, /Tap to flip back/);
   assert.match(landing, /playCardFlip\(!open\)/);

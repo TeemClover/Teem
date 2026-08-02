@@ -1,5 +1,11 @@
 # myClover: CORE7 — Patch Notes
 
+## 2026-08-03 — Rules Image Delivery Hotfix
+
+- เปลี่ยนทุกหน้าที่แสดงภาพสรุปกติกาจาก PNG เป็น WebP รวม Landing, Rules, Tutorial, Match และ Kickstarter
+- ลดไฟล์ภาพที่ส่งให้ผู้เล่นจากประมาณ 2.0 MB เหลือประมาณ 497 KB
+- แก้ Content-Type และ cache header ของไฟล์ WebP ให้ถูกต้อง
+
 ## 2026-08-02 — v0.4.5 Full-bleed Rules Flip Hotfix
 
 - การ์ดกติกาหน้าแรกแสดงภาพเต็มใบ ไม่มี padding หรือกรอบซ้อนด้านใน

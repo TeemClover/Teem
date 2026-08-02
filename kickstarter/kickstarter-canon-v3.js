@@ -238,7 +238,6 @@
     document.querySelectorAll('img').forEach(img=>{
       const src=img.getAttribute('src')||'';
       if(src.includes('/core7/assets/card-back-core7.png')) img.src=src.replace('card-back-core7.png','card-back-core7.webp');
-      if(src.includes('/core7/assets/core7-rules-overview.png')) img.src=src.replace('core7-rules-overview.png','core7-rules-overview.webp');
     });
   }
 
