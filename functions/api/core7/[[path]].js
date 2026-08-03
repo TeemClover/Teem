@@ -3,8 +3,12 @@ import {
   readyNextMatch, seatForHash, setHand, validCode, viewFor,
 } from '../../../core7/backend/room-service.js';
 import {
-  readAnalyticsStats, recordBotMatchComplete, recordBotMatchStart, syncRoomAnalytics,
+  recordBotMatchComplete, recordBotMatchStart, syncRoomAnalytics,
 } from '../../../core7/backend/analytics.js';
+import {
+  CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION, readAnalyticsStatsV11,
+  recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
+} from '../../../core7/backend/analytics-v11.js';
 
 const JSON_HEADERS = {
   'content-type': 'application/json; charset=utf-8',
@@ -98,13 +102,13 @@ export async function onRequest(context) {
 
   if (method === 'OPTIONS') return new Response(null, { status: 204, headers: JSON_HEADERS });
   if (method === 'GET' && parts[0] === 'health') {
-    return json({ ok: true, version: '0.4.5', analytics: '1.0.0' });
+    return json({ ok: true, version: CORE7_GAME_VERSION, analytics: CORE7_ANALYTICS_VERSION });
   }
 
   if (method === 'GET' && parts[0] === 'stats') {
     const url = new URL(request.url);
     try {
-      const stats = await readAnalyticsStats(env.DB, {
+      const stats = await readAnalyticsStatsV11(env.DB, {
         from: url.searchParams.get('from'),
         to: url.searchParams.get('to'),
       });
@@ -115,24 +119,40 @@ export async function onRequest(context) {
     }
   }
 
+  if (method === 'POST' && parts[0] === 'analytics' && parts[1] === 'event') {
+    if (await rateLimited(env.DB, request, 'client-analytics', 240)) {
+      return json({ ok: false, error: 'RATE_LIMITED' }, 429);
+    }
+    const result = await recordClientEvent(env.DB, await bodyOf(request));
+    return json(result, result.ok ? 202 : 400);
+  }
+
   if (method === 'POST' && parts[0] === 'analytics' && parts[1] === 'bot') {
     if (await rateLimited(env.DB, request, 'bot-analytics', 180)) {
       return json({ ok: false, error: 'RATE_LIMITED' }, 429);
     }
     const body = await bodyOf(request);
-    const result = parts[2] === 'start'
+    const stage = parts[2];
+    const result = stage === 'start'
       ? await recordBotMatchStart(env.DB, body)
-      : (parts[2] === 'complete' ? await recordBotMatchComplete(env.DB, body) : null);
+      : (stage === 'complete' ? await recordBotMatchComplete(env.DB, body) : null);
     if (!result) return json({ ok: false, error: 'NOT_FOUND' }, 404);
+    if (result.ok) {
+      const task = recordBotDevelopment(env.DB, stage, body).catch(error => {
+        console.error('CORE7 bot development analytics failed', error);
+      });
+      if (typeof context.waitUntil === 'function') context.waitUntil(task); else await task;
+    }
     return json(result, result.ok ? 202 : 400);
   }
 
   if (parts[0] !== 'rooms') return json({ ok: false, error: 'NOT_FOUND' }, 404);
 
   const scheduleAnalytics = (before, after) => {
-    const task = syncRoomAnalytics(env.DB, before, after).catch(error => {
-      console.error('CORE7 room analytics failed', error);
-    });
+    const task = Promise.all([
+      syncRoomAnalytics(env.DB, before, after),
+      syncRoomDevelopment(env.DB, before, after),
+    ]).catch(error => console.error('CORE7 room analytics failed', error));
     if (typeof context.waitUntil === 'function') context.waitUntil(task);
   };
 
