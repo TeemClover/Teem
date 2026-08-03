@@ -117,28 +117,69 @@
   function setNode(id,done,current){var node=document.getElementById(id);node.classList.toggle("done",done);node.classList.toggle("current",current);node.querySelector(".qnode-mark").textContent=done?"✓":current?"→":"○"}
   function setActive(icon,label,title,desc,url,cta){document.getElementById("activeIcon").textContent=icon;document.getElementById("activeLabel").textContent=label;document.getElementById("activeTitle").textContent=title;document.getElementById("activeDesc").textContent=desc;var link=document.getElementById("activeCta");link.href=url;link.textContent=cta}
 
+  var platinumShownThisVisit=false;
+  function hideCompletionBanner(){
+    var banner=document.getElementById("secretBanner");
+    if(banner)banner.style.display="none";
+  }
+  function renderCompletionBanner(showPlatinum,th){
+    var banner=document.getElementById("secretBanner");
+    if(!banner)return;
+    banner.style.display="flex";
+    banner.style.borderTop=showPlatinum?"1px solid rgba(255,255,255,.13)":"1px solid rgba(18,40,28,.1)";
+    if(showPlatinum){
+      banner.innerHTML='<span class="secret-trophy">🏆</span><span><b>PLATINUM TROPHY · WELL PLAYED</b><span>'
+        +(th?"สมุดถูกซ่อม · อ่าน Secret Ending จบ · ตรา 👊🏻GLHF ถูกบันทึกแล้ว":"Notebook restored · Secret Ending complete · 👊🏻GLHF saved")
+        +'</span></span>';
+      return;
+    }
+    var alt=th?"CORE7 เกมการ์ดที่สร้างจากบทเรียนทั้ง 6 บท":"CORE7 card game built from all 6 lessons";
+    var label=th?"เปิดเกม CORE7":"Open CORE7";
+    var copy=th
+      ?"เรียนจบแล้ว ลองดวลกับบอทก่อน แล้วสร้างห้องส่งลิงก์ชวนเพื่อน คอลกันไป เล่นไป คุยกันไป — ยิ่งเล่นยิ่งสนุก"
+      :"Start with a bot, then create a room and send the link to a friend. Stay on a call, play, and talk—the game gets better as you learn each other.";
+    banner.innerHTML='<a href="core7/" aria-label="'+label+'" style="display:block;width:112px;flex:none">'
+      +'<img src="img/hall-core7.jpg" alt="'+alt+'" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;box-shadow:0 12px 28px -20px rgba(0,0,0,.65)">'
+      +'</a><span><b>CORE7 · NEXT QUEST</b><span style="color:var(--muted)">'+copy+'</span></span>';
+  }
+
   function paintQuest(){
     var th=currentLang==="th";
     var readCount=countDone("mc_read",READ),learnCount=countDone("mc_learn",LEARN),cardDone=ls("mc_opened","")==="1";
     var total=readCount+learnCount+(cardDone?1:0),pct=Math.round(total/14*100);
     var restored=ls("mc_nb_restored","")==="1",secretEnd=ls("mc_secret_end","")==="1",hasGLHF=titles().indexOf("GLHF")>=0;
-    var secretComplete=restored&&secretEnd&&hasGLHF,secretSeen=ls("mc_nb_seen","")==="1"||restored||secretEnd||hasGLHF,mainComplete=readCount===7&&learnCount===6&&cardDone;
+    var secretComplete=restored&&secretEnd&&hasGLHF,mainComplete=readCount===7&&learnCount===6&&cardDone;
     var hud=document.getElementById("questHud"),title=document.getElementById("questTitle"),lead=document.getElementById("questLead"),eyebrow=document.getElementById("questEyebrow");
     document.getElementById("questFill").style.width=pct+"%";
-    document.getElementById("overallPct").textContent=secretComplete?"TRUE END":pct+"%";
-    document.getElementById("overallText").textContent=secretComplete?(th?"Secret Ending ครบแล้ว":"Secret Ending complete"):mainComplete?(th?"Main Quest ครบแล้ว":"Main Quest complete"):(th?"เก็บได้ "+total+"/14 จุด":total+"/14 progress points");
+    document.getElementById("overallPct").textContent=mainComplete?"100%":pct+"%";
+    document.getElementById("overallText").textContent=mainComplete?(th?"พร้อมเล่น CORE7":"Ready for CORE7"):(th?"เก็บได้ "+total+"/14 จุด":total+"/14 progress points");
     document.getElementById("whyStatus").textContent=readCount+"/7 "+(th?"ตอน":"episodes");
     document.getElementById("howStatus").textContent=learnCount+"/6 "+(th?"บท":"quests");
     document.getElementById("proofStatus").textContent=cardDone?(th?"บันทึกการ์ดแล้ว":"Card saved"):(th?"ยังไม่มีการ์ด":"No card yet");
     var nextRead=firstMissing("mc_read",READ),nextLearn=firstMissing("mc_learn",LEARN);
     setNode("qWhy",readCount===7,readCount<7);setNode("qHow",learnCount===6,readCount===7&&learnCount<6);setNode("qProof",cardDone,readCount===7&&learnCount===6&&!cardDone);
-    hud.dataset.state="active";eyebrow.textContent="Main Quest Tracker";
+    hud.dataset.state="active";eyebrow.textContent="Main Quest Tracker";hideCompletionBanner();
     if(readCount<7){var episode=nextRead+1;title.textContent=th?"เควสหลักถัดไป":"Next Main Quest";lead.textContent=th?"บ้านพบตอนที่คุณยังอ่านไม่จบ และปักหมุดไว้ให้แล้ว":"The house found the next unread episode and pinned it for you.";setActive("📖",th?(readCount===0?"ภารกิจแรก":"ทำเควสต่อ"):(readCount===0?"First Quest":"Continue Quest"),(th?"อ่าน WHY AI? ตอนที่ ":"Read WHY AI? Episode ")+episode,th?"ตอนที่ "+episode+" จาก 7 · อ่านจบแล้ว Tracker จะเลื่อนไปตอนถัดไปเอง":"Episode "+episode+" of 7 · The tracker will advance when you finish.",READ_URLS[nextRead],th?"อ่านตอนที่ "+episode+" →":"Read Episode "+episode+" →");return}
     if(learnCount<6){var lesson=nextLearn+1;title.textContent=th?"เควสหลักถัดไป":"Next Main Quest";lead.textContent=th?"WHY ผ่านแล้ว ต่อไปเปลี่ยนความเข้าใจให้กลายเป็นของที่ใช้ได้จริง":"WHY is complete. Now turn understanding into something real.";setActive("⚡",th?"ทำเควสต่อ":"Continue Quest",th?"เรียนภารกิจที่ "+lesson+" จาก 6":"Complete Quest "+lesson+" of 6",th?"จบภารกิจนี้แล้ว Tracker จะปักหมุดภารกิจถัดไปให้ทันที":"Finish this quest and the tracker will pin the next one.",LEARN_URLS[nextLearn],th?"เริ่มภารกิจที่ "+lesson+" →":"Start Quest "+lesson+" →");return}
     if(!cardDone){title.textContent=th?"ภารกิจสุดท้าย":"Final Main Quest";lead.textContent=th?"เหลือเพียงเก็บหลักฐานว่าคุณเดินทางมาถึงตรงนี้แล้ว":"Only one step remains: save proof that you reached this point.";setActive("🎴","Final Main Quest",th?"สร้างและบันทึกการ์ดประจำตัว":"Create and Save Your Identity Card",th?"การบันทึกการ์ดจะปิด Main Quest อย่างสมบูรณ์":"Saving the card will complete the Main Quest.","card/",th?"สร้างการ์ด →":"Create Card →");return}
-    if(secretSeen&&!secretComplete){hud.dataset.state="complete";eyebrow.textContent="Main Quest Completed · Secret Route";if(!restored){title.textContent=th?"พบเควสลับ":"Secret Quest Found";lead.textContent=th?"Main Quest จบแล้ว แต่สมุดเล่มเก่ายังรอให้คุณใช้สกิล RESTORE":"The Main Quest is complete, but the old notebook is waiting for RESTORE.";setActive("📔","Secret Quest",th?"ซ่อมสมุดเล่มเก่า":"Restore the Old Notebook",th?"กลับไปใช้ RESTORE เพื่อเปิดหน้าที่เสียหายและเรื่องราวที่ซ่อนอยู่":"Use RESTORE to recover the damaged pages and hidden story.","classroom/awaken/notebook/",th?"กลับไปซ่อมสมุด →":"Restore the Notebook →");return}if(!secretEnd){title.textContent=th?"Secret Route กำลังดำเนินอยู่":"Secret Route in Progress";lead.textContent=th?"สมุดถูกซ่อมแล้ว เหลืออ่านเรื่องที่กลับคืนมาจนถึงบทส่งท้าย":"The notebook is restored. Read the recovered story through its ending.";setActive("🌙","Secret Quest",th?"อ่านเรื่องที่ซ่อมแล้วจนจบ":"Read the Restored Story to the End",th?"เลื่อนอ่านต่อไปจนพบรหัสสุดท้ายของเส้นทางลับ":"Continue until you find the final code of the secret route.","classroom/awaken/notebook/",th?"อ่านตอนจบต่อ →":"Continue the Ending →");return}title.textContent=th?"เหลือการกระทำสุดท้าย":"One Final Action Remains";lead.textContent=th?"คุณพบ Secret Ending แล้ว เหลือเพียงชนหมัดเพื่อรับรางวัลสุดท้าย":"You found the Secret Ending. One fist bump remains for the final reward.";setActive("🤜🏻","Final Secret Quest",th?"ชนหมัดและรับ Platinum Trophy":"Fist Bump and Claim the Platinum Trophy",th?"การชนหมัดจะบันทึกตรา GLHF และปิดเส้นทางลับอย่างสมบูรณ์":"The fist bump saves the GLHF badge and completes the secret route.","classroom/awaken/notebook/",th?"กลับไปชนหมัด →":"Return for the Fist Bump →");return}
-    if(secretComplete){hud.dataset.state="secret";eyebrow.textContent="True Ending";title.textContent="Secret Ending Unlocked";lead.textContent=th?"คุณเคลียร์เนื้อเรื่องหลัก ซ่อมสมุด อ่านบทส่งท้าย และรับรางวัลสุดท้ายครบแล้ว":"You cleared the main story, restored the notebook, finished the ending, and claimed the final reward.";setActive("🏆","Platinum Trophy","WELL PLAYED · 👊🏻GLHF",th?"ฉากจบลับและตราสุดท้ายถูกบันทึกไว้ในเครื่องนี้แล้ว":"The secret ending and final badge are saved on this device.","classroom/awaken/notebook/",th?"กลับไปดูฉากจบลับ →":"Revisit the Secret Ending →");return}
-    hud.dataset.state="complete";eyebrow.textContent="Quest Complete";title.textContent="Main Quest Completed";lead.textContent=th?"คุณเข้าใจเหตุผล ลงมือสร้าง และเก็บหลักฐานของตัวเองครบแล้ว":"You understood why, built with AI, and saved your proof.";setActive("🏆","Main Quest Complete",th?"เส้นทางหลักของบ้านจบสมบูรณ์":"The house's main route is complete",th?"Webtoon 7 ตอน · ภารกิจ 6 บท · การ์ดหลักฐาน 1 ใบ":"7 Webtoon episodes · 6 quests · 1 proof card","card/",th?"ดูการ์ดของฉัน →":"View My Card →")
+
+    var platinumSeen=ls("mc_platinum_seen","")==="1";
+    var showPlatinum=secretComplete&&(platinumShownThisVisit||!platinumSeen);
+    if(secretComplete&&!platinumSeen&&!platinumShownThisVisit){
+      platinumShownThisVisit=true;
+      showPlatinum=true;
+      try{localStorage.setItem("mc_platinum_seen","1")}catch(e){}
+    }
+    hud.dataset.state=showPlatinum?"secret":"complete";
+    eyebrow.textContent=th?"Main Quest Complete · Next Game":"Main Quest Complete · Next Game";
+    title.textContent=th?"เรียนจบแล้ว — ไปเล่น CORE7":"You Finished the Quest — Play CORE7";
+    lead.textContent=th
+      ?"จากนี้ไม่ต้องย้อนกลับไปทำฉากเดิมแล้ว ลองเล่นกับบอท จากนั้นสร้างห้องส่งลิงก์ชวนเพื่อนมาดวลกัน"
+      :"No need to revisit completed scenes. Try a bot match, then create a room and send the link to a friend.";
+    setActive("🃏",th?"NEXT QUEST · CORE7":"NEXT QUEST · CORE7",th?"ลองเล่นกับบอท แล้วชวนเพื่อนมาดวล":"Play a Bot, Then Challenge a Friend",th
+      ?"เริ่มกับบอทได้ทันที พอจับจังหวะได้แล้วสร้างห้อง ส่งลิงก์ให้เพื่อน แล้วคอลกันไป เล่นไป คุยกันไป — ยิ่งเล่นยิ่งสนุก"
+      :"Start with a bot. Once you know the rhythm, create a room, send the link, and stay on a call while you play and talk—the more you play, the better it gets.","core7/",th?"เล่นเกม CORE7 →":"Play CORE7 →");
+    renderCompletionBanner(showPlatinum,th);
   }
 
   var tip=document.createElement("div");tip.className="tip-box";document.body.appendChild(tip);var active=null;
