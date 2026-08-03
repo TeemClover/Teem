@@ -4,22 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>เลือกมือ 7 ใบ — myClover: CORE7</title>
-<meta name="description" content="Build Your Hand — เลือกการ์ด 7 ใบที่เป็นคุณ สีใดกี่ใบก็ได้ ไม่มีเด็ค ไม่มี Deck Lock">
+<meta name="description" content="เลือกมือ CORE7 แบบ Quick หรือจัดมือจากการ์ดที่ปลดล็อกใน Collection">
 <meta name="theme-color" content="#0A2818">
 <link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
+.mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;padding:7px;border:1px solid rgb(var(--line)/.12);border-radius:17px;background:#fff;box-shadow:0 16px 38px -32px rgb(0 0 0/.5)}
+.mode-btn{position:relative;min-height:68px;border:1px solid transparent;border-radius:12px;padding:11px 15px;text-align:left;background:transparent;color:rgb(var(--ink));cursor:pointer}
+.mode-btn b{display:block;font-family:"Bai Jamjuree";font-size:15px}.mode-btn span{display:block;margin-top:2px;color:rgb(var(--muted));font-size:11.5px;line-height:1.45}.mode-btn[aria-pressed="true"]{border-color:rgb(var(--gold)/.42);background:linear-gradient(135deg,rgb(var(--felt)),rgb(var(--deep)));color:#fff}.mode-btn[aria-pressed="true"] span{color:rgb(255 255 255/.65)}.mode-btn:disabled{cursor:not-allowed;opacity:.58}
+.collection-status{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:13px;padding:12px 15px;border:1px solid rgb(var(--line)/.1);border-radius:13px;background:rgb(var(--gold)/.07);font-size:12.5px}.collection-status b{font-family:"Bai Jamjuree";color:rgb(var(--green));font-size:17px}.collection-status a{font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:16px}
 .pick-cell{position:relative;border:0;background:none;padding:0;border-radius:10px;transition:transform .15s}
 .pick-cell svg{width:100%;height:auto;display:block;border-radius:8px}
 .pick-cell .cnt{position:absolute;top:6px;left:6px;background:rgb(var(--gold));color:rgb(var(--deep));font-family:"Bai Jamjuree";font-weight:700;border-radius:999px;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgb(0 0 0/.3)}
-.pick-cell.picked{outline:3px solid rgb(var(--gold));outline-offset:2px}
-.pick-cell:hover{transform:translateY(-3px)}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.filters button{border:1px solid rgb(var(--line)/.18);background:#fff;border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;min-height:40px}
-.filters button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
-.member-cta{background:linear-gradient(120deg,rgb(var(--felt)),rgb(var(--deep)));color:#fff;border-radius:var(--radius);padding:20px 22px;margin-top:20px}
-.presetrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pick-cell.picked{outline:3px solid rgb(var(--gold));outline-offset:2px}.pick-cell:hover{transform:translateY(-3px)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.filters button{border:1px solid rgb(var(--line)/.18);background:#fff;border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;min-height:40px}.filters button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
+.presetrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.select-note{margin-top:18px;padding:16px 18px;border:1px solid rgb(var(--gold)/.28);border-radius:14px;background:rgb(var(--gold)/.08);font-size:13.5px}.select-note b{font-family:"Bai Jamjuree"}.select-note[hidden]{display:none}
+@media(max-width:600px){.mode-switch{grid-template-columns:1fr}.collection-status{align-items:flex-start}.pick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -28,24 +29,34 @@
   <div class="wrap">
     <p class="eyebrow">Build Your Hand</p>
     <h2 class="disp">เลือกมือ 7 ใบ</h2>
-    <p class="lead">สีใดกี่ใบก็ได้ ให้รวมครบ 7 — เปลี่ยนใหม่ได้ทุก Match ไม่มี Deck Lock</p>
+    <p class="lead">ใช้ Quick เพื่อเลือกจำนวนสีทันที หรือ Select เพื่อจัดมือจากการ์ดที่คุณสะสมได้</p>
 
-    <div id="guestMode">
+    <div class="mode-switch" role="group" aria-label="รูปแบบการเลือกมือ">
+      <button class="mode-btn" id="quickMode" type="button" aria-pressed="true">
+        <b>⚡ QUICK</b><span>เลือกจำนวนสีแบบเดิม เร็วและเล่นได้ทันที</span>
+      </button>
+      <button class="mode-btn" id="selectMode" type="button" aria-pressed="false">
+        <b>🎴 SELECT</b><span id="selectModeDesc">จัดมือจาก Collection ของคุณ</span>
+      </button>
+    </div>
+    <div class="collection-status">
+      <span>COLLECTION · เล่นจบ 1 Match ได้การ์ดใหม่ 1 ใบ</span>
+      <b id="collectionCount">4/32</b>
+      <a href="/core7/collection/">ดูทั้งหมด</a>
+    </div>
+
+    <section id="quickPanel">
       <div class="panel" style="margin-top:20px" id="counters"></div>
-      <div class="member-cta" id="memberCta">
-        <b class="disp">อยากเลือกจากการ์ดภาพ FIRST HAND ทั้ง 28 ใบ?</b>
-        <p style="font-size:13.5px;color:rgb(255 255 255/.8);margin-top:6px">
-          เปิดโหมด Collection ในเครื่องนี้เพื่อทดลองการ์ดความหมายครบชุด
-          (บัญชี Member ถาวรจะเปิดพร้อมระบบ Server จริง — สถิติและ Collection ในเครื่องไม่หายไปไหน)</p>
-        <button class="btn btn-gold" style="margin-top:12px" id="enableMember">เปิดโหมด Collection</button>
-      </div>
-    </div>
+    </section>
 
-    <div id="memberMode" hidden>
-      <div class="filters" id="filters" role="group" aria-label="กรองการ์ด"></div>
-      <div class="presetrow" id="presets"></div>
-      <div class="pick-grid" id="grid"></div>
-    </div>
+    <section id="selectPanel" hidden>
+      <div class="select-note" id="selectLocked" hidden></div>
+      <div id="selectContent">
+        <div class="filters" id="filters" role="group" aria-label="กรองการ์ด"></div>
+        <div class="presetrow" id="presets"></div>
+        <div class="pick-grid" id="grid"></div>
+      </div>
+    </section>
 
     <div class="hb-total">
       <span class="t" id="total">0 / 7</span>
@@ -60,143 +71,210 @@ import { renderShell, toast, el } from '/core7/js/ui.js';
 import { COLOR_META, FIRST_HAND, GENERIC_CARDS, cardById } from '/core7/js/cards.js';
 import { colorIcon, cardSVG, genericCardSVG } from '/core7/js/art.js';
 import { COLORS } from '/core7/js/rules.js';
+import {
+  SELECT_MODE_UNLOCK_COUNT,
+  TOTAL_COLLECTION_CARDS,
+  canUseSelectMode,
+  getCollectionCount,
+  getCollectionIds,
+  getHandMode,
+  setHandMode,
+} from '/core7/js/collection-progress.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({});
 const qs = new URLSearchParams(location.search);
 const next = qs.get('next') || 'bot';
-const member = store.isLocalMember();
+const collectionIds = getCollectionIds();
+const owned = new Set(collectionIds);
+const selectUnlocked = canUseSelectMode();
+let mode = getHandMode();
 
-/* ── สถานะการเลือก ── */
-let counts = { RED: 2, GREEN: 2, BLUE: 2, GRAY: 1 };        // guest
-let picked = [];                                              // member: card ids (ซ้ำได้ไหม? การ์ดคนละใบ — ไม่ซ้ำ id)
+/* QUICK keeps the original color-counter flow. SELECT contains only cards
+   unlocked in this browser and never allows duplicate card IDs. */
+let counts = { RED: 2, GREEN: 2, BLUE: 2, GRAY: 1 };
+let picked = [];
 const savedHand = store.getHand();
-if (savedHand) {
-  if (member && savedHand.every(id => cardById(id) && !cardById(id).generic)) picked = [...savedHand];
-  else if (!member && savedHand.every(id => cardById(id)?.generic)) {
+if (savedHand?.length === 7) {
+  const savedCards = savedHand.map(cardById);
+  if (savedCards.every(Boolean) && savedCards.every(card => card.generic)) {
     counts = { RED: 0, GREEN: 0, BLUE: 0, GRAY: 0 };
-    for (const id of savedHand) counts[cardById(id).color]++;
+    for (const card of savedCards) counts[card.color] += 1;
   }
+  if (new Set(savedHand).size === 7 && savedHand.every(id => owned.has(id))) picked = [...savedHand];
 }
 
+const quickButton = document.getElementById('quickMode');
+const selectButton = document.getElementById('selectMode');
+const selectDesc = document.getElementById('selectModeDesc');
+const quickPanel = document.getElementById('quickPanel');
+const selectPanel = document.getElementById('selectPanel');
+const selectLocked = document.getElementById('selectLocked');
+const selectContent = document.getElementById('selectContent');
 const totalEl = document.getElementById('total');
 const mixEl = document.getElementById('mix');
 const readyBtn = document.getElementById('ready');
 
-function currentCards() {
-  if (member) return [...picked];
-  const GEN = { RED: 'gen-red', GREEN: 'gen-green', BLUE: 'gen-blue', GRAY: 'gen-gray' };
-  const out = [];
-  for (const [c, n] of Object.entries(counts)) for (let i = 0; i < n; i++) out.push(GEN[c]);
-  return out;
+document.getElementById('collectionCount').textContent = `${collectionIds.length}/${TOTAL_COLLECTION_CARDS}`;
+if (!selectUnlocked) {
+  const remaining = SELECT_MODE_UNLOCK_COUNT - collectionIds.length;
+  selectButton.disabled = true;
+  selectDesc.textContent = `🔒 ปลดล็อกเมื่อสะสมครบ ${SELECT_MODE_UNLOCK_COUNT}/${TOTAL_COLLECTION_CARDS} · อีก ${remaining} ใบ`;
+  selectLocked.hidden = false;
+  selectLocked.innerHTML = `<b>SELECT HAND ยังล็อกอยู่</b><br>เล่นจบอีก ${remaining} Match เพื่อสะสมการ์ดให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ แล้วโหมดจัดมือจาก Collection จะเปิดอัตโนมัติ`;
+  selectContent.hidden = true;
+  mode = 'quick';
+  setHandMode('quick');
 }
+
+function currentCards() {
+  if (mode === 'select') return [...picked];
+  const generic = { RED: 'gen-red', GREEN: 'gen-green', BLUE: 'gen-blue', GRAY: 'gen-gray' };
+  const cards = [];
+  for (const [color, amount] of Object.entries(counts)) {
+    for (let i = 0; i < amount; i += 1) cards.push(generic[color]);
+  }
+  return cards;
+}
+
 function refreshTotal() {
   const cards = currentCards();
   totalEl.textContent = `${cards.length} / 7`;
-  const m = {};
-  for (const id of cards) { const c = cardById(id).color; m[c] = (m[c] || 0) + 1; }
-  mixEl.textContent = Object.entries(m).map(([c, n]) => `${COLOR_META[c].emoji}${n}`).join('  ');
+  const mix = {};
+  for (const id of cards) {
+    const card = cardById(id);
+    if (card) mix[card.color] = (mix[card.color] || 0) + 1;
+  }
+  mixEl.textContent = Object.entries(mix).map(([color, amount]) => `${COLOR_META[color].emoji}${amount}`).join('  ');
   readyBtn.disabled = cards.length !== 7;
 }
 
-/* ── Guest counters ── */
-if (!member) {
-  const host = document.getElementById('counters');
-  for (const color of COLORS) {
-    const meta = COLOR_META[color];
-    const row = el('div', { class: 'hb-counter' });
-    row.append(el('span', { class: `chip chip-${color.toLowerCase()}`, style: 'width:44px;height:44px', html: colorIcon(color, 24) }));
-    row.append(el('div', { class: 'cinfo' },
-      el('div', { class: 'cname' }, `${meta.nameEn.toUpperCase()} · ${meta.nameTh}`),
-      el('div', { class: 'csub' }, `${meta.nameEn} · ${meta.nameTh} — ${meta.beatsTh}`)));
-    const minus = el('button', { class: 'hb-btn', 'aria-label': `ลดจำนวนสี${meta.nameTh}` }, '−');
-    const num = el('span', { class: 'num', 'aria-live': 'polite' }, String(counts[color]));
-    const plus = el('button', { class: 'hb-btn', 'aria-label': `เพิ่มจำนวนสี${meta.nameTh}` }, '+');
-    minus.addEventListener('click', () => { if (counts[color] > 0) { counts[color]--; num.textContent = counts[color]; refreshTotal(); } });
-    plus.addEventListener('click', () => {
-      if (currentCards().length >= 7) { toast('ครบ 7 ใบแล้ว — ลดสีอื่นก่อน'); return; }
-      counts[color]++; num.textContent = counts[color]; refreshTotal();
-    });
-    row.append(minus, num, plus);
-    host.append(row);
+function switchMode(nextMode) {
+  if (nextMode === 'select' && !selectUnlocked) {
+    toast(`สะสมให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบก่อน`);
+    return;
   }
-  document.getElementById('enableMember').addEventListener('click', () => {
-    store.setLocalMember(true);
-    location.reload();
+  mode = setHandMode(nextMode);
+  const quick = mode === 'quick';
+  quickButton.setAttribute('aria-pressed', String(quick));
+  selectButton.setAttribute('aria-pressed', String(!quick));
+  quickPanel.hidden = !quick;
+  selectPanel.hidden = quick;
+  refreshTotal();
+}
+quickButton.addEventListener('click', () => switchMode('quick'));
+selectButton.addEventListener('click', () => switchMode('select'));
+
+/* ── QUICK counters ── */
+const counterHost = document.getElementById('counters');
+for (const color of COLORS) {
+  const meta = COLOR_META[color];
+  const row = el('div', { class: 'hb-counter' });
+  row.append(el('span', { class: `chip chip-${color.toLowerCase()}`, style: 'width:44px;height:44px', html: colorIcon(color, 24) }));
+  row.append(el('div', { class: 'cinfo' },
+    el('div', { class: 'cname' }, `${meta.nameEn.toUpperCase()} · ${meta.nameTh}`),
+    el('div', { class: 'csub' }, `${meta.nameEn} · ${meta.nameTh} — ${meta.beatsTh}`)));
+  const minus = el('button', { class: 'hb-btn', 'aria-label': `ลดจำนวนสี${meta.nameTh}` }, '−');
+  const num = el('span', { class: 'num', 'aria-live': 'polite' }, String(counts[color]));
+  const plus = el('button', { class: 'hb-btn', 'aria-label': `เพิ่มจำนวนสี${meta.nameTh}` }, '+');
+  minus.addEventListener('click', () => {
+    if (counts[color] <= 0) return;
+    counts[color] -= 1; num.textContent = counts[color]; refreshTotal();
+  });
+  plus.addEventListener('click', () => {
+    if (Object.values(counts).reduce((sum, n) => sum + n, 0) >= 7) { toast('ครบ 7 ใบแล้ว — ลดสีอื่นก่อน'); return; }
+    counts[color] += 1; num.textContent = counts[color]; refreshTotal();
+  });
+  row.append(minus, num, plus);
+  counterHost.append(row);
+}
+
+/* ── SELECT picker ── */
+const grid = document.getElementById('grid');
+const filters = document.getElementById('filters');
+const FILTERS = ['All', 'Red', 'Green', 'Blue', 'Gray', 'Favorites'];
+let filter = 'All';
+for (const name of FILTERS) {
+  const button = el('button', { 'aria-pressed': String(name === filter) }, name);
+  button.addEventListener('click', () => {
+    filter = name;
+    [...filters.children].forEach((item, index) => item.setAttribute('aria-pressed', String(FILTERS[index] === filter)));
+    renderGrid();
+  });
+  filters.append(button);
+}
+
+function availableCards() {
+  const all = [...GENERIC_CARDS, ...FIRST_HAND].filter(card => owned.has(card.id));
+  const favorites = store.getFavorites();
+  return all.filter(card => {
+    if (filter === 'Favorites') return favorites.includes(card.id);
+    if (['Red', 'Green', 'Blue', 'Gray'].includes(filter)) return card.color === filter.toUpperCase();
+    return true;
   });
 }
 
-/* ── Member picker ── */
-if (member) {
-  document.getElementById('guestMode').hidden = true;
-  document.getElementById('memberMode').hidden = false;
-  const grid = document.getElementById('grid');
-  const filters = document.getElementById('filters');
-  let filter = 'All';
-  const FILTERS = ['All', 'Red', 'Blue', 'Green', 'Gray', 'Favorites'];
-  for (const f of FILTERS) {
-    const b = el('button', { 'aria-pressed': String(f === filter) }, f);
-    b.addEventListener('click', () => { filter = f; renderFilters(); renderGrid(); });
-    filters.append(b);
-  }
-  function renderFilters() {
-    [...filters.children].forEach((b, i) => b.setAttribute('aria-pressed', String(FILTERS[i] === filter)));
-  }
-  function visibleCards() {
-    const favs = store.getFavorites();
-    return FIRST_HAND.filter(c => {
-      if (filter === 'Favorites') return favs.includes(c.id);
-      if (['Red', 'Blue', 'Green', 'Gray'].includes(filter)) return c.color === filter.toUpperCase();
-      return true;
-    });
-  }
-  function renderGrid() {
-    grid.innerHTML = '';
-    for (const c of visibleCards()) {
-      const cell = el('button', { class: 'pick-cell' + (picked.includes(c.id) ? ' picked' : ''), 'aria-pressed': String(picked.includes(c.id)), 'aria-label': `${c.en} ${c.th} สี${COLOR_META[c.color].nameTh}` });
-      cell.innerHTML = cardSVG(c.id, { width: 150 });
-      if (picked.includes(c.id)) cell.prepend(el('span', { class: 'cnt' }, '✓'));
-      cell.addEventListener('click', () => {
-        if (picked.includes(c.id)) picked = picked.filter(x => x !== c.id);
-        else if (picked.length >= 7) { toast('ครบ 7 ใบแล้ว — เอาใบอื่นออกก่อน'); return; }
-        else picked.push(c.id);
-        renderGrid(); refreshTotal();
-      });
-      grid.append(cell);
-    }
-  }
-  renderGrid();
-
-  /* Presets */
-  const pHost = document.getElementById('presets');
-  function renderPresets() {
-    pHost.innerHTML = '';
-    for (const p of store.getPresets()) {
-      const b = el('button', { class: 'btn', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, `▶ ${p.name}`);
-      b.addEventListener('click', () => { picked = [...p.cards]; renderGrid(); refreshTotal(); toast(`ใช้มือ "${p.name}"`); });
-      const d = el('button', { class: 'btn', style: 'padding:8px 10px;min-height:40px;font-size:13px', 'aria-label': `ลบ preset ${p.name}` }, '✕');
-      d.addEventListener('click', () => { store.deletePreset(p.id); renderPresets(); });
-      pHost.append(b, d);
-    }
-    const save = el('button', { class: 'btn btn-dark', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, '💾 บันทึกมือนี้เป็น Preset');
-    save.addEventListener('click', () => {
-      if (picked.length !== 7) { toast('เลือกให้ครบ 7 ใบก่อน'); return; }
-      const name = prompt('ตั้งชื่อมือชุดนี้:', 'มือของฉัน');
-      if (name) { store.savePreset(name, picked); renderPresets(); }
-    });
-    pHost.append(save);
-  }
-  renderPresets();
+function renderCardArt(card) {
+  return card.generic ? genericCardSVG(card.color, { width: 150 }) : cardSVG(card.id, { width: 150 });
 }
 
-refreshTotal();
+function renderGrid() {
+  grid.innerHTML = '';
+  const cards = availableCards();
+  if (!cards.length) {
+    grid.append(el('p', { style: 'color:rgb(var(--muted));grid-column:1/-1' }, 'ยังไม่มีการ์ดในหมวดนี้'));
+    return;
+  }
+  for (const card of cards) {
+    const isPicked = picked.includes(card.id);
+    const cell = el('button', {
+      class: 'pick-cell' + (isPicked ? ' picked' : ''),
+      'aria-pressed': String(isPicked),
+      'aria-label': `${card.en} ${card.th} สี${COLOR_META[card.color].nameTh}`,
+    });
+    cell.innerHTML = renderCardArt(card);
+    if (isPicked) cell.prepend(el('span', { class: 'cnt' }, '✓'));
+    cell.addEventListener('click', () => {
+      if (picked.includes(card.id)) picked = picked.filter(id => id !== card.id);
+      else if (picked.length >= 7) { toast('ครบ 7 ใบแล้ว — เอาใบอื่นออกก่อน'); return; }
+      else picked.push(card.id);
+      renderGrid(); refreshTotal();
+    });
+    grid.append(cell);
+  }
+}
+renderGrid();
+
+/* Presets only belong to SELECT because QUICK is already faster than loading one. */
+const presetHost = document.getElementById('presets');
+function renderPresets() {
+  presetHost.innerHTML = '';
+  const validPresets = store.getPresets().filter(preset => preset.cards?.length === 7 && preset.cards.every(id => owned.has(id)));
+  for (const preset of validPresets) {
+    const use = el('button', { class: 'btn', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, `▶ ${preset.name}`);
+    use.addEventListener('click', () => { picked = [...preset.cards]; renderGrid(); refreshTotal(); toast(`ใช้มือ "${preset.name}"`); });
+    const remove = el('button', { class: 'btn', style: 'padding:8px 10px;min-height:40px;font-size:13px', 'aria-label': `ลบ preset ${preset.name}` }, '✕');
+    remove.addEventListener('click', () => { store.deletePreset(preset.id); renderPresets(); });
+    presetHost.append(use, remove);
+  }
+  const save = el('button', { class: 'btn btn-dark', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, '💾 บันทึกมือนี้');
+  save.addEventListener('click', () => {
+    if (picked.length !== 7) { toast('เลือกให้ครบ 7 ใบก่อน'); return; }
+    const name = prompt('ตั้งชื่อมือชุดนี้:', 'มือของฉัน');
+    if (name) { store.savePreset(name, picked); renderPresets(); }
+  });
+  presetHost.append(save);
+}
+renderPresets();
+
+switchMode(mode);
 
 /* ── Ready → ไปต่อ ── */
 readyBtn.addEventListener('click', () => {
   const cards = currentCards();
   if (cards.length !== 7) return;
   store.setHand(cards);
-  store.track('core7_hand_complete');
+  store.track(`core7_hand_complete_${mode}`);
   if (next === 'bot') {
     const level = qs.get('level') || 'easy';
     location.href = `/core7/bot/?level=${level}&fresh=1`;
