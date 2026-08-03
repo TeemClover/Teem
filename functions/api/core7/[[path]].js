@@ -2,6 +2,9 @@ import {
   applyAction, createRoomState, heartbeat, joinRoom, leaveRoom, publicLobbyItem,
   readyNextMatch, seatForHash, setHand, validCode, viewFor,
 } from '../../../core7/backend/room-service.js';
+import {
+  readAnalyticsStats, recordBotMatchComplete, recordBotMatchStart, syncRoomAnalytics,
+} from '../../../core7/backend/analytics.js';
 
 const JSON_HEADERS = {
   'content-type': 'application/json; charset=utf-8',
@@ -58,10 +61,11 @@ async function readRoom(db, code) {
   return row ? { state: JSON.parse(row.state_json), version: row.version } : null;
 }
 
-async function mutateRoom(db, code, mutation) {
+async function mutateRoom(db, code, mutation, afterSave) {
   for (let attempt = 0; attempt < 4; attempt += 1) {
     const row = await readRoom(db, code);
     if (!row) return { error: 'ROOM_NOT_FOUND', status: 404 };
+    const before = JSON.parse(JSON.stringify(row.state));
     const result = await mutation(row.state);
     if (result?.ok === false) return { error: result.error, status: result.error === 'ROOM_FULL' ? 409 : 400 };
     const nextVersion = row.version + 1;
@@ -71,7 +75,10 @@ async function mutateRoom(db, code, mutation) {
       JSON.stringify(row.state), row.state.status, row.state.visibility, row.state.mode,
       row.state.updatedAt, row.state.expiresAt, nextVersion, code, row.version,
     ).run();
-    if (saved.meta?.changes === 1) return { state: row.state, result, version: nextVersion };
+    if (saved.meta?.changes === 1) {
+      if (afterSave) afterSave(before, row.state);
+      return { state: row.state, result, version: nextVersion };
+    }
   }
   return { error: 'ROOM_BUSY', status: 409 };
 }
@@ -90,9 +97,44 @@ export async function onRequest(context) {
   const method = request.method.toUpperCase();
 
   if (method === 'OPTIONS') return new Response(null, { status: 204, headers: JSON_HEADERS });
-  if (method === 'GET' && parts[0] === 'health') return json({ ok: true, version: '0.3-beta' });
+  if (method === 'GET' && parts[0] === 'health') {
+    return json({ ok: true, version: '0.4.5', analytics: '1.0.0' });
+  }
+
+  if (method === 'GET' && parts[0] === 'stats') {
+    const url = new URL(request.url);
+    try {
+      const stats = await readAnalyticsStats(env.DB, {
+        from: url.searchParams.get('from'),
+        to: url.searchParams.get('to'),
+      });
+      return json(stats);
+    } catch (error) {
+      console.error('CORE7 stats failed', error);
+      return json({ ok: false, error: 'STATS_UNAVAILABLE' }, 500);
+    }
+  }
+
+  if (method === 'POST' && parts[0] === 'analytics' && parts[1] === 'bot') {
+    if (await rateLimited(env.DB, request, 'bot-analytics', 180)) {
+      return json({ ok: false, error: 'RATE_LIMITED' }, 429);
+    }
+    const body = await bodyOf(request);
+    const result = parts[2] === 'start'
+      ? await recordBotMatchStart(env.DB, body)
+      : (parts[2] === 'complete' ? await recordBotMatchComplete(env.DB, body) : null);
+    if (!result) return json({ ok: false, error: 'NOT_FOUND' }, 404);
+    return json(result, result.ok ? 202 : 400);
+  }
 
   if (parts[0] !== 'rooms') return json({ ok: false, error: 'NOT_FOUND' }, 404);
+
+  const scheduleAnalytics = (before, after) => {
+    const task = syncRoomAnalytics(env.DB, before, after).catch(error => {
+      console.error('CORE7 room analytics failed', error);
+    });
+    if (typeof context.waitUntil === 'function') context.waitUntil(task);
+  };
 
   if (method === 'GET' && parts.length === 1) {
     const rows = await env.DB.prepare(
@@ -162,7 +204,7 @@ export async function onRequest(context) {
     if (parts[2] === 'next') return readyNextMatch(room, currentSeat);
     if (parts[2] === 'leave') return leaveRoom(room, currentSeat);
     return { ok: false, error: 'NOT_FOUND' };
-  });
+  }, scheduleAnalytics);
   if (changed.error) return json({ ok: false, error: changed.error }, changed.status);
   return json({ ok: true, version: changed.version, ...viewFor(changed.state, seat) });
 }
