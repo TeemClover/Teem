@@ -259,12 +259,11 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     renderHistory($('#historyRail', root));
 
     /* มือ + ข้อความ */
-    const handHost = $('#hand', root);
-    handHost.innerHTML = '';
     const msg = $('#msg', root);
     const inHand = v.you.hand.filter(c => c.status === 'IN_HAND');
 
     if (v.result) {
+      paintHand([], 'none');
       msg.textContent = 'จบ Round แล้ว — กำลังสรุปผล Match…';
       lockBtn.disabled = true;
       lockBtn.textContent = 'ผล Match…';
@@ -274,14 +273,14 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
 
     if (v.discardRequired) {
       msg.innerHTML = '<b style="color:#fca5a5">แพ้รอบนี้ — เลือกทิ้งจากมือเพิ่ม 1 ใบ (หงายหน้า)</b>';
-      inHand.forEach(c => handHost.append(handTile(c, 'discard')));
+      paintHand(inHand, 'discard');
       lockBtn.disabled = true;
       lockBtn.textContent = 'เลือกใบที่จะทิ้ง…';
       return;
     }
     if (v.waitingOpponentDiscard) {
       msg.textContent = 'ชนะรอบนี้! รอคู่แข่งเลือกทิ้งเพิ่ม…';
-      inHand.forEach(c => { const t = handTile(c, 'none'); t.disabled = true; handHost.append(t); });
+      paintHand(inHand, 'none', { disabled: true });
       lockBtn.disabled = true;
       lockBtn.textContent = '🔒 Lock';
       return;
@@ -289,20 +288,36 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     if (v.phase === 'ROUND_SELECT') {
       if (v.you.locked) {
         msg.textContent = v.opponent.locked ? 'เปิดการ์ด…' : 'Lock แล้ว — รอคู่แข่งเลือก…';
-        inHand.forEach(c => {
-          const t = handTile(c, 'none');
-          t.disabled = true;
-          if (v.you.selected === c.iid) t.classList.add('sel');
-          handHost.append(t);
-        });
+        paintHand(inHand, 'none', { disabled: true, markSelected: true });
         lockBtn.disabled = true;
         lockBtn.textContent = '⏳ รอคู่แข่ง…';
       } else {
         msg.textContent = 'แตะเพื่อเลือกแล้ว Lock หรือปัดการ์ดขึ้นเพื่อเล่นทันที';
-        inHand.forEach(c => handHost.append(handTile(c, 'select')));
+        paintHand(inHand, 'select');
         lockBtn.disabled = !v.you.selected;
         lockBtn.textContent = '🔒 Lock';
       }
+    }
+  }
+
+  /* เดิมล้าง #hand แล้วสร้างการ์ดใหม่ทุกครั้งที่ view เปลี่ยน
+     เกมออนไลน์ poll ทุก 900ms ไพ่ในมือจึงถูกสร้างใหม่วินาทีละครั้ง
+     background-image ของแต่ละใบถูกเซ็ตใหม่ทุกรอบ เห็นเป็นกะพริบบนมือถือ
+     ตอนนี้เทียบลายเซ็นก่อน ถ้ามือหน้าตาเหมือนเดิมก็ไม่แตะ DOM เลย
+     ผลพลอยได้: การลากไพ่ไม่ถูกตัดกลางคันเวลามี update เข้ามาพอดี */
+  let handSig = null;
+  function paintHand(cards, mode, { disabled = false, markSelected = false } = {}) {
+    const selected = view.you.selected || '';
+    const sig = [mode, disabled, markSelected, selected, cards.map(c => c.iid).join(',')].join('|');
+    if (sig === handSig) return;
+    handSig = sig;
+    const handHost = $('#hand', root);
+    handHost.innerHTML = '';
+    for (const c of cards) {
+      const tile = handTile(c, mode);
+      if (disabled) tile.disabled = true;
+      if (markSelected && selected === c.iid) tile.classList.add('sel');
+      handHost.append(tile);
     }
   }
 
