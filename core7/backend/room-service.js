@@ -5,9 +5,9 @@ import { colorOf } from '../js/cards.js';
 export const ROOM_TTL_MS = 15 * 60 * 1000;
 export const ACTIVE_TTL_MS = 6 * 60 * 60 * 1000;
 export const ROOM_MODES = Object.freeze({
-  quick: { label: 'Quick Match', target: 1 },
-  bo3: { label: 'Best of 3', target: 2 },
-  bo5: { label: 'Best of 5', target: 3 },
+  quick: { label: '1 WIN (Match)', target: 1 },
+  bo3: { label: '2 WIN (Double)', target: 2 },
+  bo5: { label: '3 WIN (Set)', target: 3 },
 });
 
 const cleanName = value => String(value || 'Guest')
