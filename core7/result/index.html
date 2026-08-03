@@ -68,6 +68,7 @@
 import { renderShell, el, toast, copyText } from '/core7/js/ui.js';
 import { MatchAuthority } from '/core7/js/engine.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
+import { COLORS } from '/core7/js/rules.js';
 import { cardSVG, cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 
@@ -190,7 +191,7 @@ document.addEventListener('keydown', event => {
 });
 
 function stats(side) {
-  const colors = { RED:0, BLUE:0, GREEN:0, GRAY:0 };
+  const colors = { RED:0, GREEN:0, BLUE:0, GRAY:0 };
   const played = [], discarded = [];
   for (const round of view.rounds) {
     const card = round[side]; played.push(card); colors[card.color] += 1;
@@ -204,7 +205,7 @@ function stats(side) {
 function summarySide(title, data) {
   const box = el('div', { class:'sum-side' }, el('h3', { class:'disp' }, title));
   const colors = el('div', { class:'sum-colors' });
-  for (const color of ['RED','BLUE','GREEN','GRAY']) colors.append(el('div', { class:'sum-color', style:`background:${COLOR_META[color].hex}` }, `${COLOR_META[color].emoji} ${data.colors[color]}`));
+  for (const color of COLORS) colors.append(el('div', { class:'sum-color', style:`background:${COLOR_META[color].hex}` }, `${COLOR_META[color].emoji} ${data.colors[color]}`));
   box.append(colors);
   const line = (label, cards, discard=false) => {
     const row = el('div', { style:'margin-top:8px;font-size:12px' }, el('b', {}, label + ' '));

@@ -13,6 +13,7 @@
    ═══════════════════════════════════════════════════════════════ */
 import { $, el, toast, haptic, reducedMotion } from './ui.js';
 import { COLOR_META, cardById } from './cards.js';
+import { COLORS } from './rules.js';
 import { cardSVG, cardBackSVG, genericCardSVG, cardArtHref } from './art.js';
 import { isLocalMember } from './store.js';
 import { playSfx } from './audio.js';
@@ -203,7 +204,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
   }
 
   function publicColorCounts(side) {
-    const counts = { RED: 0, BLUE: 0, GREEN: 0, GRAY: 0 };
+    const counts = { RED: 0, GREEN: 0, BLUE: 0, GRAY: 0 };
     for (const round of view.rounds) {
       const played = round[side];
       if (played?.color) counts[played.color] += 1;
@@ -218,7 +219,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
   function renderPublicCounts(host, label, counts) {
     host.innerHTML = '';
     host.append(el('b', { class: 'public-count-label' }, label));
-    for (const color of ['RED', 'BLUE', 'GREEN', 'GRAY']) {
+    for (const color of COLORS) {
       host.append(el('span', { title: `${COLOR_META[color].nameTh}ออกแล้ว ${counts[color]} ใบ` },
         `${COLOR_META[color].emoji}${counts[color]}`));
     }

@@ -59,6 +59,7 @@
 import { renderShell, toast, el } from '/core7/js/ui.js';
 import { COLOR_META, FIRST_HAND, GENERIC_CARDS, cardById } from '/core7/js/cards.js';
 import { colorIcon, cardSVG, genericCardSVG } from '/core7/js/art.js';
+import { COLORS } from '/core7/js/rules.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({});
@@ -67,13 +68,13 @@ const next = qs.get('next') || 'bot';
 const member = store.isLocalMember();
 
 /* ── สถานะการเลือก ── */
-let counts = { RED: 2, BLUE: 2, GREEN: 2, GRAY: 1 };        // guest
+let counts = { RED: 2, GREEN: 2, BLUE: 2, GRAY: 1 };        // guest
 let picked = [];                                              // member: card ids (ซ้ำได้ไหม? การ์ดคนละใบ — ไม่ซ้ำ id)
 const savedHand = store.getHand();
 if (savedHand) {
   if (member && savedHand.every(id => cardById(id) && !cardById(id).generic)) picked = [...savedHand];
   else if (!member && savedHand.every(id => cardById(id)?.generic)) {
-    counts = { RED: 0, BLUE: 0, GREEN: 0, GRAY: 0 };
+    counts = { RED: 0, GREEN: 0, BLUE: 0, GRAY: 0 };
     for (const id of savedHand) counts[cardById(id).color]++;
   }
 }
@@ -84,7 +85,7 @@ const readyBtn = document.getElementById('ready');
 
 function currentCards() {
   if (member) return [...picked];
-  const GEN = { RED: 'gen-red', BLUE: 'gen-blue', GREEN: 'gen-green', GRAY: 'gen-gray' };
+  const GEN = { RED: 'gen-red', GREEN: 'gen-green', BLUE: 'gen-blue', GRAY: 'gen-gray' };
   const out = [];
   for (const [c, n] of Object.entries(counts)) for (let i = 0; i < n; i++) out.push(GEN[c]);
   return out;
@@ -101,7 +102,7 @@ function refreshTotal() {
 /* ── Guest counters ── */
 if (!member) {
   const host = document.getElementById('counters');
-  for (const color of ['RED', 'BLUE', 'GREEN', 'GRAY']) {
+  for (const color of COLORS) {
     const meta = COLOR_META[color];
     const row = el('div', { class: 'hb-counter' });
     row.append(el('span', { class: `chip chip-${color.toLowerCase()}`, style: 'width:44px;height:44px', html: colorIcon(color, 24) }));

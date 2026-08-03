@@ -97,7 +97,7 @@ function startMatch(data) {
 }
 
 function countSide(rounds, side) {
-  const colors = { RED:0, BLUE:0, GREEN:0, GRAY:0 }; const played = []; const discarded = [];
+  const colors = { RED:0, GREEN:0, BLUE:0, GRAY:0 }; const played = []; const discarded = [];
   for (const round of rounds) {
     const card = round[side]; played.push(card); colors[card.color] += 1;
     for (const dc of round.discards) if ((side === 'you' && dc.yours) || (side === 'opp' && !dc.yours)) { discarded.push(dc); colors[dc.color] += 1; }
@@ -139,7 +139,7 @@ function renderSummary(data) {
       const grid = el('div', { class:'summary-grid' });
       for (const [key, title] of [['you', `${r.you.name} (คุณ)`], ['opponent', r.opponent.name]]) {
         const cards = data.startingHands[key].map(id => ({ cardId:id, color:cardById(id).color }));
-        grid.append(sideSummary(title, { colors:cards.reduce((a,c)=>(a[c.color]++,a),{RED:0,BLUE:0,GREEN:0,GRAY:0}), played:cards, discarded:[] }));
+        grid.append(sideSummary(title, { colors:cards.reduce((a,c)=>(a[c.color]++,a),{RED:0,GREEN:0,BLUE:0,GRAY:0}), played:cards, discarded:[] }));
       }
       hands.append(grid); content.append(hands);
     }
