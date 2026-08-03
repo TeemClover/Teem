@@ -4,11 +4,17 @@ import { colorOf } from '../js/cards.js';
 
 export const ROOM_TTL_MS = 15 * 60 * 1000;
 export const ACTIVE_TTL_MS = 6 * 60 * 60 * 1000;
+/* สามโหมดของเกม — ต่างกันแค่ "ต้องชนะกี่ Match ถึงจบ" มือเจ็ดใบถูกล็อกเหมือนกันหมด
+   ID ภายในยังเป็น quick/bo3/bo5 เพราะห้องเก่าและสถิติที่เก็บไว้แล้วอ้างชื่อนี้
+   ถ้าเปลี่ยน ID ข้อมูลเดิมจะอ่านไม่ออก — ชื่อที่ผู้เล่นเห็นเปลี่ยนได้อิสระผ่าน label */
 export const ROOM_MODES = Object.freeze({
-  quick: { label: '1 WIN (Match)', target: 1 },
-  bo3: { label: '2 WIN (Double)', target: 2 },
-  bo5: { label: '3 WIN (Set)', target: 3 },
+  quick: { label: 'MATCH', target: 1 },
+  bo3: { label: 'DOUBLE', target: 2 },
+  bo5: { label: 'SET', target: 3 },
 });
+
+/* รับชื่อใหม่เป็น input ได้ด้วย จะได้เขียนลิงก์ ?mode=double ได้โดยไม่ต้องรู้ ID เก่า */
+const MODE_ALIASES = Object.freeze({ match: 'quick', double: 'bo3', set: 'bo5' });
 
 const cleanName = value => String(value || 'Guest')
   .replace(/[<>\u0000-\u001f]/g, '').trim().slice(0, 24) || 'Guest';
@@ -16,7 +22,10 @@ const cleanName = value => String(value || 'Guest')
 export function validCode(code) { return /^\d{4}$/.test(String(code)); }
 
 export function normalizeMode(mode) {
-  return ROOM_MODES[mode] ? mode : 'quick';
+  const key = String(mode || '').toLowerCase();
+  if (ROOM_MODES[key]) return key;
+  if (MODE_ALIASES[key]) return MODE_ALIASES[key];
+  return 'quick';
 }
 
 export function validateCards(cards) {

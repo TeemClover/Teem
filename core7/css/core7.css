@@ -160,7 +160,13 @@ button { font: inherit; cursor: pointer; }
   padding: 8px 10px calc(12px + env(safe-area-inset-bottom));
   background: rgb(0 0 0 / .25); border-top: 1px solid rgb(var(--gold) / .3);
 }
-.hand-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
+/* ไพ่เจ็ดใบต้องอยู่แถวเดียวเสมอ — เดิม flex-wrap ทำให้ใบสุดท้ายตกไปบรรทัดสอง
+   บนมือถือ (7×58 + 6×8 = 454px แต่จอ 390px มีที่ราว 370px)
+   ตอนนี้ไม่ตัดบรรทัด แต่ให้ไพ่เบียดซ้อนกันแทน เหมือนถือไพ่จริง
+   ระยะซ้อนคำนวณจากความกว้างที่มีจริง จอกว้างพอก็กลับไปเว้น 8px เหมือนเดิม */
+.hand-row { display: flex; gap: 0; justify-content: center; flex-wrap: nowrap; margin-bottom: 10px; }
+.hand-card + .hand-card { margin-left: clamp(-20px, calc((100% - 7 * 58px) / 6), 8px); }
+.hand-card.sel, .hand-card:hover, .hand-card:focus-visible { z-index: 4; }
 .hand-card {
   width: 58px; height: 81px; border-radius: 8px; border: 3px solid var(--hand-color, rgb(255 255 255 / .7));
   display: flex; flex-direction: column; align-items: stretch; justify-content: flex-end;

@@ -29,9 +29,7 @@
       ['src','srcset'].forEach(attribute => {
         const value = node.getAttribute(attribute);
         if(!value) return;
-        const next = value
-          .replaceAll('card-back-core7.png','card-back-core7.webp')
-          .replaceAll('core7-rules-overview.png','core7-rules-overview.webp');
+        const next = value;
         if(next !== value) node.setAttribute(attribute,next);
       });
     });
@@ -87,7 +85,7 @@
   async function enforcePassionFlip(){
     const front = document.getElementById('ksv2CardFront');
     const back = document.querySelector('#ksv2FlipCard .ksv2-flip-back img');
-    if(back) back.src = '/core7/assets/card-back-core7.webp?v=20260803-rgbg-v4';
+    if(back) back.src = '/core7/assets/myclover-back.webp?v=20260803-rgbg-v4';
     if(!front || front.dataset.rgbgV4 === 'true') return;
     try{
       const {cardSVG} = await art();

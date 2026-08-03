@@ -46,7 +46,7 @@ body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transp
   <div style="display:flex;gap:10px;align-items:center"><button class="btn btn-ghost" id="lang" style="min-height:38px;padding:6px 10px">EN</button><a href="/core7/hand/?next=bot&level=easy" id="skip">ข้าม Tutorial →</a></div>
 </div>
 <div class="tut-stage">
-  <img class="tut-rule-visual" id="ruleVisual" src="/core7/assets/core7-rules-overview.webp" hidden
+  <img class="tut-rule-visual" id="ruleVisual" src="/core7/assets/core7-rule.webp" hidden
     alt="กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่ม ชนะสามรอบ และ Final Gray">
   <div class="tut-cards" id="tutorialCards">
     <div><small id="youLabel" style="display:block;margin-bottom:6px">คุณ · ซ้ายเสมอ</small><div class="tut-slot" id="slotYou"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
@@ -135,7 +135,7 @@ const STEPS_EN = [
   { text:'What if both colors match? Tap RED again.', want:'RED', bot:'RED', explain:'DRAW — matching colors tie.', explainSub:'Both lose only the played card. No additional discard.' },
   { text:'Try the block card. Tap GRAY.', want:'GRAY', bot:'BLUE', explain:'BLOCK — GRAY ties every normal color.', explainSub:'GRAY buys time, but never wins a normal Round.' },
   { text:'Final Gray rule', want:null, bot:null, explain:'If GRAY is your final card, it loses to a real color.', explainSub:'A tool can buy time, but cannot make the final choice for you.' },
-  { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. Quick is one Match; BO3/BO5 keep the same Starting Hand.', explainSub:'Now choose your seven cards and use the game as an easy way to start a conversation.', visual:true },
+  { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. MATCH is one win; DOUBLE and SET keep the same Starting Hand until someone wins.', explainSub:'Now choose your seven cards and use the game as an easy way to start a conversation.', visual:true },
 ];
 const STEPS = isEn ? STEPS_EN : STEPS_TH;
 let step = 0;

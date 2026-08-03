@@ -649,7 +649,7 @@ export function cardBackSVG({ width = 300 } = {}) {
   return `<svg width="${width}" height="${height}" viewBox="0 0 300 420"
     role="img" aria-label="หลังการ์ด myClover CORE7">
     <defs><clipPath id="${id}-clip"><rect width="300" height="420" rx="18"/></clipPath></defs>
-    <image href="/core7/assets/card-back-core7.png" width="300" height="420"
+    <image href="/core7/assets/myclover-back.webp" width="300" height="420"
       preserveAspectRatio="none" clip-path="url(#${id}-clip)"/>
   </svg>`;
 }
