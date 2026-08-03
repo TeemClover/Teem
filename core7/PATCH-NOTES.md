@@ -1,5 +1,17 @@
 # myClover: CORE7 — Patch Notes
 
+## 2026-08-03 — v0.4.6 Mode Language + Stat v1.1
+
+- เปลี่ยนชื่อโหมดที่ผู้เล่นเห็นเป็น `1 WIN (Match)`, `2 WIN (Double)` และ `3 WIN (Set)`
+- คง internal ID `quick / bo3 / bo5` ไว้ชั่วคราว เพื่อให้ห้องและสถิติเก่าอ่านต่อได้โดยไม่ทำ Gameplay พัง
+- อัปเกรด `/core7/stat/` เป็น Development Lab สำหรับใช้พัฒนาเกมจากข้อมูลจริง
+- เพิ่ม Anonymous Installation ID แบบสุ่มในเครื่องสำหรับดู New, Returning, Match Players และ Rematch โดยไม่เก็บชื่อ อีเมล หรือ IP
+- เพิ่ม Funnel: เปิด CORE7 → เปิด Hand Builder → ล็อกมือ → เริ่ม Match → เล่นจบ → เล่นต่อ
+- เพิ่ม Balance Stat รายสี: Play, Round Win, Tie, Final Round และ Extra Discard
+- เพิ่ม Starting Hand Pick และ Hand Win Rate รายการ์ด พร้อมเตือนเมื่อ Sample ต่ำกว่า 20 Hands
+- เพิ่ม Game/Rules Version, Patch Timeline, Data Health และ Export CSV
+- แยก Match ออกจากโหมดหลายชัยชนะอย่างชัดเจนในหน้า Stat และ Game Mode
+
 ## 2026-08-03 — Rules Image Delivery Hotfix
 
 - เปลี่ยนทุกหน้าที่แสดงภาพสรุปกติกาจาก PNG เป็น WebP รวม Landing, Rules, Tutorial, Match และ Kickstarter
