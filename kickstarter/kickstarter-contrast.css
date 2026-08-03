@@ -1,0 +1,195 @@
+:root{
+  --campaign-light-ink:#10271d;
+  --campaign-light-copy:#34483e;
+  --campaign-light-muted:#4f5b54;
+  --campaign-light-accent:#5b410b;
+  --campaign-dark-ink:#fffaf0;
+  --campaign-dark-copy:#dbe8e1;
+  --campaign-dark-muted:#c1d2c9;
+  --campaign-dark-accent:#f3d78f;
+}
+
+/*
+  Contrast audit — campaign v7
+  The base design used the same pale gold eyebrow on both dark and cream
+  surfaces. It works on emerald, but falls below readable contrast on cream.
+  These rules preserve the palette while assigning separate light/dark tokens.
+*/
+
+/* Eyebrows and small all-caps labels */
+.section-cream .eyebrow,
+.promise-band .eyebrow,
+.ks-story-static .eyebrow,
+#official-games .eyebrow,
+#box .eyebrow,
+.timeline .eyebrow,
+.faq .eyebrow,
+.founder .eyebrow,
+.origin .eyebrow,
+.ai .eyebrow,
+.stretch .eyebrow{
+  color:var(--campaign-light-accent)!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+
+.section-dark .eyebrow,
+.section-dark .campaign-kicker,
+.hero .campaign-kicker,
+.game .eyebrow,
+.memory .eyebrow,
+.language .eyebrow,
+.open-play .eyebrow,
+.pledges .eyebrow,
+.future .eyebrow,
+.risks .eyebrow,
+.final-cta .eyebrow,
+#tournament .ksv2-kicker{
+  color:var(--campaign-dark-accent)!important;
+  opacity:1!important;
+}
+
+/* Give the most important light-section eyebrow a deliberate badge treatment. */
+#official-games [data-official-kicker]{
+  display:inline-flex!important;
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  margin-inline:auto!important;
+  padding:.58em .9em!important;
+  border:1px solid rgba(91,65,11,.28);
+  border-radius:999px;
+  background:#eadfc6;
+  color:#4d3507!important;
+  box-shadow:0 8px 24px rgba(72,48,6,.08);
+}
+
+/* Readable body copy on cream surfaces */
+.section-cream .section-heading>p:last-child,
+.origin-copy>p:not(.eyebrow),
+.carry-copy>p,
+.box-item p,
+.production-spec span,
+.timeline-grid p,
+.faq-list p,
+.founder-story p,
+.founder-head>p:last-child,
+.ai-copy>p,
+.ks-story-static-head>p:last-child,
+#visual-story [data-story-lead],
+#visual-story figcaption span,
+#official-games .official-games-head>p:last-child,
+#official-games .official-open p,
+#box .box-system-line{
+  color:var(--campaign-light-copy)!important;
+  opacity:1!important;
+}
+
+.promise-grid span{
+  color:var(--campaign-light-muted)!important;
+  opacity:1!important;
+}
+
+.origin-number{
+  color:#8a6118!important;
+}
+
+/* Readable body copy on emerald surfaces */
+.hero-lead,
+#game .section-heading>p:last-child,
+.memory-copy>p,
+.language .section-heading>p:last-child,
+.open-copy>p,
+.pledges .section-heading>p:last-child,
+.future-copy>p,
+.risk-copy>p,
+.final-cta .final-inner>p:not(.eyebrow),
+#tournament .ksv2-lead,
+#tournament .ksv2-competitive-points p{
+  color:var(--campaign-dark-copy)!important;
+  opacity:1!important;
+}
+
+.micro-proof,
+.hero-scroll,
+.rules-poster figcaption{
+  color:var(--campaign-dark-muted)!important;
+  opacity:1!important;
+}
+
+.cycle-item span,
+.gray-rule span{
+  color:#f1f5f3!important;
+  opacity:1!important;
+}
+
+/* Pledge cards sit on a dark section and previously used very transparent text. */
+.pledge>p:not(.pledge-label),
+.pledge ul{
+  color:var(--campaign-dark-copy)!important;
+  opacity:1!important;
+}
+
+.pledge-label,
+.select-pledge{
+  color:var(--campaign-dark-accent)!important;
+  opacity:1!important;
+}
+
+/* Official games: separate contrast treatment for each card surface. */
+#official-games .official-games-head h2{
+  color:var(--campaign-light-ink)!important;
+}
+
+#official-games .official-game-card.core7>span{
+  color:var(--campaign-dark-accent)!important;
+}
+
+#official-games .official-game-card.core7 p{
+  color:#eef5f1!important;
+}
+
+#official-games .official-game-card.core7 small{
+  color:#d2e1d9!important;
+  opacity:1!important;
+}
+
+#official-games .official-game-card.rivers>span,
+#official-games .official-game-card.rivers>b{
+  color:var(--campaign-light-accent)!important;
+}
+
+#official-games .official-game-card.rivers p{
+  color:#243c31!important;
+}
+
+#official-games .official-game-card.rivers small{
+  color:#43564c!important;
+  opacity:1!important;
+}
+
+#official-games .official-open strong{
+  color:var(--campaign-light-accent)!important;
+}
+
+/* Small utility copy that otherwise disappears on mobile or dim displays. */
+.pocket-note small{
+  color:#46574f!important;
+  opacity:1!important;
+}
+
+.gallery-caption,
+.rules-poster figcaption,
+.production-spec span,
+.timeline-grid p,
+.faq-list p{
+  opacity:1!important;
+}
+
+@media(max-width:430px){
+  #official-games [data-official-kicker]{
+    margin-inline:0!important;
+    font-size:.68rem!important;
+    letter-spacing:.13em!important;
+  }
+}
