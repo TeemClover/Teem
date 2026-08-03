@@ -135,7 +135,7 @@ const STEPS_EN = [
   { text:'What if both colors match? Tap RED again.', want:'RED', bot:'RED', explain:'DRAW — matching colors tie.', explainSub:'Both lose only the played card. No additional discard.' },
   { text:'Try the block card. Tap GRAY.', want:'GRAY', bot:'BLUE', explain:'BLOCK — GRAY ties every normal color.', explainSub:'GRAY buys time, but never wins a normal Round.' },
   { text:'Final Gray rule', want:null, bot:null, explain:'If GRAY is your final card, it loses to a real color.', explainSub:'A tool can buy time, but cannot make the final choice for you.' },
-  { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. Quick is one Match; BO3/BO5 keep the same Starting Hand.', explainSub:'Now choose your seven cards and use the game as an easy way to start a conversation.', visual:true },
+  { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. MATCH is one win; DOUBLE and SET keep the same Starting Hand until someone wins.', explainSub:'Now choose your seven cards and use the game as an easy way to start a conversation.', visual:true },
 ];
 const STEPS = isEn ? STEPS_EN : STEPS_TH;
 let step = 0;

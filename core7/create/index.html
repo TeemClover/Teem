@@ -14,15 +14,16 @@
 <body>
 <nav class="c7nav" id="c7nav"></nav>
 <main class="sec"><div class="wrap-slim">
-  <p class="eyebrow">v0.4.6 · Online Multiplayer</p>
+  <p class="eyebrow"><span data-c7-version>v0.4.6</span> · Online Multiplayer</p>
   <h2 class="disp">สร้างห้องให้เพื่อน</h2>
   <div class="panel" style="margin-top:20px">
     <div class="field"><label for="hname">ชื่อของคุณบนโต๊ะ</label><input id="hname" maxlength="24"></div>
     <div class="field"><label>Game Mode — ต้องชนะกี่ Match</label><div class="choices">
-      <label class="choice"><input type="radio" name="mode" value="quick" checked><b>1 WIN (Match)</b><small>ชนะ 1 Match จบเกมทันที</small></label>
-      <label class="choice"><input type="radio" name="mode" value="bo3"><b>2 WIN (Double)</b><small>คนแรกที่ชนะ 2 Matches</small></label>
-      <label class="choice"><input type="radio" name="mode" value="bo5"><b>3 WIN (Set)</b><small>คนแรกที่ชนะ 3 Matches ด้วยมือเดิม</small></label>
-    </div></div>
+      <label class="choice"><input type="radio" name="mode" value="quick" checked><b>MATCH</b><small>ชนะ 1 Match จบเกม</small></label>
+      <label class="choice"><input type="radio" name="mode" value="bo3"><b>DOUBLE</b><small>คนแรกที่ชนะ 2 Matches</small></label>
+      <label class="choice"><input type="radio" name="mode" value="bo5"><b>SET</b><small>คนแรกที่ชนะ 3 Matches</small></label>
+    </div>
+    <p style="font-size:13px;color:rgb(var(--muted));margin-top:8px">ทุกโหมดใช้มือเจ็ดใบเดิมจนกว่าจะมีผู้ชนะ — เปลี่ยนมือกลางทางไม่ได้</p></div>
     <div class="field"><label for="visibility">การมองเห็นห้อง</label><select id="visibility">
       <option value="public">Public — แสดงใน Lobby</option><option value="unlisted">Unlisted — เข้าได้ด้วยรหัสเท่านั้น</option>
     </select></div>

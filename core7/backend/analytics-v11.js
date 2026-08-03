@@ -329,7 +329,7 @@ export async function readAnalyticsStatsV11(db, params = {}) {
       { date:'2026-07-31', version:'v0.1', title:'One-prompt birth' },
       { date:'2026-08-01', version:'Manual Patch', title:'Cosmetic + face-up card fix' },
       { date:'2026-08-02', version:'v0.3 Beta', title:'Real multiplayer' },
-      { date:'2026-08-03', version:'v0.4.6', title:'1 WIN / 2 WIN / 3 WIN + Stat v1.1' },
+      { date:'2026-08-03', version:'v0.4.6', title:'MATCH / DOUBLE / SET + Stat v1.1' },
     ],
   };
 }

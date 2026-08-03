@@ -4,7 +4,7 @@
    ═══════════════════════════════════════════════════════════════ */
 import { cloverLogo } from './art.js';
 import { isMuted, toggleMuted } from './audio.js';
-import { reportCore7View } from './analytics.js';
+import { reportCore7View, CORE7_GAME_VERSION } from './analytics.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -27,6 +27,9 @@ export function el(tag, attrs = {}, ...children) {
 /* ── Nav + Footer ── */
 export function renderShell({ active = '', minimal = false } = {}) {
   reportCore7View().catch(() => {});
+  /* เลขเวอร์ชันมีที่มาที่เดียวคือ CORE7_GAME_VERSION — หน้าไหนอยากโชว์ก็แค่ใส่
+     <span data-c7-version> ไว้ จะได้ไม่มีเลขค้างคนละตัวเหมือนที่ผ่านมา */
+  for (const node of $$('[data-c7-version]')) node.textContent = `v${CORE7_GAME_VERSION}`;
   const onCore7Home = location.pathname === '/core7/' || location.pathname === '/core7/index.html';
   const logoHref = onCore7Home ? '/' : '/core7/';
   const nav = $('#c7nav');
@@ -60,7 +63,7 @@ export function renderShell({ active = '', minimal = false } = {}) {
     foot.innerHTML = `
       <div class="wrap cols">
         <div>
-          <strong class="disp">myClover: CORE7 <small>v0.4.6</small></strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
+          <strong class="disp">myClover: CORE7 <small>v${CORE7_GAME_VERSION}</small></strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
           เล่นฟรีด้วยการ์ดอะไรก็ได้ · <a href="/core7/open-play/">Open Play</a> · <a href="/core7/about/">เรื่องของเกมนี้</a>
         </div>
         <div>

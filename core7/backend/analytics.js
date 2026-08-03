@@ -538,7 +538,7 @@ export async function readAnalyticsStats(db, params = {}) {
       return item;
     }),
     definitions: {
-      match: 'หนึ่ง CORE7 Match; BO3/BO5 มีหลาย Matches ในหนึ่งชุดแข่งขัน',
+      match: 'หนึ่ง CORE7 Match; DOUBLE และ SET มีหลาย Matches ในหนึ่งชุดแข่งขัน',
       completed: 'Match ที่ได้ผลลัพธ์หรือจบด้วยการยอมแพ้',
       abandoned: 'Match ที่เริ่มแล้วไม่มีผลลัพธ์เกิน 8 ชั่วโมง',
       colors: 'นับการ์ดของทั้งสองฝั่งเฉพาะ Match ที่เล่นจบ แยก Played และ Extra Discard',
