@@ -132,13 +132,13 @@
     var alt=th?"CORE7 เกมการ์ดที่สร้างจากบทเรียนทั้ง 6 บท":"CORE7 card game built from all 6 lessons";
     var label=th?"เปิดเกม CORE7":"Open CORE7";
     var copy=th
-      ?"โทรหาเพื่อน สร้างห้อง แล้วส่งลิงก์ดวลกันได้เลย — ยิ่งเล่นไปคุยกันไปยิ่งสนุก"
-      :"Call a friend, create a room, and send the link. The more you play and talk, the better it gets.";
+      ?"คอลกันไว้ แล้วเล่นไปคุยกันไป เพราะความสนุกของ CORE7 ไม่ได้มีแค่ใครชนะ แต่อยู่ที่ได้เห็นว่าเพื่อนคิดยังไง"
+      :"Stay on a call and talk while you play. CORE7 is not only about who wins—it is about discovering how your friend thinks.";
     banner.style.display="flex";
     banner.style.borderTop=secretComplete?"1px solid rgba(255,255,255,.13)":"1px solid rgba(18,40,28,.1)";
     banner.innerHTML='<a href="core7/" aria-label="'+label+'" style="display:block;width:112px;flex:none">'
       +'<img src="img/hall-core7.jpg" alt="'+alt+'" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;box-shadow:0 12px 28px -20px rgba(0,0,0,.65)">'
-      +'</a><span><b>CORE7 · NEXT QUEST</b><span style="color:'+(secretComplete?'rgba(255,255,255,.66)':'var(--muted)')+'">'+copy+'</span></span>';
+      +'</a><span><b>'+(th?'ชวนเพื่อนมาดวล':'CHALLENGE A FRIEND')+'</b><span style="color:'+(secretComplete?'rgba(255,255,255,.66)':'var(--muted)')+'">'+copy+'</span></span>';
   }
 
   function paintQuest(){
@@ -187,15 +187,15 @@
     eyebrow.textContent=secretComplete?"SECRET ENDING CLEAR · NEXT GAME":"MAIN QUEST COMPLETE · NEXT GAME";
     title.textContent=th?"เรียนจบแล้ว — ไปเล่นเกม":"Quest Complete — Time to Play";
     lead.textContent=th
-      ?"CORE7 เล่นคนเดียวได้ จะลองกับบอทก่อนก็ได้ แต่เกมจะสนุกขึ้นเมื่อชวนเพื่อนมาดวลและคุยกันไปด้วย"
-      :"CORE7 works solo, and you can practice with a bot—but it gets better when you invite a friend and talk while you play.";
+      ?"บทเรียนจบตรงนี้ แต่สิ่งที่เรียนมาจะเริ่มทำงานใน CORE7 เกมสั้นที่ทุกการ์ดคือการตัดสินใจ"
+      :"The lessons end here, but what you learned comes alive in CORE7—a short game where every card is a decision.";
     setActive(
       "🃏",
-      th?"CORE7 · PLAY NEXT":"CORE7 · PLAY NEXT",
-      th?"เล่นได้ทันที ไม่ต้องรอใคร":"Play Now—No Waiting Required",
+      th?"CORE7 · READY TO PLAY":"CORE7 · READY TO PLAY",
+      th?"เลือกการ์ด 7 ใบ แล้วเริ่มดวล":"Choose 7 Cards and Start the Duel",
       th
-        ?"ลองกับบอทเพื่อจับจังหวะ หรือสร้างห้องส่งลิงก์ให้เพื่อน ยิ่งเล่นไปคุยกันไป ยิ่งสนุก"
-        :"Try a bot to learn the rhythm, or create a room and send the link to a friend. Playing and talking together makes it better.",
+        ?"เข้าเกมได้ทันที หรือสร้างห้องส่งลิงก์ให้เพื่อนเข้ามาในแมตช์เดียวกัน"
+        :"Enter the game now, or create a room and send the link so a friend can join the same match.",
       "core7/",
       th?"เล่นเกม CORE7 →":"Play CORE7 →"
     );
