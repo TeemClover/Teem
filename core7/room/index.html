@@ -5,7 +5,7 @@
 <title>Online Room — myClover: CORE7</title><meta name="theme-color" content="#0A2818">
 <link rel="icon" type="image/svg+xml" href="/core7/favicon.svg"><link rel="stylesheet" href="/core7/css/core7.css">
 <style>
-.lobby-seat{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:16px 18px;margin-top:12px}.lobby-seat .avatar{width:44px;height:44px;border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));display:flex;align-items:center;justify-content:center;font-weight:700;font-family:"Bai Jamjuree";font-size:18px}.lobby-seat .st{margin-left:auto}.codebig{font-family:"Bai Jamjuree";font-size:clamp(30px,8vw,44px);letter-spacing:5px;color:rgb(var(--green));font-weight:700}.scoreline{display:flex;justify-content:center;align-items:center;gap:18px;font:700 clamp(24px,6vw,38px) "Bai Jamjuree";color:rgb(var(--green));margin:16px 0}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.summary-side{background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:14px;padding:16px}.card-chip{display:inline-flex;gap:5px;align-items:center;color:#fff;border-radius:8px;padding:4px 8px;margin:3px;font-size:12.5px}.match-block{border-top:1px solid rgb(var(--line)/.1);padding-top:12px;margin-top:12px}@media(max-width:620px){.summary-grid{grid-template-columns:1fr}}
+.lobby-seat{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:16px 18px;margin-top:12px}.lobby-seat .avatar{width:44px;height:44px;border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));display:flex;align-items:center;justify-content:center;font-weight:700;font-family:"Bai Jamjuree";font-size:18px}.lobby-seat .st{margin-left:auto}.codebig{font-family:"Bai Jamjuree";font-size:clamp(30px,8vw,44px);letter-spacing:5px;color:rgb(var(--green));font-weight:700}.scoreline{display:flex;justify-content:center;align-items:center;gap:18px;font:700 clamp(24px,6vw,38px) "Bai Jamjuree";color:rgb(var(--green));margin:16px 0}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.summary-side{background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:14px;padding:16px}.card-chip{display:inline-flex;gap:5px;align-items:center;color:#fff;border:2px solid transparent;border-radius:8px;padding:3px 8px 3px 3px;margin:3px;font-size:12.5px}.card-chip.discard{border-style:dashed;border-color:rgb(255 255 255/.7);opacity:.9}.card-chip .chip-art{width:22px;height:31px;flex:none;border-radius:5px;background:center/cover no-repeat rgb(0 0 0/.25);box-shadow:inset 0 0 0 1px rgb(255 255 255/.35)}.card-chip.discard .chip-art{box-shadow:inset 0 0 0 2px rgb(255 255 255/.5);filter:grayscale(.35) brightness(.82)}.match-block{border-top:1px solid rgb(var(--line)/.1);padding-top:12px;margin-top:12px}@media(max-width:620px){.summary-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -20,6 +20,7 @@ import { RemoteRooms } from '/core7/js/adapters.js';
 import { reportFunnelEvent } from '/core7/js/analytics.js';
 import { mountMatch } from '/core7/js/match-ui.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
+import { cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 import { playSfx } from '/core7/js/audio.js';
 
@@ -87,7 +88,14 @@ function startMatch(data) {
     reportFunnelEvent('MATCH_COMPLETE', { matchId:id, mode:data.room.mode, rulesVersion:view?.rulesVersion, once:true }).catch(() => {});
     /* เดิมแค่รีเฟรชห้อง ทำให้ล็อบบี้ทับหน้าจอผลภายใน 250ms คนเลยไม่ทันอ่านว่าใครชนะ
        ตอนนี้ไปหน้าผลชุดเดียวกับที่เล่นกับบอทใช้ แล้วค่อยกดกลับห้องเพื่อ Match ถัดไป */
-    store.saveMatchSnapshot(id, { kind:'view', view });
+    /* ส่งสถานะของ SET ไปด้วย หน้าผลจะได้เป็นหน้าจบหน้าเดียว
+       ไม่ต้องเด้งกลับมาห้องเพื่อกดพร้อมอีกชั้น */
+    store.saveMatchSnapshot(id, { kind:'view', view, series: {
+      mode: data.room.mode, modeLabel: data.room.modeLabel, target: data.room.targetWins,
+      matchNumber: data.room.matchNumber,
+      youWins: data.room.yourMatchWins, oppWins: data.room.opponentMatchWins,
+      youName: view.you?.name, oppName: view.opponent?.name,
+    } });
     /* 'casual' คือถังสถิติของเกมคนกับคน ที่ getAllStats() รวมอยู่แล้ว
        ถ้าตั้งชื่อถังใหม่ ตัวเลขรวมจะไม่นับให้ */
     store.recordMatch('casual', view, view.opponent?.name);
@@ -96,7 +104,7 @@ function startMatch(data) {
 }
 
 function countSide(rounds, side) {
-  const colors = { RED:0, BLUE:0, GREEN:0, GRAY:0 }; const played = []; const discarded = [];
+  const colors = { RED:0, GREEN:0, BLUE:0, GRAY:0 }; const played = []; const discarded = [];
   for (const round of rounds) {
     const card = round[side]; played.push(card); colors[card.color] += 1;
     for (const dc of round.discards) if ((side === 'you' && dc.yours) || (side === 'opp' && !dc.yours)) { discarded.push(dc); colors[dc.color] += 1; }
@@ -104,9 +112,14 @@ function countSide(rounds, side) {
   return { colors, played, discarded };
 }
 
+/* ชิปการ์ดโชว์ภาพจริง ใบที่ทิ้งบอกด้วยขอบเส้นประ ไม่ใช้อีโมจิถังขยะแล้ว */
 function chip(card, discard = false) {
   const meta = COLOR_META[card.color]; const item = cardById(card.cardId);
-  return el('span', { class:'card-chip', style:`background:${meta.hex}` }, `${discard ? '🗑 ' : ''}${meta.emoji} ${item?.en || meta.nameEn}`);
+  const node = el('span', { class:'card-chip' + (discard ? ' discard' : ''), style:`background:${meta.hex}` });
+  const art = cardArtHref(card.cardId);
+  if (art) node.append(el('i', { class:'chip-art', style:`background-image:url("${art}")` }));
+  node.append(el('span', {}, `${meta.emoji} ${item?.en || meta.nameEn}`));
+  return node;
 }
 
 function sideSummary(title, stats) {
@@ -133,21 +146,21 @@ function renderSummary(data) {
       const grid = el('div', { class:'summary-grid' });
       for (const [key, title] of [['you', `${r.you.name} (คุณ)`], ['opponent', r.opponent.name]]) {
         const cards = data.startingHands[key].map(id => ({ cardId:id, color:cardById(id).color }));
-        grid.append(sideSummary(title, { colors:cards.reduce((a,c)=>(a[c.color]++,a),{RED:0,BLUE:0,GREEN:0,GRAY:0}), played:cards, discarded:[] }));
+        grid.append(sideSummary(title, { colors:cards.reduce((a,c)=>(a[c.color]++,a),{RED:0,GREEN:0,BLUE:0,GRAY:0}), played:cards, discarded:[] }));
       }
       hands.append(grid); content.append(hands);
     }
     actions.append(el('a', { class:'btn btn-gold', href:'/core7/create/' }, 'สร้างห้องใหม่'), el('a', { class:'btn', href:'/core7/join/' }, 'กลับ Public Lobby'));
     status.textContent = `จบ ${r.modeLabel} · Starting Hand ถูกเปิดเผยแล้ว`;
   } else {
-    const ready = el('button', { class:'btn btn-gold' }, r.you.nextReady ? '✓ พร้อมแล้ว' : 'พร้อม Match ถัดไป'); ready.disabled = r.you.nextReady;
+    const ready = el('button', { class:'btn btn-gold' }, r.you.nextReady ? '✓ พร้อมแล้ว' : 'เล่นรอบต่อไป'); ready.disabled = r.you.nextReady;
     ready.addEventListener('click', async () => {
       try {
         reportFunnelEvent('REMATCH', { matchId:`online-${code}-after-${latest?.number || 0}`, mode:r.mode, once:true }).catch(() => {});
         await session.readyNext();
       } catch (e) { toast(`กดพร้อมไม่ได้: ${e.code}`); }
     }); actions.append(ready);
-    status.textContent = r.you.nextReady ? 'รอคู่แข่งพร้อม — Match ถัดไปใช้ Starting Hand เดิม' : `${r.modeLabel} ยังไม่จบ — ใช้ Starting Hand เดิมต่อ`;
+    status.textContent = r.you.nextReady ? 'รอคู่แข่ง — ใช้มือเดิม' : `${r.modeLabel} ยังไม่จบ — ใช้มือเดิม`;
   }
 }
 

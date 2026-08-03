@@ -23,7 +23,7 @@
 .tl-chip.discard{border-style:dashed;box-shadow:0 2px 7px rgb(0 0 0/.14)}
 .prompt-card{background:rgb(var(--gold)/.1);border:1px solid rgb(var(--gold)/.3);border-radius:12px;padding:16px 20px;margin-top:10px;font-size:15px}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.sum-side{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:12px;padding:15px}.sum-colors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.sum-color{text-align:center;border-radius:8px;padding:7px 2px;color:#fff;font-size:12px}.sum-card{display:inline-flex;color:#fff;border:2px solid transparent;border-radius:7px;padding:3px 7px;margin:3px;font:inherit;font-size:12px;cursor:zoom-in}.card-peek:hover,.card-peek:focus-visible{outline:2px solid rgb(var(--gold));outline-offset:2px}.card-preview{position:fixed;z-index:1200;width:min(220px,calc(100vw - 24px));padding:6px;border-radius:15px;background:rgb(var(--deep));border:1px solid rgb(var(--gold-l));box-shadow:0 20px 55px rgb(0 0 0/.46);pointer-events:none}.card-preview[hidden]{display:none}.card-preview.pinned{pointer-events:auto}.card-preview svg{display:block;width:100%;height:auto}.card-preview-note{text-align:center;color:#fff;font-size:11px;padding:5px 4px 2px}@media(max-width:700px){.sum-grid{grid-template-columns:1fr}.tl-row{grid-template-columns:34px minmax(0,1fr);padding:12px 10px;gap:8px}.tl-meta{grid-column:2}.tl-cards,.tl-discards{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr)}.tl-chip{font-size:11px;padding:4px 7px}.tl-row>.disp{align-self:start;padding-top:4px}.card-preview{width:min(190px,calc(100vw - 24px))}}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.sum-side{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:12px;padding:15px}.sum-colors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.sum-color{text-align:center;border-radius:8px;padding:7px 2px;color:#fff;font-size:12px}.sum-card{display:inline-flex;align-items:center;gap:5px;color:#fff;border:2px solid transparent;border-radius:7px;padding:2px 7px 2px 2px;margin:3px;font:inherit;font-size:12px;cursor:zoom-in}.sum-card.discard{border-style:dashed;border-color:rgb(255 255 255/.7);opacity:.9}.chip-art{width:22px;height:31px;flex:none;border-radius:5px;background:center/cover no-repeat rgb(0 0 0/.25);box-shadow:inset 0 0 0 1px rgb(255 255 255/.35)}.tl-chip .chip-art{width:24px;height:34px}.discard .chip-art{box-shadow:inset 0 0 0 2px rgb(255 255 255/.5);filter:grayscale(.35) brightness(.82)}.chip-name{overflow:hidden;text-overflow:ellipsis}.card-peek:hover,.card-peek:focus-visible{outline:2px solid rgb(var(--gold));outline-offset:2px}.card-preview{position:fixed;z-index:1200;width:min(220px,calc(100vw - 24px));padding:6px;border-radius:15px;background:rgb(var(--deep));border:1px solid rgb(var(--gold-l));box-shadow:0 20px 55px rgb(0 0 0/.46);pointer-events:none}.card-preview[hidden]{display:none}.card-preview.pinned{pointer-events:auto}.card-preview svg{display:block;width:100%;height:auto}.card-preview-note{text-align:center;color:#fff;font-size:11px;padding:5px 4px 2px}@media(max-width:700px){.sum-grid{grid-template-columns:1fr}.tl-row{grid-template-columns:34px minmax(0,1fr);padding:12px 10px;gap:8px}.tl-meta{grid-column:2}.tl-cards,.tl-discards{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr)}.tl-chip{font-size:11px;padding:4px 7px}.tl-row>.disp{align-self:start;padding-top:4px}.card-preview{width:min(190px,calc(100vw - 24px))}}
 </style>
 </head>
 <body>
@@ -67,8 +67,10 @@
 <script type="module">
 import { renderShell, el, toast, copyText } from '/core7/js/ui.js';
 import { MatchAuthority } from '/core7/js/engine.js';
+import { RemoteRooms } from '/core7/js/adapters.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
-import { cardSVG } from '/core7/js/art.js';
+import { COLORS } from '/core7/js/rules.js';
+import { cardSVG, cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({});
@@ -123,10 +125,15 @@ let title, sub;
 if (r.draw) { title = '🤝 DRAW'; sub = HOWTEXT.DRAW; }
 else if (r.youWon) { title = '🏆 YOU WIN'; sub = HOWTEXT[r.resultType] || ''; }
 else { title = 'YOU LOSE'; sub = HOWTEXT[r.resultType] || ''; }
+/* MATCH ไม่มีคะแนน — ชนะ 3 รอบกับอีกฝ่ายมือหมดคือเรื่องเดียวกัน
+   บอกแค่ว่าใครชนะพอ ส่วนคะแนนที่นับจริงมีแค่ SET เท่านั้น */
+const series = snap.series || null;
+const inSeries = !!(series && series.target > 1);
 hero.innerHTML = `
   <h1>${title}</h1>
-  <div class="score">${view.you.name} ${r.roundWins[view.seat]} — ${r.roundWins[view.seat === 'a' ? 'b' : 'a']} ${view.opponent.name}</div>
-  <div class="how">${sub} · ${view.rounds.length} Rounds · Rules v${view.rulesVersion}</div>`;
+  ${inSeries ? `<div class="score">${series.modeLabel} ${series.youWins} — ${series.oppWins}
+     <small style="display:block;font-size:13px;color:rgb(255 255 255/.6);margin-top:4px">ชนะครบ ${series.target} จบชุด</small></div>` : ''}
+  <div class="how">${sub}</div>`;
 
 /* Hover/focus shows art; click/tap pins it until the next outside click. */
 const cardPreview = el('div', { class:'card-preview', hidden:true, role:'dialog', 'aria-label':'ตัวอย่างภาพการ์ด' });
@@ -161,11 +168,16 @@ function hideCardPreview(force = false) {
   previewOwner = null;
   previewPinned = false;
 }
+/* ชิปการ์ดโชว์ภาพจริง ไม่ใช่เม็ดสีเปล่า — ใบที่ถูกทิ้งบอกด้วยขอบเส้นประ
+   ไม่ต้องมีอีโมจิถังขยะนำหน้าอีก */
 function cardPeek(card, className, style, text) {
   const button = el('button', {
     type:'button', class:`${className} card-peek`, style, 'data-card-id':card.cardId,
     'aria-label':`ดูภาพการ์ด ${cardById(card.cardId)?.en || card.color}`,
-  }, text);
+  });
+  const art = cardArtHref(card.cardId);
+  if (art) button.append(el('i', { class:'chip-art', style:`background-image:url("${art}")` }));
+  button.append(el('span', { class:'chip-name' }, text));
   button.addEventListener('mouseenter', () => showCardPreview(button));
   button.addEventListener('mouseleave', () => hideCardPreview());
   button.addEventListener('focus', () => showCardPreview(button));
@@ -185,7 +197,7 @@ document.addEventListener('keydown', event => {
 });
 
 function stats(side) {
-  const colors = { RED:0, BLUE:0, GREEN:0, GRAY:0 };
+  const colors = { RED:0, GREEN:0, BLUE:0, GRAY:0 };
   const played = [], discarded = [];
   for (const round of view.rounds) {
     const card = round[side]; played.push(card); colors[card.color] += 1;
@@ -199,12 +211,12 @@ function stats(side) {
 function summarySide(title, data) {
   const box = el('div', { class:'sum-side' }, el('h3', { class:'disp' }, title));
   const colors = el('div', { class:'sum-colors' });
-  for (const color of ['RED','BLUE','GREEN','GRAY']) colors.append(el('div', { class:'sum-color', style:`background:${COLOR_META[color].hex}` }, `${COLOR_META[color].emoji} ${data.colors[color]}`));
+  for (const color of COLORS) colors.append(el('div', { class:'sum-color', style:`background:${COLOR_META[color].hex}` }, `${COLOR_META[color].emoji} ${data.colors[color]}`));
   box.append(colors);
   const line = (label, cards, discard=false) => {
     const row = el('div', { style:'margin-top:8px;font-size:12px' }, el('b', {}, label + ' '));
     if (!cards.length) row.append('—');
-    for (const card of cards) row.append(cardPeek(card, 'sum-card', `background:${COLOR_META[card.color].hex}`, `${discard ? '🗑 ' : ''}${cardById(card.cardId)?.en || card.color}`));
+    for (const card of cards) row.append(cardPeek(card, 'sum-card' + (discard ? ' discard' : ''), `background:${COLOR_META[card.color].hex}`, `${cardById(card.cardId)?.en || card.color}`));
     return row;
   };
   box.append(line('PLAYED', data.played), line('DISCARDED', data.discarded, true));
@@ -225,7 +237,7 @@ view.rounds.forEach((round, i) => {
   const row = el('div', { class: 'tl-row' + (i === turningIdx ? ' turning' : '') });
   const chip = (c, discard = false) => cardPeek(c, `tl-chip${discard ? ' discard' : ''}`,
     `background:${COLOR_META[c.color].hex};border-color:${COLOR_META[c.color].soft}`,
-    `${discard ? '🗑 ' : ''}${COLOR_META[c.color].emoji} ${cardById(c.cardId)?.en || c.color}`);
+    `${COLOR_META[c.color].emoji} ${cardById(c.cardId)?.en || c.color}`);
   const cards = el('div', { class:'tl-cards' },
     el('div', { class:'tl-side you' }, chip(round.you)),
     el('span', { class:'tl-vs' }, 'vs'),
@@ -253,15 +265,44 @@ if (mode === 'bot') {
     el('a', { class: 'btn', href: `/core7/bot/?level=${level}&fresh=1` }, '⚡ เล่นมือเดิมทันที'),
     el('a', { class: 'btn', href: '/core7/play/' }, 'เปลี่ยนโหมด'),
   );
+} else if (inSeries && series.youWins < series.target && series.oppWins < series.target) {
+  /* ชุดยังไม่จบ — กดพร้อมได้จากหน้านี้เลย ไม่ต้องเด้งกลับห้องแล้วกดอีกชั้น
+     กดแล้วรอคู่แข่ง พอทั้งคู่พร้อม server จะเปิด Match ใหม่ เราค่อยพากลับห้อง */
+  const go = el('button', { class: 'btn btn-gold btn-lg' }, 'เล่นรอบต่อไป →');
+  const note = el('p', { style: 'flex-basis:100%;font-size:13.5px;color:rgb(var(--muted));margin-top:6px' }, '');
+  let waiting = false;
+  const session = (() => { try { return new RemoteRooms().session(roomCode); } catch { return null; } })();
+  go.addEventListener('click', async () => {
+    if (!session) { location.href = `/core7/room/?c=${encodeURIComponent(roomCode)}`; return; }
+    go.disabled = true; waiting = true;
+    go.textContent = '✓ พร้อมแล้ว';
+    note.textContent = 'รอคู่แข่ง — ใช้มือเดิม';
+    try { await session.readyNext(); } catch { /* poll ข้างล่างจะพาไปเอง */ }
+  });
+  actions.append(go, el('a', { class: 'btn', href: '/core7/play/' }, 'ออกจากชุด'), note);
+
+  /* เฝ้าดูห้อง ถ้าอีกฝ่ายกดพร้อมก่อนก็บอก และพอเริ่ม Match ใหม่ค่อยพากลับโต๊ะ */
+  if (session) {
+    setInterval(async () => {
+      let data; try { data = await session.refresh(); } catch { return; }
+      const room = data?.room;
+      if (!room) return;
+      if (data.matchView && data.matchView.matchId !== matchId) {
+        location.href = `/core7/room/?c=${encodeURIComponent(roomCode)}`;
+        return;
+      }
+      if (!waiting && room.opponent?.nextReady) note.textContent = `${room.opponent.name} พร้อมแล้ว — รอคุณ`;
+    }, 1500);
+  }
 } else {
   actions.append(
-    el('a', { class: 'btn btn-gold', href: `/core7/room/?c=${encodeURIComponent(roomCode)}` }, '🔄 กลับห้องเดิม — Rematch'),
+    el('a', { class: 'btn btn-gold', href: `/core7/room/?c=${encodeURIComponent(roomCode)}` }, '🔄 กลับห้องเดิม'),
     el('a', { class: 'btn', href: '/core7/play/' }, 'เปลี่ยนโหมด'),
   );
 }
 const share = el('button', { class: 'btn btn-dark' }, '📋 แชร์ผลลง Discord');
 share.addEventListener('click', async () => {
-  const txt = `myClover: CORE7 — ${r.draw ? 'เสมอ!' : (r.youWon ? 'ชนะ' : 'แพ้')} ${r.roundWins[view.seat]}–${r.roundWins[view.seat === 'a' ? 'b' : 'a']} กับ ${view.opponent.name} (${view.rounds.length} รอบ)\nมาเล่นกัน → https://www.myclover.com/core7/`;
+  const txt = `myClover: CORE7 — ${r.draw ? 'เสมอ' : (r.youWon ? 'ชนะ' : 'แพ้')} ${view.opponent.name}\nมาเล่นกัน → https://www.myclover.com/core7/`;
   await copyText(txt);
   store.track('core7_discord_share');
   toast('คัดลอกข้อความแล้ว — วางใน Discord ได้เลย');
@@ -270,15 +311,16 @@ actions.append(share);
 store.track('core7_match_complete_view');
 
 /* ชนะ = ปลดล็อคกรอบดำของการ์ดประจำตัว (หน้า /card/ อ่านสถิติชนะจากเครื่องนี้เอง) */
+/* เคยเห็นแล้วไม่ต้องโชว์ซ้ำ — ชนะทุกครั้งแล้วขึ้นกล่องเดิมมันเกะกะ */
 if (r.youWon) {
-  const box = document.getElementById('nightUnlock');
-  box.hidden = false;
-  try {
-    if (!localStorage.getItem('c7:night_frame_seen')) {
-      localStorage.setItem('c7:night_frame_seen', '1');
-      box.classList.add('anim-pop');
-    }
-  } catch { /* ok */ }
+  let seen = true;
+  try { seen = !!localStorage.getItem('c7:night_frame_seen'); } catch { /* ok */ }
+  if (!seen) {
+    const box = document.getElementById('nightUnlock');
+    box.hidden = false;
+    box.classList.add('anim-pop');
+    try { localStorage.setItem('c7:night_frame_seen', '1'); } catch { /* ok */ }
+  }
 }
 </script>
 </body>

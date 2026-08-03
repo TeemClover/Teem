@@ -333,3 +333,23 @@ export async function readAnalyticsStatsV11(db, params = {}) {
     ],
   };
 }
+
+/* ── ตัวนับ Match สะสมทั้งหมด สำหรับโชว์บนหน้าแรกของเกม ──
+   นับจาก MATCH_START เพราะโจทย์คือ "เกมที่เล่นไม่จบก็นับ"
+   ใช้ COUNT(DISTINCT match_id) กัน event ซ้ำจากการ reconnect หรือ refresh
+
+   pvp = เกมคนกับคน แยกด้วย bot_level ที่ว่าง (แถวของบอทเซ็ต bot_level เสมอ)
+   ไม่ใช้ mode เพราะบอทก็บันทึกเป็น mode='quick' เหมือนกัน */
+export async function readMatchCounters(db) {
+  await ensureAnalyticsV11Schema(db);
+  const row = await db.prepare(`
+    SELECT
+      COUNT(DISTINCT match_id) AS total,
+      COUNT(DISTINCT CASE WHEN bot_level IS NULL OR bot_level = '' THEN match_id END) AS pvp
+    FROM c7_analytics_events
+    WHERE event_type = 'MATCH_START' AND match_id IS NOT NULL AND match_id <> ''
+  `).first();
+  const total = Number(row?.total || 0);
+  const pvp = Number(row?.pvp || 0);
+  return { ok: true, total, pvp, bot: Math.max(0, total - pvp) };
+}

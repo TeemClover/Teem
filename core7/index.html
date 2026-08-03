@@ -38,6 +38,11 @@
 .rules-flip:focus-visible{outline:3px solid rgb(var(--gold-l));outline-offset:6px}
 @media(prefers-reduced-motion:reduce){.rules-flip-inner{transition:none}}
 .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+/* จำนวน Match ที่เล่นไปแล้วทั้งหมด — วิ่งจาก 0 ขึ้นไปตอนโหลด */
+.played{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:26px;padding-top:20px;border-top:1px solid rgb(255 255 255/.14)}
+.played b{font-size:clamp(30px,6vw,42px);line-height:1;color:rgb(var(--gold-l));font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.played span{font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.16em;color:rgb(255 255 255/.72)}
+.played small{flex-basis:100%;font-size:12.5px;color:rgb(255 255 255/.5)}
 .step3{display:grid;gap:16px;grid-template-columns:1fr}
 @media(min-width:720px){.step3{grid-template-columns:repeat(3,1fr)}}
 .step3 .panel b.n{font-family:"Bai Jamjuree";font-size:14px;color:rgb(var(--gold));letter-spacing:.1em}
@@ -46,6 +51,12 @@
 .fan .fc{width:clamp(96px,15vw,150px);flex:none;transition:transform .25s;filter:drop-shadow(0 12px 22px rgb(10 40 24/.35))}
 .fan .fc:not(:first-child){margin-left:calc(clamp(96px,15vw,150px)*-.42)}
 .fan .fc:hover{transform:translateY(-14px) rotate(0deg)!important;z-index:5;position:relative}
+/* จอเล็กสุด พัดการ์ด 5 ใบกว้าง 319px แต่มีที่ราว 280px เลยล้นออกนอกจอ
+   ย่อใบและเบียดให้แน่นขึ้น (ของเดิมล้นมาตั้งแต่ก่อนหน้านี้แล้ว) */
+@media(max-width:400px){
+  .fan .fc{width:84px}
+  .fan .fc:not(:first-child){margin-left:-46px}
+}
 .duo{display:grid;gap:16px;grid-template-columns:1fr}
 @media(min-width:760px){.duo{grid-template-columns:1fr 1fr}}
 .duo ul{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
@@ -66,15 +77,22 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="tag tag-gold"><span data-c7-version>v0.4.6</span> · FIRST HAND — ชุดแรก · เล่นฟรี</span>
+      <span class="tag tag-gold"><span data-c7-version>v0.4.6</span> · <span data-en="FIRST HAND — first set · free to play">FIRST HAND — ชุดแรก · เล่นฟรี</span></span>
       <h1 class="disp">my<span class="c7">Clover</span>: CORE7</h1>
-      <p class="promise">7 ใบ ไม่มีเด็ค ไม่มีดวง<br>มีแค่สิ่งที่คุณเลือก<br>และคนที่นั่งตรงข้าม</p>
-      <p class="promise-en">Seven cards. No deck. No draw. Just your choices and the person across the table.</p>
+      <p class="promise" data-en-html data-en="Seven cards.<br>No deck. No draw.<br>Just you and the person across the table.">7 ใบ ไม่มีเด็ค ไม่มีดวง<br>มีแค่สิ่งที่คุณเลือก<br>และคนที่นั่งตรงข้าม</p>
+      <p class="promise-en" data-lang-block="th">Seven cards. No deck. No draw. Just your choices and the person across the table.</p>
       <div class="cta-row">
-        <a class="btn btn-gold btn-lg" href="/core7/play/">เล่นเลย · Play Now</a>
-        <a class="btn btn-ghost" href="/core7/tutorial/">เรียนรู้ใน 30 วินาที</a>
-        <a class="btn btn-ghost" href="/core7/create/">สร้างห้องให้เพื่อน</a>
+        <a class="btn btn-gold btn-lg" href="/core7/play/" data-en="Play Now">เล่นเลย · Play Now</a>
+        <a class="btn btn-ghost" href="/core7/tutorial/" data-en="Learn in 30 seconds">เรียนรู้ใน 30 วินาที</a>
+        <a class="btn btn-ghost" href="/core7/create/" data-en="Make a room for a friend">สร้างห้องให้เพื่อน</a>
       </div>
+      <!-- ตัวนับซ่อนไว้ก่อน โผล่เมื่อดึงเลขจริงได้เท่านั้น
+           ต่อ server ไม่ได้ก็ไม่ต้องโชว์ 0 ให้เก้อ -->
+      <p class="played" id="playedBox" hidden>
+        <b class="disp" id="playedNum">0</b>
+        <span>MATCHES PLAYED</span>
+        <small id="playedPvp"></small>
+      </p>
     </div>
     <div class="hero-cycle">
       <button class="rules-flip" id="rulesFlip" type="button" aria-pressed="false" aria-label="พลิกการ์ดเพื่อดูกติกา CORE7">
@@ -84,7 +102,7 @@
             alt="CORE7: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะครบสามรอบ และ Final Gray แพ้สีจริง"></span>
         </span>
       </button>
-      <p class="cap" id="rulesFlipHint" aria-live="polite">แตะการ์ดเพื่อเปิดกติกา · Tap to reveal</p>
+      <p class="cap" id="rulesFlipHint" aria-live="polite" data-en="Tap the card to reveal the rules">แตะการ์ดเพื่อเปิดกติกา · Tap to reveal</p>
     </div>
   </div>
 </header>
@@ -94,13 +112,13 @@
   <section class="sec">
     <div class="wrap">
       <p class="eyebrow">How to play</p>
-      <h2 class="disp">เรียนรู้ได้เร็วเหมือนเป่ายิ้งฉุบ</h2>
+      <h2 class="disp" data-en="As quick to learn as rock paper scissors">เรียนรู้ได้เร็วเหมือนเป่ายิ้งฉุบ</h2>
       <div class="step3" style="margin-top:22px">
-        <div class="panel"><b class="n">STEP 1</b><h3>เลือกมือ 7 ใบ</h3>
+        <div class="panel"><b class="n">STEP 1</b><h3 data-en="Pick your seven">เลือกมือ 7 ใบ</h3>
           <p>เลือกสีใดกี่ใบก็ได้ให้ครบ 7 — เห็นมือตัวเองครบตั้งแต่ต้น ไม่มีกองจั่ว ไม่มีการสุ่ม</p></div>
-        <div class="panel"><b class="n">STEP 2</b><h3>เปิดพร้อมกัน</h3>
+        <div class="panel"><b class="n">STEP 2</b><h3 data-en="Reveal together">เปิดพร้อมกัน</h3>
           <p>ทั้งคู่เลือกการ์ดลับคนละใบแล้วกด Lock — เปิดพร้อมกัน ตัดสินด้วยสี ผู้แพ้เสียเพิ่ม 1 ใบ</p></div>
-        <div class="panel"><b class="n">STEP 3</b><h3>อ่านเกม อ่านคน</h3>
+        <div class="panel"><b class="n">STEP 3</b><h3 data-en="Read the game, read the person">อ่านเกม อ่านคน</h3>
           <p>ชนะ 3 รอบ หรือให้อีกฝ่ายหมดมือ — การ์ดที่ใช้แล้วหงายหน้าเสมอ ทุกอย่างอ่านได้จากบนโต๊ะ</p></div>
       </div>
     </div>
@@ -180,19 +198,21 @@
   <section class="sec sec-alt">
     <div class="wrap">
       <p class="eyebrow">Ranking &amp; Collection</p>
-      <h2 class="disp">ลึกพอให้แข่ง สบายพอให้เล่น</h2>
+      <h2 class="disp" data-en="Deep enough to compete, easy enough to just play">ลึกพอให้แข่ง สบายพอให้เล่น</h2>
       <div class="duo" style="margin-top:20px">
         <div class="panel">
-          <h3 class="disp">Ranking</h3>
-          <p style="font-size:14.5px;margin-top:8px">Ranked Match ใช้ Rating ระบบ Glicko-2 พร้อม Season และ Tier
-          — SEED → ROOT → SPROUT → LEAF → BLOOM → FOUR-LEAF · Tier เป็นเกียรติยศ ไม่ใช่พลังในเกม</p>
-          <a class="btn" style="margin-top:14px" href="/core7/rank/">ดู Ranking</a>
+          <h3 class="disp">Ranked Game <span class="tag tag-soon">Coming soon</span></h3>
+          <p style="font-size:14.5px;margin-top:8px">ฤดูกาลแข่งขันที่จบด้วย <b>Season Champion Reward</b>
+          — ไต่อันดับจากเมล็ดไปจนถึงโคลเวอร์สี่แฉก แล้วปิดฤดูกาลด้วยรางวัลของแชมป์</p>
+          <p style="font-size:13.5px;margin-top:8px;color:rgb(var(--muted))">อันดับไม่ทำให้การ์ดแรงขึ้น
+          และไม่ล็อกอะไรทั้งนั้น ระหว่างนี้ทุกโหมดเล่นได้ฟรีเหมือนเดิม</p>
+          <a class="btn" style="margin-top:14px" href="/core7/rank/" data-en="See how ranking works">ดูระบบอันดับ</a>
         </div>
         <div class="panel">
           <h3 class="disp">Collection ออนไลน์ + ออฟไลน์</h3>
           <p style="font-size:14.5px;margin-top:8px">การ์ดที่ปลดล็อกออนไลน์พิมพ์ออกมาเล่นบนโต๊ะจริงได้
           — ขนาดมาตรฐาน 63 × 88 mm พร้อมคู่มือใส่ซองสี เก็บลงแฟ้ม แลกกันได้</p>
-          <a class="btn" style="margin-top:14px" href="/core7/print/">ดู Print Tools</a>
+          <a class="btn" style="margin-top:14px" href="/core7/print/" data-en="Print tools">ดู Print Tools</a>
         </div>
       </div>
     </div>
@@ -227,8 +247,8 @@
       <details><summary>เกมหนึ่งใช้เวลานานไหม</summary>
         <p>ส่วนใหญ่จบใน 3–7 รอบ ประมาณ 2–5 นาที — ตั้งใจออกแบบให้จบเร็ว สลับคู่ได้เร็ว เหมาะกับ Ice Breaking</p></details>
       <details><summary>สีเทาไว้ทำอะไร</summary>
-        <p>สีเทาเสมอกับทุกสี — ใช้ Block เพื่อซื้อเวลาและอ่านคู่แข่ง
-        แต่ระวัง: ถ้าเป็นใบสุดท้ายของทั้งคู่ สีเทาจะแพ้ทุกสีที่ไม่ใช่เทา (กฎ Final Gray)</p></details>
+        <p>⚙️ เสมอกับทุกสี ใช้ซื้อเวลาและอ่านคู่แข่ง
+        แต่ถ้าเป็นใบสุดท้ายของทั้งคู่ ⚙️ แพ้ทุกสี (Final Gray)</p></details>
       <details><summary>myClover เป็นสมาชิกของบริษัทอะไรหรือเปล่า</summary>
         <p>ไม่ — myClover คือชื่อเกมและเว็บไซต์ของเราเอง การเป็น Member หมายถึงบัญชีเว็บไซต์นี้เท่านั้น
         ไม่ผูกพันกับบริษัท ธุรกิจเครือข่าย หรือองค์กรใดทั้งสิ้น</p></details>
@@ -254,6 +274,7 @@ import { renderShell } from '/core7/js/ui.js';
 import { cardSVG } from '/core7/js/art.js';
 import { track } from '/core7/js/store.js';
 import { playCardFlip } from '/core7/js/audio.js';
+import { fetchCore7Counters } from '/core7/js/analytics.js';
 
 renderShell({ active: '' });
 track('core7_landing_view');
@@ -271,6 +292,35 @@ rulesFlip.addEventListener('click', () => {
     : 'แตะการ์ดเพื่อเปิดกติกา · Tap to reveal';
   track(open ? 'core7_rules_card_reveal' : 'core7_rules_card_hide');
 });
+
+/* ── MATCHES PLAYED ──
+   นับจาก MATCH_START ฝั่ง server เกมที่เล่นไม่จบและเกมกับบอทก็นับหมด
+   เลขวิ่งขึ้นด้วย requestAnimationFrame ไม่ใช่ setInterval จะได้ลื่นและไม่กินซีพียู
+   ถ้าเปิด reduced-motion ให้ขึ้นเลขจริงทันที ไม่ต้องวิ่ง */
+(async () => {
+  const box = document.getElementById('playedBox');
+  const num = document.getElementById('playedNum');
+  const pvp = document.getElementById('playedPvp');
+  if (!box) return;
+  let data;
+  try { data = await fetchCore7Counters(); }
+  catch { return; }                       /* ต่อไม่ได้ก็ไม่โชว์ ดีกว่าโชว์ 0 */
+  const total = Number(data.total || 0);
+  if (!total) return;
+  box.hidden = false;
+  if (data.pvp) pvp.textContent = `ในนั้นเป็นเกมคนกับคน ${data.pvp.toLocaleString('en-US')} Matches`;
+
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still) { num.textContent = total.toLocaleString('en-US'); return; }
+  const ms = 1400, t0 = performance.now();
+  const ease = x => 1 - Math.pow(1 - x, 3);
+  const step = now => {
+    const p = Math.min(1, (now - t0) / ms);
+    num.textContent = Math.round(total * ease(p)).toLocaleString('en-US');
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+})();
 
 /* การ์ดตัวอย่างพัดบนหน้าแรก */
 const showcase = ['fh-red-passion', 'fh-blue-choice', 'fh-green-commitment', 'fh-gray-repair', 'fh-red-joy'];

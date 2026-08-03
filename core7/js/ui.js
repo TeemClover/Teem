@@ -5,6 +5,7 @@
 import { cloverLogo } from './art.js';
 import { isMuted, toggleMuted } from './audio.js';
 import { reportCore7View, CORE7_GAME_VERSION } from './analytics.js';
+import { applyLang, getLang, setLang } from './i18n.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -42,14 +43,36 @@ export function renderShell({ active = '', minimal = false } = {}) {
         </a>
         ${minimal ? '' : `
         <div class="links">
-          <a href="/core7/rules/" ${active === 'rules' ? 'aria-current="page"' : ''}>กติกา</a>
+          <a href="/core7/rules/" data-en="Rules" ${active === 'rules' ? 'aria-current="page"' : ''}>กติกา</a>
           <a href="/core7/collection/" ${active === 'collection' ? 'aria-current="page"' : ''}>Collection</a>
           <a href="/core7/rank/" ${active === 'rank' ? 'aria-current="page"' : ''}>Ranking</a>
-          <a href="/core7/profile/" ${active === 'profile' ? 'aria-current="page"' : ''}>โปรไฟล์</a>
-          <a class="play keep" href="/core7/play/">เล่นเลย</a>
-          <button class="sfx-toggle" id="c7Sfx" aria-label="เปิดหรือปิดเสียงเอฟเฟกต์"></button>
+          <a href="/core7/profile/" data-en="Profile" ${active === 'profile' ? 'aria-current="page"' : ''}>โปรไฟล์</a>
+          <a class="play keep" href="/core7/play/" data-en="Play">เล่นเลย</a>
+          <div class="lang-sw" role="group" aria-label="Language / ภาษา">
+            <button type="button" data-lang="th">TH</button><button type="button" data-lang="en">EN</button>
+          </div>
+          <button class="sfx-toggle" id="c7Sfx" aria-label="เปิดหรือปิดเสียงเอฟเฟกต์"
+            data-en-attr="aria-label:Toggle sound effects"></button>
         </div>`}
       </div>`;
+    /* ปุ่มภาษาอยู่มุมขวาบนของทุกหน้าในเกม จำค่าไว้ใน localStorage
+       เปลี่ยนหน้าไหนก็ตาม หน้าถัดไปขึ้นภาษาเดิมทันที */
+    const langSw = $('.lang-sw');
+    if (langSw) {
+      const paint = () => {
+        const now = getLang();
+        for (const b of $$('button', langSw)) {
+          b.setAttribute('aria-pressed', String(b.dataset.lang === now));
+        }
+      };
+      langSw.addEventListener('click', event => {
+        const btn = event.target.closest('button[data-lang]');
+        if (btn) { setLang(btn.dataset.lang); paint(); }
+      });
+      window.addEventListener('core7:lang', paint);
+      paint();
+    }
+
     const sound = $('#c7Sfx');
     if (sound) {
       const sync = () => { sound.textContent = isMuted() ? '🔇' : '🔊'; sound.title = isMuted() ? 'เปิดเสียง' : 'ปิดเสียง'; };
@@ -72,6 +95,8 @@ export function renderShell({ active = '', minimal = false } = {}) {
         </div>
       </div>`;
   }
+  /* ทาภาษาให้ทั้งหน้าหลังวาด nav/footer เสร็จ */
+  applyLang();
 }
 
 /* ── Toast ── */
