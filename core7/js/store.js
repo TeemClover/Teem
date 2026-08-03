@@ -6,6 +6,12 @@
    เมื่อ Backend จริงพร้อม: AuthAdapter + CollectionAdapter จะทับชั้นนี้
    ═══════════════════════════════════════════════════════════════ */
 
+import { ensureCollection } from './collection-progress.js';
+
+/* Schema v2 resets the old CORE7 progression once per browser while
+   preserving identity, settings and an active Match snapshot. */
+ensureCollection();
+
 const NS = 'c7:';
 
 function read(key, fallback) {
@@ -55,9 +61,9 @@ export function getTabPlayerId() {
   } catch { return getGuest().id; }
 }
 
-/* ── บัญชีทดลองในเครื่อง (Local Member Preview) ──
-   ปลดล็อกภาพการ์ด FIRST HAND เพื่อทดลอง Collection / Hand Builder
-   เก็บในเครื่องเท่านั้น — Member จริงจะมาพร้อม Backend (ดู README) */
+/* ── บัญชีทดลองในเครื่อง (Legacy Local Member Preview) ──
+   คง API ไว้ชั่วคราวเพื่อไม่ให้หน้าเก่าพัง แต่ Collection v2 ไม่ใช้ปุ่ม
+   เปิดทั้งหมดอีกแล้ว — การ์ดต้องได้จากการเล่น Match จบเท่านั้น */
 export function isLocalMember() { return read('local_member', false); }
 export function setLocalMember(v) { write('local_member', !!v); }
 
