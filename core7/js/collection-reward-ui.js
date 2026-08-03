@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
    myClover: CORE7 — Match Completion Reward Popup
+   Shows after every completed Match, including each Match in a SET.
    ═══════════════════════════════════════════════════════════════ */
 
 import {
@@ -43,23 +44,31 @@ function addStyles() {
     .c7-reward__meter span{color:rgb(255 255 255/.58);font:700 10px/1.3 "Bai Jamjuree",system-ui;letter-spacing:.13em}
     .c7-reward__meter b{color:#ead08c;font:800 22px/1 "Bai Jamjuree",system-ui}
     .c7-reward__unlock{margin-top:12px;padding:11px 13px;border-radius:13px;color:#071d12;background:#ead08c;font-size:12.5px;font-weight:800}
+    .c7-reward__set-note{margin-top:12px;padding:11px 13px;border:1px solid rgb(255 255 255/.14);border-radius:13px;color:rgb(255 255 255/.78);background:rgb(255 255 255/.055);font-size:12.5px;line-height:1.55}
     .c7-reward__actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
     .c7-reward__btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 17px;border:1px solid rgb(255 255 255/.18);border-radius:13px;color:#fff;background:rgb(255 255 255/.07);font:800 13px/1.2 "Bai Jamjuree",system-ui;cursor:pointer;text-decoration:none}
     .c7-reward__btn--gold{border-color:#ead08c;color:#071d12;background:#ead08c}
     @keyframes c7RewardFade{from{opacity:0}to{opacity:1}}
     @keyframes c7RewardPop{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
-    @media(max-width:620px){.c7-reward{align-items:end;padding:10px}.c7-reward__card{grid-template-columns:105px minmax(0,1fr);gap:16px;border-radius:23px;padding:20px}.c7-reward__copy h2{font-size:27px}.c7-reward__story{grid-column:1/-1}.c7-reward__meter,.c7-reward__unlock,.c7-reward__actions{grid-column:1/-1}.c7-reward__actions{display:grid;grid-template-columns:1fr 1fr}.c7-reward__btn{padding-inline:10px}}
+    @media(max-width:620px){.c7-reward{align-items:end;padding:10px}.c7-reward__card{grid-template-columns:105px minmax(0,1fr);gap:16px;border-radius:23px;padding:20px}.c7-reward__copy h2{font-size:27px}.c7-reward__story{grid-column:1/-1}.c7-reward__meter,.c7-reward__unlock,.c7-reward__set-note,.c7-reward__actions{grid-column:1/-1}.c7-reward__actions{display:grid;grid-template-columns:1fr 1fr}.c7-reward__btn{padding-inline:10px}}
     @media(prefers-reduced-motion:reduce){.c7-reward,.c7-reward__card{animation:none}}
   `;
   document.head.append(style);
 }
 
-function showReward(reward) {
+function hasNextSetMatchAction() {
+  return [...document.querySelectorAll('#actions button, #actions a')].some(node => (
+    /เล่นรอบต่อไป|next match/i.test(node.textContent || '')
+  ));
+}
+
+function showReward(reward, { isSet = false } = {}) {
   if (!reward?.card || document.getElementById('c7Reward')) return;
   addStyles();
 
   const card = reward.card;
   const meta = COLOR_META[card.color];
+  const continueSet = isSet && hasNextSetMatchAction();
   const overlay = document.createElement('div');
   overlay.id = 'c7Reward';
   overlay.className = 'c7-reward';
@@ -71,14 +80,15 @@ function showReward(reward) {
     <section class="c7-reward__card">
       <div class="c7-reward__art">${cardSVG(card.id, { width: 280 })}</div>
       <div class="c7-reward__copy">
-        <span class="c7-reward__eyebrow">MATCH COMPLETE · NEW CARD</span>
+        <span class="c7-reward__eyebrow">MATCH COMPLETE · NEW FIRST HAND</span>
         <h2 id="c7RewardTitle">ได้รับการ์ดใหม่</h2>
         <div class="c7-reward__name">${meta.emoji} ${card.en} · ${card.th}</div>
-        <p class="c7-reward__story">${card.story || 'การ์ดใบนี้ถูกเพิ่มลงใน Collection ของคุณแล้ว'}</p>
-        <div class="c7-reward__meter"><span>COLLECTION</span><b>${reward.count}/${TOTAL_COLLECTION_CARDS}</b></div>
-        ${reward.selectModeJustUnlocked ? `<div class="c7-reward__unlock">🔓 SELECT HAND UNLOCKED · ตอนนี้คุณจัดมือจาก Collection ได้แล้ว</div>` : ''}
+        <p class="c7-reward__story">${card.story || 'การ์ดใบนี้ถูกเพิ่มลงใน FIRST HAND Collection ของคุณแล้ว'}</p>
+        <div class="c7-reward__meter"><span>FIRST HAND</span><b>${reward.count}/${TOTAL_COLLECTION_CARDS}</b></div>
+        ${reward.selectModeJustUnlocked ? `<div class="c7-reward__unlock">🔓 SELECT HAND UNLOCKED · คุณปลดล็อก FIRST HAND ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบแล้ว</div>` : ''}
+        ${continueSet ? '<div class="c7-reward__set-note">แต่ละคนอาจได้การ์ดไม่เหมือนกัน — ลองแชร์กันว่าได้ใบอะไร แล้วปิดหน้าต่างนี้เพื่อกดพร้อมเล่น Match ต่อไป</div>' : ''}
         <div class="c7-reward__actions">
-          <button class="c7-reward__btn c7-reward__btn--gold" type="button" data-close>รับการ์ด</button>
+          <button class="c7-reward__btn c7-reward__btn--gold" type="button" data-close>${continueSet ? 'ปิด · กลับไปกดพร้อม' : 'รับการ์ด'}</button>
           <a class="c7-reward__btn" href="/core7/collection/">ดู Collection</a>
         </div>
       </div>
@@ -108,8 +118,9 @@ function boot() {
   if (!isCompletedSnapshot(snapshot)) return;
   const reward = unlockRandomCard(matchId);
   if (!reward.isNew) return;
-  /* Let the result page paint first, then reveal the reward. */
-  window.setTimeout(() => showReward(reward), 320);
+  const isSet = Number(snapshot.series?.target || 0) > 1;
+  /* Let the result page paint its actions first, then reveal the reward. */
+  window.setTimeout(() => showReward(reward, { isSet }), 360);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
