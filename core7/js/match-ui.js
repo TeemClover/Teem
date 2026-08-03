@@ -14,14 +14,17 @@
 import { $, el, toast, haptic, reducedMotion } from './ui.js';
 import { COLOR_META, cardById } from './cards.js';
 import { COLORS } from './rules.js';
+import { t } from './i18n.js';
 import { cardSVG, cardBackSVG, genericCardSVG, cardArtHref } from './art.js';
 import { isLocalMember } from './store.js';
 import { playSfx } from './audio.js';
 
+/* เกมนี้เล่นซ้ำเยอะ ข้อความเลยต้องสั้นที่สุด — ใช้อีโมจิสีแทนชื่อสีเสมอ
+   คนเล่นจำสีได้เองตั้งแต่รอบสองอยู่แล้ว */
 const RESULT_TEXT = {
-  WIN: (c1, c2) => `${COLOR_META[c1].emoji} ${COLOR_META[c1].nameTh} ชนะ ${COLOR_META[c2].nameTh}!`,
-  TIE_SAME: c => `เสมอ — ${COLOR_META[c].nameTh}ทั้งคู่`,
-  TIE_GRAY: () => `⚙️ Block! เทาเสมอทุกสี`,
+  WIN: (c1, c2) => `${COLOR_META[c1].emoji} &gt; ${COLOR_META[c2].emoji}`,
+  TIE_SAME: c => `${COLOR_META[c].emoji} = ${COLOR_META[c].emoji}`,
+  TIE_GRAY: () => `⚙️ BLOCK`,
 };
 
 export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
@@ -265,22 +268,22 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
 
     if (v.result) {
       paintHand([], 'none');
-      msg.textContent = 'จบ Round แล้ว — กำลังสรุปผล Match…';
+      msg.textContent = t('สรุปผล…', 'Wrapping up…');
       lockBtn.disabled = true;
-      lockBtn.textContent = 'ผล Match…';
+      lockBtn.textContent = t('สรุปผล…', 'Wrapping up…');
       scheduleFinish(inReveal);
       return;
     }
 
     if (v.discardRequired) {
-      msg.innerHTML = '<b style="color:#fca5a5">แพ้รอบนี้ — เลือกทิ้งจากมือเพิ่ม 1 ใบ (หงายหน้า)</b>';
+      msg.innerHTML = `<b style="color:#fca5a5">${t('เลือกทิ้งเพิ่ม 1 ใบ', 'Discard one more')}</b>`;
       paintHand(inHand, 'discard');
       lockBtn.disabled = true;
-      lockBtn.textContent = 'เลือกใบที่จะทิ้ง…';
+      lockBtn.textContent = t('เลือกใบที่ทิ้ง', 'Pick one');
       return;
     }
     if (v.waitingOpponentDiscard) {
-      msg.textContent = 'ชนะรอบนี้! รอคู่แข่งเลือกทิ้งเพิ่ม…';
+      msg.textContent = t('รอคู่แข่งทิ้ง…', 'Waiting for their discard…');
       paintHand(inHand, 'none', { disabled: true });
       lockBtn.disabled = true;
       lockBtn.textContent = '🔒 Lock';
@@ -288,12 +291,12 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     }
     if (v.phase === 'ROUND_SELECT') {
       if (v.you.locked) {
-        msg.textContent = v.opponent.locked ? 'เปิดการ์ด…' : 'Lock แล้ว — รอคู่แข่งเลือก…';
+        msg.textContent = v.opponent.locked ? t('เปิดการ์ด…', 'Revealing…') : t('รอคู่แข่ง…', 'Waiting…');
         paintHand(inHand, 'none', { disabled: true, markSelected: true });
         lockBtn.disabled = true;
-        lockBtn.textContent = '⏳ รอคู่แข่ง…';
+        lockBtn.textContent = t('⏳ รอคู่แข่ง', '⏳ Waiting');
       } else {
-        msg.textContent = 'แตะเพื่อเลือกแล้ว Lock หรือปัดการ์ดขึ้นเพื่อเล่นทันที';
+        msg.textContent = t('แตะเลือก แล้ว Lock · หรือปัดขึ้นเพื่อลงเลย', 'Tap to pick, then Lock · or flick up to play');
         paintHand(inHand, 'select');
         lockBtn.disabled = !v.you.selected;
         lockBtn.textContent = '🔒 Lock';
@@ -335,16 +338,18 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
       /* คำผลรอบ WIN / LOSE / DRAW กลางจอ — เด่นแต่ไม่เท่าตอนจบเกม */
       const rr = $('#roundResult', root);
       const cy = round.you.color, co = round.opp.color;
+      /* คำสั้นที่สุด — ไม่มีคะแนนให้รายงาน เพราะ MATCH ไม่ได้นับคะแนน
+         บอกแค่สีไหนชนะสีไหน กับใครต้องทิ้งเพิ่ม */
+      const drop = t(' · ทิ้งเพิ่ม 1', ' · discard 1');
       if (round.result === 'TIE') {
         rr.innerHTML = '<span class="rr-word draw anim-pop">DRAW</span>'
-          + (cy === co ? RESULT_TEXT.TIE_SAME(cy) : RESULT_TEXT.TIE_GRAY())
-          + '<span class="sub">เสมอ — เสียคนละใบที่ลง ไม่มีใครทิ้งเพิ่ม</span>';
+          + (cy === co ? RESULT_TEXT.TIE_SAME(cy) : RESULT_TEXT.TIE_GRAY());
       } else if (round.youWon) {
         rr.innerHTML = '<span class="rr-word win anim-pop">WIN</span>'
-          + `🎉 ${RESULT_TEXT.WIN(cy, co)}<span class="sub">คุณได้ Round Win${currentView.waitingOpponentDiscard ? ' — คู่แข่งต้องทิ้งเพิ่ม 1 ใบ' : ''}</span>`;
+          + `${RESULT_TEXT.WIN(cy, co)}${currentView.waitingOpponentDiscard ? `<span class="sub">${t('คู่แข่ง', 'Opponent')}${drop}</span>` : ''}`;
       } else {
         rr.innerHTML = '<span class="rr-word lose anim-pop">LOSE</span>'
-          + `${RESULT_TEXT.WIN(co, cy)}<span class="sub">คู่แข่งได้ Round Win${currentView.discardRequired ? ' — คุณต้องทิ้งเพิ่ม 1 ใบ' : ''}</span>`;
+          + `${RESULT_TEXT.WIN(co, cy)}${currentView.discardRequired ? `<span class="sub">${t('คุณ', 'You')}${drop}</span>` : ''}`;
       }
     };
     reducedMotion() ? doFlip() : setTimeout(doFlip, 60);

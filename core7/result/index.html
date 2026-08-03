@@ -67,6 +67,7 @@
 <script type="module">
 import { renderShell, el, toast, copyText } from '/core7/js/ui.js';
 import { MatchAuthority } from '/core7/js/engine.js';
+import { RemoteRooms } from '/core7/js/adapters.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
 import { COLORS } from '/core7/js/rules.js';
 import { cardSVG, cardArtHref } from '/core7/js/art.js';
@@ -124,10 +125,15 @@ let title, sub;
 if (r.draw) { title = '🤝 DRAW'; sub = HOWTEXT.DRAW; }
 else if (r.youWon) { title = '🏆 YOU WIN'; sub = HOWTEXT[r.resultType] || ''; }
 else { title = 'YOU LOSE'; sub = HOWTEXT[r.resultType] || ''; }
+/* MATCH ไม่มีคะแนน — ชนะ 3 รอบกับอีกฝ่ายมือหมดคือเรื่องเดียวกัน
+   บอกแค่ว่าใครชนะพอ ส่วนคะแนนที่นับจริงมีแค่ SET เท่านั้น */
+const series = snap.series || null;
+const inSeries = !!(series && series.target > 1);
 hero.innerHTML = `
   <h1>${title}</h1>
-  <div class="score">${view.you.name} ${r.roundWins[view.seat]} — ${r.roundWins[view.seat === 'a' ? 'b' : 'a']} ${view.opponent.name}</div>
-  <div class="how">${sub} · ${view.rounds.length} Rounds · Rules v${view.rulesVersion}</div>`;
+  ${inSeries ? `<div class="score">${series.modeLabel} ${series.youWins} — ${series.oppWins}
+     <small style="display:block;font-size:13px;color:rgb(255 255 255/.6);margin-top:4px">ชนะครบ ${series.target} จบชุด</small></div>` : ''}
+  <div class="how">${sub}</div>`;
 
 /* Hover/focus shows art; click/tap pins it until the next outside click. */
 const cardPreview = el('div', { class:'card-preview', hidden:true, role:'dialog', 'aria-label':'ตัวอย่างภาพการ์ด' });
@@ -259,15 +265,44 @@ if (mode === 'bot') {
     el('a', { class: 'btn', href: `/core7/bot/?level=${level}&fresh=1` }, '⚡ เล่นมือเดิมทันที'),
     el('a', { class: 'btn', href: '/core7/play/' }, 'เปลี่ยนโหมด'),
   );
+} else if (inSeries && series.youWins < series.target && series.oppWins < series.target) {
+  /* ชุดยังไม่จบ — กดพร้อมได้จากหน้านี้เลย ไม่ต้องเด้งกลับห้องแล้วกดอีกชั้น
+     กดแล้วรอคู่แข่ง พอทั้งคู่พร้อม server จะเปิด Match ใหม่ เราค่อยพากลับห้อง */
+  const go = el('button', { class: 'btn btn-gold btn-lg' }, 'เล่นรอบต่อไป →');
+  const note = el('p', { style: 'flex-basis:100%;font-size:13.5px;color:rgb(var(--muted));margin-top:6px' }, '');
+  let waiting = false;
+  const session = (() => { try { return new RemoteRooms().session(roomCode); } catch { return null; } })();
+  go.addEventListener('click', async () => {
+    if (!session) { location.href = `/core7/room/?c=${encodeURIComponent(roomCode)}`; return; }
+    go.disabled = true; waiting = true;
+    go.textContent = '✓ พร้อมแล้ว';
+    note.textContent = 'รอคู่แข่ง — ใช้มือเดิม';
+    try { await session.readyNext(); } catch { /* poll ข้างล่างจะพาไปเอง */ }
+  });
+  actions.append(go, el('a', { class: 'btn', href: '/core7/play/' }, 'ออกจากชุด'), note);
+
+  /* เฝ้าดูห้อง ถ้าอีกฝ่ายกดพร้อมก่อนก็บอก และพอเริ่ม Match ใหม่ค่อยพากลับโต๊ะ */
+  if (session) {
+    setInterval(async () => {
+      let data; try { data = await session.refresh(); } catch { return; }
+      const room = data?.room;
+      if (!room) return;
+      if (data.matchView && data.matchView.matchId !== matchId) {
+        location.href = `/core7/room/?c=${encodeURIComponent(roomCode)}`;
+        return;
+      }
+      if (!waiting && room.opponent?.nextReady) note.textContent = `${room.opponent.name} พร้อมแล้ว — รอคุณ`;
+    }, 1500);
+  }
 } else {
   actions.append(
-    el('a', { class: 'btn btn-gold', href: `/core7/room/?c=${encodeURIComponent(roomCode)}` }, '🔄 กลับห้องเดิม — Rematch'),
+    el('a', { class: 'btn btn-gold', href: `/core7/room/?c=${encodeURIComponent(roomCode)}` }, '🔄 กลับห้องเดิม'),
     el('a', { class: 'btn', href: '/core7/play/' }, 'เปลี่ยนโหมด'),
   );
 }
 const share = el('button', { class: 'btn btn-dark' }, '📋 แชร์ผลลง Discord');
 share.addEventListener('click', async () => {
-  const txt = `myClover: CORE7 — ${r.draw ? 'เสมอ!' : (r.youWon ? 'ชนะ' : 'แพ้')} ${r.roundWins[view.seat]}–${r.roundWins[view.seat === 'a' ? 'b' : 'a']} กับ ${view.opponent.name} (${view.rounds.length} รอบ)\nมาเล่นกัน → https://www.myclover.com/core7/`;
+  const txt = `myClover: CORE7 — ${r.draw ? 'เสมอ' : (r.youWon ? 'ชนะ' : 'แพ้')} ${view.opponent.name}\nมาเล่นกัน → https://www.myclover.com/core7/`;
   await copyText(txt);
   store.track('core7_discord_share');
   toast('คัดลอกข้อความแล้ว — วางใน Discord ได้เลย');
@@ -276,15 +311,16 @@ actions.append(share);
 store.track('core7_match_complete_view');
 
 /* ชนะ = ปลดล็อคกรอบดำของการ์ดประจำตัว (หน้า /card/ อ่านสถิติชนะจากเครื่องนี้เอง) */
+/* เคยเห็นแล้วไม่ต้องโชว์ซ้ำ — ชนะทุกครั้งแล้วขึ้นกล่องเดิมมันเกะกะ */
 if (r.youWon) {
-  const box = document.getElementById('nightUnlock');
-  box.hidden = false;
-  try {
-    if (!localStorage.getItem('c7:night_frame_seen')) {
-      localStorage.setItem('c7:night_frame_seen', '1');
-      box.classList.add('anim-pop');
-    }
-  } catch { /* ok */ }
+  let seen = true;
+  try { seen = !!localStorage.getItem('c7:night_frame_seen'); } catch { /* ok */ }
+  if (!seen) {
+    const box = document.getElementById('nightUnlock');
+    box.hidden = false;
+    box.classList.add('anim-pop');
+    try { localStorage.setItem('c7:night_frame_seen', '1'); } catch { /* ok */ }
+  }
 }
 </script>
 </body>
