@@ -57,10 +57,10 @@ window.HALL_COPY.th={
       seekerFound:"ปลดล็อค “Seeker” แล้ว",seekerSaved:"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง",seekerTry:"ครั้งที่ {n} — ยังไม่ครบ ลองอีกครั้ง"
     };
 
-// V4.9 final Hall polish: navigation, four stats, selected path, Seeker and completion handoff.
+// V5.0 final Hall polish: navigation, stats, completion handoff and clickable CORE7 card.
 (function(){
   var style=document.createElement("style");
-  style.id="hall-v49-final-patch";
+  style.id="hall-v50-final-patch";
   style.textContent='\
 .navlinks>a[href="#quest"]{display:none!important}\
 .navlinks{align-items:center!important;overflow:visible!important}\
@@ -72,7 +72,31 @@ window.HALL_COPY.th={
 .path-choice[data-class="KEEPER"] .path-art{background-image:url("/img/path-keeper.jpg")!important}\
 .path-choice[data-class="THINKER"] .path-art{background-image:url("/img/path-thinker.jpg")!important}\
 .path-choice[data-class="MAKER"] .path-art{background-image:url("/img/path-maker.jpg")!important}\
-@media(max-width:520px){.nav .wrap{min-height:58px!important;gap:7px!important}.logo{font-size:20px!important}.navlinks{gap:6px!important}.lang-switch{height:42px!important}.lang-switch button{width:38px!important;height:34px!important;font-size:11px!important}.navlinks a.gold{width:42px!important;height:42px!important;min-width:42px!important}.navlinks a.gold::before{font-size:30px;transform:scale(1.12) translateY(1px)}}';
+.quest-hud[data-state="complete"] h2,.quest-hud[data-state="secret"] h2{max-width:none!important}\
+.completion-title{white-space:nowrap}\
+#secretBanner{padding-top:18px!important}\
+#secretBanner .core7-handoff{width:100%;display:grid;grid-template-columns:124px minmax(0,1fr) auto;gap:18px;align-items:center;padding:10px;border-radius:20px;color:inherit;text-decoration:none;transition:transform .2s ease,background .2s ease,box-shadow .2s ease}\
+.quest-hud[data-state="secret"] #secretBanner .core7-handoff{background:rgba(255,255,255,.035)}\
+.quest-hud[data-state="complete"] #secretBanner .core7-handoff{background:rgba(18,40,28,.025)}\
+#secretBanner .core7-handoff:hover{transform:translateY(-2px);box-shadow:0 18px 40px -30px rgba(0,0,0,.78)}\
+.quest-hud[data-state="secret"] #secretBanner .core7-handoff:hover{background:rgba(255,255,255,.075)}\
+.quest-hud[data-state="complete"] #secretBanner .core7-handoff:hover{background:rgba(27,106,66,.07)}\
+#secretBanner .core7-handoff:focus-visible{outline:3px solid var(--gold2);outline-offset:4px}\
+.core7-handoff__art{display:block;padding:6px;border-radius:18px;overflow:hidden;box-shadow:0 14px 30px -20px rgba(0,0,0,.72)}\
+.quest-hud[data-state="secret"] .core7-handoff__art{background:rgba(255,255,255,.08);border:1px solid rgba(234,208,140,.28)}\
+.quest-hud[data-state="complete"] .core7-handoff__art{background:rgba(255,255,255,.92);border:1px solid rgba(18,40,28,.12)}\
+.core7-handoff__art img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;transition:transform .35s ease}\
+.core7-handoff:hover .core7-handoff__art img{transform:scale(1.035)}\
+.core7-handoff__body{min-width:0}\
+.core7-handoff__title{display:block;font-family:"Bai Jamjuree",system-ui;font-weight:800;font-size:clamp(14px,1.6vw,18px);line-height:1.45;color:#85641f}\
+.quest-hud[data-state="secret"] .core7-handoff__title{color:var(--gold2)}\
+.core7-handoff__copy{display:block;margin-top:4px;font-size:13px;line-height:1.65;color:var(--muted)}\
+.quest-hud[data-state="secret"] .core7-handoff__copy{color:rgba(255,255,255,.66)}\
+.core7-handoff__go{display:inline-flex;align-items:center;justify-content:center;min-width:82px;padding:9px 12px;border-radius:999px;font-family:"Bai Jamjuree",system-ui;font-size:12px;font-weight:800;white-space:nowrap;color:var(--deep);background:var(--gold2);transition:transform .2s ease}\
+.core7-handoff:hover .core7-handoff__go{transform:translateX(3px)}\
+@media(prefers-reduced-motion:reduce){#secretBanner .core7-handoff,.core7-handoff__art img,.core7-handoff__go{transition:none!important}}\
+@media(max-width:760px){.completion-title{white-space:normal}.core7-handoff__title{font-size:14px}#secretBanner .core7-handoff{grid-template-columns:102px minmax(0,1fr);gap:13px;padding:8px}.core7-handoff__go{grid-column:2;justify-self:start;margin-top:-2px}}\
+@media(max-width:520px){.nav .wrap{min-height:58px!important;gap:7px!important}.logo{font-size:20px!important}.navlinks{gap:6px!important}.lang-switch{height:42px!important}.lang-switch button{width:38px!important;height:34px!important;font-size:11px!important}.navlinks a.gold{width:42px!important;height:42px!important;min-width:42px!important}.navlinks a.gold::before{font-size:30px;transform:scale(1.12) translateY(1px)}#secretBanner .core7-handoff{grid-template-columns:1fr}.core7-handoff__art{width:min(180px,100%)}.core7-handoff__go{grid-column:1}.core7-handoff__title{font-size:15px}}';
   document.head.appendChild(style);
 
   function lang(){
@@ -171,7 +195,10 @@ window.HALL_COPY.th={
       var activeDesc=document.getElementById("activeDesc");
       var activeCta=document.getElementById("activeCta");
       if(questEyebrow)questEyebrow.textContent=secret?"SECRET ENDING CLEAR · NEXT QUEST":"MAIN QUEST COMPLETE · NEXT QUEST";
-      if(questTitle)questTitle.textContent=isTh?"เรียนจบแล้ว — ไปต่อด้วยกัน":"Quest Complete — Continue Together";
+      if(questTitle){
+        questTitle.classList.add("completion-title");
+        questTitle.innerHTML=isTh?'เรียนจบแล้ว — <span class="completion-phrase">ไปต่อด้วยกัน</span>':'Quest Complete — <span class="completion-phrase">Continue Together</span>';
+      }
       if(questLead)questLead.textContent=isTh
         ?"บทเรียนจบแล้ว แต่บ้านไม่ได้ส่งคุณออกไปคนเดียว — ด่านถัดไปคือเจอคนที่อยากเรียน เล่น และสร้างต่อเหมือนกัน"
         :"The lessons are complete, but the house does not send you onward alone. Your next quest is to meet people who want to learn, play, and build too.";
@@ -183,12 +210,23 @@ window.HALL_COPY.th={
         ?"Discord สำหรับแชร์สิ่งที่ทำ ถามคำถาม และเจอคนที่อยากเล่นหรือสร้างต่อไปด้วยกัน"
         :"A Discord space to share what you made, ask questions, and meet people who want to keep playing or building together.";
       if(activeCta){activeCta.href="guild/";activeCta.textContent=isTh?"เข้าร่วม Guild X →":"Join Guild X →";}
-      var bannerTitle=document.querySelector("#secretBanner>span>b");
-      var bannerCopy=document.querySelector("#secretBanner>span>span");
-      if(bannerTitle)bannerTitle.textContent=isTh?"CORE7 · ชวน Party มาดวล":"CORE7 · CHALLENGE YOUR PARTY";
-      if(bannerCopy)bannerCopy.textContent=isTh
-        ?"สร้างห้อง ส่งลิงก์ แล้วคอลกันไว้ — ความสนุกอยู่ที่การอ่านการตัดสินใจของกันและกัน"
-        :"Create a room, send the link, and stay on a call—the fun is in reading each other’s decisions.";
+
+      var banner=document.getElementById("secretBanner");
+      if(banner){
+        var bannerTitle=isTh
+          ?"CORE7 · เกมการ์ดวัดใจ · เล่นคนเดียว · ชวนเพื่อนมาดวล · เกมจบใน 1 นาที"
+          :"CORE7 · A CARD GAME OF NERVE · SOLO · CHALLENGE A FRIEND · 1-MINUTE GAME";
+        var bannerCopy=isTh
+          ?"สร้างห้อง ส่งลิงก์ แล้วคอลกันไว้ — ความสนุกอยู่ที่การอ่านใจ และได้พูดคุยกันผ่านเกม"
+          :"Create a room, send the link, and stay on a call—the fun is in reading each other and having a real conversation through the game.";
+        var playLabel=isTh?"เล่น CORE7":"Play CORE7";
+        var imageAlt=isTh?"CORE7 เกมการ์ดวัดใจ":"CORE7 card game";
+        banner.innerHTML='<a class="core7-handoff" href="core7/" aria-label="'+playLabel+'">'
+          +'<span class="core7-handoff__art"><img src="img/hall-core7.jpg" alt="'+imageAlt+'"></span>'
+          +'<span class="core7-handoff__body"><span class="core7-handoff__title">'+bannerTitle+'</span><span class="core7-handoff__copy">'+bannerCopy+'</span></span>'
+          +'<span class="core7-handoff__go" aria-hidden="true">'+(isTh?'เล่นเลย ↗':'Play ↗')+'</span>'
+          +'</a>';
+      }
     }
   }
   function queue(){setTimeout(applyFinalUI,0)}
