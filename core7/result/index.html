@@ -80,17 +80,33 @@ const roomCode = qs.get('room') || '';
 
 const snap = matchId && store.loadMatchSnapshot(matchId);
 const hero = document.getElementById('hero');
-if (!snap || !snap.state) {
+/* บอทเก็บ state เต็ม · ออนไลน์เก็บได้แค่ view เพราะ server เป็นเจ้าของ state
+   รับทั้งสองแบบ ไม่งั้นเกมออนไลน์จะเด้งเป็น "ไม่พบผล" ทุกครั้ง */
+if (!snap || (!snap.state && !snap.view)) {
   hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how">ผลอาจถูกล้างไปแล้ว</p>';
   document.getElementById('actions').append(
     el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
   throw new Error('no snapshot');
 }
 
-const auth = MatchAuthority.restore(snap.state);
+/* สองแบบที่เข้ามาถึงหน้านี้ได้
+   - เล่นกับบอท: เครื่องเราถือ state เต็มของเกม ประกอบ view เองได้
+   - เล่นออนไลน์: server เป็นเจ้าของ state เรามีแค่ view ที่ได้มาตอนจบ
+   ทั้งสองทางลงเอยที่ view หน้าตาเดียวกัน ที่เหลือของหน้านี้จึงใช้โค้ดชุดเดียว */
 const me = qs.get('pid') || store.getGuest().id;
-const view = auth.viewFor(me) || auth.viewFor(store.getGuest().id)
-  || auth.viewFor(snap.state.players.a.id);
+const view = snap.state
+  ? (() => {
+      const auth = MatchAuthority.restore(snap.state);
+      return auth.viewFor(me) || auth.viewFor(store.getGuest().id)
+        || auth.viewFor(snap.state.players.a.id);
+    })()
+  : snap.view;
+if (!view || !view.result) {
+  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how">ผลอาจถูกล้างไปแล้ว</p>';
+  document.getElementById('actions').append(
+    el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
+  throw new Error('no view');
+}
 const r = view.result;
 
 const HOWTEXT = {
