@@ -6,9 +6,10 @@ import {
   recordBotMatchComplete, recordBotMatchStart, syncRoomAnalytics,
 } from '../../../core7/backend/analytics.js';
 import {
-  CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION, readAnalyticsStatsV11,
+  CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION,
   recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
 } from '../../../core7/backend/analytics-v11.js';
+import { readAnalyticsDevelopmentReport } from '../../../core7/backend/analytics-v11-report.js';
 
 const JSON_HEADERS = {
   'content-type': 'application/json; charset=utf-8',
@@ -108,7 +109,7 @@ export async function onRequest(context) {
   if (method === 'GET' && parts[0] === 'stats') {
     const url = new URL(request.url);
     try {
-      const stats = await readAnalyticsStatsV11(env.DB, {
+      const stats = await readAnalyticsDevelopmentReport(env.DB, {
         from: url.searchParams.get('from'),
         to: url.searchParams.get('to'),
       });
