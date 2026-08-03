@@ -25,7 +25,7 @@
     <div class="pick">
       <button class="btn btn-gold" id="printHand">🖨 พิมพ์มือ 7 ใบล่าสุด</button>
       <button class="btn" id="printGen">พิมพ์ Generic 4 สี ×2 + หลังการ์ด</button>
-      <button class="btn" id="printAll">พิมพ์ทั้ง Collection (28 ใบ · 4 แผ่น)</button>
+      <button class="btn" id="printUnlocked">พิมพ์ FIRST HAND ที่ปลดล็อกแล้ว</button>
       <button class="btn" id="printBacks">พิมพ์หลังการ์ด 9 ใบ</button>
     </div>
     <div class="panel" style="margin-top:18px">
@@ -34,7 +34,7 @@
         <li>พิมพ์บนกระดาษ 250–300 gsm หรือพิมพ์กระดาษธรรมดาแล้วใส่ซองสีทับการ์ดเก่า</li>
         <li>พิมพ์หน้า-หลัง: พิมพ์หน้าการ์ดก่อน แล้วป้อนกระดาษกลับเพื่อพิมพ์หลังการ์ดให้ตรงตำแหน่ง</li>
         <li>ตั้งค่าการพิมพ์เป็น 100% / Actual size — อย่าใช้ Fit to page</li>
-        <li>Spec เต็ม (Bleed 3 mm สำหรับโรงพิมพ์) อยู่ใน <code>core7/assets/ASSET-MANIFEST.md</code></li>
+        <li>FIRST HAND พิมพ์ได้เฉพาะใบที่ปลดล็อกจากการเล่น Match จบแล้ว</li>
       </ul>
     </div>
   </div>
@@ -43,8 +43,9 @@
 <footer class="c7foot no-print" id="c7foot"></footer>
 <script type="module">
 import { renderShell, toast } from '/core7/js/ui.js';
-import { FIRST_HAND, cardById } from '/core7/js/cards.js';
+import { cardById } from '/core7/js/cards.js';
 import { cardSVG, genericCardSVG, cardBackSVG } from '/core7/js/art.js';
+import { getCollectionIds, ownsCard } from '/core7/js/collection-progress.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({});
@@ -56,10 +57,12 @@ function renderSheets(ids) {
     const sheet = document.createElement('div');
     sheet.className = 'print-sheet';
     for (const id of ids.slice(i, i + 9)) {
+      const card = id === 'BACK' ? null : cardById(id);
+      if (id !== 'BACK' && !card) continue;
       const cell = document.createElement('div');
       cell.className = 'print-card';
       cell.innerHTML = id === 'BACK' ? cardBackSVG({ width: 300 })
-        : (cardById(id).generic ? genericCardSVG(cardById(id).color, { width: 300 })
+        : (card.generic ? genericCardSVG(card.color, { width: 300 })
           : cardSVG(id, { width: 300 }));
       sheet.append(cell);
     }
@@ -73,17 +76,32 @@ function go(ids) {
 }
 document.getElementById('printHand').addEventListener('click', () => {
   const hand = store.getHand();
-  if (!hand || hand.length !== 7) { toast('ยังไม่มีมือ 7 ใบ — ไปเลือกก่อน'); return; }
+  if (!hand || hand.length !== 7) {
+    toast('ยังไม่มีมือ 7 ใบ — ไปเลือกก่อน');
+    return;
+  }
+  const allowed = hand.every(id => cardById(id)?.generic || ownsCard(id));
+  if (!allowed) {
+    toast('มือเดิมมีการ์ดที่ยังไม่ปลดล็อก — กรุณาเลือกมือใหม่');
+    return;
+  }
   go([...hand, 'BACK', 'BACK']);
 });
 document.getElementById('printGen').addEventListener('click', () =>
   go(['gen-red', 'gen-blue', 'gen-green', 'gen-gray', 'gen-red', 'gen-blue', 'gen-green', 'gen-gray', 'BACK']));
-document.getElementById('printAll').addEventListener('click', () => go(FIRST_HAND.map(c => c.id)));
+document.getElementById('printUnlocked').addEventListener('click', () => {
+  const ids = getCollectionIds();
+  if (!ids.length) {
+    toast('ยังไม่มี FIRST HAND ที่ปลดล็อก — เล่นให้จบ Match ก่อน');
+    return;
+  }
+  go(ids);
+});
 document.getElementById('printBacks').addEventListener('click', () => go(Array(9).fill('BACK')));
 
-/* พิมพ์ใบเดียวจากหน้า Card Detail */
+/* พิมพ์ใบเดียวจากหน้า Card Detail — ต้องปลดล็อกแล้วเท่านั้น */
 const single = new URLSearchParams(location.search).get('card');
-if (single && cardById(single)) renderSheets([single]);
+if (single && ownsCard(single)) renderSheets([single]);
 </script>
 </body>
 </html>
