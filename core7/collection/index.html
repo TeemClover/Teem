@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Collection · 32 Cards — myClover: CORE7</title>
-<meta name="description" content="สะสมการ์ด CORE7 32 ใบ เล่นจบทุก Match รับการ์ดใหม่ 1 ใบโดยไม่ซ้ำ">
+<title>Collection · FIRST HAND — myClover: CORE7</title>
+<meta name="description" content="สะสมการ์ด FIRST HAND 28 ใบ เล่นจบทุก Match รับการ์ดใหม่ 1 ใบโดยไม่ซ้ำ">
 <meta name="theme-color" content="#0A2818">
 <link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
 <link rel="stylesheet" href="/core7/css/core7.css">
@@ -12,8 +12,8 @@
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px}.filters button{border:1px solid rgb(var(--line)/.18);background:#fff;border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;min-height:40px}.filters button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
 .colhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.completion{font-family:"Bai Jamjuree";font-weight:800;color:rgb(var(--green));font-size:20px}.progress{height:9px;margin-top:17px;overflow:hidden;border-radius:999px;background:rgb(var(--line)/.1)}.progress i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .5s ease}
 .reward-rule{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;margin-top:18px;padding:16px 18px;border:1px solid rgb(var(--gold)/.28);border-radius:16px;background:rgb(var(--gold)/.08)}.reward-rule .icon{font-size:30px}.reward-rule b{font-family:"Bai Jamjuree"}.reward-rule p{margin-top:2px;color:rgb(var(--muted));font-size:13px}.select-state{padding:8px 12px;border-radius:999px;background:rgb(var(--deep));color:#fff;font:800 11px/1.2 "Bai Jamjuree";white-space:nowrap}.select-state.on{background:rgb(var(--gold));color:rgb(var(--deep))}
-.card-cell.locked{position:relative;overflow:hidden;border-radius:10px;background:linear-gradient(145deg,rgb(var(--deep)),#111);aspect-ratio:2/3;box-shadow:inset 0 0 0 1px rgb(255 255 255/.08)}.card-cell.locked svg{opacity:.12;filter:grayscale(1) blur(1px)}.card-cell.locked::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:28px;background:linear-gradient(180deg,transparent,rgb(7 29 18/.3))}.card-cell.locked .slot-no{position:absolute;z-index:2;left:9px;bottom:8px;color:rgb(255 255 255/.45);font:700 10px/1 "Bai Jamjuree"}.generic-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-top:44px}.generic-head span{color:rgb(var(--green));font:800 12px/1 "Bai Jamjuree"}.empty-grid{grid-column:1/-1;padding:30px 18px;border:1px dashed rgb(var(--line)/.18);border-radius:14px;text-align:center;color:rgb(var(--muted))}
-@media(max-width:620px){.reward-rule{grid-template-columns:auto 1fr}.select-state{grid-column:1/-1;justify-self:start}.generic-head{align-items:start}}
+.card-cell.locked{position:relative;overflow:hidden;border-radius:10px;background:linear-gradient(145deg,rgb(var(--deep)),#111);aspect-ratio:2/3;box-shadow:inset 0 0 0 1px rgb(255 255 255/.08)}.card-cell.locked svg{opacity:.08;filter:grayscale(1) brightness(.45) blur(1.5px)}.card-cell.locked::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:28px;background:linear-gradient(180deg,rgb(7 29 18/.15),rgb(7 29 18/.65))}.card-cell.locked .slot-no{position:absolute;z-index:2;left:9px;bottom:8px;color:rgb(255 255 255/.45);font:700 10px/1 "Bai Jamjuree"}.generic-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-top:44px}.generic-head span{color:rgb(var(--muted));font:800 11px/1.3 "Bai Jamjuree";text-align:right}.generic-note{padding:14px 16px;border:1px dashed rgb(var(--line)/.18);border-radius:13px;background:rgb(var(--line)/.035);font-size:13.5px;color:rgb(var(--muted));margin-top:10px}.empty-grid{grid-column:1/-1;padding:30px 18px;border:1px dashed rgb(var(--line)/.18);border-radius:14px;text-align:center;color:rgb(var(--muted))}
+@media(max-width:620px){.reward-rule{grid-template-columns:auto 1fr}.select-state{grid-column:1/-1;justify-self:start}.generic-head{align-items:start;flex-direction:column}.generic-head span{text-align:left}}
 </style>
 </head>
 <body>
@@ -22,23 +22,26 @@
   <div class="wrap">
     <p class="eyebrow">Collection · FIRST HAND</p>
     <div class="colhead">
-      <h2 class="disp">การ์ดของคุณ</h2>
-      <span class="completion" id="completion">4 / 32</span>
+      <h2 class="disp">การ์ดที่ปลดล็อกแล้ว</h2>
+      <span class="completion" id="completion">0 / 28</span>
     </div>
-    <p class="lead">เริ่มด้วย Generic 4 สี แล้วเล่นให้จบ Match เพื่อรับการ์ดความหมายใหม่ทีละใบ — ไม่มีการ์ดซ้ำ</p>
+    <p class="lead">เล่นให้จบ Match เพื่อรับการ์ด FIRST HAND ใหม่ทีละใบ — แพ้ ชนะ หรือเสมอก็ได้ และไม่มีการ์ดซ้ำ</p>
     <div class="progress" aria-hidden="true"><i id="progress"></i></div>
 
     <div class="reward-rule">
       <span class="icon">🎁</span>
-      <div><b>เล่นจบ 1 Match · รับการ์ดใหม่ 1 ใบ</b><p>แพ้ ชนะ หรือเสมอก็ได้รับเหมือนกัน ขอแค่เล่นจน Match จบ</p></div>
-      <span class="select-state" id="selectState">SELECT 4/8</span>
+      <div><b>เล่นจบ 1 Match · ปลดล็อก FIRST HAND 1 ใบ</b><p>ใน SET ก็แจกหลังจบทุก Match ก่อนกดพร้อมเล่น Match ต่อไป</p></div>
+      <span class="select-state" id="selectState">SELECT 0/7</span>
     </div>
 
     <div class="filters" id="filters" role="group" aria-label="กรองการ์ด"></div>
     <div class="card-grid" id="grid" style="margin-top:14px"></div>
 
-    <div class="generic-head"><div><p class="eyebrow">Starter Cards</p><h2 class="disp" style="font-size:22px;margin-top:5px">Generic 4 สี</h2></div><span>UNLOCKED FROM START</span></div>
-    <p style="font-size:14px;color:rgb(var(--muted));margin-top:5px">ใช้เล่นได้เต็มรูปแบบและอยู่ใน Collection ตั้งแต่ครั้งแรก</p>
+    <div class="generic-head">
+      <div><p class="eyebrow">Quick Play Tools</p><h2 class="disp" style="font-size:22px;margin-top:5px">Generic 4 สี</h2></div>
+      <span>ไม่ใช่ FIRST HAND · ไม่นับใน Collection · ไม่เข้า SELECT</span>
+    </div>
+    <div class="generic-note">Generic ใช้เฉพาะโหมด QUICK เพื่อจัดจำนวนสีและเริ่มเล่นได้ทันที การ์ด 4 ใบนี้ไม่มีอยู่จริงในชุด FIRST HAND จึงไม่ถูกนับรวมกับ 28 ใบด้านบน</div>
     <div class="card-grid" id="genGrid" style="margin-top:14px;max-width:640px"></div>
   </div>
 </main>
@@ -99,7 +102,7 @@ function render() {
   grid.innerHTML = '';
   const cards = visibleCards();
   if (!cards.length) {
-    grid.append(el('p', { class: 'empty-grid' }, 'ยังไม่มีการ์ดในหมวดนี้'));
+    grid.append(el('p', { class: 'empty-grid' }, 'ยังไม่มีการ์ดที่ปลดล็อกในหมวดนี้'));
     return;
   }
   const favorites = store.getFavorites();
@@ -120,7 +123,11 @@ function render() {
       'aria-label': `Favorite ${card.en}`,
       'aria-pressed': String(favorites.includes(card.id)),
     }, favorites.includes(card.id) ? '★' : '☆');
-    favorite.addEventListener('click', () => { store.toggleFavorite(card.id); store.track('core7_card_favorite'); render(); });
+    favorite.addEventListener('click', () => {
+      store.toggleFavorite(card.id);
+      store.track('core7_card_favorite');
+      render();
+    });
     cell.append(link, favorite);
     grid.append(cell);
   }
