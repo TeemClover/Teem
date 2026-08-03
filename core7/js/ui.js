@@ -33,6 +33,10 @@ export function renderShell({ active = '', minimal = false } = {}) {
   for (const node of $$('[data-c7-version]')) node.textContent = `v${CORE7_GAME_VERSION}`;
   const onCore7Home = location.pathname === '/core7/' || location.pathname === '/core7/index.html';
   const logoHref = onCore7Home ? '/' : '/core7/';
+  const mobileNav = window.matchMedia?.('(max-width: 720px)').matches;
+  const playShortcut = mobileNav
+    ? ''
+    : '<a class="play keep" href="/core7/play/" data-en="Play">เล่นเลย</a>';
   const nav = $('#c7nav');
   if (nav) {
     nav.innerHTML = `
@@ -47,7 +51,7 @@ export function renderShell({ active = '', minimal = false } = {}) {
           <a href="/core7/collection/" ${active === 'collection' ? 'aria-current="page"' : ''}>Collection</a>
           <a href="/core7/rank/" ${active === 'rank' ? 'aria-current="page"' : ''}>Ranking</a>
           <a href="/core7/profile/" data-en="Profile" ${active === 'profile' ? 'aria-current="page"' : ''}>โปรไฟล์</a>
-          <a class="play keep" href="/core7/play/" data-en="Play">เล่นเลย</a>
+          ${playShortcut}
           <div class="lang-sw" role="group" aria-label="Language / ภาษา">
             <button type="button" data-lang="th">TH</button><button type="button" data-lang="en">EN</button>
           </div>
