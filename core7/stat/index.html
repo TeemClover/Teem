@@ -21,6 +21,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 <div class="meta"><span id="range"></span><span id="version"></span></div>
 <div id="state" class="loading">กำลังอ่านข้อมูล…</div>
 <div id="dashboard" hidden>
+<section class="section"><div class="head"><div><p class="eyebrow">ALL TIME</p><h2>Match ที่เล่นไปแล้วทั้งหมด</h2></div><p>นับจาก MATCH_START จึงรวมเกมที่เล่นไม่จบและเกมกับบอทด้วย — เลขชุดนี้ไม่ขึ้นกับช่วงวันที่ที่เลือก และเป็นตัวเดียวกับที่โชว์บนหน้าแรกของเกม</p></div><div class="metrics" id="alltime"></div></section>
 <section class="metrics" id="metrics"></section>
 <section class="section"><div class="head"><div><p class="eyebrow">PLAYER HEALTH</p><h2>คนเข้ามาแล้วกลับมาไหม</h2></div><p>นับด้วย Anonymous Installation ID แบบสุ่มในเครื่อง ไม่รู้ว่าเป็นใครและไม่เก็บ IP</p></div><div class="metrics" id="players"></div></section>
 <section class="section"><div class="head"><div><p class="eyebrow">FUNNEL</p><h2>จากเปิดเกมไปถึงเล่นซ้ำ</h2></div><p>จำนวนเครื่องที่ผ่านแต่ละขั้น ช่วยหา Drop-off ก่อนปรับหน้าเกม</p></div><div class="funnel" id="funnel"></div></section>
@@ -36,6 +37,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 <script type="module">
 import { fetchCore7Stats } from '/core7/js/analytics.js';
 import { cardById, COLOR_META } from '/core7/js/cards.js';
+import { fetchCore7Counters } from '/core7/js/analytics.js';
 const $=id=>document.getElementById(id), DAY=86400000;
 const MODE={quick:'MATCH',bo3:'DOUBLE',bo5:'SET'};
 const ORDER=['RED','GREEN','BLUE','GRAY'];
@@ -47,6 +49,18 @@ function setDays(days){const now=new Date();$('to').value=now.toISOString().slic
 document.querySelectorAll('[data-days]').forEach(b=>b.onclick=()=>setDays(Number(b.dataset.days)));
 $('refresh').onclick=load;
 $('csv').onclick=()=>{if(!current)return;const rows=[['section','name','value'],['totals','started',current.totals.started],['totals','completed',current.totals.completed],['totals','completion_rate',current.totals.completion_rate],...Object.entries(current.colors||{}).map(([k,v])=>['color',k,JSON.stringify(v)]),...(current.bot||[]).map(v=>['bot',v.level,JSON.stringify(v)]),...(current.online||[]).map(v=>['mode',MODE[v.format]||v.format,JSON.stringify(v)])];const csv=rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`core7-stat-${current.range.from}-${current.range.to}.csv`;a.click();URL.revokeObjectURL(a.href)};
+/* ตัวนับสะสมทั้งหมด — แยกจากรายงานตามช่วงวันที่ เพราะเป็นเลขตลอดกาล */
+async function loadCounters(){
+ const host=$('alltime'); if(!host) return;
+ try{
+  const c=await fetchCore7Counters();
+  host.innerHTML=metric('Matches Played',fmt(c.total),'รวมเกมที่เล่นไม่จบ')
+   +metric('คนกับคน',fmt(c.pvp),'เกมออนไลน์ระหว่างผู้เล่นจริง')
+   +metric('กับบอท',fmt(c.bot),'EASY + HARD');
+ }catch(e){
+  host.innerHTML=metric('Matches Played','—','อ่านตัวนับไม่สำเร็จ ('+(e.message||'ERROR')+')');
+ }
+}
 function metric(label,value,sub=''){return `<article class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></article>`}
 function sampleClass(n){return Number(n||0)>=20?'good':'warn'}
 async function load(){
@@ -66,6 +80,7 @@ function render(d){
  $('health').innerHTML=(d.dataHealth||[]).map(r=>`<span>${r.source}: ${fmt(r.matches)} Matches · latest ${r.latest?date(r.latest):'—'}</span>`).join('')||'<span>ยังไม่มีข้อมูล Health</span>';
 }
 setDays(30);
+loadCounters();
 </script>
 </body>
 </html>

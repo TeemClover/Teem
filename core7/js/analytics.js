@@ -124,3 +124,16 @@ export async function fetchCore7Stats({ from, to } = {}) {
   if (!response.ok || !data.ok) throw new Error(data.error || `HTTP_${response.status}`);
   return data;
 }
+
+/* จำนวน Match ที่เล่นไปแล้วทั้งหมด — โชว์บนหน้าแรกของเกม
+   เกมที่เล่นไม่จบก็นับ และรวมเกมกับบอทด้วย */
+export async function fetchCore7Counters() {
+  const response = await fetch(`${CORE7_ANALYTICS_BASE}/counters`, {
+    headers: { accept: 'application/json' },
+    cache: 'no-store',
+    credentials: 'omit',
+  });
+  const data = await response.json().catch(() => ({ ok: false, error: 'INVALID_RESPONSE' }));
+  if (!response.ok || !data.ok) throw new Error(data.error || `HTTP_${response.status}`);
+  return data;
+}

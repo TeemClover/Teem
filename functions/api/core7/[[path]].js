@@ -7,7 +7,7 @@ import {
 } from '../../../core7/backend/analytics.js';
 import {
   CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION,
-  recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
+  readMatchCounters, recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
 } from '../../../core7/backend/analytics-v11.js';
 import { readAnalyticsDevelopmentReport } from '../../../core7/backend/analytics-v11-report.js';
 
@@ -104,6 +104,16 @@ export async function onRequest(context) {
   if (method === 'OPTIONS') return new Response(null, { status: 204, headers: JSON_HEADERS });
   if (method === 'GET' && parts[0] === 'health') {
     return json({ ok: true, version: CORE7_GAME_VERSION, analytics: CORE7_ANALYTICS_VERSION });
+  }
+
+  /* ตัวนับสาธารณะสำหรับหน้าแรกของเกม — ไม่มีข้อมูลรายบุคคล มีแค่ผลรวม */
+  if (method === 'GET' && parts[0] === 'counters') {
+    try {
+      return json(await readMatchCounters(env.DB));
+    } catch (error) {
+      console.error('CORE7 counters failed', error);
+      return json({ ok: false, error: 'COUNTERS_UNAVAILABLE' }, 500);
+    }
   }
 
   if (method === 'GET' && parts[0] === 'stats') {
