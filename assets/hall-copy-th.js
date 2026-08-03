@@ -57,10 +57,10 @@ window.HALL_COPY.th={
       seekerFound:"ปลดล็อค “Seeker” แล้ว",seekerSaved:"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง",seekerTry:"ครั้งที่ {n} — ยังไม่ครบ ลองอีกครั้ง"
     };
 
-// V5.0 final Hall polish: navigation, stats, completion handoff and clickable CORE7 card.
+// V5.1 Hall polish: quiet collection counter on the clickable CORE7 handoff.
 (function(){
   var style=document.createElement("style");
-  style.id="hall-v50-final-patch";
+  style.id="hall-v51-final-patch";
   style.textContent='\
 .navlinks>a[href="#quest"]{display:none!important}\
 .navlinks{align-items:center!important;overflow:visible!important}\
@@ -92,11 +92,15 @@ window.HALL_COPY.th={
 .quest-hud[data-state="secret"] .core7-handoff__title{color:var(--gold2)}\
 .core7-handoff__copy{display:block;margin-top:4px;font-size:13px;line-height:1.65;color:var(--muted)}\
 .quest-hud[data-state="secret"] .core7-handoff__copy{color:rgba(255,255,255,.66)}\
-.core7-handoff__go{display:inline-flex;align-items:center;justify-content:center;min-width:82px;padding:9px 12px;border-radius:999px;font-family:"Bai Jamjuree",system-ui;font-size:12px;font-weight:800;white-space:nowrap;color:var(--deep);background:var(--gold2);transition:transform .2s ease}\
-.core7-handoff:hover .core7-handoff__go{transform:translateX(3px)}\
-@media(prefers-reduced-motion:reduce){#secretBanner .core7-handoff,.core7-handoff__art img,.core7-handoff__go{transition:none!important}}\
-@media(max-width:760px){.completion-title{white-space:normal}.core7-handoff__title{font-size:14px}#secretBanner .core7-handoff{grid-template-columns:102px minmax(0,1fr);gap:13px;padding:8px}.core7-handoff__go{grid-column:2;justify-self:start;margin-top:-2px}}\
-@media(max-width:520px){.nav .wrap{min-height:58px!important;gap:7px!important}.logo{font-size:20px!important}.navlinks{gap:6px!important}.lang-switch{height:42px!important}.lang-switch button{width:38px!important;height:34px!important;font-size:11px!important}.navlinks a.gold{width:42px!important;height:42px!important;min-width:42px!important}.navlinks a.gold::before{font-size:30px;transform:scale(1.12) translateY(1px)}#secretBanner .core7-handoff{grid-template-columns:1fr}.core7-handoff__art{width:min(180px,100%)}.core7-handoff__go{grid-column:1}.core7-handoff__title{font-size:15px}}';
+.core7-handoff__collection{display:grid;justify-items:end;gap:1px;min-width:92px;padding-left:17px;border-left:1px solid rgba(18,40,28,.12);font-family:"Bai Jamjuree",system-ui;white-space:nowrap}\
+.quest-hud[data-state="secret"] .core7-handoff__collection{border-left-color:rgba(255,255,255,.12)}\
+.core7-handoff__collection span{font-size:9.5px;font-weight:800;letter-spacing:.14em;color:var(--muted)}\
+.quest-hud[data-state="secret"] .core7-handoff__collection span{color:rgba(255,255,255,.5)}\
+.core7-handoff__collection b{font-size:21px;line-height:1.05;color:var(--green)}\
+.quest-hud[data-state="secret"] .core7-handoff__collection b{color:var(--gold2)}\
+@media(prefers-reduced-motion:reduce){#secretBanner .core7-handoff,.core7-handoff__art img{transition:none!important}}\
+@media(max-width:760px){.completion-title{white-space:normal}.core7-handoff__title{font-size:14px}#secretBanner .core7-handoff{grid-template-columns:102px minmax(0,1fr);gap:13px;padding:8px}.core7-handoff__collection{grid-column:2;justify-items:start;min-width:0;margin-top:-2px;padding-left:0;border-left:0}}\
+@media(max-width:520px){.nav .wrap{min-height:58px!important;gap:7px!important}.logo{font-size:20px!important}.navlinks{gap:6px!important}.lang-switch{height:42px!important}.lang-switch button{width:38px!important;height:34px!important;font-size:11px!important}.navlinks a.gold{width:42px!important;height:42px!important;min-width:42px!important}.navlinks a.gold::before{font-size:30px;transform:scale(1.12) translateY(1px)}#secretBanner .core7-handoff{grid-template-columns:1fr}.core7-handoff__art{width:min(180px,100%)}.core7-handoff__collection{grid-column:1}.core7-handoff__title{font-size:15px}}';
   document.head.appendChild(style);
 
   function lang(){
@@ -112,6 +116,19 @@ window.HALL_COPY.th={
   }
   function selectedKey(){
     try{return localStorage.getItem("mc_class")||""}catch(e){return""}
+  }
+  function collectionCount(){
+    var count=4;
+    try{
+      var direct=parseInt(localStorage.getItem("mc_core7_collection_count")||"",10);
+      if(Number.isFinite(direct))count=direct;
+      var raw=localStorage.getItem("mc_core7_collection");
+      if(raw){
+        var cards=JSON.parse(raw);
+        if(Array.isArray(cards))count=Math.max(count,new Set(cards).size);
+      }
+    }catch(e){}
+    return Math.max(4,Math.min(32,count));
   }
   function applyFinalUI(){
     var c=copy(),isTh=lang()==="th";
@@ -219,12 +236,13 @@ window.HALL_COPY.th={
         var bannerCopy=isTh
           ?"สร้างห้อง ส่งลิงก์ แล้วคอลกันไว้ — ความสนุกอยู่ที่การอ่านใจ และได้พูดคุยกันผ่านเกม"
           :"Create a room, send the link, and stay on a call—the fun is in reading each other and having a real conversation through the game.";
-        var playLabel=isTh?"เล่น CORE7":"Play CORE7";
+        var collected=collectionCount();
+        var playLabel=(isTh?"เล่น CORE7":"Play CORE7")+" · Collection "+collected+"/32";
         var imageAlt=isTh?"CORE7 เกมการ์ดวัดใจ":"CORE7 card game";
         banner.innerHTML='<a class="core7-handoff" href="core7/" aria-label="'+playLabel+'">'
           +'<span class="core7-handoff__art"><img src="img/hall-core7.jpg" alt="'+imageAlt+'"></span>'
           +'<span class="core7-handoff__body"><span class="core7-handoff__title">'+bannerTitle+'</span><span class="core7-handoff__copy">'+bannerCopy+'</span></span>'
-          +'<span class="core7-handoff__go" aria-hidden="true">'+(isTh?'เล่นเลย ↗':'Play ↗')+'</span>'
+          +'<span class="core7-handoff__collection" aria-hidden="true"><span>COLLECTION</span><b>'+collected+'/32</b></span>'
           +'</a>';
       }
     }
