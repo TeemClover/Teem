@@ -17,7 +17,15 @@
 .mode .row{display:flex;gap:10px;flex-wrap:wrap}
 .namebar{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:14px;padding:12px 16px;margin-top:22px;flex-wrap:wrap}
 .namebar input{flex:1;min-width:160px;border:1px solid rgb(var(--line)/.15);border-radius:10px;padding:11px 14px;font:inherit}
-.play-lobby{margin-top:26px;background:rgb(var(--gold)/.07);border-color:rgb(var(--gold)/.28)}
+/* กล่องแรกเน้นกว่าใบอื่น เพราะเป็นทางที่เล่นได้แน่ ๆ ไม่ต้องพึ่งใคร */
+.play-first{margin-top:22px;background:rgb(var(--green)/.06);border-color:rgb(var(--green)/.32)}
+.play-first h3{font-family:"Bai Jamjuree";font-size:22px;margin-top:4px}
+.play-first-lead{font-size:14.5px;color:rgb(var(--ink)/.75);margin:8px 0 14px}
+.play-first .row,.play-room-make .row{display:flex;gap:10px;flex-wrap:wrap}
+.play-room-make{margin-top:16px}
+.play-room-make h3{font-family:"Bai Jamjuree";font-size:20px}
+.play-room-make p{font-size:14.5px;color:rgb(var(--ink)/.75);margin:8px 0 14px}
+.play-lobby{margin-top:16px;background:rgb(var(--gold)/.07);border-color:rgb(var(--gold)/.28)}
 .play-lobby-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .quick-join{display:flex;align-items:end;gap:10px;margin-top:14px}.quick-join .field{flex:1;margin:0}.quick-join input{font:700 20px "Bai Jamjuree";letter-spacing:4px}
 .play-room-list{display:flex;flex-direction:column;gap:9px;margin-top:14px}
@@ -41,6 +49,24 @@
       <button class="btn" id="saveName" style="padding:11px 18px;min-height:44px">บันทึก</button>
     </div>
 
+    <!-- เล่นกับบอทมาก่อนเสมอ — เป็นทางเดียวที่เริ่มได้ทันทีโดยไม่ต้องมีคนอื่นออนไลน์
+         Public Lobby ที่ว่างเปล่าไม่ควรเป็นสิ่งแรกที่คนเปิดเกมครั้งแรกเห็น -->
+    <section class="panel play-first" aria-labelledby="botTitle">
+      <p class="eyebrow">เริ่มได้ทันที · ไม่ต้องรอใคร</p>
+      <h3 class="disp" id="botTitle">🤖 เล่นกับบอท</h3>
+      <p class="play-first-lead">EASY ลงแบบสุ่ม ส่วน HARD คิดจากข้อมูลหงายหน้าและ Pattern โดยไม่เห็นมือคุณ</p>
+      <div class="row">
+        <a class="btn btn-green" href="/core7/hand/?next=bot&level=easy">EASY · สุ่ม</a>
+        <a class="btn btn-dark" href="/core7/hand/?next=bot&level=hard">HARD · คิดก่อนลง</a>
+      </div>
+    </section>
+
+    <section class="panel play-room-make" aria-labelledby="makeTitle">
+      <h3 class="disp" id="makeTitle">🏠 สร้างห้องชวนเพื่อน</h3>
+      <p>สร้างห้องออนไลน์ด้วยรหัสตัวเลข 4 หลัก แล้วเลือกโหมด MATCH, DOUBLE หรือ SET — ทุกโหมดใช้มือเจ็ดใบเดิมจนกว่าจะมีผู้ชนะ</p>
+      <div class="row"><a class="btn btn-gold" href="/core7/create/">สร้างห้อง</a></div>
+    </section>
+
     <section class="panel play-lobby" aria-labelledby="lobbyTitle">
       <div class="play-lobby-head">
         <div><p class="eyebrow">Public Lobby · Online</p><h3 class="disp" id="lobbyTitle">ห้องที่กำลังรอผู้เล่น</h3></div>
@@ -56,27 +82,14 @@
 
     <div class="modes">
       <div class="panel mode">
-        <h3>🤖 เล่นกับบอท</h3>
-        <p>เริ่มได้ทันที ไม่ต้องรอใคร — EASY ลงแบบสุ่ม ส่วน HARD คิดจากข้อมูลหงายหน้าและ Pattern โดยไม่เห็นมือคุณ</p>
-        <div class="row">
-          <a class="btn btn-green" href="/core7/hand/?next=bot&level=easy">EASY · สุ่ม</a>
-          <a class="btn btn-dark" href="/core7/hand/?next=bot&level=hard">HARD · คิดก่อนลง</a>
-        </div>
-      </div>
-      <div class="panel mode">
-        <h3>🏠 สร้างห้องชวนเพื่อน</h3>
-        <p>สร้างห้องออนไลน์ด้วยรหัสตัวเลข 4 หลัก แล้วเลือกให้ชนะ 1 Match, 2 Matches แบบ Double หรือ 3 Matches เป็น 1 Set</p>
-        <div class="row"><a class="btn btn-gold" href="/core7/create/">สร้างห้อง</a></div>
-      </div>
-      <div class="panel mode">
         <h3>🎓 ยังไม่เคยเล่น?</h3>
         <p>Tutorial แบบเล่นจริง สอนวงสี การทิ้งเพิ่ม และกฎ Final Gray ใน 30 วินาที</p>
         <div class="row"><a class="btn" href="/core7/tutorial/">เรียนรู้ใน 30 วินาที</a></div>
       </div>
       <div class="panel mode">
-        <h3>🏆 Ranked Match <span class="tag tag-soon">รอ Backend จริง</span></h3>
-        <p>Ranked Queue พร้อม Rating Glicko-2 และ Season — จะเปิดเมื่อระบบ Multiplayer
-           Server จริงออนไลน์ (ดูสถานะใน <a href="/core7/rank/" style="text-decoration:underline">หน้า Ranking</a>)</p>
+        <h3>🏆 Ranked Game <span class="tag tag-soon">Coming soon</span></h3>
+        <p>ฤดูกาลแข่งขันพร้อมรางวัล Season Champion — ตอนนี้ทุกโหมดเล่นได้ฟรีและไม่มีอะไรต้องปลดล็อก
+           (ดูรายละเอียดที่ <a href="/core7/rank/" style="text-decoration:underline">หน้า Ranking</a>)</p>
       </div>
     </div>
   </div>
