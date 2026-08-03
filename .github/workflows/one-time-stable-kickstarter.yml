@@ -1,0 +1,144 @@
+name: One-time stable Kickstarter repair
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/one-time-stable-kickstarter.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Remove fragile layers and make campaign static-safe
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          version = '20260803-stable-v1'
+
+          index = Path('kickstarter/index.html')
+          html = index.read_text(encoding='utf-8')
+
+          # One main module only. The previous distilled stack loaded several
+          # overlapping mutation observers and could leave .reveal content hidden.
+          html = re.sub(r'\n\s*<script type="module" src="\./kickstarter-distilled\.js\?v=[^"]+"></script>', '', html)
+          html = re.sub(r'kickstarter\.css\?v=[^"\']+', f'kickstarter.css?v={version}', html)
+          html = re.sub(r'kickstarter-v2\.css\?v=[^"\']+', f'kickstarter-v2.css?v={version}', html)
+          html = re.sub(r'kickstarter\.js\?v=[^"\']+', f'kickstarter.js?v={version}', html)
+
+          story_link = f'  <link rel="stylesheet" href="./kickstarter-static-story.css?v={version}">\n'
+          if 'kickstarter-static-story.css' not in html:
+              anchor = re.search(r'\s*<link rel="stylesheet" data-kickstarter-v2[^>]+>\n', html)
+              if not anchor:
+                  raise SystemExit('v2 stylesheet anchor missing')
+              html = html[:anchor.end()] + story_link + html[anchor.end():]
+
+          html = html.replace('/core7/assets/card-back-core7.png','/core7/assets/card-back-core7.webp')
+          html = html.replace('RED, BLUE, GREEN and GRAY','RED, GREEN, BLUE and GRAY')
+          html = html.replace('Red, Blue, Green and Gray','Red, Green, Blue and Gray')
+          html = html.replace('Write RED, BLUE, GREEN and GRAY','Write RED, GREEN, BLUE and GRAY')
+          html = html.replace('Body. Mind. Soul. Craft.','Body. Soul. Mind. Craft.')
+
+          old_buttons = '<button class="energy-button active red" data-energy="RED"><span>●</span> RED · BODY</button><button class="energy-button blue" data-energy="BLUE"><span>●</span> BLUE · MIND</button><button class="energy-button green" data-energy="GREEN"><span>●</span> GREEN · SOUL</button><button class="energy-button gray" data-energy="GRAY"><span>●</span> GRAY · CRAFT</button>'
+          new_buttons = '<button class="energy-button active red" data-energy="RED"><span>●</span> RED · BODY</button><button class="energy-button green" data-energy="GREEN"><span>●</span> GREEN · SOUL</button><button class="energy-button blue" data-energy="BLUE"><span>●</span> BLUE · MIND</button><button class="energy-button gray" data-energy="GRAY"><span>●</span> GRAY · CRAFT</button>'
+          html = html.replace(old_buttons,new_buttons)
+
+          visual = f'''
+    <section id="visual-story" class="ks-story-static">
+      <div class="wrap">
+        <div class="ks-story-static-head">
+          <p class="eyebrow">THE VISUAL STORY</p>
+          <h2>A game this small should be seen—not buried in paragraphs.</h2>
+          <p>Four images trace the system from removing rules to sharing one box, meeting someone and reading the same hand again.</p>
+        </div>
+        <div class="ks-story-static-grid">
+          <figure><img src="/kickstarter/assets/story/removing-rules.webp?v={version}" alt="Early prototypes reduced to three colors and one intentionally empty Gray card" loading="lazy" decoding="async"><figcaption><strong>Nothing left to remove</strong><span>Three colors created the rules. The empty Gray card created the game.</span></figcaption></figure>
+          <figure><img src="/kickstarter/assets/story/one-box-ritual.webp?v={version}" alt="One player chooses seven cards and offers the remaining twenty-one" loading="lazy" decoding="async"><figcaption><strong>Choose seven. Share twenty-one.</strong><span>One compact box creates two complete hands without a second deck.</span></figcaption></figure>
+          <figure><img src="/kickstarter/assets/story/first-meeting.webp?v={version}" alt="Two strangers play myClover Cards during a first meeting" loading="lazy" decoding="async"><figcaption><strong>A shared feeling before a shared language</strong><span>The luck was already spent when the two people found each other. Everything after that is a decision.</span></figcaption></figure>
+          <figure><img src="/kickstarter/assets/story/core7bo5-memory.webp?v={version}" alt="The same seven-card hands repeat while shared information accumulates" loading="lazy" decoding="async"><figcaption><strong>Same hand. Stronger memory.</strong><span>CORE7BO5 keeps the seven cards fixed while the humans learn each other.</span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+'''
+          if 'id="visual-story"' not in html:
+              anchor = '    <section class="language section-dark">'
+              if anchor not in html:
+                  raise SystemExit('language section anchor missing')
+              html = html.replace(anchor, visual + '\n' + anchor, 1)
+
+          founder = f'''<figure class="ks-story-inline"><img src="/kickstarter/assets/story/founder-daughter.webp?v={version}" alt="A father and daughter test handmade cards together" loading="lazy" decoding="async"><figcaption><strong>The table where the game began</strong><span>The system was designed by one creator. The game was discovered by removing rules together with his daughter.</span></figcaption></figure>'''
+          if 'founder-daughter.webp' not in html:
+              anchor = '<div class="founder-story reveal">'
+              if anchor not in html:
+                  raise SystemExit('founder anchor missing')
+              html = html.replace(anchor, founder + anchor, 1)
+
+          shipping = f'''<figure class="ks-story-inline"><img src="/kickstarter/assets/story/built-to-ship.webp?v={version}" alt="A controlled card production setup with proofs and color checks" loading="lazy" decoding="async"><figcaption><strong>Built to ship, not to spiral</strong><span>One compact box, controlled proofs and no production complexity hiding inside stretch goals.</span></figcaption></figure>'''
+          if 'built-to-ship.webp' not in html:
+              risk_end = '</div></div></section>\n\n    <section class="faq section-cream">'
+              if risk_end not in html:
+                  raise SystemExit('risk section anchor missing')
+              html = html.replace(risk_end, shipping + '</div></div></section>\n\n    <section class="faq section-cream">', 1)
+
+          index.write_text(html,encoding='utf-8')
+
+          base = Path('kickstarter/kickstarter-base.js')
+          js = base.read_text(encoding='utf-8')
+          js = js.replace("'fh-red-courage',\n    'fh-blue-clarity',\n    'fh-green-balance',\n    'fh-gray-build',", "'fh-red-courage',\n    'fh-green-balance',\n    'fh-blue-clarity',\n    'fh-gray-build',")
+          js = js.replace("'fh-red-desire',\n    'fh-blue-perspective',\n    'fh-green-discipline',\n    'fh-gray-observe',", "'fh-red-desire',\n    'fh-green-discipline',\n    'fh-blue-perspective',\n    'fh-gray-observe',")
+          js = js.replace("FIRST_HAND.forEach(cardData => {", "['RED','GREEN','BLUE','GRAY'].flatMap(color => FIRST_HAND.filter(cardData => cardData.color === color)).forEach(cardData => {")
+          js = js.replace("['COURAGE','CLARITY','BALANCE','BUILD','JOY','STRATEGY','RECOVERY']", "['COURAGE','BALANCE','CLARITY','BUILD','JOY','RECOVERY','STRATEGY']")
+          js = js.replace("['RED','BLUE','GREEN','GRAY','RED','BLUE','GREEN']", "['RED','GREEN','BLUE','GRAY','RED','GREEN','BLUE']")
+          js = re.sub(r"function initReveal\(\)\{.*?\n  \}", "function initReveal(){\n    document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));\n  }", js, count=1, flags=re.S)
+          base.write_text(js,encoding='utf-8')
+
+          campaign = Path('kickstarter/kickstarter.js')
+          js = campaign.read_text(encoding='utf-8')
+          js = re.sub(r"import './kickstarter-base\.js\?v=[^']+';", f"import './kickstarter-base.js?v={version}';", js, count=1)
+          js = js.replace('/core7/assets/card-back-core7.png','/core7/assets/card-back-core7.webp')
+          js = js.replace("cardSVG('fh-red-courage',{width:360})", "cardSVG('fh-red-passion',{width:360})")
+          js = js.replace('COURAGE · ความกล้า','PASSION · แรงปรารถนา')
+          js = js.replace('Body. Mind. Soul. Craft.','Body. Soul. Mind. Craft.')
+          js = js.replace('Use Body, Mind, Soul and Craft','Use Body, Soul, Mind and Craft')
+          js = js.replace('RED, BLUE, GREEN and GRAY','RED, GREEN, BLUE and GRAY')
+          js = js.replace('Red, Blue, Green and Gray','Red, Green, Blue and Gray')
+          js = js.replace('แดง ฟ้า เขียว เทา','แดง เขียว ฟ้า เทา')
+          js = js.replace("A beautiful 32-card box that lets you open a real game with anyone in ten seconds — even if they do not own a deck, know the rules, or speak the same language.", "A 32-card game you can teach in ten seconds. 0% RNG. 100% decisions. The only unpredictable thing is the human across the table.")
+          js = js.replace("28 energy cards · 4 rule cards · 10-second teach · 1 deck for the whole table", "28 word cards · 4 rule cards · 0% RNG · 100% decisions · 1 box for two complete hands")
+          campaign.write_text(js,encoding='utf-8')
+
+          css = Path('kickstarter/kickstarter.css')
+          styles = css.read_text(encoding='utf-8')
+          styles = re.sub(r'\.reveal\{[^}]*\}', '.reveal{opacity:1;transform:none}', styles, count=1)
+          css.write_text(styles,encoding='utf-8')
+
+          v2 = Path('kickstarter/kickstarter-v2.css')
+          styles = v2.read_text(encoding='utf-8')
+          styles = re.sub(r"@import url\('\./kickstarter-story-images\.css\?v=[^']+'\);\n?", '', styles)
+          v2.write_text(styles,encoding='utf-8')
+
+          workflow = Path('.github/workflows/one-time-stable-kickstarter.yml')
+          workflow.unlink()
+          PY
+
+          node --check kickstarter/kickstarter-base.js
+          node --check kickstarter/kickstarter.js
+
+      - name: Commit stable campaign
+        shell: bash
+        run: |
+          git config user.name 'TeemClover Automation'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A
+          git commit -m 'Stabilize Kickstarter rendering and use static story images'
+          git push origin HEAD:main
