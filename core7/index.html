@@ -67,6 +67,23 @@
 .faq details{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:12px;padding:16px 20px;margin-bottom:10px}
 .faq summary{font-weight:700;cursor:pointer;min-height:32px}
 .faq p{margin-top:8px;color:rgb(var(--ink)/.8);font-size:14.5px}
+.cta-note{margin-top:12px;font-size:13px;color:rgb(255 255 255/.55)}
+/* วงจรสี — แกนของเกมทั้งเกมอยู่ในบรรทัดเดียว ใช้อีโมจิสีแทนชื่อสี */
+.cycle{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+  margin-top:22px;padding:16px 18px;border:1px solid rgb(var(--gold)/.3);border-radius:16px;
+  background:rgb(var(--gold)/.07)}
+.cycle .cy{font-size:clamp(24px,5vw,32px);line-height:1}
+.cycle i{font-style:normal;color:rgb(var(--gold));font-weight:700;font-size:18px}
+.cycle i.loop{opacity:.7}
+.cycle b{font-family:"Bai Jamjuree";font-size:13.5px;color:rgb(var(--ink)/.75);font-weight:700}
+.tiers-mini{display:flex;gap:8px;margin-top:12px;font-size:22px;line-height:1}
+.tiers-mini span{filter:grayscale(.15)}
+/* ค่อย ๆ ปรากฏตอนเลื่อนถึง — ยืมจากหน้า kickstarter
+   ถ้าสคริปต์ไม่ทำงานหรือปิด motion ต้องเห็นเนื้อหาเสมอ */
+@media(prefers-reduced-motion:no-preference){
+  .sec.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .sec.rv.in{opacity:1;transform:none}
+}
 .sec-alt{background:linear-gradient(rgb(var(--green)/.06),transparent)}
 .story-quote{border-left:3px solid rgb(var(--gold));padding-left:18px;color:rgb(var(--ink)/.85);font-size:15.5px;max-width:60ch}
 </style>
@@ -81,11 +98,15 @@
       <h1 class="disp">my<span class="c7">Clover</span>: CORE7</h1>
       <p class="promise" data-en-html data-en="Seven cards.<br>No deck. No draw.<br>Just you and the person across the table.">7 ใบ ไม่มีเด็ค ไม่มีดวง<br>มีแค่สิ่งที่คุณเลือก<br>และคนที่นั่งตรงข้าม</p>
       <p class="promise-en" data-lang-block="th">Seven cards. No deck. No draw. Just your choices and the person across the table.</p>
+      <!-- ปุ่มแรกพาไปเล่นกับบอทตรง ๆ — เป็นทางเดียวที่เล่นได้แน่โดยไม่ต้องรอใคร
+           คนเปิดเกมครั้งแรกไม่ควรต้องเลือกโหมดก่อนถึงจะได้เล่น -->
       <div class="cta-row">
-        <a class="btn btn-gold btn-lg" href="/core7/play/" data-en="Play Now">เล่นเลย · Play Now</a>
-        <a class="btn btn-ghost" href="/core7/tutorial/" data-en="Learn in 30 seconds">เรียนรู้ใน 30 วินาที</a>
-        <a class="btn btn-ghost" href="/core7/create/" data-en="Make a room for a friend">สร้างห้องให้เพื่อน</a>
+        <a class="btn btn-gold btn-lg" href="/core7/hand/?next=bot&amp;level=easy"
+           data-en="▶ Play now — vs bot">▶ เล่นเลย — กับบอท</a>
+        <a class="btn btn-ghost" href="/core7/play/" data-en="Play with a friend">เล่นกับเพื่อน</a>
+        <a class="btn btn-ghost" href="/core7/tutorial/" data-en="Learn in 30s">เรียนรู้ใน 30 วิ</a>
       </div>
+      <p class="cta-note" data-en="No sign-up. No cards to buy. Starts in one tap.">ไม่ต้องสมัคร ไม่ต้องซื้อการ์ด กดแล้วเล่นได้เลย</p>
       <!-- ตัวนับซ่อนไว้ก่อน โผล่เมื่อดึงเลขจริงได้เท่านั้น
            ต่อ server ไม่ได้ก็ไม่ต้องโชว์ 0 ให้เก้อ -->
       <p class="played" id="playedBox" hidden>
@@ -113,6 +134,10 @@
     <div class="wrap">
       <p class="eyebrow">How to play</p>
       <h2 class="disp" data-en="As quick to learn as rock paper scissors">เรียนรู้ได้เร็วเหมือนเป่ายิ้งฉุบ</h2>
+      <div class="cycle" aria-label="วงจรสี: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาบล็อกทุกสี">
+        <span class="cy">🔴</span><i>→</i><span class="cy">🟢</span><i>→</i><span class="cy">🔵</span><i class="loop">↺</i>
+        <span class="cy gray">⚙️</span><b data-en="blocks every color">บล็อกทุกสี</b>
+      </div>
       <div class="step3" style="margin-top:22px">
         <div class="panel"><b class="n">STEP 1</b><h3 data-en="Pick your seven">เลือกมือ 7 ใบ</h3>
           <p>เลือกสีใดกี่ใบก็ได้ให้ครบ 7 — เห็นมือตัวเองครบตั้งแต่ต้น ไม่มีกองจั่ว ไม่มีการสุ่ม</p></div>
@@ -202,8 +227,10 @@
       <div class="duo" style="margin-top:20px">
         <div class="panel">
           <h3 class="disp">Ranked Game <span class="tag tag-soon">Coming soon</span></h3>
-          <p style="font-size:14.5px;margin-top:8px">ฤดูกาลแข่งขันที่จบด้วย <b>Season Champion Reward</b>
-          — ไต่อันดับจากเมล็ดไปจนถึงโคลเวอร์สี่แฉก แล้วปิดฤดูกาลด้วยรางวัลของแชมป์</p>
+          <p style="font-size:14.5px;margin-top:8px" data-en="A competitive season that ends with a <b>Season Champion Reward</b>." data-en-html>ฤดูกาลแข่งขันที่จบด้วย <b>Season Champion Reward</b></p>
+          <div class="tiers-mini" aria-label="หกขั้นของฤดูกาล">
+            <span>🌰</span><span>🌱</span><span>🌿</span><span>🍃</span><span>🌸</span><span>🍀</span>
+          </div>
           <p style="font-size:13.5px;margin-top:8px;color:rgb(var(--muted))">อันดับไม่ทำให้การ์ดแรงขึ้น
           และไม่ล็อกอะไรทั้งนั้น ระหว่างนี้ทุกโหมดเล่นได้ฟรีเหมือนเดิม</p>
           <a class="btn" style="margin-top:14px" href="/core7/rank/" data-en="See how ranking works">ดูระบบอันดับ</a>
@@ -275,6 +302,7 @@ import { cardSVG } from '/core7/js/art.js';
 import { track } from '/core7/js/store.js';
 import { playCardFlip } from '/core7/js/audio.js';
 import { fetchCore7Counters } from '/core7/js/analytics.js';
+import { t } from '/core7/js/i18n.js';
 
 renderShell({ active: '' });
 track('core7_landing_view');
@@ -308,7 +336,10 @@ rulesFlip.addEventListener('click', () => {
   const total = Number(data.total || 0);
   if (!total) return;
   box.hidden = false;
-  if (data.pvp) pvp.textContent = `ในนั้นเป็นเกมคนกับคน ${data.pvp.toLocaleString('en-US')} Matches`;
+  if (data.pvp) {
+    const n = data.pvp.toLocaleString('en-US');
+    pvp.textContent = t(`เป็นเกมคนกับคน ${n}`, `${n} played against real people`);
+  }
 
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (still) { num.textContent = total.toLocaleString('en-US'); return; }
@@ -320,6 +351,21 @@ rulesFlip.addEventListener('click', () => {
     if (p < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
+})();
+
+/* ค่อย ๆ ปรากฏตอนเลื่อนถึง — เนื้อหาต้องเห็นเสมอถ้าเบราว์เซอร์ไม่รองรับ
+   จึงติดคลาสด้วย JS เท่านั้น ไม่ได้ซ่อนไว้ใน HTML */
+(() => {
+  if (!('IntersectionObserver' in window)) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const secs = [...document.querySelectorAll('main .sec')];
+  secs.forEach(s => s.classList.add('rv'));
+  const io = new IntersectionObserver(es => {
+    for (const e of es) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }, { threshold: .08, rootMargin: '0px 0px -40px' });
+  secs.forEach(s => io.observe(s));
+  /* กันเหนียว: ถ้ายังไม่โผล่ใน 3 วิ ให้โชว์หมด */
+  setTimeout(() => secs.forEach(s => s.classList.add('in')), 3000);
 })();
 
 /* การ์ดตัวอย่างพัดบนหน้าแรก */

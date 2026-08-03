@@ -23,6 +23,7 @@ import { COLOR_META, cardById } from '/core7/js/cards.js';
 import { cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 import { playSfx } from '/core7/js/audio.js';
+import { t } from '/core7/js/i18n.js';
 
 renderShell({ minimal: true });
 const code = (pathSegment('room') || '').trim();
@@ -53,8 +54,13 @@ function showLobby() { lobbyWrap.hidden = false; matchEl.hidden = true; }
 
 function copyActions() {
   const link = `${location.origin}/core7/join/?code=${code}`;
-  const copy = el('button', { class:'btn' }, '🔗 คัดลอกคำเชิญ');
-  copy.addEventListener('click', async () => { await copyText(`มาเล่น myClover: CORE7 ห้อง ${code}\n${link}`); toast('คัดลอกคำเชิญแล้ว'); });
+  /* คัดลอกเป็นลิงก์เปล่า ๆ เท่านั้น จะได้วางลงช่อง URL ของเบราว์เซอร์ได้เลย
+     ถ้าพ่วงข้อความไปด้วย คนต้องมานั่งลบทิ้งก่อนทุกครั้ง */
+  const copy = el('button', { class:'btn', 'data-en': '🔗 Copy link' }, '🔗 คัดลอกลิงก์');
+  copy.addEventListener('click', async () => {
+    await copyText(link);
+    toast(t('คัดลอกลิงก์แล้ว', 'Link copied'));
+  });
   actions.append(copy);
 }
 
