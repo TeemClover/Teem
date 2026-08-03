@@ -12,6 +12,7 @@
 <div id="match"></div>
 <script type="module">
 import { LocalBotClient } from '/core7/js/adapters.js';
+import { reportBotMatchComplete, reportBotMatchStart } from '/core7/js/analytics.js';
 import { mountMatch } from '/core7/js/match-ui.js';
 import * as store from '/core7/js/store.js';
 
@@ -25,18 +26,19 @@ if (!hand || hand.length !== 7) {
   throw new Error('no hand');
 }
 
-/* Resume หลัง Refresh: จำ matchId ปัจจุบันไว้ */
 const CUR = 'c7:cur_bot';
 let matchId = null;
+let createdNewMatch = false;
 if (!fresh) {
   try { matchId = localStorage.getItem(CUR); } catch { /* ok */ }
   const snap = matchId && store.loadMatchSnapshot(matchId);
   if (!snap || snap.state?.phase === 'MATCH_RESULT') matchId = null;
 }
 if (!matchId) {
+  createdNewMatch = true;
   matchId = 'bm-' + Date.now().toString(36);
   try { localStorage.setItem(CUR, matchId); } catch { /* ok */ }
-  history.replaceState(null, '', `/core7/bot/?level=${level}`);   // กัน fresh=1 ค้างตอน refresh
+  history.replaceState(null, '', `/core7/bot/?level=${level}`);
   store.track('core7_bot_match_start');
 }
 
@@ -47,9 +49,21 @@ const client = new LocalBotClient({
   resume: !fresh,
 });
 
+if (createdNewMatch) {
+  const state = store.loadMatchSnapshot(matchId)?.state;
+  reportBotMatchStart({
+    matchId,
+    level,
+    startedAt: state?.startedAt || Date.now(),
+    rulesVersion: state?.rulesVersion,
+  });
+}
+
 mountMatch(document.getElementById('match'), client, {
   oppLabel: `· ${level.toUpperCase()}`,
   onFinished(view) {
+    const state = store.loadMatchSnapshot(matchId)?.state;
+    reportBotMatchComplete({ state, humanId: client.playerId, level });
     store.recordMatch('bot', view, view.opponent.name);
     store.track('core7_bot_match_complete');
     try { localStorage.removeItem(CUR); } catch { /* ok */ }
