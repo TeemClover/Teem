@@ -36,7 +36,7 @@ window.HALL_COPY.th={
       strTip:"STR ย่อจาก Strength แปลว่า พลังหรือความแข็งแรง ในโลกของ myClover หมายถึงแรงขับ ความกล้า และพลังลงมือที่ทุกคนใช้เริ่มทำสิ่งสำคัญได้ ไม่ได้หมายถึงกล้ามอย่างเดียว",
       dexTip:"DEX ย่อจาก Dexterity แปลว่า ความคล่องแคล่วหรือความชำนาญ ในโลกของ myClover หมายถึงการดูแลรายละเอียด ปรับจังหวะ และรักษาความต่อเนื่อง ไม่ได้หมายถึงความเร็วอย่างเดียว",
       intTip:"INT ย่อจาก Intelligence แปลว่า ความฉลาดหรือความสามารถในการเข้าใจ ในโลกของ myClover หมายถึงการเชื่อมโยงข้อมูล มองภาพรวม และจัดความคิดให้ชัด ทุกคนใช้พลังนี้ได้ ไม่จำเป็นต้องเป็นคนวิชาการ",
-      constructTip:"Construct แปลว่า การสร้างหรือประกอบ ในโลกของ myClover คือพลังสร้างเครื่องมือ ระบบ และสิ่งประดิษฐ์ เพื่อช่วยให้พลังที่เรามีอยู่แล้วทำงานได้ไกลขึ้น",
+      constructTip:"CON ย่อมาจาก Construct แปลว่า การสร้างหรือประกอบ ในโลกของ myClover คือพลังสร้างเครื่องมือ ระบบ และสิ่งประดิษฐ์ เพื่อช่วยให้พลังที่เรามีอยู่แล้วทำงานได้ไกลขึ้น",
       chosenLabel:"สายที่เลือก",notChosen:"ยังไม่ได้เลือก",enterPath:"เข้าสู่เส้นทาง →",
       pathsQuiet:'ยังไม่อยากเลือกก็ไม่เป็นไร — <a href="paths/">เปิดหน้ารวมทั้ง 4 สาย</a> เพื่ออ่านเทียบกันก่อนได้',
       roomsEyebrow:"Sub Quest · Daily Play",
@@ -57,10 +57,10 @@ window.HALL_COPY.th={
       seekerFound:"ปลดล็อค “Seeker” แล้ว",seekerSaved:"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง",seekerTry:"ครั้งที่ {n} — ยังไม่ครบ ลองอีกครั้ง"
     };
 
-// V4.8 final Hall polish: navigation icon, four stats, selected-path icon and Seeker count.
+// V4.9 final Hall polish: navigation, four stats, selected path, Seeker and completion handoff.
 (function(){
   var style=document.createElement("style");
-  style.id="hall-v48-final-patch";
+  style.id="hall-v49-final-patch";
   style.textContent='\
 .navlinks>a[href="#quest"]{display:none!important}\
 .navlinks{align-items:center!important;overflow:visible!important}\
@@ -108,12 +108,19 @@ window.HALL_COPY.th={
         energyEyebrow:"🔴🟢🔵⚙️ · 4 STATS YOU CAN LEVEL UP IN THIS HOUSE",
         inventoryName:"Inventory",
         seekerFound:"“Seeker” Unlocked",
-        seekerSaved:"You found the four-leaf clover in {n} tries."
+        seekerSaved:"You found the four-leaf clover in {n} tries.",
+        constructTip:"CON is short for Construct, meaning to build or assemble. In myClover it is the power to create tools, systems, and inventions that help your existing strengths go further."
       });
       c=copy();
     }
     var energy=document.querySelector(".energy .eyebrow");
     if(energy)energy.textContent=c.energyEyebrow||"";
+
+    var makerStat=document.querySelector('[data-class="MAKER"] .stat-term');
+    if(makerStat){
+      makerStat.textContent="CON";
+      makerStat.setAttribute("data-tip",c.constructTip||(isTh?"CON ย่อมาจาก Construct แปลว่า การสร้างหรือประกอบ":"CON is short for Construct, meaning to build or assemble."));
+    }
 
     var bag=document.querySelector('.navlinks a.gold');
     if(bag){
@@ -149,6 +156,40 @@ window.HALL_COPY.th={
       if(seekerCopy)seekerCopy.textContent=format(c.seekerSaved||(isTh?"คุณพบใบโคลเวอร์ 4 แฉก ใน {n} ครั้ง":"You found the four-leaf clover in {n} tries."),{n:n});
       if(seekerCount)seekerCount.textContent="";
     }
+
+    var hud=document.getElementById("questHud");
+    var complete=hud&&(hud.dataset.state==="complete"||hud.dataset.state==="secret");
+    if(complete){
+      var secret=hud.dataset.state==="secret";
+      var questEyebrow=document.getElementById("questEyebrow");
+      var questTitle=document.getElementById("questTitle");
+      var questLead=document.getElementById("questLead");
+      var overallText=document.getElementById("overallText");
+      var activeIcon=document.getElementById("activeIcon");
+      var activeLabel=document.getElementById("activeLabel");
+      var activeTitle=document.getElementById("activeTitle");
+      var activeDesc=document.getElementById("activeDesc");
+      var activeCta=document.getElementById("activeCta");
+      if(questEyebrow)questEyebrow.textContent=secret?"SECRET ENDING CLEAR · NEXT QUEST":"MAIN QUEST COMPLETE · NEXT QUEST";
+      if(questTitle)questTitle.textContent=isTh?"เรียนจบแล้ว — ไปต่อด้วยกัน":"Quest Complete — Continue Together";
+      if(questLead)questLead.textContent=isTh
+        ?"บทเรียนจบแล้ว แต่บ้านไม่ได้ส่งคุณออกไปคนเดียว — ด่านถัดไปคือเจอคนที่อยากเรียน เล่น และสร้างต่อเหมือนกัน"
+        :"The lessons are complete, but the house does not send you onward alone. Your next quest is to meet people who want to learn, play, and build too.";
+      if(overallText)overallText.textContent=isTh?"พร้อมเข้า Guild X":"Ready for Guild X";
+      if(activeIcon)activeIcon.textContent="🏰";
+      if(activeLabel)activeLabel.textContent="NEXT QUEST · GUILD X";
+      if(activeTitle)activeTitle.textContent=isTh?"เข้า Guild X แล้วหา Party ของคุณ":"Enter Guild X and Find Your Party";
+      if(activeDesc)activeDesc.textContent=isTh
+        ?"Discord สำหรับแชร์สิ่งที่ทำ ถามคำถาม และเจอคนที่อยากเล่นหรือสร้างต่อไปด้วยกัน"
+        :"A Discord space to share what you made, ask questions, and meet people who want to keep playing or building together.";
+      if(activeCta){activeCta.href="guild/";activeCta.textContent=isTh?"เข้าร่วม Guild X →":"Join Guild X →";}
+      var bannerTitle=document.querySelector("#secretBanner>span>b");
+      var bannerCopy=document.querySelector("#secretBanner>span>span");
+      if(bannerTitle)bannerTitle.textContent=isTh?"CORE7 · ชวน Party มาดวล":"CORE7 · CHALLENGE YOUR PARTY";
+      if(bannerCopy)bannerCopy.textContent=isTh
+        ?"สร้างห้อง ส่งลิงก์ แล้วคอลกันไว้ — ความสนุกอยู่ที่การอ่านการตัดสินใจของกันและกัน"
+        :"Create a room, send the link, and stay on a call—the fun is in reading each other’s decisions.";
+    }
   }
   function queue(){setTimeout(applyFinalUI,0)}
   function boot(){
@@ -157,12 +198,15 @@ window.HALL_COPY.th={
         energyEyebrow:"🔴🟢🔵⚙️ · 4 STATS YOU CAN LEVEL UP IN THIS HOUSE",
         inventoryName:"Inventory",
         seekerFound:"“Seeker” Unlocked",
-        seekerSaved:"You found the four-leaf clover in {n} tries."
+        seekerSaved:"You found the four-leaf clover in {n} tries.",
+        constructTip:"CON is short for Construct, meaning to build or assemble. In myClover it is the power to create tools, systems, and inventions that help your existing strengths go further."
       });
     }
     document.querySelectorAll("[data-lang],.path-choice,#seekerBtn").forEach(function(el){el.addEventListener("click",queue)});
     window.addEventListener("storage",queue);
     document.addEventListener("visibilitychange",function(){if(!document.hidden)queue()});
+    var hud=document.getElementById("questHud");
+    if(hud)new MutationObserver(queue).observe(hud,{attributes:true,attributeFilter:["data-state"]});
     var active=document.querySelector("[data-lang].active")||document.querySelector('[data-lang="th"]');
     if(active)active.click();else queue();
   }
