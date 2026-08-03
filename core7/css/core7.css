@@ -381,3 +381,10 @@ button { font: inherit; cursor: pointer; }
 .print-sheet { display: grid; grid-template-columns: repeat(3, 63mm); gap: 0; justify-content: center; }
 .print-card { width: 63mm; height: 88mm; overflow: hidden; outline: .3mm dashed #bbb; }
 .print-card svg { width: 63mm; height: 88mm; }
+
+/* ── ปุ่มสลับภาษาในแถบบน ── */
+.lang-sw { display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(255 255 255 / .1); border: 1px solid rgb(255 255 255 / .18); }
+.lang-sw button { min-width: 40px; min-height: 34px; padding: 5px 11px; border: 0; border-radius: 999px; background: transparent; color: rgb(255 255 255 / .68); font-family: "Bai Jamjuree"; font-weight: 700; font-size: 12.5px; cursor: pointer; transition: background .15s, color .15s; }
+.lang-sw button[aria-pressed="true"] { background: rgb(var(--cream, 248 246 240)); color: rgb(var(--deep)); }
+.lang-sw button:focus-visible { outline: 2px solid rgb(var(--gold-l)); outline-offset: 2px; }
+@media (max-width: 620px) { .lang-sw button { min-width: 34px; padding: 5px 8px; font-size: 12px; } }
