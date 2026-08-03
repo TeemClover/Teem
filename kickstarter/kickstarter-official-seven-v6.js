@@ -184,7 +184,7 @@
 
       const back=q('.pocket-card-back img');
       if(back){
-        back.src='/core7/assets/card-back-core7.webp?v=20260803-official-seven-v6';
+        back.src='/core7/assets/myclover-back.webp?v=20260803-official-seven-v6';
         back.alt=document.documentElement.lang==='th'?'การ์ดคว่ำ 1 ใบในมือทางการ 7 ใบ':'1 face-down card in the official 7-card hand';
       }
     }catch(error){

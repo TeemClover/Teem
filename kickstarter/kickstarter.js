@@ -147,7 +147,7 @@ import './kickstarter-base.js?v=20260802-campaign-v2';
           <div class="ksv2-flip-stage">
             <div id="ksv2FlipCard" class="ksv2-flip-card" role="button" tabindex="0" aria-label="Flip the CORE7 card">
               <div id="ksv2CardFront" class="ksv2-flip-face ksv2-flip-front"></div>
-              <div class="ksv2-flip-face ksv2-flip-back"><img src="/core7/assets/card-back-core7.png" alt="The shared back of every myClover CORE7 card"></div>
+              <div class="ksv2-flip-face ksv2-flip-back"><img src="/core7/assets/myclover-back.webp" alt="The shared back of every myClover CORE7 card"></div>
             </div>
             <button id="ksv2FlipButton" class="ksv2-flip-control" type="button">↻ Flip the card</button>
           </div>

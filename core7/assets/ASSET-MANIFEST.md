@@ -26,11 +26,11 @@ Frame, Character หรือภาพจำของ TCG แบรนด์อ�
 | Wordmark `myClover · CORE7` | HTML + font stack | — | Nav ทุกหน้า | ✅ Final V1 |
 | หน้าการ์ด FIRST HAND 28 ใบ | `cardSVG(id)` + WebP | 300×420 (63:88) | Collection, Match, Print | ✅ ART v0.4 ภาพเต็มใบครบ 28 ใบ |
 | Generic Card 4 สี | `genericCardSVG(color)` + WebP | 300×420 | Guest ทุกโหมด | ✅ ART v0.4 ครบ 4 สี |
-| หลังการ์ดจริง — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง | `card-back-core7.webp` via `cardBackSVG()` | 1061×1482 source | Match, Tutorial, Print, Campaign | ✅ Canonical WebP |
+| หลังการ์ดจริง — ตราหัวใจโคลเวอร์ + วงเข็มทิศทอง | `myclover-back.webp` via `cardBackSVG()` | 1061×1482 source | Match, Tutorial, Print, Campaign | ✅ Canonical WebP |
 | โปสเตอร์ myClover : First Hand (Coming Soon) | ไฟล์ภาพจากผู้ก่อตั้ง | `img/core7-poster-{640,1024}.webp` + jpg | หน้า `/card/` ส่วนชวนเล่นเกม | ✅ ภาพจริง |
 | Icon ประจำสี (flame/leaf/drop/gear) | `colorIcon(color)` | 24×24 | หน้าการ์ดและภาพสอนกติกา | ✅ Final V1 |
 | Pattern ประจำสี (bite/shield/thought/block) | `patternDefs()` | pattern tile | แถบการ์ด, Accessibility | ✅ Final V1 |
-| ภาพสรุปกติกาใบเดียว | `core7-rules-overview.webp` | WebP | Landing, Rules, Tutorial, Match, Campaign | ✅ Canonical WebP |
+| ภาพสรุปกติกาใบเดียว | `core7-rule.webp` | WebP | Landing, Rules, Tutorial, Match, Campaign | ✅ Canonical WebP |
 | วงสี Static | `colorCycleSVG()` | 300×260 | Rules TH/EN | ✅ Final V1 |
 | Table Background | CSS gradient (`core7.css` .match-shell) | — | หน้า Match | ✅ Final V1 |
 | Open Graph Image | — | 1200×630 | Social share | ⏳ ใช้ meta ข้อความก่อน — สร้างภาพเมื่อมีเครื่องมือเรนเดอร์ PNG ฝั่ง Server |
