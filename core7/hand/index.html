@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>เลือกมือ 7 ใบ — myClover: CORE7</title>
-<meta name="description" content="เลือกมือ CORE7 แบบ Quick หรือจัดมือจากการ์ดที่ปลดล็อกใน Collection">
+<meta name="description" content="เลือกมือ CORE7 แบบ Quick หรือจัดมือจากการ์ด FIRST HAND ที่ปลดล็อกแล้ว">
 <meta name="theme-color" content="#0A2818">
 <link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
 <link rel="stylesheet" href="/core7/css/core7.css">
@@ -29,20 +29,20 @@
   <div class="wrap">
     <p class="eyebrow">Build Your Hand</p>
     <h2 class="disp">เลือกมือ 7 ใบ</h2>
-    <p class="lead">ใช้ Quick เพื่อเลือกจำนวนสีทันที หรือ Select เพื่อจัดมือจากการ์ดที่คุณสะสมได้</p>
+    <p class="lead">QUICK ใช้ Generic เลือกจำนวนสีทันที ส่วน SELECT ใช้เฉพาะ FIRST HAND ที่คุณปลดล็อกจริง</p>
 
     <div class="mode-switch" role="group" aria-label="รูปแบบการเลือกมือ">
       <button class="mode-btn" id="quickMode" type="button" aria-pressed="true">
-        <b>⚡ QUICK</b><span>เลือกจำนวนสีแบบเดิม เร็วและเล่นได้ทันที</span>
+        <b>⚡ QUICK</b><span>ใช้ Generic 4 สี เลือกจำนวนสีแล้วเล่นได้ทันที</span>
       </button>
       <button class="mode-btn" id="selectMode" type="button" aria-pressed="false">
-        <b>🎴 SELECT</b><span id="selectModeDesc">จัดมือจาก Collection ของคุณ</span>
+        <b>🎴 SELECT</b><span id="selectModeDesc">จัดมือจาก FIRST HAND ที่ปลดล็อกแล้ว</span>
       </button>
     </div>
     <div class="collection-status">
-      <span>COLLECTION · เล่นจบ 1 Match ได้การ์ดใหม่ 1 ใบ</span>
-      <b id="collectionCount">4/32</b>
-      <a href="/core7/collection/">ดูทั้งหมด</a>
+      <span>FIRST HAND · เล่นจบ 1 Match ปลดล็อก 1 ใบ</span>
+      <b id="collectionCount">0/28</b>
+      <a href="/core7/collection/">ดู Collection</a>
     </div>
 
     <section id="quickPanel">
@@ -68,14 +68,13 @@
 <footer class="c7foot" id="c7foot"></footer>
 <script type="module">
 import { renderShell, toast, el } from '/core7/js/ui.js';
-import { COLOR_META, FIRST_HAND, GENERIC_CARDS, cardById } from '/core7/js/cards.js';
-import { colorIcon, cardSVG, genericCardSVG } from '/core7/js/art.js';
+import { COLOR_META, FIRST_HAND, cardById } from '/core7/js/cards.js';
+import { colorIcon, cardSVG } from '/core7/js/art.js';
 import { COLORS } from '/core7/js/rules.js';
 import {
   SELECT_MODE_UNLOCK_COUNT,
   TOTAL_COLLECTION_CARDS,
   canUseSelectMode,
-  getCollectionCount,
   getCollectionIds,
   getHandMode,
   setHandMode,
@@ -90,8 +89,8 @@ const owned = new Set(collectionIds);
 const selectUnlocked = canUseSelectMode();
 let mode = getHandMode();
 
-/* QUICK keeps the original color-counter flow. SELECT contains only cards
-   unlocked in this browser and never allows duplicate card IDs. */
+/* QUICK uses Generic cards. SELECT is a separate system containing only
+   unlocked FIRST HAND IDs and never allows duplicate cards. */
 let counts = { RED: 2, GREEN: 2, BLUE: 2, GRAY: 1 };
 let picked = [];
 const savedHand = store.getHand();
@@ -117,14 +116,16 @@ const readyBtn = document.getElementById('ready');
 
 document.getElementById('collectionCount').textContent = `${collectionIds.length}/${TOTAL_COLLECTION_CARDS}`;
 if (!selectUnlocked) {
-  const remaining = SELECT_MODE_UNLOCK_COUNT - collectionIds.length;
+  const remaining = Math.max(0, SELECT_MODE_UNLOCK_COUNT - collectionIds.length);
   selectButton.disabled = true;
-  selectDesc.textContent = `🔒 ปลดล็อกเมื่อสะสมครบ ${SELECT_MODE_UNLOCK_COUNT}/${TOTAL_COLLECTION_CARDS} · อีก ${remaining} ใบ`;
+  selectDesc.textContent = `🔒 ปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ · อีก ${remaining} ใบ`;
   selectLocked.hidden = false;
-  selectLocked.innerHTML = `<b>SELECT HAND ยังล็อกอยู่</b><br>เล่นจบอีก ${remaining} Match เพื่อสะสมการ์ดให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ แล้วโหมดจัดมือจาก Collection จะเปิดอัตโนมัติ`;
+  selectLocked.innerHTML = `<b>SELECT HAND ยังล็อกอยู่</b><br>เล่นจบอีก ${remaining} Match เพื่อปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ แล้วจึงจัดมือ 7 ใบจาก Collection ได้ Generic 4 สีไม่นับรวมและไม่เข้ามาปนในโหมดนี้`;
   selectContent.hidden = true;
   mode = 'quick';
   setHandMode('quick');
+} else {
+  selectDesc.textContent = `เลือกจาก FIRST HAND ที่ปลดล็อกแล้ว ${collectionIds.length} ใบ`;
 }
 
 function currentCards() {
@@ -151,7 +152,7 @@ function refreshTotal() {
 
 function switchMode(nextMode) {
   if (nextMode === 'select' && !selectUnlocked) {
-    toast(`สะสมให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบก่อน`);
+    toast(`ปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบก่อน`);
     return;
   }
   mode = setHandMode(nextMode);
@@ -179,17 +180,24 @@ for (const color of COLORS) {
   const plus = el('button', { class: 'hb-btn', 'aria-label': `เพิ่มจำนวนสี${meta.nameTh}` }, '+');
   minus.addEventListener('click', () => {
     if (counts[color] <= 0) return;
-    counts[color] -= 1; num.textContent = counts[color]; refreshTotal();
+    counts[color] -= 1;
+    num.textContent = counts[color];
+    refreshTotal();
   });
   plus.addEventListener('click', () => {
-    if (Object.values(counts).reduce((sum, n) => sum + n, 0) >= 7) { toast('ครบ 7 ใบแล้ว — ลดสีอื่นก่อน'); return; }
-    counts[color] += 1; num.textContent = counts[color]; refreshTotal();
+    if (Object.values(counts).reduce((sum, n) => sum + n, 0) >= 7) {
+      toast('ครบ 7 ใบแล้ว — ลดสีอื่นก่อน');
+      return;
+    }
+    counts[color] += 1;
+    num.textContent = counts[color];
+    refreshTotal();
   });
   row.append(minus, num, plus);
   counterHost.append(row);
 }
 
-/* ── SELECT picker ── */
+/* ── SELECT picker: FIRST HAND only ── */
 const grid = document.getElementById('grid');
 const filters = document.getElementById('filters');
 const FILTERS = ['All', 'Red', 'Green', 'Blue', 'Gray', 'Favorites'];
@@ -205,24 +213,19 @@ for (const name of FILTERS) {
 }
 
 function availableCards() {
-  const all = [...GENERIC_CARDS, ...FIRST_HAND].filter(card => owned.has(card.id));
   const favorites = store.getFavorites();
-  return all.filter(card => {
+  return FIRST_HAND.filter(card => owned.has(card.id)).filter(card => {
     if (filter === 'Favorites') return favorites.includes(card.id);
     if (['Red', 'Green', 'Blue', 'Gray'].includes(filter)) return card.color === filter.toUpperCase();
     return true;
   });
 }
 
-function renderCardArt(card) {
-  return card.generic ? genericCardSVG(card.color, { width: 150 }) : cardSVG(card.id, { width: 150 });
-}
-
 function renderGrid() {
   grid.innerHTML = '';
   const cards = availableCards();
   if (!cards.length) {
-    grid.append(el('p', { style: 'color:rgb(var(--muted));grid-column:1/-1' }, 'ยังไม่มีการ์ดในหมวดนี้'));
+    grid.append(el('p', { style: 'color:rgb(var(--muted));grid-column:1/-1' }, 'ยังไม่มี FIRST HAND ที่ปลดล็อกในหมวดนี้'));
     return;
   }
   for (const card of cards) {
@@ -232,36 +235,57 @@ function renderGrid() {
       'aria-pressed': String(isPicked),
       'aria-label': `${card.en} ${card.th} สี${COLOR_META[card.color].nameTh}`,
     });
-    cell.innerHTML = renderCardArt(card);
+    cell.innerHTML = cardSVG(card.id, { width: 150 });
     if (isPicked) cell.prepend(el('span', { class: 'cnt' }, '✓'));
     cell.addEventListener('click', () => {
       if (picked.includes(card.id)) picked = picked.filter(id => id !== card.id);
-      else if (picked.length >= 7) { toast('ครบ 7 ใบแล้ว — เอาใบอื่นออกก่อน'); return; }
-      else picked.push(card.id);
-      renderGrid(); refreshTotal();
+      else if (picked.length >= 7) {
+        toast('ครบ 7 ใบแล้ว — เอาใบอื่นออกก่อน');
+        return;
+      } else picked.push(card.id);
+      renderGrid();
+      refreshTotal();
     });
     grid.append(cell);
   }
 }
 renderGrid();
 
-/* Presets only belong to SELECT because QUICK is already faster than loading one. */
+/* Presets belong to SELECT and must contain 7 currently owned FIRST HAND IDs. */
 const presetHost = document.getElementById('presets');
 function renderPresets() {
   presetHost.innerHTML = '';
-  const validPresets = store.getPresets().filter(preset => preset.cards?.length === 7 && preset.cards.every(id => owned.has(id)));
+  const validPresets = store.getPresets().filter(preset => (
+    preset.cards?.length === 7
+    && new Set(preset.cards).size === 7
+    && preset.cards.every(id => owned.has(id))
+  ));
   for (const preset of validPresets) {
     const use = el('button', { class: 'btn', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, `▶ ${preset.name}`);
-    use.addEventListener('click', () => { picked = [...preset.cards]; renderGrid(); refreshTotal(); toast(`ใช้มือ "${preset.name}"`); });
+    use.addEventListener('click', () => {
+      picked = [...preset.cards];
+      renderGrid();
+      refreshTotal();
+      toast(`ใช้มือ "${preset.name}"`);
+    });
     const remove = el('button', { class: 'btn', style: 'padding:8px 10px;min-height:40px;font-size:13px', 'aria-label': `ลบ preset ${preset.name}` }, '✕');
-    remove.addEventListener('click', () => { store.deletePreset(preset.id); renderPresets(); });
+    remove.addEventListener('click', () => {
+      store.deletePreset(preset.id);
+      renderPresets();
+    });
     presetHost.append(use, remove);
   }
   const save = el('button', { class: 'btn btn-dark', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, '💾 บันทึกมือนี้');
   save.addEventListener('click', () => {
-    if (picked.length !== 7) { toast('เลือกให้ครบ 7 ใบก่อน'); return; }
+    if (picked.length !== 7) {
+      toast('เลือกให้ครบ 7 ใบก่อน');
+      return;
+    }
     const name = prompt('ตั้งชื่อมือชุดนี้:', 'มือของฉัน');
-    if (name) { store.savePreset(name, picked); renderPresets(); }
+    if (name) {
+      store.savePreset(name, picked);
+      renderPresets();
+    }
   });
   presetHost.append(save);
 }
