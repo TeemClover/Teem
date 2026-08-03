@@ -8,8 +8,8 @@
 
 import { ensureCollection } from './collection-progress.js';
 
-/* Schema v2 resets the old CORE7 progression once per browser while
-   preserving identity, settings and an active Match snapshot. */
+/* Schema v3 resets CORE7 progression once more while preserving identity,
+   settings and an active Match snapshot. */
 ensureCollection();
 
 const NS = 'c7:';
@@ -61,11 +61,17 @@ export function getTabPlayerId() {
   } catch { return getGuest().id; }
 }
 
-/* ── บัญชีทดลองในเครื่อง (Legacy Local Member Preview) ──
-   คง API ไว้ชั่วคราวเพื่อไม่ให้หน้าเก่าพัง แต่ Collection v2 ไม่ใช้ปุ่ม
-   เปิดทั้งหมดอีกแล้ว — การ์ดต้องได้จากการเล่น Match จบเท่านั้น */
-export function isLocalMember() { return read('local_member', false); }
-export function setLocalMember(v) { write('local_member', !!v); }
+/* ── Legacy Local Member Preview ──
+   หน้าเก่าที่ถูก browser cache ไว้อาจยังมีปุ่ม "เปิด Collection" อยู่
+   API นี้จึงต้องเป็น no-op: ต่อให้กดปุ่มเก่าก็ปลดการ์ดทั้งหมดไม่ได้อีก */
+export function isLocalMember() {
+  try { localStorage.removeItem(NS + 'local_member'); } catch { /* ok */ }
+  return false;
+}
+export function setLocalMember() {
+  try { localStorage.removeItem(NS + 'local_member'); } catch { /* ok */ }
+  return false;
+}
 
 /* ── Tutorial ── */
 export function tutorialCompleted() { return read('tutorial_completed', false); }
