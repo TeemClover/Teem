@@ -190,3 +190,10 @@ export function resetCollectionForTesting() {
   resetLegacyCore7Progress();
   return ensureCollection();
 }
+
+/* Every CORE7 page already imports store.js, which imports this module.
+   On the result route, mount the reward UI without adding another script
+   tag to the page. The UI validates the completed snapshot before drawing. */
+if (typeof window !== 'undefined' && /\/core7\/result\/?$/.test(location.pathname)) {
+  import('./collection-reward-ui.js').catch(() => {});
+}
