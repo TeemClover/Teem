@@ -1,324 +1,140 @@
+import './kickstarter-distilled-legacy.js?v=20260803-campaign-v6';
+
 (function(){
   'use strict';
 
-  const VERSION = '20260803-polish-v5';
-  const ORDER = ['RED','GREEN','BLUE','GRAY'];
-  const HERO = ['fh-red-courage','fh-green-balance','fh-blue-clarity','fh-gray-build','fh-red-joy','fh-green-recovery','fh-blue-strategy'];
-  const POCKET = ['fh-red-desire','fh-green-discipline','fh-blue-perspective','fh-gray-observe','fh-red-warmth','fh-green-commitment','fh-blue-choice'];
-  const STORIES = [
-    {
-      id:'removing-rules',
-      en:['Nothing left to remove','Three colors created the rules. The empty Gray card created the game.'],
-      th:['ถอดจนไม่เหลืออะไรให้ถอด','สามสีสร้างกติกา ส่วนการ์ดเทาที่ว่างเปล่าสร้างเกม']
-    },
-    {
-      id:'one-box-ritual',
-      en:['Choose seven. Share twenty-one.','One compact box creates two complete hands without a second deck.'],
-      th:['เลือกเจ็ด ส่งต่อยี่สิบเอ็ด','หนึ่งกล่องเล็กสร้างมือที่สมบูรณ์ให้คนสองคนได้โดยไม่ต้องมีเด็คที่สอง']
-    },
-    {
-      id:'first-meeting',
-      en:['A shared feeling before a shared language','The luck was meeting. Everything after that is a decision.'],
-      th:['มีความรู้สึกร่วมกันก่อนมีภาษาร่วมกัน','ดวงถูกใช้ไปแล้วตอนที่คนสองคนได้พบกัน หลังจากนั้นคือการตัดสินใจทั้งหมด']
-    },
-    {
-      id:'core7bo5-memory',
-      en:['Same hand. Win three Matches.','A CORE7 Set locks the same seven cards until one player wins three Matches.'],
-      th:['มือเดิม ชนะสาม Matches','CORE7 Set ล็อกเจ็ดใบเดิมจนกว่าจะมีคนชนะสาม Matches']
-    }
-  ];
+  const isThai = () => document.documentElement.lang === 'th';
+  const q = selector => document.querySelector(selector);
+  const qa = selector => Array.from(document.querySelectorAll(selector));
+  const setText = (selector,value) => { const node=q(selector); if(node) node.textContent=value; };
+  const setHTML = (selector,value) => { const node=q(selector); if(node) node.innerHTML=value; };
+  const setMeta = (selector,value) => { const node=q(selector); if(node) node.setAttribute('content',value); };
 
-  let artPromise;
-  let galleryObserver;
-  const language = () => document.documentElement.lang === 'th' ? 'th' : 'en';
-  const art = () => artPromise || (artPromise = import('/core7/js/art.js?v=' + VERSION));
-
-  function showAll(){
-    document.querySelectorAll('.reveal').forEach(node => node.classList.add('is-visible'));
+  function injectStyles(){
+    if(q('#campaign-v6-styles')) return;
+    const style=document.createElement('style');
+    style.id='campaign-v6-styles';
+    style.textContent=`
+      #official-games{padding:clamp(72px,9vw,128px) 0;background:#f4eddd;color:#10271d;position:relative;overflow:hidden}
+      #official-games:before{content:"三川";position:absolute;right:-.04em;top:-.16em;font-size:clamp(140px,28vw,430px);font-weight:900;line-height:1;color:rgba(6,39,24,.035);pointer-events:none}
+      .official-games-head{max-width:920px;margin:0 auto clamp(34px,5vw,64px);text-align:center;position:relative}.official-games-head h2{font-size:clamp(34px,5.6vw,72px);line-height:1.02;margin:.3em 0}.official-games-head>p:last-child{max-width:760px;margin:0 auto;font-size:clamp(17px,2vw,22px);line-height:1.65;color:#40534a}
+      .official-games-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,3vw,34px);position:relative}.official-game-card{min-height:360px;border-radius:26px;padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;box-shadow:0 18px 60px rgba(6,39,24,.12);overflow:hidden;position:relative}.official-game-card.core7{background:#062718;color:#fff}.official-game-card.rivers{background:linear-gradient(145deg,#f9f3e7,#e9dcc1);border:1px solid rgba(125,92,30,.24);color:#183328}.official-game-card>span{font-size:12px;letter-spacing:.2em;font-weight:800;color:#c9a85c}.official-game-card h3{font-size:clamp(45px,7vw,84px);line-height:.9;margin:auto 0 .18em;letter-spacing:-.06em}.official-game-card.rivers h3{font-size:clamp(40px,6vw,74px);letter-spacing:-.045em}.official-game-card.rivers>b{font-size:12px;letter-spacing:.25em;color:#806423;margin-bottom:24px}.official-game-card p{font-size:clamp(16px,1.7vw,20px);line-height:1.65;max-width:620px;margin:0 0 32px}.official-game-card small{margin-top:auto;font-size:11px;letter-spacing:.13em;font-weight:800;opacity:.66}.official-open{margin:clamp(22px,4vw,40px) auto 0;padding:22px 28px;border:1px solid rgba(6,39,24,.14);border-radius:18px;display:flex;gap:20px;align-items:center;justify-content:center;text-align:left;position:relative;background:rgba(255,255,255,.45)}.official-open strong{white-space:nowrap;font-size:13px;letter-spacing:.14em;color:#7c6127}.official-open p{margin:0;line-height:1.55}
+      #visual-story .ks-story-static-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:clamp(18px,2.8vw,34px)!important;align-items:start!important}#visual-story figure{margin:0!important;min-width:0!important;overflow:hidden!important;border-radius:18px!important}#visual-story figure img,#visual-story .ksv3-art-slot img{display:block!important;width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:1586/992!important;object-fit:contain!important;object-position:center!important;background:#071e15!important}#visual-story figcaption{min-height:98px}
+      .pocket-note{display:grid!important;grid-template-columns:auto 1fr!important;align-items:center!important;gap:14px!important;min-width:250px!important;padding:16px 20px!important;border-radius:18px!important;background:rgba(250,244,230,.96)!important;box-shadow:0 18px 55px rgba(6,39,24,.18)!important;text-align:left!important}.pocket-note>b{font-size:clamp(58px,7vw,88px)!important;line-height:.78!important;letter-spacing:-.08em!important;color:#b18b3d!important}.pocket-note>span{display:flex!important;flex-direction:column!important;line-height:1!important}.pocket-note strong{font-size:clamp(13px,1.3vw,17px)!important;letter-spacing:.11em!important;color:#062718!important}.pocket-note small{font-size:11px!important;letter-spacing:.18em!important;margin-top:7px!important;color:#657269!important;font-weight:800!important}
+      @media(max-width:760px){.official-games-grid{grid-template-columns:1fr}.official-game-card{min-height:310px;border-radius:22px}.official-open{display:block;text-align:center}.official-open strong{display:block;margin-bottom:8px;white-space:normal}#visual-story .ks-story-static-grid{grid-template-columns:1fr!important;gap:22px!important}#visual-story figure{border-radius:14px!important}#visual-story figcaption{min-height:0}.pocket-note{min-width:0!important;width:min(88vw,330px)!important;padding:14px 17px!important;gap:12px!important}.pocket-note>b{font-size:62px!important}.pocket-note strong{font-size:13px!important}}
+      @media(max-width:430px){.official-game-card{padding:26px 22px}.official-game-card h3{font-size:48px}.official-game-card.rivers h3{font-size:42px}.official-games-head{text-align:left}.official-games-head>p:last-child{margin:0}.brand b{display:none}}
+    `;
+    document.head.appendChild(style);
   }
 
-  function replaceAssetPaths(){
-    document.querySelectorAll('img[src],source[src],source[srcset]').forEach(node => {
-      ['src','srcset'].forEach(attribute => {
-        const value = node.getAttribute(attribute);
-        if(!value) return;
-        const next = value
-          .replaceAll('card-back-core7.png','card-back-core7.webp')
-          .replaceAll('core7-rules-overview.png','core7-rules-overview.webp');
-        if(next !== value) node.setAttribute(attribute,next);
-      });
-    });
+  function insertOfficialGames(){
+    if(q('#official-games')) return;
+    const anchor=q('#tournament')||q('#play-online')||q('#game');
+    if(!anchor||!anchor.parentNode) return;
+    const section=document.createElement('section');
+    section.id='official-games';
+    section.className='official-games section-cream';
+    section.innerHTML='<div class="wrap"><div class="official-games-head reveal is-visible"><p class="eyebrow" data-official-kicker></p><h2 data-official-title></h2><p data-official-lead></p></div><div class="official-games-grid"><article class="official-game-card core7 reveal is-visible"><span>FLAGSHIP RULE</span><h3>CORE7</h3><p data-core7-card></p><small>7 CARDS · SECRET CHOICE · HUMAN READ</small></article><article class="official-game-card rivers reveal is-visible"><span>STRATEGY GAME</span><h3>三川 3IVERS</h3><b>THREE RIVERS</b><p data-rivers-card></p><small>7 CARDS · 3 RIVERS · FIRST TO 3 WINS</small></article></div><div class="official-open reveal is-visible"><strong>1 KEYWORD · 4 COLOR STATS</strong><p data-official-open></p></div></div>';
+    anchor.parentNode.insertBefore(section,anchor.nextSibling);
   }
 
-  function reorder(container,selector,readEnergy){
-    if(!container) return false;
-    const items = Array.from(container.querySelectorAll(selector));
-    if(!items.length) return false;
-    const expected = ORDER.flatMap(color => items.filter(item => readEnergy(item) === color));
-    if(expected.length !== items.length) return false;
-    const already = expected.every((item,index) => item === items[index]);
-    if(!already) expected.forEach(item => container.appendChild(item));
-    return true;
+  function applyMeta(){
+    document.title='myClover — 0% RNG. 100% Decisions.';
+    setMeta('meta[name="description"]','Choose 7 words and play 2 zero-randomness games with one 32-card system: CORE7, the flagship rule, and 三川 3IVERS, a 3-lane strategy game.');
+    setMeta('meta[property="og:title"]','myClover — CORE7 + 三川 3IVERS');
+    setMeta('meta[property="og:description"]','1 keyword. 4 colors. 7 chosen cards. 0% RNG. 100% decisions.');
   }
 
-  function reorderRGBG(){
-    reorder(document.querySelector('.energy-selector'),'.energy-button',item => item.dataset.energy || '');
-    reorder(document.querySelector('.ksv2-core-grid'),'.ksv2-core-card',item => {
-      if(item.classList.contains('red')) return 'RED';
-      if(item.classList.contains('green')) return 'GREEN';
-      if(item.classList.contains('blue')) return 'BLUE';
-      if(item.classList.contains('gray')) return 'GRAY';
-      return '';
-    });
-    const gallery = document.getElementById('cardGallery');
-    if(gallery && gallery.querySelectorAll('.gallery-card').length >= 28){
-      reorder(gallery,'.gallery-card',item => item.dataset.energy || '');
-      if(galleryObserver){ galleryObserver.disconnect(); galleryObserver = null; }
+  function applyTop(){
+    const th=isThai();
+    const brand=q('.brand > span:not(.brand-mark)');
+    if(brand) brand.innerHTML='myClover <b>· CORE7 + 三川 3IVERS</b>';
+    setText('.hero-lead',th?'ระบบเกมการ์ด 32 ใบที่สอน CORE7 ได้ใน 10 วินาที เลือก 7 คำ เล่นด้วยการสุ่ม 0% และการตัดสินใจ 100% สิ่งเดียวที่คาดเดาไม่ได้คือมนุษย์ตรงหน้า':'A 32-card game system you can teach in 10 seconds. Choose 7 words. Play with 0% RNG and 100% decisions—the only unpredictable thing is the human across the table.');
+    setText('.micro-proof',th?'การ์ดคำ 28 ใบ · 4 สี · เลือก 7 ใบ · สุ่ม 0% · ตัดสินใจ 100%':'28 word cards · 4 colors · 7 chosen cards · 0% RNG · 100% decisions');
+    const promise=q('.promise-grid');
+    if(promise) promise.innerHTML=th?'<article><strong>10 วิ</strong><span>เรียนรู้ CORE7</span></article><article><strong>7 ใบ</strong><span>มือที่คุณเลือกเอง</span></article><article><strong>สุ่ม 0%</strong><span>ตัดสินใจ 100%</span></article><article><strong>2 เกม</strong><span>ระบบเดียวกัน</span></article>':'<article><strong>10 sec</strong><span>to learn CORE7</span></article><article><strong>7 cards</strong><span>your chosen hand</span></article><article><strong>0% RNG</strong><span>100% Decisions</span></article><article><strong>2 games</strong><span>one shared system</span></article>';
+    const number=q('.origin-number'); if(number) number.innerHTML='04<span>COLORS</span>';
+    const origin=q('.origin-copy');
+    if(origin){
+      let note=origin.querySelector('.origin-clarifier');
+      if(!note){note=document.createElement('p');note.className='origin-clarifier';const quote=origin.querySelector('blockquote');if(quote) quote.insertAdjacentElement('afterend',note);}
+      note.textContent=th?'3 สีใช้ตัดสินการปะทะ ส่วนสีเทาเปลี่ยนการตัดสินใจ':'Three colors resolve conflict. Gray changes the decision.';
     }
   }
 
-  async function rebuildRows(){
-    try{
-      const {cardSVG} = await art();
-      const build = (targetId,ids,className,width,showNumber) => {
-        const target = document.getElementById(targetId);
-        if(!target || target.dataset.polishV5 === 'true') return;
-        const fragment = document.createDocumentFragment();
-        ids.forEach((id,index) => {
-          const card = document.createElement('div');
-          card.className = className;
-          if(targetId === 'heroCards') card.dataset.index = String(index);
-          card.innerHTML = cardSVG(id,{width,showNumber});
-          fragment.appendChild(card);
-        });
-        target.replaceChildren(fragment);
-        target.dataset.polishV5 = 'true';
-      };
-      build('heroCards',HERO,'hero-card',300,true);
-      build('pocketCards',POCKET,'mini-card',220,false);
-    }catch(error){
-      console.error('Unable to rebuild RGBG card rows.',error);
-    }
+  function applyCore7(){
+    const th=isThai();
+    setText('#game .section-heading .eyebrow','CORE7 · FLAGSHIP RULE');
+    setHTML('#game .section-heading h2',th?'1 Match ที่เรียนรู้ได้ทันที<br><em>1 Set ที่อ่านคนตรงหน้าได้ลึกขึ้น</em>':'One Match you can learn instantly.<br><em>One Set that reads deeper.</em>');
+    setText('#game .section-heading > p:last-child',th?'เลือกอย่างลับ เปิดพร้อมกัน สีตัดสิน Round ส่วนมนุษย์ตรงหน้าสร้างทุกสิ่งที่คาดเดาไม่ได้':'Choose in secret. Reveal together. Color resolves the Round. The human across the table creates everything unpredictable.');
+    const poster=q('.rules-poster img'); if(poster) poster.alt='CORE7 Match and CORE7 Set rule overview';
+    setText('.how-list li:nth-child(5) b',th?'ชนะ CORE7 Match':'Win the CORE7 Match.');
+    setText('.how-list li:nth-child(5) p',th?'เล่นต่อจนผู้เล่นคนหนึ่งชนะ 3 Rounds หรือคู่แข่งหมดมือ':'Keep playing until one player wins 3 Rounds—or the opponent runs out of cards.');
+    const guide=q('#formatGuide');
+    if(guide) guide.innerHTML=th?'<article class="quick"><span>CORE7 MATCH</span><h3>ชนะ 3 Rounds หรือทำให้คู่แข่งหมดมือ</h3><p>1 เกมที่สมบูรณ์ เลือกการ์ดลับ เปิดพร้อมกัน และบริหารไพ่ 7 ใบจน Match มีผู้ชนะ</p></article><article class="standard"><span>CORE7 SET · LOCKED HAND</span><h3>มือเดิม ชนะ 3 Matches</h3><p>ล็อกมือ 7 ใบเดิมตลอด Set รีเซ็ตมือเดิมหลังจบแต่ละ Match คนแรกที่ชนะ 3 Matches ชนะ Set</p></article>':'<article class="quick"><span>CORE7 MATCH</span><h3>Win 3 Rounds—or empty the opponent’s hand.</h3><p>One complete game. Choose in secret, reveal together and manage the same 7-card hand until the Match has a winner.</p></article><article class="standard"><span>CORE7 SET · LOCKED HAND</span><h3>Same hand. Win 3 Matches.</h3><p>Lock the same 7-card hand for the whole Set. Reset it after every Match. First to win 3 Matches wins the Set.</p></article>';
+    const truth=q('.game-truth'); if(truth) truth.innerHTML=th?'<p>สุ่ม 0% · ตัดสินใจ 100%</p><strong>การ์ดสร้างขอบเขต มนุษย์สร้างเกม</strong>':'<p>0% RNG · 100% DECISIONS</p><strong>The cards create the boundary. The humans create the game.</strong>';
+    const memory=q('.memory-copy blockquote'); if(memory) memory.innerHTML=th?'CORE7 Match สร้างการอ่านครั้งแรก<br>CORE7 Set เปลี่ยนมันเป็นความทรงจำ':'A CORE7 Match creates the first read.<br>A CORE7 Set turns it into memory.';
+    const checks=q('.carry .check-list'); if(checks) checks.innerHTML=th?'<li>เล่นกับคนที่เพิ่งพบกัน</li><li>สอน CORE7 ได้ใน 10 วินาที</li><li>เล่น 1 Match ด้วยมือที่เลือกเอง</li><li>ล็อกมือเดิมตลอด CORE7 Set</li><li>ให้บทสนทนาอยู่ได้นานกว่าคะแนน</li>':'<li>Play with someone you just met</li><li>Teach CORE7 in 10 seconds</li><li>Play one Match with a chosen hand</li><li>Lock the same hand for a CORE7 Set</li><li>Let the conversation outlast the score</li>';
+    const note=q('.pocket-note'); if(note) note.innerHTML=th?'<b>7</b><span><strong>คำที่คุณเลือก</strong><small>ถือไว้ในวันนี้</small></span>':'<b>7</b><span><strong>WORDS YOU CHOOSE</strong><small>TO CARRY TODAY</small></span>';
   }
 
-  async function ensurePassion(){
-    const front = document.getElementById('ksv2CardFront');
-    const back = document.querySelector('#ksv2FlipCard .ksv2-flip-back img');
-    if(back) back.src = '/core7/assets/card-back-core7.webp?v=' + VERSION;
-    if(!front || front.dataset.cardId === 'fh-red-passion') return;
-    try{
-      const {cardSVG} = await art();
-      front.innerHTML = '<div data-passion-card>' + cardSVG('fh-red-passion',{width:360}) + '</div>';
-      front.dataset.cardId = 'fh-red-passion';
-      front.setAttribute('aria-label',language() === 'th' ? 'การ์ด PASSION จากชุด FIRST HAND' : 'PASSION card from the FIRST HAND set');
-    }catch(error){
-      console.error('Unable to render PASSION card.',error);
-    }
+  function applyTournament(){
+    const th=isThai(), section=q('#tournament'); if(!section) return;
+    setText('#tournament .ksv2-scoreboard-top b','CORE7 SET');setText('#tournament .ksv2-scoreboard-top span','LOCKED HAND');setText('#tournament .ksv2-bo5','FIRST TO 3');
+    const rounds=q('#tournament .ksv2-rounds'); if(rounds){rounds.innerHTML='<i>1</i><i>2</i><i>3</i>';rounds.setAttribute('aria-label','First to 3 Matches');}
+    setText('#tournament .ksv2-scoreboard > p',th?'มือ 7 ใบเดิม คนแรกที่ชนะ 3 Matches ชนะ Set':'The same 7-card hand. First to win 3 Matches wins the Set.');
+    setText('#tournament .ksv2-kicker',th?'การแข่งขันในรูปแบบที่เรียบที่สุด':'COMPETITIVE IN ITS SIMPLEST FORM');
+    setHTML('#tournament .ksv2-title',th?'การ์ด 7 ใบเดิม<br>คนแรกที่ชนะ 3 Matches':'Same 7 cards.<br>First to 3 Matches.');
+    setText('#tournament .ksv2-lead',th?'กติกาไม่ได้ยากขึ้น แต่คู่แข่งชัดขึ้น ทุก Match เปิดเผยนิสัย การหลอก และการตัดสินใจเพิ่มอีก 1 ชั้น':'The rules do not get harder. The opponent becomes clearer. Every Match reveals another habit, bluff and decision.');
+    const copy=th?[['ล็อกมือ','การ์ด 7 ใบกลายเป็นตัวตนของคุณตลอด Set'],['เล่น Match ถัดไป','รีเซ็ตมือเดิม แต่เก็บข้อมูลทุกอย่างที่อ่านได้จากคู่แข่ง'],['ปรับตัวมนุษย์','ความลึกเกิดจากความจำ การหลอก และการอ่านรูปแบบ ไม่ใช่กติกาเพิ่ม']]:[['Lock the hand','The same 7 cards become your identity for the Set.'],['Play the next Match','Reset the hand, but keep everything you learned about the opponent.'],['Adapt the human','Depth comes from memory, bluffing and pattern recognition—not extra rules.']];
+    qa('#tournament .ksv2-competitive-points article').forEach((node,index)=>{const row=copy[index];if(!row)return;const b=node.querySelector('b'),p=node.querySelector('p');if(b)b.textContent=row[0];if(p)p.textContent=row[1];});
   }
 
-  function figure(id,kind){
-    const item = STORIES.find(row => row.id === id);
-    const copy = item ? item[language()] : ['', ''];
-    const node = document.createElement('figure');
-    node.dataset.storyId = id;
-    node.innerHTML = '<img src="/kickstarter/assets/story/' + id + '.webp?v=' + VERSION + '" width="960" height="600" loading="lazy" decoding="async" alt=""><figcaption><strong></strong><span></span></figcaption>';
-    node.querySelector('img').alt = copy[0];
-    node.querySelector('strong').textContent = copy[0];
-    node.querySelector('span').textContent = copy[1];
-    if(kind) node.dataset.storyInline = kind;
-    return node;
+  function applyOfficialGames(){
+    const th=isThai(); if(!q('#official-games')) return;
+    setText('#official-games [data-official-kicker]',th?'1 ระบบ · 2 เกมทางการ':'ONE SYSTEM · TWO OFFICIAL GAMES');
+    setHTML('#official-games [data-official-title]',th?'CORE7 คือจุดเริ่มต้น<br><em>三川 3IVERS เปลี่ยนการ์ด 7 ใบเดิมให้กลายเป็นสนามรบ</em>':'CORE7 is where everyone begins.<br><em>三川 3IVERS turns the same 7 cards into a battlefield.</em>');
+    setText('#official-games [data-official-lead]',th?'myClover คือระบบเกม ไม่ใช่กติกาเพียงแบบเดียว การ์ด 1 ใบมี 1 Keyword และ Stat 4 สี แต่สร้างประสบการณ์เล่นได้หลายรูปแบบ':'myClover is the game system—not a single ruleset. Each card carries 1 keyword and 4 color stats, ready to support more ways to play.');
+    setText('#official-games [data-core7-card]',th?'Flagship Rule เลือกอย่างลับ เปิดพร้อมกัน และอ่านมนุษย์ตรงหน้า ไม่ใช่กองการ์ดที่ถูกสับ':'The flagship rule. Choose in secret, reveal together and read the human across the table—not a shuffled deck.');
+    setText('#official-games [data-rivers-card]',th?'Strategy Game ที่ใช้มือ 7 ใบเดิมต่อสู้บน 3 Rivers ชนะ 2 Rivers เพื่อรับ 1 Win จับเชลย 1 ใบจาก River ที่ยึดได้ และเป็นคนแรกที่ได้ 3 Wins':'A strategy game played with the same 7-card hand across 3 Rivers. Win 2 Rivers to claim 1 Win. Capture 1 defeated card from a River you conquered. First to 3 Wins takes the game.');
+    setText('#official-games [data-official-open]',th?'2 กติกาทางการ และระบบเปิดสำหรับให้ผู้เล่นสร้างเกมถัดไป':'Two official games—and an open system for players to create the next one.');
   }
 
-  function insertNameOrigin(){
-    if(document.getElementById('name-origin')) return;
-    const game = document.getElementById('game');
-    if(!game || !game.parentNode) return;
-    const section = document.createElement('section');
-    section.id = 'name-origin';
-    section.className = 'name-origin section-dark';
-    section.innerHTML = '<div class="wrap name-origin-grid"><div class="name-origin-mark reveal is-visible" aria-hidden="true"><span>4</span><b>→</b><span>7</span></div><div class="name-origin-copy reveal is-visible"><p id="nameOriginKicker" class="eyebrow"></p><h2 id="nameOriginTitle"></h2><p id="nameOriginBody"></p><blockquote id="nameOriginQuote"></blockquote><div class="name-origin-chips"><span>FOUR-LEAF CLOVER</span><span>MY LUCKY SEVEN</span><span>SEVEN CHOSEN WORDS</span></div></div></div>';
-    game.parentNode.insertBefore(section,game);
+  function applySystemAndBox(){
+    const th=isThai();
+    const labels=th?{RED:'แดง · กาย',GREEN:'เขียว · จิตวิญญาณ',BLUE:'ฟ้า · ความคิด',GRAY:'เทา · งานสร้าง'}:{RED:'RED · BODY',GREEN:'GREEN · SOUL',BLUE:'BLUE · MIND',GRAY:'GRAY · CRAFT'};
+    qa('.energy-button').forEach(button=>{if(labels[button.dataset.energy])button.innerHTML='<span>●</span> '+labels[button.dataset.energy];});
+    setHTML('.ksv2-core-intro .ksv2-title',th?'กาย · จิตวิญญาณ · ความคิด · งานสร้าง':'Body. Soul. Mind. Craft.');
+    setText('.ksv2-core-intro .ksv2-lead',th?'Red คือ Body, Green คือ Soul, Blue คือ Mind และ Gray คือ Craft ภาษาร่วม 4 สีของ myClover':'Red is Body. Green is Soul. Blue is Mind. Gray is Craft—the shared four-color language of myClover.');
+    setText('#box .box-item:nth-child(1) p',th?'แดง เขียว ฟ้า และเทา สีละ 7 ใบ แต่ละใบมีภาพ Keyword ภาษาอังกฤษ และความหมายภาษาไทย':'Seven Red, Green, Blue and Gray cards, each with art, an English keyword and its Thai meaning.');
+    setText('#box .box-item:nth-child(2) p',th?'CORE7 Match, CORE7 Set, 三川 3IVERS และ Open Play ส่งต่อให้กันแล้วเริ่มเล่นได้เลย':'CORE7 Match, CORE7 Set, 三川 3IVERS and Open Play. Hand them around and begin.');
+    const heading=q('#box .section-heading');if(heading){let line=heading.querySelector('.box-system-line');if(!line){line=document.createElement('p');line.className='box-system-line';heading.appendChild(line);}line.textContent=th?'1 เด็ค · 2 เกมทางการ · ระบบเปิดสำหรับเกมใหม่':'One deck. Two official games. An open system for more.';}
+    const open=q('.open-copy > p:not(.eyebrow):not(.open-emphasis)');if(open)open.textContent=th?'เขียน RED, GREEN, BLUE และ GRAY ลงบนกระดาษ CORE7 และเกมที่สร้างจากระบบนี้ก็ยังเล่นได้ กติกายังคงเปิดและออนไลน์ยังคงฟรี':'Write RED, GREEN, BLUE and GRAY on paper. CORE7—and games built on the system—still work. The rules stay open and online play stays free.';
+    const stretch=qa('.stretch-goal b').find(node=>/BODY|SOUL|MIND|CRAFT|กาย|จิตวิญญาณ/.test(node.textContent));if(stretch)stretch.textContent=th?'กาย · จิตวิญญาณ · ความคิด · งานสร้าง':'BODY · SOUL · MIND · CRAFT';
+    if(q('#possibilities')){setHTML('#possibilities .ksv2-title',th?'1 ระบบ<br>หลายวิธีเล่น':'One system.<br>Many ways to play.');setText('#possibilities .ksv2-lead',th?'CORE7 คือ Flagship Rule และ 三川 3IVERS คือ Strategy Game ในกล่องเดียวกัน ระบบ Keyword 1 คำและ Stat 4 สียังเปิดให้เกิดกติกาใหม่ต่อไป':'CORE7 is the flagship rule and 三川 3IVERS is the strategy game in the same box. The 1-keyword, 4-color-stat system stays open for new rules to emerge.');}
   }
 
-  function insertStories(){
-    if(!document.getElementById('visual-story')){
-      const languageSection = document.querySelector('.language');
-      if(languageSection && languageSection.parentNode){
-        const section = document.createElement('section');
-        section.id = 'visual-story';
-        section.className = 'ks-story-static';
-        section.innerHTML = '<div class="wrap"><div class="ks-story-static-head"><p class="eyebrow" data-story-kicker></p><h2 data-story-title></h2><p data-story-lead></p></div><div class="ks-story-static-grid"></div></div>';
-        const grid = section.querySelector('.ks-story-static-grid');
-        STORIES.forEach(item => grid.appendChild(figure(item.id)));
-        languageSection.parentNode.insertBefore(section,languageSection);
-      }
-    }
-
-    const founderGrid = document.querySelector('#founder .founder-grid');
-    if(founderGrid && !founderGrid.querySelector('[data-story-inline="founder"]')){
-      const node = document.createElement('figure');
-      node.className = 'ks-story-inline';
-      node.dataset.storyInline = 'founder';
-      node.innerHTML = '<img src="/kickstarter/assets/story/founder-daughter.webp?v=' + VERSION + '" width="960" height="600" loading="lazy" decoding="async" alt=""><figcaption><strong></strong><span></span></figcaption>';
-      founderGrid.insertBefore(node,founderGrid.querySelector('.founder-story') || founderGrid.firstChild);
-    }
-
-    const riskGrid = document.querySelector('.risks .risk-grid');
-    if(riskGrid && !riskGrid.querySelector('[data-story-inline="shipping"]')){
-      const node = document.createElement('figure');
-      node.className = 'ks-story-inline';
-      node.dataset.storyInline = 'shipping';
-      node.innerHTML = '<img src="/kickstarter/assets/story/built-to-ship.webp?v=' + VERSION + '" width="960" height="600" loading="lazy" decoding="async" alt=""><figcaption><strong></strong><span></span></figcaption>';
-      riskGrid.appendChild(node);
-    }
-  }
-
-  function replaceVisibleTerms(){
-    const replacements = [
-      ['CORE7BO5','CORE7 Set'],
-      ['Quick Plays','CORE7 Matches'],
-      ['Quick Play','CORE7 Match'],
-      ['Best-of-5','CORE7 Set'],
-      ['Standard Match','CORE7 Set'],
-      ['Standard Format','CORE7 Set'],
-      ['Body. Mind. Soul. Craft.','Body. Soul. Mind. Craft.'],
-      ['BODY · MIND · SOUL · CRAFT','BODY · SOUL · MIND · CRAFT']
-    ];
-    const walker = document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{
-      acceptNode(node){
-        const parent = node.parentElement;
-        if(!parent || /^(SCRIPT|STYLE|NOSCRIPT)$/i.test(parent.tagName)) return NodeFilter.FILTER_REJECT;
-        return NodeFilter.FILTER_ACCEPT;
-      }
-    });
-    const nodes = [];
-    while(walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach(node => {
-      let value = node.nodeValue;
-      replacements.forEach(([oldText,newText]) => { value = value.replaceAll(oldText,newText); });
-      node.nodeValue = value;
-    });
-  }
-
-  function applyMatchSetCopy(){
-    const thai = language() === 'th';
-    const kicker = document.querySelector('#game .section-heading .eyebrow');
-    if(kicker) kicker.textContent = thai ? 'CORE7 · MATCH' : 'CORE7 · MATCH';
-
-    const stepFive = document.querySelector('.how-list li:nth-child(5)');
-    if(stepFive){
-      const title = stepFive.querySelector('b');
-      const body = stepFive.querySelector('p');
-      if(title) title.textContent = thai ? 'ชนะ 3 Rounds' : 'Win three Rounds.';
-      if(body) body.textContent = thai ? 'คนแรกที่ชนะสาม Rounds จะชนะหนึ่ง CORE7 Match' : 'The first player to win three Rounds wins one CORE7 Match.';
-    }
-
-    const guide = document.getElementById('formatGuide');
-    if(guide){
-      guide.innerHTML = thai
-        ? '<article class="quick"><span>CORE7 MATCH</span><h3>ชนะ 3 Rounds</h3><p>หนึ่งเกมที่สมบูรณ์ เลือกการ์ดลับ เปิดพร้อมกัน และเป็นคนแรกที่ชนะสาม Rounds</p></article><article class="standard"><span>CORE7 SET · LOCKED HAND</span><h3>มือเดิม ชนะ 3 Matches</h3><p>ล็อก CORE7 เจ็ดใบเดิมตลอด Set รีเซ็ตมือเดิมหลังทุก Match คนแรกที่ชนะสาม Matches ชนะ Set</p></article>'
-        : '<article class="quick"><span>CORE7 MATCH</span><h3>Win 3 Rounds.</h3><p>One complete Match. Choose in secret, reveal together, and become the first player to win three Rounds.</p></article><article class="standard"><span>CORE7 SET · LOCKED HAND</span><h3>Same hand. Win 3 Matches.</h3><p>Lock the same CORE7 hand for the whole Set. Reset those seven cards after every Match. First to win three Matches wins the Set.</p></article>';
-    }
-
-    const memoryQuote = document.querySelector('.memory-copy blockquote');
-    if(memoryQuote) memoryQuote.innerHTML = thai ? 'CORE7 Match สร้างความประทับใจแรก<br>CORE7 Set ทำให้ความทรงจำนั้นลึกขึ้น' : 'A CORE7 Match creates the first impression.<br>A CORE7 Set strengthens it.';
-
-    const scoreboard = document.querySelector('.ksv2-scoreboard-top b');
-    if(scoreboard) scoreboard.textContent = 'CORE7 SET';
-    const bo5 = document.querySelector('.ksv2-bo5');
-    if(bo5) bo5.textContent = 'SET';
-    const boardText = document.querySelector('.ksv2-scoreboard > p');
-    if(boardText) boardText.textContent = thai ? 'มือเจ็ดใบเดิม คนแรกที่ชนะสาม Matches ชนะ Set' : 'One locked seven-card hand. First to win three Matches wins the Set.';
-  }
-
-  function applyCopy(){
-    const thai = language() === 'th';
-    const hero = document.querySelector('.hero-lead');
-    if(hero) hero.textContent = thai
-      ? 'เกม 32 ใบที่สอนได้ในสิบวินาที สุ่ม 0% ตัดสินใจ 100% สิ่งเดียวที่คาดเดาไม่ได้คือมนุษย์ตรงหน้า'
-      : 'A 32-card game you can teach in ten seconds. 0% RNG. 100% decisions. The only unpredictable thing is the human across the table.';
-    const micro = document.querySelector('.micro-proof');
-    if(micro) micro.textContent = thai
-      ? 'การ์ดคำ 28 ใบ · การ์ดกติกา 4 ใบ · สุ่ม 0% · ตัดสินใจ 100% · หนึ่งกล่องสร้างมือได้สองคน'
-      : '28 word cards · 4 rule cards · 0% RNG · 100% DECISIONS · 1 box for two complete hands';
-
-    const labels = thai
-      ? {RED:'แดง · กาย',GREEN:'เขียว · จิตวิญญาณ',BLUE:'ฟ้า · ความคิด',GRAY:'เทา · งานสร้าง'}
-      : {RED:'RED · BODY',GREEN:'GREEN · SOUL',BLUE:'BLUE · MIND',GRAY:'GRAY · CRAFT'};
-    document.querySelectorAll('.energy-button').forEach(button => {
-      if(labels[button.dataset.energy]) button.innerHTML = '<span>●</span> ' + labels[button.dataset.energy];
-    });
-
-    const nameKicker = document.getElementById('nameOriginKicker');
-    const nameTitle = document.getElementById('nameOriginTitle');
-    const nameBody = document.getElementById('nameOriginBody');
-    const nameQuote = document.getElementById('nameOriginQuote');
-    if(nameKicker) nameKicker.textContent = thai ? 'ที่มาของชื่อ' : 'THE NAME';
-    if(nameTitle) nameTitle.innerHTML = thai ? 'myClover คือโชค<br><em>ที่เราเลือกพกไปด้วย</em>' : 'myClover is luck<br><em>you choose to carry.</em>';
-    if(nameBody) nameBody.textContent = thai ? 'ชื่อเริ่มจากโคลเวอร์สี่แฉก และแนวคิด “my lucky seven” — เจ็ดคำที่เราเลือกถือไปพบคนตรงหน้า' : 'The name began with a four-leaf clover and the idea of “my lucky seven”: the seven words you choose to carry into a meeting.';
-    if(nameQuote) nameQuote.innerHTML = thai ? 'ดวงถูกใช้ไปหมดแล้วตอนที่เราได้มาเจอกัน<br>ที่เหลือคือการตัดสินใจของเรา' : 'The luck was meeting.<br>The game is all decisions.';
-
-    const visual = document.getElementById('visual-story');
-    if(visual){
-      const kicker = visual.querySelector('[data-story-kicker]');
-      const title = visual.querySelector('[data-story-title]');
-      const lead = visual.querySelector('[data-story-lead]');
-      if(kicker) kicker.textContent = thai ? 'เรื่องราวที่เล่าด้วยภาพ' : 'THE VISUAL STORY';
-      if(title) title.textContent = thai ? 'เกมที่เล็กขนาดนี้ควรถูกมองเห็น ไม่ใช่ถูกฝังอยู่ในย่อหน้า' : 'A game this small should be seen—not buried in paragraphs.';
-      if(lead) lead.textContent = thai ? 'ภาพหกชุดเล่าเส้นทางตั้งแต่การถอดกติกา การพบกันครั้งแรก การเล่นซ้ำ การผลิต และโต๊ะที่เกมนี้เริ่มต้น' : 'Six images trace the system from removing rules to first meetings, repeated play, production and the table where it began.';
-      STORIES.forEach(item => {
-        const node = visual.querySelector('[data-story-id="' + item.id + '"]');
-        if(!node) return;
-        const copy = item[language()];
-        node.querySelector('img').alt = copy[0];
-        node.querySelector('strong').textContent = copy[0];
-        node.querySelector('span').textContent = copy[1];
-      });
-    }
-
-    const founder = document.querySelector('[data-story-inline="founder"]');
-    if(founder){
-      const title = thai ? 'โต๊ะที่เกมนี้เริ่มต้น' : 'The table where the game began';
-      const body = thai ? 'ระบบถูกออกแบบโดยผู้สร้างหนึ่งคน แต่เกมถูกค้นพบจากการช่วยกันถอดกติกากับลูกสาว' : 'The system was designed by one creator. The game was discovered by removing rules together with his daughter.';
-      founder.querySelector('img').alt = title;
-      founder.querySelector('strong').textContent = title;
-      founder.querySelector('span').textContent = body;
-    }
-    const shipping = document.querySelector('[data-story-inline="shipping"]');
-    if(shipping){
-      const title = thai ? 'สร้างมาเพื่อส่งมอบ ไม่ใช่ขยายจนควบคุมไม่ได้' : 'Built to ship, not to spiral';
-      const body = thai ? 'หนึ่งกล่องขนาดกะทัดรัด ปรู๊ฟที่ควบคุมได้ และไม่มีความซับซ้อนซ่อนอยู่ใน Stretch Goals' : 'One compact box, controlled proofs and no production complexity hiding inside stretch goals.';
-      shipping.querySelector('img').alt = title;
-      shipping.querySelector('strong').textContent = title;
-      shipping.querySelector('span').textContent = body;
-    }
-
-    applyMatchSetCopy();
-    replaceVisibleTerms();
+  function applyStoryAndSupport(){
+    const th=isThai();
+    setText('#nameOriginKicker',th?'ที่มาของชื่อ':'THE NAME');setHTML('#nameOriginTitle',th?'myClover คือโชค<br><em>ที่เราเลือกถือไว้เอง</em>':'myClover is luck<br><em>you choose to carry.</em>');setText('#nameOriginBody',th?'ชื่อเริ่มจากโคลเวอร์ 4 แฉก และแนวคิด “my lucky seven” — 7 คำที่เราเลือกถือไปพบคนตรงหน้า':'The name began with a four-leaf clover and the idea of “my lucky seven”: the 7 words you choose to carry into a meeting.');setHTML('#nameOriginQuote',th?'ดวงถูกใช้ไปหมดแล้วตอนที่เราได้มาเจอกัน<br>ที่เหลือคือการตัดสินใจของเรา':'The luck was meeting.<br>Everything after that is a decision.');
+    setText('#visual-story [data-story-kicker]',th?'เรื่องราวที่เล่าด้วยภาพ':'THE VISUAL STORY');setText('#visual-story [data-story-title]',th?'เกมที่เล็กขนาดนี้ควรถูกมองเห็น ไม่ใช่ถูกฝังอยู่ในย่อหน้า':'A game this small should be seen—not buried in paragraphs.');setText('#visual-story [data-story-lead]',th?'ภาพขนาด 1586 × 992 แสดงเต็มภาพทั้ง Desktop และ Mobile โดยไม่ Crop':'Every 1586 × 992 image is shown in full on desktop and mobile—never cropped.');
+    qa('#visual-story img').forEach(image=>{image.width=1586;image.height=992;});
+    const risk=qa('.risk-copy p');if(risk[1])risk[1].textContent=th?'myClover ถูกควบคุมขอบเขตอย่างตั้งใจ: การ์ด 32 ใบ กล่องขนาดกะทัดรัด เกมทางการ 2 แบบ ไม่มี Miniature ไม่มีแอปที่บังคับใช้ และไม่มีความซับซ้อนด้านการผลิตซ่อนอยู่ใน Stretch Goals':'myClover is intentionally controlled: 32 cards, one compact box, 2 official games, no miniatures, no required app and no production complexity hiding inside stretch goals.';
+    const faq=qa('.faq-list details');if(faq[3])faq[3].innerHTML=th?'<summary>CORE7 Match กับ CORE7 Set ต่างกันอย่างไร?</summary><p>CORE7 Match คือ 1 เกมสมบูรณ์ จบเมื่อผู้เล่นชนะ 3 Rounds หรือคู่แข่งหมดมือ ส่วน CORE7 Set ล็อกมือ 7 ใบเดิม รีเซ็ตหลังแต่ละ Match และจบเมื่อมีผู้เล่นชนะ 3 Matches</p>':'<summary>What is the difference between a CORE7 Match and a CORE7 Set?</summary><p>A CORE7 Match is one complete game and ends when a player wins 3 Rounds or the opponent runs out of cards. A CORE7 Set locks the same 7-card hand, resets it after every Match and ends when a player wins 3 Matches.</p>';
+    setText('.final-cta .final-inner > p:not(.eyebrow)',th?'เล่น 1 CORE7 Match หรือเปิดสนาม 三川 3IVERS แล้วออกจากโต๊ะพร้อมความทรงจำร่วมกัน':'Play one CORE7 Match—or open 3 Rivers—and leave the table with a shared memory.');setText('.final-cta small','myClover · CORE7 + 三川 3IVERS · 0% RNG · 100% Decisions');
+    const featured=q('.pledge.featured > p:not(.pledge-label)');if(featured)featured.textContent=th?'ระบบเกมพกพาที่สมบูรณ์ใน 1 กล่อง':'The complete portable game system.';
   }
 
   function apply(){
-    showAll();
-    replaceAssetPaths();
-    insertNameOrigin();
-    insertStories();
-    reorderRGBG();
-    rebuildRows();
-    ensurePassion();
-    applyCopy();
+    injectStyles();insertOfficialGames();applyMeta();applyTop();applyCore7();applyTournament();applyOfficialGames();applySystemAndBox();applyStoryAndSupport();
+    qa('.reveal').forEach(node=>node.classList.add('is-visible'));
   }
 
   function init(){
     apply();
-    [100,350,900,1800].forEach(delay => setTimeout(apply,delay));
-    const gallery = document.getElementById('cardGallery');
-    if(gallery && gallery.querySelectorAll('.gallery-card').length < 28){
-      galleryObserver = new MutationObserver(reorderRGBG);
-      galleryObserver.observe(gallery,{childList:true});
-    }
-    new MutationObserver(() => setTimeout(applyCopy,0)).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+    [120,420,980,1900,2600].forEach(delay=>setTimeout(apply,delay));
+    new MutationObserver(()=>setTimeout(apply,24)).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   }
 
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded',init);
-  else init();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
