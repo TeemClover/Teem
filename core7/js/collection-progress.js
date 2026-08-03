@@ -1,18 +1,20 @@
 /* ═══════════════════════════════════════════════════════════════
    myClover: CORE7 — Browser Collection Progress
 
-   Schema v2 resets the old CORE7 progression once per browser.
-   Every player starts with the four Generic cards. Completing a
-   Match can unlock one random FIRST HAND card without duplicates.
+   Schema v3 resets CORE7 progression once more for every browser.
+   Generic cards are Quick-play tools only. They are not part of the
+   FIRST HAND collection and never count toward SELECT unlock.
    ═══════════════════════════════════════════════════════════════ */
 
 import { FIRST_HAND, GENERIC_CARDS, cardById } from './cards.js';
 
-export const COLLECTION_SCHEMA = 2;
+export const COLLECTION_SCHEMA = 3;
 export const STARTER_CARD_IDS = Object.freeze(GENERIC_CARDS.map(card => card.id));
-export const TOTAL_COLLECTION_CARDS = STARTER_CARD_IDS.length + FIRST_HAND.length;
-export const SELECT_MODE_UNLOCK_COUNT = 8;
+export const TOTAL_COLLECTION_CARDS = FIRST_HAND.length; // FIRST HAND only: 28
+export const TOTAL_PLAYABLE_CARDS = STARTER_CARD_IDS.length + FIRST_HAND.length; // 32
+export const SELECT_MODE_UNLOCK_COUNT = 7; // 7 FIRST HAND cards, not 4 Generic cards
 
+const FIRST_HAND_IDS = new Set(FIRST_HAND.map(card => card.id));
 const KEY_SCHEMA = 'c7:collection_schema';
 const KEY_COLLECTION = 'c7:collection';
 const KEY_COUNT = 'c7:collection_count';
@@ -36,27 +38,29 @@ function removeKey(key) {
   try { localStorage.removeItem(key); } catch { /* private mode */ }
 }
 
-function validCardIds(ids) {
+function validFirstHandIds(ids) {
   if (!Array.isArray(ids)) return [];
   const seen = new Set();
   const result = [];
   for (const id of ids) {
-    if (typeof id !== 'string' || !cardById(id) || seen.has(id)) continue;
+    if (typeof id !== 'string' || !FIRST_HAND_IDS.has(id) || seen.has(id)) continue;
     seen.add(id);
     result.push(id);
   }
   return result;
 }
 
-function syncPublicCount(ids) {
-  /* Hall currently reads these public keys. Keep them mirrored until
-     every surface imports this module directly. */
-  writeJSON('mc_core7_collection', ids);
-  writeJSON('mc_core7_collection_count', ids.length);
+function syncPublicCount(firstHandIds) {
+  /* Hall still presents total playable ownership as x/32. Keep that
+     legacy surface accurate while FIRST HAND pages use x/28. */
+  const playableIds = [...STARTER_CARD_IDS, ...firstHandIds];
+  writeJSON('mc_core7_collection', playableIds);
+  writeJSON('mc_core7_collection_count', playableIds.length);
+  writeJSON('mc_core7_first_hand_count', firstHandIds.length);
 }
 
 function resetLegacyCore7Progress() {
-  /* Keep identity, preferences and an active Match snapshot so a deploy
+  /* Keep identity, settings and an active Match snapshot so a deploy
      never throws someone out of a game already in progress. Everything
      that represents old progression starts again. */
   const preserved = key => (
@@ -77,29 +81,28 @@ function resetLegacyCore7Progress() {
 
   removeKey('mc_core7_collection');
   removeKey('mc_core7_collection_count');
+  removeKey('mc_core7_first_hand_count');
 }
 
 export function ensureCollection() {
   const schema = Number(readJSON(KEY_SCHEMA, 0));
   if (schema !== COLLECTION_SCHEMA) {
     resetLegacyCore7Progress();
-    const starters = [...STARTER_CARD_IDS];
+    const firstHandIds = [];
     writeJSON(KEY_SCHEMA, COLLECTION_SCHEMA);
-    writeJSON(KEY_COLLECTION, starters);
-    writeJSON(KEY_COUNT, starters.length);
+    writeJSON(KEY_COLLECTION, firstHandIds);
+    writeJSON(KEY_COUNT, 0);
     writeJSON(KEY_REWARDED_MATCHES, []);
     writeJSON(KEY_HAND_MODE, 'quick');
-    syncPublicCount(starters);
-    return starters;
+    syncPublicCount(firstHandIds);
+    return firstHandIds;
   }
 
-  const existing = validCardIds(readJSON(KEY_COLLECTION, []));
-  const ids = [...STARTER_CARD_IDS];
-  for (const id of existing) if (!ids.includes(id)) ids.push(id);
-  writeJSON(KEY_COLLECTION, ids);
-  writeJSON(KEY_COUNT, ids.length);
-  syncPublicCount(ids);
-  return ids;
+  const firstHandIds = validFirstHandIds(readJSON(KEY_COLLECTION, []));
+  writeJSON(KEY_COLLECTION, firstHandIds);
+  writeJSON(KEY_COUNT, firstHandIds.length);
+  syncPublicCount(firstHandIds);
+  return firstHandIds;
 }
 
 export function getCollectionIds() {
@@ -114,13 +117,16 @@ export function getCollectionCount() {
   return getCollectionIds().length;
 }
 
+export function getTotalOwnedCount() {
+  return STARTER_CARD_IDS.length + getCollectionCount();
+}
+
 export function getUnlockedFirstHandIds() {
-  const owned = new Set(getCollectionIds());
-  return FIRST_HAND.filter(card => owned.has(card.id)).map(card => card.id);
+  return getCollectionIds();
 }
 
 export function ownsCard(cardId) {
-  return getCollectionIds().includes(cardId);
+  return FIRST_HAND_IDS.has(cardId) && getCollectionIds().includes(cardId);
 }
 
 export function canUseSelectMode() {
@@ -151,38 +157,59 @@ function randomIndex(length) {
 }
 
 export function unlockRandomCard(matchId) {
-  const ids = getCollectionIds();
+  const firstHandIds = getCollectionIds();
   const rewardKey = String(matchId || '').trim();
-  if (!rewardKey) return { card: null, isNew: false, count: ids.length, complete: ids.length >= TOTAL_COLLECTION_CARDS };
+  if (!rewardKey) {
+    return {
+      card: null,
+      isNew: false,
+      count: firstHandIds.length,
+      totalOwnedCount: STARTER_CARD_IDS.length + firstHandIds.length,
+      complete: firstHandIds.length >= TOTAL_COLLECTION_CARDS,
+    };
+  }
 
   const rewarded = new Set(readJSON(KEY_REWARDED_MATCHES, []));
   if (rewarded.has(rewardKey)) {
-    return { card: null, isNew: false, count: ids.length, complete: ids.length >= TOTAL_COLLECTION_CARDS };
+    return {
+      card: null,
+      isNew: false,
+      count: firstHandIds.length,
+      totalOwnedCount: STARTER_CARD_IDS.length + firstHandIds.length,
+      complete: firstHandIds.length >= TOTAL_COLLECTION_CARDS,
+    };
   }
 
-  /* Mark the Match before drawing so reloads or double callbacks cannot
-     grant two cards for the same completed Match. */
+  /* Mark the Match before drawing so refreshes, double callbacks and SET
+     transitions cannot grant two cards for the same completed Match. */
   rewarded.add(rewardKey);
-  writeJSON(KEY_REWARDED_MATCHES, [...rewarded].slice(-200));
+  writeJSON(KEY_REWARDED_MATCHES, [...rewarded].slice(-1000));
 
-  const owned = new Set(ids);
+  const owned = new Set(firstHandIds);
   const available = FIRST_HAND.filter(card => !owned.has(card.id));
   if (!available.length) {
-    return { card: null, isNew: false, count: ids.length, complete: true };
+    return {
+      card: null,
+      isNew: false,
+      count: firstHandIds.length,
+      totalOwnedCount: TOTAL_PLAYABLE_CARDS,
+      complete: true,
+    };
   }
 
   const card = available[randomIndex(available.length)];
-  ids.push(card.id);
-  writeJSON(KEY_COLLECTION, ids);
-  writeJSON(KEY_COUNT, ids.length);
-  syncPublicCount(ids);
+  firstHandIds.push(card.id);
+  writeJSON(KEY_COLLECTION, firstHandIds);
+  writeJSON(KEY_COUNT, firstHandIds.length);
+  syncPublicCount(firstHandIds);
 
   return {
     card,
     isNew: true,
-    count: ids.length,
-    complete: ids.length >= TOTAL_COLLECTION_CARDS,
-    selectModeJustUnlocked: ids.length === SELECT_MODE_UNLOCK_COUNT,
+    count: firstHandIds.length,
+    totalOwnedCount: STARTER_CARD_IDS.length + firstHandIds.length,
+    complete: firstHandIds.length >= TOTAL_COLLECTION_CARDS,
+    selectModeJustUnlocked: firstHandIds.length === SELECT_MODE_UNLOCK_COUNT,
   };
 }
 
@@ -191,9 +218,8 @@ export function resetCollectionForTesting() {
   return ensureCollection();
 }
 
-/* Every CORE7 page already imports store.js, which imports this module.
-   On the result route, mount the reward UI without adding another script
-   tag to the page. The UI validates the completed snapshot before drawing. */
+/* Every CORE7 page imports store.js, which imports this module. On every
+   Match result—including each Match inside a SET—mount the reward popup. */
 if (typeof window !== 'undefined' && /\/core7\/result\/?$/.test(location.pathname)) {
   import('./collection-reward-ui.js').catch(() => {});
 }
