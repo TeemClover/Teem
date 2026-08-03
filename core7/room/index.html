@@ -10,13 +10,14 @@
 </head>
 <body>
 <div id="lobbyWrap"><nav class="c7nav" id="c7nav"></nav><main class="sec"><div class="wrap-slim" id="lobby">
-  <p class="eyebrow" id="modeLine">v0.4.5 · Online</p><h2 class="disp">ห้อง <span class="codebig" id="codeShow"></span></h2>
+  <p class="eyebrow" id="modeLine">v0.4.6 · Online</p><h2 class="disp">ห้อง <span class="codebig" id="codeShow"></span></h2>
   <div id="content"></div><div id="status" role="status" style="margin-top:16px;font-size:14px;color:rgb(var(--muted))"></div><div id="actions" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"></div>
 </div></main><footer class="c7foot" id="c7foot"></footer></div>
 <div id="match" hidden></div>
 <script type="module">
 import { renderShell, el, toast, copyText, pathSegment } from '/core7/js/ui.js';
 import { RemoteRooms } from '/core7/js/adapters.js';
+import { reportFunnelEvent } from '/core7/js/analytics.js';
 import { mountMatch } from '/core7/js/match-ui.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
 import * as store from '/core7/js/store.js';
@@ -49,7 +50,7 @@ function seatRow(name, sub, ready) {
 
 function showLobby() { lobbyWrap.hidden = false; matchEl.hidden = true; }
 
-function copyActions(room) {
+function copyActions() {
   const link = `${location.origin}/core7/join/?code=${code}`;
   const copy = el('button', { class:'btn' }, '🔗 คัดลอกคำเชิญ');
   copy.addEventListener('click', async () => { await copyText(`มาเล่น myClover: CORE7 ห้อง ${code}\n${link}`); toast('คัดลอกคำเชิญแล้ว'); });
@@ -57,7 +58,10 @@ function copyActions(room) {
 }
 
 async function sendHand(cards) {
-  try { await session.setHand(cards); playSfx('lock'); toast('ล็อก Starting Hand แล้ว'); }
+  try {
+    await session.setHand(cards); playSfx('lock'); toast('ล็อก Starting Hand แล้ว');
+    reportFunnelEvent('HAND_READY', { matchId:`room-${code}-hand`, mode:session.state?.room?.mode, once:true }).catch(() => {});
+  }
   catch (error) { playSfx('error'); toast(`ส่งมือไม่ได้: ${error.code || 'NETWORK_ERROR'}`); }
 }
 
@@ -65,7 +69,7 @@ function renderWaiting(data) {
   showLobby(); mountedMatchId = null; content.innerHTML = ''; actions.innerHTML = '';
   const r = data.room; document.getElementById('modeLine').textContent = `${r.modeLabel} · ${r.visibility === 'public' ? 'Public Lobby' : 'Unlisted'} · Online`;
   content.append(seatRow(r.you.name, 'คุณ · ฝั่งซ้ายบนเครื่องนี้', r.you.ready), seatRow(r.opponent?.name, 'คู่แข่ง', r.opponent?.ready));
-  copyActions(r);
+  copyActions();
   if (!r.you.ready) {
     actions.append(el('a', { class:'btn btn-gold', href:`/core7/hand/?next=room&code=${code}` }, '🃏 เลือกมือ 7 ใบ'));
     const saved = store.getHand();
@@ -76,8 +80,13 @@ function renderWaiting(data) {
 
 function startMatch(data) {
   const id = data.matchView?.matchId; if (!id || mountedMatchId === id) return;
-  mountedMatchId = id; lobbyWrap.hidden = true; matchEl.hidden = false; matchEl.innerHTML = ''; matchEl.className = '';
-  mountMatch(matchEl, session.client(), { onFinished: () => setTimeout(() => session.refresh().catch(() => {}), 250) });
+  mountedMatchId = id;
+  reportFunnelEvent('MATCH_START', { matchId:id, mode:data.room.mode, rulesVersion:data.matchView?.rulesVersion, once:true }).catch(() => {});
+  lobbyWrap.hidden = true; matchEl.hidden = false; matchEl.innerHTML = ''; matchEl.className = '';
+  mountMatch(matchEl, session.client(), { onFinished: view => {
+    reportFunnelEvent('MATCH_COMPLETE', { matchId:id, mode:data.room.mode, rulesVersion:view?.rulesVersion, once:true }).catch(() => {});
+    setTimeout(() => session.refresh().catch(() => {}), 250);
+  } });
 }
 
 function countSide(rounds, side) {
@@ -114,7 +123,7 @@ function renderSummary(data) {
   if (r.seriesEnded) {
     content.prepend(el('h2', { class:'disp', style:'text-align:center' }, r.youWonSeries ? '🏆 YOU WIN' : 'YOU LOSE'));
     if (data.startingHands) {
-      const hands = el('div', { class:'match-block' }, el('h3', { class:'disp' }, 'Starting Hands — เปิดเผยหลังจบ Series'));
+      const hands = el('div', { class:'match-block' }, el('h3', { class:'disp' }, 'Starting Hands — เปิดเผยหลังจบโหมด'));
       const grid = el('div', { class:'summary-grid' });
       for (const [key, title] of [['you', `${r.you.name} (คุณ)`], ['opponent', r.opponent.name]]) {
         const cards = data.startingHands[key].map(id => ({ cardId:id, color:cardById(id).color }));
@@ -126,8 +135,13 @@ function renderSummary(data) {
     status.textContent = `จบ ${r.modeLabel} · Starting Hand ถูกเปิดเผยแล้ว`;
   } else {
     const ready = el('button', { class:'btn btn-gold' }, r.you.nextReady ? '✓ พร้อมแล้ว' : 'พร้อม Match ถัดไป'); ready.disabled = r.you.nextReady;
-    ready.addEventListener('click', async () => { try { await session.readyNext(); } catch (e) { toast(`กดพร้อมไม่ได้: ${e.code}`); } }); actions.append(ready);
-    status.textContent = r.you.nextReady ? 'รอคู่แข่งพร้อม — Match ถัดไปใช้ Starting Hand เดิม' : 'Series ยังไม่จบ — ใช้ Starting Hand เดิมต่อ';
+    ready.addEventListener('click', async () => {
+      try {
+        reportFunnelEvent('REMATCH', { matchId:`online-${code}-after-${latest?.number || 0}`, mode:r.mode, once:true }).catch(() => {});
+        await session.readyNext();
+      } catch (e) { toast(`กดพร้อมไม่ได้: ${e.code}`); }
+    }); actions.append(ready);
+    status.textContent = r.you.nextReady ? 'รอคู่แข่งพร้อม — Match ถัดไปใช้ Starting Hand เดิม' : `${r.modeLabel} ยังไม่จบ — ใช้ Starting Hand เดิมต่อ`;
   }
 }
 
