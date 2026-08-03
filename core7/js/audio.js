@@ -1,10 +1,34 @@
 const KEY = 'c7:sfx-muted';
 let context = null;
 
+/* iPhone เงียบเพราะสวิตช์กระดิ่งข้างเครื่อง ไม่ใช่เพราะโค้ดพัง
+   Web Audio บน iOS ถูกจัดเป็นเสียง ambient โดยปริยาย ซึ่งโดนสวิตช์ silent ปิดทั้งหมด
+   บอก iOS 16.4+ ว่านี่คือเสียง playback เสียงเกมจะดังแม้ปิดกระดิ่ง
+   เบราว์เซอร์ที่ไม่รู้จัก audioSession จะข้ามบรรทัดนี้ไปเอง */
+function claimPlaybackSession() {
+  try {
+    if (navigator.audioSession && navigator.audioSession.type !== 'playback') {
+      navigator.audioSession.type = 'playback';
+    }
+  } catch { /* ไม่รองรับก็ไม่เป็นไร */ }
+}
+
 function audioContext() {
+  claimPlaybackSession();
   context ||= new (window.AudioContext || window.webkitAudioContext)();
   if (context.state === 'suspended') context.resume();
   return context;
+}
+
+/* iOS พัก AudioContext ทุกครั้งที่สลับแอปหรือปิดจอ กลับมาแล้วต้องปลุกเอง
+   ไม่งั้นเสียงจะหายไปเงียบ ๆ ทั้งที่โค้ดยังเรียก playSfx อยู่ */
+if (typeof document !== 'undefined') {
+  const wake = () => { if (context && context.state === 'suspended') context.resume(); };
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
+  /* แตะครั้งแรกที่ไหนก็ได้ = ปลุกเสียงให้พร้อมก่อนถึงจังหวะที่ต้องดังจริง */
+  const prime = () => { claimPlaybackSession(); wake(); };
+  addEventListener('pointerdown', prime, { once: true, passive: true });
+  addEventListener('keydown', prime, { once: true, passive: true });
 }
 
 export function isMuted() {
