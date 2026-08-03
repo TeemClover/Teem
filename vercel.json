@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/kickstart/",
+      "destination": "/kickstarter/",
+      "permanent": true
+    },
+    {
       "source": "/core7/assets/card-back-core7.png",
       "destination": "/core7/assets/card-back-core7.webp",
       "permanent": true
@@ -33,6 +38,12 @@
     },
     {
       "source": "/kickstarter/kickstarter-distilled.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/kickstarter/kickstarter-distilled-legacy.js",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
