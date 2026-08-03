@@ -231,8 +231,12 @@ button { font: inherit; cursor: pointer; }
 .hc { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; min-height: 4px; }
 .hc.l { justify-content: flex-end; padding-right: 14px; }
 .hc.r { justify-content: flex-start; padding-left: 14px; }
-.hchip { display: inline-flex; align-items: center; gap: 5px; border-radius: 10px; padding: 6px 11px; color: #fff; font-family: "Bai Jamjuree"; font-weight: 600; font-size: 13px; border: 2px solid rgb(255 255 255 / .85); box-shadow: 0 2px 8px rgb(0 0 0 / .35); white-space: nowrap; }
+.hchip { display: inline-flex; align-items: center; gap: 7px; border-radius: 10px; padding: 4px 10px 4px 4px; color: #fff; font-family: "Bai Jamjuree"; font-weight: 600; font-size: 13px; border: 2px solid rgb(255 255 255 / .85); box-shadow: 0 2px 8px rgb(0 0 0 / .35); white-space: nowrap; }
+/* ภาพจริงของการ์ดที่ออกไปแล้ว — ใบเล็กแต่จำได้ว่าเป็นใบไหน */
+.hchip-art { width: 26px; height: 36px; flex: none; border-radius: 6px; background: center/cover no-repeat rgb(0 0 0 / .25); box-shadow: inset 0 0 0 1px rgb(255 255 255 / .35); }
 .hchip.discard { border-style: dashed; opacity: .88; }
+/* ใบที่ถูกทิ้งบอกด้วยเส้นประรอบภาพด้วย จะได้อ่านออกแม้ชิปเล็กลงบนจอแคบ */
+.hchip.discard .hchip-art { box-shadow: inset 0 0 0 2px rgb(255 255 255 / .5); filter: grayscale(.35) brightness(.82); }
 .discard-row { padding-bottom: 3px; }
 
 /* จอกว้างเปิด/ซ่อน Discard rail ได้; เมื่อซ่อน โต๊ะกลับมากึ่งกลาง */
@@ -244,7 +248,8 @@ button { font: inherit; cursor: pointer; }
     background: rgb(0 0 0 / .2); border-left: 1px solid rgb(var(--gold) / .3);
   }
   .history-rail h2 { font-size: 20px; margin-bottom: 12px; }
-  .history-rail .hchip { font-size: 12px; padding: 5px 8px; }
+  .history-rail .hchip { font-size: 12px; padding: 3px 8px 3px 3px; }
+  .history-rail .hchip-art { width: 22px; height: 31px; }
 }
 
 @media (max-width: 600px) {

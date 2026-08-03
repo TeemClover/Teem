@@ -5,7 +5,7 @@
 <title>Online Room — myClover: CORE7</title><meta name="theme-color" content="#0A2818">
 <link rel="icon" type="image/svg+xml" href="/core7/favicon.svg"><link rel="stylesheet" href="/core7/css/core7.css">
 <style>
-.lobby-seat{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:16px 18px;margin-top:12px}.lobby-seat .avatar{width:44px;height:44px;border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));display:flex;align-items:center;justify-content:center;font-weight:700;font-family:"Bai Jamjuree";font-size:18px}.lobby-seat .st{margin-left:auto}.codebig{font-family:"Bai Jamjuree";font-size:clamp(30px,8vw,44px);letter-spacing:5px;color:rgb(var(--green));font-weight:700}.scoreline{display:flex;justify-content:center;align-items:center;gap:18px;font:700 clamp(24px,6vw,38px) "Bai Jamjuree";color:rgb(var(--green));margin:16px 0}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.summary-side{background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:14px;padding:16px}.card-chip{display:inline-flex;gap:5px;align-items:center;color:#fff;border-radius:8px;padding:4px 8px;margin:3px;font-size:12.5px}.match-block{border-top:1px solid rgb(var(--line)/.1);padding-top:12px;margin-top:12px}@media(max-width:620px){.summary-grid{grid-template-columns:1fr}}
+.lobby-seat{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:14px;padding:16px 18px;margin-top:12px}.lobby-seat .avatar{width:44px;height:44px;border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));display:flex;align-items:center;justify-content:center;font-weight:700;font-family:"Bai Jamjuree";font-size:18px}.lobby-seat .st{margin-left:auto}.codebig{font-family:"Bai Jamjuree";font-size:clamp(30px,8vw,44px);letter-spacing:5px;color:rgb(var(--green));font-weight:700}.scoreline{display:flex;justify-content:center;align-items:center;gap:18px;font:700 clamp(24px,6vw,38px) "Bai Jamjuree";color:rgb(var(--green));margin:16px 0}.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.summary-side{background:#fff;border:1px solid rgb(var(--line)/.12);border-radius:14px;padding:16px}.card-chip{display:inline-flex;gap:5px;align-items:center;color:#fff;border:2px solid transparent;border-radius:8px;padding:3px 8px 3px 3px;margin:3px;font-size:12.5px}.card-chip.discard{border-style:dashed;border-color:rgb(255 255 255/.7);opacity:.9}.card-chip .chip-art{width:22px;height:31px;flex:none;border-radius:5px;background:center/cover no-repeat rgb(0 0 0/.25);box-shadow:inset 0 0 0 1px rgb(255 255 255/.35)}.card-chip.discard .chip-art{box-shadow:inset 0 0 0 2px rgb(255 255 255/.5);filter:grayscale(.35) brightness(.82)}.match-block{border-top:1px solid rgb(var(--line)/.1);padding-top:12px;margin-top:12px}@media(max-width:620px){.summary-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -20,6 +20,7 @@ import { RemoteRooms } from '/core7/js/adapters.js';
 import { reportFunnelEvent } from '/core7/js/analytics.js';
 import { mountMatch } from '/core7/js/match-ui.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
+import { cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 import { playSfx } from '/core7/js/audio.js';
 
@@ -104,9 +105,14 @@ function countSide(rounds, side) {
   return { colors, played, discarded };
 }
 
+/* ชิปการ์ดโชว์ภาพจริง ใบที่ทิ้งบอกด้วยขอบเส้นประ ไม่ใช้อีโมจิถังขยะแล้ว */
 function chip(card, discard = false) {
   const meta = COLOR_META[card.color]; const item = cardById(card.cardId);
-  return el('span', { class:'card-chip', style:`background:${meta.hex}` }, `${discard ? '🗑 ' : ''}${meta.emoji} ${item?.en || meta.nameEn}`);
+  const node = el('span', { class:'card-chip' + (discard ? ' discard' : ''), style:`background:${meta.hex}` });
+  const art = cardArtHref(card.cardId);
+  if (art) node.append(el('i', { class:'chip-art', style:`background-image:url("${art}")` }));
+  node.append(el('span', {}, `${meta.emoji} ${item?.en || meta.nameEn}`));
+  return node;
 }
 
 function sideSummary(title, stats) {

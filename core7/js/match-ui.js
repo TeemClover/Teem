@@ -424,15 +424,21 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     if (!wideDiscard()) setDiscardRail(false);
   });
 
+  /* ไพ่ที่ออกจากมือแล้วโชว์ภาพจริง ไม่ใช่เม็ดสีเปล่า ๆ — asset โหลดลงเครื่องไปแล้ว
+     ตั้งแต่ตอนเล่น ใบที่ถูกทิ้งบอกด้วยขอบเส้นประ ไม่ต้องมีอีโมจิถังขยะนำหน้า */
   function historyChip(c, { discard = false } = {}) {
     const meta = COLOR_META[c.color];
     const card = cardById(c.cardId);
     const name = card && !card.generic ? card.en : meta.nameEn.toUpperCase();
-    return el('span', {
+    const art = cardArtHref(c.cardId);
+    const chip = el('span', {
       class: 'hchip' + (discard ? ' discard' : ''),
       style: `background:${meta.hex}`,
       'aria-label': `${discard ? 'ทิ้ง ' : ''}${name} สี${meta.nameTh}`,
-    }, `${discard ? '🗑 ' : ''}${meta.emoji} ${name}`);
+    });
+    if (art) chip.append(el('i', { class: 'hchip-art', style: `background-image:url("${art}")` }));
+    chip.append(el('span', { class: 'hchip-name' }, `${meta.emoji} ${name}`));
+    return chip;
   }
 
   function buildHistoryTable() {

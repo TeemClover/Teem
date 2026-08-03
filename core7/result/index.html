@@ -23,7 +23,7 @@
 .tl-chip.discard{border-style:dashed;box-shadow:0 2px 7px rgb(0 0 0/.14)}
 .prompt-card{background:rgb(var(--gold)/.1);border:1px solid rgb(var(--gold)/.3);border-radius:12px;padding:16px 20px;margin-top:10px;font-size:15px}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.sum-side{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:12px;padding:15px}.sum-colors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.sum-color{text-align:center;border-radius:8px;padding:7px 2px;color:#fff;font-size:12px}.sum-card{display:inline-flex;color:#fff;border:2px solid transparent;border-radius:7px;padding:3px 7px;margin:3px;font:inherit;font-size:12px;cursor:zoom-in}.card-peek:hover,.card-peek:focus-visible{outline:2px solid rgb(var(--gold));outline-offset:2px}.card-preview{position:fixed;z-index:1200;width:min(220px,calc(100vw - 24px));padding:6px;border-radius:15px;background:rgb(var(--deep));border:1px solid rgb(var(--gold-l));box-shadow:0 20px 55px rgb(0 0 0/.46);pointer-events:none}.card-preview[hidden]{display:none}.card-preview.pinned{pointer-events:auto}.card-preview svg{display:block;width:100%;height:auto}.card-preview-note{text-align:center;color:#fff;font-size:11px;padding:5px 4px 2px}@media(max-width:700px){.sum-grid{grid-template-columns:1fr}.tl-row{grid-template-columns:34px minmax(0,1fr);padding:12px 10px;gap:8px}.tl-meta{grid-column:2}.tl-cards,.tl-discards{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr)}.tl-chip{font-size:11px;padding:4px 7px}.tl-row>.disp{align-self:start;padding-top:4px}.card-preview{width:min(190px,calc(100vw - 24px))}}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}.sum-side{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:12px;padding:15px}.sum-colors{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.sum-color{text-align:center;border-radius:8px;padding:7px 2px;color:#fff;font-size:12px}.sum-card{display:inline-flex;align-items:center;gap:5px;color:#fff;border:2px solid transparent;border-radius:7px;padding:2px 7px 2px 2px;margin:3px;font:inherit;font-size:12px;cursor:zoom-in}.sum-card.discard{border-style:dashed;border-color:rgb(255 255 255/.7);opacity:.9}.chip-art{width:22px;height:31px;flex:none;border-radius:5px;background:center/cover no-repeat rgb(0 0 0/.25);box-shadow:inset 0 0 0 1px rgb(255 255 255/.35)}.tl-chip .chip-art{width:24px;height:34px}.discard .chip-art{box-shadow:inset 0 0 0 2px rgb(255 255 255/.5);filter:grayscale(.35) brightness(.82)}.chip-name{overflow:hidden;text-overflow:ellipsis}.card-peek:hover,.card-peek:focus-visible{outline:2px solid rgb(var(--gold));outline-offset:2px}.card-preview{position:fixed;z-index:1200;width:min(220px,calc(100vw - 24px));padding:6px;border-radius:15px;background:rgb(var(--deep));border:1px solid rgb(var(--gold-l));box-shadow:0 20px 55px rgb(0 0 0/.46);pointer-events:none}.card-preview[hidden]{display:none}.card-preview.pinned{pointer-events:auto}.card-preview svg{display:block;width:100%;height:auto}.card-preview-note{text-align:center;color:#fff;font-size:11px;padding:5px 4px 2px}@media(max-width:700px){.sum-grid{grid-template-columns:1fr}.tl-row{grid-template-columns:34px minmax(0,1fr);padding:12px 10px;gap:8px}.tl-meta{grid-column:2}.tl-cards,.tl-discards{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr)}.tl-chip{font-size:11px;padding:4px 7px}.tl-row>.disp{align-self:start;padding-top:4px}.card-preview{width:min(190px,calc(100vw - 24px))}}
 </style>
 </head>
 <body>
@@ -68,7 +68,7 @@
 import { renderShell, el, toast, copyText } from '/core7/js/ui.js';
 import { MatchAuthority } from '/core7/js/engine.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
-import { cardSVG } from '/core7/js/art.js';
+import { cardSVG, cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({});
@@ -161,11 +161,16 @@ function hideCardPreview(force = false) {
   previewOwner = null;
   previewPinned = false;
 }
+/* ชิปการ์ดโชว์ภาพจริง ไม่ใช่เม็ดสีเปล่า — ใบที่ถูกทิ้งบอกด้วยขอบเส้นประ
+   ไม่ต้องมีอีโมจิถังขยะนำหน้าอีก */
 function cardPeek(card, className, style, text) {
   const button = el('button', {
     type:'button', class:`${className} card-peek`, style, 'data-card-id':card.cardId,
     'aria-label':`ดูภาพการ์ด ${cardById(card.cardId)?.en || card.color}`,
-  }, text);
+  });
+  const art = cardArtHref(card.cardId);
+  if (art) button.append(el('i', { class:'chip-art', style:`background-image:url("${art}")` }));
+  button.append(el('span', { class:'chip-name' }, text));
   button.addEventListener('mouseenter', () => showCardPreview(button));
   button.addEventListener('mouseleave', () => hideCardPreview());
   button.addEventListener('focus', () => showCardPreview(button));
@@ -204,7 +209,7 @@ function summarySide(title, data) {
   const line = (label, cards, discard=false) => {
     const row = el('div', { style:'margin-top:8px;font-size:12px' }, el('b', {}, label + ' '));
     if (!cards.length) row.append('—');
-    for (const card of cards) row.append(cardPeek(card, 'sum-card', `background:${COLOR_META[card.color].hex}`, `${discard ? '🗑 ' : ''}${cardById(card.cardId)?.en || card.color}`));
+    for (const card of cards) row.append(cardPeek(card, 'sum-card' + (discard ? ' discard' : ''), `background:${COLOR_META[card.color].hex}`, `${cardById(card.cardId)?.en || card.color}`));
     return row;
   };
   box.append(line('PLAYED', data.played), line('DISCARDED', data.discarded, true));
@@ -225,7 +230,7 @@ view.rounds.forEach((round, i) => {
   const row = el('div', { class: 'tl-row' + (i === turningIdx ? ' turning' : '') });
   const chip = (c, discard = false) => cardPeek(c, `tl-chip${discard ? ' discard' : ''}`,
     `background:${COLOR_META[c.color].hex};border-color:${COLOR_META[c.color].soft}`,
-    `${discard ? '🗑 ' : ''}${COLOR_META[c.color].emoji} ${cardById(c.cardId)?.en || c.color}`);
+    `${COLOR_META[c.color].emoji} ${cardById(c.cardId)?.en || c.color}`);
   const cards = el('div', { class:'tl-cards' },
     el('div', { class:'tl-side you' }, chip(round.you)),
     el('span', { class:'tl-vs' }, 'vs'),
