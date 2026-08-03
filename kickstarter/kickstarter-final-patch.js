@@ -1,12 +1,15 @@
 import './kickstarter-final-patch-base.js?v=20260803-final-qa-base';
 
-// The preserved QA base still injects the older Founder grid and rewrites
-// the first proof value to “397”. Apply the canonical Founder layout after
-// every hydration pass so the rendered page—not only the static HTML—wins.
+// The preserved QA base still injects older campaign copy and layout during
+// delayed hydration. Apply the current canonical Founder layout and official
+// game naming after every pass so the rendered page always wins.
 (function(){
   'use strict';
 
   const STYLE_ID='founder-runtime-canonical-v3';
+  const isThai=()=>document.documentElement.lang==='th';
+  const q=selector=>document.querySelector(selector);
+  const qa=selector=>Array.from(document.querySelectorAll(selector));
 
   function injectFounderLayout(){
     const previous=document.getElementById(STYLE_ID);
@@ -130,18 +133,93 @@ import './kickstarter-final-patch-base.js?v=20260803-final-qa-base';
     document.head.appendChild(style);
   }
 
-  function correctFounderRuntime(){
-    injectFounderLayout();
+  function replaceText(root,from,to){
+    if(!root) return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+      acceptNode(node){
+        const parent=node.parentElement;
+        if(!parent||/^(SCRIPT|STYLE|NOSCRIPT)$/i.test(parent.tagName)) return NodeFilter.FILTER_REJECT;
+        return node.nodeValue&&node.nodeValue.includes(from)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+      }
+    });
+    const nodes=[];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node=>{node.nodeValue=node.nodeValue.replaceAll(from,to);});
+  }
 
-    const firstValue=document.querySelector('#founder .founder-proof article:first-child b');
+  function applyMikawaCanonical(){
+    const th=isThai();
+
+    // Remove every legacy public-facing spelling without changing the
+    // Three Rivers descriptor used to explain the battlefield.
+    replaceText(document.body,'三川 3IVERS','三川 MIKAWA');
+    replaceText(document.body,'CORE7 + 3IVERS','CORE7 + 三川 MIKAWA');
+    replaceText(document.body,'3IVERS','MIKAWA');
+
+    document.title='myClover — 0% RNG. 100% Decisions.';
+    const description=q('meta[name="description"]');
+    const ogTitle=q('meta[property="og:title"]');
+    const ogDescription=q('meta[property="og:description"]');
+    if(description) description.setAttribute('content','Choose 7 words and play 2 zero-randomness games with one 32-card system: CORE7, the flagship rule, and 三川 MIKAWA, a Three-River strategy game.');
+    if(ogTitle) ogTitle.setAttribute('content','myClover — CORE7 + 三川 MIKAWA');
+    if(ogDescription) ogDescription.setAttribute('content','1 keyword. 4 colors. 7 chosen cards. 2 official games. 0% RNG. 100% decisions.');
+
+    const brand=q('.brand > span:not(.brand-mark)');
+    if(brand) brand.innerHTML='myClover <b>· CORE7 + 三川 MIKAWA</b>';
+
+    const title=q('#official-games [data-official-title]');
+    const lead=q('#official-games [data-official-lead]');
+    const riversCard=q('#official-games [data-rivers-card]');
+    const rivers=q('#official-games .official-game-card.rivers');
+    if(title) title.textContent=th
+      ? 'CORE7 คือจุดเริ่มต้นของทุกคน ส่วน 三川 MIKAWA เปลี่ยนมือ 7 ใบเดิมให้กลายเป็นสมรภูมิ'
+      : 'CORE7 is where everyone begins. 三川 MIKAWA is where the same 7 cards become a battlefield.';
+    if(lead) lead.textContent=th
+      ? 'ระบบเดียวกันสร้างได้ทั้งเกมที่เรียนรู้ทันที และเกมกลยุทธ์ 3 สายน้ำที่ทุกตำแหน่งมีความหมาย'
+      : 'The same system holds an instant flagship rule and a Three-River strategy game where every position matters.';
+    if(riversCard) riversCard.textContent=th
+      ? 'เกมกลยุทธ์ที่ใช้มือ 7 ใบเดิมต่อสู้บน 3 สายน้ำ ชนะ 2 สายน้ำเพื่อรับ 1 Win จับการ์ดที่พ่ายแพ้จากสายน้ำที่ยึดได้ และเป็นคนแรกที่ได้ 3 Wins'
+      : 'A strategy game played with the same 7-card hand across 3 Rivers. Win 2 Rivers to claim 1 Win, capture 1 defeated card from a River you conquered, and become the first to 3 Wins.';
+    if(rivers){
+      const h3=rivers.querySelector('h3');
+      const descriptor=rivers.querySelector('b');
+      const small=rivers.querySelector('small');
+      if(h3) h3.textContent='三川 MIKAWA';
+      if(descriptor) descriptor.textContent=th?'กลยุทธ์ 3 สายน้ำ':'THREE RIVERS';
+      if(small) small.textContent=th?'7 ใบ · 3 สายน้ำ · คนแรกที่ได้ 3 WINS':'7 CARDS · 3 RIVERS · FIRST TO 3 WINS';
+    }
+
+    const ruleCopy=q('#box .box-item:nth-child(2) p');
+    if(ruleCopy) ruleCopy.textContent=th
+      ? 'CORE7 Match, CORE7 Set, 三川 MIKAWA และ Open Play ส่งต่อกติกาแล้วเริ่มเล่นได้ทันที'
+      : 'CORE7 Match, CORE7 Set, 三川 MIKAWA and Open Play. Hand them around and begin.';
+
+    const productDefinition=q('#pledges .product-definition span');
+    if(productDefinition) productDefinition.textContent=th
+      ? 'สินค้า 1 กล่อง · การ์ดคำ 28 ใบ · การ์ดกติกา 4 ใบ · CORE7 + 三川 MIKAWA'
+      : '1 product box · 28 word cards · 4 rule cards · CORE7 + 三川 MIKAWA';
+
+    const finalCopy=q('.final-cta .final-inner>p:not(.eyebrow)');
+    const finalSmall=q('.final-cta small');
+    if(finalCopy) finalCopy.textContent=th
+      ? 'เล่น CORE7 หรือข้าม 3 สายน้ำของ 三川 MIKAWA แล้วออกจากโต๊ะพร้อมความทรงจำร่วมกัน'
+      : 'Play CORE7—or cross the 3 Rivers of 三川 MIKAWA—and leave the table with a shared memory.';
+    if(finalSmall) finalSmall.textContent='myClover · CORE7 + 三川 MIKAWA · 0% RNG · 100% Decisions';
+  }
+
+  function correctRuntime(){
+    injectFounderLayout();
+    applyMikawaCanonical();
+
+    const firstValue=q('#founder .founder-proof article:first-child b');
     if(firstValue){
-      const value=document.documentElement.lang==='th'?'1 ใน 397':'1 of 397';
+      const value=isThai()?'1 ใน 397':'1 of 397';
       if(firstValue.textContent!==value) firstValue.textContent=value;
     }
   }
 
   function scheduleCorrections(){
-    [0,40,180,520,1180,2860,3600].forEach(delay=>setTimeout(correctFounderRuntime,delay));
+    [0,40,180,520,1180,2860,3600].forEach(delay=>setTimeout(correctRuntime,delay));
   }
 
   if(document.readyState==='loading'){
@@ -150,13 +228,13 @@ import './kickstarter-final-patch-base.js?v=20260803-final-qa-base';
     scheduleCorrections();
   }
 
-  const rootObserver=new MutationObserver(()=>setTimeout(correctFounderRuntime,20));
+  const rootObserver=new MutationObserver(()=>setTimeout(correctRuntime,20));
   rootObserver.observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 
   const startFounderObserver=()=>{
     const founder=document.getElementById('founder');
     if(!founder) return;
-    const observer=new MutationObserver(()=>setTimeout(correctFounderRuntime,20));
+    const observer=new MutationObserver(()=>setTimeout(correctRuntime,20));
     observer.observe(founder,{childList:true,subtree:true,characterData:true});
   };
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',startFounderObserver,{once:true});
