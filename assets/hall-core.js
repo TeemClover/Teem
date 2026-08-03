@@ -121,6 +121,22 @@
     if(track)track.style.display=show?"block":"none";
     if(route)route.style.display=show?"grid":"none";
   }
+  function paintRewards(secretComplete){
+    var rewards=document.getElementById("questRewards");
+    if(!rewards)return;
+    var trophy=rewards.querySelector(".platinum-reward");
+    if(secretComplete&&!trophy){
+      trophy=document.createElement("span");
+      trophy.className="reward-chip platinum-reward";
+      trophy.textContent="🏆 PLATINUM TROPHY";
+      trophy.style.borderColor="rgba(190,148,66,.55)";
+      trophy.style.background="rgba(234,208,140,.14)";
+      trophy.style.color="var(--gold2)";
+      rewards.insertBefore(trophy,rewards.firstChild);
+    }else if(!secretComplete&&trophy){
+      trophy.remove();
+    }
+  }
 
   function hideCompletionBanner(){
     var banner=document.getElementById("secretBanner");
@@ -136,8 +152,8 @@
       :"Stay on a call and talk while you play. CORE7 is not only about who wins—it is about discovering how your friend thinks.";
     banner.style.display="flex";
     banner.style.borderTop=secretComplete?"1px solid rgba(255,255,255,.13)":"1px solid rgba(18,40,28,.1)";
-    banner.innerHTML='<a href="core7/" aria-label="'+label+'" style="display:block;width:112px;flex:none">'
-      +'<img src="img/hall-core7.jpg" alt="'+alt+'" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;box-shadow:0 12px 28px -20px rgba(0,0,0,.65)">'
+    banner.innerHTML='<a href="core7/" aria-label="'+label+'" style="display:block;width:124px;flex:none;padding:6px;border-radius:18px;background:'+(secretComplete?'rgba(255,255,255,.08)':'rgba(255,255,255,.92)')+';border:1px solid '+(secretComplete?'rgba(234,208,140,.28)':'rgba(18,40,28,.12)')+';box-shadow:0 14px 30px -20px rgba(0,0,0,.72)">'
+      +'<img src="img/hall-core7.jpg" alt="'+alt+'" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px">'
       +'</a><span><b>'+(th?'ชวนเพื่อนมาดวล':'CHALLENGE A FRIEND')+'</b><span style="color:'+(secretComplete?'rgba(255,255,255,.66)':'var(--muted)')+'">'+copy+'</span></span>';
   }
 
@@ -160,6 +176,7 @@
     eyebrow.textContent="Main Quest Tracker";
     hideCompletionBanner();
     toggleQuestScaffold(true);
+    paintRewards(false);
 
     if(readCount<7){
       var episode=nextRead+1;
@@ -183,6 +200,7 @@
     }
 
     toggleQuestScaffold(false);
+    paintRewards(secretComplete);
     hud.dataset.state=secretComplete?"secret":"complete";
     eyebrow.textContent=secretComplete?"SECRET ENDING CLEAR · NEXT GAME":"MAIN QUEST COMPLETE · NEXT GAME";
     title.textContent=th?"เรียนจบแล้ว — ไปเล่นเกม":"Quest Complete — Time to Play";
