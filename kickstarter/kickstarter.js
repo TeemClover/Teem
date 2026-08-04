@@ -1,501 +1,315 @@
-import './kickstarter-base.js?v=20260802-campaign-v2';
-
 (function(){
   'use strict';
 
+  const VERSION = '20260804-final';
+  const DISCORD_URL = 'https://discord.gg/A5nmMqvTm';
+  const STORAGE_KEY = 'mc_kickstarter_pledge_preview_final';
+  const q = selector => document.querySelector(selector);
+  const qa = selector => Array.from(document.querySelectorAll(selector));
+  let language = 'en';
+  let translations = [];
+  let selectedPledge = null;
+
+  document.documentElement.lang = 'en';
+  const bootStyle = document.createElement('style');
+  bootStyle.id = 'ks-final-boot-style';
+  bootStyle.textContent = 'html.ks-final-boot body{visibility:hidden!important}';
+  document.head.appendChild(bootStyle);
+  document.documentElement.classList.add('ks-final-boot');
+
   const ENERGY_COPY = {
     RED: {
-      en: { label:'RED · BODY', headline:'What makes you feel and move?', body:'Desire, Joy, Taste, Passion, Courage, Warmth and Celebration — the living energy that lets you feel, want and act.' },
-      th: { label:'แดง · ร่างกาย', headline:'อะไรทำให้คุณรู้สึกและเคลื่อนไหว?', body:'ความอยาก ความสุข รสชาติ แรงปรารถนา ความกล้า ความอบอุ่น และการเฉลิมฉลอง — พลังชีวิตที่ทำให้เรารู้สึก ต้องการ และลงมือ' }
-    },
-    BLUE: {
-      en: { label:'BLUE · MIND', headline:'What helps you see and choose?', body:'Clarity, Perspective, Wisdom, Curiosity, Strategy, Reflection and Choice — the mind that turns noise into direction.' },
-      th: { label:'ฟ้า · จิตใจ', headline:'อะไรช่วยให้คุณมองเห็นและเลือก?', body:'ความชัดเจน มุมมอง ปัญญา ความสงสัย กลยุทธ์ การทบทวน และการเลือก — จิตใจที่เปลี่ยนความวุ่นวายให้กลายเป็นทิศทาง' }
+      en:{label:'RED · BODY',headline:'What makes you feel and move?',body:'Desire, Joy, Taste, Passion, Courage, Warmth and Celebration—the living energy that lets you feel, want and act.'},
+      th:{label:'แดง · ร่างกาย',headline:'อะไรทำให้คุณรู้สึกและเคลื่อนไหว?',body:'ความอยาก ความสุข รสชาติ แรงปรารถนา ความกล้า ความอบอุ่น และการเฉลิมฉลอง—พลังชีวิตที่ทำให้เรารู้สึก ต้องการ และลงมือ'}
     },
     GREEN: {
-      en: { label:'GREEN · SOUL', headline:'What helps you care, endure and become?', body:'Discipline, Consistency, Balance, Patience, Care, Recovery and Commitment — the inner roots that let a life keep growing.' },
-      th: { label:'เขียว · จิตวิญญาณ', headline:'อะไรช่วยให้คุณดูแล อดทน และเติบโตเป็นตัวเอง?', body:'วินัย ความสม่ำเสมอ สมดุล ความอดทน การดูแล การฟื้นตัว และความตั้งใจมั่น — รากภายในที่ทำให้ชีวิตเติบโตต่อไปได้' }
+      en:{label:'GREEN · SOUL',headline:'What helps you care, endure and become?',body:'Discipline, Consistency, Balance, Patience, Care, Recovery and Commitment—the inner roots that let a life keep growing.'},
+      th:{label:'เขียว · จิตวิญญาณ',headline:'อะไรช่วยให้คุณดูแล อดทน และเติบโตเป็นตัวเอง?',body:'วินัย ความสม่ำเสมอ สมดุล ความอดทน การดูแล การฟื้นตัว และความตั้งใจมั่น—รากภายในที่ทำให้ชีวิตเติบโตต่อไปได้'}
+    },
+    BLUE: {
+      en:{label:'BLUE · MIND',headline:'What helps you see and choose?',body:'Clarity, Perspective, Wisdom, Curiosity, Strategy, Reflection and Choice—the mind that turns noise into direction.'},
+      th:{label:'ฟ้า · จิตใจ',headline:'อะไรช่วยให้คุณมองเห็นและเลือก?',body:'ความชัดเจน มุมมอง ปัญญา ความสงสัย กลยุทธ์ การทบทวน และการเลือก—จิตใจที่เปลี่ยนความวุ่นวายให้กลายเป็นทิศทาง'}
     },
     GRAY: {
-      en: { label:'GRAY · CRAFT', headline:'What helps you turn meaning into reality?', body:'Observe, Measure, Build, Repair, Connect, Adapt and Iterate — the craft that gives intention a form the world can use.' },
-      th: { label:'เทา · งานสร้าง', headline:'อะไรช่วยให้คุณเปลี่ยนความหมายให้เป็นของจริง?', body:'สังเกต วัดผล สร้าง ซ่อม เชื่อมต่อ ปรับตัว และทำซ้ำให้ดีขึ้น — งานสร้างที่เปลี่ยนเจตนาให้เป็นสิ่งที่โลกใช้งานได้' }
+      en:{label:'GRAY · CRAFT',headline:'What helps you turn meaning into reality?',body:'Observe, Measure, Build, Repair, Connect, Adapt and Iterate—the craft that gives intention a form the world can use.'},
+      th:{label:'เทา · งานสร้าง',headline:'อะไรช่วยให้คุณเปลี่ยนความหมายให้เป็นของจริง?',body:'สังเกต วัดผล สร้าง ซ่อม เชื่อมต่อ ปรับตัว และทำซ้ำให้ดีขึ้น—งานสร้างที่เปลี่ยนเจตนาให้เป็นสิ่งที่โลกใช้งานได้'}
     }
   };
 
-  let currentLanguage = 'en';
-  const translations = [];
+  const OFFICIAL_COPY = {
+    en:{
+      eyebrow:'3 OFFICIAL GAMES + INFINITE CRAFT',
+      title:'Three rules we designed. Infinite games you can.',
+      lead:'The same 7-card hand moves through three levels of depth. Start with Green. Move to Red for speed or Blue for the deepest positional fight. Gray belongs to the player who wants to build what comes next.',
+      games:[
+        {color:'red',core:'BODY',badge:'RED · FASTEST',name:'HERO’S DUEL',tag:'FAST-PACED DUEL GAME',body:'Rock-paper-scissors rebuilt as a rapid fight with memory, damage and shrinking options. Win and your card returns. Lose and it is discarded. A tie costs both cards.',meta:'2 PLAYERS · 7 CARDS · RAPID FIRE'},
+        {color:'green',core:'SOUL',badge:'GREEN · START HERE',name:'CORE7',tag:'FLAGSHIP RULE',body:'The recommended first game. Choose in secret, reveal together and read the human across the table. It teaches the shared color language in seconds.',meta:'2 PLAYERS · MEDIUM DEPTH · HUMAN READ',start:'START HERE'},
+        {color:'blue',core:'MIND',badge:'BLUE · DEEPEST',name:'三川 MIKAWA',tag:'THREE-RIVER STRATEGY GAME',body:'Deploy across 3 bridges, capture 2 of 3 positions and kill 1 captured card. Play a duel or a 4-player tournament where every loss follows you into the Final.',meta:'2–4 PLAYERS · POSITIONAL WAR · 3 BRIDGES'},
+        {color:'gray',core:'CRAFT',badge:'GRAY · OPEN CRAFT',name:'CRAFT YOUR OWN',tag:'INFINITE POSSIBILITIES',body:'Game 4 and beyond belong to the players. Build freely with the same four colors, test it at your table and share the rule in the myClover Discord.',meta:'COMMUNITY-MADE · OPEN RULES · SHARE & REMIX',craft:true}
+      ],
+      ruleEyebrow:'ONE COLOR LANGUAGE · ONE RULE CARD',
+      ruleTitle:'Learn CORE7 once. Then turn over the same card.',
+      ruleBody:'Start with CORE7 and learn the 4-color cycle in seconds. Once the table knows it, the other side opens HERO’S DUEL and 三川 MIKAWA immediately. Same cards. Same symbols. No second system to learn.',
+      flip:'FLIP THE RULE CARD',
+      mikawaSide:'MIKAWA SIDE · HERO’S DUEL + MIKAWA',
+      coreSide:'CORE7 SIDE · START HERE',
+      discord:'SHARE A CRAFTED GAME IN DISCORD'
+    },
+    th:{
+      eyebrow:'3 เกมทางการ + งานสร้างไม่รู้จบ',
+      title:'3 กติกาที่เราออกแบบ ส่วนเกมที่เหลือเป็นของผู้เล่น',
+      lead:'มือ 7 ใบเดิมเดินทางผ่านความลึก 3 ระดับ แนะนำให้เริ่มจากสีเขียว ไปสีแดงเมื่ออยากดวลเร็ว หรือสีฟ้าเมื่ออยากเข้าสู่สงครามวางตำแหน่งที่ลึกที่สุด ส่วนสีเทาเป็นพื้นที่ของคนที่อยากสร้างสิ่งต่อไป',
+      games:[
+        {color:'red',core:'BODY',badge:'แดง · เร็วที่สุด',name:'HERO’S DUEL',tag:'เกมดวลความเร็วสูง',body:'เป่ายิ้งฉุบที่ถูกสร้างใหม่ให้เป็นการต่อสู้รัว ๆ มีทั้งความจำ ความเสียหาย และทางเลือกที่ลดลงเรื่อย ๆ ชนะได้การ์ดคืน แพ้เสียการ์ด เสมอเสียทั้งคู่',meta:'2 ผู้เล่น · 7 ใบ · ดวลรัว'},
+        {color:'green',core:'SOUL',badge:'เขียว · เริ่มจากเกมนี้',name:'CORE7',tag:'กติกาหลัก',body:'เกมแรกที่เราแนะนำ เลือกอย่างลับ เปิดพร้อมกัน และอ่านมนุษย์ตรงหน้า สอนภาษาสีร่วมกันได้ภายในไม่กี่วินาที',meta:'2 ผู้เล่น · ความลึกปานกลาง · อ่านคน',start:'เริ่มจากเกมนี้'},
+        {color:'blue',core:'MIND',badge:'ฟ้า · ลึกที่สุด',name:'三川 MIKAWA',tag:'เกมกลยุทธ์ 3 สายน้ำ',body:'วางกำลังบน 3 สะพาน ยึด 2 ใน 3 ตำแหน่ง แล้ว Kill การ์ดที่ถูก Capture 1 ใบ เล่นดวลหรือจัด Tournament 4 คนที่ทุกความสูญเสียติดตามไปถึงรอบ Final',meta:'2–4 ผู้เล่น · สงครามวางตำแหน่ง · 3 สะพาน'},
+        {color:'gray',core:'CRAFT',badge:'เทา · เปิดให้สร้าง',name:'CRAFT YOUR OWN',tag:'ความเป็นไปได้ไม่รู้จบ',body:'เกมที่ 4 เป็นต้นไปเป็นของผู้เล่น สร้างกติกาได้อย่างอิสระด้วย 4 สีเดิม ทดลองบนโต๊ะ แล้วนำมาแชร์ใน Discord ของ myClover',meta:'ผู้เล่นสร้างเอง · กติกาเปิด · แชร์และต่อยอด',craft:true}
+      ],
+      ruleEyebrow:'ภาษาสีเดียว · การ์ดกติกาใบเดียว',
+      ruleTitle:'เรียน CORE7 เพียงครั้งเดียว แล้วพลิกการ์ดใบเดิม',
+      ruleBody:'เริ่มจาก CORE7 และเข้าใจวงจร 4 สีได้ภายในไม่กี่วินาที เมื่อทั้งโต๊ะเล่นเป็นแล้ว อีกด้านของ Rule Card จะเปิด HERO’S DUEL และ 三川 MIKAWA ให้เล่นต่อได้ทันที การ์ดเดิม สัญลักษณ์เดิม ไม่ต้องเรียนระบบที่ 2',
+      flip:'พลิกการ์ดกติกา',
+      mikawaSide:'ด้าน MIKAWA · HERO’S DUEL + MIKAWA',
+      coreSide:'ด้าน CORE7 · เริ่มจากเกมนี้',
+      discord:'แชร์เกมที่สร้างใน Discord'
+    }
+  };
+
+  const PLEDGE_COPY = {
+    en:{
+      heading:'Choose your First Hand.',
+      lead:'Campaign prices are in USD. We ship worldwide. Shipping and applicable taxes are collected separately in the Pledge Manager after the campaign.',
+      tiers:[
+        {name:'Open Player',label:'DIGITAL · PRINT & PLAY',price:'3.00',desc:'Play the complete system anywhere.',items:['Print-and-play files','Digital Rule Cards','AI knowledge file','All 3 official games']},
+        {name:'First 100 Hands',label:'EARLY BIRD · 100 BOXES ONLY',price:'9.99',desc:'The complete physical First Hand at the launch price.',items:['1 First Hand box','37 cards total','4 foil CORE Cards','All digital rewards'],ribbon:'FIRST 100 BOXES'},
+        {name:'The First Hand',label:'1 PHYSICAL BOX',price:'11.99',desc:'One pocket box. Three official games.',items:['1 First Hand box','37 cards total','4 foil CORE Cards','MSRP $14.99'],featured:true,ribbon:'CORE PLEDGE'},
+        {name:'Share Two',label:'2 PHYSICAL BOXES',price:'21.99',desc:'Keep one. Give one.',items:['2 First Hand boxes','$11.00 per box','All Kickstarter box rewards','All digital rewards']},
+        {name:'Party of Four',label:'4 PHYSICAL BOXES',price:'39.99',desc:'Open four tables—or run a 4-player MIKAWA tournament.',items:['4 First Hand boxes','$10.00 per box','Facilitator quick guide','All digital rewards']},
+        {name:'Culture Builder',label:'12-BOX WORKSHOP PACK',price:'107.99',desc:'Bring the four-color language into a room.',items:['12 First Hand boxes','$9.00 per box','Workshop playbook','Slides and exercises']}
+      ],
+      selected:'You selected',preview:'Campaign preview only. Shipping is added later in the Pledge Manager.',change:'Change selection',choose:'Choose',chosen:'Selected ✓'
+    },
+    th:{
+      heading:'เลือก First Hand ของคุณ',
+      lead:'ราคาทั้งหมดเป็นดอลลาร์สหรัฐ จัดส่งทั่วโลก โดยเก็บค่าจัดส่งและภาษีที่เกี่ยวข้องแยกภายหลังผ่าน Pledge Manager',
+      tiers:[
+        {name:'Open Player',label:'ดิจิทัล · พิมพ์เล่นเอง',price:'3.00',desc:'เล่นระบบเต็มได้จากทุกที่',items:['ไฟล์ Print-and-play','Rule Cards ดิจิทัล','ไฟล์ความรู้สำหรับ AI','เกมทางการครบ 3 เกม']},
+        {name:'First 100 Hands',label:'EARLY BIRD · 100 กล่องแรกเท่านั้น',price:'9.99',desc:'First Hand แบบกล่องจริงในราคาเปิดตัว',items:['First Hand 1 กล่อง','การ์ดรวม 37 ใบ','CORE Cards ฟอยล์ 4 ใบ','รางวัลดิจิทัลทั้งหมด'],ribbon:'100 กล่องแรก'},
+        {name:'The First Hand',label:'กล่องจริง 1 กล่อง',price:'11.99',desc:'กล่องพกพา 1 กล่อง เกมทางการ 3 เกม',items:['First Hand 1 กล่อง','การ์ดรวม 37 ใบ','CORE Cards ฟอยล์ 4 ใบ','ราคาขายปลีก $14.99'],featured:true,ribbon:'ระดับหลัก'},
+        {name:'Share Two',label:'กล่องจริง 2 กล่อง',price:'21.99',desc:'เก็บไว้ 1 กล่อง มอบให้อีกคน 1 กล่อง',items:['First Hand 2 กล่อง','เฉลี่ยกล่องละ $11.00','รางวัล Kickstarter ครบทุกกล่อง','รางวัลดิจิทัลทั้งหมด']},
+        {name:'Party of Four',label:'กล่องจริง 4 กล่อง',price:'39.99',desc:'เปิดโต๊ะได้ 4 โต๊ะ หรือจัด MIKAWA Tournament 4 คน',items:['First Hand 4 กล่อง','เฉลี่ยกล่องละ $10.00','คู่มือ Facilitator แบบย่อ','รางวัลดิจิทัลทั้งหมด']},
+        {name:'Culture Builder',label:'แพ็กเวิร์กช็อป 12 กล่อง',price:'107.99',desc:'นำภาษาสีทั้ง 4 เข้าไปในห้องกิจกรรม',items:['First Hand 12 กล่อง','เฉลี่ยกล่องละ $9.00','Workshop playbook','สไลด์และกิจกรรม']}
+      ],
+      selected:'คุณเลือก',preview:'หน้านี้เป็นตัวอย่างแคมเปญ ค่าจัดส่งจะถูกเพิ่มภายหลังใน Pledge Manager',change:'เปลี่ยนตัวเลือก',choose:'เลือก',chosen:'เลือกแล้ว ✓'
+    }
+  };
+
+  const HERO_IDS=['fh-red-courage','fh-blue-clarity','fh-green-balance','fh-gray-build','fh-red-joy','fh-blue-strategy','fh-green-recovery'];
+  const POCKET_IDS=['fh-red-desire','fh-blue-perspective','fh-green-discipline','fh-gray-observe','fh-red-warmth','fh-blue-choice','fh-green-commitment'];
 
   function injectStyles(){
-    if(document.querySelector('link[data-kickstarter-v2]')) return;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = './kickstarter-v2.css?v=20260802-2';
-    link.dataset.kickstarterV2 = 'true';
+    if(q('#ks-final-styles')) return;
+    const style=document.createElement('style');
+    style.id='ks-final-styles';
+    style.textContent=`
+      html[lang='th'] body,html[lang='th'] button,html[lang='th'] input,html[lang='th'] select,html[lang='th'] textarea{font-family:'Anuphan','Noto Sans Thai','Leelawadee UI',sans-serif!important}
+      html[lang='th'] h1,html[lang='th'] h2,html[lang='th'] h3,html[lang='th'] h4,html[lang='th'] strong,html[lang='th'] b{font-family:'Anuphan','Noto Sans Thai','Leelawadee UI',sans-serif!important;letter-spacing:-.025em}
+      .campaign-nav .brand,.campaign-nav .brand *{font-family:Georgia,'Times New Roman',serif!important;letter-spacing:-.02em!important}
+      .ks-lang{display:flex;align-items:center;border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px;background:rgba(255,255,255,.05)}
+      .ks-lang button{min-width:34px;padding:5px 8px;border:0;border-radius:999px;background:transparent;color:rgba(255,255,255,.62);font-family:Inter,ui-sans-serif,system-ui,sans-serif!important;font-size:10px;font-weight:900;letter-spacing:.08em;cursor:pointer}
+      .ks-lang button.active{background:#ecd28b;color:#102316}
+      #official-games{padding:clamp(76px,9vw,132px) 0;background:linear-gradient(180deg,#f7f0e2 0%,#eadcc3 100%);color:#10271d;position:relative;overflow:hidden}
+      #official-games:before{content:'04';position:absolute;right:-.02em;top:-.2em;font-size:clamp(160px,29vw,440px);font-weight:900;line-height:1;color:rgba(6,39,24,.035);pointer-events:none}
+      .ks-games-head{max-width:980px;margin:0 auto clamp(38px,5vw,66px);text-align:center;position:relative}
+      .ks-games-head h2{margin:.26em 0 .28em;font-size:clamp(38px,5.6vw,74px);line-height:1.01;letter-spacing:-.055em;color:#08251a}
+      .ks-games-head>p:last-child{max-width:850px;margin:0 auto;color:#40534a;font-size:clamp(17px,1.9vw,22px);line-height:1.66}
+      .ks-games-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;position:relative}
+      .ks-game{min-height:390px;padding:30px 26px;border-radius:24px;display:flex;flex-direction:column;position:relative;overflow:hidden;color:#fff;box-shadow:0 24px 64px -38px rgba(5,25,18,.72);isolation:isolate}
+      .ks-game:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 85% 12%,rgba(255,255,255,.16),transparent 34%);z-index:-1}
+      .ks-game.red{background:linear-gradient(150deg,#7e1d17,#3b0d0b)}
+      .ks-game.green{background:linear-gradient(150deg,#0d5638,#062718);outline:3px solid rgba(216,179,95,.72);outline-offset:-3px}
+      .ks-game.blue{background:linear-gradient(150deg,#0b3d67,#071d35)}
+      .ks-game.gray{background:linear-gradient(150deg,#535b60,#252b2f)}
+      .ks-game-badge{align-self:flex-start;padding:8px 11px;border:1px solid rgba(255,255,255,.24);border-radius:999px;font-size:10px;font-weight:900;letter-spacing:.12em;color:#f4d184;text-transform:uppercase}
+      .ks-game-core{position:absolute;right:22px;top:24px;font-size:11px;font-weight:950;letter-spacing:.14em;color:rgba(255,255,255,.42)}
+      .ks-game-start{position:absolute;top:66px;right:18px;padding:7px 10px;border-radius:999px;background:#d8b35f;color:#08251a;font-size:9px;font-weight:950;letter-spacing:.09em;text-transform:uppercase}
+      .ks-game h3{margin:auto 0 .12em;font-size:clamp(30px,3.3vw,48px);line-height:.95;letter-spacing:-.05em;color:#fff}
+      .ks-game.blue h3{font-size:clamp(28px,3vw,43px)}
+      .ks-game-tag{margin-bottom:18px;font-size:10px;font-weight:900;letter-spacing:.14em;color:#f4d184;text-transform:uppercase}
+      .ks-game p{margin:0 0 24px;color:rgba(255,255,255,.84);font-size:15px;line-height:1.62}
+      .ks-game small{margin-top:auto;color:rgba(255,255,255,.62);font-size:9px;font-weight:850;letter-spacing:.08em;line-height:1.5}
+      .ks-discord{display:inline-flex;margin-top:15px;padding:10px 12px;border:1px solid rgba(255,255,255,.28);border-radius:12px;color:#fff;font-size:9px;font-weight:900;letter-spacing:.08em;text-align:center;justify-content:center}
+      .ks-rule{margin-top:clamp(34px,5vw,62px);padding:clamp(24px,4vw,48px);display:grid;grid-template-columns:minmax(300px,.72fr) minmax(0,1fr);gap:clamp(30px,5vw,72px);align-items:center;border:1px solid rgba(6,39,24,.14);border-radius:28px;background:rgba(255,255,255,.62);box-shadow:0 28px 80px -56px rgba(6,39,24,.7)}
+      .ks-flip-shell{width:min(100%,410px);margin:0 auto;perspective:1800px;text-align:center}
+      .ks-flip-card{display:grid;width:100%;padding:0;border:0;background:none;cursor:pointer;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.75,.2,1);filter:drop-shadow(0 24px 28px rgba(5,24,17,.23))}
+      .ks-flip-card.flipped{transform:rotateY(180deg)}
+      .ks-flip-face{grid-area:1/1;display:block;overflow:hidden;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#061d2d}
+      .ks-flip-back{transform:rotateY(180deg);background:#06321f}
+      .ks-flip-face img,.ks-flip-face svg{display:block;width:100%;height:auto;aspect-ratio:1061/1482;object-fit:contain}
+      .ks-flip-control{margin-top:18px;padding:10px 15px;border:0;border-radius:999px;background:#082a1d;color:#fff;font-family:Inter,ui-sans-serif,system-ui,sans-serif!important;font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;cursor:pointer}
+      .ks-rule-copy .eyebrow{color:#8a5d15!important}
+      .ks-rule-copy h3{margin:.3em 0 .35em;font-size:clamp(31px,4vw,54px);line-height:1.04;letter-spacing:-.045em;color:#08251a}
+      .ks-rule-copy>p{margin:0;color:#40534a;font-size:clamp(16px,1.55vw,20px);line-height:1.7}
+      .ks-rule-sides{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+      .ks-rule-sides span{padding:14px 16px;border-radius:14px;background:#fff;border:1px solid rgba(6,39,24,.11);color:#18372a;font-size:11px;font-weight:900;letter-spacing:.06em;text-align:center}
+      #card-back.ks-cardback{padding:clamp(76px,9vw,126px) 0;background:#08271b;color:#fff}
+      .ks-cardback-grid{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(0,1fr);gap:clamp(38px,6vw,86px);align-items:center}
+      .ks-cardback-copy h2{font-size:clamp(40px,5vw,70px);line-height:1;margin:.2em 0 .35em;letter-spacing:-.05em}
+      .ks-cardback-copy p{color:rgba(255,255,255,.76);font-size:clamp(17px,1.7vw,21px)}
+      .ks-cardback-copy blockquote{margin:28px 0;padding:22px;border-left:3px solid #d8b35f;background:rgba(255,255,255,.05);color:#f0d893}
+      .ks-passion-front{aspect-ratio:1061/1482;background:#7e1d17}
+      .ks-passion-front svg{width:100%;height:100%}
+      .pledge-grid{align-items:stretch}
+      .pledge .pledge-price{white-space:nowrap}
+      .pledge .pledge-price small{display:block;margin-top:5px;font-size:11px;color:rgba(255,255,255,.58);font-weight:700;letter-spacing:.04em}
+      .ks-shipping-note{margin:28px auto 0;max-width:880px;padding:18px 22px;border:1px solid rgba(236,210,139,.24);border-radius:16px;color:rgba(255,255,255,.72);text-align:center}
+      @media(max-width:1100px){.ks-games-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+      @media(max-width:900px){.ks-rule,.ks-cardback-grid{grid-template-columns:1fr}.ks-game{min-height:330px}}
+      @media(max-width:680px){.ks-games-head{text-align:left}.ks-games-head>p:last-child{margin-left:0}.ks-games-grid{grid-template-columns:1fr}.ks-game{min-height:300px}.ks-rule{padding:24px 18px;border-radius:22px}.ks-rule-sides{grid-template-columns:1fr}.ks-flip-shell{width:min(92vw,390px)}.ks-lang{margin-left:auto}.nav-links{display:none}}
+      @media(prefers-reduced-motion:reduce){.ks-flip-card{transition:none}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function loadThaiFont(){
+    if(q('#ks-anuphan')) return;
+    const link=document.createElement('link');
+    link.id='ks-anuphan';
+    link.rel='stylesheet';
+    link.href='https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700;800&display=swap';
     document.head.appendChild(link);
   }
 
-  function setText(selector, value){
-    const node = document.querySelector(selector);
-    if(node) node.textContent = value;
+  function fixedBrand(){
+    const brand=q('.brand > span:not(.brand-mark)');
+    if(brand) brand.innerHTML='myClover <b>· First Hand</b>';
+    const founderLink=qa('.nav-links a').find(a=>/founder/i.test(a.textContent||''));
+    if(founderLink) founderLink.textContent='Creator';
   }
 
-  function insertAfter(reference, node){
-    if(reference && reference.parentNode) reference.parentNode.insertBefore(node, reference.nextSibling);
+  function setMeta(){
+    document.title='myClover · First Hand — 0% RNG. 100% Decisions.';
+    const values={
+      'meta[name="description"]':'Choose 7 cards and play 3 official zero-randomness games—HERO’S DUEL, CORE7 and 三川 MIKAWA—inside one 37-card pocket box.',
+      'meta[property="og:title"]':'myClover · First Hand',
+      'meta[property="og:description"]':'3 official games. 1 shared four-color language. 0% RNG. 100% decisions.'
+    };
+    Object.entries(values).forEach(([selector,value])=>{const node=q(selector);if(node)node.setAttribute('content',value);});
   }
 
-  function sectionFrom(html){
-    const template = document.createElement('template');
-    template.innerHTML = html.trim();
-    return template.content.firstElementChild;
+  function cleanLegacyText(root=document.body){
+    const replacements=[[/三川\s*3IVERS/g,'三川 MIKAWA'],[/3IVERS/g,'MIKAWA'],[/Two official games/gi,'Three official games'],[/2 official games/gi,'3 official games'],[/Two games/gi,'Three games'],[/2 games/gi,'3 games']];
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+    nodes.forEach(node=>{if(node.parentElement&&node.parentElement.closest('script,style'))return;let value=node.nodeValue;replacements.forEach(([pattern,next])=>{value=value.replace(pattern,next);});if(value!==node.nodeValue)node.nodeValue=value;});
+    qa('[aria-label],[title],[alt]').forEach(node=>{['aria-label','title','alt'].forEach(attr=>{if(!node.hasAttribute(attr))return;let value=node.getAttribute(attr);replacements.forEach(([pattern,next])=>{value=value.replace(pattern,next);});node.setAttribute(attr,value);});});
   }
 
-  function addNavigationControls(){
-    const nav = document.querySelector('.nav-inner');
-    if(!nav || document.querySelector('.ksv2-nav-tools')) return;
-    const controls = document.createElement('div');
-    controls.className = 'ksv2-nav-tools';
-    controls.innerHTML = `
-      <div class="ksv2-lang" role="group" aria-label="Language">
-        <button type="button" data-lang="en" class="active">EN</button>
-        <button type="button" data-lang="th">TH</button>
-      </div>
-      <a class="ksv2-play-nav" href="/core7/">Play now</a>`;
-    const cta = nav.querySelector('.nav-cta');
-    nav.insertBefore(controls, cta || null);
-  }
-
-  function enhanceHero(){
-    const actions = document.querySelector('.hero-actions');
-    if(actions && !actions.querySelector('.ksv2-play-hero')){
-      const play = document.createElement('a');
-      play.className = 'button button-ghost ksv2-play-hero';
-      play.href = '/core7/';
-      play.textContent = 'Play online now';
-      actions.insertBefore(play, actions.lastElementChild);
+  function canonicalEnglish(){
+    fixedBrand();setMeta();
+    const setText=(selector,value)=>{const node=q(selector);if(node)node.textContent=value;};
+    const setHTML=(selector,value)=>{const node=q(selector);if(node)node.innerHTML=value;};
+    setText('.hero-lead','A pocket game system built from 7 cards you choose yourself. Play 3 official games—from a rapid duel to a full Three-River war—with 0% RNG and 100% decisions.');
+    setText('.micro-proof','28 word cards · 4 double-sided Rule Cards · 1 Lucky Card · 4 foil CORE Cards');
+    setHTML('.hero-seal','<span>myClover · FIRST HAND</span><b>37 CARDS</b><small>3 OFFICIAL GAMES</small>');
+    setHTML('#promise .promise-grid','<article><strong>10 sec</strong><span>to learn CORE7</span></article><article><strong>7 cards</strong><span>your chosen hand</span></article><article><strong>0% RNG</strong><span>100% Decisions</span></article><article><strong>3 games</strong><span>one shared system</span></article>');
+    const box=q('#box');
+    if(box){
+      setHTML('#box .section-heading h2','Thirty-seven cards.<br>Three official games. One pocket box.');
+      setText('#box .box-system-line','33-card game system + 4 playable foil CORE Cards.');
+      const grid=q('#box .box-grid');
+      if(grid)grid.innerHTML='<article class="box-item reveal is-visible"><span class="box-count">28</span><h3>Word Cards</h3><p>Seven Red, Green, Blue and Gray cards. One keyword per card. One shared language across all 3 official games.</p></article><article class="box-item reveal is-visible"><span class="box-count">04</span><h3>Double-Sided Rule Cards</h3><p>CORE7 on one side. HERO’S DUEL + 三川 MIKAWA on the other. One visual guide for each player.</p></article><article class="box-item reveal is-visible"><span class="box-count">01</span><h3>Lucky Card</h3><p>A QR, a good-luck message and a four-panel story showing how one myClover card can become many games.</p></article><article class="box-item reveal is-visible"><span class="box-count">04</span><h3>Foil CORE Cards</h3><p>BODY · SOUL · MIND · CRAFT as playable full-art cards in every Kickstarter box.</p></article>';
     }
-    const copy = document.querySelector('.hero-copy');
-    if(copy && !copy.querySelector('.ksv2-hero-badge')){
-      const badges = document.createElement('div');
-      badges.className = 'ksv2-hero-badge';
-      badges.innerHTML = '<span>Free forever</span><span>No ads</span><span>10 seconds to learn</span>';
-      copy.appendChild(badges);
-    }
+    qa('.risk-copy p').forEach(p=>{if(/intentionally controlled/i.test(p.textContent||''))p.textContent='myClover is intentionally controlled: 37 cards, one compact tuck box, 3 official games, no miniatures, no required app and no production complexity hiding inside stretch goals.';});
+    qa('.stretch-goal').forEach(goal=>{const body=goal.querySelector('p');if(body&&/32-card First Hand/i.test(body.textContent))body.textContent='The complete 37-card First Hand.';const title=goal.querySelector('b');if(title&&/OPEN CREATOR KIT/i.test(title.textContent)){title.textContent='OPEN CRAFT KIT';if(body)body.textContent='A public rule template for player-made games, shared through the myClover Discord.';}});
+    qa('.future-cards article').forEach(card=>{const b=card.querySelector('b'),span=card.querySelector('span');if(b&&/NEW GAMES/i.test(b.textContent)){b.textContent='PLAYER-CRAFTED GAMES';if(span)span.textContent='Game 4 and beyond are built, tested and shared by the community.';}});
+    cleanLegacyText();
   }
 
-  function injectOnlineSection(){
-    if(document.getElementById('play-online')) return;
-    const section = sectionFrom(`
-      <section id="play-online" class="ksv2-section ksv2-online">
-        <div class="wrap ksv2-online-grid">
-          <div>
-            <p class="ksv2-kicker">TRY BEFORE YOU BACK</p>
-            <h2 class="ksv2-title">The game already exists.<br>You can play it now.</h2>
-            <p class="ksv2-lead">CORE7 is online, playable and free forever. No advertising. No paid advantage. No campaign promise asking you to imagine whether the game is fun.</p>
-            <div class="ksv2-button-row">
-              <a class="ksv2-button primary" href="/core7/">Play CORE7 now</a>
-              <a class="ksv2-button secondary" href="#game">Read the ten-second rules</a>
-            </div>
-          </div>
-          <div class="ksv2-online-panel">
-            <p class="ksv2-kicker">PHYSICAL ↔ DIGITAL</p>
-            <h3>The cards are not a paywall.<br>They are the artifact.</h3>
-            <p>Every player gets the same game. Physical sets add the object, the art, the ritual and a code that unlocks the matching collection online as new sets arrive.</p>
-            <div class="ksv2-online-list">
-              <article><b>Free forever</b><span>The core game remains available without a purchase.</span></article>
-              <article><b>No ads</b><span>The table is for people, not interruption inventory.</span></article>
-              <article><b>Equal play</b><span>Foil, rarity and digital art never change the odds.</span></article>
-              <article><b>Set unlocks</b><span>Own the physical set, carry its matching collection online.</span></article>
-            </div>
-          </div>
-        </div>
-      </section>`);
-    insertAfter(document.querySelector('.game'), section);
+  function officialMarkup(){
+    const section=q('#official-games')||document.createElement('section');section.id='official-games';section.className='section-cream';
+    section.innerHTML='<div class="wrap"><div class="ks-games-head reveal is-visible"><p class="eyebrow" data-ks-official="eyebrow"></p><h2 data-ks-official="title"></h2><p data-ks-official="lead"></p></div><div class="ks-games-grid" data-ks-games></div><div class="ks-rule reveal is-visible"><div class="ks-flip-shell"><div class="ks-flip-card" data-rule-flip role="button" tabindex="0" aria-label="Flip the Rule Card"><div class="ks-flip-face"><img src="/core7/assets/mikawa-rule.webp?v='+VERSION+'" alt="三川 MIKAWA and HERO’S DUEL visual Rule Card" loading="eager" decoding="async"></div><div class="ks-flip-face ks-flip-back"><img src="/core7/assets/core7-rule.webp?v='+VERSION+'" alt="CORE7 visual Rule Card" loading="eager" decoding="async"></div></div><button class="ks-flip-control" data-rule-flip-button type="button"></button></div><div class="ks-rule-copy"><p class="eyebrow" data-ks-official="ruleEyebrow"></p><h3 data-ks-official="ruleTitle"></h3><p data-ks-official="ruleBody"></p><div class="ks-rule-sides"><span data-ks-official="mikawaSide"></span><span data-ks-official="coreSide"></span></div></div></div></div>';
+    if(!section.parentNode){const anchor=q('#game');if(anchor)anchor.insertAdjacentElement('afterend',section);}
+    renderOfficial(language);wireFlip(section.querySelector('[data-rule-flip]'),section.querySelector('[data-rule-flip-button]'));
   }
 
-  function injectTournamentSection(){
-    if(document.getElementById('tournament')) return;
-    const section = sectionFrom(`
-      <section id="tournament" class="ksv2-section ksv2-tournament">
-        <div class="wrap ksv2-tournament-grid">
-          <div class="ksv2-scoreboard">
-            <div class="ksv2-scoreboard-top"><b>CORE7 TOURNAMENT FORMAT</b><span>LOCKED HAND</span></div>
-            <div class="ksv2-bo5">BO5</div>
-            <div class="ksv2-rounds" aria-label="Best of five"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i></div>
-            <p>One seven-card hand. Up to five fast games. Every repeat reveals another habit.</p>
-          </div>
-          <div>
-            <p class="ksv2-kicker">COMPETITIVE IN ITS SIMPLEST FORM</p>
-            <h2 class="ksv2-title">Ten seconds to learn.<br>Five games to read a human.</h2>
-            <p class="ksv2-lead">For tournaments, players lock the same seven-card hand for a Best-of-5 set. The rules do not get harder. The opponent becomes clearer. You remember choices, detect patterns, change timing and feel the pressure of using the same tools again.</p>
-            <div class="ksv2-competitive-points">
-              <article><strong>01</strong><div><b>Lock the hand</b><p>Seven cards become your identity for the set.</p></div></article>
-              <article><strong>02</strong><div><b>Repeat the duel</b><p>Play up to five compact matches with the same information space.</p></div></article>
-              <article><strong>03</strong><div><b>Adapt the player</b><p>The competitive depth comes from memory, bluffing and human pattern recognition.</p></div></article>
-            </div>
-            <div class="ksv2-prize"><b>Cold Foil Tournament Prizes</b><br><span>Special event cards can reward champions and communities without adding power. Prestige only. The game remains equal.</span></div>
-          </div>
-        </div>
-      </section>`);
-    insertAfter(document.getElementById('play-online'), section);
+  function renderOfficial(lang){
+    const c=OFFICIAL_COPY[lang];
+    Object.keys(c).filter(key=>typeof c[key]==='string').forEach(key=>qa('[data-ks-official="'+key+'"]').forEach(node=>node.textContent=c[key]));
+    const grid=q('[data-ks-games]');
+    if(grid)grid.innerHTML=c.games.map(game=>'<article class="ks-game '+game.color+'"><span class="ks-game-badge">'+game.badge+'</span><span class="ks-game-core">'+game.core+'</span>'+(game.start?'<span class="ks-game-start">'+game.start+'</span>':'')+'<h3>'+game.name+'</h3><b class="ks-game-tag">'+game.tag+'</b><p>'+game.body+'</p><small>'+game.meta+'</small>'+(game.craft?'<a class="ks-discord" href="'+DISCORD_URL+'" target="_blank" rel="noopener">'+c.discord+'</a>':'')+'</article>').join('');
+    const button=q('[data-rule-flip-button]');if(button)button.textContent='↻ '+c.flip;
   }
 
-  function injectCardBackSection(){
-    if(document.getElementById('card-back')) return;
-    const section = sectionFrom(`
-      <section id="card-back" class="ksv2-section ksv2-cardback">
-        <div class="wrap ksv2-cardback-grid">
-          <div class="ksv2-flip-stage">
-            <div id="ksv2FlipCard" class="ksv2-flip-card" role="button" tabindex="0" aria-label="Flip the CORE7 card">
-              <div id="ksv2CardFront" class="ksv2-flip-face ksv2-flip-front"></div>
-              <div class="ksv2-flip-face ksv2-flip-back"><img src="/core7/assets/myclover-back.webp" alt="The shared back of every myClover CORE7 card"></div>
-            </div>
-            <button id="ksv2FlipButton" class="ksv2-flip-control" type="button">↻ Flip the card</button>
-          </div>
-          <div class="ksv2-cardback-copy">
-            <p class="ksv2-kicker">ONE BACK · EVERY SET</p>
-            <h2 class="ksv2-title">Different meanings.<br>The same language.</h2>
-            <p class="ksv2-lead">Every playable myClover card shares one back. New keywords, artists and cultures can enter the system without breaking the hidden information that makes CORE7 work.</p>
-            <blockquote>The back is not packaging. It is the flag of a language anyone can sit down and speak.</blockquote>
-            <ul>
-              <li>One universal back for every compatible set</li>
-              <li>Four-color clover and compass identity</li>
-              <li>Designed for mixing old and future cards</li>
-              <li>No sleeves required for ordinary play</li>
-            </ul>
-          </div>
-        </div>
-      </section>`);
-    insertAfter(document.querySelector('.carry'), section);
+  function wireFlip(card,button){
+    if(!card||!button||card.dataset.wired==='true')return;card.dataset.wired='true';const toggle=()=>card.classList.toggle('flipped');card.addEventListener('click',toggle);card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();toggle();}});button.addEventListener('click',toggle);
   }
 
-  function injectCoreFoilSection(){
-    if(document.getElementById('foil-cores')) return;
-    const section = sectionFrom(`
-      <section id="foil-cores" class="ksv2-section ksv2-cores">
-        <div class="wrap">
-          <div class="ksv2-core-intro">
-            <p class="ksv2-kicker">THE FOUR FOIL CORES</p>
-            <h2 class="ksv2-title">Body. Mind. Soul. Craft.</h2>
-            <p class="ksv2-lead">Three are the forces of a living person. The fourth is the human act of shaping meaning into something real. Together they complete the myClover language.</p>
-          </div>
-          <div class="ksv2-core-grid">
-            <article class="ksv2-core-card red"><span class="ksv2-core-symbol">●</span><small>RED CORE</small><h3>BODY<br><span>ร่างกาย</span></h3></article>
-            <article class="ksv2-core-card blue"><span class="ksv2-core-symbol">◆</span><small>BLUE CORE</small><h3>MIND<br><span>จิตใจ</span></h3></article>
-            <article class="ksv2-core-card green"><span class="ksv2-core-symbol">✦</span><small>GREEN CORE</small><h3>SOUL<br><span>จิตวิญญาณ</span></h3></article>
-            <article class="ksv2-core-card gray"><span class="ksv2-core-symbol">⚙</span><small>GRAY CORE</small><h3>CRAFT<br><span>งานสร้าง</span></h3></article>
-          </div>
-          <p class="ksv2-core-thesis">Unlocked as a stretch goal: four symbolic foil cards in every physical box. They are collectible, universal and never mechanically stronger.</p>
-        </div>
-      </section>`);
-    insertAfter(document.querySelector('.language'), section);
+  function injectCardBack(){
+    let section=q('#card-back');if(!section){section=document.createElement('section');section.id='card-back';section.className='ks-cardback';const anchor=q('.carry');if(anchor)anchor.insertAdjacentElement('afterend',section);}
+    section.innerHTML='<div class="wrap ks-cardback-grid"><div class="ks-flip-shell reveal is-visible"><div class="ks-flip-card" data-passion-flip role="button" tabindex="0" aria-label="Flip Passion to the shared card back"><div class="ks-flip-face ks-passion-front" id="ksPassionFront"></div><div class="ks-flip-face ks-flip-back"><img src="/core7/assets/myclover-back.webp?v='+VERSION+'" alt="The shared back of every myClover card"></div></div><button class="ks-flip-control" data-passion-flip-button type="button">↻ FLIP PASSION / CARD BACK</button></div><div class="ks-cardback-copy reveal is-visible"><p class="eyebrow">ONE BACK · EVERY GAME</p><h2>Different choices.<br>The same hidden language.</h2><p>Every playable myClover card shares one back. The same 7-card hand can move from CORE7 to HERO’S DUEL, 三川 MIKAWA and any player-crafted game without breaking hidden information.</p><blockquote>The back is not packaging. It is the flag of a language anyone can sit down and play.</blockquote></div></div>';
+    wireFlip(section.querySelector('[data-passion-flip]'),section.querySelector('[data-passion-flip-button]'));
   }
 
-  function injectUseCases(){
-    if(document.getElementById('possibilities')) return;
-    const section = sectionFrom(`
-      <section id="possibilities" class="ksv2-section ksv2-uses">
-        <div class="wrap">
-          <div class="ksv2-uses-head">
-            <div><p class="ksv2-kicker">BEYOND THE DUEL</p><h2 class="ksv2-title">One deck.<br>Many rooms.</h2></div>
-            <p class="ksv2-lead">CORE7 is the first game inside the system, not the limit of the cards. The same four colors can move from a pocket duel to a seminar, a team table or an AI-assisted reflection.</p>
-          </div>
-          <div class="ksv2-uses-grid">
-            <article class="ksv2-use"><span class="icon">💬</span><b>Conversation Starter</b><p>Move from small talk to a real question without forcing anyone to overshare.</p><span>HOME · FRIENDS · COMMUNITY</span></article>
-            <article class="ksv2-use"><span class="icon">🤝</span><b>Team Building</b><p>Name what a team has, what it lacks and what needs to happen next.</p><span>TEAMS · CULTURE · RETROSPECTIVE</span></article>
-            <article class="ksv2-use"><span class="icon">🎤</span><b>Seminar & Workshop</b><p>Teach one shared language, run an activity, then let every participant carry it home.</p><span>EVENTS · LEARNING · DOOR GIFT</span></article>
-            <article class="ksv2-use"><span class="icon">🧭</span><b>Project & Product</b><p>Use Body, Mind, Soul and Craft to frame desire, direction, sustainability and execution.</p><span>PITCH · PLAN · PRESENT</span></article>
-            <article class="ksv2-use"><span class="icon">🧩</span><b>Build a Team</b><p>Choose the energies and keywords a project needs before assigning roles.</p><span>FORMATION · ROLE · ALIGNMENT</span></article>
-            <article class="ksv2-use"><span class="icon">🔮</span><b>Oracle & Reflection</b><p>Use symbolic systems as optional lenses for better questions, never guaranteed prediction.</p><span>JOURNAL · RITUAL · PERSPECTIVE</span></article>
-            <article class="ksv2-use"><span class="icon">🤖</span><b>AI Companion</b><p>Scan the Markdown knowledge file so AI can interpret, combine and expand the deck responsibly.</p><span>CHOOSE · EXPLAIN · EXPAND</span></article>
-            <article class="ksv2-use"><span class="icon">🏆</span><b>Tournament Play</b><p>Run compact BO5 sets and reward champions with cosmetic Cold Foil prize cards.</p><span>DUEL · RANK · COMMUNITY</span></article>
-          </div>
-          <div class="ksv2-unlimited"><strong>4 Colours.<br>Unlimited Possibilities.</strong><span>New cards can add words and art. New designers can add games. The common protocol remains small enough for everyone to remember.</span></div>
-        </div>
-      </section>`);
-    insertAfter(document.querySelector('.ai'), section);
-  }
-
-  function applyCampaignCopy(){
-    const og = document.querySelector('meta[property="og:description"]');
-    if(og) og.setAttribute('content','One deck. Any opponent. Anywhere. Learn in ten seconds, carry seven cards, and play with the world.');
-    setText('.hero-lead','A beautiful 32-card box that lets you open a real game with anyone in ten seconds — even if they do not own a deck, know the rules, or speak the same language.');
-    setText('.micro-proof','28 energy cards · 4 rule cards · 10-second teach · 1 deck for the whole table');
-    const promise = document.querySelector('#promise .promise-grid article:first-child strong');
-    if(promise) promise.textContent = '10 sec';
-    const heading = document.querySelector('.language .section-heading h2');
-    if(heading) heading.innerHTML = 'Four colors. Four parts of being human.<br><em>Body. Mind. Soul. Craft.</em>';
-    const labels = {RED:'RED · BODY',BLUE:'BLUE · MIND',GREEN:'GREEN · SOUL',GRAY:'GRAY · CRAFT'};
-    document.querySelectorAll('.energy-button').forEach(button => {
-      if(labels[button.dataset.energy]) button.innerHTML = '<span>●</span> '+labels[button.dataset.energy];
-    });
-    applyEnergy('RED');
-  }
-
-  function enhancePledges(){
-    document.querySelectorAll('.pledge').forEach(card => {
-      if(card.dataset.pledge === 'Open Player') return;
-      const list = card.querySelector('ul');
-      if(list && !list.querySelector('.ksv2-unlock-item')){
-        const li = document.createElement('li');
-        li.className = 'ksv2-unlock-item';
-        li.textContent = 'Matching digital collection unlock';
-        list.appendChild(li);
-      }
-    });
-    const box = document.querySelector('#box .production-spec');
-    if(box && !document.querySelector('.ksv2-digital-unlock')){
-      const note = document.createElement('div');
-      note.className = 'ksv2-digital-unlock reveal';
-      note.innerHTML = '<b>Physical set, digital collection.</b><br><span>Each physical release is designed to unlock its matching card collection online while the core game stays free for everyone.</span>';
-      insertAfter(box, note);
-    }
-  }
-
-  function enhanceStretchGoal(){
-    document.querySelectorAll('.stretch-goal').forEach(goal => {
-      if(goal.textContent.includes('FOUR FOIL CORES')){
-        const title = goal.querySelector('b');
-        const body = goal.querySelector('p');
-        if(title) title.textContent = 'BODY · MIND · SOUL · CRAFT';
-        if(body) body.textContent = 'Four symbolic foil Core cards in every box — three forces of life and the human power to Craft. Collectible, universal and never stronger.';
-      }
-    });
-    const futureTitle = document.querySelector('.future-copy h2');
-    if(futureTitle) futureTitle.innerHTML = 'Four colors.<br>Unlimited possibilities.';
-  }
-
-  async function renderCardFront(){
+  async function renderCardArt(){
     try{
-      const {cardSVG} = await import('/core7/js/art.js');
-      const target = document.getElementById('ksv2CardFront');
-      if(target) target.innerHTML = cardSVG('fh-red-courage',{width:360});
-    }catch(error){
-      const target = document.getElementById('ksv2CardFront');
-      if(target) target.innerHTML = '<div style="height:100%;display:grid;place-items:center;background:#8f2b1a;color:white;font-weight:900">COURAGE · ความกล้า</div>';
-    }
+      const [{FIRST_HAND},{cardSVG,cloverLogo}]=await Promise.all([import('/core7/js/cards.js'),import('/core7/js/art.js')]);
+      const navLogo=q('#navLogo'),finalLogo=q('#finalLogo');if(navLogo)navLogo.innerHTML=cloverLogo(34);if(finalLogo)finalLogo.innerHTML=cloverLogo(86);
+      const hero=q('#heroCards');if(hero&&!hero.children.length)HERO_IDS.forEach((id,index)=>{const card=document.createElement('div');card.className='hero-card';card.dataset.index=index;card.innerHTML=cardSVG(id,{width:300});hero.appendChild(card);});
+      const pocket=q('#pocketCards');if(pocket&&!pocket.children.length)POCKET_IDS.forEach(id=>{const card=document.createElement('div');card.className='mini-card';card.innerHTML=cardSVG(id,{width:220,showNumber:false});pocket.appendChild(card);});
+      const gallery=q('#cardGallery');if(gallery&&!gallery.children.length)FIRST_HAND.forEach(cardData=>{const card=document.createElement('article');card.className='gallery-card';card.dataset.energy=cardData.color;card.dataset.name=cardData.en;card.setAttribute('aria-label',cardData.en+' — '+cardData.th);card.innerHTML=cardSVG(cardData.id,{width:230});gallery.appendChild(card);});
+      const passion=q('#ksPassionFront');if(passion)passion.innerHTML=cardSVG('fh-red-passion',{width:410});
+    }catch(error){console.error('Unable to load card art',error);}
   }
 
-  function initFlip(){
-    const card = document.getElementById('ksv2FlipCard');
-    const button = document.getElementById('ksv2FlipButton');
-    if(!card || !button) return;
-    const flip = () => card.classList.toggle('flipped');
-    button.addEventListener('click',flip);
-    card.addEventListener('click',flip);
-    card.addEventListener('keydown',event => {
-      if(event.key === 'Enter' || event.key === ' '){ event.preventDefault(); flip(); }
-    });
+  function renderPledges(lang){
+    const c=PLEDGE_COPY[lang];const heading=q('#pledges .section-heading h2');if(heading)heading.textContent=c.heading;const lead=q('#pledges .section-heading>p:last-child');if(lead)lead.textContent=c.lead;
+    const grid=q('#pledges .pledge-grid');if(grid)grid.innerHTML=c.tiers.map(tier=>'<article class="pledge '+(tier.featured?'featured ':'')+'reveal is-visible" data-pledge="'+tier.name+'" data-price="$'+tier.price+'">'+(tier.ribbon?'<div class="pledge-ribbon">'+tier.ribbon+'</div>':'')+'<p class="pledge-label">'+tier.label+'</p><h3>'+tier.name+'</h3><div class="pledge-price"><sup>$</sup>'+tier.price+(tier.name==='The First Hand'?'<small>MSRP $14.99</small>':'')+'</div><p>'+tier.desc+'</p><ul>'+tier.items.map(item=>'<li>'+item+'</li>').join('')+'</ul><button class="select-pledge" type="button">'+c.choose+' '+tier.name+'</button></article>').join('');
+    let note=q('.ks-shipping-note');if(!note&&grid){note=document.createElement('p');note.className='ks-shipping-note';grid.insertAdjacentElement('afterend',note);}if(note)note.textContent=c.lead;
+    const panel=q('#pledgeSelection');if(panel){panel.innerHTML='<span>'+c.selected+'</span><b id="selectedPledge"></b><strong id="selectedPrice"></strong><p>'+c.preview+'</p><button id="clearPledge" type="button">'+c.change+'</button>';panel.hidden=!selectedPledge;}
+    syncPledgeSelection();
   }
 
-  function applyEnergy(energy){
-    const pack = ENERGY_COPY[energy];
-    if(!pack) return;
-    const copy = pack[currentLanguage] || pack.en;
-    setText('#energyLabel',copy.label);
-    setText('#energyHeadline',copy.headline);
-    setText('#energyBody',copy.body);
+  function syncPledgeSelection(){
+    const c=PLEDGE_COPY[language];qa('.pledge').forEach(card=>{const active=selectedPledge&&card.dataset.pledge===selectedPledge.name;card.classList.toggle('is-selected',Boolean(active));const button=card.querySelector('.select-pledge');if(button)button.textContent=active?c.chosen:c.choose+' '+card.dataset.pledge;});
+    const panel=q('#pledgeSelection');if(panel){panel.hidden=!selectedPledge;const name=q('#selectedPledge'),price=q('#selectedPrice');if(name)name.textContent=selectedPledge?.name||'';if(price)price.textContent=selectedPledge?.price||'';}
   }
 
-  function bind(selector, thai, html){
-    const nodes = Array.from(document.querySelectorAll(selector));
-    const values = Array.isArray(thai) ? thai : [thai];
-    nodes.forEach((node,index) => {
-      translations.push({
-        node,
-        en: html ? node.innerHTML : node.textContent,
-        th: values[index] !== undefined ? values[index] : values[values.length-1],
-        html: Boolean(html)
-      });
-    });
+  function bindPledges(){
+    document.addEventListener('click',event=>{const choose=event.target.closest&&event.target.closest('.select-pledge');if(choose){const card=choose.closest('.pledge');if(!card)return;selectedPledge={name:card.dataset.pledge,price:card.dataset.price};try{localStorage.setItem(STORAGE_KEY,JSON.stringify(selectedPledge));}catch(_){ }syncPledgeSelection();const panel=q('#pledgeSelection');if(panel)panel.scrollIntoView({behavior:'smooth',block:'center'});return;}if(event.target.closest&&event.target.closest('#clearPledge')){selectedPledge=null;try{localStorage.removeItem(STORAGE_KEY);}catch(_){ }syncPledgeSelection();}});
+    try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));if(saved&&saved.name&&qa('.pledge').some(card=>card.dataset.pledge===saved.name))selectedPledge=saved;}catch(_){ }syncPledgeSelection();
   }
 
+  function setEnergy(energy){
+    const copy=ENERGY_COPY[energy]?.[language]||ENERGY_COPY.RED[language];qa('.energy-button').forEach(button=>button.classList.toggle('active',button.dataset.energy===energy));const label=q('#energyLabel'),headline=q('#energyHeadline'),body=q('#energyBody');if(label)label.textContent=copy.label;if(headline)headline.textContent=copy.headline;if(body)body.textContent=copy.body;qa('.gallery-card').forEach(card=>card.classList.toggle('is-muted',card.dataset.energy!==energy));setTimeout(()=>qa('.gallery-card').forEach(card=>card.classList.remove('is-muted')),900);
+  }
+  function bindEnergy(){qa('.energy-button').forEach(button=>button.addEventListener('click',()=>setEnergy(button.dataset.energy)));}
+
+  function addLanguageControls(){
+    const nav=q('.nav-inner');if(!nav)return;let control=q('.ks-lang');if(!control){control=document.createElement('div');control.className='ks-lang';control.setAttribute('role','group');control.setAttribute('aria-label','Language');control.innerHTML='<button type="button" data-lang="en" class="active">EN</button><button type="button" data-lang="th">TH</button>';const cta=q('.nav-cta');nav.insertBefore(control,cta||null);}control.addEventListener('click',event=>{const button=event.target.closest('button[data-lang]');if(button)applyLanguage(button.dataset.lang);});
+  }
+
+  function bind(selector,thai,{html=false}={}){const nodes=qa(selector),values=Array.isArray(thai)?thai:[thai];nodes.forEach((node,index)=>translations.push({node,en:html?node.innerHTML:node.textContent,th:values[index]!==undefined?values[index]:values[values.length-1],html}));}
   function buildTranslations(){
-    bind('.nav-links a',['ตัวเกม','ในกล่อง','ระดับสนับสนุน','เป้าหมายเพิ่มเติม']);
-    bind('.nav-cta','เลือกระดับสนับสนุน');
-    bind('.ksv2-play-nav','เล่นตอนนี้');
-    bind('.campaign-kicker','ตัวอย่างแคมเปญ · การพิมพ์ครั้งแรก');
-    bind('.hero h1','เด็คเดียว<br>คู่แข่งคนไหนก็ได้<br><em>ที่ไหนก็ได้</em>',true);
-    bind('.hero-lead','กล่องการ์ดสวยงาม 32 ใบ ที่ทำให้คุณเปิดเกมจริงกับใครก็ได้ภายในสิบวินาที แม้เขาจะไม่มีเด็ค ไม่รู้กติกา หรือพูดคนละภาษาก็ตาม');
-    bind('.hero-actions a',['สนับสนุน First Hand','เล่นออนไลน์ตอนนี้','ดูวิธีเล่น']);
-    bind('.micro-proof','การ์ดพลังงาน 28 ใบ · การ์ดกติกา 4 ใบ · สอน 10 วินาที · เด็คเดียวเล่นได้ทั้งโต๊ะ');
-    bind('.ksv2-hero-badge span',['ฟรีตลอดไป','ไม่มีโฆษณา','เรียนรู้ใน 10 วินาที']);
-    bind('#promise .promise-grid article span',['ใช้เรียนรู้','พกติดตัว','คนจากกล่องเดียว','การซื้อที่จำเป็นต่อการเล่น']);
-    bind('.origin-copy .eyebrow','การค้นพบครั้งสำคัญ');
-    bind('.origin-copy h2','เราใช้เวลาสามปีพยายามออกแบบเกมการ์ด<br><em>แล้วเราก็ค้นพบภาษา</em>',true);
-    bind('.origin-copy p',['เกมการ์ดส่วนใหญ่เริ่มด้วยปัญหา: ทั้งสองคนต้องมีเกมเดียวกัน รู้กติกาเดียวกัน และมักต้องมีเด็คของตัวเอง แต่ CORE7 เริ่มจากคำสัญญาตรงกันข้าม','การ์ดใช้สี่สี สี่สัญลักษณ์ และยี่สิบแปดคำของมนุษย์ เด็กเข้าใจการต่อสู้ ผู้ใหญ่คุยต่อหลังเกม และทีมใช้การ์ดชุดเดียวกันเพื่อวางแผน ทบทวน หรือบอกว่าสิ่งใดกำลังขาด']);
-    bind('.origin-copy blockquote','“ฉันพกหนึ่งกล่อง ฉันเจอใครก็ได้ แล้วเราเล่นกันได้”');
-    bind('.game .section-heading .eyebrow','CORE7 · เกมหลัก');
-    bind('.game .section-heading h2','สี่สี หนึ่งวงจร<br>และเกมที่ลึกเกินคาด',true);
-    bind('.game .section-heading > p:last-child','เลือกแบบลับ เปิดพร้อมกัน แล้วอ่านคนตรงหน้า ไม่ใช่อ่านกำแพงข้อความบนการ์ด');
-    bind('.rules-poster figcaption','แนวคิดทั้งหมดจบได้ในการ์ดกติกาเพียงหนึ่งใบ');
-    bind('.cycle-item span',['ชนะเขียว','ชนะฟ้า','ชนะแดง']);
-    bind('.gray-rule span','บล็อกทุกสี แต่เทาใบสุดท้ายแพ้');
-    bind('.how-list b',['สร้างมือของคุณ','เลือกแบบลับ','เปิดพร้อมกัน','บริหารการ์ดที่เหลือ','ชนะสามรอบ']);
-    bind('.how-list p',['พกเจ็ดใบ ดราฟต์จากกล่อง หรือใช้อะไรก็ได้ที่แทนสี่สี','ผู้เล่นทั้งสองเลือกการ์ดหนึ่งใบคว่ำพร้อมกัน','วงจรสีตัดสินทันที เทาทำหน้าที่บล็อก','ผู้ชนะทิ้งหนึ่งใบ ผู้แพ้ทิ้งใบที่เล่นและเพิ่มอีกหนึ่งใบ','ทุกใบที่เปิดกลายเป็นข้อมูล เกมยิ่งเข้มเมื่อมือเล็กลง']);
-    bind('.game-truth p','กติกาง่ายพอจะสอนได้โดยไม่ต้องใช้ภาษา');
-    bind('.game-truth strong','แต่ตัวเลือกเป็นมนุษย์พอที่จะทำให้เล่นซ้ำได้');
-    bind('.carry-copy .eyebrow','คำสัญญาของเกมพกพา');
-    bind('.carry-copy h2','เกมทั้งคืนของคุณอยู่ในกระเป๋าใบเดียวได้');
-    bind('.carry-copy > p','เก็บกล่องเต็มไว้ที่บ้าน หรือพกมือเจ็ดใบของคุณ เมื่อเจอผู้เล่นอีกคนก็สร้างมือให้เขาจากอีกยี่สิบเอ็ดใบ ไม่ต้องมีเด็คที่สอง ไม่ต้องจัดโต๊ะพิธีใหญ่ และไม่ต้องตามหาคนที่รู้จักเกมเดียวกัน');
-    bind('.check-list li',['ไม่ต้องใส่ซอง','ไม่ต้องใช้พื้นที่โต๊ะใหญ่','ไม่มีการ์ดสะสมที่เก่งขึ้นเรื่อย ๆ','ไม่ต้องอ่านข้อความเพื่อชี้ขาดเกมหลัก','ไม่ต้องใช้อินเทอร์เน็ต']);
-    bind('.language .section-heading .eyebrow','การ์ดหลังเกมจบ');
-    bind('.language .section-heading h2','สี่สี สี่ส่วนของความเป็นมนุษย์<br><em>ร่างกาย จิตใจ จิตวิญญาณ งานสร้าง</em>',true);
-    bind('.language .section-heading > p:last-child','การ์ดแต่ละใบเก็บพลังงานของมนุษย์หนึ่งคำ คำอังกฤษทำให้มันเดินทาง ส่วนคำไทยรักษาต้นกำเนิดทางอารมณ์ของมันไว้ ไม่ใช่ของตกแต่ง แต่คือเมล็ดแรกของความหมาย');
-    bind('.gallery-caption','FIRST HAND · 28 ใบ · เจ็ดความหมายในแต่ละสี');
-    bind('#box .section-heading .eyebrow','มีอะไรในกล่อง');
-    bind('#box .section-heading h2','สามสิบสองใบ<br>ไม่มีอะไรเกินความจำเป็น',true);
-    bind('.box-item h3',['การ์ดพลังงาน','การ์ดกติกา','ไฟล์ความรู้สำหรับ AI','วิธีใช้ไม่จำกัด']);
-    bind('.box-item p',['แดงเจ็ด ฟ้าเจ็ด เขียวเจ็ด และเทาเจ็ด แต่ละใบมีภาพเต็มใบต้นฉบับ คำอังกฤษ และความหมายภาษาไทย','การเริ่มเกม วงจรสี การบล็อกและชัยชนะ รวมถึง Open Play และคู่มือ AI แจกให้คนรอบโต๊ะแล้วเริ่มได้เลย','สแกน QR เพื่อให้ AI รู้รายการการ์ด ความหมาย กติกา ขอบเขต และแนวคิดใช้งานต่อ','CORE7 คือเกมแรก ไม่ใช่เกมสุดท้าย ใช้โปรโตคอลสี่สีเดียวกันสร้างเกม เวิร์กช็อป และพิธีกรรมใหม่ได้']);
-    bind('.production-spec span',['ขนาดการ์ดมาตรฐาน','ออกแบบมาให้เล่นโดยไม่ใส่ซอง','ไม่ใช้สีเพียงอย่างเดียว','สร้างมาเพื่อกระเป๋า ไม่ใช่ชั้นวาง']);
-    bind('.ksv2-digital-unlock b','ชุดจริง คอลเลกชันดิจิทัล');
-    bind('.ksv2-digital-unlock span','การ์ดจริงแต่ละชุดออกแบบมาเพื่อปลดล็อกคอลเลกชันเดียวกันในออนไลน์ ขณะที่เกมหลักยังฟรีสำหรับทุกคน');
-    bind('.open-copy .eyebrow','คำสัญญาของเรา');
-    bind('.open-copy h2','คุณไม่จำเป็นต้องซื้อการ์ดของเราเพื่อเล่นเกมของเรา');
-    bind('.open-copy > p:first-of-type','เขียน แดง ฟ้า เขียว เทา ลงบนเศษกระดาษ ใช้โทเคนสี หรือกำหนดดอกจากไพ่ปกติ CORE7 ก็ยังเล่นได้');
-    bind('.open-emphasis','เราไม่ได้ขายสิทธิ์ในการเล่น<br><b>เรากำลังสร้างวัตถุที่ดีพอให้คุณเลือกซื้อเอง</b>',true);
-    bind('.open-pillars span',['เล่นออนไลน์ฟรี','พิมพ์เล่นเอง','ใช้ของแทนได้','ไม่จ่ายเพื่อชนะ','สร้างกติกาชุมชนได้']);
-    bind('.ai-copy .eyebrow','ชั้น AI');
-    bind('.ai-copy h2','เด็คที่เครื่องเข้าใจได้ โดยไม่บังคับให้คุณจำหนังสือทั้งเล่ม');
-    bind('.ai-copy > p:first-of-type','ทุกกล่องมี QR ไปยังไฟล์ Markdown ที่สะอาด ส่งให้ AI ที่คุณใช้อยู่ มันจะรู้ว่ามีการ์ดอะไร ความหมายคืออะไร เกมทำงานอย่างไร และจุดไหนที่การตีความต้องหยุด');
-    bind('.ai-use-grid b',['เลือกมือประจำวัน','วางแผนโปรเจกต์','เปิดบทสนทนา','สะท้อนผ่านสัญลักษณ์']);
-    bind('.ai-use-grid span',['“เลือกเจ็ดใบให้เหมาะกับวันที่ฉันกำลังจะเจอ”','เปลี่ยน Clarity, Strategy, Build, Measure และ Iterate ให้เป็นขั้นตอนทำงานจริง','สร้างคำถามสำหรับครอบครัว ทีม หรือคนแปลกหน้าสองคนที่โต๊ะเดียวกัน','ใช้วันเกิด ธาตุ หรือระบบวัฒนธรรมเป็นเลนส์เสริม ไม่ใช่คำทำนายที่รับประกัน']);
-    bind('.ai-boundary','AI ไม่ได้บอกชะตาของคุณ มันช่วยให้คุณเห็นทางเลือกมากขึ้น');
-    bind('#pledges .section-heading .eyebrow','เลือก FIRST HAND ของคุณ');
-    bind('#pledges .section-heading h2','สนับสนุนวัตถุ<br>รักษาเกมให้เปิดกว้าง',true);
-    bind('#pledges .section-heading > p:last-child','ราคาแคมเปญแสดงเป็นดอลลาร์สหรัฐ ค่าจัดส่งเก็บหลังแคมเปญเพื่อคิดตามปลายทางจริง');
-    bind('.ksv2-unlock-item','ปลดล็อกคอลเลกชันดิจิทัลที่ตรงกับชุดจริง');
-    bind('#stretch .section-heading .eyebrow','เป้าหมายเพิ่มเติม');
-    bind('#stretch .section-heading h2','ทำให้กล่องเดิมดีขึ้น<br>อย่าสร้างโครงการที่สอง',true);
-    bind('#stretch .section-heading > p:last-child','ทุกเป้าหมายทำให้วัตถุหรือระบบเปิดดีขึ้น ไม่มีสิ่งใดเพิ่มพลังการแข่งขัน');
-    bind('.future-copy .eyebrow','หนึ่งภาษา · หลายโลก');
-    bind('.future-copy h2','สี่สี<br>ความเป็นไปได้ไม่จำกัด',true);
-    bind('.future-copy p','ชุดอนาคตนำคำใหม่ ภาพใหม่ ศิลปินใหม่ และวัฒนธรรมใหม่เข้าสู่โปรโตคอลสี่สีเดิม การ์ดเก่ายังเล่นได้ ภาพใหม่ยังน่าสะสม และ CORE7 ยังฟรี');
-    bind('.timeline .section-heading .eyebrow','เส้นทางสู่โต๊ะของคุณ');
-    bind('.timeline .section-heading h2','กล่องเล็ก ๆ สมควรได้รับแผนงานที่มีวินัย');
-    bind('.timeline-grid b',['แคมเปญ','เตรียมพิมพ์','ตัวอย่างโรงงาน','การผลิต','ขนส่งใหญ่','ส่งถึงมือ']);
-    bind('.timeline-grid p',['ระดมทุน สรุปจำนวนผู้สนับสนุน และล็อกเป้าหมายเพิ่มเติม','ตรวจทุกใบ ภาษา สัญลักษณ์ ระยะตัดตก และโปรไฟล์สี','อนุมัติกระดาษ ผิวสัมผัส กล่อง และการใช้งานจริงโดยไม่ใส่ซอง','พิมพ์ ตัด จัดชุด ตรวจสอบ และเปลี่ยนชิ้นเสีย','ย้ายสินค้าไปจุดกระจายและเก็บค่าจัดส่งตามปลายทาง','ส่ง First Hand ออกสู่โลก แล้วดูโต๊ะใหม่เริ่มต้น']);
-    bind('.risks .eyebrow','ความเสี่ยงและความท้าทาย');
-    bind('.risks h2','เราทะเยอทะยานกับวัฒนธรรม<br>แต่ระมัดระวังกับกล่อง',true);
-    bind('.risk-copy p',['เกมมีอยู่แล้วในรูปแบบดิจิทัล ตัวตนของการ์ดยี่สิบแปดใบแรกถูกล็อก และระบบภาพสร้างเสร็จแล้ว งานที่เหลือคือการผลิตจริง: ตัวอย่าง สี วัสดุ บรรจุภัณฑ์ ขนส่ง และกระจายสินค้า','เราจะไม่เพิ่มมินิฟิกเกอร์ การบังคับใช้แอป กล่องเกมที่สอง หรือกระบวนการผลิตประหลาดเพียงเพราะตัวเลขระดมทุนดูน่าตื่นเต้น เป้าหมายเพิ่มเติมต้องทำให้สิ่งเดิมดีขึ้น','วันที่ในแคมเปญจริงจะอิงใบเสนอราคาที่ลงนามแล้ว พร้อมเวลาสำรองสำหรับแก้ตัวอย่างและขนส่งระหว่างประเทศ']);
-    bind('.faq .eyebrow','คำถามที่พบบ่อย');
-    bind('.faq h2','คำถามที่เราจะถามก่อนกดสนับสนุน');
-    bind('.faq-list summary',['ผู้เล่นทั้งสองต้องมีกล่องไหม?','ทำไมต้องซื้อการ์ดถ้าเกมฟรี?','คำไทยมีผลต่อการเล่นไหม?','นี่คือไพ่ออราเคิลหรือดูดวงไหม?','การ์ดหายากเก่งกว่าหรือไม่?','เด็กเล่นได้ไหม?','ฉันสร้างการ์ดหรือเกมเองได้ไหม?','จะมีชุดใหม่อีกไหม?']);
-    bind('.faq-list details p',['ไม่ นี่คือคำสัญญาหลัก กล่องเดียวสร้างมือได้ทั้งสองฝ่าย และเกมพื้นฐานใช้สิ่งใดก็ได้ที่แทนสี่สี','เพราะเด็คจริงคืองานศิลปะ ภาษา พิธีกรรมพกพา และวัตถุที่คุณอยากวางลงบนโต๊ะ กลไกเปิดกว้าง แต่วัตถุต้องคู่ควรกับการซื้อ','ไม่ สีเป็นตัวตัดสิน CORE7 ภาษาไทยรักษาต้นกำเนิดทางวัฒนธรรมและอารมณ์ของแต่ละคำ เพิ่มความลึกโดยไม่สร้างกำแพงภาษา','ใช้สะท้อนเชิงสัญลักษณ์ร่วมกับ AI ได้ แต่ไม่อ้างว่าทำนายอนาคต ระบบออกแบบเพื่อสร้างคำถาม มุมมอง และการลงมือ ไม่ใช่ความแน่นอน','ไม่ ฟอยล์ ภาพพิเศษ และความหายากเป็นเพียงของสะสม กระดาษเขียนคำว่าแดงสามารถชนะการ์ดเขียวราคาแพงที่สุดได้เสมอ','เกมสีตั้งใจให้ง่ายและมีไอคอนกำกับ คำแนะนำอายุและการดูแลของผู้ใหญ่จะยืนยันหลัง Blind Playtest','นี่คือส่วนหนึ่งของระบบระยะยาว Open Creator Kit จะกำหนด Schema และแนวทางความเข้ากันได้โดยรักษาแกนสี่สี','มี ทั้งคำใหม่ ภาพใหม่ ศิลปินใหม่ และธีมใหม่ โปรโตคอลยังคงแดง ฟ้า เขียว เทา เพื่อให้ First Hand ไม่ล้าสมัย']);
-    bind('.final-cta .eyebrow','FIRST HAND');
-    bind('.final-cta h2','พกหนึ่งเด็ค<br>แล้วออกไปพบโลกครึ่งทาง',true);
-    bind('.final-cta > .wrap > p:not(.eyebrow)','สนับสนุนเกมที่ทุกคนเล่นได้ และชุดคำที่ควรถูกส่งต่อจากมือหนึ่งสู่อีกมือหนึ่ง');
-    bind('.final-cta .button','เลือกระดับสนับสนุน');
-
-    bind('#play-online .ksv2-kicker',['ลองก่อนสนับสนุน','กายภาพ ↔ ดิจิทัล']);
-    bind('#play-online .ksv2-title','เกมมีอยู่แล้ว<br>คุณเล่นได้ตอนนี้',true);
-    bind('#play-online .ksv2-lead','CORE7 เล่นออนไลน์ได้จริงและฟรีตลอดไป ไม่มีโฆษณา ไม่มีความได้เปรียบแบบจ่ายเงิน และไม่ต้องเชื่อคำสัญญาของแคมเปญว่ามันสนุกหรือไม่');
-    bind('#play-online .ksv2-button',['เล่น CORE7 ตอนนี้','อ่านกติกาสิบวินาที']);
-    bind('.ksv2-online-panel h3','การ์ดไม่ใช่กำแพงจ่ายเงิน<br>มันคือวัตถุที่เราอยากสร้าง',true);
-    bind('.ksv2-online-panel > p:not(.ksv2-kicker)','ผู้เล่นทุกคนได้เกมเดียวกัน ชุดจริงเพิ่มวัตถุ งานศิลปะ พิธีกรรม และรหัสปลดล็อกคอลเลกชันเดียวกันในออนไลน์เมื่อมีชุดใหม่');
-    bind('.ksv2-online-list b',['ฟรีตลอดไป','ไม่มีโฆษณา','การแข่งขันเท่าเทียม','ปลดล็อกชุด']);
-    bind('.ksv2-online-list span',['เกมหลักยังเล่นได้โดยไม่ต้องซื้อ','โต๊ะมีไว้ให้คน ไม่ใช่พื้นที่ขายโฆษณา','ฟอยล์ ความหายาก และภาพดิจิทัลไม่เปลี่ยนโอกาสชนะ','มีชุดจริง ก็พกคอลเลกชันเดียวกันไปในออนไลน์']);
-
-    bind('#tournament .ksv2-scoreboard-top b','รูปแบบการแข่งขัน CORE7');
-    bind('#tournament .ksv2-scoreboard-top span','ล็อกมือ');
-    bind('#tournament .ksv2-scoreboard > p','มือเจ็ดใบหนึ่งชุด เกมเร็วสูงสุดห้าเกม ทุกการเล่นซ้ำเผยนิสัยเพิ่มขึ้น');
-    bind('#tournament .ksv2-kicker','การแข่งขันในรูปแบบที่เรียบง่ายที่สุด');
-    bind('#tournament .ksv2-title','เรียนรู้ในสิบวินาที<br>ใช้ห้าเกมอ่านมนุษย์หนึ่งคน',true);
-    bind('#tournament .ksv2-lead','ในการแข่งขัน ผู้เล่นล็อกมือเจ็ดใบเดิมตลอดเซ็ต Best-of-5 กติกาไม่ได้ยากขึ้น แต่คู่แข่งชัดขึ้น คุณจำการเลือก เห็นรูปแบบ เปลี่ยนจังหวะ และรู้สึกถึงแรงกดดันของการใช้เครื่องมือเดิมอีกครั้ง');
-    bind('.ksv2-competitive-points b',['ล็อกมือ','เล่นดวลซ้ำ','ปรับตามคน']);
-    bind('.ksv2-competitive-points p',['เจ็ดใบกลายเป็นตัวตนของคุณตลอดเซ็ต','เล่นเกมสั้นสูงสุดห้าเกมในพื้นที่ข้อมูลเดิม','ความลึกมาจากความจำ การลวง และการอ่านรูปแบบของมนุษย์']);
-    bind('.ksv2-prize b','รางวัลการแข่งขัน Cold Foil');
-    bind('.ksv2-prize span','การ์ดกิจกรรมพิเศษใช้ให้รางวัลแชมป์และชุมชนได้โดยไม่เพิ่มพลัง มีเพียงเกียรติ เกมยังเท่าเทียม');
-
-    bind('#card-back .ksv2-kicker','หลังเดียว · ทุกชุด');
-    bind('#card-back .ksv2-title','ความหมายต่างกัน<br>ภาษาเดียวกัน',true);
-    bind('#card-back .ksv2-lead','การ์ด myClover ที่ใช้เล่นทุกใบมีหลังเดียวกัน คำใหม่ ศิลปินใหม่ และวัฒนธรรมใหม่จึงเข้าระบบได้โดยไม่ทำลายข้อมูลลับที่ทำให้ CORE7 ทำงาน');
-    bind('.ksv2-cardback-copy blockquote','หลังการ์ดไม่ใช่บรรจุภัณฑ์ มันคือธงของภาษาที่ใครก็นั่งลงและพูดร่วมกันได้');
-    bind('.ksv2-cardback-copy li',['หลังสากลหนึ่งแบบสำหรับทุกชุดที่เข้ากันได้','โคลเวอร์สี่สีและเข็มทิศเป็นตัวตนกลาง','ออกแบบให้ผสมการ์ดเก่ากับอนาคตได้','เล่นทั่วไปได้โดยไม่ต้องใส่ซอง']);
-    bind('#ksv2FlipButton','↻ พลิกการ์ด');
-
-    bind('#foil-cores .ksv2-kicker','FOIL CORE ทั้งสี่');
-    bind('#foil-cores .ksv2-title','ร่างกาย จิตใจ จิตวิญญาณ งานสร้าง');
-    bind('#foil-cores .ksv2-lead','สามอย่างคือพลังของชีวิต ส่วนที่สี่คือการกระทำของมนุษย์ที่เปลี่ยนความหมายให้เป็นของจริง เมื่อรวมกันจึงทำให้ภาษา myClover สมบูรณ์');
-    bind('.ksv2-core-thesis','ปลดล็อกเป็น Stretch Goal: การ์ดสัญลักษณ์ฟอยล์สี่ใบในทุกกล่อง เป็นของสะสม ใช้ร่วมกันได้ และไม่เก่งกว่าเชิงกลไก');
-
-    bind('#possibilities .ksv2-kicker','นอกเหนือจากการดวล');
-    bind('#possibilities .ksv2-title','หนึ่งเด็ค<br>หลายพื้นที่',true);
-    bind('#possibilities .ksv2-lead','CORE7 คือเกมแรกในระบบ ไม่ใช่ขีดจำกัดของการ์ด สี่สีเดียวกันเดินทางจากการดวลในกระเป๋าไปสู่สัมมนา โต๊ะทีม หรือการสะท้อนร่วมกับ AI ได้');
-    bind('.ksv2-use b',['เริ่มบทสนทนา','สร้างทีม','สัมมนาและเวิร์กช็อป','โปรเจกต์และสินค้า','ตั้งทีม','ออราเคิลและการสะท้อน','คู่คิด AI','การแข่งขัน']);
-    bind('.ksv2-use p',['พาจากบทสนทนาทั่วไปไปสู่คำถามจริงโดยไม่บังคับให้ใครเปิดเผยเกินไป','บอกว่าทีมมีอะไร ขาดอะไร และอะไรต้องเกิดขึ้นต่อ','สอนภาษากลางหนึ่งชุด ทำกิจกรรม แล้วให้ผู้เข้าร่วมพกกลับบ้าน','ใช้ Body, Mind, Soul และ Craft วางกรอบความต้องการ ทิศทาง ความยั่งยืน และการลงมือ','เลือกพลังงานและ Keyword ที่โครงการต้องการก่อนแบ่งบทบาท','ใช้ระบบสัญลักษณ์เป็นเลนส์เสริมสำหรับคำถามที่ดีขึ้น ไม่ใช่คำทำนายรับประกัน','สแกนไฟล์ Markdown เพื่อให้ AI ตีความ ผสม และขยายระบบอย่างมีขอบเขต','จัดเซ็ต BO5 ที่กระชับและให้รางวัลแชมป์ด้วยการ์ด Cold Foil ที่ไม่มีพลังเพิ่ม']);
-    bind('.ksv2-unlimited strong','4 สี<br>ความเป็นไปได้ไม่จำกัด',true);
-    bind('.ksv2-unlimited span','การ์ดใหม่เพิ่มคำและภาพ นักออกแบบใหม่เพิ่มเกม โปรโตคอลร่วมยังเล็กพอให้ทุกคนจำได้');
+    translations=[];bind('.nav-links a',['ตัวเกม','ในกล่อง','ระดับสนับสนุน','ผู้สร้าง']);bind('.nav-cta','เลือกระดับสนับสนุน');bind('.campaign-kicker','ตัวอย่างแคมเปญ · การพิมพ์ครั้งแรก');bind('.hero h1','เด็คเดียว<br>คู่แข่งคนไหนก็ได้<br><em>ที่ไหนก็ได้</em>',{html:true});bind('.hero-lead','ระบบเกมพกพาที่เริ่มจากการ์ด 7 ใบซึ่งคุณเลือกเอง เล่นได้ 3 เกมทางการ ตั้งแต่การดวลรัวไปจนถึงสงคราม 3 สายน้ำ โดยไม่มีการสุ่มและทุกผลลัพธ์เกิดจากการตัดสินใจ');bind('.hero-actions a',['สนับสนุน First Hand','ดูวิธีเล่น']);bind('.micro-proof','การ์ดคำ 28 ใบ · Rule Cards หน้าหลัง 4 ใบ · Lucky Card 1 ใบ · CORE Cards ฟอยล์ 4 ใบ');bind('.hero-scroll','สำรวจกล่อง');bind('#promise .promise-grid article span',['เรียนรู้ CORE7','มือที่เลือกเอง','ตัดสินใจ 100%','ระบบเดียวกัน']);bind('.origin-copy .eyebrow','วิธีออกแบบ');bind('.origin-copy h2','เราไม่ได้สร้าง CORE7 ด้วยการเพิ่มกติกา<br><em>เราค้นพบมันด้วยการตัดสิ่งที่ไม่จำเป็นออก</em>',{html:true});bind('.game .section-heading .eyebrow','CORE7 · กติกาหลัก');bind('.game .section-heading h2','1 Match ที่เรียนรู้ได้ทันที<br><em>1 Set ที่อ่านคนตรงหน้าได้ลึกขึ้น</em>',{html:true});bind('.carry-copy .eyebrow','1 กล่อง · 2 คน');bind('.carry-copy h2','เลือก 7 ใบ<br>ส่งอีก 21 ใบให้คนตรงหน้า',{html:true});bind('.language .section-heading .eyebrow','ทำไมคำบนการ์ดจึงสำคัญ');bind('.language .section-heading h2','สีทำให้เล่นได้<br><em>คำทำให้มันเป็นเรื่องของเรา</em>',{html:true});bind('#box .section-heading .eyebrow','มีอะไรในกล่อง');bind('#box .section-heading h2','การ์ด 37 ใบ<br>3 เกมทางการ ในกล่องพกพา 1 กล่อง',{html:true});bind('#box .box-system-line','ระบบเกม 33 ใบ + CORE Cards ฟอยล์ที่นำมาเล่นได้จริงอีก 4 ใบ');bind('.open-copy .eyebrow','คำสัญญาของเรา');bind('.ai-copy .eyebrow','ชั้นการใช้งานร่วมกับ AI');bind('#pledges .section-heading .eyebrow','เลือก FIRST HAND ของคุณ');bind('#stretch .section-heading .eyebrow','เป้าหมายเพิ่มเติม');bind('.future-copy .eyebrow','ภาษาเดียว · หลายมือ');bind('.timeline .section-heading .eyebrow','เส้นทางสู่โต๊ะของคุณ');bind('.risks .eyebrow','ออกแบบมาให้ส่งถึงมือ');bind('.faq .eyebrow','คำถามที่พบบ่อย');bind('#founder .eyebrow','เกือบ 30 ปีของการออกแบบเกม');bind('.final-cta .eyebrow','FIRST HAND เริ่มจากโต๊ะเดียว');
   }
 
-  function translatePledgeButtons(){
-    document.querySelectorAll('.pledge').forEach(card => {
-      const button = card.querySelector('.select-pledge');
-      if(!button) return;
-      const selected = card.classList.contains('is-selected');
-      if(currentLanguage === 'th') button.textContent = selected ? 'เลือกแล้ว ✓' : 'เลือก '+card.dataset.pledge;
-      else button.textContent = selected ? 'Selected ✓' : 'Choose '+card.dataset.pledge;
-    });
-    const clear = document.getElementById('clearPledge');
-    if(clear) clear.textContent = currentLanguage === 'th' ? 'เปลี่ยนตัวเลือก' : 'Change selection';
+  function applyLanguage(next){
+    language=next==='th'?'th':'en';document.documentElement.lang=language;if(language==='th')loadThaiFont();qa('.ks-lang button').forEach(button=>button.classList.toggle('active',button.dataset.lang===language));translations.forEach(item=>{const value=language==='th'?item.th:item.en;if(item.html)item.node.innerHTML=value;else item.node.textContent=value;});fixedBrand();renderOfficial(language);renderPledges(language);const active=q('.energy-button.active')||q('.energy-button');if(active)setEnergy(active.dataset.energy);if(language==='en')auditEnglishUI();
   }
 
-  function applyLanguage(language){
-    currentLanguage = language === 'th' ? 'th' : 'en';
-    document.documentElement.lang = currentLanguage;
-    document.querySelectorAll('.ksv2-lang button').forEach(button => button.classList.toggle('active',button.dataset.lang === currentLanguage));
-    translations.forEach(item => {
-      const value = currentLanguage === 'th' ? item.th : item.en;
-      if(item.html) item.node.innerHTML = value;
-      else item.node.textContent = value;
-    });
-    document.querySelectorAll('.energy-button').forEach(button => {
-      const energy = button.dataset.energy;
-      const labels = currentLanguage === 'th'
-        ? {RED:'แดง · ร่างกาย',BLUE:'ฟ้า · จิตใจ',GREEN:'เขียว · จิตวิญญาณ',GRAY:'เทา · งานสร้าง'}
-        : {RED:'RED · BODY',BLUE:'BLUE · MIND',GREEN:'GREEN · SOUL',GRAY:'GRAY · CRAFT'};
-      button.innerHTML = '<span>●</span> '+labels[energy];
-    });
-    const active = document.querySelector('.energy-button.active') || document.querySelector('.energy-button');
-    if(active) applyEnergy(active.dataset.energy);
-    translatePledgeButtons();
+  function auditEnglishUI(){
+    cleanLegacyText();const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),offenders=[];while(walker.nextNode()){const node=walker.currentNode,parent=node.parentElement;if(!parent||parent.closest('svg,.hero-cards,.pocket-seven,.card-gallery,script,style'))continue;if(/[\u0E00-\u0E7F]/.test(node.nodeValue||''))offenders.push(node);}if(offenders.length)console.warn('English UI audit found Thai text:',offenders.map(node=>node.nodeValue.trim()).filter(Boolean));
   }
 
-  function initLanguageToggle(){
-    document.querySelectorAll('.ksv2-lang button').forEach(button => {
-      button.addEventListener('click',() => applyLanguage(button.dataset.lang));
-    });
+  function initReveal(){const items=qa('.reveal');if(!('IntersectionObserver'in window)){items.forEach(el=>el.classList.add('is-visible'));return;}const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});items.forEach(el=>observer.observe(el));}
+  function setProgress(){const max=Math.max(1,document.documentElement.scrollHeight-innerHeight),bar=q('.scroll-progress span');if(bar)bar.style.width=Math.min(100,Math.max(0,scrollY/max*100))+'%';}
+  function initDetails(){qa('.faq-list details').forEach(detail=>detail.addEventListener('toggle',()=>{if(detail.open)qa('.faq-list details').forEach(other=>{if(other!==detail)other.open=false;});}));}
+  function initHeroTilt(){const stage=q('.hero-stage'),cards=q('#heroCards');if(!stage||!cards||matchMedia('(pointer:coarse)').matches)return;stage.addEventListener('pointermove',event=>{const rect=stage.getBoundingClientRect(),x=(event.clientX-rect.left)/rect.width-.5,y=(event.clientY-rect.top)/rect.height-.5;cards.style.transform='rotateY('+(x*7)+'deg) rotateX('+(-y*5)+'deg)';});stage.addEventListener('pointerleave',()=>{cards.style.transform='';});}
+
+  function init(){
+    injectStyles();canonicalEnglish();addLanguageControls();officialMarkup();injectCardBack();renderPledges('en');buildTranslations();bindPledges();bindEnergy();initReveal();initDetails();renderCardArt().then(initHeroTilt);setProgress();addEventListener('scroll',setProgress,{passive:true});addEventListener('resize',setProgress,{passive:true});applyLanguage('en');requestAnimationFrame(()=>{document.documentElement.classList.remove('ks-final-boot');const style=q('#ks-final-boot-style');if(style)style.remove();});
   }
 
-  function initEnergyOverride(){
-    document.querySelectorAll('.energy-button').forEach(button => {
-      button.addEventListener('click',() => window.setTimeout(() => applyEnergy(button.dataset.energy),0));
-    });
-  }
-
-  function initPledgeLanguageSync(){
-    document.querySelectorAll('.select-pledge,#clearPledge').forEach(button => {
-      button.addEventListener('click',() => window.setTimeout(translatePledgeButtons,0));
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded',() => {
-    injectStyles();
-    addNavigationControls();
-    enhanceHero();
-    injectOnlineSection();
-    injectTournamentSection();
-    injectCardBackSection();
-    injectCoreFoilSection();
-    injectUseCases();
-    applyCampaignCopy();
-    enhancePledges();
-    enhanceStretchGoal();
-    renderCardFront();
-    initFlip();
-    buildTranslations();
-    initLanguageToggle();
-    initEnergyOverride();
-    initPledgeLanguageSync();
-    applyLanguage('en');
-  });
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
