@@ -40,20 +40,20 @@ export const FIRST_HAND_ART = {
   'fh-green-care': '/core7/assets/cards/fh-green-care.webp',
   'fh-green-recovery': '/core7/assets/cards/fh-green-recovery.webp',
   'fh-green-commitment': '/core7/assets/cards/fh-green-commitment.webp',
-  'fh-gray-observe': '/core7/assets/cards/fh-gray-observe.webp',
-  'fh-gray-measure': '/core7/assets/cards/fh-gray-measure.webp',
-  'fh-gray-build': '/core7/assets/cards/fh-gray-build.webp',
-  'fh-gray-repair': '/core7/assets/cards/fh-gray-repair.webp',
-  'fh-gray-connect': '/core7/assets/cards/fh-gray-connect.webp',
-  'fh-gray-adapt': '/core7/assets/cards/fh-gray-adapt.webp',
-  'fh-gray-iterate': '/core7/assets/cards/fh-gray-iterate.webp',
+  'fh-silver-observe': '/core7/assets/cards/fh-silver-observe.webp',
+  'fh-silver-measure': '/core7/assets/cards/fh-silver-measure.webp',
+  'fh-silver-build': '/core7/assets/cards/fh-silver-build.webp',
+  'fh-silver-repair': '/core7/assets/cards/fh-silver-repair.webp',
+  'fh-silver-connect': '/core7/assets/cards/fh-silver-connect.webp',
+  'fh-silver-adapt': '/core7/assets/cards/fh-silver-adapt.webp',
+  'fh-silver-iterate': '/core7/assets/cards/fh-silver-iterate.webp',
 };
 
 export const GENERIC_CARD_ART = {
   RED: '/core7/assets/cards/gen-red.webp',
   BLUE: '/core7/assets/cards/gen-blue.webp',
   GREEN: '/core7/assets/cards/gen-green.webp',
-  GRAY: '/core7/assets/cards/gen-gray.webp',
+  SILVER: '/core7/assets/cards/gen-silver.webp',
 };
 
 export function cardArtHref(cardId) {
@@ -114,10 +114,10 @@ function cloverLogoVector(size = 64, { ring = true } = {}) {
       ${grad('red', '#e8604a', C.RED.deep)}
       ${grad('blue', '#5f9ede', C.BLUE.deep)}
       ${grad('green', '#4fae78', C.GREEN.deep)}
-      ${grad('gray', '#b9bfc6', '#5d6268')}
+      ${grad('silver', '#b9bfc6', '#5d6268')}
     </defs>
     ${ring ? `<circle cx="50" cy="50" r="48" fill="none" stroke="url(#${id}-au)" stroke-width="2"/>` : ''}
-    ${leaf(-45, 'red')}${leaf(45, 'blue')}${leaf(225, 'green')}${leaf(135, 'gray')}
+    ${leaf(-45, 'red')}${leaf(45, 'blue')}${leaf(225, 'green')}${leaf(135, 'silver')}
     <circle cx="50" cy="50" r="4.6" fill="url(#${id}-au)"/>
     <circle cx="48.8" cy="48.8" r="1.5" fill="rgba(255,255,255,.75)"/>
   </svg>`;
@@ -132,8 +132,8 @@ export function colorIcon(color, size = 20) {
     BLUE: '<path d="M12 2.5 C10.2 5.5 5.8 9.6 5.8 14 A6.2 6.2 0 0 0 18.2 14 C18.2 9.6 13.8 5.5 12 2.5 Z M8.6 14.2 C8.8 16.3 10.1 17.4 12 17.7 C9.5 18.1 7.6 16.6 7.6 14.4 C7.6 13.2 8.1 12.2 8.8 11.2 C8.6 12.3 8.5 13.3 8.6 14.2 Z"/>',
     /* leaf — GREEN */
     GREEN: '<path d="M19 5 C11 5 5.6 9.4 5.6 15.6 C5.6 17 5.9 18.2 6.3 19 L8 17.4 C7.8 16.8 7.7 16.2 7.7 15.6 C7.7 10.8 12 7.3 19 7.1 C18.6 12.6 15.9 16.6 10.6 17.6 L9 19.1 C9.9 19.4 10.9 19.6 12 19.6 C17.1 19.6 20.8 15 21 5.2 Z M4 21 C7 17.8 10 14.8 14.5 11.5 C10.4 13.6 6.9 16.4 3.2 20.2 Z"/>',
-    /* gear — SILVER (คีย์ข้อมูลยังเป็น GRAY) */
-    GRAY: '<path d="M12 8.6 A3.4 3.4 0 1 0 12 15.4 A3.4 3.4 0 0 0 12 8.6 Z M12 10.6 A1.4 1.4 0 1 1 12 13.4 A1.4 1.4 0 0 1 12 10.6 Z M10.7 3 L10.3 5.4 C9.6 5.7 9 6 8.4 6.5 L6.1 5.7 L4.8 8 L6.6 9.5 C6.5 10.3 6.5 11 6.6 11.7 L4.8 13.2 L6.1 15.5 L8.4 14.7 C9 15.2 9.6 15.6 10.3 15.8 L10.7 18.2 H13.3 L13.7 15.8 C14.4 15.6 15 15.2 15.6 14.7 L17.9 15.5 L19.2 13.2 L17.4 11.7 C17.5 11 17.5 10.3 17.4 9.5 L19.2 8 L17.9 5.7 L15.6 6.5 C15 6 14.4 5.7 13.7 5.4 L13.3 3 Z" transform="translate(0 1.5)"/>',
+    /* gear — SILVER */
+    SILVER: '<path d="M12 8.6 A3.4 3.4 0 1 0 12 15.4 A3.4 3.4 0 0 0 12 8.6 Z M12 10.6 A1.4 1.4 0 1 1 12 13.4 A1.4 1.4 0 0 1 12 10.6 Z M10.7 3 L10.3 5.4 C9.6 5.7 9 6 8.4 6.5 L6.1 5.7 L4.8 8 L6.6 9.5 C6.5 10.3 6.5 11 6.6 11.7 L4.8 13.2 L6.1 15.5 L8.4 14.7 C9 15.2 9.6 15.6 10.3 15.8 L10.7 18.2 H13.3 L13.7 15.8 C14.4 15.6 15 15.2 15.6 14.7 L17.9 15.5 L19.2 13.2 L17.4 11.7 C17.5 11 17.5 10.3 17.4 9.5 L19.2 8 L17.9 5.7 L15.6 6.5 C15 6 14.4 5.7 13.7 5.4 L13.3 3 Z" transform="translate(0 1.5)"/>',
   };
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor"
     aria-hidden="true">${paths[color]}</svg>`;
@@ -156,8 +156,8 @@ export function patternDefs(idPrefix = 'pat') {
       <rect width="14" height="14" fill="${C.GREEN.hex}"/>
       <path d="M7 2 L12 6 L7 12 L2 6 Z" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.8"/>
     </pattern>
-    <pattern id="${idPrefix}-GRAY" width="14" height="14" patternUnits="userSpaceOnUse">
-      <rect width="14" height="14" fill="${C.GRAY.hex}"/>
+    <pattern id="${idPrefix}-SILVER" width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="${C.SILVER.hex}"/>
       <path d="M2 2 H12 V12 H2 Z M7 2 V12 M2 7 H12" stroke="rgba(255,255,255,.4)" stroke-width="1.4" fill="none"/>
     </pattern>
   </defs>`;
@@ -427,8 +427,8 @@ const SCENES = {
         transform="rotate(${-28 - i * 3} ${x} ${y})" fill="${CREAM}" opacity=".9"/>`).join('')}`;
   },
 
-  /* ── ⚙️ GRAY ── */
-  'fh-gray-observe': () => {
+  /* ── ⚙️ SILVER ── */
+  'fh-silver-observe': () => {
     const g = nid('s');
     return `${sceneBg(g, '#EDEEEA', '#CDD1CE')}
     <rect x="52" y="150" width="136" height="44" rx="8" fill="#9AA0A6"/>
@@ -439,7 +439,7 @@ const SCENES = {
     <path d="M144 138 L176 172" stroke="${GOLD}" stroke-width="12" stroke-linecap="round"/>
     <path d="M96 92 A20 20 0 0 1 116 76" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/>`;
   },
-  'fh-gray-measure': () => {
+  'fh-silver-measure': () => {
     const g = nid('s');
     return `${sceneBg(g, '#F1F1EE', '#D3D6D2')}
     <rect x="36" y="60" width="168" height="120" rx="6" fill="${CREAM}" stroke="#6E7378" stroke-width="3"/>
@@ -450,7 +450,7 @@ const SCENES = {
     ${Array.from({ length: 13 }, (_, i) => `<path d="M${36 + i * 14} 188 V${i % 4 === 0 ? 202 : 197}"
       stroke="#43474C" stroke-width="2.5"/>`).join('')}`;
   },
-  'fh-gray-build': () => {
+  'fh-silver-build': () => {
     const g = nid('s');
     return `${sceneBg(g, '#ECEDE9', '#C8CCC8')}
     <rect x="64" y="150" width="44" height="44" rx="6" fill="#6E7378"/>
@@ -460,7 +460,7 @@ const SCENES = {
     <path d="M150 92 L160 74 M156 96 L172 84" stroke="#6E7378" stroke-width="3" stroke-linecap="round"/>
     <ellipse cx="120" cy="206" rx="80" ry="10" fill="#43474C" opacity=".2"/>`;
   },
-  'fh-gray-repair': () => {
+  'fh-silver-repair': () => {
     const g = nid('s');
     return `${sceneBg(g, '#E9EAE6', '#C6CAC6')}
     <circle cx="112" cy="128" r="56" fill="${CREAM}" stroke="#9AA0A6" stroke-width="4"/>
@@ -469,7 +469,7 @@ const SCENES = {
     <path d="M172 176 L196 152 C206 158 206 170 198 178 C190 186 178 184 172 176 Z" fill="#6E7378"/>
     <path d="M176 172 L140 150" stroke="#6E7378" stroke-width="9" stroke-linecap="round"/>`;
   },
-  'fh-gray-connect': () => {
+  'fh-silver-connect': () => {
     const g = nid('s');
     return `${sceneBg(g, '#DDE6EC', '#AFC0CC')}
     <path d="M0 130 L70 130 L70 240 L0 240 Z" fill="#6E7378"/>
@@ -483,7 +483,7 @@ const SCENES = {
     }).join('')}
     <path d="M0 240 C80 210 160 210 240 240 Z" fill="#2C6BA8" opacity=".55"/>`;
   },
-  'fh-gray-adapt': () => {
+  'fh-silver-adapt': () => {
     const g = nid('s');
     return `${sceneBg(g, '#EEEFEB', '#CFD3CF')}
     <path d="M56 84 L108 84 L82 130 Z" fill="#6E7378"/>
@@ -494,7 +494,7 @@ const SCENES = {
     <path d="M96 118 C104 132 116 140 130 144" stroke="#43474C" stroke-width="3"
       stroke-dasharray="5 6" fill="none" stroke-linecap="round"/>`;
   },
-  'fh-gray-iterate': () => {
+  'fh-silver-iterate': () => {
     const g = nid('s');
     return `${sceneBg(g, '#F0F0ED', '#D3D6D2')}
     <rect x="26" y="86" width="52" height="70" rx="5" fill="${CREAM}" stroke="#9AA0A6" stroke-width="2.5"/>
@@ -708,9 +708,9 @@ export function colorCycleSVG(size = 300) {
     ${arrow(...pos.BLUE, ...pos.RED)}
     ${node('RED', ...pos.RED)}${node('GREEN', ...pos.GREEN)}${node('BLUE', ...pos.BLUE)}
     <g transform="translate(150,160)">
-      <g class="cyc-node" data-color="GRAY" style="color:#fff">
-        <circle r="32" fill="${C.GRAY.hex}" stroke="${BRAND.gold}" stroke-width="2"/>
-        <g transform="translate(-12,-18)">${colorIcon('GRAY', 24)}</g>
+      <g class="cyc-node" data-color="SILVER" style="color:#fff">
+        <circle r="32" fill="${C.SILVER.hex}" stroke="${BRAND.gold}" stroke-width="2"/>
+        <g transform="translate(-12,-18)">${colorIcon('SILVER', 24)}</g>
         <text y="18" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
           font-size="11" font-weight="700" fill="#fff">SILVER = BLOCK</text>
       </g>

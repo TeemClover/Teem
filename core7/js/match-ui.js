@@ -33,7 +33,7 @@ const RESULT_TEXT = {
   WIN: (you, opp) => `${emo(you)} &gt; ${emo(opp)}`,
   LOSE: (you, opp) => `${emo(you)} &lt; ${emo(opp)}`,
   TIE_SAME: (you, opp) => `${emo(you)} = ${emo(opp)}`,
-  TIE_GRAY: (you, opp) => `${emo(you)} = ${emo(opp)} · BLOCK`,
+  TIE_SILVER: (you, opp) => `${emo(you)} = ${emo(opp)} · BLOCK`,
 };
 
 export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
@@ -338,7 +338,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
   }
 
   function publicColorCounts(side) {
-    const counts = { RED: 0, GREEN: 0, BLUE: 0, GRAY: 0 };
+    const counts = { RED: 0, GREEN: 0, BLUE: 0, SILVER: 0 };
     for (const round of view.rounds) {
       const played = round[side];
       if (played?.color) counts[played.color] += 1;
@@ -537,7 +537,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
       const drop = t(' · ทิ้งเพิ่ม 1', ' · discard 1');
       if (round.result === 'TIE') {
         rr.innerHTML = '<span class="rr-word draw anim-pop">DRAW</span>'
-          + (cy === co ? RESULT_TEXT.TIE_SAME(cy, co) : RESULT_TEXT.TIE_GRAY(cy, co));
+          + (cy === co ? RESULT_TEXT.TIE_SAME(cy, co) : RESULT_TEXT.TIE_SILVER(cy, co));
       } else if (round.youWon) {
         rr.innerHTML = '<span class="rr-word win anim-pop">WIN</span>'
           + `${RESULT_TEXT.WIN(cy, co)}${currentView.waitingOpponentDiscard ? `<span class="sub">${t('คู่แข่ง', 'Opponent')}${drop}</span>` : ''}`;

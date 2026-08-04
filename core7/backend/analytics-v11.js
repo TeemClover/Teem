@@ -1,10 +1,15 @@
-import { readAnalyticsStats } from './analytics.js';
+import {
+  readAnalyticsStats,
+  ensureAnalyticsSchema,
+  CARD_EVENTS_TABLE_SQL,
+  CARD_EVENTS_INDEX_SQL,
+} from './analytics.js';
 import { colorOf } from '../js/cards.js';
 
 export const CORE7_ANALYTICS_VERSION = '1.2.0';
 export const CORE7_GAME_VERSION = '0.5';
 
-const COLORS = ['RED', 'GREEN', 'BLUE', 'GRAY'];
+const COLORS = ['RED', 'GREEN', 'BLUE', 'SILVER'];
 const EVENTS = new Set([
   'CORE7_VIEW', 'HAND_VIEW', 'HAND_READY', 'MATCH_START', 'MATCH_COMPLETE', 'REMATCH',
   /* v1.2 — การ์ด FIRST HAND ที่ถูกเปิดใหม่หลังจบ Match ยิงมาที่นี่ ใบละหนึ่ง event */
@@ -65,7 +70,99 @@ const SCHEMA = [
    ต้อง ALTER เอง และกลืน error "duplicate column" ทิ้ง เพราะรันซ้ำทุก request */
 const MIGRATIONS = [
   `ALTER TABLE c7_analytics_events ADD COLUMN card_id TEXT`,
+
 ];
+
+
+/* ── GRAY → SILVER ──
+   สีที่สี่เปลี่ยนชื่อทั้งระบบ ของที่เก็บไว้แล้วต้องตามมาด้วย ไม่งั้นสถิติจะแตก
+   เป็นสองก้อน (GRAY เก่า + SILVER ใหม่) แล้วอ่านค่าไหนก็ผิดทั้งคู่
+
+   แยกจาก MIGRATIONS ข้างบนเพราะแตะตารางของ analytics v1 ด้วย ต้องมั่นใจว่า
+   ทั้งสอง schema ถูกสร้างครบก่อน ไม่งั้น ALTER จะยิงใส่ตารางที่ยังไม่มี แล้ว
+   error ถูกกลืนไปเงียบ ๆ โดยไม่มีใครรู้ว่าไม่ได้แปลง
+
+   RENAME COLUMN error ถ้ารันไปแล้วหรือตารางเพิ่งสร้างใหม่ด้วยชื่อใหม่
+   ส่วน UPDATE รันซ้ำได้ เพราะ WHERE จะไม่เจอแถวแล้ว */
+const SILVER_MIGRATIONS = [
+  `ALTER TABLE c7_analytics_matches RENAME COLUMN played_gray TO played_silver`,
+  `ALTER TABLE c7_analytics_matches RENAME COLUMN discarded_gray TO discarded_silver`,
+  `UPDATE c7_analytics_color_outcomes SET color = 'SILVER' WHERE color = 'GRAY'`,
+  `UPDATE c7_analytics_card_picks SET color = 'SILVER' WHERE color = 'GRAY'`,
+  `UPDATE c7_analytics_card_picks SET card_id = REPLACE(card_id, 'fh-gray-', 'fh-silver-') WHERE card_id LIKE 'fh-gray-%'`,
+  `UPDATE c7_analytics_card_picks SET card_id = 'gen-silver' WHERE card_id = 'gen-gray'`,
+  `UPDATE c7_analytics_events SET card_id = REPLACE(card_id, 'fh-gray-', 'fh-silver-') WHERE card_id LIKE 'fh-gray-%'`,
+  `UPDATE c7_analytics_events SET card_id = 'gen-silver' WHERE card_id = 'gen-gray'`,
+  `UPDATE c7_analytics_matches SET result_type = 'TIEBREAK_FINAL_SILVER' WHERE result_type = 'TIEBREAK_FINAL_GRAY'`,
+  `UPDATE c7_analytics_matches SET result_type = 'TIEBREAK_FEWER_SILVER' WHERE result_type = 'TIEBREAK_FEWER_GRAY'`,
+  /* ห้องที่ยังเปิดค้างอยู่เก็บ state ทั้งก้อนเป็น JSON — ถ้าไม่แปลง คนที่กำลัง
+     เล่นอยู่ตอน deploy จะเห็นการ์ด ⚙️ หายไปทั้งมือ เพราะ id ไม่ตรงกับสำรับใหม่ */
+  `UPDATE c7_beta_rooms SET state_json = REPLACE(state_json, 'fh-gray-', 'fh-silver-') WHERE state_json LIKE '%fh-gray-%'`,
+  `UPDATE c7_beta_rooms SET state_json = REPLACE(state_json, 'gen-gray', 'gen-silver') WHERE state_json LIKE '%gen-gray%'`,
+  `UPDATE c7_beta_rooms SET state_json = REPLACE(state_json, '"GRAY"', '"SILVER"') WHERE state_json LIKE '%"GRAY"%'`,
+];
+
+/* c7_analytics_card_events มี CHECK(color IN (...)) ที่เขียนชื่อสีไว้ตรง ๆ ของจริง
+   บน D1 ถูกสร้างตอนที่สีที่สี่ยังชื่อ GRAY แปลว่าตารางนั้นตอนนี้ "ห้าม" ค่า SILVER
+   อยู่ ทั้ง UPDATE ของเก่าและ INSERT ของใหม่จะถูกปฏิเสธทั้งคู่ — และเงียบด้วย
+   เพราะทุกอย่างที่นี่ถูกครอบ try ไว้
+
+   SQLite แก้ CHECK ในที่เดิมไม่ได้ ต้องสร้างตารางใหม่แล้วย้ายข้อมูล ทำใน batch
+   เดียวเพราะ D1 รัน batch เป็น transaction — ถ้าล้มกลางทางจะไม่เหลือสภาพที่
+   ตารางถูก rename ทิ้งไว้แล้วไม่มีตัวจริง
+
+   SUM(n) + GROUP BY เผื่อกรณีที่แถว GRAY กับ SILVER ชนกันหลังแปลง id: รวมยอด
+   ไม่ใช่ทิ้งใบใดใบหนึ่ง */
+async function rebuildCardEventsForSilver(db) {
+  const row = await db.prepare(
+    `SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'c7_analytics_card_events'`,
+  ).first();
+  const ddl = String(row?.sql || '');
+  if (!ddl || !/GRAY/i.test(ddl)) return false;
+
+  await db.batch([
+    db.prepare(`ALTER TABLE c7_analytics_card_events RENAME TO c7_analytics_card_events_gray`),
+    db.prepare(CARD_EVENTS_TABLE_SQL),
+    db.prepare(`INSERT INTO c7_analytics_card_events (match_id, card_id, color, event_type, n)
+      SELECT match_id,
+             CASE WHEN card_id = 'gen-gray' THEN 'gen-silver'
+                  WHEN card_id LIKE 'fh-gray-%' THEN REPLACE(card_id, 'fh-gray-', 'fh-silver-')
+                  ELSE card_id END,
+             CASE WHEN color = 'GRAY' THEN 'SILVER' ELSE color END,
+             event_type,
+             SUM(n)
+      FROM c7_analytics_card_events_gray
+      GROUP BY 1, 2, 3, 4`),
+    db.prepare(`DROP TABLE c7_analytics_card_events_gray`),
+    db.prepare(CARD_EVENTS_INDEX_SQL),
+  ]);
+  return true;
+}
+
+let silverDone = false;
+
+export async function migrateSilverDatabase(db) {
+  if (silverDone) return { ok: true, skipped: true };
+  await ensureAnalyticsSchema(db);
+  await ensureAnalyticsV11Schema(db);
+
+  /* ทำก่อน UPDATE ก้อนล่าง เพราะตราบใดที่ CHECK เก่ายังอยู่ แถวสี SILVER
+     เขียนลงตารางนั้นไม่ได้เลย */
+  let rebuilt = false;
+  try { rebuilt = await rebuildCardEventsForSilver(db); }
+  catch (error) { console.error('CORE7 card_events rebuild failed', error); }
+
+  let applied = 0;
+  const failed = [];
+  for (const sql of SILVER_MIGRATIONS) {
+    try { await db.prepare(sql).run(); applied += 1; }
+    catch { failed.push(sql.slice(0, 60)); }
+  }
+  silverDone = true;
+  /* ที่ล้มส่วนใหญ่คือของที่แปลงไปแล้ว (RENAME COLUMN ซ้ำ) แต่คืนออกมาให้เห็น
+     ดีกว่ากลืนทิ้ง — เวลามีอะไรผิดจริงจะได้มีร่องรอย */
+  return { ok: true, applied, rebuilt, failed };
+}
 
 let ready = false;
 

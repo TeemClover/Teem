@@ -127,9 +127,9 @@ const HOWTEXT = {
   THREE_WINS:          [t('ชนะครบ 3 รอบ', 'Won 3 rounds'), t('อีกฝ่ายชนะครบ 3 รอบ', 'They won 3 rounds')],
   EXHAUSTION:          [t('อีกฝ่ายการ์ดหมดมือ', 'They ran out of cards'), t('คุณการ์ดหมดมือ', 'You ran out of cards')],
   TIEBREAK_LAST_ROUND: t('หมดมือพร้อมกัน — รอบสุดท้ายชี้ขาด', 'Both hands empty — last round decided it'),
-  TIEBREAK_FINAL_GRAY: t('⚙️ เป็นใบสุดท้าย เลยแพ้สี', 'Final Silver — ⚙️ loses as the last card'),
+  TIEBREAK_FINAL_SILVER: t('⚙️ เป็นใบสุดท้าย เลยแพ้สี', 'Final Silver — ⚙️ loses as the last card'),
   TIEBREAK_HISTORY:    t('หมดมือพร้อมกัน — ย้อนดูรอบที่มีผู้ชนะ', 'Both hands empty — traced back to a decided round'),
-  TIEBREAK_FEWER_GRAY: [t('เสมอทุกรอบ — คุณเริ่มด้วย ⚙️ น้อยกว่า', 'All rounds tied — you started with fewer ⚙️'),
+  TIEBREAK_FEWER_SILVER: [t('เสมอทุกรอบ — คุณเริ่มด้วย ⚙️ น้อยกว่า', 'All rounds tied — you started with fewer ⚙️'),
                         t('เสมอทุกรอบ — อีกฝ่ายเริ่มด้วย ⚙️ น้อยกว่า', 'All rounds tied — they started with fewer ⚙️')],
   DRAW:                t('เสมอทุกรอบ และ ⚙️ เท่ากัน — ใจตรงกันพอดี', 'Every round tied, same ⚙️ count — perfectly in sync'),
   FORFEIT:             [t('อีกฝ่ายยอมแพ้', 'They forfeited'), t('คุณยอมแพ้', 'You forfeited')],
@@ -229,7 +229,7 @@ document.addEventListener('keydown', event => {
 });
 
 function stats(side) {
-  const colors = { RED:0, GREEN:0, BLUE:0, GRAY:0 };
+  const colors = { RED:0, GREEN:0, BLUE:0, SILVER:0 };
   const played = [], discarded = [];
   for (const round of view.rounds) {
     const card = round[side]; played.push(card); colors[card.color] += 1;
@@ -271,7 +271,7 @@ if (seriesEnded && series.startingHands) {
     if (!Array.isArray(ids) || !ids.length) continue;
     const cards = ids.map(id => ({ cardId: id, color: cardById(id)?.color })).filter(c => c.color);
     if (!cards.length) continue;
-    const colors = { RED:0, GREEN:0, BLUE:0, GRAY:0 };
+    const colors = { RED:0, GREEN:0, BLUE:0, SILVER:0 };
     for (const c of cards) colors[c.color] += 1;
     grid.append(summarySide(name, { colors, played: cards, discarded: [] },
       { playedLabel: 'HAND', hideDiscarded: true }));
@@ -287,7 +287,7 @@ if (r.resultType === 'TIEBREAK_HISTORY') {
   for (let i = view.rounds.length - 1; i >= 0; i--) {
     if (view.rounds[i].result !== 'TIE') { turningIdx = i; break; }
   }
-} else if (!r.draw && r.resultType !== 'TIEBREAK_FEWER_GRAY') turningIdx = view.rounds.length - 1;
+} else if (!r.draw && r.resultType !== 'TIEBREAK_FEWER_SILVER') turningIdx = view.rounds.length - 1;
 
 view.rounds.forEach((round, i) => {
   const row = el('div', { class: 'tl-row' + (i === turningIdx ? ' turning' : '') });

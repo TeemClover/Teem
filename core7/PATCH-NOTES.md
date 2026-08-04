@@ -1,5 +1,27 @@
 # myClover: CORE7 — Patch Notes
 
+## 2026-08-04 — v0.5 Silver ถึงระดับโค้ด
+
+**คีย์ในข้อมูลเป็น `SILVER` แล้ว ไม่ใช่แค่ชื่อที่คนเห็น** — รอบก่อนเปลี่ยนเฉพาะ
+ป้ายที่ผู้เล่นอ่าน รอบนี้เปลี่ยนถึงชั้นข้อมูลทั้งหมด
+
+- `COLOR_META.GRAY` → `COLOR_META.SILVER`, `fh-gray-*` → `fh-silver-*`, `gen-gray` → `gen-silver`
+- ไฟล์ภาพการ์ดเปลี่ยนชื่อตาม ทั้ง 8 ไฟล์
+- คอลัมน์ใน D1: `played_gray` / `discarded_gray` → `played_silver` / `discarded_silver`
+- ตัวแปรและ CSS: `startingSilverCounts`, `resolveFinalSilver`, `finalSilverLosses`,
+  `TIEBREAK_FINAL_SILVER`, `TIEBREAK_FEWER_SILVER`, `--c-silver`, `.chip-silver`
+- คำว่า `grayscale` ใน CSS ไม่ถูกแตะ เพราะเป็นชื่อ filter ของเบราว์เซอร์
+
+**ของเก่าถูกแปลงให้อัตโนมัติ ไม่ต้องรีเซ็ตอะไร**
+
+- ในเครื่องผู้เล่น: `core7/js/migrate-silver.js` แปลง localStorage ตอนโหลดหน้าแรก
+  ครั้งเดียวแล้วปักธง — การ์ดที่ปลดล็อกไว้ มือที่บันทึก และเกมที่ค้างกลางคันอยู่ครบ
+  แตะเฉพาะคีย์ที่ขึ้นต้นด้วย `c7:` / `mc_core7_` ไม่ยุ่งกับชื่อผู้เล่นหรือข้อความที่พิมพ์เอง
+- บน D1: `migrateSilverDatabase()` แปลงสถิติเก่าให้เป็นก้อนเดียวกับของใหม่
+- `c7_analytics_card_events` ต้องสร้างตารางใหม่ เพราะ `CHECK` เขียนชื่อสีไว้ตรง ๆ
+  ตอนที่ยังชื่อ GRAY — ถ้าไม่แก้ แถวสี SILVER จะเขียนลงไม่ได้เลย และ error จะเงียบ
+- ห้องที่ยังเปิดค้างตอน deploy ถูกแปลง `state_json` ด้วย คนที่กำลังเล่นอยู่ไพ่ไม่หายกลางมือ
+
 ## 2026-08-04 — v0.5 Silver + Icon Canon
 
 **เปลี่ยนชื่อสีที่สี่จาก GRAY เป็น SILVER · ไทยเรียก "เงิน"**

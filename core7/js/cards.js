@@ -31,11 +31,10 @@ export const COLOR_META = {
     creed: 'ความคิดหยุดอารมณ์อยากได้',
     beats: 'RED', beatsTh: 'ชนะแดง',
   },
-  /* คีย์ยังเป็น GRAY เพราะถูกเก็บลง D1, localStorage และ snapshot ของแมตช์
-     ไปแล้ว เปลี่ยนเมื่อไหร่ข้อมูลเก่าอ่านไม่ออกทันที — ที่เปลี่ยนคือ "ชื่อที่คนเห็น"
-     RGBS = Red / Green / Blue / Silver */
-  GRAY: {
-    color: 'GRAY', emoji: '⚙️',
+  /* RGBS = Red / Green / Blue / Silver — คีย์ ชื่อ และไฟล์ภาพใช้คำเดียวกันหมด
+     ข้อมูลเก่าที่เคยเก็บเป็น GRAY ถูกแปลงให้ตอนโหลดโดย migrate-silver.js */
+  SILVER: {
+    color: 'SILVER', emoji: '⚙️',
     nameTh: 'เงิน', nameEn: 'Silver',
     icon: 'gear', pattern: 'block',
     hex: '#6E7378', deep: '#43474C', soft: '#E4E6E8',
@@ -147,32 +146,32 @@ export const FIRST_HAND = [
     story: 'ทุกทางแยกมีแสงของมันเอง สิ่งเดียวที่ต้องทำคือเลือก',
     storyEn: 'Every fork has a light of its own. All you have to do is choose.' },
 
-  /* ── ⚙️ GRAY ── */
-  { id: 'fh-gray-observe', no: 22, color: 'GRAY', en: 'Observe', th: 'สังเกต',
+  /* ── ⚙️ SILVER ── */
+  { id: 'fh-silver-observe', no: 22, color: 'SILVER', en: 'Observe', th: 'สังเกต',
     artTh: 'แว่นขยายเหนือชิ้นงาน',
     story: 'ก่อนแก้อะไรได้ ต้องเห็นมันชัด ๆ ก่อน',
     storyEn: 'Before you can fix anything, you have to see it clearly.' },
-  { id: 'fh-gray-measure', no: 23, color: 'GRAY', en: 'Measure', th: 'วัดผล',
+  { id: 'fh-silver-measure', no: 23, color: 'SILVER', en: 'Measure', th: 'วัดผล',
     artTh: 'ไม้บรรทัดกับแบบร่าง',
     story: 'สิ่งที่วัดได้ ปรับปรุงได้',
     storyEn: 'What gets measured gets better.' },
-  { id: 'fh-gray-build', no: 24, color: 'GRAY', en: 'Build', th: 'สร้าง',
+  { id: 'fh-silver-build', no: 24, color: 'SILVER', en: 'Build', th: 'สร้าง',
     artTh: 'มือประกอบชิ้นส่วนเข้าด้วยกัน',
     story: 'ของจริงชิ้นเล็ก ชนะแผนสวยหนึ่งเล่มเสมอ',
     storyEn: 'One small real thing always beats one beautiful plan.' },
-  { id: 'fh-gray-repair', no: 25, color: 'GRAY', en: 'Repair', th: 'ซ่อมแซม',
+  { id: 'fh-silver-repair', no: 25, color: 'SILVER', en: 'Repair', th: 'ซ่อมแซม',
     artTh: 'เครื่องมือกำลังซ่อมของที่แตกร้าว',
     story: 'ของที่ถูกซ่อมด้วยมือ มีเรื่องราวมากกว่าของใหม่',
     storyEn: 'Something mended by hand carries more story than something new.' },
-  { id: 'fh-gray-connect', no: 26, color: 'GRAY', en: 'Connect', th: 'เชื่อมต่อ',
+  { id: 'fh-silver-connect', no: 26, color: 'SILVER', en: 'Connect', th: 'เชื่อมต่อ',
     artTh: 'สะพานเชื่อมพื้นที่ 2 ฝั่ง',
     story: 'สะพานไม่เคยถามว่าฝั่งไหนสำคัญกว่า',
     storyEn: 'A bridge never asks which bank matters more.' },
-  { id: 'fh-gray-adapt', no: 27, color: 'GRAY', en: 'Adapt', th: 'ปรับตัว',
+  { id: 'fh-silver-adapt', no: 27, color: 'SILVER', en: 'Adapt', th: 'ปรับตัว',
     artTh: 'ชิ้นส่วนหลายรูปทรงประกอบใหม่',
     story: 'ชิ้นส่วนเดิม เรียงใหม่ ก็เป็นของใหม่ได้',
     storyEn: 'The same pieces, arranged differently, become something new.' },
-  { id: 'fh-gray-iterate', no: 28, color: 'GRAY', en: 'Iterate', th: 'ทำซ้ำให้ดีขึ้น',
+  { id: 'fh-silver-iterate', no: 28, color: 'SILVER', en: 'Iterate', th: 'ทำซ้ำให้ดีขึ้น',
     artTh: 'แบบร่างหลาย Version เรียงต่อกัน',
     story: 'Version แรกไม่ต้องสมบูรณ์ แค่ต้องมี Version ถัดไป',
     storyEn: 'The first version does not have to be perfect. It only has to have a next one.' },
@@ -183,7 +182,7 @@ export const GENERIC_CARDS = [
   { id: 'gen-red', color: 'RED', en: 'Red', th: 'แดง', generic: true },
   { id: 'gen-blue', color: 'BLUE', en: 'Blue', th: 'ฟ้า', generic: true },
   { id: 'gen-green', color: 'GREEN', en: 'Green', th: 'เขียว', generic: true },
-  { id: 'gen-gray', color: 'GRAY', en: 'Silver', th: 'เงิน', generic: true },
+  { id: 'gen-silver', color: 'SILVER', en: 'Silver', th: 'เงิน', generic: true },
 ];
 
 const BY_ID = new Map(

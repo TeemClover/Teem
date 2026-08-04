@@ -113,7 +113,7 @@ export function toggleFavorite(cardId) {
 /* ── สถิติ (แยก bot / casual ตาม Brief §21) ── */
 const EMPTY_STATS = {
   matchesPlayed: 0, matchesWon: 0, matchesLost: 0, draws: 0,
-  roundsWon: 0, tiebreakWins: 0, finalGrayLosses: 0,
+  roundsWon: 0, tiebreakWins: 0, finalSilverLosses: 0,
   currentStreak: 0, bestStreak: 0,
   colorPlays: {}, cardPlays: {}, cardDiscards: {},
   opponents: [],
@@ -125,7 +125,7 @@ export function getAllStats() {
   const bot = getStats('bot'), casual = getStats('casual');
   const sum = structuredClone(EMPTY_STATS);
   for (const s of [bot, casual]) {
-    for (const k of ['matchesPlayed', 'matchesWon', 'matchesLost', 'draws', 'roundsWon', 'tiebreakWins', 'finalGrayLosses']) sum[k] += s[k];
+    for (const k of ['matchesPlayed', 'matchesWon', 'matchesLost', 'draws', 'roundsWon', 'tiebreakWins', 'finalSilverLosses']) sum[k] += s[k];
     for (const map of ['colorPlays', 'cardPlays', 'cardDiscards']) {
       for (const [k, v] of Object.entries(s[map])) sum[map][k] = (sum[map][k] || 0) + v;
     }
@@ -149,7 +149,7 @@ export function recordMatch(mode, view, opponentName) {
   } else {
     s.matchesLost += 1;
     s.currentStreak = 0;
-    if (r.resultType === 'TIEBREAK_FINAL_GRAY') s.finalGrayLosses += 1;
+    if (r.resultType === 'TIEBREAK_FINAL_SILVER') s.finalSilverLosses += 1;
   }
   s.roundsWon += view.you.roundWins;
   for (const round of view.rounds) {

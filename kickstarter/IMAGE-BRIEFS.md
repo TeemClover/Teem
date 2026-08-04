@@ -8,9 +8,9 @@ Upload the finished files to the exact paths below. The page will attempt to loa
 
 - Export **WebP**, sRGB, quality 82–90.
 - Do not place generated text inside the artwork. Campaign captions remain HTML so spelling and translation stay correct.
-- Use the system order **RGBG: Red, Green, Blue, Gray**.
+- Use the system order **RGBS: Red, Green, Blue, Silver**.
 - The victory loop must be accurate: **Red beats Green, Green beats Blue, Blue beats Red**.
-- Gray is a Block and does not beat a normal color.
+- Silver is a Block and does not beat a normal color.
 - Keep the visual language premium, human and portable—not casino imagery and not a generic fantasy TCG battle.
 - Images of people should feel observational and honest. Do not imply that every game creates friendship or that an AI illustration is a documentary photograph.
 - Use myClover cards at plausible physical scale. Avoid hands with malformed fingers or impossible card arrangements.
@@ -26,9 +26,9 @@ Upload the finished files to the exact paths below. The page will attempt to loa
 
 **Prompt direction:**
 
-> Editorial tabletop still life showing a sequence of card-game prototypes evolving from crowded paper cards with notes, numbers and crossed-out rules into three clean color cards—red, green and blue—and finally one empty gray card. Premium warm studio light, dark emerald table, subtle gold accents, human pencil marks and cut paper, no readable generated text, no people required. The composition should move left to right from complexity to radical simplicity. The final gray card looks intentionally blank and quiet, not powerful.
+> Editorial tabletop still life showing a sequence of card-game prototypes evolving from crowded paper cards with notes, numbers and crossed-out rules into three clean color cards—red, green and blue—and finally one empty silver card. Premium warm studio light, dark emerald table, subtle gold accents, human pencil marks and cut paper, no readable generated text, no people required. The composition should move left to right from complexity to radical simplicity. The final silver card looks intentionally blank and quiet, not powerful.
 
-**Alt text:** Early prototypes becoming three colors and one intentionally empty Gray card.
+**Alt text:** Early prototypes becoming three colors and one intentionally empty Silver card.
 
 ---
 
@@ -41,7 +41,7 @@ Upload the finished files to the exact paths below. The page will attempt to loa
 
 **Prompt direction:**
 
-> Overhead editorial photograph-style illustration of two people at a small table. One player has seven chosen myClover word cards arranged close to them and is gently offering the remaining twenty-one cards across the table. Four-color system appears in RGBG order: red, green, blue, gray. Compact emerald tuck box nearby. Warm natural light, culturally neutral hands, premium but intimate, no generated text, no extra game components.
+> Overhead editorial photograph-style illustration of two people at a small table. One player has seven chosen myClover word cards arranged close to them and is gently offering the remaining twenty-one cards across the table. Four-color system appears in RGBS order: red, green, blue, silver. Compact emerald tuck box nearby. Warm natural light, culturally neutral hands, premium but intimate, no generated text, no extra game components.
 
 **Alt text:** One player holds seven chosen cards and offers the remaining twenty-one to another person.
 
@@ -56,7 +56,7 @@ Upload the finished files to the exact paths below. The page will attempt to loa
 
 **Prompt direction:**
 
-> Cinematic editorial scene of two adult strangers from different cultural backgrounds playing a tiny four-color card game at an airport lounge or on a train table. They communicate through the cards and gestures rather than visible dialogue. The mood is curious and comfortable, not exaggerated friendship. Seven-card hands, compact box, clear red-green-blue-gray visual language, warm travel light, no readable generated text, no brand logos from airlines.
+> Cinematic editorial scene of two adult strangers from different cultural backgrounds playing a tiny four-color card game at an airport lounge or on a train table. They communicate through the cards and gestures rather than visible dialogue. The mood is curious and comfortable, not exaggerated friendship. Seven-card hands, compact box, clear red-green-blue-silver visual language, warm travel light, no readable generated text, no brand logos from airlines.
 
 **Alt text:** Two strangers play myClover Cards while traveling, before sharing a spoken language.
 
@@ -103,7 +103,7 @@ Upload the finished files to the exact paths below. The page will attempt to loa
 
 **Prompt direction:**
 
-> Clean premium production flat lay: one compact 32-card tuck box, a proof sheet, color swatches for red green blue gray, calipers, signed proof marks and a small shipping carton. Everything controlled and deliberately limited. No miniatures, no giant board, no electronics. Emerald, cream and antique gold palette, realistic print-production details, no readable generated text.
+> Clean premium production flat lay: one compact 32-card tuck box, a proof sheet, color swatches for red green blue silver, calipers, signed proof marks and a small shipping carton. Everything controlled and deliberately limited. No miniatures, no giant board, no electronics. Emerald, cream and antique gold palette, realistic print-production details, no readable generated text.
 
 **Alt text:** A controlled 32-card production setup with proofs, color checks and one compact box.
 

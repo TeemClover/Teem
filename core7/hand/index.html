@@ -93,13 +93,13 @@ let mode = getHandMode();
 
 /* QUICK uses Generic cards. SELECT is a separate system containing only
    unlocked FIRST HAND IDs and never allows duplicate cards. */
-let counts = { RED: 2, GREEN: 2, BLUE: 2, GRAY: 1 };
+let counts = { RED: 2, GREEN: 2, BLUE: 2, SILVER: 1 };
 let picked = [];
 const savedHand = store.getHand();
 if (savedHand?.length === 7) {
   const savedCards = savedHand.map(cardById);
   if (savedCards.every(Boolean) && savedCards.every(card => card.generic)) {
-    counts = { RED: 0, GREEN: 0, BLUE: 0, GRAY: 0 };
+    counts = { RED: 0, GREEN: 0, BLUE: 0, SILVER: 0 };
     for (const card of savedCards) counts[card.color] += 1;
   }
   if (new Set(savedHand).size === 7 && savedHand.every(id => owned.has(id))) picked = [...savedHand];
@@ -132,7 +132,7 @@ if (!selectUnlocked) {
 
 function currentCards() {
   if (mode === 'select') return [...picked];
-  const generic = { RED: 'gen-red', GREEN: 'gen-green', BLUE: 'gen-blue', GRAY: 'gen-gray' };
+  const generic = { RED: 'gen-red', GREEN: 'gen-green', BLUE: 'gen-blue', SILVER: 'gen-silver' };
   const cards = [];
   for (const [color, amount] of Object.entries(counts)) {
     for (let i = 0; i < amount; i += 1) cards.push(generic[color]);
@@ -202,9 +202,9 @@ for (const color of COLORS) {
 /* ── SELECT picker: FIRST HAND only ── */
 const grid = document.getElementById('grid');
 const filters = document.getElementById('filters');
-/* ป้ายบนปุ่มมาจาก COLOR_META (⚙️ ชื่อว่า Silver แล้ว) ส่วนค่าที่ใช้กรอง
-   ยังเป็นคีย์สีเดิม — 'GRAY' ถูกเก็บใน localStorage และฐานข้อมูลไปแล้ว
-   ถ้าเปลี่ยนคีย์ตามชื่อ การ์ดเก่าจะกรองไม่เจอทันที */
+/* ป้ายบนปุ่มมาจาก COLOR_META ส่วนค่าที่ใช้กรองคือคีย์สี — แยกกันไว้เหมือนเดิม
+   ถึงตอนนี้จะสะกดเหมือนกันแล้วก็ตาม เพราะถ้ามัดสองอย่างเข้าด้วยกันอีก
+   วันหลังเปลี่ยนชื่อสีทีไรตัวกรองจะพังทุกที */
 const FILTERS = [
   { value: 'All', label: 'All' },
   ...COLORS.map(key => ({ value: key, label: COLOR_META[key].nameEn })),

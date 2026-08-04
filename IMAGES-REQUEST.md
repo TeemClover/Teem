@@ -62,7 +62,7 @@
 | `img/path-thinker.jpg` | `/paths/thinker/` | `1200 × 600 px` JPG | สายคิด — โทนน้ำเงิน `#2E4A8F` |
 | `img/path-taster.jpg` | `/paths/taster/` | `1200 × 600 px` JPG | สายกิน — โทนส้ม `#C4622D` |
 | `img/path-keeper.jpg` | `/paths/keeper/` | `1200 × 600 px` JPG | สายคลีน — โทนเขียว `#1F8A70` |
-| `img/path-maker.jpg` | `/paths/maker/` | `1200 × 600 px` JPG | สายประดิษฐ์ — โทนเทา `#4B5A67` |
+| `img/path-maker.jpg` | `/paths/maker/` | `1200 × 600 px` JPG | สายประดิษฐ์ — โทนเงิน `#4B5A67` |
 | `img/awaken-hero.jpg` | `/classroom/awaken/` | `1600 × 900 px` JPG | หน้าประตูด่านบอส ตอนนี้เป็นตัวหนังสือล้วน อยากได้ภาพที่ทำให้รู้สึกว่ากำลังจะเข้าด่านสุดท้าย โทนมืด เงียบ มีแสงเดียว |
 
 > ทั้งหมดในข้อ 4 **ยังไม่มีช่องรอในโค้ด** เพราะยังไม่รู้ว่าอยากได้จริงไหม

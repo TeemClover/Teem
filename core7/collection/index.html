@@ -76,10 +76,10 @@ if (canUseSelectMode()) {
   selectState.textContent = `🔒 SELECT ${count}/${SELECT_MODE_UNLOCK_COUNT}`;
 }
 
-/* ป้ายบนปุ่มมาจาก COLOR_META (⚙️ ชื่อว่า Silver แล้ว) ส่วนค่าที่ใช้กรอง
-   ยังเป็นคีย์สีเดิม — 'GRAY' ถูกเก็บใน localStorage และฐานข้อมูลไปแล้ว
-   ถ้าเปลี่ยนคีย์ตามชื่อ การ์ดเก่าจะกรองไม่เจอทันที */
-const COLOR_KEYS = ['RED', 'GREEN', 'BLUE', 'GRAY'];
+/* ป้ายบนปุ่มมาจาก COLOR_META ส่วนค่าที่ใช้กรองคือคีย์สี — แยกกันไว้เหมือนเดิม
+   ถึงตอนนี้จะสะกดเหมือนกันแล้วก็ตาม เพราะถ้ามัดสองอย่างเข้าด้วยกันอีก
+   วันหลังเปลี่ยนชื่อสีทีไรตัวกรองจะพังทุกที */
+const COLOR_KEYS = ['RED', 'GREEN', 'BLUE', 'SILVER'];
 const FILTERS = [
   { value: 'All', label: 'All' },
   ...COLOR_KEYS.map(key => ({ value: key, label: COLOR_META[key].nameEn })),

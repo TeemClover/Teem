@@ -8,6 +8,7 @@ import {
 import {
   CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION,
   readMatchCounters, recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
+  migrateSilverDatabase,
 } from '../../../core7/backend/analytics-v11.js';
 import { readAnalyticsDevelopmentReport } from '../../../core7/backend/analytics-v11-report.js';
 
@@ -102,6 +103,12 @@ export async function onRequest(context) {
   const method = request.method.toUpperCase();
 
   if (method === 'OPTIONS') return new Response(null, { status: 204, headers: JSON_HEADERS });
+
+  /* แปลงข้อมูลเก่าจาก GRAY เป็น SILVER — มี flag กันไว้ในตัว รันจริงครั้งเดียว
+     ต่อ worker instance ที่เหลือคืนทันที ถ้าพลาดก็ไม่ทำให้ request ล้ม
+     เพราะสถิติที่แปลงไม่ทันเสียหายน้อยกว่าเกมเล่นไม่ได้ */
+  await migrateSilverDatabase(env.DB).catch(error => console.error('CORE7 silver migration failed', error));
+
   if (method === 'GET' && parts[0] === 'health') {
     return json({ ok: true, version: CORE7_GAME_VERSION, analytics: CORE7_ANALYTICS_VERSION });
   }
