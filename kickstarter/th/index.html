@@ -8,10 +8,10 @@
 <meta content="เลือก 7 คำ เล่น 3 เกมทางการโดยไม่มีการสุ่ม แล้วพกภาษาสากลขนาดเล็กที่เปลี่ยนคนแปลกหน้าให้กลายเป็นความทรงจำร่วมกัน" name="description"/>
 <meta content="website" property="og:type"/>
 <meta content="myClover · First Hand" property="og:title"/>
-<meta content="เราเริ่มต้นด้วยการออกแบบเกม แล้วค้นพบภาษา: การ์ด 37 ใบ 3 เกมทางการ สุ่ม 0% และการตัดสินใจของมนุษย์ 100%" property="og:description"/>
+<meta content="เราเริ่มต้นด้วยการออกแบบเกม แต่สิ่งที่ค้นพบคือภาษา: การ์ด 37 ใบ 3 เกมทางการ สุ่ม 0% และการตัดสินใจของมนุษย์ 100%" property="og:description"/>
 <meta content="https://www.myclover.com/img/core7-poster-1024.webp" property="og:image"/>
 <meta content="#062718" name="theme-color"/>
-<link href="https://www.myclover.com/kickstarter/th/" rel="canonical"/><link href="https://www.myclover.com/kickstarter/" hreflang="en" rel="alternate"/><link href="https://www.myclover.com/kickstarter/th/" hreflang="th" rel="alternate"/>
+<link href="https://www.myclover.com/kickstarter/th/" rel="canonical"/>
 <link as="image" href="/assets/myclover-icon.png" rel="preload"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -424,6 +424,9 @@
     .founder-editorial{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(390px,.98fr);gap:clamp(38px,6vw,82px);align-items:start}
     .founder-narrative>p{margin:0 0 20px;color:rgba(255,255,255,.72);font-size:1.02rem;line-height:1.76}
     .founder-narrative blockquote{margin:32px 0 0;padding:24px 27px;border-left:3px solid var(--gold);background:rgba(255,255,255,.055);font-family:var(--serif);font-size:clamp(1.3rem,2.15vw,2rem);line-height:1.35}
+    .founder-media-stack{display:grid;gap:22px;align-content:start}
+    .founder-media-stack .story-image{margin:0}
+    .founder-media-stack .story-image img{display:block}
     .founder-proof-rich{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:clamp(34px,5vw,62px)}
     .founder-proof-rich article{min-width:0;padding:22px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.04);text-align:left}
     .founder-proof-rich b{display:block;color:var(--gold-soft);font-family:var(--serif);font-size:clamp(28px,3vw,42px);line-height:.95}
@@ -656,110 +659,811 @@
       .cursor{animation:none}
     }
 
-    /* ── THAI STATIC EDITION ─────────────────────────────────────────────── */
+    /* Single-exit reading mode: PLAY CORE7 exists only in the fixed header. */
+    .nav-inner{justify-content:flex-start}
+    .nav-play{margin-left:auto}
+    .hero-actions,.rule-actions,.final-actions,.discord{display:none!important}
+    .source-note,.fx-note{
+      margin:10px 0 0;
+      color:rgba(255,255,255,.54);
+      font-size:.72rem;
+      line-height:1.55;
+    }
+    .mongkol-evidence .source-note,
+    .mongkol-evidence .fx-note{
+      color:rgba(255,255,255,.58);
+    }
+    .plain-reference{color:inherit}
+    .rule-copy{align-self:center}
+    .final p{margin-bottom:0}
+
+    @media(max-width:680px){
+      .nav-play{
+        display:inline-flex!important;
+        margin-left:auto;
+        min-height:38px;
+        padding:8px 11px;
+        border-radius:999px;
+        font-size:9px;
+        white-space:nowrap;
+      }
+      .hero-copy{padding-top:8px}
+      .hero-actions,.rule-actions,.final-actions{display:none!important}
+    }
+
+    /* Emoji wayfinding: one small visual cue per major chapter. */
+    .eyebrow{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .section-emoji{
+      display:inline-grid;
+      width:25px;
+      height:25px;
+      place-items:center;
+      flex:0 0 25px;
+      border:1px solid currentColor;
+      border-radius:8px;
+      background:rgba(201,157,76,.08);
+      font-size:14px;
+      line-height:1;
+      letter-spacing:0;
+      text-transform:none;
+    }
+
+    /* Subtraction story: removed elements recede; the human result leads. */
+    .subtraction-decisions{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin-top:34px;
+    }
+    .subtraction-decision{
+      min-width:0;
+      padding:22px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      background:rgba(255,255,255,.035);
+    }
+    .decision-topic{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding-bottom:15px;
+      border-bottom:1px solid rgba(255,255,255,.09);
+      color:#ef8175;
+    }
+    .decision-topic span{
+      font-size:18px;
+      filter:saturate(.82);
+    }
+    .decision-topic b{
+      font-size:.78rem;
+      font-weight:950;
+      letter-spacing:.11em;
+    }
+    .decision-removed{
+      display:grid;
+      grid-template-columns:78px minmax(0,1fr);
+      gap:10px;
+      align-items:start;
+      margin-top:16px;
+      color:rgba(255,255,255,.38);
+    }
+    .decision-removed small,
+    .decision-remains small{
+      padding-top:3px;
+      font-size:.62rem;
+      font-weight:950;
+      letter-spacing:.1em;
+    }
+    .decision-removed small{color:rgba(239,129,117,.68)}
+    .decision-removed span{
+      font-size:.88rem;
+      line-height:1.45;
+    }
+    .decision-remains{
+      display:grid;
+      grid-template-columns:78px minmax(0,1fr);
+      gap:4px 10px;
+      align-items:start;
+      margin-top:17px;
+      padding:15px;
+      border:1px solid rgba(184,227,201,.16);
+      border-radius:14px;
+      background:rgba(87,166,115,.085);
+    }
+    .decision-remains small{color:#a8daba}
+    .decision-remains strong{
+      color:#fff;
+      font-size:1.04rem;
+      line-height:1.35;
+    }
+    .decision-remains p{
+      grid-column:2;
+      margin:2px 0 0;
+      color:rgba(255,255,255,.62);
+      font-size:.82rem;
+      line-height:1.55;
+    }
+
+    /* Time philosophy: speed is a route to better human time, not the goal itself. */
+    .time-section{
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 88% 16%,rgba(201,157,76,.13),transparent 30%),
+        linear-gradient(160deg,#0a3523,#041b11);
+    }
+    .time-section:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.07;
+      background-image:
+        linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px);
+      background-size:58px 58px;
+      pointer-events:none;
+    }
+    .time-section>.wrap{position:relative;z-index:1}
+    .time-head{
+      display:grid;
+      grid-template-columns:minmax(0,.95fr) minmax(360px,1.05fr);
+      gap:clamp(34px,6vw,84px);
+      align-items:end;
+    }
+    .time-head .lead{margin:0}
+    .time-arc{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-top:46px;
+    }
+    .time-arc article{
+      min-width:0;
+      min-height:250px;
+      padding:24px 21px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:19px;
+      background:rgba(255,255,255,.045);
+    }
+    .time-icon{
+      display:grid;
+      width:42px;
+      height:42px;
+      place-items:center;
+      margin-bottom:24px;
+      border:1px solid rgba(239,217,149,.32);
+      border-radius:13px;
+      background:rgba(239,217,149,.08);
+      font-size:20px;
+    }
+    .time-arc b{
+      display:block;
+      color:var(--gold-soft);
+      font-family:var(--serif);
+      font-size:1.55rem;
+      line-height:1.05;
+    }
+    .time-arc strong{
+      display:block;
+      margin-top:9px;
+      color:#fff;
+      font-size:.9rem;
+    }
+    .time-arc p{
+      margin:8px 0 0;
+      color:rgba(255,255,255,.6);
+      font-size:.83rem;
+      line-height:1.58;
+    }
+    .time-statement{
+      max-width:940px;
+      margin:42px auto 0;
+      padding:25px 30px;
+      border-left:3px solid var(--gold);
+      background:rgba(255,255,255,.045);
+      font-family:var(--serif);
+      font-size:clamp(1.45rem,2.6vw,2.35rem);
+      line-height:1.3;
+      text-align:center;
+    }
+
+    @media(max-width:1080px){
+      .time-arc{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media(max-width:900px){
+      .time-head{grid-template-columns:1fr}
+      .time-head .lead{margin-top:0}
+    }
+
+    @media(max-width:680px){
+      .section-emoji{
+        width:23px;
+        height:23px;
+        flex-basis:23px;
+        border-radius:7px;
+        font-size:13px;
+      }
+      .subtraction-decisions{grid-template-columns:1fr;gap:12px}
+      .subtraction-decision{padding:19px 17px}
+      .decision-removed,
+      .decision-remains{grid-template-columns:76px minmax(0,1fr)}
+      .time-arc{grid-template-columns:1fr;gap:10px;margin-top:32px}
+      .time-arc article{min-height:0;padding:21px 19px}
+      .time-icon{margin-bottom:18px}
+      .time-statement{
+        margin-top:30px;
+        padding:22px 20px;
+        text-align:left;
+      }
+    }
+
+    /* ── EMOJI AS LANGUAGE ─────────────────────────────────────────────────
+       A second information layer: scan the symbol first, read the sentence next.
+       Symbols are restrained, aligned and repeated consistently.
+    ----------------------------------------------------------------------- */
+    .semantic-icon,.proof-icon,.quote-icon,.micro-icon,.side-icon,
+    .framework-icon,.gallery-note-icon,.evidence-icon,.evidence-grid-icon,
+    .box-icon,.spec-icon,.utility-icon,.ai-use-icon,.pledge-icon,
+    .stretch-icon,.founder-icon,.disclosure-icon,.faq-icon{
+      font-family:Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif;
+      font-style:normal;
+      line-height:1;
+      letter-spacing:0;
+    }
+
+    .proof-grid article{
+      position:relative;
+      padding-top:24px;
+    }
+    .proof-icon{
+      display:grid;
+      width:34px;height:34px;
+      place-items:center;
+      margin:0 auto 12px;
+      border:1px solid rgba(201,157,76,.32);
+      border-radius:11px;
+      background:rgba(201,157,76,.08);
+      font-size:18px;
+    }
+
+    .quote-icon{
+      display:inline-grid;
+      width:30px;height:30px;
+      place-items:center;
+      margin-right:8px;
+      border-radius:10px;
+      background:rgba(201,157,76,.12);
+      vertical-align:middle;
+      font-size:16px;
+    }
+
+    .seven-steps .step-symbol{
+      display:grid;
+      width:40px;height:40px;
+      place-items:center;
+      border:1px solid rgba(16,39,29,.16);
+      border-radius:12px;
+      background:#fff;
+      font-size:19px;
+    }
+
+    .time-equation{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:9px;
+      max-width:860px;
+      margin:38px auto 0;
+      padding:14px 18px;
+      border:1px solid rgba(239,217,149,.22);
+      border-radius:999px;
+      background:rgba(255,255,255,.045);
+      color:rgba(255,255,255,.75);
+      font-size:.78rem;
+      font-weight:850;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .equation-icon{font-size:17px}
+    .equation-arrow{color:var(--gold);font-weight:900}
+
+    .micro-icon{
+      display:inline-block;
+      margin-right:5px;
+      font-size:11px;
+    }
+
+    .game-grammar{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      margin:18px 0 4px;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:12px;
+      background:rgba(255,255,255,.06);
+      font-size:.68rem;
+      font-weight:900;
+      letter-spacing:.055em;
+      line-height:1.4;
+    }
+    .game-grammar-icon{font-size:16px}
+
+    .side-icon{margin-right:6px}
+
+    .visual-language-principle{
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr);
+      gap:16px 20px;
+      align-items:center;
+      margin:28px 0 38px;
+      padding:22px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:rgba(255,255,255,.68);
+    }
+    .visual-language-chain{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:26px;
+    }
+    .visual-language-chain i{
+      color:var(--gold);
+      font-style:normal;
+      font-size:15px;
+    }
+    .visual-language-principle b{
+      display:block;
+      color:var(--ink);
+      font-family:var(--serif);
+      font-size:1.3rem;
+    }
+    .visual-language-principle p{
+      margin:5px 0 0;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    .rgbs-language{
+      grid-column:1/-1;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+    }
+    .rgbs-language span{
+      padding:9px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      text-align:center;
+      font-size:.68rem;
+      font-weight:900;
+      letter-spacing:.05em;
+    }
+
+    .story-symbol{
+      display:grid!important;
+      width:48px!important;height:48px!important;
+      place-items:center;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:rgba(201,157,76,.09);
+      font-family:Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif!important;
+      font-size:23px!important;
+      line-height:1!important;
+    }
+
+    .framework-icon{
+      display:inline-block;
+      margin-right:7px;
+      font-size:18px;
+      vertical-align:-2px;
+    }
+
+    .gallery-language-note{
+      display:grid;
+      grid-template-columns:44px minmax(0,1fr);
+      gap:15px;
+      align-items:center;
+      max-width:820px;
+      margin:26px 0 34px;
+      padding:16px 18px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      background:rgba(255,255,255,.045);
+    }
+    .gallery-note-icon{
+      display:grid;
+      width:44px;height:44px;
+      place-items:center;
+      border-radius:13px;
+      background:rgba(239,217,149,.09);
+      font-size:22px;
+    }
+    .gallery-language-note b{color:#fff}
+    .gallery-language-note p{
+      margin:4px 0 0;
+      color:rgba(255,255,255,.58);
+      font-size:.84rem;
+      line-height:1.55;
+    }
+
+    .evidence-icon{
+      display:grid;
+      width:46px;height:46px;
+      place-items:center;
+      margin-bottom:18px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      background:rgba(255,255,255,.05);
+      font-size:22px;
+    }
+    .evidence-grid-icon{
+      display:block;
+      margin-bottom:9px;
+      font-size:20px;
+    }
+
+    .box-item,.spec-grid article,.pledge,.stretch-card,.founder-proof article{
+      position:relative;
+    }
+    .box-icon,.pledge-icon,.founder-icon{
+      display:grid;
+      width:42px;height:42px;
+      place-items:center;
+      margin-bottom:18px;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:rgba(201,157,76,.085);
+      font-size:20px;
+    }
+    .spec-icon{
+      display:block;
+      margin-bottom:8px;
+      font-size:18px;
+    }
+
+    .read-icon,.timeline-icon,.disclosure-icon{
+      display:grid!important;
+      width:40px!important;height:40px!important;
+      place-items:center;
+      border:1px solid currentColor;
+      border-radius:12px;
+      font-family:Apple Color Emoji,Segoe UI Emoji,Noto Color Emoji,sans-serif!important;
+      font-size:19px!important;
+      line-height:1!important;
+    }
+
+    .utility-icon{
+      display:inline-block;
+      margin-right:7px;
+      font-size:17px;
+      vertical-align:-2px;
+    }
+
+    .ai-use-grid article{
+      position:relative;
+      padding-top:52px;
+    }
+    .ai-use-icon{
+      position:absolute;
+      top:16px;left:18px;
+      font-size:22px;
+    }
+
+    .pledge-icon{
+      border-color:rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
+    }
+    .pledge.featured .pledge-icon{
+      border-color:rgba(201,157,76,.4);
+      background:rgba(201,157,76,.12);
+    }
+    .check-icon{
+      display:inline-grid;
+      width:17px;height:17px;
+      place-items:center;
+      margin-right:7px;
+      border-radius:50%;
+      background:rgba(87,166,115,.15);
+      color:#9ed6b2;
+      font-size:10px;
+      font-weight:950;
+    }
+
+    .stretch-icon{
+      display:block;
+      margin:12px 0 18px;
+      font-size:31px;
+    }
+
+    .founder-icon{
+      border-color:rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);
+    }
+
+    .faq-icon{
+      display:inline-block;
+      width:27px;
+      margin-right:9px;
+      font-size:18px;
+      vertical-align:-2px;
+    }
+
+    @media(max-width:680px){
+      .proof-icon{width:30px;height:30px;font-size:16px}
+      .time-equation{
+        justify-content:flex-start;
+        border-radius:18px;
+        line-height:1.7;
+      }
+      .visual-language-principle{grid-template-columns:1fr}
+      .visual-language-chain{justify-content:center}
+      .rgbs-language{
+        grid-column:1;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .story-symbol{width:42px!important;height:42px!important;font-size:20px!important}
+      .game-grammar{align-items:flex-start}
+      .gallery-language-note{grid-template-columns:38px minmax(0,1fr)}
+      .gallery-note-icon{width:38px;height:38px;font-size:19px}
+      .box-icon,.pledge-icon,.founder-icon{width:38px;height:38px;font-size:18px}
+    }
+
+    /* ── THAI-ONLY STATIC EDITION ───────────────────────────────────────── */
     html[lang="th"] body,
     html[lang="th"] button,
     html[lang="th"] input,
     html[lang="th"] a,
-    html[lang="th"] .brand,
     html[lang="th"] .display,
     html[lang="th"] .hero h1,
     html[lang="th"] blockquote,
     html[lang="th"] .price,
-    html[lang="th"] .box-count,
     html[lang="th"] .stretch-no,
-    html[lang="th"] .founder-proof b,
-    html[lang="th"] .proof-grid strong,
-    html[lang="th"] .story-copy .number,
     html[lang="th"] .game-card h3,
     html[lang="th"] .rule-copy h3,
-    html[lang="th"] .final h2{
+    html[lang="th"] .story-copy h3,
+    html[lang="th"] .framework strong,
+    html[lang="th"] .final h2,
+    html[lang="th"] .founder-proof b,
+    html[lang="th"] .founder-proof strong,
+    html[lang="th"] .terminal-body{
       font-family:"Anuphan","Noto Sans Thai",Tahoma,sans-serif!important;
     }
-    html[lang="th"] body{font-weight:400;line-height:1.72}
+
+    html[lang="th"] body{
+      font-weight:400;
+      line-height:1.72;
+    }
+
     html[lang="th"] .display,
     html[lang="th"] .hero h1,
     html[lang="th"] .final h2{
       font-weight:700;
       letter-spacing:-.045em;
-      line-height:1.12;
+      line-height:1.13;
     }
+
     html[lang="th"] .display em,
-    html[lang="th"] .hero h1 em{font-style:normal;font-weight:600}
-    html[lang="th"] .eyebrow{letter-spacing:.08em;line-height:1.5}
-    html[lang="th"] .lead{line-height:1.8}
+    html[lang="th"] .hero h1 em{
+      font-style:normal;
+      font-weight:600;
+    }
+
+    html[lang="th"] .lead{
+      line-height:1.82;
+    }
+
+    html[lang="th"] .eyebrow{
+      letter-spacing:.075em;
+      line-height:1.5;
+    }
+
     html[lang="th"] .button,
     html[lang="th"] .nav-play,
-    html[lang="th"] .pledge button{font-weight:700}
-    html[lang="th"] .compare-row b,
-    html[lang="th"] .framework strong,
-    html[lang="th"] .game-card h3,
-    html[lang="th"] .stretch-card h3{line-height:1.35}
-    html[lang="th"] .terminal-body{
-      font-family:"Anuphan","Noto Sans Thai",Tahoma,sans-serif;
-      line-height:1.8;
+    html[lang="th"] .pledge button{
+      font-weight:700;
     }
+
+    html[lang="th"] .game-grammar,
+    html[lang="th"] .time-equation{
+      letter-spacing:.025em;
+    }
+
+    .thb-estimate{
+      display:block;
+      margin-top:8px;
+      color:var(--gold);
+      font-family:"Anuphan","Noto Sans Thai",Tahoma,sans-serif;
+      font-size:.72rem;
+      font-weight:700;
+      line-height:1.45;
+      letter-spacing:0;
+    }
+
     @media(max-width:680px){
-      html[lang="th"] .display{font-size:clamp(2.25rem,10.7vw,3.25rem);line-height:1.14}
-      html[lang="th"] .hero h1{font-size:clamp(3rem,13vw,4.1rem);line-height:1.08}
-      html[lang="th"] .brand{font-size:.9rem}
-      html[lang="th"] .nav-play{font-size:.66rem}
+      html[lang="th"] .display{
+        font-size:clamp(2.2rem,10.6vw,3.2rem);
+        line-height:1.15;
+      }
+
+      html[lang="th"] .hero h1{
+        font-size:clamp(3rem,13vw,4.05rem);
+        line-height:1.08;
+      }
+
+      html[lang="th"] .brand{
+        font-size:.9rem;
+      }
+
+      html[lang="th"] .nav-play{
+        font-size:.66rem;
+      }
+
       html[lang="th"] .story-copy h3,
       html[lang="th"] .rule-copy h3,
-      html[lang="th"] .game-card h3{line-height:1.22}
+      html[lang="th"] .game-card h3{
+        line-height:1.24;
+      }
     }
 </style>
-<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/></head>
+<meta content="th_TH" property="og:locale"/><link href="https://www.myclover.com/kickstarter/" hreflang="en" rel="alternate"/><link href="https://www.myclover.com/kickstarter/th/" hreflang="th" rel="alternate"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/></head>
 <body>
-<header class="nav"><div class="nav-inner"><a aria-label="กลับไปด้านบน" class="brand" href="#top"><img alt="" aria-hidden="true" class="brand-logo" fetchpriority="high" height="594" src="/assets/myclover-icon.png" width="594"/><span>myClover <b>· First Hand</b></span></a><nav aria-label="เมนูในหน้านี้" class="nav-links"><a href="#language">ทำไมจึงได้ผล</a><a href="#games">3 เกม</a><a href="#ai-layer">ชั้น AI</a><a href="#cards">การ์ด</a><a href="#pledges">ระดับสนับสนุน</a></nav><a class="nav-cta nav-play" href="/core7/">เล่น CORE7 ฟรี</a></div></header>
+<header class="nav"><div class="nav-inner"><div class="brand"><img alt="" aria-hidden="true" class="brand-logo" fetchpriority="high" height="594" src="/assets/myclover-icon.png" width="594"/><span>myClover <b>· First Hand</b></span></div><a class="nav-cta nav-play" href="/core7/">เล่น CORE7</a></div></header>
 <main id="top">
-<section class="hero"><div class="hero-glow red"></div><div class="hero-glow blue"></div><div class="wrap hero-grid"><div class="hero-copy reveal"><p class="eyebrow">ตัวอย่างแคมเปญ · การพิมพ์ครั้งแรก</p><h1>1 เด็ค<br/>กับใครก็ได้<br/><em>ที่ไหนก็ได้</em></h1><p class="lead">เลือก 7 คำ เล่น 3 เกมทางการโดยไม่มีการสุ่ม ภายในไม่ถึง 10 นาที คนแปลกหน้าอาจกลายเป็นคนที่คุณมีความทรงจำร่วมกัน</p><div class="hero-actions"><a class="button gold" href="#pledges">สนับสนุน First Hand</a><a class="button" href="/core7/">เล่น CORE7 ฟรี</a></div><p class="micro">การ์ด 37 ใบ · 3 เกมทางการ · ภาษาพกพา 1 ระบบ · สุ่ม 0% · ตัดสินใจ 100%</p></div><div aria-label="การ์ด myClover จริง 7 ใบ จัดแบบ 3-1-3" class="hero-hand reveal" id="heroHand"><div class="hero-seal"><span>myClover</span><b>37</b><small>FIRST HAND</small></div></div></div></section>
-<section class="proof-band"><div class="wrap proof-grid"><article><strong>7 วินาที</strong><span>เพื่อเริ่มเล่น ไม่ใช่ท่องจำ</span></article><article><strong>7 ใบ</strong><span>มือที่สมบูรณ์เสมอ</span></article><article><strong>3 เกม</strong><span>ใช้ภาษา RGBS ร่วมกัน</span></article><article><strong>0% RNG</strong><span>การตัดสินใจของมนุษย์ 100%</span></article></div></section>
-<section class="section section-dark"><div class="wrap why-grid"><div class="why-copy reveal"><p class="eyebrow">ทำไมต้อง myClover?</p><h2 class="display">โชคที่คุณเลือก<br/><em>พกติดตัว</em></h2><p class="lead">myClover มาจากแนวคิด my lucky seven แต่ 7 ใบนี้ไม่เคยถูกสุ่มแจกให้คุณ คุณเป็นคนเลือกคำที่อยากพกเข้ามาในการพบกันครั้งนี้ เกมไม่ใช้ดวง เพราะดวงถูกใช้ไปแล้วตอนที่คุณได้เจอคนตรงหน้า</p><blockquote>โชคคือการได้มาเจอกัน หลังจากนั้นคือการตัดสินใจของเรา</blockquote></div><div aria-hidden="true" class="lucky-orbit reveal"><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><strong>7</strong><span>7 คำที่คุณเลือกเอง</span></div></div></section>
-<section class="section section-cream" id="start"><div class="wrap seven-start-grid"><div class="seven-start-copy reveal"><p class="eyebrow">เริ่มเล่นใน 7 วินาที</p><h2 class="display">ใช้เวลาก่อนเล่นให้น้อยลง<br/><em>เหลือความหมายหลังเกมให้มากขึ้น</em></h2><p class="lead">วาง Rule Card ไว้บนโต๊ะตลอดเกม ไม่มีใครต้องท่อง Rulebook เพียงชี้วงจรสี เลือก 1 จาก 7 ใบ เปิดพร้อมกัน แล้วเกมก็เริ่มขึ้นแล้ว</p><div class="seven-steps"><article><b>01</b><span>ยื่น Rule Card</span></article><article><b>02</b><span>เลือก 1 จาก 7</span></article><article><b>03</b><span>เปิดพร้อมกัน</span></article></div><blockquote>กลไกถูกออกแบบให้หายไปอย่างรวดเร็ว เพื่อให้มนุษย์กลายเป็นส่วนที่น่าสนใจที่สุด</blockquote></div><div aria-label="การ์ด 7 ใบเรียงแบบพัดจากซ้ายไปขวา" class="seven-spread reveal" id="startHand"></div></div></section>
-<section class="section subtraction"><div class="wrap subtraction-grid"><figure class="story-image mobile-fullbleed"><img alt="ต้นแบบยุคแรกค่อย ๆ เหลือ 3 สี และการ์ดสีเงินที่ตั้งใจเปิดพื้นที่ไว้" decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/removing-rules.webp" width="1600"/><figcaption><strong>ไม่มีอะไรให้ตัดออกอีกแล้ว</strong><span>เกมนี้ถูกค้นพบด้วยการตัดออก ไม่ใช่การสะสมฟีเจอร์</span></figcaption></figure><div class="subtraction-copy"><p class="eyebrow">ออกแบบด้วยการตัดออก</p><h2 class="display">เราเริ่มต้นด้วยการออกแบบเกม<br/><em>แต่สิ่งที่ค้นพบคือภาษา</em></h2><p class="lead">ทุกชั้นที่เราตัดออกทำให้เกมเริ่มง่ายขึ้น และทำให้คนตรงหน้าสำคัญขึ้น ตัวเลข ระบบทรัพยากร การจั่วแบบสุ่ม กำแพงข้อความ และการเพิ่มพลังหายไป สิ่งที่เหลือคือภาษา RGBS ที่ขับเคลื่อนด้วยการเลือกซึ่งซ่อนอยู่ของมนุษย์</p><div aria-label="สิ่งที่ First Hand ตัดออกและสิ่งที่เหลืออยู่" class="comparison" role="table"><div class="compare-head" role="row"><span>ชั้นของเกมดีไซน์</span><span>สิ่งที่ตัดออก</span><span>สิ่งที่เหลืออยู่</span></div><div class="compare-row" role="row"><div><b>การสุ่ม</b></div><div class="compare-cut"><span class="compare-mobile-label">สิ่งที่ตัดออก</span><b>ลูกเต๋า การสับ และดวงจากการจั่ว</b></div><div class="compare-kept"><span class="compare-mobile-label">สิ่งที่เหลืออยู่</span><b>การเลือกที่ซ่อนอยู่ของมนุษย์</b><p>ความไม่แน่นอนมาจากคน ไม่ใช่เครื่องมือ</p></div></div><div class="compare-row" role="row"><div><b>ระบบพลัง</b></div><div class="compare-cut"><span class="compare-mobile-label">สิ่งที่ตัดออก</span><b>ค่าสถานะ ความหายาก และการอัปเกรด</b></div><div class="compare-kept"><span class="compare-mobile-label">สิ่งที่เหลืออยู่</span><b>วงจร RGBS</b><p>การ์ดทุกใบยังเท่าเทียมกันในเชิงกลไก</p></div></div><div class="compare-row" role="row"><div><b>ภาระของกติกา</b></div><div class="compare-cut"><span class="compare-mobile-label">สิ่งที่ตัดออก</span><b>กำแพงข้อความและการทดสอบความจำ</b></div><div class="compare-kept"><span class="compare-mobile-label">สิ่งที่เหลืออยู่</span><b>Rule Card แบบภาพ 1 ใบ</b><p>วางให้มองเห็นได้ตลอดเกม</p></div></div><div class="compare-row" role="row"><div><b>ความลึกในการเล่นซ้ำ</b></div><div class="compare-cut"><span class="compare-mobile-label">สิ่งที่ตัดออก</span><b>ข้อยกเว้นและเนื้อหาที่เพิ่มขึ้น</b></div><div class="compare-kept"><span class="compare-mobile-label">สิ่งที่เหลืออยู่</span><b>ความทรงจำเกี่ยวกับคู่แข่ง</b><p>กติกาอยู่นิ่ง แต่ความสัมพันธ์เปลี่ยนไป</p></div></div></div><div class="silver-thesis"><b>สีเงินไม่ใช่พลังลำดับที่ 4 แต่คือสีแห่งอารยธรรม</b><p>BODY, SOUL และ MIND คือธรรมชาติของมนุษย์ ส่วนสีเงินเริ่มต้นจากพื้นที่เปิด ก่อนกลายเป็นเครื่องมือ ระบบ และวัฒนธรรมผ่าน CRAFT—สิ่งที่มนุษย์เลือกสร้างและแบ่งปัน</p></div></div></div></section>
-<section class="section section-cream" id="games"><div class="wrap"><div class="games-head reveal"><p class="eyebrow">3 เกมทางการ + CRAFT ที่ไร้ขีดจำกัด</p><h2 class="display">3 กติกาที่เราออกแบบ ส่วนเกมที่เหลือคุณเป็นคนสร้าง</h2><p class="lead">มือที่เลือกเองชุดเดียวเดินทางผ่านความลึก 3 ระดับ เริ่มจากสีเขียว ไปสีแดงเมื่ออยากดวลเร็ว หรือสีฟ้าเมื่ออยากเข้าสู่สงครามวางตำแหน่งที่ลึกที่สุด ส่วนสีเงินเป็นพื้นที่ของผู้เล่นที่อยากสร้างสิ่งต่อไป</p></div><div class="games-grid"><article class="game-card red reveal"><span class="game-badge">🔴 แดง · เร็วที่สุด</span><span class="game-core">BODY</span><h3>HERO’S DUEL</h3><b class="tag">เกมดวลความเร็วสูง</b><p>เป่ายิ้งฉุบที่ถูกสร้างใหม่ให้เป็นการต่อสู้รัว ๆ มีทั้งความจำ ความเสียหาย และทางเลือกที่ลดลง ชนะได้การ์ดคืน แพ้ต้องทิ้งการ์ด เสมอเสียทั้งคู่</p><small>2 ผู้เล่น · 7 ใบ · ดวลรัว</small></article><article class="game-card green reveal"><span class="game-badge">🟢 เขียว · เริ่มจากเกมนี้</span><span class="game-core">SOUL</span><h3>CORE7</h3><b class="tag">กติกาหลัก</b><p>เกมแรกที่เราแนะนำ เลือกอย่างลับ เปิดพร้อมกัน และอ่านมนุษย์ตรงหน้า เกมนี้สอนภาษาสีร่วมกันได้ภายในไม่กี่วินาที</p><small>2 ผู้เล่น · ความลึกปานกลาง · อ่านคน</small></article><article class="game-card blue reveal"><span class="game-badge">🔵 ฟ้า · ลึกที่สุด</span><span class="game-core">MIND</span><h3>三川 MIKAWA</h3><b class="tag">เกมกลยุทธ์ 3 สายน้ำ</b><p>วางกำลังบน 3 สะพาน ยึด 2 จาก 3 ตำแหน่ง แล้ว Kill การ์ดที่ถูก Capture 1 ใบ เล่นแบบดวลหรือ Tournament 4 คนที่ทุกความสูญเสียติดตามคุณไปถึงรอบ Final</p><small>2–4 ผู้เล่น · สงครามวางตำแหน่ง · 3 สะพาน</small></article><article class="game-card silver reveal"><span class="game-badge">⚙️ เงิน · เปิดให้สร้าง</span><span class="game-core">CRAFT</span><h3>สร้างเกมของคุณเอง</h3><b class="tag">ความเป็นไปได้ไม่รู้จบ</b><p>เกมที่ 4 เป็นต้นไปเป็นของผู้เล่น สีเงินคือสีแห่งอารยธรรม สร้างกติกาได้อย่างอิสระด้วยภาษา RGBS เดิม ทดลองบนโต๊ะ แล้วนำมาแชร์ใน Discord ของ myClover</p><small>ชุมชนสร้าง · กติกาเปิด · แชร์และต่อยอด</small><a class="discord" href="https://discord.gg/A5nmMqvTm" rel="noopener" target="_blank">แชร์เกมใน Discord</a></article></div><div class="rule-flip-grid reveal"><div class="flip-shell"><button aria-label="พลิก Rule Card แบบหน้าหลัง" aria-pressed="false" class="rules-flip" id="ruleCard" type="button"><span class="rules-flip-inner"><span class="rules-flip-face cover"><img alt="Rule Card แบบภาพของ CORE7 — ด้านหน้า" decoding="async" height="1482" loading="eager" src="/core7/assets/core7-rule.webp" width="1061"/></span><span class="rules-flip-face rules"><img alt="Rule Card แบบภาพของ 三川 MIKAWA และ HERO’S DUEL — ด้านหลัง" decoding="async" height="1482" loading="eager" src="/core7/assets/mikawa-rule.webp" width="1061"/></span></span></button><button class="flip-control" id="flipRule" type="button">↻ พลิก Rule Card</button></div><div class="rule-copy"><p class="eyebrow">ภาษาสีเดียว · Rule Card ใบเดียว</p><h3>เรียน CORE7 เพียงครั้งเดียว แล้วพลิกการ์ดใบเดิม</h3><p class="lead">เริ่มจาก CORE7 และเข้าใจวงจร RGBS ได้ภายในไม่กี่วินาที เมื่อทั้งโต๊ะเล่นเป็นแล้ว อีกด้านของ Rule Card จะเปิด HERO’S DUEL และ 三川 MIKAWA ให้เล่นต่อได้ทันที การ์ดเดิม สัญลักษณ์เดิม ไม่ต้องเรียนระบบที่ 2</p><div class="side-labels"><span>ด้านหน้า : CORE7 · เริ่มจากเกมนี้</span><span>ด้านหลัง · 三川 MIKAWA + HERO’S DUEL</span></div><div class="rule-actions"><a class="button ink" href="/core7/">เล่น CORE7 ฟรี →</a></div></div></div></div></section>
-<section class="section section-paper" id="language"><div class="wrap"><div class="center reveal"><p class="eyebrow">ภาษาสากล</p><h2 class="display">พกกล่องบาง ๆ 1 กล่อง แล้วเปิดประตูไปหาใครก็ได้</h2><p class="lead">ไม่ต้องมีงานอดิเรก วัฒนธรรม หรือภาษาพูดร่วมกัน เพียงนั่งตรงหน้ากัน เลือกการ์ด 7 ใบ แล้วเริ่มเล่น เด็คนี้พาคุณไปถึงครึ่งทางของบทสนทนาจริง ก่อนที่ใครจะรู้ด้วยซ้ำว่าควรพูดอะไร</p></div><div class="story-grid"><article class="story-row reveal"><figure class="story-image mobile-fullbleed"><img alt="ผู้เล่นคนหนึ่งถือการ์ด 7 ใบที่เลือกเองและส่งการ์ดที่เหลือให้อีกคน" decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/one-box-ritual.webp" width="1600"/></figure><div class="story-copy"><span class="number">01</span><h3>กล่องบาง 1 กล่อง พาไปครึ่งทางของบทสนทนา</h3><p>เก็บไว้ในกระเป๋า เลือก 7 ใบของคุณ แล้วส่งที่เหลือให้คนตรงหน้าเพื่อสร้างมือที่สมบูรณ์ 1 กล่องเพียงพอให้คน 2 คนเริ่มเล่นได้ทุกที่</p></div></article><article class="story-row reveal"><figure class="story-image mobile-fullbleed"><img alt="คนแปลกหน้า 2 คนเล่น myClover ระหว่างเดินทาง ก่อนจะมีภาษาพูดร่วมกัน" decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/first-meeting.webp" width="1600"/></figure><div class="story-copy"><span class="number">02</span><h3>นั่งลง แล้วเริ่มก่อนจะมีคำพูด</h3><p>ถ้าใครเป่ายิ้งฉุบเป็น CORE7 ก็ยากกว่านั้นเพียงเล็กน้อย บนเครื่องบิน ในคาเฟ่ หรือระหว่างคนที่พูดคนละภาษา เวลาไม่ถึง 10 นาทีอาจกลายเป็นช่วงเวลาร่วมกันที่ไม่มีใครคาดคิด</p></div></article><article class="story-row reveal"><figure class="story-image mobile-fullbleed"><img alt="มือ 7 ใบชุดเดิมถูกเล่นซ้ำ ขณะที่ความทรงจำจากการเลือกครั้งก่อนสะสมขึ้น" decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/core7bo5-memory.webp" width="1600"/></figure><div class="story-copy"><span class="number">03</span><h3>เกมแรกเผยให้เห็นการ์ด เกมต่อ ๆ ไปเผยให้เห็นคน</h3><p>ตอนแรกคุณยังไม่รู้อะไร จากนั้นคุณจะรู้ 7 คำที่เขาเลือกพกมา ทุก Match ทำให้คุณเริ่มอ่านจังหวะ ความกล้า การยับยั้ง และคุณค่าที่เขาเลือก คุณอาจลืมคำที่อยู่บนการ์ด แต่จะจำความรู้สึกที่ได้เล่นกับมนุษย์คนนั้น</p></div></article></div></div></section>
-<section class="section section-cream"><div class="wrap"><div class="one-box-grid"><div class="flip-shell passion-flip reveal"><button aria-label="พลิก Passion ไปยังหลังการ์ดร่วมของ myClover" aria-pressed="false" class="rules-flip" id="passionCard" type="button"><span class="rules-flip-inner"><span class="rules-flip-face cover passion-card-wrap" id="passionFront"></span><span class="rules-flip-face rules"><img alt="หลังการ์ดร่วมของการ์ด myClover ทุกใบ" decoding="async" height="1482" loading="lazy" src="/core7/assets/myclover-back.webp" width="1061"/></span></span></button><button class="flip-control" id="flipPassion" type="button">↻ พลิก PASSION / หลังการ์ด</button></div><div class="reveal"><p class="eyebrow">หลังเดียว · ทุกเกม</p><h2 class="display">ความหมายต่างกัน<br/><em>ภาษาลับเดียวกัน</em></h2><p class="lead">การ์ด myClover ที่ใช้เล่นทุกใบมีหลังเดียวกัน มือ 7 ใบชุดเดิมจึงเดินทางจาก CORE7 ไป HERO’S DUEL, 三川 MIKAWA และกติกาที่ผู้เล่นสร้างเองได้ โดยไม่ทำลายข้อมูลที่ต้องซ่อน</p></div></div><div class="framework framework-wide"><article><span>🔴 แดง · BODY</span><strong>รู้สึกและเคลื่อนไหว</strong><p>ความปรารถนา ความกล้า และพลังที่เปลี่ยนการเลือกให้กลายเป็นการลงมือ</p></article><article><span>🟢 เขียว · SOUL</span><strong>ดูแลและเติบโต</strong><p>สมดุล ความอดทน และรากที่ทำให้ชีวิตเติบโตต่อ</p></article><article><span>🔵 ฟ้า · MIND</span><strong>มองเห็นและเลือก</strong><p>ความชัดเจน กลยุทธ์ และทิศทางเบื้องหลังการตัดสินใจ</p></article><article><span>⚙️ เงิน · CRAFT</span><strong>สร้างและแบ่งปัน</strong><p>สังเกต ซ่อม และสร้างสิ่งที่กติกาทางการเปิดพื้นที่ไว้</p></article></div></div></section>
-<section class="section section-dark" id="cards"><div class="wrap"><div class="gallery-head reveal"><div class="gallery-copy"><p class="eyebrow">FIRST HAND · การ์ดจริง 28 ใบ</p><h2 class="display">ทุกสีมีความหมาย 7 แบบ</h2><p class="lead">Desktop แสดงการ์ดครบ 28 ใบเป็น 4 มือที่สมบูรณ์ มือละ 7 ใบ ส่วน Mobile แสดงมือสีที่เลือกครั้งละ 7 ใบเพื่อให้อ่านง่าย</p></div><div aria-label="เลือกมือการ์ดตามสี" class="color-tabs" role="group"><button class="active" data-color="RED" type="button">🔴 แดง</button><button data-color="GREEN" type="button">🟢 เขียว</button><button data-color="BLUE" type="button">🔵 ฟ้า</button><button data-color="GRAY" type="button">⚙️ เงิน</button></div></div><div class="gallery" id="gallery"></div><p class="gallery-note">ไม่มีค่าสถานะ ไม่มีพลังจากความหายาก การ์ดละ 1 คำ การตัดสินใจละ 1 สี</p></div></section><section class="section section-paper mongkol-section" id="mongkol">
+<section class="hero"><div class="hero-glow red"></div><div class="hero-glow blue"></div><div class="wrap hero-grid"><div class="hero-copy reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🎴</span> ตัวอย่างแคมเปญ · การพิมพ์ครั้งแรก</p><h1>1 เด็ค<br/>กับใครก็ได้<br/><em>ที่ไหนก็ได้</em></h1><p class="lead">เลือก 7 คำ เล่น 3 เกมทางการโดยไม่มีการสุ่ม ภายในไม่ถึง 10 นาที คนแปลกหน้าอาจกลายเป็นคนที่คุณมีความทรงจำร่วมกัน</p><p class="micro">การ์ด 37 ใบ · 3 เกมทางการ · ภาษาพกพา 1 ระบบ · สุ่ม 0% · ตัดสินใจ 100%</p></div><div aria-label="Seven real myClover cards in a 3-1-3 spread" class="hero-hand reveal" id="heroHand"><div class="hero-seal"><span>myClover</span><b>37</b><small>FIRST HAND</small></div></div></div></section>
+<section class="proof-band"><div class="wrap proof-grid"><article><span aria-hidden="true" class="proof-icon">⚡</span><strong>7 วินาที</strong><span>เพื่อเริ่มเล่น ไม่ใช่ท่องจำ</span></article><article><span aria-hidden="true" class="proof-icon">🃏</span><strong>7 ใบ</strong><span>มือที่สมบูรณ์เสมอ</span></article><article><span aria-hidden="true" class="proof-icon">⚔️</span><strong>3 เกม</strong><span>ใช้ภาษา RGBS ร่วมกัน</span></article><article><span aria-hidden="true" class="proof-icon">🎯</span><strong>0% RNG</strong><span>การตัดสินใจของมนุษย์ 100%</span></article></div></section>
+<section class="section section-dark"><div class="wrap why-grid"><div class="why-copy reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🍀</span> ทำไมต้อง myClover?</p><h2 class="display">โชคที่คุณเลือก<br/><em>พกติดตัว</em></h2><p class="lead">myClover มาจากแนวคิด my lucky seven แต่ 7 ใบนี้ไม่เคยถูกสุ่มแจกให้คุณ คุณเป็นคนเลือกคำที่อยากพกเข้ามาในการพบกันครั้งนี้ เกมไม่ใช้ดวง เพราะดวงถูกใช้ไปแล้วตอนที่คุณได้เจอคนตรงหน้า</p><blockquote><span aria-hidden="true" class="quote-icon">🤝</span> โชคคือการได้มาเจอกัน หลังจากนั้นคือการตัดสินใจของเรา</blockquote></div><div aria-hidden="true" class="lucky-orbit reveal"><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><i class="lucky-dot"></i><strong>7</strong><span>7 คำที่คุณเลือกเอง</span></div></div></section>
+<section class="section section-cream" id="start"><div class="wrap seven-start-grid"><div class="seven-start-copy reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">⚡</span> เริ่มเล่นใน 7 วินาที</p><h2 class="display">ใช้เวลาก่อนเล่นให้น้อยลง<br/><em>เหลือความหมายหลังเกมให้มากขึ้น</em></h2><p class="lead">วาง Rule Card ไว้บนโต๊ะตลอดเกม ไม่มีใครต้องท่อง Rulebook เพียงชี้วงจรสี เลือก 1 จาก 7 ใบ เปิดพร้อมกัน แล้วเกมก็เริ่มขึ้นแล้ว</p><div class="seven-steps"><article><b aria-hidden="true" class="step-symbol">👁️</b><span>ยื่น Rule Card</span></article><article><b aria-hidden="true" class="step-symbol">🃏</b><span>เลือก 1 จาก 7</span></article><article><b aria-hidden="true" class="step-symbol">🤝</b><span>เปิดพร้อมกัน</span></article></div><blockquote>กลไกถูกออกแบบให้หายไปอย่างรวดเร็ว เพื่อให้มนุษย์กลายเป็นส่วนที่น่าสนใจที่สุด</blockquote></div><div aria-label="Seven cards spread from left to right" class="seven-spread reveal" id="startHand"></div></div></section><section class="section section-dark time-section" id="time">
+<div class="wrap">
+<div class="time-head">
+<div>
+<p class="eyebrow"><span aria-hidden="true" class="section-emoji">⏳</span> เวลาคือความหรูหราที่แท้จริง</p>
+<h2 class="display">เส้นทางที่สั้นที่สุด<br/><em>สู่เวลาที่ควรค่าแก่การจดจำ</em></h2>
+</div>
+<p class="lead">First Hand ไม่ได้สั้นเพราะช่วงเวลานั้นสำคัญน้อยลง แต่มันสั้นเพราะช่วงเวลานั้นสำคัญมากขึ้น เราตัดเวลารอ การจัดโต๊ะ และคำอธิบายออก เพื่อให้คน 2 คนไปถึงกันได้เร็วขึ้น</p>
+</div>
+<div class="time-arc">
+<article>
+<span aria-hidden="true" class="time-icon">⚡</span>
+<b>7 วินาที</b>
+<strong>เปิดประตู</strong>
+<p>ชี้วงจร เลือกการ์ด 1 ใบ แล้วเปิดพร้อมกัน ไม่มีใครต้องนั่งฟังคำอธิบายยาว ๆ ก่อนจะรู้สึกว่าตัวเองเป็นส่วนหนึ่งของโต๊ะ</p>
+</article>
+<article>
+<span aria-hidden="true" class="time-icon">🤝</span>
+<b>ไม่ถึง 10 นาที</b>
+<strong>สร้างอดีตร่วมกัน</strong>
+<p>แม้การพบกันเพียงสั้น ๆ ก็กลายเป็นช่วงเวลาที่สมบูรณ์และอยู่ในความทรงจำของทั้ง 2 คนได้</p>
+</article>
+<article>
+<span aria-hidden="true" class="time-icon">🧠</span>
+<b>ทุก Match ถัดไป</b>
+<strong>ให้ความทรงจำทบต้น</strong>
+<p>การ์ด 7 ใบชุดเดิมเผยให้เห็นมากขึ้น เพราะตอนนี้คุณจำทั้งการเลือก และมนุษย์ผู้เลือกมันได้แล้ว</p>
+</article>
+<article>
+<span aria-hidden="true" class="time-icon">🌱</span>
+<b>หลังเกมจบไปนานแล้ว</b>
+<strong>เก็บสิ่งที่ยังเติบโต</strong>
+<p>คะแนนเลือนหายไป แต่ความรู้สึกอาจมีค่ามากขึ้นเมื่อเวลาผ่านไป</p>
+</article>
+</div>
+<div aria-label="7 วินาทีเพื่อเริ่ม ไม่ถึง 10 นาทีเพื่อเชื่อมโยง และความทรงจำที่ยังเติบโต" class="time-equation"><span aria-hidden="true" class="equation-icon">⚡</span> 7 วินาที <span aria-hidden="true" class="equation-arrow">→</span> <span aria-hidden="true" class="equation-icon">🤝</span> &lt; 10 นาที <span aria-hidden="true" class="equation-arrow">→</span> <span aria-hidden="true" class="equation-icon">🧠</span> ความทรงจำ <span aria-hidden="true" class="equation-arrow">→</span> <span aria-hidden="true" class="equation-icon">🌱</span> เติบโต</div><blockquote class="time-statement">
+      เราแทบไม่ใช้เวลาเพื่อเข้าสู่ระบบ เพื่อให้เวลาที่เหลือทั้งหมดเป็นของคนตรงหน้า
+    </blockquote>
+</div>
+</section>
+<section class="section subtraction"><div class="wrap subtraction-grid"><figure class="story-image mobile-fullbleed"><img alt="Early prototypes becoming three colors and one intentionally empty Silver card." decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/removing-rules.webp" width="1600"/><figcaption><strong>ไม่มีอะไรให้ตัดออกอีกแล้ว</strong><span>เกมนี้ถูกค้นพบด้วยการตัดออก ไม่ใช่การสะสมฟีเจอร์</span></figcaption></figure><div class="subtraction-copy"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">✂️</span> ออกแบบด้วยการตัดออก</p><h2 class="display">เราเริ่มต้นด้วยการออกแบบเกม<br/><em>แต่สิ่งที่ค้นพบคือภาษา</em></h2><p class="lead">ทุกชั้นที่เราตัดออกทำให้เกมเริ่มง่ายขึ้น และทำให้คนตรงหน้าสำคัญขึ้น ตัวเลข ระบบทรัพยากร การจั่วแบบสุ่ม กำแพงข้อความ และการเพิ่มพลังหายไป สิ่งที่เหลือคือภาษา RGBS ที่ขับเคลื่อนด้วยการเลือกซึ่งซ่อนอยู่ของมนุษย์</p><div aria-label="สิ่งที่ First Hand ตัดออกและสิ่งที่เหลืออยู่" class="subtraction-decisions">
+<article class="subtraction-decision">
+<div class="decision-topic"><span aria-hidden="true">🎲</span><b>การสุ่ม</b></div>
+<div class="decision-removed">
+<small><span aria-hidden="true" class="micro-icon">✂️</span> สิ่งที่ตัดออก</small>
+<span>ลูกเต๋า การสับ และดวงจากการจั่ว</span>
+</div>
+<div class="decision-remains">
+<small><span aria-hidden="true" class="micro-icon">✨</span> สิ่งที่เหลืออยู่</small>
+<strong>การเลือกที่ซ่อนอยู่ของมนุษย์</strong>
+<p>ความไม่แน่นอนมาจากคนตรงหน้า ไม่ใช่จากเครื่องมือ</p>
+</div>
+</article>
+<article class="subtraction-decision">
+<div class="decision-topic"><span aria-hidden="true">📈</span><b>ระบบพลัง</b></div>
+<div class="decision-removed">
+<small><span aria-hidden="true" class="micro-icon">✂️</span> สิ่งที่ตัดออก</small>
+<span>ค่าสถานะ ความหายาก และการอัปเกรด</span>
+</div>
+<div class="decision-remains">
+<small><span aria-hidden="true" class="micro-icon">✨</span> สิ่งที่เหลืออยู่</small>
+<strong>วงจร RGBS ที่เท่าเทียมกัน</strong>
+<p>ไม่มีการ์ดใบใดชนะเพราะหายากกว่า ความหมายและจังหวะต่างหากที่สร้างความได้เปรียบ</p>
+</div>
+</article>
+<article class="subtraction-decision">
+<div class="decision-topic"><span aria-hidden="true">📚</span><b>ภาระของกติกา</b></div>
+<div class="decision-removed">
+<small><span aria-hidden="true" class="micro-icon">✂️</span> สิ่งที่ตัดออก</small>
+<span>กำแพงข้อความและการทดสอบความจำ</span>
+</div>
+<div class="decision-remains">
+<small><span aria-hidden="true" class="micro-icon">✨</span> สิ่งที่เหลืออยู่</small>
+<strong>Rule Card แบบภาพ 1 ใบ</strong>
+<p>วางไว้บนโต๊ะ แล้วเริ่มเล่นก่อนที่ใครจะมีเวลารู้สึกว่าตัวเองตามไม่ทัน</p>
+</div>
+</article>
+<article class="subtraction-decision">
+<div class="decision-topic"><span aria-hidden="true">🧠</span><b>ความลึกในการเล่นซ้ำ</b></div>
+<div class="decision-removed">
+<small><span aria-hidden="true" class="micro-icon">✂️</span> สิ่งที่ตัดออก</small>
+<span>ข้อยกเว้นและเนื้อหาที่เพิ่มขึ้น</span>
+</div>
+<div class="decision-remains">
+<small><span aria-hidden="true" class="micro-icon">✨</span> สิ่งที่เหลืออยู่</small>
+<strong>ความทรงจำเกี่ยวกับคู่แข่ง</strong>
+<p>กติกาอยู่นิ่ง แต่ความสัมพันธ์กลายเป็นเกมที่ขยายตัวต่อไป</p>
+</div>
+</article>
+</div><div class="silver-thesis"><b>สีเงินไม่ใช่พลังลำดับที่ 4 แต่คือสีแห่งอารยธรรม</b><p>BODY, SOUL และ MIND คือธรรมชาติของมนุษย์ ส่วนสีเงินเริ่มต้นจากพื้นที่เปิด ก่อนกลายเป็นเครื่องมือ ระบบ และวัฒนธรรมผ่าน CRAFT—สิ่งที่มนุษย์เลือกสร้างและแบ่งปัน</p></div></div></div></section>
+<section class="section section-cream" id="games"><div class="wrap"><div class="games-head reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">⚔️</span> 3 เกมทางการ + CRAFT ที่ไร้ขีดจำกัด</p><h2 class="display">3 กติกาที่เราออกแบบ ส่วนเกมที่เหลือคุณเป็นคนสร้าง</h2><p class="lead">มือที่เลือกเองชุดเดียวเดินทางผ่านความลึก 3 ระดับ เริ่มจากสีเขียว ไปสีแดงเมื่ออยากดวลเร็ว หรือสีฟ้าเมื่ออยากเข้าสู่สงครามวางตำแหน่งที่ลึกที่สุด ส่วนสีเงินเป็นพื้นที่ของผู้เล่นที่อยากสร้างสิ่งต่อไป</p></div><div class="games-grid"><article class="game-card red reveal"><span class="game-badge">🔴 แดง · เร็วที่สุด</span><span class="game-core">BODY</span><h3>HERO’S DUEL</h3><b class="tag">เกมดวลความเร็วสูง</b><p>เป่ายิ้งฉุบที่ถูกสร้างใหม่ให้เป็นการต่อสู้รัว ๆ มีทั้งความจำ ความเสียหาย และทางเลือกที่ลดลง ชนะได้การ์ดคืน แพ้ต้องทิ้งการ์ด เสมอเสียทั้งคู่</p><div class="game-grammar"><span aria-hidden="true" class="game-grammar-icon">⚡</span><span>ชนะ → คืนมือ · แพ้ → ทิ้ง</span></div><small>2 ผู้เล่น · 7 ใบ · ดวลรัว</small></article><article class="game-card green reveal"><span class="game-badge">🟢 เขียว · เริ่มจากเกมนี้</span><span class="game-core">SOUL</span><h3>CORE7</h3><b class="tag">กติกาหลัก</b><p>เกมแรกที่เราแนะนำ เลือกอย่างลับ เปิดพร้อมกัน และอ่านมนุษย์ตรงหน้า เกมนี้สอนภาษาสีร่วมกันได้ภายในไม่กี่วินาที</p><div class="game-grammar"><span aria-hidden="true" class="game-grammar-icon">🧠</span><span>เลือก → เปิด → จดจำ</span></div><small>2 ผู้เล่น · ความลึกปานกลาง · อ่านคน</small></article><article class="game-card blue reveal"><span class="game-badge">🔵 ฟ้า · ลึกที่สุด</span><span class="game-core">MIND</span><h3>三川 MIKAWA</h3><b class="tag">เกมกลยุทธ์ 3 สายน้ำ</b><p>วางกำลังบน 3 สะพาน ยึด 2 จาก 3 ตำแหน่ง แล้ว Kill การ์ดที่ถูก Capture 1 ใบ เล่นแบบดวลหรือ Tournament 4 คนที่ทุกความสูญเสียติดตามคุณไปถึงรอบ Final</p><div class="game-grammar"><span aria-hidden="true" class="game-grammar-icon">🌉</span><span>3 สะพาน → ยึด 2 → กำจัด 1</span></div><small>2–4 ผู้เล่น · สงครามวางตำแหน่ง · 3 สะพาน</small></article><article class="game-card silver reveal"><span class="game-badge">⚙️ เงิน · เปิดให้สร้าง</span><span class="game-core">CRAFT</span><h3>สร้างเกมของคุณเอง</h3><b class="tag">ความเป็นไปได้ไม่รู้จบ</b><p>เกมที่ 4 เป็นต้นไปเป็นของผู้เล่น สีเงินคือสีแห่งอารยธรรม สร้างกติกาได้อย่างอิสระด้วยภาษา RGBS เดิม ทดลองบนโต๊ะ แล้วนำมาแชร์ใน Discord ของ myClover</p><div class="game-grammar"><span aria-hidden="true" class="game-grammar-icon">⚙️</span><span>สังเกต → สร้าง → ทดลอง → แชร์</span></div><small>ชุมชนสร้าง · กติกาเปิด · แชร์และต่อยอด</small></article></div><div class="rule-flip-grid reveal"><div class="flip-shell"><button aria-label="Flip the double-sided Rule Card" aria-pressed="false" class="rules-flip" id="ruleCard" type="button"><span class="rules-flip-inner"><span class="rules-flip-face cover"><img alt="CORE7 visual Rule Card — front" decoding="async" height="1482" loading="eager" src="/core7/assets/core7-rule.webp" width="1061"/></span><span class="rules-flip-face rules"><img alt="三川 MIKAWA and HERO’S DUEL visual Rule Card — back" decoding="async" height="1482" loading="eager" src="/core7/assets/mikawa-rule.webp" width="1061"/></span></span></button><button class="flip-control" id="flipRule" type="button">↻ พลิก Rule Card</button></div><div class="rule-copy"><p class="eyebrow">ภาษาสีเดียว · Rule Card ใบเดียว</p><h3>เรียน CORE7 เพียงครั้งเดียว แล้วพลิกการ์ดใบเดิม</h3><p class="lead">เริ่มจาก CORE7 และเข้าใจวงจร RGBS ได้ภายในไม่กี่วินาที เมื่อทั้งโต๊ะเล่นเป็นแล้ว อีกด้านของ Rule Card จะเปิด HERO’S DUEL และ 三川 MIKAWA ให้เล่นต่อได้ทันที การ์ดเดิม สัญลักษณ์เดิม ไม่ต้องเรียนระบบที่ 2</p><div class="side-labels"><span><span aria-hidden="true" class="side-icon">🟢</span> ด้านหน้า : CORE7 · เริ่มจากเกมนี้</span><span><span aria-hidden="true" class="side-icon">⚔️</span> ด้านหลัง · 三川 MIKAWA + HERO’S DUEL</span></div></div></div></div></section>
+<section class="section section-paper" id="language"><div class="wrap"><div class="center reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🌍</span> ภาษาสากล</p><h2 class="display">พกกล่องบาง ๆ 1 กล่อง แล้วเปิดประตูไปหาใครก็ได้</h2><p class="lead">ไม่ต้องมีงานอดิเรก วัฒนธรรม หรือภาษาพูดร่วมกัน เพียงนั่งตรงหน้ากัน เลือกการ์ด 7 ใบ แล้วเริ่มเล่น เด็คนี้พาคุณไปถึงครึ่งทางของบทสนทนาจริง ก่อนที่ใครจะรู้ด้วยซ้ำว่าควรพูดอะไร</p><div class="visual-language-principle">
+<div aria-hidden="true" class="visual-language-chain">
+<span>👁️</span><i>→</i><span>🧠</span><i>→</i><span>🤝</span>
+</div>
+<div>
+<b>สัญลักษณ์มาถึงก่อนประโยค</b>
+<p>Emoji ทำให้คนแปลกหน้าแบ่งปันความหมายกันได้ก่อนจะมีไวยากรณ์ร่วมกัน First Hand ใช้หลักเดียวกัน: สี ไอคอน และคำที่เลือก 1 คำ กลายเป็นการกระทำได้ก่อนต้องมีภาษาพูดร่วมกัน</p>
+</div>
+<div aria-label="ภาษาภาพ แดง เขียว ฟ้า เงิน" class="rgbs-language">
+<span>🔴 BODY</span><span>🟢 SOUL</span><span>🔵 MIND</span><span>⚙️ CRAFT</span>
+</div>
+</div></div><div class="story-grid"><article class="story-row reveal"><figure class="story-image mobile-fullbleed"><img alt="One player holds seven chosen cards and offers the remaining cards to another person." decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/one-box-ritual.webp" width="1600"/></figure><div class="story-copy"><span aria-hidden="true" class="number story-symbol">🎒</span><h3>กล่องบาง 1 กล่อง พาไปครึ่งทางของบทสนทนา</h3><p>เก็บไว้ในกระเป๋า เลือก 7 ใบของคุณ แล้วส่งที่เหลือให้คนตรงหน้าเพื่อสร้างมือที่สมบูรณ์ 1 กล่องเพียงพอให้คน 2 คนเริ่มเล่นได้ทุกที่</p></div></article><article class="story-row reveal"><figure class="story-image mobile-fullbleed"><img alt="Two strangers play myClover while traveling before sharing a spoken language." decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/first-meeting.webp" width="1600"/></figure><div class="story-copy"><span aria-hidden="true" class="number story-symbol">✈️</span><h3>นั่งลง แล้วเริ่มก่อนจะมีคำพูด</h3><p>ถ้าใครเป่ายิ้งฉุบเป็น CORE7 ก็ยากกว่านั้นเพียงเล็กน้อย บนเครื่องบิน ในคาเฟ่ หรือระหว่างคนที่พูดคนละภาษา เวลาไม่ถึง 10 นาทีอาจกลายเป็นช่วงเวลาร่วมกันที่ไม่มีใครคาดคิด</p></div></article><article class="story-row reveal"><figure class="story-image mobile-fullbleed"><img alt="The same seven-card hands repeat while memory of previous choices accumulates." decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/core7bo5-memory.webp" width="1600"/></figure><div class="story-copy"><span aria-hidden="true" class="number story-symbol">🧠</span><h3>เกมแรกเผยให้เห็นการ์ด เกมต่อ ๆ ไปเผยให้เห็นคน</h3><p>ตอนแรกคุณยังไม่รู้อะไร จากนั้นคุณจะรู้ 7 คำที่เขาเลือกพกมา ทุก Match ทำให้คุณเริ่มอ่านจังหวะ ความกล้า การยับยั้ง และคุณค่าที่เขาเลือก คุณอาจลืมคำที่อยู่บนการ์ด แต่จะจำความรู้สึกที่ได้เล่นกับมนุษย์คนนั้น</p></div></article></div></div></section>
+<section class="section section-cream"><div class="wrap"><div class="one-box-grid"><div class="flip-shell passion-flip reveal"><button aria-label="Flip Passion to the shared myClover card back" aria-pressed="false" class="rules-flip" id="passionCard" type="button"><span class="rules-flip-inner"><span class="rules-flip-face cover passion-card-wrap" id="passionFront"></span><span class="rules-flip-face rules"><img alt="The shared back of every myClover card" decoding="async" height="1482" loading="lazy" src="/core7/assets/myclover-back.webp" width="1061"/></span></span></button><button class="flip-control" id="flipPassion" type="button">↻ พลิก PASSION / หลังการ์ด</button></div><div class="reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🔄</span> หลังเดียว · ทุกเกม</p><h2 class="display">ความหมายต่างกัน<br/><em>ภาษาลับเดียวกัน</em></h2><p class="lead">การ์ด myClover ที่ใช้เล่นทุกใบมีหลังเดียวกัน มือ 7 ใบชุดเดิมจึงเดินทางจาก CORE7 ไป HERO’S DUEL, 三川 MIKAWA และกติกาที่ผู้เล่นสร้างเองได้ โดยไม่ทำลายข้อมูลที่ต้องซ่อน</p></div></div><div class="framework framework-wide"><article><span>🔴 แดง · BODY</span><strong><span aria-hidden="true" class="framework-icon">❤️</span> รู้สึกและเคลื่อนไหว</strong><p>ความปรารถนา ความกล้า และพลังที่เปลี่ยนการเลือกให้กลายเป็นการลงมือ</p></article><article><span>🟢 เขียว · SOUL</span><strong><span aria-hidden="true" class="framework-icon">🌱</span> ดูแลและเติบโต</strong><p>สมดุล ความอดทน และรากที่ทำให้ชีวิตเติบโตต่อ</p></article><article><span>🔵 ฟ้า · MIND</span><strong><span aria-hidden="true" class="framework-icon">👁️</span> มองเห็นและเลือก</strong><p>ความชัดเจน กลยุทธ์ และทิศทางเบื้องหลังการตัดสินใจ</p></article><article><span>⚙️ เงิน · CRAFT</span><strong><span aria-hidden="true" class="framework-icon">🛠️</span> สร้างและแบ่งปัน</strong><p>สังเกต ซ่อม และสร้างสิ่งที่กติกาทางการเปิดพื้นที่ไว้</p></article></div></div></section>
+<section class="section section-dark" id="cards"><div class="wrap"><div class="gallery-head reveal"><div class="gallery-copy"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🃏</span> FIRST HAND · การ์ดจริง 28 ใบ</p><h2 class="display">ทุกสีมีความหมาย 7 แบบ</h2><p class="lead">Desktop แสดงการ์ดครบ 28 ใบเป็น 4 มือที่สมบูรณ์ มือละ 7 ใบ ส่วน Mobile แสดงมือสีที่เลือกครั้งละ 7 ใบเพื่อให้อ่านง่าย</p></div><div aria-label="Choose a color hand" class="color-tabs" role="group"><button class="active" data-color="RED" type="button">🔴 แดง</button><button data-color="GREEN" type="button">🟢 เขียว</button><button data-color="BLUE" type="button">🔵 ฟ้า</button><button data-color="GRAY" type="button">⚙️ เงิน</button></div></div><div class="gallery-language-note"><span aria-hidden="true" class="gallery-note-icon">🃏</span><div><b>อ่านสีก่อน อ่านคำเป็นลำดับที่ 2 แล้วอ่านมนุษย์ผ่านการเล่น</b><p>การ์ดทุกใบรวมตระกูลสี ตำแหน่งไอคอนที่สม่ำเสมอ และคำ 2 ภาษาไว้ด้วยกัน ทำให้ทุกครั้งที่มอง คุณเข้าใจได้เร็วขึ้น</p></div></div><div class="gallery" id="gallery"></div><p class="gallery-note">ไม่มีค่าสถานะ ไม่มีพลังจากความหายาก การ์ดละ 1 คำ การตัดสินใจละ 1 สี</p></div></section><section class="section section-paper mongkol-section" id="mongkol">
 <div class="wrap mongkol-grid">
 <div class="mongkol-copy">
-<p class="eyebrow">ทำไมการ์ดจึงมีทั้งภาษาอังกฤษและภาษาไทย</p>
+<p class="eyebrow"><span aria-hidden="true" class="section-emoji">✨</span> ทำไมการ์ดจึงมีทั้งภาษาอังกฤษและภาษาไทย</p>
 <h2 class="display">ความหมายเดินทางได้ไกลกว่า<br/><em>เมื่อมันยังจดจำจุดกำเนิดของตัวเอง</em></h2>
 <p class="lead">First Hand ถูกออกแบบในประเทศไทย Keyword ทุกคำถูกเลือกจากพลังเชิงบวกของมนุษย์—คำที่เชื้อเชิญความกล้า การดูแล ความชัดเจน การฟื้นตัว ความอบอุ่น และการลงมือสร้างสรรค์</p>
 <p>ในประเทศไทย คำว่า “มงคล” หมายถึงคำ ตัวเลข สิ่งของ หรือช่วงเวลาที่ผู้คนเลือก เพราะมันพกความหมายแห่งความหวัง ภาษาไทยบนการ์ดทุกใบจึงไม่ใช่ของตกแต่ง แต่คือบ้านเกิดของเด็คที่ถูกเก็บรักษาไว้ในภาษาซึ่งตั้งใจให้เดินทางไปทั่วโลก</p>
-<blockquote>เราไม่ได้ขอให้คุณเชื่อว่าคำหนึ่งคำควบคุมชะตาได้ เราเพียงชวนให้สังเกตว่ามนุษย์มอบน้ำหนักจริงให้กับสัญลักษณ์ แล้วใช้ความหมายเหล่านั้นเพื่อเริ่มต้นบางสิ่งที่มีคุณค่า</blockquote>
+<blockquote><span aria-hidden="true" class="quote-icon">✨</span> มงคลพิสูจน์ไม่ได้ด้วยวิทยาศาสตร์ แต่มีหลักฐานยืนยันทางคณิตศาสตร์ว่า มนุษย์มอบคุณค่าให้มันจริง</blockquote>
 </div>
 <div class="mongkol-evidence">
-<p class="evidence-kicker">ความเชื่อที่วัดได้ · ข้อมูลทางการจากประเทศไทย</p>
-<div class="evidence-number"><b>THB 119.173M</b><span>ยอดประมูลรวมในวันเดียว</span></div>
+<p class="evidence-kicker"><span aria-hidden="true" class="micro-icon">📊</span> ความเชื่อที่วัดได้ · ข้อมูลทางการจากประเทศไทย</p>
+<div class="evidence-number"><span aria-hidden="true" class="evidence-icon">ยอดประมูลรวมในวันเดียว · ประมาณ US$3.56M</span><b>฿119.173M</b><span>ยอดประมูลรวมในวันเดียว · 119.173 ล้านบาท</span></div>
 <div class="evidence-grid">
-<article><b>99</b><span>เลขหมายที่ประมูลได้</span></article>
-<article><b>THB 10M</b><span>ราคาสูงสุดของเลขหมายเดียว</span></article>
+<article><span aria-hidden="true" class="evidence-grid-icon">📱</span><b>99</b><span>เลขหมายที่ประมูลได้</span></article>
+<article><span aria-hidden="true" class="evidence-grid-icon">ราคาสูงสุดของเลขหมายเดียว · ประมาณ US$299K</span><b>฿10M</b><span>ราคาสูงสุดของเลขหมายเดียว · 10 ล้านบาท</span></article>
 </div>
-<p class="evidence-note">เมื่อวันที่ 1 ธันวาคม 2024 กสทช. รายงานผลการประมูลเลขหมายที่ผู้คนให้คุณค่าเป็นพิเศษ ตัวเลขเหล่านี้ไม่ใช่หลักฐานทางวิทยาศาสตร์ว่าเราสร้างโชคได้ แต่เป็นหลักฐานเชิงคณิตศาสตร์ว่าความหมายของสัญลักษณ์สร้างพฤติกรรมมนุษย์และมูลค่าทางเศรษฐกิจที่วัดได้</p>
-<a class="source-link" href="https://www.nbtc.go.th/News/Information/68598.aspx?lang=th-TH" rel="noopener" target="_blank">ผลการประมูลอย่างเป็นทางการจาก กสทช. ↗</a>
+<p class="evidence-note">เมื่อวันที่ 1 ธันวาคม 2024 กสทช. ประมูลเลขหมายที่ผู้คนให้คุณค่าเป็นพิเศษ 99 เลขหมาย ได้ยอดรวมประมาณ 119.173 ล้านบาทในวันเดียว และราคาสูงสุดของเลขหมายเดียวอยู่ที่ 10 ล้านบาท วิทยาศาสตร์ไม่สามารถพิสูจน์ได้ว่าคำหรือตัวเลขมงคลเปลี่ยนชะตา แต่คณิตศาสตร์ยืนยันได้ว่า ความหมายเชิงสัญลักษณ์ส่งผลต่อการเลือกของมนุษย์และสร้างมูลค่าทางเศรษฐกิจที่วัดได้จริง</p>
+<p class="fx-note">ตัวเลข USD เป็นค่าประมาณ โดยใช้อัตราอ้างอิงของธนาคารแห่งประเทศไทยที่ประมาณ US$1 = ฿33.48 เมื่อวันที่ 27 กรกฎาคม 2026</p><p class="source-note">ที่มา: ผลการประมูลอย่างเป็นทางการของ กสทช. วันที่ 1 ธันวาคม 2024</p>
 </div>
 </div>
 </section>
-<section class="section section-cream" id="box"><div class="wrap"><div class="center reveal"><p class="eyebrow">มีอะไรในกล่อง</p><h2 class="display">การ์ด 37 ใบ 3 เกมทางการ ในกล่องพกพา 1 กล่อง</h2><p class="lead">การ์ด 33 ใบสร้างระบบร่วมกัน และ CORE Cards ที่นำมาเล่นได้จริงอีก 4 ใบทำให้ BODY, SOUL, MIND และ CRAFT สมบูรณ์ Stretch Goal จะอัปเกรดการ์ด 4 ใบเดิม—โดยไม่เพิ่มชิ้นส่วน—ให้เป็นฟอยล์ Extended Full Art จากศิลปินรับเชิญ</p></div><div class="box-grid"><article class="box-item reveal"><span class="box-count">28</span><h3>การ์ดคำ</h3><p>แดง เขียว ฟ้า และเงิน สีละ 7 ใบ การ์ดละ 1 Keyword ใช้ภาษาเดียวกันในเกมทางการทั้ง 3 เกม</p></article><article class="box-item reveal"><span class="box-count">04</span><h3>Rule Cards แบบหน้าหลัง</h3><p>ด้านหนึ่งคือ CORE7 อีกด้านคือ HERO’S DUEL + 三川 MIKAWA ผู้เล่นแต่ละคนมีคู่มือภาพของตัวเอง</p></article><article class="box-item reveal"><span class="box-count">01</span><h3>Lucky Card</h3><p>QR สำหรับเล่นออนไลน์ฟรี เข้าถึง AI Knowledge File, Prompt Library และการ์ตูน 4 ช่องที่แสดงว่าระบบการ์ดเดียวกลายเป็นเครื่องมือได้หลากหลายเพียงใด</p></article><article class="box-item reveal"><span class="box-count">04</span><h3>CORE Cards</h3><p>BODY · SOUL · MIND · CRAFT เป็นการ์ดที่นำมาเล่นได้จริงในทุกกล่อง และ Stretch Goal สามารถอัปเกรดการ์ด 4 ใบเดิมให้เป็นฟอยล์ Extended Full Art จากศิลปินรับเชิญ</p></article></div><div class="specs reveal"><div><b>63 × 88 mm</b><span>ขนาดการ์ดมาตรฐาน</span></div><div><b>กระดาษพรีเมียม</b><span>ออกแบบให้เล่นโดยไม่ต้องใส่ซอง</span></div><div><b>สี + ไอคอน</b><span>ไม่ใช้สีเพียงอย่างเดียว</span></div><div><b>กล่องพกพา</b><span>สร้างมาเพื่ออยู่ในกระเป๋า</span></div></div></div></section>
-<section class="section section-dark"><div class="wrap utility-grid"><div class="reveal"><p class="eyebrow">สิ่งที่ทำงานต่อหลังเกม</p><h2 class="display">กติกาอยู่นิ่ง แต่ความสัมพันธ์เปลี่ยนไปเรื่อย ๆ</h2><p class="lead">Match แรกเริ่มต้นในความมืด Match ที่ 2 เริ่มต้นด้วยความทรงจำ และทุก Match หลังจากนั้นจะเผยให้เห็นจังหวะ การยับยั้ง ความกล้า และการลวง จน 7 คำกลายเป็นวิธีจดจำมนุษย์ผู้เลือกมัน</p><div class="read-arc"><article><span>01</span><div><b>MATCH แรก</b><p>คุณยังไม่รู้อะไร ทุกการเลือกคือคำถาม</p></div></article><article><span>02</span><div><b>MATCH ที่ 2</b><p>ตอนนี้คุณรู้แล้วว่าเขาพก 7 คำอะไรมา</p></div></article><article><span>03</span><div><b>MATCH ต่อ ๆ ไป</b><p>รูปแบบเริ่มปรากฏ: จังหวะ ความกล้า การยับยั้ง และการลวง</p></div></article><article><span>04</span><div><b>หลังคะแนนจบลง</b><p>คำที่แน่นอนอาจเลือนหาย แต่ความรู้สึกที่มีต่อคนนั้นยังอยู่</p></div></article></div><div class="utility-list"><article><b>บทสนทนา</b><p>ก้าวพ้นบทสนทนาทั่วไปโดยไม่บังคับให้ใครเปิดเผยมากเกินไป</p></article><article><b>ทีมและเวิร์กช็อป</b><p>บอกให้เห็นว่าห้องนี้มีอะไร ขาดอะไร และต้องการอะไรต่อ</p></article><article><b>เล่นออนไลน์ฟรี</b><p>เกมหลักยังคงเปิด ใช้ของแทนได้ และเล่นฟรี</p><a class="button" href="/core7/">เล่น CORE7 ออนไลน์</a></article><article><b>AI Knowledge File</b><p>มอบความหมายของการ์ด กติกา และขอบเขตที่รับผิดชอบให้ AI ใดก็ได้</p></article></div></div><div class="craft-panel reveal"><p class="eyebrow">เงิน · CRAFT</p><h3>เกมที่ 4 ไม่ใช่สิ่งที่เราจะล็อกไว้</h3><p>เกมทางการจบที่ 3 เกม แต่ระบบไม่ได้จบ สีเงินให้อิสระแก่ผู้เล่นในการสังเกต สร้าง ทดลอง ซ่อม และแชร์กติกาที่โต๊ะของตัวเองยังต้องการ</p><div class="craft-loop"><span>CRAFT</span><span>ทดลอง</span><span>แชร์</span><span>ต่อยอด</span></div><a class="button gold" href="https://discord.gg/A5nmMqvTm" rel="noopener" target="_blank">เข้า Discord ของ myClover</a></div></div></section><section class="section section-paper ai-layer" id="ai-layer">
+<section class="section section-cream" id="box"><div class="wrap"><div class="center reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">📦</span> มีอะไรในกล่อง</p><h2 class="display">การ์ด 37 ใบ 3 เกมทางการ ในกล่องพกพา 1 กล่อง</h2><p class="lead">การ์ด 33 ใบสร้างระบบร่วมกัน และ CORE Cards ที่นำมาเล่นได้จริงอีก 4 ใบทำให้ BODY, SOUL, MIND และ CRAFT สมบูรณ์ Stretch Goal จะอัปเกรดการ์ด 4 ใบเดิม—โดยไม่เพิ่มชิ้นส่วน—ให้เป็นฟอยล์ Extended Full Art จากศิลปินรับเชิญ</p></div><div class="box-grid"><article class="box-item reveal"><span aria-hidden="true" class="box-icon">🃏</span><span class="box-count">28</span><h3>การ์ดคำ</h3><p>แดง เขียว ฟ้า และเงิน สีละ 7 ใบ การ์ดละ 1 Keyword ใช้ภาษาเดียวกันในเกมทางการทั้ง 3 เกม</p></article><article class="box-item reveal"><span aria-hidden="true" class="box-icon">🔄</span><span class="box-count">04</span><h3>Rule Cards แบบหน้าหลัง</h3><p>ด้านหนึ่งคือ CORE7 อีกด้านคือ HERO’S DUEL + 三川 MIKAWA ผู้เล่นแต่ละคนมีคู่มือภาพของตัวเอง</p></article><article class="box-item reveal"><span aria-hidden="true" class="box-icon">🍀</span><span class="box-count">01</span><h3>Lucky Card</h3><p>QR สำหรับเล่นออนไลน์ฟรี เข้าถึง AI Knowledge File, Prompt Library และการ์ตูน 4 ช่องที่แสดงว่าระบบการ์ดเดียวกลายเป็นเครื่องมือได้หลากหลายเพียงใด</p></article><article class="box-item reveal"><span aria-hidden="true" class="box-icon">💎</span><span class="box-count">04</span><h3>CORE Cards</h3><p>BODY · SOUL · MIND · CRAFT เป็นการ์ดที่นำมาเล่นได้จริงในทุกกล่อง และ Stretch Goal สามารถอัปเกรดการ์ด 4 ใบเดิมให้เป็นฟอยล์ Extended Full Art จากศิลปินรับเชิญ</p></article></div><div class="specs reveal"><div><b>63 × 88 mm</b><span>ขนาดการ์ดมาตรฐาน</span></div><div><b>กระดาษพรีเมียม</b><span>ออกแบบให้เล่นโดยไม่ต้องใส่ซอง</span></div><div><b>สี + ไอคอน</b><span>ไม่ใช้สีเพียงอย่างเดียว</span></div><div><b>กล่องพกพา</b><span>สร้างมาเพื่ออยู่ในกระเป๋า</span></div></div></div></section>
+<section class="section section-dark"><div class="wrap utility-grid"><div class="reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🧠</span> สิ่งที่ทำงานต่อหลังเกม</p><h2 class="display">กติกาอยู่นิ่ง แต่ความสัมพันธ์เปลี่ยนไปเรื่อย ๆ</h2><p class="lead">Match แรกเริ่มต้นในความมืด Match ที่ 2 เริ่มต้นด้วยความทรงจำ และทุก Match หลังจากนั้นจะเผยให้เห็นจังหวะ การยับยั้ง ความกล้า และการลวง จน 7 คำกลายเป็นวิธีจดจำมนุษย์ผู้เลือกมัน</p><div class="read-arc"><article><span aria-hidden="true" class="read-icon">🌑</span><div><b>MATCH แรก</b><p>คุณยังไม่รู้อะไร ทุกการเลือกคือคำถาม</p></div></article><article><span aria-hidden="true" class="read-icon">👀</span><div><b>MATCH ที่ 2</b><p>ตอนนี้คุณรู้แล้วว่าเขาพก 7 คำอะไรมา</p></div></article><article><span aria-hidden="true" class="read-icon">🧠</span><div><b>MATCH ต่อ ๆ ไป</b><p>รูปแบบเริ่มปรากฏ: จังหวะ ความกล้า การยับยั้ง และการลวง</p></div></article><article><span aria-hidden="true" class="read-icon">💭</span><div><b>หลังคะแนนจบลง</b><p>คำที่แน่นอนอาจเลือนหาย แต่ความรู้สึกที่มีต่อคนนั้นยังอยู่</p></div></article></div><div class="utility-list"><article><b><span aria-hidden="true" class="utility-icon">💬</span> บทสนทนา</b><p>ก้าวพ้นบทสนทนาทั่วไปโดยไม่บังคับให้ใครเปิดเผยมากเกินไป</p></article><article><b><span aria-hidden="true" class="utility-icon">🧑‍🤝‍🧑</span> ทีมและเวิร์กช็อป</b><p>บอกให้เห็นว่าห้องนี้มีอะไร ขาดอะไร และต้องการอะไรต่อ</p></article><article><b><span aria-hidden="true" class="utility-icon">🌐</span> เล่นออนไลน์ฟรี</b><p>เกมหลักยังคงเปิด ใช้ของแทนได้ และเล่นฟรี</p></article><article><b><span aria-hidden="true" class="utility-icon">🤖</span> AI Knowledge File</b><p>มอบความหมายของการ์ด กติกา และขอบเขตที่รับผิดชอบให้ AI ใดก็ได้</p></article></div></div><div class="craft-panel reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">⚙️</span> เงิน · CRAFT</p><h3>เกมที่ 4 ไม่ใช่สิ่งที่เราจะล็อกไว้</h3><p>เกมทางการจบที่ 3 เกม แต่ระบบไม่ได้จบ สีเงินให้อิสระแก่ผู้เล่นในการสังเกต สร้าง ทดลอง ซ่อม และแชร์กติกาที่โต๊ะของตัวเองยังต้องการ</p><div class="craft-loop"><span>🛠️ CRAFT</span><span>🧪 TEST</span><span>📣 SHARE</span><span>♻️ REMIX</span></div></div></div></section><section class="section section-paper ai-layer" id="ai-layer">
 <div class="wrap ai-layer-grid">
 <div class="ai-layer-copy">
-<p class="eyebrow">ทุกกล่องมาพร้อม AI LAYER</p>
+<p class="eyebrow"><span aria-hidden="true" class="section-emoji">🤖</span> ทุกกล่องมาพร้อม AI LAYER</p>
 <h2 class="display">Match อาจจบลง<br/><em>แต่การ์ดยังทำงานต่อได้</em></h2>
 <p class="lead">ทุกกล่องจริงมี QR เข้าถึง MYCLOVER-CARDS.md ไฟล์ความรู้ที่สอน AI ให้เข้าใจความหมายของการ์ด เกมทางการทั้ง 3 เกม กรอบคิด RGBS และขอบเขตที่รับผิดชอบ ไม่ต้องใช้แอปบังคับ ไม่มีค่าสมัครสมาชิกผูกกับเกม ใช้ AI ที่คุณไว้วางใจอยู่แล้วได้เลย</p>
 <div class="ai-use-grid">
-<article><b>เลือกมือประจำวัน</b><span>เปลี่ยน 7 คำให้เป็นสิ่งที่คุณจะใส่ใจในวันนี้</span></article>
-<article><b>เปิดบทสนทนา</b><span>สร้างคำถามที่ก้าวพ้น Small Talk โดยไม่บังคับให้ใครเปิดเผยตัวเอง</span></article>
-<article><b>วางแผนโปรเจกต์</b><span>เปลี่ยน BODY, SOUL, MIND และ CRAFT ให้เป็นการลงมือขั้นต่อไปที่ชัดเจน</span></article>
-<article><b>จัดเวิร์กช็อป</b><span>บอกให้เห็นว่าห้องนี้มีอะไร ขาดอะไร และต้องการอะไรต่อ</span></article>
-<article><b>ทบทวนหลังเล่น</b><span>สำรวจว่าทำไมมือนั้นจึงมีความหมาย โดยไม่มองว่ามันคือคำตัดสิน</span></article>
-<article><b>สร้างกติกาใหม่</b><span>ทำต้นแบบ ทดลอง และบันทึกเกมที่ชุมชนสร้างขึ้นด้วยการ์ดชุดเดิม</span></article>
+<article><span aria-hidden="true" class="ai-use-icon">🌅</span><b>เลือกมือประจำวัน</b><span>เปลี่ยน 7 คำให้เป็นสิ่งที่คุณจะใส่ใจในวันนี้</span></article>
+<article><span aria-hidden="true" class="ai-use-icon">💬</span><b>เปิดบทสนทนา</b><span>สร้างคำถามที่ก้าวพ้น Small Talk โดยไม่บังคับให้ใครเปิดเผยตัวเอง</span></article>
+<article><span aria-hidden="true" class="ai-use-icon">🗺️</span><b>วางแผนโปรเจกต์</b><span>เปลี่ยน BODY, SOUL, MIND และ CRAFT ให้เป็นการลงมือขั้นต่อไปที่ชัดเจน</span></article>
+<article><span aria-hidden="true" class="ai-use-icon">🧑‍🏫</span><b>จัดเวิร์กช็อป</b><span>บอกให้เห็นว่าห้องนี้มีอะไร ขาดอะไร และต้องการอะไรต่อ</span></article>
+<article><span aria-hidden="true" class="ai-use-icon">🪞</span><b>ทบทวนหลังเล่น</b><span>สำรวจว่าทำไมมือนั้นจึงมีความหมาย โดยไม่มองว่ามันคือคำตัดสิน</span></article>
+<article><span aria-hidden="true" class="ai-use-icon">⚙️</span><b>สร้างกติกาใหม่</b><span>ทำต้นแบบ ทดลอง และบันทึกเกมที่ชุมชนสร้างขึ้นด้วยการ์ดชุดเดิม</span></article>
 </div>
-<p class="ai-boundary"><b>AI ไม่ได้ทำนายชะตาของคุณ</b> มันช่วยให้ 7 คำเดิมกลายเป็นคำถามที่ดีขึ้น ทางเลือกที่ชัดขึ้น และการลงมือที่ใช้ได้จริง</p>
+<p class="ai-boundary"><span aria-hidden="true" class="quote-icon">🧭</span> <b>AI ไม่ได้ทำนายชะตาของคุณ</b> มันช่วยให้ 7 คำเดิมกลายเป็นคำถามที่ดีขึ้น ทางเลือกที่ชัดขึ้น และการลงมือที่ใช้ได้จริง</p>
 </div>
-<div aria-label="ตัวอย่างบทสนทนากับ AI โดยใช้ไฟล์ความรู้ myClover" class="ai-terminal">
+<div aria-label="Example AI conversation using the myClover knowledge file" class="ai-terminal">
 <div class="terminal-bar"><i></i><i></i><i></i><span>MYCLOVER-CARDS.md</span></div>
 <div class="terminal-body">
 <p class="terminal-label">ผู้เล่น</p>
@@ -775,12 +1479,12 @@
 </div>
 </div>
 </section>
-<section class="section section-dark" id="pledges"><div class="wrap"><div class="center reveal"><p class="eyebrow">เลือก FIRST HAND ของคุณ</p><h2 class="display">กล่องเล็ก ในราคาที่ตรงไปตรงมา</h2><p class="lead">ราคาทั้งหมดเป็นดอลลาร์สหรัฐ จัดส่งทั่วโลก โดยเก็บค่าจัดส่งและภาษีที่เกี่ยวข้องแยกภายหลังผ่าน Pledge Manager</p></div><div class="pledges-grid"><article class="pledge reveal" data-name="Open Player" data-price="$3.00"><p class="pledge-label">ดิจิทัล · PRINT &amp; PLAY</p><h3>Open Player</h3><div class="price"><sup>$</sup>3.00</div><p>เล่นระบบเต็มได้จากทุกที่</p><ul><li>ไฟล์ Print-and-play</li><li>Rule Cards ดิจิทัล</li><li>เกมทางการครบ 3 เกม</li><li>AI Knowledge File</li></ul><button type="button">เลือก Open Player</button></article><article class="pledge reveal" data-name="First 100 Hands" data-price="$9.99"><div class="ribbon">100 กล่องเท่านั้น</div><p class="pledge-label">EARLY BIRD · กล่องจริง 1 กล่อง</p><h3>First 100 Hands</h3><div class="price"><sup>$</sup>9.99</div><p>First Hand แบบกล่องจริงในราคาเปิดตัว</p><ul><li>First Hand 1 กล่อง</li><li>การ์ดรวม 37 ใบ</li><li>CORE Cards ที่เล่นได้ 4 ใบ</li><li>รางวัลดิจิทัลทั้งหมด</li><li>AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก First 100 Hands</button></article><article class="pledge featured reveal" data-name="The First Hand" data-price="$11.99"><div class="ribbon">ระดับหลัก</div><p class="pledge-label">กล่องจริง 1 กล่อง</p><h3>The First Hand</h3><div class="price"><sup>$</sup>11.99<small>MSRP $14.99</small></div><p>กล่องพกพา 1 กล่อง เกมทางการ 3 เกม</p><ul><li>First Hand 1 กล่อง</li><li>การ์ดรวม 37 ใบ</li><li>CORE Cards ที่เล่นได้ 4 ใบ</li><li>MSRP $14.99</li><li>AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก The First Hand</button></article><article class="pledge reveal" data-name="Share Two" data-price="$21.99"><p class="pledge-label">กล่องจริง 2 กล่อง</p><h3>Share Two</h3><div class="price"><sup>$</sup>21.99<small>$11.00 / BOX</small></div><p>เก็บไว้ 1 กล่อง มอบให้อีกคน 1 กล่อง</p><ul><li>First Hand 2 กล่อง</li><li>รางวัล Kickstarter ครบทุกกล่อง</li><li>รางวัลดิจิทัลทั้งหมด</li><li>AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก Share Two</button></article><article class="pledge reveal" data-name="Party of Four" data-price="$39.99"><p class="pledge-label">กล่องจริง 4 กล่อง</p><h3>Party of Four</h3><div class="price"><sup>$</sup>39.99<small>$10.00 / BOX</small></div><p>เปิดโต๊ะได้ 4 โต๊ะ หรือจัด MIKAWA Tournament 4 คน</p><ul><li>First Hand 4 กล่อง</li><li>คู่มือ Facilitator แบบย่อ</li><li>รางวัลดิจิทัลทั้งหมด</li><li>AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก Party of Four</button></article><article class="pledge reveal" data-name="Culture Builder" data-price="$107.99"><p class="pledge-label">แพ็กเวิร์กช็อป 12 กล่อง</p><h3>Culture Builder</h3><div class="price"><sup>$</sup>107.99<small>$9.00 / BOX</small></div><p>นำภาษา RGBS เข้าไปในห้องกิจกรรม</p><ul><li>First Hand 12 กล่อง</li><li>Workshop Playbook</li><li>สไลด์และกิจกรรม</li><li>AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก Culture Builder</button></article></div><p class="shipping">จัดส่งทั่วโลก ค่าจัดส่งและภาษีที่เกี่ยวข้องไม่รวมอยู่ในราคา Pledge และจะเก็บแยกผ่าน Pledge Manager หลังจบแคมเปญ</p><div class="selection" hidden="" id="selection"><span>คุณเลือก</span><strong id="selectedName"></strong><b id="selectedPrice"></b><button id="clearSelection" type="button">เปลี่ยนตัวเลือก</button></div></div></section>
+<section class="section section-dark" id="pledges"><div class="wrap"><div class="center reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🤝</span> เลือก FIRST HAND ของคุณ</p><h2 class="display">กล่องเล็ก ในราคาที่ตรงไปตรงมา</h2><p class="lead">ราคาทั้งหมดเป็นดอลลาร์สหรัฐ จัดส่งทั่วโลก โดยเก็บค่าจัดส่งและภาษีที่เกี่ยวข้องแยกภายหลังผ่าน Pledge Manager</p></div><div class="pledges-grid"><article class="pledge reveal" data-name="Open Player" data-price="US$3.00 ≈ ฿100"><span aria-hidden="true" class="pledge-icon">🖨️</span><p class="pledge-label">ดิจิทัล · PRINT &amp; PLAY</p><h3>Open Player</h3><div class="price"><sup>$</sup>3.00<span class="thb-estimate">≈ ฿100</span></div><p>เล่นระบบเต็มได้จากทุกที่</p><ul><li><span aria-hidden="true" class="check-icon">✓</span> ไฟล์ Print-and-play</li><li><span aria-hidden="true" class="check-icon">✓</span> Rule Cards ดิจิทัล</li><li><span aria-hidden="true" class="check-icon">✓</span> เกมทางการครบ 3 เกม</li><li><span aria-hidden="true" class="check-icon">✓</span> AI Knowledge File</li></ul><button type="button">เลือก Open Player</button></article><article class="pledge reveal" data-name="First 100 Hands" data-price="US$9.99 ≈ ฿335"><span aria-hidden="true" class="pledge-icon">🌅</span><div class="ribbon">100 กล่องเท่านั้น</div><p class="pledge-label">EARLY BIRD · กล่องจริง 1 กล่อง</p><h3>First 100 Hands</h3><div class="price"><sup>$</sup>9.99<span class="thb-estimate">≈ ฿335</span></div><p>First Hand แบบกล่องจริงในราคาเปิดตัว</p><ul><li><span aria-hidden="true" class="check-icon">✓</span> First Hand 1 กล่อง</li><li><span aria-hidden="true" class="check-icon">✓</span> การ์ดรวม 37 ใบ</li><li><span aria-hidden="true" class="check-icon">✓</span> CORE Cards ที่เล่นได้ 4 ใบ</li><li><span aria-hidden="true" class="check-icon">✓</span> รางวัลดิจิทัลทั้งหมด</li><li><span aria-hidden="true" class="check-icon">✓</span> AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก First 100 Hands</button></article><article class="pledge featured reveal" data-name="The First Hand" data-price="US$11.99 ≈ ฿400"><span aria-hidden="true" class="pledge-icon">🎴</span><div class="ribbon">ระดับหลัก</div><p class="pledge-label">กล่องจริง 1 กล่อง</p><h3>The First Hand</h3><div class="price"><sup>$</sup>11.99<small>MSRP US$14.99 · ประมาณ ฿500</small><span class="thb-estimate">≈ ฿400 · MSRP ≈ ฿500</span></div><p>กล่องพกพา 1 กล่อง เกมทางการ 3 เกม</p><ul><li><span aria-hidden="true" class="check-icon">✓</span> First Hand 1 กล่อง</li><li><span aria-hidden="true" class="check-icon">✓</span> การ์ดรวม 37 ใบ</li><li><span aria-hidden="true" class="check-icon">✓</span> CORE Cards ที่เล่นได้ 4 ใบ</li><li><span aria-hidden="true" class="check-icon">✓</span> MSRP US$14.99 · ประมาณ ฿500</li><li><span aria-hidden="true" class="check-icon">✓</span> AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก The First Hand</button></article><article class="pledge reveal" data-name="Share Two" data-price="US$21.99 ≈ ฿735"><span aria-hidden="true" class="pledge-icon">🤝</span><p class="pledge-label">กล่องจริง 2 กล่อง</p><h3>Share Two</h3><div class="price"><sup>$</sup>21.99<small>US$11.00 / กล่อง · ประมาณ ฿370</small><span class="thb-estimate">≈ ฿735 · ฿370 / กล่อง</span></div><p>เก็บไว้ 1 กล่อง มอบให้อีกคน 1 กล่อง</p><ul><li><span aria-hidden="true" class="check-icon">✓</span> First Hand 2 กล่อง</li><li><span aria-hidden="true" class="check-icon">✓</span> รางวัล Kickstarter ครบทุกกล่อง</li><li><span aria-hidden="true" class="check-icon">✓</span> รางวัลดิจิทัลทั้งหมด</li><li><span aria-hidden="true" class="check-icon">✓</span> AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก Share Two</button></article><article class="pledge reveal" data-name="Party of Four" data-price="US$39.99 ≈ ฿1,340"><span aria-hidden="true" class="pledge-icon">👥</span><p class="pledge-label">กล่องจริง 4 กล่อง</p><h3>Party of Four</h3><div class="price"><sup>$</sup>39.99<small>US$10.00 / กล่อง · ประมาณ ฿335</small><span class="thb-estimate">≈ ฿1,340 · ฿335 / กล่อง</span></div><p>เปิดโต๊ะได้ 4 โต๊ะ หรือจัด MIKAWA Tournament 4 คน</p><ul><li><span aria-hidden="true" class="check-icon">✓</span> First Hand 4 กล่อง</li><li><span aria-hidden="true" class="check-icon">✓</span> คู่มือ Facilitator แบบย่อ</li><li><span aria-hidden="true" class="check-icon">✓</span> รางวัลดิจิทัลทั้งหมด</li><li><span aria-hidden="true" class="check-icon">✓</span> AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก Party of Four</button></article><article class="pledge reveal" data-name="Culture Builder" data-price="US$107.99 ≈ ฿3,620"><span aria-hidden="true" class="pledge-icon">🏛️</span><p class="pledge-label">แพ็กเวิร์กช็อป 12 กล่อง</p><h3>Culture Builder</h3><div class="price"><sup>$</sup>107.99<small>US$9.00 / กล่อง · ประมาณ ฿300</small><span class="thb-estimate">≈ ฿3,620 · ฿300 / กล่อง</span></div><p>นำภาษา RGBS เข้าไปในห้องกิจกรรม</p><ul><li><span aria-hidden="true" class="check-icon">✓</span> First Hand 12 กล่อง</li><li><span aria-hidden="true" class="check-icon">✓</span> Workshop Playbook</li><li><span aria-hidden="true" class="check-icon">✓</span> สไลด์และกิจกรรม</li><li><span aria-hidden="true" class="check-icon">✓</span> AI Knowledge File + Prompt Library</li></ul><button type="button">เลือก Culture Builder</button></article></div><p class="shipping">จัดส่งทั่วโลก ค่าจัดส่งและภาษีที่เกี่ยวข้องไม่รวมอยู่ในราคา Pledge และจะเก็บแยกผ่าน Pledge Manager หลังจบแคมเปญ</p><div class="selection" hidden="" id="selection"><span>คุณเลือก</span><strong id="selectedName"></strong><b id="selectedPrice"></b><button id="clearSelection" type="button">เปลี่ยนตัวเลือก</button></div></div></section>
 <section class="section section-paper" id="stretch-goals">
 <div class="wrap">
 <div class="stretch-head reveal">
 <div>
-<p class="eyebrow">STRETCH GOALS · ดีขึ้น ไม่ใช่ใหญ่ขึ้น</p>
+<p class="eyebrow"><span aria-hidden="true" class="section-emoji">⬆️</span> STRETCH GOALS · ดีขึ้น ไม่ใช่ใหญ่ขึ้น</p>
 <h2 class="display">ไม่เพิ่มเกมใหม่<br/><em>ไม่เพิ่มกล่องใหม่</em></h2>
 </div>
 <p class="lead">ทุก Stretch Goal ยกระดับ First Hand กล่องเดิมที่ผู้สนับสนุนแบบกล่องจริงทุกคนได้รับ ไม่มีกติกาพิเศษ ไม่มีตัวเลือกการเล่นเพิ่ม และไม่มีผลิตภัณฑ์ชิ้นที่ 2 ให้ผลิตหรือจัดส่ง</p>
@@ -788,65 +1492,71 @@
 <div class="stretch-grid">
 <article class="stretch-card guaranteed reveal">
 <span class="stretch-state">ยืนยันแล้ว</span>
-<p class="stretch-no">01</p>
+<p class="stretch-no">01</p><span aria-hidden="true" class="stretch-icon">🎨</span>
 <h3>หลังการ์ดแบบ Commission</h3>
 <p>หลังการ์ดจริงที่ใช้ร่วมกันทุกใบจะเป็นงาน Commission จากศิลปินการ์ดเกมระดับโลก โดยจะเปิดเผยชื่อเมื่อผลงานฉบับสมบูรณ์พร้อม ไม่เปิดก่อนเวลา</p>
 <small>หลังเดียว · ทุกเกม · ทุกกล่อง</small>
 </article>
 <article class="stretch-card reveal">
 <span class="stretch-state">ปลดล็อกด้วย Stretch Goal</span>
-<p class="stretch-no">02</p>
+<p class="stretch-no">02</p><span aria-hidden="true" class="stretch-icon">✨</span>
 <h3>CORE Cards ฟอยล์ 4 ใบ · Extended Full Art</h3>
 <p>อัปเกรดการ์ด BODY, SOUL, MIND และ CRAFT ที่เล่นได้จริง 4 ใบเดิม ให้เป็นงาน Commission แบบ Extended Full Art พร้อมผิวฟอยล์พรีเมียม ไม่เพิ่มการ์ดใหม่ มีเพียงของเดิมที่ดีขึ้น</p>
 <small>ประกาศยอดปลดล็อกพร้อมใบเสนอราคาการผลิตฉบับจริง</small>
 </article>
 </div>
 </div>
-</section><section class="section section-cream"><div class="wrap ship-grid"><figure class="story-image reveal mobile-fullbleed"><img alt="ระบบผลิตการ์ดที่ควบคุมได้ พร้อมปรู๊ฟ การตรวจสี และกล่องกะทัดรัด 1 กล่อง" decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/built-to-ship.webp" width="1800"/><figcaption><strong>สร้างมาเพื่อส่งถึงมือ ไม่ใช่ขยายจนควบคุมไม่ได้</strong><span>ผลิตภัณฑ์กะทัดรัด 1 ชิ้น การผลิตที่ควบคุมได้</span></figcaption></figure><div class="reveal"><p class="eyebrow">ออกแบบมาให้ส่งถึงมือ</p><h2 class="display">เกมที่มาช้าอาจยังมาถึง แต่โต๊ะเดิมอาจไม่อยู่แล้ว</h2><p class="lead">ผมเป็น Kickstarter Superbacker และเข้าใจความหวังระหว่างรอกล่องหนึ่งมาถึง รวมถึงความผิดหวังเงียบ ๆ เมื่อเกมมาถึงหลังจากโต๊ะเปลี่ยนไปแล้ว เพื่อนย้ายออก ตารางชีวิตปิดลง ความตื่นเต้นผ่านไป บางเกมขึ้นชั้นโดยไม่เคยได้พบคนที่มันถูกสร้างมาให้เล่นด้วย</p><blockquote class="backer-note">เราไม่อยากให้ First Hand อยู่ในตู้โดยไม่เคยถูกเปิด เราอยากให้มันบางพอสำหรับกระเป๋า ชัดเจนพอสำหรับคนแปลกหน้า และควบคุมการผลิตได้มากพอที่จะมาถึงขณะที่โต๊ะของคุณยังอยู่</blockquote><div class="timeline"><article><span>01</span><div><b>ปรู๊ฟการ์ดทุกใบ</b><p>ตรวจทั้ง 2 ภาษา สี เส้นตัด ผิวสัมผัส และหลังการ์ดฉบับจริง</p></div></article><article><span>02</span><div><b>รักษาผลิตภัณฑ์ไว้เพียง 1 แบบ</b><p>ไม่มีสาย Deluxe ไม่มีโหมดเกมเพิ่ม และไม่มีโครงการ Fulfillment ชุดที่ 2</p></div></article><article><span>03</span><div><b>สัญญาวันส่งจากใบเสนอราคาจริง</b><p>วางตารางการผลิต การแก้ปรู๊ฟ การขนส่ง และ Fulfillment ทั่วโลกก่อนประกาศคำสัญญา</p></div></article></div></div></div></section>
+</section><section class="section section-cream"><div class="wrap ship-grid"><figure class="story-image reveal mobile-fullbleed"><img alt="A controlled card production setup with proofs, color checks and one compact box." decoding="async" height="1000" loading="lazy" src="/kickstarter/assets/story/built-to-ship.webp" width="1800"/><figcaption><strong>สร้างมาเพื่อส่งถึงมือ ไม่ใช่ขยายจนควบคุมไม่ได้</strong><span>ผลิตภัณฑ์กะทัดรัด 1 ชิ้น การผลิตที่ควบคุมได้</span></figcaption></figure><div class="reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🚚</span> ออกแบบมาให้ส่งถึงมือ</p><h2 class="display">เกมที่มาช้าอาจยังมาถึง แต่โต๊ะเดิมอาจไม่อยู่แล้ว</h2><p class="lead">ผมเป็น Kickstarter Superbacker และเข้าใจความหวังระหว่างรอกล่องหนึ่งมาถึง รวมถึงความผิดหวังเงียบ ๆ เมื่อเกมมาถึงหลังจากโต๊ะเปลี่ยนไปแล้ว เพื่อนย้ายออก ตารางชีวิตปิดลง ความตื่นเต้นผ่านไป บางเกมขึ้นชั้นโดยไม่เคยได้พบคนที่มันถูกสร้างมาให้เล่นด้วย</p><blockquote class="backer-note"><span aria-hidden="true" class="quote-icon">⏰</span> เราไม่อยากให้ First Hand อยู่ในตู้โดยไม่เคยถูกเปิด เราอยากให้มันบางพอสำหรับกระเป๋า ชัดเจนพอสำหรับคนแปลกหน้า และควบคุมการผลิตได้มากพอที่จะมาถึงขณะที่โต๊ะของคุณยังอยู่</blockquote><div class="timeline"><article><span aria-hidden="true" class="timeline-icon">🔍</span><div><b>ปรู๊ฟการ์ดทุกใบ</b><p>ตรวจทั้ง 2 ภาษา สี เส้นตัด ผิวสัมผัส และหลังการ์ดฉบับจริง</p></div></article><article><span aria-hidden="true" class="timeline-icon">📦</span><div><b>รักษาผลิตภัณฑ์ไว้เพียง 1 แบบ</b><p>ไม่มีสาย Deluxe ไม่มีโหมดเกมเพิ่ม และไม่มีโครงการ Fulfillment ชุดที่ 2</p></div></article><article><span aria-hidden="true" class="timeline-icon">📅</span><div><b>สัญญาวันส่งจากใบเสนอราคาจริง</b><p>วางตารางการผลิต การแก้ปรู๊ฟ การขนส่ง และ Fulfillment ทั่วโลกก่อนประกาศคำสัญญา</p></div></article></div></div></div></section>
 <section class="section section-dark founder-section" id="founder">
 <div class="wrap">
 <div class="founder-intro reveal">
-<p class="eyebrow">มนุษย์เบื้องหลังระบบ</p>
+<p class="eyebrow"><span aria-hidden="true" class="section-emoji">👤</span> มนุษย์เบื้องหลังระบบ</p>
 <h2 class="display">ง่ายพอให้เด็กเริ่มได้<br/><em>ลึกพอสำหรับเวทีระดับโลก</em></h2>
 <p class="lead">First Hand เติบโตจากประสบการณ์ออกแบบเกมและระบบมากกว่า 30 ปี: ต้นแบบวาดมือกับผู้เล่นคนแรกวัย 6 ขวบ แรงกดดันจาก Tournament เกมสด 50 คน และระบบการเรียนรู้ที่สร้างให้แพลตฟอร์มซึ่งมีผู้ใช้มากกว่า 5,000,000 คน</p>
 </div>
 <div class="founder-editorial">
 <div class="founder-narrative reveal">
 <p>CORE7 เริ่มต้นเมื่อลูกสาวของผมอายุ 6 ขวบ เธอคือผู้เล่นคนแรกและเป็นคนที่ค้นพบเกมนี้ร่วมกับผม ไม่ใช่เพียงผู้ทดสอบ ตอนนั้น Generative AI ยังไม่มีอยู่ในกระบวนการของเรา มีเพียงการ์ดกระดาษวาดมือ เกมจริงหลายร้อยครั้ง และคำถามเดียวที่เราถามกันซ้ำ ๆ ว่า ต่อไปเราตัดอะไรออกได้อีก?</p>
-<p>ในการแข่งขัน Flesh and Blood World Championship 2024 ที่โอซาก้า ผมเป็น 1 ในผู้เล่น 397 คน ความเข้มข้นระดับนั้นยืนยันความเชื่อที่อยู่ใจกลาง First Hand ว่า กติกาสามารถเริ่มง่ายได้โดยไม่จำเป็นต้องตื้น เด็กสามารถเข้าใจ Round แรก ขณะที่ผู้เล่นจริงจังยังค้นพบแรงกดดัน ความทรงจำ และชั้นถัดไปได้เรื่อย ๆ</p>
+<p>ในการแข่งขัน Flesh and Blood World Championship 2024 ที่โอซาก้า ผมเป็น 1 ในผู้เล่น 397 คน บนเวทีระดับโลก การแข่งขันเริ่มก่อนการ์ดใบแรกจะถูกเล่น คู่แข่งศึกษาข้อมูลเด็คของคุณล่วงหน้า CORE7 จำลองแรงกดดันแบบเดียวกัน: ทุก Match เปิดเผยข้อมูลของมือ 7 ใบชุดเดิมมากขึ้น จนเกมค่อย ๆ เปลี่ยนจากการเดาข้อมูลที่ซ่อนอยู่ ไปสู่การอ่านมนุษย์ตรงหน้า</p>
 <p>ผมเคยทำหน้าที่ Head Gamemaster ในประสบการณ์บอร์ดเกมยาว 6 ชั่วโมงสำหรับผู้เล่น 50 คน และออกแบบระบบเทรนนิ่งให้แพลตฟอร์มที่มีผู้ใช้มากกว่า 5,000,000 คน ไม่ว่าห้องนั้นจะมี 2 คนหรือหลายล้านคน คำถามยังเหมือนเดิม: เราจะช่วยให้มนุษย์เข้าใจ เลือก และเดินหน้าต่อได้อย่างไร?</p>
 <blockquote>เด็กควรเริ่มได้ ผู้เล่นจริงจังควรยังพบชั้นถัดไป และคนแปลกหน้าควรกลายเป็นความทรงจำได้</blockquote>
 </div>
-<figure class="story-image mobile-fullbleed reveal">
-<img alt="พ่อและลูกสาววัย 6 ขวบค้นพบ CORE7 ด้วยการ์ดกระดาษวาดมือ" decoding="async" height="1200" loading="lazy" src="/kickstarter/assets/story/founder-daughter.webp" width="1800"/>
+<div class="founder-media-stack reveal">
+<figure class="story-image mobile-fullbleed">
+<img alt="A father and his 6-year-old daughter discover CORE7 with hand-drawn paper cards." decoding="async" height="1200" loading="lazy" src="/kickstarter/assets/story/founder-daughter.webp" width="1800"/>
 <figcaption><strong>ก่อน AI มีเพียงกระดาษ</strong><span>วาด เล่น ตัดออก แล้วขออีก 1 รอบ</span></figcaption>
 </figure>
+<figure class="story-image mobile-fullbleed">
+<img alt="บรรยากาศการแข่งขันการ์ดระดับ World Championship ที่ผู้เล่นศึกษาข้อมูลเด็คและเตรียมตัวก่อนการแข่งขันเริ่ม" decoding="async" height="1200" loading="lazy" src="/kickstarter/assets/story/founder-world-stage.webp" width="1800"/>
+<figcaption><strong>การแข่งขันเริ่มก่อน Turn 1</strong><span>ศึกษา กดดัน เปิดเผย แล้วอ่านคน</span></figcaption>
+</figure>
+</div>
 </div>
 <div aria-label="ประสบการณ์ของผู้สร้าง" class="founder-proof founder-proof-rich reveal">
-<article><b>1 ใน 397</b><strong>Flesh and Blood World Championship 2024 · Osaka</strong><p>แรงกดดันระดับ Tournament ถูกใส่ไว้ในเกมที่กติกายังง่ายพอสำหรับเด็ก</p></article>
-<article><b>50 คน · 6 ชั่วโมง</b><strong>Head Gamemaster</strong><p>ประสบการณ์บอร์ดเกมสด 6 ชั่วโมงที่ออกแบบและดำเนินเกมสำหรับผู้เล่น 50 คน</p></article>
-<article><b>5M+</b><strong>ออกแบบระบบเทรนนิ่ง</strong><p>ระบบและเส้นทางการเรียนรู้ที่สร้างให้แพลตฟอร์มซึ่งมีผู้ใช้มากกว่า 5,000,000 คน</p></article>
-<article><b>30+ ปี</b><strong>ออกแบบเกม</strong><p>จากต้นแบบวาดมือสู่ภาษา RGBS สากลที่ถูกสร้างมาเพื่อเดินทาง</p></article>
+<article><span aria-hidden="true" class="founder-icon">🏆</span><b>1 ใน 397</b><strong>FAB World Championship 2024 · ผู้เข้าแข่งขัน</strong><p>การแข่งขันระดับโลกเริ่มก่อนการ์ดใบแรกถูกเล่น แรงกดดันแบบเดียวกันถูกหลอมเข้าไปใน CORE7</p></article>
+<article><span aria-hidden="true" class="founder-icon">🎲</span><b>50 คน · 6 ชั่วโมง</b><strong>Head Gamemaster</strong><p>ประสบการณ์บอร์ดเกมสด 6 ชั่วโมงสำหรับผู้เล่น 50 คน สอนเรื่องจังหวะ ความทรงจำ และแรงตึงบนโต๊ะ</p></article>
+<article><span aria-hidden="true" class="founder-icon">🌐</span><b>5M+</b><strong>ออกแบบระบบเทรนนิ่ง</strong><p>ความชัดเจน ลำดับการเติบโต และเส้นทางการเรียนรู้ ถูกออกแบบให้แพลตฟอร์มที่มีผู้ใช้มากกว่า 5,000,000 คน</p></article>
+<article><span aria-hidden="true" class="founder-icon">🛠️</span><b>30+ ปี</b><strong>ออกแบบเกม</strong><p>จากต้นแบบวาดมือ สู่ภาษา RGBS ในกระเป๋าที่ถูกออกแบบให้เดินทางไปได้ทุกที่</p></article>
 </div>
 </div>
 </section>
 <section class="section section-cream" id="design-disclosure">
 <div class="wrap disclosure-grid">
 <div class="disclosure-copy reveal">
-<p class="eyebrow">มนุษย์ออกแบบ · ใช้ AI ช่วยการผลิต</p>
+<p class="eyebrow"><span aria-hidden="true" class="section-emoji">🛠️</span> มนุษย์ออกแบบ · ใช้ AI ช่วยการผลิต</p>
 <h2 class="display">ตัวเกมเกิดขึ้นก่อน<br/><em>AI ช่วยให้คน 1 คนทำงานนี้จนสำเร็จ</em></h2>
 <p class="lead">กติกาทุกข้อเริ่มจากกระดาษจริงและโต๊ะจริง การเล่นหลายร้อยครั้งกับเด็ก ผู้ใหญ่ และผู้สูงวัย เป็นผู้ตัดสินว่าสิ่งใดควรอยู่และสิ่งใดควรถูกตัดออก</p>
 <p>ไอเดียนี้มีอยู่มานานก่อนเครื่องมือ AI ในปัจจุบัน AI ช่วยเร่งการทำต้นแบบภาพช่วงแรก โค้ดเกมออนไลน์ และการสื่อสารแคมเปญ แต่มันไม่ได้แทนที่การออกแบบเกม ต้นแบบกระดาษ หรือการ Playtest กับมนุษย์ ส่วนงานภาพลายเซ็นฉบับจริงเป็นงาน Commission</p>
 </div>
 <div class="disclosure-proof reveal">
-<article><span>01</span><div><b>กระดาษมาก่อนพิกเซล</b><p>กติกา มือการ์ด และ Layout ถูกทดลองเป็นต้นแบบจริงก่อน</p></div></article>
-<article><span>02</span><div><b>เกมจริงหลายร้อยครั้ง</b><p>เด็ก ผู้ใหญ่ และผู้สูงวัยช่วยกำหนดว่าสิ่งใดควรอยู่และสิ่งใดควรถูกตัด</p></div></article>
-<article><span>03</span><div><b>AI ในฐานะเครื่องมือการผลิต</b><p>ภาพช่วงเริ่มต้น โค้ดออนไลน์ และการสื่อสารเดินหน้าเร็วขึ้น ขณะที่ตัวเกมยังคงถูกคิดและทดสอบโดยมนุษย์</p></div></article>
-<article><span>04</span><div><b>งานภาพลายเซ็นฉบับจริงเป็น Commission</b><p>หลังการ์ดฉบับผลิตจริง และงานอัปเกรด CORE Cards ฟอยล์หากปลดล็อก จะทำโดยศิลปินผู้เชี่ยวชาญแบบ Commission</p></div></article>
+<article><span aria-hidden="true" class="disclosure-icon">✏️</span><div><b>กระดาษมาก่อนพิกเซล</b><p>กติกา มือการ์ด และ Layout ถูกทดลองเป็นต้นแบบจริงก่อน</p></div></article>
+<article><span aria-hidden="true" class="disclosure-icon">👥</span><div><b>เกมจริงหลายร้อยครั้ง</b><p>เด็ก ผู้ใหญ่ และผู้สูงวัยช่วยกำหนดว่าสิ่งใดควรอยู่และสิ่งใดควรถูกตัด</p></div></article>
+<article><span aria-hidden="true" class="disclosure-icon">🤖</span><div><b>AI ในฐานะเครื่องมือการผลิต</b><p>ภาพช่วงเริ่มต้น โค้ดออนไลน์ และการสื่อสารเดินหน้าเร็วขึ้น ขณะที่ตัวเกมยังคงถูกคิดและทดสอบโดยมนุษย์</p></div></article>
+<article><span aria-hidden="true" class="disclosure-icon">🎨</span><div><b>งานภาพลายเซ็นฉบับจริงเป็น Commission</b><p>หลังการ์ดฉบับผลิตจริง และงานอัปเกรด CORE Cards ฟอยล์หากปลดล็อก จะทำโดยศิลปินผู้เชี่ยวชาญแบบ Commission</p></div></article>
 </div>
 </div>
-</section><section class="section section-cream"><div class="wrap faq-grid"><div class="reveal"><p class="eyebrow">FAQ</p><h2 class="display">คำถามที่เราเองก็จะถามก่อนกดสนับสนุน</h2></div><div class="faq reveal"><details open=""><summary>เกมเริ่มได้จริงภายใน 7 วินาทีหรือ?</summary><p>ได้ คำสัญญาคือ 7 วินาทีเพื่อเริ่ม ไม่ใช่ 7 วินาทีเพื่อท่องจำทุกอย่าง Rule Card แบบภาพยังวางให้เห็นอยู่ ชี้วงจรสี เลือก 1 จาก 7 ใบ แล้วเปิดพร้อมกัน</p></details><details><summary>ผู้เล่นทั้ง 2 คนต้องมีกล่องหรือไม่?</summary><p>ไม่ 1 กล่องมี Word Cards เพียงพอ และมี Rule Card สำหรับผู้เล่นทุกคนบนโต๊ะ 4 คน</p></details><details><summary>มีเกมทางการ 3 เกมเท่านั้นใช่หรือไม่?</summary><p>ใช่ HERO’S DUEL, CORE7 และ 三川 MIKAWA คือเกมทางการครบทั้ง 3 เกมของ First Hand ส่วนเกมที่ 4 เป็นต้นไปเปิดให้ผู้เล่นสร้างกติกาเอง</p></details><details><summary>เกมทางการไม่มีการสุ่มจริงหรือ?</summary><p>ใช่ ไม่มีลูกเต๋า ไม่มีดวงจากการจั่ว และไม่มีการตัดสินผลแบบสุ่ม ความไม่แน่นอนมาจากการตัดสินใจที่ซ่อนอยู่ของมนุษย์</p></details><details><summary>ทำไมต้องซื้อการ์ด หากกติกาเปิดให้เล่นฟรี?</summary><p>เพราะเด็คจริงคืองานศิลปะ ภาษา และพิธีกรรมพกพา กลไกเปิดกว้าง แต่ตัววัตถุต้องคู่ควรกับการซื้อ</p></details><details><summary>คิดค่าจัดส่งอย่างไร?</summary><p>เราจัดส่งทั่วโลก โดยเก็บค่าจัดส่งและภาษีที่เกี่ยวข้องแยกหลังจบแคมเปญผ่าน Pledge Manager</p></details><details><summary>ทำไมจึงพิมพ์ภาษาไทยบนการ์ด?</summary><p>First Hand ถูกออกแบบในประเทศไทย ภาษาอังกฤษช่วยให้เด็คเดินทาง ส่วนภาษาไทยเก็บรักษาบ้านเกิดและแนวคิดทางวัฒนธรรมเรื่องถ้อยคำเชิงบวกและมงคล กลไกไม่เคยบังคับให้ผู้เล่นต้องอ่านภาษาไทย</p></details><details><summary>จำเป็นต้องใช้ AI เพื่อเล่นหรือไม่?</summary><p>ไม่ เกมทางการทั้ง 3 เกมเป็นเกมจริงที่สมบูรณ์ในตัวเอง AI Knowledge File เป็นชั้นเสริมสำหรับการทบทวน บทสนทนา โปรเจกต์ เวิร์กช็อป และการออกแบบกติกาของชุมชน</p></details></div></div></section>
-<section class="section section-dark final"><div class="wrap reveal"><img alt="" aria-hidden="true" class="brand-logo final-brand-logo" decoding="async" height="594" loading="lazy" src="/assets/myclover-icon.png" width="594"/><p class="eyebrow">myClover · FIRST HAND</p><h2>พก 7 คำ<br/>ออกไปพบโลก</h2><p>เริ่มจาก CORE7 ดวลรัวด้วย HERO’S DUEL บัญชาการ 3 สายน้ำใน 三川 MIKAWA แล้วพกการ์ดชุดเดิมเข้าสู่บทสนทนา โปรเจกต์ หรือโต๊ะที่ยังต้องการกติกาใหม่</p><div class="final-actions"><a class="button gold" href="#pledges">เลือกระดับสนับสนุน</a><a class="button" href="/core7/">เล่น CORE7 ฟรี</a></div><small>myClover · First Hand · สุ่ม 0% · ตัดสินใจ 100%</small></div></section>
+</section><section class="section section-cream"><div class="wrap faq-grid"><div class="reveal"><p class="eyebrow"><span aria-hidden="true" class="section-emoji">❓</span> FAQ</p><h2 class="display">คำถามที่เราเองก็จะถามก่อนกดสนับสนุน</h2></div><div class="faq reveal"><details open=""><summary><span aria-hidden="true" class="faq-icon">⚡</span> เกมเริ่มได้จริงภายใน 7 วินาทีหรือ?</summary><p>ได้ คำสัญญาคือ 7 วินาทีเพื่อเริ่ม ไม่ใช่ 7 วินาทีเพื่อท่องจำทุกอย่าง Rule Card แบบภาพยังวางให้เห็นอยู่ ชี้วงจรสี เลือก 1 จาก 7 ใบ แล้วเปิดพร้อมกัน</p></details><details><summary><span aria-hidden="true" class="faq-icon">📦</span> ผู้เล่นทั้ง 2 คนต้องมีกล่องหรือไม่?</summary><p>ไม่ 1 กล่องมี Word Cards เพียงพอ และมี Rule Card สำหรับผู้เล่นทุกคนบนโต๊ะ 4 คน</p></details><details><summary><span aria-hidden="true" class="faq-icon">3️⃣</span> มีเกมทางการ 3 เกมเท่านั้นใช่หรือไม่?</summary><p>ใช่ HERO’S DUEL, CORE7 และ 三川 MIKAWA คือเกมทางการครบทั้ง 3 เกมของ First Hand ส่วนเกมที่ 4 เป็นต้นไปเปิดให้ผู้เล่นสร้างกติกาเอง</p></details><details><summary><span aria-hidden="true" class="faq-icon">🎲</span> เกมทางการไม่มีการสุ่มจริงหรือ?</summary><p>ใช่ ไม่มีลูกเต๋า ไม่มีดวงจากการจั่ว และไม่มีการตัดสินผลแบบสุ่ม ความไม่แน่นอนมาจากการตัดสินใจที่ซ่อนอยู่ของมนุษย์</p></details><details><summary><span aria-hidden="true" class="faq-icon">🃏</span> ทำไมต้องซื้อการ์ด หากกติกาเปิดให้เล่นฟรี?</summary><p>เพราะเด็คจริงคืองานศิลปะ ภาษา และพิธีกรรมพกพา กลไกเปิดกว้าง แต่ตัววัตถุต้องคู่ควรกับการซื้อ</p></details><details><summary><span aria-hidden="true" class="faq-icon">🚚</span> คิดค่าจัดส่งอย่างไร?</summary><p>เราจัดส่งทั่วโลก โดยเก็บค่าจัดส่งและภาษีที่เกี่ยวข้องแยกหลังจบแคมเปญผ่าน Pledge Manager</p></details><details><summary><span aria-hidden="true" class="faq-icon">🇹🇭</span> ทำไมจึงพิมพ์ภาษาไทยบนการ์ด?</summary><p>First Hand ถูกออกแบบในประเทศไทย ภาษาอังกฤษช่วยให้เด็คเดินทาง ส่วนภาษาไทยเก็บรักษาบ้านเกิดและแนวคิดทางวัฒนธรรมเรื่องถ้อยคำเชิงบวกและมงคล กลไกไม่เคยบังคับให้ผู้เล่นต้องอ่านภาษาไทย</p></details><details><summary><span aria-hidden="true" class="faq-icon">🤖</span> จำเป็นต้องใช้ AI เพื่อเล่นหรือไม่?</summary><p>ไม่ เกมทางการทั้ง 3 เกมเป็นเกมจริงที่สมบูรณ์ในตัวเอง AI Knowledge File เป็นชั้นเสริมสำหรับการทบทวน บทสนทนา โปรเจกต์ เวิร์กช็อป และการออกแบบกติกาของชุมชน</p></details></div></div></section>
+<section class="section section-dark final"><div class="wrap reveal"><img alt="" aria-hidden="true" class="brand-logo final-brand-logo" decoding="async" height="594" loading="lazy" src="/assets/myclover-icon.png" width="594"/><p class="eyebrow"><span aria-hidden="true" class="section-emoji">🍀</span> myClover · FIRST HAND</p><h2>พก 7 คำ<br/>ออกไปพบโลก</h2><p><span aria-hidden="true" class="quote-icon">🌍</span> เริ่มจาก CORE7 ดวลรัวด้วย HERO’S DUEL บัญชาการ 3 สายน้ำใน 三川 MIKAWA แล้วพกการ์ดชุดเดิมเข้าสู่บทสนทนา โปรเจกต์ หรือโต๊ะที่ยังต้องการกติกาใหม่</p><small>⚡ 7 วินาที · 🤝 ไม่ถึง 10 นาที · 🧠 ความทรงจำที่ยังเติบโต</small></div></section>
 </main>
 <script type="module">
     import { FIRST_HAND } from '/core7/js/cards.js';
