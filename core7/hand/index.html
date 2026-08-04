@@ -29,20 +29,20 @@
   <div class="wrap">
     <p class="eyebrow">Build Your Hand</p>
     <h2 class="disp">เลือกมือ 7 ใบ</h2>
-    <p class="lead">QUICK ใช้ Generic เลือกจำนวนสีทันที ส่วน SELECT ใช้เฉพาะ FIRST HAND ที่คุณปลดล็อกจริง</p>
+    <p class="lead" data-en="QUICK uses Generic cards — just pick how many of each color. SELECT uses only the FIRST HAND cards you have unlocked.">QUICK ใช้ Generic เลือกจำนวนสีทันที ส่วน SELECT ใช้เฉพาะ FIRST HAND ที่คุณปลดล็อกจริง</p>
 
     <div class="mode-switch" role="group" aria-label="รูปแบบการเลือกมือ">
       <button class="mode-btn" id="quickMode" type="button" aria-pressed="true">
-        <b>⚡ QUICK</b><span>ใช้ Generic 4 สี เลือกจำนวนสีแล้วเล่นได้ทันที</span>
+        <b>⚡ QUICK</b><span data-en="Four Generic colors. Pick the counts and play.">ใช้ Generic 4 สี เลือกจำนวนสีแล้วเล่นได้ทันที</span>
       </button>
       <button class="mode-btn" id="selectMode" type="button" aria-pressed="false">
-        <b>🎴 SELECT</b><span id="selectModeDesc">จัดมือจาก FIRST HAND ที่ปลดล็อกแล้ว</span>
+        <b>🎴 SELECT</b><span id="selectModeDesc" data-en="Build from the FIRST HAND cards you own">จัดมือจาก FIRST HAND ที่ปลดล็อกแล้ว</span>
       </button>
     </div>
     <div class="collection-status">
-      <span>FIRST HAND · เล่นจบ 1 Match ปลดล็อก 1 ใบ</span>
+      <span data-en="FIRST HAND · one finished Match unlocks one card">FIRST HAND · เล่นจบ 1 Match ปลดล็อก 1 ใบ</span>
       <b id="collectionCount">0/28</b>
-      <a href="/core7/collection/">ดู Collection</a>
+      <a href="/core7/collection/" data-en="View Collection">ดู Collection</a>
     </div>
 
     <section id="quickPanel">
@@ -61,7 +61,7 @@
     <div class="hb-total">
       <span class="t" id="total">0 / 7</span>
       <span id="mix" style="font-size:13px;color:rgb(255 255 255/.75);flex:1"></span>
-      <button class="btn btn-gold" id="ready" disabled>พร้อมเล่น →</button>
+      <button class="btn btn-gold" id="ready" disabled data-en="Ready →">พร้อมเล่น →</button>
     </div>
   </div>
 </main>
@@ -120,7 +120,7 @@ if (!selectUnlocked) {
   selectButton.disabled = true;
   selectDesc.textContent = `🔒 ปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ · อีก ${remaining} ใบ`;
   selectLocked.hidden = false;
-  selectLocked.innerHTML = `<b>SELECT HAND ยังล็อกอยู่</b><br>เล่นจบอีก ${remaining} Match เพื่อปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ แล้วจึงจัดมือ 7 ใบจาก Collection ได้ Generic 4 สีไม่นับรวมและไม่เข้ามาปนในโหมดนี้`;
+  selectLocked.innerHTML = `<b data-en="SELECT HAND is still locked">SELECT HAND ยังล็อกอยู่</b><br>เล่นจบอีก ${remaining} Match เพื่อปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ แล้วจึงจัดมือ 7 ใบจาก Collection ได้ Generic 4 สีไม่นับรวมและไม่เข้ามาปนในโหมดนี้`;
   selectContent.hidden = true;
   mode = 'quick';
   setHandMode('quick');

@@ -14,13 +14,24 @@
    คนสองคนคนละภาษาต้องชี้การ์ดใบเดียวกันแล้วเรียกชื่อตรงกันได้
    ═══════════════════════════════════════════════════════════════ */
 
-const KEY = 'c7:lang';
+/* ภาษาของทั้งเว็บใช้คีย์เดียวกัน — หน้าแรก hall และหน้าเกมอ่านค่าเดียวกันหมด
+   ตั้งที่หน้าไหนก็จำทั้งเว็บ ไม่มีตัวแปรภาษาแยกต่อหน้าอีกแล้ว
+   (ยกเว้น /kickstarter/ ที่เป็นอังกฤษเสมอทุกครั้งที่โหลด จึงไม่อ่านคีย์นี้เลย) */
+const KEY = 'mc_lang';
+const LEGACY_KEY = 'c7:lang';
 const VALID = ['th', 'en'];
 
 export function getLang() {
   try {
     const saved = localStorage.getItem(KEY);
     if (VALID.includes(saved)) return saved;
+    /* เคยตั้งภาษาไว้ตอนที่เกมยังใช้คีย์ของตัวเอง — ย้ายมาให้ครั้งเดียว */
+    const legacy = localStorage.getItem(LEGACY_KEY);
+    if (VALID.includes(legacy)) {
+      localStorage.setItem(KEY, legacy);
+      localStorage.removeItem(LEGACY_KEY);
+      return legacy;
+    }
   } catch { /* private mode */ }
   /* ยังไม่เคยเลือก — เดาจากภาษาเบราว์เซอร์ ไทยได้ไทย นอกนั้นได้อังกฤษ */
   const nav = (globalThis.navigator?.language || 'th').toLowerCase();
@@ -88,3 +99,34 @@ export function localize(root) {
 }
 
 export const t = (th, en) => (getLang() === 'en' ? en : th);
+
+/* เปลี่ยนภาษาที่แท็บอื่น (เช่นหน้าแรก) แท็บนี้ต้องตามทันที ไม่ต้องรีเฟรช */
+if (typeof window !== 'undefined') {
+  addEventListener('storage', e => {
+    if (e.key !== KEY || !VALID.includes(e.newValue)) return;
+    applyLang(e.newValue);
+    dispatchEvent(new CustomEvent('core7:lang', { detail: { lang: e.newValue } }));
+  });
+}
+
+/* บางหน้าวาดเนื้อหาด้วย JS หลัง applyLang() วิ่งไปแล้ว ท่อนพวกนั้นจะค้างเป็นไทย
+   ทั้งที่มี data-en อยู่ — เฝ้าไว้แล้วแปลให้เองเมื่อมีของใหม่โผล่
+   debounce ไว้ เรียกซ้ำไม่เปลือง และถ้าเบราว์เซอร์ไม่มี MutationObserver ก็ข้ามไป */
+if (typeof window !== 'undefined' && window.MutationObserver) {
+  const start = () => {
+    let pending = false;
+    let mine = false;          /* applyLang เขียน DOM เอง ต้องไม่นับว่าเป็นของใหม่
+                                  ไม่งั้นมันจะปลุกตัวเองวนไม่จบ */
+    new MutationObserver(() => {
+      if (pending || mine) return;
+      pending = true;
+      setTimeout(() => {
+        pending = false;
+        mine = true;
+        try { applyLang(); } finally { setTimeout(() => { mine = false; }, 0); }
+      }, 0);
+    }).observe(document.body, { childList: true, subtree: true });
+  };
+  if (document.body) start();
+  else document.addEventListener('DOMContentLoaded', start, { once: true });
+}

@@ -11,8 +11,8 @@
 <body><nav class="c7nav" id="c7nav"></nav><main class="sec"><div class="wrap-slim">
   <p class="eyebrow"><span data-c7-version>v0.4.6</span> · Public Lobby</p><h2 class="disp">เข้าห้องออนไลน์</h2>
   <div class="panel" style="margin-top:20px">
-    <div class="field"><label for="jname">ชื่อของคุณบนโต๊ะ</label><input id="jname" maxlength="24"></div>
-    <div class="join-row"><div class="field"><label for="jcode">รหัสห้อง 4 หลัก</label><input id="jcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0042" autocomplete="one-time-code" style="font-family:'Bai Jamjuree';letter-spacing:4px;font-size:20px"></div><button class="btn btn-gold" id="joinCode">Join</button></div>
+    <div class="field"><label for="jname" data-en="Your name at the table">ชื่อของคุณบนโต๊ะ</label><input id="jname" maxlength="24"></div>
+    <div class="join-row"><div class="field"><label for="jcode" data-en="4-digit room code">รหัสห้อง 4 หลัก</label><input id="jcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0042" autocomplete="one-time-code" style="font-family:'Bai Jamjuree';letter-spacing:4px;font-size:20px"></div><button class="btn btn-gold" id="joinCode">Join</button></div>
     <p id="joinStatus" role="status" style="font-size:13.5px;color:rgb(var(--muted));min-height:20px;margin-top:10px"></p>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:12px"><div><p class="eyebrow">Waiting Rooms</p><h3 class="disp">ห้องสาธารณะ</h3></div><button class="btn" id="refresh">↻ Refresh</button></div>
@@ -45,10 +45,10 @@ document.getElementById('joinCode').addEventListener('click', () => join(codeEl.
 codeEl.addEventListener('keydown', event => { if (event.key === 'Enter') join(codeEl.value); });
 const list = document.getElementById('rooms'); const refreshBtn = document.getElementById('refresh');
 async function refresh() {
-  refreshBtn.disabled = true; list.innerHTML = '<div class="empty">กำลังโหลดห้อง…</div>';
+  refreshBtn.disabled = true; list.innerHTML = '<div class="empty" data-en="Loading rooms…">กำลังโหลดห้อง…</div>';
   try {
     const rooms = await api.list(); list.innerHTML = '';
-    if (!rooms.length) { list.innerHTML = '<div class="empty panel">ยังไม่มีห้องสาธารณะ — สร้างห้องใหม่ได้เลย<br><a class="btn btn-gold" style="margin-top:12px" href="/core7/create/">สร้างห้อง</a></div>'; }
+    if (!rooms.length) { list.innerHTML = '<div class="empty panel">ยังไม่มีห้องสาธารณะ — สร้างห้องใหม่ได้เลย<br><a class="btn btn-gold" style="margin-top:12px" href="/core7/create/" data-en="Make a room">สร้างห้อง</a></div>'; }
     for (const room of rooms) {
       const row = document.createElement('div'); row.className = 'room-item';
       const code = document.createElement('span'); code.className = 'room-code'; code.textContent = room.code;

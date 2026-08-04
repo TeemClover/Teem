@@ -10,7 +10,8 @@ import {
   TOTAL_COLLECTION_CARDS,
   unlockRandomCard,
 } from './collection-progress.js';
-import { COLOR_META } from './cards.js';
+import { COLOR_META, cardStory } from './cards.js';
+import { getLang, t } from './i18n.js';
 import { cardBackSVG, cardSVG } from './art.js';
 import { playCardFlip, playSfx } from './audio.js';
 
@@ -117,7 +118,7 @@ function showReward(reward, { isSet = false } = {}) {
           </div>
         </div>
       </div>
-      <blockquote class="c7-reward__flavor" data-flavor hidden><span class="c7-reward__quote c7-reward__quote--open" aria-hidden="true">“</span><span class="c7-reward__flavor-text">${card.story || 'การ์ดใบนี้ถูกเพิ่มลงใน FIRST HAND Collection ของคุณแล้ว'}</span><span class="c7-reward__quote c7-reward__quote--close" aria-hidden="true">”</span></blockquote>
+      <blockquote class="c7-reward__flavor" data-flavor hidden><span class="c7-reward__quote c7-reward__quote--open" aria-hidden="true">“</span><span class="c7-reward__flavor-text">${cardStory(card, getLang()) || t('การ์ดใบนี้เข้า FIRST HAND Collection ของคุณแล้ว', 'This card joined your FIRST HAND Collection.')}</span><span class="c7-reward__quote c7-reward__quote--close" aria-hidden="true">”</span></blockquote>
     </section>`;
 
   const flip = overlay.querySelector('[data-flip]');

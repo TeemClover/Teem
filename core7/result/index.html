@@ -40,26 +40,26 @@
     <div class="timeline" id="timeline"></div>
 
     <h2 class="disp" style="margin-top:34px;font-size:22px">ชวนคุยหลังเกม</h2>
-    <p style="font-size:13.5px;color:rgb(var(--muted))">เกมจบแล้ว แต่บทสนทนาเพิ่งเริ่ม — ลองถามกันดู</p>
-    <div class="prompt-card">การ์ดใบไหนในมือ 7 ใบนี้เป็นตัวคุณที่สุด?</div>
-    <div class="prompt-card">ทำไมคุณเลือกทิ้งใบนั้น?</div>
-    <div class="prompt-card">มีใบไหนที่คุณไม่อยากเสียเลย?</div>
+    <p style="font-size:13.5px;color:rgb(var(--muted))" data-en="The game is over, the conversation just started — try asking:">เกมจบแล้ว แต่บทสนทนาเพิ่งเริ่ม — ลองถามกันดู</p>
+    <div class="prompt-card" data-en="Which of your seven is most like you?">การ์ดใบไหนในมือ 7 ใบนี้เป็นตัวคุณที่สุด?</div>
+    <div class="prompt-card" data-en="Why did you discard that one?">ทำไมคุณเลือกทิ้งใบนั้น?</div>
+    <div class="prompt-card" data-en="Was there one you did not want to lose?">มีใบไหนที่คุณไม่อยากเสียเลย?</div>
 
     <div class="panel" id="nightUnlock" hidden
       style="margin-top:30px;background:#161814;color:#fff;border-color:rgb(var(--gold)/.5)">
-      <b class="disp">🖤 ปลดล็อคแล้ว: กรอบดำ — ผู้ชนะเกม</b>
+      <b class="disp" data-en="🖤 Unlocked: the black frame — game winner">🖤 ปลดล็อคแล้ว: กรอบดำ — ผู้ชนะเกม</b>
       <p style="font-size:14px;margin-top:6px;color:rgb(255 255 255/.8)">
         ชัยชนะของคุณปลดล็อคกรอบสีใหม่ให้การ์ดประจำตัวบนเว็บ myClover —
         ไปที่หน้าทำการ์ดแล้วเลือก "กรอบดำ" ได้เลย</p>
-      <a class="btn btn-gold" style="margin-top:12px" href="/card/">🃏 ไปแต่งการ์ดของฉัน</a>
+      <a class="btn btn-gold" style="margin-top:12px" href="/card/" data-en="🃏 Go style my card">🃏 ไปแต่งการ์ดของฉัน</a>
     </div>
 
     <div class="panel" style="margin-top:30px" id="signup">
-      <b class="disp">สมัครเพื่อเก็บเรื่องราวของมือ 7 ใบนี้</b>
+      <b class="disp" data-en="Sign up to keep the story of these seven">สมัครเพื่อเก็บเรื่องราวของมือ 7 ใบนี้</b>
       <p style="font-size:14px;margin-top:6px;color:rgb(var(--ink)/.75)">
         บัญชี Member จะเก็บสถิติ Rank Collection และประวัติข้ามอุปกรณ์ —
-        ระบบสมัครจะเปิดพร้อม Server จริง <b>ไม่สมัครก็เล่นต่อได้เสมอ</b>
-        (สถิติของคุณถูกเก็บในเครื่องนี้แล้ว ดูได้ที่ <a href="/core7/profile/" style="text-decoration:underline">โปรไฟล์</a>)</p>
+        ระบบสมัครจะเปิดพร้อม Server จริง <b data-en="You can always keep playing without an account">ไม่สมัครก็เล่นต่อได้เสมอ</b>
+        (สถิติของคุณถูกเก็บในเครื่องนี้แล้ว ดูได้ที่ <a href="/core7/profile/" style="text-decoration:underline" data-en="Profile">โปรไฟล์</a>)</p>
     </div>
   </div>
 </main>
@@ -70,6 +70,7 @@ import { MatchAuthority } from '/core7/js/engine.js';
 import { RemoteRooms } from '/core7/js/adapters.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
 import { COLORS } from '/core7/js/rules.js';
+import { t } from '/core7/js/i18n.js';
 import { cardSVG, cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 
@@ -85,7 +86,7 @@ const hero = document.getElementById('hero');
 /* บอทเก็บ state เต็ม · ออนไลน์เก็บได้แค่ view เพราะ server เป็นเจ้าของ state
    รับทั้งสองแบบ ไม่งั้นเกมออนไลน์จะเด้งเป็น "ไม่พบผล" ทุกครั้ง */
 if (!snap || (!snap.state && !snap.view)) {
-  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how">ผลอาจถูกล้างไปแล้ว</p>';
+  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how" data-en="It may have been cleared already">ผลอาจถูกล้างไปแล้ว</p>';
   document.getElementById('actions').append(
     el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
   throw new Error('no snapshot');
@@ -104,27 +105,37 @@ const view = snap.state
     })()
   : snap.view;
 if (!view || !view.result) {
-  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how">ผลอาจถูกล้างไปแล้ว</p>';
+  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how" data-en="It may have been cleared already">ผลอาจถูกล้างไปแล้ว</p>';
   document.getElementById('actions').append(
     el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
   throw new Error('no view');
 }
 const r = view.result;
 
+/* เหตุผลต้องเล่าจากมุมของคนอ่าน — เดิมเขียนไว้มุมผู้ชนะมุมเดียว
+   แพ้เพราะไพ่ตัวเองหมด แต่หน้าจอขึ้นว่า "อีกฝ่ายไม่มีการ์ดเหลือ" ซึ่งกลับหัว
+   [ตอนชนะ, ตอนแพ้] ถ้าเหตุผลไม่มีฝั่งก็ใช้ข้อความเดียวกันทั้งคู่ */
 const HOWTEXT = {
-  THREE_WINS: 'ชนะครบ 3 Round',
-  EXHAUSTION: 'อีกฝ่ายไม่มีการ์ดเหลือ',
-  TIEBREAK_LAST_ROUND: 'Tie Break — รอบสุดท้ายชี้ขาด',
-  TIEBREAK_FINAL_GRAY: 'Tie Break — กฎ Final Gray: เทาแพ้ใบสุดท้าย',
-  TIEBREAK_HISTORY: 'Tie Break — ย้อนประวัติรอบที่มีผู้ชนะ',
-  TIEBREAK_FEWER_GRAY: 'เสมอทุกตา — เปิดมือแล้ว ฝ่ายที่เริ่มด้วยเทาน้อยกว่าชนะ',
-  DRAW: 'เสมอทุกตาและจำนวนเทาเท่ากัน — ใจตรงกันพอดี',
-  FORFEIT: 'อีกฝ่ายยอมแพ้',
+  THREE_WINS:          [t('ชนะครบ 3 รอบ', 'Won 3 rounds'), t('อีกฝ่ายชนะครบ 3 รอบ', 'They won 3 rounds')],
+  EXHAUSTION:          [t('อีกฝ่ายการ์ดหมดมือ', 'They ran out of cards'), t('คุณการ์ดหมดมือ', 'You ran out of cards')],
+  TIEBREAK_LAST_ROUND: t('หมดมือพร้อมกัน — รอบสุดท้ายชี้ขาด', 'Both hands empty — last round decided it'),
+  TIEBREAK_FINAL_GRAY: t('⚙️ เป็นใบสุดท้าย เลยแพ้สี', 'Final Gray — ⚙️ loses as the last card'),
+  TIEBREAK_HISTORY:    t('หมดมือพร้อมกัน — ย้อนดูรอบที่มีผู้ชนะ', 'Both hands empty — traced back to a decided round'),
+  TIEBREAK_FEWER_GRAY: [t('เสมอทุกรอบ — คุณเริ่มด้วย ⚙️ น้อยกว่า', 'All rounds tied — you started with fewer ⚙️'),
+                        t('เสมอทุกรอบ — อีกฝ่ายเริ่มด้วย ⚙️ น้อยกว่า', 'All rounds tied — they started with fewer ⚙️')],
+  DRAW:                t('เสมอทุกรอบ และ ⚙️ เท่ากัน — ใจตรงกันพอดี', 'Every round tied, same ⚙️ count — perfectly in sync'),
+  FORFEIT:             [t('อีกฝ่ายยอมแพ้', 'They forfeited'), t('คุณยอมแพ้', 'You forfeited')],
+  DISCONNECT_LOSS:     [t('อีกฝ่ายหลุดจากห้อง', 'They disconnected'), t('คุณหลุดจากห้อง', 'You disconnected')],
+};
+const howText = (type, won) => {
+  const v = HOWTEXT[type];
+  if (!v) return '';
+  return Array.isArray(v) ? (won ? v[0] : v[1]) : v;
 };
 let title, sub;
-if (r.draw) { title = '🤝 DRAW'; sub = HOWTEXT.DRAW; }
-else if (r.youWon) { title = '🏆 YOU WIN'; sub = HOWTEXT[r.resultType] || ''; }
-else { title = 'YOU LOSE'; sub = HOWTEXT[r.resultType] || ''; }
+if (r.draw) { title = '🤝 DRAW'; sub = howText('DRAW', true); }
+else if (r.youWon) { title = '🏆 YOU WIN'; sub = howText(r.resultType, true); }
+else { title = 'YOU LOSE'; sub = howText(r.resultType, false); }
 /* MATCH ไม่มีคะแนน — ชนะ 3 รอบกับอีกฝ่ายมือหมดคือเรื่องเดียวกัน
    บอกแค่ว่าใครชนะพอ ส่วนคะแนนที่นับจริงมีแค่ SET เท่านั้น */
 const series = snap.series || null;

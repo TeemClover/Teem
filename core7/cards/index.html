@@ -28,6 +28,8 @@ import { renderShell, el, pathSegment } from '/core7/js/ui.js';
 import { cardById, COLOR_META, FIRST_HAND } from '/core7/js/cards.js';
 import { cardSVG } from '/core7/js/art.js';
 import { getCollectionIds, ownsCard } from '/core7/js/collection-progress.js';
+import { cardStory } from '/core7/js/cards.js';
+import { getLang, t } from '/core7/js/i18n.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({ active: 'collection' });
@@ -66,8 +68,8 @@ main.innerHTML = `
         <span class="tag" style="background:${meta.soft};color:${meta.deep}">${meta.emoji} ${meta.nameEn.toUpperCase()}</span>
         <span class="tag tag-gold">${meta.beatsTh}</span>
       </div>
-      <p style="font-size:14px;color:rgb(var(--muted))">ภาพ: ${card.artTh}</p>
-      <blockquote class="story">${card.story}</blockquote>
+      <p style="font-size:14px;color:rgb(var(--muted))">${t('ภาพ', 'Art')}: ${card.artTh}</p>
+      <blockquote class="story">${cardStory(card, getLang())}</blockquote>
       <p style="font-size:13.5px;color:rgb(var(--muted));margin-top:16px">
         ในเกม การ์ดใบนี้มีค่าเท่ากับสี${meta.nameTh}ทุกใบ — ความหมายเป็นของคุณ ชัยชนะมาจากการอ่านเกม</p>
       <div class="meta-row" style="margin-top:20px">
