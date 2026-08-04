@@ -132,6 +132,21 @@ export async function fetchCore7Stats({ from, to } = {}) {
   return data;
 }
 
+/* Collection Stat — การ์ดแต่ละใบถูกเปิดไปแล้วกี่เครื่อง และคนหลุดที่ใบที่เท่าไหร่ */
+export async function fetchCore7CollectionStats({ from, to } = {}) {
+  const query = new URLSearchParams();
+  if (from) query.set('from', from);
+  if (to) query.set('to', to);
+  const response = await fetch(`${CORE7_ANALYTICS_BASE}/collection-stats?${query}`, {
+    headers: { accept: 'application/json' },
+    cache: 'no-store',
+    credentials: 'omit',
+  });
+  const data = await response.json().catch(() => ({ ok: false, error: 'INVALID_RESPONSE' }));
+  if (!response.ok || !data.ok) throw new Error(data.error || `HTTP_${response.status}`);
+  return data;
+}
+
 /* จำนวน Match ที่เล่นไปแล้วทั้งหมด — โชว์บนหน้าแรกของเกม
    เกมที่เล่นไม่จบก็นับ และรวมเกมกับบอทด้วย */
 export async function fetchCore7Counters() {

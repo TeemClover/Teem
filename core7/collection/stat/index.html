@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Collection Stat — CORE7 · myClover</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#071d12">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+:root{--gold:#d9b86c;--green:#65d39d;--blue:#7fa9ff;--warn:#ffb977}
+body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;min-height:100vh}
+.shell{width:min(1240px,calc(100% - 28px));margin:auto;padding:30px 0 80px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.top h1{font:700 clamp(32px,6vw,58px)/1 "Bai Jamjuree",sans-serif}
+.top p{max-width:740px;color:rgb(255 255 255/.65);margin-top:8px}
+.back{color:var(--gold);white-space:nowrap;font-size:13px}
+.tools{display:flex;gap:9px;align-items:end;flex-wrap:wrap;margin-top:24px;padding:14px;border:1px solid rgb(255 255 255/.12);border-radius:17px;background:rgb(255 255 255/.05)}
+.tools label{display:grid;gap:4px;font-size:11px;color:rgb(255 255 255/.58);font-weight:700}
+.tools input{min-height:42px;border:0;border-radius:10px;padding:8px 10px;font:inherit}
+.tools button{min-height:42px;border:1px solid rgb(255 255 255/.16);border-radius:10px;padding:8px 13px;background:rgb(255 255 255/.07);color:#fff;font-weight:700;cursor:pointer}
+.tools .primary{background:var(--gold);color:#172018;border-color:var(--gold)}
+.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;color:rgb(255 255 255/.48);font-size:12px}
+.loading,.error{padding:30px 0}.error{color:#ff9c93}
+.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-top:23px}
+.metric,.panel{border:1px solid rgb(255 255 255/.11);border-radius:17px;background:linear-gradient(145deg,rgb(255 255 255/.07),rgb(255 255 255/.035))}
+.metric{padding:17px}
+.metric span{display:block;color:rgb(255 255 255/.55);font-size:10px;font-weight:700;letter-spacing:.06em}
+.metric strong{display:block;margin-top:4px;font:700 clamp(24px,4vw,36px) "Bai Jamjuree",sans-serif}
+.metric small{display:block;color:var(--green);font-size:11px;margin-top:3px}
+.section{margin-top:38px}
+.head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:13px}
+.head h2{font:700 clamp(22px,4vw,31px) "Bai Jamjuree",sans-serif}
+.head p{max-width:640px;color:rgb(255 255 255/.52);font-size:12px}
+.panel{padding:17px;overflow:hidden}
+.muted{color:rgb(255 255 255/.45)}
+.alert{margin-top:13px;padding:14px 17px;border-left:3px solid var(--warn);background:rgb(255 185 119/.09);border-radius:0 13px 13px 0;font-size:13px}
+.alert b{color:var(--warn)}
+/* บันไดการ์ด: แต่ละแท่งคือ "มีกี่เครื่องที่เก็บได้อย่างน้อย n ใบ" */
+.ladder{display:flex;align-items:flex-end;gap:5px;min-height:208px;padding-top:22px;overflow-x:auto}
+.rung{flex:1;min-width:24px;display:grid;grid-template-rows:1fr auto auto;gap:6px;height:186px;justify-items:center}
+.rung .col{display:flex;align-items:flex-end;height:150px}
+.rung i{display:block;width:16px;min-height:2px;border-radius:5px 5px 1px 1px;background:var(--blue);position:relative}
+.rung.gate i{background:var(--gold)}
+.rung.full i{background:var(--green)}
+.rung i:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);padding:6px 9px;border-radius:7px;background:#fff;color:#172018;font-size:10px;font-weight:700;white-space:nowrap;z-index:4}
+.rung label{font-size:10px;color:rgb(255 255 255/.5)}
+.rung em{font-size:9px;font-style:normal;color:rgb(255 255 255/.32)}
+.legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:12px;color:rgb(255 255 255/.55);font-size:11px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--blue)}
+.dot.gate{background:var(--gold)}.dot.full{background:var(--green)}
+.funnel{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.step{padding:14px;border-radius:14px;background:rgb(255 255 255/.055);border:1px solid rgb(255 255 255/.1)}
+.step b{display:block;font:700 24px "Bai Jamjuree"}
+.step span{font-size:11px;color:rgb(255 255 255/.58)}
+.step small{display:block;margin-top:5px;font-size:11px;color:var(--warn)}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.card{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid rgb(255 255 255/.09);border-radius:12px;background:rgb(255 255 255/.035)}
+.card.zero{border-style:dashed;opacity:.62}
+.swatch{width:34px;height:34px;border-radius:9px}
+.card b{display:block}.card small{display:block;color:rgb(255 255 255/.45)}
+.card strong{font:700 18px "Bai Jamjuree"}
+.table-wrap{overflow:auto}
+.table{width:100%;border-collapse:collapse;min-width:560px;font-size:13px}
+.table th,.table td{padding:10px 9px;border-bottom:1px solid rgb(255 255 255/.08);text-align:right;white-space:nowrap}
+.table th:first-child,.table td:first-child{text-align:left}
+.table th{color:rgb(255 255 255/.48);font-size:10px}
+.note{margin-top:28px;padding:14px 17px;border-left:3px solid var(--gold);background:rgb(255 255 255/.04);color:rgb(255 255 255/.56);font-size:12px}
+@media(max-width:1000px){.metrics{grid-template-columns:repeat(3,1fr)}.funnel{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){.top{display:block}.back{display:inline-block;margin-top:12px}.cards{grid-template-columns:1fr}.head{display:block}.head p{margin-top:5px}.tools{align-items:stretch}.tools label{flex:1;min-width:130px}.metrics{grid-template-columns:1fr 1fr}.funnel{grid-template-columns:1fr 1fr}.rung{min-width:26px}}
+@media(max-width:430px){.shell{width:min(100% - 20px,1240px)}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top">
+<div>
+<p class="eyebrow">CORE7 · DEVELOPMENT LAB</p>
+<h1>Collection Stat</h1>
+<p>การ์ด FIRST HAND แต่ละใบถูกเปิดไปแล้วกี่เครื่อง และคนเลิกเก็บที่ใบที่เท่าไหร่ — ใช้หาจุดที่คนหลุด ไม่ใช่ดูว่าใบไหนดัง</p>
+</div>
+<a class="back" href="/core7/stat/">← Stat หลัก</a>
+</header>
+
+<section class="tools">
+<label>ตั้งแต่<input type="date" id="from"></label>
+<label>ถึง<input type="date" id="to"></label>
+<button data-days="1">วันนี้</button>
+<button data-days="7">7 วัน</button>
+<button data-days="30">30 วัน</button>
+<button data-days="365">1 ปี</button>
+<button id="refresh" class="primary">Refresh</button>
+<button id="csv">Export CSV</button>
+</section>
+<div class="meta"><span id="range"></span><span id="version"></span></div>
+
+<div id="state" class="loading">กำลังอ่านข้อมูล…</div>
+<div id="dashboard" hidden>
+
+<section class="metrics" id="metrics"></section>
+
+<section class="section">
+<div class="head">
+<div><p class="eyebrow">DROP-OFF</p><h2>คนหลุดที่ใบที่เท่าไหร่</h2></div>
+<p>แต่ละแท่งคือจำนวนเครื่องที่เก็บได้ <b>อย่างน้อย</b> n ใบ แท่งทองคือใบที่ 7 ซึ่งปลดล็อกโหมด SELECT แท่งเขียวคือเก็บครบทั้งชุด · ตัวเลขใต้แท่งคือ % ของคนที่มาถึงใบก่อนหน้าแล้วไปต่อได้อีกใบ</p>
+</div>
+<div class="panel">
+<div class="ladder" id="ladder"></div>
+<div class="legend"><span><i class="dot"></i>ปกติ</span><span><i class="dot gate"></i>ใบที่ 7 · ปลดล็อก SELECT</span><span><i class="dot full"></i>ครบชุด</span></div>
+</div>
+<div id="dropoff"></div>
+</section>
+
+<section class="section">
+<div class="head">
+<div><p class="eyebrow">FUNNEL</p><h2>จากเปิดเกมถึงการ์ดใบแรก</h2></div>
+<p>จำนวนเครื่องที่ผ่านแต่ละขั้น · ถ้าคนหลุดก่อนถึง CARD UNLOCK แปลว่าปัญหาอยู่ก่อนหน้าระบบสะสม ไม่ใช่ที่การ์ด</p>
+</div>
+<div class="funnel" id="funnel"></div>
+</section>
+
+<section class="section">
+<div class="head">
+<div><p class="eyebrow">PER CARD</p><h2>ใบไหนถูกเปิดไปกี่เครื่อง</h2></div>
+<p>ทุกใบครบ 28 รวมใบที่ยังไม่เคยถูกสุ่มออกมา (เส้นประ) · สุ่มแจกทีละใบไม่ซ้ำ ตัวเลขจึงควรใกล้เคียงกัน ถ้าเอียงมากแปลว่า RNG มีปัญหา</p>
+</div>
+<div class="cards" id="cards"></div>
+</section>
+
+<section class="section">
+<div class="head"><div><p class="eyebrow">DAILY</p><h2>การ์ดใหม่ถูกเปิดวันไหนบ้าง</h2></div></div>
+<div class="panel table-wrap">
+<table class="table"><thead><tr><th>วัน</th><th>การ์ดที่เปิดได้</th><th>เครื่องที่เปิด</th></tr></thead><tbody id="daily"></tbody></table>
+</div>
+</section>
+
+<aside class="note">นับด้วย Anonymous Installation ID แบบสุ่มในเครื่อง ไม่ใช่จำนวนคนจริง — เปลี่ยนเบราว์เซอร์หรือล้างข้อมูลคือคนละหัว ตัวเลขจึงเป็นขอบล่าง อ่านเป็นแนวโน้มได้ แต่อย่าอ่านเป็นจำนวนหัว · ไม่เก็บชื่อ อีเมล หรือ IP</aside>
+</div>
+</main>
+
+<script type="module">
+import { fetchCore7CollectionStats } from '/core7/js/analytics.js';
+import { COLOR_META } from '/core7/js/cards.js';
+const $=id=>document.getElementById(id), DAY=86400000;
+const fmt=n=>Number(n||0).toLocaleString('en-US');
+const pct=n=>`${Number(n||0).toFixed(1)}%`;
+const date=d=>new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
+const metric=(label,value,sub='')=>`<article class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></article>`;
+let current=null;
+
+function setDays(days){const now=new Date();$('to').value=now.toISOString().slice(0,10);$('from').value=new Date(now-DAY*(days-1)).toISOString().slice(0,10);load();}
+document.querySelectorAll('[data-days]').forEach(b=>b.onclick=()=>setDays(Number(b.dataset.days)));
+$('refresh').onclick=load;
+$('csv').onclick=()=>{
+ if(!current)return;
+ const rows=[['section','key','value','extra'],
+  ['totals','players',current.totals.players,''],
+  ['totals','unlocks',current.totals.unlocks,''],
+  ['totals','never_unlocked',current.totals.never_unlocked,''],
+  ...current.steps.map(s=>['ladder',s.owned,s.at_least,s.step_rate]),
+  ...current.cards.map(c=>['card',c.card_id,c.players,c.unlocks]),
+  ...(current.daily||[]).map(d=>['daily',d.day,d.unlocks,d.players])];
+ const csv=rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n');
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+ a.download=`core7-collection-${current.range.from}-${current.range.to}.csv`;
+ a.click();URL.revokeObjectURL(a.href);
+};
+
+/* สเกลแท่งเทียบกับใบแรกเสมอ ไม่ใช่ค่าสูงสุดของชุด เพราะบันไดนี้ลดลงทางเดียว
+   ใบแรกจึงเป็นเส้น 100% ที่อ่านง่ายที่สุด */
+function renderLadder(steps,gate,total){
+ const host=$('ladder'), H=148;
+ const base=steps[0]?.at_least||0;
+ if(!base){host.innerHTML='<div class="muted">ยังไม่มีใครเปิดการ์ดในช่วงนี้</div>';return}
+ host.innerHTML=steps.map(s=>{
+  const cls=s.owned===total?'full':(s.owned===gate?'gate':'');
+  const h=Math.max(2,Math.round((s.at_least/base)*H));
+  return `<div class="rung ${cls}"><div class="col"><i style="height:${h}px" data-tip="อย่างน้อย ${s.owned} ใบ · ${fmt(s.at_least)} เครื่อง (${pct(s.share)})"></i></div>`
+   +`<label>${s.owned}</label><em>${s.owned>1?pct(s.step_rate):'—'}</em></div>`;
+ }).join('');
+}
+
+async function load(){
+ $('state').hidden=false;$('state').className='loading';$('state').textContent='กำลังอ่านข้อมูล…';$('dashboard').hidden=true;
+ try{
+  current=await fetchCore7CollectionStats({from:$('from').value,to:$('to').value});
+  render(current);$('state').hidden=true;$('dashboard').hidden=false;
+ }catch(e){$('state').className='error';$('state').textContent=`อ่านข้อมูลไม่ได้: ${e.message}`}
+}
+
+function render(d){
+ const t=d.totals||{};
+ $('range').textContent=`${d.range.from} → ${d.range.to} · Asia/Bangkok`;
+ $('version').textContent=`Game ${d.gameVersion||'-'} · Analytics ${d.analyticsVersion||'-'} · Updated ${date(d.generatedAt)}`;
+ const gateStep=(d.steps||[]).find(s=>s.owned===d.selectUnlockAt);
+ $('metrics').innerHTML=[
+  metric('COLLECTORS',fmt(t.players),'เครื่องที่เปิดได้อย่างน้อย 1 ใบ'),
+  metric('CARDS UNLOCKED',fmt(t.unlocks),'ใบใหม่ที่ถูกเปิดรวม'),
+  metric('CARDS / COLLECTOR',Number(t.per_player||0).toFixed(2),`เต็มชุด ${d.totalCards} ใบ`),
+  metric('ถึงใบที่ '+d.selectUnlockAt,fmt(gateStep?.at_least||0),`${pct(gateStep?.share||0)} · ปลดล็อก SELECT`),
+  metric('ครบชุด',fmt(t.completed),`${d.totalCards}/${d.totalCards} ใบ`),
+  metric('ใบที่ยังไม่เคยออก',`${fmt(t.never_unlocked)}/${d.totalCards}`,t.never_unlocked?'ยังไม่เคยถูกสุ่มออกมา':'ออกครบทุกใบแล้ว'),
+ ].join('');
+
+ renderLadder(d.steps||[],d.selectUnlockAt,d.totalCards);
+ const w=d.dropoff;
+ $('dropoff').innerHTML=w&&w.lost>0
+  ? `<div class="alert"><b>หลุดหนักสุดที่ใบที่ ${w.owned}</b> — มี ${fmt(w.lost)} เครื่องที่เก็บได้ ${w.owned-1} ใบแล้วไม่ไปต่อ (ผ่านต่อแค่ ${pct(w.step_rate)})</div>`
+  : '';
+
+ const f=d.funnel||{};
+ const steps=[['CORE7_VIEW','เปิด CORE7'],['HAND_READY','ล็อกมือ'],['MATCH_START','เริ่ม Match'],['MATCH_COMPLETE','เล่นจบ'],['CARD_UNLOCK','ได้การ์ดใบแรก']];
+ $('funnel').innerHTML=steps.map(([k,l],i)=>{
+  const users=Number(f[k]||0);
+  const prev=i?Number(f[steps[i-1][0]]||0):0;
+  const lost=i&&prev>users?`หลุด ${fmt(prev-users)} เครื่อง`:'';
+  return `<div class="step"><b>${fmt(users)}</b><span>${l}</span>${lost?`<small>${lost}</small>`:''}</div>`;
+ }).join('');
+
+ $('cards').innerHTML=(d.cards||[]).map(c=>{
+  const m=COLOR_META[c.color]||COLOR_META.SILVER;
+  return `<article class="card${c.unlocks?'':' zero'}"><i class="swatch" style="background:${m.hex}"></i>`
+   +`<div><b>${c.no}. ${c.en}</b><small>${c.th} · ${fmt(c.players)} เครื่อง · ${pct(c.owner_rate)} ของคนที่เก็บ</small></div>`
+   +`<strong>${fmt(c.unlocks)}</strong></article>`;
+ }).join('');
+
+ $('daily').innerHTML=(d.daily||[]).map(r=>`<tr><td>${r.day}</td><td>${fmt(r.unlocks)}</td><td>${fmt(r.players)}</td></tr>`).join('')
+  ||'<tr><td colspan="3" class="muted">ยังไม่มีการ์ดใบใหม่ถูกเปิดในช่วงนี้</td></tr>';
+}
+
+setDays(30);
+</script>
+</body>
+</html>

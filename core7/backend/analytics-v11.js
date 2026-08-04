@@ -4,7 +4,7 @@ import {
   CARD_EVENTS_TABLE_SQL,
   CARD_EVENTS_INDEX_SQL,
 } from './analytics.js';
-import { colorOf } from '../js/cards.js';
+import { colorOf, FIRST_HAND } from '../js/cards.js';
 
 export const CORE7_ANALYTICS_VERSION = '1.2.0';
 export const CORE7_GAME_VERSION = '0.5';
@@ -490,4 +490,136 @@ export async function readMatchCounters(db) {
   const total = Number(row?.total || 0);
   const pvp = Number(row?.pvp || 0);
   return { ok: true, total, pvp, bot: Math.max(0, total - pvp) };
+}
+
+/* ── Collection Stat ──
+   คำถามที่หน้านี้ต้องตอบคือ "คนหลุดตอนไหน" ไม่ใช่ "การ์ดใบไหนดัง"
+   ตัวเลขต่อใบเป็นแค่เครื่องมือตรวจ RNG ส่วนของจริงคือ retention:
+   มีกี่เครื่องที่เก็บได้ 1 ใบแล้วหายไป กี่เครื่องที่ไปถึง 7 ใบ (ปลดล็อก SELECT)
+
+   นับด้วย install_id แบบสุ่มในเครื่อง ไม่ใช่คน — เปลี่ยนเบราว์เซอร์คือคนละหัว
+   ตัวเลขจึงเป็นขอบล่าง อ่านเป็นแนวโน้ม ไม่ใช่จำนวนหัวจริง
+
+   เติมการ์ดที่ยังไม่เคยถูกเปิดให้ครบ 28 ใบจากฝั่งนี้ ไม่ปล่อยให้หน้าเว็บเดาเอง
+   ใบที่ไม่เคยโผล่คือสัญญาณ ต้องเห็นเป็นศูนย์ ไม่ใช่หายไปจากตาราง */
+export async function readCollectionStats(db, params = {}) {
+  await ensureAnalyticsV11Schema(db);
+  const b = bounds(params);
+  const window = [b.start, b.end];
+
+  const [cardsRes, totalsRow, ladderRes, funnelRes, dailyRes] = await Promise.all([
+    db.prepare(`SELECT card_id, COUNT(*) unlocks, COUNT(DISTINCT install_id) players,
+      MIN(occurred_at) first_at, MAX(occurred_at) last_at
+      FROM c7_analytics_events
+      WHERE event_type='CARD_UNLOCK' AND card_id IS NOT NULL AND card_id <> ''
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY card_id`).bind(...window).all(),
+    db.prepare(`SELECT COUNT(*) unlocks, COUNT(DISTINCT install_id) players,
+      COUNT(DISTINCT card_id) distinct_cards
+      FROM c7_analytics_events
+      WHERE event_type='CARD_UNLOCK' AND occurred_at >= ? AND occurred_at < ?`).bind(...window).first(),
+    /* กี่เครื่องมีการ์ดกี่ใบ — ฐานของทั้งกราฟ drop-off */
+    db.prepare(`SELECT owned, COUNT(*) installs FROM (
+        SELECT install_id, COUNT(DISTINCT card_id) owned
+        FROM c7_analytics_events
+        WHERE event_type='CARD_UNLOCK' AND card_id IS NOT NULL AND card_id <> ''
+          AND occurred_at >= ? AND occurred_at < ?
+        GROUP BY install_id
+      ) GROUP BY owned ORDER BY owned`).bind(...window).all(),
+    /* ขั้นก่อนหน้าการ์ดใบแรก — คนหลุดก่อนได้ใบแรกก็ต้องเห็นด้วย */
+    db.prepare(`SELECT event_type, COUNT(DISTINCT install_id) users
+      FROM c7_analytics_events
+      WHERE event_type IN ('CORE7_VIEW','HAND_READY','MATCH_START','MATCH_COMPLETE','CARD_UNLOCK')
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY event_type`).bind(...window).all(),
+    db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day,
+      COUNT(*) unlocks, COUNT(DISTINCT install_id) players
+      FROM c7_analytics_events
+      WHERE event_type='CARD_UNLOCK' AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY day ORDER BY day`).bind(...window).all(),
+  ]);
+
+  const byId = new Map((cardsRes.results || []).map(r => [String(r.card_id), nums(r)]));
+  const players = Number(totalsRow?.players || 0);
+  const cards = FIRST_HAND.map(card => {
+    const row = byId.get(card.id) || {};
+    const cardPlayers = Number(row.players || 0);
+    return {
+      card_id: card.id,
+      no: card.no,
+      color: card.color,
+      en: card.en,
+      th: card.th,
+      unlocks: Number(row.unlocks || 0),
+      players: cardPlayers,
+      /* สัดส่วนของคนที่เก็บการ์ดอยู่ ไม่ใช่ของคนที่เข้าเว็บ — ตอบว่า
+         "ในบรรดาคนที่เริ่มเก็บแล้ว มีกี่ % ที่ได้ใบนี้" */
+      owner_rate: rate(cardPlayers, players),
+      first_at: Number(row.first_at || 0) || null,
+      last_at: Number(row.last_at || 0) || null,
+    };
+  });
+
+  /* เครื่องที่มีการ์ดอย่างน้อย n ใบ — ไล่จากท้ายมาหน้าเพื่อสะสมย้อนกลับ */
+  const ladderRows = (ladderRes.results || []).map(nums);
+  const exact = new Map(ladderRows.map(r => [Number(r.owned), Number(r.installs)]));
+  const steps = [];
+  let atLeast = 0;
+  for (let owned = FIRST_HAND.length; owned >= 1; owned -= 1) {
+    atLeast += exact.get(owned) || 0;
+    steps.unshift({
+      owned,
+      installs: exact.get(owned) || 0,
+      at_least: atLeast,
+      /* เทียบกับคนที่ได้ใบแรก = เส้น 100% ของกราฟ */
+      share: 0,
+      /* กี่ % ของคนที่มาถึงใบก่อนหน้า แล้วไปต่อได้อีกใบ */
+      step_rate: 0,
+    });
+  }
+  for (const step of steps) {
+    step.share = rate(step.at_least, players);
+    const prev = steps[step.owned - 2];
+    step.step_rate = prev ? rate(step.at_least, prev.at_least) : 100;
+  }
+
+  const funnel = Object.fromEntries(
+    (funnelRes.results || []).map(r => [String(r.event_type), Number(r.users || 0)]),
+  );
+
+  /* จุดที่คนหายเยอะที่สุด — ชี้ให้ดูก่อน ไม่ต้องไล่อ่านตารางเอง
+     ข้ามใบแรกเพราะ step_rate ของมันคือ 100 เสมอ ไม่ใช่ข้อมูล
+     ข้ามขั้นที่ at_least เป็นศูนย์ด้วย เพราะนั่นคือปลายบันไดที่ยังไม่มีใครไปถึง
+     ไม่ใช่รูรั่ว
+     เท่ากันให้เอาใบที่มาก่อน — อุดรูที่อยู่ต้นทางได้คนกลับมามากกว่า */
+  let worst = null;
+  for (const step of steps) {
+    if (step.owned < 2 || !step.at_least) continue;
+    const prev = steps[step.owned - 2];
+    const lost = (prev?.at_least || 0) - step.at_least;
+    if (!worst || lost > worst.lost) worst = { owned: step.owned, lost, step_rate: step.step_rate };
+  }
+
+  return {
+    ok: true,
+    range: { from: b.from, to: b.to },
+    generatedAt: Date.now(),
+    analyticsVersion: CORE7_ANALYTICS_VERSION,
+    gameVersion: CORE7_GAME_VERSION,
+    totalCards: FIRST_HAND.length,
+    selectUnlockAt: 7,
+    totals: {
+      unlocks: Number(totalsRow?.unlocks || 0),
+      players,
+      distinct_cards: Number(totalsRow?.distinct_cards || 0),
+      never_unlocked: cards.filter(c => !c.unlocks).length,
+      per_player: players ? Number((Number(totalsRow.unlocks) / players).toFixed(2)) : 0,
+      completed: exact.get(FIRST_HAND.length) || 0,
+    },
+    funnel,
+    steps,
+    dropoff: worst,
+    cards,
+    daily: (dailyRes.results || []).map(nums),
+  };
 }
