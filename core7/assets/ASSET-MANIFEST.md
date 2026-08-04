@@ -13,7 +13,7 @@ Frame, Character หรือภาพจำของ TCG แบรนด์อ�
 
 ## ลำดับ Canon ของระบบ
 
-- **RGBG:** Red, Green, Blue, Gray
+- **RGBS:** Red, Green, Blue, Silver
 - **Semantic order:** Body, Soul, Mind, Craft
 - **Victory cycle:** Red > Green > Blue > Red
 - **Primary campaign lockup:** `0% RNG · 100% DECISIONS`
@@ -22,7 +22,7 @@ Frame, Character หรือภาพจำของ TCG แบรนด์อ�
 
 | Asset | ฟังก์ชัน | ขนาดฐาน | การใช้งาน | สถานะ |
 |---|---|---|---|---|
-| โลโก้โคลเวอร์ 4 แฉกรูปหัวใจ Metallic (แดง-เขียว-ฟ้า-เทา ตามลำดับระบบ RGBG) | `cloverLogo(size)` | 100×100 viewBox | Nav, Card Back, Favicon | ✅ Final V1 |
+| โลโก้โคลเวอร์ 4 แฉกรูปหัวใจ Metallic (แดง-เขียว-ฟ้า-เงิน ตามลำดับระบบ RGBS) | `cloverLogo(size)` | 100×100 viewBox | Nav, Card Back, Favicon | ✅ Final V1 |
 | Wordmark `myClover · CORE7` | HTML + font stack | — | Nav ทุกหน้า | ✅ Final V1 |
 | หน้าการ์ด FIRST HAND 28 ใบ | `cardSVG(id)` + WebP | 300×420 (63:88) | Collection, Match, Print | ✅ ART v0.4 ภาพเต็มใบครบ 28 ใบ |
 | Generic Card 4 สี | `genericCardSVG(color)` + WebP | 300×420 | Guest ทุกโหมด | ✅ ART v0.4 ครบ 4 สี |

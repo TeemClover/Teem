@@ -13,7 +13,7 @@ myclover.com ไม่มี Build Step ไม่มี Dependency ภายน�
 - 🔴 RED = **BODY**
 - 🔵 BLUE = **MIND**
 - 🟢 GREEN = **SOUL**
-- ⚙️ GRAY = **CRAFT**
+- ⚙️ SILVER = **CRAFT** (คีย์ข้อมูลยังเป็น `GRAY`)
 
 `Body · Mind · Soul` คือสามมิติที่รวมเป็นตัวเรา และ `Craft` คือพลังแห่งการสร้างที่เปลี่ยนสิ่งภายในให้เกิดขึ้นจริง แกนนี้เป็น Lore/semantic layer ไม่ใช่ข้อมูลที่ผู้เล่นต้องจำเพื่อ Resolve เกม CORE7 Classic
 
@@ -22,7 +22,7 @@ myclover.com ไม่มี Build Step ไม่มี Dependency ภายน�
 | Landing / Rules TH-EN / Interactive Tutorial | ✅ |
 | Hand Builder — Guest (Generic 4 สี) + โหมด Collection (28 ใบ + Preset) | ✅ |
 | เล่นกับบอท 2 ระดับ (EASY / HARD) จบ Match จริง | ✅ |
-| Simultaneous Reveal + ทิ้งเพิ่ม + Tie Break ครบ (Final Gray, History, Draw) | ✅ |
+| Simultaneous Reveal + ทิ้งเพิ่ม + Tie Break ครบ (Final Silver, History, Draw) | ✅ |
 | Refresh / กลับเข้า Match เดิม (Snapshot restore) | ✅ |
 | Multiplayer ข้ามอุปกรณ์ + รหัส 4 หลัก + Public Lobby | ✅ โค้ดพร้อม; production ต้อง bind D1 ตาม `DEPLOY-v0.3.md` |
 | Quick / BO3 / BO5 + Starting Hand lock ตลอด Series | ✅ |

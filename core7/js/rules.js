@@ -3,7 +3,8 @@
    Pure functions เท่านั้น ห้ามมี UI / Network / Storage ในไฟล์นี้
 
    กติกาฉบับล็อก:
-   🔴 RED  > 🟢 GREEN > 🔵 BLUE > 🔴 RED   ⚙️ GRAY = เสมอทุกสี
+   🔴 RED  > 🟢 GREEN > 🔵 BLUE > 🔴 RED   ⚙️ SILVER = เสมอทุกสี
+   (คีย์ในข้อมูลยังเป็น GRAY เพราะถูกบันทึกลงฐานข้อมูลไปแล้ว)
    ผู้ชนะ Round เสีย 1 ใบ (ใบที่ลง) — ผู้แพ้เสีย 2 ใบ (ใบที่ลง + ทิ้งเพิ่ม 1)
    เสมอ: เสียคนละ 1 ใบ ไม่มี Round Win
 
@@ -28,8 +29,8 @@ export const MATCH_RESULT_TYPE = {
   LAST_ROUND: 'TIEBREAK_LAST_ROUND',  // หมดมือพร้อมกัน — รอบสุดท้ายชี้ขาด
   FINAL_GRAY: 'TIEBREAK_FINAL_GRAY',  // หมดมือพร้อมกัน — กฎ Final Gray
   HISTORY: 'TIEBREAK_HISTORY',        // หมดมือพร้อมกัน — ย้อนประวัติ
-  FEWER_GRAY: 'TIEBREAK_FEWER_GRAY',  // เสมอทุก Round — เทาเริ่มต้นน้อยกว่าชนะ
-  DRAW: 'DRAW',                       // เสมอทุก Round และเทาเริ่มต้นเท่ากัน
+  FEWER_GRAY: 'TIEBREAK_FEWER_GRAY',  // เสมอทุก Round — เงินเริ่มต้นน้อยกว่าชนะ
+  DRAW: 'DRAW',                       // เสมอทุก Round และเงินเริ่มต้นเท่ากัน
   FORFEIT: 'FORFEIT',
   DISCONNECT: 'DISCONNECT_LOSS',
 };

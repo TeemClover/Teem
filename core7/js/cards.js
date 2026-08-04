@@ -31,9 +31,12 @@ export const COLOR_META = {
     creed: 'ความคิดหยุดอารมณ์อยากได้',
     beats: 'RED', beatsTh: 'ชนะแดง',
   },
+  /* คีย์ยังเป็น GRAY เพราะถูกเก็บลง D1, localStorage และ snapshot ของแมตช์
+     ไปแล้ว เปลี่ยนเมื่อไหร่ข้อมูลเก่าอ่านไม่ออกทันที — ที่เปลี่ยนคือ "ชื่อที่คนเห็น"
+     RGBS = Red / Green / Blue / Silver */
   GRAY: {
     color: 'GRAY', emoji: '⚙️',
-    nameTh: 'เทา', nameEn: 'Gray',
+    nameTh: 'เงิน', nameEn: 'Silver',
     icon: 'gear', pattern: 'block',
     hex: '#6E7378', deep: '#43474C', soft: '#E4E6E8',
     creed: 'เครื่องมือช่วย Block และเปิดข้อมูล แต่ไม่ตัดสินชีวิตแทนเรา',
@@ -180,7 +183,7 @@ export const GENERIC_CARDS = [
   { id: 'gen-red', color: 'RED', en: 'Red', th: 'แดง', generic: true },
   { id: 'gen-blue', color: 'BLUE', en: 'Blue', th: 'ฟ้า', generic: true },
   { id: 'gen-green', color: 'GREEN', en: 'Green', th: 'เขียว', generic: true },
-  { id: 'gen-gray', color: 'GRAY', en: 'Gray', th: 'เทา', generic: true },
+  { id: 'gen-gray', color: 'GRAY', en: 'Silver', th: 'เงิน', generic: true },
 ];
 
 const BY_ID = new Map(

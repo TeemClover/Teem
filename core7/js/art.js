@@ -72,9 +72,20 @@ let uid = 0;
 const nid = p => `${p}${(++uid).toString(36)}`;
 
 /* ═══ โลโก้ myClover — โคลเวอร์ 4 แฉกรูปหัวใจ ═══
-   ใบเป็นหัวใจ ปลายชี้เข้ากลาง: แดงบนซ้าย ฟ้าบนขวา เขียวล่างซ้าย เทาล่างขวา
+   ใบเป็นหัวใจ ปลายชี้เข้ากลาง: แดงบนซ้าย ฟ้าบนขวา เขียวล่างซ้าย เงินล่างขวา
    ตามภาพต้นแบบของแบรนด์ (ใช้ทั้ง Nav, Favicon และหลังการ์ดทุกใบ) */
-export function cloverLogo(size = 64, { ring = true } = {}) {
+/* โลโก้ canon เป็นไฟล์ภาพไฟล์เดียวทั้งเว็บ — ที่ไหนต้องการโลโก้ ให้ใช้อันนี้
+   ส่วน cloverLogoVector ข้างล่างเก็บไว้เพราะฝังอยู่ใน SVG อื่น (<img> ใส่ใน
+   <svg> ไม่ได้) ตอนนี้เหลือแต่ legacyCardBackSVG ที่ยังเรียกใช้ */
+export const CLOVER_ICON = '/assets/myclover-icon.png';
+
+export function cloverLogo(size = 64) {
+  return `<img src="${CLOVER_ICON}" width="${size}" height="${size}" loading="lazy" decoding="async"`
+    + ` style="display:block;width:${size}px;height:${size}px"`
+    + ` alt="${t('โลโก้ myClover โคลเวอร์ 4 แฉกรูปหัวใจ 4 สี', 'myClover logo — a four-leaf clover of four coloured hearts')}">`;
+}
+
+function cloverLogoVector(size = 64, { ring = true } = {}) {
   const id = nid('cl');
   /* หัวใจ: ปลายอยู่ที่ origin ตัวใบชี้ขึ้น (-y) — หมุนเข้าตำแหน่งทีละใบ */
   const HEART = 'M0 0 C -20 -14 -30 -26 -30 -38 C -30 -50 -21 -57 -12 -57 ' +
@@ -121,7 +132,7 @@ export function colorIcon(color, size = 20) {
     BLUE: '<path d="M12 2.5 C10.2 5.5 5.8 9.6 5.8 14 A6.2 6.2 0 0 0 18.2 14 C18.2 9.6 13.8 5.5 12 2.5 Z M8.6 14.2 C8.8 16.3 10.1 17.4 12 17.7 C9.5 18.1 7.6 16.6 7.6 14.4 C7.6 13.2 8.1 12.2 8.8 11.2 C8.6 12.3 8.5 13.3 8.6 14.2 Z"/>',
     /* leaf — GREEN */
     GREEN: '<path d="M19 5 C11 5 5.6 9.4 5.6 15.6 C5.6 17 5.9 18.2 6.3 19 L8 17.4 C7.8 16.8 7.7 16.2 7.7 15.6 C7.7 10.8 12 7.3 19 7.1 C18.6 12.6 15.9 16.6 10.6 17.6 L9 19.1 C9.9 19.4 10.9 19.6 12 19.6 C17.1 19.6 20.8 15 21 5.2 Z M4 21 C7 17.8 10 14.8 14.5 11.5 C10.4 13.6 6.9 16.4 3.2 20.2 Z"/>',
-    /* gear — GRAY */
+    /* gear — SILVER (คีย์ข้อมูลยังเป็น GRAY) */
     GRAY: '<path d="M12 8.6 A3.4 3.4 0 1 0 12 15.4 A3.4 3.4 0 0 0 12 8.6 Z M12 10.6 A1.4 1.4 0 1 1 12 13.4 A1.4 1.4 0 0 1 12 10.6 Z M10.7 3 L10.3 5.4 C9.6 5.7 9 6 8.4 6.5 L6.1 5.7 L4.8 8 L6.6 9.5 C6.5 10.3 6.5 11 6.6 11.7 L4.8 13.2 L6.1 15.5 L8.4 14.7 C9 15.2 9.6 15.6 10.3 15.8 L10.7 18.2 H13.3 L13.7 15.8 C14.4 15.6 15 15.2 15.6 14.7 L17.9 15.5 L19.2 13.2 L17.4 11.7 C17.5 11 17.5 10.3 17.4 9.5 L19.2 8 L17.9 5.7 L15.6 6.5 C15 6 14.4 5.7 13.7 5.4 L13.3 3 Z" transform="translate(0 1.5)"/>',
   };
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor"
@@ -632,7 +643,7 @@ function legacyCardBackSVG({ width = 300 } = {}) {
     </g>
 
     <!-- ตราหัวใจโคลเวอร์ -->
-    <g transform="translate(78,113)">${cloverLogo(144, { ring: false })}</g>
+    <g transform="translate(78,113)">${cloverLogoVector(144, { ring: false })}</g>
 
     <!-- ชื่อการ์ด: myClover เท่านั้น -->
     <text x="150" y="352" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
@@ -681,7 +692,7 @@ export function colorCycleSVG(size = 300) {
       stroke="url(#${id}-au)" stroke-width="5" marker-end="url(#${id}-ah)"/>`;
   };
   return `<svg width="${size}" height="${size * 0.87}" viewBox="0 0 300 260" role="img"
-    aria-label="${t('วงสี: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเสมอทุกสี', 'Colour wheel: red beats green, green beats blue, blue beats red, gray ties with everything')}">
+    aria-label="${t('วงสี: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เงินเสมอทุกสี', 'Colour wheel: red beats green, green beats blue, blue beats red, silver ties with everything')}">
     <defs>
       <linearGradient id="${id}-au"
       gradientUnits="userSpaceOnUse"
@@ -701,7 +712,7 @@ export function colorCycleSVG(size = 300) {
         <circle r="32" fill="${C.GRAY.hex}" stroke="${BRAND.gold}" stroke-width="2"/>
         <g transform="translate(-12,-18)">${colorIcon('GRAY', 24)}</g>
         <text y="18" text-anchor="middle" font-family="'Bai Jamjuree',sans-serif"
-          font-size="11" font-weight="700" fill="#fff">GRAY = BLOCK</text>
+          font-size="11" font-weight="700" fill="#fff">SILVER = BLOCK</text>
       </g>
     </g>
   </svg>`;

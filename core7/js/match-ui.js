@@ -120,13 +120,13 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     attr('#rulesPopover', 'aria-label', t('กติกา CORE7', 'CORE7 rules'));
     attr('#rulesClose', 'aria-label', t('ปิด Rules', 'Close rules'));
     attr('#rulesImg', 'alt', t(
-      'แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ และ Final Gray',
-      'Red beats green, green beats blue, blue beats red, gray blocks. The loser discards one more. First to three round wins, plus the Final Gray rule.'));
+      'แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เงินเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ และ Final Silver',
+      'Red beats green, green beats blue, blue beats red, silver blocks. The loser discards one more. First to three round wins, plus the Final Silver rule.'));
     text('#rulesLine2', t('ผู้แพ้ทิ้งเพิ่ม 1 ใบ · ชนะครบ 3 รอบ', 'Loser discards 1 more · first to 3 rounds'));
     text('#rulesFull', t('อ่านกติกาเต็ม TH / EN ↗', 'Read the full rules TH / EN ↗'));
     attr('#ruleLine', 'aria-label', t(
-      'แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเป็นบล็อก',
-      'Red beats green, green beats blue, blue beats red, gray blocks'));
+      'แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เงินเป็นบล็อก',
+      'Red beats green, green beats blue, blue beats red, silver blocks'));
     attr('#historyAside', 'aria-label', t('Discard ทุกใบที่ออกแล้ว', 'Every card already played or discarded'));
     attr('#hand', 'aria-label', t('มือของคุณ', 'Your hand'));
   }
