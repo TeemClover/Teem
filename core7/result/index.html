@@ -70,6 +70,7 @@ import { MatchAuthority } from '/core7/js/engine.js';
 import { RemoteRooms } from '/core7/js/adapters.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
 import { COLORS } from '/core7/js/rules.js';
+import { t } from '/core7/js/i18n.js';
 import { cardSVG, cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 
@@ -111,20 +112,30 @@ if (!view || !view.result) {
 }
 const r = view.result;
 
+/* เหตุผลต้องเล่าจากมุมของคนอ่าน — เดิมเขียนไว้มุมผู้ชนะมุมเดียว
+   แพ้เพราะไพ่ตัวเองหมด แต่หน้าจอขึ้นว่า "อีกฝ่ายไม่มีการ์ดเหลือ" ซึ่งกลับหัว
+   [ตอนชนะ, ตอนแพ้] ถ้าเหตุผลไม่มีฝั่งก็ใช้ข้อความเดียวกันทั้งคู่ */
 const HOWTEXT = {
-  THREE_WINS: 'ชนะครบ 3 Round',
-  EXHAUSTION: 'อีกฝ่ายไม่มีการ์ดเหลือ',
-  TIEBREAK_LAST_ROUND: 'Tie Break — รอบสุดท้ายชี้ขาด',
-  TIEBREAK_FINAL_GRAY: 'Tie Break — กฎ Final Gray: เทาแพ้ใบสุดท้าย',
-  TIEBREAK_HISTORY: 'Tie Break — ย้อนประวัติรอบที่มีผู้ชนะ',
-  TIEBREAK_FEWER_GRAY: 'เสมอทุกตา — เปิดมือแล้ว ฝ่ายที่เริ่มด้วยเทาน้อยกว่าชนะ',
-  DRAW: 'เสมอทุกตาและจำนวนเทาเท่ากัน — ใจตรงกันพอดี',
-  FORFEIT: 'อีกฝ่ายยอมแพ้',
+  THREE_WINS:          [t('ชนะครบ 3 รอบ', 'Won 3 rounds'), t('อีกฝ่ายชนะครบ 3 รอบ', 'They won 3 rounds')],
+  EXHAUSTION:          [t('อีกฝ่ายไพ่หมดมือ', 'They ran out of cards'), t('คุณไพ่หมดมือ', 'You ran out of cards')],
+  TIEBREAK_LAST_ROUND: t('หมดมือพร้อมกัน — รอบสุดท้ายชี้ขาด', 'Both hands empty — last round decided it'),
+  TIEBREAK_FINAL_GRAY: t('⚙️ เป็นใบสุดท้าย เลยแพ้สี', 'Final Gray — ⚙️ loses as the last card'),
+  TIEBREAK_HISTORY:    t('หมดมือพร้อมกัน — ย้อนดูรอบที่มีผู้ชนะ', 'Both hands empty — traced back to a decided round'),
+  TIEBREAK_FEWER_GRAY: [t('เสมอทุกรอบ — คุณเริ่มด้วย ⚙️ น้อยกว่า', 'All rounds tied — you started with fewer ⚙️'),
+                        t('เสมอทุกรอบ — อีกฝ่ายเริ่มด้วย ⚙️ น้อยกว่า', 'All rounds tied — they started with fewer ⚙️')],
+  DRAW:                t('เสมอทุกรอบ และ ⚙️ เท่ากัน — ใจตรงกันพอดี', 'Every round tied, same ⚙️ count — perfectly in sync'),
+  FORFEIT:             [t('อีกฝ่ายยอมแพ้', 'They forfeited'), t('คุณยอมแพ้', 'You forfeited')],
+  DISCONNECT_LOSS:     [t('อีกฝ่ายหลุดจากห้อง', 'They disconnected'), t('คุณหลุดจากห้อง', 'You disconnected')],
+};
+const howText = (type, won) => {
+  const v = HOWTEXT[type];
+  if (!v) return '';
+  return Array.isArray(v) ? (won ? v[0] : v[1]) : v;
 };
 let title, sub;
-if (r.draw) { title = '🤝 DRAW'; sub = HOWTEXT.DRAW; }
-else if (r.youWon) { title = '🏆 YOU WIN'; sub = HOWTEXT[r.resultType] || ''; }
-else { title = 'YOU LOSE'; sub = HOWTEXT[r.resultType] || ''; }
+if (r.draw) { title = '🤝 DRAW'; sub = howText('DRAW', true); }
+else if (r.youWon) { title = '🏆 YOU WIN'; sub = howText(r.resultType, true); }
+else { title = 'YOU LOSE'; sub = howText(r.resultType, false); }
 /* MATCH ไม่มีคะแนน — ชนะ 3 รอบกับอีกฝ่ายมือหมดคือเรื่องเดียวกัน
    บอกแค่ว่าใครชนะพอ ส่วนคะแนนที่นับจริงมีแค่ SET เท่านั้น */
 const series = snap.series || null;

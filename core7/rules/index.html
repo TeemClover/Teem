@@ -9,9 +9,6 @@
 <link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
-.langsw{display:flex;gap:8px;margin:18px 0}
-.langsw button{border:1px solid rgb(var(--line)/.2);background:#fff;border-radius:999px;padding:9px 22px;font-weight:700;font-family:"Bai Jamjuree";min-height:44px}
-.langsw button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
 .rule-block{margin-bottom:14px}
 .rule-block h3{font-family:"Bai Jamjuree";margin-bottom:8px;font-size:18px}
 .rule-block ol,.rule-block ul{padding-left:22px;font-size:15px;display:flex;flex-direction:column;gap:5px}
@@ -27,12 +24,7 @@
   <div class="wrap-slim">
     <p class="eyebrow">Rules · CORE7_RULES_VERSION 1.1.0</p>
     <h2 class="disp">กติกา CORE7</h2>
-    <div class="langsw" role="group" aria-label="เลือกภาษา">
-      <button id="thBtn" aria-pressed="true">ภาษาไทย</button>
-      <button id="enBtn" aria-pressed="false">English</button>
-    </div>
-
-    <div id="th">
+    <div id="th" data-lang-block="th">
       <div class="panel rule-block">
         <h3>เกมนี้ใช้ข้อมูลบนการ์ดเพียงอย่างเดียว: สี</h3>
         <p style="font-size:15px">ใช้การ์ดอะไรก็ได้ — การ์ดของเรา กระดาษสี หรือการ์ดจากเกมอื่นใส่ซองสี
@@ -80,11 +72,12 @@
       <div class="panel rule-block">
         <h3>Tie Break (เมื่อหมดมือพร้อมกัน)</h3>
         <ol>
-          <li>รอบสุดท้ายมีผู้ชนะตามวงสี → ผู้ชนะรอบนั้นชนะ Match</li>
-          <li><b>กฎ Final Gray:</b> ถ้าเป็นใบสุดท้ายของทั้งคู่ สีเทา<b>แพ้</b>ทุกสีที่ไม่ใช่เทา
-</li>
-          <li>รอบสุดท้ายสีเดียวกัน (รวมเทา vs เทา) → ย้อนดูประวัติจากรอบล่าสุดไปเก่าสุด
-            ข้ามรอบเสมอ — ใครชนะรอบแรกที่พบ คนนั้นชนะ Match</li>
+          <li>รอบสุดท้ายมีผู้ชนะตามวงสี → คนนั้นชนะ</li>
+          <li><b>Final Gray:</b> ถ้าเป็นใบสุดท้ายของทั้งคู่ ⚙️ <b>แพ้</b>ทุกสี</li>
+          <li>รอบสุดท้ายสีเดียวกัน (รวม ⚙️ ชน ⚙️) → ย้อนดูจากรอบล่าสุดไปเก่าสุด
+            ข้ามรอบที่เสมอ ใครชนะรอบแรกที่เจอ คนนั้นชนะ</li>
+          <li>ถ้าย้อนแล้วไม่มีรอบไหนตัดสินเลย → ใครมี ⚙️ ในมือ 7 ใบเริ่มต้นน้อยกว่า คนนั้นชนะ</li>
+          <li>⚙️ เริ่มต้นเท่ากันอีก → เสมอ ถือว่าดวงสมพงษ์ ใจตรงกัน</li>
         </ol>
       </div>
 
@@ -98,7 +91,7 @@
       </div>
     </div>
 
-    <div id="en" hidden>
+    <div id="en" data-lang-block="en" hidden>
       <div class="panel rule-block">
         <h3>The only information a card carries is its color</h3>
         <p style="font-size:15px">You never need to buy our cards to play CORE7.
@@ -144,10 +137,11 @@
         <h3>Tiebreaker (both hands empty)</h3>
         <ol>
           <li>If the final round had a normal color winner → they win the match.</li>
-          <li><b>Final Gray rule:</b> if it is both players' last card, GRAY <b>loses</b> to every
-            non-gray color — a tool can buy time, but it cannot choose the final victory for you.</li>
-          <li>Same color in the final round (including gray vs gray) → walk back through the round
-            history, newest to oldest, skipping ties. First decisive round wins the match.</li>
+          <li><b>Final Gray:</b> if it is both players' last card, ⚙️ <b>loses</b> to every color.</li>
+          <li>Same color in the final round (including ⚙️ vs ⚙️) → walk back from the newest round
+            to the oldest, skipping ties. The first decided round wins.</li>
+          <li>If no round decides it → whoever started with fewer ⚙️ in their seven wins.</li>
+          <li>Same number of ⚙️ too → a draw. Two minds landed on exactly the same play.</li>
         </ol>
       </div>
       <div class="panel rule-block">
@@ -169,15 +163,8 @@
 <script type="module">
 import { renderShell } from '/core7/js/ui.js';
 renderShell({ active: 'rules' });
-const th = document.getElementById('th'), en = document.getElementById('en');
-const thBtn = document.getElementById('thBtn'), enBtn = document.getElementById('enBtn');
-function sw(lang) {
-  th.hidden = lang !== 'th'; en.hidden = lang !== 'en';
-  thBtn.setAttribute('aria-pressed', lang === 'th');
-  enBtn.setAttribute('aria-pressed', lang === 'en');
-}
-thBtn.addEventListener('click', () => sw('th'));
-enBtn.addEventListener('click', () => sw('en'));
+/* ภาษาคุมจากปุ่มกลางบนหัวเว็บที่เดียว หน้านี้ไม่มีปุ่มของตัวเองแล้ว
+   สองก้อนนี้สลับด้วย data-lang-block ที่ i18n จัดการให้อยู่แล้ว */
 </script>
 </body>
 </html>
