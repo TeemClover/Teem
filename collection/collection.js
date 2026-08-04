@@ -72,7 +72,7 @@ item({id:'card',kind:'PROOF SAVED',name:'การ์ดประจำตัว
 groups.push({id:'badges',eyebrow:'BADGES & SECRET ROUTE',title:'ตราและของที่พบระหว่างทาง',desc:'บางชิ้นบอกเงื่อนไขตรง ๆ บางชิ้นจะไม่เปิดเผยชื่อจนกว่าคุณจะพบเอง',items:[
 item({id:'blacksmith',kind:'SIGIL',name:'ช่างตีเหล็ก',icon:'⚒️',on:forgeDone||hasTitle('BLACKSMITH'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../forge/',image:'../forge/img/07-thumb.webp?v=20260802-sigil'}),
 item({id:'awakened',kind:'SIGIL',name:'ผู้ตื่นรู้',icon:'🌅',on:ch7Done,hint:'ผ่านบทที่ 7 · ด่านบอส',go:'../classroom/awaken/',image:'../img/og-awaken.jpg'}),
-item({id:'hero',kind:'SIGIL',name:'ฮีโร่',icon:'⚔️',on:hasTitle('HERO'),hint:'ปลดรหัสจาก Guild X',go:'../card/',image:'../img/og-card.jpg'}),
+item({id:'hero',kind:'SIGIL · GUILD X',name:'ฮีโร่',icon:'⚔️',on:hasTitle('HERO'),hint:'ปลดรหัส HERO จาก Guild X',go:'../guild/',image:'../img/achievement-hero-guild-x.jpg'}),
 item({id:'seeker',kind:'TITLE',name:'ผู้ค้นพบ',icon:'🔍',on:raw('mc_seek_hit','')==='1'||hasTitle('SEEKER'),hint:'พบโคลเวอร์ที่ซ่อนอยู่ท้ายหน้า Hall',go:'../hall.html',image:'../img/achievement-seeker.webp'}),
 item({id:'notebook-found',kind:'SECRET',name:'สมุดที่หายไป',lockedName:'???',icon:'📔',on:raw('mc_nb_seen','')==='1'||raw('mc_nb_restored','')==='1'||raw('mc_secret_end','')==='1',hint:'พบเส้นทางลับด้วยตัวเอง',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-01.jpg',secret:true}),
 item({id:'notebook-restored',kind:'SECRET',name:'สมุดที่ซ่อมแล้ว',lockedName:'???',icon:'📓',on:raw('mc_nb_restored','')==='1',hint:'ใช้ RESTORE ซ่อมหน้าที่เสียหาย',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-02.jpg',secret:true}),
