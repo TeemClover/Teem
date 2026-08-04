@@ -29,14 +29,14 @@ renderShell({ minimal: true });
 const code = (pathSegment('room') || '').trim();
 const lobby = document.getElementById('lobby');
 if (!/^\d{4}$/.test(code)) {
-  lobby.innerHTML = '<h2 class="disp">รหัสห้องไม่ถูกต้อง</h2><a class="btn btn-gold" href="/core7/join/" data-en="Back to Lobby">กลับไป Lobby</a>';
+  lobby.innerHTML = `<h2 class="disp">${t('รหัสห้องไม่ถูกต้อง', 'Invalid room code')}</h2><a class="btn btn-gold" href="/core7/join/" data-en="Back to Lobby">กลับไป Lobby</a>`;
   throw new Error('INVALID_ROOM_CODE');
 }
-document.getElementById('codeShow').textContent = code; document.title = `ห้อง ${code} — myClover: CORE7`;
+document.getElementById('codeShow').textContent = code; document.title = t(`ห้อง ${code} — myClover: CORE7`, `Room ${code} — myClover: CORE7`);
 const api = new RemoteRooms(); let session;
 try { session = api.session(code); }
 catch {
-  lobby.innerHTML = '<h2 class="disp">ไม่พบ session ของห้องนี้</h2><p data-en="Join from the Public Lobby, or enter the code again.">เข้าห้องผ่าน Public Lobby หรือใส่รหัสใหม่อีกครั้ง</p><a class="btn btn-gold" style="margin-top:14px" href="/core7/join/" data-en="Go to Join">ไปหน้า Join</a>';
+  lobby.innerHTML = `<h2 class="disp">${t('ไม่พบ session ของห้องนี้', 'No session found for this room')}</h2><p data-en="Join from the Public Lobby, or enter the code again.">เข้าห้องผ่าน Public Lobby หรือใส่รหัสใหม่อีกครั้ง</p><a class="btn btn-gold" style="margin-top:14px" href="/core7/join/" data-en="Go to Join">ไปหน้า Join</a>`;
   throw new Error('ROOM_SESSION_NOT_FOUND');
 }
 
@@ -46,8 +46,8 @@ let mountedMatchId = null; let lastOpponent = null;
 
 function seatRow(name, sub, ready) {
   return el('div', { class:'lobby-seat' }, el('span', { class:'avatar' }, name ? name[0].toUpperCase() : '?'),
-    el('div', {}, el('b', {}, name || 'รอผู้เล่น…'), el('div', { style:'font-size:12.5px;color:rgb(var(--muted))' }, sub)),
-    el('span', { class:`st tag${ready ? '' : ' tag-soon'}` }, ready ? '✓ พร้อม' : 'ยังไม่พร้อม'));
+    el('div', {}, el('b', {}, name || t('รอผู้เล่น…', 'Waiting for a player…')), el('div', { style:'font-size:12.5px;color:rgb(var(--muted))' }, sub)),
+    el('span', { class:`st tag${ready ? '' : ' tag-soon'}` }, ready ? t('✓ พร้อม', '✓ Ready') : t('ยังไม่พร้อม', 'Not ready')));
 }
 
 function showLobby() { lobbyWrap.hidden = false; matchEl.hidden = true; }
@@ -66,23 +66,25 @@ function copyActions() {
 
 async function sendHand(cards) {
   try {
-    await session.setHand(cards); playSfx('lock'); toast('ล็อก Starting Hand แล้ว');
+    await session.setHand(cards); playSfx('lock'); toast(t('ล็อก Starting Hand แล้ว', 'Starting Hand locked'));
     reportFunnelEvent('HAND_READY', { matchId:`room-${code}-hand`, mode:session.state?.room?.mode, once:true }).catch(() => {});
   }
-  catch (error) { playSfx('error'); toast(`ส่งมือไม่ได้: ${error.code || 'NETWORK_ERROR'}`); }
+  catch (error) { playSfx('error'); toast(t(`ส่งมือไม่ได้: ${error.code || 'NETWORK_ERROR'}`, `Could not send your hand: ${error.code || 'NETWORK_ERROR'}`)); }
 }
 
 function renderWaiting(data) {
   showLobby(); mountedMatchId = null; content.innerHTML = ''; actions.innerHTML = '';
   const r = data.room; document.getElementById('modeLine').textContent = `${r.modeLabel} · ${r.visibility === 'public' ? 'Public Lobby' : 'Unlisted'} · Online`;
-  content.append(seatRow(r.you.name, 'คุณ · ฝั่งซ้ายบนเครื่องนี้', r.you.ready), seatRow(r.opponent?.name, 'คู่แข่ง', r.opponent?.ready));
+  content.append(seatRow(r.you.name, t('คุณ · ฝั่งซ้ายบนเครื่องนี้', 'You · left side on this device'), r.you.ready), seatRow(r.opponent?.name, t('คู่แข่ง', 'Opponent'), r.opponent?.ready));
   copyActions();
   if (!r.you.ready) {
-    actions.append(el('a', { class:'btn btn-gold', href:`/core7/hand/?next=room&code=${code}` }, '🃏 เลือกมือ 7 ใบ'));
+    actions.append(el('a', { class:'btn btn-gold', href:`/core7/hand/?next=room&code=${code}` }, t('🃏 เลือกมือ 7 ใบ', '🃏 Pick your 7 cards')));
     const saved = store.getHand();
-    if (saved?.length === 7) { const use = el('button', { class:'btn' }, '⚡ ใช้มือชุดล่าสุด'); use.addEventListener('click', () => sendHand(saved)); actions.append(use); }
+    if (saved?.length === 7) { const use = el('button', { class:'btn' }, t('⚡ ใช้มือชุดล่าสุด', '⚡ Reuse last hand')); use.addEventListener('click', () => sendHand(saved)); actions.append(use); }
   }
-  status.textContent = !r.opponent ? 'รอผู้เล่นคนที่สอง — ห้องจะหมดอายุหากไม่มี activity' : (r.you.ready ? 'พร้อมแล้ว — รออีกฝ่ายล็อกมือ' : 'เลือก Starting Hand ให้ครบ 7 ใบ');
+  status.textContent = !r.opponent
+    ? t('รอผู้เล่นคนที่สอง — ห้องจะหมดอายุหากไม่มี activity', 'Waiting for a second player — the room expires if nothing happens')
+    : (r.you.ready ? t('พร้อมแล้ว — รออีกฝ่ายล็อกมือ', 'Ready — waiting for them to lock a hand') : t('เลือก Starting Hand ให้ครบ 7 ใบ', 'Pick all 7 Starting Hand cards'));
 }
 
 function startMatch(data) {
@@ -130,7 +132,7 @@ function chip(card, discard = false) {
 
 function sideSummary(title, stats) {
   const box = el('div', { class:'summary-side' }, el('h3', { class:'disp' }, title));
-  box.append(el('p', { style:'font-size:13px;margin:8px 0' }, `แดง ${stats.colors.RED} · น้ำเงิน ${stats.colors.BLUE} · เขียว ${stats.colors.GREEN} · เทา ${stats.colors.GRAY}`));
+  box.append(el('p', { style:'font-size:13px;margin:8px 0' }, `🔴 ${stats.colors.RED} · 🟢 ${stats.colors.GREEN} · 🔵 ${stats.colors.BLUE} · ⚙️ ${stats.colors.GRAY}`));
   const played = el('div', {}, el('b', { style:'font-size:12px' }, 'PLAYED ')); stats.played.forEach(c => played.append(chip(c)));
   const discarded = el('div', { style:'margin-top:8px' }, el('b', { style:'font-size:12px' }, 'DISCARDED '));
   if (stats.discarded.length) stats.discarded.forEach(c => discarded.append(chip(c, true))); else discarded.append('—');
@@ -143,30 +145,32 @@ function renderSummary(data) {
   const latest = data.matches[data.matches.length - 1];
   if (latest) {
     content.append(el('h3', { class:'disp' }, `Match ${latest.number} Summary`));
-    const grid = el('div', { class:'summary-grid' }); grid.append(sideSummary(`${r.you.name} (คุณ)`, countSide(latest.rounds, 'you')), sideSummary(r.opponent.name, countSide(latest.rounds, 'opp'))); content.append(grid);
+    const grid = el('div', { class:'summary-grid' }); grid.append(sideSummary(`${r.you.name} ${t('(คุณ)', '(you)')}`, countSide(latest.rounds, 'you')), sideSummary(r.opponent.name, countSide(latest.rounds, 'opp'))); content.append(grid);
   }
   if (r.seriesEnded) {
     content.prepend(el('h2', { class:'disp', style:'text-align:center' }, r.youWonSeries ? '🏆 YOU WIN' : 'YOU LOSE'));
     if (data.startingHands) {
-      const hands = el('div', { class:'match-block' }, el('h3', { class:'disp' }, 'Starting Hands — เปิดเผยหลังจบโหมด'));
+      const hands = el('div', { class:'match-block' }, el('h3', { class:'disp' }, t('Starting Hands — เปิดเผยหลังจบโหมด', 'Starting Hands — revealed once the mode ends')));
       const grid = el('div', { class:'summary-grid' });
-      for (const [key, title] of [['you', `${r.you.name} (คุณ)`], ['opponent', r.opponent.name]]) {
+      for (const [key, title] of [['you', `${r.you.name} ${t('(คุณ)', '(you)')}`], ['opponent', r.opponent.name]]) {
         const cards = data.startingHands[key].map(id => ({ cardId:id, color:cardById(id).color }));
         grid.append(sideSummary(title, { colors:cards.reduce((a,c)=>(a[c.color]++,a),{RED:0,GREEN:0,BLUE:0,GRAY:0}), played:cards, discarded:[] }));
       }
       hands.append(grid); content.append(hands);
     }
-    actions.append(el('a', { class:'btn btn-gold', href:'/core7/create/' }, 'สร้างห้องใหม่'), el('a', { class:'btn', href:'/core7/join/' }, 'กลับ Public Lobby'));
-    status.textContent = `จบ ${r.modeLabel} · Starting Hand ถูกเปิดเผยแล้ว`;
+    actions.append(el('a', { class:'btn btn-gold', href:'/core7/create/' }, t('สร้างห้องใหม่', 'Create a new room')), el('a', { class:'btn', href:'/core7/join/' }, t('กลับ Public Lobby', 'Back to Public Lobby')));
+    status.textContent = t(`จบ ${r.modeLabel} · Starting Hand ถูกเปิดเผยแล้ว`, `${r.modeLabel} finished · Starting Hands revealed`);
   } else {
-    const ready = el('button', { class:'btn btn-gold' }, r.you.nextReady ? '✓ พร้อมแล้ว' : 'เล่นรอบต่อไป'); ready.disabled = r.you.nextReady;
+    const ready = el('button', { class:'btn btn-gold' }, r.you.nextReady ? t('✓ พร้อมแล้ว', '✓ Ready') : t('เล่นรอบต่อไป', 'Play the next round')); ready.disabled = r.you.nextReady;
     ready.addEventListener('click', async () => {
       try {
         reportFunnelEvent('REMATCH', { matchId:`online-${code}-after-${latest?.number || 0}`, mode:r.mode, once:true }).catch(() => {});
         await session.readyNext();
-      } catch (e) { toast(`กดพร้อมไม่ได้: ${e.code}`); }
+      } catch (e) { toast(t(`กดพร้อมไม่ได้: ${e.code}`, `Could not ready up: ${e.code}`)); }
     }); actions.append(ready);
-    status.textContent = r.you.nextReady ? 'รอคู่แข่ง — ใช้มือเดิม' : `${r.modeLabel} ยังไม่จบ — ใช้มือเดิม`;
+    status.textContent = r.you.nextReady
+      ? t('รอคู่แข่ง — ใช้มือเดิม', 'Waiting for them — same hand')
+      : t(`${r.modeLabel} ยังไม่จบ — ใช้มือเดิม`, `${r.modeLabel} is not over — same hand`);
   }
 }
 

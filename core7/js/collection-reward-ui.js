@@ -96,7 +96,7 @@ function showReward(reward, { isSet = false } = {}) {
   overlay.innerHTML = `
     <section class="c7-reward__panel">
       <div class="c7-reward__visual">
-        <button class="c7-reward__flip" type="button" data-flip aria-label="พลิกเพื่อเปิดการ์ดใหม่" aria-pressed="false">
+        <button class="c7-reward__flip" type="button" data-flip aria-label="${t('พลิกเพื่อเปิดการ์ดใหม่', 'Flip to reveal your new card')}" aria-pressed="false">
           <span class="c7-reward__flip-inner">
             <span class="c7-reward__face c7-reward__face--back">${cardBackSVG({ width: 280 })}</span>
             <span class="c7-reward__face c7-reward__face--front">${cardSVG(card.id, { width: 280 })}</span>
@@ -105,16 +105,16 @@ function showReward(reward, { isSet = false } = {}) {
       </div>
       <div class="c7-reward__copy" aria-live="polite">
         <span class="c7-reward__eyebrow">YOU GOT A NEW CARD</span>
-        <h2 id="c7RewardTitle" data-title>คุณได้รับการ์ดใบใหม่</h2>
-        <p class="c7-reward__hint" data-hint>แตะการ์ดเพื่อเปิด</p>
+        <h2 id="c7RewardTitle" data-title>${t('คุณได้รับการ์ดใบใหม่', 'You got a new card')}</h2>
+        <p class="c7-reward__hint" data-hint>${t('แตะการ์ดเพื่อเปิด', 'Tap the card to reveal')}</p>
         <div data-reveal hidden>
-          <div class="c7-reward__name">${meta.emoji} ${card.th}</div>
+          <div class="c7-reward__name">${meta.emoji} ${card.en}</div>
           <div class="c7-reward__meter"><span>FIRST HAND</span><b>${reward.count}/${TOTAL_COLLECTION_CARDS}</b></div>
-          ${reward.selectModeJustUnlocked ? `<div class="c7-reward__unlock">🔓 SELECT HAND UNLOCKED · คุณปลดล็อก FIRST HAND ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบแล้ว</div>` : ''}
-          ${continueSet ? '<div class="c7-reward__set-note">แต่ละคนอาจได้การ์ดไม่เหมือนกัน — ลองแชร์กันว่าได้ใบอะไร แล้วปิดหน้าต่างนี้เพื่อกดพร้อมเล่น Match ต่อไป</div>' : ''}
+          ${reward.selectModeJustUnlocked ? `<div class="c7-reward__unlock">${t(`🔓 SELECT HAND UNLOCKED · คุณปลดล็อก FIRST HAND ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบแล้ว`, `🔓 SELECT HAND UNLOCKED · you now own ${SELECT_MODE_UNLOCK_COUNT} FIRST HAND cards`)}</div>` : ''}
+          ${continueSet ? `<div class="c7-reward__set-note">${t('แต่ละคนอาจได้การ์ดไม่เหมือนกัน — ลองแชร์กันว่าได้ใบอะไร แล้วปิดหน้าต่างนี้เพื่อกดพร้อมเล่น Match ต่อไป', 'You each may get a different card — compare, then close this to ready up for the next Match.')}</div>` : ''}
           <div class="c7-reward__actions">
-            <button class="c7-reward__btn c7-reward__btn--gold" type="button" data-close>${continueSet ? 'ปิด · กลับไปกดพร้อม' : 'รับการ์ด'}</button>
-            ${continueSet ? '' : '<a class="c7-reward__btn" href="/core7/collection/">ดู Collection</a>'}
+            <button class="c7-reward__btn c7-reward__btn--gold" type="button" data-close>${continueSet ? t('ปิด · กลับไปกดพร้อม', 'Close · back to ready up') : t('รับการ์ด', 'Take the card')}</button>
+            ${continueSet ? '' : `<a class="c7-reward__btn" href="/core7/collection/">${t('ดู Collection', 'View Collection')}</a>`}
           </div>
         </div>
       </div>
@@ -141,12 +141,12 @@ function showReward(reward, { isSet = false } = {}) {
     overlay.dataset.revealed = 'true';
     flip.classList.add('is-flipped');
     flip.setAttribute('aria-pressed', 'true');
-    flip.setAttribute('aria-label', `การ์ด ${card.en} ${card.th}`);
+    flip.setAttribute('aria-label', t(`การ์ด ${card.en} ${card.th}`, `Card ${card.en}`));
     playCardFlip(false);
     window.setTimeout(() => playSfx('reveal'), reducedMotion ? 0 : 250);
 
     const revealDetails = () => {
-      title.textContent = `คุณได้รับ “${card.en}”`;
+      title.textContent = t(`คุณได้รับ “${card.en}”`, `You got “${card.en}”`);
       hint.hidden = true;
       flavor.hidden = false;
       revealContent.hidden = false;

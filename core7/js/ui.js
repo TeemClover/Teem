@@ -5,7 +5,7 @@
 import { cloverLogo } from './art.js';
 import { isMuted, toggleMuted } from './audio.js';
 import { reportCore7View, CORE7_GAME_VERSION } from './analytics.js';
-import { applyLang, getLang, setLang } from './i18n.js';
+import { applyLang, getLang, setLang, t } from './i18n.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -41,7 +41,7 @@ export function renderShell({ active = '', minimal = false } = {}) {
   if (nav) {
     nav.innerHTML = `
       <div class="wrap bar">
-        <a class="logo" href="${logoHref}" aria-label="${onCore7Home ? 'กลับหน้าแรก myClover' : 'กลับหน้าแรก CORE7'}">
+        <a class="logo" href="${logoHref}" aria-label="${onCore7Home ? 'กลับหน้าแรก myClover' : 'กลับหน้าแรก CORE7'}" data-en-attr="aria-label:${onCore7Home ? 'Back to the myClover home page' : 'Back to the CORE7 home page'}">
           ${cloverLogo(30)}
           <span>my<em>Clover</em>&thinsp;· CORE7</span>
         </a>
@@ -79,7 +79,10 @@ export function renderShell({ active = '', minimal = false } = {}) {
 
     const sound = $('#c7Sfx');
     if (sound) {
-      const sync = () => { sound.textContent = isMuted() ? '🔇' : '🔊'; sound.title = isMuted() ? 'เปิดเสียง' : 'ปิดเสียง'; };
+      const sync = () => {
+        sound.textContent = isMuted() ? '🔇' : '🔊';
+        sound.title = isMuted() ? t('เปิดเสียง', 'Turn sound on') : t('ปิดเสียง', 'Turn sound off');
+      };
       sync();
       sound.addEventListener('click', () => { toggleMuted(); sync(); });
       window.addEventListener('core7:mute', sync, { once: true });
@@ -90,12 +93,12 @@ export function renderShell({ active = '', minimal = false } = {}) {
     foot.innerHTML = `
       <div class="wrap cols">
         <div>
-          <strong class="disp">myClover: CORE7 <small>v${CORE7_GAME_VERSION}</small></strong> — 7 ใบ ไม่มีเด็ค ไม่มีดวง<br>
-          เล่นฟรีด้วยการ์ดอะไรก็ได้ · <a href="/core7/open-play/">Open Play</a> · <a href="/core7/about/">เรื่องของเกมนี้</a>
+          <strong class="disp">myClover: CORE7 <small>v${CORE7_GAME_VERSION}</small></strong> <span data-en="— 7 cards. No deck. No luck.">— 7 ใบ ไม่มีเด็ค ไม่มีดวง</span><br>
+          <span data-en="Free to play with any cards">เล่นฟรีด้วยการ์ดอะไรก็ได้</span> · <a href="/core7/open-play/">Open Play</a> · <a href="/core7/about/" data-en="The story behind it">เรื่องของเกมนี้</a>
         </div>
         <div>
-          <a href="/core7/rules/">กติกา</a> · <a href="/core7/print/">Print</a> ·
-          <a href="/">กลับบ้าน myclover</a>
+          <a href="/core7/rules/" data-en="Rules">กติกา</a> · <a href="/core7/print/">Print</a> ·
+          <a href="/" data-en="Back to myclover">กลับบ้าน myclover</a>
         </div>
       </div>`;
   }

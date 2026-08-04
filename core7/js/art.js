@@ -11,6 +11,9 @@
    ═══════════════════════════════════════════════════════════════ */
 
 import { COLOR_META, cardById } from './cards.js';
+/* aria-label ของ SVG ถูกฝังตอนสร้าง string — หน้าไหนสลับภาษาแล้ววาดใหม่
+   จะได้ภาษาใหม่เอง ส่วนที่ไม่วาดใหม่ก็ยังอ่านออกอยู่ดี ไม่คุ้มจะไล่ patch */
+import { t } from './i18n.js';
 
 export const CORE7_ART_VERSION = '0.5';
 
@@ -89,7 +92,7 @@ export function cloverLogo(size = 64, { ring = true } = {}) {
     </radialGradient>`;
   const C = COLOR_META;
   return `<svg width="${size}" height="${size}" viewBox="0 0 100 100" role="img"
-    aria-label="โลโก้ myClover โคลเวอร์ 4 แฉกรูปหัวใจ 4 สี">
+    aria-label="${t('โลโก้ myClover โคลเวอร์ 4 แฉกรูปหัวใจ 4 สี', 'myClover logo — a four-leaf clover of four coloured hearts')}">
     <defs>
       <linearGradient id="${id}-au" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stop-color="${BRAND.goldLight}"/>
@@ -511,7 +514,7 @@ function fullBleedCardSVG(card, artHref, { width = 300, showNumber = true, gener
     : `FIRST HAND · ${String(card.no).padStart(2, '0')} / 28`;
 
   return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420" data-art-version="${CORE7_ART_VERSION}"
-    role="img" aria-label="การ์ด ${title} (${subtitle}) สี${meta.nameTh}">
+    role="img" aria-label="${t(`การ์ด ${title} (${subtitle}) สี${meta.nameTh}`, `${title} card (${subtitle}), ${meta.nameEn}`)}">
     <defs>
       <clipPath id="${id}-clip"><rect x="12" y="12" width="276" height="396" rx="13"/></clipPath>
       <linearGradient id="${id}-gold" x1="0" y1="0" x2="1" y2="1">
@@ -588,7 +591,7 @@ function legacyCardBackSVG({ width = 300 } = {}) {
     <path d="M0 -${len} L6 -78 L0 -70 L-6 -78 Z" transform="rotate(${rot})"
       fill="url(#${id}-au)"/>`;
   return `<svg width="${width}" height="${Math.round(width * 1.4)}" viewBox="0 0 300 420"
-    role="img" aria-label="หลังการ์ด myClover">
+    role="img" aria-label="${t('หลังการ์ด myClover', 'myClover card back')}">
     <defs>
       <radialGradient id="${id}-bg" cx="50%" cy="46%" r="80%">
         <stop offset="0%" stop-color="#11402A"/><stop offset="100%" stop-color="#071B10"/>
@@ -647,7 +650,7 @@ export function cardBackSVG({ width = 300 } = {}) {
   const id = nid('cb-photo');
   const height = Math.round(width * 1.4);
   return `<svg width="${width}" height="${height}" viewBox="0 0 300 420"
-    role="img" aria-label="หลังการ์ด myClover CORE7">
+    role="img" aria-label="${t('หลังการ์ด myClover CORE7', 'myClover CORE7 card back')}">
     <defs><clipPath id="${id}-clip"><rect width="300" height="420" rx="18"/></clipPath></defs>
     <image href="/core7/assets/myclover-back.webp" width="300" height="420"
       preserveAspectRatio="none" clip-path="url(#${id}-clip)"/>
@@ -678,7 +681,7 @@ export function colorCycleSVG(size = 300) {
       stroke="url(#${id}-au)" stroke-width="5" marker-end="url(#${id}-ah)"/>`;
   };
   return `<svg width="${size}" height="${size * 0.87}" viewBox="0 0 300 260" role="img"
-    aria-label="วงสี: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเสมอทุกสี">
+    aria-label="${t('วงสี: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เทาเสมอทุกสี', 'Colour wheel: red beats green, green beats blue, blue beats red, gray ties with everything')}">
     <defs>
       <linearGradient id="${id}-au"
       gradientUnits="userSpaceOnUse"
@@ -708,5 +711,5 @@ export function colorCycleSVG(size = 300) {
 export function colorChip(color, size = 40) {
   const meta = COLOR_META[color];
   return `<span class="chip chip-${color.toLowerCase()}" style="width:${size}px;height:${size}px"
-    role="img" aria-label="สี${meta.nameTh}">${colorIcon(color, Math.round(size * 0.55))}</span>`;
+    role="img" aria-label="${t(`สี${meta.nameTh}`, meta.nameEn)}">${colorIcon(color, Math.round(size * 0.55))}</span>`;
 }

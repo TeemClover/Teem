@@ -45,6 +45,8 @@
 <footer class="c7foot" id="c7foot"></footer>
 <script type="module">
 import { renderShell, el } from '/core7/js/ui.js';
+/* ในไฟล์นี้ตัวแปร t ถูกใช้เป็นตัววนลูป TIERS อยู่แล้ว เลยรับ helper แปลภาษามาเป็น tr */
+import { t as tr } from '/core7/js/i18n.js';
 import { TIERS } from '/core7/js/ranking.js';
 import * as store from '/core7/js/store.js';
 
@@ -55,7 +57,7 @@ for (const t of TIERS) {
   tHost.append(el('div', { class: 'tier' },
     el('span', { class: 'ic' }, ICONS[t.name] || '🍀'),
     el('b', {}, t.name),
-    el('span', {}, `${t.th}${Number.isFinite(t.min) ? ` · ${t.min}+` : ''}`)));
+    el('span', {}, `${tr(t.th, t.name)}${Number.isFinite(t.min) ? ` · ${t.min}+` : ''}`)));
 }
 const S = store.getAllStats();
 const winRate = S.all.matchesPlayed ? Math.round(100 * S.all.matchesWon / S.all.matchesPlayed) : 0;

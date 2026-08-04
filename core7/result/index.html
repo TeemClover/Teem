@@ -33,13 +33,13 @@
   <div class="wrap-slim">
     <div class="actions" id="actions"></div>
 
-    <h2 class="disp" style="margin-top:34px;font-size:22px">สรุปการ์ดตามฝั่งและสี</h2>
+    <h2 class="disp" style="margin-top:34px;font-size:22px" data-en="Cards by side and colour">สรุปการ์ดตามฝั่งและสี</h2>
     <div class="sum-grid" id="summary"></div>
 
     <h2 class="disp" style="margin-top:34px;font-size:22px">Round Timeline</h2>
     <div class="timeline" id="timeline"></div>
 
-    <h2 class="disp" style="margin-top:34px;font-size:22px">ชวนคุยหลังเกม</h2>
+    <h2 class="disp" style="margin-top:34px;font-size:22px" data-en="Talk it over">ชวนคุยหลังเกม</h2>
     <p style="font-size:13.5px;color:rgb(var(--muted))" data-en="The game is over, the conversation just started — try asking:">เกมจบแล้ว แต่บทสนทนาเพิ่งเริ่ม — ลองถามกันดู</p>
     <div class="prompt-card" data-en="Which of your seven is most like you?">การ์ดใบไหนในมือ 7 ใบนี้เป็นตัวคุณที่สุด?</div>
     <div class="prompt-card" data-en="Why did you discard that one?">ทำไมคุณเลือกทิ้งใบนั้น?</div>
@@ -48,7 +48,8 @@
     <div class="panel" id="nightUnlock" hidden
       style="margin-top:30px;background:#161814;color:#fff;border-color:rgb(var(--gold)/.5)">
       <b class="disp" data-en="🖤 Unlocked: the black frame — game winner">🖤 ปลดล็อคแล้ว: กรอบดำ — ผู้ชนะเกม</b>
-      <p style="font-size:14px;margin-top:6px;color:rgb(255 255 255/.8)">
+      <p style="font-size:14px;margin-top:6px;color:rgb(255 255 255/.8)"
+         data-en="Your win unlocked a new frame colour for your personal card on myClover — head to the card maker and pick &quot;black frame&quot;.">
         ชัยชนะของคุณปลดล็อคกรอบสีใหม่ให้การ์ดประจำตัวบนเว็บ myClover —
         ไปที่หน้าทำการ์ดแล้วเลือก "กรอบดำ" ได้เลย</p>
       <a class="btn btn-gold" style="margin-top:12px" href="/card/" data-en="🃏 Go style my card">🃏 ไปแต่งการ์ดของฉัน</a>
@@ -57,9 +58,9 @@
     <div class="panel" style="margin-top:30px" id="signup">
       <b class="disp" data-en="Sign up to keep the story of these seven">สมัครเพื่อเก็บเรื่องราวของมือ 7 ใบนี้</b>
       <p style="font-size:14px;margin-top:6px;color:rgb(var(--ink)/.75)">
-        บัญชี Member จะเก็บสถิติ Rank Collection และประวัติข้ามอุปกรณ์ —
-        ระบบสมัครจะเปิดพร้อม Server จริง <b data-en="You can always keep playing without an account">ไม่สมัครก็เล่นต่อได้เสมอ</b>
-        (สถิติของคุณถูกเก็บในเครื่องนี้แล้ว ดูได้ที่ <a href="/core7/profile/" style="text-decoration:underline" data-en="Profile">โปรไฟล์</a>)</p>
+        <span data-en="A Member account keeps your stats, Rank, Collection and history across devices — sign-up opens with the real server.">บัญชี Member จะเก็บสถิติ Rank Collection และประวัติข้ามอุปกรณ์ —
+        ระบบสมัครจะเปิดพร้อม Server จริง</span> <b data-en="You can always keep playing without an account">ไม่สมัครก็เล่นต่อได้เสมอ</b>
+        <span data-en="(your stats are already saved on this device — see">(สถิติของคุณถูกเก็บในเครื่องนี้แล้ว ดูได้ที่</span> <a href="/core7/profile/" style="text-decoration:underline" data-en="Profile">โปรไฟล์</a>)</p>
     </div>
   </div>
 </main>
@@ -88,7 +89,7 @@ const hero = document.getElementById('hero');
 if (!snap || (!snap.state && !snap.view)) {
   hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how" data-en="It may have been cleared already">ผลอาจถูกล้างไปแล้ว</p>';
   document.getElementById('actions').append(
-    el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
+    el('a', { class: 'btn btn-gold', href: '/core7/play/' }, t('กลับไปเล่น', 'Back to play')));
   throw new Error('no snapshot');
 }
 
@@ -143,11 +144,11 @@ const inSeries = !!(series && series.target > 1);
 hero.innerHTML = `
   <h1>${title}</h1>
   ${inSeries ? `<div class="score">${series.modeLabel} ${series.youWins} — ${series.oppWins}
-     <small style="display:block;font-size:13px;color:rgb(255 255 255/.6);margin-top:4px">ชนะครบ ${series.target} จบชุด</small></div>` : ''}
+     <small style="display:block;font-size:13px;color:rgb(255 255 255/.6);margin-top:4px">${t(`ชนะครบ ${series.target} จบชุด`, `First to ${series.target} takes the set`)}</small></div>` : ''}
   <div class="how">${sub}</div>`;
 
 /* Hover/focus shows art; click/tap pins it until the next outside click. */
-const cardPreview = el('div', { class:'card-preview', hidden:true, role:'dialog', 'aria-label':'ตัวอย่างภาพการ์ด' });
+const cardPreview = el('div', { class:'card-preview', hidden:true, role:'dialog', 'aria-label':t('ตัวอย่างภาพการ์ด', 'Card art preview') });
 document.body.append(cardPreview);
 let previewOwner = null;
 let previewPinned = false;
@@ -168,7 +169,7 @@ function showCardPreview(target, pin = false) {
   previewOwner = target;
   previewPinned = pin;
   cardPreview.classList.toggle('pinned', pin);
-  cardPreview.innerHTML = `${cardSVG(cardId, { width:208 })}<div class="card-preview-note">${pin ? 'แตะข้างนอกเพื่อปิด' : 'คลิกเพื่อค้างภาพ'}</div>`;
+  cardPreview.innerHTML = `${cardSVG(cardId, { width:208 })}<div class="card-preview-note">${pin ? t('แตะข้างนอกเพื่อปิด', 'Tap outside to close') : t('คลิกเพื่อค้างภาพ', 'Click to pin')}</div>`;
   cardPreview.hidden = false;
   placePreview(target);
 }
@@ -184,7 +185,7 @@ function hideCardPreview(force = false) {
 function cardPeek(card, className, style, text) {
   const button = el('button', {
     type:'button', class:`${className} card-peek`, style, 'data-card-id':card.cardId,
-    'aria-label':`ดูภาพการ์ด ${cardById(card.cardId)?.en || card.color}`,
+    'aria-label':t(`ดูภาพการ์ด ${cardById(card.cardId)?.en || card.color}`, `View the ${cardById(card.cardId)?.en || card.color} card art`),
   });
   const art = cardArtHref(card.cardId);
   if (art) button.append(el('i', { class:'chip-art', style:`background-image:url("${art}")` }));
@@ -233,7 +234,7 @@ function summarySide(title, data) {
   box.append(line('PLAYED', data.played), line('DISCARDED', data.discarded, true));
   return box;
 }
-document.getElementById('summary').append(summarySide(`${view.you.name} (คุณ)`, stats('you')), summarySide(view.opponent.name, stats('opp')));
+document.getElementById('summary').append(summarySide(`${view.you.name} ${t('(คุณ)', '(you)')}`, stats('you')), summarySide(view.opponent.name, stats('opp')));
 
 /* Timeline + Turning Point (รอบชนะสุดท้ายที่ชี้ผล หรือรอบที่ตัดสิน tiebreak) */
 const tl = document.getElementById('timeline');
@@ -262,7 +263,7 @@ view.rounds.forEach((round, i) => {
   const main = el('div', { class:'tl-main' }, cards);
   if (round.discards.length) main.append(discards);
   const meta = el('div', { class:'tl-meta' }, el('span', { class:'tl-result' },
-    round.result === 'TIE' ? 'เสมอ' : (round.youWon ? 'คุณชนะ' : `${view.opponent.name} ชนะ`)));
+    round.result === 'TIE' ? t('เสมอ', 'Draw') : (round.youWon ? t('คุณชนะ', 'You won') : t(`${view.opponent.name} ชนะ`, `${view.opponent.name} won`))));
   if (i === turningIdx) meta.append(el('span', { class: 'tag tag-gold' }, 'Turning Point'));
   row.append(el('b', { class: 'disp' }, `R${round.n}`), main, meta);
   tl.append(row);
@@ -272,25 +273,25 @@ view.rounds.forEach((round, i) => {
 const actions = document.getElementById('actions');
 if (mode === 'bot') {
   actions.append(
-    el('a', { class: 'btn btn-gold', href: `/core7/hand/?next=bot&level=${level}` }, '🔄 Rematch — เลือกมือใหม่'),
-    el('a', { class: 'btn', href: `/core7/bot/?level=${level}&fresh=1` }, '⚡ เล่นมือเดิมทันที'),
-    el('a', { class: 'btn', href: '/core7/play/' }, 'เปลี่ยนโหมด'),
+    el('a', { class: 'btn btn-gold', href: `/core7/hand/?next=bot&level=${level}` }, t('🔄 Rematch — เลือกมือใหม่', '🔄 Rematch — pick a new hand')),
+    el('a', { class: 'btn', href: `/core7/bot/?level=${level}&fresh=1` }, t('⚡ เล่นมือเดิมทันที', '⚡ Same hand, play now')),
+    el('a', { class: 'btn', href: '/core7/play/' }, t('เปลี่ยนโหมด', 'Change mode')),
   );
 } else if (inSeries && series.youWins < series.target && series.oppWins < series.target) {
   /* ชุดยังไม่จบ — กดพร้อมได้จากหน้านี้เลย ไม่ต้องเด้งกลับห้องแล้วกดอีกชั้น
      กดแล้วรอคู่แข่ง พอทั้งคู่พร้อม server จะเปิด Match ใหม่ เราค่อยพากลับห้อง */
-  const go = el('button', { class: 'btn btn-gold btn-lg' }, 'เล่นรอบต่อไป →');
+  const go = el('button', { class: 'btn btn-gold btn-lg' }, t('เล่นรอบต่อไป →', 'Play the next round →'));
   const note = el('p', { style: 'flex-basis:100%;font-size:13.5px;color:rgb(var(--muted));margin-top:6px' }, '');
   let waiting = false;
   const session = (() => { try { return new RemoteRooms().session(roomCode); } catch { return null; } })();
   go.addEventListener('click', async () => {
     if (!session) { location.href = `/core7/room/?c=${encodeURIComponent(roomCode)}`; return; }
     go.disabled = true; waiting = true;
-    go.textContent = '✓ พร้อมแล้ว';
-    note.textContent = 'รอคู่แข่ง — ใช้มือเดิม';
+    go.textContent = t('✓ พร้อมแล้ว', '✓ Ready');
+    note.textContent = t('รอคู่แข่ง — ใช้มือเดิม', 'Waiting for them — same hand');
     try { await session.readyNext(); } catch { /* poll ข้างล่างจะพาไปเอง */ }
   });
-  actions.append(go, el('a', { class: 'btn', href: '/core7/play/' }, 'ออกจากชุด'), note);
+  actions.append(go, el('a', { class: 'btn', href: '/core7/play/' }, t('ออกจากชุด', 'Leave the set')), note);
 
   /* เฝ้าดูห้อง ถ้าอีกฝ่ายกดพร้อมก่อนก็บอก และพอเริ่ม Match ใหม่ค่อยพากลับโต๊ะ */
   if (session) {
@@ -302,21 +303,23 @@ if (mode === 'bot') {
         location.href = `/core7/room/?c=${encodeURIComponent(roomCode)}`;
         return;
       }
-      if (!waiting && room.opponent?.nextReady) note.textContent = `${room.opponent.name} พร้อมแล้ว — รอคุณ`;
+      if (!waiting && room.opponent?.nextReady) note.textContent = t(`${room.opponent.name} พร้อมแล้ว — รอคุณ`, `${room.opponent.name} is ready — waiting on you`);
     }, 1500);
   }
 } else {
   actions.append(
-    el('a', { class: 'btn btn-gold', href: `/core7/room/?c=${encodeURIComponent(roomCode)}` }, '🔄 กลับห้องเดิม'),
-    el('a', { class: 'btn', href: '/core7/play/' }, 'เปลี่ยนโหมด'),
+    el('a', { class: 'btn btn-gold', href: `/core7/room/?c=${encodeURIComponent(roomCode)}` }, t('🔄 กลับห้องเดิม', '🔄 Back to the room')),
+    el('a', { class: 'btn', href: '/core7/play/' }, t('เปลี่ยนโหมด', 'Change mode')),
   );
 }
-const share = el('button', { class: 'btn btn-dark' }, '📋 แชร์ผลลง Discord');
+const share = el('button', { class: 'btn btn-dark' }, t('📋 แชร์ผลลง Discord', '📋 Share the result to Discord'));
 share.addEventListener('click', async () => {
-  const txt = `myClover: CORE7 — ${r.draw ? 'เสมอ' : (r.youWon ? 'ชนะ' : 'แพ้')} ${view.opponent.name}\nมาเล่นกัน → https://www.myclover.com/core7/`;
+  const txt = t(
+    `myClover: CORE7 — ${r.draw ? 'เสมอ' : (r.youWon ? 'ชนะ' : 'แพ้')} ${view.opponent.name}\nมาเล่นกัน → https://www.myclover.com/core7/`,
+    `myClover: CORE7 — ${r.draw ? 'draw with' : (r.youWon ? 'beat' : 'lost to')} ${view.opponent.name}\nCome play → https://www.myclover.com/core7/`);
   await copyText(txt);
   store.track('core7_discord_share');
-  toast('คัดลอกข้อความแล้ว — วางใน Discord ได้เลย');
+  toast(t('คัดลอกข้อความแล้ว — วางใน Discord ได้เลย', 'Copied — paste it straight into Discord'));
 });
 actions.append(share);
 store.track('core7_match_complete_view');
