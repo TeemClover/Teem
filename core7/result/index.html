@@ -36,6 +36,11 @@
     <h2 class="disp" style="margin-top:34px;font-size:22px" data-en="Cards by side and colour">สรุปการ์ดตามฝั่งและสี</h2>
     <div class="sum-grid" id="summary"></div>
 
+    <div id="startingHands" hidden>
+      <h2 class="disp" style="margin-top:34px;font-size:22px" data-en="Starting Hands — revealed once the set ends">Starting Hands — เปิดเผยเมื่อจบชุด</h2>
+      <div class="sum-grid" id="startingHandsGrid"></div>
+    </div>
+
     <h2 class="disp" style="margin-top:34px;font-size:22px">Round Timeline</h2>
     <div class="timeline" id="timeline"></div>
 
@@ -73,7 +78,6 @@ import { COLOR_META, cardById } from '/core7/js/cards.js';
 import { COLORS } from '/core7/js/rules.js';
 import { t } from '/core7/js/i18n.js';
 import { cardSVG, cardArtHref } from '/core7/js/art.js';
-import { playSfx } from '/core7/js/audio.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({});
@@ -138,14 +142,27 @@ let title, sub;
 if (r.draw) { title = '🤝 DRAW'; sub = howText('DRAW', true); }
 else if (r.youWon) { title = '🏆 YOU WIN'; sub = howText(r.resultType, true); }
 else { title = 'YOU LOSE'; sub = howText(r.resultType, false); }
+/* เหตุผลของแมตช์สุดท้ายยังมีค่าอยู่แม้ชุดจะจบ เก็บไว้ต่อท้ายผลชุด */
+const subMatch = sub;
 /* MATCH ไม่มีคะแนน — ชนะ 3 รอบกับอีกฝ่ายมือหมดคือเรื่องเดียวกัน
    บอกแค่ว่าใครชนะพอ ส่วนคะแนนที่นับจริงมีแค่ SET เท่านั้น */
 const series = snap.series || null;
 const inSeries = !!(series && series.target > 1);
+/* ชุดจบแล้ว = หน้านี้คือหน้าจบจริง ไม่ใช่สรุประหว่างทาง เดิมต้องกด
+   "กลับห้องเดิม" อีกทีถึงจะเห็นผลชุด กลายเป็นสรุปเล็กคั่นก่อนสรุปใหญ่ */
+const seriesEnded = inSeries && !!series.ended;
+if (seriesEnded) {
+  /* ผู้ชนะชุดมาจาก server ไม่ใช่ผลแมตช์สุดท้าย จะได้ไม่เพี้ยนถ้ากติกา
+     ตัดสินชุดด้วยอย่างอื่นในอนาคต */
+  title = series.youWonSeries ? '🏆 YOU WIN' : 'YOU LOSE';
+  sub = t(`จบ ${series.modeLabel} แล้ว · ${subMatch}`, `${series.modeLabel} complete · ${subMatch}`);
+}
 hero.innerHTML = `
   <h1>${title}</h1>
   ${inSeries ? `<div class="score">${series.modeLabel} ${series.youWins} — ${series.oppWins}
-     <small style="display:block;font-size:13px;color:rgb(255 255 255/.6);margin-top:4px">${t(`ชนะครบ ${series.target} จบชุด`, `First to ${series.target} takes the set`)}</small></div>` : ''}
+     <small style="display:block;font-size:13px;color:rgb(255 255 255/.6);margin-top:4px">${seriesEnded
+       ? t('จบชุดแล้ว', 'Set complete')
+       : t(`ชนะครบ ${series.target} จบชุด`, `First to ${series.target} takes the set`)}</small></div>` : ''}
   <div class="how">${sub}</div>`;
 
 /* Hover/focus shows art; click/tap pins it until the next outside click. */
@@ -221,7 +238,9 @@ function stats(side) {
   }
   return { colors, played, discarded };
 }
-function summarySide(title, data) {
+/* playedLabel / hideDiscarded มีไว้ให้ Starting Hands ใช้ซ้ำได้ — มือเริ่มต้น
+   ไม่ใช่ "ใบที่ลง" และไม่มีใบทิ้ง แถว DISCARDED จึงเป็น "—" เปล่า ๆ ทุกครั้ง */
+function summarySide(title, data, { playedLabel = 'PLAYED', hideDiscarded = false } = {}) {
   const box = el('div', { class:'sum-side' }, el('h3', { class:'disp' }, title));
   const colors = el('div', { class:'sum-colors' });
   for (const color of COLORS) colors.append(el('div', { class:'sum-color', style:`background:${COLOR_META[color].hex}` }, `${COLOR_META[color].emoji} ${data.colors[color]}`));
@@ -232,10 +251,32 @@ function summarySide(title, data) {
     for (const card of cards) row.append(cardPeek(card, 'sum-card' + (discard ? ' discard' : ''), `background:${COLOR_META[card.color].hex}`, `${cardById(card.cardId)?.en || card.color}`));
     return row;
   };
-  box.append(line('PLAYED', data.played), line('DISCARDED', data.discarded, true));
+  box.append(line(playedLabel, data.played));
+  if (!hideDiscarded) box.append(line('DISCARDED', data.discarded, true));
   return box;
 }
 document.getElementById('summary').append(summarySide(`${view.you.name} ${t('(คุณ)', '(you)')}`, stats('you')), summarySide(view.opponent.name, stats('opp')));
+
+/* มือเริ่มต้นถูกปิดไว้ตลอดชุด เปิดได้ก็ต่อเมื่อชุดจบแล้วเท่านั้น
+   เดิมโชว์อยู่ในห้อง ย้ายมาไว้ที่นี่เพราะหน้านี้กลายเป็นหน้าจบจริงแล้ว */
+if (seriesEnded && series.startingHands) {
+  const host = document.getElementById('startingHands');
+  const grid = document.getElementById('startingHandsGrid');
+  const sides = [['you', `${view.you.name} ${t('(คุณ)', '(you)')}`], ['opponent', view.opponent.name]];
+  let shown = 0;
+  for (const [key, name] of sides) {
+    const ids = series.startingHands[key];
+    if (!Array.isArray(ids) || !ids.length) continue;
+    const cards = ids.map(id => ({ cardId: id, color: cardById(id)?.color })).filter(c => c.color);
+    if (!cards.length) continue;
+    const colors = { RED:0, GREEN:0, BLUE:0, GRAY:0 };
+    for (const c of cards) colors[c.color] += 1;
+    grid.append(summarySide(name, { colors, played: cards, discarded: [] },
+      { playedLabel: 'HAND', hideDiscarded: true }));
+    shown += 1;
+  }
+  if (shown) host.hidden = false;
+}
 
 /* Timeline + Turning Point (รอบชนะสุดท้ายที่ชี้ผล หรือรอบที่ตัดสิน tiebreak) */
 const tl = document.getElementById('timeline');
@@ -296,8 +337,6 @@ if (mode === 'bot') {
 
   /* เฝ้าดูห้อง ถ้าอีกฝ่ายกดพร้อมก่อนก็บอก และพอเริ่ม Match ใหม่ค่อยพากลับโต๊ะ */
   if (session) {
-    /* poll ทุก 1.5 วิ เลยต้องจำสถานะเดิมไว้ ไม่งั้นเสียงจะดังรัวทุกรอบที่เช็ค */
-    let oppWasReady = false;
     setInterval(async () => {
       let data; try { data = await session.refresh(); } catch { return; }
       const room = data?.room;
@@ -307,16 +346,17 @@ if (mode === 'bot') {
         return;
       }
       const oppReady = !!room.opponent?.nextReady;
-      if (oppReady && !oppWasReady) playSfx('join');
-      oppWasReady = oppReady;
       if (!waiting && oppReady) note.textContent = t(`${room.opponent.name} พร้อมแล้ว — รอคุณ`, `${room.opponent.name} is ready — waiting on you`);
     }, 1500);
   }
 } else {
-  actions.append(
+  actions.append(...(seriesEnded ? [
+    el('a', { class: 'btn btn-gold', href: '/core7/create/' }, t('สร้างห้องใหม่', 'Create a new room')),
+    el('a', { class: 'btn', href: '/core7/join/' }, t('กลับ Public Lobby', 'Back to Public Lobby')),
+  ] : [
     el('a', { class: 'btn btn-gold', href: `/core7/room/?c=${encodeURIComponent(roomCode)}` }, t('🔄 กลับห้องเดิม', '🔄 Back to the room')),
     el('a', { class: 'btn', href: '/core7/play/' }, t('เปลี่ยนโหมด', 'Change mode')),
-  );
+  ]));
 }
 const share = el('button', { class: 'btn btn-dark' }, t('📋 แชร์ผลลง Discord', '📋 Share the result to Discord'));
 share.addEventListener('click', async () => {
