@@ -6,7 +6,9 @@
 <title>เลือกมือ 7 ใบ — myClover: CORE7</title>
 <meta name="description" content="เลือกมือ CORE7 แบบ Quick หรือจัดมือจากการ์ด FIRST HAND ที่ปลดล็อกแล้ว">
 <meta name="theme-color" content="#0A2818">
-<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
 .mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;padding:7px;border:1px solid rgb(var(--line)/.12);border-radius:17px;background:#fff;box-shadow:0 16px 38px -32px rgb(0 0 0/.5)}
@@ -200,13 +202,20 @@ for (const color of COLORS) {
 /* ── SELECT picker: FIRST HAND only ── */
 const grid = document.getElementById('grid');
 const filters = document.getElementById('filters');
-const FILTERS = ['All', 'Red', 'Green', 'Blue', 'Gray', 'Favorites'];
+/* ป้ายบนปุ่มมาจาก COLOR_META (⚙️ ชื่อว่า Silver แล้ว) ส่วนค่าที่ใช้กรอง
+   ยังเป็นคีย์สีเดิม — 'GRAY' ถูกเก็บใน localStorage และฐานข้อมูลไปแล้ว
+   ถ้าเปลี่ยนคีย์ตามชื่อ การ์ดเก่าจะกรองไม่เจอทันที */
+const FILTERS = [
+  { value: 'All', label: 'All' },
+  ...COLORS.map(key => ({ value: key, label: COLOR_META[key].nameEn })),
+  { value: 'Favorites', label: 'Favorites' },
+];
 let filter = 'All';
-for (const name of FILTERS) {
-  const button = el('button', { 'aria-pressed': String(name === filter) }, name);
+for (const item of FILTERS) {
+  const button = el('button', { 'aria-pressed': String(item.value === filter) }, item.label);
   button.addEventListener('click', () => {
-    filter = name;
-    [...filters.children].forEach((item, index) => item.setAttribute('aria-pressed', String(FILTERS[index] === filter)));
+    filter = item.value;
+    [...filters.children].forEach((node, index) => node.setAttribute('aria-pressed', String(FILTERS[index].value === filter)));
     renderGrid();
   });
   filters.append(button);
@@ -216,7 +225,7 @@ function availableCards() {
   const favorites = store.getFavorites();
   return FIRST_HAND.filter(card => owned.has(card.id)).filter(card => {
     if (filter === 'Favorites') return favorites.includes(card.id);
-    if (['Red', 'Green', 'Blue', 'Gray'].includes(filter)) return card.color === filter.toUpperCase();
+    if (COLORS.includes(filter)) return card.color === filter;
     return true;
   });
 }

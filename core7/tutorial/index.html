@@ -4,9 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>เรียนรู้ใน 30 วินาที — myClover: CORE7</title>
-<meta name="description" content="Tutorial แบบเล่นจริง — สอนวงสี การทิ้งเพิ่ม และกฎ Final Gray ของ CORE7 ใน 30 วินาที">
+<meta name="description" content="Tutorial แบบเล่นจริง — สอนวงสี การทิ้งเพิ่ม และกฎ Final Silver ของ CORE7 ใน 30 วินาที">
 <meta name="theme-color" content="#0A2818">
-<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
 body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transparent 65%),rgb(var(--deep));color:#fff;min-height:100dvh;display:flex;flex-direction:column}
@@ -47,7 +49,7 @@ body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transp
 </div>
 <div class="tut-stage">
   <img class="tut-rule-visual" id="ruleVisual" src="/core7/assets/core7-rule.webp" hidden
-    alt="กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่ม ชนะสามรอบ และ Final Gray">
+    alt="กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่ม ชนะสามรอบ และ Final Silver">
   <div class="tut-cards" id="tutorialCards">
     <div><small id="youLabel" style="display:block;margin-bottom:6px" data-en="You · always left">คุณ · ซ้ายเสมอ</small><div class="tut-slot" id="slotYou"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
     <b class="disp" style="color:rgb(var(--gold-l))">VS</b>
@@ -84,8 +86,8 @@ document.getElementById('skip').textContent = isEn ? 'Skip tutorial →' : 'ข�
 document.getElementById('youLabel').textContent = isEn ? 'YOU · always left' : 'คุณ · ซ้ายเสมอ';
 document.getElementById('oppLabel').textContent = isEn ? 'OPPONENT · right' : 'คู่แข่ง · ขวา';
 ruleVisual.alt = isEn
-  ? 'CORE7 overview: color cycle, loser discards one extra, win three rounds, and Final Gray'
-  : 'กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ และ Final Gray';
+  ? 'CORE7 overview: color cycle, loser discards one extra, win three rounds, and Final Silver'
+  : 'กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ และ Final Silver';
 slotYou.querySelector('.back').innerHTML = cardBackSVG({ width: 140 });
 slotBot.querySelector('.back').innerHTML = cardBackSVG({ width: 140 });
 
@@ -110,15 +112,15 @@ const STEPS_TH = [
     explainSub: 'ทั้งคู่เสียแค่ใบที่ลง ไม่มีใครทิ้งเพิ่ม และไม่มีใครได้ Round Win',
   },
   {
-    text: 'ทีนี้ลองอาวุธลับ — กด ⚙️ GRAY',
+    text: 'ทีนี้ลองอาวุธลับ — กด ⚙️ SILVER',
     want: 'GRAY', bot: 'BLUE',
-    explain: '⚙️ Block! สีเทาเสมอกับทุกสี',
-    explainSub: 'ใช้เทาเพื่อซื้อเวลาและอ่านคู่แข่ง โดยไม่เสี่ยงแพ้ (และไม่มีวันชนะรอบ)',
+    explain: '⚙️ Block! สีเงินเสมอกับทุกสี',
+    explainSub: 'ใช้เงินเพื่อซื้อเวลาและอ่านคู่แข่ง โดยไม่เสี่ยงแพ้ (และไม่มีวันชนะรอบ)',
   },
   {
-    text: 'กฎสุดท้าย — Final Gray',
+    text: 'กฎสุดท้าย — Final Silver',
     want: null, bot: null,
-    explain: '⚠️ ถ้าเทาเป็น "ใบสุดท้าย" ของทั้งคู่ เทาจะแพ้ทุกสีที่ไม่ใช่เทา',
+    explain: '⚠️ ถ้าเงินเป็น "ใบสุดท้าย" ของทั้งคู่ เงินจะแพ้ทุกสีที่ไม่ใช่เงิน',
     explainSub: 'อย่าเก็บ ⚙️ ไว้เป็นใบสุดท้าย — ใบปิดเกมของทั้งคู่เมื่อไหร่ ⚙️ แพ้ทุกสี',
   },
   {
@@ -133,8 +135,8 @@ const STEPS_EN = [
   { text:'Your cards are always on the left on this device.', want:null, bot:null, explain:'YOU = left · OPPONENT = right', explainSub:'Both players see themselves on the left while sharing the same server-authoritative result.' },
   { text:'Both choose secretly, then reveal together. Tap RED.', want:'RED', bot:'GREEN', explain:'RED beats GREEN — you win the Round.', explainSub:'The loser loses the played card and reveals one additional discarded card.' },
   { text:'What if both colors match? Tap RED again.', want:'RED', bot:'RED', explain:'DRAW — matching colors tie.', explainSub:'Both lose only the played card. No additional discard.' },
-  { text:'Try the block card. Tap GRAY.', want:'GRAY', bot:'BLUE', explain:'BLOCK — GRAY ties every normal color.', explainSub:'GRAY buys time, but never wins a normal Round.' },
-  { text:'Final Gray rule', want:null, bot:null, explain:'If GRAY is your final card, it loses to a real color.', explainSub:'A tool can buy time, but cannot make the final choice for you.' },
+  { text:'Try the block card. Tap SILVER.', want:'GRAY', bot:'BLUE', explain:'BLOCK — SILVER ties every normal color.', explainSub:'GRAY buys time, but never wins a normal Round.' },
+  { text:'Final Silver rule', want:null, bot:null, explain:'If SILVER is your final card, it loses to a real color.', explainSub:'A tool can buy time, but cannot make the final choice for you.' },
   { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. MATCH is one win; DOUBLE and SET keep the same Starting Hand until someone wins.', explainSub:'Now choose your seven cards and use the game as an easy way to start a conversation.', visual:true },
 ];
 const STEPS = isEn ? STEPS_EN : STEPS_TH;

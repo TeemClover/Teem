@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>โปรไฟล์ — myClover: CORE7</title>
 <meta name="theme-color" content="#0A2818">
-<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
 .pf-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
@@ -84,7 +86,7 @@ const stats = [
   ['เสมอ', S.all.draws], ['Win Rate', winRate + '%'], ['Round Wins', S.all.roundsWon],
   ['Streak ปัจจุบัน', S.bot.currentStreak + S.casual.currentStreak > 0 ? Math.max(S.bot.currentStreak, S.casual.currentStreak) : 0],
   ['Best Streak', S.all.bestStreak],
-  ['Tiebreak Wins', S.all.tiebreakWins], ['Final Gray Losses', S.all.finalGrayLosses],
+  ['Tiebreak Wins', S.all.tiebreakWins], ['Final Silver Losses', S.all.finalGrayLosses],
   ['คู่แข่งไม่ซ้ำ', S.all.opponents.length],
   ['ใบที่ลงบ่อย', mostPlayed ? cardName(mostPlayed[0]) : '—'],
   ['ใบที่ทิ้งบ่อย', mostDiscarded ? cardName(mostDiscarded[0]) : '—'],

@@ -6,7 +6,9 @@
 <title>Collection · FIRST HAND — myClover: CORE7</title>
 <meta name="description" content="สะสมการ์ด FIRST HAND 28 ใบ เล่นจบทุก Match รับการ์ดใหม่ 1 ใบโดยไม่ซ้ำ">
 <meta name="theme-color" content="#0A2818">
-<link rel="icon" type="image/svg+xml" href="/core7/favicon.svg">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px}.filters button{border:1px solid rgb(var(--line)/.18);background:#fff;border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;min-height:40px}.filters button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
@@ -48,7 +50,7 @@
 <footer class="c7foot" id="c7foot"></footer>
 <script type="module">
 import { renderShell, el } from '/core7/js/ui.js';
-import { FIRST_HAND, GENERIC_CARDS } from '/core7/js/cards.js';
+import { FIRST_HAND, GENERIC_CARDS, COLOR_META } from '/core7/js/cards.js';
 import { cardSVG, genericCardSVG } from '/core7/js/art.js';
 import {
   SELECT_MODE_UNLOCK_COUNT,
@@ -74,14 +76,23 @@ if (canUseSelectMode()) {
   selectState.textContent = `🔒 SELECT ${count}/${SELECT_MODE_UNLOCK_COUNT}`;
 }
 
-const FILTERS = ['All', 'Red', 'Green', 'Blue', 'Gray', 'Unlocked', 'Favorites'];
+/* ป้ายบนปุ่มมาจาก COLOR_META (⚙️ ชื่อว่า Silver แล้ว) ส่วนค่าที่ใช้กรอง
+   ยังเป็นคีย์สีเดิม — 'GRAY' ถูกเก็บใน localStorage และฐานข้อมูลไปแล้ว
+   ถ้าเปลี่ยนคีย์ตามชื่อ การ์ดเก่าจะกรองไม่เจอทันที */
+const COLOR_KEYS = ['RED', 'GREEN', 'BLUE', 'GRAY'];
+const FILTERS = [
+  { value: 'All', label: 'All' },
+  ...COLOR_KEYS.map(key => ({ value: key, label: COLOR_META[key].nameEn })),
+  { value: 'Unlocked', label: 'Unlocked' },
+  { value: 'Favorites', label: 'Favorites' },
+];
 let filter = 'All';
 const filterHost = document.getElementById('filters');
-for (const name of FILTERS) {
-  const button = el('button', { 'aria-pressed': String(name === filter) }, name);
+for (const item of FILTERS) {
+  const button = el('button', { 'aria-pressed': String(item.value === filter) }, item.label);
   button.addEventListener('click', () => {
-    filter = name;
-    [...filterHost.children].forEach((item, index) => item.setAttribute('aria-pressed', String(FILTERS[index] === filter)));
+    filter = item.value;
+    [...filterHost.children].forEach((node, index) => node.setAttribute('aria-pressed', String(FILTERS[index].value === filter)));
     render();
   });
   filterHost.append(button);
@@ -93,7 +104,7 @@ function visibleCards() {
   return FIRST_HAND.filter(card => {
     if (filter === 'Favorites') return owned.has(card.id) && favorites.includes(card.id);
     if (filter === 'Unlocked') return owned.has(card.id);
-    if (['Red', 'Green', 'Blue', 'Gray'].includes(filter)) return card.color === filter.toUpperCase();
+    if (COLOR_KEYS.includes(filter)) return card.color === filter;
     return true;
   });
 }
