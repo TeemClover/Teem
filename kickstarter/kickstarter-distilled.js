@@ -1,3 +1,0 @@
-/* Retired compatibility entry.
-   The final Kickstarter page is controlled by kickstarter.js only.
-   This file intentionally performs no imports and no DOM mutations. */
