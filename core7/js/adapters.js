@@ -20,6 +20,7 @@
 import { MatchAuthority, PHASE } from './engine.js';
 import { Core7Bot } from './bot.js';
 import { saveMatchSnapshot, loadMatchSnapshot, getGuest, getTabPlayerId } from './store.js';
+import { t } from './i18n.js';
 
 let actionSeq = 0;
 const newActionId = () => `a-${Date.now().toString(36)}-${(++actionSeq).toString(36)}`;
@@ -62,7 +63,7 @@ export class LocalBotClient {
   }
 
   _botName(level) {
-    return { easy: 'บอท EASY', hard: 'บอท HARD' }[level] || 'บอท';
+    return { easy: t('บอท EASY', 'EASY Bot'), hard: t('บอท HARD', 'HARD Bot') }[level] || t('บอท', 'Bot');
   }
 
   _persist() {
