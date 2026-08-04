@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content" name="viewport"/>
 <title>myClover · First Hand</title>
 <meta content="Start in 7 seconds. Choose 7 cards and play 3 official zero-randomness games with one universal RGBS language—Red, Green, Blue and Silver." name="description"/>
 <meta content="website" property="og:type"/>
@@ -241,6 +241,176 @@
         font-size:.72rem;
       }
     }
+
+    /* Final mobile viewport lock: no sideways drag, no accidental page-width expansion */
+    html{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden!important;
+      overscroll-behavior-x:none;
+    }
+    body{
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden!important;
+      overscroll-behavior-x:none;
+      position:relative;
+    }
+    main,
+    header,
+    footer,
+    section{
+      width:100%;
+      max-width:100%;
+      overflow-x:clip;
+    }
+    .wrap,
+    .nav-inner,
+    .hero-grid,
+    .why-grid,
+    .seven-start-grid,
+    .subtraction-grid,
+    .games-grid,
+    .rule-flip-grid,
+    .story-grid,
+    .story-row,
+    .one-box-grid,
+    .framework,
+    .gallery-head,
+    .gallery,
+    .box-grid,
+    .utility-grid,
+    .pledges-grid,
+    .ship-grid,
+    .founder-grid,
+    .faq-grid,
+    .stretch-head,
+    .stretch-grid,
+    .disclosure-grid{
+      min-width:0;
+      max-width:100%;
+    }
+    img,svg,video,canvas{
+      max-width:100%;
+    }
+
+    @media(max-width:680px){
+      html,body{
+        touch-action:pan-y;
+        width:100vw;
+        max-width:100vw;
+        overflow-x:hidden!important;
+      }
+      body{
+        padding-bottom:0!important;
+      }
+      main{
+        width:100vw;
+        max-width:100vw;
+        overflow-x:hidden!important;
+      }
+      .section{
+        width:100%;
+        max-width:100%;
+        overflow-x:clip;
+      }
+      .wrap{
+        width:calc(100% - 28px)!important;
+        max-width:calc(100% - 28px)!important;
+        margin-left:auto!important;
+        margin-right:auto!important;
+      }
+
+      /* Remove the floating pledge pill on phones.
+         It collided with Safari's toolbar and obscured campaign copy. */
+      .mobile-cta{
+        display:none!important;
+      }
+
+      /* Keep every animated seven-card composition inside the viewport. */
+      .hero-hand,
+      .seven-spread{
+        width:100%;
+        max-width:100%;
+        margin-left:0!important;
+        margin-right:0!important;
+        overflow:hidden!important;
+        contain:paint;
+      }
+      .hero-hand .card-shell{
+        width:132px;
+      }
+      .seven-spread .card-shell{
+        width:108px;
+      }
+
+      /* Seven-card mobile gallery: preserve the spread, but never exceed the screen. */
+      .card-row{
+        width:100%;
+        max-width:100%;
+        min-height:280px;
+        padding:20px 4px 28px;
+        overflow:hidden!important;
+        contain:paint;
+      }
+      .card-row .card-shell{
+        width:clamp(62px,18.5vw,76px)!important;
+        max-width:76px;
+        margin-left:-23px!important;
+      }
+      .card-row .card-shell:first-child{
+        margin-left:0!important;
+      }
+
+      /* Prevent long headings or labels from forcing a wider layout. */
+      .display,
+      .hero h1,
+      .rule-copy h3,
+      .story-copy h3,
+      .stretch-card h3,
+      .game-card h3,
+      .framework strong,
+      .pledge h3,
+      .brand,
+      .brand span,
+      .game-card,
+      .stretch-card,
+      .pledge,
+      .box-item,
+      .utility-list article,
+      .craft-panel,
+      .compare-row,
+      .side-labels span{
+        min-width:0;
+        max-width:100%;
+        overflow-wrap:anywhere;
+        word-break:normal;
+      }
+
+      /* Fixed header must also stay strictly inside the viewport. */
+      .nav{
+        width:100vw;
+        max-width:100vw;
+        overflow:hidden;
+      }
+      .nav-inner{
+        width:calc(100% - 24px)!important;
+        max-width:calc(100% - 24px)!important;
+        gap:10px;
+      }
+      .brand{
+        flex:1 1 auto;
+        min-width:0;
+      }
+      .brand>span:last-child{
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      }
+      .lang{
+        flex:0 0 auto;
+      }
+    }
 </style>
 </head>
 <body>
@@ -304,7 +474,7 @@
 </section><section class="section section-cream"><div class="wrap faq-grid"><div class="reveal"><p class="eyebrow">FAQ</p><h2 class="display" data-en="Questions we would ask before backing." data-th="คำถามที่เราจะถามก่อนกดสนับสนุน">Questions we would ask before backing.</h2></div><div class="faq reveal"><details open=""><summary data-en="Can the game really begin in 7 seconds?" data-th="เกมเริ่มได้จริงภายใน 7 วินาทีหรือ?">Can the game really begin in 7 seconds?</summary><p data-en="Yes—the claim is 7 seconds to begin, not 7 seconds to memorize everything. The visual Rule Card remains visible. Point to the color loop, choose 1 of 7 cards and reveal together." data-th="ได้ คำสัญญาคือ 7 วินาทีเพื่อเริ่ม ไม่ใช่ 7 วินาทีเพื่อท่องจำทุกอย่าง Rule Card แบบภาพยังวางให้เห็นอยู่ ชี้วงจรสี เลือก 1 จาก 7 ใบ แล้วเปิดพร้อมกัน">Yes—the claim is 7 seconds to begin, not 7 seconds to memorize everything. The visual Rule Card remains visible. Point to the color loop, choose 1 of 7 cards and reveal together.</p></details><details><summary data-en="Do both players need a box?" data-th="ผู้เล่นทั้งสองต้องมีกล่องไหม?">Do both players need a box?</summary><p data-en="No. One box contains enough Word Cards and one Rule Card for every player at a 4-player table." data-th="ไม่ 1 กล่องมี Word Cards เพียงพอและมี Rule Card ให้ผู้เล่นทุกคนบนโต๊ะ 4 คน">No. One box contains enough Word Cards and one Rule Card for every player at a 4-player table.</p></details><details><summary data-en="Are there exactly 3 official games?" data-th="มีเกมทางการ 3 เกมเท่านั้นใช่ไหม?">Are there exactly 3 official games?</summary><p data-en="Yes. HERO’S DUEL, CORE7 and 三川 MIKAWA are the complete official line for First Hand. Game 4 and beyond are open for player-crafted rules." data-th="ใช่ HERO’S DUEL, CORE7 และ 三川 MIKAWA คือเกมทางการครบทั้ง 3 เกมของ First Hand ส่วนเกมที่ 4 เป็นต้นไปเปิดให้ผู้เล่นสร้างกติกาเอง">Yes. HERO’S DUEL, CORE7 and 三川 MIKAWA are the complete official line for First Hand. Game 4 and beyond are open for player-crafted rules.</p></details><details><summary data-en="Is official play really 0% RNG?" data-th="เกมทางการไม่มีการสุ่มจริงหรือ?">Is official play really 0% RNG?</summary><p data-en="Yes. No dice, no draw luck and no random resolution. Uncertainty comes from hidden human decisions." data-th="ใช่ ไม่มีลูกเต๋า ไม่มีดวงจากการจั่ว และไม่มีการตัดสินผลแบบสุ่ม ความไม่แน่นอนมาจากการตัดสินใจที่ซ่อนอยู่ของมนุษย์">Yes. No dice, no draw luck and no random resolution. Uncertainty comes from hidden human decisions.</p></details><details><summary data-en="Why buy the cards if the rules are open?" data-th="ทำไมต้องซื้อการ์ดถ้ากติกาเปิด?">Why buy the cards if the rules are open?</summary><p data-en="Because the physical deck is the art, language and portable ritual. The mechanic is open; the artifact earns the purchase." data-th="เพราะเด็คจริงคืองานศิลปะ ภาษา และพิธีกรรมพกพา กลไกเปิดกว้าง ส่วนตัวการ์ดต้องคู่ควรกับการซื้อ">Because the physical deck is the art, language and portable ritual. The mechanic is open; the artifact earns the purchase.</p></details><details><summary data-en="How is shipping charged?" data-th="คิดค่าจัดส่งอย่างไร?">How is shipping charged?</summary><p data-en="We ship worldwide. Shipping and applicable taxes are collected separately after the campaign through the Pledge Manager." data-th="เราจัดส่งทั่วโลก โดยเก็บค่าจัดส่งและภาษีที่เกี่ยวข้องแยกหลังจบแคมเปญผ่าน Pledge Manager">We ship worldwide. Shipping and applicable taxes are collected separately after the campaign through the Pledge Manager.</p></details></div></div></section>
 <section class="section section-dark final"><div class="wrap reveal"><img alt="" aria-hidden="true" class="brand-logo final-brand-logo" decoding="async" height="594" loading="lazy" src="/assets/myclover-icon.png" width="594"/><p class="eyebrow">myClover · FIRST HAND</p><h2 data-en-html="Start in 7 seconds.&lt;br&gt;Remember the human." data-th-html="เริ่มใน 7 วินาที&lt;br&gt;จดจำมนุษย์ตรงหน้า">Start in 7 seconds.<br/>Remember the human.</h2><p data-en="Start with CORE7. Duel fast in HERO’S DUEL. Command the 3 Rivers in 三川 MIKAWA. Then Craft the game your table still needs." data-th="เริ่มจาก CORE7 ดวลรัวด้วย HERO’S DUEL บัญชาการ 3 สายน้ำใน 三川 MIKAWA แล้วสร้างเกมที่โต๊ะของคุณยังต้องการ">Start with CORE7. Duel fast in HERO’S DUEL. Command the 3 Rivers in 三川 MIKAWA. Then Craft the game your table still needs.</p><a class="button gold" data-en="Choose your pledge" data-th="เลือกระดับสนับสนุน" href="#pledges">Choose your pledge</a><small>myClover · First Hand · 0% RNG · 100% Decisions</small></div></section>
 </main>
-<a class="mobile-cta" href="#pledges"><span>myClover · First Hand</span><b data-en="Choose a pledge" data-th="เลือกระดับสนับสนุน">Choose a pledge</b></a>
+
 <script type="module">
     import { FIRST_HAND } from '/core7/js/cards.js';
     import { cardSVG } from '/core7/js/art.js';
