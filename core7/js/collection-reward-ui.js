@@ -49,6 +49,7 @@ function addStyles() {
     .c7-reward__face--front{transform:rotateY(180deg)}
     .c7-reward__face svg{display:block;width:100%;height:100%;overflow:visible;border-radius:0}
     .c7-reward__face--back::after{content:"FLIP TO REVEAL";position:absolute;left:50%;bottom:13px;translate:-50% 0;width:max-content;padding:7px 10px;border:1px solid rgb(234 208 140/.34);border-radius:999px;color:#ead08c;background:rgb(5 22 13/.74);backdrop-filter:blur(6px);font:800 9px/1 "Bai Jamjuree",system-ui;letter-spacing:.15em;box-shadow:0 6px 18px rgb(0 0 0/.28)}
+    .c7-reward__flip.is-flipped .c7-reward__face--back::after{content:none}
     .c7-reward__flip:not(.is-flipped)::after{content:"";position:absolute;inset:0;border-radius:10px;pointer-events:none;background:linear-gradient(110deg,transparent 28%,rgb(255 255 255/.13) 46%,transparent 62%);transform:translateX(-120%);animation:c7RewardShine 2.8s ease-in-out infinite}
     .c7-reward__flavor{position:relative;z-index:1;grid-column:1/-1;margin:0;width:100%;padding:19px clamp(24px,5vw,50px) 18px;border:1px solid rgb(234 208 140/.28);border-radius:17px;color:rgb(255 255 255/.88);background:rgb(255 255 255/.06);font:500 clamp(17px,1.7vw,20px)/1.8 "Anuphan",system-ui;text-align:center;text-wrap:balance;animation:c7RewardStory .45s .08s ease both}
     .c7-reward__quote{display:inline-block;color:#ead08c;font:800 42px/.72 "Bai Jamjuree",system-ui;text-shadow:0 0 20px rgb(234 208 140/.22);vertical-align:-.18em;user-select:none}
