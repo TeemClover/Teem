@@ -31,6 +31,9 @@
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <link rel="stylesheet" href="/assets/readable.css">
+<!-- โหลดภาพแรกและวิดีโอพื้นหลังก่อน เพื่อให้หน้าเปิดติดเร็วที่สุด -->
+<link rel="preload" href="/img/home-opening-poster.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="/media/home-opening-bg.mp4" as="video" type="video/mp4" fetchpriority="high">
 <style>
 :root{
   --deep:#071d12;--deep2:#0b2a19;--gold:#d1a64b;--gold2:#f1d18a;
@@ -150,8 +153,8 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:mani
     </section>
 
     <section class="stage" aria-label="วิดีโอเปิดบ้าน">
-      <video id="bgVideo" autoplay muted loop playsinline preload="metadata" poster="img/home-opening-poster.jpg">
-        <source src="media/home-opening-bg.mp4" type="video/mp4">
+      <video id="bgVideo" autoplay muted loop playsinline preload="auto" poster="img/home-opening-poster.jpg">
+        <source src="/media/home-opening-bg.mp4" type="video/mp4">
       </video>
       <span class="stage-label" data-i18n="stage">คลิปแนะนำบ้าน · 44 วินาที</span>
     </section>
@@ -162,7 +165,7 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:mani
   <div class="dialog" role="dialog" aria-modal="true" aria-label="คลิปเปิดบ้าน 44 วินาที">
     <button class="close" id="closeVideo" aria-label="ปิด">✕</button>
     <video id="fullVideo" controls playsinline preload="none" poster="img/home-opening-poster.jpg">
-      <source src="media/home-opening-full.mp4" type="video/mp4">
+      <source src="/media/home-opening-full.mp4" type="video/mp4">
     </video>
   </div>
 </div>
@@ -213,7 +216,34 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:mani
   var modal=document.getElementById("videoModal");
   var full=document.getElementById("fullVideo");
   var bg=document.getElementById("bgVideo");
+  var fullPreloadStarted=false;
+
+  // เริ่มโหลดคลิปเต็มหลัง BG เล่นได้แล้ว เพื่อไม่ให้แย่ง bandwidth ตอนเปิดหน้า
+  function preloadFullVideo(){
+    if(fullPreloadStarted)return;
+    fullPreloadStarted=true;
+    full.preload="auto";
+    full.load();
+  }
+  function queueFullVideoPreload(){
+    window.setTimeout(preloadFullVideo,250);
+  }
+
+  if(bg.readyState>=3&&!bg.paused){
+    queueFullVideoPreload();
+  }else{
+    bg.addEventListener("playing",queueFullVideoPreload,{once:true});
+  }
+
+  // fallback สำหรับ browser ที่ไม่ยิง playing ตามคาด
+  window.addEventListener("load",function(){
+    window.setTimeout(function(){
+      if(!fullPreloadStarted&&bg.readyState>=2)preloadFullVideo();
+    },2500);
+  },{once:true});
+
   function openModal(){
+    preloadFullVideo();
     modal.classList.add("open");
     modal.setAttribute("aria-hidden","false");
     bg.pause();
