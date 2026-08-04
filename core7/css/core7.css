@@ -36,6 +36,11 @@ body {
 .disp { font-family: "Bai Jamjuree", sans-serif; letter-spacing: -.015em; }
 a { color: inherit; text-decoration: none; }
 img, svg { max-width: 100%; }
+/* การ์ดทุกใบวาดเป็น SVG ที่ติดทั้ง width และ height มาจากโค้ด พอกล่องแคบกว่านั้น
+   max-width บีบเฉพาะความกว้าง ส่วนความสูงยังค้างค่าเดิม ภาพเลยยืดเกินกล่องแล้วโดน
+   overflow:hidden ตัดขอบล่างหายไปนิดหนึ่ง — เห็นชัดสุดบนไพ่กลางโต๊ะตอนมือถือ
+   ที่ตั้ง height ไว้เองอยู่แล้ว (เช่น .print-card) specificity สูงกว่า ไม่โดนกระทบ */
+svg { height: auto; }
 button { font: inherit; cursor: pointer; }
 .sfx-toggle { border: 1px solid rgb(255 255 255 / .24); border-radius: 9px; background: transparent; color: inherit; min-width: 40px; min-height: 40px; }
 [hidden] { display: none !important; }
