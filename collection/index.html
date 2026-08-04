@@ -12,46 +12,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://www.myclover.com/collection/">
 <meta name="theme-color" content="#0A2818">
-<style>
-:root{--deep:#0a2818;--deep2:#071d12;--green:#1b6a42;--gold:#be9442;--gold2:#ead08c;--muted:#a8b5ad;--line:rgba(255,255,255,.13)}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",Tahoma,sans-serif;color:#fff;line-height:1.7;background:radial-gradient(760px 390px at 9% -5%,rgba(27,106,66,.56),transparent 63%),radial-gradient(640px 360px at 96% 4%,rgba(190,148,66,.18),transparent 64%),var(--deep2);-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}button{font:inherit}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}[hidden]{display:none!important}:focus-visible{outline:3px solid var(--gold2);outline-offset:3px;border-radius:8px}
-.bar{position:sticky;z-index:80;top:0;background:rgba(7,29,18,.91);backdrop-filter:blur(13px);border-bottom:1px solid rgba(234,208,140,.2)}
-.bar .wrap{min-height:60px;display:flex;align-items:center;gap:14px}.home{font-weight:800;white-space:nowrap}.home em{font-style:normal;color:var(--gold2)}.bar-title{margin-left:auto;text-align:right;color:rgba(255,255,255,.62);font-size:12px}.bar-title b{display:block;color:#fff;font-size:14px}
-.hero{text-align:center;padding:clamp(42px,7vw,76px) 0 28px}.hero-icon{font-size:48px;line-height:1}.tag{display:inline-flex;margin-top:15px;padding:6px 14px;border:1px solid rgba(234,208,140,.44);border-radius:999px;color:var(--gold2);font-size:11px;font-weight:800;letter-spacing:.15em}.hero h1{font-size:clamp(31px,5.8vw,52px);line-height:1.12;margin:15px 0 12px}.lead{max-width:66ch;margin:auto;color:rgba(255,255,255,.72);font-size:15.5px}.meter{max-width:520px;margin:27px auto 0}.track{height:9px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.13)}.track i{display:block;width:0;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--green),var(--gold2));transition:width .55s ease}.meter-copy{margin-top:10px;color:rgba(255,255,255,.72);font-size:13px}.meter-copy b{color:var(--gold2)}
-.filters{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:22px}.filter{border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:12px;font-weight:800}.filter[aria-pressed="true"]{background:var(--gold2);border-color:var(--gold2);color:var(--deep2)}
-.album{padding:18px 0 74px}.group{padding:34px 0 9px}.group.bonus{margin-top:16px;padding:30px 20px 20px;border:1px solid rgba(234,208,140,.28);border-radius:24px;background:linear-gradient(145deg,rgba(190,148,66,.08),rgba(255,255,255,.025))}.group-head{display:flex;align-items:end;justify-content:space-between;gap:18px;padding-bottom:13px;border-bottom:1px solid rgba(255,255,255,.12)}.eyebrow{color:var(--gold2);font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.group h2{font-size:clamp(22px,3.8vw,31px);line-height:1.2;margin-top:6px}.group-desc{color:rgba(255,255,255,.61);font-size:13.5px;margin-top:5px}.group-count{flex:none;border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 12px;color:rgba(255,255,255,.68);font-size:12px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:18px}
-.ach-card{position:relative;display:flex;min-width:0;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:19px;background:rgba(255,255,255,.055);color:#fff;text-align:left;transition:transform .2s,border-color .2s,box-shadow .2s}.ach-card.is-link{cursor:pointer}.ach-card.is-link:hover{transform:translateY(-5px);border-color:rgba(234,208,140,.86);box-shadow:0 34px 64px -40px rgba(0,0,0,1)}.ach-card.unlocked{border-color:rgba(234,208,140,.44);box-shadow:0 24px 50px -38px rgba(0,0,0,.9)}.ach-card.bonus-card{border-color:rgba(234,208,140,.7);box-shadow:0 24px 62px -36px rgba(190,148,66,.42)}
-.ach-art{position:relative;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(circle at 50% 44%,rgba(190,148,66,.15),transparent 54%),#071a10}.ach-art img{display:block;width:100%;height:100%;object-fit:cover}.ach-card.locked:not(.secret) .ach-art img{filter:brightness(.28) saturate(.65)}.ach-card.secret.locked .ach-art{background:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 9px,transparent 9px 18px),#071a10}.ach-card.secret.locked .ach-art img{display:none}
-.state{position:absolute;z-index:3;top:10px;right:10px;display:grid;place-items:center;min-width:29px;height:29px;padding:0 7px;border-radius:999px;background:rgba(2,13,7,.82);border:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:900}.ach-card.unlocked .state{background:var(--green)}.new{position:absolute;z-index:4;left:10px;top:10px;padding:5px 9px;border-radius:999px;background:var(--gold2);color:var(--deep2);font-size:9px;font-weight:900;letter-spacing:.08em}
-.ach-body{display:flex;flex:1;flex-direction:column;padding:15px 16px 17px}.kind{color:var(--gold2);font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}.ach-name{display:flex;align-items:flex-start;gap:8px;font-size:17px;line-height:1.35;margin-top:5px}.name-icon{flex:none;width:1.25em;text-align:center}.hint{color:rgba(255,255,255,.63);font-size:13px;line-height:1.55;margin-top:5px}.ach-card.locked .ach-name{color:rgba(255,255,255,.56)}.ach-card.locked .hint b{color:var(--gold2)}.ach-card.unlocked .hint b{color:#8fe0ae}.go{display:inline-flex;align-items:center;gap:6px;margin-top:auto;padding-top:12px;color:var(--gold2);font-size:12px;font-weight:800}
-.empty{padding:36px 18px;text-align:center;color:rgba(255,255,255,.62);border:1px dashed rgba(255,255,255,.15);border-radius:18px;margin-top:18px}.note{margin-top:34px;padding:18px 20px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13.5px}.note b{color:#fff}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:19px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 18px;border:1px solid rgba(255,255,255,.22);border-radius:12px;font-weight:800;font-size:13px}.btn.gold{background:var(--gold2);border-color:var(--gold2);color:var(--deep2)}
-footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-size:12px}footer a{color:var(--gold2);font-weight:700}
-
-/* เพลงประจำบ้าน — player แบบเดียวกับหน้า Card แต่ใช้ไฟล์เวอร์ชันมีเสียงร้อง */
-.hud{position:fixed;left:14px;bottom:14px;z-index:80;display:flex;align-items:center;gap:11px;background:#f8f6f0;color:#12281c;border:1px solid rgba(18,40,28,.12);border-radius:999px;padding:8px 20px 8px 8px;cursor:pointer;font-weight:800;font-size:13.5px;box-shadow:0 16px 34px -14px rgba(18,40,28,.62);transition:transform .18s cubic-bezier(.22,1,.36,1),box-shadow .18s,border-color .18s}
-.hud:hover{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 22px 42px -14px rgba(18,40,28,.7)}.hud:active{transform:translateY(-1px) scale(.97)}
-.hud .ico{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--gold);color:#fff;font-size:15px;line-height:1;box-shadow:0 0 0 0 rgba(190,148,66,.5);animation:hudRing 2.6s ease-out infinite}
-@keyframes hudRing{0%{box-shadow:0 0 0 0 rgba(190,148,66,.55)}70%{box-shadow:0 0 0 12px rgba(190,148,66,0)}100%{box-shadow:0 0 0 0 rgba(190,148,66,0)}}
-.hud .lbl{white-space:nowrap;line-height:1.3}.hud .lbl small{display:block;font-weight:500;font-size:11.5px;color:#637068;margin-top:1px}.hud .eq{display:none;align-items:flex-end;gap:2.5px;height:15px;margin-left:-3px}.hud .eq i{width:3px;border-radius:2px;background:var(--green);height:5px;animation:eqBar .9s ease-in-out infinite}.hud .eq i:nth-child(2){animation-delay:.15s}.hud .eq i:nth-child(3){animation-delay:.3s}.hud .eq i:nth-child(4){animation-delay:.45s}@keyframes eqBar{0%,100%{height:4px}50%{height:15px}}
-.hud.playing{border-color:rgba(27,106,66,.4)}.hud.playing .eq{display:flex}.hud.playing .ico{background:var(--green);animation:none;box-shadow:none}
-@media(max-width:600px){.hud{left:10px;bottom:10px;padding:7px 16px 7px 7px;font-size:12.5px;gap:9px}.hud .ico{width:32px;height:32px;font-size:14px}.hud .lbl small{display:none}}
-
-/* First-visit item discovery event */
-.intro-event{position:fixed;inset:0;z-index:220;display:grid;place-items:center;padding:20px;background:rgba(1,8,5,.88);backdrop-filter:blur(10px)}
-.intro-card{position:relative;width:min(520px,100%);overflow:hidden;border:1px solid rgba(234,208,140,.62);border-radius:24px;padding:clamp(24px,6vw,38px);background:radial-gradient(420px 210px at 50% -15%,rgba(190,148,66,.34),transparent 65%),linear-gradient(155deg,#123b25,#071d12);box-shadow:0 38px 100px rgba(0,0,0,.72);text-align:center}
-.intro-tag{display:inline-flex;padding:5px 12px;border:1px solid rgba(234,208,140,.48);border-radius:999px;color:var(--gold2);font-size:10px;font-weight:900;letter-spacing:.16em}
-.intro-bag{font-size:58px;line-height:1;margin:18px 0 8px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.35))}
-.intro-card h2{font-size:clamp(24px,6vw,34px);line-height:1.2}.intro-story{margin:14px auto 0;max-width:40ch;color:rgba(255,255,255,.78);font-size:15px;line-height:1.85}
-.intro-item{display:flex;align-items:center;gap:13px;margin:20px auto 0;padding:13px 15px;border:1px solid rgba(234,208,140,.35);border-radius:15px;background:rgba(255,255,255,.07);text-align:left}.intro-disc{font-size:38px;line-height:1}.intro-item small{display:block;color:var(--gold2);font-size:9.5px;font-weight:900;letter-spacing:.14em}.intro-item b{display:block;margin-top:2px;font-size:16px}.intro-hint{margin-top:17px;color:rgba(255,255,255,.65);font-size:13.5px;line-height:1.7}
-.intro-open{width:100%;min-height:50px;margin-top:22px;border:0;border-radius:13px;padding:12px 18px;background:var(--gold2);color:var(--deep2);cursor:pointer;font-weight:900;font-size:14px;transition:transform .16s,filter .16s}.intro-open:hover{transform:translateY(-2px);filter:brightness(1.06)}.intro-open:active{transform:scale(.98)}
-@media(max-width:600px){.intro-event{padding:14px}.intro-card{border-radius:20px}.intro-bag{font-size:50px}.intro-story{font-size:14px}}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.wrap{width:min(100% - 24px,1120px)}.bar-title{display:none}.group-head{align-items:start}.grid{grid-template-columns:1fr}.hero{padding-top:35px}.ach-card{border-radius:17px}.group.bonus{padding:24px 12px 14px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.track i,.ach-card{transition:none}.ach-card.is-link:hover{transform:none}}
-</style>
+<link rel="stylesheet" href="/collection/collection.css?v=20260804-core7-7">
 <link rel="stylesheet" href="/assets/readable.css">
 <link rel="stylesheet" href="/assets/line-oa.css">
+<script defer src="/collection/collection.js?v=20260804-core7-7"></script>
 </head>
 <body>
 <nav class="bar"><div class="wrap"><a class="home" href="../">🍀 my<em>Clover</em></a><span class="bar-title"><b>Inventory</b>Achievement Album</span></div></nav>
@@ -60,7 +24,11 @@ footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-si
   <h1>ของที่คุณปลดล็อกไว้ในบ้านหลังนี้</h1>
   <p class="lead">เรื่องที่อ่านจบ บทเรียนที่ผ่าน ของที่สร้าง เกมที่ชนะ และความลับที่พบ จะกลับมารวมอยู่ตรงนี้ ช่องที่ยังมืดคือเควสที่ยังรอคุณอยู่</p>
   <div class="meter"><div class="track"><i id="totalFill"></i></div><div class="meter-copy" id="totalCopy">กำลังอ่าน Save ในเครื่องนี้…</div></div>
-  <div class="filters" aria-label="กรอง Achievement"><button class="filter" data-filter="all" aria-pressed="true">ทั้งหมด</button><button class="filter" data-filter="unlocked" aria-pressed="false">ปลดแล้ว</button><button class="filter" data-filter="locked" aria-pressed="false">ยังไม่ปลด</button></div>
+  <div class="filters" aria-label="กรอง Achievement">
+    <button class="filter" data-filter="all" aria-pressed="true">ทั้งหมด</button>
+    <button class="filter" data-filter="unlocked" aria-pressed="false">ปลดแล้ว</button>
+    <button class="filter" data-filter="locked" aria-pressed="false">ยังไม่ปลด</button>
+  </div>
 </div></header>
 <main class="album"><div class="wrap" id="album"></div></main>
 
@@ -72,7 +40,7 @@ footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-si
   </div>
   <a class="mc-line-invite__btn" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer"><img src="/assets/LINE_Brand_icon.png" alt="" width="40" height="40">แอด LINE บ้าน myClover</a>
 </aside>
-<!-- คนละไฟล์กับหน้า Card: หน้านี้เป็น Clover Song เวอร์ชันมีเสียงร้อง -->
+
 <audio id="collectionSong" src="../assets/audio/clover-song-vocal.mp3" loop preload="none"></audio>
 <button type="button" class="hud" id="collectionMusicBtn" aria-pressed="false">
   <span class="ico" id="collectionMusicIco" aria-hidden="true">🎵</span>
@@ -86,142 +54,13 @@ footer{text-align:center;padding:30px 0 50px;color:rgba(255,255,255,.48);font-si
     <div class="intro-bag" aria-hidden="true">🎒</div>
     <h2 id="collectionIntroTitle">คุณเจอกระเป๋าใบหนึ่ง</h2>
     <p class="intro-story">มันวางรออยู่ตรงทางเข้า<br>เมื่อเปิดออก ข้างในมี CD แผ่นหนึ่ง<br>เขียนด้วยปากกาว่า “Clover Song · 2010”</p>
-    <div class="intro-item">
-      <span class="intro-disc" aria-hidden="true">💿</span>
-      <span><small>NEW ITEM</small><b>Clover Song · 2010</b></span>
-    </div>
+    <div class="intro-item"><span class="intro-disc" aria-hidden="true">💿</span><span><small>NEW ITEM</small><b>Clover Song · 2010</b></span></div>
     <p class="intro-hint">ลองเปิดฟังได้จากปุ่มเพลงในหน้านี้<br>ส่วนช่องที่ยังว่างในกระเป๋า จะค่อย ๆ เก็บการ์ดและรางวัลที่คุณพบระหว่างทาง</p>
     <button type="button" class="intro-open" id="collectionIntroOpen">เก็บ CD แล้วเปิดกระเป๋า →</button>
   </div>
 </div>
-<footer><p>🍀 myClover.com · Good Luck, Have Fun</p><p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="../card/">การ์ดของฉัน</a> · <a href="../core7/">CORE7</a></p></footer>
-<script>
-(function(){
-'use strict';
-var FORGE=['ep1-everyone-gets-to-play','ep2-the-first-item','ep3-the-item-that-came-back','ep4-what-traveled-without-us','ep5-from-answers-to-a-system','ep6-the-starter-kit','ep7-a-voice-that-went-further'];
-var FORGE_NAME=['ทุกคนมีสิทธิ์ลงเล่น','ไอเท็มชิ้นแรก','ของที่กลับมาพร้อมรอยใช้','สิ่งที่เดินทางแทนเรา','จากคำตอบสู่ระบบ','สำหรับคนที่มาทีหลัง','เวลาที่ได้คืนมา'];
-var LEARN=['free-ai','image-ai','clip-ai','notebooklm','prompts','first-web'];
-var LEARN_NAME=['เริ่มใช้ AI ฟรี','สร้างภาพด้วย AI','สร้างวิดีโอและคลิป','สร้าง Source ให้ AI','ออกแบบ Prompt','สร้างเว็บชิ้นแรก'];
-function raw(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
-function list(k){return raw(k,'').split(',').filter(Boolean)}
-function json(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}
-function titles(){var t=json('mc_titles',[]);return Array.isArray(t)?t:[]}
-function hasTitle(t){return titles().indexOf(t)>=0}
-function stats(){var a=json('c7:stats_bot',{}),b=json('c7:stats_casual',{});return{played:(a.matchesPlayed||0)+(b.matchesPlayed||0),won:(a.matchesWon||0)+(b.matchesWon||0)}}
-var read=list('mc_read'),learn=list('mc_learn'),c7=stats();
-var forgeCount=FORGE.filter(function(x){return read.indexOf(x)>=0}).length;
-var learnCount=LEARN.filter(function(x){return learn.indexOf(x)>=0}).length;
-var forgeDone=forgeCount===7;
-var cardDone=raw('mc_opened','')==='1';
-var classDone=!!raw('mc_class','');
-var clubDone=raw('mc_club_seen','')==='1';
-var ch7Done=raw('mc_ch7_done','')==='1'||hasTitle('AWAKENED');
-var hand=json('c7:hand',null);var handDone=Array.isArray(hand)&&hand.length===7;
-var tutorialDone=json('c7:tutorial_completed',false)===true;
-var genesisDone=raw('mc_genesis_found','')==='1'||hasTitle('GENESIS');
-var genesisNew=raw('mc_genesis_new','')==='1';
-var started=forgeCount>0||learnCount>0||classDone||cardDone||clubDone||c7.played>0;
-var groups=[];
-function item(o){return o}
-var forgeItems=FORGE.map(function(slug,i){var no=String(i+1).padStart(2,'0');return item({id:'forge-'+(i+1),kind:'WHY AI? · EP '+(i+1),name:FORGE_NAME[i],icon:'📖',on:read.indexOf(slug)>=0,hint:'อ่านตอนที่ '+(i+1)+' จนจบ',go:'../forge/'+slug+'/',image:i===6?'../forge/img/07-p1.jpg?v=20260802-current':'../forge/img/'+no+'-thumb.webp'})});
-forgeItems.push(item({id:'forge-special',kind:'SPECIAL EPISODE',name:'Version แรก · 12 ภาพต้นฉบับ',icon:'🎁',on:read.indexOf(FORGE[6])>=0,hint:'อ่านตอนที่ 7 จบเพื่อเปิดตอนพิเศษ',go:'../forge/original/',image:'../forge/original/01.jpeg'}));
-groups.push({id:'story',eyebrow:'STORY COLLECTION',title:'เรื่องเล่าจากโรงตีเหล็ก',desc:'7 ตอนคือ Progress หลัก ส่วน Version แรกเป็นตอนพิเศษและไม่ถูกนับรวม',items:forgeItems});
-var lessonItems=LEARN.map(function(slug,i){return item({id:'lesson-'+(i+1),kind:'FREE LESSON '+(i+1),name:LEARN_NAME[i],icon:['✨','🖼️','🎬','📚','🧠','🌐'][i],on:learn.indexOf(slug)>=0,hint:'เรียนบทที่ '+(i+1)+' จนจบ',go:'../classroom/'+slug+'.html',image:'../img/lesson-'+(i+1)+'.jpg'})});
-lessonItems.push(item({id:'awaken',kind:'BOSS CLEAR',name:'บทที่ 7 · ผู้ตื่นรู้',icon:'🌅',on:ch7Done,hint:'เรียนครบ 6 บท แล้วผ่านด่านบอส',go:'../classroom/awaken/',image:'../img/og-awaken.jpg'}));
-groups.push({id:'learn',eyebrow:'CLASSROOM COLLECTION',title:'ห้องเรียน AI',desc:'บทเรียนแต่ละบทถูกเก็บแยก และด่านบอสเป็น Achievement เพิ่มจาก 6 บทหลัก',items:lessonItems});
-groups.push({id:'world',eyebrow:'WORLD & PROOF',title:'ห้อง เส้นทาง และของที่สร้าง',desc:'สิ่งที่เกิดขึ้นจากการเลือก ลงมือ และเดินเข้าไปสำรวจจริง',items:[
-item({id:'home',kind:'FIRST STEP',name:'เริ่มเดินในบ้าน myClover',icon:'🍀',on:started,hint:'เริ่มอ่าน เรียน เลือกสาย หรือเล่นเกมอย่างใดอย่างหนึ่ง',go:'../',image:'../img/og-home.jpg'}),
-item({id:'path',kind:'COMPASS',name:'เลือกสายของตัวเอง',icon:'🧭',on:classDone,hint:'เลือกพลัง 1 จาก 4 สาย และเปลี่ยนได้ตลอด',go:'../paths/',image:'../img/og-paths.jpg'}),
-item({id:'club',kind:'ROOM VISITED',name:'myClover Club',icon:'🍜',on:clubDone,hint:'เข้าไปเยี่ยม Club 1 ครั้ง',go:'../club/',image:'../img/og-club.jpg'}),
-item({id:'resume',kind:'ROOM UNLOCK',name:'Smart Resume',icon:'🧾',on:forgeDone,hint:'อ่าน Forge ครบ 7 ตอน',go:'../resume/',image:'../img/og-resume.jpg'}),
-item({id:'walkthrough',kind:'GUIDE UNLOCK',name:'Walkthrough',icon:'🗺️',on:forgeDone||hasTitle('BLACKSMITH'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../walkthrough/',image:'../img/og-walkthrough.jpg'}),
-item({id:'card',kind:'PROOF SAVED',name:'การ์ดประจำตัวใบแรก',icon:'🎴',on:cardDone,hint:'สร้างและบันทึกการ์ดประจำตัว',go:'../card/',image:'../img/og-card.jpg'})]});
-groups.push({id:'badges',eyebrow:'BADGES & SECRET ROUTE',title:'ตราและของที่พบระหว่างทาง',desc:'บางชิ้นบอกเงื่อนไขตรง ๆ บางชิ้นจะไม่เปิดเผยชื่อจนกว่าคุณจะพบเอง',items:[
-item({id:'blacksmith',kind:'SIGIL',name:'ช่างตีเหล็ก',icon:'⚒️',on:forgeDone||hasTitle('BLACKSMITH'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../forge/',image:'../forge/img/07-thumb.webp?v=20260802-sigil'}),
-item({id:'awakened',kind:'SIGIL',name:'ผู้ตื่นรู้',icon:'🌅',on:ch7Done,hint:'ผ่านบทที่ 7 · ด่านบอส',go:'../classroom/awaken/',image:'../img/og-awaken.jpg'}),
-item({id:'hero',kind:'SIGIL',name:'ฮีโร่',icon:'⚔️',on:hasTitle('HERO'),hint:'ปลดรหัสจาก Guild X',go:'../card/',image:'../img/og-card.jpg'}),
-item({id:'seeker',kind:'TITLE',name:'ผู้ค้นพบ',icon:'🔍',on:raw('mc_seek_hit','')==='1'||hasTitle('SEEKER'),hint:'พบโคลเวอร์ที่ซ่อนอยู่ท้ายหน้า Hall',go:'../hall.html',image:'../img/achievement-seeker.webp'}),
-item({id:'notebook-found',kind:'SECRET',name:'สมุดที่หายไป',lockedName:'???',icon:'📔',on:raw('mc_nb_seen','')==='1'||raw('mc_nb_restored','')==='1'||raw('mc_secret_end','')==='1',hint:'พบเส้นทางลับด้วยตัวเอง',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-01.jpg',secret:true}),
-item({id:'notebook-restored',kind:'SECRET',name:'สมุดที่ซ่อมแล้ว',lockedName:'???',icon:'📓',on:raw('mc_nb_restored','')==='1',hint:'ใช้ RESTORE ซ่อมหน้าที่เสียหาย',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-02.jpg',secret:true}),
-item({id:'secret-end',kind:'SECRET ENDING',name:'เพื่อนเล่น · Secret Ending',lockedName:'???',icon:'🏆',on:raw('mc_secret_end','')==='1',hint:'อ่านตอนพิเศษลับจนจบ',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-09.jpg',secret:true}),
-item({id:'glhf',kind:'TRUE END TAG',name:'GLHF · Well Played',lockedName:'???',icon:'👊🏻',on:hasTitle('GLHF'),hint:'ทำการกระทำสุดท้ายของ Secret Route',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-10.jpg',secret:true})]});
-groups.push({id:'core7',eyebrow:'CORE7 ACHIEVEMENTS',title:'เกมที่เล่นได้จริง',desc:'Achievement อ่านจากสถิติที่ CORE7 เก็บไว้ในเครื่องเดียวกัน',items:[
-item({id:'c7-tutorial',kind:'CORE7',name:'เข้าใจกติกา',icon:'🧠',on:tutorialDone,hint:'เล่น Tutorial จนจบ',go:'../core7/tutorial/',image:'../img/hall-core7.jpg'}),
-item({id:'c7-hand',kind:'CORE7',name:'มือแรกของฉัน',icon:'🖐️',on:handDone,hint:'เลือกการ์ดให้ครบ 7 ใบ',go:'../core7/hand/',image:'../img/hall-core7.jpg'}),
-item({id:'c7-match',kind:'CORE7',name:'ดวลครั้งแรก',icon:'⚔️',on:c7.played>0,hint:'เล่น Match แรกจนจบ',go:'../core7/',image:'../img/hall-core7.jpg'}),
-item({id:'c7-win',kind:'CORE7 · BLACK FRAME',name:'ชัยชนะครั้งแรก',icon:'🏅',on:c7.won>0,hint:'ชนะ CORE7 อย่างน้อย 1 Match',go:'../core7/',image:'../img/hall-core7.jpg'})]});
-if(genesisDone)groups.push({id:'genesis',bonus:true,eyebrow:'HIDDEN ORIGIN · BONUS',title:'ของที่ไม่อยู่ในสารบัญ',desc:'ช่องพิเศษนี้ปรากฏหลังจากพบสิ่งที่ผู้สร้างซ่อนไว้ และไม่ถูกนับรวมใน 33 Achievement หลัก',items:[
-item({id:'genesis-scroll',bonus:true,kind:'FORBIDDEN GENESIS · BONUS',name:'คุณเจอ Genesis Prompt ที่ใช้สร้างวิหารแห่งนี้',icon:'📜',on:true,hint:'เลือกทุกหมวดในคลังพรอมพ์ แล้วเปิดม้วนคาถาที่ซ่อนอยู่',go:'../classroom/prompts.html?scroll=forbidden',image:'../img/achievement-genesis-scroll.svg',newBonus:genesisNew})
-]});
-var filter='all',lastUnlocked=raw('mc_collection_last_count','');
-var allItems=[];groups.forEach(function(g){g.items.forEach(function(x){if(!x.bonus)allItems.push(x)})});
-var unlockedCount=allItems.filter(function(x){return x.on}).length;
-try{localStorage.setItem('mc_collection_last_count',String(unlockedCount))}catch(e){}
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function cardHTML(x){
-  var shown=x.on?x.name:(x.secret?(x.lockedName||'???'):x.name);
-  var state=x.on?'✓':'🔒';
-  var canLink=!!x.go&&(!x.secret||x.on);
-  var tag=canLink?'a':'article';
-  var attrs=canLink?' href="'+esc(x.go)+'"':'';
-  var cls='ach-card '+(x.on?'unlocked':'locked')+(x.secret?' secret':'')+(canLink?' is-link':'')+(x.bonus?' bonus-card':'');
-  var regularNew=x.on&&!x.bonus&&lastUnlocked!==''&&unlockedCount>Number(lastUnlocked);
-  var newTag=(regularNew||x.newBonus)?'<span class="new">NEW</span>':'';
-  var image=(!x.secret||x.on)&&x.image?'<img src="'+esc(x.image)+'" alt="" loading="lazy" decoding="async" onerror="this.remove()">':'';
-  var hint=x.on?'<b>✓ ปลดแล้ว</b> — '+x.hint:'<b>ปลดเมื่อ</b> '+x.hint;
-  return '<'+tag+' class="'+cls+'"'+attrs+' data-id="'+esc(x.id)+'">'+newTag+'<div class="ach-art">'+image+'<span class="state">'+state+'</span></div><div class="ach-body"><span class="kind">'+esc(x.kind)+'</span><b class="ach-name"><span class="name-icon">'+x.icon+'</span><span>'+esc(shown)+'</span></b><span class="hint">'+hint+'</span>'+(canLink?'<span class="go">ไปที่เควส →</span>':'')+'</div></'+tag+'>';
-}
-function render(){
-  var root=document.getElementById('album');root.innerHTML='';var visibleTotal=0;
-  groups.forEach(function(g){
-    var visible=g.items.filter(function(x){return filter==='all'||(filter==='unlocked'?x.on:!x.on)});
-    if(!visible.length)return;visibleTotal+=visible.length;
-    var got=g.items.filter(function(x){return x.on}).length;
-    var sec=document.createElement('section');sec.className='group'+(g.bonus?' bonus':'');
-    sec.innerHTML='<div class="group-head"><div><span class="eyebrow">'+g.eyebrow+'</span><h2>'+g.title+'</h2><p class="group-desc">'+g.desc+'</p></div><span class="group-count">'+got+'/'+g.items.length+'</span></div><div class="grid">'+visible.map(cardHTML).join('')+'</div>';
-    root.appendChild(sec);
-  });
-  if(!visibleTotal)root.innerHTML='<div class="empty">ยังไม่มีช่องในตัวกรองนี้</div>';
-  root.insertAdjacentHTML('beforeend','<div class="note"><b>Save ทั้งหมดอยู่ในเครื่องของคุณ</b> — หน้า Inventory แค่อ่าน Local Storage ของเว็บ ไม่ได้ส่งประวัติการเล่นหรือข้อมูลส่วนตัวออกไป หากล้างข้อมูล Browser หรือเปลี่ยนเครื่อง อัลบั้มนี้จะเริ่มใหม่ตาม Save ของเครื่องนั้น</div><div class="actions"><a class="btn gold" href="../hall.html">กลับไปทำ Main Quest →</a><a class="btn" href="../core7/">เล่น CORE7</a><a class="btn" href="../card/">ดูการ์ดของฉัน</a></div>');
-  var bonus=document.querySelector('[data-id="genesis-scroll"]');
-  if(bonus)bonus.addEventListener('click',function(){try{localStorage.removeItem('mc_genesis_new')}catch(e){}});
-}
-document.querySelectorAll('.filter').forEach(function(b){b.addEventListener('click',function(){filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});render()})});
-var pct=Math.round(unlockedCount/allItems.length*100);document.getElementById('totalFill').style.width=pct+'%';document.getElementById('totalCopy').innerHTML='เก็บได้ <b>'+unlockedCount+'</b> จาก '+allItems.length+' Achievement · '+pct+'%';render();
-})();
-</script>
-<script>
-/* เพลงประจำบ้านเวอร์ชันมีเสียงร้อง — ไม่ autoplay และไม่โหลดจนกว่าผู้ใช้จะกด */
-(function(){
-  var au=document.getElementById('collectionSong'),btn=document.getElementById('collectionMusicBtn'),
-      ico=document.getElementById('collectionMusicIco'),lbl=document.getElementById('collectionMusicLbl');
-  if(!au||!btn)return;
-  var sub='<small>Clover Song · เวอร์ชันมีเสียงร้อง</small>',want=false;
-  function cls(c,on){var re=new RegExp('(^|\\s)'+c+'(?=\\s|$)','g');btn.className=btn.className.replace(re,' ').replace(/\\s+/g,' ').replace(/^ | $/g,'')+(on?' '+c:'')}
-  function paint(on){cls('playing',on);ico.textContent=on?'⏸':'🎵';lbl.innerHTML=(on?'กำลังเล่น · แตะเพื่อหยุด':'เปิดเพลงประจำบ้าน')+sub;btn.setAttribute('aria-pressed',on?'true':'false')}
-  btn.addEventListener('click',function(){want=!want;if(want){var pr=au.play();if(pr&&pr.then)pr.catch(function(){want=false;paint(false)});window.mcEvent&&window.mcEvent('music',{item:'collection-vocal-play'})}else{au.pause();window.mcEvent&&window.mcEvent('music',{item:'collection-vocal-pause'})}});
-  au.addEventListener('play',function(){want=true;paint(true)});au.addEventListener('pause',function(){want=false;paint(false)});paint(false);
-})();
-</script>
 
-<script>
-/* แสดงครั้งเดียวในเครื่องนี้ เมื่อพบกระเป๋า Collection เป็นครั้งแรก */
-(function(){
-  var key='mc_collection_intro_seen',modal=document.getElementById('collectionIntro'),
-      open=document.getElementById('collectionIntroOpen');
-  if(!modal||!open)return;
-  var seen=false;try{seen=localStorage.getItem(key)==='1'}catch(e){}
-  if(seen)return;
-  try{localStorage.setItem(key,'1')}catch(e){}
-  modal.hidden=false;document.body.style.overflow='hidden';
-  setTimeout(function(){open.focus()},0);
-  function close(){modal.hidden=true;document.body.style.overflow=''}
-  open.addEventListener('click',close);
-  modal.addEventListener('click',function(e){if(e.target===modal)close()});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)close()});
-})();
-</script>
-<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<footer><p>🍀 myClover.com · Good Luck, Have Fun</p><p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="../card/">การ์ดของฉัน</a> · <a href="../core7/">CORE7</a></p></footer>
 <script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","xtx73cs6w1");</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});</script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>
