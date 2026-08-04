@@ -1,11 +1,15 @@
 import { readAnalyticsStats } from './analytics.js';
 import { colorOf } from '../js/cards.js';
 
-export const CORE7_ANALYTICS_VERSION = '1.1.0';
-export const CORE7_GAME_VERSION = '0.4.6';
+export const CORE7_ANALYTICS_VERSION = '1.2.0';
+export const CORE7_GAME_VERSION = '0.5';
 
 const COLORS = ['RED', 'GREEN', 'BLUE', 'GRAY'];
-const EVENTS = new Set(['CORE7_VIEW', 'HAND_VIEW', 'HAND_READY', 'MATCH_START', 'MATCH_COMPLETE', 'REMATCH']);
+const EVENTS = new Set([
+  'CORE7_VIEW', 'HAND_VIEW', 'HAND_READY', 'MATCH_START', 'MATCH_COMPLETE', 'REMATCH',
+  /* v1.2 — การ์ด FIRST HAND ที่ถูกเปิดใหม่หลังจบ Match ยิงมาที่นี่ ใบละหนึ่ง event */
+  'CARD_UNLOCK',
+]);
 const DAY_MS = 86400000;
 const BKK = 7 * 60 * 60 * 1000;
 
@@ -57,6 +61,12 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS idx_c7_card_picks_card ON c7_analytics_card_picks(card_id, color)`,
 ];
 
+/* ตารางเดิมสร้างไปแล้วบน D1 จริง CREATE TABLE IF NOT EXISTS เลยไม่เติมคอลัมน์ให้
+   ต้อง ALTER เอง และกลืน error "duplicate column" ทิ้ง เพราะรันซ้ำทุก request */
+const MIGRATIONS = [
+  `ALTER TABLE c7_analytics_events ADD COLUMN card_id TEXT`,
+];
+
 let ready = false;
 
 function safeId(value, fallback = '') {
@@ -96,6 +106,9 @@ function bounds(params = {}) {
 export async function ensureAnalyticsV11Schema(db) {
   if (ready) return;
   for (const sql of SCHEMA) await db.prepare(sql).run();
+  for (const sql of MIGRATIONS) {
+    try { await db.prepare(sql).run(); } catch { /* คอลัมน์มีอยู่แล้ว */ }
+  }
   ready = true;
 }
 
@@ -110,8 +123,8 @@ export async function recordClientEvent(db, payload = {}) {
   const inserted = await db.prepare(`
     INSERT OR IGNORE INTO c7_analytics_events (
       event_id, install_id, event_type, path, mode, bot_level, match_id,
-      game_version, rules_version, occurred_at, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      game_version, rules_version, occurred_at, created_at, card_id
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).bind(
     eventId, installId, eventType,
     safeText(payload.path, 160) || null,
@@ -121,6 +134,7 @@ export async function recordClientEvent(db, payload = {}) {
     safeText(payload.gameVersion, 24) || CORE7_GAME_VERSION,
     safeText(payload.rulesVersion, 24) || null,
     occurredAt, now,
+    safeId(payload.cardId) || null,
   ).run();
   if (Number(inserted.meta?.changes || 0) === 0) return { ok: true, duplicate: true };
   const pageInc = ['CORE7_VIEW', 'HAND_VIEW'].includes(eventType) ? 1 : 0;
@@ -241,7 +255,7 @@ export async function readAnalyticsStatsV11(db, params = {}) {
   const base = await readAnalyticsStats(db, params);
   await ensureAnalyticsV11Schema(db);
   const b = bounds(params);
-  const [activeRow, newRow, returningRow, matchUsersRow, rematchRow, funnelRes, versionsRes, colorsRes, picksRes, healthRes, dailyRes] = await Promise.all([
+  const [activeRow, newRow, returningRow, matchUsersRow, rematchRow, funnelRes, versionsRes, colorsRes, picksRes, healthRes, dailyRes, unlockRow, unlockCardsRes, selectUnlockRow] = await Promise.all([
     db.prepare('SELECT COUNT(DISTINCT install_id) n FROM c7_analytics_events WHERE occurred_at >= ? AND occurred_at < ?').bind(b.start, b.end).first(),
     db.prepare('SELECT COUNT(*) n FROM c7_analytics_installations WHERE first_seen_at >= ? AND first_seen_at < ?').bind(b.start, b.end).first(),
     db.prepare(`SELECT COUNT(DISTINCT e.install_id) n FROM c7_analytics_events e
@@ -280,8 +294,23 @@ export async function readAnalyticsStatsV11(db, params = {}) {
       COUNT(DISTINCT install_id) active_players,
       COUNT(DISTINCT CASE WHEN event_type='MATCH_START' THEN install_id END) match_players,
       COUNT(DISTINCT CASE WHEN event_type='MATCH_START' THEN match_id END) match_starts,
-      COUNT(DISTINCT CASE WHEN event_type='MATCH_COMPLETE' THEN match_id END) match_completes
+      COUNT(DISTINCT CASE WHEN event_type='MATCH_COMPLETE' THEN match_id END) match_completes,
+      COUNT(CASE WHEN event_type='CARD_UNLOCK' THEN 1 END) card_unlocks
       FROM c7_analytics_events WHERE occurred_at >= ? AND occurred_at < ? GROUP BY day ORDER BY day`).bind(b.start, b.end).all(),
+    db.prepare(`SELECT COUNT(*) unlocks, COUNT(DISTINCT install_id) players,
+      COUNT(DISTINCT card_id) distinct_cards
+      FROM c7_analytics_events
+      WHERE event_type='CARD_UNLOCK' AND occurred_at >= ? AND occurred_at < ?`).bind(b.start, b.end).first(),
+    db.prepare(`SELECT card_id, COUNT(*) unlocks, COUNT(DISTINCT install_id) players
+      FROM c7_analytics_events
+      WHERE event_type='CARD_UNLOCK' AND card_id IS NOT NULL
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY card_id ORDER BY unlocks DESC, card_id LIMIT 28`).bind(b.start, b.end).all(),
+    db.prepare(`SELECT COUNT(DISTINCT install_id) n FROM (
+      SELECT install_id FROM c7_analytics_events
+      WHERE event_type='CARD_UNLOCK' AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY install_id HAVING COUNT(DISTINCT card_id) >= 7
+    )`).bind(b.start, b.end).first(),
   ]);
 
   const active = Number(activeRow?.n || 0);
@@ -324,12 +353,24 @@ export async function readAnalyticsStatsV11(db, params = {}) {
     cardPicks,
     dataHealth: (healthRes.results || []).map(nums),
     dailyPlayers: (dailyRes.results || []).map(nums),
+    cardUnlocks: {
+      unlocks: Number(unlockRow?.unlocks || 0),
+      players: Number(unlockRow?.players || 0),
+      distinct_cards: Number(unlockRow?.distinct_cards || 0),
+      select_unlocked_players: Number(selectUnlockRow?.n || 0),
+      /* ต่อหัวได้กี่ใบ — บอกว่าคนเล่นซ้ำจนสะสมจริงหรือเปิดใบเดียวแล้วหาย */
+      per_player: Number(unlockRow?.players || 0)
+        ? Number((Number(unlockRow.unlocks) / Number(unlockRow.players)).toFixed(2)) : 0,
+      /* สุ่มแจกทีละใบไม่ซ้ำ ถ้าตัวเลขนี้เอียงมากแปลว่า RNG มีปัญหา */
+      cards: (unlockCardsRes.results || []).map(nums),
+    },
     samplePolicy: { minimum: 20, text: 'เปอร์เซ็นต์ Balance จะแสดงคำเตือนเมื่อ Sample ต่ำกว่า 20 Matches/Hands' },
     patches: [
       { date:'2026-07-31', version:'v0.1', title:'One-prompt birth' },
       { date:'2026-08-01', version:'Manual Patch', title:'Cosmetic + face-up card fix' },
       { date:'2026-08-02', version:'v0.3 Beta', title:'Real multiplayer' },
       { date:'2026-08-03', version:'v0.4.6', title:'MATCH / DOUBLE / SET + Stat v1.1' },
+      { date:'2026-08-04', version:'v0.5', title:'สองภาษาทั้งเว็บ · Card Unlock Stat · กราฟรายวัน' },
     ],
   };
 }

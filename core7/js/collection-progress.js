@@ -7,6 +7,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 import { FIRST_HAND, GENERIC_CARDS, cardById } from './cards.js';
+import { reportCardUnlock } from './analytics.js';
 
 export const COLLECTION_SCHEMA = 3;
 export const STARTER_CARD_IDS = Object.freeze(GENERIC_CARDS.map(card => card.id));
@@ -206,6 +207,10 @@ export function unlockRandomCard(matchId) {
   writeJSON(KEY_COLLECTION, firstHandIds);
   writeJSON(KEY_COUNT, firstHandIds.length);
   syncPublicCount(firstHandIds);
+
+  /* บอก Stat ว่ามีการ์ดใบใหม่ถูกเปิด — ยิงทิ้งไม่รอผล และห้าม throw
+     ออกมาเด็ดขาด ไม่งั้นเน็ตล่มทีเดียวรางวัลไม่ขึ้นทั้งหน้า */
+  try { reportCardUnlock({ cardId: card.id, matchId: rewardKey }); } catch { /* offline */ }
 
   return {
     card,
