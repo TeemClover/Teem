@@ -296,7 +296,7 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
           if (moved) {
             suppressClick = true;
             setTimeout(() => { suppressClick = false; }, 0);
-            playSfx('select');
+            playSfx('cardSwap');
             moveHandCard(c.iid, sortTo);
           }
           resetDrag();
