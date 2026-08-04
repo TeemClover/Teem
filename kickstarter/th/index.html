@@ -1313,6 +1313,215 @@
         line-height:1.24;
       }
     }
+
+    /* ── THAI MONGKOL EVIDENCE — rebuilt for long Thai copy ─────────────── */
+    .mongkol-evidence-th{
+      display:block;
+      padding:clamp(26px,4vw,44px);
+      overflow:hidden;
+    }
+
+    .mongkol-evidence-th .evidence-kicker{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin:0 0 26px;
+      color:var(--gold);
+      font-size:.72rem;
+      font-weight:800;
+      letter-spacing:.07em;
+      line-height:1.5;
+    }
+
+    .evidence-hero{
+      display:grid;
+      grid-template-columns:58px minmax(0,1fr);
+      gap:18px;
+      align-items:center;
+      padding:0 0 28px;
+      border-bottom:1px solid rgba(255,255,255,.14);
+    }
+
+    .evidence-hero-icon{
+      display:grid;
+      width:58px;
+      height:58px;
+      place-items:center;
+      border:1px solid rgba(239,217,149,.3);
+      border-radius:17px;
+      background:rgba(239,217,149,.08);
+      font-size:28px;
+    }
+
+    .evidence-hero-copy{
+      min-width:0;
+    }
+
+    .evidence-label{
+      display:block;
+      margin-bottom:7px;
+      color:rgba(255,255,255,.62);
+      font-size:.86rem;
+      line-height:1.5;
+    }
+
+    .evidence-hero-copy b{
+      display:block;
+      color:var(--gold-soft);
+      font-family:"Anuphan","Noto Sans Thai",Tahoma,sans-serif!important;
+      font-size:clamp(2.25rem,4.6vw,4.6rem);
+      font-weight:700;
+      letter-spacing:-.045em;
+      line-height:1.02;
+      overflow-wrap:anywhere;
+    }
+
+    .evidence-usd{
+      display:inline-flex;
+      margin-top:12px;
+      padding:7px 11px;
+      border:1px solid rgba(255,255,255,.15);
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      color:rgba(255,255,255,.72);
+      font-size:.74rem;
+      font-weight:700;
+      line-height:1.35;
+    }
+
+    .evidence-grid-th{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .evidence-grid-th article{
+      min-width:0;
+      padding:20px;
+      border:1px solid rgba(255,255,255,.11);
+      border-radius:17px;
+      background:rgba(255,255,255,.04);
+    }
+
+    .evidence-grid-th .evidence-grid-icon{
+      display:block;
+      margin-bottom:16px;
+      font-size:22px;
+    }
+
+    .evidence-grid-th b{
+      display:block;
+      color:#fff;
+      font-family:"Anuphan","Noto Sans Thai",Tahoma,sans-serif!important;
+      font-size:clamp(2rem,3.3vw,3rem);
+      font-weight:700;
+      letter-spacing:-.035em;
+      line-height:1.05;
+      overflow-wrap:anywhere;
+    }
+
+    .evidence-grid-th strong{
+      display:block;
+      margin-top:9px;
+      color:var(--gold-soft);
+      font-size:.86rem;
+      line-height:1.45;
+    }
+
+    .evidence-grid-th p{
+      margin:6px 0 0;
+      color:rgba(255,255,255,.55);
+      font-size:.78rem;
+      line-height:1.5;
+    }
+
+    .mongkol-evidence-th .evidence-note{
+      margin:26px 0 0;
+      color:rgba(255,255,255,.72);
+      font-size:.9rem;
+      line-height:1.75;
+    }
+
+    .evidence-conclusion{
+      display:grid;
+      grid-template-columns:30px minmax(0,1fr);
+      gap:3px 12px;
+      margin:22px 0 0;
+      padding:18px 19px;
+      border:1px solid rgba(239,217,149,.2);
+      border-radius:15px;
+      background:rgba(239,217,149,.07);
+      color:rgba(255,255,255,.72);
+      font-size:.86rem;
+      line-height:1.65;
+    }
+
+    .evidence-conclusion>span{
+      grid-row:1/3;
+      font-size:20px;
+    }
+
+    .evidence-conclusion b{
+      display:block;
+      color:#fff;
+      font-weight:700;
+    }
+
+    .evidence-meta{
+      display:grid;
+      gap:5px;
+      margin-top:18px;
+      padding-top:17px;
+      border-top:1px solid rgba(255,255,255,.1);
+    }
+
+    .evidence-meta p{
+      margin:0;
+      color:rgba(255,255,255,.47);
+      font-size:.7rem;
+      line-height:1.55;
+    }
+
+    @media(max-width:680px){
+      .mongkol-evidence-th{
+        padding:24px 20px;
+      }
+
+      .evidence-hero{
+        grid-template-columns:46px minmax(0,1fr);
+        gap:13px;
+      }
+
+      .evidence-hero-icon{
+        width:46px;
+        height:46px;
+        border-radius:14px;
+        font-size:22px;
+      }
+
+      .evidence-hero-copy b{
+        font-size:clamp(2rem,10vw,2.8rem);
+        line-height:1.08;
+      }
+
+      .evidence-grid-th{
+        grid-template-columns:1fr;
+      }
+
+      .evidence-grid-th article{
+        padding:18px;
+      }
+
+      .evidence-grid-th b{
+        font-size:2.25rem;
+      }
+
+      .evidence-conclusion{
+        grid-template-columns:26px minmax(0,1fr);
+        padding:16px;
+      }
+    }
 </style>
 <meta content="th_TH" property="og:locale"/><link href="https://www.myclover.com/kickstarter/" hreflang="en" rel="alternate"/><link href="https://www.myclover.com/kickstarter/th/" hreflang="th" rel="alternate"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/></head>
 <body>
@@ -1434,15 +1643,48 @@
 <p>ในประเทศไทย คำว่า “มงคล” หมายถึงคำ ตัวเลข สิ่งของ หรือช่วงเวลาที่ผู้คนเลือก เพราะมันพกความหมายแห่งความหวัง ภาษาไทยบนการ์ดทุกใบจึงไม่ใช่ของตกแต่ง แต่คือบ้านเกิดของเด็คที่ถูกเก็บรักษาไว้ในภาษาซึ่งตั้งใจให้เดินทางไปทั่วโลก</p>
 <blockquote><span aria-hidden="true" class="quote-icon">✨</span> มงคลพิสูจน์ไม่ได้ด้วยวิทยาศาสตร์ แต่มีหลักฐานยืนยันทางคณิตศาสตร์ว่า มนุษย์มอบคุณค่าให้มันจริง</blockquote>
 </div>
-<div class="mongkol-evidence">
-<p class="evidence-kicker"><span aria-hidden="true" class="micro-icon">📊</span> ความเชื่อที่วัดได้ · ข้อมูลทางการจากประเทศไทย</p>
-<div class="evidence-number"><span aria-hidden="true" class="evidence-icon">ยอดประมูลรวมในวันเดียว · ประมาณ US$3.56M</span><b>฿119.173M</b><span>ยอดประมูลรวมในวันเดียว · 119.173 ล้านบาท</span></div>
-<div class="evidence-grid">
-<article><span aria-hidden="true" class="evidence-grid-icon">📱</span><b>99</b><span>เลขหมายที่ประมูลได้</span></article>
-<article><span aria-hidden="true" class="evidence-grid-icon">ราคาสูงสุดของเลขหมายเดียว · ประมาณ US$299K</span><b>฿10M</b><span>ราคาสูงสุดของเลขหมายเดียว · 10 ล้านบาท</span></article>
+<div class="mongkol-evidence mongkol-evidence-th">
+<p class="evidence-kicker">
+<span aria-hidden="true" class="micro-icon">📊</span>
+    ความเชื่อที่วัดได้ · ข้อมูลทางการจากประเทศไทย
+  </p>
+<div class="evidence-hero">
+<div aria-hidden="true" class="evidence-hero-icon">💰</div>
+<div class="evidence-hero-copy">
+<span class="evidence-label">ยอดประมูลรวมในวันเดียว</span>
+<b>119.173 ล้านบาท</b>
+<span class="evidence-usd">ประมาณ US$3.56M</span>
 </div>
-<p class="evidence-note">เมื่อวันที่ 1 ธันวาคม 2024 กสทช. ประมูลเลขหมายที่ผู้คนให้คุณค่าเป็นพิเศษ 99 เลขหมาย ได้ยอดรวมประมาณ 119.173 ล้านบาทในวันเดียว และราคาสูงสุดของเลขหมายเดียวอยู่ที่ 10 ล้านบาท วิทยาศาสตร์ไม่สามารถพิสูจน์ได้ว่าคำหรือตัวเลขมงคลเปลี่ยนชะตา แต่คณิตศาสตร์ยืนยันได้ว่า ความหมายเชิงสัญลักษณ์ส่งผลต่อการเลือกของมนุษย์และสร้างมูลค่าทางเศรษฐกิจที่วัดได้จริง</p>
-<p class="fx-note">ตัวเลข USD เป็นค่าประมาณ โดยใช้อัตราอ้างอิงของธนาคารแห่งประเทศไทยที่ประมาณ US$1 = ฿33.48 เมื่อวันที่ 27 กรกฎาคม 2026</p><p class="source-note">ที่มา: ผลการประมูลอย่างเป็นทางการของ กสทช. วันที่ 1 ธันวาคม 2024</p>
+</div>
+<div class="evidence-grid evidence-grid-th">
+<article>
+<span aria-hidden="true" class="evidence-grid-icon">📱</span>
+<b>99</b>
+<strong>เลขหมาย</strong>
+<p>จำนวนเลขหมายที่ประมูลได้</p>
+</article>
+<article>
+<span aria-hidden="true" class="evidence-grid-icon">🏆</span>
+<b>10 ล้านบาท</b>
+<strong>ราคาสูงสุดต่อ 1 เลขหมาย</strong>
+<p>ประมาณ US$299K</p>
+</article>
+</div>
+<p class="evidence-note">
+    เมื่อวันที่ 1 ธันวาคม 2024 กสทช. ประมูลเลขหมายที่ผู้คนให้คุณค่าเป็นพิเศษ
+    99 เลขหมาย ได้ยอดรวม 119.173 ล้านบาทภายในวันเดียว และราคาสูงสุดของ
+    เลขหมายเดียวอยู่ที่ 10 ล้านบาท
+  </p>
+<p class="evidence-conclusion">
+<span aria-hidden="true">🧮</span>
+<b>วิทยาศาสตร์พิสูจน์ไม่ได้ว่า “มงคล” เปลี่ยนชะตา</b>
+    แต่คณิตศาสตร์ยืนยันได้ว่า ความหมายเชิงสัญลักษณ์เปลี่ยนการเลือกของมนุษย์
+    และสร้างมูลค่าทางเศรษฐกิจที่วัดได้จริง
+  </p>
+<div class="evidence-meta">
+<p>💱 USD เป็นค่าประมาณ จากอัตรา US$1 ≈ ฿33.48</p>
+<p>📄 ที่มา: ผลการประมูลอย่างเป็นทางการของ กสทช. วันที่ 1 ธันวาคม 2024</p>
+</div>
 </div>
 </div>
 </section>
