@@ -44,27 +44,27 @@
     <h2 class="disp">วันนี้อยากนั่งโต๊ะแบบไหน</h2>
 
     <div class="namebar">
-      <span style="font-weight:700">ชื่อบนโต๊ะ:</span>
+      <span style="font-weight:700" data-en="Name at the table:">ชื่อบนโต๊ะ:</span>
       <input id="gname" maxlength="24" aria-label="ชื่อที่แสดงบนโต๊ะ">
-      <button class="btn" id="saveName" style="padding:11px 18px;min-height:44px">บันทึก</button>
+      <button class="btn" id="saveName" style="padding:11px 18px;min-height:44px" data-en="Save">บันทึก</button>
     </div>
 
     <!-- เล่นกับบอทมาก่อนเสมอ — เป็นทางเดียวที่เริ่มได้ทันทีโดยไม่ต้องมีคนอื่นออนไลน์
          Public Lobby ที่ว่างเปล่าไม่ควรเป็นสิ่งแรกที่คนเปิดเกมครั้งแรกเห็น -->
     <section class="panel play-first" aria-labelledby="botTitle">
-      <p class="eyebrow">เริ่มได้ทันที · ไม่ต้องรอใคร</p>
+      <p class="eyebrow" data-en="Starts instantly · No waiting">เริ่มได้ทันที · ไม่ต้องรอใคร</p>
       <h3 class="disp" id="botTitle">🤖 เล่นกับบอท</h3>
-      <p class="play-first-lead">EASY ลงแบบสุ่ม ส่วน HARD คิดจากข้อมูลหงายหน้าและ Pattern โดยไม่เห็นมือคุณ</p>
+      <p class="play-first-lead" data-en="EASY plays at random. HARD reads the face-up cards and your patterns — it never sees your hand.">EASY ลงแบบสุ่ม ส่วน HARD คิดจากข้อมูลหงายหน้าและ Pattern โดยไม่เห็นมือคุณ</p>
       <div class="row">
-        <a class="btn btn-green" href="/core7/hand/?next=bot&level=easy">EASY · สุ่ม</a>
-        <a class="btn btn-dark" href="/core7/hand/?next=bot&level=hard">HARD · คิดก่อนลง</a>
+        <a class="btn btn-green" href="/core7/hand/?next=bot&level=easy" data-en="EASY · random">EASY · สุ่ม</a>
+        <a class="btn btn-dark" href="/core7/hand/?next=bot&level=hard" data-en="HARD · thinks first">HARD · คิดก่อนลง</a>
       </div>
     </section>
 
     <section class="panel play-room-make" aria-labelledby="makeTitle">
       <h3 class="disp" id="makeTitle">🏠 สร้างห้องชวนเพื่อน</h3>
-      <p>สร้างห้องออนไลน์ด้วยรหัสตัวเลข 4 หลัก แล้วเลือกโหมด MATCH, DOUBLE หรือ SET — ทุกโหมดใช้มือเจ็ดใบเดิมจนกว่าจะมีผู้ชนะ</p>
-      <div class="row"><a class="btn btn-gold" href="/core7/create/">สร้างห้อง</a></div>
+      <p data-en="Open an online room with a 4-digit code, then pick MATCH, DOUBLE or SET — every mode keeps the same seven cards until someone wins.">สร้างห้องออนไลน์ด้วยรหัสตัวเลข 4 หลัก แล้วเลือกโหมด MATCH, DOUBLE หรือ SET — ทุกโหมดใช้มือเจ็ดใบเดิมจนกว่าจะมีผู้ชนะ</p>
+      <div class="row"><a class="btn btn-gold" href="/core7/create/" data-en="Make a room">สร้างห้อง</a></div>
     </section>
 
     <section class="panel play-lobby" aria-labelledby="lobbyTitle">
@@ -73,7 +73,7 @@
         <button class="btn" id="refreshLobby">↻ Refresh</button>
       </div>
       <div class="quick-join">
-        <div class="field"><label for="quickCode">Room Code 4 หลัก</label><input id="quickCode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0042" autocomplete="one-time-code"></div>
+        <div class="field"><label for="quickCode" data-en="4-digit room code">Room Code 4 หลัก</label><input id="quickCode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0042" autocomplete="one-time-code"></div>
         <button class="btn btn-gold" id="joinCode">Join Room</button>
       </div>
       <p id="lobbyStatus" role="status" style="font-size:13px;color:rgb(var(--muted));min-height:18px;margin-top:6px"></p>
@@ -83,13 +83,13 @@
     <div class="modes">
       <div class="panel mode">
         <h3>🎓 ยังไม่เคยเล่น?</h3>
-        <p>Tutorial แบบเล่นจริง สอนวงสี การทิ้งเพิ่ม และกฎ Final Gray ใน 30 วินาที</p>
-        <div class="row"><a class="btn" href="/core7/tutorial/">เรียนรู้ใน 30 วินาที</a></div>
+        <p data-en="A hands-on tutorial: the color cycle, the extra discard, and Final Gray in 30 seconds.">Tutorial แบบเล่นจริง สอนวงสี การทิ้งเพิ่ม และกฎ Final Gray ใน 30 วินาที</p>
+        <div class="row"><a class="btn" href="/core7/tutorial/" data-en="Learn in 30 seconds">เรียนรู้ใน 30 วินาที</a></div>
       </div>
       <div class="panel mode">
         <h3>🏆 Ranked Game <span class="tag tag-soon">Coming soon</span></h3>
         <p>ฤดูกาลแข่งขันพร้อมรางวัล Season Champion — ตอนนี้ทุกโหมดเล่นได้ฟรีและไม่มีอะไรต้องปลดล็อก
-           (ดูรายละเอียดที่ <a href="/core7/rank/" style="text-decoration:underline">หน้า Ranking</a>)</p>
+           (ดูรายละเอียดที่ <a href="/core7/rank/" style="text-decoration:underline" data-en="the Ranking page">หน้า Ranking</a>)</p>
       </div>
     </div>
   </div>
@@ -137,13 +137,13 @@ async function joinRoom(code, button) {
 async function loadLobby() {
   refreshLobby.disabled = true;
   lobbyStatus.textContent = 'กำลังอัปเดต Lobby…';
-  roomsEl.innerHTML = '<div class="play-lobby-empty">กำลังโหลดห้อง…</div>';
+  roomsEl.innerHTML = '<div class="play-lobby-empty" data-en="Loading rooms…">กำลังโหลดห้อง…</div>';
   try {
     const rooms = await roomsApi.list();
     roomsEl.innerHTML = '';
     lobbyStatus.textContent = rooms.length ? `${rooms.length} ห้องกำลังรอ` : 'ยังไม่มีห้องสาธารณะ';
     if (!rooms.length) {
-      roomsEl.innerHTML = '<div class="play-lobby-empty">ยังไม่มีห้อง — สร้างห้อง Public แล้วชื่อจะขึ้นตรงนี้</div>';
+      roomsEl.innerHTML = '<div class="play-lobby-empty" data-en="No rooms yet — make a Public room and it will show up here.">ยังไม่มีห้อง — สร้างห้อง Public แล้วชื่อจะขึ้นตรงนี้</div>';
     }
     for (const room of rooms) {
       const row = document.createElement('div'); row.className = 'play-room';
@@ -157,7 +157,7 @@ async function loadLobby() {
     }
   } catch (error) {
     lobbyStatus.textContent = `โหลด Lobby ไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`;
-    roomsEl.innerHTML = '<div class="play-lobby-empty">กด Refresh เพื่อลองอีกครั้ง</div>';
+    roomsEl.innerHTML = '<div class="play-lobby-empty" data-en="Press Refresh to try again">กด Refresh เพื่อลองอีกครั้ง</div>';
   } finally {
     refreshLobby.disabled = false;
   }

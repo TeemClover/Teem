@@ -17,21 +17,21 @@
   <p class="eyebrow"><span data-c7-version>v0.4.6</span> · Online Multiplayer</p>
   <h2 class="disp">สร้างห้องให้เพื่อน</h2>
   <div class="panel" style="margin-top:20px">
-    <div class="field"><label for="hname">ชื่อของคุณบนโต๊ะ</label><input id="hname" maxlength="24"></div>
-    <div class="field"><label>Game Mode — ต้องชนะกี่ Match</label><div class="choices">
-      <label class="choice"><input type="radio" name="mode" value="quick" checked><b>MATCH</b><small>ชนะ 1 Match จบเกม</small></label>
-      <label class="choice"><input type="radio" name="mode" value="bo3"><b>DOUBLE</b><small>คนแรกที่ชนะ 2 Matches</small></label>
-      <label class="choice"><input type="radio" name="mode" value="bo5"><b>SET</b><small>คนแรกที่ชนะ 3 Matches</small></label>
+    <div class="field"><label for="hname" data-en="Your name at the table">ชื่อของคุณบนโต๊ะ</label><input id="hname" maxlength="24"></div>
+    <div class="field"><label data-en="Game mode — how many Matches to win">Game Mode — ต้องชนะกี่ Match</label><div class="choices">
+      <label class="choice"><input type="radio" name="mode" value="quick" checked><b>MATCH</b><small data-en="Win 1 Match and it is over">ชนะ 1 Match จบเกม</small></label>
+      <label class="choice"><input type="radio" name="mode" value="bo3"><b>DOUBLE</b><small data-en="First to win 2 Matches">คนแรกที่ชนะ 2 Matches</small></label>
+      <label class="choice"><input type="radio" name="mode" value="bo5"><b>SET</b><small data-en="First to win 3 Matches">คนแรกที่ชนะ 3 Matches</small></label>
     </div>
-    <p style="font-size:13px;color:rgb(var(--muted));margin-top:8px">ทุกโหมดใช้มือเจ็ดใบเดิมจนกว่าจะมีผู้ชนะ — เปลี่ยนมือกลางทางไม่ได้</p></div>
-    <div class="field"><label for="visibility">การมองเห็นห้อง</label><select id="visibility">
-      <option value="public">Public — แสดงใน Lobby</option><option value="unlisted">Unlisted — เข้าได้ด้วยรหัสเท่านั้น</option>
+    <p style="font-size:13px;color:rgb(var(--muted));margin-top:8px" data-en="Every mode keeps the same seven cards until someone wins — no swapping mid-set.">ทุกโหมดใช้มือเจ็ดใบเดิมจนกว่าจะมีผู้ชนะ — เปลี่ยนมือกลางทางไม่ได้</p></div>
+    <div class="field"><label for="visibility" data-en="Room visibility">การมองเห็นห้อง</label><select id="visibility">
+      <option value="public" data-en="Public — listed in the Lobby">Public — แสดงใน Lobby</option><option value="unlisted" data-en="Unlisted — code only">Unlisted — เข้าได้ด้วยรหัสเท่านั้น</option>
     </select></div>
     <div class="panel" style="background:rgb(var(--gold)/.08);border-color:rgb(var(--gold)/.3);margin-bottom:12px">
-      <b>รหัสห้องเป็นตัวเลข 4 หลัก</b><p style="font-size:13.5px;margin-top:4px">Server จะจองรหัสที่ว่างให้ ห้องรอหมดอายุอัตโนมัติ และใช้เล่นข้ามอุปกรณ์ได้</p>
+      <b data-en="Room codes are 4 digits">รหัสห้องเป็นตัวเลข 4 หลัก</b><p style="font-size:13.5px;margin-top:4px" data-en="The server reserves a free code, idle rooms expire on their own, and you can play across devices.">Server จะจองรหัสที่ว่างให้ ห้องรอหมดอายุอัตโนมัติ และใช้เล่นข้ามอุปกรณ์ได้</p>
     </div>
     <p class="status" id="status" role="status"></p>
-    <button class="btn btn-gold btn-lg btn-block" id="go">สร้างห้องออนไลน์ →</button>
+    <button class="btn btn-gold btn-lg btn-block" id="go" data-en="Make the room →">สร้างห้องออนไลน์ →</button>
   </div>
 </div></main>
 <footer class="c7foot" id="c7foot"></footer>

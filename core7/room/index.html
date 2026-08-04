@@ -29,14 +29,14 @@ renderShell({ minimal: true });
 const code = (pathSegment('room') || '').trim();
 const lobby = document.getElementById('lobby');
 if (!/^\d{4}$/.test(code)) {
-  lobby.innerHTML = '<h2 class="disp">รหัสห้องไม่ถูกต้อง</h2><a class="btn btn-gold" href="/core7/join/">กลับไป Lobby</a>';
+  lobby.innerHTML = '<h2 class="disp">รหัสห้องไม่ถูกต้อง</h2><a class="btn btn-gold" href="/core7/join/" data-en="Back to Lobby">กลับไป Lobby</a>';
   throw new Error('INVALID_ROOM_CODE');
 }
 document.getElementById('codeShow').textContent = code; document.title = `ห้อง ${code} — myClover: CORE7`;
 const api = new RemoteRooms(); let session;
 try { session = api.session(code); }
 catch {
-  lobby.innerHTML = '<h2 class="disp">ไม่พบ session ของห้องนี้</h2><p>เข้าห้องผ่าน Public Lobby หรือใส่รหัสใหม่อีกครั้ง</p><a class="btn btn-gold" style="margin-top:14px" href="/core7/join/">ไปหน้า Join</a>';
+  lobby.innerHTML = '<h2 class="disp">ไม่พบ session ของห้องนี้</h2><p data-en="Join from the Public Lobby, or enter the code again.">เข้าห้องผ่าน Public Lobby หรือใส่รหัสใหม่อีกครั้ง</p><a class="btn btn-gold" style="margin-top:14px" href="/core7/join/" data-en="Go to Join">ไปหน้า Join</a>';
   throw new Error('ROOM_SESSION_NOT_FOUND');
 }
 
@@ -176,7 +176,7 @@ function render(data) {
   if (r.status === 'WAITING' || r.status === 'HAND_BUILDING') renderWaiting(data);
   else if (r.status === 'PLAYING') startMatch(data);
   else if (r.status === 'BETWEEN_MATCHES' || r.status === 'SERIES_ENDED') renderSummary(data);
-  else { showLobby(); content.innerHTML = '<div class="panel">ห้องนี้ปิดแล้ว</div>'; }
+  else { showLobby(); content.innerHTML = '<div class="panel" data-en="This room is closed">ห้องนี้ปิดแล้ว</div>'; }
 }
 
 session.subscribe(data => render(data));
@@ -184,7 +184,7 @@ try {
   const data = await session.refresh(); render(data);
   if (new URLSearchParams(location.search).get('hand') === '1') { const hand = store.getHand(); if (hand?.length === 7 && !data.room.you.ready) await sendHand(hand); }
 } catch (error) {
-  content.innerHTML = `<div class="panel"><b>เชื่อมต่อห้องไม่ได้</b><p style="margin-top:6px">${error.code || 'NETWORK_ERROR'}</p><a class="btn btn-gold" style="margin-top:12px" href="/core7/join/">กลับ Lobby</a></div>`;
+  content.innerHTML = `<div class="panel"><b data-en="Could not reach the room">เชื่อมต่อห้องไม่ได้</b><p style="margin-top:6px">${error.code || 'NETWORK_ERROR'}</p><a class="btn btn-gold" style="margin-top:12px" href="/core7/join/" data-en="Back to Lobby">กลับ Lobby</a></div>`;
 }
 window.addEventListener('pagehide', () => session.close());
 </script>

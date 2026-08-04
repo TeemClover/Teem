@@ -40,26 +40,26 @@
     <div class="timeline" id="timeline"></div>
 
     <h2 class="disp" style="margin-top:34px;font-size:22px">ชวนคุยหลังเกม</h2>
-    <p style="font-size:13.5px;color:rgb(var(--muted))">เกมจบแล้ว แต่บทสนทนาเพิ่งเริ่ม — ลองถามกันดู</p>
-    <div class="prompt-card">การ์ดใบไหนในมือ 7 ใบนี้เป็นตัวคุณที่สุด?</div>
-    <div class="prompt-card">ทำไมคุณเลือกทิ้งใบนั้น?</div>
-    <div class="prompt-card">มีใบไหนที่คุณไม่อยากเสียเลย?</div>
+    <p style="font-size:13.5px;color:rgb(var(--muted))" data-en="The game is over, the conversation just started — try asking:">เกมจบแล้ว แต่บทสนทนาเพิ่งเริ่ม — ลองถามกันดู</p>
+    <div class="prompt-card" data-en="Which of your seven is most like you?">การ์ดใบไหนในมือ 7 ใบนี้เป็นตัวคุณที่สุด?</div>
+    <div class="prompt-card" data-en="Why did you discard that one?">ทำไมคุณเลือกทิ้งใบนั้น?</div>
+    <div class="prompt-card" data-en="Was there one you did not want to lose?">มีใบไหนที่คุณไม่อยากเสียเลย?</div>
 
     <div class="panel" id="nightUnlock" hidden
       style="margin-top:30px;background:#161814;color:#fff;border-color:rgb(var(--gold)/.5)">
-      <b class="disp">🖤 ปลดล็อคแล้ว: กรอบดำ — ผู้ชนะเกม</b>
+      <b class="disp" data-en="🖤 Unlocked: the black frame — game winner">🖤 ปลดล็อคแล้ว: กรอบดำ — ผู้ชนะเกม</b>
       <p style="font-size:14px;margin-top:6px;color:rgb(255 255 255/.8)">
         ชัยชนะของคุณปลดล็อคกรอบสีใหม่ให้การ์ดประจำตัวบนเว็บ myClover —
         ไปที่หน้าทำการ์ดแล้วเลือก "กรอบดำ" ได้เลย</p>
-      <a class="btn btn-gold" style="margin-top:12px" href="/card/">🃏 ไปแต่งการ์ดของฉัน</a>
+      <a class="btn btn-gold" style="margin-top:12px" href="/card/" data-en="🃏 Go style my card">🃏 ไปแต่งการ์ดของฉัน</a>
     </div>
 
     <div class="panel" style="margin-top:30px" id="signup">
-      <b class="disp">สมัครเพื่อเก็บเรื่องราวของมือ 7 ใบนี้</b>
+      <b class="disp" data-en="Sign up to keep the story of these seven">สมัครเพื่อเก็บเรื่องราวของมือ 7 ใบนี้</b>
       <p style="font-size:14px;margin-top:6px;color:rgb(var(--ink)/.75)">
         บัญชี Member จะเก็บสถิติ Rank Collection และประวัติข้ามอุปกรณ์ —
-        ระบบสมัครจะเปิดพร้อม Server จริง <b>ไม่สมัครก็เล่นต่อได้เสมอ</b>
-        (สถิติของคุณถูกเก็บในเครื่องนี้แล้ว ดูได้ที่ <a href="/core7/profile/" style="text-decoration:underline">โปรไฟล์</a>)</p>
+        ระบบสมัครจะเปิดพร้อม Server จริง <b data-en="You can always keep playing without an account">ไม่สมัครก็เล่นต่อได้เสมอ</b>
+        (สถิติของคุณถูกเก็บในเครื่องนี้แล้ว ดูได้ที่ <a href="/core7/profile/" style="text-decoration:underline" data-en="Profile">โปรไฟล์</a>)</p>
     </div>
   </div>
 </main>
@@ -86,7 +86,7 @@ const hero = document.getElementById('hero');
 /* บอทเก็บ state เต็ม · ออนไลน์เก็บได้แค่ view เพราะ server เป็นเจ้าของ state
    รับทั้งสองแบบ ไม่งั้นเกมออนไลน์จะเด้งเป็น "ไม่พบผล" ทุกครั้ง */
 if (!snap || (!snap.state && !snap.view)) {
-  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how">ผลอาจถูกล้างไปแล้ว</p>';
+  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how" data-en="It may have been cleared already">ผลอาจถูกล้างไปแล้ว</p>';
   document.getElementById('actions').append(
     el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
   throw new Error('no snapshot');
@@ -105,7 +105,7 @@ const view = snap.state
     })()
   : snap.view;
 if (!view || !view.result) {
-  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how">ผลอาจถูกล้างไปแล้ว</p>';
+  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how" data-en="It may have been cleared already">ผลอาจถูกล้างไปแล้ว</p>';
   document.getElementById('actions').append(
     el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
   throw new Error('no view');

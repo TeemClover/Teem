@@ -108,3 +108,25 @@ if (typeof window !== 'undefined') {
     dispatchEvent(new CustomEvent('core7:lang', { detail: { lang: e.newValue } }));
   });
 }
+
+/* บางหน้าวาดเนื้อหาด้วย JS หลัง applyLang() วิ่งไปแล้ว ท่อนพวกนั้นจะค้างเป็นไทย
+   ทั้งที่มี data-en อยู่ — เฝ้าไว้แล้วแปลให้เองเมื่อมีของใหม่โผล่
+   debounce ไว้ เรียกซ้ำไม่เปลือง และถ้าเบราว์เซอร์ไม่มี MutationObserver ก็ข้ามไป */
+if (typeof window !== 'undefined' && window.MutationObserver) {
+  const start = () => {
+    let pending = false;
+    let mine = false;          /* applyLang เขียน DOM เอง ต้องไม่นับว่าเป็นของใหม่
+                                  ไม่งั้นมันจะปลุกตัวเองวนไม่จบ */
+    new MutationObserver(() => {
+      if (pending || mine) return;
+      pending = true;
+      setTimeout(() => {
+        pending = false;
+        mine = true;
+        try { applyLang(); } finally { setTimeout(() => { mine = false; }, 0); }
+      }, 0);
+    }).observe(document.body, { childList: true, subtree: true });
+  };
+  if (document.body) start();
+  else document.addEventListener('DOMContentLoaded', start, { once: true });
+}
