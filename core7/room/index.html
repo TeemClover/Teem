@@ -43,6 +43,9 @@ catch {
 const lobbyWrap = document.getElementById('lobbyWrap'); const matchEl = document.getElementById('match');
 const content = document.getElementById('content'); const status = document.getElementById('status'); const actions = document.getElementById('actions');
 let mountedMatchId = null; let lastOpponent = null;
+/* จำสถานะพร้อมของคู่แข่งไว้ จะได้ยิงเสียงตอนที่มันเพิ่งเปลี่ยนเป็นพร้อม
+   ไม่ใช่ทุกครั้งที่ poll เจอว่าพร้อมอยู่ */
+let lastOppNextReady = false;
 
 function seatRow(name, sub, ready) {
   return el('div', { class:'lobby-seat' }, el('span', { class:'avatar' }, name ? name[0].toUpperCase() : '?'),
@@ -177,6 +180,11 @@ function renderSummary(data) {
 function render(data) {
   if (!data?.room) return; const r = data.room;
   if (r.opponent?.name && r.opponent.name !== lastOpponent) { if (lastOpponent === null) playSfx('join'); lastOpponent = r.opponent.name; }
+  /* คู่แข่งกดพร้อมเล่นรอบต่อไป — เสียงเดียวกับตอนมีคนเข้าห้อง เพราะเป็น
+     จังหวะเดียวกันในความรู้สึก คือ "อีกฝั่งมาแล้ว" */
+  const oppNextReady = !!r.opponent?.nextReady;
+  if (oppNextReady && !lastOppNextReady) playSfx('join');
+  lastOppNextReady = oppNextReady;
   if (r.status === 'WAITING' || r.status === 'HAND_BUILDING') renderWaiting(data);
   else if (r.status === 'PLAYING') startMatch(data);
   else if (r.status === 'BETWEEN_MATCHES' || r.status === 'SERIES_ENDED') renderSummary(data);

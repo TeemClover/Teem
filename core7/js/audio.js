@@ -29,6 +29,11 @@ if (typeof document !== 'undefined') {
   const prime = () => { claimPlaybackSession(); wake(); };
   addEventListener('pointerdown', prime, { once: true, passive: true });
   addEventListener('keydown', prime, { once: true, passive: true });
+  /* ดึงไฟล์เสียงตั้งแต่ตอนว่าง ไม่ต้องรอให้ถึงจังหวะที่ต้องดังจริง
+     ไม่แตะ AudioContext ตรงนี้ แค่โหลดไบต์เก็บไว้ */
+  const warm = () => prefetchSamples();
+  if (document.readyState === 'complete') setTimeout(warm, 400);
+  else addEventListener('load', () => setTimeout(warm, 400), { once: true });
 }
 
 export function isMuted() {
@@ -46,8 +51,79 @@ export function toggleMuted() {
   return next;
 }
 
+/* ── เสียงจากไฟล์จริง ──
+   เสียงสังเคราะห์ยังใช้กับจังหวะเล็ก ๆ ที่ยิงถี่ (เลือกไพ่ ล็อก ชนะแพ้)
+   เพราะไม่ต้องโหลดอะไรและไม่มีทางดีเลย์ ส่วนสามเสียงนี้เป็นไฟล์ที่เลือก
+   มาเอง สังเคราะห์ให้เหมือนไม่ได้ ถ้าโหลดหรือ decode ไม่ผ่านก็ถอยไปใช้
+   PATTERNS ของชื่อเดียวกัน เสียงเพี้ยนดีกว่าเงียบสนิท */
+const SAMPLES = {
+  join: '/core7/assets/audio/player-joined.mp3',
+  cardFlip: '/core7/assets/audio/card-flip.mp3',
+  /* ต้นฉบับเป็น .m4a (AAC) — แปลงเป็น mp3 เพราะ AAC ต้องพึ่ง decoder ของ
+     ระบบ บางเบราว์เซอร์/บางเครื่องเลยเล่นไม่ได้ ส่วน mp3 เล่นได้ทุกที่ */
+  cardSwap: '/core7/assets/audio/card-swap.mp3',
+};
+
+const decoded = new Map();   // name → AudioBuffer | null (null = เจ๊งแล้ว อย่าลองซ้ำ)
+const bytes = new Map();     // name → ArrayBuffer ที่โหลดไว้ล่วงหน้า
+const decoding = new Map();
+
+/* โหลดไฟล์ไว้ก่อนตั้งแต่หน้าโหลดเสร็จ แต่ยังไม่ decode เพราะ decode ต้องมี
+   AudioContext ซึ่งสร้างก่อนผู้ใช้แตะจะโดนเบราว์เซอร์พักไว้อยู่ดี
+   แยกสองจังหวะแบบนี้ เสียงครั้งแรกเลยไม่ต้องรอเน็ต */
+function prefetchSamples() {
+  for (const [name, url] of Object.entries(SAMPLES)) {
+    if (bytes.has(name) || decoded.has(name)) continue;
+    bytes.set(name, null);
+    fetch(url)
+      .then(response => (response.ok ? response.arrayBuffer() : null))
+      .then(buffer => { if (buffer) bytes.set(name, buffer); })
+      .catch(() => { /* ไม่มีไฟล์ก็ถอยไปใช้เสียงสังเคราะห์ */ });
+  }
+}
+
+function sampleBuffer(name) {
+  if (decoded.has(name)) return Promise.resolve(decoded.get(name));
+  if (decoding.has(name)) return decoding.get(name);
+  const url = SAMPLES[name];
+  if (!url) return Promise.resolve(null);
+  /* decodeAudioData ยึด ArrayBuffer ไปเลย (detach) ถ้า decode พลาดจะเหลือ
+     ก้อนเปล่า เลยส่งสำเนาเข้าไปแทน ต้นฉบับจะได้ลองใหม่ได้ */
+  const source = bytes.get(name)
+    ? Promise.resolve(bytes.get(name).slice(0))
+    : fetch(url).then(response => (response.ok ? response.arrayBuffer() : Promise.reject(new Error('HTTP'))));
+  const job = source
+    .then(raw => audioContext().decodeAudioData(raw))
+    .then(buffer => { decoded.set(name, buffer); return buffer; })
+    .catch(() => { decoded.set(name, null); return null; })
+    .finally(() => decoding.delete(name));
+  decoding.set(name, job);
+  return job;
+}
+
+function playSample(name, { rate = 1, gain = 1 } = {}) {
+  if (isMuted()) return Promise.resolve(false);
+  return sampleBuffer(name).then(buffer => {
+    /* เช็ค mute อีกรอบ — ระหว่างรอ decode ผู้ใช้อาจกดปิดเสียงไปแล้ว */
+    if (!buffer || isMuted()) return false;
+    try {
+      const audio = audioContext();
+      const source = audio.createBufferSource();
+      const volume = audio.createGain();
+      source.buffer = buffer;
+      source.playbackRate.value = rate;
+      volume.gain.value = gain;
+      source.connect(volume).connect(audio.destination);
+      source.start();
+      return true;
+    } catch { return false; }
+  });
+}
+
 const PATTERNS = {
   select: [[420, .035, .035]],
+  /* สำรองของเสียงสลับไพ่ เผื่อโหลดไฟล์ไม่ได้ (ออฟไลน์ / ไฟล์หาย) */
+  cardSwap: [[520, .035, .03], [300, .045, .02]],
   fling: [[260, .035, .02], [420, .045, .025], [720, .08, .035]],
   lock: [[330, .05, .04], [520, .06, .02]],
   reveal: [[220, .06, .02], [440, .08, .02], [660, .1, .02]],
@@ -60,6 +136,17 @@ const PATTERNS = {
 };
 
 export function playSfx(name) {
+  if (isMuted()) return;
+  /* ชื่อที่มีไฟล์จริงให้ไฟล์ชนะเสมอ ถ้าเล่นไม่ได้ค่อยถอยไปสังเคราะห์
+     call site เดิมจึงไม่ต้องรู้ว่าเสียงไหนเป็นไฟล์เสียงไหนเป็นคลื่น */
+  if (SAMPLES[name]) {
+    playSample(name).then(played => { if (!played) synthSfx(name); });
+    return;
+  }
+  synthSfx(name);
+}
+
+function synthSfx(name) {
   if (isMuted() || !PATTERNS[name]) return;
   try {
     const audio = audioContext();
@@ -78,8 +165,16 @@ export function playSfx(name) {
   } catch { /* Audio is cosmetic; gameplay must continue. */ }
 }
 
-/* Paper sweep through the turn, followed by the card touching the table. */
+/* พลิกการ์ด — ใช้ไฟล์เสียงจริง ส่วนตอนคว่ำกลับเล่นช้าลงนิดให้รู้สึกว่า
+   เป็นทิศตรงข้าม ไฟล์หายเมื่อไหร่ค่อยถอยไปใช้เสียงกระดาษที่สังเคราะห์ไว้ */
 export function playCardFlip(reverse = false) {
+  if (isMuted()) return;
+  playSample('cardFlip', { rate: reverse ? .92 : 1 })
+    .then(played => { if (!played) synthCardFlip(reverse); });
+}
+
+/* Paper sweep through the turn, followed by the card touching the table. */
+function synthCardFlip(reverse = false) {
   if (isMuted()) return;
   try {
     const audio = audioContext();

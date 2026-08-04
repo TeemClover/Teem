@@ -73,6 +73,7 @@ import { COLOR_META, cardById } from '/core7/js/cards.js';
 import { COLORS } from '/core7/js/rules.js';
 import { t } from '/core7/js/i18n.js';
 import { cardSVG, cardArtHref } from '/core7/js/art.js';
+import { playSfx } from '/core7/js/audio.js';
 import * as store from '/core7/js/store.js';
 
 renderShell({});
@@ -295,6 +296,8 @@ if (mode === 'bot') {
 
   /* เฝ้าดูห้อง ถ้าอีกฝ่ายกดพร้อมก่อนก็บอก และพอเริ่ม Match ใหม่ค่อยพากลับโต๊ะ */
   if (session) {
+    /* poll ทุก 1.5 วิ เลยต้องจำสถานะเดิมไว้ ไม่งั้นเสียงจะดังรัวทุกรอบที่เช็ค */
+    let oppWasReady = false;
     setInterval(async () => {
       let data; try { data = await session.refresh(); } catch { return; }
       const room = data?.room;
@@ -303,7 +306,10 @@ if (mode === 'bot') {
         location.href = `/core7/room/?c=${encodeURIComponent(roomCode)}`;
         return;
       }
-      if (!waiting && room.opponent?.nextReady) note.textContent = t(`${room.opponent.name} พร้อมแล้ว — รอคุณ`, `${room.opponent.name} is ready — waiting on you`);
+      const oppReady = !!room.opponent?.nextReady;
+      if (oppReady && !oppWasReady) playSfx('join');
+      oppWasReady = oppReady;
+      if (!waiting && oppReady) note.textContent = t(`${room.opponent.name} พร้อมแล้ว — รอคุณ`, `${room.opponent.name} is ready — waiting on you`);
     }, 1500);
   }
 } else {
