@@ -151,6 +151,12 @@ footer a{color:rgb(var(--green));font-weight:600}
 .prog .tx{display:inline-block;margin-top:8px;font-family:"Bai Jamjuree";font-weight:700;
   font-size:12.5px;color:rgb(255 255 255/.75)}
 .prog .tx.is-done{color:rgb(var(--gold))}
+.tr-note{margin-top:14px;padding:13px 16px;border:1px solid rgb(190 148 66/.45);
+  border-radius:12px;background:rgb(190 148 66/.1);font-size:13.5px;line-height:1.7;max-width:62ch}
+.langbtn{margin-left:auto;min-height:38px;padding:7px 15px;border:1px solid rgb(255 255 255/.3);
+  border-radius:999px;background:transparent;color:#fff;font:700 13px/1 "Bai Jamjuree",system-ui;cursor:pointer}
+.langbtn:hover{background:rgb(255 255 255/.1)}
+[hidden]{display:none!important}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
 </head>
@@ -158,15 +164,22 @@ footer a{color:rgb(var(--green));font-weight:600}
 <header class="bar"><div class="wrap">
   <a class="home disp" href="../">🍀 my<em>clover</em></a>
   <span class="ttl"><b>WHY AI? - เรื่องเล่าจากโรงตีเหล็ก</b></span>
+  <!-- ปุ่มภาษาตัวเดียวกับทั้งเว็บ ตั้งที่นี่ก็จำที่อื่น -->
+  <button class="langbtn" id="langBtn" type="button" aria-label="สลับภาษา TH / EN">TH</button>
 </div></header>
 
 <section class="head"><div class="wrap">
-  <span class="eyebrow">อ่านฟรี · ไม่ต้องสมัคร</span>
+  <span class="eyebrow" data-en="Free to read · No sign-up">อ่านฟรี · ไม่ต้องสมัคร</span>
   <h1 class="disp">WHY AI? - เรื่องเล่าจากโรงตีเหล็ก</h1>
-  <p>เรื่องจริงของคนที่เคยต้องสร้างทุกอย่างอยู่หน้าคอมคนเดียว<br>จนถึงวันที่ AI คืนเวลาให้ชีวิต — <b>7 ตอนจบ</b> พร้อมตอนพิเศษ Version แรก</p>
+  <p data-en-html data-en="The true story of someone who used to build everything alone in front of a screen,<br>until the day AI gave that time back — <b>7 episodes</b> plus a bonus first-version chapter.">เรื่องจริงของคนที่เคยต้องสร้างทุกอย่างอยู่หน้าคอมคนเดียว<br>จนถึงวันที่ AI คืนเวลาให้ชีวิต — <b>7 ตอนจบ</b> พร้อมตอนพิเศษ Version แรก</p>
+  <!-- การ์ตูนเป็นภาพล้วน ตัวอักษรฝังอยู่ในภาพ แปลด้วยโค้ดไม่ได้
+       บอกคนอ่านอังกฤษตรง ๆ ว่าให้ใช้ตัวแปลของเบราว์เซอร์ ดีกว่าปล่อยให้งง -->
+  <p class="tr-note" data-lang-block="en">📖 The comic itself is artwork — the words are drawn into the pictures,
+     so this page cannot translate them. Use your browser's built-in translate
+     (Chrome: right-click → Translate · Safari: <b>aA</b> → Translate) to read them in English.</p>
   <div class="startrow">
-    <a class="start disp" id="continueBtn" href="ep1-everyone-gets-to-play/" hidden>▶ อ่านต่อจากที่ค้างไว้</a>
-    <a class="start disp" id="startBtn" href="ep1-everyone-gets-to-play/">เริ่มอ่านจากตอนแรก</a>
+    <a class="start disp" id="continueBtn" href="ep1-everyone-gets-to-play/" hidden data-en="▶ Continue where you left off">▶ อ่านต่อจากที่ค้างไว้</a>
+    <a class="start disp" id="startBtn" href="ep1-everyone-gets-to-play/" data-en="Start from episode 1">เริ่มอ่านจากตอนแรก</a>
   </div>
   <div class="prog">
     <div class="track"><i id="forgeBar"></i></div>
@@ -419,5 +432,15 @@ gtag('js',new Date());
 gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
 </script>
 <!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+<script type="module">
+/* ภาษาของหน้านี้ใช้ตัวเดียวกับทั้งเว็บ (mc_lang) — ตั้งที่นี่ก็จำที่หน้าเกมและหน้าแรก
+   แปลเฉพาะหน้ารวมตอนเท่านั้น ตัวการ์ตูนเป็นภาพ แปลด้วยโค้ดไม่ได้ */
+import { applyLang, getLang, toggleLang } from '/core7/js/i18n.js';
+const btn = document.getElementById('langBtn');
+const paint = () => { btn.textContent = getLang() === 'en' ? 'EN' : 'TH'; };
+applyLang(); paint();
+btn.addEventListener('click', () => { toggleLang(); paint(); });
+addEventListener('core7:lang', paint);
+</script>
 </body>
 </html>

@@ -67,6 +67,10 @@ function resetLegacyCore7Progress() {
     key === 'c7:guest'
     || key === 'c7:settings'
     || key === 'c7:cur_bot'
+    /* ภาษาเป็นการตั้งค่า ไม่ใช่ความคืบหน้า — ล้างทิ้งแล้วคนที่เลือก EN ไว้
+       จะเด้งกลับไทยเงียบ ๆ (i18n ย้ายค่านี้ไป mc_lang ให้ครั้งเดียว
+       แต่ต้องรอดจากการล้างตรงนี้ก่อน) */
+    || key === 'c7:lang'
     || key.startsWith('c7:match_')
   );
 
