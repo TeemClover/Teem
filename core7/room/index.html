@@ -43,9 +43,6 @@ catch {
 const lobbyWrap = document.getElementById('lobbyWrap'); const matchEl = document.getElementById('match');
 const content = document.getElementById('content'); const status = document.getElementById('status'); const actions = document.getElementById('actions');
 let mountedMatchId = null; let lastOpponent = null;
-/* จำสถานะพร้อมของคู่แข่งไว้ จะได้ยิงเสียงตอนที่มันเพิ่งเปลี่ยนเป็นพร้อม
-   ไม่ใช่ทุกครั้งที่ poll เจอว่าพร้อมอยู่ */
-let lastOppNextReady = false;
 
 function seatRow(name, sub, ready) {
   return el('div', { class:'lobby-seat' }, el('span', { class:'avatar' }, name ? name[0].toUpperCase() : '?'),
@@ -95,17 +92,30 @@ function startMatch(data) {
   mountedMatchId = id;
   reportFunnelEvent('MATCH_START', { matchId:id, mode:data.room.mode, rulesVersion:data.matchView?.rulesVersion, once:true }).catch(() => {});
   lobbyWrap.hidden = true; matchEl.hidden = false; matchEl.innerHTML = ''; matchEl.className = '';
-  mountMatch(matchEl, session.client(), { onFinished: view => {
+  mountMatch(matchEl, session.client(), { onFinished: async view => {
     reportFunnelEvent('MATCH_COMPLETE', { matchId:id, mode:data.room.mode, rulesVersion:view?.rulesVersion, once:true }).catch(() => {});
     /* เดิมแค่รีเฟรชห้อง ทำให้ล็อบบี้ทับหน้าจอผลภายใน 250ms คนเลยไม่ทันอ่านว่าใครชนะ
        ตอนนี้ไปหน้าผลชุดเดียวกับที่เล่นกับบอทใช้ แล้วค่อยกดกลับห้องเพื่อ Match ถัดไป */
+    leavingToResult = true;
+
+    /* คะแนนใน data เป็นของ "ก่อน" แมตช์นี้ ถ้าเอาไปใช้ตรง ๆ หน้าผลจะโชว์
+       คะแนนช้าไปหนึ่งนัด และเดาเองไม่ได้ว่าชุดจบหรือยัง (เสมอก็ไม่นับเพิ่ม)
+       ถาม server หลังแมตช์จบทีเดียว ได้ทั้งคะแนนจริงและสถานะจบชุด */
+    let room = data.room, startingHands = null;
+    try {
+      const fresh = await session.refresh();
+      if (fresh?.room) { room = fresh.room; startingHands = fresh.startingHands || null; }
+    } catch { /* เน็ตสะดุด — ใช้ค่าเดิมไปก่อน ดีกว่าค้างอยู่บนโต๊ะ */ }
+
     /* ส่งสถานะของ SET ไปด้วย หน้าผลจะได้เป็นหน้าจบหน้าเดียว
-       ไม่ต้องเด้งกลับมาห้องเพื่อกดพร้อมอีกชั้น */
+       ไม่ต้องเด้งกลับมาห้องเพื่อกดพร้อมหรือดูผลชุดอีกชั้น */
     store.saveMatchSnapshot(id, { kind:'view', view, series: {
-      mode: data.room.mode, modeLabel: data.room.modeLabel, target: data.room.targetWins,
-      matchNumber: data.room.matchNumber,
-      youWins: data.room.yourMatchWins, oppWins: data.room.opponentMatchWins,
+      mode: room.mode, modeLabel: room.modeLabel, target: room.targetWins,
+      matchNumber: room.matchNumber,
+      youWins: room.yourMatchWins, oppWins: room.opponentMatchWins,
       youName: view.you?.name, oppName: view.opponent?.name,
+      ended: !!room.seriesEnded, youWonSeries: !!room.youWonSeries,
+      startingHands,
     } });
     /* 'casual' คือถังสถิติของเกมคนกับคน ที่ getAllStats() รวมอยู่แล้ว
        ถ้าตั้งชื่อถังใหม่ ตัวเลขรวมจะไม่นับให้ */
@@ -177,14 +187,14 @@ function renderSummary(data) {
   }
 }
 
+/* ระหว่างรอ server ตอบก่อนเปลี่ยนไปหน้าผล ห้ามวาดล็อบบี้ทับหน้าจอแมตช์
+   ไม่งั้นจะเห็นหน้าสรุปแวบหนึ่งก่อนโดนเปลี่ยนหน้าอยู่ดี */
+let leavingToResult = false;
 function render(data) {
+  if (leavingToResult) return;
   if (!data?.room) return; const r = data.room;
-  if (r.opponent?.name && r.opponent.name !== lastOpponent) { if (lastOpponent === null) playSfx('join'); lastOpponent = r.opponent.name; }
-  /* คู่แข่งกดพร้อมเล่นรอบต่อไป — เสียงเดียวกับตอนมีคนเข้าห้อง เพราะเป็น
-     จังหวะเดียวกันในความรู้สึก คือ "อีกฝั่งมาแล้ว" */
-  const oppNextReady = !!r.opponent?.nextReady;
-  if (oppNextReady && !lastOppNextReady) playSfx('join');
-  lastOppNextReady = oppNextReady;
+  /* เสียงต้อนรับดังครั้งเดียว ตอนมีผู้เล่นอีกคนเข้ามาในห้องจริง ๆ */
+  if (r.opponent?.name && r.opponent.name !== lastOpponent) { if (lastOpponent === null) playSfx('playerJoined'); lastOpponent = r.opponent.name; }
   if (r.status === 'WAITING' || r.status === 'HAND_BUILDING') renderWaiting(data);
   else if (r.status === 'PLAYING') startMatch(data);
   else if (r.status === 'BETWEEN_MATCHES' || r.status === 'SERIES_ENDED') renderSummary(data);
