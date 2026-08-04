@@ -3,8 +3,8 @@ const DEFAULT_API_BASE = (/^(www\.)?myclover\.com$/.test(globalThis.location?.ho
   : '/api/core7';
 
 export const CORE7_ANALYTICS_BASE = String(globalThis.C7_CONFIG?.API_BASE || DEFAULT_API_BASE).replace(/\/$/, '');
-export const CORE7_GAME_VERSION = '0.4.6';
-export const CORE7_ANALYTICS_VERSION = '1.1.0';
+export const CORE7_GAME_VERSION = '0.5';
+export const CORE7_ANALYTICS_VERSION = '1.2.0';
 
 const INSTALL_KEY = 'c7:install_id';
 const SENT_PREFIX = 'c7:analytics:sent:';
@@ -43,7 +43,7 @@ function markSent(type, matchId) {
 
 export function reportFunnelEvent(eventType, {
   path = globalThis.location?.pathname || '', mode = null, botLevel = null,
-  matchId = null, rulesVersion = null, once = false,
+  matchId = null, rulesVersion = null, cardId = null, once = false,
 } = {}) {
   const type = String(eventType || '').toUpperCase();
   if (once && alreadySent(type, matchId)) return Promise.resolve(true);
@@ -52,11 +52,18 @@ export function reportFunnelEvent(eventType, {
     eventId: randomId('e'),
     installId: getInstallId(),
     eventType: type,
-    path, mode, botLevel, matchId,
+    path, mode, botLevel, matchId, cardId,
     gameVersion: CORE7_GAME_VERSION,
     rulesVersion,
     occurredAt: Date.now(),
   });
+}
+
+/* การ์ด FIRST HAND ใบใหม่ที่เพิ่งถูกเปิด — ยิงเฉพาะตอนได้ใบใหม่จริง
+   ใบซ้ำหรือ Match ที่แจกรางวัลไปแล้วจะไม่มาถึงตรงนี้ */
+export function reportCardUnlock({ cardId, matchId = null } = {}) {
+  if (!cardId) return Promise.resolve(false);
+  return reportFunnelEvent('CARD_UNLOCK', { cardId, matchId });
 }
 
 export function reportCore7View(path = globalThis.location?.pathname || '/core7/') {

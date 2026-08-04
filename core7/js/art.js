@@ -12,7 +12,7 @@
 
 import { COLOR_META, cardById } from './cards.js';
 
-export const CORE7_ART_VERSION = '0.4.0';
+export const CORE7_ART_VERSION = '0.5';
 
 /* FIRST HAND v0.4 — ภาพเต็มใบครบ 28 ใบ */
 export const FIRST_HAND_ART = {
