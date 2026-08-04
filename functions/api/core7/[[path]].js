@@ -8,7 +8,7 @@ import {
 import {
   CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION,
   readMatchCounters, recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
-  migrateSilverDatabase, readCollectionStats,
+  migrateSilverDatabase, readCollectionStats, readJourneyFunnel,
 } from '../../../core7/backend/analytics-v11.js';
 import { readAnalyticsDevelopmentReport } from '../../../core7/backend/analytics-v11-report.js';
 
@@ -134,6 +134,20 @@ export async function onRequest(context) {
     } catch (error) {
       console.error('CORE7 stats failed', error);
       return json({ ok: false, error: 'STATS_UNAVAILABLE' }, 500);
+    }
+  }
+
+  /* Journey Funnel — คนหลุดตรงไหนระหว่างประตูหน้าแรกกับบทที่ 1 */
+  if (method === 'GET' && parts[0] === 'journey-stats') {
+    const url = new URL(request.url);
+    try {
+      return json(await readJourneyFunnel(env.DB, {
+        from: url.searchParams.get('from'),
+        to: url.searchParams.get('to'),
+      }));
+    } catch (error) {
+      console.error('CORE7 journey stats failed', error);
+      return json({ ok: false, error: 'JOURNEY_STATS_UNAVAILABLE' }, 500);
     }
   }
 

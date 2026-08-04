@@ -6,14 +6,45 @@ import {
 } from './analytics.js';
 import { colorOf, FIRST_HAND } from '../js/cards.js';
 
-export const CORE7_ANALYTICS_VERSION = '1.2.0';
+export const CORE7_ANALYTICS_VERSION = '1.3.0';
 export const CORE7_GAME_VERSION = '0.5';
 
 const COLORS = ['RED', 'GREEN', 'BLUE', 'SILVER'];
+
+/* ── เส้นทาง First Run ──
+   ลำดับที่คนเดินจากประตูหน้าแรกไปถึงบทที่ 1 เก็บไว้ที่เดียวเพราะทั้งชุด
+   event ที่ยอมรับ ทั้งลำดับบนกราฟ และป้ายที่คนอ่าน ต้องมาจากแหล่งเดียวกัน
+   ไม่งั้นเพิ่มขั้นใหม่แล้วลืมแก้ที่ใดที่หนึ่ง กราฟจะโกหกเงียบ ๆ
+
+   หน้าเว็บฝั่ง Journey ยังไม่มี ตัวรับข้อมูลมาก่อนโดยตั้งใจ — event ที่ไม่ได้
+   เก็บวันนี้ คือข้อมูลที่ย้อนกลับไปเก็บไม่ได้ตลอดไป */
+export const JOURNEY_STEPS = Object.freeze([
+  { event: 'JOURNEY_START', th: 'เข้าประตูหน้าแรก' },
+  { event: 'PROLOGUE_COMPLETE', th: 'อ่านบทนำจบ' },
+  { event: 'FORGE_EP_1_COMPLETE', th: 'จบ EP1' },
+  { event: 'FORGE_EP_2_COMPLETE', th: 'จบ EP2' },
+  { event: 'FORGE_EP_3_COMPLETE', th: 'จบ EP3' },
+  { event: 'FORGE_EP_4_COMPLETE', th: 'จบ EP4' },
+  { event: 'FORGE_EP_5_COMPLETE', th: 'จบ EP5' },
+  { event: 'FORGE_EP_6_COMPLETE', th: 'จบ EP6' },
+  { event: 'FORGE_EP_7_COMPLETE', th: 'จบ EP7' },
+  { event: 'SAVEPOINT_BLACKSMITH', th: 'รับ BLACKSMITH' },
+  { event: 'QUICK_WALKTHROUGH_COMPLETE', th: 'อ่าน Walkthrough จบ' },
+  { event: 'CORE7_ONBOARDING_START', th: 'เริ่มเล่น CORE7' },
+  { event: 'CORE7_ONBOARDING_COMPLETE', th: 'เล่น CORE7 จบ' },
+  { event: 'LOADOUT_VIEW', th: 'เห็นหน้า Loadout' },
+  { event: 'LESSON_1_START', th: 'เริ่มบทที่ 1' },
+]);
+
+/* ทางเข้าที่ยอมรับ — 'forge' คือเดินตามเส้น Journey มา ค่าอื่นถูกทิ้งเป็น null */
+const ENTRIES = new Set(['forge']);
+
 const EVENTS = new Set([
   'CORE7_VIEW', 'HAND_VIEW', 'HAND_READY', 'MATCH_START', 'MATCH_COMPLETE', 'REMATCH',
   /* v1.2 — การ์ด FIRST HAND ที่ถูกเปิดใหม่หลังจบ Match ยิงมาที่นี่ ใบละหนึ่ง event */
   'CARD_UNLOCK',
+  /* v1.3 — เส้นทาง First Run ตั้งแต่ประตูหน้าแรกถึงบทที่ 1 */
+  ...JOURNEY_STEPS.map(step => step.event),
 ]);
 const DAY_MS = 86400000;
 const BKK = 7 * 60 * 60 * 1000;
@@ -70,7 +101,11 @@ const SCHEMA = [
    ต้อง ALTER เอง และกลืน error "duplicate column" ทิ้ง เพราะรันซ้ำทุก request */
 const MIGRATIONS = [
   `ALTER TABLE c7_analytics_events ADD COLUMN card_id TEXT`,
-
+  /* v1.3 — คนเข้ามาทางไหน: 'forge' คือเดินมาตามเส้น Journey ส่วน null คือ
+     เข้า /core7/ เองหรือได้ลิงก์จากเพื่อน ตัวเกมเปิดให้ทุกคนเหมือนเดิม
+     แฟล็กนี้มีไว้แยกตัวเลขตอนอ่าน ไม่ได้ใช้กั้นใคร */
+  `ALTER TABLE c7_analytics_events ADD COLUMN entry TEXT`,
+  `CREATE INDEX IF NOT EXISTS idx_c7_events_entry ON c7_analytics_events(entry, event_type, occurred_at)`,
 ];
 
 
@@ -220,8 +255,8 @@ export async function recordClientEvent(db, payload = {}) {
   const inserted = await db.prepare(`
     INSERT OR IGNORE INTO c7_analytics_events (
       event_id, install_id, event_type, path, mode, bot_level, match_id,
-      game_version, rules_version, occurred_at, created_at, card_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      game_version, rules_version, occurred_at, created_at, card_id, entry
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).bind(
     eventId, installId, eventType,
     safeText(payload.path, 160) || null,
@@ -232,6 +267,9 @@ export async function recordClientEvent(db, payload = {}) {
     safeText(payload.rulesVersion, 24) || null,
     occurredAt, now,
     safeId(payload.cardId) || null,
+    /* จำกัดชุดค่าไว้ ไม่ให้กลายเป็นถังขยะที่ใครยัดอะไรก็ได้เข้ามา */
+    ENTRIES.has(String(payload.entry || '').toLowerCase())
+      ? String(payload.entry).toLowerCase() : null,
   ).run();
   if (Number(inserted.meta?.changes || 0) === 0) return { ok: true, duplicate: true };
   const pageInc = ['CORE7_VIEW', 'HAND_VIEW'].includes(eventType) ? 1 : 0;
@@ -490,6 +528,103 @@ export async function readMatchCounters(db) {
   const total = Number(row?.total || 0);
   const pvp = Number(row?.pvp || 0);
   return { ok: true, total, pvp, bot: Math.max(0, total - pvp) };
+}
+
+/* ── Journey Funnel ──
+   คนหลุดตรงไหนระหว่างประตูหน้าแรกกับบทที่ 1
+
+   นับ "เครื่องที่ผ่านขั้นนี้" ไม่ใช่จำนวน event เพราะคนกดซ้ำหรือ refresh ได้
+   และไม่บังคับว่าต้องผ่านขั้นก่อนหน้าจริง — ถ้าตัวเลขขั้นหลังมากกว่าขั้นหน้า
+   นั่นแปลว่ามีทางลัดที่ไม่ได้ตั้งใจ ซึ่งเป็นเรื่องที่ต้องเห็น ไม่ใช่เรื่องที่
+   ต้องกลบด้วยการบังคับให้กราฟลดทางเดียว */
+export async function readJourneyFunnel(db, params = {}) {
+  await ensureAnalyticsV11Schema(db);
+  const b = bounds(params);
+  const types = JOURNEY_STEPS.map(s => s.event);
+  const holes = types.map(() => '?').join(',');
+
+  const [stepsRes, entryRes, dailyRes] = await Promise.all([
+    db.prepare(`SELECT event_type, COUNT(DISTINCT install_id) users, COUNT(*) events,
+      MIN(occurred_at) first_at, MAX(occurred_at) last_at
+      FROM c7_analytics_events
+      WHERE event_type IN (${holes}) AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY event_type`).bind(...types, b.start, b.end).all(),
+    /* CORE7 เปิดให้ทุกคนเข้าได้ ตัวเลขจึงต้องแยกว่าใครเดินมาตามเส้น
+       ใครเข้าเองหรือได้ลิงก์จากเพื่อน ไม่งั้นอ่าน conversion ผิดทั้งกระดาน */
+    db.prepare(`SELECT COALESCE(entry,'direct') entry,
+      COUNT(DISTINCT install_id) users,
+      COUNT(DISTINCT CASE WHEN event_type='MATCH_START' THEN install_id END) match_players,
+      COUNT(DISTINCT CASE WHEN event_type='MATCH_COMPLETE' THEN install_id END) finishers
+      FROM c7_analytics_events
+      WHERE occurred_at >= ? AND occurred_at < ?
+      GROUP BY COALESCE(entry,'direct')`).bind(b.start, b.end).all(),
+    db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day,
+      COUNT(DISTINCT CASE WHEN event_type='JOURNEY_START' THEN install_id END) started,
+      COUNT(DISTINCT CASE WHEN event_type='LESSON_1_START' THEN install_id END) reached_lesson
+      FROM c7_analytics_events
+      WHERE event_type IN ('JOURNEY_START','LESSON_1_START')
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY day ORDER BY day`).bind(b.start, b.end).all(),
+  ]);
+
+  const rows = new Map((stepsRes.results || []).map(r => [String(r.event_type), nums(r)]));
+  const first = Number(rows.get(types[0])?.users || 0);
+  let prev = 0;
+  const steps = JOURNEY_STEPS.map((step, index) => {
+    const row = rows.get(step.event) || {};
+    const users = Number(row.users || 0);
+    const out = {
+      event: step.event,
+      th: step.th,
+      index,
+      users,
+      events: Number(row.events || 0),
+      /* เทียบกับขั้นแรก = เส้น 100% ของกราฟ */
+      share: rate(users, first),
+      /* กี่ % ของคนที่ผ่านขั้นก่อนหน้า แล้วมาถึงขั้นนี้ */
+      step_rate: index === 0 ? 100 : rate(users, prev),
+      lost: index === 0 ? 0 : Math.max(0, prev - users),
+      first_at: Number(row.first_at || 0) || null,
+      last_at: Number(row.last_at || 0) || null,
+    };
+    prev = users;
+    return out;
+  });
+
+  /* ขั้นที่คนหายเยอะสุด — ข้ามขั้นที่ยังไม่มีใครไปถึงเลย เพราะนั่นคือปลายทาง
+     ที่ยังไม่เปิด ไม่ใช่รูรั่ว เท่ากันเอาขั้นที่มาก่อน */
+  let worst = null;
+  for (const step of steps) {
+    if (!step.index || !step.users) continue;
+    if (!worst || step.lost > worst.lost) {
+      worst = { event: step.event, th: step.th, lost: step.lost, step_rate: step.step_rate };
+    }
+  }
+
+  const last = steps[steps.length - 1];
+  return {
+    ok: true,
+    range: { from: b.from, to: b.to },
+    generatedAt: Date.now(),
+    analyticsVersion: CORE7_ANALYTICS_VERSION,
+    gameVersion: CORE7_GAME_VERSION,
+    /* ยังไม่มีหน้าไหนยิง event พวกนี้ — บอกให้ชัดว่าเลขศูนย์แปลว่า
+       "ยังไม่ได้ต่อสาย" ไม่ใช่ "ไม่มีคนเดิน" */
+    wired: steps.some(s => s.events > 0),
+    totals: {
+      started: first,
+      reached_lesson: last.users,
+      completion_rate: rate(last.users, first),
+    },
+    steps,
+    dropoff: worst,
+    byEntry: (entryRes.results || []).map(row => {
+      const r = nums(row);
+      r.finish_rate = rate(Number(r.finishers || 0), Number(r.match_players || 0));
+      return r;
+    }),
+    daily: (dailyRes.results || []).map(nums),
+  };
 }
 
 /* ── Collection Stat ──

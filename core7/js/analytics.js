@@ -4,7 +4,7 @@ const DEFAULT_API_BASE = (/^(www\.)?myclover\.com$/.test(globalThis.location?.ho
 
 export const CORE7_ANALYTICS_BASE = String(globalThis.C7_CONFIG?.API_BASE || DEFAULT_API_BASE).replace(/\/$/, '');
 export const CORE7_GAME_VERSION = '0.5';
-export const CORE7_ANALYTICS_VERSION = '1.2.0';
+export const CORE7_ANALYTICS_VERSION = '1.3.0';
 
 const INSTALL_KEY = 'c7:install_id';
 const SENT_PREFIX = 'c7:analytics:sent:';
@@ -41,9 +41,33 @@ function markSent(type, matchId) {
   try { localStorage.setItem(onceKey(type, matchId), '1'); } catch { /* private mode */ }
 }
 
+/* ── ทางเข้า ──
+   `?entry=forge` บอกว่าคนเดินมาตามเส้น Journey ไม่ได้เข้า /core7/ เอง
+   จำไว้ในเครื่องเพราะแฟล็กหลุดทันทีที่กดลิงก์ถัดไป แล้วสถิติจะเห็นครึ่งเดียว
+
+   ไม่ได้ใช้กั้นใคร ตัวเกมยังเปิดให้ทุกคนเข้าตรงได้เหมือนเดิม — มีไว้แยกตัวเลข
+   ตอนอ่านอย่างเดียว */
+const ENTRY_KEY = 'c7:entry';
+const VALID_ENTRIES = new Set(['forge']);
+
+export function getEntry() {
+  try {
+    const fromUrl = new URLSearchParams(globalThis.location?.search || '').get('entry');
+    const value = String(fromUrl || '').toLowerCase();
+    if (VALID_ENTRIES.has(value)) { localStorage.setItem(ENTRY_KEY, value); return value; }
+    const saved = localStorage.getItem(ENTRY_KEY);
+    return VALID_ENTRIES.has(saved) ? saved : null;
+  } catch { return null; }
+}
+
+/* คนที่เดินจบเส้นแล้วไม่ควรถูกนับเป็น Journey ตลอดไป */
+export function clearEntry() {
+  try { localStorage.removeItem(ENTRY_KEY); } catch { /* private mode */ }
+}
+
 export function reportFunnelEvent(eventType, {
   path = globalThis.location?.pathname || '', mode = null, botLevel = null,
-  matchId = null, rulesVersion = null, cardId = null, once = false,
+  matchId = null, rulesVersion = null, cardId = null, once = false, entry = undefined,
 } = {}) {
   const type = String(eventType || '').toUpperCase();
   if (once && alreadySent(type, matchId)) return Promise.resolve(true);
@@ -53,10 +77,27 @@ export function reportFunnelEvent(eventType, {
     installId: getInstallId(),
     eventType: type,
     path, mode, botLevel, matchId, cardId,
+    entry: entry === undefined ? getEntry() : entry,
     gameVersion: CORE7_GAME_VERSION,
     rulesVersion,
     occurredAt: Date.now(),
   });
+}
+
+/* ── เส้นทาง First Run ──
+   หน้า Journey เรียกอันนี้อันเดียวพอ เช่น reportJourneyStep('FORGE_EP_1_COMPLETE')
+
+   `once` เป็นค่าเริ่มต้น เพราะขั้นพวกนี้วัด "เครื่องที่ผ่านไปแล้ว" ไม่ใช่
+   "กดกี่ครั้ง" — คนกด Back แล้วอ่านซ้ำต้องไม่ทำให้ตัวเลขบวม
+
+   ยิงทิ้งไม่รอผล และไม่ throw ออกมา เน็ตล่มต้องไม่ทำให้หน้าเว็บค้าง */
+export function reportJourneyStep(step, { once = true, ...rest } = {}) {
+  const type = String(step || '').toUpperCase();
+  if (!type) return Promise.resolve(false);
+  const key = `journey:${type}`;
+  if (once && alreadySent(key, null)) return Promise.resolve(true);
+  if (once) markSent(key, null);
+  return reportFunnelEvent(type, { once: false, ...rest }).catch(() => false);
 }
 
 /* การ์ด FIRST HAND ใบใหม่ที่เพิ่งถูกเปิด — ยิงเฉพาะตอนได้ใบใหม่จริง
@@ -123,6 +164,21 @@ export async function fetchCore7Stats({ from, to } = {}) {
   if (from) query.set('from', from);
   if (to) query.set('to', to);
   const response = await fetch(`${CORE7_ANALYTICS_BASE}/stats?${query}`, {
+    headers: { accept: 'application/json' },
+    cache: 'no-store',
+    credentials: 'omit',
+  });
+  const data = await response.json().catch(() => ({ ok: false, error: 'INVALID_RESPONSE' }));
+  if (!response.ok || !data.ok) throw new Error(data.error || `HTTP_${response.status}`);
+  return data;
+}
+
+/* Journey Funnel — คนหลุดตรงไหนระหว่างประตูหน้าแรกกับบทที่ 1 */
+export async function fetchCore7JourneyStats({ from, to } = {}) {
+  const query = new URLSearchParams();
+  if (from) query.set('from', from);
+  if (to) query.set('to', to);
+  const response = await fetch(`${CORE7_ANALYTICS_BASE}/journey-stats?${query}`, {
     headers: { accept: 'application/json' },
     cache: 'no-store',
     credentials: 'omit',
