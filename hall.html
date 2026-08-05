@@ -32,14 +32,13 @@
 <div id="scrollProg"></div>
 <nav class="nav">
   <div class="wrap">
-    <a class="logo" href="/">🍀 my<em>Clover</em></a>
+    <a class="logo" href="/"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>Clover</em></a>
     <div class="navlinks">
-      <a href="#quest" data-mc-stage="intro" hidden>🧭 เข็มทิศ</a>
       <div class="lang-switch" aria-label="Language">
         <button type="button" data-lang="th" class="active" aria-pressed="true">TH</button>
         <button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <a href="collection/" class="gold" data-mc-stage="hall" hidden>🎒 Inventory</a>
+      <a href="collection/" class="gold" data-mc-when="walk" hidden>🎒 Inventory</a>
     </div>
   </div>
 </nav>
@@ -164,7 +163,7 @@
   </div>
 </section>
 
-<section class="energy" id="energy" data-mc-stage="stats" hidden>
+<section class="energy" id="energy" data-mc-when="lesson1" hidden>
   <div class="wrap">
     <span class="eyebrow">RGBS · RED GREEN BLUE SILVER</span>
     <h2>เลือกพลังที่ใกล้ตัวคุณที่สุด</h2>
@@ -240,7 +239,7 @@
   </div>
 </section>
 
-<section class="rooms" data-mc-stage="hall" hidden>
+<section class="rooms" data-mc-when="lesson1" hidden>
   <div class="wrap">
     <span class="eyebrow">Sub Quest · Daily Play</span>
     <h2>ถ้าอยากสำรวจต่อ ยังมีห้องอื่นอีก</h2>
@@ -257,7 +256,7 @@
   </div>
 </section>
 
-<aside class="mc-line-invite" data-mc-stage="hall" hidden aria-label="ติดตามบ้าน myClover ทาง LINE">
+<aside class="mc-line-invite" data-mc-when="lesson1" hidden aria-label="ติดตามบ้าน myClover ทาง LINE">
   <div class="mc-line-invite__copy">
     <span class="mc-line-invite__eyebrow">ทางกลับเข้าบ้าน</span>
     <b>ไม่ต้องจำว่าครั้งก่อนเดินถึงห้องไหน</b>
@@ -266,7 +265,7 @@
   <a class="mc-line-invite__btn" data-mc-act="hall-line" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer"><img src="/assets/LINE_Brand_icon.png" alt="" width="40" height="40">แอด LINE บ้าน myClover</a>
 </aside>
 
-<section class="first" data-mc-stage="hall" hidden>
+<section class="first" data-mc-when="secret" hidden>
   <div class="wrap first-row">
     <div>
       <span class="eyebrow">หลังเรียนจบแล้ว</span>
@@ -287,7 +286,7 @@
     <div class="seeker-count" id="seekerCount" role="status" aria-live="polite"></div>
     <div class="footlinks">
       <a href="/">หน้าบ้าน</a>
-      <a href="collection/" data-mc-stage="hall" hidden>Inventory</a>
+      <a href="collection/" data-mc-when="walk" hidden>Inventory</a>
       <a href="privacy/">ข้อมูลของคุณ</a>
     </div>
   </div>

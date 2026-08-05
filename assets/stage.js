@@ -19,6 +19,9 @@
      <section data-mc-stage="hall">…</section>     โผล่เมื่อถึงขั้น hall แล้ว
      <section data-mc-stage="!hall">…</section>    ซ่อนเมื่อถึงขั้น hall แล้ว
 
+   ของที่เปิดด้วยเงื่อนไข ไม่ใช่ตามลำดับการเดิน (walk · lesson1 · secret)
+     <section data-mc-when="lesson1">…</section>
+
    อ่านค่าจากโค้ด
      MC_STAGE.get()        → {id, index, done, next}
      MC_STAGE.reached('core7')
@@ -70,7 +73,7 @@
       },
     },
     {
-      id: 'walkthrough', rail: { icon: '🗺️', th: 'Walkthrough' },
+      id: 'walkthrough', rail: { icon: '🗺️', th: 'บทสรุปก่อนเรียน' },
       done: function () { return flag('mc_walk_done'); },
       next: {
         href: 'walkthrough/', icon: '🗺️',
@@ -81,7 +84,7 @@
       },
     },
     {
-      id: 'tutorial', rail: { icon: '🎓', th: 'กติกา CORE7' },
+      id: 'tutorial', rail: null,
       done: function () { return json('c7:tutorial_completed') === true; },
       next: {
         href: 'core7/tutorial/', icon: '🎓',
@@ -92,7 +95,7 @@
       },
     },
     {
-      id: 'core7', rail: { icon: '🃏', th: 'ลองเล่น 1 เกม' },
+      id: 'core7', rail: { icon: '🃏', th: 'เล่น 1 เกม' },
       done: function () { return matchesPlayed() > 0; },
       next: {
         href: 'core7/hand/?next=bot&level=easy&entry=forge', icon: '🃏',
@@ -103,25 +106,29 @@
       },
     },
     {
-      id: 'hall', rail: { icon: '⚡', th: 'AI ใส่ซอส บทที่ 1' },
-      done: function () { return learned('free-ai'); },
-      next: {
-        href: 'classroom/free-ai.html', icon: '⚡',
-        label: 'บทที่ 1',
-        title: 'AI ใส่ซอส — บทที่ 1',
-        desc: 'เริ่มลงมือสร้างของชิ้นแรกด้วยเครื่องมือฟรีที่ควรมีติดเครื่อง',
-        cta: 'เข้าห้องเรียน →',
+      id: 'hall', rail: { icon: '⚡', th: 'AI ใส่ซอส 6 บท' },
+      done: function () { return learnCount() >= LESSONS.length; },
+      next: function () {
+        var i = Math.min(learnCount(), LESSONS.length - 1);
+        var n = i + 1;
+        return {
+          href: 'classroom/' + LESSONS[i] + '.html', icon: '⚡',
+          label: 'บทที่ ' + n,
+          title: 'AI ใส่ซอส — บทที่ ' + n,
+          desc: LESSON_TH[i] + ' · บทที่ ' + n + ' จาก ' + LESSONS.length,
+          cta: 'เข้าห้องเรียน →',
+        };
       },
     },
     {
       id: 'stats', rail: null,
       done: function () { return false; },   /* ปลายทางปัจจุบัน */
       next: {
-        href: 'classroom/', icon: '🎒',
+        href: 'collection/', icon: '🎒',
         label: 'บ้านเปิดหมดแล้ว',
         title: 'เดินต่อได้ทุกห้อง',
-        desc: 'ค่าสถานะทั้ง 4 เปิดแล้ว จากนี้เลือกห้องไหนก่อนก็ได้',
-        cta: 'ดูห้องเรียนทั้งหมด →',
+        desc: 'เส้นทางหลักครบแล้ว จากนี้เลือกห้องไหนก่อนก็ได้',
+        cta: 'เปิดกระเป๋าดูของที่เก็บได้ →',
       },
     },
   ];
@@ -132,6 +139,8 @@
     'ep6-the-starter-kit', 'ep7-a-voice-that-went-further',
   ];
   var LESSONS = ['free-ai', 'image-ai', 'clip-ai', 'notebooklm', 'prompts', 'first-web'];
+  var LESSON_TH = ['AI ฟรีที่ควรมีติดเครื่อง', 'สร้างภาพด้วย AI', 'สร้างคลิปสั้นด้วย AI',
+    'สร้าง Source ให้ AI', 'ออกแบบ Prompt ให้เป็นระบบ', 'สร้างเว็บชิ้นแรก'];
 
   /* ── อ่านค่าจากเครื่อง ──
      ทุกตัวกัน throw เพราะ localStorage โยน SecurityError ได้ในโหมดส่วนตัว
@@ -152,11 +161,16 @@
     var a = list('mc_learn');
     return LESSONS.filter(function (s) { return a.indexOf(s) >= 0; }).length;
   }
-  /* เกมเก็บสถิติแยกตามโหมด — รวมทุกโหมดเพราะคำถามคือ "เคยเล่นจบไหม" */
+  /* เกมเก็บสถิติแยกตามโหมด — รวมทุกโหมดเพราะคำถามคือ "เคยเล่นจบไหม"
+     ไม่ใช่ "ชนะไหม"
+
+     ⚠️ คีย์คือ c7:stats_bot ขีดล่าง ไม่ใช่ c7:stats:bot — core7/js/store.js
+     ต่อ namespace 'c7:' เข้ากับชื่อ 'stats_' + mode เอง เดาผิดทีคนเล่นจบแล้ว
+     ค้างอยู่ตรงนั้นตลอดกาลโดยไม่มีอะไรบอกว่าค้างเพราะอะไร */
   function matchesPlayed() {
     var n = 0;
-    ['bot', 'casual', 'online'].forEach(function (m) {
-      var s = json('c7:stats:' + m);
+    ['bot', 'casual'].forEach(function (m) {
+      var s = json('c7:stats_' + m);
       if (s && typeof s.matchesPlayed === 'number') n += s.matchesPlayed;
     });
     return n;
@@ -190,6 +204,18 @@
     return want >= 0 && get().index >= want;
   }
 
+  /* ── เงื่อนไขที่ไม่ได้อยู่บนเส้นตรง ──
+     บางห้องไม่ได้เปิดตามลำดับการเดิน แต่เปิดเพราะทำอย่างใดอย่างหนึ่งสำเร็จ
+     ยัดพวกนี้เข้าไปเป็น "ขั้น" จะทำให้เข็มทิศชี้ไปหาของที่ไม่ควรถูกชี้ */
+  var WHEN = {
+    /* กระเป๋าเปิดตอนจบ Walkthrough แล้วอยู่ตลอดไป ไม่หายอีก */
+    walk: function () { return flag('mc_walk_done'); },
+    /* บทที่ 1 จบ = เปิด 4 ค่าสถานะ กับ Sub Quest พร้อมกัน โดยไม่ประกาศในเข็มทิศ */
+    lesson1: function () { return learned('free-ai'); },
+    /* First Version เป็นของท้ายเกมจริง ๆ เปิดหลังดู Secret Ending เท่านั้น */
+    secret: function () { return flag('mc_secret_end'); },
+  };
+
   /* ── เปิด/ปิดบล็อกตามขั้น ──
      ใช้ hidden แทน display:none เพราะมันเอา element ออกจาก accessibility tree
      ด้วย — ห้องที่ยังไม่เปิดต้องไม่โผล่ในลำดับ Tab หรือใน Screen Reader */
@@ -205,6 +231,14 @@
       var want = indexOf(neg ? v.slice(1) : v);
       var ok = want >= 0 && here.index >= want;
       nodes[i].hidden = neg ? ok : !ok;
+    }
+    var whens = document.querySelectorAll('[data-mc-when]');
+    for (var j = 0; j < whens.length; j++) {
+      var w = whens[j].getAttribute('data-mc-when');
+      var nw = w.charAt(0) === '!';
+      var fn = WHEN[nw ? w.slice(1) : w];
+      var got = typeof fn === 'function' && fn();
+      whens[j].hidden = nw ? got : !got;
     }
   }
 
@@ -232,6 +266,7 @@
     rail: rail,
     EPISODES: EPISODES,
     get: get, reached: reached, paint: paint, href: href,
+    when: function (k) { return typeof WHEN[k] === 'function' && WHEN[k](); },
     /* ปักธงว่าอ่าน/ทำขั้นนี้จบแล้ว — เรียกจากหน้าที่เป็นเจ้าของขั้นนั้น */
     mark: function (key) {
       try { localStorage.setItem(key, '1'); } catch (e) { /* โหมดส่วนตัว */ }
