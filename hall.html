@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<meta name="mc-act-view" content="hall-open">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>บ้าน myClover — Main Quest การ์ตูน บทเรียน และเกม CORE7</title>
 <meta name="description" content="หยิบเข็มทิศแล้วเริ่ม Main Quest ของบ้าน myClover: อ่าน WHY AI? 7 ตอน เรียน AI ฟรี 6 บท สร้างการ์ดเป็นหลักฐาน และลองเล่น CORE7">
@@ -33,12 +34,12 @@
   <div class="wrap">
     <a class="logo" href="/">🍀 my<em>Clover</em></a>
     <div class="navlinks">
-      <a href="#quest">Main Quest</a>
+      <a href="#quest" data-mc-stage="intro" hidden>🧭 เข็มทิศ</a>
       <div class="lang-switch" aria-label="Language">
         <button type="button" data-lang="th" class="active" aria-pressed="true">TH</button>
         <button type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
-      <a href="collection/" class="gold">🎒 Inventory</a>
+      <a href="collection/" class="gold" data-mc-stage="hall" hidden>🎒 Inventory</a>
     </div>
   </div>
 </nav>
@@ -46,9 +47,9 @@
 <header class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="kicker">🧭 คุณหยิบเข็มทิศมาแล้ว</span>
-      <h1>ในบ้านนี้ ไม่มีทางที่ผิด</h1>
-      <p class="lead">เลือกเริ่มจากสิ่งที่ใกล้ตัวที่สุด หรือเดินตาม <span class="term context-term" tabindex="0" data-tip="Main Quest คือเส้นทางหลัก 3 ขั้นของบ้าน: อ่าน WHY AI? เพื่อเข้าใจเหตุผล → เรียน 6 บทเพื่อลงมือสร้าง → ทำการ์ดเพื่อเก็บหลักฐาน ระบบจะจำความคืบหน้าและปักเควสถัดไปให้เสมอ">Main Quest</span> ที่เราวางไว้ให้ก็ได้ ทุกเส้นทางพากลับมาหาของที่ใช้ได้จริง</p>
+      <span class="kicker">🧭 AI SMART WEBSITE</span>
+      <h1>บ้านที่จำได้ว่าคุณเดินถึงไหน</h1>
+      <p class="lead">บ้านหลังนี้มี<span class="term context-term" tabindex="0" data-tip="เข็มทิศคือตัวนำทางของบ้าน มันอ่านความคืบหน้าที่เก็บไว้ในเครื่องคุณ แล้วชี้ไปยังก้าวถัดไปเพียงก้าวเดียว ไม่ต้องเลือกเองว่าจะไปห้องไหนก่อน">เข็มทิศนำทาง</span> ที่ชี้ไปยังจุดล่าสุดที่คุณเดินถึงเสมอ<br>ไม่ต้องเล่นให้จบในรอบเดียว — ปิดไปแล้วกลับมาเมื่อไหร่ ก็กดเดินต่อจากตรงนั้นได้ทันที</p>
     </div>
     <div class="compass" aria-hidden="true"><span class="needle">🧭</span></div>
   </div>
@@ -58,12 +59,12 @@
   <div class="wrap glhf-grid">
     <div>
       <small>GOOD LUCK, HAVE FUN</small>
-      <h2>ก่อนเริ่มเกม เรา<span class="term context-term context-term-light" tabindex="0" data-tip="ชนหมัดคือพิธีเริ่มเกมของบ้าน และเป็นความหมายของ GLHF — Good Luck, Have Fun ขอให้โชคดี สนุกกับทางที่เลือก และไม่ต้องเล่นให้สมบูรณ์ตั้งแต่ครั้งแรก">ชนหมัด</span>กันก่อน</h2>
-      <p>คำอวยพรก่อนเริ่มเล่น: ขอให้โชคดี และอย่าลืมสนุกกับทางที่คุณเลือก</p>
+      <h2><span class="term context-term context-term-light" tabindex="0" data-tip="ชนหมัดคือพิธีเริ่มเกมของบ้าน และเป็นความหมายของ GLHF — Good Luck, Have Fun ขอให้โชคดี สนุกกับทางที่เลือก และไม่ต้องเล่นให้สมบูรณ์ตั้งแต่ครั้งแรก">ชนหมัด</span>กันก่อน แล้วเข็มทิศจะโผล่มา</h2>
+      <p>พิธีเริ่มเกมของบ้านหลังนี้ — ขอให้โชคดี และอย่าลืมสนุกกับทางที่คุณเลือก</p>
     </div>
-    <button class="bump" id="bump" type="button" aria-label="ชนหมัดเพื่อเริ่ม">
+    <button class="bump" id="bump" type="button" data-mc-act="hall-bump" aria-label="ชนหมัดเพื่อเริ่ม">
       <span class="fists"><span class="l">🤜</span><span class="spark">✨</span><span class="r">🤛</span></span>
-      <span class="tap" id="bumpText">แตะเพื่อชนหมัดและเริ่มเกม</span>
+      <span class="tap" id="bumpText">แตะที่นี่เพื่อชนหมัด</span>
     </button>
   </div>
 </section>
@@ -79,33 +80,19 @@
           <h2 id="questTitle">กำลังหาเควสถัดไป…</h2>
           <p class="quest-lead" id="questLead">บ้านกำลังอ่านความคืบหน้าในเครื่องนี้ เพื่อปักหมุดภารกิจที่ควรทำต่อให้คุณ</p>
         </div>
-        <div class="overall">
+        <div class="overall" id="questOverall">
           <b id="overallPct">0%</b>
           <span id="overallText">ยังไม่ได้เริ่ม</span>
         </div>
       </div>
 
-      <div class="qtrack" aria-label="Main Quest progress">
+      <div class="qtrack" id="questTrack" aria-label="ความคืบหน้าในบ้าน">
         <i id="questFill"></i>
       </div>
 
-      <div class="quest-route" aria-label="ลำดับ Main Quest">
-        <div class="qnode" id="qWhy">
-          <span class="qnode-icon">📖</span>
-          <span class="qnode-copy"><b>WHY · เข้าใจเหตุผล</b><span id="whyStatus">0/7 ตอน</span></span>
-          <span class="qnode-mark">○</span>
-        </div>
-        <div class="qnode" id="qHow">
-          <span class="qnode-icon">⚡</span>
-          <span class="qnode-copy"><b>HOW · ลงมือสร้าง</b><span id="howStatus">0/6 บท</span></span>
-          <span class="qnode-mark">○</span>
-        </div>
-        <div class="qnode" id="qProof">
-          <span class="qnode-icon">🎴</span>
-          <span class="qnode-copy"><b>PROOF · เก็บหลักฐาน</b><span id="proofStatus">ยังไม่มีการ์ด</span></span>
-          <span class="qnode-mark">○</span>
-        </div>
-      </div>
+      <!-- รางเส้นตรงของบ้าน — วาดจาก MC_STAGE.rail() ไม่ได้เขียนตายไว้ในหน้านี้
+           เพิ่มหรือสลับขั้นเมื่อไหร่ แก้ที่ assets/stage.js ที่เดียว -->
+      <ol class="qrail" id="questRail" aria-label="เส้นทางของบ้าน"></ol>
 
       <div class="active-quest">
         <div class="active-icon" id="activeIcon">🧭</div>
@@ -114,7 +101,7 @@
           <h3 id="activeTitle">กำลังค้นหาเควสที่ค้างอยู่</h3>
           <p id="activeDesc">รอสักครู่ บ้านกำลังจัดลำดับเส้นทางให้คุณ</p>
         </div>
-        <a class="quest-cta" id="activeCta" href="forge/">เริ่มภารกิจ →</a>
+        <a class="quest-cta" id="activeCta" href="forge/intro/" data-mc-act="hall-quest">เดินตามเข็มทิศ →</a>
       </div>
 
       <div class="quest-rewards" id="questRewards" aria-label="Main Quest rewards">
@@ -134,7 +121,7 @@
   </div>
 </section>
 
-<section class="highlights">
+<section class="highlights" data-mc-stage="hall" hidden>
   <div class="wrap">
     <span class="eyebrow">3 จุดเริ่มต้นของบ้าน</span>
     <h2>เข้าใจว่าทำไม ใช้ AI ให้เป็น แล้วดูของจริง</h2>
@@ -177,14 +164,14 @@
   </div>
 </section>
 
-<section class="energy" id="energy">
+<section class="energy" id="energy" data-mc-stage="stats" hidden>
   <div class="wrap">
     <span class="eyebrow">RGBS · RED GREEN BLUE SILVER</span>
     <h2>เลือกพลังที่ใกล้ตัวคุณที่สุด</h2>
     <p class="sub">เลือกเพื่อให้บ้านจำว่าควรแนะนำอะไรให้คุณก่อนเท่านั้น ไม่ได้ล็อกตัวตน ไม่ได้ล็อกห้อง และเปลี่ยนสายได้ตลอด</p>
 
     <div class="path-pick" id="pathPicker">
-      <button class="path-choice" style="--path-img:url('img/path-taster.jpg')" type="button" data-class="TASTER" data-url="paths/taster/" aria-pressed="false">
+      <button class="path-choice" data-mc-act="hall-path-pick" style="--path-img:url('img/path-taster.jpg')" type="button" data-class="TASTER" data-url="paths/taster/" aria-pressed="false">
         <span class="path-art" aria-hidden="true"></span>
         <span class="path-selected">เลือกแล้ว ✓</span>
         <span class="path-copy">
@@ -198,7 +185,7 @@
         </span>
       </button>
 
-      <button class="path-choice" style="--path-img:url('img/path-keeper.jpg')" type="button" data-class="KEEPER" data-url="paths/keeper/" aria-pressed="false">
+      <button class="path-choice" data-mc-act="hall-path-pick" style="--path-img:url('img/path-keeper.jpg')" type="button" data-class="KEEPER" data-url="paths/keeper/" aria-pressed="false">
         <span class="path-art" aria-hidden="true"></span>
         <span class="path-selected">เลือกแล้ว ✓</span>
         <span class="path-copy">
@@ -212,7 +199,7 @@
         </span>
       </button>
 
-      <button class="path-choice" style="--path-img:url('img/path-thinker.jpg')" type="button" data-class="THINKER" data-url="paths/thinker/" aria-pressed="false">
+      <button class="path-choice" data-mc-act="hall-path-pick" style="--path-img:url('img/path-thinker.jpg')" type="button" data-class="THINKER" data-url="paths/thinker/" aria-pressed="false">
         <span class="path-art" aria-hidden="true"></span>
         <span class="path-selected">เลือกแล้ว ✓</span>
         <span class="path-copy">
@@ -226,7 +213,7 @@
         </span>
       </button>
 
-      <button class="path-choice" style="--path-img:url('img/path-maker.jpg')" type="button" data-class="MAKER" data-url="paths/maker/" aria-pressed="false">
+      <button class="path-choice" data-mc-act="hall-path-pick" style="--path-img:url('img/path-maker.jpg')" type="button" data-class="MAKER" data-url="paths/maker/" aria-pressed="false">
         <span class="path-art" aria-hidden="true"></span>
         <span class="path-selected">เลือกแล้ว ✓</span>
         <span class="path-copy">
@@ -246,14 +233,14 @@
         <span class="path-result-label">สายที่เลือก</span>
         <b id="pathResultTitle">ยังไม่ได้เลือก</b>
       </div>
-      <a class="path-enter" id="pathEnter" href="paths/" aria-disabled="true">เข้าสู่เส้นทาง →</a>
+      <a class="path-enter" id="pathEnter" href="paths/" data-mc-act="hall-path-enter" aria-disabled="true">เข้าสู่เส้นทาง →</a>
     </div>
 
     <p class="paths-quiet">ยังไม่อยากเลือกก็ไม่เป็นไร — <a href="paths/">เปิดหน้ารวมทั้ง 4 สาย</a> เพื่ออ่านเทียบกันก่อนได้</p>
   </div>
 </section>
 
-<section class="rooms">
+<section class="rooms" data-mc-stage="hall" hidden>
   <div class="wrap">
     <span class="eyebrow">Sub Quest · Daily Play</span>
     <h2>ถ้าอยากสำรวจต่อ ยังมีห้องอื่นอีก</h2>
@@ -262,24 +249,24 @@
 ราว 5 ชั่วโมงต่อเดือน
 ไม่ต้องเร่งให้จบ ขอแค่กลับมาเล่นต่อทีละนิด">วันละ 10 นาที</span> ก็พอ แต่ถ้าอยากสนุกกว่า กดเข้า <span class="term game-term" tabindex="0" data-tip="Guild คือพื้นที่ชุมชนของ myClover บน Discord สำหรับหาคนคุย แชร์ความคืบหน้า ถามคำถาม และรวมทีมเล่นหรือสร้างงานด้วยกัน">Guild</span> หา <span class="term game-term" tabindex="0" data-tip="Party คือกลุ่มเพื่อนร่วมทางแบบในเกม RPG ใน myClover หมายถึงคนที่ช่วยกันเรียน แชร์ผลงาน เตือนกันกลับมาทำเควส และทำให้การเดินทางไม่ต้องเงียบอยู่คนเดียว">Party</span> เลย อย่าเล่นคนเดียว</p>
     <div class="room-grid">
-      <a class="room" href="collection/"><b>🎒 Inventory</b><span>Achievement, Badge และของที่ปลดล็อกแล้ว</span></a>
-      <a class="room" href="resume/"><b>🧾 Smart Resume</b><span>เปลี่ยนประสบการณ์ให้กลายเป็นเรื่องที่คนเข้าใจ</span></a>
-      <a class="room" href="club/"><b>🍀 myClover Club</b><span>สุขภาพ อาหาร และการดูแลชีวิตจริง</span></a>
-      <a class="room" href="guild/"><b>🔒 <span class="term room-term" tabindex="0" data-tip="Guild คือพื้นที่ชุมชนของ myClover บน Discord สำหรับหาคนคุย แชร์ความคืบหน้า ถามคำถาม และรวมทีมเล่นหรือสร้างงานด้วยกัน">Guild X</span> <small>· Discord</small></b><span>เข้าไปหา <span class="term room-term" tabindex="0" data-tip="Party คือกลุ่มเพื่อนร่วมทางแบบในเกม RPG ใน myClover หมายถึงคนที่ช่วยกันเรียน แชร์ผลงาน เตือนกันกลับมาทำเควส และทำให้การเดินทางไม่ต้องเงียบอยู่คนเดียว">Party</span> แล้วเล่นต่อด้วยกัน</span></a>
+      <a class="room" data-mc-act="hall-room" href="collection/"><b>🎒 Inventory</b><span>Achievement, Badge และของที่ปลดล็อกแล้ว</span></a>
+      <a class="room" data-mc-act="hall-room" href="resume/"><b>🧾 Smart Resume</b><span>เปลี่ยนประสบการณ์ให้กลายเป็นเรื่องที่คนเข้าใจ</span></a>
+      <a class="room" data-mc-act="hall-room" href="club/"><b>🍀 myClover Club</b><span>สุขภาพ อาหาร และการดูแลชีวิตจริง</span></a>
+      <a class="room" data-mc-act="hall-room" href="guild/"><b>🔒 <span class="term room-term" tabindex="0" data-tip="Guild คือพื้นที่ชุมชนของ myClover บน Discord สำหรับหาคนคุย แชร์ความคืบหน้า ถามคำถาม และรวมทีมเล่นหรือสร้างงานด้วยกัน">Guild X</span> <small>· Discord</small></b><span>เข้าไปหา <span class="term room-term" tabindex="0" data-tip="Party คือกลุ่มเพื่อนร่วมทางแบบในเกม RPG ใน myClover หมายถึงคนที่ช่วยกันเรียน แชร์ผลงาน เตือนกันกลับมาทำเควส และทำให้การเดินทางไม่ต้องเงียบอยู่คนเดียว">Party</span> แล้วเล่นต่อด้วยกัน</span></a>
     </div>
   </div>
 </section>
 
-<aside class="mc-line-invite" aria-label="ติดตามบ้าน myClover ทาง LINE">
+<aside class="mc-line-invite" data-mc-stage="hall" hidden aria-label="ติดตามบ้าน myClover ทาง LINE">
   <div class="mc-line-invite__copy">
     <span class="mc-line-invite__eyebrow">ทางกลับเข้าบ้าน</span>
     <b>ไม่ต้องจำว่าครั้งก่อนเดินถึงห้องไหน</b>
     <p>แอด LINE บ้าน myClover ไว้ แล้วค่อยกลับมารับ Prompt, Quest และอัปเดตใหม่เมื่อพร้อม</p>
   </div>
-  <a class="mc-line-invite__btn" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer"><img src="/assets/LINE_Brand_icon.png" alt="" width="40" height="40">แอด LINE บ้าน myClover</a>
+  <a class="mc-line-invite__btn" data-mc-act="hall-line" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer"><img src="/assets/LINE_Brand_icon.png" alt="" width="40" height="40">แอด LINE บ้าน myClover</a>
 </aside>
 
-<section class="first">
+<section class="first" data-mc-stage="hall" hidden>
   <div class="wrap first-row">
     <div>
       <span class="eyebrow">หลังเรียนจบแล้ว</span>
@@ -290,6 +277,8 @@
   </div>
 </section>
 
+</div></div>
+
 <footer class="footer">
   <div class="wrap">
     <button class="secret" id="seekerBtn" type="button" aria-describedby="seekerCopy">☘️</button>
@@ -298,16 +287,16 @@
     <div class="seeker-count" id="seekerCount" role="status" aria-live="polite"></div>
     <div class="footlinks">
       <a href="/">หน้าบ้าน</a>
-      <a href="collection/">Inventory</a>
+      <a href="collection/" data-mc-stage="hall" hidden>Inventory</a>
       <a href="privacy/">ข้อมูลของคุณ</a>
     </div>
   </div>
 </footer>
 
-</div></div>
-
+<script src="/assets/stage.js" defer></script>
 <script src="/assets/hall-copy-th.js" defer></script>
 <script src="/assets/hall-copy-en.js" defer></script>
 <script src="/assets/hall-core.js" defer></script>
+<script type="module" src="/assets/track.js"></script>
 </body>
 </html>

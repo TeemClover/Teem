@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<meta name="mc-act-view" content="walkthrough-open">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover</title>
 <meta name="description" content="หน้าสำหรับคนที่อ่านการ์ตูนจบครบทุกตอนแล้ว — กลไก แนวคิด และโครงสร้างของบ้านหลังนี้ พร้อมพจนานุกรมแปลศัพท์เกมเป็นศัพท์ธุรกิจ">
@@ -620,9 +621,11 @@ footer a{color:rgb(var(--green));font-weight:600}
     <p style="font-size:14.5px;margin-top:18px;color:rgb(255 255 255/.72)">
       ใครเจอเรา คนนั้นโชคดี — และเราอยากให้คุณสนุกไปกับมันด้วย</p>
     <div class="cta">
-      <a class="btn" href="../card/">🃏 ไปทำการ์ดของคุณ</a>
+      <a class="btn" id="walkNext" href="../core7/tutorial/">🎓 ต่อไป — เรียนกติกา CORE7 ใน 1 นาที</a>
     </div>
-    <div class="cta" style="margin-top:12px">
+    <p style="font-size:13.5px;margin-top:12px;color:rgb(255 255 255/.6)">
+      เข็มทิศชี้ไปทางนี้ต่อ — รู้กติกาแล้วค่อยลงเล่นจริงกับบอท 1 เกม</p>
+    <div class="cta" style="margin-top:16px">
       <a class="btn ghost" href="../#glhf">🍀 กลับไปดูบ้านอีกรอบ</a>
     </div>
   </div>
@@ -635,6 +638,7 @@ footer a{color:rgb(var(--green));font-weight:600}
 
 </div><!-- /#doc -->
 
+<script defer src="/assets/stage.js"></script>
 <script defer src="../assets/quest.js"></script>
 <!-- อภิธานศัพท์ — ใส่เฉพาะโซนท้ายเกม (หน้านี้ · บทที่ 7 · บทส่งท้ายตอนพิเศษ) -->
 <script defer src="../assets/terms.js"></script>
@@ -653,7 +657,14 @@ document.addEventListener('DOMContentLoaded',function(){
     document.getElementById('doc').style.visibility='visible';
     document.title='Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover';
   }
-  if(ls('mc_forge_done','')==='1' || has('BLACKSMITH')){ unlock(); return; }
+  /* เปิดหน้านี้ได้ = เดินผ่านขั้น Walkthrough แล้ว เข็มทิศจะเลื่อนไปขั้นถัดไป
+     ปักธงตอนปลดล็อกไม่ใช่ตอนเลื่อนถึงท้าย เพราะหน้านี้ยาวและกำลังจะถูกเขียนใหม่
+     ถ้าผูกกับการเลื่อนไว้ตอนนี้ พอเนื้อหาสั้นลงคนจะติดค้างที่ขั้นนี้โดยไม่รู้ตัว */
+  function pass(){
+    try{ localStorage.setItem('mc_walk_done','1'); }catch(e){}
+    if(window.MC_STAGE) window.MC_STAGE.paint();
+  }
+  if(ls('mc_forge_done','')==='1' || has('BLACKSMITH')){ unlock(); pass(); return; }
 
   /* กู้สิทธิ์ด้วยรหัสท้ายเล่ม — เก็บเป็นแฮชเพราะไฟล์นี้เปิดซอร์สดูได้
      ไม่ได้กันคนตั้งใจงัด แค่ไม่ให้รหัสลอยอยู่กลางหน้าให้เห็นก่อนถึงเวลา */
@@ -676,6 +687,7 @@ document.addEventListener('DOMContentLoaded',function(){
     }catch(e){}
     msg.className='rcmsg ok';
     msg.textContent='⚒️ ถูกต้อง — เปิดให้แล้ว';
+    pass();
     setTimeout(unlock,500);
   }
   function tryCode(){
@@ -709,5 +721,6 @@ gtag('js',new Date());
 gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
 </script>
 <!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+<script type="module" src="/assets/track.js"></script>
 </body>
 </html>

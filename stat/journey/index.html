@@ -53,7 +53,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 .row .side{text-align:right;font-size:11px;color:rgb(255 255 255/.5)}
 .row .side b{display:block;font:700 14px "Bai Jamjuree";color:#fff}
 .row.hole .side b{color:var(--warn)}
-.table-wrap{overflow:auto}
+.table-wrap{overflow-x:auto;overflow-y:hidden}
 .table{width:100%;border-collapse:collapse;min-width:520px;font-size:13px}
 .table th,.table td{padding:10px 9px;border-bottom:1px solid rgb(255 255 255/.08);text-align:right;white-space:nowrap}
 .table th:first-child,.table td:first-child{text-align:left}
@@ -124,15 +124,16 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 
 <script type="module" src="/assets/stat-nav.js"></script>
 <script type="module">
+import { bkkDay, bkkTime } from '/assets/stat-nav.js';
 import { fetchCore7JourneyStats } from '/core7/js/analytics.js';
 const $=id=>document.getElementById(id), DAY=86400000;
 const fmt=n=>Number(n||0).toLocaleString('en-US');
 const pct=n=>`${Number(n||0).toFixed(1)}%`;
-const date=d=>new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
+const date=d=>bkkTime(d);
 const metric=(label,value,sub='')=>`<article class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></article>`;
 let current=null;
 
-function setDays(days){const now=new Date();$('to').value=now.toISOString().slice(0,10);$('from').value=new Date(now-DAY*(days-1)).toISOString().slice(0,10);load();}
+function setDays(days){$('to').value=bkkDay(0);$('from').value=bkkDay(days-1);load();}
 document.querySelectorAll('[data-days]').forEach(b=>b.onclick=()=>setDays(Number(b.dataset.days)));
 $('refresh').onclick=load;
 $('csv').onclick=()=>{
@@ -157,7 +158,7 @@ async function load(){
 }
 
 function render(d){
- $('range').textContent=`${d.range.from} → ${d.range.to} · Asia/Bangkok`;
+ $('range').textContent=`${d.range.from} → ${d.range.to} · เวลาไทย GMT+7`;
  $('version').textContent=`Game ${d.gameVersion||'-'} · Analytics ${d.analyticsVersion||'-'} · Updated ${date(d.generatedAt)}`;
 
  /* ศูนย์ทุกช่องมีสองความหมาย: ยังไม่มีคนเดิน กับ ยังไม่ได้ต่อสาย

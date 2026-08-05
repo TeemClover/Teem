@@ -107,11 +107,11 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 <script type="module" src="/assets/stat-nav.js"></script>
 <script type="module">
 import { fetchCore7Overview } from '/core7/js/analytics.js';
-import { STAT_PAGES } from '/assets/stat-nav.js';
+import { STAT_PAGES, bkkTime } from '/assets/stat-nav.js';
 const $=id=>document.getElementById(id);
 const fmt=n=>Number(n||0).toLocaleString('en-US');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const time=d=>new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
+const time=d=>bkkTime(d);
 
 const LABEL={
  devices:['เครื่องที่เข้ามา','ทั้งเว็บ รวมเกม'],

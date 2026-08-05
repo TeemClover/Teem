@@ -112,5 +112,58 @@ import { reportAchievementUnlock } from '/core7/js/analytics.js';
 reportAchievementUnlock('forge-intro');   // กันซ้ำในตัว
 ```
 
+### Act ที่ต่อสายแล้ว
+
+| ที่ไหน | act |
+|---|---|
+| หน้าแรก | `home-open` · `home-video` · `home-compass` |
+| Hall | `hall-open` · **`hall-bump`** (ชนหมัด — ประตูจริง) · `hall-quest` · `hall-path-pick` · `hall-path-enter` · `hall-room` · `hall-line` |
+| การ์ตูน | `forge-open` · `forge-ep-open` (ทุกตอนใช้ id เดียว ดูว่าตอนไหนจากคอลัมน์ `path`) |
+| Walkthrough | `walkthrough-open` |
+| ห้องเรียน | `class-open` · `lesson-open` (ทุกบทใช้ id เดียว) |
+| ด่านบอส | `awaken-open` |
+| เส้นทางลับ | `notebook-open` · `notebook-restore` · `notebook-bump` |
+| ห้องอื่น | `card-open` · `card-save` · `collection-open` · `paths-open` · `club-open` · `resume-open` · `guild-discord` · `ks-open` |
+
+`hall-bump` สำคัญที่สุดในชุดนี้ — ระบบใหม่ Hall จะปลดล็อกทีละขั้นหลังชนหมัด
+ระยะห่างระหว่าง `hall-open` กับ `hall-bump` คือจำนวนคนที่มาถึงหน้าแล้วไม่เริ่ม
+
 ดูผลที่ `/collection/stat/` · API: `GET /api/core7/achievement-stats?from&to`
 
+
+---
+
+## 7. เข็มทิศนำทาง — First Run แบบเปิดทีละขั้น
+
+บ้านไม่ได้เปิดทุกห้องพร้อมกันตั้งแต่วินาทีแรกแล้ว คนใหม่เห็นแค่หมัดที่ยื่นมา
+แล้วห้องจะเปิดทีละขั้นตามที่เดินจริง
+
+ตำแหน่งบนเส้นทางคำนวณที่ `assets/stage.js` **ที่เดียว** — หน้าอื่นแค่อ่านตาม
+
+| ขั้น | ผ่านเมื่อ | เข็มทิศชี้ไป |
+|---|---|---|
+| `door` | `mc_glhf_seen` | ชนหมัดที่ Hall |
+| `intro` | `mc_intro_seen` หรืออ่านตอนไหนแล้ว | `/forge/intro/` |
+| `forge` | อ่านครบ 7 ตอน | ตอนที่ยังไม่อ่าน |
+| `walkthrough` | `mc_walk_done` | `/walkthrough/` |
+| `tutorial` | `c7:tutorial_completed` | `/core7/tutorial/` |
+| `core7` | `c7:stats:*.matchesPlayed > 0` | `/core7/hand/?next=bot&level=easy&entry=forge` |
+| `hall` | เรียน `free-ai` จบ | `/classroom/free-ai.html` |
+| `stats` | — (ปลายทาง) | — |
+
+### ห้องเปิดตอนไหน
+
+ติดป้ายใน HTML แล้ว `stage.js` จัดการเอง ไม่ต้องเขียน JS ต่อหน้า
+
+```html
+<section data-mc-stage="hall" hidden>…</section>    <!-- เปิดเมื่อถึงขั้น hall -->
+<section data-mc-stage="!hall">…</section>          <!-- ปิดเมื่อถึงขั้น hall -->
+```
+
+- **ขั้น `hall`** (เล่น CORE7 จบ 1 เกม) เปิด 3 จุดเริ่มต้น · ห้องอื่นในบ้าน ·
+  LINE · First Version · Inventory บนแถบบน
+- **ขั้น `stats`** (เรียน AI ใส่ซอส บทที่ 1 จบ) เปิด 🔴🟢🔵⚙️ 4 ค่าสถานะ
+
+> ⚠️ การซ่อนใช้ attribute `hidden` ล้วน — หน้าไหนที่มีกฎ `display` แบบ `!important`
+> ต้องมี `[hidden]{display:none!important}` ด้วย ไม่งั้นห้องที่สั่งปิดจะโผล่มาเฉย ๆ
+> โดยที่ `el.hidden` ยังเป็น true (เทสที่เช็คแค่ attribute จะผ่านแบบหลอก ๆ)

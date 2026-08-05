@@ -2,13 +2,12 @@ window.HALL_COPY=window.HALL_COPY||{};
 window.HALL_COPY.th={
       metaTitle:"บ้าน myClover — Main Quest การ์ตูน บทเรียน และเกม CORE7",
       metaDescription:"หยิบเข็มทิศแล้วเริ่ม Main Quest ของบ้าน myClover: อ่าน WHY AI? Webtoon 7 ตอน เรียน AI ฟรี 6 ภารกิจ สร้างการ์ดเป็นหลักฐาน และลองเล่น CORE7",
-      heroKicker:"🧭 คุณหยิบเข็มทิศมาแล้ว",
-      heroTitle:"ในบ้านนี้ ไม่มีทางที่ผิด",
-      heroLead:'เลือกเริ่มจากสิ่งที่ใกล้ตัวที่สุด หรือเดินตาม <span class="term context-term" tabindex="0" data-tip="Main Quest คือเส้นทางหลัก 3 ขั้นของบ้าน: อ่าน WHY AI? เพื่อเข้าใจเหตุผล → เรียน 6 บทเพื่อลงมือสร้าง → ทำการ์ดเพื่อเก็บหลักฐาน ระบบจะจำความคืบหน้าและปักเควสถัดไปให้เสมอ">Main Quest</span> ที่เราวางไว้ให้ก็ได้ ทุกเส้นทางพากลับมาหาของที่ใช้ได้จริง',
-      glhfTitle:'ก่อนเริ่มเกม เรา<span class="term context-term context-term-light" tabindex="0" data-tip="ชนหมัดคือพิธีเริ่มเกมของบ้าน และเป็นความหมายของ GLHF — Good Luck, Have Fun ขอให้โชคดี สนุกกับทางที่เลือก และไม่ต้องเล่นให้สมบูรณ์ตั้งแต่ครั้งแรก">ชนหมัด</span>กันก่อน',
-      glhfDesc:"คำอวยพรก่อนเริ่มเล่น: ขอให้โชคดี และอย่าลืมสนุกกับทางที่คุณเลือก",
-      bump:"แตะเพื่อชนหมัดและเริ่มเกม",
-      qWhy:"WHY · เข้าใจเหตุผล", qHow:"HOW · ลงมือสร้าง", qProof:"PROOF · เก็บหลักฐาน",
+      heroKicker:"🧭 AI SMART WEBSITE",
+      heroTitle:"บ้านที่จำได้ว่าคุณเดินถึงไหน",
+      heroLead:'บ้านหลังนี้มี<span class="term context-term" tabindex="0" data-tip="เข็มทิศคือตัวนำทางของบ้าน มันอ่านความคืบหน้าที่เก็บไว้ในเครื่องคุณ แล้วชี้ไปยังก้าวถัดไปเพียงก้าวเดียว ไม่ต้องเลือกเองว่าจะไปห้องไหนก่อน">เข็มทิศนำทาง</span> ที่ชี้ไปยังจุดล่าสุดที่คุณเดินถึงเสมอ<br>ไม่ต้องเล่นให้จบในรอบเดียว — ปิดไปแล้วกลับมาเมื่อไหร่ ก็กดเดินต่อจากตรงนั้นได้ทันที',
+      glhfTitle:'<span class="term context-term context-term-light" tabindex="0" data-tip="ชนหมัดคือพิธีเริ่มเกมของบ้าน และเป็นความหมายของ GLHF — Good Luck, Have Fun ขอให้โชคดี สนุกกับทางที่เลือก และไม่ต้องเล่นให้สมบูรณ์ตั้งแต่ครั้งแรก">ชนหมัด</span>กันก่อน แล้วเข็มทิศจะโผล่มา',
+      glhfDesc:"พิธีเริ่มเกมของบ้านหลังนี้ — ขอให้โชคดี และอย่าลืมสนุกกับทางที่คุณเลือก",
+      bump:"แตะที่นี่เพื่อชนหมัด",
       secretBanner:"สมุดถูกซ่อม · อ่าน Secret Ending จบ · ตรา 👊🏻GLHF ถูกบันทึกแล้ว",
       highlightsEyebrow:"3 จุดเริ่มต้นของบ้าน",
       highlightsTitle:"เข้าใจว่าทำไม ใช้ AI ให้เป็น แล้วดูของจริง",
@@ -62,9 +61,8 @@ window.HALL_COPY.th={
   var style=document.createElement("style");
   style.id="hall-v51-final-patch";
   style.textContent='\
-.navlinks>a[href="#quest"]{display:none!important}\
 .navlinks{align-items:center!important;overflow:visible!important}\
-.navlinks a.gold{width:44px!important;height:44px!important;min-width:44px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:0!important;line-height:1!important;overflow:visible!important}\
+.navlinks a.gold:not([hidden]){width:44px!important;height:44px!important;min-width:44px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:0!important;line-height:1!important;overflow:visible!important}\
 .navlinks a.gold::before{content:"🎒";display:block;font-size:32px;line-height:1;transform:scale(1.12) translateY(1px);transform-origin:center}\
 .lang-switch{height:44px!important}\
 .lang-switch button{width:42px!important;height:36px!important;padding:0!important}\

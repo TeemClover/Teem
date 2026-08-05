@@ -37,9 +37,52 @@ export const STAGES = Object.freeze([
    id สั้นและอยู่ตัว เพราะมันจะถูกเขียนลง DB ตลอดไป เปลี่ยนเมื่อไหร่
    ข้อมูลเก่ากลายเป็นเด็กกำพร้าทันที (หน้าสถิติจะโชว์แยกให้เห็น ไม่กลืนทิ้ง) */
 export const ACTS = Object.freeze([
+  /* ── ประตูหน้าบ้าน ── */
   { id: 'home-open', stage: 'home', emoji: '🚪', th: 'เปิดหน้าแรก', en: 'Opened the front page', achievement: false },
   { id: 'home-video', stage: 'home', emoji: '▶️', th: 'กดดูคลิปเปิดบ้าน', en: 'Played the opening clip', achievement: true },
   { id: 'home-compass', stage: 'home', emoji: '🧭', th: 'หยิบเข็มทิศเข้าบ้าน', en: 'Picked up the compass', achievement: true },
+
+  /* ── Hall ──
+     ชนหมัดคือประตูจริงของบ้าน ส่วนที่เหลือของ Hall เปิดหลังจากนี้
+     ระยะห่างระหว่าง hall-open กับ hall-bump คือจำนวนคนที่มาถึงหน้าแล้วไม่เริ่ม */
+  { id: 'hall-open', stage: 'home', emoji: '🏛️', th: 'เปิดหน้า Hall', en: 'Opened the Hall', achievement: false },
+  { id: 'hall-bump', stage: 'home', emoji: '👊', th: 'ชนหมัดเปิดบ้าน', en: 'Fist bump', achievement: true },
+  { id: 'hall-quest', stage: 'home', emoji: '🎯', th: 'กดปุ่มเควสหลัก', en: 'Tapped the main quest', achievement: false },
+  { id: 'hall-path-pick', stage: 'world', emoji: '🎴', th: 'เลือกสายของตัวเอง', en: 'Picked a path', achievement: true },
+  { id: 'hall-path-enter', stage: 'world', emoji: '🚶', th: 'เข้าสู่เส้นทางที่เลือก', en: 'Entered the path', achievement: false },
+  { id: 'hall-room', stage: 'world', emoji: '🚪', th: 'กดเข้าห้องใน Hall', en: 'Opened a room', achievement: false },
+  { id: 'hall-line', stage: 'world', emoji: '💬', th: 'กดแอด LINE', en: 'Tapped Add LINE', achievement: true },
+
+  /* ── การ์ตูน ──
+     บทนำเป็นห้องแรกที่เข็มทิศพาคนใหม่ไป ระยะห่างระหว่าง hall-bump กับ
+     forge-intro-open คือจำนวนคนที่ชนหมัดแล้วแต่ไม่เดินตามเข็มทิศต่อ */
+  { id: 'forge-intro-open', stage: 'forge', emoji: '🌱', th: 'เปิดบทนำ Intro', en: 'Opened the Intro', achievement: false },
+  { id: 'forge-open', stage: 'forge', emoji: '📚', th: 'เปิดหน้ารวมการ์ตูน', en: 'Opened the Forge index', achievement: false },
+  { id: 'forge-ep-open', stage: 'forge', emoji: '📖', th: 'เปิดอ่านตอน', en: 'Opened an episode', achievement: false },
+
+  { id: 'walkthrough-open', stage: 'walkthrough', emoji: '🗺️', th: 'เปิด Walkthrough', en: 'Opened the walkthrough', achievement: false },
+
+  /* ── ห้องเรียน ── */
+  { id: 'class-open', stage: 'classroom', emoji: '🏫', th: 'เปิดหน้ารวมห้องเรียน', en: 'Opened the classroom', achievement: false },
+  { id: 'lesson-open', stage: 'classroom', emoji: '📝', th: 'เปิดบทเรียน', en: 'Opened a lesson', achievement: false },
+
+  /* ── ด่านบอสและเส้นทางลับ ── */
+  { id: 'awaken-open', stage: 'awaken', emoji: '🌅', th: 'เข้าด่านบอส', en: 'Entered the boss stage', achievement: false },
+  { id: 'notebook-open', stage: 'secret', emoji: '📔', th: 'หยิบสมุดเก่า', en: 'Picked up the notebook', achievement: true, secret: true },
+  { id: 'notebook-restore', stage: 'secret', emoji: '🔧', th: 'กด RESTORE', en: 'Used RESTORE', achievement: true, secret: true },
+  { id: 'notebook-bump', stage: 'secret', emoji: '👊🏻', th: 'ชนหมัด Well Played', en: 'Well Played fist bump', achievement: true, secret: true },
+
+  /* ── ห้องอื่นในบ้าน ── */
+  { id: 'card-open', stage: 'endgame', emoji: '🎴', th: 'เปิดหน้าทำการ์ด', en: 'Opened the Player Card', achievement: false },
+  { id: 'card-save', stage: 'endgame', emoji: '💾', th: 'กดบันทึกการ์ด', en: 'Saved the Player Card', achievement: true },
+  { id: 'collection-open', stage: 'world', emoji: '🎒', th: 'เปิด Inventory', en: 'Opened the Inventory', achievement: false },
+  { id: 'paths-open', stage: 'world', emoji: '🧭', th: 'เปิดหน้ารวม 4 สาย', en: 'Opened the paths page', achievement: false },
+  { id: 'club-open', stage: 'world', emoji: '🍜', th: 'เปิด myClover Club', en: 'Opened the Club', achievement: false },
+  { id: 'resume-open', stage: 'world', emoji: '🧾', th: 'เปิด Smart Resume', en: 'Opened Smart Resume', achievement: false },
+  /* /guild/ เป็นหน้าเด้งไป Discord ล้วน เปิดหน้านั้น = ไปแล้ว จึงไม่แยกสองขั้น
+     ให้เป็นแถวที่มีความหมายจริงแถวเดียว ดีกว่ามีแถวที่เป็นศูนย์ตลอดกาล */
+  { id: 'guild-discord', stage: 'world', emoji: '💠', th: 'เข้า Guild บน Discord', en: 'Went into Discord', achievement: true },
+  { id: 'ks-open', stage: 'world', emoji: '📦', th: 'เปิดหน้า Kickstarter', en: 'Opened the campaign page', achievement: false },
 ]);
 
 /* ── ACHIEVEMENT ──

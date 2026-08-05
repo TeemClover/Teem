@@ -27,9 +27,6 @@
     html(".hero .lead",c("heroLead"));
     html(".glhf h2",c("glhfTitle"));
     text(".glhf p",c("glhfDesc"));
-    text("#qWhy .qnode-copy b",c("qWhy"));
-    text("#qHow .qnode-copy b",c("qHow"));
-    text("#qProof .qnode-copy b",c("qProof"));
     text("#secretBanner span span",c("secretBanner"));
     text(".highlights .eyebrow",c("highlightsEyebrow"));
     text(".highlights h2",c("highlightsTitle"));
@@ -92,6 +89,10 @@
   function openHouse(auto){
     seen=true;bump.classList.add("hit");document.body.classList.add("glhf-open");paintBump();
     try{localStorage.setItem("mc_glhf_seen","1")}catch(e){}
+    /* ชนหมัดแล้วขั้นเปลี่ยนจาก door เป็น intro ทันที — ต้องวาดใหม่ทั้งเข็มทิศ
+       และประตูห้องต่าง ๆ ไม่งั้นเข็มทิศที่เพิ่งโผล่มาจะยังบอกให้ไปชนหมัดอยู่ */
+    if(window.MC_STAGE)window.MC_STAGE.paint();
+    paintQuest();
     if(!auto)setTimeout(function(){document.getElementById("quest").scrollIntoView({behavior:"smooth",block:"start"})},650);
   }
   if(seen)openHouse(true);
@@ -114,13 +115,7 @@
   function countDone(k,items){var raw=values(k);return items.filter(function(item){return raw.indexOf(item)>=0}).length}
   function firstMissing(k,items){var raw=values(k);for(var i=0;i<items.length;i++){if(raw.indexOf(items[i])<0)return i}return-1}
   function titles(){try{var list=JSON.parse(ls("mc_titles","[]"));return Array.isArray(list)?list:[]}catch(e){return[]}}
-  function setNode(id,done,current){var node=document.getElementById(id);node.classList.toggle("done",done);node.classList.toggle("current",current);node.querySelector(".qnode-mark").textContent=done?"✓":current?"→":"○"}
   function setActive(icon,label,title,desc,url,cta){document.getElementById("activeIcon").textContent=icon;document.getElementById("activeLabel").textContent=label;document.getElementById("activeTitle").textContent=title;document.getElementById("activeDesc").textContent=desc;var link=document.getElementById("activeCta");link.href=url;link.textContent=cta}
-  function toggleQuestScaffold(show){
-    var track=one(".qtrack"),route=one(".quest-route");
-    if(track)track.style.display=show?"block":"none";
-    if(route)route.style.display=show?"grid":"none";
-  }
   function paintRewards(secretComplete){
     var rewards=document.getElementById("questRewards");
     if(!rewards)return;
@@ -157,67 +152,76 @@
       +'</a><span><b>'+(th?'ชวนเพื่อนมาดวล':'CHALLENGE A FRIEND')+'</b><span style="color:'+(secretComplete?'rgba(255,255,255,.66)':'var(--muted)')+'">'+copy+'</span></span>';
   }
 
+  /* ── เข็มทิศ ──
+     ตำแหน่งบนเส้นทางคำนวณที่ assets/stage.js ที่เดียว หน้านี้แค่วาดตาม
+     เข็มทิศอันแรกตั้งใจให้ว่างมาก: ไม่มีแถบความคืบหน้า ไม่มีราง ไม่มีเปอร์เซ็นต์
+     เพราะคนที่เพิ่งชนหมัดเสร็จยังไม่มีความคืบหน้าให้ดู มีแต่ก้าวถัดไปก้าวเดียว */
   function paintQuest(){
     var th=currentLang==="th";
-    var readCount=countDone("mc_read",READ),learnCount=countDone("mc_learn",LEARN),cardDone=ls("mc_opened","")==="1";
-    var total=readCount+learnCount+(cardDone?1:0),pct=Math.round(total/14*100);
-    var restored=ls("mc_nb_restored","")==="1",secretEnd=ls("mc_secret_end","")==="1",hasGLHF=titles().indexOf("GLHF")>=0;
-    var secretComplete=restored&&secretEnd&&hasGLHF,mainComplete=readCount===7&&learnCount===6&&cardDone;
-    var hud=document.getElementById("questHud"),title=document.getElementById("questTitle"),lead=document.getElementById("questLead"),eyebrow=document.getElementById("questEyebrow");
-    document.getElementById("questFill").style.width=pct+"%";
-    document.getElementById("overallPct").textContent=mainComplete?"100%":pct+"%";
-    document.getElementById("overallText").textContent=mainComplete?(th?"พร้อมเล่น CORE7":"Ready for CORE7"):(th?"เก็บได้ "+total+"/14 จุด":total+"/14 progress points");
-    document.getElementById("whyStatus").textContent=readCount+"/7 "+(th?"ตอน":"episodes");
-    document.getElementById("howStatus").textContent=learnCount+"/6 "+(th?"บท":"quests");
-    document.getElementById("proofStatus").textContent=cardDone?(th?"บันทึกการ์ดแล้ว":"Card saved"):(th?"ยังไม่มีการ์ด":"No card yet");
-    var nextRead=firstMissing("mc_read",READ),nextLearn=firstMissing("mc_learn",LEARN);
-    setNode("qWhy",readCount===7,readCount<7);setNode("qHow",learnCount===6,readCount===7&&learnCount<6);setNode("qProof",cardDone,readCount===7&&learnCount===6&&!cardDone);
-    hud.dataset.state="active";
-    eyebrow.textContent="Main Quest Tracker";
+    var S=window.MC_STAGE;
+    if(!S) return;
+    var here=S.get(), first=here.id==="intro";
+    var hud=document.getElementById("questHud"),
+        title=document.getElementById("questTitle"),
+        lead=document.getElementById("questLead"),
+        eyebrow=document.getElementById("questEyebrow");
+
+    var restored=ls("mc_nb_restored","")==="1",secretEnd=ls("mc_secret_end","")==="1",
+        hasGLHF=titles().indexOf("GLHF")>=0,
+        secretComplete=restored&&secretEnd&&hasGLHF;
+
+    hud.dataset.state=here.done?(secretComplete?"secret":"complete"):"active";
+    eyebrow.textContent=th?"🧭 เข็มทิศนำทาง":"🧭 COMPASS";
     hideCompletionBanner();
-    toggleQuestScaffold(true);
-    paintRewards(false);
+    paintRewards(here.done&&secretComplete);
 
-    if(readCount<7){
-      var episode=nextRead+1;
-      title.textContent=th?"เควสหลักถัดไป":"Next Main Quest";
-      lead.textContent=th?"บ้านพบตอนที่คุณยังอ่านไม่จบ และปักหมุดไว้ให้แล้ว":"The house found the next unread episode and pinned it for you.";
-      setActive("📖",th?(readCount===0?"ภารกิจแรก":"ทำเควสต่อ"):(readCount===0?"First Quest":"Continue Quest"),(th?"อ่าน WHY AI? ตอนที่ ":"Read WHY AI? Episode ")+episode,th?"ตอนที่ "+episode+" จาก 7 · อ่านจบแล้ว Tracker จะเลื่อนไปตอนถัดไปเอง":"Episode "+episode+" of 7 · The tracker will advance when you finish.",READ_URLS[nextRead],th?"อ่านตอนที่ "+episode+" →":"Read Episode "+episode+" →");
-      return;
-    }
-    if(learnCount<6){
-      var lesson=nextLearn+1;
-      title.textContent=th?"เควสหลักถัดไป":"Next Main Quest";
-      lead.textContent=th?"WHY ผ่านแล้ว ต่อไปเปลี่ยนความเข้าใจให้กลายเป็นของที่ใช้ได้จริง":"WHY is complete. Now turn understanding into something real.";
-      setActive("⚡",th?"ทำเควสต่อ":"Continue Quest",th?"เรียนภารกิจที่ "+lesson+" จาก 6":"Complete Quest "+lesson+" of 6",th?"จบภารกิจนี้แล้ว Tracker จะปักหมุดภารกิจถัดไปให้ทันที":"Finish this quest and the tracker will pin the next one.",LEARN_URLS[nextLearn],th?"เริ่มภารกิจที่ "+lesson+" →":"Start Quest "+lesson+" →");
-      return;
-    }
-    if(!cardDone){
-      title.textContent=th?"ภารกิจสุดท้าย":"Final Main Quest";
-      lead.textContent=th?"เหลือเพียงเก็บหลักฐานว่าคุณเดินทางมาถึงตรงนี้แล้ว":"Only one step remains: save proof that you reached this point.";
-      setActive("🎴","Final Main Quest",th?"สร้างและบันทึกการ์ดประจำตัว":"Create and Save Your Identity Card",th?"การบันทึกการ์ดจะปิด Main Quest อย่างสมบูรณ์":"Saving the card will complete the Main Quest.","card/",th?"สร้างการ์ด →":"Create Card →");
-      return;
+    /* เครื่องประดับทั้งหมดของเข็มทิศอันแรกถูกซ่อน ไม่ใช่แค่ว่าง */
+    show("questTrack",!first);
+    show("questRail",!first);
+    show("questOverall",!first);
+    show("questRewards",!first&&here.done);
+
+    if(first){
+      title.textContent=th?"เข็มทิศชี้ไปที่ห้องแรกแล้ว":"The compass points to the first room";
+      lead.textContent=th
+        ?"จากนี้ไม่ต้องเลือกเองว่าจะไปไหนต่อ เดินตามที่มันชี้ก็พอ"
+        :"You do not have to choose where to go. Just follow where it points.";
+    }else{
+      var steps=S.rail(), doneCount=steps.filter(function(x){return x.done}).length;
+      var pct=Math.round(doneCount/steps.length*100);
+      document.getElementById("questFill").style.width=pct+"%";
+      document.getElementById("overallPct").textContent=pct+"%";
+      document.getElementById("overallText").textContent=th
+        ?"เดินมาแล้ว "+doneCount+"/"+steps.length+" ขั้น"
+        :doneCount+"/"+steps.length+" steps";
+      paintRail(steps);
+      title.textContent=here.done
+        ?(th?"เดินครบเส้นทางของบ้านแล้ว":"You walked the whole path")
+        :(th?"เข็มทิศชี้ไปที่นี่":"The compass points here");
+      lead.textContent=here.done
+        ?(th?"จากนี้เลือกห้องไหนก่อนก็ได้ ไม่มีทางที่ผิดแล้ว":"From here, any room is a fine place to go.")
+        :(th?"จุดล่าสุดที่คุณเดินถึง — กดเดินต่อได้เลย":"The last point you reached. Pick it up from here.");
     }
 
-    toggleQuestScaffold(false);
-    paintRewards(secretComplete);
-    hud.dataset.state=secretComplete?"secret":"complete";
-    eyebrow.textContent=secretComplete?"SECRET ENDING CLEAR · NEXT GAME":"MAIN QUEST COMPLETE · NEXT GAME";
-    title.textContent=th?"เรียนจบแล้ว — ไปเล่นเกม":"Quest Complete — Time to Play";
-    lead.textContent=th
-      ?"บทเรียนจบตรงนี้ แต่สิ่งที่เรียนมาจะเริ่มทำงานใน CORE7 เกมสั้นที่ทุกการ์ดคือการตัดสินใจ"
-      :"The lessons end here, but what you learned comes alive in CORE7—a short game where every card is a decision.";
-    setActive(
-      "🃏",
-      th?"CORE7 · READY TO PLAY":"CORE7 · READY TO PLAY",
-      th?"เลือกการ์ด 7 ใบ แล้วเริ่มดวล":"Choose 7 Cards and Start the Duel",
-      th
-        ?"เข้าเกมได้ทันที หรือสร้างห้องส่งลิงก์ให้เพื่อนเข้ามาในแมตช์เดียวกัน"
-        :"Enter the game now, or create a room and send the link so a friend can join the same match.",
-      "core7/",
-      th?"เล่นเกม CORE7 →":"Play CORE7 →"
-    );
-    renderCompletionBanner(secretComplete,th);
+    /* ใช้ path เต็มจากรากเสมอ ไม่ใช่ path สัมพัทธ์ — เข็มทิศอันเดียวกันนี้
+       จะถูกเอาไปวางในหน้าที่อยู่ลึกกว่านี้ได้โดยไม่ต้องแก้อะไร */
+    var n=here.next;
+    setActive(n.icon,n.label,n.title,n.desc,S.href(n.href),n.cta);
+    if(here.done) renderCompletionBanner(secretComplete,th);
+  }
+
+  function show(id,on){var el=document.getElementById(id);if(el)el.hidden=!on}
+
+  /* วาดรางทีเดียวจบ ไม่แก้ทีละโหนด — จำนวนขั้นเปลี่ยนได้จาก stage.js */
+  function paintRail(steps){
+    var rail=document.getElementById("questRail");
+    if(!rail) return;
+    rail.innerHTML=steps.map(function(x){
+      var cls=x.done?"done":(x.current?"current":"locked");
+      var mark=x.done?"✓":(x.current?"→":"");
+      return '<li class="'+cls+'"><span class="ic" aria-hidden="true">'+x.icon+'</span>'
+        +'<b>'+x.th+'</b><span class="mk" aria-hidden="true">'+mark+'</span></li>';
+    }).join("");
   }
 
   var tip=document.createElement("div");tip.className="tip-box";document.body.appendChild(tip);var active=null;

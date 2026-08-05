@@ -12,9 +12,37 @@
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
 :root{--bg:#06170f;--panel:#0d2a1c;--gold:#d9b86c;--green:#65d39d;--muted:#91a69b}
-body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;min-height:100vh}.shell{width:min(1240px,calc(100% - 28px));margin:auto;padding:30px 0 80px}.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.top h1{font:700 clamp(32px,6vw,58px)/1 "Bai Jamjuree",sans-serif}.top p{max-width:740px;color:rgb(255 255 255/.65);margin-top:8px}.back{color:var(--gold);white-space:nowrap;font-size:13px}.tools{display:flex;gap:9px;align-items:end;flex-wrap:wrap;margin-top:24px;padding:14px;border:1px solid rgb(255 255 255/.12);border-radius:17px;background:rgb(255 255 255/.05)}.tools label{display:grid;gap:4px;font-size:11px;color:rgb(255 255 255/.58);font-weight:700}.tools input{min-height:42px;border:0;border-radius:10px;padding:8px 10px;font:inherit}.tools button{min-height:42px;border:1px solid rgb(255 255 255/.16);border-radius:10px;padding:8px 13px;background:rgb(255 255 255/.07);color:#fff;font-weight:700;cursor:pointer}.tools .primary{background:var(--gold);color:#172018;border-color:var(--gold)}.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;color:rgb(255 255 255/.48);font-size:12px}.loading,.error{padding:30px 0}.error{color:#ff9c93}.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-top:23px}.metric,.panel{border:1px solid rgb(255 255 255/.11);border-radius:17px;background:linear-gradient(145deg,rgb(255 255 255/.07),rgb(255 255 255/.035))}.metric{padding:17px}.metric span{display:block;color:rgb(255 255 255/.55);font-size:10px;font-weight:700;letter-spacing:.06em}.metric strong{display:block;margin-top:4px;font:700 clamp(24px,4vw,36px) "Bai Jamjuree",sans-serif}.metric small{display:block;color:var(--green);font-size:11px;margin-top:3px}.section{margin-top:38px}.head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:13px}.head h2{font:700 clamp(22px,4vw,31px) "Bai Jamjuree",sans-serif}.head p{max-width:620px;color:rgb(255 255 255/.52);font-size:12px}.panel{padding:17px;overflow:hidden}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:620px;font-size:13px}.table th,.table td{padding:10px 9px;border-bottom:1px solid rgb(255 255 255/.08);text-align:right;white-space:nowrap}.table th:first-child,.table td:first-child{text-align:left}.table th{color:rgb(255 255 255/.48);font-size:10px}.good{color:#7fe0ad}.warn{color:#ffb977}.muted{color:rgb(255 255 255/.45)}.funnel{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.step{padding:14px;border-radius:14px;background:rgb(255 255 255/.055);border:1px solid rgb(255 255 255/.1)}.step b{display:block;font:700 24px "Bai Jamjuree"}.step span{font-size:11px;color:rgb(255 255 255/.58)}.colors{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.color{padding:16px;border-radius:16px;box-shadow:inset 0 0 0 1px rgb(255 255 255/.22)}.color h3{font:700 20px "Bai Jamjuree"}.color strong{display:block;font:700 30px "Bai Jamjuree"}.color p{font-size:12px;color:rgb(255 255 255/.82)}.color dl{display:grid;grid-template-columns:1fr auto;gap:4px 10px;margin-top:10px;font-size:11px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.card{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid rgb(255 255 255/.09);border-radius:12px;background:rgb(255 255 255/.035)}.swatch{width:34px;height:34px;border-radius:9px}.card b{display:block}.card small{display:block;color:rgb(255 255 255/.45)}.card strong{font:700 18px "Bai Jamjuree"}.patches{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.patch{padding:14px;border-left:3px solid var(--gold);background:rgb(255 255 255/.045);border-radius:0 13px 13px 0}.patch b{display:block;color:var(--gold)}.patch span{font-size:12px;color:rgb(255 255 255/.65)}.health{display:flex;gap:8px;flex-wrap:wrap}.health span{padding:8px 11px;border-radius:999px;background:rgb(255 255 255/.06);border:1px solid rgb(255 255 255/.1);font-size:12px}.note{margin-top:28px;padding:14px 17px;border-left:3px solid var(--gold);background:rgb(255 255 255/.04);color:rgb(255 255 255/.56);font-size:12px}
-.chart{display:flex;align-items:flex-end;gap:6px;min-height:214px;padding-top:24px;overflow-x:auto}.daybar{flex:1;min-width:26px;display:grid;grid-template-rows:1fr auto;gap:7px;height:190px}.bars{display:flex;align-items:flex-end;justify-content:center;gap:2px;height:158px}.bar{width:7px;min-height:2px;border-radius:5px 5px 1px 1px;background:var(--gold);position:relative}.bar.done{background:var(--green)}.bar.unlock{background:#7fa9ff}.bar:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);padding:5px 8px;border-radius:7px;background:#fff;color:#172018;font-size:10px;font-weight:700;white-space:nowrap;z-index:4}.daybar label{font-size:9px;color:rgb(255 255 255/.45);text-align:center;transform:rotate(-35deg);transform-origin:center;white-space:nowrap}.legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:12px;color:rgb(255 255 255/.55);font-size:11px}.dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--gold)}.dot.done{background:var(--green)}.dot.unlock{background:#7fa9ff}
-@media(max-width:1000px){.metrics{grid-template-columns:repeat(3,1fr)}.funnel{grid-template-columns:repeat(3,1fr)}.colors{grid-template-columns:repeat(2,1fr)}.patches{grid-template-columns:repeat(2,1fr)}}@media(max-width:720px){.chart{min-height:206px}.daybar{min-width:30px}.top{display:block}.back{display:inline-block;margin-top:12px}.grid2,.grid3{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.head{display:block}.head p{margin-top:5px}.tools{align-items:stretch}.tools label{flex:1;min-width:130px}.metrics{grid-template-columns:1fr 1fr}.funnel{grid-template-columns:1fr 1fr}}@media(max-width:430px){.shell{width:min(100% - 20px,1240px)}.colors,.patches{grid-template-columns:1fr}}
+body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;min-height:100vh}.shell{width:min(1240px,calc(100% - 28px));margin:auto;padding:30px 0 80px}.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.top h1{font:700 clamp(32px,6vw,58px)/1 "Bai Jamjuree",sans-serif}.top p{max-width:740px;color:rgb(255 255 255/.65);margin-top:8px}.back{color:var(--gold);white-space:nowrap;font-size:13px}.tools{display:flex;gap:9px;align-items:end;flex-wrap:wrap;margin-top:24px;padding:14px;border:1px solid rgb(255 255 255/.12);border-radius:17px;background:rgb(255 255 255/.05)}.tools label{display:grid;gap:4px;font-size:11px;color:rgb(255 255 255/.58);font-weight:700}.tools input{min-height:42px;border:0;border-radius:10px;padding:8px 10px;font:inherit}.tools button{min-height:42px;border:1px solid rgb(255 255 255/.16);border-radius:10px;padding:8px 13px;background:rgb(255 255 255/.07);color:#fff;font-weight:700;cursor:pointer}.tools .primary{background:var(--gold);color:#172018;border-color:var(--gold)}.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;color:rgb(255 255 255/.48);font-size:12px}.loading,.error{padding:30px 0}.error{color:#ff9c93}.metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:11px;margin-top:23px}.metric,.panel{border:1px solid rgb(255 255 255/.11);border-radius:17px;background:linear-gradient(145deg,rgb(255 255 255/.07),rgb(255 255 255/.035))}.metric{padding:17px}.metric span{display:block;color:rgb(255 255 255/.55);font-size:10px;font-weight:700;letter-spacing:.06em}.metric strong{display:block;margin-top:4px;font:700 clamp(24px,4vw,36px) "Bai Jamjuree",sans-serif}.metric small{display:block;color:var(--green);font-size:11px;margin-top:3px}.section{margin-top:38px}.head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:13px}.head h2{font:700 clamp(22px,4vw,31px) "Bai Jamjuree",sans-serif}.head p{max-width:620px;color:rgb(255 255 255/.52);font-size:12px}.panel{padding:17px;overflow:hidden}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.table-wrap{overflow-x:auto;overflow-y:hidden}.table{width:100%;border-collapse:collapse;min-width:620px;font-size:13px}.table th,.table td{padding:10px 9px;border-bottom:1px solid rgb(255 255 255/.08);text-align:right;white-space:nowrap}.table th:first-child,.table td:first-child{text-align:left}.table th{color:rgb(255 255 255/.48);font-size:10px}.good{color:#7fe0ad}.warn{color:#ffb977}.muted{color:rgb(255 255 255/.45)}.funnel{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.step{padding:14px;border-radius:14px;background:rgb(255 255 255/.055);border:1px solid rgb(255 255 255/.1)}.step b{display:block;font:700 24px "Bai Jamjuree"}.step span{font-size:11px;color:rgb(255 255 255/.58)}.colors{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.color{padding:16px;border-radius:16px;box-shadow:inset 0 0 0 1px rgb(255 255 255/.22)}.color h3{font:700 20px "Bai Jamjuree"}.color strong{display:block;font:700 30px "Bai Jamjuree"}.color p{font-size:12px;color:rgb(255 255 255/.82)}.color dl{display:grid;grid-template-columns:1fr auto;gap:4px 10px;margin-top:10px;font-size:11px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.card{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px;border:1px solid rgb(255 255 255/.09);border-radius:12px;background:rgb(255 255 255/.035)}.swatch{width:34px;height:34px;border-radius:9px}.card b{display:block}.card small{display:block;color:rgb(255 255 255/.45)}.card strong{font:700 18px "Bai Jamjuree"}.patches{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.patch{padding:14px;border-left:3px solid var(--gold);background:rgb(255 255 255/.045);border-radius:0 13px 13px 0}.patch b{display:block;color:var(--gold)}.patch span{font-size:12px;color:rgb(255 255 255/.65)}.health{display:flex;gap:8px;flex-wrap:wrap}.health span{padding:8px 11px;border-radius:999px;background:rgb(255 255 255/.06);border:1px solid rgb(255 255 255/.1);font-size:12px}.note{margin-top:28px;padding:14px 17px;border-left:3px solid var(--gold);background:rgb(255 255 255/.04);color:rgb(255 255 255/.56);font-size:12px}
+/* ── กราฟรายวัน ──
+   overflow-y ต้องสั่ง hidden ตรง ๆ เพราะพอตั้ง overflow-x:auto อย่างเดียว
+   สเปกจะเปลี่ยน overflow-y จาก visible เป็น auto ให้เอง แล้วกล่องกราฟจะ
+   เลื่อนขึ้นลงได้โดยไม่มีใครสั่ง
+
+   ตัวเลขไม่ได้ลอยเป็นบอลลูนแล้ว เพราะ .panel ครอบด้วย overflow:hidden
+   บอลลูนจึงโดนตัดหัว — ย้ายไปเป็นแถบอ่านค่าเหนือกราฟแทน ไม่โดนตัด
+   และอ่านได้ทั้งบนมือถือที่ไม่มี hover */
+.chart-readout{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;min-height:20px;
+  margin-bottom:10px;font-size:12px;color:rgb(255 255 255/.5)}
+.chart-readout b{color:#fff;font:700 13px "Bai Jamjuree"}
+.chart-readout i{font-style:normal;font-weight:700}
+.chart-readout .v1{color:var(--gold)}.chart-readout .v2{color:var(--green)}.chart-readout .v3{color:#7fa9ff}
+.chart{display:flex;align-items:stretch;gap:3px;height:186px;overflow-x:auto;overflow-y:hidden;overflow-y:clip;
+  padding-bottom:2px;scrollbar-width:thin}
+.chart .day{flex:1 0 auto;min-width:16px;display:flex;flex-direction:column;gap:5px;
+  border-radius:6px 6px 0 0;cursor:default}
+.chart .day:hover,.chart .day.on{background:rgb(255 255 255/.06)}
+.chart .stack{height:150px;display:flex;align-items:flex-end;justify-content:center;gap:2px;
+  border-bottom:1px solid rgb(255 255 255/.14)}
+.chart .stack i{width:6px;min-height:2px;border-radius:3px 3px 0 0;background:var(--gold);display:block}
+.chart .stack i.done{background:var(--green)}
+.chart .stack i.unlock{background:#7fa9ff}
+.chart .day label{height:14px;font-size:9px;line-height:14px;text-align:center;
+  color:rgb(255 255 255/.42);white-space:nowrap;overflow:hidden}
+.chart .day.today label{color:var(--gold);font-weight:700}
+.legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:12px;color:rgb(255 255 255/.55);font-size:11px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--gold)}
+.dot.done{background:var(--green)}.dot.unlock{background:#7fa9ff}
+@media(max-width:1000px){.metrics{grid-template-columns:repeat(3,1fr)}.funnel{grid-template-columns:repeat(3,1fr)}.colors{grid-template-columns:repeat(2,1fr)}.patches{grid-template-columns:repeat(2,1fr)}}@media(max-width:720px){.chart{height:170px}.chart .stack{height:136px}.chart .day{min-width:14px}.top{display:block}.back{display:inline-block;margin-top:12px}.grid2,.grid3{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.head{display:block}.head p{margin-top:5px}.tools{align-items:stretch}.tools label{flex:1;min-width:130px}.metrics{grid-template-columns:1fr 1fr}.funnel{grid-template-columns:1fr 1fr}}@media(max-width:430px){.shell{width:min(100% - 20px,1240px)}.colors,.patches{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -26,7 +54,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 <div id="dashboard" hidden>
 <section class="section"><div class="head"><div><p class="eyebrow">ALL TIME</p><h2>Match ที่เล่นไปแล้วทั้งหมด</h2></div><p>นับจาก MATCH_START จึงรวมเกมที่เล่นไม่จบและเกมกับบอทด้วย — เลขชุดนี้ไม่ขึ้นกับช่วงวันที่ที่เลือก และเป็นตัวเดียวกับที่โชว์บนหน้าแรกของเกม</p></div><div class="metrics" id="alltime"></div></section>
 <section class="metrics" id="metrics"></section>
-<section class="section"><div class="head"><div><p class="eyebrow">DAILY</p><h2>เกมเดินทุกวันไหม</h2></div><p>แท่งทองคือ Match ที่เริ่ม แท่งเขียวคือ Match ที่เล่นจบ แท่งฟ้าคือการ์ดใบใหม่ที่ถูกเปิด · วันอิงเวลาไทย</p></div><div class="panel"><div class="chart" id="chart"></div><div class="legend"><span><i class="dot"></i>Match Started</span><span><i class="dot done"></i>Match Completed</span><span><i class="dot unlock"></i>Cards Unlocked</span></div></div></section>
+<section class="section"><div class="head"><div><p class="eyebrow">DAILY</p><h2>เกมเดินทุกวันไหม</h2></div><p>แท่งทองคือ Match ที่เริ่ม แท่งเขียวคือ Match ที่เล่นจบ แท่งฟ้าคือการ์ดใบใหม่ที่ถูกเปิด · วันอิงเวลาไทย</p></div><div class="panel"><div class="chart-readout" id="chartTip"></div><div class="chart" id="chart"></div><div class="legend"><span><i class="dot"></i>Match Started</span><span><i class="dot done"></i>Match Completed</span><span><i class="dot unlock"></i>Cards Unlocked</span></div></div></section>
 <section class="section"><div class="head"><div><p class="eyebrow">CARD UNLOCK</p><h2>การ์ดใบใหม่ถูกเปิดไปเท่าไหร่</h2></div><p>เล่นจบ 1 Match ได้ FIRST HAND 1 ใบ ไม่ซ้ำ · สุ่มแจก ตัวเลขต่อใบจึงควรใกล้เคียงกัน ถ้าเอียงมากแปลว่า RNG มีปัญหา</p></div><div class="metrics" id="unlockTotals"></div><div class="cards" id="unlockCards" style="margin-top:13px"></div></section>
 <section class="section"><div class="head"><div><p class="eyebrow">PLAYER HEALTH</p><h2>คนเข้ามาแล้วกลับมาไหม</h2></div><p>นับด้วย Anonymous Installation ID แบบสุ่มในเครื่อง ไม่รู้ว่าเป็นใครและไม่เก็บ IP</p></div><div class="metrics" id="players"></div></section>
 <section class="section"><div class="head"><div><p class="eyebrow">FUNNEL</p><h2>จากเปิดเกมไปถึงเล่นซ้ำ</h2></div><p>จำนวนเครื่องที่ผ่านแต่ละขั้น ช่วยหา Drop-off ก่อนปรับหน้าเกม</p></div><div class="funnel" id="funnel"></div></section>
@@ -41,6 +69,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 </main>
 <script type="module" src="/assets/stat-nav.js"></script>
 <script type="module">
+import { bkkDay, bkkTime } from '/assets/stat-nav.js';
 import { fetchCore7Stats } from '/core7/js/analytics.js';
 import { cardById, COLOR_META } from '/core7/js/cards.js';
 import { TOTAL_COLLECTION_CARDS } from '/core7/js/collection-progress.js';
@@ -50,9 +79,9 @@ const MODE={quick:'MATCH',bo3:'DOUBLE',bo5:'SET'};
 const ORDER=['RED','GREEN','BLUE','SILVER'];
 const fmt=n=>Number(n||0).toLocaleString('en-US');
 const pct=n=>`${Number(n||0).toFixed(1)}%`;
-const date=d=>new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
+const date=d=>bkkTime(d);
 let current=null;
-function setDays(days){const now=new Date();$('to').value=now.toISOString().slice(0,10);$('from').value=new Date(now-DAY*(days-1)).toISOString().slice(0,10);load();}
+function setDays(days){$('to').value=bkkDay(0);$('from').value=bkkDay(days-1);load();}
 document.querySelectorAll('[data-days]').forEach(b=>b.onclick=()=>setDays(Number(b.dataset.days)));
 $('refresh').onclick=load;
 $('csv').onclick=()=>{if(!current)return;const rows=[['section','name','value'],['totals','started',current.totals.started],['totals','completed',current.totals.completed],['totals','completion_rate',current.totals.completion_rate],...Object.entries(current.colors||{}).map(([k,v])=>['color',k,JSON.stringify(v)]),...(current.bot||[]).map(v=>['bot',v.level,JSON.stringify(v)]),...(current.online||[]).map(v=>['mode',MODE[v.format]||v.format,JSON.stringify(v)]),['card_unlock','total',current.cardUnlocks?.unlocks??0],['card_unlock','players',current.cardUnlocks?.players??0],...(current.cardUnlocks?.cards||[]).map(v=>['card_unlock',v.card_id,v.unlocks]),...(current.dailyPlayers||[]).map(v=>['daily',v.day,JSON.stringify(v)])];const csv=rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`core7-stat-${current.range.from}-${current.range.to}.csv`;a.click();URL.revokeObjectURL(a.href)};
@@ -70,27 +99,51 @@ async function loadCounters(){
 }
 function metric(label,value,sub=''){return `<article class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></article>`}
 function sampleClass(n){return Number(n||0)>=20?'good':'warn'}
-/* กราฟรายวัน — สเกลแท่งเทียบกับค่าสูงสุดของทั้งช่วง ไม่ใช่ของแต่ละวัน
-   จะได้เห็นว่าวันไหนเงียบจริง ไม่ใช่ทุกวันสูงเท่ากันหมด */
+/* สเกลเทียบค่าสูงสุดของทั้งช่วง ไม่ใช่ของแต่ละวัน จะได้เห็นว่าวันไหนเงียบจริง
+   ป้ายวันที่โชว์เว้นระยะเมื่อช่วงยาว ไม่งั้นตัวหนังสือทับกันจนอ่านไม่ออก */
 function renderChart(rows){
- const host=$('chart'); const H=155;
- if(!rows.length){host.innerHTML='<div class="muted">ยังไม่มีข้อมูลรายวันในช่วงนี้</div>';return}
+ const host=$('chart'), tip=$('chartTip'), H=150;
+ if(!rows.length){
+  host.innerHTML='';
+  tip.innerHTML='<span class="muted">ยังไม่มีข้อมูลรายวันในช่วงนี้</span>';
+  return;
+ }
  const max=Math.max(1,...rows.map(r=>Math.max(r.match_starts||0,r.match_completes||0,r.card_unlocks||0)));
- const h=v=>`${Math.max(2,Math.round((Number(v||0)/max)*H))}px`;
- host.innerHTML=rows.map(r=>{
+ const h=v=>Math.max(2,Math.round((Number(v||0)/max)*H));
+ const today=bkkDay(0);
+ /* โชว์ป้ายราว 8 อันพอ ที่เหลือเว้นว่างไว้ */
+ const step=Math.max(1,Math.ceil(rows.length/8));
+ host.innerHTML=rows.map((r,i)=>{
   const d=String(r.day||'');
-  return `<div class="daybar"><div class="bars">`
-   +`<i class="bar" style="height:${h(r.match_starts)}" data-tip="${d} · เริ่ม ${fmt(r.match_starts)}"></i>`
-   +`<i class="bar done" style="height:${h(r.match_completes)}" data-tip="${d} · จบ ${fmt(r.match_completes)}"></i>`
-   +`<i class="bar unlock" style="height:${h(r.card_unlocks)}" data-tip="${d} · การ์ดใหม่ ${fmt(r.card_unlocks)}"></i>`
-   +`</div><label>${d.slice(5)}</label></div>`;
+  const label=(i%step===0||i===rows.length-1||d===today)?d.slice(5).replace('-','/'):'';
+  return `<div class="day${d===today?' today':''}" data-i="${i}">`
+   +`<div class="stack">`
+   +`<i style="height:${h(r.match_starts)}px"></i>`
+   +`<i class="done" style="height:${h(r.match_completes)}px"></i>`
+   +`<i class="unlock" style="height:${h(r.card_unlocks)}px"></i>`
+   +`</div><label>${label}</label></div>`;
  }).join('');
+ const show=i=>{
+  const r=rows[i]; if(!r)return;
+  host.querySelectorAll('.day.on').forEach(el=>el.classList.remove('on'));
+  host.querySelector(`.day[data-i="${i}"]`)?.classList.add('on');
+  tip.innerHTML=`<b>${r.day}${r.day===today?' · วันนี้':''}</b>`
+   +`<span>เริ่ม <i class="v1">${fmt(r.match_starts)}</i></span>`
+   +`<span>เล่นจบ <i class="v2">${fmt(r.match_completes)}</i></span>`
+   +`<span>การ์ดใหม่ <i class="v3">${fmt(r.card_unlocks)}</i></span>`;
+ };
+ host.onpointerover=e=>{const d=e.target.closest('.day'); if(d)show(Number(d.dataset.i));};
+ host.onclick=e=>{const d=e.target.closest('.day'); if(d)show(Number(d.dataset.i));};
+ /* ตั้งต้นที่วันล่าสุด จะได้มีอะไรให้อ่านโดยไม่ต้องชี้ก่อน */
+ show(rows.length-1);
+ /* ช่วงยาวให้เลื่อนไปสุดขวา วันล่าสุดคือวันที่คนอยากดูก่อน */
+ host.scrollLeft=host.scrollWidth;
 }
 async function load(){
  $('state').hidden=false;$('state').className='loading';$('state').textContent='กำลังอ่านข้อมูล…';$('dashboard').hidden=true;
  try{current=await fetchCore7Stats({from:$('from').value,to:$('to').value});render(current);$('state').hidden=true;$('dashboard').hidden=false}catch(e){$('state').className='error';$('state').textContent=`อ่านข้อมูลไม่ได้: ${e.message}`}}
 function render(d){
- $('range').textContent=`${d.range.from} → ${d.range.to} · Asia/Bangkok`;$('version').textContent=`Game ${d.gameVersion||'-'} · Analytics ${d.analyticsVersion||'-'} · Updated ${date(d.generatedAt)}`;
+ $('range').textContent=`${d.range.from} → ${d.range.to} · เวลาไทย GMT+7`;$('version').textContent=`Game ${d.gameVersion||'-'} · Analytics ${d.analyticsVersion||'-'} · Updated ${date(d.generatedAt)}`;
  $('metrics').innerHTML=[metric('MATCH STARTED',fmt(d.totals.started)),metric('MATCH COMPLETED',fmt(d.totals.completed),pct(d.totals.completion_rate)),metric('ABANDONED',fmt(d.totals.abandoned)),metric('AVG ROUNDS',Number(d.totals.avg_rounds||0).toFixed(2)),metric('DRAW RATE',pct(d.totals.draw_rate)),metric('ACTIVE NOW',fmt(d.totals.active))].join('');
  renderChart(d.dailyPlayers||[]);
  const u=d.cardUnlocks||{};

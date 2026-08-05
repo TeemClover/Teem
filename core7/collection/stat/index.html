@@ -40,15 +40,20 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 .alert{margin-top:13px;padding:14px 17px;border-left:3px solid var(--warn);background:rgb(255 185 119/.09);border-radius:0 13px 13px 0;font-size:13px}
 .alert b{color:var(--warn)}
 /* บันไดการ์ด: แต่ละแท่งคือ "มีกี่เครื่องที่เก็บได้อย่างน้อย n ใบ" */
-.ladder{display:flex;align-items:flex-end;gap:5px;min-height:208px;padding-top:22px;overflow-x:auto}
-.rung{flex:1;min-width:24px;display:grid;grid-template-rows:1fr auto auto;gap:6px;height:186px;justify-items:center}
-.rung .col{display:flex;align-items:flex-end;height:150px}
+/* overflow-y ต้องสั่ง hidden ตรง ๆ — ตั้ง overflow-x:auto อย่างเดียว
+   สเปกจะเปลี่ยน overflow-y เป็น auto ให้เอง แล้วกล่องเลื่อนขึ้นลงได้เอง */
+/* ความสูงของแถวถูกกำหนดตายตัวทุกแถว ไม่ใช้ auto
+   เพราะ auto ขึ้นกับ line-height ที่ฟอนต์แต่ละเครื่องคิดไม่เท่ากัน
+   พลาดไปไม่กี่พิกเซลกล่องก็เลื่อนลงได้ ซึ่งเป็นสิ่งที่ไม่ควรเลื่อน */
+.ladder{display:flex;align-items:stretch;gap:5px;height:216px;padding-top:22px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.rung{flex:1;min-width:24px;display:grid;grid-template-rows:1fr 14px 12px;gap:6px;justify-items:center}
+.rung .col{display:flex;align-items:flex-end;min-height:0}
 .rung i{display:block;width:16px;min-height:2px;border-radius:5px 5px 1px 1px;background:var(--blue);position:relative}
 .rung.gate i{background:var(--gold)}
 .rung.full i{background:var(--green)}
 .rung i:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);padding:6px 9px;border-radius:7px;background:#fff;color:#172018;font-size:10px;font-weight:700;white-space:nowrap;z-index:4}
-.rung label{font-size:10px;color:rgb(255 255 255/.5)}
-.rung em{font-size:9px;font-style:normal;color:rgb(255 255 255/.32)}
+.rung label{font-size:10px;line-height:14px;color:rgb(255 255 255/.5)}
+.rung em{font-size:9px;line-height:12px;font-style:normal;color:rgb(255 255 255/.32)}
 .legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:12px;color:rgb(255 255 255/.55);font-size:11px}
 .dot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;background:var(--blue)}
 .dot.gate{background:var(--gold)}.dot.full{background:var(--green)}
@@ -63,7 +68,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 .swatch{width:34px;height:34px;border-radius:9px}
 .card b{display:block}.card small{display:block;color:rgb(255 255 255/.45)}
 .card strong{font:700 18px "Bai Jamjuree"}
-.table-wrap{overflow:auto}
+.table-wrap{overflow-x:auto;overflow-y:hidden}
 .table{width:100%;border-collapse:collapse;min-width:560px;font-size:13px}
 .table th,.table td{padding:10px 9px;border-bottom:1px solid rgb(255 255 255/.08);text-align:right;white-space:nowrap}
 .table th:first-child,.table td:first-child{text-align:left}
@@ -142,16 +147,17 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 
 <script type="module" src="/assets/stat-nav.js"></script>
 <script type="module">
+import { bkkDay, bkkTime } from '/assets/stat-nav.js';
 import { fetchCore7CollectionStats } from '/core7/js/analytics.js';
 import { COLOR_META } from '/core7/js/cards.js';
 const $=id=>document.getElementById(id), DAY=86400000;
 const fmt=n=>Number(n||0).toLocaleString('en-US');
 const pct=n=>`${Number(n||0).toFixed(1)}%`;
-const date=d=>new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
+const date=d=>bkkTime(d);
 const metric=(label,value,sub='')=>`<article class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></article>`;
 let current=null;
 
-function setDays(days){const now=new Date();$('to').value=now.toISOString().slice(0,10);$('from').value=new Date(now-DAY*(days-1)).toISOString().slice(0,10);load();}
+function setDays(days){$('to').value=bkkDay(0);$('from').value=bkkDay(days-1);load();}
 document.querySelectorAll('[data-days]').forEach(b=>b.onclick=()=>setDays(Number(b.dataset.days)));
 $('refresh').onclick=load;
 $('csv').onclick=()=>{
@@ -194,7 +200,7 @@ async function load(){
 
 function render(d){
  const t=d.totals||{};
- $('range').textContent=`${d.range.from} → ${d.range.to} · Asia/Bangkok`;
+ $('range').textContent=`${d.range.from} → ${d.range.to} · เวลาไทย GMT+7`;
  $('version').textContent=`Game ${d.gameVersion||'-'} · Analytics ${d.analyticsVersion||'-'} · Updated ${date(d.generatedAt)}`;
  const gateStep=(d.steps||[]).find(s=>s.owned===d.selectUnlockAt);
  $('metrics').innerHTML=[
