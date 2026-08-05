@@ -638,6 +638,124 @@ export async function readJourneyFunnel(db, params = {}) {
   };
 }
 
+/* ── Stat Overview ──
+   หน้า Dashboard ต้องตอบสองอย่างใน 5 วินาที: วันนี้เกิดอะไรขึ้น และมีอะไร
+   ที่ต้องไปดูต่อ ตัวเลขละเอียดอยู่ในหน้าย่อยแล้ว ที่นี่จึงเอาแค่ยอดกับสัญญาณ
+
+   เทียบวันนี้กับเมื่อวานเสมอ เพราะเลขเดี่ยว ๆ อ่านไม่ออกว่าดีหรือแย่
+   "วันนี้ 12 คน" ไม่มีความหมายจนกว่าจะรู้ว่าเมื่อวาน 3 หรือ 40
+
+   วันอิงเวลาไทย และ "วันนี้" คือช่วงที่ยังไม่จบ ตัวเลขจึงยังไม่เต็มวัน —
+   คืน `partial` ออกไปให้หน้าเว็บบอกผู้อ่านตรง ๆ ไม่ให้เข้าใจผิดว่าวันนี้ตก */
+export async function readStatOverview(db) {
+  await ensureAnalyticsV11Schema(db);
+  const now = Date.now();
+  const today = bkkDay(now);
+  const yesterday = bkkDay(now - DAY_MS);
+  const startOf = day => Date.parse(`${day}T00:00:00+07:00`);
+  const todayStart = startOf(today);
+  const yStart = startOf(yesterday);
+
+  /* ก้อนเดียวจบ แล้วค่อยแยกวันตอนอ่าน — ยิงสองรอบเปลืองกว่าโดยไม่ได้อะไรเพิ่ม */
+  const dayCounts = `
+    SELECT
+      COUNT(DISTINCT install_id) devices,
+      COUNT(DISTINCT CASE WHEN event_type='MATCH_START' THEN match_id END) match_starts,
+      COUNT(DISTINCT CASE WHEN event_type='MATCH_COMPLETE' THEN match_id END) match_completes,
+      COUNT(CASE WHEN event_type='CARD_UNLOCK' THEN 1 END) card_unlocks,
+      COUNT(CASE WHEN event_type='ACT' THEN 1 END) acts,
+      COUNT(DISTINCT CASE WHEN event_type='ACHIEVEMENT_UNLOCK' THEN install_id || '|' || COALESCE(ref,'') END) achievements,
+      COUNT(DISTINCT CASE WHEN event_type='JOURNEY_START' THEN install_id END) journey_starts,
+      COUNT(DISTINCT CASE WHEN event_type='LESSON_1_START' THEN install_id END) lesson_starts
+    FROM c7_analytics_events WHERE occurred_at >= ? AND occurred_at < ?`;
+
+  const [todayRow, yRow, newRow, wiringRes, dailyRes] = await Promise.all([
+    db.prepare(dayCounts).bind(todayStart, todayStart + DAY_MS).first(),
+    db.prepare(dayCounts).bind(yStart, yStart + DAY_MS).first(),
+    db.prepare(`SELECT COUNT(*) n FROM c7_analytics_installations
+      WHERE first_seen_at >= ? AND first_seen_at < ?`).bind(todayStart, todayStart + DAY_MS).first(),
+    /* ตัวรับพร้อมแต่ยังไม่มีใครยิง = ยังไม่ได้ต่อสาย ต้องแยกจาก "ไม่มีคนทำ" */
+    db.prepare(`SELECT event_type, COUNT(*) n FROM c7_analytics_events
+      WHERE event_type IN ('ACT','ACHIEVEMENT_UNLOCK','JOURNEY_START','CARD_UNLOCK')
+      GROUP BY event_type`).all(),
+    db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day,
+      COUNT(DISTINCT install_id) devices
+      FROM c7_analytics_events WHERE occurred_at >= ?
+      GROUP BY day ORDER BY day`).bind(todayStart - 13 * DAY_MS).all(),
+  ]);
+
+  const t = nums(todayRow || {});
+  const y = nums(yRow || {});
+  const KEYS = ['devices', 'match_starts', 'match_completes', 'card_unlocks',
+    'acts', 'achievements', 'journey_starts', 'lesson_starts'];
+  const metrics = KEYS.map(key => {
+    const nowValue = Number(t[key] || 0);
+    const prev = Number(y[key] || 0);
+    return {
+      key,
+      today: nowValue,
+      yesterday: prev,
+      delta: nowValue - prev,
+      /* เมื่อวานเป็นศูนย์แล้ววันนี้มี = ขึ้นจากศูนย์ ไม่ใช่ขึ้นอนันต์ ปล่อยเป็น null
+         ให้หน้าเว็บเลือกคำพูดเอง ดีกว่าโชว์ Infinity% */
+      change_rate: prev > 0 ? Number((((nowValue - prev) / prev) * 100).toFixed(1)) : null,
+    };
+  });
+
+  const wiring = Object.fromEntries(
+    (wiringRes.results || []).map(r => [String(r.event_type), Number(r.n || 0)]),
+  );
+
+  /* สัญญาณที่ควรไปดูต่อ — เรียงจากเรื่องที่ทำให้ข้อมูลผิดก่อน แล้วค่อยเรื่องที่
+     แค่ยังไม่ได้ทำ เพราะข้อมูลผิดทำให้ตัดสินใจผิด ส่วนของที่ยังไม่ต่อแค่ยังไม่มีเลข */
+  const alerts = [];
+  const dupRow = await db.prepare(`SELECT COUNT(*) events,
+      COUNT(DISTINCT install_id || '|' || COALESCE(ref,'')) pairs
+      FROM c7_analytics_events WHERE event_type='ACHIEVEMENT_UNLOCK'`).first();
+  const dupes = Math.max(0, Number(dupRow?.events || 0) - Number(dupRow?.pairs || 0));
+  if (dupes > 0) {
+    alerts.push({
+      level: 'warn', href: '/collection/stat/',
+      th: `Achievement ถูกยิงซ้ำ ${dupes} ครั้ง — ปลดได้ครั้งเดียวต่อเครื่อง แปลว่ามีจุดที่ไม่ได้กันไว้`,
+    });
+  }
+  if (!wiring.JOURNEY_START) {
+    alerts.push({
+      level: 'info', href: '/stat/journey/',
+      th: 'Journey ยังไม่ได้ต่อสาย — ยังไม่มีหน้าไหนเรียก reportJourneyStep()',
+    });
+  }
+  if (!wiring.ACHIEVEMENT_UNLOCK) {
+    alerts.push({
+      level: 'info', href: '/collection/stat/',
+      th: 'Achievement ยังไม่ได้ต่อสาย — หน้า Collection ยังคำนวณสดตอน render ไม่ได้ยิง event',
+    });
+  }
+  if (!wiring.ACT) {
+    alerts.push({
+      level: 'info', href: '/collection/stat/',
+      th: 'ยังไม่มีหน้าไหนยิง Act — ใส่ data-mc-act ใน HTML แล้วตัวเลขจะเริ่มไหล',
+    });
+  }
+
+  return {
+    ok: true,
+    generatedAt: now,
+    today,
+    yesterday,
+    /* วันนี้ยังไม่จบ ตัวเลขจึงเทียบกับเมื่อวานแบบเต็มวันไม่ได้ตรง ๆ */
+    partial: true,
+    hoursIntoDay: Number(((now - todayStart) / 3600000).toFixed(1)),
+    newDevices: Number(newRow?.n || 0),
+    metrics,
+    wiring,
+    alerts,
+    daily: (dailyRes.results || []).map(nums),
+    analyticsVersion: CORE7_ANALYTICS_VERSION,
+    gameVersion: CORE7_GAME_VERSION,
+  };
+}
+
 /* ── Achievement & Act Stat ──
    เรียงตาม stage ของเส้นทางจริง ไม่ใช่เรียงตามยอด เพราะคำถามคือ "คนหล่นหาย
    ช่วงไหน" ไม่ใช่ "อะไรดัง" เรียงตามยอดจะเห็นแค่ว่าของต้นทางเยอะเสมอ

@@ -15,3 +15,16 @@
 # CORE7 admin — ไม่ให้ขึ้นผลค้นหา
 /core7/admin/*
   X-Robots-Tag: noindex, nofollow
+
+# หน้าสถิติทั้งหมด — ไม่ให้ขึ้นผลค้นหา (/stat/* ล็อกด้วยรหัสผ่านที่ขอบอีกชั้น)
+/stat/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+/collection/stat/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+/core7/stat/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+/core7/collection/stat/*
+  X-Robots-Tag: noindex, nofollow, noarchive

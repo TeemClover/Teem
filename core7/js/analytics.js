@@ -196,6 +196,18 @@ export function reportAchievementUnlock(achievementId, extra = {}) {
   return reportFunnelEvent('ACHIEVEMENT_UNLOCK', { ...extra, ref: id }).catch(() => false);
 }
 
+/* Dashboard — สรุปวันนี้เทียบเมื่อวาน พร้อมสัญญาณที่ควรไปดูต่อ */
+export async function fetchCore7Overview() {
+  const response = await fetch(`${CORE7_ANALYTICS_BASE}/overview`, {
+    headers: { accept: 'application/json' },
+    cache: 'no-store',
+    credentials: 'omit',
+  });
+  const data = await response.json().catch(() => ({ ok: false, error: 'INVALID_RESPONSE' }));
+  if (!response.ok || !data.ok) throw new Error(data.error || `HTTP_${response.status}`);
+  return data;
+}
+
 /* Achievement & Act Stat — ของแต่ละชิ้นมีคนทำกี่ครั้ง กี่เครื่อง */
 export async function fetchCore7AchievementStats({ from, to } = {}) {
   const query = new URLSearchParams();

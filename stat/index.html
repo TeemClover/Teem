@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Stat Dashboard — myClover</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#071d12">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+:root{--gold:#d9b86c;--green:#65d39d;--blue:#7fa9ff;--warn:#ffb977;--red:#ff9c93}
+body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;min-height:100vh}
+.shell{width:min(1240px,calc(100% - 28px));margin:auto;padding:26px 0 80px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.top h1{font:700 clamp(30px,5.4vw,52px)/1 "Bai Jamjuree",sans-serif}
+.top p{max-width:680px;color:rgb(255 255 255/.65);margin-top:8px}
+.when{text-align:right;font-size:12px;color:rgb(255 255 255/.5);line-height:1.7}
+.when b{display:block;color:var(--gold);font:700 15px "Bai Jamjuree"}
+.loading,.error{padding:30px 0}.error{color:var(--red)}
+.alerts{display:grid;gap:8px;margin-top:22px}
+.alert{display:flex;gap:11px;align-items:flex-start;padding:13px 16px;border-radius:0 13px 13px 0;
+  border-left:3px solid var(--blue);background:rgb(127 169 255/.09);font-size:13px;
+  color:rgb(255 255 255/.86);text-decoration:none}
+.alert.warn{border-left-color:var(--warn);background:rgb(255 185 119/.1)}
+.alert i{font-style:normal;font-size:15px}
+.alert:hover{background:rgb(255 255 255/.1)}
+.alert .go{margin-left:auto;color:var(--gold);white-space:nowrap;font-size:12px;font-weight:700}
+.section{margin-top:34px}
+.eyebrow2{font-size:10px;letter-spacing:.1em;color:rgb(255 255 255/.42);font-weight:700}
+.section h2{font:700 clamp(20px,3.4vw,27px) "Bai Jamjuree";margin-top:3px}
+.section p.sub{color:rgb(255 255 255/.5);font-size:12px;margin-top:4px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:14px}
+.kpi{padding:15px 16px;border:1px solid rgb(255 255 255/.11);border-radius:16px;
+  background:linear-gradient(145deg,rgb(255 255 255/.07),rgb(255 255 255/.035))}
+.kpi span{display:block;color:rgb(255 255 255/.55);font-size:10px;font-weight:700;letter-spacing:.05em}
+.kpi strong{display:block;margin-top:5px;font:700 clamp(24px,3.6vw,33px) "Bai Jamjuree"}
+.kpi .cmp{display:flex;gap:7px;align-items:baseline;margin-top:4px;font-size:11px;color:rgb(255 255 255/.45)}
+.kpi .up{color:var(--green);font-weight:700}
+.kpi .down{color:var(--warn);font-weight:700}
+.kpi .flat{color:rgb(255 255 255/.4);font-weight:700}
+/* กราฟ 14 วัน — เห็นรูปทรงก็พอ ไม่ต้องอ่านค่าทุกแท่ง */
+.spark{display:flex;align-items:flex-end;gap:4px;height:96px;margin-top:14px;padding:14px 16px;
+  border:1px solid rgb(255 255 255/.11);border-radius:16px;background:rgb(255 255 255/.04)}
+.spark i{flex:1;min-width:5px;border-radius:4px 4px 1px 1px;background:var(--blue);min-height:2px;position:relative}
+.spark i.today{background:var(--gold)}
+.spark i:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 6px);
+  transform:translateX(-50%);padding:5px 8px;border-radius:6px;background:#fff;color:#172018;
+  font-size:10px;font-weight:700;white-space:nowrap;z-index:5}
+.rooms{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:14px}
+.room{display:block;padding:17px 18px;border:1px solid rgb(255 255 255/.11);border-radius:16px;
+  background:linear-gradient(145deg,rgb(255 255 255/.06),rgb(255 255 255/.03));text-decoration:none;color:#fff}
+.room:hover{border-color:rgb(217 184 108/.45);background:rgb(255 255 255/.08)}
+.room b{display:flex;align-items:center;gap:9px;font:700 17px "Bai Jamjuree"}
+.room p{color:rgb(255 255 255/.55);font-size:12px;margin-top:6px}
+.room .tag{margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;
+  background:rgb(255 255 255/.1);color:rgb(255 255 255/.6)}
+.room .tag.live{background:rgb(101 211 157/.18);color:var(--green)}
+.room .tag.off{background:rgb(127 169 255/.16);color:var(--blue)}
+.note{margin-top:30px;padding:14px 17px;border-left:3px solid var(--gold);background:rgb(255 255 255/.04);
+  color:rgb(255 255 255/.56);font-size:12px}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.rooms{grid-template-columns:1fr}}
+@media(max-width:560px){.top{display:block}.when{text-align:left;margin-top:12px}}
+@media(max-width:430px){.shell{width:min(100% - 20px,1240px)}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top">
+<div>
+<p class="eyebrow">myCLOVER · DEVELOPMENT LAB</p>
+<h1>Stat Dashboard</h1>
+<p>วันนี้เกิดอะไรขึ้น และมีอะไรที่ต้องไปดูต่อ · ตัวเลขละเอียดอยู่ในห้องย่อยด้านล่าง</p>
+</div>
+<div class="when" id="when"></div>
+</header>
+
+<div id="state" class="loading">กำลังอ่านข้อมูล…</div>
+<div id="dashboard" hidden>
+
+<div class="alerts" id="alerts"></div>
+
+<section class="section">
+<p class="eyebrow2">TODAY · เวลาไทย</p>
+<h2>วันนี้เทียบเมื่อวาน</h2>
+<p class="sub" id="partialNote"></p>
+<div class="cards" id="kpis"></div>
+<div class="spark" id="spark"></div>
+</section>
+
+<section class="section">
+<p class="eyebrow2">ROOMS</p>
+<h2>เข้าไปดูละเอียดที่ห้องไหน</h2>
+<div class="rooms" id="rooms"></div>
+</section>
+
+<aside class="note">
+ทุกตัวเลขนับด้วย Anonymous Installation ID แบบสุ่มในเครื่อง <b>ไม่ใช่จำนวนคนจริง</b> —
+เปลี่ยนเบราว์เซอร์หรือล้างข้อมูลคือคนละหัว ตัวเลขจึงเป็นขอบล่างเสมอ ·
+ไม่เก็บชื่อ อีเมล หรือ IP
+</aside>
+</div>
+</main>
+
+<script type="module" src="/assets/stat-nav.js"></script>
+<script type="module">
+import { fetchCore7Overview } from '/core7/js/analytics.js';
+import { STAT_PAGES } from '/assets/stat-nav.js';
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n||0).toLocaleString('en-US');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const time=d=>new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
+
+const LABEL={
+ devices:['เครื่องที่เข้ามา','ทั้งเว็บ รวมเกม'],
+ journey_starts:['เริ่มเส้นทาง','เข้าประตูหน้าแรก'],
+ acts:['Act ที่ถูกกด','นับทุกครั้ง'],
+ achievements:['Achievement ที่ปลด','นับเป็นเครื่อง'],
+ match_starts:['Match ที่เริ่ม','CORE7'],
+ match_completes:['Match ที่เล่นจบ','CORE7'],
+ card_unlocks:['การ์ดใหม่ที่เปิดได้','FIRST HAND'],
+ lesson_starts:['เริ่มบทที่ 1','ปลายทาง First Run'],
+};
+/* เรียงตามลำดับที่คนเดิน ไม่ใช่ตามความสำคัญของตัวเลข */
+const ORDER=['devices','journey_starts','acts','achievements','match_starts','match_completes','card_unlocks','lesson_starts'];
+
+function kpi(m){
+ const [label,sub]=LABEL[m.key]||[m.key,''];
+ let cmp;
+ if(m.delta>0)cmp=`<span class="up">▲ ${fmt(m.delta)}</span>`;
+ else if(m.delta<0)cmp=`<span class="down">▼ ${fmt(-m.delta)}</span>`;
+ else cmp='<span class="flat">เท่าเดิม</span>';
+ const rate=m.change_rate===null?(m.today>0?'ขึ้นจากศูนย์':''):`${m.change_rate>0?'+':''}${m.change_rate}%`;
+ return `<article class="kpi"><span>${esc(label)}</span><strong>${fmt(m.today)}</strong>`
+  +`<div class="cmp">${cmp}<span>เมื่อวาน ${fmt(m.yesterday)}${rate?' · '+esc(rate):''}</span></div>`
+  +`<div class="cmp"><span>${esc(sub)}</span></div></article>`;
+}
+
+function renderSpark(rows,today){
+ const host=$('spark');
+ if(!rows.length){host.innerHTML='<span style="color:rgb(255 255 255/.4);font-size:12px">ยังไม่มีข้อมูล 14 วันที่ผ่านมา</span>';return}
+ const max=Math.max(1,...rows.map(r=>Number(r.devices||0)));
+ host.innerHTML=rows.map(r=>{
+  const h=Math.max(2,Math.round((Number(r.devices||0)/max)*80));
+  const isToday=r.day===today;
+  return `<i class="${isToday?'today':''}" style="height:${h}px" data-tip="${esc(r.day)} · ${fmt(r.devices)} เครื่อง"></i>`;
+ }).join('');
+}
+
+function render(d){
+ $('when').innerHTML=`<b>${esc(d.today)}</b>อัปเดต ${esc(time(d.generatedAt))}<br>Analytics ${esc(d.analyticsVersion||'-')} · Game ${esc(d.gameVersion||'-')}`;
+
+ $('alerts').innerHTML=(d.alerts||[]).map(a=>
+  `<a class="alert ${a.level==='warn'?'warn':''}" href="${esc(a.href)}">`
+  +`<i aria-hidden="true">${a.level==='warn'?'⚠️':'🔌'}</i><span>${esc(a.th)}</span>`
+  +`<span class="go">ไปดู →</span></a>`).join('')
+  ||`<a class="alert" href="/stat/journey/"><i aria-hidden="true">✅</i><span>ไม่มีอะไรผิดปกติ ทุกส่วนต่อสายแล้ว</span><span class="go">ดู Journey →</span></a>`;
+
+ $('partialNote').textContent=d.partial
+  ? `วันนี้ผ่านมา ${d.hoursIntoDay} ชั่วโมง ตัวเลขยังไม่เต็มวัน — ต่ำกว่าเมื่อวานตอนนี้จึงยังไม่ได้แปลว่าตก`
+  : '';
+
+ const byKey=Object.fromEntries((d.metrics||[]).map(m=>[m.key,m]));
+ $('kpis').innerHTML=ORDER.filter(k=>byKey[k]).map(k=>kpi(byKey[k])).join('');
+ renderSpark(d.daily||[],d.today);
+
+ const LIVE={'/stat/journey/':!!d.wiring?.JOURNEY_START,'/collection/stat/':!!d.wiring?.ACT||!!d.wiring?.ACHIEVEMENT_UNLOCK,
+  '/core7/stat/':true,'/core7/collection/stat/':!!d.wiring?.CARD_UNLOCK};
+ $('rooms').innerHTML=STAT_PAGES.filter(p=>p.href!=='/stat/').map(p=>{
+  const live=LIVE[p.href];
+  const tag=live?'<span class="tag live">มีข้อมูลแล้ว</span>':'<span class="tag off">ยังไม่ต่อสาย</span>';
+  return `<a class="room" href="${p.href}"><b><span aria-hidden="true">${p.emoji}</span>${esc(p.th)}${tag}</b>`
+   +`<p>${esc(p.note)}</p></a>`;
+ }).join('');
+}
+
+async function load(){
+ $('state').hidden=false;$('state').className='loading';$('state').textContent='กำลังอ่านข้อมูล…';$('dashboard').hidden=true;
+ try{
+  render(await fetchCore7Overview());
+  $('state').hidden=true;$('dashboard').hidden=false;
+ }catch(e){$('state').className='error';$('state').textContent=`อ่านข้อมูลไม่ได้: ${e.message}`}
+}
+load();
+</script>
+</body>
+</html>

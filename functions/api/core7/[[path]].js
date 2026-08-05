@@ -9,6 +9,7 @@ import {
   CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION,
   readMatchCounters, recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
   migrateSilverDatabase, readCollectionStats, readJourneyFunnel, readAchievementStats,
+  readStatOverview,
 } from '../../../core7/backend/analytics-v11.js';
 import { readAnalyticsDevelopmentReport } from '../../../core7/backend/analytics-v11-report.js';
 
@@ -134,6 +135,16 @@ export async function onRequest(context) {
     } catch (error) {
       console.error('CORE7 stats failed', error);
       return json({ ok: false, error: 'STATS_UNAVAILABLE' }, 500);
+    }
+  }
+
+  /* Dashboard — วันนี้เกิดอะไรขึ้น และมีอะไรที่ต้องไปดูต่อ */
+  if (method === 'GET' && parts[0] === 'overview') {
+    try {
+      return json(await readStatOverview(env.DB));
+    } catch (error) {
+      console.error('CORE7 overview failed', error);
+      return json({ ok: false, error: 'OVERVIEW_UNAVAILABLE' }, 500);
     }
   }
 

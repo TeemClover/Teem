@@ -72,11 +72,6 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 <h1>Journey Funnel</h1>
 <p>คนหลุดตรงไหนระหว่างประตูหน้าแรกกับบทที่ 1 — ตั้งแต่บทนำ อ่านการ์ตูน 7 ตอน Walkthrough เล่น CORE7 จนถึงเริ่มบทเรียน</p>
 </div>
-<div style="display:grid;gap:6px;justify-items:end">
-<a class="back" href="/collection/stat/">Achievement Stat →</a>
-<a class="back" href="/core7/collection/stat/">Collection Stat →</a>
-<a class="back" href="/core7/stat/">← Stat หลัก</a>
-</div>
 </header>
 
 <section class="tools">
@@ -127,6 +122,7 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 </div>
 </main>
 
+<script type="module" src="/assets/stat-nav.js"></script>
 <script type="module">
 import { fetchCore7JourneyStats } from '/core7/js/analytics.js';
 const $=id=>document.getElementById(id), DAY=86400000;

@@ -83,12 +83,6 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 <h1>Achievement Stat</h1>
 <p>ของทุกชิ้นที่ปลดได้ในบ้านนี้ เรียงตามลำดับที่คนเดินจริง ไม่ใช่เรียงตามยอด — จะได้เห็นว่าคนหล่นหายช่วงไหน</p>
 </div>
-<div style="display:grid;gap:6px;justify-items:end">
-<a class="back" href="/core7/stat/journey/">Journey Funnel →</a>
-<a class="back" href="/core7/collection/stat/">CORE7 Collection Stat →</a>
-<a class="back" href="/core7/stat/">CORE7 Stat →</a>
-<a class="back" href="/collection/">← กลับ Collection</a>
-</div>
 </header>
 
 <section class="tools">
@@ -130,6 +124,7 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 </div>
 </main>
 
+<script type="module" src="/assets/stat-nav.js"></script>
 <script type="module">
 import { fetchCore7AchievementStats } from '/core7/js/analytics.js';
 const $=id=>document.getElementById(id), DAY=86400000;
