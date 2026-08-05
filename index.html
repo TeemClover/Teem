@@ -60,7 +60,7 @@ button{border:0}
 .lang button{min-width:47px;padding:9px 13px;border-radius:999px;background:transparent;color:rgba(255,255,255,.62);font-weight:800;cursor:pointer}
 .lang button.active{background:var(--cream);color:var(--deep)}
 .layout{height:100%;display:grid;grid-template-columns:minmax(330px,.82fr) minmax(320px,1.18fr);gap:clamp(28px,4vw,76px);align-items:center;width:min(1240px,calc(100% - 72px));margin:auto;padding-top:68px}
-.copy{position:relative;z-index:4;max-width:590px;padding:clamp(22px,3vw,32px);border:1px solid rgba(255,255,255,.18);border-radius:24px;background:rgba(4,20,12,.58);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 28px 70px rgba(0,0,0,.28)}
+.copy{position:relative;z-index:4;max-width:590px;padding:clamp(22px,3vw,32px);border:1px solid rgba(255,255,255,.18);border-radius:24px;background:rgba(4,20,12,.27);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 28px 70px rgba(0,0,0,.28)}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;background:rgba(251,246,234,.1);border:1px solid rgba(251,246,234,.18);backdrop-filter:blur(10px);color:var(--gold2);font-weight:700}
 h1{font-family:"Bai Jamjuree",system-ui;font-size:clamp(42px,5.4vw,78px);line-height:.98;letter-spacing:-.055em;margin:20px 0 16px;max-width:8.5ch;text-wrap:balance}
 .lead{font-size:clamp(18px,1.7vw,22px);line-height:1.65;color:#fff;font-weight:650;max-width:38ch;margin:0;text-shadow:0 2px 16px rgba(0,0,0,.42)}
@@ -144,9 +144,9 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:mani
     <section class="copy" aria-labelledby="homeTitle">
       <span class="eyebrow" data-i18n="eyebrow">🍀 ใครเจอเรา คนนั้นโชคดี</span>
       <h1 id="homeTitle" data-i18n="title">เปิดบ้าน myClover</h1>
-      <p class="lead" data-i18n="lead">ดูคลิป 44 วินาที แล้วเข้าไปเล่นเกมและเริ่มสร้างของชิ้นแรกด้วย AI — ฟรี ไม่ต้องสมัคร</p>
+      <p class="lead" data-i18n="lead">ดูคลิป 44 วินาที แล้วเข้าเรียนผ่านเกมและเริ่มสร้างของชิ้นแรกด้วย AI — ฟรี ไม่ต้องสมัคร</p>
       <div class="actions">
-        <button class="btn btn-primary" id="openVideo" type="button" data-i18n="watch">▶ ดูคลิปก่อน · 44 วินาที</button>
+        <button class="btn btn-primary" id="openVideo" type="button" data-i18n="watch">▶ ดูคลิป · 44 วิ</button>
         <a class="btn btn-secondary" href="hall.html" data-i18n="compass">🧭 เข้าสู่บ้าน</a>
       </div>
       <p class="hint" data-i18n="hint">แนะนำให้ดูคลิปก่อน แล้วค่อยก้าวเข้าไปตามเส้นทางของคุณ</p>
@@ -180,8 +180,8 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:mani
     th:{
       eyebrow:"🍀 ใครเจอเรา คนนั้นโชคดี",
       title:"เปิดบ้าน myClover",
-      lead:"ดูคลิป 44 วินาที แล้วเข้าไปเล่นเกมและเริ่มสร้างของชิ้นแรกด้วย AI — ฟรี ไม่ต้องสมัคร",
-      watch:"▶ ดูคลิปก่อน · 44 วินาที",
+      lead:"ดูคลิปสั้น แล้วเข้าไปเล่นเกมและเริ่มสร้างของชิ้นแรกด้วย AI — ฟรี ไม่ต้องสมัคร",
+      watch:"▶ ดูคลิป · 44 วิ",
       compass:"🧭 เข้าสู่บ้าน",
       hint:"แนะนำให้ดูคลิปก่อน แล้วค่อยก้าวเข้าไปตามเส้นทางของคุณ",
       stage:"คลิปแนะนำบ้าน · 44 วินาที"
@@ -190,7 +190,7 @@ html,body{height:100%;overflow:hidden;overscroll-behavior:none;touch-action:mani
       eyebrow:"🍀 Those who find us leave with something lucky",
       title:"Welcome to myClover",
       lead:"Watch the 44-second intro, then play a real game and begin building your first thing with AI — free, no sign-up.",
-      watch:"▶ Watch this first · 44 sec",
+      watch:"▶ Watch me · 44s",
       compass:"🧭 Enter the house",
       hint:"We recommend watching the intro before starting your path.",
       stage:"House introduction · 44 seconds"
