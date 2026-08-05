@@ -112,5 +112,5 @@ import { reportAchievementUnlock } from '/core7/js/analytics.js';
 reportAchievementUnlock('forge-intro');   // กันซ้ำในตัว
 ```
 
-ดูผลที่ `/core7/stat/achievements/` · API: `GET /api/core7/achievement-stats?from&to`
+ดูผลที่ `/collection/stat/` · API: `GET /api/core7/achievement-stats?from&to`
 
