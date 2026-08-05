@@ -112,5 +112,21 @@ import { reportAchievementUnlock } from '/core7/js/analytics.js';
 reportAchievementUnlock('forge-intro');   // กันซ้ำในตัว
 ```
 
+### Act ที่ต่อสายแล้ว
+
+| ที่ไหน | act |
+|---|---|
+| หน้าแรก | `home-open` · `home-video` · `home-compass` |
+| Hall | `hall-open` · **`hall-bump`** (ชนหมัด — ประตูจริง) · `hall-quest` · `hall-path-pick` · `hall-path-enter` · `hall-room` · `hall-line` |
+| การ์ตูน | `forge-open` · `forge-ep-open` (ทุกตอนใช้ id เดียว ดูว่าตอนไหนจากคอลัมน์ `path`) |
+| Walkthrough | `walkthrough-open` |
+| ห้องเรียน | `class-open` · `lesson-open` (ทุกบทใช้ id เดียว) |
+| ด่านบอส | `awaken-open` |
+| เส้นทางลับ | `notebook-open` · `notebook-restore` · `notebook-bump` |
+| ห้องอื่น | `card-open` · `card-save` · `collection-open` · `paths-open` · `club-open` · `resume-open` · `guild-discord` · `ks-open` |
+
+`hall-bump` สำคัญที่สุดในชุดนี้ — ระบบใหม่ Hall จะปลดล็อกทีละขั้นหลังชนหมัด
+ระยะห่างระหว่าง `hall-open` กับ `hall-bump` คือจำนวนคนที่มาถึงหน้าแล้วไม่เริ่ม
+
 ดูผลที่ `/collection/stat/` · API: `GET /api/core7/achievement-stats?from&to`
 

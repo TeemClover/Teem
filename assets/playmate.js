@@ -158,7 +158,7 @@ function buildRestored(){
     '<code>'+CODE+'</code>'+
     '<p>ไม่มีคำใบ้ของรหัสนี้อยู่บนแผนที่ และไม่มีช่องว่างรออยู่ในหน้าทำการ์ด</p>'+
     '<p><strong>ไม่ต้องพิมพ์รหัสที่ไหน</strong><br>แตะหมัดด้านล่าง แล้วระบบจะส่งรหัสนี้เข้าเซฟของคุณเอง</p>'+
-    '<button type="button" class="bump" id="bumpBtn">'+
+    '<button type="button" class="bump" id="bumpBtn" data-mc-act="notebook-bump">'+
       '<span class="fists" aria-hidden="true">🤜🏻<span class="r">🤛🏻</span></span>'+
       '<span id="bumpTx">แตะหมัด</span></button>'+
   '</div></div>';
