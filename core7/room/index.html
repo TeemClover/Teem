@@ -128,7 +128,7 @@ function startMatch(data) {
 }
 
 function countSide(rounds, side) {
-  const colors = { RED:0, GREEN:0, BLUE:0, GRAY:0 }; const played = []; const discarded = [];
+  const colors = { RED:0, GREEN:0, BLUE:0, SILVER:0 }; const played = []; const discarded = [];
   for (const round of rounds) {
     const card = round[side]; played.push(card); colors[card.color] += 1;
     for (const dc of round.discards) if ((side === 'you' && dc.yours) || (side === 'opp' && !dc.yours)) { discarded.push(dc); colors[dc.color] += 1; }
@@ -148,7 +148,7 @@ function chip(card, discard = false) {
 
 function sideSummary(title, stats) {
   const box = el('div', { class:'summary-side' }, el('h3', { class:'disp' }, title));
-  box.append(el('p', { style:'font-size:13px;margin:8px 0' }, `🔴 ${stats.colors.RED} · 🟢 ${stats.colors.GREEN} · 🔵 ${stats.colors.BLUE} · ⚙️ ${stats.colors.GRAY}`));
+  box.append(el('p', { style:'font-size:13px;margin:8px 0' }, `🔴 ${stats.colors.RED} · 🟢 ${stats.colors.GREEN} · 🔵 ${stats.colors.BLUE} · ⚙️ ${stats.colors.SILVER}`));
   const played = el('div', {}, el('b', { style:'font-size:12px' }, 'PLAYED ')); stats.played.forEach(c => played.append(chip(c)));
   const discarded = el('div', { style:'margin-top:8px' }, el('b', { style:'font-size:12px' }, 'DISCARDED '));
   if (stats.discarded.length) stats.discarded.forEach(c => discarded.append(chip(c, true))); else discarded.append('—');
@@ -170,7 +170,7 @@ function renderSummary(data) {
       const grid = el('div', { class:'summary-grid' });
       for (const [key, title] of [['you', `${r.you.name} ${t('(คุณ)', '(you)')}`], ['opponent', r.opponent.name]]) {
         const cards = data.startingHands[key].map(id => ({ cardId:id, color:cardById(id).color }));
-        grid.append(sideSummary(title, { colors:cards.reduce((a,c)=>(a[c.color]++,a),{RED:0,GREEN:0,BLUE:0,GRAY:0}), played:cards, discarded:[] }));
+        grid.append(sideSummary(title, { colors:cards.reduce((a,c)=>(a[c.color]++,a),{RED:0,GREEN:0,BLUE:0,SILVER:0}), played:cards, discarded:[] }));
       }
       hands.append(grid); content.append(hands);
     }

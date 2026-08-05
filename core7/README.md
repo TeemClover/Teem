@@ -13,7 +13,7 @@ myclover.com ไม่มี Build Step ไม่มี Dependency ภายน�
 - 🔴 RED = **BODY**
 - 🔵 BLUE = **MIND**
 - 🟢 GREEN = **SOUL**
-- ⚙️ SILVER = **CRAFT** (คีย์ข้อมูลยังเป็น `GRAY`)
+- ⚙️ SILVER = **CRAFT** (คีย์ข้อมูลยังเป็น `SILVER`)
 
 `Body · Mind · Soul` คือสามมิติที่รวมเป็นตัวเรา และ `Craft` คือพลังแห่งการสร้างที่เปลี่ยนสิ่งภายในให้เกิดขึ้นจริง แกนนี้เป็น Lore/semantic layer ไม่ใช่ข้อมูลที่ผู้เล่นต้องจำเพื่อ Resolve เกม CORE7 Classic
 

@@ -8,6 +8,8 @@ import {
 import {
   CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION,
   readMatchCounters, recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
+  migrateSilverDatabase, readCollectionStats, readJourneyFunnel, readAchievementStats,
+  readStatOverview,
 } from '../../../core7/backend/analytics-v11.js';
 import { readAnalyticsDevelopmentReport } from '../../../core7/backend/analytics-v11-report.js';
 
@@ -102,6 +104,12 @@ export async function onRequest(context) {
   const method = request.method.toUpperCase();
 
   if (method === 'OPTIONS') return new Response(null, { status: 204, headers: JSON_HEADERS });
+
+  /* แปลงข้อมูลเก่าจาก GRAY เป็น SILVER — มี flag กันไว้ในตัว รันจริงครั้งเดียว
+     ต่อ worker instance ที่เหลือคืนทันที ถ้าพลาดก็ไม่ทำให้ request ล้ม
+     เพราะสถิติที่แปลงไม่ทันเสียหายน้อยกว่าเกมเล่นไม่ได้ */
+  await migrateSilverDatabase(env.DB).catch(error => console.error('CORE7 silver migration failed', error));
+
   if (method === 'GET' && parts[0] === 'health') {
     return json({ ok: true, version: CORE7_GAME_VERSION, analytics: CORE7_ANALYTICS_VERSION });
   }
@@ -127,6 +135,58 @@ export async function onRequest(context) {
     } catch (error) {
       console.error('CORE7 stats failed', error);
       return json({ ok: false, error: 'STATS_UNAVAILABLE' }, 500);
+    }
+  }
+
+  /* Dashboard — วันนี้เกิดอะไรขึ้น และมีอะไรที่ต้องไปดูต่อ */
+  if (method === 'GET' && parts[0] === 'overview') {
+    try {
+      return json(await readStatOverview(env.DB));
+    } catch (error) {
+      console.error('CORE7 overview failed', error);
+      return json({ ok: false, error: 'OVERVIEW_UNAVAILABLE' }, 500);
+    }
+  }
+
+  /* Achievement & Act — ของแต่ละชิ้นมีคนทำกี่ครั้ง กี่เครื่อง เรียงตามเส้นทาง */
+  if (method === 'GET' && parts[0] === 'achievement-stats') {
+    const url = new URL(request.url);
+    try {
+      return json(await readAchievementStats(env.DB, {
+        from: url.searchParams.get('from'),
+        to: url.searchParams.get('to'),
+      }));
+    } catch (error) {
+      console.error('CORE7 achievement stats failed', error);
+      return json({ ok: false, error: 'ACHIEVEMENT_STATS_UNAVAILABLE' }, 500);
+    }
+  }
+
+  /* Journey Funnel — คนหลุดตรงไหนระหว่างประตูหน้าแรกกับบทที่ 1 */
+  if (method === 'GET' && parts[0] === 'journey-stats') {
+    const url = new URL(request.url);
+    try {
+      return json(await readJourneyFunnel(env.DB, {
+        from: url.searchParams.get('from'),
+        to: url.searchParams.get('to'),
+      }));
+    } catch (error) {
+      console.error('CORE7 journey stats failed', error);
+      return json({ ok: false, error: 'JOURNEY_STATS_UNAVAILABLE' }, 500);
+    }
+  }
+
+  /* Collection Stat — การ์ดใบไหนถูกเปิดไปแล้วกี่เครื่อง และคนหลุดที่ใบที่เท่าไหร่ */
+  if (method === 'GET' && parts[0] === 'collection-stats') {
+    const url = new URL(request.url);
+    try {
+      return json(await readCollectionStats(env.DB, {
+        from: url.searchParams.get('from'),
+        to: url.searchParams.get('to'),
+      }));
+    } catch (error) {
+      console.error('CORE7 collection stats failed', error);
+      return json({ ok: false, error: 'COLLECTION_STATS_UNAVAILABLE' }, 500);
     }
   }
 

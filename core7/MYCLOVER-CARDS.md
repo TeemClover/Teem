@@ -125,14 +125,14 @@ myClover Cards เปลี่ยน Slogan เหล่านี้ให้เ
 
 ---
 
-# 4. Four-Color Protocol — RGBG
+# 4. Four-Color Protocol — RGBS
 
 ลำดับ Canon ทุกหน้า ทุกแกลเลอรี และทุกเอกสารคือ:
 
 1. 🔴 **RED · BODY**
 2. 🟢 **GREEN · SOUL**
 3. 🔵 **BLUE · MIND**
-4. ⚙️ **GRAY · CRAFT**
+4. ⚙️ **SILVER · CRAFT**
 
 Canonical phrase:
 
@@ -144,21 +144,21 @@ Canonical phrase:
 - 🟢 GREEN ชนะ 🔵 BLUE
 - 🔵 BLUE ชนะ 🔴 RED
 - สีเดียวกันเสมอ
-- ⚙️ GRAY เสมอหรือ Block ทุกสีใน Round ปกติ
+- ⚙️ SILVER เสมอหรือ Block ทุกสีใน Round ปกติ
 
 ลำดับการนำเสนอควรไหลต่อเนื่องตามวงจร:
 
 > **RED → GREEN → BLUE → RED**
 
-GRAY อยู่ตรงกลางหรือแยกเป็นแกนที่สี่ ไม่ควรแทรกระหว่างวงจรชนะ
+SILVER อยู่ตรงกลางหรือแยกเป็นแกนที่สี่ ไม่ควรแทรกระหว่างวงจรชนะ
 
-## 4.2 Gray
+## 4.2 Silver
 
-ตอนค้นพบกลไก Gray ถูกเพิ่มในฐานะการ์ดที่ไม่มีพลังชนะสีใด มันเป็นการเลือกทิ้งเพื่อ Block รอบหนึ่ง
+ตอนค้นพบกลไก Silver ถูกเพิ่มในฐานะการ์ดที่ไม่มีพลังชนะสีใด มันเป็นการเลือกทิ้งเพื่อ Block รอบหนึ่ง
 
-ภายหลัง Semantic Layer ให้ Gray เป็น **CRAFT** และมีคำ Observe, Measure, Build, Repair, Connect, Adapt, Iterate แต่บทบาทเชิงกลไกยังเป็น Block
+ภายหลัง Semantic Layer ให้ Silver เป็น **CRAFT** และมีคำ Observe, Measure, Build, Repair, Connect, Adapt, Iterate แต่บทบาทเชิงกลไกยังเป็น Block
 
-> **Gray does not add randomness. It adds uncertainty.**
+> **Silver does not add randomness. It adds uncertainty.**
 
 > **Three colors created the rules. The fourth created the game.**
 
@@ -174,9 +174,9 @@ CORE7 ไม่ได้เกิดจากการเพิ่ม Skill, Sta
 
 > **เราจะถอดอะไรออกได้อีก โดยที่เกมยังคงเป็นเกม?**
 
-สิ่งที่ต้องอธิบายแต่ไม่สร้างการตัดสินใจถูกตัดออก จนเหลือสามสีที่สร้างวงจรสมบูรณ์ แล้วเพิ่ม Gray ซึ่งตั้งใจให้ “ไม่มีอะไร”
+สิ่งที่ต้องอธิบายแต่ไม่สร้างการตัดสินใจถูกตัดออก จนเหลือสามสีที่สร้างวงจรสมบูรณ์ แล้วเพิ่ม Silver ซึ่งตั้งใจให้ “ไม่มีอะไร”
 
-ความไม่มีอะไรของ Gray กลับสร้าง:
+ความไม่มีอะไรของ Silver กลับสร้าง:
 
 - Timing
 - Sacrifice
@@ -208,7 +208,7 @@ CORE7 ไม่ได้เกิดจากการเพิ่ม Skill, Sta
 - ไม่มีการสุ่มมือในกติกามาตรฐาน
 - ผู้เล่นเห็นมือของตนทั้งหมดตั้งแต่เริ่ม
 - มือคู่แข่งเป็น Hidden Information
-- บันทึกจำนวน Gray เริ่มต้นไว้สำหรับ Tie Break ขั้นสุดท้าย
+- บันทึกจำนวน Silver เริ่มต้นไว้สำหรับ Tie Break ขั้นสุดท้าย
 
 ## 6.2 แต่ละ Round
 
@@ -234,10 +234,10 @@ CORE7 ไม่ได้เกิดจากการเพิ่ม Skill, Sta
 ตรวจตามลำดับ:
 
 1. ถ้า Round สุดท้ายมีผู้ชนะตามวงจรสีปกติ ผู้ชนะ Round นั้นชนะ Match
-2. **Final Gray:** ถ้า Gray เป็นการ์ดสุดท้ายและเจอกับสีที่ไม่ใช่ Gray, Gray แพ้
-3. ถ้า Round สุดท้ายเป็นสีเดียวกัน รวม Gray vs Gray ให้ย้อนประวัติจาก Round ล่าสุดไปเก่าสุด ข้าม Round เสมอ ผู้ชนะ Round แรกที่พบชนะ Match
-4. ถ้าทุก Round เสมอ ผู้ที่เริ่มด้วย Gray น้อยกว่าชนะ
-5. ถ้าจำนวน Gray เริ่มต้นเท่ากันจริง ผลเป็น Draw
+2. **Final Silver:** ถ้า Silver เป็นการ์ดสุดท้ายและเจอกับสีที่ไม่ใช่ Silver, Silver แพ้
+3. ถ้า Round สุดท้ายเป็นสีเดียวกัน รวม Silver vs Silver ให้ย้อนประวัติจาก Round ล่าสุดไปเก่าสุด ข้าม Round เสมอ ผู้ชนะ Round แรกที่พบชนะ Match
+4. ถ้าทุก Round เสมอ ผู้ที่เริ่มด้วย Silver น้อยกว่าชนะ
+5. ถ้าจำนวน Silver เริ่มต้นเท่ากันจริง ผลเป็น Draw
 
 > **A tool can buy time, but it cannot choose the final victory for you.**
 
@@ -303,11 +303,11 @@ Variant ที่ใช้การสุ่มต้องระบุชัด
 Canonical visual:
 
 - วง RED → GREEN → BLUE → RED
-- GRAY อยู่กลางวงและระบุ Block
+- SILVER อยู่กลางวงและระบุ Block
 - **LOSER / DISCARDS 1**
 - **WIN / 3 ROUNDS**
-- **FINAL GRAY / LOSES**
-- Final Gray ต้องแสดง Gray อยู่ฝั่งแพ้
+- **FINAL SILVER / LOSES**
+- Final Silver ต้องแสดง Silver อยู่ฝั่งแพ้
 - เหรียญทองแสดงฝ่ายชนะ และใช้ Clover สี่แฉก
 - ลูกศรชี้ไปฝั่งชนะ ฝั่งแพ้ไม่มีหัวลูกศร
 
@@ -372,7 +372,7 @@ Shared Box Selection เหมาะกับ Casual, Travel, First Meeting แ�
 
 # 11. FIRST HAND — การ์ด 28 ใบ
 
-ลำดับสี Canon คือ RED, GREEN, BLUE, GRAY
+ลำดับสี Canon คือ RED, GREEN, BLUE, SILVER
 
 ## 11.1 RED · BODY
 
@@ -404,7 +404,7 @@ Shared Box Selection เหมาะกับ Casual, Travel, First Meeting แ�
 6. Reflection — การทบทวน
 7. Choice — การเลือก
 
-## 11.4 GRAY · CRAFT
+## 11.4 SILVER · CRAFT
 
 1. Observe — สังเกต
 2. Measure — วัดผล
@@ -448,7 +448,7 @@ Working configuration:
 
 ## 13.1 Working Rule Cards
 
-1. Visual Core Rule — Color Cycle, Gray Block, Discard 1, Win 3, Final Gray
+1. Visual Core Rule — Color Cycle, Silver Block, Discard 1, Win 3, Final Silver
 2. Setup / CORE7 Match Detail
 3. CORE7 Set / Tie Break / Locked-Hand Detail
 4. Open Play / QR / AI Guide / Safety
@@ -561,17 +561,17 @@ Manufacturer, Factory, Fulfillment Partner, MOQ, Unit Cost และ Delivery Da
 - สีไม่เป็นข้อมูลเพียงอย่างเดียว
 - ทุกสีมี Icon, Pattern และ Text Label
 - Red/Green ต้องแยกได้ผ่าน Icon และ Pattern
-- Gray ต้องไม่ใกล้ Blue หรือ Green ในแสงจริง
+- Silver ต้องไม่ใกล้ Blue หรือ Green ในแสงจริง
 - Thai และ English ต้องไม่หลุด Font หรือ tone mark
 - QR ต้องสแกนได้จากอุปกรณ์หลายรุ่น
 
 ## 16.5 Prepress essentials
 
 - รายชื่อการ์ด 28 ใบถูกต้อง
-- ลำดับ RGBG ถูกต้อง
+- ลำดับ RGBS ถูกต้อง
 - วงจร RED > GREEN > BLUE > RED ถูกต้อง
-- Gray = Block
-- Final Gray อยู่ฝั่งแพ้
+- Silver = Block
+- Final Silver อยู่ฝั่งแพ้
 - เหรียญ Clover สี่แฉกอยู่ฝั่งชนะ
 - ลูกศรชี้ไปฝั่งชนะ
 - Text Rule Card ตรง Canon
@@ -596,7 +596,7 @@ Manufacturer, Factory, Fulfillment Partner, MOQ, Unit Cost และ Delivery Da
 3. ที่มาของชื่อ myClover
 4. CORE7 คืออะไร
 5. เกมถูกค้นพบด้วยการถอดออก
-6. สามสีและ Gray ที่ไม่มีอะไร
+6. สามสีและ Silver ที่ไม่มีอะไร
 7. CORE7 Match / CORE7 Set
 8. 0% RNG · 100% DECISIONS
 9. เจ็ดคำและ Shared Memory
@@ -730,7 +730,7 @@ Compatibility:
 
 > **0% RNG. 100% DECISIONS.**
 
-> **Gray does not add randomness. It adds uncertainty.**
+> **Silver does not add randomness. It adds uncertainty.**
 
 ## Words
 
@@ -775,7 +775,7 @@ Compatibility:
 # 21. Things We Must Never Accidentally Claim
 
 - ห้ามเรียก CORE7 ว่าเกมสุ่ม
-- ห้ามบอกว่า Gray มี Random Effect
+- ห้ามบอกว่า Silver มี Random Effect
 - ห้ามบอกว่าเจ็ดใบวินิจฉัยบุคลิกจริง
 - ห้ามสัญญาว่าคนทุกคู่จะกลายเป็นเพื่อน
 - ห้ามเพิ่มสีที่ห้าเป็น Canon
@@ -805,12 +805,12 @@ myclover_cards:
     luck_meaning: meeting_the_person_across_the_table
 
 protocol:
-  presentation_order: [red, green, blue, gray]
+  presentation_order: [red, green, blue, silver]
   colors:
     red: {root: BODY, beats: green}
     green: {root: SOUL, beats: blue}
     blue: {root: MIND, beats: red}
-    gray: {root: CRAFT, normal_role: block, beats: null}
+    silver: {root: CRAFT, normal_role: block, beats: null}
   fifth_color: forbidden_for_core_compatibility
 
 core7:

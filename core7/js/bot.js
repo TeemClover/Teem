@@ -90,12 +90,12 @@ export class Core7Bot {
      แล้วหักออกตามที่เปิดแล้ว → เลือกสีที่ชนะสีที่คาดว่าเหลือมากสุด */
   _reader(view, hand) {
     const revealed = opponentRevealedColors(view);
-    const est = { RED: HAND_SIZE / 4, GREEN: HAND_SIZE / 4, BLUE: HAND_SIZE / 4, GRAY: HAND_SIZE / 4 };
+    const est = { RED: HAND_SIZE / 4, GREEN: HAND_SIZE / 4, BLUE: HAND_SIZE / 4, SILVER: HAND_SIZE / 4 };
     for (const c of revealed) est[c] = Math.max(0, est[c] - 1);
     /* ความน่าจะเป็นที่คู่แข่งลงสี X ≈ สัดส่วนที่คาดว่าเหลือ */
-    const total = est.RED + est.GREEN + est.BLUE + est.GRAY || 1;
+    const total = est.RED + est.GREEN + est.BLUE + est.SILVER || 1;
     const choice = pickWeighted(hand, card => {
-      if (card.color === 'GRAY') return 0.5 / hand.length;   // GRAY เสมอ — ค่ากลาง
+      if (card.color === 'SILVER') return 0.5 / hand.length;   // SILVER เสมอ — ค่ากลาง
       const target = BEATS[card.color];                       // สีที่ใบนี้ชนะ
       const threat = BEATEN_BY[card.color];                   // สีที่ชนะใบนี้
       return 0.2 + (est[target] / total) - 0.6 * (est[threat] / total);
@@ -113,7 +113,7 @@ export class Core7Bot {
       const prev = rounds[i - 1];
       const oppPrevResult = prev.result === 'TIE' ? 'T' : (prev.youWon ? 'L' : 'W');
       const key = oppPrevResult;
-      trans[key] = trans[key] || { RED: 0, GREEN: 0, BLUE: 0, GRAY: 0 };
+      trans[key] = trans[key] || { RED: 0, GREEN: 0, BLUE: 0, SILVER: 0 };
       trans[key][rounds[i].opp.color] += 1;
     }
     let predicted = null;
@@ -122,13 +122,13 @@ export class Core7Bot {
       const key = last.result === 'TIE' ? 'T' : (last.youWon ? 'L' : 'W');
       const t = trans[key];
       if (t) {
-        const totalT = t.RED + t.GREEN + t.BLUE + t.GRAY;
+        const totalT = t.RED + t.GREEN + t.BLUE + t.SILVER;
         if (totalT >= 2) {
           predicted = Object.entries(t).sort((x, y) => y[1] - x[1])[0][0];
         }
       }
     }
-    if (predicted && predicted !== 'GRAY') {
+    if (predicted && predicted !== 'SILVER') {
       /* มีสีที่ชนะสีที่ทายไว้ไหม */
       const counter = BEATEN_BY[predicted];
       const options = hand.filter(c => c.color === counter);
@@ -175,14 +175,14 @@ export class Core7Bot {
   /* เลือกมือ 7 ใบของบอทจาก Generic — กระจายพอประมาณ สุ่มเล็กน้อย */
   static buildHand(rng = Math.random) {
     const base = ['RED', 'RED', 'GREEN', 'GREEN', 'BLUE', 'BLUE'];
-    const all = ['RED', 'GREEN', 'BLUE', 'GRAY'];
+    const all = ['RED', 'GREEN', 'BLUE', 'SILVER'];
     base.push(all[Math.floor(rng() * all.length)]);
     /* สลับ 0–2 ใบเป็นสีสุ่ม เพื่อไม่ให้ทุกเกมเหมือนกัน */
     const swaps = Math.floor(rng() * 3);
     for (let i = 0; i < swaps; i++) {
       base[Math.floor(rng() * base.length)] = all[Math.floor(rng() * all.length)];
     }
-    const GEN = { RED: 'gen-red', GREEN: 'gen-green', BLUE: 'gen-blue', GRAY: 'gen-gray' };
+    const GEN = { RED: 'gen-red', GREEN: 'gen-green', BLUE: 'gen-blue', SILVER: 'gen-silver' };
     return base.map(c => GEN[c]);
   }
 }

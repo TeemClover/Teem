@@ -19,11 +19,11 @@ CREATE TABLE IF NOT EXISTS c7_analytics_matches (
   played_red      INTEGER NOT NULL DEFAULT 0,
   played_green    INTEGER NOT NULL DEFAULT 0,
   played_blue     INTEGER NOT NULL DEFAULT 0,
-  played_gray     INTEGER NOT NULL DEFAULT 0,
+  played_silver     INTEGER NOT NULL DEFAULT 0,
   discarded_red   INTEGER NOT NULL DEFAULT 0,
   discarded_green INTEGER NOT NULL DEFAULT 0,
   discarded_blue  INTEGER NOT NULL DEFAULT 0,
-  discarded_gray  INTEGER NOT NULL DEFAULT 0,
+  discarded_silver  INTEGER NOT NULL DEFAULT 0,
   created_at      INTEGER NOT NULL,
   updated_at      INTEGER NOT NULL
 );
@@ -50,7 +50,7 @@ CREATE INDEX IF NOT EXISTS idx_c7_analytics_series_started
 CREATE TABLE IF NOT EXISTS c7_analytics_card_events (
   match_id        TEXT NOT NULL,
   card_id         TEXT NOT NULL,
-  color           TEXT NOT NULL CHECK(color IN ('RED','GREEN','BLUE','GRAY')),
+  color           TEXT NOT NULL CHECK(color IN ('RED','GREEN','BLUE','SILVER')),
   event_type      TEXT NOT NULL CHECK(event_type IN ('PLAYED','DISCARDED')),
   n               INTEGER NOT NULL DEFAULT 1,
   PRIMARY KEY(match_id, card_id, color, event_type)

@@ -33,7 +33,7 @@ body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transp
 .cbtn.red{background:linear-gradient(160deg,rgb(var(--c-red)),rgb(var(--c-red-deep)))}
 .cbtn.green{background:linear-gradient(160deg,rgb(var(--c-green)),rgb(var(--c-green-deep)))}
 .cbtn.blue{background:linear-gradient(160deg,rgb(var(--c-blue)),rgb(var(--c-blue-deep)))}
-.cbtn.gray{background:linear-gradient(160deg,rgb(var(--c-gray)),rgb(var(--c-gray-deep)))}
+.cbtn.silver{background:linear-gradient(160deg,rgb(var(--c-silver)),rgb(var(--c-silver-deep)))}
 .cbtn:disabled{opacity:.35}
 .tut-next{padding:0 18px 30px;display:flex;justify-content:center;gap:12px}
 .dots{display:flex;gap:6px;justify-content:center;margin-top:4px}
@@ -113,7 +113,7 @@ const STEPS_TH = [
   },
   {
     text: 'ทีนี้ลองอาวุธลับ — กด ⚙️ SILVER',
-    want: 'GRAY', bot: 'BLUE',
+    want: 'SILVER', bot: 'BLUE',
     explain: '⚙️ Block! สีเงินเสมอกับทุกสี',
     explainSub: 'ใช้เงินเพื่อซื้อเวลาและอ่านคู่แข่ง โดยไม่เสี่ยงแพ้ (และไม่มีวันชนะรอบ)',
   },
@@ -135,7 +135,7 @@ const STEPS_EN = [
   { text:'Your cards are always on the left on this device.', want:null, bot:null, explain:'YOU = left · OPPONENT = right', explainSub:'Both players see themselves on the left while sharing the same server-authoritative result.' },
   { text:'Both choose secretly, then reveal together. Tap RED.', want:'RED', bot:'GREEN', explain:'RED beats GREEN — you win the Round.', explainSub:'The loser loses the played card and reveals one additional discarded card.' },
   { text:'What if both colors match? Tap RED again.', want:'RED', bot:'RED', explain:'DRAW — matching colors tie.', explainSub:'Both lose only the played card. No additional discard.' },
-  { text:'Try the block card. Tap SILVER.', want:'GRAY', bot:'BLUE', explain:'BLOCK — SILVER ties every normal color.', explainSub:'GRAY buys time, but never wins a normal Round.' },
+  { text:'Try the block card. Tap SILVER.', want:'SILVER', bot:'BLUE', explain:'BLOCK — SILVER ties every normal color.', explainSub:'SILVER buys time, but never wins a normal Round.' },
   { text:'Final Silver rule', want:null, bot:null, explain:'If SILVER is your final card, it loses to a real color.', explainSub:'A tool can buy time, but cannot make the final choice for you.' },
   { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. MATCH is one win; DOUBLE and SET keep the same Starting Hand until someone wins.', explainSub:'Now choose your seven cards and use the game as an easy way to start a conversation.', visual:true },
 ];
@@ -189,7 +189,7 @@ function runStep() {
     return;
   }
 
-  for (const color of ['RED', 'GREEN', 'BLUE', 'GRAY']) {
+  for (const color of ['RED', 'GREEN', 'BLUE', 'SILVER']) {
     const b = colorBtn(color, color === s.want, color === s.want);
     b.addEventListener('click', () => {
       haptic(10);

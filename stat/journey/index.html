@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Journey Funnel — CORE7 · myClover</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#071d12">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+:root{--gold:#d9b86c;--green:#65d39d;--blue:#7fa9ff;--warn:#ffb977}
+body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;min-height:100vh}
+.shell{width:min(1240px,calc(100% - 28px));margin:auto;padding:30px 0 80px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.top h1{font:700 clamp(32px,6vw,58px)/1 "Bai Jamjuree",sans-serif}
+.top p{max-width:740px;color:rgb(255 255 255/.65);margin-top:8px}
+.back{color:var(--gold);white-space:nowrap;font-size:13px}
+.tools{display:flex;gap:9px;align-items:end;flex-wrap:wrap;margin-top:24px;padding:14px;border:1px solid rgb(255 255 255/.12);border-radius:17px;background:rgb(255 255 255/.05)}
+.tools label{display:grid;gap:4px;font-size:11px;color:rgb(255 255 255/.58);font-weight:700}
+.tools input{min-height:42px;border:0;border-radius:10px;padding:8px 10px;font:inherit}
+.tools button{min-height:42px;border:1px solid rgb(255 255 255/.16);border-radius:10px;padding:8px 13px;background:rgb(255 255 255/.07);color:#fff;font-weight:700;cursor:pointer}
+.tools .primary{background:var(--gold);color:#172018;border-color:var(--gold)}
+.meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;color:rgb(255 255 255/.48);font-size:12px}
+.loading,.error{padding:30px 0}.error{color:#ff9c93}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:23px}
+.metric,.panel{border:1px solid rgb(255 255 255/.11);border-radius:17px;background:linear-gradient(145deg,rgb(255 255 255/.07),rgb(255 255 255/.035))}
+.metric{padding:17px}
+.metric span{display:block;color:rgb(255 255 255/.55);font-size:10px;font-weight:700;letter-spacing:.06em}
+.metric strong{display:block;margin-top:4px;font:700 clamp(24px,4vw,36px) "Bai Jamjuree",sans-serif}
+.metric small{display:block;color:var(--green);font-size:11px;margin-top:3px}
+.section{margin-top:38px}
+.head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:13px}
+.head h2{font:700 clamp(22px,4vw,31px) "Bai Jamjuree",sans-serif}
+.head p{max-width:640px;color:rgb(255 255 255/.52);font-size:12px}
+.panel{padding:17px;overflow:hidden}
+.muted{color:rgb(255 255 255/.45)}
+.alert{padding:14px 17px;border-left:3px solid var(--warn);background:rgb(255 185 119/.09);border-radius:0 13px 13px 0;font-size:13px;margin-top:13px}
+.alert b{color:var(--warn)}
+.notice{padding:14px 17px;border-left:3px solid var(--blue);background:rgb(127 169 255/.09);border-radius:0 13px 13px 0;font-size:13px;margin-top:23px}
+.notice b{color:var(--blue)}
+/* บันไดแนวนอน — ชื่อขั้นยาว อ่านง่ายกว่าแท่งตั้ง */
+.rows{display:grid;gap:6px}
+.row{display:grid;grid-template-columns:190px 1fr 88px;gap:12px;align-items:center}
+.row .name{font-size:12px;color:rgb(255 255 255/.72);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .name b{display:block;font-size:9px;color:rgb(255 255 255/.3);font-weight:400;letter-spacing:.04em}
+.row .track{height:26px;border-radius:7px;background:rgb(255 255 255/.05);overflow:hidden}
+.row .fill{height:100%;border-radius:7px;background:var(--blue);min-width:2px;display:flex;align-items:center;padding:0 8px;font:700 11px "Bai Jamjuree";color:#0b1a12}
+.row.gate .fill{background:var(--gold)}
+.row.last .fill{background:var(--green)}
+.row .side{text-align:right;font-size:11px;color:rgb(255 255 255/.5)}
+.row .side b{display:block;font:700 14px "Bai Jamjuree";color:#fff}
+.row.hole .side b{color:var(--warn)}
+.table-wrap{overflow:auto}
+.table{width:100%;border-collapse:collapse;min-width:520px;font-size:13px}
+.table th,.table td{padding:10px 9px;border-bottom:1px solid rgb(255 255 255/.08);text-align:right;white-space:nowrap}
+.table th:first-child,.table td:first-child{text-align:left}
+.table th{color:rgb(255 255 255/.48);font-size:10px}
+.note{margin-top:28px;padding:14px 17px;border-left:3px solid var(--gold);background:rgb(255 255 255/.04);color:rgb(255 255 255/.56);font-size:12px}
+code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size:11px}
+@media(max-width:720px){.top{display:block}.back{display:inline-block;margin-top:12px}.head{display:block}.head p{margin-top:5px}.tools{align-items:stretch}.tools label{flex:1;min-width:130px}.metrics{grid-template-columns:1fr}.row{grid-template-columns:130px 1fr 62px;gap:8px}}
+@media(max-width:430px){.shell{width:min(100% - 20px,1240px)}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top">
+<div>
+<p class="eyebrow">CORE7 · DEVELOPMENT LAB</p>
+<h1>Journey Funnel</h1>
+<p>คนหลุดตรงไหนระหว่างประตูหน้าแรกกับบทที่ 1 — ตั้งแต่บทนำ อ่านการ์ตูน 7 ตอน Walkthrough เล่น CORE7 จนถึงเริ่มบทเรียน</p>
+</div>
+</header>
+
+<section class="tools">
+<label>ตั้งแต่<input type="date" id="from"></label>
+<label>ถึง<input type="date" id="to"></label>
+<button data-days="1">วันนี้</button>
+<button data-days="7">7 วัน</button>
+<button data-days="30">30 วัน</button>
+<button data-days="365">1 ปี</button>
+<button id="refresh" class="primary">Refresh</button>
+<button id="csv">Export CSV</button>
+</section>
+<div class="meta"><span id="range"></span><span id="version"></span></div>
+
+<div id="state" class="loading">กำลังอ่านข้อมูล…</div>
+<div id="dashboard" hidden>
+
+<div id="wiring"></div>
+<section class="metrics" id="metrics"></section>
+
+<section class="section">
+<div class="head">
+<div><p class="eyebrow">FIRST RUN</p><h2>เดินถึงไหนกันบ้าง</h2></div>
+<p>แถบยาวคือจำนวนเครื่องที่ผ่านขั้นนั้น เทียบกับขั้นแรกเป็น 100% · ตัวเลขขวาคือจำนวนเครื่อง และ % ของคนที่ผ่านขั้นก่อนหน้าแล้วมาถึงขั้นนี้</p>
+</div>
+<div class="panel"><div class="rows" id="rows"></div></div>
+<div id="dropoff"></div>
+</section>
+
+<section class="section">
+<div class="head">
+<div><p class="eyebrow">ENTRY</p><h2>เดินมาตามเส้น vs เข้าเอง</h2></div>
+<p>CORE7 เปิดให้ทุกคนเข้าตรงได้เสมอ แฟล็กนี้แค่แยกตัวเลขตอนอ่าน ไม่ได้กั้นใคร · <code>forge</code> คือมาจาก Journey ส่วน <code>direct</code> คือเข้าเองหรือได้ลิงก์จากเพื่อน</p>
+</div>
+<div class="panel table-wrap">
+<table class="table"><thead><tr><th>ทางเข้า</th><th>เครื่องทั้งหมด</th><th>เริ่ม Match</th><th>เล่นจบ</th><th>จบ / เริ่ม</th></tr></thead><tbody id="entry"></tbody></table>
+</div>
+</section>
+
+<section class="section">
+<div class="head"><div><p class="eyebrow">DAILY</p><h2>เข้าเส้นกี่คน ถึงบทเรียนกี่คน</h2></div></div>
+<div class="panel table-wrap">
+<table class="table"><thead><tr><th>วัน</th><th>เข้าประตู</th><th>ถึงบทที่ 1</th></tr></thead><tbody id="daily"></tbody></table>
+</div>
+</section>
+
+<aside class="note">นับด้วย Anonymous Installation ID แบบสุ่มในเครื่อง ไม่ใช่จำนวนคนจริง · แต่ละขั้นนับ “เครื่องที่ผ่าน” ไม่ใช่จำนวนครั้งที่กด คนกด Back แล้วอ่านซ้ำจึงไม่ทำให้ตัวเลขบวม · ถ้าขั้นหลังมีมากกว่าขั้นหน้า แปลว่ามีทางลัดที่ไม่ได้ตั้งใจ ไม่ใช่ข้อมูลผิด</aside>
+</div>
+</main>
+
+<script type="module" src="/assets/stat-nav.js"></script>
+<script type="module">
+import { fetchCore7JourneyStats } from '/core7/js/analytics.js';
+const $=id=>document.getElementById(id), DAY=86400000;
+const fmt=n=>Number(n||0).toLocaleString('en-US');
+const pct=n=>`${Number(n||0).toFixed(1)}%`;
+const date=d=>new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
+const metric=(label,value,sub='')=>`<article class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></article>`;
+let current=null;
+
+function setDays(days){const now=new Date();$('to').value=now.toISOString().slice(0,10);$('from').value=new Date(now-DAY*(days-1)).toISOString().slice(0,10);load();}
+document.querySelectorAll('[data-days]').forEach(b=>b.onclick=()=>setDays(Number(b.dataset.days)));
+$('refresh').onclick=load;
+$('csv').onclick=()=>{
+ if(!current)return;
+ const rows=[['section','key','users','extra'],
+  ...current.steps.map(s=>['step',s.event,s.users,s.step_rate]),
+  ...(current.byEntry||[]).map(e=>['entry',e.entry,e.users,e.finish_rate]),
+  ...(current.daily||[]).map(d=>['daily',d.day,d.started,d.reached_lesson])];
+ const csv=rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n');
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+ a.download=`core7-journey-${current.range.from}-${current.range.to}.csv`;
+ a.click();URL.revokeObjectURL(a.href);
+};
+
+async function load(){
+ $('state').hidden=false;$('state').className='loading';$('state').textContent='กำลังอ่านข้อมูล…';$('dashboard').hidden=true;
+ try{
+  current=await fetchCore7JourneyStats({from:$('from').value,to:$('to').value});
+  render(current);$('state').hidden=true;$('dashboard').hidden=false;
+ }catch(e){$('state').className='error';$('state').textContent=`อ่านข้อมูลไม่ได้: ${e.message}`}
+}
+
+function render(d){
+ $('range').textContent=`${d.range.from} → ${d.range.to} · Asia/Bangkok`;
+ $('version').textContent=`Game ${d.gameVersion||'-'} · Analytics ${d.analyticsVersion||'-'} · Updated ${date(d.generatedAt)}`;
+
+ /* ศูนย์ทุกช่องมีสองความหมาย: ยังไม่มีคนเดิน กับ ยังไม่ได้ต่อสาย
+    ต้องแยกให้ชัด ไม่งั้นจะนั่งหาสาเหตุผิดที่ */
+ $('wiring').innerHTML=d.wired?'':
+  `<div class="notice"><b>ยังไม่มีหน้าไหนส่งข้อมูลเข้ามา</b> — ตัวรับพร้อมแล้ว แต่หน้า Journey ยังไม่ได้เรียก
+   <code>reportJourneyStep()</code> เลขศูนย์ตรงนี้จึงแปลว่า “ยังไม่ได้ต่อสาย” ไม่ใช่ “ไม่มีคนเดิน”</div>`;
+
+ const t=d.totals||{};
+ $('metrics').innerHTML=[
+  metric('เข้าประตูหน้าแรก',fmt(t.started),'เครื่องที่เริ่มเส้นทาง'),
+  metric('ถึงบทที่ 1',fmt(t.reached_lesson),'ปลายทางของ First Run'),
+  metric('เดินจบเส้น',pct(t.completion_rate),'ถึงบทที่ 1 / เข้าประตู'),
+ ].join('');
+
+ const base=d.steps?.[0]?.users||0;
+ const lastIndex=(d.steps||[]).length-1;
+ $('rows').innerHTML=(d.steps||[]).map((s,i)=>{
+  const w=base?Math.max(0.6,(s.users/base)*100):0;
+  const cls=[s.event==='CORE7_ONBOARDING_COMPLETE'?'gate':'',i===lastIndex?'last':'',s.lost>0&&s.lost===d.dropoff?.lost&&s.event===d.dropoff?.event?'hole':''].filter(Boolean).join(' ');
+  return `<div class="row ${cls}"><div class="name">${s.th}<b>${s.event}</b></div>`
+   +`<div class="track"><div class="fill" style="width:${w}%">${s.users?fmt(s.users):''}</div></div>`
+   +`<div class="side"><b>${i?pct(s.step_rate):'—'}</b>${s.lost?`−${fmt(s.lost)}`:''}</div></div>`;
+ }).join('');
+
+ const w=d.dropoff;
+ $('dropoff').innerHTML=w&&w.lost>0
+  ? `<div class="alert"><b>หลุดหนักสุดที่ “${w.th}”</b> — หายไป ${fmt(w.lost)} เครื่อง ผ่านต่อแค่ ${pct(w.step_rate)}</div>`
+  : '';
+
+ $('entry').innerHTML=(d.byEntry||[]).map(e=>`<tr><td>${e.entry}</td><td>${fmt(e.users)}</td><td>${fmt(e.match_players)}</td><td>${fmt(e.finishers)}</td><td>${pct(e.finish_rate)}</td></tr>`).join('')
+  ||'<tr><td colspan="5" class="muted">ยังไม่มีข้อมูลในช่วงนี้</td></tr>';
+
+ $('daily').innerHTML=(d.daily||[]).map(r=>`<tr><td>${r.day}</td><td>${fmt(r.started)}</td><td>${fmt(r.reached_lesson)}</td></tr>`).join('')
+  ||'<tr><td colspan="3" class="muted">ยังไม่มีใครเข้าเส้นทางในช่วงนี้</td></tr>';
+}
+
+setDays(30);
+</script>
+</body>
+</html>

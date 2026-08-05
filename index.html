@@ -2,6 +2,8 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<!-- assets/track.js อ่านสองอย่างนี้แล้วยิงเอง ไม่ต้องเขียน JS เพิ่ม -->
+<meta name="mc-act-view" content="home-open">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>myClover — พื้นฐาน AI ในไม่ถึง 1 ชั่วโมง</title>
 <meta name="description" content="คลิป 44 วินาที เรื่องจริง 2 นาที เกม 1 นาที และบทเรียน AI 6 บท จบพื้นฐานในไม่ถึง 1 ชั่วโมง แล้วนำวิธีคิดไปใช้กับ AI ตัวไหนก็ได้ — ฟรี ไม่ต้องสมัคร">
@@ -502,7 +504,7 @@ h1 .title-line{display:block;white-space:nowrap}
       <p class="lead" data-i18n="lead">จบพื้นฐานในไม่ถึง 1 ชั่วโมง แล้วนำวิธีคิดไปคุย สร้าง ใช้ Source และต่อยอดงานกับ AI ตัวไหนก็ได้ทันที</p>
 
       <div class="actions">
-        <button class="btn btn-primary" id="openVideo" type="button">
+        <button class="btn btn-primary" id="openVideo" type="button" data-mc-act="home-video">
           <span class="btn-icon" aria-hidden="true">▶️</span>
           <span class="btn-copy">
             <strong data-i18n="watchTitle">ดูคลิปเปิดบ้าน</strong>
@@ -510,7 +512,7 @@ h1 .title-line{display:block;white-space:nowrap}
           </span>
         </button>
 
-        <a class="btn btn-secondary" href="hall.html">
+        <a class="btn btn-secondary" href="hall.html" data-mc-act="home-compass">
           <span class="btn-icon" aria-hidden="true">🧭</span>
           <span class="btn-copy">
             <strong data-i18n="journeyTitle">เริ่มเส้นทาง</strong>
@@ -646,5 +648,6 @@ h1 .title-line{display:block;white-space:nowrap}
   document.addEventListener("keydown",function(e){if(e.key==="Escape"&&modal.classList.contains("open"))closeModal()});
 })();
 </script>
+<script type="module" src="/assets/track.js"></script>
 </body>
 </html>

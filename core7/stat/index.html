@@ -19,7 +19,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 </head>
 <body>
 <main class="shell">
-<header class="top"><div><p class="eyebrow">CORE7 · DEVELOPMENT LAB</p><h1>Stat v1.2</h1><p>ดูว่าเกมมีชีวิตแค่ไหน คนกลับมาเล่นหรือไม่ โหมดไหนเล่นจบจริง Balance สีและการ์ดเป็นอย่างไร โดยไม่เก็บชื่อ อีเมล หรือ IP</p></div><a class="back" href="/core7/">← กลับ CORE7</a></header>
+<header class="top"><div><p class="eyebrow">CORE7 · DEVELOPMENT LAB</p><h1>Stat v1.3</h1><p>ดูว่าเกมมีชีวิตแค่ไหน คนกลับมาเล่นหรือไม่ โหมดไหนเล่นจบจริง Balance สีและการ์ดเป็นอย่างไร โดยไม่เก็บชื่อ อีเมล หรือ IP</p></div></header>
 <section class="tools"><label>ตั้งแต่<input type="date" id="from"></label><label>ถึง<input type="date" id="to"></label><button data-days="1">วันนี้</button><button data-days="7">7 วัน</button><button data-days="30">30 วัน</button><button id="refresh" class="primary">Refresh</button><button id="csv">Export CSV</button></section>
 <div class="meta"><span id="range"></span><span id="version"></span></div>
 <div id="state" class="loading">กำลังอ่านข้อมูล…</div>
@@ -39,6 +39,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 <aside class="note">Stat ใช้เพื่อสร้างสมมติฐาน ไม่ใช่ตัดสิน Balance จาก Sample เล็กทันที · สีไม่มีค่าพลังต่างกัน ตัวเลขจึงสะท้อนพฤติกรรมและบริบทของผู้เล่นมากกว่าความเก่งของการ์ด</aside>
 </div>
 </main>
+<script type="module" src="/assets/stat-nav.js"></script>
 <script type="module">
 import { fetchCore7Stats } from '/core7/js/analytics.js';
 import { cardById, COLOR_META } from '/core7/js/cards.js';
@@ -46,7 +47,7 @@ import { TOTAL_COLLECTION_CARDS } from '/core7/js/collection-progress.js';
 import { fetchCore7Counters } from '/core7/js/analytics.js';
 const $=id=>document.getElementById(id), DAY=86400000;
 const MODE={quick:'MATCH',bo3:'DOUBLE',bo5:'SET'};
-const ORDER=['RED','GREEN','BLUE','GRAY'];
+const ORDER=['RED','GREEN','BLUE','SILVER'];
 const fmt=n=>Number(n||0).toLocaleString('en-US');
 const pct=n=>`${Number(n||0).toFixed(1)}%`;
 const date=d=>new Date(d).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Bangkok'});
@@ -94,14 +95,14 @@ function render(d){
  renderChart(d.dailyPlayers||[]);
  const u=d.cardUnlocks||{};
  $('unlockTotals').innerHTML=[metric('CARDS UNLOCKED',fmt(u.unlocks),'ใบใหม่ที่ถูกเปิด'),metric('PLAYERS',fmt(u.players),'เครื่องที่เปิดได้อย่างน้อย 1 ใบ'),metric('CARDS / PLAYER',Number(u.per_player||0).toFixed(2),`เต็มชุด ${TOTAL_COLLECTION_CARDS} ใบ`),metric('DISTINCT CARDS',`${fmt(u.distinct_cards)}/${TOTAL_COLLECTION_CARDS}`,'ใบที่เคยถูกสุ่มออกมา'),metric('SELECT UNLOCKED',fmt(u.select_unlocked_players),'เครื่องที่สะสมครบ 7 ใบ')].join('');
- $('unlockCards').innerHTML=(u.cards||[]).map(r=>{const card=cardById(r.card_id),m=COLOR_META[card?.color]||COLOR_META.GRAY;return `<article class="card"><i class="swatch" style="background:${m.hex}"></i><div><b>${card?.en||r.card_id}</b><small>${card?.th||m.nameTh} · ${fmt(r.players)} เครื่อง</small></div><strong>${fmt(r.unlocks)}</strong></article>`}).join('')||'<div class="muted">ยังไม่มีการ์ดใบใหม่ถูกเปิดในช่วงนี้</div>';
+ $('unlockCards').innerHTML=(u.cards||[]).map(r=>{const card=cardById(r.card_id),m=COLOR_META[card?.color]||COLOR_META.SILVER;return `<article class="card"><i class="swatch" style="background:${m.hex}"></i><div><b>${card?.en||r.card_id}</b><small>${card?.th||m.nameTh} · ${fmt(r.players)} เครื่อง</small></div><strong>${fmt(r.unlocks)}</strong></article>`}).join('')||'<div class="muted">ยังไม่มีการ์ดใบใหม่ถูกเปิดในช่วงนี้</div>';
  const p=d.players||{};$('players').innerHTML=[metric('ACTIVE PLAYERS',fmt(p.active)),metric('NEW',fmt(p.new)),metric('RETURNING',fmt(p.returning)),metric('MATCH PLAYERS',fmt(p.match_players)),metric('REMATCH RATE',pct(p.rematch_rate)),metric('MATCHES / PLAYER',Number(p.matches_per_player||0).toFixed(2))].join('');
  const steps=[['CORE7_VIEW','เปิด CORE7'],['HAND_VIEW','เปิด Hand Builder'],['HAND_READY','ล็อกมือ'],['MATCH_START','เริ่ม Match'],['MATCH_COMPLETE','เล่นจบ'],['REMATCH','เล่นต่อ']];$('funnel').innerHTML=steps.map(([k,l])=>`<div class="step"><b>${fmt(d.funnel?.[k]?.users)}</b><span>${l}<br>${fmt(d.funnel?.[k]?.events)} events</span></div>`).join('');
  $('bot').innerHTML=(d.bot||[]).map(r=>`<tr><td>${String(r.level).toUpperCase()}</td><td>${fmt(r.started)}</td><td>${fmt(r.completed)}</td><td>${pct(r.completion_rate)}</td><td>${fmt(r.human_wins)}</td><td>${fmt(r.bot_wins)}</td><td>${fmt(r.draws)}</td><td class="${sampleClass(r.completed)}">${pct(r.human_win_rate)} ${r.completed<20?'⚠':''}</td><td>${Number(r.avg_rounds||0).toFixed(2)}</td></tr>`).join('')||'<tr><td colspan="9" class="muted">ยังไม่มีข้อมูล</td></tr>';
  $('online').innerHTML=(d.online||[]).map(r=>`<tr><td>${MODE[r.format]||r.format}</td><td>${fmt(r.started)}</td><td>${fmt(r.completed)}</td><td>${pct(r.completion_rate)}</td><td>${Number(r.avg_rounds||0).toFixed(2)}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">ยังไม่มีข้อมูล</td></tr>';
  $('sets').innerHTML=(d.series||[]).map(r=>`<tr><td>${MODE[r.format]||r.format}</td><td>${fmt(r.started)}</td><td>${fmt(r.completed)}</td><td>${pct(r.completion_rate)}</td><td>${fmt(r.abandoned)}</td><td>${Number(r.avg_matches||0).toFixed(2)}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">ยังไม่มีข้อมูล</td></tr>';
  $('colors').innerHTML=ORDER.map(c=>{const base=d.colors?.[c]||{},dev=d.developmentColors?.[c]||{},m=COLOR_META[c];return `<article class="color" style="background:${m.hex}"><h3>${m.emoji} ${m.nameTh}</h3><strong>${fmt(base.played)}</strong><p>${pct(base.play_share)} ของการ์ดที่ถูกเล่น</p><dl><dt>Round Win</dt><dd class="${sampleClass(dev.played)}">${pct(dev.round_win_rate)} ${dev.played<20?'⚠':''}</dd><dt>Tie</dt><dd>${pct(dev.tie_rate)}</dd><dt>Final Round</dt><dd>${fmt(dev.final_plays)}</dd><dt>Extra Discard</dt><dd>${fmt(dev.discarded||base.discarded)}</dd></dl></article>`}).join('');
- const cards=(d.cardPicks?.length?d.cardPicks:d.topCards)||[];$('cards').innerHTML=cards.map(r=>{const card=cardById(r.card_id),m=COLOR_META[r.color]||COLOR_META.GRAY;const hands=r.picked_hands??0,win=r.hand_win_rate??0;return `<article class="card"><i class="swatch" style="background:${m.hex}"></i><div><b>${card?.en||r.card_id}</b><small>${card?.th||m.nameTh} · Pick ${fmt(hands)} · Played ${fmt(r.played)} · Discard ${fmt(r.discarded)}</small></div><strong class="${sampleClass(hands)}">${pct(win)}${hands<20?' ⚠':''}</strong></article>`}).join('')||'<div class="muted">ยังไม่มีข้อมูล Starting Hand</div>';
+ const cards=(d.cardPicks?.length?d.cardPicks:d.topCards)||[];$('cards').innerHTML=cards.map(r=>{const card=cardById(r.card_id),m=COLOR_META[r.color]||COLOR_META.SILVER;const hands=r.picked_hands??0,win=r.hand_win_rate??0;return `<article class="card"><i class="swatch" style="background:${m.hex}"></i><div><b>${card?.en||r.card_id}</b><small>${card?.th||m.nameTh} · Pick ${fmt(hands)} · Played ${fmt(r.played)} · Discard ${fmt(r.discarded)}</small></div><strong class="${sampleClass(hands)}">${pct(win)}${hands<20?' ⚠':''}</strong></article>`}).join('')||'<div class="muted">ยังไม่มีข้อมูล Starting Hand</div>';
  $('patches').innerHTML=(d.patches||[]).map(r=>`<article class="patch"><b>${r.date} · ${r.version}</b><span>${r.title}</span></article>`).join('');
  $('health').innerHTML=(d.dataHealth||[]).map(r=>`<span>${r.source}: ${fmt(r.matches)} Matches · latest ${r.latest?date(r.latest):'—'}</span>`).join('')||'<span>ยังไม่มีข้อมูล Health</span>';
 }

@@ -1,4 +1,4 @@
-const COLORS = Object.freeze(['RED', 'GREEN', 'BLUE', 'GRAY']);
+const COLORS = Object.freeze(['RED', 'GREEN', 'BLUE', 'SILVER']);
 const FORMATS = new Set(['quick', 'bo3', 'bo5']);
 const BOT_LEVELS = new Set(['easy', 'hard']);
 const WINNERS = new Set(['HUMAN', 'BOT', 'A', 'B', 'DRAW']);
@@ -7,6 +7,21 @@ const BANGKOK_OFFSET_MS = 7 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MAX_RANGE_DAYS = 366;
 const STALE_AFTER_MS = 8 * 60 * 60 * 1000;
+
+/* แยกออกมาเป็นค่าคงที่เพราะ migration GRAY → SILVER ต้องสร้างตารางนี้ใหม่
+   (CHECK ระบุชื่อสีไว้ตรง ๆ SQLite แก้ในที่เดิมไม่ได้) ทั้งสองที่ต้องใช้ DDL
+   ก้อนเดียวกัน ไม่งั้นตารางที่สร้างใหม่จะเพี้ยนจากของเดิมโดยไม่มีใครเห็น */
+export const CARD_EVENTS_TABLE_SQL = `CREATE TABLE IF NOT EXISTS c7_analytics_card_events (
+    match_id        TEXT NOT NULL,
+    card_id         TEXT NOT NULL,
+    color           TEXT NOT NULL CHECK(color IN ('RED','GREEN','BLUE','SILVER')),
+    event_type      TEXT NOT NULL CHECK(event_type IN ('PLAYED','DISCARDED')),
+    n               INTEGER NOT NULL DEFAULT 1,
+    PRIMARY KEY(match_id, card_id, color, event_type)
+  )`;
+
+export const CARD_EVENTS_INDEX_SQL = `CREATE INDEX IF NOT EXISTS idx_c7_analytics_card_events_card
+    ON c7_analytics_card_events(card_id, color, event_type)`;
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS c7_analytics_matches (
@@ -26,11 +41,11 @@ const SCHEMA = [
     played_red      INTEGER NOT NULL DEFAULT 0,
     played_green    INTEGER NOT NULL DEFAULT 0,
     played_blue     INTEGER NOT NULL DEFAULT 0,
-    played_gray     INTEGER NOT NULL DEFAULT 0,
+    played_silver     INTEGER NOT NULL DEFAULT 0,
     discarded_red   INTEGER NOT NULL DEFAULT 0,
     discarded_green INTEGER NOT NULL DEFAULT 0,
     discarded_blue  INTEGER NOT NULL DEFAULT 0,
-    discarded_gray  INTEGER NOT NULL DEFAULT 0,
+    discarded_silver  INTEGER NOT NULL DEFAULT 0,
     created_at      INTEGER NOT NULL,
     updated_at      INTEGER NOT NULL
   )`,
@@ -52,16 +67,8 @@ const SCHEMA = [
   )`,
   `CREATE INDEX IF NOT EXISTS idx_c7_analytics_series_started
     ON c7_analytics_series(started_at, format, status)`,
-  `CREATE TABLE IF NOT EXISTS c7_analytics_card_events (
-    match_id        TEXT NOT NULL,
-    card_id         TEXT NOT NULL,
-    color           TEXT NOT NULL CHECK(color IN ('RED','GREEN','BLUE','GRAY')),
-    event_type      TEXT NOT NULL CHECK(event_type IN ('PLAYED','DISCARDED')),
-    n               INTEGER NOT NULL DEFAULT 1,
-    PRIMARY KEY(match_id, card_id, color, event_type)
-  )`,
-  `CREATE INDEX IF NOT EXISTS idx_c7_analytics_card_events_card
-    ON c7_analytics_card_events(card_id, color, event_type)`,
+  CARD_EVENTS_TABLE_SQL,
+  CARD_EVENTS_INDEX_SQL,
 ];
 
 let schemaReady = false;
@@ -83,7 +90,7 @@ function safeTime(value, fallback = Date.now()) {
 }
 
 function emptyCounts() {
-  return { RED: 0, GREEN: 0, BLUE: 0, GRAY: 0 };
+  return { RED: 0, GREEN: 0, BLUE: 0, SILVER: 0 };
 }
 
 function normalizeCard(card) {
@@ -188,8 +195,8 @@ async function upsertCompletedMatch(db, {
     INSERT INTO c7_analytics_matches (
       match_id, series_id, source, bot_level, format, status, winner, result_type,
       rounds, started_at, ended_at, duration_ms, rules_version,
-      played_red, played_green, played_blue, played_gray,
-      discarded_red, discarded_green, discarded_blue, discarded_gray,
+      played_red, played_green, played_blue, played_silver,
+      discarded_red, discarded_green, discarded_blue, discarded_silver,
       created_at, updated_at
     ) VALUES (?, ?, ?, ?, ?, 'COMPLETED', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(match_id) DO UPDATE SET
@@ -208,18 +215,18 @@ async function upsertCompletedMatch(db, {
       played_red = excluded.played_red,
       played_green = excluded.played_green,
       played_blue = excluded.played_blue,
-      played_gray = excluded.played_gray,
+      played_silver = excluded.played_silver,
       discarded_red = excluded.discarded_red,
       discarded_green = excluded.discarded_green,
       discarded_blue = excluded.discarded_blue,
-      discarded_gray = excluded.discarded_gray,
+      discarded_silver = excluded.discarded_silver,
       updated_at = excluded.updated_at
   `).bind(
     matchId, seriesId, source, botLevel, normalizeFormat(format), winnerValue,
     safeText(resultType, 64) || null, summary.roundCount, start, end, end - start,
     safeText(rulesVersion, 32) || null,
-    summary.played.RED, summary.played.GREEN, summary.played.BLUE, summary.played.GRAY,
-    summary.discarded.RED, summary.discarded.GREEN, summary.discarded.BLUE, summary.discarded.GRAY,
+    summary.played.RED, summary.played.GREEN, summary.played.BLUE, summary.played.SILVER,
+    summary.discarded.RED, summary.discarded.GREEN, summary.discarded.BLUE, summary.discarded.SILVER,
     now, now,
   );
 
@@ -451,9 +458,9 @@ export async function readAnalyticsStats(db, params = {}) {
       GROUP BY s.format ORDER BY s.format`).bind(bounds.start, bounds.end).all(),
     bindRange(db.prepare(`SELECT
       SUM(played_red) AS played_red, SUM(played_green) AS played_green,
-      SUM(played_blue) AS played_blue, SUM(played_gray) AS played_gray,
+      SUM(played_blue) AS played_blue, SUM(played_silver) AS played_silver,
       SUM(discarded_red) AS discarded_red, SUM(discarded_green) AS discarded_green,
-      SUM(discarded_blue) AS discarded_blue, SUM(discarded_gray) AS discarded_gray
+      SUM(discarded_blue) AS discarded_blue, SUM(discarded_silver) AS discarded_silver
       FROM c7_analytics_matches WHERE status = 'COMPLETED' AND ${matchWhere}`)).first(),
     db.prepare(`SELECT e.card_id, e.color,
       SUM(CASE WHEN e.event_type = 'PLAYED' THEN e.n ELSE 0 END) AS played,

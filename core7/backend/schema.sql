@@ -79,8 +79,8 @@ CREATE TABLE IF NOT EXISTS c7_cards (
   slug            TEXT UNIQUE NOT NULL,
   name_en         TEXT NOT NULL,
   name_th         TEXT NOT NULL,
-  color           TEXT NOT NULL CHECK (color IN ('RED','GREEN','BLUE','GRAY')),
-  class_name      TEXT NOT NULL,            -- RED | BLUE | GREEN | GRAY
+  color           TEXT NOT NULL CHECK (color IN ('RED','GREEN','BLUE','SILVER')),
+  class_name      TEXT NOT NULL,            -- RED | BLUE | GREEN | SILVER
   card_type       TEXT NOT NULL DEFAULT 'MEANING',  -- MEANING | GENERIC | PEOPLE | EVENT
   collection_id   TEXT REFERENCES c7_collections(id),
   art_url         TEXT,
@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS c7_player_stats (
   draws          INTEGER NOT NULL DEFAULT 0,
   rounds_won     INTEGER NOT NULL DEFAULT 0,
   tiebreak_wins  INTEGER NOT NULL DEFAULT 0,
-  final_gray_losses INTEGER NOT NULL DEFAULT 0,
+  final_silver_losses INTEGER NOT NULL DEFAULT 0,
   favorite_color TEXT,
   current_streak INTEGER NOT NULL DEFAULT 0,
   best_streak    INTEGER NOT NULL DEFAULT 0,
@@ -352,14 +352,14 @@ INSERT OR IGNORE INTO c7_cards (id, slug, name_en, name_th, color, class_name, c
   ('fh-green-care','fh-green-care','Care','การดูแล','GREEN','GREEN','MEANING','first-hand',1,datetime('now'),datetime('now')),
   ('fh-green-recovery','fh-green-recovery','Recovery','การฟื้นตัว','GREEN','GREEN','MEANING','first-hand',1,datetime('now'),datetime('now')),
   ('fh-green-commitment','fh-green-commitment','Commitment','ความตั้งใจมั่น','GREEN','GREEN','MEANING','first-hand',1,datetime('now'),datetime('now')),
-  ('fh-gray-observe','fh-gray-observe','Observe','สังเกต','GRAY','GRAY','MEANING','first-hand',1,datetime('now'),datetime('now')),
-  ('fh-gray-measure','fh-gray-measure','Measure','วัดผล','GRAY','GRAY','MEANING','first-hand',1,datetime('now'),datetime('now')),
-  ('fh-gray-build','fh-gray-build','Build','สร้าง','GRAY','GRAY','MEANING','first-hand',1,datetime('now'),datetime('now')),
-  ('fh-gray-repair','fh-gray-repair','Repair','ซ่อมแซม','GRAY','GRAY','MEANING','first-hand',1,datetime('now'),datetime('now')),
-  ('fh-gray-connect','fh-gray-connect','Connect','เชื่อมต่อ','GRAY','GRAY','MEANING','first-hand',1,datetime('now'),datetime('now')),
-  ('fh-gray-adapt','fh-gray-adapt','Adapt','ปรับตัว','GRAY','GRAY','MEANING','first-hand',1,datetime('now'),datetime('now')),
-  ('fh-gray-iterate','fh-gray-iterate','Iterate','ทำซ้ำให้ดีขึ้น','GRAY','GRAY','MEANING','first-hand',1,datetime('now'),datetime('now')),
+  ('fh-silver-observe','fh-silver-observe','Observe','สังเกต','SILVER','SILVER','MEANING','first-hand',1,datetime('now'),datetime('now')),
+  ('fh-silver-measure','fh-silver-measure','Measure','วัดผล','SILVER','SILVER','MEANING','first-hand',1,datetime('now'),datetime('now')),
+  ('fh-silver-build','fh-silver-build','Build','สร้าง','SILVER','SILVER','MEANING','first-hand',1,datetime('now'),datetime('now')),
+  ('fh-silver-repair','fh-silver-repair','Repair','ซ่อมแซม','SILVER','SILVER','MEANING','first-hand',1,datetime('now'),datetime('now')),
+  ('fh-silver-connect','fh-silver-connect','Connect','เชื่อมต่อ','SILVER','SILVER','MEANING','first-hand',1,datetime('now'),datetime('now')),
+  ('fh-silver-adapt','fh-silver-adapt','Adapt','ปรับตัว','SILVER','SILVER','MEANING','first-hand',1,datetime('now'),datetime('now')),
+  ('fh-silver-iterate','fh-silver-iterate','Iterate','ทำซ้ำให้ดีขึ้น','SILVER','SILVER','MEANING','first-hand',1,datetime('now'),datetime('now')),
   ('gen-red','gen-red','Red','แดง','RED','RED','GENERIC',NULL,1,datetime('now'),datetime('now')),
   ('gen-green','gen-green','Green','เขียว','GREEN','GREEN','GENERIC',NULL,1,datetime('now'),datetime('now')),
   ('gen-blue','gen-blue','Blue','ฟ้า','BLUE','BLUE','GENERIC',NULL,1,datetime('now'),datetime('now')),
-  ('gen-gray','gen-gray','Gray','เทา','GRAY','GRAY','GENERIC',NULL,1,datetime('now'),datetime('now'));
+  ('gen-silver','gen-silver','Silver','เงิน','SILVER','SILVER','GENERIC',NULL,1,datetime('now'),datetime('now'));

@@ -6,6 +6,10 @@
    FIRST HAND collection and never count toward SELECT unlock.
    ═══════════════════════════════════════════════════════════════ */
 
+/* ต้องเป็น import แรก — โมดูลนี้แปลงคีย์ GRAY เก่าใน localStorage ให้เป็น
+   SILVER และต้องเสร็จก่อน ensureCollection() อ่านรายการการ์ดที่ปลดล็อกไว้
+   ไม่งั้นจะเห็น id เก่าเป็นการ์ดที่ไม่มีอยู่ แล้วโยนทิ้งหมด */
+import './migrate-silver.js';
 import { FIRST_HAND, GENERIC_CARDS, cardById } from './cards.js';
 import { reportCardUnlock } from './analytics.js';
 

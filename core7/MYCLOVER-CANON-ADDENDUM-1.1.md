@@ -55,25 +55,25 @@ supersedes_sections:
 
 ห้ามเรียก Locked-Hand BO5 ว่า Standard Format อีก เพราะ CORE7 เองคือ Standard Rule และ CORE7BO5 คือ Competitive Rule
 
-## 4. RGBG order
+## 4. RGBS order
 
 ลำดับจำของระบบเปลี่ยนเป็น:
 
 1. 🔴 **RED — BODY**
 2. 🟢 **GREEN — SOUL**
 3. 🔵 **BLUE — MIND**
-4. ⚙️ **GRAY — CRAFT**
+4. ⚙️ **SILVER — CRAFT**
 
 Canonical shorthand:
 
-> **RGBG — Red, Green, Blue, Gray**
+> **RGBS — Red, Green, Blue, Silver**
 
 > **Body · Soul · Mind · Craft**
 
 เหตุผล:
 
 - Red → Green → Blue เรียงตามวงจรการชนะ
-- Gray วางท้ายในฐานะ Block และ Fourth Color
+- Silver วางท้ายในฐานะ Block และ Fourth Color
 - Body → Soul → Mind → Craft เป็น Mnemonic ของระบบ ไม่ใช่ข้ออ้างว่ามนุษย์ทุกคนต้องมีโครงสร้างตามลำดับนี้
 
 Victory cycle ไม่เปลี่ยน:
@@ -81,7 +81,7 @@ Victory cycle ไม่เปลี่ยน:
 - Red beats Green
 - Green beats Blue
 - Blue beats Red
-- Gray blocks and beats no normal color
+- Silver blocks and beats no normal color
 
 ## 5. FIRST HAND display order
 
@@ -90,7 +90,7 @@ Victory cycle ไม่เปลี่ยน:
 1. RED · BODY
 2. GREEN · SOUL
 3. BLUE · MIND
-4. GRAY · CRAFT
+4. SILVER · CRAFT
 
 การเปลี่ยนลำดับ Display ไม่เปลี่ยน Card ID, Color Rule หรือ Compatibility
 
@@ -101,7 +101,7 @@ Victory cycle ไม่เปลี่ยน:
 3. Try Now / Free Online
 4. CORE7 คืออะไร
 5. เกมถูกค้นพบด้วยการถอดออก
-6. สามสีและ Gray ที่ไม่มีอะไร
+6. สามสีและ Silver ที่ไม่มีอะไร
 7. CORE7 / Quick Play / CORE7BO5
 8. **0% RNG · 100% DECISIONS**
 9. เจ็ดคำและ Shared Memory
@@ -121,7 +121,7 @@ Victory cycle ไม่เปลี่ยน:
 Visual beats ที่ต้องมี:
 
 1. Chosen Luck — มือสองคนกับเจ็ดคำ
-2. Removing Rules — Prototype จากข้อมูลมากไปสู่สามสีและ Gray ว่าง
+2. Removing Rules — Prototype จากข้อมูลมากไปสู่สามสีและ Silver ว่าง
 3. One-Box Ritual — เลือก 7 แล้วยื่น 21
 4. First Meeting — คนต่างภาษาเล่นได้ก่อนคุยกัน
 5. CORE7BO5 Memory — มือเดิม แต่ประวัติร่วมสะสม
@@ -153,13 +153,13 @@ Kickstarter flip demonstration ต้องใช้:
 
 ```yaml
 protocol:
-  mnemonic_order: [red, green, blue, gray]
+  mnemonic_order: [red, green, blue, silver]
   semantic_order: [BODY, SOUL, MIND, CRAFT]
   colors:
     red: {root: BODY, beats: green}
     green: {root: SOUL, beats: blue}
     blue: {root: MIND, beats: red}
-    gray: {root: CRAFT, normal_role: block, beats: null}
+    silver: {root: CRAFT, normal_role: block, beats: null}
 
 campaign:
   primary_lockup: "0% RNG · 100% DECISIONS"

@@ -4,7 +4,6 @@
 
    กติกาฉบับล็อก:
    🔴 RED  > 🟢 GREEN > 🔵 BLUE > 🔴 RED   ⚙️ SILVER = เสมอทุกสี
-   (คีย์ในข้อมูลยังเป็น GRAY เพราะถูกบันทึกลงฐานข้อมูลไปแล้ว)
    ผู้ชนะ Round เสีย 1 ใบ (ใบที่ลง) — ผู้แพ้เสีย 2 ใบ (ใบที่ลง + ทิ้งเพิ่ม 1)
    เสมอ: เสียคนละ 1 ใบ ไม่มี Round Win
 
@@ -16,7 +15,7 @@
 
 export const CORE7_RULES_VERSION = '1.1.0';
 
-export const COLORS = ['RED', 'GREEN', 'BLUE', 'GRAY'];
+export const COLORS = ['RED', 'GREEN', 'BLUE', 'SILVER'];
 
 /* สีที่ชนะ → สีที่แพ้ (วงจรปกติ) */
 const BEATS = { RED: 'GREEN', GREEN: 'BLUE', BLUE: 'RED' };
@@ -27,9 +26,9 @@ export const MATCH_RESULT_TYPE = {
   THREE_WINS: 'THREE_WINS',           // ชนะครบ 3 Round
   EXHAUSTION: 'EXHAUSTION',           // อีกฝ่ายไม่มีการ์ดเหลือ
   LAST_ROUND: 'TIEBREAK_LAST_ROUND',  // หมดมือพร้อมกัน — รอบสุดท้ายชี้ขาด
-  FINAL_GRAY: 'TIEBREAK_FINAL_GRAY',  // หมดมือพร้อมกัน — กฎ Final Gray
+  FINAL_SILVER: 'TIEBREAK_FINAL_SILVER',  // หมดมือพร้อมกัน — กฎ Final Silver
   HISTORY: 'TIEBREAK_HISTORY',        // หมดมือพร้อมกัน — ย้อนประวัติ
-  FEWER_GRAY: 'TIEBREAK_FEWER_GRAY',  // เสมอทุก Round — เงินเริ่มต้นน้อยกว่าชนะ
+  FEWER_SILVER: 'TIEBREAK_FEWER_SILVER',  // เสมอทุก Round — เงินเริ่มต้นน้อยกว่าชนะ
   DRAW: 'DRAW',                       // เสมอทุก Round และเงินเริ่มต้นเท่ากัน
   FORFEIT: 'FORFEIT',
   DISCONNECT: 'DISCONNECT_LOSS',
@@ -40,13 +39,13 @@ export function isValidColor(c) {
 }
 
 /* ── resolveColor(a, b) → 'A' | 'B' | 'TIE' ──
-   ผล Round ปกติจากสี 2 ใบ — GRAY เสมอกับทุกสีเสมอ */
+   ผล Round ปกติจากสี 2 ใบ — SILVER เสมอกับทุกสีเสมอ */
 export function resolveColor(a, b) {
   if (!isValidColor(a) || !isValidColor(b)) {
     throw new Error(`invalid color: ${a} vs ${b}`);
   }
   if (a === b) return ROUND_RESULT.TIE;
-  if (a === 'GRAY' || b === 'GRAY') return ROUND_RESULT.TIE;
+  if (a === 'SILVER' || b === 'SILVER') return ROUND_RESULT.TIE;
   if (BEATS[a] === b) return ROUND_RESULT.A;
   if (BEATS[b] === a) return ROUND_RESULT.B;
   /* unreachable ถ้าตาราง BEATS ครบวงจร */
@@ -89,14 +88,14 @@ export function checkHandExhaustion(handCounts) {
   return { done: false, winner: null, both: false };
 }
 
-/* ── resolveFinalGray(lastRound) ──
-   ใช้เมื่อหมดมือพร้อมกันและรอบสุดท้ายมี GRAY ปน:
-   GRAY แพ้ทุกสีที่ไม่ใช่ GRAY เฉพาะใบสุดท้ายเท่านั้น
+/* ── resolveFinalSilver(lastRound) ──
+   ใช้เมื่อหมดมือพร้อมกันและรอบสุดท้ายมี SILVER ปน:
+   SILVER แพ้ทุกสีที่ไม่ใช่ SILVER เฉพาะใบสุดท้ายเท่านั้น
    lastRound = { a: COLOR, b: COLOR } → 'A' | 'B' | null (null = ไม่เข้าเงื่อนไข) */
-export function resolveFinalGray(lastRound) {
+export function resolveFinalSilver(lastRound) {
   const { a, b } = lastRound;
-  if (a === 'GRAY' && b !== 'GRAY') return 'B';
-  if (b === 'GRAY' && a !== 'GRAY') return 'A';
+  if (a === 'SILVER' && b !== 'SILVER') return 'B';
+  if (b === 'SILVER' && a !== 'SILVER') return 'A';
   return null;
 }
 
@@ -112,10 +111,10 @@ export function resolveHistoryTiebreak(rounds) {
   return null;
 }
 
-/* เสมอทุก Round → เปิด Starting Hand และให้คนที่เริ่มด้วย GRAY น้อยกว่าชนะ */
-export function resolveFewerGray(startingGrayCounts = {}) {
-  const a = Number(startingGrayCounts.a ?? 0);
-  const b = Number(startingGrayCounts.b ?? 0);
+/* เสมอทุก Round → เปิด Starting Hand และให้คนที่เริ่มด้วย SILVER น้อยกว่าชนะ */
+export function resolveFewerSilver(startingSilverCounts = {}) {
+  const a = Number(startingSilverCounts.a ?? 0);
+  const b = Number(startingSilverCounts.b ?? 0);
   if (a < b) return 'A';
   if (b < a) return 'B';
   return null;
@@ -127,7 +126,7 @@ export function resolveFewerGray(startingGrayCounts = {}) {
      roundWins: { a, b },
      handCounts: { a, b },
      rounds: [{ a: COLOR, b: COLOR, result }],   // ประวัติทุกรอบที่จบแล้ว
-     startingGrayCounts: { a, b },               // จำนวน GRAY ในมือ 7 ใบตอนเริ่ม
+     startingSilverCounts: { a, b },               // จำนวน SILVER ในมือ 7 ใบตอนเริ่ม
    }
    → null (ยังไม่จบ) หรือ
      { winner: 'A'|'B'|null, resultType, draw: bool } */
@@ -150,18 +149,18 @@ export function resolveMatch(state) {
     return { winner: last.result, resultType: MATCH_RESULT_TYPE.LAST_ROUND, draw: false };
   }
 
-  /* 6.2 Final Gray — GRAY แพ้สีอื่นเมื่อเป็นใบสุดท้ายของทั้งคู่ */
-  const fg = resolveFinalGray(last);
-  if (fg) return { winner: fg, resultType: MATCH_RESULT_TYPE.FINAL_GRAY, draw: false };
+  /* 6.2 Final Silver — SILVER แพ้สีอื่นเมื่อเป็นใบสุดท้ายของทั้งคู่ */
+  const fg = resolveFinalSilver(last);
+  if (fg) return { winner: fg, resultType: MATCH_RESULT_TYPE.FINAL_SILVER, draw: false };
 
-  /* 6.3 รอบสุดท้ายสีเดียวกัน (รวม GRAY vs GRAY) → ย้อนประวัติ */
+  /* 6.3 รอบสุดท้ายสีเดียวกัน (รวม SILVER vs SILVER) → ย้อนประวัติ */
   const hist = resolveHistoryTiebreak(state.rounds);
   if (hist) return { winner: hist, resultType: MATCH_RESULT_TYPE.HISTORY, draw: false };
 
-  /* 6.4 เสมอทุก Round → เปิดมือ คนที่เริ่มด้วย GRAY น้อยกว่าชนะ */
-  const fewerGray = resolveFewerGray(state.startingGrayCounts);
-  if (fewerGray) {
-    return { winner: fewerGray, resultType: MATCH_RESULT_TYPE.FEWER_GRAY, draw: false };
+  /* 6.4 เสมอทุก Round → เปิดมือ คนที่เริ่มด้วย SILVER น้อยกว่าชนะ */
+  const fewerSilver = resolveFewerSilver(state.startingSilverCounts);
+  if (fewerSilver) {
+    return { winner: fewerSilver, resultType: MATCH_RESULT_TYPE.FEWER_SILVER, draw: false };
   }
 
   /* 6.5 ทุกอย่างเท่ากันจริง → DRAW (ผลจริง ไม่ใช่ Error) */

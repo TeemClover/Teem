@@ -17,7 +17,7 @@
   --c-red: 200 68 44;   --c-red-deep: 143 43 26;
   --c-green: 46 125 79; --c-green-deep: 27 82 51;
   --c-blue: 44 107 168; --c-blue-deep: 27 68 112;
-  --c-gray: 110 115 120;--c-gray-deep: 67 71 76;
+  --c-silver: 110 115 120;--c-silver-deep: 67 71 76;
   --radius: 14px;
   --shadow: 0 18px 40px -22px rgb(10 40 24 / .5);
 }
@@ -100,7 +100,7 @@ button { font: inherit; cursor: pointer; }
 .chip-red { background: rgb(var(--c-red)); }
 .chip-green { background: rgb(var(--c-green)); }
 .chip-blue { background: rgb(var(--c-blue)); }
-.chip-gray { background: rgb(var(--c-gray)); }
+.chip-silver { background: rgb(var(--c-silver)); }
 
 /* ── หน้าเกม (Match) ── */
 .match-shell {
