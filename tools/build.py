@@ -180,6 +180,12 @@ print(f'ภาพทั้งหมด {len(os.listdir(IMG))} ไฟล์  ร�
 SERIES = 'เรื่องเล่าจากโรงตีเหล็ก'
 E = html.escape
 
+# โลโก้บนหัวเว็บ — ไฟล์เดียวกับที่หน้าแรกใช้
+# style ติดมากับแท็กเพราะหน้าที่ตัวสร้างนี้ออกให้มี CSS ของตัวเองคนละชุด
+# คลาสกลางจะไปไม่ถึงทุกหน้า แต่ inline-block ขนาดเท่าบรรทัดใช้ได้ทุกที่
+MARK = ('<img src="/icons/icon-192.png" alt="" width="192" height="192" '
+        'style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> ')
+
 CSS = '''
 :root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -757,7 +763,7 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     </a>''')
 
 index_body = f'''<header class="bar"><div class="wrap">
-  <a class="home disp" href="../">🍀 my<em>clover</em></a>
+  <a class="home disp" href="../">{MARK}my<em>clover</em></a>
   <span class="ttl"><b>{SERIES}</b></span>
 </div></header>
 
@@ -1349,7 +1355,7 @@ def path_page(p):
             if p.get('note') else '')
 
     body = f'''<nav class="bar"><div class="wrap">
-  <a class="home disp" href="../../">🍀 my<em>clover</em></a>
+  <a class="home disp" href="../../">{MARK}my<em>clover</em></a>
   <span class="ttl"><b>{p['emo']} {p['th']}</b>เส้นทางของคุณในบ้านหลังนี้</span>
 </div></nav>
 
@@ -1447,7 +1453,7 @@ def paths_index():
     </a>''' for p in PATHS)
 
     body = f'''<nav class="bar"><div class="wrap">
-  <a class="home disp" href="../">🍀 my<em>clover</em></a>
+  <a class="home disp" href="../">{MARK}my<em>clover</em></a>
   <span class="ttl"><b>สายทั้งหมด</b>เลือกได้ ไม่เลือกก็ได้</span>
 </div></nav>
 
