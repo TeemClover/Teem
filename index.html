@@ -32,7 +32,7 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Mitr:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=Noto+Sans+Thai+Looped:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/readable.css">
 <!-- โหลดภาพแรกและวิดีโอพื้นหลังก่อน เพื่อให้หน้าเปิดติดเร็วที่สุด -->
 <link rel="preload" href="/img/home-opening-poster.jpg" as="image" fetchpriority="high">
@@ -102,7 +102,7 @@ button{border:0}
   display:flex;
   align-items:center;
   gap:10px;
-  font-family:"Mitr","Anuphan",system-ui;
+  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
   font-weight:800;
   font-size:18px;
   letter-spacing:-.01em;
@@ -182,7 +182,7 @@ button{border:0}
   border:1px solid rgba(255,255,255,.15);
   background:rgba(4,20,12,.18);
   color:var(--gold2);
-  font-family:"Mitr","Anuphan",system-ui;
+  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
   font-size:13px;
   font-weight:800;
   letter-spacing:.01em;
@@ -191,7 +191,7 @@ button{border:0}
 h1{
   max-width:11ch;
   margin:17px 0 13px;
-  font-family:"Mitr","Anuphan",system-ui;
+  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
   font-size:clamp(42px,5.5vw,76px);
   line-height:.98;
   letter-spacing:-.035em;
@@ -213,7 +213,7 @@ h1{
   border-radius:999px;
   background:rgba(4,20,12,.20);
   color:#fff;
-  font-family:"Mitr","Anuphan",system-ui;
+  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
   font-size:13px;
   font-weight:750;
   white-space:nowrap;
@@ -244,7 +244,7 @@ h1{
   align-items:center;
   gap:10px;
   text-align:left;
-  font-family:"Mitr","Anuphan",system-ui;
+  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
   cursor:pointer;
   transition:transform .18s,box-shadow .18s,border-color .18s,background .18s;
 }
@@ -403,6 +403,27 @@ h1{
 @media(prefers-reduced-motion:reduce){
   .btn{transition:none}
 }
+
+h1 .title-line{display:block}
+.route-arrow{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:18px;
+  color:var(--gold2);
+  font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
+  font-size:15px;
+  font-weight:800;
+  text-shadow:0 2px 12px rgba(0,0,0,.6);
+}
+@media(max-width:760px){
+  .route-arrow{font-size:14px;min-width:14px}
+}
+@media(max-width:420px){
+  .route{gap:4px}
+  .route-arrow{font-size:12px;min-width:10px}
+}
+
 </style>
 <script type="application/ld+json">
 {
@@ -435,12 +456,18 @@ h1{
     <section class="copy" aria-labelledby="homeTitle">
       <span class="eyebrow" data-i18n="eyebrow">🍀 ใครเจอเรา คนนั้นโชคดี</span>
 
-      <h1 id="homeTitle" data-i18n="title">เรียนครั้งเดียว ใช้ AI ตัวไหนก็ได้</h1>
+      <h1 id="homeTitle">
+        <span class="title-line" data-i18n="title1">เรียนครั้งเดียว</span>
+        <span class="title-line" data-i18n="title2">ใช้ AI ตัวไหนก็ได้</span>
+      </h1>
 
       <p class="route" aria-label="ระยะเวลาของเส้นทาง">
         <span data-i18n="routeVideo">🎬 44 วิ</span>
+        <i class="route-arrow" aria-hidden="true">→</i>
         <span data-i18n="routeStory">📖 2 นาที</span>
+        <i class="route-arrow" aria-hidden="true">→</i>
         <span data-i18n="routeGame">🎮 1 นาที</span>
+        <i class="route-arrow" aria-hidden="true">→</i>
         <span data-i18n="routeLessons">🧠 6 บทเรียน</span>
       </p>
 
@@ -494,7 +521,8 @@ h1{
   var TEXT={
     th:{
       eyebrow:"🍀 ใครเจอเรา คนนั้นโชคดี",
-      title:"เรียนครั้งเดียว ใช้ AI ตัวไหนก็ได้",
+      title1:"เรียนครั้งเดียว",
+      title2:"ใช้ AI ตัวไหนก็ได้",
       routeVideo:"🎬 44 วิ",
       routeStory:"📖 2 นาที",
       routeGame:"🎮 1 นาที",
@@ -509,7 +537,8 @@ h1{
     },
     en:{
       eyebrow:"🍀 Those who find us leave with something lucky",
-      title:"Learn once. Use any AI.",
+      title1:"Learn once.",
+      title2:"Use any AI.",
       routeVideo:"🎬 44 sec",
       routeStory:"📖 2 min",
       routeGame:"🎮 1 min",
