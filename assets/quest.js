@@ -200,7 +200,7 @@
   }
 
   /* ── ย้ายความคืบหน้าเก่ามาชื่อใหม่ ──
-     รองรับ Save จากโครงตอนเก่า ก่อนสรุปเรื่องใหม่เป็น 7 ตอน
+     เรื่องเดิมถูกรวมและเรียบเรียงใหม่เป็น 7 ตอน
      คนที่อ่านค้างไว้ก่อนหน้านั้นต้องไม่เสียของ — แปลงครั้งเดียวแล้วปักธงไว้ */
   var RENAMED={'ep0-my-own-machine':'ep1-everyone-gets-to-play','ep1-month-five':'ep2-the-first-item','ep2-footsteps':'ep3-the-item-that-came-back','ep3-fresh-disc':'ep4-what-traveled-without-us','ep4-deckbuilding':'ep5-from-answers-to-a-system','ep5-dream-factory':'ep6-the-starter-kit','ep6-ten-to-thousand':'ep7-a-voice-that-went-further','ep7-the-smith-who-lost':'original','ep8-the-one-from-hatyai':'original','ep9-open-the-screen':'original','ep9-5-the-guild-i-imagined':'original','ep10-the-tenth-step':'original'};
   function migrate(){

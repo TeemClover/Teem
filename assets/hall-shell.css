@@ -11,6 +11,10 @@ body.js .after-ritual{display:grid;grid-template-rows:0fr;opacity:0;transition:g
 body.js.glhf-open .after-ritual{grid-template-rows:1fr;opacity:1}
 .after-ritual>.inner{min-height:0;overflow:hidden}
 a{color:inherit;text-decoration:none}button{font:inherit;border:0}
+/* ระบบเปิดห้องทีละขั้นสั่งซ่อนด้วย attribute hidden ล้วน ๆ แต่กฎ display ที่มี
+   !important ในหน้านี้ชนะกฎของเบราว์เซอร์ได้ ห้องที่สั่งซ่อนไว้จึงโผล่มาเฉย ๆ
+   ประกาศไว้ตรงนี้ที่เดียวให้ hidden แปลว่าซ่อนจริงเสมอ */
+[hidden]{display:none!important}
 .wrap{width:min(1120px,calc(100% - 32px));margin:auto}
 .disp{font-family:"Bai Jamjuree",system-ui;letter-spacing:-.025em}
 #scrollProg{position:fixed;z-index:120;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .08s linear}
@@ -58,6 +62,34 @@ a{color:inherit;text-decoration:none}button{font:inherit;border:0}
 .bump.hit .spark{opacity:1;animation:pop .7s .45s both}
 @keyframes pop{0%{transform:scale(.3)}55%{transform:scale(1.5)}100%{transform:scale(1)}}
 .tap{display:block;margin-top:9px;color:var(--gold2);font-family:"Bai Jamjuree",system-ui;font-weight:800;font-size:13px;letter-spacing:.05em}
+
+/* ── หมัดของคนที่ยังไม่เคยชน ──
+   ตอนยังอยู่ขั้น door มันคือปุ่มเดียวในหน้าที่กดได้จริง ถ้าหาไม่เจอคือจบเห่
+   จึงขยายกล่อง ใส่วงแหวนที่เต้น และเติมลูกศรชี้ลงมาให้เห็นแต่ไกล
+   พอชนแล้วทุกอย่างหดกลับเป็นแถบปกติ เพราะมันไม่ใช่พระเอกอีกต่อไป */
+/* ตอนยังไม่ชนหมัด หน้าจอแรกต้องมีทั้งหัวเรื่องและหมัดอยู่ในนั้น
+   ไม่งั้นคนที่ไม่เลื่อนลงจะไม่เจอปุ่มเดียวที่กดได้ในหน้า */
+html[data-mc-here="door"] .hero{padding:clamp(30px,4.5vw,48px) 0 clamp(24px,3.5vw,34px)}
+html[data-mc-here="door"] .hero h1{font-size:clamp(34px,4.6vw,52px);margin:14px 0 12px}
+html[data-mc-here="door"] .compass{width:min(230px,52vw)}
+html[data-mc-here="door"] .needle{font-size:56px}
+html[data-mc-here="door"] .glhf{padding:clamp(30px,4.5vw,50px) 0}
+html[data-mc-here="door"] .glhf-grid{grid-template-columns:1fr;justify-items:center;text-align:center;gap:30px}
+html[data-mc-here="door"] .glhf p{margin-inline:auto}
+html[data-mc-here="door"] .bump{position:relative;padding:26px 34px;border-radius:26px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(190,148,66,.45)}
+html[data-mc-here="door"] .bump::before{content:"";position:absolute;inset:-6px;border-radius:32px;
+  border:2px solid rgba(190,148,66,.55);animation:bumpring 2.4s ease-out infinite;pointer-events:none}
+html[data-mc-here="door"] .bump .tap{font-size:15px}
+html[data-mc-here="door"] .bump::after{content:"👇";position:absolute;left:50%;top:-46px;translate:-50% 0;
+  font-size:26px;animation:bumpnudge 1.6s ease-in-out infinite}
+@keyframes bumpring{0%{transform:scale(.97);opacity:.85}70%{transform:scale(1.09);opacity:0}100%{opacity:0}}
+@keyframes bumpnudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+@media(prefers-reduced-motion:reduce){
+  html[data-mc-here="door"] .bump::before,
+  html[data-mc-here="door"] .bump::after{animation:none}
+  .needle{animation:none}
+}
 section{padding:clamp(58px,8vw,94px) 0}
 .eyebrow{display:block;color:#85641f;font-family:"Bai Jamjuree",system-ui;font-weight:800;font-size:12px;letter-spacing:.15em;text-transform:uppercase}
 h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-height:1.15;letter-spacing:-.035em;margin:9px 0 12px}
@@ -133,12 +165,62 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   background:linear-gradient(90deg,var(--green),var(--gold));
   transition:width .55s ease
 }
-.quest-route{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:10px;
-  margin-bottom:18px
+/* ── รางเส้นตรง ──
+   overflow-x:auto เดี่ยว ๆ ทำให้ overflow-y กลายเป็น auto ตามสเปก แล้วกล่อง
+   จะเลื่อนขึ้นลงได้ทั้งที่ไม่มีอะไรให้เลื่อน จึงต้องสั่ง hidden ตรง ๆ */
+.qrail{
+  list-style:none;
+  display:flex;
+  gap:6px;
+  margin:0 0 18px;
+  padding:0 0 2px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:thin
 }
+.qrail li{
+  flex:1 1 0;
+  min-width:96px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  padding:11px 12px;
+  border:1px solid rgba(18,40,28,.1);
+  border-radius:15px;
+  background:rgba(248,246,240,.72)
+}
+.qrail .ic{font-size:17px;line-height:1}
+.qrail b{
+  font-family:"Bai Jamjuree",system-ui;
+  font-weight:800;
+  font-size:11.5px;
+  line-height:1.32;
+  letter-spacing:-.01em
+}
+.qrail .mk{
+  margin-top:auto;
+  font-family:"Bai Jamjuree",system-ui;
+  font-weight:900;
+  font-size:11px;
+  color:var(--muted);
+  min-height:14px
+}
+.qrail li.done{border-color:rgba(27,106,66,.3);background:rgba(27,106,66,.07)}
+.qrail li.done .mk{color:var(--green)}
+.qrail li.current{
+  border-color:rgba(190,148,66,.65);
+  background:#fff;
+  box-shadow:0 0 0 3px rgba(190,148,66,.09)
+}
+.qrail li.current .mk{color:#85641f}
+/* ห้องที่ยังไม่ถึงต้องอ่านออกว่า "ยังไม่ถึง" ไม่ใช่จางจนหายไปเลย
+   คนต้องเห็นว่าข้างหน้ามีอะไรรออยู่ ถึงจะรู้ว่าคุ้มที่จะเดินต่อ */
+.qrail li.locked{opacity:.48}
+.quest-hud[data-state="secret"] .qrail li{
+  border-color:rgba(255,255,255,.12);
+  background:rgba(255,255,255,.055)
+}
+.quest-hud[data-state="secret"] .qrail .mk{color:rgba(255,255,255,.54)}
 .qnode{
   display:flex;
   align-items:center;

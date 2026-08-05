@@ -45,7 +45,7 @@ body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transp
 <body>
 <div class="tut-top">
   <b class="disp" data-en="🎓 Learn CORE7">🎓 เรียนรู้ CORE7</b>
-  <div style="display:flex;gap:10px;align-items:center"><button class="btn btn-ghost" id="lang" style="min-height:38px;padding:6px 10px">EN</button><a href="/core7/hand/?next=bot&level=easy" id="skip" data-en="Skip tutorial →">ข้าม Tutorial →</a></div>
+  <div style="display:flex;gap:10px;align-items:center"><button class="btn btn-ghost" id="lang" style="min-height:38px;padding:6px 10px">EN</button><a href="/core7/hand/?next=bot&level=easy&entry=forge" id="skip" data-en="Skip tutorial →">ข้าม Tutorial →</a></div>
 </div>
 <div class="tut-stage">
   <img class="tut-rule-visual" id="ruleVisual" src="/core7/assets/core7-rule.webp" hidden
@@ -183,7 +183,7 @@ function runStep() {
     if (step === STEPS.length - 1) {
       setTutorialCompleted();
       track('core7_tutorial_complete');
-      show.addEventListener('click', () => location.href = '/core7/hand/?next=bot&level=easy');
+      show.addEventListener('click', () => location.href = '/core7/hand/?next=bot&level=easy&entry=forge');
     }
     nextRow.append(show);
     return;

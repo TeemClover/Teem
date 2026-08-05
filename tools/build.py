@@ -36,6 +36,16 @@ EPISODES = [
      ["071.jpg", "072.jpg", "073.jpg", "074.jpg"]),
 ]
 
+# บทนำก่อน EP1 — ไม่นับเป็นตอน จำนวนตอนยังเป็น 7 เท่าเดิม
+#
+# มันคือประตูของ First Run: คนใหม่ชนหมัดที่ Hall แล้วเข็มทิศพามาที่นี่เป็นที่แรก
+# หน้านี้จึงไม่มีตัวหนังสือ ไม่มีแถบนำทาง และเลื่อนไม่ได้ — ล็อกภาพเต็มความสูงจอ
+# แตะเพื่อไปช่องถัดไป แตะช่องท้ายแล้วเข้าตอนที่ 1 เลย
+INTRO_KEY   = "00"
+INTRO_SRCS  = ["001.jpg", "002.jpg"]
+INTRO_SLUG  = "intro"
+INTRO_TITLE = "myClover — Intro"
+
 # รองรับลิงก์และ Save จากโครงเก่า ก่อนสรุปเรื่องใหม่เป็น 7 ตอน
 # คนที่อ่านค้างไว้ก่อนเปลี่ยนต้องไม่เสียความคืบหน้า และลิงก์เก่าต้องยังเปิดได้
 # ตารางนี้เลยถูกใช้ 2 ที่: ย้ายค่าใน localStorage (quest.js) และทำ _redirects
@@ -125,6 +135,31 @@ for key, num, title, slug, special, srcs in EPISODES:
     og.paste(r, ((1200 - r.width) // 2, (630 - r.height) // 2))
     og.save(f'{IMG}/{key}-og.jpg', 'JPEG', quality=86, optimize=True, progressive=True)
 
+# ── ภาพบทนำ ──
+# หน้านี้แสดงเต็มความสูงจอ ไม่ใช่เต็มความกว้าง ภาพจึงถูกอ่านที่ขนาดต่างจากช่องปกติ
+# แต่ต้นฉบับชุดเดียวกันครอบคลุมทั้งสองแบบอยู่แล้ว จึงแปลงชุดเดิมพอ
+intro_panels = []
+_intro_have = all(os.path.exists(os.path.join(SRC, f)) for f in INTRO_SRCS)
+for i, srcname in enumerate(INTRO_SRCS):
+    k = f'{INTRO_KEY}-p{i+1}'
+    if SKIP_IMG or not _intro_have:
+        w, h = Image.open(f'{IMG}/{k}.jpg').size
+        intro_panels.append({'k': k, 'w': w, 'h': h})
+        continue
+    im = Image.open(os.path.join(SRC, srcname)).convert('RGB')
+    w, h = im.size
+    intro_panels.append({'k': k, 'w': w, 'h': h})
+    im.save(f'{IMG}/{k}-1024.webp', 'WEBP', quality=85, method=6)
+    im.resize((640, round(h * 640 / w)), Image.LANCZOS)\
+      .save(f'{IMG}/{k}-640.webp', 'WEBP', quality=85, method=6)
+    im.save(f'{IMG}/{k}.jpg', 'JPEG', quality=85, optimize=True, progressive=True)
+    if i == 0:
+        og = Image.new('RGB', (1200, 630))
+        scale = max(1200 / w, 630 / h)
+        r = im.resize((round(w * scale), round(h * scale)), Image.LANCZOS)
+        og.paste(r, ((1200 - r.width) // 2, (630 - r.height) // 2))
+        og.save(f'{IMG}/{INTRO_KEY}-og.jpg', 'JPEG', quality=86, optimize=True, progressive=True)
+
 # แบนเนอร์หน้าแรก — ใช้ช่องสุดท้ายของตอนจบ
 BANNER_SRC = EPISODES[-1][5][-1]
 if not SKIP_IMG and os.path.exists(os.path.join(SRC, BANNER_SRC)):
@@ -170,12 +205,19 @@ footer a{color:rgb(var(--green));font-weight:600}
   font-size:10.5px;border-radius:6px;padding:2px 8px;letter-spacing:.04em;vertical-align:middle}
 '''
 
-def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical=''):
+def page(title, desc, ogimg, body, extra_css='', extra_js='', canonical='', act=''):
+    """โครงหน้าเว็บของ /forge/ และ /paths/ ทั้งหมด
+
+    act = ชื่อ Act ที่หน้านี้ยิงตอนเปิด (ทะเบียนอยู่ที่ assets/achievements.js)
+    ต้องออกมาจากตัวสร้างหน้า ไม่ใช่ไปเติมทีหลังในไฟล์ที่ถูกสร้าง —
+    ไม่งั้นรันไฟล์นี้อีกรอบเมื่อไหร่ ตัวเก็บสถิติของทุกหน้าก็หายไปเงียบ ๆ
+    """
+    act_meta = f'<meta name="mc-act-view" content="{act}">\n' if act else ''
     return f'''<!doctype html>
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+{act_meta}<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta property="og:type" content="article">
@@ -206,6 +248,7 @@ gtag('js',new Date());
 gtag('config','G-8LVQBD44BK',{{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false}});
 </script>
 <!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{{"token": "cd6b654477f3437ca6619742cf119aa6"}}'></script>
+<script type="module" src="/assets/track.js"></script>
 </body>
 </html>
 '''
@@ -488,39 +531,52 @@ if os.path.exists(_old):
 
 # บล็อก "อ่านจบแล้ว" — ใช้ทั้งหน้ารวมและหน้าตอน (ต่างกันแค่ path)
 def finish_block(up):
+    """บล็อก "อ่านจบแล้ว" — ใช้ทั้งหน้ารวมและหน้าตอน (ต่างกันแค่ path)
+
+    ลำดับในบล็อกนี้ = ลำดับที่เข็มทิศชี้ ไม่ใช่ลำดับที่อยากขายของ
+    Walkthrough จึงเป็นของชิ้นเด่นที่สุด เพราะมันคือขั้นถัดไปจริง ๆ
+    ส่วนตอนพิเศษกับการ์ดประจำตัวเป็นของแถมที่กลับมาหยิบเมื่อไหร่ก็ได้
+    """
     return f'''<div class="finish" data-mc-done="forge" hidden>
-    <span class="fl">⚒️ อ่านครบทุกตอนแล้ว</span>
+    <span class="fl">⚒️ อ่านครบทั้ง {len(EPISODES)} ตอนแล้ว</span>
     <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
-    <p>ตั้งแต่ “{EPISODES[0][2]}” จนถึง “{EPISODES[-1][2]}” — ครบทั้ง {len(EPISODES)} ตอน<br>
+    <p>ตั้งแต่ “{EPISODES[0][2]}” จนถึง “{EPISODES[-1][2]}”<br>
        ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
     <div class="codebox">
       <span class="lb">รหัสของคุณ</span>
       <code id="fcode">{FORGE_CODE}</code>
       <button type="button" class="cp" id="fcopy">คัดลอก</button>
     </div>
-    <p class="sm">เอาไปใส่ในหน้าทำการ์ด จะได้ตรา <b>⚒️ ช่างตีเหล็ก</b> กับกรอบไฟบนการ์ดของคุณ<br>
-       และรหัสนี้ยังใช้เปิด Walkthrough บนเครื่องใหม่ได้ด้วย</p>
-    <a class="fbtn disp" href="{up}card/">⚡ ไปทำการ์ดของคุณ</a>
+    <p class="sm">รหัสนี้ใช้กู้สิทธิ์การอ่านจบบนเครื่องอื่นได้ และใส่ในหน้าทำการ์ด
+       เพื่อรับตรา <b>⚒️ ช่างตีเหล็ก</b></p>
 
     <div class="nextup">
-      <span class="hr"><i></i>แล้วไงต่อ<i></i></span>
-      <p>เรื่องที่คุณเพิ่งอ่านจบ ไม่ได้จบที่ตัวผมคนเดียว<br>
-         วิธีคิดแบบคนเล่นเกมคือ อ่าน Quest หา Class จัด Loadout แล้วฝึกจนคนละ Build เล่นด้วยกันได้
-         — หลักนี้ย้ายไปใช้กับงานและชีวิตได้เหมือนกัน</p>
-      <p>กิลด์ของเราเลยมีไว้แบบนั้น ไม่ได้มีไว้ขายอะไรกับคุณ
-         แต่มีไว้ให้คนที่อยากโตทั้งเรื่องงานและเรื่องชีวิต มาโตไปด้วยกัน<br>
-         <b>ใครเจอเรา คนนั้นโชคดี — #glhf</b></p>
+      <span class="hr"><i></i>เข็มทิศชี้ไปทางนี้ต่อ<i></i></span>
       <a class="wtcard" href="{up}walkthrough/" data-ga="go_walkthrough">
         <span class="wtseal" aria-hidden="true">🗺️</span>
         <span class="wtbody">
-          <span class="wttag">UNLOCKED · ห้องบทสรุป</span>
-          <b class="disp">Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ</b>
-          <span class="wtsm">คำที่คนเล่นเกมใช้กันจนชิน กับคำที่คนทำธุรกิจใช้ — หลายคำมันคือคำเดียวกัน
-            หน้านี้ถอดให้ดูทีละคำ พร้อมอภิธานศัพท์ทั้งชุดของบ้านนี้</span>
-          <span class="wtmeta"><i>7 คำหลัก</i><i>26 คำในอภิธานศัพท์</i><i>อ่าน 8 นาที</i></span>
+          <span class="wttag">ปลดล็อกแล้ว · ขั้นต่อไป</span>
+          <b class="disp">Walkthrough — มัดทั้งเรื่องให้เหลือสิ่งที่ใช้ได้จริง</b>
+          <span class="wtsm">เรื่องที่คุณเพิ่งอ่านไม่ใช่เรื่องธุรกิจเก่า มันคือวิธีสร้างระบบ
+            ตั้งแต่ยุคที่ยังไม่มี AI หน้านี้ถอดให้ดูว่าวิธีคิดเดิมกับเครื่องมือวันนี้
+            เป็นเรื่องเดียวกันตรงไหน</span>
+          <span class="wtmeta"><i>อ่าน 1 นาที</i><i>ก่อนลงมือสร้างของชิ้นแรก</i></span>
         </span>
         <span class="wtgo disp">เปิดอ่าน →</span>
       </a>
+
+      <a class="wtcard bonus" href="{up}forge/original/">
+        <span class="wtseal" aria-hidden="true">🎁</span>
+        <span class="wtbody">
+          <span class="wttag">ปลดล็อกแล้ว · ตอนพิเศษ</span>
+          <b class="disp">Version แรก — ก่อนจะมาเป็นเรื่องนี้</b>
+          <span class="wtsm">ฉบับร่างแรกที่ยังไม่ถูกตัด ยังไม่ถูกเรียงใหม่ และยังยาวกว่านี้มาก
+            เก็บไว้ให้ดูว่าของที่ยังไม่เสร็จหน้าตาเป็นยังไง</span>
+        </span>
+        <span class="wtgo disp">เปิดดู →</span>
+      </a>
+
+      <p class="quietrow"><a href="{up}card/">🎴 ทำการ์ดประจำตัวเก็บตราไว้</a></p>
     </div>
   </div>'''
 
@@ -574,6 +630,16 @@ FINISH_CSS = '''
 }
 .fbtn.ghost{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255/.38)}
 .fbtn.ghost:hover{border-color:rgb(var(--gold));background:rgb(190 148 66/.14)}
+/* ของแถมต้องดูเป็นของแถม ไม่ใช่ทางแยกที่แข่งความเด่นกับขั้นถัดไป */
+.wtcard.bonus{margin-top:12px;background:rgb(255 255 255/.05);border-color:rgb(255 255 255/.18);
+  box-shadow:none}
+.wtcard.bonus:hover{border-color:rgb(255 255 255/.4);box-shadow:0 18px 38px -28px rgb(0 0 0/.8)}
+.wtcard.bonus .wtseal{background:rgb(255 255 255/.08);border-color:rgb(255 255 255/.2)}
+.wtcard.bonus .wttag{color:rgb(255 255 255/.55)}
+.wtcard.bonus .wtgo{color:rgb(255 255 255/.72)}
+.quietrow{margin-top:16px;font-size:13.5px}
+.quietrow a{color:rgb(255 255 255/.66);border-bottom:1px solid rgb(255 255 255/.24);padding-bottom:2px}
+.quietrow a:hover{color:rgb(var(--gold));border-color:rgb(var(--gold))}
 .nextup{margin-top:30px}
 .nextup .hr{display:flex;align-items:center;gap:12px;font-family:"Bai Jamjuree";font-weight:700;
   font-size:11.5px;letter-spacing:.16em;color:rgb(255 255 255/.5)}
@@ -588,6 +654,29 @@ FINISH_CSS = '''
 .prog .tx{display:inline-block;margin-top:8px;font-family:"Bai Jamjuree";font-weight:700;
   font-size:12.5px;color:rgb(255 255 255/.75)}
 .prog .tx.is-done{color:rgb(var(--gold))}
+'''
+
+# ── ปุ่มย่อ/ขยายช่องการ์ตูน ──
+# จำค่าไว้ข้ามตอน เพราะคนที่ปรับขนาดจนพอดีตาแล้วต้องไม่โดนรีเซ็ตทุกครั้งที่เปิดตอนใหม่
+ZOOM_JS = '''
+(function(){
+  var strip=document.querySelector('.strip');
+  var dn=document.getElementById('zoomOut'), up=document.getElementById('zoomIn'),
+      out=document.getElementById('zoomLv');
+  if(!strip||!dn||!up||!out) return;
+  var W=[540,700,880,1080], KEY='mc_panel_w', MAX=W[W.length-1];
+  function load(){ try{ return parseInt(localStorage.getItem(KEY),10); }catch(e){ return NaN; } }
+  var i=W.indexOf(load()); if(i<0) i=W.length-1;
+  function paint(){
+    strip.style.setProperty('--pw',W[i]+'px');
+    out.textContent=Math.round(W[i]/MAX*100)+'%';
+    dn.disabled=i===0; up.disabled=i===W.length-1;
+    try{ localStorage.setItem(KEY,String(W[i])); }catch(e){}
+  }
+  dn.addEventListener('click',function(){ if(i>0){ i--; paint(); } });
+  up.addEventListener('click',function(){ if(i<W.length-1){ i++; paint(); } });
+  paint();
+})();
 '''
 
 COPY_JS = '''
@@ -641,6 +730,12 @@ INDEX_CSS = '''
 .rst{background:none;border:0;color:rgb(var(--muted));font-size:12.5px;text-decoration:underline;
   cursor:pointer;padding:10px;min-height:44px}
 .rst:hover{color:rgb(var(--green))}
+/* บทนำไม่อยู่ในตารางเลือกตอน เพราะมันไม่ใช่ตอน — เป็นประตูที่เดินผ่านไปแล้ว
+   เหลือไว้เป็นปุ่มเล็กสำหรับคนที่อยากกลับไปดูอีกรอบ */
+.introbtn{display:inline-flex;align-items:center;gap:7px;margin-top:18px;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(255 255 255/.72);
+  border:1px solid rgb(255 255 255/.26);border-radius:999px;padding:0 15px;min-height:40px;transition:.16s}
+.introbtn:hover{border-color:rgb(var(--gold));color:rgb(var(--gold));background:rgb(190 148 66/.1)}
 ''' + FINISH_CSS
 
 cards = []
@@ -678,6 +773,7 @@ index_body = f'''<header class="bar"><div class="wrap">
     <div class="track"><i data-mc-bar="forge"></i></div>
     <span class="tx" data-mc-progress="forge" hidden></span>
   </div>
+  <a class="introbtn" href="{INTRO_SLUG}/">🌱 เปิด Intro อีกครั้ง</a>
 </div></section>
 
 <main class="wrap">
@@ -705,19 +801,39 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 });
 </script>\n''',
-    canonical=f'<link rel="canonical" href="{SITE}/forge/">\n'))
+    canonical=f'<link rel="canonical" href="{SITE}/forge/">\n', act='forge-open'))
 
 # ── หน้าอ่านแต่ละตอน ──
 READ_CSS = '''
-.strip{background:rgb(var(--deep));font-size:0;line-height:0}
+.strip{background:rgb(var(--deep));font-size:0;line-height:0;--pw:1080px}
 .strip picture{display:block}
 .strip img{width:100%;height:auto;margin:0 auto;display:block}
 /* ช่องต่อกันสนิท ไม่มีรอยต่อ · scroll-margin กันช่องโดนแถบบนบังตอนกระโดด
-   ตรึงกว้างสุดที่ 820px เพื่อให้เห็นหนึ่งช่องได้ครบขึ้นบนจอคอม
-   ไฟล์ต้นฉบับยังคง 1024px เพื่อรักษาความคมชัดบนจอความละเอียดสูง */
-.panel{display:block;cursor:pointer;scroll-margin-top:56px;max-width:820px;margin:0 auto;
+   เพดานอยู่ที่ 1080px เสมอ ต่อให้จอกว้างแค่ไหน — ช่องการ์ตูนที่กว้างกว่านั้น
+   ต้องกวาดตาทั้งหัวทั้งท้าย อ่านช้าลงโดยไม่ได้อะไรเพิ่ม
+   --pw คือความกว้างที่ผู้อ่านปรับเองได้ผ่านปุ่มย่อ/ขยาย */
+.panel{display:block;cursor:pointer;scroll-margin-top:56px;margin:0 auto;
+  max-width:min(100%,var(--pw));
   -webkit-tap-highlight-color:rgb(190 148 66/.18)}
 .tapnext{display:block;cursor:pointer;-webkit-tap-highlight-color:rgb(190 148 66/.18)}
+/* ปุ่มย่อ/ขยายอยู่บนแถบบนที่ติดหนึบ จะได้กดได้ตลอดโดยไม่ต้องเลื่อนกลับขึ้นไป */
+.zoom{display:flex;align-items:center;gap:2px;margin-left:auto}
+.zoom button{width:38px;height:38px;display:grid;place-items:center;background:rgb(255 255 255/.08);
+  border:1px solid rgb(255 255 255/.18);color:#fff;border-radius:10px;cursor:pointer;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:17px;line-height:1;padding:0;transition:.16s}
+.zoom button:first-child{border-radius:10px 0 0 10px}
+.zoom button:last-child{border-radius:0 10px 10px 0}
+.zoom button:hover:not(:disabled){background:rgb(190 148 66/.3);border-color:rgb(var(--gold))}
+.zoom button:disabled{opacity:.32;cursor:default}
+.zoom .lv{min-width:44px;text-align:center;font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;
+  color:rgb(255 255 255/.62);border-block:1px solid rgb(255 255 255/.18);
+  height:38px;display:grid;place-items:center;background:rgb(255 255 255/.04)}
+/* มือถือแนวตั้งพอดีความกว้างเสมอ ไม่ให้ปรับ — ขยายเกินจอแล้วต้องเลื่อนซ้ายขวา
+   อ่านการ์ตูนแบบนั้นไม่ไหว ตะแคงเครื่องเมื่อไหร่ปุ่มค่อยกลับมา */
+@media (max-width:720px) and (orientation:portrait){
+  .strip{--pw:100%}
+  .zoom{display:none}
+}
 .nav{padding:22px 0 8px}
 .row{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
 .nb{flex:1 1 auto;min-width:132px;min-height:52px;display:flex;align-items:center;justify-content:center;gap:8px;
@@ -809,6 +925,11 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     body = f'''<header class="bar"><div class="wrap">
   <a class="home disp" href="../">← ทุกตอน</a>
   <span class="ttl">ตอนที่ {num}<b>{E(title)}</b></span>
+  <div class="zoom" role="group" aria-label="ขนาดช่องการ์ตูน">
+    <button type="button" id="zoomOut" aria-label="ย่อช่องการ์ตูน">−</button>
+    <span class="lv" id="zoomLv" role="status" aria-live="polite">100%</span>
+    <button type="button" id="zoomIn" aria-label="ขยายช่องการ์ตูน">+</button>
+  </div>
 </div></header>
 
 <div class="wrap epttl">
@@ -845,16 +966,95 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight') go=document.querySelector('[data-next]');
   if(go){ e.preventDefault(); location.href=go.getAttribute('href'); }
 });
-''' + COPY_JS + '</script>\n'
+''' + ZOOM_JS + COPY_JS + '</script>\n'
     # การนับว่าอ่านจบตอนนี้ quest.js จัดการเองจาก <meta name="mc-item">
     open(f'{d}/index.html', 'w', encoding='utf-8').write(page(
         f'ตอนที่ {num}: {title} — {SERIES} | myclover',
         f'{SERIES} ตอนที่ {num} — {title} · อ่านฟรี ไม่ต้องสมัคร',
         f'{SITE}/forge/img/{key}-og.jpg', body, READ_CSS, js,
         canonical=(f'<link rel="canonical" href="{SITE}/forge/{slug}/">\n'
-                   f'<meta name="mc-item" content="forge:{slug}">\n')))
+                   f'<meta name="mc-item" content="forge:{slug}">\n'), act='forge-ep-open'))
 
-print(f'สร้างหน้าเว็บ {len(EPISODES)+1} หน้า')
+# ── บทนำ /forge/intro/ ──
+#
+# ต่างจากหน้าตอนทุกอย่างโดยตั้งใจ: ไม่มีแถบบน ไม่มีตัวหนังสือ เลื่อนไม่ได้
+# และล็อกภาพไว้ที่ความสูงจอ เพราะนี่คือหน้าที่คนใหม่เห็นเป็นหน้าที่สองของชีวิต
+# ต่อจากชนหมัด — อะไรที่ไม่ใช่ภาพคือสิ่งที่ดึงสายตาออกจากเรื่อง
+#
+# การสลับช่องใช้ :target ล้วน ไม่พึ่ง JS เลย ปุ่มย้อนกลับของเบราว์เซอร์
+# จึงพากลับช่องแรกได้เองโดยไม่ต้องเขียนอะไรเพิ่ม
+INTRO_CSS = '''
+html,body{height:100%;overflow:hidden;overscroll-behavior:none;background:rgb(var(--deep))}
+.intro{position:fixed;inset:0;background:rgb(var(--deep))}
+.ip{position:absolute;inset:0;display:grid;place-items:center;cursor:pointer;
+  -webkit-tap-highlight-color:rgb(190 148 66/.18);transition:opacity .28s ease}
+.ip img{max-height:100svh;max-width:100vw;width:auto;height:auto;object-fit:contain}
+#p2{opacity:0;pointer-events:none}
+#p2:target{opacity:1;pointer-events:auto;z-index:2}
+#p2:target + #p1{opacity:0;pointer-events:none}
+.dots{position:fixed;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));z-index:3;
+  display:flex;gap:7px;justify-content:center;pointer-events:none}
+.dots i{width:7px;height:7px;border-radius:50%;background:rgb(255 255 255/.28);transition:background .28s}
+.dots i:first-child{background:rgb(190 148 66/.95)}
+#p2:target ~ .dots i:first-child{background:rgb(255 255 255/.28)}
+#p2:target ~ .dots i:last-child{background:rgb(190 148 66/.95)}
+.skip{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip:focus{position:fixed;top:12px;left:12px;width:auto;height:auto;clip:auto;z-index:9;
+  background:rgb(var(--gold));color:rgb(var(--deep));border-radius:10px;padding:10px 16px;
+  font-family:"Bai Jamjuree";font-weight:700;font-size:14px}
+'''
+
+_first_ep = EPISODES[0]
+_ipics = []
+for _i, _pn in enumerate(intro_panels):
+    _k, _w, _h = _pn['k'], _pn['w'], _pn['h']
+    _ipics.append(
+        f'<picture>\n'
+        f'      <source type="image/webp" media="(max-width:640px)" srcset="../img/{_k}-640.webp">\n'
+        f'      <source type="image/webp" srcset="../img/{_k}-1024.webp">\n'
+        f'      <img src="../img/{_k}.jpg" width="{_w}" height="{_h}"\n'
+        f'           loading="{"eager" if _i == 0 else "lazy"}"'
+        f'{" fetchpriority=" + chr(34) + "high" + chr(34) if _i == 0 else ""}'
+        f' decoding="async" alt="{INTRO_TITLE} — ช่องที่ {_i+1}">\n'
+        f'    </picture>')
+
+intro_body = f'''<a class="skip" href="../{_first_ep[3]}/">ข้ามบทนำ ไปตอนที่ 1</a>
+<main class="intro">
+  <a class="ip" id="p2" href="../{_first_ep[3]}/" data-next
+     aria-label="เข้าตอนที่ 1 — {E(_first_ep[2])}">{_ipics[1]}</a>
+  <a class="ip" id="p1" href="#p2" data-first aria-label="ไปช่องถัดไป">{_ipics[0]}</a>
+  <span class="dots" aria-hidden="true"><i></i><i></i></span>
+</main>'''
+
+intro_js = '''<script>
+(function(){
+  /* เข็มทิศต้องรู้ว่าคนนี้ผ่านบทนำมาแล้ว ไม่งั้นกลับมาหน้า Hall
+     แล้วมันจะชี้กลับมาที่นี่อีกรอบไม่รู้จบ */
+  try{ localStorage.setItem('mc_intro_seen','1'); }catch(e){}
+  /* คีย์บอร์ดต้องเดินได้เท่ากับนิ้ว — Space/ลูกศรขวา = ช่องถัดไป */
+  document.addEventListener('keydown',function(e){
+    if(e.altKey||e.ctrlKey||e.metaKey) return;
+    if(e.key!=='ArrowRight'&&e.key!==' '&&e.key!=='Enter') return;
+    if(document.activeElement&&document.activeElement.tagName==='A') return;
+    e.preventDefault();
+    var atFirst=location.hash!=='#p2';
+    var go=document.querySelector(atFirst?'[data-first]':'[data-next]');
+    if(!go) return;
+    if(atFirst) location.hash='#p2'; else location.href=go.getAttribute('href');
+  });
+})();
+</script>
+'''
+
+_intro_dir = os.path.join(DEST, INTRO_SLUG)
+os.makedirs(_intro_dir, exist_ok=True)
+open(f'{_intro_dir}/index.html', 'w', encoding='utf-8').write(page(
+    f'{INTRO_TITLE} — บทนำก่อน {SERIES}',
+    f'บทนำสั้น ๆ ก่อนเข้า {SERIES} — 2 ช่อง อ่านจบในไม่กี่วินาที',
+    f'{SITE}/forge/img/{INTRO_KEY}-og.jpg', intro_body, INTRO_CSS, intro_js,
+    canonical=f'<link rel="canonical" href="{SITE}/forge/{INTRO_SLUG}/">\n', act='forge-intro-open'))
+
+print(f'สร้างหน้าเว็บ {len(EPISODES)+2} หน้า')
 
 
 # ─────────────────────────────────────────────────────────────
@@ -1305,7 +1505,7 @@ def paths_index():
                 'สี่สายของบ้าน myclover — สายคิด สายกิน สายคลีน สายประดิษฐ์ '
                 'เลือกแล้วเราจะหยิบของที่ตรงกับคุณมาวางให้ พร้อมลำดับที่แนะนำ',
                 f'{SITE}/img/og-home.jpg', body, css, '',
-                canonical=f'<link rel="canonical" href="{SITE}/paths/">\n')
+                canonical=f'<link rel="canonical" href="{SITE}/paths/">\n', act='paths-open')
 
 
 PDEST = os.path.join(ROOT, 'paths')

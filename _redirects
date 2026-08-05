@@ -14,6 +14,13 @@
 /forge/ep9-5-the-guild-i-imagined/            /forge/original/  301
 /forge/ep10-the-tenth-step/                   /forge/original/  301
 
+# ตอน 8–12 จากโครงเก่า เก็บไว้ใน Version แรก ไม่ให้ชนกับชุดใหม่ 7 ตอน
+/forge/ep8-the-blacksmith-backstage/*          /forge/original/  301
+/forge/ep9-tools-must-reach-people/*           /forge/original/  301
+/forge/ep10-this-time-i-left-the-screen-on/*   /forge/original/  301
+/forge/ep11-everyone-has-their-own-class/*     /forge/original/  301
+/forge/ep12-a-new-game-a-new-league/*          /forge/original/  301
+
 # หน้าลงทะเบียนถูกรวมเข้าหน้าทำการ์ดแล้ว
 /register/*                              /card/#register  301
 
@@ -24,10 +31,3 @@
 /core7/result/*                          /core7/result/index.html  200
 /core7/cards/*                           /core7/cards/index.html  200
 /core7/profile/*                         /core7/profile/index.html  200
-
-# ตอน 8–12 จากโครงเก่า เก็บไว้ใน Version แรก ไม่ให้ชนกับชุดใหม่ 7 ตอน
-/forge/ep8-the-blacksmith-backstage/*       /forge/original/  301
-/forge/ep9-tools-must-reach-people/*        /forge/original/  301
-/forge/ep10-this-time-i-left-the-screen-on/* /forge/original/  301
-/forge/ep11-everyone-has-their-own-class/*  /forge/original/  301
-/forge/ep12-a-new-game-a-new-league/*       /forge/original/  301

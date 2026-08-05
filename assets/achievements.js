@@ -53,7 +53,10 @@ export const ACTS = Object.freeze([
   { id: 'hall-room', stage: 'world', emoji: '🚪', th: 'กดเข้าห้องใน Hall', en: 'Opened a room', achievement: false },
   { id: 'hall-line', stage: 'world', emoji: '💬', th: 'กดแอด LINE', en: 'Tapped Add LINE', achievement: true },
 
-  /* ── การ์ตูน ── */
+  /* ── การ์ตูน ──
+     บทนำเป็นห้องแรกที่เข็มทิศพาคนใหม่ไป ระยะห่างระหว่าง hall-bump กับ
+     forge-intro-open คือจำนวนคนที่ชนหมัดแล้วแต่ไม่เดินตามเข็มทิศต่อ */
+  { id: 'forge-intro-open', stage: 'forge', emoji: '🌱', th: 'เปิดบทนำ Intro', en: 'Opened the Intro', achievement: false },
   { id: 'forge-open', stage: 'forge', emoji: '📚', th: 'เปิดหน้ารวมการ์ตูน', en: 'Opened the Forge index', achievement: false },
   { id: 'forge-ep-open', stage: 'forge', emoji: '📖', th: 'เปิดอ่านตอน', en: 'Opened an episode', achievement: false },
 
