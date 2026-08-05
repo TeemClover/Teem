@@ -189,32 +189,35 @@ button{border:0}
   text-shadow:0 2px 12px rgba(0,0,0,.55);
 }
 h1{
-  max-width:11ch;
+  width:max-content;
+  max-width:100%;
   margin:17px 0 13px;
   font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
-  font-size:clamp(42px,5.5vw,76px);
-  line-height:.98;
+  font-size:clamp(38px,4.7vw,66px);
+  line-height:1.02;
   letter-spacing:-.035em;
-  text-wrap:balance;
   text-shadow:0 3px 22px rgba(0,0,0,.62);
 }
 .route{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
+  display:grid;
+  grid-template-columns:auto 18px auto 18px auto 18px auto;
+  align-items:center;
+  justify-content:start;
+  gap:5px;
   margin:0;
 }
 .route span{
   display:inline-flex;
   align-items:center;
-  min-height:34px;
-  padding:6px 10px;
+  justify-content:center;
+  min-height:32px;
+  padding:5px 9px;
   border:1px solid rgba(255,255,255,.13);
   border-radius:999px;
   background:rgba(4,20,12,.20);
   color:#fff;
   font-family:"Noto Sans Thai Looped","Anuphan",system-ui!important;
-  font-size:13px;
+  font-size:12.5px;
   font-weight:750;
   white-space:nowrap;
   text-shadow:0 2px 12px rgba(0,0,0,.55);
@@ -363,13 +366,27 @@ h1{
   }
   .eyebrow{font-size:12.5px}
   h1{
-    max-width:12ch;
+    width:max-content;
+    max-width:100%;
     margin:13px auto 11px;
-    font-size:clamp(36px,10.5vw,50px);
-    line-height:1.01;
+    font-size:clamp(32px,8.8vw,42px);
+    line-height:1.04;
   }
-  .route{justify-content:center;gap:6px}
-  .route span{font-size:12px;padding:5px 9px}
+  .route{
+    grid-template-columns:auto 10px auto 10px auto 10px auto;
+    justify-content:center;
+    gap:3px;
+    width:100%;
+  }
+  .route span{
+    min-height:30px;
+    padding:4px 7px;
+    font-size:11px;
+  }
+  .route-arrow{
+    min-width:10px;
+    font-size:12px;
+  }
   .lead{
     max-width:34ch;
     margin:12px auto 0;
@@ -404,7 +421,7 @@ h1{
   .btn{transition:none}
 }
 
-h1 .title-line{display:block}
+h1 .title-line{display:block;white-space:nowrap}
 .route-arrow{
   display:inline-flex;
   align-items:center;
@@ -420,8 +437,19 @@ h1 .title-line{display:block}
   .route-arrow{font-size:14px;min-width:14px}
 }
 @media(max-width:420px){
-  .route{gap:4px}
-  .route-arrow{font-size:12px;min-width:10px}
+  .route{
+    grid-template-columns:auto 8px auto 8px auto 8px auto;
+    gap:2px;
+  }
+  .route span{
+    min-height:28px;
+    padding:4px 6px;
+    font-size:10.5px;
+  }
+  .route-arrow{
+    min-width:8px;
+    font-size:11px;
+  }
 }
 
 </style>
@@ -468,7 +496,7 @@ h1 .title-line{display:block}
         <i class="route-arrow" aria-hidden="true">→</i>
         <span data-i18n="routeGame">🎮 1 นาที</span>
         <i class="route-arrow" aria-hidden="true">→</i>
-        <span data-i18n="routeLessons">🧠 6 บทเรียน</span>
+        <span data-i18n="routeLessons">🧠 6 บท</span>
       </p>
 
       <p class="lead" data-i18n="lead">จบพื้นฐานในไม่ถึง 1 ชั่วโมง แล้วนำวิธีคิดไปคุย สร้าง ใช้ Source และต่อยอดงานกับ AI ตัวไหนก็ได้ทันที</p>
@@ -526,7 +554,7 @@ h1 .title-line{display:block}
       routeVideo:"🎬 44 วิ",
       routeStory:"📖 2 นาที",
       routeGame:"🎮 1 นาที",
-      routeLessons:"🧠 6 บทเรียน",
+      routeLessons:"🧠 6 บท",
       lead:"จบพื้นฐานในไม่ถึง 1 ชั่วโมง แล้วนำวิธีคิดไปคุย สร้าง ใช้ Source และต่อยอดงานกับ AI ตัวไหนก็ได้ทันที",
       watchTitle:"ดูคลิปเปิดบ้าน",
       watchSub:"ใช้เวลา 44 วินาที",
