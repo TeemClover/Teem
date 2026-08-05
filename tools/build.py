@@ -763,7 +763,7 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     </a>''')
 
 index_body = f'''<header class="bar"><div class="wrap">
-  <a class="home disp" href="../">{MARK}my<em>clover</em></a>
+  <a class="home disp" href="/hall.html#quest">{MARK}my<em>clover</em></a>
   <span class="ttl"><b>{SERIES}</b></span>
 </div></header>
 
@@ -1355,7 +1355,7 @@ def path_page(p):
             if p.get('note') else '')
 
     body = f'''<nav class="bar"><div class="wrap">
-  <a class="home disp" href="../../">{MARK}my<em>clover</em></a>
+  <a class="home disp" href="/hall.html#quest">{MARK}my<em>clover</em></a>
   <span class="ttl"><b>{p['emo']} {p['th']}</b>เส้นทางของคุณในบ้านหลังนี้</span>
 </div></nav>
 
@@ -1453,7 +1453,7 @@ def paths_index():
     </a>''' for p in PATHS)
 
     body = f'''<nav class="bar"><div class="wrap">
-  <a class="home disp" href="../">{MARK}my<em>clover</em></a>
+  <a class="home disp" href="/hall.html#quest">{MARK}my<em>clover</em></a>
   <span class="ttl"><b>สายทั้งหมด</b>เลือกได้ ไม่เลือกก็ได้</span>
 </div></nav>
 

@@ -32,7 +32,10 @@ export function renderShell({ active = '', minimal = false } = {}) {
      <span data-c7-version> ไว้ จะได้ไม่มีเลขค้างคนละตัวเหมือนที่ผ่านมา */
   for (const node of $$('[data-c7-version]')) node.textContent = `v${CORE7_GAME_VERSION}`;
   const onCore7Home = location.pathname === '/core7/' || location.pathname === '/core7/index.html';
-  const logoHref = onCore7Home ? '/' : '/core7/';
+  /* ในเกมโลโก้พากลับหน้าแรกของเกม แต่พอยืนอยู่หน้าแรกของเกมแล้ว การกดอีกทีคือ
+     "ออกจากเกม" ซึ่งปลายทางคือเข็มทิศของบ้าน ไม่ใช่ประตูหน้าบ้าน —
+     เข็มทิศรู้ว่าคนนี้ค้างอยู่ตรงไหน ส่วนประตูเริ่มนับหนึ่งใหม่ทุกครั้ง */
+  const logoHref = onCore7Home ? '/hall.html#quest' : '/core7/';
   const mobileNav = window.matchMedia?.('(max-width: 720px)').matches;
   const playShortcut = mobileNav
     ? ''
@@ -41,7 +44,7 @@ export function renderShell({ active = '', minimal = false } = {}) {
   if (nav) {
     nav.innerHTML = `
       <div class="wrap bar">
-        <a class="logo" href="${logoHref}" aria-label="${onCore7Home ? 'กลับหน้าแรก myClover' : 'กลับหน้าแรก CORE7'}" data-en-attr="aria-label:${onCore7Home ? 'Back to the myClover home page' : 'Back to the CORE7 home page'}">
+        <a class="logo" href="${logoHref}" aria-label="${onCore7Home ? 'กลับไปที่เข็มทิศของบ้าน myClover' : 'กลับหน้าแรก CORE7'}" data-en-attr="aria-label:${onCore7Home ? 'Back to the myClover compass' : 'Back to the CORE7 home page'}">
           ${cloverLogo(30)}
           <span>my<em>Clover</em>&thinsp;· CORE7</span>
         </a>
