@@ -87,3 +87,30 @@ API: `GET /api/core7/journey-stats?from&to`
   แปลว่ามีทางลัดที่ไม่ได้ตั้งใจ** — เป็นเรื่องที่ต้องเห็น ไม่ใช่เรื่องที่ต้องกลบ
   ด้วยการบังคับให้กราฟลดทางเดียว
 - ไม่เก็บชื่อ อีเมล หรือ IP
+
+---
+
+## 6. Act และ Achievement
+
+คนละระบบกับ Journey Step ข้างบน — Journey Step วัด "เดินถึงขั้นไหน"
+ส่วน Act/Achievement วัด "ทำอะไรไปบ้าง"
+
+ทะเบียนอยู่ที่ `assets/achievements.js` เพิ่มของใหม่ที่นั่นที่เดียว
+
+**ยิง Act โดยไม่ต้องเขียน JS** — ใส่ใน HTML แล้ว `assets/track.js` จัดการเอง
+
+```html
+<meta name="mc-act-view" content="home-open">
+<button data-mc-act="home-video">▶ ดูคลิป</button>
+<script type="module" src="/assets/track.js"></script>
+```
+
+**ยิง Achievement จากโค้ด**
+
+```js
+import { reportAchievementUnlock } from '/core7/js/analytics.js';
+reportAchievementUnlock('forge-intro');   // กันซ้ำในตัว
+```
+
+ดูผลที่ `/core7/stat/achievements/` · API: `GET /api/core7/achievement-stats?from&to`
+

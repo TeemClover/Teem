@@ -68,6 +68,7 @@ export function clearEntry() {
 export function reportFunnelEvent(eventType, {
   path = globalThis.location?.pathname || '', mode = null, botLevel = null,
   matchId = null, rulesVersion = null, cardId = null, once = false, entry = undefined,
+  ref = null,
 } = {}) {
   const type = String(eventType || '').toUpperCase();
   if (once && alreadySent(type, matchId)) return Promise.resolve(true);
@@ -76,7 +77,7 @@ export function reportFunnelEvent(eventType, {
     eventId: randomId('e'),
     installId: getInstallId(),
     eventType: type,
-    path, mode, botLevel, matchId, cardId,
+    path, mode, botLevel, matchId, cardId, ref,
     entry: entry === undefined ? getEntry() : entry,
     gameVersion: CORE7_GAME_VERSION,
     rulesVersion,
@@ -164,6 +165,43 @@ export async function fetchCore7Stats({ from, to } = {}) {
   if (from) query.set('from', from);
   if (to) query.set('to', to);
   const response = await fetch(`${CORE7_ANALYTICS_BASE}/stats?${query}`, {
+    headers: { accept: 'application/json' },
+    cache: 'no-store',
+    credentials: 'omit',
+  });
+  const data = await response.json().catch(() => ({ ok: false, error: 'INVALID_RESPONSE' }));
+  if (!response.ok || !data.ok) throw new Error(data.error || `HTTP_${response.status}`);
+  return data;
+}
+
+/* ── การกระทำเล็ก ๆ ──
+   กดปุ่ม เปิดหน้า หยิบของ — นับ "กี่ครั้ง" จริง ๆ ไม่กันซ้ำ เพราะจำนวนครั้ง
+   คือข้อมูล คนกดวิดีโอ 3 รอบต่างจากคนกดครั้งเดียวแล้วปิด
+   (ตัวกันรัวอยู่ที่ assets/track.js ซึ่งกันแค่นิ้วลั่นในหน้าต่างสั้น ๆ) */
+export function reportAct(actId, extra = {}) {
+  const id = String(actId || '').trim();
+  if (!id) return Promise.resolve(false);
+  return reportFunnelEvent('ACT', { ...extra, ref: id }).catch(() => false);
+}
+
+/* ── Achievement ──
+   ปลดได้ครั้งเดียวต่อเครื่อง กันซ้ำที่นี่ด้วย เพราะถ้าหลุดไปสองครั้ง
+   ตัวเลข "กี่เครื่อง" กับ "กี่ครั้ง" จะไม่ตรงกันแล้วอ่านไม่ออกว่าอันไหนจริง */
+export function reportAchievementUnlock(achievementId, extra = {}) {
+  const id = String(achievementId || '').trim();
+  if (!id) return Promise.resolve(false);
+  const key = `ach:${id}`;
+  if (alreadySent(key, null)) return Promise.resolve(true);
+  markSent(key, null);
+  return reportFunnelEvent('ACHIEVEMENT_UNLOCK', { ...extra, ref: id }).catch(() => false);
+}
+
+/* Achievement & Act Stat — ของแต่ละชิ้นมีคนทำกี่ครั้ง กี่เครื่อง */
+export async function fetchCore7AchievementStats({ from, to } = {}) {
+  const query = new URLSearchParams();
+  if (from) query.set('from', from);
+  if (to) query.set('to', to);
+  const response = await fetch(`${CORE7_ANALYTICS_BASE}/achievement-stats?${query}`, {
     headers: { accept: 'application/json' },
     cache: 'no-store',
     credentials: 'omit',

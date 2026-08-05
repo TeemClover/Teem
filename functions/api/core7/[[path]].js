@@ -8,7 +8,7 @@ import {
 import {
   CORE7_ANALYTICS_VERSION, CORE7_GAME_VERSION,
   readMatchCounters, recordBotDevelopment, recordClientEvent, syncRoomDevelopment,
-  migrateSilverDatabase, readCollectionStats, readJourneyFunnel,
+  migrateSilverDatabase, readCollectionStats, readJourneyFunnel, readAchievementStats,
 } from '../../../core7/backend/analytics-v11.js';
 import { readAnalyticsDevelopmentReport } from '../../../core7/backend/analytics-v11-report.js';
 
@@ -134,6 +134,20 @@ export async function onRequest(context) {
     } catch (error) {
       console.error('CORE7 stats failed', error);
       return json({ ok: false, error: 'STATS_UNAVAILABLE' }, 500);
+    }
+  }
+
+  /* Achievement & Act — ของแต่ละชิ้นมีคนทำกี่ครั้ง กี่เครื่อง เรียงตามเส้นทาง */
+  if (method === 'GET' && parts[0] === 'achievement-stats') {
+    const url = new URL(request.url);
+    try {
+      return json(await readAchievementStats(env.DB, {
+        from: url.searchParams.get('from'),
+        to: url.searchParams.get('to'),
+      }));
+    } catch (error) {
+      console.error('CORE7 achievement stats failed', error);
+      return json({ ok: false, error: 'ACHIEVEMENT_STATS_UNAVAILABLE' }, 500);
     }
   }
 

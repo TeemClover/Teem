@@ -5,6 +5,7 @@ import {
   CARD_EVENTS_INDEX_SQL,
 } from './analytics.js';
 import { colorOf, FIRST_HAND } from '../js/cards.js';
+import { ACTS, ACHIEVEMENTS, STAGES, stageOrder } from '../../assets/achievements.js';
 
 export const CORE7_ANALYTICS_VERSION = '1.3.0';
 export const CORE7_GAME_VERSION = '0.5';
@@ -45,6 +46,9 @@ const EVENTS = new Set([
   'CARD_UNLOCK',
   /* v1.3 — เส้นทาง First Run ตั้งแต่ประตูหน้าแรกถึงบทที่ 1 */
   ...JOURNEY_STEPS.map(step => step.event),
+  /* v1.3 — การกระทำเล็ก ๆ กับ Achievement ตัวไหนถูกทำ/ปลด อยู่ที่คอลัมน์ ref
+     ใช้สองชนิดนี้แทนการเพิ่ม event type ใหม่ทุกครั้งที่มีปุ่มใหม่ */
+  'ACT', 'ACHIEVEMENT_UNLOCK',
 ]);
 const DAY_MS = 86400000;
 const BKK = 7 * 60 * 60 * 1000;
@@ -106,6 +110,10 @@ const MIGRATIONS = [
      แฟล็กนี้มีไว้แยกตัวเลขตอนอ่าน ไม่ได้ใช้กั้นใคร */
   `ALTER TABLE c7_analytics_events ADD COLUMN entry TEXT`,
   `CREATE INDEX IF NOT EXISTS idx_c7_events_entry ON c7_analytics_events(entry, event_type, occurred_at)`,
+  /* v1.3 — "อันไหน" ของ event ที่ต้องระบุตัว: act id หรือ achievement id
+     แยกจาก card_id เพราะความหมายคนละเรื่อง และ card_id ถูกใช้ไปแล้ว */
+  `ALTER TABLE c7_analytics_events ADD COLUMN ref TEXT`,
+  `CREATE INDEX IF NOT EXISTS idx_c7_events_ref ON c7_analytics_events(event_type, ref, occurred_at)`,
 ];
 
 
@@ -255,8 +263,8 @@ export async function recordClientEvent(db, payload = {}) {
   const inserted = await db.prepare(`
     INSERT OR IGNORE INTO c7_analytics_events (
       event_id, install_id, event_type, path, mode, bot_level, match_id,
-      game_version, rules_version, occurred_at, created_at, card_id, entry
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      game_version, rules_version, occurred_at, created_at, card_id, entry, ref
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).bind(
     eventId, installId, eventType,
     safeText(payload.path, 160) || null,
@@ -270,6 +278,9 @@ export async function recordClientEvent(db, payload = {}) {
     /* จำกัดชุดค่าไว้ ไม่ให้กลายเป็นถังขยะที่ใครยัดอะไรก็ได้เข้ามา */
     ENTRIES.has(String(payload.entry || '').toLowerCase())
       ? String(payload.entry).toLowerCase() : null,
+    /* ไม่เช็คกับทะเบียนตรงนี้ — id ที่ถูกเปลี่ยนชื่อทีหลังต้องไม่ทำให้ข้อมูล
+       ที่ยิงมาแล้วหายไป หน้าสถิติจะแยกโชว์ของที่ไม่รู้จักให้เห็นเองว่ามีอะไรค้าง */
+    safeId(payload.ref) || null,
   ).run();
   if (Number(inserted.meta?.changes || 0) === 0) return { ok: true, duplicate: true };
   const pageInc = ['CORE7_VIEW', 'HAND_VIEW'].includes(eventType) ? 1 : 0;
@@ -623,6 +634,128 @@ export async function readJourneyFunnel(db, params = {}) {
       r.finish_rate = rate(Number(r.finishers || 0), Number(r.match_players || 0));
       return r;
     }),
+    daily: (dailyRes.results || []).map(nums),
+  };
+}
+
+/* ── Achievement & Act Stat ──
+   เรียงตาม stage ของเส้นทางจริง ไม่ใช่เรียงตามยอด เพราะคำถามคือ "คนหล่นหาย
+   ช่วงไหน" ไม่ใช่ "อะไรดัง" เรียงตามยอดจะเห็นแค่ว่าของต้นทางเยอะเสมอ
+
+   ACT นับสองเลขแยกกัน:
+     events = กดกี่ครั้ง  ·  users = กี่เครื่อง
+   สองเลขนี้ไม่เท่ากัน และส่วนต่างคือข้อมูล — คนกดวิดีโอ 3 รอบแปลว่าดูจริง
+   คนกดครั้งเดียวแล้วหายแปลว่าเปิดมาแล้วปิด
+
+   ACHIEVEMENT ปลดได้ครั้งเดียวต่อเครื่อง สองเลขจึงต้องเท่ากันเสมอ
+   ถ้าไม่เท่าคือมีบั๊กที่ฝั่ง client ยิงซ้ำ — คืน `duplicates` ออกมาให้เห็นเลย
+
+   id ที่ไม่มีในทะเบียนไม่ถูกทิ้ง แต่ถูกแยกไปกอง `orphans` เพราะมันแปลว่ามี
+   ของที่ถูกเปลี่ยนชื่อหรือลบไปแล้วแต่ข้อมูลเก่ายังอยู่ ต้องเห็น ไม่ใช่หายเงียบ */
+export async function readAchievementStats(db, params = {}) {
+  await ensureAnalyticsV11Schema(db);
+  const b = bounds(params);
+  const window = [b.start, b.end];
+
+  const [rowsRes, reachRow, dailyRes] = await Promise.all([
+    db.prepare(`SELECT event_type, ref, COUNT(*) events,
+      COUNT(DISTINCT install_id) users,
+      MIN(occurred_at) first_at, MAX(occurred_at) last_at
+      FROM c7_analytics_events
+      WHERE event_type IN ('ACT','ACHIEVEMENT_UNLOCK')
+        AND ref IS NOT NULL AND ref <> ''
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY event_type, ref`).bind(...window).all(),
+    /* ฐานสำหรับคิด % — ทุกเครื่องที่ยิง event อะไรก็ได้เข้ามาในช่วงนี้ */
+    db.prepare(`SELECT COUNT(DISTINCT install_id) n FROM c7_analytics_events
+      WHERE occurred_at >= ? AND occurred_at < ?`).bind(...window).first(),
+    db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day,
+      COUNT(CASE WHEN event_type='ACT' THEN 1 END) acts,
+      COUNT(CASE WHEN event_type='ACHIEVEMENT_UNLOCK' THEN 1 END) unlocks,
+      COUNT(DISTINCT install_id) users
+      FROM c7_analytics_events
+      WHERE event_type IN ('ACT','ACHIEVEMENT_UNLOCK')
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY day ORDER BY day`).bind(...window).all(),
+  ]);
+
+  const reach = Number(reachRow?.n || 0);
+  const seen = new Map();
+  for (const row of rowsRes.results || []) {
+    seen.set(`${row.event_type}|${row.ref}`, nums(row));
+  }
+
+  function build(entry, kind) {
+    const row = seen.get(`${kind === 'ACT' ? 'ACT' : 'ACHIEVEMENT_UNLOCK'}|${entry.id}`) || {};
+    const users = Number(row.users || 0);
+    const events = Number(row.events || 0);
+    seen.delete(`${kind === 'ACT' ? 'ACT' : 'ACHIEVEMENT_UNLOCK'}|${entry.id}`);
+    return {
+      id: entry.id,
+      kind,
+      stage: entry.stage,
+      emoji: entry.emoji,
+      th: entry.th,
+      en: entry.en,
+      secret: !!entry.secret,
+      isAchievement: kind === 'ACHIEVEMENT' || !!entry.achievement,
+      events,
+      users,
+      /* ต่อหัวทำซ้ำกี่ครั้ง — ของ achievement ต้องเป็น 1.00 เสมอ */
+      per_user: users ? Number((events / users).toFixed(2)) : 0,
+      /* % ของเครื่องที่เข้ามาในช่วงนี้ทั้งหมด */
+      reach_rate: rate(users, reach),
+      /* ยิงเกิน 1 ครั้งต่อเครื่องทั้งที่ปลดได้ครั้งเดียว = บั๊ก */
+      duplicates: kind === 'ACHIEVEMENT' ? Math.max(0, events - users) : 0,
+      first_at: Number(row.first_at || 0) || null,
+      last_at: Number(row.last_at || 0) || null,
+    };
+  }
+
+  const items = [
+    ...ACTS.map(a => build(a, 'ACT')),
+    ...ACHIEVEMENTS.map(a => build(a, 'ACHIEVEMENT')),
+  ].sort((x, y) => stageOrder(x.stage) - stageOrder(y.stage));
+
+  /* จัดเป็นกลุ่มตาม stage ให้หน้าเว็บวาดตามลำดับเส้นทางได้เลย ไม่ต้องเรียงเอง */
+  const stages = STAGES.map(stage => {
+    const list = items.filter(i => i.stage === stage.id);
+    const touched = list.filter(i => i.users > 0).length;
+    return {
+      id: stage.id,
+      th: stage.th,
+      items: list,
+      total: list.length,
+      touched,
+      /* เครื่องที่มากที่สุดในบรรดาของในช่วงนี้ = มีคนมาถึงช่วงนี้กี่เครื่อง */
+      users: list.reduce((max, i) => Math.max(max, i.users), 0),
+    };
+  }).filter(s => s.total > 0);
+
+  const orphans = [...seen.entries()].map(([key, row]) => {
+    const [eventType, ref] = key.split('|');
+    return { id: ref, kind: eventType === 'ACT' ? 'ACT' : 'ACHIEVEMENT', ...nums(row) };
+  });
+
+  return {
+    ok: true,
+    range: { from: b.from, to: b.to },
+    generatedAt: Date.now(),
+    analyticsVersion: CORE7_ANALYTICS_VERSION,
+    gameVersion: CORE7_GAME_VERSION,
+    /* ยังไม่มีหน้าไหนยิงเข้ามา = ยังไม่ได้ต่อสาย ไม่ใช่ไม่มีคนทำ */
+    wired: items.some(i => i.events > 0),
+    totals: {
+      reach,
+      tracked: items.length,
+      touched: items.filter(i => i.users > 0).length,
+      never: items.filter(i => !i.users).length,
+      acts: items.filter(i => i.kind === 'ACT').reduce((n, i) => n + i.events, 0),
+      unlocks: items.filter(i => i.kind === 'ACHIEVEMENT').reduce((n, i) => n + i.users, 0),
+      duplicates: items.reduce((n, i) => n + i.duplicates, 0),
+    },
+    stages,
+    orphans,
     daily: (dailyRes.results || []).map(nums),
   };
 }
