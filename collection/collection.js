@@ -89,10 +89,34 @@ item({id:'c7-full',kind:'CORE7 · COLLECTION MASTER',name:'FIRST HAND ครบ�
 if(genesisDone)groups.push({id:'genesis',bonus:true,eyebrow:'HIDDEN ORIGIN · BONUS',title:'ของที่ไม่อยู่ในสารบัญ',desc:'ช่องพิเศษนี้ปรากฏหลังจากพบสิ่งที่ผู้สร้างซ่อนไว้ และไม่ถูกนับรวมใน 36 Achievement หลัก',items:[
 item({id:'genesis-scroll',bonus:true,kind:'FORBIDDEN GENESIS · BONUS',name:'คุณเจอ Genesis Prompt ที่ใช้สร้างวิหารแห่งนี้',icon:'📜',on:true,hint:'เลือกทุกหมวดในคลังพรอมพ์ แล้วเปิดม้วนคาถาที่ซ่อนอยู่',go:'../classroom/prompts.html?scroll=forbidden',image:'../img/achievement-genesis-scroll.svg',newBonus:genesisNew})
 ]});
-var filter='all',lastUnlocked=raw('mc_collection_last_count','');
+/* ── ป้าย NEW ──
+   เดิมจำไว้แค่ "ครั้งก่อนปลดได้กี่ชิ้น" แล้วถ้าตัวเลขเพิ่มก็ติด NEW ให้ทุกชิ้น
+   ที่ปลดแล้วพร้อมกัน — ปลดใหม่ 1 ชิ้น ทั้งอัลบั้มก็ขึ้น NEW หมด ป้ายเลยไม่เคย
+   แปลว่า "อันนี้ของใหม่" สักที
+
+   ต้องจำเป็นรายชิ้น ไม่ใช่จำนวน แล้ว NEW คือส่วนต่างระหว่างของที่มีตอนนี้
+   กับของที่เห็นไปแล้วรอบก่อน · เปิดหน้านี้ = เห็นแล้ว ปิดแล้วเปิดใหม่จึงหายไปเอง */
+var SEEN_KEY='mc_collection_seen';
+var filter='all';
 var allItems=[];groups.forEach(function(g){g.items.forEach(function(x){if(!x.bonus)allItems.push(x)})});
-var unlockedCount=allItems.filter(function(x){return x.on}).length;
-try{localStorage.setItem('mc_collection_last_count',String(unlockedCount))}catch(e){}
+var unlockedIds=allItems.filter(function(x){return x.on}).map(function(x){return x.id});
+var unlockedCount=unlockedIds.length;
+
+var seenRaw=json(SEEN_KEY,null);
+var seen=Array.isArray(seenRaw)?seenRaw:null;
+/* ครั้งแรกที่เปิดหน้านี้ (หรือเครื่องที่ยังใช้ของเดิมที่จำเป็นจำนวน) ไม่ติด NEW
+   ให้อะไรเลย เพราะของที่มีอยู่แล้วไม่ใช่ของใหม่ — บันทึกไว้เฉย ๆ แล้วรอบหน้า
+   ค่อยเริ่มเทียบ ไม่งั้นทุกคนจะเจออัลบั้มที่ขึ้น NEW ทั้งหน้าอยู่ดี */
+var freshIds={};
+if(seen){
+  for(var ui=0;ui<unlockedIds.length;ui++){
+    if(seen.indexOf(unlockedIds[ui])<0) freshIds[unlockedIds[ui]]=1;
+  }
+}
+try{
+  localStorage.setItem(SEEN_KEY,JSON.stringify(unlockedIds));
+  localStorage.removeItem('mc_collection_last_count');
+}catch(e){}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function cardHTML(x){
   var shown=x.on?x.name:(x.secret?(x.lockedName||'???'):x.name);
@@ -101,7 +125,7 @@ function cardHTML(x){
   var tag=canLink?'a':'article';
   var attrs=canLink?' href="'+esc(x.go)+'"':'';
   var cls='ach-card '+(x.on?'unlocked':'locked')+(x.secret?' secret':'')+(canLink?' is-link':'')+(x.bonus?' bonus-card':'');
-  var regularNew=x.on&&!x.bonus&&lastUnlocked!==''&&unlockedCount>Number(lastUnlocked);
+  var regularNew=x.on&&!x.bonus&&freshIds[x.id]===1;
   var newTag=(regularNew||x.newBonus)?'<span class="new">NEW</span>':'';
   var imageStyle=x.imageStyle?' style="'+esc(x.imageStyle)+'"':'';
   var image=(!x.secret||x.on)&&x.image?'<img src="'+esc(x.image)+'" alt="" loading="lazy" decoding="async"'+imageStyle+' onerror="this.remove()">':'';
