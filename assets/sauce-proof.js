@@ -62,6 +62,21 @@ function addStyles() {
   document.head.append(style);
 }
 
+function paintWalkthroughHandoff() {
+  const play = document.getElementById('playCore7');
+  if (!play) return;
+  const read = play.closest('.read');
+  const lead = read?.querySelector(':scope > .lead');
+  const title = play.closest('.playbox')?.querySelector('h3');
+  if (lead) lead.textContent = 'ต่อจากนี้คุณจะเข้า Quick Tutorial ที่สั้นมาก จากนั้นระบบจะจัดมือเริ่มต้นแบบสมดุลให้ และส่งไปเล่นกับ EASY BOT ทันที ไม่ผ่านหน้าแรกของเกม ไม่ผ่านหน้าเลือกมือ และไม่ต้องสมัครสมาชิก';
+  if (title) title.innerHTML = 'เรียนกติกาไว<br>แล้วลงเล่น 1 Match เลย';
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', paintWalkthroughHandoff, { once: true });
+  else paintWalkthroughHandoff();
+}
+
 export function eligibleForKickstarterProof() {
   return !wasSeen() && hasWalkthrough() && hasFirstHandCard();
 }
