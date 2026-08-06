@@ -92,12 +92,26 @@ footer a{color:rgb(var(--green));font-weight:600}
 .epprog .tx.is-done{color:rgb(var(--green))}
 
 .finish{background:linear-gradient(160deg,rgb(10 40 24),rgb(18 62 38));color:#fff;border-radius:20px;
-  padding:clamp(24px,4.4vw,34px);margin-top:22px;text-align:center;
+  padding:clamp(18px,3vw,24px) clamp(20px,4vw,30px);margin-top:22px;text-align:center;
   border:1px solid rgb(190 148 66/.4);box-shadow:0 26px 54px -34px rgb(10 40 24/.85)}
+/* หุบอยู่ = แถบเตี้ย ๆ แถบเดียว มีแค่ป้ายเขียวกับลูกศรว่ากางได้ */
+.finish>summary{display:flex;align-items:center;justify-content:center;gap:10px;
+  list-style:none;cursor:pointer;min-height:34px;
+  -webkit-tap-highlight-color:rgb(190 148 66/.18)}
+.finish>summary::-webkit-details-marker{display:none}
+.finish .fx{width:9px;height:9px;flex:none;border-right:2px solid rgb(var(--gold));
+  border-bottom:2px solid rgb(var(--gold));transform:rotate(45deg) translate(-2px,-2px);
+  transition:transform .2s}
+.finish[open] .fx{transform:rotate(-135deg) translate(-2px,-2px)}
+.finish>summary:hover .fl{background:rgb(190 148 66/.14);border-color:rgb(var(--gold))}
+.finish .fbody{padding-top:clamp(12px,2.4vw,18px)}
 .finish .fl{display:inline-block;font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;
   letter-spacing:.14em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.45);
-  border-radius:999px;padding:5px 13px}
-.finish b.disp{display:block;font-family:"Bai Jamjuree";font-size:clamp(19px,3.4vw,25px);margin:14px 0 8px}
+  border-radius:999px;padding:5px 13px;transition:.16s}
+.finish b.disp{display:block;font-family:"Bai Jamjuree";font-size:clamp(19px,3.4vw,25px);margin:4px 0 8px}
+/* รหัสอยู่ล่างสุดและเงียบที่สุด — คั่นด้วยเส้นบาง ๆ ให้รู้ว่าคนละเรื่องกับข้างบน */
+.codewrap{margin-top:26px;padding-top:20px;border-top:1px solid rgb(255 255 255/.14)}
+.codewrap .sm{margin-top:0}
 .finish p{color:rgb(255 255 255/.78);font-size:15px;line-height:1.7}
 .finish .sm{font-size:13.5px;color:rgb(255 255 255/.68);margin-top:12px}
 .finish .sm b{color:rgb(var(--gold))}
@@ -115,10 +129,13 @@ footer a{color:rgb(var(--green));font-weight:600}
   border-radius:13px;padding:14px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
   margin-top:18px;min-height:44px;transition:transform .18s,filter .18s}
 .fbtn:hover{transform:translateY(-2px);filter:brightness(1.07)}
-/* ประตูเข้า Walkthrough — เป็นของรางวัลที่เพิ่งปลด ไม่ใช่ลิงก์จาง ๆ ท้ายหน้า */
+/* ประตูเข้า Walkthrough — เป็นของรางวัลที่เพิ่งปลด ไม่ใช่ลิงก์จาง ๆ ท้ายหน้า
+   ⚠️ การ์ดนี้เคยอยู่ในกล่องเขียวเข้ม สีตัวหนังสือจึงเป็น #fff ได้
+   ตอนนี้มันย้ายออกมาอยู่บนพื้นกระดาษสีอ่อน — ขาวบนทองอ่อนคืออ่านไม่ออกเลย
+   ทุกสีในบล็อกนี้จึงเป็นโทนเข้มบนพื้นอ่อน ไม่ใช่กลับกัน */
 .wtcard{display:grid;grid-template-columns:52px 1fr auto;align-items:start;gap:14px 16px;text-align:left;margin-top:8px;
   background:linear-gradient(135deg,rgb(190 148 66/.2),rgb(190 148 66/.05));
-  border:1.5px solid rgb(190 148 66/.55);border-radius:18px;padding:20px;color:#fff;
+  border:1.5px solid rgb(190 148 66/.55);border-radius:18px;padding:20px;color:rgb(var(--ink));
   box-shadow:0 20px 44px -26px rgb(190 148 66/.75);transition:transform .25s,box-shadow .25s,border-color .25s}
 .wtcard:hover{transform:translateY(-3px);border-color:rgb(var(--gold));
   box-shadow:0 28px 54px -24px rgb(190 148 66/.9)}
@@ -126,13 +143,13 @@ footer a{color:rgb(var(--green));font-weight:600}
   font-size:26px;background:rgb(190 148 66/.22);border:1px solid rgb(190 148 66/.5)}
 .wtbody{min-width:0}
 .wttag{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.16em;
-  color:rgb(var(--gold))}
+  color:rgb(146 108 38)}
 .wtcard b{display:block;font-size:17px;line-height:1.4;margin-top:5px}
-.wtsm{display:block;font-size:13.5px;line-height:1.8;color:rgb(255 255 255/.72);margin-top:7px}
+.wtsm{display:block;font-size:13.5px;line-height:1.8;color:rgb(var(--muted));margin-top:7px}
 .wtmeta{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
 .wtmeta i{font-style:normal;font-family:"Bai Jamjuree";font-weight:700;font-size:11px;
-  border:1px solid rgb(255 255 255/.22);border-radius:99px;padding:4px 11px;color:rgb(255 255 255/.78)}
-.wtgo{align-self:center;font-size:14px;font-weight:700;color:rgb(var(--gold));white-space:nowrap}
+  border:1px solid rgb(var(--ink)/.2);border-radius:99px;padding:4px 11px;color:rgb(var(--muted))}
+.wtgo{align-self:center;font-size:14px;font-weight:700;color:rgb(146 108 38);white-space:nowrap}
 /* จอแคบ ปุ่มลงไปอยู่บรรทัดล่างใต้ข้อความ ไม่งั้นมันไปบีบตัวหนังสือจนเหลือคอลัมน์ผอม ๆ */
 @media(max-width:620px){
   .wtcard{grid-template-columns:52px 1fr}
@@ -140,20 +157,15 @@ footer a{color:rgb(var(--green));font-weight:600}
 }
 .fbtn.ghost{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255/.38)}
 .fbtn.ghost:hover{border-color:rgb(var(--gold));background:rgb(190 148 66/.14)}
-/* ของแถมต้องดูเป็นของแถม ไม่ใช่ทางแยกที่แข่งความเด่นกับขั้นถัดไป */
-.wtcard.bonus{margin-top:12px;background:rgb(255 255 255/.05);border-color:rgb(255 255 255/.18);
-  box-shadow:none}
-.wtcard.bonus:hover{border-color:rgb(255 255 255/.4);box-shadow:0 18px 38px -28px rgb(0 0 0/.8)}
-.wtcard.bonus .wtseal{background:rgb(255 255 255/.08);border-color:rgb(255 255 255/.2)}
-.wtcard.bonus .wttag{color:rgb(255 255 255/.55)}
-.wtcard.bonus .wtgo{color:rgb(255 255 255/.72)}
+/* .wtcard.bonus ถูกลบทิ้งพร้อมกับตอนที่ย้ายตอนพิเศษไปเป็นช่องที่ 8 ในตาราง
+   กฎ CSS ที่ไม่มีใครใช้แล้วแต่ยังนอนอยู่ในไฟล์ คือกับดักของคนที่มาแก้ทีหลัง */
 .quietrow{margin-top:16px;font-size:13.5px}
 .quietrow a{color:rgb(255 255 255/.66);border-bottom:1px solid rgb(255 255 255/.24);padding-bottom:2px}
 .quietrow a:hover{color:rgb(var(--gold));border-color:rgb(var(--gold))}
 .nextup{margin-top:30px}
 .nextup .hr{display:flex;align-items:center;gap:12px;font-family:"Bai Jamjuree";font-weight:700;
-  font-size:11.5px;letter-spacing:.16em;color:rgb(255 255 255/.5)}
-.nextup .hr i{flex:1;height:1px;background:rgb(255 255 255/.18)}
+  font-size:11.5px;letter-spacing:.16em;color:rgb(var(--muted))}
+.nextup .hr i{flex:1;height:1px;background:rgb(var(--ink)/.16)}
 .nextup p{margin-top:14px;font-size:14.5px}
 .nextup p + p{margin-top:12px}
 .nextup p b{color:rgb(var(--gold))}
@@ -217,48 +229,44 @@ footer a{color:rgb(var(--green));font-weight:600}
   </div>
   <p class="epprog"><span class="tx" data-mc-progress="forge" hidden></span></p>
   
-  <div class="finish" data-mc-done="forge" hidden>
-    <span class="fl">⚒️ อ่านครบทั้ง 7 ตอนแล้ว</span>
-    <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
-    <p>ตั้งแต่ “ทุกคนมีสิทธิ์ลงเล่น” จนถึง “เวลาที่ได้คืนมา”<br>
-       ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
-    <div class="codebox">
-      <span class="lb">รหัสของคุณ</span>
-      <code id="fcode">BLACKSMITH</code>
-      <button type="button" class="cp" id="fcopy">คัดลอก</button>
-    </div>
-    <p class="sm">รหัสนี้ใช้กู้สิทธิ์การอ่านจบบนเครื่องอื่นได้ และใส่ในหน้าทำการ์ด
-       เพื่อรับตรา <b>⚒️ ช่างตีเหล็ก</b></p>
-
-    <div class="nextup">
-      <span class="hr"><i></i>เข็มทิศชี้ไปทางนี้ต่อ<i></i></span>
-      <a class="wtcard" href="../../walkthrough/" data-ga="go_walkthrough">
-        <span class="wtseal" aria-hidden="true">🗺️</span>
-        <span class="wtbody">
-          <span class="wttag">ปลดล็อกแล้ว · ขั้นต่อไป</span>
-          <b class="disp">Walkthrough — มัดทั้งเรื่องให้เหลือสิ่งที่ใช้ได้จริง</b>
-          <span class="wtsm">เรื่องที่คุณเพิ่งอ่านไม่ใช่เรื่องธุรกิจเก่า มันคือวิธีสร้างระบบ
-            ตั้งแต่ยุคที่ยังไม่มี AI หน้านี้ถอดให้ดูว่าวิธีคิดเดิมกับเครื่องมือวันนี้
-            เป็นเรื่องเดียวกันตรงไหน</span>
-          <span class="wtmeta"><i>อ่าน 1 นาที</i><i>ก่อนลงมือสร้างของชิ้นแรก</i></span>
-        </span>
-        <span class="wtgo disp">เปิดอ่าน →</span>
-      </a>
-
-      <a class="wtcard bonus" href="../../forge/original/">
-        <span class="wtseal" aria-hidden="true">🎁</span>
-        <span class="wtbody">
-          <span class="wttag">ปลดล็อกแล้ว · ตอนพิเศษ</span>
-          <b class="disp">Version แรก — ก่อนจะมาเป็นเรื่องนี้</b>
-          <span class="wtsm">ฉบับร่างแรกที่ยังไม่ถูกตัด ยังไม่ถูกเรียงใหม่ และยังยาวกว่านี้มาก
-            เก็บไว้ให้ดูว่าของที่ยังไม่เสร็จหน้าตาเป็นยังไง</span>
-        </span>
-        <span class="wtgo disp">เปิดดู →</span>
-      </a>
+  <div class="nextup" data-mc-done="forge" hidden>
+    <span class="hr"><i></i>เข็มทิศชี้ไปทางนี้ต่อ<i></i></span>
+    <a class="wtcard" href="../../walkthrough/" data-ga="go_walkthrough">
+      <span class="wtseal" aria-hidden="true">🗺️</span>
+      <span class="wtbody">
+        <span class="wttag">ปลดล็อกแล้ว · ขั้นต่อไป</span>
+        <b class="disp">Walkthrough — มัดทั้งเรื่องให้เหลือสิ่งที่ใช้ได้จริง</b>
+        <span class="wtsm">เรื่องที่คุณเพิ่งอ่านไม่ใช่เรื่องธุรกิจเก่า มันคือวิธีสร้างระบบ
+          ตั้งแต่ยุคที่ยังไม่มี AI หน้านี้ถอดให้ดูว่าวิธีคิดเดิมกับเครื่องมือวันนี้
+          เป็นเรื่องเดียวกันตรงไหน</span>
+        <span class="wtmeta"><i>อ่าน 1 นาที</i><i>ก่อนลงมือสร้างของชิ้นแรก</i></span>
+      </span>
+      <span class="wtgo disp">เปิดอ่าน →</span>
+    </a>
+  </div>
+  <details class="finish" id="finishBox" data-mc-done="forge" hidden>
+    <summary>
+      <span class="fl">⚒️ อ่านครบทั้ง 7 ตอนแล้ว</span>
+      <span class="fx" aria-hidden="true"></span>
+    </summary>
+    <div class="fbody">
+      <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
+      <p>ตั้งแต่ “ทุกคนมีสิทธิ์ลงเล่น” จนถึง “เวลาที่ได้คืนมา”<br>
+         ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
 
       <p class="quietrow"><a href="../../card/">🎴 ทำการ์ดประจำตัวเก็บตราไว้</a></p>
+
+      <div class="codewrap">
+        <p class="sm">ถ้าจะไปทำการ์ดที่เครื่องอื่น ใช้รหัสนี้ยืนยันว่าอ่านจบแล้ว
+           แล้วรับตรา <b>⚒️ ช่างตีเหล็ก</b> ได้เลย</p>
+        <div class="codebox">
+          <span class="lb">รหัสของคุณ</span>
+          <code id="fcode">BLACKSMITH</code>
+          <button type="button" class="cp" id="fcopy">คัดลอก</button>
+        </div>
+      </div>
     </div>
-  </div>
+  </details>
   <p class="kb">แตะที่ภาพเพื่อเลื่อนไปช่องถัดไป · ช่องสุดท้ายพาไปตอนต่อไป · หรือกดลูกศร ← → บนคีย์บอร์ด</p>
 </nav>
 
@@ -307,6 +315,22 @@ document.addEventListener('keydown',function(e){
       navigator.clipboard.writeText(t).then(ok,function(){ b.textContent=t; });
     } else { b.textContent=t; }
   });
+})();
+
+(function(){
+  var d=document.getElementById('finishBox');
+  if(!d) return;
+  var KEY='mc_forge_finish_seen';
+  function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function open1(){
+    if(d.hidden) return;
+    /* คนที่อ่าน Walkthrough ไปแล้วไม่ต้องถูกทักเรื่องนี้อีก ต่อให้ยังไม่เคยกาง */
+    var first = ls(KEY)!=='1' && ls('mc_walk_done')!=='1';
+    d.open = first;
+    if(first){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+  }
+  if(document.readyState!=='loading') setTimeout(open1,0);
+  else document.addEventListener('DOMContentLoaded',function(){ setTimeout(open1,0); });
 })();
 </script>
 <!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->

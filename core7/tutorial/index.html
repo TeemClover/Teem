@@ -49,9 +49,18 @@ import { el, haptic, reducedMotion } from '/core7/js/ui.js';
 import { COLOR_META } from '/core7/js/cards.js';
 import { colorIcon, genericCardSVG, cardBackSVG } from '/core7/js/art.js';
 import { setHand, setTutorialCompleted, track } from '/core7/js/store.js';
+import { getLang, setLang, applyLang } from '/core7/js/i18n.js';
 
+/* ภาษาของหน้านี้เคยอ่านจาก ?lang= บน URL อย่างเดียว แปลว่าคนที่กด EN ไว้ที่
+   หน้าอื่นแล้วเดินเข้ามาที่นี่จะเจอภาษาไทยเหมือนไม่เคยกด — ทั้งเว็บใช้ mc_lang
+   ร่วมกันหมด หน้านี้ต้องอ่านค่าเดียวกันด้วย
+   ยังรับ ?lang= อยู่ เพราะลิงก์เก่าที่ส่งกันไว้ต้องไม่ตาย แต่ให้ถือว่าเป็น
+   "คำสั่งเปลี่ยนภาษา" คือเขียนลง mc_lang แล้วทั้งเว็บเปลี่ยนตาม ไม่ใช่ค่าเฉพาะหน้า */
 const params = new URLSearchParams(location.search);
-const isEn = params.get('lang') === 'en';
+const fromUrl = params.get('lang');
+if (fromUrl === 'en' || fromUrl === 'th') setLang(fromUrl);
+const isEn = getLang() === 'en';
+applyLang();
 const entry = params.get('entry') || 'core7';
 const fromWalkthrough = entry === 'walkthrough';
 const handTarget = `/core7/hand/?next=bot&level=easy&entry=${encodeURIComponent(entry)}`;
@@ -63,9 +72,10 @@ if (entry === 'walkthrough') track('core7_tutorial_from_walkthrough');
 
 document.getElementById('lang').textContent = isEn ? 'TH' : 'EN';
 document.getElementById('lang').addEventListener('click', () => {
-  const next = new URLSearchParams(location.search);
-  if (isEn) next.delete('lang'); else next.set('lang', 'en');
-  location.search = next.toString() ? `?${next}` : '';
+  /* เขียนลงค่ากลางแล้วโหลดใหม่ ไม่ต้องยุ่งกับ query string อีก —
+     เดินออกจากหน้านี้ไปหน้าไหนต่อ ภาษาก็ตามไปด้วย */
+  setLang(isEn ? 'th' : 'en');
+  location.reload();
 });
 const skip = document.getElementById('skip');
 skip.href = fromWalkthrough ? botTarget : handTarget;

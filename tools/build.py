@@ -46,6 +46,21 @@ INTRO_SRCS  = ["001.jpg", "002.jpg"]
 INTRO_SLUG  = "intro"
 INTRO_TITLE = "myClover — Intro"
 
+# ตอนพิเศษ — ช่องที่ 8 ในหน้ารวม
+#
+# ไม่นับเป็นตอนของเส้นเรื่อง จำนวนตอนยังเป็น 7 เท่าเดิม และไม่บังคับอ่าน
+# แต่ช่องนี้จะปลดล็อกก็ต่อเมื่ออ่านครบ 7 ตอนแล้วเท่านั้น
+#
+# ต้นฉบับภาพปกเอามาจากหน้าแรกของฉบับร่าง ซึ่งอยู่ในรีโปอยู่แล้ว
+# ไม่ได้อยู่ใน .forge-src เหมือนตอนปกติ — ปกช่องนี้จึงสร้างได้เสมอ
+# ต่อให้เครื่องที่รัน build ไม่มีโฟลเดอร์ต้นฉบับการ์ตูนเลย
+SPECIAL_KEY   = "original"
+SPECIAL_SLUG  = "original"
+SPECIAL_TITLE = "Version แรก — ก่อนจะมาเป็นเรื่องนี้"
+SPECIAL_DESC  = ("ฉบับร่างแรกที่ยังไม่ถูกตัด ยังไม่ถูกเรียงใหม่ และยังยาวกว่านี้มาก "
+                 "เก็บไว้ให้ดูว่าของที่ยังไม่เสร็จหน้าตาเป็นยังไง")
+SPECIAL_COVER = os.path.join(DEST, 'original', '01.jpeg')
+
 # รองรับลิงก์และ Save จากโครงเก่า ก่อนสรุปเรื่องใหม่เป็น 7 ตอน
 # คนที่อ่านค้างไว้ก่อนเปลี่ยนต้องไม่เสียความคืบหน้า และลิงก์เก่าต้องยังเปิดได้
 # ตารางนี้เลยถูกใช้ 2 ที่: ย้ายค่าใน localStorage (quest.js) และทำ _redirects
@@ -134,6 +149,22 @@ for key, num, title, slug, special, srcs in EPISODES:
     r = cover.resize((round(pw * scale), round(ph * scale)), Image.LANCZOS)
     og.paste(r, ((1200 - r.width) // 2, (630 - r.height) // 2))
     og.save(f'{IMG}/{key}-og.jpg', 'JPEG', quality=86, optimize=True, progressive=True)
+
+# ── ปกตอนพิเศษ ──
+# ต้นฉบับอยู่ใน forge/original/ ซึ่ง commit ไว้ในรีโปแล้ว ไม่ใช่ .forge-src
+# จึงไม่ต้องเช็ค SKIP_IMG แบบตอนปกติ แต่ยังกันไว้เผื่อไฟล์หาย จะได้ไม่ล้มทั้ง build
+if os.path.exists(SPECIAL_COVER):
+    _sp = Image.open(SPECIAL_COVER).convert('RGB')
+    _sw, _sh = _sp.size
+    # ฉบับร่างเป็นภาพยาวใบเดียวเหมือนตอนเก่า ครอปหนึ่งในสี่บนมาทำปกตามกติกาเดิม
+    _spc = _sp.crop((0, 0, _sw, _sh // 4))
+    _pw, _ph = _spc.size
+    _spt = _spc.resize((560, round(_ph * 560 / _pw)), Image.LANCZOS)
+    _spt.save(f'{IMG}/{SPECIAL_KEY}-thumb.webp', 'WEBP', quality=82, method=6)
+    _spt.save(f'{IMG}/{SPECIAL_KEY}-thumb.jpg', 'JPEG', quality=82, optimize=True, progressive=True)
+    SPECIAL_TW, SPECIAL_TH = _spt.size
+else:
+    SPECIAL_TW, SPECIAL_TH = Image.open(f'{IMG}/{SPECIAL_KEY}-thumb.jpg').size
 
 # ── ภาพบทนำ ──
 # หน้านี้แสดงเต็มความสูงจอ ไม่ใช่เต็มความกว้าง ภาพจึงถูกอ่านที่ขนาดต่างจากช่องปกติ
@@ -331,6 +362,7 @@ QUEST_JS = '''/* ═════════════════════
      [data-mc-undone=forge]        บล็อกที่ซ่อนเมื่อครบ (ตั้งต้นต้องมองเห็น)
      [data-mc-any=forge]           บล็อกที่โผล่เมื่อเริ่มแล้วอย่างน้อย 1 ชิ้น
      [data-mc-item=forge:slug]     ใส่คลาส .done ให้เมื่อทำชิ้นนั้นแล้ว
+     [data-mc-seq=forge:3]         ล็อก (.locked + ถอด href) จนกว่าจะครบ 3 ชิ้น
      [data-mc-title=FORGE]         บล็อกที่โผล่เมื่อได้ตรานั้นแล้ว
      [data-mc-notitle=FORGE]       บล็อกที่ซ่อนเมื่อได้ตรานั้นแล้ว
    ═══════════════════════════════════════════════════════════════ */
@@ -458,6 +490,33 @@ QUEST_JS = '''/* ═════════════════════
       var p=split(el.getAttribute('data-mc-item')), t=T(p[0]); if(!t) return;
       addCls(el,'done',t.has(p[1]));
     });
+    /* [data-mc-seq=forge:3] — ล็อกจนกว่าจะทำครบ 3 ชิ้นในเส้นนั้น
+       ใช้บังคับให้อ่านการ์ตูนเรียงตอน ข้ามไปตอนที่ยังไม่ถึงไม่ได้
+       ตอนพิเศษก็ใช้ตัวเดียวกัน แค่ตั้งเลขเป็นจำนวนตอนทั้งหมด
+
+       ลิงก์ที่ล็อกต้องถอด href ออกจริง ๆ ไม่ใช่แค่ทำให้จางแล้วกด CSS ทับ
+       เพราะ pointer-events ไม่กัน Enter บนคีย์บอร์ด ไม่กันเมนูคลิกขวา
+       และไม่กันคนที่ปิด CSS — ของที่ล็อกอยู่ต้องกดไม่ได้จริงทุกทาง */
+    each('[data-mc-seq]',function(el){
+      var p=split(el.getAttribute('data-mc-seq')), t=T(p[0]); if(!t) return;
+      var need=parseInt(p[1],10)||0, lock=t.count()<need;
+      addCls(el,'locked',lock);
+      if(lock){
+        if(el.hasAttribute('href')){
+          el.setAttribute('data-href',el.getAttribute('href'));
+          el.removeAttribute('href');
+        }
+        el.setAttribute('aria-disabled','true');
+        el.setAttribute('tabindex','-1');
+      }else{
+        if(el.hasAttribute('data-href')){
+          el.setAttribute('href',el.getAttribute('data-href'));
+          el.removeAttribute('data-href');
+        }
+        el.removeAttribute('aria-disabled');
+        el.removeAttribute('tabindex');
+      }
+    });
     each('[data-mc-title]',  function(el){ el.hidden=!hasTitle(el.getAttribute('data-mc-title')); });
     each('[data-mc-notitle]',function(el){ el.hidden= hasTitle(el.getAttribute('data-mc-notitle')); });
   }
@@ -536,64 +595,113 @@ if os.path.exists(_old):
     os.remove(_old)
 
 # บล็อก "อ่านจบแล้ว" — ใช้ทั้งหน้ารวมและหน้าตอน (ต่างกันแค่ path)
-def finish_block(up):
-    """บล็อก "อ่านจบแล้ว" — ใช้ทั้งหน้ารวมและหน้าตอน (ต่างกันแค่ path)
+def walkthrough_card(up):
+    """ประตูเข้า Walkthrough — ขั้นถัดไปจริง ๆ หลังอ่านครบ
 
-    ลำดับในบล็อกนี้ = ลำดับที่เข็มทิศชี้ ไม่ใช่ลำดับที่อยากขายของ
-    Walkthrough จึงเป็นของชิ้นเด่นที่สุด เพราะมันคือขั้นถัดไปจริง ๆ
-    ส่วนตอนพิเศษกับการ์ดประจำตัวเป็นของแถมที่กลับมาหยิบเมื่อไหร่ก็ได้
+    อยู่นอกกล่อง "อ่านครบแล้ว" โดยตั้งใจ เพราะกล่องนั้นหุบอยู่ตลอดหลังกางครั้งแรก
+    ถ้าเอาปุ่มนี้ไปไว้ข้างใน คนที่กลับมาหน้านี้อีกรอบจะต้องกางกล่องก่อนถึงจะเจอทาง
+    กลับไปอ่าน Walkthrough ซึ่งไม่มีเหตุผลอะไรเลยที่จะต้องซ่อนมันไว้
     """
-    return f'''<div class="finish" data-mc-done="forge" hidden>
-    <span class="fl">⚒️ อ่านครบทั้ง {len(EPISODES)} ตอนแล้ว</span>
-    <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
-    <p>ตั้งแต่ “{EPISODES[0][2]}” จนถึง “{EPISODES[-1][2]}”<br>
-       ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
-    <div class="codebox">
-      <span class="lb">รหัสของคุณ</span>
-      <code id="fcode">{FORGE_CODE}</code>
-      <button type="button" class="cp" id="fcopy">คัดลอก</button>
-    </div>
-    <p class="sm">รหัสนี้ใช้กู้สิทธิ์การอ่านจบบนเครื่องอื่นได้ และใส่ในหน้าทำการ์ด
-       เพื่อรับตรา <b>⚒️ ช่างตีเหล็ก</b></p>
+    return f'''<div class="nextup" data-mc-done="forge" hidden>
+    <span class="hr"><i></i>เข็มทิศชี้ไปทางนี้ต่อ<i></i></span>
+    <a class="wtcard" href="{up}walkthrough/" data-ga="go_walkthrough">
+      <span class="wtseal" aria-hidden="true">🗺️</span>
+      <span class="wtbody">
+        <span class="wttag">ปลดล็อกแล้ว · ขั้นต่อไป</span>
+        <b class="disp">Walkthrough — มัดทั้งเรื่องให้เหลือสิ่งที่ใช้ได้จริง</b>
+        <span class="wtsm">เรื่องที่คุณเพิ่งอ่านไม่ใช่เรื่องธุรกิจเก่า มันคือวิธีสร้างระบบ
+          ตั้งแต่ยุคที่ยังไม่มี AI หน้านี้ถอดให้ดูว่าวิธีคิดเดิมกับเครื่องมือวันนี้
+          เป็นเรื่องเดียวกันตรงไหน</span>
+        <span class="wtmeta"><i>อ่าน 1 นาที</i><i>ก่อนลงมือสร้างของชิ้นแรก</i></span>
+      </span>
+      <span class="wtgo disp">เปิดอ่าน →</span>
+    </a>
+  </div>'''
 
-    <div class="nextup">
-      <span class="hr"><i></i>เข็มทิศชี้ไปทางนี้ต่อ<i></i></span>
-      <a class="wtcard" href="{up}walkthrough/" data-ga="go_walkthrough">
-        <span class="wtseal" aria-hidden="true">🗺️</span>
-        <span class="wtbody">
-          <span class="wttag">ปลดล็อกแล้ว · ขั้นต่อไป</span>
-          <b class="disp">Walkthrough — มัดทั้งเรื่องให้เหลือสิ่งที่ใช้ได้จริง</b>
-          <span class="wtsm">เรื่องที่คุณเพิ่งอ่านไม่ใช่เรื่องธุรกิจเก่า มันคือวิธีสร้างระบบ
-            ตั้งแต่ยุคที่ยังไม่มี AI หน้านี้ถอดให้ดูว่าวิธีคิดเดิมกับเครื่องมือวันนี้
-            เป็นเรื่องเดียวกันตรงไหน</span>
-          <span class="wtmeta"><i>อ่าน 1 นาที</i><i>ก่อนลงมือสร้างของชิ้นแรก</i></span>
-        </span>
-        <span class="wtgo disp">เปิดอ่าน →</span>
-      </a>
 
-      <a class="wtcard bonus" href="{up}forge/original/">
-        <span class="wtseal" aria-hidden="true">🎁</span>
-        <span class="wtbody">
-          <span class="wttag">ปลดล็อกแล้ว · ตอนพิเศษ</span>
-          <b class="disp">Version แรก — ก่อนจะมาเป็นเรื่องนี้</b>
-          <span class="wtsm">ฉบับร่างแรกที่ยังไม่ถูกตัด ยังไม่ถูกเรียงใหม่ และยังยาวกว่านี้มาก
-            เก็บไว้ให้ดูว่าของที่ยังไม่เสร็จหน้าตาเป็นยังไง</span>
-        </span>
-        <span class="wtgo disp">เปิดดู →</span>
-      </a>
+def finish_block(up):
+    """กล่อง "อ่านครบแล้ว" — ใช้ทั้งหน้ารวมและหน้าตอน (ต่างกันแค่ path)
+
+    เป็น <details> ที่กางให้ดูครั้งเดียวตอนเพิ่งปลดล็อก แล้วหุบตลอดไป
+    เพราะคนที่กลับมาหน้ารวมอีกสิบรอบไม่ได้ต้องการอ่านคำขอบคุณซ้ำทุกรอบ
+    เหลือไว้แค่ป้ายเขียวกับลูกศรว่ากางได้ ที่เหลือไม่เกะกะทาง
+
+    ป้ายบน summary กับหัวข้อข้างในเคยเขียนว่า "อ่านครบทั้ง 7 ตอนแล้ว" เหมือนกัน
+    ทั้งคู่ ตอนกางออกมาเลยอ่านเจอประโยคเดิมสองรอบติดกัน — ข้างในจึงพูดเรื่องอื่น
+
+    รหัส BLACKSMITH อยู่ล่างสุด เพราะเป็นของที่ใช้ทีเดียวแล้วไม่ต้องกลับมาดูอีก
+    ไม่ใช่ของที่ควรทักคนก่อนคำขอบคุณ
+    """
+    return f'''<details class="finish" id="finishBox" data-mc-done="forge" hidden>
+    <summary>
+      <span class="fl">⚒️ อ่านครบทั้ง {len(EPISODES)} ตอนแล้ว</span>
+      <span class="fx" aria-hidden="true"></span>
+    </summary>
+    <div class="fbody">
+      <b class="disp">คุณเดินผ่านโรงตีเหล็กมาทั้งสายแล้ว</b>
+      <p>ตั้งแต่ “{EPISODES[0][2]}” จนถึง “{EPISODES[-1][2]}”<br>
+         ขอบคุณที่อ่านจนจบจริง ๆ ครับ</p>
 
       <p class="quietrow"><a href="{up}card/">🎴 ทำการ์ดประจำตัวเก็บตราไว้</a></p>
+
+      <div class="codewrap">
+        <p class="sm">ถ้าจะไปทำการ์ดที่เครื่องอื่น ใช้รหัสนี้ยืนยันว่าอ่านจบแล้ว
+           แล้วรับตรา <b>⚒️ ช่างตีเหล็ก</b> ได้เลย</p>
+        <div class="codebox">
+          <span class="lb">รหัสของคุณ</span>
+          <code id="fcode">{FORGE_CODE}</code>
+          <button type="button" class="cp" id="fcopy">คัดลอก</button>
+        </div>
+      </div>
     </div>
-  </div>'''
+  </details>'''
+
+
+# กางให้ดูครั้งเดียวตอนที่กล่องเพิ่งโผล่มา หลังจากนั้นหุบตลอดไป
+#
+# ต้องรอให้ quest.js ทาสีเสร็จก่อน เพราะก่อนหน้านั้นกล่องยัง hidden อยู่เสมอ
+# ถ้าจดว่า "เคยกางแล้ว" ตั้งแต่ตอนที่มันยังไม่โผล่ คนที่อ่านครบทีหลัง
+# จะไม่มีวันได้เห็นมันกางเลยสักครั้ง
+FINISH_JS = '''
+(function(){
+  var d=document.getElementById('finishBox');
+  if(!d) return;
+  var KEY='mc_forge_finish_seen';
+  function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function open1(){
+    if(d.hidden) return;
+    /* คนที่อ่าน Walkthrough ไปแล้วไม่ต้องถูกทักเรื่องนี้อีก ต่อให้ยังไม่เคยกาง */
+    var first = ls(KEY)!=='1' && ls('mc_walk_done')!=='1';
+    d.open = first;
+    if(first){ try{ localStorage.setItem(KEY,'1'); }catch(e){} }
+  }
+  if(document.readyState!=='loading') setTimeout(open1,0);
+  else document.addEventListener('DOMContentLoaded',function(){ setTimeout(open1,0); });
+})();
+'''
 
 FINISH_CSS = '''
 .finish{background:linear-gradient(160deg,rgb(10 40 24),rgb(18 62 38));color:#fff;border-radius:20px;
-  padding:clamp(24px,4.4vw,34px);margin-top:22px;text-align:center;
+  padding:clamp(18px,3vw,24px) clamp(20px,4vw,30px);margin-top:22px;text-align:center;
   border:1px solid rgb(190 148 66/.4);box-shadow:0 26px 54px -34px rgb(10 40 24/.85)}
+/* หุบอยู่ = แถบเตี้ย ๆ แถบเดียว มีแค่ป้ายเขียวกับลูกศรว่ากางได้ */
+.finish>summary{display:flex;align-items:center;justify-content:center;gap:10px;
+  list-style:none;cursor:pointer;min-height:34px;
+  -webkit-tap-highlight-color:rgb(190 148 66/.18)}
+.finish>summary::-webkit-details-marker{display:none}
+.finish .fx{width:9px;height:9px;flex:none;border-right:2px solid rgb(var(--gold));
+  border-bottom:2px solid rgb(var(--gold));transform:rotate(45deg) translate(-2px,-2px);
+  transition:transform .2s}
+.finish[open] .fx{transform:rotate(-135deg) translate(-2px,-2px)}
+.finish>summary:hover .fl{background:rgb(190 148 66/.14);border-color:rgb(var(--gold))}
+.finish .fbody{padding-top:clamp(12px,2.4vw,18px)}
 .finish .fl{display:inline-block;font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;
   letter-spacing:.14em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.45);
-  border-radius:999px;padding:5px 13px}
-.finish b.disp{display:block;font-family:"Bai Jamjuree";font-size:clamp(19px,3.4vw,25px);margin:14px 0 8px}
+  border-radius:999px;padding:5px 13px;transition:.16s}
+.finish b.disp{display:block;font-family:"Bai Jamjuree";font-size:clamp(19px,3.4vw,25px);margin:4px 0 8px}
+/* รหัสอยู่ล่างสุดและเงียบที่สุด — คั่นด้วยเส้นบาง ๆ ให้รู้ว่าคนละเรื่องกับข้างบน */
+.codewrap{margin-top:26px;padding-top:20px;border-top:1px solid rgb(255 255 255/.14)}
+.codewrap .sm{margin-top:0}
 .finish p{color:rgb(255 255 255/.78);font-size:15px;line-height:1.7}
 .finish .sm{font-size:13.5px;color:rgb(255 255 255/.68);margin-top:12px}
 .finish .sm b{color:rgb(var(--gold))}
@@ -611,10 +719,13 @@ FINISH_CSS = '''
   border-radius:13px;padding:14px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
   margin-top:18px;min-height:44px;transition:transform .18s,filter .18s}
 .fbtn:hover{transform:translateY(-2px);filter:brightness(1.07)}
-/* ประตูเข้า Walkthrough — เป็นของรางวัลที่เพิ่งปลด ไม่ใช่ลิงก์จาง ๆ ท้ายหน้า */
+/* ประตูเข้า Walkthrough — เป็นของรางวัลที่เพิ่งปลด ไม่ใช่ลิงก์จาง ๆ ท้ายหน้า
+   ⚠️ การ์ดนี้เคยอยู่ในกล่องเขียวเข้ม สีตัวหนังสือจึงเป็น #fff ได้
+   ตอนนี้มันย้ายออกมาอยู่บนพื้นกระดาษสีอ่อน — ขาวบนทองอ่อนคืออ่านไม่ออกเลย
+   ทุกสีในบล็อกนี้จึงเป็นโทนเข้มบนพื้นอ่อน ไม่ใช่กลับกัน */
 .wtcard{display:grid;grid-template-columns:52px 1fr auto;align-items:start;gap:14px 16px;text-align:left;margin-top:8px;
   background:linear-gradient(135deg,rgb(190 148 66/.2),rgb(190 148 66/.05));
-  border:1.5px solid rgb(190 148 66/.55);border-radius:18px;padding:20px;color:#fff;
+  border:1.5px solid rgb(190 148 66/.55);border-radius:18px;padding:20px;color:rgb(var(--ink));
   box-shadow:0 20px 44px -26px rgb(190 148 66/.75);transition:transform .25s,box-shadow .25s,border-color .25s}
 .wtcard:hover{transform:translateY(-3px);border-color:rgb(var(--gold));
   box-shadow:0 28px 54px -24px rgb(190 148 66/.9)}
@@ -622,13 +733,13 @@ FINISH_CSS = '''
   font-size:26px;background:rgb(190 148 66/.22);border:1px solid rgb(190 148 66/.5)}
 .wtbody{min-width:0}
 .wttag{display:block;font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.16em;
-  color:rgb(var(--gold))}
+  color:rgb(146 108 38)}
 .wtcard b{display:block;font-size:17px;line-height:1.4;margin-top:5px}
-.wtsm{display:block;font-size:13.5px;line-height:1.8;color:rgb(255 255 255/.72);margin-top:7px}
+.wtsm{display:block;font-size:13.5px;line-height:1.8;color:rgb(var(--muted));margin-top:7px}
 .wtmeta{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
 .wtmeta i{font-style:normal;font-family:"Bai Jamjuree";font-weight:700;font-size:11px;
-  border:1px solid rgb(255 255 255/.22);border-radius:99px;padding:4px 11px;color:rgb(255 255 255/.78)}
-.wtgo{align-self:center;font-size:14px;font-weight:700;color:rgb(var(--gold));white-space:nowrap}
+  border:1px solid rgb(var(--ink)/.2);border-radius:99px;padding:4px 11px;color:rgb(var(--muted))}
+.wtgo{align-self:center;font-size:14px;font-weight:700;color:rgb(146 108 38);white-space:nowrap}
 /* จอแคบ ปุ่มลงไปอยู่บรรทัดล่างใต้ข้อความ ไม่งั้นมันไปบีบตัวหนังสือจนเหลือคอลัมน์ผอม ๆ */
 @media(max-width:620px){
   .wtcard{grid-template-columns:52px 1fr}
@@ -636,20 +747,15 @@ FINISH_CSS = '''
 }
 .fbtn.ghost{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255/.38)}
 .fbtn.ghost:hover{border-color:rgb(var(--gold));background:rgb(190 148 66/.14)}
-/* ของแถมต้องดูเป็นของแถม ไม่ใช่ทางแยกที่แข่งความเด่นกับขั้นถัดไป */
-.wtcard.bonus{margin-top:12px;background:rgb(255 255 255/.05);border-color:rgb(255 255 255/.18);
-  box-shadow:none}
-.wtcard.bonus:hover{border-color:rgb(255 255 255/.4);box-shadow:0 18px 38px -28px rgb(0 0 0/.8)}
-.wtcard.bonus .wtseal{background:rgb(255 255 255/.08);border-color:rgb(255 255 255/.2)}
-.wtcard.bonus .wttag{color:rgb(255 255 255/.55)}
-.wtcard.bonus .wtgo{color:rgb(255 255 255/.72)}
+/* .wtcard.bonus ถูกลบทิ้งพร้อมกับตอนที่ย้ายตอนพิเศษไปเป็นช่องที่ 8 ในตาราง
+   กฎ CSS ที่ไม่มีใครใช้แล้วแต่ยังนอนอยู่ในไฟล์ คือกับดักของคนที่มาแก้ทีหลัง */
 .quietrow{margin-top:16px;font-size:13.5px}
 .quietrow a{color:rgb(255 255 255/.66);border-bottom:1px solid rgb(255 255 255/.24);padding-bottom:2px}
 .quietrow a:hover{color:rgb(var(--gold));border-color:rgb(var(--gold))}
 .nextup{margin-top:30px}
 .nextup .hr{display:flex;align-items:center;gap:12px;font-family:"Bai Jamjuree";font-weight:700;
-  font-size:11.5px;letter-spacing:.16em;color:rgb(255 255 255/.5)}
-.nextup .hr i{flex:1;height:1px;background:rgb(255 255 255/.18)}
+  font-size:11.5px;letter-spacing:.16em;color:rgb(var(--muted))}
+.nextup .hr i{flex:1;height:1px;background:rgb(var(--ink)/.16)}
 .nextup p{margin-top:14px;font-size:14.5px}
 .nextup p + p{margin-top:12px}
 .nextup p b{color:rgb(var(--gold))}
@@ -725,13 +831,27 @@ INDEX_CSS = '''
 .ep .bd{padding:13px 15px 15px;display:flex;flex-direction:column;gap:3px;flex:1}
 .ep .no{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.08em;color:rgb(var(--gold))}
 .ep b{font-family:"Bai Jamjuree";font-size:15.5px;line-height:1.35}
-.ep.read{border-color:rgb(27 106 66/.42)}
-.ep.read .im{position:relative}
-.ep.read .im::after{content:"✓";position:absolute;top:8px;right:8px;width:26px;height:26px;
+/* คลาสที่ quest.js ใส่จริงคือ .done — เดิม CSS ชุดนี้เขียนเป็น .read
+   เครื่องหมายถูกบนตอนที่อ่านแล้วจึงไม่เคยขึ้นเลยสักครั้ง ทั้งที่โค้ดทำงานถูก */
+.ep.done{border-color:rgb(27 106 66/.42)}
+.ep.done .im{position:relative}
+.ep.done .im::after{content:"✓";position:absolute;top:8px;right:8px;width:26px;height:26px;
   display:flex;align-items:center;justify-content:center;border-radius:50%;
   background:rgb(var(--green));color:#fff;font-size:14px;font-weight:700;
   box-shadow:0 4px 10px -3px rgb(10 40 24/.6)}
-.ep.read .im img{opacity:.72}
+.ep.done .im img{opacity:.72}
+/* ── ตอนที่ยังไม่ถึง ──
+   href ถูกถอดออกโดย quest.js แล้ว ตรงนี้แค่ทำให้ "เห็นว่าล็อก" ไม่ใช่ตัวกัน */
+.ep{position:relative}
+.ep .lk{display:none}
+.ep.locked{filter:grayscale(1);opacity:.5;cursor:not-allowed}
+.ep.locked:hover{transform:none;box-shadow:none;border-color:rgb(var(--ink)/.09)}
+.ep.locked .lk{display:grid;place-items:center;position:absolute;inset:0;
+  font-size:26px;background:rgb(10 40 24/.32);border-radius:16px}
+/* ตอนพิเศษเป็นของแถม ไม่ใช่ตอนที่ 8 ของเส้นเรื่อง — ป้ายจึงเป็นสีทองอ่อนคนละโทน */
+.ep.bonus .no{color:rgb(var(--muted))}
+.ep.bonus .sp{display:inline-block;margin-left:5px;font-size:10px;letter-spacing:.06em;
+  color:rgb(var(--green));border:1px solid rgb(27 106 66/.35);border-radius:99px;padding:1px 7px}
 .rstw{text-align:center;padding:6px 0 4px}
 .rst{background:none;border:0;color:rgb(var(--muted));font-size:12.5px;text-decoration:underline;
   cursor:pointer;padding:10px;min-height:44px}
@@ -744,11 +864,14 @@ INDEX_CSS = '''
 .introbtn:hover{border-color:rgb(var(--gold));color:rgb(var(--gold));background:rgb(190 148 66/.1)}
 ''' + FINISH_CSS
 
+# ── ตารางเลือกตอน ──
+# ข้ามไม่ได้ ต้องอ่านเรียง — ตอนที่ i เปิดก็ต่อเมื่ออ่านมาแล้วอย่างน้อย i ตอน
+# (ตอนแรก i=0 จึงเปิดเสมอ) ส่วนตอนพิเศษต้องครบทั้ง 7 ก่อน
 cards = []
 for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
     m = meta[key]
     badge = ' <span class="sp">ตอนพิเศษ</span>' if special else ''
-    cards.append(f'''    <a class="ep" href="{slug}/" data-mc-item="forge:{slug}">
+    cards.append(f'''    <a class="ep" href="{slug}/" data-mc-item="forge:{slug}" data-mc-seq="forge:{i}">
       <div class="im">
         <picture>
           <source type="image/webp" srcset="img/{key}-thumb.webp">
@@ -760,6 +883,24 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
         <span class="no">ตอนที่ {num}{badge}</span>
         <b class="disp">{E(title)}</b>
       </div>
+      <span class="lk" aria-hidden="true">🔒</span>
+    </a>''')
+
+# ช่องที่ 8 — ตอนพิเศษ ไม่บังคับอ่าน จึงไม่มี data-mc-item ไม่นับรวมความคืบหน้า
+# แต่กดไม่ได้จนกว่าจะครบ 7 ตอน
+cards.append(f'''    <a class="ep bonus" href="{SPECIAL_SLUG}/" data-mc-seq="forge:{len(EPISODES)}">
+      <div class="im">
+        <picture>
+          <source type="image/webp" srcset="img/{SPECIAL_KEY}-thumb.webp">
+          <img src="img/{SPECIAL_KEY}-thumb.jpg" width="{SPECIAL_TW}" height="{SPECIAL_TH}" loading="lazy" decoding="async"
+               alt="{SERIES} ตอนพิเศษ — {E(SPECIAL_TITLE)}">
+        </picture>
+      </div>
+      <div class="bd">
+        <span class="no">🎁 ตอนพิเศษ <span class="sp">ไม่บังคับอ่าน</span></span>
+        <b class="disp">{E(SPECIAL_TITLE)}</b>
+      </div>
+      <span class="lk" aria-hidden="true">🔒</span>
     </a>''')
 
 index_body = f'''<header class="bar"><div class="wrap">
@@ -786,6 +927,7 @@ index_body = f'''<header class="bar"><div class="wrap">
   <div class="grid">
 {chr(10).join(cards)}
   </div>
+  {walkthrough_card('../')}
   {finish_block('../')}
   <p class="rstw" data-mc-any="forge" hidden><button type="button" class="rst" id="rstBtn">ล้างความคืบหน้าการอ่าน</button></p>
 </main>
@@ -799,7 +941,7 @@ open(f'{DEST}/index.html', 'w', encoding='utf-8').write(page(
     f'{SERIES} — อ่านฟรีบน myclover',
     '19 ปีของคนที่เอาวิธีคิดแบบคนเล่นเกมมาทำธุรกิจ — ปรับตัว หา META แล้วพาทั้งทีมไปต่อ อ่านฟรีทุกตอน ไม่ต้องสมัคร',
     f'{SITE}/forge/img/07-og.jpg', index_body, INDEX_CSS,
-    '<script defer src="../assets/quest.js"></script>\n<script>' + COPY_JS + '''
+    '<script defer src="../assets/quest.js"></script>\n<script>' + COPY_JS + FINISH_JS + '''
 document.addEventListener('DOMContentLoaded',function(){
   var b=document.getElementById('rstBtn');
   if(b) b.addEventListener('click',function(){
@@ -953,6 +1095,7 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
   </div>
   <p class="epprog"><span class="tx" data-mc-progress="forge" hidden></span></p>
   {end}
+  {walkthrough_card('../../')}
   {finish_block('../../')}
   <p class="kb">{tap_hint}</p>
 </nav>
@@ -972,7 +1115,7 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight') go=document.querySelector('[data-next]');
   if(go){ e.preventDefault(); location.href=go.getAttribute('href'); }
 });
-''' + ZOOM_JS + COPY_JS + '</script>\n'
+''' + ZOOM_JS + COPY_JS + FINISH_JS + '</script>\n'
     # การนับว่าอ่านจบตอนนี้ quest.js จัดการเองจาก <meta name="mc-item">
     open(f'{d}/index.html', 'w', encoding='utf-8').write(page(
         f'ตอนที่ {num}: {title} — {SERIES} | myclover',
