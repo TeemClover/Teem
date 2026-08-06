@@ -5,7 +5,7 @@ window.HALL_COPY.en={
       heroKicker:"🧭 AI SMART WEBSITE",
       heroTitle:"A house that remembers how far you walked",
       heroLead:'This house has a <span class="term context-term" tabindex="0" data-tip="The compass reads the progress stored on your own device and points at exactly one next step, so you never have to decide which room comes first.">guiding compass</span> that always points at the last place you reached.<br>You do not have to finish in one sitting — close the tab, come back whenever, and pick up from there.',
-      glhfTitle:'<span class="term context-term context-term-light" tabindex="0" data-tip="The fist bump is the house ritual behind GLHF — Good Luck, Have Fun. It means: enjoy the path you choose, and do not wait for a perfect first try.">Fist bump</span> first, and the compass appears',
+      glhfTitle:'<span class="term context-term context-term-light" tabindex="0" data-tip="The fist bump is the house ritual behind GLHF — Good Luck, Have Fun. It means: enjoy the path you choose, and do not wait for a perfect first try.">Fist bump</span> first 👊 and the compass appears',
       glhfDesc:"The starting ritual of this house — good luck, and remember to have fun with the path you choose.",
       bump:"Tap here to fist bump",
       secretBanner:"Notebook restored · Secret Ending completed · 👊🏻GLHF badge saved",

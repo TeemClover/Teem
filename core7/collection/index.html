@@ -24,7 +24,7 @@
   <div class="wrap">
     <p class="eyebrow">Collection · FIRST HAND</p>
     <div class="colhead">
-      <h2 class="disp">การ์ดที่ปลดล็อกแล้ว</h2>
+      <h2 class="disp">🃏 การ์ดที่ปลดล็อกแล้ว</h2>
       <span class="completion" id="completion">0 / 28</span>
     </div>
     <p class="lead" data-en="Finish a Match to earn one new FIRST HAND card — win, lose or draw, and never a duplicate.">เล่นให้จบ Match เพื่อรับการ์ด FIRST HAND ใหม่ทีละใบ — แพ้ ชนะ หรือเสมอก็ได้ และไม่มีการ์ดซ้ำ</p>
@@ -45,7 +45,7 @@
     <div class="card-grid" id="grid" style="margin-top:14px"></div>
 
     <div class="generic-head">
-      <div><p class="eyebrow">Quick Play Tools</p><h2 class="disp" style="font-size:22px;margin-top:5px">Generic 4 สี</h2></div>
+      <div><p class="eyebrow">Quick Play Tools</p><h2 class="disp" style="font-size:22px;margin-top:5px">⚡ Generic 4 สี</h2></div>
       <span data-en="Not FIRST HAND · not counted in the Collection · not usable in SELECT">ไม่ใช่ FIRST HAND · ไม่นับใน Collection · ไม่เข้า SELECT</span>
     </div>
     <div class="generic-note">Generic ใช้เฉพาะโหมด QUICK เพื่อจัดจำนวนสีและเริ่มเล่นได้ทันที การ์ด 4 ใบนี้ไม่มีอยู่จริงในชุด FIRST HAND จึงไม่ถูกนับรวมกับ 28 ใบด้านบน</div>
@@ -98,11 +98,13 @@ if (canUseSelectMode()) {
    ถึงตอนนี้จะสะกดเหมือนกันแล้วก็ตาม เพราะถ้ามัดสองอย่างเข้าด้วยกันอีก
    วันหลังเปลี่ยนชื่อสีทีไรตัวกรองจะพังทุกที */
 const COLOR_KEYS = ['RED', 'GREEN', 'BLUE', 'SILVER'];
+/* อีโมจินำหน้าทุกตัวกรอง — สีใช้อีโมจิสีของตัวเองจาก COLOR_META
+   อ่านด้วยหางตาก็รู้ว่ากดอันไหนอยู่ ไม่ต้องอ่านคำ */
 const FILTERS = [
-  { value: 'All', label: 'All' },
-  ...COLOR_KEYS.map(key => ({ value: key, label: COLOR_META[key].nameEn })),
-  { value: 'Unlocked', label: 'Unlocked' },
-  { value: 'Favorites', label: 'Favorites' },
+  { value: 'All', label: '🗃️ All' },
+  ...COLOR_KEYS.map(key => ({ value: key, label: `${COLOR_META[key].emoji} ${COLOR_META[key].nameEn}` })),
+  { value: 'Unlocked', label: '✅ Unlocked' },
+  { value: 'Favorites', label: '⭐ Favorites' },
 ];
 let filter = 'All';
 const filterHost = document.getElementById('filters');

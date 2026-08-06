@@ -184,7 +184,7 @@ function runStep() {
   if (!s.want) {   /* ขั้นอธิบายอย่างเดียว */
     msg.textContent = s.text;
     sub.textContent = '';
-    const show = el('button', { class: 'btn btn-gold' }, step === STEPS.length - 1 ? (isEn ? 'Build my 7-card hand →' : 'ไปเลือกมือ 7 ใบ →') : (isEn ? 'Got it — next' : 'เข้าใจแล้ว ต่อเลย'));
+    const show = el('button', { class: 'btn btn-gold' }, step === STEPS.length - 1 ? (isEn ? '🖐️ Build my 7-card hand →' : '🖐️ ไปเลือกมือ 7 ใบ →') : (isEn ? '👍 Got it — next' : '👍 เข้าใจแล้ว ต่อเลย'));
     show.addEventListener('click', () => advance());
     msg.textContent = s.explain;
     sub.textContent = s.explainSub;
@@ -210,7 +210,7 @@ function runStep() {
         haptic([10, 40, 18]);
         msg.textContent = s.explain;
         sub.textContent = s.explainSub;
-        const nxt = el('button', { class: 'btn btn-gold' }, isEn ? 'Next →' : 'ต่อไป →');
+        const nxt = el('button', { class: 'btn btn-gold' }, isEn ? '▶️ Next →' : '▶️ ต่อไป →');
         nxt.addEventListener('click', () => advance());
         nextRow.append(nxt);
       };

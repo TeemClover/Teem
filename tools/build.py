@@ -768,7 +768,7 @@ index_body = f'''<header class="bar"><div class="wrap">
 </div></header>
 
 <section class="head"><div class="wrap">
-  <span class="eyebrow">อ่านฟรี · ไม่ต้องสมัคร</span>
+  <span class="eyebrow">🆓 อ่านฟรี · ไม่ต้องสมัคร</span>
   <h1 class="disp">{SERIES}</h1>
   <p>เรื่องจริงของคนที่เคยต้องสร้างทุกอย่างอยู่หน้าคอมคนเดียว<br>จนถึงวันที่ AI คืนเวลาให้ชีวิต — <b>7 ตอนจบ</b></p>
   <div class="startrow">
@@ -932,9 +932,9 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
   <a class="home disp" href="../">← ทุกตอน</a>
   <span class="ttl">ตอนที่ {num}<b>{E(title)}</b></span>
   <div class="zoom" role="group" aria-label="ขนาดช่องการ์ตูน">
-    <button type="button" id="zoomOut" aria-label="ย่อช่องการ์ตูน">−</button>
+    <button type="button" id="zoomOut" aria-label="ย่อช่องการ์ตูน">➖</button>
     <span class="lv" id="zoomLv" role="status" aria-live="polite">100%</span>
-    <button type="button" id="zoomIn" aria-label="ขยายช่องการ์ตูน">+</button>
+    <button type="button" id="zoomIn" aria-label="ขยายช่องการ์ตูน">➕</button>
   </div>
 </div></header>
 
@@ -1373,8 +1373,8 @@ def path_page(p):
 </div></header>
 
 <section class="sect"><div class="wrap">
-  <span class="eyebrow">ฟังดูคุ้นไหม</span>
-  <h2 class="disp">ถ้าสามข้อนี้ใช่ คุณมาถูกหน้าแล้ว</h2>
+  <span class="eyebrow">🤔 ฟังดูคุ้นไหม</span>
+  <h2 class="disp">✅ ถ้าสามข้อนี้ใช่ คุณมาถูกหน้าแล้ว</h2>
   <p class="sub">ไม่มีแบบทดสอบ ไม่มีคะแนน — อ่านแล้วรู้สึกว่าใช่ก็พอ</p>
   <div class="signs">
 {signs}
@@ -1386,8 +1386,8 @@ def path_page(p):
 </div></section>
 
 <section class="sect"><div class="wrap">
-  <span class="eyebrow">เส้นทางที่เราแนะนำ</span>
-  <h2 class="disp">สามก้าวถัดไป เรียงมาให้แล้ว</h2>
+  <span class="eyebrow">🧭 เส้นทางที่เราแนะนำ</span>
+  <h2 class="disp">👣 สามก้าวถัดไป เรียงมาให้แล้ว</h2>
   <p class="sub">ไม่ใช่ข้อบังคับ ข้ามหรือสลับได้ตามใจ — ทำอันไหนแล้วมันจะติ๊กเขียวให้เอง
   เก็บอยู่ในเครื่องคุณล้วน ไม่ได้ส่งไปไหน</p>
   <div class="route">
@@ -1397,8 +1397,8 @@ def path_page(p):
 {note}</div></section>
 
 <section class="sect"><div class="wrap">
-  <span class="eyebrow">ของในบ้านที่ตรงกับสายนี้</span>
-  <h2 class="disp">หยิบไปใช้ได้เลย ไม่มีเงื่อนไข</h2>
+  <span class="eyebrow">🎁 ของในบ้านที่ตรงกับสายนี้</span>
+  <h2 class="disp">🆓 หยิบไปใช้ได้เลย ไม่มีเงื่อนไข</h2>
   <div class="gifts">
 {gifts}
   </div>
@@ -1411,15 +1411,15 @@ def path_page(p):
     รวมถึงการ์ดประจำตัวที่จะขึ้น{p['th']}ให้อัตโนมัติ — เปลี่ยนใจทีหลังได้ตลอด</p>
     <p class="flagged" id="flagMsg" hidden>🍀 ปักธงเรียบร้อย — คุณคือ{p['th']}</p>
     <div class="btnrow">
-      <button type="button" class="btn" id="flagBtn">ปักธงว่าฉันคือ{p['th']}</button>
-      <a class="btn gold" href="../../card/">ไปทำการ์ดประจำตัว</a>
+      <button type="button" class="btn" id="flagBtn">🚩 ปักธงว่าฉันคือ{p['th']}</button>
+      <a class="btn gold" href="../../card/">🎴 ไปทำการ์ดประจำตัว</a>
     </div>
   </div>
 </div></section>
 
 <section class="sect"><div class="wrap" data-mc-end>
-  <span class="eyebrow">ไม่ใช่สายนี้ก็ไม่เป็นไร</span>
-  <h2 class="disp">ดูสายอื่นได้ ห้องทุกห้องเปิดเหมือนเดิม</h2>
+  <span class="eyebrow">🤷 ไม่ใช่สายนี้ก็ไม่เป็นไร</span>
+  <h2 class="disp">🚪 ดูสายอื่นได้ ห้องทุกห้องเปิดเหมือนเดิม</h2>
   <p class="sub">สายเป็นแค่ทางลัดให้เราหยิบของถูกอันมาวางตรงหน้าคุณ ไม่ได้ล็อกอะไรทั้งนั้น</p>
   <div class="others">
 {others_html}
@@ -1447,7 +1447,7 @@ def paths_index():
         f'''    <a class="pcard" href="{p['slug']}/" style="--c:{hex_rgb(p['ac'])}">
       <span class="e">{p['emo']}</span>
       <span class="nm">{p['key']}</span>
-      <h3 class="disp">{p['th']} — {E(p['hook'])}</h3>
+      <h3 class="disp">{p['emo']} {p['th']} — {E(p['hook'])}</h3>
       <p>{E(p['who'])}</p>
       <span class="go">ดูเส้นทางของ{p['th']} →</span>
     </a>''' for p in PATHS)
@@ -1473,8 +1473,8 @@ def paths_index():
 </div></header>
 
 <section class="sect"><div class="wrap">
-  <span class="eyebrow">สี่สายของบ้าน</span>
-  <h2 class="disp">อ่านสองบรรทัด แล้วเลือกอันที่ใช่ที่สุด</h2>
+  <span class="eyebrow">🎴 สี่สายของบ้าน</span>
+  <h2 class="disp">👀 อ่านสองบรรทัด แล้วเลือกอันที่ใช่ที่สุด</h2>
   <p class="sub">ไม่ต้องเลือกให้ถูก เลือกให้ใกล้ตัวก็พอ ที่เหลือเราจัดให้</p>
   <div class="pcards">
 {cards}
@@ -1482,8 +1482,8 @@ def paths_index():
 </div></section>
 
 <section class="sect"><div class="wrap" data-mc-end>
-  <span class="eyebrow">เลือกแล้วเกิดอะไรขึ้น</span>
-  <h2 class="disp">เปลี่ยนแค่ลำดับของ ไม่ได้เปลี่ยนสิทธิ์</h2>
+  <span class="eyebrow">❓ เลือกแล้วเกิดอะไรขึ้น</span>
+  <h2 class="disp">🔀 เปลี่ยนแค่ลำดับของ ไม่ได้เปลี่ยนสิทธิ์</h2>
   <div class="three">
     <div class="box"><b class="disp">🧭 ได้ลำดับที่แนะนำ</b>
       <p>สามก้าวถัดไปที่เรียงมาให้แล้ว ว่าควรเริ่มตรงไหนแล้วไปต่อยังไง
