@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Quick Tutorial — myClover: CORE7</title>
-<meta name="description" content="เรียน CORE7 แบบเล่นจริงในเวลาประมาณ 1 นาที แล้วไปเลือกมือ 7 ใบเพื่อเล่นกับ EASY BOT ทันที">
+<meta name="description" content="เรียน CORE7 แบบเล่นจริงในเวลาประมาณ 1 นาที แล้วใช้มือเริ่มต้นลงเล่นกับ EASY BOT ทันที">
 <meta name="theme-color" content="#0A2818">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -48,16 +48,66 @@ body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transp
 import { el, haptic, reducedMotion } from '/core7/js/ui.js';
 import { COLOR_META } from '/core7/js/cards.js';
 import { colorIcon, genericCardSVG, cardBackSVG } from '/core7/js/art.js';
-import { setTutorialCompleted, track } from '/core7/js/store.js';
-const params=new URLSearchParams(location.search),isEn=params.get('lang')==='en',entry=params.get('entry')||'core7',handTarget=`/core7/hand/?next=bot&level=easy&entry=${encodeURIComponent(entry)}`;
-document.documentElement.lang=isEn?'en':'th';track('core7_tutorial_start');if(entry==='walkthrough')track('core7_tutorial_from_walkthrough');
-document.getElementById('lang').textContent=isEn?'TH':'EN';document.getElementById('lang').addEventListener('click',()=>{const next=new URLSearchParams(location.search);if(isEn)next.delete('lang');else next.set('lang','en');location.search=next.toString()?`?${next}`:''});
-const skip=document.getElementById('skip');skip.href=handTarget;skip.textContent=isEn?'Skip → EASY BOT':'ข้าม → EASY BOT';document.getElementById('entryNote').textContent=entry==='walkthrough'?(isEn?'Walkthrough route · tutorial → choose 7 cards → EASY BOT':'ทางลัดจาก Walkthrough · เรียนกติกา → เลือก 7 ใบ → EASY BOT'):'';document.getElementById('youLabel').textContent=isEn?'YOU · always left':'คุณ · ซ้ายเสมอ';document.getElementById('oppLabel').textContent=isEn?'OPPONENT · right':'คู่แข่ง · ขวา';
-const slotYou=document.getElementById('slotYou'),slotBot=document.getElementById('slotBot'),msg=document.getElementById('msg'),sub=document.getElementById('sub'),choices=document.getElementById('choices'),nextRow=document.getElementById('nextRow'),dots=document.getElementById('dots'),tutorialCards=document.getElementById('tutorialCards'),ruleVisual=document.getElementById('ruleVisual');slotYou.querySelector('.back').innerHTML=cardBackSVG({width:140});slotBot.querySelector('.back').innerHTML=cardBackSVG({width:140});
-const TH=[{explain:'คุณอยู่ซ้าย · คู่แข่งอยู่ขวา',explainSub:'ทั้ง 2 ฝั่งเห็นตัวเองอยู่ซ้ายบนเครื่องของตัวเอง ผลเกมยังตรงกันจาก Server เดียวกัน'},{want:'RED',bot:'GREEN',text:'ลองกด 🔴 RED',explain:'🔴 แดงชนะ 🟢 เขียว',explainSub:'ผู้ชนะเสียใบที่ลง 1 ใบ · ผู้แพ้เสียใบที่ลง และต้องทิ้งเพิ่มอีก 1 ใบแบบหงายหน้า'},{want:'RED',bot:'RED',text:'ถ้าสีเดียวกันล่ะ? กด 🔴 RED อีกครั้ง',explain:'เสมอ — สีเดียวกันไม่มีใครแพ้',explainSub:'ทั้งคู่เสียแค่ใบที่ลง ไม่มีใครทิ้งเพิ่ม และไม่มีใครได้ Round Win'},{want:'SILVER',bot:'BLUE',text:'ลอง ⚙️ SILVER',explain:'⚙️ Block — เงินเสมอกับทุกสี',explainSub:'ใช้ซื้อเวลาและอ่านคู่แข่ง แต่เงินไม่มีวันชนะ Round ปกติ'},{explain:'⚠️ Final Silver',explainSub:'เมื่อเป็นใบสุดท้ายของทั้งคู่ เงินแพ้ทุกสีที่ไม่ใช่เงิน อย่าเก็บไว้ปิดเกม'},{visual:true,explain:'ชนะ 3 Rounds ก่อน หรือคู่แข่งหมดมือ = ชนะ Match',explainSub:'เท่านี้เล่นเป็นแล้ว ต่อไปเลือกมือ 7 ใบ แล้วลงเล่นกับ EASY BOT ทันที'}];
-const EN=[{explain:'YOU = left · OPPONENT = right',explainSub:'Both players see themselves on the left while sharing the same server-authoritative result.'},{want:'RED',bot:'GREEN',text:'Tap RED',explain:'RED beats GREEN',explainSub:'The loser loses the played card and reveals one additional discard.'},{want:'RED',bot:'RED',text:'Tap RED again',explain:'DRAW — matching colors tie',explainSub:'Both lose only the played card. No extra discard.'},{want:'SILVER',bot:'BLUE',text:'Try SILVER',explain:'BLOCK — SILVER ties every normal color',explainSub:'It buys time but never wins a normal Round.'},{explain:'Final Silver',explainSub:'If SILVER is the final card for both players, it loses to any real color.'},{visual:true,explain:'Win 3 Rounds first, or outlast the opponent’s hand',explainSub:'Choose seven cards next, then play the EASY BOT immediately.'}];
-const STEPS=isEn?EN:TH;let step=0;function renderDots(){dots.innerHTML='';STEPS.forEach((_,i)=>dots.append(el('i',{class:i<=step?'on':''})))}function reset(){slotYou.classList.remove('revealed');slotBot.classList.remove('revealed')}function advance(){step=Math.min(step+1,STEPS.length-1);run()}function colorBtn(color,enabled,hinted){const b=el('button',{class:`cbtn ${color.toLowerCase()}${hinted?' hint':''}`,'aria-label':`${isEn?'Choose':'เลือกสี'} ${COLOR_META[color].nameEn}`,html:`${colorIcon(color,26)}<span>${COLOR_META[color].nameEn.toUpperCase()}</span>`});b.disabled=!enabled;return b}
-function run(){renderDots();reset();const s=STEPS[step];tutorialCards.hidden=!!s.visual;ruleVisual.hidden=!s.visual;msg.textContent=s.text||s.explain;sub.textContent=s.text?'':s.explainSub;choices.innerHTML='';nextRow.innerHTML='';if(!s.want){const last=step===STEPS.length-1,b=el('button',{class:'btn btn-gold'},last?(isEn?'🖐️ Choose 7 cards → EASY BOT':'🖐️ เลือก 7 ใบ → EASY BOT'):(isEn?'👍 Next':'👍 เข้าใจแล้ว ต่อเลย'));b.addEventListener('click',()=>{if(last){setTutorialCompleted();track('core7_tutorial_complete');location.href=handTarget}else advance()});nextRow.append(b);return}for(const color of ['RED','GREEN','BLUE','SILVER']){const b=colorBtn(color,color===s.want,color===s.want);b.addEventListener('click',()=>{haptic(10);choices.querySelectorAll('button').forEach(x=>x.disabled=true);slotYou.querySelector('.front').innerHTML=genericCardSVG(color,{width:140});slotBot.querySelector('.front').innerHTML=genericCardSVG(s.bot,{width:140});const reveal=()=>{slotYou.classList.add('revealed');slotBot.classList.add('revealed');msg.textContent=s.explain;sub.textContent=s.explainSub;const n=el('button',{class:'btn btn-gold'},isEn?'▶️ Next →':'▶️ ต่อไป →');n.addEventListener('click',advance);nextRow.append(n)};reducedMotion()?reveal():setTimeout(reveal,350)});choices.append(b)}}run();
+import { setHand, setTutorialCompleted, track } from '/core7/js/store.js';
+
+const params = new URLSearchParams(location.search);
+const isEn = params.get('lang') === 'en';
+const entry = params.get('entry') || 'core7';
+const fromWalkthrough = entry === 'walkthrough';
+const handTarget = `/core7/hand/?next=bot&level=easy&entry=${encodeURIComponent(entry)}`;
+const botTarget = '/core7/bot/?level=easy&fresh=1&entry=walkthrough';
+
+document.documentElement.lang = isEn ? 'en' : 'th';
+track('core7_tutorial_start');
+if (entry === 'walkthrough') track('core7_tutorial_from_walkthrough');
+
+document.getElementById('lang').textContent = isEn ? 'TH' : 'EN';
+document.getElementById('lang').addEventListener('click', () => {
+  const next = new URLSearchParams(location.search);
+  if (isEn) next.delete('lang'); else next.set('lang', 'en');
+  location.search = next.toString() ? `?${next}` : '';
+});
+const skip = document.getElementById('skip');
+skip.href = fromWalkthrough ? botTarget : handTarget;
+skip.textContent = isEn ? 'Skip → EASY BOT' : 'ข้าม → EASY BOT';
+skip.addEventListener('click', () => {
+  if (fromWalkthrough) setHand(['gen-red','gen-red','gen-green','gen-green','gen-blue','gen-blue','gen-silver']);
+});
+document.getElementById('entryNote').textContent = fromWalkthrough
+  ? (isEn ? 'Walkthrough route · tutorial → starter hand → EASY BOT' : 'ทางลัดจาก Walkthrough · เรียนกติกา → มือเริ่มต้น → EASY BOT')
+  : '';
+document.getElementById('youLabel').textContent = isEn ? 'YOU · always left' : 'คุณ · ซ้ายเสมอ';
+document.getElementById('oppLabel').textContent = isEn ? 'OPPONENT · right' : 'คู่แข่ง · ขวา';
+
+const slotYou=document.getElementById('slotYou'),slotBot=document.getElementById('slotBot'),msg=document.getElementById('msg'),sub=document.getElementById('sub'),choices=document.getElementById('choices'),nextRow=document.getElementById('nextRow'),dots=document.getElementById('dots'),tutorialCards=document.getElementById('tutorialCards'),ruleVisual=document.getElementById('ruleVisual');
+slotYou.querySelector('.back').innerHTML=cardBackSVG({width:140});slotBot.querySelector('.back').innerHTML=cardBackSVG({width:140});
+
+const TH=[
+ {explain:'คุณอยู่ซ้าย · คู่แข่งอยู่ขวา',explainSub:'ทั้ง 2 ฝั่งเห็นตัวเองอยู่ซ้ายบนเครื่องของตัวเอง ผลเกมยังตรงกันจาก Server เดียวกัน'},
+ {want:'RED',bot:'GREEN',text:'ลองกด 🔴 RED',explain:'🔴 แดงชนะ 🟢 เขียว',explainSub:'ผู้ชนะเสียใบที่ลง 1 ใบ · ผู้แพ้เสียใบที่ลง และต้องทิ้งเพิ่มอีก 1 ใบแบบหงายหน้า'},
+ {want:'RED',bot:'RED',text:'ถ้าสีเดียวกันล่ะ? กด 🔴 RED อีกครั้ง',explain:'เสมอ — สีเดียวกันไม่มีใครแพ้',explainSub:'ทั้งคู่เสียแค่ใบที่ลง ไม่มีใครทิ้งเพิ่ม และไม่มีใครได้ Round Win'},
+ {want:'SILVER',bot:'BLUE',text:'ลอง ⚙️ SILVER',explain:'⚙️ Block — เงินเสมอกับทุกสี',explainSub:'ใช้ซื้อเวลาและอ่านคู่แข่ง แต่เงินไม่มีวันชนะ Round ปกติ'},
+ {explain:'⚠️ Final Silver',explainSub:'เมื่อเป็นใบสุดท้ายของทั้งคู่ เงินแพ้ทุกสีที่ไม่ใช่เงิน อย่าเก็บไว้ปิดเกม'},
+ {visual:true,explain:'ชนะ 3 Rounds ก่อน หรือคู่แข่งหมดมือ = ชนะ Match',explainSub:'เท่านี้เล่นเป็นแล้ว เราจัดมือเริ่มต้น 2-2-2-1 ไว้ให้ กดแล้วเจอ EASY BOT ทันที'}
+];
+const EN=[
+ {explain:'YOU = left · OPPONENT = right',explainSub:'Both players see themselves on the left while sharing the same server-authoritative result.'},
+ {want:'RED',bot:'GREEN',text:'Tap RED',explain:'RED beats GREEN',explainSub:'The loser loses the played card and reveals one additional discard.'},
+ {want:'RED',bot:'RED',text:'Tap RED again',explain:'DRAW — matching colors tie',explainSub:'Both lose only the played card. No extra discard.'},
+ {want:'SILVER',bot:'BLUE',text:'Try SILVER',explain:'BLOCK — SILVER ties every normal color',explainSub:'It buys time but never wins a normal Round.'},
+ {explain:'Final Silver',explainSub:'If SILVER is the final card for both players, it loses to any real color.'},
+ {visual:true,explain:'Win 3 Rounds first, or outlast the opponent’s hand',explainSub:'A balanced 2-2-2-1 starter hand is ready. Tap once to meet the EASY BOT.'}
+];
+const STEPS=isEn?EN:TH;let step=0;
+function renderDots(){dots.innerHTML='';STEPS.forEach((_,i)=>dots.append(el('i',{class:i<=step?'on':''})))}
+function reset(){slotYou.classList.remove('revealed');slotBot.classList.remove('revealed')}
+function advance(){step=Math.min(step+1,STEPS.length-1);run()}
+function colorBtn(color,enabled,hinted){const b=el('button',{class:`cbtn ${color.toLowerCase()}${hinted?' hint':''}`,'aria-label':`${isEn?'Choose':'เลือกสี'} ${COLOR_META[color].nameEn}`,html:`${colorIcon(color,26)}<span>${COLOR_META[color].nameEn.toUpperCase()}</span>`});b.disabled=!enabled;return b}
+function run(){renderDots();reset();const s=STEPS[step];tutorialCards.hidden=!!s.visual;ruleVisual.hidden=!s.visual;msg.textContent=s.text||s.explain;sub.textContent=s.text?'':s.explainSub;choices.innerHTML='';nextRow.innerHTML='';
+ if(!s.want){const last=step===STEPS.length-1;const b=el('button',{class:'btn btn-gold'},last?(fromWalkthrough?(isEn?'🎲 Play EASY BOT now':'🎲 เล่นกับ EASY BOT เลย'):(isEn?'🖐️ Choose 7 cards →':'🖐️ เลือก 7 ใบ →')):(isEn?'👍 Next':'👍 เข้าใจแล้ว ต่อเลย'));b.addEventListener('click',()=>{if(last){setTutorialCompleted();track('core7_tutorial_complete');if(fromWalkthrough){setHand(['gen-red','gen-red','gen-green','gen-green','gen-blue','gen-blue','gen-silver']);location.href=botTarget}else location.href=handTarget}else advance()});nextRow.append(b);return}
+ for(const color of ['RED','GREEN','BLUE','SILVER']){const b=colorBtn(color,color===s.want,color===s.want);b.addEventListener('click',()=>{haptic(10);choices.querySelectorAll('button').forEach(x=>x.disabled=true);slotYou.querySelector('.front').innerHTML=genericCardSVG(color,{width:140});slotBot.querySelector('.front').innerHTML=genericCardSVG(s.bot,{width:140});const reveal=()=>{slotYou.classList.add('revealed');slotBot.classList.add('revealed');msg.textContent=s.explain;sub.textContent=s.explainSub;const n=el('button',{class:'btn btn-gold'},isEn?'▶️ Next →':'▶️ ต่อไป →');n.addEventListener('click',advance);nextRow.append(n)};reducedMotion()?reveal():setTimeout(reveal,350)});choices.append(b)}
+}
+run();
 </script>
 </body>
 </html>
