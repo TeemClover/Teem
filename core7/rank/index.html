@@ -23,21 +23,21 @@
   <div class="wrap">
     <p class="eyebrow">🏆 Ranking &amp; Seasons</p>
     <h2 class="disp">Ranked Game <span class="tag tag-soon">🔜 Coming soon</span></h2>
-    <p class="lead">ฤดูกาลแข่งขันที่จบด้วย <b>Season Champion Reward</b> — ยังไม่เปิด
+    <p class="lead" data-en-html="A competitive season that ends with a <b>Season Champion Reward</b> — not open yet. In the meantime every mode stays free to play and nothing is locked away waiting for it.">ฤดูกาลแข่งขันที่จบด้วย <b>Season Champion Reward</b> — ยังไม่เปิด
       ระหว่างนี้เล่นได้ทุกโหมดฟรีเหมือนเดิม และไม่มีอะไรถูกล็อกไว้รอ</p>
 
     <div class="panel" style="margin-top:20px">
-      <b class="disp">เปิดแล้วจะเป็นแบบนี้</b>
+      <b class="disp" data-en="Here is how it will work">เปิดแล้วจะเป็นแบบนี้</b>
       <ul style="margin:12px 0 0 20px;font-size:14.5px;line-height:1.9">
-        <li>อันดับขยับเฉพาะจากคิว Ranked เท่านั้น — เล่นกับบอท เล่นกับเพื่อนในห้องส่วนตัว
+        <li data-en="Rank moves only through the Ranked queue. Bot games, private rooms with friends and Casual matches never touch it.">อันดับขยับเฉพาะจากคิว Ranked เท่านั้น — เล่นกับบอท เล่นกับเพื่อนในห้องส่วนตัว
             และเกม Casual ไม่มีผลกับอันดับเลย</li>
-        <li>ปิดฤดูกาลแล้วแจกรางวัลให้แชมป์ประจำฤดูกาล</li>
-        <li>อันดับเป็นเกียรติยศล้วน ๆ ไม่ทำให้การ์ดใบไหนแรงขึ้น และไม่ปลดล็อกการ์ดที่คนอื่นไม่มี</li>
+        <li data-en="When a season closes, the season champion gets the reward.">ปิดฤดูกาลแล้วแจกรางวัลให้แชมป์ประจำฤดูกาล</li>
+        <li data-en="Rank is honour and nothing else. It makes no card stronger and unlocks no card other people cannot have.">อันดับเป็นเกียรติยศล้วน ๆ ไม่ทำให้การ์ดใบไหนแรงขึ้น และไม่ปลดล็อกการ์ดที่คนอื่นไม่มี</li>
       </ul>
     </div>
 
     <h3 class="disp" style="margin-top:34px" data-en="🪜 Six tiers in a season">🪜 หกขั้นของฤดูกาล</h3>
-    <p style="font-size:14px;color:rgb(var(--muted))">จากเมล็ดไปจนถึงโคลเวอร์สี่แฉก — เป็นเครื่องหมายว่าเดินมาถึงไหน ไม่ใช่พลังในเกม</p>
+    <p style="font-size:14px;color:rgb(var(--muted))" data-en="From a seed to a four-leaf clover — a mark of how far you have come, not power in the game.">จากเมล็ดไปจนถึงโคลเวอร์สี่แฉก — เป็นเครื่องหมายว่าเดินมาถึงไหน ไม่ใช่พลังในเกม</p>
     <div class="tiers" id="tiers"></div>
 
     <h3 class="disp" style="margin-top:34px" data-en="📊 Your stats (on this device)">📊 สถิติของคุณ (ในเครื่องนี้)</h3>
@@ -65,7 +65,7 @@ const S = store.getAllStats();
 const winRate = S.all.matchesPlayed ? Math.round(100 * S.all.matchesWon / S.all.matchesPlayed) : 0;
 const ls = document.getElementById('localStats');
 for (const [label, val] of [
-  ['Matches (Casual+Bot)', S.all.matchesPlayed], ['ชนะ', S.all.matchesWon],
+  ['Matches (Casual+Bot)', S.all.matchesPlayed], [tr('ชนะ', 'Wins'), S.all.matchesWon],
   ['Win Rate', winRate + '%'], ['Best Streak', S.all.bestStreak],
 ]) ls.append(el('div', { class: 'stat' }, el('b', {}, String(val)), el('span', {}, label)));
 </script>

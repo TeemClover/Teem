@@ -23,6 +23,7 @@
 </div></main><footer class="c7foot" id="c7foot"></footer>
 <script type="module">
 import { renderShell } from '/core7/js/ui.js';
+import { t } from '/core7/js/i18n.js';
 import { RemoteRooms } from '/core7/js/adapters.js';
 import { getGuest, setGuestName, track } from '/core7/js/store.js';
 import { playSfx } from '/core7/js/audio.js';
@@ -61,7 +62,10 @@ async function refresh() {
       main.append(host, meta); const button = document.createElement('button'); button.className = 'btn btn-green'; button.textContent = 'Join'; button.addEventListener('click', () => join(room.code));
       row.append(code, main, button); list.append(row);
     }
-  } catch (error) { list.innerHTML = `<div class="empty panel">โหลด Lobby ไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})</div>`; }
+  } catch (error) {
+    list.innerHTML = `<div class="empty panel">${t(`โหลด Lobby ไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`,
+      `Could not load the lobby (${error.code || 'NETWORK_ERROR'})`)}</div>`;
+  }
   finally { refreshBtn.disabled = false; }
 }
 refreshBtn.addEventListener('click', refresh); refresh();

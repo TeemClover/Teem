@@ -52,7 +52,14 @@ export function toggleLang() {
 
 /* เก็บข้อความไทยต้นฉบับไว้ครั้งแรกที่สลับ จะได้สลับกลับมาได้ไม่เพี้ยน */
 function swap(node, lang) {
-  const en = node.getAttribute('data-en');
+  /* data-en-html เขียนได้สองแบบ และต้องอ่านออกทั้งคู่:
+       <li data-en="A <b>b</b>" data-en-html>   ← ธงเปล่า คำอยู่ที่ data-en
+       <li data-en-html="A <b>b</b>">           ← คำอยู่ในตัวมันเอง
+     แบบที่สองเคยถูกมองข้ามเงียบ ๆ เพราะโค้ดอ่าน data-en อย่างเดียวแล้ว
+     return ทิ้งตั้งแต่บรรทัดแรก — หน้ากติกาจึงมี 9 จุดที่กด EN แล้วยังเป็นไทย
+     โดยไม่มี error ให้เห็น ทั้งที่ attribute เขียนไว้ครบแล้ว */
+  const html = node.getAttribute('data-en-html');
+  const en = node.getAttribute('data-en') ?? (html || null);
   if (en === null) return;
   const useHtml = node.hasAttribute('data-en-html');
   const store = useHtml ? '__thHtml' : '__thText';
@@ -85,7 +92,9 @@ function swapAttrs(node, lang) {
 export function applyLang(lang = getLang(), root = document) {
   const use = VALID.includes(lang) ? lang : 'th';
   if (root === document) document.documentElement.lang = use;
-  for (const node of root.querySelectorAll('[data-en]')) swap(node, use);
+  /* ต้องเก็บ data-en-html ที่ไม่มี data-en คู่มาด้วย ไม่งั้นแบบที่คำอยู่ใน
+     ตัวมันเองจะไม่เคยถูกเรียก swap() เลยแม้ swap() จะอ่านมันออกแล้ว */
+  for (const node of root.querySelectorAll('[data-en],[data-en-html]')) swap(node, use);
   for (const node of root.querySelectorAll('[data-en-attr]')) swapAttrs(node, use);
   /* หน้าที่เขียนสองภาษาเป็นก้อนแยก (เช่นหน้ากติกา) ใช้ data-lang-block */
   for (const node of root.querySelectorAll('[data-lang-block]')) {

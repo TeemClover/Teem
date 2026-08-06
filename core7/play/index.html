@@ -43,7 +43,7 @@
 <main class="sec">
   <div class="wrap">
     <p class="eyebrow">Play</p>
-    <h2 class="disp">🎮 วันนี้อยากนั่งโต๊ะแบบไหน</h2>
+    <h2 class="disp" data-en="🎮 What kind of table do you want today?">🎮 วันนี้อยากนั่งโต๊ะแบบไหน</h2>
 
     <div class="namebar">
       <span style="font-weight:700" data-en="Name at the table:">ชื่อบนโต๊ะ:</span>
@@ -90,8 +90,8 @@
       </div>
       <div class="panel mode">
         <h3>🏆 Ranked Game <span class="tag tag-soon">🔜 Coming soon</span></h3>
-        <p>ฤดูกาลแข่งขันพร้อมรางวัล Season Champion — ตอนนี้ทุกโหมดเล่นได้ฟรีและไม่มีอะไรต้องปลดล็อก
-           (ดูรายละเอียดที่ <a href="/core7/rank/" style="text-decoration:underline" data-en="the Ranking page">หน้า Ranking</a>)</p>
+        <p data-en-html="A competitive season with a Season Champion reward. For now every mode is free to play and nothing is locked (details on the <a href=&quot;/core7/rank/&quot; style=&quot;text-decoration:underline&quot;>Ranking page</a>).">ฤดูกาลแข่งขันพร้อมรางวัล Season Champion — ตอนนี้ทุกโหมดเล่นได้ฟรีและไม่มีอะไรต้องปลดล็อก
+           (ดูรายละเอียดที่ <a href="/core7/rank/" style="text-decoration:underline">หน้า Ranking</a>)</p>
       </div>
     </div>
   </div>
@@ -99,6 +99,7 @@
 <footer class="c7foot" id="c7foot"></footer>
 <script type="module">
 import { renderShell, toast } from '/core7/js/ui.js';
+import { t } from '/core7/js/i18n.js';
 import { RemoteRooms } from '/core7/js/adapters.js';
 import { getGuest, setGuestName, track } from '/core7/js/store.js';
 import { playSfx } from '/core7/js/audio.js';
@@ -158,7 +159,8 @@ async function loadLobby() {
       main.append(host, meta); row.append(code, main, join); roomsEl.append(row);
     }
   } catch (error) {
-    lobbyStatus.textContent = `โหลด Lobby ไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`;
+    lobbyStatus.textContent = t(`โหลด Lobby ไม่สำเร็จ (${error.code || 'NETWORK_ERROR'})`,
+      `Could not load the lobby (${error.code || 'NETWORK_ERROR'})`);
     roomsEl.innerHTML = '<div class="play-lobby-empty" data-en="Press Refresh to try again">กด Refresh เพื่อลองอีกครั้ง</div>';
   } finally {
     refreshLobby.disabled = false;

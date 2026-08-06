@@ -31,10 +31,14 @@
 
   /* ── ลำดับขั้น ──
      เรียงตามที่คนเดินจริง แต่ละขั้นถามคำถามเดียว: "ผ่านขั้นนี้ไปหรือยัง"
-     done() เป็นจริงเมื่อไหร่ = เข็มทิศเลื่อนไปขั้นถัดไปทันที */
+     done() เป็นจริงเมื่อไหร่ = เข็มทิศเลื่อนไปขั้นถัดไปทันที
+
+     ทุกขั้นมีคำสองภาษาอยู่ในที่เดียวกัน ไม่แยกไฟล์ เพราะข้อความพวกนี้
+     ผูกกับเงื่อนไข done() ของขั้นนั้นแน่น แยกไปอยู่คนละไฟล์เมื่อไหร่
+     คนแก้ลำดับขั้นจะลืมแก้คำอีกฝั่งทันที — en เขียนคู่กับ th บรรทัดติดกัน */
   var STAGES = [
     {
-      id: 'door', rail: { icon: '👊', th: 'ชนหมัด' },
+      id: 'door', rail: { icon: '👊', th: 'ชนหมัด', en: 'Fist bump' },
       done: function () { return flag('mc_glhf_seen'); },
       next: {
         href: 'hall.html#glhf', icon: '👊',
@@ -42,10 +46,16 @@
         title: '👊 ชนหมัดเพื่อเริ่มเกม',
         desc: 'พิธีเริ่มเกมของบ้านหลังนี้ ชนหมัดแล้วเข็มทิศจะโผล่ขึ้นมา',
         cta: 'ไปชนหมัด →',
+        en: {
+          label: 'First step',
+          title: '👊 Bump fists to begin',
+          desc: 'The opening ritual of this house. Bump fists and the compass appears.',
+          cta: 'Go bump fists →',
+        },
       },
     },
     {
-      id: 'intro', rail: { icon: '🌱', th: 'บทนำ' },
+      id: 'intro', rail: { icon: '🌱', th: 'บทนำ', en: 'Prologue' },
       done: function () { return flag('mc_intro_seen') || readCount() > 0; },
       next: {
         href: 'forge/intro/', icon: '🌱',
@@ -55,10 +65,16 @@
         title: '🌱 วิธีคิดในการใช้ AI ที่คนส่วนใหญ่ไม่เคยรู้',
         desc: 'สองช่อง อ่านจบในไม่กี่วินาที แล้วเข้าเรื่องเลย',
         cta: 'เดินตามเข็มทิศ →',
+        en: {
+          label: 'First room',
+          title: '🌱 The way of using AI that most people never learn',
+          desc: 'Two panels, a few seconds to read, then straight into the story.',
+          cta: 'Follow the compass →',
+        },
       },
     },
     {
-      id: 'forge', rail: { icon: '📖', th: 'การ์ตูน 7 ตอน' },
+      id: 'forge', rail: { icon: '📖', th: 'การ์ตูน 7 ตอน', en: '7 episodes' },
       done: function () { return readCount() >= EPISODES.length; },
       next: function () {
         var i = Math.min(readCount(), EPISODES.length - 1);
@@ -69,11 +85,17 @@
           title: '📖 อ่าน WHY AI? ตอนที่ ' + n,
           desc: 'ตอนที่ ' + n + ' จาก ' + EPISODES.length + ' · อ่านจบแล้วเข็มทิศจะเลื่อนไปตอนถัดไปเอง',
           cta: 'อ่านตอนที่ ' + n + ' →',
+          en: {
+            label: readCount() === 0 ? 'First quest' : 'Keep going',
+            title: '📖 Read WHY AI? episode ' + n,
+            desc: 'Episode ' + n + ' of ' + EPISODES.length + ' · finish it and the compass moves to the next one on its own',
+            cta: 'Read episode ' + n + ' →',
+          },
         };
       },
     },
     {
-      id: 'walkthrough', rail: { icon: '🗺️', th: 'บทสรุปก่อนเรียน' },
+      id: 'walkthrough', rail: { icon: '🗺️', th: 'บทสรุปก่อนเรียน', en: 'Recap' },
       done: function () { return flag('mc_walk_done'); },
       next: {
         href: 'walkthrough/', icon: '🗺️',
@@ -81,6 +103,12 @@
         title: '🗺️ Walkthrough — บทสรุปก่อนลงมือ',
         desc: 'อ่านครบ 7 ตอนแล้ว หน้านี้มัดทั้งเรื่องให้เหลือสิ่งที่เอาไปใช้ได้จริง',
         cta: 'เปิด Walkthrough →',
+        en: {
+          label: 'Unlocked',
+          title: '🗺️ Walkthrough — the recap before you start',
+          desc: 'All seven episodes read. This page ties the whole story down to what you can actually use.',
+          cta: 'Open the Walkthrough →',
+        },
       },
     },
     {
@@ -92,10 +120,16 @@
         title: '🎓 เรียนกติกา CORE7 ใน 1 นาที',
         desc: 'กติกามีอยู่ไม่กี่ข้อ รู้ครบแล้วค่อยลงเล่นจริง',
         cta: 'เริ่ม Tutorial →',
+        en: {
+          label: 'Before the table',
+          title: '🎓 Learn the CORE7 rules in a minute',
+          desc: 'There are only a handful of rules. Learn them, then play for real.',
+          cta: 'Start the tutorial →',
+        },
       },
     },
     {
-      id: 'core7', rail: { icon: '🃏', th: 'เล่น 1 เกม' },
+      id: 'core7', rail: { icon: '🃏', th: 'เล่น 1 เกม', en: 'Play 1 match' },
       done: function () { return matchesPlayed() > 0; },
       next: {
         href: 'core7/hand/?next=bot&level=easy&entry=forge', icon: '🃏',
@@ -103,10 +137,16 @@
         title: '🃏 เล่น CORE7 กับบอท 1 เกม',
         desc: 'ไม่ต้องชนะ ขอแค่เล่นจนจบ — จบเกมแล้วบ้านจะเปิดห้องที่เหลือให้',
         cta: 'เลือกมือ 7 ใบ →',
+        en: {
+          label: 'On the table',
+          title: '🃏 Play one CORE7 match against the bot',
+          desc: 'You do not have to win, only finish. Once you do, the house opens the rest of its rooms.',
+          cta: 'Pick your 7 cards →',
+        },
       },
     },
     {
-      id: 'hall', rail: { icon: '⚡', th: 'AI ใส่ซอส 6 บท' },
+      id: 'hall', rail: { icon: '⚡', th: 'AI ใส่ซอส 6 บท', en: 'AI Sauce · 6 lessons' },
       done: function () { return learnCount() >= LESSONS.length; },
       next: function () {
         var i = Math.min(learnCount(), LESSONS.length - 1);
@@ -117,6 +157,12 @@
           title: '⚡ AI ใส่ซอส — บทที่ ' + n,
           desc: LESSON_TH[i] + ' · บทที่ ' + n + ' จาก ' + LESSONS.length,
           cta: 'เข้าห้องเรียน →',
+          en: {
+            label: 'Lesson ' + n,
+            title: '⚡ AI Sauce — lesson ' + n,
+            desc: LESSON_EN[i] + ' · lesson ' + n + ' of ' + LESSONS.length,
+            cta: 'Enter the classroom →',
+          },
         };
       },
     },
@@ -134,6 +180,12 @@
     title: '🏰 เข้า Guild X แล้วหา Party ของคุณ',
     desc: 'Discord สำหรับแชร์สิ่งที่ทำ ถามคำถาม และเจอคนที่อยากเล่นหรือสร้างต่อไปด้วยกัน',
     cta: 'เข้าร่วม Guild X →',
+    en: {
+      label: 'NEXT QUEST · GUILD X',
+      title: '🏰 Step into Guild X and find your party',
+      desc: 'A Discord for sharing what you made, asking questions, and meeting people who want to play or build next.',
+      cta: 'Join Guild X →',
+    },
   };
 
   var EPISODES = [
@@ -144,6 +196,9 @@
   var LESSONS = ['free-ai', 'image-ai', 'clip-ai', 'notebooklm', 'prompts', 'first-web'];
   var LESSON_TH = ['AI ฟรีที่ควรมีติดเครื่อง', 'สร้างภาพด้วย AI', 'สร้างคลิปสั้นด้วย AI',
     'สร้าง Source ให้ AI', 'ออกแบบ Prompt ให้เป็นระบบ', 'สร้างเว็บชิ้นแรก'];
+  var LESSON_EN = ['The free AI worth keeping on hand', 'Making images with AI',
+    'Making short clips with AI', 'Giving AI a source', 'Designing prompts as a system',
+    'Building your first web page'];
 
   /* ── อ่านค่าจากเครื่อง ──
      ทุกตัวกัน throw เพราะ localStorage โยน SecurityError ได้ในโหมดส่วนตัว
@@ -188,12 +243,28 @@
     }
     return snapshot(STAGES.length - 1, true);
   }
+  /* ── ภาษา ──
+     อ่านสด ๆ ทุกครั้งที่ถูกเรียก ไม่ cache ไว้ตอนโหลดไฟล์ เพราะปุ่มสลับภาษา
+     เขียน mc_lang แล้วสั่งวาดใหม่ทันทีโดยไม่ reload หน้า — cache ไว้เมื่อไหร่
+     เข็มทิศจะเป็นภาษาเดิมค้างอยู่อันเดียวทั้งที่ทั้งหน้าเปลี่ยนไปแล้ว */
+  function isEn() { return raw('mc_lang', 'th') === 'en'; }
+
+  /* คำอังกฤษเขียนเป็นก้อน en ซ้อนอยู่ในก้อนไทย — ทับเฉพาะคีย์ที่มีจริง
+     คีย์ที่ไม่ได้แปล (href, icon) จึงตกทอดมาเองโดยไม่ต้องเขียนซ้ำสองที่ */
+  function lang(n) {
+    if (!isEn() || !n || !n.en) return n;
+    var out = {};
+    for (var k in n) if (k !== 'en') out[k] = n[k];
+    for (var j in n.en) out[j] = n.en[j];
+    return out;
+  }
+
   function snapshot(i, all) {
     var s = STAGES[i];
     var n = all ? DONE_NEXT : (typeof s.next === 'function' ? s.next() : s.next);
     return {
       id: s.id, index: i, total: STAGES.length, done: all,
-      next: n, read: readCount(), episodes: EPISODES.length,
+      next: lang(n), read: readCount(), episodes: EPISODES.length,
       learn: learnCount(), lessons: LESSONS.length,
     };
   }
@@ -256,7 +327,11 @@
     for (var i = 0; i < STAGES.length; i++) {
       if (!STAGES[i].rail) continue;
       out.push({
-        id: STAGES[i].id, icon: STAGES[i].rail.icon, th: STAGES[i].rail.th,
+        id: STAGES[i].id, icon: STAGES[i].rail.icon,
+        /* th คือชื่อเดิมของช่องนี้ตอนที่รางยังมีภาษาเดียว เก็บไว้ให้โค้ดเก่า
+           ที่ยังอ่าน x.th ไม่พัง ส่วน label คือช่องที่เลือกภาษาให้แล้ว */
+        th: STAGES[i].rail.th, en: STAGES[i].rail.en,
+        label: isEn() ? STAGES[i].rail.en : STAGES[i].rail.th,
         done: here.index > i || here.done,
         current: here.index === i && !here.done,
       });

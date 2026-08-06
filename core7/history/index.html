@@ -19,7 +19,7 @@
 <nav class="c7nav" id="c7nav"></nav>
 <main class="sec">
   <div class="wrap-slim">
-    <p class="eyebrow">📜 Match History · เก็บในเครื่องนี้ (50 เกมล่าสุด)</p>
+    <p class="eyebrow" data-en="📜 Match History · kept on this device (last 50 games)">📜 Match History · เก็บในเครื่องนี้ (50 เกมล่าสุด)</p>
     <h2 class="disp" data-en="📜 Match history">📜 ประวัติการเล่น</h2>
     <div id="list"></div>
   </div>
@@ -27,13 +27,16 @@
 <footer class="c7foot" id="c7foot"></footer>
 <script type="module">
 import { renderShell, el } from '/core7/js/ui.js';
+import { t } from '/core7/js/i18n.js';
 import { getHistory } from '/core7/js/store.js';
 renderShell({});
 const list = document.getElementById('list');
 const hist = getHistory();
 if (!hist.length) {
-  list.append(el('p', { style: 'margin-top:16px;color:rgb(var(--muted))' }, 'ยังไม่มีประวัติ — ',
-    el('a', { href: '/core7/play/', style: 'text-decoration:underline' }, 'ไปเล่นเกมแรกกัน')));
+  list.append(el('p', { style: 'margin-top:16px;color:rgb(var(--muted))' },
+    t('ยังไม่มีประวัติ — ', 'No history yet — '),
+    el('a', { href: '/core7/play/', style: 'text-decoration:underline' },
+      t('ไปเล่นเกมแรกกัน', 'go play your first game'))));
 }
 const TXT = { WIN: 'ชนะ', LOSS: 'แพ้', DRAW: 'เสมอ' };
 for (const h of hist) {

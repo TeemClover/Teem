@@ -27,13 +27,27 @@ function write(key, val) {
 /* ── ตัวตน Guest ── */
 const ADJ = ['กล้าหาญ', 'ใจดี', 'ช่างคิด', 'ขยัน', 'ร่าเริง', 'สุขุม', 'ว่องไว', 'ใจเย็น'];
 const NOUN = ['โคลเวอร์', 'ใบไม้', 'สายลม', 'แสงเช้า', 'ภูเขา', 'สายน้ำ', 'ดวงดาว', 'เมล็ดพันธุ์'];
+const ADJ_EN = ['Brave', 'Kind', 'Thoughtful', 'Diligent', 'Cheerful', 'Calm', 'Swift', 'Patient'];
+const NOUN_EN = ['Clover', 'Leaf', 'Breeze', 'Morning Light', 'Mountain', 'River', 'Star', 'Seed'];
+
+/* อ่าน mc_lang ตรง ๆ แทนที่จะ import i18n.js เพราะ i18n.js ไม่มีเหตุต้องรู้จัก
+   store.js และไม่อยากผูกสองไฟล์นี้เข้าหากันเพื่อค่าเดียว */
+function guestLangIsEn() {
+  try { return localStorage.getItem('mc_lang') === 'en'; } catch { return false; }
+}
 
 export function getGuest() {
   let g = read('guest', null);
   if (!g) {
+    /* ชื่อถูกสุ่มครั้งเดียวตอนเปิดเว็บครั้งแรก แล้วกลายเป็นชื่อของคนคนนั้น
+       สุ่มด้วยภาษาที่เขากำลังอ่านอยู่ แต่หลังจากนั้นห้ามแปลตามปุ่มภาษาอีก —
+       มันเป็นชื่อเขา ไม่ใช่ป้ายบน UI และเปลี่ยนได้เองที่หน้า Profile */
+    const en = guestLangIsEn();
+    const i = Math.floor(Math.random() * NOUN.length);
+    const j = Math.floor(Math.random() * ADJ.length);
     g = {
       id: 'g-' + Math.random().toString(36).slice(2, 10),
-      name: `${NOUN[Math.floor(Math.random() * NOUN.length)]}${ADJ[Math.floor(Math.random() * ADJ.length)]}`,
+      name: en ? `${ADJ_EN[j]} ${NOUN_EN[i]}` : `${NOUN[i]}${ADJ[j]}`,
       createdAt: Date.now(),
     };
     write('guest', g);

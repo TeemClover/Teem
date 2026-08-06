@@ -123,7 +123,9 @@ if (!selectUnlocked) {
   selectButton.disabled = true;
   selectDesc.textContent = `🔒 ปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ · อีก ${remaining} ใบ`;
   selectLocked.hidden = false;
-  selectLocked.innerHTML = `<b data-en="SELECT HAND is still locked">SELECT HAND ยังล็อกอยู่</b><br>เล่นจบอีก ${remaining} Match เพื่อปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ แล้วจึงจัดมือ 7 ใบจาก Collection ได้ Generic 4 สีไม่นับรวมและไม่เข้ามาปนในโหมดนี้`;
+  selectLocked.innerHTML = t(
+    `<b>SELECT HAND ยังล็อกอยู่</b><br>เล่นจบอีก ${remaining} Match เพื่อปลดล็อก FIRST HAND ให้ครบ ${SELECT_MODE_UNLOCK_COUNT} ใบ แล้วจึงจัดมือ 7 ใบจาก Collection ได้ Generic 4 สีไม่นับรวมและไม่เข้ามาปนในโหมดนี้`,
+    `<b>SELECT HAND is still locked</b><br>Finish ${remaining} more match${remaining === 1 ? '' : 'es'} to unlock ${SELECT_MODE_UNLOCK_COUNT} FIRST HAND cards, then you can build your seven from the Collection. The Generic 4 do not count toward this and never mix into this mode.`);
   selectContent.hidden = true;
   mode = 'quick';
   setHandMode('quick');
@@ -176,11 +178,17 @@ for (const color of COLORS) {
   const row = el('div', { class: 'hb-counter' });
   row.append(el('span', { class: `chip chip-${color.toLowerCase()}`, style: 'width:44px;height:44px', html: colorIcon(color, 24) }));
   row.append(el('div', { class: 'cinfo' },
-    el('div', { class: 'cname' }, `${meta.nameEn.toUpperCase()} · ${meta.nameTh}`),
-    el('div', { class: 'csub' }, `${meta.nameEn} · ${meta.nameTh} — ${meta.beatsTh}`)));
-  const minus = el('button', { class: 'hb-btn', 'aria-label': `ลดจำนวนสี${meta.nameTh}` }, '➖');
+    el('div', { class: 'cname' }, t(`${meta.nameEn.toUpperCase()} · ${meta.nameTh}`, meta.nameEn.toUpperCase())),
+    el('div', { class: 'csub' }, t(`${meta.nameEn} · ${meta.nameTh} — ${meta.beatsTh}`,
+      `${meta.nameEn} — ${meta.beatsEn}`))));
+  /* ปุ่มถูกหาโดย data-act ไม่ใช่ aria-label — aria-label เป็นคำที่คนอ่าน
+     จึงต้องแปลตามภาษา ผูกตัวหาไว้กับคำแปลเมื่อไหร่ มันก็หาไม่เจอทันที
+     ที่สลับภาษา ทั้งที่ปุ่มยังอยู่ที่เดิม */
+  const minus = el('button', { class: 'hb-btn', 'data-act': 'minus',
+    'aria-label': t(`ลดจำนวนสี${meta.nameTh}`, `One fewer ${meta.nameEn}`) }, '➖');
   const num = el('span', { class: 'num', 'aria-live': 'polite' }, String(counts[color]));
-  const plus = el('button', { class: 'hb-btn', 'aria-label': `เพิ่มจำนวนสี${meta.nameTh}` }, '➕');
+  const plus = el('button', { class: 'hb-btn', 'data-act': 'plus',
+    'aria-label': t(`เพิ่มจำนวนสี${meta.nameTh}`, `One more ${meta.nameEn}`) }, '➕');
   minus.addEventListener('click', () => {
     if (counts[color] <= 0) return;
     counts[color] -= 1;
@@ -235,7 +243,8 @@ function renderGrid() {
   grid.innerHTML = '';
   const cards = availableCards();
   if (!cards.length) {
-    grid.append(el('p', { style: 'color:rgb(var(--muted));grid-column:1/-1' }, 'ยังไม่มี FIRST HAND ที่ปลดล็อกในหมวดนี้'));
+    grid.append(el('p', { style: 'color:rgb(var(--muted));grid-column:1/-1' },
+      t('ยังไม่มี FIRST HAND ที่ปลดล็อกในหมวดนี้', 'No FIRST HAND cards unlocked in this group yet')));
     return;
   }
   for (const card of cards) {
