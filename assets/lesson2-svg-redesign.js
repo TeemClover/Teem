@@ -5,6 +5,13 @@
 var meta=document.querySelector('meta[name="mc-item"]');
 if(!meta||meta.content!=='learn:image-ai')return;
 
+/* ⚠️ ตำแหน่งกับแอนิเมชันต้องอยู่คนละ group เสมอ
+   ใน SVG นั้น attribute transform="..." กับ CSS property transform คือตัวเดียวกัน
+   ฝั่ง CSS จึงชนะเสมอ — พอ keyframes ตั้ง transform ให้ขยับนิดเดียว มันก็ลบ
+   translate() ที่ใช้จัดตำแหน่งทิ้งทั้งก้อน ชิ้นงานเลยกระโดดไปกองที่มุม (0,0)
+   บั๊กนี้เคยทำให้เชฟ ขวดซอส และป้าย ✓/✗ ของบทนี้หลุดตำแหน่งไป 340-910 หน่วย
+   และมองไม่เห็นเลยถ้าเปิด prefers-reduced-motion เพราะ animation:none
+   ทำให้ attribute รอดกลับมา — คือหน้าจะดู "ปกติ" เฉพาะตอนที่ปิดแอนิเมชัน */
 function newHeroSvg(){
   return `
   <svg viewBox="0 0 960 430" role="img" aria-labelledby="tasteHeroTitle tasteHeroDesc" data-mc-course-motion="1" xmlns="http://www.w3.org/2000/svg">
@@ -82,14 +89,14 @@ function newHeroSvg(){
         <path d="M113 244Q137 222 172 222Q211 223 232 247L248 288H95Z" fill="#4d6ea0"/>
       </g>
       <path d="M82 83l27 27M109 83l-27 27" stroke="#b7483f" stroke-width="7" stroke-linecap="round"/>
-      <g class="l2-badge" transform="translate(251 251)">
+      <g transform="translate(251 251)"><g class="l2-badge">
         <circle r="30" fill="#b7483f" stroke="#fff7e5" stroke-width="5"/>
         <path d="M-11-11L11 11M11-11L-11 11" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
-      </g>
+      </g></g>
       <path d="M64 299H288" stroke="#8b6030" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
     </g>
 
-    <g class="l2-chef" transform="translate(338 34)" filter="url(#l2Shadow)">
+    <g transform="translate(338 34)" filter="url(#l2Shadow)"><g class="l2-chef">
       <ellipse cx="142" cy="300" rx="112" ry="20" fill="#071a10" opacity=".25"/>
       <path d="M76 128Q78 70 138 70Q200 72 203 132L193 213Q179 250 140 252Q99 249 86 214Z" fill="#3c271f"/>
       <path d="M94 131Q104 99 141 98Q179 100 192 133L185 199Q171 230 140 231Q107 229 96 198Z" fill="#f2c7aa"/>
@@ -108,16 +115,16 @@ function newHeroSvg(){
         <ellipse cx="280" cy="167" rx="13" ry="8" fill="#e7d8b8" stroke="#bfa778" stroke-width="3"/>
         <ellipse cx="280" cy="168" rx="7" ry="3.5" fill="#d29a3c"/>
       </g>
-    </g>
+    </g></g>
 
-    <g class="l2-source" transform="translate(430 257)" filter="url(#l2Shadow)">
+    <g transform="translate(430 257)" filter="url(#l2Shadow)"><g class="l2-source">
       <rect x="35" y="0" width="48" height="28" rx="8" fill="#d7bb70"/>
       <path d="M26 24H92L99 119Q97 145 76 151H49Q27 146 23 119Z" fill="url(#l2SourceGlass)" stroke="#d2ad59" stroke-width="4"/>
       <rect x="34" y="63" width="55" height="49" rx="10" fill="#fff4d1"/>
       <path d="M49 88C55 76 69 76 76 88C70 100 56 101 49 88Z" fill="#be9442"/>
       <path d="M62 77V99M51 88H73" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
       <circle cx="62" cy="81" r="48" fill="#f4d37f" opacity=".08"/>
-    </g>
+    </g></g>
 
     <g class="l2-right" filter="url(#l2Shadow)">
       <rect x="647" y="32" width="273" height="282" rx="25" fill="#f9f1df" stroke="#d5b45d" stroke-width="4"/>
@@ -133,10 +140,10 @@ function newHeroSvg(){
         <path d="M766 212Q778 222 792 212" fill="none" stroke="#8b4943" stroke-width="3.5" stroke-linecap="round"/>
         <path d="M718 242Q742 220 777 220Q815 221 836 245L853 288H700Z" fill="#1b6a42"/>
       </g>
-      <g class="l2-badge" transform="translate(871 263)">
+      <g transform="translate(871 263)"><g class="l2-badge">
         <circle r="31" fill="#1b6a42" stroke="#fff7e5" stroke-width="5"/>
         <path d="M-13 0L-4 10 15-13" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-      </g>
+      </g></g>
       <path d="M671 299H896" stroke="#8b6030" stroke-opacity=".35" stroke-width="4" stroke-linecap="round"/>
     </g>
 
@@ -161,7 +168,7 @@ function newHeroSvg(){
       <circle cx="62" cy="25" r="10" fill="#342119"/>
       <circle cx="96" cy="25" r="10" fill="#1b6a42"/>
       <rect x="120" y="15" width="36" height="20" rx="6" fill="#f4d17a"/>
-      <g class="l2-badge" transform="translate(163 9)"><circle r="9" fill="#1b6a42"/><path d="M-4 0l3 3 6-7" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <g transform="translate(163 9)"><g class="l2-badge"><circle r="9" fill="#1b6a42"/><path d="M-4 0l3 3 6-7" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></g></g>
     </g>
   </svg>`;
 }
