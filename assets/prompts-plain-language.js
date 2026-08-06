@@ -107,24 +107,30 @@ function addStyles(){
   document.head.appendChild(style);
 }
 
+function cardButtons(card){
+  var customize=card.querySelector('[data-act="use"]');
+  var direct=card.querySelector('[data-act="raw"]');
+  var filled=card.querySelector('[data-act="copyFilled"]');
+  if(customize){
+    customize.setAttribute('aria-label','ปรับแต่ง Prompt ก่อนใช้');
+    customize.title='แนะนำ: เติมข้อมูลให้ตรงงานก่อนคัดลอก';
+  }
+  if(direct){
+    direct.setAttribute('aria-label','คัดลอก Prompt ต้นฉบับแบบพร้อมใช้');
+    direct.title='คัดลอก Prompt ต้นฉบับโดยไม่ปรับข้อมูล';
+  }
+  if(filled){
+    filled.setAttribute('aria-label','คัดลอก Prompt ที่ปรับแล้ว');
+    filled.title='คัดลอกข้อความที่ตรวจและปรับแล้ว';
+  }
+}
+
 function patchButtonAttributes(root){
-  (root||document).querySelectorAll('.pc').forEach(function(card){
-    var customize=card.querySelector('[data-act="use"]');
-    var direct=card.querySelector('[data-act="raw"]');
-    var filled=card.querySelector('[data-act="copyFilled"]');
-    if(customize){
-      customize.setAttribute('aria-label','ปรับแต่ง Prompt ก่อนใช้');
-      customize.title='แนะนำ: เติมข้อมูลให้ตรงงานก่อนคัดลอก';
-    }
-    if(direct){
-      direct.setAttribute('aria-label','คัดลอก Prompt ต้นฉบับแบบพร้อมใช้');
-      direct.title='คัดลอก Prompt ต้นฉบับโดยไม่ปรับข้อมูล';
-    }
-    if(filled){
-      filled.setAttribute('aria-label','คัดลอก Prompt ที่ปรับแล้ว');
-      filled.title='คัดลอกข้อความที่ตรวจและปรับแล้ว';
-    }
-  });
+  var cards=[];
+  root=root||document;
+  if(root.matches&&root.matches('.pc'))cards.push(root);
+  if(root.querySelectorAll)cards=cards.concat([].slice.call(root.querySelectorAll('.pc')));
+  cards.forEach(cardButtons);
 }
 
 function bindButtonState(){
@@ -142,7 +148,7 @@ function bindButtonState(){
   var observer=new MutationObserver(function(records){
     records.forEach(function(record){
       record.addedNodes.forEach(function(node){
-        if(node.nodeType===1)patchButtonAttributes(node.matches('.pc')?node:node);
+        if(node.nodeType===1)patchButtonAttributes(node);
       });
     });
   });
