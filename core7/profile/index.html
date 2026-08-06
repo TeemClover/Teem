@@ -20,28 +20,28 @@
 <nav class="c7nav" id="c7nav"></nav>
 <main class="sec">
   <div class="wrap">
-    <p class="eyebrow">👤 Profile · เก็บในเครื่องนี้</p>
+    <p class="eyebrow" data-en="👤 Profile · kept on this device">👤 Profile · เก็บในเครื่องนี้</p>
     <div class="pf-head">
       <span class="avatar" id="av"></span>
       <div>
         <h2 class="disp" id="pname" style="margin-bottom:2px"></h2>
         <div id="pmeta" style="font-size:13.5px;color:rgb(var(--muted))"></div>
       </div>
-      <button class="btn" id="rename" style="margin-left:auto">✏️ เปลี่ยนชื่อ</button>
+      <button class="btn" id="rename" style="margin-left:auto" data-en="✏️ Change name">✏️ เปลี่ยนชื่อ</button>
     </div>
 
-    <h3 class="disp" style="margin-top:30px">🖐️ มือ 7 ใบล่าสุดของคุณ</h3>
+    <h3 class="disp" style="margin-top:30px" data-en="🖐️ Your latest seven">🖐️ มือ 7 ใบล่าสุดของคุณ</h3>
     <div class="showcase" id="showcase"></div>
 
-    <h3 class="disp" style="margin-top:30px">📊 สถิติรวม</h3>
+    <h3 class="disp" style="margin-top:30px" data-en="📊 Overall stats">📊 สถิติรวม</h3>
     <div class="statgrid" id="stats" style="margin-top:12px"></div>
 
-    <h3 class="disp" style="margin-top:30px">🎮 แยกตามโหมด</h3>
+    <h3 class="disp" style="margin-top:30px" data-en="🎮 By mode">🎮 แยกตามโหมด</h3>
     <div class="statgrid" id="modeStats" style="margin-top:12px"></div>
 
     <div class="panel" style="margin-top:30px">
-      <b class="disp">โปรไฟล์ถาวรข้ามอุปกรณ์</b>
-      <p style="font-size:14px;margin-top:6px;color:rgb(var(--ink)/.75)">
+      <b class="disp" data-en="A permanent profile across devices">โปรไฟล์ถาวรข้ามอุปกรณ์</b>
+      <p style="font-size:14px;margin-top:6px;color:rgb(var(--ink)/.75)" data-en="A public handle, achievements, event badges, a Discord link and privacy settings all arrive with Member accounts on the live server. The stats on this device stay yours either way.">
         Handle สาธารณะ, Achievement, Event Badge, Discord Link และ Privacy Settings
         จะเปิดพร้อมบัญชี Member บน Server จริง — สถิติในเครื่องนี้ยังเป็นของคุณเสมอ</p>
     </div>
@@ -53,6 +53,7 @@ import { renderShell, el } from '/core7/js/ui.js';
 import { COLOR_META, cardById } from '/core7/js/cards.js';
 import { cardSVG, genericCardSVG } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
+import { t, getLang } from '/core7/js/i18n.js';
 
 renderShell({ active: 'profile' });
 const g = store.getGuest();
@@ -61,11 +62,16 @@ document.getElementById('pname').textContent = g.name;
 const joined = new Date(g.createdAt);
 const S = store.getAllStats();
 const favColor = Object.entries(S.all.colorPlays).sort((a, b) => b[1] - a[1])[0];
+/* วันที่ต้องเปลี่ยน locale ตามภาษาด้วย ไม่ใช่แค่คำรอบ ๆ มัน — ค.ศ. กับ พ.ศ.
+   ต่างกัน 543 ปี คนอ่านอังกฤษที่เห็น 2569 จะคิดว่าเว็บพัง ไม่ใช่ว่าเป็นปีไทย */
+const locale = getLang() === 'en' ? 'en-GB' : 'th-TH';
 document.getElementById('pmeta').textContent =
-  `Guest (เครื่องนี้) · เริ่มเล่น ${joined.toLocaleDateString('th-TH')}`
-  + (favColor ? ` · สีที่เล่นบ่อย: ${COLOR_META[favColor[0]].emoji} ${COLOR_META[favColor[0]].nameTh}` : '');
+  t(`Guest (เครื่องนี้) · เริ่มเล่น ${joined.toLocaleDateString(locale)}`,
+    `Guest (this device) · playing since ${joined.toLocaleDateString(locale)}`)
+  + (favColor ? t(` · สีที่เล่นบ่อย: ${COLOR_META[favColor[0]].emoji} ${COLOR_META[favColor[0]].nameTh}`,
+      ` · most played colour: ${COLOR_META[favColor[0]].emoji} ${COLOR_META[favColor[0]].nameEn}`) : '');
 document.getElementById('rename').addEventListener('click', () => {
-  const n = prompt('ชื่อบนโต๊ะ:', g.name);
+  const n = prompt(t('ชื่อบนโต๊ะ:', 'Name at the table:'), g.name);
   if (n) { store.setGuestName(n); location.reload(); }
 });
 
@@ -75,21 +81,31 @@ if (hand) for (const id of hand) {
   const c = cardById(id);
   const d = el('span', { html: c.generic ? genericCardSVG(c.color, { width: 76 }) : cardSVG(id, { width: 76, showNumber: false }) });
   sc.append(d);
-} else sc.append(el('p', { style: 'color:rgb(var(--muted));font-size:14px' }, 'ยังไม่เคยเลือกมือ — ', el('a', { href: '/core7/hand/', style: 'text-decoration:underline' }, 'เลือกเลย')));
+} else sc.append(el('p', { style: 'color:rgb(var(--muted));font-size:14px' },
+  t('ยังไม่เคยเลือกมือ — ', 'No hand chosen yet — '),
+  el('a', { href: '/core7/hand/', style: 'text-decoration:underline' }, t('เลือกเลย', 'pick one'))));
 
 const mostPlayed = Object.entries(S.all.cardPlays).sort((a, b) => b[1] - a[1])[0];
 const mostDiscarded = Object.entries(S.all.cardDiscards).sort((a, b) => b[1] - a[1])[0];
 const winRate = S.all.matchesPlayed ? Math.round(100 * S.all.matchesWon / S.all.matchesPlayed) : 0;
-const cardName = id => { const c = cardById(id); return c ? (c.generic ? COLOR_META[c.color].nameTh : c.en) : '—'; };
+const cardName = id => {
+  const c = cardById(id);
+  if (!c) return '—';
+  /* ชื่อการ์ดจริงเป็นอังกฤษเสมอทั้งสองภาษา (ดู i18n.js) มีแต่การ์ด Generic
+     ที่เป็นชื่อสี ซึ่งเป็นคำธรรมดา ไม่ใช่ชื่อเฉพาะ จึงแปลได้ */
+  if (!c.generic) return c.en;
+  return t(COLOR_META[c.color].nameTh, COLOR_META[c.color].nameEn);
+};
 const stats = [
-  ['Matches', S.all.matchesPlayed], ['ชนะ', S.all.matchesWon], ['แพ้', S.all.matchesLost],
-  ['เสมอ', S.all.draws], ['Win Rate', winRate + '%'], ['Round Wins', S.all.roundsWon],
-  ['Streak ปัจจุบัน', S.bot.currentStreak + S.casual.currentStreak > 0 ? Math.max(S.bot.currentStreak, S.casual.currentStreak) : 0],
+  ['Matches', S.all.matchesPlayed],
+  [t('ชนะ', 'Wins'), S.all.matchesWon], [t('แพ้', 'Losses'), S.all.matchesLost],
+  [t('เสมอ', 'Draws'), S.all.draws], ['Win Rate', winRate + '%'], ['Round Wins', S.all.roundsWon],
+  [t('Streak ปัจจุบัน', 'Current streak'), S.bot.currentStreak + S.casual.currentStreak > 0 ? Math.max(S.bot.currentStreak, S.casual.currentStreak) : 0],
   ['Best Streak', S.all.bestStreak],
   ['Tiebreak Wins', S.all.tiebreakWins], ['Final Silver Losses', S.all.finalSilverLosses],
-  ['คู่แข่งไม่ซ้ำ', S.all.opponents.length],
-  ['ใบที่ลงบ่อย', mostPlayed ? cardName(mostPlayed[0]) : '—'],
-  ['ใบที่ทิ้งบ่อย', mostDiscarded ? cardName(mostDiscarded[0]) : '—'],
+  [t('คู่แข่งไม่ซ้ำ', 'Unique opponents'), S.all.opponents.length],
+  [t('ใบที่ลงบ่อย', 'Most played card'), mostPlayed ? cardName(mostPlayed[0]) : '—'],
+  [t('ใบที่ทิ้งบ่อย', 'Most discarded card'), mostDiscarded ? cardName(mostDiscarded[0]) : '—'],
 ];
 const sHost = document.getElementById('stats');
 for (const [label, val] of stats) sHost.append(el('div', { class: 'stat' }, el('b', {}, String(val)), el('span', {}, label)));
@@ -98,9 +114,11 @@ const mHost = document.getElementById('modeStats');
 for (const [mode, s] of [['🤖 Bot', S.bot], ['🏠 Casual', S.casual]]) {
   mHost.append(el('div', { class: 'stat' },
     el('b', {}, `${s.matchesWon}–${s.matchesLost}${s.draws ? `–${s.draws}` : ''}`),
-    el('span', {}, `${mode} (${s.matchesPlayed} เกม)`)));
+    el('span', {}, t(`${mode} (${s.matchesPlayed} เกม)`,
+      `${mode} (${s.matchesPlayed} ${s.matchesPlayed === 1 ? 'game' : 'games'})`))));
 }
-mHost.append(el('div', { class: 'stat' }, el('b', {}, '—'), el('span', {}, '🏆 Ranked (รอ Server จริง)')));
+mHost.append(el('div', { class: 'stat' }, el('b', {}, '—'),
+  el('span', {}, t('🏆 Ranked (รอ Server จริง)', '🏆 Ranked (waiting on the live server)'))));
 </script>
 </body>
 </html>

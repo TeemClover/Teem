@@ -101,6 +101,18 @@
     html(".first h2",c("firstTitle"));
     text(".first p",c("firstDesc"));
     text(".first-go",c("firstCta"));
+    text(".mc-line-invite__eyebrow",c("lineEyebrow"));
+    text(".mc-line-invite__copy b",c("lineTitle"));
+    text(".mc-line-invite__copy p",c("lineDesc"));
+    /* ปุ่มมีโลโก้ LINE เป็น <img> อยู่ข้างใน — textContent จะลบภาพทิ้ง
+       จึงเขียนทับเฉพาะโหนดข้อความตัวสุดท้าย */
+    (function(){
+      var b=one(".mc-line-invite__btn");if(!b)return;
+      var last=b.lastChild;
+      if(last&&last.nodeType===3)last.nodeValue=c("lineCta");
+      b.setAttribute("aria-label",c("lineCta"));
+    })();
+    attr(".mc-line-invite","aria-label",c("lineAria"));
     text('.footlinks a[href="/"]',c("home"));
     text('.footlinks a[href="privacy/"]',c("privacy"));
     document.querySelectorAll("[data-lang]").forEach(function(btn){
@@ -273,7 +285,7 @@
       var cls=x.done?"done":(x.current?"current":"locked");
       var mark=x.done?"✓":(x.current?"→":"");
       return '<li class="'+cls+'"><span class="ic" aria-hidden="true">'+x.icon+'</span>'
-        +'<b>'+x.th+'</b><span class="mk" aria-hidden="true">'+mark+'</span></li>';
+        +'<b>'+x.label+'</b><span class="mk" aria-hidden="true">'+mark+'</span></li>';
     }).join("");
   }
 

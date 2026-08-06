@@ -49,6 +49,11 @@ window.HALL_COPY.en={
       firstTitle:'Return to the <span class="term context-term" tabindex="0" data-tip="The First Version is the original homepage we kept instead of deleting. Return after the lessons to compare the first work with the current one—and see how far an imperfect beginning can grow.">First Version</span>',
       firstDesc:"We kept the original homepage for you to revisit after the lessons. The distance between the first version and the current one makes it easier to see how unfinished work can grow once you begin building with AI.",
       firstCta:"View the First Version →",
+      lineEyebrow:"The way back in",
+      lineTitle:"You do not have to remember where you left off",
+      lineDesc:"Add the myClover LINE account and come back for prompts, quests and new updates whenever you are ready.",
+      lineCta:"Add myClover on LINE",
+      lineAria:"Follow myClover on LINE",
       home:"Home",privacy:"Your data",
       seekerTitle:"This leaf still has only three hearts",seekerCopy:"Tap it and see how many tries luck takes",
       seekerFound:"“Seeker” Unlocked",seekerSaved:"You found the four-leaf clover in {n} tries.",seekerTry:"Attempt {n} — not yet. Try again."

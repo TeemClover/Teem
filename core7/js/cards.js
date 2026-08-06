@@ -13,7 +13,7 @@ export const COLOR_META = {
     icon: 'flame', pattern: 'bite',
     hex: '#C8442C', deep: '#8F2B1A', soft: '#F4D9D2',
     creed: 'ความอยากมักชนะวินัย',
-    beats: 'GREEN', beatsTh: 'ชนะเขียว',
+    beats: 'GREEN', beatsTh: 'ชนะเขียว', beatsEn: 'beats Green',
   },
   GREEN: {
     color: 'GREEN', emoji: '🟢',
@@ -21,7 +21,7 @@ export const COLOR_META = {
     icon: 'leaf', pattern: 'shield',
     hex: '#2E7D4F', deep: '#1B5233', soft: '#D8EBDF',
     creed: 'วินัยชนะการคิดแต่ไม่ลงมือ',
-    beats: 'BLUE', beatsTh: 'ชนะฟ้า',
+    beats: 'BLUE', beatsTh: 'ชนะฟ้า', beatsEn: 'beats Blue',
   },
   BLUE: {
     color: 'BLUE', emoji: '🔵',
@@ -29,7 +29,7 @@ export const COLOR_META = {
     icon: 'droplet', pattern: 'thought',
     hex: '#2C6BA8', deep: '#1B4470', soft: '#D6E4F2',
     creed: 'ความคิดหยุดอารมณ์อยากได้',
-    beats: 'RED', beatsTh: 'ชนะแดง',
+    beats: 'RED', beatsTh: 'ชนะแดง', beatsEn: 'beats Red',
   },
   /* RGBS = Red / Green / Blue / Silver — คีย์ ชื่อ และไฟล์ภาพใช้คำเดียวกันหมด
      ข้อมูลเก่าที่เคยเก็บเป็น GRAY ถูกแปลงให้ตอนโหลดโดย migrate-silver.js */
@@ -39,7 +39,7 @@ export const COLOR_META = {
     icon: 'gear', pattern: 'block',
     hex: '#6E7378', deep: '#43474C', soft: '#E4E6E8',
     creed: 'เครื่องมือช่วย Block และเปิดข้อมูล แต่ไม่ตัดสินชีวิตแทนเรา',
-    beats: null, beatsTh: 'เสมอทุกสี (Block)',
+    beats: null, beatsTh: 'เสมอทุกสี (Block)', beatsEn: 'ties every colour (Block)',
   },
 };
 

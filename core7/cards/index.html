@@ -39,7 +39,8 @@ const id = pathSegment('cards');
 const card = cardById(id);
 const main = document.getElementById('main');
 if (!card || card.generic) {
-  main.innerHTML = '<h2 class="disp">ไม่พบการ์ดนี้</h2><a class="btn btn-gold" style="margin-top:14px" href="/core7/collection/">กลับ Collection</a>';
+  main.innerHTML = `<h2 class="disp">${t('ไม่พบการ์ดนี้', 'Card not found')}</h2>`
+    + `<a class="btn btn-gold" style="margin-top:14px" href="/core7/collection/">${t('กลับ Collection', 'Back to the Collection')}</a>`;
   throw new Error('no card');
 }
 if (!ownsCard(card.id)) {
@@ -50,7 +51,7 @@ if (!ownsCard(card.id)) {
       <h2 class="disp" style="margin-top:8px">การ์ดใบนี้ยังไม่ปลดล็อก</h2>
       <p>เล่น CORE7 ให้จบ Match เพื่อรับ FIRST HAND ใหม่ 1 ใบ แพ้ ชนะ หรือเสมอก็ได้รับ และระบบจะไม่แจกใบซ้ำ</p>
       <a class="btn btn-gold" style="margin-top:18px" href="/core7/play/">ไปเล่น CORE7</a>
-      <a class="btn" style="margin-top:18px" href="/core7/collection/">กลับ Collection</a>
+      <a class="btn" style="margin-top:18px" href="/core7/collection/" data-en="Back to the Collection">กลับ Collection</a>
     </div>`;
   throw new Error('card locked');
 }

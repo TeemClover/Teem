@@ -94,7 +94,8 @@ const hero = document.getElementById('hero');
 /* บอทเก็บ state เต็ม · ออนไลน์เก็บได้แค่ view เพราะ server เป็นเจ้าของ state
    รับทั้งสองแบบ ไม่งั้นเกมออนไลน์จะเด้งเป็น "ไม่พบผล" ทุกครั้ง */
 if (!snap || (!snap.state && !snap.view)) {
-  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how" data-en="It may have been cleared already">ผลอาจถูกล้างไปแล้ว</p>';
+  hero.innerHTML = `<h1>${t('ไม่พบผลการแข่งขันนี้', 'Match result not found')}</h1>`
+    + `<p class="how">${t('ผลอาจถูกล้างไปแล้ว', 'It may have been cleared already')}</p>`;
   document.getElementById('actions').append(
     el('a', { class: 'btn btn-gold', href: '/core7/play/' }, t('กลับไปเล่น', 'Back to play')));
   throw new Error('no snapshot');
@@ -113,7 +114,8 @@ const view = snap.state
     })()
   : snap.view;
 if (!view || !view.result) {
-  hero.innerHTML = '<h1>ไม่พบผลการแข่งขันนี้</h1><p class="how" data-en="It may have been cleared already">ผลอาจถูกล้างไปแล้ว</p>';
+  hero.innerHTML = `<h1>${t('ไม่พบผลการแข่งขันนี้', 'Match result not found')}</h1>`
+    + `<p class="how">${t('ผลอาจถูกล้างไปแล้ว', 'It may have been cleared already')}</p>`;
   document.getElementById('actions').append(
     el('a', { class: 'btn btn-gold', href: '/core7/play/' }, 'กลับไปเล่น'));
   throw new Error('no view');
