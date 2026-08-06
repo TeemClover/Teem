@@ -6,6 +6,7 @@ import { cloverLogo } from './art.js';
 import { isMuted, toggleMuted } from './audio.js';
 import { reportCore7View, CORE7_GAME_VERSION } from './analytics.js';
 import { applyLang, getLang, setLang, t } from './i18n.js';
+import { notifyFirstHandCardReceived } from '/assets/sauce-proof.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -23,6 +24,18 @@ export function el(tag, attrs = {}, ...children) {
     node.append(c.nodeType ? c : document.createTextNode(c));
   }
   return node;
+}
+
+/* FIRST HAND reward is created after the result page loads. Listen in the
+   shared shell so both bot and online result flows use the same one-time
+   Sauce → Kickstarter handoff without coupling it to the reward UI itself. */
+if (typeof document !== 'undefined' && /\/core7\/result\/?$/.test(location.pathname)) {
+  document.addEventListener('click', event => {
+    const close = event.target?.closest?.('#c7Reward [data-close]');
+    const reward = close?.closest?.('#c7Reward');
+    if (!reward || reward.dataset.revealed !== 'true') return;
+    window.setTimeout(notifyFirstHandCardReceived, 120);
+  }, true);
 }
 
 /* ── Nav + Footer ── */
