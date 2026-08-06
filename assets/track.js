@@ -3,3 +3,4 @@ import '/assets/ai-sauce-course.js';
 import '/assets/details-fix.js';
 import '/assets/awaken-boss-patch.js';
 import '/assets/notebooklm-page.js';
+import '/assets/notebooklm-hero-position.js';
