@@ -130,6 +130,19 @@ nav.top .wrap{display:flex;justify-content:space-between;align-items:center;heig
 .canon-card span{display:block;font-size:26px;margin-bottom:3px}
 .canon-card b{font-family:"Bai Jamjuree",sans-serif;font-size:13px}
 .canon-card small{display:block;color:rgb(var(--muted));font-size:11.5px;line-height:1.45;margin-top:2px}
+.canon-help{position:relative;display:inline-flex;align-items:center;margin-top:11px;z-index:12}
+.canon-term{display:inline-flex;align-items:center;gap:6px;border:1px dashed rgb(27 106 66/.45);border-radius:999px;background:rgb(27 106 66/.07);color:rgb(var(--green));padding:5px 10px;font-family:"Bai Jamjuree",sans-serif;font-size:12px;font-weight:800;cursor:help}
+.canon-term .q{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:rgb(var(--green));color:#fff;font-size:10px;line-height:1}
+.canon-tip{position:absolute;right:0;top:calc(100% + 9px);width:min(310px,calc(100vw - 48px));padding:13px 14px;border-radius:12px;background:#071a10;color:#fff;font-size:12.5px;line-height:1.65;box-shadow:0 14px 34px rgb(7 26 16/.28);opacity:0;visibility:hidden;transform:translateY(-5px);transition:.16s;text-align:left;pointer-events:none}
+.canon-tip::before{content:"";position:absolute;right:24px;top:-6px;width:12px;height:12px;background:#071a10;transform:rotate(45deg)}
+.canon-help:hover .canon-tip,.canon-help:focus-within .canon-tip,.canon-help[data-open="1"] .canon-tip{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+.real-ref{display:grid;grid-template-columns:auto 1fr;gap:14px;margin-top:14px;padding:19px 20px;border:1px solid rgb(170 66 48/.3);border-radius:17px;background:linear-gradient(135deg,rgb(170 66 48/.075),rgb(190 148 66/.08));box-shadow:0 8px 23px rgb(18 40 28/.04)}
+.real-ref .ico{font-size:29px;line-height:1.2}
+.real-ref b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:16px;color:rgb(var(--red));margin-bottom:3px}
+.real-ref p{font-size:14px;line-height:1.7}
+.real-ref ul{padding-left:19px;margin-top:8px}
+.real-ref li{font-size:13.5px;color:rgb(var(--muted));margin:3px 0;line-height:1.65}
+.real-ref code{background:rgb(var(--ink)/.06);border-radius:5px;padding:1px 6px}
 details.deep{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;margin-top:10px;overflow:hidden;box-shadow:0 6px 18px rgb(18 40 28/.035)}
 details.deep summary{cursor:pointer;list-style:none;padding:15px 18px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;display:flex;justify-content:space-between;gap:12px}
 details.deep summary::-webkit-details-marker{display:none}
@@ -167,6 +180,7 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   .menu{grid-template-columns:1fr}.menu-card:last-child{grid-column:auto}.plate-compare{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:34px}
   .prompt{padding:48px 14px 16px;font-size:12.2px}.step{grid-template-columns:30px 1fr;padding:16px 15px;gap:11px}.step .num{width:29px;height:29px}
   .core{padding:17px}.chef-note{padding:58px 17px 18px}.chef-note::before{left:17px;top:14px}.quest{padding:22px 19px}
+  .real-ref{grid-template-columns:1fr;padding:17px}.real-ref .ico{font-size:26px}.canon-tip{right:auto;left:0}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style>
@@ -262,6 +276,10 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
       <span>🚫 Do-not-change list</span>
       <span>🧴 Source เวอร์ชันที่ชิมแล้ว</span>
     </div>
+    <span class="canon-help">
+      <button class="canon-term" type="button" aria-expanded="false">Canon คืออะไร? <span class="q" aria-hidden="true">?</span></button>
+      <span class="canon-tip" role="tooltip">Canon คือรายละเอียดที่ตัดสินใจแล้วว่า “ต้องเป็นแบบนี้เหมือนเดิมทุกครั้ง” เช่น หน้าตาตัวละคร สี เสื้อ ห้อง ยุค พร็อพ และสิ่งที่ห้ามเปลี่ยน เมื่อผ่านการชิมแล้วให้บันทึกกลับเข้า Source</span>
+    </span>
   </div>
 </section>
 
@@ -308,6 +326,19 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   <article class="bottle"><div class="topline"><span class="ico">🩹</span><div><b>การ์ด Surgical Edit</b><p>แก้เฉพาะจุดที่ผิด และล็อกองค์ประกอบที่ผ่านแล้ว ห้ามเปิดร้านใหม่ทุกครั้งที่เติมเกลือ</p><span class="tag">DO NOT RECOMPOSE</span></div></div></article>
 </div>
 
+<aside class="real-ref" aria-label="ข้อจำกัดของ Source แบบข้อความ">
+  <span class="ico" aria-hidden="true">📎</span>
+  <div>
+    <b>มีโลโก้หรือสินค้าจริง ต้องแนบรูปต้นฉบับ</b>
+    <p>ไฟล์ <code>.md</code> ช่วยบอกชื่อ สี กติกา สัดส่วน และสิ่งที่ห้ามเปลี่ยนได้ แต่ไม่มี Pixel ของของจริงอยู่ข้างใน จึงแทนรูปโลโก้ ฉลาก บรรจุภัณฑ์ หรือรูปร่างสินค้าจริงไม่ได้</p>
+    <ul>
+      <li><strong>โลโก้:</strong> แนบไฟล์ PNG หรือ SVG ที่ถูกต้อง อย่าให้ AI เดาจากคำบรรยาย</li>
+      <li><strong>สินค้า:</strong> แนบภาพสินค้าชัด ๆ และหลายมุมเมื่อรูปร่างหรือวัสดุสำคัญ</li>
+      <li><strong>ฉลากและตัวหนังสือ:</strong> ตรวจจากต้นฉบับ และควรใส่ข้อความจริงภายหลังในโปรแกรมออกแบบ</li>
+    </ul>
+  </div>
+</aside>
+
 <h2 class="section"><span class="n">5</span>ลงมือปรุง</h2>
 <div class="steps">
   <article class="step"><span class="num">1</span><div><b>ให้ AI โหลด Source และสรุปสิ่งที่เข้าใจ</b><p>อย่าเริ่มสร้างภาพทันที ให้มันพูดกลับมาก่อนว่ากำลังจะรักษาอะไร และจุดไหนยังไม่แน่ใจ</p><div class="prompt">อ่าน Source ที่แนบให้ครบก่อน
@@ -324,6 +355,7 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 
 ก่อนสร้าง ให้ยึด Canon และข้อห้ามจาก Source เป็นหลัก
 ถ้าข้อมูลไม่พอ ให้ถามแทนการเติมเอง
+ถ้ามีโลโก้หรือสินค้าจริง ให้ใช้เฉพาะไฟล์ภาพต้นฉบับที่แนบ ห้ามเดาหรือวาดใหม่จากคำอธิบายในไฟล์ .md
 ไม่มีตัวหนังสือ โลโก้ หรือวัตถุใหม่ที่ Source ไม่ได้อนุญาต</div></div></article>
 
   <article class="step"><span class="num">4</span><div><b>ชิมด้วย Checklist ไม่ใช่ความรู้สึกล้วน</b><p>ติ๊กเฉพาะสิ่งที่ตรงจริง ยิ่งช่องไหนไม่ผ่าน ยิ่งได้ข้อมูลกลับไปปรุง Source</p>
@@ -368,7 +400,10 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 ## Era and Environment
 ## Must Keep
 ## Must Not Add
+## Reference Files Required
 ## Decisions Added From This Taste Test
+
+ในหัวข้อ Reference Files Required ให้ระบุไฟล์รูปที่ต้องแนบทุกครั้ง เช่น โลโก้ PNG/SVG ภาพสินค้า หรือภาพบุคคล เพราะข้อมูลเหล่านี้แทนด้วยคำอธิบายใน .md อย่างเดียวไม่ได้
 
 เขียนให้เป็นกติกาที่ AI ตัวอื่นอ่านแล้วใช้ต่อได้ โดยไม่อ้างว่า “ตามภาพด้านบน”</div></div></article>
 </div>
@@ -438,6 +473,29 @@ document.querySelectorAll('.prompt').forEach(function(el){
   };
   el.appendChild(b);
 });
+
+(function(){
+  var helps=[].slice.call(document.querySelectorAll('.canon-help'));
+  function closeAll(except){
+    helps.forEach(function(w){
+      if(w===except)return;
+      w.dataset.open='0';
+      var b=w.querySelector('.canon-term');if(b)b.setAttribute('aria-expanded','false');
+    });
+  }
+  helps.forEach(function(w){
+    var b=w.querySelector('.canon-term');if(!b)return;
+    b.addEventListener('click',function(e){
+      e.stopPropagation();
+      var open=w.dataset.open==='1';
+      closeAll(w);
+      w.dataset.open=open?'0':'1';
+      b.setAttribute('aria-expanded',open?'false':'true');
+    });
+  });
+  document.addEventListener('click',function(){closeAll(null)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll(null)});
+})();
 
 (function(){
   var checks=[].slice.call(document.querySelectorAll('#tasteBoard input[type="checkbox"]'));
