@@ -72,89 +72,33 @@ function addStyles(){
       border:1px solid rgb(27 106 66/.22);background:rgb(27 106 66/.06);color:rgb(var(--green));
       font:750 11.5px "Bai Jamjuree",system-ui
     }
-    .pc .pcb [data-act="use"].main{
-      order:-2!important;background:rgb(var(--green))!important;border-color:rgb(var(--green))!important;color:#fff!important;
-      flex:1 1 210px!important
+
+    /* prompts-season.js still owns the old DOM order and labels.
+       Override visually instead of fighting its MutationObserver. */
+    .pc .pcb [data-act="use"]{
+      order:-2!important;flex:1 1 210px!important;
+      background:rgb(var(--green))!important;border-color:rgb(var(--green))!important;color:transparent!important;
+      font-size:0!important
+    }
+    .pc .pcb [data-act="use"]::after{
+      content:'⚙️ ปรับแต่งก่อนใช้';color:#fff;font:800 13.5px/1.25 "Bai Jamjuree",system-ui
     }
     .pc .pcb [data-act="raw"]{
-      order:-1!important;background:#fff!important;border-color:rgb(27 106 66/.32)!important;color:rgb(var(--green))!important
+      order:-1!important;background:#fff!important;border-color:rgb(27 106 66/.32)!important;color:transparent!important;
+      font-size:0!important
     }
-    .drawer .drow [data-act="copyFilled"].main{
-      background:rgb(var(--green))!important;border-color:rgb(var(--green))!important;color:#fff!important
+    .pc .pcb [data-act="raw"]::after{
+      content:'คัดลอกแบบพร้อมใช้';color:rgb(var(--green));font:750 13px/1.25 "Bai Jamjuree",system-ui
+    }
+    .drawer .drow [data-act="copyFilled"]{
+      background:rgb(var(--green))!important;border-color:rgb(var(--green))!important;color:transparent!important;
+      font-size:0!important
+    }
+    .drawer .drow [data-act="copyFilled"]::after{
+      content:'คัดลอก Prompt ที่ปรับแล้ว';color:#fff;font:800 13.5px/1.25 "Bai Jamjuree",system-ui
     }
   `;
   document.head.appendChild(style);
-}
-
-function promptByCard(card){
-  var id=card&&card.dataset&&card.dataset.id;
-  return V.prompts.find(function(prompt){return prompt.id===id});
-}
-
-function refreshOpenPreview(card){
-  if(!card||!card.classList.contains('open'))return;
-  var prompt=promptByCard(card);
-  if(!prompt)return;
-
-  if(card.dataset.genericPreviewVersion===VERSION)return;
-  card.dataset.genericPreviewVersion=VERSION;
-
-  var field=card.querySelector('.drawer input,.drawer textarea');
-  if(field){
-    field.dispatchEvent(new Event('input',{bubbles:true}));
-    return;
-  }
-
-  var preview=card.querySelector('[data-prev]');
-  if(preview){
-    preview.textContent=prompt.tpl;
-    preview.dataset.text=prompt.tpl;
-  }
-}
-
-function patchCard(card){
-  if(!card)return;
-
-  var row=card.querySelector('.pcb');
-  var customize=card.querySelector('[data-act="use"]');
-  var direct=card.querySelector('[data-act="raw"]');
-
-  if(customize){
-    customize.classList.add('main');
-    setText(customize,'⚙️ ปรับแต่งก่อนใช้');
-  }
-  if(direct){
-    direct.classList.remove('main');
-    setText(direct,'คัดลอกแบบพร้อมใช้');
-  }
-  if(row&&customize&&row.firstElementChild!==customize){
-    row.insertBefore(customize,row.firstElementChild);
-  }
-  if(row&&customize&&direct&&customize.nextElementSibling!==direct){
-    row.insertBefore(direct,customize.nextSibling);
-  }
-
-  var drawer=card.querySelector('.drawer');
-  if(drawer){
-    var headings=drawer.querySelectorAll('.dh');
-    setText(headings[0],'ปรับข้อมูลให้ตรงกับงานของคุณ');
-    setText(headings[1],'Prompt ที่จะส่งให้ AI');
-
-    var sourceHelp=drawer.querySelector('.drawer-source small');
-    setText(sourceHelp,'ปรับเฉพาะข้อมูลที่จำเป็น แล้วตรวจข้อความก่อนคัดลอกไปใช้กับ AI ตัวใดก็ได้');
-
-    var copyFilled=drawer.querySelector('[data-act="copyFilled"]');
-    if(copyFilled){
-      copyFilled.classList.add('main');
-      setText(copyFilled,'คัดลอก Prompt ที่ปรับแล้ว');
-    }
-  }
-
-  refreshOpenPreview(card);
-}
-
-function patchAllCards(){
-  document.querySelectorAll('.pc').forEach(patchCard);
 }
 
 function patchPage(){
@@ -176,20 +120,6 @@ function patchPage(){
 
   var guide=document.querySelector('.season-guide>summary');
   setText(guide,'หน้าเว็บใช้คำว่า “ผงปรุงรส” แต่ Prompt จริงหน้าตาแบบไหน?');
-
-  patchAllCards();
-
-  var results=document.getElementById('results');
-  if(results&&!results.__genericPromptObserver){
-    results.__genericPromptObserver=new MutationObserver(function(){
-      patchAllCards();
-    });
-    results.__genericPromptObserver.observe(results,{childList:true,subtree:true,characterData:true});
-    results.addEventListener('click',function(){
-      window.setTimeout(patchAllCards,0);
-      window.setTimeout(patchAllCards,1700);
-    },true);
-  }
 }
 
 function audit(){
