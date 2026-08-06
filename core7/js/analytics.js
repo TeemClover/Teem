@@ -32,6 +32,8 @@ function post(path, payload) {
   }).then(response => response.ok).catch(() => false);
 }
 
+/* กันซ้ำ "ต่อหน้า" — ไม่มี matchId ก็ใช้ path ของหน้าเป็นตัวแยก
+   เหมาะกับของอย่าง CORE7_VIEW ที่นับหน้าละครั้ง */
 function onceKey(type, matchId) { return `${SENT_PREFIX}${type}:${matchId || location.pathname}`; }
 function alreadySent(type, matchId) {
   try { return localStorage.getItem(onceKey(type, matchId)) === '1'; }
@@ -39,6 +41,22 @@ function alreadySent(type, matchId) {
 }
 function markSent(type, matchId) {
   try { localStorage.setItem(onceKey(type, matchId), '1'); } catch { /* private mode */ }
+}
+
+/* กันซ้ำ "ต่อเครื่อง" — คีย์ไม่มี path ปนอยู่เลย
+   ⚠️ ของที่นับ "กี่เครื่องเดินผ่านขั้นนี้" ต้องใช้ชุดนี้เท่านั้น
+   เคยใช้ชุดข้างบนซึ่งตกไปใช้ location.pathname เป็นตัวแยก ผลคือมันกันซ้ำได้
+   แค่ตอนอยู่หน้าเดิม พอเดินข้ามหน้าก็นับเป็นคีย์ใหม่แล้วยิงอีกรอบ —
+   PROLOGUE_COMPLETE ยิง 23 ครั้งจากการเดินทางรอบเดียว ทั้งที่ควรครั้งเดียว
+   ตัวเลข "กี่ครั้ง" กับ "กี่เครื่อง" จึงเพี้ยนกันคนละโลก
+   (เทสต์เดิมเปิดหน้าเดิมซ้ำ ๆ เลยผ่าน — ต้องเดินข้ามหน้าถึงจะเห็น) */
+function onceDeviceKey(name) { return `${SENT_PREFIX}dev:${name}`; }
+function alreadySentOnDevice(name) {
+  try { return localStorage.getItem(onceDeviceKey(name)) === '1'; }
+  catch { return false; }
+}
+function markSentOnDevice(name) {
+  try { localStorage.setItem(onceDeviceKey(name), '1'); } catch { /* private mode */ }
 }
 
 /* ── ทางเข้า ──
@@ -96,8 +114,8 @@ export function reportJourneyStep(step, { once = true, ...rest } = {}) {
   const type = String(step || '').toUpperCase();
   if (!type) return Promise.resolve(false);
   const key = `journey:${type}`;
-  if (once && alreadySent(key, null)) return Promise.resolve(true);
-  if (once) markSent(key, null);
+  if (once && alreadySentOnDevice(key)) return Promise.resolve(true);
+  if (once) markSentOnDevice(key);
   return reportFunnelEvent(type, { once: false, ...rest }).catch(() => false);
 }
 
@@ -191,8 +209,8 @@ export function reportAchievementUnlock(achievementId, extra = {}) {
   const id = String(achievementId || '').trim();
   if (!id) return Promise.resolve(false);
   const key = `ach:${id}`;
-  if (alreadySent(key, null)) return Promise.resolve(true);
-  markSent(key, null);
+  if (alreadySentOnDevice(key)) return Promise.resolve(true);
+  markSentOnDevice(key);
   return reportFunnelEvent('ACHIEVEMENT_UNLOCK', { ...extra, ref: id }).catch(() => false);
 }
 
