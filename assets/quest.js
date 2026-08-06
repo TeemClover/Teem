@@ -26,7 +26,7 @@
      [data-mc-undone=forge]        บล็อกที่ซ่อนเมื่อครบ (ตั้งต้นต้องมองเห็น)
      [data-mc-any=forge]           บล็อกที่โผล่เมื่อเริ่มแล้วอย่างน้อย 1 ชิ้น
      [data-mc-item=forge:slug]     ใส่คลาส .done ให้เมื่อทำชิ้นนั้นแล้ว
-     [data-mc-seq=forge:3]         ล็อก (.locked + ถอด href) จนกว่าจะครบ 3 ชิ้น
+     [data-mc-seq=forge:3]         ซ่อน + ถอด href จนกว่าจะทำครบ 3 ชิ้น
      [data-mc-title=FORGE]         บล็อกที่โผล่เมื่อได้ตรานั้นแล้ว
      [data-mc-notitle=FORGE]       บล็อกที่ซ่อนเมื่อได้ตรานั้นแล้ว
    ═══════════════════════════════════════════════════════════════ */
@@ -165,6 +165,14 @@
     each('[data-mc-seq]',function(el){
       var p=split(el.getAttribute('data-mc-seq')), t=T(p[0]); if(!t) return;
       var need=parseInt(p[1],10)||0, lock=t.count()<need;
+      /* ตอนที่ยังไม่ถึงถูกซ่อนไปเลย ไม่ใช่โชว์เป็นการ์ดเทา ๆ ที่กดไม่ได้
+         หน้ารวมจึงยาวเท่าที่คนคนนั้นเดินมาถึงจริง ๆ ไม่ได้โชว์ทางลัดให้เห็น
+
+         ⚠️ el.hidden อย่างเดียวไม่การันตีว่าของจะหาย — [hidden] ของเบราว์เซอร์
+         อยู่ใน UA stylesheet ซึ่งแพ้กฎ author เสมอไม่ว่า specificity เท่าไหร่
+         หน้าไหนตั้ง display ทับไว้ต้องมี [hidden]{display:none!important}
+         ในหน้านั้นด้วย ไม่งั้นของที่สั่งซ่อนจะยังโผล่โดยไม่มี error ให้เห็น */
+      el.hidden=lock;
       addCls(el,'locked',lock);
       if(lock){
         if(el.hasAttribute('href')){

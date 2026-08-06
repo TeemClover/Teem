@@ -362,7 +362,7 @@ QUEST_JS = '''/* ═════════════════════
      [data-mc-undone=forge]        บล็อกที่ซ่อนเมื่อครบ (ตั้งต้นต้องมองเห็น)
      [data-mc-any=forge]           บล็อกที่โผล่เมื่อเริ่มแล้วอย่างน้อย 1 ชิ้น
      [data-mc-item=forge:slug]     ใส่คลาส .done ให้เมื่อทำชิ้นนั้นแล้ว
-     [data-mc-seq=forge:3]         ล็อก (.locked + ถอด href) จนกว่าจะครบ 3 ชิ้น
+     [data-mc-seq=forge:3]         ซ่อน + ถอด href จนกว่าจะทำครบ 3 ชิ้น
      [data-mc-title=FORGE]         บล็อกที่โผล่เมื่อได้ตรานั้นแล้ว
      [data-mc-notitle=FORGE]       บล็อกที่ซ่อนเมื่อได้ตรานั้นแล้ว
    ═══════════════════════════════════════════════════════════════ */
@@ -500,6 +500,14 @@ QUEST_JS = '''/* ═════════════════════
     each('[data-mc-seq]',function(el){
       var p=split(el.getAttribute('data-mc-seq')), t=T(p[0]); if(!t) return;
       var need=parseInt(p[1],10)||0, lock=t.count()<need;
+      /* ตอนที่ยังไม่ถึงถูกซ่อนไปเลย ไม่ใช่โชว์เป็นการ์ดเทา ๆ ที่กดไม่ได้
+         หน้ารวมจึงยาวเท่าที่คนคนนั้นเดินมาถึงจริง ๆ ไม่ได้โชว์ทางลัดให้เห็น
+
+         ⚠️ el.hidden อย่างเดียวไม่การันตีว่าของจะหาย — [hidden] ของเบราว์เซอร์
+         อยู่ใน UA stylesheet ซึ่งแพ้กฎ author เสมอไม่ว่า specificity เท่าไหร่
+         หน้าไหนตั้ง display ทับไว้ต้องมี [hidden]{display:none!important}
+         ในหน้านั้นด้วย ไม่งั้นของที่สั่งซ่อนจะยังโผล่โดยไม่มี error ให้เห็น */
+      el.hidden=lock;
       addCls(el,'locked',lock);
       if(lock){
         if(el.hasAttribute('href')){
@@ -841,13 +849,12 @@ INDEX_CSS = '''
   box-shadow:0 4px 10px -3px rgb(10 40 24/.6)}
 .ep.done .im img{opacity:.72}
 /* ── ตอนที่ยังไม่ถึง ──
-   href ถูกถอดออกโดย quest.js แล้ว ตรงนี้แค่ทำให้ "เห็นว่าล็อก" ไม่ใช่ตัวกัน */
+   ซ่อนหายไปเลย หน้ารวมยาวเท่าที่คนคนนั้นเดินมาถึงจริง
+   การซ่อนอาศัย [hidden]{display:none!important} ที่อยู่ใน CSS ฐานของทุกหน้า
+   ตรงนี้จึงไม่ต้องมีกฎซ้ำอีก แต่ถ้าวันไหนกฎฐานนั้นหาย .ep ที่ตั้ง display:flex
+   ไว้จะโผล่ครบทุกตอนทั้งที่ el.hidden เป็น true — พังเงียบโดยไม่มี error */
 .ep{position:relative}
-.ep .lk{display:none}
-.ep.locked{filter:grayscale(1);opacity:.5;cursor:not-allowed}
-.ep.locked:hover{transform:none;box-shadow:none;border-color:rgb(var(--ink)/.09)}
-.ep.locked .lk{display:grid;place-items:center;position:absolute;inset:0;
-  font-size:26px;background:rgb(10 40 24/.32);border-radius:16px}
+.moresoon{text-align:center;color:rgb(var(--muted));font-size:13.5px;padding:6px 0 2px}
 /* ตอนพิเศษเป็นของแถม ไม่ใช่ตอนที่ 8 ของเส้นเรื่อง — ป้ายจึงเป็นสีทองอ่อนคนละโทน */
 .ep.bonus .no{color:rgb(var(--muted))}
 .ep.bonus .sp{display:inline-block;margin-left:5px;font-size:10px;letter-spacing:.06em;
@@ -883,7 +890,6 @@ for i, (key, num, title, slug, special, _srcs) in enumerate(EPISODES):
         <span class="no">ตอนที่ {num}{badge}</span>
         <b class="disp">{E(title)}</b>
       </div>
-      <span class="lk" aria-hidden="true">🔒</span>
     </a>''')
 
 # ช่องที่ 8 — ตอนพิเศษ ไม่บังคับอ่าน จึงไม่มี data-mc-item ไม่นับรวมความคืบหน้า
@@ -900,7 +906,6 @@ cards.append(f'''    <a class="ep bonus" href="{SPECIAL_SLUG}/" data-mc-seq="for
         <span class="no">🎁 ตอนพิเศษ <span class="sp">ไม่บังคับอ่าน</span></span>
         <b class="disp">{E(SPECIAL_TITLE)}</b>
       </div>
-      <span class="lk" aria-hidden="true">🔒</span>
     </a>''')
 
 index_body = f'''<header class="bar"><div class="wrap">
@@ -927,6 +932,7 @@ index_body = f'''<header class="bar"><div class="wrap">
   <div class="grid">
 {chr(10).join(cards)}
   </div>
+  <p class="moresoon" data-mc-undone="forge">🔒 ตอนถัดไปจะโผล่ขึ้นมาเองเมื่ออ่านตอนนี้จบ — เรื่องนี้เรียงกันมา ข้ามแล้วจะงง</p>
   {walkthrough_card('../')}
   {finish_block('../')}
   <p class="rstw" data-mc-any="forge" hidden><button type="button" class="rst" id="rstBtn">ล้างความคืบหน้าการอ่าน</button></p>
