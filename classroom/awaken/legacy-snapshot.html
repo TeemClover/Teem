@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="mc-act-view" content="awaken-open">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>บทที่ 7 — ความเงียบ และ ตัวอักษร | ห้องเรียน AI myclover</title>
+<meta name="description" content="บทสรุปห้องเรียน AI — 6 บทที่ผ่านมาไม่ใช่ 6 เครื่องมือ แต่คือ Workflow เดียว: Login, Create, Apply, Source, Multiply และ Share">
+<meta property="og:type" content="website">
+<meta property="og:title" content="บทที่ 7 — ความเงียบ และ ตัวอักษร | myclover">
+<meta property="og:description" content="6 บทที่ผ่านมาไม่ใช่ 6 เครื่องมือ แต่คือ Workflow เดียวที่ย้ายไปใช้กับงานอะไรก็ได้">
+<meta property="og:image" content="https://www.myclover.com/img/og-awaken.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#06190E">
+<style>
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",sans-serif;background:#06190E;color:rgb(var(--paper));
+  line-height:1.9;-webkit-font-smoothing:antialiased}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
+.mono{font-family:"Bai Jamjuree",monospace;letter-spacing:.1em}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;height:auto;display:block}
+[hidden]{display:none!important}
+.wrap{max-width:660px;margin:0 auto;padding:0 22px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
+
+/* ═══════════ แถบบน + XP ═══════════ */
+.bar{position:sticky;top:0;z-index:70;background:rgb(6 25 14/.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgb(190 148 66/.22)}
+.bar .row{max-width:660px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:12px;min-height:54px}
+.bar .home{font-family:"Bai Jamjuree";font-weight:700;font-size:14px;color:rgb(255 255 255/.8);
+  min-height:44px;display:inline-flex;align-items:center}
+.bar .home em{font-style:normal;color:rgb(var(--gold))}
+.bar .xp{margin-left:auto;display:flex;align-items:center;gap:9px;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:11px;letter-spacing:.12em;color:rgb(var(--gold))}
+.bar .xpt{width:96px;height:4px;border-radius:99px;background:rgb(255 255 255/.13);overflow:hidden}
+.bar .xpt i{display:block;height:100%;width:0;background:rgb(var(--gold));transition:width .35s linear}
+.phasedots{display:flex;gap:5px;padding:0 22px 8px;max-width:660px;margin:0 auto}
+.phasedots span{flex:1;height:3px;border-radius:99px;background:rgb(255 255 255/.12);transition:background .5s}
+.phasedots span.on{background:rgb(var(--gold))}
+
+/* ═══════════ หน้าก่อนเข้าบอส ═══════════ */
+.encounter{min-height:calc(100vh - 54px);padding:72px 0 80px;text-align:center;display:grid;place-items:center;
+  background:radial-gradient(620px 360px at 50% 22%,rgb(190 148 66/.08),transparent 72%)}
+.enc-tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.24em;color:rgb(var(--gold))}
+.enc-copy{padding-top:0}
+@media(max-width:600px){.encounter{padding:52px 0 68px}}
+.encounter h1{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(26px,7vw,38px);
+  margin-top:14px;line-height:1.3}
+.enc-body{margin-top:22px;font-size:16px;color:rgb(255 255 255/.74);line-height:2.05}
+.enc-body em{font-style:normal;color:rgb(var(--paper))}
+.enc-meta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px}
+.enc-meta span{font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.06em;
+  border:1px solid rgb(190 148 66/.42);border-radius:99px;padding:7px 15px;color:rgb(var(--gold))}
+.enter{margin-top:32px;display:inline-flex;align-items:center;gap:10px;background:rgb(var(--gold));
+  color:#06190E;font-family:"Bai Jamjuree";font-weight:700;font-size:16.5px;border:0;border-radius:14px;
+  padding:16px 32px;cursor:pointer;min-height:52px;box-shadow:0 22px 44px -20px rgb(190 148 66/.9);
+  transition:transform .25s,box-shadow .25s}
+.enter:hover{transform:translateY(-2px);box-shadow:0 28px 50px -20px rgb(190 148 66/.95)}
+.enc-lock{margin-top:26px;border:1px solid rgb(255 255 255/.16);border-radius:16px;padding:22px;
+  background:rgb(255 255 255/.04)}
+.enc-lock b{display:block;font-family:"Bai Jamjuree";font-size:16px;margin-bottom:6px}
+.enc-lock p{font-size:14px;color:rgb(255 255 255/.62)}
+.enc-lock .lbar{height:5px;border-radius:99px;background:rgb(255 255 255/.12);margin:14px 0 8px;overflow:hidden}
+.enc-lock .lbar i{display:block;height:100%;background:rgb(var(--green));width:0;transition:width .8s}
+.enc-lock .go{display:inline-block;margin-top:12px;font-family:"Bai Jamjuree";font-weight:700;
+  font-size:14px;color:rgb(var(--gold));border-bottom:1px solid rgb(190 148 66/.5);padding-bottom:2px}
+
+/* ═══════════ ตัวบท ═══════════ */
+.chapter{padding:20px 0 0}
+.ch-head{text-align:center;padding:36px 0 44px;border-bottom:1px solid rgb(255 255 255/.1)}
+.ch-head .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.24em;color:rgb(var(--gold))}
+.ch-head h1{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(25px,6.4vw,36px);margin-top:12px;line-height:1.32}
+.ch-head .lead{margin-top:16px;font-size:16px;color:rgb(255 255 255/.72)}
+.ch-head .rew{margin-top:14px;font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;
+  letter-spacing:.08em;color:rgb(var(--gold))}
+
+.phase{padding:56px 0 10px}
+.phase h2{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(20px,5.2vw,26px);line-height:1.4;
+  margin-bottom:8px}
+.phase .pn{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.22em;
+  color:rgb(190 148 66/.8);display:block;margin-bottom:10px}
+.phase p{margin-top:18px;font-size:16.5px;color:rgb(255 255 255/.8)}
+.phase p.tight{margin-top:8px}
+.phase strong{color:rgb(var(--paper));font-weight:600}
+.phase .beat{margin-top:22px;font-size:16.5px;color:rgb(255 255 255/.86);line-height:2.15}
+.phase .beat span{display:block}
+
+.loop{margin-top:26px;display:grid;gap:12px}
+.loop .st{border:1px solid rgb(255 255 255/.14);border-radius:14px;padding:16px 18px;
+  background:rgb(255 255 255/.035)}
+.loop .st b{font-family:"Bai Jamjuree";font-weight:700;font-size:13px;letter-spacing:.14em;
+  color:rgb(var(--gold));display:block}
+.loop .st p{margin-top:5px;font-size:15px;color:rgb(255 255 255/.74);line-height:1.8}
+.loop .st .lv{display:inline-block;margin-right:8px;color:rgb(255 255 255/.52);font-size:11px;letter-spacing:.08em}
+.cycle{margin-top:18px;border:1px solid rgb(190 148 66/.5);border-radius:18px;padding:22px 20px;
+  background:linear-gradient(180deg,rgb(190 148 66/.13),rgb(190 148 66/.035));text-align:center}
+.cycleline{display:flex;justify-content:center;flex-wrap:wrap;gap:7px 12px;color:rgb(var(--gold));
+  font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.08em}
+.cycleline span{display:inline-flex;align-items:center;gap:12px}
+.cycleline span:not(:last-child)::after{content:"→";color:rgb(255 255 255/.35)}
+.cycleline span:last-child::after{content:"↻";color:rgb(255 255 255/.55)}
+.cycle h3{font-family:"Bai Jamjuree";font-size:19px;line-height:1.5;margin-top:15px}
+.cycle p{font-size:15.5px;color:rgb(255 255 255/.8);line-height:1.9;margin-top:10px}
+
+.reveal-box{margin-top:30px;border:1px solid rgb(190 148 66/.5);border-radius:18px;padding:24px 22px;
+  background:linear-gradient(180deg,rgb(190 148 66/.13),rgb(190 148 66/.03))}
+.reveal-box .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.2em;
+  color:rgb(var(--gold));display:block}
+.reveal-box h3{font-family:"Bai Jamjuree";font-weight:700;font-size:19px;margin-top:8px;line-height:1.45}
+.reveal-box p{margin-top:12px;font-size:15.5px;color:rgb(255 255 255/.82);line-height:1.95}
+.reveal-box .kbd{font-family:"Bai Jamjuree";font-weight:700;color:rgb(var(--gold))}
+
+.quote{margin-top:22px;border-left:2px solid rgb(190 148 66/.6);padding-left:18px;
+  font-size:16px;color:rgb(255 255 255/.76);font-style:italic}
+.pre{margin-top:20px;background:rgb(0 0 0/.3);border:1px solid rgb(255 255 255/.12);border-radius:12px;
+  padding:16px 18px;font-family:"Bai Jamjuree",monospace;font-size:14px;line-height:2;
+  color:rgb(255 255 255/.8);white-space:pre-line;overflow-x:auto}
+
+.clear{margin-top:42px;font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;letter-spacing:.18em;
+  color:rgb(190 148 66/.55);text-align:center;padding-bottom:20px;border-bottom:1px solid rgb(255 255 255/.08);
+  transition:color .6s}
+.clear.lit{color:rgb(var(--gold))}
+
+/* ═══════════ สมุดที่วางอยู่ข้างทาง — ทางเข้าลับ ═══════════ */
+.aside-nbk{margin:52px auto 0;max-width:400px;text-align:center;opacity:.72;transition:opacity .4s}
+.aside-nbk:hover{opacity:1}
+.aside-nbk .cap{font-size:13.5px;color:rgb(255 255 255/.44);font-style:italic}
+.nbk-btn{margin-top:14px;background:none;border:0;padding:0;cursor:pointer;display:inline-block}
+.nbk-mini{background:#C9BFA4;color:#2A2418;border-radius:3px 9px 9px 3px;padding:15px 22px 17px;
+  border:1px solid rgb(0 0 0/.22);transform:rotate(-2.2deg);position:relative;
+  box-shadow:0 16px 30px -18px rgb(0 0 0/.9);transition:transform .3s}
+.nbk-btn:hover .nbk-mini{transform:rotate(-1deg) translateY(-3px)}
+.nbk-mini::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:1px;background:rgb(180 60 60/.35)}
+.nbk-mini .l{font-size:9.5px;letter-spacing:.16em;color:rgb(42 36 24/.5);font-family:"Bai Jamjuree";font-weight:700}
+.nbk-mini .w{font-family:"Bai Jamjuree";font-weight:700;font-size:19px;margin-top:3px}
+.nbk-choice{margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.nbk-choice a,.nbk-choice button{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;
+  border-radius:10px;padding:11px 18px;min-height:44px;display:inline-flex;align-items:center;cursor:pointer}
+.nbk-choice .yes{background:rgb(var(--gold));color:#06190E;border:0}
+.nbk-choice .no{background:none;border:1px solid rgb(255 255 255/.24);color:rgb(255 255 255/.68)}
+.nbk-choice .no:hover{border-color:rgb(255 255 255/.45)}
+
+/* ═══════════ ปุ่มเปิดปาร์ตี้ ═══════════ */
+.party-open{margin-top:28px;width:100%;background:rgb(255 255 255/.06);border:1px solid rgb(190 148 66/.45);
+  color:rgb(var(--paper));font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;border-radius:14px;
+  padding:16px 20px;cursor:pointer;min-height:52px;transition:background .25s,border-color .25s}
+.party-open:hover{background:rgb(190 148 66/.14);border-color:rgb(var(--gold))}
+
+/* ═══════════ Modal ปาร์ตี้ ═══════════ */
+.md{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:20px}
+.md .bd{position:absolute;inset:0;background:rgb(3 12 7/.82);backdrop-filter:blur(4px)}
+.md .panel{position:relative;background:#0B2416;border:1px solid rgb(190 148 66/.42);border-radius:20px;
+  width:100%;max-width:620px;max-height:86vh;overflow-y:auto;padding:26px 22px 30px;
+  box-shadow:0 40px 80px -30px rgb(0 0 0/.9)}
+.md .x{position:absolute;right:14px;top:14px;background:rgb(255 255 255/.09);border:0;color:#fff;
+  width:40px;height:40px;border-radius:50%;font-size:19px;cursor:pointer;line-height:1}
+.md .x:hover{background:rgb(255 255 255/.18)}
+.md h2{font-family:"Bai Jamjuree";font-weight:700;font-size:22px;padding-right:46px}
+.md .guard{margin-top:12px;border:1px dashed rgb(190 148 66/.45);border-radius:12px;padding:13px 15px;
+  font-size:13.5px;color:rgb(255 255 255/.72);line-height:1.8}
+.md .guard b{color:rgb(var(--gold))}
+.pbar{display:flex;align-items:center;gap:10px;margin-top:16px;padding:9px 14px;
+  border:1px solid rgb(190 148 66/.4);border-radius:11px;background:rgb(190 148 66/.09)}
+.pbar b{font-family:"Bai Jamjuree";font-weight:700;font-size:11px;letter-spacing:.2em;color:rgb(var(--gold))}
+.pbar .slots{margin-left:auto;display:flex;gap:4px}
+.pbar .slots i{width:9px;height:9px;border-radius:2px;background:rgb(var(--gold));transform:rotate(45deg)}
+
+.pc4{margin-top:14px;display:grid;gap:13px}
+/* การ์ดสมาชิก — กรอบซ้ายเป็นสีประจำสายของตัวนั้น */
+.pmem{border:1px solid rgb(255 255 255/.15);border-left:3px solid var(--ac,rgb(190 148 66));
+  border-radius:16px;padding:16px;background:linear-gradient(100deg,color-mix(in srgb,var(--ac) 13%,transparent),rgb(255 255 255/.03))}
+.pmem.lead{border:1.5px solid rgb(190 148 66/.65);border-left-width:3px;
+  box-shadow:0 0 0 1px rgb(190 148 66/.2) inset,0 18px 40px -26px rgb(190 148 66/.85)}
+.pmem .top{display:flex;align-items:flex-start;gap:14px}
+
+/* ภาพประจำตัว — กรอบสองชั้นแบบการ์ดเกม มีมุมทองสี่มุมให้หัวหน้าปาร์ตี้ */
+.ava{width:112px;height:112px;flex:none;border-radius:14px;overflow:hidden;position:relative;
+  background:rgb(255 255 255/.06);border:2px solid var(--ac,rgb(190 148 66));display:grid;place-items:center;
+  box-shadow:0 0 0 1px rgb(0 0 0/.5),0 10px 26px -14px rgb(0 0 0/.9)}
+.ava picture{display:contents}
+.ava img{width:100%;height:100%;object-fit:cover;display:block}
+/* ยังไม่มีภาพก็ต้องดูตั้งใจ ไม่ใช่รูปแตก — ใช้อีโมจิยืนแทนไปก่อน */
+.ava .fb{font-size:46px;line-height:1}
+.ava picture+.fb{display:none}
+.pmem.lead .ava{border-color:rgb(var(--gold));width:124px;height:124px}
+.pmem.lead .ava::after{content:"";position:absolute;inset:3px;border-radius:9px;pointer-events:none;
+  border:1px solid rgb(190 148 66/.55)}
+
+.pmem .who{flex:1;min-width:0}
+.nmrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pmem .nm{font-family:"Bai Jamjuree";font-weight:700;font-size:19px;letter-spacing:.04em}
+.ldtag{font-family:"Bai Jamjuree";font-weight:700;font-size:9.5px;letter-spacing:.14em;
+  color:rgb(10 40 24);background:rgb(var(--gold));border-radius:99px;padding:3px 9px}
+.pmem .role{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.11em;
+  color:rgb(var(--gold));margin-top:3px}
+.clschip{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:12.5px;border-radius:99px;padding:4px 12px 4px 8px;color:#fff;
+  background:color-mix(in srgb,var(--ac) 65%,transparent);border:1px solid rgb(255 255 255/.28)}
+.clschip i{font-style:normal;font-size:14px}
+.pmem .duty{font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;color:rgb(var(--paper));margin-top:7px}
+.pmem .duty em{font-style:normal;color:rgb(var(--gold))}
+
+.relay{margin-top:20px;border:1px solid rgb(190 148 66/.45);border-radius:16px;padding:20px 18px;
+  background:linear-gradient(180deg,rgb(190 148 66/.12),rgb(190 148 66/.02))}
+.relay .tag{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.18em;
+  color:rgb(var(--gold));display:block}
+.relay h3{font-family:"Bai Jamjuree";font-weight:700;font-size:17px;margin-top:7px;line-height:1.45}
+.relay p{margin-top:10px;font-size:14.5px;color:rgb(255 255 255/.8);line-height:1.9}
+.relay ol{list-style:none;counter-reset:r;margin-top:13px;display:grid;gap:9px}
+.relay li{counter-increment:r;position:relative;padding-left:34px;font-size:14.5px;
+  color:rgb(255 255 255/.82);line-height:1.8}
+.relay li::before{content:counter(r);position:absolute;left:0;top:1px;width:23px;height:23px;
+  border-radius:50%;background:rgb(190 148 66);color:#06190E;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:12.5px;display:grid;place-items:center}
+.relay .why{margin-top:14px;padding-top:12px;border-top:1px solid rgb(255 255 255/.14);
+  font-size:14px;color:rgb(255 255 255/.7);line-height:1.9}
+.pmem{border:1px solid rgb(255 255 255/.15);border-radius:16px;padding:18px;background:rgb(255 255 255/.04)}
+.pmem .nm{font-family:"Bai Jamjuree";font-weight:700;font-size:19px;letter-spacing:.04em}
+.pmem .role{font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.12em;
+  color:rgb(var(--gold));margin-top:2px}
+.pmem .lb{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.18em;
+  color:rgb(255 255 255/.45);margin-top:14px;display:block}
+.skills{margin-top:8px;display:grid;gap:7px}
+.sk{display:flex;gap:10px;align-items:baseline;font-size:14.5px;line-height:1.65}
+.sk b{font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;letter-spacing:.08em;color:rgb(var(--gold));
+  white-space:nowrap;min-width:132px}
+.sk span{color:rgb(255 255 255/.76)}
+.pmem .watch{margin-top:6px;font-size:14px;color:rgb(255 255 255/.66);line-height:1.8}
+
+/* ═══════════ ฉากตื่นรู้ ═══════════ */
+.aw{position:fixed;inset:0;z-index:100;background:radial-gradient(circle at 50% 42%,#123A22 0%,#05150C 70%);
+  display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.aw .in{max-width:460px;width:100%}
+.aw .t1{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(26px,8vw,40px);letter-spacing:.06em;
+  color:rgb(var(--gold));text-shadow:0 0 34px rgb(190 148 66/.6)}
+.aw .t2{font-family:"Bai Jamjuree";font-weight:700;font-size:19px;margin-top:8px;color:rgb(var(--paper))}
+.aw .lvn{font-family:"Bai Jamjuree";font-weight:700;font-size:11.5px;letter-spacing:.2em;
+  color:rgb(255 255 255/.5)}
+.aw .stat{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(28px,8vw,42px);
+  color:rgb(var(--gold));margin-top:10px;letter-spacing:.06em}
+.aw .say{margin-top:14px;font-size:16px;color:rgb(255 255 255/.82);line-height:1.95}
+.aw .btn{margin-top:30px;background:rgb(var(--gold));color:#06190E;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:16px;border:0;border-radius:13px;padding:15px 34px;cursor:pointer;min-height:52px}
+.aw .btn:hover{filter:brightness(1.07)}
+.aw .codebox{margin-top:22px;border:1px solid rgb(190 148 66/.5);border-radius:14px;padding:16px;
+  background:rgb(190 148 66/.1)}
+.aw .codebox .lb{font-family:"Bai Jamjuree";font-weight:700;font-size:10.5px;letter-spacing:.2em;
+  color:rgb(255 255 255/.55)}
+.aw .codebox code{display:block;font-family:"Bai Jamjuree",monospace;font-weight:700;font-size:27px;
+  letter-spacing:.22em;color:rgb(var(--gold));margin-top:6px}
+.aw .cp{margin-top:10px;background:rgb(255 255 255/.1);border:0;color:#fff;font-family:"Bai Jamjuree";
+  font-weight:700;font-size:13px;border-radius:9px;padding:9px 18px;cursor:pointer;min-height:40px}
+.aw .note{margin-top:16px;font-size:13.5px;color:rgb(255 255 255/.6);line-height:1.85}
+.aw .ctas{margin-top:24px;display:grid;gap:9px}
+.aw .ctas a{font-family:"Bai Jamjuree";font-weight:700;font-size:14.5px;border-radius:11px;padding:13px 16px;
+  min-height:46px;display:flex;align-items:center;justify-content:center}
+.aw .ctas .p{background:rgb(var(--gold));color:#06190E}
+.aw .ctas .s{border:1px solid rgb(255 255 255/.24);color:rgb(255 255 255/.82)}
+.aw .step{animation:awIn .7s cubic-bezier(.22,1,.36,1)}
+@keyframes awIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ═══════════ ท้ายบท ═══════════ */
+.tail{padding:48px 0 20px}
+.tail h2{font-family:"Bai Jamjuree";font-weight:700;font-size:22px}
+.tail ul{list-style:none;margin-top:18px;display:grid;gap:9px}
+.tail li{padding-left:24px;position:relative;font-size:16px;color:rgb(255 255 255/.8)}
+.tail li::before{content:"▪";position:absolute;left:2px;color:rgb(var(--gold))}
+.replay{margin-top:26px;background:none;border:1px solid rgb(255 255 255/.24);color:rgb(255 255 255/.75);
+  font-family:"Bai Jamjuree";font-weight:700;font-size:13.5px;border-radius:11px;padding:12px 20px;
+  cursor:pointer;min-height:44px}
+.replay:hover{border-color:rgb(var(--gold));color:rgb(var(--gold))}
+#endSentinel{height:1px}
+
+footer{text-align:center;color:rgb(255 255 255/.42);font-size:12.5px;padding:44px 0 56px;margin-top:44px;
+  border-top:1px solid rgb(255 255 255/.1)}
+footer a{color:rgb(var(--gold));font-weight:600}
+footer .exits{display:flex;gap:8px 18px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+
+/* หน้านี้พื้นเข้ม คำศัพท์เลยใช้สีทองแทนเขียว จะได้ contrast พอ */
+.chapter{--kwc:190 148 66}
+.loop .st b button{letter-spacing:.14em}
+@media(min-width:760px){ .loop{grid-template-columns:1fr 1fr} }
+/* จอแคบ ชื่อสกิลกินความกว้างจนคำอธิบายเหลือ 3 คำต่อบรรทัด — ให้ขึ้นบรรทัดใหม่แทน */
+/* จอกว้างขึ้น ภาพใหญ่ขึ้นอีก งานศิลป์จะได้ไม่จม */
+@media(min-width:560px){
+  .ava{width:136px;height:136px}
+  .pmem.lead .ava{width:150px;height:150px}
+}
+@media(max-width:560px){
+  .sk{display:block}
+  .sk b{min-width:0;display:block;margin-bottom:2px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .enter:hover,.nbk-btn:hover .nbk-mini{transform:none}
+  .aw .step{animation:none}
+  .bar .xpt i,.enc-lock .lbar i,.phasedots span,.clear{transition:none}
+}
+</style>
+<link rel="stylesheet" href="/assets/readable.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="row">
+    <a class="home disp" href="/hall.html#quest">← <img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>clover</em></a>
+    <div class="xp" id="xpWrap" hidden>
+      <span class="mono" id="xpTx">XP 0%</span>
+      <span class="xpt"><i id="xpBar"></i></span>
+    </div>
+  </div>
+  <div class="phasedots" id="dots" hidden>
+    <span></span><span></span><span></span><span></span>
+  </div>
+</header>
+
+<!-- ═══════════════ หน้าก่อนเข้าบอส ═══════════════ -->
+<main id="gate" class="encounter">
+  <div class="wrap enc-copy">
+  <span class="enc-tag mono">FINAL ENCOUNTER</span>
+  <h1 class="disp">ด่านนี้ไม่มีอะไรให้ทำ</h1>
+  <div class="enc-body">
+    <p>คุณไม่ต้องเปิด AI<br>ไม่ต้องพิมพ์ตาม<br>และไม่ต้องตอบคำถาม</p>
+    <p style="margin-top:18px"><em>แค่หาที่เงียบ ๆ แล้วอ่านให้จบ</em></p>
+    <p style="margin-top:18px">สิ่งที่คุณกำลังจะเจอไม่ใช่เครื่องมือชิ้นที่ 7<br>
+      แต่มันคือ Workflow ที่ซ่อนอยู่ใน 6 บทที่คุณเพิ่งผ่านมา</p>
+  </div>
+  <div class="enc-meta">
+    <span class="disp">⏱ 8–10 นาที</span>
+    <span class="disp">📖 อ่านอย่างเดียว</span>
+    <span class="disp">🏅 Reward: AWAKEN</span>
+  </div>
+
+  <!-- ยังเรียนไม่ครบ — ด่านยังไม่เปิด -->
+  <div class="enc-lock" id="lockBox" hidden>
+    <b class="disp">🔒 ด่านนี้ยังไม่เปิด</b>
+    <p>บทที่ 7 จะโผล่ให้เห็นหลังคุณเรียนครบทั้ง 6 บทของห้องเรียน</p>
+    <div class="lbar"><i id="lockBar"></i></div>
+    <p class="mono" style="font-size:12px" id="lockN">0 / 6</p>
+    <a class="go disp" href="../">กลับไปเรียนต่อ →</a>
+  </div>
+
+  <button type="button" class="enter disp" id="enterBtn" hidden>เข้าสู่ความเงียบ →</button>
+</div></main>
+
+<!-- ═══════════════ ตัวบท ═══════════════ -->
+<article id="chapter" class="chapter" hidden>
+<div class="wrap">
+
+  <div class="ch-head">
+    <span class="tag mono">BOSS STAGE</span>
+    <h1 class="disp">บทที่ 7 — ความเงียบ และ ตัวอักษร</h1>
+    <p class="lead">ด่านนี้ไม่มีอะไรให้ทำ มีเพียงให้อ่าน</p>
+    <p class="rew disp">อ่านจบ = Level Up ทันทีทุก Class · เวลาโดยประมาณ 8–10 นาที</p>
+  </div>
+
+  <!-- ── PHASE 1 ── -->
+  <section class="phase" data-phase="1">
+    <span class="pn mono">PHASE 1</span>
+    <h2 class="disp">คุณเพิ่งเล่นเกมจบไป 1 เกม</h2>
+    <p>ตั้งแต่เข้ามาในบ้านนี้ คุณได้รับของหลายชิ้น</p>
+    <div class="beat">
+      <span>คุณได้รับเข็มทิศ แล้วเลือกว่าจะเริ่มจากทางไหน</span>
+      <span>คุณชนหมัดกับเรา ก่อนจะรู้ด้วยซ้ำว่า GLHF หมายถึงอะไร</span>
+      <span>คุณมองเห็นเวลาที่มีอยู่จริงใน 1 วัน</span>
+      <span>คุณจั่วไพ่มือแรก</span>
+      <span>คุณเลือก Quest</span>
+      <span>คุณได้รับแผนที่</span>
+      <span>คุณเปิดจดหมายจาก GM</span>
+      <span>แล้วคุณได้เห็นไพ่ทั้งมือ</span>
+    </div>
+    <p>ไม่มีใครบอกให้คุณจำกฎเหล่านี้</p>
+    <p class="tight">คุณแค่ลองใช้มัน</p>
+    <p>นั่นคือวิธีที่เกมสอนผู้เล่นมาตลอด</p>
+    <p>เกมที่ดีไม่ได้หยุดทุก 10 วินาทีเพื่ออธิบายว่า
+      “ตอนนี้คุณกำลังเรียน Mechanic ข้อที่ 3”</p>
+    <div class="beat">
+      <span>มันให้คุณลอง</span>
+      <span>ให้คุณเห็นผล</span>
+      <span>แล้วค่อยทำให้สิ่งนั้นกลายเป็นความเข้าใจ</span>
+    </div>
+    <p>ตลอดเวลาที่อยู่ใน myclover คุณไม่ได้เดินผ่านหน้าเว็บไซต์หลายหน้า</p>
+    <p class="tight"><strong>คุณกำลังเล่น Tutorial ของเกมเดียวกัน</strong></p>
+    <p>เกมที่ไม่ได้ให้แต้มเพราะคุณคลิกเก่ง
+      แต่ให้ Item ที่คุณนำออกไปใช้กับงานและชีวิตจริงได้</p>
+    <div class="reveal-box" style="margin-top:32px">
+      <span class="tag mono">ทำไมบทนี้ถึงมีแต่ตัวหนังสือ</span>
+      <h3 class="disp">การทำงานกับ AI คือการเขียน พูด และอ่าน</h3>
+      <p>และเวลาส่วนใหญ่ของคุณจะหมดไปกับ <strong>การอ่านกับการคิด</strong>
+        ไม่ใช่การกดปุ่ม</p>
+      <p>เราจึงทำบทนี้มาให้คุณได้ฝึกอ่านและคิด เพราะเชื่อว่าในระยะยาว
+        มันประหยัดเวลาของคุณได้มากกว่าการดูคลิปสอนอีกสิบคลิป</p>
+      <p>หน้านี้จึงตั้งใจไม่ใช้ภาพเปิด และไม่แทรกภาพในตัวบท —
+        อยากให้คุณได้อยู่กับตัวหนังสือ ซึ่งเป็นภาษาเดียวกับที่ AI จะโต้ตอบกับคุณจริง ๆ</p>
+    </div>
+    <p class="clear mono" data-clear="1">▪ PHASE CLEAR</p>
+  </section>
+
+  <!-- ── PHASE 2 ── -->
+  <section class="phase" data-phase="2">
+    <span class="pn mono">PHASE 2</span>
+    <h2 class="disp">6 บทที่ผ่านมา คือ Workflow เดียวกัน</h2>
+    <p>แต่ละบทดูเหมือนสอนคนละเครื่องมือ แต่จริง ๆ แล้วแต่ละ LV กำลังวาง 1 ด่าน
+      ลงในวงจรทำงานเดียวกัน</p>
+
+    <div class="loop">
+      <div class="st"><b class="mono"><span class="lv">LV.1</span>LOGIN</b><p><strong>เข้า เริ่ม แล้ว Save</strong><br>ล็อกอิน เริ่มคุยกับระบบ และเก็บ Context สำคัญเป็น Save เพื่อกลับมาทำต่อได้โดยไม่ต้องเริ่มใหม่</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.2</span>CREATE</b><p><strong>ลองสร้างผลงานชิ้นแรก</strong><br>เปลี่ยนความคิดให้กลายเป็นของที่มองเห็นและแก้ได้ Version แรกยังไม่ต้องสมบูรณ์</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.3</span>APPLY</b><p><strong>เอาไปปรับใช้กับชีวิตจริง</strong><br>ให้ผลงานเจองาน คน และข้อจำกัดจริง เพราะของที่สวยในหน้าจอแต่ใช้ไม่ได้ ยังไม่จบ Quest</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.4</span><button type="button" data-kw="SOURCE">SOURCE</button></b><p><strong>แตกงานจากสิ่งที่ Save ไว้</strong><br>จัด Save ที่ผ่านการใช้จริงให้เป็นต้นฉบับกลาง แล้วให้ AI แตกออกเป็นงานหลายรูปแบบโดยยังยึด Source เดียวกัน</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.5</span><button type="button" data-kw="MULTIPLY">MULTIPLY</button></b><p><strong>ให้เครื่องมืออ่าน Save แล้วทำงานซ้ำ</strong><br>เปลี่ยน Prompt และ Workflow ให้เป็น Loadout ที่อ่าน Save แล้วหยิบ Source ไปทำงานต่อได้ ไม่ต้องป้อนบริบทใหม่ทีละช่องทุกครั้ง</p></div>
+      <div class="st"><b class="mono"><span class="lv">LV.6</span><button type="button" data-kw="SHARE">SHARE</button></b><p><strong>ส่งมอบงานที่สร้างต่อ</strong><br>ทำให้ผลงานเปิด ใช้ และต่อยอดได้โดยคนอื่น งานจึงเดินทางต่อแม้คนสร้างไม่ได้ยืนอธิบายอยู่ตรงนั้น</p></div>
+    </div>
+
+    <div class="cycle">
+      <div class="cycleline mono"><span>LOGIN</span><span>CREATE</span><span>APPLY</span><span>SOURCE</span><span>MULTIPLY</span><span>SHARE</span></div>
+      <h3 class="disp">นี่ไม่ใช่บันได 6 ขั้นที่เดินจบแล้วทิ้ง</h3>
+      <p>มันคือ Cycle ที่วนใช้กับงานไหนก็ได้ — งานที่ Share ออกไปจะสร้างผลลัพธ์และ Feedback ใหม่
+        สิ่งนั้นกลับมาอัปเดต Save และ Source ก่อนเริ่มรอบถัดไป</p>
+    </div>
+
+    <!-- เฉลยของบท 4 × บท 5 -->
+    <div class="reveal-box">
+      <span class="tag mono">★ WORKFLOW MULTIPLIER</span>
+      <h3 class="disp">เฉลยที่ซ่อนอยู่ระหว่าง Save, Source และเครื่องมือ</h3>
+      <p><span class="kbd">Save</span> คือความจำของงานที่ช่วยให้คุณกลับมาเริ่มต่อได้<br>
+         <span class="kbd">Source</span> คือ Save ที่ถูกตรวจและจัดโครงสร้าง จนพร้อมเป็นต้นฉบับกลาง<br>
+         <span class="kbd">Multiplier</span> คือ Prompt หรือ Workflow ที่หยิบ Source นั้นไปสร้างงานซ้ำได้</p>
+      <p>คนส่วนใหญ่ใช้สองอย่างนี้แยกกัน แล้วก็นั่งเติมคำในช่องว่างทีละช่องทุกครั้ง</p>
+      <p><strong>วิธีที่เร็วกว่านั้นคือ ไม่ต้องเติมเลย</strong><br>
+         ก๊อป Prompt จากบทที่ 5 มาทั้งอัน ปล่อยวงเล็บว่างไว้อย่างนั้น
+         แล้วแนบไฟล์ Source ที่สร้างจากบทที่ 1 ที่มีบริบทครบไปพร้อมกัน</p>
+      <p>AI จะเติมช่องว่างเองจาก Source ของคุณ เพราะมันรู้จักงานของคุณอยู่แล้ว
+         และ Source นั้นจะโตขึ้นเรื่อย ๆ ไปกับคุณ ด้วยวิธีคิดที่คุณเรียนมาทั้ง 6 บท
+         วิธีนี้จะประหยัดเวลาในชีวิตของคุณไปอย่างมหาศาล ในระยะยาว</p>
+      <p class="quote" style="margin-top:16px">พอคุณทำได้ครั้งแรก
+        คุณจะมองการทำงานด้วย AI ไม่เหมือนเดิมอีกต่อไป</p>
+    </div>
+
+    <p>เมื่อระบบเปลี่ยน อย่าถามก่อนว่าปุ่มอยู่ไหน</p>
+    <p class="tight"><strong>ให้ถามว่างานของเราติดอยู่ด่านไหน</strong></p>
+    <div class="beat">
+      <span>ยังไม่มีของให้ลอง — กลับไป CREATE</span>
+      <span>มีของแล้ว แต่ยังไม่รู้ว่าใช้จริงได้ไหม — ไป APPLY</span>
+      <span>ทำได้แล้ว แต่ต้องเริ่มใหม่ทุกครั้ง — สร้าง SOURCE และ MULTIPLY</span>
+      <span>งานยังอยู่กับคนทำคนเดียว — ทำให้ SHARE ได้</span>
+    </div>
+    <p>ปุ่มเปลี่ยนได้ หน้าตาโปรแกรมเปลี่ยนได้ ชื่อโมเดลเปลี่ยนได้</p>
+    <p class="tight"><strong>แต่คนที่มองเห็น Cycle จะจับเครื่องมือใหม่ใส่ในด่านเดิม และปรับตัวต่อได้ทันที</strong></p>
+    <p class="clear mono" data-clear="2">▪ PHASE CLEAR</p>
+  </section>
+
+  <!-- ── PHASE 3 ── -->
+  <section class="phase" data-phase="3">
+    <span class="pn mono">PHASE 3</span>
+    <h2 class="disp">Keyword คือ Mechanic ที่ถูกบีบอัดไว้ในคำสั้น ๆ</h2>
+    <p>ตอนเล่นเกม คุณไม่จำเป็นต้องอธิบายใหม่ทุกครั้งว่า</p>
+    <div class="beat">
+      <span>ของที่เตรียมไปใช้ในภารกิจมีอะไรบ้าง</span>
+      <span>ตัวละครจัดแต้มแบบไหน</span>
+      <span>วิธีไหนกำลังได้ผลใน Patch นี้</span>
+      <span>ภารกิจไหนจำเป็นต่อเนื้อเรื่อง</span>
+      <span>ภารกิจไหนทำเพิ่มก็ได้</span>
+    </div>
+    <p>คุณเรียกมันสั้น ๆ ว่า <button type="button" data-kw="LOADOUT">Loadout</button> · <button type="button" data-kw="BUILD">Build</button> · <button type="button" data-kw="META">META</button> · <button type="button" data-kw="MAIN QUEST">Main Quest</button> · <button type="button" data-kw="SIDE QUEST">Side Quest</button></p>
+    <p class="tight">คำเหล่านี้สั้น แต่ข้างในมี Mechanic ทั้งชุดอยู่แล้ว</p>
+    <p class="tight">เวลาคุยกับ AI ก็เหมือนกัน ถ้าคุณบอกว่า</p>
+    <p class="quote">ช่วยจัด Loadout สำหรับการถ่ายคลิป 1 วัน</p>
+    <p>AI ส่วนใหญ่เข้าใจทันทีว่าควรจัดของจำเป็น เครื่องมือ ไฟล์ คน ขั้นตอน และของสำรอง
+      คุณไม่ต้องเขียนอธิบาย Mechanic ใหม่เป็น 20 บรรทัดทุกครั้ง</p>
+    <p>Keyword ที่ดีจึงไม่ใช่ศัพท์เท่ ๆ</p>
+    <p class="tight"><strong>มันคือ Handle ที่ใช้เรียกระบบทั้งชุดออกมา</strong></p>
+    <p>คำมาตรฐานอย่าง META, Build, Loadout, Workflow หรือ Walkthrough AI หลายตัวรู้จักอยู่แล้ว
+      ส่วนคำเฉพาะของบ้าน เช่น Source, Multiply หรือ First Item
+      คุณเพียงกำหนดความหมายให้มัน 1 ครั้งใน Source ของคุณ
+      หลังจากนั้นคุณกับ AI ก็ใช้ภาษาชุดเดียวกันได้</p>
+    <p>นี่คือเหตุผลที่บางคำในหน้านี้มีสีต่างออกไปและแตะแล้วเปิดคำอธิบายได้
+      เราใส่ไว้แค่สองที่ — ตรงนี้ กับ <button type="button" data-kw="WALKTHROUGH">Walkthrough</button>
+      เพราะคำพวกนี้ควรโผล่ตอนคุณพร้อมอ่านมันแล้ว ไม่ใช่โผล่ขวางตั้งแต่หน้าแรก</p>
+    <p>เราไม่ได้ต้องการให้คุณพูดเหมือนเกมเมอร์</p>
+    <p class="tight">เราอยากให้คุณเห็นว่า
+      <strong>การตั้งชื่อสิ่งที่เกิดซ้ำได้ดี ช่วยประหยัดเวลาชีวิตได้มากแค่ไหน</strong></p>
+    <p class="clear mono" data-clear="3">▪ PHASE CLEAR</p>
+  </section>
+
+  <!-- ── ของที่วางอยู่ข้างทาง ── -->
+  <div class="aside-nbk" id="asideNbk">
+    <p class="cap">ระหว่างสองด่าน มีสมุดเล่มหนึ่งวางอยู่บนโต๊ะ ปกเขียนด้วยลายมือเด็ก</p>
+    <button type="button" class="nbk-btn" id="nbkBtn" aria-expanded="false" aria-controls="nbkChoice">
+      <span class="nbk-mini">
+        <span class="l">สมุดวิชา</span>
+        <span class="w">ด.ช.นรินทร์</span>
+      </span>
+    </button>
+    <div class="nbk-choice" id="nbkChoice" hidden>
+      <a class="yes disp" href="notebook/" id="nbkGo">เปิดสมุด</a>
+      <button type="button" class="no disp" id="nbkNo">วางไว้ที่เดิม</button>
+    </div>
+  </div>
+
+  <!-- ── PHASE 4 ── -->
+  <section class="phase" data-phase="4">
+    <span class="pn mono">PHASE 4</span>
+    <h2 class="disp">บ้านหลังนี้ถูกสร้างด้วยปาร์ตี้</h2>
+    <p>เว็บที่คุณกำลังอ่าน การ์ตูน ระบบ Progress การ์ดประจำตัว ข้อความ ภาพ
+      และกติกาที่เชื่อมทุกหน้าเข้าด้วยกัน</p>
+    <p class="tight">ไม่ได้เกิดจากเครื่องมือวิเศษ 1 ตัว</p>
+    <p><strong>มันเกิดจากการจัด <button type="button" data-kw="PARTY">Party</button></strong>
+      แต่ละคนเล่น <button type="button" data-kw="CLASS">Class</button> ของตัวเอง</p>
+    <p>ไม่มีคะแนนจัดอันดับว่าใครเก่งที่สุด นี่เป็นเพียง
+      <button type="button" data-kw="LOADOUT">Loadout</button> ที่
+      <button type="button" data-kw="GM">GM</button> ใช้สร้างบ้านหลังนี้</p>
+
+    <button type="button" class="party-open disp" id="partyBtn"
+            aria-haspopup="dialog">⚔️ ชมปาร์ตี้ที่ใช้สร้างบ้านหลังนี้</button>
+
+    <p>ปาร์ตี้นี้ไม่ได้เป็นสูตรที่ทุกคนต้องลอก มันเป็นตัวอย่างว่า</p>
+    <p class="quote">คน 1 คนไม่จำเป็นต้องบังคับให้ AI ทุกตัวทำงานเหมือนกัน<br>
+      เลือก Class ให้เครื่องมือ แล้วส่งงานให้ตรงกับ Skill ของมัน</p>
+    <p>ตรงนี้เองที่คำว่า AI Workflow มีความหมาย</p>
+    <p class="tight">ไม่ใช่การถามทุกตัวด้วยคำถามเดียวกันแล้วเลือกคำตอบที่ฟังดูดีที่สุด
+      แต่คือการออกแบบเส้นทางว่า</p>
+    <div class="pre">ใครเปิด Map
+ใครร่างภาพ
+ใครตรวจระบบ
+ใคร Build ของจริง
+ใครเป็นคนตัดสินใจสุดท้าย</div>
+    <p><strong>คนที่ตัดสินใจสุดท้ายยังเป็นคุณ</strong></p>
+    <p class="tight">AI เป็น Party ไม่ใช่เจ้าของ Character ของคุณ</p>
+    <p class="clear mono" data-clear="4">▪ ALL PHASES CLEAR</p>
+  </section>
+
+  <!-- ── ท้ายบท ── -->
+  <section class="tail">
+    <h2 class="disp">สิ่งที่คุณเพิ่งเรียนจบ</h2>
+    <p style="margin-top:16px;font-size:16.5px;color:rgb(255 255 255/.8)">คุณไม่ได้เรียน AI 6 เครื่องมือ</p>
+    <p style="margin-top:8px;font-size:16.5px;color:rgb(255 255 255/.8)">
+      คุณเรียน Workflow 6 ด่านที่ใช้กับงานไหนก็ได้</p>
+    <p style="margin-top:18px;font-size:16.5px;color:rgb(255 255 255/.8)">
+      คุณไม่ได้จำ Prompt วิเศษ คุณเรียนรู้ว่า</p>
+    <ul>
+      <li>LOGIN — เข้าใจระบบ เริ่มงาน และเก็บ Save</li>
+      <li>CREATE — ทำ Version แรกให้เกิดขึ้น</li>
+      <li>APPLY — เอาไปชนกับชีวิตจริง</li>
+      <li>SOURCE — เก็บสิ่งที่ใช้ได้เป็นต้นฉบับกลาง</li>
+      <li>MULTIPLY — สร้างเครื่องมือให้ทำซ้ำและขยายผล</li>
+      <li>SHARE — ส่งมอบให้คนอื่นใช้และทำต่อ</li>
+    </ul>
+    <p style="margin-top:20px;font-size:16.5px;color:rgb(255 255 255/.8)">
+      สิ่งเหล่านี้ไม่ได้อยู่ในโปรแกรมใดโปรแกรมหนึ่ง</p>
+    <p style="margin-top:8px;font-size:17px"><strong>ตอนนี้มันอยู่ในตัวคุณแล้ว</strong></p>
+
+    <!-- Guild X — X = Multiplier -->
+    <div class="reveal-box" style="margin-top:34px">
+      <span class="tag mono">GUILD X</span>
+      <h3 class="disp">X ไม่ได้แปลว่า Extra</h3>
+      <p><span class="kbd">X = <button type="button" data-kw="MULTIPLY">Multiplier</button></span> — ตัวคูณ</p>
+      <p>ห้องที่ชื่อ Guild X ตั้งชื่อจากสิ่งเดียวที่เราสนใจจริง ๆ คือตัวคูณ
+        ไม่ใช่การทำเยอะขึ้น แต่คือการทำครั้งเดียวแล้วให้มันทำงานต่อได้หลายรอบ</p>
+      <p>Source คือตัวคูณ · Workflow คือตัวคูณ · Keyword ที่ตั้งไว้ดีก็เป็นตัวคูณ</p>
+      <p><strong>ถ้าคุณใช้มันเป็น คุณจะ abuse game mechanic ของงานตัวเองได้จริง</strong>
+        จนตัวละครของคุณแรงกว่าที่เกมตั้งใจให้เป็น</p>
+    </div>
+
+    <button type="button" class="replay disp" id="replayBtn" hidden>▸ ดูฉากตื่นรู้อีกครั้ง</button>
+  </section>
+
+  <div id="endSentinel" aria-hidden="true"></div>
+</div>
+
+<footer><div class="wrap">
+  <div class="exits">
+    <a href="../">ห้องเรียน AI</a>
+    <a href="../../card/">การ์ดประจำตัว</a>
+    <a href="../../forge/">เรื่องเล่าจากโรงตีเหล็ก</a>
+    <a href="../../">หน้าแรก</a>
+  </div>
+  <p>myclover.com · บทที่ 7 ไม่อยู่ในแผนการสอน</p>
+</div></footer>
+</article>
+
+<!-- ═══════════════ Modal ปาร์ตี้ ═══════════════ -->
+<div class="md" id="partyMd" hidden>
+  <div class="bd" id="partyBd"></div>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="partyTtl">
+    <button type="button" class="x" id="partyX" aria-label="ปิด">✕</button>
+    <h2 class="disp" id="partyTtl">⚔️ Party Loadout</h2>
+    <div class="guard">
+      <b>นี่คือ Build ที่ผมจัดเอง ไม่ใช่คะแนนทดสอบ</b><br>
+      เครื่องมือแต่ละตัวเปลี่ยนเร็ว และคนอื่นอาจจัด Party ต่างจากผมได้
+    </div>
+    <div class="pbar">
+      <b class="mono">ACTIVE PARTY</b>
+      <span style="font-size:13px;color:rgb(255 255 255/.7)">4 คน · คนละสาย</span>
+      <span class="slots" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    </div>
+    <div class="pc4">
+
+      <div class="pmem lead" style="--ac:#2E4A8F">
+        <div class="top">
+          <span class="ava"><picture><source type="image/webp" srcset="../../img/party-teem.webp"><img src="../../img/party-teem.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🧑‍🏭</span></span>
+          <div class="who">
+            <div class="nmrow"><span class="nm disp">TEEM</span><span class="ldtag">👑 PARTY LEADER</span></div>
+            <div class="role mono">MASTER BLACKSMITH / GAME MASTER</div>
+            <span class="clschip"><i aria-hidden="true">🧠</i>สายคิด</span>
+            <div class="duty disp"><em>คิด</em> และ <em>สั่งการ</em></div>
+          </div>
+        </div>
+        <span class="lb mono">SKILLS</span>
+        <div class="skills"><div class="sk"><b>READ THE META</b><span>อ่านว่าตอนนี้อะไรกำลังได้ผล แล้วเลือกว่าจะไม่ทำอะไรบ้าง</span></div><div class="sk"><b>DECK BUILD</b><span>จัดของที่มีอยู่ให้กลายเป็นชุดที่เล่นได้จริง</span></div><div class="sk"><b>FORGE ITEM</b><span>ตีของชิ้นใหม่จนใช้งานได้ ไม่ใช่แค่ดูดีในหน้าจอ</span></div><div class="sk"><b>FINAL CALL</b><span>ตัดสินใจครั้งสุดท้ายว่าอะไรได้ไปต่อ และอะไรพอแค่นี้</span></div></div>
+        <span class="lb mono">WATCH OUT</span>
+        <p class="watch">ช่างที่ใช้เวลานานมากกว่าจะเรียนรู้ว่า Skill ที่ใช้ตีเหล็กควรมีค่าจ้างอย่างไร</p>
+      </div>
+
+      <div class="pmem" style="--ac:#4B5A67">
+        <div class="top">
+          <span class="ava"><picture><source type="image/webp" srcset="../../img/party-claude.webp"><img src="../../img/party-claude.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🛠️</span></span>
+          <div class="who">
+            <div class="nmrow"><span class="nm disp">CLAUDE</span></div>
+            <div class="role mono">ARTIFICER / GUARDIAN</div>
+            <span class="clschip"><i aria-hidden="true">🧰</i>สายประดิษฐ์</span>
+            <div class="duty disp"><em>สร้าง</em> และ <em>ซ่อม</em></div>
+          </div>
+        </div>
+        <span class="lb mono">SKILLS</span>
+        <div class="skills"><div class="sk"><b>BLUEPRINT→BUILD</b><span>เปลี่ยนแบบร่างเป็นระบบที่รันได้จริง</span></div><div class="sk"><b>DEBUG</b><span>ไล่หาจุดที่พังแล้วซ่อมให้กลับมาทำงาน</span></div><div class="sk"><b>STRUCTURE SCAN</b><span>ตรวจโครงสร้างว่าต่อของใหม่เข้าไปแล้วจะไม่ล้มทั้งหลัง</span></div><div class="sk"><b>GUARD BREAK</b><span>เบรกเมื่อการสร้างเร็วเกินกว่าระบบจะรับไหว</span></div></div>
+        <span class="lb mono">WATCH OUT</span>
+        <p class="watch">ระวังตัวจนบางทีช้ากว่าที่ต้องการ และถ้าคุณให้บริบทไม่พอ มันจะถามก่อนลงมือ</p>
+      </div>
+
+      <div class="pmem" style="--ac:#1F8A70">
+        <div class="top">
+          <span class="ava"><picture><source type="image/webp" srcset="../../img/party-gpt.webp"><img src="../../img/party-gpt.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🎨</span></span>
+          <div class="who">
+            <div class="nmrow"><span class="nm disp">CHATGPT</span></div>
+            <div class="role mono">ILLUSIONIST BARD</div>
+            <span class="clschip"><i aria-hidden="true">💪</i>สายคลีน</span>
+            <div class="duty disp"><em>วาด</em> และ <em>เขียน</em></div>
+          </div>
+        </div>
+        <span class="lb mono">SKILLS</span>
+        <div class="skills"><div class="sk"><b>VISION CAST</b><span>ร่ายภาพของโลกให้เห็นก่อนลงมือสร้าง</span></div><div class="sk"><b>STORY WEAVE</b><span>ร้อยเรื่องกระจัดกระจายให้ต่อกันติด</span></div><div class="sk"><b>CANON KEEP</b><span>จำกติกาของโลกไว้ ไม่ให้เนื้อเรื่องขัดกันเอง</span></div><div class="sk"><b>TONE SHIFT</b><span>แปลงสารดิบให้เป็นมิตรก่อนส่งถึงมือผู้เล่น</span></div></div>
+        <span class="lb mono">WATCH OUT</span>
+        <p class="watch">เล่าเก่งจนบางทีฟังดูมั่นใจเกินกว่าที่ควร ข้อเท็จจริงต้องเช็กเองอีกชั้น</p>
+      </div>
+
+      <div class="pmem" style="--ac:#C4622D">
+        <div class="top">
+          <span class="ava"><picture><source type="image/webp" srcset="../../img/party-gemini.webp"><img src="../../img/party-gemini.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">⚡</span></span>
+          <div class="who">
+            <div class="nmrow"><span class="nm disp">GEMINI</span></div>
+            <div class="role mono">BERSERKER ANALYST</div>
+            <span class="clschip"><i aria-hidden="true">🍜</i>สายกิน</span>
+            <div class="duty disp"><em>แตกไอเดีย</em> และ <em>เถียง</em></div>
+          </div>
+        </div>
+        <span class="lb mono">SKILLS</span>
+        <div class="skills"><div class="sk"><b>OPEN MAP</b><span>เปิดแผนที่ให้เห็นทั้งกระดานก่อนเดิน</span></div><div class="sk"><b>LOGIC SMASH</b><span>ทุบตรรกะที่ติดอยู่จนมันขยับได้อีกครั้ง</span></div><div class="sk"><b>STRESS TEST</b><span>ซัดไอเดียให้แรงจนเห็นว่ามันจะพังตรงไหน</span></div><div class="sk"><b>SCALE BURST</b><span>ระเบิดสเกลให้เห็นความเป็นไปได้ที่ใหญ่กว่าเดิม</span></div></div>
+        <span class="lb mono">WATCH OUT</span>
+        <p class="watch">แรงและกว้าง แต่ต้องมีคนคอยตัดให้เหลือเท่าที่ทำจริงได้ในเวลาที่มี</p>
+      </div>
+
+      <div class="relay">
+        <span class="tag mono">PARTY TECHNIQUE · RELAY</span>
+        <h3 class="disp">ให้ AI คุยกันเอง โดยมีคุณเป็นคนเดินสาร</h3>
+        <p>ทั้งสามตัวไม่ได้ต่อกันเองอยู่แล้ว แต่คุณต่อให้มันได้ —
+          และตรงนี้แหละที่ปาร์ตี้เริ่มทำงานเหมือนปาร์ตี้จริง</p>
+        <ol>
+          <li>ให้ตัวหนึ่งตอบคำถามหรือร่างงานออกมาก่อน</li>
+          <li>ก๊อปคำตอบนั้นไปวางให้อีกตัว แล้วบอกตรง ๆ ว่า
+            “นี่คือสิ่งที่อีกตัวตอบมา คุณเห็นด้วยไหม ตรงไหนพัง”</li>
+          <li>สั่งให้มัน<strong>เขียนข้อความถึงอีกตัวโดยตรง</strong> ไม่ใช่เขียนถึงคุณ</li>
+          <li>คุณเป็นคนเดินสารกลับไปกลับมา และเป็นคนตัดสินว่ารอบไหนพอ</li>
+        </ol>
+        <p class="why">ที่มันได้ผลเพราะแต่ละตัวถนัดคนละอย่างจริง ๆ —
+          ตัวที่เก่งเถียงจะเจอรูที่ตัวที่เก่งสร้างมองข้าม และตัวที่เก่งเล่าจะทำให้ของที่ถูกต้อง
+          กลายเป็นของที่คนอ่านรู้เรื่อง คุณไม่ได้กำลังหาคำตอบที่ดีที่สุดจากตัวเดียว
+          <strong>คุณกำลังจัดประชุมที่คุณเป็นคนคุมวาระ</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ฉากตื่นรู้ ═══════════════ -->
+<div class="aw" id="awaken" hidden>
+  <div class="in" role="dialog" aria-modal="true" aria-labelledby="awTtl" id="awIn"></div>
+</div>
+
+<script src="../../assets/quest.js" defer></script>
+<!-- อภิธานศัพท์ — ใส่เฉพาะโซนท้ายเกม (บทนี้ · Walkthrough · บทส่งท้ายตอนพิเศษ) -->
+<script src="../../assets/terms.js" defer></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   บทที่ 7 — Boss Stage
+
+   สามหน้าที่หลัก
+   1) ประตูด่าน  ปลดเมื่อเรียนครบ 6 บท (ใช้ mc_learn_done จาก quest.js
+      เป็น source of truth ไม่สร้างระบบนับซ้ำ)
+   2) หน้าอ่าน   XP bar ตามการเลื่อน · PHASE CLEAR แบบ passive
+   3) ฉากตื่นรู้ ยิงเมื่อเลื่อนถึง end sentinel · กด LEVEL UP 3 ครั้ง
+      แล้วได้รหัส AWAKEN + ตรา Awakened
+   ═══════════════════════════════════════════════════════ */
+(function(){
+  var LESSONS=6, CODE='AWAKEN', TITLE='AWAKENED';
+  var K_DONE='mc_ch7_done', K_IN='mc_ch7_entered', K_Y='mc_ch7_y';
+
+  function ls(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
+  function save(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function reduced(){ return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+
+  function learnCount(){
+    var raw=ls('mc_learn','');
+    if(!raw) return 0;
+    var seen={},n=0;
+    raw.split(',').forEach(function(s){ if(s && !seen[s]){ seen[s]=1; n++; } });
+    return Math.min(n,LESSONS);
+  }
+  function unlocked(){ return ls('mc_learn_done','')==='1' || learnCount()>=LESSONS; }
+  function done(){ return ls(K_DONE,'')==='1'; }
+
+  var gate=document.getElementById('gate'), art=document.getElementById('chapter'),
+      enterBtn=document.getElementById('enterBtn'), lockBox=document.getElementById('lockBox'),
+      xpWrap=document.getElementById('xpWrap'), xpBar=document.getElementById('xpBar'),
+      xpTx=document.getElementById('xpTx'), dots=document.getElementById('dots');
+
+  /* ── ประตูด่าน ── */
+  function paintGate(){
+    if(unlocked()){ enterBtn.hidden=false; lockBox.hidden=true; return; }
+    enterBtn.hidden=true; lockBox.hidden=false;
+    var n=learnCount();
+    document.getElementById('lockN').textContent=n+' / '+LESSONS;
+    document.getElementById('lockBar').style.width=Math.round(n/LESSONS*100)+'%';
+  }
+
+  /* ── เข้าหน้าอ่าน ── */
+  function openChapter(scrollTop){
+    gate.hidden=true;
+    art.hidden=false;
+    xpWrap.hidden=false;
+    dots.hidden=false;
+    save(K_IN,'1');
+    document.getElementById('replayBtn').hidden=!done();
+    watchScroll();
+    if(scrollTop) window.scrollTo(0,0);
+  }
+  if(enterBtn) enterBtn.addEventListener('click',function(){ openChapter(true); });
+
+  /* ── XP + PHASE CLEAR ── */
+  var raf=false, clears=null, dotEls=null;
+  function tick(){
+    var d=document.documentElement;
+    var h=Math.max(d.scrollHeight,document.body.scrollHeight)-window.innerHeight;
+    var y=window.pageYOffset||d.scrollTop||0;
+    var p=h<=0?100:Math.max(0,Math.min(100,Math.round(y/h*100)));
+    xpBar.style.width=p+'%';
+    xpTx.textContent='XP '+p+'%';
+    for(var i=0;i<clears.length;i++){
+      if(clears[i].getBoundingClientRect().top < window.innerHeight-40){
+        clears[i].className+=clears[i].className.indexOf('lit')<0?' lit':'';
+        if(dotEls[i]) dotEls[i].className='on';
+      }
+    }
+    raf=false;
+  }
+  function onScroll(){ if(!raf){ raf=true; requestAnimationFrame(tick); } }
+  function watchScroll(){
+    clears=document.querySelectorAll('.clear');
+    dotEls=dots.children;
+    window.addEventListener('scroll',onScroll,{passive:true});
+    tick();
+    endWatch();
+  }
+
+  /* ── end sentinel → ฉากตื่นรู้ ── */
+  function endWatch(){
+    var s=document.getElementById('endSentinel');
+    if(!('IntersectionObserver' in window)){
+      /* เบราว์เซอร์เก่า — ใช้การเลื่อนถึงท้ายแทน ยังต้องจบได้เหมือนกัน */
+      window.addEventListener('scroll',function(){
+        var d=document.documentElement;
+        var h=Math.max(d.scrollHeight,document.body.scrollHeight)-window.innerHeight;
+        if(h<=0 || (window.pageYOffset||d.scrollTop||0)/h>=0.99) finish();
+      },{passive:true});
+      return;
+    }
+    new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting && !document.hidden) finish(); });
+    },{threshold:0}).observe(s);
+  }
+  function finish(){
+    if(done()) return;
+    save(K_DONE,'1');
+    if(window.MC_QUEST && window.MC_QUEST.grant) window.MC_QUEST.grant(TITLE);
+    else grantFallback();
+    document.getElementById('replayBtn').hidden=false;
+    startAwaken();
+  }
+  function grantFallback(){
+    try{
+      var t=JSON.parse(ls('mc_titles','[]'));
+      if(!Array.isArray(t)) t=[];
+      if(t.indexOf(TITLE)<0){ t.push(TITLE); save('mc_titles',JSON.stringify(t)); }
+    }catch(e){}
+  }
+
+  /* ═══════════ ฉากตื่นรู้ ═══════════ */
+  var aw=document.getElementById('awaken'), awIn=document.getElementById('awIn'), lastFocus=null;
+  var LEVELS=[
+    ['CONTEXT +1','คุณรู้แล้วว่า<br>คำตอบที่ดีเริ่มจากการให้บริบทที่ดี'],
+    ['SYSTEM +1','คุณมองเห็นงานซ้ำ<br>และเริ่มเปลี่ยนมันเป็น Workflow ได้'],
+    ['LANGUAGE +1','คุณเรียก Mechanic ที่ต้องการ<br>ด้วย Keyword ที่คนและ AI เข้าใจร่วมกันได้']
+  ];
+  function stepIntro(){
+    awIn.innerHTML='<div class="step">'+
+      '<div class="t1 mono" id="awTtl">YOU ARE AWAKENED</div>'+
+      '<div class="t2 disp">คุณได้ตื่นรู้แล้ว</div>'+
+      '<button type="button" class="btn disp" id="awGo">LEVEL UP</button></div>';
+    document.getElementById('awGo').addEventListener('click',function(){ stepLevel(0); });
+    document.getElementById('awGo').focus();
+  }
+  function stepLevel(i){
+    var L=LEVELS[i];
+    awIn.innerHTML='<div class="step">'+
+      '<div class="lvn mono" id="awTtl">LEVEL UP '+(i+1)+'/3</div>'+
+      '<div class="stat mono">'+L[0]+'</div>'+
+      '<p class="say">'+L[1]+'</p>'+
+      '<button type="button" class="btn disp" id="awGo">'+(i<2?'LEVEL UP':'รับตรา')+'</button></div>';
+    document.getElementById('awGo').addEventListener('click',function(){
+      if(i<2) stepLevel(i+1); else stepCode();
+    });
+    document.getElementById('awGo').focus();
+  }
+  function stepCode(){
+    awIn.innerHTML='<div class="step">'+
+      '<div class="lvn mono" id="awTtl">ACHIEVEMENT UNLOCKED</div>'+
+      '<div class="t1 mono" style="font-size:clamp(30px,9vw,46px);margin-top:6px">AWAKEN</div>'+
+      '<p class="say">คุณไม่ได้แค่ใช้ AI เป็น<br>คุณรู้แล้วว่าตัวเองกำลังทำอะไร</p>'+
+      '<div class="codebox"><span class="lb mono">รหัสของคุณ</span><code id="awCode">'+CODE+'</code>'+
+      '<button type="button" class="cp disp" id="awCopy">คัดลอก</button></div>'+
+      '<p class="note">เก็บรหัสนี้ไว้ มันใช้ Restore ตราของคุณได้เมื่อย้ายเครื่อง<br>'+
+      'แต่ตรานี้เป็นเพียงใบเสร็จ — Skill ที่แท้จริงอยู่ในสิ่งที่คุณทำได้หลังออกจากหน้านี้</p>'+
+      '<div class="ctas">'+
+      '<a class="p disp" href="../../card/">อัปเดต Player Card</a>'+
+      '<a class="s disp" href="../">กลับไปเลือก Quest ต่อ</a>'+
+      '<a class="s disp" href="../../club/">ไปที่ Guild Hall</a>'+
+      '<button type="button" class="s disp" id="awClose" style="background:none;cursor:pointer;font:inherit">ปิดแล้วอ่านต่อ</button>'+
+      '</div></div>';
+    var cp=document.getElementById('awCopy');
+    cp.addEventListener('click',function(){
+      try{ navigator.clipboard.writeText(CODE); cp.textContent='คัดลอกแล้ว ✓'; }
+      catch(e){ cp.textContent='กดค้างที่รหัสเพื่อคัดลอก'; }
+    });
+    document.getElementById('awClose').addEventListener('click',close);
+    cp.focus();
+  }
+  function open(){
+    lastFocus=document.activeElement;
+    aw.hidden=false;
+    document.body.style.overflow='hidden';
+    stepIntro();
+  }
+  function close(){
+    aw.hidden=true;
+    document.body.style.overflow='';
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function startAwaken(){
+    /* หยุดนิ่งครู่หนึ่งก่อน ไม่ให้มันเด้งใส่หน้าทันทีที่อ่านจบ */
+    if(reduced()) open(); else setTimeout(open,700);
+  }
+  document.getElementById('replayBtn').addEventListener('click',open);
+
+  /* ═══════════ Modal ปาร์ตี้ ═══════════ */
+  var md=document.getElementById('partyMd'), mdBtn=document.getElementById('partyBtn'), mdFocus=null;
+  function mdOpen(){
+    mdFocus=document.activeElement;
+    md.hidden=false;
+    document.body.style.overflow='hidden';
+    document.getElementById('partyX').focus();
+  }
+  function mdClose(){
+    md.hidden=true;
+    document.body.style.overflow='';
+    if(mdFocus && mdFocus.focus) mdFocus.focus();
+  }
+  if(mdBtn){
+    mdBtn.addEventListener('click',mdOpen);
+    document.getElementById('partyX').addEventListener('click',mdClose);
+    document.getElementById('partyBd').addEventListener('click',mdClose);
+  }
+
+  /* ── ขังโฟกัสไว้ในกล่องที่เปิดอยู่ · ESC ปิด ── */
+  var SEL='a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  document.addEventListener('keydown',function(e){
+    var box = !md.hidden ? md.querySelector('.panel') : (!aw.hidden ? awIn : null);
+    if(!box) return;
+    if(e.key==='Escape'){ e.preventDefault(); if(!md.hidden) mdClose(); else close(); return; }
+    if(e.key!=='Tab') return;
+    var f=box.querySelectorAll(SEL);
+    if(!f.length) return;
+    var first=f[0], last=f[f.length-1];
+    if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+  });
+
+  /* ═══════════ สมุดข้างทาง ═══════════ */
+  var nbkBtn=document.getElementById('nbkBtn'), nbkChoice=document.getElementById('nbkChoice');
+  if(nbkBtn){
+    nbkBtn.addEventListener('click',function(){
+      var open=nbkChoice.hidden;
+      nbkChoice.hidden=!open;
+      nbkBtn.setAttribute('aria-expanded',open?'true':'false');
+    });
+    /* วางไว้ที่เดิมได้ กลับมาเปิดทีหลังก็ได้ ไม่บันทึกว่าเคยปฏิเสธ */
+    document.getElementById('nbkNo').addEventListener('click',function(){
+      nbkChoice.hidden=true;
+      nbkBtn.setAttribute('aria-expanded','false');
+      nbkBtn.focus();
+    });
+    /* จำตำแหน่งที่อ่านค้างไว้ก่อนเดินออกไป */
+    document.getElementById('nbkGo').addEventListener('click',function(){
+      save(K_Y,String(Math.round(window.pageYOffset||document.documentElement.scrollTop||0)));
+    });
+  }
+
+  /* ═══════════ เริ่มทำงาน ═══════════ */
+  paintGate();
+  if(unlocked() && (done() || ls(K_IN,'')==='1')){
+    openChapter(false);
+    /* กลับมาจากสมุด — คืนตำแหน่งเดิมที่จากไป */
+    var y=parseInt(ls(K_Y,''),10);
+    if((document.referrer||'').indexOf('/notebook')>=0 && y>0){
+      window.scrollTo(0, y);
+      setTimeout(function(){ window.scrollTo(0,y); },60);   /* กันภาพ/ฟอนต์โหลดเสร็จแล้วดันหน้า */
+    }
+  }
+})();
+</script>
+<script type="module" src="/assets/track.js"></script>
+</body>
+</html>
