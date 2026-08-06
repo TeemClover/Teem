@@ -20,5 +20,6 @@ import '/assets/prompts-chef.js';
 import '/assets/prompts-eko-tasting.js';
 import '/assets/prompts-svg-polish.js';
 import '/assets/prompts-plain-language.js';
+import '/assets/course-prompt-compat.js';
 import '/assets/lesson2-svg-redesign.js';
 import '/assets/course-svg-motion.js';
