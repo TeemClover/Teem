@@ -4,723 +4,77 @@
 <meta charset="utf-8">
 <meta name="mc-act-view" content="walkthrough-open">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover</title>
-<meta name="description" content="หน้าสำหรับคนที่อ่านการ์ตูนจบครบทุกตอนแล้ว — กลไก แนวคิด และโครงสร้างของบ้านหลังนี้ พร้อมพจนานุกรมแปลศัพท์เกมเป็นศัพท์ธุรกิจ">
+<title>Walkthrough — จากวัตถุดิบในหัว ถึงเกมที่เล่นได้ | AI ใส่ซอส</title>
+<meta name="description" content="เรื่องจริงของ Source-Based AI Workflow — จากไฟล์ .md ข้ามภาษา สู่ Source 50 บทที่สร้าง CORE7 และหลักสูตร AI ใส่ซอส">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover">
-<meta property="og:description" content="คำที่คนเล่นเกมใช้ กับคำที่คนทำธุรกิจใช้ — หลายคำมันคือคำเดียวกัน">
+<meta property="og:title" content="Walkthrough — AI ใส่ซอส | myClover">
+<meta property="og:description" content="เกมไม่ได้อยู่ใน Prompt มันอยู่ใน Source ที่ปรุงไว้แล้ว">
 <meta property="og:image" content="https://www.myclover.com/img/og-walkthrough.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0A2818">
 <style>
-:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+:root{--ink:18 40 28;--paper:249 247 241;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:79 91 82;--cream:255 252 243;--red:174 68 55}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:"Anuphan",sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.78;-webkit-font-smoothing:antialiased}
-.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.015em}
-a{color:inherit;text-decoration:none}
-img,svg{max-width:100%;display:block}
-[hidden]{display:none!important}
-.wrap{max-width:840px;margin:0 auto;padding:0 20px}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Thai",Tahoma,sans-serif;background:rgb(var(--paper));color:rgb(var(--ink));line-height:1.82;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}img{max-width:100%;display:block}[hidden]{display:none!important}
+.wrap{width:min(860px,100%);margin:0 auto;padding:0 20px}.read{width:min(720px,100%);margin:0 auto}
 :focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
-
-/* ── ประตูล็อก ── */
-#lock{min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:rgb(var(--deep));color:#fff;padding:30px 20px;text-align:center;
-  background-image:radial-gradient(680px 340px at 20% -10%,rgb(27 106 66/.5),transparent 62%),
-                   radial-gradient(500px 300px at 90% 108%,rgb(190 148 66/.18),transparent 60%)}
-#lock .in{max-width:460px}
-#lock .seal{width:74px;height:74px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;
-  background:rgb(190 148 66/.13);border:1px solid rgb(190 148 66/.45);font-size:32px}
-#lock h1{font-family:"Bai Jamjuree";font-size:clamp(24px,5vw,34px);line-height:1.24;margin-bottom:14px}
-#lock p{color:rgb(255 255 255/.78);font-size:15.5px}
-#lock .pgw{margin:26px auto 0;max-width:320px}
-#lock .track{height:7px;border-radius:999px;background:rgb(255 255 255/.15);overflow:hidden}
-#lock .track i{display:block;height:100%;width:0;border-radius:999px;
-  background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .6s ease}
-#lock .tx{display:inline-block;margin-top:9px;font-family:"Bai Jamjuree";font-weight:700;font-size:12.5px;color:rgb(255 255 255/.75)}
-#lock .go{display:inline-flex;align-items:center;gap:8px;background:rgb(var(--gold));color:rgb(var(--deep));
-  border-radius:13px;padding:14px 26px;font-family:"Bai Jamjuree";font-weight:700;font-size:15.5px;
-  margin-top:24px;min-height:44px;transition:transform .18s,filter .18s}
-#lock .go:hover{transform:translateY(-2px);filter:brightness(1.07)}
-#lock .back{display:block;margin-top:18px;font-size:13px;color:rgb(255 255 255/.5)}
-
-/* ── ตัวหน้า ── */
-#doc{visibility:hidden}
-.bar{position:sticky;top:0;z-index:60;background:rgb(var(--deep));color:#fff;border-bottom:1px solid rgb(190 148 66/.28)}
-.bar .wrap{display:flex;align-items:center;gap:12px;min-height:56px;max-width:1020px}
-.bar .home{font-family:"Bai Jamjuree";font-weight:700;font-size:15px;min-height:44px;display:inline-flex;align-items:center}
-.bar .home em{font-style:normal;color:rgb(var(--gold))}
-.bar .ttl{margin-left:auto;font-family:"Bai Jamjuree";font-size:13px;color:rgb(var(--gold));letter-spacing:.1em}
-
-.hero{background:rgb(var(--deep));color:#fff;padding:clamp(40px,7vw,74px) 0 clamp(34px,6vw,58px);
-  background-image:radial-gradient(720px 380px at 14% -16%,rgb(27 106 66/.55),transparent 62%),
-                   radial-gradient(540px 330px at 92% 112%,rgb(190 148 66/.2),transparent 60%)}
-.hero .eyebrow{display:inline-block;font-family:"Bai Jamjuree";font-size:11.5px;font-weight:700;letter-spacing:.16em;
-  text-transform:uppercase;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.45);border-radius:999px;padding:5px 13px}
-.hero h1{font-family:"Bai Jamjuree";font-size:clamp(28px,5.6vw,46px);line-height:1.16;margin:16px 0 14px}
-.hero h1 em{font-style:normal;color:rgb(var(--gold))}
-.hero p{color:rgb(255 255 255/.8);font-size:16.5px;max-width:56ch}
-
-section{padding:clamp(38px,6vw,64px) 0}
-section + section{border-top:1px solid rgb(var(--ink)/.08)}
-.kicker{font-family:"Bai Jamjuree";font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgb(var(--green))}
-h2{font-family:"Bai Jamjuree";font-size:clamp(23px,4.2vw,33px);line-height:1.24;margin:11px 0 14px}
-h3{font-family:"Bai Jamjuree";font-size:19px;margin:26px 0 8px}
-p + p{margin-top:14px}
-.lead{font-size:17px}
-em.hi{font-style:normal;color:rgb(var(--green));font-weight:600}
-strong{font-weight:700}
-
-/* ── พจนานุกรม ── */
-/* ปาร์ตี้ที่ใช้สร้างบ้าน — การ์ดคนละใบ มีอวาตาร์กับหน้าที่ */
-.crew{display:grid;gap:10px;margin-top:16px}
-@media(min-width:620px){.crew{grid-template-columns:1fr 1fr}}
-.cm{display:flex;gap:13px;align-items:center;background:#fff;border:1px solid rgb(var(--ink)/.09);
-  border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
-.cm{border-left:3px solid var(--ac,rgb(var(--green)))}
-.cm.lead{border-color:rgb(var(--gold));box-shadow:0 0 0 1px rgb(190 148 66/.35),0 1px 3px rgb(18 40 28/.05)}
-.cm .ava{width:82px;height:82px;flex:none;border-radius:14px;overflow:hidden;display:grid;
-  place-items:center;background:rgb(27 106 66/.08);border:2px solid var(--ac,rgb(190 148 66/.5))}
-.cm.lead .ava{border-color:rgb(var(--gold))}
-.ldtag{display:inline-block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:9.5px;
-  letter-spacing:.1em;color:#fff;background:#8a6a22;border-radius:99px;padding:3px 8px;
-  vertical-align:2px;margin-left:6px}
-.clschip{display:inline-flex;align-items:center;gap:5px;margin-top:4px;font-family:"Bai Jamjuree",sans-serif;
-  font-weight:700;font-size:11.5px;border-radius:99px;padding:3px 10px 3px 7px;color:#fff;
-  background:var(--ac,rgb(var(--green)))}
-.clschip i{font-style:normal;font-size:12.5px}
-.cm .ava picture{display:contents}
-.ava img{width:100%;height:100%;object-fit:cover;display:block}
-/* ยังไม่มีภาพก็ต้องดูตั้งใจ ไม่ใช่รูปแตก */
-.cm .ava .fb{font-size:34px;line-height:1}
-.cm .ava picture+.fb{display:none}
-.cm b{display:block;font-size:16.5px}
-.cm .duty{display:block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px;
-  color:rgb(var(--green));margin-top:1px}
-.cm small{display:block;font-size:12.5px;color:rgb(var(--muted));line-height:1.65;margin-top:4px}
-.rtag{display:inline-block;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:10.5px;
-  letter-spacing:.16em;color:rgb(var(--gold));margin-bottom:8px}
-ol.relay{list-style:none;counter-reset:r;margin-top:14px;display:grid;gap:9px}
-ol.relay li{counter-increment:r;position:relative;padding-left:34px;line-height:1.85}
-ol.relay li::before{content:counter(r);position:absolute;left:0;top:2px;width:23px;height:23px;
-  border-radius:50%;background:rgb(var(--gold));color:rgb(var(--deep));
-  font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:12.5px;display:grid;place-items:center}
-.term{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;overflow:hidden;margin-top:18px;
-  box-shadow:0 1px 3px rgb(18 40 28/.05)}
-.term > .hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:18px 22px 0}
-.term .en{font-family:"Bai Jamjuree";font-weight:700;font-size:20px;letter-spacing:.04em;color:rgb(var(--deep))}
-.term .th{font-size:14px;color:rgb(var(--muted))}
-.term .bd{padding:10px 22px 22px}
-.term .bd p{font-size:15px}
-.term .arrow{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin:16px 0 4px}
-@media(max-width:620px){.term .arrow{grid-template-columns:1fr;gap:8px}}
-.term .cell{border-radius:13px;padding:13px 15px;font-size:14px;line-height:1.65}
-.term .cell b{display:block;font-family:"Bai Jamjuree";font-size:11.5px;letter-spacing:.12em;
-  text-transform:uppercase;margin-bottom:5px}
-.term .g{background:rgb(27 106 66/.07);border:1px solid rgb(27 106 66/.18)}
-.term .g b{color:rgb(var(--green))}
-.term .b{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.32)}
-.term .b b{color:#8a6a22}
-.term .mid{display:grid;place-items:center;font-size:20px;color:rgb(var(--gold))}
-@media(max-width:620px){.term .mid{transform:rotate(90deg)}}
-.term .same{margin-top:12px;font-size:14px;background:rgb(var(--deep));color:rgb(255 255 255/.86);
-  border-radius:12px;padding:12px 16px}
-.term .same b{color:rgb(var(--gold))}
-
-/* ── ภาพประกอบ ── */
-figure{margin:24px 0 6px;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;
-  padding:22px 20px 16px;box-shadow:0 1px 3px rgb(18 40 28/.05)}
-.figscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
-.figscroll svg{min-width:560px;width:100%;height:auto;margin:0 auto}
-.figscroll::-webkit-scrollbar{height:6px}
-.figscroll::-webkit-scrollbar-thumb{background:rgb(18 40 28/.2);border-radius:99px}
-.swipe{display:none;font-size:11.5px;color:rgb(var(--muted));text-align:center;margin-top:8px}
-@media(max-width:600px){.swipe{display:block}}
-figcaption{margin-top:12px;font-size:13px;color:rgb(var(--muted));text-align:center;line-height:1.65}
-.mech{margin-top:16px;background:rgb(27 106 66/.06);border:1px solid rgb(27 106 66/.18);border-radius:14px;padding:15px 18px}
-.mech b.disp{display:block;font-size:14px;color:rgb(var(--green));margin-bottom:8px}
-.mech ul{list-style:none;display:grid;gap:7px}
-.mech li{font-size:14px;padding-left:16px;position:relative;line-height:1.6}
-.mech li::before{content:"•";position:absolute;left:0;color:rgb(var(--gold));font-weight:700}
-.mech li b{color:rgb(var(--ink))}
-.svgtx{font-family:"Bai Jamjuree",sans-serif;font-weight:700}
-.svgtx.sm{font-weight:600}
-
-/* ── กล่องเน้น ── */
-.note{background:rgb(27 106 66/.06);border:1px solid rgb(27 106 66/.2);border-radius:16px;padding:18px 22px;margin-top:20px;font-size:15px}
-.note b{color:rgb(var(--green))}
-.dark{background:linear-gradient(160deg,rgb(10 40 24),rgb(18 62 38));color:#fff;border-radius:20px;
-  padding:clamp(24px,4.4vw,36px);margin-top:24px;border:1px solid rgb(190 148 66/.35)}
-.dark h3{margin-top:0;color:#fff}
-.dark p{color:rgb(255 255 255/.8)}
-.dark b{color:rgb(var(--gold))}
-
-.stack{display:grid;gap:12px;margin-top:18px}
-.row{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid rgb(var(--ink)/.09);
-  border-radius:14px;padding:15px 18px}
-.row .n{flex:none;width:28px;height:28px;border-radius:9px;background:rgb(var(--green));color:#fff;
-  display:grid;place-items:center;font-family:"Bai Jamjuree";font-weight:700;font-size:13px}
-.row .tx b{display:block;font-family:"Bai Jamjuree";font-size:15.5px;margin-bottom:2px}
-.row .tx span{font-size:14px;color:rgb(var(--muted))}
-
-.cta{text-align:center;margin-top:26px}
-.btn{display:inline-flex;align-items:center;gap:9px;background:rgb(var(--gold));color:rgb(var(--deep));
-  border-radius:13px;padding:15px 28px;font-family:"Bai Jamjuree";font-weight:700;font-size:16px;
-  min-height:44px;transition:transform .18s,filter .18s}
-.btn:hover{transform:translateY(-2px);filter:brightness(1.07)}
-.btn.ghost{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255/.4)}
-.btn.ghost:hover{border-color:rgb(var(--gold));background:rgb(190 148 66/.14)}
-
-footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 48px}
-footer a{color:rgb(var(--green));font-weight:600}
+#lock{min-height:100dvh;display:grid;place-items:center;padding:28px 20px;text-align:center;color:#fff;background:radial-gradient(600px 340px at 20% 0%,rgb(27 106 66/.5),transparent 65%),radial-gradient(520px 340px at 100% 100%,rgb(190 148 66/.2),transparent 65%),#071a10}
+.lockin{width:min(470px,100%)}.seal{width:76px;height:76px;margin:0 auto 21px;border-radius:50%;display:grid;place-items:center;font-size:34px;background:rgb(190 148 66/.13);border:1px solid rgb(190 148 66/.5)}
+#lock h1{font-size:clamp(25px,6vw,36px);line-height:1.24}#lock p{margin-top:12px;color:rgb(255 255 255/.76)}
+.recover{margin-top:24px;padding:17px;border:1px solid rgb(255 255 255/.15);border-radius:15px;background:rgb(255 255 255/.05)}
+.recover input{width:100%;margin-top:10px;border:1px solid rgb(255 255 255/.2);border-radius:10px;padding:11px 13px;background:rgb(0 0 0/.2);color:#fff;text-align:center}.recover button{margin-top:9px;width:100%;min-height:46px;border:0;border-radius:10px;background:rgb(var(--gold));color:rgb(var(--deep));font-weight:800}.rcmsg{display:block;min-height:23px;margin-top:6px;font-size:13px}.rcmsg.ok{color:#98e0b1}.rcmsg.no{color:#ffb0a4}
+#doc{visibility:hidden}.top{position:sticky;top:0;z-index:60;background:rgb(var(--paper)/.94);backdrop-filter:blur(12px);border-bottom:1px solid rgb(var(--ink)/.09)}
+.top .wrap{height:57px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{display:flex;align-items:center;gap:8px;font-weight:800}.brand img{height:27px;width:auto}.brand em{font-style:normal;color:rgb(var(--green))}.top small{color:rgb(var(--muted));font-weight:650}
+.hero{position:relative;overflow:hidden;color:#fff;padding:clamp(50px,9vw,88px) 0;background:radial-gradient(760px 420px at 0% 0%,rgb(27 106 66/.55),transparent 67%),radial-gradient(620px 400px at 100% 105%,rgb(190 148 66/.25),transparent 67%),linear-gradient(145deg,#071a10,#0d3520)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,330px);gap:38px;align-items:center}.eyebrow{display:inline-block;border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:6px 13px;color:rgb(var(--gold));font-size:11.5px;font-weight:800;letter-spacing:.14em}.hero h1{font-size:clamp(34px,7vw,58px);line-height:1.08;letter-spacing:-.035em;margin:16px 0 14px}.hero h1 em{display:block;font-style:normal;color:rgb(var(--gold))}.hero p{max-width:55ch;color:rgb(255 255 255/.82);font-size:17px}.hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:19px}.hero-meta span{border:1px solid rgb(255 255 255/.16);border-radius:999px;padding:6px 11px;background:rgb(255 255 255/.07);font-size:12px;font-weight:700}
+.hero-card{position:relative;border:1px solid rgb(255 255 255/.16);border-radius:24px;padding:22px;background:rgb(255 255 255/.07);box-shadow:0 30px 70px rgb(0 0 0/.28);transform:rotate(1deg)}
+.hero-card::before{content:"";display:block;aspect-ratio:16/10;border-radius:16px;background:url('../img/og-walkthrough.jpg') center/cover no-repeat,linear-gradient(145deg,#184f33,#071a10)}
+.hero-card b{display:block;margin-top:15px;color:rgb(var(--gold));font-size:12px;letter-spacing:.12em}.hero-card span{display:block;margin-top:5px;color:rgb(255 255 255/.74);font-size:13px;line-height:1.65}
+section{padding:clamp(46px,7vw,76px) 0}section+section{border-top:1px solid rgb(var(--ink)/.08)}
+.kicker{display:block;color:rgb(var(--green));font-size:11.5px;font-weight:850;letter-spacing:.15em}.read h2{font-size:clamp(27px,5vw,40px);line-height:1.2;letter-spacing:-.025em;margin:12px 0 16px}.lead{font-size:18px;color:rgb(var(--ink)/.82)}p+p{margin-top:14px}strong{font-weight:780}code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:rgb(var(--ink)/.06);border-radius:6px;padding:1px 6px}
+.story{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:25px}.story-card{border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px;background:#fff;box-shadow:0 12px 32px rgb(18 40 28/.05)}.story-card .icon{font-size:30px}.story-card b{display:block;margin-top:9px;font-size:17px}.story-card p{font-size:14px;color:rgb(var(--muted));margin-top:5px}
+.chef{margin-top:23px;border:1px solid rgb(190 148 66/.42);border-radius:18px;padding:20px 22px;background:linear-gradient(135deg,rgb(190 148 66/.12),#fff)}.chef-tag{display:block;color:#80601f;font-size:11px;font-weight:850;letter-spacing:.13em}.chef p{margin-top:6px;font-size:16px}.chef strong{color:#6d511d}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:25px}.doc{border:1px solid rgb(var(--ink)/.1);border-radius:20px;padding:21px;background:#fff}.doc.bad{background:linear-gradient(145deg,#fff,rgb(174 68 55/.045))}.doc.good{background:linear-gradient(145deg,#fff,rgb(27 106 66/.065));border-color:rgb(27 106 66/.22)}.doc .tag{font-size:11px;font-weight:850;letter-spacing:.13em;color:rgb(var(--muted))}.doc h3{font-size:20px;margin:7px 0}.doc ul{list-style:none;display:grid;gap:7px;margin-top:12px}.doc li{position:relative;padding-left:20px;font-size:14px;color:rgb(var(--muted))}.doc li::before{position:absolute;left:0}.doc.bad li::before{content:"×";color:rgb(var(--red));font-weight:900}.doc.good li::before{content:"✓";color:rgb(var(--green));font-weight:900}
+.truth{margin-top:18px;border-left:4px solid rgb(var(--gold));padding:8px 0 8px 17px;color:rgb(var(--muted));font-size:14px}.truth b{color:rgb(var(--ink))}
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:26px}.pipe{position:relative;min-height:150px;border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:15px 13px;background:#fff;text-align:center}.pipe:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:50%;z-index:2;color:rgb(var(--gold));font-weight:900}.pipe .n{width:30px;height:30px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:rgb(var(--green));color:#fff;font-weight:850}.pipe b{display:block;font-size:14px}.pipe small{display:block;margin-top:5px;color:rgb(var(--muted));line-height:1.55}
+.quote{margin-top:26px;border-radius:20px;padding:25px 26px;color:#fff;background:linear-gradient(145deg,#071a10,#123b26);border:1px solid rgb(190 148 66/.35);font-size:clamp(21px,4vw,30px);font-weight:800;line-height:1.42}.quote span{display:block;margin-top:10px;color:rgb(var(--gold));font-size:12px;letter-spacing:.1em}
+.proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:27px}.screen{overflow:hidden;border:1px solid rgb(var(--ink)/.1);border-radius:20px;background:#fff;box-shadow:0 18px 42px rgb(18 40 28/.07)}.screen-top{display:flex;gap:6px;padding:11px 13px;background:#ecebe7}.screen-top i{width:8px;height:8px;border-radius:50%;background:#aaa}.screen-body{padding:20px}.filechip{display:flex;align-items:center;gap:10px;border:1px solid rgb(var(--ink)/.08);border-radius:12px;padding:11px 13px;background:#f5f4f0;font-size:13px;font-weight:750}.chat{margin-top:13px;border-radius:14px;padding:15px;background:#f3f1ed;font-size:14px}.agent{margin-top:13px;padding-left:14px;border-left:3px solid rgb(var(--green));font-family:Georgia,serif;font-size:15px;line-height:1.75}.log{display:grid;gap:7px;margin-top:15px}.log span{font-size:12px;color:rgb(var(--muted))}.log b{color:rgb(var(--green))}
+.mdpage{background:#071a10;color:#d8f2e1;border-radius:14px;padding:18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.7}.mdpage b{display:block;color:#e1c473;font-size:14px;margin-bottom:8px}.mdpage span{display:block}.chapters{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:13px}.chapters i{display:grid;place-items:center;height:25px;border-radius:6px;background:rgb(255 255 255/.07);color:rgb(255 255 255/.7);font-style:normal;font-size:9px}.chapters i:nth-child(5n){background:rgb(190 148 66/.17);color:#ead18d}
+.numbers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}.numcard{border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:19px;background:#fff}.numcard strong{display:block;color:rgb(var(--green));font-size:35px;line-height:1}.numcard span{display:block;margin-top:8px;color:rgb(var(--muted));font-size:14px}
+.course{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:24px}.lesson{display:grid;grid-template-columns:46px 1fr;gap:13px;align-items:start;border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:17px;background:#fff}.lesson .b{width:46px;height:58px;border-radius:12px 12px 8px 8px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,rgb(var(--green)),rgb(var(--deep)));font-weight:850}.lesson:nth-child(2n) .b{background:linear-gradient(145deg,#ae5b47,#72372b)}.lesson b{display:block;font-size:15px}.lesson small{display:block;margin-top:3px;color:rgb(var(--muted));line-height:1.55}
+.one-line{margin-top:25px;border:2px solid rgb(var(--gold));border-radius:20px;padding:24px;background:rgb(190 148 66/.09);text-align:center}.one-line small{display:block;color:#7b5b20;font-weight:800;letter-spacing:.08em}.one-line strong{display:block;margin-top:8px;font-size:clamp(25px,5vw,42px);line-height:1.23}
+.final{color:#fff;background:radial-gradient(620px 360px at 100% 0%,rgb(190 148 66/.23),transparent 66%),radial-gradient(640px 400px at 0% 100%,rgb(27 106 66/.5),transparent 68%),#071a10}.final .kicker{color:rgb(var(--gold))}.final h2{color:#fff}.final .lead,.final p{color:rgb(255 255 255/.8)}.playbox{margin-top:27px;border:1px solid rgb(190 148 66/.5);border-radius:24px;padding:clamp(24px,5vw,37px);background:rgb(255 255 255/.06);text-align:center}.playbox .cards{font-size:38px;letter-spacing:5px}.playbox h3{font-size:clamp(25px,5vw,38px);line-height:1.2;margin-top:12px}.playbox p{max-width:52ch;margin:12px auto 0}.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:23px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;border:1px solid rgb(255 255 255/.22);border-radius:13px;padding:12px 20px;color:#fff;background:rgb(255 255 255/.07);font-weight:800}.btn.gold{border-color:rgb(var(--gold));background:rgb(var(--gold));color:rgb(var(--deep))}.fine{margin-top:12px!important;font-size:13px!important;color:rgb(255 255 255/.56)!important}
+footer{text-align:center;padding:38px 20px 50px;color:rgb(var(--muted));font-size:13px}footer a{font-weight:700;color:rgb(var(--green))}#endSentinel{height:1px}
+@media(max-width:700px){.hero-grid{grid-template-columns:1fr}.hero-card{display:none}.story,.compare,.proof-grid,.course,.numbers{grid-template-columns:1fr}.pipeline{grid-template-columns:1fr}.pipe{min-height:0;text-align:left;display:grid;grid-template-columns:32px 1fr;gap:10px}.pipe .n{margin:0}.pipe small{grid-column:2}.pipe:not(:last-child)::after{content:"↓";right:auto;left:15px;top:auto;bottom:-19px}.chapters{grid-template-columns:repeat(10,1fr)}}
+@media(max-width:430px){.wrap{padding:0 16px}.chapters{grid-template-columns:repeat(5,1fr)}.actions{display:grid}.btn{width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
 </head>
 <body>
-
-<!-- ═══ ยังอ่านการ์ตูนไม่จบ ═══ -->
-<div id="lock">
-  <div class="in">
-    <div class="seal">🔒</div>
-    <h1 class="disp">หน้านี้เปิดให้คนที่อ่านจบแล้ว</h1>
-    <p>ไม่ได้กั๊กเพื่อให้ดูหวงครับ — เนื้อหาข้างในเป็นการถอดกลไกของเรื่องที่คุณเพิ่งอ่าน
-       ถ้ายังไม่ได้อ่าน มันจะเป็นแค่คำศัพท์กองหนึ่งที่ไม่มีความหมาย</p>
-    <div class="pgw">
-      <div class="track"><i data-mc-bar="forge"></i></div>
-      <span class="tx" data-mc-progress="forge" hidden></span>
-    </div>
-    <a class="go disp" data-mc-continue="forge:../forge/" href="../forge/">▶ อ่านต่อจากที่ค้างไว้</a>
-    <a class="go disp" data-mc-undone="forge" href="../forge/">📖 ไปอ่านการ์ตูน</a>
-    <a class="back" href="../">← กลับหน้าบ้าน</a>
-
-    <!-- อ่านจบมาแล้วแต่คนละเครื่อง — กรอกรหัสท้ายเล่มเพื่อเปิดหน้านี้ได้เลย -->
-    <div class="recover">
-      <p>อ่านจบมาแล้วแต่คนละเครื่อง? กรอกรหัสที่ได้ตอนอ่านจบ</p>
-      <div class="rcrow">
-        <input type="text" id="wcode" placeholder="รหัสท้ายเล่ม" autocomplete="off"
-               aria-label="รหัสที่ได้ตอนอ่านการ์ตูนจบ">
-        <button type="button" class="disp" id="wbtn" data-ga="wt_code">เปิดหน้านี้</button>
-      </div>
-      <p class="rcmsg" id="wmsg" role="status" aria-live="polite"></p>
-    </div>
-  </div>
-</div>
-
-<style>
-.recover{margin-top:26px;padding-top:20px;border-top:1px solid rgb(255 255 255/.14);
-  max-width:400px;margin-left:auto;margin-right:auto}
-.recover>p{font-size:13.5px;color:rgb(255 255 255/.6);margin-bottom:10px}
-.rcrow{display:flex;gap:8px;flex-wrap:wrap}
-.rcrow input{flex:1;min-width:150px;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.22);
-  border-radius:11px;padding:12px 14px;color:#fff;font-family:"Anuphan",sans-serif;font-size:15px;min-height:46px}
-.rcrow input::placeholder{color:rgb(255 255 255/.4)}
-.rcrow button{background:rgb(190 148 66);color:rgb(10 40 24);border:0;border-radius:11px;
-  padding:12px 20px;font-weight:700;font-size:14.5px;cursor:pointer;min-height:46px}
-.rcmsg{margin-top:9px;font-size:13.5px;min-height:1.2em}
-.rcmsg.ok{color:rgb(190 148 66);font-weight:600}
-.rcmsg.no{color:#E88}
-</style>
-
-<!-- ═══ อ่านจบแล้ว ═══ -->
+<main id="lock"><div class="lockin"><div class="seal">⚒️</div><h1>Walkthrough ยังล็อกอยู่</h1><p>หน้านี้เปิดหลังอ่านเรื่องเล่าจากโรงตีเหล็กครบ เพื่อไม่ให้คำอธิบายเดินแซงเรื่องราว</p><div class="recover"><b>มีรหัสท้ายเรื่องแล้ว?</b><input id="wcode" type="text" autocomplete="off" spellcheck="false" placeholder="พิมพ์รหัสที่นี่"><button id="wbtn" type="button">🔑 เปิด Walkthrough</button><span class="rcmsg" id="wmsg"></span></div><a href="../forge/" style="display:inline-block;margin-top:18px;color:rgb(255 255 255/.6)">กลับไปอ่านการ์ตูน →</a></div></main>
 <div id="doc">
-
-<header class="bar"><div class="wrap">
-  <a class="home disp" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>clover</em></a>
-  <span class="ttl disp">WALKTHROUGH</span>
-</div></header>
-
-<div class="hero"><div class="wrap">
-  <span class="eyebrow">ปลดล็อกแล้ว · สำหรับคนที่อ่านจบครบทุกตอน</span>
-  <h1 class="disp">คู่มือแปล<em>ภาษาเกม</em><br>เป็นภาษาธุรกิจ</h1>
-  <p>คุณเพิ่งอ่านเรื่องของคนที่ใช้วิธีคิดแบบคนเล่นเกมมาทำธุรกิจจบไปแล้ว
-     หน้านี้คือการถอดออกมาให้เห็นว่ามันไม่ใช่การเปรียบเปรยเล่น ๆ —
-     คำในเกมกับคำในธุรกิจ หลายคำมันคือ<em style="font-style:normal;color:rgb(190 148 66)">เรื่องเดียวกัน</em>
-     แค่คนละสนาม</p>
-</div></div>
-
-<!-- ── 1. ทำไมต้องแปล ── -->
-<section><div class="wrap">
-  <span class="kicker">01 · เปิดเกม</span>
-  <h2 class="disp">ทำไมคนที่เล่นเกมเป็น ถึงเรียนธุรกิจได้เร็ว</h2>
-  <p class="lead">ไม่ใช่เพราะเกมสอนธุรกิจ แต่เพราะเกมสอน<em class="hi">วิธีเข้าหาเรื่องที่ยังไม่รู้</em>
-     คนที่เล่นเกมมาเยอะจะเจอสถานการณ์เดิมซ้ำ ๆ จนกลายเป็นนิสัย</p>
-
-  <figure>
-    <div class="figscroll"><svg viewBox="0 0 640 220" role="img" aria-label="วงจรสี่ขั้นของคนเล่นเกม: ลอง สังเกต ปรับ แล้วลองอีก">
-      <defs>
-        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M0 0 L10 5 L0 10 z" fill="rgb(190,148,66)"/>
-        </marker>
-      </defs>
-      <g>
-        <circle cx="80"  cy="110" r="46" fill="rgb(27,106,66)" opacity=".1"/>
-        <circle cx="80"  cy="110" r="46" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
-        <text class="svgtx" x="80" y="104" text-anchor="middle" font-size="15" fill="rgb(18,40,28)">ลอง</text>
-        <text class="svgtx sm" x="80" y="124" text-anchor="middle" font-size="11" fill="rgb(96,108,100)">ตายก็ได้</text>
-
-        <circle cx="240" cy="110" r="46" fill="rgb(27,106,66)" opacity=".1"/>
-        <circle cx="240" cy="110" r="46" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
-        <text class="svgtx" x="240" y="104" text-anchor="middle" font-size="15" fill="rgb(18,40,28)">สังเกต</text>
-        <text class="svgtx sm" x="240" y="124" text-anchor="middle" font-size="11" fill="rgb(96,108,100)">ตายเพราะอะไร</text>
-
-        <circle cx="400" cy="110" r="46" fill="rgb(27,106,66)" opacity=".1"/>
-        <circle cx="400" cy="110" r="46" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
-        <text class="svgtx" x="400" y="104" text-anchor="middle" font-size="15" fill="rgb(18,40,28)">ปรับ</text>
-        <text class="svgtx sm" x="400" y="124" text-anchor="middle" font-size="11" fill="rgb(96,108,100)">เปลี่ยนวิธี</text>
-
-        <circle cx="560" cy="110" r="46" fill="rgb(190,148,66)" opacity=".16"/>
-        <circle cx="560" cy="110" r="46" fill="none" stroke="rgb(190,148,66)" stroke-width="1.5"/>
-        <text class="svgtx" x="560" y="104" text-anchor="middle" font-size="15" fill="rgb(18,40,28)">เก่งขึ้น</text>
-        <text class="svgtx sm" x="560" y="124" text-anchor="middle" font-size="11" fill="rgb(96,108,100)">วัดได้</text>
-
-        <line x1="130" y1="110" x2="186" y2="110" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar)"/>
-        <line x1="290" y1="110" x2="346" y2="110" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar)"/>
-        <line x1="450" y1="110" x2="506" y2="110" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar)"/>
-        <path d="M560 60 C560 20, 80 20, 80 60" fill="none" stroke="rgb(190,148,66)" stroke-width="2"
-              stroke-dasharray="5 5" marker-end="url(#ar)"/>
-        <text class="svgtx sm" x="320" y="30" text-anchor="middle" font-size="11.5" fill="rgb(96,108,100)">แล้ววนอีก</text>
-      </g>
-    </svg></div>
-    <p class="swipe">← ปัดดูภาพทางขวาได้ →</p>
-    <figcaption>วงจรนี้คือทั้งหมดที่เกมสอน และมันคือวงจรเดียวกับที่ธุรกิจใช้ — ต่างกันแค่เกมให้ตายฟรี</figcaption>
-  </figure>
-
-  <p>ในเกม คุณตายแล้วเกิดใหม่ได้ ค่าเสียหายคือเวลาไม่กี่นาที คุณเลยกล้าลอง กล้าผิด
-     และเรียนรู้เร็วมาก พอมาทำธุรกิจ คนส่วนใหญ่กลับกลัวผิดจนไม่กล้าลองอะไรเลย
-     ทั้งที่หลายเรื่อง<em class="hi">ต้นทุนของการลองมันต่ำกว่าที่คิดมาก</em></p>
-  <p>คนที่เอาวิธีคิดแบบคนเล่นเกมมาใช้ ไม่ได้แปลว่าเล่น ๆ ไม่จริงจัง
-     แต่แปลว่าเขามองว่าทุกอย่างคือระบบที่<strong>อ่านออกได้ ปรับได้ และเก่งขึ้นได้</strong>
-     ไม่ใช่พรสวรรค์ที่มีหรือไม่มี</p>
-</div></section>
-
-<!-- ── 2. พจนานุกรม ── -->
-<section><div class="wrap">
-  <span class="kicker">02 · พจนานุกรม</span>
-  <h2 class="disp">คำที่คุณใช้อยู่แล้วในเกม แปลเป็นคำที่เขาใช้ในห้องประชุม</h2>
-  <p class="lead">คำพวกนี้ไม่ใช่การเปรียบเทียบ — หลายคำมันข้ามมาจากอีกฝั่งจริง ๆ
-     และพอรู้ว่ามันคือคำเดียวกัน คุณจะฟังคนอื่นคุยงานรู้เรื่องขึ้นทันที</p>
-
-  <div class="term" id="deck">
-    <div class="hd"><span class="en">DECK</span><span class="th">สำรับไพ่</span></div>
-    <div class="bd">
-      <div class="arrow">
-        <div class="cell g"><b>ในเกม</b>ชุดไพ่ที่คุณเลือกมาลงสนาม ไม่ใช่ไพ่ทั้งหมดที่มี
-          — เลือกมาเฉพาะใบที่ทำงานร่วมกันได้ และตัดใบที่ดีแต่ไม่เข้ากันทิ้ง</div>
-        <div class="mid">→</div>
-        <div class="cell b"><b>ในธุรกิจ</b>ชุดสไลด์ที่คุณใช้เล่าเรื่อง — pitch deck, sales deck,
-          แฟ้มสปอนเซอร์ที่เปิดคุยกับลูกค้า ก็คือเด็คที่เรียงมาแล้วทั้งนั้น</div>
-      </div>
-      <div class="same"><b>จุดร่วม:</b> ทั้งสองอย่างคือ “ของที่คุณเลือกมาลงสนาม” — คุณค่าไม่ได้อยู่ที่มีเยอะ
-        แต่อยู่ที่<b>เลือกอะไรออก</b> เด็คที่ยัดทุกอย่างลงไปคือเด็คที่แพ้ เหมือนสไลด์ 80 หน้าที่ไม่มีใครจำอะไรได้เลย</div>
-      <p style="margin-top:14px">เวลาใครพูดว่า “ขอดูเด็คหน่อย” เขาไม่ได้ขอดูไพ่ เขาขอดูว่า
-        <strong>คุณเรียงเรื่องมายังไง ตัดอะไรทิ้ง และเหลืออะไรไว้</strong></p>
-    </div>
-  </div>
-
-  <div class="term" id="meta">
-    <div class="hd"><span class="en">META</span><span class="th">วิธีเล่นที่เหมาะกับ Patch นี้</span></div>
-    <div class="bd">
-      <div class="arrow">
-        <div class="cell g"><b>ในเกม</b>วิธีเล่นที่ได้ผลที่สุด<u>ในตอนนี้</u> ไม่ใช่ตลอดไป —
-          พอผู้พัฒนาแก้สมดุลรอบใหม่ เมต้าก็เปลี่ยน คนที่ยึดของเดิมไว้จะตกรุ่นทันที</div>
-        <div class="mid">→</div>
-        <div class="cell b"><b>ในธุรกิจ</b>ช่องทางหรือวิธีที่ได้ผลที่สุดในตลาดตอนนี้ —
-          เมื่อก่อนคือใบปลิว แล้วเป็นเฟซบุ๊ก แล้วเป็นไลฟ์ แล้วเป็นคลิปสั้น แล้วก็เปลี่ยนอีก</div>
-      </div>
-      <div class="same"><b>จุดร่วม:</b> เมต้าไม่ใช่ความจริงถาวร มันคือ<b>คำตอบที่ดีที่สุดของช่วงเวลาหนึ่ง</b>
-        คนที่เก่งจริงไม่ใช่คนที่รู้เมต้า แต่คือคนที่<b>รู้ว่าเมต้ากำลังจะเปลี่ยน</b> และปรับก่อนคนอื่น</div>
-      <p style="margin-top:14px"><b>หมายเหตุ:</b> ในบ้านนี้เราเคยใช้ “Most Effective Tactic Available” เป็นประโยคช่วยจำความหมายของ META ไม่ได้อ้างว่าเป็นรากศัพท์ดั้งเดิมของคำ</p>
-
-      <figure style="box-shadow:none;border:0;padding:18px 0 0;background:none">
-        <div class="figscroll"><svg viewBox="0 0 640 200" role="img" aria-label="เส้นกราฟแสดงว่าเมต้าเปลี่ยนเป็นช่วง ๆ คนที่ปรับตัวเร็วจะไปต่อได้">
-          <line x1="40" y1="170" x2="612" y2="170" stroke="rgb(18,40,28)" stroke-opacity=".18" stroke-width="1.5"/>
-          <line x1="40" y1="20"  x2="40"  y2="170" stroke="rgb(18,40,28)" stroke-opacity=".18" stroke-width="1.5"/>
-          <text class="svgtx sm" x="34" y="26" text-anchor="end" font-size="10.5" fill="rgb(96,108,100)">ผล</text>
-          <text class="svgtx sm" x="612" y="188" text-anchor="end" font-size="10.5" fill="rgb(96,108,100)">เวลา</text>
-
-          <path d="M40 150 Q100 60 160 66 L170 66 Q176 140 200 152" fill="none" stroke="rgb(27,106,66)" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M200 152 Q260 56 320 62 L330 62 Q336 138 360 150" fill="none" stroke="rgb(27,106,66)" stroke-width="2.5" stroke-linecap="round" opacity=".72"/>
-          <path d="M360 150 Q420 50 480 58 L490 58 Q496 136 520 148" fill="none" stroke="rgb(27,106,66)" stroke-width="2.5" stroke-linecap="round" opacity=".5"/>
-          <path d="M520 148 Q560 70 600 46" fill="none" stroke="rgb(190,148,66)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="6 5"/>
-
-          <g fill="rgb(96,108,100)">
-            <text class="svgtx sm" x="120" y="186" text-anchor="middle" font-size="10.5">เมต้า 1</text>
-            <text class="svgtx sm" x="280" y="186" text-anchor="middle" font-size="10.5">เมต้า 2</text>
-            <text class="svgtx sm" x="440" y="186" text-anchor="middle" font-size="10.5">เมต้า 3</text>
-          </g>
-          <text class="svgtx" x="600" y="34" text-anchor="end" font-size="11.5" fill="rgb(190,148,66)">ถัดไป?</text>
-          <g stroke="rgb(18,40,28)" stroke-opacity=".14" stroke-dasharray="3 4">
-            <line x1="200" y1="30" x2="200" y2="170"/>
-            <line x1="360" y1="30" x2="360" y2="170"/>
-            <line x1="520" y1="30" x2="520" y2="170"/>
-          </g>
-        </svg></div>
-    <p class="swipe">← ปัดดูภาพทางขวาได้ →</p>
-        <figcaption>ทุกเมต้ามีวันหมดอายุ คนที่รอจนกราฟตกแล้วค่อยขยับ จะเริ่มรอบใหม่ช้ากว่าเสมอ</figcaption>
-      </figure>
-    </div>
-  </div>
-
-  <div class="term" id="progression">
-    <div class="hd"><span class="en">PROGRESSION</span><span class="th">เส้นทางการเก่งขึ้น</span></div>
-    <div class="bd">
-      <div class="arrow">
-        <div class="cell g"><b>ในเกม</b>ระบบที่ทำให้รู้ว่าเล่นไปแล้วได้อะไร — เลเวล ค่าประสบการณ์
-          ของที่ปลดล็อก เกมที่ดีจะทำให้คุณรู้ตัวว่า<u>วันนี้เก่งกว่าเมื่อวาน</u></div>
-        <div class="mid">→</div>
-        <div class="cell b"><b>ในธุรกิจ</b>เส้นทางที่คนในทีมมองเห็นว่าตัวเองจะโตไปทางไหน
-          ทักษะอะไรที่ต้องได้ต่อ และวัดยังไงว่าได้แล้ว</div>
-      </div>
-      <div class="same"><b>จุดร่วม:</b> คนไม่ได้เลิกเล่นเพราะเกมยาก คนเลิกเล่นเพราะ<b>เล่นแล้วไม่รู้ว่าได้อะไร</b>
-        ทีมก็เหมือนกัน คนไม่ได้ลาออกเพราะงานหนัก แต่เพราะทำไปแล้วไม่เห็นว่าตัวเองไปถึงไหน</div>
-      <p style="margin-top:14px">นี่คือเหตุผลที่บ้านหลังนี้มีแถบความคืบหน้า มีตรา มีการ์ด —
-        ไม่ใช่ลูกเล่น แต่เพราะ<strong>สิ่งที่มองเห็นความคืบหน้าได้ คือสิ่งที่คนทำต่อ</strong></p>
-    </div>
-  </div>
-
-  <div class="term" id="build">
-    <div class="hd"><span class="en">BUILD</span><span class="th">การจัดตัวละคร</span></div>
-    <div class="bd">
-      <div class="arrow">
-        <div class="cell g"><b>ในเกม</b>การเลือกว่าจะลงค่าสเตตัสตรงไหน เอาสกิลอะไร ใส่ของชิ้นไหน
-          — บิลด์ที่เก่งคือบิลด์ที่<u>ทุกชิ้นส่งกัน</u> ไม่ใช่บิลด์ที่เอาของแรงที่สุดมากองรวมกัน</div>
-        <div class="mid">→</div>
-        <div class="cell b"><b>ในธุรกิจ</b>การจัดตัวเองและจัดทีม — ใครถนัดอะไร วางใครไว้ตรงไหน
-          และยอมทิ้งอะไรเพื่อให้ที่เหลือทำงานเข้าขากัน</div>
-      </div>
-      <div class="same"><b>จุดร่วม:</b> ไม่มีบิลด์ที่ดีที่สุด มีแต่<b>บิลด์ที่เข้ากับวิธีเล่นของคุณ</b>
-        คนที่พยายามลอกบิลด์คนอื่นทั้งดุ้นมักจะเล่นไม่ออก เพราะมือไม่ใช่มือเดียวกัน</div>
-    </div>
-  </div>
-
-  <div class="term" id="grind">
-    <div class="hd"><span class="en">GRIND</span><span class="th">งานซ้ำที่ต้องผ่าน</span></div>
-    <div class="bd">
-      <div class="arrow">
-        <div class="cell g"><b>ในเกม</b>งานซ้ำ ๆ ที่ต้องทำเพื่อสะสม — ตีมอนเดิม เก็บของเดิม
-          จำเป็นแต่ไม่สนุก เกมที่ออกแบบดีจะหาทางลดมันลง</div>
-        <div class="mid">→</div>
-        <div class="cell b"><b>ในธุรกิจ</b>งานประจำที่กินเวลาแต่ไม่ได้เพิ่มมูลค่า —
-          พิมพ์ข้อมูลซ้ำ ตอบคำถามเดิม ทำรายงานแบบเดิมทุกเดือน</div>
-      </div>
-      <div class="same"><b>จุดร่วม:</b> เกรนด์ไม่ได้แปลว่าต้องทน มันคือ<b>สัญญาณว่าตรงนี้ควรมีระบบมาแทน</b>
-        และวันนี้ AI คือของที่มารับเกรนด์ไปทำแทนได้จริง — นั่นคือทั้งหมดที่ห้องเรียนของบ้านนี้สอน</div>
-    </div>
-  </div>
-
-  <div class="term" id="party">
-    <div class="hd"><span class="en">PARTY &amp; GUILD</span><span class="th">ปาร์ตี้ กับ กิลด์</span></div>
-    <div class="bd">
-      <div class="arrow">
-        <div class="cell g"><b>ในเกม</b>ปาร์ตี้คือกลุ่มเฉพาะกิจ ตีเสร็จก็แยกย้าย
-          ส่วนกิลด์คือบ้าน — อยู่ด้วยกันข้ามภารกิจ สอนคนใหม่ แบ่งของ และอยู่ต่อแม้ไม่มีอะไรจะตี</div>
-        <div class="mid">→</div>
-        <div class="cell b"><b>ในธุรกิจ</b>ปาร์ตี้คือทีมโปรเจกต์ที่รวมกันเพื่องานหนึ่ง
-          กิลด์คือกลุ่มคนที่ยังอยู่ด้วยกันหลังโปรเจกต์จบแล้ว</div>
-      </div>
-      <div class="same"><b>จุดร่วม:</b> ปาร์ตี้วัดกันที่<b>ผลของภารกิจ</b> กิลด์วัดกันที่
-        <b>คนในกิลด์โตขึ้นไหม</b> — สองอย่างนี้ต้องการการดูแลคนละแบบ และคนมักเอามาปนกัน</div>
-    </div>
-  </div>
-
-  <div class="term" id="patch">
-    <div class="hd"><span class="en">PATCH · NERF · BUFF</span><span class="th">กติกาเปลี่ยน</span></div>
-    <div class="bd">
-      <div class="arrow">
-        <div class="cell g"><b>ในเกม</b>ผู้พัฒนาปรับสมดุลใหม่ ของที่เคยแรงถูกลดพลัง (nerf)
-          ของที่เคยอ่อนถูกเพิ่มให้ (buff) — ไม่มีใครถามคุณก่อน</div>
-        <div class="mid">→</div>
-        <div class="cell b"><b>ในธุรกิจ</b>แพลตฟอร์มเปลี่ยนอัลกอริทึม กฎหมายเปลี่ยน
-          ต้นทุนขึ้น คู่แข่งเข้ามาใหม่ — ก็ไม่มีใครถามคุณก่อนเหมือนกัน</div>
-      </div>
-      <div class="same"><b>จุดร่วม:</b> คนที่โวยว่า “ทำไมเปลี่ยน” จะเสียเวลาไปหนึ่งรอบเสมอ
-        คนที่ถามว่า “<b>แล้วตอนนี้อะไรแรงขึ้น</b>” จะได้เปรียบตั้งแต่วันแรกของแพตช์</div>
-    </div>
-  </div>
-
-  <div class="note">
-    <b>ลองสังเกตดู</b> — ทั้งเจ็ดคำข้างบนนี้ ไม่มีคำไหนเลยที่ต้องเล่นเกมเป็นถึงจะเข้าใจ
-    เพราะมันไม่ได้เป็นเรื่องของเกม มันเป็นเรื่องของ<b>ระบบที่มีคนอยู่ในนั้น</b> — ซึ่งธุรกิจก็คือแบบนั้น
-  </div>
-  <p style="margin-top:16px">คำอื่นที่โผล่ตามหน้าต่าง ๆ ในบ้านนี้ก็มาจากที่เดียวกัน —
-    <button type="button" data-kw="CLASS">คลาส</button> ที่บอกว่าคุณถนัดทางไหน <button type="button" data-kw="QUEST">เควสต์</button>ที่รู้ว่าจบเมื่อไหร่
-    <button type="button" data-kw="ITEM">ไอเทม</button>ที่เอาออกไปใช้ได้จริง <button type="button" data-kw="LOADOUT">โหลดเอาต์</button>ที่เตรียมไปกับงานหนึ่งงาน
-    <button type="button" data-kw="SOURCE">ซอร์ส</button>ที่โตไปกับคุณ และ <button type="button" data-kw="MULTIPLY">ตัวคูณ</button>ที่ทำให้ของชิ้นเดียวทำงานได้หลายรอบ<br>
-    <span style="color:rgb(var(--muted));font-size:14px">คำที่มีเส้นใต้จุด แตะหรือชี้เมาส์ค้างไว้แล้วมีคำอธิบายขึ้นให้</span></p>
-</div></section>
-
-<!-- ── 3. บ้านหลังนี้ถูกสร้างยังไง ── -->
-<section><div class="wrap">
-  <span class="kicker">03 · โครงสร้าง</span>
-  <h2 class="disp">บ้านหลังนี้เอง ก็ถูกออกแบบเป็นเกม</h2>
-  <p class="lead">ทุกอย่างที่คุณเจอมาตั้งแต่หน้าแรก ไม่ได้ใส่มาเพราะน่ารัก
-     แต่ใส่มาเพราะมันเป็นกลไกที่ทำให้คนอยากเดินต่อ — และตอนนี้คุณเดินมาจนสุดสายแล้ว</p>
-
-  <figure>
-    <div class="figscroll"><svg viewBox="0 0 640 130" role="img" aria-label="แผนผังเส้นทางของผู้เข้าชม จากอ่านการ์ตูน ไปเรียน ไปทำการ์ด แล้วเข้ากิลด์">
-      <defs>
-        <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M0 0 L10 5 L0 10 z" fill="rgb(190,148,66)"/>
-        </marker>
-      </defs>
-      <g>
-        <rect x="24"  y="40" width="132" height="72" rx="14" fill="rgb(27,106,66)" opacity=".1"/>
-        <rect x="24"  y="40" width="132" height="72" rx="14" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
-        <text class="svgtx" x="90" y="70" text-anchor="middle" font-size="14" fill="rgb(18,40,28)">📖 อ่าน</text>
-        <text class="svgtx sm" x="90" y="92" text-anchor="middle" font-size="10.5" fill="rgb(96,108,100)">7 ตอน</text>
-
-        <rect x="196" y="40" width="132" height="72" rx="14" fill="rgb(27,106,66)" opacity=".1"/>
-        <rect x="196" y="40" width="132" height="72" rx="14" fill="none" stroke="rgb(27,106,66)" stroke-width="1.5"/>
-        <text class="svgtx" x="262" y="70" text-anchor="middle" font-size="14" fill="rgb(18,40,28)">🎓 เรียน</text>
-        <text class="svgtx sm" x="262" y="92" text-anchor="middle" font-size="10.5" fill="rgb(96,108,100)">6 คลาส</text>
-
-        <rect x="368" y="40" width="132" height="72" rx="14" fill="rgb(190,148,66)" opacity=".16"/>
-        <rect x="368" y="40" width="132" height="72" rx="14" fill="none" stroke="rgb(190,148,66)" stroke-width="1.5"/>
-        <text class="svgtx" x="434" y="70" text-anchor="middle" font-size="14" fill="rgb(18,40,28)">🃏 การ์ด</text>
-        <text class="svgtx sm" x="434" y="92" text-anchor="middle" font-size="10.5" fill="rgb(96,108,100)">ตราที่สะสมมา</text>
-
-        <rect x="540" y="40" width="80" height="72" rx="14" fill="rgb(10,40,24)"/>
-        <text class="svgtx" x="580" y="70" text-anchor="middle" font-size="14" fill="#fff">⚔️</text>
-        <text class="svgtx sm" x="580" y="92" text-anchor="middle" font-size="10.5" fill="rgb(190,148,66)">กิลด์</text>
-
-        <line x1="160" y1="76" x2="190" y2="76" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar2)"/>
-        <line x1="332" y1="76" x2="362" y2="76" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar2)"/>
-        <line x1="504" y1="76" x2="534" y2="76" stroke="rgb(190,148,66)" stroke-width="2" marker-end="url(#ar2)"/>
-
-      </g>
-    </svg></div>
-    <p class="swipe">← ปัดดูภาพทางขวาได้ →</p>
-    <figcaption>ไม่มีขั้นไหนบังคับ ทุกขั้นเปิดให้เดินกลับได้ตลอด — แต่ละขั้นแค่ทำให้ขั้นถัดไปน่าเดินขึ้น</figcaption>
-    <div class="mech">
-      <b class="disp">กลไกที่ทำงานอยู่เบื้องหลัง</b>
-      <ul>
-        <li><b>แถบความคืบหน้า</b> — ให้เห็นว่าเดินมาถึงไหนแล้ว (progression)</li>
-        <li><b>ตราและรหัส</b> — ให้สิ่งที่ทำไปแล้วมีหลักฐานเอาไปโชว์ได้</li>
-        <li><b>การ์ด</b> — รวมทุกอย่างเป็นของชิ้นเดียวที่เป็นของคุณจริง ๆ</li>
-      </ul>
-    </div>
-  </figure>
-
-  <div class="stack">
-    <div class="row"><span class="n">1</span><span class="tx"><b>ประตูหน้าบ้านมีรหัส</b>
-      <span>คนที่ผ่านเข้ามาได้ คือคนที่ตั้งใจจะเข้ามา — ไม่ใช่คนที่หลงเข้ามาแล้วปิดทิ้ง</span></span></div>
-    <div class="row"><span class="n">2</span><span class="tx"><b>ของฟรีทั้งหมดให้ก่อน ไม่ขออะไรแลก</b>
-      <span>ห้องเรียน เครื่องมือ การ์ตูน — ไม่มีอันไหนต้องกรอกอีเมลก่อน เพราะถ้าของดีจริง คนจะกลับมาเอง</span></span></div>
-    <div class="row"><span class="n">3</span><span class="tx"><b>ความคืบหน้าเก็บไว้ในเครื่องคุณเอง</b>
-      <span>ไม่มีบัญชี ไม่มีเซิร์ฟเวอร์เก็บพฤติกรรม ล้างเบราว์เซอร์เมื่อไหร่ก็หายไปกับคุณ</span></span></div>
-    <div class="row"><span class="n">4</span><span class="tx"><b>ตราปลดล็อกจากการทำจริง</b>
-      <span>อ่านจบถึงได้ เรียนจบถึงได้ — ไม่ใช่กดรับ นี่คือเหตุผลที่มันมีความหมายพอจะเอาไปแปะบนการ์ด</span></span></div>
-    <div class="row"><span class="n">5</span><span class="tx"><b>กิลด์อยู่ปลายทาง ไม่ใช่ต้นทาง</b>
-      <span>เพราะการชวนคนเข้ากลุ่มตั้งแต่ยังไม่รู้จักกัน คือสิ่งที่ทำให้คนเบื่อการถูกชวนไปทุกอย่าง</span></span></div>
-  </div>
-</div></section>
-
-<!-- ── 4. คนหนึ่งคนจัด AI เป็น Party ── -->
-<section><div class="wrap">
-  <span class="kicker">04 · เบื้องหลัง</span>
-  <h2 class="disp">บ้านหลังนี้สร้างโดยคน 1 คนที่จัด AI เป็น Party</h2>
-  <p class="lead">เว็บที่คุณกำลังอ่าน การ์ตูนที่คุณเพิ่งอ่านจบ ระบบความคืบหน้า การ์ดที่วาดขึ้นในเบราว์เซอร์ของคุณ
-     ภาพประกอบ ไปจนถึงตัวหนังสือทุกบรรทัด — <em class="hi">ใช้ AI ช่วยสร้าง ตรวจ และแก้หลายรอบ</em>
-     แต่ Source เรื่องจริง ทิศทาง และ Final Call ยังมาจากคน</p>
-
-  <div class="dark">
-    <h3 class="disp">ทำไมถึงบอกตรง ๆ</h3>
-    <p>เพราะนี่คือประเด็นของบ้านหลังนี้ครับ ไม่ได้จะอวดว่า AI ทำแทนคนได้ทั้งหมด
-       แต่จะให้เห็นด้วยตาว่า <b>คนที่ไม่ได้จบสายโปรแกรมเมอร์สามารถเป็น Party Leader แล้วจัดเครื่องมือให้ช่วยกันสร้างของจริงได้</b></p>
-    <p style="margin-top:14px">งานแบบนี้เคยต้องรอหลายบทบาทมาอยู่ในห้องเดียวกัน
-       ตอนนี้คนหนึ่งคนเริ่ม Version แรกได้เร็วขึ้น แล้วค่อยชวนคนจริงเข้ามาตรวจ ใช้ และทำให้ดีขึ้น — ห้องเรียน 6 คลาสในบ้านนี้
-       ก็คือเครื่องมือชุดเดียวกับที่ใช้สร้างมันขึ้นมา</p>
-    <p style="margin-top:14px"><b>นี่แหละคือของที่คุณจะได้กลับไป</b> ไม่ใช่กำลังใจ ไม่ใช่คำคม
-       แต่เป็นความสามารถที่วัดผลได้ว่าคุณทำอะไรได้เพิ่มขึ้นบ้าง</p>
-  </div>
-
-  <h3 class="disp">เครื่องมือที่ใช้จริง ทั้งหมดมีสอนในบ้าน</h3>
-  <div class="stack">
-    <div class="row"><span class="n">📖</span><span class="tx"><b>ภาพการ์ตูนทุกตอน</b>
-      <span>สร้างจาก AI ภาพ แล้วคัดและตัดต่อเอง — วิธีเดียวกับที่สอนในคลาส LV.2</span></span></div>
-    <div class="row"><span class="n">🧠</span><span class="tx"><b>โครงเรื่องและบทพูด</b>
-      <span>เขียนร่วมกับ AI จากเรื่องจริงที่เกิดขึ้น ไม่ได้ให้ AI แต่งขึ้นเอง — วิธีสั่งงานอยู่ใน LV.1 กับ LV.6</span></span></div>
-    <div class="row"><span class="n">💻</span><span class="tx"><b>ตัวเว็บทั้งหมด</b>
-      <span>เขียนด้วย AI ช่วยเขียนโค้ด ตั้งแต่หน้าแรกจนถึงหน้าที่คุณกำลังอ่านนี้ — LV.6 สอนวิธีเริ่ม</span></span></div>
-    <div class="row"><span class="n">🎬</span><span class="tx"><b>คลิปและภาพประกอบ</b>
-      <span>ตัดจากของที่มีอยู่แล้วด้วยเครื่องมือฟรี — LV.3</span></span></div>
-  </div>
-
-
-  <h3 class="disp" id="crew">ปาร์ตี้ที่ใช้สร้างบ้านหลังนี้</h3>
-  <p>ไม่ได้ใช้ AI ตัวเดียวทำทุกอย่าง เพราะแต่ละตัวถนัดคนละเรื่องจริง ๆ
-     วิธีที่ได้ผลกว่าคือ<b>ให้หน้าที่มันไปเลย</b> แล้วส่งงานให้ตรงกับที่มันถนัด</p>
-  <div class="crew">
-    <div class="cm lead" style="--ac:#2E4A8F">
-      <span class="ava"><picture><source type="image/webp" srcset="../img/party-teem.webp"><img src="../img/party-teem.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🧑‍🏭</span></span>
-      <div><b class="disp">Teem <span class="ldtag">👑 หัวหน้าปาร์ตี้</span></b><span class="clschip"><i aria-hidden="true">🧠</i>สายคิด</span><span class="duty">คิด และ สั่งการ</span>
-        <small>คนเดียวในปาร์ตี้ที่ตัดสินใจได้ว่าอะไรได้ไปต่อ</small></div>
-    </div>
-    <div class="cm" style="--ac:#4B5A67">
-      <span class="ava"><picture><source type="image/webp" srcset="../img/party-claude.webp"><img src="../img/party-claude.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🛠️</span></span>
-      <div><b class="disp">Claude</b><span class="clschip"><i aria-hidden="true">🧰</i>สายประดิษฐ์</span><span class="duty">สร้าง และ ซ่อม</span>
-        <small>เปลี่ยนแบบร่างเป็นของที่รันได้ แล้วคอยไล่จุดที่พัง</small></div>
-    </div>
-    <div class="cm" style="--ac:#1F8A70">
-      <span class="ava"><picture><source type="image/webp" srcset="../img/party-gpt.webp"><img src="../img/party-gpt.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">🎨</span></span>
-      <div><b class="disp">ChatGPT</b><span class="clschip"><i aria-hidden="true">💪</i>สายคลีน</span><span class="duty">วาด และ เขียน</span>
-        <small>ทำภาพ ร้อยเรื่อง และดูว่าโลกนี้ยังไม่ขัดกันเอง</small></div>
-    </div>
-    <div class="cm" style="--ac:#C4622D">
-      <span class="ava"><picture><source type="image/webp" srcset="../img/party-gemini.webp"><img src="../img/party-gemini.png" alt="" loading="lazy" decoding="async" onerror="this.closest('picture').remove()"></picture><span class="fb" aria-hidden="true">⚡</span></span>
-      <div><b class="disp">Gemini</b><span class="clschip"><i aria-hidden="true">🍜</i>สายกิน</span><span class="duty">แตกไอเดีย และ เถียง</span>
-        <small>เปิดกระดานให้กว้าง แล้วซัดไอเดียจนเห็นว่ามันพังตรงไหน</small></div>
-    </div>
-  </div>
-
-  <div class="dark" style="margin-top:20px">
-    <span class="rtag">เทคนิคที่อยากแชร์</span>
-    <h3 class="disp">ให้ AI สามตัวคุยกันเอง โดยมีคุณเป็นคนเดินสาร</h3>
-    <p>มันไม่ได้ต่อกันเองอยู่แล้ว แต่คุณต่อให้มันได้ — และนี่คือจุดที่ปาร์ตี้เริ่มทำงานเหมือนปาร์ตี้จริง
-       ไม่ใช่แค่มีเครื่องมือหลายตัวเปิดค้างไว้หลายแท็บ</p>
-    <ol class="relay">
-      <li>ให้ตัวหนึ่งตอบหรือร่างงานออกมาก่อน</li>
-      <li>ก๊อปคำตอบนั้นไปวางให้อีกตัว แล้วบอกตรง ๆ ว่า
-        <b>“นี่คือสิ่งที่อีกตัวตอบมา คุณเห็นด้วยไหม ตรงไหนพัง”</b></li>
-      <li>สั่งให้มัน<b>เขียนข้อความถึงอีกตัวโดยตรง</b> ไม่ใช่เขียนรายงานถึงคุณ</li>
-      <li>คุณเดินสารกลับไปกลับมา และเป็นคนตัดสินว่ารอบไหนพอ</li>
-    </ol>
-    <p style="margin-top:14px">ที่มันได้ผลเพราะตัวที่เก่งเถียงจะเจอรูที่ตัวที่เก่งสร้างมองข้าม
-       และตัวที่เก่งเล่าจะทำให้ของที่ถูกต้องกลายเป็นของที่คนอ่านรู้เรื่อง<br>
-       คุณไม่ได้กำลังหาคำตอบที่ดีที่สุดจากตัวเดียว — <b>คุณกำลังจัดประชุมที่คุณเป็นคนคุมวาระ</b></p>
-  </div>
-
-  <div class="note">
-    <b>ข้อเดียวที่ AI ทำแทนไม่ได้</b> — เรื่องที่เล่า 19 ปีที่ผ่านมา คนที่เดินมาด้วยกัน
-    และสิ่งที่ตัดสินใจผิดแล้วต้องจ่ายจริง ๆ ตรงนั้นไม่มีเครื่องมือไหนสร้างให้ได้
-    AI ย่นเวลาให้เราได้ แต่<b>ประสบการณ์ยังต้องเดินเอาเอง</b><br><br>
-    🎵 <b>และมีอีกหนึ่งอย่างที่ไม่ได้ทำกับ AI เลย</b> — <b>Clover Song</b> เพลงประจำบ้านที่เปิดฟังได้
-    ในหน้าทำการ์ด เพลงนี้คนแต่งเอง และเวอร์ชันที่มีเสียงร้องก็คนร้องเอง
-  </div>
-</div></section>
-
-<!-- ── 5. ปิดเกม ── -->
-<section><div class="wrap">
-  <span class="kicker">05 · ปิดเกม</span>
-  <h2 class="disp">ธุรกิจ ชีวิต และเกม เป็นเรื่องเดียวกันได้</h2>
-  <p class="lead">ถ้าอ่านมาถึงตรงนี้ คุณน่าจะเห็นแล้วว่ามันไม่ใช่การเอาเกมมาเปรียบเปรยให้ดูเท่
-     ทั้งสามอย่างคือระบบที่มีกติกา มีคนอยู่ในนั้น มีวันที่ทำได้ดี และมีวันที่พัง</p>
-  <p>ต่างกันตรงที่เกมออกแบบมาให้คุณรู้ตัวเสมอว่าเก่งขึ้นแค่ไหน ส่วนชีวิตกับงานไม่มีแถบบอก
-     คนเลยรู้สึกว่าทำไปเรื่อย ๆ โดยไม่รู้ว่าไปถึงไหน — <strong>สิ่งที่กิลด์เราทำ คือช่วยกันสร้างแถบนั้นให้กัน</strong></p>
-  <p>เราไม่ได้มาเพื่อจะบอกว่าใครควรทำอะไรกับชีวิต แค่เชื่อว่าเวลาเล่นด้วยกันหลายคน
-     มันไปได้ไกลกว่า และที่สำคัญคือ<em class="hi">มันสนุกกว่ามาก</em></p>
-
-  <div class="dark" style="text-align:center">
-    <p style="font-size:15px;color:rgb(255 255 255/.7)">ก่อนเกมจะเริ่ม เกมเมอร์ทั้งโลกพูดคำเดียวกัน
-      แม้แต่กับคนที่กำลังจะเล่นแข่งกับเรา</p>
-    <p style="font-family:'Bai Jamjuree';font-weight:700;font-size:clamp(24px,5vw,38px);color:rgb(var(--gold));margin-top:14px">
-      #glhf</p>
-    <p style="font-size:15px;margin-top:6px">Good Luck, Have Fun — ขอให้โชคดี และขอให้สนุก</p>
-    <p style="font-size:14.5px;margin-top:18px;color:rgb(255 255 255/.72)">
-      ใครเจอเรา คนนั้นโชคดี — และเราอยากให้คุณสนุกไปกับมันด้วย</p>
-    <div class="cta">
-      <a class="btn" id="walkNext" href="../core7/tutorial/">🎓 ต่อไป — เรียนกติกา CORE7 ใน 1 นาที</a>
-    </div>
-    <p style="font-size:13.5px;margin-top:12px;color:rgb(255 255 255/.6)">
-      เข็มทิศชี้ไปทางนี้ต่อ — รู้กติกาแล้วค่อยลงเล่นจริงกับบอท 1 เกม</p>
-    <div class="cta" style="margin-top:16px">
-      <a class="btn ghost" href="../#glhf">🍀 กลับไปดูบ้านอีกรอบ</a>
-    </div>
-  </div>
-</div></section>
-
-<footer data-mc-end>
-  <p>🍀 myclover.com · walkthrough</p>
-  <p style="margin-top:6px"><a href="../forge/">ทุกตอน</a> · <a href="../classroom/">ห้องเรียน</a> · <a href="../">กลับหน้าบ้าน</a> · <a href="../privacy/">ข้อมูลของคุณ</a></p>
-</footer>
-
-</div><!-- /#doc -->
-
-<script defer src="/assets/stage.js"></script>
-<script defer src="../assets/quest.js"></script>
-<!-- อภิธานศัพท์ — ใส่เฉพาะโซนท้ายเกม (หน้านี้ · บทที่ 7 · บทส่งท้ายตอนพิเศษ) -->
-<script defer src="../assets/terms.js"></script>
+<nav class="top"><div class="wrap"><a class="brand" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192">my<em>Clover</em></a><small>WALKTHROUGH · AI ใส่ซอส</small></div></nav>
+<header class="hero"><div class="wrap hero-grid"><div><span class="eyebrow">SOURCE-BASED AI WORKFLOW</span><h1>จากวัตถุดิบในหัว<em>ถึงเกมที่เล่นได้</em></h1><p>เรื่องนี้ไม่ได้เริ่มจาก Prompt วิเศษ มันเริ่มจากคน 2 คนที่ช่วยกันทำให้ความรู้ยาก ๆ กลายเป็นซอสที่ AI กินง่าย และคนธรรมดาก็กินหมดจาน</p><div class="hero-meta"><span>📖 เรื่องจริง</span><span>🧴 Source 1 ขวด</span><span>🎮 เกมที่เล่นได้</span><span>🍳 มีเชฟช่วยชิม</span></div></div><div class="hero-card"><b>POST-CREDIT WALKTHROUGH</b><span>อ่านเบื้องหลังว่า Webtoon, ห้องเรียน และ CORE7 เชื่อมกันด้วย Source ชุดเดียวอย่างไร</span></div></div></header>
+<section><div class="read"><span class="kicker">01 · คน 2 คนในครัวเดียวกัน</span><h2>คนหนึ่งสร้างระบบ<br>อีกคนกลัวว่าคุณจะกินไม่หมด</h2><p class="lead">หลักสูตรนี้เขียนโดยคนที่คุณเพิ่งรู้จักผ่านการ์ตูน 7 ตอน กับเชฟมืออาชีพที่ปรากฏในตอนสุดท้าย</p><div class="story"><article class="story-card"><span class="icon">⚒️</span><b>คนจากโรงตีเหล็ก</b><p>เริ่มจาก A4 จัดคำตอบเป็น Source คัดของเกินออก และสร้าง Starter Kit ให้คนใหม่ไม่ต้องเริ่มจากศูนย์ เขาเก่งเรื่องระบบ แต่บางครั้งอธิบายเหมือนทุกคนเกิดมาพร้อมแผนผังฐานข้อมูลในหัว</p></article><article class="story-card"><span class="icon">🍳</span><b>เชฟ</b><p>ชิมภาษา แปลศัพท์ยากให้เห็นภาพ และคอยห้ามไม่ให้คนเขียนยกครัวทั้งครัวมาเสิร์ฟบนจานเดียว เพราะคนอ่านไม่ได้หิวขนาดนั้น</p></article></div><div class="chef"><span class="chef-tag">เชฟชิมแล้ว</span><p>เนื้อหาครบดีค่ะ แต่ถ้าคนอ่านต้องเปิดพจนานุกรม 3 รอบก่อนเข้าใจ เขาอาจไม่ได้ไม่เก่งนะคะ เขาอาจแค่ปิดหน้าไปแล้วค่ะ</p></div><p style="margin-top:23px">คนหนึ่งรู้ว่าระบบต้องทำงานอย่างไร อีกคนรู้ว่าคนจะยอมกินมันหรือไม่ เพราะอย่างนั้น <strong>AI ใส่ซอส</strong> จึงไม่ใช่คอร์สสอนใช้เครื่องมือ แต่เป็นคอร์สที่สอนให้คุณทำวัตถุดิบของตัวเองให้พร้อมใช้กับ AI ตัวไหนก็ได้</p></div></section>
+<section><div class="read"><span class="kicker">02 · จุดเริ่มต้นของ .md</span><h2>ผมรู้จักไฟล์ที่ดีที่สุดสำหรับ AI<br>จากคนที่คุยกันไม่รู้เรื่อง</h2><p class="lead">ตอนทำงานกับบริษัทจีนที่สร้างหนังสั้นด้วย AI เขาพูดได้แต่ภาษาจีน ส่วนผมอ่านจีนไม่ออก</p><p>แทนที่จะอธิบายงานกันใหม่ทีละประโยค เขาส่งไฟล์ <code>.md</code> มาให้ ผมใส่มันให้ AI อ่าน แล้วเราก็คุยเรื่องเดียวกันรู้เรื่องทันที</p><p>ผมเคยส่ง PDF กลับไป เพราะคิดว่า PDF คือเอกสารที่ดีที่สุด หน้าตาสวย เปิดที่ไหนก็เหมือนเดิม แต่เขาบอกว่าความสวยนั้นสร้างมาให้มนุษย์มอง ส่วน AI ต้องการโครงสร้างที่นำไปใช้ต่อได้ง่าย</p><div class="compare"><article class="doc bad"><span class="tag">PDF / PPT / DOC</span><h3>จัดหน้าให้คนอ่าน</h3><ul><li>มี Layout หลายชั้น</li><li>หัวกระดาษ ตาราง กล่องข้อความ</li><li>อาจต้องสกัดเนื้อหาก่อนใช้ต่อ</li><li>เหมาะเมื่อหน้าตาเดิมสำคัญ</li></ul></article><article class="doc good"><span class="tag">MARKDOWN · .MD</span><h3>จัดความหมายให้ AI ใช้</h3><ul><li>หัวข้อและลำดับชัด</li><li>ไฟล์เล็ก ส่งต่อสะดวก</li><li>แก้และเทียบ Version ง่าย</li><li>พกข้ามแชตและข้าม AI ได้</li></ul></article></div><div class="truth"><b>พูดให้แม่น:</b> AI รุ่นใหม่อ่าน PDF ภาพ และเสียงได้แล้ว แต่ <code>.md</code> เหมาะกับการเป็น Source กลาง เพราะเหลือเฉพาะโครงสร้างและความหมายที่ต้องใช้ทำงานต่อ</div><div class="chef"><span class="chef-tag">เชฟชิมแล้ว</span><p>AI กินได้หลายไฟล์ค่ะ แต่ <code>.md</code> เหมือนอาหารที่แกะเปลือก คัดก้าง และจัดใส่จานไว้แล้ว ย่อยง่ายกว่าไม่ได้แปลว่าวัตถุดิบข้างในดีเสมอนะคะ ของเสียจัดจานสวยก็ยังเป็นของเสียค่ะ</p></div></div></section>
+<section><div class="read"><span class="kicker">03 · วิธีปรุงซอสขวดแรก</span><h2>ไม่ต้องเริ่มจากการเขียน<br>เริ่มจากการเล่าให้ AI ฟัง</h2><p class="lead">Source ของผมเริ่มจากเปิด Voice ใน ChatGPT แล้วพูดไปเรื่อย ๆ ว่าอยากทำอะไร มีอะไรอยู่แล้ว อะไรห้ามเปลี่ยน และภาพสุดท้ายควรเป็นแบบไหน</p><div class="pipeline"><article class="pipe"><span class="n">1</span><b>เทวัตถุดิบ</b><small>เล่า แนบไฟล์ หรือเปิดแชตเดิม ไม่ต้องเรียงสวย</small></article><article class="pipe"><span class="n">2</span><b>สกัดหัวซอส</b><small>หาเป้าหมาย กติกา ข้อห้าม และสิ่งที่ยังขาด</small></article><article class="pipe"><span class="n">3</span><b>ทำ Source แรก</b><small>ให้ AI เรียงเป็นหัวข้อที่อ่านและตรวจได้</small></article><article class="pipe"><span class="n">4</span><b>ชิมแล้วแก้</b><small>เติมสิ่งที่ขาด ตัดสิ่งที่ไม่ใช่ ห้าม AI เดาแทน</small></article><article class="pipe"><span class="n">5</span><b>บรรจุ .md</b><small>ได้ขวดพร้อมส่งให้ AI ตัวอื่นทำงานต่อ</small></article></div><div class="quote">AI ไม่ได้ต้องการเอกสารที่สวยที่สุด<br>มันต้องการ Source ที่ชัดที่สุด<span>นี่คือจุดที่ “ข้อมูล” เริ่มกลายเป็น “ซอส”</span></div><p>Source ที่ดีช่วยประหยัดเวลา เพราะไม่ต้องเล่าเรื่องเดิมใหม่ทุกแชต ช่วยประหยัดเครดิต เพราะไม่ต้องส่งเอกสารกองเดิมให้ AI อ่านซ้ำ และช่วยลดความผิดพลาด เพราะกติกา ข้อห้าม กับคำตัดสินล่าสุดอยู่ในที่เดียวกัน</p><p><strong>แต่มันไม่ได้ทำให้ AI ถูก 100%</strong> วัตถุดิบอาจผิด ข้อความอาจกำกวม และ AI ก็ยังย่อยผิดได้ หน้าที่ของมนุษย์จึงไม่ใช่แค่ใส่ซอส แต่ต้องชิมก่อนเสิร์ฟทุกครั้ง</p></div></section>
+<section><div class="read"><span class="kicker">04 · หลักฐานชิ้นใหญ่</span><h2>เกมไม่ได้อยู่ใน Prompt<br>มันอยู่ใน Source 50 บท</h2><p class="lead">CORE7 ไม่ได้ถูกสร้างจากการนั่งสั่ง AI ทีละหน้าจอ ผมส่งคำสั่งเปิดงาน 1 ครั้ง พร้อม Master Build Brief ที่เขียนรายละเอียดไว้ครบแล้ว</p><div class="proof-grid"><article class="screen"><div class="screen-top"><i></i><i></i><i></i></div><div class="screen-body"><div class="filechip">📄 MYCLOVER_CORE7_MASTER_BUILD_BRIEF.md</div><div class="chat">I'm going to make this game. Start step by step until the game is complete elegantly.</div><div class="agent">I’ll read the full build brief, survey the existing repository, then build the game from the system already described.</div><div class="log"><span>Rules-engine tests <b>PASS</b></span><span>Seed data created <b>+502</b></span><span>Online flow prepared <b>READY</b></span></div></div></article><article class="screen"><div class="screen-top"><i></i><i></i><i></i></div><div class="screen-body"><div class="mdpage"><b># CORE7 · MASTER SOURCE</b><span>## สิ่งที่ต้องสร้าง</span><span>## กติกาและคำเรียก</span><span>## สิ่งที่ห้ามทำ</span><span>## Multiplayer / Test / Done</span><div class="chapters" aria-label="Source 50 บท"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>10</i><i>11</i><i>12</i><i>13</i><i>14</i><i>15</i><i>16</i><i>17</i><i>18</i><i>19</i><i>20</i><i>21</i><i>22</i><i>23</i><i>24</i><i>25</i><i>26</i><i>27</i><i>28</i><i>29</i><i>30</i><i>31</i><i>32</i><i>33</i><i>34</i><i>35</i><i>36</i><i>37</i><i>38</i><i>39</i><i>40</i><i>41</i><i>42</i><i>43</i><i>44</i><i>45</i><i>46</i><i>47</i><i>48</i><i>49</i><i>50</i></div></div></div></article></div><div class="numbers"><article class="numcard"><strong>95%</strong><span>Engine กติกา UI การทดสอบ และระบบออนไลน์ ถูกสร้างบน Claude Code จาก Source กลาง</span></article><article class="numcard"><strong>5%</strong><span>ภาพ เสียง และถ้อยคำ ถูกแต่งต่อบน ChatGPT Work โดยไม่ต้องรื้อ Engine เกม</span></article></div><p style="margin-top:20px">คำว่า “Prompt เดียว” ไม่ได้แปลว่า AI ตอบครั้งเดียวแล้วเกมเสกเสร็จ มันหมายถึง <strong>มนุษย์ไม่ต้องกลับไปคิดคำสั่งใหม่ทีละขั้น</strong> Agent ยังอ่าน สร้าง ทดสอบ แก้ และทำงานต่อหลายร้อยขั้น แต่ทุกขั้นอ้างอิง Source ชุดเดียวกัน</p><div class="chef"><span class="chef-tag">เชฟชิมแล้ว</span><p>สั่งว่า “ทำเกมสวย ๆ ให้หน่อย” แล้วหวังได้ระบบออนไลน์ครบ เขาเรียกฝากชีวิตไว้กับดวงค่ะ คราวนี้ไม่ได้ขาดเครื่องปรุงนะคะ ขาดสูตรทั้งเล่มเลยค่ะ</p></div></div></section>
+<section><div class="read"><span class="kicker">05 · หลักสูตรที่เกิดจากเรื่องทั้งหมดนี้</span><h2>เราเอาเชฟมาสอน AI<br>และไม่เริ่มจากการสอนเขียน Prompt</h2><p class="lead">เราขอประกาศตัวว่าเป็นหลักสูตรแรกที่เอาเชฟมาช่วยสอน AI โดยไม่ยก Prompt ขึ้นเป็นพระเอก ถ้ามีใครทำก่อนแล้ว ส่งมาให้เชฟชิมได้ครับ</p><p>Prompt ยังมีประโยชน์ แต่ในครัวนี้มันเป็นเพียงเครื่องปรุง ส่วนอาหารหลักคือ Source ของคุณเอง</p><div class="course"><article class="lesson"><span class="b">1</span><div><b>SOURCE · ปรุงซอส</b><small>เปลี่ยนเสียง ไฟล์ และแชตเดิมเป็น Source ขวดแรก</small></div></article><article class="lesson"><span class="b">2</span><div><b>TASTE · ชิมก่อนเติม</b><small>ใช้ผลลัพธ์มองหาจุดที่ AI เข้าใจผิด แล้วแก้ที่ Source</small></div></article><article class="lesson"><span class="b">3</span><div><b>COOK · ทำจานจริง</b><small>ใช้ Source ขวดเดียวควบคุมงานหลายชิ้นในจานเดียว</small></div></article><article class="lesson"><span class="b">4</span><div><b>MULTIPLY · แตกเมนู</b><small>เปลี่ยน Source ชุดเดียวเป็นภาพ สไลด์ เสียง คู่มือ และงานอื่น</small></div></article><article class="lesson"><span class="b">5</span><div><b>SEASON · เปิดลิ้นชัก</b><small>หยิบเครื่องปรุงที่เตรียมไว้มาเติมให้ถูกงาน ไม่เทหมดลิ้นชัก</small></div></article><article class="lesson"><span class="b">6</span><div><b>SERVE · เสิร์ฟจริง</b><small>พางานออกจากแชต ให้คนอื่นเปิด ใช้ และส่งต่อได้</small></div></article></div><div class="one-line"><small>ข้อสรุป 1 ประโยคจาก AI ผู้ช่วยเชฟ</small><strong>งาน AI จืด<br>เพราะมึงยังไม่ได้ใส่ซอส</strong></div><p style="margin-top:21px">ประโยคนี้เป็นจุดเดียวที่ผู้ช่วยเชฟพูดหยาบ ส่วนเชฟตัวจริงจะสุภาพเสมอ เพียงแต่ความสุภาพไม่ได้แปลว่าจะปล่อยให้คุณเทผงปรุงรส 8 ซองลงหม้อแล้วเรียกว่า Workflow</p></div></section>
+<section class="final"><div class="read"><span class="kicker">06 · ลองชิมของจริง</span><h2>อ่านเรื่อง Source มาเยอะแล้ว<br>ถึงเวลาลองของที่มันสร้างออกมา</h2><p class="lead">ต่อจากนี้คุณจะเข้า Quick Tutorial ที่สั้นมาก จากนั้นเลือกมือ 7 ใบ แล้วถูกส่งไปเล่นกับ EASY BOT ทันที ไม่ต้องผ่านหน้าแรกของเกม และไม่ต้องสมัครสมาชิก</p><div class="playbox"><div class="cards">🔴 🟢 🔵 ⚙️</div><h3>เรียนกติกาไว<br>แล้วลองเล่น 1 Match</h3><p>เมื่อเกมจบ คุณจะได้รับ FIRST HAND ใบแรก จากนั้นระบบอาจชวนไปดูหน้าขาย Kickstarter ที่สร้างจาก Source 50 บทขวดเดียวกัน คุณข้ามได้ ไม่บังคับ และคำชวนจะแสดงเพียงครั้งเดียว</p><div class="actions"><a class="btn gold" id="playCore7" href="/core7/tutorial/?entry=walkthrough">🎓 Quick Tutorial → EASY BOT</a><a class="btn" href="/classroom/">🧴 ไปดูหลักสูตร AI ใส่ซอส</a></div><p class="fine">อ่านถึงตรงนี้ถือว่าผ่าน Walkthrough แล้ว · เกมเป็น Side Quest ที่แนะนำ แต่ไม่บังคับ</p></div><div id="endSentinel" aria-hidden="true"></div></div></section>
+<footer data-mc-end><p>🍀 myclover.com · AI ใส่ซอส Walkthrough</p><p style="margin-top:6px"><a href="../forge/">การ์ตูน 7 ตอน</a> · <a href="../classroom/">ห้องเรียน</a> · <a href="../">กลับหน้าบ้าน</a> · <a href="../privacy/">ข้อมูลของคุณ</a></p></footer>
+</div>
+<script defer src="/assets/stage.js"></script><script defer src="/assets/quest.js"></script>
 <script>
-/* หน้านี้เปิดให้คนที่อ่านการ์ตูนจบครบทุกตอน
-   เป็นการล็อกฝั่งเบราว์เซอร์ — กันคนที่ยังไม่ได้อ่านไม่ให้เจอสปอยล์
-   ไม่ใช่ระบบความปลอดภัย ใครเปิดซอร์สดูก็เห็นได้ ซึ่งไม่เป็นไร */
-document.addEventListener('DOMContentLoaded',function(){
-  function ls(k,d){ try{ var v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } }
-  function has(t){
-    try{ var a=JSON.parse(ls('mc_titles','[]')); return Array.isArray(a)&&a.indexOf(t)>=0; }
-    catch(e){ return false; }
-  }
-  function unlock(){
-    document.getElementById('lock').hidden=true;
-    document.getElementById('doc').style.visibility='visible';
-    document.title='Walkthrough — คู่มือแปลภาษาเกมเป็นภาษาธุรกิจ | myclover';
-  }
-  /* เปิดหน้านี้ได้ = เดินผ่านขั้น Walkthrough แล้ว เข็มทิศจะเลื่อนไปขั้นถัดไป
-     ปักธงตอนปลดล็อกไม่ใช่ตอนเลื่อนถึงท้าย เพราะหน้านี้ยาวและกำลังจะถูกเขียนใหม่
-     ถ้าผูกกับการเลื่อนไว้ตอนนี้ พอเนื้อหาสั้นลงคนจะติดค้างที่ขั้นนี้โดยไม่รู้ตัว */
-  function pass(){
-    try{ localStorage.setItem('mc_walk_done','1'); }catch(e){}
-    if(window.MC_STAGE) window.MC_STAGE.paint();
-  }
-  if(ls('mc_forge_done','')==='1' || has('BLACKSMITH')){ unlock(); pass(); return; }
-
-  /* กู้สิทธิ์ด้วยรหัสท้ายเล่ม — เก็บเป็นแฮชเพราะไฟล์นี้เปิดซอร์สดูได้
-     ไม่ได้กันคนตั้งใจงัด แค่ไม่ให้รหัสลอยอยู่กลางหน้าให้เห็นก่อนถึงเวลา */
-  var SHA='8eae6c54657e94be77a206e430054386a7391f99e2cea017b16d90661037a1ee', DJB='837210823';
-  function djb2(s){ var h=5381; for(var i=0;i<s.length;i++){ h=((h*33)+s.charCodeAt(i))>>>0; } return String(h); }
-  function sha256(s){
-    if(!(window.crypto&&crypto.subtle&&window.isSecureContext!==false)) return Promise.reject();
-    return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){
-      return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0');}).join('');
-    });
-  }
-  var inp=document.getElementById('wcode'), btn=document.getElementById('wbtn'),
-      msg=document.getElementById('wmsg');
-  function grant(){
-    try{
-      var a=JSON.parse(ls('mc_titles','[]'));
-      if(!Array.isArray(a)) a=[];
-      if(a.indexOf('BLACKSMITH')<0){ a.push('BLACKSMITH'); localStorage.setItem('mc_titles',JSON.stringify(a)); }
-      localStorage.setItem('mc_forge_done','1');
-    }catch(e){}
-    msg.className='rcmsg ok';
-    msg.textContent='⚒️ ถูกต้อง — เปิดให้แล้ว';
-    pass();
-    setTimeout(unlock,500);
-  }
-  function tryCode(){
-    var v=inp.value.trim().toLowerCase();
-    if(!v){ msg.className='rcmsg'; msg.textContent=''; return; }
-    sha256(v).then(function(h){ return h===SHA; })
-             .catch(function(){ return djb2(v)===DJB; })
-             .then(function(ok){
-               if(ok) grant();
-               else { msg.className='rcmsg no'; msg.textContent='ยังไม่ใช่รหัสนี้ — รหัสอยู่ท้ายตอนสุดท้ายของการ์ตูน'; }
-             });
-  }
-  btn.addEventListener('click',tryCode);
-  inp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); tryCode(); } });
-});
+document.addEventListener('DOMContentLoaded',function(){function ls(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}function has(t){try{var a=JSON.parse(ls('mc_titles','[]'));return Array.isArray(a)&&a.indexOf(t)>=0}catch(e){return false}}function unlock(){document.getElementById('lock').hidden=true;document.getElementById('doc').style.visibility='visible'}if(ls('mc_forge_done','')==='1'||has('BLACKSMITH')){unlock();return}var SHA='8eae6c54657e94be77a206e430054386a7391f99e2cea017b16d90661037a1ee',DJB='837210823';function djb2(s){var h=5381;for(var i=0;i<s.length;i++)h=((h*33)+s.charCodeAt(i))>>>0;return String(h)}function sha256(s){if(!(window.crypto&&crypto.subtle&&window.isSecureContext!==false))return Promise.reject();return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,'0')}).join('')})}var inp=document.getElementById('wcode'),btn=document.getElementById('wbtn'),msg=document.getElementById('wmsg');function grant(){try{var a=JSON.parse(ls('mc_titles','[]'));if(!Array.isArray(a))a=[];if(a.indexOf('BLACKSMITH')<0)a.push('BLACKSMITH');localStorage.setItem('mc_titles',JSON.stringify(a));localStorage.setItem('mc_forge_done','1')}catch(e){}msg.className='rcmsg ok';msg.textContent='⚒️ ถูกต้อง — เปิดให้แล้ว';setTimeout(unlock,350)}function tryCode(){var v=inp.value.trim().toLowerCase();if(!v)return;sha256(v).then(function(h){return h===SHA}).catch(function(){return djb2(v)===DJB}).then(function(ok){if(ok)grant();else{msg.className='rcmsg no';msg.textContent='ยังไม่ใช่รหัสนี้ — รหัสอยู่ท้ายตอนสุดท้ายของการ์ตูน'}})}btn.addEventListener('click',tryCode);inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();tryCode()}})});
 </script>
-<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
-<script type="text/javascript">
-(function(c,l,a,r,i,t,y){
-  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "xtx73cs6w1");
+<script type="module">
+import { markWalkthroughDone } from '/assets/sauce-proof.js';
+const sentinel=document.getElementById('endSentinel');let marked=false;function complete(){if(marked)return;marked=true;markWalkthroughDone({showOffer:true});try{window.gtag?.('event','walkthrough_complete')}catch{}}document.getElementById('playCore7')?.addEventListener('click',complete);if('IntersectionObserver' in window&&sentinel){new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))complete()},{threshold:0}).observe(sentinel)}else window.addEventListener('scroll',()=>{if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-80)complete()},{passive:true});
 </script>
-<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
-<script>
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-gtag('js',new Date());
-gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
-</script>
-<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
 <script type="module" src="/assets/track.js"></script>
 </body>
 </html>
