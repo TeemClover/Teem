@@ -6,21 +6,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="mc-item" content="learn:clip-ai">
 <meta name="theme-color" content="#0a2818">
-<title>ทำคลิปสั้นด้วย AI — จากไอเดียถึงโพสต์ในวันเดียว · ห้องเรียน AI ของบ้าน myclover</title>
-<meta name="description" content="ให้ AI ช่วยตั้งแต่คิดสคริปต์ แตกช็อตถ่าย จนถึงแคปชัน — คุณมีหน้าที่แค่กดถ่ายกับมือถือเครื่องเดิม">
+<title>บทที่ 3 · เอาซอสไปทำจานจริง — คลิป 10 วินาทีที่พาคนลงมือ · AI ใส่ซอส</title>
+<meta name="description" content="เปลี่ยน Source จากบทที่ 1 เป็นคลิปสั้นไม่เกิน 10 วินาที เลือกถ่ายเองหรือสร้างภาพเคลื่อนไหวด้วย AI แล้วเติมเสียงของคุณเป็น Final Human Touch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="บทที่ 3 · เอาซอสไปทำจานจริง — AI ใส่ซอส">
+<meta property="og:description" content="งานยังไม่เกิด จนกว่าจะออกจากแชตไปทำให้คนจริงรู้สึก เข้าใจ หรือทำอะไรบางอย่าง">
 <style>
-:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100;--red:170 66 48;--cream:255 252 243;--blue:49 88 139;--orange:190 101 51}
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:74px}
-body{font-family:"Anuphan",sans-serif;background:radial-gradient(900px 460px at 50% -220px,rgb(190 148 66/.12),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:"Anuphan",sans-serif;background:radial-gradient(900px 460px at 50% -220px,rgb(190 148 66/.13),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));line-height:1.78;font-size:16px;-webkit-font-smoothing:antialiased}
 button,input,textarea{font:inherit}
 button,summary,a{-webkit-tap-highlight-color:transparent}
 button{touch-action:manipulation}
-.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
 a{text-decoration:none;color:inherit}
-img{max-width:100%}
-.wrap{width:100%;max-width:800px;margin:0 auto;padding:0 20px}
-.skip-link{position:fixed;left:16px;top:10px;z-index:100;transform:translateY(-160%);background:#fff;color:rgb(var(--deep));border:2px solid rgb(var(--gold));border-radius:9px;padding:8px 12px;font-weight:700;transition:transform .18s}
+img,svg{max-width:100%}
+code{font-family:ui-monospace,Menlo,Consolas,monospace}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.012em}
+.wrap{width:100%;max-width:860px;margin:0 auto;padding:0 22px}
+.skip-link{position:fixed;left:16px;top:10px;z-index:100;transform:translateY(-170%);background:#fff;color:rgb(var(--deep));border:2px solid rgb(var(--gold));border-radius:10px;padding:8px 13px;font-weight:700;transition:transform .18s}
 .skip-link:focus{transform:translateY(0)}
 nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgb(var(--ink)/.08);box-shadow:0 5px 20px rgb(10 40 24/.035)}
 nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
@@ -28,81 +32,136 @@ nav.top .wrap{display:flex;justify-content:space-between;align-items:center;heig
 .bk em{font-style:normal;color:rgb(var(--green))}
 .bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
 .bk2:hover{color:rgb(var(--green))}
-.head{background:rgb(var(--deep));color:#fff;border:1px solid rgb(255 255 255/.08);border-radius:22px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative;box-shadow:0 18px 46px rgb(10 40 24/.14)}
-.heroimg{position:relative;margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
-.heroimg::after{content:"";position:absolute;inset:auto 0 0;height:38%;background:linear-gradient(transparent,rgb(var(--deep)/.34));pointer-events:none}
-.heroimg img{width:100%;height:100%;object-fit:cover;display:block}
-.lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
-.head h1{font-size:clamp(24px,4.5vw,32px);margin:12px 0 8px;line-height:1.3}
-.head>p{color:rgb(255 255 255/.8);font-size:15.5px;max-width:58ch}
-.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.15);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.85)}
-h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;margin:38px 0 14px;display:flex;align-items:center;gap:11px;line-height:1.45}
-main.wrap>h2::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgb(var(--green)/.24),transparent)}
-h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none;box-shadow:0 5px 14px rgb(27 106 66/.2)}
-.card{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:6px 22px;box-shadow:0 8px 24px rgb(18 40 28/.055)}
-.item{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgb(var(--ink)/.06)}
-.item:last-child{border:0}
-.item .bx{width:23px;height:23px;border:2px solid rgb(27 106 66/.4);border-radius:7px;flex:none;margin-top:3px}
-.item .ic{font-size:19px;flex:none;margin-top:1px;width:23px;text-align:center}
-.item b{font-weight:600}
-.item small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:2px}
-.item a,.step a{color:rgb(var(--green));font-weight:600}
-.steps{display:flex;flex-direction:column;gap:10px}
-.step{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:17px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 8px 24px rgb(18 40 28/.055)}
-.step>div{flex:1;min-width:0}
-.step .num{width:28px;height:28px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;flex:none;margin-top:2px}
-.step b{font-weight:600}
-.step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px}
-.step code,.item code,.note code{background:rgb(var(--ink)/.06);border-radius:5px;padding:1px 7px;font-size:13px}
-.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#071a10;color:#d7f5e2;border:1px solid rgb(190 148 66/.18);border-radius:13px;padding:16px 66px 16px 17px;margin-top:12px;line-height:1.72;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 1px 0 rgb(255 255 255/.055),0 7px 18px rgb(7 26 16/.1)}
-.note{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:14px;padding:15px 20px;margin-top:16px;font-size:14.5px}
-.quest{position:relative;overflow:hidden;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.08));border:1px solid rgb(27 106 66/.25);border-radius:17px;padding:20px 24px 20px 27px;margin-top:36px;font-size:15px;box-shadow:0 8px 24px rgb(18 40 28/.05)}
-.quest::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:rgb(var(--gold))}
-.quest .qshare{display:block;margin-top:8px;font-size:13px;color:rgb(var(--muted))}
-.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
-.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:transform .18s,box-shadow .18s,border-color .18s;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgb(27 106 66/.14)}
+.head{position:relative;overflow:hidden;background:linear-gradient(145deg,#071a10,#0b3420 58%,#145337);color:#fff;border:1px solid rgb(255 255 255/.09);border-radius:24px;padding:34px;margin:26px 0 12px;box-shadow:0 20px 52px rgb(10 40 24/.16)}
+.head::before{content:"";position:absolute;width:560px;height:560px;border-radius:50%;right:-250px;top:-350px;background:radial-gradient(circle,rgb(190 148 66/.34),transparent 67%);pointer-events:none}
+.lv{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.13em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.48);border-radius:999px;padding:6px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif;background:rgb(7 26 16/.25)}
+.head h1{font-size:clamp(29px,5.6vw,43px);margin:14px 0 8px;line-height:1.2;max-width:17ch}
+.head .lead{color:rgb(255 255 255/.82);font-size:clamp(15.5px,2.4vw,18px);max-width:64ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}
+.meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.14);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.88)}
+.hero-stage{position:relative;margin:25px -7px -10px;padding:17px 7px 0;border-top:1px solid rgb(255 255 255/.1)}
+.hero-stage svg{display:block;width:100%;filter:drop-shadow(0 18px 23px rgb(0 0 0/.18))}
+.hero-labels{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:1px 6px 0}
+.hero-label{text-align:center;font-family:"Bai Jamjuree",sans-serif;font-size:10.5px;font-weight:700;color:rgb(255 255 255/.65);line-height:1.35}
+.hero-label b{display:block;color:#fff;font-size:12px}
+.tldr{display:grid;grid-template-columns:1.25fr .75fr;gap:14px;margin:18px 0 8px}
+.tldr-main,.tldr-side{background:rgb(255 255 255/.95);border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px 22px;box-shadow:0 9px 28px rgb(18 40 28/.055)}
+.eyebrow{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;letter-spacing:.13em;color:rgb(var(--green));margin-bottom:5px}
+.tldr h2{font-family:"Bai Jamjuree",sans-serif;font-size:21px;line-height:1.35;margin-bottom:6px}
+.tldr p{font-size:14.5px;color:rgb(var(--muted))}
+.takehome{display:grid;gap:7px;margin-top:12px}
+.takehome span{display:flex;gap:9px;align-items:center;font-size:13.5px;font-weight:600}
+.section{font-family:"Bai Jamjuree",sans-serif;font-size:21px;margin:40px 0 14px;display:flex;align-items:center;gap:11px;line-height:1.4}
+.section::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgb(var(--green)/.24),transparent)}
+.section .n{width:31px;height:31px;border-radius:10px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:14px;flex:none;box-shadow:0 5px 15px rgb(27 106 66/.2)}
+.core{display:grid;grid-template-columns:auto 1fr;gap:15px;align-items:start;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.11));border:1px solid rgb(27 106 66/.24);border-radius:17px;padding:20px 22px}
+.core .big{font-size:31px;line-height:1.2}
+.core b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:18px;margin-bottom:3px}
+.core p{font-size:14.5px;color:rgb(var(--muted))}
+.action-ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.action-card{position:relative;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;padding:16px 12px;text-align:center;box-shadow:0 7px 20px rgb(18 40 28/.04)}
+.action-card span{display:block;font-size:27px;margin-bottom:4px}
+.action-card b{font-family:"Bai Jamjuree",sans-serif;font-size:13.5px}
+.action-card small{display:block;color:rgb(var(--muted));font-size:11.5px;line-height:1.5;margin-top:3px}
+.action-card:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:37%;z-index:3;color:rgb(var(--gold));font-weight:800}
+.routes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.route{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px;box-shadow:0 9px 26px rgb(18 40 28/.05)}
+.route .route-top{display:flex;align-items:flex-start;gap:11px}
+.route .ico{font-size:29px;line-height:1.2}
+.route .tag{display:inline-block;font-family:"Bai Jamjuree",sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:rgb(var(--green));background:rgb(27 106 66/.08);border-radius:999px;padding:4px 9px;margin-bottom:5px}
+.route h3{font-family:"Bai Jamjuree",sans-serif;font-size:17px;line-height:1.35}
+.route p{font-size:13.5px;color:rgb(var(--muted));line-height:1.65;margin-top:5px}
+.route ul{padding-left:19px;margin-top:10px}
+.route li{font-size:13px;color:rgb(var(--muted));line-height:1.65;margin:3px 0}
+.route .pass{display:block;margin-top:12px;padding-top:10px;border-top:1px dashed rgb(var(--ink)/.1);font-size:12.5px;font-weight:700;color:rgb(var(--green))}
+.human-touch{position:relative;overflow:hidden;background:linear-gradient(145deg,#071a10,#143d29);color:#fff;border:1px solid rgb(190 148 66/.4);border-radius:20px;padding:24px 24px 24px 76px;box-shadow:0 12px 34px rgb(7 26 16/.13)}
+.human-touch::before{content:"🎙️";position:absolute;left:22px;top:21px;font-size:34px}
+.human-touch::after{content:"";position:absolute;width:210px;height:210px;border-radius:50%;right:-120px;bottom:-140px;background:rgb(190 148 66/.16)}
+.human-touch h3{position:relative;font-family:"Bai Jamjuree",sans-serif;font-size:20px;color:rgb(var(--gold));z-index:1}
+.human-touch p{position:relative;font-size:14.5px;color:rgb(255 255 255/.8);margin-top:6px;z-index:1}
+.human-touch strong{color:#fff}
+.human-touch .quote{position:relative;margin-top:13px;padding:12px 14px;border-left:3px solid rgb(var(--gold));background:rgb(255 255 255/.06);border-radius:0 10px 10px 0;font-size:13.5px;color:rgb(255 255 255/.88);z-index:1}
+.timeline{display:grid;grid-template-columns:2fr 5fr 3fr;gap:7px;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:17px;box-shadow:0 9px 25px rgb(18 40 28/.045)}
+.beat{position:relative;min-height:115px;border-radius:13px;padding:14px;color:#fff;overflow:hidden}
+.beat::after{content:"";position:absolute;inset:auto -24px -45px auto;width:90px;height:90px;border-radius:50%;background:rgb(255 255 255/.1)}
+.beat:nth-child(1){background:linear-gradient(145deg,#a34232,#c46a3f)}
+.beat:nth-child(2){background:linear-gradient(145deg,#1b6a42,#33845b)}
+.beat:nth-child(3){background:linear-gradient(145deg,#284b78,#496e9f)}
+.beat .time{font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;color:rgb(255 255 255/.75)}
+.beat b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;margin-top:3px}
+.beat p{font-size:12.5px;color:rgb(255 255 255/.78);line-height:1.55;margin-top:4px}
+.recipe{background:linear-gradient(150deg,#fff,rgb(190 148 66/.05));border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px;box-shadow:0 9px 25px rgb(18 40 28/.045)}
+.recipe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}
+.recipe-item{border:1px dashed rgb(var(--ink)/.14);border-radius:12px;padding:12px;background:rgb(var(--paper)/.5)}
+.recipe-item b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:12.5px;color:rgb(var(--green))}
+.recipe-item span{display:block;font-size:12px;color:rgb(var(--muted));line-height:1.5;margin-top:2px}
+.steps{display:grid;gap:11px}
+.step{background:rgb(255 255 255/.95);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:18px 20px;display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start;box-shadow:0 9px 25px rgb(18 40 28/.05)}
+.step .num{width:31px;height:31px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px}
+.step b{font-family:"Bai Jamjuree",sans-serif;font-size:15.5px}
+.step p,.step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px;line-height:1.65}
+.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.8px;background:#071a10;color:#d7f5e2;border:1px solid rgb(190 148 66/.2);border-radius:13px;padding:17px 68px 17px 17px;margin-top:12px;line-height:1.72;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 1px 0 rgb(255 255 255/.05),0 7px 18px rgb(7 26 16/.1)}
+.cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:8px;padding:6px 10px;cursor:pointer}
+.cpx:hover{filter:brightness(1.05)}
+.check-board{background:linear-gradient(145deg,#0a2818,#124a2e);border:1px solid rgb(190 148 66/.32);color:#fff;border-radius:20px;padding:23px;box-shadow:0 13px 36px rgb(10 40 24/.13)}
+.check-board h3{font-family:"Bai Jamjuree",sans-serif;font-size:19px;margin-bottom:4px}
+.check-board>p{font-size:13.5px;color:rgb(255 255 255/.7)}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}
+.check{display:flex;gap:10px;align-items:flex-start;border:1px solid rgb(255 255 255/.12);background:rgb(255 255 255/.065);border-radius:12px;padding:11px 12px;cursor:pointer;user-select:none}
+.check input{width:18px;height:18px;margin-top:2px;accent-color:rgb(var(--gold));flex:none}
+.check span{font-size:13px;line-height:1.55;color:rgb(255 255 255/.88)}
+.score{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:13px;padding-top:13px;border-top:1px solid rgb(255 255 255/.12)}
+.score b{font-family:"Bai Jamjuree",sans-serif;font-size:14px;color:rgb(var(--gold))}
+.score span{font-size:12.5px;color:rgb(255 255 255/.62)}
+.chef-note{position:relative;background:linear-gradient(135deg,rgb(190 148 66/.12),rgb(255 255 255/.8));border:1px solid rgb(190 148 66/.37);border-radius:18px;padding:21px 22px 21px 68px;margin-top:16px}
+.chef-note::before{content:"👩‍🍳";position:absolute;left:20px;top:17px;font-size:31px}
+.chef-note b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;color:#775719;margin-bottom:3px}
+.chef-note p{font-size:14.5px;line-height:1.7}
+.chef-note p+p{margin-top:8px}
+details.deep{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;margin-top:10px;overflow:hidden;box-shadow:0 6px 18px rgb(18 40 28/.035)}
+details.deep summary{cursor:pointer;list-style:none;padding:15px 18px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;display:flex;justify-content:space-between;gap:12px}
+details.deep summary::-webkit-details-marker{display:none}
+details.deep summary::after{content:"เปิดดู ＋";color:#fff;background:rgb(var(--green));border-radius:999px;padding:3px 9px;font-size:10.5px;white-space:nowrap}
+details.deep[open] summary::after{content:"ซ่อน −"}
+.deepbody{padding:0 18px 17px;border-top:1px solid rgb(var(--ink)/.07)}
+.deepbody p,.deepbody li{font-size:13.8px;color:rgb(var(--muted));line-height:1.75}
+.deepbody p{margin-top:13px}.deepbody ul,.deepbody ol{padding-left:20px;margin-top:9px}
+.deepbody .prompt{color:#d7f5e2}
+.finish-card{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.finish-side{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:17px 18px;box-shadow:0 8px 22px rgb(18 40 28/.04)}
+.finish-side b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px}
+.finish-side ul{padding-left:18px;margin-top:7px}
+.finish-side li{font-size:13px;color:rgb(var(--muted));line-height:1.65;margin:3px 0}
+.quest{position:relative;overflow:hidden;background:linear-gradient(140deg,#0a2818,#155336);color:#fff;border:1px solid rgb(190 148 66/.35);border-radius:21px;padding:25px;margin-top:38px;box-shadow:0 14px 38px rgb(10 40 24/.14)}
+.quest::after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;right:-130px;bottom:-160px;background:rgb(190 148 66/.17)}
+.quest h2{position:relative;font-family:"Bai Jamjuree",sans-serif;font-size:22px;line-height:1.35;z-index:1}
+.quest p{position:relative;font-size:14px;color:rgb(255 255 255/.75);margin-top:5px;z-index:1}
+.quest ol{position:relative;padding-left:21px;margin-top:13px;z-index:1}
+.quest li{font-size:14px;margin:5px 0}
+.finish{position:relative;z-index:1;width:100%;margin-top:17px;border:1px solid rgb(190 148 66/.7);background:rgb(var(--gold));color:#071a10;border-radius:13px;padding:13px 18px;cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-weight:800;font-size:14.5px;transition:.15s}
+.finish:hover{transform:translateY(-2px)}
+.finish.done{background:rgb(var(--green));border-color:rgb(255 255 255/.18);color:#fff}
+.achievement{display:none;position:relative;z-index:1;margin-top:12px;text-align:center;border:1px solid rgb(190 148 66/.5);border-radius:13px;padding:13px;background:rgb(190 148 66/.13);font-family:"Bai Jamjuree",sans-serif;color:rgb(var(--gold));font-weight:700}
+.achievement.show{display:block}
+.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:31px 0 6px}
+.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14.5px;border-radius:13px;padding:14px;background:rgb(var(--green));color:#fff;transition:.15s}
 .nx:hover{transform:translateY(-2px)}
-.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.32);box-shadow:0 8px 20px rgb(18 40 28/.045)}
-footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
-.cpx{position:absolute;top:9px;right:9px;min-height:31px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:1px solid rgb(255 255 255/.16);border-radius:8px;padding:5px 11px;cursor:pointer;opacity:.94;transition:transform .16s,filter .16s}
-.cpx:hover{opacity:1}
-.shortcut{margin:18px 0 8px;border:1px solid rgb(190 148 66/.45);border-radius:17px;background:linear-gradient(135deg,rgb(190 148 66/.13),rgb(27 106 66/.07));overflow:hidden;box-shadow:0 8px 24px rgb(18 40 28/.045)}
-.shortcut summary{list-style:none;cursor:pointer;padding:17px 20px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;color:rgb(var(--deep));display:flex;align-items:center;justify-content:space-between;gap:12px}
-.shortcut summary::-webkit-details-marker{display:none}
-.shortcut summary::after{content:"เปิดดู +";font-size:12px;color:#fff;background:rgb(var(--green));border-radius:999px;padding:4px 10px;white-space:nowrap}
-.shortcut[open] summary::after{content:"ซ่อน −"}
-.shortcut .inside{border-top:1px solid rgb(190 148 66/.28);padding:17px 20px 20px;font-size:14.5px}
-.shortcut .inside p+p{margin-top:8px}
-.shortcut .mini{color:rgb(var(--muted))}
-.shortcut .shortcut-prompt{font-family:ui-monospace,Menlo,Consolas,monospace;background:#071a10;color:#d7f5e2;border-radius:10px;padding:13px 15px;margin-top:12px;line-height:1.7}
-.shortcut .pass{display:block;margin-top:12px;font-weight:700;color:rgb(var(--green))}
-@media(hover:hover){
-  .card,.step{transition:transform .18s,border-color .18s,box-shadow .18s}
-  .card:hover,.step:hover{transform:translateY(-2px);border-color:rgb(var(--green)/.2);box-shadow:0 12px 30px rgb(18 40 28/.075)}
-  .cpx:hover{transform:translateY(-1px);filter:brightness(1.05)}
-}
+.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.38)}
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 45px}
 :focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px}
 ::selection{background:rgb(190 148 66/.3);color:rgb(var(--deep))}
-@media(max-width:520px){
-  .wrap{padding:0 16px}
-  nav.top .wrap{height:52px}
-  .bk{font-size:17px}.bk2{font-size:12.5px}
-  .head{padding:27px 20px;border-radius:18px;margin-top:16px}
-  .heroimg{margin:-27px -20px 18px;height:146px}
-  .head h1{font-size:25px}
-  .meta{gap:6px}.meta span{padding:4px 10px;font-size:11.5px}
-  h2{font-size:18px;margin-top:32px;align-items:flex-start}
-  main.wrap>h2::after{margin-top:14px}
-  .card{padding:4px 17px}.step{padding:15px 16px;gap:11px}
-  .prompt{padding:47px 14px 15px;font-size:12.5px}
-  .shortcut summary,.shortcut .inside{padding-left:16px;padding-right:16px}
-  .quest{padding:18px 19px 18px 22px}
+@media(max-width:720px){
+  .tldr,.routes,.finish-card{grid-template-columns:1fr}.action-ladder{grid-template-columns:1fr 1fr}.action-card:nth-child(2)::after{display:none}.recipe-grid{grid-template-columns:1fr 1fr}.hero-labels{grid-template-columns:repeat(5,1fr)}
 }
-@media(prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+@media(max-width:580px){
+  .wrap{padding:0 16px}nav.top .wrap{height:52px}.bk{font-size:17px}.bk2{font-size:12.5px}
+  .head{padding:27px 20px 22px;border-radius:19px;margin-top:16px}.head h1{font-size:30px}.hero-stage{margin-left:-7px;margin-right:-7px}.hero-label{font-size:8.5px}.hero-label b{font-size:9.5px}
+  .section{font-size:18px;margin-top:33px;align-items:flex-start}.section::after{margin-top:14px}
+  .checks{grid-template-columns:1fr}.timeline{grid-template-columns:1fr}.beat{min-height:96px}.recipe-grid{grid-template-columns:1fr}.action-ladder{grid-template-columns:1fr}.action-card::after{display:none!important}
+  .prompt{padding:48px 14px 16px;font-size:12.2px}.step{grid-template-columns:30px 1fr;padding:16px 15px;gap:11px}.step .num{width:29px;height:29px}
+  .human-touch{padding:62px 18px 20px}.human-touch::before{left:18px;top:15px}.chef-note{padding:58px 17px 18px}.chef-note::before{left:17px;top:14px}.quest{padding:22px 19px}
 }
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
 </head>
@@ -112,106 +171,348 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   <a class="bk disp" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>clover</em></a>
   <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
 </div></nav>
-<main class="wrap" id="main">
 
+<main class="wrap" id="main">
 <header class="head">
-  <!-- 📷 รูปหัวคลาส: วางไฟล์ img/lesson-3.jpg (ดูรายละเอียดใน IMAGES.md) -->
-  <div class="heroimg"><img src="../img/lesson-3.jpg" alt="" width="1600" height="600" fetchpriority="high" decoding="async" onerror="this.parentElement.style.display='none'"></div>
-  <span class="lv">LV.3 · คอนเทนต์วิดีโอ</span>
-  <h1 class="disp">ทำคลิปสั้นด้วย AI — จากไอเดียถึงโพสต์ในวันเดียว</h1>
-  <p>ให้ AI ช่วยตั้งแต่คิดสคริปต์ แตกช็อตถ่าย จนถึงแคปชัน — คุณมีหน้าที่แค่กดถ่ายกับมือถือเครื่องเดิม</p>
-  <div class="meta"><span>⏱️ ~10 นาที + เวลาถ่ายจริง</span><span>💸 ฟรี</span><span>🎬 ได้โครงคลิปครบ</span><span>📋 ต้องผ่าน LV.1 ก่อน</span></div>
+  <span class="lv">LV.3 · COOK</span>
+  <h1 class="disp">เอาซอสไปทำจานจริง</h1>
+  <p class="lead">งานยังไม่เกิด จนกว่าจะออกจากแชตไปทำให้คนจริงรู้สึก เข้าใจ หรือทำอะไรบางอย่าง บทนี้เราจะเปลี่ยน Source ขวดเดิมให้เป็นคลิปไม่เกิน 10 วินาที — ถ่ายเองก็ได้ เจนภาพเคลื่อนไหวก็ได้ แต่ขอให้เหลือเสียงของคุณอยู่ในจาน</p>
+  <div class="meta"><span>⏱️ คลิปไม่เกิน 10 วินาที</span><span>🧴 ใช้ Source จากบท 1</span><span>🎬 ถ่ายเองหรือเจน AI</span><span>🎙️ Final Human Touch</span></div>
+
+  <div class="hero-stage" role="img" aria-label="ภาพประกอบ Source ขวดเดียวไหลไปเป็น Recipe Card ภาพเคลื่อนไหว เสียงมนุษย์ และคลิปที่ส่งถึงคนดูจริง">
+    <svg viewBox="0 0 1060 390" aria-hidden="true">
+      <defs>
+        <linearGradient id="counter" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4e6c7"/><stop offset="1" stop-color="#cba86a"/></linearGradient>
+        <linearGradient id="sauce" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c7603e"/><stop offset="1" stop-color="#743124"/></linearGradient>
+        <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="12" stdDeviation="11" flood-color="#03120b" flood-opacity=".28"/></filter>
+      </defs>
+      <rect x="16" y="245" width="1028" height="112" rx="36" fill="url(#counter)"/>
+      <path d="M184 211C258 158 284 197 352 168S470 183 530 150 653 173 716 142 831 158 881 133" fill="none" stroke="#c09743" stroke-width="7" stroke-linecap="round" stroke-dasharray="4 16"/>
+      <g transform="translate(42 72)" filter="url(#sh)">
+        <rect x="28" y="54" width="112" height="168" rx="24" fill="#f7efe0" stroke="#d6bd8b" stroke-width="5"/>
+        <rect x="54" y="12" width="60" height="55" rx="13" fill="#d3b36d"/>
+        <rect x="49" y="88" width="70" height="96" rx="18" fill="url(#sauce)"/>
+        <path d="M65 122c18-14 34-12 48 3M69 145c14 8 27 8 42-1" fill="none" stroke="#f3c96f" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="84" cy="204" r="10" fill="#1b6a42"/>
+      </g>
+      <g transform="translate(250 92) rotate(-3)" filter="url(#sh)">
+        <rect width="158" height="202" rx="16" fill="#fffdf7" stroke="#d9c9aa" stroke-width="5"/>
+        <rect x="20" y="20" width="78" height="13" rx="6" fill="#1b6a42"/>
+        <rect x="20" y="52" width="118" height="28" rx="8" fill="#eee6d4"/>
+        <rect x="20" y="91" width="35" height="76" rx="8" fill="#b8503c"/>
+        <rect x="61" y="91" width="35" height="76" rx="8" fill="#2b744d"/>
+        <rect x="102" y="91" width="35" height="76" rx="8" fill="#315a86"/>
+        <path d="M27 183h103" stroke="#c09743" stroke-width="7" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(468 70)" filter="url(#sh)">
+        <rect x="8" y="12" width="170" height="226" rx="25" fill="#171d1a" stroke="#d3b36d" stroke-width="5"/>
+        <rect x="22" y="38" width="142" height="156" rx="12" fill="#f0e4ca"/>
+        <circle cx="93" cy="100" r="43" fill="#1b6a42" opacity=".9"/>
+        <path d="M78 75l48 25-48 25z" fill="#fff"/>
+        <rect x="54" y="209" width="77" height="7" rx="4" fill="#bfa86d"/>
+      </g>
+      <g transform="translate(696 78)" filter="url(#sh)">
+        <rect x="53" y="32" width="28" height="113" rx="14" fill="#f1e8d6" stroke="#c6a96e" stroke-width="5"/>
+        <rect x="36" y="104" width="62" height="32" rx="16" fill="#1b6a42"/>
+        <path d="M67 144v47M36 191h62" stroke="#d6bd8b" stroke-width="8" stroke-linecap="round"/>
+        <path d="M17 70c-13 12-13 29 0 41M116 70c13 12 13 29 0 41M0 55c-23 24-23 49 0 72M133 55c23 24 23 49 0 72" fill="none" stroke="#c09743" stroke-width="6" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(861 65)" filter="url(#sh)">
+        <rect x="8" y="12" width="143" height="238" rx="25" fill="#171d1a" stroke="#d3b36d" stroke-width="5"/>
+        <rect x="21" y="40" width="117" height="155" rx="12" fill="#1b6a42"/>
+        <circle cx="80" cy="91" r="31" fill="#e7b486"/>
+        <path d="M52 88c6-34 54-43 59 2" fill="#2d211d"/>
+        <path d="M67 106c8 7 17 7 25 0" fill="none" stroke="#8a4037" stroke-width="4" stroke-linecap="round"/>
+        <rect x="43" y="130" width="75" height="47" rx="18" fill="#f6ead1"/>
+        <path d="M31 213h98" stroke="#c09743" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="80" cy="231" r="8" fill="#fff" opacity=".8"/>
+      </g>
+    </svg>
+    <div class="hero-labels" aria-hidden="true">
+      <div class="hero-label"><b>Source</b>ซอสขวดเดิม</div>
+      <div class="hero-label"><b>Recipe Card</b>วางจังหวะก่อนทำ</div>
+      <div class="hero-label"><b>ภาพเคลื่อนไหว</b>ถ่ายหรือเจน</div>
+      <div class="hero-label"><b>เสียงคุณ</b>เติมความเป็นมนุษย์</div>
+      <div class="hero-label"><b>คนจริง</b>เห็นแล้วทำต่อ</div>
+    </div>
+  </div>
 </header>
 
-<details class="shortcut">
-  <summary>🔓 EASY MODE - ทางลัดผ่านบทนี้</summary>
-  <div class="inside">
-    <p><b>ไม่อยากถ่ายคลิป? ผมเข้าใจดี</b></p>
-    <p class="mini">ถ้าเป็นผม ก็คงตันอยู่ตรงบทนี้เหมือนกัน งั้นทำเควสสั้น ๆ แทนได้เลย</p>
-    <p>เปิดตู้เย็น ถ่ายรูปของที่มี แล้วส่งให้ AI พร้อมถามว่า:</p>
-    <div class="shortcut-prompt">จากภาพในตู้เย็นของฉัน วันนี้ฉันควรกินอะไรดี</div>
-    <span class="pass">ทำอาหารกินอิ่ม ก็นับว่าผ่านบทนี้แล้ว ไปต่อได้เลย ✓</span>
+<section class="tldr" aria-label="สรุปบทเรียน">
+  <div class="tldr-main">
+    <span class="eyebrow">TL;DR · จบบทต้องมีไฟล์วิดีโอ</span>
+    <h2>Source 1 ขวด → คลิปจริง 1 จาน → Action จริง 1 อย่าง</h2>
+    <p>เลือกให้คนดูทำเพียงอย่างเดียว แล้วสร้างคลิปแนวตั้งสั้นไม่เกิน 10 วินาทีจาก Source เดิม ถ้าไม่สะดวกออกกล้อง ให้เจนภาพหรือวิดีโอสั้นแทน แล้วลองพากย์เสียงด้วยตัวเอง</p>
   </div>
-</details>
+  <div class="tldr-side">
+    <span class="eyebrow">ของกลับบ้าน</span>
+    <div class="takehome">
+      <span>🧾 Production Recipe Card</span>
+      <span>🎬 วิดีโอไม่เกิน 10 วินาที</span>
+      <span>🎙️ เสียงพากย์ของคุณ 1 Take</span>
+      <span>👉 CTA ที่พาคนลงมือ</span>
+    </div>
+  </div>
+</section>
 
-<h2><span class="n">1</span>ให้ Gemini เขียนสคริปต์ให้ก่อน</h2>
+<div class="core">
+  <span class="big">🔥</span>
+  <div>
+    <b>COOK — งานต้องออกจากแชต</b>
+    <p>บทที่ 1 ทำซอส บทที่ 2 ชิมว่ารสตรงหรือยัง บทนี้ต้องเปิดเตาและทำ Version แรกให้เสร็จ เพราะ Source ที่ดีแต่ไม่เคยกลายเป็นของใช้จริง ยังเป็นเพียงสูตรที่วางสวยอยู่บนชั้น</p>
+  </div>
+</div>
+
+<h2 class="section"><span class="n">1</span>ก่อนทำคลิป เลือก Action ให้ชัด</h2>
+<div class="action-ladder" aria-label="ลำดับจากคนเห็นคลิปไปสู่การลงมือ">
+  <div class="action-card"><span>👀</span><b>เห็น</b><small>หยุดนิ้วได้ทัน</small></div>
+  <div class="action-card"><span>❤️</span><b>รู้สึก</b><small>มีเหตุผลให้อยู่ต่อ</small></div>
+  <div class="action-card"><span>💡</span><b>เข้าใจ</b><small>รู้ว่าคลิปกำลังบอกอะไร</small></div>
+  <div class="action-card"><span>👉</span><b>ลงมือ</b><small>ทำเพียง 1 อย่างต่อทันที</small></div>
+</div>
+<div class="chef-note">
+  <b>เชฟขอชิมเป้าหมายก่อน</b>
+  <p>ถ้าคลิปดูแพงมาก แต่คนดูจบแล้วไม่รู้ว่าจะทำอะไรต่อ เชฟขอเรียกว่าไฟประดับค่ะ ไม่ใช่จานหลัก</p>
+</div>
+
+<h2 class="section"><span class="n">2</span>เลือกเตาที่เหมาะกับคุณ</h2>
+<div class="routes">
+  <article class="route">
+    <div class="route-top"><span class="ico">📱</span><div><span class="tag">ROUTE A · ถ่ายเอง</span><h3>ไม่ต้องเป็นพิธีกร แค่เก็บภาพจริง</h3></div></div>
+    <p>ถ่ายมือกำลังทำ ของจริง สถานที่จริง หน้าจอ หรือมุมมองจากสายตาคุณ ไม่จำเป็นต้องหันกล้องเข้าหน้า</p>
+    <ul><li>ใช้ 2–3 ช็อต ช็อตละ 2–4 วินาที</li><li>แสงจากหน้าต่างและภาพนิ่งสำคัญกว่ากล้องแพง</li><li>ถ่ายเผื่อหัวท้าย แล้วค่อยตัดให้เหลือ 10 วินาที</li></ul>
+    <span class="pass">เหมาะเมื่อของจริงคือหลักฐานที่ดีที่สุด</span>
+  </article>
+  <article class="route">
+    <div class="route-top"><span class="ico">✨</span><div><span class="tag">ROUTE B · เจน AI</span><h3>ไม่สะดวกถ่าย ก็สร้างภาพเคลื่อนไหวจาก Source</h3></div></div>
+    <p>ใช้ Canon และภาพอ้างอิงจากบทที่ 2 สร้าง 2–3 ช็อตสั้น แล้วเรียงเป็นคลิปเดียว โดยทุกช็อตต้องกลับไปอ้าง Source ขวดเดียวกัน</p>
+    <ul><li>สร้างภาพนิ่งก่อน แล้วค่อยทำให้เคลื่อนไหวก็ได้</li><li>ขยับเพียง 1 Action ต่อช็อต ลดโอกาสภาพกลายพันธุ์</li><li>โลโก้หรือสินค้าจริงต้องแนบไฟล์ภาพต้นฉบับ</li></ul>
+    <span class="pass">เหมาะเมื่อไม่อยากออกกล้อง หรือของจริงยังถ่ายไม่ได้</span>
+  </article>
+</div>
+
+<h2 class="section"><span class="n">3</span>Final Human Touch</h2>
+<section class="human-touch">
+  <h3>AI ช่วยทำภาพได้ แต่เสียงของคุณส่งพลังแทนคุณไม่ได้ทั้งหมด</h3>
+  <p>เรารู้ว่า AI ทำเสียงพูดได้ และบางงานจำเป็นต้องใช้ แต่ในบทนี้ให้ลองพูดเองอย่างน้อย 1 Take ก่อน เพราะน้ำหนัก คำเว้นจังหวะ ลมหายใจ และความตั้งใจเล็ก ๆ คือส่วนที่บอกคนดูว่า <strong>มีมนุษย์คนหนึ่งกำลังส่งสิ่งนี้มาหาเขาจริง ๆ</strong></p>
+  <div class="quote">คลิปเปิดบ้านในหน้าแรก ผมพูดใส่ไมค์เองทุกคำ ไม่ใช่เพราะ AI ทำไม่ได้ แต่เพราะผมไม่อยากให้งานที่ส่งไปถึงคนจริง ไม่มีความเป็นมนุษย์เหลืออยู่เลย</div>
+</section>
+
+<h2 class="section"><span class="n">4</span>สูตรคลิป 10 วินาที</h2>
+<div class="timeline" aria-label="Timeline คลิป 10 วินาที">
+  <div class="beat"><span class="time">0–2 วินาที</span><b>HOOK</b><p>เปิดด้วยภาพหรือประโยคที่ทำให้คนรู้ทันทีว่าเรื่องนี้เกี่ยวอะไรกับเขา</p></div>
+  <div class="beat"><span class="time">2–7 วินาที</span><b>PROOF / TURN</b><p>ให้เห็นของจริง การเปลี่ยนแปลง หรือข้อมูลสำคัญเพียง 1 เรื่อง</p></div>
+  <div class="beat"><span class="time">7–10 วินาที</span><b>ACTION</b><p>บอกให้คนทำสิ่งเดียว เช่น ลอง เปิด อ่าน ส่ง กด หรือเริ่ม</p></div>
+</div>
+
+<h2 class="section"><span class="n">5</span>ให้ AI ทำ Recipe Card ก่อนเปิดเตา</h2>
+<div class="recipe">
+  <span class="eyebrow">PRODUCTION RECIPE CARD</span>
+  <p>อย่าให้ Script ภาพ Caption และ CTA เกิดจาก Prompt คนละชุดจนรสหลุดคนละร้าน ให้ AI วางการ์ดใบเดียวจาก Source ก่อน แล้วทุก Station ใช้การ์ดเดียวกัน</p>
+  <div class="recipe-grid">
+    <div class="recipe-item"><b>คนดู</b><span>คลิปนี้ส่งถึงใคร</span></div>
+    <div class="recipe-item"><b>Action</b><span>ดูจบแล้วให้ทำอะไร 1 อย่าง</span></div>
+    <div class="recipe-item"><b>Hook</b><span>คำหรือภาพเปิด 0–2 วิ</span></div>
+    <div class="recipe-item"><b>Proof</b><span>หลักฐานหรือการเปลี่ยน 2–7 วิ</span></div>
+    <div class="recipe-item"><b>Voice</b><span>ประโยคที่พูดได้ในลมหายใจเดียว</span></div>
+    <div class="recipe-item"><b>Visual</b><span>2–3 ช็อตจาก Canon เดียวกัน</span></div>
+    <div class="recipe-item"><b>CTA</b><span>คำสั่งสั้นและทำได้ทันที</span></div>
+    <div class="recipe-item"><b>Done</b><span>ไฟล์จริง ≤10 วิ ส่งให้คนได้</span></div>
+  </div>
+  <div class="prompt">อ่าน Source ที่แนบให้ครบ แล้วทำ Production Recipe Card สำหรับคลิปแนวตั้งไม่เกิน 10 วินาที
+
+เป้าหมาย: ทำให้คนดู [Action เดียวที่ต้องการ]
+กลุ่มคนดู: [ใคร]
+ข้อจำกัด: ใช้ Canon และข้อห้ามจาก Source เท่านั้น
+
+ส่งกลับมาเป็น:
+1. One-line promise
+2. Hook 0–2 วินาที
+3. Proof / Turn 2–7 วินาที
+4. CTA 7–10 วินาที
+5. บทพากย์สั้นที่พูดได้ในลมหายใจเดียว
+6. Shot list 2–3 ช็อต
+7. สิ่งที่ต้องใช้จาก Source และไฟล์อ้างอิง
+8. Definition of Done
+
+ยังไม่ต้องสร้างคลิป รอฉันตรวจ Recipe Card ก่อน</div>
+</div>
+
+<h2 class="section"><span class="n">6</span>ลงมือปรุง Version แรก</h2>
 <div class="steps">
-  <div class="step"><span class="num">1</span><div><b>บอกมันว่าจะทำคลิปอะไร ลงที่ไหน</b>
-  <div class="prompt">เขียนสคริปต์คลิปสั้น 30 วินาที เรื่อง [สิ่งที่จะทำ เช่น แนะนำเมนูเด็ดของร้าน / รีวิวของที่เพิ่งซื้อ / สอนเคล็ดลับงานของฉัน]
-กลุ่มคนดูคือ [ใคร] ลงใน [TikTok / Reels / YouTube Shorts]
-ขอ: ประโยคเปิดที่หยุดนิ้วคนได้ใน 3 วินาทีแรก + เนื้อหากระชับ + ประโยคปิดชวนติดตาม
-น้ำเสียงเป็นกันเอง เหมือนเพื่อนเล่าให้ฟัง</div></div></div>
-  <div class="step"><span class="num">2</span><div><b>ให้มันแตกเป็น "ช็อตถ่าย" ต่อเลย</b>
-  <div class="prompt">ดีมาก ทีนี้ช่วยแตกสคริปต์นี้เป็นตารางช็อตถ่าย: ช็อตที่เท่าไหร่ / ถ่ายอะไร / มุมกล้องแบบไหน / พูดว่าอะไร — ให้คนที่ไม่เคยถ่ายวิดีโอทำตามได้เลย</div></div></div>
+  <article class="step"><span class="num">1</span><div><b>แนบ Source และเลือกจานจริง 1 จาน</b><p>ใช้ Source ขวดเดียวกับบทก่อนหน้า แล้วระบุให้ชัดว่าคลิปนี้ต้องพาใครไปทำอะไร อย่าพยายามขาย สอน เล่า และสร้างแบรนด์พร้อมกันใน 10 วินาที</p></div></article>
+
+  <article class="step"><span class="num">2</span><div><b>ตรวจ Recipe Card ก่อนสร้างของ</b><p>เช็กว่า Hook, ภาพ, เสียง และ CTA กำลังเล่าเรื่องเดียวกัน ถ้าส่วนใดดูเหมือนมาจากคนละเมนู ให้แก้บนการ์ดก่อน</p><div class="prompt">ตรวจ Recipe Card นี้เทียบกับ Source แล้วตอบแบบตรงไปตรงมา:
+- จุดใดสอดคล้องกับ Source
+- จุดใด AI เดาเพิ่ม
+- จุดใดมีมากกว่า 1 เป้าหมาย
+- จุดใดทำให้คลิปเกิน 10 วินาที
+
+จากนั้นปรับให้เหลือ Message เดียว, Action เดียว และ Visual Direction เดียว</div></div></article>
+
+  <article class="step"><span class="num">3</span><div><b>เลือก Route A หรือ Route B</b><p>ถ่ายเองให้แตกเป็นช็อตที่ทำตามได้ทันที ส่วนการเจน AI ให้สร้างทีละช็อตและล็อก Canon อย่าสั่งวิดีโอยาวรวดเดียวแล้วหวังให้ทุกอย่างตรงเอง</p><div class="prompt">จาก Recipe Card และ Source ที่แนบ ช่วยทำ Shot Card 3 ใบสำหรับคลิปไม่เกิน 10 วินาที
+
+แต่ละใบระบุ:
+- เวลาเริ่ม–จบ
+- สิ่งที่เห็นเพียง 1 Action
+- มุมกล้องหรือการเคลื่อนที่
+- Canon ที่ต้องรักษา
+- สิ่งที่ห้ามเพิ่ม
+- ถ้าถ่ายเอง: วิธีถ่ายด้วยมือถือแบบง่ายที่สุด
+- ถ้าเจน AI: Prompt สำหรับสร้างช็อตนั้นโดยไม่เปลี่ยนตัวละคร สินค้า สี ยุค และสถานที่
+
+หากมีโลโก้ สินค้า หรือบุคคลจริง ให้ระบุไฟล์ภาพอ้างอิงที่ต้องแนบ ห้ามเดาจากข้อความใน .md</div></div></article>
+
+  <article class="step"><span class="num">4</span><div><b>ทำภาพให้เสร็จก่อน 1 รอบ</b><p>ถ่ายหรือเจนทั้ง 2–3 ช็อตให้ครบ แล้วเรียงตาม Timeline ก่อน อย่าเพิ่งเสียเวลาขัด Transition หรือเอฟเฟกต์ เพราะเราต้องดูว่าจานนี้กินรู้เรื่องหรือยัง</p></div></article>
+
+  <article class="step"><span class="num">5</span><div><b>เขียนบทพากย์ให้ “ปากพูดได้จริง”</b><p>บทที่อ่านสวยบนจออาจแข็งเมื่อออกเสียง ให้ตัดคำทางการ คำซ้ำ และประโยคที่ยาวเกินลมหายใจ</p><div class="prompt">เขียนบทพากย์ภาษาไทยสำหรับคลิปนี้ ความยาวไม่เกิน 10 วินาที
+
+กติกา:
+- ใช้ข้อมูลจาก Source เท่านั้น
+- พูดเหมือนเจ้าของงานพูดกับคนจริง 1 คน
+- 1–2 ประโยคสั้น
+- มีคำเว้นจังหวะตามธรรมชาติ
+- ไม่ใช้ภาษาขายของเกินจริง
+- จบด้วย Action เดียวจาก Recipe Card
+
+ส่งมา 3 แบบ:
+A. จริงใจ
+B. มีพลัง
+C. สุภาพแต่จัดจ้าน
+
+ทุกแบบต้องอ่านออกเสียงได้ในลมหายใจเดียว</div></div></article>
+
+  <article class="step"><span class="num">6</span><div><b>อัดเสียงตัวเอง 1 Take ก่อน</b><p>ปิดพัดลม อยู่ใกล้ผ้าม่านหรือเสื้อผ้า วางมือถือห่างปากประมาณ 1 ฝ่ามือ แล้วพูดเหมือนกำลังส่งข้อความเสียงให้คนคนเดียว ไม่ต้องทำเสียงโฆษณา</p></div></article>
+
+  <article class="step"><span class="num">7</span><div><b>ประกอบภาพ + เสียง + Caption</b><p>ตัดช่วงเงียบ วางเสียงให้ภาพเปลี่ยนตามความหมาย และใส่ข้อความเท่าที่จำเป็น ถ้าคนอ่าน Caption ไม่ทันใน 10 วินาที แปลว่าใส่มากเกินไป</p><div class="prompt">ทำ Editing Map จาก Recipe Card นี้สำหรับวิดีโอไม่เกิน 10 วินาที
+
+ระบุเป็น Timeline:
+- ช็อตที่ใช้
+- จุดเริ่มคำพากย์
+- คำบนจอไม่เกิน 1 บรรทัดต่อช่วง
+- จุดตัดภาพ
+- เสียงประกอบที่จำเป็นจริง
+- CTA ตอนจบ
+
+รักษา Message เดียวและห้ามเพิ่มข้อมูลใหม่ที่ไม่มีใน Source</div></div></article>
+
+  <article class="step"><span class="num">8</span><div><b>Export แล้วส่งไปชนโลกจริง</b><p>บันทึกเป็นไฟล์วิดีโอจริง เปิดดูจากต้นจนจบ แล้วส่งให้คนจริงอย่างน้อย 1 คน หรือโพสต์ในพื้นที่ที่เหมาะสม จะส่งแบบส่วนตัวก็ได้ เป้าหมายคือให้ Output ออกจากแชต</p></div></article>
 </div>
 
-<h2><span class="n">2</span>ถ่ายด้วยมือถือ — เคล็ดลับ 3 ข้อพอ</h2>
-<div class="card">
-  <div class="item"><span class="ic">💡</span><div><b>แสงสำคัญกว่ากล้อง</b><small>หันหน้าเข้าหาแสง (หน้าต่าง/ไฟ) อย่าให้แสงอยู่ข้างหลังตัว</small></div></div>
-  <div class="item"><span class="ic">🎙️</span><div><b>เสียงสำคัญกว่าภาพ</b><small>ถ่ายในที่เงียบ หรือพูดใกล้มือถือหน่อย — คลิปภาพสวยแต่เสียงไม่ชัด คนปัดทิ้งทันที</small></div></div>
-  <div class="item"><span class="ic">📱</span><div><b>ถ่ายแนวตั้ง ช็อตละไม่เกิน 5 วิ</b><small>คลิปสั้นชอบภาพเปลี่ยนบ่อย ๆ — ถ่ายเผื่อไว้หลายช็อต เดี๋ยวไปเลือกตอนตัด</small></div></div>
+<h2 class="section"><span class="n">7</span>Action Check ก่อนเสิร์ฟ</h2>
+<section class="check-board" id="cookBoard">
+  <h3>🍽️ จานนี้ออกจากครัวได้หรือยัง?</h3>
+  <p>ติ๊กเมื่อทำจริง ไม่ใช่เมื่อคิดว่าจะทำ</p>
+  <div class="checks">
+    <label class="check"><input type="checkbox"><span>🧴 ทุกช็อตอ้าง Source และ Canon ขวดเดียวกัน</span></label>
+    <label class="check"><input type="checkbox"><span>⏱️ วิดีโอจริงยาวไม่เกิน 10 วินาที</span></label>
+    <label class="check"><input type="checkbox"><span>🎬 มีภาพเคลื่อนไหวหรือการเปลี่ยนอย่างน้อย 2 ช่วง</span></label>
+    <label class="check"><input type="checkbox"><span>🎙️ ลองอัดเสียงตัวเองอย่างน้อย 1 Take</span></label>
+    <label class="check"><input type="checkbox"><span>👉 ดูจบแล้วรู้ว่าต้องทำอะไรต่อเพียง 1 อย่าง</span></label>
+    <label class="check"><input type="checkbox"><span>📤 Export เป็นไฟล์และส่งให้คนจริงแล้ว</span></label>
+  </div>
+  <div class="score"><b id="cookScore">ผ่าน 0 / 6 จุด</b><span id="cookHint">ตอนนี้ยังเป็นสูตรอยู่ เปิดเตาก่อนค่ะ</span></div>
+</section>
+
+<div class="chef-note">
+  <b>เชฟเพิ่มความจัดจ้านแบบสุภาพ</b>
+  <p>ถ้า Script พูดอย่างหนึ่ง ภาพเล่าอีกอย่าง และ Caption เชิญไปอีกทาง เชฟขอเรียกว่าโต๊ะบุฟเฟต์ค่ะ ไม่ใช่เมนูเดียวกัน</p>
+  <p>ส่วนเสียง AI ที่เรียบกริบเหมือนโรงแรม 5 ดาว แต่เจ้าของบ้านไม่กล่าวสวัสดีสักคำ เชฟก็ยังไม่แน่ใจว่าได้รับเชิญมา หรือระบบเปิดประตูอัตโนมัติค่ะ</p>
 </div>
 
-<h2><span class="n">3</span>ตัดต่อฟรีด้วย CapCut</h2>
-<div class="steps">
-  <div class="step"><span class="num">1</span><div><b>โหลดแอป CapCut (ฟรี)</b><small>เอาคลิปที่ถ่ายมาเรียงตามตารางช็อต ตัดช่วงเงียบ/ที่พูดผิดออก</small></div></div>
-  <div class="step"><span class="num">2</span><div><b>เปิดซับไตเติลอัตโนมัติ</b><small>ใช้ฟีเจอร์ Auto captions ภาษาไทย — คนส่วนใหญ่ดูคลิปแบบปิดเสียง ซับช่วยให้คนดูจนจบ</small></div></div>
+<h2 class="section"><span class="n">8</span>หลังครัว · เปิดเมื่ออยากลงลึก</h2>
+<details class="deep"><summary>ไม่ออกกล้องเลย จะเจนคลิปอย่างไรไม่ให้หลุด Canon</summary><div class="deepbody"><ol><li>เลือกเพียง 2–3 ช็อตจาก Recipe Card</li><li>สร้างภาพนิ่งของแต่ละช็อตให้ Canon ตรงก่อน</li><li>ใช้ภาพนิ่งนั้นเป็นภาพอ้างอิงในการสร้างการเคลื่อนไหว</li><li>สั่งให้ขยับเพียง 1 อย่าง เช่น มือหยิบของ กล้องเคลื่อนเข้า หรือแสงเปลี่ยน</li><li>ตรวจใบหน้า มือ โลโก้ ฉลาก และยุคทุกช็อตก่อนตัดต่อ</li></ol><p>อย่าสั่งให้ตัวละครเดิน หยิบสินค้า หันหน้า พูด และเปลี่ยนฉากพร้อมกันในช็อตสั้นเดียว ยิ่งมี Action มาก AI ยิ่งมีพื้นที่สร้างร้านใหม่แทนการปรุงจานเดิม</p></div></details>
+
+<details class="deep"><summary>อัดเสียงเองแล้วไม่มั่นใจ ทำอย่างไร</summary><div class="deepbody"><ul><li>พูดกับคนหนึ่งคน ไม่ต้องพูดกับ “ผู้ชมทุกท่าน”</li><li>ยิ้มเล็กน้อยก่อนเริ่ม เสียงจะอุ่นขึ้นโดยไม่ต้องแสดง</li><li>อัด 3 Take: ธรรมชาติ / มีพลังขึ้น / ช้าลง แล้วเลือกทีหลัง</li><li>ตัดลมหายใจยาวได้ แต่ไม่ต้องลบทุกลมหายใจจนเสียงไร้ชีวิต</li><li>เสียงไม่ต้องเหมือนนักพากย์ ขอให้ฟังรู้เรื่องและเป็นคุณ</li></ul><p>กรณีมีข้อจำกัดด้านเสียง ภาษา ความเป็นส่วนตัว หรือการเข้าถึง ใช้เสียง AI ได้ แต่ควรใส่ Human Direction เช่น จังหวะ น้ำหนัก ความรู้สึก และตรวจทุกคำก่อนเผยแพร่</p></div></details>
+
+<details class="deep"><summary>Caption และข้อความบนจอควรมีแค่ไหน</summary><div class="deepbody"><p>คลิป 10 วินาทีไม่ใช่สไลด์ที่วิ่งเร็ว ให้ข้อความบนจอช่วยย้ำสิ่งที่หูอาจพลาด ไม่ใช่แข่งขันกับเสียงพากย์ ใช้ตัวอักษรใหญ่ อ่านง่าย และให้ 1 ช่วงมีเพียง 1 ใจความ</p><p>เมื่อมีชื่อ ตัวเลข ราคา คุณสมบัติสินค้า หรือคำสำคัญ ให้ตรวจจาก Source และต้นฉบับจริงก่อน Export เสมอ</p></div></details>
+
+<details class="deep"><summary>ทำไมต้องจำกัดไม่เกิน 10 วินาที</summary><div class="deepbody"><p>ข้อจำกัดนี้บังคับให้เลือก Message เดียว, Action เดียว และภาพที่จำเป็นจริง ผู้เรียนจึงได้ฝึกทำงานครบวงจรตั้งแต่ Source ถึงไฟล์จริง โดยไม่ติดอยู่กับการผลิตชิ้นใหญ่เกินกำลัง</p><p>เมื่อทำ 10 วินาทีได้แล้ว คุณค่อยขยายเป็น 30 วินาทีหรือ Content Pack ในรอบถัดไป โดยยังใช้ Recipe Card และ Source เดิมเป็นฐาน</p></div></details>
+
+<details class="deep"><summary>ความปลอดภัย ลิขสิทธิ์ และความจริงของคลิป</summary><div class="deepbody"><ul><li>ใช้ภาพและเสียงบุคคลเมื่อได้รับอนุญาต โดยเฉพาะเด็ก ลูกค้า และบุคคลที่อาจถูกเข้าใจผิด</li><li>อย่าเลียนเสียงหรือใบหน้าคนจริงเพื่อให้ดูเหมือนเขาพูดสิ่งที่ไม่เคยพูด</li><li>ใช้เพลง ภาพ โลโก้ และฟุตเทจที่มีสิทธิใช้งาน</li><li>ตรวจสินค้า ฉลาก ตัวเลข และคำอ้างก่อนโพสต์</li><li>เมื่อภาพ AI อาจทำให้เข้าใจผิดว่าเป็นเหตุการณ์จริง ควรระบุให้ชัดตามบริบท</li><li>อย่าแนบข้อมูลลับหรือไฟล์ลูกค้าเข้าเครื่องมือสร้างวิดีโอโดยไม่จำเป็น</li></ul></div></details>
+
+<h2 class="section"><span class="n">9</span>Definition of Done</h2>
+<div class="finish-card">
+  <div class="finish-side"><b>✅ งานที่ถือว่าเสร็จ</b><ul><li>มีไฟล์วิดีโอจริง เปิดเล่นได้</li><li>ความยาวไม่เกิน 10 วินาที</li><li>ภาพ เสียง และ CTA มาจาก Recipe Card เดียวกัน</li><li>คนดูรู้ว่าต้องทำอะไรต่อ</li><li>ส่งให้คนจริงอย่างน้อย 1 คนแล้ว</li></ul></div>
+  <div class="finish-side"><b>❌ สิ่งที่ยังไม่นับว่าเสร็จ</b><ul><li>มีเพียง Prompt หรือ Script ในแชต</li><li>มีภาพนิ่งแต่ยังไม่ประกอบเป็นคลิป</li><li>เจนไว้หลาย Version แต่ไม่เลือกสักอัน</li><li>ตัดต่อไม่จบเพราะมัวเลือกเอฟเฟกต์</li><li>ยังไม่ Export หรือไม่เคยให้ใครดู</li></ul></div>
 </div>
 
-<h2><span class="n">4</span>ให้ Gemini ปิดจ๊อบแคปชัน</h2>
-<div class="steps">
-  <div class="step"><span class="num">✍️</span><div><b>แคปชัน + แฮชแท็ก ใน 10 วินาที</b>
-  <div class="prompt">คลิปของฉันเกี่ยวกับ [เรื่องอะไร] ช่วยเขียนแคปชันสั้น ๆ 3 แบบให้เลือก (แบบกวน ๆ / แบบจริงใจ / แบบให้ความรู้) พร้อมแฮชแท็กภาษาไทยที่คนไทยค้นหาจริง 5 อัน</div></div></div>
-</div>
-<div class="note">💡 <b>กติกาของบ้าน:</b> คลิปแรกไม่ต้องเพอร์เฟกต์ — โพสต์ก่อน เก่งทีหลัง คนที่โพสต์คลิปห่วย ๆ ไปแล้ว 10 คลิป ชนะคนที่ยังไม่กล้าโพสต์เลยเสมอ</div>
+<section class="quest">
+  <h2>🎯 เควสท้ายบท · เสิร์ฟจานแรกให้คนจริง</h2>
+  <p>คลิปไม่ต้องสมบูรณ์แบบ แต่ต้องเป็นไฟล์จริงและมีความเป็นคุณเหลืออยู่</p>
+  <ol>
+    <li>แนบ Source จากบทที่ 1</li>
+    <li>เลือก Action เดียวและทำ Recipe Card</li>
+    <li>ถ่ายเองหรือเจน AI ให้ครบ 2–3 ช็อต</li>
+    <li>ลองพากย์เสียงตัวเอง 1 Take</li>
+    <li>ตัดให้เหลือไม่เกิน 10 วินาที</li>
+    <li>Export และส่งให้คนจริงอย่างน้อย 1 คน</li>
+    <li>เก็บ Feedback ที่ได้กลับเข้า Source</li>
+  </ol>
+  <button class="finish" id="finishLesson" type="button">ฉันมีวิดีโอจริงและส่งออกจากแชตแล้ว</button>
+  <div class="achievement" id="achievement">🔥 FIRST DISH SERVED TO SELF · ซอสขวดเดิมกลายเป็นงานที่โลกจริงรับรู้แล้ว</div>
+</section>
 
-<div class="quest">🎯 <b>เควสท้ายคลาส:</b> ทำคลิปแรก 15–30 วินาที เรื่องอะไรก็ได้ที่คุณรู้ดีที่สุด แล้วโพสต์จริง<span class="qshare">ทำเสร็จแล้วเอามาอวดกันในบ้านได้เลย — ใช้เวลาแค่วันละ 10 นาทีก็พอ 🍀</span></div>
 <div class="nextrow">
-  <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
-  <a class="nx" href="notebooklm.html">⭐ คลาสถัดไป: สร้าง Source ครั้งเดียว ใช้ต่อได้ทั้งงาน →</a>
+  <a class="nx ghost" href="image-ai.html">← กลับบทที่ 2 · ชิมก่อนเติม</a>
+  <a class="nx" href="notebooklm.html">ไปบทที่ 4 · แตกซอสเป็นหลายเมนู →</a>
 </div>
 
-<footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
+<footer>AI ใส่ซอส · Source-Based AI Workflow · myclover.com<br>ภาพทำให้คนหยุด เสียงทำให้คนรู้ว่ามีใครอยู่ตรงนั้น และ Action ทำให้งานเกิดขึ้นจริง 🍀</footer>
 </main>
 
 <script>
 document.querySelectorAll('.prompt').forEach(function(el){
-  var b=document.createElement('button');b.type='button';b.className='cpx';b.textContent='คัดลอก';
-  b.setAttribute('aria-label','คัดลอกพร้อมท์');
-  b.setAttribute('aria-live','polite');
+  var b=document.createElement('button');
+  b.type='button';b.className='cpx';b.textContent='คัดลอก';
+  b.setAttribute('aria-label','คัดลอกคำสั่ง');
   b.onclick=async function(){
     var c=el.cloneNode(true);c.querySelectorAll('button').forEach(function(x){x.remove()});
     var text=c.innerText.trim(),ok=false;
     try{await navigator.clipboard.writeText(text);ok=true}catch(e){
       var t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
-      try{ok=document.execCommand('copy')}catch(err){}
-      t.remove();
+      try{ok=document.execCommand('copy')}catch(err){}t.remove();
     }
     b.textContent=ok?'✓ คัดลอกแล้ว':'คัดลอกไม่สำเร็จ';
     setTimeout(function(){b.textContent='คัดลอก'},1400);
   };
   el.appendChild(b);
 });
-</script>
 
+(function(){
+  var checks=[].slice.call(document.querySelectorAll('#cookBoard input[type="checkbox"]'));
+  var score=document.getElementById('cookScore'),hint=document.getElementById('cookHint');
+  function updateCook(){
+    var done=checks.filter(function(x){return x.checked}).length;
+    score.textContent='ผ่าน '+done+' / '+checks.length+' จุด';
+    hint.textContent=done===checks.length?'จานนี้ออกจากครัวและไปถึงคนจริงแล้ว':done>=4?'ใกล้เสิร์ฟแล้ว เหลือทำให้เป็นไฟล์และส่งออกไป':done>0?'เตาเริ่มร้อนแล้ว ทำ Version แรกให้จบก่อนขัดเงา':'ตอนนี้ยังเป็นสูตรอยู่ เปิดเตาก่อนค่ะ';
+    try{localStorage.setItem('mc-cook-check',checks.map(function(x){return x.checked?'1':'0'}).join(''))}catch(e){}
+  }
+  checks.forEach(function(x){x.addEventListener('change',updateCook)});
+  try{
+    var saved=localStorage.getItem('mc-cook-check')||'';
+    checks.forEach(function(x,i){x.checked=saved.charAt(i)==='1'});
+  }catch(e){}
+  updateCook();
+})();
+
+(function(){
+  var btn=document.getElementById('finishLesson'),achievement=document.getElementById('achievement');
+  function complete(){
+    btn.textContent='✓ ผ่านบทที่ 3 แล้ว';btn.classList.add('done');btn.disabled=true;achievement.classList.add('show');achievement.setAttribute('role','status');
+    try{localStorage.setItem('mc-clip-ai-complete','1')}catch(e){}
+  }
+  btn.addEventListener('click',complete);
+  try{if(localStorage.getItem('mc-clip-ai-complete')==='1')complete()}catch(e){}
+})();
+</script>
 <script defer src="../assets/quest.js"></script>
-<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
 <script type="text/javascript">
-(function(c,l,a,r,i,t,y){
-  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-})(window, document, "clarity", "script", "xtx73cs6w1");
+(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","xtx73cs6w1");
 </script>
-<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
-<script>
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-gtag('js',new Date());
-gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
-</script>
-<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>
 <script type="module" src="/assets/track.js"></script>
 </body>
 </html>
