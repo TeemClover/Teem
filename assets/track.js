@@ -5,6 +5,7 @@ import '/assets/awaken-boss-patch.js';
 import '/assets/awaken-language-sidequest.js';
 import '/assets/awaken-loot.js';
 import '/assets/awaken-rush-v2.js';
+import '/assets/notebook-boss-reset.js';
 import '/assets/notebooklm-page.js';
 import '/assets/notebooklm-hero-position.js';
 import '/assets/prompts-season.js';
