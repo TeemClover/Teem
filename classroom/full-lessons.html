@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071a10">
+<title>บทเรียนฉบับเต็ม · AI ใส่ซอส</title>
+<meta name="description" content="บทเรียน AI ใส่ซอสฉบับเต็มสำหรับอ่านรายละเอียดเพิ่มเติมทั้ง 6 บท">
+<link rel="stylesheet" href="/assets/readable.css">
+<style>
+:root{--ink:#12281c;--paper:#f8f6f0;--green:#1b6a42;--deep:#071a10;--gold:#be9442;--muted:#647068}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:"Anuphan",system-ui,sans-serif;line-height:1.78;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}.wrap{width:min(820px,100%);margin:auto;padding:0 22px}.top{position:sticky;top:0;z-index:20;border-bottom:1px solid #12281c16;background:#f8f6f0ed;backdrop-filter:blur(12px)}.top .wrap{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font-weight:850}.brand em{font-style:normal;color:var(--green)}.back{font-size:13px;color:var(--muted);font-weight:700}.hero{margin:28px 0 18px;padding:30px;border-radius:24px;background:linear-gradient(145deg,#071a10,#12442b);color:#fff;box-shadow:0 24px 60px #071a1024}.hero small{color:#dfbd70;font-weight:850;letter-spacing:.12em}.hero h1{margin:8px 0 7px;font-size:clamp(30px,6vw,46px);line-height:1.18}.hero p{margin:0;color:#ffffffc2}.lesson-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}.lesson-nav a{padding:11px 10px;border:1px solid #12281c18;border-radius:12px;background:#fff;text-align:center;font-size:13px;font-weight:800}.lesson-nav a[aria-current="page"]{border-color:#1b6a4266;background:#1b6a42;color:#fff}.reader{margin:18px 0 24px;padding:clamp(22px,5vw,38px);border:1px solid #12281c16;border-radius:22px;background:#fff;box-shadow:0 14px 38px #12281c0b}.reader h1{margin:0 0 18px;font-size:clamp(27px,5vw,38px);line-height:1.3}.reader h2{margin:32px 0 10px;font-size:22px;line-height:1.4}.reader h3{margin:26px 0 8px;font-size:18px}.reader p{margin:11px 0}.reader ul,.reader ol{padding-left:23px}.reader li{margin:6px 0}.reader blockquote{margin:18px 0;padding:16px 18px;border-left:4px solid var(--gold);border-radius:0 13px 13px 0;background:#be944214}.reader code{padding:1px 6px;border-radius:5px;background:#12281c0c;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em}.reader hr{margin:30px 0;border:0;border-top:1px solid #12281c16}.actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 42px}.btn{flex:1;min-width:220px;display:flex;align-items:center;justify-content:center;min-height:50px;padding:12px 16px;border-radius:13px;background:var(--green);color:#fff;font-weight:850;text-align:center}.btn.alt{border:1px solid #1b6a4255;background:#fff;color:var(--green)}.state{padding:28px;text-align:center;color:var(--muted)}footer{text-align:center;padding:10px 0 44px;color:var(--muted);font-size:12px}@media(max-width:560px){.wrap{padding:0 16px}.hero{padding:25px 21px}.lesson-nav{grid-template-columns:repeat(2,1fr)}.reader{padding:22px 18px}}
+</style>
+</head>
+<body>
+<nav class="top"><div class="wrap"><a class="brand" href="./">🍀 AI ใส่<em>ซอส</em></a><a class="back" id="backTop" href="free-ai.html">กลับบททำเควส →</a></div></nav>
+<main class="wrap">
+<header class="hero"><small>FULL LESSON · อ่านลึก</small><h1 id="pageTitle">บทเรียนฉบับเต็ม</h1><p>ฉบับนี้เก็บคำอธิบาย ตัวอย่าง เครื่องมือ และรายละเอียดสำหรับคนที่อยากเรียนต่อจาก Main Quest</p></header>
+<nav class="lesson-nav" aria-label="เลือกบทเรียน">
+<a href="#lesson-1">บท 1 · SOURCE</a><a href="#lesson-2">บท 2 · TASTE</a><a href="#lesson-3">บท 3 · COOK</a><a href="#lesson-4">บท 4 · MULTIPLY</a><a href="#lesson-5">บท 5 · SEASON</a><a href="#lesson-6">บท 6 · SERVE</a>
+</nav>
+<article class="reader" id="reader"><p class="state">กำลังเปิดบทเรียนฉบับเต็ม…</p></article>
+<div class="actions"><a class="btn alt" id="backLesson" href="free-ai.html">← กลับบททำเควส</a><a class="btn" id="nextFull" href="#lesson-2">อ่านฉบับเต็มบทถัดไป →</a></div>
+<footer>AI ใส่ซอส · ฉบับเต็มใช้ Master Source เดียวกับหลักสูตร</footer>
+</main>
+<script>
+(function(){
+'use strict';
+var lessons={
+  1:{start:'# 7. บทที่ 1',end:'# 8. บทที่ 2',title:'บทที่ 1 · เริ่มจากการปรุงซอส',short:'free-ai.html'},
+  2:{start:'# 8. บทที่ 2',end:'# 9. บทที่ 3',title:'บทที่ 2 · ชิมก่อนเติม',short:'image-ai.html'},
+  3:{start:'# 9. บทที่ 3',end:'# 10. บทที่ 4',title:'บทที่ 3 · เอาซอสไปทำจานจริง',short:'clip-ai.html'},
+  4:{start:'# 10. บทที่ 4',end:'# 11. บทที่ 5',title:'บทที่ 4 · ซอสขวดเดียว แตกได้หลายเมนู',short:'notebooklm.html'},
+  5:{start:'# 11. บทที่ 5',end:'# 12. บทที่ 6',title:'บทที่ 5 · เปิดลิ้นชักเครื่องปรุง',short:'prompts.html'},
+  6:{start:'# 12. บทที่ 6',end:'# 13. Walkthrough',title:'บทที่ 6 · บรรจุ เสิร์ฟ และส่งต่อ',short:'first-web.html'}
+};
+var master='';
+function current(){var m=location.hash.match(/lesson-(\d)/);return m&&lessons[m[1]]?Number(m[1]):1}
+function esc(s){return s.replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+function inline(s){return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')}
+function render(md){
+  var lines=md.split(/\r?\n/),out=[],list=null,quote=[];
+  function closeList(){if(list){out.push('</'+list+'>');list=null}}
+  function closeQuote(){if(quote.length){out.push('<blockquote>'+quote.map(function(x){return '<p>'+inline(x)+'</p>'}).join('')+'</blockquote>');quote=[]}}
+  lines.forEach(function(raw){var line=raw.trim();
+    if(/^>/.test(line)){closeList();quote.push(line.replace(/^>\s?/,''));return}else closeQuote();
+    if(!line){closeList();return}
+    if(/^---+$/.test(line)){closeList();out.push('<hr>');return}
+    var h=line.match(/^(#{1,3})\s+(.+)/);if(h){closeList();var n=h[1].length;out.push('<h'+n+'>'+inline(h[2].replace(/^\d+\.\s*/,''))+'</h'+n+'>');return}
+    var ul=line.match(/^[-*]\s+(.+)/);if(ul){if(list!=='ul'){closeList();list='ul';out.push('<ul>')}out.push('<li>'+inline(ul[1])+'</li>');return}
+    var ol=line.match(/^\d+[.)]\s+(.+)/);if(ol){if(list!=='ol'){closeList();list='ol';out.push('<ol>')}out.push('<li>'+inline(ol[1])+'</li>');return}
+    closeList();out.push('<p>'+inline(line)+'</p>')
+  });closeList();closeQuote();return out.join('')
+}
+function paint(){
+  var n=current(),cfg=lessons[n],a=master.indexOf(cfg.start),b=master.indexOf(cfg.end,a+1);
+  var section=a>=0?master.slice(a,b>0?b:master.length):'ไม่พบเนื้อหาบทนี้ใน Master Source';
+  if(n===1)section=section.replace(/มึง/g,'คุณ');
+  document.title=cfg.title+' · ฉบับเต็ม · AI ใส่ซอส';
+  document.getElementById('pageTitle').textContent=cfg.title;
+  document.getElementById('reader').innerHTML=render(section);
+  document.getElementById('backTop').href=cfg.short;document.getElementById('backLesson').href=cfg.short;
+  var next=document.getElementById('nextFull');if(n<6){next.hidden=false;next.href='#lesson-'+(n+1);next.textContent='อ่านฉบับเต็มบท '+(n+1)+' →'}else{next.hidden=true}
+  document.querySelectorAll('.lesson-nav a').forEach(function(link){link.removeAttribute('aria-current')});
+  var active=document.querySelector('.lesson-nav a[href="#lesson-'+n+'"]');if(active)active.setAttribute('aria-current','page');
+  scrollTo({top:0,behavior:'auto'})
+}
+fetch('AI-SAUCE-COURSE-MASTER.md').then(function(r){if(!r.ok)throw Error(r.status);return r.text()}).then(function(t){master=t;paint()}).catch(function(){document.getElementById('reader').innerHTML='<p class="state">เปิด Master Source ไม่สำเร็จ กรุณาลองโหลดหน้าใหม่</p>'});
+addEventListener('hashchange',function(){if(master)paint()});
+})();
+</script>
+</body>
+</html>
