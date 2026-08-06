@@ -6,20 +6,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="mc-item" content="learn:free-ai">
 <meta name="theme-color" content="#0a2818">
-<title>AI ฟรีที่ควรมีติดเครื่อง · ห้องเรียน AI ของบ้าน myclover</title>
-<meta name="description" content="คลาสแรกสุดสำหรับคนที่ไม่เคยใช้ AI เลย — จบคลาสนี้ คุณจะมีผู้ช่วย AI ฟรี 2 ตัวพร้อมใช้ในเครื่อง และส่งคำสั่งแรกสำเร็จด้วยตัวเอง">
+<title>บทที่ 1 · เริ่มจากการปรุงซอส · AI ใส่ซอส</title>
+<meta name="description" content="เริ่มใช้ AI จาก Source ของคุณเอง — เล่า อัปโหลด หรือสกัดจากแชตเดิม แล้วปรุงเป็นไฟล์ .md พร้อมส่งต่อให้ AI ตัวไหนก็ได้">
+<meta property="og:type" content="website">
+<meta property="og:title" content="บทที่ 1 · เริ่มจากการปรุงซอส">
+<meta property="og:description" content="Source คือวัตถุดิบ ปรุงให้ดี แล้ว AI จะทำงานจากรสชาติของคุณ">
+<meta property="og:image" content="https://www.myclover.com/img/lesson-1.jpg">
 <style>
-:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+:root{
+  --ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;
+  --gold:190 148 66;--muted:96 108 100;--red:174 68 55;--cream:255 252 244
+}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:74px}
-body{font-family:"Anuphan",sans-serif;background:radial-gradient(900px 460px at 50% -220px,rgb(190 148 66/.12),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+body{
+  font-family:"Anuphan",sans-serif;
+  background:
+    radial-gradient(900px 460px at 50% -220px,rgb(190 148 66/.14),transparent 72%),
+    rgb(var(--paper));
+  color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased
+}
 button,input,textarea{font:inherit}
 button,summary,a{-webkit-tap-highlight-color:transparent}
 button{touch-action:manipulation}
 .disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
 a{text-decoration:none;color:inherit}
 img{max-width:100%}
-.wrap{width:100%;max-width:800px;margin:0 auto;padding:0 20px}
+code{font-family:ui-monospace,Menlo,Consolas,monospace}
+.wrap{width:100%;max-width:820px;margin:0 auto;padding:0 20px}
 .skip-link{position:fixed;left:16px;top:10px;z-index:100;transform:translateY(-160%);background:#fff;color:rgb(var(--deep));border:2px solid rgb(var(--gold));border-radius:9px;padding:8px 12px;font-weight:700;transition:transform .18s}
 .skip-link:focus{transform:translateY(0)}
 nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgb(var(--ink)/.08);box-shadow:0 5px 20px rgb(10 40 24/.035)}
@@ -28,130 +42,214 @@ nav.top .wrap{display:flex;justify-content:space-between;align-items:center;heig
 .bk em{font-style:normal;color:rgb(var(--green))}
 .bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
 .bk2:hover{color:rgb(var(--green))}
-.head{background:rgb(var(--deep));color:#fff;border:1px solid rgb(255 255 255/.08);border-radius:22px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative;box-shadow:0 18px 46px rgb(10 40 24/.14)}
-.heroimg{position:relative;margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
-.heroimg::after{content:"";position:absolute;inset:auto 0 0;height:38%;background:linear-gradient(transparent,rgb(var(--deep)/.34));pointer-events:none}
-.heroimg img{width:100%;height:100%;object-fit:cover;display:block}
-.lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
-.head h1{font-size:clamp(24px,4.5vw,32px);margin:12px 0 8px;line-height:1.3}
-.head>p{color:rgb(255 255 255/.8);font-size:15.5px;max-width:58ch}
-.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-.meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.15);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.85)}
-h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;margin:38px 0 14px;display:flex;align-items:center;gap:11px;line-height:1.45}
-main.wrap>h2::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgb(var(--green)/.24),transparent)}
-h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none;box-shadow:0 5px 14px rgb(27 106 66/.2)}
-.card{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:6px 22px;box-shadow:0 8px 24px rgb(18 40 28/.055)}
-.item{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgb(var(--ink)/.06)}
-.item:last-child{border:0}
-.item .bx{width:23px;height:23px;border:2px solid rgb(27 106 66/.4);border-radius:7px;flex:none;margin-top:3px}
-.item .ic{font-size:19px;flex:none;margin-top:1px;width:23px;text-align:center}
-.item b{font-weight:600}
-.item small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:2px}
-.item a,.step a{color:rgb(var(--green));font-weight:600}
-.steps{display:flex;flex-direction:column;gap:10px}
-.step{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:17px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 8px 24px rgb(18 40 28/.055)}
-.step>div{flex:1;min-width:0}
-.step .num{width:28px;height:28px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;flex:none;margin-top:2px}
-.step b{font-weight:600}
-.step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px}
-.step code,.item code,.note code{background:rgb(var(--ink)/.06);border-radius:5px;padding:1px 7px;font-size:13px}
-.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#071a10;color:#d7f5e2;border:1px solid rgb(190 148 66/.18);border-radius:13px;padding:16px 66px 16px 17px;margin-top:12px;line-height:1.72;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 1px 0 rgb(255 255 255/.055),0 7px 18px rgb(7 26 16/.1)}
-.note{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:14px;padding:15px 20px;margin-top:16px;font-size:14.5px}
-.quest{position:relative;overflow:hidden;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.08));border:1px solid rgb(27 106 66/.25);border-radius:17px;padding:20px 24px 20px 27px;margin-top:36px;font-size:15px;box-shadow:0 8px 24px rgb(18 40 28/.05)}
-.quest::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:rgb(var(--gold))}
-.quest .qshare{display:block;margin-top:8px;font-size:13px;color:rgb(var(--muted))}
-.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
-.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:transform .18s,box-shadow .18s,border-color .18s;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgb(27 106 66/.14)}
-.nx:hover{transform:translateY(-2px)}
-.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.32);box-shadow:0 8px 20px rgb(18 40 28/.045)}
-footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
-.cpx{position:absolute;top:9px;right:9px;min-height:31px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:1px solid rgb(255 255 255/.16);border-radius:8px;padding:5px 11px;cursor:pointer;opacity:.94;transition:transform .16s,filter .16s}
-.cpx:hover{opacity:1}
-.jumpbox{display:flex;align-items:center;justify-content:space-between;gap:18px;background:linear-gradient(135deg,rgb(190 148 66/.13),rgb(27 106 66/.07));border:1px solid rgb(190 148 66/.42);border-radius:16px;padding:18px 20px;margin:18px 0 8px}
-.jumpbox b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:16px;margin-bottom:2px}
-.jumpbox p{font-size:13.8px;color:rgb(var(--muted));line-height:1.65}
-.jumpbox a{flex:none;background:rgb(var(--deep));color:#fff;border-radius:10px;padding:10px 15px;font-family:"Bai Jamjuree",sans-serif;font-size:13px;font-weight:700;transition:.15s}
-.jumpbox a:hover{transform:translateY(-2px)}
 
-.savehard{margin-top:38px;border:1px solid rgb(190 148 66/.55);border-radius:20px;background:linear-gradient(150deg,#071a10,#113b25);color:#fff;overflow:hidden;box-shadow:0 12px 35px rgb(7 26 16/.15)}
-.savehead{padding:26px 24px;text-align:center;background-image:radial-gradient(520px 200px at 50% -30%,rgb(190 148 66/.3),transparent 66%)}
-.saveicon{display:block;font-size:35px;line-height:1.2;margin-bottom:7px}
-.saveeyebrow{font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;color:rgb(var(--gold))}
-.savehead h2{display:block;color:#fff;font-size:clamp(21px,4vw,28px);margin:7px 0 5px}
-.savehead p{font-size:14px;color:rgb(255 255 255/.72);max-width:59ch;margin:0 auto}
-.saveunlock{margin-top:18px;border:1px solid rgb(190 148 66/.6);background:rgb(var(--gold));color:#071a10;border-radius:12px;padding:12px 19px;cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-weight:700;transition:.18s}
-.saveunlock:hover{transform:translateY(-2px);filter:brightness(1.04)}
-.saveunlock.done{background:rgb(var(--green));border-color:rgb(255 255 255/.2);color:#fff}
-.savebody{display:none;padding:0 24px 25px}
-.savehard[data-open="1"] .savebody{display:block}
-.saveline{height:1px;background:rgb(255 255 255/.13);margin-bottom:22px}
-.savequote{display:grid;grid-template-columns:auto 1fr;gap:13px;align-items:start;background:rgb(190 148 66/.11);border:1px solid rgb(190 148 66/.3);border-radius:14px;padding:15px 16px}
-.savequote .e{font-size:25px;line-height:1.3}
-.savequote b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;color:#fff}
-.savequote p{font-size:13px;color:rgb(255 255 255/.68);margin-top:2px}
-.savewhy{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
-.savewhy>div{border:1px solid rgb(255 255 255/.12);background:rgb(255 255 255/.055);border-radius:13px;padding:13px 14px}
-.savewhy b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:14px;color:#fff}
-.savewhy span{display:block;font-size:12.5px;color:rgb(255 255 255/.64);line-height:1.58;margin-top:2px}
-.savebest{margin-top:16px;border-left:3px solid rgb(var(--gold));padding:3px 0 3px 14px;font-size:13.5px;color:rgb(255 255 255/.72)}
-.savebest b{color:#fff}
-.savesteps{counter-reset:sstep;display:grid;gap:9px;margin-top:18px}
-.savestep{counter-increment:sstep;display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:start;border:1px solid rgb(255 255 255/.11);border-radius:13px;padding:13px 14px;background:rgb(0 0 0/.12)}
-.savestep::before{content:counter(sstep);width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:rgb(var(--gold));color:#071a10;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px}
-.savestep b{display:block;font-size:14px}
-.savestep small{display:block;color:rgb(255 255 255/.62);font-size:12.5px;line-height:1.6;margin-top:2px}
-.savehard .prompt{background:#020b06;border:1px solid rgb(255 255 255/.12);margin-top:17px}
-.savebox{margin-top:20px;border:1px solid rgb(255 255 255/.13);border-radius:16px;background:rgb(255 255 255/.055);padding:18px}
-.savebox h3{font-family:"Bai Jamjuree",sans-serif;font-size:17px;color:#fff}
-.savebox>p{font-size:13px;color:rgb(255 255 255/.64);margin-top:2px}
-.savefield{margin-top:13px}
-.savefield label{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:12px;font-weight:700;color:rgb(var(--gold));margin-bottom:5px}
-.savefield input,.savefield textarea{width:100%;border:1px solid rgb(255 255 255/.14);border-radius:10px;background:#020b06;color:#e8f3ec;padding:11px 13px;outline:none}
-.savefield input:focus,.savefield textarea:focus{border-color:rgb(190 148 66/.65)}
-.savefield textarea{min-height:255px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65}
-.saveactions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
-.saveactions button{flex:1;min-width:180px;border:0;border-radius:10px;padding:11px 14px;cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-size:13px;font-weight:700}
-.saveactions .primary{background:rgb(var(--gold));color:#071a10}
-.saveactions .secondary{background:rgb(255 255 255/.1);border:1px solid rgb(255 255 255/.14);color:#fff}
-.loadbox{margin-top:17px;background:rgb(27 106 66/.15);border:1px solid rgb(80 170 112/.28);border-radius:14px;padding:15px 16px}
-.loadbox b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;color:#fff}
-.loadbox p{font-size:13px;color:rgb(255 255 255/.67);margin-top:2px}
-.savefinish{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-top:17px;background:rgb(190 148 66/.11);border:1px solid rgb(190 148 66/.32);border-radius:14px;padding:15px 16px}
-.savefinish p{font-size:13px;color:rgb(255 255 255/.7)}
-.savefinish button{flex:none;border:0;border-radius:10px;padding:10px 14px;background:#fff;color:#071a10;font-family:"Bai Jamjuree",sans-serif;font-size:13px;font-weight:700;cursor:pointer}
-.saveachievement{display:none;margin-top:13px;text-align:center;border:1px solid rgb(190 148 66/.5);border-radius:13px;padding:14px;background:rgb(190 148 66/.13);font-family:"Bai Jamjuree",sans-serif;color:rgb(var(--gold))}
-.saveachievement.show{display:block}
+.head{
+  position:relative;overflow:hidden;margin:26px 0 14px;padding:36px 34px 32px;
+  border-radius:24px;color:#fff;background:
+  radial-gradient(500px 260px at 92% -8%,rgb(65 154 102/.42),transparent 65%),
+  linear-gradient(145deg,#071a10,#0d3520 62%,#102b1d);
+  border:1px solid rgb(255 255 255/.09);box-shadow:0 20px 54px rgb(10 40 24/.16)
+}
+.headgrid{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;align-items:center}
+.lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.55);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
+.head h1{font-size:clamp(27px,5vw,39px);margin:13px 0 8px;line-height:1.2}
+.head p{color:rgb(255 255 255/.79);font-size:15.5px;max-width:56ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}
+.meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.14);border-radius:999px;padding:5px 12px;color:rgb(255 255 255/.86)}
+.shelf{position:relative;height:230px;display:flex;align-items:flex-end;justify-content:center;gap:10px;padding:0 6px 20px}
+.shelf::after{content:"";position:absolute;left:0;right:0;bottom:10px;height:13px;border-radius:5px;background:linear-gradient(#b88c42,#755522);box-shadow:0 12px 22px rgb(0 0 0/.25)}
+.bottle{position:relative;width:60px;border:2px solid rgb(255 255 255/.5);border-radius:16px 16px 10px 10px  / 22px 22px 10px 10px;background:linear-gradient(90deg,rgb(255 255 255/.22),rgb(255 255 255/.05) 36%,rgb(0 0 0/.12));box-shadow:inset 0 0 0 5px rgb(255 255 255/.05),0 14px 24px rgb(0 0 0/.2)}
+.bottle::before{content:"";position:absolute;width:27px;height:25px;left:50%;top:-24px;transform:translateX(-50%);border:2px solid rgb(255 255 255/.5);border-bottom:0;border-radius:7px 7px 2px 2px;background:linear-gradient(90deg,#d7bd72,#97702c)}
+.bottle::after{content:"";position:absolute;inset:42% 7px auto;height:39%;border-radius:5px;background:rgb(var(--cream)/.92);border:1px solid rgb(190 148 66/.45)}
+.bottle.a{height:142px;background-color:#5d9a68}
+.bottle.b{height:174px;background-color:#b65b45}
+.bottle.c{height:155px;background-color:#466a9d}
+.bottle.d{height:125px;background-color:#7f816f}
+.bottle i{position:absolute;z-index:2;left:5px;right:5px;top:51%;text-align:center;font-style:normal;font-family:"Bai Jamjuree",sans-serif;font-size:9px;font-weight:700;line-height:1.25;color:rgb(var(--deep))}
+.shelf-label{position:absolute;right:4px;top:4px;font-size:11px;color:rgb(255 255 255/.52);transform:rotate(4deg)}
+
+.tldr{margin:18px 0 8px;padding:21px 23px;border-radius:18px;background:#fff;border:1px solid rgb(var(--ink)/.09);box-shadow:0 9px 28px rgb(18 40 28/.055)}
+.tldr-top{display:flex;gap:12px;align-items:flex-start}
+.tldr-tag{flex:none;border-radius:9px;padding:5px 9px;background:rgb(var(--green));color:#fff;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:12px}
+.tldr h2{font-size:19px;margin:0 0 5px}
+.tldr p{font-size:14.5px;color:rgb(var(--ink)/.8)}
+.tldr-flow{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.tldr-flow span{font-size:12.5px;font-weight:600;color:rgb(var(--deep));background:rgb(var(--green)/.07);border:1px solid rgb(var(--green)/.18);border-radius:999px;padding:6px 10px}
+.tldr-flow b{color:rgb(var(--gold));padding:4px 0}
+
+.setup{
+  margin:12px 0 28px;padding:15px 18px;border:1px dashed rgb(var(--gold)/.65);
+  border-radius:15px;background:rgb(var(--gold)/.08);display:flex;gap:16px;align-items:center;justify-content:space-between
+}
+.setup b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px}
+.setup p{font-size:13px;color:rgb(var(--muted))}
+.setup a{flex:none;min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:10px 15px;border-radius:11px;background:rgb(var(--deep));color:#fff;font-family:"Bai Jamjuree",sans-serif;font-size:13px;font-weight:700}
+
+.quote{
+  position:relative;margin:31px 0;padding:28px 25px 24px;text-align:center;border-radius:20px;
+  background:linear-gradient(145deg,#071a10,#113b25);color:#fff;border:1px solid rgb(var(--gold)/.48);
+  box-shadow:0 14px 35px rgb(7 26 16/.14)
+}
+.quote small{display:block;color:rgb(var(--gold));font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;margin-bottom:8px}
+.quote strong{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:clamp(24px,5.8vw,38px);line-height:1.27}
+.quote p{margin:10px auto 0;color:rgb(255 255 255/.7);font-size:13px;max-width:56ch}
+.quote::after{content:"ชิมแล้วพูดตรง ๆ";position:absolute;right:16px;bottom:-12px;background:rgb(var(--gold));color:rgb(var(--deep));font-size:10.5px;font-weight:700;border-radius:999px;padding:4px 10px;transform:rotate(-2deg)}
+
+h2.section{font-family:"Bai Jamjuree",sans-serif;font-size:21px;margin:38px 0 14px;display:flex;align-items:center;gap:11px;line-height:1.4}
+h2.section::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgb(var(--green)/.26),transparent)}
+.n{width:31px;height:31px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none;box-shadow:0 5px 14px rgb(var(--green)/.2)}
+
+.map{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.mapcard{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;padding:15px 14px;min-height:142px;box-shadow:0 7px 22px rgb(18 40 28/.045)}
+.mapcard .ico{font-size:25px;display:block;margin-bottom:7px}
+.mapcard b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:14.5px;line-height:1.4}
+.mapcard p{font-size:12.5px;color:rgb(var(--muted));line-height:1.6;margin-top:4px}
+.mapnote{margin-top:11px;padding:13px 16px;border-radius:13px;background:rgb(var(--green)/.06);border-left:4px solid rgb(var(--green));font-size:13.5px}
+.mapnote b{color:rgb(var(--green))}
+
+.legend{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.legend div{padding:11px 12px;border:1px solid rgb(var(--ink)/.08);border-radius:12px;background:rgb(255 255 255/.7);font-size:12.5px;line-height:1.55}
+.legend b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:13px;color:rgb(var(--green));margin-bottom:2px}
+
+.bottles{display:grid;gap:13px}
+.sauce{background:#fff;border:1px solid rgb(var(--ink)/.1);border-radius:18px;overflow:hidden;box-shadow:0 8px 25px rgb(18 40 28/.05)}
+.sauce-head{display:grid;grid-template-columns:60px 1fr auto;gap:14px;align-items:center;padding:17px 19px}
+.sauce-icon{width:49px;height:62px;position:relative;border-radius:13px 13px 8px 8px;background:linear-gradient(145deg,rgb(var(--green)),#124329);box-shadow:inset 0 0 0 3px rgb(255 255 255/.18)}
+.sauce:nth-child(2) .sauce-icon{background:linear-gradient(145deg,#b25843,#743526)}
+.sauce:nth-child(3) .sauce-icon{background:linear-gradient(145deg,#496e9e,#294666)}
+.sauce:nth-child(4) .sauce-icon{background:linear-gradient(145deg,#9a7b3f,#675028)}
+.sauce-icon::before{content:"";position:absolute;width:23px;height:13px;left:13px;top:-8px;border-radius:5px 5px 2px 2px;background:rgb(var(--gold))}
+.sauce-icon::after{content:"";position:absolute;left:6px;right:6px;top:23px;height:23px;border-radius:4px;background:rgb(var(--cream));border:1px solid rgb(var(--gold)/.45)}
+.sauce-icon i{position:absolute;z-index:2;left:6px;right:6px;top:28px;text-align:center;font-style:normal;font-family:"Bai Jamjuree",sans-serif;font-size:8px;font-weight:700;color:rgb(var(--deep))}
+.sauce-title b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:16px}
+.sauce-title p{font-size:13px;color:rgb(var(--muted));margin-top:2px}
+.sauce-open{border:1px solid rgb(var(--green)/.35);border-radius:10px;background:rgb(var(--green)/.07);color:rgb(var(--green));padding:9px 12px;font-family:"Bai Jamjuree",sans-serif;font-size:12px;font-weight:700;cursor:pointer}
+.sauce-body{display:none;padding:0 19px 19px}
+.sauce[data-open="1"] .sauce-body{display:block}
+.sauce[data-open="1"] .sauce-open{background:rgb(var(--green));color:#fff}
+.sauce-line{height:1px;background:rgb(var(--ink)/.08);margin-bottom:16px}
+.sauce-body>p{font-size:13.5px;color:rgb(var(--ink)/.8)}
+.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.8px;background:#071a10;color:#d7f5e2;border:1px solid rgb(var(--gold)/.2);border-radius:13px;padding:48px 16px 16px;margin-top:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 1px 0 rgb(255 255 255/.055)}
+.cpx{position:absolute;top:9px;right:9px;min-height:31px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:1px solid rgb(255 255 255/.16);border-radius:8px;padding:5px 11px;cursor:pointer}
+.tip{margin-top:11px;border-left:3px solid rgb(var(--gold));padding:3px 0 3px 12px;font-size:12.8px;color:rgb(var(--muted))}
+.tip b{color:rgb(var(--ink))}
+
+.taste{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checkcard{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:17px 18px;box-shadow:0 7px 22px rgb(18 40 28/.045)}
+.checkcard h3{font-family:"Bai Jamjuree",sans-serif;font-size:15px;margin-bottom:8px}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed rgb(var(--ink)/.09);font-size:13.3px}
+.ck:last-child{border:0}
+.ck input{margin-top:5px;accent-color:rgb(var(--green))}
+.redflag{color:rgb(var(--red));font-weight:600}
+.recipe{margin-top:13px;padding:16px 18px;border-radius:15px;background:rgb(var(--gold)/.1);border:1px solid rgb(var(--gold)/.38);font-size:13.5px}
+.recipe b{display:block;font-family:"Bai Jamjuree",sans-serif;margin-bottom:3px}
+
+.fastgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.fast{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;padding:15px 13px;text-align:center;box-shadow:0 7px 22px rgb(18 40 28/.045)}
+.fast span{font-size:25px;display:block}
+.fast b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:13.5px;margin-top:5px}
+.fast p{font-size:11.8px;color:rgb(var(--muted));line-height:1.55;margin-top:2px}
+
+.deep{margin-top:13px;border:1px solid rgb(var(--ink)/.1);border-radius:15px;background:#fff;overflow:hidden}
+.deep summary{list-style:none;cursor:pointer;padding:15px 18px;font-family:"Bai Jamjuree",sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.deep summary::-webkit-details-marker{display:none}
+.deep summary::after{content:"＋";font-size:18px;color:rgb(var(--green))}
+.deep[open] summary::after{content:"−"}
+.deep[open] summary{border-bottom:1px solid rgb(var(--ink)/.08);background:rgb(var(--green)/.035)}
+.deepbody{padding:17px 19px;font-size:13.7px;color:rgb(var(--ink)/.82)}
+.deepbody p+p{margin-top:10px}
+.deepbody ul{margin:9px 0 0 20px}
+.deepbody li{margin:5px 0}
+.deepbody strong{color:rgb(var(--green))}
+.truth{margin-top:14px;border-radius:13px;padding:14px 16px;background:rgb(var(--red)/.07);border:1px solid rgb(var(--red)/.25);font-size:13px}
+.truth b{color:rgb(var(--red))}
+
+.machine{margin-top:18px;border:1px solid rgb(var(--gold)/.55);border-radius:20px;background:linear-gradient(150deg,#071a10,#113b25);color:#fff;overflow:hidden;box-shadow:0 14px 38px rgb(7 26 16/.16)}
+.machine summary{list-style:none;cursor:pointer;padding:25px 24px;display:grid;grid-template-columns:58px 1fr auto;gap:15px;align-items:center}
+.machine summary::-webkit-details-marker{display:none}
+.gear{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;background:rgb(var(--gold));color:#071a10;font-size:27px;box-shadow:inset 0 0 0 4px rgb(255 255 255/.18)}
+.machine summary b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:18px}
+.machine summary p{font-size:12.8px;color:rgb(255 255 255/.65);margin-top:2px}
+.machine summary::after{content:"เปิดเครื่อง";border:1px solid rgb(var(--gold)/.65);border-radius:10px;padding:8px 11px;color:rgb(var(--gold));font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700}
+.machine[open] summary::after{content:"ปิดฝา"}
+.machine-body{padding:0 24px 24px}
+.mline{height:1px;background:rgb(255 255 255/.13);margin-bottom:20px}
+.machine-note{padding:13px 15px;border-radius:13px;background:rgb(255 255 255/.06);border:1px solid rgb(255 255 255/.11);font-size:12.8px;color:rgb(255 255 255/.7)}
+.machine-note b{color:#fff}
+.field{margin-top:14px}
+.field label{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:12px;font-weight:700;color:rgb(var(--gold));margin-bottom:5px}
+.field input,.field textarea{width:100%;border:1px solid rgb(255 255 255/.15);border-radius:11px;background:#020b06;color:#e8f3ec;padding:11px 13px;outline:none}
+.field input:focus,.field textarea:focus{border-color:rgb(var(--gold)/.75)}
+.field textarea{min-height:285px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;line-height:1.65}
+.machine-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.machine-actions button{flex:1;min-width:190px;border:0;border-radius:11px;padding:12px 14px;cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-size:13px;font-weight:700}
+.machine-actions .secondary{background:rgb(255 255 255/.1);border:1px solid rgb(255 255 255/.14);color:#fff}
+.machine-actions .primary{background:rgb(var(--gold));color:#071a10}
+.machine-status{min-height:24px;margin-top:9px;font-size:12px;color:rgb(255 255 255/.66)}
+.machine-status.ok{color:#9be2b5}
+.machine-status.bad{color:#ffb7aa}
+
+.beforeafter{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;margin-top:15px}
+.ba{border-radius:15px;padding:16px 17px;font-size:13.2px;line-height:1.65}
+.ba.old{background:rgb(var(--red)/.055);border:1px solid rgb(var(--red)/.2)}
+.ba.new{background:rgb(var(--green)/.07);border:1px solid rgb(var(--green)/.22)}
+.ba b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:13px;margin-bottom:5px}
+.ba.old b{color:rgb(var(--red))}
+.ba.new b{color:rgb(var(--green))}
+.arrow{display:grid;place-items:center;color:rgb(var(--gold));font-size:25px;font-weight:700}
+
+.quest{position:relative;overflow:hidden;background:linear-gradient(135deg,rgb(var(--green)/.09),rgb(var(--gold)/.08));border:1px solid rgb(var(--green)/.25);border-radius:18px;padding:22px 24px 21px 28px;margin-top:38px;font-size:15px;box-shadow:0 8px 24px rgb(18 40 28/.05)}
+.quest::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:rgb(var(--gold))}
+.quest h2{font-family:"Bai Jamjuree",sans-serif;font-size:19px;margin-bottom:7px}
+.quest ol{margin:8px 0 0 20px}
+.quest li{margin:5px 0}
+.finish{margin-top:16px;width:100%;border:0;border-radius:12px;background:rgb(var(--green));color:#fff;padding:13px 16px;cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-size:14px;font-weight:700;box-shadow:0 8px 20px rgb(var(--green)/.16)}
+.finish.done{background:rgb(var(--deep))}
+.achievement{display:none;margin-top:11px;text-align:center;border:1px solid rgb(var(--gold)/.55);border-radius:13px;padding:13px;background:rgb(var(--gold)/.11);font-family:"Bai Jamjuree",sans-serif;color:#80601f;font-weight:700}
+.achievement.show{display:block}
+
+.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
+.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:transform .18s;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgb(var(--green)/.14)}
+.nx:hover{transform:translateY(-2px)}
+.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(var(--green)/.32);box-shadow:0 8px 20px rgb(18 40 28/.045)}
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
+
 @media(hover:hover){
-  .card,.step{transition:transform .18s,border-color .18s,box-shadow .18s}
-  .card:hover,.step:hover{transform:translateY(-2px);border-color:rgb(var(--green)/.2);box-shadow:0 12px 30px rgb(18 40 28/.075)}
-  .cpx:hover{transform:translateY(-1px);filter:brightness(1.05)}
+  .mapcard,.fast,.checkcard,.sauce{transition:transform .18s,border-color .18s,box-shadow .18s}
+  .mapcard:hover,.fast:hover,.checkcard:hover,.sauce:hover{transform:translateY(-2px);border-color:rgb(var(--green)/.22);box-shadow:0 12px 30px rgb(18 40 28/.075)}
+  .cpx:hover,.sauce-open:hover,.finish:hover{filter:brightness(1.05);transform:translateY(-1px)}
 }
 :focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px}
-::selection{background:rgb(190 148 66/.3);color:rgb(var(--deep))}
-@media(max-width:620px){
-  .savewhy{grid-template-columns:1fr}
-  .savefinish{align-items:stretch;flex-direction:column}
-  .savefinish button{width:100%}
+::selection{background:rgb(var(--gold)/.3);color:rgb(var(--deep))}
+@media(max-width:720px){
+  .headgrid{grid-template-columns:1fr}
+  .shelf{height:170px;max-width:310px;margin:0 auto}
+  .bottle.a{height:108px}.bottle.b{height:132px}.bottle.c{height:118px}.bottle.d{height:96px}
+  .map,.fastgrid{grid-template-columns:1fr 1fr}
+  .legend{grid-template-columns:1fr 1fr}
 }
-
-@media(max-width:520px){
+@media(max-width:560px){
   .wrap{padding:0 16px}
   nav.top .wrap{height:52px}
   .bk{font-size:17px}.bk2{font-size:12.5px}
-  .head{padding:27px 20px;border-radius:18px;margin-top:16px}
-  .heroimg{margin:-27px -20px 18px;height:146px}
-  .head h1{font-size:25px}
+  .head{padding:27px 20px 24px;border-radius:19px;margin-top:16px}
+  .head h1{font-size:29px}
   .meta{gap:6px}.meta span{padding:4px 10px;font-size:11.5px}
-  h2{font-size:18px;margin-top:32px;align-items:flex-start}
-  main.wrap>h2::after{margin-top:14px}
-  .card{padding:4px 17px}.step{padding:15px 16px;gap:11px}
-  .prompt{padding:47px 14px 15px;font-size:12.5px}
-  .cpx{top:8px;right:8px}
-  .jumpbox{align-items:stretch;flex-direction:column}.jumpbox a{text-align:center}
-  .savehead,.savebody{padding-left:18px;padding-right:18px}
-  .savebox{padding:16px}
-  .saveactions button{min-width:100%}
-  .quest{padding:18px 19px 18px 22px}
+  .setup{align-items:stretch;flex-direction:column}.setup a{text-align:center}
+  .quote{padding:25px 18px}
+  h2.section{font-size:18px;margin-top:33px;align-items:flex-start}
+  h2.section::after{margin-top:14px}
+  .map,.legend,.taste,.fastgrid{grid-template-columns:1fr}
+  .mapcard{min-height:0}
+  .sauce-head{grid-template-columns:52px 1fr;gap:12px;padding:15px}
+  .sauce-open{grid-column:1/-1;width:100%}
+  .sauce-body{padding:0 15px 16px}
+  .beforeafter{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:20px}
+  .machine summary{grid-template-columns:52px 1fr;padding:20px 18px}
+  .machine summary::after{grid-column:1/-1;text-align:center}
+  .machine-body{padding:0 18px 20px}
+  .machine-actions button{min-width:100%}
+  .quest{padding:20px 19px 19px 23px}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -166,181 +264,366 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
   <a class="bk disp" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>clover</em></a>
   <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
 </div></nav>
-<main class="wrap" id="main">
 
+<main class="wrap" id="main">
 <header class="head">
-  <!-- 📷 รูปหัวคลาส: วางไฟล์ img/lesson-1.jpg (ดูรายละเอียดใน IMAGES.md) -->
-  <div class="heroimg"><img src="../img/lesson-1.jpg" alt="" width="1600" height="600" fetchpriority="high" decoding="async" onerror="this.parentElement.style.display='none'"></div>
-  <span class="lv">LV.1 · คลาสแรกของบ้าน</span>
-  <h1 class="disp">AI ฟรีที่ควรมีติดเครื่อง</h1>
-  <p>คลาสแรกสุดสำหรับคนที่ไม่เคยใช้ AI เลย — จบคลาสนี้ คุณจะมีผู้ช่วย AI ฟรี 2 ตัวพร้อมใช้ในเครื่อง และส่งคำสั่งแรกสำเร็จด้วยตัวเอง</p>
-  <div class="meta"><span>⏱️ ~10 นาที</span><span>💸 ฟรี 100%</span><span>📱 มือถือหรือคอมก็ได้</span><span>🌱 ไม่ต้องมีพื้นฐาน</span><span>🔒 มี HARD MODE</span></div>
+  <div class="headgrid">
+    <div>
+      <span class="lv">บทที่ 1 · AI ใส่ซอส</span>
+      <h1 class="disp">เริ่มจากการปรุงซอส</h1>
+      <p>ยังไม่ต้องเขียน Prompt ให้ดูฉลาด ยังไม่ต้องเลือกว่าจะรัก AI ค่ายไหนตลอดชีวิต เริ่มจากเอาสิ่งที่คุณมีอยู่ มาปรุงเป็น Source ที่ AI ใช้ทำงานต่อได้ก่อน</p>
+      <div class="meta"><span>⏱️ เริ่มได้ใน 10 นาที</span><span>🥣 ใช้ของที่มีอยู่แล้ว</span><span>🤖 ใช้กับ AI ตัวไหนก็ได้</span><span>🧴 จบด้วยซอสขวดแรก</span></div>
+    </div>
+    <div class="shelf" aria-hidden="true">
+      <span class="shelf-label">ชั้นวางซอสของคุณ</span>
+      <div class="bottle a"><i>VOICE</i></div>
+      <div class="bottle b"><i>FILES</i></div>
+      <div class="bottle c"><i>CHAT</i></div>
+      <div class="bottle d"><i>.MD</i></div>
+    </div>
+  </div>
 </header>
 
-<div class="jumpbox">
-  <div><b>🚀 ใช้ AI เป็นอยู่แล้ว?</b><p>ถ้าบทนี้ง่ายเกินไป ข้ามไป LV.4 ได้เลย — นั่นคือบทที่ผมอยากเน้นที่สุด และเชื่อว่าจะได้ใช้จริง</p></div>
-  <a href="notebooklm.html">ข้ามไป LV.4 →</a>
-</div>
-
-<h2><span class="n">1</span>รู้จักผู้ช่วย 2 ตัวของเรา</h2>
-<div class="card">
-  <div class="item"><span class="ic">✨</span><div><b>Gemini — ผู้ช่วยคุยได้หลายเรื่อง</b><small>ถาม-ตอบ เขียนข้อความ คิดไอเดีย สร้างภาพ แปลภาษา — ใช้เริ่มงานทั่วไปได้เร็ว และมีโหมดฟรีด้วยบัญชี Google</small></div></div>
-  <div class="item"><span class="ic">📚</span><div><b>NotebookLM — บรรณารักษ์ส่วนตัว</b><small>ใส่เอกสาร ไฟล์ หรือลิงก์ แล้วถามจาก "ของของเรา" — มันแสดงแหล่งอ้างอิงให้ย้อนตรวจได้ แต่คำตอบสำคัญก็ยังต้องเปิดต้นฉบับเช็กเอง</small></div></div>
-  <div class="item"><span class="ic">🤔</span><div><b>ใช้ตัวไหนตอนไหน?</b><small>จำง่าย ๆ: เรื่องทั่วไปในโลก → Gemini · เรื่องในเอกสารของเรา → NotebookLM</small></div></div>
-</div>
-
-<h2><span class="n">2</span>เตรียมของ (มีครบแล้วข้ามได้เลย)</h2>
-<div class="card">
-  <div class="item"><div class="bx"></div><div><b>บัญชี Google (Gmail)</b><small>ตัวเดียวใช้ได้ทั้ง Gemini และ NotebookLM — ถ้ายังไม่มี สมัครฟรีที่ <a href="https://accounts.google.com" target="_blank" rel="noopener">accounts.google.com</a></small></div></div>
-  <div class="item"><div class="bx"></div><div><b>มือถือ หรือคอมพิวเตอร์ 1 เครื่อง</b><small>เครื่องไหนก็ได้ที่ต่อเน็ตได้</small></div></div>
-</div>
-
-<h2><span class="n">3</span>เปิด Gemini แล้วส่งคำสั่งแรก</h2>
-<div class="steps">
-  <div class="step"><span class="num">1</span><div><b>เปิด <a href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a> แล้วล็อกอินด้วยบัญชี Google</b><small>บนมือถือ: โหลดแอป "Google Gemini" จาก App Store / Play Store ก็ได้ สะดวกกว่า</small></div></div>
-  <div class="step"><span class="num">2</span><div><b>ก๊อปคำสั่งนี้ไปวางในช่องแชท แล้วกดส่ง</b>
-  <div class="prompt">สวัสดี ฉันเพิ่งเคยใช้ AI ครั้งแรก งานประจำของฉันคือ [เติมอาชีพของคุณ เช่น ขายของออนไลน์ / พนักงานออฟฟิศ / แม่บ้าน]
-ช่วยแนะนำ 3 อย่างที่คุณช่วยงานฉันได้ พร้อมตัวอย่างสั้น ๆ ที่ทำให้ดูเลย</div>
-  <small>เปลี่ยนข้อความใน [วงเล็บ] เป็นของคุณเองก่อนส่ง — นี่คือกติกาเดียวกันทุก Prompt ในบ้านนี้</small></div></div>
-  <div class="step"><span class="num">3</span><div><b>คุยต่อได้เหมือนคุยกับคน</b><small>ไม่ต้องพิมพ์สวย ไม่ต้องกลัวผิด — ถ้าคำตอบยังไม่ถูกใจ บอกมันตรง ๆ ว่า "สั้นกว่านี้" "เป็นกันเองกว่านี้" "ยกตัวอย่างเพิ่ม" มันจะปรับให้ทันที</small></div></div>
-</div>
-
-<h2><span class="n">4</span>เปิด NotebookLM รอไว้</h2>
-<div class="steps">
-  <div class="step"><span class="num">1</span><div><b>เปิด <a href="https://notebooklm.google.com" target="_blank" rel="noopener">notebooklm.google.com</a> ล็อกอินบัญชีเดิม</b><small>วันนี้แค่เปิดให้เห็นหน้าตาพอ — คลาส LV.4 เราจะเอาข้อมูลของคุณใส่เข้าไป แล้วให้มันแตกออกเป็นภาพ สไลด์ และคลิป</small></div></div>
-</div>
-
-<h2><span class="n">5</span>กติกาความปลอดภัย (สำคัญ ท่องไว้)</h2>
-<div class="card">
-  <div class="item"><span class="ic">🚫</span><div><b>อย่าพิมพ์ข้อมูลลับลงไป</b><small>เลขบัตรประชาชน รหัสผ่าน เลขบัญชี ความลับบริษัท — AI ไม่จำเป็นต้องรู้สิ่งเหล่านี้เลย</small></div></div>
-  <div class="item"><span class="ic">🧐</span><div><b>AI ตอบผิดได้</b><small>เรื่องสำคัญ (เงิน สุขภาพ กฎหมาย) ให้เช็คซ้ำก่อนใช้เสมอ — AI คือผู้ช่วยคิด ไม่ใช่ผู้ตัดสินแทนเรา</small></div></div>
-</div>
-
-
-<section class="savehard" id="saveHard" data-open="0">
-  <div class="savehead">
-    <span class="saveicon" id="saveIcon">🔒</span>
-    <span class="saveeyebrow">OPTIONAL CHALLENGE · SAVE POINT</span>
-    <h2 class="disp">HARD MODE · สร้างไฟล์เซฟของ AI</h2>
-    <p>คุยกับ AI มานานจนมันรู้จักงานและสไตล์ของคุณแล้วใช่ไหม? อย่าปล่อยให้ความเข้าใจนั้นติดอยู่ในแชทเดียว — แปลงมันเป็นไฟล์ <code>.md</code> แล้วพกข้ามแชท ข้ามเครื่อง หรือข้ามไปใช้อีก AI ได้</p>
-    <button class="saveunlock" id="saveUnlock" type="button" aria-expanded="false" aria-controls="saveBody">ปลดล็อก SAVE POINT</button>
+<section class="tldr" aria-labelledby="tldr-title">
+  <div class="tldr-top">
+    <span class="tldr-tag">TL;DR</span>
+    <div>
+      <h2 class="disp" id="tldr-title">อ่านแค่นี้ก็เริ่มทำได้</h2>
+      <p>เปิด Voice แล้วเล่า, อัปโหลดไฟล์ที่มี หรือกลับไปใช้แชตเก่า จากนั้นหยิบ Prompt ขวดที่ตรงกับของคุณ ให้ AI สกัดหัวซอสออกมา อ่าน ชิม แก้ แล้วบันทึกเป็นไฟล์ <code>.md</code></p>
+    </div>
   </div>
-
-  <div class="savebody" id="saveBody" aria-hidden="true">
-    <div class="saveline"></div>
-
-    <div class="savequote">
-      <span class="e">💾</span>
-      <div>
-        <b>ไฟล์ .md คือ Save Game ของการทำงานกับ AI</b>
-        <p>มันเก็บเป้าหมาย ข้อมูลสำคัญ สิ่งที่ตัดสินใจแล้ว สไตล์ที่ชอบ และงานที่ค้างไว้ เพื่อให้แชทใหม่เริ่มต่อได้โดยไม่ต้องเล่าทุกอย่างใหม่ตั้งแต่ต้น</p>
-      </div>
-    </div>
-
-    <div class="savewhy">
-      <div><b>🪶 เล็กจิ๋ว</b><span>เป็นไฟล์ข้อความล้วน ไม่มีภาพหรือเลย์เอาต์หนัก ๆ โปรเจกต์ยาวมากก็ยังมีขนาดเล็กและส่งต่อสะดวก</span></div>
-      <div><b>👀 คนก็อ่านได้</b><span>เปิดด้วยแอปข้อความธรรมดาก็เห็นหัวข้อ รายการ และเนื้อหา ไม่ได้ถูกล็อกอยู่ในโปรแกรมใดโปรแกรมหนึ่ง</span></div>
-      <div><b>🤖 AI อ่านง่าย</b><span>Markdown มีโครงสร้างเรียบ ๆ เช่น หัวข้อ รายการ และตาราง ทำให้ AI ส่วนใหญ่ที่รับข้อความหรือไฟล์อ่านต่อได้ง่าย</span></div>
-      <div><b>🧳 ย้ายค่ายได้</b><span>อัปโหลดเข้าแชทใหม่ หรือส่งให้อีก AI ที่รองรับไฟล์ข้อความ เพื่อย้าย Context โดยไม่ต้องเริ่มชีวิตใหม่ทุกครั้ง</span></div>
-    </div>
-
-    <div class="savebest"><b>แนะนำที่สุด:</b> กลับไปใช้แชทหรือ session ที่คุณคุยเรื่องนี้มานานแล้ว เพราะแชทนั้นมีบริบทจริงอยู่ในมือ ให้มันเป็นคนสรุป Save File ของตัวเอง จะแม่นกว่าการเริ่มเขียนจากศูนย์</div>
-
-    <div class="savesteps">
-      <div class="savestep"><div><b>เปิดแชทเก่าที่รู้จักคุณดีที่สุด</b><small>เลือกแชทที่ทำโปรเจกต์เดียวกันมาหลายรอบ หรือคุยจน AI รู้ข้อชอบ ข้อห้าม และสิ่งที่ตัดสินใจไปแล้ว</small></div></div>
-      <div class="savestep"><div><b>สั่งให้มันสร้าง Save File เป็น Markdown</b><small>ให้สรุปเฉพาะสิ่งที่จำเป็นต่อการทำงานต่อ ไม่ต้องยกบทสนทนาทั้งหมดมาใส่</small></div></div>
-      <div class="savestep"><div><b>ตรวจไฟล์ก่อนพกไป</b><small>ลบข้อมูลลับ แก้เรื่องที่ล้าสมัย และเช็กว่าเป้าหมายล่าสุดกับงานค้างถูกต้อง</small></div></div>
-      <div class="savestep"><div><b>ดาวน์โหลดเป็น <code>.md</code></b><small>วางข้อความลงในเครื่องสร้างไฟล์ด้านล่าง แล้วกดดาวน์โหลด ไฟล์นี้คือ Save Slot ที่คุณควบคุมเอง</small></div></div>
-      <div class="savestep"><div><b>โหลด Save ในแชทใหม่</b><small>อัปโหลดไฟล์แล้วบอก AI ให้อ่านเป็นบริบทตั้งต้น จากนั้นถามกลับเพื่อเช็กว่ามันเข้าใจตรงกันก่อนเริ่มงาน</small></div></div>
-    </div>
-
-    <div class="prompt">จากบทสนทนาทั้งหมดใน session นี้ ช่วยสร้าง “AI Save File” เป็น Markdown ให้ฉัน
-
-เป้าหมายคือใช้ไฟล์นี้โอนบริบทไปยังแชทใหม่ หรือ AI อีกตัว โดยไม่ต้องเล่าใหม่ทั้งหมด
-
-จัดหัวข้อดังนี้:
-# ชื่อโปรเจกต์
-## เป้าหมายหลัก
-## ข้อมูลสำคัญที่ต้องรู้
-## สิ่งที่ตัดสินใจและล็อกไว้แล้ว
-## สไตล์หรือวิธีทำงานที่ฉันชอบ
-## สิ่งที่ห้ามทำหรือข้อควรระวัง
-## งานที่ทำเสร็จแล้ว
-## งานที่กำลังทำและขั้นตอนถัดไป
-## คำสั่งเริ่มต้นสำหรับแชทใหม่
-
-กติกา:
-- สรุปให้กระชับ แต่ต้องพอทำงานต่อได้จริง
-- ใช้เฉพาะข้อมูลที่มีอยู่ในบทสนทนานี้
-- ไม่ใส่รหัสผ่าน ข้อมูลการเงิน ข้อมูลส่วนตัวอ่อนไหว หรือความลับที่ไม่จำเป็น
-- ถ้ามีข้อมูลขัดกัน ให้ใช้คำสั่งล่าสุดและระบุว่าข้อมูลเก่าถูกแทนที่แล้ว
-- ตอบเป็นเนื้อหา Markdown พร้อมบันทึกเป็นไฟล์ได้ทันที
-- อย่าใส่เครื่องหมาย ``` ครอบเนื้อหา</div>
-
-    <div class="savebox">
-      <h3>🛠️ สร้างไฟล์ .md ในหน้านี้</h3>
-      <p>เอาข้อความที่ AI สรุปให้มาวาง ตั้งชื่อ Save Slot แล้วดาวน์โหลดได้เลย ทุกอย่างทำในเครื่องของคุณ</p>
-
-      <div class="savefield">
-        <label for="saveName">ชื่อไฟล์</label>
-        <input id="saveName" type="text" value="my-ai-save.md" autocomplete="off" spellcheck="false">
-      </div>
-
-      <div class="savefield">
-        <label for="saveText">วางเนื้อหา Markdown</label>
-        <textarea id="saveText" spellcheck="false" placeholder="# ชื่อโปรเจกต์&#10;&#10;## เป้าหมายหลัก&#10;..."></textarea>
-      </div>
-
-      <div class="saveactions">
-        <button class="secondary" id="fillTemplate" type="button">ใส่แม่แบบเริ่มต้น</button>
-        <button class="primary" id="downloadSave" type="button">⬇️ ดาวน์โหลดไฟล์ .md</button>
-      </div>
-    </div>
-
-    <div class="loadbox">
-      <b>▶ วิธี Load Save ในแชทใหม่</b>
-      <p>อัปโหลดไฟล์ แล้วพิมพ์ว่า: “อ่านไฟล์นี้เป็น Save Data ของโปรเจกต์เรา สรุปสิ่งที่คุณเข้าใจ 5 ข้อ บอกจุดที่ยังไม่ชัด และอย่าเริ่มทำงานจนกว่าฉันจะยืนยัน” จากนั้นค่อยเริ่มเควสต่อไป</p>
-    </div>
-
-    <div class="prompt">อ่านไฟล์ .md ที่ฉันแนบเป็น Save Data ของโปรเจกต์นี้
-
-ก่อนเริ่มงาน:
-1. สรุปสิ่งที่คุณเข้าใจ 5 ข้อ
-2. บอกสิ่งที่ถูกล็อกไว้แล้วและห้ามเปลี่ยน
-3. บอกงานที่ค้างและขั้นตอนถัดไป
-4. ชี้จุดที่ยังไม่ชัดหรืออาจล้าสมัย
-5. รอให้ฉันยืนยันก่อนเริ่มทำงาน
-
-ถ้าคำสั่งใหม่ของฉันขัดกับไฟล์ ให้ถามว่าต้องการ Override Save เดิมหรือไม่</div>
-
-    <div class="savefinish">
-      <p>ดาวน์โหลด Save File สำเร็จแล้ว กดรับ Achievement ได้เลย สถานะจะถูกจำไว้ในเครื่องนี้</p>
-      <button type="button" id="finishSave">ฉันสร้าง Save File แล้ว</button>
-    </div>
-    <div class="saveachievement" id="saveAchievement">🏆 ACHIEVEMENT UNLOCKED · CONTEXT KEEPER</div>
+  <div class="tldr-flow" aria-label="สรุปขั้นตอน">
+    <span>1 · เทวัตถุดิบ</span><b>→</b><span>2 · สกัดหัวซอส</span><b>→</b><span>3 · ชิมและแก้</span><b>→</b><span>4 · บรรจุ .md</span>
   </div>
 </section>
 
-
-<div class="quest">🎯 <b>เควสท้ายคลาส:</b> เอาคำสั่งใน ข้อ 3 ไปส่งจริง แล้วเลือกคำแนะนำ 1 ข้อที่ Gemini ให้มา ลองใช้กับงานของคุณพรุ่งนี้เช้า<span class="qshare">ทำเสร็จแล้วเอามาอวดกันในบ้านได้เลย — ใช้เวลาแค่วันละ 10 นาทีก็พอ 🍀</span></div>
-<div class="nextrow">
-  <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
-  <a class="nx" href="image-ai.html">คลาสถัดไป: ทำภาพด้วย AI →</a>
+<div class="setup">
+  <div><b>ยังไม่มีบัญชี AI ตัวไหนเลย?</b><p>ไม่เป็นไร ไม่ต้องยืนมองครัวจากหน้าประตู เราแยกทางเข้าพิเศษไว้ให้แล้ว</p></div>
+  <a href="lesson-0.html">ไปบท 0 · เปิดครัว AI →</a>
 </div>
 
-<footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
+<section class="quote">
+  <small>ข้อสรุป 1 ประโยคจาก AI ที่ช่วยงานเขียนหลักสูตรนี้</small>
+  <strong>งาน AI จืด<br>เพราะมึงยังไม่ได้ใส่ซอส</strong>
+  <p>คอร์สนี้จึงไม่เริ่มจากการสอนให้เขียน Prompt ยาวขึ้น แต่เริ่มจากการทำให้ AI ได้วัตถุดิบที่ดี และรู้รสชาติของงานคุณก่อน</p>
+</section>
+
+<h2 class="section"><span class="n">1</span>ซอสในคอร์สนี้คืออะไร</h2>
+<div class="legend">
+  <div><b>Source</b>วัตถุดิบของงาน</div>
+  <div><b>การคัดและจัด</b>การปรุงซอส</div>
+  <div><b>ไฟล์ .md</b>ขวดที่ส่งต่อสะดวก</div>
+  <div><b>Workflow</b>สูตรและลำดับการทำงาน</div>
+</div>
+<div class="mapnote"><b>Prompt เป็นแค่ฉลากบนขวด</b> — มันบอก AI ว่าต้องผลิตซอสชนิดไหน เราแจกให้กดคัดลอกได้ แต่ไม่ต้องท่อง ไม่มีสอบปากเปล่า และไม่มีใครได้คะแนนเพิ่มเพราะพิมพ์คำว่า “กรุณา” 14 ครั้ง</div>
+
+<h2 class="section"><span class="n">2</span>เริ่มจากของที่คุณมี</h2>
+<div class="map">
+  <article class="mapcard"><span class="ico">🎙️</span><b>มีเรื่องอยู่ในหัว</b><p>เปิด Voice แล้วเล่าไปเรื่อย ๆ ไม่ต้องเรียงสวย หน้าที่แรกของ AI คือฟัง ไม่ใช่รีบแย่งทำ</p></article>
+  <article class="mapcard"><span class="ico">📁</span><b>มีไฟล์อยู่แล้ว</b><p>PDF, PPT, DOC, Sheet, รูป, เสียง, โน้ต หรือไฟล์ชนิดอื่นที่ AI ตัวนั้นรองรับ ใส่ลงไปเป็นวัตถุดิบได้</p></article>
+  <article class="mapcard"><span class="ico">💬</span><b>มีแชตเก่า</b><p>กลับไป Session ที่คุยเรื่องนี้มานานแล้ว ให้มันสกัดสิ่งที่ตกผลึกออกมา ไม่ต้องเล่าชีวิตใหม่อีกรอบ</p></article>
+  <article class="mapcard"><span class="ico">🧺</span><b>มีทุกอย่างปนกัน</b><p>โยนลงตะกร้าก่อนได้ แต่ยังไม่ต้องโยนทั้งตู้เย็นลงหม้อ ให้ AI แยกวัตถุดิบก่อนปรุง</p></article>
+</div>
+
+<h2 class="section"><span class="n">3</span>เลือกขวดให้ตรงกับวัตถุดิบ</h2>
+<div class="bottles">
+
+  <article class="sauce">
+    <div class="sauce-head">
+      <span class="sauce-icon" aria-hidden="true"><i>VOICE</i></span>
+      <div class="sauce-title"><b>ขวดเทวัตถุดิบ</b><p>สำหรับคนที่มีเรื่องอยู่ในหัว แต่ยังไม่มีเอกสาร</p></div>
+      <button class="sauce-open" type="button" aria-expanded="false">เปิดฉลากและ Prompt</button>
+    </div>
+    <div class="sauce-body">
+      <div class="sauce-line"></div>
+      <p>เปิด Voice แล้วส่งคำสั่งนี้ก่อน จากนั้นเล่าเหมือนเล่าให้คนที่อยากช่วยจริง ๆ ฟัง ไม่ต้องพูดเป็นภาษาราชการ เดี๋ยวซอสเค็มน้ำตา</p>
+      <div class="prompt">ฉันกำลังจะเล่าเรื่องงานหรือโปรเจกต์ที่อยากทำให้ฟัง
+
+หน้าที่ของคุณตอนนี้:
+1. ฟังและเก็บวัตถุดิบสำคัญ
+2. ถามเพิ่มทีละคำถามเมื่อข้อมูลยังไม่พอ
+3. แยกข้อเท็จจริง สิ่งที่ตัดสินใจแล้ว ไอเดียที่ยังไม่แน่ใจ และสิ่งที่ห้ามทำ
+4. อย่าเพิ่งลงมือสร้างงานปลายทาง
+5. อย่าเติมข้อมูลที่ฉันไม่ได้บอก
+
+เมื่อฉันพูดว่า “ปรุงซอส” ให้สร้าง Source ฉบับแรกเป็น Markdown โดยมี:
+# ชื่อโปรเจกต์
+## เป้าหมาย
+## ผู้ใช้หรือคนที่งานนี้ทำให้
+## วัตถุดิบและข้อมูลที่มี
+## สิ่งที่ตัดสินใจและล็อกแล้ว
+## รสชาติของงาน: น้ำเสียง สไตล์ และตัวอย่าง
+## สิ่งที่ห้ามทำ
+## เรื่องที่ยังไม่ชัดและต้องถามเพิ่ม
+## งานปลายทางที่ต้องการ
+## เกณฑ์ว่างานเสร็จ
+
+ก่อนสร้าง Source ให้สรุปสิ่งที่เข้าใจสั้น ๆ และให้ฉันยืนยันก่อน</div>
+      <div class="tip"><b>เคล็ดลับ:</b> เล่าเป็นช่วง ๆ แล้วหยุดให้ AI ทวนได้ คุณยังเป็นคนชิม ไม่ใช่เทวัตถุดิบแล้ววิ่งหนีออกจากครัว</div>
+    </div>
+  </article>
+
+  <article class="sauce">
+    <div class="sauce-head">
+      <span class="sauce-icon" aria-hidden="true"><i>FILES</i></span>
+      <div class="sauce-title"><b>ขวดสกัดหัวซอส</b><p>สำหรับไฟล์ เอกสาร ภาพ เสียง โน้ต หรือของหลายชิ้น</p></div>
+      <button class="sauce-open" type="button" aria-expanded="false">เปิดฉลากและ Prompt</button>
+    </div>
+    <div class="sauce-body">
+      <div class="sauce-line"></div>
+      <p>แนบสิ่งที่มีให้ AI ที่รองรับไฟล์นั้น แล้วใช้คำสั่งนี้ จุดสำคัญคือเราไม่ได้ขอ “สรุปทุกอย่าง” แต่ขอให้ดึงเฉพาะสิ่งที่งานต่อไปต้องใช้</p>
+      <div class="prompt">อ่านวัตถุดิบทั้งหมดที่ฉันแนบ แล้วช่วย “สกัดหัวซอส” สำหรับงานต่อไป
+
+งานปลายทางของฉันคือ:
+[บอกว่าจะเอาไปทำอะไร เช่น สร้างเว็บไซต์ / เขียนบท / วางระบบ / ทำเกม / ทำคอนเทนต์]
+
+ให้ทำดังนี้:
+1. ดึงเฉพาะข้อมูลที่จำเป็นต่อการทำงานปลายทางนี้
+2. รักษาคำเฉพาะ ชื่อ กติกา ตัวเลข และข้อห้ามตามต้นฉบับ
+3. แยกข้อมูลที่ยืนยันแล้ว ออกจากไอเดียหรือข้อสันนิษฐาน
+4. ชี้ข้อมูลที่ขัดกัน ล้าสมัย อ่านไม่ชัด หรือไม่มีหลักฐานพอ
+5. ห้ามเดาเติมช่องว่าง ถ้าข้อมูลไม่พอให้ถาม
+6. บอกว่าวัตถุดิบส่วนใดควรเก็บเป็นภาคผนวก ไม่ต้องยัดลง Source หลัก
+7. สร้าง Source ใหม่เป็น Markdown ที่กระชับ แต่เพียงพอให้ AI อีกตัวเริ่มงานต่อได้
+
+ก่อนส่งฉบับสุดท้าย ให้แสดง:
+- หัวซอสที่สกัดได้
+- สิ่งที่ตัดออกและเหตุผล
+- คำถามที่ต้องให้ฉันตัดสินใจ</div>
+      <div class="tip"><b>จำไว้:</b> ไฟล์ใหญ่ไม่เท่ากับ Source ดี บางครั้งไฟล์ 200 หน้าอาจมีของที่งานนี้ต้องใช้จริง 2 หน้า ที่เหลือเป็นญาติที่มางานแต่งแต่ไม่ได้ช่วยยกโต๊ะ</div>
+    </div>
+  </article>
+
+  <article class="sauce">
+    <div class="sauce-head">
+      <span class="sauce-icon" aria-hidden="true"><i>CHAT</i></span>
+      <div class="sauce-title"><b>ขวดสกัดจากแชตเดิม</b><p>สำหรับ Session ที่คุยกันจนรู้เรื่องอยู่แล้ว</p></div>
+      <button class="sauce-open" type="button" aria-expanded="false">เปิดฉลากและ Prompt</button>
+    </div>
+    <div class="sauce-body">
+      <div class="sauce-line"></div>
+      <p>ใช้ในแชตเดิมโดยตรง เพราะแชตนั้นมีบริบทจริงอยู่แล้ว นี่คือการรีดหัวซอสออกจากบทสนทนา ก่อนมันจะจมหายอยู่ใต้ข้อความ “โอเค ต่อเลย” 183 รอบ</p>
+      <div class="prompt">จากบทสนทนาทั้งหมดใน Session นี้ ช่วยสกัด Source กลางของโปรเจกต์ออกมาเป็น Markdown
+
+เป้าหมายคือ:
+- ใช้ต่อในแชทใหม่
+- ส่งให้ AI ตัวอื่น
+- ลดการอธิบายเรื่องเดิมซ้ำ
+- รักษาสิ่งที่ตัดสินใจและล็อกไว้แล้ว
+
+จัดหัวข้อดังนี้:
+# ชื่อโปรเจกต์
+## เป้าหมายและเหตุผลที่ทำ
+## ผู้ใช้หรือกลุ่มเป้าหมาย
+## สิ่งที่ทำเสร็จแล้ว
+## สิ่งที่ตัดสินใจและล็อกไว้
+## คำศัพท์หรือชื่อที่ต้องใช้ให้ถูก
+## สไตล์และวิธีทำงานที่ต้องรักษา
+## สิ่งที่ห้ามทำ
+## ข้อมูลเก่าที่ถูกแทนที่แล้ว
+## งานที่กำลังทำ
+## ขั้นตอนถัดไป
+## เรื่องที่ยังไม่แน่ใจ
+## คำสั่งเริ่มต้นสำหรับ AI ตัวใหม่
+
+กติกา:
+- ใช้เฉพาะสิ่งที่มีใน Session นี้
+- ถ้ามีข้อมูลขัดกัน ให้ยึดคำสั่งล่าสุด แต่ระบุว่ามีการเปลี่ยน
+- อย่าใส่รหัสผ่าน ข้อมูลการเงิน หรือข้อมูลอ่อนไหวที่ไม่จำเป็น
+- อย่าทำให้สั้นจนคนใหม่ทำงานต่อไม่ได้
+- อย่าใส่เครื่องหมาย ``` ครอบเนื้อหา
+- ก่อนจบ ให้บอก 5 จุดที่ฉันควรตรวจด้วยตัวเอง</div>
+      <div class="tip"><b>เหมาะมากกับ:</b> โปรเจกต์ที่คุยมาหลายวัน หลายเดือน หรือแชตที่ AI รู้จักรสนิยมคุณจนเริ่มตอบแทนญาติได้แล้ว</div>
+    </div>
+  </article>
+
+  <article class="sauce">
+    <div class="sauce-head">
+      <span class="sauce-icon" aria-hidden="true"><i>TASTE</i></span>
+      <div class="sauce-title"><b>ขวดปรุงให้ถูกงาน</b><p>สำหรับเอาหัวซอสเดิมไปสร้าง Source ที่เหมาะกับงานหนึ่งงาน</p></div>
+      <button class="sauce-open" type="button" aria-expanded="false">เปิดฉลากและ Prompt</button>
+    </div>
+    <div class="sauce-body">
+      <div class="sauce-line"></div>
+      <p>วัตถุดิบชุดเดียวกันทำได้หลายจาน แต่ Source สำหรับทำเว็บไม่ควรหน้าตาเหมือน Source สำหรับเขียนบท ไม่งั้น AI จะเอาเมนูนำทางไปใส่ในฉากร้องไห้</p>
+      <div class="prompt">ฉันมีหัวซอสหรือ Source ตั้งต้นอยู่ด้านล่าง
+
+งานใหม่ที่ต้องการทำคือ:
+[ระบุงานปลายทาง]
+
+ช่วยปรุง Source ชุดใหม่ให้เหมาะกับงานนี้โดย:
+1. เลือกเฉพาะข้อมูลที่งานนี้ต้องใช้
+2. จัดลำดับจากภาพรวมไปสู่รายละเอียดที่ AI ต้องลงมือทำ
+3. เพิ่มหัวข้อ “สิ่งที่ต้องสร้าง”, “สิ่งที่ห้ามทำ”, “เกณฑ์ตรวจงาน” และ “Definition of Done”
+4. แยกข้อเท็จจริงจากข้อเสนอใหม่ของคุณให้ชัด
+5. ถ้าข้อมูลไม่พอ ให้ถามก่อน ห้ามแต่งให้ดูครบ
+6. รักษาคำเฉพาะ ตัวเลข กติกา และสิ่งที่ล็อกไว้
+7. ส่งออกเป็น Markdown ที่ใช้เป็น Master Source ของงานนี้ได้
+
+ก่อนสร้างฉบับสุดท้าย:
+- สรุปแผนการจัด Source
+- บอกข้อมูลที่ยังขาด
+- รอฉันยืนยัน
+
+[วางหัวซอสหรือแนบไฟล์ตรงนี้]</div>
+      <div class="tip"><b>นี่คือจุดสำคัญ:</b> เราไม่ได้พกซอสถังเดียวราดทุกอย่าง แต่เอาหัวซอสไปปรุงเป็นขวดที่ถูกกับงาน</div>
+    </div>
+  </article>
+</div>
+
+<h2 class="section"><span class="n">4</span>ชิมก่อนปิดฝา</h2>
+<div class="taste">
+  <div class="checkcard">
+    <h3>ซอสขวดนี้ต้องมี</h3>
+    <label class="ck"><input type="checkbox"> เป้าหมายและงานปลายทางชัด</label>
+    <label class="ck"><input type="checkbox"> มีข้อมูลและกติกาที่จำเป็น</label>
+    <label class="ck"><input type="checkbox"> ระบุสิ่งที่ล็อกและห้ามเปลี่ยน</label>
+    <label class="ck"><input type="checkbox"> แยกเรื่องที่ยังไม่รู้ไว้ชัดเจน</label>
+    <label class="ck"><input type="checkbox"> มีเกณฑ์ตรวจว่างานเสร็จหรือยัง</label>
+  </div>
+  <div class="checkcard">
+    <h3>เจอแบบนี้ อย่าเพิ่งปิดฝา</h3>
+    <div class="ck"><span>⚠️</span><span>AI เติมประวัติหรือข้อเท็จจริงที่คุณไม่เคยบอก</span></div>
+    <div class="ck"><span>⚠️</span><span>ข้อมูลเก่ากับใหม่ขัดกัน แต่ไม่บอกว่าเลือกอันไหน</span></div>
+    <div class="ck"><span>⚠️</span><span>คำสวยมาก แต่ไม่มีรายละเอียดพอให้ลงมือทำ</span></div>
+    <div class="ck"><span>⚠️</span><span class="redflag">อ่านแล้วรู้สึกว่า “ไม่ใช่กู” — เชื่อความรู้สึกนี้ก่อน</span></div>
+  </div>
+</div>
+<div class="recipe"><b>สูตรชิมง่ายที่สุด</b>ส่ง Source กลับให้ AI แล้วถามว่า “สรุปสิ่งที่เข้าใจ 5 ข้อ บอกสิ่งที่ห้ามเปลี่ยน 3 ข้อ และถามจุดที่ยังไม่ชัด” ถ้าคำตอบหลุด แปลว่าซอสยังต้องปรุง ไม่ใช่ตะโกนใส่หม้อดังขึ้น</div>
+
+<h2 class="section"><span class="n">5</span>ทำไม Source กลางถึงช่วยได้</h2>
+<div class="fastgrid">
+  <div class="fast"><span>⏱️</span><b>ประหยัดเวลา</b><p>ไม่ต้องเล่าเป้าหมาย กติกา และประวัติใหม่ทุกแชต</p></div>
+  <div class="fast"><span>🪙</span><b>ประหยัดเครดิต</b><p>ลดการส่งของเดิมและไฟล์ที่ไม่เกี่ยวให้ AI อ่านซ้ำ</p></div>
+  <div class="fast"><span>🎯</span><b>ลดความพลาด</b><p>ทุกขั้นอ้างอิงกติกาและข้อห้ามชุดเดียวกัน</p></div>
+  <div class="fast"><span>👻</span><b>ลดพื้นที่ให้หลอน</b><p>บอกสิ่งที่รู้ ไม่รู้ และจุดที่ต้องถามแทนการเดา</p></div>
+</div>
+
+<details class="deep">
+  <summary>อ่านเพิ่ม · เวลาหายไปตรงไหน</summary>
+  <div class="deepbody">
+    <p>เวลาส่วนใหญ่ไม่ได้หายตอน AI กำลังพิมพ์ แต่มันหายตอนเราหาไฟล์เดิม อธิบายบริบทใหม่ แก้ความเข้าใจผิด และพยายามจำว่าแชตเมื่อ 3 วันก่อนตกลงอะไรกันไว้</p>
+    <p>เมื่อมี Source กลาง ทุกแชตเริ่มจากฐานเดียวกัน แก้กติกาที่ Source จุดเดียว แล้วนำขวดใหม่ไปใช้ต่อ ไม่ต้องเดินแจกข่าวแก้ไขทีละ Session เหมือนผู้ใหญ่บ้านถือโทรโข่ง</p>
+  </div>
+</details>
+
+<details class="deep">
+  <summary>อ่านเพิ่ม · ทำไมจึงประหยัดเครดิตหรือโควตา</summary>
+  <div class="deepbody">
+    <p>บริการ AI แต่ละแห่งคิดค่าใช้งานไม่เหมือนกัน บางแห่งนับ Token บางแห่งนับเครดิต บางแห่งจำกัดข้อความหรือความยาวไฟล์ จึงไม่มีตัวเลขตายตัวว่าจะประหยัดเท่าไร</p>
+    <p>แต่กลไกเหมือนกัน: <strong>ถ้าส่งข้อมูลที่ไม่เกี่ยวให้น้อยลง AI ก็มีของต้องอ่านและประมวลผลน้อยลง</strong> แทนที่จะส่งเอกสาร 200 หน้าทุกครั้ง เราใช้ Source ที่สกัดเฉพาะข้อมูลของงานนั้น แล้วแนบต้นฉบับเพิ่มเมื่อจำเป็นต้องตรวจรายละเอียด</p>
+  </div>
+</details>
+
+<details class="deep">
+  <summary>อ่านเพิ่ม · Source ลดความผิดพลาดอย่างไร</summary>
+  <div class="deepbody">
+    <p>เมื่อข้อมูลอยู่คนละไฟล์ คนละแชต และใช้คำเรียกไม่เหมือนกัน AI ต้องเดาเองว่าอะไรใหม่กว่า อะไรสำคัญกว่า และคำไหนหมายถึงสิ่งเดียวกัน</p>
+    <ul>
+      <li>Source กลางรวมคำศัพท์ กติกา และข้อห้ามไว้ที่เดียว</li>
+      <li>ลบหรือทำเครื่องหมายข้อมูลที่เลิกใช้แล้ว</li>
+      <li>แยกข้อเท็จจริงออกจากไอเดียที่ยังไม่ตัดสินใจ</li>
+      <li>ระบุว่าเมื่อข้อมูลไม่พอ ให้ถามแทนการเติมเอง</li>
+      <li>มีเกณฑ์ตรวจงาน ทำให้เห็นได้ง่ายว่า Output หลุดตรงไหน</li>
+    </ul>
+  </div>
+</details>
+
+<details class="deep">
+  <summary>อ่านเพิ่ม · แล้ว AI ยังหลอนได้ไหม</summary>
+  <div class="deepbody">
+    <p><strong>ได้อยู่ดี</strong> Source ที่ดีไม่ใช่ยันต์กันผี และไฟล์ <code>.md</code> ก็ไม่ได้ทำให้ AI ถูก 100%</p>
+    <p>AI ยังผิดได้เมื่อวัตถุดิบเดิมผิด ข้อความกำกวม ข้อมูลขัดกัน อ่านตกหล่น เชื่อมเหตุผลพลาด หรือเรื่องนั้นต้องใช้ข้อมูลปัจจุบันจากภายนอก สิ่งที่ Source ช่วยคือทำให้พื้นที่ที่ AI ต้องเดาแคบลง และทำให้เราย้อนตรวจได้ว่าความผิดเริ่มจากวัตถุดิบ กติกา หรือ Output</p>
+    <div class="truth"><b>กติกาของบ้านนี้:</b> งานสำคัญต้องตรวจต้นฉบับ ตรวจข้อเท็จจริง และให้มนุษย์เป็นคนตัดสินผลสุดท้ายเสมอ ซอสอร่อยช่วยได้ แต่ไม่ควรให้ขวดซอสเซ็นสัญญาแทนเรา</div>
+  </div>
+</details>
+
+<details class="deep">
+  <summary>อ่านเพิ่ม · ทำไมเราชอบ .md</summary>
+  <div class="deepbody">
+    <p><strong>AI กิน <code>.md</code> แล้วย่อยง่ายที่สุด</strong> เป็นภาษาภาพจำของคอร์สนี้: Markdown เก็บหัวข้อ รายการ ลำดับ และข้อความตรง ๆ ไฟล์เล็ก แก้ง่าย ค้นง่าย และส่งข้ามเครื่องมือได้สะดวก</p>
+    <p>แต่ AI หลายระบบก็อ่าน PDF, Word, PowerPoint, รูป และเสียงได้ดีขึ้นเรื่อย ๆ และบางงานจำเป็นต้องดู Layout ตาราง หรือภาพต้นฉบับด้วย เราจึงไม่ทิ้งไฟล์เดิม เราใช้มันเป็น <strong>วัตถุดิบ</strong> แล้วสกัด Source กลางเป็น <code>.md</code> สำหรับทำงานต่อ</p>
+    <p>จำง่าย ๆ: PDF มักรักษาหน้าตาให้มนุษย์อ่าน ส่วน <code>.md</code> รักษาโครงสร้างความหมายให้ AI ใช้ต่อได้สะอาดกว่าในหลายงาน</p>
+  </div>
+</details>
+
+<h2 class="section"><span class="n">6</span>บรรจุซอสใส่ขวด .md</h2>
+<p style="font-size:14px;color:rgb(var(--muted));margin-top:-5px">ถ้า AI ที่คุณใช้สร้างไฟล์ให้ดาวน์โหลดได้อยู่แล้ว ใช้ไฟล์นั้นเลย ส่วนใครได้มาเป็นข้อความยาว ๆ กดเปิดเครื่องด้านล่าง</p>
+
+<details class="machine" id="machine">
+  <summary>
+    <span class="gear" aria-hidden="true">⚙️</span>
+    <div><b>เครื่องบรรจุขวดซอส</b><p>วางข้อความจาก AI แล้วดาวน์โหลดเป็นไฟล์ .md ได้ทันที</p></div>
+  </summary>
+  <div class="machine-body">
+    <div class="mline"></div>
+    <div class="machine-note"><b>เครื่องนี้ไม่มี AI แอบอยู่หลังม่าน</b> มันไม่แก้ ไม่ส่ง และไม่อัปโหลดข้อความไปไหน แค่บรรจุสิ่งที่คุณวางเป็นไฟล์ในเครื่องของคุณเอง กรุณาอ่านและลบข้อมูลลับก่อนดาวน์โหลด</div>
+    <div class="field">
+      <label for="sauceName">ชื่อขวด</label>
+      <input id="sauceName" type="text" value="my-sauce.md" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <label for="sauceText">วาง Source หรือข้อความ Markdown</label>
+      <textarea id="sauceText" spellcheck="false" placeholder="# ชื่อโปรเจกต์&#10;&#10;## เป้าหมาย&#10;..."></textarea>
+    </div>
+    <div class="machine-actions">
+      <button class="secondary" id="cleanSauce" type="button">ลอกถุงพลาสติกออก</button>
+      <button class="primary" id="downloadSauce" type="button">⬇️ สกัดใส่ขวดซอส.md</button>
+    </div>
+    <div class="machine-status" id="machineStatus" role="status" aria-live="polite"></div>
+  </div>
+</details>
+
+<div class="beforeafter">
+  <div class="ba old"><b>ก่อนมีซอส</b>“เดี๋ยวก่อน ขอเล่าตั้งแต่ต้นนะ โปรเจกต์นี้เริ่มเมื่อ... เอ๊ะ ไฟล์อยู่ไหนวะ”</div>
+  <div class="arrow">→</div>
+  <div class="ba new"><b>หลังมีซอส</b>แนบ <code>my-sauce.md</code> แล้วบอก AI ให้สรุปสิ่งที่เข้าใจ รอการยืนยัน จากนั้นค่อยเริ่มงาน</div>
+</div>
+
+<section class="quest">
+  <h2>🎯 เควสท้ายบท · ทำซอสขวดแรกให้เสร็จ</h2>
+  <ol>
+    <li>เลือกขวด 1 แบบจากบทนี้</li>
+    <li>ให้ AI สร้าง Source ฉบับแรกจากเสียง ไฟล์ หรือแชตเดิม</li>
+    <li>อ่านและแก้จนเป็นรสชาติของคุณ</li>
+    <li>ดาวน์โหลดเป็นไฟล์ <code>.md</code></li>
+    <li>ลองส่งให้แชตใหม่ แล้วถามว่ามันเข้าใจอะไรบ้าง</li>
+  </ol>
+  <button class="finish" id="finishLesson" type="button">ฉันมีซอสขวดแรกแล้ว</button>
+  <div class="achievement" id="achievement">🧴 ACHIEVEMENT UNLOCKED · SAUCE MAKER</div>
+</section>
+
+<div class="nextrow">
+  <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
+  <a class="nx" href="image-ai.html">ไปบทที่ 2 →</a>
+</div>
+
+<footer>AI ใส่ซอส · Source-Based AI Workflow · myclover.com<br>เราไม่เลือก AI แทนคุณ เราช่วยให้คุณมีซอสของตัวเอง 🍀</footer>
 </main>
 
 <script>
+document.querySelectorAll('.sauce').forEach(function(card){
+  var btn=card.querySelector('.sauce-open');
+  btn.addEventListener('click',function(){
+    var open=card.dataset.open==='1';
+    card.dataset.open=open?'0':'1';
+    btn.setAttribute('aria-expanded',open?'false':'true');
+    btn.textContent=open?'เปิดฉลากและ Prompt':'ปิดฉลาก';
+  });
+});
+
 document.querySelectorAll('.prompt').forEach(function(el){
-  var b=document.createElement('button');b.type='button';b.className='cpx';b.textContent='คัดลอก';
-  b.setAttribute('aria-label','คัดลอกพร้อมท์');
-  b.setAttribute('aria-live','polite');
+  var b=document.createElement('button');
+  b.type='button';b.className='cpx';b.textContent='คัดลอก';
+  b.setAttribute('aria-label','คัดลอก Prompt');
   b.onclick=async function(){
-    var c=el.cloneNode(true);c.querySelectorAll('button').forEach(function(x){x.remove()});
+    var c=el.cloneNode(true);
+    c.querySelectorAll('button').forEach(function(x){x.remove()});
     var text=c.innerText.trim(),ok=false;
     try{await navigator.clipboard.writeText(text);ok=true}catch(e){
-      var t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
+      var t=document.createElement('textarea');
+      t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';
+      document.body.appendChild(t);t.select();
       try{ok=document.execCommand('copy')}catch(err){}
       t.remove();
     }
@@ -349,124 +632,64 @@ document.querySelectorAll('.prompt').forEach(function(el){
   };
   el.appendChild(b);
 });
-</script>
 
-
-<script>
 (function(){
-  var hard=document.getElementById('saveHard');
-  var unlock=document.getElementById('saveUnlock');
-  var icon=document.getElementById('saveIcon');
-  var nameInput=document.getElementById('saveName');
-  var textInput=document.getElementById('saveText');
-  var templateButton=document.getElementById('fillTemplate');
-  var downloadButton=document.getElementById('downloadSave');
-  var finishButton=document.getElementById('finishSave');
-  var achievement=document.getElementById('saveAchievement');
+  var nameInput=document.getElementById('sauceName');
+  var textInput=document.getElementById('sauceText');
+  var cleanButton=document.getElementById('cleanSauce');
+  var downloadButton=document.getElementById('downloadSauce');
+  var status=document.getElementById('machineStatus');
 
-  var template=[
-    '# ชื่อโปรเจกต์',
-    '',
-    '## เป้าหมายหลัก',
-    '- ',
-    '',
-    '## ข้อมูลสำคัญที่ต้องรู้',
-    '- ',
-    '',
-    '## สิ่งที่ตัดสินใจและล็อกไว้แล้ว',
-    '- ',
-    '',
-    '## สไตล์หรือวิธีทำงานที่ฉันชอบ',
-    '- ',
-    '',
-    '## สิ่งที่ห้ามทำหรือข้อควรระวัง',
-    '- ',
-    '',
-    '## งานที่ทำเสร็จแล้ว',
-    '- ',
-    '',
-    '## งานที่กำลังทำและขั้นตอนถัดไป',
-    '- ',
-    '',
-    '## คำสั่งเริ่มต้นสำหรับแชทใหม่',
-    'อ่านไฟล์นี้เป็น Save Data ของโปรเจกต์ สรุปสิ่งที่เข้าใจก่อน และรอการยืนยันก่อนเริ่มงาน'
-  ].join('\n');
-
-  function openSave(shouldScroll){
-    hard.dataset.open='1';
-    icon.textContent='💾';
-    unlock.textContent='✓ SAVE POINT ปลดล็อกแล้ว';
-    unlock.classList.add('done');
-    unlock.setAttribute('aria-expanded','true');
-    document.getElementById('saveBody').setAttribute('aria-hidden','false');
-    try{localStorage.setItem('mc-free-ai-save-unlocked','1')}catch(e){}
-    if(shouldScroll){
-      setTimeout(function(){
-        document.getElementById('saveBody').scrollIntoView({behavior:'smooth',block:'start'});
-      },80);
-    }
+  function setStatus(message,type){
+    status.textContent=message;
+    status.className='machine-status '+(type||'');
+  }
+  function cleanMarkdown(value){
+    var text=(value||'').replace(/^\uFEFF/,'').replace(/\r\n?/g,'\n').trim();
+    var match=text.match(/^```(?:markdown|md)?\s*\n([\s\S]*?)\n```\s*$/i);
+    if(match)text=match[1].trim();
+    return text.replace(/[ \t]+$/gm,'').trim();
   }
 
-  function completeSave(){
-    achievement.classList.add('show');
-    achievement.setAttribute('role','status');
-    finishButton.textContent='✓ รับ Achievement แล้ว';
-    finishButton.disabled=true;
-    try{localStorage.setItem('mc-free-ai-save-complete','1')}catch(e){}
-  }
-
-  unlock.addEventListener('click',function(){
-    if(hard.dataset.open==='1'){
-      document.getElementById('saveBody').scrollIntoView({behavior:'smooth',block:'start'});
-    }else{
-      openSave(true);
-    }
-  });
-
-  templateButton.addEventListener('click',function(){
-    if(textInput.value.trim() && !window.confirm('แทนที่ข้อความปัจจุบันด้วยแม่แบบเริ่มต้นหรือไม่?'))return;
-    textInput.value=template;
-    textInput.focus();
+  cleanButton.addEventListener('click',function(){
+    if(!textInput.value.trim()){setStatus('ยังไม่มีข้อความให้ลอกถุงออก — เอาซอสมาวางก่อน','bad');textInput.focus();return}
+    var before=textInput.value;
+    var after=cleanMarkdown(before);
+    textInput.value=after;
+    setStatus(after===before.trim()?'ข้อความสะอาดอยู่แล้ว ไม่เจอถุงพลาสติกครอบไว้':'ลบกรอบโค้ดและช่องว่างส่วนเกินให้แล้ว','ok');
   });
 
   downloadButton.addEventListener('click',function(){
-    var content=textInput.value.trim();
-    if(!content){
-      textInput.value=template;
-      textInput.focus();
-      downloadButton.textContent='ใส่เนื้อหาก่อนดาวน์โหลด';
-      setTimeout(function(){downloadButton.textContent='⬇️ ดาวน์โหลดไฟล์ .md'},1500);
-      return;
-    }
+    var content=cleanMarkdown(textInput.value);
+    if(!content){setStatus('ขวดยังว่างอยู่ วาง Source ก่อนดาวน์โหลด','bad');textInput.focus();return}
 
-    var filename=nameInput.value.trim() || 'my-ai-save.md';
-    filename=filename.replace(/[\\/:*?"<>|]+/g,'-');
+    var filename=(nameInput.value||'my-sauce.md').trim().replace(/[\\/:*?"<>|]+/g,'-');
+    if(!filename)filename='my-sauce.md';
     if(!filename.toLowerCase().endsWith('.md'))filename+='.md';
 
     var blob=new Blob([content+'\n'],{type:'text/markdown;charset=utf-8'});
     var url=URL.createObjectURL(blob);
     var a=document.createElement('a');
-    a.href=url;
-    a.download=filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
     setTimeout(function(){URL.revokeObjectURL(url)},1000);
-
-    downloadButton.textContent='✓ ดาวน์โหลดแล้ว';
-    setTimeout(function(){downloadButton.textContent='⬇️ ดาวน์โหลดไฟล์ .md'},1500);
-    try{localStorage.setItem('mc-free-ai-save-downloaded','1')}catch(e){}
+    setStatus('บรรจุ '+filename+' ลงเครื่องแล้ว ✓','ok');
+    try{localStorage.setItem('mc-sauce-bottle-downloaded','1')}catch(e){}
   });
+})();
 
-  finishButton.addEventListener('click',completeSave);
-
-  try{
-    if(localStorage.getItem('mc-free-ai-save-unlocked')==='1')openSave(false);
-    if(localStorage.getItem('mc-free-ai-save-complete')==='1')completeSave();
-  }catch(e){}
+(function(){
+  var button=document.getElementById('finishLesson');
+  var achievement=document.getElementById('achievement');
+  function complete(){
+    button.textContent='✓ มีซอสขวดแรกแล้ว';
+    button.classList.add('done');
+    achievement.classList.add('show');
+    try{localStorage.setItem('mc-sauce-lesson-1-complete','1')}catch(e){}
+  }
+  button.addEventListener('click',complete);
+  try{if(localStorage.getItem('mc-sauce-lesson-1-complete')==='1')complete()}catch(e){}
 })();
 </script>
-
 
 <script defer src="../assets/quest.js"></script>
 <!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
@@ -481,11 +704,12 @@ document.querySelectorAll('.prompt').forEach(function(el){
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
 <script>
 window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
+function gtag(){dataLayer.push(arguments)}
 gtag('js',new Date());
 gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
 </script>
-<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>
 <script type="module" src="/assets/track.js"></script>
 </body>
 </html>
