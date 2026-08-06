@@ -26,6 +26,7 @@
      [data-mc-undone=forge]        บล็อกที่ซ่อนเมื่อครบ (ตั้งต้นต้องมองเห็น)
      [data-mc-any=forge]           บล็อกที่โผล่เมื่อเริ่มแล้วอย่างน้อย 1 ชิ้น
      [data-mc-item=forge:slug]     ใส่คลาส .done ให้เมื่อทำชิ้นนั้นแล้ว
+     [data-mc-seq=forge:3]         ล็อก (.locked + ถอด href) จนกว่าจะครบ 3 ชิ้น
      [data-mc-title=FORGE]         บล็อกที่โผล่เมื่อได้ตรานั้นแล้ว
      [data-mc-notitle=FORGE]       บล็อกที่ซ่อนเมื่อได้ตรานั้นแล้ว
    ═══════════════════════════════════════════════════════════════ */
@@ -153,6 +154,33 @@
     each('[data-mc-item]',function(el){
       var p=split(el.getAttribute('data-mc-item')), t=T(p[0]); if(!t) return;
       addCls(el,'done',t.has(p[1]));
+    });
+    /* [data-mc-seq=forge:3] — ล็อกจนกว่าจะทำครบ 3 ชิ้นในเส้นนั้น
+       ใช้บังคับให้อ่านการ์ตูนเรียงตอน ข้ามไปตอนที่ยังไม่ถึงไม่ได้
+       ตอนพิเศษก็ใช้ตัวเดียวกัน แค่ตั้งเลขเป็นจำนวนตอนทั้งหมด
+
+       ลิงก์ที่ล็อกต้องถอด href ออกจริง ๆ ไม่ใช่แค่ทำให้จางแล้วกด CSS ทับ
+       เพราะ pointer-events ไม่กัน Enter บนคีย์บอร์ด ไม่กันเมนูคลิกขวา
+       และไม่กันคนที่ปิด CSS — ของที่ล็อกอยู่ต้องกดไม่ได้จริงทุกทาง */
+    each('[data-mc-seq]',function(el){
+      var p=split(el.getAttribute('data-mc-seq')), t=T(p[0]); if(!t) return;
+      var need=parseInt(p[1],10)||0, lock=t.count()<need;
+      addCls(el,'locked',lock);
+      if(lock){
+        if(el.hasAttribute('href')){
+          el.setAttribute('data-href',el.getAttribute('href'));
+          el.removeAttribute('href');
+        }
+        el.setAttribute('aria-disabled','true');
+        el.setAttribute('tabindex','-1');
+      }else{
+        if(el.hasAttribute('data-href')){
+          el.setAttribute('href',el.getAttribute('data-href'));
+          el.removeAttribute('data-href');
+        }
+        el.removeAttribute('aria-disabled');
+        el.removeAttribute('tabindex');
+      }
     });
     each('[data-mc-title]',  function(el){ el.hidden=!hasTitle(el.getAttribute('data-mc-title')); });
     each('[data-mc-notitle]',function(el){ el.hidden= hasTitle(el.getAttribute('data-mc-notitle')); });
