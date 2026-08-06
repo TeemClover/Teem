@@ -11,7 +11,7 @@ var meta=document.querySelector('meta[name="mc-item"]');
 var item=meta&&meta.content;
 if(!item||!/^learn:/.test(item))return;
 
-var VERSION='generic-ai-course-v1';
+var VERSION='generic-ai-course-v2';
 
 var REPLACEMENTS={
   'learn:free-ai':[
@@ -37,19 +37,23 @@ var REPLACEMENTS={
   'learn:first-web':[]
 };
 
-var COURSE_ONLY_MARKERS=[
+var COMMON_MARKERS=[
   'ใช้ผงปรุงรสนี้กับ Source',
   'ผงปรุงรสสำหรับงานนี้:',
-  'ตักผงปรุงรส',
-  'ปรุงซอส',
-  'สกัดหัวซอส',
-  'หัวซอส',
-  'ซอสขวด',
-  'เชฟผู้ช่วย',
-  'Production Recipe Card',
-  'Recipe Card',
-  'Taste Test'
+  'ตักผงปรุงรส'
 ];
+
+var LESSON_MARKERS={
+  'learn:free-ai':[
+    'ปรุงซอส','สกัดหัวซอส','หัวซอส','รสชาติของงาน',
+    'เก็บวัตถุดิบสำคัญ','อ่านวัตถุดิบทั้งหมด','วัตถุดิบส่วนใด'
+  ],
+  'learn:image-ai':['Decisions Added From This Taste Test'],
+  'learn:clip-ai':['Production Recipe Card','Recipe Card'],
+  'learn:notebooklm':['เชฟชิมแล้ว','ซอสขวดเดียว','ผงปรุงรสนี้'],
+  'learn:first-web':['เชฟขอ','เสิร์ฟเมนคอร์ส','จานหลัก'],
+  'learn:prompts':[]
+};
 
 function replaceAll(value,from,to){
   return String(value).split(from).join(to);
@@ -86,7 +90,9 @@ function copyableRoots(){
 function promptText(root){
   if(!root)return'';
   var clone=root.cloneNode(true);
-  clone.querySelectorAll&&clone.querySelectorAll('button').forEach(function(button){button.remove()});
+  if(clone.querySelectorAll){
+    clone.querySelectorAll('button').forEach(function(button){button.remove()});
+  }
   return (clone.innerText||clone.textContent||'').trim();
 }
 
@@ -120,9 +126,10 @@ function collectPayloads(){
 function audit(){
   var failures=[];
   var payloads=collectPayloads();
+  var markers=COMMON_MARKERS.concat(LESSON_MARKERS[item]||[]);
 
   payloads.forEach(function(payload){
-    COURSE_ONLY_MARKERS.forEach(function(marker){
+    markers.forEach(function(marker){
       if(payload.text.includes(marker))failures.push(payload.id+': '+marker);
     });
   });
