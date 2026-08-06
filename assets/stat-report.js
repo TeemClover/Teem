@@ -16,6 +16,7 @@
    ⚠️ ยิงทิ้งอย่างเดียว ไม่รอผล ไม่ throw — สถิติล่มต้องไม่ทำให้เว็บพัง
    ═══════════════════════════════════════════════════════════════ */
 import { reportJourneyStep, reportAchievementUnlock } from '/core7/js/analytics.js';
+import { unlockedAchievementIds } from '/assets/achievement-state.js';
 
 const FORGE = [
   'ep1-everyone-gets-to-play', 'ep2-the-first-item', 'ep3-the-item-that-came-back',
@@ -77,13 +78,12 @@ function sendJourney() {
 }
 
 /* ── Achievement ──
-   หน้า /collection/ เป็นเจ้าของกติกาว่าอะไรปลดแล้ว มันคำนวณสดตอน render
-   จาก localStorage หลายคีย์ ไฟล์นี้จึงไม่คำนวณซ้ำ (ลอกกติกามาไว้สองที่
-   แล้ววันหนึ่งมันจะไม่ตรงกันแน่นอน) แต่รอรับรายการที่หน้านั้นสรุปมาแล้ว
+   กติกาว่าอะไรปลดแล้วอยู่ที่ assets/achievement-state.js ซึ่งหน้า /collection/
+   ก็อ่านชุดเดียวกัน ไม่มีการลอกเงื่อนไขไปไว้สองที่
 
-   ผลที่ตามมาซึ่งต้องรู้ตอนอ่านตัวเลข: Achievement จะถูกนับก็ต่อเมื่อเจ้าของ
-   เครื่องเคยเปิดหน้า Collection สักครั้ง ตัวเลขนี้จึงอ่านว่า "ปลดแล้วและ
-   เคยเปิดดู" ไม่ใช่ "ปลดแล้ว" เฉย ๆ */
+   เดิมไฟล์นี้รอรับรายการจากหน้า Collection ผลคือนับได้เฉพาะคนที่เคยเปิดอัลบั้ม
+   คนที่อ่านการ์ตูนจบแล้วเดินต่อไปเลยไม่เคยถูกนับ ตัวเลขจึงตอบคำถามผิดข้อ
+   ตอนนี้คำนวณเองได้ทุกหน้า จึงนับ "ปลดแล้ว" ตรง ๆ ไม่ต้องแวะที่ไหนก่อน */
 function sendAchievements(ids) {
   if (!Array.isArray(ids)) return;
   for (const id of ids) {
@@ -93,9 +93,9 @@ function sendAchievements(ids) {
 }
 
 sendJourney();
+try { sendAchievements(unlockedAchievementIds()); } catch { /* สถิติล่มไม่เกี่ยวกับหน้าเว็บ */ }
 
-/* หน้า Collection ยิงสัญญาณมาเมื่อวาดเสร็จ และเผื่อกรณีที่มันวาดเสร็จก่อน
-   โมดูลนี้ถูกโหลด (classic defer กับ module ไม่ได้รับประกันลำดับกัน)
-   ก็อ่านค่าที่มันฝากไว้บน window ซ้ำอีกทาง */
+/* หน้า Collection ยังยิงสัญญาณมาตอนวาดเสร็จ — ไม่ได้จำเป็นอีกแล้วเพราะเรา
+   คำนวณเองได้ แต่รับไว้เพราะมันคือจังหวะที่ค่าเพิ่งถูกอ่านใหม่หมาด ๆ
+   และ reportAchievementUnlock กันซ้ำต่อเครื่องอยู่แล้ว จึงไม่มีทางนับเกิน */
 addEventListener('mc:achievements', event => sendAchievements(event.detail?.unlocked));
-sendAchievements(globalThis.MC_UNLOCKED_ACHIEVEMENTS);
