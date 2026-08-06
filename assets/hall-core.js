@@ -201,7 +201,7 @@
     else hideCompletionBanner();
 
     if(first){
-      title.textContent=th?"เข็มทิศชี้ไปที่ห้องแรกแล้ว":"The compass points to the first room";
+      title.textContent=th?"🧭 เข็มทิศชี้ไปที่ห้องแรกแล้ว":"🧭 The compass points to the first room";
       lead.textContent=th
         ?"จากนี้ไม่ต้องเลือกเองว่าจะไปไหนต่อ เดินตามที่มันชี้ก็พอ"
         :"You do not have to choose where to go. Just follow where it points.";
@@ -215,14 +215,14 @@
         :(th?"เดินมาแล้ว "+doneCount+"/"+steps.length+" ขั้น":doneCount+"/"+steps.length+" steps");
       if(here.done){
         title.innerHTML=th
-          ?'เดินครบเส้นทางแล้ว — <span class="completion-phrase">ไปต่อด้วยกัน</span>'
-          :'Quest Complete — <span class="completion-phrase">Continue Together</span>';
+          ?'🏁 เดินครบเส้นทางแล้ว — <span class="completion-phrase">ไปต่อด้วยกัน</span>'
+          :'🏁 Quest Complete — <span class="completion-phrase">Continue Together</span>';
         lead.textContent=th
           ?"บทเรียนจบแล้ว แต่บ้านไม่ได้ส่งคุณออกไปคนเดียว ด่านถัดไปคือเจอคนที่อยากเรียน เล่น และสร้างต่อเหมือนกัน"
           :"The lessons are done, but the house does not send you onward alone. The next quest is meeting people who want to learn, play and build too.";
       }else{
         paintRail(steps);
-        title.textContent=th?"เข็มทิศชี้ไปที่นี่":"The compass points here";
+        title.textContent=th?"🧭 เข็มทิศชี้ไปที่นี่":"🧭 The compass points here";
         lead.textContent=th
           ?"จุดล่าสุดที่คุณเดินถึง — กดเดินต่อได้เลย"
           :"The last point you reached. Pick it up from here.";
