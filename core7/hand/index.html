@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>เลือกมือ 7 ใบ — myClover: CORE7</title>
+<title data-en="Build your 7-card hand">เลือกมือ 7 ใบ — myClover: CORE7</title>
 <meta name="description" content="เลือกมือ CORE7 แบบ Quick หรือจัดมือจากการ์ด FIRST HAND ที่ปลดล็อกแล้ว">
 <meta name="theme-color" content="#0A2818">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
@@ -30,7 +30,7 @@
 <main class="sec">
   <div class="wrap">
     <p class="eyebrow">Build Your Hand</p>
-    <h2 class="disp">🖐️ เลือกมือ 7 ใบ</h2>
+    <h2 class="disp" data-en="🖐️ Build your 7-card hand">🖐️ เลือกมือ 7 ใบ</h2>
     <p class="lead" data-en="QUICK uses Generic cards — just pick how many of each color. SELECT uses only the FIRST HAND cards you have unlocked.">QUICK ใช้ Generic เลือกจำนวนสีทันที ส่วน SELECT ใช้เฉพาะ FIRST HAND ที่คุณปลดล็อกจริง</p>
 
     <div class="mode-switch" role="group" aria-label="รูปแบบการเลือกมือ">
@@ -82,6 +82,7 @@ import {
   setHandMode,
 } from '/core7/js/collection-progress.js';
 import * as store from '/core7/js/store.js';
+import { t } from '/core7/js/i18n.js';
 
 renderShell({});
 const qs = new URLSearchParams(location.search);
@@ -284,7 +285,7 @@ function renderPresets() {
     });
     presetHost.append(use, remove);
   }
-  const save = el('button', { class: 'btn btn-dark', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, '💾 บันทึกมือนี้');
+  const save = el('button', { class: 'btn btn-dark', style: 'padding:8px 14px;min-height:40px;font-size:13px' }, t('💾 บันทึกมือนี้', '💾 Save this hand'));
   save.addEventListener('click', () => {
     if (picked.length !== 7) {
       toast('เลือกให้ครบ 7 ใบก่อน');

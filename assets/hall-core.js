@@ -18,6 +18,34 @@
   function html(selector,value){var el=one(selector);if(el)el.innerHTML=value}
   function attr(selector,name,value){var el=one(selector);if(el)el.setAttribute(name,value)}
 
+  /* ── ป้ายบอกเรื่องภาษา ──
+     เว็บนี้ถูกคิดและเขียนเป็นภาษาไทย ปุ่ม TH/EN มีเฉพาะหน้าที่เป็นหน้าจอของระบบ
+     ส่วนเนื้อหายาว ๆ (การ์ตูน บทเรียน Walkthrough) ไม่มีปุ่ม เพราะแปลมือทั้งหมด
+     แล้วจะกลายเป็นสองเว็บที่ต้องดูแลคู่กัน
+
+     คนอ่านภาษาอังกฤษจึงต้องรู้ว่ามีทางไปต่อ ไม่ใช่เจอกำแพงแล้วคิดว่าเว็บพัง
+     ป้ายนี้เลยโผล่เฉพาะตอนภาษาอังกฤษ */
+  function paintLangNote(){
+    var box=document.getElementById("langNote");
+    if(!box)return;
+    if(currentLang!=="en"){ box.hidden=true; box.open=false; return; }
+    box.hidden=false;
+    box.querySelector("summary").textContent=
+      "🌐 Reading in English? Here is how to get through the whole house";
+    box.querySelector(".mc-lang-note__body").innerHTML=
+      "<p>This house was thought out and written in <b>Thai</b>. The TH / EN switch covers "
+      +"the screens you interact with — the Hall, the front page and the CORE7 game.</p>"
+      +"<ul>"
+      +"<li>Pages without the switch (the comic, the lessons, the Walkthrough) are long-form "
+      +"writing. Use your browser's built-in <b>Translate page</b> and they read fine.</li>"
+      +"<li>The comic is drawn artwork, so the words live inside the pictures. "
+      +"Your browser's <b>image translation</b> (Google Lens on Chrome, Live Text on Safari) "
+      +"reads them out loud enough to follow the story.</li>"
+      +"<li>Nothing is locked behind Thai. Every room, every card and every achievement "
+      +"is reachable in English.</li>"
+      +"</ul>";
+  }
+
   function applyStaticLanguage(){
     document.documentElement.lang=currentLang;
     document.title=c("metaTitle");
@@ -275,7 +303,7 @@
   function paintSeeker(){if(hit){seekerBtn.textContent="🍀";seekerBtn.disabled=true;seekerTitle.textContent=c("seekerFound");seekerCopy.textContent=c("seekerSaved");seekerOut.textContent="";grant()}else{seekerBtn.textContent="☘️";seekerBtn.disabled=false;seekerTitle.textContent=c("seekerTitle");seekerCopy.textContent=c("seekerCopy")}}
   seekerBtn.addEventListener("click",function(){if(hit)return;n+=1;try{localStorage.setItem("mc_seek_n",String(n))}catch(e){}if(Math.random()<.1){hit=true;try{localStorage.setItem("mc_seek_hit","1")}catch(e){}paintSeeker()}else{seekerOut.textContent=fmt("seekerTry",{n:n});seekerBtn.animate([{transform:"rotate(0)"},{transform:"rotate(-9deg)"},{transform:"rotate(9deg)"},{transform:"rotate(0)"}],{duration:320})}});
 
-  function setLanguage(lang){currentLang=lang==="en"?"en":"th";try{localStorage.setItem("mc_lang",currentLang)}catch(e){}hideTip();applyStaticLanguage();paintBump();paintQuest();try{saved=localStorage.getItem("mc_class")||saved||""}catch(e){}paintPath(PATHS[saved]?saved:"",false);paintSeeker()}
+  function setLanguage(lang){currentLang=lang==="en"?"en":"th";try{localStorage.setItem("mc_lang",currentLang)}catch(e){}hideTip();applyStaticLanguage();paintLangNote();paintBump();paintQuest();try{saved=localStorage.getItem("mc_class")||saved||""}catch(e){}paintPath(PATHS[saved]?saved:"",false);paintSeeker()}
   document.querySelectorAll("[data-lang]").forEach(function(btn){btn.addEventListener("click",function(){setLanguage(btn.dataset.lang)})});
   window.addEventListener("storage",function(e){if(e.key==="mc_lang")setLanguage(e.newValue||"th");else{paintQuest();paintSeeker()}});
   document.addEventListener("visibilitychange",function(){if(!document.hidden){paintQuest();paintSeeker()}});

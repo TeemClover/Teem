@@ -45,6 +45,29 @@ a{color:inherit;text-decoration:none}button{font:inherit;border:0}
 .compass::before{width:2px;height:88%;left:50%;top:6%}.compass::after{height:2px;width:88%;top:50%;left:6%}
 .needle{position:relative;z-index:2;font-size:76px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.45));animation:needle 5s ease-in-out infinite}
 @keyframes needle{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(12deg)}}
+/* ── ป้ายบอกเรื่องภาษา ──
+   อยู่คั่นระหว่างหัวเว็บกับหมัด เห็นแน่ ๆ แต่ไม่ขวางทาง
+   ปิดอยู่เป็นค่าเริ่มต้น กดแล้วค่อยกางออก */
+.mc-lang-note{background:#0a2818;color:#fff;border-block:1px solid rgba(190,148,66,.28)}
+.mc-lang-note[hidden]{display:none!important}
+.mc-lang-note>summary{list-style:none;cursor:pointer;
+  width:min(1120px,calc(100% - 32px));margin:auto;padding:13px 0;
+  display:flex;align-items:center;gap:9px;
+  font:800 13px/1.5 "Bai Jamjuree",system-ui;color:var(--gold2)}
+.mc-lang-note>summary::-webkit-details-marker{display:none}
+.mc-lang-note>summary::after{content:"▾";margin-left:auto;transition:transform .2s}
+.mc-lang-note[open]>summary::after{transform:rotate(180deg)}
+.mc-lang-note>summary:hover{color:#fff}
+/* กล่องนอกกว้างเท่าคอนเทนต์ของหน้า ส่วนความยาวบรรทัดคุมที่ตัวลูก
+   ถ้าใส่ max-width ที่กล่องนอก margin:auto จะจับมันไปไว้กลางจอ
+   แล้วข้อความไม่ตรงขอบเดียวกับหัวข้อ */
+.mc-lang-note__body{width:min(1120px,calc(100% - 32px));margin-inline:auto;
+  padding:0 0 17px;font-size:14px;line-height:1.75;color:rgba(255,255,255,.78)}
+.mc-lang-note__body>*{max-width:74ch}
+.mc-lang-note__body b{color:var(--gold2)}
+.mc-lang-note__body ul{margin:9px 0 0;padding-left:19px}
+.mc-lang-note__body li{margin-top:5px}
+
 .glhf{background:linear-gradient(135deg,#0c2f1c,#06150d);color:#fff;border-top:1px solid rgba(190,148,66,.25);border-bottom:1px solid rgba(190,148,66,.25);padding:30px 0}
 .glhf-grid{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
 .glhf small{color:var(--gold2);font-family:"Bai Jamjuree",system-ui;font-weight:800;letter-spacing:.15em}
