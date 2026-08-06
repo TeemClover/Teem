@@ -1,0 +1,1 @@
+legacy.html should render the original Chapter 7 blob: 8a03ea884965178b0933ff7e147c1f5f0b9d6be8
