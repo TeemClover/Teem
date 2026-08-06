@@ -26,6 +26,7 @@ import { COLOR_META, cardById } from '/core7/js/cards.js';
 import { cardArtHref } from '/core7/js/art.js';
 import * as store from '/core7/js/store.js';
 import { playSfx } from '/core7/js/audio.js';
+import { shouldWelcome } from '/core7/js/room-welcome.js';
 import { t } from '/core7/js/i18n.js';
 
 renderShell({ minimal: true });
@@ -45,7 +46,10 @@ catch {
 
 const lobbyWrap = document.getElementById('lobbyWrap'); const matchEl = document.getElementById('match');
 const content = document.getElementById('content'); const status = document.getElementById('status'); const actions = document.getElementById('actions');
-let mountedMatchId = null; let lastOpponent = null;
+let mountedMatchId = null;
+/* null = ยังไม่เคยเห็นสถานะห้อง · true/false = เคยเห็นรอบก่อนแล้ว
+   ใช้จำ "รอบก่อนมีคู่แข่งอยู่ไหม" ไม่ใช่ "ชื่อคู่แข่งคือใคร" */
+let sawOpponent = null;
 
 function seatRow(name, sub, ready) {
   return el('div', { class:'lobby-seat' }, el('span', { class:'avatar' }, name ? name[0].toUpperCase() : '?'),
@@ -95,7 +99,7 @@ function startMatch(data) {
   mountedMatchId = id;
   reportFunnelEvent('MATCH_START', { matchId:id, mode:data.room.mode, rulesVersion:data.matchView?.rulesVersion, once:true }).catch(() => {});
   lobbyWrap.hidden = true; matchEl.hidden = false; matchEl.innerHTML = ''; matchEl.className = '';
-  mountMatch(matchEl, session.client(), { onFinished: async view => {
+  mountMatch(matchEl, session.client(), { endOverlay: false, onFinished: async view => {
     reportFunnelEvent('MATCH_COMPLETE', { matchId:id, mode:data.room.mode, rulesVersion:view?.rulesVersion, once:true }).catch(() => {});
     /* เดิมแค่รีเฟรชห้อง ทำให้ล็อบบี้ทับหน้าจอผลภายใน 250ms คนเลยไม่ทันอ่านว่าใครชนะ
        ตอนนี้ไปหน้าผลชุดเดียวกับที่เล่นกับบอทใช้ แล้วค่อยกดกลับห้องเพื่อ Match ถัดไป */
@@ -196,11 +200,20 @@ let leavingToResult = false;
 function render(data) {
   if (leavingToResult) return;
   if (!data?.room) return; const r = data.room;
-  /* เสียงต้อนรับดังครั้งเดียว ตอนมีผู้เล่นอีกคนเข้ามาในห้องจริง ๆ */
-  if (r.opponent?.name && r.opponent.name !== lastOpponent) { if (lastOpponent === null) playSfx('playerJoined'); lastOpponent = r.opponent.name; }
+  /* เสียงต้อนรับ — กฎและเหตุผลอยู่ที่ core7/js/room-welcome.js */
+  const hasOpponent = Boolean(r.opponent?.name);
+  if (shouldWelcome(sawOpponent, hasOpponent, r.you?.seat)) playSfx('playerJoined');
+  sawOpponent = hasOpponent;
   if (r.status === 'WAITING' || r.status === 'HAND_BUILDING') renderWaiting(data);
   else if (r.status === 'PLAYING') startMatch(data);
-  else if (r.status === 'BETWEEN_MATCHES' || r.status === 'SERIES_ENDED') renderSummary(data);
+  /* แมตช์จบปุ๊บ server เปลี่ยนสถานะห้องเป็น BETWEEN_MATCHES ทันที แล้ว poll
+     รอบถัดไป (~250ms) ก็วาดล็อบบี้ทับโต๊ะ — ไพ่ใบสุดท้ายที่เพิ่งพลิกหายไป
+     ก่อนคนจะทันเห็น ทั้งที่ match-ui ตั้งใจค้างไว้ให้ดูเกือบสามวินาที
+     ตราบใดที่ยังมีโต๊ะค้างอยู่ ปล่อยให้มันเล่นจนจบแล้วพาไปหน้าผลเอง */
+  else if (r.status === 'BETWEEN_MATCHES' || r.status === 'SERIES_ENDED') {
+    if (mountedMatchId !== null) return;
+    renderSummary(data);
+  }
   else { showLobby(); content.innerHTML = '<div class="panel" data-en="This room is closed">ห้องนี้ปิดแล้ว</div>'; }
 }
 
