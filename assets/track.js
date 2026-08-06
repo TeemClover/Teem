@@ -65,8 +65,12 @@ function enhanceWalkthrough() {
     .walk-more__body .compare,.walk-more__body .numbers{margin-top:16px}
     .walk-more__body .chef{margin-top:17px}
 
-    .walk-thai-note{margin:20px 0 4px;padding:16px 17px;border:1px solid rgb(27 106 66/.25);border-radius:17px;background:linear-gradient(135deg,rgb(27 106 66/.09),#fff);font-size:14px;line-height:1.75}
-    .walk-thai-note b{display:block;margin-bottom:3px;color:rgb(27 106 66);font-size:16px}
+    .walk-core7-story{margin:23px 0 18px;padding:21px 22px;border:1px solid rgb(190 148 66/.38);border-radius:19px;background:linear-gradient(135deg,rgb(190 148 66/.13),#fff);box-shadow:0 12px 32px rgb(18 40 28/.05);font-size:17px;line-height:1.78}
+    .walk-core7-story p{margin:0}.walk-core7-story p+p{margin-top:10px}
+    .walk-core7-story strong{color:rgb(27 106 66)}
+    .walk-lang{margin:14px 0 7px;background:rgb(255 255 255/.58);box-shadow:none}
+    .walk-lang summary{padding-block:13px;color:rgb(79 91 82);font-size:13px}
+    .walk-lang .walk-more__body{font-size:14px}
 
     .proof-grid{align-items:stretch}
     .proof-shot{position:relative;display:flex;flex-direction:column;width:100%;min-width:0;overflow:hidden;border:1px solid rgb(18 40 28/.12);border-radius:20px;padding:0;background:#fff;color:rgb(18 40 28);box-shadow:0 18px 42px rgb(18 40 28/.08);cursor:zoom-in;text-align:left}
@@ -86,6 +90,7 @@ function enhanceWalkthrough() {
       #doc .proof-grid{grid-template-columns:1fr!important;gap:15px!important}
       .proof-shot__crop{aspect-ratio:5/4}
       .proof-shot--source .proof-shot__crop img{object-position:center 82%}
+      .walk-core7-story{padding:19px;font-size:16px}
     }
     @media(max-width:390px){
       #doc section>.read{width:calc(100% - 52px)!important}
@@ -139,10 +144,19 @@ function enhanceWalkthrough() {
 
   const proofGrid = document.querySelector('.proof-grid');
   if (proofGrid) {
-    const note = document.createElement('div');
-    note.className = 'walk-thai-note';
-    note.innerHTML = '<b>🇹🇭 ทั้งเกมและเว็บไซต์นี้สร้างด้วยภาษาไทย</b>Source 50 บท การคุยแก้กติกา การทดสอบ และ Prompt ที่ใช้สร้าง myclover.com เป็นภาษาไทยทั้งหมด ยกเว้นคำสั่งเปิดงานภาษาอังกฤษสั้น ๆ ในภาพแรก';
+    const story = document.createElement('div');
+    story.className = 'walk-core7-story';
+    story.innerHTML = '<p>CORE7 ไม่ได้ถูกสร้างจากการนั่งสั่ง AI ทีละหน้าจอ ผมส่งคำสั่งเปิดงาน <strong>1 ครั้ง</strong> พร้อม Master Build Brief ที่เขียนรายละเอียดไว้ครบแล้ว แล้วไปนอน 😴</p><p><strong>ตื่นมาก็ได้ระบบเกมที่สมบูรณ์และเล่นได้เลยประมาณ 95%</strong> ที่เหลือเป็นการพัฒนาความสวยงามด้วย AI อีกตัวหนึ่ง</p>';
+    proofGrid.before(story);
+
+    const note = document.createElement('details');
+    note.className = 'walk-more walk-lang';
+    note.innerHTML = '<summary>🇹🇭 ทั้งเกมและเว็บไซต์นี้สร้างด้วยภาษาไทย</summary><div class="walk-more__body"><p>Source 50 บท การคุยแก้กติกา การทดสอบ และ Prompt ที่ใช้สร้าง myclover.com เป็นภาษาไทยทั้งหมด ยกเว้นคำสั่งเปิดงานภาษาอังกฤษสั้น ๆ ในภาพแรก</p></div>';
     proofGrid.before(note);
+    note.addEventListener('toggle', () => {
+      if (note.open) fire('walkthrough-thai-proof-open');
+    }, { once: true });
+
     proofGrid.innerHTML = `
       <button class="proof-shot" type="button" data-proof-src="/img/walkthrough/claude-code-proof.webp" data-proof-alt="หน้าจอ Claude Code เริ่มสร้าง CORE7 จาก Master Build Brief">
         <span class="proof-shot__crop"><img src="/img/walkthrough/claude-code-proof.webp" loading="lazy" decoding="async" alt="หน้าจอ Claude Code เริ่มสร้าง CORE7 จาก Master Build Brief"><span class="proof-shot__zoom">🔍 ขยาย</span></span>
@@ -153,6 +167,7 @@ function enhanceWalkthrough() {
         <span class="proof-shot__copy"><b>🧴 สูตรทั้งเล่มอยู่ในขวดนี้</b><small>สิ่งที่ต้องทำและสิ่งที่ห้ามทำ</small></span>
       </button>`;
   }
+
   if (sections[3]) {
     const extras = [
       sections[3].querySelector('.numbers'),
