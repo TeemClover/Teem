@@ -97,6 +97,9 @@ function promptByCard(card){
 
 function refreshOpenPreview(card){
   if(!card||!card.classList.contains('open'))return;
+  if(card.dataset.plainPreviewVersion===VERSION)return;
+  card.dataset.plainPreviewVersion=VERSION;
+
   var field=card.querySelector('.drawer input,.drawer textarea');
   if(field){
     field.dispatchEvent(new Event('input',{bubbles:true}));
