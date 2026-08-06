@@ -102,6 +102,18 @@ var allItems=[];groups.forEach(function(g){g.items.forEach(function(x){if(!x.bon
 var unlockedIds=allItems.filter(function(x){return x.on}).map(function(x){return x.id});
 var unlockedCount=unlockedIds.length;
 
+/* ── ส่งต่อให้หน้าสถิติ ──
+   หน้านี้เป็นเจ้าของกติกาว่าอะไรปลดแล้ว มันคำนวณสดจาก localStorage หลายคีย์
+   assets/stat-report.js จึงไม่คำนวณซ้ำ แต่รับรายการนี้ไปยิงเป็น event
+   (ลอกกติกาไปไว้สองที่ แล้ววันหนึ่งมันจะไม่ตรงกันแน่นอน)
+
+   ฝากไว้บน window ด้วย ไม่ใช่ส่งแต่ event เพราะ classic defer กับ module
+   ไม่ได้รับประกันว่าใครรันก่อน ถ้าโมดูลมาทีหลังมันจะไม่ได้ยิน event นี้เลย */
+try{
+  window.MC_UNLOCKED_ACHIEVEMENTS=unlockedIds.slice();
+  window.dispatchEvent(new CustomEvent('mc:achievements',{detail:{unlocked:unlockedIds.slice()}}));
+}catch(e){}
+
 var seenRaw=json(SEEN_KEY,null);
 var seen=Array.isArray(seenRaw)?seenRaw:null;
 /* ครั้งแรกที่เปิดหน้านี้ (หรือเครื่องที่ยังใช้ของเดิมที่จำเป็นจำนวน) ไม่ติด NEW

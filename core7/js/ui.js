@@ -7,6 +7,10 @@ import { isMuted, toggleMuted } from './audio.js';
 import { reportCore7View, CORE7_GAME_VERSION } from './analytics.js';
 import { applyLang, getLang, setLang, t } from './i18n.js';
 import { notifyFirstHandCardReceived } from '/assets/sauce-proof.js';
+/* หน้าฝั่งเกมไม่ได้โหลด /assets/track.js (มันพ่วงโมดูลของบทเรียนมาอีกยี่สิบตัว
+   ซึ่งไม่เกี่ยวกับเกมเลย) ตัวรายงาน Journey จึงต้องเข้ามาทางนี้แทน
+   ไม่งั้นขั้นที่เกิดในเกม เช่น LOADOUT_VIEW จะไม่มีวันถูกนับ */
+import '/assets/stat-report.js';
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
