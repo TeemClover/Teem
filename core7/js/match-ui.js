@@ -16,7 +16,6 @@ import { COLOR_META, cardById } from './cards.js';
 import { COLORS } from './rules.js';
 import { t } from './i18n.js';
 import { cardSVG, cardBackSVG, genericCardSVG, cardArtHref } from './art.js';
-import { isLocalMember } from './store.js';
 import { playSfx } from './audio.js';
 
 /* เกมนี้เล่นซ้ำเยอะ ข้อความเลยต้องสั้นที่สุด — ใช้อีโมจิสีแทนชื่อสีเสมอ
@@ -36,12 +35,14 @@ const RESULT_TEXT = {
   TIE_SILVER: (you, opp) => `${emo(you)} = ${emo(opp)} · BLOCK`,
 };
 
-export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
+/* endOverlay=false สำหรับเส้นที่มีหน้าจบเต็มรออยู่แล้ว (ห้อง / SET)
+   ไม่งั้นคนจะเจอฉากจบเล็กแวบหนึ่ง แล้วการ์ดใหม่ แล้วฉากจบเต็มอีกที
+   ประกาศผลสามชั้นซ้อนกันในสิบวินาที */
+export function mountMatch(root, client, { onFinished, oppLabel = '', endOverlay = true } = {}) {
   let view = null;
   let finished = false;
   let finishTimer = null;
   let revealShown = 0;      // จำนวนรอบที่เล่น animation แล้ว
-  const member = isLocalMember();
 
   root.classList.add('match-shell');
   /* ฝั่งผู้เล่นอยู่ซ้ายเสมอ — คู่แข่งอยู่ขวาเสมอ (ทั้งแถบบนและโต๊ะกลาง) */
@@ -148,12 +149,16 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     for (let i = 0; i < 3; i++) host.append(el('i', { class: i < n ? 'on' : '' }));
   }
 
+  /* การ์ดที่ลงบนโต๊ะต้องเป็นใบที่เลือกมาจริง ไม่ใช่การ์ดสีเปล่า ๆ
+     เดิมผูกไว้กับ isLocalMember() ซึ่งถูกทำให้คืน false ตลอดกาลไปแล้ว
+     (มันเป็น API เก่าที่ถูกปิดทิ้ง) หน้าไพ่จริงจึงไม่มีวันได้โผล่เลย
+     เกณฑ์ที่ถูกคือดูที่ตัวการ์ด: generic ก็วาดแบบสี ไม่ generic ก็วาดใบนั้น */
   function cardFace(cardId) {
     const card = cardById(cardId);
     if (!card) return '';
-    return (member && !card.generic)
-      ? cardSVG(cardId, { width: 150, showNumber: false })
-      : genericCardSVG(card.color, { width: 150 });
+    return card.generic
+      ? genericCardSVG(card.color, { width: 150 })
+      : cardSVG(cardId, { width: 150, showNumber: false });
   }
 
   function handTile(c, mode) {
@@ -576,6 +581,16 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
     const resultClass = r.draw ? 'draw' : (r.youWon ? 'win' : 'lose');
     const sub = r.draw ? t('🤝 เสมอ — เกิดได้ยากมาก', '🤝 A draw — extremely rare')
       : (r.youWon ? t('🏆 ชนะ Match นี้', '🏆 You won this match') : t('จบ Match นี้แล้ว', 'This match is over'));
+    haptic(r.youWon ? [20, 60, 20, 60, 40] : 30);
+    playSfx(r.draw ? 'draw' : (r.youWon ? 'win' : 'lose'));
+
+    if (!endOverlay) {
+      /* ไพ่ใบสุดท้ายกับผลรอบถูกค้างไว้ให้ดูมาแล้วใน scheduleFinish
+         ที่เหลือคือใครชนะแมตช์ ซึ่งหน้าจบเต็มเป็นคนบอก */
+      onFinished && onFinished(view);
+      return;
+    }
+
     const overlay = el('div', {
       class: `end-overlay ${resultClass}`, role: 'alert',
     },
@@ -589,8 +604,6 @@ export function mountMatch(root, client, { onFinished, oppLabel = '' } = {}) {
         ...lastRound.discards.map(card => historyChip(card, { discard: true }))));
     }
     root.append(overlay);
-    haptic(r.youWon ? [20, 60, 20, 60, 40] : 30);
-    playSfx(r.draw ? 'draw' : (r.youWon ? 'win' : 'lose'));
     setTimeout(() => onFinished && onFinished(view), reducedMotion() ? 700 : 2000);
   }
 
