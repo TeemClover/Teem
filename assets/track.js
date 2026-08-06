@@ -10,3 +10,4 @@ import '/assets/notebooklm-page.js';
 import '/assets/notebooklm-hero-position.js';
 import '/assets/prompts-season.js';
 import '/assets/prompts-utility.js';
+import '/assets/prompts-chef.js';
