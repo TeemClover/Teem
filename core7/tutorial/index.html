@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>เรียนรู้ใน 30 วินาที — myClover: CORE7</title>
-<meta name="description" content="Tutorial แบบเล่นจริง — สอนวงสี การทิ้งเพิ่ม และกฎ Final Silver ของ CORE7 ใน 30 วินาที">
+<title>Quick Tutorial — myClover: CORE7</title>
+<meta name="description" content="เรียน CORE7 แบบเล่นจริงในเวลาประมาณ 1 นาที แล้วไปเลือกมือ 7 ใบเพื่อเล่นกับ EASY BOT ทันที">
 <meta name="theme-color" content="#0A2818">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
@@ -12,56 +12,31 @@
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
 body{background:radial-gradient(900px 520px at 50% -10%,rgb(27 106 66/.5),transparent 65%),rgb(var(--deep));color:#fff;min-height:100dvh;display:flex;flex-direction:column}
-.tut-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px}
-/* หน้านี้มีแถบบนของตัวเอง ไม่ได้ใช้ c7nav ร่วมกับหน้าอื่นในเกม
-   โลโก้จึงเคยหายไปทั้งอัน แปลว่ากดออกจาก Tutorial ไม่ได้เลยนอกจากปุ่มข้าม */
-.tut-logo{display:inline-flex;align-items:center;gap:8px;min-height:44px;
-  font-family:"Bai Jamjuree";font-weight:700;font-size:15px;color:#fff!important;white-space:nowrap}
-.tut-logo img{height:26px;width:auto;display:block}
-.tut-logo em{font-style:normal;color:rgb(var(--gold-l))}
-@media(max-width:520px){.tut-logo span{display:none}}
-.tut-top a{font-size:13.5px;color:rgb(255 255 255/.7);min-height:44px;display:inline-flex;align-items:center}
-.tut-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:10px 18px;text-align:center}
-.tut-cards{display:flex;gap:20px;align-items:center}
-.tut-rule-visual{width:min(88vw,430px);max-height:56dvh;object-fit:contain;border:0;box-shadow:0 18px 44px rgb(0 0 0/.34)}
-.tut-cards[hidden],.tut-rule-visual[hidden]{display:none!important}
-.tut-slot{width:min(30vw,140px);aspect-ratio:300/420;perspective:900px}
-.tut-slot .flip{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s}
-.tut-slot.revealed .flip{transform:rotateY(180deg)}
-.tut-slot .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;overflow:hidden}
-.tut-slot .front{transform:rotateY(180deg)}
-.tut-msg{font-size:clamp(16px,4vw,20px);font-weight:700;font-family:"Bai Jamjuree";min-height:56px;max-width:34ch}
-.tut-sub{font-size:14px;color:rgb(255 255 255/.78);max-width:46ch;min-height:44px}
-.tut-choices{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:0 14px 26px}
-.tut-choices .cbtn{width:76px;height:100px;border-radius:12px;border:2px solid rgb(255 255 255/.35);color:#fff;font-family:"Bai Jamjuree";font-weight:700;font-size:12px;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;transition:transform .15s}
-.cbtn:hover{transform:translateY(-4px)}
-.cbtn.hint{animation:hintPulse 1.2s infinite;border-color:rgb(var(--gold-l))}
-@keyframes hintPulse{0%,100%{box-shadow:0 0 0 0 rgb(227 197 126/.7)}50%{box-shadow:0 0 0 10px rgb(227 197 126/0)}}
-.cbtn.red{background:linear-gradient(160deg,rgb(var(--c-red)),rgb(var(--c-red-deep)))}
-.cbtn.green{background:linear-gradient(160deg,rgb(var(--c-green)),rgb(var(--c-green-deep)))}
-.cbtn.blue{background:linear-gradient(160deg,rgb(var(--c-blue)),rgb(var(--c-blue-deep)))}
-.cbtn.silver{background:linear-gradient(160deg,rgb(var(--c-silver)),rgb(var(--c-silver-deep)))}
-.cbtn:disabled{opacity:.35}
-.tut-next{padding:0 18px 30px;display:flex;justify-content:center;gap:12px}
-.dots{display:flex;gap:6px;justify-content:center;margin-top:4px}
-.dots i{width:8px;height:8px;border-radius:50%;background:rgb(255 255 255/.25)}
-.dots i.on{background:rgb(var(--gold-l))}
-@media(prefers-reduced-motion:reduce){.cbtn.hint{animation:none}}
+.tut-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid rgb(255 255 255/.09)}
+.tut-logo{display:inline-flex;align-items:center;gap:8px;min-height:44px;font-family:"Bai Jamjuree";font-weight:700;font-size:15px;color:#fff!important;white-space:nowrap}.tut-logo img{height:26px;width:auto}.tut-logo em{font-style:normal;color:rgb(var(--gold-l))}.tut-title{text-align:center;font-family:"Bai Jamjuree";font-weight:700;font-size:14px}.tut-tools{display:flex;gap:9px;align-items:center}.tut-tools a{font-size:13px;color:rgb(255 255 255/.72);min-height:42px;display:inline-flex;align-items:center}.tut-tools button{min-height:38px;padding:6px 10px}
+.tut-entry{font-size:11px;color:rgb(var(--gold-l));letter-spacing:.08em;text-align:center;padding:7px 12px 0}
+.tut-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:17px;padding:12px 18px;text-align:center}
+.tut-cards{display:flex;gap:20px;align-items:center}.tut-rule-visual{width:min(88vw,430px);max-height:52dvh;object-fit:contain;box-shadow:0 18px 44px rgb(0 0 0/.34)}.tut-cards[hidden],.tut-rule-visual[hidden]{display:none!important}
+.tut-slot{width:min(30vw,140px);aspect-ratio:300/420;perspective:900px}.tut-slot .flip{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s}.tut-slot.revealed .flip{transform:rotateY(180deg)}.tut-slot .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;overflow:hidden}.tut-slot .front{transform:rotateY(180deg)}
+.tut-msg{font-size:clamp(17px,4vw,21px);font-weight:700;font-family:"Bai Jamjuree";min-height:54px;max-width:35ch}.tut-sub{font-size:14px;color:rgb(255 255 255/.78);max-width:48ch;min-height:42px}.tut-choices{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:0 14px 22px}.cbtn{width:76px;height:100px;border-radius:12px;border:2px solid rgb(255 255 255/.35);color:#fff;font-family:"Bai Jamjuree";font-weight:700;font-size:12px;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;transition:transform .15s}.cbtn:hover{transform:translateY(-4px)}.cbtn.hint{animation:hintPulse 1.2s infinite;border-color:rgb(var(--gold-l))}@keyframes hintPulse{0%,100%{box-shadow:0 0 0 0 rgb(227 197 126/.7)}50%{box-shadow:0 0 0 10px rgb(227 197 126/0)}}.cbtn.red{background:linear-gradient(160deg,rgb(var(--c-red)),rgb(var(--c-red-deep)))}.cbtn.green{background:linear-gradient(160deg,rgb(var(--c-green)),rgb(var(--c-green-deep)))}.cbtn.blue{background:linear-gradient(160deg,rgb(var(--c-blue)),rgb(var(--c-blue-deep)))}.cbtn.silver{background:linear-gradient(160deg,rgb(var(--c-silver)),rgb(var(--c-silver-deep)))}.cbtn:disabled{opacity:.35}
+.tut-next{padding:0 18px 28px;display:flex;justify-content:center}.dots{display:flex;gap:6px;justify-content:center}.dots i{width:8px;height:8px;border-radius:50%;background:rgb(255 255 255/.25)}.dots i.on{background:rgb(var(--gold-l))}
+@media(max-width:620px){.tut-top{grid-template-columns:auto auto}.tut-title{display:none}.tut-tools{justify-self:end}.tut-tools a{font-size:12px}.tut-entry{padding-top:4px}.tut-logo span{display:none}}
+@media(prefers-reduced-motion:reduce){.cbtn.hint{animation:none}.tut-slot .flip{transition:none}}
 </style>
 </head>
 <body>
 <div class="tut-top">
   <a class="tut-logo" href="/core7/" aria-label="กลับหน้าแรก CORE7"><img src="/icons/icon-192.png" alt="" width="192" height="192"><span>my<em>Clover</em>&thinsp;· CORE7</span></a>
-  <b class="disp" data-en="🎓 Learn CORE7" style="font-size:14px">🎓 เรียนรู้ CORE7</b>
-  <div style="display:flex;gap:10px;align-items:center"><button class="btn btn-ghost" id="lang" style="min-height:38px;padding:6px 10px">EN</button><a href="/core7/hand/?next=bot&level=easy&entry=forge" id="skip" data-en="Skip tutorial →">ข้าม Tutorial →</a></div>
+  <b class="tut-title">🎓 QUICK TUTORIAL</b>
+  <div class="tut-tools"><button class="btn btn-ghost" id="lang">EN</button><a id="skip" href="#">ข้าม → EASY BOT</a></div>
 </div>
+<div class="tut-entry" id="entryNote"></div>
 <div class="tut-stage">
-  <img class="tut-rule-visual" id="ruleVisual" src="/core7/assets/core7-rule.webp" hidden
-    alt="กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่ม ชนะสามรอบ และ Final Silver">
+  <img class="tut-rule-visual" id="ruleVisual" src="/core7/assets/core7-rule.webp" hidden alt="ภาพสรุปกติกา CORE7">
   <div class="tut-cards" id="tutorialCards">
-    <div><small id="youLabel" style="display:block;margin-bottom:6px" data-en="You · always left">คุณ · ซ้ายเสมอ</small><div class="tut-slot" id="slotYou"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
+    <div><small id="youLabel" style="display:block;margin-bottom:6px">คุณ · ซ้ายเสมอ</small><div class="tut-slot" id="slotYou"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
     <b class="disp" style="color:rgb(var(--gold-l))">VS</b>
-    <div><small id="oppLabel" style="display:block;margin-bottom:6px" data-en="Opponent · right">คู่แข่ง · ขวา</small><div class="tut-slot" id="slotBot"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
+    <div><small id="oppLabel" style="display:block;margin-bottom:6px">คู่แข่ง · ขวา</small><div class="tut-slot" id="slotBot"><div class="flip"><div class="face back"></div><div class="face front"></div></div></div></div>
   </div>
   <div class="tut-msg" id="msg" aria-live="assertive"></div>
   <div class="tut-sub" id="sub"></div>
@@ -74,167 +49,15 @@ import { el, haptic, reducedMotion } from '/core7/js/ui.js';
 import { COLOR_META } from '/core7/js/cards.js';
 import { colorIcon, genericCardSVG, cardBackSVG } from '/core7/js/art.js';
 import { setTutorialCompleted, track } from '/core7/js/store.js';
-import { getLang, setLang, applyLang } from '/core7/js/i18n.js';
-
-track('core7_tutorial_start');
-const slotYou = document.getElementById('slotYou');
-const slotBot = document.getElementById('slotBot');
-const msg = document.getElementById('msg');
-const sub = document.getElementById('sub');
-const choices = document.getElementById('choices');
-const nextRow = document.getElementById('nextRow');
-const dots = document.getElementById('dots');
-const tutorialCards = document.getElementById('tutorialCards');
-const ruleVisual = document.getElementById('ruleVisual');
-/* ภาษาของหน้านี้เคยอ่านจาก ?lang= บน URL อย่างเดียว แปลว่าคนที่กด EN
-   ไว้ที่หน้าอื่นแล้วเดินเข้ามาที่นี่จะเจอภาษาไทยเหมือนไม่เคยกด และกดที่นี่
-   ก็ไม่ถูกจำไปหน้าถัดไป — ตอนนี้อ่านและเขียนคีย์เดียวกับทั้งเว็บ (mc_lang)
-
-   ?lang= ยังรองรับอยู่เพื่อไม่ให้ลิงก์เก่าที่คนแชร์ไว้พัง แต่ให้ถือว่า
-   เป็นคำสั่งเปลี่ยนภาษา ไม่ใช่สถานะชั่วคราวของหน้านี้ */
-const params = new URLSearchParams(location.search);
-const fromUrl = params.get('lang');
-if (fromUrl === 'en' || fromUrl === 'th') setLang(fromUrl);
-const isEn = getLang() === 'en';
-document.documentElement.lang = isEn ? 'en' : 'th';
-applyLang();
-document.getElementById('lang').textContent = isEn ? 'TH' : 'EN';
-document.getElementById('lang').addEventListener('click', () => {
-  setLang(isEn ? 'th' : 'en');
-  location.reload();
-});
-document.getElementById('skip').textContent = isEn ? 'Skip tutorial →' : 'ข้าม Tutorial →';
-document.getElementById('youLabel').textContent = isEn ? 'YOU · always left' : 'คุณ · ซ้ายเสมอ';
-document.getElementById('oppLabel').textContent = isEn ? 'OPPONENT · right' : 'คู่แข่ง · ขวา';
-ruleVisual.alt = isEn
-  ? 'CORE7 overview: color cycle, loser discards one extra, win three rounds, and Final Silver'
-  : 'กติกา CORE7: วงสี ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ และ Final Silver';
-slotYou.querySelector('.back').innerHTML = cardBackSVG({ width: 140 });
-slotBot.querySelector('.back').innerHTML = cardBackSVG({ width: 140 });
-
-/* บทเรียน: [ข้อความ, สีที่ให้กด(null=ปุ่มไปต่อ), สีที่บอทเปิด, คำอธิบายหลังเปิด] */
-const STEPS_TH = [
-  {
-    text: 'ไม่ว่าคุณจะสร้างหรือเข้าห้อง การ์ดของคุณอยู่ฝั่งซ้ายบนเครื่องนี้เสมอ',
-    want: null, bot: null,
-    explain: 'คุณ = ซ้าย · คู่แข่ง = ขวา',
-    explainSub: 'ทั้งสองคนจึงเห็นตัวเองอยู่ซ้ายบนหน้าจอของตัวเอง โดยผลเกมยังตรงกันจาก Server เดียวกัน',
-  },
-  {
-    text: 'ทั้งคู่เลือกการ์ดลับแล้วเปิดพร้อมกัน — ลองกด 🔴 RED ดู',
-    want: 'RED', bot: 'GREEN',
-    explain: '🔴 แดงชนะ 🟢 เขียว! คุณได้ Round Win — ผู้ชนะเสียแค่ใบที่ลง (1 ใบ)',
-    explainSub: 'แต่ผู้แพ้เสีย 2 ใบ: ใบที่ลง + ต้องเลือกทิ้งจากมือเพิ่มอีก 1 ใบแบบหงายหน้า',
-  },
-  {
-    text: 'ถ้าสีเดียวกันล่ะ? ลองกด 🔴 RED อีกครั้ง',
-    want: 'RED', bot: 'RED',
-    explain: 'เสมอ! สีเดียวกันไม่มีใครแพ้',
-    explainSub: 'ทั้งคู่เสียแค่ใบที่ลง ไม่มีใครทิ้งเพิ่ม และไม่มีใครได้ Round Win',
-  },
-  {
-    text: 'ทีนี้ลองอาวุธลับ — กด ⚙️ SILVER',
-    want: 'SILVER', bot: 'BLUE',
-    explain: '⚙️ Block! สีเงินเสมอกับทุกสี',
-    explainSub: 'ใช้เงินเพื่อซื้อเวลาและอ่านคู่แข่ง โดยไม่เสี่ยงแพ้ (และไม่มีวันชนะรอบ)',
-  },
-  {
-    text: 'กฎสุดท้าย — Final Silver',
-    want: null, bot: null,
-    explain: '⚠️ ถ้าเงินเป็น "ใบสุดท้าย" ของทั้งคู่ เงินจะแพ้ทุกสีที่ไม่ใช่เงิน',
-    explainSub: 'อย่าเก็บ ⚙️ ไว้เป็นใบสุดท้าย — ใบปิดเกมของทั้งคู่เมื่อไหร่ ⚙️ แพ้ทุกสี',
-  },
-  {
-    text: 'ชนะ Match เมื่อ: ชนะครบ 3 รอบ หรือคู่แข่งการ์ดหมดมือ',
-    want: null, bot: null,
-    explain: 'เท่านี้ก็เล่นเป็นแล้ว! 🎉',
-    explainSub: 'ต่อไป: เลือกมือ 7 ใบของคุณเอง — สีใดกี่ใบก็ได้ แล้วใช้เกมเป็นข้ออ้างดี ๆ ในการเปิดบทสนทนา',
-    visual: true,
-  },
-];
-const STEPS_EN = [
-  { text:'Your cards are always on the left on this device.', want:null, bot:null, explain:'YOU = left · OPPONENT = right', explainSub:'Both players see themselves on the left while sharing the same server-authoritative result.' },
-  { text:'Both choose secretly, then reveal together. Tap RED.', want:'RED', bot:'GREEN', explain:'RED beats GREEN — you win the Round.', explainSub:'The loser loses the played card and reveals one additional discarded card.' },
-  { text:'What if both colors match? Tap RED again.', want:'RED', bot:'RED', explain:'DRAW — matching colors tie.', explainSub:'Both lose only the played card. No additional discard.' },
-  { text:'Try the block card. Tap SILVER.', want:'SILVER', bot:'BLUE', explain:'BLOCK — SILVER ties every normal color.', explainSub:'SILVER buys time, but never wins a normal Round.' },
-  { text:'Final Silver rule', want:null, bot:null, explain:'If SILVER is your final card, it loses to a real color.', explainSub:'A tool can buy time, but cannot make the final choice for you.' },
-  { text:'Win a Match by reaching 3 Round wins before your hand runs out.', want:null, bot:null, explain:'You are ready. MATCH is one win; DOUBLE and SET keep the same Starting Hand until someone wins.', explainSub:'Now choose your seven cards and use the game as an easy way to start a conversation.', visual:true },
-];
-const STEPS = isEn ? STEPS_EN : STEPS_TH;
-let step = 0;
-
-function renderDots() {
-  dots.innerHTML = '';
-  STEPS.forEach((_, i) => dots.append(el('i', { class: i <= step ? 'on' : '' })));
-}
-
-function colorBtn(color, enabled, hinted) {
-  const b = el('button', {
-    class: `cbtn ${color.toLowerCase()}${hinted ? ' hint' : ''}`,
-    'aria-label': `เลือกสี${COLOR_META[color].nameTh}`,
-    html: `${colorIcon(color, 26)}<span>${COLOR_META[color].nameEn.toUpperCase()}</span>`,
-  });
-  b.disabled = !enabled;
-  return b;
-}
-
-function resetSlots() {
-  slotYou.classList.remove('revealed');
-  slotBot.classList.remove('revealed');
-}
-
-function runStep() {
-  renderDots();
-  const s = STEPS[step];
-  resetSlots();
-  tutorialCards.hidden = Boolean(s.visual);
-  ruleVisual.hidden = !s.visual;
-  msg.textContent = s.text;
-  sub.textContent = '';
-  nextRow.innerHTML = '';
-  choices.innerHTML = '';
-
-  if (!s.want) {   /* ขั้นอธิบายอย่างเดียว */
-    msg.textContent = s.text;
-    sub.textContent = '';
-    const show = el('button', { class: 'btn btn-gold' }, step === STEPS.length - 1 ? (isEn ? '🖐️ Build my 7-card hand →' : '🖐️ ไปเลือกมือ 7 ใบ →') : (isEn ? '👍 Got it — next' : '👍 เข้าใจแล้ว ต่อเลย'));
-    show.addEventListener('click', () => advance());
-    msg.textContent = s.explain;
-    sub.textContent = s.explainSub;
-    if (step === STEPS.length - 1) {
-      setTutorialCompleted();
-      track('core7_tutorial_complete');
-      show.addEventListener('click', () => location.href = '/core7/hand/?next=bot&level=easy&entry=forge');
-    }
-    nextRow.append(show);
-    return;
-  }
-
-  for (const color of ['RED', 'GREEN', 'BLUE', 'SILVER']) {
-    const b = colorBtn(color, color === s.want, color === s.want);
-    b.addEventListener('click', () => {
-      haptic(10);
-      choices.querySelectorAll('button').forEach(x => x.disabled = true);
-      slotYou.querySelector('.front').innerHTML = genericCardSVG(color, { width: 140 });
-      slotBot.querySelector('.front').innerHTML = genericCardSVG(s.bot, { width: 140 });
-      const reveal = () => {
-        slotYou.classList.add('revealed');
-        slotBot.classList.add('revealed');
-        haptic([10, 40, 18]);
-        msg.textContent = s.explain;
-        sub.textContent = s.explainSub;
-        const nxt = el('button', { class: 'btn btn-gold' }, isEn ? '▶️ Next →' : '▶️ ต่อไป →');
-        nxt.addEventListener('click', () => advance());
-        nextRow.append(nxt);
-      };
-      reducedMotion() ? reveal() : setTimeout(reveal, 350);
-    });
-    choices.append(b);
-  }
-}
-
-function advance() { step = Math.min(step + 1, STEPS.length - 1); runStep(); }
-runStep();
+const params=new URLSearchParams(location.search),isEn=params.get('lang')==='en',entry=params.get('entry')||'core7',handTarget=`/core7/hand/?next=bot&level=easy&entry=${encodeURIComponent(entry)}`;
+document.documentElement.lang=isEn?'en':'th';track('core7_tutorial_start');if(entry==='walkthrough')track('core7_tutorial_from_walkthrough');
+document.getElementById('lang').textContent=isEn?'TH':'EN';document.getElementById('lang').addEventListener('click',()=>{const next=new URLSearchParams(location.search);if(isEn)next.delete('lang');else next.set('lang','en');location.search=next.toString()?`?${next}`:''});
+const skip=document.getElementById('skip');skip.href=handTarget;skip.textContent=isEn?'Skip → EASY BOT':'ข้าม → EASY BOT';document.getElementById('entryNote').textContent=entry==='walkthrough'?(isEn?'Walkthrough route · tutorial → choose 7 cards → EASY BOT':'ทางลัดจาก Walkthrough · เรียนกติกา → เลือก 7 ใบ → EASY BOT'):'';document.getElementById('youLabel').textContent=isEn?'YOU · always left':'คุณ · ซ้ายเสมอ';document.getElementById('oppLabel').textContent=isEn?'OPPONENT · right':'คู่แข่ง · ขวา';
+const slotYou=document.getElementById('slotYou'),slotBot=document.getElementById('slotBot'),msg=document.getElementById('msg'),sub=document.getElementById('sub'),choices=document.getElementById('choices'),nextRow=document.getElementById('nextRow'),dots=document.getElementById('dots'),tutorialCards=document.getElementById('tutorialCards'),ruleVisual=document.getElementById('ruleVisual');slotYou.querySelector('.back').innerHTML=cardBackSVG({width:140});slotBot.querySelector('.back').innerHTML=cardBackSVG({width:140});
+const TH=[{explain:'คุณอยู่ซ้าย · คู่แข่งอยู่ขวา',explainSub:'ทั้ง 2 ฝั่งเห็นตัวเองอยู่ซ้ายบนเครื่องของตัวเอง ผลเกมยังตรงกันจาก Server เดียวกัน'},{want:'RED',bot:'GREEN',text:'ลองกด 🔴 RED',explain:'🔴 แดงชนะ 🟢 เขียว',explainSub:'ผู้ชนะเสียใบที่ลง 1 ใบ · ผู้แพ้เสียใบที่ลง และต้องทิ้งเพิ่มอีก 1 ใบแบบหงายหน้า'},{want:'RED',bot:'RED',text:'ถ้าสีเดียวกันล่ะ? กด 🔴 RED อีกครั้ง',explain:'เสมอ — สีเดียวกันไม่มีใครแพ้',explainSub:'ทั้งคู่เสียแค่ใบที่ลง ไม่มีใครทิ้งเพิ่ม และไม่มีใครได้ Round Win'},{want:'SILVER',bot:'BLUE',text:'ลอง ⚙️ SILVER',explain:'⚙️ Block — เงินเสมอกับทุกสี',explainSub:'ใช้ซื้อเวลาและอ่านคู่แข่ง แต่เงินไม่มีวันชนะ Round ปกติ'},{explain:'⚠️ Final Silver',explainSub:'เมื่อเป็นใบสุดท้ายของทั้งคู่ เงินแพ้ทุกสีที่ไม่ใช่เงิน อย่าเก็บไว้ปิดเกม'},{visual:true,explain:'ชนะ 3 Rounds ก่อน หรือคู่แข่งหมดมือ = ชนะ Match',explainSub:'เท่านี้เล่นเป็นแล้ว ต่อไปเลือกมือ 7 ใบ แล้วลงเล่นกับ EASY BOT ทันที'}];
+const EN=[{explain:'YOU = left · OPPONENT = right',explainSub:'Both players see themselves on the left while sharing the same server-authoritative result.'},{want:'RED',bot:'GREEN',text:'Tap RED',explain:'RED beats GREEN',explainSub:'The loser loses the played card and reveals one additional discard.'},{want:'RED',bot:'RED',text:'Tap RED again',explain:'DRAW — matching colors tie',explainSub:'Both lose only the played card. No extra discard.'},{want:'SILVER',bot:'BLUE',text:'Try SILVER',explain:'BLOCK — SILVER ties every normal color',explainSub:'It buys time but never wins a normal Round.'},{explain:'Final Silver',explainSub:'If SILVER is the final card for both players, it loses to any real color.'},{visual:true,explain:'Win 3 Rounds first, or outlast the opponent’s hand',explainSub:'Choose seven cards next, then play the EASY BOT immediately.'}];
+const STEPS=isEn?EN:TH;let step=0;function renderDots(){dots.innerHTML='';STEPS.forEach((_,i)=>dots.append(el('i',{class:i<=step?'on':''})))}function reset(){slotYou.classList.remove('revealed');slotBot.classList.remove('revealed')}function advance(){step=Math.min(step+1,STEPS.length-1);run()}function colorBtn(color,enabled,hinted){const b=el('button',{class:`cbtn ${color.toLowerCase()}${hinted?' hint':''}`,'aria-label':`${isEn?'Choose':'เลือกสี'} ${COLOR_META[color].nameEn}`,html:`${colorIcon(color,26)}<span>${COLOR_META[color].nameEn.toUpperCase()}</span>`});b.disabled=!enabled;return b}
+function run(){renderDots();reset();const s=STEPS[step];tutorialCards.hidden=!!s.visual;ruleVisual.hidden=!s.visual;msg.textContent=s.text||s.explain;sub.textContent=s.text?'':s.explainSub;choices.innerHTML='';nextRow.innerHTML='';if(!s.want){const last=step===STEPS.length-1,b=el('button',{class:'btn btn-gold'},last?(isEn?'🖐️ Choose 7 cards → EASY BOT':'🖐️ เลือก 7 ใบ → EASY BOT'):(isEn?'👍 Next':'👍 เข้าใจแล้ว ต่อเลย'));b.addEventListener('click',()=>{if(last){setTutorialCompleted();track('core7_tutorial_complete');location.href=handTarget}else advance()});nextRow.append(b);return}for(const color of ['RED','GREEN','BLUE','SILVER']){const b=colorBtn(color,color===s.want,color===s.want);b.addEventListener('click',()=>{haptic(10);choices.querySelectorAll('button').forEach(x=>x.disabled=true);slotYou.querySelector('.front').innerHTML=genericCardSVG(color,{width:140});slotBot.querySelector('.front').innerHTML=genericCardSVG(s.bot,{width:140});const reveal=()=>{slotYou.classList.add('revealed');slotBot.classList.add('revealed');msg.textContent=s.explain;sub.textContent=s.explainSub;const n=el('button',{class:'btn btn-gold'},isEn?'▶️ Next →':'▶️ ต่อไป →');n.addEventListener('click',advance);nextRow.append(n)};reducedMotion()?reveal():setTimeout(reveal,350)});choices.append(b)}}run();
 </script>
 </body>
 </html>
