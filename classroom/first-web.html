@@ -1,131 +1,276 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="mc-act-view" content="lesson-open"><meta name="mc-item" content="learn:first-web"><meta name="theme-color" content="#071a10">
-<title>บทที่ 6 · เมนคอร์ส — HTML ไฟล์มีชีวิต · AI ใส่ซอส</title>
-<meta name="description" content="ใช้ Source สร้าง Single-file HTML เปิดในคอม ส่งต่อ และอัปเดตเป็นไฟล์มีชีวิต">
-<link rel="stylesheet" href="/assets/ai-sauce-lite.css"><link rel="stylesheet" href="/assets/readable.css">
-</head>
-<body data-lesson="first-web">
-<nav class="top"><div class="wrap"><a class="brand" href="/hall.html#quest">🍀 my<em>clover</em></a><a class="all" href="./">ห้องเรียนทั้งหมด →</a></div></nav>
-<main class="wrap">
-<header class="hero"><div class="hero-in">
-  <span class="level">บทที่ 6 · SERVE · MAIN COURSE</span><h1>HTML — ไฟล์มีชีวิต</h1>
-  <p class="lead">ใช้ซอสของคุณสร้างไฟล์เดียวที่ <strong>คนอื่นเปิด ใช้ และส่งต่อได้</strong> โดยไม่ต้องติดตั้งแอป</p>
-  <div class="meta"><span>⏱ 15–30 นาที</span><span>🥩 index.html 1 ไฟล์</span><span>🌐 AI ตัวไหนก็ได้</span></div>
-  <div class="hero-visual" aria-label="เชฟกำลังเสิร์ฟสเต็กเมนคอร์ส">
-    <svg viewBox="0 0 720 300" role="img" aria-labelledby="steakTitle steakDesc">
-      <title id="steakTitle">เชฟเสิร์ฟสเต็กเมนคอร์ส</title><desc id="steakDesc">เชฟยกจานสเต็กย่างพร้อมซอสและผักออกมาเสิร์ฟ</desc>
-      <defs><linearGradient id="bg" x1="0" x2="1"><stop stop-color="#082316"/><stop offset="1" stop-color="#173e2a"/></linearGradient><linearGradient id="meat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a7432d"/><stop offset=".55" stop-color="#6f271d"/><stop offset="1" stop-color="#3a1511"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="10"/></filter></defs>
-      <rect width="720" height="300" rx="24" fill="url(#bg)"/><ellipse cx="500" cy="237" rx="170" ry="30" fill="#000" opacity=".3"/>
-      <circle cx="175" cy="84" r="42" fill="#f0c9a8"/><path d="M127 79c10-43 87-58 103 5-18-9-31-11-51-8-17 3-31 8-52 3z" fill="#fff"/><path d="M143 126c30-18 69-14 89 8l36 75-147 2z" fill="#f8f6f0"/><path d="M175 127v75" stroke="#d5d1c7" stroke-width="4"/><circle cx="164" cy="83" r="4"/><circle cx="188" cy="83" r="4"/><path d="M165 103q12 8 24 0" fill="none" stroke="#754a3a" stroke-width="3" stroke-linecap="round"/>
-      <path d="M229 150q67 26 139 49" fill="none" stroke="#f0c9a8" stroke-width="23" stroke-linecap="round"/><path d="M140 154q-31 35-48 67" fill="none" stroke="#f0c9a8" stroke-width="23" stroke-linecap="round"/>
-      <ellipse cx="482" cy="208" rx="153" ry="46" fill="#ddd8ca"/><ellipse cx="482" cy="199" rx="142" ry="38" fill="#f8f4e8"/>
-      <path d="M400 185c25-31 95-36 130-5 19 17 8 41-13 49-43 17-122 3-129-19-3-10 2-18 12-25z" fill="url(#meat)" stroke="#32120d" stroke-width="5"/>
-      <g stroke="#d78a52" stroke-width="5" opacity=".7"><path d="M414 184l89 41"/><path d="M436 174l90 40"/><path d="M468 171l70 31"/><path d="M510 178l-83 39"/><path d="M532 190l-73 34"/></g>
-      <path d="M383 191q-21 12-17 28 18 11 35-5-5-15-18-23z" fill="#77a95d"/><circle cx="565" cy="197" r="17" fill="#d8a74c"/><circle cx="590" cy="206" r="13" fill="#b74e36"/><path d="M550 177q18-22 31 0" fill="none" stroke="#6ca052" stroke-width="7" stroke-linecap="round"/>
-      <g fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"><path d="M445 148q-13-18 1-32"/><path d="M478 145q14-20 0-35"/><path d="M512 149q-12-18 2-32"/></g>
-      <ellipse cx="483" cy="202" rx="108" ry="19" fill="#5d1a12" opacity=".22" filter="url(#glow)"/>
-      <text x="360" y="278" fill="#e6c477" font-family="Bai Jamjuree, sans-serif" font-size="14" font-weight="800" letter-spacing="3">MAIN COURSE · SERVE</text>
-    </svg>
-  </div>
-</div></header>
-
-<section class="goal"><small>เป้าหมายของบทนี้</small><h2>สร้าง <code>index.html</code> 1 ไฟล์ แล้วเปิดด้วยเบราว์เซอร์ให้ได้</h2><p>ไม่ต้องมีโดเมน ไม่ต้อง Publish และไม่ต้องเป็นนักพัฒนา แค่ทำให้ไฟล์ออกจากแชตมาเปิดใช้จริงก่อน</p></section>
-
-<section class="section">
-  <div class="section-head"><span class="n">1</span><div><h2>ทำไมต้อง HTML</h2><p>เพราะไฟล์เดียวเป็นได้มากกว่า “หน้าเว็บไซต์”</p></div></div>
-  <div class="prepare">
-    <div><span>📰</span><p><b>สื่อ</b>ใส่บทความ ภาพ วิดีโอ เสียง และหลายภาษาในหน้าเดียว</p></div>
-    <div><span>🎮</span><p><b>ของที่เล่นได้</b>ใส่ปุ่ม เกม Quiz เครื่องคำนวณ และระบบโต้ตอบ</p></div>
-    <div><span>📱</span><p><b>เปิดได้ทันที</b>ใช้โทรศัพท์หรือคอมโดยไม่ต้องดาวน์โหลดแอปใหม่</p></div>
-    <div><span>♻️</span><p><b>อัปเดตได้</b>เมื่อ Publish แล้ว แก้ไฟล์ใหม่ คนเปิด URL เดิมก็เห็น Version ใหม่</p></div>
-  </div>
-  <p class="rule">ทุกสิ่งที่คุณเห็นในบ้านนี้ เริ่มจากไฟล์ชื่อ <code>index.html</code> แล้วค่อยเชื่อมต่อจนกลายเป็นบ้านทั้งหลัง</p>
-</section>
-
-<section class="section">
-  <div class="section-head"><span class="n">2</span><div><h2>ทำตาม 5 ขั้น</h2><p>สร้างในเครื่องก่อน แล้วค่อยคิดเรื่องอินเทอร์เน็ต</p></div></div>
-  <div class="steps">
-    <article class="step"><span class="num">1</span><div><h3>เลือก Source และคนอ่าน</h3><p>ใช้ Source จริง 1 ขวด แล้วกำหนดว่าหน้านี้ทำให้ใครและต้องการให้เขาทำอะไรต่อ</p></div></article>
-    <article class="step"><span class="num">2</span><div><h3>สั่งสร้าง Single-file HTML</h3><p>ใช้ AI ที่คุณมีอยู่ ไม่ต้องเปลี่ยนเครื่องมือเพื่อเรียนบทนี้</p>
-      <div class="prompt" id="htmlPrompt">ใช้ Source ที่แนบสร้างหน้า HTML ไฟล์เดียวสำหรับ [ผู้อ่าน]
-เป้าหมายของหน้า: [สิ่งที่ต้องการให้เขาเข้าใจหรือทำต่อ]
-
-กติกา:
-- ส่งโค้ดครบตั้งแต่ <!doctype html> ถึง </html> ใน code block เดียว
-- รวม CSS และ JavaScript ที่จำเป็นไว้ในไฟล์เดียว
-- Mobile-first ตัวหนังสือหลักไม่น้อยกว่า 16px และปุ่มกดง่าย
-- ใช้ Source เป็นฐาน ห้ามแต่งข้อเท็จจริงที่ไม่มี
-- รักษาชื่อ ตัวเลข Key Messages, Tone และ Canon
-- ถ้าข้อมูลไม่พอให้ถามก่อน
-- ห้ามใส่ Tracker, API Key หรือส่งข้อมูลออกจากเครื่อง
-- ใส่คอมเมนต์บอกจุดที่เจ้าของควรแก้ข้อความและลิงก์<button class="copy" type="button" data-copy="htmlPrompt">คัดลอก</button></div>
-    </div></article>
-    <article class="step"><span class="num">3</span><div><h3>เซฟชื่อ index.html</h3><p>คัดลอกโค้ดลง Text Editor แล้วบันทึกนามสกุล <code>.html</code> ไม่ใช่ <code>.txt</code></p></div></article>
-    <article class="step"><span class="num">4</span><div><h3>เปิดและตรวจ</h3><p>ดับเบิลคลิกไฟล์ เปิดบนคอมและโทรศัพท์ แล้วตรวจชื่อ ตัวเลข ปุ่ม ลิงก์ และข้อมูลที่ AI อาจแต่งเพิ่ม</p></div></article>
-    <article class="step"><span class="num">5</span><div><h3>ส่งต่อ</h3><p>ส่งไฟล์ผ่าน AirDrop, Email, Drive หรือ ZIP ให้คนที่ไว้ใจทดลองเปิดก่อน Publish</p></div></article>
-  </div>
-  <div class="prepare" style="margin-top:14px"><div><span>🧪</span><p><b>ยังไม่มีไฟล์ให้ลอง?</b>ดาวน์โหลดตัวอย่าง แล้วดับเบิลคลิกเปิดในเบราว์เซอร์ได้เลย<br><button class="finish" type="button" data-download-html="starterHtml" style="width:auto;margin-top:10px">ดาวน์โหลด index.html ตัวอย่าง</button></p></div></div>
-  <script type="text/plain" id="starterHtml"><!doctype html>
-<html lang="th">
-<head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>หน้าแรกของฉัน</title>
+<meta name="mc-act-view" content="lesson-open">
+<meta name="mc-item" content="learn:first-web">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071a10">
+<title>บทที่ 6 · เมนคอร์ส — HTML ไฟล์มีชีวิต · AI ใส่ซอส</title>
+<meta name="description" content="ใช้ Source สร้าง HTML ไฟล์เดียวที่รวมบทความ ภาพ วิดีโอ เสียง เกม และระบบโต้ตอบ เปิดในคอม ส่งต่อ หรือเผยแพร่ให้ทั้งโลกเข้าถึงได้">
+<meta property="og:type" content="article">
+<meta property="og:title" content="บทที่ 6 · เมนคอร์ส — HTML ไฟล์มีชีวิต">
+<meta property="og:description" content="ถ้าคุณใช้ซอสเป็น คุณสร้างไฟล์ที่เปิดได้ทุกเครื่อง อัปเดตที่อยู่เดิม และเติบโตจากหน้าเดียวเป็นบ้านทั้งหลังได้">
 <style>
-body{margin:0;font-family:system-ui,sans-serif;background:#f8f6f0;color:#12281c;line-height:1.75}
-main{max-width:680px;margin:auto;padding:64px 22px}
-article{background:#fff;border:1px solid #dfe7df;border-radius:20px;padding:28px}
-h1{color:#1b6a42;font-size:clamp(32px,7vw,52px);line-height:1.15}
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:7 26 16;--gold:190 148 66;--muted:96 108 100;--red:189 49 44;--cream:255 251 239;--blue:54 93 143}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:"Anuphan",system-ui,sans-serif;background:radial-gradient(900px 480px at 50% -240px,rgb(190 148 66/.15),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));font-size:16px;line-height:1.78;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,input,textarea{font:inherit}button,a{-webkit-tap-highlight-color:transparent}button{touch-action:manipulation}a{color:inherit;text-decoration:none}img,svg{display:block;max-width:100%}[hidden]{display:none!important}.disp{font-family:"Bai Jamjuree",system-ui,sans-serif;letter-spacing:-.012em}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.wrap{width:min(920px,100%);margin:auto;padding:0 22px}:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
+nav.top{position:sticky;top:0;z-index:80;border-bottom:1px solid rgb(var(--ink)/.08);background:rgb(var(--paper)/.92);-webkit-backdrop-filter:blur(13px);backdrop-filter:blur(13px)}nav.top .wrap{height:58px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font:750 18px "Bai Jamjuree",sans-serif}.brand em{font-style:normal;color:rgb(var(--green))}.all{color:rgb(var(--muted));font-size:13.5px;font-weight:650}.all:hover{color:rgb(var(--green))}
+.hero{position:relative;overflow:hidden;margin:28px 0 16px;border:1px solid rgb(255 255 255/.1);border-radius:28px;background:linear-gradient(145deg,#06180f,#0d3521 55%,#16452e);color:#fff;box-shadow:0 28px 70px rgb(7 26 16/.19)}.hero::before{content:"";position:absolute;width:680px;height:680px;border-radius:50%;right:-280px;top:-390px;background:radial-gradient(circle,rgb(190 148 66/.35),transparent 67%)}.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);align-items:center;gap:18px;padding:42px 38px 34px}.lv{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid rgb(190 148 66/.54);border-radius:999px;background:rgb(7 26 16/.32);color:rgb(var(--gold));font:800 11.5px "Bai Jamjuree",sans-serif;letter-spacing:.14em}.hero h1{max-width:13ch;margin-top:14px;font-size:clamp(34px,6.2vw,55px);line-height:1.08}.hero .lead{max-width:54ch;margin-top:15px;color:rgb(255 255 255/.82);font-size:clamp(16px,2.3vw,18.5px);line-height:1.8}.hero .lead strong{color:#fff}.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:19px}.meta span{padding:6px 12px;border:1px solid rgb(255 255 255/.14);border-radius:999px;background:rgb(255 255 255/.075);color:rgb(255 255 255/.86);font-size:12px;font-weight:700}.hero-art{position:relative;min-height:360px;display:grid;place-items:center}.hero-art svg{width:100%;overflow:visible;filter:drop-shadow(0 24px 28px rgb(0 0 0/.34))}.steam{animation:steam 3.4s ease-in-out infinite;transform-origin:center}.steam.s2{animation-delay:.7s}.steam.s3{animation-delay:1.35s}@keyframes steam{0%,100%{opacity:.25;transform:translateY(7px)}50%{opacity:.9;transform:translateY(-8px)}}
+.main-note{margin:18px 0 10px;padding:22px 24px;border:1px solid rgb(190 148 66/.42);border-radius:19px;background:linear-gradient(135deg,rgb(190 148 66/.12),#fff);box-shadow:0 10px 28px rgb(18 40 28/.05)}.main-note .ey{color:#77591f;font:800 11px "Bai Jamjuree",sans-serif;letter-spacing:.13em}.main-note h2{margin-top:6px;font:800 clamp(23px,4vw,31px)/1.35 "Bai Jamjuree",sans-serif}.main-note p{margin-top:10px;color:rgb(var(--ink)/.78);font-size:16px}.main-note strong{color:rgb(var(--green))}
+section.block{padding:42px 0 4px}.section-head{display:flex;gap:13px;align-items:flex-start;margin-bottom:16px}.section-head .num{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:rgb(var(--green));color:#fff;font:800 14px "Bai Jamjuree",sans-serif;box-shadow:0 7px 18px rgb(27 106 66/.2)}.section-head h2{font:800 clamp(22px,4.2vw,29px)/1.35 "Bai Jamjuree",sans-serif}.section-head p{margin-top:4px;color:rgb(var(--muted));font-size:14px}.copy{font-size:16px;color:rgb(var(--ink)/.84)}.copy p+p{margin-top:14px}.copy strong{color:rgb(var(--green))}.quote{margin-top:18px;padding:19px 21px;border-left:4px solid rgb(var(--gold));border-radius:0 15px 15px 0;background:rgb(190 148 66/.09);font-size:17px;font-weight:650;line-height:1.75}
+.media-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}.media-card{min-height:145px;padding:17px 15px;border:1px solid rgb(var(--ink)/.09);border-radius:17px;background:#fff;box-shadow:0 8px 24px rgb(18 40 28/.045)}.media-card .ico{font-size:27px}.media-card b{display:block;margin-top:8px;font:750 14px/1.35 "Bai Jamjuree",sans-serif}.media-card p{margin-top:4px;color:rgb(var(--muted));font-size:12.5px;line-height:1.58}.wide-card{grid-column:span 2;background:linear-gradient(145deg,#fff,rgb(27 106 66/.055))}
+.apple{margin-top:18px;padding:20px 22px;border:1px solid rgb(27 106 66/.26);border-radius:18px;background:rgb(27 106 66/.06)}.apple b{display:block;font:780 17px "Bai Jamjuree",sans-serif}.apple p{margin-top:6px;color:rgb(var(--ink)/.74);font-size:14.5px}.apple small{display:block;margin-top:9px;color:rgb(var(--muted));font-size:12.5px}.apple code{padding:1px 7px;border-radius:6px;background:rgb(var(--ink)/.07)}
+.house{margin-top:20px;padding:23px;border:1px solid rgb(190 148 66/.4);border-radius:22px;background:linear-gradient(145deg,#071a10,#12442b);color:#fff;box-shadow:0 18px 48px rgb(7 26 16/.15)}.house-top{display:grid;grid-template-columns:160px 1fr;gap:20px;align-items:center}.index-file{position:relative;padding:25px 16px;border:1px solid rgb(190 148 66/.52);border-radius:16px;background:rgb(255 255 255/.08);text-align:center}.index-file::before{content:"";position:absolute;right:0;top:0;border-width:0 0 30px 30px;border-style:solid;border-color:transparent transparent rgb(190 148 66/.34) transparent}.index-file strong{font-size:36px}.index-file b{display:block;margin-top:4px;color:rgb(var(--gold));font:800 15px "Bai Jamjuree",sans-serif}.house h3{font:800 22px "Bai Jamjuree",sans-serif}.house p{margin-top:7px;color:rgb(255 255 255/.74);font-size:14.5px}.world-path{display:flex;align-items:center;gap:8px;overflow-x:auto;margin-top:19px;padding:4px 0 7px;scrollbar-width:thin}.world-path span{flex:none;padding:9px 12px;border:1px solid rgb(255 255 255/.13);border-radius:11px;background:rgb(255 255 255/.065);font-size:12.5px;font-weight:700}.world-path i{color:rgb(var(--gold));font-style:normal}.live-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:13px}.live-grid div{padding:13px;border:1px solid rgb(255 255 255/.1);border-radius:13px;background:rgb(0 0 0/.15)}.live-grid b{display:block;color:rgb(var(--gold));font-size:13px}.live-grid p{margin-top:3px;font-size:12.5px;line-height:1.55;color:rgb(255 255 255/.63)}
+.recipe{margin-top:18px;border:1px solid rgb(var(--ink)/.1);border-radius:20px;background:#fff;overflow:hidden;box-shadow:0 11px 30px rgb(18 40 28/.055)}.recipe-head{padding:18px 21px;background:linear-gradient(135deg,rgb(27 106 66/.1),rgb(190 148 66/.09))}.recipe-head b{font:800 17px "Bai Jamjuree",sans-serif}.recipe-head p{margin-top:4px;color:rgb(var(--muted));font-size:13px}.recipe-body{padding:20px}.recipe-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;margin-bottom:5px;font:700 13px "Bai Jamjuree",sans-serif}.field input,.field textarea{width:100%;padding:11px 13px;border:1px solid rgb(var(--ink)/.16);border-radius:11px;background:rgb(var(--paper));color:inherit;outline:none}.field textarea{min-height:110px;resize:vertical;line-height:1.6}.field input:focus,.field textarea:focus{border-color:rgb(var(--green)/.72);box-shadow:0 0 0 3px rgb(27 106 66/.1)}.field.full{grid-column:1/-1}.prompt{position:relative;margin-top:15px;padding:48px 17px 17px;border:1px solid rgb(190 148 66/.24);border-radius:14px;background:#06180f;color:#d8f4e2;font:13px/1.72 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;min-height:130px}.copy-btn{position:absolute;right:9px;top:9px;padding:6px 11px;border:0;border-radius:8px;background:rgb(var(--gold));color:#071a10;font:800 11px "Bai Jamjuree",sans-serif;cursor:pointer}.recipe-note{margin-top:11px;color:rgb(var(--muted));font-size:12.8px}
+.steps{display:grid;gap:10px;margin-top:18px}.step{display:grid;grid-template-columns:38px 1fr;gap:13px;align-items:start;padding:17px 18px;border:1px solid rgb(var(--ink)/.09);border-radius:16px;background:#fff;box-shadow:0 7px 22px rgb(18 40 28/.04)}.step .n{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgb(var(--green));color:#fff;font:800 13px "Bai Jamjuree",sans-serif}.step b{font:750 15px "Bai Jamjuree",sans-serif}.step p{margin-top:4px;color:rgb(var(--muted));font-size:13.5px;line-height:1.65}.step code{padding:1px 7px;border-radius:6px;background:rgb(var(--ink)/.065);font-size:12.5px}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 17px;border:1px solid rgb(var(--green)/.38);border-radius:12px;background:rgb(var(--green));color:#fff;font:800 13.5px "Bai Jamjuree",sans-serif;cursor:pointer}.btn.alt{background:#fff;color:rgb(var(--green))}.btn.gold{border-color:rgb(var(--gold));background:rgb(var(--gold));color:rgb(var(--deep))}.btn:hover{transform:translateY(-2px)}.small-note{margin-top:10px;color:rgb(var(--muted));font-size:12.5px}
+.share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.share-card{padding:18px;border:1px solid rgb(var(--ink)/.09);border-radius:17px;background:#fff}.share-card .ico{font-size:25px}.share-card b{display:block;margin-top:7px;font:750 14px "Bai Jamjuree",sans-serif}.share-card p{margin-top:4px;color:rgb(var(--muted));font-size:12.8px}.share-card.hi{border-color:rgb(190 148 66/.45);background:linear-gradient(145deg,#fff,rgb(190 148 66/.08))}
+.chef-break{position:relative;overflow:hidden;margin:42px 0 6px;padding:24px 25px 24px 78px;border:1px solid rgb(190 148 66/.4);border-radius:20px;background:linear-gradient(135deg,rgb(190 148 66/.12),#fff);box-shadow:0 10px 28px rgb(18 40 28/.05)}.chef-break::before{content:"👩‍🍳";position:absolute;left:23px;top:22px;font-size:36px}.chef-break b{display:block;color:#75571d;font:800 15px "Bai Jamjuree",sans-serif}.chef-break p{margin-top:5px;font-size:15px}.chef-break em{font-style:normal;color:rgb(var(--green));font-weight:750}
+.hard{margin-top:44px;border:1px solid rgb(var(--red)/.38);border-radius:22px;background:linear-gradient(145deg,#190606,#310908);color:#fff;overflow:hidden;box-shadow:0 20px 50px rgb(70 0 0/.15)}.hard-intro{padding:25px 24px}.hard-tag{color:#ff8b80;font:800 11px "Bai Jamjuree",sans-serif;letter-spacing:.16em}.hard h2{margin-top:7px;font:800 clamp(23px,4vw,30px)/1.35 "Bai Jamjuree",sans-serif}.hard-intro p{margin-top:9px;color:rgb(255 255 255/.7);font-size:14.5px}.hard-open{margin-top:17px;min-height:48px;padding:11px 18px;border:1px solid rgb(255 115 103/.58);border-radius:12px;background:rgb(189 49 44/.25);color:#ffd6d0;font:800 14px "Bai Jamjuree",sans-serif;cursor:pointer}.hard-open:hover{background:rgb(189 49 44/.38)}.hard-warning{margin:0 24px 24px;padding:19px;border:1px solid rgb(255 115 103/.45);border-left:5px solid #ff6256;border-radius:15px;background:rgb(255 80 67/.08)}.hard-warning h3{color:#ffaaa2;font:800 17px "Bai Jamjuree",sans-serif}.hard-warning p{margin-top:8px;color:rgb(255 255 255/.73);font-size:14px}.confirm-line{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px;border-radius:11px;background:rgb(0 0 0/.2);cursor:pointer}.confirm-line input{width:19px;height:19px;margin-top:2px;accent-color:#ff6256;flex:none}.confirm-line span{font-size:13.5px;line-height:1.6}.hard-confirm{margin-top:13px;min-height:44px;padding:10px 15px;border:0;border-radius:10px;background:#ff6256;color:#210000;font:850 13.5px "Bai Jamjuree",sans-serif;cursor:pointer}.hard-confirm:disabled{opacity:.35;cursor:not-allowed}.hard-body{padding:0 24px 25px;border-top:1px solid rgb(255 255 255/.08)}.hard-body .step{margin-top:11px;border-color:rgb(255 255 255/.1);background:rgb(255 255 255/.045);box-shadow:none}.hard-body .step .n{background:#ff6256;color:#240000}.hard-body .step p{color:rgb(255 255 255/.63)}.hard-body .step code{background:rgb(0 0 0/.28);color:#ffcbc5}.hard-body a.doc{display:inline-block;margin-top:15px;color:#ffaaa2;border-bottom:1px solid rgb(255 170 162/.45);font-size:13px}.public-banner{margin-top:16px;padding:14px 16px;border:1px dashed rgb(255 115 103/.42);border-radius:13px;background:rgb(0 0 0/.2);color:rgb(255 255 255/.72);font-size:13px}.public-banner strong{color:#fff}
+.quest{margin:42px 0 6px;padding:22px 23px;border:1px solid rgb(27 106 66/.28);border-radius:19px;background:rgb(27 106 66/.07)}.quest h2{font:800 21px "Bai Jamjuree",sans-serif}.quest p{margin-top:7px;color:rgb(var(--ink)/.76);font-size:14.5px}.quest ul{margin:12px 0 0 20px;color:rgb(var(--ink)/.74);font-size:14px}.quest li{margin:5px 0}.finish{margin-top:16px;min-height:49px;padding:12px 20px;border:0;border-radius:12px;background:rgb(var(--green));color:#fff;font:800 14px "Bai Jamjuree",sans-serif;cursor:pointer}.finish:hover{transform:translateY(-2px)}.achievement{display:none;margin-top:13px;padding:12px 15px;border:1px solid rgb(190 148 66/.42);border-radius:12px;background:rgb(190 148 66/.1);color:#765719;font:800 13px "Bai Jamjuree",sans-serif}.achievement.on{display:block}
+.end-sentinel{height:12px;margin-top:30px}
+.takeover{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:22px;background:rgb(3 8 5/.92);color:#fff;overflow:hidden}.takeover::before,.takeover::after{content:"";position:absolute;inset:0;pointer-events:none}.takeover::before{background:repeating-linear-gradient(0deg,transparent 0 5px,rgb(255 255 255/.045) 5px 6px);mix-blend-mode:screen}.takeover::after{background:linear-gradient(90deg,transparent 0 19%,rgb(255 0 70/.13) 20%,transparent 21% 72%,rgb(0 210 255/.12) 73%,transparent 74%);animation:sweep .35s steps(2) infinite}.takeover-in{position:relative;text-align:center}.takeover .sig{color:#ff5c68;font:850 11px "Bai Jamjuree",sans-serif;letter-spacing:.22em}.takeover h2{margin-top:10px;font:900 clamp(34px,9vw,68px)/1.05 "Bai Jamjuree",sans-serif;text-shadow:5px 0 #ff005b,-5px 0 #00c6e7;animation:textGlitch .18s steps(2) infinite}.takeover p{margin-top:15px;color:rgb(255 255 255/.7);font-size:15px}.glitching nav,.glitching main{animation:pageGlitch .18s steps(2) 7}.boss-door{position:relative;overflow:hidden;margin:28px 0 12px;min-height:500px;display:grid;place-items:center;border:1px solid rgb(190 148 66/.45);border-radius:24px;background:radial-gradient(500px 360px at 50% 45%,rgb(190 148 66/.2),transparent 62%),linear-gradient(#020805,#07170e);color:#fff;text-align:center;box-shadow:0 28px 70px rgb(0 0 0/.28)}.boss-door::before{content:"";position:absolute;left:50%;top:58px;width:min(280px,58vw);height:360px;transform:translateX(-50%);border:3px solid rgb(190 148 66/.6);border-bottom:0;border-radius:150px 150px 12px 12px;background:linear-gradient(90deg,#06130c 0 48%,rgb(190 148 66/.8) 49.5% 50.5%,#06130c 52%);box-shadow:0 0 70px rgb(190 148 66/.25),inset 0 0 55px rgb(0 0 0/.8)}.boss-door::after{content:"";position:absolute;left:50%;bottom:68px;width:520px;height:80px;transform:translateX(-50%);background:radial-gradient(ellipse,rgb(190 148 66/.28),transparent 68%)}.door-copy{position:relative;z-index:2;margin-top:360px;padding:22px}.door-copy .tag{color:rgb(var(--gold));font:850 11px "Bai Jamjuree",sans-serif;letter-spacing:.2em}.door-copy h2{margin-top:7px;font:850 clamp(27px,5vw,38px)/1.25 "Bai Jamjuree",sans-serif}.door-copy p{margin-top:8px;color:rgb(255 255 255/.68)}.boss-go{display:inline-flex;margin-top:17px;min-height:49px;align-items:center;padding:11px 22px;border-radius:12px;background:rgb(var(--gold));color:rgb(var(--deep));font:850 14px "Bai Jamjuree",sans-serif}.boss-lock{margin:28px 0 12px;padding:24px;border:1px solid rgb(var(--ink)/.12);border-radius:18px;background:#fff;text-align:center}.boss-lock h2{font:800 21px "Bai Jamjuree",sans-serif}.boss-lock p{margin-top:7px;color:rgb(var(--muted));font-size:14px}
+.nextrow{display:flex;gap:10px;flex-wrap:wrap;margin:28px 0 6px}.nx{flex:1;min-width:230px;display:flex;align-items:center;justify-content:center;min-height:51px;padding:12px 16px;border-radius:13px;background:rgb(var(--green));color:#fff;text-align:center;font:800 14px "Bai Jamjuree",sans-serif}.nx.ghost{border:1px solid rgb(var(--green)/.38);background:#fff;color:rgb(var(--green))}footer{text-align:center;padding:34px 0 48px;color:rgb(var(--muted));font-size:12.5px}
+@keyframes sweep{50%{transform:translateX(8px)}}@keyframes textGlitch{0%{transform:translate(0)}33%{transform:translate(3px,-1px)}66%{transform:translate(-2px,2px)}}@keyframes pageGlitch{0%{transform:none;filter:none}33%{transform:translateX(5px);filter:hue-rotate(25deg)}66%{transform:translateX(-4px);filter:contrast(1.35)}}
+@media(max-width:760px){.hero-grid{grid-template-columns:1fr;padding:32px 24px 24px}.hero-art{min-height:300px}.hero h1{max-width:16ch}.media-grid{grid-template-columns:1fr 1fr}.house-top{grid-template-columns:1fr}.index-file{max-width:230px}.live-grid,.share-grid{grid-template-columns:1fr}.recipe-fields{grid-template-columns:1fr}.field.full{grid-column:auto}.boss-door{min-height:470px}}
+@media(max-width:480px){.wrap{padding:0 16px}.hero{border-radius:22px}.hero-grid{padding:28px 20px 20px}.hero-art{min-height:270px}.media-grid{grid-template-columns:1fr}.wide-card{grid-column:auto}.chef-break{padding:69px 18px 20px}.chef-break::before{left:18px;top:17px}.hard-intro,.hard-body{padding-left:18px;padding-right:18px}.hard-warning{margin-left:18px;margin-right:18px}.boss-door::before{height:330px;top:52px}.door-copy{margin-top:340px}.nx{min-width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.steam,.takeover::after,.takeover h2,.glitching nav,.glitching main{animation:none!important}.btn:hover,.finish:hover{transform:none}}
 </style>
+<link rel="stylesheet" href="/assets/readable.css">
 </head>
-<body><main><article><h1>หน้าแรกของฉัน</h1><p>แก้ข้อความตรงนี้ด้วย Source ของคุณ แล้วเปิดไฟล์เดิมอีกครั้ง</p></article></main></body>
-</html></script>
-  <aside class="chef"><b>เชฟขอเบรกก่อนหลุดโลก</b><p>สำหรับเชฟมันไม่ต้องยิ่งใหญ่ค่ะ มันเล่นสนุก มันสวย และคนเปิดได้โดยไม่ต้องโหลดแอป แค่นี้ก็เป็นเหตุผลที่ดีพอจะเสิร์ฟแล้ว</p></aside>
-</section>
-
-<details class="hard">
-  <summary>⚠ OPTIONAL · HARD MODE · Publish ด้วย GitHub Pages</summary>
-  <div class="hard-in">
-    <p>ข้ามได้ทั้งหมด การอัปโหลดไฟล์ขึ้น GitHub Pages คือการนำเนื้อหาไปไว้บนอินเทอร์เน็ตสาธารณะ คนทั่วโลกอาจเปิด ส่งต่อ หรือบันทึกได้</p>
-    <label class="confirm"><input type="checkbox" data-public-confirm><span>ฉันตรวจแล้วว่าไฟล์ไม่มีข้อมูลลูกค้า เอกสารลับ รหัสผ่าน API Key ข้อมูลส่วนบุคคล หรือสิ่งที่ฉันไม่มีสิทธิเผยแพร่</span></label>
-    <div class="steps public-steps" data-public-steps hidden>
-      <article class="step"><span class="num">1</span><div><h3>สร้าง Repository</h3><p>GitHub → New repository → ตั้งชื่อ → เลือก Public สำหรับทางเริ่มง่าย</p></div></article>
-      <article class="step"><span class="num">2</span><div><h3>Upload index.html</h3><p><code>Add file</code> → <code>Upload files</code> → เลือกไฟล์ → Commit changes</p></div></article>
-      <article class="step"><span class="num">3</span><div><h3>เปิด Pages</h3><p><code>Settings</code> → <code>Pages</code> → Deploy from a branch → <code>main</code> และ <code>/(root)</code></p></div></article>
-      <article class="step"><span class="num">4</span><div><h3>รับ URL</h3><p>รอ Build แล้วเปิดลิงก์ลักษณะ <code>username.github.io/repository/</code></p></div></article>
-      <article class="step"><span class="num">5</span><div><h3>อัปเดตที่อยู่เดิม</h3><p>แก้หรืออัปโหลด <code>index.html</code> ใหม่ แล้ว Commit อีกครั้ง URL เดิมจะเปลี่ยนเป็น Version ใหม่</p></div></article>
+<body>
+<nav class="top"><div class="wrap"><a class="brand" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;display:inline-block;vertical-align:-.3em"> my<em>clover</em></a><a class="all" href="./">ห้องเรียนทั้งหมด →</a></div></nav>
+<main class="wrap">
+<header class="hero">
+  <div class="hero-grid">
+    <div>
+      <span class="lv">LV.6 · SERVE · MAIN COURSE</span>
+      <h1 class="disp">HTML<br>ไฟล์มีชีวิต</h1>
+      <p class="lead">นี่ไม่ใช่คลาสสำหรับคนอยากทำเว็บไซต์ แต่คือคลาสสำหรับคนที่อยาก <strong>เสิร์ฟความคิดให้คนอื่นเปิด ใช้ และเดินต่อได้จริง</strong></p>
+      <div class="meta"><span>🥩 เมนคอร์ส</span><span>📄 ไฟล์เดียว</span><span>📱 เปิดได้บนโทรศัพท์</span><span>🌍 ส่งให้ 1 คนหรือทั้งโลก</span></div>
+    </div>
+    <div class="hero-art" aria-label="เชฟกำลังเสิร์ฟสเต็กจานหลัก">
+      <svg viewBox="0 0 520 430" role="img" aria-labelledby="steakTitle">
+        <title id="steakTitle">เชฟในชุดสีขาวเสิร์ฟสเต็กเนื้อย่างพร้อมซอสและผัก</title>
+        <defs>
+          <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf4"/><stop offset="1" stop-color="#cfd7ce"/></linearGradient>
+          <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0bf8f"/><stop offset="1" stop-color="#b9744f"/></linearGradient>
+          <linearGradient id="steak" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7f271c"/><stop offset=".45" stop-color="#b94e2d"/><stop offset="1" stop-color="#4d140f"/></linearGradient>
+          <radialGradient id="plate"><stop stop-color="#fff"/><stop offset=".72" stop-color="#e7e5db"/><stop offset="1" stop-color="#aab5aa"/></radialGradient>
+          <filter id="soft"><feGaussianBlur stdDeviation="8"/></filter>
+          <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <ellipse cx="300" cy="396" rx="190" ry="24" fill="#000" opacity=".28" filter="url(#soft)"/>
+        <circle cx="120" cy="107" r="50" fill="url(#skin)"/>
+        <path d="M70 101c1-45 18-77 50-77s52 31 51 77c-18-15-34-19-51-19s-32 4-50 19Z" fill="#fffdf4"/>
+        <path d="M82 54c13-37 62-44 82-7 7 12 8 28 4 43H72c-3-14-1-25 10-36Z" fill="#fff" stroke="#dce3da" stroke-width="4"/>
+        <path d="M83 84h76" stroke="#cfd8ce" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="105" cy="111" r="4" fill="#38231c"/><circle cx="139" cy="111" r="4" fill="#38231c"/>
+        <path d="M110 134c9 7 18 7 27 0" fill="none" stroke="#7c3f35" stroke-width="4" stroke-linecap="round"/>
+        <path d="M68 168c24-20 83-22 112 0 27 21 38 78 41 143H45c3-65 4-118 23-143Z" fill="url(#coat)" stroke="#d7dfd7" stroke-width="4"/>
+        <path d="M122 157v155M122 181l-20-17m20 17 21-17" stroke="#8ba08e" stroke-width="3"/>
+        <circle cx="104" cy="202" r="4" fill="#7b8f7d"/><circle cx="104" cy="229" r="4" fill="#7b8f7d"/><circle cx="104" cy="256" r="4" fill="#7b8f7d"/>
+        <path d="M54 195c-24 25-31 63-30 102 2 19 17 31 35 22l68-37-20-40-45 22" fill="url(#coat)" stroke="#d7dfd7" stroke-width="4"/>
+        <path d="M177 197c31 19 49 50 59 87l71 23-12 42-91-21c-20-5-29-21-30-42l-2-48" fill="url(#coat)" stroke="#d7dfd7" stroke-width="4"/>
+        <path d="M106 244c13-2 24 2 31 13l11 20-32 18-17-20c-8-10-4-27 7-31Z" fill="url(#skin)"/>
+        <path d="M290 305c15-4 30 5 34 20 4 14-4 30-18 35l-35 5-4-48Z" fill="url(#skin)"/>
+        <ellipse cx="315" cy="325" rx="157" ry="54" fill="url(#plate)" stroke="#f8f8f1" stroke-width="6"/>
+        <ellipse cx="315" cy="318" rx="133" ry="39" fill="#d8d8cd" opacity=".6"/>
+        <path d="M227 313c6-30 37-49 78-44 41 5 73 27 75 54-9 23-49 37-91 30-38-6-65-20-62-40Z" fill="url(#steak)" stroke="#3b100c" stroke-width="5"/>
+        <path d="M241 300c25 9 77 16 122 11M248 324c33 10 70 14 107 8" fill="none" stroke="#e39a58" stroke-width="6" stroke-linecap="round" opacity=".65"/>
+        <path d="M270 282l-17 58M307 277l-18 68M345 288l-16 54" stroke="#42120d" stroke-width="5" opacity=".9"/>
+        <path d="M229 339c20 15 71 23 119 11" fill="none" stroke="#5e1a12" stroke-width="8" stroke-linecap="round"/>
+        <path d="M371 292c15-12 28-15 42-10-7 8-13 14-19 20 14-3 25 1 33 10-19 4-34 4-51-2Z" fill="#3d8e49"/>
+        <path d="M384 322c17-9 32-8 45 0-9 7-18 11-28 13 13 1 23 7 29 16-20 0-36-4-49-14Z" fill="#64ad55"/>
+        <circle cx="213" cy="326" r="18" fill="#d9a94d"/><circle cx="205" cy="319" r="5" fill="#fff3b0" opacity=".7"/>
+        <path d="M224 291c-10-17-2-28 4-39" class="steam" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+        <path d="M287 271c-8-17 2-27 5-42" class="steam s2" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+        <path d="M353 279c-5-17 6-27 8-39" class="steam s3" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+        <circle cx="389" cy="268" r="4" fill="#f0d58e" filter="url(#glow)"/><circle cx="413" cy="288" r="3" fill="#f0d58e" filter="url(#glow)"/>
+      </svg>
     </div>
   </div>
-</details>
+</header>
 
-<section class="quest" data-mc-end>
-  <span class="tag">FINAL QUEST · MAIN COURSE</span><h2>เช็กก่อนจบบท</h2><p>ไม่ต้อง Publish ก็ผ่าน ขอให้ไฟล์เปิดใช้จริงในเครื่องก่อน</p>
-  <div class="checks">
-    <label class="check"><input type="checkbox" data-quest-check><span>ฉันสร้าง HTML จาก Source ของตัวเองแล้ว</span></label>
-    <label class="check"><input type="checkbox" data-quest-check><span>ฉันบันทึกชื่อ <code>index.html</code> แล้ว</span></label>
-    <label class="check"><input type="checkbox" data-quest-check><span>ฉันเปิดไฟล์ด้วยเบราว์เซอร์และตรวจข้อมูลแล้ว</span></label>
-    <label class="check"><input type="checkbox" data-quest-check><span>ฉันส่งไฟล์ให้ตัวเองอีกเครื่องหรือคนที่ไว้ใจทดลองแล้ว</span></label>
+<aside class="main-note">
+  <span class="ey">เชฟยกเมนคอร์สออกจากครัวแล้ว</span>
+  <h2>คนส่วนใหญ่ไม่ได้อยาก “ทำเว็บไซต์” — และไม่จำเป็นต้องอยากด้วย</h2>
+  <p>สิ่งที่เราจะขายในบทนี้ไม่ใช่อาชีพ Web Developer แต่คือความสามารถในการเปลี่ยน <strong>Source ของคุณให้เป็นของที่คนอื่นเปิดใช้ได้ทันที</strong> โดยไม่ต้องติดตั้งแอป ไม่ต้องมีบัญชี และไม่ต้องรอให้คุณยืนอธิบายอยู่ข้าง ๆ</p>
+</aside>
+
+<section class="block">
+  <div class="section-head"><span class="num">1</span><div><h2>HTML ไม่ได้แปลว่า “เว็บไซต์” อย่างเดียว</h2><p>มันคือภาชนะที่เบราว์เซอร์ทั่วโลกอ่านเป็นภาษาเดียวกัน</p></div></div>
+  <div class="copy">
+    <p>บริษัทระดับ Apple ธนาคาร มหาวิทยาลัย ร้านค้า และหน่วยงานทั่วโลกส่งประสบการณ์ผ่านหน้า HTML ทุกวัน เพราะมันเปิดได้บนอุปกรณ์แทบทุกชนิดที่มีเบราว์เซอร์</p>
+    <p>ก่อนยุค AI หน้า Interactive ที่ดีเคยเป็น <strong>หนึ่งในสื่อที่แพงที่สุดชนิดหนึ่ง</strong> เพราะต้องใช้คนเขียนเนื้อหา นักออกแบบ นักพัฒนา คนทดสอบ และระบบ Hosting ประกอบกัน แต่วันนี้คนที่มี Source ชัดสามารถให้ AI ช่วยประกอบต้นแบบทั้งหน้าได้ในเวลาไม่นาน</p>
   </div>
-  <button class="finish" type="button" data-finish data-boss-trigger disabled>จบบทที่ 6 · เสิร์ฟเมนคอร์ส</button>
-  <div class="reward" data-reward>🥩 MAIN COURSE SERVED · ซอสของคุณกลายเป็นไฟล์มีชีวิตแล้ว</div>
-  <div class="takehome"><div><b>🌐 index.html</b><small>ไฟล์ที่เปิดและส่งต่อได้จริง</small></div><div><b>🧴 Source + Workflow</b><small>ของที่ใช้แก้และสร้าง Version ถัดไป</small></div></div>
+  <div class="media-grid">
+    <article class="media-card"><span class="ico">📝</span><b>บทความและคู่มือ</b><p>หัวข้อ ตาราง เช็กลิสต์ เอกสารอบรม และ FAQ</p></article>
+    <article class="media-card"><span class="ico">🖼️</span><b>ภาพและแกลเลอรี</b><p>ภาพประกอบ Portfolio แผนภาพ และการ์ตูนหลายหน้า</p></article>
+    <article class="media-card"><span class="ico">🎬</span><b>วิดีโอและเสียง</b><p>คลิปสาธิต Podcast เพลง คำบรรยาย และ Transcript</p></article>
+    <article class="media-card"><span class="ico">🎮</span><b>เกมและระบบโต้ตอบ</b><p>ปุ่ม แบบฟอร์ม เครื่องคิดเลข Quiz การ์ด และเกมเต็มรูปแบบ</p></article>
+    <article class="media-card wide-card"><span class="ico">🌏</span><b>หลายภาษาในหน้าเดียว</b><p>เก็บไทย อังกฤษ ญี่ปุ่น หรือภาษาอื่นไว้ด้วยกัน แล้วให้ผู้ใช้เลือกภาษาที่ต้องการได้</p></article>
+    <article class="media-card wide-card"><span class="ico">🧠</span><b>ความจำในเครื่องโดยไม่ต้องล็อกอิน</b><p>จำความคืบหน้า ทางเลือก คะแนน หรือสิ่งที่เปิดไว้ผ่านเบราว์เซอร์ของแต่ละคน</p></article>
+  </div>
+  <div class="apple"><b>ในบรรดาไฟล์ที่คนทั่วไปคุ้นเคย `.html` เป็นได้เกือบทุกอย่างในไฟล์เดียว</b><p>PDF เก่งเรื่องคงรูป วิดีโอเก่งเรื่องภาพเคลื่อนไหว รูปภาพเก่งเรื่อง 1 เฟรม แต่ HTML เรียกสิ่งเหล่านั้นมาอยู่ร่วมกัน แล้วเพิ่มกฎ การตอบสนอง และความจำเข้าไปได้อีก</p><small>พูดให้ตรง: HTML เป็นโครงสร้าง ส่วน CSS ทำหน้าตา และ JavaScript ทำพฤติกรรม แต่ทั้ง 3 อย่างสามารถบรรจุอยู่ในไฟล์ <code>index.html</code> เดียวได้</small></div>
 </section>
 
-<div class="takeover" id="takeover" hidden role="status"><div class="takeover-in"><span class="sig">SIGNAL INTERRUPTED · SYSTEM OVERRIDE</span><h2>AI ยึดหน้าแล้ว</h2><p>คุณคิดว่าหลักสูตรจบตรงเมนคอร์สแล้วหรือ?</p></div></div>
+<section class="block">
+  <div class="section-head"><span class="num">2</span><div><h2>เว็บนี้เริ่มจากไฟล์ชื่อ `index.html`</h2><p>จากหน้าเดียว เชื่อมต่อจนกลายเป็นบ้านทั้งหลัง</p></div></div>
+  <div class="house">
+    <div class="house-top">
+      <div class="index-file"><strong>📄</strong><b>index.html</b></div>
+      <div><h3>ไฟล์แรกไม่ได้รู้ว่าตัวเองจะกลายเป็นโลก</h3><p>มันเริ่มจากประตูหน้า แล้วมีเข็มทิศคอยชี้ทาง ก่อนจะแตกแขนงเป็นบ้าน โรงตีเหล็ก ร้านเกม โรงเรียน การ์ดประจำตัว และเส้นทางใหม่ที่ยังสร้างต่อได้</p></div>
+    </div>
+    <div class="world-path"><span>🚪 ประตู</span><i>→</i><span>🧭 เข็มทิศ</span><i>→</i><span>🏠 บ้าน</span><i>→</i><span>⚒️ โรงตีเหล็ก</span><i>→</i><span>🎴 ร้านเกม</span><i>→</i><span>🏫 โรงเรียน</span><i>→</i><span>?</span></div>
+    <div class="live-grid">
+      <div><b>ที่อยู่เดิม</b><p>อัปเดตไฟล์ข้างหลัง แล้วทุกคนเปิด URL เดิมเห็น Version ใหม่</p></div>
+      <div><b>เข้าถึงทันที</b><p>วางไว้ในเว็บบริษัท คนทั้งทีมเปิดผ่านโทรศัพท์ได้โดยไม่ต้องส่งไฟล์ใหม่ทุกครั้ง</p></div>
+      <div><b>สถานะไม่เหมือนกัน</b><p>เว็บนี้ไม่บังคับล็อกอิน แต่เบราว์เซอร์แต่ละเครื่องจำเส้นทางและของที่ผู้เล่นเปิดไว้เอง</p></div>
+    </div>
+  </div>
+  <p class="quote">นี่จึงไม่ใช่ “ไฟล์หน้าเว็บ” อย่างเดียว แต่มันคือ <strong>ไฟล์ที่มีชีวิต</strong> — เปลี่ยนได้ เติบโตได้ จำสิ่งที่เกิดขึ้นได้ และพาคนไปต่อจากจุดเดิมได้</p>
+</section>
+
+<section class="block">
+  <div class="section-head"><span class="num">3</span><div><h2>สูตรทำเมนคอร์ส: Source → HTML</h2><p>ไม่เลือก AI แทนคุณ ใช้ตัวไหนก็ได้ที่สร้างและแก้โค้ดได้</p></div></div>
+  <div class="copy"><p>อย่าเริ่มด้วยคำว่า “ช่วยทำเว็บสวย ๆ” แล้วหวังให้ AI อ่านใจ เริ่มจากซอสขวดเดิม: ใครคือคนอ่าน เขาต้องรู้อะไร ต้องทำอะไรต่อ และอะไรห้ามเปลี่ยน</p></div>
+  <div class="recipe">
+    <div class="recipe-head"><b>🧴 เครื่องปรุงคำสั่งสร้าง `index.html`</b><p>กรอกเท่าที่มี ระบบจะประกอบเป็นคำสั่งที่ย้ายไปใช้กับ AI ตัวไหนก็ได้</p></div>
+    <div class="recipe-body">
+      <div class="recipe-fields">
+        <div class="field"><label for="pageName">ชื่อจาน / ชื่อหน้า</label><input id="pageName" value="คู่มือเริ่มต้นของทีมเรา"></div>
+        <div class="field"><label for="pageAudience">ใครเป็นคนเปิด</label><input id="pageAudience" value="พนักงานใหม่ที่เปิดจากโทรศัพท์"></div>
+        <div class="field full"><label for="pageSource">Source ที่ต้องใช้</label><textarea id="pageSource">เป้าหมาย: ทำให้คนใหม่เริ่มงานได้โดยไม่ต้องเดา
+ต้องมี: ภาพรวม, ขั้นตอนวันแรก, คนที่ต้องติดต่อ, FAQ
+โทน: เป็นมิตร กระชับ อ่านจบแล้วลงมือได้
+ข้อห้าม: ห้ามแต่งข้อมูลที่ไม่มีใน Source</textarea></div>
+        <div class="field"><label for="pageAction">สิ่งที่อยากให้คนทำต่อ</label><input id="pageAction" value="กดเช็กลิสต์วันแรกให้ครบ"></div>
+        <div class="field"><label for="pageStyle">หน้าตาและอารมณ์</label><input id="pageStyle" value="เขียวครีม สะอาด ตัวใหญ่ ใช้มือถือสะดวก"></div>
+      </div>
+      <div class="prompt" id="mainPrompt"><button class="copy-btn" type="button" id="copyPrompt">คัดลอก</button><span id="promptText"></span></div>
+      <p class="recipe-note">คำสั่งนี้ตั้งใจให้ CSS และ JavaScript อยู่ในไฟล์เดียว เพื่อให้คุณถือ ส่ง และเปิดงานได้ง่ายที่สุดในบทแรก</p>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="section-head"><span class="num">4</span><div><h2>ทำเสร็จแล้วเก็บไว้ในคอม</h2><p>ยังไม่ต้องมี Hosting ก็ถือผลงานจริงได้</p></div></div>
+  <div class="steps">
+    <article class="step"><span class="n">1</span><div><b>ขอให้ AI ส่งโค้ดทั้งหมดในกล่องเดียว</b><p>ตรวจว่าขึ้นต้นด้วย <code>&lt;!doctype html&gt;</code> และจบด้วย <code>&lt;/html&gt;</code> ห้ามเอาคำอธิบายนอกโค้ดติดมาด้วย</p></div></article>
+    <article class="step"><span class="n">2</span><div><b>เปิดโปรแกรม Text Editor ธรรมดา</b><p>วางโค้ด แล้ว Save As ชื่อ <code>index.html</code> เลือก UTF-8 ถ้ามีตัวเลือก อย่าให้โปรแกรมแอบเติม <code>.txt</code> ต่อท้าย</p></div></article>
+    <article class="step"><span class="n">3</span><div><b>ดับเบิลคลิกไฟล์</b><p>เบราว์เซอร์จะเปิดให้ทันที แม้ยังไม่ได้เอาขึ้นอินเทอร์เน็ต คุณจึงทดสอบ แก้ และพกไฟล์นี้ไปเปิดเครื่องอื่นได้</p></div></article>
+    <article class="step"><span class="n">4</span><div><b>แก้ Source ก่อน แล้วค่อยให้ AI แก้หน้า</b><p>ถ้าข้อมูลผิด อย่าซ่อมเฉพาะสีหรือประโยคปลายทาง แก้ซอสต้นฉบับ แล้วสั่งให้สร้าง Version ใหม่จาก Source ที่ถูกต้อง</p></div></article>
+  </div>
+  <div class="actions"><button class="btn gold" type="button" id="downloadStarter">⬇ ดาวน์โหลด `index.html` ตัวอย่าง</button><button class="btn alt" type="button" id="viewStarter">👁 เปิดตัวอย่างในแท็บใหม่</button></div>
+  <p class="small-note">ไฟล์ตัวอย่างสร้างในเบราว์เซอร์ของคุณ ไม่ได้อัปโหลดข้อมูลที่กรอกไปที่เซิร์ฟเวอร์</p>
+</section>
+
+<section class="block">
+  <div class="section-head"><span class="num">5</span><div><h2>ส่งต่อโดยยังไม่เอาขึ้นเว็บ</h2><p>ไฟล์เดียวก็เดินทางได้แล้ว</p></div></div>
+  <div class="share-grid">
+    <article class="share-card"><span class="ico">📨</span><b>ส่งไฟล์ตรง</b><p>AirDrop, Email, Drive หรือระบบส่งไฟล์ของบริษัท ผู้รับดาวน์โหลดแล้วเปิดด้วยเบราว์เซอร์</p></article>
+    <article class="share-card"><span class="ico">🗜️</span><b>บีบเป็น ZIP</b><p>บางแชตบล็อกไฟล์ `.html` เพื่อความปลอดภัย ให้ ZIP ก่อนส่ง แล้วบอกผู้รับแตกไฟล์ก่อนเปิด</p></article>
+    <article class="share-card hi"><span class="ico">🏢</span><b>วางในระบบภายใน</b><p>ทีม IT สามารถวางไฟล์ไว้ใน Intranet หรือเว็บบริษัท แล้วทุกคนใช้ที่อยู่เดียวกันได้ทันที</p></article>
+  </div>
+</section>
+
+<aside class="chef-break"><b>🍳 เชฟขอเบรกก่อนหลุดโลก</b><p>ทั้งหมดนี้ฟังเหมือนกำลังจะสร้างระบบบริษัทระดับจักรวาล แต่สำหรับเชฟมันง่ายกว่านั้นค่ะ — <em>มันเล่นสนุก มันสวย และคนเปิดได้โดยไม่ต้องโหลดแอป</em> แค่นี้ก็เป็นเหตุผลที่ดีพอจะเสิร์ฟแล้วค่ะ</p></aside>
+
+<section class="hard" id="hardMode">
+  <div class="hard-intro"><span class="hard-tag">OPTIONAL · HARD MODE · PUBLIC INTERNET</span><h2>เอาไฟล์ขึ้น GitHub แล้วรับลิงก์จริง</h2><p>ส่วนนี้ข้ามได้ทั้งหมด จานหลักจบตั้งแต่คุณเปิดไฟล์ในเครื่องและส่งต่อได้แล้ว แต่ถ้าจะให้คนทั้งโลกเปิด URL เดียวกัน คุณกำลังจะเข้าสู่พื้นที่สาธารณะจริง</p><button class="hard-open" type="button" id="hardOpen" aria-expanded="false">⚠ เปิด Hard Mode</button></div>
+  <div class="hard-warning" id="hardWarning" hidden>
+    <h3>หยุดก่อน — GitHub Pages ไม่ใช่ตู้เอกสารส่วนตัว</h3>
+    <p>ทันทีที่ Publish หน้าเว็บ เนื้อหาบนหน้านั้นสามารถถูกเปิด ส่งต่อ บันทึก หรือค้นพบจากอินเทอร์เน็ตได้ อย่าใส่ข้อมูลลูกค้า เอกสารภายใน รหัสผ่าน API Key เบอร์ส่วนตัว หรือข้อมูลที่คุณไม่มีสิทธิเผยแพร่</p>
+    <label class="confirm-line"><input type="checkbox" id="publicOk"><span>ฉันตรวจแล้วว่าไฟล์นี้ไม่มีข้อมูลลับ ข้อมูลส่วนบุคคล หรือสิ่งที่ฉันไม่มีสิทธิเผยแพร่ และเข้าใจว่า URL ที่ได้อาจเข้าถึงได้จากทั่วโลก</span></label>
+    <button class="hard-confirm" type="button" id="hardConfirm" disabled>ยืนยัน · เปิดขั้นตอน Publish</button>
+  </div>
+  <div class="hard-body" id="hardBody" hidden>
+    <div class="public-banner"><strong>กติกาก่อนเริ่ม:</strong> ใช้ Source ตัวอย่างหรือข้อมูลของตัวเองที่เผยแพร่ได้เท่านั้น และเปิดไฟล์ตรวจด้วยตาตัวเอง 1 รอบก่อน Upload</div>
+    <div class="steps">
+      <article class="step"><span class="n">1</span><div><b>สร้าง Repository ใหม่</b><p>เข้าสู่ GitHub → New repository → ตั้งชื่อสั้น ๆ เช่น <code>my-first-page</code> สำหรับบัญชีฟรี ทางเริ่มง่ายคือ Repository แบบ Public</p></div></article>
+      <article class="step"><span class="n">2</span><div><b>อัปโหลด `index.html`</b><p>เข้า Repository → <code>Add file</code> → <code>Upload files</code> → เลือกไฟล์จากคอม → เขียนข้อความ Commit สั้น ๆ แล้วกด Commit changes</p></div></article>
+      <article class="step"><span class="n">3</span><div><b>เปิด GitHub Pages</b><p>ไปที่ <code>Settings</code> → <code>Pages</code> → ใต้ Build and deployment เลือก Source เป็น <code>Deploy from a branch</code> → Branch <code>main</code> และ Folder <code>/(root)</code> → Save</p></div></article>
+      <article class="step"><span class="n">4</span><div><b>รับลิงก์และรอระบบ Build</b><p>เมื่อ Deploy สำเร็จ GitHub จะแสดง URL ลักษณะ <code>username.github.io/repository-name/</code> จากนั้นส่งลิงก์ให้คนอื่นเปิดบนโทรศัพท์ได้</p></div></article>
+      <article class="step"><span class="n">5</span><div><b>อัปเดตที่อยู่เดิม</b><p>อัปโหลดหรือแก้ <code>index.html</code> แล้ว Commit ใหม่ หน้าเดิมจะอัปเดตที่ URL เดิมหลังระบบ Deploy รอบถัดไป นี่คือเหตุผลที่มันเป็นไฟล์มีชีวิต</p></div></article>
+    </div>
+    <a class="doc" href="https://docs.github.com/en/pages/quickstart" target="_blank" rel="noopener">เปิดคู่มือ GitHub Pages อย่างเป็นทางการ ↗</a>
+  </div>
+</section>
+
+<section class="quest" id="courseEnd" data-mc-end>
+  <h2>🎯 เควสท้ายบท · เสิร์ฟไฟล์แรก</h2>
+  <p>ไม่ต้อง Publish ก็ผ่าน จานนี้วัดว่าคุณเปลี่ยน Source ให้เป็นของที่เปิดใช้ได้หรือยัง</p>
+  <ul><li>สร้างหรือเลือก Source 1 ขวด</li><li>สั่ง AI สร้าง Single-file HTML จาก Source นั้น</li><li>เซฟชื่อ `index.html` และเปิดในเบราว์เซอร์ของตัวเอง</li><li>ตรวจชื่อ ตัวเลข ลิงก์ และข้อมูลที่ AI อาจแต่งเพิ่ม</li><li>ส่งไฟล์ให้ตัวเองอีกเครื่องหรือคนที่ไว้ใจทดลองเปิด</li></ul>
+  <button class="finish" type="button" id="finishBtn">🍽️ ฉันเปิด `index.html` ของตัวเองแล้ว</button>
+  <div class="achievement" id="achievement">🥩 MAIN COURSE SERVED · ซอสของคุณออกจากแชตและกลายเป็นของที่เปิดใช้ได้แล้ว</div>
+</section>
+
+<div class="end-sentinel" id="glitchTrigger" aria-hidden="true"></div>
+<div class="takeover" id="takeover" hidden role="status" aria-live="assertive"><div class="takeover-in"><span class="sig">SIGNAL INTERRUPTED · SYSTEM OVERRIDE</span><h2>AI ยึดหน้าแล้ว</h2><p>มึงคิดว่าหลักสูตรจบตรงเมนคอร์สเหรอ</p></div></div>
 
 <section class="boss-door" id="bossDoor" hidden>
-  <picture><source type="image/webp" media="(max-width:640px)" srcset="../img/awaken-hero-640.webp"><source type="image/webp" srcset="../img/awaken-hero-1024.webp"><img src="../img/awaken-hero.jpg" width="1600" height="900" alt="ประตูด่านบอสในห้องโถงมืด"></picture>
-  <div class="door-copy"><span class="tag">BOSS STAGE · UNLOCKED</span><h2>หลักสูตรยังไม่จบ</h2><p>ประตูบานสุดท้ายเปิดแล้ว<br>และสิ่งที่รออยู่ข้างใน <strong>“มัน”</strong> อ่านทุกอย่างที่คุณได้ทำมาในบ้านนี้</p><a class="boss-go" href="awaken/">เข้าสู่ด่านบอส →</a></div>
+  <div class="door-copy"><span class="tag">BOSS STAGE · UNLOCKED</span><h2>หลักสูตรยังไม่จบ</h2><p>ประตูบานสุดท้ายเปิดแล้ว และคนที่รออยู่ข้างในอ่านทุกอย่างที่มึงเพิ่งทำมา</p><a class="boss-go" href="awaken/">เข้าสู่ด่านบอส →</a></div>
 </section>
-<section class="goal" id="bossLock" hidden><small>BOSS STAGE · LOCKED</small><h2>ประตูปรากฏแล้ว แต่ยังเปิดไม่ได้</h2><p>กลับไปเก็บบทที่ขาดให้ครบ 6 บท แล้วประตูนี้จะจำว่าคุณเคยมาถึงตรงนี้</p><a class="nx" style="margin-top:14px" href="./">กลับไปเก็บบทที่เหลือ</a></section>
+<section class="boss-lock" id="bossLock" hidden><h2>ประตูปรากฏแล้ว แต่ยังเปิดไม่ได้</h2><p>กลับไปเก็บบทที่ขาดให้ครบ 6 บท แล้วประตูนี้จะจำว่ามึงเคยมาถึงตรงนี้</p><a class="btn alt" style="margin-top:14px" href="./">กลับไปเก็บบทที่เหลือ</a></section>
 
-<div class="nextrow"><a class="nx ghost" href="full-lessons.html#lesson-6">📖 เปิดบทเรียนฉบับเต็ม</a></div>
 <div class="nextrow"><a class="nx ghost" href="prompts.html">← บท 5 · เปิดลิ้นชักเครื่องปรุง</a><a class="nx" href="./">ห้องเรียนทั้งหมด</a></div>
-<footer>AI ใส่ซอส · งานยังไม่จบจนกว่าจะออกจากแชตไปอยู่ในโลกจริง</footer>
+<footer>AI ใส่ซอส · SOURCE → TASTE → COOK → MULTIPLY → SEASON → SERVE · แต่ประตูข้างหน้ายังไม่ยอมให้เรียกว่าจบ 🍀</footer>
 </main>
-<script defer src="/assets/quest.js"></script><script defer src="/assets/ai-sauce-lite.js"></script>
-<script type="module">import{trackAct}from'/assets/track-core.js';window.MC_ACT=trackAct;import'/assets/stat-report.js';import'/assets/lesson6-boss-transition.js';</script>
-</body></html>
+
+<script defer src="../assets/quest.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function buildPrompt(){
+  var name=$('pageName').value.trim()||'หน้า HTML ของฉัน';
+  var audience=$('pageAudience').value.trim()||'คนที่เปิดจากโทรศัพท์';
+  var source=$('pageSource').value.trim()||'ยังไม่มี Source';
+  var action=$('pageAction').value.trim()||'เข้าใจสารสำคัญและรู้ว่าต้องทำอะไรต่อ';
+  var style=$('pageStyle').value.trim()||'สะอาด อ่านง่ายบนมือถือ';
+  var text='ใช้ Source ด้านล่างสร้างหน้า HTML ไฟล์เดียวที่เปิดได้ด้วยเบราว์เซอร์โดยไม่ต้องติดตั้งแอป\n\n'+
+    'ชื่อหน้า: '+name+'\nคนอ่าน: '+audience+'\nสิ่งที่ต้องการให้คนทำต่อ: '+action+'\nหน้าตา: '+style+'\n\nSOURCE:\n'+source+'\n\nกติกา:\n'+
+    '- ส่งโค้ดทั้งหมดในกล่องเดียว เริ่มด้วย <!doctype html> และจบด้วย </html>\n'+
+    '- รวม CSS และ JavaScript ที่จำเป็นไว้ในไฟล์เดียว\n'+
+    '- Mobile-first ตัวหนังสือหลักไม่น้อยกว่า 16px และปุ่มกดง่าย\n'+
+    '- ใช้ Semantic HTML, Keyboard ได้ และเคารพ prefers-reduced-motion\n'+
+    '- ห้ามแต่งข้อเท็จจริงที่ไม่มีใน Source ถ้าขาดให้เขียนว่า “ยังไม่มีข้อมูล”\n'+
+    '- อย่าใส่ข้อมูลลับ Library ภายนอก Tracker หรือแบบฟอร์มส่งข้อมูลออกจากเครื่อง\n'+
+    '- ใส่คอมเมนต์สั้น ๆ บอกจุดที่เจ้าของควรแก้ข้อความและลิงก์';
+  $('promptText').textContent=text;
+  return text;
+}
+['pageName','pageAudience','pageSource','pageAction','pageStyle'].forEach(function(id){$(id).addEventListener('input',buildPrompt)});buildPrompt();
+$('copyPrompt').addEventListener('click',function(){var b=this;navigator.clipboard.writeText(buildPrompt()).then(function(){b.textContent='✓ คัดลอกแล้ว';setTimeout(function(){b.textContent='คัดลอก'},1200)})});
+function starterHTML(){
+  var title=esc($('pageName').value.trim()||'หน้าแรกของฉัน');
+  var source=esc($('pageSource').value.trim()||'นี่คือพื้นที่สำหรับ Source ของคุณ').replace(/\n/g,'<br>');
+  return '<!doctype html>\n<html lang="th">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>'+title+'</title>\n<style>\nbody{margin:0;font-family:system-ui,sans-serif;background:#f8f6f0;color:#12281c;line-height:1.75}main{max-width:720px;margin:auto;padding:64px 22px}article{background:#fff;border:1px solid #dfe7df;border-radius:20px;padding:28px;box-shadow:0 18px 40px #12301a12}h1{font-size:clamp(32px,7vw,52px);line-height:1.15;margin:0;color:#1b6a42}p{font-size:17px}small{color:#66736b}\n</style>\n</head>\n<body>\n<main><article><small>MY FIRST LIVING FILE</small><h1>'+title+'</h1><p>'+source+'</p></article></main>\n</body>\n</html>';
+}
+function download(){var blob=new Blob([starterHTML()],{type:'text/html;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},1000);try{window.MC_ACT&&window.MC_ACT('lesson6-starter-download')}catch(e){}}
+$('downloadStarter').addEventListener('click',download);
+$('viewStarter').addEventListener('click',function(){var u=URL.createObjectURL(new Blob([starterHTML()],{type:'text/html;charset=utf-8'}));window.open(u,'_blank','noopener');setTimeout(function(){URL.revokeObjectURL(u)},30000);try{window.MC_ACT&&window.MC_ACT('lesson6-starter-preview')}catch(e){}});
+var hardOpen=$('hardOpen'), warning=$('hardWarning'), publicOk=$('publicOk'), hardConfirm=$('hardConfirm'), hardBody=$('hardBody');
+hardOpen.addEventListener('click',function(){var open=hardOpen.getAttribute('aria-expanded')==='true';hardOpen.setAttribute('aria-expanded',open?'false':'true');warning.hidden=open;hardOpen.textContent=open?'⚠ เปิด Hard Mode':'ปิดคำเตือน Hard Mode';if(!open){try{window.MC_ACT&&window.MC_ACT('lesson6-hardmode-warning-open')}catch(e){}}});
+publicOk.addEventListener('change',function(){hardConfirm.disabled=!publicOk.checked});
+hardConfirm.addEventListener('click',function(){warning.hidden=true;hardBody.hidden=false;hardOpen.hidden=true;hardBody.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});try{window.MC_ACT&&window.MC_ACT('lesson6-hardmode-confirmed')}catch(e){}});
+$('finishBtn').addEventListener('click',function(){$('achievement').classList.add('on');try{var t=window.MC_QUEST&&window.MC_QUEST.track('learn');if(t)t.mark('first-web');window.MC_ACT&&window.MC_ACT('lesson6-main-course-served')}catch(e){}this.textContent='✓ เสิร์ฟเมนคอร์สแล้ว'});
+var takeover=$('takeover'), bossDoor=$('bossDoor'), bossLock=$('bossLock'), fired=false;
+function completed(){try{var t=window.MC_QUEST&&window.MC_QUEST.track('learn');return t?t.complete():localStorage.getItem('mc_learn_done')==='1'}catch(e){return false}}
+function mark(){try{var t=window.MC_QUEST&&window.MC_QUEST.track('learn');if(t)t.mark('first-web')}catch(e){}}
+function revealBoss(){mark();if(completed()){bossDoor.hidden=false;bossLock.hidden=true}else{bossLock.hidden=false;bossDoor.hidden=true}}
+function glitch(){if(fired)return;fired=true;mark();var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;document.body.classList.add('glitching');takeover.hidden=false;try{window.MC_ACT&&window.MC_ACT('lesson6-ai-takeover')}catch(e){}setTimeout(function(){takeover.hidden=true;document.body.classList.remove('glitching');revealBoss();(completed()?bossDoor:bossLock).scrollIntoView({behavior:reduced?'auto':'smooth',block:'center'})},reduced?450:1650)}
+var sentinel=$('glitchTrigger');if('IntersectionObserver' in window){new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)glitch()})},{threshold:.5}).observe(sentinel)}else{addEventListener('scroll',function(){if(sentinel.getBoundingClientRect().top<innerHeight)glitch()},{passive:true})}
+})();
+</script>
+<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","xtx73cs6w1");</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>
+<script type="module" src="/assets/track.js"></script>
+</body>
+</html>

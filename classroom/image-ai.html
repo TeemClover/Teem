@@ -1,69 +1,536 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="mc-act-view" content="lesson-open"><meta name="mc-item" content="learn:image-ai"><meta name="theme-color" content="#071a10">
-<title>บทที่ 2 · ชิมก่อนเติม · AI ใส่ซอส</title>
-<meta name="description" content="ใช้ภาพทดสอบตรวจว่า AI เข้าใจ Source ตรงกับเราหรือยัง แล้วแก้กลับที่ต้นทาง">
-<link rel="stylesheet" href="/assets/ai-sauce-lite.css"><link rel="stylesheet" href="/assets/readable.css">
+<meta charset="utf-8">
+<meta name="mc-act-view" content="lesson-open">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="mc-item" content="learn:image-ai">
+<meta name="theme-color" content="#0a2818">
+<title>บทที่ 2 · ชิมก่อนเติม — ใช้ภาพตรวจว่า AI เข้าใจ Source ตรงกับเราหรือยัง · AI ใส่ซอส</title>
+<meta name="description" content="ใช้ภาพเป็นช้อนชิม Source สร้างภาพทดสอบ แยกข้อผิดพลาด แก้ Source และเก็บ Visual Canon ก่อนทำงานจริง">
+<meta property="og:type" content="article">
+<meta property="og:title" content="บทที่ 2 · ชิมก่อนเติม — AI ใส่ซอส">
+<meta property="og:description" content="ภาพสวยไม่พอ ต้องเป็นคนเดิม บ้านเดิม ปีเดิม และรสเดียวกับ Source">
+<style>
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100;--red:170 66 48;--cream:255 252 243;--blue:49 88 139}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:"Anuphan",sans-serif;background:radial-gradient(900px 460px at 50% -220px,rgb(190 148 66/.13),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));line-height:1.78;font-size:16px;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit}
+button,summary,a{-webkit-tap-highlight-color:transparent}
+button{touch-action:manipulation}
+a{text-decoration:none;color:inherit}
+img,svg{max-width:100%}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.012em}
+.wrap{width:100%;max-width:860px;margin:0 auto;padding:0 22px}
+.skip-link{position:fixed;left:16px;top:10px;z-index:100;transform:translateY(-170%);background:#fff;color:rgb(var(--deep));border:2px solid rgb(var(--gold));border-radius:10px;padding:8px 13px;font-weight:700;transition:transform .18s}
+.skip-link:focus{transform:translateY(0)}
+nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgb(var(--ink)/.08);box-shadow:0 5px 20px rgb(10 40 24/.035)}
+nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+.bk{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:18px;color:rgb(var(--ink))}
+.bk em{font-style:normal;color:rgb(var(--green))}
+.bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
+.bk2:hover{color:rgb(var(--green))}
+.head{position:relative;overflow:hidden;background:linear-gradient(145deg,#071a10,#0b3420 58%,#145337);color:#fff;border:1px solid rgb(255 255 255/.09);border-radius:24px;padding:34px;margin:26px 0 12px;box-shadow:0 20px 52px rgb(10 40 24/.16)}
+.head::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;right:-230px;top:-320px;background:radial-gradient(circle,rgb(190 148 66/.34),transparent 67%);pointer-events:none}
+.lv{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.13em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.48);border-radius:999px;padding:6px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif;background:rgb(7 26 16/.25)}
+.head h1{font-size:clamp(29px,5.6vw,43px);margin:14px 0 8px;line-height:1.2;max-width:16ch}
+.head .lead{color:rgb(255 255 255/.82);font-size:clamp(15.5px,2.4vw,18px);max-width:62ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}
+.meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.14);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.88)}
+.hero-stage{position:relative;margin:27px -9px -13px;padding:16px 10px 2px;border-top:1px solid rgb(255 255 255/.1)}
+.hero-stage svg{display:block;width:100%;filter:drop-shadow(0 20px 24px rgb(0 0 0/.16))}
+.stage-labels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:4px 5px 0}
+.stage-label{font-family:"Bai Jamjuree",sans-serif;text-align:center;font-size:12px;font-weight:700;color:rgb(255 255 255/.78)}
+.stage-label b{display:block;color:#fff;font-size:13px}
+.tldr{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin:18px 0 8px}
+.tldr-main,.tldr-side{background:rgb(255 255 255/.95);border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px 22px;box-shadow:0 9px 28px rgb(18 40 28/.055)}
+.eyebrow{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;letter-spacing:.13em;color:rgb(var(--green));margin-bottom:5px}
+.tldr h2{font-family:"Bai Jamjuree",sans-serif;font-size:21px;line-height:1.35;margin-bottom:6px}
+.tldr p{font-size:14.5px;color:rgb(var(--muted))}
+.takehome{display:grid;gap:7px;margin-top:12px}
+.takehome span{display:flex;gap:9px;align-items:center;font-size:13.5px;font-weight:600}
+.section{font-family:"Bai Jamjuree",sans-serif;font-size:21px;margin:40px 0 14px;display:flex;align-items:center;gap:11px;line-height:1.4}
+.section::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgb(var(--green)/.24),transparent)}
+.section .n{width:31px;height:31px;border-radius:10px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:14px;flex:none;box-shadow:0 5px 15px rgb(27 106 66/.2)}
+.core{display:grid;grid-template-columns:auto 1fr;gap:15px;align-items:start;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.11));border:1px solid rgb(27 106 66/.24);border-radius:17px;padding:20px 22px}
+.core .big{font-size:31px;line-height:1.2}
+.core b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:18px;margin-bottom:3px}
+.core p{font-size:14.5px;color:rgb(var(--muted))}
+.error-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.error{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;padding:15px 16px;box-shadow:0 8px 22px rgb(18 40 28/.045)}
+.error .ico{font-size:24px;display:block;margin-bottom:4px}
+.error b{display:block;font-size:14px}
+.error small{display:block;font-size:12.5px;color:rgb(var(--muted));line-height:1.55;margin-top:2px}
+.menu{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.menu-card{position:relative;background:rgb(255 255 255/.95);border:1px solid rgb(var(--ink)/.09);border-radius:15px;padding:15px 11px 13px;text-align:center;box-shadow:0 7px 20px rgb(18 40 28/.04)}
+.menu-card .dish{font-size:26px;display:block;margin-bottom:5px}
+.menu-card b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:13px;line-height:1.35}
+.menu-card small{display:block;font-size:11.5px;color:rgb(var(--muted));line-height:1.45;margin-top:3px}
+.menu-card:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:31%;z-index:2;color:rgb(var(--gold));font-weight:800}
+.ingredient-grid,.bottle-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.ingredient,.bottle{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:17px 18px;box-shadow:0 8px 22px rgb(18 40 28/.045)}
+.ingredient .topline,.bottle .topline{display:flex;gap:10px;align-items:flex-start}
+.ingredient .ico,.bottle .ico{font-size:24px;line-height:1.25;flex:none}
+.ingredient b,.bottle b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;line-height:1.4}
+.ingredient p,.bottle p{font-size:13px;color:rgb(var(--muted));margin-top:4px;line-height:1.65}
+.bottle{background:linear-gradient(150deg,#fff,rgb(190 148 66/.05))}
+.bottle .tag{display:inline-block;margin-top:10px;padding:3px 8px;border-radius:999px;background:rgb(27 106 66/.08);color:rgb(var(--green));font-family:"Bai Jamjuree",sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.05em}
+.steps{display:grid;gap:11px}
+.step{background:rgb(255 255 255/.95);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:18px 20px;display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start;box-shadow:0 9px 25px rgb(18 40 28/.05)}
+.step .num{width:31px;height:31px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px}
+.step b{font-family:"Bai Jamjuree",sans-serif;font-size:15.5px}
+.step p,.step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px;line-height:1.65}
+.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.8px;background:#071a10;color:#d7f5e2;border:1px solid rgb(190 148 66/.2);border-radius:13px;padding:17px 68px 17px 17px;margin-top:12px;line-height:1.72;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 1px 0 rgb(255 255 255/.05),0 7px 18px rgb(7 26 16/.1)}
+.cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:8px;padding:6px 10px;cursor:pointer}
+.cpx:hover{filter:brightness(1.05)}
+.test-frame{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.test-card{border:1px solid rgb(var(--ink)/.09);border-radius:15px;padding:14px;background:rgb(var(--paper)/.52)}
+.test-card b{display:block;font-size:13.5px;margin-bottom:5px}
+.test-card ul{padding-left:18px;font-size:12.8px;color:rgb(var(--muted));line-height:1.65}
+.triage{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.triage-card{border-radius:17px;padding:18px;border:1px solid rgb(var(--ink)/.09);background:#fff;box-shadow:0 8px 22px rgb(18 40 28/.045)}
+.triage-card .badge{display:inline-grid;place-items:center;width:31px;height:31px;border-radius:10px;background:rgb(var(--ink)/.055);font-size:17px;margin-bottom:8px}
+.triage-card h3{font-family:"Bai Jamjuree",sans-serif;font-size:15px;line-height:1.35}
+.triage-card p{font-size:13px;color:rgb(var(--muted));margin-top:4px;line-height:1.6}
+.triage-card .action{display:block;margin-top:10px;padding-top:9px;border-top:1px dashed rgb(var(--ink)/.11);font-size:12px;font-weight:700;color:rgb(var(--green))}
+.taste-board{background:linear-gradient(145deg,#0a2818,#124a2e);border:1px solid rgb(190 148 66/.32);color:#fff;border-radius:20px;padding:23px;margin-top:14px;box-shadow:0 13px 36px rgb(10 40 24/.13)}
+.taste-board h3{font-family:"Bai Jamjuree",sans-serif;font-size:19px;margin-bottom:4px}
+.taste-board>p{font-size:13.5px;color:rgb(255 255 255/.7)}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}
+.check{display:flex;gap:10px;align-items:flex-start;border:1px solid rgb(255 255 255/.12);background:rgb(255 255 255/.065);border-radius:12px;padding:11px 12px;cursor:pointer;user-select:none}
+.check input{width:18px;height:18px;margin-top:2px;accent-color:rgb(var(--gold));flex:none}
+.check span{font-size:13px;line-height:1.55;color:rgb(255 255 255/.88)}
+.score{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:13px;padding-top:13px;border-top:1px solid rgb(255 255 255/.12)}
+.score b{font-family:"Bai Jamjuree",sans-serif;font-size:14px;color:rgb(var(--gold))}
+.score span{font-size:12.5px;color:rgb(255 255 255/.62)}
+.plate-compare{display:grid;grid-template-columns:1fr auto 1fr;gap:13px;align-items:stretch}
+.plate-card{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:18px;text-align:center;box-shadow:0 9px 26px rgb(18 40 28/.05)}
+.plate-card h3{font-family:"Bai Jamjuree",sans-serif;font-size:16px;margin-top:9px}
+.plate-card p{font-size:12.8px;color:rgb(var(--muted));margin-top:3px}
+.plate{position:relative;width:150px;aspect-ratio:1;border-radius:50%;margin:0 auto;background:radial-gradient(circle at 50% 47%,#fff 0 48%,#eee7d8 49% 54%,#fff 55% 69%,#d8cbb3 70% 71%,#faf8f1 72%);box-shadow:0 15px 24px rgb(18 40 28/.12)}
+.food{position:absolute;inset:33% 27% 29%;border-radius:48% 52% 42% 58%;background:linear-gradient(135deg,#b95c42,#6d291d);box-shadow:-19px 17px 0 -8px #6d9d52,17px 15px 0 -9px #e5b95f,2px -19px 0 -12px #f0efe5}
+.food::after{content:"";position:absolute;width:9px;height:32px;border-radius:999px;background:#4c7b42;left:43%;top:-25px;transform:rotate(27deg);box-shadow:9px 4px 0 -2px #77a85d}
+.wrong .plate::after{content:"✕";position:absolute;right:4px;top:5px;width:35px;height:35px;display:grid;place-items:center;border-radius:50%;background:rgb(var(--red));color:#fff;font-weight:800;box-shadow:0 6px 13px rgb(170 66 48/.25)}
+.empty .crumb{position:absolute;width:5px;height:5px;border-radius:50%;background:#9a7544;left:46%;top:48%;box-shadow:17px 7px 0 -1px #6e8b4f,-19px 13px 0 -1px #bb7a4b}
+.empty .swirl{position:absolute;width:42px;height:18px;border:3px solid rgb(var(--gold));border-color:rgb(var(--gold)) transparent transparent transparent;border-radius:50%;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-13deg);opacity:.72}
+.arrow{display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-size:28px;font-weight:800;color:rgb(var(--gold))}
+.diner{display:flex;justify-content:center;align-items:end;gap:3px;height:55px;margin-top:-4px}
+.face{position:relative;width:39px;height:39px;border-radius:50%;background:#e8b78c;border:2px solid #663d2b}
+.face::before{content:"";position:absolute;left:9px;top:14px;width:4px;height:4px;border-radius:50%;background:#2b241f;box-shadow:14px 0 #2b241f}
+.face::after{content:"⌣";position:absolute;left:12px;top:16px;font-size:18px;color:#7d2f29;font-family:Arial,sans-serif}
+.hair{position:absolute;inset:-4px -3px auto;height:18px;border-radius:20px 20px 8px 8px;background:#2c201b}
+.body{width:48px;height:28px;border-radius:18px 18px 4px 4px;background:#1b6a42;margin-left:-4px}
+.chef-note{position:relative;background:linear-gradient(135deg,rgb(190 148 66/.12),rgb(255 255 255/.8));border:1px solid rgb(190 148 66/.37);border-radius:18px;padding:21px 22px 21px 66px;margin-top:16px}
+.chef-note::before{content:"👩‍🍳";position:absolute;left:20px;top:17px;font-size:31px}
+.chef-note b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;color:#775719;margin-bottom:3px}
+.chef-note p{font-size:14.5px;line-height:1.7}
+.canon{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.canon-card{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;padding:15px 12px;text-align:center}
+.canon-card span{display:block;font-size:26px;margin-bottom:3px}
+.canon-card b{font-family:"Bai Jamjuree",sans-serif;font-size:13px}
+.canon-card small{display:block;color:rgb(var(--muted));font-size:11.5px;line-height:1.45;margin-top:2px}
+.canon-help{position:relative;display:inline-flex;align-items:center;margin-top:11px;z-index:12}
+.canon-term{display:inline-flex;align-items:center;gap:6px;border:1px dashed rgb(27 106 66/.45);border-radius:999px;background:rgb(27 106 66/.07);color:rgb(var(--green));padding:5px 10px;font-family:"Bai Jamjuree",sans-serif;font-size:12px;font-weight:800;cursor:help}
+.canon-term .q{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:rgb(var(--green));color:#fff;font-size:10px;line-height:1}
+.canon-tip{position:absolute;right:0;top:calc(100% + 9px);width:min(310px,calc(100vw - 48px));padding:13px 14px;border-radius:12px;background:#071a10;color:#fff;font-size:12.5px;line-height:1.65;box-shadow:0 14px 34px rgb(7 26 16/.28);opacity:0;visibility:hidden;transform:translateY(-5px);transition:.16s;text-align:left;pointer-events:none}
+.canon-tip::before{content:"";position:absolute;right:24px;top:-6px;width:12px;height:12px;background:#071a10;transform:rotate(45deg)}
+.canon-help:hover .canon-tip,.canon-help:focus-within .canon-tip,.canon-help[data-open="1"] .canon-tip{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+.real-ref{display:grid;grid-template-columns:auto 1fr;gap:14px;margin-top:14px;padding:19px 20px;border:1px solid rgb(170 66 48/.3);border-radius:17px;background:linear-gradient(135deg,rgb(170 66 48/.075),rgb(190 148 66/.08));box-shadow:0 8px 23px rgb(18 40 28/.04)}
+.real-ref .ico{font-size:29px;line-height:1.2}
+.real-ref b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:16px;color:rgb(var(--red));margin-bottom:3px}
+.real-ref p{font-size:14px;line-height:1.7}
+.real-ref ul{padding-left:19px;margin-top:8px}
+.real-ref li{font-size:13.5px;color:rgb(var(--muted));margin:3px 0;line-height:1.65}
+.real-ref code{background:rgb(var(--ink)/.06);border-radius:5px;padding:1px 6px}
+details.deep{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:15px;margin-top:10px;overflow:hidden;box-shadow:0 6px 18px rgb(18 40 28/.035)}
+details.deep summary{cursor:pointer;list-style:none;padding:15px 18px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14px;display:flex;justify-content:space-between;gap:12px}
+details.deep summary::-webkit-details-marker{display:none}
+details.deep summary::after{content:"＋";color:rgb(var(--green))}
+details.deep[open] summary::after{content:"−"}
+.deepbody{padding:0 18px 17px;border-top:1px solid rgb(var(--ink)/.07)}
+.deepbody p,.deepbody li{font-size:13.8px;color:rgb(var(--muted));line-height:1.75}
+.deepbody p{margin-top:13px}.deepbody ul{padding-left:20px;margin-top:9px}
+.quest{position:relative;overflow:hidden;background:linear-gradient(140deg,#0a2818,#155336);color:#fff;border:1px solid rgb(190 148 66/.35);border-radius:21px;padding:25px;margin-top:38px;box-shadow:0 14px 38px rgb(10 40 24/.14)}
+.quest::after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;right:-130px;bottom:-160px;background:rgb(190 148 66/.17)}
+.quest h2{position:relative;font-family:"Bai Jamjuree",sans-serif;font-size:22px;line-height:1.35;z-index:1}
+.quest p{position:relative;font-size:14px;color:rgb(255 255 255/.75);margin-top:5px;z-index:1}
+.quest ol{position:relative;padding-left:21px;margin-top:13px;z-index:1}
+.quest li{font-size:14px;margin:5px 0}
+.finish{position:relative;z-index:1;width:100%;margin-top:17px;border:1px solid rgb(190 148 66/.7);background:rgb(var(--gold));color:#071a10;border-radius:13px;padding:13px 18px;cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-weight:800;font-size:14.5px;transition:.15s}
+.finish:hover{transform:translateY(-2px)}
+.finish.done{background:rgb(var(--green));border-color:rgb(255 255 255/.18);color:#fff}
+.achievement{display:none;position:relative;z-index:1;margin-top:12px;text-align:center;border:1px solid rgb(190 148 66/.5);border-radius:13px;padding:13px;background:rgb(190 148 66/.13);font-family:"Bai Jamjuree",sans-serif;color:rgb(var(--gold));font-weight:700}
+.achievement.show{display:block}
+.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:31px 0 6px}
+.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:14.5px;border-radius:13px;padding:14px;background:rgb(var(--green));color:#fff;transition:.15s}
+.nx:hover{transform:translateY(-2px)}
+.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.38)}
+footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 45px}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px}
+::selection{background:rgb(190 148 66/.3);color:rgb(var(--deep))}
+@media(max-width:720px){
+  .tldr{grid-template-columns:1fr}.error-grid{grid-template-columns:1fr 1fr}.menu{grid-template-columns:1fr 1fr}.menu-card:last-child{grid-column:1/-1}.menu-card::after{display:none}.triage{grid-template-columns:1fr}.canon{grid-template-columns:1fr 1fr}
+}
+@media(max-width:580px){
+  .wrap{padding:0 16px}nav.top .wrap{height:52px}.bk{font-size:17px}.bk2{font-size:12.5px}
+  .head{padding:27px 20px 22px;border-radius:19px;margin-top:16px}.head h1{font-size:30px}.hero-stage{margin-left:-5px;margin-right:-5px}.stage-label{font-size:10px}.stage-label b{font-size:11px}
+  .section{font-size:18px;margin-top:33px;align-items:flex-start}.section::after{margin-top:14px}
+  .error-grid,.ingredient-grid,.bottle-grid,.checks,.test-frame{grid-template-columns:1fr}
+  .menu{grid-template-columns:1fr}.menu-card:last-child{grid-column:auto}.plate-compare{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:34px}
+  .prompt{padding:48px 14px 16px;font-size:12.2px}.step{grid-template-columns:30px 1fr;padding:16px 15px;gap:11px}.step .num{width:29px;height:29px}
+  .core{padding:17px}.chef-note{padding:58px 17px 18px}.chef-note::before{left:17px;top:14px}.quest{padding:22px 19px}
+  .real-ref{grid-template-columns:1fr;padding:17px}.real-ref .ico{font-size:26px}.canon-tip{right:auto;left:0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+<link rel="stylesheet" href="/assets/readable.css">
 </head>
-<body data-lesson="image-ai">
-<nav class="top"><div class="wrap"><a class="brand" href="/hall.html#quest">🍀 my<em>clover</em></a><a class="all" href="./">ห้องเรียนทั้งหมด →</a></div></nav>
-<main class="wrap">
-<header class="hero"><div class="hero-in">
-  <span class="level">บทที่ 2 · TASTE</span><h1>ชิมก่อนเติม</h1>
-  <p class="lead">ใช้ Output 1 ชิ้นตรวจว่า <strong>AI เข้าใจ Source ตรงกับคุณหรือยัง</strong></p>
-  <div class="meta"><span>⏱ 10–15 นาที</span><span>🖼️ ทดสอบ 1 ภาพ</span><span>🧴 แก้กลับที่ Source</span></div>
-</div></header>
+<body>
+<a class="skip-link" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
+<nav class="top"><div class="wrap">
+  <a class="bk disp" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>clover</em></a>
+  <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
+</div></nav>
 
-<section class="goal"><small>เป้าหมายของบทนี้</small><h2>สร้างภาพทดสอบ 1 ภาพ แล้วแก้ Source จากสิ่งที่เห็น</h2><p>ภาพไม่ต้องสวยที่สุด แต่ต้องช่วยเปิดเผยว่าข้อมูลตรงไหนยังขาดหรือคลุมเครือ</p></section>
+<main class="wrap" id="main">
+<header class="head">
+  <span class="lv">LV.2 · TASTE</span>
+  <h1 class="disp">ชิมก่อนเติม</h1>
+  <p class="lead">ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจ Source เป็นรสเดียวกับเราหรือยัง เพราะภาพที่สวยแต่เป็นคนละคน คนละบ้าน และคนละปี ยังเสิร์ฟไม่ได้</p>
+  <div class="meta"><span>⏱️ 15–25 นาที</span><span>🧴 ใช้ซอสจากบท 1</span><span>🖼️ ได้ภาพทดสอบ 1 ภาพ</span><span>✅ เก็บ Canon กลับบ้าน</span></div>
 
-<section class="section">
-  <div class="section-head"><span class="n">1</span><div><h2>เตรียมของ</h2><p>ใช้ซอสจากบท 1 และเลือกสิ่งสำคัญที่อยากตรวจ</p></div></div>
-  <div class="prepare">
-    <div><span>🧴</span><p><b>Source .md จากบท 1</b>ใช้ขวดเดิม ห้ามเริ่มเล่าใหม่ทั้งหมด</p></div>
-    <div><span>🔎</span><p><b>สิ่งที่ต้องไม่ผิด</b>เช่น คน สินค้า สี ยุค สถานที่ หรือของที่ห้ามมี</p></div>
+  <div class="hero-stage" role="img" aria-label="ภาพประกอบ 3 ขั้น: จานอาหารที่สวยแต่ผิดสูตร เชฟชิมและตรวจ Source และคนกินอาหารตรงรสจนหมดจาน">
+    <svg viewBox="0 0 960 430" aria-hidden="true">
+      <defs>
+        <linearGradient id="table" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5ead4"/><stop offset="1" stop-color="#d8ba7b"/></linearGradient>
+        <linearGradient id="dish" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bd6848"/><stop offset="1" stop-color="#6d2e24"/></linearGradient>
+        <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#03120b" flood-opacity=".28"/></filter>
+      </defs>
+      <rect x="20" y="244" width="920" height="142" rx="40" fill="url(#table)" opacity=".96"/>
+      <g filter="url(#shadow)">
+        <ellipse cx="174" cy="290" rx="125" ry="34" fill="#9d804c" opacity=".25"/>
+        <circle cx="174" cy="253" r="112" fill="#fffdf7" stroke="#d9c9aa" stroke-width="8"/>
+        <circle cx="174" cy="253" r="76" fill="#f8f4e9" stroke="#ece2ce" stroke-width="3"/>
+        <path d="M122 255c20-45 77-59 111-14 17 23 3 58-26 70-42 18-102-9-85-56z" fill="url(#dish)"/>
+        <ellipse cx="128" cy="274" rx="33" ry="17" fill="#6a9853" transform="rotate(-18 128 274)"/>
+        <ellipse cx="224" cy="278" rx="29" ry="15" fill="#dfb34f" transform="rotate(16 224 278)"/>
+        <path d="M170 207c7 24 18 38 35 50" stroke="#4b833f" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="271" cy="158" r="35" fill="#a94238"/>
+        <path d="M258 145l26 26M284 145l-26 26" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(380 84)" filter="url(#shadow)">
+        <path d="M74 90c-6-29 13-54 40-56 12-28 57-30 71 1 33-2 49 34 31 57z" fill="#fffdf7" stroke="#d9c9aa" stroke-width="5"/>
+        <circle cx="145" cy="125" r="55" fill="#e7b486"/>
+        <path d="M95 126c7-51 94-73 108 0-13-18-89-18-108 0z" fill="#4d2e25"/>
+        <circle cx="126" cy="127" r="5" fill="#29211c"/><circle cx="165" cy="127" r="5" fill="#29211c"/>
+        <path d="M130 150c12 10 24 10 35 0" fill="none" stroke="#8a4037" stroke-width="5" stroke-linecap="round"/>
+        <path d="M102 182h86c27 0 49 22 49 49v90H54v-90c0-27 21-49 48-49z" fill="#f7f0df" stroke="#d9c9aa" stroke-width="5"/>
+        <path d="M145 181v139" stroke="#d8c29a" stroke-width="4"/>
+        <path d="M58 232c-38 8-54 36-36 58 14 17 43 9 57-16" fill="none" stroke="#e7b486" stroke-width="20" stroke-linecap="round"/>
+        <path d="M28 248c-31-45-48-70-53-98" stroke="#d4d1c6" stroke-width="8" stroke-linecap="round"/>
+        <ellipse cx="-30" cy="143" rx="19" ry="8" fill="#d4d1c6" transform="rotate(63 -30 143)"/>
+        <rect x="199" y="206" width="95" height="126" rx="10" fill="#fff" stroke="#d8c29a" stroke-width="5" transform="rotate(4 199 206)"/>
+        <path d="M218 236h56M218 260h45M218 284h57" stroke="#1b6a42" stroke-width="7" stroke-linecap="round"/>
+        <path d="M210 237l7 7 12-15M210 261l7 7 12-15M210 285l7 7 12-15" fill="none" stroke="#c09743" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g filter="url(#shadow)">
+        <ellipse cx="789" cy="300" rx="128" ry="33" fill="#9d804c" opacity=".24"/>
+        <circle cx="789" cy="260" r="108" fill="#fffdf7" stroke="#d9c9aa" stroke-width="8"/>
+        <circle cx="789" cy="260" r="74" fill="#faf8f1" stroke="#eee3ce" stroke-width="3"/>
+        <path d="M754 270c18-12 51-9 68 3" fill="none" stroke="#c09743" stroke-width="5" stroke-linecap="round" opacity=".76"/>
+        <circle cx="779" cy="240" r="4" fill="#8e6a3c"/><circle cx="816" cy="276" r="3" fill="#6e8b4f"/><circle cx="744" cy="281" r="3" fill="#b36c4b"/>
+        <g transform="translate(742 38)">
+          <path d="M9 95c0-47 76-66 94-8 4 13 2 28-5 39H20C13 117 9 106 9 95z" fill="#2c201b"/>
+          <circle cx="57" cy="111" r="48" fill="#e8b78c" stroke="#6a4131" stroke-width="4"/>
+          <circle cx="40" cy="111" r="4" fill="#29211c"/><circle cx="75" cy="111" r="4" fill="#29211c"/>
+          <path d="M42 134c10 11 22 11 32 0" fill="none" stroke="#8a4037" stroke-width="5" stroke-linecap="round"/>
+          <path d="M18 160h78c26 0 47 21 47 47v62H-29v-62c0-26 21-47 47-47z" fill="#1b6a42" stroke="#0d4529" stroke-width="4"/>
+          <path d="M-4 190c-26 19-32 39-20 58" fill="none" stroke="#e8b78c" stroke-width="17" stroke-linecap="round"/>
+          <path d="M116 190c25 18 33 38 22 57" fill="none" stroke="#e8b78c" stroke-width="17" stroke-linecap="round"/>
+          <path d="M-21 242l-17 52M138 242l16 52" stroke="#d4d1c6" stroke-width="6" stroke-linecap="round"/>
+        </g>
+      </g>
+      <path d="M314 245c20 0 36 0 56 0" stroke="#c09743" stroke-width="8" stroke-linecap="round" stroke-dasharray="4 16"/>
+      <path d="M618 245c20 0 36 0 56 0" stroke="#c09743" stroke-width="8" stroke-linecap="round" stroke-dasharray="4 16"/>
+    </svg>
+    <div class="stage-labels" aria-hidden="true">
+      <div class="stage-label"><b>สวย แต่ผิดสูตร</b>ยังเสิร์ฟไม่ได้</div>
+      <div class="stage-label"><b>ชิม Source</b>เห็นว่าหลุดตรงไหน</div>
+      <div class="stage-label"><b>ตรงรส จนหมดจาน</b>งานพร้อมใช้จริง</div>
+    </div>
+  </div>
+</header>
+
+<section class="tldr" aria-label="สรุปบทเรียน">
+  <div class="tldr-main">
+    <span class="eyebrow">TL;DR · เริ่มทำได้ทันที</span>
+    <h2>สร้างภาพทดสอบ 1 ภาพ แล้วใช้มันตรวจ Source</h2>
+    <p>เป้าหมายไม่ใช่ไล่ทำภาพให้สวยที่สุด แต่หาว่า AI เข้าใจตัวตน สี ยุค พร็อพ และข้อห้ามตรงกับเราหรือยัง จากนั้นแก้ Source ก่อนสั่งรอบใหม่</p>
+  </div>
+  <div class="tldr-side">
+    <span class="eyebrow">ของกลับบ้าน</span>
+    <div class="takehome">
+      <span>🖼️ ภาพทดสอบ 1 ภาพ</span>
+      <span>🎨 Visual Canon</span>
+      <span>🚫 Do-not-change list</span>
+      <span>🧴 Source เวอร์ชันที่ชิมแล้ว</span>
+    </div>
+    <span class="canon-help">
+      <button class="canon-term" type="button" aria-expanded="false">Canon คืออะไร? <span class="q" aria-hidden="true">?</span></button>
+      <span class="canon-tip" role="tooltip">Canon คือรายละเอียดที่ตัดสินใจแล้วว่า “ต้องเป็นแบบนี้เหมือนเดิมทุกครั้ง” เช่น หน้าตาตัวละคร สี เสื้อ ห้อง ยุค พร็อพ และสิ่งที่ห้ามเปลี่ยน เมื่อผ่านการชิมแล้วให้บันทึกกลับเข้า Source</span>
+    </span>
   </div>
 </section>
 
-<section class="section">
-  <div class="section-head"><span class="n">2</span><div><h2>ทำตาม 5 ขั้น</h2><p>ทดสอบเพียง 1 ภาพก็พอ</p></div></div>
-  <div class="steps">
-    <article class="step"><span class="num">1</span><div><h3>แนบ Source</h3><p>บอก AI ให้ใช้ Source เป็นฐานหลัก ห้ามแต่งสิ่งที่ไม่มี</p></div></article>
-    <article class="step"><span class="num">2</span><div><h3>สร้างภาพทดสอบ</h3><p>เลือกฉากที่ตรวจได้หลายเรื่องในภาพเดียว เช่น คน สถานที่ สี และยุค</p>
-      <div class="prompt" id="tastePrompt">อ่าน Source ที่แนบ แล้วสร้างภาพทดสอบ 1 ภาพที่ช่วยตรวจสิ่งต่อไปนี้:
-- ตัวตนและรูปลักษณ์
-- สถานที่และช่วงเวลา
-- สีหรือบรรยากาศหลัก
-- สิ่งที่ห้ามเปลี่ยนหรือห้ามมี
-
-ใช้ Source เป็นฐาน ห้ามเติมข้อเท็จจริงที่ไม่มี ถ้าข้อมูลไม่พอให้ถามก่อน<button class="copy" type="button" data-copy="tastePrompt">คัดลอก</button></div>
-    </div></article>
-    <article class="step"><span class="num">3</span><div><h3>แยกข้อผิดพลาด</h3><p>เขียนแต่ละจุดลงใน 1 กลุ่ม: Source ไม่ได้บอก / Source บอกแล้วแต่ AI ทำผิด / เราเพิ่งตัดสินใจใหม่</p></div></article>
-    <article class="step"><span class="num">4</span><div><h3>แก้ Source ก่อน</h3><p>เติม Canon และข้อห้ามกลับเข้าไฟล์ต้นทาง อย่าแก้ด้วย Prompt ยาวๆ อย่างเดียว</p></div></article>
-    <article class="step"><span class="num">5</span><div><h3>สร้าง Version ถัดไป</h3><p>ให้แก้เฉพาะจุดที่ผิด และรักษาส่วนที่ผ่านแล้ว</p></div></article>
+<div class="core">
+  <span class="big">🥄</span>
+  <div>
+    <b>ภาพคือช้อนชิม Source</b>
+    <p>ข้อความที่อ่านดูเหมือนครบ อาจยังมีช่องว่างซ่อนอยู่ พอ AI ต้องวาดคน เสื้อ ห้อง หรือยุคออกมา ความเข้าใจผิดจะมองเห็นทันที จึงแก้ได้ตรงจุดก่อนทำงานจริงหลายชิ้น</p>
   </div>
-  <p class="rule">Output ไม่ได้มีไว้แค่ใช้ แต่มันมีไว้บอกว่า Source ยังรั่วตรงไหน</p>
-  <aside class="chef"><b>เชฟชิมแล้ว</b><p>ภาพสวยแต่เป็นคนละคน คนละบ้าน และคนละปี แบบนี้ไม่ใช่ปรับรสค่ะ นี่คือเปิดร้านใหม่</p></aside>
+</div>
+
+<h2 class="section"><span class="n">1</span>ภาพสวยอย่างเดียว ยังไม่ถือว่าผ่าน</h2>
+<div class="error-grid">
+  <div class="error"><span class="ico">🙂→😶</span><b>เปลี่ยนหน้าคน</b><small>ทรงหน้า อายุ หรือบุคลิกกลายเป็นคนละคน</small></div>
+  <div class="error"><span class="ico">👕</span><b>เปลี่ยนเสื้อ</b><small>สี โลโก้ หรือยุคของเสื้อหลุดจากต้นฉบับ</small></div>
+  <div class="error"><span class="ico">🪑</span><b>เติมของที่ห้ามมี</b><small>ใส่พร็อพ ตัวหนังสือ หรือของประดับที่เรื่องไม่เคยมี</small></div>
+  <div class="error"><span class="ico">🎨</span><b>ใช้สีผิด</b><small>สีหลัก สีแบรนด์ หรือแสงบรรยากาศเปลี่ยนรส</small></div>
+  <div class="error"><span class="ico">📅</span><b>ผิดยุค</b><small>มือถือ รถ คอม หรือแฟชั่นใหม่เกินปีของเรื่อง</small></div>
+  <div class="error"><span class="ico">🫥</span><b>ลืมสิ่งสำคัญ</b><small>รายละเอียดเล็กที่เป็นหัวใจของเรื่องหายไปจากภาพ</small></div>
+</div>
+
+<h2 class="section"><span class="n">2</span>เมนูวันนี้</h2>
+<div class="menu" aria-label="ลำดับการทำบทเรียน">
+  <div class="menu-card"><span class="dish">🧴</span><b>แนบ Source</b><small>ใช้ขวดจากบท 1</small></div>
+  <div class="menu-card"><span class="dish">🖼️</span><b>ทำภาพทดสอบ</b><small>เลือกฉากที่ตรวจได้หลายข้อ</small></div>
+  <div class="menu-card"><span class="dish">🥄</span><b>ชิม</b><small>เทียบภาพกับ Source</small></div>
+  <div class="menu-card"><span class="dish">🩹</span><b>แก้เฉพาะจุด</b><small>ไม่รื้อของที่ผ่านแล้ว</small></div>
+  <div class="menu-card"><span class="dish">🗄️</span><b>เก็บ Canon</b><small>บันทึกกลับเข้าขวด</small></div>
+</div>
+
+<h2 class="section"><span class="n">3</span>วัตถุดิบที่ต้องมี</h2>
+<div class="ingredient-grid">
+  <article class="ingredient"><div class="topline"><span class="ico">🧴</span><div><b>Source จากบทที่ 1</b><p>ไฟล์ <code>.md</code> หรือข้อความที่รวมตัวตน กติกา ตัวอย่าง ข้อห้าม และสิ่งที่ตัดสินใจแล้ว</p></div></div></article>
+  <article class="ingredient"><div class="topline"><span class="ico">🎯</span><div><b>ภาพทดสอบ 1 ฉาก</b><p>เลือกฉากเดียวที่บังคับให้ AI แสดงรายละเอียดสำคัญหลายข้อพร้อมกัน เช่น คน + เสื้อ + ห้อง + ยุค + สี</p></div></div></article>
+  <article class="ingredient"><div class="topline"><span class="ico">📎</span><div><b>ภาพอ้างอิงเท่าที่จำเป็น</b><p>รูปคน สินค้า สถานที่ หรือพร็อพจริง ช่วยลดพื้นที่ให้ AI เดา แต่ต้องมีสิทธิใช้ภาพนั้น</p></div></div></article>
+  <article class="ingredient"><div class="topline"><span class="ico">👀</span><div><b>สายตาของคนตัดสิน</b><p>AI ช่วยสร้างได้ แต่คนต้องเป็นผู้บอกว่าอะไรตรง อะไรผิด และอะไรเพิ่งตัดสินใจใหม่</p></div></div></article>
+</div>
+
+<h2 class="section"><span class="n">4</span>ขวดและเครื่องปรุงประจำบท</h2>
+<div class="bottle-grid">
+  <article class="bottle"><div class="topline"><span class="ico">🎨</span><div><b>ขวด Visual Canon</b><p>สี แสง สไตล์ ยุค สัดส่วน และบรรยากาศที่ต้องรักษาเหมือนกันทุกภาพ</p><span class="tag">CANON</span></div></div></article>
+  <article class="bottle"><div class="topline"><span class="ico">👤</span><div><b>ขวด Character / Product Reference</b><p>หน้าตา ทรงผม เสื้อ รูปร่าง ฉลาก รูปทรง และรายละเอียดที่ห้ามเปลี่ยน</p><span class="tag">REFERENCE</span></div></div></article>
+  <article class="bottle"><div class="topline"><span class="ico">📅</span><div><b>ผงคุมยุคและสี</b><p>ระบุปี เทคโนโลยี วัสดุ แฟชั่น และ Palette ให้ชัด ไม่ปล่อยให้คำว่า “ย้อนยุค” ทำงานแทนข้อมูล</p><span class="tag">ERA + COLOR</span></div></div></article>
+  <article class="bottle"><div class="topline"><span class="ico">🩹</span><div><b>การ์ด Surgical Edit</b><p>แก้เฉพาะจุดที่ผิด และล็อกองค์ประกอบที่ผ่านแล้ว ห้ามเปิดร้านใหม่ทุกครั้งที่เติมเกลือ</p><span class="tag">DO NOT RECOMPOSE</span></div></div></article>
+</div>
+
+<aside class="real-ref" aria-label="ข้อจำกัดของ Source แบบข้อความ">
+  <span class="ico" aria-hidden="true">📎</span>
+  <div>
+    <b>มีโลโก้หรือสินค้าจริง ต้องแนบรูปต้นฉบับ</b>
+    <p>ไฟล์ <code>.md</code> ช่วยบอกชื่อ สี กติกา สัดส่วน และสิ่งที่ห้ามเปลี่ยนได้ แต่ไม่มี Pixel ของของจริงอยู่ข้างใน จึงแทนรูปโลโก้ ฉลาก บรรจุภัณฑ์ หรือรูปร่างสินค้าจริงไม่ได้</p>
+    <ul>
+      <li><strong>โลโก้:</strong> แนบไฟล์ PNG หรือ SVG ที่ถูกต้อง อย่าให้ AI เดาจากคำบรรยาย</li>
+      <li><strong>สินค้า:</strong> แนบภาพสินค้าชัด ๆ และหลายมุมเมื่อรูปร่างหรือวัสดุสำคัญ</li>
+      <li><strong>ฉลากและตัวหนังสือ:</strong> ตรวจจากต้นฉบับ และควรใส่ข้อความจริงภายหลังในโปรแกรมออกแบบ</li>
+    </ul>
+  </div>
+</aside>
+
+<h2 class="section"><span class="n">5</span>ลงมือปรุง</h2>
+<div class="steps">
+  <article class="step"><span class="num">1</span><div><b>ให้ AI โหลด Source และสรุปสิ่งที่เข้าใจ</b><p>อย่าเริ่มสร้างภาพทันที ให้มันพูดกลับมาก่อนว่ากำลังจะรักษาอะไร และจุดไหนยังไม่แน่ใจ</p><div class="prompt">อ่าน Source ที่แนบให้ครบก่อน
+
+1. สรุป Visual Canon ที่คุณเข้าใจ
+2. แยกสิ่งที่ต้องคงเดิม ห้ามเปลี่ยน
+3. บอกข้อมูลที่ยังขาดหรือขัดกัน
+4. ยังไม่ต้องสร้างภาพ รอฉันยืนยันก่อน</div></div></article>
+
+  <article class="step"><span class="num">2</span><div><b>เลือกภาพทดสอบที่ “ชิมได้หลายรส”</b><p>อย่าเลือกภาพง่ายจนตรวจอะไรไม่ได้ เช่น วัตถุเดี่ยวบนพื้นขาว ให้เลือกฉากที่รวมรายละเอียดสำคัญของงานจริง</p><div class="test-frame"><div class="test-card"><b>ภาพทดสอบที่อ่อนเกินไป</b><ul><li>เห็นเพียงโลโก้หรือวัตถุ 1 ชิ้น</li><li>ไม่มีคน ไม่มีสถานที่ ไม่เห็นยุค</li><li>สวยแล้วก็ยังไม่รู้ว่า Source ครบไหม</li></ul></div><div class="test-card"><b>ภาพทดสอบที่ดี</b><ul><li>มีตัวละครหลักและเสื้อชุดจริง</li><li>เห็นห้อง พร็อพ และแสงประจำเรื่อง</li><li>ตรวจสี ยุค และสิ่งห้ามมีได้พร้อมกัน</li></ul></div></div></div></article>
+
+  <article class="step"><span class="num">3</span><div><b>สร้าง Version แรกให้เร็ว</b><p>Version แรกมีหน้าที่เปิดเผยความเข้าใจ ไม่ได้มีหน้าที่ชนะรางวัลภาพแห่งปี</p><div class="prompt">ใช้ Source และภาพอ้างอิงที่แนบ สร้างภาพทดสอบ 1 ภาพตามฉากนี้:
+[อธิบายฉากที่เลือก]
+
+ก่อนสร้าง ให้ยึด Canon และข้อห้ามจาก Source เป็นหลัก
+ถ้าข้อมูลไม่พอ ให้ถามแทนการเติมเอง
+ถ้ามีโลโก้หรือสินค้าจริง ให้ใช้เฉพาะไฟล์ภาพต้นฉบับที่แนบ ห้ามเดาหรือวาดใหม่จากคำอธิบายในไฟล์ .md
+ไม่มีตัวหนังสือ โลโก้ หรือวัตถุใหม่ที่ Source ไม่ได้อนุญาต</div></div></article>
+
+  <article class="step"><span class="num">4</span><div><b>ชิมด้วย Checklist ไม่ใช่ความรู้สึกล้วน</b><p>ติ๊กเฉพาะสิ่งที่ตรงจริง ยิ่งช่องไหนไม่ผ่าน ยิ่งได้ข้อมูลกลับไปปรุง Source</p>
+    <div class="taste-board" id="tasteBoard">
+      <h3>🥄 Taste Check</h3><p>แตะเพื่อตรวจภาพ Version แรกของคุณ</p>
+      <div class="checks">
+        <label class="check"><input type="checkbox"><span>คน / สินค้า ยังเป็นตัวเดิม</span></label>
+        <label class="check"><input type="checkbox"><span>เสื้อ สี ฉลาก และรูปทรงถูกต้อง</span></label>
+        <label class="check"><input type="checkbox"><span>สถานที่และพร็อพตรง Source</span></label>
+        <label class="check"><input type="checkbox"><span>ยุค เทคโนโลยี และวัสดุไม่หลุด</span></label>
+        <label class="check"><input type="checkbox"><span>อารมณ์ แสง และ Palette ตรงรส</span></label>
+        <label class="check"><input type="checkbox"><span>ไม่มีของที่ห้ามมีหรือข้อมูลแต่งเพิ่ม</span></label>
+      </div>
+      <div class="score"><b id="tasteScore">ผ่าน 0 / 6 จุด</b><span id="tasteHint">ยังไม่ต้องรีบเติม Prompt ให้หาสาเหตุก่อน</span></div>
+    </div>
+  </div></article>
+
+  <article class="step"><span class="num">5</span><div><b>แยกข้อผิดพลาดเป็น 3 กลุ่ม</b><p>นี่คือจุดสำคัญที่สุด เพราะแต่ละกลุ่มต้องแก้คนละที่</p></div></article>
+</div>
+
+<div class="triage" aria-label="ประเภทข้อผิดพลาด 3 กลุ่ม" style="margin-top:11px">
+  <article class="triage-card"><span class="badge">🕳️</span><h3>Source ยังไม่ได้บอก</h3><p>เช่น ไม่เคยระบุสีเสื้อ ปี หรือของที่ห้ามมี AI จึงต้องเดา</p><span class="action">แก้ที่ Source แล้วบันทึกเป็นกติกาใหม่</span></article>
+  <article class="triage-card"><span class="badge">🤖</span><h3>Source บอกแล้ว แต่ AI ทำผิด</h3><p>ข้อมูลมีครบ แต่ระบบอ่านตกหล่นหรือไม่ทำตาม</p><span class="action">ย้ำหลักฐาน + ใช้ Surgical Edit เฉพาะจุด</span></article>
+  <article class="triage-card"><span class="badge">💡</span><h3>เราเพิ่งตัดสินใจใหม่</h3><p>ภาพทำให้เห็นว่ารสเดิมยังไม่ใช่ จึงเลือกแบบใหม่หลังชิม</p><span class="action">บันทึกว่าเป็น Decision ใหม่ ไม่ใช่ความผิดของ AI</span></article>
+</div>
+
+<div class="steps" style="margin-top:11px">
+  <article class="step"><span class="num">6</span><div><b>แก้ Source ก่อนเขียน Prompt ยาวขึ้น</b><p>เพิ่มเฉพาะข้อมูลที่ค้นพบจากการชิม แล้วให้ AI สร้าง Version ถัดไปจากฐานใหม่</p><div class="prompt">จากภาพ Version แรก ให้แก้เฉพาะจุดต่อไปนี้:
+- [จุดที่ผิด 1]
+- [จุดที่ผิด 2]
+
+สิ่งที่ผ่านแล้วและห้ามเปลี่ยน:
+- [องค์ประกอบที่ถูกต้อง 1]
+- [องค์ประกอบที่ถูกต้อง 2]
+
+ห้ามจัดองค์ประกอบใหม่ ห้ามเปลี่ยนตัวละคร แสง มุมกล้อง หรือรายละเอียดอื่นนอกเหนือรายการแก้ไข</div></div></article>
+
+  <article class="step"><span class="num">7</span><div><b>เก็บสิ่งที่ผ่านกลับเข้าขวด</b><p>เมื่อภาพเริ่มตรง อย่าปล่อยให้ความสำเร็จค้างอยู่แค่ในแชต ให้สรุป Canon และข้อห้ามกลับเข้า Source เพื่อให้ภาพถัดไปไม่เริ่มจากศูนย์</p><div class="prompt">สรุปสิ่งที่ยืนยันแล้วจากภาพ Version ล่าสุดเป็น Markdown โดยแยกหัวข้อ:
+
+## Visual Canon
+## Character / Product Reference
+## Era and Environment
+## Must Keep
+## Must Not Add
+## Reference Files Required
+## Decisions Added From This Taste Test
+
+ในหัวข้อ Reference Files Required ให้ระบุไฟล์รูปที่ต้องแนบทุกครั้ง เช่น โลโก้ PNG/SVG ภาพสินค้า หรือภาพบุคคล เพราะข้อมูลเหล่านี้แทนด้วยคำอธิบายใน .md อย่างเดียวไม่ได้
+
+เขียนให้เป็นกติกาที่ AI ตัวอื่นอ่านแล้วใช้ต่อได้ โดยไม่อ้างว่า “ตามภาพด้านบน”</div></div></article>
+</div>
+
+<h2 class="section"><span class="n">6</span>จานก่อนและหลังการชิม</h2>
+<div class="plate-compare">
+  <article class="plate-card wrong"><div class="plate"><div class="food"></div></div><h3>จานแรกสวย แต่ผิดสูตร</h3><p>หน้าตาดี แต่รายละเอียดไม่ตรง Source จึงยังนำไปใช้ต่อไม่ได้</p></article>
+  <div class="arrow" aria-hidden="true">→</div>
+  <article class="plate-card empty"><div class="diner"><div class="body"></div><div class="face"><span class="hair"></span></div></div><div class="plate"><span class="crumb"></span><span class="swirl"></span></div><h3>ตรงรส จนคนกินหมดจาน</h3><p>ความสวยและความถูกต้องอยู่จานเดียวกัน งานจึงส่งถึงคนจริงได้</p></article>
+</div>
+
+<div class="chef-note">
+  <b>เชฟชิมแล้ว</b>
+  <p>ภาพสวยค่ะ แต่เป็นคนละคน คนละบ้าน และคนละปี นี่ไม่เรียกว่าปรับรสนะคะ นี่เปิดร้านใหม่แล้วค่ะ</p>
+</div>
+
+<h2 class="section"><span class="n">7</span>ตู้ Canon ที่ต้องเก็บกลับบ้าน</h2>
+<div class="canon">
+  <div class="canon-card"><span>🎨</span><b>สีและแสง</b><small>Palette · เวลา · อารมณ์</small></div>
+  <div class="canon-card"><span>👕</span><b>คนและเสื้อ</b><small>ใบหน้า · ผม · ชุด · สัดส่วน</small></div>
+  <div class="canon-card"><span>🏠</span><b>ฉากและพร็อพ</b><small>ของที่ต้องมี · ตำแหน่ง · ยุค</small></div>
+  <div class="canon-card"><span>🚫</span><b>สิ่งห้ามเปลี่ยน</b><small>Do not add · Do not recompose</small></div>
+</div>
+
+<h2 class="section"><span class="n">8</span>หลังครัว</h2>
+<details class="deep"><summary>ทำไมต้องแก้ Source ก่อนแก้ Prompt</summary><div class="deepbody"><p>Prompt ใช้สั่งงานเฉพาะรอบ แต่ Source คือฐานที่หลายรอบและหลายเครื่องมือต้องใช้ร่วมกัน ถ้ารายละเอียดสำคัญขาดจาก Source แล้วเราแก้ด้วย Prompt เฉพาะแชต ความรู้ใหม่นั้นจะหายทันทีเมื่อย้ายแชตหรือเปลี่ยน AI</p><p>การเก็บข้อค้นพบกลับเข้าขวดทำให้การแก้ครั้งนี้กลายเป็นทรัพย์สินของงาน ไม่ใช่ค่าแรงที่ต้องจ่ายซ้ำทุก Session</p></div></details>
+<details class="deep"><summary>Source ที่ดีทำให้ AI ไม่ผิดเลยหรือไม่</summary><div class="deepbody"><p>ไม่ค่ะ AI ยังอ่านตกหล่น เชื่อมเหตุผลพลาด หรือทำไม่ครบได้ Source ที่ดีช่วยลดพื้นที่ที่ระบบต้องเดา และช่วยให้เราแยกได้ว่าปัญหาเกิดจากวัตถุดิบ กติกา หรือการลงมือของ AI</p><p>งานสำคัญยังต้องตรวจต้นฉบับ ตรวจข้อเท็จจริง และให้มนุษย์ตัดสินผลสุดท้ายเสมอ</p></div></details>
+<details class="deep"><summary>ภาพอ้างอิงเยอะขึ้น แปลว่าดีขึ้นเสมอไหม</summary><div class="deepbody"><p>ไม่เสมอไป ภาพอ้างอิงที่ขัดกันทำให้ AI ไม่รู้ว่าต้องยึดภาพไหนเป็นหลัก ระบุให้ชัดว่าแต่ละภาพใช้ตรวจอะไร เช่น ภาพ A ใช้ใบหน้า ภาพ B ใช้เสื้อ ภาพ C ใช้ห้อง และบอกลำดับความสำคัญเมื่อข้อมูลชนกัน</p></div></details>
+<details class="deep"><summary>กติกาความปลอดภัยของภาพจริง</summary><div class="deepbody"><ul><li>อย่าอัปโหลดเอกสารลับ บัตรประชาชน ที่อยู่ หรือข้อมูลลูกค้าโดยไม่จำเป็น</li><li>ใช้รูปคนอื่นเมื่อได้รับอนุญาต โดยเฉพาะเด็ก ลูกค้า และภาพที่อาจทำให้เข้าใจผิด</li><li>ตรวจสินค้า ฉลาก สี จำนวน และคุณสมบัติก่อนเผยแพร่</li><li>ระวังภาพที่สร้างความเสียหาย ปลอมตัวตน หรือทำให้ผู้อื่นเข้าใจว่าเหตุการณ์ปลอมเป็นเรื่องจริง</li></ul></div></details>
+
+<section class="quest">
+  <h2>🎯 เควสท้ายบท · ชิมภาพแรกให้จบ</h2>
+  <p>ทำเพียง 1 ภาพ แต่ต้องได้ข้อมูลกลับไปทำให้ซอสขวดเดิมดีขึ้น</p>
+  <ol>
+    <li>แนบ Source จากบทที่ 1</li>
+    <li>สร้างภาพทดสอบ 1 ภาพ</li>
+    <li>แยกสิ่งที่ผิดเป็น 3 กลุ่ม</li>
+    <li>แก้ Source และทำ Surgical Edit 1 รอบ</li>
+    <li>เก็บ Visual Canon และข้อห้ามกลับเข้าขวด</li>
+  </ol>
+  <button class="finish" id="finishLesson" type="button">ฉันชิมและแก้ Source แล้ว</button>
+  <div class="achievement" id="achievement">🥄 TASTE CHECK PASSED · ภาพไม่ใช่แค่สวย แต่ตรงรสแล้ว</div>
 </section>
 
-<section class="quest" data-mc-end>
-  <span class="tag">QUEST · TASTE CHECK</span><h2>เช็กก่อนจบบท</h2><p>จบบทเมื่อ Source ดีขึ้นจาก Feedback จริง</p>
-  <div class="checks">
-    <label class="check"><input type="checkbox" data-quest-check><span>ฉันสร้างภาพทดสอบ 1 ภาพแล้ว</span></label>
-    <label class="check"><input type="checkbox" data-quest-check><span>ฉันแยกข้อผิดพลาดออกเป็น 3 กลุ่มแล้ว</span></label>
-    <label class="check"><input type="checkbox" data-quest-check><span>ฉันแก้ Canon หรือข้อห้ามกลับเข้า Source แล้ว</span></label>
-    <label class="check"><input type="checkbox" data-quest-check><span>ฉันสร้าง Version ถัดไปโดยไม่รื้อของที่ผ่านแล้ว</span></label>
-  </div>
-  <button class="finish" type="button" data-finish disabled>จบบทที่ 2 · ผ่านการชิม</button>
-  <div class="reward" data-reward>🥄 TASTE CHECK PASSED · Source ผ่านการชิมรอบแรก</div>
-  <div class="takehome"><div><b>🖼️ ภาพทดสอบ</b><small>หลักฐานว่า AI เข้าใจตรงไหนและพลาดตรงไหน</small></div><div><b>📌 Canon ที่แก้แล้ว</b><small>กติกาที่ใช้คุมงานชิ้นต่อไป</small></div></div>
-</section>
+<div class="nextrow">
+  <a class="nx ghost" href="free-ai.html">← กลับบทที่ 1</a>
+  <a class="nx" href="clip-ai.html">ไปบทที่ 3 · ทำจานจริง →</a>
+</div>
 
-<div class="nextrow"><a class="nx ghost" href="full-lessons.html#lesson-2">📖 เปิดบทเรียนฉบับเต็ม</a></div>
-<div class="nextrow"><a class="nx ghost" href="free-ai.html">← บท 1 · เริ่มจากการปรุงซอส</a><a class="nx" href="clip-ai.html">บท 3 · เอาซอสไปทำจานจริง →</a></div>
-<footer>AI ใส่ซอส · ชิม Output แล้วแก้กลับที่ Source</footer>
+<footer>AI ใส่ซอส · Source-Based AI Workflow · myclover.com<br>ภาพคือช้อนชิม และ Source คือสูตรที่ต้องเก็บไว้ 🍀</footer>
 </main>
-<script defer src="/assets/quest.js"></script><script defer src="/assets/ai-sauce-lite.js"></script>
-<script type="module">import{trackAct}from'/assets/track-core.js';window.MC_ACT=trackAct;import'/assets/stat-report.js';</script>
-</body></html>
+
+<script>
+document.querySelectorAll('.prompt').forEach(function(el){
+  var b=document.createElement('button');
+  b.type='button';b.className='cpx';b.textContent='คัดลอก';
+  b.setAttribute('aria-label','คัดลอกคำสั่ง');
+  b.onclick=async function(){
+    var c=el.cloneNode(true);c.querySelectorAll('button').forEach(function(x){x.remove()});
+    var text=c.innerText.trim(),ok=false;
+    try{await navigator.clipboard.writeText(text);ok=true}catch(e){
+      var t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
+      try{ok=document.execCommand('copy')}catch(err){}t.remove();
+    }
+    b.textContent=ok?'✓ คัดลอกแล้ว':'คัดลอกไม่สำเร็จ';
+    setTimeout(function(){b.textContent='คัดลอก'},1400);
+  };
+  el.appendChild(b);
+});
+
+(function(){
+  var helps=[].slice.call(document.querySelectorAll('.canon-help'));
+  function closeAll(except){
+    helps.forEach(function(w){
+      if(w===except)return;
+      w.dataset.open='0';
+      var b=w.querySelector('.canon-term');if(b)b.setAttribute('aria-expanded','false');
+    });
+  }
+  helps.forEach(function(w){
+    var b=w.querySelector('.canon-term');if(!b)return;
+    b.addEventListener('click',function(e){
+      e.stopPropagation();
+      var open=w.dataset.open==='1';
+      closeAll(w);
+      w.dataset.open=open?'0':'1';
+      b.setAttribute('aria-expanded',open?'false':'true');
+    });
+  });
+  document.addEventListener('click',function(){closeAll(null)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll(null)});
+})();
+
+(function(){
+  var checks=[].slice.call(document.querySelectorAll('#tasteBoard input[type="checkbox"]'));
+  var score=document.getElementById('tasteScore'),hint=document.getElementById('tasteHint');
+  function updateTaste(){
+    var done=checks.filter(function(x){return x.checked}).length;
+    score.textContent='ผ่าน '+done+' / '+checks.length+' จุด';
+    hint.textContent=done===checks.length?'จานนี้พร้อมใช้เป็นฐานของภาพถัดไปแล้ว':done>=4?'ใกล้ตรงรสแล้ว เก็บจุดที่ยังผิดกลับเข้า Source':done>0?'เห็นรสที่ผ่านแล้ว ต่อไปแยกสาเหตุของจุดที่ไม่ผ่าน':'ยังไม่ต้องรีบเติม Prompt ให้หาสาเหตุก่อน';
+    try{localStorage.setItem('mc-taste-check',checks.map(function(x){return x.checked?'1':'0'}).join(''))}catch(e){}
+  }
+  checks.forEach(function(x){x.addEventListener('change',updateTaste)});
+  try{
+    var saved=localStorage.getItem('mc-taste-check')||'';
+    checks.forEach(function(x,i){x.checked=saved.charAt(i)==='1'});
+  }catch(e){}
+  updateTaste();
+})();
+
+(function(){
+  var btn=document.getElementById('finishLesson'),achievement=document.getElementById('achievement');
+  function complete(){
+    btn.textContent='✓ ผ่านบทที่ 2 แล้ว';btn.classList.add('done');btn.disabled=true;achievement.classList.add('show');achievement.setAttribute('role','status');
+    try{localStorage.setItem('mc-image-ai-complete','1')}catch(e){}
+  }
+  btn.addEventListener('click',complete);
+  try{if(localStorage.getItem('mc-image-ai-complete')==='1')complete()}catch(e){}
+})();
+</script>
+<script defer src="../assets/quest.js"></script>
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","xtx73cs6w1");
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"cd6b654477f3437ca6619742cf119aa6"}'></script>
+<script type="module" src="/assets/track.js"></script>
+</body>
+</html>
