@@ -1,6 +1,7 @@
 export { trackAct } from '/assets/track-core.js';
 import '/assets/ai-sauce-course.js';
 import '/assets/main-course-route.js';
+import '/assets/forge-path-choice.js';
 import '/assets/lesson6-boss-transition.js';
 import '/assets/course-nav-names.js';
 import '/assets/details-fix.js';
