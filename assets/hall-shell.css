@@ -366,26 +366,32 @@ h2{font-family:"Bai Jamjuree",system-ui;font-size:clamp(29px,4.8vw,48px);line-he
   background:rgba(255,255,255,.075);
   color:#fff
 }
+/* ถ้วยแพลตินัมต้องอ่านออกทั้งบนแผงอ่อนและแผงเข้ม — ทองอ่อนบนพื้นขาวจมทันที */
+.reward-chip.platinum-reward{
+  border-color:rgba(190,148,66,.55);
+  background:rgba(190,148,66,.14);
+  color:#7a5a17
+}
+.quest-hud[data-state="secret"] .reward-chip.platinum-reward{
+  background:rgba(234,208,140,.14);
+  color:var(--gold2)
+}
+/* ── ป้ายเสริมใต้เข็มทิศตอนจบ ──
+   โผล่ทั้งตอนจบเส้นทางหลักและตอนเคลียร์ Secret Ending แต่พื้นหลังคนละสี:
+   จบเส้นทางหลัก = แผงสีอ่อน · Secret Ending = แผงสีเข้ม
+   เส้นขอบกับตัวหนังสือจึงต้องมีคนละชุด ไม่งั้นตอนแผงอ่อนมันจมหายไปทั้งป้าย */
 .secret-banner{
   display:none;
   align-items:center;
   gap:12px;
   margin-top:17px;
   padding-top:17px;
-  border-top:1px solid rgba(255,255,255,.13)
+  border-top:1px solid rgba(18,40,28,.12)
 }
+.secret-banner[hidden]{display:none!important}
+.quest-hud[data-state="complete"] .secret-banner,
 .quest-hud[data-state="secret"] .secret-banner{display:flex}
-.secret-trophy{
-  font-size:34px;
-  filter:drop-shadow(0 8px 18px rgba(190,148,66,.45))
-}
-.secret-banner b{
-  display:block;
-  font-family:"Bai Jamjuree",system-ui;
-  color:var(--gold2);
-  font-size:15px
-}
-.secret-banner span{display:block;color:rgba(255,255,255,.62);font-size:12px}
+.quest-hud[data-state="secret"] .secret-banner{border-top-color:rgba(255,255,255,.13)}
 @media(max-width:760px){
   .quest-top{grid-template-columns:1fr}
   .overall{text-align:left;padding-top:0}

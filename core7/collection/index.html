@@ -13,7 +13,7 @@
 <style>
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px}.filters button{border:1px solid rgb(var(--line)/.18);background:#fff;border-radius:999px;padding:8px 16px;font-weight:600;font-size:13.5px;min-height:40px}.filters button[aria-pressed="true"]{background:rgb(var(--deep));color:#fff;border-color:transparent}
 .colhead{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.completion{font-family:"Bai Jamjuree";font-weight:800;color:rgb(var(--green));font-size:20px}.progress{height:9px;margin-top:17px;overflow:hidden;border-radius:999px;background:rgb(var(--line)/.1)}.progress i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .5s ease}
-.reward-rule{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;margin-top:18px;padding:16px 18px;border:1px solid rgb(var(--gold)/.28);border-radius:16px;background:rgb(var(--gold)/.08)}.reward-rule .icon{font-size:30px}.reward-rule b{font-family:"Bai Jamjuree"}.reward-rule p{margin-top:2px;color:rgb(var(--muted));font-size:13px}.select-state{padding:8px 12px;border-radius:999px;background:rgb(var(--deep));color:#fff;font:800 11px/1.2 "Bai Jamjuree";white-space:nowrap}.select-state.on{background:rgb(var(--gold));color:rgb(var(--deep))}
+.reward-rule{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;margin-top:18px;padding:16px 18px;border:1px solid rgb(var(--gold)/.28);border-radius:16px;background:rgb(var(--gold)/.08)}.reward-rule.full{border-color:rgb(var(--gold)/.62);background:rgb(var(--gold)/.16)}.reward-rule.full b{color:#7a5a17}.reward-rule .icon{font-size:30px}.reward-rule b{font-family:"Bai Jamjuree"}.reward-rule [hidden]{display:none!important}.reward-rule p{margin-top:2px;color:rgb(var(--muted));font-size:13px}.select-state{padding:8px 12px;border-radius:999px;background:rgb(var(--deep));color:#fff;font:800 11px/1.2 "Bai Jamjuree";white-space:nowrap}.select-state.on{background:rgb(var(--gold));color:rgb(var(--deep))}
 .card-cell.locked{position:relative;overflow:hidden;border-radius:10px;background:linear-gradient(145deg,rgb(var(--deep)),#111);aspect-ratio:2/3;box-shadow:inset 0 0 0 1px rgb(255 255 255/.08)}.card-cell.locked svg{opacity:.08;filter:grayscale(1) brightness(.45) blur(1.5px)}.card-cell.locked::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:28px;background:linear-gradient(180deg,rgb(7 29 18/.15),rgb(7 29 18/.65))}.card-cell.locked .slot-no{position:absolute;z-index:2;left:9px;bottom:8px;color:rgb(255 255 255/.45);font:700 10px/1 "Bai Jamjuree"}.generic-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-top:44px}.generic-head span{color:rgb(var(--muted));font:800 11px/1.3 "Bai Jamjuree";text-align:right}.generic-note{padding:14px 16px;border:1px dashed rgb(var(--line)/.18);border-radius:13px;background:rgb(var(--line)/.035);font-size:13.5px;color:rgb(var(--muted));margin-top:10px}.empty-grid{grid-column:1/-1;padding:30px 18px;border:1px dashed rgb(var(--line)/.18);border-radius:14px;text-align:center;color:rgb(var(--muted))}
 @media(max-width:620px){.reward-rule{grid-template-columns:auto 1fr}.select-state{grid-column:1/-1;justify-self:start}.generic-head{align-items:start;flex-direction:column}.generic-head span{text-align:left}}
 </style>
@@ -30,9 +30,14 @@
     <p class="lead" data-en="Finish a Match to earn one new FIRST HAND card — win, lose or draw, and never a duplicate.">เล่นให้จบ Match เพื่อรับการ์ด FIRST HAND ใหม่ทีละใบ — แพ้ ชนะ หรือเสมอก็ได้ และไม่มีการ์ดซ้ำ</p>
     <div class="progress" aria-hidden="true"><i id="progress"></i></div>
 
-    <div class="reward-rule">
-      <span class="icon">🎁</span>
-      <div><b data-en="One finished Match · one FIRST HAND card">เล่นจบ 1 Match · ปลดล็อก FIRST HAND 1 ใบ</b><p data-en="In a SET you get one after every Match, before you ready up for the next.">ใน SET ก็แจกหลังจบทุก Match ก่อนกดพร้อมเล่น Match ต่อไป</p></div>
+    <div class="reward-rule" id="rewardRule">
+      <span class="icon" id="rewardIcon">🎁</span>
+      <div>
+        <b data-full="off" data-en="One finished Match · one FIRST HAND card">เล่นจบ 1 Match · ปลดล็อก FIRST HAND 1 ใบ</b>
+        <p data-full="off" data-en="In a SET you get one after every Match, before you ready up for the next.">ใน SET ก็แจกหลังจบทุก Match ก่อนกดพร้อมเล่น Match ต่อไป</p>
+        <b data-full="on" hidden data-en="You have completed the FIRST HAND Collection!!">คุณสะสม FIRST HAND ครบ Collection แล้ว!!</b>
+        <p data-full="on" hidden data-en="All 28 cards · your SELECT hand has no limits now">ครบทั้ง 28 ใบ · จัดมือแบบ SELECT ได้เต็มที่แล้ว</p>
+      </div>
       <span class="select-state" id="selectState">SELECT 0/7</span>
     </div>
 
@@ -68,6 +73,19 @@ const count = collection.length;
 
 document.getElementById('completion').textContent = `${count} / ${TOTAL_COLLECTION_CARDS}`;
 document.getElementById('progress').style.width = `${count / TOTAL_COLLECTION_CARDS * 100}%`;
+/* ครบทุกใบแล้วกติกาการแจกไม่มีความหมายอีกต่อไป — ช่องนี้เปลี่ยนไปทำหน้าที่
+   ประกาศแทน คนที่เก็บครบต้องได้เห็นว่าครบ ไม่ใช่เห็นวิธีเก็บที่ทำไปแล้ว
+
+   ข้อความสองชุดเขียนไว้ใน HTML ทั้งคู่แล้วสลับกันโชว์ ไม่ใช่เขียนทับด้วย JS
+   เพราะตัวสลับภาษาจำข้อความไทยต้นฉบับไว้ตั้งแต่โหลด — เขียนทับทีหลังจะโดน
+   กู้กลับเป็นของเดิมทันทีที่สลับภาษา */
+const full = count >= TOTAL_COLLECTION_CARDS;
+document.getElementById('rewardRule').classList.toggle('full', full);
+document.getElementById('rewardIcon').textContent = full ? '🏆' : '🎁';
+for (const node of document.querySelectorAll('.reward-rule [data-full]')) {
+  node.hidden = (node.dataset.full === 'on') !== full;
+}
+
 const selectState = document.getElementById('selectState');
 if (canUseSelectMode()) {
   selectState.textContent = '🔓 SELECT UNLOCKED';
