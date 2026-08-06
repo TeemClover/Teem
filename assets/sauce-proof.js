@@ -5,7 +5,7 @@
 */
 
 const KEY_WALK = 'mc_walk_done';
-const KEY_SEEN = 'mc_sauce_kickstarter_offer_seen_v1';
+const KEY_SEEN = 'mc_sauce_kickstarter_offer_seen_v2';
 const MODAL_ID = 'mcSauceProof';
 
 function readJSON(key, fallback) {
@@ -55,6 +55,7 @@ function addStyles() {
     .mc-proof__btn{display:flex;align-items:center;justify-content:center;min-height:50px;border:1px solid rgb(255 255 255/.2);border-radius:13px;padding:11px 17px;color:#fff;background:rgb(255 255 255/.07);font:750 14px/1.35 system-ui;text-decoration:none;cursor:pointer;text-align:center}
     .mc-proof__btn--gold{border-color:#e5c779;background:#e5c779;color:#071a10}
     .mc-proof__fine{display:block;margin-top:13px;color:rgb(255 255 255/.52);font:400 12.5px/1.65 system-ui}
+    .mc-proof__confirm{padding-top:2px}.mc-proof__confirm[hidden],.mc-proof__main[hidden]{display:none!important}.mc-proof__warning{margin:18px 0 4px;padding:15px 16px;border:1px solid rgb(229 199 121/.35);border-radius:14px;background:rgb(229 199 121/.09);color:rgb(255 255 255/.88)!important}.mc-proof__warning strong{color:#e5c779}.mc-proof__btn--danger{border-color:rgb(255 171 153/.45);color:#ffd1c7;background:rgb(174 68 55/.17)}
     @keyframes mcProofFade{from{opacity:0}to{opacity:1}}@keyframes mcProofPop{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
     @media(max-width:540px){.mc-proof{align-items:end;padding:10px}.mc-proof__panel{border-radius:22px;padding:26px 20px 22px}.mc-proof__actions{grid-template-columns:1fr}.mc-proof__btn--skip{order:2}}
     @media(prefers-reduced-motion:reduce){.mc-proof,.mc-proof__panel{animation:none}}
@@ -85,10 +86,6 @@ export function tryShowKickstarterProof() {
   if (!eligibleForKickstarterProof() || document.getElementById(MODAL_ID)) return false;
   addStyles();
 
-  /* Mark on display, not on click. The invitation is intentionally one-time,
-     including when the visitor chooses to skip it. */
-  write(KEY_SEEN, '1');
-
   const modal = document.createElement('div');
   modal.id = MODAL_ID;
   modal.className = 'mc-proof';
@@ -97,35 +94,71 @@ export function tryShowKickstarterProof() {
   modal.setAttribute('aria-labelledby', 'mcProofTitle');
   modal.innerHTML = `
     <section class="mc-proof__panel">
-      <button class="mc-proof__close" type="button" data-close aria-label="ปิด">✕</button>
-      <span class="mc-proof__eyebrow">SOURCE → GAME → SALES PAGE</span>
-      <h2 id="mcProofTitle">คุณลองชิมเกมแล้ว<br>ดูจานที่เอาไปขายต่อไหม?</h2>
-      <p>CORE7 ที่คุณเพิ่งเล่น และหน้าขาย Kickstarter ด้านล่าง เกิดจาก <strong>Source 50 บทขวดเดียวกัน</strong></p>
-      <p>แค่เปลี่ยนงานปลายทาง จาก “สร้างเกมที่เล่นได้” เป็น “อธิบายเกมให้คนอยากสนับสนุน” — AI ก็หยิบวัตถุดิบชุดเดิมไปจัดจานใหม่ได้</p>
-      <div class="mc-proof__formula"><b>ซอสขวดเดิม</b><i>→</i><span>เกมที่เล่นได้</span><i>→</i><span>หน้าขายที่พร้อมเล่าเรื่อง</span></div>
-      <p>ถ้าคุณมีสินค้า บริการ หรือความรู้ของตัวเอง สิ่งที่ต้องสร้างก่อนอาจไม่ใช่หน้าเว็บ แต่คือ Source ที่ดีพอให้ AI เข้าใจว่าคุณกำลังขายอะไรอยู่</p>
-      <div class="mc-proof__actions">
-        <a class="mc-proof__btn mc-proof__btn--gold" href="/kickstarter/th/?from=first-hand">🍽️ ดูหน้าขายจากซอสขวดเดียว →</a>
-        <button class="mc-proof__btn mc-proof__btn--skip" type="button" data-close>ข้ามก่อน</button>
+      <button class="mc-proof__close" type="button" data-ask-skip aria-label="ปิด">✕</button>
+      <div class="mc-proof__main" data-main>
+        <span class="mc-proof__eyebrow">🔐 SOURCE → GAME → SALES PAGE</span>
+        <h2 id="mcProofTitle">คุณลองชิมเกมแล้ว<br>ดูจานที่เอาไปขายต่อไหม?</h2>
+        <p>CORE7 ที่คุณเพิ่งเล่น และหน้าขาย Kickstarter ด้านล่าง เกิดจาก <strong>Source 50 บทขวดเดียวกัน</strong></p>
+        <p>แค่เปลี่ยนงานปลายทาง จาก “สร้างเกมที่เล่นได้” เป็น “อธิบายเกมให้คนอยากสนับสนุน” — AI ก็หยิบวัตถุดิบชุดเดิมไปจัดจานใหม่ได้</p>
+        <div class="mc-proof__formula"><b>🧴 ซอสขวดเดิม</b><i>→</i><span>🎮 เกมที่เล่นได้</span><i>→</i><span>🛍️ หน้าขายที่พร้อมเล่าเรื่อง</span></div>
+        <p>ถ้าคุณมีสินค้า บริการ หรือความรู้ของตัวเอง สิ่งที่ต้องสร้างก่อนอาจไม่ใช่หน้าเว็บ แต่คือ Source ที่ดีพอให้ AI เข้าใจว่าคุณกำลังขายอะไรอยู่</p>
+        <div class="mc-proof__actions">
+          <a class="mc-proof__btn mc-proof__btn--gold" data-open-secret href="/kickstarter/th/?from=first-hand">👀 แอบดูหน้าขายจากซอสขวดเดียว →</a>
+          <button class="mc-proof__btn mc-proof__btn--skip" type="button" data-ask-skip>ข้ามก่อน</button>
+        </div>
+        <span class="mc-proof__fine">ไม่บังคับ · แต่ถ้าข้าม ระบบจะถามย้ำ 1 ครั้ง เพราะลิงก์ลับนี้จะไม่ถูกเสนอให้อีก</span>
       </div>
-      <span class="mc-proof__fine">ไม่บังคับ · ไม่เด้งซ้ำ · ข้ามแล้วเดินต่อได้ตามปกติ</span>
+      <div class="mc-proof__confirm" data-confirm hidden>
+        <span class="mc-proof__eyebrow">⚠️ LAST CHANCE</span>
+        <h2>แน่ใจหรือว่าจะข้าม?</h2>
+        <p class="mc-proof__warning"><strong>ลิงก์ลับนี้จะไม่ปรากฏให้อีกในเส้นทางปกติของบ้าน</strong> ข้างในมีรายละเอียดของโปรเจกต์ที่ตั้งใจนำไปขายจริง คุณมีโอกาสแอบดูจากจุดนี้ได้เพียงครั้งเดียว</p>
+        <p>ข้ามได้ตามสบายค่ะ เชฟเพียงไม่อยากให้คุณกลับมาถามทีหลังว่า “เมื่อกี้กดอะไรหายไปนะ” เพราะคราวนี้หายจริงค่ะ</p>
+        <div class="mc-proof__actions">
+          <button class="mc-proof__btn mc-proof__btn--gold" type="button" data-return>👀 กลับไปดูหน้าลับ</button>
+          <button class="mc-proof__btn mc-proof__btn--danger" type="button" data-confirm-skip>ยืนยัน · ข้ามโอกาสนี้</button>
+        </div>
+        <span class="mc-proof__fine">เมื่อยืนยันแล้ว คำชวนนี้จะไม่แสดงอีกบนอุปกรณ์นี้</span>
+      </div>
     </section>`;
 
+  const main = modal.querySelector('[data-main]');
+  const confirm = modal.querySelector('[data-confirm]');
   const close = () => {
     modal.remove();
     document.documentElement.style.overflow = '';
   };
-  modal.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', close));
-  modal.addEventListener('click', event => { if (event.target === modal) close(); });
+  const askSkip = () => {
+    main.hidden = true;
+    confirm.hidden = false;
+    modal.querySelector('[data-return]')?.focus();
+    try { window.gtag?.('event', 'sauce_kickstarter_offer_skip_warning'); } catch { /* optional */ }
+  };
+  const returnToOffer = () => {
+    confirm.hidden = true;
+    main.hidden = false;
+    modal.querySelector('[data-open-secret]')?.focus();
+  };
+  const confirmSkip = () => {
+    write(KEY_SEEN, '1');
+    try { window.gtag?.('event', 'sauce_kickstarter_offer_skipped'); } catch { /* optional */ }
+    close();
+  };
+  modal.querySelectorAll('[data-ask-skip]').forEach(button => button.addEventListener('click', askSkip));
+  modal.querySelector('[data-return]')?.addEventListener('click', returnToOffer);
+  modal.querySelector('[data-confirm-skip]')?.addEventListener('click', confirmSkip);
+  modal.querySelector('[data-open-secret]')?.addEventListener('click', () => {
+    write(KEY_SEEN, '1');
+    try { window.gtag?.('event', 'sauce_kickstarter_offer_opened'); } catch { /* optional */ }
+  });
+  modal.addEventListener('click', event => { if (event.target === modal) askSkip(); });
   document.addEventListener('keydown', function escape(event) {
     if (event.key !== 'Escape' || !document.body.contains(modal)) return;
-    close();
-    document.removeEventListener('keydown', escape);
+    if (confirm.hidden) askSkip(); else returnToOffer();
   });
 
   document.documentElement.style.overflow = 'hidden';
   document.body.append(modal);
-  modal.querySelector('.mc-proof__btn--gold')?.focus();
+  modal.querySelector('[data-open-secret]')?.focus();
   try { window.gtag?.('event', 'sauce_kickstarter_offer_shown'); } catch { /* analytics optional */ }
   return true;
 }
