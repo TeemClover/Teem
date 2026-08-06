@@ -102,6 +102,11 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 <div id="dashboard" hidden>
 
 <div id="wiring"></div>
+<!-- ข้อจำกัดของตัวเลขนี้ต้องเขียนติดไว้กับตัวเลข ไม่ใช่ไปอยู่ในคอมเมนต์ของโค้ด
+     คนที่เปิดหน้านี้มาอ่านคือคนที่กำลังจะเอาไปตัดสินใจ -->
+<div class="notice"><b>อ่านตัวเลข Achievement ยังไง</b> — event ถูกยิงตอนที่เจ้าของเครื่องเปิดหน้า
+ <code>/collection/</code> เพราะหน้านั้นเป็นที่เดียวที่คำนวณว่าอะไรปลดแล้ว ตัวเลขนี้จึงหมายถึง
+ <b>“ปลดแล้วและเคยเปิดดู”</b> ไม่ใช่ “ปลดแล้ว” เฉย ๆ — คนที่อ่านการ์ตูนจบแต่ไม่เคยแวะอัลบั้มจะยังไม่ถูกนับ</div>
 <section class="metrics" id="metrics"></section>
 <div id="dupes"></div>
 
@@ -177,9 +182,10 @@ function render(d){
  $('version').textContent=`Analytics ${d.analyticsVersion||'-'} · Updated ${date(d.generatedAt)}`;
 
  $('wiring').innerHTML=d.wired?'':
-  `<div class="notice"><b>ยังไม่มีหน้าไหนส่งข้อมูลเข้ามา</b> — ตัวรับพร้อมแล้ว แต่หน้าเว็บยังไม่ได้ใส่
-   <code>&lt;meta name="mc-act-view"&gt;</code> หรือ <code>data-mc-act</code> เลขศูนย์ตรงนี้จึงแปลว่า
-   “ยังไม่ได้ต่อสาย” ไม่ใช่ “ไม่มีคนทำ”</div>`;
+  `<div class="notice"><b>ยังไม่มีข้อมูลเข้ามาในช่วงเวลานี้</b> — Act ต่อผ่าน
+   <code>&lt;meta name="mc-act-view"&gt;</code> กับ <code>data-mc-act</code> ส่วน Achievement ต่อแล้วที่
+   <code>assets/stat-report.js</code> ซึ่งรับรายการที่หน้า Collection สรุปมาแล้วไปยิงต่อ
+   ถ้ายังเป็นศูนย์ แปลว่ายังไม่ได้ deploy ตัวล่าสุด หรือช่วงเวลาที่เลือกไม่มีคนเข้าจริง ๆ</div>`;
 
  const t=d.totals||{};
  $('metrics').innerHTML=[
