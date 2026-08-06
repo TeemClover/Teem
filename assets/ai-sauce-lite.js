@@ -4,16 +4,88 @@
   var body=document.body, slug=body&&body.getAttribute('data-lesson');
   if(!slug) return;
 
+  var PROMPT_REPLACEMENTS={
+    'free-ai':[
+      ['ใช้ข้อมูลทั้งหมดที่ฉันให้เป็นวัตถุดิบ','ใช้ข้อมูลต้นทางทั้งหมดที่ฉันให้']
+    ],
+    'clip-ai':[
+      ['Recipe Card','Production Brief']
+    ]
+  };
+  var COURSE_ONLY_TERMS=['ผงปรุงรส','ตักผง','เชฟ','ซอสขวด','ปรุงซอส','สกัดหัวซอส','หัวซอส','Recipe Card'];
+
   function storeKey(){ return 'mc:ai-sauce-lite:'+slug; }
   function read(){ try{return JSON.parse(localStorage.getItem(storeKey())||'{}')}catch(e){return{}} }
   function save(v){ try{localStorage.setItem(storeKey(),JSON.stringify(v))}catch(e){} }
+
+  function replaceAll(text,from,to){ return String(text).split(from).join(to); }
+  function normalizePrompt(text){
+    var output=String(text||'').trim();
+    (PROMPT_REPLACEMENTS[slug]||[]).forEach(function(pair){ output=replaceAll(output,pair[0],pair[1]); });
+    return output;
+  }
+  function promptText(target){
+    var clone=target.cloneNode(true);
+    clone.querySelectorAll('button').forEach(function(button){button.remove()});
+    return normalizePrompt(clone.innerText||clone.textContent||'');
+  }
+  function rewritePromptTargets(){
+    document.querySelectorAll('[data-copy]').forEach(function(button){
+      var target=document.getElementById(button.getAttribute('data-copy'));
+      if(!target) return;
+      var replacements=PROMPT_REPLACEMENTS[slug]||[];
+      var walker=document.createTreeWalker(target,NodeFilter.SHOW_TEXT);
+      var nodes=[];
+      while(walker.nextNode())nodes.push(walker.currentNode);
+      nodes.forEach(function(node){
+        if(node.parentElement&&node.parentElement.closest('button'))return;
+        var next=node.nodeValue;
+        replacements.forEach(function(pair){next=replaceAll(next,pair[0],pair[1])});
+        if(next!==node.nodeValue)node.nodeValue=next;
+      });
+    });
+  }
+  function auditPrompts(){
+    var failures=[];
+    document.querySelectorAll('[data-copy]').forEach(function(button){
+      var id=button.getAttribute('data-copy'), target=document.getElementById(id);
+      if(!target)return;
+      var text=promptText(target);
+      COURSE_ONLY_TERMS.forEach(function(term){
+        if(text.includes(term))failures.push(id+': '+term);
+      });
+    });
+    return {version:'generic-ai-lite-v1',lesson:slug,passed:failures.length===0,failures:failures};
+  }
+  function copyText(text){
+    if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(text);
+    return new Promise(function(resolve,reject){
+      var area=document.createElement('textarea');
+      area.value=text;area.setAttribute('readonly','');area.style.cssText='position:fixed;left:-9999px;opacity:0';
+      document.body.appendChild(area);area.select();
+      try{document.execCommand('copy')?resolve():reject(new Error('copy failed'))}catch(error){reject(error)}
+      area.remove();
+    });
+  }
+
+  rewritePromptTargets();
+  window.MC_GENERIC_AI_PROMPT_AUDIT={run:auditPrompts,last:auditPrompts()};
+  if(!window.MC_GENERIC_AI_PROMPT_AUDIT.last.passed){
+    console.warn('[AI Sauce] copied prompt contains course-only language',window.MC_GENERIC_AI_PROMPT_AUDIT.last);
+  }
 
   document.querySelectorAll('[data-copy]').forEach(function(button){
     button.addEventListener('click',function(){
       var id=button.getAttribute('data-copy'), target=document.getElementById(id);
       if(!target) return;
-      var text=target.innerText.trim();
-      navigator.clipboard.writeText(text).then(function(){
+      var text=promptText(target), audit=auditPrompts();
+      if(!audit.passed){
+        button.textContent='Prompt ยังมีศัพท์หลักสูตร';
+        console.warn('[AI Sauce] copy blocked',audit.failures);
+        setTimeout(function(){button.textContent='คัดลอก'},1800);
+        return;
+      }
+      copyText(text).then(function(){
         var old=button.textContent;button.textContent='✓ คัดลอกแล้ว';
         setTimeout(function(){button.textContent=old},1200);
       }).catch(function(){ button.textContent='เลือกข้อความแล้วคัดลอกเอง'; });
