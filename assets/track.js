@@ -13,3 +13,4 @@ import '/assets/prompts-season.js';
 import '/assets/prompts-utility.js';
 import '/assets/prompts-chef.js';
 import '/assets/prompts-eko-tasting.js';
+import '/assets/prompts-svg-polish.js';
