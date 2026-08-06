@@ -120,18 +120,21 @@
         };
       },
     },
-    {
-      id: 'stats', rail: null,
-      done: function () { return false; },   /* ปลายทางปัจจุบัน */
-      next: {
-        href: 'collection/', icon: '🎒',
-        label: 'บ้านเปิดหมดแล้ว',
-        title: 'เดินต่อได้ทุกห้อง',
-        desc: 'เส้นทางหลักครบแล้ว จากนี้เลือกห้องไหนก่อนก็ได้',
-        cta: 'เปิดกระเป๋าดูของที่เก็บได้ →',
-      },
-    },
   ];
+
+  /* ── ปลายทาง ──
+     เดินครบทุกขั้นแล้วเข็มทิศไม่ได้ดับ มันหันไปทางด่านถัดไปของบ้าน
+     ซึ่งไม่ใช่ห้องอีกห้อง แต่คือคนอื่นที่กำลังเดินอยู่เหมือนกัน
+
+     เคยมีขั้นปลอมชื่อ stats คั่นอยู่ตรงนี้ ซึ่ง done() คืน false ตลอดกาล
+     get() จึงไม่มีวันคืน done:true และหน้าจบของบ้านไม่มีวันได้โผล่เลย */
+  var DONE_NEXT = {
+    href: 'guild/', icon: '🏰',
+    label: 'NEXT QUEST · GUILD X',
+    title: 'เข้า Guild X แล้วหา Party ของคุณ',
+    desc: 'Discord สำหรับแชร์สิ่งที่ทำ ถามคำถาม และเจอคนที่อยากเล่นหรือสร้างต่อไปด้วยกัน',
+    cta: 'เข้าร่วม Guild X →',
+  };
 
   var EPISODES = [
     'ep1-everyone-gets-to-play', 'ep2-the-first-item', 'ep3-the-item-that-came-back',
@@ -187,7 +190,7 @@
   }
   function snapshot(i, all) {
     var s = STAGES[i];
-    var n = typeof s.next === 'function' ? s.next() : s.next;
+    var n = all ? DONE_NEXT : (typeof s.next === 'function' ? s.next() : s.next);
     return {
       id: s.id, index: i, total: STAGES.length, done: all,
       next: n, read: readCount(), episodes: EPISODES.length,

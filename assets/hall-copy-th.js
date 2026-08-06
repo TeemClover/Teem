@@ -196,54 +196,9 @@ window.HALL_COPY.th={
       if(seekerCount)seekerCount.textContent="";
     }
 
-    var hud=document.getElementById("questHud");
-    var complete=hud&&(hud.dataset.state==="complete"||hud.dataset.state==="secret");
-    if(complete){
-      var secret=hud.dataset.state==="secret";
-      var questEyebrow=document.getElementById("questEyebrow");
-      var questTitle=document.getElementById("questTitle");
-      var questLead=document.getElementById("questLead");
-      var overallText=document.getElementById("overallText");
-      var activeIcon=document.getElementById("activeIcon");
-      var activeLabel=document.getElementById("activeLabel");
-      var activeTitle=document.getElementById("activeTitle");
-      var activeDesc=document.getElementById("activeDesc");
-      var activeCta=document.getElementById("activeCta");
-      if(questEyebrow)questEyebrow.textContent=secret?"SECRET ENDING CLEAR · NEXT QUEST":"MAIN QUEST COMPLETE · NEXT QUEST";
-      if(questTitle){
-        questTitle.classList.add("completion-title");
-        questTitle.innerHTML=isTh?'เรียนจบแล้ว — <span class="completion-phrase">ไปต่อด้วยกัน</span>':'Quest Complete — <span class="completion-phrase">Continue Together</span>';
-      }
-      if(questLead)questLead.textContent=isTh
-        ?"บทเรียนจบแล้ว แต่บ้านไม่ได้ส่งคุณออกไปคนเดียว — ด่านถัดไปคือเจอคนที่อยากเรียน เล่น และสร้างต่อเหมือนกัน"
-        :"The lessons are complete, but the house does not send you onward alone. Your next quest is to meet people who want to learn, play, and build too.";
-      if(overallText)overallText.textContent=isTh?"พร้อมเข้า Guild X":"Ready for Guild X";
-      if(activeIcon)activeIcon.textContent="🏰";
-      if(activeLabel)activeLabel.textContent="NEXT QUEST · GUILD X";
-      if(activeTitle)activeTitle.textContent=isTh?"เข้า Guild X แล้วหา Party ของคุณ":"Enter Guild X and Find Your Party";
-      if(activeDesc)activeDesc.textContent=isTh
-        ?"Discord สำหรับแชร์สิ่งที่ทำ ถามคำถาม และเจอคนที่อยากเล่นหรือสร้างต่อไปด้วยกัน"
-        :"A Discord space to share what you made, ask questions, and meet people who want to keep playing or building together.";
-      if(activeCta){activeCta.href="guild/";activeCta.textContent=isTh?"เข้าร่วม Guild X →":"Join Guild X →";}
-
-      var banner=document.getElementById("secretBanner");
-      if(banner){
-        var bannerTitle=isTh
-          ?"CORE7 · เกมการ์ดวัดใจ · เล่นคนเดียว · ชวนเพื่อนมาดวล · เกมจบใน 1 นาที"
-          :"CORE7 · A CARD GAME OF NERVE · SOLO · CHALLENGE A FRIEND · 1-MINUTE GAME";
-        var bannerCopy=isTh
-          ?"สร้างห้อง ส่งลิงก์ แล้วคอลกันไว้ — ความสนุกอยู่ที่การอ่านใจ และได้พูดคุยกันผ่านเกม"
-          :"Create a room, send the link, and stay on a call—the fun is in reading each other and having a real conversation through the game.";
-        var collected=collectionCount();
-        var playLabel=(isTh?"เล่น CORE7":"Play CORE7")+" · Collection "+collected+"/32";
-        var imageAlt=isTh?"CORE7 เกมการ์ดวัดใจ":"CORE7 card game";
-        banner.innerHTML='<a class="core7-handoff" href="core7/" aria-label="'+playLabel+'">'
-          +'<span class="core7-handoff__art"><img src="img/hall-core7.jpg" alt="'+imageAlt+'"></span>'
-          +'<span class="core7-handoff__body"><span class="core7-handoff__title">'+bannerTitle+'</span><span class="core7-handoff__copy">'+bannerCopy+'</span></span>'
-          +'<span class="core7-handoff__collection" aria-hidden="true"><span>COLLECTION</span><b>'+collected+'/32</b></span>'
-          +'</a>';
-      }
-    }
+    /* หน้าจบของบ้าน (Guild X + ป้าย CORE7 + ตรา) ย้ายไปอยู่ที่ assets/hall-core.js
+       ที่เดียวแล้ว — เดิมเขียนซ้ำสองที่แล้วอันหลังทับอันแรก แก้ทีต้องแก้สองรอบ
+       และรอบไหนลืมก็เพี้ยนคนละแบบ */
   }
   function queue(){setTimeout(applyFinalUI,0)}
   function boot(){

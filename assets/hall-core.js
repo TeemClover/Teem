@@ -116,40 +116,56 @@
   function firstMissing(k,items){var raw=values(k);for(var i=0;i<items.length;i++){if(raw.indexOf(items[i])<0)return i}return-1}
   function titles(){try{var list=JSON.parse(ls("mc_titles","[]"));return Array.isArray(list)?list:[]}catch(e){return[]}}
   function setActive(icon,label,title,desc,url,cta){document.getElementById("activeIcon").textContent=icon;document.getElementById("activeLabel").textContent=label;document.getElementById("activeTitle").textContent=title;document.getElementById("activeDesc").textContent=desc;var link=document.getElementById("activeCta");link.href=url;link.textContent=cta}
-  function paintRewards(secretComplete){
-    var rewards=document.getElementById("questRewards");
-    if(!rewards)return;
-    var trophy=rewards.querySelector(".platinum-reward");
-    if(secretComplete&&!trophy){
-      trophy=document.createElement("span");
-      trophy.className="reward-chip platinum-reward";
-      trophy.textContent="🏆 PLATINUM TROPHY";
-      trophy.style.borderColor="rgba(190,148,66,.55)";
-      trophy.style.background="rgba(234,208,140,.14)";
-      trophy.style.color="var(--gold2)";
-      rewards.insertBefore(trophy,rewards.firstChild);
-    }else if(!secretComplete&&trophy){
-      trophy.remove();
-    }
-  }
-
   function hideCompletionBanner(){
     var banner=document.getElementById("secretBanner");
-    if(banner)banner.style.display="none";
+    if(banner)banner.hidden=true;
   }
-  function renderCompletionBanner(secretComplete,th){
+
+  /* จำนวนการ์ด FIRST HAND ที่เก็บได้ — อ่านจากคลังของเกมโดยตรง
+     เคยอ่านจากคีย์ mc_core7_* ที่เลิกใช้ไปแล้ว ตัวเลขเลยค้างที่ 4/32 ตลอด */
+  function collectionCount(){
+    try{
+      var a=JSON.parse(localStorage.getItem("c7:collection")||"[]");
+      return Array.isArray(a)?new Set(a).size:0;
+    }catch(e){ return 0; }
+  }
+
+  /* ป้ายเสริมใต้เข็มทิศตอนจบ — พา CORE7
+     เข็มทิศชี้ Guild X (เจอคน) ส่วนป้ายนี้คือของที่หยิบไปเล่นด้วยกันได้
+     สองอย่างนี้อยู่คู่กันมาแต่ไหนแต่ไร อย่าให้เหลืออันเดียว */
+  function renderCompletionBanner(th){
     var banner=document.getElementById("secretBanner");
     if(!banner)return;
-    var alt=th?"CORE7 เกมการ์ดที่สร้างจากบทเรียนทั้ง 6 บท":"CORE7 card game built from all 6 lessons";
-    var label=th?"เปิดเกม CORE7":"Open CORE7";
+    var got=collectionCount();
+    var title=th
+      ?"CORE7 · เกมการ์ดวัดใจ · เล่นคนเดียวก็ได้ · ชวนเพื่อนดวลก็ได้ · จบใน 1 นาที"
+      :"CORE7 · A CARD GAME OF NERVE · SOLO OR WITH A FRIEND · ONE MINUTE";
     var copy=th
-      ?"คอลกันไว้ แล้วเล่นไปคุยกันไป เพราะความสนุกของ CORE7 ไม่ได้มีแค่ใครชนะ แต่อยู่ที่ได้เห็นว่าเพื่อนคิดยังไง"
-      :"Stay on a call and talk while you play. CORE7 is not only about who wins—it is about discovering how your friend thinks.";
-    banner.style.display="flex";
-    banner.style.borderTop=secretComplete?"1px solid rgba(255,255,255,.13)":"1px solid rgba(18,40,28,.1)";
-    banner.innerHTML='<a href="core7/" aria-label="'+label+'" style="display:block;width:124px;flex:none;padding:6px;border-radius:18px;background:'+(secretComplete?'rgba(255,255,255,.08)':'rgba(255,255,255,.92)')+';border:1px solid '+(secretComplete?'rgba(234,208,140,.28)':'rgba(18,40,28,.12)')+';box-shadow:0 14px 30px -20px rgba(0,0,0,.72)">'
-      +'<img src="img/hall-core7.jpg" alt="'+alt+'" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px">'
-      +'</a><span><b>'+(th?'ชวนเพื่อนมาดวล':'CHALLENGE A FRIEND')+'</b><span style="color:'+(secretComplete?'rgba(255,255,255,.66)':'var(--muted)')+'">'+copy+'</span></span>';
+      ?"สร้างห้อง ส่งลิงก์ แล้วคอลกันไว้ — ความสนุกอยู่ที่การอ่านใจกัน"
+      :"Create a room, send the link, stay on a call — the fun is in reading each other.";
+    banner.hidden=false;
+    banner.innerHTML='<a class="core7-handoff" href="core7/" aria-label="'
+      +(th?"เล่น CORE7":"Play CORE7")+' · Collection '+got+'/28">'
+      +'<span class="core7-handoff__art"><img src="img/hall-core7.jpg" alt=""></span>'
+      +'<span class="core7-handoff__body"><span class="core7-handoff__title">'+title+'</span>'
+      +'<span class="core7-handoff__copy">'+copy+'</span></span>'
+      +'<span class="core7-handoff__collection" aria-hidden="true">'
+      +'<span>COLLECTION</span><b>'+got+'/28</b></span></a>';
+  }
+
+  /* ตราที่เก็บได้ตลอดทาง — โผล่ตอนจบอย่างเดียว ระหว่างทางมันคือ spoiler */
+  function paintRewards(secretComplete,th){
+    var rewards=document.getElementById("questRewards");
+    if(!rewards)return;
+    var chips=[
+      "📖 "+(th?"การ์ตูน 7/7":"WHY 7/7"),
+      "⚡ "+(th?"AI ใส่ซอส 6/6":"HOW 6/6"),
+      "🃏 "+(th?"ลงสนามแล้ว":"PLAYED"),
+    ];
+    if(secretComplete)chips.unshift("🏆 PLATINUM TROPHY");
+    rewards.innerHTML=chips.map(function(x,i){
+      return '<span class="reward-chip'+(secretComplete&&i===0?" platinum-reward":"")+'">'+x+'</span>';
+    }).join("");
   }
 
   /* ── เข็มทิศ ──
@@ -171,15 +187,18 @@
         secretComplete=restored&&secretEnd&&hasGLHF;
 
     hud.dataset.state=here.done?(secretComplete?"secret":"complete"):"active";
-    eyebrow.textContent=th?"🧭 เข็มทิศนำทาง":"🧭 COMPASS";
-    hideCompletionBanner();
-    paintRewards(here.done&&secretComplete);
+    eyebrow.textContent=here.done
+      ?(secretComplete?"SECRET ENDING CLEAR · NEXT QUEST":"MAIN QUEST COMPLETE · NEXT QUEST")
+      :(th?"🧭 เข็มทิศนำทาง":"🧭 COMPASS");
 
-    /* เครื่องประดับทั้งหมดของเข็มทิศอันแรกถูกซ่อน ไม่ใช่แค่ว่าง */
-    show("questTrack",!first);
-    show("questRail",!first);
+    /* เครื่องประดับทั้งหมดของเข็มทิศอันแรกถูกซ่อน ไม่ใช่แค่ว่าง
+       ส่วนตอนจบไม่ต้องมีรางกับแถบแล้ว มันเต็มไปหมดทุกช่องอยู่ดี */
+    show("questTrack",!first&&!here.done);
+    show("questRail",!first&&!here.done);
     show("questOverall",!first);
-    show("questRewards",!first&&here.done);
+    show("questRewards",here.done);
+    if(here.done){ paintRewards(secretComplete,th); renderCompletionBanner(th); }
+    else hideCompletionBanner();
 
     if(first){
       title.textContent=th?"เข็มทิศชี้ไปที่ห้องแรกแล้ว":"The compass points to the first room";
@@ -190,24 +209,30 @@
       var steps=S.rail(), doneCount=steps.filter(function(x){return x.done}).length;
       var pct=Math.round(doneCount/steps.length*100);
       document.getElementById("questFill").style.width=pct+"%";
-      document.getElementById("overallPct").textContent=pct+"%";
-      document.getElementById("overallText").textContent=th
-        ?"เดินมาแล้ว "+doneCount+"/"+steps.length+" ขั้น"
-        :doneCount+"/"+steps.length+" steps";
-      paintRail(steps);
-      title.textContent=here.done
-        ?(th?"เดินครบเส้นทางของบ้านแล้ว":"You walked the whole path")
-        :(th?"เข็มทิศชี้ไปที่นี่":"The compass points here");
-      lead.textContent=here.done
-        ?(th?"จากนี้เลือกห้องไหนก่อนก็ได้ ไม่มีทางที่ผิดแล้ว":"From here, any room is a fine place to go.")
-        :(th?"จุดล่าสุดที่คุณเดินถึง — กดเดินต่อได้เลย":"The last point you reached. Pick it up from here.");
+      document.getElementById("overallPct").textContent=here.done?"100%":pct+"%";
+      document.getElementById("overallText").textContent=here.done
+        ?(th?"พร้อมเข้า Guild X":"Ready for Guild X")
+        :(th?"เดินมาแล้ว "+doneCount+"/"+steps.length+" ขั้น":doneCount+"/"+steps.length+" steps");
+      if(here.done){
+        title.innerHTML=th
+          ?'เดินครบเส้นทางแล้ว — <span class="completion-phrase">ไปต่อด้วยกัน</span>'
+          :'Quest Complete — <span class="completion-phrase">Continue Together</span>';
+        lead.textContent=th
+          ?"บทเรียนจบแล้ว แต่บ้านไม่ได้ส่งคุณออกไปคนเดียว ด่านถัดไปคือเจอคนที่อยากเรียน เล่น และสร้างต่อเหมือนกัน"
+          :"The lessons are done, but the house does not send you onward alone. The next quest is meeting people who want to learn, play and build too.";
+      }else{
+        paintRail(steps);
+        title.textContent=th?"เข็มทิศชี้ไปที่นี่":"The compass points here";
+        lead.textContent=th
+          ?"จุดล่าสุดที่คุณเดินถึง — กดเดินต่อได้เลย"
+          :"The last point you reached. Pick it up from here.";
+      }
     }
 
     /* ใช้ path เต็มจากรากเสมอ ไม่ใช่ path สัมพัทธ์ — เข็มทิศอันเดียวกันนี้
        จะถูกเอาไปวางในหน้าที่อยู่ลึกกว่านี้ได้โดยไม่ต้องแก้อะไร */
     var n=here.next;
     setActive(n.icon,n.label,n.title,n.desc,S.href(n.href),n.cta);
-    if(here.done) renderCompletionBanner(secretComplete,th);
   }
 
   function show(id,on){var el=document.getElementById(id);if(el)el.hidden=!on}
