@@ -3,107 +3,449 @@
 <head>
 <meta charset="utf-8">
 <meta name="mc-act-view" content="lesson-open">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="mc-item" content="learn:image-ai">
 <meta name="theme-color" content="#0a2818">
-<title>บทที่ 2 · ชิมก่อนเติม — ใช้ภาพตรวจ Source · AI ใส่ซอส</title>
-<meta name="description" content="ใช้ภาพเป็นช้อนชิม Source แยกข้อผิดพลาด แก้ Source และเก็บ Visual Canon ก่อนทำงานจริง">
+<title>ทำภาพด้วย AI — จากภาพในหัวสู่งานที่ใช้ได้จริง · ห้องเรียน AI ของบ้าน myclover</title>
+<meta name="description" content="เรียนสร้างภาพด้วย AI ตั้งแต่พื้นฐาน ไปจนถึงการใช้รูปตัวเอง รูปสินค้า การ์ตูนเล่าเรื่อง และ Carousel โดยมี HARD MODE ให้เลือกปลดล็อก">
 <style>
 :root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100;--red:170 66 48}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:72px}
-body{font-family:"Anuphan",sans-serif;background:radial-gradient(900px 460px at 50% -220px,rgb(190 148 66/.13),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));font-size:16px;line-height:1.78;-webkit-font-smoothing:antialiased}
-button,a{font:inherit;-webkit-tap-highlight-color:transparent}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:74px}
+body{font-family:"Anuphan",sans-serif;background:radial-gradient(900px 460px at 50% -220px,rgb(190 148 66/.12),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit}
+button,summary,a{-webkit-tap-highlight-color:transparent}
 button{touch-action:manipulation}
+.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.01em}
 a{text-decoration:none;color:inherit}
-.disp{font-family:"Bai Jamjuree",sans-serif;letter-spacing:-.012em}
-.wrap{width:100%;max-width:860px;margin:auto;padding:0 22px}
-nav{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.93);backdrop-filter:blur(12px);border-bottom:1px solid rgb(var(--ink)/.08)}
-nav .wrap{height:56px;display:flex;align-items:center;justify-content:space-between}
-.bk{font-weight:700;font-size:18px}.bk em{font-style:normal;color:rgb(var(--green))}.bk2{font-size:14px;color:rgb(var(--muted));font-weight:600}
-.head{position:relative;overflow:hidden;margin:26px 0 12px;padding:34px;border-radius:24px;color:#fff;background:linear-gradient(145deg,#071a10,#0b3420 58%,#145337);box-shadow:0 20px 52px rgb(10 40 24/.16)}
-.lv{display:inline-flex;gap:8px;align-items:center;padding:6px 14px;border:1px solid rgb(190 148 66/.48);border-radius:999px;color:rgb(var(--gold));font-size:12px;font-weight:700;letter-spacing:.13em}
-.head h1{font-size:clamp(29px,5.6vw,43px);line-height:1.2;margin:14px 0 8px;max-width:17ch}
-.head .lead{max-width:62ch;color:rgb(255 255 255/.82);font-size:clamp(15.5px,2.4vw,18px)}
-.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:17px}.meta span{padding:5px 13px;border:1px solid rgb(255 255 255/.14);border-radius:999px;background:rgb(255 255 255/.08);font-size:12.5px;font-weight:600}
-.plates{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:28px;padding-top:18px;border-top:1px solid rgb(255 255 255/.12)}
-.plate{text-align:center}.plate .pic{height:112px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,#fff 0 46%,#d9d4c9 47% 52%,transparent 53%);font-size:45px}.plate b{display:block;margin-top:7px;font-size:13px}.plate small{display:block;color:rgb(255 255 255/.65);font-size:11.5px}.arrow{color:rgb(var(--gold));font-size:24px;font-weight:800}
-.tldr{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin:18px 0 8px}.card{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:18px;padding:20px 22px;box-shadow:0 9px 28px rgb(18 40 28/.055)}
-.eyebrow{display:block;color:rgb(var(--green));font-size:11px;font-weight:700;letter-spacing:.13em;margin-bottom:5px}.card h2{font-size:21px;line-height:1.35}.card p{font-size:14.5px;color:rgb(var(--muted))}
-.takehome{display:grid;gap:7px;margin-top:12px}.takehome span{font-size:13.5px;font-weight:600}
-.section{display:flex;align-items:center;gap:11px;margin:40px 0 14px;font-size:21px;line-height:1.4}.section:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgb(var(--green)/.24),transparent)}.n{width:31px;height:31px;border-radius:10px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:14px;flex:none}
-.core{display:grid;grid-template-columns:auto 1fr;gap:15px;padding:20px 22px;border:1px solid rgb(27 106 66/.24);border-radius:17px;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.11))}.core .big{font-size:31px}.core b{display:block;font-size:18px}.core p{font-size:14.5px;color:rgb(var(--muted))}
-.steps{display:grid;gap:11px}.step{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:18px 20px;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:17px;box-shadow:0 9px 25px rgb(18 40 28/.05)}.step .num{width:31px;height:31px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}.step b{font-size:15.5px}.step p,.step small{display:block;margin-top:3px;color:rgb(var(--muted));font-size:13.5px;line-height:1.65}
-.prompt{position:relative;margin-top:12px;padding:17px 70px 17px 17px;border:1px solid rgb(190 148 66/.2);border-radius:13px;background:#071a10;color:#d7f5e2;font:12.8px/1.72 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}.cpx{position:absolute;top:8px;right:8px;padding:6px 10px;border:0;border-radius:8px;background:rgb(var(--gold));color:#071a10;font-size:11px;font-weight:700;cursor:pointer}
-.triage{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.triage article{padding:18px;background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:17px}.triage h3{font-size:15px}.triage p{font-size:13px;color:rgb(var(--muted));margin-top:4px}.action{display:block;margin-top:10px;padding-top:9px;border-top:1px dashed rgb(var(--ink)/.11);font-size:12px;font-weight:700;color:rgb(var(--green))}
-.taste-board{padding:23px;border:1px solid rgb(190 148 66/.32);border-radius:20px;background:linear-gradient(145deg,#0a2818,#124a2e);color:#fff}.taste-board>p{font-size:13.5px;color:rgb(255 255 255/.7)}.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:15px}.check{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border:1px solid rgb(255 255 255/.12);border-radius:12px;background:rgb(255 255 255/.065);cursor:pointer}.check input{width:18px;height:18px;margin-top:2px;accent-color:rgb(var(--gold))}.check span{font-size:13px;color:rgb(255 255 255/.88)}.score{display:flex;justify-content:space-between;gap:12px;margin-top:13px;padding-top:13px;border-top:1px solid rgb(255 255 255/.12)}.score b{color:rgb(var(--gold));font-size:14px}.score span{font-size:12.5px;color:rgb(255 255 255/.62)}
-.canon-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.canon{position:relative;padding:17px 18px;background:linear-gradient(150deg,#fff,rgb(190 148 66/.05));border:1px solid rgb(var(--ink)/.09);border-radius:16px}.canon b{display:flex;align-items:center;gap:7px;font-size:15px}.canon p{font-size:13px;color:rgb(var(--muted));margin-top:4px}
-.term{position:relative;display:inline-flex;align-items:center;gap:5px;border:0;border-bottom:1px dashed rgb(var(--green));background:transparent;color:rgb(var(--green));font-weight:800;cursor:help}.term:after{content:"?";width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:rgb(27 106 66/.1);font-size:11px}
-.tip{position:absolute;z-index:20;left:14px;right:14px;top:48px;padding:12px 14px;border-radius:12px;background:#071a10;color:#fff;font-size:12.5px;line-height:1.6;box-shadow:0 12px 30px rgb(7 26 16/.25);opacity:0;visibility:hidden;transform:translateY(-4px);transition:.16s}.tip:before{content:"";position:absolute;top:-6px;left:22px;width:12px;height:12px;background:#071a10;transform:rotate(45deg)}.term:hover+.tip,.term:focus+.tip,.canon[data-open="1"] .tip{opacity:1;visibility:visible;transform:translateY(0)}
-.limit{display:grid;grid-template-columns:auto 1fr;gap:14px;margin-top:14px;padding:18px 20px;border:1px solid rgb(170 66 48/.28);border-radius:17px;background:rgb(170 66 48/.07)}.limit .ico{font-size:28px}.limit b{display:block;font-size:16px;color:rgb(var(--red))}.limit p{font-size:14px}.limit code{padding:1px 6px;border-radius:5px;background:rgb(var(--ink)/.06)}.limit ul{margin:8px 0 0 18px;font-size:13.5px;color:rgb(var(--muted))}
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}.compare div{padding:14px 16px;border-radius:14px;border:1px solid rgb(var(--ink)/.09);font-size:13.5px}.compare .md{background:rgb(27 106 66/.06)}.compare .img{background:rgb(190 148 66/.09)}.compare b{display:block;margin-bottom:3px}
-.quest{margin-top:38px;padding:22px 24px;border:1px solid rgb(27 106 66/.25);border-radius:18px;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.08))}.quest h2{font-size:20px}.quest ol{margin:10px 0 0 20px}.finish{width:100%;margin-top:16px;padding:13px;border:0;border-radius:12px;background:rgb(var(--green));color:#fff;font-weight:700;cursor:pointer}.achievement{display:none;margin-top:12px;padding:13px;text-align:center;border:1px solid rgb(190 148 66/.42);border-radius:12px;color:#745718;background:rgb(190 148 66/.12);font-weight:700}.achievement.show{display:block}
-.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}.nx{flex:1;min-width:210px;text-align:center;padding:14px;border-radius:12px;background:rgb(var(--green));color:#fff;font-weight:700}.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.4)}
+img{max-width:100%}
+.wrap{width:100%;max-width:800px;margin:0 auto;padding:0 20px}
+.skip-link{position:fixed;left:16px;top:10px;z-index:100;transform:translateY(-160%);background:#fff;color:rgb(var(--deep));border:2px solid rgb(var(--gold));border-radius:9px;padding:8px 12px;font-weight:700;transition:transform .18s}
+.skip-link:focus{transform:translateY(0)}
+nav.top{position:sticky;top:0;z-index:50;background:rgb(var(--paper)/.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgb(var(--ink)/.08);box-shadow:0 5px 20px rgb(10 40 24/.035)}
+nav.top .wrap{display:flex;justify-content:space-between;align-items:center;height:56px}
+.bk{font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:18px;color:rgb(var(--ink))}
+.bk em{font-style:normal;color:rgb(var(--green))}
+.bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
+.bk2:hover{color:rgb(var(--green))}
+.head{background:rgb(var(--deep));color:#fff;border:1px solid rgb(255 255 255/.08);border-radius:22px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative;box-shadow:0 18px 46px rgb(10 40 24/.14)}
+.heroimg{position:relative;margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
+.heroimg::after{content:"";position:absolute;inset:auto 0 0;height:38%;background:linear-gradient(transparent,rgb(var(--deep)/.34));pointer-events:none}
+.heroimg img{width:100%;height:100%;object-fit:cover;display:block}
+.lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
+.head h1{font-size:clamp(25px,4.7vw,34px);margin:12px 0 8px;line-height:1.28}
+.head>p{color:rgb(255 255 255/.82);font-size:15.5px;max-width:61ch}
+.meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.meta span{font-size:12.5px;font-weight:600;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.15);border-radius:999px;padding:5px 13px;color:rgb(255 255 255/.87)}
+h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;margin:38px 0 14px;display:flex;align-items:center;gap:11px;line-height:1.45}
+main.wrap>h2::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgb(var(--green)/.24),transparent)}
+h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-size:15px;flex:none;box-shadow:0 5px 14px rgb(27 106 66/.2)}
+.card{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:6px 22px;box-shadow:0 8px 24px rgb(18 40 28/.055)}
+.item{display:flex;gap:13px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgb(var(--ink)/.06)}
+.item:last-child{border:0}
+.item .ic{font-size:19px;flex:none;margin-top:1px;width:25px;text-align:center}
+.item b{font-weight:600}
+.item small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:2px}
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:17px 20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 8px 24px rgb(18 40 28/.055)}
+.step>div{flex:1;min-width:0}
+.step .num{width:29px;height:29px;border-radius:50%;background:rgb(var(--green));color:#fff;display:grid;place-items:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px;flex:none;margin-top:2px}
+.step b{font-weight:600}
+.step small{display:block;color:rgb(var(--muted));font-size:13.5px;margin-top:3px}
+.prompt{position:relative;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#071a10;color:#d7f5e2;border:1px solid rgb(190 148 66/.18);border-radius:13px;padding:16px 66px 16px 17px;margin-top:12px;line-height:1.72;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:inset 0 1px 0 rgb(255 255 255/.055),0 7px 18px rgb(7 26 16/.1)}
+.cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:7px;padding:5px 11px;cursor:pointer;opacity:.92}
+.cpx:hover{opacity:1}
+.note{background:rgb(190 148 66/.1);border:1px solid rgb(190 148 66/.35);border-radius:14px;padding:16px 20px;margin-top:16px;font-size:14.5px}
+.core{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:linear-gradient(135deg,rgb(27 106 66/.1),rgb(190 148 66/.1));border:1px solid rgb(27 106 66/.25);border-radius:16px;padding:19px 21px;margin:18px 0 8px}
+.core .big{font-size:28px;line-height:1.3}
+.core b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:17px;margin-bottom:3px}
+.core p{font-size:14px;color:rgb(var(--muted))}
+.formula{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
+.formula div{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:12px;padding:10px 8px;text-align:center;font-size:11.5px;line-height:1.45}
+.formula b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:12px;color:rgb(var(--green));margin-bottom:2px}
+.routes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.route{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:18px;box-shadow:0 8px 24px rgb(18 40 28/.055)}
+.route .tag{display:inline-block;font-family:"Bai Jamjuree",sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:rgb(var(--green));background:rgb(27 106 66/.08);border-radius:999px;padding:4px 9px;margin-bottom:9px}
+.route h3{font-family:"Bai Jamjuree",sans-serif;font-size:16px;line-height:1.4;margin-bottom:5px}
+.route p{font-size:13.5px;color:rgb(var(--muted));line-height:1.65}
+.route .mini{margin-top:10px;padding-top:9px;border-top:1px dashed rgb(var(--ink)/.1);font-size:12.5px;color:rgb(var(--ink)/.78)}
+.truth{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;background:linear-gradient(135deg,#fff,rgb(190 148 66/.06));border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:18px 20px;box-shadow:0 8px 24px rgb(18 40 28/.05)}
+.truth .side b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;margin-bottom:2px}
+.truth .side span{font-size:13px;color:rgb(var(--muted))}
+.truth .plus{font-family:"Bai Jamjuree",sans-serif;font-size:24px;font-weight:700;color:rgb(var(--gold))}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.rule{background:rgb(255 255 255/.94);border:1px solid rgb(var(--ink)/.09);border-radius:14px;padding:14px 15px;font-size:13.5px;line-height:1.65;box-shadow:0 7px 20px rgb(18 40 28/.045)}
+.rule b{display:block;font-size:13.5px;margin-bottom:1px}
+.hard{margin-top:38px;border:1px solid rgb(190 148 66/.55);border-radius:20px;background:linear-gradient(150deg,#071a10,#113b25);color:#fff;overflow:hidden;box-shadow:0 12px 35px rgb(7 26 16/.15)}
+.hardtop{padding:25px 24px;text-align:center;background-image:radial-gradient(500px 180px at 50% -25%,rgb(190 148 66/.28),transparent 65%)}
+.lock{font-size:33px;display:block;margin-bottom:5px}
+.hardtop .eyebrow{font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;color:rgb(var(--gold))}
+.hardtop h2{display:block;color:#fff;font-size:clamp(21px,4vw,28px);margin:6px 0 5px}
+.hardtop p{font-size:14px;color:rgb(255 255 255/.72);max-width:56ch;margin:0 auto}
+.unlock{margin-top:17px;border:1px solid rgb(190 148 66/.6);background:rgb(var(--gold));color:#071a10;border-radius:12px;padding:12px 19px;cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-weight:700;transition:.18s}
+.unlock:hover{transform:translateY(-2px);filter:brightness(1.04)}
+.unlock.done{background:rgb(27 106 66);border-color:rgb(255 255 255/.2);color:#fff}
+.hardbody{display:none;padding:0 24px 25px}
+.hard[data-open="1"] .hardbody{display:block}
+.hardline{height:1px;background:rgb(255 255 255/.13);margin-bottom:22px}
+.modegrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.mode{border:1px solid rgb(255 255 255/.13);background:rgb(255 255 255/.06);border-radius:13px;padding:13px 14px}
+.mode b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:14px;color:#fff}
+.mode span{display:block;font-size:12.5px;color:rgb(255 255 255/.65);margin-top:2px;line-height:1.55}
+.hardsteps{counter-reset:hstep;display:grid;gap:9px;margin-top:17px}
+.hstep{counter-increment:hstep;display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:start;border:1px solid rgb(255 255 255/.11);border-radius:13px;padding:13px 14px;background:rgb(0 0 0/.12)}
+.hstep::before{content:counter(hstep);width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:rgb(var(--gold));color:#071a10;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13px}
+.hstep b{display:block;font-size:14px}
+.hstep small{display:block;color:rgb(255 255 255/.62);font-size:12.5px;line-height:1.6;margin-top:2px}
+.hard .prompt{background:#020b06;border:1px solid rgb(255 255 255/.12);margin-top:17px}
+.finish{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-top:18px;background:rgb(190 148 66/.11);border:1px solid rgb(190 148 66/.32);border-radius:14px;padding:15px 16px}
+.finish p{font-size:13px;color:rgb(255 255 255/.7)}
+.finish button{flex:none;border:0;border-radius:10px;padding:10px 14px;background:#fff;color:#071a10;font-family:"Bai Jamjuree",sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.achievement{display:none;margin-top:13px;text-align:center;border:1px solid rgb(190 148 66/.5);border-radius:13px;padding:14px;background:rgb(190 148 66/.13);font-family:"Bai Jamjuree",sans-serif;color:rgb(var(--gold))}
+.achievement.show{display:block}
+.quest{position:relative;overflow:hidden;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.08));border:1px solid rgb(27 106 66/.25);border-radius:17px;padding:20px 24px 20px 27px;margin-top:30px;font-size:15px;box-shadow:0 8px 24px rgb(18 40 28/.05)}
+.quest::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:rgb(var(--gold))}
+.quest .qshare{display:block;margin-top:8px;font-size:13px;color:rgb(var(--muted))}
+.skip{display:block;margin-top:10px;font-size:12.5px;color:rgb(var(--muted))}
+.nextrow{display:flex;gap:12px;flex-wrap:wrap;margin:30px 0 6px}
+.nx{flex:1;min-width:210px;text-align:center;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15px;border-radius:12px;padding:14px;background:rgb(var(--green));color:#fff;transition:transform .18s,box-shadow .18s,border-color .18s;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgb(27 106 66/.14)}
+.nx:hover{transform:translateY(-2px)}
+.nx.ghost{background:#fff;color:rgb(var(--green));border:1px solid rgb(27 106 66/.32);box-shadow:0 8px 20px rgb(18 40 28/.045)}
 footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
+.cpx{transition:transform .16s,filter .16s}
+@media(hover:hover){
+  .card,.step,.route,.rule{transition:transform .18s,border-color .18s,box-shadow .18s}
+  .card:hover,.step:hover,.route:hover,.rule:hover{transform:translateY(-2px);border-color:rgb(var(--green)/.2);box-shadow:0 12px 30px rgb(18 40 28/.075)}
+  .cpx:hover{transform:translateY(-1px);filter:brightness(1.05)}
+}
 :focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px}
-@media(max-width:680px){.wrap{padding:0 16px}.head{padding:27px 20px;margin-top:16px}.plates{grid-template-columns:1fr 1fr 1fr;gap:6px}.plates .arrow{display:none}.plate .pic{height:82px;font-size:34px}.tldr,.triage,.canon-grid,.compare{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.section{font-size:18px}.tip{position:relative;left:auto;right:auto;top:auto;margin-top:9px}.tip:before{display:none}.prompt{padding-top:48px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+::selection{background:rgb(190 148 66/.3);color:rgb(var(--deep))}
+@media(max-width:620px){
+  .wrap{padding:0 16px}
+  nav.top .wrap{height:52px}
+  .bk{font-size:17px}.bk2{font-size:12.5px}
+  .head{padding:27px 20px;border-radius:18px;margin-top:16px}.heroimg{margin:-27px -20px 18px;height:146px}
+  .head h1{font-size:25px}
+  .meta{gap:6px}.meta span{padding:4px 10px;font-size:11.5px}
+  h2{font-size:18px;margin-top:32px;align-items:flex-start}
+  main.wrap>h2::after{margin-top:14px}
+  .formula{grid-template-columns:1fr 1fr}.formula div:last-child{grid-column:1/-1}
+  .routes,.rules,.modegrid{grid-template-columns:1fr}
+  .truth{grid-template-columns:1fr;text-align:center}.truth .plus{line-height:1}
+  .finish{align-items:stretch;flex-direction:column}.finish button{width:100%}
+  .card{padding:4px 17px}.step{padding:15px 16px;gap:11px}
+  .prompt{padding:47px 14px 15px;font-size:12.5px}
+  .hardtop,.hardbody{padding-left:18px;padding-right:18px}
+  .quest{padding:18px 19px 18px 22px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
 </head>
 <body>
-<nav><div class="wrap"><a class="bk disp" href="/hall.html#quest">🍀 my<em>clover</em></a><a class="bk2" href="./">ห้องเรียนทั้งหมด →</a></div></nav>
-<main class="wrap">
+<a class="skip-link" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
+<nav class="top"><div class="wrap">
+  <a class="bk disp" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>clover</em></a>
+  <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
+</div></nav>
+
+<main class="wrap" id="main">
 <header class="head">
-<span class="lv">LV.2 · TASTE</span>
-<h1 class="disp">ชิมก่อนเติม</h1>
-<p class="lead">ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจ Source ตรงกับเราหรือยัง ก่อนเอาซอสขวดนั้นไปทำงานทั้งชุด</p>
-<div class="meta"><span>⏱️ 10–15 นาที</span><span>🥄 ใช้ภาพทดสอบ 1 ภาพ</span><span>🧴 แก้ Source ไม่แก้มั่ว</span></div>
-<div class="plates" aria-label="ภาพอธิบายลำดับการชิม Source">
-<div class="plate"><div class="pic">🍛</div><b>จานสวย แต่ผิดสูตร</b><small>ดูดีแต่ไม่ใช่ของเรา</small></div><div class="arrow">→</div>
-<div class="plate"><div class="pic">👨‍🍳🥄</div><b>ชิม Source</b><small>ดูว่าผิดตรงไหน</small></div><div class="arrow">→</div>
-<div class="plate"><div class="pic">🍽️✨</div><b>กินหมดจาน</b><small>ตรงรสจนใช้ต่อได้</small></div>
-</div>
+  <div class="heroimg"><img src="../img/lesson-2.jpg" alt="" width="1600" height="600" fetchpriority="high" decoding="async" onerror="this.parentElement.style.display='none'"></div>
+  <span class="lv">LV.2 · VISUAL CREATOR</span>
+  <h1 class="disp">ทำภาพด้วย AI — จากภาพในหัว สู่งานที่ใช้ได้จริง</h1>
+  <p>เริ่มจากสร้างภาพง่าย ๆ แล้วอัปเกรดไปถึงการใช้รูปตัวเอง รูปสินค้า การ์ตูนเล่าเรื่อง และภาพชุด Carousel โดยไม่ทิ้งความจริงของต้นฉบับ</p>
+  <div class="meta"><span>⏱️ พื้นฐาน ~10 นาที</span><span>💸 ฟรี</span><span>🖼️ ได้งานจริงกลับไป</span><span>🔒 มี HARD MODE</span></div>
 </header>
-<section class="tldr">
-<div class="card"><span class="eyebrow">แก่นของบท</span><h2 class="disp">ภาพสวย ไม่ได้แปลว่า Source ถูก</h2><p>ถ้าคนผิด บ้านผิด ยุคผิด หรือสินค้าถูกดัดแปลง งานนั้นยังไม่ผ่าน ต่อให้แสงสวยแค่ไหนก็ตาม</p></div>
-<div class="card"><span class="eyebrow">ของที่ได้กลับบ้าน</span><div class="takehome"><span>✅ Source ที่แม่นขึ้น</span><span>✅ Visual Canon ชุดแรก</span><span>✅ Checklist ตรวจงาน</span></div></div>
-</section>
-<h2 class="section disp"><span class="n">1</span>สร้างภาพทดสอบ ไม่ใช่ภาพสุดท้าย</h2>
-<div class="core"><span class="big">🥄</span><div><b class="disp">ภาพแรกคือช้อนชิม</b><p>อย่าเพิ่งเสียเวลาขัดภาพให้สวย ให้สร้างภาพที่บังคับให้ AI เปิดเผยว่าเข้าใจคน สถานที่ เวลา วัตถุ และบรรยากาศจาก Source อย่างไร</p></div></div>
-<h2 class="section disp"><span class="n">2</span>Workflow 7 ขั้น</h2>
+
+<div class="core">
+  <span class="big">💡</span>
+  <div>
+    <b>แก่นของบทนี้มีประโยคเดียว</b>
+    <p><strong>ภาพจริงคือหลักฐาน — AI คือพลังขยาย</strong> เราไม่ได้ใช้ AI เพื่อทำทุกอย่างปลอม แต่ใช้มันช่วยจัดฉาก เปลี่ยนสไตล์ เล่าเรื่อง และทำให้งาน 1 ชิ้นเดินทางไปได้ไกลกว่าเดิม</p>
+  </div>
+</div>
+
+<h2><span class="n">1</span>สร้างภาพแรกให้สำเร็จก่อน</h2>
 <div class="steps">
-<div class="step"><span class="num">1</span><div><b>โหลด Source ก่อน</b><p>แนบไฟล์ซอสจากบทที่ 1 แล้วให้ AI สรุปสิ่งที่เข้าใจ รอให้คุณยืนยันก่อนเริ่มสร้างภาพ</p><div class="prompt">อ่าน Source ที่แนบ แล้วสรุปเฉพาะข้อมูลที่มีผลต่อภาพ ได้แก่ ตัวละคร สถานที่ ช่วงเวลา วัตถุสำคัญ สี บรรยากาศ และข้อห้าม หากข้อมูลใดไม่มีใน Source ให้เขียนว่า “ยังไม่ระบุ” ห้ามเดาเพิ่ม</div></div></div>
-<div class="step"><span class="num">2</span><div><b>เลือกฉากที่ตรวจได้หลายอย่าง</b><p>เลือกฉากที่มีทั้งคน สถานที่ ของสำคัญ และช่วงเวลา ภาพเดียวจะช่วยตรวจ Source ได้หลายจุด</p></div></div>
-<div class="step"><span class="num">3</span><div><b>สร้างภาพทดสอบ 1 ภาพ</b><div class="prompt">สร้างภาพทดสอบ 1 ภาพจาก Source ที่แนบ โดยยึดข้อมูลใน Source เป็นหลัก เป้าหมายคือทดสอบความเข้าใจ ไม่ใช่ทำภาพสุดท้าย ห้ามเพิ่มรายละเอียดที่ Source ไม่ได้ระบุ และห้ามใส่ข้อความหรือโลโก้ที่แต่งขึ้นเอง</div></div></div>
-<div class="step"><span class="num">4</span><div><b>ตรวจด้วย Taste Checklist</b><p>อย่าถามแค่ว่า “สวยไหม” ให้ถามว่า “ตรงไหม”</p></div></div>
-<div class="step"><span class="num">5</span><div><b>แยกสาเหตุ ก่อนสั่งแก้</b><p>ผิดเพราะ Source ไม่ได้บอก, AI ทำผิดทั้งที่บอกแล้ว หรือคุณเพิ่งตัดสินใจเปลี่ยนกติกา</p></div></div>
-<div class="step"><span class="num">6</span><div><b>แก้เฉพาะจุดแบบ Surgical Edit</b><div class="prompt">แก้เฉพาะ [จุดที่ผิด] ให้เป็น [ข้อมูลที่ถูกต้อง] ตาม Source รักษาองค์ประกอบ มุมกล้อง แสง สี ท่าทาง และรายละเอียดส่วนอื่นเหมือนภาพเดิม ห้ามออกแบบภาพใหม่ทั้งภาพ</div></div></div>
-<div class="step"><span class="num">7</span><div><b>เก็บสิ่งที่ผ่านเป็น Canon</b><p>เมื่อรายละเอียดใดผ่านแล้ว ให้บันทึกกลับเข้า Source เพื่อให้ครั้งต่อไปไม่ต้องชิมใหม่ตั้งแต่ศูนย์</p></div></div>
+  <div class="step"><span class="num">1</span><div><b>เปิด Gemini แล้วเริ่มด้วยคำว่า “สร้างภาพ...”</b><small>ไม่ต้องรู้ศัพท์เทคนิค แค่บอกให้ชัดว่าภาพมีอะไร รู้สึกแบบไหน และเอาไปใช้ที่ไหน</small></div></div>
+  <div class="step"><span class="num">2</span><div><b>ลองคำสั่งนี้ แล้วสังเกตว่าแต่ละส่วนทำหน้าที่อะไร</b>
+    <div class="prompt">สร้างภาพ แมวส้มใส่แว่นกันแดด นั่งจิบกาแฟในคาเฟ่ริมทะเล แสงเย็นอบอุ่น สไตล์ภาพถ่ายจริง สำหรับโพสต์แนวตั้ง</div>
+    <small>ได้ภาพแล้ว เท่ากับผ่านพื้นฐาน ต่อไปเราจะทำให้มัน “ตรงใจ” และ “ใช้จริง” มากขึ้น</small>
+  </div></div>
 </div>
-<h2 class="section disp"><span class="n">3</span>แยกให้ถูกว่าอะไรพัง</h2>
-<div class="triage"><article><h3>🕳️ Source ยังไม่ได้บอก</h3><p>AI ต้องเดา เพราะไม่มีวัตถุดิบให้ยึด</p><span class="action">ทางแก้: เติมข้อมูลลง Source</span></article><article><h3>🤖 Source บอกแล้ว แต่ AI ทำผิด</h3><p>ข้อมูลมีอยู่ แต่ Output ไม่ทำตาม</p><span class="action">ทางแก้: ชี้จุดและ Surgical Edit</span></article><article><h3>🧠 คุณเพิ่งตัดสินใจใหม่</h3><p>ไม่ใช่ AI ผิด แต่กติกาเพิ่งเปลี่ยน</p><span class="action">ทางแก้: อัปเดต Source เป็นฉบับล่าสุด</span></article></div>
-<h2 class="section disp"><span class="n">4</span>Taste Checklist</h2>
-<section class="taste-board"><h3 class="disp">จานนี้ตรงสูตรหรือยัง?</h3><p>แตะทีละข้อหลังดูภาพทดสอบ คะแนนไม่ได้วัดความสวย แต่วัดความตรงกับ Source</p><div class="checks"><label class="check"><input type="checkbox"><span>👤 คนหรือตัวละครตรงตัวตน</span></label><label class="check"><input type="checkbox"><span>🏠 สถานที่และยุคสมัยตรง</span></label><label class="check"><input type="checkbox"><span>🎒 วัตถุสำคัญไม่หายหรือกลายพันธุ์</span></label><label class="check"><input type="checkbox"><span>🎨 สี แสง และอารมณ์ตรงรส</span></label><label class="check"><input type="checkbox"><span>🚫 ไม่มีสิ่งต้องห้ามโผล่มา</span></label><label class="check"><input type="checkbox"><span>🧩 ไม่มีรายละเอียดที่ AI เดาเกิน Source</span></label></div><div class="score"><b id="scoreText">ผ่าน 0 / 6 จุด</b><span id="scoreHint">ยังไม่ควรเอาไปทำงานชุดใหญ่</span></div></section>
-<h2 class="section disp"><span class="n">5</span>เก็บ Visual Canon กลับเข้าขวด</h2>
-<div class="canon-grid">
-<article class="canon"><b>👤 ตัวละคร <button class="term" type="button" aria-expanded="false">Canon</button></b><div class="tip" role="tooltip">Canon คือ “ข้อมูลที่ตัดสินใจแล้วและต้องใช้เหมือนเดิมทุกครั้ง” เช่น หน้าตา ทรงผม เสื้อผ้า อายุ และลักษณะที่ห้ามเปลี่ยน</div><p>หน้าตา รูปร่าง ทรงผม เสื้อผ้า อายุ และความแตกต่างจากตัวละครอื่น</p></article>
-<article class="canon"><b>🏠 สถานที่ <button class="term" type="button" aria-expanded="false">Canon</button></b><div class="tip" role="tooltip">Canon ของสถานที่คือรายละเอียดถาวรที่ช่วยให้ทุกภาพดูเป็นห้องหรือโลกเดียวกัน เช่น ผัง สีผนัง หน้าต่าง เฟอร์นิเจอร์ และช่วงปี</div><p>ผังห้อง สีผนัง หน้าต่าง เฟอร์นิเจอร์ สภาพอากาศ และช่วงเวลา</p></article>
-<article class="canon"><b>🎨 ภาษาภาพ <button class="term" type="button" aria-expanded="false">Canon</button></b><div class="tip" role="tooltip">Canon ของภาษาภาพคือกติกาความรู้สึกของงาน เช่น สไตล์เส้น แสง โทนสี ความสมจริง ระยะกล้อง และพื้นที่ว่าง</div><p>สไตล์ แสง โทนสี ความสมจริง ระยะกล้อง และองค์ประกอบ</p></article>
-<article class="canon"><b>🚫 ข้อห้าม <button class="term" type="button" aria-expanded="false">Canon</button></b><div class="tip" role="tooltip">ข้อห้ามก็เป็น Canon เพราะต้องคงเดิมทุกครั้ง เช่น ห้ามเพิ่มตัวหนังสือ ห้ามเปลี่ยนสินค้า ห้ามใส่วัตถุหรือโลโก้ที่ไม่ได้รับอนุญาต</div><p>สิ่งที่ห้ามเพิ่ม ห้ามเปลี่ยน ห้ามทำให้ผิดยุค และห้ามเดาเอง</p></article>
+
+<h2><span class="n">2</span>สูตรสั่งภาพ 5 ช่อง</h2>
+<div class="formula">
+  <div><b>1 · งานอะไร</b>ภาพถ่าย<br>โปสเตอร์<br>การ์ตูน</div>
+  <div><b>2 · มีอะไร</b>คน<br>สินค้า<br>สถานที่</div>
+  <div><b>3 · ทำอะไร</b>ท่าทาง<br>เหตุการณ์<br>เรื่องราว</div>
+  <div><b>4 · รู้สึกแบบไหน</b>แสง<br>อารมณ์<br>สไตล์</div>
+  <div><b>5 · ใช้ที่ไหน</b>แนวตั้ง<br>สี่เหลี่ยม<br>Carousel</div>
 </div>
-<div class="limit"><div class="ico">🖼️</div><div><b class="disp">โลโก้และสินค้าจริง ต้องแนบรูปต้นฉบับ</b><p>ไฟล์ <code>.md</code> ช่วยบอกชื่อ สี ขนาด กติกา และสิ่งที่ห้ามเปลี่ยนได้ แต่ไม่มี Pixel ของของจริงอยู่ข้างใน จึงไม่สามารถทำให้ AI วาดโลโก้ ฉลาก บรรจุภัณฑ์ หรือรูปร่างสินค้าได้ตรง 100%</p><ul><li><strong>มีโลโก้จริง:</strong> แนบไฟล์ PNG หรือ SVG ที่ถูกต้องทุกครั้ง</li><li><strong>มีสินค้าจริง:</strong> แนบภาพสินค้าชัด ๆ หลายมุมเมื่อจำเป็น</li><li><strong>มีข้อความบนฉลาก:</strong> ตรวจต้นฉบับ และควรใส่ตัวหนังสือจริงภายหลังในโปรแกรมออกแบบ</li></ul></div></div>
-<div class="compare"><div class="md"><b>🧴 Source .md ทำหน้าที่</b>บอกว่าอะไรคืออะไร ต้องรักษาอะไร ใช้สีไหน อยู่ในยุคใด และห้ามเปลี่ยนอะไร</div><div class="img"><b>📷 รูปต้นฉบับทำหน้าที่</b>ให้รูปร่างจริง Pixel จริง โลโก้จริง ฉลากจริง ผิววัสดุจริง และสัดส่วนของสินค้าจริง</div></div>
-<section class="quest"><h2 class="disp">🎯 เควสท้ายบท · ชิมจนหมดจาน</h2><ol><li>แนบ Source 1 ขวด</li><li>สร้างภาพทดสอบ 1 ภาพ</li><li>ตรวจ Taste Checklist ทั้ง 6 จุด</li><li>แยกสาเหตุของข้อที่ไม่ผ่าน แล้วแก้ Source หรือแก้ภาพให้ถูกจุด</li><li>บันทึกสิ่งที่ผ่านเป็น Canon และแนบรูปจริงเพิ่มเมื่อมีโลโก้หรือสินค้า</li></ol><button class="finish" id="finishLesson" type="button">ฉันชิม Source และแก้รสแล้ว</button><div class="achievement" id="achievement">🥄 TASTE CHECK PASSED · จานนี้ตรงรสแล้ว</div></section>
-<div class="nextrow"><a class="nx ghost" href="free-ai.html">← บทที่ 1</a><a class="nx" href="clip-ai.html">ไปบทที่ 3 →</a></div>
-<footer>AI ใส่ซอส · Source-Based AI Workflow · myclover.com<br>Source บอกสูตร ภาพจริงบอกหน้าตาของวัตถุดิบ 🍀</footer>
+<div class="note">🧩 <b>จำง่าย:</b> งานอะไร + มีอะไร + กำลังทำอะไร + รู้สึกแบบไหน + เอาไปใช้ที่ไหน</div>
+
+<h2><span class="n">3</span>ภาพจริง + AI ทำอะไรได้บ้าง?</h2>
+<div class="truth">
+  <div class="side"><b>📷 ภาพจริง</b><span>ตัวตนจริง · สินค้าจริง · สถานที่จริง · ความน่าเชื่อถือ</span></div>
+  <div class="plus">+</div>
+  <div class="side"><b>✨ AI</b><span>จัดฉาก · เปลี่ยนบรรยากาศ · แตกเรื่อง · ทำภาพชุด · ขยายไอเดีย</span></div>
+</div>
+
+<h2><span class="n">4</span>เลือกสายที่ตรงกับงานของคุณ</h2>
+<div class="routes">
+  <article class="route">
+    <span class="tag">REAL PERSON</span>
+    <h3>👤 ใช้รูปตัวเอง</h3>
+    <p>อัปโหลดรูปที่เห็นหน้าและเสื้อผ้าชัด แล้วขอให้ AI เปลี่ยนฉาก แสง หรือสไตล์ โดยย้ำให้รักษาใบหน้าและลักษณะเดิม</p>
+    <div class="mini">เหมาะกับ: โปรไฟล์ · ภาพแนะนำตัว · Personal Brand</div>
+  </article>
+  <article class="route">
+    <span class="tag">REAL PRODUCT</span>
+    <h3>📦 ใช้รูปสินค้าจริง</h3>
+    <p>ให้สินค้าจริงเป็นพระเอก แล้วใช้ AI ช่วยเก็บพื้นหลัง จัดแสง หรือวางในฉากโฆษณา โดยห้ามเปลี่ยนฉลาก รูปทรง และสีสินค้า</p>
+    <div class="mini">เหมาะกับ: ภาพขาย · เมนู · Catalog · รีวิว</div>
+  </article>
+  <article class="route">
+    <span class="tag">STORY MODE</span>
+    <h3>🎬 ทำการ์ตูนเล่าเรื่อง</h3>
+    <p>เริ่มจากตัวละครหรือภาพอ้างอิง 1 ภาพ แล้วแตกเป็นเหตุการณ์ 3–4 ช่อง พร้อมกำหนดเสื้อผ้า สี และหน้าตาให้ต่อเนื่องทุกช่อง</p>
+    <div class="mini">เหมาะกับ: เรื่องเล่าแบรนด์ · How-to · Before/After</div>
+  </article>
+  <article class="route">
+    <span class="tag">CAROUSEL</span>
+    <h3>🗂️ ทำภาพชุดแบบ Carousel</h3>
+    <p>อย่าสั่งทีละภาพแบบแยกกัน ให้ AI วางโครงทั้งชุดก่อน: ปก → ปัญหา → วิธีแก้ → ตัวอย่าง → ชวนลงมือ แล้วค่อยทำภาพด้วยภาษาภาพเดียวกัน</p>
+    <div class="mini">เหมาะกับ: Facebook · Instagram · LinkedIn · ความรู้</div>
+  </article>
+</div>
+
+<h2><span class="n">5</span>พร้อมท์ใช้งานจริง 4 แบบ</h2>
+<div class="steps">
+  <div class="step"><span class="num">👤</span><div><b>รูปตัวเอง — เปลี่ยนฉาก แต่ไม่เปลี่ยนตัวตน</b>
+    <div class="prompt">ใช้ภาพที่ฉันแนบเป็นภาพอ้างอิง รักษาใบหน้า ทรงผม รูปร่าง และเสื้อผ้าหลักให้ใกล้เคียงต้นฉบับ เปลี่ยนฉากเป็น [สถานที่] แสง [บรรยากาศ] จัดองค์ประกอบสำหรับ [รูปโปรไฟล์/โพสต์แนวตั้ง] ห้ามเพิ่มตัวหนังสือหรือโลโก้</div>
+  </div></div>
+
+  <div class="step"><span class="num">📦</span><div><b>สินค้าจริง — อัปเกรดฉากโดยไม่บิดเบือนสินค้า</b>
+    <div class="prompt">ใช้สินค้าจากภาพที่แนบเป็นตัวแบบหลัก รักษารูปทรง สี ฉลาก และรายละเอียดสินค้าให้ตรงกับต้นฉบับ จัดวางในฉาก [ครัวสะอาด/โต๊ะทำงาน/ธรรมชาติ] แสงโฆษณานุ่ม ดูน่าเชื่อถือ เว้นพื้นที่ว่างสำหรับใส่ข้อความภายหลัง ห้ามสร้างข้อความใหม่บนฉลาก</div>
+  </div></div>
+
+  <div class="step"><span class="num">🎬</span><div><b>การ์ตูนเล่าเรื่อง — ตัวละครต้องต่อเนื่อง</b>
+    <div class="prompt">สร้างภาพการ์ตูนเล่าเรื่อง 4 ช่องจากหัวข้อ [เรื่อง] ตัวละครหลักอ้างอิงจากภาพที่แนบ รักษาหน้าตา ทรงผม เสื้อผ้า และโทนสีให้เหมือนกันทุกช่อง
+ช่อง 1: ปัญหา
+ช่อง 2: พยายามแก้
+ช่อง 3: พบวิธีใหม่
+ช่อง 4: ผลลัพธ์
+ไม่มีข้อความในภาพ เว้นพื้นที่สำหรับใส่คำพูดภายหลัง</div>
+  </div></div>
+
+  <div class="step"><span class="num">🗂️</span><div><b>Carousel — วางทั้งชุดก่อนสร้างภาพ</b>
+    <div class="prompt">ช่วยวางโครง Carousel 5 หน้าเรื่อง [หัวข้อ] สำหรับ [กลุ่มคนดู]
+หน้า 1: ประโยคเปิดที่หยุดนิ้ว
+หน้า 2: ปัญหาที่คนดูเจอ
+หน้า 3: วิธีคิดหรือวิธีแก้
+หน้า 4: ตัวอย่างจากภาพจริงที่ฉันแนบ
+หน้า 5: สรุปและชวนลงมือ
+กำหนดแนวภาพ สี องค์ประกอบ และพื้นที่วางข้อความให้ต่อเนื่องกันทั้งชุด จากนั้นเขียนคำสั่งสร้างภาพแยกสำหรับแต่ละหน้า โดยไม่ใส่ตัวหนังสือลงในภาพ</div>
+  </div></div>
+</div>
+
+<h2><span class="n">6</span>กติกาก่อนใช้ภาพจริง</h2>
+<div class="rules">
+  <div class="rule"><b>🔐 อย่าอัปโหลดข้อมูลลับ</b>บัตรประชาชน เอกสารลูกค้า ที่อยู่ หรือภาพที่ไม่อยากให้ระบบประมวลผล</div>
+  <div class="rule"><b>🤝 ใช้รูปคนอื่นต้องได้รับอนุญาต</b>โดยเฉพาะภาพเด็ก ลูกค้า และภาพที่อาจทำให้เขาเข้าใจผิดหรือเสียหาย</div>
+  <div class="rule"><b>📦 อย่าปล่อยให้ AI เปลี่ยนสินค้า</b>ตรวจฉลาก สี รูปร่าง จำนวน และคุณสมบัติให้ตรงของจริงก่อนโพสต์</div>
+  <div class="rule"><b>✍️ ตัวหนังสือใส่ทีหลัง</b>ให้ AI ทำภาพและเว้นพื้นที่ แล้วพิมพ์ข้อความใน Canva หรือแอปที่แก้ไขได้</div>
+</div>
+
+<section class="hard" id="hardMode" data-open="0">
+  <div class="hardtop">
+    <span class="lock" id="lockIcon">🔒</span>
+    <span class="eyebrow">OPTIONAL CHALLENGE</span>
+    <h2 class="disp">HARD MODE · 1 SOURCE → 1 CONTENT SET</h2>
+    <p>บทนี้ผ่านได้โดยไม่ต้องทำส่วนนี้ แต่ถ้าปลดล็อก คุณจะได้ลองเปลี่ยนภาพจริง 1 ภาพ ให้กลายเป็นงานคอนเทนต์ทั้งชุด โดยสรุปข้อความให้จบก่อน แล้วค่อยสร้างภาพอย่างเป็นระบบ</p>
+    <button class="unlock" id="unlockHard" type="button" aria-expanded="false" aria-controls="hardBody">ปลดล็อก HARD MODE</button>
+  </div>
+
+  <div class="hardbody" id="hardBody" aria-hidden="true">
+    <div class="hardline"></div>
+    <div class="modegrid">
+      <div class="mode"><b>🗂️ เลือก A · Carousel 4 หน้า</b><span>ปก → ปัญหา → วิธีแก้ → ชวนลงมือ</span></div>
+      <div class="mode"><b>🎬 เลือก B · การ์ตูน 4 ช่อง</b><span>เริ่มเรื่อง → อุปสรรค → จุดเปลี่ยน → ผลลัพธ์</span></div>
+    </div>
+
+    <div class="hardsteps">
+      <div class="hstep"><div><b>เลือก Source จริง 1 ภาพ</b><small>รูปตัวเอง สินค้า ร้าน อาหาร ห้องทำงาน หรือสิ่งที่คุณทำจริง</small></div></div>
+      <div class="hstep"><div><b>ให้ AI อ่านภาพก่อน อย่าเพิ่งสร้าง</b><small>ถามว่าภาพนี้มีอะไร จุดเด่นคืออะไร และอะไรต้องรักษาไว้ไม่ให้เปลี่ยน</small></div></div>
+      <div class="hstep"><div><b>ให้ AI เขียน “ข้อความทั้งงาน” ให้จบก่อน</b><small>หัวปก ข้อความแต่ละหน้า แคปชัน คำพูด หรือ CTA ต้องเคลียร์ก่อนสร้างภาพ เพื่อกันการพิมพ์ผิดและทำให้งานทั้งชิ้นไปในทิศทางเดียวกัน</small></div></div>
+      <div class="hstep"><div><b>คอนเฟิร์มข้อความ แล้วค่อยวางภาพทั้งชุด</b><small>เมื่อถ้อยคำลงตัวแล้ว ค่อยให้ AI แปลงเป็น Carousel 4 หน้า หรือการ์ตูน 4 ช่อง โดยยึดข้อความชุดนั้นเป็น Master</small></div></div>
+      <div class="hstep"><div><b>สร้างและตรวจทีละจุด ถ้าผิดให้สั่งแก้เฉพาะจุด</b><small>หน้า ตัวละคร สินค้า เสื้อผ้า สี แสง และข้อความ ต้องไม่เปลี่ยนมั่วระหว่างภาพ ถ้าพลาด ให้บอกแก้เป็นจุด ๆ ไม่ต้องรื้อทั้งหมด</small></div></div>
+    </div>
+
+    <div class="prompt">ดูภาพที่ฉันแนบ แล้วตอบก่อนว่า:
+1. ภาพนี้มีจุดเด่นอะไร
+2. อะไรคือรายละเอียดที่ต้องรักษาไว้ ห้าม AI เปลี่ยน
+3. ภาพนี้เหมาะจะเล่าเป็น Carousel 4 หน้า หรือการ์ตูน 4 ช่องมากกว่า เพราะอะไร
+4. เขียน “ข้อความทั้งงาน” ให้ฉันก่อน ได้แก่ หัวเรื่อง ข้อความแต่ละหน้า/แต่ละช่อง และประโยคปิด
+5. เมื่อฉันอนุมัติข้อความแล้ว ค่อยวางโครงภาพทั้งชุด
+ยังไม่ต้องสร้างภาพ จนกว่าฉันจะอนุมัติข้อความและโครง</div>
+
+    <div class="note" style="margin-top:18px;background:rgb(255 255 255/.06);border-color:rgb(255 255 255/.12);color:#fff">
+      ✍️ <b>กติกา HARD MODE:</b> ให้จบข้อความก่อนสร้างภาพเสมอ เพราะข้อความคือ “สคริปต์” ของงานทั้งชิ้น ถ้ายังแก้คำอยู่ อย่าเพิ่งให้ AI ไปสร้างภาพ
+    </div>
+
+    <div class="steps" style="margin-top:16px">
+      <div class="step" style="background:rgb(255 255 255/.06);border-color:rgb(255 255 255/.12);color:#fff">
+        <span class="num" style="background:rgb(var(--gold));color:#071a10">A</span>
+        <div><b>Prompt สั่งให้ AI เขียนข้อความก่อน</b>
+          <div class="prompt">จากภาพที่ฉันแนบ ช่วยเขียนข้อความสำหรับ [Carousel 4 หน้า / การ์ตูน 4 ช่อง] ให้จบก่อน
+ต้องมี:
+- หัวเรื่อง
+- ข้อความของแต่ละหน้า/แต่ละช่อง
+- ประโยคปิดหรือ CTA
+ใช้ภาษาง่าย กระชับ และสอดคล้องกันทั้งชุด
+ยังไม่ต้องสร้างภาพ จนกว่าฉันจะพิมพ์ว่า “โอเค เริ่มสร้างภาพได้”</div>
+        </div>
+      </div>
+
+      <div class="step" style="background:rgb(255 255 255/.06);border-color:rgb(255 255 255/.12);color:#fff">
+        <span class="num" style="background:rgb(var(--gold));color:#071a10">B</span>
+        <div><b>Prompt สั่งสร้างภาพหลังข้อความจบแล้ว</b>
+          <div class="prompt">ใช้ข้อความชุดที่เราตกลงกันแล้ว เป็น Master สำหรับสร้าง [Carousel 4 หน้า / การ์ตูน 4 ช่อง]
+ยึดภาพที่ฉันแนบเป็น Source หลัก
+รักษา [ใบหน้า/สินค้า/สถานที่] ให้ใกล้ต้นฉบับ
+ทำภาพทั้งชุดให้สไตล์และโทนสีต่อเนื่องกัน
+ถ้าต้องมีข้อความในภาพ ให้ใช้ข้อความตาม Master เท่านั้น ห้ามแต่งใหม่เอง</div>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="color:#fff;margin-top:24px"><span class="n" style="background:rgb(var(--gold));color:#071a10">7</span>สูตรแก้งานทีละจุด</h2>
+    <div class="modegrid">
+      <div class="mode"><b>ตัวหนังสือผิด</b><span>“ใช้แบบเดิมทุกอย่าง แต่แก้ข้อความหน้า 2 เป็น ‘...’ และคงเลย์เอาต์เดิม”</span></div>
+      <div class="mode"><b>ตัวละครหน้าไม่เหมือนเดิม</b><span>“ยึดหน้าตา ทรงผม เสื้อผ้า และโทนสีจากภาพอ้างอิงเดิมให้มากที่สุด”</span></div>
+      <div class="mode"><b>สินค้าเพี้ยน</b><span>“คงรูปทรง สี ฉลาก และจำนวนสินค้าตามภาพต้นฉบับ ห้ามเปลี่ยนแบรนด์หรือแพ็กเกจ”</span></div>
+      <div class="mode"><b>ภาพแต่ละหน้าไม่เข้าชุดกัน</b><span>“ทำทั้งชุดให้ใช้โทนสี มุมมอง และภาษาภาพเดียวกันเหมือนเป็นเซ็ตเดียว”</span></div>
+      <div class="mode"><b>พื้นที่ข้อความไม่พอ</b><span>“เว้นพื้นที่ว่างด้านบน/ซ้าย/ล่างสำหรับข้อความเพิ่ม โดยไม่เปลี่ยนสารหลักของภาพ”</span></div>
+      <div class="mode"><b>อยากแก้เฉพาะหน้าเดียว</b><span>“แก้เฉพาะหน้า 3 เท่านั้น หน้าอื่นคงเดิมทุกอย่าง”</span></div>
+    </div>
+
+    <div class="prompt">ถ้าภาพยังไม่ตรง ใช้สูตรนี้:
+- “คงแบบเดิมทั้งหมด แต่แก้เฉพาะ...”
+- “อย่ารื้อทั้งชุด ให้แก้เฉพาะหน้า...”
+- “รักษา [ใบหน้า/สินค้า/สี/ฉาก] เดิมไว้”
+- “ใช้ข้อความตาม Master เท่านั้น”
+- “ขออีก 3 เวอร์ชัน โดยยังคงโครงเดิม”</div>
+
+    <div class="finish">
+      <p>สร้างงานครบ 1 ชุดแล้ว กดรับ Achievement ได้เลย สถานะจะถูกจำไว้ในเครื่องนี้</p>
+      <button type="button" id="finishHard">ฉันทำ HARD MODE สำเร็จ</button>
+    </div>
+    <div class="achievement" id="achievement">🏆 ACHIEVEMENT UNLOCKED · VISUAL ALCHEMIST</div>
+  </div>
+</section>
+
+<div class="quest">🎯 <b>เควสหลัก — เลือกทำแค่ 1 อย่าง:</b> ใช้สูตร 5 ช่องสร้างภาพใหม่ 1 ภาพ หรือใช้ภาพจริง 1 ภาพกับพร้อมท์สายใดสายหนึ่งด้านบน<span class="qshare">เป้าหมายไม่ใช่ภาพที่เพอร์เฟกต์ แต่คือภาพที่คุณอธิบายได้ว่า “ทำไมถึงสั่งแบบนี้” 🍀</span><span class="skip">HARD MODE เป็นเควสเสริม ไม่ทำก็ผ่านบทนี้และไปต่อได้ตามปกติ</span></div>
+
+<div class="nextrow">
+  <a class="nx ghost" href="./">← ห้องเรียนทั้งหมด</a>
+  <a class="nx" href="clip-ai.html">คลาสถัดไป: ทำคลิปสั้น →</a>
+</div>
+
+<footer>myclover.com · ห้องเรียนของบ้าน — เข้าเรียนฟรี ตลอดชีพ · ใครเจอเรา คนนั้นโชคดี 🍀</footer>
 </main>
+
 <script>
-document.querySelectorAll('.prompt').forEach(function(el){var b=document.createElement('button');b.type='button';b.className='cpx';b.textContent='คัดลอก';b.onclick=async function(){var c=el.cloneNode(true);c.querySelectorAll('button').forEach(x=>x.remove());var t=c.innerText.trim(),ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{ok=document.execCommand('copy')}catch(x){}a.remove()}b.textContent=ok?'✓ คัดลอกแล้ว':'ลองใหม่';setTimeout(()=>b.textContent='คัดลอก',1400)};el.appendChild(b)});
-var boxes=[...document.querySelectorAll('.check input')],score=document.getElementById('scoreText'),hint=document.getElementById('scoreHint');function updateScore(){var n=boxes.filter(x=>x.checked).length;score.textContent='ผ่าน '+n+' / 6 จุด';hint.textContent=n===6?'พร้อมเก็บเป็น Canon และทำงานต่อ':'ยังไม่ควรเอาไปทำงานชุดใหญ่';try{localStorage.setItem('mc-taste-score',JSON.stringify(boxes.map(x=>x.checked)))}catch(e){}}boxes.forEach(x=>x.addEventListener('change',updateScore));try{var s=JSON.parse(localStorage.getItem('mc-taste-score')||'[]');boxes.forEach((x,i)=>x.checked=!!s[i]);updateScore()}catch(e){}
-document.querySelectorAll('.term').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();var card=btn.closest('.canon'),open=card.dataset.open==='1';document.querySelectorAll('.canon').forEach(x=>{x.dataset.open='0';var b=x.querySelector('.term');if(b)b.setAttribute('aria-expanded','false')});card.dataset.open=open?'0':'1';btn.setAttribute('aria-expanded',open?'false':'true')})});document.addEventListener('click',()=>document.querySelectorAll('.canon').forEach(x=>{x.dataset.open='0';var b=x.querySelector('.term');if(b)b.setAttribute('aria-expanded','false')}));
-var finish=document.getElementById('finishLesson'),ach=document.getElementById('achievement');finish.addEventListener('click',function(){ach.classList.add('show');finish.textContent='✓ ผ่านบทที่ 2 แล้ว';try{localStorage.setItem('mc-image-complete','1')}catch(e){}});try{if(localStorage.getItem('mc-image-complete')==='1'){ach.classList.add('show');finish.textContent='✓ ผ่านบทที่ 2 แล้ว'}}catch(e){}
+document.querySelectorAll('.prompt').forEach(function(el){
+  var b=document.createElement('button');
+  b.type='button';
+  b.className='cpx';
+  b.textContent='คัดลอก';
+  b.setAttribute('aria-label','คัดลอกพร้อมท์');
+  b.setAttribute('aria-live','polite');
+  b.onclick=async function(){
+    var c=el.cloneNode(true);
+    c.querySelectorAll('button').forEach(function(x){x.remove()});
+    var text=c.innerText.trim(),ok=false;
+    try{await navigator.clipboard.writeText(text);ok=true}catch(e){
+      var t=document.createElement('textarea');t.value=text;t.setAttribute('readonly','');t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();
+      try{ok=document.execCommand('copy')}catch(err){}
+      t.remove();
+    }
+    b.textContent=ok?'✓ คัดลอกแล้ว':'คัดลอกไม่สำเร็จ';
+    setTimeout(function(){b.textContent='คัดลอก'},1400);
+  };
+  el.appendChild(b);
+});
+
+(function(){
+  var hard=document.getElementById('hardMode');
+  var unlock=document.getElementById('unlockHard');
+  var icon=document.getElementById('lockIcon');
+  var finish=document.getElementById('finishHard');
+  var achievement=document.getElementById('achievement');
+
+  function openHard(shouldScroll){
+    hard.dataset.open='1';
+    icon.textContent='🔓';
+    unlock.textContent='✓ ปลดล็อกแล้ว · เปิด HARD MODE';
+    unlock.classList.add('done');
+    unlock.setAttribute('aria-expanded','true');
+    document.getElementById('hardBody').setAttribute('aria-hidden','false');
+    try{localStorage.setItem('mc-image-hard-unlocked','1')}catch(e){}
+    if(shouldScroll){
+      setTimeout(function(){
+        document.getElementById('hardBody').scrollIntoView({behavior:'smooth',block:'start'});
+      },80);
+    }
+  }
+
+  function showAchievement(){
+    achievement.classList.add('show');
+    achievement.setAttribute('role','status');
+    finish.textContent='✓ รับ Achievement แล้ว';
+    finish.disabled=true;
+    try{localStorage.setItem('mc-image-hard-complete','1')}catch(e){}
+  }
+
+  unlock.addEventListener('click',function(){
+    if(hard.dataset.open==='1'){
+      document.getElementById('hardBody').scrollIntoView({behavior:'smooth',block:'start'});
+    }else{
+      openHard(true);
+    }
+  });
+
+  finish.addEventListener('click',showAchievement);
+
+  try{
+    if(localStorage.getItem('mc-image-hard-unlocked')==='1')openHard(false);
+    if(localStorage.getItem('mc-image-hard-complete')==='1')showAchievement();
+  }catch(e){}
+})();
 </script>
-<script defer src="../assets/quest.js"></script><script type="module" src="/assets/track.js"></script>
+
+<script defer src="../assets/quest.js"></script>
+<!-- Microsoft Clarity — heatmap + ดูย้อนหลังว่าคนใช้หน้านี้ยังไง -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window, document, "clarity", "script", "xtx73cs6w1");
+</script>
+<!-- Google Analytics (GA4) — ปิดฟีเจอร์โฆษณาทั้งหมด ใช้แค่ดูว่าหน้าไหนมีคนอ่าน -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8LVQBD44BK"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-8LVQBD44BK',{anonymize_ip:true,allow_google_signals:false,allow_ad_personalization_signals:false});
+</script>
+<!-- Cloudflare Web Analytics — ไม่ใช้คุกกี้ ไม่ตามรอยรายบุคคล --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "cd6b654477f3437ca6619742cf119aa6"}'></script>
+<script type="module" src="/assets/track.js"></script>
 </body>
 </html>
