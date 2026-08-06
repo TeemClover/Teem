@@ -15,3 +15,4 @@ import '/assets/prompts-utility.js';
 import '/assets/prompts-chef.js';
 import '/assets/prompts-eko-tasting.js';
 import '/assets/prompts-svg-polish.js';
+import '/assets/course-svg-motion.js';
