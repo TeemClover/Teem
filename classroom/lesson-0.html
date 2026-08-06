@@ -2,68 +2,128 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<meta name="mc-act-view" content="lesson-zero-open">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0a2818">
 <meta name="robots" content="noindex">
-<title>บท 0 · เปิดครัว AI · AI ใส่ซอส</title>
-<meta name="description" content="ทางเข้าพิเศษสำหรับคนที่ยังไม่มีบัญชี AI เลือกเครื่องมือหนึ่งตัว เปิดแชต แล้วกลับไปเริ่มปรุงซอสในบทที่ 1">
+<title>บท 0 · เลือกเครื่องครัว และเปิดเตา · AI ใส่ซอส</title>
+<meta name="description" content="เปิดครัว AI ในมือถือ สมัคร ChatGPT, Claude และ Gemini แบบฟรี แล้วเรียนรู้ว่าเครื่องครัวแต่ละชิ้นเหมาะกับงานแบบไหน ก่อนกลับไปปรุง Source ในบทที่ 1">
 <style>
-:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:96 108 100}
+:root{--ink:18 40 28;--paper:248 246 240;--green:27 106 66;--deep:10 40 24;--gold:190 148 66;--muted:82 96 87;--red:174 68 55;--cream:255 252 244}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Anuphan",sans-serif;background:radial-gradient(800px 420px at 50% -180px,rgb(190 148 66/.14),transparent 70%),rgb(var(--paper));color:rgb(var(--ink));line-height:1.75}
-.disp{font-family:"Bai Jamjuree",sans-serif}
-a{text-decoration:none;color:inherit}
-.wrap{max-width:760px;margin:0 auto;padding:0 20px}
-nav{border-bottom:1px solid rgb(var(--ink)/.08);background:rgb(var(--paper)/.94)}
-nav .wrap{height:56px;display:flex;align-items:center;justify-content:space-between}
-.brand{font-weight:700;font-size:18px}.brand em{color:rgb(var(--green));font-style:normal}
-.back{font-size:14px;font-weight:600;color:rgb(var(--muted))}
-main{padding-top:28px;padding-bottom:55px}
-.hero{padding:32px;border-radius:22px;background:linear-gradient(145deg,#071a10,#113b25);color:#fff;border:1px solid rgb(255 255 255/.08);box-shadow:0 18px 45px rgb(10 40 24/.14)}
-.eyebrow{display:inline-block;border:1px solid rgb(var(--gold)/.55);color:rgb(var(--gold));border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;letter-spacing:.1em}
-h1{font-size:clamp(27px,5vw,38px);line-height:1.25;margin:12px 0 8px}
-.hero p{color:rgb(255 255 255/.76);max-width:55ch}
-.note{margin:18px 0;padding:15px 18px;border-radius:14px;background:rgb(var(--gold)/.09);border:1px solid rgb(var(--gold)/.35);font-size:14px}
-.note b{color:#7b5b1f}
-h2{font-size:20px;margin:30px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.card{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:18px;box-shadow:0 8px 24px rgb(18 40 28/.05)}
-.card span{font-size:27px}.card b{display:block;margin-top:7px;font-size:15px}.card p{font-size:12.8px;color:rgb(var(--muted));margin:3px 0 13px}
-.card a{display:flex;min-height:43px;align-items:center;justify-content:center;border-radius:10px;background:rgb(var(--green));color:#fff;font-size:13px;font-weight:700}
-.steps{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:17px;padding:7px 20px}
-.step{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid rgb(var(--ink)/.07);font-size:14px}.step:last-child{border:0}
-.num{flex:none;width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:rgb(var(--green));color:#fff;font-weight:700;font-size:13px}
-.cta{margin-top:25px;display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:13px;background:rgb(var(--deep));color:#fff;font-weight:700}
-.fine{text-align:center;font-size:12px;color:rgb(var(--muted));margin-top:10px}
-@media(max-width:620px){.grid{grid-template-columns:1fr}.hero{padding:26px 21px}.wrap{padding:0 16px}}
+html{scroll-behavior:smooth}
+body{font-family:"Anuphan",system-ui,sans-serif;background:radial-gradient(900px 450px at 50% -210px,rgb(190 148 66/.16),transparent 72%),rgb(var(--paper));color:rgb(var(--ink));line-height:1.78;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}.disp{font-family:"Bai Jamjuree",system-ui,sans-serif;letter-spacing:-.01em}.wrap{width:min(820px,100%);margin:0 auto;padding:0 28px}button{font:inherit}
+:focus-visible{outline:3px solid rgb(var(--gold));outline-offset:3px;border-radius:8px}
+nav{position:sticky;top:0;z-index:30;border-bottom:1px solid rgb(var(--ink)/.08);background:rgb(var(--paper)/.94);backdrop-filter:blur(10px)}
+nav .wrap{height:57px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:800;font-size:18px}.brand em{color:rgb(var(--green));font-style:normal}.back{font-size:13.5px;font-weight:700;color:rgb(var(--muted))}
+main{padding:27px 0 60px}.hero{position:relative;overflow:hidden;padding:clamp(28px,6vw,46px);border:1px solid rgb(255 255 255/.1);border-radius:25px;color:#fff;background:radial-gradient(560px 300px at 95% 0%,rgb(55 143 91/.45),transparent 65%),radial-gradient(430px 270px at 0% 100%,rgb(190 148 66/.2),transparent 70%),linear-gradient(145deg,#071a10,#113b25);box-shadow:0 22px 58px rgb(10 40 24/.16)}
+.eyebrow{display:inline-block;border:1px solid rgb(var(--gold)/.55);border-radius:999px;padding:5px 13px;color:rgb(var(--gold));font-size:11.5px;font-weight:800;letter-spacing:.12em}.hero h1{font-size:clamp(30px,7vw,48px);line-height:1.13;margin:15px 0 12px}.hero h1 em{display:block;color:rgb(var(--gold));font-style:normal}.hero>p{max-width:59ch;color:rgb(255 255 255/.8);font-size:16.5px}.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.hero-tags span{border:1px solid rgb(255 255 255/.16);border-radius:999px;padding:6px 11px;background:rgb(255 255 255/.07);font-size:12px;font-weight:700}
+.punch{margin:18px 0 8px;padding:20px 22px;border:1px solid rgb(var(--gold)/.42);border-radius:18px;background:linear-gradient(135deg,rgb(var(--gold)/.11),#fff);box-shadow:0 10px 28px rgb(18 40 28/.05)}.punch b{display:block;color:#75571d;font-size:19px}.punch p{margin-top:5px;color:rgb(var(--ink)/.82);font-size:14.5px}
+h2{font-size:clamp(21px,4.5vw,27px);line-height:1.35;margin:38px 0 14px}.lead{font-size:16px;color:rgb(var(--ink)/.78);margin-top:-4px}.lead strong{color:rgb(var(--green))}
+.kitchens{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:20px}.tool{display:flex;flex-direction:column;min-width:0;overflow:hidden;border:1px solid rgb(var(--ink)/.1);border-radius:20px;background:#fff;box-shadow:0 12px 32px rgb(18 40 28/.055)}.tool-top{padding:20px 19px 16px;background:linear-gradient(145deg,rgb(var(--green)/.08),#fff)}.tool:nth-child(2) .tool-top{background:linear-gradient(145deg,rgb(174 68 55/.08),#fff)}.tool:nth-child(3) .tool-top{background:linear-gradient(145deg,rgb(51 92 158/.08),#fff)}.tool .ico{font-size:34px}.tool .name{display:block;margin-top:7px;font-size:20px}.tool .appliance{display:block;margin-top:2px;color:rgb(var(--green));font-size:12px;font-weight:800;letter-spacing:.07em}.tool-body{display:flex;flex:1;flex-direction:column;padding:0 19px 19px}.tool-body>p{font-size:13.5px;color:rgb(var(--muted));margin-top:10px}.best{margin-top:13px;padding:12px;border-radius:12px;background:rgb(var(--ink)/.035);font-size:12.8px}.best b{color:rgb(var(--ink))}.watch{margin-top:10px;font-size:12.3px;color:rgb(var(--red))}.tool a{display:flex;align-items:center;justify-content:center;min-height:46px;margin-top:auto;border-radius:11px;background:rgb(var(--green));color:#fff;font-size:13px;font-weight:800}.tool:nth-child(2) a{background:#6f4438}.tool:nth-child(3) a{background:#345d9b}
+.bonus{margin-top:13px;display:grid;grid-template-columns:64px 1fr auto;gap:15px;align-items:center;padding:17px 18px;border:1px dashed rgb(var(--gold)/.62);border-radius:17px;background:rgb(var(--gold)/.075)}.bonus .ico{width:58px;height:58px;display:grid;place-items:center;border-radius:15px;background:#fff;font-size:29px}.bonus b{display:block}.bonus p{font-size:13px;color:rgb(var(--muted));margin-top:3px}.bonus a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 13px;border-radius:10px;background:rgb(var(--deep));color:#fff;font-size:12px;font-weight:800}
+.chef{position:relative;margin:19px 0 0;padding:18px 20px 18px 22px;border:1px solid rgb(var(--gold)/.45);border-radius:17px;background:linear-gradient(135deg,rgb(var(--gold)/.12),#fff)}.chef::before{content:"";position:absolute;left:-1px;top:15px;bottom:15px;width:4px;border-radius:0 4px 4px 0;background:rgb(var(--gold))}.chef span{display:block;color:#7b5b1f;font-size:11px;font-weight:850;letter-spacing:.1em}.chef p{margin-top:5px;font-size:14px;color:rgb(var(--ink)/.84)}
+.party{margin-top:18px;padding:22px;border-radius:20px;color:#fff;background:linear-gradient(145deg,#071a10,#113b25);border:1px solid rgb(var(--gold)/.35)}.party h3{font-size:20px}.party>p{margin-top:7px;color:rgb(255 255 255/.72);font-size:14px}.relay{display:grid;gap:9px;margin-top:17px}.relay-step{display:grid;grid-template-columns:38px 1fr;gap:12px;align-items:start;padding:13px 14px;border:1px solid rgb(255 255 255/.12);border-radius:13px;background:rgb(255 255 255/.045)}.relay-step .n{width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:rgb(var(--gold));color:rgb(var(--deep));font-weight:900}.relay-step b{display:block;color:#fff;font-size:14px}.relay-step p{margin-top:2px;color:rgb(255 255 255/.68);font-size:12.8px}.final-call{margin-top:15px;padding-left:14px;border-left:3px solid rgb(var(--gold));color:rgb(255 255 255/.88);font-weight:700;font-size:14px}
+.fire-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.fire{border:1px solid rgb(var(--ink)/.1);border-radius:17px;padding:18px;background:#fff}.flame{font-size:27px;letter-spacing:-8px;margin-right:8px}.fire b{display:block;margin-top:8px;font-size:16px}.fire p{margin-top:5px;color:rgb(var(--muted));font-size:13px}.fire small{display:block;margin-top:10px;color:rgb(var(--green));font-weight:750;font-size:12px}.site-note{margin-top:14px;padding:18px 20px;border-radius:16px;border:1px solid rgb(var(--green)/.26);background:rgb(var(--green)/.07);font-size:14.5px}.site-note b{color:rgb(var(--green))}
+.steps{display:grid;gap:9px;margin-top:17px}.step{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;padding:15px 17px;border:1px solid rgb(var(--ink)/.09);border-radius:15px;background:#fff}.step .num{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgb(var(--green));color:#fff;font-weight:850;font-size:13px}.step b{display:block;font-size:14.5px}.step p{margin-top:2px;color:rgb(var(--muted));font-size:13px}.safety{margin-top:13px;padding:15px 17px;border:1px solid rgb(var(--red)/.25);border-radius:14px;background:rgb(var(--red)/.055);font-size:13px}.safety b{color:rgb(var(--red))}
+.research{margin-top:20px;border:1px solid rgb(var(--ink)/.11);border-radius:16px;background:#fff;overflow:hidden}.research summary{position:relative;list-style:none;cursor:pointer;padding:16px 52px 16px 18px;color:rgb(var(--green));font-size:13.5px;font-weight:800}.research summary::-webkit-details-marker{display:none}.research summary::after{content:"＋";position:absolute;right:16px;top:50%;translate:0 -50%;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgb(var(--green)/.08);font-size:17px}.research[open] summary{border-bottom:1px solid rgb(var(--ink)/.08);background:rgb(var(--green)/.035)}.research[open] summary::after{content:"−"}.research-body{padding:17px 18px;color:rgb(var(--muted));font-size:13px}.research-body p+p{margin-top:9px}.research-body ul{margin:10px 0 0 19px}.research-body li{margin:6px 0}.research-body a{color:rgb(var(--green));font-weight:750;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+.cta{margin-top:26px;display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:14px;background:rgb(var(--deep));color:#fff;font-weight:800}.fine{text-align:center;font-size:12px;color:rgb(var(--muted));margin-top:10px}
+@media(max-width:720px){.kitchens{grid-template-columns:1fr}.tool{display:grid;grid-template-columns:128px 1fr}.tool-top{padding:18px}.tool-body{padding:16px 18px}.tool .ico{font-size:30px}.tool a{margin-top:13px}.fire-grid{grid-template-columns:1fr}.bonus{grid-template-columns:55px 1fr}.bonus a{grid-column:1/-1}.wrap{padding:0 26px}}
+@media(max-width:480px){.wrap{padding:0 24px}.tool{display:block}.hero{padding:28px 22px}.punch{padding:18px}.party{padding:19px}.bonus{grid-template-columns:48px 1fr}.bonus .ico{width:48px;height:48px}.back{font-size:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 <link rel="stylesheet" href="/assets/readable.css">
 </head>
 <body>
-<nav><div class="wrap"><a class="brand disp" href="/hall.html#quest">my<em>clover</em></a><a class="back" href="free-ai.html">กลับบทที่ 1 →</a></div></nav>
+<nav><div class="wrap"><a class="brand disp" href="/hall.html#quest"><img src="/icons/icon-192.png" alt="" width="192" height="192" style="height:1.35em;width:auto;vertical-align:-.3em;display:inline-block"> my<em>clover</em></a><a class="back" href="free-ai.html">กลับบทที่ 1 →</a></div></nav>
 <main class="wrap">
 <section class="hero">
   <span class="eyebrow">บท 0 · ทางเข้าพิเศษ</span>
-  <h1 class="disp">เปิดครัว AI</h1>
-  <p>หน้านี้มีไว้สำหรับคนที่ยังไม่มีบัญชี AI เลยเท่านั้น เลือก 1 ตัวที่สะดวก สมัครตามหน้าจอ เปิดแชตให้ได้ แล้วกลับไปบทที่ 1 เราไม่ได้จับคู่แต่งงานให้คุณกับค่ายไหน ใช้ไม่ถูกใจก็เปลี่ยนครัวได้</p>
+  <h1 class="disp">เลือกเครื่องครัว<em>แล้วเปิดเตา</em></h1>
+  <p>ครัว AI ไม่ได้อยู่ในห้องแล็บ มันอยู่ในมือถือที่คุณถืออยู่แล้ว และติดตามคุณไปได้ทุกที่ หน้านี้มีหน้าที่แค่ช่วยเปิดประตู เลือกเครื่องครัวให้ครบ แล้วกลับไปปรุงซอสในบทที่ 1</p>
+  <div class="hero-tags"><span>📱 ครัวอยู่ในมือคุณ</span><span>🆓 เริ่มฟรีทุกตัว</span><span>🔥 จ่ายเมื่อไฟอ่อนไม่พอ</span></div>
 </section>
-<div class="note"><b>ใช้ตัวที่มีอยู่แล้วได้เลย</b> ถ้าโทรศัพท์หรือที่ทำงานมี AI ให้ใช้อยู่แล้ว ไม่ต้องสมัครเพิ่ม กลับไปบทที่ 1 ได้ทันที</div>
 
-<h2 class="disp">เลือกเปิดครัว 1 แห่ง</h2>
-<div class="grid">
-  <article class="card"><span>💬</span><b>ChatGPT</b><p>เปิดแชต ใช้เสียงหรือแนบไฟล์ตามสิทธิ์ของบัญชีที่มี</p><a href="https://chatgpt.com/" target="_blank" rel="noopener">เปิด ChatGPT ↗</a></article>
-  <article class="card"><span>✨</span><b>Gemini</b><p>เหมาะสำหรับคนที่มีบัญชี Google และอยากเริ่มจากของที่คุ้นเคย</p><a href="https://gemini.google.com/" target="_blank" rel="noopener">เปิด Gemini ↗</a></article>
-  <article class="card"><span>🧠</span><b>Claude</b><p>อีกทางเลือกสำหรับการคุย เขียน และทำงานจากเอกสาร</p><a href="https://claude.ai/" target="_blank" rel="noopener">เปิด Claude ↗</a></article>
+<section class="punch">
+  <b class="disp">สมัครมันทุกตัวเลย ไม่ต้องเลือก</b>
+  <p>บัญชีฟรีมีไว้ให้ชิม ไม่ได้มีไว้ให้แต่งงานกับค่ายใดค่ายหนึ่ง คุณไม่ต้องหาคำตอบว่า “ตัวไหนดีที่สุด” ก่อนเริ่ม เพราะคำถามที่มีประโยชน์กว่าคือ “งานชิ้นนี้ควรหยิบเครื่องครัวชิ้นไหน”</p>
+</section>
+
+<h2 class="disp">เครื่องครัว 3 ชิ้นที่ควรมีติดมือถือ</h2>
+<p class="lead">ข้อมูลและคำแนะนำด้านล่างตรวจสอบล่าสุดวันที่ <strong>6 สิงหาคม 2026</strong> ความสามารถและโควตาเปลี่ยนเร็ว จึงยึด “ลักษณะงานที่ถนัด” มากกว่ายึดชื่อโมเดล</p>
+
+<div class="kitchens">
+  <article class="tool">
+    <div class="tool-top"><span class="ico">🍳</span><b class="name disp">ChatGPT</b><span class="appliance">เตาอเนกประสงค์ + โต๊ะจัดจาน</span></div>
+    <div class="tool-body"><p>รวม Voice, ไฟล์, ภาพ, Web Research, Project และเครื่องมือหลายชนิดไว้ในแชตเดียว เหมาะกับการเริ่มจากการเล่า แล้วพางานไปจนเห็นหน้าตาจริง</p><div class="best"><b>หยิบใช้เมื่อ:</b> อยากพูดแทนพิมพ์ สร้างหรือแก้ภาพ วิเคราะห์ไฟล์ ทำ Research หรือปิดงานให้อ่านง่ายและดูดี</div><div class="watch">ต้องชิมข้อเท็จจริงอีกครั้ง เพราะภาษาที่ลื่นไม่ได้แปลว่าถูกเสมอ</div><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">เปิด ChatGPT ↗</a></div>
+  </article>
+  <article class="tool">
+    <div class="tool-top"><span class="ico">🔪</span><b class="name disp">Claude</b><span class="appliance">เขียงใหญ่ + เตาอบงานยาว</span></div>
+    <div class="tool-body"><p>เด่นกับข้อความ เอกสาร โครงสร้าง งานเขียน งานโค้ด และ Project ที่ต้องถือบริบทยาว ๆ ปัจจุบันโมเดลของ Claude อยู่หัวแถวของ Arena หลายหมวดที่เกี่ยวกับ Text, Document, WebDev และ Agent</p><div class="best"><b>หยิบใช้เมื่อ:</b> ต้องอ่าน Source หนา จัด Master Brief ตรวจความสอดคล้อง วางระบบ หรือ Build ของจริงจากแบบร่าง</div><div class="watch">บัญชีฟรีหมดโควตาได้เร็วเมื่อโยนงานหนัก และบางครั้งมันจะถามก่อนทำ ซึ่งน่ารำคาญเฉพาะวันที่คุณยังไม่รู้ว่าตัวเองลืมบอกอะไร</div><a href="https://claude.ai/" target="_blank" rel="noopener noreferrer">เปิด Claude ↗</a></div>
+  </article>
+  <article class="tool">
+    <div class="tool-top"><span class="ico">🧊</span><b class="name disp">Gemini</b><span class="appliance">ตู้เย็นเชื่อมทั้งบ้าน + เครื่องปั่นถังใหญ่</span></div>
+    <div class="tool-body"><p>ได้เปรียบเมื่อวัตถุดิบอยู่ในโลก Google และเมื่อมีไฟล์หลายชนิด ทั้งเอกสาร Drive, รูป, เสียง, วิดีโอ, Code หรือ NotebookLM แพ็กเกจระดับ Pro มีหน้าต่างบริบทขนาดใหญ่สำหรับงานยาว</p><div class="best"><b>หยิบใช้เมื่อ:</b> ต้องกวาดภาพใหญ่จากของจำนวนมาก ใช้ Gmail/Drive/Search ทำ Deep Research หรือสร้างเอกสาร แอป สไลด์ และ Prototype ใน Canvas</div><div class="watch">บัญชีที่ทำงานหรือโรงเรียนอาจถูกผู้ดูแลปิดบางฟังก์ชัน และฟีเจอร์ใหม่มักทยอยเปิดไม่พร้อมกันทุกคน</div><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">เปิด Gemini ↗</a></div>
+  </article>
 </div>
 
-<h2 class="disp">ทำแค่นี้พอ</h2>
+<div class="bonus">
+  <span class="ico">📚</span>
+  <div><b class="disp">ของแถมในตู้ · NotebookLM</b><p>ไม่ใช่เตาหลัก แต่เป็นสมุดสูตรที่ตอบโดยยึดวัตถุดิบที่คุณใส่ พร้อม Citation เหมาะกับการอ่านหลาย Source แล้วแตกเป็น Brief, Audio, Mind Map, Quiz หรือ Slide Deck ใช้บัญชี Google เดิมได้</p></div>
+  <a href="https://notebooklm.google.com/" target="_blank" rel="noopener noreferrer">เปิด NotebookLM ↗</a>
+</div>
+
+<div class="chef"><span>🍳 เชฟชิมแล้ว</span><p>สมัครครบได้ค่ะ แต่ไม่ต้องเปิดพร้อมกันทั้ง 3 หน้าจอแล้วถามคำถามเดียวกันเพื่อจัดประกวดนางงามทุกครั้งนะคะ จานจะเสร็จเมื่อคุณมอบหน้าที่ให้ถูกคน ไม่ใช่เมื่อได้คำตอบครบทุกค่ายค่ะ</p></div>
+
+<h2 class="disp">ตัวอย่าง Kitchen Party</h2>
+<p class="lead">สมมติคืนนี้คุณต้องทำหน้าขายซอสไก่ทอด 1 หน้า ไม่ต้องบังคับให้ AI ตัวเดียวรับบทตั้งแต่ล้างไก่จนยืนคิดเงิน</p>
+<div class="party">
+  <h3 class="disp">เมนูคืนนี้ · หน้าขายซอสที่เปิดใช้ได้จริง</h3>
+  <p>นี่เป็นตัวอย่าง Loadout ไม่ใช่กฎตายตัว สลับตำแหน่งได้ตามรสมือและแพ็กเกจที่คุณมี</p>
+  <div class="relay">
+    <div class="relay-step"><span class="n">1</span><div><b>ChatGPT · รับออร์เดอร์</b><p>เปิด Voice เล่าเรื่องสินค้า ลูกค้า ความรู้สึก และสิ่งที่ห้ามเปลี่ยน แล้วสกัด Source ฉบับแรก</p></div></div>
+    <div class="relay-step"><span class="n">2</span><div><b>Gemini · เปิดตู้และกวาดวัตถุดิบ</b><p>อ่านไฟล์ใน Drive ดูภาพ วิดีโอ และข้อมูลตลาด เพื่อบอกว่ายังขาดอะไรหรือมีอะไรขัดกัน</p></div></div>
+    <div class="relay-step"><span class="n">3</span><div><b>Claude · จัดสูตรและ Build</b><p>เอา Source ที่ตรวจแล้วไปทำ Master Brief, โครงหน้า และระบบที่ใช้งานได้จริง พร้อมตรวจว่าของใหม่ไม่พังของเดิม</p></div></div>
+    <div class="relay-step"><span class="n">4</span><div><b>ChatGPT · จัดจานก่อนเสิร์ฟ</b><p>ทำภาพ ถ้อยคำ และจังหวะการอ่านให้น่ากิน โดยไม่เปลี่ยน Engine หรือกติกาที่ล็อกไว้</p></div></div>
+  </div>
+  <p class="final-call">คนชิมและตัดสินใจว่าอะไรออกจากครัวได้ ยังเป็นคุณ</p>
+</div>
+
+<h2 class="disp">เปิดเตา = สมัครสมาชิก</h2>
+<p class="lead">เครื่องครัวชิ้นเดิมไม่ได้เปลี่ยนเป็นคนละตัวเมื่อจ่ายเงิน สิ่งที่ซื้อจริงส่วนใหญ่คือไฟที่แรงขึ้น เวลาใช้งานที่มากขึ้น และสิทธิ์เข้าถึงหัวเตาหรือฟังก์ชันเพิ่ม</p>
+<div class="fire-grid">
+  <article class="fire"><span class="flame">🔥</span><b class="disp">ไฟอ่อน · Free</b><p>พอสำหรับสมัครให้ครบ ชิมรสแต่ละตัว ทำ Source ขวดแรก และเรียนทั้งคอร์ส ข้อจำกัดคือโควตา ความเร็ว และฟีเจอร์บางอย่าง</p><small>คำแนะนำ: เริ่มตรงนี้ทุกคน</small></article>
+  <article class="fire"><span class="flame">🔥🔥</span><b class="disp">ไฟกลาง · Paid Personal</b><p>เหมาะเมื่อใช้ทำงานจริงทุกสัปดาห์ ต้องอ่านไฟล์เยอะ ใช้ Voice/ภาพ/Research/Project หรือเจอโควตาขวางบ่อยจนเสียเวลา</p><small>คำแนะนำ: จ่ายให้ตัวที่ช่วยประหยัดเงินหรือเวลาเกินค่ารายเดือน</small></article>
+  <article class="fire"><span class="flame">🔥🔥🔥</span><b class="disp">ไฟสูง · Pro / Max / Ultra</b><p>เหมาะกับคนที่ใช้ AI เป็นสายการผลิตทั้งวัน รัน Agent งานยาว หรือมีต้นทุนจากการรอสูงมาก ไม่ใช่ Shortcut สำหรับคนที่ Source ยังไม่ชัด</p><small>คำแนะนำ: ซื้อเมื่อรู้แล้วว่าไฟกลางติดเพดานตรงไหน</small></article>
+</div>
+<div class="site-note"><b>เว็บนี้ทั้งหมดสร้างด้วยแพ็กเกจระดับไฟกลาง</b> ไม่ได้ใช้แพ็กเกจแพงสุดของทุกค่าย แต่ตอนนี้ผมใช้ฟรีอยู่ เพราะเก็บ Promotion มา 😜<br>ประเด็นไม่ใช่ไฟแรงที่สุด ประเด็นคือมี Source ชัดพอให้เปิดเตาแล้วรู้ว่าจะทำอะไรต่อ</div>
+
+<h2 class="disp">ทำแค่นี้แล้วกลับบทที่ 1</h2>
 <div class="steps">
-  <div class="step"><span class="num">1</span><div><b>เลือก 1 ตัว</b><br>ไม่ต้องสมัครครบเหมือนสะสมโปเกมอน</div></div>
-  <div class="step"><span class="num">2</span><div><b>สมัครหรือล็อกอินตามหน้าจอ</b><br>อย่าใส่รหัสผ่านหรือรหัส OTP ลงในช่องแชต</div></div>
-  <div class="step"><span class="num">3</span><div><b>เปิดแชตใหม่ให้ได้</b><br>เห็นช่องพิมพ์หรือปุ่มเสียงแล้วถือว่าผ่านบท 0</div></div>
+  <div class="step"><span class="num">1</span><div><b>เปิดบัญชีฟรีทั้ง ChatGPT, Claude และ Gemini</b><p>ใช้ Email ที่คุณเข้าถึงได้จริง และจำไว้ว่าบัญชีทำงานหรือโรงเรียนอาจมีข้อจำกัดจากผู้ดูแลระบบ</p></div></div>
+  <div class="step"><span class="num">2</span><div><b>เปิดแชตใหม่ให้ได้อย่างน้อย 1 ตัว</b><p>เห็นช่องพิมพ์หรือปุ่มเสียงแล้วถือว่าเปิดเตาสำเร็จ ไม่ต้องตั้งค่าครัวให้ครบก่อนทำไข่เจียวใบแรก</p></div></div>
+  <div class="step"><span class="num">3</span><div><b>ยังไม่ต้องซื้อแพ็กเกจ</b><p>กลับไปบทที่ 1 ทำซอสขวดแรกก่อน แล้วค่อยสังเกตว่าไฟอ่อนติดเพดานจริงหรือแค่ยังไม่ได้เทวัตถุดิบลงหม้อ</p></div></div>
 </div>
-<a class="cta disp" href="free-ai.html">พร้อมแล้ว · กลับไปปรุงซอสขวดแรก →</a>
-<p class="fine">บท 0 ไม่อยู่ในสารบัญ เพราะคนส่วนใหญ่ข้ามได้</p>
+<div class="safety"><b>กฎหน้าครัว:</b> อย่าใส่รหัสผ่าน รหัส OTP เลขบัตร ข้อมูลการเงิน หรือความลับของคนอื่นลงในช่องแชต อ่านนโยบายของบัญชีที่ทำงานก่อนอัปโหลดเอกสาร และงานสำคัญต้องตรวจคำตอบกับต้นฉบับเสมอ</div>
+
+<details class="research">
+  <summary>🔬 หลังครัว · เชฟใช้อะไรประกอบคำแนะนำ ณ 6 สิงหาคม 2026</summary>
+  <div class="research-body">
+    <p>ไม่มีผลวิจัยชิ้นเดียวที่พิสูจน์ว่าแพลตฟอร์มหนึ่งดีที่สุดทุกงาน คะแนนเปลี่ยนตามรุ่นโมเดล วิธีทดสอบ ภาษา เครื่องมือที่เปิดให้ใช้ และประเภทงาน หน้านี้จึงใช้ข้อมูล 2 ชั้น: ความสามารถที่แต่ละบริษัทประกาศอย่างเป็นทางการ และผลเปรียบเทียบแบบ Blind Vote จาก Arena เพื่อดูแนวโน้มในงานจริง</p>
+    <ul>
+      <li><a href="https://help.openai.com/en/articles/10169521-chatgpt-projects" target="_blank" rel="noopener noreferrer">ChatGPT Projects และ Project Memory</a> · <a href="https://help.openai.com/en/articles/10500283-deep-research-faq/" target="_blank" rel="noopener noreferrer">Deep Research</a> · <a href="https://help.openai.com/en/articles/6950777-what-is-chatgpt-plus" target="_blank" rel="noopener noreferrer">สิทธิ์ของ Plus</a></li>
+      <li><a href="https://www.anthropic.com/pricing" target="_blank" rel="noopener noreferrer">Claude Plans</a> · <a href="https://support.anthropic.com/en/articles/9517075-what-are-projects" target="_blank" rel="noopener noreferrer">Claude Projects</a> · <a href="https://support.anthropic.com/en/articles/8241126-what-kinds-of-documents-can-i-upload-to-claude-ai" target="_blank" rel="noopener noreferrer">เอกสารที่ Claude อ่านได้</a></li>
+      <li><a href="https://support.google.com/gemini/answer/16275805" target="_blank" rel="noopener noreferrer">Gemini Limits และ Context</a> · <a href="https://support.google.com/gemini/answer/14903178" target="_blank" rel="noopener noreferrer">Gemini File Uploads</a> · <a href="https://support.google.com/gemini/answer/15719111" target="_blank" rel="noopener noreferrer">Gemini Deep Research</a></li>
+      <li><a href="https://support.google.com/notebooklm/answer/16164461" target="_blank" rel="noopener noreferrer">NotebookLM และ Source-grounded Answers</a></li>
+      <li><a href="https://arena.ai/leaderboard" target="_blank" rel="noopener noreferrer">Arena Leaderboard</a> — ผลโหวตเปรียบเทียบแบบไม่บอกชื่อโมเดล แยกหมวด Text, Document, Vision, WebDev, Agent, Search และ Media</li>
+    </ul>
+    <p>ราคาจริง โควตา และชื่อแพ็กเกจต่างกันตามประเทศ ภาษี Promotion และช่วงทดลอง โปรดดูหน้าชำระเงินของบัญชีตัวเองก่อนซื้อเสมอ</p>
+  </div>
+</details>
+
+<a class="cta disp" href="free-ai.html">เปิดเตาแล้ว · กลับไปปรุงซอสขวดแรก →</a>
+<p class="fine">บท 0 ไม่อยู่ในสารบัญ เพราะคนที่มีบัญชี AI อยู่แล้วข้ามได้ แต่ของแถมชิ้นนี้ตั้งใจปรุงเกินราคาอยู่หน่อย</p>
 </main>
 <script defer src="../assets/quest.js"></script>
 <script type="module" src="/assets/track.js"></script>
