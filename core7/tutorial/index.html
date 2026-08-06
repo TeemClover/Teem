@@ -74,6 +74,7 @@ import { el, haptic, reducedMotion } from '/core7/js/ui.js';
 import { COLOR_META } from '/core7/js/cards.js';
 import { colorIcon, genericCardSVG, cardBackSVG } from '/core7/js/art.js';
 import { setTutorialCompleted, track } from '/core7/js/store.js';
+import { getLang, setLang, applyLang } from '/core7/js/i18n.js';
 
 track('core7_tutorial_start');
 const slotYou = document.getElementById('slotYou');
@@ -85,11 +86,23 @@ const nextRow = document.getElementById('nextRow');
 const dots = document.getElementById('dots');
 const tutorialCards = document.getElementById('tutorialCards');
 const ruleVisual = document.getElementById('ruleVisual');
+/* ภาษาของหน้านี้เคยอ่านจาก ?lang= บน URL อย่างเดียว แปลว่าคนที่กด EN
+   ไว้ที่หน้าอื่นแล้วเดินเข้ามาที่นี่จะเจอภาษาไทยเหมือนไม่เคยกด และกดที่นี่
+   ก็ไม่ถูกจำไปหน้าถัดไป — ตอนนี้อ่านและเขียนคีย์เดียวกับทั้งเว็บ (mc_lang)
+
+   ?lang= ยังรองรับอยู่เพื่อไม่ให้ลิงก์เก่าที่คนแชร์ไว้พัง แต่ให้ถือว่า
+   เป็นคำสั่งเปลี่ยนภาษา ไม่ใช่สถานะชั่วคราวของหน้านี้ */
 const params = new URLSearchParams(location.search);
-const isEn = params.get('lang') === 'en';
+const fromUrl = params.get('lang');
+if (fromUrl === 'en' || fromUrl === 'th') setLang(fromUrl);
+const isEn = getLang() === 'en';
 document.documentElement.lang = isEn ? 'en' : 'th';
+applyLang();
 document.getElementById('lang').textContent = isEn ? 'TH' : 'EN';
-document.getElementById('lang').addEventListener('click', () => location.search = isEn ? '' : '?lang=en');
+document.getElementById('lang').addEventListener('click', () => {
+  setLang(isEn ? 'th' : 'en');
+  location.reload();
+});
 document.getElementById('skip').textContent = isEn ? 'Skip tutorial →' : 'ข้าม Tutorial →';
 document.getElementById('youLabel').textContent = isEn ? 'YOU · always left' : 'คุณ · ซ้ายเสมอ';
 document.getElementById('oppLabel').textContent = isEn ? 'OPPONENT · right' : 'คู่แข่ง · ขวา';
