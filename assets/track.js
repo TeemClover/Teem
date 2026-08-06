@@ -7,3 +7,4 @@ import '/assets/awaken-loot.js';
 import '/assets/notebooklm-page.js';
 import '/assets/notebooklm-hero-position.js';
 import '/assets/prompts-season.js';
+import '/assets/prompts-utility.js';
