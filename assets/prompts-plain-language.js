@@ -90,6 +90,9 @@ function addStyles(){
     .pc .pcb [data-act="raw"]::after{
       content:'คัดลอกแบบพร้อมใช้';color:rgb(var(--green));font:750 13px/1.25 "Bai Jamjuree",system-ui
     }
+    .pc .pcb [data-act="raw"][data-copy-state="done"]::after{
+      content:'✓ คัดลอกแล้ว'
+    }
     .drawer .drow [data-act="copyFilled"]{
       background:rgb(var(--green))!important;border-color:rgb(var(--green))!important;color:transparent!important;
       font-size:0!important
@@ -97,8 +100,53 @@ function addStyles(){
     .drawer .drow [data-act="copyFilled"]::after{
       content:'คัดลอก Prompt ที่ปรับแล้ว';color:#fff;font:800 13.5px/1.25 "Bai Jamjuree",system-ui
     }
+    .drawer .drow [data-act="copyFilled"][data-copy-state="done"]::after{
+      content:'✓ คัดลอกแล้ว'
+    }
   `;
   document.head.appendChild(style);
+}
+
+function patchButtonAttributes(root){
+  (root||document).querySelectorAll('.pc').forEach(function(card){
+    var customize=card.querySelector('[data-act="use"]');
+    var direct=card.querySelector('[data-act="raw"]');
+    var filled=card.querySelector('[data-act="copyFilled"]');
+    if(customize){
+      customize.setAttribute('aria-label','ปรับแต่ง Prompt ก่อนใช้');
+      customize.title='แนะนำ: เติมข้อมูลให้ตรงงานก่อนคัดลอก';
+    }
+    if(direct){
+      direct.setAttribute('aria-label','คัดลอก Prompt ต้นฉบับแบบพร้อมใช้');
+      direct.title='คัดลอก Prompt ต้นฉบับโดยไม่ปรับข้อมูล';
+    }
+    if(filled){
+      filled.setAttribute('aria-label','คัดลอก Prompt ที่ปรับแล้ว');
+      filled.title='คัดลอกข้อความที่ตรวจและปรับแล้ว';
+    }
+  });
+}
+
+function bindButtonState(){
+  var results=document.getElementById('results');
+  if(!results||results.__genericPromptButtons)return;
+  results.__genericPromptButtons=true;
+
+  results.addEventListener('click',function(event){
+    var button=event.target.closest('[data-act="raw"],[data-act="copyFilled"]');
+    if(!button)return;
+    button.dataset.copyState='done';
+    window.setTimeout(function(){delete button.dataset.copyState},1550);
+  },true);
+
+  var observer=new MutationObserver(function(records){
+    records.forEach(function(record){
+      record.addedNodes.forEach(function(node){
+        if(node.nodeType===1)patchButtonAttributes(node.matches('.pc')?node:node);
+      });
+    });
+  });
+  observer.observe(results,{childList:true,subtree:true});
 }
 
 function patchPage(){
@@ -120,6 +168,9 @@ function patchPage(){
 
   var guide=document.querySelector('.season-guide>summary');
   setText(guide,'หน้าเว็บใช้คำว่า “ผงปรุงรส” แต่ Prompt จริงหน้าตาแบบไหน?');
+
+  patchButtonAttributes(document);
+  bindButtonState();
 }
 
 function audit(){
