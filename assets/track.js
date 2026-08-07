@@ -18,6 +18,7 @@ import '/assets/awaken-language-sidequest.js';
 import '/assets/awaken-loot-v4-migration.js';
 import '/assets/awaken-loot-v4.js';
 import '/assets/awaken-glossary-extra.js';
+import '/assets/awaken-mobile-overflow-fix.js';
 import '/assets/notebook-boss-reset-v2.js';
 import '/assets/notebooklm-page.js';
 import '/assets/notebooklm-hero-position.js';
