@@ -1,5 +1,6 @@
 export { trackAct } from '/assets/track-core.js';
 import '/assets/stat-report.js';
+import '/assets/mini-achievements.js';
 import '/assets/ai-sauce-course.js';
 import '/assets/main-course-route.js';
 import '/assets/forge-path-choice.js';
@@ -9,8 +10,8 @@ import '/assets/course-nav-names.js';
 import '/assets/details-fix.js';
 import '/assets/awaken-boss-patch.js';
 import '/assets/awaken-language-sidequest.js';
-import '/assets/awaken-loot-v3.js';
-import '/assets/notebook-boss-reset.js';
+import '/assets/awaken-loot-v4.js';
+import '/assets/notebook-boss-reset-v2.js';
 import '/assets/notebooklm-page.js';
 import '/assets/notebooklm-hero-position.js';
 import '/assets/prompts-season.js';
