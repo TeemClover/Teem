@@ -1,10 +1,12 @@
 /* myClover · Main Quest CORE7 handoff
    - Main-site routes use /core7/quick/; the normal tutorial remains inside the game
    - The Main Quest never asks a first-time visitor to build a hand
+   - After the Quick Tutorial, the compass resumes the Match directly
    - A false/legacy free-ai mark cannot make the compass skip lesson 1
 */
 
 const QUICK_PATH = '/core7/quick/';
+const MAIN_MATCH_PATH = '/core7/bot/?level=easy&entry=main';
 const LESSON_ONE = '/classroom/free-ai.html';
 
 function read(key, fallback = '') {
@@ -53,20 +55,33 @@ function patchStage() {
       if (!snapshot) return snapshot;
       const next = snapshot.next ? { ...snapshot.next } : null;
       const adjusted = { ...snapshot, next };
+      const en = read('mc_lang', 'th') === 'en';
 
-      if (snapshot.id === 'tutorial' || snapshot.id === 'core7') {
+      if (snapshot.id === 'tutorial') {
         adjusted.next = {
           ...(next || {}),
           href: QUICK_PATH,
           icon: '🎓',
-          label: read('mc_lang', 'th') === 'en' ? 'Playable proof' : 'หลักฐานที่เล่นได้',
-          title: read('mc_lang', 'th') === 'en'
-            ? '🎓 Quick Tutorial → your first Match'
-            : '🎓 Quick Tutorial → Match แรก',
-          desc: read('mc_lang', 'th') === 'en'
+          label: en ? 'Playable proof' : 'หลักฐานที่เล่นได้',
+          title: en ? '🎓 Quick Tutorial → your first Match' : '🎓 Quick Tutorial → Match แรก',
+          desc: en
             ? 'No hand selection. Learn the few rules, then meet the EASY BOT immediately.'
             : 'ไม่ต้องเลือกมือ เรียนกติกาสั้น ๆ แล้วเจอ EASY BOT ทันที',
-          cta: read('mc_lang', 'th') === 'en' ? 'Start Quick Tutorial →' : 'เริ่ม Quick Tutorial →',
+          cta: en ? 'Start Quick Tutorial →' : 'เริ่ม Quick Tutorial →',
+        };
+      }
+
+      if (snapshot.id === 'core7') {
+        adjusted.next = {
+          ...(next || {}),
+          href: MAIN_MATCH_PATH,
+          icon: '🃏',
+          label: en ? 'First Match' : 'Match แรก',
+          title: en ? '🃏 Continue your Match against the EASY BOT' : '🃏 กลับไปเล่น Match แรกกับ EASY BOT',
+          desc: en
+            ? 'The Quick Tutorial is already complete. Continue straight at the table.'
+            : 'Quick Tutorial จบแล้ว กลับเข้าสนามต่อได้ทันที ไม่ต้องเรียนซ้ำหรือเลือกมือใหม่',
+          cta: en ? 'Continue the Match →' : 'กลับเข้า Match →',
         };
       }
 
@@ -78,12 +93,12 @@ function patchStage() {
         adjusted.next = {
           href: LESSON_ONE,
           icon: '⚡',
-          label: read('mc_lang', 'th') === 'en' ? 'Lesson 1' : 'บทที่ 1',
-          title: read('mc_lang', 'th') === 'en' ? '⚡ AI Sauce — lesson 1' : '⚡ AI ใส่ซอส — บทที่ 1',
-          desc: read('mc_lang', 'th') === 'en'
+          label: en ? 'Lesson 1' : 'บทที่ 1',
+          title: en ? '⚡ AI Sauce — lesson 1' : '⚡ AI ใส่ซอส — บทที่ 1',
+          desc: en
             ? 'Build your first Source from your own material.'
             : 'สร้าง Source ขวดแรกจากวัตถุดิบจริงของคุณ',
-          cta: read('mc_lang', 'th') === 'en' ? 'Start lesson 1 →' : 'เริ่มบทที่ 1 →',
+          cta: en ? 'Start lesson 1 →' : 'เริ่มบทที่ 1 →',
         };
       }
       return adjusted;
