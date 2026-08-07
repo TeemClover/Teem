@@ -46,15 +46,19 @@ function forgeComplete() {
 function withWalkthroughBypassed(task) {
   let previous = null;
   let existed = false;
+  let bypassed = false;
 
   try {
     previous = localStorage.getItem(WALK_KEY);
     existed = previous !== null;
     localStorage.setItem(WALK_KEY, '1');
-    return task();
-  } catch {
+    bypassed = true;
+  } catch { /* private mode: run without temporary storage */ }
+
+  try {
     return task();
   } finally {
+    if (!bypassed) return;
     try {
       if (existed) localStorage.setItem(WALK_KEY, previous);
       else localStorage.removeItem(WALK_KEY);
@@ -117,18 +121,21 @@ function patchStage() {
   window.MC_STAGE = patched;
 }
 
-function repaintHall() {
+function refreshStage() {
   patchStage();
   window.MC_STAGE?.paint?.();
   unlockStarterCards();
   cleanForgeRouteCopy();
+}
 
-  /* hall-core.js listens for storage and repaints its private compass renderer. */
+function notifyHallCompass() {
+  /* hall-core.js keeps its compass renderer private and repaints on storage. */
   try { window.dispatchEvent(new Event('storage')); } catch { /* optional */ }
 }
 
 function boot() {
-  repaintHall();
+  refreshStage();
+  notifyHallCompass();
 
   let observer = null;
   if (!cleanForgeRouteCopy() && document.body) {
@@ -138,10 +145,16 @@ function boot() {
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
-  window.addEventListener('pageshow', repaintHall);
-  window.addEventListener('storage', () => window.setTimeout(repaintHall, 0));
+  window.addEventListener('pageshow', () => {
+    refreshStage();
+    notifyHallCompass();
+  });
+  window.addEventListener('storage', () => window.setTimeout(refreshStage, 0));
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) repaintHall();
+    if (!document.hidden) {
+      refreshStage();
+      notifyHallCompass();
+    }
   });
 }
 
