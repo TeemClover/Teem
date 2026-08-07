@@ -96,6 +96,6 @@ if (typeof document !== 'undefined') {
     mount();
   }
   if (samePath(globalThis.location?.pathname, '/stat/')) {
-    import('/assets/stat-awaken.js').catch(() => {});
+    import('/assets/stat-awaken-v2.js').catch(() => {});
   }
 }
