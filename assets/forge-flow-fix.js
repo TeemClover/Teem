@@ -58,11 +58,12 @@ function withWalkthroughBypassed(task) {
   try {
     return task();
   } finally {
-    if (!bypassed) return;
-    try {
-      if (existed) localStorage.setItem(WALK_KEY, previous);
-      else localStorage.removeItem(WALK_KEY);
-    } catch { /* private mode */ }
+    if (bypassed) {
+      try {
+        if (existed) localStorage.setItem(WALK_KEY, previous);
+        else localStorage.removeItem(WALK_KEY);
+      } catch { /* private mode */ }
+    }
   }
 }
 
