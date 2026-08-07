@@ -166,14 +166,18 @@ function openModal(key,button){
 function collapseParty(){
   const partyGrid=document.querySelector('.partygrid'); if(!partyGrid)return;
   const details=partyGrid.closest('details.more');
-  if(details) details.open=false;
+  if(details && details.open) details.open=false;
   const box=partyGrid.closest('.boss-more');
   if(box){
     box.classList.remove('is-open');
     const toggle=box.querySelector(':scope > .boss-more-toggle');
     const body=box.querySelector(':scope > .boss-more-body');
-    if(toggle){toggle.setAttribute('aria-expanded','false');toggle.querySelector('.boss-more-icon')?.replaceChildren('+')}
-    if(body)body.hidden=true;
+    if(toggle){
+      if(toggle.getAttribute('aria-expanded')!=='false') toggle.setAttribute('aria-expanded','false');
+      const icon=toggle.querySelector('.boss-more-icon');
+      if(icon && icon.textContent!=='+') icon.textContent='+';
+    }
+    if(body && !body.hidden) body.hidden=true;
   }
 }
 
@@ -196,7 +200,7 @@ function boot(){
   injectStyles();
   collapseParty();
   addButtons();
-  const observer=new MutationObserver(()=>{collapseParty();addButtons()});
+  const observer=new MutationObserver(()=>{addButtons()});
   observer.observe(document.body,{childList:true,subtree:true});
 }
 
