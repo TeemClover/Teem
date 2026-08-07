@@ -28,3 +28,8 @@
 
 /core7/collection/stat/*
   X-Robots-Tag: noindex, nofollow, noarchive
+
+# HALO / Calling private campaign concept — shared only by direct link + access code
+/calling/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
