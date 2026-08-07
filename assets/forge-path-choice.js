@@ -4,7 +4,7 @@
    - ไม่เด้งตอน quest.js นับ 70% เพราะผู้อ่านอาจยังอ่านช่องสุดท้ายไม่จบ
    - รอจนเลื่อนผ่านภาพช่องสุดท้าย เข้าสู่พื้นที่ท้ายตอน
    - ต้องค้างอยู่ตรงนั้นต่อเนื่อง 3 วินาที
-   - Walkthrough ไม่อยู่ในเข็มทิศนี้อีกแล้ว จะกลับมาเป็น Subquest หลังจบบท 1
+   - Walkthrough อยู่เป็นปุ่มรองใต้ Main Quest และก่อนแถบ BLACKSMITH
 */
 
 const EP7_PATH = '/forge/ep7-a-voice-that-went-further/';
@@ -73,6 +73,10 @@ function addStyles() {
     .forge-route__desc{display:block;margin-top:7px;color:rgb(var(--muted));font-size:13.5px;line-height:1.68}
     .forge-route__go{display:block;margin-top:auto;padding-top:13px;color:rgb(var(--green));font-family:"Bai Jamjuree",system-ui;font-size:13px;font-weight:800}
     .forge-route--recommended .forge-route__go{color:rgb(130 92 25)}
+    .forge-walkthrough-secondary{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:50px;margin-top:12px;padding:11px 16px;border:1px solid rgb(var(--ink)/.14);border-radius:13px;background:rgb(var(--ink)/.025);color:rgb(var(--muted));font-family:"Bai Jamjuree",system-ui;font-size:13.5px;font-weight:700;text-align:center;transition:transform .18s,border-color .18s,background .18s,color .18s}
+    .forge-walkthrough-secondary:hover{transform:translateY(-2px);border-color:rgb(var(--green)/.38);background:rgb(var(--green)/.055);color:rgb(var(--ink))}
+    .forge-walkthrough-secondary .forge-walkthrough-secondary__tag{font-size:10.5px;letter-spacing:.12em;color:rgb(var(--muted));font-weight:800}
+    .forge-walkthrough-secondary .forge-walkthrough-secondary__title{color:rgb(var(--ink));font-weight:800}
 
     .forge-choice{position:fixed;inset:0;z-index:3200;display:grid;place-items:center;padding:18px;background:rgb(3 14 8/.86);backdrop-filter:blur(11px);animation:forgeChoiceFade .22s ease both}
     .forge-choice[hidden]{display:none!important}
@@ -97,8 +101,9 @@ function addStyles() {
       .forge-choice{align-items:end;padding:9px}
       .forge-choice__panel{max-height:92dvh;border-radius:23px 23px 18px 18px;padding:27px 18px 19px}
       .forge-choice__route{min-height:0}
+      .forge-walkthrough-secondary{align-items:flex-start;text-align:left;justify-content:flex-start}
     }
-    @media(prefers-reduced-motion:reduce){.forge-choice,.forge-choice__panel{animation:none}.forge-route,.forge-choice__route{transition:none}}
+    @media(prefers-reduced-motion:reduce){.forge-choice,.forge-choice__panel{animation:none}.forge-route,.forge-choice__route,.forge-walkthrough-secondary{transition:none}}
   `;
   document.head.append(style);
 }
@@ -129,8 +134,13 @@ function patchPersistentRoutes() {
   current.className = 'forge-routes';
   current.innerHTML = `
     <div class="forge-routes__head">WHY COMPLETE · MAIN QUEST 2 ทาง</div>
-    <p class="forge-routes__intro">เลือกเรียนต่อได้ทันที หรือทำตามเข็มทิศไปลองเกมก่อน — ไม่มี Walkthrough มาคั่นทางหลัก</p>
-    <div class="forge-routes__grid">${routesMarkup()}</div>`;
+    <p class="forge-routes__intro">เลือกเรียนต่อได้ทันที หรือทำตามเข็มทิศไปลองเกมก่อน — Walkthrough อยู่เป็นทางเสริมด้านล่าง</p>
+    <div class="forge-routes__grid">${routesMarkup()}</div>
+    <a class="forge-walkthrough-secondary" href="/walkthrough/" data-forge-route="walkthrough" data-ga="go_walkthrough">
+      <span aria-hidden="true">🗺️</span>
+      <span class="forge-walkthrough-secondary__tag">ทางเสริม</span>
+      <span class="forge-walkthrough-secondary__title">Walkthrough · มัดทั้งเรื่องให้เหลือสิ่งที่ใช้ได้จริง →</span>
+    </a>`;
   if (forgeComplete()) current.hidden = false;
 }
 
