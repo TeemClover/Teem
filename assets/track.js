@@ -17,6 +17,7 @@ import '/assets/awaken-boss-patch.js';
 import '/assets/awaken-language-sidequest.js';
 import '/assets/awaken-loot-v4-migration.js';
 import '/assets/awaken-loot-v4.js';
+import '/assets/awaken-crosspage-stars.js';
 import '/assets/awaken-glossary-extra.js';
 import '/assets/awaken-mobile-overflow-fix.js';
 import '/assets/awaken-party-loadout.js';
