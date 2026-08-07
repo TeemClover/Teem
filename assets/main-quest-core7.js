@@ -86,9 +86,9 @@ function patchStage() {
       }
 
       /* Old scroll-based progress could add free-ai to mc_learn before the learner
-         explicitly finished the quest. During the Main Quest, the completion button
-         state is authoritative, so lesson 1 must remain the next destination. */
-      if (snapshot.id === 'hall' && read('mc_force_lesson1_until_explicit') === '1' && !lessonOneFinished()) {
+         explicitly finished the quest. The completion button is authoritative, so
+         lesson 1 remains next until “ฉันมีซอสขวดแรกแล้ว” has really been pressed. */
+      if (snapshot.id === 'hall' && !lessonOneFinished()) {
         adjusted.learn = 0;
         adjusted.next = {
           href: LESSON_ONE,
