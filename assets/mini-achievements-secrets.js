@@ -54,6 +54,10 @@ function queueCollectionSync() {
   });
 }
 
+function setText(node, value) {
+  if (node && node.textContent !== value) node.textContent = value;
+}
+
 function syncCollectionCards() {
   if (!/^\/collection\/?(?:index\.html)?$/.test(location.pathname)) return;
   normalizeThresholds();
@@ -77,27 +81,25 @@ function syncCollectionCards() {
     card.classList.toggle('locked', !isUnlocked);
 
     if (isUnlocked && item) {
-      if (icon) {
-        icon.textContent = item.emoji;
-        icon.classList.toggle('stars', /★/.test(item.emoji));
-      }
-      if (name) name.textContent = item.name;
-      if (copy) copy.textContent = `✓ ปลดแล้ว · ${item.hint}`;
-      if (state) state.textContent = '✓';
+      setText(icon, item.emoji);
+      icon?.classList.toggle('stars', /★/.test(item.emoji));
+      setText(name, item.name);
+      setText(copy, `✓ ปลดแล้ว · ${item.hint}`);
+      setText(state, '✓');
       return;
     }
 
-    if (icon) {
-      icon.textContent = '🔒';
-      icon.classList.remove('stars');
-    }
-    if (name) name.textContent = '???';
-    if (copy) copy.textContent = 'ยังไม่ปลด';
-    if (state) state.textContent = '🔒';
+    setText(icon, '🔒');
+    icon?.classList.remove('stars');
+    setText(name, '???');
+    setText(copy, 'ยังไม่ปลด');
+    setText(state, '🔒');
   });
 
   const count = document.querySelector('.mini-achievement-group .group-count');
-  if (count && registry.length) count.textContent = `${registry.filter(item => unlocked.has(item.id)).length}/${registry.length}`;
+  if (count && registry.length) {
+    setText(count, `${registry.filter(item => unlocked.has(item.id)).length}/${registry.length}`);
+  }
 }
 
 function boot() {
