@@ -86,9 +86,10 @@ function patchStage() {
       }
 
       /* Old scroll-based progress could add free-ai to mc_learn before the learner
-         explicitly finished the quest. The completion button is authoritative, so
-         lesson 1 remains next until “ฉันมีซอสขวดแรกแล้ว” has really been pressed. */
-      if (snapshot.id === 'hall' && !lessonOneFinished()) {
+         explicitly finished the quest. Only correct the first-step edge case; people
+         already several lessons in, or fully complete, must never be pulled backward. */
+      const reportedLearn = Number(snapshot.learn || 0);
+      if (snapshot.id === 'hall' && !snapshot.done && reportedLearn <= 1 && !lessonOneFinished()) {
         adjusted.learn = 0;
         adjusted.next = {
           href: LESSON_ONE,
