@@ -93,19 +93,22 @@ function itemNode(item){
   div.innerHTML=`<span class="icon">${item.icon}</span><span><b>${item.name}</b><small>${item.note}</small></span>`;
   return div;
 }
+function setText(node,value){if(node&&node.textContent!==value)node.textContent=value}
 function patchVisible(state=readJSON(LOOT_KEY,null)){
   if(!state?.chestOpened)return;
   const screen=document.querySelector('.loot-screen');
   if(!screen)return;
   const stars=Math.max(0,Math.min(5,Number(state.stars||0)));
   const starNode=screen.querySelector('.loot-stars');
-  if(starNode)starNode.textContent='★'.repeat(stars)+'☆'.repeat(5-stars);
-  const rank=screen.querySelector('.loot-rank');
-  if(rank)rank.textContent=rankFor(stars);
+  setText(starNode,'★'.repeat(stars)+'☆'.repeat(5-stars));
+  setText(screen.querySelector('.loot-rank'),rankFor(stars));
   const micro=screen.querySelector('.micro');
-  if(micro&&/BOSS CHEST OPENED|LOOT LOCKED/.test(micro.textContent))micro.textContent='BOSS CHEST · BEST DUNGEON RANK';
+  if(micro&&/BOSS CHEST OPENED|LOOT LOCKED/.test(micro.textContent))setText(micro,'BOSS CHEST · BEST DUNGEON RANK');
   const say=screen.querySelector('.say');
-  if(say&&screen.querySelector('.loot-stars'))say.innerHTML='ดาวจำ <strong>ผลดีที่สุดของ Dungeon นี้</strong> ถ้ากลับไปทำ Side Quest เพิ่มแล้วกลับมา ดาวจะอัปได้ แต่จะไม่ลด';
+  if(say&&screen.querySelector('.loot-stars')&&say.dataset.bestRankCopy!=='1'){
+    say.dataset.bestRankCopy='1';
+    say.innerHTML='ดาวจำ <strong>ผลดีที่สุดของ Dungeon นี้</strong> ถ้ากลับไปทำ Side Quest เพิ่มแล้วกลับมา ดาวจะอัปได้ แต่จะไม่ลด';
+  }
   const list=screen.querySelector('.loot-list');
   if(list){
     const have=new Set([...list.querySelectorAll('[data-loot-id]')].map(x=>x.dataset.lootId));
@@ -117,20 +120,29 @@ function patchChestCopy(root=document){
   root.querySelectorAll?.('.loot-screen').forEach(screen=>{
     const big=screen.querySelector('.big');
     const say=screen.querySelector('.say');
-    if(big?.textContent.trim()==='หีบบอส'&&say){
+    if(big?.textContent.trim()==='หีบบอส'&&say&&say.dataset.crosspageChestCopy!=='1'){
+      say.dataset.crosspageChestCopy='1';
       say.textContent='หีบจะอ่านสิ่งที่ทำใน Dungeon รอบนี้ ดาวสามารถอัปได้ถ้ากลับไปสำรวจ Side Quest เพิ่ม และจะไม่ลดจากผลดีที่สุดที่เคยได้';
     }
   });
 }
 
+function sync(reason){
+  reconcile(reason);
+  patchChestCopy();
+}
 function boot(){
   if(!bossPath()||document.documentElement.dataset.awakenCrosspageStars==='1')return;
   document.documentElement.dataset.awakenCrosspageStars='1';
-  reconcile('page-load');
-  patchChestCopy();
-  addEventListener('pageshow',()=>{reconcile('pageshow');patchChestCopy()});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden){reconcile('visible');patchChestCopy()}});
-  new MutationObserver(()=>{reconcile('dom-update');patchChestCopy()}).observe(document.body,{childList:true,subtree:true});
+  sync('page-load');
+  addEventListener('pageshow',()=>sync('pageshow'));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)sync('visible')});
+  let queued=false;
+  new MutationObserver(()=>{
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(()=>{queued=false;sync('dom-update')});
+  }).observe(document.body,{childList:true,subtree:true});
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
