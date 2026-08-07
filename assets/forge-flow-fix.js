@@ -67,6 +67,15 @@ function withWalkthroughBypassed(task) {
   }
 }
 
+function restoreWalkthroughRewards() {
+  const done = raw(WALK_KEY) === '1';
+  document.querySelectorAll('[data-mc-when]').forEach(node => {
+    const condition = node.getAttribute('data-mc-when');
+    if (condition === 'walk') node.hidden = !done;
+    if (condition === '!walk') node.hidden = done;
+  });
+}
+
 function unlockStarterCards() {
   if (!forgeComplete()) return;
   document.querySelectorAll('.highlights[data-mc-stage="hall"]').forEach(section => {
@@ -115,6 +124,7 @@ function patchStage() {
     },
     paint() {
       withWalkthroughBypassed(() => base.paint());
+      restoreWalkthroughRewards();
       unlockStarterCards();
     },
   };
@@ -125,6 +135,7 @@ function patchStage() {
 function refreshStage() {
   patchStage();
   window.MC_STAGE?.paint?.();
+  restoreWalkthroughRewards();
   unlockStarterCards();
   cleanForgeRouteCopy();
 }
