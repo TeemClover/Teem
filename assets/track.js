@@ -9,6 +9,7 @@ import '/assets/forge-flow-fix.js';
 import '/assets/main-quest-core7.js';
 import '/assets/lesson-one-subquests.js';
 import '/assets/lesson1-polite-language.js';
+import '/assets/lesson1-downloadable-md.js';
 import '/assets/lesson6-boss-transition.js';
 import '/assets/course-nav-names.js';
 import '/assets/details-fix.js';
