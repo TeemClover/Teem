@@ -21,10 +21,14 @@ import * as store from '/core7/js/store.js';
 const qs = new URLSearchParams(location.search);
 const level = ['easy', 'hard'].includes(qs.get('level')) ? qs.get('level') : 'easy';
 const fresh = qs.get('fresh') === '1';
+const entry = qs.get('entry') || 'core7';
+const mainQuest = entry === 'main';
 
 let hand = store.getHand();
 if (!hand || hand.length !== 7) {
-  location.replace(`/core7/hand/?next=bot&level=${level}`);
+  location.replace(mainQuest
+    ? '/core7/quick/'
+    : `/core7/hand/?next=bot&level=${level}&entry=${encodeURIComponent(entry)}`);
   throw new Error('no hand');
 }
 
@@ -40,8 +44,8 @@ if (!matchId) {
   createdNewMatch = true;
   matchId = 'bm-' + Date.now().toString(36);
   try { localStorage.setItem(CUR, matchId); } catch { /* ok */ }
-  history.replaceState(null, '', `/core7/bot/?level=${level}`);
-  store.track('core7_bot_match_start');
+  history.replaceState(null, '', `/core7/bot/?level=${level}${mainQuest ? '&entry=main' : ''}`);
+  store.track(mainQuest ? 'core7_main_match_start' : 'core7_bot_match_start');
 }
 
 const client = new LocalBotClient({
@@ -67,9 +71,11 @@ mountMatch(document.getElementById('match'), client, {
     const state = store.loadMatchSnapshot(matchId)?.state;
     reportBotMatchComplete({ state, humanId: client.playerId, level });
     store.recordMatch('bot', view, view.opponent.name);
-    store.track('core7_bot_match_complete');
+    store.track(mainQuest ? 'core7_main_match_complete' : 'core7_bot_match_complete');
     try { localStorage.removeItem(CUR); } catch { /* ok */ }
-    location.href = `/core7/result/?m=${matchId}&mode=bot&level=${level}`;
+    location.href = mainQuest
+      ? `/core7/journey-result/?m=${matchId}&mode=bot&level=${level}`
+      : `/core7/result/?m=${matchId}&mode=bot&level=${level}`;
   },
 });
 </script>
