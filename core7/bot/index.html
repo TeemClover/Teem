@@ -14,6 +14,7 @@
 <div id="match"></div>
 <script type="module">
 import { LocalBotClient } from '/core7/js/adapters.js';
+import { Core7Bot } from '/core7/js/bot.js';
 import { reportBotMatchComplete, reportBotMatchStart } from '/core7/js/analytics.js';
 import { mountMatch } from '/core7/js/match-ui.js';
 import * as store from '/core7/js/store.js';
@@ -30,6 +31,15 @@ if (!hand || hand.length !== 7) {
     ? '/core7/quick/'
     : `/core7/hand/?next=bot&level=${level}&entry=${encodeURIComponent(entry)}`);
   throw new Error('no hand');
+}
+
+/* Main Quest / Quick Tutorial must teach with equal information.
+   Mirror the player's exact 7-card hand for the bot so the tutorial Match
+   is always symmetric (normally 2 RED / 2 GREEN / 2 BLUE / 1 SILVER).
+   Normal bot play keeps Core7Bot.buildHand() random as before. */
+if (mainQuest) {
+  const tutorialHand = hand.slice();
+  Core7Bot.buildHand = () => tutorialHand.slice();
 }
 
 const CUR = 'c7:cur_bot';
