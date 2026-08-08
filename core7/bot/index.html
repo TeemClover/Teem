@@ -40,11 +40,12 @@ if (mainQuest) {
 }
 
 /* ── Bot presentation pacing ──────────────────────────────────────────────
-   Timing belongs to what the human can SEE, not to the Engine clock.
+   Timing belongs to what the human can SEE and DO, not to the Engine clock.
 
-   • Bot leads only 2.0–3.0s AFTER the previous result is visibly painted.
+   • Bot leads 2.0–3.0s after the table is truly ready for the next card.
+   • If a discard is required, that clock does NOT start until discard finishes.
    • If the human commits first, the bot follows in 0.3–0.8s.
-   • Between Engine resolve and Physical Table reveal the bot is BLOCKED.
+   • Legacy adapter callbacks all pass through this one deadline.
 */
 const randomMs = (min, max) => min + Math.random() * (max - min);
 const BOT_LEAD_MIN = 2000;
@@ -52,6 +53,7 @@ const BOT_LEAD_MAX = 3000;
 const BOT_FOLLOW_MIN = 300;
 const BOT_FOLLOW_MAX = 800;
 const botPace = { round:null, mode:'blocked', deadline:Infinity, timer:null };
+let waitingForDiscard = false;
 const nativeBotTurn = LocalBotClient.prototype._botTurn;
 
 function clearBotTimer() {
@@ -81,8 +83,8 @@ LocalBotClient.prototype._botTurn = function pacedBotTurn() {
   const state = this.authority?.state;
   if (!state) return nativeBotTurn.call(this);
 
-  /* Discard is a visible consequence of the previous reveal, not a hidden new
-     choice. Let the adapter handle it normally. Only gate next-card commits. */
+  /* Discard itself is a visible consequence and still uses normal bot logic.
+     Only the hidden choice for the NEXT round is gated here. */
   if (state.phase === 'ROUND_SELECT' && !state.current?.b?.locked) {
     const round = state.roundNumber;
     const now = performance.now();
@@ -123,16 +125,35 @@ if (!matchId) {
 
 const client = new LocalBotClient({ matchId, humanCards:hand, level, resume:!fresh });
 
-/* Engine may resolve the next round before the reveal animation is finished.
-   Block the next hidden choice until Physical Table announces visible result. */
+/* Engine events define whether a discard is still part of the previous round.
+   A required discard freezes the next-card clock. When round.resolved arrives
+   after that discard action, THAT moment becomes time zero for the 2–3s think. */
 {
   const state = client.authority?.state;
   blockLead(state?.roundNumber ?? 1);
+
   client.subscribe(ev => {
-    if (ev?.event_type === 'round.resolved') {
+    if (ev?.event_type === 'round.discard_required') {
+      waitingForDiscard = true;
       blockLead(Number(ev.round_number || 0) + 1);
       return;
     }
+
+    if (ev?.event_type === 'round.resolved') {
+      const nextRound = Number(ev.round_number || 0) + 1;
+      if (waitingForDiscard) {
+        waitingForDiscard = false;
+        setLeadDeadline(nextRound);
+        /* _finishRound changes phase to ROUND_SELECT immediately after this
+           event returns. Let that call stack finish, then enforce our deadline. */
+        setTimeout(() => client._botTurn(), 0);
+      } else {
+        /* No discard: physical reveal/result still has to finish before timing. */
+        blockLead(nextRound);
+      }
+      return;
+    }
+
     if (ev?.event_type === 'round.selection_locked' && ev.payload?.seat === 'a') {
       const round = client.authority?.state?.roundNumber ?? botPace.round ?? 1;
       if (botPace.mode !== 'follow') setFollowDeadline(round);
@@ -146,13 +167,19 @@ if (createdNewMatch) {
   reportBotMatchStart({ matchId, level, startedAt:state?.startedAt || Date.now(), rulesVersion:state?.rulesVersion });
 }
 
-/* Result-visible time zero. Start the 2–3s hold even if a discard phase is
-   still active. If discard takes longer than the hold, the bot may act once
-   the next ROUND_SELECT actually exists; otherwise it waits the remainder. */
+/* For a normal round with no discard, visible result = start the 2–3s hold.
+   If either player still has to discard, remain blocked; round.resolved after
+   the discard will start a fresh full 2–3s clock instead. */
 window.addEventListener('core7:physical-result-ready', event => {
   const state = client.authority?.state;
   if (!state || state.phase === 'MATCH_RESULT') return;
   const nextRound = Number(event.detail?.nextRound || state.roundNumber || botPace.round || 1);
+
+  if (waitingForDiscard || state.phase === 'DISCARD_REQUIRED') {
+    blockLead(nextRound);
+    return;
+  }
+
   setLeadDeadline(nextRound);
   client._botTurn();
 });
@@ -173,7 +200,7 @@ const matchApi = mountMatch(document.getElementById('match'), client, {
   },
 });
 
-/* First round has no previous result. Start only after the table paints. */
+/* First round has no previous result/discard. Start after the table paints. */
 requestAnimationFrame(() => requestAnimationFrame(() => {
   const state = client.authority?.state;
   if (!state || state.phase !== 'ROUND_SELECT' || state.current?.b?.locked) return;
