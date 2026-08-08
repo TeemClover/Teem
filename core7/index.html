@@ -3,294 +3,247 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>myClover: CORE7 — เกม 7 ใบที่เล่นได้ด้วยการ์ดอะไรก็ได้</title>
-<meta name="description" content="เลือกการ์ด 7 ใบ เปิดพร้อมกัน อ่านเกมและอ่านคน เล่นฟรีกับบอทหรือสร้างห้องชวนเพื่อน ไม่ต้องซื้อการ์ดและไม่ต้องจัดเด็ค">
+<title>myClover: CORE7 — 7 Cards. No Deck. No Luck.</title>
+<meta name="description" content="เลือก 7 ใบ เปิดพร้อมกัน อ่านเกมและอ่านคน เล่นฟรีกับบอทหรือเพื่อน แล้วพกเกมไปเล่นบนโต๊ะจริงได้ทุกที่">
 <link rel="canonical" href="https://www.myclover.com/core7/">
-<meta property="og:title" content="myClover: CORE7 — 7 ใบ ไม่มีเด็ค ไม่มีดวง">
-<meta property="og:description" content="Seven cards. No deck. No draw. Just your choices and the person across the table.">
+<meta property="og:title" content="myClover: CORE7 — 7 Cards. No Deck. No Luck.">
+<meta property="og:description" content="Seven cards. Four colours. Zero draw. Just your choices and the person across the table.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.myclover.com/core7/">
-<meta name="theme-color" content="#0A2818">
+<meta name="theme-color" content="#062718">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preload" as="image" href="/core7/assets/myclover-back.webp">
+<link rel="preload" as="image" href="/core7/assets/core7-rule.webp">
 <link rel="stylesheet" href="/core7/css/core7.css">
 <style>
-.hero{
-  background:
-    radial-gradient(820px 480px at 12% -10%, rgb(27 106 66/.5), transparent 62%),
-    radial-gradient(560px 400px at 95% 8%, rgb(190 148 66/.22), transparent 60%),
-    rgb(var(--deep));
-  color:#fff; padding:clamp(56px,9vw,110px) 0 clamp(46px,7vw,84px); overflow:hidden;
-}
-.hero h1{font-size:clamp(34px,7vw,64px);line-height:1.1;font-weight:700;margin:16px 0 8px}
-.hero h1 .c7{color:rgb(var(--gold-l))}
-.hero .promise{font-size:clamp(17px,2.4vw,22px);line-height:1.6;max-width:30ch;color:rgb(255 255 255/.92);font-weight:600}
-.hero .promise-en{font-size:14px;color:rgb(255 255 255/.6);margin-top:10px;max-width:52ch}
-.hero-grid{display:grid;grid-template-columns:1fr;gap:34px;align-items:center}
-@media(min-width:880px){.hero-grid{grid-template-columns:1.15fr .85fr}}
-.hero-cycle{display:flex;flex-direction:column;align-items:center;gap:10px}
-.hero-cycle .cap{font-size:13px;color:rgb(255 255 255/.72);text-align:center;max-width:46ch}
-.rules-flip{display:block;width:min(100%,440px);aspect-ratio:5/7;padding:0;border:0;border-radius:26px;background:transparent;perspective:1200px;cursor:pointer;appearance:none;-webkit-appearance:none;filter:drop-shadow(0 22px 28px rgb(0 0 0/.34))}
+:root{--home-cream:#f5edde;--home-paper:#fffaf0;--home-emerald:#062718;--home-emerald2:#0b3f28;--home-gold:#c99d4c;--home-gold-soft:#efd995;--home-ink:#10271d;--home-muted:#607067;--home-serif:Georgia,"Times New Roman",serif}
+*{box-sizing:border-box}
+body{overflow-x:hidden;background:var(--home-cream)}
+.home-wrap{width:min(1160px,calc(100% - 36px));margin-inline:auto}
+.home-eyebrow{margin:0 0 10px;color:var(--home-gold);font:800 11px/1.4 "Bai Jamjuree",sans-serif;letter-spacing:.16em;text-transform:uppercase}
+.home-title{font-family:var(--home-serif);font-size:clamp(38px,7vw,78px);font-weight:600;line-height:.96;letter-spacing:-.045em}
+.home-title em{font-style:normal;color:var(--home-gold-soft)}
+.home-lead{max-width:650px;margin-top:18px;font-size:clamp(17px,2vw,21px);line-height:1.65;color:inherit;opacity:.82}
+.home-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.home-btns .btn{min-height:50px}
+.hero-home{position:relative;overflow:hidden;color:#fff;background:radial-gradient(circle at 75% 14%,rgb(201 157 76/.18),transparent 28%),radial-gradient(circle at 8% 12%,rgb(27 106 66/.45),transparent 30%),linear-gradient(145deg,#031a0f,#07351f 55%,#031a0f);padding:clamp(48px,8vw,94px) 0 54px}
+.hero-home:before{content:"";position:absolute;inset:0;opacity:.075;background-image:linear-gradient(rgb(255 255 255/.12) 1px,transparent 1px),linear-gradient(90deg,rgb(255 255 255/.12) 1px,transparent 1px);background-size:54px 54px;pointer-events:none}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,430px);gap:clamp(30px,6vw,74px);align-items:center}
+.hero-kicker{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid rgb(239 217 149/.24);border-radius:999px;background:rgb(255 255 255/.055);font-size:11px;font-weight:800;color:rgb(255 255 255/.72)}
+.hero-copy .micro{margin-top:13px;font-size:12.5px;color:rgb(255 255 255/.5)}
+.hero-quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.hero-quick a{display:inline-flex;align-items:center;min-height:38px;padding:7px 11px;border-radius:10px;border:1px solid rgb(255 255 255/.15);background:rgb(255 255 255/.045);color:rgb(255 255 255/.72);font-size:12px;font-weight:700}
+.hero-quick a:hover{color:#fff;background:rgb(255 255 255/.09)}
+.rules-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0}
+.rules-flip{display:block;width:min(100%,350px);aspect-ratio:5/7;padding:0;border:0;border-radius:23px;background:transparent;perspective:1200px;cursor:pointer;appearance:none;-webkit-appearance:none;filter:drop-shadow(0 26px 28px rgb(0 0 0/.38))}
 .rules-flip-inner{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.75,.2,1)}
 .rules-flip.is-flipped .rules-flip-inner{transform:rotateY(180deg)}
-.rules-flip-face{position:absolute;inset:0;display:block;overflow:hidden;border:0;border-radius:26px;background:#071b10;backface-visibility:hidden;box-shadow:0 0 0 1px rgb(var(--gold-l)/.55)}
+.rules-flip-face{position:absolute;inset:0;display:block;overflow:hidden;border-radius:23px;background:#071b10;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 0 0 1px rgb(239 217 149/.5)}
 .rules-flip-face img{display:block;width:100%;height:100%;object-fit:cover}
 .rules-flip-face.rules{transform:rotateY(180deg)}
-.rules-flip:focus-visible{outline:3px solid rgb(var(--gold-l));outline-offset:6px}
-@media(prefers-reduced-motion:reduce){.rules-flip-inner{transition:none}}
-.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
-/* จำนวน Match ที่เล่นไปแล้วทั้งหมด — วิ่งจาก 0 ขึ้นไปตอนโหลด */
-.played{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:26px;padding-top:20px;border-top:1px solid rgb(255 255 255/.14)}
-.played b{font-size:clamp(30px,6vw,42px);line-height:1;color:rgb(var(--gold-l));font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.played span{font-family:"Bai Jamjuree";font-weight:700;font-size:12px;letter-spacing:.16em;color:rgb(255 255 255/.72)}
-.played small{flex-basis:100%;font-size:12.5px;color:rgb(255 255 255/.5)}
-.step3{display:grid;gap:16px;grid-template-columns:1fr}
-@media(min-width:720px){.step3{grid-template-columns:repeat(3,1fr)}}
-.step3 .panel b.n{font-family:"Bai Jamjuree";font-size:14px;color:rgb(var(--gold));letter-spacing:.1em}
-.step3 .panel h3{font-family:"Bai Jamjuree";margin:6px 0 8px}
-.fan{display:flex;justify-content:center;gap:0;margin:26px 0 8px;min-height:200px}
-.fan .fc{width:clamp(96px,15vw,150px);flex:none;transition:transform .25s;filter:drop-shadow(0 12px 22px rgb(10 40 24/.35))}
-.fan .fc:not(:first-child){margin-left:calc(clamp(96px,15vw,150px)*-.42)}
-.fan .fc:hover{transform:translateY(-14px) rotate(0deg)!important;z-index:5;position:relative}
-/* จอเล็กสุด พัดการ์ด 5 ใบกว้าง 319px แต่มีที่ราว 280px เลยล้นออกนอกจอ
-   ย่อใบและเบียดให้แน่นขึ้น (ของเดิมล้นมาตั้งแต่ก่อนหน้านี้แล้ว) */
-@media(max-width:400px){
-  .fan .fc{width:84px}
-  .fan .fc:not(:first-child){margin-left:-46px}
+.rules-flip:focus-visible{outline:3px solid var(--home-gold-soft);outline-offset:6px}
+.rules-hint{margin:0;text-align:center;color:rgb(255 255 255/.62);font-size:12.5px}
+.proof-band{position:relative;z-index:1;margin-top:46px;border-block:1px solid rgb(255 255 255/.09);background:rgb(3 24 14/.42)}
+.proof-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.proof-grid div{padding:18px 12px;text-align:center;border-right:1px solid rgb(255 255 255/.09)}
+.proof-grid div:last-child{border-right:0}
+.proof-grid b{display:block;color:var(--home-gold-soft);font-family:var(--home-serif);font-size:25px;line-height:1}
+.proof-grid span{display:block;margin-top:4px;color:rgb(255 255 255/.56);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.home-section{padding:clamp(54px,7vw,82px) 0;color:var(--home-ink)}
+.home-section.paper{background:var(--home-paper)}
+.home-section.dark{background:var(--home-emerald);color:#fff}
+.section-head{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:26px}
+.section-head .home-lead{max-width:520px;margin:0;font-size:15px}
+.quick-rule{display:grid;grid-template-columns:minmax(0,.85fr) minmax(320px,1.15fr);gap:40px;align-items:center}
+.rule-orbit{padding:24px;border:1px solid rgb(16 39 29/.12);border-radius:22px;background:#fff;box-shadow:0 22px 50px -40px rgb(10 40 24/.7)}
+.cycle-line{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:clamp(28px,5vw,38px)}
+.cycle-line i{font-style:normal;color:var(--home-gold);font-size:18px;font-weight:800}
+.silver-line{margin-top:16px;padding-top:14px;border-top:1px solid rgb(16 39 29/.1);text-align:center;font-size:13px;color:var(--home-muted);font-weight:700}
+.three-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+.three-steps article{padding:15px;border-radius:15px;background:rgb(16 39 29/.045);border:1px solid rgb(16 39 29/.08)}
+.three-steps b{display:block;color:var(--home-gold);font-family:var(--home-serif);font-size:24px}
+.three-steps strong{display:block;margin-top:2px;font-size:13px}
+.three-steps p{margin-top:4px;font-size:12.5px;line-height:1.5;color:var(--home-muted)}
+.play-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.play-card{position:relative;display:flex;flex-direction:column;min-height:220px;padding:23px;border-radius:20px;border:1px solid rgb(255 255 255/.13);background:linear-gradient(145deg,rgb(255 255 255/.075),rgb(255 255 255/.025));overflow:hidden;transition:transform .2s,border-color .2s,background .2s}
+.play-card:hover{transform:translateY(-3px);border-color:rgb(239 217 149/.4);background:rgb(255 255 255/.085)}
+.play-card .ico{font-size:30px;line-height:1}
+.play-card h3{margin:17px 0 7px;font-family:var(--home-serif);font-size:25px;color:#fff}
+.play-card p{margin:0;color:rgb(255 255 255/.6);font-size:13.5px;line-height:1.55}
+.play-card .go{margin-top:auto;padding-top:18px;color:var(--home-gold-soft);font-size:12px;font-weight:900;letter-spacing:.05em}
+.first-hand-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(420px,1.2fr);gap:46px;align-items:center}
+.first-hand-copy .home-title{font-size:clamp(34px,5vw,60px);color:var(--home-ink)}
+.seven-spread{--card-w:clamp(74px,12vw,138px);display:flex;justify-content:center;align-items:flex-end;min-height:250px;padding:24px 0 18px;overflow:visible}
+.seven-card{width:var(--card-w);flex:none;filter:drop-shadow(0 15px 18px rgb(10 40 24/.28));transform-origin:50% 105%;transition:transform .28s ease,filter .28s ease}
+.seven-card:not(:first-child){margin-left:calc(var(--card-w) * -.5)}
+.seven-card:nth-child(1){transform:rotate(-15deg) translateY(18px)}
+.seven-card:nth-child(2){transform:rotate(-10deg) translateY(9px)}
+.seven-card:nth-child(3){transform:rotate(-5deg) translateY(3px)}
+.seven-card:nth-child(4){transform:translateY(-3px);z-index:4}
+.seven-card:nth-child(5){transform:rotate(5deg) translateY(3px)}
+.seven-card:nth-child(6){transform:rotate(10deg) translateY(9px)}
+.seven-card:nth-child(7){transform:rotate(15deg) translateY(18px)}
+.seven-card:hover{transform:translateY(-14px) rotate(0)!important;z-index:10;filter:drop-shadow(0 20px 24px rgb(10 40 24/.34))}
+.collection-box{margin-top:18px;padding:18px 20px;border-radius:17px;border:1px solid rgb(16 39 29/.11);background:rgb(255 255 255/.62)}
+.collection-box strong{display:block;font-family:var(--home-serif);font-size:22px}
+.collection-box p{margin:5px 0 14px;color:var(--home-muted);font-size:13.5px;line-height:1.55}
+.explore-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.explore-link{display:flex;align-items:center;gap:12px;min-height:82px;padding:15px 16px;border:1px solid rgb(16 39 29/.1);border-radius:15px;background:#fff;transition:transform .18s,border-color .18s,box-shadow .18s}
+.explore-link:hover{transform:translateY(-2px);border-color:rgb(201 157 76/.45);box-shadow:0 18px 34px -28px rgb(10 40 24/.6)}
+.explore-link .ico{font-size:23px;flex:none}
+.explore-link b{display:block;font-size:13.5px}
+.explore-link small{display:block;margin-top:2px;color:var(--home-muted);font-size:11px;line-height:1.35}
+.utility{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:20px}
+.utility a{display:inline-flex;align-items:center;min-height:38px;padding:7px 11px;border:1px solid rgb(16 39 29/.1);border-radius:999px;background:rgb(255 255 255/.58);color:var(--home-muted);font-size:11.5px;font-weight:700}
+.utility a:hover{color:var(--home-ink);border-color:rgb(201 157 76/.4)}
+.played{display:flex;align-items:baseline;gap:8px;margin-top:17px;color:rgb(255 255 255/.5)}
+.played b{color:var(--home-gold-soft);font-family:var(--home-serif);font-size:25px;font-variant-numeric:tabular-nums}
+.played span{font-size:9px;font-weight:900;letter-spacing:.14em}
+.played small{font-size:11px}
+@media(prefers-reduced-motion:no-preference){.home-reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}.home-reveal.in{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.rules-flip-inner,.seven-card,.play-card,.explore-link{transition:none!important}}
+@media(max-width:860px){
+  .hero-grid,.quick-rule,.first-hand-grid{grid-template-columns:1fr}
+  .hero-copy{text-align:center}.hero-copy .home-lead{margin-inline:auto}.home-btns,.hero-quick{justify-content:center}.rules-flip{width:min(72vw,330px)}
+  .proof-grid{grid-template-columns:repeat(2,1fr)}.proof-grid div:nth-child(2){border-right:0}.proof-grid div:nth-child(-n+2){border-bottom:1px solid rgb(255 255 255/.09)}
+  .play-grid{grid-template-columns:1fr}.play-card{min-height:0}
+  .first-hand-copy{text-align:center}.collection-box{text-align:left}
+  .explore-grid{grid-template-columns:repeat(2,1fr)}
+  .section-head{display:block}.section-head .home-lead{margin-top:10px}
 }
-.duo{display:grid;gap:16px;grid-template-columns:1fr}
-@media(min-width:760px){.duo{grid-template-columns:1fr 1fr}}
-.duo ul{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;font-size:14.5px}
-.duo li{padding-left:24px;position:relative}
-.duo li::before{content:"✦";position:absolute;left:2px;color:rgb(var(--gold))}
-.duo li.no{color:rgb(var(--muted))}
-.duo li.no::before{content:"—"}
-.faq details{background:#fff;border:1px solid rgb(var(--line)/.1);border-radius:12px;padding:16px 20px;margin-bottom:10px}
-.faq summary{font-weight:700;cursor:pointer;min-height:32px}
-.faq p{margin-top:8px;color:rgb(var(--ink)/.8);font-size:14.5px}
-.cta-note{margin-top:12px;font-size:13px;color:rgb(255 255 255/.55)}
-/* วงจรสี — แกนของเกมทั้งเกมอยู่ในบรรทัดเดียว ใช้อีโมจิสีแทนชื่อสี */
-.cycle{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
-  margin-top:22px;padding:16px 18px;border:1px solid rgb(var(--gold)/.3);border-radius:16px;
-  background:rgb(var(--gold)/.07)}
-.cycle .cy{font-size:clamp(24px,5vw,32px);line-height:1}
-.cycle i{font-style:normal;color:rgb(var(--gold));font-weight:700;font-size:18px}
-.cycle i.loop{opacity:.7}
-.cycle b{font-family:"Bai Jamjuree";font-size:13.5px;color:rgb(var(--ink)/.75);font-weight:700}
-.tiers-mini{display:flex;gap:8px;margin-top:12px;font-size:22px;line-height:1}
-.tiers-mini span{filter:grayscale(.15)}
-/* ค่อย ๆ ปรากฏตอนเลื่อนถึง — ยืมจากหน้า kickstarter
-   ถ้าสคริปต์ไม่ทำงานหรือปิด motion ต้องเห็นเนื้อหาเสมอ */
-@media(prefers-reduced-motion:no-preference){
-  .sec.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
-  .sec.rv.in{opacity:1;transform:none}
+@media(max-width:520px){
+  .home-wrap{width:min(100% - 26px,1160px)}
+  .hero-home{padding-top:40px}.home-title{font-size:clamp(36px,13vw,54px)}
+  .home-btns{display:grid;grid-template-columns:1fr 1fr;width:100%}.home-btns .btn:first-child{grid-column:1/-1}.home-btns .btn{width:100%;padding-inline:12px;font-size:13px}
+  .hero-quick{gap:6px}.hero-quick a{font-size:11px}
+  .rules-flip{width:min(76vw,305px)}
+  .three-steps{grid-template-columns:1fr}.three-steps article{display:grid;grid-template-columns:36px 1fr;column-gap:8px}.three-steps b{grid-row:1/3}.three-steps p{margin-top:2px}
+  .seven-spread{--card-w:74px;min-height:190px;padding-top:10px}.seven-card:not(:first-child){margin-left:-37px}
+  .explore-grid{grid-template-columns:1fr}.explore-link{min-height:68px}
 }
-.sec-alt{background:linear-gradient(rgb(var(--green)/.06),transparent)}
-.story-quote{border-left:3px solid rgb(var(--gold));padding-left:18px;color:rgb(var(--ink)/.85);font-size:15.5px;max-width:60ch}
 </style>
 </head>
 <body>
 <nav class="c7nav" id="c7nav"></nav>
 
-<header class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="tag tag-gold">🃏 <span data-c7-version>v0.5</span> · <span data-en="FIRST HAND — first set · free to play">FIRST HAND — ชุดแรก · เล่นฟรี</span></span>
-      <h1 class="disp">my<span class="c7">Clover</span>: CORE7</h1>
-      <p class="promise" data-en-html data-en="Seven cards.<br>No deck. No draw.<br>Just you and the person across the table.">7 ใบ ไม่มีเด็ค ไม่มีดวง<br>มีแค่สิ่งที่คุณเลือก<br>และคนที่นั่งตรงข้าม</p>
-      <p class="promise-en" data-lang-block="th">Seven cards. No deck. No draw. Just your choices and the person across the table.</p>
-      <!-- ปุ่มแรกพาไปเล่นกับบอทตรง ๆ — เป็นทางเดียวที่เล่นได้แน่โดยไม่ต้องรอใคร
-           คนเปิดเกมครั้งแรกไม่ควรต้องเลือกโหมดก่อนถึงจะได้เล่น -->
-      <div class="cta-row">
-        <a class="btn btn-gold btn-lg" href="/core7/hand/?next=bot&amp;level=easy"
-           data-en="▶ Play now — vs 🤖">▶ เล่นเลย — กับ 🤖</a>
-        <a class="btn btn-ghost" href="/core7/play/" data-en="Play with a friend">👥 เล่นกับเพื่อน</a>
-        <a class="btn btn-ghost" href="/core7/tutorial/" data-en="Learn in 30s">🎓 เรียนรู้ใน 30 วิ</a>
+<header class="hero-home">
+  <div class="home-wrap hero-grid">
+    <div class="hero-copy">
+      <span class="hero-kicker">🃏 <span data-c7-version>v0.5</span> · FIRST HAND · <span data-en="FREE TO PLAY">เล่นฟรี</span></span>
+      <h1 class="home-title" style="margin-top:16px">myClover:<br><em>CORE7</em></h1>
+      <p class="home-lead" data-en="Seven cards. No deck. No draw. Just your choices — and the person across the table.">7 ใบ ไม่มีเด็ค ไม่มีกองจั่ว มีแค่สิ่งที่คุณเลือก — และคนที่นั่งตรงข้าม</p>
+      <div class="home-btns">
+        <a class="btn btn-gold btn-lg" href="/core7/hand/?next=bot&amp;level=easy" data-en="▶ Play vs Bot">▶ เล่นกับบอท</a>
+        <a class="btn btn-ghost" href="/core7/play/" data-en="👥 Play with a friend">👥 เล่นกับเพื่อน</a>
+        <a class="btn btn-ghost" href="/core7/collection/" data-en="🗃️ Collection">🗃️ Collection</a>
       </div>
-      <p class="cta-note" data-en="No sign-up. No cards to buy. Starts in one tap.">ไม่ต้องสมัคร ไม่ต้องซื้อการ์ด กดแล้วเล่นได้เลย</p>
-      <!-- ตัวนับซ่อนไว้ก่อน โผล่เมื่อดึงเลขจริงได้เท่านั้น
-           ต่อ server ไม่ได้ก็ไม่ต้องโชว์ 0 ให้เก้อ -->
-      <p class="played" id="playedBox" hidden>
-        <b class="disp" id="playedNum">0</b>
-        <span>MATCHES PLAYED</span>
-        <small id="playedPvp"></small>
-      </p>
+      <div class="hero-quick">
+        <a href="/core7/tutorial/" data-en="🎓 Quick tutorial">🎓 เรียนรู้เร็ว</a>
+        <a href="/core7/rules/" data-en="📜 Full rules">📜 กติกาเต็ม</a>
+        <a href="/core7/open-play/" data-en="🎴 Play with any cards">🎴 เล่นด้วยการ์ดอะไรก็ได้</a>
+      </div>
+      <p class="micro" data-en="No sign-up. No cards to buy. Start in one tap.">ไม่ต้องสมัคร ไม่ต้องซื้อการ์ด กดแล้วเริ่มได้เลย</p>
+      <p class="played" id="playedBox" hidden><b id="playedNum">0</b><span>MATCHES PLAYED</span><small id="playedPvp"></small></p>
     </div>
-    <div class="hero-cycle">
-      <button class="rules-flip" id="rulesFlip" type="button" aria-pressed="false" aria-label="พลิกการ์ดเพื่อดูกติกา CORE7">
+
+    <div class="rules-wrap">
+      <button class="rules-flip" id="rulesFlip" type="button" aria-pressed="false" aria-label="พลิกการ์ดเพื่อดูกติกา CORE7" data-en-attr="aria-label:Flip the card to reveal CORE7 rules">
         <span class="rules-flip-inner">
-          <span class="rules-flip-face cover"><img src="/core7/assets/myclover-back.webp" alt="หลังการ์ด myClover CORE7"></span>
-          <span class="rules-flip-face rules"><img src="/core7/assets/core7-rule.webp"
-            alt="CORE7: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เงินเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะครบสามรอบ และ Final Silver แพ้สีจริง"></span>
+          <span class="rules-flip-face cover"><img src="/core7/assets/myclover-back.webp" alt="myClover card back"></span>
+          <span class="rules-flip-face rules"><img src="/core7/assets/core7-rule.webp" alt="CORE7 rule card"></span>
         </span>
       </button>
-      <p class="cap" id="rulesFlipHint" aria-live="polite" data-en="Tap the card to reveal the rules">แตะการ์ดเพื่อเปิดกติกา · Tap to reveal</p>
+      <p class="rules-hint" id="rulesFlipHint" data-en="Tap the card · the rules stay with you while you play">แตะเพื่อพลิก · การ์ดกติกาใบเดียวอยู่กับคุณตลอดเกม</p>
+    </div>
+  </div>
+
+  <div class="proof-band">
+    <div class="home-wrap proof-grid">
+      <div><b>7</b><span data-en="cards in hand">การ์ดในมือ</span></div>
+      <div><b>4</b><span data-en="colours">สี</span></div>
+      <div><b>0</b><span data-en="draw · RNG">จั่ว · RNG</span></div>
+      <div><b>100%</b><span data-en="your choice">การเลือกของคุณ</span></div>
     </div>
   </div>
 </header>
 
 <main>
-  <!-- 1. วิธีเล่น 3 ขั้น -->
-  <section class="sec">
-    <div class="wrap">
-      <p class="eyebrow">How to play</p>
-      <h2 class="disp" data-en="As quick to learn as rock paper scissors">✊ เรียนรู้ได้เร็วเหมือนเป่ายิ้งฉุบ</h2>
-      <div class="cycle" data-en-attr="aria-label:Colour wheel: red beats green, green beats blue, blue beats red, silver blocks every colour" aria-label="วงจรสี: แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เงินบล็อกทุกสี">
-        <span class="cy">🔴</span><i>→</i><span class="cy">🟢</span><i>→</i><span class="cy">🔵</span><i>→</i><span class="cy">🔴</span><i class="loop">↺</i>
-        <span class="cy silver">⚙️</span><b data-en="blocks every color">บล็อกทุกสี</b>
-      </div>
-      <div class="step3" style="margin-top:22px">
-        <div class="panel"><b class="n">STEP 1</b><h3 data-en="Pick your seven">🖐️ เลือกมือ 7 ใบ</h3>
-          <p data-en="Take any mix of colours as long as it adds up to 7. You see your whole hand from the start — no draw pile, no randomness.">เลือกสีใดกี่ใบก็ได้ให้ครบ 7 — เห็นมือตัวเองครบตั้งแต่ต้น ไม่มีกองจั่ว ไม่มีการสุ่ม</p></div>
-        <div class="panel"><b class="n">STEP 2</b><h3 data-en="Reveal together">👀 เปิดพร้อมกัน</h3>
-          <p data-en="Both players pick a card in secret and hit Lock. You reveal together, colour decides, and the loser gives up one extra card.">ทั้งคู่เลือกการ์ดลับคนละใบแล้วกด Lock — เปิดพร้อมกัน ตัดสินด้วยสี ผู้แพ้เสียเพิ่ม 1 ใบ</p></div>
-        <div class="panel"><b class="n">STEP 3</b><h3 data-en="Read the game, read the person">🧠 อ่านเกม อ่านคน</h3>
-          <p data-en="Win 3 rounds, or run the other player out of cards. Used cards always stay face up — everything can be read off the table.">ชนะ 3 รอบ หรือให้อีกฝ่ายหมดมือ — การ์ดที่ใช้แล้วหงายหน้าเสมอ ทุกอย่างอ่านได้จากบนโต๊ะ</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 2. Open Play -->
-  <section class="sec sec-alt">
-    <div class="wrap">
-      <p class="eyebrow">Open Play</p>
-      <h2 class="disp" data-en="🆓 Free to play, with any cards you have">🆓 เล่นฟรีด้วยการ์ดอะไรก็ได้</h2>
-      <p class="lead" data-en="You never have to buy cards from us to play CORE7. Print your own, cut coloured paper, use coloured sleeves, or borrow cards from another game — all that matters is that everyone knows which colour each card stands for.">ไม่ต้องซื้อการ์ดจากเราเพื่อเล่น CORE7 — คุณพิมพ์เอง ใช้กระดาษสี ใส่ซองสี
-        หรือใช้การ์ดจากเกมอื่นก็ได้ ขอเพียงทุกคนรู้ว่าแต่ละใบแทนสีอะไร</p>
-      <div class="cta-row" style="margin-top:20px">
-        <a class="btn" href="/core7/open-play/" data-en="🎴 How to play with your own cards">🎴 วิธีเล่นด้วยการ์ดของคุณเอง</a>
-        <a class="btn" href="/core7/rules/" data-en="📜 Read the full rules TH / EN">📜 อ่านกติกาเต็ม TH / EN</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3. FIRST HAND -->
-  <section class="sec">
-    <div class="wrap">
-      <p class="eyebrow" data-en="🖐️ FIRST HAND">🖐️ FIRST HAND · มือแรก</p>
-      <h2 class="disp" data-en="🃏 28 cards of meaning — seven per colour">🃏 การ์ดความหมาย 28 ใบ — สีละ 7</h2>
-      <p class="lead" data-en="No numbers, no power levels, no skills. A beautiful card is a memory and a matter of taste, not a weapon that buys wins — every card is worth exactly its colour.">ไม่มีตัวเลข ไม่มีค่าพลัง ไม่มี Skill — การ์ดสวยเป็นความทรงจำและรสนิยม
-        ไม่ใช่อาวุธที่ซื้อชัยชนะ ทุกใบมีค่าเท่ากับสีของมัน</p>
-      <div class="fan" id="fan" data-en-attr="aria-label:Sample cards from the FIRST HAND set" aria-label="ตัวอย่างการ์ดชุด FIRST HAND"></div>
-      <div style="text-align:center"><a class="btn btn-green" href="/core7/collection/" data-en="🗃️ See all 28 cards">🗃️ ดู Collection ทั้ง 28 ใบ</a></div>
-    </div>
-  </section>
-
-  <!-- 4. Guest vs Member -->
-  <section class="sec sec-alt">
-    <div class="wrap">
-      <p class="eyebrow">👥 Guest &amp; Member</p>
-      <h2 class="disp" data-en="⚡ Start playing right away, no sign-up">⚡ เริ่มเล่นได้เลย ไม่ต้องสมัคร</h2>
-      <div class="duo" style="margin-top:20px">
-        <div class="panel">
-          <span class="tag" data-en="👤 GUEST — free, right now">👤 GUEST — เล่นฟรีทันที</span>
-          <ul>
-            <li data-en="Play the bot on EASY / HARD">เล่นกับบอท EASY / HARD</li>
-            <li data-en="Open online rooms: MATCH / DOUBLE / SET">สร้างห้องออนไลน์ MATCH / DOUBLE / SET</li>
-            <li data-en="Use the Generic 4-colour deck and pick your 7">ใช้การ์ด Generic 4 สี เลือกมือ 7 ใบ</li>
-            <li data-en="Stats stay on your own device">สถิติเก็บในเครื่องของคุณ</li>
-            <li data-en="Exactly the same odds of winning as a Member">โอกาสชนะเท่า Member ทุกประการ</li>
-          </ul>
-        </div>
-        <div class="panel">
-          <span class="tag tag-gold" data-en="🍀 MEMBER — a myClover account">🍀 MEMBER — บัญชี myClover</span>
-          <ul>
-            <li data-en="The full 28-card FIRST HAND set">การ์ดชุด FIRST HAND ครบ 28 ใบ</li>
-            <li data-en="Collection · saved hands · profile">Collection · Preset มือ · โปรไฟล์</li>
-            <li>Ranked Match · Rating · Season</li>
-            <li data-en="Print Tools for making your own cards">Print Tools พิมพ์การ์ดใช้เอง</li>
-            <li class="no" data-en="No special powers, no pay-to-win. Membership means an account on the myClover website and nothing else — it is not tied to any company or business.">ไม่มีพลังพิเศษ ไม่มี Pay-to-win — สมาชิกคือเว็บไซต์ myClover เท่านั้น ไม่ผูกกับบริษัทหรือธุรกิจใด</li>
-          </ul>
+  <section class="home-section paper home-reveal">
+    <div class="home-wrap quick-rule">
+      <div>
+        <p class="home-eyebrow">7-SECOND LANGUAGE</p>
+        <h2 class="home-title" style="font-size:clamp(34px,5vw,58px);color:var(--home-ink)" data-en="See the colours. Start playing.">เห็นสี ก็เริ่มเล่นได้</h2>
+        <p class="home-lead" style="font-size:15px" data-en="CORE7 removes the deck, draw pile, stats and card text from the rules. What remains is a tiny shared language you can read from the table.">CORE7 ตัดเด็ค กองจั่ว ค่าพลัง และข้อความบนการ์ดออกจากกติกา เหลือเพียงภาษาสีเล็ก ๆ ที่อ่านได้จากบนโต๊ะ</p>
+        <div class="three-steps">
+          <article><b>1</b><strong data-en="Choose 7">เลือก 7</strong><p data-en="Any mix of colours.">สีอะไรก็ได้ให้ครบ 7</p></article>
+          <article><b>2</b><strong data-en="Lock 1">ล็อก 1</strong><p data-en="Choose in secret.">เลือกพร้อมกันแบบลับ</p></article>
+          <article><b>3</b><strong data-en="Reveal">เปิด</strong><p data-en="Colour resolves the round.">สีตัดสินผลของรอบ</p></article>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- 5. Discord -->
-  <section class="sec">
-    <div class="wrap">
-      <p class="eyebrow">Play with friends</p>
-      <h2 class="disp" data-en="🔗 Invite friends on Discord with one link">🔗 ชวนเพื่อนใน Discord ด้วยลิงก์เดียว</h2>
-      <p class="lead" data-en="Open a room, hit Copy for Discord and paste it in a channel. Your friend clicks the link, picks a name, chooses seven cards and meets you at the table — no sign-up first.">สร้างห้อง กด Copy for Discord แล้ววางในแชนแนล — เพื่อนกดลิงก์ ตั้งชื่อ
-        เลือกมือ 7 ใบ แล้วเจอกันบนโต๊ะทันที ไม่ต้องสมัครอะไรก่อนเลย</p>
-      <div class="cta-row" style="margin-top:20px">
-        <a class="btn btn-dark" href="/core7/create/" data-en="🏠 Open a room">🏠 สร้างห้องเลย</a>
-        <a class="btn" href="/core7/join/" data-en="🚪 Got a room code? Join">🚪 มี Room Code แล้ว? เข้าห้อง</a>
+      <div class="rule-orbit">
+        <div class="cycle-line" aria-label="Red beats green, green beats blue, blue beats red"><span>🔴</span><i>→</i><span>🟢</span><i>→</i><span>🔵</span><i>→</i><span>🔴</span></div>
+        <div class="silver-line" data-en="⚙️ SILVER blocks every colour · Final Silver loses to a real colour">⚙️ SILVER บล็อกทุกสี · Final Silver แพ้สีจริง</div>
+        <p style="margin:16px 0 0;text-align:center;color:var(--home-muted);font-size:12.5px" data-en="Lose a round → discard 1 extra card. First to 3 round wins — or the last player with cards — wins the Match.">แพ้รอบ → ทิ้งเพิ่ม 1 ใบ · ชนะ 3 รอบก่อน หรือเหลือการ์ดเมื่ออีกฝ่ายหมดมือ = ชนะ Match</p>
       </div>
     </div>
   </section>
 
-  <!-- 6-7. Ranking + Collection -->
-  <section class="sec sec-alt">
-    <div class="wrap">
-      <p class="eyebrow">🏆 Ranking &amp; Collection</p>
-      <h2 class="disp" data-en="Deep enough to compete, easy enough to just play">⚖️ ลึกพอให้แข่ง สบายพอให้เล่น</h2>
-      <div class="duo" style="margin-top:20px">
-        <div class="panel">
-          <h3 class="disp">🏆 Ranked Game <span class="tag tag-soon">🔜 Coming soon</span></h3>
-          <p style="font-size:14.5px;margin-top:8px" data-en="A competitive season that ends with a <b>Season Champion Reward</b>." data-en-html>ฤดูกาลแข่งขันที่จบด้วย <b>Season Champion Reward</b></p>
-          <div class="tiers-mini" data-en-attr="aria-label:The six season tiers" aria-label="หกขั้นของฤดูกาล">
-            <span>🌰</span><span>🌱</span><span>🌿</span><span>🍃</span><span>🌸</span><span>🍀</span>
+  <section class="home-section dark home-reveal">
+    <div class="home-wrap">
+      <div class="section-head">
+        <div><p class="home-eyebrow">PLAY</p><h2 class="home-title" style="font-size:clamp(34px,5vw,58px)" data-en="Pick a table.">เลือกโต๊ะแล้วเล่นเลย</h2></div>
+        <p class="home-lead" data-en="The rules are the same online or on a real table. Only the person across from you changes.">กติกาเดียวกันทั้งออนไลน์และบนโต๊ะจริง เปลี่ยนแค่คนที่นั่งตรงข้าม</p>
+      </div>
+      <div class="play-grid">
+        <a class="play-card" href="/core7/hand/?next=bot&amp;level=easy"><span class="ico">🤖</span><h3 data-en="Play the Bot">เล่นกับบอท</h3><p data-en="Fastest way in. Pick seven and play immediately — no account required.">ทางเข้าที่เร็วที่สุด เลือก 7 ใบแล้วเริ่มได้ทันที ไม่ต้องมีบัญชี</p><span class="go" data-en="PLAY NOW →">เล่นเลย →</span></a>
+        <a class="play-card" href="/core7/play/"><span class="ico">👥</span><h3 data-en="Play a Friend">เล่นกับเพื่อน</h3><p data-en="Create a room or join with a code. Two browsers, one table, simultaneous reveal.">สร้างห้องหรือใส่ Room Code แล้วเจอกันบนโต๊ะ เปิดไพ่พร้อมกันจริง</p><span class="go" data-en="ONLINE PLAY →">เล่นออนไลน์ →</span></a>
+        <a class="play-card" href="/core7/open-play/"><span class="ico">🎴</span><h3>Open Play</h3><p data-en="Use coloured paper, sleeves or cards from another game. You never need to buy ours to play.">ใช้กระดาษสี ซองสี หรือการ์ดจากเกมอื่นก็ได้ ไม่ต้องซื้อการ์ดเราเพื่อเล่น</p><span class="go" data-en="PLAY OFFLINE →">เล่นบนโต๊ะจริง →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-reveal">
+    <div class="home-wrap first-hand-grid">
+      <div class="first-hand-copy">
+        <p class="home-eyebrow">🖐️ FIRST HAND</p>
+        <h2 class="home-title" data-en="Seven cards become your hand.">7 ใบ กลายเป็นมือของคุณ</h2>
+        <p class="home-lead" style="font-size:15px" data-en="28 illustrated cards. Seven per colour. No numbers, power levels or pay-to-win — every card is worth exactly its colour.">การ์ดภาพ 28 ใบ สีละ 7 ไม่มีตัวเลข ไม่มีค่าพลัง ไม่มี Pay-to-win ทุกใบมีค่าเท่ากับสีของมันเท่านั้น</p>
+        <div class="collection-box">
+          <strong data-en="Your Collection is part of the game.">Collection คือส่วนหนึ่งของเกม</strong>
+          <p data-en="Browse all 28 cards, choose the seven that feel right today, save hands and print physical copies.">ดูครบ 28 ใบ เลือก 7 ใบที่อยากถือวันนี้ เก็บมือที่ชอบ และพิมพ์ออกมาเล่นจริงได้</p>
+          <div class="home-btns" style="margin-top:0">
+            <a class="btn btn-green" href="/core7/collection/" data-en="🗃️ Open Collection">🗃️ เปิด Collection</a>
+            <a class="btn" href="/core7/print/" data-en="🖨️ Print cards">🖨️ พิมพ์การ์ด</a>
           </div>
-          <p style="font-size:13.5px;margin-top:8px;color:rgb(var(--muted))" data-en="Rank never makes a card stronger and never locks anything. In the meantime every mode stays free to play.">อันดับไม่ทำให้การ์ดแรงขึ้น
-          และไม่ล็อกอะไรทั้งนั้น ระหว่างนี้ทุกโหมดเล่นได้ฟรีเหมือนเดิม</p>
-          <a class="btn" style="margin-top:14px" href="/core7/rank/" data-en="See how ranking works">🏆 ดูระบบอันดับ</a>
-        </div>
-        <div class="panel">
-          <h3 class="disp" data-en="🗃️ A collection online and offline">🗃️ Collection ออนไลน์ + ออฟไลน์</h3>
-          <p style="font-size:14.5px;margin-top:8px" data-en="Cards you unlock online can be printed and played on a real table — standard 63 × 88 mm, with a guide for sleeving them, filing them and trading them.">การ์ดที่ปลดล็อกออนไลน์พิมพ์ออกมาเล่นบนโต๊ะจริงได้
-          — ขนาดมาตรฐาน 63 × 88 mm พร้อมคู่มือใส่ซองสี เก็บลงแฟ้ม แลกกันได้</p>
-          <a class="btn" style="margin-top:14px" href="/core7/print/" data-en="Print tools">🖨️ ดู Print Tools</a>
         </div>
       </div>
+      <div class="seven-spread" id="sevenSpread" aria-label="Seven FIRST HAND cards"></div>
     </div>
   </section>
 
-  <!-- 8. เรื่องราว -->
-  <section class="sec">
-    <div class="wrap">
-      <p class="eyebrow">Why CORE7</p>
-      <h2 class="disp" data-en="👨‍👩‍👧‍👦 A game play-tested at home from day one">👨‍👩‍👧‍👦 เกมที่ถูกทดลองเล่นในครอบครัวตั้งแต่วันแรก</h2>
-      <blockquote class="story-quote" data-en="myClover: CORE7 has been in design since 2023, play-tested with our daughter since she was small. We wanted a game anyone could play whether or not they own our cards: quick to learn, quick enough to finish that you can swap opponents, and good at getting two people who have not met talking.">
-        myClover: CORE7 ถูกออกแบบขึ้นตั้งแต่ปี 2023 และถูกทดลองเล่นกับลูกสาวมาตั้งแต่เธอยังเด็ก
-        เราอยากได้เกมที่ทุกคนเล่นได้ — ไม่ว่าคุณจะมีการ์ดของเราหรือไม่
-        เรียนรู้ได้เร็ว เล่นจบเร็วพอให้สลับคู่ และช่วยให้คนที่ยังไม่รู้จักกันเริ่มคุยกันได้
-      </blockquote>
-      <a class="btn" style="margin-top:20px" href="/core7/about/" data-en="📖 Read the whole intent">📖 อ่านเจตนารมณ์ทั้งหมด</a>
-    </div>
-  </section>
-
-  <!-- 9. FAQ -->
-  <section class="sec sec-alt">
-    <div class="wrap-slim faq">
-      <p class="eyebrow">FAQ</p>
-      <h2 class="disp" style="margin-bottom:20px" data-en="❓ Frequently asked">❓ คำถามที่พบบ่อย</h2>
-      <details><summary data-en="💸 Do I have to buy anything to play?">💸 ต้องซื้ออะไรไหมถึงจะเล่นได้</summary>
-        <p data-en="No. Online play is entirely free, and you can play at a real table with coloured paper or cards from any other game — as long as each card&#39;s colour is unmistakable.">ไม่ต้อง — เล่นออนไลน์ฟรีทั้งหมด และเล่นบนโต๊ะจริงด้วยกระดาษสีหรือการ์ดจากเกมไหนก็ได้
-        ขอเพียงระบุสีของแต่ละใบได้ชัดเจน</p></details>
-      <details><summary data-en="✨ Do prettier cards make winning easier?">✨ การ์ดสวย ๆ ทำให้ชนะง่ายขึ้นไหม</summary>
-        <p data-en="No. Colour alone decides the game. Art, names, rarity and membership have no effect on the rules whatsoever.">ไม่ — สีเท่านั้นที่ตัดสินเกม ภาพ ชื่อ ความหายาก และสถานะสมาชิกไม่มีผลต่อกติกาแม้แต่นิดเดียว</p></details>
-      <details><summary data-en="👥 Can a Guest play against a Member?">👥 Guest แข่งกับ Member ได้ไหม</summary>
-        <p data-en="Yes, and it is 100% fair. A Guest uses the Generic 4-colour deck and a Member uses illustrated cards, but the same colour choice gives the same chance of winning.">ได้ และยุติธรรม 100% — Guest ใช้การ์ด Generic 4 สี Member ใช้การ์ดภาพ แต่โอกาสชนะเท่ากันเมื่อเลือกสีเหมือนกัน</p></details>
-      <details><summary data-en="⏱️ How long does one game take?">⏱️ เกมหนึ่งใช้เวลานานไหม</summary>
-        <p data-en="Most finish in 3–7 rounds, about 2–5 minutes. It is deliberately short so you can swap opponents quickly — it works well as an ice breaker.">ส่วนใหญ่จบใน 3–7 รอบ ประมาณ 2–5 นาที — ตั้งใจออกแบบให้จบเร็ว สลับคู่ได้เร็ว เหมาะกับ Ice Breaking</p></details>
-      <details><summary data-en="⚙️ What is Silver for?">⚙️ สีเงินไว้ทำอะไร</summary>
-        <p data-en="⚙️ ties every colour, so it buys you time and lets you read your opponent. But if it is the last card in both hands, ⚙️ loses to every colour (Final Silver).">⚙️ เสมอกับทุกสี ใช้ซื้อเวลาและอ่านคู่แข่ง
-        แต่ถ้าเป็นใบสุดท้ายของทั้งคู่ ⚙️ แพ้ทุกสี (Final Silver)</p></details>
-      <details><summary data-en="🏢 Is myClover a member of some company?">🏢 myClover เป็นสมาชิกของบริษัทอะไรหรือเปล่า</summary>
-        <p data-en="No. myClover is the name of our own game and website. Being a Member means having an account here and nothing more — there is no tie to any company, network business or organisation.">ไม่ — myClover คือชื่อเกมและเว็บไซต์ของเราเอง การเป็น Member หมายถึงบัญชีเว็บไซต์นี้เท่านั้น
-        ไม่ผูกพันกับบริษัท ธุรกิจเครือข่าย หรือองค์กรใดทั้งสิ้น</p></details>
-    </div>
-  </section>
-
-  <!-- 10. CTA ท้าย -->
-  <section class="sec" style="background:rgb(var(--deep));color:#fff;text-align:center">
-    <div class="wrap">
-      <h2 class="disp" data-en="🖐️ Pick the seven cards that are you, then sit down across from someone">🖐️ เลือก 7 ใบที่เป็นคุณ แล้วนั่งลงตรงหน้าอีกคน</h2>
-      <p style="color:rgb(255 255 255/.75);margin-top:8px" data-en="By the end of the game you may know each other a little better.">เล่นจบแล้ว คุณอาจรู้จักกันมากกว่าเดิม</p>
-      <div class="cta-row" style="justify-content:center;margin-top:26px">
-        <a class="btn btn-gold btn-lg" href="/core7/play/" data-en="🃏 Play Now">🃏 เล่นเลย · Play Now</a>
+  <section class="home-section paper home-reveal">
+    <div class="home-wrap">
+      <div class="section-head">
+        <div><p class="home-eyebrow">EXPLORE</p><h2 class="home-title" style="font-size:clamp(34px,5vw,56px)" data-en="Everything else, one tap away.">ที่เหลือ อยู่ห่างแค่ 1 แตะ</h2></div>
+        <p class="home-lead" data-en="The home page stays light. Go deeper only when you want to.">หน้าแรกไม่ต้องแบกทุกอย่าง อยากรู้อะไรค่อยเข้าไปตรงนั้น</p>
+      </div>
+      <div class="explore-grid">
+        <a class="explore-link" href="/core7/tutorial/"><span class="ico">🎓</span><span><b data-en="Tutorial">Tutorial</b><small data-en="Learn by playing">เรียนด้วยการเล่น</small></span></a>
+        <a class="explore-link" href="/core7/rules/"><span class="ico">📜</span><span><b data-en="Full Rules">กติกาเต็ม</b><small>TH / EN</small></span></a>
+        <a class="explore-link" href="/core7/collection/"><span class="ico">🗃️</span><span><b>Collection</b><small data-en="All 28 FIRST HAND cards">FIRST HAND ครบ 28 ใบ</small></span></a>
+        <a class="explore-link" href="/core7/rank/"><span class="ico">🏆</span><span><b>Ranking</b><small data-en="Competitive play">การแข่งขัน</small></span></a>
+        <a class="explore-link" href="/core7/profile/"><span class="ico">👤</span><span><b data-en="Profile">โปรไฟล์</b><small data-en="Hands and stats">มือและสถิติ</small></span></a>
+        <a class="explore-link" href="/core7/print/"><span class="ico">🖨️</span><span><b>Print Tools</b><small data-en="Take CORE7 offline">พา CORE7 ลงโต๊ะจริง</small></span></a>
+        <a class="explore-link" href="/core7/about/"><span class="ico">📖</span><span><b data-en="Why CORE7">เรื่องของ CORE7</b><small data-en="Design intent">แนวคิดเบื้องหลัง</small></span></a>
+        <a class="explore-link" href="/kickstarter/"><span class="ico">🍀</span><span><b>FIRST HAND</b><small data-en="The physical project">โปรเจกต์การ์ดจริง</small></span></a>
+      </div>
+      <div class="utility">
+        <a href="/core7/create/" data-en="🏠 Create room">🏠 สร้างห้อง</a>
+        <a href="/core7/join/" data-en="🚪 Join room">🚪 เข้าห้อง</a>
+        <a href="/core7/open-play/">🎴 Open Play</a>
+        <a href="/core7/play/" data-en="👥 Play menu">👥 เมนูเล่น</a>
       </div>
     </div>
   </section>
@@ -302,84 +255,61 @@
 import { renderShell } from '/core7/js/ui.js';
 import { cardSVG } from '/core7/js/art.js';
 import { track } from '/core7/js/store.js';
-import { playCardFlip } from '/core7/js/audio.js';
+import { playCardFlip, primeAudio } from '/core7/js/audio.js';
 import { fetchCore7Counters } from '/core7/js/analytics.js';
-import { t } from '/core7/js/i18n.js';
+import { t, getLang } from '/core7/js/i18n.js';
 
 renderShell({ active: '' });
 track('core7_landing_view');
 
-/* การ์ดกติกาเริ่มคว่ำ — กด/Enter/Space เพื่อพลิกดูและคว่ำคืน */
 const rulesFlip = document.getElementById('rulesFlip');
 const rulesFlipHint = document.getElementById('rulesFlipHint');
-rulesFlip.addEventListener('click', () => {
+rulesFlip?.addEventListener('pointerdown', () => { void primeAudio(); }, { passive:true });
+rulesFlip?.addEventListener('click', () => {
   const open = rulesFlip.classList.toggle('is-flipped');
   playCardFlip(!open);
   rulesFlip.setAttribute('aria-pressed', String(open));
-  rulesFlip.setAttribute('aria-label', open ? 'คว่ำการ์ดกติกา CORE7' : 'พลิกการ์ดเพื่อดูกติกา CORE7');
-  rulesFlipHint.textContent = open
-    ? 'แตะอีกครั้งเพื่อคว่ำ · Tap to flip back'
-    : 'แตะการ์ดเพื่อเปิดกติกา · Tap to reveal';
+  rulesFlip.setAttribute('aria-label', open ? t('คว่ำการ์ดกติกา CORE7','Flip the CORE7 rule card back') : t('พลิกการ์ดเพื่อดูกติกา CORE7','Flip the card to reveal CORE7 rules'));
+  if (rulesFlipHint) rulesFlipHint.textContent = open
+    ? t('แตะอีกครั้งเพื่อคว่ำ · การ์ดใบเดียวอยู่กับคุณตลอดเกม','Tap again to flip back · one rule card stays with you throughout the game')
+    : t('แตะเพื่อพลิก · การ์ดกติกาใบเดียวอยู่กับคุณตลอดเกม','Tap the card · the rules stay with you while you play');
   track(open ? 'core7_rules_card_reveal' : 'core7_rules_card_hide');
 });
 
-/* ── MATCHES PLAYED ──
-   นับจาก MATCH_START ฝั่ง server เกมที่เล่นไม่จบและเกมกับบอทก็นับหมด
-   เลขวิ่งขึ้นด้วย requestAnimationFrame ไม่ใช่ setInterval จะได้ลื่นและไม่กินซีพียู
-   ถ้าเปิด reduced-motion ให้ขึ้นเลขจริงทันที ไม่ต้องวิ่ง */
+const showcase = ['fh-red-passion','fh-green-balance','fh-blue-choice','fh-silver-build','fh-red-joy','fh-green-commitment','fh-blue-clarity'];
+const spread = document.getElementById('sevenSpread');
+for (const id of showcase) {
+  const node = document.createElement('div');
+  node.className = 'seven-card';
+  node.innerHTML = cardSVG(id,{width:138});
+  spread?.append(node);
+}
+
 (async () => {
   const box = document.getElementById('playedBox');
   const num = document.getElementById('playedNum');
   const pvp = document.getElementById('playedPvp');
-  if (!box) return;
+  if (!box || !num) return;
   let data;
-  try { data = await fetchCore7Counters(); }
-  catch { return; }                       /* ต่อไม่ได้ก็ไม่โชว์ ดีกว่าโชว์ 0 */
+  try { data = await fetchCore7Counters(); } catch { return; }
   const total = Number(data.total || 0);
   if (!total) return;
   box.hidden = false;
-  if (data.pvp) {
-    const n = data.pvp.toLocaleString('en-US');
-    pvp.textContent = t(`เป็นเกมคนกับคน ${n}`, `${n} played against real people`);
-  }
-
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (still) { num.textContent = total.toLocaleString('en-US'); return; }
-  const ms = 1400, t0 = performance.now();
-  const ease = x => 1 - Math.pow(1 - x, 3);
-  const step = now => {
-    const p = Math.min(1, (now - t0) / ms);
-    num.textContent = Math.round(total * ease(p)).toLocaleString('en-US');
-    if (p < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
+  num.textContent = total.toLocaleString('en-US');
+  if (pvp && data.pvp) pvp.textContent = t(`· คนกับคน ${Number(data.pvp).toLocaleString('en-US')}`, `· ${Number(data.pvp).toLocaleString('en-US')} vs real people`);
 })();
 
-/* ค่อย ๆ ปรากฏตอนเลื่อนถึง — เนื้อหาต้องเห็นเสมอถ้าเบราว์เซอร์ไม่รองรับ
-   จึงติดคลาสด้วย JS เท่านั้น ไม่ได้ซ่อนไว้ใน HTML */
 (() => {
-  if (!('IntersectionObserver' in window)) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const secs = [...document.querySelectorAll('main .sec')];
-  secs.forEach(s => s.classList.add('rv'));
-  const io = new IntersectionObserver(es => {
-    for (const e of es) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-  }, { threshold: .08, rootMargin: '0px 0px -40px' });
-  secs.forEach(s => io.observe(s));
-  /* กันเหนียว: ถ้ายังไม่โผล่ใน 3 วิ ให้โชว์หมด */
-  setTimeout(() => secs.forEach(s => s.classList.add('in')), 3000);
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const items = [...document.querySelectorAll('.home-reveal')];
+  const io = new IntersectionObserver(entries => {
+    for (const entry of entries) if (entry.isIntersecting) { entry.target.classList.add('in'); io.unobserve(entry.target); }
+  },{threshold:.08,rootMargin:'0px 0px -30px'});
+  items.forEach(item => io.observe(item));
+  setTimeout(() => items.forEach(item => item.classList.add('in')),2200);
 })();
 
-/* การ์ดตัวอย่างพัดบนหน้าแรก */
-const showcase = ['fh-red-passion', 'fh-blue-choice', 'fh-green-commitment', 'fh-silver-repair', 'fh-red-joy'];
-const fan = document.getElementById('fan');
-showcase.forEach((id, i) => {
-  const d = document.createElement('div');
-  d.className = 'fc';
-  d.style.transform = `rotate(${(i - 2) * 6}deg) translateY(${Math.abs(i - 2) * 10}px)`;
-  d.innerHTML = cardSVG(id, { width: 150 });
-  fan.append(d);
-});
+void getLang();
 </script>
 </body>
 </html>
