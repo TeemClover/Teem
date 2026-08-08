@@ -5,14 +5,45 @@ import { cardSVG, cardBackSVG, genericCardSVG } from './art.js';
 import { playCardFlip, playSfx, primeAudio } from './audio.js';
 
 let installed = false;
+let viewportLocked = false;
+
 function installStyles() {
   if (installed) return;
   installed = true;
   const s = document.createElement('style');
   s.id = 'c7-physical-table-v2';
   s.textContent = `
-  .physical-v2 .stage-slot{position:relative;overflow:visible}
+  html.c7-match-locked,html.c7-match-locked body{
+    width:100%;max-width:100%;overflow-x:hidden!important;overscroll-behavior-x:none;
+  }
+  html.c7-match-locked body{touch-action:pan-y;-webkit-text-size-adjust:100%}
+  .physical-v2{overflow-x:hidden;--pf2-slot-w:min(31vw,150px);--pf2-slot-h:calc(var(--pf2-slot-w) * 1.4)}
+  .physical-v2 .match-board{min-width:0;overflow:hidden}
+  /* Reserve fixed visual rows for the table, result and discard message. The
+     card row never moves when WIN/LOSE or discard copy appears/disappears. */
+  .physical-v2 .match-stage{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:minmax(8px,1fr) var(--pf2-slot-h) 72px 46px minmax(8px,1fr);
+    align-items:center!important;justify-items:center!important;justify-content:stretch!important;
+    min-width:0;overflow:hidden;
+  }
+  .physical-v2 .stage-cards{grid-row:2;align-self:center;justify-self:center;margin:0!important}
+  .physical-v2 .stage-slot{position:relative;overflow:visible;width:var(--pf2-slot-w)!important}
   .physical-v2 .stage-slot>.flip{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+  .physical-v2 .round-result{
+    grid-row:3;width:100%;height:72px;min-height:72px!important;margin:0!important;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s
+  }
+  .physical-v2 .round-result.pf2-show{opacity:1;transform:none}
+  .physical-v2 .round-discard{
+    grid-row:4;width:100%;height:46px;min-height:46px!important;margin:0!important;
+    display:flex!important;align-items:center;justify-content:center;
+    transition:opacity .18s,transform .18s
+  }
+  .physical-v2 .round-discard:empty{display:flex!important;visibility:hidden}
+  .physical-v2.pf2-next .round-discard{opacity:0;transform:translateY(4px)}
   .pf2-card{position:absolute;inset:0;z-index:3;opacity:0;pointer-events:none;perspective:1000px;filter:drop-shadow(0 15px 18px rgb(0 0 0/.3));transform:scale(.99);transition:opacity .12s,transform .18s}
   .pf2-card.on{opacity:1;transform:scale(1)}
   .pf2-inner{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(0);transition:transform .52s cubic-bezier(.18,.72,.18,1)}
@@ -24,16 +55,38 @@ function installStyles() {
   .pf2-exit{z-index:410;transition:none!important}
   .pf2-ghost-inner{position:absolute;inset:0;transform-style:preserve-3d}
   .pf2-ghost .pf2-face,.pf2-exit .pf2-face{border-radius:9px}
-  .physical-v2 .round-result{opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s}
-  .physical-v2 .round-result.pf2-show{opacity:1;transform:none}
-  .physical-v2 .round-discard{transition:opacity .18s,transform .18s}
-  .physical-v2.pf2-next .round-discard{opacity:0;transform:translateY(4px)}
   .physical-v2 .hand-card.pf2-played{opacity:0!important;pointer-events:none!important}
   .physical-v2 .stage-cards.pf2-ready{animation:pf2ready .24s ease-out}
   @keyframes pf2ready{50%{transform:scale(1.012)}}
+  @media(max-height:620px){
+    .physical-v2 .match-stage{grid-template-rows:minmax(4px,.7fr) var(--pf2-slot-h) 64px 40px minmax(4px,.7fr)}
+    .physical-v2 .round-result{height:64px;min-height:64px!important}
+    .physical-v2 .round-discard{height:40px;min-height:40px!important}
+  }
   @media(prefers-reduced-motion:reduce){.pf2-card,.pf2-inner,.physical-v2 .round-result,.physical-v2 .round-discard{transition:none!important}.pf2-ghost,.pf2-exit{display:none!important}.physical-v2 .stage-cards.pf2-ready{animation:none!important}}
   `;
   document.head.append(s);
+}
+
+function lockMatchViewport() {
+  if (viewportLocked) return;
+  viewportLocked = true;
+  document.documentElement.classList.add('c7-match-locked');
+
+  let meta = document.querySelector('meta[name="viewport"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.name = 'viewport';
+    document.head.prepend(meta);
+  }
+  meta.setAttribute('content','width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover');
+
+  /* Safari still exposes gesture events on some iOS versions even with
+     user-scalable=no. Prevent pinch zoom only while an actual Match is mounted. */
+  const stopGesture = event => event.preventDefault();
+  document.addEventListener('gesturestart',stopGesture,{passive:false});
+  document.addEventListener('gesturechange',stopGesture,{passive:false});
+  document.addEventListener('gestureend',stopGesture,{passive:false});
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -428,10 +481,11 @@ function controller(root) {
 
 export function mountMatch(root,client,options={}){
   installStyles();
+  lockMatchViewport();
 
-  /* Scope-specific first-touch unlock. This capture listener runs before the
-     legacy card handlers so the very first Select/Lock gesture can make sound. */
-  root.addEventListener('pointerdown',()=>{void primeAudio();},{once:true,passive:true,capture:true});
+  /* Audio assets are prepared by audio.js on page load. The capture-phase
+     pointer only unlocks playback; no network/decode work should begin here. */
+  root.addEventListener('pointerdown',()=>{void primeAudio();},{passive:true,capture:true});
 
   const p=controller(root);
   const subs=new Set();
