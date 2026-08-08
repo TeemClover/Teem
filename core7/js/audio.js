@@ -1,17 +1,31 @@
 const KEY = 'c7:sfx-muted';
+
+/* Real physical-card samples. Keep these at the top because we now prepare
+   every asset as soon as the module is evaluated — before the first tap. */
+const SAMPLES = {
+  playerJoined: '/core7/assets/audio/player-joined.mp3',
+  cardFlip: '/core7/assets/audio/card-flip.mp3',
+  cardSwap: '/core7/assets/audio/card-swap.mp3',
+};
+
 let context = null;
 let primed = false;
 let priming = null;
+let gestureSeen = false;
 
-/* iPhone เงียบเพราะสวิตช์กระดิ่งข้างเครื่อง ไม่ใช่เพราะโค้ดพัง
-   Web Audio บน iOS ถูกจัดเป็นเสียง ambient โดยปริยาย ซึ่งโดนสวิตช์ silent ปิดทั้งหมด
-   บอก iOS 16.4+ ว่านี่คือเสียง playback เสียงเกมจะดังแม้ปิดกระดิ่ง */
+const decoded = new Map();
+const bytes = new Map();
+const decoding = new Map();
+const media = new Map();
+
+/* iOS 16.4+ can expose AudioSession. Claim playback so game SFX behave like
+   game audio rather than ambient audio when the device is in silent mode. */
 function claimPlaybackSession() {
   try {
     if (navigator.audioSession && navigator.audioSession.type !== 'playback') {
       navigator.audioSession.type = 'playback';
     }
-  } catch { /* ไม่รองรับก็ไม่เป็นไร */ }
+  } catch { /* unsupported */ }
 }
 
 function audioContext() {
@@ -19,125 +33,37 @@ function audioContext() {
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   if (!AudioCtx) throw new Error('WEB_AUDIO_UNAVAILABLE');
   if (!context || context.state === 'closed') {
-    context = new AudioCtx();
-    primed = false;
+    context = new AudioCtx({ latencyHint:'interactive' });
+    primed = context.state === 'running';
   }
   return context;
 }
 
-/* iOS audio unlock must happen INSIDE a real gesture. Important detail:
-   start an inaudible source before awaiting resume(), otherwise Safari can lose
-   the user-activation window between the await and source.start().
-
-   This function is deliberately recoverable: one failed unlock must never
-   poison the whole session. The next tap can try again. */
-export function primeAudio() {
-  if (isMuted()) return Promise.resolve(false);
-  if (context?.state === 'running') {
-    primed = true;
-    return Promise.resolve(true);
-  }
-  if (priming) return priming;
-
-  try {
-    const audio = audioContext();
-
-    /* Schedule one silent frame synchronously while the gesture is still live. */
-    const source = audio.createBufferSource();
-    source.buffer = audio.createBuffer(1, 1, audio.sampleRate);
-    source.connect(audio.destination);
-    source.start(0);
-
-    const resume = audio.state === 'running'
-      ? Promise.resolve()
-      : audio.resume();
-
-    priming = Promise.resolve(resume)
-      .then(() => {
-        primed = audio.state === 'running';
-        if (primed) {
-          /* Decode samples only after playback is really unlocked. */
-          for (const name of Object.keys(SAMPLES)) void sampleBuffer(name);
-        }
-        return primed;
-      })
-      .catch(() => {
-        primed = false;
-        return false;
-      })
-      .finally(() => {
-        priming = null;
-      });
-
-    return priming;
-  } catch {
-    primed = false;
-    priming = null;
-    return Promise.resolve(false);
-  }
+function mediaElement(name) {
+  if (media.has(name)) return media.get(name);
+  const url = SAMPLES[name];
+  if (!url || typeof Audio === 'undefined') return null;
+  const el = new Audio(url);
+  el.preload = 'auto';
+  el.playsInline = true;
+  el.load();
+  media.set(name, el);
+  return el;
 }
-
-/* iOS may suspend AudioContext when switching apps or locking the screen. */
-if (typeof document !== 'undefined') {
-  const wake = () => {
-    if (document.hidden || isMuted() || !context) return;
-    claimPlaybackSession();
-    if (context.state === 'suspended') {
-      context.resume().then(() => {
-        primed = context?.state === 'running';
-      }).catch(() => { primed = false; });
-    }
-  };
-  document.addEventListener('visibilitychange', wake);
-
-  /* Do NOT use once:true here. If Safari rejects the first unlock attempt,
-     the next real gesture must be allowed to recover the AudioContext. */
-  const primeFromGesture = () => {
-    if (!isMuted() && context?.state !== 'running') void primeAudio();
-  };
-  addEventListener('pointerdown', primeFromGesture, { passive:true, capture:true });
-  addEventListener('touchstart', primeFromGesture, { passive:true, capture:true });
-  addEventListener('keydown', primeFromGesture, { capture:true });
-
-  /* Download bytes early. Decoding happens after the first successful gesture. */
-  const warm = () => prefetchSamples();
-  if (document.readyState === 'complete') setTimeout(warm, 400);
-  else addEventListener('load', () => setTimeout(warm, 400), { once:true });
-}
-
-export function isMuted() {
-  try { return localStorage.getItem(KEY) === '1'; } catch { return false; }
-}
-
-export function setMuted(value) {
-  try { localStorage.setItem(KEY, value ? '1' : '0'); } catch { /* private mode */ }
-  window.dispatchEvent(new CustomEvent('core7:mute', { detail: { muted:value } }));
-  if (!value) void primeAudio();
-}
-
-export function toggleMuted() {
-  const next = !isMuted();
-  setMuted(next);
-  return next;
-}
-
-/* ── Real samples ─────────────────────────────────────────────────────── */
-const SAMPLES = {
-  playerJoined: '/core7/assets/audio/player-joined.mp3',
-  cardFlip: '/core7/assets/audio/card-flip.mp3',
-  cardSwap: '/core7/assets/audio/card-swap.mp3',
-};
-
-const decoded = new Map();
-const bytes = new Map();
-const decoding = new Map();
 
 function prefetchSamples() {
   for (const [name,url] of Object.entries(SAMPLES)) {
-    if (bytes.get(name) || decoded.has(name) || decoding.has(name)) continue;
-    fetch(url)
+    mediaElement(name);
+    if (bytes.has(name)) continue;
+    fetch(url, { cache:'force-cache' })
       .then(response => response.ok ? response.arrayBuffer() : null)
-      .then(buffer => { if (buffer) bytes.set(name,buffer); })
+      .then(buffer => {
+        if (!buffer) return;
+        bytes.set(name, buffer);
+        /* Decoding does not require audible playback. Doing it while the page
+           opens means the first real click only has to resume the context. */
+        void sampleBuffer(name);
+      })
       .catch(() => {});
   }
 }
@@ -147,45 +73,164 @@ function sampleBuffer(name) {
   if (decoding.has(name)) return decoding.get(name);
   const url = SAMPLES[name];
   if (!url) return Promise.resolve(null);
-  const source = bytes.get(name)
+
+  const raw = bytes.has(name)
     ? Promise.resolve(bytes.get(name).slice(0))
-    : fetch(url).then(response => response.ok ? response.arrayBuffer() : Promise.reject(new Error('HTTP')));
-  const job = source
-    .then(raw => audioContext().decodeAudioData(raw))
-    .then(buffer => { decoded.set(name,buffer); return buffer; })
-    /* Do NOT permanently cache a failed decode as null. A later gesture may
-       successfully unlock audio and should be allowed to retry the decode. */
+    : fetch(url, { cache:'force-cache' }).then(response => {
+        if (!response.ok) throw new Error('HTTP');
+        return response.arrayBuffer();
+      }).then(buffer => {
+        bytes.set(name, buffer.slice(0));
+        return buffer;
+      });
+
+  const job = raw
+    .then(buffer => audioContext().decodeAudioData(buffer))
+    .then(buffer => {
+      decoded.set(name, buffer);
+      return buffer;
+    })
+    /* Never cache failure. Safari may decode successfully on the next attempt. */
     .catch(() => null)
     .finally(() => decoding.delete(name));
-  decoding.set(name,job);
+
+  decoding.set(name, job);
   return job;
 }
 
-async function runningAudio() {
-  const audio = audioContext();
-  if (audio.state !== 'running') {
-    try { await audio.resume(); } catch { /* caller will fall back */ }
+function unlockMediaElements() {
+  /* HTMLAudio is the safety net if WebAudio gets suspended by iOS. Touch every
+     real sample while user activation is live, but muted, so later fallback
+     playback does not need a navigation-away/back cycle to become eligible. */
+  for (const name of Object.keys(SAMPLES)) {
+    const el = mediaElement(name);
+    if (!el) continue;
+    try {
+      const oldMuted = el.muted;
+      const oldVolume = el.volume;
+      el.muted = true;
+      el.volume = 0;
+      el.currentTime = 0;
+      const p = el.play();
+      if (p?.then) p.then(() => {
+        el.pause();
+        el.currentTime = 0;
+        el.muted = oldMuted;
+        el.volume = oldVolume;
+      }).catch(() => {
+        el.muted = oldMuted;
+        el.volume = oldVolume;
+      });
+    } catch { /* fallback is optional */ }
   }
-  primed = audio.state === 'running';
-  return audio;
+}
+
+/* Called synchronously from the capture-phase first gesture. Assets are already
+   loaded/decoding, so this function only unlocks playback. */
+export function primeAudio() {
+  if (isMuted()) return Promise.resolve(false);
+  gestureSeen = true;
+
+  let audio;
+  try { audio = audioContext(); }
+  catch { return Promise.resolve(false); }
+
+  if (audio.state === 'running') {
+    primed = true;
+    unlockMediaElements();
+    return Promise.resolve(true);
+  }
+  if (priming) return priming;
+
+  try {
+    /* Queue a silent frame BEFORE any await. On iOS the source is then already
+       attached to the user gesture when resume() changes state. */
+    const source = audio.createBufferSource();
+    source.buffer = audio.createBuffer(1, 1, audio.sampleRate);
+    source.connect(audio.destination);
+    source.start(audio.currentTime);
+    unlockMediaElements();
+
+    priming = Promise.resolve(audio.resume())
+      .then(() => {
+        primed = audio.state === 'running';
+        return primed;
+      })
+      .catch(() => {
+        primed = false;
+        return false;
+      })
+      .finally(() => { priming = null; });
+    return priming;
+  } catch {
+    primed = false;
+    priming = null;
+    return Promise.resolve(false);
+  }
+}
+
+export function isMuted() {
+  try { return localStorage.getItem(KEY) === '1'; }
+  catch { return false; }
+}
+
+export function setMuted(value) {
+  try { localStorage.setItem(KEY, value ? '1' : '0'); } catch { /* private mode */ }
+  window.dispatchEvent(new CustomEvent('core7:mute', { detail:{ muted:value } }));
+  if (!value) {
+    gestureSeen = true;
+    /* The sound button itself is a user gesture. Recover playback and give an
+       audible confirmation instead of changing only the icon. */
+    void primeAudio().then(() => {
+      if (!isMuted()) playSfx('cardSwap');
+    });
+  }
+}
+
+export function toggleMuted() {
+  const next = !isMuted();
+  setMuted(next);
+  return next;
+}
+
+async function playMedia(name,{rate=1,gain=1}={}) {
+  const el = mediaElement(name);
+  if (!el || isMuted()) return false;
+  try {
+    el.pause();
+    el.currentTime = 0;
+    el.playbackRate = rate;
+    el.muted = false;
+    el.volume = Math.max(0, Math.min(1, gain));
+    await el.play();
+    return true;
+  } catch { return false; }
 }
 
 async function playSample(name,{rate=1,gain=1}={}) {
-  if (isMuted()) return false;
+  if (isMuted() || !gestureSeen) return false;
   const buffer = await sampleBuffer(name);
-  if (!buffer || isMuted()) return false;
+  if (!buffer || isMuted()) return playMedia(name,{rate,gain});
+
   try {
-    const audio = await runningAudio();
-    if (audio.state !== 'running') return false;
+    const audio = audioContext();
+    if (audio.state !== 'running') {
+      try { await audio.resume(); } catch { /* media fallback below */ }
+    }
+    primed = audio.state === 'running';
+    if (!primed) return playMedia(name,{rate,gain});
+
     const source = audio.createBufferSource();
     const volume = audio.createGain();
     source.buffer = buffer;
     source.playbackRate.value = rate;
     volume.gain.value = gain;
     source.connect(volume).connect(audio.destination);
-    source.start();
+    source.start(audio.currentTime);
     return true;
-  } catch { return false; }
+  } catch {
+    return playMedia(name,{rate,gain});
+  }
 }
 
 const PATTERNS = {
@@ -202,34 +247,8 @@ const PATTERNS = {
   error: [[180,.07,.02],[150,.1,.02]],
 };
 
-/* Never gate gameplay sound behind a successful prime result. The previous
-   implementation did exactly that and one Safari unlock failure silenced the
-   entire session. Prime is best-effort; every sound still gets its own attempt. */
-function attemptSound(fn) {
-  if (isMuted()) return;
-  if (context?.state === 'running') {
-    primed = true;
-    fn();
-    return;
-  }
-  void primeAudio()
-    .catch(() => false)
-    .finally(() => { if (!isMuted()) fn(); });
-}
-
-export function playSfx(name) {
-  if (isMuted()) return;
-  attemptSound(() => {
-    if (SAMPLES[name]) {
-      playSample(name).then(played => { if (!played) synthSfx(name); });
-      return;
-    }
-    synthSfx(name);
-  });
-}
-
 function synthSfx(name) {
-  if (isMuted() || !PATTERNS[name]) return;
+  if (isMuted() || !gestureSeen || !PATTERNS[name]) return;
   try {
     const audio = audioContext();
     if (audio.state !== 'running') return;
@@ -243,23 +262,34 @@ function synthSfx(name) {
       gain.gain.exponentialRampToValueAtTime(gainValue,at+.01);
       gain.gain.exponentialRampToValueAtTime(.0001,at+duration);
       oscillator.connect(gain).connect(audio.destination);
-      oscillator.start(at); oscillator.stop(at+duration+.02);
+      oscillator.start(at);
+      oscillator.stop(at+duration+.02);
       at += duration+.025;
     }
-  } catch { /* Audio is cosmetic; gameplay must continue. */ }
+  } catch { /* cosmetic */ }
+}
+
+export function playSfx(name) {
+  if (isMuted() || !gestureSeen) return;
+  if (SAMPLES[name]) {
+    void playSample(name).then(played => {
+      if (!played) synthSfx(name);
+    });
+    return;
+  }
+  synthSfx(name);
 }
 
 export function playCardFlip(reverse=false) {
-  if (isMuted()) return;
-  attemptSound(() => {
-    playSample('cardFlip',{rate:reverse?.92:1})
-      .then(played => { if (!played) synthCardFlip(reverse); });
+  if (isMuted() || !gestureSeen) return;
+  void playSample('cardFlip',{rate:reverse?.92:1}).then(played => {
+    if (!played) synthCardFlip(reverse);
   });
 }
 
 /* Paper sweep through the turn, followed by the card touching the table. */
 function synthCardFlip(reverse=false) {
-  if (isMuted()) return;
+  if (isMuted() || !gestureSeen) return;
   try {
     const audio = audioContext();
     if (audio.state !== 'running') return;
@@ -286,7 +316,8 @@ function synthCardFlip(reverse=false) {
     paperGain.gain.exponentialRampToValueAtTime(.055,start+.25);
     paperGain.gain.exponentialRampToValueAtTime(.0001,start+duration);
     paper.connect(paperFilter).connect(paperGain).connect(audio.destination);
-    paper.start(start); paper.stop(start+duration);
+    paper.start(start);
+    paper.stop(start+duration);
 
     const tap = audio.createOscillator();
     const tapGain = audio.createGain();
@@ -297,6 +328,27 @@ function synthCardFlip(reverse=false) {
     tapGain.gain.exponentialRampToValueAtTime(.14,start+.385);
     tapGain.gain.exponentialRampToValueAtTime(.0001,start+.49);
     tap.connect(tapGain).connect(audio.destination);
-    tap.start(start+.37); tap.stop(start+.5);
-  } catch { /* Audio is cosmetic; the card must always keep flipping. */ }
+    tap.start(start+.37);
+    tap.stop(start+.5);
+  } catch { /* cosmetic */ }
+}
+
+/* Prepare everything immediately. Creating a suspended AudioContext is allowed;
+   audible playback still waits for the first real user gesture. */
+if (typeof document !== 'undefined') {
+  try { audioContext(); } catch { /* media fallback can still work */ }
+  prefetchSamples();
+
+  const fromGesture = () => {
+    gestureSeen = true;
+    if (!isMuted()) void primeAudio();
+  };
+  addEventListener('pointerdown', fromGesture, { passive:true, capture:true });
+  addEventListener('touchstart', fromGesture, { passive:true, capture:true });
+  addEventListener('keydown', fromGesture, { capture:true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden || isMuted()) return;
+    if (gestureSeen) void primeAudio();
+  });
 }
