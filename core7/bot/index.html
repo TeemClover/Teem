@@ -43,25 +43,46 @@ if (mainQuest) {
 }
 
 /* ── Bot presentation pacing ──────────────────────────────────────────────
-   The game engine may resolve a bot choice immediately, but a physical table
-   needs a readable human rhythm.
+   A human opponent does not act on a metronome.
 
-   • If nobody has committed yet, the bot visibly "thinks" for 2 seconds.
-   • If the human commits first, the bot answers almost immediately.
-   • Discard timing is left to the normal adapter because that is a consequence
-     of the previous reveal, not a new hidden choice.
-
-   The guard lives on the bot page only; Engine / rules / Online rooms are not
-   changed. Existing adapter timers may still call _botTurn, but this wrapper
-   makes every early call wait until the presentation deadline. */
-const BOT_THINK_MS = 2000;
-const BOT_REPLY_MS = 90;
+   • If the bot is the first player to commit, it thinks for 2.0–3.0 seconds.
+   • If the human commits first, the bot follows in 0.3–0.8 seconds.
+   • Every legacy adapter timer still routes through this one deadline, so an
+     older 350ms callback can never jump ahead and make the card appear early.
+   • Discard timing stays with the adapter because it is a visible consequence,
+     not a hidden choice.
+*/
+const randomMs = (min, max) => min + Math.random() * (max - min);
+const BOT_LEAD_MIN = 2000;
+const BOT_LEAD_MAX = 3000;
+const BOT_FOLLOW_MIN = 300;
+const BOT_FOLLOW_MAX = 800;
 const botPace = {
   round: null,
-  readyAt: 0,
+  mode: null,        // 'lead' | 'follow'
+  deadline: 0,
   timer: null,
 };
 const nativeBotTurn = LocalBotClient.prototype._botTurn;
+
+function clearBotTimer() {
+  clearTimeout(botPace.timer);
+  botPace.timer = null;
+}
+
+function setLeadDeadline(round, now = performance.now()) {
+  botPace.round = round;
+  botPace.mode = 'lead';
+  botPace.deadline = now + randomMs(BOT_LEAD_MIN, BOT_LEAD_MAX);
+  clearBotTimer();
+}
+
+function setFollowDeadline(round, now = performance.now()) {
+  botPace.round = round;
+  botPace.mode = 'follow';
+  botPace.deadline = now + randomMs(BOT_FOLLOW_MIN, BOT_FOLLOW_MAX);
+  clearBotTimer();
+}
 
 LocalBotClient.prototype._botTurn = function pacedBotTurn() {
   const state = this.authority?.state;
@@ -69,21 +90,23 @@ LocalBotClient.prototype._botTurn = function pacedBotTurn() {
 
   if (state.phase === 'ROUND_SELECT' && !state.current?.b?.locked) {
     const round = state.roundNumber;
-    if (botPace.round !== round) {
-      botPace.round = round;
-      botPace.readyAt = performance.now() + BOT_THINK_MS;
+    const now = performance.now();
+
+    if (botPace.round !== round) setLeadDeadline(round, now);
+
+    /* Human lock changes the body language of the table: the bot is no longer
+       "thinking first"; it is reacting. Set the follow deadline exactly once
+       from the lock, then make every stray adapter callback respect it. */
+    if (state.current?.a?.locked && botPace.mode !== 'follow') {
+      setFollowDeadline(round, now);
     }
 
-    /* The human card on the table is the cue. Once they commit, answer now
-       instead of waiting out the remaining think timer. */
-    if (state.current?.a?.locked) botPace.readyAt = 0;
-
-    const wait = botPace.readyAt - performance.now();
+    const wait = botPace.deadline - performance.now();
     if (wait > 16) {
-      clearTimeout(botPace.timer);
+      clearBotTimer();
       botPace.timer = setTimeout(() => {
         botPace.timer = null;
-        nativeBotTurn.call(this);
+        this._botTurn();
       }, wait);
       return;
     }
@@ -115,30 +138,23 @@ const client = new LocalBotClient({
   resume: !fresh,
 });
 
-/* Start the 2-second clock from the moment this round is actually ready, not
-   from whichever legacy timeout happens to call the bot first. If the player
-   locks before that deadline, cancel it and make the bot respond right away. */
+/* Establish the first human-like deadline immediately. Authority events then
+   reset it round by round. The selection_locked event is the exact moment the
+   opponent should switch from "thinking" to "following". */
 {
   const state = client.authority?.state;
-  botPace.round = state?.roundNumber ?? null;
-  botPace.readyAt = performance.now() + BOT_THINK_MS;
+  setLeadDeadline(state?.roundNumber ?? 1);
 
   client.subscribe(ev => {
     if (ev?.event_type === 'round.resolved') {
-      clearTimeout(botPace.timer);
-      botPace.timer = null;
-      botPace.round = Number(ev.round_number || 0) + 1;
-      botPace.readyAt = performance.now() + BOT_THINK_MS;
+      setLeadDeadline(Number(ev.round_number || 0) + 1);
       return;
     }
 
     if (ev?.event_type === 'round.selection_locked' && ev.payload?.seat === 'a') {
-      botPace.readyAt = 0;
-      clearTimeout(botPace.timer);
-      botPace.timer = setTimeout(() => {
-        botPace.timer = null;
-        nativeBotTurn.call(client);
-      }, BOT_REPLY_MS);
+      const round = client.authority?.state?.roundNumber ?? botPace.round ?? 1;
+      if (botPace.mode !== 'follow') setFollowDeadline(round);
+      client._botTurn();
     }
   });
 }
@@ -156,14 +172,18 @@ if (createdNewMatch) {
 mountMatch(document.getElementById('match'), client, {
   oppLabel: `· ${level.toUpperCase()}`,
   onFinished(view) {
+    clearBotTimer();
     const state = store.loadMatchSnapshot(matchId)?.state;
     reportBotMatchComplete({ state, humanId: client.playerId, level });
     store.recordMatch('bot', view, view.opponent.name);
     store.track(mainQuest ? 'core7_main_match_complete' : 'core7_bot_match_complete');
     try { localStorage.removeItem(CUR); } catch { /* ok */ }
-    location.href = mainQuest
+    const destination = mainQuest
       ? `/core7/journey-result/?m=${matchId}&mode=bot&level=${level}`
       : `/core7/result/?m=${matchId}&mode=bot&level=${level}`;
+    /* Replace instead of stacking a completed live table behind the summary.
+       This also prevents Back/BFCache from briefly restoring stale match DOM. */
+    location.replace(destination);
   },
 });
 </script>
