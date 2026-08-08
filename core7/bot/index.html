@@ -33,10 +33,7 @@ if (!hand || hand.length !== 7) {
   throw new Error('no hand');
 }
 
-/* Main Quest / Quick Tutorial must teach with equal information.
-   Mirror the player's exact 7-card hand for the bot so the tutorial Match
-   is always symmetric (normally 2 RED / 2 GREEN / 2 BLUE / 1 SILVER).
-   Normal bot play keeps Core7Bot.buildHand() random as before. */
+/* Main Quest / Quick Tutorial must teach with equal information. */
 if (mainQuest) {
   const tutorialHand = hand.slice();
   Core7Bot.buildHand = () => tutorialHand.slice();
@@ -47,41 +44,32 @@ if (mainQuest) {
 
    • Bot leads only 2.0–3.0s AFTER the previous result is visibly painted.
    • If the human commits first, the bot follows in 0.3–0.8s.
-   • Between Engine resolve and Physical Table reveal the bot is BLOCKED, so
-     no legacy adapter timer can secretly spend the thinking time off-screen.
+   • Between Engine resolve and Physical Table reveal the bot is BLOCKED.
 */
 const randomMs = (min, max) => min + Math.random() * (max - min);
 const BOT_LEAD_MIN = 2000;
 const BOT_LEAD_MAX = 3000;
 const BOT_FOLLOW_MIN = 300;
 const BOT_FOLLOW_MAX = 800;
-const botPace = {
-  round: null,
-  mode: 'blocked',   // blocked | lead | follow
-  deadline: Infinity,
-  timer: null,
-};
+const botPace = { round:null, mode:'blocked', deadline:Infinity, timer:null };
 const nativeBotTurn = LocalBotClient.prototype._botTurn;
 
 function clearBotTimer() {
   clearTimeout(botPace.timer);
   botPace.timer = null;
 }
-
 function blockLead(round) {
   botPace.round = round;
   botPace.mode = 'blocked';
   botPace.deadline = Infinity;
   clearBotTimer();
 }
-
 function setLeadDeadline(round, now = performance.now()) {
   botPace.round = round;
   botPace.mode = 'lead';
   botPace.deadline = now + randomMs(BOT_LEAD_MIN, BOT_LEAD_MAX);
   clearBotTimer();
 }
-
 function setFollowDeadline(round, now = performance.now()) {
   botPace.round = round;
   botPace.mode = 'follow';
@@ -93,20 +81,14 @@ LocalBotClient.prototype._botTurn = function pacedBotTurn() {
   const state = this.authority?.state;
   if (!state) return nativeBotTurn.call(this);
 
+  /* Discard is a visible consequence of the previous reveal, not a hidden new
+     choice. Let the adapter handle it normally. Only gate next-card commits. */
   if (state.phase === 'ROUND_SELECT' && !state.current?.b?.locked) {
     const round = state.roundNumber;
     const now = performance.now();
 
     if (botPace.round !== round) blockLead(round);
-
-    /* Human commitment always wins over the lead hold. React from the visible
-       moment their card is committed, never from an earlier Engine callback. */
-    if (state.current?.a?.locked && botPace.mode !== 'follow') {
-      setFollowDeadline(round, now);
-    }
-
-    /* A resolved round is still animating / being read. The Physical Table
-       explicitly releases this block after its visible result is on-screen. */
+    if (state.current?.a?.locked && botPace.mode !== 'follow') setFollowDeadline(round, now);
     if (botPace.mode === 'blocked') return;
 
     const wait = botPace.deadline - performance.now();
@@ -139,26 +121,18 @@ if (!matchId) {
   store.track(mainQuest ? 'core7_main_match_start' : 'core7_bot_match_start');
 }
 
-const client = new LocalBotClient({
-  matchId,
-  humanCards: hand,
-  level,
-  resume: !fresh,
-});
+const client = new LocalBotClient({ matchId, humanCards:hand, level, resume:!fresh });
 
-/* Engine events can prepare the next round, but they are NOT allowed to start
-   the bot's lead timer. That clock begins only when Physical Table says the
-   previous result is actually visible to the player. */
+/* Engine may resolve the next round before the reveal animation is finished.
+   Block the next hidden choice until Physical Table announces visible result. */
 {
   const state = client.authority?.state;
   blockLead(state?.roundNumber ?? 1);
-
   client.subscribe(ev => {
     if (ev?.event_type === 'round.resolved') {
       blockLead(Number(ev.round_number || 0) + 1);
       return;
     }
-
     if (ev?.event_type === 'round.selection_locked' && ev.payload?.seat === 'a') {
       const round = client.authority?.state?.roundNumber ?? botPace.round ?? 1;
       if (botPace.mode !== 'follow') setFollowDeadline(round);
@@ -169,25 +143,17 @@ const client = new LocalBotClient({
 
 if (createdNewMatch) {
   const state = store.loadMatchSnapshot(matchId)?.state;
-  reportBotMatchStart({
-    matchId,
-    level,
-    startedAt: state?.startedAt || Date.now(),
-    rulesVersion: state?.rulesVersion,
-  });
+  reportBotMatchStart({ matchId, level, startedAt:state?.startedAt || Date.now(), rulesVersion:state?.rulesVersion });
 }
 
-/* Physical Table dispatches this only AFTER both cards have flipped and the
-   WIN / LOSE / DRAW line is visibly painted. Start a fresh 2–3s read window
-   from that exact presentation moment. */
-window.addEventListener('core7:physical-result-ready', () => {
+/* Result-visible time zero. Start the 2–3s hold even if a discard phase is
+   still active. If discard takes longer than the hold, the bot may act once
+   the next ROUND_SELECT actually exists; otherwise it waits the remainder. */
+window.addEventListener('core7:physical-result-ready', event => {
   const state = client.authority?.state;
-  if (!state || state.phase !== 'ROUND_SELECT' || state.current?.b?.locked) return;
-  if (state.current?.a?.locked) {
-    if (botPace.mode !== 'follow') setFollowDeadline(state.roundNumber);
-  } else {
-    setLeadDeadline(state.roundNumber);
-  }
+  if (!state || state.phase === 'MATCH_RESULT') return;
+  const nextRound = Number(event.detail?.nextRound || state.roundNumber || botPace.round || 1);
+  setLeadDeadline(nextRound);
   client._botTurn();
 });
 
@@ -196,7 +162,7 @@ const matchApi = mountMatch(document.getElementById('match'), client, {
   onFinished(view) {
     clearBotTimer();
     const state = store.loadMatchSnapshot(matchId)?.state;
-    reportBotMatchComplete({ state, humanId: client.playerId, level });
+    reportBotMatchComplete({ state, humanId:client.playerId, level });
     store.recordMatch('bot', view, view.opponent.name);
     store.track(mainQuest ? 'core7_main_match_complete' : 'core7_bot_match_complete');
     try { localStorage.removeItem(CUR); } catch { /* ok */ }
@@ -207,8 +173,7 @@ const matchApi = mountMatch(document.getElementById('match'), client, {
   },
 });
 
-/* First round has no previous result. Start its human-like think window only
-   after the table has actually mounted and painted at least two frames. */
+/* First round has no previous result. Start only after the table paints. */
 requestAnimationFrame(() => requestAnimationFrame(() => {
   const state = client.authority?.state;
   if (!state || state.phase !== 'ROUND_SELECT' || state.current?.b?.locked) return;
@@ -216,7 +181,6 @@ requestAnimationFrame(() => requestAnimationFrame(() => {
   else setLeadDeadline(state.roundNumber);
   client._botTurn();
 }));
-
 void matchApi;
 </script>
 </body>
