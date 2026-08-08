@@ -1,6 +1,7 @@
 const KEY = 'c7:sfx-muted';
 let context = null;
 let primed = false;
+let priming = null;
 
 /* iPhone เงียบเพราะสวิตช์กระดิ่งข้างเครื่อง ไม่ใช่เพราะโค้ดพัง
    Web Audio บน iOS ถูกจัดเป็นเสียง ambient โดยปริยาย ซึ่งโดนสวิตช์ silent ปิดทั้งหมด
@@ -21,27 +22,39 @@ function audioContext() {
 }
 
 /* iOS requires the AudioContext to be CREATED/RESUMED inside a real user
-   gesture. The old "prime" only woke an already-existing context, so the first
-   game sound could create it too late (outside the gesture) and remain silent.
-   Create it on the first touch and push one inaudible sample through the graph. */
-async function primeAudio() {
-  if (isMuted()) return false;
-  try {
-    claimPlaybackSession();
-    const audio = audioContext();
-    if (audio.state !== 'running') await audio.resume();
-    const source = audio.createBufferSource();
-    source.buffer = audio.createBuffer(1, 1, audio.sampleRate);
-    source.connect(audio.destination);
-    source.start();
-    primed = audio.state === 'running';
-    /* Once iOS has granted playback, decode the physical card samples while
-       the player is reading/choosing so reveal never has to wait on decode. */
-    for (const name of Object.keys(SAMPLES)) void sampleBuffer(name);
-    return primed;
-  } catch {
-    return false;
-  }
+   gesture. Capture the FIRST pointer before card UI handlers run, then decode
+   the physical samples while the player is making the first choice. */
+export function primeAudio() {
+  if (isMuted()) return Promise.resolve(false);
+  if (primed && context?.state === 'running') return Promise.resolve(true);
+  if (priming) return priming;
+
+  priming = (async () => {
+    try {
+      claimPlaybackSession();
+      const audio = audioContext();
+      if (audio.state !== 'running') await audio.resume();
+
+      /* Push an inaudible frame through the graph. Safari/iOS is more reliable
+         after an actual source has started inside the user gesture. */
+      const source = audio.createBufferSource();
+      source.buffer = audio.createBuffer(1, 1, audio.sampleRate);
+      source.connect(audio.destination);
+      source.start();
+
+      primed = audio.state === 'running';
+      if (primed) {
+        for (const name of Object.keys(SAMPLES)) void sampleBuffer(name);
+      }
+      return primed;
+    } catch {
+      return false;
+    } finally {
+      priming = null;
+    }
+  })();
+
+  return priming;
 }
 
 /* iOS may suspend AudioContext when switching apps or locking the screen. */
@@ -49,11 +62,17 @@ if (typeof document !== 'undefined') {
   const wake = () => {
     if (document.hidden || isMuted()) return;
     claimPlaybackSession();
-    if (context?.state === 'suspended') context.resume().catch(() => {});
+    if (context?.state === 'suspended') context.resume().then(() => {
+      primed = context?.state === 'running';
+    }).catch(() => {});
   };
   document.addEventListener('visibilitychange', wake);
-  addEventListener('pointerdown', () => { void primeAudio(); }, { once:true, passive:true });
-  addEventListener('keydown', () => { void primeAudio(); }, { once:true });
+
+  /* Capture phase is intentional: unlock audio BEFORE select/drag/lock code
+     consumes the same gesture. This fixes the old behaviour where sound only
+     started after a later hand rearrange. */
+  addEventListener('pointerdown', () => { void primeAudio(); }, { once:true, passive:true, capture:true });
+  addEventListener('keydown', () => { void primeAudio(); }, { once:true, capture:true });
 
   /* Download bytes early. Decoding happens after the first user gesture. */
   const warm = () => prefetchSamples();
@@ -110,8 +129,7 @@ function sampleBuffer(name) {
     .then(raw => audioContext().decodeAudioData(raw))
     .then(buffer => { decoded.set(name,buffer); return buffer; })
     /* Do NOT permanently cache a failed decode as null. iOS can fail while the
-       context is still suspended; a later user gesture should be allowed to
-       retry instead of leaving the whole session silently broken. */
+       context is still suspended; a later user gesture should be allowed to retry. */
     .catch(() => null)
     .finally(() => decoding.delete(name));
   decoding.set(name,job);
@@ -123,6 +141,7 @@ async function runningAudio() {
   if (audio.state !== 'running') {
     try { await audio.resume(); } catch { /* fallback below */ }
   }
+  primed = audio.state === 'running';
   return audio;
 }
 
@@ -158,20 +177,33 @@ const PATTERNS = {
   error: [[180,.07,.02],[150,.1,.02]],
 };
 
-export function playSfx(name) {
+/* If a sound request happens on the same first gesture that unlocks audio,
+   queue it behind primeAudio instead of silently dropping it. */
+function whenAudioReady(fn) {
   if (isMuted()) return;
-  if (SAMPLES[name]) {
-    playSample(name).then(played => { if (!played) synthSfx(name); });
+  if (primed && context?.state === 'running') {
+    fn();
     return;
   }
-  synthSfx(name);
+  void primeAudio().then(ok => { if (ok && !isMuted()) fn(); });
+}
+
+export function playSfx(name) {
+  if (isMuted()) return;
+  whenAudioReady(() => {
+    if (SAMPLES[name]) {
+      playSample(name).then(played => { if (!played) synthSfx(name); });
+      return;
+    }
+    synthSfx(name);
+  });
 }
 
 function synthSfx(name) {
   if (isMuted() || !PATTERNS[name]) return;
   try {
     const audio = audioContext();
-    if (audio.state !== 'running' && !primed) return;
+    if (audio.state !== 'running') return;
     let at = audio.currentTime;
     for (const [frequency,duration,gainValue] of PATTERNS[name]) {
       const oscillator = audio.createOscillator();
@@ -190,8 +222,10 @@ function synthSfx(name) {
 
 export function playCardFlip(reverse=false) {
   if (isMuted()) return;
-  playSample('cardFlip',{rate:reverse?.92:1})
-    .then(played => { if (!played) synthCardFlip(reverse); });
+  whenAudioReady(() => {
+    playSample('cardFlip',{rate:reverse?.92:1})
+      .then(played => { if (!played) synthCardFlip(reverse); });
+  });
 }
 
 /* Paper sweep through the turn, followed by the card touching the table. */
@@ -199,7 +233,7 @@ function synthCardFlip(reverse=false) {
   if (isMuted()) return;
   try {
     const audio = audioContext();
-    if (audio.state !== 'running' && !primed) return;
+    if (audio.state !== 'running') return;
     const start = audio.currentTime;
     const duration = .46;
     const buffer = audio.createBuffer(1,Math.ceil(audio.sampleRate*duration),audio.sampleRate);
