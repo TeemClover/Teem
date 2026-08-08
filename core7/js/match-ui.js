@@ -20,9 +20,10 @@ function installStyles() {
   .pf2-face{position:absolute;inset:0;border-radius:10px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#071c12;transform:translateZ(.1px)}
   .pf2-face.front{transform:rotateY(180deg) translateZ(.1px)}
   .pf2-face svg{display:block;width:100%;height:100%}
-  .pf2-ghost{position:fixed;z-index:420;pointer-events:none;perspective:1000px;transform-origin:top left;filter:drop-shadow(0 18px 24px rgb(0 0 0/.38))}
+  .pf2-ghost,.pf2-exit{position:fixed;z-index:420;pointer-events:none;perspective:1000px;transform-origin:top left;filter:drop-shadow(0 18px 24px rgb(0 0 0/.38))}
+  .pf2-exit{z-index:410;transition:none!important}
   .pf2-ghost-inner{position:absolute;inset:0;transform-style:preserve-3d}
-  .pf2-ghost .pf2-face{border-radius:9px}
+  .pf2-ghost .pf2-face,.pf2-exit .pf2-face{border-radius:9px}
   .physical-v2 .round-result{opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s}
   .physical-v2 .round-result.pf2-show{opacity:1;transform:none}
   .physical-v2 .round-discard{transition:opacity .18s,transform .18s}
@@ -30,7 +31,7 @@ function installStyles() {
   .physical-v2 .hand-card.pf2-played{opacity:0!important;pointer-events:none!important}
   .physical-v2 .stage-cards.pf2-ready{animation:pf2ready .24s ease-out}
   @keyframes pf2ready{50%{transform:scale(1.012)}}
-  @media(prefers-reduced-motion:reduce){.pf2-card,.pf2-inner,.physical-v2 .round-result,.physical-v2 .round-discard{transition:none!important}.pf2-ghost{display:none!important}.physical-v2 .stage-cards.pf2-ready{animation:none!important}}
+  @media(prefers-reduced-motion:reduce){.pf2-card,.pf2-inner,.physical-v2 .round-result,.physical-v2 .round-discard{transition:none!important}.pf2-ghost,.pf2-exit{display:none!important}.physical-v2 .stage-cards.pf2-ready{animation:none!important}}
   `;
   document.head.append(s);
 }
@@ -90,12 +91,33 @@ function controller(root) {
     return {left:to.left+to.width/2-29,top:a?Math.max(4,a.bottom+2):Math.max(4,to.top-150),width:58,height:81};
   }
 
+  /* Never animate the persistent table card itself out of the slot. That same
+     DOM node is immediately reused by the incoming card, which previously let
+     an old exit animation finish late and make the new card appear to warp or
+     vanish. Snapshot the old card into a fixed ghost, free the slot instantly,
+     then let the snapshot travel completely off-screen. */
   async function clear(side,soft=false){
     const n=card(side);if(!n?.classList.contains('on'))return;
     if(reducedMotion()||!n.animate){hide(side);return}
+    const rect=copyRect(n.getBoundingClientRect());if(!rect?.width){hide(side);return}
+    const exit=n.cloneNode(true);
+    exit.classList.add('pf2-exit','on');
+    Object.assign(exit.style,{position:'fixed',inset:'auto',left:`${rect.left}px`,top:`${rect.top}px`,width:`${rect.width}px`,height:`${rect.height}px`,opacity:'1',transform:'none',transition:'none',pointerEvents:'none'});
+    document.body.append(exit);
+    hide(side);
+    await twoFrames();
+    if(!soft)playSfx('fling');
     const d=side==='you'?-1:1;
-    const a=n.animate([{transform:'translate3d(0,0,0) scale(1)',opacity:1},{transform:`translate3d(${d*(soft?24:138)}%,${soft?5:10}px,0) rotate(${d*(soft?3:8)}deg) scale(${soft?.97:.94})`,opacity:0}],{duration:soft?170:300,easing:'cubic-bezier(.28,.74,.2,1)',fill:'forwards'});
-    try{await a.finished}catch{} hide(side);a.cancel();
+    const travel=d<0?-(rect.right+Math.max(64,rect.width*.45)):(innerWidth-rect.left+Math.max(64,rect.width*.45));
+    const y=soft?5:12;
+    const turn=d*(soft?4:9);
+    const duration=soft?290:390;
+    const a=exit.animate([
+      {transform:'translate3d(0,0,0) rotate(0deg) scale(1)',opacity:1,offset:0},
+      {transform:`translate3d(${travel*.76}px,${d*y*.35}px,0) rotate(${turn*.68}deg) scale(${soft?.985:.965})`,opacity:1,offset:.72},
+      {transform:`translate3d(${travel}px,${d*y}px,0) rotate(${turn}deg) scale(${soft?.975:.94})`,opacity:0,offset:1},
+    ],{duration,easing:'cubic-bezier(.24,.72,.18,1)',fill:'forwards'});
+    try{await a.finished}catch{}exit.remove();
   }
 
   function ghost(side,id,from){
@@ -115,7 +137,7 @@ function controller(root) {
     if(side==='you')inner.style.transform='rotateY(180deg)';
     const m=g.animate([{transform:'translate3d(0,0,0) scale(1)',offset:0},{transform:`translate3d(${dx*.56}px,${dy*.56-10}px,0) scale(${1+(sx-1)*.56},${1+(sy-1)*.56})`,offset:.56},{transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`,offset:1}],{duration:side==='you'?470:430,easing:'cubic-bezier(.2,.76,.2,1)',fill:'forwards'});
     let turn=null;if(side==='you')turn=inner.animate([{transform:'rotateY(180deg)',offset:0},{transform:'rotateY(180deg)',offset:.3},{transform:'rotateY(92deg)',offset:.56},{transform:'rotateY(0deg)',offset:.82},{transform:'rotateY(0deg)',offset:1}],{duration:430,easing:'cubic-bezier(.22,.68,.18,1)',fill:'forwards'});
-    try{await m.finished}catch{} back(side);await twoFrames();playSfx('cardSwap');g.remove();try{turn?.cancel()}catch{} if(side==='you')launch=null;
+    try{await m.finished}catch{}back(side);await twoFrames();playSfx('cardSwap');g.remove();try{turn?.cancel()}catch{}if(side==='you')launch=null;
   }
 
   function lock(side,known=null){
@@ -133,6 +155,9 @@ function controller(root) {
     const a=locked.you?(arrivals.you||Promise.resolve()):lock('you',r.you?.cardId),b=locked.opp?(arrivals.opp||Promise.resolve()):lock('opp');await Promise.allSettled([a,b]);
     back('you');back('opp');readyPulse();if(!reducedMotion())await sleep(230);playCardFlip(false);card('you')?.classList.add('up');card('opp')?.classList.add('up');if(!reducedMotion())await sleep(540);
     paintResult(r);showResult();physicalRounds=Math.max(physicalRounds+1,Number(r.n||0));legacyRounds=Math.max(legacyRounds,physicalRounds);notify();
+    /* This event marks human-visible time zero for the next decision. The bot
+       must not spend its thinking delay while these cards are still flipping. */
+    try{window.dispatchEvent(new CustomEvent('core7:physical-result-ready',{detail:{round:Number(r.n||physicalRounds),nextRound:Number(r.n||physicalRounds)+1}}))}catch{}
     first=null;locked.you=locked.opp=false;arrivals.you=arrivals.opp=null;selectedIid=launch=committedIid=null;
   }
 
