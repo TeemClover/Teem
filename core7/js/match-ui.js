@@ -1,715 +1,521 @@
 /* ═══════════════════════════════════════════════════════════════
-   myClover: CORE7 — Match Screen Controller
-   ใช้ร่วมกันทั้งโหมด Bot / Room — คุยกับ "client" interface เท่านั้น
+   myClover: CORE7 — Physical Table Flow
 
-   client = {
-     playerId,
-     send(action)        → Promise<{ok, error?}>   // select_card / lock_choice / discard_card / forfeit
-     getView()           → Promise<view>            // viewFor(playerId) จากฝั่ง Authority
-     subscribe(cb(ev))   → unsubscribe
-     connectionState?()  → 'on' | 'off'
-   }
-   UI ไม่เคยคำนวณผลเกมเอง — แสดงตาม view ที่ Authority ส่งมาเท่านั้น
+   This file intentionally wraps the proven Match UI instead of rewriting the
+   game screen. Engine / server / drag-sort / discard / result behavior stays
+   in match-ui-legacy.js. This layer owns only the physical rhythm of cards on
+   the centre table:
+
+   RESULT HOLD → FIRST LOCK → SECOND LOCK → REVEAL → RESULT HOLD
+
+   A locked card is visible as a face-down card. The previous result stays on
+   the table until somebody commits the next card. Both new cards flip together.
+   DOM for the real card faces is only changed when a new round is revealed,
+   which also prevents the stage-card flash seen during frequent online polls.
    ═══════════════════════════════════════════════════════════════ */
-import { $, el, toast, haptic, reducedMotion } from './ui.js';
-import { COLOR_META, cardById } from './cards.js';
-import { COLORS } from './rules.js';
-import { t } from './i18n.js';
-import { cardSVG, cardBackSVG, genericCardSVG, cardArtHref } from './art.js';
-import { playSfx } from './audio.js';
+import { mountMatch as mountLegacyMatch } from './match-ui-legacy.js';
+import { reducedMotion } from './ui.js';
+import { cardById } from './cards.js';
+import { cardSVG, cardBackSVG, genericCardSVG } from './art.js';
 
-/* เกมนี้เล่นซ้ำเยอะ ข้อความเลยต้องสั้นที่สุด — ใช้อีโมจิสีแทนชื่อสีเสมอ
-   คนเล่นจำสีได้เองตั้งแต่รอบสองอยู่แล้ว
+let styleInstalled = false;
 
-   อีโมจิซ้ายคือใบของเราเสมอ ตรงกับการ์ดฝั่งซ้ายบนโต๊ะและในประวัติ
-   แพ้ก็ยังอยู่ซ้าย แค่กลับเครื่องหมายเป็น < แทน — ของเดิมสลับฝั่ง
-   ให้ผู้ชนะอยู่ซ้ายตลอด อ่านแล้วงงว่าอีโมจิไหนคือใบเรา */
-const emo = color => COLOR_META[color].emoji;
-/* ชื่อสีสำหรับ screen reader — บนหน้าจอใช้อีโมจิอยู่แล้ว ตรงนี้จึงมีไว้
-   ให้คนที่ฟังอย่างเดียวรู้ว่าใบไหนสีอะไร */
-const colorName = color => t(COLOR_META[color].nameTh, COLOR_META[color].nameEn);
-const RESULT_TEXT = {
-  WIN: (you, opp) => `${emo(you)} &gt; ${emo(opp)}`,
-  LOSE: (you, opp) => `${emo(you)} &lt; ${emo(opp)}`,
-  TIE_SAME: (you, opp) => `${emo(you)} = ${emo(opp)}`,
-  TIE_SILVER: (you, opp) => `${emo(you)} = ${emo(opp)} · BLOCK`,
-};
+function installPhysicalTableStyles() {
+  if (styleInstalled || typeof document === 'undefined') return;
+  styleInstalled = true;
+  const style = document.createElement('style');
+  style.id = 'c7-physical-table-flow';
+  style.textContent = `
+    .physical-table-flow .stage-slot{
+      opacity:0;
+      will-change:transform,opacity;
+      transition:opacity .18s ease;
+      transform-origin:center center;
+    }
+    .physical-table-flow .stage-slot.pf-visible{opacity:1}
 
-/* endOverlay=false สำหรับเส้นที่มีหน้าจบเต็มรออยู่แล้ว (ห้อง / SET)
-   ไม่งั้นคนจะเจอฉากจบเล็กแวบหนึ่ง แล้วการ์ดใหม่ แล้วฉากจบเต็มอีกที
-   ประกาศผลสามชั้นซ้อนกันในสิบวินาที */
-export function mountMatch(root, client, { onFinished, oppLabel = '', endOverlay = true } = {}) {
-  let view = null;
-  let finished = false;
-  let finishTimer = null;
-  let revealShown = 0;      // จำนวนรอบที่เล่น animation แล้ว
+    /* Legacy reveal still writes the public card faces and result copy, but
+       only pf-faceup is allowed to control the physical flip. This prevents
+       polling / legacy class churn from flashing the cards. */
+    .physical-table-flow .stage-slot.revealed .flip,
+    .physical-table-flow .stage-slot.pf-facedown .flip{
+      transform:rotateY(0deg)!important;
+    }
+    .physical-table-flow .stage-slot.pf-faceup .flip{
+      transform:rotateY(180deg)!important;
+    }
+    .physical-table-flow .stage-slot .flip{
+      transition:transform .42s cubic-bezier(.2,.72,.2,1)!important;
+      will-change:transform;
+    }
+    .physical-table-flow .stage-slot .face{
+      -webkit-backface-visibility:hidden;
+      backface-visibility:hidden;
+      transform:translateZ(0);
+    }
 
-  root.classList.add('match-shell');
-  /* ฝั่งผู้เล่นอยู่ซ้ายเสมอ — คู่แข่งอยู่ขวาเสมอ (ทั้งแถบบนและโต๊ะกลาง) */
-  root.innerHTML = `
-    <div class="match-top">
-      <div class="pl">
-        <span class="avatar" id="youAv">?</span>
-        <div>
-          <div class="nm" id="youName">…</div>
-          <div class="meta"><span id="youCards"></span><span class="pips" id="youPips"></span></div>
-        </div>
-      </div>
-      <div class="pl" style="flex-direction:row-reverse;text-align:right">
-        <span class="avatar" id="oppAv">?</span>
-        <div>
-          <div class="nm" id="oppName">…</div>
-          <div class="meta" style="justify-content:flex-end"><span class="pips" id="oppPips"></span><span id="oppCards"></span></div>
-        </div>
-        <span class="conn" id="connDot"></span>
-      </div>
-    </div>
-    <div class="public-counts" id="publicCounts">
-      <div class="public-count-side you" id="youPublicCounts"></div>
-      <div class="public-count-side opp" id="oppPublicCounts"></div>
-    </div>
-    <div class="match-board">
-      <div class="match-stage">
-        <button class="rules-toggle" id="rulesBtn" aria-expanded="false">📖 Rules</button>
-        <button class="drawer-toggle" id="histBtn" aria-expanded="false">🗑️ Discard</button>
-        <div class="match-rules-popover" id="rulesPopover" hidden role="dialog">
-          <div class="match-rules-head"><b class="disp">CORE7 Rules</b><button type="button" id="rulesClose">✕</button></div>
-          <img id="rulesImg" src="/core7/assets/core7-rule.webp" alt="">
-          <p>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴 · ⚙️ = BLOCK<br><span id="rulesLine2"></span></p>
-          <a href="/core7/rules/" target="_blank" rel="noopener" id="rulesFull"></a>
-        </div>
-        <div class="rule-line" id="ruleLine"><span>🔴 &gt; 🟢 &gt; 🔵 &gt; 🔴</span><span>⚙️ = BLOCK</span></div>
-        <div class="stage-cards">
-          <div class="stage-slot" id="slotYou">
-            <div class="flip"><div class="face back"></div><div class="face front"></div></div>
-          </div>
-          <div class="stage-vs">VS<br><span id="roundNo" style="font-size:12px;color:rgb(255 255 255/.6)"></span></div>
-          <div class="stage-slot" id="slotOpp" aria-live="polite">
-            <div class="flip"><div class="face back"></div><div class="face front"></div></div>
-          </div>
-        </div>
-        <div class="round-result" id="roundResult" aria-live="assertive"></div>
-        <div class="round-discard" id="roundDiscard" aria-live="polite"></div>
-      </div>
-      <aside class="history-rail" id="historyAside">
-        <h2 class="disp">🗑️ Discard</h2>
-        <div id="historyRail"></div>
-      </aside>
-    </div>
-    <div class="match-hand">
-      <p class="match-msg" id="msg"></p>
-      <div class="hand-row" id="hand" role="group"></div>
-      <div class="match-actions">
-        <button class="btn btn-gold" id="lockBtn" disabled>🔒 Lock</button>
-      </div>
-    </div>`;
+    /* Result never disappears on a timer. It leaves only when the next card
+       is committed, then comes back after the simultaneous reveal. */
+    .physical-table-flow .round-result{
+      opacity:0;
+      transform:translateY(4px);
+      transition:opacity .2s ease,transform .2s ease;
+    }
+    .physical-table-flow .round-result.pf-result-visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+    .physical-table-flow .round-discard{
+      transition:opacity .18s ease;
+    }
+    .physical-table-flow.pf-between-rounds .round-discard{opacity:0}
 
-  const slotOpp = $('#slotOpp', root), slotYou = $('#slotYou', root);
-  const lockBtn = $('#lockBtn', root);
+    /* Moving card used only during the commitment animation. It is a detached
+       visual copy, so the real hand DOM can keep its stable no-flicker cache. */
+    .pf-card-ghost{
+      position:fixed;
+      z-index:240;
+      pointer-events:none;
+      perspective:900px;
+      transform-origin:center center;
+      filter:drop-shadow(0 14px 18px rgb(0 0 0 / .34));
+      contain:layout paint style;
+    }
+    .pf-card-ghost-inner{
+      position:absolute;
+      inset:0;
+      transform-style:preserve-3d;
+      will-change:transform;
+    }
+    .pf-card-ghost-face{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      border-radius:9px;
+      -webkit-backface-visibility:hidden;
+      backface-visibility:hidden;
+    }
+    .pf-card-ghost-face.back{transform:rotateY(180deg)}
+    .pf-card-ghost-face svg{display:block;width:100%;height:100%}
 
-  /* โครงหน้าจอถูกสร้างครั้งเดียวตอน mount ถ้าฝัง t() ไว้ใน template ตรง ๆ
-     คนที่สลับภาษากลางแมตช์จะเห็นข้อความเก่าค้าง (โดยเฉพาะ aria-label กับ
-     title ที่ MutationObserver ของ i18n ไม่แตะให้) เลยแยกมาเซ็ตทีหลัง
-     แล้วเรียกซ้ำทุกครั้งที่ภาษาเปลี่ยน */
-  function localizeShell() {
-    const attr = (sel, name, value) => { const n = $(sel, root); if (n) n.setAttribute(name, value); };
-    const text = (sel, value) => { const n = $(sel, root); if (n) n.textContent = value; };
-    attr('#connDot', 'title', t('สถานะการเชื่อมต่อ', 'Connection status'));
-    attr('#publicCounts', 'aria-label', t('จำนวนไพ่ที่เปิดเผยแล้ว', 'Cards revealed so far'));
-    attr('#rulesBtn', 'aria-label', t('เปิด Rules', 'Open rules'));
-    attr('#histBtn', 'aria-label', t('เปิด Discard', 'Open discard pile'));
-    attr('#rulesPopover', 'aria-label', t('กติกา CORE7', 'CORE7 rules'));
-    attr('#rulesClose', 'aria-label', t('ปิด Rules', 'Close rules'));
-    attr('#rulesImg', 'alt', t(
-      'แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เงินเป็น Block ผู้แพ้ทิ้งเพิ่มหนึ่งใบ ชนะสามรอบ และ Final Silver',
-      'Red beats green, green beats blue, blue beats red, silver blocks. The loser discards one more. First to three round wins, plus the Final Silver rule.'));
-    text('#rulesLine2', t('ผู้แพ้ทิ้งเพิ่ม 1 ใบ · ชนะครบ 3 รอบ', 'Loser discards 1 more · first to 3 rounds'));
-    text('#rulesFull', t('อ่านกติกาเต็ม TH / EN ↗', 'Read the full rules TH / EN ↗'));
-    attr('#ruleLine', 'aria-label', t(
-      'แดงชนะเขียว เขียวชนะฟ้า ฟ้าชนะแดง เงินเป็นบล็อก',
-      'Red beats green, green beats blue, blue beats red, silver blocks'));
-    attr('#historyAside', 'aria-label', t('Discard ทุกใบที่ออกแล้ว', 'Every card already played or discarded'));
-    attr('#hand', 'aria-label', t('มือของคุณ', 'Your hand'));
-  }
-  localizeShell();
-  /* หน้านี้อยู่จนจบแมตช์แล้วเปลี่ยนหน้า ไม่ต้องถอด listener */
-  window.addEventListener('core7:lang', () => {
-    localizeShell();
-    if (!view) return;
-    handSig = null;   // ชื่อการ์ดกับ aria-label ในมืออยู่ในปุ่ม ต้องวาดใหม่ทั้งแถว
-    render();
-  });
+    @media (prefers-reduced-motion: reduce){
+      .physical-table-flow .stage-slot,
+      .physical-table-flow .stage-slot .flip,
+      .physical-table-flow .round-result{transition:none!important}
+      .pf-card-ghost{display:none!important}
+    }
+  `;
+  document.head.append(style);
+}
 
-  /* หลังการ์ดในช่อง reveal */
-  $('.back', slotOpp).innerHTML = cardBackSVG({ width: 150 });
-  $('.back', slotYou).innerHTML = cardBackSVG({ width: 150 });
+function faceSVG(cardId) {
+  const card = cardById(cardId);
+  if (!card) return '';
+  return card.generic
+    ? genericCardSVG(card.color, { width: 150 })
+    : cardSVG(cardId, { width: 150, showNumber: false });
+}
 
-  function pips(n, host) {
-    host.innerHTML = '';
-    for (let i = 0; i < 3; i++) host.append(el('i', { class: i < n ? 'on' : '' }));
-  }
+function copyRect(rect) {
+  if (!rect) return null;
+  return {
+    left: rect.left,
+    top: rect.top,
+    width: rect.width,
+    height: rect.height,
+    right: rect.right,
+    bottom: rect.bottom,
+  };
+}
 
-  /* การ์ดที่ลงบนโต๊ะต้องเป็นใบที่เลือกมาจริง ไม่ใช่การ์ดสีเปล่า ๆ
-     เดิมผูกไว้กับ isLocalMember() ซึ่งถูกทำให้คืน false ตลอดกาลไปแล้ว
-     (มันเป็น API เก่าที่ถูกปิดทิ้ง) หน้าไพ่จริงจึงไม่มีวันได้โผล่เลย
-     เกณฑ์ที่ถูกคือดูที่ตัวการ์ด: generic ก็วาดแบบสี ไม่ generic ก็วาดใบนั้น */
-  function cardFace(cardId) {
-    const card = cardById(cardId);
-    if (!card) return '';
-    return card.generic
-      ? genericCardSVG(card.color, { width: 150 })
-      : cardSVG(cardId, { width: 150, showNumber: false });
+function physicalController(root, client) {
+  let attached = false;
+  let lastView = null;
+  let initialized = false;
+  let shownRounds = 0;
+  let firstLocker = null;
+  let holdingResult = false;
+  let pendingSelectedIid = null;
+  let pendingLaunch = null;
+  let lastViewSig = '';
+  let queue = Promise.resolve();
+  const visualLocked = { you: false, opp: false };
+  const entryPromise = { you: null, opp: null };
+
+  const sideSlot = side => root.querySelector(side === 'you' ? '#slotYou' : '#slotOpp');
+  const opposite = side => side === 'you' ? 'opp' : 'you';
+  const resultNode = () => root.querySelector('#roundResult');
+
+  function setFace(slot, cardId) {
+    if (!slot || !cardId || slot.dataset.pfFaceId === cardId) return;
+    const front = slot.querySelector('.front');
+    if (!front) return;
+    front.innerHTML = faceSVG(cardId);
+    slot.dataset.pfFaceId = cardId;
   }
 
-  function handTile(c, mode) {
-    const meta = COLOR_META[c.color];
-    const card = cardById(c.cardId);
-    const label = card.generic ? meta.nameEn.toUpperCase() : card.en;
-    const artHref = cardArtHref(c.cardId);
-    const btn = el('button', {
-      class: `hand-card ${c.color.toLowerCase()}`,
-      'data-iid': c.iid,
-      'aria-label': `${label} ${colorName(c.color)}${mode === 'discard' ? t(' — เลือกเพื่อทิ้ง', ' — pick to discard') : ''}`,
-      'aria-pressed': String(view.you.selected === c.iid),
-      style: `--hand-color:${meta.hex};--hand-art:url("${artHref}")`,
-      html: `<span class="hand-card-name">${label}</span>`,
-    });
-    if (view.you.selected === c.iid && mode === 'select') btn.classList.add('sel');
-    let pointerId = null;
-    let startX = 0;
-    let startY = 0;
-    let suppressClick = false;
-    let committing = false;
-    /* ล็อกทิศทางครั้งเดียวต่อการลาก — ขึ้น = โยนลง, ข้าง = สลับตำแหน่งในมือ
-       ถ้าไม่ล็อก นิ้วที่เอียงนิดเดียวจะสลับไปมาระหว่างสองท่า */
-    let axis = null;
-    let escapeDy = -48;   // ลากขึ้นเท่านี้ = พ้นขอบแถวมือ ถือว่าเลือกแล้ว
-    let maxUp = -180;     // แต่ลากต่อได้ถึงกลางจอ
-    let sortFrom = -1;
-    let sortTo = -1;
-    let sortStep = 0;
+  function slotBack(side) {
+    const slot = sideSlot(side);
+    if (!slot) return;
+    slot.classList.remove('pf-faceup');
+    slot.classList.add('pf-visible', 'pf-facedown');
+  }
 
-    const siblings = () => [...(btn.parentElement?.children || [])];
+  function slotFaceUp(side, cardId) {
+    const slot = sideSlot(side);
+    if (!slot) return;
+    setFace(slot, cardId);
+    slot.classList.remove('pf-facedown');
+    slot.classList.add('pf-visible', 'pf-faceup');
+  }
 
-    const clearSortPreview = () => {
-      for (const node of siblings()) node.style.removeProperty('--slide');
+  function hideSlot(side) {
+    const slot = sideSlot(side);
+    if (!slot) return;
+    slot.classList.remove('pf-visible', 'pf-facedown', 'pf-faceup');
+  }
+
+  function hideResult() {
+    holdingResult = false;
+    resultNode()?.classList.remove('pf-result-visible');
+    root.classList.add('pf-between-rounds');
+  }
+
+  function showResult() {
+    holdingResult = true;
+    resultNode()?.classList.add('pf-result-visible');
+    root.classList.remove('pf-between-rounds');
+  }
+
+  function cardForIid(iid) {
+    return lastView?.you?.hand?.find(card => card.iid === iid) || null;
+  }
+
+  function selectedHandRect(iid) {
+    if (!iid) return null;
+    let node = null;
+    try { node = root.querySelector(`.hand-card[data-iid="${CSS.escape(iid)}"]`); }
+    catch { node = root.querySelector(`.hand-card[data-iid="${iid}"]`); }
+    return node ? copyRect(node.getBoundingClientRect()) : null;
+  }
+
+  function rememberLocalSelection(iid) {
+    pendingSelectedIid = iid || null;
+    const card = cardForIid(iid);
+    pendingLaunch = {
+      iid,
+      cardId: card?.cardId || null,
+      rect: selectedHandRect(iid),
     };
+  }
 
-    const resetDrag = () => {
-      pointerId = null;
-      axis = null;
-      btn.classList.remove('dragging', 'sorting', 'will-play');
-      btn.style.removeProperty('--fling-x');
-      btn.style.removeProperty('--fling-y');
-      clearSortPreview();
+  function sourceRect(side, target) {
+    if (side === 'you') {
+      const remembered = pendingLaunch?.rect;
+      if (remembered?.width > 2 && remembered?.height > 2) return remembered;
+      const live = selectedHandRect(pendingSelectedIid || lastView?.you?.selected);
+      if (live) return live;
+      const hand = root.querySelector('#hand')?.getBoundingClientRect();
+      if (hand) return {
+        left: hand.left + hand.width / 2 - 29,
+        top: hand.top + Math.max(0, hand.height / 2 - 40),
+        width: 58,
+        height: 81,
+      };
+    }
+
+    /* Opponent card has no public identity before reveal. Bring a card back
+       down from the opponent's side of the table, like a real hand entering
+       from above. */
+    const av = root.querySelector('#oppAv')?.getBoundingClientRect();
+    if (av) return {
+      left: av.left + av.width / 2 - 29,
+      top: Math.max(6, av.bottom + 2),
+      width: 58,
+      height: 81,
     };
+    return {
+      left: target.left + target.width / 2 - 29,
+      top: Math.max(6, target.top - 150),
+      width: 58,
+      height: 81,
+    };
+  }
 
-    /* เลือก + Lock + ลงในจังหวะเดียว ใช้ร่วมกันระหว่างโยนกับ double click */
-    async function commitPlay(viaFling) {
-      if (committing) return;
-      suppressClick = true;
-      committing = true;
-      btn.classList.remove('dragging');
-      btn.classList.add('fling-out');
-      haptic([8, 25, 14]);
-      playSfx(viaFling ? 'fling' : 'select');
-      let res;
-      if (mode === 'select') {
-        res = await client.send({ type: 'select_card', cardInstanceId: c.iid });
-        if (res.ok) res = await client.send({ type: 'lock_choice' });
-      } else {
-        res = await client.send({ type: 'discard_card', cardInstanceId: c.iid });
-      }
-      if (!res?.ok) {
-        btn.classList.remove('fling-out');
-        toast(mode === 'discard' ? t('ทิ้งใบนี้ไม่ได้', 'Cannot discard this one') : t('ลงการ์ดไม่ได้', 'Cannot play that card'));
-        playSfx('error');
-      }
-      resetDrag();
-      committing = false;
-      setTimeout(() => { suppressClick = false; }, 0);
-      refresh();
-    }
-
-    if (mode === 'select' || mode === 'discard') {
-      btn.addEventListener('pointerdown', event => {
-        if (committing || event.button > 0) return;
-        pointerId = event.pointerId;
-        startX = event.clientX;
-        startY = event.clientY;
-        axis = null;
-        const rect = btn.getBoundingClientRect();
-        const row = btn.parentElement?.getBoundingClientRect();
-        const midY = rect.top + rect.height / 2;
-        /* "พ้นขอบ" วัดจากกึ่งกลางใบขึ้นไปพ้นขอบบนของแถวมือ ไม่ใช่ขอบบนของใบ
-           ไม่งั้นขยับ 2px ก็ติดแล้ว — คุมช่วงไว้ไม่ให้ไวหรือหนืดเกินไป */
-        escapeDy = Math.max(-96, Math.min(-32, (row ? row.top : rect.top) - midY));
-        /* ลากได้ไกลถึงกลางจอ ให้รู้สึกว่าโยนได้จริง ไม่ใช่ติดเพดาน 120px */
-        maxUp = Math.min(escapeDy, window.innerHeight / 2 - midY);
-        const list = siblings();
-        sortFrom = list.indexOf(btn);
-        sortTo = sortFrom;
-        sortStep = list.length > 1
-          ? list[1].getBoundingClientRect().left - list[0].getBoundingClientRect().left
-          : 0;
-        btn.setPointerCapture?.(pointerId);
-      });
-
-      btn.addEventListener('pointermove', event => {
-        if (event.pointerId !== pointerId) return;
-        const dx = event.clientX - startX;
-        const dy = event.clientY - startY;
-        if (!axis) {
-          if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
-          /* ขึ้นชนะเสมอเมื่อก้ำกึ่ง — โยนลงคือท่าหลัก การเรียงมือเป็นของแถม */
-          axis = (Math.abs(dx) > Math.abs(dy) * 1.3 && dy > -24) ? 'sort' : 'fling';
-          btn.classList.add(axis === 'sort' ? 'sorting' : 'dragging');
-        }
-        event.preventDefault();
-
-        if (axis === 'fling') {
-          btn.style.setProperty('--fling-x', `${dx * .5}px`);
-          btn.style.setProperty('--fling-y', `${Math.max(maxUp, Math.min(0, dy))}px`);
-          btn.classList.toggle('will-play', dy <= escapeDy);
-          return;
-        }
-
-        /* สลับตำแหน่ง — ขยับเฉพาะภาพ ยังไม่แตะ DOM จนกว่าจะปล่อยนิ้ว
-           ถ้าย้าย DOM ระหว่างลาก pointer capture จะหลุดในบางเบราว์เซอร์ */
-        btn.style.setProperty('--fling-x', `${dx}px`);
-        btn.style.setProperty('--fling-y', '0px');
-        const list = siblings();
-        let target = sortFrom;
-        if (sortStep) target = Math.round(sortFrom + dx / sortStep);
-        target = Math.max(0, Math.min(list.length - 1, target));
-        if (target === sortTo) return;
-        sortTo = target;
-        haptic(6);
-        for (const [i, node] of list.entries()) {
-          if (node === btn) continue;
-          let shift = 0;
-          if (sortTo > sortFrom && i > sortFrom && i <= sortTo) shift = -sortStep;
-          else if (sortTo < sortFrom && i >= sortTo && i < sortFrom) shift = sortStep;
-          node.style.setProperty('--slide', `${shift}px`);
-        }
-      });
-
-      btn.addEventListener('pointerup', async event => {
-        if (event.pointerId !== pointerId || committing) return;
-        if (axis === 'sort') {
-          const moved = sortTo !== sortFrom;
-          if (moved) {
-            suppressClick = true;
-            setTimeout(() => { suppressClick = false; }, 0);
-            playSfx('cardSwap');
-            moveHandCard(c.iid, sortTo);
-          }
-          resetDrag();
-          if (moved) paintHandNow();
-          return;
-        }
-        if (event.clientY - startY > escapeDy) { resetDrag(); return; }
-        await commitPlay(true);
-      });
-      btn.addEventListener('pointercancel', resetDrag);
-      btn.addEventListener('lostpointercapture', () => { if (axis) resetDrag(); });
-    }
-
-    btn.addEventListener('click', async event => {
-      if (suppressClick) { event.preventDefault(); return; }
-      if (mode === 'select') {
-        /* คลิก/แตะสองทีเร็ว ๆ = เลือก + Lock + ลง ทางลัดแทนการโยน
-           คลิกเดียวยังเป็นแค่เลือกเหมือนเดิม ไม่เปลี่ยนนิสัยเดิมของใคร */
-        const now = Date.now();
-        const double = lastTapIid === c.iid && now - lastTapAt < 380;
-        lastTapIid = c.iid;
-        lastTapAt = now;
-        if (double) { lastTapIid = null; await commitPlay(false); return; }
-      }
-      haptic(8);
-      playSfx('select');
-      if (mode === 'select') {
-        const res = await client.send({ type: 'select_card', cardInstanceId: c.iid });
-        if (res.ok) refresh();
-        else if (res.error === 'ALREADY_LOCKED') toast(t('Lock ไปแล้ว — รอเปิดการ์ด', 'Already locked — wait for the reveal'));
-      } else if (mode === 'discard') {
-        const res = await client.send({ type: 'discard_card', cardInstanceId: c.iid });
-        if (!res.ok) toast(t('ทิ้งใบนี้ไม่ได้', 'Cannot discard this one'));
-        else playSfx('discard');
-        refresh();
-      }
+  async function animateOut(side) {
+    const slot = sideSlot(side);
+    if (!slot || !slot.classList.contains('pf-visible')) return;
+    if (reducedMotion() || !slot.animate) { hideSlot(side); return; }
+    const direction = side === 'you' ? -1 : 1;
+    const animation = slot.animate([
+      { transform:'translate3d(0,0,0) rotate(0deg)', opacity:1 },
+      { transform:`translate3d(${direction * 150}%, 8px, 0) rotate(${direction * 9}deg)`, opacity:0 },
+    ], {
+      duration:260,
+      easing:'cubic-bezier(.3,.75,.25,1)',
+      fill:'forwards',
     });
-    return btn;
+    try { await animation.finished; } catch { /* navigation / cancel */ }
+    hideSlot(side);
+    animation.cancel();
   }
 
-  function publicColorCounts(side) {
-    const counts = { RED: 0, GREEN: 0, BLUE: 0, SILVER: 0 };
-    for (const round of view.rounds) {
-      const played = round[side];
-      if (played?.color) counts[played.color] += 1;
-      for (const discarded of round.discards) {
-        const belongs = side === 'you' ? discarded.yours : !discarded.yours;
-        if (belongs) counts[discarded.color] += 1;
+  function makeGhost(side, cardId, from, to) {
+    const ghost = document.createElement('div');
+    ghost.className = 'pf-card-ghost';
+    ghost.style.left = `${from.left}px`;
+    ghost.style.top = `${from.top}px`;
+    ghost.style.width = `${Math.max(1, from.width)}px`;
+    ghost.style.height = `${Math.max(1, from.height)}px`;
+
+    const inner = document.createElement('div');
+    inner.className = 'pf-card-ghost-inner';
+    const front = document.createElement('div');
+    front.className = 'pf-card-ghost-face front';
+    const back = document.createElement('div');
+    back.className = 'pf-card-ghost-face back';
+    front.innerHTML = side === 'you' && cardId ? faceSVG(cardId) : cardBackSVG({ width: 150 });
+    back.innerHTML = cardBackSVG({ width: 150 });
+    inner.append(front, back);
+    ghost.append(inner);
+    document.body.append(ghost);
+
+    const dx = to.left - from.left;
+    const dy = to.top - from.top;
+    const sx = to.width / Math.max(1, from.width);
+    const sy = to.height / Math.max(1, from.height);
+    return { ghost, inner, dx, dy, sx, sy };
+  }
+
+  async function animateIncoming(side, knownCardId = null) {
+    if (!attached) return;
+    const slot = sideSlot(side);
+    if (!slot) return;
+    if (visualLocked[side] && slot.classList.contains('pf-facedown')) return;
+
+    visualLocked[side] = true;
+    const cardId = knownCardId || (side === 'you'
+      ? (pendingLaunch?.cardId || cardForIid(pendingSelectedIid || lastView?.you?.selected)?.cardId)
+      : null);
+    const target = copyRect(slot.getBoundingClientRect());
+    if (!target?.width || !target?.height) { slotBack(side); return; }
+
+    if (reducedMotion()) { slotBack(side); return; }
+    const from = sourceRect(side, target);
+    const { ghost, inner, dx, dy, sx, sy } = makeGhost(side, cardId, from, target);
+
+    /* Opponent arrives already face-down. Our own card visibly turns over while
+       travelling from the hand to the left play area. */
+    if (side === 'opp') inner.style.transform = 'rotateY(180deg)';
+    const move = ghost.animate([
+      { transform:'translate3d(0,0,0) scale(1,1)', opacity:.92 },
+      { transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy})`, opacity:1 },
+    ], {
+      duration:side === 'you' ? 340 : 320,
+      easing:'cubic-bezier(.18,.76,.22,1)',
+      fill:'forwards',
+    });
+    let turn = null;
+    if (side === 'you') {
+      turn = inner.animate([
+        { transform:'rotateY(0deg)', offset:0 },
+        { transform:'rotateY(18deg)', offset:.18 },
+        { transform:'rotateY(180deg)', offset:1 },
+      ], {
+        duration:300,
+        easing:'cubic-bezier(.22,.7,.18,1)',
+        fill:'forwards',
+      });
+    }
+
+    try { await move.finished; } catch { /* navigation / cancel */ }
+    slotBack(side);
+    ghost.remove();
+    try { turn?.cancel(); } catch { /* ok */ }
+    pendingLaunch = side === 'you' ? null : pendingLaunch;
+  }
+
+  function startLockVisual(side, knownCardId = null) {
+    if (!attached || visualLocked[side]) return entryPromise[side] || Promise.resolve();
+
+    /* The first committed card is the signal that the previous trick is over.
+       The card on the opposite side physically leaves the table while the new
+       face-down card enters. The old card on the committing side is naturally
+       covered by the incoming card. */
+    const isFirst = !firstLocker;
+    if (isFirst) {
+      firstLocker = side;
+      if (holdingResult || shownRounds > 0) hideResult();
+      void animateOut(opposite(side));
+    }
+
+    entryPromise[side] = animateIncoming(side, knownCardId)
+      .catch(() => { slotBack(side); })
+      .finally(() => { entryPromise[side] = null; });
+    return entryPromise[side];
+  }
+
+  async function revealRound(round) {
+    if (!round) return;
+    hideResult();
+
+    /* A server can resolve immediately when the second player locks. If that
+       happens before the polling view ever contains `locked:true`, manufacture
+       the missing face-down arrival first. No hidden information is exposed:
+       the face remains down until both slots are ready. */
+    const pYou = visualLocked.you
+      ? (entryPromise.you || Promise.resolve())
+      : startLockVisual('you', round.you?.cardId);
+    const pOpp = visualLocked.opp
+      ? (entryPromise.opp || Promise.resolve())
+      : startLockVisual('opp', round.opp?.cardId);
+    await Promise.allSettled([pYou, pOpp]);
+
+    const youSlot = sideSlot('you');
+    const oppSlot = sideSlot('opp');
+    setFace(youSlot, round.you?.cardId);
+    setFace(oppSlot, round.opp?.cardId);
+    slotBack('you');
+    slotBack('opp');
+
+    if (!reducedMotion()) await new Promise(resolve => setTimeout(resolve, 90));
+    slotFaceUp('you', round.you?.cardId);
+    slotFaceUp('opp', round.opp?.cardId);
+
+    /* Legacy result copy is written 60ms after the round enters the view. Wait
+       for the physical flip as well, then reveal that copy and keep it there. */
+    await new Promise(resolve => setTimeout(resolve, reducedMotion() ? 0 : 430));
+    showResult();
+
+    visualLocked.you = false;
+    visualLocked.opp = false;
+    firstLocker = null;
+    pendingSelectedIid = null;
+    pendingLaunch = null;
+  }
+
+  function showExistingRound(round) {
+    if (!round) {
+      hideSlot('you');
+      hideSlot('opp');
+      hideResult();
+      root.classList.remove('pf-between-rounds');
+      return;
+    }
+    slotFaceUp('you', round.you?.cardId);
+    slotFaceUp('opp', round.opp?.cardId);
+    window.setTimeout(showResult, reducedMotion() ? 0 : 90);
+  }
+
+  async function syncView(v) {
+    if (!attached || !v) return;
+    lastView = v;
+
+    if (!initialized) {
+      initialized = true;
+      shownRounds = v.rounds?.length || 0;
+      showExistingRound(v.rounds?.[shownRounds - 1]);
+      /* Reconnect can land after one side already locked. Rebuild the same
+         public state without requiring a fresh event. */
+      if (v.phase === 'ROUND_SELECT') {
+        if (v.you?.locked) startLockVisual('you');
+        if (v.opponent?.locked) startLockVisual('opp');
       }
-    }
-    return counts;
-  }
-
-  function renderPublicCounts(host, label, counts) {
-    host.innerHTML = '';
-    host.append(el('b', { class: 'public-count-label' }, label));
-    for (const color of COLORS) {
-      host.append(el('span', { title: t(`${COLOR_META[color].nameTh}ออกแล้ว ${counts[color]} ใบ`, `${COLOR_META[color].nameEn}: ${counts[color]} shown`) },
-        `${COLOR_META[color].emoji}${counts[color]}`));
-    }
-  }
-
-  async function refresh() {
-    view = await client.getView();
-    if (!view) return;
-    loadHandOrder();
-    render();
-  }
-
-  function render() {
-    const v = view;
-    $('#oppName', root).textContent = v.opponent.name + (oppLabel ? ` ${oppLabel}` : '');
-    $('#oppAv', root).textContent = (v.opponent.name || '?')[0].toUpperCase();
-    $('#youName', root).textContent = `${v.you.name} ${t('(คุณ)', '(you)')}`;
-    $('#youAv', root).textContent = (v.you.name || '?')[0].toUpperCase();
-    const youCount = v.you.hand.filter(c => c.status === 'IN_HAND').length;
-    $('#oppCards', root).textContent = `🂠 ${v.opponent.handCount}`;
-    $('#youCards', root).textContent = `🂠 ${youCount}`;
-    renderPublicCounts($('#youPublicCounts', root), 'OUT', publicColorCounts('you'));
-    renderPublicCounts($('#oppPublicCounts', root), 'OUT', publicColorCounts('opp'));
-    pips(v.opponent.roundWins, $('#oppPips', root));
-    pips(v.you.roundWins, $('#youPips', root));
-    $('#roundNo', root).textContent = `ROUND ${v.roundNumber}`;
-    if (client.connectionState) {
-      $('#connDot', root).className = 'conn' + (client.connectionState() === 'on' ? '' : ' off');
-    }
-
-    /* Reveal animation ของรอบล่าสุด */
-    const lastRound = v.rounds[v.rounds.length - 1];
-    const inReveal = v.rounds.length > revealShown && lastRound;
-    if (inReveal) {
-      revealShown = v.rounds.length;
-      showReveal(lastRound, v);
-    }
-    renderLatestDiscard(lastRound);
-    renderHistory($('#historyRail', root));
-
-    /* มือ + ข้อความ */
-    const msg = $('#msg', root);
-    const inHand = v.you.hand.filter(c => c.status === 'IN_HAND');
-
-    if (v.result) {
-      paintHand([], 'none');
-      msg.textContent = t('สรุปผล…', 'Wrapping up…');
-      lockBtn.disabled = true;
-      lockBtn.textContent = t('สรุปผล…', 'Wrapping up…');
-      scheduleFinish(inReveal);
       return;
     }
 
-    if (v.discardRequired) {
-      msg.innerHTML = `<b style="color:#fca5a5">${t('เลือกทิ้งเพิ่ม 1 ใบ', 'Discard one more')}</b>`;
-      paintHand(inHand, 'discard');
-      lockBtn.disabled = true;
-      lockBtn.textContent = t('เลือกใบที่ทิ้ง', 'Pick one');
+    const roundCount = v.rounds?.length || 0;
+    if (roundCount > shownRounds) {
+      shownRounds = roundCount;
+      await revealRound(v.rounds[roundCount - 1]);
       return;
     }
-    if (v.waitingOpponentDiscard) {
-      msg.textContent = t('รอคู่แข่งทิ้ง…', 'Waiting for their discard…');
-      paintHand(inHand, 'none', { disabled: true });
-      lockBtn.disabled = true;
-      lockBtn.textContent = '🔒 Lock';
-      return;
-    }
+
+    /* Online polling can miss the tiny moment between lock and reveal. When it
+       does not, use the public locked flags as a second source of truth. */
     if (v.phase === 'ROUND_SELECT') {
-      if (v.you.locked) {
-        msg.textContent = v.opponent.locked ? t('เปิดการ์ด…', 'Revealing…') : t('รอคู่แข่ง…', 'Waiting…');
-        paintHand(inHand, 'none', { disabled: true, markSelected: true });
-        lockBtn.disabled = true;
-        lockBtn.textContent = t('⏳ รอคู่แข่ง', '⏳ Waiting');
-      } else {
-        msg.textContent = t('แตะเลือก แล้ว Lock · ปัดขึ้นหรือแตะสองที = ลงเลย · ลากข้าง = จัดมือ',
-          'Tap to pick, then Lock · flick up or double-tap to play · drag sideways to reorder');
-        paintHand(inHand, 'select');
-        lockBtn.disabled = !v.you.selected;
-        lockBtn.textContent = '🔒 Lock';
-      }
+      if (v.you?.locked && !visualLocked.you) startLockVisual('you');
+      if (v.opponent?.locked && !visualLocked.opp) startLockVisual('opp');
     }
   }
 
-  /* ── ลำดับไพ่ในมือที่ผู้เล่นจัดเอง ──
-     Authority เป็นเจ้าของว่ามีใบอะไรบ้าง แต่ "เรียงยังไง" เป็นเรื่องของ
-     สายตาคนถือ ไม่ใช่ข้อมูลเกม จึงเก็บฝั่ง client อย่างเดียว ไม่ส่งขึ้น
-     server และไม่กระทบกติกาใด ๆ
-
-     เก็บใน sessionStorage แยกตาม matchId — refresh กลางเกมแล้วมือยังเรียง
-     เหมือนเดิม แต่จบแมตช์แล้วไม่ค้างไปแมตช์หน้า */
-  let handOrder = [];
-  let orderLoaded = false;
-  const orderKey = () => `c7:hand_order:${view?.matchId || 'x'}`;
-
-  function loadHandOrder() {
-    if (orderLoaded || !view?.matchId) return;
-    orderLoaded = true;
-    try {
-      const saved = JSON.parse(sessionStorage.getItem(orderKey()) || '[]');
-      if (Array.isArray(saved)) handOrder = saved.filter(id => typeof id === 'string');
-    } catch { /* private mode */ }
+  function enqueueView(v) {
+    lastView = v;
+    if (!attached || !v) return;
+    const sig = [
+      v.matchId,
+      v.rounds?.length || 0,
+      v.roundNumber,
+      v.phase,
+      !!v.you?.locked,
+      !!v.opponent?.locked,
+      v.you?.selected || '',
+      !!v.discardRequired,
+      !!v.waitingOpponentDiscard,
+      !!v.result,
+    ].join('|');
+    if (sig === lastViewSig) return;
+    lastViewSig = sig;
+    queue = queue.then(() => syncView(v)).catch(() => {});
   }
 
-  function saveHandOrder() {
-    try { sessionStorage.setItem(orderKey(), JSON.stringify(handOrder)); } catch { /* private mode */ }
-  }
-
-  /* ใบที่ยังไม่เคยถูกจัด (เพิ่งเข้าเกมมา) ต่อท้ายตามลำดับเดิมของ Authority
-     Array.sort เสถียรอยู่แล้ว ใบที่ rank เท่ากันจึงไม่สลับกันเอง */
-  function orderHand(cards) {
-    if (!handOrder.length) return cards;
-    const rank = new Map(handOrder.map((iid, i) => [iid, i]));
-    return [...cards].sort((a, b) =>
-      (rank.get(a.iid) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.iid) ?? Number.MAX_SAFE_INTEGER));
-  }
-
-  function moveHandCard(iid, toIndex) {
-    const inHand = orderHand(lastPaint?.cards || []).map(c => c.iid);
-    const from = inHand.indexOf(iid);
-    if (from < 0 || toIndex === from) return;
-    const next = [...inHand];
-    next.splice(from, 1);
-    next.splice(Math.max(0, Math.min(next.length, toIndex)), 0, iid);
-    /* ใบที่ออกจากมือไปแล้วต่อท้ายไว้ ไม่ต้องลบ — ไม่มีใครวาดมันอยู่ดี
-       และถ้าลบทิ้ง ลำดับจะเพี้ยนเมื่อ view ย้อนกลับมาระหว่าง reconnect */
-    handOrder = [...next, ...handOrder.filter(id => !next.includes(id))];
-    saveHandOrder();
-  }
-
-  function paintHandNow() {
-    if (!lastPaint) return;
-    handSig = null;
-    paintHand(lastPaint.cards, lastPaint.mode, lastPaint.opts);
-  }
-
-  /* จับดับเบิลแท็ปเองแทน event dblclick — ทุกครั้งที่เลือกไพ่ view เปลี่ยน
-     แล้ว paintHand สร้างปุ่มใหม่ คลิกที่สองจึงลงบน node คนละตัว dblclick
-     ไม่มีวันยิง ส่วน iid อยู่ข้ามการวาดใหม่ได้ */
-  let lastTapIid = null;
-  let lastTapAt = 0;
-
-  /* เดิมล้าง #hand แล้วสร้างการ์ดใหม่ทุกครั้งที่ view เปลี่ยน
-     เกมออนไลน์ poll ทุก 900ms ไพ่ในมือจึงถูกสร้างใหม่วินาทีละครั้ง
-     background-image ของแต่ละใบถูกเซ็ตใหม่ทุกรอบ เห็นเป็นกะพริบบนมือถือ
-     ตอนนี้เทียบลายเซ็นก่อน ถ้ามือหน้าตาเหมือนเดิมก็ไม่แตะ DOM เลย
-     ผลพลอยได้: การลากไพ่ไม่ถูกตัดกลางคันเวลามี update เข้ามาพอดี */
-  let handSig = null;
-  let lastPaint = null;
-  function paintHand(cards, mode, { disabled = false, markSelected = false } = {}) {
-    const selected = view.you.selected || '';
-    const ordered = orderHand(cards);
-    const sig = [mode, disabled, markSelected, selected, ordered.map(c => c.iid).join(',')].join('|');
-    lastPaint = { cards, mode, opts: { disabled, markSelected } };
-    if (sig === handSig) return;
-    handSig = sig;
-    const handHost = $('#hand', root);
-    handHost.innerHTML = '';
-    for (const c of ordered) {
-      const tile = handTile(c, mode);
-      if (disabled) tile.disabled = true;
-      if (markSelected && selected === c.iid) tile.classList.add('sel');
-      handHost.append(tile);
+  function onEvent(ev) {
+    if (!attached || !ev || !lastView) return;
+    if (ev.event_type === 'round.selection_locked') {
+      const side = ev.payload?.seat === lastView.seat ? 'you' : 'opp';
+      startLockVisual(side);
     }
   }
 
-  function showReveal(round, currentView) {
-    const setFace = (slot, cardId) => { $('.front', slot).innerHTML = cardFace(cardId); };
-    setFace(slotYou, round.you.cardId);
-    setFace(slotOpp, round.opp.cardId);
-    slotYou.classList.remove('revealed'); slotOpp.classList.remove('revealed');
-    const doFlip = () => {
-      slotYou.classList.add('revealed');
-      slotOpp.classList.add('revealed');
-      haptic([10, 40, 18]);
-      playSfx(round.result === 'TIE' ? 'draw' : (round.youWon ? 'win' : 'lose'));
-      /* คำผลรอบ WIN / LOSE / DRAW กลางจอ — เด่นแต่ไม่เท่าตอนจบเกม */
-      const rr = $('#roundResult', root);
-      const cy = round.you.color, co = round.opp.color;
-      /* คำสั้นที่สุด — ไม่มีคะแนนให้รายงาน เพราะ MATCH ไม่ได้นับคะแนน
-         บอกแค่สีไหนชนะสีไหน กับใครต้องทิ้งเพิ่ม */
-      const drop = t(' · ทิ้งเพิ่ม 1', ' · discard 1');
-      if (round.result === 'TIE') {
-        rr.innerHTML = '<span class="rr-word draw anim-pop">DRAW</span>'
-          + (cy === co ? RESULT_TEXT.TIE_SAME(cy, co) : RESULT_TEXT.TIE_SILVER(cy, co));
-      } else if (round.youWon) {
-        rr.innerHTML = '<span class="rr-word win anim-pop">WIN</span>'
-          + `${RESULT_TEXT.WIN(cy, co)}${currentView.waitingOpponentDiscard ? `<span class="sub">${t('คู่แข่ง', 'Opponent')}${drop}</span>` : ''}`;
-      } else {
-        rr.innerHTML = '<span class="rr-word lose anim-pop">LOSE</span>'
-          + `${RESULT_TEXT.LOSE(cy, co)}${currentView.discardRequired ? `<span class="sub">${t('คุณ', 'You')}${drop}</span>` : ''}`;
-      }
-    };
-    reducedMotion() ? doFlip() : setTimeout(doFlip, 60);
-  }
-
-  function renderLatestDiscard(round) {
-    const host = $('#roundDiscard', root);
-    host.innerHTML = '';
-    if (!round?.discards?.length) return;
-    const label = round.discards[0].yours ? 'YOU DISCARDED' : `${view.opponent.name} DISCARDED`;
-    host.append(el('b', {}, label), ...round.discards.map(card => historyChip(card, { discard: true })));
-  }
-
-  function scheduleFinish(justRevealed) {
-    if (finished || finishTimer) return;
-    /* ให้ผู้เล่นเห็นการพลิกไพ่ ผล Round และใบทิ้ง ก่อนประกาศผล Match */
-    const wait = reducedMotion() ? 1100 : (justRevealed ? 2800 : 1800);
-    finishTimer = setTimeout(() => {
-      finishTimer = null;
-      finishMatch();
-    }, wait);
-  }
-
-  function finishMatch() {
-    if (finished) return;
-    finished = true;
-    /* ผลใหญ่กลางจอก่อนไปหน้าสรุป */
-    const r = view.result;
-    const word = r.draw ? 'DRAW' : (r.youWon ? 'YOU WIN' : 'YOU LOSE');
-    const resultClass = r.draw ? 'draw' : (r.youWon ? 'win' : 'lose');
-    const sub = r.draw ? t('🤝 เสมอ — เกิดได้ยากมาก', '🤝 A draw — extremely rare')
-      : (r.youWon ? t('🏆 ชนะ Match นี้', '🏆 You won this match') : t('จบ Match นี้แล้ว', 'This match is over'));
-    haptic(r.youWon ? [20, 60, 20, 60, 40] : 30);
-    playSfx(r.draw ? 'draw' : (r.youWon ? 'win' : 'lose'));
-
-    if (!endOverlay) {
-      /* ไพ่ใบสุดท้ายกับผลรอบถูกค้างไว้ให้ดูมาแล้วใน scheduleFinish
-         ที่เหลือคือใครชนะแมตช์ ซึ่งหน้าจบเต็มเป็นคนบอก */
-      onFinished && onFinished(view);
-      return;
+  function beforeSend(action) {
+    if (!action) return;
+    if (action.type === 'select_card') rememberLocalSelection(action.cardInstanceId);
+    if (action.type === 'lock_choice') {
+      const iid = pendingSelectedIid || lastView?.you?.selected;
+      if (iid && (!pendingLaunch || pendingLaunch.iid !== iid)) rememberLocalSelection(iid);
     }
-
-    const overlay = el('div', {
-      class: `end-overlay ${resultClass}`, role: 'alert',
-    },
-      el('b', { class: 'disp anim-pop' }, word),
-      el('span', {}, sub));
-    const lastRound = view.rounds[view.rounds.length - 1];
-    if (lastRound?.discards?.length) {
-      const discardedBy = lastRound.discards[0].yours ? 'YOU DISCARDED' : `${view.opponent.name} DISCARDED`;
-      overlay.append(el('div', { class: 'end-discard' },
-        el('small', {}, discardedBy),
-        ...lastRound.discards.map(card => historyChip(card, { discard: true }))));
-    }
-    root.append(overlay);
-    setTimeout(() => onFinished && onFinished(view), reducedMotion() ? 700 : 2000);
   }
 
-  /* ── Discard — จอกว้างเปิดเป็น rail; จอแคบเปิดเป็น drawer ── */
-  const histBtn = $('#histBtn', root);
-  const rulesBtn = $('#rulesBtn', root);
-  const rulesPopover = $('#rulesPopover', root);
-  function setRulesOpen(open) {
-    rulesPopover.hidden = !open;
-    rulesBtn.setAttribute('aria-expanded', String(open));
-    rulesBtn.setAttribute('aria-label', open ? t('ซ่อน Rules', 'Hide rules') : t('เปิด Rules', 'Open rules'));
-    rulesBtn.textContent = open ? '✕ Hide Rules' : '📖 Rules';
+  function attach() {
+    attached = true;
+    root.classList.add('physical-table-flow');
+    /* Existing slots contain their card-back SVG already. Hide them until a
+       player actually locks something; an empty table should look empty. */
+    hideSlot('you');
+    hideSlot('opp');
+    resultNode()?.classList.remove('pf-result-visible');
+    if (lastView) enqueueView(lastView);
   }
-  rulesBtn.addEventListener('click', () => setRulesOpen(rulesPopover.hidden));
-  $('#rulesClose', root).addEventListener('click', () => setRulesOpen(false));
-  root.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && !rulesPopover.hidden) setRulesOpen(false);
-  });
-  const wideDiscard = () => window.matchMedia('(min-width: 960px) and (min-height: 600px)').matches;
-  function setDiscardRail(open) {
-    root.classList.toggle('discard-open', open);
-    histBtn.setAttribute('aria-expanded', String(open));
-    histBtn.setAttribute('aria-label', open ? t('ซ่อน Discard', 'Hide discard pile') : t('เปิด Discard', 'Open discard pile'));
-    histBtn.textContent = open ? '✕ Hide Discard' : '🗑️ Discard';
-  }
-  histBtn.addEventListener('click', () => {
-    if (wideDiscard()) setDiscardRail(!root.classList.contains('discard-open'));
-    else openHistory();
-  });
-  window.addEventListener('resize', () => {
-    if (!wideDiscard()) setDiscardRail(false);
+
+  return { enqueueView, onEvent, beforeSend, attach };
+}
+
+export function mountMatch(root, client, options = {}) {
+  installPhysicalTableStyles();
+  const physical = physicalController(root, client);
+
+  /* Observe the same authoritative client the legacy UI uses. Nothing here
+     calculates game outcomes. We only react to public view / event state. */
+  const originalGetView = client.getView.bind(client);
+  client.getView = async (...args) => {
+    const view = await originalGetView(...args);
+    physical.enqueueView(view);
+    return view;
+  };
+
+  const originalSubscribe = client.subscribe.bind(client);
+  client.subscribe = fn => originalSubscribe(ev => {
+    physical.onEvent(ev);
+    fn(ev);
   });
 
-  /* ไพ่ที่ออกจากมือแล้วโชว์ภาพจริง ไม่ใช่เม็ดสีเปล่า ๆ — asset โหลดลงเครื่องไปแล้ว
-     ตั้งแต่ตอนเล่น ใบที่ถูกทิ้งบอกด้วยขอบเส้นประ ไม่ต้องมีอีโมจิถังขยะนำหน้า */
-  function historyChip(c, { discard = false } = {}) {
-    const meta = COLOR_META[c.color];
-    const card = cardById(c.cardId);
-    const name = card && !card.generic ? card.en : meta.nameEn.toUpperCase();
-    const art = cardArtHref(c.cardId);
-    const chip = el('span', {
-      class: 'hchip' + (discard ? ' discard' : ''),
-      style: `background:${meta.hex}`,
-      'aria-label': `${discard ? t('ทิ้ง ', 'discarded ') : ''}${name} ${colorName(c.color)}`,
-    });
-    if (art) chip.append(el('i', { class: 'hchip-art', style: `background-image:url("${art}")` }));
-    chip.append(el('span', { class: 'hchip-name' }, `${meta.emoji} ${name}`));
-    return chip;
-  }
+  const originalSend = client.send.bind(client);
+  client.send = async action => {
+    physical.beforeSend(action);
+    return originalSend(action);
+  };
 
-  function buildHistoryTable() {
-    if (!view.rounds.length) return el('p', { class: 'history-empty' }, t('ยังไม่มีรอบที่จบ', 'No finished rounds yet'));
-    const table = el('div', { class: 'hist2' });
-    table.append(el('div', { class: 'hhead' },
-      el('span', {}, `${view.you.name} ${t('(คุณ)', '(you)')}`),
-      el('span', {}, view.opponent.name)));
-    for (const r of view.rounds) {
-      const resCls = r.result === 'TIE' ? 'tie' : (r.youWon ? 'win' : 'lose');
-      const resTxt = r.result === 'TIE' ? t('เสมอ', 'Draw') : (r.youWon ? t('คุณชนะ', 'You won') : t('แพ้', 'Lost'));
-      table.append(el('div', { class: 'hround' },
-        el('span', { class: `rpill ${resCls}` }, `R${r.n} · ${resTxt}`)));
-      table.append(el('div', { class: 'hcells' },
-        el('div', { class: 'hc l' }, historyChip(r.you)),
-        el('div', { class: 'hc r' }, historyChip(r.opp))));
-      if (r.discards.length) {
-        const l = el('div', { class: 'hc l' });
-        const rt = el('div', { class: 'hc r' });
-        for (const dc of r.discards) (dc.yours ? l : rt).append(historyChip(dc, { discard: true }));
-        table.append(el('div', { class: 'hcells discard-row' }, l, rt));
-      }
-    }
-    return table;
-  }
-
-  function renderHistory(host) {
-    host.innerHTML = '';
-    host.append(buildHistoryTable());
-  }
-
-  function openHistory() {
-    const d = el('div', { class: 'drawer', role: 'dialog', 'aria-label': 'Discard' });
-    const inner = el('div', { class: 'wrap-slim' });
-    inner.append(el('h2', { class: 'disp' }, t('🗑️ Discard — ไพ่ที่ออกแล้ว', '🗑️ Discard — cards already out')));
-    inner.append(buildHistoryTable());
-    const closeBtn = el('button', { class: 'btn btn-gold', style: 'margin-top:18px' }, t('ปิด', 'Close'));
-    const ffBtn = el('button', { class: 'btn btn-ghost', style: 'margin-top:18px;margin-left:10px' }, t('🏳️ ยอมแพ้', '🏳️ Forfeit'));
-    closeBtn.addEventListener('click', () => d.remove());
-    ffBtn.addEventListener('click', async () => {
-      if (confirm(t('ยอมแพ้ Match นี้?', 'Forfeit this match?'))) { await client.send({ type: 'forfeit' }); d.remove(); refresh(); }
-    });
-    inner.append(closeBtn, ffBtn);
-    d.append(inner);
-    document.body.append(d);
-  }
-
-  /* ── Lock ── */
-  lockBtn.addEventListener('click', async () => {
-    haptic(15);
-    playSfx('lock');
-    const res = await client.send({ type: 'lock_choice' });
-    if (!res.ok && res.error) toast(t('ยังเลือกการ์ดไม่ได้: ', 'Cannot lock yet: ') + res.error);
-    refresh();
-  });
-
-  /* ── Event จาก Authority ── */
-  client.subscribe(() => refresh());
-  refresh();
-  return { refresh };
+  const api = mountLegacyMatch(root, client, options);
+  physical.attach();
+  return api;
 }
