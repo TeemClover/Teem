@@ -42,6 +42,56 @@ if (mainQuest) {
   Core7Bot.buildHand = () => tutorialHand.slice();
 }
 
+/* ── Bot presentation pacing ──────────────────────────────────────────────
+   The game engine may resolve a bot choice immediately, but a physical table
+   needs a readable human rhythm.
+
+   • If nobody has committed yet, the bot visibly "thinks" for 2 seconds.
+   • If the human commits first, the bot answers almost immediately.
+   • Discard timing is left to the normal adapter because that is a consequence
+     of the previous reveal, not a new hidden choice.
+
+   The guard lives on the bot page only; Engine / rules / Online rooms are not
+   changed. Existing adapter timers may still call _botTurn, but this wrapper
+   makes every early call wait until the presentation deadline. */
+const BOT_THINK_MS = 2000;
+const BOT_REPLY_MS = 90;
+const botPace = {
+  round: null,
+  readyAt: 0,
+  timer: null,
+};
+const nativeBotTurn = LocalBotClient.prototype._botTurn;
+
+LocalBotClient.prototype._botTurn = function pacedBotTurn() {
+  const state = this.authority?.state;
+  if (!state) return nativeBotTurn.call(this);
+
+  if (state.phase === 'ROUND_SELECT' && !state.current?.b?.locked) {
+    const round = state.roundNumber;
+    if (botPace.round !== round) {
+      botPace.round = round;
+      botPace.readyAt = performance.now() + BOT_THINK_MS;
+    }
+
+    /* The human card on the table is the cue. Once they commit, answer now
+       instead of waiting out the remaining think timer. */
+    if (state.current?.a?.locked) botPace.readyAt = 0;
+
+    const wait = botPace.readyAt - performance.now();
+    if (wait > 16) {
+      clearTimeout(botPace.timer);
+      botPace.timer = setTimeout(() => {
+        botPace.timer = null;
+        nativeBotTurn.call(this);
+      }, wait);
+      return;
+    }
+  }
+
+  return nativeBotTurn.call(this);
+};
+
 const CUR = 'c7:cur_bot';
 let matchId = null;
 let createdNewMatch = false;
@@ -64,6 +114,34 @@ const client = new LocalBotClient({
   level,
   resume: !fresh,
 });
+
+/* Start the 2-second clock from the moment this round is actually ready, not
+   from whichever legacy timeout happens to call the bot first. If the player
+   locks before that deadline, cancel it and make the bot respond right away. */
+{
+  const state = client.authority?.state;
+  botPace.round = state?.roundNumber ?? null;
+  botPace.readyAt = performance.now() + BOT_THINK_MS;
+
+  client.subscribe(ev => {
+    if (ev?.event_type === 'round.resolved') {
+      clearTimeout(botPace.timer);
+      botPace.timer = null;
+      botPace.round = Number(ev.round_number || 0) + 1;
+      botPace.readyAt = performance.now() + BOT_THINK_MS;
+      return;
+    }
+
+    if (ev?.event_type === 'round.selection_locked' && ev.payload?.seat === 'a') {
+      botPace.readyAt = 0;
+      clearTimeout(botPace.timer);
+      botPace.timer = setTimeout(() => {
+        botPace.timer = null;
+        nativeBotTurn.call(client);
+      }, BOT_REPLY_MS);
+    }
+  });
+}
 
 if (createdNewMatch) {
   const state = store.loadMatchSnapshot(matchId)?.state;
