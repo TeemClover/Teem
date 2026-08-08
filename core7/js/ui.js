@@ -40,6 +40,26 @@ if (typeof document !== 'undefined' && /\/core7\/result\/?$/.test(location.pathn
     if (!reward || reward.dataset.revealed !== 'true') return;
     window.setTimeout(notifyFirstHandCardReceived, 120);
   }, true);
+
+  /* Result page = game information only.
+     First-time players only know the four colours, so do not interrupt the
+     post-match read with card-personality prompts, collection unlocks,
+     membership pitches or social-share CTAs. Keep the existing DOM in place
+     for compatibility with legacy result code, but make these retired layers
+     impossible to surface even if old JS toggles `hidden` later. */
+  const resultFocus = document.createElement('style');
+  resultFocus.id = 'c7-result-game-only';
+  resultFocus.textContent = `
+    #timeline + h2[data-en="Talk it over"],
+    #timeline + h2[data-en="Talk it over"] + p,
+    .wrap-slim > .prompt-card,
+    #nightUnlock,
+    #signup,
+    #actions > .btn-dark {
+      display: none !important;
+    }
+  `;
+  document.head.append(resultFocus);
 }
 
 /* ── Nav + Footer ── */
