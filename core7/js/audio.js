@@ -16,65 +16,90 @@ function claimPlaybackSession() {
 
 function audioContext() {
   claimPlaybackSession();
-  context ||= new (window.AudioContext || window.webkitAudioContext)();
-  if (context.state === 'suspended') context.resume().catch(() => {});
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) throw new Error('WEB_AUDIO_UNAVAILABLE');
+  if (!context || context.state === 'closed') {
+    context = new AudioCtx();
+    primed = false;
+  }
   return context;
 }
 
-/* iOS requires the AudioContext to be CREATED/RESUMED inside a real user
-   gesture. Capture the FIRST pointer before card UI handlers run, then decode
-   the physical samples while the player is making the first choice. */
+/* iOS audio unlock must happen INSIDE a real gesture. Important detail:
+   start an inaudible source before awaiting resume(), otherwise Safari can lose
+   the user-activation window between the await and source.start().
+
+   This function is deliberately recoverable: one failed unlock must never
+   poison the whole session. The next tap can try again. */
 export function primeAudio() {
   if (isMuted()) return Promise.resolve(false);
-  if (primed && context?.state === 'running') return Promise.resolve(true);
+  if (context?.state === 'running') {
+    primed = true;
+    return Promise.resolve(true);
+  }
   if (priming) return priming;
 
-  priming = (async () => {
-    try {
-      claimPlaybackSession();
-      const audio = audioContext();
-      if (audio.state !== 'running') await audio.resume();
+  try {
+    const audio = audioContext();
 
-      /* Push an inaudible frame through the graph. Safari/iOS is more reliable
-         after an actual source has started inside the user gesture. */
-      const source = audio.createBufferSource();
-      source.buffer = audio.createBuffer(1, 1, audio.sampleRate);
-      source.connect(audio.destination);
-      source.start();
+    /* Schedule one silent frame synchronously while the gesture is still live. */
+    const source = audio.createBufferSource();
+    source.buffer = audio.createBuffer(1, 1, audio.sampleRate);
+    source.connect(audio.destination);
+    source.start(0);
 
-      primed = audio.state === 'running';
-      if (primed) {
-        for (const name of Object.keys(SAMPLES)) void sampleBuffer(name);
-      }
-      return primed;
-    } catch {
-      return false;
-    } finally {
-      priming = null;
-    }
-  })();
+    const resume = audio.state === 'running'
+      ? Promise.resolve()
+      : audio.resume();
 
-  return priming;
+    priming = Promise.resolve(resume)
+      .then(() => {
+        primed = audio.state === 'running';
+        if (primed) {
+          /* Decode samples only after playback is really unlocked. */
+          for (const name of Object.keys(SAMPLES)) void sampleBuffer(name);
+        }
+        return primed;
+      })
+      .catch(() => {
+        primed = false;
+        return false;
+      })
+      .finally(() => {
+        priming = null;
+      });
+
+    return priming;
+  } catch {
+    primed = false;
+    priming = null;
+    return Promise.resolve(false);
+  }
 }
 
 /* iOS may suspend AudioContext when switching apps or locking the screen. */
 if (typeof document !== 'undefined') {
   const wake = () => {
-    if (document.hidden || isMuted()) return;
+    if (document.hidden || isMuted() || !context) return;
     claimPlaybackSession();
-    if (context?.state === 'suspended') context.resume().then(() => {
-      primed = context?.state === 'running';
-    }).catch(() => {});
+    if (context.state === 'suspended') {
+      context.resume().then(() => {
+        primed = context?.state === 'running';
+      }).catch(() => { primed = false; });
+    }
   };
   document.addEventListener('visibilitychange', wake);
 
-  /* Capture phase is intentional: unlock audio BEFORE select/drag/lock code
-     consumes the same gesture. This fixes the old behaviour where sound only
-     started after a later hand rearrange. */
-  addEventListener('pointerdown', () => { void primeAudio(); }, { once:true, passive:true, capture:true });
-  addEventListener('keydown', () => { void primeAudio(); }, { once:true, capture:true });
+  /* Do NOT use once:true here. If Safari rejects the first unlock attempt,
+     the next real gesture must be allowed to recover the AudioContext. */
+  const primeFromGesture = () => {
+    if (!isMuted() && context?.state !== 'running') void primeAudio();
+  };
+  addEventListener('pointerdown', primeFromGesture, { passive:true, capture:true });
+  addEventListener('touchstart', primeFromGesture, { passive:true, capture:true });
+  addEventListener('keydown', primeFromGesture, { capture:true });
 
-  /* Download bytes early. Decoding happens after the first user gesture. */
+  /* Download bytes early. Decoding happens after the first successful gesture. */
   const warm = () => prefetchSamples();
   if (document.readyState === 'complete') setTimeout(warm, 400);
   else addEventListener('load', () => setTimeout(warm, 400), { once:true });
@@ -128,8 +153,8 @@ function sampleBuffer(name) {
   const job = source
     .then(raw => audioContext().decodeAudioData(raw))
     .then(buffer => { decoded.set(name,buffer); return buffer; })
-    /* Do NOT permanently cache a failed decode as null. iOS can fail while the
-       context is still suspended; a later user gesture should be allowed to retry. */
+    /* Do NOT permanently cache a failed decode as null. A later gesture may
+       successfully unlock audio and should be allowed to retry the decode. */
     .catch(() => null)
     .finally(() => decoding.delete(name));
   decoding.set(name,job);
@@ -139,7 +164,7 @@ function sampleBuffer(name) {
 async function runningAudio() {
   const audio = audioContext();
   if (audio.state !== 'running') {
-    try { await audio.resume(); } catch { /* fallback below */ }
+    try { await audio.resume(); } catch { /* caller will fall back */ }
   }
   primed = audio.state === 'running';
   return audio;
@@ -177,20 +202,24 @@ const PATTERNS = {
   error: [[180,.07,.02],[150,.1,.02]],
 };
 
-/* If a sound request happens on the same first gesture that unlocks audio,
-   queue it behind primeAudio instead of silently dropping it. */
-function whenAudioReady(fn) {
+/* Never gate gameplay sound behind a successful prime result. The previous
+   implementation did exactly that and one Safari unlock failure silenced the
+   entire session. Prime is best-effort; every sound still gets its own attempt. */
+function attemptSound(fn) {
   if (isMuted()) return;
-  if (primed && context?.state === 'running') {
+  if (context?.state === 'running') {
+    primed = true;
     fn();
     return;
   }
-  void primeAudio().then(ok => { if (ok && !isMuted()) fn(); });
+  void primeAudio()
+    .catch(() => false)
+    .finally(() => { if (!isMuted()) fn(); });
 }
 
 export function playSfx(name) {
   if (isMuted()) return;
-  whenAudioReady(() => {
+  attemptSound(() => {
     if (SAMPLES[name]) {
       playSample(name).then(played => { if (!played) synthSfx(name); });
       return;
@@ -222,7 +251,7 @@ function synthSfx(name) {
 
 export function playCardFlip(reverse=false) {
   if (isMuted()) return;
-  whenAudioReady(() => {
+  attemptSound(() => {
     playSample('cardFlip',{rate:reverse?.92:1})
       .then(played => { if (!played) synthCardFlip(reverse); });
   });
