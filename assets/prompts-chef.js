@@ -7,13 +7,13 @@ if(!meta||meta.content!=='learn:prompts')return;
 
 var TERMS={
   ingredients:'วัตถุดิบหลัก คือเนื้อหาและความจริงที่มาจากผู้ใช้ เช่น ประสบการณ์ ไอเดีย โน้ต ภาพ เสียง เอกสาร ตัวเลข ความต้องการ และข้อจำกัดจริง',
-  source:'Source คือซอสตั้งต้นที่คัด จัด และเคี่ยววัตถุดิบหลักให้เป็น Source of Truth แบบพกพา พร้อมใช้ซ้ำโดยไม่ต้องเล่าใหม่ทุกครั้ง',
+  source:'ซอสคือข้อมูลต้นทางที่คัด จัด และเคี่ยววัตถุดิบหลักจนพร้อมใช้ซ้ำ โดยไม่ต้องเล่าใหม่ทุกครั้ง',
   order:'ใบออร์เดอร์ คือผลลัพธ์ที่ผู้ใช้ต้องการจากครัว เช่น อีเมล สไลด์ คลิป รายงาน แผนงาน หรือหน้าเว็บ',
-  seasoning:'ผงปรุง คือคำสั่งที่บอกว่าจะนำ Source ไปทำอะไร ต้องการรสแบบไหน มีข้อจำกัดอะไร และควรตรวจอะไรบ้าง',
-  chef:'เชฟผู้ช่วย คือชุดกติกาที่กำหนดว่า AI ควรถาม คิด วิจารณ์ ตรวจ และจัดคำตอบอย่างไรตลอด Session เดียวกัน โดยยังใช้ Source เป็นข้อเท็จจริงหลัก',
-  kitchen:'ครัว AI ใส่ซอส คือภาษาภาพจำของ myClover ที่แยกวัตถุดิบ Source ใบออร์เดอร์ ผงปรุง เครื่องมือ AI และการชิมของมนุษย์ออกจากกันให้ชัด',
+  seasoning:'ผงปรุง คือคำสั่งที่บอกว่าจะนำซอสไปทำอะไร ต้องการรสแบบไหน มีข้อจำกัดอะไร และควรตรวจอะไรบ้าง',
+  chef:'เชฟผู้ช่วย คือชุดกติกาที่กำหนดว่า AI ควรถาม คิด วิจารณ์ ตรวจ และจัดคำตอบอย่างไรตลอด Session เดียวกัน โดยยังใช้ซอสเป็นข้อเท็จจริงหลัก',
+  kitchen:'ครัว AI ใส่ซอสคือภาษาภาพจำของ myClover ที่แยกวัตถุดิบ ซอส ใบออร์เดอร์ ผงปรุง เครื่องมือ AI และการชิมของมนุษย์ออกจากกันให้ชัด',
   owner:'เจ้าของครัวคือคุณ ผู้เลือกรส ชิม ตรวจ และตัดสินใจสุดท้าย ส่วนความเข้าใจ วิธีคิด และ Mindset คือรสมือกับลิ้นที่ใช้ตัดสินว่างานไหนใช่',
-  mainCourse:'MAIN COURSE คือบทที่ 6 · SERVE — นำวัตถุดิบ Source ผงปรุง และรสมือทั้งหมดมาทำเป็นงานจริงที่คนอื่นเปิดใช้ได้'
+  mainCourse:'MAIN COURSE คือบทที่ 6 · SERVE — นำวัตถุดิบ ซอส ผงปรุง และรสมือทั้งหมดมาทำเป็นงานจริงที่คนอื่นเปิดใช้ได้'
 };
 
 function addStyle(){
@@ -140,7 +140,7 @@ function wrapChefTool(){
       '<span class="chef-tool-icon" aria-hidden="true">👩‍🍳</span>'+
       '<span><span class="chef-tool-kicker">SPECIAL TOOL · CHEF SELECT</span>'+
       '<span class="chef-tool-title">เลือก '+chefTerm('เชฟผู้ช่วยของคุณเอง','chef')+'</span>'+
-      '<span class="chef-tool-desc">วัตถุดิบและ Source ขวดเดิม แต่เชฟแต่ละคนมีวิธีถาม ชิม วิจารณ์ และจัดจานต่างกัน เลือกคนที่เข้ากับงานแล้วปรับรสมือได้ทุกช่อง</span></span>'+
+      '<span class="chef-tool-desc">วัตถุดิบและซอสขวดเดิม แต่เชฟแต่ละคนมีวิธีถาม ชิม วิจารณ์ และจัดจานต่างกัน เลือกคนที่เข้ากับงานแล้วปรับรสมือได้ทุกช่อง</span></span>'+
       '<span class="chef-toggle-label"><span class="closed">เลือกเชฟ +</span><span class="opened">เก็บครัว −</span></span>'+
     '</summary><div class="chef-tool-body"></div>';
   parent.insertBefore(tool,start);
@@ -155,7 +155,7 @@ function wrapChefTool(){
   }
 
   var headings=body.querySelectorAll(':scope > h2');
-  if(headings[0])headings[0].innerHTML='<span class="n">★</span>เชฟผู้ช่วยต่างจาก Source ยังไง?';
+  if(headings[0])headings[0].innerHTML='<span class="n">★</span>เชฟผู้ช่วยต่างจากซอสยังไง?';
   if(headings[1])headings[1].innerHTML='<span class="n">👩‍🍳</span>เลือกเชฟ แล้วตั้งรสมือให้เข้ากับงาน';
 
   var legendTitle=legend.querySelector('h3');
@@ -165,7 +165,7 @@ function wrapChefTool(){
 
   var note=document.createElement('div');
   note.className='chef-tool-note';
-  note.innerHTML='<b>แยกให้ออก:</b> '+chefTerm('วัตถุดิบหลัก','ingredients')+' คือสิ่งที่มาจากคุณ · '+chefTerm('Source','source')+' คือซอสที่เคี่ยววัตถุดิบนั้นไว้ให้พร้อมใช้ซ้ำ · เชฟผู้ช่วยคือ “รสมือ” ที่กำหนดว่า AI จะร่วมงานกับคุณแบบไหน';
+  note.innerHTML='<b>แยกให้ออก:</b> '+chefTerm('วัตถุดิบหลัก','ingredients')+' คือสิ่งที่มาจากคุณ · '+chefTerm('ซอส','source')+' คือซอสที่เคี่ยววัตถุดิบนั้นไว้ให้พร้อมใช้ซ้ำ · เชฟผู้ช่วยคือ “รสมือ” ที่กำหนดว่า AI จะร่วมงานกับคุณแบบไหน';
   body.insertBefore(note,legend);
   return true;
 }
@@ -183,18 +183,18 @@ function addKitchenWhy(){
     '<span class="kitchen-toggle"><span class="closed">ทบทวนศัพท์ +</span><span class="opened">ซ่อน −</span></span></summary>'+
     '<div class="kitchen-why-body">'+
       '<p>เพราะชื่อ AI ปุ่ม และความสามารถเปลี่ยนตลอด แต่หลักทำงานที่ดีไม่ค่อยเปลี่ยน เราจึงใช้ภาษาครัวเพื่อจำ Workflow ที่ย้ายข้ามเครื่องมือได้ และเพื่อไม่ให้ Prompt ถูกเข้าใจผิดว่าเป็นต้นกำเนิดของงานทั้งหมด</p>'+
-      '<div class="kitchen-flow"><span>🥕 วัตถุดิบของคุณ</span><i>→</i><span>🫙 Source</span><i>→</i><span>🧾 ใบออร์เดอร์</span><i>→</i><span>🧂 ผงปรุง</span><i>→</i><span>🛠️ ครัว AI</span><i>→</i><span>🍽️ จานที่เสิร์ฟ</span><i>→</i><span>👅 ชิมและตัดสินใจ</span></div>'+
+      '<div class="kitchen-flow"><span>🥕 วัตถุดิบของคุณ</span><i>→</i><span>🫙 ซอส</span><i>→</i><span>🧾 ใบออร์เดอร์</span><i>→</i><span>🧂 ผงปรุง</span><i>→</i><span>🛠️ ครัว AI</span><i>→</i><span>🍽️ จานที่เสิร์ฟ</span><i>→</i><span>👅 ชิมและตัดสินใจ</span></div>'+
       '<div class="kitchen-glossary">'+
         '<div class="kitchen-card"><b>🥕 '+chefTerm('วัตถุดิบหลัก','ingredients')+'</b><p>ประสบการณ์ ไอเดีย โน้ต ภาพ เสียง เอกสาร ตัวเลข และข้อจำกัดจริงจากผู้ใช้</p></div>'+
-        '<div class="kitchen-card"><b>🫙 '+chefTerm('Source','source')+'</b><p>ซอสตั้งต้นที่คัดและเคี่ยววัตถุดิบให้เป็น Source of Truth พร้อมใช้ซ้ำ</p></div>'+
+        '<div class="kitchen-card"><b>🫙 '+chefTerm('ซอส','source')+'</b><p>ซอสตั้งต้นที่คัดและเคี่ยววัตถุดิบให้เป็นซอสหลักที่ยึดเป็นความจริง พร้อมใช้ซ้ำ</p></div>'+
         '<div class="kitchen-card"><b>🧾 '+chefTerm('เมนู / ใบออร์เดอร์','order')+'</b><p>สิ่งที่ต้องการให้ครัวทำออกมา เช่น อีเมล สไลด์ คลิป รายงาน หรือเว็บ</p></div>'+
-        '<div class="kitchen-card"><b>🧂 '+chefTerm('Prompt / ผงปรุง','seasoning')+'</b><p>คำสั่งว่าจะใช้ Source ทำอะไร ต้องการรสแบบไหน และต้องตรวจอะไร</p></div>'+
+        '<div class="kitchen-card"><b>🧂 '+chefTerm('Prompt / ผงปรุง','seasoning')+'</b><p>คำสั่งว่าจะใช้ซอสทำอะไร ต้องการรสแบบไหน และต้องตรวจอะไร</p></div>'+
         '<div class="kitchen-card"><b>👩‍🍳 '+chefTerm('เชฟผู้ช่วย','chef')+'</b><p>วิธีถาม คิด วิจารณ์ ตรวจ และจัดคำตอบของ AI ตลอด Session</p></div>'+
-        '<div class="kitchen-card"><b>🛠️ ครัว AI</b><p>เครื่องมือ โมเดล ปุ่ม และแรงงานที่ช่วยแปรวัตถุดิบกับ Source ให้เป็นงาน</p></div>'+
+        '<div class="kitchen-card"><b>🛠️ ครัว AI</b><p>เครื่องมือ โมเดล ปุ่ม และแรงงานที่ช่วยแปรวัตถุดิบกับซอสให้เป็นงาน</p></div>'+
         '<div class="kitchen-card owner"><b>👅 '+chefTerm('คุณคือเจ้าของครัว','owner')+'</b><p>ความเข้าใจ วิธีคิด และ Mindset คือรสมือกับลิ้นของคุณ ใช้เลือก ชิม ตรวจ และตัดสินใจสุดท้าย</p></div>'+
       '</div>'+
-      '<p><b>ประโยคเดียวที่ควรจำ:</b> ของที่เป็นของคุณคือวัตถุดิบ · Source คือซอสที่จัดวัตถุดิบนั้นไว้ · Prompt คือผงปรุง · AI คือครัว · ส่วนคุณคือคนเลือกรส ชิม และตัดสินใจ</p>'+
-      '<p>หน้านี้เปิดมาใช้เครื่องมือได้ทันที แม้ไม่เคยเรียนคอร์ส แต่ถ้าอยากเห็นว่าเราเปลี่ยนวัตถุดิบดิบให้กลายเป็น Source ได้อย่างไร ลองเดินเข้ามาจากประตูหน้าบ้านก่อน</p>'+
+      '<p><b>ประโยคเดียวที่ควรจำ:</b> ของที่เป็นของคุณคือวัตถุดิบ · ซอสคือข้อมูลที่จัดวัตถุดิบนั้นไว้ · Prompt คือผงปรุง · AI คือครัว · ส่วนคุณคือคนเลือกรส ชิม และตัดสินใจ</p>'+
+      '<p>หน้านี้เปิดมาใช้เครื่องมือได้ทันที แม้ไม่เคยเรียนคอร์ส แต่ถ้าอยากเห็นว่าเราเปลี่ยนวัตถุดิบดิบให้กลายเป็นซอสได้อย่างไร ลองเดินเข้ามาจากประตูหน้าบ้านก่อน</p>'+
       '<a class="front-door" href="/">🚪 เริ่มจากประตูหน้าบ้าน →</a>'+
     '</div>';
   head.insertAdjacentElement('afterend',box);
@@ -208,15 +208,15 @@ function rewriteReviewAndNext(){
     if(h&&h.tagName==='H2')h.innerHTML='<span class="n">5</span>ทบทวนครัวก่อนรอจานหลัก';
     lvls.innerHTML=
       '<div class="lvl"><span class="n">STEP 1 · มีวัตถุดิบ</span><q>นี่คือโน้ต ภาพ เอกสาร และเรื่องจริงของฉัน</q><small>ของจริงเริ่มจากผู้ใช้ ไม่ได้เริ่มจาก Prompt หรือ AI</small></div>'+
-      '<div class="lvl"><span class="n">STEP 2 · เคี่ยวเป็น Source</span><q>คัดสิ่งสำคัญ จัดความจริง รักษาเสียง และล็อก Canon ไว้ในซอสขวดเดียว</q><small>Source ทำให้อธิบายน้อยลง ใช้ซ้ำง่ายขึ้น และลดข้อมูลขัดกัน</small></div>'+
+      '<div class="lvl"><span class="n">STEP 2 · เคี่ยวเป็นซอส</span><q>คัดสิ่งสำคัญ จัดความจริง รักษาเสียง และล็อก Canon ไว้ในซอสขวดเดียว</q><small>ซอสทำให้อธิบายน้อยลง ใช้ซ้ำง่ายขึ้น และลดข้อมูลขัดกัน</small></div>'+
       '<div class="lvl best"><span class="n">STEP 3 · รับออร์เดอร์แล้วปรุง</span><q>เลือกเมนู → ตักผงปรุง → เลือกเชฟผู้ช่วย → ชิมก่อนเสิร์ฟ</q><small>บทนี้เตรียมครัวครบแล้ว บทถัดไปจะนำทุกอย่างไปทำจานจริง</small></div>';
 
     var recap=lvls.nextElementSibling;
-    if(recap&&recap.classList.contains('note'))recap.innerHTML='<b>ไม่มีวัตถุดิบ ต่อให้มี Source Template และผงปรุงครบ งานก็เป็นได้แค่อาหารสำเร็จรูปรสกลาง ๆ</b><br>คุณภาพเริ่มจากสิ่งที่คุณรู้ สิ่งที่คุณเจอ และสิ่งที่คุณเลือกใส่ลงไป';
+    if(recap&&recap.classList.contains('note'))recap.innerHTML='<b>ไม่มีวัตถุดิบ ต่อให้มีซอส Template และผงปรุงครบ งานก็เป็นได้แค่อาหารสำเร็จรูปรสกลาง ๆ</b><br>คุณภาพเริ่มจากสิ่งที่คุณรู้ สิ่งที่คุณเจอ และสิ่งที่คุณเลือกใส่ลงไป';
   }
 
   var quest=document.querySelector('.quest');
-  if(quest)quest.innerHTML='🎯 <b>QUEST: จัดครัวให้พร้อมก่อน Main Course</b><ol><li>เลือกวัตถุดิบจริงจากงานของคุณ 1 ชุด</li><li>ยืนยันว่า Source ขวดหลักยังตรงกับข้อเท็จจริงและเสียงของคุณ</li><li>เลือกเมนูที่อยากได้ แล้วตักผงปรุง 1 สูตรไปใช้</li><li>ถ้างานต้องทำต่อหลายรอบ ค่อยเปิด “เลือกเชฟผู้ช่วยของคุณเอง”</li><li>ชิมชื่อ ตัวเลข Key Messages, Tone และ Canon ก่อนเสิร์ฟ</li></ol><p style="margin-top:12px"><b>คำถามทิ้งท้าย:</b> วัตถุดิบชิ้นไหนของคุณที่ AI สร้างแทนไม่ได้?</p><span class="unlock">✨ KITCHEN READY — MAIN COURSE NEXT</span><span class="qshare">เอามาอวดกันได้: “วัตถุดิบหลักของฉันคือ ______ · Source ขวดนี้จะถูกเอาไปทำ ______ 🍀”</span>';
+  if(quest)quest.innerHTML='🎯 <b>QUEST: จัดครัวให้พร้อมก่อน Main Course</b><ol><li>เลือกวัตถุดิบจริงจากงานของคุณ 1 ชุด</li><li>ยืนยันว่าซอสขวดหลักยังตรงกับข้อเท็จจริงและเสียงของคุณ</li><li>เลือกเมนูที่อยากได้ แล้วตักผงปรุง 1 สูตรไปใช้</li><li>ถ้างานต้องทำต่อหลายรอบ ค่อยเปิด “เลือกเชฟผู้ช่วยของคุณเอง”</li><li>ชิมชื่อ ตัวเลข Key Messages, Tone และ Canon ก่อนเสิร์ฟ</li></ol><p style="margin-top:12px"><b>คำถามทิ้งท้าย:</b> วัตถุดิบชิ้นไหนของคุณที่ AI สร้างแทนไม่ได้?</p><span class="unlock">✨ KITCHEN READY — MAIN COURSE NEXT</span><span class="qshare">เอามาอวดกันได้: “วัตถุดิบหลักของฉันคือ ______ · ซอสขวดนี้จะถูกเอาไปทำ ______ 🍀”</span>';
 
   var nextrow=document.querySelector('.nextrow');
   if(nextrow){
@@ -224,7 +224,7 @@ function rewriteReviewAndNext(){
     if(!existing){
       existing=document.createElement('section');
       existing.className='main-course-tease';
-      existing.innerHTML='<small>NEXT · บทที่ 6 · SERVE</small><h3>ครัวพร้อมแล้ว — ต่อไปคือ '+chefTerm('MAIN COURSE','mainCourse')+'</h3><p>5 บทที่ผ่านมาเราเตรียมวัตถุดิบ เคี่ยว Source ชิม ทำจานต้นแบบ แตกหลายเมนู และเลือกเครื่องปรุงแล้ว บทถัดไปจะรวมทุกอย่างเป็นงานจริงที่เปิดให้คนอื่นเห็นและใช้งานได้</p><div class="main-course-line"><span>🥕 วัตถุดิบพร้อม</span><span>🫙 Source พร้อม</span><span>🧂 สูตรพร้อม</span><span>👩‍🍳 เชฟพร้อม</span><span>🍽️ รอเสิร์ฟ</span></div>';
+      existing.innerHTML='<small>NEXT · บทที่ 6 · SERVE</small><h3>ครัวพร้อมแล้ว — ต่อไปคือ '+chefTerm('MAIN COURSE','mainCourse')+'</h3><p>5 บทที่ผ่านมาเราเตรียมวัตถุดิบ เคี่ยวซอสชิม ทำจานต้นแบบ แตกหลายเมนู และเลือกเครื่องปรุงแล้ว บทถัดไปจะรวมทุกอย่างเป็นงานจริงที่เปิดให้คนอื่นเห็นและใช้งานได้</p><div class="main-course-line"><span>🥕 วัตถุดิบพร้อม</span><span>🫙 ซอสพร้อม</span><span>🧂 สูตรพร้อม</span><span>👩‍🍳 เชฟพร้อม</span><span>🍽️ รอเสิร์ฟ</span></div>';
       nextrow.parentNode.insertBefore(existing,nextrow);
     }
     var links=nextrow.querySelectorAll('a');
