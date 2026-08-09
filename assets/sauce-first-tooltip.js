@@ -60,7 +60,13 @@ function lessonConfig() {
 
 function contentRoot() {
   if (/\/classroom\/full-lessons(?:\.html)?$/.test(location.pathname)) return document.getElementById('reader');
-  return document.querySelector('main');
+  return document.querySelector('main') || document.querySelector('body > .wrap') || document.body;
+}
+
+function isVisible(element) {
+  if (!element || element.closest('[hidden],[aria-hidden="true"]')) return false;
+  const style = getComputedStyle(element);
+  return style.display !== 'none' && style.visibility !== 'hidden' && element.getClientRects().length > 0;
 }
 
 function firstSauceText(root) {
@@ -70,7 +76,7 @@ function firstSauceText(root) {
     acceptNode(node) {
       if (!node.nodeValue.includes('ซอส')) return NodeFilter.FILTER_REJECT;
       const parent = node.parentElement;
-      if (!parent || parent.closest(blocked)) return NodeFilter.FILTER_REJECT;
+      if (!parent || parent.closest(blocked) || !isVisible(parent)) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     }
   });
@@ -163,8 +169,16 @@ function scheduleClose() {
 function wrapFirstSauce() {
   const config = lessonConfig();
   const root = contentRoot();
-  if (!config || !root || root.querySelector('[data-mc-sauce-term]')) return false;
-  const text = firstSauceText(root);
+  if (!config || !root) return false;
+  let existing = root.querySelector('[data-mc-sauce-term]');
+  let text = firstSauceText(root);
+  if (existing) {
+    const candidateComesFirst = text && (text.compareDocumentPosition(existing) & Node.DOCUMENT_POSITION_FOLLOWING);
+    if (isVisible(existing) && !candidateComesFirst) return true;
+    existing.replaceWith(document.createTextNode('ซอส'));
+    existing = null;
+    text = firstSauceText(root);
+  }
   if (!text) return false;
   const index = text.nodeValue.indexOf('ซอส');
   const button = document.createElement('button');
@@ -197,13 +211,20 @@ function wrapFirstSauce() {
 
 function apply() {
   injectStyle();
-  if (wrapFirstSauce()) return;
   const root = contentRoot();
   if (!root) return;
+  let refreshTimer = 0;
+  const refresh = () => {
+    clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(wrapFirstSauce, 40);
+  };
+  wrapFirstSauce();
   const observer = new MutationObserver(() => {
-    if (wrapFirstSauce()) observer.disconnect();
+    refresh();
   });
   observer.observe(root, { childList:true, subtree:true });
+  setTimeout(wrapFirstSauce, 250);
+  setTimeout(wrapFirstSauce, 1000);
 }
 
 document.addEventListener('click', event => {
