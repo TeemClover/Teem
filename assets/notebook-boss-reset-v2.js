@@ -1,32 +1,16 @@
-/* myClover · Boss Dungeon reset v2
+/* myClover · Boss Dungeon reset v3
    Hidden at the end of the restored notebook.
-   Resets one Chapter 7 run, but keeps permanent Collection / course progress.
+   A reset must behave like a brand-new Chapter 7 run:
+   - chest can be opened again
+   - notebook must be restored again
+   - side quests / run timer / XP / secret-ending state are cleared
+   Permanent course progress, titles and Mini Achievements stay intact.
 */
 
-const RESET_LOCAL_KEYS = [
-  'mc_awaken_explore_v1',
-  'mc_awaken_loadouts_v1',
-  'mc_awaken_loot_v1',
-  'mc_awaken_loot_v2',
-  'mc_awaken_loot_v3',
-  'mc_awaken_xp_used_v1',
-  'mc_awaken_run_reported_v2',
-  'mc_awaken_run_reported_v3',
-  'mc_awaken_run_reported_v4',
-  'mc_awaken_run_reported_v5',
-  'mc_ch7_done',
-  'mc_ch7_entered',
-  'mc_ch7_y',
-  'mc_nb_seen',
-  'mc_nb_restored',
-  'mc_secret_end',
-];
-
-const RESET_SESSION_KEYS = [
-  'mc_awaken_run_session_v2',
-  'mc_awaken_run_session_v3',
-  'mc_awaken_run_session_v4',
-];
+const KEEP_LOCAL_KEYS = new Set([
+  'mc_awaken_reset_count',
+  'mc_mini_achievements_v1',
+]);
 
 function isNotebookPage() {
   return /^\/classroom\/awaken\/notebook\/?(?:index\.html)?$/.test(location.pathname);
@@ -34,6 +18,24 @@ function isNotebookPage() {
 
 function report(id) {
   try { window.MC_ACT?.(id); } catch { /* analytics optional */ }
+}
+
+function dungeonKey(key) {
+  return key.startsWith('mc_awaken_') ||
+    key.startsWith('mc_ch7_') ||
+    key.startsWith('mc_nb_') ||
+    key === 'mc_secret_end';
+}
+
+function clearDungeonStorage(storage) {
+  const remove = [];
+  for (let i = 0; i < storage.length; i += 1) {
+    const key = storage.key(i);
+    if (!key || KEEP_LOCAL_KEYS.has(key)) continue;
+    if (dungeonKey(key)) remove.push(key);
+  }
+  remove.forEach(key => storage.removeItem(key));
+  return remove;
 }
 
 function injectStyles() {
@@ -57,17 +59,32 @@ function injectStyles() {
 }
 
 function resetDungeon() {
-  let count = 0;
+  let count = 1;
+  let removedLocal = [];
+  let removedSession = [];
+
   try {
     count = Number(localStorage.getItem('mc_awaken_reset_count') || 0) + 1;
-    localStorage.setItem('mc_awaken_reset_count', String(count));
     window.MC_MINI_UNLOCK?.('dungeon-reset');
-    RESET_LOCAL_KEYS.forEach(key => localStorage.removeItem(key));
+    removedLocal = clearDungeonStorage(localStorage);
+    localStorage.setItem('mc_awaken_reset_count', String(count));
   } catch { /* private mode */ }
-  try { RESET_SESSION_KEYS.forEach(key => sessionStorage.removeItem(key)); } catch { /* private mode */ }
+
+  try {
+    removedSession = clearDungeonStorage(sessionStorage);
+  } catch { /* private mode */ }
+
   report('awaken-dungeon-reset');
-  try { window.gtag?.('event', 'awaken_dungeon_reset', { reset_count:count || 1 }); } catch { /* optional */ }
-  location.href = '/classroom/awaken/?reset=1';
+  try {
+    window.gtag?.('event', 'awaken_dungeon_reset', {
+      reset_count: count,
+      cleared_local: removedLocal.length,
+      cleared_session: removedSession.length,
+    });
+  } catch { /* optional */ }
+
+  /* replace prevents Safari/back from restoring the old restored-notebook DOM */
+  location.replace(`/classroom/awaken/?reset=${Date.now()}`);
 }
 
 function createPanel() {
@@ -94,7 +111,11 @@ function createPanel() {
     confirm.hidden = expanded;
     if (!expanded) { report('awaken-reset-menu-open'); cancel.focus(); }
   });
-  cancel.addEventListener('click', () => { confirm.hidden = true; open.setAttribute('aria-expanded', 'false'); open.focus(); });
+  cancel.addEventListener('click', () => {
+    confirm.hidden = true;
+    open.setAttribute('aria-expanded', 'false');
+    open.focus();
+  });
   panel.querySelector('.boss-reset-do').addEventListener('click', resetDungeon);
   return panel;
 }
@@ -113,7 +134,9 @@ function boot() {
   document.documentElement.dataset.bossResetV2 = '1';
   injectStyles();
   if (mountAtNotebookEnd()) return;
-  const observer = new MutationObserver(() => { if (mountAtNotebookEnd()) observer.disconnect(); });
+  const observer = new MutationObserver(() => {
+    if (mountAtNotebookEnd()) observer.disconnect();
+  });
   observer.observe(document.body, { childList:true, subtree:true });
 }
 
