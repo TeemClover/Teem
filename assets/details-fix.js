@@ -1,5 +1,3 @@
-import '/assets/awaken-static-chapter.js?v=20260810-static1';
-
 /* myclover · reliable expandable details on mobile WebViews */
 (function(){
   var SELECTOR='details.fold';
