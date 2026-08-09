@@ -12,7 +12,7 @@ const NOTEBOOK_SECRET_EPOCH = 'mc_secret_end_run_epoch';
 const NOTEBOOK_SEEN_EPOCH = 'mc_nb_seen_run_epoch';
 const LOOT_KEYS = ['mc_awaken_loot_v1','mc_awaken_loot_v2','mc_awaken_loot_v3'];
 
-function onBoss(){ return /^\/classroom\/awaken\/?(?:index\.html)?$/.test(location.pathname); }
+function onBoss(){ return /^\/(?:classroom\/awaken|boss)\/?(?:index\.html)?$/.test(location.pathname); }
 function onNotebook(){ return /^\/classroom\/awaken\/notebook\/?(?:index\.html)?$/.test(location.pathname); }
 function inDungeon(){ return onBoss() || onNotebook(); }
 function get(storage,key){ try{return storage.getItem(key)}catch{return null} }
@@ -131,7 +131,7 @@ async function hardReset(event){
 
   try{ window.MC_ACT?.('awaken-dungeon-hard-reset'); }catch{}
   await Promise.race([pushReset(e),new Promise(r=>setTimeout(r,1800))]);
-  location.replace(`/classroom/awaken/?reset=${e}`);
+  location.replace(`/boss/?reset=${e}`);
 }
 
 function wireNotebookRunMarkers(){

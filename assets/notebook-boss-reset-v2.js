@@ -131,7 +131,7 @@ async function resetDungeon() {
     new Promise(resolve => setTimeout(resolve, 1800)),
   ]);
 
-  location.replace(`/classroom/awaken/?reset=${epoch}`);
+  location.replace(`/boss/?reset=${epoch}`);
 }
 
 function createPanel() {
@@ -145,7 +145,7 @@ function createPanel() {
     <div class="boss-reset-confirm" hidden>
       <b>เริ่มด่านบอสใหม่ตั้งแต่หน้าประตู?</b>
       <p>รอบปัจจุบันจะถูกล้าง เพื่อให้มึงเดินใหม่ เปิด Side Quest ใหม่ ซ่อมสมุดใหม่ และเปิดหีบใหม่ได้</p>
-      <div class="boss-reset-list"><span>ล้าง: เวลาอ่าน · Side Quest · ดาว · Loot · เกลือ · ม้วน EXP · สถานะสมุด</span><span>เก็บไว้: 6 บท · Achievement ที่เคยปลด · BLACKSMITH · Player Card · Collection</span></div>
+      <div class="boss-reset-list"><span>ล้าง: Quest · ดาว · Loot · เกลือ · คัมภีร์ · สถานะสมุด</span><span>เก็บไว้: 6 บท · Achievement ที่เคยปลด · BLACKSMITH · Player Card · Collection</span></div>
       <div class="boss-reset-actions"><button class="boss-reset-cancel" type="button">ยังไม่รีเซ็ต</button><button class="boss-reset-do" type="button">ยืนยัน · เริ่ม Dungeon ใหม่</button></div>
     </div>`;
 

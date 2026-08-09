@@ -266,20 +266,20 @@ footer .exits{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;ma
       <span class="seam" aria-hidden="true"></span>
     </figure>
 
-    <!-- สถานะ A — ยังไม่จบโรงตีเหล็ก · ห้ามสปอยล์อะไรทั้งนั้น -->
+    <!-- สถานะ A — ยังไม่มีเครื่องมือซ่อมจากด่านบอส -->
     <div class="gate" id="stateA">
       <span class="tag mono">OLD ITEM CONDITION · DAMAGED</span>
       <h2 class="disp">หน้าถัดไปเสียหายหนัก</h2>
       <p>หมึกส่วนใหญ่เลือนจนอ่านไม่ออก</p>
-      <p class="why">ช่างที่ผ่านโรงตีเหล็ก อาจมี Skill ที่ใช้ซ่อมของเก่าได้</p>
-      <a class="go disp" href="../../../forge/">กลับไปยัง The Forge</a>
+      <p class="why">มีของชิ้นหนึ่งซ่อนอยู่ใน Quest Chest ช่วงโลกของตัวอักษร</p>
+      <a class="go disp" href="../../../boss/#phase1">กลับไปหาเครื่องมือในด่านบอส</a>
     </div>
 
     <!-- สถานะ B — มีสกิลแล้ว แต่ต้องกดใช้เอง ไม่เปิดให้อัตโนมัติ -->
     <div class="gate" id="stateB" hidden>
       <span class="tag mono">SKILL AVAILABLE · RESTORE</span>
       <h2 class="disp">ซ่อมแซมสิ่งที่เวลาเคยทำให้เลือนหาย</h2>
-      <p>คุณผ่านโรงตีเหล็กมาแล้ว — สกิลนี้เป็นของคุณ</p>
+      <p>ค้อนซ่อมความทรงจำอยู่ในกระเป๋า — คุณเลือกใช้มันได้เอง</p>
       <p class="why">สมุดหลังซ่อมยังต้องดูเก่า สกิลทำให้มันอ่านได้ ไม่ได้ลบร่องรอยของอดีต</p>
       <button type="button" class="rbtn disp" id="restoreBtn" data-mc-act="notebook-restore">
         <span aria-hidden="true">🔨</span>USE SKILL — ซ่อมสมุด</button>
@@ -337,6 +337,7 @@ function hasForge(){
   var t=titles();
   return t.indexOf('BLACKSMITH')>=0 || t.indexOf('FORGE')>=0;
 }
+function hasRestoreTool(){ return ls('mc_awaken_restore_tool_v1','')==='1'; }
 function grantTag(){
   var tag=TAG();
   if(!tag) return;
@@ -509,7 +510,7 @@ if(ls(K_REST,'')==='1'){
   reveal(false);                       /* ซ่อมไปแล้ว กลับมาอ่านได้เลย */
 } else {
   meter(1);
-  if(hasForge()){ A.hidden=true; B.hidden=false; }
+  if(hasRestoreTool()){ A.hidden=true; B.hidden=false; }
   ev('playmate_restore_gate_seen');
 }
 
@@ -520,10 +521,17 @@ if(btn) btn.addEventListener('click',function(){
   reveal(true);
 });
 
-/* กลับบทที่เจ็ดแล้วต้องอยู่ตรงที่เดิมที่เขาจากมา */
+/* มาจากด่านใหม่ให้กลับแผนที่เดิม ส่วนทางเข้าเก่ายังคงใช้ history เดิม */
 var back=document.getElementById('back');
+var fromBoss=new URLSearchParams(location.search).get('from')==='boss' ||
+  (document.referrer||'').indexOf('/boss/')>=0;
+if(fromBoss){
+  if(back) back.href='../../../boss/#phase3';
+  document.querySelectorAll('footer a[href="../"]').forEach(function(a){ a.href='../../../boss/#phase3'; });
+}
 if(back) back.addEventListener('click',function(e){
-  if(history.length>1 && (document.referrer||'').indexOf('/classroom/awaken')>=0){
+  if(history.length>1 && ((document.referrer||'').indexOf('/classroom/awaken')>=0 ||
+      (document.referrer||'').indexOf('/boss/')>=0)){
     e.preventDefault(); history.back();
   }
 });

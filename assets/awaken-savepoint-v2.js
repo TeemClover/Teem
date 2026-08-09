@@ -162,7 +162,7 @@ async function hardReset(event){
   try{ window.MC_ACT?.('awaken-dungeon-savepoint-reset'); }catch{}
 
   await Promise.race([pushReset(e),new Promise(resolve=>setTimeout(resolve,1800))]);
-  location.replace(`/classroom/awaken/?reset=${e}`);
+  location.replace(`/boss/?reset=${e}`);
 }
 
 function wireRunStamps(){
