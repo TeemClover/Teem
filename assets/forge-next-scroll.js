@@ -18,11 +18,6 @@ if (episode && nextLink) {
   let touchStartY = null;
   let touchStartedAtBottom = false;
 
-  const hint = document.querySelector('.kb');
-  if (hint && !hint.textContent.includes('เลื่อนต่อจากท้ายหน้า')) {
-    hint.textContent += ' · เลื่อนต่อจากท้ายหน้าเพื่อไปตอนต่อไป';
-  }
-
   const atBottom = () => {
     const root = document.documentElement;
     return Math.ceil(window.scrollY + window.innerHeight) >= root.scrollHeight - 2;
