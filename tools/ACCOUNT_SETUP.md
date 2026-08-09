@@ -1,14 +1,14 @@
 # myClover Account + Cloud Save
 
-The site stays guest-first. Anonymous progress continues to live in `localStorage`; signing in adds a D1 backup and merges cloud/device unlocks.
+The site stays guest-first. Anonymous progress continues to live in `localStorage`; signing in adds a Postgres backup and merges cloud/device unlocks.
 
-## Required Cloudflare binding
+## Required Vercel database
 
-Bind the existing D1 database to the Pages project as `DB`. Account tables create themselves lazily; `tools/account-schema.sql` can also be run manually.
+Connect a Neon Postgres database to the Vercel project and expose its pooled connection string as `DATABASE_URL`. Tables and indexes create themselves lazily on the first API request.
 
 ## Google Login
 
-Set encrypted Pages environment variables:
+Set encrypted Vercel environment variables:
 
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
@@ -19,7 +19,7 @@ Authorized redirect URI:
 
 ## LINE Login
 
-Set encrypted Pages environment variables:
+Set encrypted Vercel environment variables:
 
 - `LINE_CHANNEL_ID`
 - `LINE_CHANNEL_SECRET`
@@ -42,4 +42,4 @@ Enable the `openid`, `profile`, and `email` scopes in the LINE Login channel. Th
 
 Open `https://www.myclover.com/members/` to search member number, name, email, login provider, join date, last progress activity, and export CSV.
 
-Set `MEMBER_ADMIN_USER` and `MEMBER_ADMIN_PASSWORD` in Cloudflare Pages. If omitted, the page reuses `STAT_USER` and `STAT_PASSWORD`. When neither password exists, the registry fails closed with HTTP 503.
+Set `MEMBER_ADMIN_USER` and `MEMBER_ADMIN_PASSWORD` in Vercel. If omitted, the API reuses `STAT_USER` and `STAT_PASSWORD`. When neither password exists, the registry fails closed with HTTP 503. The static dashboard contains no member data; every search and CSV download goes through the protected `/api/members` endpoint.

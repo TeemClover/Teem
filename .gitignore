@@ -7,6 +7,9 @@ __pycache__/
 *.pyc
 yyy/.venv/
 
+# Node dependencies (installed by Vercel from package-lock.json)
+node_modules/
+
 # YYY Studio OS — runtime-generated (recreated by app.py on first run)
 yyy/yyy_studio.db
 yyy/projects/
