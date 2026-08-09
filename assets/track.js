@@ -16,17 +16,17 @@ import '/assets/lesson1-polite-language.js';
 import '/assets/lesson1-downloadable-md.js';
 import '/assets/lesson6-boss-transition.js';
 import '/assets/course-nav-names.js';
-import '/assets/details-fix.js';
-import '/assets/awaken-boss-patch.js';
-import '/assets/awaken-language-sidequest.js';
+import '/assets/details-fix.js?v=20260810-layout2';
+import '/assets/awaken-boss-patch.js?v=20260810-layout2';
+import '/assets/awaken-language-sidequest.js?v=20260810-layout2';
 import '/assets/awaken-hard-reset-v1.js?v=20260809-1';
 import '/assets/awaken-migration-guard-v2.js?v=20260809-1';
 import '/assets/awaken-loot-v4-migration.js?v=20260809-1';
-import '/assets/awaken-loot-v4.js?v=20260809-1';
-import '/assets/awaken-glossary-extra.js?v=20260809-1';
-import '/assets/awaken-floating-tooltips-v1.js?v=20260809-1';
-import '/assets/awaken-mobile-overflow-fix.js';
-import '/assets/awaken-party-loadout.js';
+import '/assets/awaken-loot-v4.js?v=20260810-layout2';
+import '/assets/awaken-glossary-extra.js?v=20260810-layout2';
+import '/assets/awaken-floating-tooltips-v1.js?v=20260810-layout2';
+import '/assets/awaken-mobile-overflow-fix.js?v=20260810-layout2';
+import '/assets/awaken-party-loadout.js?v=20260810-layout2';
 import '/assets/notebook-boss-reset-v2.js?v=20260809-1';
 import '/assets/notebooklm-page.js';
 import '/assets/notebooklm-hero-position.js';
@@ -56,12 +56,37 @@ import '/assets/comic-bottom-next.js';
       /* Progress UI is decorative only; remove it without touching chapter DOM. */
       #xp,#dots{display:none!important}
 
-      /* Fail-safe: every normal chapter node is immediately readable.
-         [hidden] still wins for intentional accordions/modals/choices. */
-      #chapter{overflow:visible!important}
-      #chapter .phase{display:block!important;opacity:1!important;visibility:visible!important;transform:none!important}
+      /* Hard layout fail-safe. No phase may become a clipped viewport. */
+      #chapter,
+      #chapter>.wrap,
+      #chapter .phase,
+      #chapter .truth,
+      #chapter .compare,
+      #chapter .sample,
+      #chapter .timebox,
+      #chapter .loop,
+      #chapter .step,
+      #chapter .cycle,
+      #chapter .notebook,
+      #chapter .language-sidequest,
+      #chapter .partygrid,
+      #chapter .tail{
+        height:auto!important;
+        max-height:none!important;
+        overflow:visible!important;
+        clip:auto!important;
+        clip-path:none!important;
+        contain:none!important;
+      }
+      #chapter .phase{
+        display:block!important;
+        opacity:1!important;
+        visibility:visible!important;
+        transform:none!important;
+      }
       #chapter .phase *:not([hidden]),#chapter .tail *:not([hidden]){
-        opacity:1!important;visibility:visible!important;
+        opacity:1!important;
+        visibility:visible!important;
       }
 
       #gate{
