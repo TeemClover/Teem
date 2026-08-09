@@ -38,7 +38,7 @@
   figure.innerHTML=`
   <svg viewBox="0 0 900 390" role="img" xmlns="http://www.w3.org/2000/svg">
     <title id="multiplyIllTitle">ซอสขวดเดียวราดได้หลายจาน</title>
-    <desc id="multiplyIllDesc">เชฟผู้หญิงน่ารักเทซอสสีทองจากขวดเดียว ซอสแยกไปยังจานที่แทนภาพ สไลด์ วิดีโอ เสียง และแผนผัง</desc>
+    <desc id="multiplyIllDesc">เชฟผู้หญิงน่ารักเทซอสสีทองจากขวดเดียวซอสแยกไปยังจานที่แทนภาพ สไลด์ วิดีโอ เสียง และแผนผัง</desc>
     <defs>
       <linearGradient id="nbBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf7"/><stop offset="1" stop-color="#f3e7cf"/></linearGradient>
       <linearGradient id="nbSauce" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7c96b"/><stop offset="1" stop-color="#b9822e"/></linearGradient>
