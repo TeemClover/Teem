@@ -8,11 +8,11 @@ var V=window.MC_VAULT;
 if(!V||!Array.isArray(V.prompts))return;
 
 var TERMS={
-  season:'SEASON คือช่วงเติมวิธีใช้ให้ Source เพื่อให้ออกมาเป็นงานที่ตรงจุด ไม่ใช่การสร้างข้อมูลต้นทางใหม่',
-  sourceFirst:'Source-first คือเริ่มจากข้อมูลต้นทางก่อน แล้วค่อยเลือกคำสั่งหรือเครื่องมือให้เหมาะกับงาน',
-  instant:'Instant คือสูตรที่กดคัดลอกไปใช้กับ Source ได้ทันที โดยไม่ต้องกรอกช่องว่างก่อน',
+  season:'SEASON คือช่วงเติมวิธีใช้ให้ซอสเพื่อให้ออกมาเป็นงานที่ตรงจุด ไม่ใช่การสร้างข้อมูลต้นทางใหม่',
+  sourceFirst:'ซอส-first คือเริ่มจากข้อมูลต้นทางก่อน แล้วค่อยเลือกคำสั่งหรือเครื่องมือให้เหมาะกับงาน',
+  instant:'Instant คือสูตรที่กดคัดลอกไปใช้กับซอสได้ทันที โดยไม่ต้องกรอกช่องว่างก่อน',
   zone:'โซนเครื่องปรุงคือตัวกรองที่รวมหลายสูตรตามจุดประสงค์เดียวกัน 1 โซนจึงเปิดเจอได้หลายสูตร',
-  scoop:'ตักผง คือกดคัดลอกสูตรพร้อมใช้ แล้วนำไปวางต่อจาก Source ใน AI ที่ใช้อยู่',
+  scoop:'ตักผง คือกดคัดลอกสูตรพร้อมใช้ แล้วนำไปวางต่อจากซอสใน AI ที่ใช้อยู่',
   genesis:'Genesis Seasoning คือกติกาวิธีร่วมงานของ AI ตลอด Session เช่น ถามก่อนเดา รักษาเสียง และตรวจข้อขัดแย้ง ไม่ใช่ข้อเท็จจริงของงาน',
   exhibit:'นิทรรศการหลังครัวคือส่วนอ่านต่อ ดูตัวอย่าง และเข้าใจแนวคิดเพิ่มเติม ไม่จำเป็นต้องอ่านก่อนใช้คลังเครื่องมือ'
 };
@@ -105,7 +105,7 @@ function addStyle(){
 function exhibitionSvg(){
   return `<svg viewBox="0 0 900 260" role="img" aria-labelledby="exTitle exDesc" xmlns="http://www.w3.org/2000/svg">
     <title id="exTitle">ทางเข้าสู่นิทรรศการหลังครัว</title>
-    <desc id="exDesc">โถงนิทรรศการที่มีกรอบแสดง Source เครื่องปรุง และผลงาน พร้อมทางเดินต่อไปยังเนื้อหาอธิบาย</desc>
+    <desc id="exDesc">โถงนิทรรศการที่มีกรอบแสดงซอสเครื่องปรุง และผลงาน พร้อมทางเดินต่อไปยังเนื้อหาอธิบาย</desc>
     <defs>
       <linearGradient id="exBg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071a10"/><stop offset="1" stop-color="#174c32"/></linearGradient>
       <linearGradient id="exFloor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d7bd72" stop-opacity=".26"/><stop offset="1" stop-color="#071a10" stop-opacity=".05"/></linearGradient>
@@ -185,9 +185,9 @@ function initGlossary(){
 }
 
 function rewriteTop(){
-  document.title='บทที่ 5 · เลือกงาน แล้วตักผงไปใช้กับ Source — AI ใส่ซอส';
+  document.title='บทที่ 5 · เลือกงาน แล้วตักผงไปใช้กับซอส — AI ใส่ซอส';
   var desc=document.querySelector('meta[name="description"]');
-  if(desc)desc.content='ค้นหางานหรือเลือกโซนเครื่องปรุง แล้วตัก 1 ใน 44 สูตรไปใช้กับ Source ทันที หรือเปิดปรับสูตรเมื่ออยากเปลี่ยนรายละเอียด';
+  if(desc)desc.content='ค้นหางานหรือเลือกโซนเครื่องปรุง แล้วตัก 1 ใน 44 สูตรไปใช้กับซอสทันที หรือเปิดปรับสูตรเมื่ออยากเปลี่ยนรายละเอียด';
 
   var head=document.querySelector('.head');
   if(head){
@@ -198,14 +198,14 @@ function rewriteTop(){
 
     var lv=head.querySelector('.lv');
     if(lv)lv.innerHTML='บทที่ 5 · '+term('SEASON','season');
-    setText(head.querySelector('h1'),'เลือกงาน แล้วตักผงไปใช้กับ Source');
+    setText(head.querySelector('h1'),'เลือกงาน แล้วตักผงไปใช้กับซอส');
     var lead=head.querySelector(':scope > p');
     if(lead)lead.innerHTML='ค้นจากผลลัพธ์ที่อยากได้ หรือเลือกโซนเครื่องปรุง ระบบจะแสดงหลายสูตรที่เกี่ยวข้องทันที กด '+term('ตักผง','scoop')+' เพื่อคัดลอก หรือเปิดปรับสูตรเมื่อต้องการเปลี่ยนรายละเอียด';
     var m=head.querySelector('.meta');
-    if(m)m.innerHTML='<span>'+term('🫙 Source-first','sourceFirst')+'</span><span>🧂 '+V.prompts.length+' สูตร</span><span>'+term('⚡️ Instant - กดใช้ได้ทันที','instant')+'</span>';
+    if(m)m.innerHTML='<span>'+term('🫙 ซอส-first','sourceFirst')+'</span><span>🧂 '+V.prompts.length+' สูตร</span><span>'+term('⚡️ Instant - กดใช้ได้ทันที','instant')+'</span>';
   }
 
-  setText(document.querySelector('.finder .qlab'),'อยากให้ Source กลายเป็นงานแบบไหน?');
+  setText(document.querySelector('.finder .qlab'),'อยากให้ซอสกลายเป็นงานแบบไหน?');
   var q=document.getElementById('q');
   if(q)q.placeholder='เช่น อีเมล, สไลด์, รายงาน, คลิป, แผนงาน, คำตอบลูกค้า...';
 
@@ -234,7 +234,7 @@ function ensureExhibition(){
     wrap=document.createElement('section');
     wrap.className='season-exhibition';
     wrap.setAttribute('aria-label','นิทรรศการหลังครัว');
-    wrap.innerHTML='<div class="exhibit-head"><div><small>OPTIONAL EXHIBITION</small><h2>'+term('นิทรรศการหลังครัว','exhibit')+'</h2><p>จากตรงนี้ลงไปเป็นส่วนอ่านต่อ ดูตัวอย่าง และเข้าใจภาษาของครัว ไม่ขวางทางใช้เครื่องมือด้านบน</p></div><span class="exhibit-badge">ดูเมื่ออยากเข้าใจเพิ่ม</span></div><div class="exhibit-stage">'+exhibitionSvg()+'</div><details class="season-guide"><summary>Source กับผงปรุงรสต่างกันยังไง?</summary><div class="season-guide-body"></div></details>';
+    wrap.innerHTML='<div class="exhibit-head"><div><small>OPTIONAL EXHIBITION</small><h2>'+term('นิทรรศการหลังครัว','exhibit')+'</h2><p>จากตรงนี้ลงไปเป็นส่วนอ่านต่อ ดูตัวอย่าง และเข้าใจภาษาของครัว ไม่ขวางทางใช้เครื่องมือด้านบน</p></div><span class="exhibit-badge">ดูเมื่ออยากเข้าใจเพิ่ม</span></div><div class="exhibit-stage">'+exhibitionSvg()+'</div><details class="season-guide"><summary>ซอสกับผงปรุงรสต่างกันยังไง?</summary><div class="season-guide-body"></div></details>';
     builder.insertAdjacentElement('afterend',wrap);
   }
 
@@ -246,7 +246,7 @@ function ensureExhibition(){
 
   var legend=document.querySelector('.legend h3');
   if(legend&&!legend.querySelector('[data-kterm]')){
-    legend.innerHTML=term('GENESIS SEASONING','genesis')+' — ตั้งวิธีร่วมงาน ไม่ใช่สร้างข้อเท็จจริงแทน Source';
+    legend.innerHTML=term('GENESIS SEASONING','genesis')+' — ตั้งวิธีร่วมงาน ไม่ใช่สร้างข้อเท็จจริงแทนซอส';
   }
   return wrap;
 }
