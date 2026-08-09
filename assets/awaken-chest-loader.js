@@ -1,7 +1,8 @@
-/* myClover · AWAKEN chapter lightweight loader
-   - Chapter 7 is a normal continuous page: no XP progress bar / phase dots / phase-scroll UI.
+/* myClover · AWAKEN chapter loader
+   - After the player enters Lv.7, every Phase is available immediately.
+   - XP / phase dots remain decorative progress indicators only; they never gate content.
    - Keep the original #end sentinel untouched so chapter completion / AWAKEN still works.
-   - Load the chest shortly after Chapter 7 opens, before the reader reaches the ending.
+   - Load the chest shortly after Chapter 7 opens.
 */
 (function () {
   'use strict';
@@ -10,33 +11,68 @@
   let loaded = false;
   let timer = 0;
 
-  function simplifyChapterScroll() {
-    if (document.documentElement.dataset.awakenSimpleScroll === '1') return;
-    document.documentElement.dataset.awakenSimpleScroll = '1';
-
-    /* The inline legacy script still owns chapter completion. Detach only its
-       decorative scroll-progress targets; references remain harmless off-DOM. */
-    document.getElementById('xp')?.remove();
-    document.getElementById('dots')?.remove();
-
-    /* PHASE CLEAR markers existed only to be lit while scrolling. Remove them
-       from the reading flow, but keep #end so reaching the bottom still finishes. */
-    document.querySelectorAll('[data-clear]').forEach(marker => marker.remove());
+  function ungateChapter() {
+    if (document.documentElement.dataset.awakenUngated === '1') return;
+    document.documentElement.dataset.awakenUngated = '1';
 
     const style = document.createElement('style');
-    style.id = 'awaken-simple-scroll-style';
+    style.id = 'awaken-ungated-style';
     style.textContent = `
+      /* Phase containers and their direct reading blocks are always present.
+         Hidden attributes inside accordions / notebook choices still behave normally. */
       #chapter .phase{
         display:block!important;
         visibility:visible!important;
         opacity:1!important;
         transform:none!important;
+        translate:none!important;
+        scale:1!important;
         max-height:none!important;
         overflow:visible!important;
+        clip-path:none!important;
+        filter:none!important;
       }
-      #xp,#dots,[data-clear]{display:none!important}
+      #chapter .phase > *{
+        visibility:visible!important;
+        opacity:1!important;
+        transform:none!important;
+        translate:none!important;
+        scale:1!important;
+        clip-path:none!important;
+        filter:none!important;
+      }
+      /* XP and phase dots are indicators only. */
+      #xp,#dots{visibility:visible!important;opacity:1!important}
     `;
     document.head.append(style);
+
+    const reveal = () => {
+      const chapter = document.getElementById('chapter');
+      if (!chapter || chapter.hidden) return;
+
+      document.querySelectorAll('#chapter .phase').forEach(phase => {
+        phase.hidden = false;
+        phase.removeAttribute('aria-hidden');
+      });
+
+      const xp = document.getElementById('xp');
+      const dots = document.getElementById('dots');
+      if (xp) xp.hidden = false;
+      if (dots) dots.hidden = false;
+    };
+
+    reveal();
+    const chapter = document.getElementById('chapter');
+    if (chapter) {
+      new MutationObserver(reveal).observe(chapter, {
+        attributes:true,
+        childList:true,
+        subtree:true,
+        attributeFilter:['hidden','class','style','aria-hidden'],
+      });
+    }
+    window.addEventListener('pageshow', reveal);
+    window.addEventListener('focus', reveal);
   }
 
   function loadChest() {
@@ -62,13 +98,17 @@
     const enter = document.getElementById('enter');
     if (!chapter) return;
 
-    simplifyChapterScroll();
-    enter?.addEventListener('click', scheduleIfChapterOpen);
-    new MutationObserver(scheduleIfChapterOpen).observe(chapter, {
+    ungateChapter();
+    const onOpen = () => {
+      ungateChapter();
+      scheduleIfChapterOpen();
+    };
+    enter?.addEventListener('click', () => queueMicrotask(onOpen));
+    new MutationObserver(onOpen).observe(chapter, {
       attributes: true,
       attributeFilter: ['hidden'],
     });
-    scheduleIfChapterOpen();
+    onOpen();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
