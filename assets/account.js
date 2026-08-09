@@ -265,7 +265,7 @@ function bindEvents() {
 
 function showAccountChip() {
   const path = location.pathname.replace(/\/index\.html$/i, '').replace(/\/$/, '') || '/';
-  return path === '/collection' || path === '/card';
+  return path === '/collection' || path === '/card' || path === '/core7/collection';
 }
 
 function paintChip() {
