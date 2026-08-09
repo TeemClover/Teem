@@ -19,6 +19,7 @@ export const STAT_PAGES = Object.freeze([
   { href: '/collection/stat/', th: 'Achievement', emoji: '🏅', note: 'ของที่ปลดได้ทั้งบ้าน' },
   { href: '/core7/stat/', th: 'CORE7', emoji: '🎮', note: 'สุขภาพเกม' },
   { href: '/core7/collection/stat/', th: 'FIRST HAND', emoji: '🃏', note: 'การ์ด 28 ใบ' },
+  { href: '/members/', th: 'Members', emoji: '🍀', note: 'เลขสมาชิกและบัญชี Cloud Save' },
 ]);
 
 const CSS = `

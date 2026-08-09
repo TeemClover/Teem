@@ -167,7 +167,7 @@ function render(d){
  renderSpark(d.daily||[],d.today);
 
  const LIVE={'/stat/journey/':!!d.wiring?.JOURNEY_START,'/collection/stat/':!!d.wiring?.ACT||!!d.wiring?.ACHIEVEMENT_UNLOCK,
-  '/core7/stat/':true,'/core7/collection/stat/':!!d.wiring?.CARD_UNLOCK};
+  '/core7/stat/':true,'/core7/collection/stat/':!!d.wiring?.CARD_UNLOCK,'/members/':true};
  $('rooms').innerHTML=STAT_PAGES.filter(p=>p.href!=='/stat/').map(p=>{
   const live=LIVE[p.href];
   const tag=live?'<span class="tag live">มีข้อมูลแล้ว</span>':'<span class="tag off">ยังไม่ต่อสาย</span>';

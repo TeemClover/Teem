@@ -1,4 +1,5 @@
 export { trackAct } from '/assets/track-core.js';
+import '/assets/account.js';
 import '/assets/stat-report.js';
 import '/assets/mini-achievements.js';
 import '/assets/mini-achievements-secrets.js';

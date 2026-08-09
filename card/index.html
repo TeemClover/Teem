@@ -298,9 +298,9 @@ body.js .reveal.in{opacity:1;transform:none}
           <span>ทำเสร็จแล้วบันทึกเป็นรูปไปใช้ได้เลย ไม่ต้องกรอกอะไรเพิ่ม · ยังไม่มีเลขสมาชิก</span>
         </button>
         <button type="button" class="mo" data-mode="reg" aria-pressed="false">
-          <span class="e">🍀</span>
-          <b class="disp">ลงทะเบียนเข้าระบบสมาชิก</b>
-          <span>เมื่อระบบบันทึกสำเร็จ คุณจะได้<b>เลขสมาชิกประจำตัว</b>ขึ้นบนการ์ด และการ์ดจะถูกเก็บเข้าทะเบียนของบ้าน</span>
+          <span class="e">☁️</span>
+          <b class="disp">สร้างบัญชีเก็บ Progress</b>
+          <span>ย้ายเครื่องหรือล้างเบราว์เซอร์แล้ว Login กลับมา ของที่ปลดไว้จะกลับมาครบ · ไม่บังคับสมัคร</span>
         </button>
       </div>
     </div>
@@ -385,7 +385,7 @@ body.js .reveal.in{opacity:1;transform:none}
       </div>
     </div>
 
-    <!-- ═══ ขั้นที่สี่ — เฉพาะคนที่เลือกลงทะเบียน ═══ -->
+    <!-- Legacy member form เก็บไว้รองรับข้อมูลเดิม แต่ปุ่มด้านบนเปิด Account UI ใหม่ -->
     <div class="step" id="regStep" hidden>
       <span class="num"><i>4</i>ขั้นที่สี่</span>
       <h2 class="disp">ลงทะเบียนเข้าระบบสมาชิก</h2>
@@ -453,8 +453,8 @@ body.js .reveal.in{opacity:1;transform:none}
         <button type="button" class="abtn" id="shareBtn" hidden>📤 แชร์</button>
       </div>
       <p class="savemsg" id="saveMsg" role="status" aria-live="polite"></p>
-      <p class="toreg" id="toReg" hidden>อยากได้ <b>เลขสมาชิก</b> ขึ้นบนการ์ดด้วยไหมครับ —
-        <a href="#register" id="toRegLink">ลงทะเบียนเก็บการ์ดเข้าระบบ →</a></p>
+      <p class="toreg" id="toReg" hidden>อยากให้ <b>ของที่ปลดไว้กลับมาครบเมื่อย้ายเครื่อง</b> ไหมครับ —
+        <a href="#account" id="toRegLink" data-account-open="signup">สร้างบัญชีเก็บ Progress →</a></p>
       <p class="iosnote" id="iosNote">ใช้ไอโฟนหรือเปิดจากในแอป LINE? กด <b>“เปิดรูป”</b> แล้วกดค้างที่รูปเพื่อบันทึกลงเครื่องได้เลยครับ</p>
     </div>
   </div>
@@ -509,7 +509,7 @@ body.js .reveal.in{opacity:1;transform:none}
 <footer>
   <p>🍀 myclover.com · บ้านของชาว Clover ตั้งแต่ 2010</p>
   <p style="margin-top:6px">การ์ดใบนี้สร้างและเก็บอยู่ในเครื่องของคุณเองทั้งหมด</p>
-  <p style="margin-top:6px"><a href="#register">ลงทะเบียนเข้าระบบสมาชิก</a> · <a href="../privacy/">ข้อมูลของคุณ</a> · <a href="../">กลับหน้าบ้าน</a></p>
+  <p style="margin-top:6px"><a href="#account" data-account-open="signup">บัญชีและ Cloud Save</a> · <a href="../privacy/">ข้อมูลของคุณ</a> · <a href="../">กลับหน้าบ้าน</a></p>
 </footer>
 
 <script>
@@ -650,6 +650,12 @@ var st={
   era   : ls.get('mc_era',''),
   img   : null
 };
+window.addEventListener('mc:account-changed',function(e){
+  var u=e.detail&&e.detail.user;
+  if(u&&/^(?:MY|MC)-\d{4}-\d+$/.test(u.memberNo||'')){
+    ls.set('mc_member',u.memberNo); st.member=u.memberNo; render();
+  }
+});
 
 /* ═══════════════════════════════════════════════════════════
    ตัวช่วยวาด
@@ -1266,19 +1272,19 @@ paintFrames();
   if(ls.get(r[0],'')==='1' && st.titles.indexOf(r[1])<0) grant(r[1],r[2]);
 });
 
-/* ═══════════════════════════════════════════════════════════
-   โหมดของหน้า: ทำการ์ดอย่างเดียว หรือ ลงทะเบียนเข้าระบบสมาชิก
-   ═══════════════════════════════════════════════════════════ */
-var TEAM_EMAIL='team@myclover.com';
-/* ปลายทางรับข้อมูลลงทะเบียน — เว้นว่างไว้ = ส่งทางอีเมลแทน
-   ตั้งค่าได้ที่ assets/config.js เมื่อต่อระบบหลังบ้านเสร็จ */
-var REG_ENDPOINT=(window.MC_CONFIG&&window.MC_CONFIG.REGISTER_ENDPOINT)||'';
-
+/* โหมดของหน้า: ทำการ์ดแบบ Guest หรือเปิด Account + Cloud Save จริง */
 var regStep=document.getElementById('regStep'),
     modeBtns=document.querySelectorAll('.mo');
 
 var toReg=document.getElementById('toReg');
 function setMode(m,remember){
+  if(m==='reg'){
+    regStep.hidden=true;
+    var launch=function(){ if(window.MC_ACCOUNT) window.MC_ACCOUNT.open('signup'); };
+    if(window.MC_ACCOUNT) launch();
+    else window.addEventListener('mc:account-ready',launch,{once:true});
+    return;
+  }
   regStep.hidden = m!=='reg';
   if(toReg) toReg.hidden = (m==='reg') || ls.get('mc_registered','')==='1';
   Array.prototype.forEach.call(modeBtns,function(b){
@@ -1291,128 +1297,10 @@ Array.prototype.forEach.call(modeBtns,function(b){
   b.addEventListener('click',function(){ setMode(b.getAttribute('data-mode'),true); });
 });
 /* จำโหมดไว้ · มาจากลิงก์ /card/#register ก็เข้าโหมดลงทะเบียนเลย */
-function fromHash(){ return location.hash==='#register'||location.hash==='#reg'; }
-setMode(fromHash() ? 'reg' : (ls.get('mc_mode','')==='reg' ? 'reg' : 'card'), false);
-if(fromHash()) setTimeout(function(){ regStep.scrollIntoView({behavior:'smooth',block:'start'}); },220);
+function fromHash(){ return location.hash==='#register'||location.hash==='#reg'||location.hash==='#account'; }
+setMode(fromHash() ? 'reg' : 'card', false);
 /* ลิงก์ #register ที่อยู่ในหน้าเดียวกัน ก็ต้องสลับโหมดให้ด้วย */
 window.addEventListener('hashchange',function(){ if(fromHash()) setMode('reg',true); });
-
-/* ═══════════════════════════════════════════════════════════
-   ลงทะเบียน
-   ═══════════════════════════════════════════════════════════ */
-var regForm=document.getElementById('regForm'),
-    rname=document.getElementById('rname'),
-    remail=document.getElementById('remail'),
-    rera=document.getElementById('rera'),
-    rnews=document.getElementById('rnews'),
-    rconsent=document.getElementById('rconsent'),
-    regBtn=document.getElementById('regBtn'),
-    regMsg=document.getElementById('regMsg');
-
-rname.value = ls.get('mc_name','');
-remail.value= ls.get('mc_email','');
-
-function emailOk(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
-
-
-function regPayload(){
-  return {
-    name    : rname.value.trim(),
-    email   : remail.value.trim(),
-    era     : st.era,
-    eraTh   : (function(){
-      var o=rera && st.era ? rera.querySelector('option[value="'+st.era+'"]') : null;
-      return o ? o.textContent.trim() : '';
-    })(),
-    news    : rnews.checked,
-    nickname: st.nick,
-    line    : st.line,
-    cls     : st.cls,
-    clsTh   : (CLASSES[st.cls]||{}).th || '',
-    titles  : st.titles.slice(),
-    at      : new Date().toISOString()
-  };
-}
-
-function regMailto(d){
-  var body='ลงทะเบียนสมาชิก myclover\n\n'+
-    'ชื่อ: '+d.name+'\n'+
-    'อีเมล: '+d.email+'\n'+
-    'ชื่อบนการ์ด: '+(d.nickname||'—')+'\n'+
-    'สาย: '+d.clsTh+'\n'+
-    'ตรา: '+(d.titles.length?d.titles.join(', '):'—')+'\n'+
-    'ประโยคบนการ์ด: '+(d.line||'—')+'\n'+
-    'รู้จักยุค: '+(d.eraTh||'—')+'\n'+
-    'รับข่าวสาร: '+(d.news?'รับ':'ไม่รับ')+'\n'+
-    'เวลา: '+d.at+'\n';
-  return 'mailto:'+TEAM_EMAIL+'?subject='+encodeURIComponent('ลงทะเบียน myclover — '+(d.nickname||d.name))+
-         '&body='+encodeURIComponent(body);
-}
-
-function regDone(d,viaMail,memberNo){
-  ls.set('mc_name',d.name); ls.set('mc_email',d.email);
-  /* ลงทะเบียนสำเร็จ = ได้เลขสมาชิกขึ้นการ์ดเลย ไม่ต้องรอปลดตราอะไรก่อน */
-  if(/^(?:MY|MC)-\d{4}-\d+$/.test(memberNo||'')){ ls.set('mc_member',memberNo); st.member=memberNo; }
-  regMsg.className='codemsg ok';
-  if(viaMail){
-    /* ยังไม่มีหลังบ้าน — ต้องให้ผู้ใช้กดส่งอีเมลเอง เลยยังไม่ควรบอกว่าเสร็จแล้ว */
-    regMsg.innerHTML='📧 เราเปิดอีเมลที่กรอกไว้ให้แล้ว — <b>กดส่งอีกทีเพื่อยืนยันการลงทะเบียน</b><br>'+
-      'ถ้าอีเมลไม่เปิดขึ้นมา เขียนมาหาเราตรง ๆ ที่ <a href="mailto:'+TEAM_EMAIL+'">'+TEAM_EMAIL+'</a> ก็ได้ครับ';
-    regBtn.textContent='📧 เปิดอีเมลอีกครั้ง';
-    regBtn.disabled=false;
-  } else {
-    ls.set('mc_registered','1');
-    regMsg.innerHTML='🍀 ลงทะเบียนเรียบร้อย — การ์ดของคุณถูกบันทึกเข้าระบบสมาชิกแล้ว'+
-      (/^(?:MY|MC)-\d{4}-\d+$/.test(memberNo||'')?' เลขสมาชิกของคุณคือ <b>'+memberNo+'</b>':'')+
-      (d.news?'<br>เราจะส่งข่าวของบ้านไปที่อีเมลนี้':'<br>เราจะไม่ส่งอีเมลอะไรไปนะครับ')+
-      '<br>บันทึกการ์ดเป็นรูปเก็บไว้ได้เลยที่ปุ่มด้านขวา';
-    regBtn.textContent='🍀 ลงทะเบียนแล้ว';
-    regBtn.disabled=true;
-  }
-  paintBadges(); render();
-}
-
-regForm.addEventListener('submit',function(e){
-  e.preventDefault();
-  if(document.getElementById('website').value) return;   /* บอท */
-  var d=regPayload();
-  if(!d.name){ regMsg.className='codemsg no'; regMsg.textContent='ใส่ชื่อของคุณก่อนนะครับ'; rname.focus(); return; }
-  if(!emailOk(d.email)){ regMsg.className='codemsg no'; regMsg.textContent='อีเมลยังไม่ถูกรูปแบบ ลองเช็กอีกครั้งครับ'; remail.focus(); return; }
-  if(!rconsent.checked){ regMsg.className='codemsg no'; regMsg.textContent='ต้องติ๊กยินยอมให้เก็บข้อมูลก่อน ถึงจะลงทะเบียนได้ครับ'; return; }
-
-  regMsg.className='codemsg'; regMsg.textContent='กำลังส่ง…';
-  regBtn.disabled=true;
-
-  if(!REG_ENDPOINT){
-    /* ยังไม่มีหลังบ้าน — เปิดอีเมลให้ส่งมาหาเราแทน จะได้ไม่หายไปเฉย ๆ */
-    regDone(d,true);
-    window.location.href=regMailto(d);
-    return;
-  }
-  d.consent=true;                       /* ฝั่งเซิร์ฟเวอร์บังคับให้มีค่านี้ */
-  fetch(REG_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
-    .then(function(r){
-      return r.json().catch(function(){ return {}; }).then(function(j){
-        if(!r.ok || !j.ok){ var e=new Error(j.error||r.status); e.info=j; e.status=r.status; throw e; }
-        return j;
-      });
-    })
-    .then(function(j){ regDone(d,false,j.member_no); })
-    .catch(function(e){
-      var s=e&&e.status;
-      /* กรอกผิดเอง (400) หรือกดรัวเกินไป (429) — บอกให้แก้ ไม่ต้องเด้งอีเมล */
-      if(s===400||s===429){
-        regBtn.disabled=false;
-        regMsg.className='codemsg no';
-        regMsg.textContent=(e.info&&e.info.message)||'ส่งไม่สำเร็จ ลองเช็กข้อมูลอีกครั้งนะครับ';
-        return;
-      }
-      /* หลังบ้านล่ม เน็ตมีปัญหา หรือยังไม่ได้ผูกฐานข้อมูล
-         ไม่ปล่อยให้การลงทะเบียนหายไปเฉย ๆ — สลับไปทางอีเมลให้เลย */
-      regDone(d,true);
-      window.location.href=regMailto(d);
-    });
-});
 
 /* ═══════════════════════════════════════════════════════════
    บันทึก / คัดลอก / แชร์
