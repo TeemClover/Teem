@@ -1,6 +1,6 @@
 /* myClover · AI ใส่ซอส — presentation layer
    เนื้อหาหลักของบทเรียนยังอยู่ในหน้าเดิม ไฟล์นี้เติมเสียงของเชฟ
-   และทำให้หน้ารวมสะท้อน SOURCE → TASTE → COOK → MULTIPLY → SEASON → SERVE
+   และทำให้หน้ารวมสะท้อนซอส → TASTE → COOK → MULTIPLY → SEASON → SERVE
 */
 
 function setMeta(name, value) {
@@ -58,7 +58,7 @@ function enhanceLessonOne() {
   if (tldr) tldr.insertAdjacentElement('afterend', chefBox('ขั้นตอนครบค่ะ แต่บทนี้ยังไม่ใช่บุฟเฟต์ กรุณาเลือกวัตถุดิบจริงของคุณเพียง 1 กองก่อน แล้วทำซอสให้เสร็จ 1 ขวด ดีกว่าเปิดทุกขวดพร้อมกันแต่ไม่ได้ชิมสักขวดค่ะ', { compact: true }));
 
   const map = document.querySelector('.map');
-  if (map) map.insertAdjacentElement('afterend', chefBox('เริ่มจากอะไรก็ได้ค่ะ แต่ควรเป็นงานที่คุณอยากใช้จริง ซอสทดลองที่ไม่มีวันเปิดใช้ ต่อให้อร่อยก็ยังนอนอยู่ในตู้เย็นค่ะ'));
+  if (map) map.insertAdjacentElement('afterend', chefBox('เริ่มจากอะไรก็ได้ค่ะ แต่ควรเป็นงานที่คุณอยากใช้จริงซอสทดลองที่ไม่มีวันเปิดใช้ ต่อให้อร่อยก็ยังนอนอยู่ในตู้เย็นค่ะ'));
 
   const recipe = document.querySelector('.recipe');
   if (recipe) recipe.insertAdjacentElement('afterend', chefBox('ถ้า AI เขียนลื่นจนคุณเผลอเชื่อทุกคำ กรุณาชิมช้าลงค่ะ ความมั่นใจของ AI ไม่ใช่ใบรับรอง อย่าให้ภาษาสวยลักลอบขนข้อเท็จจริงปลอมเข้าขวด'));
@@ -75,28 +75,28 @@ function enhanceLessonOne() {
 const COURSE = [
   {
     emoji: '🧴',
-    level: 'SOURCE',
+    level: 'ซอส',
     title: 'เริ่มจากการปรุงซอส',
-    description: 'เล่า แนบไฟล์ หรือสกัดจากแชตเดิม แล้วจบด้วย Source .md ขวดแรกของตัวเอง',
+    description: 'เล่า แนบไฟล์ หรือสกัดจากแชตเดิม แล้วจบด้วยซอส .md ขวดแรกของตัวเอง',
     step: 'สร้างหัวซอสขวดแรกจากเสียง ไฟล์ หรือแชตเดิม',
-    gain: 'Source .md ขวดแรกของตัวเอง',
-    day: 'ปรุง Source ขวดแรก'
+    gain: 'ซอส .md ขวดแรกของตัวเอง',
+    day: 'ปรุงซอสขวดแรก'
   },
   {
     emoji: '🥄',
     level: 'TASTE',
     title: 'ชิมก่อนเติม',
-    description: 'ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจ Source ตรงกับคุณไหม แล้วแก้ที่ต้นทาง',
-    step: 'ใช้ผลลัพธ์มองหาสิ่งที่ AI เข้าใจผิด แล้วแก้ Source',
-    gain: 'ภาพทดสอบ + Visual Canon + Source ที่แก้รสแล้ว',
-    day: 'สร้างภาพเพื่อชิม Source'
+    description: 'ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจซอสตรงกับคุณไหม แล้วแก้ที่ต้นทาง',
+    step: 'ใช้ผลลัพธ์มองหาสิ่งที่ AI เข้าใจผิด แล้วแก้ซอส',
+    gain: 'ภาพทดสอบ + Visual Canon + ซอสที่แก้รสแล้ว',
+    day: 'สร้างภาพเพื่อชิมซอส'
   },
   {
     emoji: '🍳',
     level: 'COOK',
     title: 'เอาซอสไปทำจานจริง',
-    description: 'ใช้ Source ขวดเดียวสร้าง Script, Shot list, Caption และงานชิ้นแรกที่พร้อมใช้',
-    step: 'ใช้ Source เดียวควบคุมส่วนประกอบของงานจริงทั้งจาน',
+    description: 'ใช้ซอสขวดเดียวสร้าง Script, Shot list, Caption และงานชิ้นแรกที่พร้อมใช้',
+    step: 'ใช้ซอสเดียวควบคุมส่วนประกอบของงานจริงทั้งจาน',
     gain: 'Production Brief และงาน Version แรก',
     day: 'ทำจานจริงชิ้นแรก'
   },
@@ -104,10 +104,10 @@ const COURSE = [
     emoji: '🍱',
     level: 'MULTIPLY',
     title: 'ซอสขวดเดียว แตกได้หลายเมนู',
-    description: 'แตก Source เป็นภาพ สไลด์ เสียง FAQ คู่มือ และ Output หลายรูปแบบ',
-    step: 'ทำ Source ครั้งเดียว แล้วแตกให้เหมาะกับคนและงานหลายแบบ',
+    description: 'แตกซอสเป็นภาพ สไลด์ เสียง FAQ คู่มือ และ Output หลายรูปแบบ',
+    step: 'ทำซอสครั้งเดียว แล้วแตกให้เหมาะกับคนและงานหลายแบบ',
     gain: 'Output Pack อย่างน้อย 3 รูปแบบ',
-    day: 'แตก Source เป็นหลายเมนู'
+    day: 'แตกซอสเป็นหลายเมนู'
   },
   {
     emoji: '🧂',
@@ -123,7 +123,7 @@ const COURSE = [
     level: 'SERVE',
     title: 'บรรจุ เสิร์ฟ และส่งต่อ',
     description: 'รวมทุกอย่างเป็นเว็บหรือผลงานที่คนอื่นเปิด ใช้ และส่งต่อได้จริง',
-    step: 'พางานออกจากแชต พร้อม Source และเกณฑ์ตรวจที่ส่งต่อได้',
+    step: 'พางานออกจากแชต พร้อมซอสและเกณฑ์ตรวจที่ส่งต่อได้',
     gain: 'ผลงานจริง + URL หรือไฟล์ที่ส่งต่อได้',
     day: 'เสิร์ฟงานให้คนอื่นใช้จริง'
   }
@@ -137,17 +137,17 @@ function applyClassroomCopy() {
   const header = document.querySelector('.head');
   if (!header) return;
 
-  document.title = 'AI ใส่ซอส · Source-Based AI Workflow · myClover';
-  setMeta('description', 'หลักสูตรฟรี 6 บทที่สอนให้คุณปรุง Source ของตัวเอง ชิม แก้ แตกงาน เลือกเครื่องปรุง และเสิร์ฟผลงานจริงด้วย AI ตัวไหนก็ได้');
-  setProperty('og:title', 'AI ใส่ซอส · Source-Based AI Workflow');
-  setProperty('og:description', '6 บทจากวัตถุดิบในหัว สู่ Source ที่ AI ใช้ทำงานต่อและผลงานที่คนอื่นเปิดใช้ได้จริง');
+  document.title = 'AI ใส่ซอส · AI Workflow แบบใส่ซอส · myClover';
+  setMeta('description', 'หลักสูตรฟรี 6 บทที่สอนให้คุณปรุงซอสของตัวเอง ชิม แก้ แตกงาน เลือกเครื่องปรุง และเสิร์ฟผลงานจริงด้วย AI ตัวไหนก็ได้');
+  setProperty('og:title', 'AI ใส่ซอส · AI Workflow แบบใส่ซอส');
+  setProperty('og:description', '6 บทจากวัตถุดิบในหัว สู่ซอสที่ AI ใช้ทำงานต่อและผลงานที่คนอื่นเปิดใช้ได้จริง');
 
-  setText(header.querySelector('.lv'), 'AI ใส่ซอส · SOURCE-BASED AI WORKFLOW · ฟรีตลอดชีพ');
-  setText(header.querySelector('h1'), 'AI ใส่ซอส — ปรุง Source ให้ AI ทำงานต่อได้');
+  setText(header.querySelector('.lv'), 'AI ใส่ซอส · ซอส-BASED AI WORKFLOW · ฟรีตลอดชีพ');
+  setText(header.querySelector('h1'), 'AI ใส่ซอส — ปรุงซอสให้ AI ทำงานต่อได้');
   const heroCopy = header.querySelector(':scope > p');
-  if (heroCopy) heroCopy.innerHTML = '6 บทที่ต่อกันเป็น Workflow เดียว: <b style="color:#fff">SOURCE → TASTE → COOK → MULTIPLY → SEASON → SERVE</b> ไม่ผูกกับ AI ตัวใด ไม่เริ่มจากการท่อง Prompt และทุกบทต้องมีของจริงกลับบ้าน';
+  if (heroCopy) heroCopy.innerHTML = '6 บทที่ต่อกันเป็น Workflow เดียว: <b style="color:#fff">ซอส → TASTE → COOK → MULTIPLY → SEASON → SERVE</b> ไม่ผูกกับ AI ตัวใด ไม่เริ่มจากการท่อง Prompt และทุกบทต้องมีของจริงกลับบ้าน';
   const meta = header.querySelectorAll('.meta span');
-  const metaCopy = ['🧴 จบด้วย Source ของตัวเอง','🔁 6 บทเป็น Workflow เดียว','🤖 ใช้กับ AI ตัวไหนก็ได้'];
+  const metaCopy = ['🧴 จบด้วยซอสของตัวเอง','🔁 6 บทเป็น Workflow เดียว','🤖 ใช้กับ AI ตัวไหนก็ได้'];
   meta.forEach((node, index) => { if (metaCopy[index]) node.textContent = metaCopy[index]; });
 
   const pathCard = document.getElementById('pathCard');
@@ -193,7 +193,7 @@ function applyClassroomCopy() {
   });
 
   const pathGo = document.getElementById('pathGo');
-  if (pathGo && /free-ai\.html$/.test(pathGo.getAttribute('href') || '')) pathGo.textContent = 'เริ่ม SOURCE — ปรุงซอสขวดแรก →';
+  if (pathGo && /free-ai\.html$/.test(pathGo.getAttribute('href') || '')) pathGo.textContent = 'เริ่มซอส — ปรุงซอสขวดแรก →';
 
   try { window.MC_ACT?.('classroom-sauce-course-copy'); } catch { /* analytics optional */ }
 }
