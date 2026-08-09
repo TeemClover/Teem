@@ -26,7 +26,7 @@ let manualModal=false;
 let chestButton=null;
 
 function get(key){try{return localStorage.getItem(key)}catch{return null}}
-function set(key,value){try{localStorage.setItem(key,String(value))}catch{}}
+function set(key,value){try{const next=String(value);if(localStorage.getItem(key)!==next)localStorage.setItem(key,next)}catch{}}
 function read(key,fallback=null){try{const raw=get(key);return raw===null?fallback:JSON.parse(raw)}catch{return fallback}}
 function write(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
 function flag(key){return get(key)==='1'}
@@ -104,7 +104,8 @@ function updateObject(){
   chestButton.dataset.state=opened?'open':'closed';
   chestButton.setAttribute('aria-label',opened?'หีบบอสเปิดแล้ว กดเพื่อดู Loot':'หีบบอสปิดอยู่ กดเพื่อเปิดหีบ');
   const status=chestButton.querySelector('.boss-chest-object__status');
-  if(status)status.textContent=opened?'OPENED · กดดู LOOT':'SEALED · กดเปิดหีบ';
+  const nextStatus=opened?'OPENED · กดดู LOOT':'SEALED · กดเปิดหีบ';
+  if(status&&status.textContent!==nextStatus)status.textContent=nextStatus;
 }
 
 function claim(){
@@ -204,11 +205,11 @@ function keepRunStateStamped(){
   const sync=()=>{stampRunState();updateObject()};
   document.addEventListener('click',()=>queueMicrotask(sync),true);
   document.addEventListener('toggle',()=>queueMicrotask(sync),true);
+  window.addEventListener('mc:account-ready',sync);
+  window.addEventListener('storage',sync);
   addEventListener('focus',sync);
   addEventListener('pageshow',sync);
   sync();
-  const timer=setInterval(sync,700);
-  addEventListener('pagehide',()=>clearInterval(timer),{once:true});
 }
 
 function boot(){
