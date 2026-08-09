@@ -53,7 +53,7 @@ function walkthroughCard() {
       <span class="lesson-subquest__icon" aria-hidden="true">🗺️</span>
       <span class="lesson-subquest__kind">SUBQUEST · OPTIONAL · 1 นาที</span>
       <b>อ่าน Walkthrough</b>
-      <p>มัดเรื่อง 7 ตอน หลักสูตร และ CORE7 ให้เห็นว่า Source ขวดเดียวเดินทางไปเป็นงานหลายแบบได้อย่างไร</p>
+      <p>มัดเรื่อง 7 ตอน หลักสูตร และ CORE7 ให้เห็นว่าซอสขวดเดียวเดินทางไปเป็นงานหลายแบบได้อย่างไร</p>
       <span class="lesson-subquest__go">เปิดอ่าน →</span>
     </a>`;
 }
