@@ -4,8 +4,8 @@
 var meta=document.querySelector('meta[name="mc-item"]');
 if(!meta||meta.content!=='learn:prompts')return;
 
-var OLD_PREFIX='SOURCE FIRST — ใน Session นี้ให้ใช้ Source หลักต่อไปนี้';
-var NEW_PREFIX='ในบทสนทนานี้ ให้ใช้ Source หลักต่อไปนี้เป็นฐานข้อเท็จจริง';
+var OLD_PREFIX='ซอส FIRST — ใน Session นี้ให้ใช้ซอสหลักต่อไปนี้';
+var NEW_PREFIX='ในบทสนทนานี้ ให้ใช้ซอสหลักต่อไปนี้เป็นฐานข้อเท็จจริง';
 
 function normalize(text){
   return String(text||'').replace(OLD_PREFIX,NEW_PREFIX).trim();
