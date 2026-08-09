@@ -26,6 +26,7 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 .meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;color:rgb(255 255 255/.48);font-size:12px}
 .loading,.error{padding:30px 0}.error{color:#ff9c93}
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:23px}
+.metrics.four{grid-template-columns:repeat(4,1fr)}
 .metric,.panel{border:1px solid rgb(255 255 255/.11);border-radius:17px;background:linear-gradient(145deg,rgb(255 255 255/.07),rgb(255 255 255/.035))}
 .metric{padding:17px}
 .metric span{display:block;color:rgb(255 255 255/.55);font-size:10px;font-weight:700;letter-spacing:.06em}
@@ -60,7 +61,8 @@ body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;m
 .table th{color:rgb(255 255 255/.48);font-size:10px}
 .note{margin-top:28px;padding:14px 17px;border-left:3px solid var(--gold);background:rgb(255 255 255/.04);color:rgb(255 255 255/.56);font-size:12px}
 code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size:11px}
-@media(max-width:720px){.top{display:block}.back{display:inline-block;margin-top:12px}.head{display:block}.head p{margin-top:5px}.tools{align-items:stretch}.tools label{flex:1;min-width:130px}.metrics{grid-template-columns:1fr}.row{grid-template-columns:130px 1fr 62px;gap:8px}}
+@media(max-width:900px){.metrics.four{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.top{display:block}.back{display:inline-block;margin-top:12px}.head{display:block}.head p{margin-top:5px}.tools{align-items:stretch}.tools label{flex:1;min-width:130px}.metrics,.metrics.four{grid-template-columns:1fr}.row{grid-template-columns:130px 1fr 62px;gap:8px}}
 @media(max-width:430px){.shell{width:min(100% - 20px,1240px)}}
 </style>
 </head>
@@ -70,7 +72,7 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 <div>
 <p class="eyebrow">CORE7 · DEVELOPMENT LAB</p>
 <h1>Journey Funnel</h1>
-<p>คนหลุดตรงไหนระหว่างประตูหน้าแรกกับบทที่ 1 — ตั้งแต่บทนำ อ่านการ์ตูน 7 ตอน Walkthrough เล่น CORE7 จนถึงเริ่มบทเรียน</p>
+<p>คนหลุดตรงไหนตั้งแต่หน้าแรก ดูวิดีโอ เข้าบ้าน อ่านการ์ตูน เล่น CORE7 เรียนครบ 6 บท ไปจนถึงบท 7 และสมุดลับ</p>
 </div>
 </header>
 
@@ -94,11 +96,29 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 
 <section class="section">
 <div class="head">
+<div><p class="eyebrow">🏠 FRONT DOOR</p><h2>หน้าแรกแล้วเลือกทำอะไรต่อ</h2></div>
+<p>นับเป็นเครื่องเดียวกัน จึงแยกได้จริงว่าใครเข้าบ้านทันที และใครดูวิดีโอก่อนแล้วค่อยเข้าบ้าน</p>
+</div>
+<section class="metrics four" id="homeMetrics"></section>
+<div id="homeDropoff"></div>
+</section>
+
+<section class="section">
+<div class="head">
 <div><p class="eyebrow">🚶 FIRST RUN</p><h2>เดินถึงไหนกันบ้าง</h2></div>
 <p>แถบยาวคือจำนวนเครื่องที่ผ่านขั้นนั้น เทียบกับขั้นแรกเป็น 100% · ตัวเลขขวาคือจำนวนเครื่อง และ % ของคนที่ผ่านขั้นก่อนหน้าแล้วมาถึงขั้นนี้</p>
 </div>
 <div class="panel"><div class="rows" id="rows"></div></div>
 <div id="dropoff"></div>
+</section>
+
+<section class="section">
+<div class="head">
+<div><p class="eyebrow">📔 SECRET QUEST</p><h2>จากบท 7 ไปถึงชนมือ</h2></div>
+<p>สมุดเป็น Side Quest จึงแยกจาก Main Quest — คนข้ามสมุดไม่ถูกนับว่าหลุดจากเส้นหลัก</p>
+</div>
+<section class="metrics" id="secretMetrics"></section>
+<div class="panel"><div class="rows" id="secretRows"></div></div>
 </section>
 
 <section class="section">
@@ -112,9 +132,9 @@ code{background:rgb(255 255 255/.08);padding:1px 6px;border-radius:5px;font-size
 </section>
 
 <section class="section">
-<div class="head"><div><p class="eyebrow">📈 DAILY</p><h2>เข้าเส้นกี่คน ถึงบทเรียนกี่คน</h2></div></div>
+<div class="head"><div><p class="eyebrow">📈 DAILY</p><h2>แต่ละวันคนไปถึงจุดไหน</h2></div></div>
 <div class="panel table-wrap">
-<table class="table"><thead><tr><th>วัน</th><th>เข้าประตู</th><th>ถึงบทที่ 1</th></tr></thead><tbody id="daily"></tbody></table>
+<table class="table"><thead><tr><th>วัน</th><th>เข้าประตู</th><th>ดูวิดีโอ</th><th>ถึงบทที่ 1</th><th>จบบท 7</th><th>เปิดสมุด</th><th>ชนมือ</th></tr></thead><tbody id="daily"></tbody></table>
 </div>
 </section>
 
@@ -139,9 +159,12 @@ $('refresh').onclick=load;
 $('csv').onclick=()=>{
  if(!current)return;
  const rows=[['section','key','users','extra'],
+  ...Object.entries(current.home||{}).filter(([,v])=>typeof v==='number').map(([k,v])=>['home',k,v,'']),
   ...current.steps.map(s=>['step',s.event,s.users,s.step_rate]),
+  ...(current.secret?.steps||[]).map(s=>['secret',s.event,s.users,s.step_rate]),
+  ['secret','boss_to_bump',current.secret?.bumped_after_boss||0,current.secret?.boss_to_bump_rate||0],
   ...(current.byEntry||[]).map(e=>['entry',e.entry,e.users,e.finish_rate]),
-  ...(current.daily||[]).map(d=>['daily',d.day,d.started,d.reached_lesson])];
+  ...(current.daily||[]).map(d=>['daily',d.day,d.started,JSON.stringify({video:d.watched_video,lesson1:d.reached_lesson,boss7:d.boss_completed,notebook:d.notebook_opened,bump:d.bumped})])];
  const csv=rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n');
  const a=document.createElement('a');
  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
@@ -172,9 +195,20 @@ function render(d){
  const t=d.totals||{};
  $('metrics').innerHTML=[
   metric('เข้าประตูหน้าแรก',fmt(t.started),'เครื่องที่เริ่มเส้นทาง'),
-  metric('ถึงบทที่ 1',fmt(t.reached_lesson),'ปลายทางของ First Run'),
-  metric('เดินจบเส้น',pct(t.completion_rate),'ถึงบทที่ 1 / เข้าประตู'),
+  metric('อ่านบทที่ 7 จบ',fmt(t.reached_end??t.reached_lesson),'ปลายทางของ Main Quest'),
+  metric('เดินจบเส้นหลัก',pct(t.completion_rate),'จบบทที่ 7 / เข้าประตู'),
  ].join('');
+
+ const h=d.home||{};
+ $('homeMetrics').innerHTML=[
+  metric('เข้าหน้าแรก',fmt(h.visitors),'เครื่องที่เปิดหน้าแรก'),
+  metric('กดดูวิดีโอ',fmt(h.watched_video),`${pct(h.video_rate)} ของคนเข้าหน้าแรก`),
+  metric('เข้าบ้านทันที',fmt(h.entered_direct),`${pct(h.direct_rate)} · ไม่ได้ดูวิดีโอก่อน`),
+  metric('ดูวิดีโอแล้วเข้าบ้าน',fmt(h.video_then_hall),`${pct(h.video_to_hall_rate)} ของคนที่ดูวิดีโอ`),
+ ].join('');
+ $('homeDropoff').innerHTML=Number(h.video_without_hall||0)>0
+  ? `<div class="alert"><b>ดูวิดีโอแล้วไม่ได้เข้าบ้าน ${fmt(h.video_without_hall)} เครื่อง</b> — จุดนี้คือคนที่คลิปพามาถึง แต่ CTA ยังพาไปต่อไม่ได้</div>`
+  : '';
 
  const base=d.steps?.[0]?.users||0;
  const lastIndex=(d.steps||[]).length-1;
@@ -191,11 +225,25 @@ function render(d){
   ? `<div class="alert"><b>หลุดหนักสุดที่ “${w.th}”</b> — หายไป ${fmt(w.lost)} เครื่อง ผ่านต่อแค่ ${pct(w.step_rate)}</div>`
   : '';
 
+ const secret=d.secret||{}, secretSteps=secret.steps||[];
+ $('secretMetrics').innerHTML=[
+  metric('อ่านบท 7 จบ',fmt(secret.boss_completed),'ฐานก่อนเข้าสมุดลับ'),
+  metric('อ่านบท 7 จบแล้วชนมือ',fmt(secret.bumped_after_boss),`${pct(secret.boss_to_bump_rate)} ของคนที่จบบท 7`),
+  metric('เปิดสมุด',fmt(secretSteps[0]?.users||0),'คนที่เลือกเข้า Side Quest'),
+ ].join('');
+ const secretBase=secretSteps[0]?.users||0;
+ $('secretRows').innerHTML=secretSteps.map((s,i)=>{
+  const width=secretBase?Math.max(.6,(s.users/secretBase)*100):0;
+  return `<div class="row ${i===secretSteps.length-1?'last':''}"><div class="name">${s.th}<b>${s.event}</b></div>`
+   +`<div class="track"><div class="fill" style="width:${width}%">${s.users?fmt(s.users):''}</div></div>`
+   +`<div class="side"><b>${i?pct(s.step_rate):'—'}</b>${s.lost?`−${fmt(s.lost)}`:''}</div></div>`;
+ }).join('')||'<p class="muted">ยังไม่มีข้อมูลเส้นสมุดในช่วงนี้</p>';
+
  $('entry').innerHTML=(d.byEntry||[]).map(e=>`<tr><td>${e.entry}</td><td>${fmt(e.users)}</td><td>${fmt(e.match_players)}</td><td>${fmt(e.finishers)}</td><td>${pct(e.finish_rate)}</td></tr>`).join('')
   ||'<tr><td colspan="5" class="muted">ยังไม่มีข้อมูลในช่วงนี้</td></tr>';
 
- $('daily').innerHTML=(d.daily||[]).map(r=>`<tr><td>${r.day}</td><td>${fmt(r.started)}</td><td>${fmt(r.reached_lesson)}</td></tr>`).join('')
-  ||'<tr><td colspan="3" class="muted">ยังไม่มีใครเข้าเส้นทางในช่วงนี้</td></tr>';
+ $('daily').innerHTML=(d.daily||[]).map(r=>`<tr><td>${r.day}</td><td>${fmt(r.started)}</td><td>${fmt(r.watched_video)}</td><td>${fmt(r.reached_lesson)}</td><td>${fmt(r.boss_completed)}</td><td>${fmt(r.notebook_opened)}</td><td>${fmt(r.bumped)}</td></tr>`).join('')
+  ||'<tr><td colspan="7" class="muted">ยังไม่มีใครเข้าเส้นทางในช่วงนี้</td></tr>';
 }
 
 setDays(30);

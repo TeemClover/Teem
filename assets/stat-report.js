@@ -23,6 +23,7 @@ const FORGE = [
   'ep4-what-traveled-without-us', 'ep5-from-answers-to-a-system',
   'ep6-the-starter-kit', 'ep7-a-voice-that-went-further',
 ];
+const LEARN = ['free-ai', 'image-ai', 'clip-ai', 'notebooklm', 'prompts', 'first-web'];
 
 function raw(k, d = '') { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch { return d; } }
 function list(k) { return raw(k).split(',').filter(Boolean); }
@@ -67,6 +68,18 @@ function reachedSteps() {
      แต่บทที่ 1 นับจากที่เรียนจบด้วย เพราะคนที่เรียนจบไปแล้วย่อมเคยเริ่ม */
   if (p.startsWith('/core7/hand/')) steps.push('LOADOUT_VIEW');
   if (p === '/classroom/free-ai.html' || learn.includes('free-ai')) steps.push('LESSON_1_START');
+  LEARN.forEach((slug, i) => { if (learn.includes(slug)) steps.push(`LESSON_${i + 1}_COMPLETE`); });
+
+  /* บท 7 กับสมุดใช้ธงถาวรอยู่แล้ว จึง backfill คนที่เคยผ่านมาก่อนมี event
+     ชุดนี้ได้ทันทีเมื่อเขากลับมาเปิดหน้าใดก็ได้ในบ้าน */
+  const bossOpen = p.startsWith('/classroom/awaken/') || raw('mc_ch7_entered') === '1'
+    || raw('mc_ch7_done') === '1' || hasTitle('AWAKENED');
+  if (bossOpen) steps.push('BOSS_7_OPEN');
+  if (raw('mc_ch7_done') === '1' || hasTitle('AWAKENED')) steps.push('BOSS_7_COMPLETE');
+  if (raw('mc_nb_seen') === '1' || raw('mc_nb_restored') === '1' || raw('mc_secret_end') === '1') steps.push('NOTEBOOK_OPEN');
+  if (raw('mc_nb_restored') === '1') steps.push('NOTEBOOK_RESTORED');
+  if (raw('mc_secret_end') === '1') steps.push('SECRET_END_COMPLETE');
+  if (hasTitle('GLHF')) steps.push('NOTEBOOK_BUMP_COMPLETE');
 
   return steps;
 }
@@ -94,6 +107,12 @@ function sendAchievements(ids) {
 
 sendJourney();
 try { sendAchievements(unlockedAchievementIds()); } catch { /* สถิติล่มไม่เกี่ยวกับหน้าเว็บ */ }
+
+/* หลาย milestone ถูกบันทึกหลังผู้ใช้กดปุ่มในหน้าเดิม เช่น เรียนจบบท 7,
+   ซ่อมสมุด และชนมือ ถ้าตรวจแค่ตอนโหลดหน้าจะต้องรอให้เขาเปิดหน้าใหม่ก่อน
+   ตัวเลขจึงมาช้า ตรวจซ้ำหลัง click จบหนึ่งรอบเพื่อให้ handler ของหน้านั้น
+   เขียน localStorage ให้เสร็จก่อน แล้วส่ง milestone ได้ทันที */
+document.addEventListener('click', () => setTimeout(sendJourney, 0));
 
 /* หน้า Collection ยังยิงสัญญาณมาตอนวาดเสร็จ — ไม่ได้จำเป็นอีกแล้วเพราะเรา
    คำนวณเองได้ แต่รับไว้เพราะมันคือจังหวะที่ค่าเพิ่งถูกอ่านใหม่หมาด ๆ

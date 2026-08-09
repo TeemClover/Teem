@@ -7,13 +7,13 @@ import {
 import { colorOf, FIRST_HAND } from '../js/cards.js';
 import { ACTS, ACHIEVEMENTS, STAGES, stageOrder } from '../../assets/achievements.js';
 
-export const CORE7_ANALYTICS_VERSION = '1.3.0';
+export const CORE7_ANALYTICS_VERSION = '1.4.0';
 export const CORE7_GAME_VERSION = '0.5';
 
 const COLORS = ['RED', 'GREEN', 'BLUE', 'SILVER'];
 
 /* ── เส้นทาง First Run ──
-   ลำดับที่คนเดินจากประตูหน้าแรกไปถึงบทที่ 1 เก็บไว้ที่เดียวเพราะทั้งชุด
+   ลำดับที่คนเดินจากประตูหน้าแรกไปจนจบบทที่ 7 เก็บไว้ที่เดียวเพราะทั้งชุด
    event ที่ยอมรับ ทั้งลำดับบนกราฟ และป้ายที่คนอ่าน ต้องมาจากแหล่งเดียวกัน
    ไม่งั้นเพิ่มขั้นใหม่แล้วลืมแก้ที่ใดที่หนึ่ง กราฟจะโกหกเงียบ ๆ
 
@@ -35,6 +35,24 @@ export const JOURNEY_STEPS = Object.freeze([
   { event: 'CORE7_ONBOARDING_COMPLETE', th: 'เล่น CORE7 จบ' },
   { event: 'LOADOUT_VIEW', th: 'เห็นหน้า Loadout' },
   { event: 'LESSON_1_START', th: 'เริ่มบทที่ 1' },
+  { event: 'LESSON_1_COMPLETE', th: 'เรียนจบบทที่ 1' },
+  { event: 'LESSON_2_COMPLETE', th: 'เรียนจบบทที่ 2' },
+  { event: 'LESSON_3_COMPLETE', th: 'เรียนจบบทที่ 3' },
+  { event: 'LESSON_4_COMPLETE', th: 'เรียนจบบทที่ 4' },
+  { event: 'LESSON_5_COMPLETE', th: 'เรียนจบบทที่ 5' },
+  { event: 'LESSON_6_COMPLETE', th: 'เรียนจบบทที่ 6' },
+  { event: 'BOSS_7_OPEN', th: 'เปิดบทที่ 7' },
+  { event: 'BOSS_7_COMPLETE', th: 'อ่านบทที่ 7 จบ' },
+]);
+
+/* สมุดเป็น Side Quest ในบท 7 จึงแยกออกจากเส้นหลัก ถ้าเอาไปคั่นใน
+   JOURNEY_STEPS คนที่ตั้งใจข้ามสมุดจะถูกอ่านว่า "หลุด" ทั้งที่เดิน Main Quest
+   ต่อถูกต้องแล้ว */
+export const NOTEBOOK_STEPS = Object.freeze([
+  { event: 'NOTEBOOK_OPEN', th: 'เปิดสมุดเล่มเก่า' },
+  { event: 'NOTEBOOK_RESTORED', th: 'ซ่อมสมุดด้วย RESTORE' },
+  { event: 'SECRET_END_COMPLETE', th: 'อ่าน Secret Ending จบ' },
+  { event: 'NOTEBOOK_BUMP_COMPLETE', th: 'ชนมือ WELL PLAYED' },
 ]);
 
 /* ทางเข้าที่ยอมรับ — 'forge' คือเดินตามเส้น Journey มา ค่าอื่นถูกทิ้งเป็น null */
@@ -44,8 +62,10 @@ const EVENTS = new Set([
   'CORE7_VIEW', 'HAND_VIEW', 'HAND_READY', 'MATCH_START', 'MATCH_COMPLETE', 'REMATCH',
   /* v1.2 — การ์ด FIRST HAND ที่ถูกเปิดใหม่หลังจบ Match ยิงมาที่นี่ ใบละหนึ่ง event */
   'CARD_UNLOCK',
-  /* v1.3 — เส้นทาง First Run ตั้งแต่ประตูหน้าแรกถึงบทที่ 1 */
+  /* v1.3–v1.4 — เส้นทาง First Run ตั้งแต่ประตูหน้าแรกถึงจบบทที่ 7 */
   ...JOURNEY_STEPS.map(step => step.event),
+  /* v1.4 — Side Quest สมุดหลังบท 7 แยกกราฟจาก Main Quest */
+  ...NOTEBOOK_STEPS.map(step => step.event),
   /* v1.3 — การกระทำเล็ก ๆ กับ Achievement ตัวไหนถูกทำ/ปลด อยู่ที่คอลัมน์ ref
      ใช้สองชนิดนี้แทนการเพิ่ม event type ใหม่ทุกครั้งที่มีปุ่มใหม่ */
   'ACT', 'ACHIEVEMENT_UNLOCK',
@@ -542,7 +562,7 @@ export async function readMatchCounters(db) {
 }
 
 /* ── Journey Funnel ──
-   คนหลุดตรงไหนระหว่างประตูหน้าแรกกับบทที่ 1
+   คนหลุดตรงไหนระหว่างประตูหน้าแรกกับตอนจบบทที่ 7 และ Side Quest สมุด
 
    นับ "เครื่องที่ผ่านขั้นนี้" ไม่ใช่จำนวน event เพราะคนกดซ้ำหรือ refresh ได้
    และไม่บังคับว่าต้องผ่านขั้นก่อนหน้าจริง — ถ้าตัวเลขขั้นหลังมากกว่าขั้นหน้า
@@ -554,7 +574,10 @@ export async function readJourneyFunnel(db, params = {}) {
   const types = JOURNEY_STEPS.map(s => s.event);
   const holes = types.map(() => '?').join(',');
 
-  const [stepsRes, entryRes, dailyRes] = await Promise.all([
+  const notebookTypes = NOTEBOOK_STEPS.map(s => s.event);
+  const notebookHoles = notebookTypes.map(() => '?').join(',');
+
+  const [stepsRes, entryRes, dailyRes, homeRes, notebookRes, bossToBumpRes] = await Promise.all([
     db.prepare(`SELECT event_type, COUNT(DISTINCT install_id) users, COUNT(*) events,
       MIN(occurred_at) first_at, MAX(occurred_at) last_at
       FROM c7_analytics_events
@@ -571,11 +594,55 @@ export async function readJourneyFunnel(db, params = {}) {
       GROUP BY COALESCE(entry,'direct')`).bind(b.start, b.end).all(),
     db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day,
       COUNT(DISTINCT CASE WHEN event_type='JOURNEY_START' THEN install_id END) started,
-      COUNT(DISTINCT CASE WHEN event_type='LESSON_1_START' THEN install_id END) reached_lesson
+      COUNT(DISTINCT CASE WHEN event_type='ACT' AND ref='home-video' THEN install_id END) watched_video,
+      COUNT(DISTINCT CASE WHEN event_type='LESSON_1_START' THEN install_id END) reached_lesson,
+      COUNT(DISTINCT CASE WHEN event_type='BOSS_7_COMPLETE' THEN install_id END) boss_completed,
+      COUNT(DISTINCT CASE WHEN event_type='NOTEBOOK_OPEN' THEN install_id END) notebook_opened,
+      COUNT(DISTINCT CASE WHEN event_type='NOTEBOOK_BUMP_COMPLETE' THEN install_id END) bumped
       FROM c7_analytics_events
-      WHERE event_type IN ('JOURNEY_START','LESSON_1_START')
+      WHERE (event_type IN ('JOURNEY_START','LESSON_1_START','BOSS_7_COMPLETE','NOTEBOOK_OPEN','NOTEBOOK_BUMP_COMPLETE')
+        OR (event_type='ACT' AND ref='home-video'))
         AND occurred_at >= ? AND occurred_at < ?
       GROUP BY day ORDER BY day`).bind(b.start, b.end).all(),
+    /* เส้นทางหน้าแรกต้องดูเป็น cohort ต่อเครื่อง ไม่ใช่แค่ยอดคลิกแยกกัน
+       ไม่งั้นตอบไม่ได้ว่าคนดูวิดีโอคือคนเดียวกับคนที่เข้าบ้านหรือไม่ */
+    db.prepare(`WITH home AS (
+      SELECT install_id,
+        MIN(CASE WHEN ref='home-open' THEN occurred_at END) opened_at,
+        MIN(CASE WHEN ref='home-video' THEN occurred_at END) video_at,
+        MIN(CASE WHEN ref='hall-open' THEN occurred_at END) hall_at
+      FROM c7_analytics_events
+      WHERE event_type='ACT' AND ref IN ('home-open','home-video','hall-open')
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY install_id
+    )
+    SELECT
+      COUNT(CASE WHEN opened_at IS NOT NULL THEN 1 END) visitors,
+      COUNT(CASE WHEN opened_at IS NOT NULL AND video_at IS NOT NULL THEN 1 END) watched_video,
+      COUNT(CASE WHEN opened_at IS NOT NULL AND hall_at IS NOT NULL
+        AND (video_at IS NULL OR hall_at < video_at) THEN 1 END) entered_direct,
+      COUNT(CASE WHEN opened_at IS NOT NULL AND video_at IS NOT NULL
+        AND hall_at IS NOT NULL AND video_at <= hall_at THEN 1 END) video_then_hall,
+      COUNT(CASE WHEN opened_at IS NOT NULL AND video_at IS NOT NULL
+        AND (hall_at IS NULL OR hall_at < video_at) THEN 1 END) video_without_hall
+    FROM home`).bind(b.start, b.end).first(),
+    db.prepare(`SELECT event_type, COUNT(DISTINCT install_id) users, COUNT(*) events,
+      MIN(occurred_at) first_at, MAX(occurred_at) last_at
+      FROM c7_analytics_events
+      WHERE event_type IN (${notebookHoles}) AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY event_type`).bind(...notebookTypes, b.start, b.end).all(),
+    db.prepare(`WITH flags AS (
+      SELECT install_id,
+        MAX(CASE WHEN event_type='BOSS_7_COMPLETE' THEN 1 ELSE 0 END) boss_done,
+        MAX(CASE WHEN event_type='NOTEBOOK_BUMP_COMPLETE' THEN 1 ELSE 0 END) bumped
+      FROM c7_analytics_events
+      WHERE event_type IN ('BOSS_7_COMPLETE','NOTEBOOK_BUMP_COMPLETE')
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY install_id
+    )
+    SELECT SUM(boss_done) boss_completed,
+      SUM(CASE WHEN boss_done=1 AND bumped=1 THEN 1 ELSE 0 END) bumped_after_boss
+    FROM flags`).bind(b.start, b.end).first(),
   ]);
 
   const rows = new Map((stepsRes.results || []).map(r => [String(r.event_type), nums(r)]));
@@ -613,6 +680,34 @@ export async function readJourneyFunnel(db, params = {}) {
   }
 
   const last = steps[steps.length - 1];
+  const home = nums(homeRes || {});
+  home.video_rate = rate(home.watched_video, home.visitors);
+  home.direct_rate = rate(home.entered_direct, home.visitors);
+  home.video_then_hall_rate = rate(home.video_then_hall, home.visitors);
+  home.video_to_hall_rate = rate(home.video_then_hall, home.watched_video);
+
+  const notebookRows = new Map((notebookRes.results || []).map(r => [String(r.event_type), nums(r)]));
+  const notebookBase = Number(notebookRows.get(notebookTypes[0])?.users || 0);
+  let notebookPrev = 0;
+  const notebookSteps = NOTEBOOK_STEPS.map((step, index) => {
+    const row = notebookRows.get(step.event) || {};
+    const users = Number(row.users || 0);
+    const out = {
+      event: step.event, th: step.th, index, users,
+      events: Number(row.events || 0),
+      share: rate(users, notebookBase),
+      step_rate: index === 0 ? 100 : rate(users, notebookPrev),
+      lost: index === 0 ? 0 : Math.max(0, notebookPrev - users),
+      first_at: Number(row.first_at || 0) || null,
+      last_at: Number(row.last_at || 0) || null,
+    };
+    notebookPrev = users;
+    return out;
+  });
+  const secret = nums(bossToBumpRes || {});
+  secret.boss_to_bump_rate = rate(secret.bumped_after_boss, secret.boss_completed);
+  secret.steps = notebookSteps;
+
   return {
     ok: true,
     range: { from: b.from, to: b.to },
@@ -624,10 +719,14 @@ export async function readJourneyFunnel(db, params = {}) {
     wired: steps.some(s => s.events > 0),
     totals: {
       started: first,
+      reached_end: last.users,
+      /* ชื่อเก่าเก็บไว้เพื่อไม่ทำ dashboard รุ่นที่ cache อยู่พังระหว่าง deploy */
       reached_lesson: last.users,
       completion_rate: rate(last.users, first),
     },
+    home,
     steps,
+    secret,
     dropoff: worst,
     byEntry: (entryRes.results || []).map(row => {
       const r = nums(row);
