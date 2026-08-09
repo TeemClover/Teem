@@ -216,6 +216,11 @@ export function unlockRandomCard(matchId) {
   writeJSON(KEY_COLLECTION, firstHandIds);
   writeJSON(KEY_COUNT, firstHandIds.length);
   syncPublicCount(firstHandIds);
+  try {
+    window.dispatchEvent(new CustomEvent('core7:first-hand-changed', {
+      detail: { count: firstHandIds.length, cardId: card.id },
+    }));
+  } catch { /* account prompt is optional */ }
 
   /* บอก Stat ว่ามีการ์ดใบใหม่ถูกเปิด — ยิงทิ้งไม่รอผล และห้าม throw
      ออกมาเด็ดขาด ไม่งั้นเน็ตล่มทีเดียวรางวัลไม่ขึ้นทั้งหน้า */
