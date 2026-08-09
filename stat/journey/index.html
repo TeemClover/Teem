@@ -207,7 +207,7 @@ function render(d){
   metric('กดดูวิดีโอ',fmt(h.watched_video),`${pct(h.video_rate)} ของคนเข้าหน้าแรก`),
   metric('เข้าบ้านทันที',fmt(h.entered_direct),`${pct(h.direct_rate)} · ไม่ได้ดูวิดีโอก่อน`),
   metric('ดูวิดีโอแล้วเข้าบ้าน',fmt(h.video_then_hall),`${pct(h.video_to_hall_rate)} ของคนที่ดูวิดีโอ`),
-  metric('ดูวิดีโอแล้วไม่เข้าบ้าน',fmt(h.video_without_hall),`${pct(h.video_without_hall_rate)} ของคนที่ดูวิดีโอ`),
+  metric('ดูวิดีโอแล้วไม่เข้าบ้าน',fmt(h.video_without_hall),`${pct(h.video_without_hall_rate ?? (h.watched_video ? Number(h.video_without_hall||0)/Number(h.watched_video)*100 : 0))} ของคนที่ดูวิดีโอ`),
  ].join('');
  $('homeDropoff').innerHTML=Number(h.video_without_hall||0)>0
   ? `<div class="alert"><b>ดูวิดีโอแล้วไม่ได้เข้าบ้าน ${fmt(h.video_without_hall)} เครื่อง</b> — จุดนี้คือคนที่คลิปพามาถึง แต่ CTA ยังพาไปต่อไม่ได้</div>`
