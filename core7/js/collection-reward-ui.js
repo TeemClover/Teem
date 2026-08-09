@@ -133,6 +133,11 @@ function showReward(reward, { isSet = false } = {}) {
     if (!revealed) return;
     overlay.remove();
     document.documentElement.style.overflow = '';
+    try {
+      window.dispatchEvent(new CustomEvent('core7:first-hand-reward-closed', {
+        detail: { count: reward.count, cardId: card.id },
+      }));
+    } catch { /* account prompt is optional */ }
   };
 
   const reveal = () => {
