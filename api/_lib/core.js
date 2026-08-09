@@ -33,6 +33,7 @@ const SCHEMA = [
     provider TEXT NOT NULL, provider_user_id TEXT NOT NULL, user_id TEXT NOT NULL,
     email TEXT, created_at TIMESTAMPTZ NOT NULL, PRIMARY KEY (provider, provider_user_id)
   )`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_mc_accounts_member_no ON mc_accounts(member_no) WHERE member_no IS NOT NULL`,
   `CREATE INDEX IF NOT EXISTS idx_mc_auth_user ON mc_auth_identities(user_id)`,
   `CREATE TABLE IF NOT EXISTS mc_sessions (
     token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL,
@@ -143,6 +144,13 @@ export async function authRateLimited(sql, req, action, identifier, limit, windo
   return Number(rows[0]?.hits || 0) > limit;
 }
 
+async function nextAccountMemberNo(sql, now = new Date()) {
+  const year = now.getUTCFullYear(); const key = `member-${year}`;
+  const counters = await sql.query(`INSERT INTO mc_counters (key,value) VALUES ($1,1)
+    ON CONFLICT(key) DO UPDATE SET value=mc_counters.value+1 RETURNING value`, [key]);
+  return `MY-${year}-${String(Number(counters[0].value)).padStart(4, "0")}`;
+}
+
 export async function ensureMemberNo(sql, email, name, now = new Date()) {
   if (!email) return '';
   const normalized = email.toLowerCase();
@@ -213,8 +221,10 @@ export async function accountForIdentity(sql, identity) {
     JOIN mc_accounts a ON a.id=i.user_id WHERE i.provider=$1 AND i.provider_user_id=$2`, [identity.provider, identity.id]);
   let account = rows[0];
   if (account) {
-    if (identity.email && !account.member_no) {
-      const memberNo = await ensureMemberNo(sql, identity.email, identity.name);
+    if (!account.member_no) {
+      const memberNo = identity.email
+        ? await ensureMemberNo(sql, identity.email, identity.name)
+        : await nextAccountMemberNo(sql);
       if (memberNo) { await sql.query('UPDATE mc_accounts SET member_no=$1,updated_at=$2 WHERE id=$3', [memberNo, new Date(), account.id]); account.member_no = memberNo; }
     }
     return account;
@@ -222,7 +232,9 @@ export async function accountForIdentity(sql, identity) {
   if (identity.email) {
     rows = await sql.query('SELECT id,email,display_name,member_no FROM mc_accounts WHERE email=$1', [identity.email.toLowerCase()]); account = rows[0];
   }
-  const now = new Date(); const memberNo = identity.email ? await ensureMemberNo(sql, identity.email, identity.name, now) : '';
+  const now = new Date(); const memberNo = identity.email
+    ? await ensureMemberNo(sql, identity.email, identity.name, now)
+    : await nextAccountMemberNo(sql, now);
   if (!account) {
     const id = randomUUID();
     rows = await sql.query(`INSERT INTO mc_accounts (id,email,display_name,member_no,consent_at,created_at,updated_at)
