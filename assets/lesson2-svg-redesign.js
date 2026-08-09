@@ -9,14 +9,14 @@ if(!meta||meta.content!=='learn:image-ai')return;
    ใน SVG นั้น attribute transform="..." กับ CSS property transform คือตัวเดียวกัน
    ฝั่ง CSS จึงชนะเสมอ — พอ keyframes ตั้ง transform ให้ขยับนิดเดียว มันก็ลบ
    translate() ที่ใช้จัดตำแหน่งทิ้งทั้งก้อน ชิ้นงานเลยกระโดดไปกองที่มุม (0,0)
-   บั๊กนี้เคยทำให้เชฟ ขวดซอส และป้าย ✓/✗ ของบทนี้หลุดตำแหน่งไป 340-910 หน่วย
+   บั๊กนี้เคยทำให้เชฟ ขวดซอสและป้าย ✓/✗ ของบทนี้หลุดตำแหน่งไป 340-910 หน่วย
    และมองไม่เห็นเลยถ้าเปิด prefers-reduced-motion เพราะ animation:none
    ทำให้ attribute รอดกลับมา — คือหน้าจะดู "ปกติ" เฉพาะตอนที่ปิดแอนิเมชัน */
 function newHeroSvg(){
   return `
   <svg viewBox="0 0 960 430" role="img" aria-labelledby="tasteHeroTitle tasteHeroDesc" data-mc-course-motion="1" xmlns="http://www.w3.org/2000/svg">
-    <title id="tasteHeroTitle">ชิม Source ด้วยภาพก่อนทำงานจริง</title>
-    <desc id="tasteHeroDesc">ฉากครัวต่อเนื่อง ภาพทดสอบที่ยังผิดอยู่ทางซ้าย เชฟชิม Source ตรงกลาง และภาพที่ตรง Canon พร้อมเสิร์ฟอยู่ทางขวา</desc>
+    <title id="tasteHeroTitle">ชิมซอสด้วยภาพก่อนทำงานจริง</title>
+    <desc id="tasteHeroDesc">ฉากครัวต่อเนื่อง ภาพทดสอบที่ยังผิดอยู่ทางซ้าย เชฟชิมซอสตรงกลาง และภาพที่ตรง Canon พร้อมเสิร์ฟอยู่ทางขวา</desc>
     <defs>
       <linearGradient id="l2Bg" x1="0" y1="0" x2="1" y2="1">
         <stop stop-color="#06180f"/><stop offset=".52" stop-color="#0d3823"/><stop offset="1" stop-color="#17563a"/>
