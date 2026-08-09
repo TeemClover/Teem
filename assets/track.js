@@ -1,6 +1,5 @@
 export { trackAct } from '/assets/track-core.js';
 import '/assets/awaken-savepoint-v2.js?v=20260809-1';
-import '/assets/awaken-static-chapter.js?v=20260810-2';
 import '/assets/account.js';
 import '/assets/stat-report.js';
 import '/assets/mini-achievements.js';
@@ -45,7 +44,7 @@ import '/assets/sauce-first-tooltip.js';
 import '/assets/comic-bottom-next.js';
 
 /* Chapter 7 opening: keep the black/green boss aesthetic, but make it completely static.
-   No typing animation, no cursor, no DOM rewriting, no terminal state machine. */
+   The real #chapter from index.html stays in place: never clone or replace it. */
 (function awakenStaticBossGate(){
   if(!/^\/classroom\/awaken\/?(?:index\.html)?$/.test(location.pathname)) return;
 
@@ -54,6 +53,17 @@ import '/assets/comic-bottom-next.js';
     const style=document.createElement('style');
     style.id='awaken-static-gate-style';
     style.textContent=`
+      /* Progress UI is decorative only; remove it without touching chapter DOM. */
+      #xp,#dots{display:none!important}
+
+      /* Fail-safe: every normal chapter node is immediately readable.
+         [hidden] still wins for intentional accordions/modals/choices. */
+      #chapter{overflow:visible!important}
+      #chapter .phase{display:block!important;opacity:1!important;visibility:visible!important;transform:none!important}
+      #chapter .phase *:not([hidden]),#chapter .tail *:not([hidden]){
+        opacity:1!important;visibility:visible!important;
+      }
+
       #gate{
         min-height:calc(100dvh - 58px)!important;
         padding:42px 0 64px!important;
