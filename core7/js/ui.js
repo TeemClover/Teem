@@ -11,6 +11,9 @@ import { notifyFirstHandCardReceived } from '/assets/sauce-proof.js';
    ซึ่งไม่เกี่ยวกับเกมเลย) ตัวรายงาน Journey จึงต้องเข้ามาทางนี้แทน
    ไม่งั้นขั้นที่เกิดในเกม เช่น LOADOUT_VIEW จะไม่มีวันถูกนับ */
 import '/assets/stat-report.js';
+/* บัญชีไม่ต้องโหลดระหว่างเล่น แต่หน้ารับรางวัลต้องพร้อมเสนอ Cloud Save
+   ทันทีหลังผู้เล่นปิดการ์ด FIRST HAND ใบที่ 14 */
+if (/\/core7\/(?:journey-)?result\//.test(location.pathname)) import('/assets/account.js');
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 export const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
