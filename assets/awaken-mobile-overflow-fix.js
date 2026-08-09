@@ -1,3 +1,5 @@
+import '/assets/awaken-chest-object-v5.js?v=20260809-1';
+
 /* AWAKEN boss · mobile overflow guard
    The boss page receives extra UI from several late-loaded modules. One wide child
    must never turn the whole document into a horizontal canvas on iOS Safari.
