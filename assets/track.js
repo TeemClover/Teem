@@ -35,5 +35,6 @@ import '/assets/prompts-plain-language.js';
 import '/assets/prompts-genesis-generic.js';
 import '/assets/lesson2-svg-redesign.js';
 import '/assets/course-svg-motion.js';
+import '/assets/classroom-hero-consistency.js';
 import '/assets/sauce-first-tooltip.js';
 import '/assets/comic-bottom-next.js';
