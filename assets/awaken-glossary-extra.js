@@ -1,4 +1,6 @@
-/* Extra plain-language tooltips for Chapter 7 role names and technical words. */
+/* Extra plain-language tooltips for Chapter 7 role names and technical words.
+   Tooltips render as one floating layer on <body> so card overflow can never clip them.
+*/
 (function(){
 'use strict';
 if (!/^\/classroom\/awaken\/?(?:index\.html)?$/.test(location.pathname)) return;
@@ -33,12 +35,117 @@ const TERMS = [
   ['UI','ส่วนหน้าจอ ปุ่ม และองค์ประกอบที่ผู้ใช้มองเห็นและกดได้'],
 ];
 
+let tip = null;
+let active = null;
+let sticky = false;
+
 function injectStyle() {
-  if (document.getElementById('aw-extra-term-style') || document.getElementById('awaken-loot-v4-style')) return;
+  if (document.getElementById('aw-extra-term-style')) return;
   const style = document.createElement('style');
   style.id = 'aw-extra-term-style';
-  style.textContent = '.aw-term{position:relative;border-bottom:1px dotted #d9b967;cursor:help}.aw-term::after{content:attr(data-tip);position:absolute;z-index:300;left:0;bottom:calc(100% + 8px);width:min(290px,calc(100vw - 42px));padding:10px 12px;border:1px solid rgba(217,185,103,.45);border-radius:10px;background:#07130c;color:#f8f6f0;font:650 12px/1.58 Anuphan,sans-serif;opacity:0;visibility:hidden}.aw-term:hover::after,.aw-term:focus-visible::after,.aw-term[data-open="1"]::after{opacity:1;visibility:visible}';
+  style.textContent = `
+    .aw-term{position:relative;border-bottom:1px dotted #d9b967;cursor:help}
+    .aw-term::after{content:none!important;display:none!important}
+    #aw-floating-tip{
+      position:fixed!important;z-index:2147483000!important;box-sizing:border-box;
+      width:max-content;max-width:min(320px,calc(100vw - 24px));padding:11px 13px;
+      border:1px solid rgba(217,185,103,.48);border-radius:11px;background:#07130c;
+      color:#f8f6f0;-webkit-text-fill-color:#f8f6f0;
+      font:650 12.5px/1.62 "Anuphan",system-ui,sans-serif;text-align:left;
+      white-space:normal;overflow-wrap:anywhere;word-break:normal;
+      box-shadow:0 16px 38px rgba(0,0,0,.58);pointer-events:none;
+      opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .12s ease,transform .12s ease;
+    }
+    #aw-floating-tip[data-open="1"]{opacity:1;visibility:visible;transform:translateY(0)}
+    @media(max-width:560px){#aw-floating-tip{max-width:calc(100vw - 20px);font-size:13px;line-height:1.65}}
+    @media(prefers-reduced-motion:reduce){#aw-floating-tip{transition:none}}
+  `;
   document.head.append(style);
+}
+
+function ensureTip() {
+  if (tip?.isConnected) return tip;
+  tip = document.createElement('div');
+  tip.id = 'aw-floating-tip';
+  tip.setAttribute('role','tooltip');
+  tip.setAttribute('aria-hidden','true');
+  document.body.append(tip);
+  return tip;
+}
+
+function viewportBox() {
+  const vv = window.visualViewport;
+  return {
+    left: vv?.offsetLeft || 0,
+    top: vv?.offsetTop || 0,
+    width: vv?.width || window.innerWidth,
+    height: vv?.height || window.innerHeight,
+  };
+}
+
+function place(term) {
+  const node = ensureTip();
+  if (!term?.isConnected || node.dataset.open !== '1') return;
+  const r = term.getBoundingClientRect();
+  const v = viewportBox();
+  const gap = 9;
+  const margin = 10;
+
+  node.style.left = `${v.left + margin}px`;
+  node.style.top = `${v.top + margin}px`;
+  const tr = node.getBoundingClientRect();
+
+  let left = r.left + Math.min(r.width / 2, 70) - tr.width / 2;
+  left = Math.max(v.left + margin, Math.min(left, v.left + v.width - tr.width - margin));
+
+  const below = r.bottom + gap;
+  const above = r.top - tr.height - gap;
+  let top = below;
+  if (below + tr.height > v.top + v.height - margin && above >= v.top + margin) top = above;
+  top = Math.max(v.top + margin, Math.min(top, v.top + v.height - tr.height - margin));
+
+  node.style.left = `${Math.round(left)}px`;
+  node.style.top = `${Math.round(top)}px`;
+}
+
+function show(term, keepOpen) {
+  if (!term?.dataset.tip) return;
+  const node = ensureTip();
+  active = term;
+  sticky = !!keepOpen;
+  node.textContent = term.dataset.tip;
+  node.dataset.open = '1';
+  node.setAttribute('aria-hidden','false');
+  term.setAttribute('aria-describedby', node.id);
+  requestAnimationFrame(() => place(term));
+}
+
+function hide(force = false) {
+  if (sticky && !force) return;
+  const node = ensureTip();
+  if (active) active.removeAttribute('aria-describedby');
+  active = null;
+  sticky = false;
+  node.dataset.open = '0';
+  node.setAttribute('aria-hidden','true');
+}
+
+function wireTerm(term) {
+  if (!term || term.dataset.floatTipWired === '1') return;
+  term.dataset.floatTipWired = '1';
+  term.addEventListener('mouseenter', () => { if (!sticky) show(term, false); });
+  term.addEventListener('mouseleave', () => { if (!sticky) hide(true); });
+  term.addEventListener('focus', () => show(term, false));
+  term.addEventListener('blur', () => { if (!sticky) hide(true); });
+  term.addEventListener('click', event => {
+    event.stopPropagation();
+    if (active === term && sticky) hide(true);
+    else show(term, true);
+  });
+}
+
+function wireTerms() {
+  document.querySelectorAll('.aw-term[data-tip]').forEach(wireTerm);
 }
 
 function scan() {
@@ -48,7 +155,7 @@ function scan() {
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode(node) {
       const parent = node.parentElement;
-      if (!parent || !node.nodeValue.trim() || parent.closest('script,style,code,pre,textarea,input,.aw-term')) return NodeFilter.FILTER_REJECT;
+      if (!parent || !node.nodeValue.trim() || parent.closest('script,style,code,pre,textarea,input,.aw-term,#aw-floating-tip')) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     }
   });
@@ -58,10 +165,10 @@ function scan() {
     if (count >= 50 || !node.parentNode) return;
     const text = node.nodeValue;
     const matches = [];
-    TERMS.forEach(([term, tip]) => {
+    TERMS.forEach(([term, explanation]) => {
       let at = text.indexOf(term);
       while (at >= 0) {
-        matches.push({ at, term, tip });
+        matches.push({ at, term, tip:explanation });
         at = text.indexOf(term, at + term.length);
       }
     });
@@ -86,18 +193,25 @@ function scan() {
     frag.append(text.slice(cursor));
     node.parentNode.replaceChild(frag, node);
   });
+  wireTerms();
 }
 
 function boot() {
   injectStyle();
+  ensureTip();
   let queued = false;
   const queue = () => {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => { queued = false; scan(); });
+    requestAnimationFrame(() => { queued = false; scan(); wireTerms(); });
   };
   queue();
   new MutationObserver(queue).observe(document.body, { childList:true, subtree:true });
+  document.addEventListener('click', event => { if (!event.target.closest?.('.aw-term')) hide(true); });
+  window.addEventListener('scroll', () => { if (active) sticky ? place(active) : hide(true); }, { passive:true, capture:true });
+  window.addEventListener('resize', () => { if (active) place(active); });
+  window.visualViewport?.addEventListener('resize', () => { if (active) place(active); });
+  window.visualViewport?.addEventListener('scroll', () => { if (active) place(active); });
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
