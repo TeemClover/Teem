@@ -1,7 +1,5 @@
-import { unlockedAchievementIds } from '/assets/achievement-state.js';
-
 const API = '/api/auth';
-const PROMPT_KEY = 'mc_account_prompt_14_shown';
+const PROMPT_KEY = 'mc_account_prompt_first_hand_14_shown';
 const LAST_SYNC_KEY = 'mc_account_last_sync';
 const OWNER_KEY = 'mc_account_progress_owner';
 const EXCLUDED = [
@@ -14,6 +12,7 @@ let providers = { email: true, google: false, line: false };
 let syncTimer = 0;
 let dialog;
 let previousFocus = null;
+let promptAfterRewardTimer = 0;
 
 function addStyles() {
   if (document.querySelector('link[data-mc-account-css]')) return;
@@ -60,6 +59,14 @@ function clearDeviceProgress() {
 }
 
 function parseMaybe(value) { try { return JSON.parse(value); } catch { return null; } }
+function firstHandCount() {
+  const collection = parseMaybe(storageGet('c7:collection'));
+  if (Array.isArray(collection)) {
+    return new Set(collection.filter(id => typeof id === 'string' && /^fh-(red|green|blue|silver)-/.test(id))).size;
+  }
+  const count = Number(parseMaybe(storageGet('mc_core7_first_hand_count', '0')));
+  return Number.isFinite(count) && count > 0 ? count : 0;
+}
 function union(a, b) { return [...new Set([...a, ...b].filter(value => typeof value === 'string'))]; }
 function mergeObject(a, b) {
   if (Array.isArray(a) && Array.isArray(b)) return union(a, b);
@@ -168,8 +175,8 @@ function authHTML(mode) {
   const signup = mode !== 'login';
   const trigger14 = mode === 'signup14';
   return `<span class="mc-account-kicker">OPTIONAL CLOUD SAVE</span>
-    <h2>${signup ? (trigger14 ? '14 ใบแล้ว — เก็บสำรับนี้ไว้ไหม?' : 'เก็บของที่ปลดไว้ ไม่ให้หายตอนย้ายเครื่อง') : 'กลับมาเอา Progress ของคุณคืน'}</h2>
-    <p>${signup ? (trigger14 ? 'คุณเดินมาไกลพอที่เสียดายถ้าของหายแล้ว สมัครเพื่อสำรองไว้ได้ แต่กดข้ามแล้วเล่นต่อได้เหมือนเดิม' : 'ไม่สมัครก็เล่นต่อได้เหมือนเดิม บัญชีมีไว้สำรอง Save ในเครื่องนี้เท่านั้น') : 'Login แล้วระบบจะรวมของในเครื่องนี้กับของที่เคยเก็บไว้ให้อัตโนมัติ'}</p>
+    <h2>${signup ? (trigger14 ? 'FIRST HAND ครบ 14 ใบแล้ว — เก็บไว้ไหม?' : 'เก็บของที่ปลดไว้ ไม่ให้หายตอนย้ายเครื่อง') : 'กลับมาเอา Progress ของคุณคืน'}</h2>
+    <p>${signup ? (trigger14 ? 'การ์ด myClover: FIRST HAND ที่คุณสะสมมาครึ่งสำรับจะอยู่ในเครื่องนี้เท่านั้น สมัครเพื่อสำรองการ์ดและ Progress ไว้ แต่กดข้ามแล้วเล่นต่อได้เหมือนเดิม' : 'ไม่สมัครก็เล่นต่อได้เหมือนเดิม บัญชีมีไว้สำรอง Save ในเครื่องนี้เท่านั้น') : 'Login แล้วระบบจะรวมของในเครื่องนี้กับของที่เคยเก็บไว้ให้อัตโนมัติ'}</p>
     <div class="mc-account-tabs" role="tablist">
       <button type="button" class="mc-account-tab" data-account-mode="signup" aria-selected="${signup}">สมัครสมาชิก</button>
       <button type="button" class="mc-account-tab" data-account-mode="login" aria-selected="${!signup}">เข้าสู่ระบบ</button>
@@ -260,7 +267,8 @@ function bindEvents() {
   window.addEventListener('pagehide', pushOnLeave);
   window.addEventListener('storage', event => { if (event.key && allowedKey(event.key)) scheduleSync(); });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') scheduleSync(); });
-  window.addEventListener('mc:achievements', maybePrompt);
+  window.addEventListener('core7:first-hand-changed', maybePrompt);
+  window.addEventListener('core7:first-hand-reward-closed', maybePrompt);
 }
 
 function showAccountChip() {
@@ -280,13 +288,20 @@ function paintChip() {
   chip.setAttribute('aria-label', user ? `เปิดบัญชี ${user.displayName || 'ของฉัน'}` : 'เก็บ Progress ด้วยบัญชี');
 }
 
-function maybePrompt() {
+function maybePrompt(event) {
   if (user || storageGet(PROMPT_KEY) === '1') return;
-  let count = 0;
-  try { count = unlockedAchievementIds().length; } catch { return; }
+  const count = firstHandCount();
   if (count < 14) return;
+  const onResult = /\/core7\/(?:journey-)?result\//.test(location.pathname);
+  if (onResult && event?.type !== 'core7:first-hand-reward-closed') {
+    clearTimeout(promptAfterRewardTimer);
+    promptAfterRewardTimer = setTimeout(() => {
+      if (!document.getElementById('c7Reward')) maybePrompt({ type: 'core7:first-hand-reward-closed' });
+    }, 700);
+    return;
+  }
   storageSet(PROMPT_KEY, '1'); open('signup14');
-  try { window.mcEvent && window.mcEvent('account_prompt_14', { unlocked: count }); } catch { /* analytics optional */ }
+  try { window.mcEvent && window.mcEvent('account_prompt_first_hand_14', { first_hand: count }); } catch { /* analytics optional */ }
 }
 
 async function boot() {
