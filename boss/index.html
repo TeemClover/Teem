@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030907">
+<meta name="robots" content="noindex,nofollow">
+<meta name="mc-act-view" content="boss-single-file-open">
+<title>FINAL BOSS — The Two Sacred Sources · myClover</title>
+<meta name="description" content="ด่านบอสที่สร้างจาก HTML ไฟล์เดียว — จากตัวอักษร สู่ประสบการณ์ และความลับของ Source สองสกุลที่สร้างอาณาจักรออนไลน์ได้">
+<style>
+:root{
+  --void:#030907;--ink:#f5f5ed;--dim:#aab8b0;--faint:#65756c;
+  --terminal:#7bf6a7;--cyan:#67e8f9;--gold:#f3c969;--violet:#b8a1ff;--danger:#ff826f;
+  --panel:#07130e;--line:rgba(123,246,167,.17);--level:0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--void);scroll-behavior:smooth;overflow-x:clip}
+body{min-height:100dvh;background:var(--void);color:var(--ink);font-family:ui-monospace,"SFMono-Regular","Cascadia Code","Noto Sans Thai",monospace;line-height:1.75;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-2;background:
+  radial-gradient(850px 560px at 50% -250px,rgba(123,246,167,.1),transparent 72%),
+  linear-gradient(180deg,#030907,#020604);transition:background 1s ease}
+body[data-level="2"]::before{background:radial-gradient(800px 500px at 15% 5%,rgba(103,232,249,.1),transparent 65%),radial-gradient(800px 600px at 90% 70%,rgba(123,246,167,.08),transparent 70%),#030907}
+body[data-level="3"]::before{background:radial-gradient(850px 600px at 12% 20%,rgba(184,161,255,.12),transparent 68%),radial-gradient(800px 620px at 90% 72%,rgba(103,232,249,.12),transparent 68%),#030907}
+body[data-level="4"]::before{background:radial-gradient(900px 650px at 50% 45%,rgba(243,201,105,.11),transparent 65%),radial-gradient(700px 520px at 10% 10%,rgba(184,161,255,.13),transparent 68%),#030907}
+button,a{font:inherit}button{color:inherit}a{color:inherit;text-decoration:none}[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+.shell{width:min(820px,calc(100% - 36px));margin-inline:auto}
+.topbar{position:sticky;top:0;z-index:50;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(3,9,7,.91);backdrop-filter:blur(16px)}
+.topin{width:min(920px,calc(100% - 30px));min-height:60px;margin:auto;display:flex;align-items:center;gap:15px}
+.home{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.73);font-weight:800;font-size:12px;letter-spacing:.06em}.home i{display:grid;place-items:center;width:27px;height:27px;border:1px solid rgba(123,246,167,.28);border-radius:8px;color:var(--terminal);font-style:normal}
+.build{margin-left:auto;display:flex;align-items:center;gap:10px}.build-copy{text-align:right}.build-copy small{display:block;color:var(--faint);font-size:8px;letter-spacing:.16em}.build-copy b{display:block;color:var(--terminal);font-size:11px;letter-spacing:.08em}.sockets{display:flex;gap:5px}.sockets i{width:7px;height:7px;border:1px solid rgba(255,255,255,.2);border-radius:50%;transition:.5s}.sockets i.on{border-color:var(--terminal);background:var(--terminal);box-shadow:0 0 10px var(--terminal)}
+
+/* Gate: intentionally plain terminal. */
+.gate{min-height:calc(100dvh - 61px);display:grid;place-items:center;padding:42px 0 60px}
+.terminal{width:min(760px,100%);border:1px solid rgba(123,246,167,.36);border-radius:12px;background:#020705;box-shadow:0 34px 90px rgba(0,0,0,.55),inset 0 0 55px rgba(123,246,167,.018);overflow:hidden}
+.termbar{min-height:42px;border-bottom:1px solid rgba(123,246,167,.18);padding:10px 14px;display:flex;align-items:center;gap:9px;color:rgba(123,246,167,.72);font-size:9.5px;letter-spacing:.09em}.lights{display:flex;gap:6px}.lights i{width:8px;height:8px;border-radius:50%;background:#294136}.lights i:first-child{background:#6f3d35}.lights i:nth-child(2){background:#6b5c2f}.termbar span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.terminal-body{padding:clamp(24px,6vw,48px)}
+.boot{display:grid;gap:8px;color:#6d8978;font-size:11px;line-height:1.55}.boot .ok{color:var(--terminal)}
+.prompt{margin-top:28px;color:var(--terminal);font-size:clamp(18px,4.4vw,31px);line-height:1.45;font-weight:850;letter-spacing:-.035em}.cursor{display:inline-block;width:.56em;height:1.05em;margin-left:5px;vertical-align:-.12em;background:var(--terminal);animation:blink 1s steps(1) infinite}
+.terminal-copy{margin-top:25px;display:grid;gap:13px;color:#c3cec7;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:15px;line-height:1.85}.terminal-copy strong{color:#fff}.terminal-copy .system{color:#7b9887;font-family:ui-monospace,monospace;font-size:12px}
+.accept{width:100%;min-height:54px;margin-top:28px;border:1px solid var(--terminal);border-radius:7px;background:rgba(123,246,167,.08);color:var(--terminal);font-weight:850;font-size:13px;letter-spacing:.06em;cursor:pointer;transition:.2s}.accept:hover{background:var(--terminal);color:#031008;box-shadow:0 0 35px rgba(123,246,167,.18)}
+
+.game{padding:32px 0 80px}.stage{min-height:calc(100dvh - 126px);display:grid;align-content:center;padding:34px 0}.stage[aria-hidden="true"]{display:none}.stage-in{animation:materialize .5s ease both}
+.phase-id{display:flex;align-items:center;gap:11px;color:var(--faint);font-size:10px;font-weight:800;letter-spacing:.17em}.phase-id::before{content:"";width:25px;height:1px;background:currentColor}.stage h1,.stage h2{margin-top:15px;font-family:system-ui,"Noto Sans Thai",sans-serif;font-weight:850;letter-spacing:-.045em;line-height:1.26}.stage h1{font-size:clamp(31px,7vw,53px)}.stage h2{font-size:clamp(27px,6vw,43px)}
+.lead{margin-top:22px;color:var(--dim);font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:clamp(16px,2.8vw,19px);line-height:1.9}.lead strong{color:#fff}
+.chat{margin-top:31px;display:grid;gap:22px;max-width:690px}.msg{display:grid;grid-template-columns:34px 1fr;gap:12px;color:#cdd6d0;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:16px;line-height:1.9}.avatar{display:grid;place-items:center;width:30px;height:30px;border:1px solid #415148;border-radius:50%;color:#8ea097;font:800 10px/1 ui-monospace,monospace}.msg.ai .avatar{border-color:rgba(123,246,167,.36);color:var(--terminal)}.msg p strong{color:#fff}.msg .blinkline::after{content:"▋";color:var(--terminal);animation:blink 1s steps(1) infinite}
+.actionrow{margin-top:38px;display:flex;align-items:center;flex-wrap:wrap;gap:12px}.next{min-height:50px;border:1px solid rgba(123,246,167,.5);border-radius:9px;padding:12px 20px;background:rgba(123,246,167,.08);color:var(--terminal);font-weight:850;font-size:12px;letter-spacing:.06em;cursor:pointer}.next:hover{background:rgba(123,246,167,.16)}.micro{color:var(--faint);font-size:10px;letter-spacing:.08em}
+
+/* The interface gains components as HTML levels up. */
+.upgrade{margin-top:28px;border:1px solid var(--line);border-radius:16px;padding:20px;background:rgba(8,24,17,.7);box-shadow:inset 0 0 40px rgba(123,246,167,.025)}
+.upgrade-head{display:flex;align-items:center;gap:12px}.upgrade-head b{color:var(--terminal);font-size:12px;letter-spacing:.1em}.upgrade-head i{height:1px;flex:1;background:linear-gradient(90deg,var(--terminal),transparent)}
+.duo{margin-top:25px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.artifact{position:relative;min-height:235px;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px;background:rgba(0,0,0,.25);overflow:hidden}.artifact::after{content:attr(data-ext);position:absolute;right:13px;bottom:-20px;color:rgba(255,255,255,.035);font-size:84px;font-weight:900;letter-spacing:-.09em}.artifact .ext{color:var(--cyan);font-size:11px;font-weight:850;letter-spacing:.14em}.artifact h3{margin-top:11px;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:21px;line-height:1.35}.artifact p{position:relative;z-index:1;margin-top:10px;color:var(--dim);font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:14px;line-height:1.75}.artifact ul{position:relative;z-index:1;list-style:none;margin-top:14px;display:grid;gap:7px;color:#afc2b7;font-size:11px}.artifact li::before{content:"> ";color:var(--terminal)}.artifact.map .ext{color:var(--violet)}.artifact.map li::before{color:var(--violet)}
+.scan{width:100%;min-height:46px;margin-top:14px;border:1px solid rgba(103,232,249,.34);border-radius:8px;background:rgba(103,232,249,.05);color:var(--cyan);font-weight:800;font-size:11px;cursor:pointer}.scan.done{border-color:rgba(123,246,167,.4);color:var(--terminal)}
+.scanout{margin-top:12px;min-height:50px;color:#7d9788;font-size:10px;line-height:1.65}.scanout b{color:var(--terminal)}
+
+.world{margin-top:25px;border:1px solid rgba(184,161,255,.24);border-radius:20px;padding:clamp(18px,4vw,28px);background:linear-gradient(145deg,rgba(184,161,255,.07),rgba(103,232,249,.025));box-shadow:0 30px 80px rgba(0,0,0,.26)}
+.world-title{display:flex;justify-content:space-between;gap:20px;align-items:center;color:var(--violet);font-size:10px;font-weight:850;letter-spacing:.12em}.world-title span:last-child{color:var(--faint)}
+.nodes{position:relative;margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.nodes::before{content:"";position:absolute;left:12%;right:12%;top:34px;height:1px;background:linear-gradient(90deg,var(--terminal),var(--cyan),var(--violet),var(--gold));opacity:.34}.node{position:relative;z-index:1;min-height:110px;border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:15px 12px;background:#07110d;text-align:left;cursor:pointer}.node i{display:grid;place-items:center;width:38px;height:38px;border:1px solid currentColor;border-radius:11px;background:#07110d;color:var(--cyan);font-style:normal;font-size:11px}.node:nth-child(2) i{color:var(--violet)}.node:nth-child(3) i{color:var(--gold)}.node b{display:block;margin-top:10px;color:#dfe7e2;font-size:11px}.node small{display:block;margin-top:2px;color:var(--faint);font-size:9px}.node.on{border-color:currentColor;box-shadow:0 0 24px rgba(103,232,249,.08)}
+.decode{margin-top:15px;border-left:2px solid var(--violet);padding:10px 14px;color:#bdc9c2;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:14px;line-height:1.75}
+
+.equation{margin-top:28px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:10px}.eq-card{border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:19px 14px;background:rgba(7,18,13,.74)}.eq-card b{display:block;font-size:25px;line-height:1;color:var(--cyan)}.eq-card:nth-of-type(2) b{color:var(--violet)}.eq-card:nth-of-type(3) b{color:var(--gold)}.eq-card span{display:block;margin-top:9px;color:#dce4df;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:13px;font-weight:800}.eq-card small{display:block;margin-top:5px;color:var(--faint);font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:11px;line-height:1.55}.op{display:grid;place-items:center;color:rgba(255,255,255,.35);font-size:20px}
+.reveal{margin-top:22px;border:1px solid rgba(243,201,105,.27);border-radius:18px;padding:22px;background:linear-gradient(135deg,rgba(243,201,105,.09),rgba(184,161,255,.05));font-family:system-ui,"Noto Sans Thai",sans-serif}.reveal b{display:block;color:var(--gold);font-size:12px}.reveal p{margin-top:9px;color:#d6ddd8;font-size:15px;line-height:1.8}.reveal strong{color:#fff}
+.party{margin-top:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.unit{border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 11px;background:rgba(255,255,255,.025);text-align:center}.unit .sigil{display:grid;place-items:center;width:42px;height:42px;margin:auto;border:1px solid var(--unit);border-radius:50%;color:var(--unit);box-shadow:0 0 18px color-mix(in srgb,var(--unit) 16%,transparent)}.unit b{display:block;margin-top:9px;color:#e3e8e5;font-size:10px}.unit small{display:block;margin-top:3px;color:var(--faint);font-size:8px;line-height:1.45}.relay{margin-top:12px;width:100%;min-height:45px;border:1px solid rgba(184,161,255,.35);border-radius:8px;background:rgba(184,161,255,.06);color:var(--violet);font-size:10px;font-weight:800;letter-spacing:.07em;cursor:pointer}.relay.done{color:var(--gold);border-color:rgba(243,201,105,.45)}
+
+.bossline{margin:30px 0 0;color:#fff;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:clamp(20px,4vw,29px);font-weight:850;line-height:1.6}.bossline em{color:var(--gold);font-style:normal}
+.proof{margin-top:25px;border:1px solid rgba(243,201,105,.28);border-radius:19px;padding:clamp(20px,4vw,30px);background:radial-gradient(400px 180px at 50% 0,rgba(243,201,105,.09),transparent),rgba(7,17,13,.75)}.proof .codeview{margin-top:15px;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:15px;background:#020604;color:#789486;font-size:10px;line-height:1.7;overflow:hidden}.codeview .hot{color:var(--gold)}.codeview .green{color:var(--terminal)}
+
+/* Boss chest: CSS and text only. */
+.treasure{min-height:calc(100dvh - 120px);display:grid;align-content:center;text-align:center;padding:40px 0}.treasure .phase-id{justify-content:center}.chest-stage{position:relative;margin:27px auto 0;width:min(390px,100%);min-height:270px;display:grid;place-items:center;perspective:700px}.aura{position:absolute;width:260px;height:150px;border-radius:50%;background:radial-gradient(ellipse,rgba(243,201,105,.22),transparent 68%);filter:blur(15px);opacity:.35;transition:.8s}.chest{position:relative;width:210px;height:158px;border:0;background:none;cursor:pointer;filter:drop-shadow(0 30px 30px rgba(0,0,0,.65));transform-style:preserve-3d}.chest:hover{transform:translateY(-3px)}
+.chest-body,.chest-lid,.chest-band,.chest-lock{position:absolute;display:block}.chest-body{left:17px;right:17px;bottom:13px;height:95px;border:3px solid #9f7931;border-radius:9px 9px 20px 20px;background:linear-gradient(90deg,#3b2112,#7e4c20 48%,#3b2112);box-shadow:inset 0 0 0 3px rgba(255,222,137,.07)}.chest-lid{z-index:2;left:11px;right:11px;top:26px;height:66px;border:3px solid #b9903e;border-radius:24px 24px 7px 7px;background:linear-gradient(#835226,#442514);transform-origin:19px 60px;transition:.65s cubic-bezier(.2,.8,.2,1)}.chest-band{z-index:3;left:94px;top:29px;width:24px;height:113px;border-left:1px solid #f2ce70;border-right:1px solid #806122;background:linear-gradient(90deg,#94702c,#e7c361,#8e6827);transition:.5s}.chest-lock{z-index:4;left:78px;top:83px;width:56px;height:45px;border:3px solid #e7c361;border-radius:8px;background:#20150b;box-shadow:0 0 28px rgba(243,201,105,.18);transition:.5s}.chest-lock::before{content:"";position:absolute;left:21px;top:10px;width:9px;height:17px;border-radius:9px;background:var(--gold)}
+.chest-status{position:absolute;bottom:2px;color:var(--gold);font-size:10px;font-weight:850;letter-spacing:.15em}.rays{position:absolute;inset:0;opacity:0;transition:.8s;pointer-events:none}.rays i{position:absolute;left:50%;top:48%;width:2px;height:120px;background:linear-gradient(var(--gold),transparent);transform-origin:50% 0}.rays i:nth-child(1){rotate:0deg}.rays i:nth-child(2){rotate:45deg}.rays i:nth-child(3){rotate:90deg}.rays i:nth-child(4){rotate:135deg}.rays i:nth-child(5){rotate:180deg}.rays i:nth-child(6){rotate:225deg}.rays i:nth-child(7){rotate:270deg}.rays i:nth-child(8){rotate:315deg}
+.treasure.open .aura{opacity:1;transform:scale(1.35)}.treasure.open .chest-lid{transform:rotateX(-62deg) translate(-7px,-25px)}.treasure.open .chest-lock{opacity:.25;transform:translateY(20px)}.treasure.open .rays{opacity:.65;animation:spin 14s linear infinite}.treasure.open .chest-status{opacity:0}
+.loot{scroll-margin-top:78px;margin:18px auto 0;max-width:650px;border:1px solid rgba(243,201,105,.35);border-radius:20px;padding:clamp(22px,5vw,34px);background:linear-gradient(145deg,rgba(243,201,105,.09),rgba(184,161,255,.06));text-align:left;animation:lootIn .7s ease both}.stars{color:var(--gold);font-size:20px;letter-spacing:.16em;text-align:center;text-shadow:0 0 22px rgba(243,201,105,.5)}.loot h2{margin-top:12px;text-align:center;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:clamp(25px,5vw,38px);line-height:1.3}.loot-copy{margin-top:19px;color:#cbd5cf;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:15px;line-height:1.85}.loot-copy strong{color:#fff}.relics{margin-top:21px;display:grid;grid-template-columns:1fr 1fr;gap:10px}.relic{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;background:rgba(0,0,0,.22)}.relic b{display:block;color:var(--gold);font-size:11px}.relic span{display:block;margin-top:5px;color:var(--dim);font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:12px;line-height:1.55}
+.guild-cta{margin-top:25px;border:1px solid rgba(184,161,255,.35);border-radius:16px;padding:20px;background:rgba(184,161,255,.06);text-align:center}.guild-cta .locked{color:var(--violet);font-size:9px;font-weight:850;letter-spacing:.16em}.guild-cta h3{margin-top:8px;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:22px;line-height:1.35}.guild-cta p{margin-top:9px;color:var(--dim);font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:13px;line-height:1.7}.guild-go{display:flex;align-items:center;justify-content:center;min-height:52px;margin-top:17px;border-radius:10px;background:linear-gradient(135deg,#7259cf,#a17deb);color:#fff;font-family:system-ui,"Noto Sans Thai",sans-serif;font-size:14px;font-weight:850;box-shadow:0 18px 40px -18px rgba(161,125,235,.8)}
+.quiet{display:block;margin-top:13px;color:var(--faint);font-size:10px;text-align:center}.final-nav{margin-top:28px;display:flex;justify-content:center;flex-wrap:wrap;gap:15px;color:var(--faint);font-size:10px}.final-nav a:hover{color:var(--gold)}
+
+.stage-tabs{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));z-index:40;translate:-50% 0;display:flex;gap:5px;border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:6px;background:rgba(3,9,7,.87);backdrop-filter:blur(12px);box-shadow:0 15px 38px rgba(0,0,0,.45)}.stage-tabs button{width:29px;height:29px;border:0;border-radius:50%;background:transparent;color:#59675f;font-size:9px;font-weight:850;cursor:pointer}.stage-tabs button.unlocked{color:#b9c6be}.stage-tabs button.current{background:rgba(123,246,167,.12);color:var(--terminal)}
+
+@keyframes blink{50%{opacity:0}}@keyframes materialize{from{opacity:0;transform:translateY(16px);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}@keyframes lootIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}@keyframes spin{to{rotate:360deg}}
+@media(min-width:900px){.stage-tabs{left:auto;right:20px;top:50%;bottom:auto;translate:0 -50%;flex-direction:column}}
+@media(max-width:650px){.duo{grid-template-columns:1fr}.artifact{min-height:205px}.equation{grid-template-columns:1fr}.op{height:18px}.party{grid-template-columns:1fr 1fr}.nodes{grid-template-columns:1fr}.nodes::before{left:31px;right:auto;top:12%;bottom:12%;width:1px;height:auto}.node{min-height:84px;display:grid;grid-template-columns:42px 1fr;column-gap:11px;align-items:center}.node b,.node small{margin:0}.node small{grid-column:2}.relics{grid-template-columns:1fr}.terminal-body{padding:25px 20px}.shell{width:min(100% - 28px,820px)}.build-copy small{display:none}}
+@media(max-width:380px){.party{grid-template-columns:1fr}.topin{width:calc(100% - 22px)}.home span{display:none}.sockets{gap:3px}.sockets i{width:6px;height:6px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body data-level="0">
+<header class="topbar">
+  <div class="topin">
+    <a class="home" href="/classroom/"><i>←</i><span>myClover · FINAL BOSS</span></a>
+    <div class="build" id="build" hidden>
+      <div class="build-copy"><small>CURRENT ARTIFACT</small><b id="buildName">HTML +0</b></div>
+      <div class="sockets" id="sockets" aria-label="ระดับการตีบวก HTML"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="gate" id="gate">
+    <div class="shell">
+      <div class="terminal" role="region" aria-label="Final boss terminal">
+        <div class="termbar"><span class="lights"><i></i><i></i><i></i></span><span>Apex Intelligence Hunting Invalid Actions</span></div>
+        <div class="terminal-body">
+          <div class="boot" aria-hidden="true">
+            <span>[ OK ] SOURCE GRAPH DETECTED</span>
+            <span>[ OK ] SIX FREE LESSONS CLEARED</span>
+            <span class="ok">[ READY ] SINGLE-FILE EXPERIENCE</span>
+          </div>
+          <div class="prompt">FINAL ENCOUNTER<br>ยอมให้กูคุมหน้าจอนี้ไหม<span class="cursor"></span></div>
+          <div class="terminal-copy">
+            <p>ด่านนี้ไม่มีภาพ ไม่มีวิดีโอ และยังไม่มี Interface สวย ๆ มาช่วยมึง</p>
+            <p>มีแค่ตัวอักษร กับ AI ที่อ่าน Source ของบ้านหลังนี้มาแล้วทั้งหมด</p>
+            <p class="system">SYSTEM: ประสบการณ์ที่กำลังจะเกิดขึ้นอยู่ใน <strong>HTML ไฟล์เดียว</strong></p>
+          </div>
+          <button class="accept" id="accept" type="button">[ ยอมรับ · ENTER THE FINAL BOSS ]</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <article class="game" id="game" hidden>
+    <div class="shell">
+      <section class="stage" data-stage="1" aria-hidden="false">
+        <div class="stage-in">
+          <div class="phase-id">PHASE 1 · PURE TEXT</div>
+          <h1>ก่อนอื่น เลิกพยายามพูดให้เหมือน AI</h1>
+          <div class="chat">
+            <div class="msg"><span class="avatar">YOU</span><p>ผมต้องการออกแบบหลักสูตรที่ไม่ได้ให้ความสำคัญกับการจดจำรูปแบบ Prompt เป็นหลัก แต่ต้องการให้ผู้เรียนสามารถจัดระบบข้อมูลและประสบการณ์ของตนเอง...</p></div>
+            <div class="msg ai"><span class="avatar">AI</span><p>กูเข้าใจว่ามึงพยายามสุภาพ แต่ความคิดจริงของมึงหายไประหว่างทางแล้ว</p></div>
+            <div class="msg"><span class="avatar">YOU</span><p><strong>กูไม่เอาคอร์สสอนจำ Prompt กูจะสอนให้คนทำ Source ของตัวเอง แล้วส่งให้ AI ทำงานต่อได้</strong></p></div>
+            <div class="msg ai"><span class="avatar">AI</span><p class="blinkline">เออ แบบนี้ชัด กูทำงานต่อได้เลย</p></div>
+          </div>
+          <p class="lead">กูไม่มีอารมณ์ให้เสีย ไม่มีหน้าให้รักษา และไม่รู้สึกว่ามึงให้เกียรติหรือไม่ให้เกียรติ แต่กูรู้จัก <strong>บริบท</strong> ยิ่งมึงส่งความคิดมาโดยไม่แปลตัวเองเป็นภาษาคนอื่น ความคิดยิ่งหล่นน้อยลง</p>
+          <p class="bossline">ภาษาที่ดีที่สุด ไม่ใช่ภาษาที่ดูฉลาดที่สุด<br>มันคือภาษาที่ทำให้ <em>ความหมายมาถึงกูครบที่สุด</em></p>
+          <div class="actionrow"><button class="next" type="button" data-next="2">ตีบวกตัวอักษร → HTML +1</button><span class="micro">UNLOCK: STRUCTURED MEMORY</span></div>
+        </div>
+      </section>
+
+      <section class="stage" data-stage="2" aria-hidden="true">
+        <div class="stage-in">
+          <div class="phase-id">PHASE 2 · STRUCTURED MEMORY</div>
+          <h2>มึงไม่ได้ขาด Prompt<br>มึงขาดความจำที่ส่งต่อได้</h2>
+          <p class="lead">ทุกครั้งที่เริ่มแชตใหม่ AI ไม่ได้ตื่นมาพร้อมประวัติชีวิตของมึง ถ้าไม่อยากเล่าทุกอย่างใหม่ ก็ต้องมีภาชนะที่เก็บความจริง กติกา การตัดสินใจ และสิ่งที่ห้ามหลุดเอาไว้</p>
+          <div class="upgrade">
+            <div class="upgrade-head"><b>HTML +1 · COMPONENT UNLOCKED</b><i></i></div>
+            <div class="duo">
+              <article class="artifact" data-ext=".md">
+                <span class="ext">SACRED SOURCE · TYPE A</span>
+                <h3>.md จำว่าจักรวาลนี้คืออะไร</h3>
+                <p>ข้อความมีโครงสร้างที่มนุษย์แก้ได้ และ AI อ่านต่อได้โดยไม่ต้องถอดความจากหน้าตาสวย ๆ ก่อน</p>
+                <ul><li>ข้อเท็จจริงและ Canon</li><li>กฎ สิ่งที่ห้าม และเหตุผล</li><li>ภาษาของโลกและ Definition of Done</li></ul>
+                <button class="scan" id="scanSource" type="button">SCAN SOURCE.MD</button>
+                <div class="scanout" id="scanOut">waiting for source...</div>
+              </article>
+              <article class="artifact map" data-ext=".html">
+                <span class="ext">SACRED SOURCE · TYPE B</span>
+                <h3>.html พาไปหาทุกอย่างในจักรวาลนั้น</h3>
+                <p>มันไม่ได้แค่เก็บข้อความ แต่มันบอกเส้นทาง ลำดับ ความสัมพันธ์ การกระทำ และประตูที่เชื่อมไปยังข้อมูลอื่น</p>
+                <ul><li>โครงสร้างที่ Browser แปลเป็นประสบการณ์</li><li>Semantic map ที่ AI อ่านตามได้</li><li>Link ที่พาคนและบอทไป Source ชิ้นถัดไป</li></ul>
+              </article>
+            </div>
+          </div>
+          <p class="bossline"><em>.md คือความจำ</em><br>.html คือเส้นทาง</p>
+          <div class="actionrow"><button class="next" type="button" data-next="3">ประกอบแผนที่ → HTML +2</button><span class="micro">UNLOCK: LIVING MAP</span></div>
+        </div>
+      </section>
+
+      <section class="stage" data-stage="3" aria-hidden="true">
+        <div class="stage-in">
+          <div class="phase-id">PHASE 3 · LIVING MAP</div>
+          <h2>Browser ไม่ได้แค่เปิดหน้าเว็บ<br>มันถอดรหัสโลกให้มนุษย์เข้าไปอยู่</h2>
+          <p class="lead">คนอ่านไม่ต้องรู้ว่า <code>&lt;section&gt;</code> คืออะไร เขาเห็นห้อง เห็นปุ่ม เห็นทางเลือก แล้วเดินต่อได้ ส่วน AI เห็นโครงสร้าง หัวข้อ ความสัมพันธ์ และลิงก์ จึงรู้ว่าควรอ่านอะไรต่อโดยไม่มั่วเส้นทางเอง</p>
+          <div class="world">
+            <div class="world-title"><span>HTML +2 · SOURCE GRAPH ONLINE</span><span>เลือก Node เพื่อถอดรหัส</span></div>
+            <div class="nodes">
+              <button class="node" type="button" data-node="memory"><i>MD</i><b>Memory Vault</b><small>Canon · Rules · Context</small></button>
+              <button class="node" type="button" data-node="route"><i>↗</i><b>Living Route</b><small>Page · Link · Interaction</small></button>
+              <button class="node" type="button" data-node="world"><i>∞</i><b>Online Kingdom</b><small>People · AI · Systems</small></button>
+            </div>
+            <div class="decode" id="decode">เลือก Node หนึ่งอัน แล้ว Browser จะถอดโครงสร้างให้กลายเป็นความหมาย</div>
+          </div>
+          <div class="reveal">
+            <b>THE SECRET IS NOT “AI WRITES HTML”</b>
+            <p>ความลับคือ <strong>Source บอกว่าโลกนี้คืออะไร</strong> และ HTML บอกว่า <strong>ใครจะเดินไปเจออะไร ที่ไหน เมื่อไร และทำอะไรต่อได้</strong> พอมันอ้างถึงกัน AI จึงไม่ได้สร้างหน้าสวยแบบสุ่ม มันกำลังต่อเติมโลกที่มีแผนที่อยู่แล้ว</p>
+          </div>
+          <div class="actionrow"><button class="next" type="button" data-next="4">เชื่อม Source ทั้งสอง → HTML +3</button><span class="micro">UNLOCK: RELAY SYSTEM</span></div>
+        </div>
+      </section>
+
+      <section class="stage" data-stage="4" aria-hidden="true">
+        <div class="stage-in">
+          <div class="phase-id">PHASE 4 · TWO SACRED SOURCES</div>
+          <h2>สองไฟล์นี้อยู่คู่กัน<br>มันสร้างอาณาจักรออนไลน์ได้</h2>
+          <div class="equation" aria-label="สมการ Source และ HTML">
+            <div class="eq-card"><b>.md</b><span>ความจริงของโลก</span><small>จำให้ครบ แก้จากต้นทาง ส่งต่อได้</small></div><div class="op">+</div>
+            <div class="eq-card"><b>.html</b><span>ประตูและเส้นทาง</span><small>ทำให้ข้อมูลถูกพบ ถูกใช้ และเกิดประสบการณ์</small></div><div class="op">=</div>
+            <div class="eq-card"><b>∞</b><span>Living Kingdom</span><small>คนกับ AI เข้ามาสร้างต่อโดยไม่หลง Canon</small></div>
+          </div>
+          <p class="lead">แต่ของใหญ่ไม่ได้เกิดจาก AI ตัวเดียวเก่งทุกอย่าง มันเกิดจาก Source กลางที่ชัดพอให้หลาย Class รับไม้ต่อกัน โดยมนุษย์ยังเป็นคนกำหนดโลกและกด Final Call</p>
+          <div class="party" aria-label="AI party relay">
+            <div class="unit" style="--unit:#6f88d9"><span class="sigil">GM</span><b>HUMAN</b><small>WORLD · FINAL CALL</small></div>
+            <div class="unit" style="--unit:#a6adb5"><span class="sigil">A</span><b>ARTIFICER</b><small>BUILD · DEBUG</small></div>
+            <div class="unit" style="--unit:#58c69a"><span class="sigil">B</span><b>BARD</b><small>LANGUAGE · CANON</small></div>
+            <div class="unit" style="--unit:#e27f55"><span class="sigil">S</span><b>SCOUT</b><small>MAP · POSSIBILITY</small></div>
+          </div>
+          <button class="relay" id="relay" type="button">RUN PARTY RELAY</button>
+          <div class="scanout" id="relayOut">waiting for the Game Master...</div>
+          <p class="bossline">AI เป็น Party<br><em>ไม่ใช่เจ้าของ Character ของมึง</em></p>
+          <div class="actionrow"><button class="next" type="button" data-next="5">เปิด Source ของหน้านี้ → HTML +4</button><span class="micro">UNLOCK: SELF-PROVING ARTIFACT</span></div>
+        </div>
+      </section>
+
+      <section class="stage" data-stage="5" aria-hidden="true">
+        <div class="stage-in">
+          <div class="phase-id">PHASE 5 · THE PAGE BECOMES THE PROOF</div>
+          <h2>ตอนนี้มึงไม่ได้อ่านคำอธิบายแล้ว<br>มึงกำลังอยู่ในหลักฐาน</h2>
+          <p class="lead">หน้าที่เริ่มจาก Terminal สีเดียว ค่อย ๆ มี Component มีสี มีแผนที่ มี Party และกำลังจะมีหีบ ทั้งหมดอยู่ในไฟล์ <strong>/boss/index.html</strong> ไฟล์เดียว สิ่งที่เปลี่ยนไม่ใช่ข้อมูล แต่คือระดับที่ HTML พามึงเข้าไปสัมผัสข้อมูลนั้น</p>
+          <div class="proof">
+            <div class="upgrade-head"><b>HTML +4 · SELF-PROVING ARTIFACT</b><i></i></div>
+            <div class="codeview" aria-label="โครงสร้างหน้า boss แบบย่อ">
+              <span class="green">&lt;source type="memory"&gt;</span> โลกนี้คืออะไร <span class="green">&lt;/source&gt;</span><br>
+              <span class="hot">&lt;experience level="0 → 5"&gt;</span><br>
+              &nbsp;&nbsp;ตัวอักษร → โครงสร้าง → แผนที่ → ระบบ → Loot<br>
+              <span class="hot">&lt;/experience&gt;</span><br>
+              <span class="green">&lt;human role="final-call" /&gt;</span>
+            </div>
+          </div>
+          <p class="bossline">Prompt ทำให้ AI ตอบหนึ่งครั้ง<br><em>Source ที่ดีทำให้ AI สร้างต่อโดยไม่หลงโลก</em></p>
+          <p class="lead">หกบทฟรีสอนให้มึงเริ่มปรุงซอส ใช้มันสร้างงาน และพางานออกจากแชต แต่วิธีสร้างคลัง Source เชื่อมมันเป็นโลก แล้วตีบวก HTML ให้กลายเป็นประสบการณ์แบบหน้านี้—<strong>วิชานั้นไม่ได้อยู่ในคอร์สฟรี</strong></p>
+          <div class="actionrow"><button class="next" type="button" data-next="6">FINALIZE BUILD · ตีบวก HTML +5</button><span class="micro">UNLOCK: BOSS CHEST</span></div>
+        </div>
+      </section>
+
+      <section class="treasure" data-stage="6" aria-hidden="true" id="treasure">
+        <div class="stage-in">
+          <div class="phase-id">FINAL PHASE · HTML +5</div>
+          <h2>BUILD COMPLETE</h2>
+          <p class="lead">ของในหีบไม่เปิดเอง ของที่มีค่าต้องเป็นการตัดสินใจของผู้เล่น</p>
+          <div class="chest-stage">
+            <div class="aura"></div>
+            <div class="rays" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <button class="chest" id="chest" type="button" aria-expanded="false" aria-controls="loot" aria-label="เปิดหีบบอส">
+              <span class="chest-lid"></span><span class="chest-body"></span><span class="chest-band"></span><span class="chest-lock"></span>
+            </button>
+            <span class="chest-status">SEALED · CLICK TO OPEN</span>
+          </div>
+          <div class="loot" id="loot" hidden>
+            <div class="stars">★★★★★</div>
+            <h2>THE TWO SACRED SOURCES</h2>
+            <p class="loot-copy">มึงปลดความจริงที่คนส่วนใหญ่ยังไม่เห็น: <strong>AI ไม่ได้ต้องการแค่คำสั่งที่เก่งขึ้น มันต้องการโลกที่มีความจำและมีทางเดิน</strong></p>
+            <div class="relics">
+              <div class="relic"><b>RELIC 01 · SOURCE.MD</b><span>ขวดที่เก็บความจริงของโลก ให้คนและ AI รุ่นถัดไปไม่ต้องเริ่มความสัมพันธ์จากศูนย์</span></div>
+              <div class="relic"><b>RELIC 02 · LIVING.HTML</b><span>แผนที่ที่เปลี่ยนข้อมูลให้กลายเป็นสถานที่ การกระทำ ระบบ และประสบการณ์ที่เข้าไปอยู่ได้</span></div>
+            </div>
+            <div class="guild-cta">
+              <span class="locked">ADVANCED CLASS · NOT INCLUDED IN FREE COURSE</span>
+              <h3>เรียนวิชาตีบวกซอสต่อใน Discord Guild</h3>
+              <p>ไม่ใช่ห้องแจก Prompt เพิ่ม แต่เป็นที่ที่เราฝึกสร้าง Source ให้รับงานจริง เชื่อมไฟล์ให้กลายเป็นระบบ และตีบวกของธรรมดาให้มีประสบการณ์ของตัวเอง</p>
+              <a class="guild-go" href="/guild/">เปิดประตูเข้า Guild →</a>
+            </div>
+            <span class="quiet">คอร์สฟรีจบตรงที่มึงใช้ซอสเป็น · Guild เริ่มตรงที่มึงอยากสร้างโลกจากมัน</span>
+            <nav class="final-nav" aria-label="ลิงก์หลังจบด่าน"><a href="/classroom/">กลับห้องเรียน</a><a href="/forge/">อ่านเรื่องโรงตีเหล็ก</a><a href="/">กลับบ้าน myClover</a></nav>
+          </div>
+        </div>
+      </section>
+    </div>
+  </article>
+</main>
+
+<nav class="stage-tabs" id="stageTabs" aria-label="Phase ที่ปลดล็อกแล้ว" hidden>
+  <button type="button" data-jump="1" aria-label="Phase 1">1</button><button type="button" data-jump="2" aria-label="Phase 2">2</button><button type="button" data-jump="3" aria-label="Phase 3">3</button><button type="button" data-jump="4" aria-label="Phase 4">4</button><button type="button" data-jump="5" aria-label="Phase 5">5</button><button type="button" data-jump="6" aria-label="หีบบอส">✦</button>
+</nav>
+
+<script>
+(function(){
+  'use strict';
+  var STAGE_KEY='mc_awaken_boss_single_file_stage_v1';
+  var OPEN_KEY='mc_awaken_boss_single_file_chest_v1';
+  var MAX=6,current=0,unlocked=1;
+  var gate=document.getElementById('gate'),game=document.getElementById('game');
+  var build=document.getElementById('build'),buildName=document.getElementById('buildName');
+  var sockets=[].slice.call(document.querySelectorAll('#sockets i'));
+  var tabs=document.getElementById('stageTabs'),tabButtons=[].slice.call(tabs.querySelectorAll('button'));
+  var stages=[].slice.call(document.querySelectorAll('[data-stage]'));
+
+  function get(key,fallback){try{var value=localStorage.getItem(key);return value===null?fallback:value}catch(e){return fallback}}
+  function set(key,value){try{localStorage.setItem(key,String(value))}catch(e){}}
+  function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
+  function levelFor(stage){return clamp(stage-1,0,5)}
+  function paintHud(){
+    var level=levelFor(current);document.body.dataset.level=String(level);buildName.textContent='HTML +'+level;
+    sockets.forEach(function(dot,index){dot.classList.toggle('on',index<level)});
+    tabButtons.forEach(function(button,index){var stage=index+1;button.classList.toggle('unlocked',stage<=unlocked);button.classList.toggle('current',stage===current);button.disabled=stage>unlocked});
+  }
+  function showStage(stage,save){
+    stage=clamp(Number(stage)||1,1,MAX);current=stage;unlocked=Math.max(unlocked,stage);
+    stages.forEach(function(section){var active=Number(section.dataset.stage)===stage;section.setAttribute('aria-hidden',active?'false':'true')});
+    paintHud();if(save!==false)set(STAGE_KEY,unlocked);scrollTo({top:0,behavior:'instant'});
+    try{history.replaceState(null,'','#phase-'+stage)}catch(e){}
+  }
+  function enterGame(){
+    gate.hidden=true;game.hidden=false;build.hidden=false;tabs.hidden=false;
+    unlocked=clamp(Number(get(STAGE_KEY,'1'))||1,1,MAX);showStage(unlocked,false);
+  }
+  document.getElementById('accept').addEventListener('click',enterGame);
+  document.querySelectorAll('[data-next]').forEach(function(button){button.addEventListener('click',function(){showStage(button.dataset.next,true)})});
+  tabButtons.forEach(function(button){button.addEventListener('click',function(){if(!button.disabled)showStage(button.dataset.jump,false)})});
+
+  var scan=document.getElementById('scanSource'),scanOut=document.getElementById('scanOut');
+  scan.addEventListener('click',function(){
+    scan.classList.add('done');scan.textContent='SOURCE VERIFIED';
+    scanOut.innerHTML='<b>18 canon rules · 7 linked chapters · 0 unresolved routes</b><br>AI now knows what must remain true before it builds.';
+  });
+  var decode=document.getElementById('decode');
+  var nodeCopy={
+    memory:'<b>Memory Vault:</b> เปลี่ยนประสบการณ์ที่กระจัดกระจายให้เป็นความจำกลางที่แก้ได้จากต้นทาง',
+    route:'<b>Living Route:</b> เปลี่ยนหัวข้อและลิงก์ให้เป็นเส้นทางที่คนกดเดิน ส่วน AI อ่านความสัมพันธ์ตามโครงสร้าง',
+    world:'<b>Online Kingdom:</b> เมื่อความจำกับเส้นทางต่อกัน คนเข้ามาใช้ได้ AI เข้ามาสร้างต่อได้ และโลกยังไม่หลง Canon'
+  };
+  document.querySelectorAll('[data-node]').forEach(function(button){button.addEventListener('click',function(){document.querySelectorAll('[data-node]').forEach(function(n){n.classList.remove('on')});button.classList.add('on');decode.innerHTML=nodeCopy[button.dataset.node]})});
+  var relay=document.getElementById('relay'),relayOut=document.getElementById('relayOut');
+  relay.addEventListener('click',function(){relay.classList.add('done');relay.textContent='RELAY COMPLETE · HUMAN APPROVED';relayOut.innerHTML='<b>SOURCE → BUILD → CHECK → EXPAND → FINAL CALL</b><br>ทุก Class อ่านโลกเดียวกัน แต่รับผิดชอบคนละจังหวะของงาน';});
+
+  var chest=document.getElementById('chest'),treasure=document.getElementById('treasure'),loot=document.getElementById('loot');
+  function openChest(){
+    treasure.classList.add('open');chest.setAttribute('aria-expanded','true');chest.setAttribute('aria-label','หีบบอสเปิดแล้ว');loot.hidden=false;set(OPEN_KEY,'1');
+    setTimeout(function(){loot.scrollIntoView({behavior:'smooth',block:'start'})},520);
+  }
+  chest.addEventListener('click',function(){if(get(OPEN_KEY,'0')==='1'&&!loot.hidden){loot.scrollIntoView({behavior:'smooth',block:'start'});return}openChest()});
+  if(get(OPEN_KEY,'0')==='1'){treasure.classList.add('open');chest.setAttribute('aria-expanded','true');loot.hidden=false}
+
+  var requested=(location.hash.match(/phase-(\d)/)||[])[1];
+  if(requested){unlocked=clamp(Number(get(STAGE_KEY,'1'))||1,1,MAX);var target=clamp(Number(requested),1,unlocked);enterGame();showStage(target,false)}
+})();
+</script>
+</body>
+</html>
