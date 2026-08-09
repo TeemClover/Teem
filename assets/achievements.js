@@ -59,6 +59,9 @@ export const ACTS = Object.freeze([
   { id: 'forge-intro-open', stage: 'forge', emoji: '🌱', th: 'เปิดบทนำ Intro', en: 'Opened the Intro', achievement: false },
   { id: 'forge-open', stage: 'forge', emoji: '📚', th: 'เปิดหน้ารวมการ์ตูน', en: 'Opened the Forge index', achievement: false },
   { id: 'forge-ep-open', stage: 'forge', emoji: '📖', th: 'เปิดอ่านตอน', en: 'Opened an episode', achievement: false },
+  { id: 'forge-next-button', stage: 'forge', emoji: '➡️', th: 'กดปุ่มตอนต่อไป', en: 'Used the next button', achievement: false },
+  { id: 'forge-next-panel', stage: 'forge', emoji: '🖼️', th: 'แตะภาพ Panel 4 ไปต่อ', en: 'Used panel 4 to continue', achievement: false },
+  { id: 'forge-next-scroll', stage: 'forge', emoji: '↕️', th: 'เลื่อนต่อจากท้ายหน้า', en: 'Scrolled past the end', achievement: false },
 
   { id: 'walkthrough-open', stage: 'walkthrough', emoji: '🗺️', th: 'เปิด Walkthrough', en: 'Opened the walkthrough', achievement: false },
 

@@ -16,6 +16,7 @@
 export const STAT_PAGES = Object.freeze([
   { href: '/stat/', th: 'Dashboard', emoji: '📊', note: 'สรุปวันนี้' },
   { href: '/stat/journey/', th: 'Journey', emoji: '🚶', note: 'เส้นทาง First Run' },
+  { href: '/stat/behavior/', th: 'Behavior', emoji: '🧭', note: 'พฤติกรรมและ Navigation' },
   { href: '/collection/stat/', th: 'Achievement', emoji: '🏅', note: 'ของที่ปลดได้ทั้งบ้าน' },
   { href: '/core7/stat/', th: 'CORE7', emoji: '🎮', note: 'สุขภาพเกม' },
   { href: '/core7/collection/stat/', th: 'FIRST HAND', emoji: '🃏', note: 'การ์ด 28 ใบ' },

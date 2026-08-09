@@ -5,7 +5,8 @@
    พามาถึงก้นหน้าในครั้งแรกไม่ทำให้ข้ามตอนทันที
 
    ACT สองชื่อใช้ path ของ event แยกตอนให้อยู่แล้ว:
-     forge-next-button = กด/แตะทางไปตอนต่อไป
+     forge-next-button = กดปุ่มตอนต่อไป
+     forge-next-panel  = แตะภาพ Panel 4
      forge-next-scroll = เลื่อนต่อจากท้ายหน้า */
 
 const episode = location.pathname.match(/^\/forge\/ep([1-7])-?[^/]*\/?(?:index\.html)?$/);
@@ -38,13 +39,14 @@ if (episode && nextLink) {
     location.assign(nextLink.href);
   };
 
-  /* นับทุก explicit click ที่พาไป URL เดียวกับปุ่มตอนต่อไป รวมทั้งการแตะ
-     ช่องสุดท้ายของการ์ตูน เพราะในสายตาคนอ่านนี่คือวิธีกดไปต่อแบบเดียวกัน */
+  /* URL เดียวกันมีสอง affordance ที่หน้าตาไม่เหมือนกัน ต้องแยก ref เพื่อรู้ว่า
+     คนเห็นปุ่มล่างจริง หรือใช้ภาพ Panel 4 เป็นทางไปต่อ */
   document.addEventListener('click', event => {
     const link = event.target.closest?.('a[href]');
     if (!link || leaving) return;
     try {
-      if (new URL(link.href, location.href).href === nextLink.href) report('button');
+      if (new URL(link.href, location.href).href !== nextLink.href) return;
+      report(link.classList.contains('tapnext') ? 'panel' : 'button');
     } catch { /* href แปลกไม่ต้องนับ */ }
   }, true);
 
