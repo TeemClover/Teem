@@ -1,4 +1,5 @@
 import { readAnalyticsStatsV11 } from './analytics-v11.js';
+import { clampAnalyticsStart } from './open-beta.js';
 
 function rate(n, d) { return d > 0 ? Number((n * 100 / d).toFixed(1)) : 0; }
 function nums(row) {
@@ -12,7 +13,7 @@ function nums(row) {
 
 export async function readAnalyticsDevelopmentReport(db, params = {}) {
   const data = await readAnalyticsStatsV11(db, params);
-  const start = Date.parse(`${data.range.from}T00:00:00+07:00`);
+  const start = clampAnalyticsStart(Date.parse(`${data.range.from}T00:00:00+07:00`));
   const end = Date.parse(`${data.range.to}T00:00:00+07:00`) + 86400000;
   const result = await db.prepare(`
     WITH picks AS (
