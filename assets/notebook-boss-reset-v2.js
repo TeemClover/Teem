@@ -1,13 +1,13 @@
-/* myClover · Boss Dungeon reset v3
+/* myClover · Boss Dungeon reset v4
    Hidden at the end of the restored notebook.
-   A reset must behave like a brand-new Chapter 7 run:
-   - chest can be opened again
-   - notebook must be restored again
-   - side quests / run timer / XP / secret-ending state are cleared
-   Permanent course progress, titles and Mini Achievements stay intact.
+   Reset one Chapter 7 run completely while preserving permanent collection data.
 */
 
+const RESET_EPOCH_KEY = 'mc_awaken_reset_epoch';
+const RESET_PENDING_KEY = 'mc_awaken_reset_pending';
 const KEEP_LOCAL_KEYS = new Set([
+  RESET_EPOCH_KEY,
+  RESET_PENDING_KEY,
   'mc_awaken_reset_count',
   'mc_mini_achievements_v1',
 ]);
@@ -21,10 +21,10 @@ function report(id) {
 }
 
 function dungeonKey(key) {
-  return key.startsWith('mc_awaken_') ||
+  return ((key.startsWith('mc_awaken_') && !KEEP_LOCAL_KEYS.has(key)) ||
     key.startsWith('mc_ch7_') ||
     key.startsWith('mc_nb_') ||
-    key === 'mc_secret_end';
+    key === 'mc_secret_end');
 }
 
 function clearDungeonStorage(storage) {
@@ -36,6 +36,45 @@ function clearDungeonStorage(storage) {
   }
   remove.forEach(key => storage.removeItem(key));
   return remove;
+}
+
+function resetPayload() {
+  const progress = {};
+  try {
+    [RESET_EPOCH_KEY, 'mc_awaken_reset_count', 'mc_mini_achievements_v1'].forEach(key => {
+      const value = localStorage.getItem(key);
+      if (value !== null) progress[key] = value;
+    });
+  } catch { /* private mode */ }
+  return progress;
+}
+
+async function pushResetToCloud() {
+  try {
+    const response = await fetch('/api/progress', {
+      method: 'PUT',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ progress: resetPayload() }),
+    });
+    if (response.ok || response.status === 401) {
+      try { localStorage.removeItem(RESET_PENDING_KEY); } catch { /* private mode */ }
+      return true;
+    }
+  } catch { /* retry on next page */ }
+  return false;
+}
+
+function guardPendingReset() {
+  let pending = false;
+  try { pending = localStorage.getItem(RESET_PENDING_KEY) === '1'; } catch { return; }
+  if (!pending) return;
+
+  /* account.js may have merged an old cloud save before this module ran.
+     Kill resurrected run keys again, then retry the server tombstone. */
+  try { clearDungeonStorage(localStorage); } catch { /* private mode */ }
+  try { clearDungeonStorage(sessionStorage); } catch { /* private mode */ }
+  pushResetToCloud();
 }
 
 function injectStyles() {
@@ -58,21 +97,25 @@ function injectStyles() {
   document.head.append(style);
 }
 
-function resetDungeon() {
+async function resetDungeon() {
   let count = 1;
   let removedLocal = [];
   let removedSession = [];
+  const epoch = Date.now();
 
   try {
     count = Number(localStorage.getItem('mc_awaken_reset_count') || 0) + 1;
     window.MC_MINI_UNLOCK?.('dungeon-reset');
     removedLocal = clearDungeonStorage(localStorage);
     localStorage.setItem('mc_awaken_reset_count', String(count));
+    localStorage.setItem(RESET_EPOCH_KEY, String(epoch));
+    localStorage.setItem(RESET_PENDING_KEY, '1');
+    /* prevent account boot on the destination page from immediately fetching an
+       older cloud save while the reset tombstone is being written */
+    localStorage.setItem('mc_account_last_sync', new Date().toISOString());
   } catch { /* private mode */ }
 
-  try {
-    removedSession = clearDungeonStorage(sessionStorage);
-  } catch { /* private mode */ }
+  try { removedSession = clearDungeonStorage(sessionStorage); } catch { /* private mode */ }
 
   report('awaken-dungeon-reset');
   try {
@@ -83,8 +126,12 @@ function resetDungeon() {
     });
   } catch { /* optional */ }
 
-  /* replace prevents Safari/back from restoring the old restored-notebook DOM */
-  location.replace(`/classroom/awaken/?reset=${Date.now()}`);
+  await Promise.race([
+    pushResetToCloud(),
+    new Promise(resolve => setTimeout(resolve, 1800)),
+  ]);
+
+  location.replace(`/classroom/awaken/?reset=${epoch}`);
 }
 
 function createPanel() {
@@ -129,10 +176,28 @@ function mountAtNotebookEnd() {
   return false;
 }
 
+function enforceFreshNotebookAfterReset() {
+  if (!isNotebookPage()) return;
+  let restored = false;
+  try { restored = localStorage.getItem('mc_nb_restored') === '1'; } catch { return; }
+  if (restored) return;
+  const story = document.getElementById('restored');
+  const torn = document.getElementById('tornWrap');
+  if ((story && story.children.length > 0) || torn?.hidden) location.reload();
+}
+
 function boot() {
+  guardPendingReset();
+  window.addEventListener('mc:account-ready', guardPendingReset);
+  window.addEventListener('pageshow', event => {
+    guardPendingReset();
+    if (event.persisted) enforceFreshNotebookAfterReset();
+  });
+
   if (!isNotebookPage() || document.documentElement.dataset.bossResetV2 === '1') return;
   document.documentElement.dataset.bossResetV2 = '1';
   injectStyles();
+  enforceFreshNotebookAfterReset();
   if (mountAtNotebookEnd()) return;
   const observer = new MutationObserver(() => {
     if (mountAtNotebookEnd()) observer.disconnect();
