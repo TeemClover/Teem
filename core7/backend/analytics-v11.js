@@ -685,6 +685,7 @@ export async function readJourneyFunnel(db, params = {}) {
   home.direct_rate = rate(home.entered_direct, home.visitors);
   home.video_then_hall_rate = rate(home.video_then_hall, home.visitors);
   home.video_to_hall_rate = rate(home.video_then_hall, home.watched_video);
+  home.video_without_hall_rate = rate(home.video_without_hall, home.watched_video);
 
   const notebookRows = new Map((notebookRes.results || []).map(r => [String(r.event_type), nums(r)]));
   const notebookBase = Number(notebookRows.get(notebookTypes[0])?.users || 0);
