@@ -263,11 +263,21 @@ function bindEvents() {
   window.addEventListener('mc:achievements', maybePrompt);
 }
 
+function showAccountChip() {
+  const path = location.pathname.replace(/\/index\.html$/i, '').replace(/\/$/, '') || '/';
+  return path === '/collection' || path === '/card';
+}
+
 function paintChip() {
   let chip = document.querySelector('.mc-account-chip');
+  if (!showAccountChip()) {
+    if (chip) chip.remove();
+    return;
+  }
   if (!chip) { chip = document.createElement('button'); chip.type = 'button'; chip.className = 'mc-account-chip'; chip.dataset.accountOpen = 'login'; document.body.appendChild(chip); }
   chip.dataset.state = user ? 'member' : 'guest';
-  chip.innerHTML = user ? `☁️ ${escapeHTML(user.displayName || 'บัญชีของฉัน')}<small>Progress เก็บแล้ว</small>` : '☁️ เก็บ Progress<small>ไม่บังคับสมัคร</small>';
+  chip.textContent = user ? '☁️ บัญชี' : '☁️ เก็บ Progress';
+  chip.setAttribute('aria-label', user ? `เปิดบัญชี ${user.displayName || 'ของฉัน'}` : 'เก็บ Progress ด้วยบัญชี');
 }
 
 function maybePrompt() {
