@@ -7,7 +7,15 @@ import {
 import { randomUUID } from 'node:crypto';
 
 function routeParts(req) {
-  const value = req.query.path;
+  // Vercel does not consistently expose catch-all segments in req.query for
+  // plain Node functions. Parse the public URL first and keep req.query only
+  // as a compatibility fallback for local/dev runtimes.
+  const pathname = new URL(req.url || '/', 'https://myclover.local').pathname;
+  const marker = '/api/auth/';
+  if (pathname.startsWith(marker)) {
+    return pathname.slice(marker.length).split('/').filter(Boolean).map(part => decodeURIComponent(part));
+  }
+  const value = req.query?.path;
   return Array.isArray(value) ? value : String(value || '').split('/').filter(Boolean);
 }
 function bodyOf(req) { return req.body && typeof req.body === 'object' ? req.body : {}; }
