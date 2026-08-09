@@ -2,14 +2,24 @@ import { currentUser, database, ensureSchema, sameOrigin, sendJson } from './_li
 
 const MAX_KEYS = 180; const MAX_VALUE = 120000; const MAX_BODY = 800000;
 const RESET_EPOCH_KEY = 'mc_awaken_reset_epoch';
-const RESET_PERSISTENT_KEYS = new Set([RESET_EPOCH_KEY, 'mc_awaken_reset_count']);
+const RESET_COUNT_KEY = 'mc_awaken_reset_count';
+const RESET_PERSISTENT_KEYS = new Set([RESET_EPOCH_KEY, RESET_COUNT_KEY]);
 function allowedKey(key) {
   if (typeof key !== 'string' || key.length > 100 || !(key.startsWith('mc_') || key.startsWith('mc-') || key.startsWith('c7:'))) return false;
   return !(key.startsWith('c7:match_') || key.startsWith('c7roomtoken:') || key === 'c7:current_match' || key === 'c7:install_id' || key === 'c7tab_pid' || key.startsWith('mc_account_') || key.startsWith('mc_collection_seen') || key === 'mc_email' || key === 'mc_name' || key === 'mc_nick' || key === 'mc_line' || key === 'mc_registered');
 }
+function validEntry(key, raw) { return allowedKey(key) && typeof raw === 'string' && raw.length <= MAX_VALUE; }
 function safeProgress(value) {
   const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {}; const result = {};
-  for (const [key, raw] of Object.entries(source).slice(0, MAX_KEYS)) if (allowedKey(key) && typeof raw === 'string' && raw.length <= MAX_VALUE) result[key] = raw;
+  /* Reset metadata is a save-game tombstone. Preserve it even when an old account
+     already has enough progress keys to hit MAX_KEYS. */
+  for (const key of [RESET_EPOCH_KEY, RESET_COUNT_KEY]) if (validEntry(key, source[key])) result[key] = source[key];
+  let count = Object.keys(result).length;
+  for (const [key, raw] of Object.entries(source)) {
+    if (count >= MAX_KEYS) break;
+    if (key in result || !validEntry(key, raw)) continue;
+    result[key] = raw; count += 1;
+  }
   return result;
 }
 function parseMaybe(value) { if (value && typeof value === 'object') return value; try { return JSON.parse(value); } catch { return null; } }
@@ -47,10 +57,9 @@ function mergeProgress(cloud, incoming) {
   let left = safeProgress(cloud), right = safeProgress(incoming);
   const cloudEpoch = resetEpoch(left), incomingEpoch = resetEpoch(right);
 
-  /* A newer Reset Dungeon is a tombstone for the whole run. It must delete old
-     Boss/Notebook state in the cloud instead of OR-merging flags such as
-     mc_nb_restored back to 1. Older devices are also prevented from resurrecting
-     a run that was reset elsewhere. */
+  /* Reset Dungeon is equivalent to loading the save immediately before Lv.7.
+     A newer epoch deletes the entire older Lv.7 run instead of OR-merging its
+     chest/notebook flags back to life. */
   if (incomingEpoch > cloudEpoch) left = stripDungeon(left);
   else if (cloudEpoch > incomingEpoch) right = stripDungeon(right);
 
