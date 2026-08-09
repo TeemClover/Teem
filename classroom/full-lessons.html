@@ -17,11 +17,11 @@
 <main class="wrap">
 <header class="hero"><small>FULL LESSON · อ่านลึก</small><h1 id="pageTitle">บทเรียนฉบับเต็ม</h1><p>ฉบับนี้เก็บคำอธิบาย ตัวอย่าง เครื่องมือ และรายละเอียดสำหรับคนที่อยากเรียนต่อจาก Main Quest</p></header>
 <nav class="lesson-nav" aria-label="เลือกบทเรียน">
-<a href="#lesson-1">บท 1 · SOURCE</a><a href="#lesson-2">บท 2 · TASTE</a><a href="#lesson-3">บท 3 · COOK</a><a href="#lesson-4">บท 4 · MULTIPLY</a><a href="#lesson-5">บท 5 · SEASON</a><a href="#lesson-6">บท 6 · SERVE</a>
+<a href="#lesson-1">บท 1 · ซอส</a><a href="#lesson-2">บท 2 · TASTE</a><a href="#lesson-3">บท 3 · COOK</a><a href="#lesson-4">บท 4 · MULTIPLY</a><a href="#lesson-5">บท 5 · SEASON</a><a href="#lesson-6">บท 6 · SERVE</a>
 </nav>
 <article class="reader" id="reader"><p class="state">กำลังเปิดบทเรียนฉบับเต็ม…</p></article>
 <div class="actions"><a class="btn alt" id="backLesson" href="free-ai.html">← กลับบททำเควส</a><a class="btn" id="nextFull" href="#lesson-2">อ่านฉบับเต็มบทถัดไป →</a></div>
-<footer>AI ใส่ซอส · ฉบับเต็มใช้ Master Source เดียวกับหลักสูตร</footer>
+<footer>AI ใส่ซอส · ฉบับเต็มใช้ซอสหลักเดียวกับหลักสูตร</footer>
 </main>
 <script>
 (function(){
@@ -54,7 +54,7 @@ function render(md){
 }
 function paint(){
   var n=current(),cfg=lessons[n],a=master.indexOf(cfg.start),b=master.indexOf(cfg.end,a+1);
-  var section=a>=0?master.slice(a,b>0?b:master.length):'ไม่พบเนื้อหาบทนี้ใน Master Source';
+  var section=a>=0?master.slice(a,b>0?b:master.length):'ไม่พบเนื้อหาบทนี้ในซอสหลัก';
   if(n===1)section=section.replace(/มึง/g,'คุณ');
   document.title=cfg.title+' · ฉบับเต็ม · AI ใส่ซอส';
   document.getElementById('pageTitle').textContent=cfg.title;
@@ -65,7 +65,7 @@ function paint(){
   var active=document.querySelector('.lesson-nav a[href="#lesson-'+n+'"]');if(active)active.setAttribute('aria-current','page');
   scrollTo({top:0,behavior:'auto'})
 }
-fetch('AI-SAUCE-COURSE-MASTER.md').then(function(r){if(!r.ok)throw Error(r.status);return r.text()}).then(function(t){master=t;paint()}).catch(function(){document.getElementById('reader').innerHTML='<p class="state">เปิด Master Source ไม่สำเร็จ กรุณาลองโหลดหน้าใหม่</p>'});
+fetch('AI-SAUCE-COURSE-MASTER.md').then(function(r){if(!r.ok)throw Error(r.status);return r.text()}).then(function(t){master=t;paint()}).catch(function(){document.getElementById('reader').innerHTML='<p class="state">เปิดซอสหลักไม่สำเร็จ กรุณาลองโหลดหน้าใหม่</p>'});
 addEventListener('hashchange',function(){if(master)paint()});
 })();
 </script>
