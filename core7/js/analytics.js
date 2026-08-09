@@ -4,7 +4,7 @@ const DEFAULT_API_BASE = (/^(www\.)?myclover\.com$/.test(globalThis.location?.ho
 
 export const CORE7_ANALYTICS_BASE = String(globalThis.C7_CONFIG?.API_BASE || DEFAULT_API_BASE).replace(/\/$/, '');
 export const CORE7_GAME_VERSION = '0.5';
-export const CORE7_ANALYTICS_VERSION = '1.4.0';
+export const CORE7_ANALYTICS_VERSION = '1.5.0';
 
 const INSTALL_KEY = 'c7:install_id';
 const SENT_PREFIX = 'c7:analytics:sent:';

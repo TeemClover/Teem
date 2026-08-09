@@ -7,7 +7,7 @@ import {
 import { colorOf, FIRST_HAND } from '../js/cards.js';
 import { ACTS, ACHIEVEMENTS, STAGES, stageOrder } from '../../assets/achievements.js';
 
-export const CORE7_ANALYTICS_VERSION = '1.4.0';
+export const CORE7_ANALYTICS_VERSION = '1.5.0';
 export const CORE7_GAME_VERSION = '0.5';
 
 const COLORS = ['RED', 'GREEN', 'BLUE', 'SILVER'];
@@ -577,7 +577,8 @@ export async function readJourneyFunnel(db, params = {}) {
   const notebookTypes = NOTEBOOK_STEPS.map(s => s.event);
   const notebookHoles = notebookTypes.map(() => '?').join(',');
 
-  const [stepsRes, entryRes, dailyRes, homeRes, notebookRes, bossToBumpRes] = await Promise.all([
+  const [stepsRes, entryRes, dailyRes, homeRes, notebookRes, bossToBumpRes,
+    forgeNavSummaryRes, forgeNavEpisodeRes, forgeNavDailyRes] = await Promise.all([
     db.prepare(`SELECT event_type, COUNT(DISTINCT install_id) users, COUNT(*) events,
       MIN(occurred_at) first_at, MAX(occurred_at) last_at
       FROM c7_analytics_events
@@ -643,6 +644,22 @@ export async function readJourneyFunnel(db, params = {}) {
     SELECT SUM(boss_done) boss_completed,
       SUM(CASE WHEN boss_done=1 AND bumped=1 THEN 1 ELSE 0 END) bumped_after_boss
     FROM flags`).bind(b.start, b.end).first(),
+    db.prepare(`SELECT ref method, COUNT(DISTINCT install_id) users, COUNT(*) events
+      FROM c7_analytics_events
+      WHERE event_type='ACT' AND ref IN ('forge-next-button','forge-next-scroll')
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY ref`).bind(b.start, b.end).all(),
+    db.prepare(`SELECT path, ref method, COUNT(DISTINCT install_id) users, COUNT(*) events
+      FROM c7_analytics_events
+      WHERE event_type='ACT' AND ref IN ('forge-next-button','forge-next-scroll')
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY path, ref ORDER BY path, ref`).bind(b.start, b.end).all(),
+    db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day, ref method,
+      COUNT(DISTINCT install_id) users, COUNT(*) events
+      FROM c7_analytics_events
+      WHERE event_type='ACT' AND ref IN ('forge-next-button','forge-next-scroll')
+        AND occurred_at >= ? AND occurred_at < ?
+      GROUP BY day, ref ORDER BY day, ref`).bind(b.start, b.end).all(),
   ]);
 
   const rows = new Map((stepsRes.results || []).map(r => [String(r.event_type), nums(r)]));
@@ -709,6 +726,23 @@ export async function readJourneyFunnel(db, params = {}) {
   secret.boss_to_bump_rate = rate(secret.bumped_after_boss, secret.boss_completed);
   secret.steps = notebookSteps;
 
+  const navSummaryRows = (forgeNavSummaryRes.results || []).map(nums);
+  const navByMethod = Object.fromEntries(navSummaryRows.map(row => [String(row.method), row]));
+  const buttonNav = navByMethod['forge-next-button'] || { users: 0, events: 0 };
+  const scrollNav = navByMethod['forge-next-scroll'] || { users: 0, events: 0 };
+  const navEvents = Number(buttonNav.events || 0) + Number(scrollNav.events || 0);
+  const forgeNavigation = {
+    button: buttonNav,
+    scroll: scrollNav,
+    total_events: navEvents,
+    button_share: rate(buttonNav.events, navEvents),
+    scroll_share: rate(scrollNav.events, navEvents),
+    winner: Number(scrollNav.events || 0) > Number(buttonNav.events || 0) ? 'scroll'
+      : Number(buttonNav.events || 0) > Number(scrollNav.events || 0) ? 'button' : 'tie',
+    byEpisode: (forgeNavEpisodeRes.results || []).map(nums),
+    daily: (forgeNavDailyRes.results || []).map(nums),
+  };
+
   return {
     ok: true,
     range: { from: b.from, to: b.to },
@@ -726,6 +760,7 @@ export async function readJourneyFunnel(db, params = {}) {
       completion_rate: rate(last.users, first),
     },
     home,
+    forgeNavigation,
     steps,
     secret,
     dropoff: worst,

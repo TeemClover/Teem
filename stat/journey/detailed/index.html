@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Detailed Journey Data — myClover</title>
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#071d12">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="stylesheet" href="/core7/css/core7.css">
+<style>
+:root{--gold:#d9b86c;--green:#65d39d;--blue:#7fa9ff;--warn:#ffb977}
+body{background:linear-gradient(180deg,#06170f,#0b2117 48%,#06150e);color:#fff;min-height:100vh}
+.shell{width:min(1180px,calc(100% - 28px));margin:auto;padding:30px 0 80px}.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.top h1{font:700 clamp(31px,6vw,56px)/1 "Bai Jamjuree",sans-serif}.top p{max-width:720px;color:rgb(255 255 255/.64);margin-top:8px}.back{color:var(--gold);white-space:nowrap;font-size:13px}.tools{display:flex;gap:9px;align-items:end;flex-wrap:wrap;margin-top:24px;padding:14px;border:1px solid rgb(255 255 255/.12);border-radius:17px;background:rgb(255 255 255/.05)}.tools label{display:grid;gap:4px;font-size:11px;color:rgb(255 255 255/.58);font-weight:700}.tools input{min-height:42px;border:0;border-radius:10px;padding:8px 10px;font:inherit}.tools button{min-height:42px;border:1px solid rgb(255 255 255/.16);border-radius:10px;padding:8px 13px;background:rgb(255 255 255/.07);color:#fff;font-weight:700;cursor:pointer}.tools .primary{background:var(--gold);color:#172018}.meta{margin-top:10px;color:rgb(255 255 255/.48);font-size:12px}.loading,.error{padding:30px 0}.error{color:#ff9c93}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:25px}.metric,.panel{border:1px solid rgb(255 255 255/.11);border-radius:17px;background:linear-gradient(145deg,rgb(255 255 255/.07),rgb(255 255 255/.035))}.metric{padding:17px}.metric span{display:block;color:rgb(255 255 255/.55);font-size:10px;font-weight:700}.metric strong{display:block;margin-top:4px;font:700 clamp(25px,4vw,36px) "Bai Jamjuree",sans-serif}.metric small{display:block;color:var(--green);font-size:11px;margin-top:3px}.section{margin-top:38px}.head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:13px}.head h2{font:700 clamp(22px,4vw,31px) "Bai Jamjuree",sans-serif}.head p{max-width:600px;color:rgb(255 255 255/.52);font-size:12px}.panel{padding:17px}.table-wrap{overflow-x:auto}.table{width:100%;border-collapse:collapse;min-width:650px;font-size:13px}.table th,.table td{padding:11px 9px;border-bottom:1px solid rgb(255 255 255/.08);text-align:right;white-space:nowrap}.table th:first-child,.table td:first-child{text-align:left}.table th{color:rgb(255 255 255/.48);font-size:10px}.winner{margin-top:13px;padding:14px 17px;border-left:3px solid var(--gold);background:rgb(217 184 108/.09);font-size:13px}.note{margin-top:28px;color:rgb(255 255 255/.5);font-size:12px}.muted{color:rgb(255 255 255/.44)}
+@media(max-width:850px){.metrics{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.top{display:block}.back{display:inline-block;margin-top:12px}.metrics{grid-template-columns:1fr}.head{display:block}.head p{margin-top:6px}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header class="top"><div><p class="eyebrow">FORGE · DETAILED DATA</p><h1>อ่านตอนต่อไปด้วยวิธีไหน</h1><p>เปรียบเทียบการกด/แตะทางไปตอนต่อไป กับการเลื่อนต่อจากท้ายหน้าการ์ตูน แยกตามตอนและตามวัน</p></div><a class="back" href="../">← Journey Funnel</a></header>
+<section class="tools"><label>ตั้งแต่<input type="date" id="from"></label><label>ถึง<input type="date" id="to"></label><button data-days="1">📅 วันนี้</button><button data-days="7">🗓️ 7 วัน</button><button data-days="30">📆 30 วัน</button><button data-days="365">🗂️ 1 ปี</button><button id="refresh" class="primary">🔄 Refresh</button></section>
+<div class="meta" id="range"></div><div id="state" class="loading">กำลังอ่านข้อมูล…</div>
+<div id="dashboard" hidden>
+<section class="metrics" id="metrics"></section><div id="winner"></div>
+<section class="section"><div class="head"><div><p class="eyebrow">📖 BY EPISODE</p><h2>แต่ละตอนเลือกวิธีไหน</h2></div><p>“เครื่อง” กันคนเดิมกดซ้ำ ส่วน “ครั้ง” บอกพฤติกรรมที่เกิดขึ้นจริงทั้งหมด</p></div><div class="panel table-wrap"><table class="table"><thead><tr><th>ตอนต้นทาง</th><th>กด/แตะ · เครื่อง</th><th>กด/แตะ · ครั้ง</th><th>เลื่อนต่อ · เครื่อง</th><th>เลื่อนต่อ · ครั้ง</th><th>เลื่อนต่อทั้งหมด</th></tr></thead><tbody id="episodes"></tbody></table></div></section>
+<section class="section"><div class="head"><div><p class="eyebrow">📈 DAILY</p><h2>วิธีไปต่อต่อวัน</h2></div></div><div class="panel table-wrap"><table class="table"><thead><tr><th>วัน</th><th>กด/แตะ · เครื่อง</th><th>กด/แตะ · ครั้ง</th><th>เลื่อนต่อ · เครื่อง</th><th>เลื่อนต่อ · ครั้ง</th><th>เลื่อนต่อทั้งหมด</th></tr></thead><tbody id="daily"></tbody></table></div></section>
+<p class="note">เริ่มเก็บข้อมูลสองวิธีนี้ตั้งแต่วันที่ฟีเจอร์เลื่อนต่อถูกเปิดใช้ ข้อมูลก่อนหน้านั้นไม่มี ref แยกวิธี จึงไม่ถูกเดาย้อนหลัง</p>
+</div></main>
+<script type="module" src="/assets/stat-nav.js"></script>
+<script type="module">
+import { bkkDay } from '/assets/stat-nav.js';
+import { fetchCore7JourneyStats } from '/core7/js/analytics.js';
+const $=id=>document.getElementById(id),fmt=n=>Number(n||0).toLocaleString('en-US'),pct=n=>`${Number(n||0).toFixed(1)}%`;
+const metric=(label,value,sub)=>`<article class="metric"><span>${label}</span><strong>${value}</strong><small>${sub}</small></article>`;
+function setDays(days){$('to').value=bkkDay(0);$('from').value=bkkDay(days-1);load()}
+document.querySelectorAll('[data-days]').forEach(b=>b.onclick=()=>setDays(Number(b.dataset.days)));$('refresh').onclick=load;
+function episodeName(path){const m=String(path||'').match(/\/forge\/ep([1-7])-/);return m?`ตอน ${m[1]}`:(path||'ไม่ทราบตอน')}
+function pivot(rows,key){const out=new Map();for(const row of rows||[]){const k=row[key]||'unknown',x=out.get(k)||{key:k,buttonUsers:0,buttonEvents:0,scrollUsers:0,scrollEvents:0};if(row.method==='forge-next-button'){x.buttonUsers=Number(row.users||0);x.buttonEvents=Number(row.events||0)}if(row.method==='forge-next-scroll'){x.scrollUsers=Number(row.users||0);x.scrollEvents=Number(row.events||0)}out.set(k,x)}return [...out.values()]}
+function row(x,label){const total=x.buttonEvents+x.scrollEvents,share=total?x.scrollEvents/total*100:0;return `<tr><td>${label}</td><td>${fmt(x.buttonUsers)}</td><td>${fmt(x.buttonEvents)}</td><td>${fmt(x.scrollUsers)}</td><td>${fmt(x.scrollEvents)}</td><td>${pct(share)}</td></tr>`}
+async function load(){$('state').hidden=false;$('state').className='loading';$('state').textContent='กำลังอ่านข้อมูล…';$('dashboard').hidden=true;try{const d=await fetchCore7JourneyStats({from:$('from').value,to:$('to').value}),n=d.forgeNavigation||{},b=n.button||{},s=n.scroll||{};$('range').textContent=`${d.range.from} → ${d.range.to} · เวลาไทย GMT+7`;$('metrics').innerHTML=[metric('กด/แตะตอนต่อไป',fmt(b.events),`${fmt(b.users)} เครื่อง · ${pct(n.button_share)}`),metric('เลื่อนต่อจากท้ายหน้า',fmt(s.events),`${fmt(s.users)} เครื่อง · ${pct(n.scroll_share)}`),metric('การไปต่อทั้งหมด',fmt(n.total_events),'นับทุกครั้ง'),metric('วิธีที่ใช้มากกว่า',n.winner==='scroll'?'เลื่อนต่อ':n.winner==='button'?'กด/แตะ':'เท่ากัน','เทียบจากจำนวนครั้ง')].join('');$('winner').innerHTML=n.total_events?`<div class="winner"><b>${n.winner==='scroll'?'คนใช้การเลื่อนต่อมากกว่า':n.winner==='button'?'คนใช้การกด/แตะมากกว่า':'ทั้งสองวิธีถูกใช้เท่ากัน'}</b> — กด/แตะ ${fmt(b.events)} ครั้ง เทียบกับเลื่อนต่อ ${fmt(s.events)} ครั้ง</div>`:'<div class="winner muted">ยังไม่มีข้อมูลหลังเปิดฟีเจอร์นี้</div>';
+const eps=pivot(n.byEpisode,'path').sort((a,b)=>episodeName(a.key).localeCompare(episodeName(b.key),'th',{numeric:true}));$('episodes').innerHTML=eps.map(x=>row(x,episodeName(x.key))).join('')||'<tr><td colspan="6" class="muted">ยังไม่มีข้อมูล</td></tr>';const days=pivot(n.daily,'day').sort((a,b)=>String(a.key).localeCompare(String(b.key)));$('daily').innerHTML=days.map(x=>row(x,x.key)).join('')||'<tr><td colspan="6" class="muted">ยังไม่มีข้อมูล</td></tr>';$('state').hidden=true;$('dashboard').hidden=false}catch(e){$('state').className='error';$('state').textContent=`อ่านข้อมูลไม่ได้: ${e.message}`}}
+setDays(30);
+</script>
+</body></html>
