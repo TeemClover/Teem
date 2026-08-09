@@ -1,6 +1,8 @@
 import { currentUser, database, ensureSchema, sameOrigin, sendJson } from './_lib/core.js';
 
 const MAX_KEYS = 180; const MAX_VALUE = 120000; const MAX_BODY = 800000;
+const RESET_EPOCH_KEY = 'mc_awaken_reset_epoch';
+const RESET_PERSISTENT_KEYS = new Set([RESET_EPOCH_KEY, 'mc_awaken_reset_count']);
 function allowedKey(key) {
   if (typeof key !== 'string' || key.length > 100 || !(key.startsWith('mc_') || key.startsWith('mc-') || key.startsWith('c7:'))) return false;
   return !(key.startsWith('c7:match_') || key.startsWith('c7roomtoken:') || key === 'c7:current_match' || key === 'c7:install_id' || key === 'c7tab_pid' || key.startsWith('mc_account_') || key.startsWith('mc_collection_seen') || key === 'mc_email' || key === 'mc_name' || key === 'mc_nick' || key === 'mc_line' || key === 'mc_registered');
@@ -28,7 +30,34 @@ function mergeValue(key, cloud, incoming) {
   const an = Number(cloud), bn = Number(incoming); if (Number.isFinite(an) && Number.isFinite(bn) && cloud !== '' && incoming !== '') return String(Math.max(an, bn));
   return incoming;
 }
-function mergeProgress(cloud, incoming) { const left = safeProgress(cloud), right = safeProgress(incoming), merged = { ...left }; for (const key of Object.keys(right)) merged[key] = mergeValue(key, left[key], right[key]); return merged; }
+function dungeonKey(key) {
+  return ((key.startsWith('mc_awaken_') && !RESET_PERSISTENT_KEYS.has(key)) ||
+    key.startsWith('mc_ch7_') || key.startsWith('mc_nb_') || key === 'mc_secret_end');
+}
+function resetEpoch(progress) {
+  const value = Number(progress?.[RESET_EPOCH_KEY] || 0);
+  return Number.isFinite(value) ? value : 0;
+}
+function stripDungeon(progress) {
+  const out = { ...progress };
+  for (const key of Object.keys(out)) if (dungeonKey(key)) delete out[key];
+  return out;
+}
+function mergeProgress(cloud, incoming) {
+  let left = safeProgress(cloud), right = safeProgress(incoming);
+  const cloudEpoch = resetEpoch(left), incomingEpoch = resetEpoch(right);
+
+  /* A newer Reset Dungeon is a tombstone for the whole run. It must delete old
+     Boss/Notebook state in the cloud instead of OR-merging flags such as
+     mc_nb_restored back to 1. Older devices are also prevented from resurrecting
+     a run that was reset elsewhere. */
+  if (incomingEpoch > cloudEpoch) left = stripDungeon(left);
+  else if (cloudEpoch > incomingEpoch) right = stripDungeon(right);
+
+  const merged = { ...left };
+  for (const key of Object.keys(right)) merged[key] = mergeValue(key, left[key], right[key]);
+  return merged;
+}
 
 export default async function handler(req, res) {
   try {
