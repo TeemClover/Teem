@@ -6,6 +6,7 @@ import '/assets/mini-achievements-secrets.js';
 import '/assets/ai-sauce-course.js';
 import '/assets/main-course-route.js';
 import '/assets/forge-path-choice.js';
+import '/assets/sauce-cup-entry.js';
 import '/assets/forge-flow-fix.js';
 import '/assets/main-quest-core7.js';
 import '/assets/lesson-one-subquests.js';
