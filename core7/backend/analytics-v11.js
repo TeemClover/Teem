@@ -6,6 +6,7 @@ import {
 } from './analytics.js';
 import { colorOf, FIRST_HAND } from '../js/cards.js';
 import { ACTS, ACHIEVEMENTS, STAGES, stageOrder } from '../../assets/achievements.js';
+import { OPEN_BETA_AT, OPEN_BETA_ISO, clampAnalyticsStart } from './open-beta.js';
 
 export const CORE7_ANALYTICS_VERSION = '1.6.0';
 export const CORE7_GAME_VERSION = '0.5';
@@ -258,7 +259,7 @@ function bounds(params = {}) {
   const from = validDay(params.from) ? params.from : bkkDay(Date.now() - 29 * DAY_MS);
   return {
     from, to,
-    start: Date.parse(`${from}T00:00:00+07:00`),
+    start: clampAnalyticsStart(Date.parse(`${from}T00:00:00+07:00`)),
     end: Date.parse(`${to}T00:00:00+07:00`) + DAY_MS,
   };
 }
@@ -455,7 +456,9 @@ export async function readAnalyticsStatsV11(db, params = {}) {
       WHERE m.status='COMPLETED' AND m.started_at >= ? AND m.started_at < ?
       GROUP BY p.card_id,p.color ORDER BY picked_hands DESC, played DESC LIMIT 28`).bind(b.start, b.end).all(),
     db.prepare(`SELECT source, MAX(updated_at) latest, COUNT(*) matches
-      FROM c7_analytics_matches GROUP BY source`).all(),
+      FROM c7_analytics_matches
+      WHERE started_at >= ? AND started_at < ?
+      GROUP BY source`).bind(b.start, b.end).all(),
     db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day,
       COUNT(DISTINCT install_id) active_players,
       COUNT(DISTINCT CASE WHEN event_type='MATCH_START' THEN install_id END) match_players,
@@ -829,6 +832,8 @@ export async function readStatOverview(db) {
   const startOf = day => Date.parse(`${day}T00:00:00+07:00`);
   const todayStart = startOf(today);
   const yStart = startOf(yesterday);
+  const todayDataStart = Math.max(todayStart, OPEN_BETA_AT);
+  const yesterdayDataStart = Math.max(yStart, OPEN_BETA_AT);
 
   /* ก้อนเดียวจบ แล้วค่อยแยกวันตอนอ่าน — ยิงสองรอบเปลืองกว่าโดยไม่ได้อะไรเพิ่ม */
   const dayCounts = `
@@ -844,18 +849,19 @@ export async function readStatOverview(db) {
     FROM c7_analytics_events WHERE occurred_at >= ? AND occurred_at < ?`;
 
   const [todayRow, yRow, newRow, wiringRes, dailyRes] = await Promise.all([
-    db.prepare(dayCounts).bind(todayStart, todayStart + DAY_MS).first(),
-    db.prepare(dayCounts).bind(yStart, yStart + DAY_MS).first(),
+    db.prepare(dayCounts).bind(todayDataStart, todayStart + DAY_MS).first(),
+    db.prepare(dayCounts).bind(yesterdayDataStart, yStart + DAY_MS).first(),
     db.prepare(`SELECT COUNT(*) n FROM c7_analytics_installations
-      WHERE first_seen_at >= ? AND first_seen_at < ?`).bind(todayStart, todayStart + DAY_MS).first(),
+      WHERE first_seen_at >= ? AND first_seen_at < ?`).bind(todayDataStart, todayStart + DAY_MS).first(),
     /* ตัวรับพร้อมแต่ยังไม่มีใครยิง = ยังไม่ได้ต่อสาย ต้องแยกจาก "ไม่มีคนทำ" */
     db.prepare(`SELECT event_type, COUNT(*) n FROM c7_analytics_events
       WHERE event_type IN ('ACT','ACHIEVEMENT_UNLOCK','JOURNEY_START','CARD_UNLOCK')
-      GROUP BY event_type`).all(),
+        AND occurred_at >= ?
+      GROUP BY event_type`).bind(OPEN_BETA_AT).all(),
     db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day,
       COUNT(DISTINCT install_id) devices
       FROM c7_analytics_events WHERE occurred_at >= ?
-      GROUP BY day ORDER BY day`).bind(todayStart - 13 * DAY_MS).all(),
+      GROUP BY day ORDER BY day`).bind(Math.max(todayStart - 13 * DAY_MS, OPEN_BETA_AT)).all(),
   ]);
 
   const t = nums(todayRow || {});
@@ -885,7 +891,8 @@ export async function readStatOverview(db) {
   const alerts = [];
   const dupRow = await db.prepare(`SELECT COUNT(*) events,
       COUNT(DISTINCT install_id || '|' || COALESCE(ref,'')) pairs
-      FROM c7_analytics_events WHERE event_type='ACHIEVEMENT_UNLOCK'`).first();
+      FROM c7_analytics_events
+      WHERE event_type='ACHIEVEMENT_UNLOCK' AND occurred_at >= ?`).bind(OPEN_BETA_AT).first();
   const dupes = Math.max(0, Number(dupRow?.events || 0) - Number(dupRow?.pairs || 0));
   if (dupes > 0) {
     alerts.push({
@@ -914,6 +921,7 @@ export async function readStatOverview(db) {
 
   return {
     ok: true,
+    openBetaAt: OPEN_BETA_ISO,
     generatedAt: now,
     today,
     yesterday,

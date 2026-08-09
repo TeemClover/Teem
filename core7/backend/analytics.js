@@ -1,3 +1,5 @@
+import { OPEN_BETA_AT, OPEN_BETA_ISO } from './open-beta.js';
+
 const COLORS = Object.freeze(['RED', 'GREEN', 'BLUE', 'SILVER']);
 const FORMATS = new Set(['quick', 'bo3', 'bo5']);
 const BOT_LEVELS = new Set(['easy', 'hard']);
@@ -380,6 +382,7 @@ function dateBounds(params = {}) {
     start = end - MAX_RANGE_DAYS * DAY_MS;
     from = bangkokDay(start);
   }
+  start = Math.max(start, OPEN_BETA_AT);
   return { from, to, start, end };
 }
 
@@ -527,6 +530,7 @@ export async function readAnalyticsStats(db, params = {}) {
 
   return {
     ok: true,
+    openBetaAt: OPEN_BETA_ISO,
     timezone: 'Asia/Bangkok',
     generatedAt: now,
     range: { from: bounds.from, to: bounds.to },
