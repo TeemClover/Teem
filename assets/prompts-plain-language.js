@@ -1,7 +1,7 @@
 /* Lesson 5 · kitchen metaphor stays in the UI; copied prompts stay literal.
 
    The 44 vault templates are already written in normal working language.
-   Do not wrap them in a course-specific Source/seasoning preamble.
+   Do not wrap them in a course-specific ซอส/seasoning preamble.
    Users may customize first (recommended) or copy the original template directly.
 */
 (function(){
@@ -16,7 +16,7 @@ if(!V||!Array.isArray(V.prompts))return;
 var VERSION='original-44-generic-ai-v3';
 var EXPECTED_TOTAL=44;
 var COURSE_ONLY_MARKERS=[
-  'ใช้ผงปรุงรสนี้กับ Source',
+  'ใช้ผงปรุงรสนี้กับซอส',
   'ผงปรุงรสสำหรับงานนี้:',
   'ตักผงปรุงรส',
   'ปรุงซอส',
@@ -31,11 +31,11 @@ function setText(el,value){
 function stripCourseWrapper(value){
   var text=String(value||'').trim();
   text=text.replace(
-    /^SOURCE FIRST[^\n]*\n[\s\S]*?ผงปรุงรสสำหรับงานนี้:\s*/,
+    /^ซอสก่อน[^\n]*\n[\s\S]*?ผงปรุงรสสำหรับงานนี้:\s*/,
     ''
   );
   text=text.replace(
-    /^ใช้ Source ที่แนบหรือวางไว้ในบทสนทนานี้เป็นฐานหลักของงาน\n[\s\S]*?รายละเอียดงาน:\s*/,
+    /^ใช้ซอสที่แนบหรือวางไว้ในบทสนทนานี้เป็นฐานหลักของงาน\n[\s\S]*?รายละเอียดงาน:\s*/,
     ''
   );
   return text.trim();
@@ -123,7 +123,7 @@ function cardButtons(card){
       ? '✓ คัดลอกแล้ว'
       : '🥫 นำไปใช้กับซอส';
     direct.setAttribute('aria-label','นำ Prompt ไปใช้กับซอส');
-    direct.title='คัดลอก Prompt ต้นฉบับเพื่อนำไปใช้กับ Source ของคุณ';
+    direct.title='คัดลอก Prompt ต้นฉบับเพื่อนำไปใช้กับซอสของคุณ';
   }
   if(filled){
     filled.textContent=filled.dataset.copyState==='done'
