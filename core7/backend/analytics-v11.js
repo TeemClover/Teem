@@ -670,17 +670,20 @@ export async function readJourneyFunnel(db, params = {}) {
       COUNT(DISTINCT path) paths
       FROM c7_analytics_events
       WHERE event_type='ACT' AND ref IS NOT NULL
+        AND (path IS NULL OR path NOT LIKE '/assets/%')
         AND occurred_at >= ? AND occurred_at < ?
       GROUP BY ref ORDER BY events DESC, users DESC, ref`).bind(b.start, b.end).all(),
     db.prepare(`SELECT COALESCE(path,'(no path)') path,
       COUNT(DISTINCT install_id) users, COUNT(*) events, COUNT(DISTINCT ref) actions
       FROM c7_analytics_events
-      WHERE event_type='ACT' AND occurred_at >= ? AND occurred_at < ?
+      WHERE event_type='ACT' AND (path IS NULL OR path NOT LIKE '/assets/%')
+        AND occurred_at >= ? AND occurred_at < ?
       GROUP BY COALESCE(path,'(no path)') ORDER BY events DESC, users DESC, path`).bind(b.start, b.end).all(),
     db.prepare(`SELECT date(occurred_at/1000,'unixepoch','+7 hours') day,
       COUNT(DISTINCT install_id) users, COUNT(*) events, COUNT(DISTINCT ref) actions
       FROM c7_analytics_events
-      WHERE event_type='ACT' AND occurred_at >= ? AND occurred_at < ?
+      WHERE event_type='ACT' AND (path IS NULL OR path NOT LIKE '/assets/%')
+        AND occurred_at >= ? AND occurred_at < ?
       GROUP BY day ORDER BY day`).bind(b.start, b.end).all(),
   ]);
 
