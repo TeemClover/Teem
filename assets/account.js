@@ -1,5 +1,7 @@
 const API = '/api/auth';
-const PROMPT_KEY = 'mc_account_prompt_first_hand_14_shown';
+/* v2 deliberately ignores the old flag: that version could be written by an
+   incorrect Home-page popup before the player ever reached card 14. */
+const PROMPT_KEY = 'mc_account_prompt_first_hand_14_reward_v2';
 const LAST_SYNC_KEY = 'mc_account_last_sync';
 const OWNER_KEY = 'mc_account_progress_owner';
 const EXCLUDED = [
@@ -12,7 +14,6 @@ let providers = { email: true, google: false, line: false };
 let syncTimer = 0;
 let dialog;
 let previousFocus = null;
-let promptAfterRewardTimer = 0;
 
 function addStyles() {
   if (document.querySelector('link[data-mc-account-css]')) return;
@@ -59,14 +60,6 @@ function clearDeviceProgress() {
 }
 
 function parseMaybe(value) { try { return JSON.parse(value); } catch { return null; } }
-function firstHandCount() {
-  const collection = parseMaybe(storageGet('c7:collection'));
-  if (Array.isArray(collection)) {
-    return new Set(collection.filter(id => typeof id === 'string' && /^fh-(red|green|blue|silver)-/.test(id))).size;
-  }
-  const count = Number(parseMaybe(storageGet('mc_core7_first_hand_count', '0')));
-  return Number.isFinite(count) && count > 0 ? count : 0;
-}
 function union(a, b) { return [...new Set([...a, ...b].filter(value => typeof value === 'string'))]; }
 function mergeObject(a, b) {
   if (Array.isArray(a) && Array.isArray(b)) return union(a, b);
@@ -262,13 +255,12 @@ function bindEvents() {
     const form = event.target.closest('[data-account-form]');
     if (form) { event.preventDefault(); submitAuth(form); }
   });
-  window.addEventListener('focus', () => { maybePrompt(); scheduleSync(); });
+  window.addEventListener('focus', scheduleSync);
   window.addEventListener('online', scheduleSync);
   window.addEventListener('pagehide', pushOnLeave);
   window.addEventListener('storage', event => { if (event.key && allowedKey(event.key)) scheduleSync(); });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') scheduleSync(); });
-  window.addEventListener('core7:first-hand-changed', maybePrompt);
-  window.addEventListener('core7:first-hand-reward-closed', maybePrompt);
+  window.addEventListener('core7:first-hand-reward-closed', maybePromptFirstHand14);
 }
 
 function showAccountChip() {
@@ -288,18 +280,15 @@ function paintChip() {
   chip.setAttribute('aria-label', user ? `เปิดบัญชี ${user.displayName || 'ของฉัน'}` : 'เก็บ Progress ด้วยบัญชี');
 }
 
-function maybePrompt(event) {
+function maybePromptFirstHand14(event) {
+  /* This invitation belongs to one precise game event: the player has just
+     revealed and accepted FIRST HAND card 14 on a result page. Never infer
+     it later from stored totals; doing that made the dialog leak into Home. */
+  if (!/^\/core7\/(?:journey-)?result\//.test(location.pathname)) return;
+  if (event?.type !== 'core7:first-hand-reward-closed') return;
+  const count = Number(event.detail?.count);
+  if (count !== 14) return;
   if (user || storageGet(PROMPT_KEY) === '1') return;
-  const count = firstHandCount();
-  if (count < 14) return;
-  const onResult = /\/core7\/(?:journey-)?result\//.test(location.pathname);
-  if (onResult && event?.type !== 'core7:first-hand-reward-closed') {
-    clearTimeout(promptAfterRewardTimer);
-    promptAfterRewardTimer = setTimeout(() => {
-      if (!document.getElementById('c7Reward')) maybePrompt({ type: 'core7:first-hand-reward-closed' });
-    }, 700);
-    return;
-  }
   storageSet(PROMPT_KEY, '1'); open('signup14');
   try { window.mcEvent && window.mcEvent('account_prompt_first_hand_14', { first_hand: count }); } catch { /* analytics optional */ }
 }
@@ -316,7 +305,7 @@ async function boot() {
     const lastSync = Date.parse(storageGet(LAST_SYNC_KEY));
     if (!Number.isFinite(lastSync) || Date.now() - lastSync > 15000) await syncProgress({ quiet: true });
     if (new URLSearchParams(location.search).get('account') === 'connected') toast('Login สำเร็จ — ของที่เคยเก็บกลับมาครบแล้ว ✓');
-  } else maybePrompt();
+  }
   const accountState = new URLSearchParams(location.search).get('account');
   if (accountState === 'oauth_error') { open('login'); const msg = dialog.querySelector('.mc-account-msg'); if (msg) msg.textContent = 'เชื่อมบัญชีไม่สำเร็จ ลองใหม่อีกครั้งครับ'; }
   if (accountState === 'rate_limited') { open('login'); const msg = dialog.querySelector('.mc-account-msg'); if (msg) msg.textContent = 'ลองเชื่อมบัญชีถี่เกินไป รออีกสักครู่นะครับ'; }
