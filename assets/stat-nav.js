@@ -7,16 +7,12 @@
    ก็กลายเป็นหน้าที่เข้าถึงไม่ได้
 
    ทะเบียนอยู่ที่นี่ที่เดียว ทุกหน้า import แล้วแถบขึ้นเอง
-
-     <script type="module" src="/assets/stat-nav.js"></script>
-
-   หน้าไหนอยู่ที่ไหนดูจาก path ของตัวเอง ไม่ต้องบอก
    ═══════════════════════════════════════════════════════════════ */
 
 export const STAT_PAGES = Object.freeze([
   { href: '/stat/', th: 'Dashboard', emoji: '📊', note: 'สรุปวันนี้' },
   { href: '/stat/journey/', th: 'Journey', emoji: '🚶', note: 'เส้นทาง First Run' },
-  { href: '/stat/behavior/', th: 'Behavior', emoji: '🧭', note: 'พฤติกรรมและ Navigation' },
+  { href: '/stat/behavior/', th: 'Behavior', emoji: '🧭', note: 'Navigation + THE DUNGEON behavior' },
   { href: '/collection/stat/', th: 'Achievement', emoji: '🏅', note: 'ของที่ปลดได้ทั้งบ้าน' },
   { href: '/core7/stat/', th: 'CORE7', emoji: '🎮', note: 'สุขภาพเกม' },
   { href: '/core7/collection/stat/', th: 'FIRST HAND', emoji: '🃏', note: 'การ์ด 28 ใบ' },
@@ -41,29 +37,20 @@ const CSS = `
   .mc-statnav a[aria-current] span.t,.mc-statnav .mc-statnav-cmd span.t{display:inline}}
 `;
 
-/* ── เวลาไทยที่เดียว ──
-   ทั้งระบบยึด GMT+7 ทุกจุด: วันที่ backend ตัด, วันที่ในช่องเลือกช่วง และเวลาที่แสดง
-
-   ก่อนหน้านี้ช่องเลือกวันที่ใช้ `new Date().toISOString()` ซึ่งเป็น UTC —
-   ระหว่างเที่ยงคืนถึงเจ็ดโมงเช้าเวลาไทย มันจะเลือก "เมื่อวาน" ให้โดยที่ไม่มีอะไรบอก
-   แล้วตัวเลขบนหน้าก็ไม่ตรงกับที่ backend ตัดวันไว้ อ่านแล้วงงโดยไม่รู้ว่างงเพราะอะไร */
 export const BKK_OFFSET_MS = 7 * 60 * 60 * 1000;
 export const TZ = 'Asia/Bangkok';
 
-/* วันแบบ YYYY-MM-DD ตามเวลาไทย — ใส่ offset เป็นจำนวนวันเพื่อถอยหลังได้ */
 export function bkkDay(offsetDays = 0, base = Date.now()) {
   return new Date(base + BKK_OFFSET_MS - offsetDays * 86400000)
     .toISOString().slice(0, 10);
 }
 
-/* เวลาเต็มสำหรับแสดงผล ระบุโซนไว้ตรง ๆ ไม่ปล่อยให้ขึ้นกับเครื่องคนอ่าน */
 export function bkkTime(ms) {
   return new Date(ms).toLocaleString('th-TH', {
     dateStyle: 'medium', timeStyle: 'short', timeZone: TZ,
   });
 }
 
-/* เทียบแบบตัดสแลชท้ายออก เพราะ /stat/ กับ /stat ต้องนับเป็นหน้าเดียวกัน */
 function samePath(a, b) {
   const norm = s => String(s || '').replace(/\/+$/, '') || '/';
   return norm(a) === norm(b);
@@ -96,8 +83,5 @@ if (typeof document !== 'undefined') {
     document.addEventListener('DOMContentLoaded', mount, { once: true });
   } else {
     mount();
-  }
-  if (samePath(globalThis.location?.pathname, '/stat/')) {
-    import('/assets/stat-awaken-v2.js').catch(() => {});
   }
 }
