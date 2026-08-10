@@ -13,7 +13,7 @@ const HERO_COPY = {
     title: 'เอาซอสไปทำจานจริง'
   },
   'learn:notebooklm': {
-    label: 'บทที่ 4 · Multiply',
+    label: 'บทที่ 4 · Split',
     title: 'ซอสขวดเดียว แตกได้หลายเมนู'
   },
   'learn:prompts': {
