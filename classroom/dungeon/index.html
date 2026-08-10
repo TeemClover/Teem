@@ -1141,7 +1141,7 @@ const blank = () => ({
   fish:0, boot:false, bottle:false, clover:false,
   pry:0, loot:null, level:0,
   pos:{x:16,y:19}, trail:[{x:15,y:19},{x:14,y:19},{x:13,y:19}],
-  folds:{}, sound:false
+  folds:{}, sound:true
 });
 const rd = k => { try { return localStorage.getItem(k); } catch { return null; } };
 const wr = (k,v) => { try { localStorage.setItem(k,v); } catch {} };
@@ -1192,6 +1192,7 @@ function beep(freq, dur = .07, type = 'square', vol = .05){
   if (!S.sound) return;
   try {
     ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();   /* เบราว์เซอร์ปลดล็อกเสียงหลังคนแตะครั้งแรก */
     const o = ac.createOscillator(), g = ac.createGain();
     o.type = type; o.frequency.value = freq;
     g.gain.setValueAtTime(vol, ac.currentTime);
@@ -1514,7 +1515,7 @@ const OBJ = [
   { id:'school', x:11, y:6, w:4, h:2, kind:'school',
     msg:'<b>โรงเรียน</b> — ในนั้นมีคัมภีร์ “AI ใส่ซอส” วางอยู่ 6 เล่ม มึงอ่านจบมาแล้วถึงได้มายืนตรงนี้' },
   { id:'kitchen', x:18, y:3, w:3, h:2, kind:'kitchen',
-    msg:'<b>ห้องครัว</b> — ต้องเดินวนอ้อมเข้ามาถึงจะเจอ · หม้อซอสยังเดือดอยู่ เมียไอ้ทีมเป็นเชฟ และคำว่าซอสในบ้านนี้แปลได้ทั้ง Source กับ Sauce โดยไม่ต้องอธิบาย' },
+    msg:'<b>ห้องครัว</b> — หม้อซอสยังเดือดอยู่ เมียไอ้ทีมเป็นเชฟ และกำลังทอดไก่อยู่ในครัว กลิ่นหอมมากจนอยากเข้าไปขอกิน' },
   { id:'construct', x:27, y:9, w:3, h:2, kind:'construct',
     msg:'<b>ไซต์ก่อสร้าง · UNDER CONSTRUCTION</b> — บ้านนี้เสร็จพอให้มึงเดินเล่นแล้ว แต่ไอ้ทีมมันยังไม่หยุดสร้างของต่อ · ถ้าอยากรู้ว่ามีอะไรดี ๆ รออยู่ ไปถามมันเองละกัน' },
   { id:'shop', x:19, y:17, w:3, h:2, kind:'shop',
@@ -1772,14 +1773,11 @@ function drawObj(o, sx, sy){
     px(sx+w/2-5, sy+h-11, 10, 11, '#3b3158');
     px(sx+w/2-1, sy+h-6, 3, 3, '#ffe071');
   } else if (o.kind === 'construct'){
+    px(sx+w-43, sy-22, 40, 22, 'rgba(0,0,0,.09)');    /* เงาแขนเครนทอดลงพื้น */
     px(sx+2, sy+14, w-4, h-16, '#6f6a5e');            /* โครงตึกยังไม่เสร็จ */
     px(sx+2, sy+14, w-4, 3, '#8b8578');
     for (let i = 0; i < 5; i++) px(sx+4+i*8, sy+17, 2, h-19, '#4d4a42');
     px(sx+3, sy+9, w-6, 2, '#8b8578');
-    px(sx+w-9, sy-6, 3, 22, '#e3c33c');               /* เครน */
-    px(sx+w-9, sy-6, -20, 3, '#e3c33c');
-    px(sx+w-26, sy-3, 1, 7 + (tick/26%3|0), 'rgba(255,255,255,.45)');
-    px(sx+w-28, sy+4 + (tick/26%3|0), 5, 4, '#8b8578');
     px(sx+1, sy+h-7, 10, 7, '#c9a227');               /* ป้ายเตือน */
     px(sx+3, sy+h-5, 6, 1, '#2b2b2b'); px(sx+3, sy+h-3, 4, 1, '#2b2b2b');
   } else if (o.kind === 'fish'){
@@ -1800,6 +1798,26 @@ function drawObj(o, sx, sy){
     px(sx+8, sy+5, 1, 9, '#5a3418');
     if (!S.book) px(sx+6, sy+1, 4, 3, 'rgba(255,224,113,' + (0.4 + 0.35*Math.sin(tick/9)).toFixed(2) + ')');
   }
+}
+
+/* เครนสูงกว่าทุกอย่างในแผนที่ เลยต้องวาดทีหลังตัวละคร ใครเดินผ่านใต้แขนเครนจะโดนบัง */
+function drawCrane(sx, sy, w, h){
+  const T = 72, ph = tick % T;
+  const sweep = ph < T/2 ? ph/(T/2) : 1 - (ph - T/2)/(T/2);
+  const mast = sx + w - 9, jib = 34;
+  const trolley = Math.round(mast - 8 - sweep * (jib - 14));
+  const cable = 7 + Math.round(sweep * 13);
+  px(mast, sy-36, 4, 52, '#e3c33c');                  /* เสา */
+  for (let i = 0; i < 9; i++) px(mast, sy-33+i*6, 4, 1, '#8a761c');
+  px(mast+4, sy-34, 8, 9, '#6f6a5e');                 /* ถ่วงน้ำหนัก */
+  px(mast - jib, sy-36, jib+4, 4, '#e3c33c');         /* แขนเครน */
+  px(mast - jib, sy-33, jib, 1, '#8a761c');
+  px(mast - jib + 2, sy-40, 2, 5, '#8a761c');
+  px(trolley+1, sy-33, 5, 3, '#8b8578');              /* รถเข็นบนแขน */
+  px(trolley+3, sy-30, 1, cable, 'rgba(255,255,255,.55)');
+  px(trolley, sy-30+cable, 7, 5, '#8b8578');          /* ของที่แขวนอยู่ */
+  px(trolley, sy-26+cable, 7, 1, '#4d4a42');
+  if ((tick/3|0) % 2) px(mast+1, sy-39, 2, 2, '#ff6b5a');
 }
 
 function drawChar(p, i, ox, oy){
@@ -1844,6 +1862,11 @@ function draw(){
     const ay = prev[i].y + (chain[i].y - prev[i].y) * t;
     drawChar(chain[i], i, (ax-cx)*TILE, (ay-cy)*TILE);
   }
+  OBJ.forEach(o => {
+    if (o.kind !== 'construct') return;
+    if (o.x + o.w < cx-2 || o.x > cx+VW+2 || o.y + o.h < cy-3 || o.y > cy+VH+2) return;
+    drawCrane(Math.round((o.x-cx)*TILE), Math.round((o.y-cy)*TILE), o.w*TILE, o.h*TILE);
+  });
 }
 const say = html => { $('rpgMsg').innerHTML = html; };
 
@@ -2517,6 +2540,7 @@ checkNotebook(); paintLogs();
 paintSpoons();
 paintChest(); paintStars();
 $('sndBtn').textContent = (S.sound ? '🔊' : '🔇') + ' เสียง 8-BIT';
+$('sndBtn').setAttribute('aria-pressed', S.sound ? 'true' : 'false');
 draw();
 requestAnimationFrame(paintNetwork);
 let rzT = 0;
