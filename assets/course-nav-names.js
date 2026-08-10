@@ -5,19 +5,19 @@
 const NAV = {
   '/classroom/free-ai.html': {
     prev: { href: 'lesson-0.html', text: '← บท 0 · เลือกเครื่องครัว และเปิดเตา' },
-    next: { href: 'image-ai.html', text: 'บท 2 · ชิมก่อนเติม →' },
+    next: { href: 'image-ai.html', text: 'บท 2 · ชิมซอสก่อนเติม →' },
   },
   '/classroom/image-ai.html': {
     prev: { href: 'free-ai.html', text: '← บท 1 · เริ่มจากการปรุงซอส' },
     next: { href: 'clip-ai.html', text: 'บท 3 · เอาซอสไปทำจานจริง →' },
   },
   '/classroom/clip-ai.html': {
-    prev: { href: 'image-ai.html', text: '← บท 2 · ชิมก่อนเติม' },
+    prev: { href: 'image-ai.html', text: '← บท 2 · ชิมซอสก่อนเติม' },
     next: { href: 'notebooklm.html', text: 'บท 4 · ซอสขวดเดียว แตกได้หลายเมนู →' },
   },
   '/classroom/notebooklm.html': {
     prev: { href: 'clip-ai.html', text: '← บท 3 · เอาซอสไปทำจานจริง' },
-    next: { href: 'prompts.html', text: 'บท 5 · เปิดลิ้นชักเครื่องปรุง →' },
+    next: { href: 'prompts.html', text: 'บท 5 · เลือกงาน แล้วตักผงไปใช้กับซอส →' },
   },
 };
 

@@ -3,6 +3,7 @@
    - ใช้ภาพประตูจริงชุดเดียวกับหน้ารวมบทเรียน
    - คงสัญญาณ glitch เบา ๆ หลังประตูปรากฏ
    - ก่อนเข้าด่านบอสใช้สรรพนาม คุณ / มัน เท่านั้น
+   - ห้องบอสหลัก /classroom/awaken กำลังสร้างใหม่: ใช้ /boss/ เป็นห้องสำรองชั่วคราว
 */
 
 function isLessonSix() {
@@ -131,6 +132,13 @@ function rewriteCopy(takeover, bossDoor, bossLock) {
 
   const doorCopy = bossDoor?.querySelector('.door-copy p');
   if (doorCopy) doorCopy.innerHTML = 'ประตูบานสุดท้ายเปิดแล้ว<br>และสิ่งที่รออยู่ข้างใน <strong>“มัน”</strong> อ่านทุกอย่างที่คุณได้ทำมาในบ้านนี้';
+
+  const bossLink = bossDoor?.querySelector('.boss-go');
+  if (bossLink) {
+    bossLink.href = '/boss/';
+    bossLink.textContent = 'เข้าสู่ด่านบอส →';
+    bossLink.dataset.bossRoom = 'backup';
+  }
 
   const lockCopy = bossLock?.querySelector('p');
   if (lockCopy) lockCopy.textContent = 'กลับไปเก็บบทที่ขาดให้ครบ 6 บท แล้วประตูนี้จะจำว่าคุณเคยมาถึงตรงนี้';

@@ -165,7 +165,7 @@ function enhanceWalkthrough() {
             <b>🎮 มุมของเกมดีไซเนอร์</b>
             <p>ผมถนัดและชอบออกแบบเกม กิจกรรม และหลักสูตร พอไปทำธุรกิจ สิ่งที่ผมทำโดยธรรมชาติจึงไม่ใช่แค่เขียนคู่มือ แต่คือสร้าง “เกม” ให้ทุกคนเล่นอยู่ในงานจริง</p>
             <p>ตอนนั้นทุกคนมีแค่ปากกากับกระดาษ ผมจึงสร้างกติกา Item ลำดับภารกิจ และ Starter Kit ใส่เข้าไปในธุรกิจ เพื่อให้คนเริ่มง่ายขึ้นและรู้สึกสนุกขึ้น โดยไม่ต้องเรียกมันว่าเกมด้วยซ้ำ</p>
-            <p class="legendary-line">เป้าหมายคือให้คนใหม่ได้ Item ระดับ Legendary ตั้งแต่เริ่มเกม ไม่ต้องเปิดกล่องสุ่มว่า รุ่นพี่คนไหนจะสอนครบ</p>
+            <p class="legendary-line">เป้าหมายคือให้คนใหม่ได้ Item ระดับ Legendary ตั้งแต่เริ่มเกม ไม่ต้องเสียชีวิตไปกับการเปิดกล่องสุ่มว่ารุ่นพี่คนไหนจะสอนครบค่ะ</p>
           </div>
         </div>`;
       storyGrid.insertAdjacentElement('afterend', recap);
@@ -257,25 +257,44 @@ function enhanceWalkthrough() {
   lightbox.setAttribute('role', 'dialog');
   lightbox.setAttribute('aria-modal', 'true');
   lightbox.setAttribute('aria-label', 'ภาพหลักฐานแบบขยาย');
-  lightbox.innerHTML = '<div class="proof-lightbox__panel"><button class="proof-lightbox__close" type="button" aria-label="ปิด">✕</button><img alt=""></div>';
+  lightbox.innerHTML = '<div class="proof-lightbox__panel"><button class="proof-lightbox__close" type="button" aria-label="ปิดภาพ">✕</button><img alt=""></div>';
   document.body.append(lightbox);
+  const fullImage = lightbox.querySelector('img');
+  const closeLightbox = () => {
+    lightbox.hidden = true;
+    fullImage.removeAttribute('src');
+    document.documentElement.style.overflow = '';
+  };
 
-  const lightboxImg = lightbox.querySelector('img');
-  const close = () => { lightbox.hidden = true; document.body.style.overflow = ''; };
-  document.querySelectorAll('[data-proof-src]').forEach(button => {
-    button.addEventListener('click', () => {
-      lightboxImg.src = button.dataset.proofSrc;
-      lightboxImg.alt = button.dataset.proofAlt || '';
-      lightbox.hidden = false;
-      document.body.style.overflow = 'hidden';
-      fire('walkthrough-proof-zoom');
-    });
+  document.addEventListener('click', event => {
+    const shot = event.target.closest?.('[data-proof-src]');
+    if (!shot) return;
+    fullImage.src = shot.dataset.proofSrc;
+    fullImage.alt = shot.dataset.proofAlt || 'ภาพหลักฐาน';
+    lightbox.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    lightbox.querySelector('.proof-lightbox__close')?.focus();
+    fire('walkthrough-proof-expand');
   });
-  lightbox.querySelector('.proof-lightbox__close').addEventListener('click', close);
-  lightbox.addEventListener('click', event => { if (event.target === lightbox) close(); });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !lightbox.hidden) close(); });
+  lightbox.querySelector('.proof-lightbox__close')?.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', event => { if (event.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !lightbox.hidden) closeLightbox();
+  });
 }
 
-document.addEventListener('click', onClick, { passive: true });
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { fireView(); enhanceWalkthrough(); }, { once: true });
-else { fireView(); enhanceWalkthrough(); }
+if (typeof document !== 'undefined') {
+  document.addEventListener('click', onClick, true);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      fireView();
+      enhanceWalkthrough();
+    }, { once: true });
+  } else {
+    fireView();
+    enhanceWalkthrough();
+  }
+}
+
+if (typeof window !== 'undefined') window.MC_ACT = fire;
+export { fire as trackAct };
