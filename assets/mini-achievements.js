@@ -12,8 +12,8 @@ export const MINI_ACHIEVEMENTS = Object.freeze([
   { id:'xp-scroll-used', emoji:'📜', name:'ตีบวกคัมภีร์ครบ', hint:'ใช้คัมภีร์ใน THE DUNGEON และดู LEVEL UP ครบ 3 ครั้ง' },
   { id:'timebox-open', emoji:'😴', name:'เปิดกล่องของเก่า', hint:'เปิดอ่านเรื่อง 14 วันที่เว็บนี้ถูกสร้างใน PHASE 1' },
   { id:'party-box-open', emoji:'🔌', name:'เปิดหน้าต่าง Party', hint:'เปิด Party ในแผนที่ THE DUNGEON' },
-  { id:'d20-natural-1', emoji:'🎲', name:'Natural 1 · ทอยจุ๊ง', hint:'ทอย d20 แล้วออก 1 เต็ม ๆ — จังหวะที่ต่อให้มั่นใจแค่ไหน ลูกเต๋าก็บอกว่า “ไม่ครับ”' },
-  { id:'d20-natural-20', emoji:'🎲', name:'Natural 20 · ทอยคริ!', hint:'ทอย d20 ได้ 20 ธรรมชาติ — Critical Hit แบบไม่ต้องบวกอะไรเพิ่ม จังหวะที่โต๊ะควรมีคนร้องเฮ' },
+  { id:'d20-natural-1', emoji:'🎲', name:'Natural 1 · ทอยจุ๊ง!', hint:'ทอย d20 ได้ 1 — จุ๊งเต็มข้อ ต่อให้แผนดีแค่ไหนก็มีวันที่ลูกเต๋าบอกว่า “วันนี้ไม่ใช่วันของมึง”' },
+  { id:'d20-natural-20', emoji:'🎲', name:'Natural 20 · ทอยคริ!', hint:'ทอย d20 ได้ 20 — คริเต็มหน้า! จังหวะที่ความเสี่ยงกลายเป็นตำนาน และโต๊ะควรมีคนร้องเฮ' },
   { id:'clover-song-2010', emoji:'💿', name:'Clover Song · 2010', hint:'เปิดเพลงที่เจ้าของบ้านแต่ง และเพื่อนร้องจริงตั้งแต่ปี 2010' },
   { id:'dungeon-reset', emoji:'♻️', name:'เริ่มด่านใหม่', lockedName:'???', hint:'พบเมนูลับและ Reset THE DUNGEON', secret:true },
   { id:'lucky-bug', emoji:'🍀', name:'Lucky Bug', lockedName:'???', hint:'ขโมยทองมังกรสำเร็จ ขณะยืนอยู่บนโคลเวอร์สี่แฉก', secret:true },
@@ -60,6 +60,42 @@ function watchSong() {
   }, true);
 }
 
+function ensureD20Styles() {
+  if (document.getElementById('mc-d20-callout-style')) return;
+  const style = document.createElement('style');
+  style.id = 'mc-d20-callout-style';
+  style.textContent = `
+    .mc-d20-callout{position:fixed;left:50%;top:18%;z-index:99999;translate:-50% -50%;pointer-events:none;min-width:min(430px,calc(100vw - 28px));padding:18px 22px;border-radius:18px;text-align:center;background:rgba(7,18,12,.94);color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:0 24px 80px rgba(0,0,0,.48);backdrop-filter:blur(12px);opacity:0;transform:scale(.78);transition:opacity .18s ease,transform .22s cubic-bezier(.2,.9,.2,1.25)}
+    .mc-d20-callout.on{opacity:1;transform:scale(1)}
+    .mc-d20-callout.jung{border-color:rgba(255,132,105,.6);box-shadow:0 24px 80px rgba(0,0,0,.48),0 0 0 1px rgba(255,132,105,.14) inset}
+    .mc-d20-callout.crit{border-color:rgba(240,201,108,.8);box-shadow:0 24px 80px rgba(0,0,0,.48),0 0 34px rgba(240,201,108,.25)}
+    .mc-d20-callout b{display:block;font:900 clamp(25px,6vw,42px)/1.05 system-ui,sans-serif;letter-spacing:-.03em}
+    .mc-d20-callout small{display:block;margin-top:8px;color:rgba(255,255,255,.7);font:700 13px/1.5 system-ui,sans-serif}
+  `;
+  document.head.append(style);
+}
+
+let d20CalloutTimer = 0;
+function showD20Callout(value) {
+  if (value !== 1 && value !== 20) return;
+  ensureD20Styles();
+  let box = document.getElementById('mc-d20-callout');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'mc-d20-callout';
+    box.className = 'mc-d20-callout';
+    document.body.appendChild(box);
+  }
+  const crit = value === 20;
+  box.className = `mc-d20-callout ${crit ? 'crit' : 'jung'}`;
+  box.innerHTML = crit
+    ? '<b>💥 NATURAL 20 · ทอยคริ!</b><small>คริเต็มหน้า — จังหวะนี้โต๊ะควรมีคนร้องเฮ</small>'
+    : '<b>💀 NATURAL 1 · ทอยจุ๊ง!</b><small>จุ๊งเต็มข้อ — ลูกเต๋าบอกว่า วันนี้ไม่ใช่วันของมึง</small>';
+  requestAnimationFrame(() => box.classList.add('on'));
+  clearTimeout(d20CalloutTimer);
+  d20CalloutTimer = window.setTimeout(() => box.classList.remove('on'), 2200);
+}
+
 function watchD20() {
   document.addEventListener('click', event => {
     if (!event.target.closest?.('#d20')) return;
@@ -67,6 +103,7 @@ function watchD20() {
       const value = Number(document.getElementById('d20num')?.textContent || 0);
       if (value === 1) unlockMini('d20-natural-1');
       if (value === 20) unlockMini('d20-natural-20');
+      showD20Callout(value);
     }, 760);
   }, true);
 }
