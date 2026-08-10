@@ -131,7 +131,8 @@ async function hardReset(event){
 
   /* ธงให้ด่านใหม่ /classroom/dungeon/ รู้ว่าต้องปลดล็อกหีบให้เปิดได้อีกรอบ
      หน้าปลายทางจะอ่านธงนี้ ล้างผลหีบรอบก่อน แล้วปรับธงกลับเป็น 0 เอง */
-  set(localStorage,'mc_dungeon_reset_v1','1');
+  set(localStorage,'mc_dungeon_reset_requested','true');
+  set(localStorage,'mc_dungeon_reset_v1','true');
 
   try{ window.MC_ACT?.('awaken-dungeon-hard-reset'); }catch{}
   await Promise.race([pushReset(e),new Promise(r=>setTimeout(r,1800))]);
