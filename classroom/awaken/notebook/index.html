@@ -69,16 +69,33 @@ img{max-width:100%;height:auto;display:block}
 .scroll-anchor{scroll-margin-top:74px}
 
 /* ── หน้าที่เสียหาย + กล่องสกิล ── */
-.tornwrap{margin-top:12px;transition:opacity .9s ease,filter .9s ease}
-.tornwrap.mending{filter:drop-shadow(0 0 22px rgb(190 148 66/.55))}
-.tornwrap.fade{opacity:0;pointer-events:none}
-/* เส้นทองวิ่งตามรอยฉีกตอนกำลังซ่อม */
+.tornwrap{margin-top:12px;position:relative;transition:opacity .9s ease,filter .9s ease,transform .9s ease}
+.tornwrap.mending{filter:drop-shadow(0 0 40px rgb(255 214 124/.8)) saturate(1.25);transform:scale(1.015)}
+.tornwrap.fade{opacity:0;pointer-events:none;transform:scale(1.06)}
+/* เส้นทองวิ่งตามรอยฉีกตอนเวลากำลังไหลย้อน */
 .seam{position:absolute;inset:0;pointer-events:none;opacity:0;
-  background:linear-gradient(103deg,transparent 44%,rgb(255 236 180/.9) 50%,transparent 56%);
+  background:linear-gradient(103deg,transparent 40%,rgb(255 236 180/.95) 50%,transparent 60%);
   mix-blend-mode:screen}
-.tornwrap.mending .seam{animation:seamRun 1.1s ease-in-out}
-@keyframes seamRun{0%{opacity:0;transform:translateY(-18%)}
-  30%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateY(18%)}}
+.tornwrap.mending .seam{animation:seamRun 1.05s ease-in-out 2}
+@keyframes seamRun{0%{opacity:0;transform:translateY(-22%)}
+  30%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translateY(22%)}}
+
+/* ── เอฟเฟกต์ย้อนเวลา — วงแหวนทอง เม็ดทรายลอยขึ้น และแฟลชตอนจบ ── */
+.timefx{position:fixed;inset:0;z-index:90;pointer-events:none;overflow:hidden}
+.timefx .ring{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;
+  border:2px solid rgb(255 226 160/.85);box-shadow:0 0 34px rgb(255 214 124/.55),inset 0 0 22px rgb(255 214 124/.35);
+  animation:ringOut 1.5s cubic-bezier(.16,.9,.3,1) forwards}
+@keyframes ringOut{to{width:170vmax;height:170vmax;margin:-85vmax 0 0 -85vmax;opacity:0;border-width:1px}}
+.timefx .grain{position:absolute;bottom:-14px;width:4px;height:4px;border-radius:50%;background:rgb(255 226 160/.95);
+  box-shadow:0 0 9px rgb(255 214 124/.9);animation:grainUp linear forwards}
+@keyframes grainUp{0%{transform:translateY(0) scale(.6);opacity:0}
+  12%{opacity:1}100%{transform:translateY(-105vh) scale(1.15);opacity:0}}
+.timefx .flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgb(255 244 214/.95),rgb(255 214 124/.35) 38%,transparent 68%);
+  opacity:0;animation:flashPop 1s ease-out .95s forwards}
+@keyframes flashPop{22%{opacity:1}100%{opacity:0}}
+.timefx .clockface{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;
+  border:2px dashed rgb(255 226 160/.7);animation:clockBack 1.6s cubic-bezier(.3,.9,.3,1) forwards}
+@keyframes clockBack{0%{rotate:0deg;opacity:0}18%{opacity:.9}100%{rotate:-720deg;opacity:0;scale:1.7}}
 
 .gate{margin:18px auto 0;max-width:560px;background:rgb(255 255 255/.05);
   border:1px solid rgb(190 148 66/.4);border-radius:16px;padding:22px 22px 24px;text-align:center}
@@ -271,18 +288,18 @@ footer .exits{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;ma
       <span class="tag mono">OLD ITEM CONDITION · DAMAGED</span>
       <h2 class="disp">หน้าถัดไปเสียหายหนัก</h2>
       <p>หมึกส่วนใหญ่เลือนจนอ่านไม่ออก</p>
-      <p class="why">มีของชิ้นหนึ่งซ่อนอยู่ใน Quest Chest ช่วงโลกของตัวอักษร</p>
-      <a class="go disp" href="../../dungeon/#p1">กลับไปหาเครื่องมือในด่านบอส</a>
+      <p class="why">มีของชิ้นหนึ่งที่ย้อนเวลาได้ รออยู่ในเควสแรกของด่านบอส ช่วงโลกของตัวอักษร</p>
+      <a class="go disp" href="../../dungeon/#p1">กลับไปหานาฬิกาทรายในด่านบอส</a>
     </div>
 
     <!-- สถานะ B — มีสกิลแล้ว แต่ต้องกดใช้เอง ไม่เปิดให้อัตโนมัติ -->
     <div class="gate" id="stateB" hidden>
       <span class="tag mono">SKILL AVAILABLE · RESTORE</span>
-      <h2 class="disp">ซ่อมแซมสิ่งที่เวลาเคยทำให้เลือนหาย</h2>
-      <p>ค้อนซ่อมความทรงจำอยู่ในกระเป๋า — คุณเลือกใช้มันได้เอง</p>
-      <p class="why">สมุดหลังซ่อมยังต้องดูเก่า สกิลทำให้มันอ่านได้ ไม่ได้ลบร่องรอยของอดีต</p>
+      <h2 class="disp">ย้อนเวลาให้หน้าที่จางหายกลับมา</h2>
+      <p>นาฬิกาทรายย้อนเวลาอยู่ในกระเป๋า — คุณเลือกใช้มันได้เอง</p>
+      <p class="why">สมุดหลังย้อนยังต้องดูเก่า เวลาที่ไหลกลับทำให้มันอ่านได้ ไม่ได้ลบร่องรอยของอดีต</p>
       <button type="button" class="rbtn disp" id="restoreBtn" data-mc-act="notebook-restore">
-        <span aria-hidden="true">🔨</span>USE SKILL — ซ่อมสมุด</button>
+        <span aria-hidden="true">⏳</span>USE ITEM — กลับทรายให้ไหลย้อน</button>
     </div>
   </div>
 </div>
@@ -318,7 +335,7 @@ footer .exits{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;ma
    ═══════════════════════════════════════════════════════ */
 (function(){
 'use strict';
-var K_REST='mc_nb_restored', K_SEEN='mc_nb_seen', K_END='mc_secret_end';
+var K_REST='mc_nb_restored', K_SEEN='mc_nb_seen', K_END='mc_secret_end', K_BUMP='mc_nb_bumped';
 /* ชื่อแท็กกับรหัสสุดท้ายอยู่ในไฟล์เนื้อหา ไม่ใช่ในหน้านี้
    คนที่ยังไม่ซ่อมสมุดเปิดซอร์สหน้านี้แล้วจะไม่เจอว่ามีอะไรรออยู่ */
 function TAG(){ return (window.MC_PLAYMATE||{}).tag; }
@@ -373,15 +390,34 @@ function loadStory(){
   return loading;
 }
 
+/* ═══════════ เอฟเฟกต์ตอนกลับทรายให้ไหลย้อน ═══════════
+   วงแหวนทองแผ่ออก เม็ดทรายลอยขึ้น (ทวนแรงโน้มถ่วง = เวลาเดินกลับ) แล้วแฟลชปิดท้าย */
+function timeBurst(){
+  var fx=document.createElement('div');
+  fx.className='timefx';
+  fx.setAttribute('aria-hidden','true');
+  var html='<span class="ring"></span><span class="clockface"></span><span class="flash"></span>';
+  for(var i=0;i<44;i++){
+    var left=Math.random()*100, dur=(1.5+Math.random()*1.4).toFixed(2),
+        delay=(Math.random()*.85).toFixed(2), size=(2+Math.random()*3.5).toFixed(1);
+    html+='<span class="grain" style="left:'+left.toFixed(1)+'%;width:'+size+'px;height:'+size+
+          'px;animation-duration:'+dur+'s;animation-delay:'+delay+'s"></span>';
+  }
+  fx.innerHTML=html;
+  document.body.appendChild(fx);
+  setTimeout(function(){ fx.remove(); },3000);
+}
+
 /* ═══════════ เปิดหน้า 2–10 ═══════════ */
 var wired=false;
 function reveal(anim){
   /* เริ่มแอนิเมชันซ่อมทันทีที่กด ไม่ต้องรอไฟล์เนื้อหาโหลดเสร็จก่อน
      แล้วค่อยโชว์ตอนที่ทั้งสองอย่างพร้อม จะได้ไม่มีจังหวะค้าง */
-  var minWait = (anim && !reduced()) ? 1700 : 0;
+  var minWait = (anim && !reduced()) ? 2200 : 0;
   if(anim && !reduced()){
     torn.classList.add('mending');
-    setTimeout(function(){ torn.classList.add('fade'); },900);
+    timeBurst();
+    setTimeout(function(){ torn.classList.add('fade'); },1250);
   }
   var t0=Date.now();
   loadStory().then(function(){
@@ -462,10 +498,13 @@ function wire(){
 
   var bump=document.getElementById('bumpBtn'), btx=document.getElementById('bumpTx');
   if(bump){
-    if(TAG() && titles().indexOf(TAG())>=0) bumped(true);
+    /* ปุ่มชนหมัดผูกกับ "รอบนี้" ไม่ใช่ตราถาวร — Reset Dungeon ล้าง mc_nb_* ทิ้ง
+       ตราที่เคยได้ยังอยู่ในคลัง แต่คนที่รีเซ็ตแล้วได้กลับมาชนใหม่จริง ๆ */
+    if(ls(K_BUMP,'')==='1') bumped(true);
     bump.addEventListener('click',function(){
       if(bump.disabled) return;
       bump.disabled=true;
+      save(K_BUMP,'1');
       ev('playmate_fist_bump_clicked');
       grantTag();
       bumped(false);

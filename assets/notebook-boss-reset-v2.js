@@ -118,7 +118,10 @@ async function resetDungeon() {
   try { removedSession = clearDungeonStorage(sessionStorage); } catch { /* private mode */ }
 
   /* ธงเดียวที่ด่านใหม่ /classroom/dungeon/ ต้องการ — เข้าไปแล้วมันจะปลดล็อกหีบเอง */
-  try { localStorage.setItem('mc_dungeon_reset_v1', '1'); } catch { /* private mode */ }
+  try {
+    localStorage.setItem('mc_dungeon_reset_requested', 'true');
+    localStorage.setItem('mc_dungeon_reset_v1', 'true');
+  } catch { /* private mode */ }
 
   report('awaken-dungeon-reset');
   try {
@@ -146,10 +149,9 @@ function createPanel() {
     <p>ปุ่มนี้ซ่อนอยู่ท้ายสมุด เพราะคนที่หาไม่เจอก็ยังไม่จำเป็นต้องกด</p>
     <button class="boss-reset-open" type="button" aria-expanded="false">♻️ Reset Boss Dungeon</button>
     <div class="boss-reset-confirm" hidden>
-      <b>ปลดล็อกหีบให้เปิดใหม่อีกรอบ?</b>
-      <p>ผลของหีบรอบที่แล้วจะถูกล้าง มึงจะได้กลับไปเปิดหีบใหม่ ตีบวกคัมภีร์ใหม่ หรือจะลองงัดดูก็ได้</p>
-      <div class="boss-reset-list"><span>ล้าง: ผลหีบ · ดาวที่ล็อกไว้ · เกลือ · เลเวลคัมภีร์ · สถานะสมุด</span><span>เก็บไว้: เควสที่เคลียร์แล้ว · 6 บท · Achievement · Player Card · Collection</span></div>
-      <div class="boss-reset-actions"><button class="boss-reset-cancel" type="button">ยังไม่รีเซ็ต</button><button class="boss-reset-do" type="button">ยืนยัน · เริ่ม Dungeon ใหม่</button></div>
+      <b>กดแล้วระบบจะลืมว่าคุณเคยเข้าห้องบอส</b>
+      <p>หีบจะเกิดใหม่และยังไม่ถูกเปิด</p>
+      <div class="boss-reset-actions"><button class="boss-reset-cancel" type="button">ยังไม่รีเซ็ต</button><button class="boss-reset-do" type="button">ยืนยัน</button></div>
     </div>`;
 
   const open = panel.querySelector('.boss-reset-open');
