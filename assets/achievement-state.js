@@ -29,7 +29,6 @@ function titles() { const t = json('mc_titles', []); return Array.isArray(t) ? t
 function hasTitle(t) { return titles().includes(t); }
 
 function core7Stats() {
-  /* ⚠️ คีย์คือ c7:stats_bot ขีดล่าง ไม่ใช่ c7:stats:bot */
   const bot = json('c7:stats_bot', {}) || {};
   const casual = json('c7:stats_casual', {}) || {};
   return {
@@ -46,8 +45,6 @@ function firstHandCount() {
   return Number.isFinite(n) ? n : 0;
 }
 
-/* เคยจบ SET ไหม — ผลลัพธ์ถูกจดไว้เป็นธงถาวรตั้งแต่ครั้งแรกที่เจอ
-   เพราะ snapshot ของ Match ถูกลบทิ้งได้ ถ้าไม่จดไว้ Achievement จะหายย้อนหลัง */
 function completedSet() {
   if (raw('c7:first_set_completed') === '1') return true;
   try {
@@ -66,8 +63,15 @@ function completedSet() {
   return false;
 }
 
-/* คืนค่าเป็น Map id → true/false ให้หน้าอัลบั้มเอาไปวาดได้ตรง ๆ
-   ไม่ใช่คืนแค่รายการที่ปลดแล้ว เพราะหน้านั้นต้องวาดช่องที่ยังไม่ปลดด้วย */
+/* THE DUNGEON ใหม่เป็น source of truth ของด่านสุดท้าย
+   - ผ่านด่าน = เปิดผลหีบแล้ว ไม่ว่าจะเลือกล็อกกี่ดาวหรือทำหีบพัง
+   - AWAKENED = เปิดหีบปกติที่ 5/5 เท่านั้น
+   ห้ามอ่าน mc_ch7_done ของหน้า AWAKEN เก่าอีก */
+function dungeonState() {
+  const d = json('mc_dungeon_state_v2', null);
+  return d && d.v === 2 ? d : null;
+}
+
 export function achievementState() {
   const read = list('mc_read');
   const learn = list('mc_learn');
@@ -78,17 +82,18 @@ export function achievementState() {
   const cardDone = raw('mc_opened') === '1';
   const classDone = !!raw('mc_class');
   const clubDone = raw('mc_club_seen') === '1';
-  const ch7Done = raw('mc_ch7_done') === '1' || hasTitle('AWAKENED');
+  const dungeon = dungeonState();
+  const dungeonDone = !!dungeon?.loot;
+  const dungeonPerfect = !!(dungeon?.loot && !dungeon.loot.broken && Number(dungeon.loot.stars) === 5);
   const blacksmith = forgeDone || hasTitle('BLACKSMITH');
   const firstHand = firstHandCount();
   const state = {};
 
   FORGE_SLUGS.forEach((slug, i) => { state['forge-' + (i + 1)] = read.includes(slug); });
-  /* ตอนพิเศษปลดพร้อมกับอ่านตอนที่ 7 จบ */
   state['forge-special'] = read.includes(FORGE_SLUGS[6]);
   LEARN_SLUGS.forEach((slug, i) => { state['lesson-' + (i + 1)] = learn.includes(slug); });
 
-  state.awaken = ch7Done;
+  state.awaken = dungeonDone;
   state.home = forgeCount > 0 || learnCount > 0 || classDone || cardDone || clubDone || c7.played > 0;
   state.path = classDone;
   state.club = clubDone;
@@ -97,7 +102,7 @@ export function achievementState() {
   state.card = cardDone;
 
   state.blacksmith = blacksmith;
-  state.awakened = ch7Done;
+  state.awakened = dungeonPerfect || hasTitle('AWAKENED');
   state.hero = hasTitle('HERO');
   state.seeker = raw('mc_seek_hit') === '1' || hasTitle('SEEKER');
   state['notebook-found'] = raw('mc_nb_seen') === '1' || raw('mc_nb_restored') === '1' || raw('mc_secret_end') === '1';
