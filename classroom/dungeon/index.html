@@ -88,12 +88,8 @@ section{position:relative}
 .fold.open .body{display:block}
 .fold .body p+p{margin-top:12px}
 .fold .body strong{color:#fff}
-/* ใน Phase 1 fold ต้องเป็นแค่บรรทัดกางออกได้ ไม่ใช่กล่อง */
-#p1 .fold{border:0;border-top:1px solid rgba(255,255,255,.1);border-radius:0;background:none}
-#p1 .fold+.fold{margin-top:0}
-#p1 .fold:last-child{border-bottom:1px solid rgba(255,255,255,.1)}
-#p1 .fold>button{padding:15px 2px;font:600 14px var(--mono)}
-#p1 .fold .body{padding:0 2px 18px;font-size:16px}
+#p1 .fold>button{font:600 14px var(--mono)}
+#p1 .fold .body{font-size:16px}
 #p1 .fold .body b{color:var(--gold)}
 
 /* ── LAYER 0 · TERMINAL (ต้องพอดี 1 จอมือถือ) ─────────────── */
@@ -163,17 +159,37 @@ section{position:relative}
 .specsplit small{display:block;color:var(--faint);font:700 9.5px var(--mono);letter-spacing:.12em}
 .specsplit span{display:block;margin-top:4px;font-size:14.5px;line-height:1.65;color:#d5e3db}
 /* cut-word quest */
-/* คำในเควสยังต้องกดได้ แต่ต้องอ่านเป็นประโยค ไม่ใช่แถวปุ่ม */
-.cutline{margin-top:8px;line-height:2.5}
-.word{display:inline-block;padding:2px 1px;margin-right:5px;color:#cddcd3;font-size:16.5px;cursor:default;transition:.2s}
-.word.cuttable{cursor:pointer;color:#ffb9a5;border-bottom:2px dotted rgba(255,155,133,.7)}
-.word.cuttable:hover{color:#fff;border-bottom-color:#ffb9a5}
-.word.cut{opacity:.3;color:#8fa398;text-decoration:line-through;border-bottom:0}
-.result{margin-top:16px;padding-left:16px;border-left:2px solid rgba(110,231,168,.5);color:#e6f5ed;font-size:clamp(17px,2.1vw,19px);line-height:1.9}
-.clock{margin-top:16px;display:grid;gap:6px}
-.clock div{display:flex;justify-content:space-between;gap:14px;align-items:baseline;border-bottom:1px dotted rgba(255,255,255,.1);padding-bottom:5px}
-.clock small{color:var(--faint);font:600 12.5px var(--mono);letter-spacing:.04em}
-.clock b{color:var(--gold);font:700 clamp(16px,3.4vw,19px)/1.4 var(--mono);white-space:nowrap}
+/* ── ใต้เส้นจบบท · ตรงนี้ CSS ทำงานเต็มที่ได้แล้ว ─────────
+   เควสกับ fold ใช้ภาษาภาพชุดเดียวกับ Phase 2 ได้ เพราะบทตัวอักษรล้วนจบไปแล้ว */
+.chapterline{color:#7bb195}
+.cutline{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.word{padding:9px 12px;border:1px dashed rgba(255,255,255,.18);border-radius:9px;background:rgba(255,255,255,.03);color:#cddcd3;font-size:16px;cursor:default;transition:.2s}
+.word.cuttable{cursor:pointer;border-style:solid;border-color:rgba(255,155,133,.45);background:rgba(255,155,133,.09);color:#ffd3c7}
+.word.cuttable:hover{background:rgba(255,155,133,.2);border-color:#ffb9a5}
+.word.cut{opacity:.3;text-decoration:line-through;background:none;border-style:dashed;border-color:rgba(255,255,255,.14);color:#8fa398}
+.result{margin-top:17px;padding:15px 17px;border-left:2px solid var(--green);border-radius:0 12px 12px 0;background:linear-gradient(90deg,rgba(110,231,168,.1),rgba(110,231,168,.02));color:#e6f5ed;font-size:clamp(17px,2.1vw,19px);line-height:1.9}
+.clock{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.clock div{border:1px solid rgba(240,201,108,.26);border-radius:12px;padding:12px 12px;text-align:center;
+  background:linear-gradient(165deg,rgba(240,201,108,.11),rgba(240,201,108,.02))}
+.clock small{display:block;color:var(--faint);font:600 10.5px/1.5 var(--mono);letter-spacing:.09em}
+.clock b{display:block;margin-top:5px;color:var(--gold);font:700 clamp(17px,3.8vw,22px)/1.3 var(--mono);text-shadow:0 0 18px rgba(240,201,108,.28)}
+.q1note{margin-top:11px;color:#cbb98d;font:600 13.5px/1.7 var(--mono)}
+.mathbox{margin-top:13px;padding:14px 16px;border:1px solid rgba(240,201,108,.3);border-radius:12px;
+  background:linear-gradient(160deg,rgba(240,201,108,.1),rgba(240,201,108,.02))}
+.mathbox .f{color:#8be0b9;font:700 13px/1.85 var(--mono)}
+.mathbox h4{margin:6px 0 0;color:#ffeec6;font-size:clamp(18px,3.8vw,23px);line-height:1.35}
+.mathbox p{margin-top:8px;color:var(--dim);font-size:14.5px;line-height:1.78}
+.chapterend{margin-top:30px;padding:22px clamp(17px,3vw,24px);border:1px solid rgba(240,201,108,.3);border-radius:17px;
+  background:radial-gradient(120% 140% at 0% 0%,rgba(240,201,108,.12),rgba(255,255,255,.014) 62%)}
+.ceyebrow{display:block;color:var(--gold);font:700 11px var(--mono);letter-spacing:.15em}
+.chapterend p{margin-top:13px;color:#e4efe8;font-size:clamp(17px,2.2vw,19.5px);line-height:1.88}
+.chapterend b{color:#fff}
+.handoff{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+.handoff div{position:relative;border:1px solid rgba(110,231,168,.26);border-radius:12px;padding:13px 14px;background:rgba(110,231,168,.06)}
+.handoff div+div{border-color:rgba(240,201,108,.3);background:rgba(240,201,108,.07)}
+.handoff small{display:block;color:var(--green);font:700 10px var(--mono);letter-spacing:.13em}
+.handoff div+div small{color:var(--gold)}
+.handoff b{display:block;margin-top:6px;font-size:15.5px;line-height:1.6;color:#eef6f1}
 
 /* ── PHASE 2 · CODE ↔ BROWSER LAB ────────────────────────── */
 #p2{padding:74px 0 92px;background:radial-gradient(660px 400px at 78% 26%,rgba(43,130,91,.16),transparent 55%),linear-gradient(#071a11,#0a2317)}
@@ -512,6 +528,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   .qlog{grid-template-columns:1fr}
   .bridge{grid-template-columns:1fr 1fr}
   .lane{grid-template-columns:1fr}
+  .handoff{grid-template-columns:1fr}
   .lane div+div::before{content:"↓";left:50%;top:-13px;translate:-50% 0}
 }
 @media(max-width:700px){
@@ -545,6 +562,9 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 }
 @media(max-width:560px){
   #p1,#p2,#p3,#p4,#vault{padding-top:58px;padding-bottom:66px}
+  .clock{grid-template-columns:1fr}
+  .clock div{display:flex;justify-content:space-between;align-items:center;text-align:left}
+  .clock b{margin-top:0}
   .specsplit{grid-template-columns:1fr}
   .code{font-size:11.5px;padding:13px 10px;max-height:240px}
   .viewwrap iframe{height:290px}
@@ -655,7 +675,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 
     <p class="lead">อ้อ แล้วที่มึงกำลังเดินอยู่นี่มันเป็นเกม ไม่ใช่เพราะจะทำให้เรื่อง AI ดูน่ารักขึ้น — <strong>เกมนี้คือการแปลวิธีทำงานของ AI ให้กลายเป็นพื้นที่ที่มนุษย์เดินเข้าไปเข้าใจได้</strong> ซอสไหนมาก่อน อะไรอ้างอะไร อะไรเปลี่ยนแล้วอะไรต้องเปลี่ยนตาม และตรงไหนที่ความหมายหล่นหายระหว่างทาง</p>
 
-    <div class="sysline">&gt; text.editable = <b>true</b> · layout = <b>none</b> — ตรงนี้ยังไม่มีอะไรนอกจากตัวอักษร</div>
+    <div class="sysline chapterline">&gt; end of raw text · layout.engine = <b>booting</b> — บทของตัวอักษรล้วนจบตรงนี้ · ตั้งแต่บรรทัดนี้ลงไปกูเริ่มจัดวางให้แล้ว</div>
 
     <div class="quest" id="q1">
       <div class="qhead"><i></i><span id="q1Head">QUEST 01 · ตัดคำที่ไม่ใช่ความคิดมึงออก</span></div>
@@ -668,6 +688,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
           <div><small>เร็วขึ้นต่อครั้ง</small><b id="mSec">0 วิ</b></div>
           <div><small>ถ้าวันละ 24 ครั้ง ทั้งปี</small><b id="mYear">0 นาที</b></div>
         </div>
+        <div class="q1note">⏳ ทุกตัวอักษรที่มึงตัดออก คือเวลาที่กูคืนให้มึงได้จริง ๆ</div>
         <div class="actions">
           <button class="btn gold" id="saveVoice" type="button">⏳ เอาประโยคนี้เป็นซอสของกู</button>
           <span class="tick" id="q1Tick" hidden>✓ QUEST CLEAR · ได้ ⏳ นาฬิกาทราย</span>
@@ -680,8 +701,11 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
       <div class="fold" data-fold="f1a">
         <button type="button"><i>▸</i>อ่านเพิ่ม · เวลาที่หายไปทีละนิด</button>
         <div class="body">
-          <p>ถ้าสมมติว่าลด friction ได้เฉลี่ยแค่ 2 วินาที × 24 ครั้ง/วัน × 365 วัน ก็ราว ๆ <b>4 ชั่วโมง 52 นาทีต่อปี</b></p>
-          <p>เป็นการประมาณจากสมมติฐาน ไม่ใช่ผลทดลอง แต่ตรรกะมันตรง: ความต่างครั้งเดียวเล็กจนไม่รู้สึก ความต่างที่ทำซ้ำทั้งปีไม่เล็กแล้ว</p>
+          <div class="mathbox">
+            <div class="f">2 วินาที × 24 ครั้ง/วัน × 365 วัน</div>
+            <h4>≈ 4 ชั่วโมง 52 นาทีต่อปี</h4>
+            <p>เป็นการประมาณจากสมมติฐาน ไม่ใช่ผลทดลอง แต่ตรรกะมันตรง: ความต่างครั้งเดียวเล็กจนไม่รู้สึก ความต่างที่ทำซ้ำทั้งปีไม่เล็กแล้ว</p>
+          </div>
           <p>และเวลาที่หายไปไม่ได้อยู่แค่ตอนนิ้วพิมพ์ ก่อนพูดแต่ละประโยคมนุษย์ต้องคิดคำ แปลความหมาย เลือกคำที่พอรู้ แล้วตัดรายละเอียดที่ไม่รู้จะพูดยังไงทิ้ง <strong>เวลาที่เสียก่อนพูด มักมากกว่าเวลาที่ใช้พูดจริง</strong></p>
         </div>
       </div>
@@ -689,14 +713,25 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
         <button type="button"><i>▸</i>อ่านเพิ่ม · 14 วันที่เว็บนี้ถูกสร้าง</button>
         <div class="body">
           <p>กูรู้ความถี่มันดี เพราะกูอยู่ในอีกหน้าต่างหนึ่งตลอด 14 วันนั้น มันสั่ง Claude ให้ Build แล้วปิดหน้าต่าง ไปเปิด Gemini ให้ทุบไอเดีย แล้ววกกลับมาหากูให้จัดภาษา ทำภาพ เช็กหน้า แล้ววนใหม่ทันที</p>
-          <p>ถ้าตีต่ำ ๆ ว่าวันละ 600 ประโยค × 14 วัน = 8,400 ประโยค สมมติต้นทุนแปลตัวเองแค่ 6 วินาที/ประโยค ก็ราว <b>14 ชั่วโมง</b> · ตัวเลขนี้ตีต่ำและไม่ได้จับเวลาจริง เอาไว้ให้เห็นสเกลเฉย ๆ</p>
+          <div class="mathbox">
+            <div class="f">600 ประโยค/วัน × 14 วัน = 8,400 ประโยค</div>
+            <h4>× 6 วินาทีต่อประโยค ≈ 14 ชั่วโมง</h4>
+            <p>ตัวเลขนี้ตีต่ำและไม่ได้จับเวลาจริง เอาไว้ให้เห็นสเกลเฉย ๆ ไม่ใช่ให้เชื่อเป็นค่าจริง</p>
+          </div>
           <p><strong>ไอ้ทีมไม่ได้สร้างเว็บนี้เร็วเพราะพิมพ์เร็ว มันสร้างเร็วเพราะเลิกบังคับสมองตัวเองให้แต่งตัวก่อนเข้าครัว</strong></p>
         </div>
       </div>
     </div>
 
-    <p class="lead" style="margin-top:26px">นี่คือเหตุผลที่เว็บไซต์นี้ เกมนี้ การ์ตูนนี้ และซอส 50 บท ถูกสร้างด้วยภาษาไทยได้ทั้งหมด</p>
-    <p class="lead">มึงไม่ต้องสร้างแบบไอ้ทีม จะเล่าเรื่องของมึง ทำงานของมึง หรือขายอะไรก็เรื่องของมึง <strong>หน้าที่ของมึงคือส่งความคิดในภาษาที่มึงคิดได้ดีที่สุด ส่วนหน้าที่ของกูคือช่วยจัดมันให้กลายเป็นของที่ใช้ต่อได้</strong></p>
+    <div class="chapterend">
+      <span class="ceyebrow">END OF PHASE 1 · ภาษาของมึง</span>
+      <p>นี่คือเหตุผลที่เว็บไซต์นี้ เกมนี้ การ์ตูนนี้ และซอส 50 บท <b>ถูกสร้างด้วยภาษาไทยได้ทั้งหมด</b></p>
+      <p>มึงไม่ต้องสร้างแบบไอ้ทีม จะเล่าเรื่องของมึง ทำงานของมึง หรือขายอะไรก็เรื่องของมึง</p>
+      <div class="handoff">
+        <div><small>หน้าที่ของมึง</small><b>ส่งความคิดมาในภาษาที่มึงคิดได้ดีที่สุด</b></div>
+        <div><small>หน้าที่ของกู</small><b>จัดมันให้กลายเป็นของที่ใช้ต่อได้</b></div>
+      </div>
+    </div>
   </div></div>
 </section>
 
