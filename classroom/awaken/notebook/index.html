@@ -556,6 +556,8 @@ if(ls(K_REST,'')==='1'){
 if(btn) btn.addEventListener('click',function(){
   btn.disabled=true;
   save(K_REST,'1');
+  /* ประทับเวลาไว้ให้ห้องบอสแยกออกว่า “ซ่อมในรอบนี้” หรือเป็นธงค้างจากรอบก่อน */
+  save('mc_nb_restored_at', String(Date.now()));
   ev('playmate_restore_used');
   reveal(true);
 });
