@@ -1,0 +1,53 @@
+name: Notebook one-shot hotfix
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch notebook only
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('classroom/awaken/notebook/index.html')
+          s=p.read_text()
+          reps=[
+            ('.pages{margin-top:20px}.panel{', '.pages{margin-top:20px}#restoredTail>.pages{margin-top:0}.panel{'),
+            ('.panel+.panel{margin-top:10px}', '.panel+.panel{margin-top:0}'),
+            ('.page2stage .clean{position:relative;z-index:1;filter:brightness(.72) saturate(.65) sepia(.25);transform:scale(.995)}', '.page2stage .clean{position:relative;z-index:1;filter:none;transform:none}'),
+            ('.page2stage.healing .clean{animation:cleanReturn 3.25s cubic-bezier(.16,.8,.2,1) forwards}', '.page2stage.healing .clean{filter:none;transform:none}'),
+            ('@keyframes cleanReturn{0%{filter:brightness(.72) saturate(.65) sepia(.25);transform:scale(.995)}45%{filter:brightness(1.18) saturate(1.1) sepia(0);transform:scale(1.006)}100%{filter:none;transform:none}}\n', ''),
+            ('<picture class="clean"><source type="image/webp" srcset="img/nb-02.webp"><img src="img/nb-02.jpg" width="1024" height="1536" decoding="async" alt="หน้าที่ 2 หลังถูกซ่อมกลับคืน"></picture>', '<picture class="clean"><img src="img/nb-02.jpg" width="1024" height="1536" decoding="async" alt="หน้าที่ 2 หลังถูกซ่อมกลับคืน · ภาพต้นฉบับสีจริง"></picture>'),
+            ("function hasTool(){const s=dungeon();return !!s?.voice || rd('mc_awaken_restore_tool_v1')==='1'}", "function hasTool(){const s=dungeon();return !!s?.voice}"),
+            ("function roll(){const d=$('d20');", "function roll(){audio();const d=$('d20');")
+          ]
+          for old,new in reps:
+            if old not in s:
+              raise SystemExit('Expected notebook snippet not found: '+old[:100])
+            s=s.replace(old,new,1)
+          old="function resetDungeon(){preserve();const keep=new Set(['mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1','mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_titles']);const kill=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||keep.has(k))continue;if(k==='mc_dungeon_state_v2'||k==='mc_secret_end'||k.startsWith('mc_nb_')||k.startsWith('mc_ch7_')||k.startsWith('mc_awaken_'))kill.push(k)}kill.forEach(k=>localStorage.removeItem(k));wr('mc_dungeon_reset_count',String(Number(rd('mc_dungeon_reset_count','0'))+1));mini('dungeon-reset')}catch{}act('dungeon-reset');location.replace('../../dungeon/?fresh='+Date.now())}"
+          new="async function resetDungeon(){preserve();const keep=new Set(['mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1','mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_titles']);const kill=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||keep.has(k))continue;if(k==='mc_dungeon_state_v2'||k==='mc_secret_end'||k.startsWith('mc_nb_')||k.startsWith('mc_ch7_')||k.startsWith('mc_awaken_'))kill.push(k)}kill.forEach(k=>localStorage.removeItem(k));wr('mc_dungeon_reset_count',String(Number(rd('mc_dungeon_reset_count','0'))+1));mini('dungeon-reset')}catch{}try{const progress={};['mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1','mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_titles','mc_dungeon_reset_count'].forEach(k=>{const v=localStorage.getItem(k);if(v!==null)progress[k]=v});await Promise.race([fetch('/api/progress',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({resetScope:'dungeon',progress})}),new Promise(r=>setTimeout(r,900))])}catch{}act('dungeon-reset');location.replace('../../dungeon/?fresh='+Date.now())}"
+          if old not in s:
+            raise SystemExit('Expected resetDungeon function not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          # Safety assertions: story content stays; only the intended mechanics changed.
+          assert 'img/nb-02.jpg' in s and 'filter:brightness(.72) saturate(.65) sepia(.25)' not in s
+          assert '.panel+.panel{margin-top:0}' in s and '#restoredTail>.pages{margin-top:0}' in s
+          assert "mc_awaken_restore_tool_v1')==='1" not in s
+          assert "resetScope:'dungeon'" in s
+      - name: Commit hotfix and remove workflow
+        run: |
+          rm .github/workflows/notebook-state-hotfix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add classroom/awaken/notebook/index.html .github/workflows/notebook-state-hotfix.yml
+          git commit -m "Fix notebook original page color, zero-gap comic flow, and replay reset"
+          git push origin HEAD:main
