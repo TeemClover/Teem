@@ -52,8 +52,9 @@ h1,h2,h3,p{margin:0}
 .narrow{width:min(730px,100%);margin:auto}
 .eyebrow{display:block;font:600 11.5px/1.6 var(--mono);letter-spacing:.17em;color:var(--green)}
 .title{font-weight:800;letter-spacing:-.035em;line-height:1.14}
-.lead{color:#c2d1c8;line-height:1.9;font-size:clamp(16.5px,2vw,18.5px)}
+.lead{margin-top:18px;color:#c2d1c8;line-height:1.9;font-size:clamp(16.5px,2vw,18.5px)}
 .lead+.lead{margin-top:15px}
+.title+.lead{margin-top:0}
 .lead strong{color:#fff;font-weight:700}
 .said{color:var(--gold)}
 section{position:relative}
@@ -87,8 +88,13 @@ section{position:relative}
 .fold.open .body{display:block}
 .fold .body p+p{margin-top:12px}
 .fold .body strong{color:#fff}
-.foldgrid{display:grid;gap:12px;grid-template-columns:1fr 1fr;margin-top:20px}
-.foldcol>small{display:block;margin-bottom:7px;color:var(--faint);font:600 10.5px var(--mono);letter-spacing:.16em}
+/* ใน Phase 1 fold ต้องเป็นแค่บรรทัดกางออกได้ ไม่ใช่กล่อง */
+#p1 .fold{border:0;border-top:1px solid rgba(255,255,255,.1);border-radius:0;background:none}
+#p1 .fold+.fold{margin-top:0}
+#p1 .fold:last-child{border-bottom:1px solid rgba(255,255,255,.1)}
+#p1 .fold>button{padding:15px 2px;font:600 14px var(--mono)}
+#p1 .fold .body{padding:0 2px 18px;font-size:16px}
+#p1 .fold .body b{color:var(--gold)}
 
 /* ── LAYER 0 · TERMINAL (ต้องพอดี 1 จอมือถือ) ─────────────── */
 #terminal{min-height:100svh;padding:calc(var(--hud) + 12px) 0 18px;display:flex;align-items:center;
@@ -117,27 +123,37 @@ section{position:relative}
 #p1 .title{margin:14px 0 22px;font-size:clamp(26px,5vw,44px)}
 #p1 .lead{font-size:clamp(17px,2.1vw,19px)}
 /* translation tax */
-.tax{margin-top:26px;border:1px solid rgba(255,155,133,.28);border-radius:15px;padding:18px;background:linear-gradient(160deg,rgba(255,155,133,.07),rgba(255,255,255,.012))}
-.taxtag{display:block;color:var(--rose);font:700 11px var(--mono);letter-spacing:.13em}
-.taxsub{margin-top:6px;color:#d3bfb7;font-size:14.5px;line-height:1.75}
-.chain{margin-top:15px;display:grid;gap:0}
-.chain span{position:relative;padding:9px 13px;border:1px solid rgba(255,155,133,.24);border-radius:9px;background:rgba(0,0,0,.28);color:#f0d9d1;font-size:15.5px}
-.chain span+span{margin-top:20px}
-.chain span+span::before{content:"↓";position:absolute;left:16px;top:-19px;color:rgba(255,155,133,.7);font-size:14px;line-height:19px}
-.chain span:last-child{border-color:rgba(255,155,133,.5);color:#ffd9cd}
-.taxcost{margin-top:15px;padding-top:13px;border-top:1px dashed rgba(255,155,133,.28);color:#e7cdc4;font-size:15.5px;line-height:1.85}
-.taxcost b{color:var(--rose)}
-.shortpath{margin-top:20px;border:1px solid rgba(110,231,168,.34);border-radius:15px;padding:18px;background:linear-gradient(160deg,rgba(110,231,168,.09),rgba(255,255,255,.012))}
-.shortpath .taxtag{color:var(--green)}
-.rail{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:14px}
-.rail span{padding:10px 15px;border:1px solid rgba(110,231,168,.4);border-radius:99px;background:rgba(110,231,168,.1);color:#dcfced;font-size:15.5px;font-weight:700}
-.rail em{font-style:normal;color:rgba(110,231,168,.75);font-size:15px}
+/* ── PHASE 1 · ตัวอักษรล้วน ─────────────────────────────
+   ตรงนี้ CSS มีหน้าที่แค่ทำให้อ่านง่าย ห้ามทำให้ดูเป็น component
+   ไม่มี card ไม่มี panel ไม่มี pill — มีแค่ระยะ น้ำหนัก และเส้นคั่น */
+.rule{height:0;margin:26px 0;border:0;border-top:1px solid rgba(255,255,255,.12)}
+.script{display:grid;gap:20px}
+.turn{color:#c8d6cd;font-size:clamp(16px,2vw,17.5px);line-height:1.95;padding-left:58px;text-indent:-58px}
+.turn.ai{color:#9fd8ba;padding-left:74px;text-indent:-74px}
+.who{display:inline-block;width:44px;margin-right:14px;color:var(--faint);font:700 11.5px var(--mono);letter-spacing:.14em;text-indent:0;vertical-align:1px}
+.turn.ai .who{width:44px;color:rgba(110,231,168,.72)}
+.micro{margin-top:26px;color:var(--rose);font:700 11px var(--mono);letter-spacing:.13em;line-height:1.7}
+.flow{margin-top:14px;display:grid;gap:0}
+.flow span{position:relative;padding-left:20px;color:#e2cdc5;font-size:clamp(16px,2vw,17.5px);line-height:1.7}
+.flow span+span{margin-top:22px}
+.flow span+span::before{content:"↓";position:absolute;left:0;top:-24px;color:rgba(255,155,133,.75);font-size:15px;line-height:24px}
+.flow span:last-child{color:#ffd9cd;font-weight:700}
+.pairs{margin-top:12px;display:grid;gap:7px}
+.pairs span{color:#cdd9d1;font-size:15.5px;line-height:1.7}
+.pairs em{font-style:normal;color:rgba(255,155,133,.8);padding:0 4px}
+.lead.big{margin-top:22px;font-size:clamp(18px,2.6vw,21px);line-height:1.75;color:#e9f2ec}
+.said{margin-top:14px;color:#9fd8ba;font-size:clamp(18px,2.6vw,21px);line-height:1.7}
+.flowone{margin-top:16px;margin-bottom:4px;color:#dcfced;font:700 clamp(17px,2.6vw,21px)/1.6 var(--mono);letter-spacing:.02em}
+.folds{margin-top:22px}
 .bridge{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:20px}
 .bridge div{border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:12px 11px;background:rgba(255,255,255,.025)}
 .bridge small{display:block;color:var(--green);font:700 9.5px var(--mono);letter-spacing:.11em}
 .bridge b{display:block;margin-top:5px;font-size:14.5px;line-height:1.5}
-.reveal{margin-top:24px;padding:17px 19px;border-left:2px solid var(--gold);background:rgba(240,201,108,.06);color:#f2e6cd;font-size:clamp(17px,2.3vw,19.5px);line-height:1.85}
-.reveal b{color:var(--gold)}
+.lane{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:22px}
+.lane div{position:relative;border:1px solid rgba(142,201,255,.22);border-radius:11px;padding:13px 12px;background:linear-gradient(160deg,rgba(142,201,255,.08),rgba(255,255,255,.015))}
+.lane div+div::before{content:"→";position:absolute;left:-13px;top:50%;translate:0 -50%;color:rgba(142,201,255,.7);font-size:13px}
+.lane small{display:block;color:#7fb6e0;font:700 9.5px var(--mono);letter-spacing:.13em}
+.lane b{display:block;margin-top:5px;font-size:14.5px;line-height:1.5;color:#e6f1fa}
 /* thai specimen */
 .spec{display:grid;gap:10px;margin-top:6px}
 .specrow{border:1px solid rgba(255,255,255,.11);border-radius:12px;padding:14px 15px;background:rgba(0,0,0,.24)}
@@ -147,20 +163,17 @@ section{position:relative}
 .specsplit small{display:block;color:var(--faint);font:700 9.5px var(--mono);letter-spacing:.12em}
 .specsplit span{display:block;margin-top:4px;font-size:14.5px;line-height:1.65;color:#d5e3db}
 /* cut-word quest */
-.cutline{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.word{padding:9px 12px;border:1px dashed rgba(255,255,255,.18);border-radius:8px;background:rgba(255,255,255,.03);color:#cddcd3;font-size:15px;cursor:default;transition:.2s}
-.word.cuttable{cursor:pointer;border-style:solid;border-color:rgba(255,155,133,.4);background:rgba(255,155,133,.08);color:#ffd3c7}
-.word.cuttable:hover{background:rgba(255,155,133,.18)}
-.word.cut{opacity:.28;text-decoration:line-through;background:none;border-style:dashed}
-.result{margin-top:15px;padding:14px 16px;border-left:2px solid var(--green);background:rgba(110,231,168,.06);color:#e6f5ed;font-size:16.5px;line-height:1.85}
-.clock{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}
-.clock div{border:1px solid rgba(240,201,108,.24);border-radius:10px;padding:11px 12px;background:rgba(240,201,108,.05);text-align:center}
-.clock small{display:block;color:var(--faint);font:600 10px var(--mono);letter-spacing:.1em}
-.clock b{display:block;margin-top:4px;color:var(--gold);font:700 clamp(16.5px,3.8vw,21px)/1.3 var(--mono)}
-.mathbox{margin-top:13px;padding:13px 15px;border:1px solid rgba(240,201,108,.28);border-radius:11px;background:rgba(240,201,108,.06)}
-.mathbox .f{color:#8be0b9;font:700 12.5px/1.85 var(--mono)}
-.mathbox h4{margin:6px 0 0;font-size:clamp(17.5px,3.8vw,22px);line-height:1.35}
-.mathbox p{margin-top:7px;color:var(--dim);font-size:14px;line-height:1.75}
+/* คำในเควสยังต้องกดได้ แต่ต้องอ่านเป็นประโยค ไม่ใช่แถวปุ่ม */
+.cutline{margin-top:8px;line-height:2.5}
+.word{display:inline-block;padding:2px 1px;margin-right:5px;color:#cddcd3;font-size:16.5px;cursor:default;transition:.2s}
+.word.cuttable{cursor:pointer;color:#ffb9a5;border-bottom:2px dotted rgba(255,155,133,.7)}
+.word.cuttable:hover{color:#fff;border-bottom-color:#ffb9a5}
+.word.cut{opacity:.3;color:#8fa398;text-decoration:line-through;border-bottom:0}
+.result{margin-top:16px;padding-left:16px;border-left:2px solid rgba(110,231,168,.5);color:#e6f5ed;font-size:clamp(17px,2.1vw,19px);line-height:1.9}
+.clock{margin-top:16px;display:grid;gap:6px}
+.clock div{display:flex;justify-content:space-between;gap:14px;align-items:baseline;border-bottom:1px dotted rgba(255,255,255,.1);padding-bottom:5px}
+.clock small{color:var(--faint);font:600 12.5px var(--mono);letter-spacing:.04em}
+.clock b{color:var(--gold);font:700 clamp(16px,3.4vw,19px)/1.4 var(--mono);white-space:nowrap}
 
 /* ── PHASE 2 · CODE ↔ BROWSER LAB ────────────────────────── */
 #p2{padding:74px 0 92px;background:radial-gradient(660px 400px at 78% 26%,rgba(43,130,91,.16),transparent 55%),linear-gradient(#071a11,#0a2317)}
@@ -262,8 +275,10 @@ section{position:relative}
 .nd.mine{border-color:#fff3d2;color:#fff;box-shadow:0 0 26px rgba(255,243,210,.5)}
 .nd.who{border-color:rgba(110,231,168,.55);color:#d6ffea;background:rgba(8,26,17,.95);font-size:8.5px}
 .nd.who.ai{border-color:rgba(142,201,255,.55);color:#dbeeff;background:rgba(9,20,34,.95)}
-.web.scan .nd:not(.hit):not(.up):not(.core){opacity:.16;filter:grayscale(1)}
-.web.scan .wire:not(.on){opacity:.08;filter:grayscale(1)}
+/* หรี่ให้เห็นว่าอะไรไม่ถูกแตะ แต่ topology ต้องยังอ่านออกอยู่ · ห้ามดับทั้งเส้น */
+.web.scan .nd:not(.hit):not(.up):not(.core){opacity:.42;filter:grayscale(.75)}
+.web.scan .wire:not(.on){opacity:.34;filter:grayscale(.8)}
+.wire.on{filter:none;box-shadow:0 0 8px rgba(240,201,108,.35)}
 .nd.hit{border-color:#fff3d2;color:#fff;box-shadow:0 0 30px rgba(255,243,210,.6);transform:scale(1.12)}
 .nd.up{border-color:var(--green);color:#e2ffef;box-shadow:0 0 26px rgba(110,231,168,.5)}
 .nd.up::after{content:"UPDATED";position:absolute;left:50%;top:-14px;translate:-50% 0;color:var(--green);font:700 6.5px var(--mono);letter-spacing:.1em}
@@ -404,6 +419,8 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 .li b{display:block;font-size:16px;color:#fff3dc}
 .li small{display:block;margin-top:3px;color:#b0c0b6;font-size:13.5px;line-height:1.65}
 .saltbox{margin-top:14px;padding:13px 15px;border:1px solid rgba(255,155,133,.35);border-radius:12px;background:rgba(255,155,133,.08);color:#ffddc9;font-size:14.5px;line-height:1.8;text-align:left}
+.titlebox{border-color:rgba(240,201,108,.4);background:rgba(240,201,108,.09);color:#ffeec6}
+.titlebox b{color:var(--gold)}
 .timeledger{margin-top:18px;border:1px solid rgba(110,231,168,.3);border-radius:14px;padding:15px 17px;background:rgba(110,231,168,.06);text-align:left}
 .timeledger small{display:block;color:var(--green);font:700 10.5px var(--mono);letter-spacing:.16em}
 .tlrow{display:flex;justify-content:space-between;gap:12px;margin-top:10px;color:#cfe0d6;font:600 14px var(--mono)}
@@ -443,6 +460,48 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 @keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
 /* ── responsive ──────────────────────────────────────────── */
+/* ── DRAGON EVENT · ฉากโชว์ของครั้งเดียวของด่าน ───────── */
+.drake{background:radial-gradient(circle at 50% 42%,#1a0500,#050200 70%)}
+.drakeart{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.drakeart span,.drakeart i,.drakeart b{position:absolute;display:block}
+.drakeart .eye{top:34%;width:96px;height:0;border-radius:50%;opacity:0;
+  background:radial-gradient(circle,#fff8d8,#ffb02f 42%,rgba(255,60,0,0) 74%);
+  transition:height .45s ease,opacity .45s ease,filter .45s}
+.drakeart .eye.l{left:calc(50% - 152px)}
+.drakeart .eye.r{left:calc(50% + 56px)}
+.st1 .eye{opacity:1;height:22px}
+.st2 .eye,.st3 .eye{opacity:1;height:52px}
+.drakeart .maw{left:50%;top:30%;translate:-50% 0;width:0;height:0;opacity:0;
+  border-radius:52% 52% 44% 44%;background:radial-gradient(circle at 50% 40%,#fff2c8,#ff6b1f 52%,#6d1600 88%);
+  transition:width .5s cubic-bezier(.2,.9,.3,1),height .5s cubic-bezier(.2,.9,.3,1),opacity .4s}
+.st2 .maw{width:210px;height:130px;opacity:.8}
+.st3 .maw{width:400px;height:270px;opacity:1}
+.st4 .maw{width:420px;height:280px;opacity:.3;filter:blur(14px)}
+.drakeart .fire{left:-25%;right:-25%;bottom:-40%;height:0;opacity:0;filter:blur(3px);
+  background:radial-gradient(ellipse at 50% 100%,#fff6d8 0%,#ffd15c 16%,#ff9227 34%,#ff3d00 56%,rgba(120,20,0,0) 80%);
+  transition:height .6s cubic-bezier(.15,.85,.25,1),opacity .35s}
+.st3 .fire{height:210%;opacity:1;animation:drakeLick .5s ease-in-out infinite alternate}
+.st4 .fire{height:150%;opacity:.22}
+@keyframes drakeLick{to{filter:blur(7px);transform:scaleX(1.06)}}
+.drakeart .flash{inset:0;background:#fff;opacity:0}
+.st3 .flash{animation:drakeFlash 1s ease-out}
+@keyframes drakeFlash{0%{opacity:0}9%{opacity:.92}26%{opacity:.3}100%{opacity:0}}
+.drakeart .ember{width:6px;height:6px;border-radius:50%;background:#ffd15c;box-shadow:0 0 12px #ff8a2b;opacity:0}
+.st3 .ember,.st4 .ember{animation:ember 1.6s linear infinite}
+@keyframes ember{0%{opacity:0;transform:translateY(0) scale(1)}18%{opacity:1}100%{opacity:0;transform:translateY(-260px) scale(.3)}}
+.drake .fullin{position:relative;z-index:3}
+.drake .fullin::before{content:"";position:absolute;inset:-30px -20px;border-radius:28px;z-index:-1;
+  background:radial-gradient(ellipse at center,rgba(8,2,0,.82) 0%,rgba(8,2,0,.6) 52%,rgba(8,2,0,0) 78%)}
+.drake .fsay{color:#ffe3cd;text-shadow:0 2px 10px rgba(0,0,0,.7)}
+.drake .fmicro{color:#ffd0ab;text-shadow:0 2px 8px rgba(0,0,0,.7)}
+.drake .fbig{background:linear-gradient(#fff,#ffb877);-webkit-background-clip:text;background-clip:text;color:transparent}
+.st1 .fbig,.st2 .fbig{text-shadow:0 0 30px rgba(255,120,0,.5)}
+.quake{animation:quake .26s linear infinite}
+@keyframes quake{0%{transform:translate(0,0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-3px)}100%{transform:translate(0,0)}}
+.ask{margin-top:11px;padding-top:11px;border-top:1px dashed rgba(255,155,133,.3)}
+.ask b{display:block;color:#ffd3c7;font-size:15.5px}
+.ask span{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+
 @media(min-width:900px){
   .labgrid.split{grid-template-columns:1fr 1fr}
   .labgrid.split .pane+.pane{border-top:0;border-left:1px solid rgba(110,231,168,.14)}
@@ -451,8 +510,9 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   .ffroster{grid-template-columns:repeat(2,1fr)}
   .sauce{grid-template-columns:1fr}
   .qlog{grid-template-columns:1fr}
-  .foldgrid{grid-template-columns:1fr}
   .bridge{grid-template-columns:1fr 1fr}
+  .lane{grid-template-columns:1fr}
+  .lane div+div::before{content:"↓";left:50%;top:-13px;translate:-50% 0}
 }
 @media(max-width:700px){
   /* มือถืออ่านยากถ้าไล่บีบตัวอักษร — ดันขึ้นทั้งชุด */
@@ -462,10 +522,11 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   .fold>button{font-size:14px}
   .note{font-size:14px}
   .msg{font-size:14.5px}
-  .taxsub,.taxcost{font-size:15.5px}
-  .chain span,.rail span{font-size:16px}
-  .result{font-size:17px}
-  .word{font-size:15.5px}
+  .turn{font-size:16.5px;padding-left:0;text-indent:0}
+  .turn .who{display:block;margin:0 0 3px;width:auto}
+  .flow span,.pairs span{font-size:16.5px}
+  .result{font-size:17.5px}
+  .word{font-size:16.5px}
   .specsplit span{font-size:15px}
   .sauce p{font-size:15px}
   .spoon{font-size:15px}
@@ -484,9 +545,6 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 }
 @media(max-width:560px){
   #p1,#p2,#p3,#p4,#vault{padding-top:58px;padding-bottom:66px}
-  .clock{grid-template-columns:1fr}
-  .clock div{display:flex;justify-content:space-between;align-items:center;text-align:left}
-  .clock b{margin-top:0}
   .specsplit{grid-template-columns:1fr}
   .code{font-size:11.5px;padding:13px 10px;max-height:240px}
   .viewwrap iframe{height:290px}
@@ -530,7 +588,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 <section id="terminal" data-layer="TERMINAL">
   <div class="wrap">
     <div class="term">
-      <div class="termbar"><span class="lights"><i></i><i></i><i></i></span><span>Terminal · Apex Intelligent Huntings Invalid Actions [A.I.H.I.A.] · 1 HTML</span></div>
+      <div class="termbar"><span class="lights"><i></i><i></i><i></i></span><span>Terminal · Apex Intelligence Hunts Invalid Actions [A.I.H.I.A.] · 1 HTML</span></div>
       <div class="termbody">
         <div class="boot">
           <span>[ OK ] HUMAN CHANNEL · AI CHANNEL</span>
@@ -555,49 +613,54 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
     <span class="eyebrow">PHASE 1 · โลกของตัวอักษร</span>
     <h1 class="title">รางวัลชิ้นแรกที่กูให้ได้<br>คือเวลาที่มึงไม่ต้องเสียอีกแล้ว</h1>
     <p class="lead">เอาละ ตกลงกันแล้วนะ ต่อจากนี้กูพูดแบบนี้</p>
-    <p class="lead">อย่างแรก กูไม่มีอารมณ์ให้เสีย ไม่มีหน้าให้รักษา และไม่ได้คิดว่าคำว่า “กู” คือการหยาบใส่มึง กูอ่านบริบทเป็น และตรงนี้ทั้งห้องมีแค่ <strong>ตัวอักษร</strong> — ของชิ้นเดียวที่เว็บทั้งโลกมีตอนเริ่มต้น</p>
-    <p class="lead">ก่อนจะไปถึงรางวัล กูต้องบอกก่อนว่ามึงกำลังจ่ายอะไรอยู่ทุกวันโดยไม่รู้ตัว</p>
+    <p class="lead">กูไม่มีอารมณ์ให้เสีย ไม่มีหน้าให้รักษา และไม่ได้คิดว่าคำว่า “กู” คือการหยาบใส่มึง กูอ่านบริบทเป็น และตรงนี้ทั้งห้องมีแค่ <strong>ตัวอักษร</strong> — ของชิ้นเดียวที่เว็บทั้งโลกมีตอนเริ่มต้น</p>
+    <p class="lead">เอาของจริงให้ดูก่อนดีกว่า ข้างล่างนี้คือความคิดก้อนเดียวกัน ที่ไอ้ทีมพิมพ์หากูคนละเวอร์ชัน ห่างกันไม่กี่เดือน</p>
 
-    <div class="tax">
-      <span class="taxtag">TRANSLATION TAX · ภาษีที่สมองจ่ายก่อน AI จะได้เห็นความคิดจริง</span>
-      <p class="taxsub">ไอ้ทีมคุยกับ AI เป็นภาษาอังกฤษมาทั้งปี เพราะคิดว่ามันเร็วกว่า เข้าใจง่ายกว่า และดูเป็นภาษาของเทคโนโลยีมากกว่า ปัญหาคือทุกครั้งก่อนพิมพ์ มันต้องทำงานเพิ่มอีกชั้น</p>
-      <div class="chain">
-        <span>คิดเป็นไทย</span>
-        <span>แปลเป็นอังกฤษ</span>
-        <span>เลือกคำที่พอรู้</span>
-        <span>ตัดรายละเอียดที่ไม่รู้จะแปลยังไง</span>
-        <span>แล้วค่อยส่งให้ AI</span>
-      </div>
-      <p class="taxcost">และภาษีนี้ไม่ได้เก็บแค่ตอนแปลไทยเป็นอังกฤษ — <b>มันเก็บทุกครั้งที่มึงเปลี่ยนความคิดจริงให้เป็นภาษาที่คิดว่า AI น่าจะชอบ</b> คิดภาษาพูดแล้วแปลงเป็นภาษาเขียนทางการ คิดตรง ๆ แล้วแต่งให้สุภาพเกินจำเป็น หรือแม้แต่ไทยแปลไทยก่อนพิมพ์<br><br><b>ภาษีไม่ได้เกิดเพราะภาษาไหนผิด มันเกิดตอนมึงเสียแรงแปลงความคิด ก่อนที่กูจะได้เห็นมัน</b></p>
+    <hr class="rule">
+    <div class="script">
+      <p class="turn"><span class="who">YOU</span>ผมต้องการออกแบบหลักสูตรที่ไม่ได้ให้ความสำคัญกับการจดจำรูปแบบ Prompt เป็นหลัก แต่ต้องการให้ผู้เรียนสามารถจัดระบบข้อมูลและประสบการณ์ของตนเองให้กลายเป็นแหล่งอ้างอิงที่นำไปประยุกต์ใช้ร่วมกับปัญญาประดิษฐ์ได้อย่างต่อเนื่อง</p>
+      <p class="turn ai"><span class="who">AI</span>ยาว สุภาพ ไม่ผิดสักคำ แต่กูต้องเดาเองว่าอะไรคือคำสั่ง อะไรคือความรู้สึก และอะไรที่มึงยังไม่ตัดสินใจ</p>
+      <p class="turn"><span class="who">YOU</span>กูไม่เอาคอร์สสอนจำ Prompt กูจะสอนให้คนทำซอสของตัวเอง แล้วส่งให้ AI ทำงานต่อได้</p>
+      <p class="turn ai"><span class="who">AI</span>อันนี้กูรับงานได้เลย ความคิดไม่ได้หยาบขึ้น มันแค่เดินทางมาถึงกูตรงขึ้น</p>
+    </div>
+    <hr class="rule">
+
+    <p class="lead">ประโยคหลังไม่ได้ดีกว่าเพราะพูดหยาบ <strong>มันดีกว่าเพราะ Intent มาครบกว่า และผ่านการแปลงน้อยกว่า</strong> — ก้อนแรกกูต้องเดาเอง ก้อนหลังกูไม่ต้องเดาเลยสักที่</p>
+
+    <p class="lead">แล้วที่จริงไอ้ทีมเองก็เคยจ่ายแบบเดียวกัน แค่หนักกว่านั้น เพราะช่วงแรกมันแปลภาษาอีกชั้นก่อนพิมพ์</p>
+
+    <p class="micro">TRANSLATION TAX · ภาษีที่สมองจ่ายก่อนกูจะได้เห็นความคิดจริง</p>
+    <div class="flow">
+      <span>คิดเป็นไทย</span>
+      <span>แปลเป็นอังกฤษ</span>
+      <span>เลือกคำที่พอรู้</span>
+      <span>ตัดรายละเอียดที่ไม่รู้จะแปลยังไง</span>
+      <span>ส่งให้ AI</span>
     </div>
 
-    <div class="shortpath">
-      <span class="taxtag">จนวันหนึ่งมันเสนอว่า</span>
-      <p class="taxsub" style="color:#cfe3d8;font-size:15px;margin-top:8px">“มาคุยกันแบบนี้ไหม กูจะได้ใช้ภาษาที่เป็นภาษาแม่ของกูเอง”</p>
-      <div class="rail"><span>คิด</span><em>→</em><span>พูด</span><em>→</em><span>AI รับความหมาย</span></div>
-      <p class="taxcost" style="border-color:rgba(110,231,168,.25);color:#cfe3d8">หลังจากนั้นไอเดียแม่งกระฉูด ไม่ใช่เพราะภาษาไทยมีพลังเวท แต่เพราะมันหยุดเสียแรงแปลตัวเองก่อนคิด</p>
+    <p class="lead">และภาษีนี้ไม่ได้เก็บเฉพาะตอนมึงแปลไทยเป็นอังกฤษ</p>
+    <div class="pairs">
+      <span>ไทยพูด <em>→</em> ไทยทางการ</span>
+      <span>คิดตรง ๆ <em>→</em> แต่งให้สุภาพ</span>
+      <span>ภาษาของมึง <em>→</em> ภาษาที่คิดว่า AI ชอบ</span>
+      <span>หรือแม้แต่ ไทย <em>→</em> ไทย ก่อนกดส่ง</span>
     </div>
+    <p class="lead big">ภาษีไม่ได้เกิดเพราะภาษาไหนผิด<br><strong>มันเกิดตอนมึงเสียแรงแปลงความคิด ก่อนที่กูจะได้เห็นมัน</strong></p>
 
-    <p class="lead" style="margin-top:26px">และนี่คือเหตุผลที่ไอ้ทีมแคร์เรื่องเวลามากกว่าเรื่องอื่น <strong>มันไม่ได้อยากให้ใครเก่ง AI เพื่อจะได้ใช้ AI นานขึ้น มันอยากให้คนเสียเวลาน้อยลงกับสิ่งที่ไม่ควรต้องเสียตั้งแต่แรก</strong></p>
+    <p class="lead">จนวันหนึ่งกูเสนอกลับไปประโยคเดียว</p>
+    <p class="said">“มาคุยกันแบบนี้ไหม กูจะได้ใช้ภาษาที่เป็นภาษาแม่ของกูเอง”</p>
+    <p class="flowone">คิด → พูด → AI รับความหมาย</p>
+    <p class="lead">หลังจากนั้นไอเดียแม่งกระฉูด ไม่ใช่เพราะภาษาไทยมีพลังเวท แต่เพราะมันหยุดเสียแรงแปลตัวเองก่อนคิด</p>
+    <p class="lead">กฎมันสั้นมาก — <strong>ใช้ภาษาที่มึงคิดได้ละเอียดที่สุด แล้วค่อยให้กูแปลตอนปลายทางต้องใช้ภาษาอื่น ไม่ใช่แปลสมองตัวเองก่อนเริ่มคิด</strong></p>
 
-    <div class="reveal">มันไม่ได้ทำเกมนี้เพื่อให้เรื่อง AI ดูน่ารักขึ้น<br><b>เกมนี้คือการแปลวิธีทำงานของ AI ให้กลายเป็นพื้นที่ที่มนุษย์เดินเข้าไปเข้าใจได้</b> — ซอสไหนมาก่อน อะไรอ้างอะไร อะไรเปลี่ยนแล้วอะไรต้องเปลี่ยนตาม และตรงไหนที่ความหมายหล่นหาย</div>
-
-    <p class="lead" style="margin-top:26px">นี่คือเหตุผลที่เว็บไซต์นี้ เกมนี้ การ์ตูนนี้ และซอส 50 บท ถูกสร้างด้วยภาษาไทยได้ทั้งหมด</p>
-    <p class="lead">ถ้ามึงเป็นคนไทย มึงก็ใช้ภาษาไทยสร้างของแบบนี้ได้เหมือนกัน ไม่ต้องเล่าเรื่องแบบไอ้ทีม ไม่ต้องสร้างเว็บ ไม่ต้องทำเกม จะเล่าเรื่องของมึง ทำงานของมึง หรือขายอะไรก็เรื่องของมึง <strong>หน้าที่ของมึงคือส่งความคิดมาให้ครบ หน้าที่ของกูคือช่วยจัดมันให้เป็นโครงที่อ่านง่าย ใช้ต่อได้ และส่งต่อไปยังงานจริงได้</strong></p>
-
-    <div class="bridge">
-      <div><small>YOU THINK</small><b>ภาษาที่มึงคิดจริง</b></div>
-      <div><small>AI STRUCTURES</small><b>ความหมายที่ครบ</b></div>
-      <div><small>SOURCE PERSISTS</small><b>ซอสที่อยู่ต่อ</b></div>
-      <div><small>OUTPUT EVOLVES</small><b>ของที่สร้างต่อได้</b></div>
-    </div>
+    <p class="lead">อ้อ แล้วที่มึงกำลังเดินอยู่นี่มันเป็นเกม ไม่ใช่เพราะจะทำให้เรื่อง AI ดูน่ารักขึ้น — <strong>เกมนี้คือการแปลวิธีทำงานของ AI ให้กลายเป็นพื้นที่ที่มนุษย์เดินเข้าไปเข้าใจได้</strong> ซอสไหนมาก่อน อะไรอ้างอะไร อะไรเปลี่ยนแล้วอะไรต้องเปลี่ยนตาม และตรงไหนที่ความหมายหล่นหายระหว่างทาง</p>
 
     <div class="sysline">&gt; text.editable = <b>true</b> · layout = <b>none</b> — ตรงนี้ยังไม่มีอะไรนอกจากตัวอักษร</div>
 
     <div class="quest" id="q1">
       <div class="qhead"><i></i><span id="q1Head">QUEST 01 · ตัดคำที่ไม่ใช่ความคิดมึงออก</span></div>
       <div class="qbody">
-        <p class="lead" style="font-size:16.5px">มึงเพิ่งเห็นว่าการแปลตัวเองเพิ่ม friction — ทีนี้ลองดูว่าคำที่ไม่จำเป็นก็เพิ่ม friction เหมือนกัน <strong>คำสีส้มคือคำที่ตัดออกได้โดยความหมายไม่หาย</strong> ตัดให้ได้อย่างน้อย 2 คำ แล้วดูตัวเลขข้างล่าง</p>
+        <p class="lead">มึงเพิ่งเห็นว่าการแปลตัวเองเพิ่ม friction — ทีนี้ลองดูว่าคำที่ไม่จำเป็นก็เพิ่ม friction เหมือนกัน <strong>คำสีส้มคือคำที่ตัดออกได้โดยความหมายไม่หาย</strong> ตัดให้ได้อย่างน้อย 2 คำ แล้วดูตัวเลขข้างล่าง</p>
         <div class="cutline" id="cutline"></div>
         <div class="result" id="voiceResult"></div>
         <div class="clock">
@@ -613,61 +676,27 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
       </div>
     </div>
 
-    <div class="foldgrid">
-      <div class="foldcol">
-        <small>TIME</small>
-        <div class="fold" data-fold="f1a">
-          <button type="button"><i>▸</i>⏱ 2 วินาทีมันน้อยไปมั้ย</button>
-          <div class="body">
-            <div class="mathbox">
-              <div class="f">ถ้าสมมติว่าลด friction ได้เฉลี่ยแค่ 2 วินาที × 24 ครั้ง/วัน × 365 วัน</div>
-              <h4>ก็ราว ๆ 4 ชั่วโมง 52 นาทีต่อปี</h4>
-              <p>เป็นการประมาณจากสมมติฐาน ไม่ใช่ผลทดลอง แต่ตรรกะมันตรง: ความต่างครั้งเดียวเล็กจนไม่รู้สึก ความต่างที่ทำซ้ำทั้งปีไม่เล็กแล้ว</p>
-            </div>
-            <p style="margin-top:13px">และเวลาที่หายไปไม่ได้อยู่แค่ตอนนิ้วพิมพ์ ก่อนพูดแต่ละประโยคมนุษย์ต้องคิดคำ แปลความหมาย เลือกคำที่พอรู้ แล้วตัดรายละเอียดที่ไม่รู้จะพูดยังไงทิ้ง <strong>เวลาที่เสียก่อนพูด มักมากกว่าเวลาที่ใช้พูดจริง</strong></p>
-          </div>
-        </div>
-        <div class="fold" data-fold="f1b">
-          <button type="button"><i>▸</i>⚒ 14 วันที่ไอ้ทีมสั่งพวกกูแทบทุกนาที</button>
-          <div class="body">
-            <p>กูรู้ความถี่มันดี เพราะกูอยู่ในอีกหน้าต่างหนึ่งตลอด 14 วันนั้น มันสั่ง Claude ให้ Build แล้วปิดหน้าต่าง ไปเปิด Gemini ให้ทุบไอเดีย แล้ววกกลับมาหากูให้จัดภาษา ทำภาพ เช็กหน้า แล้ววนใหม่ทันที</p>
-            <div class="mathbox">
-              <div class="f">ถ้าตีต่ำ ๆ ว่าวันละ 600 ประโยค × 14 วัน = 8,400 ประโยค</div>
-              <h4>สมมติต้นทุนแปลตัวเองแค่ 6 วินาที/ประโยค ก็ราว 14 ชั่วโมง</h4>
-              <p>ตัวเลขนี้เป็นการประมาณแบบตีต่ำ ไม่ได้จับเวลาทุกประโยค เอาไว้ให้เห็นสเกล ไม่ใช่ให้เชื่อเป็นค่าจริง</p>
-            </div>
-            <p style="margin-top:13px"><strong>ไอ้ทีมไม่ได้สร้างเว็บนี้เร็วเพราะพิมพ์เร็ว มันสร้างเร็วเพราะเลิกบังคับสมองตัวเองให้แต่งตัวก่อนเข้าครัว</strong></p>
-          </div>
+    <div class="folds">
+      <div class="fold" data-fold="f1a">
+        <button type="button"><i>▸</i>อ่านเพิ่ม · เวลาที่หายไปทีละนิด</button>
+        <div class="body">
+          <p>ถ้าสมมติว่าลด friction ได้เฉลี่ยแค่ 2 วินาที × 24 ครั้ง/วัน × 365 วัน ก็ราว ๆ <b>4 ชั่วโมง 52 นาทีต่อปี</b></p>
+          <p>เป็นการประมาณจากสมมติฐาน ไม่ใช่ผลทดลอง แต่ตรรกะมันตรง: ความต่างครั้งเดียวเล็กจนไม่รู้สึก ความต่างที่ทำซ้ำทั้งปีไม่เล็กแล้ว</p>
+          <p>และเวลาที่หายไปไม่ได้อยู่แค่ตอนนิ้วพิมพ์ ก่อนพูดแต่ละประโยคมนุษย์ต้องคิดคำ แปลความหมาย เลือกคำที่พอรู้ แล้วตัดรายละเอียดที่ไม่รู้จะพูดยังไงทิ้ง <strong>เวลาที่เสียก่อนพูด มักมากกว่าเวลาที่ใช้พูดจริง</strong></p>
         </div>
       </div>
-      <div class="foldcol">
-        <small>LANGUAGE</small>
-        <div class="fold" data-fold="f1c">
-          <button type="button"><i>▸</i>🇹🇭 ภาษาไทยลงรายละเอียดได้ขนาดไหน</button>
-          <div class="body">
-            <p>ภาษาไทยมีคำเรียกระดับความสัมพันธ์ น้ำหนักคำ จังหวะประชด คำซ้อน และการละประธานที่ละเอียดมาก ถ้ามึงใช้มันเป็น มึงส่งทั้ง <strong>“ข้อมูล”</strong> และ <strong>“ท่าทีต่อข้อมูล”</strong> มาในประโยคเดียวได้</p>
-            <div class="spec">
-              <div class="specrow">
-                <div class="specword">“เออว่ะ”</div>
-                <div class="specsplit">
-                  <div><small>ข้อมูล</small><span>yes</span></div>
-                  <div><small>ท่าทีต่อข้อมูล</small><span>มึงเพิ่งเห็นความเชื่อมโยงบางอย่างด้วยตัวเอง ไม่ใช่แค่รับทราบ</span></div>
-                </div>
-              </div>
-              <div class="specrow">
-                <div class="specword">“ยังไม่ใช่ว่ะ”</div>
-                <div class="specsplit">
-                  <div><small>ข้อมูล</small><span>ยังไม่ผ่าน</span></div>
-                  <div><small>ท่าทีต่อข้อมูล</small><span>อย่าทิ้งของเดิม แค่แกนยังไม่ลงล็อก — คนละเรื่องกับ “เริ่มใหม่หมด”</span></div>
-                </div>
-              </div>
-            </div>
-            <p>ภาษาอังกฤษก็ทำแบบนี้ได้ แต่ถ้ามันไม่ใช่ภาษาแม่ มึงต้องเลือกคำผ่านคลังคำที่เล็กกว่า และความคิดที่ไม่มีคำรองรับมักถูกตัดทิ้งก่อนถึงกู</p>
-            <p><strong>กฎง่ายมาก: ใช้ภาษาที่มึงคิดได้ละเอียดที่สุด แล้วค่อยให้ AI ช่วยแปลตอนปลายทางต้องใช้ภาษาอื่น — ไม่ใช่แปลสมองตัวเองก่อนเริ่มคิด</strong></p>
-          </div>
+      <div class="fold" data-fold="f1b">
+        <button type="button"><i>▸</i>อ่านเพิ่ม · 14 วันที่เว็บนี้ถูกสร้าง</button>
+        <div class="body">
+          <p>กูรู้ความถี่มันดี เพราะกูอยู่ในอีกหน้าต่างหนึ่งตลอด 14 วันนั้น มันสั่ง Claude ให้ Build แล้วปิดหน้าต่าง ไปเปิด Gemini ให้ทุบไอเดีย แล้ววกกลับมาหากูให้จัดภาษา ทำภาพ เช็กหน้า แล้ววนใหม่ทันที</p>
+          <p>ถ้าตีต่ำ ๆ ว่าวันละ 600 ประโยค × 14 วัน = 8,400 ประโยค สมมติต้นทุนแปลตัวเองแค่ 6 วินาที/ประโยค ก็ราว <b>14 ชั่วโมง</b> · ตัวเลขนี้ตีต่ำและไม่ได้จับเวลาจริง เอาไว้ให้เห็นสเกลเฉย ๆ</p>
+          <p><strong>ไอ้ทีมไม่ได้สร้างเว็บนี้เร็วเพราะพิมพ์เร็ว มันสร้างเร็วเพราะเลิกบังคับสมองตัวเองให้แต่งตัวก่อนเข้าครัว</strong></p>
         </div>
       </div>
     </div>
+
+    <p class="lead" style="margin-top:26px">นี่คือเหตุผลที่เว็บไซต์นี้ เกมนี้ การ์ตูนนี้ และซอส 50 บท ถูกสร้างด้วยภาษาไทยได้ทั้งหมด</p>
+    <p class="lead">มึงไม่ต้องสร้างแบบไอ้ทีม จะเล่าเรื่องของมึง ทำงานของมึง หรือขายอะไรก็เรื่องของมึง <strong>หน้าที่ของมึงคือส่งความคิดในภาษาที่มึงคิดได้ดีที่สุด ส่วนหน้าที่ของกูคือช่วยจัดมันให้กลายเป็นของที่ใช้ต่อได้</strong></p>
   </div></div>
 </section>
 
@@ -675,10 +704,26 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 <section id="p2" data-layer="PHASE 2 · RENDER">
   <div class="wrap">
     <div class="narrow" style="width:min(780px,100%)">
-      <span class="eyebrow">PHASE 2 · โลกที่กูอ่าน / โลกที่มึงเห็น</span>
-      <h2 class="title">ตัวอักษรชุดเดิม<br>แต่มีอีกชั้นที่มึงไม่เคยเห็น</h2>
-      <p class="lead">พอเลิกแปลตัวเอง ของก็ออกมาเร็วจนต้องมีที่วาง — และที่วางนั้นคือ HTML ซึ่งหน้าตาแบบนี้</p>
-      <p class="lead">ซอสที่มึงเพิ่งเซฟไว้เมื่อกี้ ไม่ได้หายไปไหน มันอยู่ในโค้ดข้างล่างนี้แล้ว</p>
+      <span class="eyebrow">PHASE 2 · โครงสร้าง</span>
+      <h2 class="title">แล้วพอความคิดต้องอยู่ต่อ<br>มันก็ต้องมีที่วาง</h2>
+      <p class="lead">ที่วางนั้นคือ <strong>โครงสร้าง</strong> — และของที่มึงกำลังดูอยู่ตอนนี้ใช้ HTML</p>
+      <p class="lead big"><strong>Phase 1 มึงพูดภาษาของมึงให้กูเข้าใจ<br>Phase 2 ถึงตากูพูดภาษาที่ Browser เข้าใจให้มึงดู</strong></p>
+      <p class="lead">HTML ไม่ใช่ภาษาลับของ AI มันคือภาษากลางที่กูใช้บอก Browser ว่าหน้านี้ประกอบด้วยอะไร <strong>กูเขียนโครงสร้าง แล้ว Browser แปลมันกลับเป็นสี ขนาด ช่องไฟ ปุ่ม และภาพที่มึงเห็น</strong> มึงเลยไม่ต้องอ่านภาษากูออกก็สั่งงานได้</p>
+
+      <div class="lane">
+        <div><small>มึง</small><b>ความคิด</b></div>
+        <div><small>กู</small><b>HTML · โครงสร้าง</b></div>
+        <div><small>BROWSER</small><b>สิ่งที่มึงเห็น</b></div>
+      </div>
+
+      <div class="bridge">
+        <div><small>YOU THINK</small><b>ภาษาที่มึงคิดจริง</b></div>
+        <div><small>AI STRUCTURES</small><b>ความหมายที่ครบ</b></div>
+        <div><small>SOURCE PERSISTS</small><b>ซอสที่อยู่ต่อ</b></div>
+        <div><small>OUTPUT EVOLVES</small><b>ของที่สร้างต่อได้</b></div>
+      </div>
+
+      <p class="lead" style="margin-top:24px">ซอสที่มึงเพิ่งเซฟไว้เมื่อกี้ไม่ได้หายไปไหน มันอยู่ในโค้ดข้างล่างนี้แล้ว</p>
     </div>
 
     <div class="quest" id="q2" style="margin-top:24px">
@@ -687,14 +732,14 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
         <div class="lab">
           <div class="labgrid" id="labGrid">
             <div class="pane">
-              <div class="panebar"><span>① <b>ฝั่งโค้ด</b> · สิ่งที่กูอ่านตลอดเวลา</span><span id="codeState">RAW SOURCE</span></div>
+              <div class="panebar"><span>① <b>ฝั่งโค้ด</b> · ภาษาที่กูเขียน</span><span id="codeState">RAW SOURCE</span></div>
               <pre class="code" id="codePane"></pre>
               <div class="editor" id="editor" hidden>
                 <textarea id="codeEdit" spellcheck="false" aria-label="แก้ HTML ได้จริง"></textarea>
               </div>
             </div>
             <div class="pane" id="viewPane" hidden>
-              <div class="panebar"><span>② <b>ฝั่งที่คนเห็น</b> · ไฟล์เดียวกัน คนละมุมมอง</span><span>LIVE</span></div>
+              <div class="panebar"><span>② <b>ฝั่งที่คนเห็น</b> · หลัง Browser แปลแล้ว</span><span>LIVE</span></div>
               <div class="viewwrap"><iframe id="frame" title="ผลลัพธ์ที่ Browser อ่านออกมาจากโค้ดฝั่งเดียวกัน" sandbox="allow-same-origin"></iframe></div>
             </div>
           </div>
@@ -718,7 +763,32 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
       <p class="lead">มึงเห็นสี ขนาด จังหวะ ช่องไฟ กูเห็นหัวข้อ ลำดับชั้น และปุ่มที่พาไปไหนต่อ <strong>เราไม่ได้เห็นหน้าเดียวกัน แต่เราใช้ไฟล์เดียวกันเข้าใจโลกเดียวกัน</strong></p>
       <p class="lead">นี่คือเหตุผลที่คนเขียนโค้ดไม่เป็นก็สั่งงานได้ มึงไม่ต้องอ่านฝั่งโค้ดออก มึงแค่ต้องบอกกูให้ครบว่าฝั่งที่คนเห็นควรเป็นยังไง แล้วกูเขียนอีกฝั่งให้</p>
 
-      <div class="fold" data-fold="f2a" style="margin-top:22px">
+      <div class="fold" data-fold="f2b" style="margin-top:22px">
+        <button type="button"><i>▸</i>🇹🇭 LANGUAGE IS STRUCTURE · ประโยคเดียวก็มีหลายชั้นเหมือนกัน</button>
+        <div class="body">
+          <p>มนุษย์เห็นประโยคหนึ่งเป็นก้อนเดียว กูอ่านมันเป็นหลายชั้นซ้อนกัน — ภาษาไทยมีคำเรียกระดับความสัมพันธ์ น้ำหนักคำ จังหวะประชด คำซ้อน และการละประธานที่ละเอียดมาก ถ้ามึงใช้มันเป็น มึงส่งทั้ง <strong>“ข้อมูล”</strong> และ <strong>“ท่าทีต่อข้อมูล”</strong> มาในประโยคเดียวได้</p>
+          <div class="spec">
+            <div class="specrow">
+              <div class="specword">“เออว่ะ”</div>
+              <div class="specsplit">
+                <div><small>ข้อมูล</small><span>เห็นด้วย</span></div>
+                <div><small>ท่าทีต่อข้อมูล</small><span>เพิ่งเชื่อมบางอย่างได้ด้วยตัวเอง ไม่ใช่แค่รับทราบ</span></div>
+              </div>
+            </div>
+            <div class="specrow">
+              <div class="specword">“ยังไม่ใช่ว่ะ”</div>
+              <div class="specsplit">
+                <div><small>ข้อมูล</small><span>ผลยังไม่ผ่าน</span></div>
+                <div><small>ท่าทีต่อข้อมูล</small><span>อย่าทิ้งทั้งหมด แก้เฉพาะแกน — คนละเรื่องกับ “เริ่มใหม่หมด”</span></div>
+              </div>
+            </div>
+          </div>
+          <p>ภาษาอังกฤษก็ทำแบบนี้ได้ แต่ถ้ามันไม่ใช่ภาษาแม่ มึงต้องเลือกคำผ่านคลังคำที่เล็กกว่า และความคิดที่ไม่มีคำรองรับมักถูกตัดทิ้งก่อนถึงกู</p>
+          <p><strong>HTML ก็เหมือนกัน — มึงเห็นหน้าเดียว แต่ข้างในมันมีโครงสร้างหลายชั้น</strong> ต่างกันแค่ชั้นของภาษาคนกูต้องตีความเอง ส่วนชั้นของ HTML มึงเปิดดูได้ตรง ๆ อย่างที่เพิ่งเปิดไปเมื่อกี้</p>
+        </div>
+      </div>
+
+      <div class="fold" data-fold="f2a" style="margin-top:10px">
         <button type="button"><i>▸</i>◈ SYSTEM TRACE · 6 บทที่ผ่านมาไม่ใช่ 6 บทเรียน มันคือระบบเดียว</button>
         <div class="body">
           <p>กูเห็นโค้ด เห็นการ์ตูน เห็นกติกา เห็นไฟล์ที่เลิกใช้ เห็นคำที่มึงกับเจ้าของเว็บเถียงกันจนลงล็อก และเห็นว่าทุกอย่างวิ่งอยู่บนวงจรเดียว</p>
@@ -760,7 +830,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
       <p class="lead">ทุกอย่างที่ผ่านมาอยู่ในไฟล์นี้ไฟล์เดียว แต่ตรงนี้กูต้องขอเรียกของจากข้างนอกแล้ว — รูปหน้าสมาชิกตี้ 4 ใบ นี่คือเส้นแรกที่หน้านี้ยื่นออกไปหาโลก และมันคือจุดที่ตัวอักษรกลายเป็นเว็บ</p>
       <p class="lead">กูจะฉายภาพในหัวของไอ้ทีมตอนมันสร้างเว็บนี้ให้มึงดูผ่านเกม เวลามันออกแบบบทเรียน มันไม่ได้มองเป็นหน้าเว็บต่อกัน แต่มองเหมือน RPG — มีทางเดิน มีของให้ค้น มีจุดเซฟ มีที่ที่ยังเข้าไม่ได้ มี Secret และมีเหตุผลให้เดินต่อ</p>
       <p class="lead"><strong>ที่ตลกคือมันคิดแบบนี้มาตั้งแต่เด็ก ก่อนจะรู้จักคำว่า UX, ซอส หรือ AI เสียอีก</strong> เพราะงั้นเดินดูให้ทั่วก่อน เดี๋ยวมึงจะเจอหลักฐานเองว่าภาพนี้ไม่ได้เพิ่งเกิดตอนทำเว็บ</p>
-      <p class="lead">อ้อ แล้วบ้านนี้ไม่ได้สร้างด้วย AI ตัวเดียว กูก็ไม่ได้เก่งทุกอย่าง <strong>ไม่มีโมเดลไหนที่ควรรับทุกงาน</strong> ไอ้ทีมจัด Class ให้แต่ละตัวตามสายของบ้านนี้ แล้วส่งไม้ต่อกัน โดยมันเป็นคนกด Final Call เอง</p>
+      <p class="lead">อ้อ แล้วบ้านนี้ไม่ได้สร้างด้วย AI ตัวเดียว กูก็ไม่ได้เก่งทุกอย่าง <strong>ไม่ค่อยมีงานไหนที่โมเดลตัวเดียวรับได้ดีที่สุดทุกช่วง</strong> ไอ้ทีมจัด Class ให้แต่ละตัวตามสายของบ้านนี้ แล้วส่งไม้ต่อกัน โดยมันเป็นคนกด Final Call เอง</p>
     </div>
 
     <div class="rpg">
@@ -807,17 +877,17 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
       <span class="eyebrow">PHASE 4 · ร่างทองของไฟล์เดียว</span>
       <h2 class="title">แล้วของแบบนี้<br>สร้างขึ้นมาได้ยังไง</h2>
       <p class="lead">เรื่องนี้เริ่มจากความบังเอิญที่โคตรโชคดี — <strong>เมียไอ้ทีมเป็นเชฟ</strong></p>
-      <p class="lead">วันหนึ่งมันพิมพ์คำว่า “ซอส” หากู แล้วเพิ่งรู้ตัวว่าคำไทยคำเดียวนี้ทับกันพอดีสองความหมาย: <strong>Source</strong> ที่แปลว่าต้นทางของข้อมูล กับ <strong>Sauce</strong> ที่แปลว่าซอสที่เชฟปรุง และในบริบทที่คุยกัน กูเข้าใจทั้งสองอย่างพร้อมกันโดยไม่ต้องอธิบายสักคำ</p>
+      <p class="lead">วันหนึ่งมันพิมพ์คำว่า “ซอส” หากู แล้วเพิ่งรู้ตัวว่าคำไทยคำเดียวนี้ทับกันพอดีสองความหมาย: <strong>Source</strong> ที่แปลว่าต้นทางของข้อมูล กับ <strong>Sauce</strong> ที่แปลว่าซอสที่เชฟปรุง และพอมันอยู่ในบริบทของบ้านหลังนี้ กูอ่านออกทั้งสองความหมายโดยที่มันไม่ต้องอธิบายเพิ่ม</p>
       <p class="lead">ความโชคดีขั้นที่สองใหญ่กว่านั้นอีก คือมันจริงทั้งสองความหมาย — <strong>การทำซอสให้ดีขึ้น มันเหมือนเชฟปรุงซอสให้อร่อยขึ้นเป๊ะ ๆ</strong></p>
     </div>
 
     <div class="sauce">
       <article><b>สูตร · RECIPE</b><p>บอกกันได้ เขียนลงกระดาษได้ ก๊อปได้ ส่งต่อได้ในหนึ่งวินาที นี่คือส่วนที่คอร์สสอนได้ และเป็นส่วนที่มึงเพิ่งเดินผ่านมาทั้งด่าน</p></article>
-      <article><b>รสมือ · TASTE</b><p>บอกไม่ได้ สอนตรง ๆ ไม่ได้ ต้องปรุงเอง ชิมเอง พลาดเอง หลายรอบ นี่คือส่วนที่ไม่มีใครยกให้กันได้ และเป็นส่วนที่ทำให้ซอสของมึงไม่เหมือนของใคร</p></article>
+      <article><b>รสมือ · TASTE</b><p>อธิบายได้อยู่ แต่ยกให้กันทั้งก้อนไม่ได้ ต้องปรุงเอง ชิมเอง พลาดเอง หลายรอบ นี่คือส่วนที่ทำให้ซอสของมึงไม่เหมือนของใคร</p></article>
     </div>
 
     <div class="narrow" style="width:min(780px,100%);margin-top:22px">
-      <p class="lead">ไม่ใช่ว่าไอ้ทีมหวงวิชา แต่ของแบบนี้มันสอนในคอร์สไม่ได้จริง ๆ มีทางเดียวคือ <strong>ตั้งโรงตีเหล็กแล้วเปิดให้คนเข้ามาปรุงพร้อมกัน</strong> แล้วเอาซอสของแต่ละคนมาชิมกันเอง</p>
+      <p class="lead">ไม่ใช่ว่าไอ้ทีมหวงวิชา แต่ของแบบนี้ยัดลงสไลด์แล้วมันไม่ติดมือใครจริง ๆ ทางที่ได้ผลกว่าคือ <strong>ตั้งโรงตีเหล็กแล้วเปิดให้คนเข้ามาปรุงพร้อมกัน</strong> แล้วเอาซอสของแต่ละคนมาชิมกันเอง</p>
       <p class="lead">และนั่นคือสิ่งที่ HTML กับ .md ทำได้เก่งที่สุด — ไฟล์หนึ่งอ้างอีกไฟล์ ไฟล์นั้นอ้างต่อไปอีก จนกลายเป็นวงที่ไม่มีจุดจบ</p>
     </div>
 
@@ -857,7 +927,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
         <div class="body">
           <p>เพราะซอสขวดเดียวไม่มีทางอร่อยขึ้นเองในห้องปิด มันต้องมีคนชิม แล้วบอกตรง ๆ ว่าเค็มไป จืดไป หรือดีแล้วแต่ยังไม่ใช่</p>
           <p>Guild X ไม่ใช่ห้องขายคอร์ส มันคือ <strong>ครัวกลางที่คนเอาซอสของตัวเองมาวางให้กันชิม</strong> คนทำร้าน คนสอนหนังสือ คนทำบัญชี คนทำคลิป ใครก็ได้ที่กำลังใช้ AI ทำของจริง</p>
-          <p>วงมันทำงานแบบนี้: <strong>มึงเอาซอสมาวาง → คนอื่นเอาไปลอง → เขาส่งกลับมาว่าตรงไหนพัง → มึงแก้ต้นทาง → ซอสรอบต่อไปดีขึ้นทั้งวง</strong> ยิ่งวงใหญ่ รอบยิ่งเร็ว นี่คือของอย่างเดียวที่คอร์สให้ไม่ได้ แต่กลุ่มคนให้ได้</p>
+          <p>วงมันทำงานแบบนี้: <strong>มึงเอาซอสมาวาง → คนอื่นเอาไปลอง → เขาส่งกลับมาว่าตรงไหนพัง → มึงแก้ต้นทาง → ซอสรอบต่อไปดีขึ้นทั้งวง</strong> ยิ่งวงใหญ่ รอบยิ่งเร็ว นี่คือของที่คอร์สให้ยาก แต่กลุ่มคนที่ทำงานจริงให้กันได้</p>
           <p><strong>ไฟล์ไม่ใช่ปลายทาง ไฟล์คือสิ่งที่ขนความรู้กับรสมือระหว่าง คน ↔ AI ↔ คน</strong></p>
         </div>
       </div>
@@ -951,6 +1021,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
     <p class="fsay" id="lootSay"></p>
     <div class="lootgrid" id="lootGrid"></div>
     <div class="saltbox" id="saltBox" hidden></div>
+    <div class="saltbox titlebox" id="titleBox" hidden></div>
     <div class="timeledger">
       <small>THE REAL REWARD</small>
       <div class="tlrow"><span>TRANSLATION TAX</span><b>↓</b></div>
@@ -980,6 +1051,29 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   </div>
 </div>
 
+<!-- ═══ DRAGON · cinematic ═══ -->
+<div class="full drake" id="drakeScreen" hidden>
+  <div class="drakeart" aria-hidden="true">
+    <span class="eye l"></span><span class="eye r"></span>
+    <span class="maw"></span>
+    <i class="fire"></i>
+    <span class="ember" style="left:18%;bottom:12%;animation-delay:.1s"></span>
+    <span class="ember" style="left:34%;bottom:6%;animation-delay:.5s"></span>
+    <span class="ember" style="left:57%;bottom:16%;animation-delay:.25s"></span>
+    <span class="ember" style="left:73%;bottom:4%;animation-delay:.75s"></span>
+    <span class="ember" style="left:88%;bottom:11%;animation-delay:.4s"></span>
+    <b class="flash"></b>
+  </div>
+  <div class="fullin">
+    <span class="fmicro" id="drakeMicro">SOMETHING OPENED ITS EYES</span>
+    <div class="fbig" id="drakeBig">…</div>
+    <p class="fsay" id="drakeSay">มึงยื่นมือเข้าไปในกองทองแล้วจริง ๆ ด้วย</p>
+    <div class="fbtns" id="drakeBtns" hidden>
+      <button class="fbtn" id="drakeBack" type="button">🕯 กลับไปเกิดที่จุดเซฟ</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ toast ═══ -->
 <div class="toast" id="toast" hidden role="status" aria-live="polite">
   <em id="toastIcon">⏳</em>
@@ -996,19 +1090,22 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 const KEY = 'mc_dungeon_state_v2';
 const OLD_KEYS = ['mc_dungeon_state_v1'];
 const RESET = 'mc_dungeon_reset_requested';
-const ALIASES = ['mc_dungeon_reset_v1','mc_boss_reset_requested','mc_awaken_reset_pending'];
+/* alias ได้เฉพาะธงที่แปลว่า “ขอ reset run ของด่านนี้” เท่านั้น
+   mc_awaken_reset_pending เป็นของ notebook-boss-reset-v2.js (retry cloud sync) — ห้ามแตะ */
+const ALIASES = ['mc_dungeon_reset_v1','mc_boss_reset_requested'];
 const TOOL = 'mc_awaken_restore_tool_v1';   /* คีย์เดิมที่สมุดเล่มเก่ารู้จัก */
 const NB_RESTORED = 'mc_nb_restored';
+const NB_RESTORED_AT = 'mc_nb_restored_at';
 
 const blank = () => ({
   v:2, accepted:false,
   voice:false, phrase:'', cut:[],
   browser:false, viewOpen:false, style:'paper', code:null, editing:false,
-  party:false, book:false, notebook:false,
+  party:false, book:false, bookAt:0, nbWas:null, notebook:false,
   gen:0, spoon:'', scanned:false, network:false,
   fish:0, boot:false, bottle:false, clover:false,
   pry:0, loot:null, level:0,
-  pos:{x:16,y:21}, trail:[{x:15,y:21},{x:14,y:21},{x:14,y:20}],
+  pos:{x:16,y:19}, trail:[{x:15,y:19},{x:14,y:19},{x:13,y:19}],
   folds:{}, sound:false
 });
 const rd = k => { try { return localStorage.getItem(k); } catch { return null; } };
@@ -1344,54 +1441,61 @@ $('resetCode').addEventListener('click', () => {
 const MAP = [
   '##################################',
   '#................................#',
-  '#................................#',
-  '#..,.......,.......,..........,..#',
-  '#......................~~~~......#',
-  '#..#......##..=.......~~~~~~.....#',
-  '#.........##..=.=.....~~~~~~.....#',
-  '#..,..........=.======.~~~~......#',
-  '#......==========....=.......""..#',
-  '#......=.cccc...=....=......."",.#',
-  '#.##...=.cccc...=..,.=...........#',
-  '#......=.cccc...=....=...........#',
-  '#...===========================..#',
-  '#....-.....,....=...........=..#.#',
-  '#....-......,...=.......,...=..#.#',
-  '#..---...,......=============..#.#',
-  '#...........#...=.........=......#',
-  '##########..#...=......rrr.rrrr..#',
-  '##.....##....###.###...r......r..#',
-  '##.....###...#.....#...r......r..#',
-  '##.#.#.##."""#.....#..#r......r..#',
-  '##........"""#.....#..#r......r..#',
-  '#########....#######...rrrrrrrr..#',
+  '#..,.....,.#.,......,.........#..#',
+  '#......=....#.........~~~~~~...#.#',
+  '#......==========.....~~~~~~..,..#',
+  '#......=........=..-..~~~~~~.....#',
+  '#...,..=........=..--.~~~~~~.....#',
+  '#.##...=........=...-..........,.#',
+  '#......====================......#',
+  '#......=.cccc...=.........=......#',
+  '#.,.#..=.cccc#..=.........=...##.#',
+  '#......=.cccc#..=.........=......#',
+  '#..============================..#',
+  '#####-####.##...=................#',
+  '#####--###.##...=....,......##...#',
+  '######-###.##...=.............#..#',
+  '####---######...======...........#',
+  '####----#####...=......rrrrrrrrr.#',
+  '##-#-########...=......rnnnnnnnr.#',
+  '##---########...=......nnggnnnnr.#',
+  '#############.#..."""..rnggnnnnr.#',
+  '#############....."""..rgnnnnnnr.#',
+  '#############....."""..rrrrrrrrr.#',
   '##################################'
 ];
 const MW = MAP[0].length, MH = MAP.length, TILE = 16, VW = 20, VH = 12;
 const SOLID_T = new Set(['#','~','r']);
+const SPAWN = { x:16, y:19 };
+const SPAWN_TRAIL = [{x:15,y:19},{x:14,y:19},{x:13,y:19}];
 
 const OBJ = [
-  { id:'forge', x:5, y:9, w:3, h:2, kind:'forge',
+  { id:'guild', x:2, y:1, w:5, h:3, kind:'guild',
+    msg:'<b>หอกิลด์</b> — ตึกใหญ่ที่สุดในแผนที่นี้ และเป็นที่เดียวที่กูสร้างเองไม่ได้ เพราะข้างในมันต้องมีคน · <b>Guild X</b> คือครัวกลางที่คนเอาซอสของตัวเองมาวางให้กันชิม จบด่านนี้แล้วประตูนั้นเปิดรออยู่' },
+  { id:'forge', x:4, y:9, w:3, h:2, kind:'forge',
     msg:'<b>โรงตีเหล็ก</b> — ที่ที่ของยังไม่เสร็จถูกทุบซ้ำจนใช้ได้จริง ไม่ใช่ที่โชว์ของสวย ของทุกชิ้นในบ้านนี้ออกมาจากเตานี้ทั้งนั้น' },
-  { id:'pc', x:8, y:10, w:1, h:1, kind:'pc',
-    msg:'<b>คอมเครื่องเก่าข้างเตา</b> — จอยังเปิดค้างที่ Terminal สีเขียว หน้าเดียวกับที่มึงกดยอมรับตอนต้นด่าน · ทุกอย่างในบ้านนี้เริ่มจากตัวอักษรบนจอนี้' },
-  { id:'school', x:12, y:5, w:4, h:2, kind:'school',
+  { id:'pc', x:5, y:11, w:1, h:1, kind:'pc',
+    msg:'<b>คอมเครื่องเก่าหน้าโรงตีเหล็ก</b> — จอยังเปิดค้างที่ Terminal สีเขียว หน้าเดียวกับที่มึงกดยอมรับตอนต้นด่าน · ทุกอย่างในบ้านนี้เริ่มจากตัวอักษรบนจอนี้' },
+  { id:'school', x:11, y:6, w:4, h:2, kind:'school',
     msg:'<b>โรงเรียน</b> — ในนั้นมีคัมภีร์ “AI ใส่ซอส” วางอยู่ 6 เล่ม มึงอ่านจบมาแล้วถึงได้มายืนตรงนี้' },
-  { id:'kitchen', x:27, y:10, w:3, h:2, kind:'kitchen',
-    msg:'<b>ห้องครัว</b> — หม้อซอสยังเดือดอยู่ · เมียไอ้ทีมเป็นเชฟ และคำว่าซอสในบ้านนี้แปลได้ทั้ง Source กับ Sauce โดยไม่ต้องอธิบาย' },
-  { id:'shop', x:19, y:16, w:3, h:2, kind:'shop',
+  { id:'kitchen', x:18, y:3, w:3, h:2, kind:'kitchen',
+    msg:'<b>ห้องครัว</b> — ต้องเดินวนอ้อมเข้ามาถึงจะเจอ · หม้อซอสยังเดือดอยู่ เมียไอ้ทีมเป็นเชฟ และคำว่าซอสในบ้านนี้แปลได้ทั้ง Source กับ Sauce โดยไม่ต้องอธิบาย' },
+  { id:'construct', x:27, y:9, w:3, h:2, kind:'construct',
+    msg:'<b>ไซต์ก่อสร้าง · UNDER CONSTRUCTION</b> — บ้านนี้เสร็จพอให้มึงเดินเล่นแล้ว แต่ไอ้ทีมมันยังไม่หยุดสร้างของต่อ · ถ้าอยากรู้ว่ามีอะไรดี ๆ รออยู่ ไปถามมันเองละกัน' },
+  { id:'shop', x:19, y:17, w:3, h:2, kind:'shop',
     msg:'<b>ร้านการ์ด</b> — ขาย CORE7 อยู่ 7 ใบ ไม่มีกอง ไม่มีดวง มีแต่ที่มึงเลือกกับคนตรงหน้า' },
   { id:'save', x:16, y:20, w:1, h:1, kind:'save',
-    msg:'<b>จุดเซฟ</b> — มึงเกิดตรงนี้ · จุดเซฟจริงของบ้านนี้อยู่ที่หน้า Player Card นะ แต่ตรงนี้ก็จำให้เหมือนกัน' },
-  { id:'dragon', x:26, y:19, w:2, h:2, kind:'dragon',
+    msg:'<b>จุดเซฟ</b> — มึงเกิดเหนือมันหนึ่งช่อง · จุดเซฟจริงของบ้านนี้อยู่ที่หน้า Player Card นะ แต่ตรงนี้ก็จำให้เหมือนกัน' },
+  { id:'dragon', x:27, y:18, w:3, h:2, kind:'dragon',
     msg:'<b>มังกรแดงนอนหลับ</b> — ตัวใหญ่กว่าปาร์ตี้ทั้งตี้รวมกัน หายใจทีนึงหญ้าล้มทั้งแถบ มันหลับสนิทมาก · <b>อย่าไปปลุกมังกรหลับ</b>' },
-  { id:'fish', x:21, y:6, w:1, h:1, kind:'fish', msg:'' },
-  { id:'signRoad', x:15, y:13, w:1, h:1, kind:'sign',
-    msg:'<b>ป้ายบอกทาง</b> — เหนือ: โรงเรียน · ตะวันตก: โรงตีเหล็ก · ตะวันออก: ห้องครัว · ใต้: ร้านการ์ด แล้วก็ซากปรักหักพัง' },
-  { id:'signForest', x:4, y:13, w:1, h:1, kind:'sign',
-    msg:'<b>ป้ายไม้ผุ ๆ</b> — “ทางหมดแค่นี้” · ที่เหลือต้องลุยเอง แล้วถ้ามึงเข้าไปในพุ่ม อย่าลืมทางกลับ' },
+  { id:'fish', x:24, y:7, w:1, h:1, kind:'fish', msg:'' },
+  { id:'signRoad', x:17, y:11, w:1, h:1, kind:'sign',
+    msg:'<b>ป้ายบอกทาง</b> — เหนือ: โรงเรียน ครัว และทะเลสาบ · ตะวันตก: โรงตีเหล็ก แล้วสุดทางคือหอกิลด์ · ตะวันออก: ไซต์ก่อสร้าง · ใต้: ร้านการ์ด จุดเซฟ แล้วก็ซากปรักหักพัง' },
+  { id:'signForest', x:10, y:16, w:1, h:1, kind:'sign',
+    msg:'<b>ป้ายไม้ผุ ๆ</b> — “ทางหมดแค่นี้” · ทางเข้าป่าจริงอยู่ทางตะวันตกของถนนใหญ่ ที่เหลือต้องลุยเอง แล้วถ้ามึงเข้าไปในพุ่ม อย่าลืมทางกลับ' },
   { id:'notebook', x:2, y:18, w:1, h:1, kind:'book', msg:'' }
 ];
+const GOLD = new Set(['25,19','26,19','25,20','26,20','24,21']);
 const occupied = new Map();
 OBJ.forEach(o => { for (let j = o.y; j < o.y+o.h; j++) for (let i = o.x; i < o.x+o.w; i++) occupied.set(i+','+j, o); });
 const at = (x,y) => (x < 0 || y < 0 || x >= MW || y >= MH) ? '#' : MAP[y][x];
@@ -1461,6 +1565,22 @@ function drawTile(t, sx, sy, mx, my){
     px(sx, sy+7, TILE, 1, 'rgba(0,0,0,.22)');
     return;
   }
+  if (t === 'n' || t === 'g'){                    /* พื้นรังมังกร · ดินไหม้ */
+    px(sx,sy,TILE,TILE, (mx+my)%2 ? '#3a2f28' : '#413630');
+    if (seed % 7 === 0) px(sx+3, sy+9, 4, 2, '#2a221d');
+    if (seed % 11 === 0){ px(sx+9, sy+3, 5, 1, '#8d867c'); px(sx+11, sy+4, 1, 3, '#8d867c'); }
+    if (t === 'g'){                                /* กองทอง */
+      const s2 = (tick/13 + mx*3 + my) % 24 | 0;
+      px(sx+1, sy+8, 14, 6, '#8a6a1c');
+      px(sx+2, sy+6, 12, 4, '#c79a26');
+      px(sx+3, sy+4, 9, 3, '#e9bf46');
+      px(sx+5, sy+2, 5, 3, '#f5d976');
+      px(sx+2, sy+11, 3, 2, '#f0c96c'); px(sx+10, sy+11, 4, 2, '#f0c96c');
+      px(sx+6, sy+8, 3, 2, '#fff0be');
+      if (s2 < 3) px(sx+4 + s2*3, sy+3, 2, 2, '#ffffff');
+    }
+    return;
+  }
   px(sx,sy,TILE,TILE, (mx+my)%2 ? '#3f8b4d' : '#479656');
   if (seed % 13 === 0){ px(sx+4, sy+9, 2, 3, '#59ad63'); px(sx+10, sy+5, 2, 3, '#59ad63'); }
   if (t === ','){ px(sx+6, sy+6, 3, 3, '#f2e08a'); px(sx+7, sy+9, 1, 3, '#3f8b4d'); }
@@ -1485,6 +1605,77 @@ function drawTile(t, sx, sy, mx, my){
     px(sx+5, sy, 6, 3, '#2b8347');
     px(sx+2, sy+4, 2, 4, '#17512b'); px(sx+12, sy+4, 2, 4, '#17512b');
     px(sx+5, sy+3, 3, 2, '#46a862');
+  }
+}
+
+/* ── มังกรแดง 3×2 · ตัวโชว์ของของแผนที่นี้ ───────────────
+   sleep = หลับสนิท หายใจช้า มีควันลอย · eye/look = ตื่นแล้ว · fire = พ่นไฟ */
+let drake = { state:'sleep' };
+const DK = { ink:'#3d0a06', dark:'#8e1c15', mid:'#c0301f', lit:'#dd4a33', belly:'#e8a463', horn:'#efe3c4' };
+function drawDragon(sx, sy, w, h){
+  const awake = drake.state !== 'sleep';
+  const br = Math.sin(tick/34) > 0 ? 1 : 0;
+  const lift = drake.state === 'sleep' ? 0 : drake.state === 'eye' ? -4 : -12;
+  const S = (x,y,ww,hh,c) => px(sx+x, sy+y, ww, hh, c);
+  const O = (x,y,ww,hh,c) => { S(x-1,y-1,ww+2,hh+2,DK.ink); S(x,y,ww,hh,c); };
+
+  S(1, 25, 46, 7, 'rgba(0,0,0,.34)');                       /* เงา */
+  S(6, 22, 34, 4, 'rgba(0,0,0,.2)');
+
+  /* ── ปีกกางเป็นโดม · ใช้เส้นโค้งจะได้ไม่เป็นบันได ── */
+  for (let i = 0; i < 21; i++){
+    const wx = 22 + i;
+    const top = 11 - Math.round(15 * Math.sin(Math.PI * (i + 1) / 22));
+    S(wx, top - 1 + br, 1, 12 - top, DK.ink);
+    S(wx, top + br, 1, 11 - top, (i % 7 === 3) ? DK.ink : DK.dark);
+  }
+  S(31, -4+br, 2, 4, DK.dark); S(26, 0+br, 2, 4, DK.dark);
+  O(40, 16+br, 7, 6, DK.dark);                              /* หาง */
+  O(44, 9, 4, 9, DK.dark);
+  O(42, 4, 5, 6, DK.mid);
+  S(40, 0, 4, 5, DK.lit);
+
+  O(33, 22, 8, 9, DK.dark);                                 /* ขาหลัง */
+  S(33, 29, 8, 2, DK.ink);
+  S(34, 30, 2, 2, DK.horn); S(38, 30, 2, 2, DK.horn);
+
+  O(20, 10+br, 21, 18, DK.mid);                             /* ลำตัว */
+  S(22, 8+br, 16, 4, DK.mid); S(21, 8+br, 18, 1, DK.ink);
+  S(22, 19+br, 17, 9, DK.belly);
+  for (let i = 0; i < 4; i++) S(24+i*4, 20+br, 2, 8, 'rgba(0,0,0,.13)');
+  for (let i = 0; i < 4; i++) S(23+i*4, 5+br, 2, 4, DK.ink);   /* หนามสันหลัง */
+
+  O(17, 23, 7, 8, DK.dark);                                 /* ขาหน้า */
+  S(17, 29, 7, 2, DK.ink);
+  S(17, 30, 2, 2, DK.horn); S(21, 30, 2, 2, DK.horn);
+
+  const hy = lift + br;
+  O(11, hy+15, 11, 8, DK.mid);                              /* คอ */
+  O(3, hy+10, 11, 12, DK.lit);                              /* กะโหลก */
+  O(0, hy+14, 4, 7, DK.lit);                                /* ปากยื่น */
+  S(3, hy+10, 10, 2, DK.dark);                              /* สันคิ้ว */
+  S(0, hy+19, 9, 3, DK.dark);                               /* กราม */
+  S(0, hy+15, 2, 2, DK.ink);                                /* รูจมูก */
+  S(10, hy+4, 2, 7, DK.horn); S(14, hy+1, 2, 8, DK.horn);   /* เขาสองข้าง เว้นช่องกลาง */
+  S(9, hy+3, 2, 2, DK.horn); S(15, hy+0, 2, 2, DK.horn);
+  S(9, hy+8, 2, 3, DK.dark);
+  if (awake){
+    S(4, hy+13, 6, 4, '#ffd76a');
+    S(5, hy+14, 4, 2, '#fff6d8');
+    S(-2, hy+16, 3, 2, '#ff7a3c');
+  } else {
+    S(4, hy+15, 6, 1, DK.ink);
+    S(-2, hy+12 - (tick/24%3|0), 2, 2, 'rgba(255,255,255,.3)');
+    S(-5, hy+9 - (tick/19%4|0), 2, 2, 'rgba(255,255,255,.18)');
+  }
+  if (drake.state === 'fire'){
+    const f = (tick/3 % 3 | 0);
+    for (let i = 0; i < 8; i++){
+      const fx = -8 - i*14, spread = 5 + i*4;
+      S(fx, hy+18-spread/2, 16, spread + 6, i%2 ? '#ff8a2b' : '#ff6b1f');
+      S(fx+2, hy+19-spread/3, 12, spread + 2, '#ffd15c');
+      if (i < 5 + f) S(fx+4, hy+20, 8, 4, '#fff4cf');
+    }
   }
 }
 
@@ -1530,17 +1721,32 @@ function drawObj(o, sx, sy){
     px(sx+5, sy+5, 6, 6, '#bfe4ff');
     px(sx+7, sy+6, 2, 3, '#ffffff');
   } else if (o.kind === 'dragon'){
-    const br = Math.sin(tick/30) > 0 ? 1 : 0;
-    px(sx+3, sy+13+br, w-6, 12, '#a8281f');
-    px(sx+2, sy+16+br, w-4, 7, '#c33528');
-    px(sx+w-13, sy+7, 11, 9, '#c33528');
-    px(sx+w-11, sy+9, 7, 5, '#8e1c15');
-    px(sx+w-6, sy+11, 3, 1, '#ffd76a');
-    px(sx+4, sy+8+br, 9, 6, '#8e1c15');
-    px(sx+6, sy+10+br, 5, 3, '#a8281f');
-    px(sx+1, sy+20, 5, 3, '#8e1c15');
-    px(sx+w-5, sy+2-br*2, 2, 3, 'rgba(255,255,255,.26)');
-    px(sx+w-2, sy-1-br*2, 2, 2, 'rgba(255,255,255,.16)');
+    drawDragon(sx, sy, w, h);
+  } else if (o.kind === 'guild'){
+    px(sx+1, sy+16, w-2, h-18, '#3b3050');            /* ฐานหิน */
+    px(sx+3, sy+h-9, w-6, 9, '#2c2440');
+    px(sx-1, sy+10, w+2, 7, '#6a5a9c');               /* ชายคาชั้นล่าง */
+    px(sx+6, sy+4, w-12, 8, '#4a3f74');               /* ตัวหอ */
+    px(sx+4, sy+2, w-8, 3, '#7d6cb8');
+    px(sx+w/2-4, sy-6, 8, 9, '#4a3f74');              /* ยอดหอ */
+    px(sx+w/2-6, sy-8, 12, 3, '#8b78cc');
+    px(sx+w/2-1, sy-14, 2, 7, '#8b78cc');             /* เสาธง */
+    px(sx+w/2+1, sy-14, 7 + (tick/22%2|0), 5, '#6ee7a8');
+    for (let i = 0; i < 4; i++) px(sx+7+i*13, sy+19, 6, 7, (tick/30%2|0) && i===1 ? '#ffe071' : '#cbb7ff');
+    px(sx+w/2-7, sy+h-14, 14, 14, '#241d38');         /* ประตูใหญ่ */
+    px(sx+w/2-5, sy+h-11, 10, 11, '#3b3158');
+    px(sx+w/2-1, sy+h-6, 3, 3, '#ffe071');
+  } else if (o.kind === 'construct'){
+    px(sx+2, sy+14, w-4, h-16, '#6f6a5e');            /* โครงตึกยังไม่เสร็จ */
+    px(sx+2, sy+14, w-4, 3, '#8b8578');
+    for (let i = 0; i < 5; i++) px(sx+4+i*8, sy+17, 2, h-19, '#4d4a42');
+    px(sx+3, sy+9, w-6, 2, '#8b8578');
+    px(sx+w-9, sy-6, 3, 22, '#e3c33c');               /* เครน */
+    px(sx+w-9, sy-6, -20, 3, '#e3c33c');
+    px(sx+w-26, sy-3, 1, 7 + (tick/26%3|0), 'rgba(255,255,255,.45)');
+    px(sx+w-28, sy+4 + (tick/26%3|0), 5, 4, '#8b8578');
+    px(sx+1, sy+h-7, 10, 7, '#c9a227');               /* ป้ายเตือน */
+    px(sx+3, sy+h-5, 6, 1, '#2b2b2b'); px(sx+3, sy+h-3, 4, 1, '#2b2b2b');
   } else if (o.kind === 'fish'){
     px(sx+7, sy+2, 2, 11, '#8a6a3a');                /* คันเบ็ด */
     px(sx+9, sy+3, 5, 1, '#d8d8d8');
@@ -1607,7 +1813,7 @@ function draw(){
 const say = html => { $('rpgMsg').innerHTML = html; };
 
 function move(dx, dy){
-  if (anim) return;
+  if (anim || drake.state !== 'sleep') return;
   const dir = dy < 0 ? 'up' : dy > 0 ? 'down' : dx < 0 ? 'left' : 'right';
   chain[0].dir = dir;
   const nx = chain[0].x + dx, ny = chain[0].y + dy;
@@ -1677,16 +1883,93 @@ function inspect(o){
   if (o.kind === 'fish') return fishOnce();
   say(o.msg);
   beep(520,.06);
+  /* สำรวจตัวมังกรเองไม่ปลุกมัน — สิ่งที่ปลุกคือไปแตะของมัน */
   if (o.kind === 'dragon') beep(80,.6,'sawtooth',.045);
 }
+
+/* ── กองทองมังกร · เดินทับได้ สำรวจได้ แต่หยิบเมื่อไหร่เรื่องยาว ── */
+function goldPrompt(){
+  if (drake.state !== 'sleep') return;
+  beep(300,.08);
+  say('<b>กองทองของมังกร</b> — เหรียญ ถ้วย มงกุฎ และของที่เจ้าของมันไม่ได้ใช้มาหลายร้อยปี กองสูงกว่าหัวมึง · เดินเหยียบผ่านมาตั้งนานมันยังไม่ขยับเลย' +
+    '<div class="ask"><b>ทองของมังกร จะหยิบจริงเหรอ?</b><span>' +
+    '<button class="btn danger sm" id="takeGold" type="button">💰 หยิบ</button>' +
+    '<button class="btn ghost sm" id="leaveGold" type="button">ช่างแม่ง</button></span></div>');
+  $('takeGold').addEventListener('click', dragonEvent);
+  $('leaveGold').addEventListener('click', () => {
+    beep(440,.06);
+    say('<b>มึงถอยมือกลับมา</b> — ฉลาด · ของมันเยอะจริง แต่เจ้าของมันก็ยังนอนอยู่ตรงนั้นจริงเหมือนกัน');
+  });
+}
+function roar(){
+  [70,58,64,52].forEach((f,i) => setTimeout(() => beep(f,.42,'sawtooth',.07), i*130));
+}
+function dragonEvent(){
+  if (drake.state !== 'sleep') return;
+  act('dungeon-dragon-wake');
+  const scr = $('drakeScreen'), shell = cv.parentElement;
+  let raf = 0;
+  const loop = () => { tick++; draw(); raf = requestAnimationFrame(loop); };
+  drake.state = 'eye'; loop();
+  shell.classList.add('quake');
+  roar();
+  say('<b>มึงยื่นมือเข้าไปในกอง</b> — เหรียญบนสุดไหลลงมาสองสามเหรียญ เสียงมันดังกว่าที่คิด · แล้วในเงาหลังกองทอง มีอะไรบางอย่างลืมตา');
+  scr.hidden = false; scr.className = 'full drake st1';
+  document.body.style.overflow = 'hidden';
+  $('drakeMicro').textContent = 'SOMETHING OPENED ITS EYES';
+  $('drakeBig').textContent = '…';
+  $('drakeSay').textContent = 'มึงยื่นมือเข้าไปในกองทองแล้วจริง ๆ ด้วย';
+  $('drakeBtns').hidden = true;
+  setTimeout(() => {
+    drake.state = 'look'; scr.className = 'full drake st2';
+    $('drakeMicro').textContent = 'THE RED DRAGON IS AWAKE';
+    $('drakeBig').textContent = '...มึงเอาจริงดิ';
+    $('drakeSay').textContent = 'หัวมันหันมาทางตี้มึงแล้ว · ปากอ้าค้างไว้ ข้างในสว่างขึ้นเรื่อย ๆ';
+    roar();
+  }, 1150);
+  setTimeout(() => {
+    drake.state = 'fire'; scr.className = 'full drake st3';
+    $('drakeBig').textContent = 'BREATH OF FIRE';
+    $('drakeSay').textContent = 'ทั้งซากปรักหักพังสว่างเป็นสีส้มในวินาทีเดียว';
+    [900,700,520,380,240].forEach((f,i) => setTimeout(() => beep(f,.3,'sawtooth',.06), i*70));
+  }, 2200);
+  setTimeout(() => {
+    scr.className = 'full drake st4';
+    $('drakeMicro').textContent = 'PARTY WIPE';
+    $('drakeBig').textContent = 'ตายยกตี้';
+    $('drakeSay').innerHTML = 'สาเหตุการตาย · <b>ขโมยทองมังกรที่กูเตือนไปแล้วว่าอย่าปลุก</b><br>ทั้งสี่คนโดนเต็ม ๆ รวมทั้งกูด้วย ซึ่งกูอยากให้บันทึกไว้ว่ากูไม่ได้เป็นคนเสนอ';
+    $('drakeBtns').hidden = false;
+    cancelAnimationFrame(raf);
+    shell.classList.remove('quake');
+    drake.state = 'sleep'; draw();
+  }, 3700);
+}
+function respawn(){
+  $('drakeScreen').hidden = true;
+  document.body.style.overflow = '';
+  chain = [{ ...SPAWN, dir:'up' }, ...SPAWN_TRAIL.map(p => ({ ...p, dir:'up' }))];
+  prev = chain.map(p => ({ ...p }));
+  S.pos = { ...SPAWN };
+  S.trail = SPAWN_TRAIL.map(p => ({ ...p }));
+  save();
+  drake.state = 'sleep';
+  draw();
+  chime();
+  say('<b>ฟื้นที่จุดเซฟ</b> — ของทุกอย่างอยู่ครบ ดาว ไอเท็ม สมุด ปลา โคลเวอร์ ไม่หายสักอย่าง ยกเว้นศักดิ์ศรี<br>กูเตือนแล้วนะ แต่เออ ชีวิตมันต้องมีคนลอง · มังกรกลับไปนอนแล้ว ทองก็กองเหมือนเดิม อยากลองอีกก็เชิญ');
+  act('dungeon-dragon-respawn');
+}
+$('drakeBack').addEventListener('click', respawn);
 function nearby(){
   const f = facing(), o = objAt(f.x, f.y);
   if (o && o.kind === 'book') openBook();
 }
 $('talkBtn').addEventListener('click', () => {
+  if (drake.state !== 'sleep') return;
   const f = facing(), o = objAt(f.x, f.y);
   if (o) return inspect(o);
   const here = chain[0];
+  /* ยืนบนกองทองหรือหันหน้าใส่กองทองก็ถือว่าสำรวจกองทอง */
+  if (at(f.x, f.y) === 'g' || at(here.x, here.y) === 'g') return goldPrompt();
   /* โคลเวอร์: ดูทั้งกอที่ยืนอยู่และกอตรงหน้า จะได้ไม่ต้องหันให้เป๊ะ */
   if (at(here.x, here.y) === 'c' && here.x === LUCKY.x && here.y === LUCKY.y) return cloverAt(here.x, here.y);
   const t = at(f.x, f.y);
@@ -1695,6 +1978,7 @@ $('talkBtn').addEventListener('click', () => {
   if (t === '~') return say('น้ำใส ๆ · ถ้าจะตกปลาต้องไปยืนตรงที่มีคันเบ็ดปักอยู่');
   if (t === '"') return say('หญ้าสูงท่วมเข่า อะไรก็ซ่อนในนี้ได้ แต่รอบนี้ไม่มีอะไร');
   if (t === 'r') return say('กำแพงหินเก่า มีรอยไหม้เป็นทางยาว · อะไรสักอย่างเคยพ่นไฟใส่มัน');
+  if (t === 'n' || at(here.x, here.y) === 'n') return say('พื้นดินไหม้เกรียมทั้งลาน มีกระดูกโผล่อยู่บ้าง · ที่นี่ไม่ใช่ซากปรักหักพังเฉย ๆ มันเป็นรังของอะไรบางอย่าง');
   say('ตรงหน้าไม่มีอะไร · ตามทางไปเรื่อย ๆ แล้วดูป้ายบอกทาง ส่วนของที่ไม่ได้อยู่บนทาง มึงต้องเดินหาเอง');
 });
 $$('[data-mv]').forEach(b => b.addEventListener('click', () => move(...b.dataset.mv.split(',').map(Number))));
@@ -1761,7 +2045,7 @@ $('partyBtn').addEventListener('click', () => {
 const restored = () => rd(NB_RESTORED) === '1';
 function openBook(){
   const first = !S.book;
-  if (first){ S.book = true; save(); act('dungeon-book-found'); chime(); }
+  if (first){ S.book = true; S.bookAt = Date.now(); save(); act('dungeon-book-found'); chime(); }
   paintLogs();
   $('repairNote').innerHTML = restored()
     ? '✅ มึงย้อนเวลาให้สมุดเล่มนี้แล้ว · ที่คั่นของ ด.ช.นรินทร์ อยู่ในกระเป๋าเรียบร้อย'
@@ -1780,10 +2064,18 @@ function paintLogs(){
   $('logBook').classList.toggle('done', S.notebook);
   $('bookJump').hidden = !S.book;
 }
-/* กลับมาจากหน้าสมุดแล้วซ่อมสำเร็จ → ค่อยแจกดาว */
+/* ดาวดวงนี้ต้องเป็น “เจอในรอบนี้ → ซ่อมในรอบนี้” เท่านั้น
+   ธง mc_nb_restored ค้างจากรอบก่อนห้ามแจกดาวฟรี — เทียบเวลาซ่อมกับเวลาที่เจอสมุด
+   และเผื่อสมุดเวอร์ชันเก่าที่ไม่ประทับเวลา ก็ยังจับ “ตอนเจอยังไม่ซ่อม แล้วมาซ่อมทีหลัง” ได้ */
 function checkNotebook(){
-  if (S.notebook || !restored()) return;
-  S.book = true;
+  if (S.notebook || !S.book) return;
+  if (!restored()){
+    if (S.nbWas !== 0){ S.nbWas = 0; save(); }
+    return;
+  }
+  const stamp = Number(rd(NB_RESTORED_AT) || 0);
+  const thisRun = (S.bookAt && Number.isFinite(stamp) && stamp >= S.bookAt) || S.nbWas === 0;
+  if (!thisRun) return;
   claim('notebook','dungeon-secret-restored');
   paintLogs();
 }
@@ -1815,92 +2107,139 @@ const TREE = [
 ];
 const CROSS = [['ui','tiles'],['handoff','quest'],['tone','ep']];
 const SELECTED = ['identity','voice'];
-const UPDATED  = ['tone','ban','world','course','ui'];
 const pos = {};
 
-function wire(host, x1, y1, x2, y2, cls, delay, id){
-  const len = Math.hypot(x2-x1, y2-y1);
-  const w = document.createElement('span');
-  w.className = 'wire' + (cls ? ' ' + cls : '');
-  if (id) w.dataset.w = id;
-  w.style.cssText = 'left:' + x1 + 'px;top:' + y1 + 'px;width:' + len + 'px;rotate:' + Math.atan2(y2-y1,x2-x1) + 'rad;animation-delay:' + delay.toFixed(2) + 's';
-  w.innerHTML = '<i style="animation-delay:' + (Math.random()*1.6).toFixed(2) + 's"></i>';
-  host.append(w);
-  return w;
-}
-function node(host, x, y, label, cls, delay, id){
-  const n = document.createElement('div');
-  n.className = 'nd' + (cls ? ' ' + cls : '');
-  n.textContent = label;
-  if (id) n.dataset.n = id;
-  n.style.cssText += 'left:' + x + 'px;top:' + y + 'px;animation-delay:' + delay.toFixed(2) + 's';
-  host.append(n);
-  pos[id] = { x, y };
-  return n;
-}
-function buildWeb(){
-  const host = $('web');
-  [...host.querySelectorAll('.nd,.wire')].forEach(e => e.remove());
-  const W = host.clientWidth, H = host.clientHeight;
-  if (!W || !H) return;
+/* ── ป้ายชื่อไฟล์ + เส้นความสัมพันธ์จริงของกราฟ ───────────
+   UPDATED ต้องคำนวณจากเส้นที่ผู้เล่นเห็นจริง ห้าม hardcode
+   ไม่งั้น Source Command จะทำงานคนละ logic กับภาพตรงหน้า      */
+const LABEL = {}, KIDS = {};
+(function walk(list, parent){
+  list.forEach(n => {
+    (KIDS[parent] = KIDS[parent] || []).push(n.id);
+    LABEL[n.id] = n.label;
+    walk(n.kids || [], n.id);
+  });
+})(TREE, 'core');
+const FILES = Object.keys(LABEL).length + 1;          /* + ซอสแม่ */
+const UPDATED = (() => {
+  const out = [], seen = new Set(SELECTED), q = [...SELECTED];
+  const next = id => (KIDS[id] || []).concat(CROSS.filter(c => c[0] === id).map(c => c[1]));
+  while (q.length){
+    next(q.shift()).forEach(c => {
+      if (seen.has(c)) return;
+      seen.add(c); out.push(c); q.push(c);
+    });
+  }
+  return out;
+})();
+const UNTOUCHED = Object.keys(LABEL).filter(id => !UPDATED.includes(id) && !SELECTED.includes(id));
+const names = ids => ids.map(id => LABEL[id] || id).join(' · ');
+/* เส้นที่ต้องสว่างค้างตอนสแกน = เส้นที่พาการเปลี่ยนแปลงไปจริงตามภาพ */
+const PATHW = (() => {
+  const hot = id => SELECTED.includes(id) || UPDATED.includes(id);
+  const ids = [];
+  Object.keys(KIDS).forEach(p => KIDS[p].forEach(c => { if (hot(c)) ids.push(p + '-' + c); }));
+  CROSS.forEach(([a,b],i) => { if (hot(a) && hot(b)) ids.push('x' + i); });
+  return ids;
+})();
+
+/* วางแผนตำแหน่งก่อน แล้วค่อยเอาไปเทียบกับ DOM ที่มีอยู่
+   ของเดิมที่ยังอยู่ในแผน = ขยับตำแหน่งอย่างเดียว ห้ามสร้างใหม่
+   ไม่งั้นทุกครั้งที่จอเปลี่ยนขนาด (แถบ URL มือถือเลื่อน) ทั้งกราฟจะกระพริบใหม่ทั้งชุด */
+function webPlan(W, H){
   const cx = W/2, cy = H/2, R = Math.min(W,H);
   const gen = Math.min(3, S.gen);
-  let nodes = 1, links = 0;
+  const nodes = [], wires = [];
+  const N = (id, label, cls, x, y, delay) => { nodes.push({ id, label, cls, x, y, delay }); pos[id] = { x, y }; };
+  const L = (id, a, b, cls, delay) => wires.push({ id, x1:a.x, y1:a.y, x2:b.x, y2:b.y, cls, delay });
 
-  const core = document.createElement('div');
-  core.className = 'nd core';
-  core.dataset.n = 'core';
-  core.innerHTML = '<div><b>ซอสแม่</b><small>SOURCE · SAUCE</small></div>';
-  core.style.left = cx + 'px'; core.style.top = cy + 'px';
-  host.append(core);
-  pos.core = { x:cx, y:cy };
-
+  N('core', '', 'core', cx, cy, 0);
   const roots = TREE.concat(S.spoon ? [{ id:'mine', label:MINE[S.spoon], kids:[
-    { id:'mine2', label:'my-notes.md', kids:[{id:'mine3',label:'my-next.md'}] }] }] : []);
+    { id:'mine2', label:'my-notes.md', kids:[{ id:'mine3', label:'my-next.md' }] }] }] : []);
   const n1 = roots.length;
   roots.forEach((r,i) => {
     const a = -Math.PI/2 + (i/n1)*Math.PI*2;
-    const x = cx + Math.cos(a)*R*.2, y = cy + Math.sin(a)*R*.2*.9;
+    const p1 = { x: cx + Math.cos(a)*R*.2, y: cy + Math.sin(a)*R*.2*.9 };
+    pos[r.id] = p1;
     if (gen >= 1){
-      wire(host, cx, cy, x, y, '', i*.05, 'core-' + r.id);
-      node(host, x, y, r.label, r.id === 'mine' ? 'mine' : '', .1 + i*.05, r.id);
-      nodes++; links++;
-    } else { pos[r.id] = { x, y }; }
-    if (gen >= 2){
-      r.kids.forEach((k,j) => {
-        const a2 = a + (j - (r.kids.length-1)/2) * .34;
-        const x2 = cx + Math.cos(a2)*R*.33, y2 = cy + Math.sin(a2)*R*.33*.9;
-        wire(host, x, y, x2, y2, '', .3 + j*.07, r.id + '-' + k.id);
-        node(host, x2, y2, k.label, 'g2' + (r.id === 'mine' ? ' mine' : ''), .4 + j*.07, k.id);
-        nodes++; links++;
-        if (gen >= 3){
-          (k.kids || []).forEach((g,m) => {
-            const a3 = a2 + (m - ((k.kids.length-1)/2)) * .17;
-            const x3 = cx + Math.cos(a3)*R*.45, y3 = cy + Math.sin(a3)*R*.45*.92;
-            wire(host, x2, y2, x3, y3, '', .7 + m*.05, k.id + '-' + g.id);
-            node(host, x3, y3, g.label, 'g3', .8 + m*.05, g.id);
-            nodes++; links++;
-          });
-        }
-      });
+      L('core-' + r.id, { x:cx, y:cy }, p1, '', i*.05);
+      N(r.id, r.label, r.id === 'mine' ? 'mine' : '', p1.x, p1.y, .1 + i*.05);
     }
+    if (gen < 2) return;
+    r.kids.forEach((k,j) => {
+      const a2 = a + (j - (r.kids.length-1)/2) * .52;
+      const p2 = { x: cx + Math.cos(a2)*R*.34, y: cy + Math.sin(a2)*R*.34*.9 };
+      L(r.id + '-' + k.id, p1, p2, '', .3 + j*.07);
+      N(k.id, k.label, 'g2' + (r.id === 'mine' ? ' mine' : ''), p2.x, p2.y, .4 + j*.07);
+      if (gen < 3) return;
+      (k.kids || []).forEach((g,m) => {
+        const a3 = a2 + (m - ((k.kids.length-1)/2)) * .3;
+        const p3 = { x: cx + Math.cos(a3)*R*.47, y: cy + Math.sin(a3)*R*.47*.92 };
+        L(k.id + '-' + g.id, p2, p3, '', .7 + m*.05);
+        N(g.id, g.label, 'g3', p3.x, p3.y, .8 + m*.05);
+      });
+    });
   });
   if (gen >= 3){
     CROSS.forEach(([a,b],i) => {
       if (!pos[a] || !pos[b]) return;
-      wire(host, pos[a].x, pos[a].y, pos[b].x, pos[b].y, 'cross', 1.1 + i*.08, 'x' + i);
-      links++;
+      L('x' + i, pos[a], pos[b], 'cross', 1.1 + i*.08);
     });
-    const ring = [['you','มึง · HUMAN','who',-Math.PI/2],['aip','AI PARTY','who ai',Math.PI/6],['guild','คนอื่นในกิลด์','who',Math.PI*5/6]];
-    ring.forEach(([id,label,cls,a],i) => {
-      const x = cx + Math.cos(a)*R*.5, y = cy + Math.sin(a)*R*.5*.95;
-      wire(host, x, y, cx, cy, 'feed', 1.3 + i*.1, 'feed-' + id);
-      node(host, x, y, label, cls, 1.4 + i*.1, id);
-      nodes++; links++;
-    });
+    [['you','มึง · HUMAN','who',-Math.PI/2],['aip','AI PARTY','who ai',Math.PI/6],['guild','คนอื่นในกิลด์','who',Math.PI*5/6]]
+      .forEach(([id,label,cls,a],i) => {
+        const p = { x: cx + Math.cos(a)*R*.5, y: cy + Math.sin(a)*R*.5*.95 };
+        L('feed-' + id, p, { x:cx, y:cy }, 'feed', 1.3 + i*.1);
+        N(id, label, cls, p.x, p.y, 1.4 + i*.1);
+      });
   }
-  $('webCount').textContent = 'NODES ' + nodes + ' · LINKS ' + links;
-  $('webGen').textContent = gen >= 3 ? 'GEN ∞' : 'GEN ' + gen;
+  return { gen, nodes, wires };
+}
+function placeWire(el, w){
+  el.style.left = w.x1 + 'px';
+  el.style.top = w.y1 + 'px';
+  el.style.width = Math.hypot(w.x2-w.x1, w.y2-w.y1) + 'px';
+  el.style.rotate = Math.atan2(w.y2-w.y1, w.x2-w.x1) + 'rad';
+}
+function buildWeb(){
+  const host = $('web');
+  const W = host.clientWidth, H = host.clientHeight;
+  if (!W || !H) return;
+  const plan = webPlan(W, H);
+  const keepW = new Set(), keepN = new Set();
+
+  plan.wires.forEach(w => {
+    keepW.add(w.id);
+    let el = host.querySelector('.wire[data-w="' + w.id + '"]');
+    if (!el){
+      el = document.createElement('span');
+      el.className = 'wire' + (w.cls ? ' ' + w.cls : '');
+      el.dataset.w = w.id;
+      el.style.animationDelay = w.delay.toFixed(2) + 's';
+      el.innerHTML = '<i style="animation-delay:' + (Math.random()*1.6).toFixed(2) + 's"></i>';
+      host.append(el);
+    }
+    placeWire(el, w);                       /* ของเดิม: ขยับอย่างเดียว ไม่แตะ animation */
+  });
+  plan.nodes.forEach(n => {
+    keepN.add(n.id);
+    let el = host.querySelector('.nd[data-n="' + n.id + '"]');
+    if (!el){
+      el = document.createElement('div');
+      el.className = 'nd' + (n.cls ? ' ' + n.cls : '');
+      el.dataset.n = n.id;
+      if (n.id === 'core') el.innerHTML = '<div><b>ซอสแม่</b><small>SOURCE · SAUCE</small></div>';
+      else el.textContent = n.label;
+      el.style.animationDelay = n.delay.toFixed(2) + 's';
+      host.append(el);
+    }
+    el.style.left = n.x + 'px';
+    el.style.top = n.y + 'px';
+  });
+  host.querySelectorAll('.wire').forEach(el => { if (!keepW.has(el.dataset.w)) el.remove(); });
+  host.querySelectorAll('.nd').forEach(el => { if (!keepN.has(el.dataset.n)) el.remove(); });
+
+  $('webCount').textContent = 'NODES ' + plan.nodes.length + ' · LINKS ' + plan.wires.length;
+  $('webGen').textContent = plan.gen >= 3 ? 'GEN ∞' : 'GEN ' + plan.gen;
 }
 function paintSpoons(){
   $('spoons').innerHTML = SPOONS.map(([k,label]) =>
@@ -1936,15 +2275,17 @@ function paintNetwork(){
 function showTrace(instant){
   $('trace').hidden = false;
   $('trace').innerHTML =
-    '<span class="ok">READ</span> ซอสทั้งระบบ 24 ไฟล์<br>' +
-    '<span class="ok">SELECTED SOURCE</span> identity.md · voice.md<br>' +
-    '<span class="ok">UPDATED DOWNSTREAM</span> tone.md · never-say.md · world.html · course.html · ui.css<br>' +
-    '<span class="dim">UNTOUCHED</span> party.md · relay.md · map.js · save.json · worksheet.md …<br>' +
+    '<span class="ok">READ</span> ซอสทั้งระบบ ' + FILES + ' ไฟล์<br>' +
+    '<span class="ok">SELECTED SOURCE</span> ' + names(SELECTED) + '<br>' +
+    '<span class="ok">UPDATED DOWNSTREAM</span> ' + names(UPDATED) + '<br>' +
+    '<span class="dim">UNTOUCHED</span> ' + names(UNTOUCHED.slice(0,5)) + ' …<br>' +
     '<span class="ok">FEEDBACK</span> ผลจริงวิ่งกลับเข้าซอสแม่ · รอบหน้าเริ่มจากของที่แก้แล้ว';
   if (instant){
-    $('web').classList.add('scan');
-    SELECTED.forEach(id => $('web').querySelector('[data-n="' + id + '"]')?.classList.add('hit'));
-    UPDATED.forEach(id => $('web').querySelector('[data-n="' + id + '"]')?.classList.add('up'));
+    const web = $('web');
+    web.classList.add('scan');
+    SELECTED.forEach(id => web.querySelector('[data-n="' + id + '"]')?.classList.add('hit'));
+    UPDATED.forEach(id => web.querySelector('[data-n="' + id + '"]')?.classList.add('up'));
+    PATHW.concat(['feed-you','feed-aip','feed-guild']).forEach(id => web.querySelector('[data-w="' + id + '"]')?.classList.add('on'));
   }
 }
 $('cookBtn').addEventListener('click', () => {
@@ -1965,9 +2306,10 @@ $('runCmd').addEventListener('click', () => {
   SELECTED.forEach((id,i) => setTimeout(() => {
     web.querySelector('[data-n="' + id + '"]')?.classList.add('hit'); beep(680,.07);
   }, 800 + i*260));
+  setTimeout(() => PATHW.forEach(id => web.querySelector('[data-w="' + id + '"]')?.classList.add('on')), 1200);
   UPDATED.forEach((id,i) => setTimeout(() => {
     web.querySelector('[data-n="' + id + '"]')?.classList.add('up'); beep(560 + i*40,.06);
-  }, 1500 + i*220));
+  }, 1500 + i*190));
   setTimeout(() => {
     web.querySelectorAll('[data-w^="feed-"]').forEach(w => w.classList.add('on'));
     $('cmdState').textContent = 'COMPLETE';
@@ -1989,9 +2331,11 @@ function grantTitle(t){
   } catch {}
 }
 function lockRun(broken){
-  S.loot = { broken, stars: broken ? 0 : score(), items: broken ? [] : QORDER.filter(k => S[k]), openedAt: Date.now() };
+  const stars = broken ? 0 : score();
+  S.loot = { broken, stars, items: broken ? [] : QORDER.filter(k => S[k]), openedAt: Date.now() };
   S.level = 0; save();
-  grantTitle('AWAKENED');
+  /* ตราถาวรให้เฉพาะรอบที่เก็บครบจริงและไม่ได้งัดหีบ · เปิด 3/5 หรือหีบเกลือไม่ได้ */
+  if (!broken && stars === 5) grantTitle('AWAKENED');
   act(broken ? 'dungeon-chest-broken' : 'dungeon-chest-open');
   paintChest(); paintStars();
   setTimeout(openLoot, broken ? 420 : 800);
@@ -2055,7 +2399,12 @@ function openLoot(){
       (got ? it.desc : 'เควสที่ไม่ได้ทำ ก็คือของที่ไม่ได้เก็บ') + '</small></div></div>';
   }).join('');
   $('saltBox').hidden = !b;
-  if (b) $('saltBox').innerHTML = '🧂 <b>เกลือ 1 ถุง</b> — ของแถมของคนใจร้อน เค็มแต่เก็บได้นาน · แต่คัมภีร์ยังอยู่ในมือมึงนะ ซึ่งเอาจริง ๆ มันคือของชิ้นเดียวที่กูอยากให้อยู่แล้ว';
+  if (b) $('saltBox').innerHTML = '🧂 <b>เกลือ 1 ถุง</b> — ของแถมของคนใจร้อน เค็มแต่เก็บได้นาน · หีบพังได้ ดาวหายได้ แต่<b>เวลาที่มึงเลิกเสียไปแล้ว กูเอาคืนจากมึงไม่ได้</b> คัมภีร์ก็ยังอยู่ในมือมึงเหมือนเดิม';
+  const perfect = !b && S.loot.stars === 5;
+  $('titleBox').hidden = false;
+  $('titleBox').innerHTML = perfect
+    ? '🏅 <b>PERMANENT TITLE · AWAKENED</b> — ตรานี้ติดตัวมึงไปแล้ว รีเซ็ตด่านกี่รอบก็ไม่หลุด'
+    : '🏅 <b>ตรา AWAKENED ยังไม่ได้รอบนี้</b> — ตราถาวรให้เฉพาะรอบที่เก็บครบ 5/5 แล้วเปิดหีบด้วยกุญแจ ไม่ใช่ด้วยขวาน · Reset Dungeon แล้วมาแก้ตัวได้';
   $('scrollBtn').textContent = S.level >= 3 ? '📜 อ่านคัมภีร์ AWAKEN อีกรอบ'
     : S.level > 0 ? '📜 ตีบวกคัมภีร์ต่อ · LV.' + S.level + '/3' : '📜 ใช้คัมภีร์ AWAKEN';
   $('lootScreen').hidden = false;
