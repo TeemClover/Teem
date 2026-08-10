@@ -5,6 +5,8 @@
 
 if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
   const STATE_KEY = 'mc_dungeon_state_v2';
+  const CLEAR_KEY = 'mc_dungeon_cleared_v1';
+  const AWAKENED_KEY = 'mc_dungeon_awakened_v1';
   const $ = id => document.getElementById(id);
 
   function state() {
@@ -14,6 +16,7 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
     } catch { return null; }
   }
 
+  function mark(key) { try { localStorage.setItem(key, '1'); } catch { /* private mode */ } }
   function unlock(id) {
     try { window.MC_MINI_UNLOCK?.(id); } catch { /* private mode / early boot */ }
   }
@@ -26,11 +29,15 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
     if (s.level >= 3) unlock('xp-scroll-used');
     if (s.luckybug) unlock('lucky-bug');
     if (s.loot) {
+      mark(CLEAR_KEY);
       if (s.loot.broken) unlock('salt-speedrun');
       else {
         unlock('boss-chest');
         if (Number(s.loot.stars) === 3) unlock('boss-3-stars');
-        if (Number(s.loot.stars) === 5) unlock('boss-5-stars');
+        if (Number(s.loot.stars) === 5) {
+          unlock('boss-5-stars');
+          mark(AWAKENED_KEY);
+        }
       }
     }
   }
@@ -40,11 +47,18 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
     if (id === 'dungeon-q3') unlock('party-box-open');
     if (id === 'dungeon-scroll-lv3') unlock('xp-scroll-used');
     if (id === 'dungeon-chest-open') {
+      mark(CLEAR_KEY);
       unlock('boss-chest');
       if (Number(s?.loot?.stars) === 3) unlock('boss-3-stars');
-      if (Number(s?.loot?.stars) === 5) unlock('boss-5-stars');
+      if (Number(s?.loot?.stars) === 5) {
+        unlock('boss-5-stars');
+        mark(AWAKENED_KEY);
+      }
     }
-    if (id === 'dungeon-chest-broken' || id === 'dungeon-pry-3') unlock('salt-speedrun');
+    if (id === 'dungeon-chest-broken') {
+      mark(CLEAR_KEY);
+      unlock('salt-speedrun');
+    } else if (id === 'dungeon-pry-3') unlock('salt-speedrun');
     if (id === 'dungeon-lucky-bug') unlock('lucky-bug');
   }
 
@@ -76,7 +90,7 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
 
   /* Object behavior: the canvas renderer is deliberately private inside the living HTML.
      Its message box is the stable public boundary: every inspect/collision writes there.
-     Normalize those messages into durable ACT ids so /collection/stat can answer
+     Normalize those messages into durable ACT ids so /stat/behavior can answer
      "กี่เครื่องเคยแตะ object นี้" even when the same person inspects it repeatedly. */
   const OBJECT_RULES = [
     ['dungeon-object-forge', /โรงตีเหล็ก/],
@@ -96,7 +110,6 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
   ];
   const SECRET_RULES = [
     ['dungeon-secret-boot', /รองเท้าบูท/],
-    ['dungeon-secret-notebook', /สมุดเล่ม|สมุดเก่า|ด\.ช\.นรินทร์/],
     ['dungeon-secret-clover', /โคลเวอร์สี่แฉก/],
   ];
   let lastMessage = '';
