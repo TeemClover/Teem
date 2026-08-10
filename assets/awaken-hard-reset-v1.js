@@ -129,9 +129,13 @@ async function hardReset(event){
   /* Prevent account boot on the destination from eagerly merging an old save. */
   set(localStorage,'mc_account_last_sync',new Date().toISOString());
 
+  /* ธงให้ด่านใหม่ /classroom/dungeon/ รู้ว่าต้องปลดล็อกหีบให้เปิดได้อีกรอบ
+     หน้าปลายทางจะอ่านธงนี้ ล้างผลหีบรอบก่อน แล้วปรับธงกลับเป็น 0 เอง */
+  set(localStorage,'mc_dungeon_reset_v1','1');
+
   try{ window.MC_ACT?.('awaken-dungeon-hard-reset'); }catch{}
   await Promise.race([pushReset(e),new Promise(r=>setTimeout(r,1800))]);
-  location.replace(`/boss/?reset=${e}`);
+  location.replace(`/classroom/dungeon/?reset=${e}`);
 }
 
 function wireNotebookRunMarkers(){

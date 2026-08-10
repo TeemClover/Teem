@@ -159,10 +159,12 @@ async function hardReset(event){
 
   /* Delay account auto-merge long enough for the reset tombstone to reach cloud. */
   set(localStorage,'mc_account_last_sync',new Date().toISOString());
+  /* ธงเดียวที่ด่านใหม่ /classroom/dungeon/ ต้องการ เพื่อปลดล็อกหีบให้เปิดใหม่ */
+  set(localStorage,'mc_dungeon_reset_v1','1');
   try{ window.MC_ACT?.('awaken-dungeon-savepoint-reset'); }catch{}
 
   await Promise.race([pushReset(e),new Promise(resolve=>setTimeout(resolve,1800))]);
-  location.replace(`/boss/?reset=${e}`);
+  location.replace(`/classroom/dungeon/?reset=${e}`);
 }
 
 function wireRunStamps(){
