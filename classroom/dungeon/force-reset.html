@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#010604">
+<title>Force Reset · THE DUNGEON</title>
+<style>
+html,body{margin:0;min-height:100%;background:#010604;color:#eaf7ef;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif}body{display:grid;place-items:center;padding:24px}.box{width:min(620px,100%);border:1px solid rgba(110,231,168,.28);border-radius:16px;padding:24px;background:#06110b;box-shadow:0 30px 90px rgba(0,0,0,.5)}.tag{color:#6ee7a8;font:700 11px ui-monospace,monospace;letter-spacing:.14em}h1{margin:10px 0 8px;font-size:clamp(26px,6vw,40px)}p{color:#b9cfc3;line-height:1.75}.ok{color:#6ee7a8;font-weight:800}.warn{color:#f0c96c}.btn{display:inline-flex;margin-top:16px;padding:11px 15px;border-radius:9px;border:1px solid rgba(110,231,168,.42);background:rgba(110,231,168,.1);color:#dffced;text-decoration:none;font-weight:800}
+</style>
+</head>
+<body>
+<main class="box">
+  <span class="tag">THE DUNGEON · HARD RESET</span>
+  <h1 id="title">กำลังล้างรอบที่ค้าง…</h1>
+  <p id="msg">หน้านี้ไม่โหลดระบบเก่า ไม่พึ่ง cache และล้าง state ของรอบ Dungeon โดยตรง</p>
+  <a class="btn" id="go" href="/classroom/dungeon/" hidden>กลับเข้า THE DUNGEON →</a>
+</main>
+<script>
+(function(){
+'use strict';
+const KEEP = new Set([
+  'mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1',
+  'mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1',
+  'mc_awaken_reset_count','mc_awaken_reset_epoch'
+]);
+function preserve(){
+  try{
+    if(localStorage.getItem('mc_nb_seen')==='1') localStorage.setItem('mc_nb_seen_ever_v1','1');
+    if(localStorage.getItem('mc_nb_restored')==='1') localStorage.setItem('mc_nb_restored_ever_v1','1');
+    if(localStorage.getItem('mc_secret_end')==='1') localStorage.setItem('mc_secret_end_ever_v1','1');
+  }catch(e){}
+}
+function shouldClear(k){
+  if(!k || KEEP.has(k)) return false;
+  return k==='mc_dungeon_state_v2' || k==='mc_secret_end' ||
+    k.startsWith('mc_nb_') || k.startsWith('mc_ch7_') || k.startsWith('mc_awaken_') ||
+    k==='mc_dungeon_reset_requested' || k==='mc_dungeon_reset_v1';
+}
+function clear(storage){
+  const keys=[];
+  try{for(let i=0;i<storage.length;i++){const k=storage.key(i);if(shouldClear(k))keys.push(k);}keys.forEach(k=>storage.removeItem(k));}catch(e){}
+  return keys.length;
+}
+async function run(){
+  preserve();
+  const n1=clear(localStorage), n2=clear(sessionStorage);
+  const epoch=Date.now();
+  try{
+    localStorage.setItem('mc_awaken_reset_epoch',String(epoch));
+    localStorage.setItem('mc_awaken_reset_count',String(Number(localStorage.getItem('mc_awaken_reset_count')||0)+1));
+    localStorage.setItem('mc_account_last_sync',new Date().toISOString());
+    /* Developer force-reset compatibility: the retired notebook still gates its button
+       on this key. Normal Dungeon progression still starts fresh because S.voice is cleared. */
+    localStorage.setItem('mc_awaken_restore_tool_v1','1');
+  }catch(e){}
+  try{
+    const progress={};
+    ['mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1','mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_awaken_reset_count','mc_awaken_reset_epoch','mc_awaken_restore_tool_v1'].forEach(k=>{const v=localStorage.getItem(k);if(v!==null)progress[k]=v;});
+    await Promise.race([
+      fetch('/api/progress',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({progress})}),
+      new Promise(r=>setTimeout(r,700))
+    ]);
+  }catch(e){}
+  document.getElementById('title').textContent='รีเซ็ตแล้ว';
+  document.getElementById('msg').innerHTML='<span class="ok">ล้างรอบปัจจุบันแล้ว '+n1+' local / '+n2+' session keys</span><br><span class="warn">Achievement ที่เคยปลดถูกเก็บไว้</span> · รอบ Dungeon จะเริ่มใหม่จากศูนย์ และหน้า notebook จะกดซ่อมได้แม้ระบบเก่าเคยค้าง';
+  const go=document.getElementById('go');go.hidden=false;
+  setTimeout(()=>location.replace('/classroom/dungeon/?fresh='+epoch),900);
+}
+run();
+})();
+</script>
+</body>
+</html>
