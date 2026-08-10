@@ -14,7 +14,7 @@ html,body{margin:0;min-height:100%;background:#010604;color:#eaf7ef;font-family:
 <main class="box">
   <span class="tag">THE DUNGEON · HARD RESET</span>
   <h1 id="title">กำลังล้างรอบที่ค้าง…</h1>
-  <p id="msg">หน้านี้ไม่โหลดระบบเก่า ไม่พึ่ง cache และล้าง state ของรอบ Dungeon โดยตรง</p>
+  <p id="msg">ล้างทั้ง state ในเครื่องและ current-run state ใน Cloud Save เพื่อไม่ให้เซฟเก่าดึงสมุดที่ซ่อมแล้วกลับมาอีก</p>
   <a class="btn" id="go" href="/classroom/dungeon/" hidden>กลับเข้า THE DUNGEON →</a>
 </main>
 <script>
@@ -22,8 +22,8 @@ html,body{margin:0;min-height:100%;background:#010604;color:#eaf7ef;font-family:
 'use strict';
 const KEEP = new Set([
   'mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1',
-  'mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1',
-  'mc_awaken_reset_count','mc_awaken_reset_epoch'
+  'mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_titles',
+  'mc_awaken_reset_count','mc_awaken_reset_epoch','mc_dungeon_reset_count'
 ]);
 function preserve(){
   try{
@@ -36,7 +36,7 @@ function shouldClear(k){
   if(!k || KEEP.has(k)) return false;
   return k==='mc_dungeon_state_v2' || k==='mc_secret_end' ||
     k.startsWith('mc_nb_') || k.startsWith('mc_ch7_') || k.startsWith('mc_awaken_') ||
-    k==='mc_dungeon_reset_requested' || k==='mc_dungeon_reset_v1';
+    k==='mc_dungeon_reset_requested' || k==='mc_dungeon_reset_v1' || k==='mc_platinum_trophy';
 }
 function clear(storage){
   const keys=[];
@@ -50,23 +50,22 @@ async function run(){
   try{
     localStorage.setItem('mc_awaken_reset_epoch',String(epoch));
     localStorage.setItem('mc_awaken_reset_count',String(Number(localStorage.getItem('mc_awaken_reset_count')||0)+1));
-    localStorage.setItem('mc_account_last_sync',new Date().toISOString());
-    /* Developer force-reset compatibility: the retired notebook still gates its button
-       on this key. Normal Dungeon progression still starts fresh because S.voice is cleared. */
-    localStorage.setItem('mc_awaken_restore_tool_v1','1');
+    localStorage.setItem('mc_dungeon_reset_count',String(Number(localStorage.getItem('mc_dungeon_reset_count')||0)+1));
   }catch(e){}
+  /* Do NOT restore the retired mc_awaken_restore_tool_v1 debug key here.
+     A fresh run must earn the hourglass from Dungeon QUEST 01 again. */
   try{
     const progress={};
-    ['mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1','mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_awaken_reset_count','mc_awaken_reset_epoch','mc_awaken_restore_tool_v1'].forEach(k=>{const v=localStorage.getItem(k);if(v!==null)progress[k]=v;});
+    ['mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1','mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_titles','mc_awaken_reset_count','mc_awaken_reset_epoch','mc_dungeon_reset_count'].forEach(k=>{const v=localStorage.getItem(k);if(v!==null)progress[k]=v;});
     await Promise.race([
-      fetch('/api/progress',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({progress})}),
-      new Promise(r=>setTimeout(r,700))
+      fetch('/api/progress',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({resetScope:'dungeon',progress})}),
+      new Promise(r=>setTimeout(r,1000))
     ]);
   }catch(e){}
   document.getElementById('title').textContent='รีเซ็ตแล้ว';
-  document.getElementById('msg').innerHTML='<span class="ok">ล้างรอบปัจจุบันแล้ว '+n1+' local / '+n2+' session keys</span><br><span class="warn">Achievement ที่เคยปลดถูกเก็บไว้</span> · รอบ Dungeon จะเริ่มใหม่จากศูนย์ และหน้า notebook จะกดซ่อมได้แม้ระบบเก่าเคยค้าง';
+  document.getElementById('msg').innerHTML='<span class="ok">ล้างรอบปัจจุบันแล้ว '+n1+' local / '+n2+' session keys</span><br><span class="warn">Achievement ที่เคยปลดยังอยู่</span> · แต่ QUEST, นาฬิกาทราย และสมุดกลับเป็นรอบใหม่จริง ต้องเคลียร์ QUEST 01 แล้วกด RESTORE ใหม่';
   const go=document.getElementById('go');go.hidden=false;
-  setTimeout(()=>location.replace('/classroom/dungeon/?fresh='+epoch),900);
+  setTimeout(()=>location.replace('/classroom/dungeon/?fresh='+epoch),1100);
 }
 run();
 })();
