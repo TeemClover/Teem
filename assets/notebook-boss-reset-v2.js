@@ -1,30 +1,56 @@
-/* myClover · Boss Dungeon reset v4
-   Hidden at the end of the restored notebook.
-   Reset one Chapter 7 run completely while preserving permanent collection data.
+/* myClover · THE DUNGEON reset + notebook bridge v5
+   One reset contract for the new Dungeon.
+   - ?force-reset=1 works even when the notebook UI is stuck.
+   - A reset clears the current Dungeon/notebook run, but permanent Collection history stays.
+   - The secret notebook now accepts the new Dungeon's QUEST 01 reward (S.voice)
+     instead of requiring the retired AWAKEN page to mint a restore-tool key.
 */
 
 const RESET_EPOCH_KEY = 'mc_awaken_reset_epoch';
 const RESET_PENDING_KEY = 'mc_awaken_reset_pending';
+const DUNGEON_STATE_KEY = 'mc_dungeon_state_v2';
+const NB_REST_EVER = 'mc_nb_restored_ever_v1';
+const NB_END_EVER = 'mc_secret_end_ever_v1';
+const NB_SEEN_EVER = 'mc_nb_seen_ever_v1';
 const KEEP_LOCAL_KEYS = new Set([
   RESET_EPOCH_KEY,
   RESET_PENDING_KEY,
   'mc_awaken_reset_count',
   'mc_mini_achievements_v1',
+  'mc_dungeon_cleared_v1',
+  'mc_dungeon_awakened_v1',
+  NB_REST_EVER,
+  NB_END_EVER,
+  NB_SEEN_EVER,
 ]);
 
 function isNotebookPage() {
   return /^\/classroom\/awaken\/notebook\/?(?:index\.html)?$/.test(location.pathname);
+}
+function isDungeonPage() {
+  return /^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname);
 }
 
 function report(id) {
   try { window.MC_ACT?.(id); } catch { /* analytics optional */ }
 }
 
+function preserveNotebookAchievements() {
+  try {
+    if (localStorage.getItem('mc_nb_seen') === '1') localStorage.setItem(NB_SEEN_EVER, '1');
+    if (localStorage.getItem('mc_nb_restored') === '1') localStorage.setItem(NB_REST_EVER, '1');
+    if (localStorage.getItem('mc_secret_end') === '1') localStorage.setItem(NB_END_EVER, '1');
+  } catch { /* private mode */ }
+}
+
 function dungeonKey(key) {
-  return ((key.startsWith('mc_awaken_') && !KEEP_LOCAL_KEYS.has(key)) ||
-    key.startsWith('mc_ch7_') ||
-    key.startsWith('mc_nb_') ||
-    key === 'mc_secret_end');
+  return key === DUNGEON_STATE_KEY ||
+    key === 'mc_dungeon_reset_requested' ||
+    key === 'mc_dungeon_reset_v1' ||
+    ((key.startsWith('mc_awaken_') && !KEEP_LOCAL_KEYS.has(key)) ||
+      key.startsWith('mc_ch7_') ||
+      key.startsWith('mc_nb_') ||
+      key === 'mc_secret_end');
 }
 
 function clearDungeonStorage(storage) {
@@ -41,7 +67,9 @@ function clearDungeonStorage(storage) {
 function resetPayload() {
   const progress = {};
   try {
-    [RESET_EPOCH_KEY, 'mc_awaken_reset_count', 'mc_mini_achievements_v1'].forEach(key => {
+    [RESET_EPOCH_KEY, 'mc_awaken_reset_count', 'mc_mini_achievements_v1',
+      'mc_dungeon_cleared_v1', 'mc_dungeon_awakened_v1',
+      NB_REST_EVER, NB_END_EVER, NB_SEEN_EVER].forEach(key => {
       const value = localStorage.getItem(key);
       if (value !== null) progress[key] = value;
     });
@@ -69,12 +97,32 @@ function guardPendingReset() {
   let pending = false;
   try { pending = localStorage.getItem(RESET_PENDING_KEY) === '1'; } catch { return; }
   if (!pending) return;
-
-  /* account.js may have merged an old cloud save before this module ran.
-     Kill resurrected run keys again, then retry the server tombstone. */
   try { clearDungeonStorage(localStorage); } catch { /* private mode */ }
   try { clearDungeonStorage(sessionStorage); } catch { /* private mode */ }
   pushResetToCloud();
+}
+
+function dungeonState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(DUNGEON_STATE_KEY) || 'null');
+    return s && s.v === 2 ? s : null;
+  } catch { return null; }
+}
+
+/* Compatibility bridge: QUEST 01 in the new Dungeon gives the time-reversal item.
+   The notebook's old inline code still checks mc_awaken_restore_tool_v1, so mint that
+   compatibility key from S.voice instead of asking users to visit retired AWAKEN. */
+function syncNotebookRestoreTool() {
+  if (!isNotebookPage()) return;
+  const s = dungeonState();
+  if (!s?.voice) return;
+  try { localStorage.setItem('mc_awaken_restore_tool_v1', '1'); } catch { /* private mode */ }
+
+  if (localStorage.getItem('mc_nb_restored') === '1') return;
+  const stateA = document.getElementById('stateA');
+  const stateB = document.getElementById('stateB');
+  if (stateA) stateA.hidden = true;
+  if (stateB) stateB.hidden = false;
 }
 
 function injectStyles() {
@@ -89,7 +137,6 @@ function injectStyles() {
     .boss-reset-open:hover,.boss-reset-open:focus-visible{color:rgb(224 190 113)}
     .boss-reset-confirm{margin-top:15px;padding:16px;border:1px solid rgba(255,143,123,.28);border-radius:13px;background:rgba(151,49,37,.09);text-align:left}
     .boss-reset-confirm[hidden]{display:none!important}.boss-reset-confirm b{display:block;color:#ffc3b8;font:800 14px/1.5 "Bai Jamjuree",system-ui,sans-serif}.boss-reset-confirm p{margin-top:6px;color:rgba(255,255,255,.67);font-size:13px;line-height:1.7}
-    .boss-reset-list{margin-top:10px;display:grid;gap:4px;color:rgba(255,255,255,.55);font-size:12px;line-height:1.6}
     .boss-reset-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.boss-reset-actions button{min-height:44px;border-radius:10px;padding:9px 12px;font:750 12.5px/1.4 "Bai Jamjuree",system-ui,sans-serif;cursor:pointer}
     .boss-reset-cancel{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:rgba(255,255,255,.7)}.boss-reset-do{border:1px solid rgba(255,143,123,.5);background:rgba(151,49,37,.28);color:#ffd6cf}.boss-reset-do:hover{background:rgba(151,49,37,.42)}
     @media(max-width:480px){.boss-reset-vault{margin-top:44px;padding:17px 15px}.boss-reset-actions{grid-template-columns:1fr}}
@@ -97,11 +144,13 @@ function injectStyles() {
   document.head.append(style);
 }
 
-async function resetDungeon() {
+async function resetDungeon({ force = false } = {}) {
   let count = 1;
   let removedLocal = [];
   let removedSession = [];
   const epoch = Date.now();
+
+  preserveNotebookAchievements();
 
   try {
     count = Number(localStorage.getItem('mc_awaken_reset_count') || 0) + 1;
@@ -110,22 +159,14 @@ async function resetDungeon() {
     localStorage.setItem('mc_awaken_reset_count', String(count));
     localStorage.setItem(RESET_EPOCH_KEY, String(epoch));
     localStorage.setItem(RESET_PENDING_KEY, '1');
-    /* prevent account boot on the destination page from immediately fetching an
-       older cloud save while the reset tombstone is being written */
     localStorage.setItem('mc_account_last_sync', new Date().toISOString());
   } catch { /* private mode */ }
 
   try { removedSession = clearDungeonStorage(sessionStorage); } catch { /* private mode */ }
 
-  /* ธงเดียวที่ด่านใหม่ /classroom/dungeon/ ต้องการ — เข้าไปแล้วมันจะปลดล็อกหีบเอง */
+  report(force ? 'dungeon-force-reset' : 'awaken-dungeon-reset');
   try {
-    localStorage.setItem('mc_dungeon_reset_requested', 'true');
-    localStorage.setItem('mc_dungeon_reset_v1', 'true');
-  } catch { /* private mode */ }
-
-  report('awaken-dungeon-reset');
-  try {
-    window.gtag?.('event', 'awaken_dungeon_reset', {
+    window.gtag?.('event', force ? 'dungeon_force_reset' : 'awaken_dungeon_reset', {
       reset_count: count,
       cleared_local: removedLocal.length,
       cleared_session: removedSession.length,
@@ -134,23 +175,34 @@ async function resetDungeon() {
 
   await Promise.race([
     pushResetToCloud(),
-    new Promise(resolve => setTimeout(resolve, 1800)),
+    new Promise(resolve => setTimeout(resolve, force ? 450 : 1800)),
   ]);
 
   location.replace(`/classroom/dungeon/?reset=${epoch}`);
 }
 
+function handleForceResetURL() {
+  if (!isDungeonPage()) return false;
+  const p = new URLSearchParams(location.search);
+  if (p.get('force-reset') !== '1') return false;
+
+  /* Run immediately. The living HTML may already have booted from the old save,
+     but the page will be replaced as soon as storage is cleared. */
+  resetDungeon({ force:true });
+  return true;
+}
+
 function createPanel() {
   const panel = document.createElement('aside');
   panel.className = 'boss-reset-vault';
-  panel.setAttribute('aria-label', 'เมนูลับสำหรับเริ่มด่านบอสใหม่');
+  panel.setAttribute('aria-label', 'เมนูลับสำหรับเริ่ม THE DUNGEON ใหม่');
   panel.innerHTML = `
     <span class="micro">HIDDEN DEVELOPER MENU · END OF NOTEBOOK</span>
     <p>ปุ่มนี้ซ่อนอยู่ท้ายสมุด เพราะคนที่หาไม่เจอก็ยังไม่จำเป็นต้องกด</p>
-    <button class="boss-reset-open" type="button" aria-expanded="false">♻️ Reset Boss Dungeon</button>
+    <button class="boss-reset-open" type="button" aria-expanded="false">♻️ Reset THE DUNGEON</button>
     <div class="boss-reset-confirm" hidden>
-      <b>กดแล้วระบบจะลืมว่าคุณเคยเข้าห้องบอส</b>
-      <p>หีบจะเกิดใหม่และยังไม่ถูกเปิด</p>
+      <b>เริ่มรอบ THE DUNGEON ใหม่ทั้งหมด</b>
+      <p>ดาว หีบ ตำแหน่งแผนที่ และสถานะสมุดของรอบนี้จะเริ่มใหม่ แต่ Achievement ที่เคยปลดแล้วจะยังอยู่ใน Collection</p>
       <div class="boss-reset-actions"><button class="boss-reset-cancel" type="button">ยังไม่รีเซ็ต</button><button class="boss-reset-do" type="button">ยืนยัน</button></div>
     </div>`;
 
@@ -161,14 +213,14 @@ function createPanel() {
     const expanded = open.getAttribute('aria-expanded') === 'true';
     open.setAttribute('aria-expanded', expanded ? 'false' : 'true');
     confirm.hidden = expanded;
-    if (!expanded) { report('awaken-reset-menu-open'); cancel.focus(); }
+    if (!expanded) { report('dungeon-reset-menu-open'); cancel.focus(); }
   });
   cancel.addEventListener('click', () => {
     confirm.hidden = true;
     open.setAttribute('aria-expanded', 'false');
     open.focus();
   });
-  panel.querySelector('.boss-reset-do').addEventListener('click', resetDungeon);
+  panel.querySelector('.boss-reset-do').addEventListener('click', () => resetDungeon());
   return panel;
 }
 
@@ -191,20 +243,41 @@ function enforceFreshNotebookAfterReset() {
   if ((story && story.children.length > 0) || torn?.hidden) location.reload();
 }
 
+function watchNotebookPermanentMarkers() {
+  if (!isNotebookPage()) return;
+  preserveNotebookAchievements();
+  let queued = false;
+  const sync = () => {
+    if (queued) return;
+    queued = true;
+    queueMicrotask(() => { queued = false; preserveNotebookAchievements(); syncNotebookRestoreTool(); });
+  };
+  new MutationObserver(sync).observe(document.body, { childList:true, subtree:true, attributes:true });
+  addEventListener('pagehide', preserveNotebookAchievements);
+}
+
 function boot() {
+  if (handleForceResetURL()) return;
+
   guardPendingReset();
   window.addEventListener('mc:account-ready', guardPendingReset);
   window.addEventListener('pageshow', event => {
     guardPendingReset();
+    preserveNotebookAchievements();
+    syncNotebookRestoreTool();
     if (event.persisted) enforceFreshNotebookAfterReset();
   });
 
   if (!isNotebookPage() || document.documentElement.dataset.bossResetV2 === '1') return;
   document.documentElement.dataset.bossResetV2 = '1';
   injectStyles();
+  syncNotebookRestoreTool();
+  watchNotebookPermanentMarkers();
   enforceFreshNotebookAfterReset();
   if (mountAtNotebookEnd()) return;
   const observer = new MutationObserver(() => {
+    syncNotebookRestoreTool();
+    preserveNotebookAchievements();
     if (mountAtNotebookEnd()) observer.disconnect();
   });
   observer.observe(document.body, { childList:true, subtree:true });
