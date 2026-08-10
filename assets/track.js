@@ -27,7 +27,7 @@ import '/assets/awaken-glossary-extra.js?v=20260810-layout2';
 import '/assets/awaken-floating-tooltips-v1.js?v=20260810-layout2';
 import '/assets/awaken-mobile-overflow-fix.js?v=20260810-layout2';
 import '/assets/awaken-party-loadout.js?v=20260810-layout2';
-import '/assets/notebook-boss-reset-v2.js?v=20260809-1';
+import '/assets/notebook-boss-reset-v2.js?v=20260811-scrollfix2';
 import '/assets/notebooklm-page.js';
 import '/assets/notebooklm-hero-position.js';
 import '/assets/prompts-season.js';
