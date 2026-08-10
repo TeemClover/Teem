@@ -1,5 +1,5 @@
 /* myClover runtime dispatcher
-   Course pages get an isolated, failure-tolerant runtime.
+   Course pages use an isolated, failure-tolerant runtime.
    Everything else keeps the existing global runtime unchanged.
 */
 export { trackAct } from '/assets/track-core.js';
@@ -11,7 +11,7 @@ const isCoursePage = (
 );
 
 const runtime = isCoursePage
-  ? '/assets/course-runtime.js?v=20260811-course1'
+  ? '/assets/course-runtime.js?v=20260811-restore-e166'
   : '/assets/track-legacy.js?v=20260811-split1';
 
 import(runtime).catch(error => {

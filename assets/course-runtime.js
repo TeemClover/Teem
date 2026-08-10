@@ -1,6 +1,6 @@
-/* myClover · AI ใส่ซอส — isolated classroom runtime
-   Canonical lesson pages must not depend on the whole site's Boss/Forge patch graph.
-   Each module loads independently: one broken enhancement must never roll the whole course back.
+/* myClover · AI ใส่ซอส — isolated canonical course runtime
+   Baseline: e16610d (Fix first Sauce tooltip across lessons).
+   One module may fail without taking the other lesson enhancements down.
 */
 
 const path = location.pathname;
@@ -10,31 +10,32 @@ const isCoursePage = (
 );
 
 if (isCoursePage) {
+  const V='20260811-restore-e166';
   const modules = [
-    '/assets/account.js',
-    '/assets/stat-report.js',
-    '/assets/ai-sauce-course.js',
-    '/assets/main-course-route.js',
-    '/assets/sauce-cup-entry.js',
-    '/assets/lesson-one-subquests.js',
-    '/assets/lesson1-polite-language.js',
-    '/assets/lesson1-downloadable-md.js',
-    '/assets/lesson6-boss-transition.js?v=20260811-course1',
-    '/assets/course-nav-names.js',
-    '/assets/details-fix.js?v=20260811-course1',
-    '/assets/notebooklm-page.js',
-    '/assets/notebooklm-hero-position.js',
-    '/assets/prompts-season.js',
-    '/assets/prompts-utility.js',
-    '/assets/prompts-chef.js',
-    '/assets/prompts-eko-tasting.js',
-    '/assets/prompts-svg-polish.js',
-    '/assets/prompts-plain-language.js',
-    '/assets/prompts-genesis-generic.js',
-    '/assets/lesson2-svg-redesign.js',
-    '/assets/course-svg-motion.js',
-    '/assets/classroom-hero-consistency.js?v=20260811-course1',
-    '/assets/sauce-first-tooltip.js?v=20260811-course1',
+    `/assets/account.js?v=${V}`,
+    `/assets/stat-report.js?v=${V}`,
+    `/assets/ai-sauce-course.js?v=${V}`,
+    `/assets/main-course-route.js?v=${V}`,
+    `/assets/sauce-cup-entry.js?v=${V}`,
+    `/assets/lesson-one-subquests.js?v=${V}`,
+    `/assets/lesson1-polite-language.js?v=${V}`,
+    `/assets/lesson1-downloadable-md.js?v=${V}`,
+    `/assets/lesson6-boss-transition.js?v=${V}`,
+    `/assets/course-nav-names.js?v=${V}`,
+    `/assets/details-fix.js?v=${V}`,
+    `/assets/notebooklm-page.js?v=${V}`,
+    `/assets/notebooklm-hero-position.js?v=${V}`,
+    `/assets/prompts-season.js?v=${V}`,
+    `/assets/prompts-utility.js?v=${V}`,
+    `/assets/prompts-chef.js?v=${V}`,
+    `/assets/prompts-eko-tasting.js?v=${V}`,
+    `/assets/prompts-svg-polish.js?v=${V}`,
+    `/assets/prompts-plain-language.js?v=${V}`,
+    `/assets/prompts-genesis-generic.js?v=${V}`,
+    `/assets/lesson2-svg-redesign.js?v=${V}`,
+    `/assets/course-svg-motion.js?v=${V}`,
+    `/assets/sauce-first-tooltip.js?v=${V}`,
+    `/assets/course-dungeon-route.js?v=${V}`,
   ];
 
   (async () => {
@@ -45,6 +46,6 @@ if (isCoursePage) {
         console.error('[myClover course runtime] skipped broken module:', src, error);
       }
     }
-    document.documentElement.dataset.courseRuntime = 'ready';
+    document.documentElement.dataset.courseRuntime = 'e166-restored';
   })();
 }
