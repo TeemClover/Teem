@@ -2,18 +2,165 @@
 <html lang="th">
 <head>
   <meta charset="utf-8">
-<meta name="mc-act-view" content="guild-discord">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>กำลังพาไป Guild X · myClover</title>
-  <meta name="robots" content="noindex,follow">
-  <meta http-equiv="refresh" content="0;url=https://discord.gg/A5nmMqvTm">
-  <link rel="canonical" href="https://discord.gg/A5nmMqvTm">
-  <script>
-    window.location.replace('https://discord.gg/A5nmMqvTm');
-  </script>
+  <meta name="mc-act-view" content="guild-x">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050607">
+  <title>Guild X · MAX UPGRADE · myClover</title>
+  <meta name="description" content="Guild X — จุดที่การอัปเกรดจากคนเดียวกลายเป็นพลังของทีม รับรหัส Hero Card และกุญแจ Dungeon ใน Discord">
+  <meta property="og:title" content="Guild X · MAX UPGRADE">
+  <meta property="og:description" content="อัปเกรดการ์ดขอบทองเป็น HERO รับกุญแจ แล้วเข้า Dungeon ไปเปิดสมบัติ">
+  <meta name="robots" content="index,follow">
+  <style>
+    :root{
+      --bg:#050607;--bg2:#0b0e0d;--ink:#f4f0e5;--muted:#9fa7a1;
+      --gold:#e9c76b;--gold2:#8f6a20;--green:#61e7a6;--line:rgba(233,199,107,.22);
+      --panel:rgba(13,17,16,.72);--radius:28px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{margin:0;color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif;background:
+      radial-gradient(circle at 50% -10%,rgba(233,199,107,.13),transparent 38%),
+      radial-gradient(circle at 5% 45%,rgba(50,181,119,.08),transparent 30%),
+      linear-gradient(180deg,#050607 0%,#090b0b 55%,#030404 100%);overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    .noise{position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.045;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
+    .grid{position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
+    .wrap{width:min(1180px,calc(100% - 40px));margin:auto;position:relative;z-index:2}
+    nav{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06)}
+    .brand{display:flex;gap:12px;align-items:center;font-weight:800;letter-spacing:.08em}.clover{width:28px;height:28px;position:relative;filter:drop-shadow(0 0 10px rgba(97,231,166,.25))}.clover i{position:absolute;width:13px;height:13px;border-radius:12px 12px 3px 12px;background:var(--green);transform-origin:100% 100%}.clover i:nth-child(1){left:1px;top:1px}.clover i:nth-child(2){right:1px;top:1px;transform:rotate(90deg)}.clover i:nth-child(3){right:1px;bottom:1px;transform:rotate(180deg)}.clover i:nth-child(4){left:1px;bottom:1px;transform:rotate(270deg)}
+    .navtag{font-size:12px;color:var(--muted);letter-spacing:.16em}.hero{min-height:calc(100vh - 76px);display:grid;grid-template-columns:1.08fr .92fr;align-items:center;gap:70px;padding:70px 0 95px}.eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}.eyebrow:before{content:"";width:28px;height:1px;background:var(--gold)}
+    h1{font-size:clamp(58px,8vw,116px);line-height:.84;margin:20px 0 26px;letter-spacing:-.065em}.x{font-family:Georgia,serif;font-style:italic;color:var(--gold);text-shadow:0 0 30px rgba(233,199,107,.22)}
+    .lead{font-size:clamp(20px,2.1vw,30px);line-height:1.42;max-width:720px;margin:0;color:#e8e5db}.lead strong{color:var(--green)}.sub{font-size:16px;line-height:1.8;color:var(--muted);max-width:650px;margin:22px 0 32px}
+    .actions{display:flex;flex-wrap:wrap;gap:12px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 24px;border-radius:999px;font-weight:800;border:1px solid rgba(255,255,255,.14);transition:.25s ease}.btn.primary{background:linear-gradient(135deg,#f2d887,#bb8a2d);color:#151109;border:0;box-shadow:0 14px 50px rgba(190,143,43,.2)}.btn.primary:hover{transform:translateY(-2px) scale(1.015);box-shadow:0 18px 60px rgba(233,199,107,.28)}.btn.ghost:hover{border-color:rgba(233,199,107,.55);color:var(--gold)}
+    .micro{margin-top:14px;color:#767e79;font-size:12px}.artifact{position:relative;min-height:620px;display:grid;place-items:center}.halo{position:absolute;width:440px;height:440px;border-radius:50%;border:1px solid rgba(233,199,107,.18);box-shadow:inset 0 0 80px rgba(233,199,107,.05),0 0 90px rgba(233,199,107,.06);animation:spin 24s linear infinite}.halo:before,.halo:after{content:"";position:absolute;inset:42px;border-radius:50%;border:1px dashed rgba(97,231,166,.18)}.halo:after{inset:90px;border-style:solid;border-color:rgba(255,255,255,.08)}
+    .card{width:min(330px,72vw);aspect-ratio:.69;border-radius:24px;background:linear-gradient(160deg,#171c19,#060807 60%);border:1px solid rgba(233,199,107,.65);box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 7px rgba(233,199,107,.035),inset 0 0 55px rgba(233,199,107,.06);transform:rotate(6deg);position:relative;overflow:hidden;animation:float 5s ease-in-out infinite}.card:before{content:"";position:absolute;inset:-70% -25%;background:linear-gradient(110deg,transparent 43%,rgba(255,255,255,.19) 49%,transparent 55%);animation:shine 5.5s ease-in-out infinite}.cardInner{position:absolute;inset:16px;border:1px solid rgba(233,199,107,.32);border-radius:17px;padding:28px;display:flex;flex-direction:column;justify-content:space-between}.rank{font-size:11px;color:var(--gold);letter-spacing:.2em}.heroWord{font-size:52px;letter-spacing:-.05em;font-weight:900}.sigil{width:94px;height:94px;border:1px solid rgba(97,231,166,.42);border-radius:50%;display:grid;place-items:center;font-size:36px;box-shadow:0 0 40px rgba(97,231,166,.08)}.key{position:absolute;right:3%;bottom:9%;font-size:88px;filter:drop-shadow(0 15px 20px rgba(0,0,0,.6));transform:rotate(-12deg);animation:keyfloat 4s ease-in-out infinite}
+    .section{padding:110px 0;border-top:1px solid rgba(255,255,255,.06)}.kicker{font-size:12px;color:var(--gold);letter-spacing:.18em;font-weight:800}.section h2{font-size:clamp(38px,5.6vw,72px);line-height:1.02;letter-spacing:-.045em;margin:14px 0 22px}.sectionIntro{font-size:18px;line-height:1.7;color:var(--muted);max-width:790px}
+    .upgrade{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:52px}.step{position:relative;padding:30px;border:1px solid rgba(255,255,255,.08);border-radius:24px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));overflow:hidden;min-height:240px}.step:before{content:attr(data-n);position:absolute;right:20px;top:6px;font:900 88px/1 Georgia,serif;color:rgba(233,199,107,.055)}.stepIcon{font-size:30px;margin-bottom:34px}.step h3{font-size:24px;margin:0 0 10px}.step p{margin:0;color:var(--muted);line-height:1.65}.step strong{color:var(--ink)}
+    .merge{margin-top:65px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:28px}.solo,.party{padding:36px;border-radius:28px;border:1px solid rgba(255,255,255,.08);background:var(--panel);min-height:320px}.party{border-color:rgba(233,199,107,.28);box-shadow:inset 0 0 60px rgba(233,199,107,.025)}.mergeArrow{font-size:34px;color:var(--gold)}.label{font-size:11px;letter-spacing:.15em;color:var(--muted)}.big{font-size:34px;font-weight:900;line-height:1.1;margin:12px 0 25px}.nodes{display:flex;flex-wrap:wrap;gap:8px}.node{padding:9px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);font-size:13px;color:#cfd4d0}.party .node{border-color:rgba(97,231,166,.22);color:#d9f6e7}.plus{color:var(--green);font-weight:900}
+    .quest{display:grid;grid-template-columns:.9fr 1.1fr;gap:42px;align-items:center;margin-top:52px}.terminal{border:1px solid rgba(97,231,166,.2);background:#060a08;border-radius:22px;padding:24px;box-shadow:0 25px 90px rgba(0,0,0,.35);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:#9bb0a3}.dots{display:flex;gap:6px;margin-bottom:25px}.dots i{width:8px;height:8px;border-radius:50%;background:#39413c}.log{display:grid;gap:14px}.log b{color:var(--green);font-weight:600}.log em{color:var(--gold);font-style:normal}.questCopy{display:grid;gap:18px}.questLine{display:flex;gap:16px}.qnum{color:var(--gold);font:700 20px Georgia,serif}.questLine h3{margin:0 0 5px;font-size:20px}.questLine p{margin:0;color:var(--muted);line-height:1.6}
+    .reward{padding:120px 0}.rewardBox{position:relative;overflow:hidden;border:1px solid rgba(233,199,107,.27);border-radius:36px;padding:70px;background:radial-gradient(circle at 80% 20%,rgba(233,199,107,.12),transparent 30%),linear-gradient(145deg,#111512,#070908);text-align:center}.rewardBox:before{content:"✦";position:absolute;right:6%;top:-70px;font-size:280px;color:rgba(233,199,107,.035)}.rewardBox h2{font-size:clamp(42px,6vw,78px);margin:10px 0 18px;letter-spacing:-.05em}.rewardBox p{max-width:700px;margin:0 auto 34px;color:#bdc4bf;line-height:1.75;font-size:17px}.loot{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:22px 0 34px}.loot span{border:1px solid rgba(233,199,107,.18);border-radius:999px;padding:10px 15px;color:#e7d7a6;background:rgba(233,199,107,.04);font-size:13px}
+    footer{padding:35px 0 55px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;color:#6f7772;font-size:12px}.reveal{opacity:0;transform:translateY(24px);transition:.75s cubic-bezier(.2,.75,.2,1)}.reveal.on{opacity:1;transform:none}
+    @keyframes spin{to{transform:rotate(360deg)}}@keyframes float{50%{transform:rotate(3deg) translateY(-13px)}}@keyframes keyfloat{50%{transform:rotate(-7deg) translateY(-12px)}}@keyframes shine{0%,45%{transform:translateX(-70%)}65%,100%{transform:translateX(70%)}}
+    @media(max-width:850px){.wrap{width:min(100% - 28px,1180px)}nav{height:66px}.hero{grid-template-columns:1fr;gap:25px;padding:70px 0 80px}.heroText{text-align:left}.artifact{min-height:460px;order:-1}.halo{width:330px;height:330px}.card{width:235px}.heroWord{font-size:38px}.key{font-size:65px;right:9%}.upgrade{grid-template-columns:1fr}.merge{grid-template-columns:1fr}.mergeArrow{transform:rotate(90deg);justify-self:center}.quest{grid-template-columns:1fr}.section{padding:80px 0}.rewardBox{padding:54px 22px}.navtag{display:none}footer{gap:20px;flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+  </style>
 </head>
 <body>
-  <p>กำลังพาไป Guild X… <a href="https://discord.gg/A5nmMqvTm">กดที่นี่หากหน้าไม่เปลี่ยนอัตโนมัติ</a></p>
-<script type="module" src="/assets/track.js"></script>
+  <div class="noise"></div><div class="grid"></div>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="/"><span class="clover" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>myClover</span></a>
+      <div class="navtag">GUILD X // MAX UPGRADE</div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div class="heroText reveal">
+          <div class="eyebrow">THE FINAL UPGRADE</div>
+          <h1>GUILD <span class="x">X</span></h1>
+          <p class="lead">เก่งขึ้นคนเดียวคือการอัปเกรด<br><strong>เก่งขึ้นพร้อมคนอื่น คือการตีบวกขั้นสุด</strong></p>
+          <p class="sub">Guild X คือพื้นที่ที่คนจาก myClover เอา Skill, Source, งานที่กำลังสร้าง และของที่ทดลองมาเชื่อมกัน — เพื่อสร้างสิ่งที่คนเดียวทำได้ยากกว่า ช้ากว่า หรืออาจไม่มีวันเริ่ม</p>
+          <div class="actions">
+            <a class="btn primary" id="discordTop" href="https://discord.gg/A5nmMqvTm" target="_blank" rel="noopener">⚔️ เข้า Guild X</a>
+            <a class="btn ghost" href="#key">ดูวิธีเอากุญแจ ↓</a>
+          </div>
+          <div class="micro">Discord เปิดให้เข้าได้เลย · กุญแจอยู่ข้างใน</div>
+        </div>
+
+        <div class="artifact reveal" aria-label="Hero card and dungeon key illustration">
+          <div class="halo"></div>
+          <div class="card">
+            <div class="cardInner"><div><div class="rank">GUILD X // UPGRADE</div><div class="heroWord">HERO</div></div><div class="sigil">✦</div><div class="rank">GOLD BORDER · UNLOCKED</div></div>
+          </div>
+          <div class="key" aria-hidden="true">🗝️</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <section class="section">
+    <div class="wrap reveal">
+      <div class="kicker">WHY GUILD X</div>
+      <h2>จาก “ของกู”<br>กลายเป็น “ของที่พวกเราสร้างได้”</h2>
+      <p class="sectionIntro">การใช้ AI เก่งขึ้น ไม่ได้จบที่ Prompt ที่ดีกว่า แต่มันไปต่อได้อีกเมื่อ Source ของคนหนึ่ง เจอกับ Skill ของอีกคน และมีคนที่สามช่วยทำให้มันเกิดขึ้นจริง</p>
+      <div class="merge">
+        <div class="solo">
+          <div class="label">SOLO BUILD</div><div class="big">มึง + AI</div>
+          <div class="nodes"><span class="node">ไอเดีย</span><span class="node">Source</span><span class="node">Skill</span><span class="node">Prototype</span></div>
+        </div>
+        <div class="mergeArrow">＋</div>
+        <div class="party">
+          <div class="label">GUILD BUILD</div><div class="big">คนหลายสาย <span class="plus">×</span> AI</div>
+          <div class="nodes"><span class="node">Developer</span><span class="node">Designer</span><span class="node">Teacher</span><span class="node">Maker</span><span class="node">Tester</span><span class="node">Creator</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap reveal">
+      <div class="kicker">MAX UPGRADE LOOP</div>
+      <h2>สร้าง → แชร์ → รวมร่าง</h2>
+      <p class="sectionIntro">ไม่ต้องรอให้เก่งก่อนถึงจะเข้ากิลด์ ของที่ยังไม่เสร็จก็มีค่า เพราะสิ่งที่มึงขาด อาจเป็นของที่อีกคนมีอยู่แล้ว</p>
+      <div class="upgrade">
+        <article class="step" data-n="1"><div class="stepIcon">⚒️</div><h3>เอาของที่กำลังสร้างมา</h3><p>เว็บ เกม ระบบ งานสอน ร้านค้า ไอเดีย หรือ Source ที่เพิ่งเริ่มก็ได้ <strong>ไม่ต้องพร้อม 100%</strong></p></article>
+        <article class="step" data-n="2"><div class="stepIcon">✦</div><h3>หา Buff ที่มึงไม่มี</h3><p>ขอ feedback หาเพื่อนร่วมทำ แลก workflow หรือหยิบวิธีของคนอื่นกลับไปตีบวกงานตัวเอง</p></article>
+        <article class="step" data-n="3"><div class="stepIcon">🚀</div><h3>ทำของจริงให้เกิด</h3><p>เป้าหมายไม่ใช่คุยเรื่อง AI ทั้งวัน แต่คือ <strong>ทำสิ่งที่เมื่อวานยังไม่มี ให้มีขึ้นมาจริง</strong></p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="key">
+    <div class="wrap reveal">
+      <div class="kicker">GUILD QUEST</div>
+      <h2>เอากุญแจไปเปิด Dungeon</h2>
+      <p class="sectionIntro">เส้นทางสั้นมาก ไม่มีเควสต์ยืดเยื้อ กุญแจไม่ได้ซ่อนอยู่หลัง paywall — มันอยู่ใน Guild X เลย</p>
+      <div class="quest">
+        <div class="terminal" aria-label="Quest log">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="log">
+            <div>&gt; ENTER <b>GUILD X</b></div>
+            <div>&gt; FIND <em>HERO UPGRADE CODE</em></div>
+            <div>&gt; OPEN <b>/card</b></div>
+            <div>&gt; UPGRADE CARD ... <em>GOLD → HERO</em></div>
+            <div>&gt; RECEIVE <b>DUNGEON KEY</b> ✓</div>
+            <div>&gt; ENTER DUNGEON ... <em>CHEST UNLOCKED</em></div>
+          </div>
+        </div>
+        <div class="questCopy">
+          <div class="questLine"><div class="qnum">01</div><div><h3>เข้า Discord ของ Guild X</h3><p>เข้าไปแล้วมองหารหัสสำหรับ Hero Upgrade — เราวางทางไว้ให้เจอใน Server</p></div></div>
+          <div class="questLine"><div class="qnum">02</div><div><h3>เอารหัสไปใส่ที่ /card</h3><p>การ์ดขอบทองของมึงจะถูกอัปเกรดเป็น <strong>HERO</strong></p></div></div>
+          <div class="questLine"><div class="qnum">03</div><div><h3>รับกุญแจ Dungeon</h3><p>Guild จะมอบกุญแจให้ ใช้มันเปิดสมบัติที่รอมึงอยู่ใน Dungeon</p></div></div>
+          <div class="actions"><a class="btn ghost" href="/card/">เปิด /card</a><a class="btn ghost" href="/classroom/dungeon/">ไป Dungeon</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reward">
+    <div class="wrap reveal">
+      <div class="rewardBox">
+        <div class="kicker">READY TO PARTY?</div>
+        <h2>ตีบวกคนเดียวได้ไกล<br>แต่ Party ไปได้ไกลกว่า</h2>
+        <p>เข้ามาเอากุญแจได้เลย แล้วถ้ามึงมีอะไรที่กำลังสร้าง — เอามาด้วย Guild X จะเจ๋งก็ต่อเมื่อคนในนั้นไม่ได้เข้ามาแค่ “ดู” แต่เข้ามาเพิ่มของบางอย่างให้กัน</p>
+        <div class="loot"><span>✦ HERO Upgrade</span><span>🗝️ Dungeon Key</span><span>⚔️ Guild X Access</span><span>＋ Party Buff</span></div>
+        <a class="btn primary" id="discordBottom" href="https://discord.gg/A5nmMqvTm" target="_blank" rel="noopener">เข้า Guild X บน Discord ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap"><footer><span>myClover · Guild X</span><span>ใครเจอเรา คนนั้นโชคดี.</span></footer></div>
+
+  <script>
+    (function(){
+      const els=[...document.querySelectorAll('.reveal')];
+      if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('on'));return}
+      const io=new IntersectionObserver(entries=>entries.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target)}}),{threshold:.12});
+      els.forEach(e=>io.observe(e));
+      document.querySelectorAll('a[href*="discord.gg"]').forEach(a=>a.addEventListener('click',()=>{try{localStorage.setItem('mc_guild_click','1')}catch(e){}}));
+    })();
+  </script>
+  <script type="module" src="/assets/track.js"></script>
 </body>
 </html>
