@@ -27,7 +27,7 @@ export const STAGES = Object.freeze([
   { id: 'walkthrough', th: 'Walkthrough' },
   { id: 'core7', th: 'CORE7' },
   { id: 'classroom', th: 'ห้องเรียน 6 บท' },
-  { id: 'awaken', th: 'ด่านบอส AWAKEN' },
+  { id: 'dungeon', th: 'THE DUNGEON · พฤติกรรมการเล่น' },
   { id: 'endgame', th: 'Player Card · เปิดบ้าน' },
   { id: 'world', th: 'ห้องอื่นในบ้าน' },
   { id: 'secret', th: 'เส้นทางลับ' },
@@ -42,9 +42,7 @@ export const ACTS = Object.freeze([
   { id: 'home-video', stage: 'home', emoji: '▶️', th: 'กดดูคลิปเปิดบ้าน', en: 'Played the opening clip', achievement: true },
   { id: 'home-compass', stage: 'home', emoji: '🧭', th: 'หยิบเข็มทิศเข้าบ้าน', en: 'Picked up the compass', achievement: true },
 
-  /* ── Hall ──
-     ชนหมัดคือประตูจริงของบ้าน ส่วนที่เหลือของ Hall เปิดหลังจากนี้
-     ระยะห่างระหว่าง hall-open กับ hall-bump คือจำนวนคนที่มาถึงหน้าแล้วไม่เริ่ม */
+  /* ── Hall ── */
   { id: 'hall-open', stage: 'home', emoji: '🏛️', th: 'เปิดหน้า Hall', en: 'Opened the Hall', achievement: false },
   { id: 'hall-bump', stage: 'home', emoji: '👊', th: 'ชนหมัดเปิดบ้าน', en: 'Fist bump', achievement: true },
   { id: 'hall-quest', stage: 'home', emoji: '🎯', th: 'กดปุ่มเควสหลัก', en: 'Tapped the main quest', achievement: false },
@@ -53,9 +51,7 @@ export const ACTS = Object.freeze([
   { id: 'hall-room', stage: 'world', emoji: '🚪', th: 'กดเข้าห้องใน Hall', en: 'Opened a room', achievement: false },
   { id: 'hall-line', stage: 'world', emoji: '💬', th: 'กดแอด LINE', en: 'Tapped Add LINE', achievement: true },
 
-  /* ── การ์ตูน ──
-     บทนำเป็นห้องแรกที่เข็มทิศพาคนใหม่ไป ระยะห่างระหว่าง hall-bump กับ
-     forge-intro-open คือจำนวนคนที่ชนหมัดแล้วแต่ไม่เดินตามเข็มทิศต่อ */
+  /* ── การ์ตูน ── */
   { id: 'forge-intro-open', stage: 'forge', emoji: '🌱', th: 'เปิดบทนำ Intro', en: 'Opened the Intro', achievement: false },
   { id: 'forge-open', stage: 'forge', emoji: '📚', th: 'เปิดหน้ารวมการ์ตูน', en: 'Opened the Forge index', achievement: false },
   { id: 'forge-ep-open', stage: 'forge', emoji: '📖', th: 'เปิดอ่านตอน', en: 'Opened an episode', achievement: false },
@@ -69,8 +65,46 @@ export const ACTS = Object.freeze([
   { id: 'class-open', stage: 'classroom', emoji: '🏫', th: 'เปิดหน้ารวมห้องเรียน', en: 'Opened the classroom', achievement: false },
   { id: 'lesson-open', stage: 'classroom', emoji: '📝', th: 'เปิดบทเรียน', en: 'Opened a lesson', achievement: false },
 
-  /* ── ด่านบอสและเส้นทางลับ ── */
-  { id: 'awaken-open', stage: 'awaken', emoji: '🌅', th: 'เข้าด่านบอส', en: 'Entered the boss stage', achievement: false },
+  /* ── THE DUNGEON · ด่านสุดท้ายใหม่ ── */
+  { id: 'dungeon-open', stage: 'dungeon', emoji: '🕳️', th: 'เข้าหน้า THE DUNGEON', en: 'Entered THE DUNGEON', achievement: false },
+  { id: 'dungeon-accept', stage: 'dungeon', emoji: '⌨️', th: 'กดยอมรับใน Terminal แล้วเริ่มเล่น', en: 'Accepted the terminal link', achievement: false },
+  { id: 'dungeon-q1', stage: 'dungeon', emoji: '⏳', th: 'เคลียร์ Quest 01 · ภาษาของตัวเอง', en: 'Cleared Dungeon quest 1', achievement: false },
+  { id: 'dungeon-q2', stage: 'dungeon', emoji: '🔍', th: 'เคลียร์ Quest 02 · Code ↔ Browser', en: 'Cleared Dungeon quest 2', achievement: false },
+  { id: 'dungeon-q3', stage: 'dungeon', emoji: '🎴', th: 'เคลียร์ Quest 03 · เปิด Party', en: 'Cleared Dungeon quest 3', achievement: false },
+  { id: 'dungeon-q4', stage: 'dungeon', emoji: '🥄', th: 'เคลียร์ Quest 04 · Source Network', en: 'Cleared Dungeon quest 4', achievement: false },
+
+  /* วัตถุในแผนที่ — events = แตะกี่ครั้ง, users = กี่เครื่องเคยแตะ */
+  { id: 'dungeon-object-forge', stage: 'dungeon', emoji: '🔥', th: 'สำรวจโรงตีเหล็ก', en: 'Inspected the forge', achievement: false },
+  { id: 'dungeon-object-computer', stage: 'dungeon', emoji: '🖥️', th: 'สำรวจคอมพิวเตอร์', en: 'Inspected the computer', achievement: false },
+  { id: 'dungeon-object-school', stage: 'dungeon', emoji: '🏫', th: 'สำรวจโรงเรียน', en: 'Inspected the school', achievement: false },
+  { id: 'dungeon-object-kitchen', stage: 'dungeon', emoji: '🍳', th: 'สำรวจห้องครัว', en: 'Inspected the kitchen', achievement: false },
+  { id: 'dungeon-object-shop', stage: 'dungeon', emoji: '🏪', th: 'สำรวจร้าน', en: 'Inspected the shop', achievement: false },
+  { id: 'dungeon-object-savepoint', stage: 'dungeon', emoji: '💎', th: 'สำรวจจุดเซฟ', en: 'Inspected the save point', achievement: false },
+  { id: 'dungeon-object-guild', stage: 'dungeon', emoji: '🏰', th: 'สำรวจหอกิลด์', en: 'Inspected the guild hall', achievement: false },
+  { id: 'dungeon-object-construction', stage: 'dungeon', emoji: '🏗️', th: 'สำรวจไซต์ก่อสร้าง', en: 'Inspected construction', achievement: false },
+  { id: 'dungeon-object-fishing', stage: 'dungeon', emoji: '🎣', th: 'ปฏิสัมพันธ์กับจุดตกปลา', en: 'Interacted with fishing', achievement: false },
+  { id: 'dungeon-object-sign', stage: 'dungeon', emoji: '🪧', th: 'อ่านป้ายในแผนที่', en: 'Read a map sign', achievement: false },
+  { id: 'dungeon-object-notebook', stage: 'dungeon', emoji: '📔', th: 'ปฏิสัมพันธ์กับสมุดเก่า', en: 'Interacted with the old notebook', achievement: false, secret: true },
+  { id: 'dungeon-object-dragon', stage: 'dungeon', emoji: '🐉', th: 'สำรวจมังกร', en: 'Inspected the dragon', achievement: false },
+  { id: 'dungeon-object-gold', stage: 'dungeon', emoji: '💰', th: 'ปฏิสัมพันธ์กับกองทองมังกร', en: 'Interacted with dragon gold', achievement: false },
+  { id: 'dungeon-object-clover', stage: 'dungeon', emoji: '🍀', th: 'สำรวจโคลเวอร์', en: 'Inspected clover', achievement: false, secret: true },
+
+  /* เหตุการณ์/ความลับ */
+  { id: 'dungeon-book-found', stage: 'dungeon', emoji: '📔', th: 'SECRET · เจอสมุดที่ซ่อนในป่า', en: 'Found the hidden notebook', achievement: false, secret: true },
+  { id: 'dungeon-secret-restored', stage: 'dungeon', emoji: '🔖', th: 'SECRET · ซ่อมสมุดในรอบนี้สำเร็จ', en: 'Restored the notebook this run', achievement: false, secret: true },
+  { id: 'dungeon-secret-boot', stage: 'dungeon', emoji: '🥾', th: 'SECRET · ตกได้รองเท้าบูทเก่า', en: 'Fished up the old boot', achievement: false, secret: true },
+  { id: 'dungeon-secret-clover', stage: 'dungeon', emoji: '🍀', th: 'SECRET · เจอโคลเวอร์สี่แฉก', en: 'Found the four-leaf clover', achievement: false, secret: true },
+  { id: 'dungeon-gold-bug', stage: 'dungeon', emoji: '😏', th: 'SECRET · ใช้บั๊กขโมยทองมังกร', en: 'Used the dragon gold bug', achievement: false, secret: true },
+  { id: 'dungeon-lucky-bug', stage: 'dungeon', emoji: '🍀', th: 'SECRET · เจอ Lucky Bug ดาวดวงที่ 6', en: 'Found Lucky Bug', achievement: false, secret: true },
+  { id: 'dungeon-dragon-wake', stage: 'dungeon', emoji: '🔥', th: 'ปลุกมังกรจน PARTY WIPE', en: 'Woke the dragon', achievement: false },
+  { id: 'dungeon-chest-open', stage: 'dungeon', emoji: '🧰', th: 'เปิดหีบและล็อกดาว', en: 'Opened the Dungeon chest', achievement: false },
+  { id: 'dungeon-pry-1', stage: 'dungeon', emoji: '🪓', th: 'งัดหีบครั้งที่ 1', en: 'Pried the chest once', achievement: false },
+  { id: 'dungeon-pry-2', stage: 'dungeon', emoji: '🪓', th: 'งัดหีบครั้งที่ 2', en: 'Pried the chest twice', achievement: false },
+  { id: 'dungeon-pry-3', stage: 'dungeon', emoji: '🧂', th: 'งัดหีบครั้งที่ 3 · ได้เกลือ', en: 'Broke the chest for salt', achievement: false },
+  { id: 'dungeon-chest-broken', stage: 'dungeon', emoji: '🧂', th: 'เปิดผลหีบเกลือ', en: 'Opened the broken salt chest', achievement: false },
+  { id: 'dungeon-reset-landed', stage: 'dungeon', emoji: '♻️', th: 'กลับเข้า Dungeon หลัง Reset', en: 'Returned after Dungeon reset', achievement: false },
+
+  /* Side quest ที่ยังใช้อยู่จากสมุด ซึ่ง Dungeon ใหม่ลิงก์ไปหา */
   { id: 'notebook-open', stage: 'secret', emoji: '📔', th: 'หยิบสมุดเก่า', en: 'Picked up the notebook', achievement: true, secret: true },
   { id: 'notebook-restore', stage: 'secret', emoji: '🔧', th: 'กด RESTORE', en: 'Used RESTORE', achievement: true, secret: true },
   { id: 'notebook-bump', stage: 'secret', emoji: '👊🏻', th: 'ชนหมัด Well Played', en: 'Well Played fist bump', achievement: true, secret: true },
@@ -82,17 +116,13 @@ export const ACTS = Object.freeze([
   { id: 'paths-open', stage: 'world', emoji: '🧭', th: 'เปิดหน้ารวม 4 สาย', en: 'Opened the paths page', achievement: false },
   { id: 'club-open', stage: 'world', emoji: '🍜', th: 'เปิด myClover Club', en: 'Opened the Club', achievement: false },
   { id: 'resume-open', stage: 'world', emoji: '🧾', th: 'เปิด Smart Resume', en: 'Opened Smart Resume', achievement: false },
-  /* /guild/ เป็นหน้าเด้งไป Discord ล้วน เปิดหน้านั้น = ไปแล้ว จึงไม่แยกสองขั้น
-     ให้เป็นแถวที่มีความหมายจริงแถวเดียว ดีกว่ามีแถวที่เป็นศูนย์ตลอดกาล */
   { id: 'guild-discord', stage: 'world', emoji: '💠', th: 'เข้า Guild บน Discord', en: 'Went into Discord', achievement: true },
   { id: 'ks-open', stage: 'world', emoji: '📦', th: 'เปิดหน้า Kickstarter', en: 'Opened the campaign page', achievement: false },
 ]);
 
 /* ── ACHIEVEMENT ──
-   id ตรงกับของเดิมใน collection/collection.js เป๊ะ ห้ามเปลี่ยน
-   ไม่งั้นของที่คนปลดไว้แล้วจะกลายเป็นคนละใบ */
+   id ต้องคงเดิมเพื่อไม่ทำของที่คนปลดไว้แล้วหาย แต่ชื่อและ stage ชี้ไป Dungeon ใหม่ */
 export const ACHIEVEMENTS = Object.freeze([
-  /* การ์ตูน — Intro มาก่อน EP1 แล้ว รวมเป็น 9 ใบ */
   { id: 'forge-intro', stage: 'forge', emoji: '🌱', th: 'myClover · Intro', en: 'myClover · Intro' },
   { id: 'forge-1', stage: 'forge', emoji: '📖', th: 'EP1 ทุกคนมีสิทธิ์ลงเล่น', en: 'EP1' },
   { id: 'forge-2', stage: 'forge', emoji: '📖', th: 'EP2 ไอเท็มชิ้นแรก', en: 'EP2' },
@@ -121,8 +151,8 @@ export const ACHIEVEMENTS = Object.freeze([
   { id: 'lesson-5', stage: 'classroom', emoji: '🧠', th: 'LV5 ออกแบบ Prompt', en: 'LV5' },
   { id: 'lesson-6', stage: 'classroom', emoji: '🌐', th: 'LV6 สร้างเว็บชิ้นแรก', en: 'LV6' },
 
-  { id: 'awaken', stage: 'awaken', emoji: '🌅', th: 'ผ่านด่านบอส', en: 'Boss cleared' },
-  { id: 'awakened', stage: 'awaken', emoji: '🌅', th: 'ตรา AWAKENED', en: 'AWAKENED sigil' },
+  { id: 'awaken', stage: 'dungeon', emoji: '🕳️', th: 'ผ่าน THE DUNGEON', en: 'Dungeon cleared' },
+  { id: 'awakened', stage: 'dungeon', emoji: '🌅', th: 'ตรา AWAKENED · หีบ 5/5', en: 'AWAKENED · 5/5 Dungeon chest' },
 
   { id: 'card', stage: 'endgame', emoji: '🎴', th: 'บันทึกการ์ดประจำตัว', en: 'Player Card saved' },
 
@@ -140,7 +170,6 @@ export const ACHIEVEMENTS = Object.freeze([
   { id: 'genesis-scroll', stage: 'secret', emoji: '📜', th: 'Genesis Prompt', en: 'Genesis Prompt', secret: true },
 ]);
 
-/* ของที่ต้องยิง event ได้ทั้งหมด — ใช้ตรวจตอนรับข้อมูลและตอนวาดหน้าสถิติ */
 export const ACT_IDS = Object.freeze(ACTS.map(a => a.id));
 export const ACHIEVEMENT_IDS = Object.freeze(ACHIEVEMENTS.map(a => a.id));
 
@@ -153,8 +182,6 @@ export function entryById(id) {
   return BY_ID.get(String(id || '')) || null;
 }
 
-/* ลำดับของ stage สำหรับเรียงหน้าสถิติ — id ที่ไม่รู้จักได้เลขท้ายสุด
-   จะได้ไปกองอยู่ล่างสุดแทนที่จะแทรกกลางแล้วทำให้ลำดับ flow เพี้ยน */
 export function stageOrder(stageId) {
   const index = STAGES.findIndex(s => s.id === stageId);
   return index < 0 ? STAGES.length : index;
