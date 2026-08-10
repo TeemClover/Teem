@@ -68,6 +68,26 @@ export function mergeProgress(cloud, incoming) {
   return merged;
 }
 
+/* Current-run Dungeon state is intentionally resettable. Achievement/ever markers are
+   kept so replaying the Dungeon never erases things the player has already earned. */
+const DUNGEON_RESET_KEEP = new Set([
+  'mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1',
+  'mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1',
+  'mc_titles','mc_dungeon_reset_count','mc_awaken_reset_count','mc_awaken_reset_epoch'
+]);
+function shouldClearDungeonKey(key) {
+  if (!key || DUNGEON_RESET_KEEP.has(key)) return false;
+  return key === 'mc_dungeon_state_v2' || key === 'mc_secret_end' ||
+    key === 'mc_dungeon_reset_requested' || key === 'mc_dungeon_reset_v1' ||
+    key === 'mc_platinum_trophy' || key.startsWith('mc_nb_') ||
+    key.startsWith('mc_ch7_') || key.startsWith('mc_awaken_');
+}
+function resetDungeonCloud(progress) {
+  const clean = safeProgress(progress);
+  for (const key of Object.keys(clean)) if (shouldClearDungeonKey(key)) delete clean[key];
+  return clean;
+}
+
 export async function onRequest({ request, env }) {
   if (!env.DB) return json({ ok: false, error: 'ACCOUNT_DB_NOT_CONFIGURED' }, 503);
   await ensureAccountSchema(env.DB);
@@ -89,7 +109,9 @@ export async function onRequest({ request, env }) {
     try { body = JSON.parse(text); } catch { return json({ ok: false, error: 'BAD_JSON' }, 400); }
     const incoming = safeProgress(body && body.progress);
     const old = await env.DB.prepare('SELECT progress_json, version FROM mc_progress WHERE user_id = ?1').bind(user.id).first();
-    const merged = mergeProgress(old ? parseMaybe(old.progress_json) || {} : {}, incoming);
+    let cloud = old ? parseMaybe(old.progress_json) || {} : {};
+    if (body && body.resetScope === 'dungeon') cloud = resetDungeonCloud(cloud);
+    const merged = mergeProgress(cloud, incoming);
     const version = (old ? Number(old.version) : 0) + 1;
     const now = new Date().toISOString();
     await env.DB.prepare(
