@@ -15,6 +15,7 @@ import '/assets/lesson-one-subquests.js';
 import '/assets/lesson1-polite-language.js';
 import '/assets/lesson1-downloadable-md.js';
 import '/assets/lesson6-boss-transition.js';
+import '/assets/course-thai-flow-route.js?v=20260810-1';
 import '/assets/course-nav-names.js';
 import '/assets/details-fix.js?v=20260810-layout2';
 import '/assets/awaken-boss-patch.js?v=20260810-layout2';
