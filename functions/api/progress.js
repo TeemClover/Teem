@@ -62,9 +62,32 @@ function mergeValue(key, cloud, incoming) {
   return incoming;
 }
 
+const DUNGEON_SYNC_KEEP = new Set([
+  'mc_awaken_reset_epoch','mc_awaken_reset_pending','mc_awaken_reset_count','mc_awaken_current_run_epoch',
+  'mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1',
+  'mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_titles'
+]);
+function dungeonRunProgressKey(key) {
+  if (!key || DUNGEON_SYNC_KEEP.has(key)) return false;
+  return key === 'mc_dungeon_state_v2' || key === 'mc_secret_end' ||
+    key === 'mc_dungeon_reset_requested' || key === 'mc_dungeon_reset_v1' ||
+    key === 'mc_platinum_trophy' || key.startsWith('mc_nb_') ||
+    key.startsWith('mc_ch7_') || key.startsWith('mc_awaken_');
+}
+function progressEpoch(progress) {
+  const n = Number(progress && progress.mc_awaken_reset_epoch || 0);
+  return Number.isFinite(n) ? n : 0;
+}
 export function mergeProgress(cloud, incoming) {
   const left = safeProgress(cloud), right = safeProgress(incoming), merged = { ...left };
-  for (const key of Object.keys(right)) merged[key] = mergeValue(key, left[key], right[key]);
+  const cloudEpoch = progressEpoch(left), incomingEpoch = progressEpoch(right);
+  if (incomingEpoch > cloudEpoch) {
+    for (const key of Object.keys(merged)) if (dungeonRunProgressKey(key)) delete merged[key];
+  }
+  for (const key of Object.keys(right)) {
+    if (dungeonRunProgressKey(key) && cloudEpoch > incomingEpoch) continue;
+    merged[key] = mergeValue(key, left[key], right[key]);
+  }
   return merged;
 }
 

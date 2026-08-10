@@ -105,7 +105,7 @@ async function pushReset(epochValue){
   try{
     const res=await fetch('/api/progress',{
       method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({progress})
+      body:JSON.stringify({resetScope:'dungeon',progress})
     });
     if(res.ok || res.status===401){ del(localStorage,RESET_PENDING_KEY); return true; }
   }catch{}

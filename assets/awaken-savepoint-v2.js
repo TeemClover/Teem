@@ -130,7 +130,7 @@ async function pushReset(e){
     const response=await fetch('/api/progress',{
       method:'PUT',credentials:'same-origin',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({progress}),
+      body:JSON.stringify({resetScope:'dungeon',progress}),
     });
     if(response.ok||response.status===401){
       del(localStorage,RESET_PENDING);

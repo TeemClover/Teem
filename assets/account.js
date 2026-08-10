@@ -86,12 +86,40 @@ function mergeValue(key, cloud, local) {
   return local;
 }
 
+const DUNGEON_SYNC_KEEP = new Set([
+  'mc_awaken_reset_epoch','mc_awaken_reset_pending','mc_awaken_reset_count','mc_awaken_current_run_epoch',
+  'mc_mini_achievements_v1','mc_dungeon_cleared_v1','mc_dungeon_awakened_v1',
+  'mc_nb_seen_ever_v1','mc_nb_restored_ever_v1','mc_secret_end_ever_v1','mc_titles'
+]);
+function dungeonRunProgressKey(key) {
+  if (!key || DUNGEON_SYNC_KEEP.has(key)) return false;
+  return key === 'mc_dungeon_state_v2' || key === 'mc_secret_end' ||
+    key === 'mc_dungeon_reset_requested' || key === 'mc_dungeon_reset_v1' ||
+    key === 'mc_platinum_trophy' || key.startsWith('mc_nb_') ||
+    key.startsWith('mc_ch7_') || key.startsWith('mc_awaken_');
+}
+function progressEpoch(progress) {
+  const n = Number(progress && progress.mc_awaken_reset_epoch || 0);
+  return Number.isFinite(n) ? n : 0;
+}
 export function mergeIntoDevice(cloud) {
   const local = localProgress();
+  const cloudEpoch = progressEpoch(cloud), localEpoch = progressEpoch(local);
   const keys = new Set([...Object.keys(cloud || {}), ...Object.keys(local)]);
   const merged = {};
   for (const key of keys) {
     if (!allowedKey(key)) continue;
+    if (dungeonRunProgressKey(key) && localEpoch !== cloudEpoch) {
+      const source = localEpoch > cloudEpoch ? local : (cloud || {});
+      const value = source[key];
+      if (value === undefined) {
+        try { localStorage.removeItem(key); } catch { /* private mode */ }
+        continue;
+      }
+      merged[key] = value;
+      storageSet(key, value);
+      continue;
+    }
     merged[key] = mergeValue(key, cloud && cloud[key], local[key]);
     storageSet(key, merged[key]);
   }
