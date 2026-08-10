@@ -17,6 +17,7 @@ export const MINI_ACHIEVEMENTS = Object.freeze([
   { id:'d20-natural-20', emoji:'🎲', name:'Natural 20', hint:'ทอย d20 ได้ 20' },
   { id:'clover-song-2010', emoji:'💿', name:'Clover Song · 2010', hint:'เปิดเพลงที่เจ้าของบ้านแต่ง และเพื่อนร้องจริงตั้งแต่ปี 2010' },
   { id:'dungeon-reset', emoji:'♻️', name:'เริ่มด่านใหม่', lockedName:'???', hint:'พบเมนูลับและเริ่ม Boss Dungeon ใหม่', secret:true },
+  { id:'lucky-bug', emoji:'🍀', name:'Lucky Bug', lockedName:'???', hint:'ขโมยทองมังกรสำเร็จ ขณะยืนอยู่บนโคลเวอร์สี่แฉก', secret:true },
 ]);
 
 function readSet() {
