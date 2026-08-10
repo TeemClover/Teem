@@ -272,7 +272,7 @@ footer .exits{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;ma
       <h2 class="disp">หน้าถัดไปเสียหายหนัก</h2>
       <p>หมึกส่วนใหญ่เลือนจนอ่านไม่ออก</p>
       <p class="why">มีของชิ้นหนึ่งซ่อนอยู่ใน Quest Chest ช่วงโลกของตัวอักษร</p>
-      <a class="go disp" href="../../../boss/#phase1">กลับไปหาเครื่องมือในด่านบอส</a>
+      <a class="go disp" href="../../dungeon/#p1">กลับไปหาเครื่องมือในด่านบอส</a>
     </div>
 
     <!-- สถานะ B — มีสกิลแล้ว แต่ต้องกดใช้เอง ไม่เปิดให้อัตโนมัติ -->
@@ -523,14 +523,17 @@ if(btn) btn.addEventListener('click',function(){
 
 /* มาจากด่านใหม่ให้กลับแผนที่เดิม ส่วนทางเข้าเก่ายังคงใช้ history เดิม */
 var back=document.getElementById('back');
-var fromBoss=new URLSearchParams(location.search).get('from')==='boss' ||
-  (document.referrer||'').indexOf('/boss/')>=0;
-if(fromBoss){
-  if(back) back.href='../../../boss/#phase3';
-  document.querySelectorAll('footer a[href="../"]').forEach(function(a){ a.href='../../../boss/#phase3'; });
+var from=new URLSearchParams(location.search).get('from');
+var fromDungeon=from==='dungeon' || (document.referrer||'').indexOf('/classroom/dungeon')>=0;
+var fromBoss=from==='boss' || (document.referrer||'').indexOf('/boss/')>=0;
+if(fromDungeon||fromBoss){
+  var home=fromDungeon ? '../../dungeon/#p3' : '../../../boss/#phase3';
+  if(back) back.href=home;
+  document.querySelectorAll('footer a[href="../"]').forEach(function(a){ a.href=home; });
 }
 if(back) back.addEventListener('click',function(e){
   if(history.length>1 && ((document.referrer||'').indexOf('/classroom/awaken')>=0 ||
+      (document.referrer||'').indexOf('/classroom/dungeon')>=0 ||
       (document.referrer||'').indexOf('/boss/')>=0)){
     e.preventDefault(); history.back();
   }

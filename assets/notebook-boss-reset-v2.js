@@ -117,6 +117,9 @@ async function resetDungeon() {
 
   try { removedSession = clearDungeonStorage(sessionStorage); } catch { /* private mode */ }
 
+  /* ธงเดียวที่ด่านใหม่ /classroom/dungeon/ ต้องการ — เข้าไปแล้วมันจะปลดล็อกหีบเอง */
+  try { localStorage.setItem('mc_dungeon_reset_v1', '1'); } catch { /* private mode */ }
+
   report('awaken-dungeon-reset');
   try {
     window.gtag?.('event', 'awaken_dungeon_reset', {
@@ -131,7 +134,7 @@ async function resetDungeon() {
     new Promise(resolve => setTimeout(resolve, 1800)),
   ]);
 
-  location.replace(`/boss/?reset=${epoch}`);
+  location.replace(`/classroom/dungeon/?reset=${epoch}`);
 }
 
 function createPanel() {
@@ -143,9 +146,9 @@ function createPanel() {
     <p>ปุ่มนี้ซ่อนอยู่ท้ายสมุด เพราะคนที่หาไม่เจอก็ยังไม่จำเป็นต้องกด</p>
     <button class="boss-reset-open" type="button" aria-expanded="false">♻️ Reset Boss Dungeon</button>
     <div class="boss-reset-confirm" hidden>
-      <b>เริ่มด่านบอสใหม่ตั้งแต่หน้าประตู?</b>
-      <p>รอบปัจจุบันจะถูกล้าง เพื่อให้มึงเดินใหม่ เปิด Side Quest ใหม่ ซ่อมสมุดใหม่ และเปิดหีบใหม่ได้</p>
-      <div class="boss-reset-list"><span>ล้าง: Quest · ดาว · Loot · เกลือ · คัมภีร์ · สถานะสมุด</span><span>เก็บไว้: 6 บท · Achievement ที่เคยปลด · BLACKSMITH · Player Card · Collection</span></div>
+      <b>ปลดล็อกหีบให้เปิดใหม่อีกรอบ?</b>
+      <p>ผลของหีบรอบที่แล้วจะถูกล้าง มึงจะได้กลับไปเปิดหีบใหม่ ตีบวกคัมภีร์ใหม่ หรือจะลองงัดดูก็ได้</p>
+      <div class="boss-reset-list"><span>ล้าง: ผลหีบ · ดาวที่ล็อกไว้ · เกลือ · เลเวลคัมภีร์ · สถานะสมุด</span><span>เก็บไว้: เควสที่เคลียร์แล้ว · 6 บท · Achievement · Player Card · Collection</span></div>
       <div class="boss-reset-actions"><button class="boss-reset-cancel" type="button">ยังไม่รีเซ็ต</button><button class="boss-reset-do" type="button">ยืนยัน · เริ่ม Dungeon ใหม่</button></div>
     </div>`;
 
