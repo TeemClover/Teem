@@ -66,9 +66,8 @@ function completedSet() {
 }
 
 /* THE DUNGEON ใหม่เป็น source of truth ของด่านสุดท้าย
-   - ผ่านด่าน = เปิดผลหีบแล้ว ไม่ว่าจะเลือกล็อกกี่ดาวหรือทำหีบพัง
-   - AWAKENED = เปิดหีบปกติที่ 5/5 เท่านั้น
-   ห้ามอ่าน mc_ch7_done ของหน้า AWAKEN เก่าอีก */
+   marker สองตัวถูกเขียนจาก Dungeon ใหม่เท่านั้น จึงไม่ลาก save ของ AWAKEN เก่ามาปลด
+   และยังคง Achievement ไว้หลัง Reset Dungeon ได้ */
 function dungeonState() {
   const d = json('mc_dungeon_state_v2', null);
   return d && d.v === 2 ? d : null;
@@ -85,8 +84,8 @@ export function achievementState() {
   const classDone = !!raw('mc_class');
   const clubDone = raw('mc_club_seen') === '1';
   const dungeon = dungeonState();
-  const dungeonDone = !!dungeon?.loot;
-  const dungeonPerfect = !!(dungeon?.loot && !dungeon.loot.broken && Number(dungeon.loot.stars) === 5);
+  const dungeonDone = raw('mc_dungeon_cleared_v1') === '1' || !!dungeon?.loot;
+  const dungeonPerfect = raw('mc_dungeon_awakened_v1') === '1' || !!(dungeon?.loot && !dungeon.loot.broken && Number(dungeon.loot.stars) === 5);
   const blacksmith = forgeDone || hasTitle('BLACKSMITH');
   const firstHand = firstHandCount();
   const state = {};
@@ -104,7 +103,7 @@ export function achievementState() {
   state.card = cardDone;
 
   state.blacksmith = blacksmith;
-  state.awakened = dungeonPerfect || hasTitle('AWAKENED');
+  state.awakened = dungeonPerfect;
   state.hero = hasTitle('HERO');
   state.seeker = raw('mc_seek_hit') === '1' || hasTitle('SEEKER');
   state['notebook-found'] = raw('mc_nb_seen') === '1' || raw('mc_nb_restored') === '1' || raw('mc_secret_end') === '1';
