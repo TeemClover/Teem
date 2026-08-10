@@ -7,6 +7,7 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
   const STATE_KEY = 'mc_dungeon_state_v2';
   const CLEAR_KEY = 'mc_dungeon_cleared_v1';
   const AWAKENED_KEY = 'mc_dungeon_awakened_v1';
+  const WELL_DONE_KEY = 'mc_dungeon_well_done_v1';
   const $ = id => document.getElementById(id);
 
   function state() {
@@ -28,6 +29,7 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
     if (s.folds?.f1b) unlock('timebox-open');
     if (s.level >= 3) unlock('xp-scroll-used');
     if (s.luckybug) unlock('lucky-bug');
+    try { if (localStorage.getItem(WELL_DONE_KEY) === '1') unlock('well-done'); } catch {}
     if (s.loot) {
       mark(CLEAR_KEY);
       if (s.loot.broken) unlock('salt-speedrun');
@@ -59,11 +61,13 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
       mark(CLEAR_KEY);
       unlock('salt-speedrun');
     } else if (id === 'dungeon-pry-3') unlock('salt-speedrun');
+    if (id === 'dungeon-dragon-wake') {
+      mark(WELL_DONE_KEY);
+      unlock('well-done');
+    }
     if (id === 'dungeon-lucky-bug') unlock('lucky-bug');
   }
 
-  /* The inline Dungeon code already reports detailed acts through MC_ACT.
-     Wrap it once so Collection unlocks are derived from the exact same events. */
   const previousAct = window.MC_ACT;
   if (typeof previousAct === 'function' && !previousAct.__dungeonBridge) {
     const wrapped = function dungeonActBridge(id, ...args) {
@@ -75,7 +79,6 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
     window.MC_ACT = wrapped;
   }
 
-  /* "กล่องของเก่า" ใน Dungeon ใหม่คือ fold 14 วันที่เว็บนี้ถูกสร้าง (f1b). */
   function bindOldBox() {
     const fold = document.querySelector('.fold[data-fold="f1b"]');
     const button = fold?.querySelector(':scope > button');
@@ -88,10 +91,6 @@ if (/^\/classroom\/dungeon\/?(?:index\.html)?$/.test(location.pathname)) {
     });
   }
 
-  /* Object behavior: the canvas renderer is deliberately private inside the living HTML.
-     Its message box is the stable public boundary: every inspect/collision writes there.
-     Normalize those messages into durable ACT ids so /stat/behavior can answer
-     "กี่เครื่องเคยแตะ object นี้" even when the same person inspects it repeatedly. */
   const OBJECT_RULES = [
     ['dungeon-object-forge', /โรงตีเหล็ก/],
     ['dungeon-object-computer', /คอม|computer|terminal/i],
