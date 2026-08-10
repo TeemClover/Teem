@@ -65,9 +65,6 @@ function completedSet() {
   return false;
 }
 
-/* THE DUNGEON ใหม่เป็น source of truth ของด่านสุดท้าย
-   marker สองตัวถูกเขียนจาก Dungeon ใหม่เท่านั้น จึงไม่ลาก save ของ AWAKEN เก่ามาปลด
-   และยังคง Achievement ไว้หลัง Reset Dungeon ได้ */
 function dungeonState() {
   const d = json('mc_dungeon_state_v2', null);
   return d && d.v === 2 ? d : null;
@@ -106,9 +103,14 @@ export function achievementState() {
   state.awakened = dungeonPerfect;
   state.hero = hasTitle('HERO');
   state.seeker = raw('mc_seek_hit') === '1' || hasTitle('SEEKER');
-  state['notebook-found'] = raw('mc_nb_seen') === '1' || raw('mc_nb_restored') === '1' || raw('mc_secret_end') === '1';
-  state['notebook-restored'] = raw('mc_nb_restored') === '1';
-  state['secret-end'] = raw('mc_secret_end') === '1';
+
+  /* Current-run flags are allowed to reset. Ever-markers keep Collection achievements permanent. */
+  const nbSeen = raw('mc_nb_seen') === '1' || raw('mc_nb_seen_ever_v1') === '1';
+  const nbRestored = raw('mc_nb_restored') === '1' || raw('mc_nb_restored_ever_v1') === '1';
+  const secretEnd = raw('mc_secret_end') === '1' || raw('mc_secret_end_ever_v1') === '1';
+  state['notebook-found'] = nbSeen || nbRestored || secretEnd;
+  state['notebook-restored'] = nbRestored;
+  state['secret-end'] = secretEnd;
   state.glhf = hasTitle('GLHF');
 
   state['c7-tutorial'] = json('c7:tutorial_completed', false) === true;
