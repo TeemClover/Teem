@@ -5,18 +5,17 @@
 const KEY = 'mc_mini_achievements_v1';
 
 export const MINI_ACHIEVEMENTS = Object.freeze([
-  { id:'boss-chest', emoji:'🧰', name:'เปิดหีบบอส', hint:'เปิดหีบบอสในบทที่ 7' },
-  { id:'boss-3-stars', emoji:'★★★', name:'หีบ 3 ดาว', hint:'เปิดหีบบอสแล้วได้ 3 ดาว' },
-  { id:'boss-5-stars', emoji:'★★★★★', name:'หีบ 5 ดาว', hint:'เปิดหีบบอสแล้วได้ 5 ดาว' },
-  { id:'salt-speedrun', emoji:'🧂', name:'รีบจนได้เกลือ', hint:'เปิดหีบด้วย Active Time ต่ำกว่า 10 วินาที' },
-  { id:'xp-scroll-used', emoji:'📜', name:'ใช้ม้วนประสบการณ์', hint:'ใช้ม้วน EXP และดู LEVEL UP ครบ 3 ครั้ง' },
-  { id:'timebox-open', emoji:'😴', name:'เปิดกล่อง 14 วัน', hint:'เปิดดูช่วง 14 วันที่ไอ้ทีมสั่ง AI แทบทุกนาที' },
-  { id:'party-box-open', emoji:'🔌', name:'เปิดกล่อง Party', hint:'เปิดดู Party ที่สร้างบ้านหลังนี้' },
-  { id:'party-loadout-all', emoji:'🎒', name:'ตรวจ Loadout ครบทีม', hint:'เปิด Equipment และ Skill ของสมาชิกครบ 4 ตัว' },
+  { id:'boss-chest', emoji:'🧰', name:'เปิดหีบ Dungeon', hint:'เปิดหีบ THE DUNGEON โดยไม่งัดจนพัง' },
+  { id:'boss-3-stars', emoji:'★★★', name:'หีบ 3 ดาว', hint:'เปิดหีบ THE DUNGEON แล้วล็อกผลที่ 3/5 ดาว' },
+  { id:'boss-5-stars', emoji:'★★★★★', name:'หีบ 5 ดาว', hint:'เก็บครบ 5/5 แล้วเปิดหีบ THE DUNGEON' },
+  { id:'salt-speedrun', emoji:'🧂', name:'งัดจนได้เกลือ', hint:'งัดหีบ THE DUNGEON ครบ 3 ครั้งจนหีบพังและได้เกลือ' },
+  { id:'xp-scroll-used', emoji:'📜', name:'ตีบวกคัมภีร์ครบ', hint:'ใช้คัมภีร์ใน THE DUNGEON และดู LEVEL UP ครบ 3 ครั้ง' },
+  { id:'timebox-open', emoji:'😴', name:'เปิดกล่องของเก่า', hint:'เปิดอ่านเรื่อง 14 วันที่เว็บนี้ถูกสร้างใน PHASE 1' },
+  { id:'party-box-open', emoji:'🔌', name:'เปิดหน้าต่าง Party', hint:'เปิด Party ในแผนที่ THE DUNGEON' },
   { id:'d20-natural-1', emoji:'🎲', name:'Natural 1', hint:'ทอย d20 ได้ 1' },
   { id:'d20-natural-20', emoji:'🎲', name:'Natural 20', hint:'ทอย d20 ได้ 20' },
   { id:'clover-song-2010', emoji:'💿', name:'Clover Song · 2010', hint:'เปิดเพลงที่เจ้าของบ้านแต่ง และเพื่อนร้องจริงตั้งแต่ปี 2010' },
-  { id:'dungeon-reset', emoji:'♻️', name:'เริ่มด่านใหม่', lockedName:'???', hint:'พบเมนูลับและเริ่ม Boss Dungeon ใหม่', secret:true },
+  { id:'dungeon-reset', emoji:'♻️', name:'เริ่มด่านใหม่', lockedName:'???', hint:'พบเมนูลับและ Reset THE DUNGEON', secret:true },
   { id:'lucky-bug', emoji:'🍀', name:'Lucky Bug', lockedName:'???', hint:'ขโมยทองมังกรสำเร็จ ขณะยืนอยู่บนโคลเวอร์สี่แฉก', secret:true },
 ]);
 
