@@ -16,7 +16,8 @@ export const MINI_ACHIEVEMENTS = Object.freeze([
   { id:'d20-natural-20', emoji:'🎲', name:'Natural 20 · ทอยคริ!', hint:'ทอย d20 ได้ 20 — คริเต็มหน้า! จังหวะที่ความเสี่ยงกลายเป็นตำนาน และโต๊ะควรมีคนร้องเฮ' },
   { id:'clover-song-2010', emoji:'💿', name:'Clover Song · 2010', hint:'เปิดเพลงที่เจ้าของบ้านแต่ง และเพื่อนร้องจริงตั้งแต่ปี 2010' },
   { id:'dungeon-reset', emoji:'♻️', name:'เริ่มด่านใหม่', lockedName:'???', hint:'พบเมนูลับและ Reset THE DUNGEON', secret:true },
-  { id:'lucky-bug', emoji:'🍀', name:'Lucky Bug', lockedName:'???', hint:'ขโมยทองมังกรสำเร็จ ขณะยืนอยู่บนโคลเวอร์สี่แฉก', secret:true },
+  { id:'well-done', emoji:'🔥', name:'Well-Done', hint:'โดนมังกรย่างยกตี้จน PARTY WIPE — สุกกำลังดีแบบไม่มีใครรอด' },
+  { id:'lucky-bug', emoji:'🍀', name:'Lucky Bug · 6 ดาว', lockedName:'???', hint:'ขโมยทองมังกรสำเร็จ ขณะยืนอยู่บนโคลเวอร์สี่แฉก แล้วเจอดาวลับดวงที่ 6', secret:true },
 ]);
 
 function readSet() {
