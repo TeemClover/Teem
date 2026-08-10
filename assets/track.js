@@ -2,7 +2,9 @@
    Course pages use an isolated, failure-tolerant runtime.
    Everything else keeps the existing global runtime unchanged.
 */
-export { trackAct } from '/assets/track-core.js';
+/* track-core.js ไม่ได้ export ชื่อไหนออกมา และไม่มีไฟล์ไหนในบ้านนี้ import trackAct
+   ถ้า re-export ทิ้งไว้ โมดูลนี้จะพังตั้งแต่ instantiate แล้ว runtime ข้างล่างจะไม่ถูกโหลดเลย */
+import '/assets/track-core.js';
 
 const path = location.pathname;
 const isCoursePage = (
