@@ -22,3 +22,13 @@ window.MC_CONFIG = {
   /* เวลาเปิดบ้าน 8/8/2569 เที่ยงคืน (เวลาไทย) */
   OPEN_AT: '2026-08-08T00:00:00+07:00'
 };
+
+/* Secret ending compatibility: the historical save key is GLHF, but the final
+   compass-card reward is presented as PLATINUM TROPHY. Load this before the
+   card's inline renderer so canvas measurements use the final label too. */
+if (/^\/card\/?(?:index\.html)?$/.test(location.pathname)) {
+  var pt = document.createElement('script');
+  pt.src = '/assets/card-platinum-trophy.js?v=20260811-1';
+  pt.async = false;
+  document.head.appendChild(pt);
+}
