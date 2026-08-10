@@ -518,6 +518,26 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 .ask b{display:block;color:#ffd3c7;font-size:15.5px}
 .ask span{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
 
+/* ── LUCKY BUG · ของลับที่กูไม่ได้ตั้งใจให้มี ───────────── */
+.luckyroom{background:radial-gradient(circle at 50% 40%,#123021,#04100a 72%)}
+.luckyart{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.luckyart .glow{position:absolute;left:50%;top:38%;translate:-50% -50%;width:min(620px,90vw);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,rgba(110,231,168,.3),rgba(240,201,108,.12) 42%,transparent 68%);animation:luckyPulse 3.2s ease-in-out infinite}
+@keyframes luckyPulse{50%{transform:scale(1.12);opacity:.75}}
+.luckyart .coin{position:absolute;bottom:-8%;font-size:clamp(20px,3vw,30px);opacity:0;animation:coinUp 3.4s linear infinite}
+@keyframes coinUp{0%{opacity:0;transform:translateY(0) rotate(0)}12%{opacity:1}100%{opacity:0;transform:translateY(-108vh) rotate(320deg)}}
+.luckyroom .fullin{position:relative;z-index:3}
+.bugstars{color:var(--gold);font-size:clamp(22px,5vw,34px);letter-spacing:.1em;text-shadow:0 0 20px rgba(240,201,108,.5)}
+.bugstars b{color:#6ee7a8;text-shadow:0 0 26px rgba(110,231,168,.85)}
+.luckyroom .fbig{margin-top:6px;background:linear-gradient(#fff,#8affc4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.luckyroom .fsay+.fsay{margin-top:11px}
+.bugach{margin-top:18px;padding:13px 15px;border:1px solid rgba(110,231,168,.4);border-radius:12px;background:rgba(110,231,168,.09);
+  color:#d9ffec;font-size:14.5px;line-height:1.75;text-align:left}
+.bugach b{color:var(--green)}
+.stars i.bonus{color:#2a3a33}
+.stars i.bonus.on{color:#6ee7a8;text-shadow:0 0 22px rgba(110,231,168,.75)}
+.hudstars i.bonus.on{color:#6ee7a8;text-shadow:0 0 10px rgba(110,231,168,.7)}
+
 @media(min-width:900px){
   .labgrid.split{grid-template-columns:1fr 1fr}
   .labgrid.split .pane+.pane{border-top:0;border-left:1px solid rgba(110,231,168,.14)}
@@ -893,6 +913,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
     <div class="qlog">
       <div id="logParty">☆ QUEST 03 · เปิดหน้าต่าง Party</div>
       <div id="logBook">☆ SECRET · มีของเก่าซ่อนอยู่ในป่าทางตะวันตก</div>
+      <div id="logLucky" hidden>★ LUCKY BUG · มึงขโมยทองมังกรบนโคลเวอร์สี่แฉกได้</div>
     </div>
     <div class="bookjump" id="bookJump" hidden>
       <a class="btn gold" id="bookJumpBtn" href="/classroom/awaken/notebook/?from=dungeon">📓 ไปหน้าสมุดของ ด.ช.นรินทร์</a>
@@ -1057,6 +1078,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
     <div class="lootgrid" id="lootGrid"></div>
     <div class="saltbox" id="saltBox" hidden></div>
     <div class="saltbox titlebox" id="titleBox" hidden></div>
+    <div class="saltbox" id="luckyLoot" hidden style="border-color:rgba(110,231,168,.4);background:rgba(110,231,168,.09);color:#d9ffec">🍀 <b style="color:var(--green)">ดาวดวงที่ 6 · LUCKY BUG</b> — ดวงนี้ไม่ได้อยู่ในหีบ และหีบก็นับมันไม่ได้ มึงได้มันมาจากบั๊กที่กูตั้งใจไม่ปิด</div>
     <div class="timeledger">
       <small>THE REAL REWARD</small>
       <div class="tlrow"><span>TRANSLATION TAX</span><b>↓</b></div>
@@ -1109,6 +1131,28 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   </div>
 </div>
 
+<!-- ═══ LUCKY BUG · ดาวดวงที่ 6 ═══ -->
+<div class="full luckyroom" id="bugScreen" hidden>
+  <div class="luckyart" aria-hidden="true">
+    <i class="glow"></i>
+    <span class="coin" style="left:12%;animation-delay:0s">🪙</span>
+    <span class="coin" style="left:28%;animation-delay:.55s">💰</span>
+    <span class="coin" style="left:46%;animation-delay:.2s">🪙</span>
+    <span class="coin" style="left:64%;animation-delay:.8s">💎</span>
+    <span class="coin" style="left:81%;animation-delay:.35s">🪙</span>
+    <span class="coin" style="left:92%;animation-delay:1s">💰</span>
+  </div>
+  <div class="fullin">
+    <span class="fmicro">HIDDEN · 6TH STAR</span>
+    <div class="bugstars">★★★★★<b>★</b></div>
+    <div class="fbig">LUCKY BUG</div>
+    <p class="fsay">มึงใช้บั๊กของเกมนี้ขโมยทองมังกรได้สำเร็จ — <b>ตอนที่ยืนอยู่บนโคลเวอร์สี่แฉกกอเดียวของทั้งทุ่งพอดี</b></p>
+    <p class="fsay">กูไม่ได้ตั้งใจให้ทำได้ และไม่คิดว่าจะมีใครหาเจอ · เอาเป็นว่ามึงเจอบั๊ก แล้วมึงยังโชคดีซ้อนเข้าไปอีกชั้น <b>กูขออวยพรให้มึงรวย</b> รวยแล้วอย่าลืมกูละกัน</p>
+    <div class="bugach">🍀 <b>ACHIEVEMENT · Lucky Bug</b> — เก็บถาวรแล้ว ไปดูได้ที่หน้า Collection</div>
+    <div class="fbtns"><button class="fbtn" id="bugClose" type="button">รับพรแล้วเดินต่อ</button></div>
+  </div>
+</div>
+
 <!-- ═══ toast ═══ -->
 <div class="toast" id="toast" hidden role="status" aria-live="polite">
   <em id="toastIcon">⏳</em>
@@ -1139,7 +1183,7 @@ const blank = () => ({
   party:false, book:false, bookAt:0, nbWas:null, notebook:false,
   gen:0, spoon:'', scanned:false, network:false,
   fish:0, boot:false, bottle:false, clover:false,
-  pry:0, loot:null, level:0,
+  pry:0, loot:null, level:0, luckybug:false,
   pos:{x:16,y:19}, trail:[{x:15,y:19},{x:14,y:19},{x:13,y:19}],
   folds:{}, sound:true
 });
@@ -1227,12 +1271,14 @@ function claim(key, id){
 }
 
 /* ── HUD ────────────────────────────────────────────────── */
-$('hudStars').innerHTML = QORDER.map(() => '<i>★</i>').join('');
-$('stars').innerHTML = QORDER.map(() => '<i>★</i>').join('');
+$('hudStars').innerHTML = QORDER.map(() => '<i>★</i>').join('') + '<i class="bonus" hidden>★</i>';
+$('stars').innerHTML = QORDER.map(() => '<i>★</i>').join('') + '<i class="bonus" hidden>★</i>';
 function paintStars(){
   const n = S.loot ? S.loot.stars : score();   /* เปิดหีบแล้ว ดาวล็อกตรงนั้น */
   [...$('hudStars').children].forEach((el,i) => el.classList.toggle('on', i < n));
   [...$('stars').children].forEach((el,i) => el.classList.toggle('on', i < n));
+  /* ดวงที่ 6 ไม่นับรวมกับหีบ มันเป็นของแถมของคนที่หาบั๊กเจอ */
+  $$('.bonus').forEach(el => { el.hidden = !S.luckybug; el.classList.toggle('on', !!S.luckybug); });
   $('starNote').textContent = S.loot
     ? (S.loot.broken
         ? 'หีบพังไปแล้ว รอบนี้เหลือศูนย์ดาว · จะแก้ตัวต้องไป Reset Dungeon ท้ายสมุด'
@@ -1953,12 +1999,44 @@ function goldPrompt(){
     '<div class="ask"><b>ทองของมังกร จะหยิบจริงเหรอ?</b><span>' +
     '<button class="btn danger sm" id="takeGold" type="button">💰 หยิบ</button>' +
     '<button class="btn ghost sm" id="leaveGold" type="button">ช่างแม่ง</button></span></div>');
-  $('takeGold').addEventListener('click', dragonEvent);
+  $('takeGold').addEventListener('click', takeGold);
   $('leaveGold').addEventListener('click', () => {
     beep(440,.06);
     say('<b>มึงถอยมือกลับมา</b> — ฉลาด · ของมันเยอะจริง แต่เจ้าของมันก็ยังนอนอยู่ตรงนั้นจริงเหมือนกัน');
   });
 }
+/* บั๊กที่กูเก็บไว้ตั้งใจ: กดสำรวจทองในรัง แล้วเดินออกมากดหยิบที่อื่นก็ได้
+   กูไม่ปิดมัน เพราะคนที่หามันเจอสมควรได้เจออะไรสักอย่างที่ปลายทาง */
+function takeGold(){
+  if (drake.state !== 'sleep') return;
+  const here = chain[0], f = facing();
+  if (at(here.x, here.y) === 'g' || at(f.x, f.y) === 'g') return dragonEvent();
+  if (here.x === LUCKY.x && here.y === LUCKY.y) return luckyBug();
+  beep(520,.07); setTimeout(() => beep(660,.09), 130);
+  act('dungeon-gold-bug');
+  say('<b>😏 ขโมยทองสำเร็จ</b> — มึงกดสำรวจกองทองในรัง แล้วเดินออกมาไกล ๆ ค่อยกดหยิบ มังกรเลยไม่ตื่น เพราะมือมึงไม่ได้อยู่ตรงนั้นแล้ว' +
+    '<br>ยินดีด้วย มึงเพิ่งใช้บั๊กของเกมนี้ได้สำเร็จ · กูรู้ว่ามันมี แล้วกูเลือกไม่ปิด เพราะคนที่หาเจอควรได้อะไรกลับไปบ้าง' +
+    '<br><b>สรุปคือมึงขโมยทองในเกมได้ แต่มึงไม่ได้รวยขึ้นแม้แต่บาทเดียว</b> · ถ้าอยากได้ของจริงจากบั๊กนี้ ลองคิดดูว่ามึงควรไปยืนตรงไหนก่อนกด');
+}
+function luckyBug(){
+  if (!S.luckybug){
+    S.luckybug = true;
+    if (!S.clover) S.clover = true;
+    save();
+    grantTitle('LUCKY BUG');
+    try { window.MC_MINI_UNLOCK?.('lucky-bug'); } catch {}
+    act('dungeon-lucky-bug');
+  }
+  paintStars(); paintLogs();
+  $('bugScreen').hidden = false;
+  document.body.style.overflow = 'hidden';
+  fanfare(); setTimeout(chime, 420);
+}
+$('bugClose').addEventListener('click', () => {
+  $('bugScreen').hidden = true;
+  document.body.style.overflow = '';
+  say('<b>ทองอยู่ในกระเป๋ามึงแล้ว</b> — ในทางเทคนิคนะ · มังกรยังหลับสนิท ทุ่งโคลเวอร์ยังอยู่ที่เดิม และดาวดวงที่ 6 ของมึงไม่มีใครเอาไปได้');
+});
 function roar(){
   [70,58,64,52].forEach((f,i) => setTimeout(() => beep(f,.42,'sawtooth',.07), i*130));
 }
@@ -2120,6 +2198,8 @@ function paintLogs(){
     : S.book ? '☆ SECRET · เจอสมุดแล้ว · ต้องซ่อมให้อ่านออกถึงจะได้ดาว'
              : '☆ SECRET · มีของเก่าซ่อนอยู่ในป่าทางตะวันตก';
   $('logBook').classList.toggle('done', S.notebook);
+  $('logLucky').hidden = !S.luckybug;
+  $('logLucky').classList.toggle('done', S.luckybug);
   $('bookJump').hidden = !S.book;
 }
 /* ดาวดวงนี้ต้องเป็น “เจอในรอบนี้ → ซ่อมในรอบนี้” เท่านั้น
@@ -2458,6 +2538,7 @@ function openLoot(){
   }).join('');
   $('saltBox').hidden = !b;
   if (b) $('saltBox').innerHTML = '🧂 <b>เกลือ 1 ถุง</b> — ของแถมของคนใจร้อน เค็มแต่เก็บได้นาน · หีบพังได้ ดาวหายได้ แต่<b>เวลาที่มึงเลิกเสียไปแล้ว กูเอาคืนจากมึงไม่ได้</b> คัมภีร์ก็ยังอยู่ในมือมึงเหมือนเดิม';
+  $('luckyLoot').hidden = !S.luckybug;
   const perfect = !b && S.loot.stars === 5;
   $('titleBox').hidden = false;
   $('titleBox').innerHTML = perfect
