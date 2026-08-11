@@ -360,6 +360,15 @@ section{position:relative}
 .exitnav a{display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 8px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(255,255,255,.03);color:#d3ded8;text-decoration:none;font-weight:700;font-size:14px;transition:.2s}
 .exitnav a:hover{border-color:rgba(240,201,108,.5);background:rgba(240,201,108,.09);color:#ffeab4}
 .exitnav em{font-style:normal;font-size:22px;line-height:1}
+.exitnav .guild-cta{position:relative;isolation:isolate;grid-column:1/-1;min-height:88px;justify-content:center;overflow:hidden;border:1px solid rgba(255,231,151,.72);background:linear-gradient(135deg,#11854d 0%,#25c977 48%,#10965a 100%);color:#fff;box-shadow:0 12px 34px rgba(20,196,111,.32),0 0 0 1px rgba(255,255,255,.11) inset,0 0 30px rgba(110,231,168,.17);text-shadow:0 1px 2px rgba(0,0,0,.22);transform:translateZ(0);animation:guildCtaPulse 2.8s ease-in-out infinite}
+.exitnav .guild-cta::before{content:'';position:absolute;z-index:-1;inset:-70% -35%;background:linear-gradient(110deg,transparent 38%,rgba(255,255,255,.34) 49%,transparent 60%);transform:translateX(-60%) rotate(4deg);animation:guildCtaSheen 3.4s ease-in-out infinite}
+.exitnav .guild-cta::after{content:'ไปต่อกับคนที่เล่นด้วยกัน →';display:block;margin-top:1px;color:#effff6;font:650 11px/1.4 var(--mono);letter-spacing:.035em;opacity:.92}
+.exitnav .guild-cta em{font-size:27px;filter:drop-shadow(0 3px 8px rgba(0,0,0,.22))}
+.exitnav .guild-cta span{font-size:16px;line-height:1.2;letter-spacing:.01em}
+.exitnav .guild-cta:hover{border-color:#ffe49a;background:linear-gradient(135deg,#159b5b 0%,#35df89 48%,#13a664 100%);color:#fff;box-shadow:0 16px 42px rgba(20,196,111,.46),0 0 0 1px rgba(255,255,255,.16) inset,0 0 42px rgba(110,231,168,.28);transform:translateY(-2px) scale(1.012)}
+.exitnav .guild-cta:active{transform:translateY(0) scale(.995)}
+@keyframes guildCtaPulse{0%,100%{box-shadow:0 12px 34px rgba(20,196,111,.28),0 0 0 1px rgba(255,255,255,.11) inset,0 0 24px rgba(110,231,168,.12)}50%{box-shadow:0 15px 42px rgba(20,196,111,.42),0 0 0 1px rgba(255,255,255,.14) inset,0 0 38px rgba(110,231,168,.24)}}
+@keyframes guildCtaSheen{0%,58%{transform:translateX(-65%) rotate(4deg);opacity:0}68%{opacity:.9}86%,100%{transform:translateX(65%) rotate(4deg);opacity:0}}
 footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 
 /* ── modal shell ─────────────────────────────────────────── */
@@ -1024,7 +1033,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
     <div class="gatehelp" id="gateHelp" hidden></div>
 
     <nav class="exitnav" aria-label="ทางออกจากด่าน">
-      <a href="/guild/"><em>🛡️</em>ทางเข้ากิลด์</a>
+      <a href="/guild/" class="guild-cta"><em>🛡️</em><span>เข้ากิลด์</span></a>
       <a href="/card/"><em>💠</em>จุดเซฟ</a>
       <a href="/collection/"><em>🎒</em>กระเป๋า</a>
       <a href="/classroom/"><em>📚</em>ห้องเรียน</a>
