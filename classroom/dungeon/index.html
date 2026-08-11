@@ -253,8 +253,10 @@ section{position:relative}
 #p4{padding:76px 0 96px;color:#f6ead0;
   background:radial-gradient(720px 460px at 50% 30%,rgba(240,201,108,.16),transparent 55%),linear-gradient(#0d2a1a,#17140a 62%,#120e06)}
 #p4 .eyebrow{color:var(--gold)}
+/* background-clip:text ตัดหมึกไม้โท/ไม้เอกทิ้ง (แล้ว, สร้าง, ขึ้น, ได้) ไม่ว่า line-height จะเผื่อแค่ไหน
+   ก็ไม่ช่วย เพราะบั๊กอยู่ที่ตัวการ clip เอง — เปลี่ยนเป็นสีทึบ + glow เหมือน .fbig */
 #p4 .title{margin:14px 0 20px;font-size:clamp(25px,4.8vw,42px);
-  background:linear-gradient(100deg,#f6e2ad,#f0c96c 40%,#fff3d2 62%,#dfa93f);-webkit-background-clip:text;background-clip:text;color:transparent}
+  color:#f7dfa8;text-shadow:0 0 1px rgba(255,246,222,.35),0 0 26px rgba(240,201,108,.4)}
 #p4 .lead{color:#dbcaa6}
 #p4 .lead strong{color:#fff6e0}
 #p4 .fold{border-color:rgba(240,201,108,.28)}
@@ -420,9 +422,11 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 .full[hidden]{display:none!important}
 .fullin{width:min(660px,100%);margin:auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;padding:14px 0}
 .fmicro{color:rgba(255,255,255,.58);font:700 11px var(--mono);letter-spacing:.2em}
-.fbig{margin-top:8px;font:800 clamp(29px,8vw,52px)/1.1 var(--sans);letter-spacing:-.03em;
-  background:linear-gradient(100deg,#f6e2ad,#f0c96c 38%,#fff6de 58%,#dfa93f);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 0 28px rgba(240,201,108,.35))}
+/* ห้ามใช้ background-clip:text กับหัวข้อที่มีไม้วรรณยุกต์ไทย — มันตัดหมึกของไม้โท/ไม้เอกทิ้ง
+   ไม่ว่าจะเผื่อ line-height หรือ padding-top เท่าไหร่ก็ไม่ช่วย เพราะบั๊กอยู่ที่ตัวการ clip เอง
+   ไม่ใช่พื้นที่กล่อง — เกิดชัดกับ "ตี้" ตอนจอ PARTY WIPE จึงเปลี่ยนเป็นสีทึบ + glow แทน */
+.fbig{margin-top:8px;font:800 clamp(29px,8vw,52px)/1.2 var(--sans);letter-spacing:-.03em;
+  color:#f7dfa8;text-shadow:0 0 1px rgba(255,246,222,.4),0 0 28px rgba(240,201,108,.5),0 0 60px rgba(240,201,108,.25)}
 .fsay{margin-top:12px;color:#d2dfd7;font-size:15.5px;line-height:1.85}
 .lootgrid{display:grid;gap:9px;margin-top:20px;text-align:left}
 .li{display:flex;gap:13px;align-items:center;padding:13px 15px;border:1px solid rgba(240,201,108,.4);border-radius:13px;
@@ -510,8 +514,8 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   background:radial-gradient(ellipse at center,rgba(8,2,0,.82) 0%,rgba(8,2,0,.6) 52%,rgba(8,2,0,0) 78%)}
 .drake .fsay{color:#ffe3cd;text-shadow:0 2px 10px rgba(0,0,0,.7)}
 .drake .fmicro{color:#ffd0ab;text-shadow:0 2px 8px rgba(0,0,0,.7)}
-.drake .fbig{background:linear-gradient(#fff,#ffb877);-webkit-background-clip:text;background-clip:text;color:transparent}
-.st1 .fbig,.st2 .fbig{text-shadow:0 0 30px rgba(255,120,0,.5)}
+.drake .fbig{color:#ffe4c4;text-shadow:0 0 1px rgba(255,255,255,.4),0 0 30px rgba(255,120,0,.6)}
+.st1 .fbig,.st2 .fbig{text-shadow:0 0 1px rgba(255,255,255,.4),0 0 34px rgba(255,120,0,.75)}
 .quake{animation:quake .26s linear infinite}
 @keyframes quake{0%{transform:translate(0,0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-3px)}100%{transform:translate(0,0)}}
 .ask{margin-top:11px;padding-top:11px;border-top:1px dashed rgba(255,155,133,.3)}
@@ -529,7 +533,7 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
 .luckyroom .fullin{position:relative;z-index:3}
 .bugstars{color:var(--gold);font-size:clamp(22px,5vw,34px);letter-spacing:.1em;text-shadow:0 0 20px rgba(240,201,108,.5)}
 .bugstars b{color:#6ee7a8;text-shadow:0 0 26px rgba(110,231,168,.85)}
-.luckyroom .fbig{margin-top:6px;background:linear-gradient(#fff,#8affc4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.luckyroom .fbig{margin-top:6px;color:#dcfff0;text-shadow:0 0 1px rgba(255,255,255,.4),0 0 30px rgba(110,231,168,.7)}
 .luckyroom .fsay+.fsay{margin-top:11px}
 .bugach{margin-top:18px;padding:13px 15px;border:1px solid rgba(110,231,168,.4);border-radius:12px;background:rgba(110,231,168,.09);
   color:#d9ffec;font-size:14.5px;line-height:1.75;text-align:left}
