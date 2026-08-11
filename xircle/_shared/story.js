@@ -3,11 +3,11 @@
   if(head&&!document.querySelector('link[data-xircle-typography]')){
     const pre1=document.createElement('link');pre1.rel='preconnect';pre1.href='https://fonts.googleapis.com';head.appendChild(pre1);
     const pre2=document.createElement('link');pre2.rel='preconnect';pre2.href='https://fonts.gstatic.com';pre2.crossOrigin='anonymous';head.appendChild(pre2);
-    const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/_shared/typography.css?v=20260812-1';type.dataset.xircleTypography='1';head.appendChild(type);
+    const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/_shared/typography.css?v=20260812-2';type.dataset.xircleTypography='1';head.appendChild(type);
   }
   if(head&&!document.querySelector('link[data-xircle-experience]')){
     const experience=document.createElement('link');
-    experience.rel='stylesheet';experience.href='/xircle/_shared/experience.css?v=20260812-1';experience.dataset.xircleExperience='1';
+    experience.rel='stylesheet';experience.href='/xircle/_shared/experience.css?v=20260812-2';experience.dataset.xircleExperience='1';
     head.appendChild(experience);
   }
 
@@ -316,7 +316,7 @@
       deviceScreens[activeScreen].classList.remove('is-active');
       activeScreen=(activeScreen+1)%deviceScreens.length;
       deviceScreens[activeScreen].classList.add('is-active');
-    },3600);
+    },5600);
   }
 
   const p=document.querySelector('.progress');
