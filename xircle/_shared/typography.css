@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+:root{
+  --x-font-display:"IBM Plex Sans Thai","Noto Sans Thai",sans-serif;
+  --x-font-body:"IBM Plex Sans Thai","Noto Sans Thai",sans-serif;
+  --x-font-ui:"Manrope","IBM Plex Sans Thai","Noto Sans Thai",sans-serif;
+}
+
+html body{
+  font-family:var(--x-font-body);
+  font-weight:400;
+  font-kerning:normal;
+  font-feature-settings:"kern" 1,"liga" 1;
+  text-rendering:optimizeLegibility;
+}
+
+/* Product/editorial display typography */
+html body .display,
+html body .quote,
+html body .next h2,
+html body .section-head h2,
+html body .hero h1,
+html body .homecopy h1,
+html body .agehome h2,
+html body .circlehome h2,
+html body .carehome h2,
+html body .routinehome h2{
+  font-family:var(--x-font-display);
+  font-weight:600;
+  letter-spacing:-.036em;
+  line-height:.98;
+  font-synthesis:none;
+}
+
+/* Home hero: keep Xircle itself sharp, Thai subline more breathable */
+html body .homecopy h1{
+  font-family:var(--x-font-ui);
+  font-weight:700;
+  letter-spacing:-.062em;
+  line-height:.82;
+}
+html body .homecopy h1 span{
+  font-family:var(--x-font-display);
+  font-weight:600;
+  letter-spacing:-.028em;
+  line-height:1.12;
+}
+
+/* Section/card headings */
+html body .card h3,
+html body .panel h3,
+html body .route h3,
+html body .abc h3,
+html body .device h3,
+html body .routine-detail h3,
+html body .callout b,
+html body .row strong,
+html body .xv-step strong,
+html body .final-card h3,
+html body .score-message h4{
+  font-family:var(--x-font-display);
+  font-weight:600;
+  letter-spacing:-.026em;
+  line-height:1.16;
+}
+
+/* Body copy: lighter, calmer rhythm */
+html body .lead{
+  font-family:var(--x-font-body);
+  font-weight:400;
+  letter-spacing:-.014em;
+  line-height:1.52;
+}
+html body .copy,
+html body .card p,
+html body .panel p,
+html body .row span,
+html body .callout p,
+html body .next p,
+html body .route p,
+html body .abc p,
+html body .device p,
+html body .xv-step span,
+html body .final-card p{
+  font-family:var(--x-font-body);
+  font-weight:400;
+  letter-spacing:-.006em;
+}
+
+/* UI / labels / navigation */
+html body .brand,
+html body .navlinks,
+html body .eyebrow,
+html body .kicker,
+html body .num,
+html body .btn,
+html body .tab,
+html body .subnav,
+html body .pill,
+html body .chip,
+html body .float,
+html body .screenhead,
+html body .screen-head,
+html body .triplet,
+html body .moment-text small,
+html body .mt small,
+html body .metric small,
+html body .fine,
+html body .disclaimer,
+html body .product-chip span{
+  font-family:var(--x-font-ui);
+}
+
+html body .brand{
+  font-weight:800;
+  letter-spacing:.20em;
+}
+html body .eyebrow,
+html body .kicker,
+html body .num{
+  font-weight:700;
+  letter-spacing:.14em;
+}
+html body .navlinks,
+html body .btn,
+html body .tab,
+html body .subnav a{
+  font-weight:600;
+  letter-spacing:-.01em;
+}
+
+/* Metrics and numerals */
+html body .metric strong,
+html body .age strong,
+html body .ring b,
+html body .habit-ring b,
+html body .score-circle strong,
+html body .mini-score b,
+html body .week-label,
+html body .band-face b,
+html body .abc-letter{
+  font-family:var(--x-font-ui);
+  font-variant-numeric:tabular-nums lining-nums;
+  font-weight:700;
+  letter-spacing:-.05em;
+}
+
+/* Small English product names stay crisp */
+html body .node b,
+html body .product-chip b,
+html body .pillar-card b,
+html body .screen-section-top b,
+html body .habit-top b{
+  font-family:var(--x-font-ui);
+  font-weight:700;
+}
+
+/* Thai tone marks need breathing room; don't over-tighten on small screens */
+@media(max-width:620px){
+  html body .display,
+  html body .quote,
+  html body .next h2,
+  html body .section-head h2,
+  html body .hero h1{
+    letter-spacing:-.027em;
+    line-height:1.01;
+  }
+  html body .homecopy h1{letter-spacing:-.05em;line-height:.86}
+  html body .homecopy h1 span{letter-spacing:-.018em;line-height:1.16}
+  html body .lead{line-height:1.58}
+}
