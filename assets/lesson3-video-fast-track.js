@@ -5,9 +5,9 @@
 'use strict';
 if(!/\/classroom\/clip-ai\.html$/.test(location.pathname)) return;
 
-const VIDEO_SOURCE_PROMPT=`ใช้ Source .md และภาพจากบท 2 ที่แนบเป็นวัตถุดิบ แล้วสร้าง Source ใหม่สำหรับวิดีโอเล่าเรื่องชีวิตเจ้าของบัญชี ความยาว 10 วินาที อัตราส่วนแนวตั้ง 9:16
+const VIDEO_SOURCE_PROMPT=`ใช้ Source .md ที่แนบเป็นวัตถุดิบ แล้วสร้าง Source ใหม่สำหรับวิดีโอเล่าเรื่องชีวิตเจ้าของบัญชี ความยาว 10 วินาที อัตราส่วนแนวตั้ง 9:16
 
-ใช้เฉพาะข้อเท็จจริงจาก Source เดิม และใช้ภาพที่แนบเป็นทิศทางด้านบุคคล สี ฉาก และบรรยากาศ ห้ามแต่งประวัติ ความสำเร็จ หรือเหตุการณ์ใหม่
+ใช้เฉพาะข้อเท็จจริงจาก Source ที่แนบ ห้ามแต่งประวัติ ความสำเร็จ หรือเหตุการณ์ใหม่
 
 สร้างไฟล์ชื่อ life-video-source.md ให้ครบตามหัวข้อนี้:
 # Life Video Source — 10 Seconds
@@ -18,7 +18,6 @@ const VIDEO_SOURCE_PROMPT=`ใช้ Source .md และภาพจากบ�
 
 ## ข้อเท็จจริงของเจ้าของเรื่อง
 ## Message เดียวที่คนดูควรรู้สึกได้
-## ภาพอ้างอิงที่แนบและรายละเอียดที่ต้องรักษา
 ## Visual Direction — สี แสง อารมณ์ ฉาก และสไตล์
 ## ลำดับภาพ 10 วินาที
 - 0–3 วินาที: จุดเริ่มต้นหรือตัวตน
@@ -148,9 +147,9 @@ function injectStyle(){
     .video-done input{width:18px;height:18px;margin-top:2px;accent-color:rgb(var(--green));flex:none}
     .video-example{margin-top:15px;padding:18px;border:1px solid rgb(var(--ink)/.1);border-radius:17px;background:rgb(var(--paper)/.55)}
     .video-example>h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;color:rgb(var(--deep))}.video-example>p{margin-top:4px;color:rgb(var(--muted));font-size:14px!important}
-    .video-example__grid{display:grid;grid-template-columns:minmax(280px,1.05fr) 1fr;gap:18px;align-items:center;margin-top:14px}
+    .video-example__grid{display:grid;grid-template-columns:minmax(220px,320px) 1fr;gap:18px;align-items:center;margin-top:14px}
     .video-example__media{overflow:hidden;margin:0;border:1px solid rgb(var(--ink)/.12);border-radius:15px;background:#fff}
-    .video-example video{display:block;width:100%;aspect-ratio:16/9;background:#07180f;object-fit:contain}
+    .video-example video{display:block;width:100%;aspect-ratio:9/16;max-height:570px;background:#07180f;object-fit:contain}
     .video-example figcaption{padding:13px 14px}.video-example figcaption b{display:block;font-family:"Bai Jamjuree",sans-serif;color:rgb(var(--deep));font-size:15px}.video-example figcaption span{display:block;margin-top:3px;color:rgb(var(--muted));font-size:13px;line-height:1.65}
     .video-example__note{padding:17px;border:1px solid rgb(var(--gold)/.3);border-radius:15px;background:rgb(var(--gold)/.075)}
     .video-example__note h3{font-family:"Bai Jamjuree",sans-serif;font-size:18px;color:#6c4c13}.video-example__note>p{margin-top:5px;color:rgb(var(--muted));font-size:14px!important}
@@ -200,12 +199,12 @@ function buildFastTrack(){
       <div class="video-fast__intro"><b>เป้าหมายเดียวของบทนี้: กดสร้างแล้วได้วิดีโอ 1 ชิ้น</b><p>ซอสที่ดีต้องบอกบริบทและวิธีทำงานแทนเราได้ จึงไม่ต้องแบกคำอธิบายยาว ๆ ไปไว้ในคำสั่งสุดท้าย</p></div>
       <div class="video-fast__why"><div><b>ไม่ต้องถ่าย</b><p>ใช้ภาพจากบท 2 เป็นวัตถุดิบทางภาพได้เลย</p></div><div><b>ไม่ต้องเขียนบท</b><p>เรื่องราวและลำดับ 10 วินาทีอยู่ในซอสวิดีโอ</p></div><div><b>ไม่ต้องจำ Prompt</b><p>คำสั่งสุดท้ายมีเพียงหนึ่งบรรทัด</p></div></div>
       <div class="video-fast__steps">
-        <article class="video-step"><span class="video-step__num">1</span><div><h3>ทำซอสวิดีโอ .md</h3><p>นำข้อมูลดิบสองอย่างจากบทก่อนมาแนบในแชทที่อ่านไฟล์ได้ แล้วใช้ Prompt นี้สร้างซอสใหม่สำหรับวิดีโอโดยเฉพาะ</p><div class="video-ingredients"><span>🧴 ซอส .md</span><span>🖼️ ภาพจากบท 2</span><span>⏱️ 10 วินาที</span><span>📱 9:16</span></div><div class="video-sauce-alert"><strong>ห้ามลืมแนบซอส</strong><span>แนบซอส .md พร้อมภาพจากบท 2 ให้ครบก่อนวาง Prompt ไม่อย่างนั้นระบบจะไม่มีข้อมูลชีวิตเจ้าของบัญชีสำหรับทำวิดีโอ</span></div><div class="prompt" data-video-prompt="source" data-prompt-collapse></div></div></article>
-        <article class="video-step"><span class="video-step__num">2</span><div><h3>เปิดแชทใหม่ที่สร้างวิดีโอได้</h3><p>แนบไฟล์ <b>life-video-source.md</b> ที่ได้จากข้อ 1 แล้ววางคำสั่งสั้น ๆ นี้ รายละเอียดทุกอย่างอยู่ในซอสแล้ว</p><div class="prompt" data-video-prompt="generate" data-prompt-guard="off"></div><div class="video-short"><b>ทำไมสั้นได้</b><p>เพราะซอสระบุเรื่องราว ลำดับภาพ 10 วินาที สัดส่วน 9:16 การเคลื่อนไหว และข้อห้ามไว้ครบแล้ว</p></div></div></article>
+        <article class="video-step"><span class="video-step__num">1</span><div><h3>ทำซอสวิดีโอ .md</h3><p>แนบซอส .md ที่มีข้อมูลชีวิต แล้วใช้ Prompt นี้สร้างซอสใหม่สำหรับวิดีโอโดยเฉพาะ</p><div class="video-ingredients"><span>🧴 ซอส .md</span><span>⏱️ 10 วินาที</span><span>📱 9:16</span></div><div class="video-sauce-alert"><strong>ห้ามลืมแนบซอส</strong><span>ขั้นนี้แนบเฉพาะซอส .md ก่อนวาง Prompt เพื่อให้ระบบนำข้อมูลชีวิตไปทำไฟล์ซอสวิดีโอ</span></div><div class="prompt" data-video-prompt="source" data-prompt-collapse></div></div></article>
+        <article class="video-step"><span class="video-step__num">2</span><div><h3>เปิดแชทใหม่ที่สร้างวิดีโอได้</h3><p>แนบวัตถุดิบ <b>2 อย่างให้ครบ</b> แล้ววางคำสั่งสั้นด้านล่าง รายละเอียดการเล่าเรื่องอยู่ในซอส ส่วนภาพใช้กำหนดหน้าตาและบรรยากาศ</p><div class="video-ingredients"><span>🧴 life-video-source.md จากข้อ 1</span><span>🖼️ ภาพที่สร้างจากบท 2</span></div><div class="prompt" data-video-prompt="generate" data-prompt-guard="off"></div><div class="video-short"><b>ทำไมสั้นได้</b><p>เพราะซอสระบุเรื่องราว ลำดับภาพ 10 วินาที สัดส่วน 9:16 การเคลื่อนไหว และข้อห้ามไว้ครบแล้ว</p></div></div></article>
         <article class="video-step"><span class="video-step__num">3</span><div><h3>กดสร้าง แล้วเช็กว่าเล่นได้จริง</h3><p>จบบทเมื่อมีไฟล์วิดีโอที่เปิดดูได้ ไม่ต้องพากย์ ไม่ต้องตัดต่อ และไม่ต้องถ่ายเพิ่ม</p><div class="video-done"><label><input type="checkbox"><span>เปิดเล่นเป็นวิดีโอได้จริง</span></label><label><input type="checkbox"><span>ความยาวไม่เกิน 10 วินาที</span></label><label><input type="checkbox"><span>เป็นภาพแนวตั้ง 9:16</span></label><label><input type="checkbox"><span>ดูแล้วเชื่อมโยงกับเรื่องชีวิตเจ้าของบัญชีได้</span></label></div></div></article>
       </div>
       <section class="video-example" aria-labelledby="lesson3VideoExampleTitle">
-        <h2 id="lesson3VideoExampleTitle">ตัวอย่างผลลัพธ์จากซอส</h2><p>รูปแบบเดียวกับตัวอย่างภาพในบท 2: ดูผลงานจริงก่อน แล้วค่อยชิมว่าซอสเล่าเรื่องได้ตรงแค่ไหน ส่วนงานของคุณให้ตั้งเป็นแนวตั้ง 9:16 ตามเช็กลิสต์</p>
+        <h2 id="lesson3VideoExampleTitle">ตัวอย่างผลลัพธ์จากซอส</h2><p>รูปแบบเดียวกับตัวอย่างภาพในบท 2: ดูผลงานจริงแนวตั้ง 9:16 ก่อน แล้วค่อยชิมว่าซอสเล่าเรื่องได้ตรงแค่ไหน</p>
         <div class="video-example__grid">
           <figure class="video-example__media"><video controls playsinline preload="metadata" data-video-example aria-label="วิดีโอตัวอย่างบทที่ 3"></video><figcaption><b>🎬 วิดีโอที่สร้างจากซอส</b><span>กดเล่นเพื่อดูแนวทางการเล่าเรื่องและคุณภาพผลลัพธ์ก่อนทำของตัวเอง</span></figcaption></figure>
           <div class="video-example__note"><h3>Video AI ยังผิดพลาดและมีความสุ่ม</h3><p>ภาพ คน วัตถุ หรือการเคลื่อนไหวอาจเพี้ยนได้ แม้ซอสจะชัดเจนแล้วก็ตาม ถ้าผลยังไม่ถูกใจ ให้แก้แบบนี้</p><ol><li><b>ยังไม่ใกล้เลย:</b> ลองสร้างใหม่จากซอสเดิมก่อน ผลรอบใหม่อาจต่างจากเดิมมาก</li><li><b>ใกล้แล้ว:</b> บอกจุดที่อยากแก้ทีละนิดด้วยภาษาพูด เช่น “คงทุกอย่างไว้ แก้เฉพาะมือขวาให้เป็นธรรมชาติ”</li><li><b>แก้ทีละเรื่อง:</b> อย่ารวมหลายจุดไว้ในครั้งเดียว เพราะส่วนที่ดีอยู่แล้วอาจเปลี่ยนตาม</li></ol><p class="video-example__luck">คำสั่งเหมือนกันก็อาจได้ผลไม่เหมือนกัน — ดวงมีผล เผื่อเวลาลอง 2–3 รอบ</p></div>
@@ -234,7 +233,7 @@ function patchQuest(){
   setText(quest.querySelector('h2'),'🎯 เควสท้ายบท · สร้างวิดีโอจากซอสให้ได้ 1 ชิ้น');
   setText(quest.querySelector(':scope > p'),'ไม่ต้องถ่าย ไม่ต้องพากย์ และไม่ต้องตัดต่อ จบบทเมื่อวิดีโอแนวตั้ง 9:16 ความยาวไม่เกิน 10 วินาทีเปิดเล่นได้จริง');
   const list=quest.querySelector('ol');
-  if(list)list.innerHTML='<li>แนบซอส .md และภาพจากบท 2</li><li>ใช้ Prompt สร้างไฟล์ life-video-source.md</li><li>เปิดแชทใหม่ที่สร้างวิดีโอได้ แล้วแนบซอสวิดีโอ</li><li>วางคำสั่งสั้นจากข้อ 2 แล้วกดสร้าง</li><li>เช็กว่าไฟล์เล่นได้จริง ไม่เกิน 10 วินาที และเป็นแนวตั้ง 9:16</li>';
+  if(list)list.innerHTML='<li>แนบซอส .md แล้วใช้ Prompt สร้างไฟล์ life-video-source.md</li><li>เปิดแชทใหม่ที่สร้างวิดีโอได้ แล้วแนบ life-video-source.md พร้อมภาพที่สร้างจากบท 2</li><li>วางคำสั่งสั้นจากข้อ 2 แล้วกดสร้าง</li><li>เช็กว่าไฟล์เล่นได้จริง ไม่เกิน 10 วินาที และเป็นแนวตั้ง 9:16</li>';
   setText(quest.querySelector('.finish'),'ฉันมีวิดีโอจากซอสแล้ว');
   setText(quest.querySelector('.achievement'),'🍽️ COOK PASSED · ซอสสร้างวิดีโอได้จริง');
 }
