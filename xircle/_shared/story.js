@@ -3,11 +3,11 @@
   if(head&&!document.querySelector('link[data-xircle-typography]')){
     const pre1=document.createElement('link');pre1.rel='preconnect';pre1.href='https://fonts.googleapis.com';head.appendChild(pre1);
     const pre2=document.createElement('link');pre2.rel='preconnect';pre2.href='https://fonts.gstatic.com';pre2.crossOrigin='anonymous';head.appendChild(pre2);
-    const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/_shared/typography.css?v=20260811-2';type.dataset.xircleTypography='1';head.appendChild(type);
+    const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/_shared/typography.css?v=20260812-1';type.dataset.xircleTypography='1';head.appendChild(type);
   }
   if(head&&!document.querySelector('link[data-xircle-experience]')){
     const experience=document.createElement('link');
-    experience.rel='stylesheet';experience.href='/xircle/_shared/experience.css?v=20260811-1';experience.dataset.xircleExperience='1';
+    experience.rel='stylesheet';experience.href='/xircle/_shared/experience.css?v=20260812-1';experience.dataset.xircleExperience='1';
     head.appendChild(experience);
   }
 
@@ -59,12 +59,25 @@
     commerceMentor:'/xircle/assets/source/commerce/direct-mentoring-1199.webp',
     commerceAgency:'/xircle/assets/source/commerce/agency-management-1199.webp',
     commerceExpand:'/xircle/assets/source/commerce/franchise-expansion-1199.webp',
-    commerceRevenue:'/xircle/assets/source/commerce/income-stacking-1199.webp'
+    commerceRevenue:'/xircle/assets/source/commerce/income-stacking-1199.webp',
+    manualCover:'/xircle/assets/source/xircle-app-manual-cover.webp',
+    certificationCover:'/xircle/assets/source/xvisor-certification-cover.webp',
+    storyMorning:'/xircle/assets/generated/story-v2/morning-1600.webp',
+    storyEat:'/xircle/assets/generated/story-v2/eat-1600.webp',
+    storyMove:'/xircle/assets/generated/story-v2/move-1600.webp',
+    storySleep:'/xircle/assets/generated/story-v2/sleep-1600.webp',
+    storyXvisor:'/xircle/assets/generated/story-v2/xvisor-1600.webp',
+    storyCommunity:'/xircle/assets/generated/story-v2/community-1600.webp',
+    storyNutrition:'/xircle/assets/generated/story-v2/nutrition-1600.webp',
+    storyXos:'/xircle/assets/generated/story-v2/xos-1600.webp',
+    storySource:'/xircle/assets/generated/story-v2/source-1600.webp',
+    dataRibbons:'/xircle/assets/generated/story-v2/data-ribbons.png'
   };
 
   const responsiveSrc=(src)=>{
     if(src.includes('-1063.webp'))return src.replace('-1063.webp','-640.webp')+' 640w, '+src+' 1063w';
     if(src.includes('-1199.webp'))return src.replace('-1199.webp','-720.webp')+' 720w, '+src+' 1199w';
+    if(src.includes('-1600.webp'))return src.replace('-1600.webp','-960.webp')+' 960w, '+src+' 1600w';
     if(src.endsWith('.webp')&&!/-(430|470|500|520|650)\.webp$/.test(src))return src.replace('.webp','-640.webp')+' 640w, '+src+' 960w';
     return '';
   };
@@ -110,7 +123,9 @@
   };
 
   const path=(location.pathname.replace(/\/+$/,'')||'/');
+  let currentSource=assets.hero;
   if(path==='/xircle'){
+    currentSource=assets.dashboard;
     replace(document.querySelector('.homehero .stage'),assets.hero,'Xircle app and Habit Score experience');
     after(document.querySelector('#habit .section-head'),assets.habit,'Habit Score with Eat Move and Sleep');
     after(document.querySelector('#hardware .section-head'),assets.hardware,'Xircle Band and Scale ecosystem');
@@ -119,6 +134,7 @@
     replace(document.querySelector('.circlehome .people'),assets.community,'Xircle community and supportive circle');
     after(document.querySelector('#routine .section-head'),assets.routine,'RoutineX day journey');
   }else if(path==='/xircle/habix'||path==='/xircle/habix/fives'||path==='/xircle/habix/flavor'){
+    currentSource=assets.routineBox;
     productGrid(heroHost());
   }else{
     const map={
@@ -168,6 +184,7 @@
     };
     const item=map[path];
     if(item){
+      currentSource=item[0];
       const host=heroHost();
       if(host)replace(host,item[0],item[1],item[2]);
       else{
@@ -175,6 +192,52 @@
         if(anchor)after(anchor,item[0],item[1],item[2]);
       }
     }
+  }
+
+  if(path.startsWith('/xircle/source'))currentSource=assets.manualCover;
+  if(path.startsWith('/xircle/academy'))currentSource=assets.certificationCover;
+
+  const cinemaProfile=(()=>{
+    const common={
+      image:assets.storyMorning,
+      kicker:'LIFE IS THE SOURCE',
+      title:'ใช้ชีวิตให้เห็น แล้วค่อยเลือกสิ่งที่จะปรับ',
+      copy:'Xircle ทำให้สิ่งที่เกิดจริงในแต่ละวันกลับมาเป็นภาพที่อ่านง่าย เพื่อให้การเริ่มต้นไม่ต้องอาศัยการเดา',
+      proof:'CANONICAL PRODUCT VIEW'
+    };
+    if(path==='/xircle/app/eat')return {...common,image:assets.storyEat,kicker:'EAT · CAPTURE THE MOMENT',title:'อาหารมื้อนี้ ไม่ต้องหายไปจากความจำ',copy:'บันทึกสิ่งที่กิน แล้วให้ข้อมูลช่วยเล่าว่าวันนี้ยังเหลือพื้นที่ให้ปรับตรงไหน โดยไม่เปลี่ยนอาหารให้เป็นคำตัดสิน',proof:'TODAY\'S METABOLIC BALANCE'};
+    if(path==='/xircle/app/move')return {...common,image:assets.storyMove,kicker:'MOVE · EVERYDAY COUNTS',title:'ทุกการขยับ มีโอกาสกลับมาเป็นภาพที่เข้าใจได้',copy:'Steps, Workout และ Heart Rate Zone ช่วยให้การเคลื่อนไหวทั้งวันไม่ถูกลดเหลือแค่คำว่าออกกำลังกายหรือไม่ได้ออก',proof:'MOVE SOURCE VIEW'};
+    if(path==='/xircle/app/sleep')return {...common,image:assets.storySleep,kicker:'SLEEP · RECOVERY IN CONTEXT',title:'Recovery ไม่ใช่ความรู้สึกอย่างเดียว',copy:'Duration, Consistency, HRV และ RHR มีไว้ช่วยอ่าน pattern ของการฟื้นตัว ไม่ใช่ใช้ตัดสินว่าคืนไหนคุณเก่งหรือพลาด',proof:'RECOVERY SOURCE VIEW'};
+    if(path==='/xircle/app/community')return {...common,image:assets.storyCommunity,kicker:'YOUR XIRCLE',title:'สุขภาพของคุณ ขึ้นอยู่กับวงที่คุณอยู่',copy:'ข้อมูลช่วยให้เห็น แต่คนรอบตัวช่วยให้สิ่งใหม่มีโอกาสเกิดซ้ำในชีวิตจริง',proof:'COMMUNITY SOURCE VIEW'};
+    if(path==='/xircle/ecosystem')return {...common,image:assets.storyCommunity,kicker:'CLOVERX ECOSYSTEM',title:'วัด · เติม · ทำซ้ำ · ดูแล · ทำให้เป็นระบบ',copy:'แต่ละชิ้นมีหน้าที่ต่างกัน และมีคุณค่ามากขึ้นเมื่อทำงานเป็นเส้นทางเดียวกัน',proof:'ECOSYSTEM SOURCE VIEW'};
+    if(path.startsWith('/xircle/habix')||path.startsWith('/xircle/routinex'))return {...common,image:assets.storyNutrition,kicker:'NUTRITION · DAILY ROUTINE',title:'ความรู้จะมีค่า เมื่อกลายเป็นสิ่งที่ทำซ้ำได้',copy:'Habix คือ Nutrition Layer ส่วน RoutineX คือระบบกิจวัตร ภาพและข้อความผลิตภัณฑ์ยึดข้อมูลจริง โดยไม่สร้าง claim จากบรรยากาศของภาพ',proof:'APPROVED SOURCE VISUAL'};
+    if(path.startsWith('/xircle/xvisor'))return {...common,image:assets.storyXvisor,kicker:'HUMAN CARE',title:'ข้อมูลบอกว่าอะไรเกิดขึ้น คนช่วยคิดว่าจะทำอะไรต่อ',copy:'X-VISOR เริ่มจากการฟัง อ่านบริบท และช่วยเลือกการปรับทีละอย่าง โดยไม่วินิจฉัยหรือทำหน้าที่แทนผู้เชี่ยวชาญสุขภาพ',proof:'CARE SOURCE VIEW'};
+    if(path.startsWith('/xircle/xos'))return {...common,image:assets.storyXos,kicker:'XIRCLE OPERATING SYSTEM',title:'ดูแลคนได้ต่อเนื่อง โดยไม่ต้องพึ่งความจำของใครคนเดียว',copy:'Mission, Customers, Team และ Learning ถูกจัดให้เป็นงานที่เห็นสถานะ ทำซ้ำ และส่งต่อกันได้',proof:'XOS SOURCE VIEW'};
+    if(path.startsWith('/xircle/commerce'))return {...common,image:assets.storyXos,kicker:'X-COMMERCE · INTERNAL',title:'รายได้เกิดจากคุณค่าหลายมิติ ไม่ใช่คำสัญญาทางลัด',copy:'กลไก รายได้ และ qualification ในโซนนี้เป็นข้อมูลภายในที่ต้องตรวจประกาศล่าสุดก่อนนำไปใช้จริงทุกครั้ง',proof:'VERIFY CURRENT PLAN'};
+    if(path.startsWith('/xircle/source')||path.startsWith('/xircle/academy'))return {...common,image:assets.storySource,kicker:path.startsWith('/xircle/source')?'SOURCE CONTROL':'ACADEMY',title:'ข้อได้เปรียบของทีม คือใช้ Source เดียวกันแล้วสร้างต่อได้เร็ว',copy:'Canon, conflict, status และขอบเขตการใช้ข้อมูลถูกวางให้ตรวจย้อนกลับได้ ก่อนเปลี่ยนความรู้เป็นงานที่คนอื่นใช้ต่อ',proof:'MEMBER KNOWLEDGE SOURCE'};
+    if(path==='/xircle')return {...common,image:assets.storyMorning,kicker:'ONE REAL DAY',title:'อยากเปลี่ยนสุขภาพ ต้องเริ่มจากการเห็นชีวิตจริง',copy:'กิน ขยับ นอน วัด และกลับมาดูทิศทางของตัวเองทีละวัน นี่คือประสบการณ์ที่ Xircle ถูกออกแบบมาให้คนอยากกลับมาใช้',proof:'XIRCLE APP SOURCE VIEW'};
+    return common;
+  })();
+
+  const heroSection=document.querySelector('main > .x-hero,main > .hero');
+  if(heroSection&&!document.querySelector('.x-cinema')){
+    const detailStart=heroSection.nextElementSibling;
+    if(detailStart&&!detailStart.id)detailStart.id='x-detail-start';
+    const detailHref=detailStart?.id?'#'+detailStart.id:'#top';
+    const cinema=document.createElement('section');
+    cinema.className='x-cinema';
+    cinema.setAttribute('aria-label',cinemaProfile.kicker);
+    const sourceSet=responsiveSrc(cinemaProfile.image);
+    const sourceSetAttr=sourceSet?` srcset="${sourceSet}" sizes="100vw"`:'';
+    cinema.innerHTML=`<div class="x-cinema-stage"><img class="x-cinema-photo" src="${cinemaProfile.image}"${sourceSetAttr} alt="" loading="lazy" decoding="async" data-parallax="-0.012"><div class="x-cinema-shade"></div><img class="x-cinema-ribbons" src="${assets.dataRibbons}" alt="" aria-hidden="true" loading="lazy" decoding="async" data-parallax="-0.045"><div class="x-cinema-copy reveal"><div class="x-cinema-kicker">${cinemaProfile.kicker}</div><h2>${cinemaProfile.title}</h2><p>${cinemaProfile.copy}</p><a href="${detailHref}">ดูว่าระบบทำงานอย่างไร <span>↓</span></a></div><figure class="x-cinema-proof reveal"><img src="${currentSource}" alt="${cinemaProfile.proof}" loading="lazy" decoding="async"><figcaption><span>SOURCE-CORRECT</span>${cinemaProfile.proof}</figcaption></figure></div>`;
+    heroSection.insertAdjacentElement('afterend',cinema);
+  }
+
+  const deviceStage=document.querySelector('.x-device-stage');
+  if(deviceStage&&!deviceStage.querySelector('.x-device-ribbons')){
+    const ribbons=document.createElement('img');
+    ribbons.className='x-device-ribbons';ribbons.src=assets.dataRibbons;ribbons.alt='';ribbons.setAttribute('aria-hidden','true');ribbons.dataset.parallax='-0.05';
+    deviceStage.appendChild(ribbons);
   }
 
   const main=document.querySelector('main');
@@ -218,7 +281,7 @@
   if(main&&!document.querySelector('.x-source-footer')){
     const footer=document.createElement('footer');
     footer.className='x-source-footer';
-    footer.innerHTML=`<details><summary>Source & status <span>Reviewed 11 Aug 2026 · open details</span></summary><div class="x-source-body"><div><b>SOURCE SET</b>${sourceProfile.sources}</div><div><b>PAGE STATUS</b><span class="x-status-pill" data-status="${sourceProfile.status}">${sourceProfile.label}</span></div><div><b>BOUNDARY</b>${sourceProfile.note}</div></div></details>`;
+    footer.innerHTML=`<details><summary>Source & status <span>Reviewed 12 Aug 2026 · open details</span></summary><div class="x-source-body"><div><b>SOURCE SET</b>${sourceProfile.sources}</div><div><b>PAGE STATUS</b><span class="x-status-pill" data-status="${sourceProfile.status}">${sourceProfile.label}</span></div><div><b>BOUNDARY</b>${sourceProfile.note}</div></div></details>`;
     main.insertAdjacentElement('afterend',footer);
   }
 

@@ -133,3 +133,26 @@ No old 360/640 px wrapper was upscaled and presented as HQ. Assets were rebuilt 
 - AstaMega+ and Vita Matrix use claim-free generated ingredient atmosphere in production mapping. Raw brochure crops containing promotional claim copy remain reference-only and must not be wired into customer-facing routes.
 - Flavor+ dedicated final product photography remains unresolved; do not fabricate a canonical package until naming/artwork is confirmed.
 - Every critical image must be checked for: file existence, decoded dimensions, mobile crop, desktop crop, readable contrast, and graceful fallback before being marked production-ready.
+
+## 12 Aug 2026 — Cinematic story pass
+
+Nine new 16:9 generated story plates and one transparent parallax master were added under `assets/generated/story-v2/`:
+
+- `morning` — Xircle overview, Habit Score, Body, Hardware and MaxAge context
+- `eat` — real meal logging moment with no synthetic UI
+- `move` — attainable daily movement in a Thai urban setting
+- `sleep` — calm recovery context with no score judgment
+- `community` — a supportive circle without staged rally imagery
+- `nutrition` — claim-free Habix / RoutineX atmosphere with space for approved packs
+- `xvisor` — equal-level human care, explicitly non-medical and non-sales
+- `xos` — repeatable team operations with unreadable background screens
+- `source` — Academy / Source Control knowledge advantage
+- `data-ribbons.png` — transparent cyan/mint/gold parallax layer with no text, metric, icon or synthetic interface
+
+Each photographic master is delivered as a 1600 × 900 WebP plus a 960 × 540 responsive sibling. Generated images never carry canonical UI, package labels, metrics, compensation values or claims. Every cinematic chapter overlays a separate source-correct proof card from S1–S5 assets.
+
+The root hero no longer downloads the retired synthetic device cluster or perspective-mapped UI carousel. It uses the canonical Xircle v4.1 source visual plus the new transparent ribbon layer and HTML glass chips.
+
+Typography is now self-hosted under `assets/fonts/` with Thai and Latin WOFF2 subsets for IBM Plex Sans Thai plus Latin WOFF2 subsets for Manrope. This removes the Google Fonts runtime dependency and prevents Thai tofu/missing-glyph failures in restricted or slow network conditions.
+
+Visual QA after the pass covered all 45 routes at 320, 390, 768 and 1440 px. Browser checks confirmed: zero horizontal overflow, zero missing cinematic chapters, zero broken story/proof images, valid decoded responsive sources, readable 16 px body baseline and no runtime JavaScript errors.
