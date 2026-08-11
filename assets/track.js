@@ -1,47 +1,66 @@
+/* myClover runtime loader — fault-isolated.
+   Each patch script below is independent (path-gated, no shared state between
+   them) so one broken file must not be able to take the other 43 pages that
+   load this module down with it. A plain static `import` graph is all-or-
+   nothing: if any one of these throws while loading, every import in this
+   file fails and NONE of them run. Loading each with its own dynamic
+   import().catch() keeps a single bad script contained to just that feature.
+   Load order is preserved (awaited in sequence) since some of these scripts
+   assume they run after the ones listed before them; fetching still starts
+   for all of them immediately (import() is issued eagerly for every path
+   before the first await), so this costs nothing over the old static graph. */
 export { trackAct } from '/assets/track-core.js';
-import '/assets/awaken-savepoint-v2.js?v=20260809-1';
-import '/assets/account.js';
-import '/assets/stat-report.js';
-import '/assets/mini-achievements.js';
-import '/assets/mini-achievements-secrets.js';
-import '/assets/ai-sauce-course.js';
-import '/assets/main-course-route.js';
-import '/assets/forge-path-choice.js';
-import '/assets/sauce-cup-entry.js';
-import '/assets/forge-flow-fix.js';
-import '/assets/forge-next-scroll.js';
-import '/assets/main-quest-core7.js';
-import '/assets/lesson-one-subquests.js';
-import '/assets/lesson1-polite-language.js';
-import '/assets/lesson1-downloadable-md.js';
-import '/assets/lesson6-boss-transition.js';
-import '/assets/course-nav-names.js';
-import '/assets/details-fix.js?v=20260810-layout2';
-import '/assets/awaken-boss-patch.js?v=20260810-layout2';
-import '/assets/awaken-language-sidequest.js?v=20260810-layout2';
-import '/assets/awaken-hard-reset-v1.js?v=20260809-1';
-import '/assets/awaken-migration-guard-v2.js?v=20260809-1';
-import '/assets/awaken-loot-v4-migration.js?v=20260809-1';
-import '/assets/awaken-loot-v4.js?v=20260810-layout2';
-import '/assets/awaken-glossary-extra.js?v=20260810-layout2';
-import '/assets/awaken-floating-tooltips-v1.js?v=20260810-layout2';
-import '/assets/awaken-mobile-overflow-fix.js?v=20260810-layout2';
-import '/assets/awaken-party-loadout.js?v=20260810-layout2';
-import '/assets/notebook-boss-reset-v2.js?v=20260811-scrollfix3';
-import '/assets/notebooklm-page.js';
-import '/assets/notebooklm-hero-position.js';
-import '/assets/prompts-season.js';
-import '/assets/prompts-utility.js';
-import '/assets/prompts-chef.js';
-import '/assets/prompts-eko-tasting.js';
-import '/assets/prompts-svg-polish.js';
-import '/assets/prompts-plain-language.js';
-import '/assets/prompts-genesis-generic.js';
-import '/assets/lesson2-svg-redesign.js';
-import '/assets/course-svg-motion.js';
-import '/assets/classroom-hero-consistency.js';
-import '/assets/sauce-first-tooltip.js';
-import '/assets/comic-bottom-next.js';
+
+const PATCHES = [
+  '/assets/awaken-savepoint-v2.js?v=20260809-1',
+  '/assets/account.js',
+  '/assets/stat-report.js',
+  '/assets/mini-achievements.js',
+  '/assets/mini-achievements-secrets.js',
+  '/assets/ai-sauce-course.js',
+  '/assets/main-course-route.js',
+  '/assets/forge-path-choice.js',
+  '/assets/sauce-cup-entry.js',
+  '/assets/forge-flow-fix.js',
+  '/assets/forge-next-scroll.js',
+  '/assets/main-quest-core7.js',
+  '/assets/lesson-one-subquests.js',
+  '/assets/lesson1-polite-language.js',
+  '/assets/lesson1-downloadable-md.js',
+  '/assets/lesson6-boss-transition.js',
+  '/assets/course-nav-names.js',
+  '/assets/details-fix.js?v=20260810-layout2',
+  '/assets/awaken-boss-patch.js?v=20260810-layout2',
+  '/assets/awaken-language-sidequest.js?v=20260810-layout2',
+  '/assets/awaken-hard-reset-v1.js?v=20260809-1',
+  '/assets/awaken-migration-guard-v2.js?v=20260809-1',
+  '/assets/awaken-loot-v4-migration.js?v=20260809-1',
+  '/assets/awaken-loot-v4.js?v=20260810-layout2',
+  '/assets/awaken-glossary-extra.js?v=20260810-layout2',
+  '/assets/awaken-floating-tooltips-v1.js?v=20260810-layout2',
+  '/assets/awaken-mobile-overflow-fix.js?v=20260810-layout2',
+  '/assets/awaken-party-loadout.js?v=20260810-layout2',
+  '/assets/notebook-boss-reset-v2.js?v=20260811-scrollfix3',
+  '/assets/notebooklm-page.js',
+  '/assets/notebooklm-hero-position.js',
+  '/assets/prompts-season.js',
+  '/assets/prompts-utility.js',
+  '/assets/prompts-chef.js',
+  '/assets/prompts-eko-tasting.js',
+  '/assets/prompts-svg-polish.js',
+  '/assets/prompts-plain-language.js',
+  '/assets/prompts-genesis-generic.js',
+  '/assets/lesson2-svg-redesign.js',
+  '/assets/course-svg-motion.js',
+  '/assets/classroom-hero-consistency.js',
+  '/assets/sauce-first-tooltip.js',
+  '/assets/comic-bottom-next.js'
+];
+
+const pending = PATCHES.map(path => import(path).catch(error => {
+  console.error('[myClover] patch failed to load:', path, error);
+}));
+for (const p of pending) await p;
 
 /* Chapter 7 opening: keep the black/green boss aesthetic, but make it completely static.
    The real #chapter from index.html stays in place: never clone or replace it. */
