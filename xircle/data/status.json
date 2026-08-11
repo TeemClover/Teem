@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "last_reviewed": "2026-08-11",
+  "labels": {
+    "canon": {"label": "CANON", "symbol": "●", "description": "Current project standard."},
+    "internal": {"label": "INTERNAL", "symbol": "◆", "description": "Member/internal context. Do not reuse as public advertising copy."},
+    "building": {"label": "BUILDING", "symbol": "◌", "description": "Under construction preview."},
+    "provisional": {"label": "PROVISIONAL", "symbol": "△", "description": "Present in current source set but subject to confirmation/update."},
+    "conflict": {"label": "CONFLICT", "symbol": "!", "description": "Sources disagree. Keep both sides until resolved."},
+    "need_source": {"label": "NEED SOURCE", "symbol": "?", "description": "No sufficient source. Do not invent."},
+    "deprecated": {"label": "DEPRECATED", "symbol": "×", "description": "Old terminology; do not use as current canon."}
+  },
+  "global_notice": "XIRCLE BUILD ZONE · Under Construction · ข้อมูลบางส่วนเป็น Internal / Provisional และอาจเปลี่ยนเมื่อมี Core Data รุ่นใหม่"
+}
