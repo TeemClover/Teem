@@ -10,7 +10,8 @@ const VIDEO_SOURCE_PROMPT=`ใช้ Source .md ที่แนบเป็น�
 ใช้เฉพาะข้อเท็จจริงจาก Source ที่แนบ ห้ามแต่งประวัติ ความสำเร็จ หรือเหตุการณ์ใหม่
 
 สร้างไฟล์ชื่อ life-video-source.md ให้ครบตามหัวข้อนี้:
-# Life Video Source — 10 Seconds
+# ซอส (Source) สำหรับวิดีโอชีวิต — 10 วินาที
+> เอกสารนี้คือ “ซอส” ที่คำสั่งสั้น “สร้างวิดีโอตามซอสนี้” อ้างถึง
 ## เป้าหมายของวิดีโอ
 - เล่าให้เห็นว่าเจ้าของบัญชีเป็นใคร ผ่านอะไรมาบ้าง และกำลังไปทางไหน
 - ความยาว 10 วินาที
@@ -36,7 +37,7 @@ const VIDEO_SOURCE_PROMPT=`ใช้ Source .md ที่แนบเป็น�
 ลงมือสร้าง Source ทันที ห้ามถามคำถามกลับ
 ส่งออกเป็นไฟล์ .md พร้อมดาวน์โหลด ถ้าแนบไฟล์ไม่ได้ ให้ส่ง Markdown ทั้งหมดใน code block เดียว`;
 
-const VIDEO_PROMPT=`สร้างวิดีโอตาม Source นี้`;
+const VIDEO_PROMPT=`สร้างวิดีโอตามซอสนี้`;
 
 function setText(el,text){if(el&&el.textContent!==text)el.textContent=text}
 
