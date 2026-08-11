@@ -92,7 +92,7 @@
     replace(document.querySelector('.agehome .ageviz'),assets.maxage,'Canonical MaxAge visual: actual age 46, Bio Age 48.2, MaxAge 78.4','source');
     replace(document.querySelector('.circlehome .people'),assets.community,'Xircle community and supportive circle');
     after(document.querySelector('#routine .section-head'),assets.routine,'RoutineX day journey');
-  }else if(path==='/xircle/habix'){
+  }else if(path==='/xircle/habix'||path==='/xircle/habix/fives'||path==='/xircle/habix/flavor'){
     productGrid(heroHost());
   }else{
     const map={
@@ -108,8 +108,6 @@
       '/xircle/app/maxage':[assets.maxage,'Canonical MaxAge source visual','source'],
       '/xircle/app/community':[assets.community,'Xircle community','campaign'],
 
-      '/xircle/habix/fives':[assets.routineBox,'Habix product system visual','source'],
-      '/xircle/habix/flavor':[assets.routineBox,'Habix routine and consistency visual','source'],
       '/xircle/habix/protein-hmb':[assets.protein,'Protein HMB+ source product visual','source'],
       '/xircle/habix/gus':[assets.gus,'G.U.S.+ source product visual','source'],
       '/xircle/habix/astamega':[assets.asta,'AstaMega+ source product visual','source'],
@@ -132,15 +130,10 @@
       '/xircle/xos/customers':[assets.body,'XOS customer health-data view','source'],
       '/xircle/xos/team':[assets.community,'XOS team and community','campaign'],
       '/xircle/xos/learning':[assets.xvisor,'XOS learning and certification','source'],
-      '/xircle/xos/wealth':[assets.routineBox,'XOS service and business tools','source'],
+      '/xircle/xos/wealth':[assets.routineBox,'XOS service tools','source'],
 
       '/xircle/academy':[assets.xvisor,'X-VISOR Academy and learning','source'],
-      '/xircle/academy/certification':[assets.xvisor,'X-VISOR certification','source'],
-
-      '/xircle/commerce':[assets.routineBox,'X-Commerce operating model','source'],
-      '/xircle/commerce/roles':[assets.xvisor,'X-Commerce role development','source'],
-      '/xircle/commerce/revenue':[assets.routineBox,'X-Commerce revenue architecture','source'],
-      '/xircle/commerce/glossary':[assets.routineBox,'X-Commerce glossary and model','source']
+      '/xircle/academy/certification':[assets.xvisor,'X-VISOR certification','source']
     };
     const item=map[path];
     if(item){
