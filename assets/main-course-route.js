@@ -1,4 +1,5 @@
 import '/assets/course-thai-flow-route.js?v=20260811-split1';
+import '/assets/lesson2-life-poster.js?v=20260811-life1';
 
 /* AI ใส่ซอส · เส้นทางเข้าสู่บท 6 หลังเปลี่ยนเป็น Main Course */
 
