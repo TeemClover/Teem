@@ -12,6 +12,7 @@
 export { trackAct } from '/assets/track-core.js';
 
 const PATCHES = [
+  '/assets/guild-ui-fix.js?v=20260812-1',
   '/assets/awaken-savepoint-v2.js?v=20260809-1',
   '/assets/account.js',
   '/assets/stat-report.js',
