@@ -1,0 +1,163 @@
+name: Guild X canonical logo hotfix
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/guild-x-canonical-hotfix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  hotfix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Build canonical Guild X mark and patch page
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import re
+
+          root = Path('guild')
+          assets = root / 'assets'
+          index = root / 'index.html'
+
+          required = [
+              assets / 'petal-red.png',
+              assets / 'petal-green.png',
+              assets / 'petal-blue.png',
+              assets / 'petal-silver.png',
+              assets / 'x-gold.png',
+          ]
+          missing = [str(p) for p in required if not p.exists()]
+          if missing:
+              raise SystemExit('Missing Guild X source assets: ' + ', '.join(missing))
+
+          # Canonical Guild X logo rule:
+          # one four-path Clover, one large gold X integrated in front.
+          petals = [Image.open(p).convert('RGBA') for p in required[:4]]
+          W = max(im.width for im in petals)
+          H = max(im.height for im in petals)
+          canvas = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+          for im in petals:
+              if im.size != canvas.size:
+                  layer = Image.new('RGBA', canvas.size, (0,0,0,0))
+                  layer.alpha_composite(im, ((W-im.width)//2, (H-im.height)//2))
+                  canvas.alpha_composite(layer)
+              else:
+                  canvas.alpha_composite(im)
+
+          x = Image.open(assets / 'x-gold.png').convert('RGBA')
+          bbox = x.getchannel('A').getbbox()
+          if bbox:
+              x = x.crop(bbox)
+          target = int(min(W, H) * 0.68)
+          scale = min(target / x.width, target / x.height)
+          x = x.resize((max(1, int(x.width*scale)), max(1, int(x.height*scale))), Image.Resampling.LANCZOS)
+          canvas.alpha_composite(x, ((W-x.width)//2, (H-x.height)//2))
+
+          # Crop transparent margins, keep breathing room, and create web/UI derivatives.
+          bbox = canvas.getchannel('A').getbbox()
+          if bbox:
+              l,t,r,b = bbox
+              pad = int(max(r-l, b-t) * .035)
+              l=max(0,l-pad); t=max(0,t-pad); r=min(W,r+pad); b=min(H,b+pad)
+              canvas = canvas.crop((l,t,r,b))
+          side = max(canvas.size)
+          square = Image.new('RGBA',(side,side),(0,0,0,0))
+          square.alpha_composite(canvas, ((side-canvas.width)//2,(side-canvas.height)//2))
+          mark = square.resize((1024,1024), Image.Resampling.LANCZOS)
+          mark.save(assets / 'guild-x-mark.png', 'PNG', optimize=True, compress_level=9)
+          mark.resize((192,192), Image.Resampling.LANCZOS).save(assets / 'guild-x-mark-ui.png','PNG',optimize=True,compress_level=9)
+
+          html = index.read_text('utf-8')
+
+          # All Guild assets use an absolute site path, so /guild, /guild/ and index.html behave the same.
+          html = html.replace('src="assets/', 'src="/guild/assets/')
+          html = html.replace('href="assets/', 'href="/guild/assets/')
+
+          # Replace old heavy hero preloads with one canonical mark preload.
+          html = re.sub(r'<link\s+rel="preload"\s+as="image"\s+href="(?:/guild/)?assets/[^"]+"\s*>\s*', '', html)
+          if '/guild/assets/guild-x-mark.png' not in html.split('<style>',1)[0]:
+              html = html.replace('<style>', '<link rel="preload" as="image" href="/guild/assets/guild-x-mark.png" fetchpriority="high">\n<style>', 1)
+
+          # OG shares the real Guild X identity too.
+          html = re.sub(r'<meta\s+property="og:image"\s+content="[^"]*"\s*>', '<meta property="og:image" content="/guild/assets/guild-x-mark.png">', html)
+
+          # Remove the old hero logo stack. Those layers were making Clover-on-Clover / tiny-X artifacts.
+          html = re.sub(r'<img\s+class="(?:ring|xenergy|xgold|crest|hero-petal\s+(?:pr|pg|pb|ps))"[^>]*>\s*', '', html)
+
+          override = r'''
+/* === Guild X canonical identity hotfix === */
+.brandmark{width:42px!important;height:42px!important;flex:0 0 42px}
+.brandmark img{display:none!important}
+.brandmark::before{content:"";position:absolute;inset:0;background:url('/guild/assets/guild-x-mark-ui.png') center/contain no-repeat;filter:drop-shadow(0 5px 12px rgba(0,0,0,.38)) drop-shadow(0 0 9px rgba(82,237,154,.13))}
+.orbital{isolation:isolate}
+.orbital::before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(91,239,154,.17),rgba(23,91,55,.06) 42%,transparent 70%);filter:blur(26px);animation:guildAura 5.2s ease-in-out infinite}
+.orbital::after{content:"";position:absolute;z-index:8;inset:3%;background:url('/guild/assets/guild-x-mark.png') center/contain no-repeat;filter:drop-shadow(0 28px 38px rgba(0,0,0,.52)) drop-shadow(0 0 25px rgba(79,222,145,.15));animation:guildMarkFloat 6s ease-in-out infinite;will-change:transform,filter}
+@keyframes guildMarkFloat{0%,100%{transform:translate3d(0,2px,0) scale(.985);filter:drop-shadow(0 28px 38px rgba(0,0,0,.52)) drop-shadow(0 0 20px rgba(79,222,145,.12))}50%{transform:translate3d(0,-7px,0) scale(1);filter:drop-shadow(0 32px 42px rgba(0,0,0,.50)) drop-shadow(0 0 34px rgba(79,222,145,.22))}}
+@keyframes guildAura{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:.9;transform:scale(1.04)}}
+@media(max-width:760px){.brandmark{width:38px!important;height:38px!important;flex-basis:38px}.orbital::after{inset:7%}}
+@media(prefers-reduced-motion:reduce){.orbital::after,.orbital::before{animation:none!important}}
+/* Keep large art inside its presentation frame. */
+.hero-art,.multiply-art,.identity-stage,.upgrade-art,.dungeon-art{overflow:hidden!important}
+img[src*="hero-card"]{object-fit:contain!important;object-position:center!important}
+'''
+          html = html.replace('</style>', override + '\n</style>', 1)
+
+          # Avoid decoding stalls for content below the first screen.
+          html = re.sub(r'<img(?![^>]*\bdecoding=)', '<img decoding="async"', html)
+          # The brand and hero canonical mark are CSS backgrounds and preload immediately;
+          # remaining decorative image elements can decode asynchronously.
+
+          index.write_text(html, 'utf-8')
+          PY
+
+      - name: Verify Guild page references
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import re
+          html=Path('guild/index.html').read_text('utf-8')
+          assert '/guild/assets/guild-x-mark.png' in html
+          assert '/guild/assets/guild-x-mark-ui.png' in html
+          assert 'class="crest"' not in html
+          assert 'class="xgold"' not in html
+          assert 'src="assets/' not in html
+          refs=set(re.findall(r'/guild/assets/([^\"\'\)]+)',html))
+          missing=[x for x in sorted(refs) if not (Path('guild/assets')/x).exists()]
+          if missing:
+              raise SystemExit('Missing Guild assets: '+', '.join(missing))
+          print('Guild refs verified:', len(refs), 'assets')
+          PY
+
+      - name: Commit hotfix to main
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add guild/index.html guild/assets/guild-x-mark.png guild/assets/guild-x-mark-ui.png
+          if git diff --cached --quiet; then
+            echo "No Guild changes to commit"
+          else
+            git commit -m "fix(guild): canonical Guild X logo and reliable asset paths"
+            git push origin main
+          fi
