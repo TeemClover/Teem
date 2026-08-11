@@ -3,7 +3,7 @@
   if(head&&!document.querySelector('link[data-xircle-typography]')){
     const pre1=document.createElement('link');pre1.rel='preconnect';pre1.href='https://fonts.googleapis.com';head.appendChild(pre1);
     const pre2=document.createElement('link');pre2.rel='preconnect';pre2.href='https://fonts.gstatic.com';pre2.crossOrigin='anonymous';head.appendChild(pre2);
-    const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/_shared/typography.css?v=20260811-1';type.dataset.xircleTypography='1';head.appendChild(type);
+    const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/_shared/typography.css?v=20260811-2';type.dataset.xircleTypography='1';head.appendChild(type);
   }
 
   if(head&&!document.getElementById('xircle-media-style')){
@@ -12,14 +12,14 @@
     style.textContent=`
       .x-media{display:block;width:100%;height:auto;border-radius:32px;box-shadow:0 30px 85px rgba(0,0,0,.30);background:#061018;object-fit:contain}
       .x-media-wrap{position:relative;width:100%;max-width:920px;margin:34px auto 46px}
-      .x-media-wrap.source{max-width:580px}
+      .x-media-wrap.source{max-width:620px}
       .x-media-wrap:after{content:"";position:absolute;inset:0;border-radius:32px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);pointer-events:none}
       .x-media-replace{min-height:0!important;height:auto!important;display:block!important}
       .x-media-replace>*{display:none!important}
-      .x-media-replace>.x-media-wrap{display:block!important;margin:0 auto;max-width:820px}
-      .ageviz.x-media-replace>.x-media-wrap,.people.x-media-replace>.x-media-wrap{max-width:560px}
+      .x-media-replace>.x-media-wrap{display:block!important;margin:0 auto;max-width:860px}
+      .ageviz.x-media-replace>.x-media-wrap,.people.x-media-replace>.x-media-wrap{max-width:620px}
       .section.light .x-media,.storyday .x-media,.routinehome .x-media,.agehome .x-media{box-shadow:0 28px 75px rgba(15,42,50,.18)}
-      .x-product-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:min(100%,720px);margin:0 auto}
+      .x-product-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:min(100%,760px);margin:0 auto}
       .x-product-grid .x-media-wrap{display:block!important;margin:0;max-width:none!important;min-width:0}
       .x-product-grid .x-media{border-radius:22px;background:#f2f4f3;aspect-ratio:1/1.22;object-fit:cover;object-position:center}
       .x-product-grid .x-media-wrap:after{border-radius:22px}
@@ -30,19 +30,19 @@
   }
 
   const assets={
-    hero:'/xircle/assets/campaign/hero-xircle.svg?v=3',
-    habit:'/xircle/assets/campaign/habit-score.svg?v=3',
-    hardware:'/xircle/assets/campaign/hardware.svg?v=3',
-    body:'/xircle/assets/source/body-composition.svg?v=3',
-    maxage:'/xircle/assets/source/maxage-canonical.svg?v=3',
-    community:'/xircle/assets/campaign/community.svg?v=3',
-    routine:'/xircle/assets/campaign/routinex.svg?v=3',
-    xvisor:'/xircle/assets/source/xvisor.svg?v=3',
-    protein:'/xircle/assets/source/protein-hmb.svg?v=3',
-    gus:'/xircle/assets/source/gus-product.svg?v=3',
-    asta:'/xircle/assets/source/astamega-product.svg?v=3',
-    vita:'/xircle/assets/source/vita-matrix-product.svg?v=3',
-    routineBox:'/xircle/assets/source/routinex-box.svg?v=3'
+    hero:'/xircle/assets/campaign/hero-xircle-hq.svg?v=4',
+    habit:'/xircle/assets/campaign/habit-score.svg?v=4',
+    hardware:'/xircle/assets/campaign/hardware.svg?v=4',
+    body:'/xircle/assets/source/body-composition.svg?v=4',
+    maxage:'/xircle/assets/source/maxage-canonical.svg?v=4',
+    community:'/xircle/assets/campaign/community.svg?v=4',
+    routine:'/xircle/assets/campaign/routinex.svg?v=4',
+    xvisor:'/xircle/assets/source/xvisor.svg?v=4',
+    protein:'/xircle/assets/source/protein-hmb.svg?v=4',
+    gus:'/xircle/assets/source/gus-product.svg?v=4',
+    asta:'/xircle/assets/source/astamega-product.svg?v=4',
+    vita:'/xircle/assets/source/vita-matrix-product.svg?v=4',
+    routineBox:'/xircle/assets/source/routinex-box.svg?v=4'
   };
 
   const media=(src,label,kind='campaign')=>{
@@ -96,6 +96,8 @@
     productGrid(heroHost());
   }else{
     const map={
+      '/xircle/ecosystem':[assets.hero,'CloverX ecosystem through Xircle','campaign'],
+
       '/xircle/app':[assets.hero,'Xircle app experience','campaign'],
       '/xircle/app/habit-score':[assets.habit,'Habit Score: Eat Move Sleep','campaign'],
       '/xircle/app/eat':[assets.habit,'Eat within the Habit Score system','campaign'],
@@ -105,15 +107,40 @@
       '/xircle/app/body':[assets.body,'Canonical Body Composition source visual','source'],
       '/xircle/app/maxage':[assets.maxage,'Canonical MaxAge source visual','source'],
       '/xircle/app/community':[assets.community,'Xircle community','campaign'],
-      '/xircle/routinex':[assets.routine,'RoutineX daily routine','campaign'],
-      '/xircle/routinex/day-28':[assets.routine,'RoutineX daily routine','campaign'],
-      '/xircle/routinex/abcd':[assets.routineBox,'RoutineX source package visual','source'],
+
+      '/xircle/habix/fives':[assets.routineBox,'Habix product system visual','source'],
+      '/xircle/habix/flavor':[assets.routineBox,'Habix routine and consistency visual','source'],
       '/xircle/habix/protein-hmb':[assets.protein,'Protein HMB+ source product visual','source'],
       '/xircle/habix/gus':[assets.gus,'G.U.S.+ source product visual','source'],
       '/xircle/habix/astamega':[assets.asta,'AstaMega+ source product visual','source'],
       '/xircle/habix/vita-matrix':[assets.vita,'Vita Matrix source product visual','source'],
+
+      '/xircle/routinex':[assets.routine,'RoutineX daily routine','campaign'],
+      '/xircle/routinex/day-28':[assets.routine,'RoutineX daily routine','campaign'],
+      '/xircle/routinex/abcd':[assets.routineBox,'RoutineX source package visual','source'],
+
       '/xircle/xvisor':[assets.xvisor,'X-VISOR source visual','source'],
-      '/xircle/xvisor/role':[assets.xvisor,'X-VISOR source visual','source']
+      '/xircle/xvisor/role':[assets.xvisor,'X-VISOR Health Partner role','source'],
+      '/xircle/xvisor/care':[assets.xvisor,'X-VISOR CARE coaching framework','source'],
+      '/xircle/xvisor/onboarding':[assets.xvisor,'X-VISOR onboarding experience','source'],
+      '/xircle/xvisor/coaching':[assets.xvisor,'X-VISOR coaching experience','source'],
+      '/xircle/xvisor/claims':[assets.xvisor,'X-VISOR responsible communication','source'],
+      '/xircle/xvisor/privacy':[assets.xvisor,'X-VISOR consent and health-data care','source'],
+
+      '/xircle/xos':[assets.hero,'Xircle Operating System','campaign'],
+      '/xircle/xos/missions':[assets.habit,'XOS Today missions and habit feedback','campaign'],
+      '/xircle/xos/customers':[assets.body,'XOS customer health-data view','source'],
+      '/xircle/xos/team':[assets.community,'XOS team and community','campaign'],
+      '/xircle/xos/learning':[assets.xvisor,'XOS learning and certification','source'],
+      '/xircle/xos/wealth':[assets.routineBox,'XOS service and business tools','source'],
+
+      '/xircle/academy':[assets.xvisor,'X-VISOR Academy and learning','source'],
+      '/xircle/academy/certification':[assets.xvisor,'X-VISOR certification','source'],
+
+      '/xircle/commerce':[assets.routineBox,'X-Commerce operating model','source'],
+      '/xircle/commerce/roles':[assets.xvisor,'X-Commerce role development','source'],
+      '/xircle/commerce/revenue':[assets.routineBox,'X-Commerce revenue architecture','source'],
+      '/xircle/commerce/glossary':[assets.routineBox,'X-Commerce glossary and model','source']
     };
     const item=map[path];
     if(item){
