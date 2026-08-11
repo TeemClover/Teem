@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "last_reviewed": "2026-08-11",
+  "terms": [
+    {"term":"CloverX","meaning":"Health Innovation Ecosystem","status":"canon"},
+    {"term":"Xircle","meaning":"The Habit Tracker","status":"canon"},
+    {"term":"Habix","meaning":"แบรนด์ผลิตภัณฑ์โภชนาการ","status":"canon","deprecated":["HabitX","HabiX"]},
+    {"term":"RoutineX","meaning":"ระบบกิจวัตร / daily repeat system / fulfillment + coaching structure","status":"canon"},
+    {"term":"X-VISOR","meaning":"Health Partner ที่ผ่านการอบรมและรับรอง","status":"canon"},
+    {"term":"X-LEAD","meaning":"Senior Partner ที่พัฒนา X-VISOR และทีม","status":"canon"},
+    {"term":"X-GEN","meaning":"Growth Leader ที่สร้างมาตรฐานและดูแลหลายทีม","status":"canon"},
+    {"term":"XOS","meaning":"Xircle Operating System","status":"canon","deprecated":["X-Team Operating System"]},
+    {"term":"Habit Score","meaning":"คะแนนพฤติกรรมรายวันจาก Eat + Move + Sleep เท่านั้น","status":"canon","deprecated":["X-Body Score"]},
+    {"term":"Body Composition","meaning":"ชั้นผลลัพธ์จาก Xircle Scale; ไม่ใช่ส่วนหนึ่งของ Habit Score","status":"canon","deprecated":["X-Body"]},
+    {"term":"Pure Muscle","meaning":"ตัวชี้วัดมวลกล้ามเนื้อในระบบ","status":"canon"},
+    {"term":"Bio Age","meaning":"ค่าประเมินอายุชีวภาพในระบบ","status":"canon"},
+    {"term":"MaxAge™","meaning":"ค่าประเมินทิศทางระยะยาว ไม่ใช่อายุขัย","status":"canon","deprecated":["Max Age"]},
+    {"term":"Xircle Band","meaning":"wearable สำหรับ activity / sleep / heart signals","status":"canon","deprecated":["X-TECT Band"]},
+    {"term":"Xircle Scale","meaning":"เครื่องชั่ง Body Composition","status":"canon","deprecated":["X-TECT Scale"]},
+    {"term":"Today's Metabolic Balance","meaning":"ระบบงบพลังงานรายวันแบบ dynamic","status":"canon"},
+    {"term":"CARE","meaning":"Change · Attract · Result · Elevate","status":"canon"}
+  ]
+}

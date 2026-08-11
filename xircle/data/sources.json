@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "last_reviewed": "2026-08-11",
+  "sources": [
+    {
+      "id": "S1",
+      "label": "Xircle revised 4.1",
+      "file": "20260729_แผ่นพับ Xircle revised 4.1.pdf",
+      "scope": "Public positioning, App/Band/Scale, Habit Score, Body Composition, MaxAge™, customer-facing visual language"
+    },
+    {
+      "id": "S2",
+      "label": "Brochure New 16",
+      "file": "Brochure New 16.pdf",
+      "scope": "28-Day routine, nutrition narrative, Body Composition visual, RoutineX/ABCD and bundle snapshots",
+      "note": "Customer-facing claims must still pass S5."
+    },
+    {
+      "id": "S3",
+      "label": "X-Commerce Revenue Model",
+      "file": "CloverX_คู่มือแผนรายได้_X-Commerce.pdf",
+      "scope": "SELL → MENTOR → MANAGE → EXPAND, G1/TGV/Breakaway, examples",
+      "note": "Revenue and qualification are version-sensitive; never present as guarantees."
+    },
+    {
+      "id": "S4",
+      "label": "Xircle App & XOS Platform Manual v3",
+      "file": "Xircle_App_XOS_Platform_Manual_v3_HabitTracker.docx",
+      "scope": "Canonical Xircle terminology, App IA, XOS, Habit Score, Eat/Move/Sleep, Body, Bio Age/MaxAge™, Community"
+    },
+    {
+      "id": "S5",
+      "label": "X-VISOR Certification Ebook v1.1",
+      "file": "XVISOR_Certification_Ebook_v1_1.docx",
+      "scope": "CloverX ecosystem, Habix/RoutineX, product integrity, CARE, role boundaries, claims/privacy, certification",
+      "note": "Internal training source; not customer advertising copy."
+    }
+  ]
+}
