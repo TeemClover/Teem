@@ -14,36 +14,37 @@ html body{
   text-rendering:optimizeLegibility;
 }
 
-/* Product/editorial display typography */
+/* Thai display type needs air. Do not use Latin-style aggressive negative tracking. */
 html body .display,
 html body .quote,
 html body .next h2,
 html body .section-head h2,
 html body .hero h1,
-html body .homecopy h1,
 html body .agehome h2,
 html body .circlehome h2,
 html body .carehome h2,
 html body .routinehome h2{
   font-family:var(--x-font-display);
   font-weight:600;
-  letter-spacing:-.036em;
-  line-height:.98;
+  letter-spacing:-.006em;
+  line-height:1.08;
   font-synthesis:none;
+  text-wrap:balance;
 }
 
-/* Home hero: keep Xircle itself sharp, Thai subline more breathable */
+/* Xircle wordmark/Latin hero stays tighter; Thai subline breathes naturally. */
 html body .homecopy h1{
   font-family:var(--x-font-ui);
   font-weight:700;
-  letter-spacing:-.062em;
-  line-height:.82;
+  letter-spacing:-.055em;
+  line-height:.86;
 }
 html body .homecopy h1 span{
   font-family:var(--x-font-display);
   font-weight:600;
-  letter-spacing:-.028em;
-  line-height:1.12;
+  letter-spacing:0;
+  line-height:1.2;
+  text-wrap:balance;
 }
 
 /* Section/card headings */
@@ -60,16 +61,18 @@ html body .final-card h3,
 html body .score-message h4{
   font-family:var(--x-font-display);
   font-weight:600;
-  letter-spacing:-.026em;
-  line-height:1.16;
+  letter-spacing:-.004em;
+  line-height:1.24;
+  text-wrap:pretty;
 }
 
-/* Body copy: lighter, calmer rhythm */
+/* Body copy */
 html body .lead{
   font-family:var(--x-font-body);
   font-weight:400;
-  letter-spacing:-.014em;
-  line-height:1.52;
+  letter-spacing:0;
+  line-height:1.62;
+  text-wrap:pretty;
 }
 html body .copy,
 html body .card p,
@@ -84,7 +87,8 @@ html body .xv-step span,
 html body .final-card p{
   font-family:var(--x-font-body);
   font-weight:400;
-  letter-spacing:-.006em;
+  letter-spacing:0;
+  line-height:1.72;
 }
 
 /* UI / labels / navigation */
@@ -113,20 +117,20 @@ html body .product-chip span{
 
 html body .brand{
   font-weight:800;
-  letter-spacing:.20em;
+  letter-spacing:.18em;
 }
 html body .eyebrow,
 html body .kicker,
 html body .num{
   font-weight:700;
-  letter-spacing:.14em;
+  letter-spacing:.10em;
 }
 html body .navlinks,
 html body .btn,
 html body .tab,
 html body .subnav a{
   font-weight:600;
-  letter-spacing:-.01em;
+  letter-spacing:0;
 }
 
 /* Metrics and numerals */
@@ -142,7 +146,7 @@ html body .abc-letter{
   font-family:var(--x-font-ui);
   font-variant-numeric:tabular-nums lining-nums;
   font-weight:700;
-  letter-spacing:-.05em;
+  letter-spacing:-.035em;
 }
 
 /* Small English product names stay crisp */
@@ -155,17 +159,21 @@ html body .habit-top b{
   font-weight:700;
 }
 
-/* Thai tone marks need breathing room; don't over-tighten on small screens */
+/* Thai tone marks and stacked vowels need extra vertical room on compact screens. */
 @media(max-width:620px){
   html body .display,
   html body .quote,
   html body .next h2,
   html body .section-head h2,
   html body .hero h1{
-    letter-spacing:-.027em;
-    line-height:1.01;
+    letter-spacing:0;
+    line-height:1.12;
   }
-  html body .homecopy h1{letter-spacing:-.05em;line-height:.86}
-  html body .homecopy h1 span{letter-spacing:-.018em;line-height:1.16}
-  html body .lead{line-height:1.58}
+  html body .homecopy h1{letter-spacing:-.045em;line-height:.9}
+  html body .homecopy h1 span{letter-spacing:0;line-height:1.22}
+  html body .card h3,
+  html body .panel h3,
+  html body .callout b,
+  html body .row strong{line-height:1.28}
+  html body .lead{line-height:1.66}
 }
