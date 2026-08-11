@@ -1,6 +1,91 @@
 {
   "redirects": [
     {
+      "source": "/xircle",
+      "destination": "/xircle/",
+      "permanent": false
+    },
+    {
+      "source": "/app",
+      "destination": "/xircle/app/",
+      "permanent": false
+    },
+    {
+      "source": "/app/",
+      "destination": "/xircle/app/",
+      "permanent": false
+    },
+    {
+      "source": "/routinex",
+      "destination": "/xircle/routinex/",
+      "permanent": false
+    },
+    {
+      "source": "/routinex/",
+      "destination": "/xircle/routinex/",
+      "permanent": false
+    },
+    {
+      "source": "/habix",
+      "destination": "/xircle/habix/",
+      "permanent": false
+    },
+    {
+      "source": "/habix/",
+      "destination": "/xircle/habix/",
+      "permanent": false
+    },
+    {
+      "source": "/ecosystem",
+      "destination": "/xircle/ecosystem/",
+      "permanent": false
+    },
+    {
+      "source": "/ecosystem/",
+      "destination": "/xircle/ecosystem/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor",
+      "destination": "/xircle/xvisor/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor/",
+      "destination": "/xircle/xvisor/",
+      "permanent": false
+    },
+    {
+      "source": "/xos",
+      "destination": "/xircle/xos/",
+      "permanent": false
+    },
+    {
+      "source": "/xos/",
+      "destination": "/xircle/xos/",
+      "permanent": false
+    },
+    {
+      "source": "/commerce",
+      "destination": "/xircle/commerce/",
+      "permanent": false
+    },
+    {
+      "source": "/commerce/",
+      "destination": "/xircle/commerce/",
+      "permanent": false
+    },
+    {
+      "source": "/academy",
+      "destination": "/xircle/academy/",
+      "permanent": false
+    },
+    {
+      "source": "/academy/",
+      "destination": "/xircle/academy/",
+      "permanent": false
+    },
+    {
       "source": "/kickstart/",
       "destination": "/kickstarter/",
       "permanent": true
