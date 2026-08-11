@@ -5,6 +5,11 @@
     const pre2=document.createElement('link');pre2.rel='preconnect';pre2.href='https://fonts.gstatic.com';pre2.crossOrigin='anonymous';head.appendChild(pre2);
     const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/_shared/typography.css?v=20260811-2';type.dataset.xircleTypography='1';head.appendChild(type);
   }
+  if(head&&!document.querySelector('link[data-xircle-experience]')){
+    const experience=document.createElement('link');
+    experience.rel='stylesheet';experience.href='/xircle/_shared/experience.css?v=20260811-1';experience.dataset.xircleExperience='1';
+    head.appendChild(experience);
+  }
 
   if(head&&!document.getElementById('xircle-media-style')){
     const style=document.createElement('style');
@@ -30,19 +35,38 @@
   }
 
   const assets={
-    hero:'/xircle/assets/campaign/hero-xircle-hq.svg?v=4',
-    habit:'/xircle/assets/campaign/habit-score.svg?v=4',
-    hardware:'/xircle/assets/campaign/hardware.svg?v=4',
-    body:'/xircle/assets/source/body-composition.svg?v=4',
-    maxage:'/xircle/assets/source/maxage-canonical.svg?v=4',
-    community:'/xircle/assets/campaign/community.svg?v=4',
-    routine:'/xircle/assets/campaign/routinex.svg?v=4',
-    xvisor:'/xircle/assets/source/xvisor.svg?v=4',
-    protein:'/xircle/assets/source/protein-hmb.svg?v=4',
-    gus:'/xircle/assets/source/gus-product.svg?v=4',
-    asta:'/xircle/assets/source/astamega-product.svg?v=4',
-    vita:'/xircle/assets/source/vita-matrix-product.svg?v=4',
-    routineBox:'/xircle/assets/source/routinex-box.svg?v=4'
+    hero:'/xircle/assets/source/xircle-v41/phone-1063.webp',
+    habit:'/xircle/assets/source/xircle-v41/habit-score-1063.webp',
+    dashboard:'/xircle/assets/source/xircle-v41/daily-dashboard-1063.webp',
+    hardware:'/xircle/assets/source/xircle-v41/hardware-1063.webp',
+    body:'/xircle/assets/source/xircle-v41/body-composition-1063.webp',
+    maxage:'/xircle/assets/source/xircle-v41/maxage-1063.webp',
+    direction:'/xircle/assets/source/xircle-v41/longterm-direction-1063.webp',
+    community:'/xircle/assets/source/xircle-v41/community-1063.webp',
+    routine:'/xircle/assets/source/xircle-v41/daily-routine-1063.webp',
+    xvisor:'/xircle/assets/source/xircle-v41/xvisor-1063.webp',
+    eatMoveSleep:'/xircle/assets/source/brochure-routinex/eat-move-sleep-1063.webp',
+    protein:'/xircle/assets/source/brochure-routinex/protein-hmb-650.webp',
+    gus:'/xircle/assets/source/brochure-routinex/gus-430.webp',
+    asta:'/xircle/assets/source/brochure-routinex/astamega-470.webp',
+    vita:'/xircle/assets/source/brochure-routinex/vita-matrix-500.webp',
+    routineBox:'/xircle/assets/source/brochure-routinex/routinex-box-1063.webp',
+    metabolic:'/xircle/assets/source/app-ui/metabolic-on-track.webp',
+    bodyUi:'/xircle/assets/source/app-ui/body-trend.webp',
+    maxageUi:'/xircle/assets/source/app-ui/maxage-ui.webp',
+    commerceCover:'/xircle/assets/source/commerce/cover-1199.webp',
+    commerceModel:'/xircle/assets/source/commerce/four-dimensions-1199.webp',
+    commerceMentor:'/xircle/assets/source/commerce/direct-mentoring-1199.webp',
+    commerceAgency:'/xircle/assets/source/commerce/agency-management-1199.webp',
+    commerceExpand:'/xircle/assets/source/commerce/franchise-expansion-1199.webp',
+    commerceRevenue:'/xircle/assets/source/commerce/income-stacking-1199.webp'
+  };
+
+  const responsiveSrc=(src)=>{
+    if(src.includes('-1063.webp'))return src.replace('-1063.webp','-640.webp')+' 640w, '+src+' 1063w';
+    if(src.includes('-1199.webp'))return src.replace('-1199.webp','-720.webp')+' 720w, '+src+' 1199w';
+    if(src.endsWith('.webp')&&!/-(430|470|500|520|650)\.webp$/.test(src))return src.replace('.webp','-640.webp')+' 640w, '+src+' 960w';
+    return '';
   };
 
   const media=(src,label,kind='campaign')=>{
@@ -51,6 +75,8 @@
     const img=document.createElement('img');
     img.className='x-media';
     img.src=src; img.alt=label; img.loading='lazy'; img.decoding='async';
+    const srcset=responsiveSrc(src);if(srcset){img.srcset=srcset;img.sizes='(max-width: 700px) 94vw, 860px';}
+    img.dataset.parallax='0.018';
     img.addEventListener('error',()=>{
       const host=wrap.parentElement;
       if(host&&host.classList.contains('x-media-replace')) host.classList.remove('x-media-replace');
@@ -96,25 +122,25 @@
     productGrid(heroHost());
   }else{
     const map={
-      '/xircle/ecosystem':[assets.hero,'CloverX ecosystem through Xircle','campaign'],
+      '/xircle/ecosystem':[assets.direction,'CloverX ecosystem through Xircle','source'],
 
-      '/xircle/app':[assets.hero,'Xircle app experience','campaign'],
-      '/xircle/app/habit-score':[assets.habit,'Habit Score: Eat Move Sleep','campaign'],
-      '/xircle/app/eat':[assets.habit,'Eat within the Habit Score system','campaign'],
-      '/xircle/app/move':[assets.habit,'Move within the Habit Score system','campaign'],
-      '/xircle/app/sleep':[assets.habit,'Sleep within the Habit Score system','campaign'],
-      '/xircle/app/hardware':[assets.hardware,'Xircle Band and Scale','campaign'],
+      '/xircle/app':[assets.dashboard,'Xircle daily dashboard experience','source'],
+      '/xircle/app/habit-score':[assets.habit,'Habit Score: Eat Move Sleep','source'],
+      '/xircle/app/eat':[assets.metabolic,'Metabolic Balance interface in the Xircle app','source'],
+      '/xircle/app/move':[assets.dashboard,'Move within the Habit Score system','source'],
+      '/xircle/app/sleep':[assets.dashboard,'Sleep within the Habit Score system','source'],
+      '/xircle/app/hardware':[assets.hardware,'Xircle Band and Scale','source'],
       '/xircle/app/body':[assets.body,'Canonical Body Composition source visual','source'],
       '/xircle/app/maxage':[assets.maxage,'Canonical MaxAge source visual','source'],
-      '/xircle/app/community':[assets.community,'Xircle community','campaign'],
+      '/xircle/app/community':[assets.community,'Xircle community','source'],
 
       '/xircle/habix/protein-hmb':[assets.protein,'Protein HMB+ source product visual','source'],
       '/xircle/habix/gus':[assets.gus,'G.U.S.+ source product visual','source'],
       '/xircle/habix/astamega':[assets.asta,'AstaMega+ source product visual','source'],
       '/xircle/habix/vita-matrix':[assets.vita,'Vita Matrix source product visual','source'],
 
-      '/xircle/routinex':[assets.routine,'RoutineX daily routine','campaign'],
-      '/xircle/routinex/day-28':[assets.routine,'RoutineX daily routine','campaign'],
+      '/xircle/routinex':[assets.routineBox,'RoutineX 28-day box and routine','source'],
+      '/xircle/routinex/day-28':[assets.eatMoveSleep,'RoutineX Eat Move Sleep routine','source'],
       '/xircle/routinex/abcd':[assets.routineBox,'RoutineX source package visual','source'],
 
       '/xircle/xvisor':[assets.xvisor,'X-VISOR source visual','source'],
@@ -125,15 +151,20 @@
       '/xircle/xvisor/claims':[assets.xvisor,'X-VISOR responsible communication','source'],
       '/xircle/xvisor/privacy':[assets.xvisor,'X-VISOR consent and health-data care','source'],
 
-      '/xircle/xos':[assets.hero,'Xircle Operating System','campaign'],
-      '/xircle/xos/missions':[assets.habit,'XOS Today missions and habit feedback','campaign'],
+      '/xircle/xos':[assets.dashboard,'Xircle Operating System dashboard','source'],
+      '/xircle/xos/missions':[assets.dashboard,'XOS Today missions and habit feedback','source'],
       '/xircle/xos/customers':[assets.body,'XOS customer health-data view','source'],
-      '/xircle/xos/team':[assets.community,'XOS team and community','campaign'],
+      '/xircle/xos/team':[assets.community,'XOS team and community','source'],
       '/xircle/xos/learning':[assets.xvisor,'XOS learning and certification','source'],
       '/xircle/xos/wealth':[assets.routineBox,'XOS service tools','source'],
 
       '/xircle/academy':[assets.xvisor,'X-VISOR Academy and learning','source'],
-      '/xircle/academy/certification':[assets.xvisor,'X-VISOR certification','source']
+      '/xircle/academy/certification':[assets.xvisor,'X-VISOR certification','source'],
+
+      '/xircle/commerce':[assets.commerceModel,'X-Commerce four value dimensions','source'],
+      '/xircle/commerce/roles':[assets.commerceCover,'X-Commerce role path source visual','source'],
+      '/xircle/commerce/revenue':[assets.commerceRevenue,'X-Commerce income stacking mechanics','source'],
+      '/xircle/commerce/glossary':[assets.commerceAgency,'X-Commerce business mechanics source visual','source']
     };
     const item=map[path];
     if(item){
@@ -144,6 +175,85 @@
         if(anchor)after(anchor,item[0],item[1],item[2]);
       }
     }
+  }
+
+  const main=document.querySelector('main');
+  if(main&&!document.querySelector('.x-zone-banner')){
+    const zone=document.createElement('aside');
+    zone.className='x-zone-banner';
+    zone.setAttribute('aria-label','สถานะพื้นที่ Xircle');
+    zone.innerHTML='<b>GUILD BUILD ZONE</b><span>Member preview · under construction</span><a href="/xircle/source/">Source status</a>';
+    if(document.querySelector('body > .internal,body > .internalbar'))zone.style.setProperty('--x-zone-top','92px');
+    main.insertAdjacentElement('beforebegin',zone);
+  }
+
+  const sourceProfile=(()=>{
+    if(path.startsWith('/xircle/commerce'))return {
+      status:'provisional',label:'INTERNAL · VERIFY CURRENT PLAN',
+      sources:'Source of Truth · X-Commerce Revenue Model · X-VISOR Certification',
+      note:'Business mechanics and qualifications must be checked against the latest official compensation plan before use.'
+    };
+    if(path.startsWith('/xircle/source'))return {
+      status:'internal',label:'INTERNAL SOURCE CONTROL',
+      sources:'Xircle Project Source of Truth · Web Zone Blueprint · Core Sources S1–S5',
+      note:'Control room for canon, conflicts and unresolved facts. Not customer-facing.'
+    };
+    if(path.startsWith('/xircle/xvisor'))return {
+      status:'canon',label:'CANON · RESPONSIBLE COMMUNICATION',
+      sources:'Source of Truth · X-VISOR Certification v1.1 · Xircle revised 4.1',
+      note:'Health guidance supports learning and habit change; it does not diagnose, treat or replace professional care.'
+    };
+    if(path.startsWith('/xircle/habix')||path.startsWith('/xircle/routinex'))return {
+      status:'canon',label:'CANON · PRODUCT CLAIM BOUNDARY',
+      sources:'Source of Truth · RoutineX Brochure · X-VISOR Certification v1.1',
+      note:'Product visuals are source-derived. Ingredients, quantities and claims require the latest approved label or official specification.'
+    };
+    return {
+      status:'canon',label:'CANON · MEMBER PREVIEW',
+      sources:'Source of Truth · Web Zone Blueprint · Xircle revised 4.1 · XOS Manual v3',
+      note:'Habit Score = Eat + Move + Sleep. Body Composition is an outcome layer. MaxAge™ is an estimate of direction, not lifespan.'
+    };
+  })();
+
+  if(main&&!document.querySelector('.x-source-footer')){
+    const footer=document.createElement('footer');
+    footer.className='x-source-footer';
+    footer.innerHTML=`<details><summary>Source & status <span>Reviewed 11 Aug 2026 · open details</span></summary><div class="x-source-body"><div><b>SOURCE SET</b>${sourceProfile.sources}</div><div><b>PAGE STATUS</b><span class="x-status-pill" data-status="${sourceProfile.status}">${sourceProfile.label}</span></div><div><b>BOUNDARY</b>${sourceProfile.note}</div></div></details>`;
+    main.insertAdjacentElement('afterend',footer);
+  }
+
+  document.querySelectorAll('.x-media img,.x-wide-media img,.x-media-wrap img').forEach(img=>{
+    if(!img.dataset.parallax)img.dataset.parallax='0.018';
+    if(!img.srcset){const set=responsiveSrc(img.getAttribute('src')||'');if(set){img.srcset=set;img.sizes='(max-width: 700px) 94vw, 860px';}}
+    img.decoding='async';
+  });
+
+  const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)');
+  const parallaxItems=[...document.querySelectorAll('[data-parallax]')];
+  let parallaxFrame=0;
+  const renderParallax=()=>{
+    parallaxFrame=0;
+    if(reduceMotion.matches)return;
+    parallaxItems.forEach(el=>{
+      const rect=el.getBoundingClientRect();
+      const rate=Number(el.dataset.parallax||0);
+      const offset=Math.max(-46,Math.min(46,(rect.top+rect.height*.5-innerHeight*.5)*rate));
+      el.style.setProperty('--x-parallax-y',offset.toFixed(2)+'px');
+    });
+  };
+  const requestParallax=()=>{if(!parallaxFrame)parallaxFrame=requestAnimationFrame(renderParallax);};
+  addEventListener('scroll',requestParallax,{passive:true});
+  addEventListener('resize',requestParallax,{passive:true});
+  renderParallax();
+
+  const deviceScreens=[...document.querySelectorAll('.x-device-ui img')];
+  if(deviceScreens.length>1&&!reduceMotion.matches){
+    let activeScreen=0;
+    setInterval(()=>{
+      deviceScreens[activeScreen].classList.remove('is-active');
+      activeScreen=(activeScreen+1)%deviceScreens.length;
+      deviceScreens[activeScreen].classList.add('is-active');
+    },3600);
   }
 
   const p=document.querySelector('.progress');

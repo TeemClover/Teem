@@ -4,24 +4,25 @@
 
 The broken `campaign-atlas.jpg` implementation is retired. Do not wire pages back to that file.
 
-The web now uses separate stable `/xircle/assets/...` URLs with an error fallback in `/_shared/story.js`. The Xircle hero has been switched to `hero-xircle-hq.svg`; other legacy campaign/source wrappers still need a final HQ raster replacement pass.
+The web now uses separate stable `/xircle/assets/...` URLs with an error fallback in `/_shared/story.js`. The HQ raster replacement pass is complete for the shared route system and the `/xircle/` landing page. Legacy SVG wrappers remain in the repository only as rollback/reference assets and are no longer used by the shared visual mapper.
 
 ## Current repository resolution QA
 
-### Campaign layer
+### Generated experience layer
 
-| Asset | Current rendered source size | QA |
+| Asset | Rendered size | QA |
 |---|---:|---|
-| `hero-xircle-hq.svg` | 1200 × 751 | usable / current hero |
-| `hero-xircle.svg` | 640 × 401 | legacy fallback |
-| `habit-score.svg` | legacy compact wrapper | replace with HQ |
-| `hardware.svg` | legacy compact wrapper | replace with HQ |
-| `community.svg` | legacy compact wrapper | replace with HQ |
-| `routinex.svg` | legacy compact wrapper | replace with HQ |
+| `generated/hero-device-cluster.png` | 1254 × 1254, alpha | current layered hero device master |
+| `generated/data-orbits.png` | 1254 × 1254, alpha | current parallax atmosphere layer |
 
-### Canonical source layer
+### Canonical source layer now in production mapping
 
-Current `body-composition.svg`, `maxage-canonical.svg`, `protein-hmb.svg`, `gus-product.svg`, `astamega-product.svg`, `vita-matrix-product.svg`, `routinex-box.svg`, and `xvisor.svg` are compact source wrappers. They are valid as semantic/canonical references but are not the final Apple-style high-resolution presentation assets.
+| Directory | Production use | Responsive variants |
+|---|---|---|
+| `source/xircle-v41/` | landing, app, hardware, Body, MaxAge™, community, X-VISOR, ecosystem | 1063 px + 640 px |
+| `source/app-ui/` | rotating device UI and app deep routes | native + 640 px |
+| `source/brochure-routinex/` | RoutineX and Habix product routes | 1063/640 px plus native product crops |
+| `source/commerce/` | Commerce overview, role, revenue and glossary routes | 1199 px + 720 px |
 
 ## High-resolution source extraction verified
 
@@ -98,20 +99,30 @@ These should be used for Commerce pages instead of recycling RoutineX or health 
 - XOS and its deep routes
 - Academy / Certification
 
-X-Commerce deliberately keeps its native route-specific visual for now rather than injecting an unrelated health/product asset. Its next visual pass should use the X-Commerce source PDF.
+X-Commerce now uses its own route-specific panels from the X-Commerce Revenue Guide. It no longer recycles unrelated health or RoutineX imagery.
 
 ## Quality decision
 
-**Current state is visually functional but not yet final-resolution across every route.**
+**HQ asset replacement is complete for the current route architecture.**
 
-The final production pass should replace compact wrappers with source-derived or campaign WebP assets at these target sizes:
+Production assets meet the target classes below:
 
 - Campaign landscape: ~1586 × 992 or equivalent
 - Source portrait panels: ~1063 × 1737
 - App/XOS screenshots: native source dimensions up to ~1181 × 1930
 - Commerce pages: ~1200 × 1696 source-derived panels
 
-Do not upscale the old 360/640 px wrappers and call them HQ. Replace them from the original source or a newly generated campaign master.
+No old 360/640 px wrapper was upscaled and presented as HQ. Assets were rebuilt from the supplied source files or generated as new transparent campaign masters.
+
+## Experience and typography QA
+
+- Main hero uses independent transparent PNG layers for device cluster, data orbits, live UI screen and floating glass chips.
+- Scroll movement is requestAnimationFrame-throttled and clamped to avoid layout drift.
+- Motion is disabled under `prefers-reduced-motion`.
+- Shared source/status UI is injected across all Xircle pages.
+- Fine print and disclaimer text has a 12 px readability floor with increased line height.
+- Responsive `srcset` is assigned where a 640/720 px sibling exists.
+- Static audit: 45/45 HTML routes have `noindex`, shared experience JS and resolvable local `src`/`href` paths.
 
 ## Asset policy
 
