@@ -48,8 +48,8 @@
     eatMoveSleep:'/xircle/assets/source/brochure-routinex/eat-move-sleep-1063.webp',
     protein:'/xircle/assets/source/brochure-routinex/protein-hmb-650.webp',
     gus:'/xircle/assets/source/brochure-routinex/gus-430.webp',
-    asta:'/xircle/assets/source/brochure-routinex/astamega-470.webp',
-    vita:'/xircle/assets/source/brochure-routinex/vita-matrix-500.webp',
+    asta:'/xircle/assets/generated/astamega-ingredient.png',
+    vita:'/xircle/assets/generated/vita-matrix-ingredient.png',
     routineBox:'/xircle/assets/source/brochure-routinex/routinex-box-1063.webp',
     metabolic:'/xircle/assets/source/app-ui/metabolic-on-track.webp',
     bodyUi:'/xircle/assets/source/app-ui/body-trend.webp',
@@ -124,7 +124,7 @@
     const map={
       '/xircle/ecosystem':[assets.direction,'CloverX ecosystem through Xircle','source'],
 
-      '/xircle/app':[assets.dashboard,'Xircle daily dashboard experience','source'],
+      '/xircle/app':[assets.hero,'Xircle app experience','source'],
       '/xircle/app/habit-score':[assets.habit,'Habit Score: Eat Move Sleep','source'],
       '/xircle/app/eat':[assets.metabolic,'Metabolic Balance interface in the Xircle app','source'],
       '/xircle/app/move':[assets.dashboard,'Move within the Habit Score system','source'],

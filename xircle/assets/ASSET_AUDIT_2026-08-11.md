@@ -130,5 +130,6 @@ No old 360/640 px wrapper was upscaled and presented as HQ. Assets were rebuilt 
 - Canonical data visuals beat generated visuals whenever visible numbers/text matter.
 - Body Composition and MaxAge must remain source-correct.
 - Generated art may be used for atmosphere, hero storytelling, lifestyle, or abstract product context, but never to invent medical metrics, product labels, compensation values, or unresolved naming.
+- AstaMega+ and Vita Matrix use claim-free generated ingredient atmosphere in production mapping. Raw brochure crops containing promotional claim copy remain reference-only and must not be wired into customer-facing routes.
 - Flavor+ dedicated final product photography remains unresolved; do not fabricate a canonical package until naming/artwork is confirmed.
 - Every critical image must be checked for: file existence, decoded dimensions, mobile crop, desktop crop, readable contrast, and graceful fallback before being marked production-ready.
