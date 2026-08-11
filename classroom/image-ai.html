@@ -536,13 +536,28 @@ function setText(el,text){
 function setPrompt(el,text){
   if(!el) return;
   let button=el.querySelector('.cpx');
-  const current=[...el.childNodes].filter(n=>n!==button).map(n=>n.textContent||'').join('').trim();
-  if(current===text.trim()) return;
-  [...el.childNodes].forEach(n=>{ if(n!==button) n.remove(); });
-  el.insertBefore(document.createTextNode(text),button||null);
+  if(el.hasAttribute('data-prompt-collapse') && button && !button.hasAttribute('data-copy-full')){
+    button.remove();
+    button=null;
+  }
+  const current=[...el.childNodes].filter(n=>n!==button && !(n.nodeType===1 && n.classList.contains('prompt-expand'))).map(n=>n.textContent||'').join('').trim();
+  if(current!==text.trim()){
+    [...el.childNodes].forEach(n=>{ if(n!==button && !(n.nodeType===1 && n.classList.contains('prompt-expand'))) n.remove(); });
+    if(el.hasAttribute('data-prompt-collapse')){
+      const promptCopy=document.createElement('span');
+      promptCopy.className='prompt-copy';
+      promptCopy.textContent=text;
+      el.insertBefore(promptCopy,button||null);
+    }else{
+      el.insertBefore(document.createTextNode(text),button||null);
+    }
+  }
+  if(button) return;
   if(!button){
+    const copyLabel=el.hasAttribute('data-prompt-collapse')?'Copy Prompt':'คัดลอก';
     button=document.createElement('button');
-    button.type='button';button.className='cpx';button.textContent='คัดลอก';
+    button.type='button';button.className='cpx';button.textContent=copyLabel;
+    button.setAttribute('data-copy-full','true');
     button.setAttribute('aria-label','คัดลอกคำสั่ง');
     button.addEventListener('click',async()=>{
       let ok=false;
@@ -555,10 +570,52 @@ function setPrompt(el,text){
         area.remove();
       }
       button.textContent=ok?'✓ คัดลอกแล้ว':'คัดลอกไม่สำเร็จ';
-      setTimeout(()=>button.textContent='คัดลอก',1400);
+      setTimeout(()=>button.textContent=copyLabel,1400);
     });
     el.append(button);
   }
+}
+
+function setupPromptCollapse(el){
+  if(!el) return;
+  if(!document.getElementById('prompt-collapse-style-v2')){
+    const style=document.createElement('style');
+    style.id='prompt-collapse-style-v2';
+    style.textContent='.prompt-collapsible{padding-bottom:54px}.prompt-copy{display:block}.prompt-collapsible:not([data-expanded="true"]) .prompt-copy{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;max-height:3.44em;overflow:hidden}.prompt-expand{position:absolute;left:14px;bottom:10px;z-index:2;border:1px solid rgb(215 245 226/.3);border-radius:8px;padding:5px 10px;background:rgb(255 255 255/.07);color:#d7f5e2;font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;cursor:pointer}.prompt-expand:hover{background:rgb(255 255 255/.13)}.life-md-alert{margin:12px 0;padding:13px 15px;border:2px solid #c93434;border-radius:13px;background:#fff1f1;color:#7d1717;box-shadow:0 7px 20px rgba(153,25,25,.08)}.life-md-alert strong{display:block;color:#a31717}.life-md-alert span{display:block;margin-top:2px;font-size:13px;line-height:1.6}';
+    document.head.append(style);
+  }
+  if(!el.querySelector('.prompt-copy')){
+    const controls=[...el.querySelectorAll('.cpx,.prompt-expand')];
+    const content=[...el.childNodes].filter(node=>!controls.includes(node));
+    const value=content.map(node=>node.textContent||'').join('').trim();
+    content.forEach(node=>node.remove());
+    const promptCopy=document.createElement('span');promptCopy.className='prompt-copy';promptCopy.textContent=value;
+    el.insertBefore(promptCopy,el.firstChild);
+  }
+  el.classList.add('prompt-collapsible');
+  if(!el.hasAttribute('data-expanded')) el.dataset.expanded='false';
+  const copy=el.querySelector('.cpx');
+  if(copy) copy.textContent='Copy Prompt';
+  let toggle=el.querySelector('.prompt-expand');
+  if(!toggle){
+    toggle=document.createElement('button');
+    toggle.type='button';
+    toggle.className='prompt-expand';
+    toggle.setAttribute('aria-label','ขยายอ่าน Prompt ทั้งหมด');
+    toggle.addEventListener('click',()=>{
+      const expanded=el.dataset.expanded==='true';
+      el.dataset.expanded=expanded?'false':'true';
+      toggle.setAttribute('aria-expanded',expanded?'false':'true');
+      toggle.setAttribute('aria-label',expanded?'ขยายอ่าน Prompt ทั้งหมด':'ย่อ Prompt');
+      toggle.textContent=expanded?'ขยายอ่าน Prompt':'ย่อ Prompt';
+      if(expanded && el.getBoundingClientRect().top<0) el.scrollIntoView({block:'start',behavior:'smooth'});
+    });
+    el.append(toggle);
+  }
+  const expanded=el.dataset.expanded==='true';
+  toggle.setAttribute('aria-expanded',expanded?'true':'false');
+  toggle.setAttribute('aria-label',expanded?'ย่อ Prompt':'ขยายอ่าน Prompt ทั้งหมด');
+  toggle.textContent=expanded?'ย่อ Prompt':'ขยายอ่าน Prompt';
 }
 
 function injectStyle(){
@@ -566,9 +623,15 @@ function injectStyle(){
   const style=document.createElement('style');
   style.id='lesson2-life-poster-style';
   style.textContent=`
-    .life-md-alert{margin-top:12px;padding:14px 16px;border:2px solid #c93434;border-radius:14px;background:#fff1f1;color:#7d1717;box-shadow:0 8px 22px rgba(153,25,25,.08)}
-    .life-md-alert strong{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;margin-bottom:3px;color:#a31717}
+    .life-md-alert{margin:12px 0;padding:13px 15px;border:2px solid #c93434;border-radius:13px;background:#fff1f1;color:#7d1717;box-shadow:0 7px 20px rgba(153,25,25,.08)}
+    .life-md-alert strong{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:15px;color:#a31717}
+    .life-md-alert span{display:block;margin-top:2px;font-size:13px;line-height:1.6}
     .life-md-alert code{background:rgba(163,23,23,.08);padding:1px 5px;border-radius:5px}
+    .prompt-collapsible{padding-bottom:54px}
+    .prompt-copy{display:block}
+    .prompt-collapsible:not([data-expanded="true"]) .prompt-copy{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;max-height:3.44em;overflow:hidden}
+    .prompt-expand{position:absolute;left:14px;bottom:10px;z-index:2;border:1px solid rgb(215 245 226/.3);border-radius:8px;padding:5px 10px;background:rgb(255 255 255/.07);color:#d7f5e2;font-family:"Bai Jamjuree",sans-serif;font-size:11px;font-weight:700;cursor:pointer}
+    .prompt-expand:hover{background:rgb(255 255 255/.13)}
     .life-photo-note{margin-top:10px;border:1px solid rgb(var(--ink)/.1);border-radius:12px;background:rgb(var(--paper)/.55);padding:0 13px}
     .life-photo-note summary{cursor:pointer;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:13.5px;padding:10px 0;color:rgb(var(--green))}
     .life-photo-note p{padding:0 0 11px;margin:0!important;font-size:13px!important;line-height:1.6!important}
@@ -647,9 +710,9 @@ function buildFastTrack(){
       <div class="life-fast__intro"><b>แชทเดิมสร้างภาพไม่ได้ก็ไม่เป็นไร</b><p>ใช้แชทเดิมสกัดซอส .md แล้วนำไฟล์ไปเปิดในแชทใหม่ที่สร้างภาพได้ ผู้เรียนไม่ต้องเริ่มเล่าเรื่องตัวเองใหม่</p></div>
       <section class="life-why"><h2><span class="life-section-num">1</span>ทำไมบทนี้ต้อง “ชิม” ด้วยภาพ</h2><div class="life-why__quote">ภาพ 1 ภาพ สื่อความหมายได้มากกว่าคำ 1,000 คำ</div><p>ซอสที่อ่านแล้วดูครบ อาจยังมีช่องว่างซ่อนอยู่ พอให้ระบบแปลงเป็นภาพ เราจะเห็นทันทีว่ามันเข้าใจตัวตน เรื่องราว อารมณ์ และสิ่งสำคัญของเราตรงหรือไม่ ก่อนเอาซอสไปทำงานจริงหลายชิ้น</p><div class="life-why__grid"><div><b>👀 เห็นความเข้าใจผิด</b><p>สิ่งที่คลุมเครือจะโผล่ออกมาเป็นคน ฉาก สี และวัตถุที่ผิด</p></div><div><b>⚡ ตรวจได้เร็ว</b><p>มองภาพครั้งเดียว เห็นทั้งสิ่งที่ตรง สิ่งที่ขาด และสิ่งที่ระบบแต่งเพิ่ม</p></div><div><b>🧴 พิสูจน์ว่าซอสใช้ได้</b><p>ถ้าซอสสร้างภาพที่เล่าเรื่องเราได้ ก็พร้อมนำไปต่อยอดกับงานอื่น</p></div></div></section>
       <div class="life-fast__steps">
-        <article class="life-fast__step"><span class="life-fast__num">2</span><div><h3>สกัดซอส .md จากแชทเดิม</h3><p>วาง Prompt นี้ในแชทที่รู้จักคุณอยู่แล้ว ระบบต้องสร้างไฟล์ทันทีโดยไม่ถามกลับ</p><div class="prompt" data-life-prompt="extract"></div></div></article>
+        <article class="life-fast__step"><span class="life-fast__num">2</span><div><h3>สกัดซอส .md จากแชทเดิม</h3><p>วาง Prompt นี้ในแชทที่รู้จักคุณอยู่แล้ว ระบบต้องสร้างไฟล์ทันทีโดยไม่ถามกลับ</p><div class="prompt" data-life-prompt="extract" data-prompt-collapse></div></div></article>
         <article class="life-fast__step"><span class="life-fast__num">3</span><div><h3>เปิดแชทใหม่ที่สร้างภาพได้</h3><p>แนบซอส .md ทุกครั้ง แล้วเลือกเส้นทางที่ตรงกับไฟล์ในมือ</p><div class="life-paths"><div class="life-path"><b>🎨 มีซอส .md อย่างเดียว</b><p>ได้ Illustration หรือตัวละครวาดที่เล่าเรื่องจากซอส โดยไม่อ้างว่าใบหน้าเหมือนตัวจริง</p></div><div class="life-path"><b>📷 มีซอส .md + รูปจริง</b><p>ได้ภาพที่รักษาใบหน้า ทรงผม และลักษณะสำคัญของคนในรูปให้ใกล้เคียงต้นฉบับ</p></div></div></div></article>
-        <article class="life-fast__step"><span class="life-fast__num">4</span><div><h3>สร้างภาพด้วยคำสั่งสั้น ๆ</h3><p>รายละเอียด 9:16 เรื่องราว สไตล์ และข้อห้ามอยู่ในซอสครบแล้ว แนบไฟล์ให้ครบ วางคำสั่งนี้ แล้วรอรับภาพได้เลย</p><div class="prompt" data-life-prompt="poster" data-prompt-guard="off"></div></div></article>
+        <article class="life-fast__step"><span class="life-fast__num">4</span><div><h3>สร้างภาพด้วยคำสั่งสั้น ๆ</h3><p>รายละเอียด 9:16 เรื่องราว สไตล์ และข้อห้ามอยู่ในซอสครบแล้ว แนบไฟล์ให้ครบ วางคำสั่งนี้ แล้วรอรับภาพได้เลย</p><div class="life-md-alert"><strong>ห้ามลืมแนบซอส</strong><span>แนบซอส .md ก่อนวาง Prompt ทุกครั้ง ถ้าต้องการภาพเหมือน ให้แนบรูปจริงพร้อมกันด้วย ไม่อย่างนั้นระบบจะไม่มีข้อมูลชีวิตเจ้าของบัญชีสำหรับสร้างภาพ</span></div><div class="prompt" data-life-prompt="poster" data-prompt-guard="off"></div></div></article>
       </div>
       <section class="life-examples"><h2>ตัวอย่างผลลัพธ์จาก Prompt เดียวกัน</h2><p>ทั้งสองภาพใช้ Prompt สร้างภาพด้านบนกับแชทใหม่ที่สร้างภาพได้ ต่างกันเพียงไฟล์ที่แนบ</p><div class="life-examples__grid"><figure class="life-example"><img data-poster-example="illustration" width="540" height="960" loading="lazy" alt="ตัวอย่างโปสเตอร์แนวตั้งแบบ Illustration เมื่อแนบเฉพาะซอส .md"><figcaption><b>🎨 แนบเฉพาะซอส .md</b><span>ได้ Illustration ที่เล่าเรื่องจากซอส โดยไม่อ้างว่าใบหน้าเหมือนตัวจริง</span></figcaption></figure><figure class="life-example"><img data-poster-example="portrait" width="540" height="960" loading="lazy" alt="ตัวอย่างโปสเตอร์แนวตั้งแบบภาพเหมือน เมื่อแนบซอส .md พร้อมรูปจริง"><figcaption><b>📷 แนบซอส .md + รูปจริง</b><span>ได้โปสเตอร์ที่เล่าเรื่องเดียวกัน พร้อมรักษาความเหมือนของบุคคลในรูป</span></figcaption></figure></div></section>
       <section class="life-taste"><h2><span class="life-section-num">5</span>ชิมภาพหลังสร้าง — อย่าเพิ่งดูแค่ว่าสวยไหม</h2><p>ภาพแรกคือกระจกที่สะท้อนว่าระบบเข้าใจซอสอย่างไร ใช้เวลา 1 นาทีตรวจ 3 เรื่อง แล้วเก็บข้อสังเกตไว้ปรับซอสในบทต่อไป</p><ol><li><b>ตรง:</b> ตัวตน เรื่องราว และอารมณ์หลักที่เห็นในภาพตรงกับคุณหรือไม่</li><li><b>ขาด:</b> สิ่งสำคัญอะไรในซอสที่ภาพไม่ได้เล่าออกมา</li><li><b>เกิน:</b> มีประวัติ ความสำเร็จ ฉาก หรือสัญลักษณ์ใดที่ระบบแต่งขึ้นเอง</li></ol></section>
@@ -657,8 +720,18 @@ function buildFastTrack(){
       <div class="life-checkcards"><div class="life-checkcard"><h3>ภาพนี้ผ่านการชิมเมื่อ</h3><label><input type="checkbox"><span>ได้ภาพแนวตั้ง 9:16 จริง 1 ภาพ</span></label><label><input type="checkbox"><span>เรื่องหลักและอารมณ์ในภาพตรงกับซอส</span></label><label><input type="checkbox"><span>ไม่มีประวัติหรือความสำเร็จที่ซอสไม่เคยบอก</span></label><label><input type="checkbox"><span>มีแค่ซอสจึงได้ Illustration หรือแนบรูปจริงแล้วใบหน้ายังตรง</span></label><label><input type="checkbox"><span>บอกได้อย่างน้อยอย่างละ 1 ข้อว่าอะไรตรง ขาด และเกิน</span></label></div><div class="life-checkcard"><h3>เจอแบบนี้ อย่าเพิ่งผ่านบท</h3><ul><li>ภาพสวย แต่ดูแล้วบอกไม่ได้ว่าเรื่องนี้เป็นเรื่องของคุณอย่างไร</li><li>มีรางวัล อาชีพ เหตุการณ์ หรือสัญลักษณ์ที่ซอสไม่เคยบอก</li><li>แนบเฉพาะซอส แต่ภาพพยายามอ้างว่าเป็นใบหน้าจริงของคุณ</li><li>แนบรูปจริงแล้ว แต่ใบหน้าและลักษณะสำคัญเปลี่ยนไปชัดเจน</li></ul></div></div>`;
     tldr.insertAdjacentElement('afterend',fast);
   }
-  setPrompt(fast.querySelector('[data-life-prompt="extract"]'),EXTRACT_PROMPT);
-  setPrompt(fast.querySelector('[data-life-prompt="poster"]'),POSTER_PROMPT);
+  const extractPrompt=fast.querySelector('[data-life-prompt="extract"]');
+  extractPrompt?.setAttribute('data-prompt-collapse','');
+  setPrompt(extractPrompt,EXTRACT_PROMPT);
+  setupPromptCollapse(extractPrompt);
+  const posterPrompt=fast.querySelector('[data-life-prompt="poster"]');
+  if(posterPrompt && !posterPrompt.previousElementSibling?.classList.contains('life-md-alert')){
+    const alert=document.createElement('div');
+    alert.className='life-md-alert';
+    alert.innerHTML='<strong>ห้ามลืมแนบซอส</strong><span>แนบซอส .md ก่อนวาง Prompt ทุกครั้ง ถ้าต้องการภาพเหมือน ให้แนบรูปจริงพร้อมกันด้วย ไม่อย่างนั้นระบบจะไม่มีข้อมูลชีวิตเจ้าของบัญชีสำหรับสร้างภาพ</span>';
+    posterPrompt.before(alert);
+  }
+  setPrompt(posterPrompt,POSTER_PROMPT);
   const examples=window.__LESSON2_POSTER_EXAMPLES__||{};
   const illustration=fast.querySelector('[data-poster-example="illustration"]');
   const portrait=fast.querySelector('[data-poster-example="portrait"]');
