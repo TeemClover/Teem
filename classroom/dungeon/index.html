@@ -602,7 +602,16 @@ footer{padding:38px 0 50px;text-align:center;color:#6b8175;font-size:13px}
   .code{font-size:11.5px;padding:13px 10px;max-height:240px}
   .viewwrap iframe{height:290px}
   .editor textarea{min-height:210px;font-size:11.5px}
-  .web{aspect-ratio:1/1.06}
+  /* จอแคบ ป้ายชื่อไฟล์กว้างเท่าเดิมแต่กล่องแคบลง เลยต้องสูงขึ้นเพื่อให้กระจายตัวตามแนวตั้งได้
+     แล้วย่อป้ายลงด้วย ไม่งั้นต่อให้กระจายยังไงก็ยังทับกันอยู่ดี (ต้องตรงกับ fs ใน fit()) */
+  .web{aspect-ratio:1/1.5;max-height:none}
+  .nd{padding:4px 7px;font-size:8px}
+  .nd.g2{font-size:7px}
+  .nd.g3{font-size:6.5px;padding:3px 5px}
+  .nd.who{font-size:7.5px}
+  /* วงกลมซอสแม่ขนาดคงที่ ถ้าไม่ย่อ กล่องแคบ ๆ จะโดนมันกินที่ไปครึ่งนึง */
+  .nd.core{width:84px;height:84px;padding:8px}
+  .nd.core b{font-size:11px}
   .chest{width:184px;height:150px}
   .c-lid{width:166px;height:66px;left:9px}
   .c-box{width:174px;height:74px;left:5px;top:70px}
@@ -2301,50 +2310,117 @@ const PATHW = (() => {
 function webPlan(W, H){
   const cx = W/2, cy = H/2, R = Math.min(W,H);
   const gen = Math.min(3, S.gen);
+  /* กล่องแคบ = ป้ายชนกันตามแนวนอน แต่มีที่เหลือตามแนวตั้ง
+     เลยบีบรัศมีแกน X เข้า ดันแกน Y ออก และกางมุมพี่น้องให้ห่างขึ้น */
+  const narrow = W < 520;
+  const xk = narrow ? .78 : 1;
+  const yk = narrow ? 1.12 : .9;
+  const r1 = narrow ? .19 : .2, r2 = narrow ? .38 : .34, r3 = narrow ? .56 : .47;
+  const k2 = narrow ? .70 : .52;                    /* มุมกางของ gen2 */
+  const k3 = narrow ? .36 : .3;                     /* มุมกางของ gen3 */
+  const fs = narrow ? .86 : 1;                      /* จอแคบย่อฟอนต์ ป้ายเลยแคบลงตาม */
   const nodes = [], wires = [];
-  const N = (id, label, cls, x, y, delay) => { nodes.push({ id, label, cls, x, y, delay }); pos[id] = { x, y }; };
-  const L = (id, a, b, cls, delay) => wires.push({ id, x1:a.x, y1:a.y, x2:b.x, y2:b.y, cls, delay });
+  /* เก็บขนาดป้ายไว้กับก้อนเลย เพราะต้องใช้ทั้งตอนกันชนกันเองและตอนดันเข้ากรอบ
+     กะจากจำนวนตัวอักษร (mono กว้างราว .62 ของ font-size) */
+  const N = (id, label, cls, x, y, delay, fontPx, padPx, padBottom = 6) => {
+    const hw = (label.length * fontPx * fs * .62 + padPx * fs) / 2;
+    nodes.push({ id, label, cls, x, y, delay, hw, hh: 10, padBottom });
+  };
+  /* เส้นเก็บเป็น "ชื่อก้อน" ไม่ใช่พิกัด เพราะก้อนยังต้องขยับหลบกันอีกหลายรอบ
+     ค่อยแปลงเป็นพิกัดตอนท้ายสุด ปลายเส้นจะได้ตรงกับตำแหน่งจริงเสมอ */
+  const L = (id, a, b, cls, delay) => wires.push({ id, a, b, cls, delay });
 
-  N('core', '', 'core', cx, cy, 0);
+  nodes.push({ id:'core', label:'', cls:'core', x:cx, y:cy, delay:0, hw:0, hh:0, core:true });
   const roots = TREE.concat(S.spoon ? [{ id:'mine', label:MINE[S.spoon], kids:[
     { id:'mine2', label:'my-notes.md', kids:[{ id:'mine3', label:'my-next.md' }] }] }] : []);
   const n1 = roots.length;
   roots.forEach((r,i) => {
     const a = -Math.PI/2 + (i/n1)*Math.PI*2;
-    const p1 = { x: cx + Math.cos(a)*R*.2, y: cy + Math.sin(a)*R*.2*.9 };
-    pos[r.id] = p1;
+    const p1 = { x: cx + Math.cos(a)*R*r1*xk, y: cy + Math.sin(a)*R*r1*yk };
     if (gen >= 1){
-      L('core-' + r.id, { x:cx, y:cy }, p1, '', i*.05);
-      N(r.id, r.label, r.id === 'mine' ? 'mine' : '', p1.x, p1.y, .1 + i*.05);
+      L('core-' + r.id, 'core', r.id, '', i*.05);
+      N(r.id, r.label, r.id === 'mine' ? 'mine' : '', p1.x, p1.y, .1 + i*.05, 9, 16);
     }
     if (gen < 2) return;
     r.kids.forEach((k,j) => {
-      const a2 = a + (j - (r.kids.length-1)/2) * .52;
-      const p2 = { x: cx + Math.cos(a2)*R*.34, y: cy + Math.sin(a2)*R*.34*.9 };
-      L(r.id + '-' + k.id, p1, p2, '', .3 + j*.07);
-      N(k.id, k.label, 'g2' + (r.id === 'mine' ? ' mine' : ''), p2.x, p2.y, .4 + j*.07);
+      const a2 = a + (j - (r.kids.length-1)/2) * k2;
+      const p2 = { x: cx + Math.cos(a2)*R*r2*xk, y: cy + Math.sin(a2)*R*r2*yk };
+      L(r.id + '-' + k.id, r.id, k.id, '', .3 + j*.07);
+      N(k.id, k.label, 'g2' + (r.id === 'mine' ? ' mine' : ''), p2.x, p2.y, .4 + j*.07, 8, 16);
       if (gen < 3) return;
       (k.kids || []).forEach((g,m) => {
-        const a3 = a2 + (m - ((k.kids.length-1)/2)) * .3;
-        const p3 = { x: cx + Math.cos(a3)*R*.47, y: cy + Math.sin(a3)*R*.47*.92 };
-        L(k.id + '-' + g.id, p2, p3, '', .7 + m*.05);
-        N(g.id, g.label, 'g3', p3.x, p3.y, .8 + m*.05);
+        const a3 = a2 + (m - ((k.kids.length-1)/2)) * k3;
+        const p3 = { x: cx + Math.cos(a3)*R*r3*xk, y: cy + Math.sin(a3)*R*r3*yk };
+        L(k.id + '-' + g.id, k.id, g.id, '', .7 + m*.05);
+        N(g.id, g.label, 'g3', p3.x, p3.y, .8 + m*.05, 7, 10);
       });
     });
   });
   if (gen >= 3){
-    CROSS.forEach(([a,b],i) => {
-      if (!pos[a] || !pos[b]) return;
-      L('x' + i, pos[a], pos[b], 'cross', 1.1 + i*.08);
-    });
-    [['you','มึง · HUMAN','who',-Math.PI/2],['aip','AI PARTY','who ai',Math.PI/6],['guild','คนอื่นในกิลด์','who',Math.PI*5/6]]
-      .forEach(([id,label,cls,a],i) => {
-        const p = { x: cx + Math.cos(a)*R*.5, y: cy + Math.sin(a)*R*.5*.95 };
-        L('feed-' + id, p, { x:cx, y:cy }, 'feed', 1.3 + i*.1);
-        N(id, label, cls, p.x, p.y, 1.4 + i*.1);
+    /* สามก้อนนี้ไม่ใช่ไฟล์ มันคือคนกับ AI ที่ป้อนกลับเข้าซอสแม่
+       วางไว้ริมกล่องแทนการวางบนวงกลม เพราะต้นไม้กินพื้นที่วงกลมไปเกือบหมดแล้ว
+       padBottom เผื่อเยอะกว่าก้อนอื่น เพราะแถบ NODES/GEN นั่งอยู่ขอบล่าง */
+    const topY = narrow ? .045 : .10, botY = narrow ? .93 : .88;
+    [['you','ผู้ใช้','who',.15,topY],
+     ['aip','AI Party','who ai',.85,topY],
+     ['guild','คนอื่นๆ','who',.15,botY]]
+      .forEach(([id,label,cls,fx,fy],i) => {
+        L('feed-' + id, id, 'core', 'feed', 1.3 + i*.1);
+        N(id, label, cls, W*fx, H*fy, 1.4 + i*.1, 9, 18, 34);
       });
   }
-  return { gen, nodes, wires };
+
+  /* ── ดันก้อนที่ทับกันให้แยกออกจากกัน ──────────────────────
+     วางตามวงกลมอย่างเดียวไม่พอ เพราะป้ายแต่ละอันกว้างไม่เท่ากัน พอกล่องแคบ
+     ก้อนที่มุมใกล้กันจะทับกันเสมอไม่ว่าจะปรับค่ารัศมี/มุมยังไง
+     รอบนี้เลยดันแยกตรง ๆ ทีละคู่ แล้วดันกลับเข้ากรอบ ทำซ้ำจนไม่มีคู่ไหนทับกัน
+     ผลลัพธ์คงที่ทุกครั้ง (ไม่มีการสุ่ม) ตำแหน่งจึงไม่กระโดดตอน resize */
+  const loose = nodes.filter(n => !n.core);
+  const coreR = (narrow ? 42 : 52) + 6;
+  const clamp = n => {
+    n.x = Math.max(n.hw + 5, Math.min(W - n.hw - 5, n.x));
+    n.y = Math.max(n.hh + 5, Math.min(H - n.hh - n.padBottom, n.y));
+  };
+  for (let pass = 0; pass < 80; pass++){
+    let hits = 0;
+    for (let i = 0; i < loose.length; i++){
+      const A = loose[i];
+      for (let j = i + 1; j < loose.length; j++){
+        const B = loose[j];
+        const dx = B.x - A.x, dy = B.y - A.y;
+        const needX = A.hw + B.hw + 5, needY = A.hh + B.hh + 4;
+        const ox = needX - Math.abs(dx), oy = needY - Math.abs(dy);
+        if (ox <= 0 || oy <= 0) continue;
+        hits++;
+        if (oy <= ox){                              /* แยกตามแกนที่ต้องขยับน้อยกว่า */
+          const s = (dy >= 0 ? 1 : -1) * oy / 2;
+          A.y -= s; B.y += s;
+        } else {
+          const s = (dx >= 0 ? 1 : -1) * ox / 2;
+          A.x -= s; B.x += s;
+        }
+      }
+      const vx = A.x - cx, vy = A.y - cy, d = Math.hypot(vx, vy) || 1;
+      const keep = coreR + Math.min(A.hw, 26);      /* อย่าให้ก้อนไหนทับวงซอสแม่ */
+      if (d < keep){ A.x = cx + vx / d * keep; A.y = cy + vy / d * keep; hits++; }
+    }
+    loose.forEach(clamp);
+    if (!hits) break;
+  }
+  nodes.forEach(n => { pos[n.id] = { x:n.x, y:n.y }; });
+
+  const at = id => pos[id] || { x:cx, y:cy };
+  const laid = wires.map(w => {
+    const A = at(w.a), B = at(w.b);
+    return { id:w.id, x1:A.x, y1:A.y, x2:B.x, y2:B.y, cls:w.cls, delay:w.delay };
+  });
+  if (gen >= 3){
+    CROSS.forEach(([a,b],i) => {
+      if (!pos[a] || !pos[b]) return;
+      laid.push({ id:'x' + i, x1:pos[a].x, y1:pos[a].y, x2:pos[b].x, y2:pos[b].y, cls:'cross', delay:1.1 + i*.08 });
+    });
+  }
+  return { gen, nodes, wires: laid };
 }
 function placeWire(el, w){
   el.style.left = w.x1 + 'px';
