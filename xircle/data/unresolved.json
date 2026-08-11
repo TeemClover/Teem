@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "last_reviewed": "2026-08-11",
+  "items": [
+    {"id":"habit-score-formula","label":"Habit Score production formula","status":"need_source","rule":"Do not infer weights/normalization from narrative."},
+    {"id":"food-score-formula","label":"Food Score production formula","status":"need_source"},
+    {"id":"bio-age-formula","label":"Bio Age production formula","status":"need_source"},
+    {"id":"maxage-formula","label":"MaxAge™ production formula","status":"need_source"},
+    {"id":"dna-dynamic","label":"DNA dynamic algorithm","status":"need_source"},
+    {"id":"xgen-qualification","label":"X-GEN qualification engine / latest official qualification","status":"provisional"},
+    {"id":"revenue-calculator","label":"Definitive revenue calculator","status":"provisional","rule":"Do not guarantee income."},
+    {"id":"flavor-final-names","label":"Flavor+ final naming / selector logic","status":"provisional"},
+    {"id":"k2","label":"K2 calculation / dose conversion","status":"need_source"},
+    {"id":"probiotic-cfu","label":"Probiotic CFU display","status":"need_source"}
+  ]
+}
