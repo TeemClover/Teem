@@ -59,7 +59,7 @@ function setPrompt(el,text){
     }
   }
   if(button)return;
-  const copyLabel=el.hasAttribute('data-prompt-collapse')?'Copy Prompt':'คัดลอก';
+  const copyLabel='คัดลอก';
   button=document.createElement('button');
   button.type='button';button.className='cpx';button.textContent=copyLabel;button.setAttribute('aria-label','คัดลอกคำสั่ง');
   button.setAttribute('data-copy-full','true');
@@ -96,7 +96,7 @@ function setupPromptCollapse(el){
   el.classList.add('prompt-collapsible');
   if(!el.hasAttribute('data-expanded'))el.dataset.expanded='false';
   const copy=el.querySelector('.cpx');
-  if(copy)copy.textContent='Copy Prompt';
+  if(copy)copy.textContent='คัดลอก';
   let toggle=el.querySelector('.prompt-expand');
   if(!toggle){
     toggle=document.createElement('button');
@@ -146,10 +146,12 @@ function injectStyle(){
     .video-done{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
     .video-done label{display:flex;gap:9px;align-items:flex-start;padding:11px 12px;border:1px solid rgb(var(--ink)/.1);border-radius:12px;background:rgb(var(--paper)/.5);font-size:13px;line-height:1.55;cursor:pointer}
     .video-done input{width:18px;height:18px;margin-top:2px;accent-color:rgb(var(--green));flex:none}
-    .video-example{margin-top:15px;padding:18px;border:1px solid rgb(var(--green)/.22);border-radius:18px;background:linear-gradient(145deg,#fff,rgb(var(--green)/.045));box-shadow:0 10px 28px rgb(18 40 28/.06)}
-    .video-example__head b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:19px;color:rgb(var(--deep))}.video-example__head p{margin-top:4px;color:rgb(var(--muted));font-size:14px!important}
+    .video-example{margin-top:15px;padding:18px;border:1px solid rgb(var(--ink)/.1);border-radius:17px;background:rgb(var(--paper)/.55)}
+    .video-example>h2{font-family:"Bai Jamjuree",sans-serif;font-size:20px;color:rgb(var(--deep))}.video-example>p{margin-top:4px;color:rgb(var(--muted));font-size:14px!important}
     .video-example__grid{display:grid;grid-template-columns:minmax(280px,1.05fr) 1fr;gap:18px;align-items:center;margin-top:14px}
-    .video-example video{display:block;width:100%;aspect-ratio:16/9;border-radius:16px;background:#07180f;object-fit:contain;box-shadow:0 14px 32px rgb(4 30 18/.18)}
+    .video-example__media{overflow:hidden;margin:0;border:1px solid rgb(var(--ink)/.12);border-radius:15px;background:#fff}
+    .video-example video{display:block;width:100%;aspect-ratio:16/9;background:#07180f;object-fit:contain}
+    .video-example figcaption{padding:13px 14px}.video-example figcaption b{display:block;font-family:"Bai Jamjuree",sans-serif;color:rgb(var(--deep));font-size:15px}.video-example figcaption span{display:block;margin-top:3px;color:rgb(var(--muted));font-size:13px;line-height:1.65}
     .video-example__note{padding:17px;border:1px solid rgb(var(--gold)/.3);border-radius:15px;background:rgb(var(--gold)/.075)}
     .video-example__note h3{font-family:"Bai Jamjuree",sans-serif;font-size:18px;color:#6c4c13}.video-example__note>p{margin-top:5px;color:rgb(var(--muted));font-size:14px!important}
     .video-example__note ol{display:grid;gap:9px;margin:14px 0 0;padding:0;list-style:none;counter-reset:video-fix}
@@ -160,6 +162,7 @@ function injectStyle(){
     .video-optional summary{cursor:pointer;padding:16px 18px;font-family:"Bai Jamjuree",sans-serif;font-weight:800;color:#6f5119;list-style:none}
     .video-optional summary::-webkit-details-marker{display:none}.video-optional summary::after{content:'＋';float:right;font-size:20px}.video-optional[open] summary::after{content:'−'}
     .video-optional__body{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px}
+    .video-optional__intro{grid-column:1/-1;padding:12px 14px;border-radius:12px;background:rgb(var(--green)/.08);color:rgb(var(--muted));font-size:13px;line-height:1.65}
     .video-option{padding:15px;border:1px solid rgb(var(--ink)/.1);border-radius:14px;background:#fff}
     .video-option b{display:block;color:rgb(var(--deep));font-size:15px}.video-option p{margin-top:4px;color:rgb(var(--muted));font-size:13px!important;line-height:1.65!important}.video-option em{display:inline-block;margin-top:7px;color:rgb(var(--green));font-size:12px;font-style:normal;font-weight:750}
     @media(max-width:720px){.video-fast__why,.video-done,.video-example__grid,.video-optional__body{grid-template-columns:1fr}.video-step{grid-template-columns:32px 1fr;padding:16px 14px}}
@@ -202,13 +205,13 @@ function buildFastTrack(){
         <article class="video-step"><span class="video-step__num">3</span><div><h3>กดสร้าง แล้วเช็กว่าเล่นได้จริง</h3><p>จบบทเมื่อมีไฟล์วิดีโอที่เปิดดูได้ ไม่ต้องพากย์ ไม่ต้องตัดต่อ และไม่ต้องถ่ายเพิ่ม</p><div class="video-done"><label><input type="checkbox"><span>เปิดเล่นเป็นวิดีโอได้จริง</span></label><label><input type="checkbox"><span>ความยาวไม่เกิน 10 วินาที</span></label><label><input type="checkbox"><span>เป็นภาพแนวตั้ง 9:16</span></label><label><input type="checkbox"><span>ดูแล้วเชื่อมโยงกับเรื่องชีวิตเจ้าของบัญชีได้</span></label></div></div></article>
       </div>
       <section class="video-example" aria-labelledby="lesson3VideoExampleTitle">
-        <div class="video-example__head"><b id="lesson3VideoExampleTitle">ตัวอย่างวิดีโอที่ได้จากซอส</b><p>กดเล่นเพื่อดูแนวทางการเล่าเรื่องและคุณภาพผลลัพธ์ ส่วนงานของคุณให้ตั้งเป็นแนวตั้ง 9:16 ตามเช็กลิสต์</p></div>
+        <h2 id="lesson3VideoExampleTitle">ตัวอย่างผลลัพธ์จากซอส</h2><p>รูปแบบเดียวกับตัวอย่างภาพในบท 2: ดูผลงานจริงก่อน แล้วค่อยชิมว่าซอสเล่าเรื่องได้ตรงแค่ไหน ส่วนงานของคุณให้ตั้งเป็นแนวตั้ง 9:16 ตามเช็กลิสต์</p>
         <div class="video-example__grid">
-          <video controls playsinline preload="metadata" data-video-example aria-label="วิดีโอตัวอย่างบทที่ 3"></video>
+          <figure class="video-example__media"><video controls playsinline preload="metadata" data-video-example aria-label="วิดีโอตัวอย่างบทที่ 3"></video><figcaption><b>🎬 วิดีโอที่สร้างจากซอส</b><span>กดเล่นเพื่อดูแนวทางการเล่าเรื่องและคุณภาพผลลัพธ์ก่อนทำของตัวเอง</span></figcaption></figure>
           <div class="video-example__note"><h3>Video AI ยังผิดพลาดและมีความสุ่ม</h3><p>ภาพ คน วัตถุ หรือการเคลื่อนไหวอาจเพี้ยนได้ แม้ซอสจะชัดเจนแล้วก็ตาม ถ้าผลยังไม่ถูกใจ ให้แก้แบบนี้</p><ol><li><b>ยังไม่ใกล้เลย:</b> ลองสร้างใหม่จากซอสเดิมก่อน ผลรอบใหม่อาจต่างจากเดิมมาก</li><li><b>ใกล้แล้ว:</b> บอกจุดที่อยากแก้ทีละนิดด้วยภาษาพูด เช่น “คงทุกอย่างไว้ แก้เฉพาะมือขวาให้เป็นธรรมชาติ”</li><li><b>แก้ทีละเรื่อง:</b> อย่ารวมหลายจุดไว้ในครั้งเดียว เพราะส่วนที่ดีอยู่แล้วอาจเปลี่ยนตาม</li></ol><p class="video-example__luck">คำสั่งเหมือนกันก็อาจได้ผลไม่เหมือนกัน — ดวงมีผล เผื่อเวลาลอง 2–3 รอบ</p></div>
         </div>
       </section>
-      <details class="video-optional"><summary>เปิดเควสเพิ่ม (Optional) · อยากใส่ความเป็นมนุษย์มากขึ้น</summary><div class="video-optional__body"><div class="video-option"><b>4 · เติมเสียงของคุณ</b><p>อัดเสียงสั้น ๆ หนึ่ง Take แล้วแนบเพิ่มให้วิดีโอ ใช้ประโยคที่คุณพูดได้จริง ไม่ต้องเขียนบทใหม่ทั้งชุด</p><em>ไม่ทำก็จบบทได้</em></div><div class="video-option"><b>5 · เติมภาพถ่ายจริง</b><p>ถ่ายเพียงหนึ่งช็อตง่าย ๆ เช่น มือทำงาน โต๊ะ หรือสถานที่จริง แล้วใช้เป็นวัตถุดิบเพิ่ม ไม่ต้องถ่ายครบทุกฉาก</p><em>ไม่ทำก็จบบทได้</em></div></div></details>
+      <details class="video-optional"><summary>เปิดขั้น 4–5 (Optional) · เชื่อมวิดีโอกับตัวตนมากขึ้น</summary><div class="video-optional__body"><p class="video-optional__intro">สองขั้นนี้ช่วยให้งานเชื่อมโยงกับตัวตนผ่านเสียงและภาพจริงมากขึ้น แต่ไม่บังคับ ถ้าต้องการใช้ Video AI ล้วนก็จบบทได้</p><div class="video-option"><b>4 · ใส่ CapCut แล้วพูดด้วยเสียงของคุณ</b><p>นำวิดีโอที่ได้เข้า CapCut แล้วอัดเสียงพูดทับ ถ้าคิดคำพูดไม่ออก ให้ AI ช่วยร่างสคริปต์จากซอส แล้วปรับให้เป็นคำที่คุณพูดจริง</p><em>เพิ่มเสียงและมุมมองของเจ้าของเรื่อง</em></div><div class="video-option"><b>5 · ตัดต่อผสมกับคลิปจริง</b><p>แทรกคลิปจริงของคุณเป็นภาพประกอบการพูด เช่น มือทำงาน โต๊ะ สถานที่ หรือช่วงชีวิตที่เกี่ยวข้อง ไม่ต้องถ่ายใหม่ครบทุกฉาก</p><em>เพิ่มหลักฐานและบรรยากาศจากชีวิตจริง</em></div></div></details>
       <div class="chef-note"><b>เชฟชิมแล้ว</b><p>วันนี้ขอแค่ได้วิดีโอที่เปิดเล่นได้หนึ่งชิ้นก็ผ่านค่ะ เสียงและภาพถ่ายจริงเป็นเควสเพิ่ม อยากทำเมื่อไรค่อยเปิดค่ะ</p></div>`;
     tldr.insertAdjacentElement('afterend',fast);
   }
