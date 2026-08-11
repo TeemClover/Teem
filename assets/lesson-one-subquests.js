@@ -8,7 +8,7 @@ const WALK_KEY = 'mc_walk_done';
 const ROOT_ID = 'lessonOneSubquests';
 
 function onLessonOne() {
-  return location.pathname === LESSON_ONE_PATH;
+  return location.pathname.endsWith(LESSON_ONE_PATH);
 }
 
 function read(key, fallback = '') {

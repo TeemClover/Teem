@@ -1,13 +1,13 @@
 /* AI ใส่ซอส · บท 6 — ทางเดินก่อนพบบอส
    - ข้อความ takeover อยู่จนผู้เล่นกดรับทราบเอง
-   - ใช้ภาพประตูจริงชุดเดียวกับหน้ารวมบทเรียน
+   - ใช้ SVG ประตูที่ฝังในหน้า เพื่อให้บทเรียนเป็นไฟล์เดียว
    - คงสัญญาณ glitch เบา ๆ หลังประตูปรากฏ
    - ก่อนเข้าด่านบอสใช้สรรพนาม คุณ / มัน เท่านั้น
    - ห้องบอสหลัก /classroom/awaken กำลังสร้างใหม่: ใช้ /boss/ เป็นห้องสำรองชั่วคราว
 */
 
 function isLessonSix() {
-  return /^\/classroom\/first-web\.html$/.test(location.pathname);
+  return /\/classroom\/first-web\.html$/.test(location.pathname);
 }
 
 function addStyles() {
@@ -66,7 +66,7 @@ function addStyles() {
     body.lesson6-boss-transition .boss-door::before,
     body.lesson6-boss-transition .boss-door::after{display:none!important}
     .lesson6-boss-art{position:absolute;z-index:-2;inset:0;width:100%;height:100%}
-    .lesson6-boss-art img{width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.92) contrast(1.08) brightness(.78)}
+    .lesson6-boss-art svg{display:block;width:100%;height:100%}
     .lesson6-boss-shade{
       position:absolute;z-index:-1;inset:0;
       background:linear-gradient(180deg,rgba(0,0,0,.02) 22%,rgba(2,8,5,.26) 54%,rgba(2,8,5,.93) 100%),
@@ -95,7 +95,6 @@ function addStyles() {
     @media(max-width:560px){
       .lesson6-signal{padding:18px}.lesson6-signal p{font-size:16px}
       body.lesson6-boss-transition .boss-door{min-height:500px}
-      .lesson6-boss-art img{object-position:center}
       body.lesson6-boss-transition .door-copy{padding:260px 18px 24px}
     }
     @media(prefers-reduced-motion:reduce){
@@ -110,18 +109,33 @@ function addStyles() {
 
 function installDoorArt(bossDoor) {
   if (!bossDoor || bossDoor.querySelector('.lesson6-boss-art')) return;
-  const picture = document.createElement('picture');
-  picture.className = 'lesson6-boss-art';
-  picture.innerHTML = `
-    <source type="image/webp" media="(max-width:640px)" srcset="../img/awaken-hero-640.webp">
-    <source type="image/webp" srcset="../img/awaken-hero-1024.webp">
-    <img src="../img/awaken-hero.jpg" width="1600" height="900" loading="eager" decoding="async"
-         alt="ประตูด่านบอสในห้องโถงมืด มีแสงลอดผ่านกลางประตู">`;
-  bossDoor.prepend(picture);
+  const art = document.createElement('div');
+  art.className = 'lesson6-boss-art';
+  art.innerHTML = `
+    <svg viewBox="0 0 1200 700" role="img" aria-labelledby="lesson6DoorTitle lesson6DoorDesc" xmlns="http://www.w3.org/2000/svg">
+      <title id="lesson6DoorTitle">ประตูด่านบอส</title>
+      <desc id="lesson6DoorDesc">ประตูในห้องโถงมืด มีแสงสีทองลอดผ่านตรงกลาง</desc>
+      <defs>
+        <radialGradient id="lesson6Hall" cx="50%" cy="42%" r="75%"><stop stop-color="#173224"/><stop offset="1" stop-color="#010503"/></radialGradient>
+        <linearGradient id="lesson6Door" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10271b"/><stop offset="1" stop-color="#020704"/></linearGradient>
+        <linearGradient id="lesson6Light" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0a5" stop-opacity=".95"/><stop offset="1" stop-color="#be9442" stop-opacity=".05"/></linearGradient>
+        <filter id="lesson6Glow"><feGaussianBlur stdDeviation="14"/></filter>
+      </defs>
+      <rect width="1200" height="700" fill="url(#lesson6Hall)"/>
+      <path d="M0 590L325 420h550l325 170v110H0Z" fill="#06100a"/>
+      <path d="M350 600V125Q350 55 420 55h360q70 0 70 70v475Z" fill="#1d3528" stroke="#4d6b57" stroke-width="10"/>
+      <path d="M390 600V145q0-50 50-50h160v505Z" fill="url(#lesson6Door)"/>
+      <path d="M810 600V145q0-50-50-50H600v505Z" fill="url(#lesson6Door)"/>
+      <path d="M586 120h28v480h-28Z" fill="#f1cd6d" opacity=".72" filter="url(#lesson6Glow)"/>
+      <path d="M594 120h12v480h-12Z" fill="#fff3bd"/>
+      <path d="M440 590h320l170 110H270Z" fill="url(#lesson6Light)" opacity=".58"/>
+      <circle cx="560" cy="350" r="8" fill="#d8b65c"/><circle cx="640" cy="350" r="8" fill="#d8b65c"/>
+    </svg>`;
+  bossDoor.prepend(art);
   const shade = document.createElement('span');
   shade.className = 'lesson6-boss-shade';
   shade.setAttribute('aria-hidden', 'true');
-  picture.insertAdjacentElement('afterend', shade);
+  art.insertAdjacentElement('afterend', shade);
 }
 
 function rewriteCopy(takeover, bossDoor, bossLock) {

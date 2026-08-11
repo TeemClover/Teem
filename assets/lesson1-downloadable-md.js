@@ -4,7 +4,7 @@
 */
 
 function isLessonOne() {
-  return /^\/classroom\/free-ai(?:\.html)?$/.test(location.pathname);
+  return /\/classroom\/free-ai(?:\.html)?$/.test(location.pathname);
 }
 
 const OUTPUT_CONTRACT = `ผลลัพธ์สุดท้ายที่ต้องส่ง:

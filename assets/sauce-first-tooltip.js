@@ -1,6 +1,5 @@
 /* AI ใส่ซอส · อธิบายคำว่า “ซอส” ครั้งแรกของแต่ละบท */
 const SAUCE_DEFINITION = 'Source คือชุดข้อมูลต้นทางที่ AI ต้องยึดเป็นฐาน เช่น เป้าหมาย ข้อเท็จจริง กติกา ตัวอย่าง น้ำเสียง และข้อห้ามที่จำเป็นต่องาน';
-const CANON_DEFINITION = 'Canon คือรายละเอียดที่ตัดสินใจแล้วและต้องเหมือนเดิมในทุก Output เช่น ชื่อ สี ยุค บุคลิก ข้อความหลัก และสิ่งที่ห้ามเปลี่ยน';
 
 const LESSONS = {
   'lesson-0': {
@@ -20,7 +19,7 @@ const LESSONS = {
     relation: 'บทนี้ใช้ซอสคุมสาร ตัวตน และข้อเท็จจริง ก่อนแปลงให้เป็นคลิปสั้นที่พาคนดูไปสู่ Action เดียวที่ชัดเจน'
   },
   'learn:notebooklm': {
-    label: 'บทที่ 4 · Multiply',
+    label: 'บทที่ 4 · Split',
     relation: 'บทนี้ใช้ซอสขวดเดียวแตกเป็นภาพ สไลด์ เสียง และงานหลายรูปแบบ โดยไม่ให้ข้อเท็จจริงหรือ Canon เพี้ยน'
   },
   'learn:prompts': {
@@ -131,30 +130,27 @@ function positionPopover(button, pop) {
   pop.style.setProperty('--arrow-left', `${Math.max(18, Math.min(rect.left + rect.width / 2 - left - 6, width - 30))}px`);
 }
 
-function track(config, term) {
+function track(config) {
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event:term === 'canon' ? 'canon_hero_tooltip_open' : 'sauce_first_tooltip_open', lesson:config.id });
+  window.dataLayer.push({ event:'sauce_first_tooltip_open', lesson:config.id });
 }
 
-function openPopover(button, config, shouldPin = false, term = 'sauce') {
+function openPopover(button, config, shouldPin = false) {
   clearTimeout(hideTimer);
   if (activeButton && activeButton !== button) activeButton.setAttribute('aria-expanded', 'false');
   activeButton = button;
   pinned = shouldPin || (pinned && activeButton === button);
   const pop = popover();
   pop.querySelector('.mc-sauce-pop__tag').textContent = config.label;
-  const isCanon = term === 'canon';
-  pop.querySelector('h3').textContent = isCanon ? 'Canon = สิ่งที่ต้องคงเดิม' : 'ซอส = Source';
-  pop.querySelector('.mc-sauce-pop__definition').textContent = isCanon ? CANON_DEFINITION : SAUCE_DEFINITION;
-  pop.querySelector('.mc-sauce-pop__relation').innerHTML = isCanon
-    ? '<b>เกี่ยวกับบทนี้:</b> ใช้ภาพทดสอบว่า AI รักษา Canon ได้หรือยัง ถ้าภาพหลุด ให้แก้ซอสต้นทางก่อนสร้างใหม่'
-    : `<b>เกี่ยวกับบทนี้:</b> ${config.relation}`;
+  pop.querySelector('h3').textContent = 'ซอส = Source';
+  pop.querySelector('.mc-sauce-pop__definition').textContent = SAUCE_DEFINITION;
+  pop.querySelector('.mc-sauce-pop__relation').innerHTML = `<b>เกี่ยวกับบทนี้:</b> ${config.relation}`;
   button.setAttribute('aria-expanded', 'true');
   pop.dataset.open = '1';
   requestAnimationFrame(() => positionPopover(button, pop));
   if (button.dataset.mcTermTracked !== '1') {
     button.dataset.mcTermTracked = '1';
-    track(config, term);
+    track(config);
   }
 }
 
@@ -173,20 +169,20 @@ function scheduleClose() {
   hideTimer = setTimeout(closePopover, 130);
 }
 
-function bindTermButton(button, config, term) {
+function bindTermButton(button, config) {
   button.addEventListener('click', event => {
     event.stopPropagation();
     if (button.getAttribute('aria-expanded') === 'true' && pinned) closePopover();
-    else openPopover(button, lessonConfig() || config, true, term);
+    else openPopover(button, lessonConfig() || config, true);
   });
   button.addEventListener('pointerenter', event => {
-    if (event.pointerType === 'mouse') openPopover(button, lessonConfig() || config, false, term);
+    if (event.pointerType === 'mouse') openPopover(button, lessonConfig() || config, false);
   });
   button.addEventListener('pointerleave', event => {
     if (event.pointerType === 'mouse') scheduleClose();
   });
   button.addEventListener('focus', () => requestAnimationFrame(() => {
-    if (button.matches(':focus-visible')) openPopover(button, lessonConfig() || config, false, term);
+    if (button.matches(':focus-visible')) openPopover(button, lessonConfig() || config, false);
   }));
   button.addEventListener('blur', scheduleClose);
 }
@@ -216,34 +212,12 @@ function wrapFirstSauce() {
   const fragment = document.createDocumentFragment();
   fragment.append(text.nodeValue.slice(0, index), button, text.nodeValue.slice(index + 3));
   text.replaceWith(fragment);
-  bindTermButton(button, config, 'sauce');
-  return true;
-}
-
-function wrapHeroCanon() {
-  const config = lessonConfig();
-  const root = contentRoot();
-  if (!config || config.id !== 'learn:image-ai' || !root || root.querySelector('[data-mc-canon-term]')) return false;
-  const text = firstTermText(root, 'Canon');
-  if (!text) return false;
-  const index = text.nodeValue.indexOf('Canon');
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'mc-sauce-term mc-canon-term';
-  button.dataset.mcCanonTerm = '1';
-  button.setAttribute('aria-expanded', 'false');
-  button.setAttribute('aria-haspopup', 'dialog');
-  button.innerHTML = 'Canon<span class="mc-sauce-term__q" aria-hidden="true">?</span>';
-  const fragment = document.createDocumentFragment();
-  fragment.append(text.nodeValue.slice(0, index), button, text.nodeValue.slice(index + 5));
-  text.replaceWith(fragment);
-  bindTermButton(button, config, 'canon');
+  bindTermButton(button, config);
   return true;
 }
 
 function wrapHeroTerms() {
   wrapFirstSauce();
-  wrapHeroCanon();
 }
 
 function apply() {

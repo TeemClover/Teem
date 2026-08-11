@@ -58,7 +58,7 @@ function addStyle(){
       display:inline;border-bottom:1px dashed currentColor;font:inherit;font-weight:800;color:inherit;
       cursor:help;outline:none
     }
-    .chef-term::after{content:" ?";font-size:.72em;vertical-align:.12em;opacity:.75}
+    .chef-term::after{content:none}
     .chef-term:focus-visible{outline:2px solid rgb(var(--gold));outline-offset:3px;border-radius:4px}
     .chef-pop{
       position:fixed;z-index:140;width:min(340px,calc(100vw - 28px));padding:12px 14px;
@@ -228,8 +228,8 @@ function rewriteReviewAndNext(){
       nextrow.parentNode.insertBefore(existing,nextrow);
     }
     var links=nextrow.querySelectorAll('a');
-    if(links[0])links[0].textContent='← บทที่ 4 · MULTIPLY';
-    if(links[1])links[1].innerHTML='🍽️ บทที่ 6 · SERVE — MAIN COURSE →';
+    if(links[0])links[0].textContent='← บท 4 · ซอสขวดเดียว แตกได้หลายเมนู';
+    if(links[1])links[1].textContent='บท 6 · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต →';
   }
 }
 

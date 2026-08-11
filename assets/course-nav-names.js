@@ -22,7 +22,8 @@ const NAV = {
 };
 
 function mount() {
-  const config = NAV[location.pathname];
+  const path = Object.keys(NAV).find(candidate => location.pathname.endsWith(candidate));
+  const config = path && NAV[path];
   if (!config) return;
 
   const row = document.querySelector('.nextrow, .next');
