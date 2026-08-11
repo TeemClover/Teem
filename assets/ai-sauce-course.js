@@ -1,6 +1,6 @@
 /* myClover · AI ใส่ซอส — presentation layer
    เนื้อหาหลักของบทเรียนยังอยู่ในหน้าเดิม ไฟล์นี้เติมเสียงของเชฟ
-   และทำให้หน้ารวมสะท้อน SOURCE → TASTE → COOK → MULTIPLY → SEASON → SERVE
+   และทำให้หน้ารวมสะท้อน SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE
 */
 
 function setMeta(name, value) {
@@ -51,7 +51,7 @@ function addCourseStyles() {
 }
 
 function enhanceLessonOne() {
-  if (!/^\/classroom\/free-ai\.html$/.test(location.pathname)) return;
+  if (!/\/classroom\/free-ai\.html$/.test(location.pathname)) return;
   if (document.body.classList.contains('lesson-one-chef')) return;
   addCourseStyles();
   document.body.classList.add('lesson-one-chef');
@@ -107,7 +107,7 @@ const COURSE = [
   },
   {
     emoji: '🍱',
-    level: 'MULTIPLY',
+    level: 'SPLIT',
     title: 'ซอสขวดเดียว แตกได้หลายเมนู',
     description: 'แตกซอสเป็นภาพ สไลด์ เสียง FAQ คู่มือ และ Output หลายรูปแบบ',
     step: 'ทำซอสครั้งเดียว แล้วแตกให้เหมาะกับคนและงานหลายแบบ',
@@ -184,7 +184,7 @@ function applyClassroomCopy() {
   setText(header.querySelector('.lv'), 'AI ใส่ซอส · SOURCE-BASED AI WORKFLOW · ฟรีตลอดชีพ');
   setText(header.querySelector('h1'), 'AI ใส่ซอส — ปรุงซอสให้ AI ทำงานต่อได้');
   const heroCopy = header.querySelector(':scope > p');
-  if (heroCopy) heroCopy.innerHTML = '6 บทที่ต่อกันเป็น Workflow เดียว: <b style="color:#fff">SOURCE → TASTE → COOK → MULTIPLY → SEASON → SERVE</b> ไม่ผูกกับ AI ตัวใด ไม่เริ่มจากการท่อง Prompt และทุกบทต้องมีของจริงกลับบ้าน';
+  if (heroCopy) heroCopy.innerHTML = '6 บทที่ต่อกันเป็น Workflow เดียว: <b style="color:#fff">SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE</b> ไม่ผูกกับ AI ตัวใด ไม่เริ่มจากการท่อง Prompt และทุกบทต้องมีของจริงกลับบ้าน';
   const meta = header.querySelectorAll('.meta span');
   const metaCopy = ['🧴 จบด้วยซอสของตัวเอง','🔁 6 บทเป็น Workflow เดียว','🤖 ใช้กับ AI ตัวไหนก็ได้'];
   meta.forEach((node, index) => { if (metaCopy[index]) node.textContent = metaCopy[index]; });

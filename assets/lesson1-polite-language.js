@@ -4,7 +4,7 @@
 */
 
 function isLessonOne() {
-  return /^\/classroom\/free-ai\.html$/.test(location.pathname);
+  return /\/classroom\/free-ai\.html$/.test(location.pathname);
 }
 
 const ATTRIBUTES = ['aria-label', 'title', 'placeholder', 'alt'];
