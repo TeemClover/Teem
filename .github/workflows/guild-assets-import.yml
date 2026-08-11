@@ -1,0 +1,48 @@
+name: Guild X asset import
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/guild-assets-import.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download Guild X PNG pack
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 --max-time 120 'https://filebin.net/guildx-pro-max-20260811-1246/Guild-X-main-assets-only.zip' -o /tmp/guild-assets.zip
+          test "$(head -c 2 /tmp/guild-assets.zip)" = 'PK'
+      - name: Install PNG assets
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/guild-assets
+          mkdir -p /tmp/guild-assets
+          unzip -q /tmp/guild-assets.zip -d /tmp/guild-assets
+          mkdir -p guild/assets
+          cp -f /tmp/guild-assets/guild/assets/*.png guild/assets/
+          count=$(find guild/assets -maxdepth 1 -type f -name '*.png' | wc -l)
+          echo "PNG assets in guild/assets: $count"
+          test "$count" -ge 24
+      - name: Commit assets to main
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add guild/assets/*.png
+          if git diff --cached --quiet; then
+            echo 'Assets already present.'
+            exit 0
+          fi
+          git commit -m 'Add Guild X PNG layer assets'
+          git pull --rebase origin main
+          git push origin HEAD:main
