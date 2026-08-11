@@ -12,9 +12,10 @@ The web now uses separate stable `/xircle/assets/...` URLs with an error fallbac
 
 | Asset | Rendered size | QA |
 |---|---:|---|
-| `generated/hero-v3/device-hand.webp` | 1024 × 1536, alpha | current generated presentation hardware; blank screen, no synthetic UI |
-| `source/app-ui/hero-habit-screen.webp` | 480 × 1050 | source-derived Habit Score screen rectified from Xircle revised 4.1 |
-| `generated/story-v2/data-ribbons.png` | 1254 × 1254, alpha | current parallax atmosphere layer |
+| `generated/hero-v4/xircle-device-still.webp` | 1254 × 1254 | current root-hero beauty shot; generated blank device plus flattened source-correct Habit Score screen |
+| `source/app-ui/hero-habit-screen.webp` | 480 × 1050 | source-derived Habit Score screen used to build the flattened hero master |
+| `generated/hero-v3/device-hand.webp` | 1024 × 1536, alpha | retired root-hero experiment; do not restore the layered animation |
+| `generated/story-v2/data-ribbons.png` | 1254 × 1254, alpha | parallax atmosphere layer for cinematic story chapters, not the root hero |
 | `generated/hero-device-cluster.png` | 1254 × 1254, alpha | retired reference; do not restore because the synthetic screen is not source-correct |
 
 ### Canonical source layer now in production mapping
@@ -153,10 +154,10 @@ Nine new 16:9 generated story plates and one transparent parallax master were ad
 
 Each photographic master is delivered as a 1600 × 900 WebP plus a 960 × 540 responsive sibling. Generated images never carry canonical UI, package labels, metrics, compensation values or claims. Every cinematic chapter overlays a separate source-correct proof card from S1–S5 assets.
 
-The root hero no longer downloads the retired synthetic device cluster or the brochure panel as one cropped rectangle. Hero v3 uses a new blank-screen presentation device, then overlays two canonical source screens inside the exact display bounds: the rectified Xircle v4.1 Habit Score screen and the XOS manual Body Trend screen. The device, real screens, transparent ribbon layer and HTML glass chips animate independently. No rasterized hero copy is used.
+The root hero no longer downloads the retired synthetic device cluster, the cropped brochure panel, or the layered Hero v3 animation. Hero v4 is one static 1254 × 1254 WebP beauty shot. Its phone and studio scene are generated without UI or text; the rectified Xircle v4.1 Habit Score screen is then composited inside the exact display bounds and flattened into the final production file. No floating chips, screen rotation, root-hero parallax or rasterized hero copy is used.
 
 Typography is now self-hosted under `assets/fonts/` with Thai and Latin WOFF2 subsets for IBM Plex Sans Thai plus Latin WOFF2 subsets for Manrope. This removes the Google Fonts runtime dependency and prevents Thai tofu/missing-glyph failures in restricted or slow network conditions.
 
 Visual QA after the pass covered all 45 routes at 320, 390, 768 and 1440 px. Browser checks confirmed: zero horizontal overflow, zero missing cinematic chapters, zero broken story/proof images, valid decoded responsive sources, readable 16 px body baseline and no runtime JavaScript errors.
 
-Hero v3 received an additional browser QA pass at 320, 390, 768 and 1440 px. Both source screens decoded correctly, remained clipped inside the generated phone bezel, cross-faded with one active screen at a time, and produced zero horizontal overflow or runtime errors. Device float and transition motion are disabled under `prefers-reduced-motion`.
+Hero v4 received an additional browser QA pass at 320, 390, 768 and 1440 px. The single still decoded correctly, retained readable source UI inside the phone bezel and produced zero horizontal overflow or runtime errors.

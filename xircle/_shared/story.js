@@ -7,7 +7,7 @@
   }
   if(head&&!document.querySelector('link[data-xircle-experience]')){
     const experience=document.createElement('link');
-    experience.rel='stylesheet';experience.href='/xircle/_shared/experience.css?v=20260812-2';experience.dataset.xircleExperience='1';
+    experience.rel='stylesheet';experience.href='/xircle/_shared/experience.css?v=20260812-3';experience.dataset.xircleExperience='1';
     head.appendChild(experience);
   }
 
@@ -233,13 +233,6 @@
     heroSection.insertAdjacentElement('afterend',cinema);
   }
 
-  const deviceStage=document.querySelector('.x-device-stage');
-  if(deviceStage&&!deviceStage.querySelector('.x-device-ribbons')){
-    const ribbons=document.createElement('img');
-    ribbons.className='x-device-ribbons';ribbons.src=assets.dataRibbons;ribbons.alt='';ribbons.setAttribute('aria-hidden','true');ribbons.dataset.parallax='-0.05';
-    deviceStage.appendChild(ribbons);
-  }
-
   const main=document.querySelector('main');
   if(main&&!document.querySelector('.x-zone-banner')){
     const zone=document.createElement('aside');
@@ -308,16 +301,6 @@
   addEventListener('scroll',requestParallax,{passive:true});
   addEventListener('resize',requestParallax,{passive:true});
   renderParallax();
-
-  const deviceScreens=[...document.querySelectorAll('.x-device-ui img')];
-  if(deviceScreens.length>1&&!reduceMotion.matches){
-    let activeScreen=0;
-    setInterval(()=>{
-      deviceScreens[activeScreen].classList.remove('is-active');
-      activeScreen=(activeScreen+1)%deviceScreens.length;
-      deviceScreens[activeScreen].classList.add('is-active');
-    },5600);
-  }
 
   const p=document.querySelector('.progress');
   const update=()=>{if(!p)return;const d=document.documentElement;const max=d.scrollHeight-innerHeight;p.style.width=(max>0?(scrollY/max)*100:0)+'%';};
