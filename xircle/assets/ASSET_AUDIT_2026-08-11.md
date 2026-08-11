@@ -1,89 +1,123 @@
 # Xircle Visual Asset Audit — 2026-08-11
 
-## Root cause of the broken imagery
+## Status
 
-The previously committed `xircle/assets/campaign/campaign-atlas.jpg` is invalid for the intended atlas. GitHub reports the file as only 11,431 bytes. The runtime was slicing this file as seven full campaign images, therefore the visual layer could not work reliably.
+The broken `campaign-atlas.jpg` implementation is retired. Do not wire pages back to that file.
 
-**Decision:** retire the old atlas implementation. Do not wire pages to `campaign-atlas.jpg` again.
+The web now uses separate stable `/xircle/assets/...` URLs with an error fallback in `/_shared/story.js`. The Xircle hero has been switched to `hero-xircle-hq.svg`; other legacy campaign/source wrappers still need a final HQ raster replacement pass.
 
-## Canonical visual sources reviewed
+## Current repository resolution QA
 
-### Xircle revised 4.1 — 2-page brochure
-High-resolution source contains these distinct visual panels:
+### Campaign layer
 
-1. X-VISOR before / after
-2. Xircle The Habit Tracker app
+| Asset | Current rendered source size | QA |
+|---|---:|---|
+| `hero-xircle-hq.svg` | 1200 × 751 | usable / current hero |
+| `hero-xircle.svg` | 640 × 401 | legacy fallback |
+| `habit-score.svg` | legacy compact wrapper | replace with HQ |
+| `hardware.svg` | legacy compact wrapper | replace with HQ |
+| `community.svg` | legacy compact wrapper | replace with HQ |
+| `routinex.svg` | legacy compact wrapper | replace with HQ |
+
+### Canonical source layer
+
+Current `body-composition.svg`, `maxage-canonical.svg`, `protein-hmb.svg`, `gus-product.svg`, `astamega-product.svg`, `vita-matrix-product.svg`, `routinex-box.svg`, and `xvisor.svg` are compact source wrappers. They are valid as semantic/canonical references but are not the final Apple-style high-resolution presentation assets.
+
+## High-resolution source extraction verified
+
+### Xircle revised 4.1 brochure
+
+The 2-page source renders at approximately **5315 × 1737 px per page**. Each of the 5 vertical visual panels is approximately **1063 × 1737 px**, enough for high-quality web use.
+
+Verified panel subjects:
+
+1. Cover / Xircle positioning
+2. Habit Score / Eat · Move · Sleep
 3. Community / Your Xircle
-4. Hand-held Xircle app
-5. Daily routine
+4. The Habit Tracker / phone ecosystem
+5. Daily routine story
 6. Band + Scale + App ecosystem
 7. MaxAge canonical persona
-8. Body Composition + Trend
-9. Eat / Move / Sleep dashboard
-10. MaxAge dashboard
+8. Body Composition / Trend
+9. App dashboard
+10. Health process / long-term direction
 
-Canonical MaxAge persona in this source is:
+Canonical MaxAge persona visible in source:
 - Actual Age 46
 - Bio Age 48.2
 - MaxAge™ 78.4
 
-### RoutineX brochure — 8 pages
-Useful visual assets extracted/reviewed:
+### RoutineX brochure
 
-1. RoutineX 28-Day box / daily pack
-2. Body Composition guide with Xircle Scale + Band + App
-3. Eat · Move · Sleep nutrition / habit guide
-4. ABCD + Protein HMB+
-5. G.U.S.+ product visual
-6. AstaMega+ product visual
-7. Vita Matrix product visual
-8. RoutineX system / package overview
+The 8-page brochure supplies high-resolution material for:
 
-## Campaign image QA
-
-### Approved campaign visuals
-- Xircle app hero
-- Habit Score / Eat Move Sleep
-- Band + Scale hardware
-- Community
-- RoutineX daily journey
-
-### Rejected as canonical
-- Generated Body Composition image: contains outdated/incorrect `BODY SCORE` wording. Use exact source-derived Body Composition visual instead.
-- Generated MaxAge image: shows Actual Age 38. Current canonical persona is Actual Age 46 / Bio Age 48.2 / MaxAge™ 78.4. Use exact source-derived MaxAge visual instead.
-
-## Complete working set required by the web
-
-### Core / Xircle
-- Hero
-- Habit Score
-- Hardware
-- Body Composition
-- MaxAge™
-- Community
-- Daily Routine
-- X-VISOR
-- App dashboard variants
-
-### Habix / RoutineX
-- RoutineX box
+- RoutineX box / daily pack
+- Xircle Scale + Band + App
+- Eat · Move · Sleep
 - ABCD
 - Protein HMB+
 - G.U.S.+
 - AstaMega+
 - Vita Matrix
-- Eat Move Sleep guide
-- RoutineX system overview
+- RoutineX package/system overview
 
-## Known gaps in supplied visual source
+### Xircle / XOS manual DOCX
 
-1. **Flavor+ dedicated final product photography** — current certification names are not fully resolved across source versions, so final Flavor+ product art must not be fabricated as canonical yet.
-2. **Production XOS UI screenshots** — the supplied XOS DOCX provides feature/story information but no usable rendered production screenshots through the current source package. Use designed UI illustration only if clearly presented as conceptual, not as a screenshot of the real product.
+The source package contains real app/source imagery, including images around **1080 × 1504**, **1181 × 1930**, **1080 × 1451**, and related sizes. These are valid candidates for XOS and app deep-dive pages and supersede the earlier assumption that no usable XOS imagery was supplied.
 
-## Asset policy going forward
+### X-VISOR Certification DOCX
 
-- Every asset used by `/xircle/*` must have a stable absolute `/xircle/assets/...` path.
-- Never point critical visuals at a generated atlas unless the repository file has been verified for correct binary size and decoded dimensions.
-- Canonical data visuals beat generated visuals when text/numbers are visible.
-- Body Composition and MaxAge pages must use source-derived canonical images.
-- Do not embed obsolete claim language from a brochure into customer-facing copy merely because it appears inside a source image; source images can be used as visual/reference material while page copy follows the current certification/source-of-truth rules.
+Usable X-VISOR / product source imagery is present, including a source visual around **1181 × 1930**.
+
+### X-Commerce Revenue Guide
+
+The PDF supplies route-specific visuals for:
+
+- X-Commerce cover
+- SELL → MENTOR → MANAGE → EXPAND model
+- Direct Mentoring mechanics
+- Agency / growth examples
+- Stacking / role progression
+
+These should be used for Commerce pages instead of recycling RoutineX or health imagery.
+
+## Route coverage QA
+
+`/_shared/story.js` now explicitly covers the major customer/story routes for:
+
+- Ecosystem
+- Xircle App
+- Habit Score / Eat / Move / Sleep
+- Hardware
+- Body Composition
+- MaxAge
+- Community
+- Habix product family / FIVES / Flavor entry
+- RoutineX / ABCD / Day 28
+- X-VISOR and its deep routes
+- XOS and its deep routes
+- Academy / Certification
+
+X-Commerce deliberately keeps its native route-specific visual for now rather than injecting an unrelated health/product asset. Its next visual pass should use the X-Commerce source PDF.
+
+## Quality decision
+
+**Current state is visually functional but not yet final-resolution across every route.**
+
+The final production pass should replace compact wrappers with source-derived or campaign WebP assets at these target sizes:
+
+- Campaign landscape: ~1586 × 992 or equivalent
+- Source portrait panels: ~1063 × 1737
+- App/XOS screenshots: native source dimensions up to ~1181 × 1930
+- Commerce pages: ~1200 × 1696 source-derived panels
+
+Do not upscale the old 360/640 px wrappers and call them HQ. Replace them from the original source or a newly generated campaign master.
+
+## Asset policy
+
+- Stable absolute `/xircle/assets/...` paths only.
+- Canonical data visuals beat generated visuals whenever visible numbers/text matter.
+- Body Composition and MaxAge must remain source-correct.
+- Generated art may be used for atmosphere, hero storytelling, lifestyle, or abstract product context, but never to invent medical metrics, product labels, compensation values, or unresolved naming.
+- Flavor+ dedicated final product photography remains unresolved; do not fabricate a canonical package until naming/artwork is confirmed.
+- Every critical image must be checked for: file existence, decoded dimensions, mobile crop, desktop crop, readable contrast, and graceful fallback before being marked production-ready.
