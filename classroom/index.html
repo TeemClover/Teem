@@ -27,9 +27,9 @@ nav.top .wrap{display:flex;justify-content:space-between;align-items:center;heig
 .bk em{font-style:normal;color:rgb(var(--green))}
 .bk2{font-size:14px;font-weight:600;color:rgb(var(--muted))}
 .bk2:hover{color:rgb(var(--green))}
-.head{background:rgb(var(--deep));color:#fff;border-radius:20px;padding:36px 34px;margin:26px 0 10px;background-image:radial-gradient(600px 300px at 90% -20%,rgb(27 106 66/.5),transparent 60%);overflow:hidden;position:relative}
-.heroimg{margin:-36px -34px 22px;height:190px;overflow:hidden;background:linear-gradient(160deg,#124228,#071a10)}
-.heroimg img{width:100%;height:100%;object-fit:cover;display:block}
+.head{border-radius:20px;padding:0;margin:26px 0 10px;overflow:hidden;position:relative;background:transparent;background-image:none;color:inherit}
+.heroimg{margin:0;height:auto;overflow:hidden;background:transparent}
+.heroimg img{width:100%;height:auto;object-fit:contain;display:block}
 .lv{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;color:rgb(var(--gold));border:1px solid rgb(190 148 66/.5);border-radius:999px;padding:5px 14px;text-transform:uppercase;font-family:"Bai Jamjuree",sans-serif}
 .head h1{font-size:clamp(24px,4.5vw,32px);margin:12px 0 8px;line-height:1.3}
 .head>p{color:rgb(255 255 255/.8);font-size:15.5px;max-width:58ch}
@@ -63,7 +63,7 @@ h2 .n{width:30px;height:30px;border-radius:9px;background:rgb(var(--green));colo
 footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0 44px}
 .cpx{position:absolute;top:8px;right:8px;font-family:"Bai Jamjuree",sans-serif;font-size:11.5px;font-weight:700;color:#071a10;background:rgb(var(--gold));border:0;border-radius:7px;padding:5px 11px;cursor:pointer;opacity:.92}
 .cpx:hover{opacity:1}
-@media(max-width:520px){.head{padding:28px 22px}.heroimg{margin:-28px -22px 18px;height:150px}}
+@media(max-width:520px){.head{padding:0}.heroimg{margin:0;height:auto}}
 
 .pathnote{background:#fff;border:1px solid rgb(var(--ink)/.09);border-radius:16px;padding:17px 20px;margin-top:18px;
   box-shadow:0 1px 3px rgb(18 40 28/.05)}
@@ -205,112 +205,22 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
 </div></nav>
 <div class="wrap">
 
-<header class="head">
-  <!-- 📷 รูปหัวห้องเรียน: img/classroom-hero.jpg -->
-  <div class="heroimg"><img src="../img/classroom-hero.jpg" alt="" onerror="this.parentElement.style.display='none'"></div>
-  <span class="lv">AI ใส่ซอส · ซอส-based AI Workflow · ฟรีตลอดชีพ</span>
-  <h1 class="disp">AI ใส่ซอส — วิธีใช้ AI ที่ประหยัดเวลาที่สุด</h1>
-  <p>6 บทเรียนทักษะ AI เบื้องต้นด้วยเครื่องมือ<b style="color:#fff">ฟรี</b>ทั้งหมด (Gemini · Gemini Notebook · CapCut · Canva) — ไม่ต้องเขียนโค้ดเป็น ไม่ต้องเก่งคอม เริ่มแต่ละบทด้วยเวลา 10 นาทีแรก แล้วกลับมาทำต่อได้ตามจังหวะของคุณ</p>
-  <div class="meta"><span>🌱 เริ่มจากศูนย์ได้</span><span>⏱️ เริ่มบทละประมาณ 10 นาที</span><span>🎯 มีภารกิจให้ลงมือจริง</span></div>
-  <div class="cprog">
-    <div class="track"><i data-mc-bar="learn"></i></div>
-    <span class="tx" data-mc-progress="learn" hidden></span>
+<header class="head classroom-map-hero">
+  <div class="heroimg">
+    <img src="../img/classroom-workflow-map-20260812-1535.avif"
+         width="1024" height="1536"
+         alt="AI ใส่ซอส Workflow Map — 6 บทจาก SOURCE ถึง SERVE"
+         decoding="async">
   </div>
 </header>
-<div class="pathnote" id="pathCard" data-open="0">
-  <div class="ph">
-    <span class="e" aria-hidden="true">🗺️</span>
-    <div>
-      <h3 class="disp">เส้นทางแนะนำ: วันละ 10 นาที จากศูนย์ไปถึงเว็บแรก</h3>
-      <p class="sub">ทักษะชุดนี้มักถูกแยกสอนเป็นหลายคลาส แต่ที่นี่เราเรียงให้เป็น<b>เส้นทางเดียวที่ของจากบทก่อน กลายเป็นวัตถุดิบของบทถัดไป</b> — เรียนฟรี ลงมือได้ทันที และกลับมาใช้ซ้ำได้ตลอด</p>
-      <button type="button" class="pmore" id="pathBtn" aria-expanded="false" aria-controls="pathBody">
-        <span id="pathBtnTx">กลัวเรียนเองไม่ไหว? ลองอ่านตรงนี้ก่อน</span><span class="ar" aria-hidden="true">↓</span>
-      </button>
-      <span class="ptime" id="pathTime">ใช้เวลาอ่านประมาณ 1 นาที</span>
-    </div>
-  </div>
-
-  <div id="pathBody" style="height:0" role="region" aria-labelledby="pathBtn">
-    <div class="pbin">
-      <h4 class="disp">คุณไม่ได้ต้องเรียนเก่ง<br>คุณแค่ต้องลงมือทีละ 10 นาที</h4>
-      <p class="lead">หลายคนรู้สึกว่าการเรียน AI ต้องมีคนจับมือทำ หรือต้องนั่งดูวิดีโอยาว ๆ จึงจะเข้าใจ — ความรู้สึกนั้นไม่ผิดเลย เพราะเครื่องมือใหม่ดูเหมือนมีปุ่มและคำศัพท์เต็มไปหมด</p>
-      <p class="lead">แต่ห้องเรียนนี้ถูกออกแบบมาอีกแบบหนึ่ง เราไม่ได้อยากให้คุณ “ดูคนอื่นทำเป็น” — <b>เราอยากให้คุณทำของชิ้นแรกของตัวเองเสร็จตั้งแต่วันนี้</b></p>
-
-      <h4 class="disp">🎓 ถ้าแยกเรียนข้างนอก อาจกลายเป็นหลายคอร์ส</h4>
-      <div class="steps6">
-        <div class="st6"><span class="k">LV.1</span><div><b>เริ่มใช้ AI</b><small>ตั้งเครื่องมือและคุยกับ AI ให้รู้เรื่อง</small></div></div>
-        <div class="st6"><span class="k">LV.2</span><div><b>สร้างภาพ</b><small>เปลี่ยนความคิดให้เป็นภาพที่นำไปใช้ได้จริง</small></div></div>
-        <div class="st6"><span class="k">LV.3</span><div><b>สร้างวิดีโอ</b><small>ทำคลิปสั้นชิ้นแรกให้เสร็จ</small></div></div>
-        <div class="st6 star"><span class="k">LV.4 ⭐</span><div><b>สร้างซอส</b><small>จัดข้อมูลหนึ่งชุดให้ AI แตกเป็นภาพ สไลด์ เสียง และงานหลายรูปแบบ</small></div></div>
-        <div class="st6"><span class="k">LV.5</span><div><b>สร้าง AI คู่หู</b><small>ใช้ Prompt และ Genesis Prompt ตั้งวิธีร่วมงานตลอด Session</small></div></div>
-        <div class="st6"><span class="k">LV.6</span><div><b>สร้างเว็บแรก</b><small>รวมทุกทักษะให้กลายเป็นสิ่งที่คนอื่นเปิดใช้งานได้จริง</small></div></div>
-      </div>
-      <p class="quiet">หากแยกตามทักษะ หัวข้อเหล่านี้มักถูกนำไปทำเป็นหลายคลาส หลายเวิร์กช็อป หรือหลายคอร์ส — แต่ที่นี่ถูกเชื่อมเป็นเส้นทางเดียว เพื่อให้สิ่งที่เรียนในบทก่อนหน้า กลายเป็นวัตถุดิบของบทถัดไป</p>
-
-      <h4 class="disp">🎮 วิดีโอทำให้เราเห็น แต่การลงมือทำทำให้เราใช้เป็น</h4>
-      <p>วิดีโอเหมาะกับการดูภาพรวม แต่ปัญหาคือเรามักรู้สึกว่าเข้าใจตอนดู แล้วจำไม่ได้เมื่อต้องเปิดเครื่องมือทำเอง บทเรียนบนเว็บนี้จึงลดการอธิบายยาว แล้วเปลี่ยนเป็นขั้นตอนสั้น ๆ ที่คุณเปิดเครื่องมือจริง ทำตามจริง และเห็นผลลัพธ์ของตัวเองทันที</p>
-      <div class="cmp">
-        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>เดินตามจังหวะของผู้สอน</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>เรียนตามจังหวะของตัวเอง</div></div>
-        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>ต้องย้อนหาเวลาในคลิป</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>กลับมาอ่านตรงขั้นที่ติดได้ทันที</div></div>
-        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>เห็นตัวอย่างของคนอื่น</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>สร้างผลงานจากข้อมูลของตัวเอง</div></div>
-        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>อาจล้าสมัยเมื่อหน้าจอเปลี่ยน</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>เน้นหลักคิดที่ใช้ต่อได้ แม้เมนูเปลี่ยน</div></div>
-        <div class="cmpr"><div class="cmpc a"><span class="who">ดูวิดีโออย่างเดียว</span>ดูจบแล้วอาจยังไม่ได้ลงมือ</div><div class="cmpc b"><span class="who">ลงมือทำที่นี่</span>ทุกบทมีภารกิจให้สร้างของจริง</div></div>
-      </div>
-
-      <h4 class="disp">🛠️ เป้าหมายไม่ใช่ให้คุณทำตามเราได้ แต่คือให้คุณไปต่อเองได้</h4>
-      <p>การมีคนอยู่ข้าง ๆ ช่วยให้เริ่มต้นง่ายขึ้น แต่บางครั้งเราทำตามได้เฉพาะตอนที่เขายังอยู่ เมื่อหน้าจอเปลี่ยน เจอปัญหาใหม่ หรืออยากทำงานอีกแบบ เราอาจต้องรอให้มีคนมาบอกขั้นต่อไปอีกครั้ง</p>
-      <p>ห้องเรียนนี้จึงไม่ได้จับมือคุณไปตลอดทาง แต่<b>วางทางเดินให้ชัด ทำปุ่มให้กดได้จริง แจกตัวอย่างให้ลอง และสอนวิธีคิดที่ช่วยให้คุณแก้ปัญหาต่อเองได้</b></p>
-      <div class="four">
-        <div class="fourc"><b>ทำซ้ำได้</b>กลับมาทดลองใหม่กี่ครั้งก็ได้</div>
-        <div class="fourc"><b>ผิดได้โดยไม่กดดัน</b>ไม่มีใครรอ ไม่มีใครตัดสิน</div>
-        <div class="fourc"><b>ใช้กับงานตัวเองทันที</b>ไม่ต้องทำตามโจทย์ของผู้สอนอย่างเดียว</div>
-        <div class="fourc"><b>สร้างความมั่นใจระยะยาว</b>จาก “ทำตามได้” ไปสู่ “หาทางต่อเองเป็น”</div>
-      </div>
-      <p class="quiet">การมีครู วิดีโอ หรือเพื่อนช่วยยังมีคุณค่าเสมอ — สิ่งที่เราอยากเพิ่มให้คุณ คือความสามารถในการเริ่ม ทดลอง และไปต่อได้ด้วยตัวเอง</p>
-
-      <h4 class="disp">🌱 ทุกบทต้องมีบางอย่างกลับบ้าน</h4>
-      <div class="gains">
-        <div class="gain"><span class="k">LV.1</span><b>Chat แรกที่ใช้งานได้จริง</b></div>
-        <div class="gain"><span class="k">LV.2</span><b>ภาพชิ้นแรก</b></div>
-        <div class="gain"><span class="k">LV.3</span><b>คลิปสั้นชิ้นแรก</b></div>
-        <div class="gain"><span class="k">LV.4</span><b>ซอสที่แตกเป็นหลาย Output</b></div>
-        <div class="gain"><span class="k">LV.5</span><b>Prompt และ AI คู่หูประจำงาน</b></div>
-        <div class="gain"><span class="k">LV.6</span><b>เว็บแรกที่เปิดให้คนอื่นดูได้</b></div>
-      </div>
-      <p class="quiet">คุณจึงไม่ได้เรียนครบแล้วได้เพียงความรู้ — แต่จะมีผลงาน เครื่องมือ และระบบของตัวเองเพิ่มขึ้นทีละชิ้น</p>
-
-      <h4 class="disp">⏱️ ไม่ต้องรอวันว่าง เริ่มด้วย 10 นาทีแรก</h4>
-      <p class="quiet" style="margin-bottom:6px">แผนเริ่มต้น 6 วัน — ไม่ใช่กำหนดส่ง</p>
-      <div class="days">
-        <div class="day"><span class="d">วันที่ 1</span>เปิด LV.1 และส่งคำสั่งแรก</div>
-        <div class="day"><span class="d">วันที่ 2</span>สร้างภาพหนึ่งภาพ</div>
-        <div class="day"><span class="d">วันที่ 3</span>ทำคลิปหนึ่งคลิป</div>
-        <div class="day"><span class="d">วันที่ 4</span>เปลี่ยนข้อมูลหนึ่งชุดเป็นซอส</div>
-        <div class="day"><span class="d">วันที่ 5</span>สร้าง AI คู่หูหนึ่งแบบ</div>
-        <div class="day"><span class="d">วันที่ 6</span>เปิดเว็บแรกของตัวเอง</div>
-      </div>
-      <p class="quiet">บางบทอาจใช้เกิน 10 นาทีถ้าคุณกำลังสนุกและอยากทำต่อ แต่คุณไม่จำเป็นต้องทำให้สมบูรณ์ในครั้งเดียว — วันละหนึ่งก้าวเล็ก ๆ ก็เพียงพอให้คุณเดินจาก “ไม่เคยใช้ AI” ไปถึง “มีผลงานที่คนอื่นเปิดดูได้”</p>
-
-      <div class="pcta">
-        <h4 class="disp">ไม่ต้องสมัครคอร์สใหม่<br>ไม่ต้องเตรียมตัวให้พร้อมกว่านี้</h4>
-        <p>มือถือหรือคอมพิวเตอร์ที่คุณใช้อยู่ก็พอ เลือกเวลาว่าง 10 นาที แล้วเริ่มจากบทแรก<br>เมื่อทำของชิ้นแรกสำเร็จ บทต่อไปจะไม่ดูยากเหมือนเดิมอีก</p>
-        <div class="row">
-          <a class="go" id="pathGo" href="free-ai.html">เริ่ม LV.1 — ลงมือ 10 นาทีแรก →</a>
-          <button type="button" class="ghost" id="pathSeeAll">ดูเส้นทางทั้ง 6 บท</button>
-        </div>
-        <span class="fine">ฟรีตลอดชีพ · ไม่มีบัตรเครดิต · กลับมาทำต่อเมื่อไหร่ก็ได้</span>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="lsgrid">
   <a class="ls" href="free-ai.html" data-mc-item="learn:free-ai">
     <!-- 📷 รูปคลาส: img/lesson-1.jpg -->
     <div class="lsimg"><img src="../img/classroom-kitchen-20260812-1445/lv1-source.jpeg" alt="" onerror="this.style.display='none'"></div>
     <div class="lsbody">
-      <span class="lslv disp">LV.1 <em>คลาสแรกของบ้าน</em></span>
-      <b class="disp">AI ฟรีที่ควรมีติดเครื่อง</b>
-      <p>รู้จัก Gemini + Gemini Notebook สมัครเสร็จ ส่งคำสั่งแรกสำเร็จ — จุดเริ่มของทุกคน</p>
+      <span class="lslv disp">LV.1 <em>SOURCE</em></span>
+      <b class="disp">ซอส · เริ่มจากการปรุงซอส</b>
+      <p>เล่า แนบไฟล์ หรือสกัดจากแชตเดิม แล้วจบด้วยซอส .md ขวดแรกของตัวเอง</p>
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
@@ -318,9 +228,9 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
     <!-- 📷 รูปคลาส: img/lesson-2.jpg -->
     <div class="lsimg"><img src="../img/classroom-kitchen-20260812-1445/lv2-taste.jpeg" alt="" onerror="this.style.display='none'"></div>
     <div class="lsbody">
-      <span class="lslv disp">LV.2 <em>ฟรี</em></span>
-      <b class="disp">ทำภาพด้วย AI</b>
-      <p>สูตรสั่งภาพ 5 ส่วน — โปสเตอร์ร้าน รูปโปรไฟล์ ภาพสินค้าดูแพง</p>
+      <span class="lslv disp">LV.2 <em>TASTE</em></span>
+      <b class="disp">เทส · ชิมซอสก่อนเติม</b>
+      <p>ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจซอสตรงกับคุณไหม แล้วแก้ที่ต้นทาง</p>
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
@@ -328,9 +238,9 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
     <!-- 📷 รูปคลาส: img/lesson-3.jpg -->
     <div class="lsimg"><img src="../img/classroom-kitchen-20260812-1445/lv3-cook.jpeg" alt="" onerror="this.style.display='none'"></div>
     <div class="lsbody">
-      <span class="lslv disp">LV.3 <em>ฟรี</em></span>
-      <b class="disp">ทำคลิปสั้นด้วย AI</b>
-      <p>สคริปต์ ช็อตถ่าย แคปชัน — AI คิดให้ คุณแค่กดถ่าย</p>
+      <span class="lslv disp">LV.3 <em>COOK</em></span>
+      <b class="disp">ผัด · เอาซอสไปทำงานจริง</b>
+      <p>ใช้ซอสขวดเดียวสร้าง Script, Shot list, Caption และงานชิ้นแรกที่พร้อมใช้</p>
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
@@ -338,9 +248,9 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
     <!-- 📷 รูปคลาส: img/lesson-4.jpg -->
     <div class="lsimg"><img src="../img/classroom-kitchen-20260812-1445/lv4-split.jpeg" alt="" onerror="this.style.display='none'"></div>
     <div class="lsbody">
-      <span class="lslv disp">LV.4 <em class="starred">⭐ บทติดดาว</em></span>
-      <b class="disp">เปลี่ยนข้อมูลของคุณ<br>ให้ AI ทำงานต่อได้ทั้งระบบ</b>
-      <p>สร้างซอสครั้งเดียว แล้วแตกเป็นภาพ สไลด์ วิดีโอ เสียง และงานอีกหลายรูปแบบ — <b>ทุกคนควรทำเป็น</b></p>
+      <span class="lslv disp">LV.4 <em>SPLIT</em></span>
+      <b class="disp">แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู</b>
+      <p>แตกซอสเป็นภาพ สไลด์ เสียง FAQ คู่มือ และ Output หลายรูปแบบ</p>
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
@@ -348,9 +258,9 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
     <!-- 📷 รูปคลาส: img/lesson-5.jpg -->
     <div class="lsimg"><img src="../img/classroom-kitchen-20260812-1445/lv5-season.jpeg" alt="" onerror="this.style.display='none'"></div>
     <div class="lsbody">
-      <span class="lslv disp">LV.5 <em>อัปเดตเรื่อย ๆ</em></span>
-      <b class="disp">Smart Prompt Vault</b>
-      <p>บอกงานที่กำลังจะทำ แล้วคลังจะหยิบ Prompt ที่ตรงให้ — พร้อมตัวสร้าง AI คู่หูประจำงานของคุณ</p>
+      <span class="lslv disp">LV.5 <em>SEASON</em></span>
+      <b class="disp">ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส</b>
+      <p>หยิบ Prompt, Style, Checklist และบทบาทที่เตรียมไว้มาเติมให้ถูกงาน ไม่เทหมดลิ้นชัก</p>
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
@@ -358,9 +268,9 @@ footer{text-align:center;color:rgb(var(--muted));font-size:12.5px;padding:34px 0
     <!-- 📷 รูปคลาส: img/lesson-6.jpg -->
     <div class="lsimg"><img src="../img/classroom-kitchen-20260812-1445/lv6-serve-steak.jpeg" alt="" onerror="this.style.display='none'"></div>
     <div class="lsbody">
-      <span class="lslv disp">LV.6 <em>ด่านสุดท้าย</em></span>
-      <b class="disp">สร้างเว็บแรกของตัวเอง</b>
-      <p>Gemini Canvas สร้างเว็บทั้งหน้าจากภาษาไทยธรรมดา — ด่านบอสใหญ่</p>
+      <span class="lslv disp">LV.6 <em>SERVE</em></span>
+      <b class="disp">เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต</b>
+      <p>รวมทุกอย่างเป็นเว็บหรือผลงานที่คนอื่นเปิดใช้ และส่งต่อได้จริง</p>
       <span class="lsgo disp">เข้าเรียน →</span>
     </div>
   </a>
