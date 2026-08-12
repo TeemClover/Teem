@@ -1,0 +1,43 @@
+name: classroom hero original upload
+
+on:
+  push:
+    paths:
+      - '.tmp/classroom-hero/**'
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Assemble original JPEG without recompression
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED=13
+          DIR=.tmp/classroom-hero
+          COUNT=$(find "$DIR" -maxdepth 1 -type f -name 'part*.b64' | wc -l | tr -d ' ')
+          if [ "$COUNT" != "$EXPECTED" ]; then
+            echo "Waiting for all parts: $COUNT/$EXPECTED"
+            exit 0
+          fi
+          find "$DIR" -maxdepth 1 -type f -name 'part*.b64' | sort | xargs cat | tr -d '\n\r' | base64 -d > /tmp/banner-classroom.jpg
+          echo "59c6397e238e235f3dc03ebae35aec386c371eaea6b2abc58e551796c6a04567  /tmp/banner-classroom.jpg" | sha256sum -c -
+          test "$(stat -c%s /tmp/banner-classroom.jpg)" = "952780"
+          mkdir -p img/classroom-hero-20260812-1716
+          cp /tmp/banner-classroom.jpg img/classroom-hero-20260812-1716/banner-classroom.jpg
+          git config user.name "TeemClover"
+          git config user.email "86265222+TeemClover@users.noreply.github.com"
+          git add img/classroom-hero-20260812-1716/banner-classroom.jpg
+          if git diff --cached --quiet; then
+            echo "Original hero already present"
+            exit 0
+          fi
+          git commit -m "asset: add original classroom workflow hero"
+          git pull --rebase origin main
+          git push origin HEAD:main
