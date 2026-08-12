@@ -48,41 +48,10 @@ function replaceText(root) {
   }
 }
 
-function alignLessonOneBrandAndEnding() {
-  if (!isLessonOne()) return;
-
-  const brand = document.querySelector('nav.top .bk');
-  if (brand) {
-    brand.href = '/';
-    brand.setAttribute('aria-label', 'myClover');
-    brand.innerHTML = 'my<em>Clover</em>';
-  }
-
-  if (document.getElementById('mcLesson1Prologue')) return;
-  const nextRow = document.querySelector('.nextrow');
-  if (!nextRow) return;
-
-  if (!document.getElementById('mcLesson1PrologueStyle')) {
-    const style = document.createElement('style');
-    style.id = 'mcLesson1PrologueStyle';
-    style.textContent = `
-      #mcLesson1Prologue{width:min(1024px,calc(100vw - 32px));margin:34px 0 28px 50%;transform:translateX(-50%)}
-      #mcLesson1Prologue img{display:block;width:100%;height:auto;max-width:none}
-    `;
-    document.head.appendChild(style);
-  }
-
-  const figure = document.createElement('figure');
-  figure.id = 'mcLesson1Prologue';
-  figure.innerHTML = '<img src="/classroom/sauce-cup/header-prologue.jpeg" width="1024" height="1536" alt="จากกระดาษ A4 1 แผ่น สู่จุดเริ่มต้นของ AI ใส่ซอส">';
-  nextRow.before(figure);
-}
-
 function boot() {
   if (!isLessonOne() || document.documentElement.dataset.lesson1Polite === '1') return;
   document.documentElement.dataset.lesson1Polite = '1';
   replaceText(document.body);
-  alignLessonOneBrandAndEnding();
 
   let queued = false;
   const observer = new MutationObserver(records => {
@@ -95,7 +64,6 @@ function boot() {
         if (record.type === 'characterData') replaceText(record.target);
         if (record.type === 'attributes') replaceText(record.target);
       });
-      alignLessonOneBrandAndEnding();
     });
   });
   observer.observe(document.body, {
