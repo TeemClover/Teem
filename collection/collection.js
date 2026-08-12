@@ -10,6 +10,7 @@ var FORGE=['ep1-everyone-gets-to-play','ep2-the-first-item','ep3-the-item-that-c
 var FORGE_NAME=['ทุกคนมีสิทธิ์ลงเล่น','ไอเท็มชิ้นแรก','ของที่กลับมาพร้อมรอยใช้','สิ่งที่เดินทางแทนเรา','จากคำตอบสู่ระบบ','สำหรับคนที่มาทีหลัง','เวลาที่ได้คืนมา'];
 var LEARN=['free-ai','image-ai','clip-ai','notebooklm','prompts','first-web'];
 var LEARN_NAME=['ซอส · เริ่มจากการปรุงซอส','เทส · ชิมซอสก่อนเติม','ผัด · เอาซอสไปทำงานจริง','แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู','ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส','เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'];
+var LEARN_IMAGE=['../img/classroom-kitchen-20260812-1445/lv1-source.jpeg','../img/classroom-kitchen-20260812-1445/lv2-taste.jpeg','../img/classroom-kitchen-20260812-1445/lv3-cook.jpeg','../img/classroom-kitchen-20260812-1445/lv4-split.jpeg','../img/classroom-kitchen-20260812-1445/lv5-season.jpeg','../img/classroom-kitchen-20260812-1445/lv6-serve-steak.jpeg'];
 function raw(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function list(k){return raw(k,'').split(',').filter(Boolean)}
 function json(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}
@@ -65,7 +66,7 @@ function item(o){return o}
 var forgeItems=FORGE.map(function(slug,i){var no=String(i+1).padStart(2,'0');return item({id:'forge-'+(i+1),kind:'WHY AI? · EP '+(i+1),name:FORGE_NAME[i],icon:'📖',on:on('forge-'+(i+1)),hint:'อ่านตอนที่ '+(i+1)+' จนจบ',go:'../forge/'+slug+'/',image:i===6?'../forge/img/07-p1.jpg?v=20260802-current':'../forge/img/'+no+'-thumb.webp'})});
 forgeItems.push(item({id:'forge-special',kind:'SPECIAL EPISODE',name:'Version แรก · 12 ภาพต้นฉบับ',icon:'🎁',on:on('forge-special'),hint:'อ่านตอนที่ 7 จบเพื่อเปิดตอนพิเศษ',go:'../forge/original/',image:'../forge/original/11.jpeg',imageStyle:'object-position:center 62.5%;transform:scale(1.8);transform-origin:center center'}));
 groups.push({id:'story',eyebrow:'📖 STORY COLLECTION',title:'📖 เรื่องเล่าจากโรงตีเหล็ก',desc:'7 ตอนคือ Progress หลัก ส่วน Version แรกเป็นตอนพิเศษและไม่ถูกนับรวม',items:forgeItems});
-var lessonItems=LEARN.map(function(slug,i){return item({id:'lesson-'+(i+1),kind:'FREE LESSON '+(i+1),name:LEARN_NAME[i],icon:['✨','🖼️','🎬','📚','🧠','🌐'][i],on:on('lesson-'+(i+1)),hint:'เรียนบทที่ '+(i+1)+' จนจบ',go:'../classroom/'+slug+'.html',image:'../img/lesson-'+(i+1)+'.jpg?v=20260812-original-jpeg-v2'})});
+var lessonItems=LEARN.map(function(slug,i){return item({id:'lesson-'+(i+1),kind:'FREE LESSON '+(i+1),name:LEARN_NAME[i],icon:['✨','🖼️','🎬','📚','🧠','🌐'][i],on:on('lesson-'+(i+1)),hint:'เรียนบทที่ '+(i+1)+' จนจบ',go:'../classroom/'+slug+'.html',image:LEARN_IMAGE[i]})});
 lessonItems.push(item({id:'awaken',kind:'BOSS CLEAR',name:'บทที่ 7 · ผู้ตื่นรู้',icon:'🌅',on:on('awaken'),hint:'เรียนครบ 6 บท แล้วผ่านด่านบอส',go:'../classroom/awaken/',image:'../img/og-awaken.jpg'}));
 groups.push({id:'learn',eyebrow:'⚡ CLASSROOM COLLECTION',title:'⚡ ห้องเรียน AI',desc:'บทเรียนแต่ละบทถูกเก็บแยก และด่านบอสเป็น Achievement เพิ่มจาก 6 บทหลัก',items:lessonItems});
 groups.push({id:'world',eyebrow:'🌍 WORLD & PROOF',title:'🌍 ห้อง เส้นทาง และของที่สร้าง',desc:'สิ่งที่เกิดขึ้นจากการเลือก ลงมือ และเดินเข้าไปสำรวจจริง',items:[
