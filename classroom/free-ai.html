@@ -287,12 +287,24 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 }
 </style>
 
+
+<style id="mc-classroom-nav-sync">
+.mc-lesson-nav{position:sticky!important;top:0!important;z-index:90!important;background:rgba(248,246,240,.94)!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgba(18,40,28,.08)!important;box-shadow:none!important}
+.mc-lesson-nav__inner{width:min(880px,100%);height:56px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.mc-lesson-nav__brand{display:inline-flex!important;align-items:center!important;gap:8px!important;color:#12281c!important;font:750 18px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif!important;text-decoration:none!important;white-space:nowrap}
+.mc-lesson-nav__brand img{display:block!important;width:28px!important;height:28px!important;max-width:28px!important;object-fit:contain!important;margin:0!important;flex:none!important}
+.mc-lesson-nav__brand em{font-style:normal!important;color:#1b6a42!important}
+.mc-lesson-nav__all{color:#606c64!important;font:650 14px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif!important;text-decoration:none!important;white-space:nowrap}
+.mc-lesson-nav__all:hover{color:#1b6a42!important}
+@media(max-width:520px){.mc-lesson-nav__inner{padding:0 18px}.mc-lesson-nav__all{font-size:13px!important}}
+</style>
+
 </head>
 <body>
 <a class="skip-link" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
-<nav class="top"><div class="wrap">
-  <a class="bk disp" href="/" aria-label="myClover">my<em>Clover</em></a>
-  <a class="bk2" href="./">ห้องเรียนทั้งหมด →</a>
+<nav class="mc-lesson-nav" aria-label="ห้องเรียน myClover"><div class="mc-lesson-nav__inner">
+  <a class="mc-lesson-nav__brand" href="/hall.html#quest" aria-label="myClover"><img src="/icons/icon-192.png" alt="" aria-hidden="true" width="28" height="28"><span>my<em>Clover</em></span></a>
+  <a class="mc-lesson-nav__all" href="/classroom/">ห้องเรียนทั้งหมด →</a>
 </div></nav>
 
 <main class="wrap" id="main">
