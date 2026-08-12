@@ -1,15 +1,12 @@
 name: Repair lesson 6 Serve
 
-on:
-  push:
-    branches: [main]
+on: [push]
 
 permissions:
   contents: write
 
 jobs:
   repair:
-    if: ${{ !contains(github.event.head_commit.message, 'fix(classroom): repair lesson 6 Serve flow') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +14,12 @@ jobs:
           fetch-depth: 0
 
       - name: Patch lesson 6
-        run: python .github/scripts/repair_lesson6_serve.py
+        run: |
+          if grep -q 'id="lesson6-main-js"' classroom/first-web.html; then
+            echo "Lesson 6 already repaired"
+          else
+            python .github/scripts/repair_lesson6_serve.py
+          fi
 
       - name: Validate HTML guards and JavaScript syntax
         run: |
@@ -31,6 +33,7 @@ jobs:
           assert s.count('<script') == s.count('</script>')
           assert 'id="bossDoor"' in s and 'id="glitchTrigger"' in s
           assert 'ทำเวปตามซอสนี้' in s and 'ขยายอ่าน Prompt' in s
+          assert '← กลับไปบท 2 · หยิบซอสชีวิต' not in s
           PY
           node --check /tmp/lesson6-main.js
           git diff --check
