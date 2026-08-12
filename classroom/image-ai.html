@@ -210,6 +210,15 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 @media(max-width:520px){.mc-lesson-nav__inner{padding:0 18px}.mc-lesson-nav__all{font-size:13px!important}}
 </style>
 
+<style id="classroom-lesson-header-image-style">
+.classroom-lesson-header-image{position:relative;z-index:2;display:block;overflow:hidden;background:#071a10;border-bottom:1px solid rgba(255,255,255,.09)}
+.classroom-lesson-header-image img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}
+.head>.classroom-lesson-header-image{width:calc(100% + 68px);max-width:none;margin:-36px -34px 28px}
+.hero>.classroom-lesson-header-image{width:calc(100% + (2 * clamp(28px,6vw,46px)));max-width:none;margin:calc(-1 * clamp(28px,6vw,46px)) calc(-1 * clamp(28px,6vw,46px)) 26px}
+@media(max-width:560px){
+  .head>.classroom-lesson-header-image{width:calc(100% + 44px);margin:-26px -22px 22px}
+}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
@@ -220,12 +229,14 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 
 <main class="wrap" id="main">
 <header class="head">
+  <figure class="classroom-lesson-header-image">
+    <img src="/classroom/img/header-lesson2.jpeg" alt="ภาพหัวบท 2 · AI ใส่ซอส" loading="eager" decoding="async" fetchpriority="high">
+  </figure>
+
 <span class="lv">บทที่ 2 · Taste</span>
   <h1 class="disp">ชิมซอสก่อนเติม</h1>
   <p class="lead">ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจซอสเป็นรสเดียวกับเราหรือยัง เพราะภาพที่สวยแต่เป็นคนละคน คนละบ้าน และคนละปี ยังเสิร์ฟไม่ได้</p>
   <div class="meta"><span>⏱️ 15–25 นาที</span><span>🧴 ใช้ซอสจากบท 1</span><span>🖼️ ได้ภาพทดสอบ 1 ภาพ</span><span>✅ เก็บ Canon กลับบ้าน</span></div>
-
-  <div class="hero-stage" aria-live="off"><svg aria-hidden="true"></svg></div>
 </header>
 
 <section class="tldr" aria-label="สรุปบทเรียน">
