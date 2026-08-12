@@ -5,11 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0a2818">
 <meta name="mc-act-view" content="sauce-cup-open">
+<meta name="self-contained" content="classroom-sauce-cup">
 <title>บท 1 · ถ้วยซอส — ย้ายความเข้าใจไปคุยกับ AI อีกตัว | myClover</title>
 <meta name="description" content="บทเรียนย่อ 7 นาที: สกัดข้อมูลสำคัญจากแชตเดิม แล้วพาไปเริ่มงานต่อกับ AI อีกตัวโดยไม่ต้องเล่าใหม่ทั้งหมด">
 <meta property="og:type" content="article">
 <meta property="og:title" content="บท 1 · ถ้วยซอส">
 <meta property="og:description" content="สกัดข้อมูลจากแชตเดิม แล้วย้ายไปเริ่มงานต่อกับ AI อีกตัวใน 4 ขั้น">
+<meta property="og:image" content="https://www.myclover.com/classroom/sauce-cup/header-prologue.jpeg">
 <link rel="canonical" href="https://www.myclover.com/classroom/sauce-cup/">
 <style>
 :root{--ink:#12281c;--paper:#f8f6f0;--deep:#0a2818;--green:#1b6a42;--gold:#be9442;--muted:#607064;--white:#fff}
@@ -20,8 +22,9 @@ button,a,summary{font:inherit;-webkit-tap-highlight-color:transparent}
 a{color:inherit;text-decoration:none}.disp{font-family:"Bai Jamjuree","Anuphan",sans-serif}.wrap{width:min(820px,100%);margin:auto;padding-inline:20px}
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 .top{position:sticky;top:0;z-index:20;background:rgb(248 246 240/.91);backdrop-filter:blur(12px);border-bottom:1px solid rgb(18 40 28/.09)}
-.top .wrap{min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-weight:800}.brand em{font-style:normal;color:var(--green)}.back{font-size:13px;color:var(--muted);font-weight:700}
-.hero{position:relative;overflow:hidden;margin-top:28px;padding:clamp(28px,6vw,50px);border-radius:28px;color:#fff;background:radial-gradient(420px 260px at 90% -5%,rgb(93 174 122/.35),transparent 68%),linear-gradient(145deg,#06170e,var(--deep) 65%,#123a26);border:1px solid rgb(190 148 66/.38);box-shadow:0 24px 55px rgb(10 40 24/.18)}
+.top .wrap{min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:inline-flex;align-items:center;font-weight:800}.brand img{display:block;width:28px;height:28px;max-width:28px;object-fit:contain;margin-right:8px;flex:none}.brand em{font-style:normal;color:var(--green)}.back{font-size:13px;color:var(--muted);font-weight:700}
+.hero{position:relative;overflow:hidden;margin-top:28px;padding:0;border-radius:28px;color:#fff;background:radial-gradient(420px 260px at 90% -5%,rgb(93 174 122/.35),transparent 68%),linear-gradient(145deg,#06170e,var(--deep) 65%,#123a26);border:1px solid rgb(190 148 66/.38);box-shadow:0 24px 55px rgb(10 40 24/.18)}
+.hero-prologue{width:100%;overflow:hidden;background:#06170e;border-bottom:1px solid rgb(255 255 255/.09)}.hero-prologue img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}.hero-body{position:relative;padding:clamp(28px,6vw,50px)}
 .eyebrow{display:inline-flex;border:1px solid rgb(190 148 66/.6);border-radius:99px;padding:5px 13px;color:#e4c57e;font-size:11px;font-weight:800;letter-spacing:.12em}.hero h1{font-size:clamp(38px,9vw,64px);line-height:1.05;margin-top:17px}.hero .lead{max-width:570px;margin-top:13px;color:rgb(255 255 255/.8);font-size:clamp(16px,3.6vw,19px)}
 .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.meta span{font-size:12px;font-weight:700;padding:5px 11px;border:1px solid rgb(255 255 255/.16);border-radius:99px;background:rgb(255 255 255/.07)}
 .cup{position:absolute;right:44px;top:42px;width:116px;height:75px;border:5px solid #dfbd72;border-top:0;border-radius:8px 8px 45px 45px;background:linear-gradient(90deg,#8b4a2c,#bd6a3e 52%,#7a3e26);box-shadow:inset 0 8px 13px rgb(0 0 0/.18),0 18px 30px rgb(0 0 0/.23);transform:rotate(4deg)}
@@ -34,28 +37,32 @@ a{color:inherit;text-decoration:none}.disp{font-family:"Bai Jamjuree","Anuphan",
 .copy{position:absolute;right:11px;top:10px;border:0;border-radius:9px;padding:7px 12px;background:var(--gold);color:var(--deep);font-weight:800;font-size:12px;cursor:pointer}.copy:hover{filter:brightness(1.08)}
 .checks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.check{padding:18px;background:#fff;border:1px solid rgb(18 40 28/.09);border-radius:15px}.check b{display:block;margin-bottom:7px}.check ul{margin-left:20px;font-size:13px;color:var(--muted)}.check li+li{margin-top:4px}.warn{margin-top:13px;padding:14px 16px;border-radius:13px;background:#fff1e8;border:1px solid #e6b395;font-size:13px;color:#713b2d}.warn b{color:#a44836}
 .test{margin-top:16px;padding:21px;border-radius:17px;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.11));border:1px solid rgb(27 106 66/.25)}.test b{display:block;font-size:17px}.test p{font-size:14px;margin-top:5px}.pass{display:inline-block;margin-top:10px;padding:4px 10px;border-radius:99px;background:var(--green);color:#fff;font-size:11px;font-weight:800}
-.end{margin:42px 0 26px;padding:clamp(25px,5vw,38px);text-align:center;border-radius:24px;background:linear-gradient(145deg,#06170e,#103b25);color:#fff;border:1px solid rgb(190 148 66/.45);box-shadow:0 24px 50px rgb(10 40 24/.16)}.end .seal{font-size:38px}.end h2{font-size:clamp(24px,5vw,31px);margin-top:8px}.end>p{max-width:590px;margin:8px auto 0;color:rgb(255 255 255/.73)}
+.end{margin:42px 0 26px;padding:clamp(25px,5vw,38px);text-align:center;border-radius:24px;background:linear-gradient(145deg,#06170e,#103b25);color:#fff;border:1px solid rgb(190 148 66/.45);box-shadow:0 24px 50px rgb(10 40 24/.16);overflow:hidden}.end .seal{font-size:38px}.end h2{font-size:clamp(24px,5vw,31px);margin-top:8px}.end>p{max-width:590px;margin:8px auto 0;color:rgb(255 255 255/.73)}
+#mcSauceCupPoster{display:block;width:100%;max-width:100%;margin:22px 0 0;overflow:hidden;border-radius:14px;border:1px solid rgb(190 148 66/.3)}#mcSauceCupPoster img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}
 .why{margin:18px auto 0;padding:15px 17px;border-radius:14px;background:rgb(255 255 255/.07);border:1px solid rgb(255 255 255/.12);font-size:14px;color:rgb(255 255 255/.83);text-align:left}.why b{color:#e4c57e}
 .primary{display:flex;justify-content:center;align-items:center;min-height:54px;margin-top:19px;border-radius:13px;background:var(--gold);color:var(--deep);font-weight:800;font-size:16px;box-shadow:0 12px 25px rgb(0 0 0/.18);transition:.18s}.primary:hover{transform:translateY(-2px);filter:brightness(1.06)}
 .full{margin-top:12px;border:1px solid rgb(255 255 255/.25);border-radius:13px;overflow:hidden}.full summary{list-style:none;cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:#fff}.full summary::-webkit-details-marker{display:none}.full summary:after{content:"＋";color:#e4c57e}.full[open] summary:after{content:"−"}.full .body{padding:0 18px 19px;text-align:left;color:rgb(255 255 255/.76);font-size:14px}.full .body b{color:#fff}.full .body a{display:flex;justify-content:center;margin-top:14px;padding:11px 13px;border-radius:10px;border:1px solid rgb(190 148 66/.55);color:#e4c57e;font-weight:800}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
-@media(max-width:680px){.cup{right:25px;top:38px;transform:rotate(4deg) scale(.75);transform-origin:top right}.hero{padding-top:28px}.hero h1{padding-right:86px}.steps{grid-template-columns:1fr 1fr}.checks{grid-template-columns:1fr}}
-@media(max-width:420px){.wrap{padding-inline:15px}.top .back{font-size:12px}.hero{border-radius:21px}.hero h1{font-size:39px}.cup{opacity:.72}.steps{gap:8px}.step{padding:14px 12px}.prompt{font-size:12px;padding-inline:14px}.define{padding:19px}}
+@media(max-width:680px){.cup{right:25px;top:38px;transform:rotate(4deg) scale(.75);transform-origin:top right}.hero h1{padding-right:86px}.steps{grid-template-columns:1fr 1fr}.checks{grid-template-columns:1fr}}
+@media(max-width:420px){.wrap{padding-inline:15px}.top .back{font-size:12px}.hero{border-radius:21px}.hero h1{font-size:39px}.cup{opacity:.72}.steps{gap:8px}.step{padding:14px 12px}.prompt{font-size:12px;padding-inline:14px}.define{padding:19px}.hero-body{padding:24px 19px 27px}}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <a class="brand disp" href="/">my<em>Clover</em></a>
+  <a class="brand disp" href="/hall.html#quest" aria-label="myclover"><img src="/icons/icon-192.png" width="192" height="192" alt="" aria-hidden="true">my<em>clover</em></a>
   <a class="back" href="/forge/ep1-everyone-gets-to-play/">กลับไปอ่านการ์ตูน →</a>
 </div></header>
 
 <main class="wrap">
   <section class="hero">
-    <span class="eyebrow disp">บท 1 · ฉบับชิมก่อน</span>
-    <h1 class="disp">ถ้วยซอส</h1>
-    <p class="lead">ย้ายความเข้าใจจากแชตที่คุยอยู่ ไปเริ่มงานต่อกับ AI อีกตัว โดยไม่ต้องเล่าใหม่ทั้งหมด</p>
-    <div class="meta"><span>ใช้เวลาประมาณ 7 นาที</span><span>ได้ของไปใช้จริง 1 ชิ้น</span></div>
-    <span class="cup" aria-hidden="true"></span>
+    <div class="hero-prologue"><img src="/classroom/sauce-cup/header-prologue.jpeg?v=20260812-1851" alt="จุดเริ่มต้นจากกระดาษ A4 1 แผ่น ก่อนกลายเป็นวิธีคิด AI ใส่ซอส" loading="eager" decoding="async"></div>
+    <div class="hero-body">
+      <span class="eyebrow disp">บท 1 · ฉบับชิมก่อน</span>
+      <h1 class="disp">ถ้วยซอส</h1>
+      <p class="lead">ย้ายความเข้าใจจากแชตที่คุยอยู่ ไปเริ่มงานต่อกับ AI อีกตัว โดยไม่ต้องเล่าใหม่ทั้งหมด</p>
+      <div class="meta"><span>ใช้เวลาประมาณ 7 นาที</span><span>ได้ของไปใช้จริง 1 ชิ้น</span></div>
+      <span class="cup" aria-hidden="true"></span>
+    </div>
   </section>
 
   <div class="define">
@@ -122,7 +129,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
     <div class="seal" aria-hidden="true">🥣</div>
     <h2 class="disp">ถ้วยแรกเสร็จแล้ว</h2>
     <p>คุณเพิ่งพก “ความเข้าใจ” ข้ามจาก AI ตัวหนึ่งไปอีกตัวหนึ่ง โดยไม่ต้องเริ่มเล่าใหม่จากศูนย์</p>
-    <div class="why"><b>ทางที่เร็วที่สุดไปยังขวดเต็ม:</b> อ่านการ์ตูน 7 ตอน เพราะมันทำให้เห็นว่าซอสที่ดีเกิดจากอะไร ก่อนลงมือผลิตของจริง จึงช่วยลดเวลาเรียนรวมได้มากกว่าเริ่มกลางเรื่อง</div>
+    <figure id="mcSauceCupPoster"><img src="/classroom/sauce-cup/banner-classroom.jpg?v=20260812-1851" width="1024" height="1536" alt="ภาพรวม AI ใส่ซอส 6 บท SOURCE TASTE COOK SPLIT SEASON SERVE" loading="lazy" decoding="async"></figure>
+    <div class="why"><b>ทำไมแนะนำให้กลับไปอ่านการ์ตูนก่อน:</b> เพราะพื้นฐานของวิธีคิดนี้เริ่มมาตั้งแต่ <b>กระดาษ A4 1 แผ่น</b> การ์ตูน 7 ตอนจะพาเห็นว่ากระดาษแผ่นนั้นค่อย ๆ กลายเป็น “ซอส” และต่อยอดมาเป็น Workflow 6 บทที่เห็นในภาพนี้ได้ยังไง</div>
     <a class="primary disp" href="/forge/ep1-everyone-gets-to-play/" data-ga="sauce_cup_read_comic">อ่านการ์ตูนต่อ · เริ่มตอน 1 →</a>
     <details class="full" data-expand="full-bottle">
       <summary class="disp">อยากไปบท 1 · เต็มขวดซอสเลย?</summary>
@@ -148,6 +156,5 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
   document.querySelector('[data-expand="full-bottle"]').addEventListener('toggle',function(e){if(e.currentTarget.open)event('sauce_cup_full_explain_open');});
 })();
 </script>
-<script type="module" src="/assets/track.js"></script>
 </body>
 </html>
