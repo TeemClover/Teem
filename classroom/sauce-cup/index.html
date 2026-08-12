@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0a2818">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071d12">
 <meta name="mc-act-view" content="sauce-cup-open">
 <meta name="self-contained" content="classroom-sauce-cup">
 <title>บท 1 · ถ้วยซอส — ย้ายความเข้าใจไปคุยกับ AI อีกตัว | myClover</title>
@@ -13,56 +13,81 @@
 <meta property="og:description" content="สกัดข้อมูลจากแชตเดิม แล้วย้ายไปเริ่มงานต่อกับ AI อีกตัวใน 4 ขั้น">
 <meta property="og:image" content="https://www.myclover.com/classroom/sauce-cup/header-prologue.jpeg">
 <link rel="canonical" href="https://www.myclover.com/classroom/sauce-cup/">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
 <style>
-:root{--ink:#12281c;--paper:#f8f6f0;--deep:#0a2818;--green:#1b6a42;--gold:#be9442;--muted:#607064;--white:#fff}
+:root{
+  --deep:#071d12;--deep2:#0a2818;--green:#1b6a42;--gold:#be9442;--gold2:#ead08c;
+  --paper:#f8f6f0;--ink:#0f0f0f;--muted:#313131;--line:rgba(18,40,28,.12);
+  --mc-font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",Tahoma,Arial,sans-serif
+}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:72px}
-body{font-family:"Anuphan",system-ui,-apple-system,sans-serif;background:radial-gradient(800px 430px at 50% -210px,#e4d6ae 0,transparent 72%),var(--paper);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased}
+html{font-size:18px;scroll-behavior:smooth;scroll-padding-top:76px;text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{font-family:var(--mc-font);font-size:1rem;font-weight:400;line-height:1.8;background:radial-gradient(800px 430px at 50% -210px,#e4d6ae 0,transparent 72%),var(--paper);color:var(--ink);-webkit-font-smoothing:auto;overflow-x:hidden}
 button,a,summary{font:inherit;-webkit-tap-highlight-color:transparent}
-a{color:inherit;text-decoration:none}.disp{font-family:"Bai Jamjuree","Anuphan",sans-serif}.wrap{width:min(820px,100%);margin:auto;padding-inline:20px}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-.top{position:sticky;top:0;z-index:20;background:rgb(248 246 240/.91);backdrop-filter:blur(12px);border-bottom:1px solid rgb(18 40 28/.09)}
-.top .wrap{min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:inline-flex;align-items:center;font-weight:800}.brand img{display:block;width:28px;height:28px;max-width:28px;object-fit:contain;margin-right:8px;flex:none}.brand em{font-style:normal;color:var(--green)}.back{font-size:13px;color:var(--muted);font-weight:700}
-.hero{position:relative;overflow:hidden;margin-top:28px;padding:0;border-radius:28px;color:#fff;background:radial-gradient(420px 260px at 90% -5%,rgb(93 174 122/.35),transparent 68%),linear-gradient(145deg,#06170e,var(--deep) 65%,#123a26);border:1px solid rgb(190 148 66/.38);box-shadow:0 24px 55px rgb(10 40 24/.18)}
-.hero-prologue{width:100%;overflow:hidden;background:#06170e;border-bottom:1px solid rgb(255 255 255/.09)}.hero-prologue img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}.hero-body{position:relative;padding:clamp(28px,6vw,50px)}
-.eyebrow{display:inline-flex;border:1px solid rgb(190 148 66/.6);border-radius:99px;padding:5px 13px;color:#e4c57e;font-size:11px;font-weight:800;letter-spacing:.12em}.hero h1{font-size:clamp(38px,9vw,64px);line-height:1.05;margin-top:17px}.hero .lead{max-width:570px;margin-top:13px;color:rgb(255 255 255/.8);font-size:clamp(16px,3.6vw,19px)}
-.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.meta span{font-size:12px;font-weight:700;padding:5px 11px;border:1px solid rgb(255 255 255/.16);border-radius:99px;background:rgb(255 255 255/.07)}
+.wrap{width:min(820px,calc(100% - 32px));margin:auto}
+.top{position:sticky;top:0;z-index:100;background:rgba(248,246,240,.90);backdrop-filter:blur(13px);border-bottom:1px solid var(--line)}
+.top .wrap{min-height:62px;display:flex;align-items:center;gap:14px}
+.logo{font-family:"Bai Jamjuree",system-ui;font-weight:800;white-space:nowrap;display:inline-flex;align-items:center}
+.logo img{height:1.35em;width:auto;max-width:none;vertical-align:-.3em;margin-right:.32em}
+.logo em{font-style:normal;color:var(--green)}
+.back{margin-left:auto;white-space:nowrap;padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:#59645d;font-size:13px;font-weight:700}
+.prologue{margin:24px auto 18px;border-radius:24px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 22px 54px -38px rgba(8,28,17,.68)}
+.prologue img{width:100%;height:auto;object-fit:contain}
+.hero{position:relative;overflow:hidden;margin-top:0;padding:clamp(28px,6vw,50px);border-radius:28px;color:#fff;background:radial-gradient(420px 260px at 90% -5%,rgb(93 174 122/.35),transparent 68%),linear-gradient(145deg,#06170e,var(--deep2) 65%,#123a26);border:1px solid rgb(190 148 66/.38);box-shadow:0 24px 55px rgb(10 40 24/.18)}
+.eyebrow{display:inline-flex;border:1px solid rgb(190 148 66/.6);border-radius:99px;padding:5px 13px;color:#e4c57e;font-size:12px;font-weight:800;letter-spacing:.12em}
+.hero h1{font-size:clamp(38px,9vw,64px);line-height:1.05;margin-top:17px;font-weight:650}
+.hero .lead{max-width:570px;margin-top:13px;color:rgb(255 255 255/.9);font-size:clamp(16px,3.6vw,19px)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.meta span{font-size:13px;font-weight:700;padding:5px 11px;border:1px solid rgb(255 255 255/.16);border-radius:99px;background:rgb(255 255 255/.07)}
 .cup{position:absolute;right:44px;top:42px;width:116px;height:75px;border:5px solid #dfbd72;border-top:0;border-radius:8px 8px 45px 45px;background:linear-gradient(90deg,#8b4a2c,#bd6a3e 52%,#7a3e26);box-shadow:inset 0 8px 13px rgb(0 0 0/.18),0 18px 30px rgb(0 0 0/.23);transform:rotate(4deg)}
-.cup:before{content:"";position:absolute;right:-39px;top:8px;width:47px;height:38px;border:7px solid #dfbd72;border-left:0;border-radius:0 35px 35px 0}.cup:after{content:"ชิม";position:absolute;inset:20px 10px auto;text-align:center;color:#fff9e8;font-weight:800;font-size:16px}
-.define{margin:18px 0 30px;padding:22px 24px;background:#fff;border:1px solid rgb(18 40 28/.09);border-left:5px solid var(--gold);border-radius:16px;box-shadow:0 10px 30px rgb(18 40 28/.05)}.define b{color:var(--green)}
-.goal{margin:30px 0 10px}.goal small{display:block;color:#94702d;font-weight:800;letter-spacing:.1em}.goal h2{font-size:clamp(24px,5vw,32px);line-height:1.35;margin-top:4px}.goal p{color:var(--muted);margin-top:7px}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 32px}.step{background:#fff;border:1px solid rgb(18 40 28/.09);border-radius:16px;padding:17px 15px;box-shadow:0 8px 24px rgb(18 40 28/.045)}.step i{width:31px;height:31px;display:grid;place-items:center;border-radius:9px;background:var(--green);color:#fff;font-style:normal;font-weight:800}.step b{display:block;margin-top:10px;font-size:14px}.step p{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.55}
-.section{margin-top:38px}.section h2{display:flex;align-items:center;gap:10px;font-size:22px}.section h2 span{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:var(--deep);color:#fff;font-size:15px}.section>p{margin-top:8px;color:var(--muted)}
-.prompt{position:relative;margin-top:15px;padding:51px 18px 19px;border-radius:16px;background:#06170e;color:#d9f0e1;border:1px solid rgb(190 148 66/.35);font:13px/1.75 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:0 15px 35px rgb(10 40 24/.12)}
-.copy{position:absolute;right:11px;top:10px;border:0;border-radius:9px;padding:7px 12px;background:var(--gold);color:var(--deep);font-weight:800;font-size:12px;cursor:pointer}.copy:hover{filter:brightness(1.08)}
-.checks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.check{padding:18px;background:#fff;border:1px solid rgb(18 40 28/.09);border-radius:15px}.check b{display:block;margin-bottom:7px}.check ul{margin-left:20px;font-size:13px;color:var(--muted)}.check li+li{margin-top:4px}.warn{margin-top:13px;padding:14px 16px;border-radius:13px;background:#fff1e8;border:1px solid #e6b395;font-size:13px;color:#713b2d}.warn b{color:#a44836}
-.test{margin-top:16px;padding:21px;border-radius:17px;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.11));border:1px solid rgb(27 106 66/.25)}.test b{display:block;font-size:17px}.test p{font-size:14px;margin-top:5px}.pass{display:inline-block;margin-top:10px;padding:4px 10px;border-radius:99px;background:var(--green);color:#fff;font-size:11px;font-weight:800}
-.end{margin:42px 0 26px;padding:clamp(25px,5vw,38px);text-align:center;border-radius:24px;background:linear-gradient(145deg,#06170e,#103b25);color:#fff;border:1px solid rgb(190 148 66/.45);box-shadow:0 24px 50px rgb(10 40 24/.16);overflow:hidden}.end .seal{font-size:38px}.end h2{font-size:clamp(24px,5vw,31px);margin-top:8px}.end>p{max-width:590px;margin:8px auto 0;color:rgb(255 255 255/.73)}
-#mcSauceCupPoster{display:block;width:100%;max-width:100%;margin:22px 0 0;overflow:hidden;border-radius:14px;border:1px solid rgb(190 148 66/.3)}#mcSauceCupPoster img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}
-.why{margin:18px auto 0;padding:15px 17px;border-radius:14px;background:rgb(255 255 255/.07);border:1px solid rgb(255 255 255/.12);font-size:14px;color:rgb(255 255 255/.83);text-align:left}.why b{color:#e4c57e}
-.primary{display:flex;justify-content:center;align-items:center;min-height:54px;margin-top:19px;border-radius:13px;background:var(--gold);color:var(--deep);font-weight:800;font-size:16px;box-shadow:0 12px 25px rgb(0 0 0/.18);transition:.18s}.primary:hover{transform:translateY(-2px);filter:brightness(1.06)}
-.full{margin-top:12px;border:1px solid rgb(255 255 255/.25);border-radius:13px;overflow:hidden}.full summary{list-style:none;cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:#fff}.full summary::-webkit-details-marker{display:none}.full summary:after{content:"＋";color:#e4c57e}.full[open] summary:after{content:"−"}.full .body{padding:0 18px 19px;text-align:left;color:rgb(255 255 255/.76);font-size:14px}.full .body b{color:#fff}.full .body a{display:flex;justify-content:center;margin-top:14px;padding:11px 13px;border-radius:10px;border:1px solid rgb(190 148 66/.55);color:#e4c57e;font-weight:800}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
+.cup:before{content:"";position:absolute;right:-39px;top:8px;width:47px;height:38px;border:7px solid #dfbd72;border-left:0;border-radius:0 35px 35px 0}
+.cup:after{content:"ชิม";position:absolute;inset:20px 10px auto;text-align:center;color:#fff9e8;font-weight:800;font-size:16px}
+.define{margin:18px 0 30px;padding:22px 24px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--gold);border-radius:16px;box-shadow:0 10px 30px rgb(18 40 28/.05)}.define b{color:var(--green)}
+.goal{margin:30px 0 10px}.goal small{display:block;color:#85641f;font-weight:800;letter-spacing:.1em}.goal h2{font-size:clamp(24px,5vw,32px);line-height:1.35;margin-top:4px;font-weight:650}.goal p{color:var(--muted);margin-top:7px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 32px}.step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px 15px;box-shadow:0 8px 24px rgb(18 40 28/.045)}.step i{width:31px;height:31px;display:grid;place-items:center;border-radius:9px;background:var(--green);color:#fff;font-style:normal;font-weight:800}.step b{display:block;margin-top:10px;font-size:15px}.step p{font-size:14px;color:var(--muted);margin-top:3px;line-height:1.6}
+.section{margin-top:38px}.section h2{display:flex;align-items:center;gap:10px;font-size:24px;line-height:1.35;font-weight:650}.section h2 span{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:var(--deep2);color:#fff;font-size:15px;flex:none}.section>p{margin-top:8px;color:var(--muted)}
+.prompt{position:relative;margin-top:15px;padding:51px 18px 19px;border-radius:16px;background:#06170e;color:#d9f0e1;border:1px solid rgb(190 148 66/.35);font:13px/1.75 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:0 15px 35px rgb(10 40 24/.12)}
+.copy{position:absolute;right:11px;top:10px;border:0;border-radius:9px;padding:7px 12px;background:var(--gold);color:var(--deep);font-weight:800;font-size:12px;cursor:pointer}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.check{padding:18px;background:#fff;border:1px solid var(--line);border-radius:15px}.check b{display:block;margin-bottom:7px}.check ul{margin-left:20px;color:var(--muted)}.check li+li{margin-top:4px}
+.warn{margin-top:13px;padding:14px 16px;border-radius:13px;background:#fff1e8;border:1px solid #e6b395;color:#713b2d}.warn b{color:#a44836}
+.test{margin-top:16px;padding:21px;border-radius:17px;background:linear-gradient(135deg,rgb(27 106 66/.09),rgb(190 148 66/.11));border:1px solid rgb(27 106 66/.25)}.test b{display:block;font-size:18px}.test p{margin-top:5px}.pass{display:inline-block;margin-top:10px;padding:4px 10px;border-radius:99px;background:var(--green);color:#fff;font-size:12px;font-weight:800}
+.end{margin:42px 0 26px;padding:clamp(25px,5vw,38px);text-align:center;border-radius:24px;background:linear-gradient(145deg,#06170e,#103b25);color:#fff;border:1px solid rgb(190 148 66/.45);box-shadow:0 24px 50px rgb(10 40 24/.16);overflow:hidden}
+.end .seal{font-size:38px}.end h2{font-size:clamp(24px,5vw,31px);margin-top:8px;font-weight:650}.end>p{max-width:590px;margin:8px auto 0;color:rgb(255 255 255/.9)}
+.poster{display:block;width:100%;max-width:100%;margin:22px auto 0;overflow:hidden;border-radius:14px;border:1px solid rgb(190 148 66/.3)}
+.poster img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}
+.why{margin:18px auto 0;padding:15px 17px;border-radius:14px;background:rgb(255 255 255/.07);border:1px solid rgb(255 255 255/.12);font-size:15px;color:rgb(255 255 255/.9);text-align:left}.why b{color:#e4c57e}
+.primary{display:flex;justify-content:center;align-items:center;min-height:54px;margin-top:19px;border-radius:13px;background:var(--gold);color:var(--deep);font-weight:800;font-size:16px;box-shadow:0 12px 25px rgb(0 0 0/.18);transition:.18s}
+.primary:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.full{margin-top:12px;border:1px solid rgb(255 255 255/.25);border-radius:13px;overflow:hidden}.full summary{list-style:none;cursor:pointer;min-height:50px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;color:#fff}.full summary::-webkit-details-marker{display:none}.full summary:after{content:"＋";color:#e4c57e}.full[open] summary:after{content:"−"}.full .body{padding:0 18px 19px;text-align:left;color:rgb(255 255 255/.9)}.full .body b{color:#fff}.full .body a{display:flex;justify-content:center;margin-top:14px;padding:11px 13px;border-radius:10px;border:1px solid rgb(190 148 66/.55);color:#e4c57e;font-weight:800}
+footer{text-align:center;color:#59645d;font-size:14px;padding:10px 16px 42px}
 @media(max-width:680px){.cup{right:25px;top:38px;transform:rotate(4deg) scale(.75);transform-origin:top right}.hero h1{padding-right:86px}.steps{grid-template-columns:1fr 1fr}.checks{grid-template-columns:1fr}}
-@media(max-width:420px){.wrap{padding-inline:15px}.top .back{font-size:12px}.hero{border-radius:21px}.hero h1{font-size:39px}.cup{opacity:.72}.steps{gap:8px}.step{padding:14px 12px}.prompt{font-size:12px;padding-inline:14px}.define{padding:19px}.hero-body{padding:24px 19px 27px}}
+@media(max-width:420px){.wrap{width:calc(100% - 24px)}.back{font-size:12px;padding:7px 9px}.hero,.prologue{border-radius:21px}.hero h1{font-size:39px}.cup{opacity:.72}.steps{gap:8px}.step{padding:14px 12px}.prompt{font-size:12px;padding-inline:14px}.define{padding:19px}.end{padding:22px 16px}}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap">
-  <a class="brand disp" href="/hall.html#quest" aria-label="myclover"><img src="/icons/icon-192.png" width="192" height="192" alt="" aria-hidden="true">my<em>clover</em></a>
-  <a class="back" href="/forge/ep1-everyone-gets-to-play/">กลับไปอ่านการ์ตูน →</a>
-</div></header>
+<nav class="top">
+  <div class="wrap">
+    <a class="logo" href="/">
+      <img src="/icons/icon-192.png" alt="" width="192" height="192"> my<em>Clover</em>
+    </a>
+    <a class="back" href="/forge/ep1-everyone-gets-to-play/">กลับไปอ่านการ์ตูน →</a>
+  </div>
+</nav>
 
 <main class="wrap">
+  <figure class="prologue">
+    <img src="/classroom/sauce-cup/header-prologue.jpeg" alt="จุดเริ่มต้นจากกระดาษ A4 1 แผ่น ก่อนกลายเป็นวิธีคิด AI ใส่ซอส" loading="eager" fetchpriority="high" decoding="async">
+  </figure>
+
   <section class="hero">
-    <div class="hero-prologue"><img src="/classroom/sauce-cup/header-prologue.jpeg?v=20260812-1851" alt="จุดเริ่มต้นจากกระดาษ A4 1 แผ่น ก่อนกลายเป็นวิธีคิด AI ใส่ซอส" loading="eager" decoding="async"></div>
-    <div class="hero-body">
-      <span class="eyebrow disp">บท 1 · ฉบับชิมก่อน</span>
-      <h1 class="disp">ถ้วยซอส</h1>
-      <p class="lead">ย้ายความเข้าใจจากแชตที่คุยอยู่ ไปเริ่มงานต่อกับ AI อีกตัว โดยไม่ต้องเล่าใหม่ทั้งหมด</p>
-      <div class="meta"><span>ใช้เวลาประมาณ 7 นาที</span><span>ได้ของไปใช้จริง 1 ชิ้น</span></div>
-      <span class="cup" aria-hidden="true"></span>
-    </div>
+    <span class="eyebrow">บท 1 · ฉบับชิมก่อน</span>
+    <h1>ถ้วยซอส</h1>
+    <p class="lead">ย้ายความเข้าใจจากแชตที่คุยอยู่ ไปเริ่มงานต่อกับ AI อีกตัว โดยไม่ต้องเล่าใหม่ทั้งหมด</p>
+    <div class="meta"><span>ใช้เวลาประมาณ 7 นาที</span><span>ได้ของไปใช้จริง 1 ชิ้น</span></div>
+    <span class="cup" aria-hidden="true"></span>
   </section>
 
   <div class="define">
@@ -70,8 +95,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
   </div>
 
   <section class="goal">
-    <small class="disp">ภารกิจถ้วยแรก</small>
-    <h2 class="disp">เอาแชตเก่าหนึ่งเรื่อง มาทำเป็นซอสหนึ่งถ้วย</h2>
+    <small>ภารกิจถ้วยแรก</small>
+    <h2>เอาแชตเก่าหนึ่งเรื่อง มาทำเป็นซอสหนึ่งถ้วย</h2>
     <p>ไม่ต้องย้ายทั้งประวัติแชต เราจะย้ายเฉพาะความเข้าใจที่ทำให้งานเดินต่อได้</p>
   </section>
 
@@ -83,7 +108,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
   </div>
 
   <section class="section">
-    <h2 class="disp"><span>1</span> สั่งให้แชตเดิมสกัดซอส</h2>
+    <h2><span>1</span> สั่งให้แชตเดิมสกัดซอส</h2>
     <p>เปิดแชตที่คุยเรื่องนั้นอยู่ แล้วส่งข้อความนี้เป็นข้อความสุดท้าย</p>
     <pre class="prompt" id="extractPrompt"><button class="copy" type="button" data-copy="extractPrompt">คัดลอก</button>จากบทสนทนาทั้งหมดในแชตนี้ ช่วยสกัด “ซอส” สำหรับย้ายไปทำงานต่อกับ AI อีกตัว
 
@@ -103,17 +128,17 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
   </section>
 
   <section class="section">
-    <h2 class="disp"><span>2</span> ชิมก่อนย้าย</h2>
+    <h2><span>2</span> ชิมก่อนย้าย</h2>
     <p>อ่านซอสที่ได้สักรอบ จุดนี้สำคัญกว่าการทำให้ข้อความดูสวย</p>
     <div class="checks">
-      <div class="check"><b class="disp">ต้องมี</b><ul><li>เป้าหมายที่พูดเป็นผลลัพธ์ได้</li><li>ข้อตกลงและกติกาที่ห้ามหลุด</li><li>สิ่งที่ทำสำเร็จและงานที่ค้าง</li><li>ตัวอย่างที่ช่วยให้เข้าใจรสนิยม</li></ul></div>
-      <div class="check"><b class="disp">ต้องระวัง</b><ul><li>รายละเอียดเก่าที่เลิกใช้แล้ว</li><li>ข้อสรุปที่ AI แต่งเติมเอง</li><li>ข้อมูลไม่แน่ใจแต่เขียนเหมือนเป็นจริง</li><li>ประโยคยาวที่ไม่ช่วยให้งานเดินต่อ</li></ul></div>
+      <div class="check"><b>ต้องมี</b><ul><li>เป้าหมายที่พูดเป็นผลลัพธ์ได้</li><li>ข้อตกลงและกติกาที่ห้ามหลุด</li><li>สิ่งที่ทำสำเร็จและงานที่ค้าง</li><li>ตัวอย่างที่ช่วยให้เข้าใจรสนิยม</li></ul></div>
+      <div class="check"><b>ต้องระวัง</b><ul><li>รายละเอียดเก่าที่เลิกใช้แล้ว</li><li>ข้อสรุปที่ AI แต่งเติมเอง</li><li>ข้อมูลไม่แน่ใจแต่เขียนเหมือนเป็นจริง</li><li>ประโยคยาวที่ไม่ช่วยให้งานเดินต่อ</li></ul></div>
     </div>
     <div class="warn"><b>ก่อนคัดลอก:</b> เอารหัสผ่าน เลขบัตร ข้อมูลสุขภาพ ข้อมูลลูกค้า หรือเรื่องส่วนตัวที่ไม่จำเป็นออกก่อนทุกครั้ง</div>
   </section>
 
   <section class="section">
-    <h2 class="disp"><span>3</span> ส่งถ้วยให้ AI ตัวใหม่</h2>
+    <h2><span>3</span> ส่งถ้วยให้ AI ตัวใหม่</h2>
     <p>เปิดแชตใหม่ใน AI ตัวเดิมหรืออีกตัวหนึ่ง แล้ววางข้อความนี้ ตามด้วยซอสที่เพิ่งตรวจเสร็จ</p>
     <pre class="prompt" id="receivePrompt"><button class="copy" type="button" data-copy="receivePrompt">คัดลอก</button>นี่คือซอสของโปรเจกต์นี้ กรุณาอ่านเป็นข้อมูลต้นทางก่อนเริ่มงาน
 
@@ -122,18 +147,18 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
 3. ยังไม่ต้องสร้างงานชิ้นใหญ่ จนกว่าฉันจะยืนยันว่าคุณเข้าใจถูก
 
 [วางซอสตรงนี้]</pre>
-    <div class="test"><b class="disp">ทดสอบรสก่อนสั่งงานใหญ่</b><p>ถามคำถามเล็ก ๆ เช่น “เป้าหมายของงานนี้คืออะไร” “มีข้อห้ามอะไร” และ “ขั้นต่อไปควรทำอะไร” ถ้าตอบแก่นได้ตรงโดยไม่แต่งเพิ่ม แปลว่าซอสถ้วยนี้ผ่าน</p><span class="pass">ผ่านแล้วค่อยเริ่มงานต่อ</span></div>
+    <div class="test"><b>ทดสอบรสก่อนสั่งงานใหญ่</b><p>ถามคำถามเล็ก ๆ เช่น “เป้าหมายของงานนี้คืออะไร” “มีข้อห้ามอะไร” และ “ขั้นต่อไปควรทำอะไร” ถ้าตอบแก่นได้ตรงโดยไม่แต่งเพิ่ม แปลว่าซอสถ้วยนี้ผ่าน</p><span class="pass">ผ่านแล้วค่อยเริ่มงานต่อ</span></div>
   </section>
 
   <section class="end">
     <div class="seal" aria-hidden="true">🥣</div>
-    <h2 class="disp">ถ้วยแรกเสร็จแล้ว</h2>
+    <h2>ถ้วยแรกเสร็จแล้ว</h2>
     <p>คุณเพิ่งพก “ความเข้าใจ” ข้ามจาก AI ตัวหนึ่งไปอีกตัวหนึ่ง โดยไม่ต้องเริ่มเล่าใหม่จากศูนย์</p>
-    <figure id="mcSauceCupPoster"><img src="/classroom/sauce-cup/banner-classroom.jpg?v=20260812-1851" width="1024" height="1536" alt="ภาพรวม AI ใส่ซอส 6 บท SOURCE TASTE COOK SPLIT SEASON SERVE" loading="lazy" decoding="async"></figure>
+    <figure class="poster"><img src="/classroom/sauce-cup/banner-classroom.jpg" width="1024" height="1536" alt="ภาพรวม AI ใส่ซอส 6 บท SOURCE TASTE COOK SPLIT SEASON SERVE" loading="lazy" decoding="async"></figure>
     <div class="why"><b>ทำไมแนะนำให้กลับไปอ่านการ์ตูนก่อน:</b> เพราะพื้นฐานของวิธีคิดนี้เริ่มมาตั้งแต่ <b>กระดาษ A4 1 แผ่น</b> การ์ตูน 7 ตอนจะพาเห็นว่ากระดาษแผ่นนั้นค่อย ๆ กลายเป็น “ซอส” และต่อยอดมาเป็น Workflow 6 บทที่เห็นในภาพนี้ได้ยังไง</div>
-    <a class="primary disp" href="/forge/ep1-everyone-gets-to-play/" data-ga="sauce_cup_read_comic">อ่านการ์ตูนต่อ · เริ่มตอน 1 →</a>
+    <a class="primary" href="/forge/ep1-everyone-gets-to-play/" data-ga="sauce_cup_read_comic">อ่านการ์ตูนต่อ · เริ่มตอน 1 →</a>
     <details class="full" data-expand="full-bottle">
-      <summary class="disp">อยากไปบท 1 · เต็มขวดซอสเลย?</summary>
+      <summary>อยากไปบท 1 · เต็มขวดซอสเลย?</summary>
       <div class="body">
         <p>เราไม่ได้ซ่อนบทเต็มไว้เพื่อบังคับอ่าน แต่จัดทางเดินนี้ไว้เพราะกลัวคนเริ่มกลางเรื่องแล้วหลง</p>
         <p><b>ถ้าอยาก skip จริง ๆ</b> ไถผ่าน ๆ ไปให้จบทั้ง 7 ตอนก็ได้ ระบบจะปลดล็อกบท 1 แบบเต็มขวดให้ทันที แล้วค่อยกลับมาอ่านละเอียดเมื่อจำเป็น</p>
@@ -144,16 +169,34 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 42px}
 </main>
 
 <footer>myClover · เรียนเพื่อทำของจริง ไม่ใช่จำคำศัพท์</footer>
+
 <script>
 (function(){
-  function event(name,detail){window.dataLayer=window.dataLayer||[];window.dataLayer.push(Object.assign({event:name},detail||{}));}
+  function event(name,detail){
+    window.dataLayer=window.dataLayer||[];
+    window.dataLayer.push(Object.assign({event:name},detail||{}));
+  }
   document.querySelectorAll('[data-copy]').forEach(function(button){
     button.addEventListener('click',async function(){
-      var box=document.getElementById(button.dataset.copy);var copy=box.cloneNode(true);copy.querySelector('button').remove();var value=copy.textContent.trim();
-      try{await navigator.clipboard.writeText(value);button.textContent='คัดลอกแล้ว ✓';event('sauce_cup_copy',{prompt:button.dataset.copy});setTimeout(function(){button.textContent='คัดลอก';},1800);}catch(error){button.textContent='คัดลอกไม่ได้';}
+      var box=document.getElementById(button.dataset.copy);
+      var copy=box.cloneNode(true);
+      var nested=copy.querySelector('button');
+      if(nested) nested.remove();
+      var value=copy.textContent.trim();
+      try{
+        await navigator.clipboard.writeText(value);
+        button.textContent='คัดลอกแล้ว ✓';
+        event('sauce_cup_copy',{prompt:button.dataset.copy});
+        setTimeout(function(){button.textContent='คัดลอก';},1800);
+      }catch(error){
+        button.textContent='คัดลอกไม่ได้';
+      }
     });
   });
-  document.querySelector('[data-expand="full-bottle"]').addEventListener('toggle',function(e){if(e.currentTarget.open)event('sauce_cup_full_explain_open');});
+  var full=document.querySelector('[data-expand="full-bottle"]');
+  if(full) full.addEventListener('toggle',function(e){
+    if(e.currentTarget.open) event('sauce_cup_full_explain_open');
+  });
 })();
 </script>
 </body>
