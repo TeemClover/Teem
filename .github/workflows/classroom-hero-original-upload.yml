@@ -19,7 +19,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          EXPECTED=13
+          EXPECTED=26
           DIR=.tmp/classroom-hero
           COUNT=$(find "$DIR" -maxdepth 1 -type f -name 'part*.b64' | wc -l | tr -d ' ')
           if [ "$COUNT" != "$EXPECTED" ]; then
