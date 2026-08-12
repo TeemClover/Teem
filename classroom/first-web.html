@@ -95,6 +95,9 @@ html,body{min-height:100%}body{overflow-y:auto!important}
 .head>.classroom-lesson-header-image{width:calc(100% + 68px);max-width:none;margin:-36px -34px 28px}
 .hero>.classroom-lesson-header-image{width:calc(100% + (2 * clamp(28px,6vw,46px)));max-width:none;margin:calc(-1 * clamp(28px,6vw,46px)) calc(-1 * clamp(28px,6vw,46px)) 26px}
 .lesson6-hero>.classroom-lesson-header-image{width:100%;max-width:none;margin:0}
+.lesson6-hero>.hero-art{position:relative;z-index:1;display:block;width:100%;padding:0 42px 6px}
+.lesson6-hero>.hero-art svg{display:block;width:100%;height:auto;max-width:520px;margin:0 auto;filter:drop-shadow(0 18px 26px rgb(0 0 0/.22))}
+@media(max-width:680px){.lesson6-hero>.hero-art{padding:0 24px 4px}}
 @media(max-width:560px){
   .head>.classroom-lesson-header-image{width:calc(100% + 44px);margin:-26px -22px 22px}
 }
@@ -118,6 +121,47 @@ html,body{min-height:100%}body{overflow-y:auto!important}
     <p class="lead">นี่ไม่ใช่คลาสสำหรับคนอยากทำเว็บไซต์ แต่คือคลาสสำหรับคนที่อยาก <strong>เสิร์ฟความคิดให้คนอื่นเปิด ใช้ และเดินต่อได้จริง</strong></p>
     <div class="meta"><span>🥩 เมนคอร์ส</span><span>📄 ไฟล์เดียว</span><span>📱 เปิดได้บนโทรศัพท์</span><span>🌍 ส่งให้ 1 คนหรือทั้งโลก</span></div>
   </div>
+
+      <div class="hero-art" aria-label="เชฟกำลังเสิร์ฟสเต็กจานหลัก">
+        <svg viewBox="0 0 520 430" role="img" aria-labelledby="steakTitle">
+          <title id="steakTitle">เชฟในชุดสีขาวเสิร์ฟสเต็กเนื้อย่างพร้อมซอสและผัก</title>
+          <defs>
+            <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf4"/><stop offset="1" stop-color="#cfd7ce"/></linearGradient>
+            <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0bf8f"/><stop offset="1" stop-color="#b9744f"/></linearGradient>
+            <linearGradient id="steak" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7f271c"/><stop offset=".45" stop-color="#b94e2d"/><stop offset="1" stop-color="#4d140f"/></linearGradient>
+            <radialGradient id="plate"><stop stop-color="#fff"/><stop offset=".72" stop-color="#e7e5db"/><stop offset="1" stop-color="#aab5aa"/></radialGradient>
+            <filter id="soft"><feGaussianBlur stdDeviation="8"/></filter>
+            <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <ellipse cx="300" cy="396" rx="190" ry="24" fill="#000" opacity=".28" filter="url(#soft)"/>
+          <circle cx="120" cy="107" r="50" fill="url(#skin)"/>
+          <path d="M70 101c1-45 18-77 50-77s52 31 51 77c-18-15-34-19-51-19s-32 4-50 19Z" fill="#fffdf4"/>
+          <path d="M82 54c13-37 62-44 82-7 7 12 8 28 4 43H72c-3-14-1-25 10-36Z" fill="#fff" stroke="#dce3da" stroke-width="4"/>
+          <path d="M83 84h76" stroke="#cfd8ce" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="105" cy="111" r="4" fill="#38231c"/><circle cx="139" cy="111" r="4" fill="#38231c"/>
+          <path d="M110 134c9 7 18 7 27 0" fill="none" stroke="#7c3f35" stroke-width="4" stroke-linecap="round"/>
+          <path d="M68 168c24-20 83-22 112 0 27 21 38 78 41 143H45c3-65 4-118 23-143Z" fill="url(#coat)" stroke="#d7dfd7" stroke-width="4"/>
+          <path d="M122 157v155M122 181l-20-17m20 17 21-17" stroke="#8ba08e" stroke-width="3"/>
+          <circle cx="104" cy="202" r="4" fill="#7b8f7d"/><circle cx="104" cy="229" r="4" fill="#7b8f7d"/><circle cx="104" cy="256" r="4" fill="#7b8f7d"/>
+          <path d="M54 195c-24 25-31 63-30 102 2 19 17 31 35 22l68-37-20-40-45 22" fill="url(#coat)" stroke="#d7dfd7" stroke-width="4"/>
+          <path d="M177 197c31 19 49 50 59 87l71 23-12 42-91-21c-20-5-29-21-30-42l-2-48" fill="url(#coat)" stroke="#d7dfd7" stroke-width="4"/>
+          <path d="M106 244c13-2 24 2 31 13l11 20-32 18-17-20c-8-10-4-27 7-31Z" fill="url(#skin)"/>
+          <path d="M290 305c15-4 30 5 34 20 4 14-4 30-18 35l-35 5-4-48Z" fill="url(#skin)"/>
+          <ellipse cx="315" cy="325" rx="157" ry="54" fill="url(#plate)" stroke="#f8f8f1" stroke-width="6"/>
+          <ellipse cx="315" cy="318" rx="133" ry="39" fill="#d8d8cd" opacity=".6"/>
+          <path d="M227 313c6-30 37-49 78-44 41 5 73 27 75 54-9 23-49 37-91 30-38-6-65-20-62-40Z" fill="url(#steak)" stroke="#3b100c" stroke-width="5"/>
+          <path d="M241 300c25 9 77 16 122 11M248 324c33 10 70 14 107 8" fill="none" stroke="#e39a58" stroke-width="6" stroke-linecap="round" opacity=".65"/>
+          <path d="M270 282l-17 58M307 277l-18 68M345 288l-16 54" stroke="#42120d" stroke-width="5" opacity=".9"/>
+          <path d="M229 339c20 15 71 23 119 11" fill="none" stroke="#5e1a12" stroke-width="8" stroke-linecap="round"/>
+          <path d="M371 292c15-12 28-15 42-10-7 8-13 14-19 20 14-3 25 1 33 10-19 4-34 4-51-2Z" fill="#3d8e49"/>
+          <path d="M384 322c17-9 32-8 45 0-9 7-18 11-28 13 13 1 23 7 29 16-20 0-36-4-49-14Z" fill="#64ad55"/>
+          <circle cx="213" cy="326" r="18" fill="#d9a94d"/><circle cx="205" cy="319" r="5" fill="#fff3b0" opacity=".7"/>
+          <path d="M224 291c-10-17-2-28 4-39" class="steam" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+          <path d="M287 271c-8-17 2-27 5-42" class="steam s2" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+          <path d="M353 279c-5-17 6-27 8-39" class="steam s3" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+          <circle cx="389" cy="268" r="4" fill="#f0d58e" filter="url(#glow)"/><circle cx="413" cy="288" r="3" fill="#f0d58e" filter="url(#glow)"/>
+        </svg>
+      </div>
 </header>
 <section class="tldr" id="serveTldr" aria-label="สรุปบทเรียน">
   <div class="tldr-main">
