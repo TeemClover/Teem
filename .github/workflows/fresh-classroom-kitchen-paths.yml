@@ -1,0 +1,106 @@
+name: Fresh classroom kitchen asset paths
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fresh-classroom-kitchen-paths.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  rewire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Create brand-new asset URLs with original JPEG bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          DEST='img/classroom-kitchen-20260812-1445'
+          mkdir -p "$DEST"
+
+          # Copy byte-for-byte only. No resize / convert / recompress.
+          cp -f img/lesson-1.jpg "$DEST/lv1-source.jpeg"
+          cp -f img/lesson-2.jpg "$DEST/lv2-taste.jpeg"
+          cp -f img/lesson-3.jpg "$DEST/lv3-cook.jpeg"
+          cp -f img/lesson-4.jpg "$DEST/lv4-split.jpeg"
+          cp -f img/lesson-5.jpg "$DEST/lv5-season.jpeg"
+          cp -f img/lesson-6.jpg "$DEST/lv6-serve-steak.jpeg"
+
+          # Exact hashes from Archive 5.zip.
+          cat > /tmp/classroom-kitchen.sha256 <<'SUMS'
+          be5dddfa2799880681c2228cf9e0003d62e22255a8a5b62e0645a94a2039a23b  img/classroom-kitchen-20260812-1445/lv1-source.jpeg
+          2d69940c2b08772c785e3883fa89f519edf234d0e6261b7910232fa713f797c9  img/classroom-kitchen-20260812-1445/lv2-taste.jpeg
+          12ade5ad6fec0da92c7de3883ad1ae81541f2dc3ccc9e5944d9243a10aec2b7f  img/classroom-kitchen-20260812-1445/lv3-cook.jpeg
+          10d4a43e9ccaf4d495a7354799302fd171ff8aa919ed2f551cda0c508e31b558  img/classroom-kitchen-20260812-1445/lv4-split.jpeg
+          2518262c361b43246152d1199bd5bc809187d8b622dfa51a4b5a35e49738d729  img/classroom-kitchen-20260812-1445/lv5-season.jpeg
+          6c5ed20783eefbd7afc52b7ab6110683f9e30b1eff1d782a6d154f5e7225a674  img/classroom-kitchen-20260812-1445/lv6-serve-steak.jpeg
+          SUMS
+          sha256sum -c /tmp/classroom-kitchen.sha256
+
+      - name: Rewire classroom and collection to the new URLs
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import re
+
+          new = [
+              '../img/classroom-kitchen-20260812-1445/lv1-source.jpeg',
+              '../img/classroom-kitchen-20260812-1445/lv2-taste.jpeg',
+              '../img/classroom-kitchen-20260812-1445/lv3-cook.jpeg',
+              '../img/classroom-kitchen-20260812-1445/lv4-split.jpeg',
+              '../img/classroom-kitchen-20260812-1445/lv5-season.jpeg',
+              '../img/classroom-kitchen-20260812-1445/lv6-serve-steak.jpeg',
+          ]
+
+          # /classroom overview — hard switch to brand-new physical URLs.
+          p = Path('classroom/index.html')
+          s = p.read_text('utf-8')
+          for i, url in enumerate(new, 1):
+              s = re.sub(rf'\.\./img/lesson-{i}\.jpg(?:\?v=[^\"\']+)?', url, s)
+          # Defensive: no image emoji overlay.
+          s = re.sub(r'<span class="lsemo">[^<]*</span>', '', s)
+          p.write_text(s, 'utf-8')
+
+          # Collection — use explicit new URLs instead of constructing old lesson-N paths.
+          p = Path('collection/collection.js')
+          s = p.read_text('utf-8')
+          image_decl = "var LEARN_IMAGE=[" + ",".join(repr(x) for x in new) + "];"
+          if 'var LEARN_IMAGE=' in s:
+              s = re.sub(r"var LEARN_IMAGE=\[[^;]*\];", image_decl, s, count=1)
+          else:
+              marker = "var LEARN_NAME=['ซอส · เริ่มจากการปรุงซอส','เทส · ชิมซอสก่อนเติม','ผัด · เอาซอสไปทำงานจริง','แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู','ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส','เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'];"
+              if marker not in s:
+                  raise SystemExit('LEARN_NAME marker not found')
+              s = s.replace(marker, marker + '\n' + image_decl, 1)
+          s = re.sub(r"image:'\.\./img/lesson-'\+\(i\+1\)\+'\.jpg(?:\?v=[^']+)?'", "image:LEARN_IMAGE[i]", s, count=1)
+          p.write_text(s, 'utf-8')
+
+          # Force a fresh module URL too, although the image paths themselves are brand new.
+          p = Path('collection/index.html')
+          s = p.read_text('utf-8')
+          s = re.sub(r'/collection/collection\.js\?v=[^\"\']+', '/collection/collection.js?v=20260812-1445-fresh-kitchen-links', s, count=1)
+          p.write_text(s, 'utf-8')
+          PY
+
+          # These two live pages must no longer contain the old lesson-N image links.
+          ! grep -E 'img/lesson-[1-6]\.jpg' classroom/index.html
+          ! grep -E "image:'\.\./img/lesson-'" collection/collection.js
+          git diff --check -- classroom/index.html collection/collection.js collection/index.html
+
+      - name: Commit new assets and rewired links
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add img/classroom-kitchen-20260812-1445 classroom/index.html collection/collection.js collection/index.html
+          git commit -m 'fix: move classroom kitchen artwork to fresh uncached URLs'
+          git pull --rebase origin main
+          git push origin HEAD:main
