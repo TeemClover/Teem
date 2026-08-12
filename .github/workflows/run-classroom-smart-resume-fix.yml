@@ -1,0 +1,35 @@
+name: Run classroom Smart Resume fix
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/run-classroom-smart-resume-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply and validate patch
+        run: python3 .tmp/fix-classroom-smart-resume.py
+
+      - name: Commit lesson files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add classroom/image-ai.html classroom/clip-ai.html classroom/notebooklm.html classroom/prompts.html classroom/first-web.html
+          if git diff --cached --quiet; then
+            echo "No lesson changes"
+            exit 0
+          fi
+          git commit -m "fix(classroom): restore lesson art and simplify Serve into Smart Resume"
+          git push origin HEAD:main
