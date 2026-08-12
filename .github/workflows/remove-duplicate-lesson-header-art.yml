@@ -16,7 +16,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            classroom/image-ai.html
+            classroom/clip-ai.html
+            classroom/notebooklm.html
+            classroom/prompts.html
 
       - name: Remove only the duplicate top figure from lessons 2-5
         shell: python
@@ -54,7 +60,6 @@ jobs:
               if figure_count != 1 or style_count != 1:
                   raise SystemExit(f'{filename}: cleanup count mismatch figure={figure_count} style={style_count}')
 
-              # Guardrails: keep the real lesson header and connected hero artwork.
               if '<header class="head">' not in text:
                   raise SystemExit(f'{filename}: lesson head disappeared')
               if 'classroom-lesson-header-image' in text:
