@@ -87,8 +87,8 @@ function enhanceSauceCupEnding() {
   const style = document.createElement('style');
   style.id = 'mcSauceCupPosterStyle';
   style.textContent = `
-    #mcSauceCupPoster{width:min(1024px,calc(100vw - 32px));margin:24px 0 0 50%;transform:translateX(-50%)}
-    #mcSauceCupPoster img{display:block;width:100%;height:auto;max-width:none}
+    #mcSauceCupPoster{width:100%;max-width:100%;margin:24px 0 0;transform:none;overflow:hidden}
+    #mcSauceCupPoster img{display:block;width:100%;max-width:100%;height:auto}
   `;
   document.head.appendChild(style);
 
