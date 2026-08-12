@@ -372,8 +372,8 @@ body.js .reveal.in{opacity:1;transform:none}
       <p class="bnote full" id="ball" hidden>🏆 ครบทุกตราแล้ว — คุณเดินดูบ้านหลังนี้จนทั่วจริง ๆ</p>
       <div class="discord-gate" id="discordGate">
         <div>
-          <b>⚔️ พิสูจน์สมาชิก Guild X</b>
-          <p>เชื่อม Discord ครั้งเดียว เราจะตรวจเฉพาะตัวตนและการเป็นสมาชิกเซิร์ฟเวอร์ ไม่อ่านแชตหรืออีเมล</p>
+          <b>🔑 ปลดกุญแจหีบด้วย Discord</b>
+          <p>กด Connect Discord แล้วเข้าร่วมเซิร์ฟเวอร์ผ่านลิงก์ ระบบจะตรวจสมาชิกและปลด Title HERO กับกุญแจหีบให้อัตโนมัติ หรือใส่รหัสที่พบใน Discord ด้านล่างก็ได้</p>
         </div>
         <div class="discord-actions">
           <a class="discord-btn" id="discordBtn" href="/api/discord/login?return=%2Fcard%2F" data-ga="discord_connect">◉ Connect Discord</a>
@@ -382,9 +382,10 @@ body.js .reveal.in{opacity:1;transform:none}
         <div class="discord-status" id="discordStatus" role="status" aria-live="polite"></div>
       </div>
       <details class="code-fallback" id="codeFallback">
-        <summary>มีปัญหาในการเชื่อม Discord?</summary>
+        <summary>มีปัญหาในการเชื่อม Discord? ใช้รหัสแทนได้</summary>
+        <p class="hint" style="margin:10px 0 8px">ใส่รหัสที่พบใน Discord เพื่อปลด Title HERO และกุญแจหีบแบบเดิม</p>
         <div class="coderow">
-          <input type="text" id="guildCode" placeholder="มีรหัส? กรอกตรงนี้" autocomplete="off">
+          <input type="text" id="guildCode" placeholder="ใส่รหัสที่พบใน Discord" autocomplete="off">
           <button type="button" id="guildBtn" data-ga="code_try" class="disp">🔑 ใช้รหัส</button>
         </div>
         <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
@@ -581,7 +582,7 @@ var SIGILS={
            go:'../forge/', goTx:'ไปอ่านการ์ตูน'},
   AWAKENED  :{emo:'🌅',th:'ผู้ตื่นรู้',  how:'เรียนครบ 6 บทจะปลดด่านบอส บทที่ 7 — อ่านให้จบแล้วตรานี้เป็นของคุณ',
            go:'../classroom/awaken/', goTx:'ไปด่านสุดท้าย'},
-  HERO      :{emo:'⚔️',th:'ฮีโร่',       how:'รหัสอยู่ใน Guild X — ปลดกรอบทองเป็นการ์ดฮีโร่ พร้อมเลขประจำตัว',
+  HERO      :{emo:'⚔️',th:'ฮีโร่',       how:'เข้าร่วม Guild X แล้วเชื่อม Discord เพื่อปลดอัตโนมัติ หรือใส่รหัสที่พบใน Discord — ได้กรอบทอง กุญแจหีบ และเลขประจำตัว',
            go:'', goTx:''}
 };
 /* ไตเติ้ลสะท้อนวิธีเล่น ไม่ใช่หมุดหมายหลัก จึงไม่กินช่องตรา */
@@ -1294,7 +1295,7 @@ document.getElementById('guildBtn').addEventListener('click',function(){
           return;
         }
         connectButton();
-        message(st.titles.indexOf('HERO')>=0?'สิทธิ์ HERO ปลดไว้แล้วในเครื่องนี้ · จะเชื่อม Discord เพิ่มก็ได้':'กด Connect Discord เพื่อปลด HERO โดยไม่ต้องหารหัส','');
+        message(st.titles.indexOf('HERO')>=0?'สิทธิ์ HERO และกุญแจหีบปลดไว้แล้วในเครื่องนี้ · จะเชื่อม Discord เพิ่มก็ได้':'กด Connect Discord แล้วเข้าร่วมเซิร์ฟเวอร์เพื่อปลดกุญแจอัตโนมัติ หรือใช้รหัสจาก Discord ด้านล่าง','');
       })
       .catch(function(){
         check.disabled=false; connectButton(); check.hidden=false;
