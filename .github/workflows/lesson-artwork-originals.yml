@@ -9,63 +9,94 @@ permissions:
   contents: write
 
 jobs:
-  patch:
+  restore:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-      - name: Fix classroom layout and collection labels
+
+      - name: Download exact original JPEG files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/myclover-lessons
+
+          fetch_drive() {
+            local id="$1" out="$2"
+            curl -fL --retry 4 --retry-delay 2 --max-time 120 \
+              "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" \
+              -o "$out"
+          }
+
+          fetch_drive '1i0LInJIsoQrPloxOsbHgIlg9Ct0WSPQM' /tmp/myclover-lessons/lesson-1.jpg
+          fetch_drive '1puKiO_xDQKQwlWdLLNLVlnx7NAVkHGrO' /tmp/myclover-lessons/lesson-2.jpg
+          fetch_drive '1oyE--aAuddsgBRF7VpKIf99Pa9UB4Zcx' /tmp/myclover-lessons/lesson-3.jpg
+          fetch_drive '1E26VpzIdorJhfljB6Pkz8uLRRMKit1fn' /tmp/myclover-lessons/lesson-4.jpg
+          fetch_drive '12PS72IaM1gQC0pQ_x7UZuXLL6qPkpFYM' /tmp/myclover-lessons/lesson-5.jpg
+          fetch_drive '14dkDlG1gUBqwEniQ6r9zslBQdfz8Tmb8' /tmp/myclover-lessons/lesson-6.jpg
+
+          cat >/tmp/myclover-lessons/SHA256SUMS <<'SUMS'
+          be5dddfa2799880681c2228cf9e0003d62e22255a8a5b62e0645a94a2039a23b  lesson-1.jpg
+          2d69940c2b08772c785e3883fa89f519edf234d0e6261b7910232fa713f797c9  lesson-2.jpg
+          12ade5ad6fec0da92c7de3883ad1ae81541f2dc3ccc9e5944d9243a10aec2b7f  lesson-3.jpg
+          10d4a43e9ccaf4d495a7354799302fd171ff8aa919ed2f551cda0c508e31b558  lesson-4.jpg
+          2518262c361b43246152d1199bd5bc809187d8b622dfa51a4b5a35e49738d729  lesson-5.jpg
+          6c5ed20783eefbd7afc52b7ab6110683f9e30b1eff1d782a6d154f5e7225a674  lesson-6.jpg
+          SUMS
+          (cd /tmp/myclover-lessons && sha256sum -c SHA256SUMS)
+
+          # Copy bytes verbatim. No resize, recompression, conversion, or optimization.
+          cp -f /tmp/myclover-lessons/lesson-1.jpg img/lesson-1.jpg
+          cp -f /tmp/myclover-lessons/lesson-2.jpg img/lesson-2.jpg
+          cp -f /tmp/myclover-lessons/lesson-3.jpg img/lesson-3.jpg
+          cp -f /tmp/myclover-lessons/lesson-4.jpg img/lesson-4.jpg
+          cp -f /tmp/myclover-lessons/lesson-5.jpg img/lesson-5.jpg
+          cp -f /tmp/myclover-lessons/lesson-6.jpg img/lesson-6.jpg
+
+          # Verify the repository copies are still byte-for-byte identical.
+          (cd img && sha256sum lesson-{1,2,3,4,5,6}.jpg)
+
+      - name: Final cache bust after binary replacement
         shell: bash
         run: |
           python <<'PY'
           from pathlib import Path
+          import re
 
-          # /classroom overview: full 16:9 artwork, no emoji overlays on the images.
           p=Path('classroom/index.html')
           s=p.read_text('utf-8')
-          s=s.replace('.lsimg{height:120px;background:linear-gradient(160deg,#124228,#071a10);position:relative}', '.lsimg{aspect-ratio:16/9;height:auto;background:#071a10;position:relative;overflow:hidden}')
-          s=s.replace('.lsimg img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}', '.lsimg img{width:100%;height:100%;object-fit:contain;display:block;position:absolute;inset:0}')
-          import re
-          s=re.sub(r'<span class="lsemo">[^<]*</span>', '', s)
-          # No decorative star on top of the artwork; the LV.4 star stays in the text label below.
-          s=s.replace('.ls.star .lsimg::before{content:"⭐";position:absolute;top:8px;left:9px;font-size:15px;z-index:2;\n  filter:drop-shadow(0 2px 4px rgb(10 40 24/.6))}', '.ls.star .lsimg::before{content:none}')
           for i in range(1,7):
-              s=s.replace(f'../img/lesson-{i}.jpg?v=20260812-kitchen', f'../img/lesson-{i}.jpg?v=20260812-original-jpeg')
+              s=re.sub(rf'\.\./img/lesson-{i}\.jpg\?v=[^\"\']+', f'../img/lesson-{i}.jpg?v=20260812-original-jpeg-v2', s)
+          # Defensive cleanup: no central emoji overlay remains on lesson art.
+          s=re.sub(r'<span class="lsemo">[^<]*</span>', '', s)
           p.write_text(s,'utf-8')
 
-          # Collection: current course naming + force fresh artwork and Blacksmith panel.
           p=Path('collection/collection.js')
           s=p.read_text('utf-8')
-          old="var LEARN_NAME=['เริ่มใช้ AI ฟรี','สร้างภาพด้วย AI','สร้างวิดีโอและคลิป','สร้าง Source ให้ AI','ออกแบบ Prompt','สร้างเว็บชิ้นแรก'];"
-          new="var LEARN_NAME=['ซอส · เริ่มจากการปรุงซอส','เทส · ชิมซอสก่อนเติม','ผัด · เอาซอสไปทำงานจริง','แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู','ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส','เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'];"
-          if old in s:
-              s=s.replace(old,new,1)
-          elif new not in s:
-              raise SystemExit('LEARN_NAME shape changed; refusing unsafe patch')
-          s=s.replace(".jpg?v=20260812-kitchen'", ".jpg?v=20260812-original-jpeg'")
-          import re
-          s=re.sub(r"image:'\.\./forge/img/07-p1\.jpg\?v=[^']+'", "image:'/forge/img/07-p1.jpg?v=20260812-1400-blacksmith'", s, count=1)
+          s=re.sub(r"\.jpg\?v=20260812-original-jpeg(?:-v2)?'", ".jpg?v=20260812-original-jpeg-v2'", s)
+          s=re.sub(r"image:'/forge/img/07-p1\.jpg\?v=[^']+'", "image:'/forge/img/07-p1.jpg?v=20260812-1415-blacksmith'", s, count=1)
           p.write_text(s,'utf-8')
 
-          # Bump collection module cache so the browser cannot keep the old labels/artwork.
           p=Path('collection/index.html')
           s=p.read_text('utf-8')
-          s=re.sub(r'/collection/collection\.js\?v=[^\"\']+', '/collection/collection.js?v=20260812-1400-originals', s, count=1)
+          s=re.sub(r'/collection/collection\.js\?v=[^\"\']+', '/collection/collection.js?v=20260812-1415-originals', s, count=1)
           p.write_text(s,'utf-8')
           PY
           git diff --check -- classroom/index.html collection/collection.js collection/index.html
-      - name: Commit layout and label fixes
+
+      - name: Commit exact JPEGs and final references
         shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add classroom/index.html collection/collection.js collection/index.html
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add img/lesson-{1,2,3,4,5,6}.jpg classroom/index.html collection/collection.js collection/index.html
           if git diff --cached --quiet; then
-            echo 'No text changes needed'
+            echo 'Everything already matches the originals.'
             exit 0
           fi
-          git commit -m "fix: restore lesson artwork presentation and labels"
+          git commit -m 'fix: restore original lesson JPEGs byte for byte'
           git pull --rebase origin main
           git push origin HEAD:main
