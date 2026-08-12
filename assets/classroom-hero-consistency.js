@@ -26,6 +26,13 @@ const HERO_COPY = {
   }
 };
 
+const STATIC_HEADER_ART = {
+  'learn:image-ai': ['header-lesson2.jpeg', 'lv2-taste.jpeg'],
+  'learn:clip-ai': ['header-lesson3.jpeg', 'lv3-cook.jpeg'],
+  'learn:notebooklm': ['header-lesson4.jpeg', 'lv4-split.jpeg'],
+  'learn:prompts': ['header-lesson5.jpeg', 'lv5-season.jpeg']
+};
+
 function applyConsistentHero() {
   const id = document.querySelector('meta[name="mc-item"]')?.content;
   const copy = HERO_COPY[id];
@@ -38,25 +45,6 @@ function applyConsistentHero() {
   if (title && title.textContent.replace(/\?/g, '').trim() !== copy.title) title.textContent = copy.title;
   document.title = `${copy.label} · ${copy.title} · AI ใส่ซอส`;
 }
-
-function startHeroConsistency() {
-  applyConsistentHero();
-  removeDuplicateLessonHeaderArt();
-  setTimeout(() => { applyConsistentHero(); removeDuplicateLessonHeaderArt(); }, 250);
-  setTimeout(() => { applyConsistentHero(); removeDuplicateLessonHeaderArt(); }, 1000);
-  setTimeout(removeDuplicateLessonHeaderArt, 2200);
-}
-
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startHeroConsistency, { once:true });
-else startHeroConsistency();
-
-
-const STATIC_HEADER_ART = {
-  'learn:image-ai': ['header-lesson2.jpeg', 'lv2-taste.jpeg'],
-  'learn:clip-ai': ['header-lesson3.jpeg', 'lv3-cook.jpeg'],
-  'learn:notebooklm': ['header-lesson4.jpeg', 'lv4-split.jpeg'],
-  'learn:prompts': ['header-lesson5.jpeg', 'lv5-season.jpeg']
-};
 
 function removeDuplicateLessonHeaderArt() {
   const id = document.querySelector('meta[name="mc-item"]')?.content;
@@ -71,6 +59,7 @@ function removeDuplicateLessonHeaderArt() {
     let pathname = '';
     try { pathname = new URL(img.currentSrc || img.src, location.href).pathname; } catch { return; }
     if (!names.some(name => pathname.endsWith('/' + name))) return;
+
     const wrapper = img.closest('figure, picture, .classroom-lesson-header-image, .lesson-header-image, .lesson-chef-art');
     if (wrapper && !head.contains(wrapper)) wrapper.remove();
     else if (!head.contains(img)) img.remove();
@@ -80,3 +69,14 @@ function removeDuplicateLessonHeaderArt() {
     if (index > 0) node.remove();
   });
 }
+
+function startHeroConsistency() {
+  applyConsistentHero();
+  removeDuplicateLessonHeaderArt();
+  setTimeout(() => { applyConsistentHero(); removeDuplicateLessonHeaderArt(); }, 250);
+  setTimeout(() => { applyConsistentHero(); removeDuplicateLessonHeaderArt(); }, 1000);
+  setTimeout(removeDuplicateLessonHeaderArt, 2200);
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startHeroConsistency, { once:true });
+else startHeroConsistency();
