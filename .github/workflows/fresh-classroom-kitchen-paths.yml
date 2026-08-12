@@ -59,16 +59,20 @@ jobs:
               '../img/classroom-kitchen-20260812-1445/lv6-serve-steak.jpeg',
           ]
 
-          # /classroom overview — hard switch to brand-new physical URLs.
+          # /classroom overview — replace BOTH the original cached URLs and the first fresh-name attempt.
           p = Path('classroom/index.html')
           s = p.read_text('utf-8')
           for i, url in enumerate(new, 1):
-              s = re.sub(rf'\.\./img/lesson-{i}\.jpg(?:\?v=[^\"\']+)?', url, s)
-          # Defensive: no image emoji overlay.
+              patterns = [
+                  rf'\.\./img/lesson-{i}\.jpg(?:\?v=[^\"\']+)?',
+                  rf'\.\./img/classroom-lesson-{i}-20260812\.jpeg(?:\?v=[^\"\']+)?',
+              ]
+              for pat in patterns:
+                  s = re.sub(pat, url, s)
           s = re.sub(r'<span class="lsemo">[^<]*</span>', '', s)
           p.write_text(s, 'utf-8')
 
-          # Collection — use explicit new URLs instead of constructing old lesson-N paths.
+          # Collection — explicit fresh URLs, never construct lesson-N.jpg again.
           p = Path('collection/collection.js')
           s = p.read_text('utf-8')
           image_decl = "var LEARN_IMAGE=[" + ",".join(repr(x) for x in new) + "];"
@@ -80,18 +84,18 @@ jobs:
                   raise SystemExit('LEARN_NAME marker not found')
               s = s.replace(marker, marker + '\n' + image_decl, 1)
           s = re.sub(r"image:'\.\./img/lesson-'\+\(i\+1\)\+'\.jpg(?:\?v=[^']+)?'", "image:LEARN_IMAGE[i]", s, count=1)
+          s = re.sub(r"image:'\.\./img/classroom-lesson-'\+\(i\+1\)\+'-20260812\.jpeg(?:\?v=[^']+)?'", "image:LEARN_IMAGE[i]", s, count=1)
           p.write_text(s, 'utf-8')
 
-          # Force a fresh module URL too, although the image paths themselves are brand new.
           p = Path('collection/index.html')
           s = p.read_text('utf-8')
-          s = re.sub(r'/collection/collection\.js\?v=[^\"\']+', '/collection/collection.js?v=20260812-1445-fresh-kitchen-links', s, count=1)
+          s = re.sub(r'/collection/collection\.js\?v=[^\"\']+', '/collection/collection.js?v=20260812-1445-fresh-kitchen-links-v2', s, count=1)
           p.write_text(s, 'utf-8')
           PY
 
-          # These two live pages must no longer contain the old lesson-N image links.
-          ! grep -E 'img/lesson-[1-6]\.jpg' classroom/index.html
-          ! grep -E "image:'\.\./img/lesson-'" collection/collection.js
+          grep -q 'classroom-kitchen-20260812-1445/lv1-source.jpeg' classroom/index.html
+          grep -q 'var LEARN_IMAGE=' collection/collection.js
+          ! grep -E 'src="\.\./img/(lesson-[1-6]\.jpg|classroom-lesson-[1-6]-20260812\.jpeg)' classroom/index.html
           git diff --check -- classroom/index.html collection/collection.js collection/index.html
 
       - name: Commit new assets and rewired links
@@ -101,6 +105,16 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add img/classroom-kitchen-20260812-1445 classroom/index.html collection/collection.js collection/index.html
+          if git diff --cached --quiet; then
+            echo 'Already rewired.'
+            exit 0
+          fi
           git commit -m 'fix: move classroom kitchen artwork to fresh uncached URLs'
-          git pull --rebase origin main
-          git push origin HEAD:main
+          for attempt in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "push attempt ${attempt} failed; retrying"
+            sleep 3
+          done
+          exit 1
