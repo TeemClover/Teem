@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="mc-act-view" content="class-open">
-<meta name="build" content="classroom-self-contained-20260812-1840">
+<meta name="build" content="classroom-self-contained-20260812-1844">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -33,10 +33,10 @@
   <div class="heroimg"><img src="/classroom/sauce-cup/banner-classroom.jpg" width="1024" height="1536" alt="AI ใส่ซอส — SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE" decoding="async"></div>
   <div class="herobody">
     <span class="eyebrow">AI ใส่ซอส · SOURCE-BASED AI WORKFLOW · ฟรีตลอดชีพ</span>
-    <h1>AI ใส่ซอส — วิธีใช้ AI ที่ประหยัดเวลาที่สุด</h1>
-    <p>6 บทเรียนที่ต่อกันเป็น Workflow เดียว — เริ่มจากสร้างซอสของตัวเอง ชิมให้ตรง ผสมหลายซอสไปทำงานจริง แตกงาน ปรุงคำสั่งให้เหมาะ แล้วเสิร์ฟเป็นผลงานที่คนอื่นเปิดใช้ได้</p>
-    <div class="meta"><span>🌱 เริ่มจากศูนย์ได้</span><span>⏱️ เริ่มบทละประมาณ 10 นาที</span><span>🎯 มีภารกิจให้ลงมือจริง</span></div>
-    <div class="cprog"><div class="track"><i id="progressBar"></i></div><span class="progtx" id="progressText">0 / 6 บท</span></div>
+    <h1>AI ใส่ซอส — ปรุงซอสให้ AI ทำงานต่อได้</h1>
+    <p>6 บทที่ต่อกันเป็น Workflow เดียว: <b style="color:#fff">SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE</b> ไม่ผูกกับ AI ตัวใด ไม่เริ่มจากการท่อง Prompt และทุกบทต้องมีของจริงกลับบ้าน</p>
+    <div class="meta"><span>🧴 จบด้วยซอสของตัวเอง</span><span>🔁 6 บทเป็น Workflow เดียว</span><span>🤖 ใช้กับ AI ตัวไหนก็ได้</span></div>
+    <div class="cprog"><div class="track"><i id="progressBar"></i></div><span class="progtx" id="progressText">ยังไม่ได้เริ่มบทแรก</span></div>
   </div>
 </header>
 
@@ -97,7 +97,7 @@
     document.querySelectorAll('[data-item]').forEach(function(card){card.classList.toggle('done',done.indexOf(card.dataset.item)>=0)});
     var boss=document.getElementById('bossStage'); if(boss) boss.hidden=n<ITEMS.length;
     var bar=document.getElementById('progressBar'); if(bar) bar.style.width=((n/ITEMS.length)*100)+'%';
-    var tx=document.getElementById('progressText'); if(tx){tx.textContent=n+' / '+ITEMS.length+' บท'+(n===ITEMS.length?' · ครบแล้ว':'');tx.classList.toggle('done',n===ITEMS.length)}
+    var tx=document.getElementById('progressText'); if(tx){tx.textContent=n===0?'ยังไม่ได้เริ่มบทแรก':(n>=ITEMS.length?'เรียนครบทั้ง 6 บทแล้ว':'เรียนแล้ว '+n+'/'+ITEMS.length+' บท');tx.classList.toggle('done',n===ITEMS.length)}
     if(n>=ITEMS.length){try{localStorage.setItem('mc_learn_done','1')}catch(e){}}
     var go=document.getElementById('pathGo'); if(go){var next=ITEMS.find(function(x){return done.indexOf(x)<0});if(!next){go.href='/classroom/dungeon/';go.textContent='เรียนครบแล้ว — เข้าสู่ด่านสุดท้าย →'}else if(n>0){go.href=next+'.html';go.textContent='เรียนต่อ '+LABELS[next]+' →'}}
   }
