@@ -1,0 +1,54 @@
+name: Move Terms to clean URL
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/move-terms-clean-url.yml'
+permissions:
+  contents: write
+jobs:
+  move:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Move Terms and update links
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          src = Path('pricacy/term.html')
+          dst = Path('privacy/term/index.html')
+          privacy = Path('privacy/index.html')
+
+          if not src.exists():
+              raise SystemExit('missing source pricacy/term.html')
+          if dst.exists():
+              raise SystemExit('destination privacy/term/index.html already exists')
+
+          dst.parent.mkdir(parents=True, exist_ok=True)
+          text = src.read_text()
+          old_canonical = 'https://www.myclover.com/pricacy/term.html'
+          new_canonical = 'https://www.myclover.com/privacy/term/'
+          if text.count(old_canonical) != 1:
+              raise SystemExit(f'canonical exact-match failed: {text.count(old_canonical)}')
+          text = text.replace(old_canonical, new_canonical, 1)
+          dst.write_text(text)
+          src.unlink()
+
+          p = privacy.read_text()
+          old_link = 'href="/pricacy/term.html"'
+          new_link = 'href="/privacy/term/"'
+          if p.count(old_link) != 1:
+              raise SystemExit(f'privacy link exact-match failed: {p.count(old_link)}')
+          privacy.write_text(p.replace(old_link, new_link, 1))
+          PY
+      - name: Commit move
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A privacy pricacy
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: move Terms to clean privacy URL"
+          git push origin HEAD:main
