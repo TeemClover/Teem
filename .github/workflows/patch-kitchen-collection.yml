@@ -14,13 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Patch classroom and collection image references
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          # Collection data: bust lesson image cache + update achievement artwork.
           p = Path('collection/collection.js')
           s = p.read_text(encoding='utf-8')
           replacements = [
@@ -29,37 +30,52 @@ jobs:
               ("image:'../classroom/awaken/notebook/img/nb-01.jpg',imageStyle:'object-position:center top',secret:true})", "image:'../classroom/awaken/notebook/img/nb-02s.jpg?v=20260812-achievement',imageStyle:'object-position:center top',secret:true})"),
           ]
           for old, new in replacements:
+              if new in s:
+                  continue
               if old not in s:
                   raise SystemExit(f'Missing expected collection.js text: {old}')
               s = s.replace(old, new, 1)
           p.write_text(s, encoding='utf-8')
 
-          # Classroom overview: force browsers/CDN to fetch the six new kitchen covers.
           p = Path('classroom/index.html')
           s = p.read_text(encoding='utf-8')
           for i in range(1, 7):
               old = f'src="../img/lesson-{i}.jpg"'
               new = f'src="../img/lesson-{i}.jpg?v=20260812-kitchen"'
+              if new in s:
+                  continue
               if old not in s:
                   raise SystemExit(f'Missing expected classroom image: {old}')
               s = s.replace(old, new, 1)
           p.write_text(s, encoding='utf-8')
 
-          # Collection loads its module with a versioned URL; bump it so achievement changes show immediately.
           p = Path('collection/index.html')
           s = p.read_text(encoding='utf-8')
           old = '/collection/collection.js?v=20260811-collection-fix3'
           new = '/collection/collection.js?v=20260812-kitchen-achievements'
-          if old not in s:
-              raise SystemExit(f'Missing expected collection script version: {old}')
-          p.write_text(s.replace(old, new, 1), encoding='utf-8')
+          if new not in s:
+              if old not in s:
+                  raise SystemExit(f'Missing expected collection script version: {old}')
+              s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
           PY
 
-      - name: Remove one-shot workflow and commit
+      - name: Commit and push with rebase retry
         run: |
-          rm .github/workflows/patch-kitchen-collection.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add collection/collection.js collection/index.html classroom/index.html .github/workflows/patch-kitchen-collection.yml
+          git add collection/collection.js collection/index.html classroom/index.html
+          if git diff --cached --quiet; then
+            echo "Nothing to patch"
+            exit 0
+          fi
           git commit -m "fix: refresh classroom and collection artwork"
-          git push
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main || { git rebase --abort || true; sleep 2; continue; }
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Push failed after retries"
+          exit 1
