@@ -1,0 +1,71 @@
+name: Restore original lesson artwork
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/lesson-artwork-originals.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Fix classroom layout and collection labels
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          # /classroom overview: full 16:9 artwork, no emoji overlays on the images.
+          p=Path('classroom/index.html')
+          s=p.read_text('utf-8')
+          s=s.replace('.lsimg{height:120px;background:linear-gradient(160deg,#124228,#071a10);position:relative}', '.lsimg{aspect-ratio:16/9;height:auto;background:#071a10;position:relative;overflow:hidden}')
+          s=s.replace('.lsimg img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}', '.lsimg img{width:100%;height:100%;object-fit:contain;display:block;position:absolute;inset:0}')
+          import re
+          s=re.sub(r'<span class="lsemo">[^<]*</span>', '', s)
+          # No decorative star on top of the artwork; the LV.4 star stays in the text label below.
+          s=s.replace('.ls.star .lsimg::before{content:"⭐";position:absolute;top:8px;left:9px;font-size:15px;z-index:2;\n  filter:drop-shadow(0 2px 4px rgb(10 40 24/.6))}', '.ls.star .lsimg::before{content:none}')
+          for i in range(1,7):
+              s=s.replace(f'../img/lesson-{i}.jpg?v=20260812-kitchen', f'../img/lesson-{i}.jpg?v=20260812-original-jpeg')
+          p.write_text(s,'utf-8')
+
+          # Collection: current course naming + force fresh artwork and Blacksmith panel.
+          p=Path('collection/collection.js')
+          s=p.read_text('utf-8')
+          old="var LEARN_NAME=['เริ่มใช้ AI ฟรี','สร้างภาพด้วย AI','สร้างวิดีโอและคลิป','สร้าง Source ให้ AI','ออกแบบ Prompt','สร้างเว็บชิ้นแรก'];"
+          new="var LEARN_NAME=['ซอส · เริ่มจากการปรุงซอส','เทส · ชิมซอสก่อนเติม','ผัด · เอาซอสไปทำงานจริง','แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู','ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส','เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต'];"
+          if old in s:
+              s=s.replace(old,new,1)
+          elif new not in s:
+              raise SystemExit('LEARN_NAME shape changed; refusing unsafe patch')
+          s=s.replace(".jpg?v=20260812-kitchen'", ".jpg?v=20260812-original-jpeg'")
+          import re
+          s=re.sub(r"image:'\.\./forge/img/07-p1\.jpg\?v=[^']+'", "image:'/forge/img/07-p1.jpg?v=20260812-1400-blacksmith'", s, count=1)
+          p.write_text(s,'utf-8')
+
+          # Bump collection module cache so the browser cannot keep the old labels/artwork.
+          p=Path('collection/index.html')
+          s=p.read_text('utf-8')
+          s=re.sub(r'/collection/collection\.js\?v=[^\"\']+', '/collection/collection.js?v=20260812-1400-originals', s, count=1)
+          p.write_text(s,'utf-8')
+          PY
+          git diff --check -- classroom/index.html collection/collection.js collection/index.html
+      - name: Commit layout and label fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add classroom/index.html collection/collection.js collection/index.html
+          if git diff --cached --quiet; then
+            echo 'No text changes needed'
+            exit 0
+          fi
+          git commit -m "fix: restore lesson artwork presentation and labels"
+          git pull --rebase origin main
+          git push origin HEAD:main
