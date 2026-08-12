@@ -1,0 +1,48 @@
+name: Repair lesson 6 Serve
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: ${{ !contains(github.event.head_commit.message, 'fix(classroom): repair lesson 6 Serve flow') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch lesson 6
+        run: python .github/scripts/repair_lesson6_serve.py
+
+      - name: Validate HTML guards and JavaScript syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('classroom/first-web.html').read_text(encoding='utf-8')
+          m=re.search(r'<script id="lesson6-main-js">(.*?)</script>',s,re.S)
+          assert m, 'lesson6-main-js missing'
+          Path('/tmp/lesson6-main.js').write_text(m.group(1),encoding='utf-8')
+          assert s.count('<script') == s.count('</script>')
+          assert 'id="bossDoor"' in s and 'id="glitchTrigger"' in s
+          assert 'ทำเวปตามซอสนี้' in s and 'ขยายอ่าน Prompt' in s
+          PY
+          node --check /tmp/lesson6-main.js
+          git diff --check
+
+      - name: Commit repaired page
+        run: |
+          if git diff --quiet -- classroom/first-web.html; then
+            echo "No page changes"
+            exit 0
+          fi
+          git config user.name "TeemClover"
+          git config user.email "86265222+TeemClover@users.noreply.github.com"
+          git add classroom/first-web.html
+          git commit -m "fix(classroom): repair lesson 6 Serve flow"
+          git push origin HEAD:main
