@@ -13,8 +13,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Patch sauce cup ending
-        shell: python
+        shell: bash
         run: |
+          python - <<'PY'
           from pathlib import Path
           p = Path('classroom/sauce-cup/index.html')
           s = p.read_text()
@@ -32,6 +33,7 @@ jobs:
           assert s.count(old_end) == 1, f'ending anchor count={s.count(old_end)}'
           s = s.replace(old_end, new_end, 1)
           p.write_text(s)
+          PY
       - name: Commit patch and remove one-shot workflow
         shell: bash
         run: |
