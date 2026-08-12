@@ -197,6 +197,16 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 
 
 
+<style id="classroom-lesson-header-image-style">
+.classroom-lesson-header-image{position:relative;z-index:2;display:block;overflow:hidden;background:#071a10;border-bottom:1px solid rgba(255,255,255,.09)}
+.classroom-lesson-header-image img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}
+.head>.classroom-lesson-header-image{width:calc(100% + 68px);max-width:none;margin:-36px -34px 28px}
+.hero>.classroom-lesson-header-image{width:calc(100% + (2 * clamp(28px,6vw,46px)));max-width:none;margin:calc(-1 * clamp(28px,6vw,46px)) calc(-1 * clamp(28px,6vw,46px)) 26px}
+@media(max-width:560px){
+  .head>.classroom-lesson-header-image{width:calc(100% + 44px);margin:-26px -22px 22px}
+}
+</style>
+
 </head>
 <body>
 <a class="skip-link" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
@@ -207,69 +217,16 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 
 <main class="wrap" id="main">
 <header class="head">
+  <figure class="classroom-lesson-header-image">
+    <img src="/classroom/img/header-lesson3.jpeg" alt="ภาพหัวบท 3 · AI ใส่ซอส" loading="eager" decoding="async" fetchpriority="high">
+  </figure>
+
 <span class="lv">บทที่ 3 · Cook</span>
   <h1 class="disp">เอาซอสไปทำจานจริง</h1>
   <p class="lead">งานยังไม่เกิด จนกว่าจะออกจากแชตไปทำให้คนจริงรู้สึก เข้าใจ หรือทำอะไรบางอย่าง บทนี้เราจะเปลี่ยนซอสขวดเดิมให้เป็นคลิปไม่เกิน 10 วินาที — ถ่ายเองก็ได้ เจนภาพเคลื่อนไหวก็ได้ แต่ขอให้เหลือเสียงของคุณอยู่ในจาน</p>
   <div class="meta"><span>⏱️ คลิปไม่เกิน 10 วินาที</span><span>🧴 ใช้ซอสจากบท 1</span><span>🎬 ถ่ายเองหรือเจน AI</span><span>🎙️ Final Human Touch</span></div>
 
-  <div class="hero-stage" role="img" aria-label="ภาพประกอบซอสขวดเดียวไหลไปเป็น Recipe Card ภาพเคลื่อนไหว เสียงมนุษย์ และคลิปที่ส่งถึงคนดูจริง">
-    <svg viewBox="0 0 1060 390" aria-hidden="true">
-      <defs>
-        <linearGradient id="counter" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4e6c7"/><stop offset="1" stop-color="#cba86a"/></linearGradient>
-        <linearGradient id="sauce" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c7603e"/><stop offset="1" stop-color="#743124"/></linearGradient>
-        <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="12" stdDeviation="11" flood-color="#03120b" flood-opacity=".28"/></filter>
-      </defs>
-      <rect x="16" y="245" width="1028" height="112" rx="36" fill="url(#counter)"/>
-      <path d="M184 211C258 158 284 197 352 168S470 183 530 150 653 173 716 142 831 158 881 133" fill="none" stroke="#c09743" stroke-width="7" stroke-linecap="round" stroke-dasharray="4 16"/>
-      <g transform="translate(42 72)" filter="url(#sh)">
-        <rect x="28" y="54" width="112" height="168" rx="24" fill="#f7efe0" stroke="#d6bd8b" stroke-width="5"/>
-        <rect x="54" y="12" width="60" height="55" rx="13" fill="#d3b36d"/>
-        <rect x="49" y="88" width="70" height="96" rx="18" fill="url(#sauce)"/>
-        <path d="M65 122c18-14 34-12 48 3M69 145c14 8 27 8 42-1" fill="none" stroke="#f3c96f" stroke-width="6" stroke-linecap="round"/>
-        <circle cx="84" cy="204" r="10" fill="#1b6a42"/>
-      </g>
-      <g transform="translate(250 92) rotate(-3)" filter="url(#sh)">
-        <rect width="158" height="202" rx="16" fill="#fffdf7" stroke="#d9c9aa" stroke-width="5"/>
-        <rect x="20" y="20" width="78" height="13" rx="6" fill="#1b6a42"/>
-        <rect x="20" y="52" width="118" height="28" rx="8" fill="#eee6d4"/>
-        <rect x="20" y="91" width="35" height="76" rx="8" fill="#b8503c"/>
-        <rect x="61" y="91" width="35" height="76" rx="8" fill="#2b744d"/>
-        <rect x="102" y="91" width="35" height="76" rx="8" fill="#315a86"/>
-        <path d="M27 183h103" stroke="#c09743" stroke-width="7" stroke-linecap="round"/>
-      </g>
-      <g transform="translate(468 70)" filter="url(#sh)">
-        <rect x="8" y="12" width="170" height="226" rx="25" fill="#171d1a" stroke="#d3b36d" stroke-width="5"/>
-        <rect x="22" y="38" width="142" height="156" rx="12" fill="#f0e4ca"/>
-        <circle cx="93" cy="100" r="43" fill="#1b6a42" opacity=".9"/>
-        <path d="M78 75l48 25-48 25z" fill="#fff"/>
-        <rect x="54" y="209" width="77" height="7" rx="4" fill="#bfa86d"/>
-      </g>
-      <g transform="translate(696 78)" filter="url(#sh)">
-        <rect x="53" y="32" width="28" height="113" rx="14" fill="#f1e8d6" stroke="#c6a96e" stroke-width="5"/>
-        <rect x="36" y="104" width="62" height="32" rx="16" fill="#1b6a42"/>
-        <path d="M67 144v47M36 191h62" stroke="#d6bd8b" stroke-width="8" stroke-linecap="round"/>
-        <path d="M17 70c-13 12-13 29 0 41M116 70c13 12 13 29 0 41M0 55c-23 24-23 49 0 72M133 55c23 24 23 49 0 72" fill="none" stroke="#c09743" stroke-width="6" stroke-linecap="round"/>
-      </g>
-      <g transform="translate(861 65)" filter="url(#sh)">
-        <rect x="8" y="12" width="143" height="238" rx="25" fill="#171d1a" stroke="#d3b36d" stroke-width="5"/>
-        <rect x="21" y="40" width="117" height="155" rx="12" fill="#1b6a42"/>
-        <circle cx="80" cy="91" r="31" fill="#e7b486"/>
-        <path d="M52 88c6-34 54-43 59 2" fill="#2d211d"/>
-        <path d="M67 106c8 7 17 7 25 0" fill="none" stroke="#8a4037" stroke-width="4" stroke-linecap="round"/>
-        <rect x="43" y="130" width="75" height="47" rx="18" fill="#f6ead1"/>
-        <path d="M31 213h98" stroke="#c09743" stroke-width="8" stroke-linecap="round"/>
-        <circle cx="80" cy="231" r="8" fill="#fff" opacity=".8"/>
-      </g>
-    </svg>
-    <div class="hero-labels" aria-hidden="true">
-      <div class="hero-label"><b>ซอส</b>ซอสขวดเดิม</div>
-      <div class="hero-label"><b>Recipe Card</b>วางจังหวะก่อนทำ</div>
-      <div class="hero-label"><b>ภาพเคลื่อนไหว</b>ถ่ายหรือเจน</div>
-      <div class="hero-label"><b>เสียงคุณ</b>เติมความเป็นมนุษย์</div>
-      <div class="hero-label"><b>คนจริง</b>เห็นแล้วทำต่อ</div>
-    </div>
-  </div>
-</header>
+  </header>
 
 <section class="tldr" aria-label="สรุปบทเรียน">
   <div class="tldr-main">

@@ -35,6 +35,7 @@
     var head=document.querySelector('.head');
     var figure=document.querySelector('.multiply-ill');
     if(!head||!figure) return false;
+    if(head.querySelector(':scope > .classroom-lesson-header-image')) return true;
 
     var oldHero=head.querySelector('.hero');
     if(oldHero) oldHero.replaceWith(figure);

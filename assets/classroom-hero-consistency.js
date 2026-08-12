@@ -41,9 +41,42 @@ function applyConsistentHero() {
 
 function startHeroConsistency() {
   applyConsistentHero();
-  setTimeout(applyConsistentHero, 250);
-  setTimeout(applyConsistentHero, 1000);
+  removeDuplicateLessonHeaderArt();
+  setTimeout(() => { applyConsistentHero(); removeDuplicateLessonHeaderArt(); }, 250);
+  setTimeout(() => { applyConsistentHero(); removeDuplicateLessonHeaderArt(); }, 1000);
+  setTimeout(removeDuplicateLessonHeaderArt, 2200);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startHeroConsistency, { once:true });
 else startHeroConsistency();
+
+
+const STATIC_HEADER_ART = {
+  'learn:image-ai': ['header-lesson2.jpeg', 'lv2-taste.jpeg'],
+  'learn:clip-ai': ['header-lesson3.jpeg', 'lv3-cook.jpeg'],
+  'learn:notebooklm': ['header-lesson4.jpeg', 'lv4-split.jpeg'],
+  'learn:prompts': ['header-lesson5.jpeg', 'lv5-season.jpeg']
+};
+
+function removeDuplicateLessonHeaderArt() {
+  const id = document.querySelector('meta[name="mc-item"]')?.content;
+  const names = STATIC_HEADER_ART[id];
+  if (!names) return;
+  const head = document.querySelector('header.head, .head');
+  const keep = head?.querySelector(':scope > .classroom-lesson-header-image img');
+  if (!head || !keep) return;
+
+  document.querySelectorAll('img').forEach(img => {
+    if (img === keep) return;
+    let pathname = '';
+    try { pathname = new URL(img.currentSrc || img.src, location.href).pathname; } catch { return; }
+    if (!names.some(name => pathname.endsWith('/' + name))) return;
+    const wrapper = img.closest('figure, picture, .classroom-lesson-header-image, .lesson-header-image, .lesson-chef-art');
+    if (wrapper && !head.contains(wrapper)) wrapper.remove();
+    else if (!head.contains(img)) img.remove();
+  });
+
+  head.querySelectorAll(':scope > .classroom-lesson-header-image').forEach((node, index) => {
+    if (index > 0) node.remove();
+  });
+}
