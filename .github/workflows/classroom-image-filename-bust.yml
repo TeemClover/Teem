@@ -1,0 +1,78 @@
+name: Force fresh classroom lesson image filenames
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/classroom-image-filename-bust.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Copy exact JPEG bytes to new permanent filenames
+        shell: bash
+        run: |
+          set -euo pipefail
+          declare -A sums=(
+            [1]='be5dddfa2799880681c2228cf9e0003d62e22255a8a5b62e0645a94a2039a23b'
+            [2]='2d69940c2b08772c785e3883fa89f519edf234d0e6261b7910232fa713f797c9'
+            [3]='12ade5ad6fec0da92c7de3883ad1ae81541f2dc3ccc9e5944d9243a10aec2b7f'
+            [4]='10d4a43e9ccaf4d495a7354799302fd171ff8aa919ed2f551cda0c508e31b558'
+            [5]='2518262c361b43246152d1199bd5bc809187d8b622dfa51a4b5a35e49738d729'
+            [6]='6c5ed20783eefbd7afc52b7ab6110683f9e30b1eff1d782a6d154f5e7225a674'
+          )
+          for i in 1 2 3 4 5 6; do
+            printf '%s  %s\n' "${sums[$i]}" "img/lesson-${i}.jpg" | sha256sum -c -
+            cp -f "img/lesson-${i}.jpg" "img/classroom-lesson-${i}-20260812.jpeg"
+            printf '%s  %s\n' "${sums[$i]}" "img/classroom-lesson-${i}-20260812.jpeg" | sha256sum -c -
+          done
+
+      - name: Point classroom and collection at the new filenames
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import re
+
+          p=Path('classroom/index.html')
+          s=p.read_text('utf-8')
+          for i in range(1,7):
+              s=re.sub(rf'\.\./img/(?:lesson-{i}\.jpg|classroom-lesson-{i}-20260812\.jpeg)(?:\?v=[^\"\']+)?', f'../img/classroom-lesson-{i}-20260812.jpeg', s)
+          s=re.sub(r'<span class="lsemo">[^<]*</span>', '', s)
+          p.write_text(s,'utf-8')
+
+          p=Path('collection/collection.js')
+          s=p.read_text('utf-8')
+          for i in range(1,7):
+              s=re.sub(rf'\.\./img/(?:lesson-{i}\.jpg|classroom-lesson-{i}-20260812\.jpeg)(?:\?v=[^\"\']+)?', f'../img/classroom-lesson-{i}-20260812.jpeg', s)
+          p.write_text(s,'utf-8')
+
+          p=Path('collection/index.html')
+          s=p.read_text('utf-8')
+          s=re.sub(r'/collection/collection\.js\?v=[^\"\']+', '/collection/collection.js?v=20260812-1445-fresh-image-filenames', s, count=1)
+          p.write_text(s,'utf-8')
+          PY
+          git diff --check -- classroom/index.html collection/collection.js collection/index.html
+
+      - name: Commit fresh image filenames
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add img/classroom-lesson-*-20260812.jpeg classroom/index.html collection/collection.js collection/index.html
+          if git diff --cached --quiet; then
+            echo 'Already done.'
+            exit 0
+          fi
+          git commit -m 'fix: serve lesson artwork from fresh filenames'
+          git pull --rebase origin main
+          git push origin HEAD:main
