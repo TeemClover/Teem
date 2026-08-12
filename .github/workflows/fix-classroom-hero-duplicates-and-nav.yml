@@ -1,0 +1,172 @@
+name: Fix classroom hero duplicates and nav
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-classroom-hero-duplicates-and-nav.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Surgical classroom header cleanup
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          pages = [
+              Path('classroom/lesson-0.html'),
+              Path('classroom/free-ai.html'),
+              Path('classroom/image-ai.html'),
+              Path('classroom/clip-ai.html'),
+              Path('classroom/notebooklm.html'),
+              Path('classroom/prompts.html'),
+              Path('classroom/first-web.html'),
+          ]
+
+          nav_style = '''
+          <style id="mc-classroom-nav-sync">
+          .mc-lesson-nav{position:sticky!important;top:0!important;z-index:90!important;background:rgba(248,246,240,.94)!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgba(18,40,28,.08)!important;box-shadow:none!important}
+          .mc-lesson-nav__inner{width:min(880px,100%);height:56px;margin:0 auto;padding:0 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+          .mc-lesson-nav__brand{display:inline-flex!important;align-items:center!important;gap:8px!important;color:#12281c!important;font:750 18px/1 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif!important;text-decoration:none!important;white-space:nowrap}
+          .mc-lesson-nav__brand img{display:block!important;width:28px!important;height:28px!important;max-width:28px!important;object-fit:contain!important;margin:0!important;flex:none!important}
+          .mc-lesson-nav__brand em{font-style:normal!important;color:#1b6a42!important}
+          .mc-lesson-nav__all{color:#606c64!important;font:650 14px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif!important;text-decoration:none!important;white-space:nowrap}
+          .mc-lesson-nav__all:hover{color:#1b6a42!important}
+          @media(max-width:520px){.mc-lesson-nav__inner{padding:0 18px}.mc-lesson-nav__all{font-size:13px!important}}
+          </style>
+          '''
+
+          nav_html = '''<nav class="mc-lesson-nav" aria-label="ห้องเรียน myClover"><div class="mc-lesson-nav__inner">
+            <a class="mc-lesson-nav__brand" href="/hall.html#quest" aria-label="myClover"><img src="/icons/icon-192.png" alt="" aria-hidden="true" width="28" height="28"><span>my<em>Clover</em></span></a>
+            <a class="mc-lesson-nav__all" href="/classroom/">ห้องเรียนทั้งหมด →</a>
+          </div></nav>'''
+
+          # 1) Remove the extra injected upper raster image from lessons 2-5.
+          for lesson, filename in [(2,'classroom/image-ai.html'),(3,'classroom/clip-ai.html'),(4,'classroom/notebooklm.html'),(5,'classroom/prompts.html')]:
+              p = Path(filename)
+              text = p.read_text(encoding='utf-8')
+              pattern = rf'\s*<figure class="classroom-lesson-header-image">\s*<img\s+src="/classroom/img/header-lesson{lesson}\.jpeg"[^>]*>\s*</figure>\s*'
+              text, n = re.subn(pattern, '\n', text, count=1, flags=re.S|re.I)
+              if n != 1:
+                  raise RuntimeError(f'{filename}: expected exactly one injected lesson {lesson} figure, got {n}')
+              # This style was introduced solely for the injected figure and is no longer needed here.
+              text, nstyle = re.subn(r'\s*<style id="classroom-lesson-header-image-style">.*?</style>\s*', '\n', text, count=1, flags=re.S|re.I)
+              if nstyle != 1:
+                  raise RuntimeError(f'{filename}: expected one injected header style, got {nstyle}')
+              p.write_text(text, encoding='utf-8')
+
+          # 2) Lesson 6: remove the misplaced lower duplicate and old hero artwork,
+          #    then attach header-lesson6.jpeg to the TOP of the existing hero card.
+          p6 = Path('classroom/first-web.html')
+          t6 = p6.read_text(encoding='utf-8')
+          fig6 = r'\s*<figure class="classroom-lesson-header-image">\s*<img\s+src="/classroom/img/header-lesson6\.jpeg"[^>]*>\s*</figure>\s*'
+          t6, n = re.subn(fig6, '\n', t6, count=1, flags=re.S|re.I)
+          if n != 1:
+              raise RuntimeError(f'lesson6: expected one misplaced figure, got {n}')
+
+          # The old hero has a large chef/steak SVG. Once the new lesson card sits above
+          # the hero copy this becomes the second image, so remove that visual only.
+          hero_art = r'\s*<div class="hero-art"\b[^>]*>\s*<svg\b.*?</svg>\s*</div>\s*'
+          t6, n = re.subn(hero_art, '\n', t6, count=1, flags=re.S|re.I)
+          if n != 1:
+              raise RuntimeError(f'lesson6: expected one hero-art SVG, got {n}')
+
+          new6 = '''
+            <figure class="classroom-lesson-header-image lesson6-header-image">
+              <img src="/classroom/img/header-lesson6.jpeg" alt="ภาพหัวบท 6 · AI ใส่ซอส" loading="eager" decoding="async" fetchpriority="high">
+            </figure>
+          '''
+          anchor = '<header class="hero">'
+          if t6.count(anchor) != 1:
+              raise RuntimeError(f'lesson6: expected one hero anchor, got {t6.count(anchor)}')
+          t6 = t6.replace(anchor, anchor + new6, 1)
+
+          # Hero copy is now one column under the full-width lesson image.
+          old_grid = 'grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);align-items:center;gap:18px;padding:42px 38px 34px'
+          new_grid = 'grid-template-columns:1fr;align-items:center;gap:0;padding:34px 38px 36px'
+          if old_grid not in t6:
+              raise RuntimeError('lesson6: hero-grid desktop rule changed unexpectedly')
+          t6 = t6.replace(old_grid, new_grid, 1)
+
+          # Existing generic rule assumes padding lives on .hero; lesson 6 keeps padding
+          # on .hero-grid, so override only this one header image to make it edge-to-edge.
+          marker = '</style>\n\n</head>'
+          if marker not in t6:
+              raise RuntimeError('lesson6: standardized style closing marker missing')
+          sync6 = '''
+          <style id="lesson6-header-card-sync">
+          .hero>.lesson6-header-image{width:100%!important;max-width:none!important;margin:0!important;border-bottom:1px solid rgba(255,255,255,.09)}
+          .hero{border-radius:24px!important}
+          </style>
+          '''
+          t6 = t6.replace(marker, '</style>\n' + sync6 + '\n</head>', 1)
+          p6.write_text(t6, encoding='utf-8')
+
+          # 3) Make the top navigation/header identical on every lesson, including
+          #    restoring the real myClover icon on lesson 1.
+          nav_re = re.compile(r'<nav\b[^>]*>.*?</nav>', re.S|re.I)
+          for p in pages:
+              text = p.read_text(encoding='utf-8')
+              # Idempotent cleanup in case this script is ever retried.
+              text = re.sub(r'\s*<style id="mc-classroom-nav-sync">.*?</style>\s*', '\n', text, flags=re.S|re.I)
+              text, n = nav_re.subn(nav_html, text, count=1)
+              if n != 1:
+                  raise RuntimeError(f'{p}: expected exactly one top nav, got {n}')
+              if '</head>' not in text:
+                  raise RuntimeError(f'{p}: missing </head>')
+              text = text.replace('</head>', nav_style + '\n</head>', 1)
+              p.write_text(text, encoding='utf-8')
+
+          # 4) Assertions: no duplicate injected raster in lessons 2-5,
+          #    lesson 6 image appears exactly once and is inside its hero,
+          #    all seven pages share the same nav and real icon.
+          for lesson, filename in [(2,'classroom/image-ai.html'),(3,'classroom/clip-ai.html'),(4,'classroom/notebooklm.html'),(5,'classroom/prompts.html')]:
+              text = Path(filename).read_text(encoding='utf-8')
+              if f'/classroom/img/header-lesson{lesson}.jpeg' in text:
+                  raise RuntimeError(f'{filename}: injected duplicate image still present')
+              if 'classroom-lesson-header-image-style' in text:
+                  raise RuntimeError(f'{filename}: obsolete injected image style still present')
+
+          t6 = p6.read_text(encoding='utf-8')
+          if t6.count('/classroom/img/header-lesson6.jpeg') != 1:
+              raise RuntimeError('lesson6: header image must occur exactly once')
+          hero_open = t6.index('<header class="hero">')
+          grid_open = t6.index('<div class="hero-grid">', hero_open)
+          img_pos = t6.index('/classroom/img/header-lesson6.jpeg')
+          if not (hero_open < img_pos < grid_open):
+              raise RuntimeError('lesson6: image is not attached above old hero content')
+          if '<div class="hero-art"' in t6:
+              raise RuntimeError('lesson6: old duplicate hero artwork still present')
+
+          for p in pages:
+              text = p.read_text(encoding='utf-8')
+              if text.count('class="mc-lesson-nav"') != 1:
+                  raise RuntimeError(f'{p}: nav not normalized')
+              if text.count('src="/icons/icon-192.png"') < 1:
+                  raise RuntimeError(f'{p}: real myClover icon missing')
+              if text.count('id="mc-classroom-nav-sync"') != 1:
+                  raise RuntimeError(f'{p}: nav style missing or duplicated')
+          PY
+
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add classroom/lesson-0.html classroom/free-ai.html classroom/image-ai.html classroom/clip-ai.html classroom/notebooklm.html classroom/prompts.html classroom/first-web.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "fix(classroom): remove duplicate lesson art and unify headers"
+          git push origin HEAD:main
