@@ -1,0 +1,45 @@
+name: Patch sauce cup lesson poster
+on:
+  push:
+    paths:
+      - '.github/workflows/patch-sauce-cup-poster.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch sauce cup ending
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('classroom/sauce-cup/index.html')
+          s = p.read_text()
+
+          old_css = '.why{margin:18px auto 0;padding:15px 17px;border-radius:14px;background:rgb(255 255 255/.07);border:1px solid rgb(255 255 255/.12);font-size:14px;color:rgb(255 255 255/.83);text-align:left}.why b{color:#e4c57e}'
+          new_css = old_css + '\n.course-poster{width:min(1024px,calc(100vw - 32px));margin:24px 0 0 50%;transform:translateX(-50%);border-radius:18px;overflow:hidden;box-shadow:0 20px 45px rgb(0 0 0/.26);background:#efe5c9}.course-poster img{display:block;width:100%;height:auto}'
+          assert s.count(old_css) == 1, f'CSS anchor count={s.count(old_css)}'
+          s = s.replace(old_css, new_css, 1)
+
+          old_end = '    <div class="why"><b>ทางที่เร็วที่สุดไปยังขวดเต็ม:</b> อ่านการ์ตูน 7 ตอน เพราะมันทำให้เห็นว่าซอสที่ดีเกิดจากอะไร ก่อนลงมือผลิตของจริง จึงช่วยลดเวลาเรียนรวมได้มากกว่าเริ่มกลางเรื่อง</div>'
+          new_end = '''    <figure class="course-poster">
+      <img src="/classroom/sauce-cup/banner-classroom.jpg" width="1024" height="1536" alt="ภาพรวม AI ใส่ซอส Workflow 6 บท: SOURCE, TASTE, COOK, SPLIT, SEASON และ SERVE">
+    </figure>
+    <div class="why"><b>ทำไมแนะนำให้กลับไปอ่านการ์ตูนก่อน:</b> เพราะพื้นฐานของวิธีคิดนี้ไม่ได้เริ่มที่ AI — มันเริ่มมาตั้งแต่ <b>กระดาษ A4 1 แผ่น</b> การ์ตูน 7 ตอนจะพาเห็นว่ากระดาษแผ่นนั้นค่อย ๆ กลายเป็น “ซอส” และต่อยอดมาเป็น Workflow 6 บทที่เห็นในภาพนี้ได้ยังไง</div>'''
+          assert s.count(old_end) == 1, f'ending anchor count={s.count(old_end)}'
+          s = s.replace(old_end, new_end, 1)
+          p.write_text(s)
+      - name: Commit patch and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "TeemClover"
+          git config user.email "86265222+TeemClover@users.noreply.github.com"
+          git rm .github/workflows/patch-sauce-cup-poster.yml
+          git add classroom/sauce-cup/index.html
+          git commit -m "feat: add full classroom poster to sauce cup ending"
+          git pull --rebase origin main
+          git push origin HEAD:main
