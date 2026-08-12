@@ -2561,6 +2561,12 @@ function grantTitle(t){
     if (!arr.includes(t)){ arr.push(t); wr('mc_titles', JSON.stringify(arr)); }
   } catch {}
 }
+function hasTitle(t){
+  try {
+    const titles = JSON.parse(rd('mc_titles') || '[]');
+    return Array.isArray(titles) && titles.includes(t);
+  } catch { return false; }
+}
 function lockRun(broken){
   const stars = broken ? 0 : score();
   S.loot = { broken, stars, items: broken ? [] : QORDER.filter(k => S[k]), openedAt: Date.now() };
@@ -2582,14 +2588,16 @@ function paintChest(){
     $('chestLabel').textContent = l.broken ? 'BROKEN · หีบเกลือ' : 'OPENED · ' + l.stars + '/5 ล็อกแล้ว';
   } else {
     const n = score();
+    const hero = hasTitle('HERO');
     $('chestLabel').textContent = n === 5 ? 'READY · 5/5 ดาวเต็ม' : 'SEALED · ตอนนี้ ' + n + '/5 ดาว';
-    $('openBtn').textContent = '🔓 เปิดหีบ · ล็อกที่ ' + n + '/5';
+    $('openBtn').textContent = hero ? '⚔️ เปิดด้วยสิทธิ์ HERO · ล็อกที่ ' + n + '/5' : '🔓 เปิดหีบ · ล็อกที่ ' + n + '/5';
   }
 }
 $('openBtn').addEventListener('click', () => {
   if (S.loot) return openLoot();
   const n = score();
-  if (n === 0){
+  const hero = hasTitle('HERO');
+  if (n === 0 && !hero){
     $('gateHelp').hidden = false;
     $('gateHelp').innerHTML = '<b>หีบนี้ไม่ได้ล็อกด้วยรหัส มันล็อกด้วยของที่มึงทำระหว่างทาง</b><br>ตอนนี้ยังไม่ได้เคลียร์อะไรเลยสักอย่าง เลื่อนกลับขึ้นไปทำสักเควสก่อน แล้วค่อยลงมาเปิด';
     beep(160,.2); return;

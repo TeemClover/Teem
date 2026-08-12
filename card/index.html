@@ -117,6 +117,21 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .btrack i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,rgb(var(--green)),rgb(var(--gold)));transition:width .5s ease}
 .bnote{font-size:12.5px;color:rgb(var(--muted));margin-top:10px}
 .bnote.full{color:rgb(var(--gold));font-weight:600}
+.discord-gate{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-top:14px;padding:17px 18px;border:1px solid rgb(88 101 242/.25);border-radius:15px;background:linear-gradient(135deg,rgb(88 101 242/.09),#fff)}
+.discord-gate b{display:block;font-family:"Bai Jamjuree";font-size:15px;color:#343a75}
+.discord-gate p{font-size:12.5px;color:rgb(var(--muted));line-height:1.6;margin-top:3px}
+.discord-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px}
+.discord-btn,.discord-check{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:0;border-radius:11px;padding:10px 16px;font-family:"Bai Jamjuree";font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.discord-btn{background:#5865f2;color:#fff;box-shadow:0 7px 18px rgb(88 101 242/.2)}
+.discord-btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.discord-btn.verified{background:rgb(var(--green));pointer-events:none;box-shadow:none}
+.discord-check{background:#fff;color:#4b55bd;border:1px solid rgb(88 101 242/.28)}
+.discord-status{grid-column:1/-1;font-size:12.5px;min-height:18px;color:rgb(var(--muted))}
+.discord-status.ok{color:rgb(var(--green));font-weight:600}
+.discord-status.no{color:#b45309}
+.code-fallback{margin-top:11px}
+.code-fallback summary{display:inline-block;color:rgb(var(--muted));font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.code-fallback[open] summary{color:rgb(var(--green))}
 .coderow{display:flex;gap:8px;margin-top:10px}
 .coderow input{flex:1;background:#fff;border:1px solid rgb(var(--line)/.16);border-radius:11px;padding:10px 14px;font-family:"Anuphan";font-size:14.5px;outline:none}
 .coderow input:focus{border-color:rgb(var(--gold))}
@@ -124,6 +139,7 @@ header.top p{font-size:17px;color:rgb(var(--ink)/.74);max-width:56ch}
 .codemsg{font-size:13px;margin-top:8px;min-height:18px}
 .codemsg.ok{color:rgb(var(--green));font-weight:600}
 .codemsg.no{color:#b45309}
+@media(max-width:620px){.discord-gate{grid-template-columns:1fr}.discord-actions{justify-content:stretch}.discord-btn,.discord-check{flex:1}.coderow{flex-direction:column}.coderow button{min-height:44px}}
 
 /* เลือกโหมด: ทำการ์ด หรือ ลงทะเบียน */
 .modepick{margin-bottom:30px}
@@ -354,11 +370,25 @@ body.js .reveal.in{opacity:1;transform:none}
       <div class="badges" id="badges"></div>
       <p class="bnote" id="bhint">ทุกตราหาได้จากในเว็บนี้ทั้งหมด ไม่ต้องจ่ายอะไร แค่เดินดูให้ทั่ว</p>
       <p class="bnote full" id="ball" hidden>🏆 ครบทุกตราแล้ว — คุณเดินดูบ้านหลังนี้จนทั่วจริง ๆ</p>
-      <div class="coderow">
-        <input type="text" id="guildCode" placeholder="มีรหัส? กรอกตรงนี้" autocomplete="off">
-        <button type="button" id="guildBtn" data-ga="code_try" class="disp">🔑 ใช้รหัส</button>
+      <div class="discord-gate" id="discordGate">
+        <div>
+          <b>⚔️ พิสูจน์สมาชิก Guild X</b>
+          <p>เชื่อม Discord ครั้งเดียว เราจะตรวจเฉพาะตัวตนและการเป็นสมาชิกเซิร์ฟเวอร์ ไม่อ่านแชตหรืออีเมล</p>
+        </div>
+        <div class="discord-actions">
+          <a class="discord-btn" id="discordBtn" href="/api/discord/login?return=%2Fcard%2F" data-ga="discord_connect">◉ Connect Discord</a>
+          <button class="discord-check" id="discordCheck" type="button" hidden>ตรวจอีกครั้ง</button>
+        </div>
+        <div class="discord-status" id="discordStatus" role="status" aria-live="polite"></div>
       </div>
-      <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
+      <details class="code-fallback" id="codeFallback">
+        <summary>มีปัญหาในการเชื่อม Discord?</summary>
+        <div class="coderow">
+          <input type="text" id="guildCode" placeholder="มีรหัส? กรอกตรงนี้" autocomplete="off">
+          <button type="button" id="guildBtn" data-ga="code_try" class="disp">🔑 ใช้รหัส</button>
+        </div>
+        <div class="codemsg" id="codeMsg" role="status" aria-live="polite"></div>
+      </details>
       <p class="hint" style="margin-top:12px">ยังไม่มีรหัสเลยใช่ไหมครับ — <a href="../forge/">อ่านการ์ตูนให้ครบทุกตอน</a> แล้วจะได้รหัสแรกไปใส่ตรงนี้</p>
       <p class="hint" style="margin-top:8px">📔 อยากดูว่าเก็บอะไรมาได้บ้างระหว่างทาง — <a href="../collection/">เปิดคลังของสะสม</a></p>
 
@@ -1228,6 +1258,61 @@ document.getElementById('guildBtn').addEventListener('click',function(){
   if(!v){ codeMsg.className='codemsg'; codeMsg.textContent=''; return; }
   tryCode(v,0);
 });
+
+/* Discord เป็นทางหลัก แต่สุดท้ายเรียก grant('HERO') ตัวเดียวกับรหัสเดิม
+   เพื่อให้ Title, กรอบทอง และสิทธิ์ใน Dungeon ใช้ state ชุดเดียวกันทั้งหมด */
+(function(){
+  var btn=document.getElementById('discordBtn'), check=document.getElementById('discordCheck'),
+      status=document.getElementById('discordStatus');
+  if(!btn||!check||!status||!window.fetch) return;
+
+  function message(text,kind){ status.className='discord-status'+(kind?' '+kind:''); status.textContent=text; }
+  function connectButton(){
+    btn.className='discord-btn'; btn.textContent='◉ Connect Discord';
+    btn.href='/api/discord/login?return=%2Fcard%2F'; btn.removeAttribute('target');
+    check.hidden=true;
+  }
+  function checkStatus(){
+    message('กำลังตรวจสถานะสมาชิกกับ Discord…',''); check.disabled=true;
+    fetch('/api/discord/status',{credentials:'same-origin',headers:{Accept:'application/json'}})
+      .then(function(r){ return r.json().then(function(b){ if(!r.ok||b.ok===false) throw new Error(b.error||'status'); return b; }); })
+      .then(function(b){
+        check.disabled=false;
+        if(!b.available){ connectButton(); message('Discord OAuth ยังไม่พร้อมใช้งาน — รหัสเดิมด้านล่างยังใช้ได้ตามปกติ','no'); return; }
+        if(b.member){
+          grant('HERO','⚔️ Hero ไม่ได้แปลว่าต้องไปกอบกู้ใคร — ในชีวิตของคุณ คุณคือตัวละครหลัก การ์ดของคุณเป็นกรอบทองแล้ว');
+          btn.className='discord-btn verified'; btn.textContent='✓ Discord Verified'; btn.removeAttribute('href');
+          check.hidden=true;
+          message('ยืนยันสมาชิก Guild X แล้ว'+(b.user&&b.user.displayName?' · '+b.user.displayName:'')+' — ปลด Title HERO และสิทธิ์เปิดหีบเรียบร้อย','ok');
+          window.mcEvent&&window.mcEvent('discord_verified',{item:'guild_x'});
+          return;
+        }
+        if(b.connected){
+          btn.className='discord-btn'; btn.textContent='เข้าร่วม Guild X ↗'; btn.href='../guild/'; btn.target='_blank'; btn.rel='noopener';
+          check.hidden=false;
+          message('เชื่อม Discord แล้ว แต่บัญชีนี้ยังไม่อยู่ใน Guild X · เข้าร่วมแล้วกด “ตรวจอีกครั้ง”','no');
+          return;
+        }
+        connectButton();
+        message(st.titles.indexOf('HERO')>=0?'สิทธิ์ HERO ปลดไว้แล้วในเครื่องนี้ · จะเชื่อม Discord เพิ่มก็ได้':'กด Connect Discord เพื่อปลด HERO โดยไม่ต้องหารหัส','');
+      })
+      .catch(function(){
+        check.disabled=false; connectButton(); check.hidden=false;
+        message('ตรวจ Discord ไม่สำเร็จชั่วคราว ลองอีกครั้งหรือใช้รหัสเดิมด้านล่างได้','no');
+      });
+  }
+  check.addEventListener('click',checkStatus);
+  var oauthState=new URLSearchParams(location.search).get('discord');
+  if(oauthState==='cancelled') message('ยกเลิกการเชื่อม Discord แล้ว — ใช้รหัสเดิมแทนได้','no');
+  else if(oauthState==='error'||oauthState==='check_error') message('เชื่อม Discord แล้วแต่ตรวจสถานะไม่สำเร็จ ลองกดตรวจอีกครั้ง','no');
+  else if(oauthState==='not_member') message('เชื่อม Discord สำเร็จ แต่ยังไม่พบสมาชิกใน Guild X','no');
+  else if(oauthState==='unavailable') message('Discord OAuth ยังไม่พร้อมใช้งาน — ใช้รหัสเดิมได้ตามปกติ','no');
+  if(oauthState&&history.replaceState){
+    var cleanURL=new URL(location.href); cleanURL.searchParams.delete('discord');
+    history.replaceState(null,'',cleanURL.pathname+cleanURL.search+cleanURL.hash);
+  }
+  checkStatus();
+})();
 
 /* ทำครบบนเครื่องเดียวกัน ก็ไม่ต้องพิมพ์รหัสซ้ำ — ให้ตราไปเลย
    (รหัสมีไว้สำหรับคนที่อ่าน/เรียนคนละเครื่องกับที่ทำการ์ด) */
