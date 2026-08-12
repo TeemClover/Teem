@@ -16,54 +16,44 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Print hero visual structure
+      - name: Print lesson 6 structure
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
+          text=Path('classroom/first-web.html').read_text(encoding='utf-8')
 
-          pages = [
-            'classroom/image-ai.html',
-            'classroom/clip-ai.html',
-            'classroom/notebooklm.html',
-            'classroom/prompts.html',
-            'classroom/first-web.html',
-          ]
+          print('=== SECTIONS / ASIDES / ENDCAP ===')
+          tags=[]
+          for m in re.finditer(r'<(?:section|aside)\b[^>]*>', text, re.I):
+              tags.append((m.start(),m.group(0)))
+          for i,(pos,tag) in enumerate(tags):
+              end=tags[i+1][0] if i+1<len(tags) else min(len(text),pos+9000)
+              block=text[pos:end]
+              if any(k in block for k in ['section-head','main-note','endcap','GitHub Pages','starter-js','starter-copy','template']):
+                  print('\n---',tag,'---')
+                  print(block[:12000])
 
-          for filename in pages:
-              text = Path(filename).read_text(encoding='utf-8')
-              print('\n' + '='*90)
-              print(filename)
-              print('='*90)
-              # Print all image tags and nearby wrappers in document order.
-              for m in re.finditer(r'<(?:img|svg)\b', text, re.I):
-                  start = max(0, text.rfind('\n', 0, max(0, m.start()-500)))
-                  end = text.find('\n', min(len(text), m.start()+900))
-                  if end < 0: end = min(len(text), m.start()+900)
-                  snippet = text[start:end]
-                  # Keep logs useful rather than dumping giant inline SVGs.
-                  snippet = re.sub(r'(<svg\b[^>]*>).*?</svg>', r'\1 ... </svg>', snippet, flags=re.S|re.I)
-                  print('\n--- VISUAL ---')
-                  print(snippet[:1800])
-              # Print the main lesson hero container opening area.
-              hero = re.search(r'<(?:header|section|div)\b[^>]*class=["\'][^"\']*\b(?:head|hero)\b[^"\']*["\'][^>]*>', text, re.I)
-              if hero:
-                  block = text[hero.start():hero.start()+5000]
-                  block = re.sub(r'(<svg\b[^>]*>).*?</svg>', r'\1 ... </svg>', block, flags=re.S|re.I)
-                  print('\n--- HERO START ---')
-                  print(block[:5000])
+          print('\n=== CSS TARGET RULES ===')
+          for key in ['hero-grid','hero-art','section-head','num','copybox','template','checklist','endcap','takeaway']:
+              print('\n##',key)
+              for m in re.finditer(r'[^{}]*\.'+re.escape(key)+r'[^{}]*\{[^{}]*\}', text):
+                  print(m.group(0)[:2400])
 
-              # Historical version immediately before the mistaken removal.
-              try:
-                  import subprocess
-                  old = subprocess.check_output(['git','show','90d962423d4d7d6456ad8ef765b946daf17a4ab6:'+filename], text=True)
-                  oldhero = re.search(r'<(?:header|section|div)\b[^>]*class=["\'][^"\']*\b(?:head|hero)\b[^"\']*["\'][^>]*>', old, re.I)
-                  if oldhero:
-                      block = old[oldhero.start():oldhero.start()+5000]
-                      block = re.sub(r'(<svg\b[^>]*>).*?</svg>', r'\1 ... </svg>', block, flags=re.S|re.I)
-                      print('\n--- HISTORICAL HERO START @90d962 ---')
-                      print(block[:5000])
-              except Exception as exc:
-                  print('historical read failed:', exc)
+          print('\n=== SCRIPT REFERENCES ===')
+          for key in ['pageName','pageDesc','pageColor','pageCta','starter-js','starter-copy','template','finishBtn','finish','takeover']:
+              print('\n##',key)
+              for m in re.finditer(re.escape(key),text):
+                  a=max(0,text.rfind('\n',0,max(0,m.start()-800)))
+                  b=text.find('\n',min(len(text),m.start()+1300))
+                  if b<0:b=min(len(text),m.start()+1300)
+                  print(text[a:b][:2600])
+                  break
+
+          print('\n=== HISTORICAL HERO EXACT ===')
+          import subprocess
+          old=subprocess.check_output(['git','show','90d962423d4d7d6456ad8ef765b946daf17a4ab6:classroom/first-web.html'],text=True)
+          hm=re.search(r'<header class="hero">.*?</header>',old,re.S)
+          print(hm.group(0) if hm else 'NOT FOUND')
           PY
