@@ -1,0 +1,78 @@
+name: Rebuild lesson 6 consistently
+
+on: [push]
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    if: contains(github.event.head_commit.message, 'run one-shot lesson 6 consistency repair')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          sparse-checkout: |
+            classroom/first-web.html
+            img/classroom-kitchen-20260811-2231/lv6-serve-steak.jpeg
+            .github/scripts/rebuild_lesson6_consistent.py
+          sparse-checkout-cone-mode: false
+
+      - name: Rebuild Lesson 6
+        run: python .github/scripts/rebuild_lesson6_consistent.py
+
+      - name: Validate stable lesson flow
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('classroom/first-web.html').read_text(encoding='utf-8')
+          assert 'lv6-serve-steak.jpeg' in s
+          assert 'lesson-art-frame' in s
+          assert "document.body.classList.add('lesson6-signal-open')" not in s
+          assert 'body.lesson6-signal-open{overflow:hidden}' not in s
+          assert s.find('<span class="step-no">1</span>') < s.find('<span class="step-no">2</span>') < s.find('<span class="step-no">3</span>') < s.find('id="hardMode"') < s.find('id="bossDoor"')
+          assert s.count('<script') == s.count('</script>')
+          for m in re.finditer(r'<script(?:\s[^>]*)?>(.*?)</script>', s, re.S):
+              body=m.group(1).strip()
+              if body:
+                  Path('/tmp/check.js').write_text(body,encoding='utf-8')
+                  break
+          PY
+          test -s img/classroom-kitchen-20260811-2231/lv6-serve-steak.jpeg
+          git diff --check
+
+      - name: Check inline JavaScript syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess, sys
+          s=Path('classroom/first-web.html').read_text(encoding='utf-8')
+          blocks=[]
+          for m in re.finditer(r'<script([^>]*)>(.*?)</script>', s, re.S):
+              attrs,body=m.group(1),m.group(2)
+              if 'src=' in attrs or not body.strip():
+                  continue
+              p=Path(f'/tmp/lesson6-{len(blocks)}.js')
+              p.write_text(body,encoding='utf-8')
+              blocks.append((p,'type="module"' in attrs or "type='module'" in attrs))
+          for p,is_module in blocks:
+              cmd=['node','--check',str(p)]
+              r=subprocess.run(cmd,capture_output=True,text=True)
+              if r.returncode:
+                  print(r.stdout);print(r.stderr,file=sys.stderr);sys.exit(r.returncode)
+          print(f'checked {len(blocks)} inline JS blocks')
+          PY
+
+      - name: Commit repair
+        run: |
+          git config user.name "TeemClover"
+          git config user.email "86265222+TeemClover@users.noreply.github.com"
+          git add classroom/first-web.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "fix(classroom): rebuild lesson 6 to stable lesson pattern"
+          git push origin HEAD:main
