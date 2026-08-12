@@ -1,0 +1,35 @@
+name: Privacy terms link patch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/privacy-terms-link-patch.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Add Terms link to Privacy footer
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('privacy/index.html')
+          s = p.read_text()
+          old = '<p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="../card/#register">ลงทะเบียนรับการ์ดประจำตัว</a></p>'
+          new = '<p style="margin-top:6px"><a href="../">กลับหน้าบ้าน</a> · <a href="/pricacy/term.html">Terms of Service</a> · <a href="../card/#register">ลงทะเบียนรับการ์ดประจำตัว</a></p>'
+          if s.count(old) != 1:
+              raise SystemExit(f'exact footer anchor mismatch: found {s.count(old)}')
+          p.write_text(s.replace(old, new, 1))
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add privacy/index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "feat: link Terms of Service from privacy page"
+          git push origin HEAD:main
