@@ -1,0 +1,177 @@
+name: Fix classroom single header art
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-classroom-single-header-art.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Make lessons 2-5 match lesson 1 header structure
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          targets = {
+              'classroom/image-ai.html': ('header-lesson2.jpeg', 'ภาพหัวบท 2 · AI ใส่ซอส', 'hero-stage'),
+              'classroom/clip-ai.html': ('header-lesson3.jpeg', 'ภาพหัวบท 3 · AI ใส่ซอส', 'hero-stage'),
+              'classroom/notebooklm.html': ('header-lesson4.jpeg', 'ภาพหัวบท 4 · AI ใส่ซอส', None),
+              'classroom/prompts.html': ('header-lesson5.jpeg', 'ภาพหัวบท 5 · AI ใส่ซอส', 'heroimg'),
+          }
+
+          style = '''<style id="classroom-lesson-header-image-style">
+          .classroom-lesson-header-image{position:relative;z-index:2;display:block;overflow:hidden;background:#071a10;border-bottom:1px solid rgba(255,255,255,.09)}
+          .classroom-lesson-header-image img{display:block;width:100%;max-width:100%;height:auto;object-fit:contain}
+          .head>.classroom-lesson-header-image{width:calc(100% + 68px);max-width:none;margin:-36px -34px 28px}
+          .hero>.classroom-lesson-header-image{width:calc(100% + (2 * clamp(28px,6vw,46px)));max-width:none;margin:calc(-1 * clamp(28px,6vw,46px)) calc(-1 * clamp(28px,6vw,46px)) 26px}
+          @media(max-width:560px){
+            .head>.classroom-lesson-header-image{width:calc(100% + 44px);margin:-26px -22px 22px}
+          }
+          </style>'''
+
+          style_re = re.compile(r'\n*<style id="classroom-lesson-header-image-style">.*?</style>\s*', re.S)
+          fig_re = re.compile(r'\s*<figure class="classroom-lesson-header-image"[^>]*>.*?</figure>\s*', re.S)
+
+          for filename, (img, alt, legacy) in targets.items():
+              path = Path(filename)
+              text = path.read_text(encoding='utf-8')
+
+              # Normalize to exactly one static raster header, same pattern as lesson 1.
+              text = style_re.sub('\n', text)
+              text = fig_re.sub('\n', text)
+
+              # Remove the legacy hero artwork that used to be populated by inline/external JS.
+              if legacy == 'hero-stage':
+                  start = text.find('<div class="hero-stage"')
+                  if start != -1:
+                      end = text.find('</header>', start)
+                      if end == -1:
+                          raise SystemExit(f'{filename}: hero-stage found without closing header')
+                      chunk = text[start:end]
+                      if '<section' in chunk or '<header' in chunk:
+                          raise SystemExit(f'{filename}: refusing unsafe hero-stage removal')
+                      text = text[:start] + text[end:]
+              elif legacy == 'heroimg':
+                  text, count = re.subn(r'\s*<div class="heroimg"[^>]*>\s*</div>\s*', '\n', text, count=1)
+                  if count > 1:
+                      raise SystemExit(f'{filename}: unexpected multiple heroimg nodes')
+
+              if '</head>' not in text:
+                  raise SystemExit(f'{filename}: missing </head>')
+              text = text.replace('</head>', style + '\n\n</head>', 1)
+
+              marker = '<header class="head">'
+              if text.count(marker) != 1:
+                  raise SystemExit(f'{filename}: expected exactly one lesson head, found {text.count(marker)}')
+              figure = f'''\n  <figure class="classroom-lesson-header-image">\n    <img src="/classroom/img/{img}" alt="{alt}" loading="eager" decoding="async" fetchpriority="high">\n  </figure>\n'''
+              text = text.replace(marker, marker + figure, 1)
+
+              if text.count('<figure class="classroom-lesson-header-image">') != 1:
+                  raise SystemExit(f'{filename}: static header figure count is not 1')
+              if f'/classroom/img/{img}' not in text:
+                  raise SystemExit(f'{filename}: correct lesson image missing')
+              if legacy == 'hero-stage' and '<div class="hero-stage"' in text:
+                  raise SystemExit(f'{filename}: legacy hero-stage still present')
+              if legacy == 'heroimg' and '<div class="heroimg"' in text:
+                  raise SystemExit(f'{filename}: legacy heroimg still present')
+
+              path.write_text(text, encoding='utf-8')
+              print(f'normalized {filename}')
+
+          # Lesson 4 had a runtime helper that moves a second illustration into .head.
+          # Keep that illustration in the lesson body whenever the static header exists.
+          p = Path('assets/notebooklm-hero-position.js')
+          js = p.read_text(encoding='utf-8')
+          old = """    var head=document.querySelector('.head');\n    var figure=document.querySelector('.multiply-ill');\n    if(!head||!figure) return false;\n\n    var oldHero=head.querySelector('.hero');"""
+          new = """    var head=document.querySelector('.head');\n    var figure=document.querySelector('.multiply-ill');\n    if(!head||!figure) return false;\n    if(head.querySelector(':scope > .classroom-lesson-header-image')) return true;\n\n    var oldHero=head.querySelector('.hero');"""
+          if old not in js and new not in js:
+              raise SystemExit('notebooklm-hero-position.js: expected moveIntoHero block not found')
+          if old in js:
+              js = js.replace(old, new, 1)
+          p.write_text(js, encoding='utf-8')
+
+          # Final runtime guard: if any old script/cache injects the same lesson artwork
+          # above the real green hero, remove ONLY that duplicate and preserve the image
+          # that is the direct first artwork inside .head.
+          p = Path('assets/classroom-hero-consistency.js')
+          js = p.read_text(encoding='utf-8')
+          if 'STATIC_HEADER_ART' not in js:
+              addon = r'''
+
+const STATIC_HEADER_ART = {
+  'learn:image-ai': ['header-lesson2.jpeg', 'lv2-taste.jpeg'],
+  'learn:clip-ai': ['header-lesson3.jpeg', 'lv3-cook.jpeg'],
+  'learn:notebooklm': ['header-lesson4.jpeg', 'lv4-split.jpeg'],
+  'learn:prompts': ['header-lesson5.jpeg', 'lv5-season.jpeg']
+};
+
+function removeDuplicateLessonHeaderArt() {
+  const id = document.querySelector('meta[name="mc-item"]')?.content;
+  const names = STATIC_HEADER_ART[id];
+  if (!names) return;
+  const head = document.querySelector('header.head, .head');
+  const keep = head?.querySelector(':scope > .classroom-lesson-header-image img');
+  if (!head || !keep) return;
+
+  document.querySelectorAll('img').forEach(img => {
+    if (img === keep) return;
+    let pathname = '';
+    try { pathname = new URL(img.currentSrc || img.src, location.href).pathname; } catch { return; }
+    if (!names.some(name => pathname.endsWith('/' + name))) return;
+
+    const wrapper = img.closest('figure, picture, .classroom-lesson-header-image, .lesson-header-image, .lesson-chef-art');
+    if (wrapper && !head.contains(wrapper)) wrapper.remove();
+    else if (!head.contains(img)) img.remove();
+  });
+
+  head.querySelectorAll(':scope > .classroom-lesson-header-image').forEach((node, index) => {
+    if (index > 0) node.remove();
+  });
+}
+'''
+              js += addon
+              js = js.replace(
+                  "  applyConsistentHero();\n  setTimeout(applyConsistentHero, 250);\n  setTimeout(applyConsistentHero, 1000);",
+                  "  applyConsistentHero();\n  removeDuplicateLessonHeaderArt();\n  setTimeout(() => { applyConsistentHero(); removeDuplicateLessonHeaderArt(); }, 250);\n  setTimeout(() => { applyConsistentHero(); removeDuplicateLessonHeaderArt(); }, 1000);\n  setTimeout(removeDuplicateLessonHeaderArt, 2200);",
+                  1,
+              )
+          p.write_text(js, encoding='utf-8')
+
+      - name: Verify and commit
+        run: |
+          git diff --check
+          python - <<'PY'
+          from pathlib import Path
+          targets = {
+            'classroom/image-ai.html':'header-lesson2.jpeg',
+            'classroom/clip-ai.html':'header-lesson3.jpeg',
+            'classroom/notebooklm.html':'header-lesson4.jpeg',
+            'classroom/prompts.html':'header-lesson5.jpeg',
+          }
+          for f,img in targets.items():
+            t=Path(f).read_text(encoding='utf-8')
+            assert t.count('<figure class="classroom-lesson-header-image">') == 1, f
+            assert t.count('/classroom/img/'+img) == 1, f
+          assert '<div class="hero-stage"' not in Path('classroom/image-ai.html').read_text(encoding='utf-8')
+          assert '<div class="hero-stage"' not in Path('classroom/clip-ai.html').read_text(encoding='utf-8')
+          assert '<div class="heroimg"' not in Path('classroom/prompts.html').read_text(encoding='utf-8')
+          print('verification OK')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add classroom/image-ai.html classroom/clip-ai.html classroom/notebooklm.html classroom/prompts.html assets/notebooklm-hero-position.js assets/classroom-hero-consistency.js
+          git diff --cached --quiet && exit 0
+          git commit -m "fix(classroom): keep one connected header image in lessons 2-5"
+          git push origin HEAD:main
