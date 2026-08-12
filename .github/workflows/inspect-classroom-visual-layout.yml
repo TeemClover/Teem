@@ -1,0 +1,69 @@
+name: Inspect classroom visual layout
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/inspect-classroom-visual-layout.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Print hero visual structure
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          pages = [
+            'classroom/image-ai.html',
+            'classroom/clip-ai.html',
+            'classroom/notebooklm.html',
+            'classroom/prompts.html',
+            'classroom/first-web.html',
+          ]
+
+          for filename in pages:
+              text = Path(filename).read_text(encoding='utf-8')
+              print('\n' + '='*90)
+              print(filename)
+              print('='*90)
+              # Print all image tags and nearby wrappers in document order.
+              for m in re.finditer(r'<(?:img|svg)\b', text, re.I):
+                  start = max(0, text.rfind('\n', 0, max(0, m.start()-500)))
+                  end = text.find('\n', min(len(text), m.start()+900))
+                  if end < 0: end = min(len(text), m.start()+900)
+                  snippet = text[start:end]
+                  # Keep logs useful rather than dumping giant inline SVGs.
+                  snippet = re.sub(r'(<svg\b[^>]*>).*?</svg>', r'\1 ... </svg>', snippet, flags=re.S|re.I)
+                  print('\n--- VISUAL ---')
+                  print(snippet[:1800])
+              # Print the main lesson hero container opening area.
+              hero = re.search(r'<(?:header|section|div)\b[^>]*class=["\'][^"\']*\b(?:head|hero)\b[^"\']*["\'][^>]*>', text, re.I)
+              if hero:
+                  block = text[hero.start():hero.start()+5000]
+                  block = re.sub(r'(<svg\b[^>]*>).*?</svg>', r'\1 ... </svg>', block, flags=re.S|re.I)
+                  print('\n--- HERO START ---')
+                  print(block[:5000])
+
+              # Historical version immediately before the mistaken removal.
+              try:
+                  import subprocess
+                  old = subprocess.check_output(['git','show','90d962423d4d7d6456ad8ef765b946daf17a4ab6:'+filename], text=True)
+                  oldhero = re.search(r'<(?:header|section|div)\b[^>]*class=["\'][^"\']*\b(?:head|hero)\b[^"\']*["\'][^>]*>', old, re.I)
+                  if oldhero:
+                      block = old[oldhero.start():oldhero.start()+5000]
+                      block = re.sub(r'(<svg\b[^>]*>).*?</svg>', r'\1 ... </svg>', block, flags=re.S|re.I)
+                      print('\n--- HISTORICAL HERO START @90d962 ---')
+                      print(block[:5000])
+              except Exception as exc:
+                  print('historical read failed:', exc)
+          PY
