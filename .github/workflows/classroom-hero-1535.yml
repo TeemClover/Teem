@@ -1,0 +1,121 @@
+name: Finalize classroom workflow hero
+
+on:
+  push:
+    branches: [tmp/classroom-hero-1535]
+    paths: ['.github/workflows/classroom-hero-1535.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp/classroom-hero-1535
+          fetch-depth: 0
+
+      - name: Rebuild hero image
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .tmp/classroom-hero/*.b64 | base64 -d > img/classroom-workflow-map-20260812-1535.avif
+          echo '3d071aabd4ca4904b5a89f77fef906a9a9711f021ff012ecf0ca5e158c9b2cdd  img/classroom-workflow-map-20260812-1535.avif' | sha256sum -c -
+
+      - name: Replace hero and align lesson copy
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('classroom/index.html')
+          s = p.read_text('utf-8')
+
+          s = re.sub(
+              r'\.head\{[^}]*\}',
+              '.head{border-radius:20px;padding:0;margin:26px 0 10px;overflow:hidden;position:relative;background:transparent;background-image:none;color:inherit}',
+              s,
+              count=1,
+          )
+          s = re.sub(
+              r'\.heroimg\{[^}]*\}',
+              '.heroimg{margin:0;height:auto;overflow:hidden;background:transparent}',
+              s,
+              count=1,
+          )
+          s = re.sub(
+              r'\.heroimg img\{[^}]*\}',
+              '.heroimg img{width:100%;height:auto;object-fit:contain;display:block}',
+              s,
+              count=1,
+          )
+          s = s.replace('.head{padding:28px 22px}', '.head{padding:0}')
+          s = s.replace('.heroimg{margin:-28px -22px 18px;height:150px}', '.heroimg{margin:0;height:auto}')
+
+          hero = '''<header class="head classroom-map-hero">
+            <div class="heroimg">
+              <img src="../img/classroom-workflow-map-20260812-1535.avif"
+                   width="1024" height="1536"
+                   alt="AI ใส่ซอส Workflow Map — 6 บทจาก SOURCE ถึง SERVE"
+                   decoding="async">
+            </div>
+          </header>'''
+          s, n = re.subn(r'<header class="head">.*?</header>', hero, s, count=1, flags=re.S)
+          if n != 1:
+              raise SystemExit('hero block not found')
+
+          s, n = re.subn(
+              r'<div class="pathnote" id="pathCard".*?<div class="lsgrid">',
+              '<div class="lsgrid">',
+              s,
+              count=1,
+              flags=re.S,
+          )
+          if n != 1:
+              raise SystemExit('pathnote block not found')
+
+          cards = [
+              ('free-ai.html', 'SOURCE', 'ซอส · เริ่มจากการปรุงซอส', 'เล่า แนบไฟล์ หรือสกัดจากแชตเดิม แล้วจบด้วยซอส .md ขวดแรกของตัวเอง'),
+              ('image-ai.html', 'TASTE', 'เทส · ชิมซอสก่อนเติม', 'ใช้ภาพเป็นช้อนชิมว่า AI เข้าใจซอสตรงกับคุณไหม แล้วแก้ที่ต้นทาง'),
+              ('clip-ai.html', 'COOK', 'ผัด · เอาซอสไปทำงานจริง', 'ใช้ซอสขวดเดียวสร้าง Script, Shot list, Caption และงานชิ้นแรกที่พร้อมใช้'),
+              ('notebooklm.html', 'SPLIT', 'แบ่ง · ซอสขวดเดียว แตกได้หลายเมนู', 'แตกซอสเป็นภาพ สไลด์ เสียง FAQ คู่มือ และ Output หลายรูปแบบ'),
+              ('prompts.html', 'SEASON', 'ปรุง · เลือกงาน แล้วตักผงไปใช้กับซอส', 'หยิบ Prompt, Style, Checklist และบทบาทที่เตรียมไว้มาเติมให้ถูกงาน ไม่เทหมดลิ้นชัก'),
+              ('first-web.html', 'SERVE', 'เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต', 'รวมทุกอย่างเป็นเว็บหรือผลงานที่คนอื่นเปิดใช้ และส่งต่อได้จริง'),
+          ]
+
+          for i, (href, step, title, desc) in enumerate(cards, 1):
+              pat = rf'(<a class="ls[^"]*" href="{re.escape(href)}"[^>]*>.*?<div class="lsbody">).*?(<span class="lsgo disp">เข้าเรียน →</span>)'
+              repl = (
+                  r'\1\n'
+                  f'      <span class="lslv disp">LV.{i} <em>{step}</em></span>\n'
+                  f'      <b class="disp">{title}</b>\n'
+                  f'      <p>{desc}</p>\n'
+                  r'      \2'
+              )
+              s, n = re.subn(pat, repl, s, count=1, flags=re.S)
+              if n != 1:
+                  raise SystemExit(f'card not found: {href}')
+
+          p.write_text(s, 'utf-8')
+          PY
+
+          git diff --check -- classroom/index.html
+          grep -F 'classroom-workflow-map-20260812-1535.avif' classroom/index.html
+          grep -F 'ซอส · เริ่มจากการปรุงซอส' classroom/index.html
+          grep -F 'เสิร์ฟ · เปลี่ยนซอสเป็น HTML ไฟล์มีชีวิต' classroom/index.html
+          ! grep -F 'pathnote" id="pathCard' classroom/index.html
+
+      - name: Commit final hero
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .tmp/classroom-hero
+          rm -f .github/workflows/classroom-hero-1535.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'feat: replace classroom hero with workflow map'
+          git push origin HEAD:tmp/classroom-hero-1535
