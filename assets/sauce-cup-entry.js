@@ -76,5 +76,36 @@ function showOffer() {
   track('shown');
 }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(showOffer, 280), { once: true });
-else setTimeout(showOffer, 280);
+function enhanceSauceCupEnding() {
+  if (!/^\/classroom\/sauce-cup\/?(?:index\.html)?$/.test(location.pathname)) return;
+  if (document.getElementById('mcSauceCupPoster')) return;
+
+  const end = document.querySelector('.end');
+  const why = end && end.querySelector('.why');
+  if (!end || !why) return;
+
+  const style = document.createElement('style');
+  style.id = 'mcSauceCupPosterStyle';
+  style.textContent = `
+    #mcSauceCupPoster{width:min(1024px,calc(100vw - 32px));margin:24px 0 0 50%;transform:translateX(-50%)}
+    #mcSauceCupPoster img{display:block;width:100%;height:auto;max-width:none}
+  `;
+  document.head.appendChild(style);
+
+  const figure = document.createElement('figure');
+  figure.id = 'mcSauceCupPoster';
+  figure.innerHTML = '<img src="/classroom/sauce-cup/banner-classroom.jpg" width="1024" height="1536" alt="ภาพรวม AI ใส่ซอส Workflow 6 บท">';
+  why.before(figure);
+
+  why.innerHTML = '<b>ทำไมแนะนำให้กลับไปอ่านการ์ตูนก่อน:</b> เพราะพื้นฐานของวิธีคิดนี้เริ่มมาตั้งแต่ <b>กระดาษ A4 1 แผ่น</b> การ์ตูน 7 ตอนจะพาเห็นว่ากระดาษแผ่นนั้นค่อย ๆ กลายเป็น “ซอส” และต่อยอดมาเป็น Workflow 6 บทที่เห็นในภาพนี้ได้ยังไง';
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(showOffer, 280);
+    enhanceSauceCupEnding();
+  }, { once: true });
+} else {
+  setTimeout(showOffer, 280);
+  enhanceSauceCupEnding();
+}
