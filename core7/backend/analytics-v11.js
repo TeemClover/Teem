@@ -615,15 +615,17 @@ export async function readJourneyFunnel(db, params = {}) {
       SELECT install_id,
         MIN(CASE WHEN ref='home-open' THEN occurred_at END) opened_at,
         MIN(CASE WHEN ref='home-video' THEN occurred_at END) video_at,
+        MIN(CASE WHEN ref='home-host-profile' THEN occurred_at END) host_at,
         MIN(CASE WHEN ref='hall-open' THEN occurred_at END) hall_at
       FROM c7_analytics_events
-      WHERE event_type='ACT' AND ref IN ('home-open','home-video','hall-open')
+      WHERE event_type='ACT' AND ref IN ('home-open','home-video','home-host-profile','hall-open')
         AND occurred_at >= ? AND occurred_at < ?
       GROUP BY install_id
     )
     SELECT
       COUNT(CASE WHEN opened_at IS NOT NULL THEN 1 END) visitors,
       COUNT(CASE WHEN opened_at IS NOT NULL AND video_at IS NOT NULL THEN 1 END) watched_video,
+      COUNT(CASE WHEN opened_at IS NOT NULL AND host_at IS NOT NULL THEN 1 END) host_profile,
       COUNT(CASE WHEN opened_at IS NOT NULL AND hall_at IS NOT NULL
         AND (video_at IS NULL OR hall_at < video_at) THEN 1 END) entered_direct,
       COUNT(CASE WHEN opened_at IS NOT NULL AND video_at IS NOT NULL
@@ -727,6 +729,7 @@ export async function readJourneyFunnel(db, params = {}) {
   const last = steps[steps.length - 1];
   const home = nums(homeRes || {});
   home.video_rate = rate(home.watched_video, home.visitors);
+  home.host_profile_rate = rate(home.host_profile, home.visitors);
   home.direct_rate = rate(home.entered_direct, home.visitors);
   home.video_then_hall_rate = rate(home.video_then_hall, home.visitors);
   home.video_to_hall_rate = rate(home.video_then_hall, home.watched_video);
