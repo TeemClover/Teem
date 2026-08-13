@@ -85,6 +85,8 @@ export function achievementState() {
   const dungeonPerfect = raw('mc_dungeon_awakened_v1') === '1' || !!(dungeon?.loot && !dungeon.loot.broken && Number(dungeon.loot.stars) === 5);
   const blacksmith = forgeDone || hasTitle('BLACKSMITH');
   const firstHand = firstHandCount();
+  const mini = json('mc_mini_achievements_v1', []);
+  const cloverSong = Array.isArray(mini) && mini.includes('clover-song-2010');
   const state = {};
 
   FORGE_SLUGS.forEach((slug, i) => { state['forge-' + (i + 1)] = read.includes(slug); });
@@ -103,6 +105,7 @@ export function achievementState() {
   state.awakened = dungeonPerfect;
   state.hero = hasTitle('HERO');
   state.seeker = raw('mc_seek_hit') === '1' || hasTitle('SEEKER');
+  state['clover-song-2010'] = cloverSong;
 
   /* Current-run flags are allowed to reset. Ever-markers keep Collection achievements permanent. */
   const nbSeen = raw('mc_nb_seen') === '1' || raw('mc_nb_seen_ever_v1') === '1';
