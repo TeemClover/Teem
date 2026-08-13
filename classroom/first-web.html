@@ -102,6 +102,13 @@ html,body{min-height:100%}body{overflow-y:auto!important}
   .head>.classroom-lesson-header-image{width:calc(100% + 44px);margin:-26px -22px 22px}
 }
 </style>
+<style id="classroom-sauce-flow-style">
+.sauce-flow{margin:26px 0 4px}
+.sauce-flow__frame{display:block;overflow:hidden;border-radius:24px;border:1px solid rgba(10,48,31,.12);box-shadow:0 16px 40px rgba(10,48,31,.12);background:#fff;line-height:0}
+.sauce-flow__frame img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover}
+.sauce-flow__cap{margin-top:10px;text-align:center;font-size:13px;line-height:1.6;color:rgba(10,48,31,.62)}
+@media(max-width:680px){.sauce-flow{margin:20px 0 2px}.sauce-flow__frame{border-radius:18px}.sauce-flow__cap{font-size:12px}}
+</style>
 
 </head>
 <body>
@@ -222,23 +229,28 @@ html,body{min-height:100%}body{overflow-y:auto!important}
 </section>
 
 <section class="block smart-resume-workflow" id="smart-resume">
-  <div class="section-head"><div><span class="ey">SERVE · SMART RESUME</span><h2>ทำ Smart Resume ให้ได้วันนี้</h2><p>ใช้วิธีเดียวกับบท 2: สกัดซอสจากแชทที่รู้จักคุณ → ย้ายไฟล์ .md → สั่งสั้น ๆ → เปิดเช็กก่อนเสิร์ฟ</p></div></div>
+  <div class="section-head"><div><span class="ey">SERVE · SMART RESUME</span><h2>ทำ Smart Resume ให้ได้วันนี้</h2><p>จังหวะเดียวกับบท 2 และ 3: ใช้ซอสแม่สกัดซอสลูก → ใช้ซอสลูกสร้างงานด้วยคำสั่งสั้น → ตรวจงานที่ได้กลับไปที่ซอส</p></div></div>
   <div class="smart-actions"><a class="btn alt" href="/resume/first-version/" target="_blank" rel="noopener">ดูตัวอย่าง Smart Resume →</a></div>
 
-  <div class="smart-steps">
+  <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">ทุกบทตั้งแต่นี้ไปใช้จังหวะเดียวกัน — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
+      <div class="smart-steps">
     <article class="smart-step">
       <span class="step-no">1</span>
       <div class="step-body">
-        <h3>สกัดซอส Smart Resume .md</h3>
-        <p>วาง Prompt นี้ในแชทหรือ AI ที่รู้จักคุณอยู่แล้ว ไฟล์ที่ได้ต้องเก็บทั้ง <b>ข้อมูลเจ้าของ + WORK / LIFE + สไตล์ + กติกาสร้าง index.html</b> ไว้ครบ เพื่อรอบถัดไปไม่ต้องอธิบายใหม่</p>
-        <div class="source-warning"><strong>ห้ามเริ่มข้อ 1 จากแชทว่าง</strong><span>ทำข้อนี้ใน AI หรือแชทที่รู้จักคุณมากที่สุด ให้ใช้แชทนี้รวมกับ Memory / ประวัติอื่นที่มันเข้าถึงได้จริง เพื่อรวบรวมข้อมูลให้ครบที่สุด แต่คัดเฉพาะเรื่องที่เหมาะกับการเปิดสาธารณะ ถ้ามันเข้าถึงอะไรไม่ได้ ห้ามอ้างว่าเห็นและห้ามเดาแทน</span></div>
+        <h3>ใช้ซอสแม่ สกัดซอสลูกสำหรับ Smart Resume</h3>
+        <p>แนบ<b>ซอสแม่</b>จากบทที่ 1 แล้ววาง Prompt นี้ ไฟล์ที่ได้ต้องเก็บทั้ง <b>ข้อมูลเจ้าของ + WORK / LIFE + สไตล์ + กติกาสร้าง index.html</b> ไว้ครบ เพื่อรอบถัดไปไม่ต้องอธิบายใหม่ ผลลัพธ์คือ <code>resume-source-YYYY-MM-DD-HHmm.md</code> ที่มีวันเวลากำกับไว้ในชื่อ</p>
+        <div class="source-warning"><strong>ยังไม่มีซอสแม่ก็ทำได้ แต่อย่าเริ่มจากแชทว่าง</strong><span>ถ้ามีซอสแม่ให้แนบก่อน ถ้ายังไม่มี ให้ทำข้อนี้ใน AI หรือแชทที่รู้จักคุณมากที่สุด Prompt จะไปค้นจาก Memory และประวัติอื่นที่ระบบเข้าถึงได้จริงเพิ่มให้เอง แต่คัดเฉพาะเรื่องที่เหมาะกับการเปิดสาธารณะ ถ้ามันเข้าถึงอะไรไม่ได้ ห้ามอ้างว่าเห็นและห้ามเดาแทน</span></div>
         <div class="prompt-card" data-prompt-collapse data-expanded="false"><span class="prompt-copy" id="smartPrompt1">สกัดข้อมูลเกี่ยวกับฉันจากบริบททั้งหมดที่ AI ตัวนี้เข้าถึงได้จริง แล้วสร้างเป็น Source / ซอส ไฟล์ Markdown (.md) ที่พร้อมใช้สร้าง “Smart Resume” แบบ Single-file HTML ได้ทันที โดยคำสั่งสำหรับสร้างเว็บทั้งหมดต้องถูกรวมอยู่ในไฟล์ .md นี้แล้ว
 
-แหล่งข้อมูลที่ให้สำรวจ:
-- ใช้บทสนทนาปัจจุบันเป็นฐาน
-- ถ้าระบบนี้มี Memory, โปรไฟล์, Personal Context หรือประวัติแชทอื่นของบัญชีนี้ที่ระบบเข้าถึงได้จริง ให้ค้นและรวบรวมข้อมูลเกี่ยวกับฉันจากบริบทเหล่านั้นด้วย เพื่อให้ Source รู้จักเจ้าของมากที่สุด
+แหล่งข้อมูลที่ให้สำรวจ เรียงตามลำดับ:
+1. ซอสแม่ (.md) ที่ฉันแนบมา ถ้ามี — ใช้เป็นฐานหลักเสมอ
+2. บทสนทนาปัจจุบัน
+3. ถ้าข้อมูลจาก 1 และ 2 ยังไม่พอสำหรับหัวข้อใด และระบบนี้มี Memory, โปรไฟล์, Personal Context หรือประวัติแชทอื่นของบัญชีนี้ที่เข้าถึงได้จริง ให้ค้นและรวบรวมข้อมูลเกี่ยวกับฉันจากบริบทเหล่านั้นเพิ่ม เพื่อให้ Source รู้จักเจ้าของมากที่สุด
 - ถ้าระบบเข้าถึงแชทอื่นไม่ได้ ห้ามอ้างว่าเข้าถึงได้ และห้ามแต่งข้อมูลมาชดเชย
-- ถ้าข้อมูลขัดกัน ให้ยึดข้อมูลล่าสุดที่เจ้าของระบุหรือแก้ไขเอง ถ้ายังยืนยันไม่ได้ให้ตัดออก
+- ถ้าข้อมูลขัดกัน ให้ยึดซอสแม่ก่อน แล้วจึงยึดข้อมูลล่าสุดที่เจ้าของระบุหรือแก้ไขเอง ถ้ายังยืนยันไม่ได้ให้ตัดออก
+
+ตั้งชื่อไฟล์ว่า resume-source-YYYY-MM-DD-HHmm.md โดยใช้วันและเวลาปัจจุบันขณะสร้างไฟล์
+ถ้าระบบไม่รู้เวลาจริง ให้คงตัวอักษร YYYY-MM-DD-HHmm ไว้ตามนั้น เพื่อให้ฉันเติมเอง
 
 PUBLIC-SAFE FILTER — สำคัญมาก:
 - ใส่เฉพาะข้อมูลที่เหมาะสำหรับเปิดบนเว็บไซต์สาธารณะ
@@ -249,8 +261,14 @@ PUBLIC-SAFE FILTER — สำคัญมาก:
 
 สร้างไฟล์ .md ตามโครงนี้:
 
-# Smart Resume Source
+# ซอสลูก (Smart Resume Source)
 &gt; เอกสารนี้คือ “ซอส” สำหรับสร้าง Smart Resume ของเจ้าของข้อมูล เมื่อแนบไฟล์นี้ให้ AI แล้วสั่งเพียง “ทำเวปตามซอสนี้” ให้ทำตาม BUILD DIRECTIVE ด้านล่างทันที
+
+## ข้อมูลไฟล์
+- ชื่อไฟล์: resume-source-YYYY-MM-DD-HHmm.md
+- สร้างเมื่อ: (วัน เดือน ปี และเวลาที่สร้างไฟล์นี้)
+- ซอสแม่ที่ใช้: (ชื่อไฟล์ซอสแม่ที่แนบมา หรือระบุว่าไม่ได้แนบ)
+- แหล่งข้อมูลที่ใช้: (ระบุว่าส่วนไหนมาจากซอสแม่ ส่วนไหนมาจากบทสนทนา และส่วนไหนมาจากบริบทอื่น)
 
 ## 0. BUILD DIRECTIVE — คำสั่งที่ต้องใช้สร้าง index.html
 - สร้างไฟล์ `index.html` ฉบับเต็มเพียงไฟล์เดียว พร้อมใช้งานทันที
@@ -309,8 +327,8 @@ PUBLIC-SAFE FILTER — สำคัญมาก:
 Checklist ว่า Source มีข้อมูลพอสร้างเว็บ, ไม่มีข้อเท็จจริงแต่งเพิ่ม, ไม่มีข้อมูลลับ, Link ที่ใช้เป็น Public จริง, WORK/LIFE แยกได้ และ BUILD DIRECTIVE ครบจน Prompt รอบถัดไปเหลือเพียง “ทำเวปตามซอสนี้”
 
 ลงมือสร้าง Source ทันที ห้ามถามคำถามกลับ
-ส่งออกเป็นไฟล์ `.md` พร้อมให้ดาวน์โหลด
-ถ้าระบบแนบไฟล์ไม่ได้ ให้ส่ง Markdown ทั้งหมดใน code block เดียวทันที โดยไม่ถามกลับ</span><button class="copy-smart" type="button" data-copy-target="smartPrompt1" aria-label="คัดลอกคำสั่ง">คัดลอก</button><button class="prompt-expand" type="button" aria-expanded="false" aria-label="ขยายอ่าน Prompt ทั้งหมด">ขยายอ่าน Prompt</button></div>
+ส่งออกเป็นไฟล์ `.md` พร้อมให้ดาวน์โหลด โดยใช้ชื่อไฟล์ resume-source-YYYY-MM-DD-HHmm.md ตามเวลาจริง
+ถ้าระบบแนบไฟล์ไม่ได้ ให้ส่ง Markdown ทั้งหมดใน code block เดียวทันที โดยไม่ถามกลับ และบอกชื่อไฟล์ที่ควรใช้บันทึกไว้ด้านบน code block</span><button class="copy-smart" type="button" data-copy-target="smartPrompt1" aria-label="คัดลอกคำสั่ง">คัดลอก</button><button class="prompt-expand" type="button" aria-expanded="false" aria-label="ขยายอ่าน Prompt ทั้งหมด">ขยายอ่าน Prompt</button></div>
       </div>
     </article>
 

@@ -218,6 +218,13 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
   .head>.classroom-lesson-header-image{width:calc(100% + 44px);margin:-26px -22px 22px}
 }
 </style>
+<style id="classroom-sauce-flow-style">
+.sauce-flow{margin:26px 0 4px}
+.sauce-flow__frame{display:block;overflow:hidden;border-radius:24px;border:1px solid rgba(10,48,31,.12);box-shadow:0 16px 40px rgba(10,48,31,.12);background:#fff;line-height:0}
+.sauce-flow__frame img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover}
+.sauce-flow__cap{margin-top:10px;text-align:center;font-size:13px;line-height:1.6;color:rgba(10,48,31,.62)}
+@media(max-width:680px){.sauce-flow{margin:20px 0 2px}.sauce-flow__frame{border-radius:18px}.sauce-flow__cap{font-size:12px}}
+</style>
 
 </head>
 <body>
@@ -490,19 +497,34 @@ document.querySelectorAll('.prompt').forEach(function(el){
 'use strict';
 if(!/\/classroom\/image-ai\.html$/.test(location.pathname)) return;
 
-const EXTRACT_PROMPT = `สกัดข้อมูลเกี่ยวกับฉันจากบทสนทนาในแชทนี้ แล้วสร้างเป็น Source ไฟล์ Markdown (.md) ที่พร้อมใช้สร้าง “โปสเตอร์หนังชีวิตของฉัน” ได้ทันที โดยไม่ต้องอธิบายเพิ่มใน Prompt รอบถัดไป
+const EXTRACT_PROMPT = `สร้าง “ซอสลูก” สำหรับโปสเตอร์หนังชีวิตของฉัน เป็นไฟล์ Markdown (.md) ที่พร้อมใช้สร้างภาพได้ทันที โดยไม่ต้องอธิบายเพิ่มใน Prompt รอบถัดไป
 
-ใช้เฉพาะสิ่งที่บทสนทนานี้รองรับ:
+แหล่งข้อมูลที่ให้ใช้ เรียงตามลำดับ:
+1. ซอสแม่ (.md) ที่ฉันแนบมา ถ้ามี — ใช้เป็นฐานหลักเสมอ
+2. บทสนทนาปัจจุบัน
+3. ถ้าข้อมูลจาก 1 และ 2 ยังไม่พอสำหรับหัวข้อใด ให้ค้นเพิ่มจาก Memory โปรไฟล์ Personal Context หรือประวัติแชทอื่นของบัญชีนี้ เฉพาะเท่าที่ระบบเข้าถึงได้จริง
+- ถ้าระบบเข้าถึงบริบทอื่นไม่ได้ ห้ามอ้างว่าเข้าถึงได้ และห้ามแต่งข้อมูลมาชดเชย
+- ถ้าข้อมูลจากหลายแหล่งขัดกัน ให้ยึดซอสแม่ก่อน แล้วจึงยึดข้อมูลล่าสุดที่ฉันยืนยันเอง
+- สิ่งที่ยังไม่รู้ให้เขียนว่า “ยังไม่มีข้อมูล” ห้ามเดา
+
+สิ่งที่ต้องเก็บให้ครบ:
 - ฉันเป็นใคร ทำอะไร และสนใจอะไร
 - บุคลิก วิธีพูด จุดเด่น และสิ่งที่ให้ความสำคัญ
 - เรื่องราวหรือจุดเปลี่ยนสำคัญ
 - ฉาก สี วัตถุ และบรรยากาศที่เหมาะกับการเล่าเรื่องชีวิต
 - รูปลักษณ์หรือการแต่งตัว ถ้ามีข้อมูลจริง
-- สิ่งที่ไม่รู้ให้เขียนว่า “ยังไม่มีข้อมูลในแชทนี้” ห้ามเดา
+
+ตั้งชื่อไฟล์ว่า poster-source-YYYY-MM-DD-HHmm.md โดยใช้วันและเวลาปัจจุบันขณะสร้างไฟล์
+ถ้าระบบไม่รู้เวลาจริง ให้คงตัวอักษร YYYY-MM-DD-HHmm ไว้ตามนั้น เพื่อให้ฉันเติมเอง
 
 จัด Source ให้ครบตามหัวข้อนี้:
-# ซอส (Source) สำหรับโปสเตอร์หนังชีวิต
+# ซอสลูก (Source) สำหรับโปสเตอร์หนังชีวิต
 > เอกสารนี้คือ “ซอส” ที่คำสั่งสั้น “สร้างภาพตามซอสนี้” อ้างถึง
+## ข้อมูลไฟล์
+- ชื่อไฟล์: poster-source-YYYY-MM-DD-HHmm.md
+- สร้างเมื่อ: (วัน เดือน ปี และเวลาที่สร้างไฟล์นี้)
+- ซอสแม่ที่ใช้: (ชื่อไฟล์ซอสแม่ที่แนบมา หรือระบุว่าไม่ได้แนบ)
+- แหล่งข้อมูลที่ใช้: (ระบุว่าส่วนไหนมาจากซอสแม่ ส่วนไหนมาจากบทสนทนา และส่วนไหนมาจากบริบทอื่น)
 ## ตัวตนและบริบทของเจ้าของเรื่อง
 ## เส้นเรื่อง — มาจากไหน กำลังทำอะไร และกำลังไปทางไหน
 ## สิ่งสำคัญที่ภาพต้องสื่อ
@@ -518,8 +540,8 @@ const EXTRACT_PROMPT = `สกัดข้อมูลเกี่ยวกั�
 - รายละเอียดที่ไม่มีข้อมูลให้ใช้ทางเลือกเรียบและเป็นกลาง ห้ามสร้างข้อเท็จจริงใหม่
 
 ลงมือสร้าง Source ทันที ห้ามถามคำถามกลับ
-ส่งออกเป็นไฟล์ .md พร้อมให้ดาวน์โหลด
-ถ้าระบบแนบไฟล์ไม่ได้ ให้ส่ง Markdown ทั้งหมดใน code block เดียวทันที โดยไม่ถามกลับ`;
+ส่งออกเป็นไฟล์ .md พร้อมให้ดาวน์โหลด โดยใช้ชื่อไฟล์ poster-source-YYYY-MM-DD-HHmm.md ตามเวลาจริง
+ถ้าระบบแนบไฟล์ไม่ได้ ให้ส่ง Markdown ทั้งหมดใน code block เดียวทันที โดยไม่ถามกลับ และบอกชื่อไฟล์ที่ควรใช้บันทึกไว้ด้านบน code block`;
 
 const POSTER_PROMPT = `สร้างภาพตามซอสนี้`;
 
@@ -694,10 +716,11 @@ function buildFastTrack(){
     fast.className='life-fast';
     fast.id='lesson2FastTrack';
     fast.innerHTML=`
-      <div class="life-fast__intro"><b>แชทเดิมสร้างภาพไม่ได้ก็ไม่เป็นไร</b><p>ใช้แชทเดิมสกัดซอส .md แล้วนำไฟล์ไปเปิดในแชทใหม่ที่สร้างภาพได้ ผู้เรียนไม่ต้องเริ่มเล่าเรื่องตัวเองใหม่</p></div>
+      <div class="life-fast__intro"><b>แชทเดิมสร้างภาพไม่ได้ก็ไม่เป็นไร</b><p>สกัดซอสลูกในแชทที่รู้จักคุณ แล้วนำไฟล์ไปเปิดในแชทใหม่ที่สร้างภาพได้ ผู้เรียนไม่ต้องเริ่มเล่าเรื่องตัวเองใหม่</p></div>
       <section class="life-why"><h2>ทำไมบทนี้ต้อง “ชิม” ด้วยภาพ</h2><div class="life-why__quote">ภาพ 1 ภาพ สื่อความหมายได้มากกว่าคำ 1,000 คำ</div><p>ซอสที่อ่านแล้วดูครบ อาจยังมีช่องว่างซ่อนอยู่ พอให้ระบบแปลงเป็นภาพ เราจะเห็นทันทีว่ามันเข้าใจตัวตน เรื่องราว อารมณ์ และสิ่งสำคัญของเราตรงหรือไม่ ก่อนเอาซอสไปทำงานจริงหลายชิ้น</p><div class="life-why__grid"><div><b>👀 เห็นความเข้าใจผิด</b><p>สิ่งที่คลุมเครือจะโผล่ออกมาเป็นคน ฉาก สี และวัตถุที่ผิด</p></div><div><b>⚡ ตรวจได้เร็ว</b><p>มองภาพครั้งเดียว เห็นทั้งสิ่งที่ตรง สิ่งที่ขาด และสิ่งที่ระบบแต่งเพิ่ม</p></div><div><b>🧴 พิสูจน์ว่าซอสใช้ได้</b><p>ถ้าซอสสร้างภาพที่เล่าเรื่องเราได้ ก็พร้อมนำไปต่อยอดกับงานอื่น</p></div></div></section>
+      <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">ทุกบทตั้งแต่นี้ไปใช้จังหวะเดียวกัน — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
       <div class="life-fast__steps">
-        <article class="life-fast__step"><span class="life-fast__num">1</span><div><h3>สกัดซอส .md จากแชทเดิม</h3><p>วาง Prompt นี้ในแชทที่รู้จักคุณอยู่แล้ว ระบบต้องสร้างไฟล์ทันทีโดยไม่ถามกลับ</p><div class="life-md-alert"><strong>ห้ามเริ่มจากแชทว่าง</strong><span>ข้อ 1 ต้องทำในแชทเดิมที่รู้จักคุณอยู่แล้ว เพราะขั้นนี้กำลังสกัดข้อมูลชีวิตออกมาเป็นซอส .md</span></div><div class="prompt" data-life-prompt="extract" data-prompt-collapse></div></div></article>
+        <article class="life-fast__step"><span class="life-fast__num">1</span><div><h3>ใช้ซอสแม่ สกัดซอสลูกสำหรับโปสเตอร์</h3><p>แนบ<b>ซอสแม่</b>จากบทที่ 1 แล้ววาง Prompt นี้ ระบบต้องสร้างไฟล์ทันทีโดยไม่ถามกลับ ผลลัพธ์คือ <code>poster-source-YYYY-MM-DD-HHmm.md</code> ที่มีวันเวลากำกับไว้ในชื่อ</p><div class="life-md-alert"><strong>ยังไม่มีซอสแม่ก็ทำได้</strong><span>ถ้ายังไม่ได้ทำบทที่ 1 ให้วาง Prompt นี้ในแชทเดิมที่รู้จักคุณอยู่แล้ว Prompt จะไปดึงจากบทสนทนาและ Memory ให้แทน แต่อย่าเริ่มจากแชทว่างเปล่า</span></div><div class="prompt" data-life-prompt="extract" data-prompt-collapse></div></div></article>
         <article class="life-fast__step"><span class="life-fast__num">2</span><div><h3>แนบซอส แล้วสร้างภาพ</h3><p>เปิดแชทใหม่ที่สร้างภาพได้ <b>แนบซอส .md ทุกครั้ง</b> แล้วเลือกเส้นทางที่ตรงกับไฟล์ในมือ จากนั้นวางคำสั่งสั้นด้านล่างเพื่อสร้างภาพ</p><div class="life-paths"><div class="life-path"><b>🎨 มีซอส .md อย่างเดียว</b><p>ได้ Illustration หรือตัวละครวาดที่เล่าเรื่องจากซอส โดยไม่อ้างว่าใบหน้าเหมือนตัวจริง</p></div><div class="life-path"><b>📷 มีซอส .md + รูปจริง</b><p>ได้ภาพที่รักษาใบหน้า ทรงผม และลักษณะสำคัญของคนในรูปให้ใกล้เคียงต้นฉบับ</p></div></div><div class="prompt" data-life-prompt="poster" data-prompt-guard="off"></div></div></article>
         <article class="life-fast__step"><span class="life-fast__num">3</span><div><h3>เช็กว่าภาพใช้ได้จริง</h3><p>จบบทเมื่อได้ภาพแนวตั้ง 9:16 ที่เล่าเรื่องจากซอสได้ และบอกได้ว่าอะไรตรง ขาด หรือถูกแต่งเกิน</p><div class="life-done"><label><input type="checkbox"><span>ได้ภาพแนวตั้ง 9:16 จริง 1 ภาพ</span></label><label><input type="checkbox"><span>เรื่องหลักและอารมณ์ในภาพตรงกับซอส</span></label><label><input type="checkbox"><span>ไม่มีประวัติหรือความสำเร็จที่ซอสไม่เคยบอก</span></label><label><input type="checkbox"><span>มีแค่ซอสจึงได้ Illustration หรือแนบรูปจริงแล้วใบหน้ายังตรง</span></label><label><input type="checkbox"><span>บอกได้ว่าอะไรตรง ขาด และเกินอย่างละ 1 ข้อ</span></label></div></div></article>
       </div>
