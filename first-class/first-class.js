@@ -75,6 +75,7 @@
       lineId: String(data.get('lineId') || '').trim(),
       consent: data.get('consent') === 'on',
       website: String(data.get('website') || ''),
+      attribution: window.firstClassMeta?.attribution?.() || {},
     };
 
     if (!payload.name) return setMessage('บอกชื่อที่อยากให้เราเรียกหน่อยครับ', 'name');
@@ -106,6 +107,7 @@
       form.hidden = true;
       success.hidden = false;
       success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      try { window.firstClassMeta?.trackLead?.(result.reference); } catch (_) { /* analytics is optional */ }
       try { window.gtag && window.gtag('event', 'first_class_registered'); } catch (_) { /* analytics is optional */ }
     } catch (error) {
       setMessage(error.message || 'การเชื่อมต่อสะดุด ลองส่งอีกครั้งได้เลยครับ', error.field);

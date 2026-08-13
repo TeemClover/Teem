@@ -5,11 +5,13 @@ import { readFile, stat } from 'node:fs/promises';
 const html = await readFile(new URL('./index.html', import.meta.url), 'utf8');
 const css = await readFile(new URL('./first-class.css', import.meta.url), 'utf8');
 const script = await readFile(new URL('./first-class.js', import.meta.url), 'utf8');
+const metaScript = await readFile(new URL('./meta-pixel.js', import.meta.url), 'utf8');
 const admin = await readFile(new URL('./admin/index.html', import.meta.url), 'utf8');
 const adminScript = await readFile(new URL('./admin/admin.js', import.meta.url), 'utf8');
 const vercelApi = await readFile(new URL('../api/first-class.js', import.meta.url), 'utf8');
 const cloudflareApi = await readFile(new URL('../functions/api/first-class.js', import.meta.url), 'utf8');
 const classroom = await readFile(new URL('../classroom/index.html', import.meta.url), 'utf8');
+const privacy = await readFile(new URL('../privacy/index.html', import.meta.url), 'utf8');
 
 test('course facts and instructor are exact', () => {
   for (const text of ['98 นาที', '98 บาท', 'ส.ค. 2026', '18 สิงหาคม 2026', '19:00', '19:30', 'ไม่มีวิดีโอย้อนหลัง', 'สอนสดโดย Teem']) assert.match(html, new RegExp(text));
@@ -102,6 +104,49 @@ test('success state, admin password and control room remain operational', () => 
   assert.match(adminScript, /ยังไม่แจ้ง Discord/);
   assert.match(vercelApi, /FIRST_CLASS_ADMIN_KEY \|\| 'calling'/);
   assert.match(cloudflareApi, /FIRST_CLASS_ADMIN_KEY\|\|'calling'/);
+});
+
+test('Meta browser events use production-only canonical funnel data', () => {
+  assert.match(html, /meta-pixel\.js\?v=20260813-1/);
+  assert.ok(html.indexOf('meta-pixel.js') < html.indexOf('first-class.js'));
+  assert.match(metaScript, /PRODUCTION_HOSTS/);
+  for (const event of ['PageView', 'ViewContent', 'Lead']) assert.match(metaScript, new RegExp(`['"]${event}['"]`));
+  for (const value of ['AI ใส่ซอส · First Class', 'ai-sauce-first-class-2026-08-18', 'Online Course', 'THB']) assert.match(metaScript, new RegExp(value));
+  assert.match(metaScript, /value: 98/);
+  assert.match(metaScript, /_fbp/);
+  assert.match(metaScript, /_fbc/);
+  assert.match(metaScript, /utm_source/);
+  assert.match(script, /attribution: window\.firstClassMeta/);
+  assert.ok(script.indexOf('trackLead?.(result.reference)') > script.indexOf('if (!response.ok || !result.ok)'));
+  assert.doesNotMatch(metaScript, /META_CAPI_ACCESS_TOKEN|Purchase/);
+});
+
+test('Purchase is server-side, idempotent and visible to admins', () => {
+  for (const api of [vercelApi, cloudflareApi]) {
+    assert.match(api, /META_CAPI_ACCESS_TOKEN/);
+    assert.match(api, /event_name:\s*['"]Purchase['"]/);
+    assert.match(api, /meta_purchase_status/);
+    assert.match(api, /meta_purchase_event_id/);
+    assert.match(api, /meta_purchase_sent_at/);
+    assert.match(api, /already_sent/);
+    assert.match(api, /currency:\s*['"]THB['"]/);
+    assert.match(api, /value:\s*98/);
+    assert.match(api, /retry_meta/);
+    assert.match(api, /client_user_agent/);
+    assert.match(api, /client_ip/);
+  }
+  assert.match(vercelApi, /createHash\(['"]sha256['"]\)/);
+  assert.match(cloudflareApi, /crypto\.subtle\.digest\(['"]SHA-256['"]/);
+  assert.match(adminScript, /Meta: \$\{label\(row\.meta_purchase_status\)\}/);
+  assert.match(adminScript, /Retry Meta/);
+  assert.match(adminScript, /meta_purchase_event_id/);
+});
+
+test('privacy copy matches Meta tracking implementation', () => {
+  assert.match(html, /วัดผลการสมัคร First Class/);
+  for (const value of ['Meta Pixel และ Conversions API', '_fbp/_fbc', 'SHA-256 hash', 'Purchase 98 บาท']) assert.match(privacy, new RegExp(value));
+  assert.match(privacy, /เราไม่ส่ง LINE ID, Discord Username/);
+  assert.doesNotMatch(privacy, /ไม่มีตัวติดตามของบริษัทโฆษณาใด ๆ/);
 });
 
 test('responsive styles cover desktop, tablet and mobile', () => {
