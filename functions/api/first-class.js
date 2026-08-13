@@ -1,6 +1,7 @@
 const AI_OPTIONS = new Set(['ChatGPT', 'Claude', 'Gemini', 'NotebookLM', 'อื่น ๆ', 'ยังไม่ค่อยได้ใช้ AI']);
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
 const META_PRODUCT = {content_name:'AI ใส่ซอส · First Class',content_category:'Online Course',content_ids:['ai-sauce-first-class-2026-08-18'],content_type:'product',value:98,currency:'THB',num_items:1};
+const META_PROFILE_PIXEL_ID = '1055629253871262'; // Public browser-only pixel for the profile Boost account.
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
 const clean = (value, max = 120) => typeof value === 'string' ? value.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, max) : '';
 const attribution = data => {const input=data&&typeof data==='object'?data:{},raw=input.utm&&typeof input.utm==='object'?input.utm:{};return {fbp:clean(input.fbp,500),fbc:clean(input.fbc,500),utm:Object.fromEntries(UTM_KEYS.map(key=>[key,clean(raw[key],200)]).filter(([,value])=>value)),landingReferrer:clean(input.landingReferrer,1000)}};
@@ -77,7 +78,7 @@ async function unlockFirstClass(db,id,env){
 export async function onRequest({request,env}) {
   const url=new URL(request.url);
   if(request.method==='GET'&&url.searchParams.get('public')==='meta'){
-    const pixelId=clean(env.META_PIXEL_ID,30);return json({ok:true,enabled:Boolean(pixelId),pixelId:pixelId||null});
+    const pixelIds=[...new Set([env.META_PIXEL_ID,env.META_PROFILE_PIXEL_ID||META_PROFILE_PIXEL_ID].map(value=>clean(value,30)).filter(value=>/^\d{5,30}$/.test(value)))];return json({ok:true,enabled:Boolean(pixelIds.length),pixelId:pixelIds[0]||null,pixelIds});
   }
   if(!env.DB)return json({ok:false,message:'ระบบฐานข้อมูลยังไม่พร้อม'},503);
   await schema(env.DB);
