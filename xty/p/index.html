@@ -7,7 +7,7 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#062718">
 <title>ตี้ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=1">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=2">
 </head>
 <body>
 
@@ -33,8 +33,23 @@
         </div>
       </div>
 
-      <div class="seats" id="seats"></div>
+      <!-- The headline is who did the thing today — never an unread count -->
+      <div class="today">
+        <span class="dots" id="dots" aria-hidden="true"></span>
+        <span class="n" id="committedN">0 / 0<small>COMMITTED TODAY</small></span>
+        <span class="upd" id="updates"></span>
+      </div>
 
+      <div class="rule-box" id="ruleBox">
+        <b>WHAT COUNTS AS A COMMIT</b>
+        <p id="ruleText"></p>
+      </div>
+
+      <div class="commit-bar">
+        <button class="btn" id="commitBtn">✓ COMMIT วันนี้</button>
+      </div>
+
+      <div class="seats" id="seats"></div>
       <p class="whisper" id="petLine" style="margin-top:14px"></p>
     </div>
 
@@ -49,18 +64,15 @@
 
     <div class="card">
       <span class="label">PARTY LOG</span>
-      <!-- Messages carry the real send time but arrive as a batch when
-           the page is opened or refreshed. The party is meant to be
-           checked, not watched — every day, not all day. -->
-      <p class="whisper" style="margin:0">ทิ้งข้อความไว้ได้ ไม่ต้องรอใครตอบเดี๋ยวนั้น</p>
+      <p class="whisper" style="margin:0">Commit ทุกวัน · Message เมื่อจำเป็น · React ได้ไม่จำกัด</p>
 
       <div class="log" id="log"></div>
 
       <div class="composer">
-        <textarea id="msg" rows="1" maxlength="2000" placeholder="ฝากไว้ในตี้…" aria-label="ข้อความถึงตี้"></textarea>
-        <button id="send" aria-label="ส่งข้อความ">↑</button>
+        <textarea id="msg" rows="1" maxlength="2000" placeholder="ฝากไว้ในตี้…" aria-label="Message ถึงตี้"></textarea>
+        <button id="send" aria-label="ส่ง Message">↑</button>
       </div>
-      <button class="btn ghost sm" id="checkin" style="margin-top:12px">✓ เช็คอินวันนี้</button>
+      <div class="budget" id="budget"></div>
     </div>
 
     <nav class="tabs">
@@ -70,35 +82,54 @@
   </section>
 </main>
 
+<!-- commit sheet -->
+<div class="card" id="commitSheet" hidden
+     style="position:fixed;left:50%;bottom:20px;transform:translateX(-50%);width:min(92vw,560px);z-index:70;background:rgba(6,39,24,.98);box-shadow:var(--shadow)">
+  <span class="label">COMMIT วันนี้</span>
+  <p class="whisper" id="sheetRule" style="margin:0 0 10px"></p>
+  <div class="field" style="margin-top:0">
+    <textarea id="commitNote" rows="2" maxlength="300" placeholder="เล่าสั้น ๆ ก็ได้ หรือเว้นว่างไว้"></textarea>
+    <p class="hint">Commit ไม่กินโควตา Message</p>
+  </div>
+  <div style="display:flex;gap:9px;margin-top:14px">
+    <button class="btn ghost sm" id="commitCancel" style="flex:1">ยกเลิก</button>
+    <button class="btn gold sm" id="commitDo" style="flex:2">✓ COMMIT</button>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script type="module">
-import { getParty, postToParty, getProfile, PARTY_MAX } from '/xty/_shared/store.js';
+import {
+  getParty, postToParty, getProfile, toggleReaction, retractPost,
+  committedToday, hasCommittedToday, messagesLeftToday, budgetOf,
+  messagesUsedToday, dayKey, PARTY_MAX, REACTIONS,
+} from '/xty/_shared/store.js';
 import { PET_BY_ID, SERIES } from '/xty/_shared/pets.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
-const party = getParty(code);
+const me = getProfile();
+const myId = me ? me.id : 'anon';
 
-if (!party) {
-  $('missing').hidden = false;
-} else {
-  render();
-}
+if (!getParty(code)) { $('missing').hidden = false; } else { render(); }
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
-/* Show the real clock time the message was sent, and the day when it
-   was not today — the point of the relay is that time is honest. */
 function stamp(iso) {
   const d = new Date(iso);
   const t = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-  const today = new Date();
-  const sameDay = d.toDateString() === today.toDateString();
-  if (sameDay) return t + ' น.';
+  if (dayKey(iso) === dayKey()) return t + ' น.';
   return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) + ' · ' + t + ' น.';
+}
+
+function toast(text) {
+  const t = $('toast');
+  t.textContent = text;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2800);
 }
 
 function render() {
@@ -109,18 +140,38 @@ function render() {
   $('act').textContent = p.activity || 'ยังไม่ระบุกิจกรรม';
   $('code').textContent = p.code;
 
-  const pet = p.petId ? PET_BY_ID[p.petId] : null;
-  const slot = $('petSlot');
-  if (pet) {
-    slot.textContent = pet.emoji;
-    slot.classList.remove('empty');
-    $('petLine').textContent = `${pet.emoji} ${pet.nameTh} · ${SERIES[pet.series].labelEn} — ${pet.persona}`;
+  /* today's state */
+  const done = committedToday(p);
+  const dots = $('dots');
+  dots.innerHTML = '';
+  p.members.forEach(m => {
+    const i = document.createElement('i');
+    if (done.has(m.userId)) i.className = 'on';
+    dots.appendChild(i);
+  });
+  $('committedN').innerHTML =
+    `${done.size} / ${p.members.length}<small>COMMITTED TODAY</small>`;
+
+  /* calm phrasing: what is new, not what is owed */
+  const todayPosts = p.log.filter(x => dayKey(x.sentAt) === dayKey()).length;
+  $('updates').textContent = todayPosts ? `${todayPosts} อัปเดตวันนี้` : 'ยังไม่มีอัปเดตวันนี้';
+
+  if (p.commitRule) {
+    $('ruleText').textContent = p.commitRule;
+    $('ruleBox').hidden = false;
+    $('sheetRule').textContent = p.commitRule;
   } else {
-    slot.textContent = '—';
-    slot.classList.add('empty');
-    $('petLine').textContent = 'ตี้นี้ไม่มีสัตว์ประจำตี้';
+    $('ruleBox').hidden = true;
+    $('sheetRule').textContent = 'ตี้นี้ยังไม่ได้ตั้งกติกา — Commit ได้เลยถ้าทำสิ่งที่ตกลงกันแล้ว';
   }
 
+  const already = hasCommittedToday(p, myId);
+  const cb = $('commitBtn');
+  cb.textContent = already ? '✓ COMMIT แล้ววันนี้' : '✓ COMMIT วันนี้';
+  cb.classList.toggle('done', already);
+  cb.disabled = already;
+
+  /* seats */
   const seats = $('seats');
   seats.innerHTML = '';
   p.members.forEach(m => {
@@ -143,7 +194,35 @@ function render() {
     ? `ยังรับได้อีก ${left} คน (ตี้หนึ่งไม่เกิน ${PARTY_MAX})`
     : 'ตี้เต็มแล้ว — อยากชวนเพิ่มต้องเปิดตี้ใหม่';
 
+  const pet = p.petId ? PET_BY_ID[p.petId] : null;
+  const slot = $('petSlot');
+  if (pet) {
+    slot.textContent = pet.emoji;
+    slot.classList.remove('empty');
+    $('petLine').textContent = `${pet.emoji} ${pet.nameTh} · ${SERIES[pet.series].labelEn} — ${pet.persona}`;
+  } else {
+    slot.textContent = '—';
+    slot.classList.add('empty');
+    $('petLine').textContent = 'ตี้นี้ไม่มีสัตว์ประจำตี้';
+  }
+
   renderLog(p);
+  renderBudget(p);
+}
+
+function renderBudget(p) {
+  const b = budgetOf(p);
+  const used = messagesUsedToday(p, myId);
+  const leftN = messagesLeftToday(p, myId);
+  const el = $('budget');
+  el.classList.toggle('out', leftN === 0);
+  const pips = Array.from({ length: b.perDay }, (_, i) =>
+    `<i class="${i < used ? 'used' : ''}"></i>`).join('');
+  el.innerHTML =
+    `<span class="pips">${pips}</span>` +
+    `<span>${leftN > 0 ? `เหลือ ${leftN} Message วันนี้` : 'ใช้ Message ครบแล้ววันนี้ — React ได้ไม่จำกัด'}</span>`;
+  $('send').disabled = leftN === 0;
+  $('msg').placeholder = leftN === 0 ? 'พรุ่งนี้ค่อยว่ากัน — React ได้ไม่จำกัด' : 'ฝากไว้ในตี้…';
 }
 
 function renderLog(p) {
@@ -152,31 +231,126 @@ function renderLog(p) {
   if (!p.log.length) {
     const e = document.createElement('div');
     e.className = 'empty';
-    e.innerHTML = 'ยังไม่มีใครพูดอะไร<br><span style="font-size:13px">ฝากข้อความแรกไว้ให้ตี้ได้เลย</span>';
+    e.innerHTML = 'ยังไม่มีใคร Commit<br><span style="font-size:13px">ทำสิ่งที่ตกลงกันแล้วกดปุ่มด้านบนได้เลย</span>';
     box.appendChild(e);
     return;
   }
+
   p.log.forEach(post => {
+    const isPet = post.kind === 'pet';
     const el = document.createElement('div');
-    el.className = 'post' + (post.kind === 'checkin' ? ' checkin' : '');
+    el.className = 'post'
+      + (post.kind === 'commit' ? ' commit' : '')
+      + (isPet ? ' pet' : '')
+      + (post.retracted ? ' retracted' : '');
+
+    const body = post.retracted
+      ? '<span>ข้อความถูกถอนโดยเจ้าของ</span>'
+      : esc(post.body);
+    const tag = post.kind === 'commit' ? '<span class="tag">COMMIT</span>' : '';
+
+    /* pet turns are written by the scheduled worker and carry the pet's
+       own identity rather than a member's */
+    const petCard = isPet ? PET_BY_ID[post.petId] : null;
+    if (isPet) {
+      post = { ...post, avatar: petCard ? petCard.emoji : '🐾',
+               alias: petCard ? petCard.nameTh : 'สัตว์ประจำตี้' };
+    }
+
     el.innerHTML =
       `<div class="av">${post.avatar}</div>` +
-      `<div class="bd"><div class="meta">` +
-      `<span class="who">${esc(post.alias)}</span>` +
-      `<span class="when">${stamp(post.sentAt)}</span></div>` +
-      `<div class="txt">${esc(post.body)}</div></div>`;
+      `<div class="bd">` +
+        `<div class="meta"><span class="who">${esc(post.alias)}</span>` +
+        `<span class="when">${stamp(post.sentAt)}</span></div>` +
+        `<div class="txt">${tag}${body}</div>` +
+        `<div class="rx" data-seq="${post.seq}"></div>` +
+      `</div>`;
+
+    const rx = el.querySelector('.rx');
+    const reacts = post.reactions || {};
+    Object.keys(reacts).forEach(emoji => {
+      const who = reacts[emoji];
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = who.includes(myId) ? 'mine' : '';
+      b.innerHTML = `${emoji}<span class="c">${who.length}</span>`;
+      b.setAttribute('aria-label', `${emoji} ${who.length}`);
+      b.addEventListener('click', () => { toggleReaction(code, post.seq, emoji); render(); });
+      rx.appendChild(b);
+    });
+
+    const add = document.createElement('button');
+    add.type = 'button';
+    add.className = 'add';
+    add.textContent = '＋';
+    add.setAttribute('aria-label', 'เพิ่ม React');
+    add.addEventListener('click', () => openPicker(rx, post.seq));
+    rx.appendChild(add);
+
+    if (post.userId === myId && !post.retracted && post.kind === 'message') {
+      /* two-tap confirm rather than window.confirm(): native dialogs are
+         unreliable inside in-app browsers such as LINE, where most of
+         these links get opened */
+      const r = document.createElement('button');
+      r.type = 'button';
+      r.className = 'retract';
+      r.textContent = 'ถอนข้อความ';
+      let armed = false;
+      r.addEventListener('click', () => {
+        if (!armed) {
+          armed = true;
+          r.textContent = 'แน่ใจ? กดอีกครั้งเพื่อถอน';
+          r.style.color = 'var(--gold-soft)';
+          setTimeout(() => {
+            if (!armed) return;
+            armed = false;
+            r.textContent = 'ถอนข้อความ';
+            r.style.color = '';
+          }, 4000);
+          return;
+        }
+        retractPost(code, post.seq);
+        render();
+        toast('ถอนข้อความแล้ว — ประวัติยังบอกว่ามีข้อความตรงนี้');
+      });
+      el.querySelector('.bd').appendChild(r);
+    }
+
     box.appendChild(el);
   });
-  box.scrollIntoView({ block: 'end', behavior: 'smooth' });
 }
 
-function toast(text) {
-  const t = $('toast');
-  t.textContent = text;
-  t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 2800);
+function openPicker(container, seq) {
+  const existing = container.parentElement.querySelector('.rx-pick');
+  if (existing) { existing.remove(); return; }
+  const pick = document.createElement('div');
+  pick.className = 'rx-pick';
+  REACTIONS.forEach(emoji => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = emoji;
+    b.setAttribute('aria-label', 'react ' + emoji);
+    b.addEventListener('click', () => { toggleReaction(code, seq, emoji); render(); });
+    pick.appendChild(b);
+  });
+  container.parentElement.appendChild(pick);
 }
 
+/* ---------- commit ---------- */
+const sheet = $('commitSheet');
+$('commitBtn').addEventListener('click', () => { sheet.hidden = false; $('commitNote').focus(); });
+$('commitCancel').addEventListener('click', () => { sheet.hidden = true; $('commitNote').value = ''; });
+$('commitDo').addEventListener('click', () => {
+  const note = $('commitNote').value.trim();
+  const res = postToParty(code, { body: note || '✓', kind: 'commit' });
+  sheet.hidden = true;
+  $('commitNote').value = '';
+  if (res.error === 'ALREADY_COMMITTED') { toast('วันนี้ Commit ไปแล้ว'); return; }
+  render();
+  toast('Commit แล้ว — เจอกันพรุ่งนี้');
+});
+
+/* ---------- message ---------- */
 const msg = $('msg');
 msg.addEventListener('input', () => {
   msg.style.height = 'auto';
@@ -187,31 +361,23 @@ function send() {
   const body = msg.value.trim();
   if (!body) return;
   const res = postToParty(code, { body, kind: 'message' });
+  if (res.error === 'NO_BUDGET') { toast('ใช้ Message ครบแล้ววันนี้ — React แทนได้'); return; }
   if (res.error) { toast('ส่งไม่สำเร็จ'); return; }
   msg.value = '';
   msg.style.height = 'auto';
   render();
 }
-
 $('send').addEventListener('click', send);
 msg.addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
 });
 
-$('checkin').addEventListener('click', () => {
-  /* the alias already heads the post, so the body should not repeat it */
-  postToParty(code, { body: '✓ มาแล้ววันนี้', kind: 'checkin' });
-  render();
-  toast('เช็คอินแล้ว');
-});
-
 $('copy').addEventListener('click', async () => {
-  const p = getParty(code);
   try {
-    await navigator.clipboard.writeText(p.code);
+    await navigator.clipboard.writeText(getParty(code).code);
     toast('คัดลอกรหัสแล้ว — ส่งให้เพื่อนได้เลย');
   } catch {
-    toast('รหัสตี้: ' + p.code);
+    toast('รหัสตี้: ' + getParty(code).code);
   }
 });
 

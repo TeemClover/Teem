@@ -7,7 +7,7 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#062718">
 <title>ตั้งตี้ใหม่ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=1">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=2">
 </head>
 <body>
 
@@ -30,8 +30,26 @@
     <div class="field">
       <label for="pact">ทำอะไรกัน</label>
       <input id="pact" type="text" maxlength="60" placeholder="เช่น ตีแบดหลังเลิกงาน">
-      <p class="hint">พิมพ์อะไรก็ได้ — วิ่ง อ่านหนังสือ ทำโปรเจกต์ นอนก่อนเที่ยงคืน</p>
+      <p class="hint">พิมพ์อะไรก็ได้ — วิ่ง อ่านหนังสือ ทำโปรเจกต์ เล่ามุกวันละเรื่อง</p>
     </div>
+  </div>
+
+  <!-- The commit rule is the game: it decides what pressing COMMIT means -->
+  <div class="card">
+    <span class="label">กติกาของตี้</span>
+    <p class="whisper" style="margin:0 0 4px">แบบไหนถึงนับว่า Commit ได้ — หัวตี้เป็นคนตั้ง</p>
+    <div class="field" style="margin-top:12px">
+      <label for="prule">ทำแค่ไหนถึงนับ</label>
+      <input id="prule" type="text" maxlength="120" placeholder="เช่น อ่านอย่างน้อย 10 หน้า">
+      <p class="hint">เว้นว่างได้ แล้วค่อยตกลงกันในตี้</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="label">โควตา Message</span>
+    <p class="whisper" style="margin:0 0 4px">จำกัดไว้เพื่อให้เปิดวันละครั้งก็ตามทัน — Commit กับ React ไม่กินโควตา</p>
+    <div class="card-grid" id="budgetPick" role="radiogroup" aria-label="เลือกโควตา Message"
+         style="grid-template-columns:repeat(3,1fr)"></div>
   </div>
 
   <div class="card">
@@ -48,7 +66,7 @@
 <div class="toast" id="toast" role="status"></div>
 
 <script type="module">
-import { hasProfile, getProfile, createParty } from '/xty/_shared/store.js';
+import { hasProfile, getProfile, createParty, MESSAGE_BUDGETS, DEFAULT_BUDGET } from '/xty/_shared/store.js';
 import { PETS, PET_BY_ID, SERIES } from '/xty/_shared/pets.js';
 
 const $ = id => document.getElementById(id);
@@ -72,7 +90,32 @@ function init() {
   if (qs.get('template') === 'xircle') {
     $('pname').value = 'ตี้สุขภาพของเรา';
     $('pact').value = 'ดูแลกิน–ขยับ–นอน ด้วยกัน';
+    $('prule').value = 'วันนี้ปรับหนึ่งอย่างที่ตั้งใจไว้';
   }
+
+  /* message budget picker — default NORMAL (§10) */
+  let budget = DEFAULT_BUDGET;
+  const bp = $('budgetPick');
+  Object.values(MESSAGE_BUDGETS).forEach(b => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pc pickable' + (b.id === budget ? ' picked' : '');
+    btn.setAttribute('role', 'radio');
+    btn.setAttribute('aria-checked', b.id === budget ? 'true' : 'false');
+    btn.innerHTML =
+      `<span class="glyph" style="font-size:22px">${b.perDay}</span>` +
+      `<span class="nm">${b.labelTh}</span>` +
+      `<span class="sr">/ คน / วัน</span>`;
+    btn.addEventListener('click', () => {
+      budget = b.id;
+      bp.querySelectorAll('.pc').forEach(x => {
+        const on = x === btn;
+        x.classList.toggle('picked', on);
+        x.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+    });
+    bp.appendChild(btn);
+  });
 
   const pick = $('petPick');
   owned.forEach(p => {
@@ -108,7 +151,13 @@ function init() {
 
   go.addEventListener('click', () => {
     try {
-      const party = createParty({ name: name.value, activity: act.value, petId });
+      const party = createParty({
+        name: name.value,
+        activity: act.value,
+        commitRule: $('prule').value,
+        budget,
+        petId,
+      });
       location.href = `/xty/p/?c=${encodeURIComponent(party.code)}&new=1`;
     } catch (err) {
       const t = $('toast');

@@ -19,6 +19,34 @@ export const PARTY_MIN = 2;
 export const PARTY_MAX = 5;
 export const MAX_PROFILE_WORDS = 7;
 
+/* Message is a limited resource on purpose: the party should be
+   catchable-up in one minute, so the log never accrues message debt
+   (Party Game Blueprint §10). Commit and React are free — the game
+   rewards reporting progress and acknowledging each other, and charges
+   only for adding to the reading pile. */
+export const MESSAGE_BUDGETS = Object.freeze({
+  quiet:  { id: 'quiet',  perDay: 1, labelTh: 'เงียบ',  hintTh: 'วันละ 1 ข้อความต่อคน' },
+  normal: { id: 'normal', perDay: 3, labelTh: 'ปกติ',   hintTh: 'วันละ 3 ข้อความต่อคน' },
+  social: { id: 'social', perDay: 5, labelTh: 'คุยเยอะ', hintTh: 'วันละ 5 ข้อความต่อคน' },
+});
+export const DEFAULT_BUDGET = 'normal';
+
+export const REACTIONS = Object.freeze(['❤️', '🔥', '👏', '😂', '🫡', '💪', '👀', '🍀']);
+
+/* The pet wakes four times a day, reads what happened since it last
+   spoke, and may say nothing at all. Fixed slots rather than replies
+   keep it from becoming a chatbot that answers every message
+   (Party Game Blueprint §20, §21). */
+export const PET_WAKE_HOURS = Object.freeze([0, 6, 12, 18]);
+export const PET_MAX_BUBBLES = 3;
+
+/* TODO(config): reset time and time-zone behaviour are open decisions
+   (§40). Local midnight is the placeholder, not a locked rule. */
+export function dayKey(iso) {
+  const d = iso ? new Date(iso) : new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 function read(key, fallback) {
   try {
     const raw = localStorage.getItem(key);
@@ -118,7 +146,7 @@ export function getParty(code) {
 
 function saveParties(list) { write(K_PARTIES, list); }
 
-export function createParty({ name, activity, petId }) {
+export function createParty({ name, activity, commitRule, budget, petId }) {
   const profile = getProfile();
   if (!profile) throw new Error('NO_PROFILE');
 
@@ -129,6 +157,10 @@ export function createParty({ name, activity, petId }) {
     /* Activity is free text on purpose: XTY must never be hard-coded to
        one domain (Pivot Blueprint §15, §51). */
     activity: String(activity || '').trim().slice(0, 60),
+    /* The lead decides what counts as a Commit — that rule is the game
+       (Party Game Blueprint §7). */
+    commitRule: String(commitRule || '').trim().slice(0, 120),
+    budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
     petId: petId || null,   /* no pet is simply an empty seat */
     createdAt: now(),
     updatedAt: now(),
@@ -173,9 +205,77 @@ export function joinParty(code, { alias, avatar }) {
   return { party };
 }
 
+/* ---------- the day's game state ---------- */
+
+/* Who has done the thing the party agreed on, today. */
+export function committedToday(party, when) {
+  const key = dayKey(when);
+  const ids = new Set();
+  (party.log || []).forEach(p => {
+    if (p.kind === 'commit' && !p.retracted && dayKey(p.sentAt) === key) ids.add(p.userId);
+  });
+  return ids;
+}
+
+export function hasCommittedToday(party, userId) {
+  return committedToday(party).has(userId);
+}
+
+export function messagesUsedToday(party, userId) {
+  const key = dayKey();
+  return (party.log || []).filter(p =>
+    p.kind === 'message' && p.userId === userId && dayKey(p.sentAt) === key
+  ).length;
+}
+
+/* Written by the server-side pet worker, never by a player. Kept here so
+   the log can already render pet turns before the AI exists. */
+export function appendPetTurn(code, { petId, bubbles, wakeHour }) {
+  const list = allParties();
+  const i = list.findIndex(p => p.code === String(code || '').toUpperCase());
+  if (i < 0) return { error: 'NOT_FOUND' };
+
+  const party = list[i];
+  const lines = (Array.isArray(bubbles) ? bubbles : [bubbles])
+    .map(s => String(s || '').trim())
+    .filter(Boolean)
+    .slice(0, PET_MAX_BUBBLES);
+  if (!lines.length) return { skipped: true };   /* staying quiet is valid */
+
+  let seq = party.log.length ? party.log[party.log.length - 1].seq : 0;
+  lines.forEach(text => {
+    party.log.push({
+      seq: ++seq,
+      userId: 'pet:' + petId,
+      petId,
+      kind: 'pet',
+      body: text,
+      sentAt: now(),
+      wakeHour: typeof wakeHour === 'number' ? wakeHour : new Date().getHours(),
+      reactions: {},
+      retracted: false,
+    });
+  });
+  party.updatedAt = now();
+  list[i] = party;
+  saveParties(list);
+  return { count: lines.length };
+}
+
+export function budgetOf(party) {
+  return MESSAGE_BUDGETS[party.budget] || MESSAGE_BUDGETS[DEFAULT_BUDGET];
+}
+
+export function messagesLeftToday(party, userId) {
+  return Math.max(0, budgetOf(party).perDay - messagesUsedToday(party, userId));
+}
+
+/* ---------- writing to the log ---------- */
+
 /* Posts carry the true send time; delivery order is `seq`. A batched
    relay reads everything after a cursor in one go rather than streaming
-   message by message. */
+   message by message. Once written a post is never edited — it can only
+   be retracted (§16, §17). */
 export function postToParty(code, { body, kind = 'message' }) {
   const list = allParties();
   const i = list.findIndex(p => p.code === String(code || '').toUpperCase());
@@ -183,23 +283,82 @@ export function postToParty(code, { body, kind = 'message' }) {
 
   const profile = getProfile();
   const party = list[i];
+  const userId = profile ? profile.id : 'anon';
   const text = String(body || '').trim().slice(0, 2000);
-  if (!text && kind === 'message') return { error: 'EMPTY' };
+
+  if (kind === 'message') {
+    if (!text) return { error: 'EMPTY' };
+    if (messagesLeftToday(party, userId) <= 0) return { error: 'NO_BUDGET' };
+  }
+  if (kind === 'commit' && hasCommittedToday(party, userId)) {
+    return { error: 'ALREADY_COMMITTED' };
+  }
 
   const post = {
     seq: (party.log.length ? party.log[party.log.length - 1].seq : 0) + 1,
-    userId: profile ? profile.id : 'anon',
+    userId,
     alias: profile ? profile.alias : 'ใครบางคน',
     avatar: profile ? profile.avatar : '🍀',
-    kind,                 /* 'message' | 'checkin' */
+    kind,                 /* 'commit' | 'message' */
     body: text,
     sentAt: now(),
+    reactions: {},        /* emoji -> [userId] */
+    retracted: false,
   };
   party.log.push(post);
   party.updatedAt = now();
   list[i] = party;
   saveParties(list);
   return { post, party };
+}
+
+/* React is free and mutable — it is the acknowledgement channel that
+   keeps low-value replies out of the log entirely (§13, §15). */
+export function toggleReaction(code, seq, emoji) {
+  if (!REACTIONS.includes(emoji)) return { error: 'BAD_EMOJI' };
+  const list = allParties();
+  const i = list.findIndex(p => p.code === String(code || '').toUpperCase());
+  if (i < 0) return { error: 'NOT_FOUND' };
+
+  const profile = getProfile();
+  const userId = profile ? profile.id : 'anon';
+  const party = list[i];
+  const post = party.log.find(p => p.seq === seq);
+  if (!post) return { error: 'NO_POST' };
+
+  post.reactions = post.reactions || {};
+  const who = post.reactions[emoji] || [];
+  const at = who.indexOf(userId);
+  if (at >= 0) who.splice(at, 1); else who.push(userId);
+  if (who.length) post.reactions[emoji] = who; else delete post.reactions[emoji];
+
+  party.updatedAt = now();
+  list[i] = party;
+  saveParties(list);
+  return { post };
+}
+
+/* Not an edit and not a delete: the entry stays in history, its content
+   does not. This exists so a stray password or phone number can be
+   pulled back without rewriting what the log says happened (§17). */
+export function retractPost(code, seq) {
+  const list = allParties();
+  const i = list.findIndex(p => p.code === String(code || '').toUpperCase());
+  if (i < 0) return { error: 'NOT_FOUND' };
+
+  const profile = getProfile();
+  const userId = profile ? profile.id : 'anon';
+  const party = list[i];
+  const post = party.log.find(p => p.seq === seq);
+  if (!post) return { error: 'NO_POST' };
+  if (post.userId !== userId) return { error: 'NOT_YOURS' };
+
+  post.retracted = true;
+  post.body = '';
+  party.updatedAt = now();
+  list[i] = party;
+  saveParties(list);
+  return { post };
 }
 
 export function postsSince(code, seq = 0) {

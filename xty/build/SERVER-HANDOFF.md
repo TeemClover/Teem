@@ -1,48 +1,79 @@
-# XTY — Server Handoff Spec
+# XTY — Server Handoff
 
-**สถานะ:** frontend ใช้งานได้แล้วแบบ local-first · ยังไม่มี backend
-**เขียนเพื่อ:** คนที่มาต่อฝั่ง database ให้ตี้ข้ามเครื่องได้จริง
-
----
-
-## สรุปสั้น
-
-ตอนนี้ XTY ทำงานครบทั้ง flow แต่เก็บทุกอย่างไว้ใน `localStorage` ของเครื่องเดียว
-แปลว่า **รหัสตี้ยังใช้ข้ามเครื่องไม่ได้** — คนที่กดเข้าตี้จากอีกเครื่องจะเจอ "ไม่เจอตี้นี้"
-
-งานที่เหลือคือทำ API ให้ตรงสัญญาที่ `xty/_shared/store.js` ใช้อยู่แล้ว
-**ไม่ต้องแก้หน้าเว็บเลยสักหน้า** ถ้า API คืนรูปแบบเดียวกัน
+**สถานะ frontend:** เกมเล่นได้ครบแล้ว · เก็บข้อมูลใน `localStorage` เครื่องเดียว
+**สิ่งที่ต้องทำต่อ:** (1) backend ให้ตี้ข้ามเครื่องได้ (2) บอทสัตว์ประจำตี้ที่ตื่นวันละ 4 รอบ
 
 ---
 
-## ของที่มีอยู่แล้วในเรโป — อย่าสร้างใหม่
+## 1. เกมทำงานยังไง (อ่านก่อนแตะโค้ด)
 
-| ของ | ที่อยู่ | หมายเหตุ |
+XTY ไม่ใช่แอปแชท มันคือ **เกมของกิจกรรมในชีวิตจริง**
+
+```
+ตั้งตี้ → ตั้งกติกา → ทำจริง → COMMIT → MESSAGE ถ้าจำเป็น → REACT → กลับมาพรุ่งนี้
+```
+
+สามคำที่เป็นแกน — **ใช้คำทับศัพท์เสมอ ห้ามแปล:**
+
+| | ความหมาย | กินโควตาไหม |
 |---|---|---|
-| Google + LINE OAuth (PKCE) | `functions/api/auth/[[path]].js` | ใช้ D1 · session cookie |
-| ตาราง account/session | `functions/_lib/account.js` | `mc_accounts` `mc_sessions` `mc_auth_identities` |
-| Progress sync | `functions/api/progress.js` | ดูดคีย์ `mc_*` `mc-*` `c7:*` ขึ้น server |
-| แพตเทิร์นห้องออนไลน์ | `functions/api/core7/[[path]].js` | `c7_beta_rooms` + `version` optimistic concurrency |
+| **Commit** | ฉันทำสิ่งที่ตี้ตกลงกันแล้ว | **ไม่** |
+| **Message** | มีบางอย่างสำคัญพอจะฝากไว้ | **ใช่** |
+| **React** | เห็นแล้ว / ขำ / เอาใจช่วย | **ไม่** |
 
-**คีย์ที่ XTY ใช้คือ `mc_xty_profile` และ `mc_xty_parties`** — ขึ้นต้นด้วย `mc_` แล้ว
-เพราะงั้น**โปรไฟล์กับตี้จะถูก sync ขึ้น account อัตโนมัติอยู่แล้ว**เมื่อผู้ใช้ login
-งานที่ยังขาดคือ **การแชร์ตี้ระหว่างคน** ไม่ใช่การเก็บของคนเดียว
+**Commit สำคัญกว่า Message** — หัวตี้เป็นคนตั้งว่าอะไรถึงนับเป็น Commit
+
+### ตัวเลขที่ล็อกแล้ว
+
+```
+สมาชิก           2–5 คน (หัวตี้ 1 คน)
+Message budget   1 / 3 / 5 ต่อคนต่อวัน · default = 3
+Message          append-only · แก้ไม่ได้ · ถอนได้
+Pet bubbles      สูงสุด 3 ต่อรอบ · 4 รอบต่อวัน
+```
+
+### หลักที่ห้ามละเมิด
+
+> **No message debt. Less chat. More commit.**
+> **เปิดวันละครั้งก็ยังตามตี้ทัน**
+
+แปลว่า **ห้ามทำ**: WebSocket / SSE / long-poll, typing indicator, read receipt,
+unread badge แบบ `99+`, push ทุกข้อความ, infinite scroll
+
+ใช้ภาษาสงบแทน: `3 อัปเดตวันนี้` · `4 / 5 COMMITTED TODAY`
 
 ---
 
-## ตารางที่ต้องสร้าง (D1)
+## 2. ของที่มีอยู่แล้ว — อย่าสร้างใหม่
+
+| ของ | ที่อยู่ |
+|---|---|
+| Google + LINE OAuth (PKCE) | `functions/api/auth/[[path]].js` |
+| ตาราง account/session | `functions/_lib/account.js` |
+| Progress sync (ดูดคีย์ `mc_*`) | `functions/api/progress.js` |
+| แพตเทิร์นห้อง + `version` | `functions/api/core7/[[path]].js` |
+
+คีย์ที่ XTY ใช้คือ `mc_xty_profile` และ `mc_xty_parties` — ขึ้นต้น `mc_` แล้ว
+**โปรไฟล์จะ sync ขึ้น account อัตโนมัติเมื่อ login** งานที่ขาดคือ *การแชร์ตี้ระหว่างคน*
+
+---
+
+## 3. Schema (D1)
 
 ```sql
 CREATE TABLE IF NOT EXISTS xty_parties (
-  id          TEXT PRIMARY KEY,
-  code        TEXT NOT NULL UNIQUE,      -- ABC-123
-  name        TEXT NOT NULL,
-  activity    TEXT,
-  pet_id      TEXT,                      -- NULL = ไม่มีสัตว์ประจำตี้
-  owner_id    TEXT NOT NULL,
-  created_at  TEXT NOT NULL,
-  updated_at  TEXT NOT NULL,
-  head_seq    INTEGER NOT NULL DEFAULT 0 -- ลำดับล่าสุดของ log
+  id           TEXT PRIMARY KEY,
+  code         TEXT NOT NULL UNIQUE,        -- ABC-123
+  name         TEXT NOT NULL,
+  activity     TEXT,
+  commit_rule  TEXT,                        -- อะไรถึงนับเป็น Commit
+  budget       TEXT NOT NULL DEFAULT 'normal',  -- quiet|normal|social
+  pet_id       TEXT,                        -- NULL = ไม่มีสัตว์
+  owner_id     TEXT NOT NULL,
+  created_at   TEXT NOT NULL,
+  updated_at   TEXT NOT NULL,
+  head_seq     INTEGER NOT NULL DEFAULT 0,
+  pet_last_wake TEXT                        -- ISO ของรอบบอทล่าสุด
 );
 
 CREATE TABLE IF NOT EXISTS xty_members (
@@ -50,91 +81,179 @@ CREATE TABLE IF NOT EXISTS xty_members (
   user_id   TEXT NOT NULL,
   alias     TEXT NOT NULL,
   avatar    TEXT,
-  role      TEXT NOT NULL,               -- 'lead' | 'member'
+  role      TEXT NOT NULL,                  -- lead|member
   joined_at TEXT NOT NULL,
   PRIMARY KEY (party_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS xty_posts (
+  party_id  TEXT NOT NULL,
+  seq       INTEGER NOT NULL,
+  user_id   TEXT NOT NULL,                  -- 'pet:crow' สำหรับบอท
+  kind      TEXT NOT NULL,                  -- commit|message|pet
+  body      TEXT NOT NULL,
+  sent_at   TEXT NOT NULL,                  -- เวลาส่งจริง
+  retracted INTEGER NOT NULL DEFAULT 0,
+  pet_id    TEXT,
+  wake_hour INTEGER,
+  PRIMARY KEY (party_id, seq)
+);
+
+CREATE TABLE IF NOT EXISTS xty_reactions (
   party_id TEXT NOT NULL,
   seq      INTEGER NOT NULL,
   user_id  TEXT NOT NULL,
-  kind     TEXT NOT NULL,                -- 'message' | 'checkin'
-  body     TEXT NOT NULL,
-  sent_at  TEXT NOT NULL,                -- เวลาส่งจริง
-  PRIMARY KEY (party_id, seq)
+  emoji    TEXT NOT NULL,
+  PRIMARY KEY (party_id, seq, user_id, emoji)
 );
 ```
 
-**ข้อบังคับที่ต้องบังคับฝั่ง server ด้วย ไม่ใช่แค่ฝั่งหน้าเว็บ:**
+### ต้องบังคับฝั่ง server ด้วย ไม่ใช่แค่ฝั่งหน้าเว็บ
 
-- สมาชิกต่อตี้ **ไม่เกิน 5** (`PARTY_MAX`) — เกินให้ตอบ `FULL`
-- **หัวตี้มีคนเดียว** ต่อหนึ่งตี้
-- `seq` ต้องเดินหน้าอย่างเดียว ใช้ `head_seq` เป็นตัวนับ
+- สมาชิก **ไม่เกิน 5** · หัวตี้ **คนเดียว**
+- **1 Commit ต่อคนต่อวัน** — ซ้ำให้ตอบ `ALREADY_COMMITTED`
+- **Message ตามโควตา** — เกินให้ตอบ `NO_BUDGET`
+- **Commit และ React ไม่นับโควตา**
+- `seq` เดินหน้าอย่างเดียว ใช้ `head_seq`
+- **ห้ามมี endpoint แก้ body ของ post** มีแต่ retract
 
 ---
 
-## API ที่ต้องมี
-
-ให้ตรงกับที่ `store.js` เรียกอยู่ (ตอนนี้เป็น local function ชื่อเดียวกัน)
+## 4. API
 
 ```
-POST   /api/xty/party                 → สร้างตี้     { name, activity, petId }
-GET    /api/xty/party/:code           → อ่านตี้ + สมาชิก
-POST   /api/xty/party/:code/join      → เข้าตี้      { alias, avatar }
-POST   /api/xty/party/:code/post      → ส่งข้อความ   { body, kind }
-GET    /api/xty/party/:code/feed?since=<seq>  → ดึงเป็นก้อน
+POST  /api/xty/party                    { name, activity, commitRule, budget, petId }
+GET   /api/xty/party/:code
+POST  /api/xty/party/:code/join         { alias, avatar }
+POST  /api/xty/party/:code/commit       { note? }
+POST  /api/xty/party/:code/message      { body }
+POST  /api/xty/party/:code/react        { seq, emoji }     -- toggle
+POST  /api/xty/party/:code/retract      { seq }            -- เจ้าของ post เท่านั้น
+GET   /api/xty/party/:code/feed?since=<seq>
 ```
 
-### `feed` คือหัวใจ — ต้องเป็น relay ไม่ใช่ push
+### `feed` — relay เป็นรอบ ไม่ใช่ stream
 
 ```jsonc
-// GET /api/xty/party/ABC-123/feed?since=12
 {
   "head": 15,
+  "today": { "committed": 3, "members": 5, "updates": 7 },
+  "budgetLeft": 2,
   "posts": [
-    { "seq": 13, "userId": "...", "alias": "กล้วยทอด", "avatar": "🌻",
-      "kind": "message", "body": "เจอกันสองทุ่ม", "sentAt": "2026-08-14T13:20:11Z" }
+    { "seq": 13, "userId": "u_x", "alias": "แพร", "avatar": "🐶",
+      "kind": "commit", "body": "อ่านครบ 20 หน้า",
+      "sentAt": "2026-08-14T13:20:11Z",
+      "reactions": { "🔥": ["u_a","u_b"], "❤️": ["u_c"] },
+      "retracted": false }
   ]
 }
 ```
 
-**กติกาที่ห้ามเปลี่ยน:**
+ถ้า `since === head` ตอบสั้น: `{ "head": n, "posts": [], ... }`
 
-- `sentAt` = เวลาที่ส่งจริง · `seq` = ลำดับที่ส่งถึง — คนละเรื่องกัน
-- ถ้า `since === head` ให้ตอบ `{ "head": n, "posts": [] }` สั้น ๆ
-- **ห้ามทำ WebSocket / SSE / long-poll** — ตั้งใจให้เป็นรอบ
-  ผู้ใช้เปิดหน้าแล้วได้ทั้งรอบมาก้อนเดียว ไม่ใช่ข้อความไหลทีละอัน
-- อย่าใส่ typing indicator, read receipt, unread badge ที่ตะโกน
-
-เหตุผลไม่ใช่เรื่องประหยัดแบนด์วิดท์อย่างเดียว — หลักของสินค้าคือ
-**"ทุกวัน ไม่ใช่ทั้งวัน"** ถ้าใส่ push ทุกข้อความ มันจะกลายเป็นแอปแชทที่ทวงเวลาคน
+Reaction ชุดที่ใช้: `❤️ 🔥 👏 😂 🫡 💪 👀 🍀` (ค่าอื่นให้ปฏิเสธ)
 
 ---
 
-## ยังไม่ต้องทำ
+## 5. บอทสัตว์ประจำตี้ — Scheduled Worker
 
-- AI Pet engine (Phase G) — ตอนนี้ pet เป็นแค่ emoji ประจำตี้
-- Pet random draw / XP / unlock formula — **ห้ามแต่งสูตรเอง** ยังไม่ canon
-- Public party discovery
-- Moderation policy
-- ลบ/แก้ข้อความย้อนหลัง
+### ตารางเวลา
 
-## ที่ต้องตัดสินใจก่อนเปิดใช้จริง
+ตื่น **วันละ 4 รอบ: 00:00 · 06:00 · 12:00 · 18:00** (เวลาไทย)
 
-- **Retention** — เจ้าของตี้เลือกตอนตั้งวง แต่ควรมีเพดานตาม purpose
-  (ตี้สุขภาพควรสั้นกว่าตี้เล่นเกม) ยังไม่ได้ล็อกตัวเลข
+```
+Cloudflare Cron:  0 17,23,5,11 * * *      # UTC = ICT − 7
+```
+
+ระหว่างรอบ **บอทไม่ทำอะไรเลย** ไม่ตอบข้อความทันที ไม่ตาม webhook
+
+### แต่ละรอบทำอะไร
+
+```
+ตื่น
+↓
+ดึง post ตั้งแต่ pet_last_wake ถึงตอนนี้
+↓
+อ่านพร้อมบริบท: กติกา Commit · ใครยัง commit ไม่ครบ · เรื่องที่ฝากไว้ยังค้าง
+↓
+ตัดสินใจ: จะพูดหรือจะเงียบ
+↓
+ถ้าพูด → เขียน 1–3 bubbles (kind='pet')
+↓
+อัปเดต pet_last_wake
+```
+
+### กฎของบอท — สำคัญกว่าความฉลาด
+
+1. **เงียบได้ และควรเงียบบ่อย** — ไม่มีอะไรเปลี่ยน = ไม่ต้องพูด
+   ถ้าตอบทุกรอบทุกวัน มันจะกลายเป็น noise ที่พังหลักของสินค้า
+2. **สูงสุด 3 bubbles ต่อรอบ** — เกินให้ตัด
+3. **อ้างอิงของจริงใน log เท่านั้น** ห้ามแต่งเหตุการณ์
+4. **ห้ามตอบแบบ chatbot** — ไม่ใช่ "มีข้อความมา → ตอบ"
+   แต่เป็น "สังเกต → จำ → รอ → พูดเมื่อมีประโยชน์"
+5. **Roast the commitment, not the person** — ห้ามแตะ รูปร่าง น้ำหนัก โรค
+   ความพิการ สุขภาพจิต เชื้อชาติ ศาสนา เพศ sexuality ฐานะการเงิน trauma
+   **ทุก series ไม่มีข้อยกเว้น**
+6. **Starter 4 ตัวไม่ roast เลย** — แค่สังเกต ถาม ให้กำลังใจ
+7. บอท **React ได้** โดยไม่ต้องพูด — เป็นวิธีแสดงบุคลิกที่ไม่สร้าง noise
+
+### รอบไหนเหมาะกับอะไร
+
+| เวลา | บทบาท |
+|---|---|
+| 06:00 | เปิดวัน — กติกาวันนี้คืออะไร ใครยังค้างอะไรจากเมื่อวาน |
+| 12:00 | กลางวัน — มักเงียบ พูดเฉพาะมีเรื่องค้างจริง |
+| 18:00 | ช่วงที่คนกลับมา — ถามเรื่องที่ฝากไว้ ชวน commit |
+| 00:00 | ปิดวัน — สรุปสั้น ๆ ว่าวันนี้เป็นยังไง |
+
+### บุคลิก
+
+อยู่ในไฟล์ `xty/pets/personas/*.md` — ตอนนี้มี `crow.md` เป็นตัวอย่างเต็ม
+และ `README.md` อธิบายโครง ใช้ engine เดียวกันทุกตัว เปลี่ยนแค่ persona
+**สัตว์หายากไม่ได้ฉลาดกว่า** ต่างกันที่น้ำเสียงและจังหวะเท่านั้น
+
+### เขียนลง log ยังไง
+
+frontend รองรับแล้ว — เรียก `appendPetTurn(code, { petId, bubbles, wakeHour })`
+ฝั่ง server เขียน `xty_posts` ที่ `kind='pet'`, `user_id='pet:<petId>'`, ใส่ `pet_id` และ `wake_hour`
+หน้าตี้จะเรนเดอร์เป็น bubble ของสัตว์พร้อม emoji และชื่อไทยให้เอง
+
+---
+
+## 6. ยังไม่ต้องทำ / ห้ามแต่งเอง
+
+**ยังไม่ทำ:** pet draw, XP, unlock, public discovery, marketplace, lootbox
+
+**ห้ามแต่งตัวเลขเอง** (open decisions):
+```
+XTY score formula        pet draw cost        drop rates
+duplicate handling       slot unlock cadence  legendary odds
+message reset time       time-zone behaviour  retention ceiling
+pet intervention budget ที่ละเอียดกว่า 0–3 ต่อรอบ
+```
+ทำเป็น config แล้ว mark TODO
+
+---
+
+## 7. สลับ frontend มาใช้ server
+
+`xty/_shared/store.js` แยก I/O ไว้ในฟังก์ชันเดียวกันหมด
+เปลี่ยน body ของ `createParty` `joinParty` `postToParty` `toggleReaction`
+`retractPost` `postsSince` `getParty` ให้ `fetch` แทน `localStorage`
+
+**ข้อควรระวัง:** ตอนนี้เป็น **synchronous** ถ้าเปลี่ยนเป็น async
+ต้องไล่ใส่ `await` ในหน้า `xty/p/`, `xty/new/`, `xty/join/`, `xty/index.html`, `profile/`
+(จุดเรียกไม่เยอะ ประมาณ 15 จุด)
+
+ฟังก์ชันคำนวณสถานะเกม (`committedToday`, `messagesLeftToday`, `budgetOf`)
+เป็น pure function รับ party object — ใช้ต่อได้เลยไม่ต้องแก้
+
+---
+
+## 8. ก่อนเปิดให้คนนอกทีมใช้
+
+- **Consent** — ต้องมีหน้าอธิบายว่าข้อความถูกเก็บนานแค่ไหน ใครเห็นได้บ้าง
+- **Retention** — เจ้าของตี้เลือกตอนตั้ง แต่ควรมีเพดาน ยังไม่ได้ล็อกตัวเลข
 - **ใครลบตี้ได้** และเกิดอะไรกับ log เมื่อสมาชิกออก
-- **Consent** — พอเป็นคนจริงในตี้จริง ต้องมีหน้าอธิบายว่าข้อความถูกเก็บนานแค่ไหน
-  ก่อนเปิดให้คนนอกทีมใช้
-
----
-
-## วิธีสลับ frontend มาใช้ server
-
-`xty/_shared/store.js` แยก I/O ไว้ในฟังก์ชันเดียวกันหมดแล้ว
-เปลี่ยนแค่ body ของ `createParty` `joinParty` `postToParty` `postsSince` `getParty`
-ให้ `await fetch(...)` แทนการอ่าน `localStorage` — signature เดิม หน้าเว็บไม่ต้องแก้
-
-ข้อควรระวัง: ฟังก์ชันพวกนี้ตอนนี้เป็น **synchronous** ถ้าเปลี่ยนเป็น async
-ต้องไล่ใส่ `await` ในหน้า `xty/p/`, `xty/new/`, `xty/join/` ด้วย (จุดเรียกไม่เยอะ)
+- **Moderation** — วงเล็ก 2–5 คนและเข้าด้วยคำเชิญ ทำให้ปัญหาเล็กกว่าแชทสาธารณะมาก
+  แต่ยังต้องมีทางรายงาน
