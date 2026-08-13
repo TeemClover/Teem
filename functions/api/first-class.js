@@ -5,23 +5,26 @@ const clean = (value, max = 120) => typeof value === 'string' ? value.replace(/[
 async function schema(db) {
   await db.prepare(`CREATE TABLE IF NOT EXISTS first_class_registrations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,reference TEXT UNIQUE NOT NULL,course_id TEXT NOT NULL,
-    display_name TEXT NOT NULL,email TEXT NOT NULL,discord_username TEXT NOT NULL,ai_tools TEXT NOT NULL,
+    display_name TEXT NOT NULL,email TEXT NOT NULL,discord_username TEXT NOT NULL,ai_tools TEXT NOT NULL,ai_level INTEGER,
     transfer_time TEXT NOT NULL,line_id TEXT,payment_status TEXT NOT NULL DEFAULT 'submitted',
     first_class_status TEXT NOT NULL DEFAULT 'pending',attended INTEGER NOT NULL DEFAULT 0,
     payment_note TEXT,paid_at TEXT,first_class_granted_at TEXT,confirmation_email_status TEXT NOT NULL DEFAULT 'pending',
     discord_role_status TEXT NOT NULL DEFAULT 'pending',consent_version TEXT NOT NULL,created_at TEXT NOT NULL,updated_at TEXT NOT NULL
   )`).run();
+  const columns=await db.prepare('PRAGMA table_info(first_class_registrations)').all();
+  if(!(columns.results||[]).some(column=>column.name==='ai_level'))await db.prepare('ALTER TABLE first_class_registrations ADD COLUMN ai_level INTEGER').run();
   await db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_first_class_course_email ON first_class_registrations(course_id,email)').run();
   await db.prepare('CREATE INDEX IF NOT EXISTS idx_first_class_status_created ON first_class_registrations(payment_status,created_at)').run();
 }
 function safeEqual(a, b) { const x=String(a||''),y=String(b||''); if(x.length!==y.length)return false;let d=0;for(let i=0;i<x.length;i++)d|=x.charCodeAt(i)^y.charCodeAt(i);return d===0; }
 function emailDraft(row) {
   const subject='🏅 First Class Unlocked — AI ใส่ซอส';
-  const body=`สวัสดีครับ ${row.display_name}\n\nยืนยันยอด 98 บาทเรียบร้อยแล้ว — คุณได้รับ TITLE “🏅 First Class” สำหรับคอร์ส AI ใส่ซอส 🍀\n\nDiscord: https://discord.gg/A5nmMqvTm\nคอร์สฟรี: https://www.myclover.com/classroom/\nLINE Official สำหรับติดต่อทีมงาน: https://lin.ee/rlSlhzT\n\nวันอังคารที่ 18 สิงหาคม 2026\n19:00 น. ห้องเปิด\n19:30 น. เริ่มเรียนตรงเวลา\n\nคอร์สนี้สอนสดและไม่มีวิดีโอย้อนหลังครับ\n\nTeem`;
+  const body=`สวัสดีครับ ${row.display_name}\n\nยืนยันยอด 98 บาทเรียบร้อยแล้ว — คุณได้รับ TITLE “🏅 First Class” สำหรับคอร์ส AI ใส่ซอส 🍀\n\nDiscord: https://discord.gg/A5nmMqvTm\nเริ่มเล่นของฟรีจากหน้าแรก: https://www.myclover.com/\nLINE Official สำหรับแจ้ง Discord Username พร้อมสลิป หรือติดต่อทีมงาน: https://lin.ee/rlSlhzT\n\nวันอังคารที่ 18 สิงหาคม 2026\n19:00 น. ห้องเปิด\n19:30 น. เริ่มเรียนตรงเวลา\n\nคอร์สนี้สอนสดและไม่มีวิดีโอย้อนหลังครับ\n\nTeem`;
   return {subject,body,mailto:`mailto:${encodeURIComponent(row.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`};
 }
 
 async function grantDiscordRole(row,env){
+  if(!row.discord_username)return {status:'needs_match',detail:'discord_not_provided'};
   if(!env.DISCORD_BOT_TOKEN||!env.DISCORD_GUILD_ID||!env.DISCORD_FIRST_CLASS_ROLE_ID)return {status:'ready',detail:'manual'};
   const headers={authorization:`Bot ${env.DISCORD_BOT_TOKEN}`,'content-type':'application/json'};
   const search=await fetch(`https://discord.com/api/v10/guilds/${env.DISCORD_GUILD_ID}/members/search?query=${encodeURIComponent(row.discord_username)}&limit=20`,{headers});
@@ -57,19 +60,21 @@ export async function onRequest({request,env}) {
     }
     const origin=request.headers.get('origin');if(origin&&origin!==new URL(request.url).origin)return json({ok:false,message:'คำขอไม่ถูกต้อง'},403);
     if(clean(data.website,200))return json({ok:true,reference:null});
-    const name=clean(data.name,80),email=clean(data.email,120).toLowerCase(),discord=clean(data.discordUsername,80),transfer=clean(data.transferTime,5),line=clean(data.lineId,50);
-    const ai=Array.isArray(data.aiTools)?[...new Set(data.aiTools.map(x=>clean(x,40)).filter(x=>AI_OPTIONS.has(x)))].slice(0,6):[];
+    const name=clean(data.name,80),email=clean(data.email,120).toLowerCase(),discord=clean(data.discordUsername,80),transfer=clean(data.transferTime,5),line=clean(data.lineId,50),aiOther=clean(data.aiOther,80),aiLevel=Number(data.aiLevel);
+    const selectedAi=Array.isArray(data.aiTools)?[...new Set(data.aiTools.map(x=>clean(x,40)).filter(x=>AI_OPTIONS.has(x)))].slice(0,6):[];
+    const ai=selectedAi.map(value=>value==='อื่น ๆ'&&aiOther?`อื่น ๆ: ${aiOther}`:value);
     if(!name)return json({ok:false,field:'name',message:'ยังไม่ได้ใส่ชื่อ'},400);
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))return json({ok:false,field:'email',message:'อีเมลไม่ถูกรูปแบบ'},400);
-    if(!discord)return json({ok:false,field:'discordUsername',message:'ยังไม่ได้ใส่ Discord Username'},400);
     if(!ai.length)return json({ok:false,field:'aiTools',message:'เลือก AI อย่างน้อย 1 ข้อ'},400);
+    if(selectedAi.includes('อื่น ๆ')&&!aiOther)return json({ok:false,field:'aiOther',message:'ระบุชื่อ AI อื่น ๆ ที่ใช้อยู่'},400);
+    if(!Number.isInteger(aiLevel)||aiLevel<1||aiLevel>10)return json({ok:false,field:'aiLevel',message:'เลือกระดับความเชี่ยวชาญ AI 1–10'},400);
     if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(transfer))return json({ok:false,field:'transferTime',message:'เวลาโอนไม่ถูกรูปแบบ'},400);
     if(data.consent!==true)return json({ok:false,field:'consent',message:'ต้องยอมรับเงื่อนไขก่อน'},400);
     const now=new Date().toISOString(),ref=`FC-${crypto.randomUUID().slice(0,8).toUpperCase()}`;
-    await env.DB.prepare(`INSERT INTO first_class_registrations(reference,course_id,display_name,email,discord_username,ai_tools,transfer_time,line_id,consent_version,created_at,updated_at)
-      VALUES(?1,'ai-sauce-pilot-2026-08-18',?2,?3,?4,?5,?6,?7,'2026-08-first-class-v2',?8,?8)
-      ON CONFLICT(course_id,email) DO UPDATE SET display_name=?2,discord_username=?4,ai_tools=?5,transfer_time=?6,line_id=?7,updated_at=?8`)
-      .bind(ref,name,email,discord,JSON.stringify(ai),transfer,line||null,now).run();
+    await env.DB.prepare(`INSERT INTO first_class_registrations(reference,course_id,display_name,email,discord_username,ai_tools,ai_level,transfer_time,line_id,consent_version,created_at,updated_at)
+      VALUES(?1,'ai-sauce-pilot-2026-08-18',?2,?3,?4,?5,?6,?7,?8,'2026-08-first-class-v3',?9,?9)
+      ON CONFLICT(course_id,email) DO UPDATE SET display_name=?2,discord_username=?4,ai_tools=?5,ai_level=?6,transfer_time=?7,line_id=?8,updated_at=?9`)
+      .bind(ref,name,email,discord,JSON.stringify(ai),aiLevel,transfer,line||null,now).run();
     const saved=await env.DB.prepare("SELECT reference FROM first_class_registrations WHERE course_id='ai-sauce-pilot-2026-08-18' AND email=?1").bind(email).first();
     return json({ok:true,reference:saved.reference},201);
   }

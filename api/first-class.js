@@ -31,6 +31,7 @@ async function ensureFirstClassSchema(sql) {
     email TEXT NOT NULL,
     discord_username TEXT NOT NULL,
     ai_tools JSONB NOT NULL DEFAULT '[]'::jsonb,
+    ai_level INTEGER,
     transfer_time TIME NOT NULL,
     line_id TEXT,
     payment_status TEXT NOT NULL DEFAULT 'submitted',
@@ -45,17 +46,19 @@ async function ensureFirstClassSchema(sql) {
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL
   )`);
+  await sql.query('ALTER TABLE first_class_registrations ADD COLUMN IF NOT EXISTS ai_level INTEGER');
   await sql.query('CREATE UNIQUE INDEX IF NOT EXISTS idx_first_class_course_email ON first_class_registrations(course_id, email)');
   await sql.query('CREATE INDEX IF NOT EXISTS idx_first_class_status_created ON first_class_registrations(payment_status, created_at DESC)');
 }
 function reference() { return `FC-${randomUUID().slice(0, 8).toUpperCase()}`; }
 function emailDraft(row) {
   const subject = '🏅 First Class Unlocked — AI ใส่ซอส';
-  const body = `สวัสดีครับ ${row.display_name}\n\nยืนยันยอด 98 บาทเรียบร้อยแล้ว — คุณได้รับ TITLE “🏅 First Class” สำหรับคอร์ส AI ใส่ซอส 🍀\n\nDiscord: https://discord.gg/A5nmMqvTm\nคอร์สฟรีสำหรับเตรียมตัว: https://www.myclover.com/classroom/\nLINE Official สำหรับติดต่อทีมงาน: https://lin.ee/rlSlhzT\n\nวันอังคารที่ 18 สิงหาคม 2026\n19:00 น. ห้องเปิด เข้ามาทักทาย ทดลองเสียง และเตรียมตัว\n19:30 น. เริ่มเรียนตรงเวลา\n\nคอร์สนี้สอนสดและไม่มีวิดีโอย้อนหลัง แนะนำให้เข้า Server รอไว้ก่อนวันเรียนครับ\n\nแล้วเจอกัน\nTeem`;
+  const body = `สวัสดีครับ ${row.display_name}\n\nยืนยันยอด 98 บาทเรียบร้อยแล้ว — คุณได้รับ TITLE “🏅 First Class” สำหรับคอร์ส AI ใส่ซอส 🍀\n\nDiscord: https://discord.gg/A5nmMqvTm\nเริ่มเล่นของฟรีจากหน้าแรก: https://www.myclover.com/\nLINE Official สำหรับแจ้ง Discord Username พร้อมสลิป หรือติดต่อทีมงาน: https://lin.ee/rlSlhzT\n\nวันอังคารที่ 18 สิงหาคม 2026\n19:00 น. ห้องเปิด เข้ามาทักทาย ทดลองเสียง และเตรียมตัว\n19:30 น. เริ่มเรียนตรงเวลา\n\nคอร์สนี้สอนสดและไม่มีวิดีโอย้อนหลัง แนะนำให้เข้า Server รอไว้ก่อนวันเรียนครับ\n\nแล้วเจอกัน\nTeem`;
   return { subject, body, mailto: `mailto:${encodeURIComponent(row.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}` };
 }
 
 async function grantDiscordRole(row) {
+  if (!row.discord_username) return { status: 'needs_match', detail: 'discord_not_provided' };
   const { DISCORD_BOT_TOKEN: token, DISCORD_GUILD_ID: guildId, DISCORD_FIRST_CLASS_ROLE_ID: roleId } = process.env;
   if (!token || !guildId || !roleId) return { status: 'ready', detail: 'manual' };
   const headers = { authorization: `Bot ${token}`, 'content-type': 'application/json' };
@@ -116,22 +119,26 @@ export default async function handler(req, res) {
       const discord = clean(data.discordUsername, 80);
       const transferTime = clean(data.transferTime, 5);
       const lineId = clean(data.lineId, 50);
-      const aiTools = Array.isArray(data.aiTools) ? [...new Set(data.aiTools.map(value => clean(value, 40)).filter(value => AI_OPTIONS.has(value)))].slice(0, 6) : [];
+      const aiOther = clean(data.aiOther, 80);
+      const aiLevel = Number(data.aiLevel);
+      const selectedAiTools = Array.isArray(data.aiTools) ? [...new Set(data.aiTools.map(value => clean(value, 40)).filter(value => AI_OPTIONS.has(value)))].slice(0, 6) : [];
+      const aiTools = selectedAiTools.map(value => value === 'อื่น ๆ' && aiOther ? `อื่น ๆ: ${aiOther}` : value);
       if (!name) return sendJson(res, { ok: false, field: 'name', message: 'ยังไม่ได้ใส่ชื่อที่อยากให้เรียก' }, 400);
       if (!validEmail(email)) return sendJson(res, { ok: false, field: 'email', message: 'อีเมลไม่ถูกรูปแบบ' }, 400);
-      if (!discord) return sendJson(res, { ok: false, field: 'discordUsername', message: 'ยังไม่ได้ใส่ Discord Username' }, 400);
       if (!aiTools.length) return sendJson(res, { ok: false, field: 'aiTools', message: 'เลือก AI ที่ใช้อยู่ อย่างน้อย 1 ข้อ' }, 400);
+      if (selectedAiTools.includes('อื่น ๆ') && !aiOther) return sendJson(res, { ok: false, field: 'aiOther', message: 'ระบุชื่อ AI อื่น ๆ ที่ใช้อยู่' }, 400);
+      if (!Number.isInteger(aiLevel) || aiLevel < 1 || aiLevel > 10) return sendJson(res, { ok: false, field: 'aiLevel', message: 'เลือกระดับความเชี่ยวชาญ AI 1–10' }, 400);
       if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(transferTime)) return sendJson(res, { ok: false, field: 'transferTime', message: 'เวลาโอนไม่ถูกรูปแบบ' }, 400);
       if (data.consent !== true) return sendJson(res, { ok: false, field: 'consent', message: 'ต้องยอมรับเงื่อนไขก่อนลงทะเบียน' }, 400);
       const now = new Date();
       const ref = reference();
       const rows = await sql.query(`INSERT INTO first_class_registrations
-        (reference,course_id,display_name,email,discord_username,ai_tools,transfer_time,line_id,consent_version,created_at,updated_at)
-        VALUES ($1,'ai-sauce-pilot-2026-08-18',$2,$3,$4,$5::jsonb,$6,$7,'2026-08-first-class-v2',$8,$8)
+        (reference,course_id,display_name,email,discord_username,ai_tools,ai_level,transfer_time,line_id,consent_version,created_at,updated_at)
+        VALUES ($1,'ai-sauce-pilot-2026-08-18',$2,$3,$4,$5::jsonb,$6,$7,$8,'2026-08-first-class-v3',$9,$9)
         ON CONFLICT(course_id,email) DO UPDATE SET display_name=EXCLUDED.display_name,
-          discord_username=EXCLUDED.discord_username,ai_tools=EXCLUDED.ai_tools,transfer_time=EXCLUDED.transfer_time,
+          discord_username=EXCLUDED.discord_username,ai_tools=EXCLUDED.ai_tools,ai_level=EXCLUDED.ai_level,transfer_time=EXCLUDED.transfer_time,
           line_id=EXCLUDED.line_id,updated_at=EXCLUDED.updated_at
-        RETURNING reference`, [ref, name, email, discord, JSON.stringify(aiTools), transferTime, lineId || null, now]);
+        RETURNING reference`, [ref, name, email, discord, JSON.stringify(aiTools), aiLevel, transferTime, lineId || null, now]);
       return sendJson(res, { ok: true, reference: rows[0].reference }, 201);
     }
 
