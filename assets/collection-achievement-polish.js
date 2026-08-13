@@ -93,8 +93,17 @@ if (/^\/collection\/?(?:index\.html)?$/.test(location.pathname)) {
     if (ep7) {
       ensureCardImage(
         ep7,
-        '/forge/img/07-p1.jpg?v=20260813-ep7-crop',
-        'object-position:center 15%;transform:scale(1.12);transform-origin:center 15%'
+        '/forge/img/07-p1.jpg?v=20260813-ep7-crop-2',
+        'object-position:center 33%;transform:scale(1.08);transform-origin:center 33%'
+      );
+    }
+
+    const special = root.querySelector('[data-id="forge-special"]');
+    if (special) {
+      ensureCardImage(
+        special,
+        '../forge/original/11.jpeg?v=20260813-special-blacksmith-right',
+        'object-position:76% 62.5%;transform:scale(1.82);transform-origin:76% 62.5%'
       );
     }
 
