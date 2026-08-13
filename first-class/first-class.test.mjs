@@ -9,6 +9,7 @@ const admin = await readFile(new URL('./admin/index.html', import.meta.url), 'ut
 const adminScript = await readFile(new URL('./admin/admin.js', import.meta.url), 'utf8');
 const vercelApi = await readFile(new URL('../api/first-class.js', import.meta.url), 'utf8');
 const cloudflareApi = await readFile(new URL('../functions/api/first-class.js', import.meta.url), 'utf8');
+const classroom = await readFile(new URL('../classroom/index.html', import.meta.url), 'utf8');
 
 test('course facts and instructor are exact', () => {
   for (const text of ['98 นาที', '98 บาท', 'ส.ค. 2026', '18 สิงหาคม 2026', '19:00', '19:30', 'ไม่มีวิดีโอย้อนหลัง', 'สอนสดโดย Teem']) assert.match(html, new RegExp(text));
@@ -17,15 +18,31 @@ test('course facts and instructor are exact', () => {
   assert.doesNotMatch(html, /Ako|ผู้สอนร่วม/);
 });
 
-test('hero and registration are visible while extra reading is collapsed', async () => {
+test('hero, social preview and registration are ready', async () => {
   const image = await stat(new URL('./assets/ai-sauce-pilot.webp', import.meta.url));
+  const socialImage = await stat(new URL('./assets/ai-sauce-pilot-social.jpg', import.meta.url));
   assert.ok(image.size > 10_000 && image.size < 300_000);
+  assert.ok(socialImage.size > 30_000 && socialImage.size < 500_000);
   assert.match(html, /<figure class="hero-banner"><img[^>]+ai-sauce-pilot\.webp/);
+  assert.match(html, /property="og:image" content="https:\/\/www\.myclover\.com\/first-class\/assets\/ai-sauce-pilot-social\.jpg"/);
+  assert.match(html, /property="og:image:width" content="1440"/);
+  assert.match(html, /property="og:image:height" content="756"/);
+  assert.match(html, /name="twitter:card" content="summary_large_image"/);
+  assert.match(html, /name="twitter:image" content="https:\/\/www\.myclover\.com\/first-class\/assets\/ai-sauce-pilot-social\.jpg"/);
+  assert.match(html, /คอร์สสอน AI ไม่ใช่คอร์สทำอาหาร/);
   assert.match(html, /<section class="registration-card"/);
   assert.match(html, /<form id="registrationForm"/);
   assert.match(html, /<details class="smart-details why-discord">/);
   assert.match(html, /<details class="smart-details more-value">/);
   assert.doesNotMatch(html, /<details[^>]+open/);
+});
+
+test('classroom promotes the current live First Class course', () => {
+  assert.match(classroom, /🔴 คลาสสดของบ้าน · AI ใส่ซอส/);
+  assert.match(classroom, /98 นาที · 98 บาท · สดผ่าน Discord/);
+  assert.match(classroom, /อังคาร 18 สิงหาคม 2026 ห้องเปิด 19:00 · เริ่ม 19:30 ตรงเวลา/);
+  assert.match(classroom, /<a href="\/first-class\/">ดูรายละเอียดและลงทะเบียน →<\/a>/);
+  assert.doesNotMatch(classroom, /รับข่าวคลาสถัดไป/);
 });
 
 test('Discord has two entry routes and stays optional', () => {
