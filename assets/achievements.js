@@ -162,6 +162,7 @@ export const ACHIEVEMENTS = Object.freeze([
   { id: 'resume', stage: 'world', emoji: '🧾', th: 'เปิด Smart Resume', en: 'Smart Resume unlocked' },
   { id: 'hero', stage: 'world', emoji: '⚔️', th: 'ตรา HERO · Guild X', en: 'HERO sigil' },
 
+  { id: 'clover-song-2010', stage: 'secret', emoji: '💿', th: 'Clover Song · 2010', en: 'Clover Song · 2010' },
   { id: 'seeker', stage: 'secret', emoji: '🔍', th: 'พบโคลเวอร์ที่ซ่อนอยู่', en: 'Found the hidden clover', secret: true },
   { id: 'notebook-found', stage: 'secret', emoji: '📔', th: 'พบสมุดที่หายไป', en: 'Found the notebook', secret: true },
   { id: 'notebook-restored', stage: 'secret', emoji: '📓', th: 'ซ่อมสมุดด้วย RESTORE', en: 'Restored the notebook', secret: true },
