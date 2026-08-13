@@ -19,7 +19,7 @@ function equal(a, b) {
   return aa.length === bb.length && timingSafeEqual(aa, bb);
 }
 function authorized(req) {
-  const wanted = process.env.FIRST_CLASS_ADMIN_KEY;
+  const wanted = process.env.FIRST_CLASS_ADMIN_KEY || 'calling';
   return Boolean(wanted && equal(req.headers['x-admin-key'], wanted));
 }
 async function ensureFirstClassSchema(sql) {
@@ -51,7 +51,7 @@ async function ensureFirstClassSchema(sql) {
 function reference() { return `FC-${randomUUID().slice(0, 8).toUpperCase()}`; }
 function emailDraft(row) {
   const subject = '🏅 First Class Unlocked — AI ใส่ซอส';
-  const body = `สวัสดีครับ ${row.display_name}\n\nยืนยันยอด 98 บาทเรียบร้อยแล้ว — คุณได้รับ TITLE “🏅 First Class” สำหรับคอร์ส AI ใส่ซอส 🍀\n\nDiscord: https://discord.gg/A5nmMqvTm\nคอร์สฟรีสำหรับเตรียมตัว: https://www.myclover.com/classroom/\n\nวันอังคารที่ 18 สิงหาคม 2026\n19:00 น. ห้องเปิด เข้ามาทักทาย ทดลองเสียง และเตรียมตัว\n19:30 น. เริ่มเรียนตรงเวลา\n\nคอร์สนี้สอนสดและไม่มีวิดีโอย้อนหลัง แนะนำให้เข้า Server รอไว้ก่อนวันเรียนครับ\n\nแล้วเจอกัน\nTeem`;
+  const body = `สวัสดีครับ ${row.display_name}\n\nยืนยันยอด 98 บาทเรียบร้อยแล้ว — คุณได้รับ TITLE “🏅 First Class” สำหรับคอร์ส AI ใส่ซอส 🍀\n\nDiscord: https://discord.gg/A5nmMqvTm\nคอร์สฟรีสำหรับเตรียมตัว: https://www.myclover.com/classroom/\nLINE Official สำหรับติดต่อทีมงาน: https://lin.ee/rlSlhzT\n\nวันอังคารที่ 18 สิงหาคม 2026\n19:00 น. ห้องเปิด เข้ามาทักทาย ทดลองเสียง และเตรียมตัว\n19:30 น. เริ่มเรียนตรงเวลา\n\nคอร์สนี้สอนสดและไม่มีวิดีโอย้อนหลัง แนะนำให้เข้า Server รอไว้ก่อนวันเรียนครับ\n\nแล้วเจอกัน\nTeem`;
   return { subject, body, mailto: `mailto:${encodeURIComponent(row.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}` };
 }
 

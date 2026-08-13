@@ -11,7 +11,7 @@
 ## Environment variables
 
 - `DATABASE_URL` (Vercel/Neon) หรือ D1 binding ชื่อ `DB` (Cloudflare)
-- `FIRST_CLASS_ADMIN_KEY` สำหรับ Control Room
+- `FIRST_CLASS_ADMIN_KEY` สำหรับ Control Room (ค่าเริ่มต้นของ Pilot คือ `calling`; ตั้ง Environment Variable เพื่อเปลี่ยนได้)
 - `FIRST_CLASS_VERIFIER_KEY` สำหรับตัวตรวจยอด/AI reconciliation
 - `DISCORD_BOT_TOKEN`, `DISCORD_GUILD_ID`, `DISCORD_FIRST_CLASS_ROLE_ID` สำหรับมอบ Role อัตโนมัติ
 - `RESEND_API_KEY`, `FIRST_CLASS_FROM_EMAIL` สำหรับอีเมลอัตโนมัติ
