@@ -77,9 +77,10 @@ item({id:'resume',kind:'ROOM UNLOCK',name:'Smart Resume',icon:'🧾',on:on('resu
 item({id:'walkthrough',kind:'GUIDE UNLOCK',name:'Walkthrough',icon:'🗺️',on:on('walkthrough'),unlockHint:'อ่าน Forge ครบ 7 ตอน',unlockedHint:'อ่านคู่มือแปลภาษาเกมเป็นภาษาธุรกิจ',go:'../walkthrough/',image:'../img/og-walkthrough.jpg'}),
 item({id:'card',kind:'PROOF SAVED',name:'การ์ดประจำตัวใบแรก',icon:'🎴',on:on('card'),hint:'สร้างและบันทึกการ์ดประจำตัว',go:'../card/',image:'../img/og-card.jpg'})]});
 groups.push({id:'badges',eyebrow:'🏅 BADGES & SECRET ROUTE',title:'🏅 ตราและของที่พบระหว่างทาง',desc:'บางชิ้นบอกเงื่อนไขตรง ๆ บางชิ้นจะไม่เปิดเผยชื่อจนกว่าคุณจะพบเอง',items:[
-item({id:'blacksmith',kind:'SIGIL',name:'ช่างตีเหล็ก',icon:'⚒️',on:on('blacksmith'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../forge/',image:'/forge/img/07-p1.jpg?v=20260812-1415-blacksmith'}),
+item({id:'blacksmith',kind:'SIGIL',name:'ช่างตีเหล็ก',icon:'⚒️',on:on('blacksmith'),hint:'อ่าน Forge ครบ 7 ตอน',go:'../forge/',image:'/forge/original/07.jpeg?v=20260813-blacksmith-original'}),
 item({id:'awakened',kind:'SIGIL',name:'ผู้ตื่นรู้',icon:'🌅',on:on('awakened'),hint:'ผ่านบทที่ 7 · ด่านบอส',go:'../classroom/awaken/',image:'../img/og-awaken.jpg'}),
 item({id:'hero',kind:'SIGIL · GUILD X',name:'ฮีโร่',icon:'⚔️',on:on('hero'),hint:'ปลดรหัส HERO จาก Guild X',go:'../guild/',image:'../img/achievement-hero-guild-x.jpg'}),
+item({id:'clover-song-2010',kind:'FOUND ITEM · MUSIC',name:'Clover Song · 2010',icon:'💿',on:on('clover-song-2010'),hint:'เปิดเพลงประจำบ้านจากปุ่ม 🎵 ในหน้า Collection',unlockedHint:'เปิดฟัง Clover Song · เวอร์ชันมีเสียงร้อง'}),
 item({id:'seeker',kind:'TITLE',name:'ผู้ค้นพบ',icon:'🔍',on:on('seeker'),hint:'พบโคลเวอร์ที่ซ่อนอยู่ท้ายหน้า Hall',go:'../hall.html',image:'../img/achievement-seeker.webp'}),
 item({id:'notebook-found',kind:'SECRET',name:'สมุดที่หายไป',lockedName:'???',icon:'📔',on:on('notebook-found'),hint:'พบเส้นทางลับด้วยตัวเอง',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-01.jpg',secret:true}),
 item({id:'notebook-restored',kind:'SECRET',name:'สมุดที่ซ่อมแล้ว',lockedName:'???',icon:'📓',on:on('notebook-restored'),hint:'ใช้ RESTORE ซ่อมหน้าที่เสียหาย',go:'../classroom/awaken/notebook/',image:'../classroom/awaken/notebook/img/nb-02s.jpg?v=20260812-achievement',imageStyle:'object-position:center top',secret:true}),
@@ -93,7 +94,7 @@ item({id:'c7-friend',kind:'CORE7 · FRIEND MATCH',name:'เล่นกับเ
 item({id:'c7-set',kind:'CORE7 · SET',name:'ครบ 1 CORE7 Set',icon:'🏆',on:on('c7-set'),hint:'เล่น CORE7 Set จนมีผู้ชนะครบชุด',go:'../core7/play/',image:'../img/core7-achievement-05-first-set.jpeg'}),
 item({id:'c7-hand',kind:'CORE7 · FIRST HAND',name:'มือแรกของฉัน',icon:'🖐️',on:on('c7-hand'),hint:'ปลดล็อก FIRST HAND ครบ 7 ใบ',go:'../core7/collection/',image:'../img/core7-achievement-06-first-hand.jpeg'}),
 item({id:'c7-full',kind:'CORE7 · COLLECTION MASTER',name:'FIRST HAND ครบชุด',icon:'💎',on:on('c7-full'),hint:'สะสม FIRST HAND ครบ 28 ใบ',go:'../core7/collection/',image:'../img/core7-achievement-07-full-collection.jpeg'})]});
-if(genesisDone)groups.push({id:'genesis',bonus:true,eyebrow:'🕯️ HIDDEN ORIGIN · BONUS',title:'ของที่ไม่อยู่ในสารบัญ',desc:'ช่องพิเศษนี้ปรากฏหลังจากพบสิ่งที่ผู้สร้างซ่อนไว้ และไม่ถูกนับรวมใน 36 Achievement หลัก',items:[
+if(genesisDone)groups.push({id:'genesis',bonus:true,eyebrow:'🕯️ HIDDEN ORIGIN · BONUS',title:'ของที่ไม่อยู่ในสารบัญ',desc:'ช่องพิเศษนี้ปรากฏหลังจากพบสิ่งที่ผู้สร้างซ่อนไว้ และไม่ถูกนับรวมใน 37 Achievement หลัก',items:[
 item({id:'genesis-scroll',bonus:true,kind:'FORBIDDEN GENESIS · BONUS',name:'คุณเจอ Genesis Prompt ที่ใช้สร้างวิหารแห่งนี้',icon:'📜',on:true,hint:'เลือกทุกหมวดในคลังพรอมพ์ แล้วเปิดม้วนคาถาที่ซ่อนอยู่',go:'../classroom/prompts.html?scroll=forbidden',image:'../img/achievement-genesis-scroll.svg',newBonus:genesisNew})
 ]});
 /* ── ป้าย NEW ──
@@ -136,7 +137,7 @@ try{
   localStorage.setItem(SEEN_KEY,JSON.stringify(unlockedIds));
   localStorage.removeItem('mc_collection_last_count');
 }catch(e){}
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]})}
 function cardHTML(x){
   var shown=x.on?x.name:(x.secret?(x.lockedName||'???'):x.name);
   var state=x.on?'✓':'🔒';
