@@ -42,7 +42,9 @@
   fetch('/api/first-class?public=meta', { headers: { accept: 'application/json' } })
     .then(response => response.ok ? response.json() : null)
     .then(config => {
-      if (!config?.enabled || !/^\d{5,30}$/.test(String(config.pixelId || ''))) return;
+      const pixelIds = [...new Set((Array.isArray(config?.pixelIds) ? config.pixelIds : [config?.pixelId])
+        .map(value => String(value || '')).filter(value => /^\d{5,30}$/.test(value)))];
+      if (!config?.enabled || !pixelIds.length) return;
       if (!window.fbq) {
         const fbq = window.fbq = function () { fbq.callMethod ? fbq.callMethod.apply(fbq, arguments) : fbq.queue.push(arguments); };
         if (!window._fbq) window._fbq = fbq;
@@ -55,7 +57,7 @@
         script.src = 'https://connect.facebook.net/en_US/fbevents.js';
         document.head.appendChild(script);
       }
-      window.fbq('init', String(config.pixelId));
+      pixelIds.forEach(pixelId => window.fbq('init', pixelId));
       ready = true;
       window.fbq('track', 'PageView');
       window.fbq('track', 'ViewContent', PRODUCT);
