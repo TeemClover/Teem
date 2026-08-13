@@ -14,7 +14,7 @@ export const MINI_ACHIEVEMENTS = Object.freeze([
   { id:'party-box-open', emoji:'🔌', name:'เปิดหน้าต่าง Party', hint:'เปิด Party ในแผนที่ THE DUNGEON' },
   { id:'d20-natural-1', emoji:'🎲', name:'Natural 1 · ทอยจุ๊ง!', hint:'ทอย d20 ได้ 1 — จุ๊งเต็มข้อ ต่อให้แผนดีแค่ไหนก็มีวันที่ลูกเต๋าบอกว่า “วันนี้ไม่ใช่วันของมึง”' },
   { id:'d20-natural-20', emoji:'🎲', name:'Natural 20 · ทอยคริ!', hint:'ทอย d20 ได้ 20 — คริเต็มหน้า! จังหวะที่ความเสี่ยงกลายเป็นตำนาน และโต๊ะควรมีคนร้องเฮ' },
-  { id:'clover-song-2010', emoji:'💿', name:'Clover Song · 2010', hint:'เปิดเพลงที่เจ้าของบ้านแต่ง และเพื่อนร้องจริงตั้งแต่ปี 2010' },
+  { id:'clover-song-2010', emoji:'💿', name:'Clover Song · 2010', hint:'เปิดเพลงที่เจ้าของบ้านแต่ง และเพื่อนร้องจริงตั้งแต่ปี 2010', main:true },
   { id:'dungeon-reset', emoji:'♻️', name:'เริ่มด่านใหม่', lockedName:'???', hint:'พบเมนูลับและ Reset THE DUNGEON', secret:true },
   { id:'well-done', emoji:'🔥', name:'Well-Done', hint:'โดนมังกรย่างยกตี้จน PARTY WIPE — สุกกำลังดีแบบไม่มีใครรอด' },
   { id:'lucky-bug', emoji:'🍀', name:'Lucky Bug · 6 ดาว', lockedName:'???', hint:'ขโมยทองมังกรสำเร็จ ขณะยืนอยู่บนโคลเวอร์สี่แฉก แล้วเจอดาวลับดวงที่ 6', secret:true },
@@ -157,14 +157,15 @@ function renderMiniCollection() {
 
   const unlocked = readSet();
   const filter = collectionFilter();
-  const visible = MINI_ACHIEVEMENTS.filter(item => filter === 'all' || (filter === 'unlocked' ? unlocked.has(item.id) : !unlocked.has(item.id)));
+  const miniItems = MINI_ACHIEVEMENTS.filter(item => !item.main);
+  const visible = miniItems.filter(item => filter === 'all' || (filter === 'unlocked' ? unlocked.has(item.id) : !unlocked.has(item.id)));
   if (!visible.length) return;
 
   injectCollectionStyles();
   const section = document.createElement('section');
   section.className = 'group mini-achievement-group';
-  const count = MINI_ACHIEVEMENTS.filter(item => unlocked.has(item.id)).length;
-  section.innerHTML = `<div class="group-head"><div><span class="eyebrow">✨ MINI ACHIEVEMENTS</span><h2>เหตุการณ์เล็ก ๆ ที่เกมจำได้</h2><p class="group-desc">ไม่มีภาพใหญ่และไม่รวมในเปอร์เซ็นต์หลัก เป็นรอยเท้าจากจังหวะพิเศษที่คุณเจอระหว่างทาง</p></div><span class="group-count">${count}/${MINI_ACHIEVEMENTS.length}</span></div><div class="mini-achievement-grid">${visible.map(item => miniCard(item, unlocked.has(item.id))).join('')}</div>`;
+  const count = miniItems.filter(item => unlocked.has(item.id)).length;
+  section.innerHTML = `<div class="group-head"><div><span class="eyebrow">✨ MINI ACHIEVEMENTS</span><h2>เหตุการณ์ที่คุณค้นพบในด่านบอส</h2><p class="group-desc">ไม่มีภาพใหญ่และไม่รวมในเปอร์เซ็นต์หลัก เป็นรอยเท้าจากเหตุการณ์พิเศษที่คุณค้นพบระหว่างเล่น THE DUNGEON</p></div><span class="group-count">${count}/${miniItems.length}</span></div><div class="mini-achievement-grid">${visible.map(item => miniCard(item, unlocked.has(item.id))).join('')}</div>`;
 
   const note = root.querySelector(':scope > .note');
   root.insertBefore(section, note || null);
