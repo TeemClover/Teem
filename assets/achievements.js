@@ -41,6 +41,7 @@ export const ACTS = Object.freeze([
   { id: 'home-open', stage: 'home', emoji: '🚪', th: 'เปิดหน้าแรก', en: 'Opened the front page', achievement: false },
   { id: 'home-video', stage: 'home', emoji: '▶️', th: 'กดดูคลิปเปิดบ้าน', en: 'Played the opening clip', achievement: true },
   { id: 'home-compass', stage: 'home', emoji: '🧭', th: 'หยิบเข็มทิศเข้าบ้าน', en: 'Picked up the compass', achievement: true },
+  { id: 'home-host-profile', stage: 'home', emoji: '👤', th: 'กด Profile เจ้าบ้าน', en: 'Opened the host profile', achievement: false },
 
   /* ── Hall ── */
   { id: 'hall-open', stage: 'home', emoji: '🏛️', th: 'เปิดหน้า Hall', en: 'Opened the Hall', achievement: false },
