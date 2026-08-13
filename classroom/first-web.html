@@ -95,9 +95,18 @@ html,body{min-height:100%}body{overflow-y:auto!important}
 .head>.classroom-lesson-header-image{width:calc(100% + 68px);max-width:none;margin:-36px -34px 28px}
 .hero>.classroom-lesson-header-image{width:calc(100% + (2 * clamp(28px,6vw,46px)));max-width:none;margin:calc(-1 * clamp(28px,6vw,46px)) calc(-1 * clamp(28px,6vw,46px)) 26px}
 .lesson6-hero>.classroom-lesson-header-image{width:100%;max-width:none;margin:0}
-.lesson6-hero>.hero-art{position:relative;z-index:1;display:block;width:100%;padding:0 42px 6px}
-.lesson6-hero>.hero-art svg{display:block;width:100%;height:auto;max-width:520px;margin:0 auto;filter:drop-shadow(0 18px 26px rgb(0 0 0/.22))}
-@media(max-width:680px){.lesson6-hero>.hero-art{padding:0 24px 4px}}
+/* ตำแหน่งภาพเชฟยึดตาม .hero-grid เดิมของบท 6: จัดกลางทั้งแนวตั้งและแนวนอนในช่องของตัวเอง */
+.lesson6-hero>.hero-art{position:relative;z-index:1;min-height:360px;display:grid;place-items:center;padding:0}
+.lesson6-hero>.hero-art svg{width:100%;height:auto;overflow:visible;filter:drop-shadow(0 24px 28px rgb(0 0 0/.34))}
+/* จอกว้าง: ยึดสัดส่วนและระยะของ .hero-grid เดิม — ภาพเต็มช่องและจัดกลาง ระยะขอบอยู่ที่ตัวการ์ด ไม่ใช่ที่ภาพ */
+@media(min-width:761px){
+  .lesson6-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);align-items:center;gap:18px;padding:0 38px 34px 0}
+  .lesson6-hero h1{max-width:none}
+  .lesson6-hero>.classroom-lesson-header-image{grid-column:1/-1;margin-right:-38px}
+  .lesson6-hero>.lesson6-hero-copy{grid-column:1;grid-row:2;padding-bottom:0}
+  .lesson6-hero>.hero-art{grid-column:2;grid-row:2}
+}
+@media(max-width:760px){.lesson6-hero>.hero-art{min-height:300px;padding:0 24px 14px}}
 @media(max-width:560px){
   .head>.classroom-lesson-header-image{width:calc(100% + 44px);margin:-26px -22px 22px}
 }
