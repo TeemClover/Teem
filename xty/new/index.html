@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#062718">
+<title>ตั้งตี้ใหม่ — XTY</title>
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=1">
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="back" href="/xty/">ยกเลิก</a>
+</header>
+
+<main class="wrap">
+  <p class="kicker">NEW XTY</p>
+  <h1 class="title">ตั้งตี้</h1>
+  <p class="lede">ชื่อกับกิจกรรมอย่างเดียวก็เริ่มได้ ที่เหลือเติมทีหลังได้ตลอด</p>
+
+  <div class="card">
+    <div class="field" style="margin-top:0">
+      <label for="pname">ชื่อตี้</label>
+      <input id="pname" type="text" maxlength="40" placeholder="เช่น บอร์ดเกมบ้านเจ">
+    </div>
+
+    <div class="field">
+      <label for="pact">ทำอะไรกัน</label>
+      <input id="pact" type="text" maxlength="60" placeholder="เช่น ตีแบดหลังเลิกงาน">
+      <p class="hint">พิมพ์อะไรก็ได้ — วิ่ง อ่านหนังสือ ทำโปรเจกต์ นอนก่อนเที่ยงคืน</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="label">สัตว์ประจำตี้</span>
+    <p class="whisper" style="margin:0 0 4px">เลือกได้ตัวเดียว หรือจะไม่เลือกก็ได้ — ตี้ที่ไม่มีสัตว์ก็เงียบดี</p>
+    <div class="card-grid" id="petPick" role="radiogroup" aria-label="เลือกสัตว์ประจำตี้"></div>
+    <p class="hint" id="petHint" style="margin-top:12px">ยังไม่ได้เลือก</p>
+  </div>
+
+  <button class="btn gold" id="go" style="margin-top:20px" disabled>สร้างตี้</button>
+  <p class="note">ตั้งเสร็จจะได้รหัสไว้ชวนคน — ตี้หนึ่งอยู่ได้ 2–5 คน รวมหัวตี้</p>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script type="module">
+import { hasProfile, getProfile, createParty } from '/xty/_shared/store.js';
+import { PETS, PET_BY_ID, SERIES } from '/xty/_shared/pets.js';
+
+const $ = id => document.getElementById(id);
+
+if (!hasProfile()) {
+  location.replace('/xty/');
+} else {
+  init();
+}
+
+function init() {
+  const profile = getProfile();
+  /* Only pets this player actually owns can be placed (Pet Blueprint §24) */
+  const owned = PETS.filter(p => profile.petIds.includes(p.id));
+  let petId = null;
+
+  /* Prefill from a hand-off, e.g. Xircle sends ?template=xircle (§38).
+     The party is an ordinary XTY party once created — nothing about it
+     stays health-specific. */
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('template') === 'xircle') {
+    $('pname').value = 'ตี้สุขภาพของเรา';
+    $('pact').value = 'ดูแลกิน–ขยับ–นอน ด้วยกัน';
+  }
+
+  const pick = $('petPick');
+  owned.forEach(p => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pc pickable';
+    b.dataset.color = p.color;
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', 'false');
+    b.setAttribute('aria-label', p.nameTh);
+    b.innerHTML =
+      `<span class="cn">${SERIES[p.series].labelEn}</span>` +
+      `<span class="glyph">${p.emoji}</span>` +
+      `<span class="nm">${p.nameTh}</span>`;
+    b.addEventListener('click', () => {
+      petId = (petId === p.id) ? null : p.id;   /* tap again to clear */
+      pick.querySelectorAll('.pc').forEach(x => {
+        const on = x === b && petId === p.id;
+        x.classList.toggle('picked', on);
+        x.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      $('petHint').textContent = petId
+        ? `${PET_BY_ID[petId].emoji} ${PET_BY_ID[petId].nameTh} — ${PET_BY_ID[petId].persona}`
+        : 'ยังไม่ได้เลือก — ตี้นี้จะไม่มีสัตว์';
+    });
+    pick.appendChild(b);
+  });
+
+  const name = $('pname'), act = $('pact'), go = $('go');
+  const sync = () => { go.disabled = name.value.trim().length < 1; };
+  name.addEventListener('input', sync);
+  sync();
+
+  go.addEventListener('click', () => {
+    try {
+      const party = createParty({ name: name.value, activity: act.value, petId });
+      location.href = `/xty/p/?c=${encodeURIComponent(party.code)}&new=1`;
+    } catch (err) {
+      const t = $('toast');
+      t.textContent = 'สร้างตี้ไม่สำเร็จ — ลองใหม่อีกครั้ง';
+      t.classList.add('on');
+      setTimeout(() => t.classList.remove('on'), 3000);
+    }
+  });
+}
+</script>
+</body>
+</html>

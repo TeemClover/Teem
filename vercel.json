@@ -13,6 +13,11 @@
     { "source": "/xircle/opportunity", "destination": "/xircle/opportunity/", "permanent": false },
     { "source": "/xircle/learn", "destination": "/xircle/learn/", "permanent": false },
 
+    { "source": "/xty", "destination": "/xty/", "permanent": false },
+    { "source": "/xty/new", "destination": "/xty/new/", "permanent": false },
+    { "source": "/xty/join", "destination": "/xty/join/", "permanent": false },
+    { "source": "/profile", "destination": "/profile/", "permanent": false },
+
     { "source": "/xircle/doc", "destination": "/xircle/doc/", "permanent": false },
 
     { "source": "/xircle2", "destination": "/xircle/doc/", "permanent": false },

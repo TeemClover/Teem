@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#062718">
+<title>เข้าตี้ — XTY</title>
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=1">
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="back" href="/xty/">ยกเลิก</a>
+</header>
+
+<main class="wrap">
+  <p class="kicker">JOIN XTY</p>
+  <h1 class="title">เข้าตี้</h1>
+  <p class="lede">ใส่รหัสที่เพื่อนส่งมา</p>
+
+  <div class="card">
+    <div class="field" style="margin-top:0">
+      <label for="code">รหัสตี้</label>
+      <input id="code" type="text" maxlength="8" placeholder="ABC-123"
+             autocapitalize="characters" autocomplete="off" spellcheck="false"
+             style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;font-size:19px">
+    </div>
+    <button class="btn gold" id="go" style="margin-top:20px" disabled>เข้าตี้</button>
+    <p class="hint" id="err" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
+  </div>
+
+  <p class="note">ตอนนี้ตี้ยังอยู่แค่ในเครื่องที่ตั้งมัน — รหัสจะข้ามเครื่องได้เมื่อเปิดใช้เซิร์ฟเวอร์แล้ว</p>
+</main>
+
+<script type="module">
+import { hasProfile, joinParty, getProfile } from '/xty/_shared/store.js';
+
+const $ = id => document.getElementById(id);
+if (!hasProfile()) location.replace('/xty/');
+
+const input = $('code'), go = $('go'), err = $('err');
+
+/* keep the typed value in the shape people are given: ABC-123 */
+input.addEventListener('input', () => {
+  let v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  input.value = v.length > 3 ? v.slice(0, 3) + '-' + v.slice(3) : v;
+  go.disabled = v.length < 6;
+  err.hidden = true;
+});
+
+const prefill = new URLSearchParams(location.search).get('c');
+if (prefill) { input.value = prefill.toUpperCase(); input.dispatchEvent(new Event('input')); }
+
+go.addEventListener('click', () => {
+  const p = getProfile();
+  const res = joinParty(input.value, { alias: p.alias, avatar: p.avatar });
+  if (res.error === 'NOT_FOUND') {
+    err.textContent = 'ไม่เจอตี้รหัสนี้ในเครื่องนี้ ลองเช็ครหัสอีกครั้ง';
+    err.hidden = false;
+    return;
+  }
+  if (res.error === 'FULL') {
+    err.textContent = 'ตี้นี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)';
+    err.hidden = false;
+    return;
+  }
+  location.href = `/xty/p/?c=${encodeURIComponent(res.party.code)}`;
+});
+
+input.addEventListener('keydown', e => { if (e.key === 'Enter' && !go.disabled) go.click(); });
+</script>
+</body>
+</html>

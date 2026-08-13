@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#062718">
+<title>ตี้ — XTY</title>
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=1">
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="back" href="/xty/">ตี้ทั้งหมด</a>
+</header>
+
+<main class="wrap">
+  <section id="missing" hidden>
+    <h1 class="title">ไม่เจอตี้นี้</h1>
+    <p class="lede">รหัสอาจพิมพ์ผิด หรือตี้นี้ถูกตั้งไว้บนเครื่องอื่น</p>
+    <a class="btn ghost" href="/xty/join/">ลองใส่รหัสอีกครั้ง</a>
+  </section>
+
+  <section id="view" hidden>
+    <div class="card">
+      <div class="party-head">
+        <div class="pet-slot" id="petSlot" aria-hidden="true"></div>
+        <div style="flex:1;min-width:0">
+          <p class="kicker" id="act" style="margin-bottom:6px"></p>
+          <h1 class="title" id="pname" style="font-size:clamp(22px,5.5vw,30px);margin:0"></h1>
+        </div>
+      </div>
+
+      <div class="seats" id="seats"></div>
+
+      <p class="whisper" id="petLine" style="margin-top:14px"></p>
+    </div>
+
+    <div class="card">
+      <span class="label">ชวนคนเข้าตี้</span>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="code-chip" id="code"></span>
+        <button class="btn ghost sm" id="copy">คัดลอกรหัส</button>
+      </div>
+      <p class="hint" id="seatHint" style="margin-top:10px"></p>
+    </div>
+
+    <div class="card">
+      <span class="label">PARTY LOG</span>
+      <!-- Messages carry the real send time but arrive as a batch when
+           the page is opened or refreshed. The party is meant to be
+           checked, not watched — every day, not all day. -->
+      <p class="whisper" style="margin:0">ทิ้งข้อความไว้ได้ ไม่ต้องรอใครตอบเดี๋ยวนั้น</p>
+
+      <div class="log" id="log"></div>
+
+      <div class="composer">
+        <textarea id="msg" rows="1" maxlength="2000" placeholder="ฝากไว้ในตี้…" aria-label="ข้อความถึงตี้"></textarea>
+        <button id="send" aria-label="ส่งข้อความ">↑</button>
+      </div>
+      <button class="btn ghost sm" id="checkin" style="margin-top:12px">✓ เช็คอินวันนี้</button>
+    </div>
+
+    <nav class="tabs">
+      <a href="/xty/">XTY</a>
+      <a href="/profile/">โปรไฟล์</a>
+    </nav>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script type="module">
+import { getParty, postToParty, getProfile, PARTY_MAX } from '/xty/_shared/store.js';
+import { PET_BY_ID, SERIES } from '/xty/_shared/pets.js';
+
+const $ = id => document.getElementById(id);
+const code = new URLSearchParams(location.search).get('c');
+const party = getParty(code);
+
+if (!party) {
+  $('missing').hidden = false;
+} else {
+  render();
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+/* Show the real clock time the message was sent, and the day when it
+   was not today — the point of the relay is that time is honest. */
+function stamp(iso) {
+  const d = new Date(iso);
+  const t = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+  const today = new Date();
+  const sameDay = d.toDateString() === today.toDateString();
+  if (sameDay) return t + ' น.';
+  return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) + ' · ' + t + ' น.';
+}
+
+function render() {
+  const p = getParty(code);
+  $('view').hidden = false;
+  document.title = p.name + ' — XTY';
+  $('pname').textContent = p.name;
+  $('act').textContent = p.activity || 'ยังไม่ระบุกิจกรรม';
+  $('code').textContent = p.code;
+
+  const pet = p.petId ? PET_BY_ID[p.petId] : null;
+  const slot = $('petSlot');
+  if (pet) {
+    slot.textContent = pet.emoji;
+    slot.classList.remove('empty');
+    $('petLine').textContent = `${pet.emoji} ${pet.nameTh} · ${SERIES[pet.series].labelEn} — ${pet.persona}`;
+  } else {
+    slot.textContent = '—';
+    slot.classList.add('empty');
+    $('petLine').textContent = 'ตี้นี้ไม่มีสัตว์ประจำตี้';
+  }
+
+  const seats = $('seats');
+  seats.innerHTML = '';
+  p.members.forEach(m => {
+    const d = document.createElement('div');
+    d.className = 'seat';
+    d.innerHTML =
+      `<div class="av">${m.avatar}</div>` +
+      `<div class="al">${esc(m.alias)}</div>` +
+      (m.role === 'lead' ? '<div class="rl">หัวตี้</div>' : '');
+    seats.appendChild(d);
+  });
+  for (let i = p.members.length; i < PARTY_MAX; i++) {
+    const d = document.createElement('div');
+    d.className = 'seat open';
+    d.innerHTML = '<div class="av">+</div><div class="al">ที่ว่าง</div>';
+    seats.appendChild(d);
+  }
+  const left = PARTY_MAX - p.members.length;
+  $('seatHint').textContent = left > 0
+    ? `ยังรับได้อีก ${left} คน (ตี้หนึ่งไม่เกิน ${PARTY_MAX})`
+    : 'ตี้เต็มแล้ว — อยากชวนเพิ่มต้องเปิดตี้ใหม่';
+
+  renderLog(p);
+}
+
+function renderLog(p) {
+  const box = $('log');
+  box.innerHTML = '';
+  if (!p.log.length) {
+    const e = document.createElement('div');
+    e.className = 'empty';
+    e.innerHTML = 'ยังไม่มีใครพูดอะไร<br><span style="font-size:13px">ฝากข้อความแรกไว้ให้ตี้ได้เลย</span>';
+    box.appendChild(e);
+    return;
+  }
+  p.log.forEach(post => {
+    const el = document.createElement('div');
+    el.className = 'post' + (post.kind === 'checkin' ? ' checkin' : '');
+    el.innerHTML =
+      `<div class="av">${post.avatar}</div>` +
+      `<div class="bd"><div class="meta">` +
+      `<span class="who">${esc(post.alias)}</span>` +
+      `<span class="when">${stamp(post.sentAt)}</span></div>` +
+      `<div class="txt">${esc(post.body)}</div></div>`;
+    box.appendChild(el);
+  });
+  box.scrollIntoView({ block: 'end', behavior: 'smooth' });
+}
+
+function toast(text) {
+  const t = $('toast');
+  t.textContent = text;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2800);
+}
+
+const msg = $('msg');
+msg.addEventListener('input', () => {
+  msg.style.height = 'auto';
+  msg.style.height = Math.min(msg.scrollHeight, 150) + 'px';
+});
+
+function send() {
+  const body = msg.value.trim();
+  if (!body) return;
+  const res = postToParty(code, { body, kind: 'message' });
+  if (res.error) { toast('ส่งไม่สำเร็จ'); return; }
+  msg.value = '';
+  msg.style.height = 'auto';
+  render();
+}
+
+$('send').addEventListener('click', send);
+msg.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
+});
+
+$('checkin').addEventListener('click', () => {
+  /* the alias already heads the post, so the body should not repeat it */
+  postToParty(code, { body: '✓ มาแล้ววันนี้', kind: 'checkin' });
+  render();
+  toast('เช็คอินแล้ว');
+});
+
+$('copy').addEventListener('click', async () => {
+  const p = getParty(code);
+  try {
+    await navigator.clipboard.writeText(p.code);
+    toast('คัดลอกรหัสแล้ว — ส่งให้เพื่อนได้เลย');
+  } catch {
+    toast('รหัสตี้: ' + p.code);
+  }
+});
+
+if (new URLSearchParams(location.search).get('new') === '1') {
+  toast('ตั้งตี้เรียบร้อย — ส่งรหัสให้เพื่อนได้เลย');
+}
+</script>
+</body>
+</html>
