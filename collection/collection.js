@@ -117,10 +117,15 @@ var unlockedCount=unlockedIds.length;
 
    ฝากไว้บน window ด้วย ไม่ใช่ส่งแต่ event เพราะ classic defer กับ module
    ไม่ได้รับประกันว่าใครรันก่อน ถ้าโมดูลมาทีหลังมันจะไม่ได้ยิน event นี้เลย */
-try{
-  window.MC_UNLOCKED_ACHIEVEMENTS=unlockedIds.slice();
-  window.dispatchEvent(new CustomEvent('mc:achievements',{detail:{unlocked:unlockedIds.slice()}}));
-}catch(e){}
+function publishUnlocked(){
+  unlockedIds=allItems.filter(function(x){return x.on}).map(function(x){return x.id});
+  unlockedCount=unlockedIds.length;
+  try{
+    window.MC_UNLOCKED_ACHIEVEMENTS=unlockedIds.slice();
+    window.dispatchEvent(new CustomEvent('mc:achievements',{detail:{unlocked:unlockedIds.slice()}}));
+  }catch(e){}
+}
+publishUnlocked();
 
 var seenRaw=json(SEEN_KEY,null);
 var seen=Array.isArray(seenRaw)?seenRaw:null;
@@ -137,7 +142,7 @@ try{
   localStorage.setItem(SEEN_KEY,JSON.stringify(unlockedIds));
   localStorage.removeItem('mc_collection_last_count');
 }catch(e){}
-function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]})}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function cardHTML(x){
   var shown=x.on?x.name:(x.secret?(x.lockedName||'???'):x.name);
   var state=x.on?'✓':'🔒';
@@ -168,8 +173,21 @@ function render(){
   var bonus=document.querySelector('[data-id="genesis-scroll"]');
   if(bonus)bonus.addEventListener('click',function(){try{localStorage.removeItem('mc_genesis_new')}catch(e){}});
 }
+function paintMeter(){
+  var pct=Math.round(unlockedCount/allItems.length*100);
+  document.getElementById('totalFill').style.width=pct+'%';
+  document.getElementById('totalCopy').innerHTML='เก็บได้ <b>'+unlockedCount+'</b> จาก '+allItems.length+' Achievement · '+pct+'%';
+}
 document.querySelectorAll('.filter').forEach(function(b){b.addEventListener('click',function(){filter=b.dataset.filter;document.querySelectorAll('.filter').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});render()})});
-var pct=Math.round(unlockedCount/allItems.length*100);document.getElementById('totalFill').style.width=pct+'%';document.getElementById('totalCopy').innerHTML='เก็บได้ <b>'+unlockedCount+'</b> จาก '+allItems.length+' Achievement · '+pct+'%';render();
+paintMeter();render();
+window.addEventListener('mc:mini-achievement',function(e){
+  if(!e.detail||e.detail.id!=='clover-song-2010')return;
+  var song=null;
+  groups.forEach(function(g){g.items.forEach(function(x){if(x.id==='clover-song-2010')song=x})});
+  if(!song||song.on)return;
+  song.on=true;freshIds['clover-song-2010']=1;publishUnlocked();paintMeter();render();
+  try{localStorage.setItem(SEEN_KEY,JSON.stringify(unlockedIds))}catch(err){}
+});
 
 var au=document.getElementById('collectionSong'),musicBtn=document.getElementById('collectionMusicBtn'),musicIco=document.getElementById('collectionMusicIco'),musicLbl=document.getElementById('collectionMusicLbl');
 if(au&&musicBtn){
