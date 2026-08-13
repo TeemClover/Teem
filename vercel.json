@@ -1,5 +1,7 @@
 {
   "redirects": [
+    { "source": "/guild", "destination": "/guild/", "permanent": false },
+
     { "source": "/xircle", "destination": "/xircle/", "permanent": false },
 
     { "source": "/xircle/app", "destination": "/xircle/app/", "permanent": false },
