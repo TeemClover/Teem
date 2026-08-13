@@ -475,7 +475,7 @@ Checklist ว่า Source มีข้อมูลพอสร้างเว�
   <span class="lesson6-boss-shade" aria-hidden="true"></span>
   <div class="door-copy"><span class="tag">BOSS STAGE · UNLOCKED</span><h2>หลักสูตรยังไม่จบ</h2><p>ประตูบานสุดท้ายเปิดแล้ว และคนที่รออยู่ข้างในอ่านทุกอย่างที่มึงเพิ่งทำมา</p><a class="boss-go" href="/classroom/dungeon/">เข้าสู่ด่านบอส →</a></div>
 </section>
-<section class="boss-lock" id="bossLock" hidden><h2>ประตูปรากฏแล้ว แต่ยังเปิดไม่ได้</h2><p>กลับไปเก็บบทที่ขาดให้ครบ 6 บท แล้วประตูนี้จะจำว่ามึงเคยมาถึงตรงนี้</p><a class="btn alt" style="margin-top:14px" href="./">กลับไปเก็บบทที่เหลือ</a></section>
+<section class="boss-lock" id="bossLock" hidden><h2>ประตูปรากฏแล้ว แต่ยังเปิดไม่ได้</h2><p>เก็บบทเรียนให้ครบ 3 บทก่อน แล้วประตูนี้จะจำว่ามึงเคยมาถึงตรงนี้ ไม่ต้องเรียนครบทั้ง 6 ก็เข้าได้</p><a class="btn alt" style="margin-top:14px" href="./">กลับไปเก็บบทที่เหลือ</a></section>
 
 <div class="nextrow"><a class="nx ghost" href="prompts.html">← บท 5 · เลือกงาน แล้วตักผงไปใช้กับซอส</a><a class="nx" href="./">ห้องเรียนทั้งหมด</a></div>
 <footer>AI ใส่ซอส · SOURCE → TASTE → COOK → SPLIT → SEASON → SERVE · แต่ประตูข้างหน้ายังไม่ยอมให้เรียกว่าจบ 🍀</footer>
@@ -553,8 +553,21 @@ if(finishBtn&&achievement){
 }
 
 var takeover=$('takeover'),bossDoor=$('bossDoor'),bossLock=$('bossLock'),sentinel=$('glitchTrigger'),fired=false;
+/* ประตูบอสเปิดที่ 3 บทจาก 6 ไม่ต้องรอครบ — ของดีไม่ควรเก็บไว้ท้ายสุด
+   และคนที่อยากข้ามไปเจอบอสก่อนต้องข้ามได้ ไม่ใช่ปิดตายจนกว่าจะครบ */
+var BOSS_NEED=3;
+function learnCount(){
+  try{
+    var t=window.MC_QUEST&&window.MC_QUEST.track('learn');
+    if(t)return t.count();
+    /* quest.js ยังไม่ทันโหลด — อ่านจาก localStorage ตรง ๆ ด้วยกติกาเดียวกัน */
+    var ids=['free-ai','image-ai','clip-ai','notebooklm','prompts','first-web'];
+    return (localStorage.getItem('mc_learn')||'').split(',').filter(function(x){return ids.indexOf(x)>=0}).length;
+  }catch(e){return 0}
+}
 function completed(){
-  try{var t=window.MC_QUEST&&window.MC_QUEST.track('learn');return t?t.complete():localStorage.getItem('mc_learn_done')==='1'}catch(e){return false}
+  try{if(localStorage.getItem('mc_learn_done')==='1')return true}catch(e){}
+  return learnCount()>=BOSS_NEED;
 }
 function mark(){try{var t=window.MC_QUEST&&window.MC_QUEST.track('learn');if(t)t.mark('first-web')}catch(e){}}
 function revealBoss(){
@@ -1508,5 +1521,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 })();
 
 </script>
+<script defer src="../assets/quest.js"></script>
+<script defer src="../assets/boss-invite.js"></script>
 </body>
 </html>
