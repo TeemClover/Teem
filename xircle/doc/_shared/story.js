@@ -3,11 +3,11 @@
   if(head&&!document.querySelector('link[data-xircle-typography]')){
     const pre1=document.createElement('link');pre1.rel='preconnect';pre1.href='https://fonts.googleapis.com';head.appendChild(pre1);
     const pre2=document.createElement('link');pre2.rel='preconnect';pre2.href='https://fonts.gstatic.com';pre2.crossOrigin='anonymous';head.appendChild(pre2);
-    const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/_shared/typography.css?v=20260812-2';type.dataset.xircleTypography='1';head.appendChild(type);
+    const type=document.createElement('link');type.rel='stylesheet';type.href='/xircle/doc/_shared/typography.css?v=20260812-2';type.dataset.xircleTypography='1';head.appendChild(type);
   }
   if(head&&!document.querySelector('link[data-xircle-experience]')){
     const experience=document.createElement('link');
-    experience.rel='stylesheet';experience.href='/xircle/_shared/experience.css?v=20260812-3';experience.dataset.xircleExperience='1';
+    experience.rel='stylesheet';experience.href='/xircle/doc/_shared/experience.css?v=20260812-3';experience.dataset.xircleExperience='1';
     head.appendChild(experience);
   }
 
@@ -35,43 +35,43 @@
   }
 
   const assets={
-    hero:'/xircle/assets/source/xircle-v41/phone-1063.webp',
-    habit:'/xircle/assets/source/xircle-v41/habit-score-1063.webp',
-    dashboard:'/xircle/assets/source/xircle-v41/daily-dashboard-1063.webp',
-    hardware:'/xircle/assets/source/xircle-v41/hardware-1063.webp',
-    body:'/xircle/assets/source/xircle-v41/body-composition-1063.webp',
-    maxage:'/xircle/assets/source/xircle-v41/maxage-1063.webp',
-    direction:'/xircle/assets/source/xircle-v41/longterm-direction-1063.webp',
-    community:'/xircle/assets/source/xircle-v41/community-1063.webp',
-    routine:'/xircle/assets/source/xircle-v41/daily-routine-1063.webp',
-    xvisor:'/xircle/assets/source/xircle-v41/xvisor-1063.webp',
-    eatMoveSleep:'/xircle/assets/source/brochure-routinex/eat-move-sleep-1063.webp',
-    protein:'/xircle/assets/source/brochure-routinex/protein-hmb-650.webp',
-    gus:'/xircle/assets/source/brochure-routinex/gus-430.webp',
-    asta:'/xircle/assets/generated/astamega-ingredient.png',
-    vita:'/xircle/assets/generated/vita-matrix-ingredient.png',
-    routineBox:'/xircle/assets/source/brochure-routinex/routinex-box-1063.webp',
-    metabolic:'/xircle/assets/source/app-ui/metabolic-on-track.webp',
-    bodyUi:'/xircle/assets/source/app-ui/body-trend.webp',
-    maxageUi:'/xircle/assets/source/app-ui/maxage-ui.webp',
-    commerceCover:'/xircle/assets/source/commerce/cover-1199.webp',
-    commerceModel:'/xircle/assets/source/commerce/four-dimensions-1199.webp',
-    commerceMentor:'/xircle/assets/source/commerce/direct-mentoring-1199.webp',
-    commerceAgency:'/xircle/assets/source/commerce/agency-management-1199.webp',
-    commerceExpand:'/xircle/assets/source/commerce/franchise-expansion-1199.webp',
-    commerceRevenue:'/xircle/assets/source/commerce/income-stacking-1199.webp',
-    manualCover:'/xircle/assets/source/xircle-app-manual-cover.webp',
-    certificationCover:'/xircle/assets/source/xvisor-certification-cover.webp',
-    storyMorning:'/xircle/assets/generated/story-v2/morning-1600.webp',
-    storyEat:'/xircle/assets/generated/story-v2/eat-1600.webp',
-    storyMove:'/xircle/assets/generated/story-v2/move-1600.webp',
-    storySleep:'/xircle/assets/generated/story-v2/sleep-1600.webp',
-    storyXvisor:'/xircle/assets/generated/story-v2/xvisor-1600.webp',
-    storyCommunity:'/xircle/assets/generated/story-v2/community-1600.webp',
-    storyNutrition:'/xircle/assets/generated/story-v2/nutrition-1600.webp',
-    storyXos:'/xircle/assets/generated/story-v2/xos-1600.webp',
-    storySource:'/xircle/assets/generated/story-v2/source-1600.webp',
-    dataRibbons:'/xircle/assets/generated/story-v2/data-ribbons.png'
+    hero:'/xircle/doc/assets/source/xircle-v41/phone-1063.webp',
+    habit:'/xircle/doc/assets/source/xircle-v41/habit-score-1063.webp',
+    dashboard:'/xircle/doc/assets/source/xircle-v41/daily-dashboard-1063.webp',
+    hardware:'/xircle/doc/assets/source/xircle-v41/hardware-1063.webp',
+    body:'/xircle/doc/assets/source/xircle-v41/body-composition-1063.webp',
+    maxage:'/xircle/doc/assets/source/xircle-v41/maxage-1063.webp',
+    direction:'/xircle/doc/assets/source/xircle-v41/longterm-direction-1063.webp',
+    community:'/xircle/doc/assets/source/xircle-v41/community-1063.webp',
+    routine:'/xircle/doc/assets/source/xircle-v41/daily-routine-1063.webp',
+    xvisor:'/xircle/doc/assets/source/xircle-v41/xvisor-1063.webp',
+    eatMoveSleep:'/xircle/doc/assets/source/brochure-routinex/eat-move-sleep-1063.webp',
+    protein:'/xircle/doc/assets/source/brochure-routinex/protein-hmb-650.webp',
+    gus:'/xircle/doc/assets/source/brochure-routinex/gus-430.webp',
+    asta:'/xircle/doc/assets/generated/astamega-ingredient.png',
+    vita:'/xircle/doc/assets/generated/vita-matrix-ingredient.png',
+    routineBox:'/xircle/doc/assets/source/brochure-routinex/routinex-box-1063.webp',
+    metabolic:'/xircle/doc/assets/source/app-ui/metabolic-on-track.webp',
+    bodyUi:'/xircle/doc/assets/source/app-ui/body-trend.webp',
+    maxageUi:'/xircle/doc/assets/source/app-ui/maxage-ui.webp',
+    commerceCover:'/xircle/doc/assets/source/commerce/cover-1199.webp',
+    commerceModel:'/xircle/doc/assets/source/commerce/four-dimensions-1199.webp',
+    commerceMentor:'/xircle/doc/assets/source/commerce/direct-mentoring-1199.webp',
+    commerceAgency:'/xircle/doc/assets/source/commerce/agency-management-1199.webp',
+    commerceExpand:'/xircle/doc/assets/source/commerce/franchise-expansion-1199.webp',
+    commerceRevenue:'/xircle/doc/assets/source/commerce/income-stacking-1199.webp',
+    manualCover:'/xircle/doc/assets/source/xircle-app-manual-cover.webp',
+    certificationCover:'/xircle/doc/assets/source/xvisor-certification-cover.webp',
+    storyMorning:'/xircle/doc/assets/generated/story-v2/morning-1600.webp',
+    storyEat:'/xircle/doc/assets/generated/story-v2/eat-1600.webp',
+    storyMove:'/xircle/doc/assets/generated/story-v2/move-1600.webp',
+    storySleep:'/xircle/doc/assets/generated/story-v2/sleep-1600.webp',
+    storyXvisor:'/xircle/doc/assets/generated/story-v2/xvisor-1600.webp',
+    storyCommunity:'/xircle/doc/assets/generated/story-v2/community-1600.webp',
+    storyNutrition:'/xircle/doc/assets/generated/story-v2/nutrition-1600.webp',
+    storyXos:'/xircle/doc/assets/generated/story-v2/xos-1600.webp',
+    storySource:'/xircle/doc/assets/generated/story-v2/source-1600.webp',
+    dataRibbons:'/xircle/doc/assets/generated/story-v2/data-ribbons.png'
   };
 
   const responsiveSrc=(src)=>{
@@ -122,7 +122,13 @@
     host.appendChild(grid);
   };
 
-  const path=(location.pathname.replace(/\/+$/,'')||'/');
+  /* The reference zone moved from /xircle2/ to /xircle/doc/. The route
+     table below is keyed on the original /xircle/... paths, so normalise
+     whichever prefix the page is actually served under back to that form
+     rather than rewriting every key. */
+  const path=(location.pathname.replace(/\/+$/,'')||'/')
+    .replace(/^\/xircle\/doc(?=\/|$)/,'/xircle')
+    .replace(/^\/xircle2(?=\/|$)/,'/xircle')||'/xircle';
   let currentSource=assets.hero;
   if(path==='/xircle'){
     currentSource=assets.dashboard;
@@ -238,7 +244,7 @@
     const zone=document.createElement('aside');
     zone.className='x-zone-banner';
     zone.setAttribute('aria-label','สถานะพื้นที่ Xircle');
-    zone.innerHTML='<b>GUILD BUILD ZONE</b><span>Member preview · under construction</span><a href="/xircle/source/">Source status</a>';
+    zone.innerHTML='<b>GUILD BUILD ZONE</b><span>Member preview · under construction</span><a href="/xircle/doc/source/">Source status</a>';
     if(document.querySelector('body > .internal,body > .internalbar'))zone.style.setProperty('--x-zone-top','92px');
     main.insertAdjacentElement('beforebegin',zone);
   }

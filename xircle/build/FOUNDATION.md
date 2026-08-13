@@ -41,7 +41,16 @@ Playable first-time journey ครบ 14 ฉากตาม state machine ขอ
 - `/xircle/learn/` — Codex façade (§30): การ์ดความรู้พร้อม status badge (CANON / DEMO / PROVISIONAL) เปิด source drawer ได้
 
 ### หน้าจองโซน (placeholder มีโครง มีแผนเขียนบอกในหน้า)
-`/xircle/routinex/` `/xircle/hardware/` `/xircle/products/` `/xircle/care/`
+`/xircle/routinex/` `/xircle/hardware/` `/xircle/products/` `/xircle/care/` — ตอนนี้เป็น **สะพาน** ชี้เข้าเอกสารจริงใน `/xircle/doc/` แทนการบอกว่า "จะสร้างเฟสถัดไป"
+
+### โซนเอกสารอ้างอิง `/xircle/doc/`
+เดิมคือ `/xircle2/` (ซึ่งก่อนหน้านั้นคือ `/xircle/` เอง) — ย้ายเข้ามาเป็น `/xircle/doc/` แล้ว 44 หน้า
+
+**สิ่งที่ต้องรู้ถ้าจะแก้โซนนี้:**
+- หน้าในโซนใช้ **relative path เกือบทั้งหมด** จึงย้ายได้โดยไม่พัง
+- `doc/_shared/story.js` มี **route table ที่ key ด้วย path เดิม `/xircle/...`** และ normalise pathname ที่ต้นทาง (รองรับทั้ง `/xircle/doc/...` และ `/xircle2/...`) — ห้ามลบตัว normalise ไม่งั้น hero visual ทั้งโซนหายเงียบ ๆ
+- asset ของโซนนี้อยู่ที่ `doc/assets/` แยกจาก `assets/` ของโซนเล่น
+- `vercel.json` มี redirect ครบทั้ง `/xircle2/*`, `/xircle/app/*`, `/habix`, `/xvisor` ฯลฯ → `/xircle/doc/*` เพื่อไม่ให้ลิงก์ที่เคยแชร์ไปแล้วตาย
 
 ### Visual layer (Visual Pass รอบแรก)
 - `assets/lifestyle/` — ภาพถ่ายจริงจาก source เดิม (eat / sleep / move / morning / community / xvisor / source) ทำ responsive 640·960·1440 + `hook` crop เฉพาะจอแรก
@@ -69,9 +78,9 @@ Playable first-time journey ครบ 14 ฉากตาม state machine ขอ
 - `sources.json` — entries ของ source drawer
 
 ### Routing (แก้ใน `vercel.json` ระดับ root แล้ว)
-- โซนเก่าทั้งหมดถูก rename เป็น `/xircle2/` (archive/freeze ตาม Phase A ข้อ 1)
-- ลิงก์เก่าที่คนเคยแชร์ (`/xircle/app`, `/xircle/habix`, `/app`, `/habix`, ฯลฯ) redirect ไป `/xircle2/...`
-- asset absolute paths ที่โค้ดเก่าอ้าง (`/xircle/_shared/story.css`, `/xircle/assets/source/...`) redirect ไป `/xircle2/...`
+- โซนเก่าทั้งหมดถูก rename เป็น `/xircle/doc/` (archive/freeze ตาม Phase A ข้อ 1)
+- ลิงก์เก่าที่คนเคยแชร์ (`/xircle/app`, `/xircle/habix`, `/app`, `/habix`, ฯลฯ) redirect ไป `/xircle/doc/...`
+- asset absolute paths ที่โค้ดเก่าอ้าง (`/xircle/_shared/story.css`, `/xircle/assets/source/...`) redirect ไป `/xircle/doc/...`
 - ⚠️ **เมื่อโซนใหม่เริ่มใช้ `assets/source/` ของตัวเอง ต้องลบ redirect 3 บรรทัด assets ใน vercel.json ก่อน** ไม่งั้นไฟล์ใหม่จะโดน redirect ทับ
 
 ---
