@@ -1537,7 +1537,7 @@ function patchQuest(){
   setText(quest.querySelector('h2'),'🎯 เควสท้ายบท · สร้างวิดีโอจากซอสให้ได้ 1 ชิ้น');
   setText(quest.querySelector(':scope > p'),'ไม่ต้องถ่าย ไม่ต้องพากย์ และไม่ต้องตัดต่อ จบบทเมื่อวิดีโอแนวตั้ง 9:16 ความยาวไม่เกิน 10 วินาทีเปิดเล่นได้จริง');
   const list=quest.querySelector('ol');
-  if(list)list.innerHTML='<li>แนบซอส .md แล้วใช้ Prompt สร้างไฟล์ video-source-YYYY-MM-DD-HHmm.md</li><li>เปิดแชทใหม่ที่สร้างวิดีโอได้ แล้วแนบ video-source-YYYY-MM-DD-HHmm.md พร้อมภาพที่สร้างจากบท 2</li><li>วางคำสั่งสั้นจากข้อ 2 แล้วกดสร้าง</li><li>เช็กว่าไฟล์เล่นได้จริง ไม่เกิน 10 วินาที และเป็นแนวตั้ง 9:16</li>';
+  if(list)list.innerHTML='<li>แนบซอส .md แล้วใช้ Prompt สร้างไฟล์ video-source.md</li><li>เปิดแชทใหม่ที่สร้างวิดีโอได้ แล้วแนบ video-source.md พร้อมภาพที่สร้างจากบท 2</li><li>วางคำสั่งสั้นจากข้อ 2 แล้วกดสร้าง</li><li>เช็กว่าไฟล์เล่นได้จริง ไม่เกิน 10 วินาที และเป็นแนวตั้ง 9:16 (บางครั้ง AI ชอบทำแนวนอนให้เอง)</li>';
   setText(quest.querySelector('.finish'),'ฉันมีวิดีโอจากซอสแล้ว');
   setText(quest.querySelector('.achievement'),'🍽️ COOK PASSED · ซอสสร้างวิดีโอได้จริง');
 }
