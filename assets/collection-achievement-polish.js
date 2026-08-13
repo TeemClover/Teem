@@ -3,6 +3,20 @@
 
 if (/^\/collection\/?(?:index\.html)?$/.test(location.pathname)) {
   const COLLAPSE_KEY = 'mc_collection_collapsed_v1';
+  const DUNGEON_EVENT_IDS = Object.freeze([
+    'boss-chest',
+    'boss-3-stars',
+    'boss-5-stars',
+    'salt-speedrun',
+    'xp-scroll-used',
+    'timebox-open',
+    'party-box-open',
+    'd20-natural-1',
+    'd20-natural-20',
+    'dungeon-reset',
+    'well-done',
+    'lucky-bug'
+  ]);
 
   function readCollapsed() {
     try {
@@ -105,6 +119,28 @@ if (/^\/collection\/?(?:index\.html)?$/.test(location.pathname)) {
     }
   }
 
+  function fixDungeonEventCount(root) {
+    const section = [...root.querySelectorAll(':scope > .group')].find(group => {
+      const eyebrow = (group.querySelector('.eyebrow')?.textContent || '').toUpperCase();
+      const title = group.querySelector('h2')?.textContent || '';
+      return eyebrow.includes('MINI ACHIEVEMENTS') || title.includes('ด่านบอส');
+    });
+    if (!section) return;
+
+    /* Clover Song is a full BADGES achievement now, never a Dungeon event. */
+    section.querySelector('[data-mini-id="clover-song-2010"]')?.remove();
+
+    let saved = [];
+    try {
+      const value = JSON.parse(localStorage.getItem('mc_mini_achievements_v1') || '[]');
+      if (Array.isArray(value)) saved = value;
+    } catch { /* private mode / malformed old save */ }
+    const unlocked = new Set(saved);
+    const count = DUNGEON_EVENT_IDS.filter(id => unlocked.has(id)).length;
+    const pill = section.querySelector('.group-count');
+    if (pill) pill.textContent = `${count}/${DUNGEON_EVENT_IDS.length}`;
+  }
+
   function groupKey(section, index) {
     if (section.dataset.collapseKey) return section.dataset.collapseKey;
     const eyebrow = (section.querySelector('.eyebrow')?.textContent || '').toUpperCase();
@@ -177,6 +213,7 @@ if (/^\/collection\/?(?:index\.html)?$/.test(location.pathname)) {
     const root = document.getElementById('album');
     if (!root) return;
     polishCards(root);
+    fixDungeonEventCount(root);
     upgradeGroups(root);
   }
 
