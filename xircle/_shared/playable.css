@@ -734,6 +734,13 @@ body.night .night-lines .l2{opacity:1}
 .status-tag.canon{color:var(--green);border:1px solid rgba(143,220,174,.45)}
 .status-tag.demo{color:var(--gold);border:1px solid rgba(230,196,131,.45)}
 .status-tag.soon{color:var(--cream-dim);border:1px solid var(--line)}
+/* content that already exists in the reference zone (/xircle2/) */
+.status-tag.ref{color:var(--blue);border:1px solid rgba(125,184,240,.45)}
+.codex-card .go{
+  display:inline-block;margin-top:10px;
+  font-family:var(--font-ui);font-size:11px;letter-spacing:.1em;color:var(--cream-dim);
+}
+.codex-card:hover .go{color:var(--cream-soft)}
 
 @media(min-width:760px){
   .zone-hero{margin-left:-40px;margin-right:-40px;height:260px}
