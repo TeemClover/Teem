@@ -23,12 +23,15 @@
           0%,100%{transform:translate3d(-50%,-50%,0) rotate(0deg)}
           50%{transform:translate3d(-50%,-52%,0) rotate(.7deg)}
         }
-        .hero-card-img.guild-card-stable{
+        .hero-card-img.guild-card-stable,.card-sheen.guild-card-stable{
           left:50%!important;top:50%!important;transform:translate3d(-50%,-50%,0)!important;
           transform-origin:50% 50%!important;backface-visibility:hidden!important;
           animation:none!important;
         }
-        .hero-card-img.guild-card-stable.guild-card-ready{
+        /* The sheen is masked to the card art, so it has to ride the exact same
+           float — start both on the same frame or it drifts off the card edge. */
+        .hero-card-img.guild-card-stable.guild-card-ready,
+        .card-sheen.guild-card-stable.guild-card-ready{
           animation:guildCardFloatStable 5.6s ease-in-out infinite both!important;
         }
 
@@ -62,7 +65,11 @@
         }
         @media(prefers-reduced-motion:reduce){
           .hero-petal.pr,.hero-petal.pg,.hero-petal.pb,.hero-petal.ps{animation:none!important}
-          .hero-card-img.guild-card-stable.guild-card-ready{animation:none!important}
+          /* These rules are !important, so the page's blanket
+             *{animation:none!important} loses to them on specificity — they
+             have to opt out here by name or they keep animating. */
+          .hero-card-img.guild-card-stable.guild-card-ready,
+          .card-sheen.guild-card-stable.guild-card-ready{animation:none!important}
         }
       `;
       document.head.appendChild(style);
@@ -74,9 +81,13 @@
     }
 
     const card = document.querySelector('.hero-card-img');
+    const sheen = document.querySelector('.card-sheen');
     if (card && !card.classList.contains('guild-card-stable')) {
-      card.classList.add('guild-card-stable');
-      const ready = () => requestAnimationFrame(() => card.classList.add('guild-card-ready'));
+      const pair = sheen ? [card, sheen] : [card];
+      pair.forEach(el => el.classList.add('guild-card-stable'));
+      const ready = () => requestAnimationFrame(() => {
+        pair.forEach(el => el.classList.add('guild-card-ready'));
+      });
       if (typeof card.decode === 'function') card.decode().then(ready).catch(ready);
       else if (card.complete) ready();
       else card.addEventListener('load', ready, { once:true });
