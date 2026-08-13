@@ -112,7 +112,9 @@ async function sendConfirmationEmail(row) {
 
 async function sendMetaPurchase(sql, row) {
   const { META_PIXEL_ID: pixelId, META_CAPI_ACCESS_TOKEN: token } = process.env;
-  if (!pixelId || !token) return { status: 'pending', detail: 'not_configured' };
+  if (clean(pixelId, 30) !== META_PROFILE_PIXEL_ID || !token) {
+    return { status: 'pending', detail: 'new_pixel_capi_not_configured' };
+  }
   if (row.meta_purchase_status === 'sent') return { status: 'sent', detail: 'already_sent', eventId: row.meta_purchase_event_id };
   const eventId = row.meta_purchase_event_id || `purchase-${row.reference}`;
   const now = new Date();
@@ -166,8 +168,8 @@ async function unlockFirstClass(sql, id) {
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET' && req.query?.public === 'meta') {
-      const pixelIds = [...new Set([process.env.META_PIXEL_ID, process.env.META_PROFILE_PIXEL_ID || META_PROFILE_PIXEL_ID]
-        .map(value => clean(value, 30)).filter(value => /^\d{5,30}$/.test(value)))];
+      const pixelId = clean(process.env.META_PROFILE_PIXEL_ID || META_PROFILE_PIXEL_ID, 30);
+      const pixelIds = /^\d{5,30}$/.test(pixelId) ? [pixelId] : [];
       return sendJson(res, { ok: true, enabled: Boolean(pixelIds.length), pixelId: pixelIds[0] || null, pixelIds });
     }
     const sql = database();

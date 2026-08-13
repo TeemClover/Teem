@@ -107,14 +107,16 @@ test('success state, admin password and control room remain operational', () => 
 });
 
 test('Meta browser events use production-only canonical funnel data', () => {
-  assert.match(html, /meta-pixel\.js\?v=20260813-2/);
+  assert.match(html, /meta-pixel\.js\?v=20260813-3/);
   assert.ok(html.indexOf('meta-pixel.js') < html.indexOf('first-class.js'));
   assert.match(metaScript, /PRODUCTION_HOSTS/);
   assert.match(metaScript, /pixelIds\.forEach/);
   assert.match(vercelApi, /META_PROFILE_PIXEL_ID/);
   assert.match(vercelApi, /pixelIds/);
+  assert.match(vercelApi, /new_pixel_capi_not_configured/);
   assert.match(cloudflareApi, /META_PROFILE_PIXEL_ID/);
   assert.match(cloudflareApi, /pixelIds/);
+  assert.match(cloudflareApi, /new_pixel_capi_not_configured/);
   for (const event of ['PageView', 'ViewContent', 'Lead']) assert.match(metaScript, new RegExp(`['"]${event}['"]`));
   for (const value of ['AI ใส่ซอส · First Class', 'ai-sauce-first-class-2026-08-18', 'Online Course', 'THB']) assert.match(metaScript, new RegExp(value));
   assert.match(metaScript, /value: 98/);

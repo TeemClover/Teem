@@ -2,8 +2,8 @@
 
 ## Funnel
 
-- `PageView` + `ViewContent`: browser, production hosts only, sent once to both the business Pixel and the profile Boost Pixel.
-- `Lead`: browser, after the registration API confirms the record was saved, sent once to both browser pixels.
+- `PageView` + `ViewContent`: browser, production hosts only, sent to the profile Boost Pixel only.
+- `Lead`: browser, after the registration API confirms the record was saved, sent to the profile Boost Pixel only.
 - `Purchase`: server-side Conversions API, after an admin or trusted verifier confirms the real 98 THB payment.
 
 Client events use `AI ใส่ซอส · First Class`, course ID `ai-sauce-first-class-2026-08-18`, value `98`, and currency `THB`. The registration stores `_fbp`, `_fbc`, UTM parameters, and landing referrer. Purchase matching uses a SHA-256-normalized email plus the available browser/network signals; LINE ID, Discord Username, and AI survey answers are never sent to Meta.
@@ -12,13 +12,13 @@ Client events use `AI ใส่ซอส · First Class`, course ID `ai-sauce-fi
 
 Set these as server-only production variables:
 
-- `META_PIXEL_ID` (primary business Pixel; used by browser and CAPI)
-- `META_PROFILE_PIXEL_ID` (optional override for the public browser-only profile Boost Pixel)
+- `META_PROFILE_PIXEL_ID` (optional override for the active public profile Boost Pixel)
+- `META_PIXEL_ID` (must be changed to the same new Pixel ID before CAPI Purchase is enabled)
 - `META_CAPI_ACCESS_TOKEN`
 - `META_GRAPH_API_VERSION` (optional, defaults to `v23.0`)
 - `META_TEST_EVENT_CODE` (temporary; remove after Test Events verification)
 
-Pixel IDs are intentionally exposed through the public config endpoint. The profile Boost Pixel has a public code fallback so deployment works without a new secret. The CAPI token is never returned to the browser, and server-side `Purchase` remains on the primary business Pixel only.
+The active Pixel ID is intentionally exposed through the public config endpoint. The profile Boost Pixel has a public code fallback so deployment works without a new secret. The CAPI token is never returned to the browser. Server-side `Purchase` stays paused while `META_PIXEL_ID` still points to the retired Pixel; set the new Pixel ID and its matching token together to enable it.
 
 ## Safe launch checklist
 
