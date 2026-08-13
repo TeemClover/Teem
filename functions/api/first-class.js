@@ -50,7 +50,7 @@ async function sendConfirmationEmail(row,env){
   return response.ok?'sent':'failed';
 }
 async function sendMetaPurchase(db,row,env){
-  if(!env.META_PIXEL_ID||!env.META_CAPI_ACCESS_TOKEN)return {status:'pending',detail:'not_configured'};
+  if(clean(env.META_PIXEL_ID,30)!==META_PROFILE_PIXEL_ID||!env.META_CAPI_ACCESS_TOKEN)return {status:'pending',detail:'new_pixel_capi_not_configured'};
   if(row.meta_purchase_status==='sent')return {status:'sent',detail:'already_sent',eventId:row.meta_purchase_event_id};
   const eventId=row.meta_purchase_event_id||`purchase-${row.reference}`,now=new Date().toISOString();
   const claim=await db.prepare("UPDATE first_class_registrations SET meta_purchase_status='sending',meta_purchase_event_id=COALESCE(meta_purchase_event_id,?1),meta_purchase_attempted_at=?2,meta_purchase_error=NULL,updated_at=?2 WHERE id=?3 AND meta_purchase_status IN ('pending','failed') RETURNING *").bind(eventId,now,row.id).first();
@@ -78,7 +78,7 @@ async function unlockFirstClass(db,id,env){
 export async function onRequest({request,env}) {
   const url=new URL(request.url);
   if(request.method==='GET'&&url.searchParams.get('public')==='meta'){
-    const pixelIds=[...new Set([env.META_PIXEL_ID,env.META_PROFILE_PIXEL_ID||META_PROFILE_PIXEL_ID].map(value=>clean(value,30)).filter(value=>/^\d{5,30}$/.test(value)))];return json({ok:true,enabled:Boolean(pixelIds.length),pixelId:pixelIds[0]||null,pixelIds});
+    const pixelId=clean(env.META_PROFILE_PIXEL_ID||META_PROFILE_PIXEL_ID,30),pixelIds=/^\d{5,30}$/.test(pixelId)?[pixelId]:[];return json({ok:true,enabled:Boolean(pixelIds.length),pixelId:pixelIds[0]||null,pixelIds});
   }
   if(!env.DB)return json({ok:false,message:'ระบบฐานข้อมูลยังไม่พร้อม'},503);
   await schema(env.DB);
