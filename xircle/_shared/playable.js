@@ -126,8 +126,10 @@
       var response = container.querySelector("[data-response]");
       if (response) response.hidden = false;
 
+      /* [data-hold-cta] scenes reveal their own CTA once the copy that
+         justifies the scene has actually landed */
       var cta = container.querySelector(".px-cta.reveal-later");
-      if (cta) cta.classList.add("is-ready");
+      if (cta && !cta.hasAttribute("data-hold-cta")) cta.classList.add("is-ready");
 
       var handler = choiceHandlers[group];
       if (handler) handler(value, container);
@@ -179,18 +181,33 @@
     }
   };
 
-  /* S1 memory gap — staged response lines */
+  /* S1 memory gap — staged response lines. The CTA is held back until
+     the last line has landed, so the point of the scene cannot be
+     clicked past before it is read. */
   function setupS1() {
     var scene = sceneEl("S1");
     if (!scene) return;
-    var lines = scene.querySelectorAll("[data-response] .stagger");
+    var lines = Array.prototype.slice.call(scene.querySelectorAll("[data-response] .stagger"));
+    var cta = scene.querySelector("[data-hold-cta]");
+    var staged = false;
+
     scene.addEventListener("click", function (e) {
       if (!e.target.closest("[data-choice-group='memoryGapChoice']")) return;
+      if (staged) return;
+      staged = true;
+
+      var step = REDUCED ? 0 : 0.9;
+      var lead = REDUCED ? 0 : 0.25;
       lines.forEach(function (l, i) {
         l.style.opacity = "0";
-        l.style.transition = "opacity .6s ease " + (REDUCED ? 0 : 0.25 + i * 0.9) + "s";
+        l.style.transition = "opacity .6s ease " + (lead + i * step) + "s";
         requestAnimationFrame(function () { l.style.opacity = "1"; });
       });
+
+      var settleMs = (lead + Math.max(0, lines.length - 1) * step + 0.6) * 1000;
+      setTimeout(function () {
+        if (cta) cta.classList.add("is-ready");
+      }, REDUCED ? 150 : settleMs);
     });
   }
 
@@ -306,30 +323,49 @@
     });
   }
 
-  /* S9 — RoutineX ABCD assembly with the C trust moment (§15) */
+  /* S9 — RoutineX ABCD assembly (§15).
+     C is the moment worth earning, not one checkbox among five: tapping
+     it lands the trust copy and then snaps the remaining layers into
+     place, so assembling a day never turns into a chore list. */
   function setupS9() {
     var scene = sceneEl("S9");
     if (!scene) return;
-    var filled = {};
+    var slots = Array.prototype.slice.call(scene.querySelectorAll(".abcd-slot"));
     var trust = scene.querySelector(".trust-c");
     var revealLine = scene.querySelector("[data-routinex-reveal]");
     var cta = scene.querySelector(".px-cta.reveal-later");
+    var done = false;
+
+    function fill(slot) {
+      if (slot.classList.contains("filled")) return;
+      slot.classList.add("filled");
+      slot.setAttribute("aria-pressed", "true");
+    }
+
+    function complete() {
+      if (done) return;
+      done = true;
+      if (revealLine) revealLine.hidden = false;
+      if (cta) cta.classList.add("is-ready");
+      trackOnce("abcd_complete");
+    }
 
     scene.addEventListener("click", function (e) {
       var slot = e.target.closest(".abcd-slot");
-      if (!slot || slot.classList.contains("filled")) return;
-      var key = slot.getAttribute("data-slot");
-      slot.classList.add("filled");
-      slot.setAttribute("aria-pressed", "true");
-      filled[key] = true;
+      if (!slot || done) return;
+      fill(slot);
 
-      if (key === "C" && trust) trust.classList.add("on");
-
-      if (["A", "B", "C", "D", "F"].every(function (k) { return filled[k]; })) {
-        if (revealLine) revealLine.hidden = false;
-        if (cta) cta.classList.add("is-ready");
-        trackOnce("abcd_complete");
+      if (slot.getAttribute("data-slot") === "C") {
+        if (trust) trust.classList.add("on");
+        var rest = slots.filter(function (s) { return !s.classList.contains("filled"); });
+        rest.forEach(function (s, i) {
+          setTimeout(function () { fill(s); }, REDUCED ? 0 : 950 + i * 220);
+        });
+        setTimeout(complete, REDUCED ? 150 : 950 + rest.length * 220 + 350);
+        return;
       }
+
+      if (slots.every(function (s) { return s.classList.contains("filled"); })) complete();
     });
   }
 

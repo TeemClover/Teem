@@ -7,33 +7,104 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#04100d">
 <title>Learn — Xircle</title>
-<link rel="stylesheet" href="/xircle/_shared/typography.css?v=1">
-<link rel="stylesheet" href="/xircle/_shared/playable.css?v=1">
+<meta name="description" content="Codex — ชั้นความรู้ของ Xircle พร้อมสถานะของข้อมูลแต่ละชิ้น">
+<link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
+<link rel="stylesheet" href="/xircle/_shared/playable.css?v=2">
 </head>
 <body>
+
 <header class="px-top">
   <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
-  <a class="px-exit" href="/xircle/start/">หน้าเริ่มวัน</a>
+  <a class="px-exit" href="/xircle/start/">Today</a>
 </header>
+
+<!-- Codex façade (Blueprint §30, Phase F).
+     Knowledge lives here so the playable journey never becomes a
+     document dump. Every entry carries its canon status openly. -->
 <main class="zone-page">
-  <span class="phase-badge">PHASE F · CODEX</span>
-  <p class="px-kicker">CODEX</p>
-  <h1 class="px-title">อยากรู้ลึกแค่ไหน<br>ก็มีชั้นให้ลง</h1>
-  <p class="px-lede" style="font-size:17px">ชั้นความรู้ทั้งหมดของ Xircle — แยกออกจากเส้นทางเล่นหลัก เพื่อไม่ให้การอ่านขวางการลอง</p>
-  <section class="px-card" style="margin-top:26px">
-    <span class="px-label" style="color:var(--gold)">สิ่งที่จะอยู่ตรงนี้</span>
-    <ul style="margin:12px 0 0;padding-left:22px;line-height:1.9;font-size:15px;color:var(--cream-soft)">
-      <li>Learn More / Source / Technical Detail / Claims</li>
-      <li>สถานะข้อมูล (CANON / PROVISIONAL / NEED SOURCE) แสดงชัดในชั้นนี้</li>
-      <li>เนื้อหาความรู้เดิมของโปรเจกต์จะถูกย้ายเข้ามาอย่างเป็นระบบ</li>
-    </ul>
+
+  <figure class="zone-hero">
+    <img src="/xircle/assets/lifestyle/source-960.webp"
+         srcset="/xircle/assets/lifestyle/source-640.webp 640w, /xircle/assets/lifestyle/source-960.webp 960w, /xircle/assets/lifestyle/source-1440.webp 1440w"
+         sizes="100vw" alt="" decoding="async">
+    <figcaption class="cap">
+      <p class="px-kicker">CODEX</p>
+      <h1>อยากรู้ลึกแค่ไหน<br>ก็มีชั้นให้ลง</h1>
+    </figcaption>
+  </figure>
+
+  <p class="px-lede" style="font-size:16.5px">ทุกอย่างที่เล่าในเส้นทางหลักมีที่มา — และของที่ยังไม่ยืนยัน เราบอกตรง ๆ ว่ายังไม่ยืนยัน</p>
+
+  <div class="codex-list">
+
+    <button type="button" class="codex-card" data-source-id="habit-score-demo">
+      <span class="top"><h3>Habit Score</h3><span class="status-tag canon">CANON</span></span>
+      <p>สรุปพฤติกรรมของเมื่อวานจาก Eat + Move + Sleep เท่านั้น — Body Composition ไม่ถูกนำมารวม เพราะเป็นคนละชั้น</p>
+    </button>
+
+    <button type="button" class="codex-card" data-source-id="snap-ai-demo">
+      <span class="top"><h3>Snap AI</h3><span class="status-tag demo">DEMO ในเว็บนี้</span></span>
+      <p>บันทึกมื้ออาหารให้กลายเป็นข้อมูลที่ย้อนดูได้ การสแกนในเส้นทางเล่นเป็นภาพสาธิต ไม่ได้วิเคราะห์ภาพจริง</p>
+    </button>
+
+    <button type="button" class="codex-card" data-source-id="abcd-routinex">
+      <span class="top"><h3>RoutineX · ABCD</h3><span class="status-tag canon">CANON</span></span>
+      <p>A Absorb · B Build · C Control (Behavior — ซื้อไม่ได้) · D Daily Balance · + Flavor+ ระบบที่ทำให้ไม่ต้องตัดสินใจใหม่ทุกเช้า</p>
+    </button>
+
+    <button type="button" class="codex-card" data-source-id="product-ingredients">
+      <span class="top"><h3>Habix · ส่วนผสมและข้อมูลผลิตภัณฑ์</h3><span class="status-tag soon">PROVISIONAL</span></span>
+      <p>รายละเอียดส่วนผสม ปริมาณ และสถานะทะเบียน ยังอยู่ระหว่างตรวจทานกับแหล่งข้อมูลหลัก จึงยังไม่แสดงเป็นข้อเท็จจริง</p>
+    </button>
+
+    <button type="button" class="codex-card" data-source-id="circle-preview">
+      <span class="top"><h3>Circle Pulse</h3><span class="status-tag canon">CANON</span></span>
+      <p>Pulse วัดการโผล่มาของสมาชิก ไม่ใช่ผลสุขภาพ ไม่มีการจัดอันดับ และไม่มีการแชร์รายละเอียดสุขภาพโดยอัตโนมัติ</p>
+    </button>
+
+    <button type="button" class="codex-card" data-source-id="xvisor-sim">
+      <span class="top"><h3>X-VISOR</h3><span class="status-tag canon">CANON</span></span>
+      <p>Health Partner ที่ผ่านการเรียนและ Certification เพื่อช่วยแปลข้อมูลเป็นการดูแล — ไม่ใช่แพทย์ และไม่วินิจฉัยโรค</p>
+    </button>
+
+  </div>
+
+  <section class="px-card" style="margin-top:22px">
+    <span class="px-label" style="color:var(--gold)">สถานะข้อมูลอ่านยังไง</span>
+    <div class="member-list">
+      <div class="member-row"><span class="status-tag canon">CANON</span><span class="name" style="margin-left:12px">ยืนยันแล้วกับแหล่งข้อมูลหลัก</span></div>
+      <div class="member-row"><span class="status-tag demo">DEMO</span><span class="name" style="margin-left:12px">ภาพสาธิตประสบการณ์ ไม่ใช่ผลคำนวณจริง</span></div>
+      <div class="member-row"><span class="status-tag soon">PROVISIONAL</span><span class="name" style="margin-left:12px">ยังตรวจทานไม่จบ จึงยังไม่แสดงเป็นข้อเท็จจริง</span></div>
+    </div>
   </section>
-  <p class="px-whisper" style="margin-top:22px">โซนนี้ถูกจองไว้ตาม Build Blueprint v0.3 — โครงจริงจะถูกสร้างในเฟสถัดไป โดยใช้รากฐานเดียวกับเส้นทางหลัก</p>
-  <nav class="zone-tabs" aria-label="ไปต่อ">
-    <a href="/xircle/">เล่นหนึ่งวัน</a>
+
+  <section class="px-card" style="margin-top:12px">
+    <span class="px-label">เอกสารเชิงลึกชุดเดิม</span>
+    <p style="margin:10px 0 0;font-size:14.5px;line-height:1.62;color:var(--cream-soft)">
+      เนื้อหาละเอียดของ Ecosystem, Habix, XOS และ Commerce ยังอ่านได้ที่โซนเดิม ระหว่างที่เรากำลังย้ายเข้ามาใน Codex นี้ทีละส่วน
+    </p>
+    <div class="zone-tabs" style="margin-top:14px">
+      <a href="/xircle2/">โซนเอกสารเดิม →</a>
+    </div>
+  </section>
+
+  <nav class="zone-tabs" aria-label="พื้นที่หลัก" style="margin-top:26px">
     <a href="/xircle/start/">Today</a>
-    <a href="/xircle/learn/">Learn</a>
+    <a href="/xircle/circle/">Circle</a>
+    <a href="/xircle/ghost/">Progress</a>
+    <a class="active" href="/xircle/learn/">Learn</a>
   </nav>
 </main>
+
+<script src="/xircle/_shared/state.js?v=2"></script>
+<script src="/xircle/_shared/analytics.js?v=2"></script>
+<script src="/xircle/_shared/source-drawer.js?v=2"></script>
+<script>
+(function () {
+  "use strict";
+  window.XState.touchVisit();
+  window.XAnalytics.track("learn_more_open");
+})();
+</script>
 </body>
 </html>

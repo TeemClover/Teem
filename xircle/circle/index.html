@@ -7,33 +7,129 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#04100d">
 <title>Circle — Xircle</title>
-<link rel="stylesheet" href="/xircle/_shared/typography.css?v=1">
-<link rel="stylesheet" href="/xircle/_shared/playable.css?v=1">
+<meta name="description" content="วงเล็ก ๆ ที่ไม่ต้องทำคนเดียว — Circle Pulse วัดแค่การโผล่มา">
+<link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
+<link rel="stylesheet" href="/xircle/_shared/playable.css?v=2">
 </head>
 <body>
+
 <header class="px-top">
   <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
-  <a class="px-exit" href="/xircle/start/">หน้าเริ่มวัน</a>
+  <a class="px-exit" href="/xircle/start/">Today</a>
 </header>
+
+<!-- Circle façade (Blueprint §18, §19).
+     Everything here is explicitly CIRCLE PREVIEW: the composition is
+     mocked, no membership exists, and Pulse counts showing up — never
+     health performance. Live Circle needs a backend + consent (§47). -->
 <main class="zone-page">
-  <span class="phase-badge">PHASE D · CIRCLE PREVIEW</span>
-  <p class="px-kicker">YOUR XIRCLE</p>
-  <h1 class="px-title">วงเล็ก ๆ<br>ที่ไม่ต้องทำคนเดียว</h1>
-  <p class="px-lede" style="font-size:17px">Circle Pulse วัดแค่การโผล่มา ไม่จัดอันดับสุขภาพ — วงจริงต้องมี backend และ consent ก่อน จึงยังเป็น Preview</p>
-  <section class="px-card" style="margin-top:26px">
-    <span class="px-label" style="color:var(--gold)">สิ่งที่จะอยู่ตรงนี้</span>
-    <ul style="margin:12px 0 0;padding-left:22px;line-height:1.9;font-size:15px;color:var(--cream-soft)">
-      <li>Circle Preview เต็มรูปแบบ (mock ชัดเจน ไม่หลอกว่ามีเพื่อนจริง)</li>
-      <li>แนวคิด invite / alias / check-in</li>
-      <li>Live Circle เมื่อ backend พร้อม (V0.4+): circle_id, invite_token, consent</li>
-    </ul>
+
+  <figure class="zone-hero">
+    <img src="/xircle/assets/lifestyle/community-960.webp"
+         srcset="/xircle/assets/lifestyle/community-640.webp 640w, /xircle/assets/lifestyle/community-960.webp 960w, /xircle/assets/lifestyle/community-1440.webp 1440w"
+         sizes="100vw" alt="" decoding="async">
+    <figcaption class="cap">
+      <p class="px-kicker">YOUR XIRCLE</p>
+      <h1>วงเล็ก ๆ<br>ที่ไม่ต้องทำคนเดียว</h1>
+    </figcaption>
+  </figure>
+
+  <span class="px-demo orange">CIRCLE PREVIEW · ยังไม่มีสมาชิกจริง</span>
+
+  <div class="zone-grid">
+
+  <section class="px-card strong" style="margin-top:18px" aria-label="Circle Pulse วันนี้">
+    <span class="px-label" style="color:var(--green)">CIRCLE PULSE · วันนี้</span>
+    <div class="pulse-line">
+      <span class="beat" aria-hidden="true"></span>
+      <strong style="font-size:17px">4 of 5 showed up today</strong>
+      <span class="px-demo">DEMO</span>
+    </div>
+    <p class="px-whisper" style="margin-top:10px">Pulse นับแค่ว่าใคร “มา” วันนี้ ไม่ได้วัดว่าใครทำได้ดีกว่าใคร และไม่มีการจัดอันดับสุขภาพในวง</p>
+
+    <div class="pulse-week" role="img" aria-label="เจ็ดวันที่ผ่านมา: จันทร์ 5 คน, อังคาร 4 คน, พุธ 5 คน, พฤหัส 3 คน, ศุกร์ 4 คน, เสาร์ 2 คน, วันนี้ 4 คน">
+      <span class="day on"><span class="dot"></span>จ</span>
+      <span class="day on"><span class="dot"></span>อ</span>
+      <span class="day on"><span class="dot"></span>พ</span>
+      <span class="day on"><span class="dot"></span>พฤ</span>
+      <span class="day on"><span class="dot"></span>ศ</span>
+      <span class="day"><span class="dot"></span>ส</span>
+      <span class="day on today"><span class="dot"></span>นี้</span>
+    </div>
+    <p class="px-whisper" style="margin-top:12px">วันที่ไม่ครบไม่ใช่ความล้มเหลวของวง — มันคือชีวิตจริง วงที่ดีคือวงที่ยังกลับมาได้</p>
   </section>
-  <p class="px-whisper" style="margin-top:22px">โซนนี้ถูกจองไว้ตาม Build Blueprint v0.3 — โครงจริงจะถูกสร้างในเฟสถัดไป โดยใช้รากฐานเดียวกับเส้นทางหลัก</p>
-  <nav class="zone-tabs" aria-label="ไปต่อ">
-    <a href="/xircle/">เล่นหนึ่งวัน</a>
+
+  <section class="px-card" style="margin-top:12px" aria-label="สมาชิกในวง">
+    <span class="px-label">สมาชิก · 5 คน</span>
+    <div class="member-list">
+      <div class="member-row you">
+        <span class="who" aria-hidden="true">คุ</span>
+        <span class="name">คุณ<small>เจ้าของวงนี้</small></span>
+        <span class="state up">มาแล้ว</span>
+      </div>
+      <div class="member-row">
+        <span class="who" aria-hidden="true">แ</span>
+        <span class="name">แพร<small>เข้าร่วมวันที่ 1</small></span>
+        <span class="state up">มาแล้ว</span>
+      </div>
+      <div class="member-row">
+        <span class="who" aria-hidden="true">น</span>
+        <span class="name">นนท์<small>เข้าร่วมวันที่ 1</small></span>
+        <span class="state up">มาแล้ว</span>
+      </div>
+      <div class="member-row">
+        <span class="who" aria-hidden="true">ม</span>
+        <span class="name">มีน<small>เข้าร่วมวันที่ 2</small></span>
+        <span class="state up">มาแล้ว</span>
+      </div>
+      <div class="member-row">
+        <span class="who" aria-hidden="true">ก</span>
+        <span class="name">กร<small>เข้าร่วมวันที่ 3</small></span>
+        <span class="state quiet">ยังไม่มา</span>
+      </div>
+    </div>
+    <p class="px-whisper" style="margin-top:16px">ในวงเห็นแค่ชื่อเรียกกับการมา — ไม่มีคะแนน ไม่มีน้ำหนัก ไม่มีรายละเอียดสุขภาพของใครถูกแชร์โดยอัตโนมัติ</p>
+  </section>
+
+  <section class="px-card full" style="margin-top:12px" aria-label="ชวนเข้าวง">
+    <span class="px-label" style="color:var(--gold)">ชวนคนเข้าวง</span>
+    <p style="margin:10px 0 0;font-size:14.5px;line-height:1.6;color:var(--cream-soft)">วงที่ดีที่สุดคือ 2–5 คนที่คุณเจอในชีวิตจริงอยู่แล้ว ไม่ใช่วงใหญ่ที่ไม่มีใครรู้จักกัน</p>
+    <div class="invite-demo">
+      <code>xircle.app/join/XXXX-demo</code>
+      <button type="button" data-invite-copy>คัดลอก</button>
+    </div>
+    <button type="button" class="px-src-btn" data-source-id="circle-preview" style="margin-top:12px">ทำไมยังเชิญจริงไม่ได้?</button>
+  </section>
+
+  </div>
+
+  <nav class="zone-tabs" aria-label="พื้นที่หลัก">
     <a href="/xircle/start/">Today</a>
+    <a class="active" href="/xircle/circle/">Circle</a>
+    <a href="/xircle/ghost/">Progress</a>
     <a href="/xircle/learn/">Learn</a>
   </nav>
 </main>
+
+<script src="/xircle/_shared/state.js?v=2"></script>
+<script src="/xircle/_shared/analytics.js?v=2"></script>
+<script src="/xircle/_shared/source-drawer.js?v=2"></script>
+<script>
+(function () {
+  "use strict";
+  window.XState.touchVisit();
+  window.XAnalytics.track("xircle_view", { returning: true });
+  var copy = document.querySelector("[data-invite-copy]");
+  if (copy) copy.addEventListener("click", function () {
+    var t = document.createElement("div");
+    t.className = "px-toast"; t.setAttribute("role", "status");
+    t.textContent = "นี่คือตัวอย่าง UI — ลิงก์เชิญจริงจะเปิดใช้ในเฟส Live Circle";
+    document.body.appendChild(t);
+    requestAnimationFrame(function () { t.classList.add("on"); });
+    setTimeout(function () { t.classList.remove("on"); }, 3200);
+    setTimeout(function () { t.remove(); }, 3800);
+  });
+})();
+</script>
 </body>
 </html>

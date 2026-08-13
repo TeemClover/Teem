@@ -11,8 +11,8 @@
 <meta name="description" content="Xircle ไม่ใช่เว็บไซต์ที่มีไว้อ่าน แต่เป็นลูปที่คุณเข้าไปลองใช้ — เริ่มจากหนึ่งวันของคุณเอง">
 <link rel="preload" href="/xircle/assets/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/xircle/assets/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/xircle/_shared/typography.css?v=1">
-<link rel="stylesheet" href="/xircle/_shared/playable.css?v=1">
+<link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
+<link rel="stylesheet" href="/xircle/_shared/playable.css?v=2">
 </head>
 <body>
 
@@ -29,7 +29,14 @@
   <!-- ============ S0 — HOOK (§6) ============
        Rules: no product, no hardware, no Habix, no business,
        no X-VISOR, no income, no MaxAge, no ecosystem diagram. -->
-  <section class="scene" data-scene="S0" data-progress="0" aria-label="เริ่มต้น">
+  <section class="scene has-visual" data-scene="S0" data-progress="0" aria-label="เริ่มต้น">
+    <figure class="scene-visual">
+      <!-- Cropped so no Band/Scale appears on the first screen (§6) -->
+      <img src="/xircle/assets/lifestyle/hook-560.webp"
+           srcset="/xircle/assets/lifestyle/hook-560.webp 560w, /xircle/assets/lifestyle/hook-840.webp 840w"
+           sizes="(min-width:980px) 560px, 100vw"
+           alt="" fetchpriority="high" decoding="async">
+    </figure>
     <div class="scene-inner">
       <div class="scene-body">
         <p class="px-kicker dim fx">XIRCLE</p>
@@ -61,13 +68,21 @@
         </div>
       </div>
       <div class="scene-foot">
-        <button type="button" class="px-cta reveal-later" data-next="S2">ลองดูจากหนึ่งวันจริง ๆ</button>
+        <!-- CTA waits for the staged lines to land (see setupS1) so the
+             point of the scene is not clicked past -->
+        <button type="button" class="px-cta reveal-later" data-hold-cta data-next="S2">ลองดูจากหนึ่งวันจริง ๆ</button>
       </div>
     </div>
   </section>
 
   <!-- ============ S2 — SLEEP DECISION (§8) ============ -->
-  <section class="scene" data-scene="S2" data-progress="15" aria-label="การนอน">
+  <section class="scene has-visual" data-scene="S2" data-progress="15" aria-label="การนอน">
+    <figure class="scene-visual">
+      <img src="/xircle/assets/lifestyle/sleep-960.webp"
+           srcset="/xircle/assets/lifestyle/sleep-640.webp 640w, /xircle/assets/lifestyle/sleep-960.webp 960w, /xircle/assets/lifestyle/sleep-1440.webp 1440w"
+           sizes="(min-width:980px) 560px, 100vw"
+           alt="" loading="lazy" decoding="async">
+    </figure>
     <div class="scene-inner">
       <div class="scene-body">
         <p class="px-time fx">07:12 · เช้าวันใหม่</p>
@@ -97,7 +112,13 @@
 
   <!-- ============ S3 — EAT / SNAP AI WOW MOMENT (§9) ============
        Demo only: no real nutrient numbers, qualitative bars + DEMO label. -->
-  <section class="scene" data-scene="S3" data-progress="24" aria-label="อาหาร">
+  <section class="scene has-visual" data-scene="S3" data-progress="24" aria-label="อาหาร">
+    <figure class="scene-visual">
+      <img src="/xircle/assets/lifestyle/eat-960.webp"
+           srcset="/xircle/assets/lifestyle/eat-640.webp 640w, /xircle/assets/lifestyle/eat-960.webp 960w, /xircle/assets/lifestyle/eat-1440.webp 1440w"
+           sizes="(min-width:980px) 560px, 100vw"
+           alt="" loading="lazy" decoding="async">
+    </figure>
     <div class="scene-inner">
       <div class="scene-body">
         <p class="px-time fx">12:30 · มื้อกลางวัน</p>
@@ -163,7 +184,13 @@
   </section>
 
   <!-- ============ S4 — MOVE (§10) ============ -->
-  <section class="scene" data-scene="S4" data-progress="33" aria-label="การขยับ">
+  <section class="scene has-visual" data-scene="S4" data-progress="33" aria-label="การขยับ">
+    <figure class="scene-visual">
+      <img src="/xircle/assets/lifestyle/move-960.webp"
+           srcset="/xircle/assets/lifestyle/move-640.webp 640w, /xircle/assets/lifestyle/move-960.webp 960w, /xircle/assets/lifestyle/move-1440.webp 1440w"
+           sizes="(min-width:980px) 560px, 100vw"
+           alt="" loading="lazy" decoding="async">
+    </figure>
     <div class="scene-inner">
       <div class="scene-body">
         <p class="px-time fx">15:40 · ช่วงบ่าย</p>
@@ -314,7 +341,14 @@
 
   <!-- ============ S9 — ROUTINEX / BUILD YOUR DAY (§15) ============
        Products are NOT named here — assemble roles first. -->
-  <section class="scene" data-scene="S9" data-progress="74" aria-label="ประกอบวันของคุณ">
+  <section class="scene has-visual" data-scene="S9" data-progress="74" aria-label="ประกอบวันของคุณ">
+    <figure class="scene-visual">
+      <img src="/xircle/assets/product/routinex-box-640.webp"
+           srcset="/xircle/assets/product/routinex-box-640.webp 640w, /xircle/assets/product/routinex-box-960.webp 960w"
+           sizes="(min-width:980px) 560px, 100vw"
+           alt="" loading="lazy" decoding="async">
+      <figcaption>ROUTINEX · SOURCE PHOTO</figcaption>
+    </figure>
     <div class="scene-inner">
       <div class="scene-body">
         <p class="px-kicker fx">BUILD YOUR DAY</p>
@@ -371,22 +405,26 @@
           <article class="product-card" data-abcd="A">
             <button type="button" aria-expanded="false">
               <span class="abcd-chip en">A</span>
+              <span class="shot"><img src="/xircle/assets/product/gus-320.webp" alt="" loading="lazy" decoding="async"></span>
               <span><h3 class="en">G.U.S.+</h3><span class="role">ABSORB — ชั้นเตรียมการดูดซึม</span></span>
               <span class="chev" aria-hidden="true">›</span>
             </button>
             <div class="detail"><div class="detail-in">
               ชั้นแรกของวันคือการเตรียมระบบดูดซึมและ gut ให้พร้อมรับสิ่งที่เหลือทั้งหมด — ถ้าชั้นนี้ไม่ทำงาน ชั้นอื่นก็เหนื่อยฟรี
+              <img class="pack" src="/xircle/assets/product/gus-320.webp" alt="แพ็กเกจ G.U.S.+" loading="lazy" decoding="async">
               <br><button type="button" class="locked" data-source-id="product-ingredients">รายละเอียดส่วนผสม · LOCKED</button>
             </div></div>
           </article>
           <article class="product-card" data-abcd="B">
             <button type="button" aria-expanded="false">
               <span class="abcd-chip en">B</span>
+              <span class="shot"><img src="/xircle/assets/product/protein-hmb-320.webp" alt="" loading="lazy" decoding="async"></span>
               <span><h3 class="en">Protein HMB+</h3><span class="role">BUILD — ชั้นสร้างและรักษากล้ามเนื้อ</span></span>
               <span class="chev" aria-hidden="true">›</span>
             </button>
             <div class="detail"><div class="detail-in">
               ร่างกายไม่ได้ต้องการแค่พลังงาน แต่ต้องการวัตถุดิบไปสร้างและรักษากล้ามเนื้อ — ชั้นนี้คือวัตถุดิบนั้น
+              <img class="pack" src="/xircle/assets/product/protein-hmb-520.webp" alt="แพ็กเกจ Protein HMB+" loading="lazy" decoding="async">
               <br><button type="button" class="locked" data-source-id="product-ingredients">รายละเอียดส่วนผสม · LOCKED</button>
             </div></div>
           </article>
@@ -403,11 +441,14 @@
           <article class="product-card" data-abcd="D">
             <button type="button" aria-expanded="false">
               <span class="abcd-chip en">D</span>
+              <span class="shot"><img src="/xircle/assets/product/astamega-320.webp" alt="" loading="lazy" decoding="async"></span>
               <span><h3 class="en">AstaMega+ · Vita Matrix</h3><span class="role">DAILY BALANCE — ชั้นเติมเต็มรายวัน</span></span>
               <span class="chev" aria-hidden="true">›</span>
             </button>
             <div class="detail"><div class="detail-in">
               สิ่งที่ชีวิตจริงมักขาดแม้ตั้งใจกินดีแล้ว — ชั้นนี้เติมช่องว่างนั้นแบบรายวัน
+              <img class="pack" src="/xircle/assets/product/astamega-320.webp" alt="AstaMega+" loading="lazy" decoding="async">
+              <img class="pack" src="/xircle/assets/product/vita-matrix-320.webp" alt="Vita Matrix" loading="lazy" decoding="async">
               <br><button type="button" class="locked" data-source-id="product-ingredients">รายละเอียดส่วนผสม · LOCKED</button>
             </div></div>
           </article>
@@ -426,7 +467,7 @@
         <p class="px-note fx d3">ข้อมูลไหนยังไม่ยืนยัน เราจะไม่ทำให้มันดูเหมือนยืนยันแล้ว — ส่วนผสมที่ยังตรวจทานไม่จบจะขึ้นสถานะ LOCKED</p>
       </div>
       <div class="scene-foot">
-        <button type="button" class="px-cta" data-next="S11">แล้วข้อมูลพวกนี้มาจากไหน?</button>
+        <button type="button" class="px-cta" data-next="S11">แล้วเรามองเห็นสองชั้นนี้ได้ยังไง?</button>
       </div>
     </div>
   </section>
@@ -440,12 +481,7 @@
 
         <div class="hw-split fx d2">
           <div class="hw-half band">
-            <svg class="hw-icon" viewBox="0 0 64 64" aria-hidden="true">
-              <rect x="22" y="4" width="20" height="14" rx="5" fill="none" stroke="var(--cyan)" stroke-width="2"/>
-              <rect x="18" y="18" width="28" height="28" rx="9" fill="none" stroke="var(--cyan)" stroke-width="2.5"/>
-              <rect x="22" y="46" width="20" height="14" rx="5" fill="none" stroke="var(--cyan)" stroke-width="2"/>
-              <path d="M25 32 h4 l3 -6 4 12 3 -6 h4" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <div class="hw-shot"><img src="/xircle/assets/device/band-285.webp" alt="Xircle Band" loading="lazy" decoding="async"></div>
             <span class="px-label">XIRCLE BAND</span>
             <h3>วัดสิ่งที่คุณทำ</h3>
             <p>การขยับ การนอน จังหวะหัวใจระหว่างวัน</p>
@@ -456,12 +492,7 @@
             <b class="down">OUTCOME</b>
           </div>
           <div class="hw-half scale">
-            <svg class="hw-icon" viewBox="0 0 64 64" aria-hidden="true">
-              <rect x="10" y="10" width="44" height="44" rx="10" fill="none" stroke="var(--blue)" stroke-width="2.5"/>
-              <path d="M22 22 a14 14 0 0 1 20 0" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/>
-              <line x1="32" y1="22" x2="36" y2="16" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="24" cy="42" r="2" fill="var(--blue)"/><circle cx="32" cy="42" r="2" fill="var(--blue)"/><circle cx="40" cy="42" r="2" fill="var(--blue)"/>
-            </svg>
+            <div class="hw-shot"><img src="/xircle/assets/device/scale-362.webp" alt="Xircle Scale" loading="lazy" decoding="async"></div>
             <span class="px-label">XIRCLE SCALE</span>
             <h3>วัดผลลัพธ์ที่ร่างกายตอบ</h3>
             <p>องค์ประกอบร่างกายและทิศทางของมันตามเวลา</p>
@@ -478,7 +509,13 @@
 
   <!-- ============ S12 — BUILD YOUR XIRCLE (§18, §19) ============
        CIRCLE PREVIEW — honest mock. No fake live membership. -->
-  <section class="scene" data-scene="S12" data-progress="93" aria-label="สร้างวงของคุณ">
+  <section class="scene has-visual" data-scene="S12" data-progress="93" aria-label="สร้างวงของคุณ">
+    <figure class="scene-visual">
+      <img src="/xircle/assets/lifestyle/community-960.webp"
+           srcset="/xircle/assets/lifestyle/community-640.webp 640w, /xircle/assets/lifestyle/community-960.webp 960w, /xircle/assets/lifestyle/community-1440.webp 1440w"
+           sizes="(min-width:980px) 560px, 100vw"
+           alt="" loading="lazy" decoding="async">
+    </figure>
     <div class="scene-inner">
       <div class="scene-body">
         <p class="px-kicker fx">YOUR XIRCLE</p>
@@ -546,9 +583,9 @@
 
 </main>
 
-<script src="/xircle/_shared/state.js?v=1"></script>
-<script src="/xircle/_shared/analytics.js?v=1"></script>
-<script src="/xircle/_shared/source-drawer.js?v=1"></script>
-<script src="/xircle/_shared/playable.js?v=1"></script>
+<script src="/xircle/_shared/state.js?v=2"></script>
+<script src="/xircle/_shared/analytics.js?v=2"></script>
+<script src="/xircle/_shared/source-drawer.js?v=2"></script>
+<script src="/xircle/_shared/playable.js?v=2"></script>
 </body>
 </html>

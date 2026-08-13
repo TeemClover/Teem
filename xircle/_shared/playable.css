@@ -75,9 +75,15 @@ img,svg{display:block;max-width:100%}
 .px-top{
   position:fixed;inset:0 0 auto 0;z-index:60;
   display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px 10px;
+  padding:14px 18px 14px;
   pointer-events:none;
-  background:linear-gradient(180deg,rgba(4,16,13,.82),transparent);
+  /* opaque enough that content scrolling underneath never collides
+     with the mark — the gradient alone was not sufficient */
+  background:linear-gradient(180deg,rgba(4,16,13,.96) 0%,rgba(4,16,13,.88) 55%,rgba(4,16,13,0) 100%);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  mask-image:linear-gradient(180deg,#000 65%,transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,#000 65%,transparent 100%);
 }
 .px-mark{
   font-family:var(--font-ui);font-weight:800;font-size:11px;letter-spacing:.34em;
@@ -127,6 +133,32 @@ img,svg{display:block;max-width:100%}
 .scene-inner{
   width:100%;max-width:var(--stage);margin:0 auto;
   display:flex;flex-direction:column;flex:1;
+  position:relative;z-index:1;
+}
+
+/* ---------- cinematic visual layer ----------
+   Mobile: the photograph is the scene's backdrop, scrimmed so type
+   stays AA-legible on top of it.
+   Desktop (≥980px): the same element becomes the second column — a
+   framed cinematic panel beside the narrative (see the desktop block). */
+.scene-visual{
+  position:absolute;inset:0;margin:0;z-index:0;
+  overflow:hidden;pointer-events:none;
+}
+.scene-visual img{
+  width:100%;height:100%;object-fit:cover;object-position:center;
+  opacity:.4;
+}
+.scene-visual::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(4,16,13,.92) 0%,rgba(4,16,13,.55) 38%,rgba(4,16,13,.88) 78%,rgba(4,16,13,.97) 100%),
+    radial-gradient(120% 80% at 50% 0%,transparent 40%,rgba(4,16,13,.5) 100%);
+}
+.scene-visual figcaption{
+  position:absolute;left:0;bottom:0;
+  font-family:var(--font-ui);font-size:9px;letter-spacing:.18em;
+  color:rgba(244,238,224,.3);padding:8px 10px;
 }
 .scene-body{flex:1;display:flex;flex-direction:column;justify-content:center}
 .scene-foot{margin-top:26px;display:flex;flex-direction:column;gap:12px}
@@ -454,6 +486,16 @@ body.night .night-lines .l2{opacity:1}
 .product-card .detail{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s var(--ease),opacity .4s}
 .product-card.open .detail{max-height:420px;opacity:1}
 .product-card .detail-in{padding:0 18px 18px;font-size:14px;line-height:1.62;color:var(--cream-soft)}
+/* real pack photography — the product identity, not an ingredient spec sheet */
+.product-card .shot{
+  flex:none;width:52px;height:52px;border-radius:12px;overflow:hidden;
+  background:rgba(244,238,224,.06);border:1px solid var(--line-soft);
+}
+.product-card .shot img{width:100%;height:100%;object-fit:cover}
+.product-card .detail-in .pack{
+  display:block;width:100%;max-width:260px;margin:14px auto 0;
+  border-radius:var(--r-md);border:1px solid var(--line-soft);
+}
 .product-card .locked{
   display:inline-flex;align-items:center;gap:7px;margin-top:12px;
   font-family:var(--font-ui);font-size:10px;font-weight:800;letter-spacing:.2em;
@@ -471,6 +513,12 @@ body.night .night-lines .l2{opacity:1}
 .hw-half p{margin:0;font-size:14px;color:var(--cream-soft);line-height:1.6}
 .hw-half .px-label{color:var(--cyan)}
 .hw-half.scale .px-label{color:var(--blue)}
+.hw-shot{
+  width:100%;aspect-ratio:16/9;margin:0 0 14px;
+  border-radius:var(--r-md);overflow:hidden;
+  border:1px solid var(--line-soft);background:rgba(244,238,224,.04);
+}
+.hw-shot img{width:100%;height:100%;object-fit:cover}
 .hw-bridge{
   align-self:center;display:flex;flex-direction:column;align-items:center;gap:2px;
   padding:12px 0;font-family:var(--font-ui);font-size:10px;letter-spacing:.26em;color:var(--cream-dim);
@@ -587,6 +635,203 @@ body.night .night-lines .l2{opacity:1}
   border-radius:999px;padding:5px 12px;margin-bottom:18px;
 }
 
+/* ============================================================
+   ZONE COMPONENTS — shared by /circle/, /ghost/, /learn/, /start/
+   so the surfaces after the journey feel like the same product,
+   not a documentation appendix.
+   ============================================================ */
+
+/* zone hero: a photograph banner with the page title over it */
+.zone-hero{
+  position:relative;margin:0 -22px 26px;height:210px;overflow:hidden;
+}
+.zone-hero img{width:100%;height:100%;object-fit:cover;opacity:.55}
+.zone-hero::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(4,16,13,.7) 0%,rgba(4,16,13,.35) 45%,var(--void) 100%);
+}
+.zone-hero .cap{
+  position:absolute;left:22px;right:22px;bottom:16px;z-index:1;
+}
+.zone-hero .cap .px-kicker{margin-bottom:6px}
+.zone-hero .cap h1{margin:0;font-size:clamp(26px,7vw,34px);font-weight:700;line-height:1.25}
+
+/* 7-day presence strip — presence only, never health (§18) */
+.pulse-week{display:flex;gap:6px;margin-top:16px}
+.pulse-week .day{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;
+  font-family:var(--font-ui);font-size:10px;color:var(--cream-dim);
+}
+.pulse-week .dot{
+  width:100%;height:34px;border-radius:9px;
+  border:1px solid var(--line);background:rgba(244,238,224,.03);
+}
+.pulse-week .day.on .dot{background:rgba(143,220,174,.28);border-color:rgba(143,220,174,.5)}
+.pulse-week .day.today .dot{border-color:var(--gold);border-style:dashed}
+
+/* member rows — alias + showed-up only, no ranking, no health detail */
+.member-list{display:flex;flex-direction:column;gap:2px;margin-top:16px}
+.member-row{
+  display:flex;align-items:center;gap:13px;
+  padding:13px 0;border-top:1px solid var(--line-soft);
+}
+.member-row:first-child{border-top:0}
+.member-row .who{
+  flex:none;width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;font-weight:700;font-size:15px;
+  background:rgba(244,238,224,.08);color:var(--cream-soft);
+}
+.member-row.you .who{background:rgba(143,220,174,.2);color:var(--green)}
+.member-row .name{flex:1;font-size:15.5px;font-weight:600}
+.member-row .name small{display:block;font-size:12px;font-weight:400;color:var(--cream-dim);margin-top:2px}
+.member-row .state{
+  flex:none;font-family:var(--font-ui);font-size:10px;font-weight:800;letter-spacing:.14em;
+  padding:5px 10px;border-radius:999px;
+}
+.member-row .state.up{color:var(--green);border:1px solid rgba(143,220,174,.4)}
+.member-row .state.quiet{color:var(--cream-dim);border:1px solid var(--line)}
+
+/* trend chart — raw measures only, delta = latest − baseline (§22) */
+.metric-switch{display:flex;gap:7px;margin-top:18px;flex-wrap:wrap}
+.metric-switch button{
+  min-height:44px;padding:0 15px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card);
+  font-size:13.5px;font-weight:600;color:var(--cream-soft);
+}
+.metric-switch button[aria-pressed="true"]{background:var(--cream);color:#0a1512;border-color:var(--cream)}
+.trend{margin-top:20px}
+.trend svg{width:100%;height:auto;overflow:visible}
+.trend .grid-line{stroke:rgba(244,238,224,.08);stroke-width:1}
+.trend .axis-label{fill:rgba(244,238,224,.4);font-size:9px;font-family:var(--font-ui);letter-spacing:.1em}
+.trend .path-line{fill:none;stroke:var(--blue);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
+  transition:stroke .35s,d .8s var(--ease)}
+.trend .path-area{fill:url(#trendFill);opacity:.5}
+.trend .pt{fill:var(--blue);transition:fill .35s}
+.trend .pt.baseline{fill:var(--cream-dim)}
+.trend-delta{
+  display:flex;align-items:baseline;gap:10px;margin-top:16px;flex-wrap:wrap;
+}
+.trend-delta b{font-family:var(--font-ui);font-size:28px;letter-spacing:-.02em}
+.trend-delta span{font-size:13px;color:var(--cream-dim)}
+
+/* codex cards — knowledge with its status visible (§30) */
+.codex-list{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.codex-card{
+  display:block;text-decoration:none;
+  border:1px solid var(--line);border-radius:var(--r-lg);background:var(--card);
+  padding:20px;
+  transition:border-color var(--dur-fast),transform var(--dur-fast) var(--ease);
+}
+.codex-card:active{transform:scale(.99)}
+.codex-card:hover{border-color:rgba(244,238,224,.28)}
+.codex-card .top{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.codex-card h3{margin:0;font-size:17.5px;font-weight:700;flex:1}
+.codex-card p{margin:0;font-size:14px;line-height:1.6;color:var(--cream-soft)}
+.status-tag{
+  font-family:var(--font-ui);font-size:9px;font-weight:800;letter-spacing:.18em;
+  border-radius:999px;padding:4px 9px;white-space:nowrap;
+}
+.status-tag.canon{color:var(--green);border:1px solid rgba(143,220,174,.45)}
+.status-tag.demo{color:var(--gold);border:1px solid rgba(230,196,131,.45)}
+.status-tag.soon{color:var(--cream-dim);border:1px solid var(--line)}
+
+@media(min-width:760px){
+  .zone-hero{margin-left:-40px;margin-right:-40px;height:260px}
+  .zone-hero .cap{left:40px;right:40px}
+  .codex-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+}
+
+/* Desktop zone pages read as an app view, not a phone floating in the
+   dark: the hero goes wide and the panels sit side by side while the
+   reading measure inside each panel stays the same. */
+@media(min-width:980px){
+  .zone-page{max-width:1000px;padding-left:40px;padding-right:40px}
+  .zone-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;margin-top:18px}
+  .zone-grid>.full{grid-column:1/-1}
+  .zone-grid>section{margin-top:0!important}
+}
+
+/* ---------- X-VISOR job simulator (§25) ----------
+   Reads like a care worklist, not a quiz: each case carries a live
+   signal, and choosing one opens the reasoning behind it. */
+.case-list{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.case-card{
+  display:flex;align-items:center;gap:14px;text-align:left;width:100%;
+  padding:15px 17px;
+  border:1px solid var(--line);border-radius:var(--r-md);background:var(--card);
+  transition:transform var(--dur-fast) var(--ease),border-color var(--dur-fast),background var(--dur-fast);
+}
+.case-card:active{transform:scale(.99)}
+.case-card[aria-pressed="true"]{border-color:rgba(121,217,232,.6);background:rgba(121,217,232,.07)}
+.case-card .avatar{
+  flex:none;position:relative;width:44px;height:44px;border-radius:50%;
+  display:grid;place-items:center;font-weight:700;font-size:17px;
+  background:rgba(244,238,224,.09);color:var(--cream-soft);
+}
+.case-card .avatar i{
+  position:absolute;right:-1px;bottom:-1px;
+  width:12px;height:12px;border-radius:50%;
+  border:2px solid #0a1f19;
+}
+.case-card .avatar i.sig-change{background:var(--blue);animation:px-pulse 2.6s ease-in-out infinite}
+.case-card .avatar i.sig-review{background:var(--green)}
+.case-card .avatar i.sig-quiet{background:var(--orange);animation:px-pulse 3.4s ease-in-out infinite}
+.case-card .who{flex:1;min-width:0}
+.case-card .who b{display:block;font-size:16.5px;font-weight:700}
+.case-card .who small{
+  display:block;font-family:var(--font-ui);font-size:11px;letter-spacing:.06em;
+  color:var(--cream-dim);margin-top:3px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.case-card .tick{
+  flex:none;width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--line);display:grid;place-items:center;
+  font-size:12px;color:var(--void);
+}
+.case-card[aria-pressed="true"] .tick{background:var(--cyan);border-color:var(--cyan)}
+
+/* the reasoning panel, read as a care brief */
+.care-brief{margin-top:16px}
+.care-brief .step{
+  position:relative;padding:0 0 20px 26px;
+  border-left:1px solid var(--line);
+}
+.care-brief .step:last-child{border-left-color:transparent;padding-bottom:0}
+.care-brief .step::before{
+  content:"";position:absolute;left:-5px;top:3px;
+  width:9px;height:9px;border-radius:50%;background:var(--cream-dim);
+}
+.care-brief .step.signal::before{background:var(--cyan)}
+.care-brief .step.why::before{background:var(--gold)}
+.care-brief .step.mission::before{background:var(--green)}
+.care-brief .step.follow::before{background:var(--blue)}
+.care-brief .step b{
+  display:block;font-family:var(--font-ui);font-size:10px;font-weight:800;
+  letter-spacing:.2em;margin-bottom:5px;
+}
+.care-brief .step.signal b{color:var(--cyan)}
+.care-brief .step.why b{color:var(--gold)}
+.care-brief .step.mission b{color:var(--green)}
+.care-brief .step.follow b{color:var(--blue)}
+.care-brief .step p{margin:0;font-size:14.5px;line-height:1.62;color:var(--cream-soft)}
+
+/* workload: the real shape of the job, before any revenue talk (§27) */
+.workload-grid{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+.workload-item{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 15px;border:1px solid var(--line-soft);border-radius:var(--r-sm);
+  background:rgba(244,238,224,.03);
+  font-size:14.5px;line-height:1.45;
+}
+.workload-item .count{
+  flex:none;font-family:var(--font-ui);font-weight:800;font-size:12px;
+  color:var(--gold);border:1px solid rgba(230,196,131,.4);
+  border-radius:999px;padding:4px 9px;
+}
+@media(min-width:760px){
+  .workload-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+}
+
 /* ---------- toast ---------- */
 .px-toast{
   position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:90;
@@ -598,11 +843,10 @@ body.night .night-lines .l2{opacity:1}
 }
 .px-toast.on{transform:translate(-50%,0)}
 
-/* ---------- desktop: cinematic stage, same flow (§4) ---------- */
+/* ---------- tablet ---------- */
 @media(min-width:760px){
   body{font-size:18px}
   .scene{padding-top:96px}
-  .scene-inner{max-width:var(--stage)}
   h1.px-title,h2.px-title{font-size:clamp(38px,4.6vw,52px)}
   .px-top{padding:20px 28px 12px}
   .hw-split{flex-direction:row;align-items:stretch;gap:0}
@@ -610,6 +854,59 @@ body.night .night-lines .l2{opacity:1}
   .hw-bridge{padding:0 18px;justify-content:center}
   .fork-grid{flex-direction:row}
   .fork-card{flex:1}
+}
+
+/* ---------- desktop: two layers, same flow (§4) ----------
+   Narrative column keeps mobile's reading measure; the photograph
+   becomes a framed cinematic panel beside it rather than a backdrop.
+   Scenes without a visual stay centred — they are the quiet beats. */
+@media(min-width:980px){
+  .scene{padding:104px 40px 48px}
+
+  .scene.has-visual.active,
+  .scene.has-visual.leaving{
+    display:grid;
+    grid-template-columns:minmax(440px,540px) minmax(0,1fr);
+    gap:clamp(40px,5vw,80px);
+    align-items:center;
+    width:min(100%,1240px);
+    margin:0 auto;
+  }
+  .scene.has-visual .scene-inner{order:1;max-width:560px;min-height:0;flex:0 1 auto}
+  .scene.has-visual .scene-visual{order:2}
+
+  .scene.has-visual .scene-visual{
+    position:relative;inset:auto;
+    align-self:center;
+    width:100%;max-width:560px;
+    aspect-ratio:4/5;max-height:74svh;
+    border-radius:var(--r-lg);
+    border:1px solid var(--line);
+    box-shadow:0 46px 100px rgba(0,0,0,.5);
+  }
+  .scene.has-visual .scene-visual img{opacity:1}
+  .scene.has-visual .scene-visual::after{
+    background:
+      linear-gradient(180deg,transparent 45%,rgba(4,16,13,.55) 100%),
+      radial-gradient(90% 70% at 50% 40%,transparent 55%,rgba(4,16,13,.35) 100%);
+  }
+  .scene.has-visual .scene-visual figcaption{color:rgba(244,238,224,.5)}
+
+  /* the data visuals belong to the narrative side, sized up a little */
+  .sleep-visual{width:min(280px,80%)}
+  .move-visual{width:min(250px,72%)}
+  .habit-ring{width:min(240px,66%)}
+
+  /* wide, product-facing panels read better side by side */
+  .product-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start}
+  .product-card.nonproduct{grid-column:1/-1}
+  .scene.has-visual .product-list{grid-template-columns:1fr}
+}
+
+/* On very wide screens the frame can breathe without the type following */
+@media(min-width:1400px){
+  .scene.has-visual.active,.scene.has-visual.leaving{width:min(100%,1340px)}
+  .scene.has-visual .scene-visual{max-width:620px}
 }
 
 /* ---------- reduced motion (§41, §42) ---------- */

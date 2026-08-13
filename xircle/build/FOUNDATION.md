@@ -1,6 +1,6 @@
 # XIRCLE PLAYABLE — FOUNDATION BLUEPRINT (สำหรับ agent ที่มาสร้างต่อ)
 
-**สถานะ:** เสาเข็มตอกแล้ว (Foundation + First Journey ครบลูป)
+**สถานะ:** เสาเข็มตอกแล้ว + Visual Pass รอบแรกเสร็จ
 **สร้างเมื่อ:** 2026-08-13
 **อ้างอิง:** `XIRCLE_PLAYABLE_PRODUCT_BUILD_BLUEPRINT_v0.3_20260813.md` (blueprint)
 และ `XIRCLE_PROJECT_SOURCE_OF_TRUTH_v1_2026-08-11.md` (content authority — ชนะเสมอเมื่อขัดกัน)
@@ -35,10 +35,20 @@ Playable first-time journey ครบ 14 ฉากตาม state machine ขอ
 
 ### หน้าอื่นที่ใช้งานได้จริง
 - `/xircle/start/` — Returning Home (§20): greeting ตามเวลาจริง, Adjust One (local-only), Circle Pulse preview, tabs
-- `/xircle/opportunity/` — X-VISOR Job Simulator (§25–27): 3 เคสสมมติ → opener choice + feedback → workload ×5 → career path (ไม่มีตัวเลขรายได้)
+- `/xircle/opportunity/` — X-VISOR Job Simulator (§25–27): worklist ที่มี signal dot เต้นจริง → Care Brief timeline (SIGNAL/WHY/MISSION/FOLLOW-UP) → opener choice + feedback → workload ×5 → career path (ไม่มีตัวเลขรายได้)
+- `/xircle/circle/` — Circle façade (§18–19): Circle Pulse วันนี้, pulse strip 7 วัน, member list (alias + มา/ยังไม่มา เท่านั้น), invite demo — ติดป้าย CIRCLE PREVIEW ตลอด
+- `/xircle/ghost/` — Progress façade (§22): กราฟแนวโน้ม 28 วันสลับได้ 3 ค่า (Weight / Pure Muscle / Fat Mass) พร้อม delta = latest − baseline, ชุด DEMO ชัดเจน
+- `/xircle/learn/` — Codex façade (§30): การ์ดความรู้พร้อม status badge (CANON / DEMO / PROVISIONAL) เปิด source drawer ได้
 
 ### หน้าจองโซน (placeholder มีโครง มีแผนเขียนบอกในหน้า)
-`/xircle/circle/` `/xircle/ghost/` `/xircle/routinex/` `/xircle/hardware/` `/xircle/products/` `/xircle/care/` `/xircle/learn/`
+`/xircle/routinex/` `/xircle/hardware/` `/xircle/products/` `/xircle/care/`
+
+### Visual layer (Visual Pass รอบแรก)
+- `assets/lifestyle/` — ภาพถ่ายจริงจาก source เดิม (eat / sleep / move / morning / community / xvisor / source) ทำ responsive 640·960·1440 + `hook` crop เฉพาะจอแรก
+- `assets/product/` — ภาพแพ็กจริง G.U.S.+ / Protein HMB+ / AstaMega+ / Vita Matrix / กล่อง RoutineX
+- `assets/device/` — Band และ Scale crop ออกมาจาก brochure composite **โดยตัดตัวเลขคะแนน/ค่าที่ baked ไว้ทิ้ง** เพื่อไม่ให้ดูเหมือนผลวัดจริง
+- Desktop เป็น **two-layer cinematic**: narrative column (≤560px) + framed visual panel — มือถือใช้ภาพเดียวกันเป็น backdrop ที่ scrim แล้ว
+- ทุกภาพเป็น source-backed ไม่มีการสร้าง ingredient label / measurement result / device spec ปลอม (§40)
 
 ### Shared foundation (`_shared/`)
 | ไฟล์ | หน้าที่ | หมายเหตุ |
@@ -86,9 +96,19 @@ Playable first-time journey ครบ 14 ฉากตาม state machine ขอ
 ## 3. งานถัดไปเรียงตามลำดับ (Phase C → F ของ blueprint §45)
 
 ### ทันที (ขัดเกลาสิ่งที่มี)
-- [ ] Micro-polish S3: ภาพจานอาหารตอนนี้เป็น abstract SVG — ถ้าจะยกระดับเป็นภาพ generated ต้องไม่ปลอมผลวิเคราะห์จริง (§40)
+- [ ] `/xircle/start/` ยังไม่ได้ทำ visual pass — ควรได้ zone-hero + ภาพเหมือนหน้าอื่น
 - [ ] เพิ่ม 7-Day Checkpoint mock ใน `/xircle/start/` (§21)
 - [ ] Day-state ใน start/: นับ streak จาก `XState.local` (มี `visitCount`, `lastVisitDate` รอแล้ว)
+- [ ] จานอาหารใน S3 ยังเป็น SVG abstract (ตัวเลือก) — ภาพถ่ายจริงจะดีกว่าถ้าหา source ที่ไม่ปลอมผลวิเคราะห์ได้
+
+### รอบรีวิวที่ปิดไปแล้ว (GPT review, 2026-08-13)
+- [x] ไม่มีภาพจริงเลย → นำ asset จาก source กลับเข้ามาทั้งชุด
+- [x] Desktop แคบเหมือนมือถือยักษ์ → two-layer cinematic composition
+- [x] หลัง journey ตกไปเจอ placeholder → circle / ghost / learn เป็น façade เต็มแล้ว
+- [x] X-VISOR simulator ต้องดูเหมือนหน้าจอทำงานจริง → case worklist + care brief timeline
+- [x] S1 กด CTA ผ่านก่อนอ่านข้อความสำคัญ → CTA ถูก hold จนบรรทัดสุดท้ายขึ้นครบ
+- [x] RoutineX 5 กดเหมือน checklist → C เป็น moment ใหญ่ แล้ว auto-snap ที่เหลือ
+- [x] copy CTA หลัง Product ฟังเหมือนถามแหล่งข้อมูลสินค้า → "แล้วเรามองเห็นสองชั้นนี้ได้ยังไง?"
 
 ### Phase C เต็ม — System Reveal deep dives
 - [ ] `/xircle/routinex/` — 28-Day Run interactive เต็มหน้า
