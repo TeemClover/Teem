@@ -805,7 +805,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   /* ═══ วาดผลลัพธ์ ═══ */
   var results = $('results'), resTitle = $('resTitle'), resCount = $('resCount');
 
-  function render(list, title, topId){
+  function render(list, title, topId, isDefault){
     openId = null;
     if(!list.length){
       resTitle.textContent = 'ยังไม่เจอลิ้นชักที่ตรง';
@@ -819,20 +819,37 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     }
     results.className = 'grid';
     resTitle.textContent = title;
-    resCount.textContent = 'เจอ ' + list.length + ' ใบ จากทั้งหมด ' + V.prompts.length;
+    resCount.textContent = isDefault
+      ? 'สุ่มมาให้ ' + list.length + ' ใบ จากทั้งหมด ' + V.prompts.length
+      : 'เจอ ' + list.length + ' ใบ จากทั้งหมด ' + V.prompts.length;
     results.innerHTML = list.map(function(p){ return cardHTML(p, p.id === topId); }).join('');
   }
 
   var active = [], qEl = $('q');
 
-  function run(){
+  /* หน้าแรกโชว์แค่ 2 สูตร เพื่อไม่ให้หน้ายืดยาว — กดสุ่มใหม่หรือเปิดทั้งตู้ได้จากปุ่มด้านล่าง */
+  var DEFAULT_PICK = 2;
+  var defaultList = null;
+
+  function pickDefault(){
+    var pool = V.prompts.filter(function(p){ return p.featured; });
+    if(pool.length <= DEFAULT_PICK) return pool.slice();
+    var copy = pool.slice(), out = [];
+    while(out.length < DEFAULT_PICK && copy.length){
+      out.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
+    }
+    return out;
+  }
+
+  function run(reroll){
     var raw = qEl.value.trim();
     $('clrQ').hidden = !raw;
     var words = raw ? raw.split(/\s+/).map(norm).filter(Boolean) : [];
 
     var title, topId = null, list;
     if(!words.length && !active.length){
-      list = V.prompts.filter(function(p){ return p.featured; });
+      if(reroll || !defaultList) defaultList = pickDefault();
+      list = defaultList;
       title = 'ไอเท็มที่คนหยิบบ่อย';
     } else {
       var scored = INDEX.map(function(e){ return { p: e.p, s: score(e, words, active) }; })
@@ -843,7 +860,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       list = scored.map(function(x){ return x.p; });
       title = 'เจอไอเท็มที่น่าจะช่วยคุณได้';
     }
-    render(list, title, topId);
+    render(list, title, topId, !words.length && !active.length);
     try{
       sessionStorage.setItem('mc_v_q', raw);
       sessionStorage.setItem('mc_v_i', active.join(','));
@@ -1380,7 +1397,7 @@ function rewriteResults(){
     var zones=selectedZones();
 
     if(title){
-      var next='สูตรที่หยิบบ่อย';
+      var next='สูตรที่สุ่มมาให้';
       if(query)next='สูตรที่ตรงกับ “'+query+'”';
       else if(zones.length)next='สูตรในโซน '+zones.join(' + ');
       setText(title,next);

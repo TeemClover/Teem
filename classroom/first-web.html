@@ -95,14 +95,47 @@ html,body{min-height:100%}body{overflow-y:auto!important}
 .head>.classroom-lesson-header-image{width:calc(100% + 68px);max-width:none;margin:-36px -34px 28px}
 .hero>.classroom-lesson-header-image{width:calc(100% + (2 * clamp(28px,6vw,46px)));max-width:none;margin:calc(-1 * clamp(28px,6vw,46px)) calc(-1 * clamp(28px,6vw,46px)) 26px}
 .lesson6-hero>.classroom-lesson-header-image{width:100%;max-width:none;margin:0}
-.lesson6-hero>.hero-art{position:relative;z-index:1;display:block;width:100%;padding:0 42px 6px}
-.lesson6-hero>.hero-art svg{display:block;width:100%;height:auto;max-width:520px;margin:0 auto;filter:drop-shadow(0 18px 26px rgb(0 0 0/.22))}
-@media(max-width:680px){.lesson6-hero>.hero-art{padding:0 24px 4px}}
+/* ตำแหน่งภาพเชฟยึดตาม .hero-grid เดิมของบท 6: จัดกลางทั้งแนวตั้งและแนวนอนในช่องของตัวเอง */
+.lesson6-hero>.hero-art{position:relative;z-index:1;min-height:360px;display:grid;place-items:center;padding:0}
+.lesson6-hero>.hero-art svg{width:100%;height:auto;overflow:visible;filter:drop-shadow(0 24px 28px rgb(0 0 0/.34))}
+/* จอกว้าง: ยึดสัดส่วนและระยะของ .hero-grid เดิม — ภาพเต็มช่องและจัดกลาง ระยะขอบอยู่ที่ตัวการ์ด ไม่ใช่ที่ภาพ */
+@media(min-width:761px){
+  .lesson6-hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);align-items:center;gap:18px;padding:0 0 34px}
+  .lesson6-hero h1{max-width:none}
+  .lesson6-hero>.classroom-lesson-header-image{grid-column:1/-1}
+  .lesson6-hero>.lesson6-hero-copy{grid-column:1;grid-row:2;padding-bottom:0}
+  .lesson6-hero>.hero-art{grid-column:2;grid-row:2;padding-right:38px}
+}
+@media(max-width:760px){.lesson6-hero>.hero-art{min-height:300px;padding:0 24px 14px}}
 @media(max-width:560px){
   .head>.classroom-lesson-header-image{width:calc(100% + 44px);margin:-26px -22px 22px}
 }
 </style>
+<style id="classroom-sauce-flow-style">
+.sauce-flow{margin:26px 0 4px}
+.sauce-flow__frame{display:block;overflow:hidden;border-radius:24px;border:1px solid rgba(10,48,31,.12);box-shadow:0 16px 40px rgba(10,48,31,.12);background:#fff;line-height:0}
+.sauce-flow__frame img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover}
+.sauce-flow__cap{margin-top:10px;text-align:center;font-size:13px;line-height:1.6;color:rgba(10,48,31,.62)}
+@media(max-width:680px){.sauce-flow{margin:20px 0 2px}.sauce-flow__frame{border-radius:18px}.sauce-flow__cap{font-size:12px}}
+</style>
 
+<style id="lesson6-rescue-style">
+.rescue{margin-top:14px;border:1px solid rgb(var(--gold)/.34);border-radius:15px;background:rgb(var(--gold)/.07);overflow:hidden}
+.rescue>summary{cursor:pointer;list-style:none;padding:15px 17px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15.5px;color:rgb(var(--deep));display:flex;align-items:center;gap:9px}
+.rescue>summary::-webkit-details-marker{display:none}
+.rescue>summary::after{content:"▾";margin-left:auto;font-size:13px;opacity:.55;transition:transform .18s ease}
+.rescue[open]>summary::after{transform:rotate(180deg)}
+.rescue>summary:focus-visible{outline:2px solid rgb(var(--green));outline-offset:-3px}
+.rescue__body{padding:0 17px 17px;font-size:14.4px;line-height:1.75;color:rgb(var(--ink)/.86)}
+.rescue__body p{margin-top:9px}
+.rescue__why{margin-top:10px;padding:11px 13px;border-left:3px solid rgb(var(--gold)/.5);border-radius:0 9px 9px 0;background:rgb(255 255 255/.6);font-size:13.8px}
+.rescue__ways{margin-top:13px;display:grid;gap:9px}
+.rescue__way{padding:12px 13px;border:1px solid rgb(var(--ink)/.1);border-radius:11px;background:#fff}
+.rescue__way b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:14.4px;color:rgb(var(--deep))}
+.rescue__way p{margin-top:3px;font-size:13.6px;color:rgb(var(--ink)/.74)}
+.rescue__check{margin-top:13px;font-size:13.6px;color:rgb(var(--ink)/.74)}
+@media(max-width:600px){.rescue>summary{font-size:14.6px;padding:13px 14px}.rescue__body{padding:0 14px 14px}}
+</style>
 </head>
 <body>
 <nav class="mc-lesson-nav" aria-label="ห้องเรียน myClover"><div class="mc-lesson-nav__inner">
@@ -222,23 +255,28 @@ html,body{min-height:100%}body{overflow-y:auto!important}
 </section>
 
 <section class="block smart-resume-workflow" id="smart-resume">
-  <div class="section-head"><div><span class="ey">SERVE · SMART RESUME</span><h2>ทำ Smart Resume ให้ได้วันนี้</h2><p>ใช้วิธีเดียวกับบท 2: สกัดซอสจากแชทที่รู้จักคุณ → ย้ายไฟล์ .md → สั่งสั้น ๆ → เปิดเช็กก่อนเสิร์ฟ</p></div></div>
+  <div class="section-head"><div><span class="ey">SERVE · SMART RESUME</span><h2>ทำ Smart Resume ให้ได้วันนี้</h2><p>จังหวะเดียวกับบท 2 และ 3: ใช้ซอสแม่สกัดซอสลูก → ใช้ซอสลูกสร้างงานด้วยคำสั่งสั้น → ตรวจงานที่ได้กลับไปที่ซอส</p></div></div>
   <div class="smart-actions"><a class="btn alt" href="/resume/first-version/" target="_blank" rel="noopener">ดูตัวอย่าง Smart Resume →</a></div>
 
-  <div class="smart-steps">
+  <figure class="sauce-flow"><span class="sauce-flow__frame"><img src="/classroom/img/sauce-flow-3step.jpeg" width="1600" height="800" loading="lazy" decoding="async" alt="สามขั้นตอนของการปรุงจากซอส · ขั้นที่ 1 ใช้ซอสแม่สกัดซอสลูก · ขั้นที่ 2 ใช้ซอสลูกสร้างงาน เช่น สไลด์ เอกสาร หรือภาพ · ขั้นที่ 3 ตรวจงานที่ได้จากซอสว่าตรงเป้าหมาย ครบถ้วน ชัดเจน และพร้อมใช้"></span><figcaption class="sauce-flow__cap">ทุกบทตั้งแต่นี้ไปใช้จังหวะเดียวกัน — ซอสแม่ให้ซอสลูก ซอสลูกให้งาน แล้วตรวจงานกลับไปที่ซอส</figcaption></figure>
+      <div class="smart-steps">
     <article class="smart-step">
       <span class="step-no">1</span>
       <div class="step-body">
-        <h3>สกัดซอส Smart Resume .md</h3>
-        <p>วาง Prompt นี้ในแชทหรือ AI ที่รู้จักคุณอยู่แล้ว ไฟล์ที่ได้ต้องเก็บทั้ง <b>ข้อมูลเจ้าของ + WORK / LIFE + สไตล์ + กติกาสร้าง index.html</b> ไว้ครบ เพื่อรอบถัดไปไม่ต้องอธิบายใหม่</p>
-        <div class="source-warning"><strong>ห้ามเริ่มข้อ 1 จากแชทว่าง</strong><span>ทำข้อนี้ใน AI หรือแชทที่รู้จักคุณมากที่สุด ให้ใช้แชทนี้รวมกับ Memory / ประวัติอื่นที่มันเข้าถึงได้จริง เพื่อรวบรวมข้อมูลให้ครบที่สุด แต่คัดเฉพาะเรื่องที่เหมาะกับการเปิดสาธารณะ ถ้ามันเข้าถึงอะไรไม่ได้ ห้ามอ้างว่าเห็นและห้ามเดาแทน</span></div>
+        <h3>ใช้ซอสแม่ สกัดซอสลูกสำหรับ Smart Resume</h3>
+        <p>แนบ<b>ซอสแม่</b>จากบทที่ 1 แล้ววาง Prompt นี้ ไฟล์ที่ได้ต้องเก็บทั้ง <b>ข้อมูลเจ้าของ + WORK / LIFE + สไตล์ + กติกาสร้าง index.html</b> ไว้ครบ เพื่อรอบถัดไปไม่ต้องอธิบายใหม่ ผลลัพธ์คือ <code>resume-source-YYYY-MM-DD-HHmm.md</code> ที่มีวันเวลากำกับไว้ในชื่อ</p>
+        <div class="source-warning"><strong>ยังไม่มีซอสแม่ก็ทำได้ แต่อย่าเริ่มจากแชทว่าง</strong><span>ถ้ามีซอสแม่ให้แนบก่อน ถ้ายังไม่มี ให้ทำข้อนี้ใน AI หรือแชทที่รู้จักคุณมากที่สุด Prompt จะไปค้นจาก Memory และประวัติอื่นที่ระบบเข้าถึงได้จริงเพิ่มให้เอง แต่คัดเฉพาะเรื่องที่เหมาะกับการเปิดสาธารณะ ถ้ามันเข้าถึงอะไรไม่ได้ ห้ามอ้างว่าเห็นและห้ามเดาแทน</span></div>
         <div class="prompt-card" data-prompt-collapse data-expanded="false"><span class="prompt-copy" id="smartPrompt1">สกัดข้อมูลเกี่ยวกับฉันจากบริบททั้งหมดที่ AI ตัวนี้เข้าถึงได้จริง แล้วสร้างเป็น Source / ซอส ไฟล์ Markdown (.md) ที่พร้อมใช้สร้าง “Smart Resume” แบบ Single-file HTML ได้ทันที โดยคำสั่งสำหรับสร้างเว็บทั้งหมดต้องถูกรวมอยู่ในไฟล์ .md นี้แล้ว
 
-แหล่งข้อมูลที่ให้สำรวจ:
-- ใช้บทสนทนาปัจจุบันเป็นฐาน
-- ถ้าระบบนี้มี Memory, โปรไฟล์, Personal Context หรือประวัติแชทอื่นของบัญชีนี้ที่ระบบเข้าถึงได้จริง ให้ค้นและรวบรวมข้อมูลเกี่ยวกับฉันจากบริบทเหล่านั้นด้วย เพื่อให้ Source รู้จักเจ้าของมากที่สุด
+แหล่งข้อมูลที่ให้สำรวจ เรียงตามลำดับ:
+1. ซอสแม่ (.md) ที่ฉันแนบมา ถ้ามี — ใช้เป็นฐานหลักเสมอ
+2. บทสนทนาปัจจุบัน
+3. ถ้าข้อมูลจาก 1 และ 2 ยังไม่พอสำหรับหัวข้อใด และระบบนี้มี Memory, โปรไฟล์, Personal Context หรือประวัติแชทอื่นของบัญชีนี้ที่เข้าถึงได้จริง ให้ค้นและรวบรวมข้อมูลเกี่ยวกับฉันจากบริบทเหล่านั้นเพิ่ม เพื่อให้ Source รู้จักเจ้าของมากที่สุด
 - ถ้าระบบเข้าถึงแชทอื่นไม่ได้ ห้ามอ้างว่าเข้าถึงได้ และห้ามแต่งข้อมูลมาชดเชย
-- ถ้าข้อมูลขัดกัน ให้ยึดข้อมูลล่าสุดที่เจ้าของระบุหรือแก้ไขเอง ถ้ายังยืนยันไม่ได้ให้ตัดออก
+- ถ้าข้อมูลขัดกัน ให้ยึดซอสแม่ก่อน แล้วจึงยึดข้อมูลล่าสุดที่เจ้าของระบุหรือแก้ไขเอง ถ้ายังยืนยันไม่ได้ให้ตัดออก
+
+ตั้งชื่อไฟล์ว่า resume-source-YYYY-MM-DD-HHmm.md โดยใช้วันและเวลาปัจจุบันขณะสร้างไฟล์
+ถ้าระบบไม่รู้เวลาจริง ให้คงตัวอักษร YYYY-MM-DD-HHmm ไว้ตามนั้น เพื่อให้ฉันเติมเอง
 
 PUBLIC-SAFE FILTER — สำคัญมาก:
 - ใส่เฉพาะข้อมูลที่เหมาะสำหรับเปิดบนเว็บไซต์สาธารณะ
@@ -249,8 +287,15 @@ PUBLIC-SAFE FILTER — สำคัญมาก:
 
 สร้างไฟล์ .md ตามโครงนี้:
 
-# Smart Resume Source
-&gt; เอกสารนี้คือ “ซอส” สำหรับสร้าง Smart Resume ของเจ้าของข้อมูล เมื่อแนบไฟล์นี้ให้ AI แล้วสั่งเพียง “ทำเวปตามซอสนี้” ให้ทำตาม BUILD DIRECTIVE ด้านล่างทันที
+# ซอสลูก (Smart Resume Source)
+&gt; เอกสารนี้คือ “ซอส” (Source) สำหรับสร้าง Smart Resume ของเจ้าของข้อมูล เก็บทั้งข้อมูล สไตล์ และกติกาสร้างเว็บไว้ครบแล้ว
+&gt; เมื่อแนบไฟล์นี้ให้ AI แล้วสั่งเพียง “ทำเวปตามซอสนี้” ให้ถือว่า “ซอส” หมายถึงไฟล์นี้ และให้ทำตาม BUILD DIRECTIVE ด้านล่างทันทีโดยไม่ต้องถามเพิ่ม
+
+## ข้อมูลไฟล์
+- ชื่อไฟล์: resume-source-YYYY-MM-DD-HHmm.md
+- สร้างเมื่อ: (วัน เดือน ปี และเวลาที่สร้างไฟล์นี้)
+- ซอสแม่ที่ใช้: (ชื่อไฟล์ซอสแม่ที่แนบมา หรือระบุว่าไม่ได้แนบ)
+- แหล่งข้อมูลที่ใช้: (ระบุว่าส่วนไหนมาจากซอสแม่ ส่วนไหนมาจากบทสนทนา และส่วนไหนมาจากบริบทอื่น)
 
 ## 0. BUILD DIRECTIVE — คำสั่งที่ต้องใช้สร้าง index.html
 - สร้างไฟล์ `index.html` ฉบับเต็มเพียงไฟล์เดียว พร้อมใช้งานทันที
@@ -309,8 +354,8 @@ PUBLIC-SAFE FILTER — สำคัญมาก:
 Checklist ว่า Source มีข้อมูลพอสร้างเว็บ, ไม่มีข้อเท็จจริงแต่งเพิ่ม, ไม่มีข้อมูลลับ, Link ที่ใช้เป็น Public จริง, WORK/LIFE แยกได้ และ BUILD DIRECTIVE ครบจน Prompt รอบถัดไปเหลือเพียง “ทำเวปตามซอสนี้”
 
 ลงมือสร้าง Source ทันที ห้ามถามคำถามกลับ
-ส่งออกเป็นไฟล์ `.md` พร้อมให้ดาวน์โหลด
-ถ้าระบบแนบไฟล์ไม่ได้ ให้ส่ง Markdown ทั้งหมดใน code block เดียวทันที โดยไม่ถามกลับ</span><button class="copy-smart" type="button" data-copy-target="smartPrompt1" aria-label="คัดลอกคำสั่ง">คัดลอก</button><button class="prompt-expand" type="button" aria-expanded="false" aria-label="ขยายอ่าน Prompt ทั้งหมด">ขยายอ่าน Prompt</button></div>
+ส่งออกเป็นไฟล์ `.md` พร้อมให้ดาวน์โหลด โดยใช้ชื่อไฟล์ resume-source-YYYY-MM-DD-HHmm.md ตามเวลาจริง
+ถ้าระบบแนบไฟล์ไม่ได้ ให้ส่ง Markdown ทั้งหมดใน code block เดียวทันที โดยไม่ถามกลับ และบอกชื่อไฟล์ที่ควรใช้บันทึกไว้ด้านบน code block</span><button class="copy-smart" type="button" data-copy-target="smartPrompt1" aria-label="คัดลอกคำสั่ง">คัดลอก</button><button class="prompt-expand" type="button" aria-expanded="false" aria-label="ขยายอ่าน Prompt ทั้งหมด">ขยายอ่าน Prompt</button></div>
       </div>
     </article>
 
@@ -352,6 +397,29 @@ Checklist ว่า Source มีข้อมูลพอสร้างเว�
     <article class="step"><span class="n">3</span><div><b>ดับเบิลคลิกไฟล์</b><p>เบราว์เซอร์จะเปิดให้ทันที แม้ยังไม่ได้เอาขึ้นอินเทอร์เน็ต คุณจึงทดสอบ แก้ และพกไฟล์นี้ไปเปิดเครื่องอื่นได้</p></div></article>
     <article class="step"><span class="n">4</span><div><b>แก้ซอสก่อน แล้วค่อยให้ AI แก้หน้า</b><p>ถ้าข้อมูลผิด อย่าซ่อมเฉพาะสีหรือประโยคปลายทาง แก้ซอสต้นฉบับ แล้วสั่งให้สร้าง Version ใหม่จากซอสที่ถูกต้อง</p></div></article>
   </div>
+  <details class="rescue">
+    <summary>⚠️ ถ้าโค้ดขาดกลางคัน — AI พลาดได้ และนี่คือทางถอย</summary>
+    <div class="rescue__body">
+      <p><b>อาการ:</b> โค้ดหยุดกลางบรรทัด หรือไม่มี <code>&lt;/html&gt;</code> ปิดท้าย บันทึกไปแล้วเปิดมาหน้าเพี้ยนหรือว่างเปล่า</p>
+      <div class="rescue__why">ไม่ใช่ความผิดคุณ และไม่ได้แปลว่าซอสไม่ดี — AI ทุกตัวมีเพดานความยาวของคำตอบหนึ่งครั้ง หน้าเว็บไฟล์เดียวที่มีทั้ง HTML, CSS และ JavaScript มักยาวเกินเพดานของรุ่นฟรี นี่คือข้อจำกัดของเครื่องมือ ไม่ใช่สัญญาณว่าให้เลิก</div>
+      <div class="rescue__ways">
+        <div class="rescue__way">
+          <b>ทาง 1 · สั่งให้เขียนต่อ (ลองอันนี้ก่อน)</b>
+          <p>อย่าสั่งว่า “ส่งใหม่ทั้งหมด” เพราะจะโดนตัดที่เดิม ให้สั่งต่อจากจุดที่ค้าง แล้วเอาโค้ดที่ได้ไปต่อท้ายในไฟล์เดิมของคุณเอง</p>
+          <div class="prompt-card"><span class="prompt-copy" id="rescuePrompt">เขียนต่อจากบรรทัดสุดท้ายที่ค้างไว้ทันที ห้ามเริ่มใหม่ ห้ามสรุป และห้ามใส่คำอธิบายใด ๆ ส่งเฉพาะโค้ดส่วนที่เหลือจนจบไฟล์</span><button class="copy-smart" type="button" data-copy-target="rescuePrompt" aria-label="คัดลอกคำสั่งให้เขียนต่อ">คัดลอก</button></div>
+        </div>
+        <div class="rescue__way">
+          <b>ทาง 2 · สั่งแบ่งส่งตั้งแต่แรก</b>
+          <p>ถ้าขาดซ้ำหลายรอบ ให้บอกว่า “แบ่งส่งเป็น 3 ครั้ง ครั้งละส่วน ส่งครั้งที่ 1 ก่อน แล้วรอฉันบอกว่าต่อ” จากนั้นต่อโค้ดเรียงกันในไฟล์เดียว</p>
+        </div>
+        <div class="rescue__way">
+          <b>ทาง 3 · ขอฉบับสั้นลงก่อน</b>
+          <p>บอกว่า “ทำฉบับสั้นลง ตัด section ที่ซอสมีข้อมูลน้อยที่สุดออกก่อน” ได้หน้าที่เปิดได้จริงก่อน แล้วค่อยขอเพิ่มทีละส่วนทีหลัง</p>
+        </div>
+      </div>
+      <p class="rescue__check">เช็กทุกครั้งก่อนบันทึก: ไฟล์ต้องขึ้นต้นด้วย <code>&lt;!doctype html&gt;</code> และบรรทัดสุดท้ายต้องเป็น <code>&lt;/html&gt;</code></p>
+    </div>
+  </details>
   <p class="small-note">ใช้ไฟล์ <code>index.html</code> ที่ AI สร้างจากซอสของคุณเป็นผลงานจริง ส่วนปุ่มดูตัวอย่าง Smart Resume อยู่ใน 3 Step ด้านบน</p>
 </section>
 
