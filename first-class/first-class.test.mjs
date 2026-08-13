@@ -110,7 +110,7 @@ test('Meta browser events use production-only canonical funnel data', () => {
   assert.match(html, /meta-pixel\.js\?v=20260813-2/);
   assert.ok(html.indexOf('meta-pixel.js') < html.indexOf('first-class.js'));
   assert.match(metaScript, /PRODUCTION_HOSTS/);
-  assert.match(metaScript, /pixelIds\\.forEach/);
+  assert.match(metaScript, /pixelIds\.forEach/);
   assert.match(vercelApi, /META_PROFILE_PIXEL_ID/);
   assert.match(vercelApi, /pixelIds/);
   assert.match(cloudflareApi, /META_PROFILE_PIXEL_ID/);
