@@ -1,0 +1,44 @@
+{
+  "habit-score-demo": {
+    "name": "Habit Score (ตัวอย่างประกอบ)",
+    "status": "demo_only",
+    "note": "ภาพ Habit Score ในหน้านี้เป็นตัวอย่างเพื่ออธิบายประสบการณ์ ไม่ใช่การคำนวณคะแนนสุขภาพจริง สูตรจริงอยู่ใน Source of Truth และยังไม่ถูกนำมาใช้ใน prototype นี้",
+    "disclaimer": "ไม่ใช่การประเมินหรือคำแนะนำทางการแพทย์",
+    "last_reviewed": "2026-08-13"
+  },
+  "snap-ai-demo": {
+    "name": "Snap AI (ตัวอย่างประกอบ)",
+    "status": "demo_only",
+    "note": "การสแกนอาหารในหน้านี้เป็นแอนิเมชันสาธิตแนวคิด ไม่ได้วิเคราะห์ภาพจริง และไม่แสดงตัวเลขสารอาหารจริง",
+    "disclaimer": "ตัวเลข/แถบในการ์ดสาธิตใช้เพื่อการเล่าเรื่องเท่านั้น",
+    "last_reviewed": "2026-08-13"
+  },
+  "abcd-routinex": {
+    "name": "RoutineX / ABCD Framework",
+    "status": "canon",
+    "note": "A=ABSORB, B=BUILD, C=CONTROL (Behavior — ซื้อไม่ได้), D=DAILY BALANCE, +=FLAVOR+ ตาม Source of Truth ปัจจุบัน",
+    "disclaimer": "รายละเอียดส่วนผสมที่ยังไม่ยืนยันจะแสดงเป็น LOCKED จนกว่าจะผ่านการตรวจทาน",
+    "last_reviewed": "2026-08-13"
+  },
+  "product-ingredients": {
+    "name": "รายละเอียดส่วนผสมผลิตภัณฑ์",
+    "status": "provisional",
+    "note": "ข้อมูลส่วนผสม ปริมาณ และสถานะทะเบียนยังอยู่ระหว่างตรวจทานกับแหล่งข้อมูลหลัก จึงยังไม่แสดงในหน้านี้",
+    "disclaimer": "ข้อมูลไหนยังไม่ยืนยัน เราจะไม่ทำให้มันดูเหมือนยืนยันแล้ว",
+    "last_reviewed": "2026-08-13"
+  },
+  "circle-preview": {
+    "name": "Circle Preview",
+    "status": "demo_only",
+    "note": "วงในหน้านี้เป็นตัวอย่างแนวคิด ยังไม่มีระบบสมาชิกจริง — Live Circle ต้องมี backend และ consent ก่อน (แผน V0.4+)",
+    "disclaimer": "ตัวเลข 'showed up' เป็นข้อมูลจำลอง",
+    "last_reviewed": "2026-08-13"
+  },
+  "xvisor-sim": {
+    "name": "X-VISOR Job Simulator",
+    "status": "demo_only",
+    "note": "ทุกเคสในซิมูเลเตอร์เป็นเรื่องสมมติเพื่อให้ลองสัมผัสเนื้องาน ไม่ใช่ข้อมูลลูกค้าจริง และไม่ใช่การวินิจฉัยสุขภาพ",
+    "disclaimer": "X-VISOR ไม่ใช่แพทย์และไม่วินิจฉัยโรค",
+    "last_reviewed": "2026-08-13"
+  }
+}

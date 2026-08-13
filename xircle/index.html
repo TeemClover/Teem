@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- Prototype stays out of indexes until the owner flips launch status (Blueprint §3.1) -->
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#04100d">
+<title>Xircle — ลองดูหนึ่งวัน</title>
+<meta name="description" content="Xircle ไม่ใช่เว็บไซต์ที่มีไว้อ่าน แต่เป็นลูปที่คุณเข้าไปลองใช้ — เริ่มจากหนึ่งวันของคุณเอง">
+<link rel="preload" href="/xircle/assets/fonts/ibm-plex-sans-thai-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/xircle/assets/fonts/ibm-plex-sans-thai-thai-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/xircle/_shared/typography.css?v=1">
+<link rel="stylesheet" href="/xircle/_shared/playable.css?v=1">
+</head>
+<body>
+
+<div class="night-veil" aria-hidden="true"></div>
+
+<div class="px-progress" role="progressbar" aria-label="ความคืบหน้าของเส้นทาง" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+<header class="px-top">
+  <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
+  <a class="px-exit" href="/xircle/learn/">ข้ามไปอ่านแบบละเอียด</a>
+</header>
+
+<main class="px-stage" id="stage">
+
+  <!-- ============ S0 — HOOK (§6) ============
+       Rules: no product, no hardware, no Habix, no business,
+       no X-VISOR, no income, no MaxAge, no ecosystem diagram. -->
+  <section class="scene" data-scene="S0" data-progress="0" aria-label="เริ่มต้น">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker dim fx">XIRCLE</p>
+        <h1 class="px-title fx d1">เมื่อวานคุณ<br>ดูแลตัวเองยังไง?</h1>
+        <p class="px-lede fx d2">รู้จริง<span class="soft"> — หรือแค่จำได้?</span></p>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta fx d3" data-next="S1" data-journey-start>ลองดูหนึ่งวัน</button>
+        <a class="px-ghost" href="/xircle/start/" data-returning-link hidden>เคยเดินจบแล้ว — เข้าหน้าเริ่มวันนี้ →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S1 — MEMORY vs MEASUREMENT (§7) ============
+       Choice is never persisted and never sent to analytics. -->
+  <section class="scene" data-scene="S1" data-progress="8" aria-label="ความจำกับการวัด">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker fx">คำถามแรก</p>
+        <h2 class="px-title fx d1">เมื่อวานอะไรมีผล<br>กับวันนี้มากที่สุด?</h2>
+        <div class="px-choices fx d2" role="group" aria-label="เลือกหนึ่งอย่าง">
+          <button type="button" class="px-choice" data-choice-group="memoryGapChoice" data-value="eat" aria-pressed="false">กิน<span class="tick" aria-hidden="true">✓</span></button>
+          <button type="button" class="px-choice" data-choice-group="memoryGapChoice" data-value="move" aria-pressed="false">ขยับ<span class="tick" aria-hidden="true">✓</span></button>
+          <button type="button" class="px-choice" data-choice-group="memoryGapChoice" data-value="sleep" aria-pressed="false">นอน<span class="tick" aria-hidden="true">✓</span></button>
+        </div>
+        <div data-response hidden>
+          <p class="px-lede stagger" style="margin-top:28px"><strong>แน่ใจ — หรือแค่จำได้?</strong></p>
+          <p class="px-whisper stagger">Xircle เริ่มจากตรงนี้: เปลี่ยนสิ่งที่เราจำ ให้กลายเป็นสิ่งที่เรามองเห็นได้</p>
+        </div>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta reveal-later" data-next="S2">ลองดูจากหนึ่งวันจริง ๆ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S2 — SLEEP DECISION (§8) ============ -->
+  <section class="scene" data-scene="S2" data-progress="15" aria-label="การนอน">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-time fx">07:12 · เช้าวันใหม่</p>
+        <h2 class="px-title fx d1">เมื่อคืน<br>เป็นคืนแบบไหน?</h2>
+        <div class="sleep-visual fx d2" aria-hidden="true">
+          <svg viewBox="0 0 240 150">
+            <path class="arc-track" d="M 28 132 A 92 92 0 0 1 212 132" stroke-width="12"/>
+            <path class="arc-fill" d="M 28 132 A 92 92 0 0 1 212 132" stroke-width="12"
+                  style="stroke-dasharray:290;stroke-dashoffset:290"/>
+            <circle class="arc-moon" cx="120" cy="58" r="7"/>
+          </svg>
+        </div>
+        <div class="px-choices fx d3" role="group" aria-label="เลือกหนึ่งอย่าง">
+          <button type="button" class="px-choice" data-choice-group="sleep" data-value="short" aria-pressed="false">นอนน้อย<span class="tick" aria-hidden="true">✓</span></button>
+          <button type="button" class="px-choice" data-choice-group="sleep" data-value="mid" aria-pressed="false">พอใช้<span class="tick" aria-hidden="true">✓</span></button>
+          <button type="button" class="px-choice" data-choice-group="sleep" data-value="full" aria-pressed="false">ได้นอนเต็มที่<span class="tick" aria-hidden="true">✓</span></button>
+        </div>
+        <div data-response hidden>
+          <p class="px-whisper" style="margin-top:20px">ยังไม่ต้องตัดสินอะไร — เราแค่เก็บสิ่งที่เกิดขึ้น</p>
+        </div>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta reveal-later" data-next="S3">ต่อไป — มื้อกลางวัน</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S3 — EAT / SNAP AI WOW MOMENT (§9) ============
+       Demo only: no real nutrient numbers, qualitative bars + DEMO label. -->
+  <section class="scene" data-scene="S3" data-progress="24" aria-label="อาหาร">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-time fx">12:30 · มื้อกลางวัน</p>
+        <h2 class="px-title fx d1">มื้อนี้คุณ<br>น่าจะเลือกแบบไหน?</h2>
+        <div class="plate-row fx d2" role="group" aria-label="เลือกจานอาหาร">
+          <button type="button" class="plate" data-value="light" aria-pressed="false">
+            <svg viewBox="0 0 80 80" aria-hidden="true">
+              <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(244,238,224,.25)" stroke-width="2"/>
+              <ellipse cx="32" cy="38" rx="14" ry="10" fill="rgba(143,220,174,.75)"/>
+              <ellipse cx="52" cy="46" rx="9" ry="7" fill="rgba(230,196,131,.6)"/>
+              <circle cx="48" cy="30" r="6" fill="rgba(121,217,232,.55)"/>
+            </svg>
+            <span>จานเบา ผักเยอะ</span>
+          </button>
+          <button type="button" class="plate" data-value="balanced" aria-pressed="false">
+            <svg viewBox="0 0 80 80" aria-hidden="true">
+              <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(244,238,224,.25)" stroke-width="2"/>
+              <path d="M40 40 L40 8 A32 32 0 0 1 68 48 Z" fill="rgba(230,196,131,.65)"/>
+              <path d="M40 40 L68 48 A32 32 0 0 1 18 62 Z" fill="rgba(143,220,174,.7)"/>
+              <path d="M40 40 L18 62 A32 32 0 0 1 40 8 Z" fill="rgba(121,217,232,.5)"/>
+            </svg>
+            <span>จานสมดุล</span>
+          </button>
+          <button type="button" class="plate" data-value="heavy" aria-pressed="false">
+            <svg viewBox="0 0 80 80" aria-hidden="true">
+              <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(244,238,224,.25)" stroke-width="2"/>
+              <ellipse cx="38" cy="42" rx="20" ry="13" fill="rgba(240,164,104,.7)"/>
+              <ellipse cx="54" cy="32" rx="8" ry="6" fill="rgba(230,196,131,.7)"/>
+              <ellipse cx="26" cy="30" rx="7" ry="5" fill="rgba(240,164,104,.45)"/>
+            </svg>
+            <span>จานหนัก ของทอด</span>
+          </button>
+        </div>
+
+        <div class="snap-frame" hidden>
+          <span class="corner tl" aria-hidden="true"></span><span class="corner tr" aria-hidden="true"></span>
+          <span class="corner bl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span>
+          <svg class="plate-big" viewBox="0 0 80 80" aria-hidden="true">
+            <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(244,238,224,.3)" stroke-width="1.5"/>
+            <ellipse cx="33" cy="39" rx="15" ry="10" fill="rgba(143,220,174,.55)"/>
+            <ellipse cx="52" cy="47" rx="10" ry="7" fill="rgba(230,196,131,.5)"/>
+            <circle cx="49" cy="29" r="7" fill="rgba(121,217,232,.45)"/>
+          </svg>
+          <div class="scan-beam" aria-hidden="true"></div>
+        </div>
+
+        <div class="macro-cards" hidden>
+          <div class="macro" data-macro="protein"><b>PROTEIN</b><div class="bar"><i></i></div><small>ตัวอย่างประกอบ · DEMO</small></div>
+          <div class="macro" data-macro="carb"><b>CARB</b><div class="bar"><i></i></div><small>ตัวอย่างประกอบ · DEMO</small></div>
+          <div class="macro" data-macro="fat"><b>FAT</b><div class="bar"><i></i></div><small>ตัวอย่างประกอบ · DEMO</small></div>
+          <div class="macro" data-macro="pattern"><b>MEAL PATTERN</b><div class="bar"><i></i></div><small>ตัวอย่างประกอบ · DEMO</small></div>
+        </div>
+
+        <div data-response hidden>
+          <p class="px-lede" style="margin-top:22px;font-size:16px">สิ่งที่กิน ไม่ควรหายไปจากความจำหลังวางช้อน</p>
+          <button type="button" class="px-src-btn" data-source-id="snap-ai-demo">Snap AI ทำงานยังไง? · การสาธิตนี้คืออะไร</button>
+        </div>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta reveal-later" data-next="S4">ต่อไป — ช่วงบ่าย</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S4 — MOVE (§10) ============ -->
+  <section class="scene" data-scene="S4" data-progress="33" aria-label="การขยับ">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-time fx">15:40 · ช่วงบ่าย</p>
+        <h2 class="px-title fx d1">ช่วงบ่ายวันนี้<br>เป็นแบบไหน?</h2>
+        <div class="move-visual fx d2" aria-hidden="true">
+          <svg viewBox="0 0 220 220">
+            <circle class="ring-track" cx="110" cy="110" r="92" stroke-width="12"/>
+            <circle class="ring-fill" cx="110" cy="110" r="92" stroke-width="12"
+                    transform="rotate(-90 110 110)"
+                    style="stroke-dasharray:578;stroke-dashoffset:578"/>
+          </svg>
+        </div>
+        <div class="move-glowline fx d2" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="px-choices fx d3" role="group" aria-label="เลือกหนึ่งอย่าง">
+          <button type="button" class="px-choice" data-choice-group="move" data-value="sedentary" aria-pressed="false">นั่งยาว<span class="tick" aria-hidden="true">✓</span></button>
+          <button type="button" class="px-choice" data-choice-group="move" data-value="walk" aria-pressed="false">เดินบ้าง<span class="tick" aria-hidden="true">✓</span></button>
+          <button type="button" class="px-choice" data-choice-group="move" data-value="intentional" aria-pressed="false">ตั้งใจขยับ<span class="tick" aria-hidden="true">✓</span></button>
+        </div>
+        <div data-response hidden>
+          <p class="px-whisper" style="margin-top:20px">สิ่งเล็ก ๆ วันนี้ กำลังสะสมเป็น Pattern</p>
+        </div>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta reveal-later" data-next="S5">ปิดวันนี้</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S5 — NIGHT TRANSITION (§11) ============
+       Passive cinematic moment. No question. Auto-advances. -->
+  <section class="scene" data-scene="S5" data-progress="40" aria-label="กลางคืน">
+    <div class="scene-inner">
+      <div class="scene-body night-lines">
+        <p class="px-time fx">23:41</p>
+        <h2 class="px-title fx d1">วันนี้พอแล้ว</h2>
+        <p class="px-lede l2" style="text-align:center">แล้วเจอกันพรุ่งนี้เช้า</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S6 — NEXT MORNING PAYOFF (§12) ============ -->
+  <section class="scene" data-scene="S6" data-progress="50" aria-label="เช้าวันถัดไป">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-time fx">07:04 · เช้าวันถัดไป</p>
+        <h2 class="px-title fx d1">เมื่อวานของคุณ<br>กลับมาเป็นภาพ</h2>
+
+        <div class="habit-hero fx d2">
+          <span class="px-label">YESTERDAY</span>
+          <div class="habit-ring" role="img" aria-label="ภาพตัวอย่าง Habit Score ประกอบจาก Eat Move Sleep ของเมื่อวาน">
+            <svg viewBox="0 0 220 220">
+              <circle cx="110" cy="110" r="88" fill="none" stroke="rgba(244,238,224,.08)" stroke-width="13"/>
+              <circle class="seg eat"   cx="110" cy="110" r="88" stroke-width="13" style="stroke-dasharray:0 553"/>
+              <circle class="seg move"  cx="110" cy="110" r="88" stroke-width="13" style="stroke-dasharray:0 553"/>
+              <circle class="seg sleep" cx="110" cy="110" r="88" stroke-width="13" style="stroke-dasharray:0 553"/>
+            </svg>
+            <div class="center-label"><div><b>HABIT SCORE</b><span>DEMO</span></div></div>
+          </div>
+          <div class="habit-legend">
+            <span><i class="c-eat"></i>Eat</span>
+            <span><i class="c-move"></i>Move</span>
+            <span><i class="c-sleep"></i>Sleep</span>
+          </div>
+          <p class="px-note" style="text-align:left">ตัวอย่างเพื่ออธิบายประสบการณ์ — ไม่ใช่การคำนวณคะแนนสุขภาพจริง</p>
+
+          <button type="button" class="px-ghost" data-explain-toggle aria-expanded="false" style="margin-top:8px">แตะดูว่ามาจากอะไร ↓</button>
+          <div class="habit-explain">
+            <div class="row" data-k="eat"><b style="color:var(--gold)">EAT</b><div class="bar"><i style="background:var(--gold)"></i></div><small>DEMO</small></div>
+            <div class="row" data-k="move"><b style="color:var(--green)">MOVE</b><div class="bar"><i style="background:var(--green)"></i></div><small>DEMO</small></div>
+            <div class="row" data-k="sleep"><b style="color:var(--blue)">SLEEP</b><div class="bar"><i style="background:var(--blue)"></i></div><small>DEMO</small></div>
+            <button type="button" class="px-src-btn" data-source-id="habit-score-demo" style="margin-top:12px">คะแนนนี้มาจากไหน · สถานะข้อมูล</button>
+          </div>
+        </div>
+
+        <div class="layer-split fx d3">
+          <div class="layer behavior">
+            <b>BEHAVIOR</b>
+            <p>Eat / Move / Sleep / Habit Score — สิ่งที่คุณทำ</p>
+          </div>
+          <div class="layer outcome">
+            <b>OUTCOME</b>
+            <p>Body Composition / Trend — ผลลัพธ์ที่ร่างกายตอบ (คนละชั้นกัน ไม่เอามารวม)</p>
+          </div>
+        </div>
+
+        <p class="px-lede fx d4" style="font-size:16px">คะแนนไม่สำคัญเท่ากับรู้ว่าอะไรทำให้มันเปลี่ยน</p>
+        <p class="px-whisper fx d4"><strong class="en">Understand Yesterday. Adjust Today.</strong></p>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta" data-next="S7">แล้ววันนี้ล่ะ?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S7 — ADJUST ONE THING (§13) ============
+       Choice tracked as completion boolean only, never the value. -->
+  <section class="scene" data-scene="S7" data-progress="58" aria-label="ปรับหนึ่งอย่าง">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker fx">TODAY</p>
+        <h2 class="px-title fx d1">วันนี้คุณอยากปรับอะไร<br>แค่ 1 อย่าง?</h2>
+        <div class="px-choices fx d2" role="group" aria-label="เลือกหนึ่งอย่าง">
+          <button type="button" class="px-choice" data-choice-group="adjust" data-value="eat" aria-pressed="false">กิน<span class="tick" aria-hidden="true">✓</span></button>
+          <button type="button" class="px-choice" data-choice-group="adjust" data-value="move" aria-pressed="false">ขยับ<span class="tick" aria-hidden="true">✓</span></button>
+          <button type="button" class="px-choice" data-choice-group="adjust" data-value="sleep" aria-pressed="false">นอน<span class="tick" aria-hidden="true">✓</span></button>
+        </div>
+        <div data-response hidden>
+          <p class="px-lede" style="margin-top:24px"><strong>หนึ่งอย่างพอ</strong></p>
+        </div>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta reveal-later" data-next="S8">ถ้าทำแบบนี้ต่อจะเกิดอะไรขึ้น?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S8 — 28-DAY FAST FORWARD (§14) ============ -->
+  <section class="scene" data-scene="S8" data-progress="66" aria-label="28 วัน">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker fx">FAST FORWARD</p>
+        <h2 class="px-title fx d1">ถ้าเก็บแบบนี้ไป<br>28 วัน</h2>
+
+        <div class="ff-wrap fx d2">
+          <div class="ff-days en" aria-hidden="true">
+            <span>DAY 1</span><span>3</span><span>7</span><span>14</span><span>21</span><span>28</span>
+          </div>
+          <div class="ff-track behavior">
+            <div class="tag"><b>BEHAVIOR</b><em>ขยับเร็ว</em></div>
+            <div class="rail"><i></i></div>
+          </div>
+          <div class="ff-track outcome">
+            <div class="tag"><b>OUTCOME</b><em>ขยับช้ากว่า</em></div>
+            <div class="rail"><i></i></div>
+          </div>
+        </div>
+
+        <p class="px-lede fx d3" style="font-size:16px">ผลลัพธ์ไม่จำเป็นต้องขยับเร็วเท่าพฤติกรรม</p>
+        <p class="px-lede fx d4" style="font-size:16px"><strong>ปัญหาไม่ใช่เราไม่รู้ว่าต้องทำอะไร<br>ปัญหาคือเราต้องตัดสินใจใหม่ทุกเช้า</strong></p>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta" data-next="S9">แล้วทำยังไงให้ทำต่อได้?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S9 — ROUTINEX / BUILD YOUR DAY (§15) ============
+       Products are NOT named here — assemble roles first. -->
+  <section class="scene" data-scene="S9" data-progress="74" aria-label="ประกอบวันของคุณ">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker fx">BUILD YOUR DAY</p>
+        <h2 class="px-title fx d1">ลองประกอบวัน<br>ที่ทำซ้ำได้จริง</h2>
+        <p class="px-whisper fx d1">แตะทีละชั้นเพื่อวางลงในวันของคุณ</p>
+
+        <div class="abcd-grid fx d2">
+          <button type="button" class="abcd-slot" data-slot="A" aria-pressed="false">
+            <span class="glyph en">A</span>
+            <span class="txt"><b>ABSORB</b><small>เตรียมระบบดูดซึมให้พร้อมรับทั้งวัน</small></span>
+          </button>
+          <button type="button" class="abcd-slot" data-slot="B" aria-pressed="false">
+            <span class="glyph en">B</span>
+            <span class="txt"><b>BUILD</b><small>วัตถุดิบสำหรับสร้างและรักษากล้ามเนื้อ</small></span>
+          </button>
+          <button type="button" class="abcd-slot" data-slot="C" aria-pressed="false">
+            <span class="glyph en">C</span>
+            <span class="txt"><b>CONTROL</b><small>ชั้นนี้ซื้อไม่ได้</small></span>
+          </button>
+          <button type="button" class="abcd-slot" data-slot="D" aria-pressed="false">
+            <span class="glyph en">D</span>
+            <span class="txt"><b>DAILY BALANCE</b><small>เติมสิ่งที่ชีวิตจริงมักขาด</small></span>
+          </button>
+          <button type="button" class="abcd-slot" data-slot="F" aria-pressed="false">
+            <span class="glyph en">+</span>
+            <span class="txt"><b>FLAVOR+</b><small>ทำให้การทำซ้ำไม่ฝืน</small></span>
+          </button>
+        </div>
+
+        <div class="trust-c" role="note">
+          <b>C — CONTROL: ชั้นนี้ซื้อไม่ได้</b>
+          <p>มันคือ Behavior / Knowledge ที่คุณต้องทำเอง — ระบบช่วยให้มันง่ายขึ้นได้ แต่ทำแทนไม่ได้</p>
+        </div>
+
+        <div data-routinex-reveal hidden>
+          <p class="px-lede" style="margin-top:24px">ระบบที่ช่วยให้สิ่งเหล่านี้ทำซ้ำง่ายขึ้น<br>เราเรียกว่า <strong class="en" style="color:var(--gold)">RoutineX</strong></p>
+        </div>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta reveal-later" data-next="S10">แล้วแต่ละชั้นคืออะไรบ้าง?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S10 — PRODUCTS REVEAL (§16) ============
+       After behavior understanding only. No prices, LOCKED ingredients. -->
+  <section class="scene" data-scene="S10" data-progress="81" aria-label="ผลิตภัณฑ์">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker fx">ROUTINEX · HABIX</p>
+        <h2 class="px-title fx d1">ชั้นที่คุณเพิ่งประกอบ<br>มีตัวช่วยแบบนี้</h2>
+
+        <div class="product-list fx d2">
+          <article class="product-card" data-abcd="A">
+            <button type="button" aria-expanded="false">
+              <span class="abcd-chip en">A</span>
+              <span><h3 class="en">G.U.S.+</h3><span class="role">ABSORB — ชั้นเตรียมการดูดซึม</span></span>
+              <span class="chev" aria-hidden="true">›</span>
+            </button>
+            <div class="detail"><div class="detail-in">
+              ชั้นแรกของวันคือการเตรียมระบบดูดซึมและ gut ให้พร้อมรับสิ่งที่เหลือทั้งหมด — ถ้าชั้นนี้ไม่ทำงาน ชั้นอื่นก็เหนื่อยฟรี
+              <br><button type="button" class="locked" data-source-id="product-ingredients">รายละเอียดส่วนผสม · LOCKED</button>
+            </div></div>
+          </article>
+          <article class="product-card" data-abcd="B">
+            <button type="button" aria-expanded="false">
+              <span class="abcd-chip en">B</span>
+              <span><h3 class="en">Protein HMB+</h3><span class="role">BUILD — ชั้นสร้างและรักษากล้ามเนื้อ</span></span>
+              <span class="chev" aria-hidden="true">›</span>
+            </button>
+            <div class="detail"><div class="detail-in">
+              ร่างกายไม่ได้ต้องการแค่พลังงาน แต่ต้องการวัตถุดิบไปสร้างและรักษากล้ามเนื้อ — ชั้นนี้คือวัตถุดิบนั้น
+              <br><button type="button" class="locked" data-source-id="product-ingredients">รายละเอียดส่วนผสม · LOCKED</button>
+            </div></div>
+          </article>
+          <article class="product-card nonproduct" data-abcd="C">
+            <button type="button" aria-expanded="false">
+              <span class="abcd-chip en">C</span>
+              <span><h3>Control</h3><span class="role">CONTROL — Behavior ไม่มีขาย</span></span>
+              <span class="chev" aria-hidden="true">›</span>
+            </button>
+            <div class="detail"><div class="detail-in">
+              ชั้นนี้ไม่มีสินค้า เพราะมันคือพฤติกรรมและความรู้ที่คุณต้องทำเอง — ระบบทั้งหมดถูกออกแบบมาช่วยให้ชั้นนี้ทำซ้ำง่ายขึ้น ไม่ใช่ทำแทน
+            </div></div>
+          </article>
+          <article class="product-card" data-abcd="D">
+            <button type="button" aria-expanded="false">
+              <span class="abcd-chip en">D</span>
+              <span><h3 class="en">AstaMega+ · Vita Matrix</h3><span class="role">DAILY BALANCE — ชั้นเติมเต็มรายวัน</span></span>
+              <span class="chev" aria-hidden="true">›</span>
+            </button>
+            <div class="detail"><div class="detail-in">
+              สิ่งที่ชีวิตจริงมักขาดแม้ตั้งใจกินดีแล้ว — ชั้นนี้เติมช่องว่างนั้นแบบรายวัน
+              <br><button type="button" class="locked" data-source-id="product-ingredients">รายละเอียดส่วนผสม · LOCKED</button>
+            </div></div>
+          </article>
+          <article class="product-card" data-abcd="F">
+            <button type="button" aria-expanded="false">
+              <span class="abcd-chip en">+</span>
+              <span><h3 class="en">Flavor+</h3><span class="role">FLAVOR+ — ทำให้การทำซ้ำไม่ฝืน</span></span>
+              <span class="chev" aria-hidden="true">›</span>
+            </button>
+            <div class="detail"><div class="detail-in">
+              Routine ที่รสชาติแย่จะแพ้ความขี้เกียจเสมอ — ชั้นนี้อยู่ตรงนั้นเพื่อให้วันพรุ่งนี้ง่ายเท่าวันนี้
+            </div></div>
+          </article>
+        </div>
+
+        <p class="px-note fx d3">ข้อมูลไหนยังไม่ยืนยัน เราจะไม่ทำให้มันดูเหมือนยืนยันแล้ว — ส่วนผสมที่ยังตรวจทานไม่จบจะขึ้นสถานะ LOCKED</p>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta" data-next="S11">แล้วข้อมูลพวกนี้มาจากไหน?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S11 — HARDWARE (§17) ============ -->
+  <section class="scene" data-scene="S11" data-progress="87" aria-label="อุปกรณ์">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker fx">MEASURE WHAT MATTERS</p>
+        <h2 class="px-title fx d1">สองเครื่องมือ<br>สองคำถามคนละข้อ</h2>
+
+        <div class="hw-split fx d2">
+          <div class="hw-half band">
+            <svg class="hw-icon" viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="22" y="4" width="20" height="14" rx="5" fill="none" stroke="var(--cyan)" stroke-width="2"/>
+              <rect x="18" y="18" width="28" height="28" rx="9" fill="none" stroke="var(--cyan)" stroke-width="2.5"/>
+              <rect x="22" y="46" width="20" height="14" rx="5" fill="none" stroke="var(--cyan)" stroke-width="2"/>
+              <path d="M25 32 h4 l3 -6 4 12 3 -6 h4" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="px-label">XIRCLE BAND</span>
+            <h3>วัดสิ่งที่คุณทำ</h3>
+            <p>การขยับ การนอน จังหวะหัวใจระหว่างวัน</p>
+          </div>
+          <div class="hw-bridge en" aria-hidden="true">
+            <b class="up">BEHAVIOR</b>
+            <span class="arrows">↕</span>
+            <b class="down">OUTCOME</b>
+          </div>
+          <div class="hw-half scale">
+            <svg class="hw-icon" viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="10" y="10" width="44" height="44" rx="10" fill="none" stroke="var(--blue)" stroke-width="2.5"/>
+              <path d="M22 22 a14 14 0 0 1 20 0" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="32" y1="22" x2="36" y2="16" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="24" cy="42" r="2" fill="var(--blue)"/><circle cx="32" cy="42" r="2" fill="var(--blue)"/><circle cx="40" cy="42" r="2" fill="var(--blue)"/>
+            </svg>
+            <span class="px-label">XIRCLE SCALE</span>
+            <h3>วัดผลลัพธ์ที่ร่างกายตอบ</h3>
+            <p>องค์ประกอบร่างกายและทิศทางของมันตามเวลา</p>
+          </div>
+        </div>
+
+        <p class="px-lede fx d3" style="font-size:16px">พฤติกรรมหนึ่งวันไม่ใช่คำตอบสุดท้าย — แต่การเห็นทั้งสองชั้นใกล้กัน ทำให้เห็นเหตุและผลชัดขึ้น</p>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta" data-next="S12">แล้วต้องทำคนเดียวไหม?</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S12 — BUILD YOUR XIRCLE (§18, §19) ============
+       CIRCLE PREVIEW — honest mock. No fake live membership. -->
+  <section class="scene" data-scene="S12" data-progress="93" aria-label="สร้างวงของคุณ">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker fx">YOUR XIRCLE</p>
+        <h2 class="px-title fx d1">ถ้าไม่ต้อง<br>ทำคนเดียวล่ะ?</h2>
+
+        <div class="circle-dots fx d2" role="img" aria-label="วงตัวอย่าง 5 คน — จุดที่สว่างคือคุณ">
+          <i></i><i></i><i class="you"></i><i></i><i></i>
+        </div>
+        <p class="px-whisper fx d2" style="text-align:center">วงเล็ก ๆ 2–5 คน · จุดที่สว่างคือคุณ</p>
+
+        <div class="circle-preview" aria-live="polite">
+          <span class="px-demo orange">CIRCLE PREVIEW</span>
+          <h3 style="margin:12px 0 4px;font-size:19px">วงตัวอย่างของคุณ</h3>
+          <p style="margin:0;font-size:14px;color:var(--cream-soft);line-height:1.6">นี่คือแนวคิดของ Circle Pulse — วงจริงจะเปิดเมื่อระบบเชิญเพื่อนพร้อม ยังไม่มีใคร join จริงตอนนี้</p>
+          <div class="pulse-line">
+            <span class="beat" aria-hidden="true"></span>
+            <strong style="font-size:15px">4 of 5 showed up today</strong>
+            <span class="px-demo">DEMO</span>
+          </div>
+          <p class="px-whisper" style="margin-top:10px">Pulse วัดแค่ “โผล่มา” — ไม่จัดอันดับสุขภาพ ไม่มีใครถูกประจาน</p>
+          <div class="invite-demo">
+            <code>xircle.app/join/XXXX-demo</code>
+            <button type="button" data-invite-copy>คัดลอก</button>
+          </div>
+          <button type="button" class="px-src-btn" data-source-id="circle-preview" style="margin-top:12px">ทำไมยังเป็น Preview?</button>
+        </div>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-cta" data-circle-create>สร้างวง 7 วัน</button>
+        <button type="button" class="px-cta reveal-later" data-next="S13">ไปต่อ</button>
+        <button type="button" class="px-ghost" data-next="S13">ทำคนเดียวต่อ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ S13 — ROLE FORK (§26) ============ -->
+  <section class="scene" data-scene="S13" data-progress="100" aria-label="เลือกเส้นทาง">
+    <div class="scene-inner">
+      <div class="scene-body">
+        <p class="px-kicker gold fx">ONE DAY — DONE</p>
+        <h2 class="px-title fx d1">คุณชอบอยู่ฝั่งไหน<br>มากกว่า?</h2>
+
+        <div class="fork-grid fx d2">
+          <a class="fork-card health" href="/xircle/start/">
+            <b>MY HEALTH</b>
+            <h3>ใช้ระบบเพื่อตัวเอง</h3>
+            <p>กลับมาทุกเช้า ดูเมื่อวาน ปรับวันนี้ทีละอย่าง</p>
+            <span class="go">เข้าหน้าเริ่มวันของคุณ →</span>
+          </a>
+          <a class="fork-card care" href="/xircle/opportunity/">
+            <b>HELP OTHERS</b>
+            <h3>เรียนรู้การดูแลคนอื่น</h3>
+            <p>ลองนั่งเก้าอี้คนดูแลจริง ๆ ก่อนตัดสินใจอะไรทั้งนั้น</p>
+            <span class="go">ลองเป็น X-VISOR →</span>
+          </a>
+        </div>
+
+        <p class="px-whisper fx d3" style="margin-top:24px">หรืออยากอ่านเบื้องหลังทั้งระบบ — <a href="/xircle/learn/" style="color:var(--cream-soft)">เข้า Learn</a></p>
+      </div>
+      <div class="scene-foot">
+        <button type="button" class="px-ghost" data-replay>เล่นหนึ่งวันอีกครั้ง</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="/xircle/_shared/state.js?v=1"></script>
+<script src="/xircle/_shared/analytics.js?v=1"></script>
+<script src="/xircle/_shared/source-drawer.js?v=1"></script>
+<script src="/xircle/_shared/playable.js?v=1"></script>
+</body>
+</html>

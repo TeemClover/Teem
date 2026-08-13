@@ -1,0 +1,52 @@
+{
+  "_note": "Product reveal data (Blueprint §16, §34). No prices, no doses, no CFU, no unverified ingredient facts. LOCKED = exists but not public-safe yet.",
+  "order": ["gus", "protein_hmb", "control", "daily_balance", "flavor"],
+  "items": {
+    "gus": {
+      "name": "G.U.S.+",
+      "abcd": "A",
+      "role": "ABSORB",
+      "status": "canon",
+      "visibility": "public_safe",
+      "why": "ชั้นแรกของวันคือการเตรียมระบบดูดซึมและ gut ให้พร้อมรับสิ่งที่เหลือทั้งหมด — ถ้าชั้นนี้ไม่ทำงาน ชั้นอื่นก็เหนื่อยฟรี",
+      "ingredients": { "_status": "LOCKED" }
+    },
+    "protein_hmb": {
+      "name": "Protein HMB+",
+      "abcd": "B",
+      "role": "BUILD",
+      "status": "canon",
+      "visibility": "public_safe",
+      "why": "ร่างกายไม่ได้ต้องการแค่พลังงาน แต่ต้องการวัตถุดิบไปสร้างและรักษากล้ามเนื้อ — ชั้นนี้คือวัตถุดิบนั้น",
+      "ingredients": { "_status": "LOCKED" }
+    },
+    "control": {
+      "name": "Control",
+      "abcd": "C",
+      "role": "CONTROL",
+      "type": "behavior",
+      "status": "canon",
+      "visibility": "public_safe",
+      "why": "ชั้นนี้ซื้อไม่ได้ — มันคือ Behavior และ Knowledge ที่คุณต้องทำเอง ระบบทั้งหมดถูกออกแบบมาช่วยให้ชั้นนี้ทำซ้ำง่ายขึ้น ไม่ใช่ทำแทน"
+    },
+    "daily_balance": {
+      "name": "Daily Balance",
+      "abcd": "D",
+      "role": "DAILY BALANCE",
+      "status": "canon",
+      "visibility": "public_safe",
+      "products": ["AstaMega+", "Vita Matrix"],
+      "why": "ชั้นเติมเต็มรายวัน — สิ่งที่ชีวิตจริงมักขาดแม้ตั้งใจกินดีแล้ว",
+      "ingredients": { "_status": "LOCKED" }
+    },
+    "flavor": {
+      "name": "Flavor+",
+      "abcd": "F",
+      "role": "FLAVOR+",
+      "status": "canon",
+      "visibility": "public_safe",
+      "why": "Routine ที่รสชาติแย่จะแพ้ความขี้เกียจเสมอ — ชั้นนี้ทำให้การทำซ้ำไม่ฝืน",
+      "ingredients": { "_status": "LOCKED" }
+    }
+  }
+}

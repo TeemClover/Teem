@@ -1,0 +1,7 @@
+{
+  "_note": "Runtime flags for the /xircle/ playable prototype.",
+  "analytics": "console",
+  "debug": false,
+  "public_launch": false,
+  "live_circle": false
+}

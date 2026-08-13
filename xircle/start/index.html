@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#04100d">
+<title>Xircle — วันนี้</title>
+<meta name="description" content="หน้าเริ่มวันของคุณ — ดูเมื่อวาน ปรับวันนี้ทีละอย่าง">
+<link rel="stylesheet" href="/xircle/_shared/typography.css?v=1">
+<link rel="stylesheet" href="/xircle/_shared/playable.css?v=1">
+</head>
+<body>
+
+<div class="px-progress" aria-hidden="true"><i style="width:100%"></i></div>
+<header class="px-top">
+  <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
+  <a class="px-exit" href="/xircle/learn/">Learn</a>
+</header>
+
+<main class="zone-page">
+  <!-- Returning-user home (Blueprint §20). Static prototype:
+       "yesterday" is demo state until real data phases exist.
+       Primary daily action must be doable in ≤ 40 seconds. -->
+
+  <p class="px-kicker" id="greet">GOOD MORNING</p>
+  <h1 class="px-title">วันนี้เอาแค่<br>อย่างเดียวพอ</h1>
+
+  <section class="px-card strong" style="margin-top:26px" aria-label="เมื่อวาน">
+    <span class="px-label">YESTERDAY</span>
+    <div class="habit-legend" style="justify-content:flex-start;margin-top:12px">
+      <span><i class="c-eat"></i>Eat</span>
+      <span><i class="c-move"></i>Move</span>
+      <span><i class="c-sleep"></i>Sleep</span>
+      <span class="px-demo">DEMO</span>
+    </div>
+    <p class="px-whisper" style="margin-top:12px">ภาพเมื่อวานจะกลายเป็นข้อมูลจริงเมื่อเฟสอุปกรณ์/บันทึกจริงเปิดใช้ ตอนนี้เป็นตัวอย่างเพื่อให้เห็นจังหวะของการกลับมา</p>
+  </section>
+
+  <section class="px-card" style="margin-top:12px" aria-label="ปรับวันนี้">
+    <span class="px-label" style="color:var(--gold)">TODAY — ADJUST ONE THING</span>
+    <div class="px-choices" style="margin-top:14px" role="group" aria-label="เลือกหนึ่งอย่าง">
+      <button type="button" class="px-choice" data-adjust="eat" aria-pressed="false">กิน<span class="tick" aria-hidden="true">✓</span></button>
+      <button type="button" class="px-choice" data-adjust="move" aria-pressed="false">ขยับ<span class="tick" aria-hidden="true">✓</span></button>
+      <button type="button" class="px-choice" data-adjust="sleep" aria-pressed="false">นอน<span class="tick" aria-hidden="true">✓</span></button>
+    </div>
+    <p class="px-whisper" id="adjust-done" hidden>หนึ่งอย่างพอ — แล้วพรุ่งนี้ค่อยดูว่ามันพาไปไหน</p>
+  </section>
+
+  <section class="px-card" style="margin-top:12px" aria-label="วงของคุณ">
+    <span class="px-label" style="color:var(--green)">CIRCLE PULSE</span>
+    <div class="pulse-line">
+      <span class="beat" aria-hidden="true"></span>
+      <strong style="font-size:15px">3 of 5 showed up</strong>
+      <span class="px-demo orange">PREVIEW</span>
+    </div>
+    <p class="px-whisper" style="margin-top:10px">วงจริงยังไม่เปิด — นี่คือตัวอย่างจังหวะของ Circle เมื่อ Live Circle มาถึง</p>
+  </section>
+
+  <nav class="zone-tabs" aria-label="พื้นที่หลัก">
+    <a class="active" href="/xircle/start/">Today</a>
+    <a href="/xircle/circle/">Circle</a>
+    <a href="/xircle/ghost/">Progress</a>
+    <a href="/xircle/learn/">Learn</a>
+  </nav>
+
+  <p class="px-whisper" style="margin-top:30px">
+    ยังไม่เคยเดินครบหนึ่งวัน? <a href="/xircle/" style="color:var(--cream-soft)">เริ่มเส้นทางแรกที่นี่ →</a>
+  </p>
+</main>
+
+<script src="/xircle/_shared/state.js?v=1"></script>
+<script src="/xircle/_shared/analytics.js?v=1"></script>
+<script>
+(function () {
+  "use strict";
+  window.XState.touchVisit();
+  window.XAnalytics.track("xircle_view", { returning: true });
+
+  /* greeting follows the actual clock — small, honest liveliness */
+  var h = new Date().getHours();
+  var greet = document.getElementById("greet");
+  if (h >= 12 && h < 17) greet.textContent = "GOOD AFTERNOON";
+  else if (h >= 17 || h < 4) greet.textContent = "GOOD EVENING";
+
+  /* adjust-one-thing: value stays on this device only (§13) */
+  document.querySelectorAll("[data-adjust]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll("[data-adjust]").forEach(function (b) {
+        b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+      });
+      document.getElementById("adjust-done").hidden = false;
+      window.XAnalytics.track("adjust_one_complete");
+    });
+  });
+})();
+</script>
+</body>
+</html>
