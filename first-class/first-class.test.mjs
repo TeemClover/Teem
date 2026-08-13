@@ -4,55 +4,88 @@ import { readFile, stat } from 'node:fs/promises';
 
 const html = await readFile(new URL('./index.html', import.meta.url), 'utf8');
 const css = await readFile(new URL('./first-class.css', import.meta.url), 'utf8');
+const script = await readFile(new URL('./first-class.js', import.meta.url), 'utf8');
 const admin = await readFile(new URL('./admin/index.html', import.meta.url), 'utf8');
 const adminScript = await readFile(new URL('./admin/admin.js', import.meta.url), 'utf8');
 const vercelApi = await readFile(new URL('../api/first-class.js', import.meta.url), 'utf8');
 const cloudflareApi = await readFile(new URL('../functions/api/first-class.js', import.meta.url), 'utf8');
 
-test('course facts are concise and exact', () => {
-  for (const text of ['98 นาที', '98 บาท', '18 ส.ค. 2026', '18 สิงหาคม 2026', '19:00', '19:30', 'ไม่มีวิดีโอย้อนหลัง', 'สอนสดโดย Teem']) assert.match(html, new RegExp(text));
+test('course facts and instructor are exact', () => {
+  for (const text of ['98 นาที', '98 บาท', 'ส.ค. 2026', '18 สิงหาคม 2026', '19:00', '19:30', 'ไม่มีวิดีโอย้อนหลัง', 'สอนสดโดย Teem']) assert.match(html, new RegExp(text));
   assert.match(html, /href="\/resume\/"/);
   assert.doesNotMatch(html, /Ako|ผู้สอนร่วม/);
 });
 
-test('page opens as registration, with reading links only after the form', () => {
+test('hero and registration are visible while extra reading is collapsed', async () => {
+  const image = await stat(new URL('./assets/ai-sauce-pilot.webp', import.meta.url));
+  assert.ok(image.size > 10_000 && image.size < 300_000);
+  assert.match(html, /<figure class="hero-banner"><img[^>]+ai-sauce-pilot\.webp/);
   assert.match(html, /<section class="registration-card"/);
   assert.match(html, /<form id="registrationForm"/);
-  assert.match(html, /https:\/\/discord\.gg\/A5nmMqvTm/);
-  assert.match(html, /href="\/guild\/"/);
-  assert.ok(html.indexOf('post-form-links') > html.indexOf('</form>'));
-  assert.doesNotMatch(html, /<details|recipe-grid|discord-section|instructor-photo|resume-career-stage/);
-  assert.doesNotMatch(html, /href="\/classroom\/"|คอร์สฟรี|บทเรียน/);
-  assert.match(html, /href="\/"/);
+  assert.match(html, /<details class="smart-details why-discord">/);
+  assert.match(html, /<details class="smart-details more-value">/);
+  assert.doesNotMatch(html, /<details[^>]+open/);
 });
 
-test('pilot form is short and contains only the approved fields', () => {
-  for (const name of ['name', 'email', 'discordUsername', 'aiTools', 'transferTime', 'lineId', 'consent']) assert.match(html, new RegExp(`name="${name}"`));
-  for (const tool of ['ChatGPT', 'Claude', 'Gemini', 'NotebookLM', 'อื่น ๆ', 'ยังไม่ค่อยได้ใช้ AI']) assert.match(html, new RegExp(tool));
-  assert.doesNotMatch(html, /type="file"|name="phone"|เบอร์โทร/);
-  assert.match(html, /ไม่ต้องแนบสลิป/);
+test('Discord has two entry routes and stays optional', () => {
+  assert.match(html, /https:\/\/discord\.gg\/A5nmMqvTm/);
+  assert.match(html, /href="\/guild\/"/);
+  assert.match(html, /Why Discord\?/);
+  assert.match(html, /ทุกคนแชร์หน้าจอได้/);
+  assert.match(html, /กิจกรรมฟรีทุกสัปดาห์/);
+  const discordInput = html.match(/<input name="discordUsername"[^>]*>/)?.[0] || '';
+  assert.ok(discordInput);
+  assert.doesNotMatch(discordInput, /\brequired\b/);
+  assert.doesNotMatch(script, /if \(!payload\.discordUsername\)/);
+  assert.doesNotMatch(vercelApi, /if \(!discord\).*discordUsername/);
+  assert.doesNotMatch(cloudflareApi, /if\(!discord\).*discordUsername/);
+  assert.match(html, /Username พร้อมแนบสลิปทาง LINE Official/);
+});
+
+test('AI fields support writable other option and level 1–10', () => {
+  for (const name of ['name', 'email', 'discordUsername', 'aiTools', 'aiOther', 'aiLevel', 'transferTime', 'lineId', 'consent']) assert.match(html, new RegExp(`name="${name}"`));
+  for (const tool of ['ChatGPT', 'Claude', 'Gemini', 'NotebookLM', 'ยังไม่ค่อยได้ใช้ AI', 'อื่น ๆ']) assert.match(html, new RegExp(tool));
+  assert.ok(html.indexOf('value="อื่น ๆ"') > html.indexOf('value="ยังไม่ค่อยได้ใช้ AI"'));
+  assert.match(html, /name="aiLevel" value="1"/);
+  assert.match(html, /name="aiLevel" value="10"/);
+  assert.match(script, /aiOtherToggle/);
+  assert.match(vercelApi, /ai_level INTEGER/);
+  assert.match(cloudflareApi, /ai_level INTEGER/);
+  assert.match(adminScript, /'ai_level'/);
+});
+
+test('payment and LINE information are wired exactly', () => {
+  for (const text of ['ธนาคารกสิกรไทย', 'นรินทร์ ลีลาภรณ์', '049-3-86430-0', 'ไม่ต้องแนบสลิป']) assert.match(html, new RegExp(text));
+  assert.match(html, /id="copyBankButton" data-account="0493864300"/);
+  assert.match(script, /navigator\.clipboard\.writeText/);
+  assert.match(html, /https:\/\/lin\.ee\/rlSlhzT/);
+  assert.doesNotMatch(html, /line\.me\/ti\/p|type="file"|name="phone"|เบอร์โทร/);
   assert.match(html, /href="\/privacy\/"/);
 });
 
-test('success state and admin control room are present', () => {
-  for (const id of ['successName', 'successDiscord', 'successEmail', 'successReference']) assert.match(html, new RegExp(`id="${id}"`));
-  for (const text of ['ดาวน์โหลด CSV', 'First Class Control Room']) assert.match(admin, new RegExp(text));
-  assert.match(adminScript, /ยืนยัน 98 บาท/);
+test('free path starts from homepage and live value is explained', () => {
+  assert.match(html, /ของฟรีดีแค่ไหน/);
+  assert.match(html, /ดีพอให้เริ่มทำของจริงได้เลย/);
+  assert.match(html, /แนะนำให้เล่นเส้นทางหลักให้จบก่อนวันเรียน/);
+  assert.match(html, /แต่ไม่บังคับ/);
+  assert.match(html, /href="\/">เริ่มเล่นจากหน้าแรก myClover/);
+  assert.doesNotMatch(html, /href="\/classroom\/"/);
+  assert.doesNotMatch(vercelApi, /myclover\.com\/classroom/);
+  assert.doesNotMatch(cloudflareApi, /myclover\.com\/classroom/);
 });
 
-test('campaign image remains social-only, LINE and pilot password are wired', async () => {
-  const image = await stat(new URL('./assets/ai-sauce-pilot.webp', import.meta.url));
-  assert.ok(image.size > 10_000 && image.size < 300_000);
-  assert.match(html, /property="og:image" content="[^"]+assets\/ai-sauce-pilot\.webp"/);
-  assert.doesNotMatch(html, /<img[^>]+ai-sauce-pilot/);
-  assert.match(html, /https:\/\/lin\.ee\/rlSlhzT/);
-  assert.doesNotMatch(html, /line\.me\/ti\/p/);
+test('success state, admin password and control room remain operational', () => {
+  for (const id of ['successName', 'successDiscordStatus', 'successEmail', 'successReference']) assert.match(html, new RegExp(`id="${id}"`));
+  for (const text of ['ดาวน์โหลด CSV', 'First Class Control Room']) assert.match(admin, new RegExp(text));
+  assert.match(adminScript, /ยืนยัน 98 บาท/);
+  assert.match(adminScript, /ยังไม่แจ้ง Discord/);
   assert.match(vercelApi, /FIRST_CLASS_ADMIN_KEY \|\| 'calling'/);
   assert.match(cloudflareApi, /FIRST_CLASS_ADMIN_KEY\|\|'calling'/);
 });
 
 test('responsive styles cover desktop, tablet and mobile', () => {
-  assert.match(css, /@media\(max-width:820px\)/);
-  assert.match(css, /@media\(max-width:520px\)/);
+  assert.match(css, /@media\(max-width:900px\)/);
+  assert.match(css, /@media\(max-width:620px\)/);
   assert.match(css, /\.registration-card\{display:grid/);
+  assert.match(css, /\.level-scale\{display:grid/);
 });
