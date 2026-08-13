@@ -116,9 +116,9 @@ h2.section::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,
 .sauce{background:#fff;border:1px solid rgb(var(--ink)/.1);border-radius:18px;overflow:hidden;box-shadow:0 8px 25px rgb(18 40 28/.05)}
 .sauce-head{display:grid;grid-template-columns:60px 1fr auto;gap:14px;align-items:center;padding:17px 19px}
 .sauce-icon{width:49px;height:62px;position:relative;border-radius:13px 13px 8px 8px;background:linear-gradient(145deg,rgb(var(--green)),#124329);box-shadow:inset 0 0 0 3px rgb(255 255 255/.18)}
-.sauce:nth-child(2) .sauce-icon{background:linear-gradient(145deg,#b25843,#743526)}
-.sauce:nth-child(3) .sauce-icon{background:linear-gradient(145deg,#496e9e,#294666)}
-.sauce:nth-child(4) .sauce-icon{background:linear-gradient(145deg,#9a7b3f,#675028)}
+.sauce:nth-of-type(2) .sauce-icon{background:linear-gradient(145deg,#b25843,#743526)}
+.sauce:nth-of-type(3) .sauce-icon{background:linear-gradient(145deg,#496e9e,#294666)}
+.sauce:nth-of-type(4) .sauce-icon{background:linear-gradient(145deg,#cfd3d8,#878e98)}
 .sauce-icon::before{content:"";position:absolute;width:23px;height:13px;left:13px;top:-8px;border-radius:5px 5px 2px 2px;background:rgb(var(--gold))}
 .sauce-icon::after{content:"";position:absolute;left:6px;right:6px;top:23px;height:23px;border-radius:4px;background:rgb(var(--cream));border:1px solid rgb(var(--gold)/.45)}
 .sauce-icon i{position:absolute;z-index:2;left:6px;right:6px;top:28px;text-align:center;font-style:normal;font-family:"Bai Jamjuree",sans-serif;font-size:8px;font-weight:700;color:rgb(var(--deep))}
@@ -299,6 +299,36 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 @media(max-width:520px){.mc-lesson-nav__inner{padding:0 18px}.mc-lesson-nav__all{font-size:13px!important}}
 </style>
 
+<style id="lesson1-sauce-how-style">
+.sauce-how{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.sauce-how span{display:inline-flex;align-items:baseline;gap:6px;padding:5px 10px;border:1px solid rgba(10,48,31,.13);border-radius:999px;background:rgba(10,48,31,.035);font-size:12.5px;line-height:1.5;color:rgba(10,48,31,.82)}
+.sauce-how i{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:rgba(10,48,31,.45)}
+@media(max-width:600px){.sauce-how{gap:5px}.sauce-how span{font-size:12px;padding:4px 9px}}
+</style>
+<style id="lesson1-group-builder-style">
+.sauce-group{margin:22px 0 12px;padding:16px 18px;border:1px solid rgba(10,48,31,.12);border-left:4px solid #1b6a42;border-radius:16px;background:rgba(27,106,66,.045)}
+.sauce-group:first-child{margin-top:4px}
+.sauce-group__kicker{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#1b6a42}
+.sauce-group h3{margin-top:6px;font-size:19px;line-height:1.35;color:#0a301f}
+.sauce-group p{margin-top:5px;font-size:14px;line-height:1.7;color:rgba(10,48,31,.74)}
+.sauce-group code{font-size:12.5px;padding:1px 5px;border-radius:5px;background:rgba(10,48,31,.08)}
+.sauce-group--optional{border-left-color:#9aa1ab;background:rgba(135,142,152,.10)}
+.sauce-group--optional .sauce-group__kicker{color:#5c636e}
+
+.pb{margin:14px 0 12px;padding:14px 15px;border:1px dashed rgba(10,48,31,.28);border-radius:14px;background:rgba(255,255,255,.7)}
+.pb__head b{display:block;font-size:15px;color:#0a301f}
+.pb__head span{display:block;margin-top:2px;font-size:12.5px;color:rgba(10,48,31,.62)}
+.pb__row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}
+.pb__field{display:block}
+.pb__field[hidden]{display:none}
+.pb__field>span{display:block;font-size:11.5px;font-weight:700;color:rgba(10,48,31,.6);margin-bottom:4px}
+.pb select,.pb input{width:100%;padding:9px 11px;border:1px solid rgba(10,48,31,.22);border-radius:10px;background:#fff;font:inherit;font-size:14px;color:#0a301f}
+.pb select:focus,.pb input:focus{outline:2px solid rgba(27,106,66,.45);outline-offset:1px}
+.pb__note{margin-top:9px;font-size:12.5px;line-height:1.6;color:rgba(10,48,31,.62)}
+.pb__note code{padding:1px 5px;border-radius:5px;background:rgba(10,48,31,.08)}
+.pb__note[data-on="1"]{color:#1b6a42;font-weight:650}
+@media(max-width:600px){.pb__row{grid-template-columns:1fr}.sauce-group{padding:14px 15px}.sauce-group h3{font-size:17px}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main">ข้ามไปเนื้อหาบทเรียน</a>
@@ -374,16 +404,22 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 <h2 class="section"><span class="n">3</span>เลือกขวดให้ตรงกับวัตถุดิบ</h2>
 <div class="bottles">
 
+<div class="sauce-group">
+  <span class="sauce-group__kicker">หมวด 1 · ทำก่อน</span>
+  <h3>สร้างซอสแม่ สำหรับใช้งานต่อ</h3>
+  <p>เลือก<b>ขวดเดียว</b>ที่ตรงกับวัตถุดิบที่คุณมี แล้วทำให้จบ 1 ขวด ได้ไฟล์ <code>main-source-….md</code> ที่พกไปใช้ในบทต่อ ๆ ไปได้จนจบคอร์ส</p>
+</div>
+
   <article class="sauce">
     <div class="sauce-head">
       <span class="sauce-icon" aria-hidden="true"><i>VOICE</i></span>
-      <div class="sauce-title"><b>ขวดเทวัตถุดิบ</b><p>สำหรับคนที่มีเรื่องอยู่ในหัว แต่ยังไม่มีเอกสาร</p></div>
+      <div class="sauce-title"><b>ขวดเทวัตถุดิบ</b><p>สำหรับคนที่มีเรื่องอยู่ในหัว แต่ยังไม่มีเอกสาร</p><div class="sauce-how"><span><i>ใส่อะไร</i>เสียงที่คุณเล่าสด ๆ</span><span><i>สกัดจาก</i>บทสนทนาที่คุณเล่าในรอบนี้</span><span><i>ได้อะไร</i>ซอสแม่ ฉบับแรก</span></div></div>
       <button class="sauce-open" type="button" aria-expanded="false">เปิดฉลากและ Prompt</button>
     </div>
     <div class="sauce-body">
       <div class="sauce-line"></div>
       <p>เปิด Voice แล้วส่งคำสั่งนี้ก่อน จากนั้นเล่าเหมือนเล่าให้คนที่อยากช่วยจริง ๆ ฟัง ไม่ต้องพูดเป็นภาษาราชการ เดี๋ยวซอสเค็มน้ำตา</p>
-      <div class="prompt">ฉันกำลังจะเล่าเรื่องงานหรือโปรเจกต์ที่อยากทำให้ฟัง
+      <div class="prompt" data-sauce-kind="main">ฉันกำลังจะเล่าเรื่องงานหรือโปรเจกต์ที่อยากทำให้ฟัง
 
 หน้าที่ของคุณตอนนี้:
 1. ฟังและเก็บวัตถุดิบสำคัญ
@@ -412,13 +448,13 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
   <article class="sauce">
     <div class="sauce-head">
       <span class="sauce-icon" aria-hidden="true"><i>FILES</i></span>
-      <div class="sauce-title"><b>ขวดสกัดหัวซอส</b><p>สำหรับไฟล์ เอกสาร ภาพ เสียง โน้ต หรือของหลายชิ้น</p></div>
+      <div class="sauce-title"><b>ขวดสกัดหัวซอส</b><p>สำหรับไฟล์ เอกสาร ภาพ เสียง โน้ต หรือของหลายชิ้น</p><div class="sauce-how"><span><i>ใส่อะไร</i>ไฟล์ เอกสาร ภาพ เสียง โน้ต</span><span><i>สกัดจาก</i>เนื้อหาในไฟล์ที่แนบ</span><span><i>ได้อะไร</i>ซอสแม่ จากของที่มีอยู่แล้ว</span></div></div>
       <button class="sauce-open" type="button" aria-expanded="false">เปิดฉลากและ Prompt</button>
     </div>
     <div class="sauce-body">
       <div class="sauce-line"></div>
       <p>แนบสิ่งที่มีให้ AI ที่รองรับไฟล์นั้น แล้วใช้คำสั่งนี้ จุดสำคัญคือเราไม่ได้ขอ “สรุปทุกอย่าง” แต่ขอให้ดึงเฉพาะสิ่งที่งานต่อไปต้องใช้</p>
-      <div class="prompt">อ่านวัตถุดิบทั้งหมดที่ฉันแนบ แล้วช่วย “สกัดหัวซอส” สำหรับงานต่อไป
+      <div class="prompt" data-sauce-kind="main">อ่านวัตถุดิบทั้งหมดที่ฉันแนบ แล้วช่วย “สกัดหัวซอส” สำหรับงานต่อไป
 
 งานปลายทางของฉันคือ:
 [บอกว่าจะเอาไปทำอะไร เช่น สร้างเว็บไซต์ / เขียนบท / วางระบบ / ทำเกม / ทำคอนเทนต์]
@@ -443,13 +479,13 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
   <article class="sauce">
     <div class="sauce-head">
       <span class="sauce-icon" aria-hidden="true"><i>CHAT</i></span>
-      <div class="sauce-title"><b>ขวดสกัดจากแชตเดิม</b><p>สำหรับ Session ที่คุยกันจนรู้เรื่องอยู่แล้ว</p></div>
+      <div class="sauce-title"><b>ขวดสกัดจากแชตเดิม</b><p>สำหรับ Session ที่คุยกันจนรู้เรื่องอยู่แล้ว</p><div class="sauce-how"><span><i>ใส่อะไร</i>ไม่ต้องแนบอะไร</span><span><i>สกัดจาก</i>บทสนทนาทั้ง Session นี้</span><span><i>ได้อะไร</i>ซอสแม่ จากสิ่งที่ตกผลึกแล้ว</span></div></div>
       <button class="sauce-open" type="button" aria-expanded="false">เปิดฉลากและ Prompt</button>
     </div>
     <div class="sauce-body">
       <div class="sauce-line"></div>
       <p>ใช้ในแชตเดิมโดยตรง เพราะแชตนั้นมีบริบทจริงอยู่แล้ว นี่คือการรีดหัวซอสออกจากบทสนทนา ก่อนมันจะจมหายอยู่ใต้ข้อความ “โอเค ต่อเลย” 183 รอบ</p>
-      <div class="prompt">จากบทสนทนาทั้งหมดใน Session นี้ ช่วยสกัดซอสกลางของโปรเจกต์ออกมาเป็น Markdown
+      <div class="prompt" data-sauce-kind="main">จากบทสนทนาทั้งหมดใน Session นี้ ช่วยสกัดซอสกลางของโปรเจกต์ออกมาเป็น Markdown
 
 เป้าหมายคือ:
 - ใช้ต่อในแชทใหม่
@@ -483,16 +519,47 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
     </div>
   </article>
 
+  <div class="sauce-group sauce-group--optional">
+    <span class="sauce-group__kicker">หมวด 2 · Optional — รอบแรกข้ามไปก่อนได้</span>
+    <h3>สร้างซอสลูก สำหรับสั่งงาน</h3>
+    <p>ทำเมื่อมีซอสแม่แล้ว และรู้ว่าจะเอาไปทำงานอะไร ได้ไฟล์ <code>task-source-….md</code> ที่แนบแล้วสั่งสั้น ๆ ได้เลย <b>ยังไม่ต้องทำตอนนี้ก็ได้</b> — บทต่อ ๆ ไปจะพาทำทีละงานอยู่แล้ว</p>
+  </div>
+
   <article class="sauce">
     <div class="sauce-head">
       <span class="sauce-icon" aria-hidden="true"><i>TASTE</i></span>
-      <div class="sauce-title"><b>ขวดปรุงให้ถูกงาน</b><p>สำหรับเอาหัวซอสเดิมไปสร้างซอสที่เหมาะกับงานหนึ่งงาน</p></div>
+      <div class="sauce-title"><b>ขวดปรุงให้ถูกงาน</b><p>สำหรับเอาหัวซอสเดิมไปสร้างซอสที่เหมาะกับงานหนึ่งงาน</p><div class="sauce-how"><span><i>ใส่อะไร</i>ซอสแม่ .md + ชื่องานที่จะทำ</span><span><i>สกัดจาก</i>ซอสแม่ บวกโจทย์ของงานนั้น</span><span><i>ได้อะไร</i>ซอสลูก สำหรับ 1 งาน</span></div></div>
       <button class="sauce-open" type="button" aria-expanded="false">เปิดฉลากและ Prompt</button>
     </div>
     <div class="sauce-body">
       <div class="sauce-line"></div>
       <p>วัตถุดิบชุดเดียวกันทำได้หลายจาน แต่ซอสสำหรับทำเว็บไม่ควรหน้าตาเหมือนซอสสำหรับเขียนบท ไม่งั้น AI จะเอาเมนูนำทางไปใส่ในฉากร้องไห้</p>
-      <div class="prompt">ฉันมีหัวซอสหรือซอสตั้งต้นอยู่ด้านล่าง
+      <div class="pb" id="taskBuilder">
+        <div class="pb__head"><b>เลือกงานที่จะสั่ง</b><span>เลือกจากรายการ หรือพิมพ์เอง แล้ว Prompt ด้านล่างจะเปลี่ยนตาม</span></div>
+        <div class="pb__row">
+          <label class="pb__field"><span>งานปลายทาง</span>
+            <select id="pbJob">
+              <option value="">— เลือกงาน —</option>
+              <option>เขียนโพสต์โซเชียล 1 โพสต์</option>
+              <option>สรุปประชุมเป็นงานที่ต้องทำ</option>
+              <option>ทำสไลด์นำเสนอ 8–10 หน้า</option>
+              <option>เขียนอีเมลถึงลูกค้า 1 ฉบับ</option>
+              <option>ทำหน้าเว็บ index.html 1 หน้า</option>
+              <option>สร้างภาพประกอบ 1 ภาพ</option>
+              <option>ทำวิดีโอสั้นไม่เกิน 15 วินาที</option>
+              <option>เขียนบทความ 1 ชิ้น</option>
+              <option>วางแผนคอนเทนต์ 1 เดือน</option>
+              <option>สร้างแบบฝึกหัดพร้อมเฉลย</option>
+              <option value="__custom">อื่น ๆ — พิมพ์เอง</option>
+            </select>
+          </label>
+          <label class="pb__field pb__field--custom" id="pbCustomWrap" hidden><span>พิมพ์งานของคุณ</span>
+            <input id="pbCustom" type="text" placeholder="เช่น ทำใบเสนอราคาให้ลูกค้า" autocomplete="off">
+          </label>
+        </div>
+        <p class="pb__note" id="pbNote">ยังไม่ได้เลือก — Prompt จะคง <code>[ระบุงานปลายทาง]</code> ไว้ให้เติมเอง</p>
+      </div>
+      <div class="prompt" data-sauce-kind="task">ฉันมีหัวซอสหรือซอสตั้งต้นอยู่ด้านล่าง
 
 งานใหม่ที่ต้องการทำคือ:
 [ระบุงานปลายทาง]
@@ -606,7 +673,7 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
     <div class="machine-note"><b>เครื่องนี้ไม่มี AI แอบอยู่หลังม่าน</b> มันไม่แก้ ไม่ส่ง และไม่อัปโหลดข้อความไปไหน แค่บรรจุสิ่งที่คุณวางเป็นไฟล์ในเครื่องของคุณเอง กรุณาอ่านและลบข้อมูลลับก่อนดาวน์โหลด</div>
     <div class="field">
       <label for="sauceName">ชื่อขวด</label>
-      <input id="sauceName" type="text" value="my-sauce.md" autocomplete="off" spellcheck="false">
+      <input id="sauceName" type="text" value="main-source-YYYY-MM-DD-HHmm.md" autocomplete="off" spellcheck="false">
     </div>
     <div class="field">
       <label for="sauceText">วางซอสหรือข้อความ Markdown</label>
@@ -623,7 +690,7 @@ b,strong,h1,h2,h3,h4,h5,h6{font-weight:650!important}
 <div class="beforeafter">
   <div class="ba old"><b>ก่อนมีซอส</b>“เดี๋ยวก่อน ขอเล่าตั้งแต่ต้นนะ โปรเจกต์นี้เริ่มเมื่อ... เอ๊ะ ไฟล์อยู่ไหนวะ”</div>
   <div class="arrow">→</div>
-  <div class="ba new"><b>หลังมีซอส</b>แนบ <code>my-sauce.md</code> แล้วบอก AI ให้สรุปสิ่งที่เข้าใจ รอการยืนยัน จากนั้นค่อยเริ่มงาน</div>
+  <div class="ba new"><b>หลังมีซอส</b>แนบ <code>main-source-….md</code> แล้วบอก AI ให้สรุปสิ่งที่เข้าใจ รอการยืนยัน จากนั้นค่อยเริ่มงาน</div>
 </div>
 
 <section class="quest">
@@ -709,8 +776,8 @@ document.querySelectorAll('.prompt').forEach(function(el){
     var content=cleanMarkdown(textInput.value);
     if(!content){setStatus('ขวดยังว่างอยู่ วางซอสก่อนดาวน์โหลด','bad');textInput.focus();return}
 
-    var filename=(nameInput.value||'my-sauce.md').trim().replace(/[\\/:*?"<>|]+/g,'-');
-    if(!filename)filename='my-sauce.md';
+    var filename=(nameInput.value||'main-source-YYYY-MM-DD-HHmm.md').trim().replace(/[\\/:*?"<>|]+/g,'-');
+    if(!filename)filename='main-source-YYYY-MM-DD-HHmm.md';
     if(!filename.toLowerCase().endsWith('.md'))filename+='.md';
 
     var blob=new Blob([content+'\n'],{type:'text/markdown;charset=utf-8'});
@@ -1218,13 +1285,29 @@ function isLessonOne() {
   return /\/classroom\/free-ai(?:\.html)?$/.test(location.pathname);
 }
 
-const OUTPUT_CONTRACT = `ผลลัพธ์สุดท้ายที่ต้องส่ง:
+const SAUCE_KIND = {
+  'main': { file:'main-source', label:'Main Source', next:'พกไฟล์นี้ไปใช้เป็น Main Source ในบทต่อ ๆ ไปได้จนจบคอร์ส แล้วสั่งให้สกัด Task Source สำหรับงานนั้น ๆ' },
+  'task': { file:'task-source', label:'Task Source', next:'แนบไฟล์นี้พร้อมคำสั่งสั้นของงานนั้น โดยไม่ต้องอธิบายบริบทใหม่' },
+};
+
+function outputContract(kind) {
+  const k = SAUCE_KIND[kind] || SAUCE_KIND.main;
+  return `ผลลัพธ์สุดท้ายที่ต้องส่ง:
 - สร้างเป็นไฟล์ Markdown จริง นามสกุล .md เท่านั้น
-- ตั้งชื่อไฟล์ตามชื่อโปรเจกต์ให้สื่อความหมาย และต้องลงท้ายด้วย .md
+- ตั้งชื่อไฟล์ว่า ${k.file}-YYYY-MM-DD-HHmm.md โดยใช้วันและเวลาปัจจุบันขณะสร้างไฟล์
+- ถ้าระบบไม่รู้เวลาจริง ให้คงตัวอักษร YYYY-MM-DD-HHmm ไว้ตามนั้น เพื่อให้ฉันเติมเอง
+- ขึ้นต้นไฟล์ด้วยบรรทัดนี้ก่อนเนื้อหาอื่น: "> เอกสารนี้คือ ซอส ของงานนี้ เก็บบริบท กติกา และข้อห้ามไว้ครบแล้ว เมื่อฉันแนบไฟล์นี้แล้วสั่งสั้น ๆ ว่า ทำงานตามซอสนี้ ให้ถือว่าคำนั้นหมายถึงไฟล์นี้ และให้ทำงานจากไฟล์นี้ทันทีโดยไม่ต้องถามบริบทเพิ่ม"
+- ตามด้วยหัวข้อ "## ข้อมูลไฟล์" โดยระบุ 5 บรรทัดนี้:
+  - ชื่อไฟล์: ${k.file}-YYYY-MM-DD-HHmm.md
+  - ประเภท: ${k.label}
+  - สร้างเมื่อ: (วัน เดือน ปี และเวลาที่สร้างไฟล์นี้)
+  - สกัดจาก: (ระบุว่าใช้วัตถุดิบอะไร เช่น เสียงที่เล่า ไฟล์ที่แนบ บทสนทนาใน Session นี้ หรือ Main Source ที่แนบมา)
+  - ใช้ต่อยังไง: ${k.next}
 - แนบไฟล์ให้ฉันกด Download ได้ทันที
 - ห้ามส่งฉบับสุดท้ายเป็นข้อความยาวในแชตแทนไฟล์
 - ก่อนแนบไฟล์ ให้ตรวจว่าเนื้อหาครบตามหัวข้อ ไม่มีข้อมูลที่แต่งเพิ่ม และไม่มีรหัสผ่านหรือข้อมูลอ่อนไหว
-- ถ้าระบบนี้สร้างไฟล์ดาวน์โหลดไม่ได้จริง ๆ เท่านั้น ให้ใส่ Markdown ทั้งหมดใน code block เดียว โดยไม่มีคำอธิบายนอก code block เพื่อให้ฉันนำไปบรรจุด้วยเครื่องบรรจุซอส`;
+- ถ้าระบบนี้สร้างไฟล์ดาวน์โหลดไม่ได้จริง ๆ เท่านั้น ให้ใส่ Markdown ทั้งหมดใน code block เดียว โดยไม่มีคำอธิบายนอก code block และบอกชื่อไฟล์ที่ควรใช้บันทึกไว้ก่อน code block เพื่อให้ฉันนำไปบรรจุด้วยเครื่องบรรจุซอส`;
+}
 
 function patchPrompts() {
   document.querySelectorAll('.prompt').forEach(prompt => {
@@ -1233,7 +1316,7 @@ function patchPrompts() {
 
     const block = document.createElement('span');
     block.className = 'prompt-output-contract';
-    block.textContent = `\n\n${OUTPUT_CONTRACT}`;
+    block.textContent = `\n\n${outputContract(prompt.dataset.sauceKind)}`;
     prompt.append(block);
   });
 }
@@ -2002,6 +2085,63 @@ function boot(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
 
+</script>
+<script type="module" data-self-contained="lesson1-task-builder.js">
+/* AI ใส่ซอส · บท 1 — ตัวช่วยเลือกงานให้ขวดที่ 4
+   แทนที่ [ระบุงานปลายทาง] ใน Prompt ตามงานที่ผู้เรียนเลือกหรือพิมพ์เอง
+   ทำงานหลังสคริปต์ภาษาและสคริปต์สัญญาผลลัพธ์ จึงอ่านข้อความจาก DOM ที่ประกอบเสร็จแล้ว
+*/
+(function(){
+'use strict';
+if(!/\/classroom\/free-ai(?:\.html)?$/.test(location.pathname)) return;
+
+const PLACEHOLDER='[ระบุงานปลายทาง]';
+
+function boot(){
+  const box=document.getElementById('taskBuilder');
+  const prompt=document.querySelector('.prompt[data-sauce-kind="task"]');
+  if(!box||!prompt) return;
+
+  const sel=box.querySelector('#pbJob');
+  const customWrap=box.querySelector('#pbCustomWrap');
+  const custom=box.querySelector('#pbCustom');
+  const note=box.querySelector('#pbNote');
+
+  // ข้อความหลักของ Prompt อยู่ใน text node ที่มี placeholder
+  const target=[...prompt.childNodes].find(n=>n.nodeType===3&&n.nodeValue.includes(PLACEHOLDER));
+  if(!target) return;
+  const base=target.nodeValue;
+
+  function currentJob(){
+    if(sel.value==='__custom') return custom.value.trim();
+    return sel.value.trim();
+  }
+
+  function render(){
+    const job=currentJob();
+    target.nodeValue = job ? base.replace(PLACEHOLDER, job) : base;
+    if(job){
+      note.dataset.on='1';
+      note.textContent='Prompt ด้านล่างใช้งาน: '+job+' — กดคัดลอกได้เลย';
+    }else{
+      delete note.dataset.on;
+      note.innerHTML='ยังไม่ได้เลือก — Prompt จะคง <code>[ระบุงานปลายทาง]</code> ไว้ให้เติมเอง';
+    }
+  }
+
+  sel.addEventListener('change',()=>{
+    const isCustom = sel.value==='__custom';
+    customWrap.hidden = !isCustom;
+    if(isCustom) custom.focus();
+    render();
+  });
+  custom.addEventListener('input',render);
+  render();
+}
+
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,0),{once:true});
+else setTimeout(boot,0);
+})();
 </script>
 </body>
 </html>
