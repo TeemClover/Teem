@@ -13,6 +13,7 @@ const cloudflareApi = await readFile(new URL('../functions/api/first-class.js', 
 test('course facts and instructor are exact', () => {
   for (const text of ['98 นาที', '98 บาท', 'ส.ค. 2026', '18 สิงหาคม 2026', '19:00', '19:30', 'ไม่มีวิดีโอย้อนหลัง', 'สอนสดโดย Teem']) assert.match(html, new RegExp(text));
   assert.match(html, /href="\/resume\/"/);
+  assert.match(html, /<a class="instructor-link" href="\/resume\/"[^>]*><b>สอนสดโดย Teem/);
   assert.doesNotMatch(html, /Ako|ผู้สอนร่วม/);
 });
 
@@ -88,4 +89,7 @@ test('responsive styles cover desktop, tablet and mobile', () => {
   assert.match(css, /@media\(max-width:620px\)/);
   assert.match(css, /\.registration-card\{display:grid/);
   assert.match(css, /\.level-scale\{display:grid/);
+  assert.match(css, /\.intro-lead\{font-size:16px\}/);
+  assert.match(css, /\.field>span,fieldset legend\{font-size:15px\}/);
+  assert.match(css, /\.instructor-line b\{font-size:14px\}/);
 });
