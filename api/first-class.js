@@ -7,6 +7,7 @@ const META_PRODUCT = {
   content_name: 'AI ใส่ซอส · First Class', content_category: 'Online Course', content_ids: ['ai-sauce-first-class-2026-08-18'],
   content_type: 'product', value: 98, currency: 'THB', num_items: 1,
 };
+const META_PROFILE_PIXEL_ID = '1055629253871262'; // Public browser-only pixel for the profile Boost account.
 
 function clean(value, max = 120) {
   return typeof value === 'string' ? value.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, max) : '';
@@ -165,8 +166,9 @@ async function unlockFirstClass(sql, id) {
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET' && req.query?.public === 'meta') {
-      const pixelId = clean(process.env.META_PIXEL_ID, 30);
-      return sendJson(res, { ok: true, enabled: Boolean(pixelId), pixelId: pixelId || null });
+      const pixelIds = [...new Set([process.env.META_PIXEL_ID, process.env.META_PROFILE_PIXEL_ID || META_PROFILE_PIXEL_ID]
+        .map(value => clean(value, 30)).filter(value => /^\d{5,30}$/.test(value)))];
+      return sendJson(res, { ok: true, enabled: Boolean(pixelIds.length), pixelId: pixelIds[0] || null, pixelIds });
     }
     const sql = database();
     await ensureFirstClassSchema(sql);
