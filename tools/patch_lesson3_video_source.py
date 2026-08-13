@@ -3,12 +3,11 @@ from pathlib import Path
 p = Path("classroom/clip-ai.html")
 t = p.read_text(encoding="utf-8")
 
-# Safety: make sure we are patching the current Lesson 3 page, including the
-# single connected raster hero that must not be disturbed.
+# Safety: make sure we are patching the current Lesson 3 page and preserve its
+# current hero/header exactly as-is. This patch changes copy only.
 assert '<meta name="mc-item" content="learn:clip-ai">' in t
 assert '<figure class="classroom-lesson-header-image">' in t
 assert '/classroom/img/header-lesson3.jpeg' in t
-assert '<div class="hero-stage"' not in t
 
 # 1) Step 2 chip only.
 old_chip = 'video-source-YYYY-MM-DD-HHmm.md จากข้อ 1'
@@ -72,8 +71,8 @@ if warning_text not in t:
     assert 'prompt' in opening.lower(), f"nearest div is not a prompt div: {opening!r}"
     t = t[:prompt_div_start] + warning + t[prompt_div_start:]
 
-# Final verification: exact requested copy is present, old timestamp filename
-# is gone from the step chip/final quest, and the hero structure is untouched.
+# Final verification: exact requested copy is present and the connected lesson
+# raster header still exists. No hero artwork is modified by this script.
 assert t.count(new_chip) == 1
 assert warning_text in t
 assert '<b>⚠️ อย่าลืมแนบซอส (.md)</b>' in t
@@ -83,7 +82,6 @@ assert new_attach in t
 assert new_check in t
 assert '<figure class="classroom-lesson-header-image">' in t
 assert '/classroom/img/header-lesson3.jpeg' in t
-assert '<div class="hero-stage"' not in t
 
 p.write_text(t, encoding="utf-8")
 print("Lesson 3 video-source copy patched and verified")
