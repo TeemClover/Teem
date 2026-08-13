@@ -17,77 +17,16 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
-      - name: Wire host profile into Journey Funnel
+      - name: Patch Journey Funnel
+        run: python tools/patch-host-profile-journey.py
+      - name: Commit patch
         run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          backend=Path('core7/backend/analytics-v11.js')
-          s=backend.read_text(encoding='utf-8')
-
-          old="""        MIN(CASE WHEN ref='home-video' THEN occurred_at END) video_at,
-        MIN(CASE WHEN ref='hall-open' THEN occurred_at END) hall_at
-      FROM c7_analytics_events
-      WHERE event_type='ACT' AND ref IN ('home-open','home-video','hall-open')"""
-          new="""        MIN(CASE WHEN ref='home-video' THEN occurred_at END) video_at,
-        MIN(CASE WHEN ref='home-host-profile' THEN occurred_at END) host_at,
-        MIN(CASE WHEN ref='hall-open' THEN occurred_at END) hall_at
-      FROM c7_analytics_events
-      WHERE event_type='ACT' AND ref IN ('home-open','home-video','home-host-profile','hall-open')"""
-          if old not in s:
-              raise SystemExit('backend home cohort marker not found')
-          s=s.replace(old,new,1)
-
-          old="""      COUNT(CASE WHEN opened_at IS NOT NULL AND video_at IS NOT NULL THEN 1 END) watched_video,
-      COUNT(CASE WHEN opened_at IS NOT NULL AND hall_at IS NOT NULL"""
-          new="""      COUNT(CASE WHEN opened_at IS NOT NULL AND video_at IS NOT NULL THEN 1 END) watched_video,
-      COUNT(CASE WHEN opened_at IS NOT NULL AND host_at IS NOT NULL THEN 1 END) host_profile,
-      COUNT(CASE WHEN opened_at IS NOT NULL AND hall_at IS NOT NULL"""
-          if old not in s:
-              raise SystemExit('backend home select marker not found')
-          s=s.replace(old,new,1)
-
-          old="""  home.video_rate = rate(home.watched_video, home.visitors);
-  home.direct_rate = rate(home.entered_direct, home.visitors);"""
-          new="""  home.video_rate = rate(home.watched_video, home.visitors);
-  home.host_profile_rate = rate(home.host_profile, home.visitors);
-  home.direct_rate = rate(home.entered_direct, home.visitors);"""
-          if old not in s:
-              raise SystemExit('backend home rate marker not found')
-          s=s.replace(old,new,1)
-          backend.write_text(s,encoding='utf-8')
-
-          page=Path('stat/journey/index.html')
-          s=page.read_text(encoding='utf-8')
-          s=s.replace('.metrics.five{grid-template-columns:repeat(5,1fr)}', '.metrics.five{grid-template-columns:repeat(5,1fr)}\n.metrics.six{grid-template-columns:repeat(6,1fr)}', 1)
-          s=s.replace('@media(max-width:1100px){.metrics.five{grid-template-columns:repeat(3,1fr)}}', '@media(max-width:1100px){.metrics.five,.metrics.six{grid-template-columns:repeat(3,1fr)}}', 1)
-          s=s.replace('@media(max-width:900px){.metrics.four,.metrics.five{grid-template-columns:repeat(2,1fr)}}', '@media(max-width:900px){.metrics.four,.metrics.five,.metrics.six{grid-template-columns:repeat(2,1fr)}}', 1)
-          s=s.replace('.metrics,.metrics.four,.metrics.five{grid-template-columns:1fr}', '.metrics,.metrics.four,.metrics.five,.metrics.six{grid-template-columns:1fr}', 1)
-          if '<section class="metrics five" id="homeMetrics"></section>' not in s:
-              raise SystemExit('Journey home metric section marker not found')
-          s=s.replace('<section class="metrics five" id="homeMetrics"></section>', '<section class="metrics six" id="homeMetrics"></section>', 1)
-
-          old="""  metric('กดดูวิดีโอ',fmt(h.watched_video),`${pct(h.video_rate)} ของคนเข้าหน้าแรก`),
-  metric('เข้าบ้านทันที',fmt(h.entered_direct),`${pct(h.direct_rate)} · ไม่ได้ดูวิดีโอก่อน`),"""
-          new="""  metric('กดดูวิดีโอ',fmt(h.watched_video),`${pct(h.video_rate)} ของคนเข้าหน้าแรก`),
-  metric('พบเจ้าบ้าน',fmt(h.host_profile),`${pct(h.host_profile_rate)} ของคนเข้าหน้าแรก`),
-  metric('เข้าบ้านทันที',fmt(h.entered_direct),`${pct(h.direct_rate)} · ไม่ได้ดูวิดีโอก่อน`),"""
-          if old not in s:
-              raise SystemExit('Journey home render marker not found')
-          s=s.replace(old,new,1)
-          page.write_text(s,encoding='utf-8')
-
-          assert "ref='home-host-profile'" in backend.read_text(encoding='utf-8')
-          assert "metric('พบเจ้าบ้าน'" in page.read_text(encoding='utf-8')
-          PY
-
           git diff --check
           grep -F "home-host-profile" core7/backend/analytics-v11.js
           grep -F "metric('พบเจ้าบ้าน'" stat/journey/index.html
-
-          rm -f .github/workflows/add-host-profile-to-journey.yml
+          rm -f tools/patch-host-profile-journey.py .github/workflows/add-host-profile-to-journey.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add core7/backend/analytics-v11.js stat/journey/index.html .github/workflows/add-host-profile-to-journey.yml
+          git add core7/backend/analytics-v11.js stat/journey/index.html tools/patch-host-profile-journey.py .github/workflows/add-host-profile-to-journey.yml
           git commit -m "feat(stat): show host profile clicks in Journey Funnel"
           git push origin HEAD:main
