@@ -119,6 +119,23 @@ html,body{min-height:100%}body{overflow-y:auto!important}
 @media(max-width:680px){.sauce-flow{margin:20px 0 2px}.sauce-flow__frame{border-radius:18px}.sauce-flow__cap{font-size:12px}}
 </style>
 
+<style id="lesson6-rescue-style">
+.rescue{margin-top:14px;border:1px solid rgb(var(--gold)/.34);border-radius:15px;background:rgb(var(--gold)/.07);overflow:hidden}
+.rescue>summary{cursor:pointer;list-style:none;padding:15px 17px;font-family:"Bai Jamjuree",sans-serif;font-weight:700;font-size:15.5px;color:rgb(var(--deep));display:flex;align-items:center;gap:9px}
+.rescue>summary::-webkit-details-marker{display:none}
+.rescue>summary::after{content:"▾";margin-left:auto;font-size:13px;opacity:.55;transition:transform .18s ease}
+.rescue[open]>summary::after{transform:rotate(180deg)}
+.rescue>summary:focus-visible{outline:2px solid rgb(var(--green));outline-offset:-3px}
+.rescue__body{padding:0 17px 17px;font-size:14.4px;line-height:1.75;color:rgb(var(--ink)/.86)}
+.rescue__body p{margin-top:9px}
+.rescue__why{margin-top:10px;padding:11px 13px;border-left:3px solid rgb(var(--gold)/.5);border-radius:0 9px 9px 0;background:rgb(255 255 255/.6);font-size:13.8px}
+.rescue__ways{margin-top:13px;display:grid;gap:9px}
+.rescue__way{padding:12px 13px;border:1px solid rgb(var(--ink)/.1);border-radius:11px;background:#fff}
+.rescue__way b{display:block;font-family:"Bai Jamjuree",sans-serif;font-size:14.4px;color:rgb(var(--deep))}
+.rescue__way p{margin-top:3px;font-size:13.6px;color:rgb(var(--ink)/.74)}
+.rescue__check{margin-top:13px;font-size:13.6px;color:rgb(var(--ink)/.74)}
+@media(max-width:600px){.rescue>summary{font-size:14.6px;padding:13px 14px}.rescue__body{padding:0 14px 14px}}
+</style>
 </head>
 <body>
 <nav class="mc-lesson-nav" aria-label="ห้องเรียน myClover"><div class="mc-lesson-nav__inner">
@@ -380,6 +397,29 @@ Checklist ว่า Source มีข้อมูลพอสร้างเว�
     <article class="step"><span class="n">3</span><div><b>ดับเบิลคลิกไฟล์</b><p>เบราว์เซอร์จะเปิดให้ทันที แม้ยังไม่ได้เอาขึ้นอินเทอร์เน็ต คุณจึงทดสอบ แก้ และพกไฟล์นี้ไปเปิดเครื่องอื่นได้</p></div></article>
     <article class="step"><span class="n">4</span><div><b>แก้ซอสก่อน แล้วค่อยให้ AI แก้หน้า</b><p>ถ้าข้อมูลผิด อย่าซ่อมเฉพาะสีหรือประโยคปลายทาง แก้ซอสต้นฉบับ แล้วสั่งให้สร้าง Version ใหม่จากซอสที่ถูกต้อง</p></div></article>
   </div>
+  <details class="rescue">
+    <summary>⚠️ ถ้าโค้ดขาดกลางคัน — AI พลาดได้ และนี่คือทางถอย</summary>
+    <div class="rescue__body">
+      <p><b>อาการ:</b> โค้ดหยุดกลางบรรทัด หรือไม่มี <code>&lt;/html&gt;</code> ปิดท้าย บันทึกไปแล้วเปิดมาหน้าเพี้ยนหรือว่างเปล่า</p>
+      <div class="rescue__why">ไม่ใช่ความผิดคุณ และไม่ได้แปลว่าซอสไม่ดี — AI ทุกตัวมีเพดานความยาวของคำตอบหนึ่งครั้ง หน้าเว็บไฟล์เดียวที่มีทั้ง HTML, CSS และ JavaScript มักยาวเกินเพดานของรุ่นฟรี นี่คือข้อจำกัดของเครื่องมือ ไม่ใช่สัญญาณว่าให้เลิก</div>
+      <div class="rescue__ways">
+        <div class="rescue__way">
+          <b>ทาง 1 · สั่งให้เขียนต่อ (ลองอันนี้ก่อน)</b>
+          <p>อย่าสั่งว่า “ส่งใหม่ทั้งหมด” เพราะจะโดนตัดที่เดิม ให้สั่งต่อจากจุดที่ค้าง แล้วเอาโค้ดที่ได้ไปต่อท้ายในไฟล์เดิมของคุณเอง</p>
+          <div class="prompt-card"><span class="prompt-copy" id="rescuePrompt">เขียนต่อจากบรรทัดสุดท้ายที่ค้างไว้ทันที ห้ามเริ่มใหม่ ห้ามสรุป และห้ามใส่คำอธิบายใด ๆ ส่งเฉพาะโค้ดส่วนที่เหลือจนจบไฟล์</span><button class="copy-smart" type="button" data-copy-target="rescuePrompt" aria-label="คัดลอกคำสั่งให้เขียนต่อ">คัดลอก</button></div>
+        </div>
+        <div class="rescue__way">
+          <b>ทาง 2 · สั่งแบ่งส่งตั้งแต่แรก</b>
+          <p>ถ้าขาดซ้ำหลายรอบ ให้บอกว่า “แบ่งส่งเป็น 3 ครั้ง ครั้งละส่วน ส่งครั้งที่ 1 ก่อน แล้วรอฉันบอกว่าต่อ” จากนั้นต่อโค้ดเรียงกันในไฟล์เดียว</p>
+        </div>
+        <div class="rescue__way">
+          <b>ทาง 3 · ขอฉบับสั้นลงก่อน</b>
+          <p>บอกว่า “ทำฉบับสั้นลง ตัด section ที่ซอสมีข้อมูลน้อยที่สุดออกก่อน” ได้หน้าที่เปิดได้จริงก่อน แล้วค่อยขอเพิ่มทีละส่วนทีหลัง</p>
+        </div>
+      </div>
+      <p class="rescue__check">เช็กทุกครั้งก่อนบันทึก: ไฟล์ต้องขึ้นต้นด้วย <code>&lt;!doctype html&gt;</code> และบรรทัดสุดท้ายต้องเป็น <code>&lt;/html&gt;</code></p>
+    </div>
+  </details>
   <p class="small-note">ใช้ไฟล์ <code>index.html</code> ที่ AI สร้างจากซอสของคุณเป็นผลงานจริง ส่วนปุ่มดูตัวอย่าง Smart Resume อยู่ใน 3 Step ด้านบน</p>
 </section>
 
