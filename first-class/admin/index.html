@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>First Class Control Room · myClover</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./admin.css?v=20260813-1">
+</head>
+<body>
+  <header>
+    <a href="/first-class/" class="brand"><img src="/icons/icon-192.png" alt="" width="192" height="192"><span>my<b>Clover</b></span></a>
+    <div><small>AI ใส่ซอส · PILOT</small><strong>First Class Control Room</strong></div>
+    <button id="refreshButton" type="button" hidden>↻ รีเฟรช</button>
+  </header>
+
+  <main>
+    <section id="loginPanel" class="login-panel">
+      <div class="medal">🏅</div>
+      <p>PRIVATE ADMIN</p>
+      <h1>เปิด Control Room</h1>
+      <span>ใส่รหัสผ่าน First Class ข้อมูลจะจำไว้เฉพาะแท็บนี้</span>
+      <form id="loginForm"><input id="adminKey" type="password" autocomplete="current-password" placeholder="รหัสผ่าน" required><button type="submit">เข้าสู่ระบบ →</button></form>
+      <div id="loginMessage" class="message" hidden></div>
+    </section>
+
+    <section id="dashboard" hidden>
+      <div class="topline">
+        <div><p>วันอังคารที่ 18 สิงหาคม 2026</p><h1>พร้อมเปิดห้อง <em>19:00</em></h1></div>
+        <div class="top-actions"><button id="exportButton" type="button">ดาวน์โหลด CSV</button><a href="https://discord.gg/A5nmMqvTm" target="_blank" rel="noopener noreferrer">เปิด Discord ↗</a></div>
+      </div>
+
+      <div class="stats" aria-label="สรุปสถานะ">
+        <article><span>ลงทะเบียน</span><strong id="statSubmitted">0</strong><small>คนทั้งหมด</small></article>
+        <article><span>ยืนยันยอด</span><strong id="statPaid">0</strong><small>ชำระแล้ว</small></article>
+        <article><span>First Class</span><strong id="statGranted">0</strong><small>เปิดสิทธิ์แล้ว</small></article>
+        <article><span>ต้องดูต่อ</span><strong id="statAttention">0</strong><small>รายการ</small></article>
+      </div>
+
+      <div class="toolbar"><label>ค้นหา <input id="searchInput" type="search" placeholder="ชื่อ · อีเมล · Discord"></label><div class="filters" role="group" aria-label="กรองสถานะ"><button class="active" data-filter="all">ทั้งหมด</button><button data-filter="submitted">รอตรวจยอด</button><button data-filter="proof_requested">ขอสลิป</button><button data-filter="paid">ยืนยันแล้ว</button></div></div>
+      <div id="dashboardMessage" class="message" hidden></div>
+      <div id="registrationList" class="registration-list"></div>
+      <div id="emptyState" class="empty" hidden><span>🍀</span><h2>ยังไม่มีรายการในมุมมองนี้</h2><p>ลองเปลี่ยนตัวกรองหรือค้นหาคำอื่น</p></div>
+    </section>
+  </main>
+  <script src="./admin.js?v=20260813-1" defer></script>
+</body>
+</html>

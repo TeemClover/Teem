@@ -2,6 +2,9 @@
   "name": "myclover-site",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test:first-class": "node --test first-class/first-class.test.mjs"
+  },
   "dependencies": {
     "@neondatabase/serverless": "1.1.0"
   }

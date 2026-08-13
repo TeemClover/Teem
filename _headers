@@ -16,6 +16,11 @@
 /core7/admin/*
   X-Robots-Tag: noindex, nofollow
 
+# First Class admin — private control room
+/first-class/admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+
 # หน้าสถิติทั้งหมด — ไม่ให้ขึ้นผลค้นหา (/stat/* ล็อกด้วยรหัสผ่านที่ขอบอีกชั้น)
 /stat/*
   X-Robots-Tag: noindex, nofollow, noarchive
