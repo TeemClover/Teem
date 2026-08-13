@@ -9,17 +9,21 @@ const adminScript = await readFile(new URL('./admin/admin.js', import.meta.url),
 const vercelApi = await readFile(new URL('../api/first-class.js', import.meta.url), 'utf8');
 const cloudflareApi = await readFile(new URL('../functions/api/first-class.js', import.meta.url), 'utf8');
 
-test('course facts and instructor are exact', () => {
-  for (const text of ['98 นาที', '98 บาท', 'วันอังคาร', '18 สิงหาคม 2026', '19:00', '19:30', 'ไม่มีวิดีโอย้อนหลัง', 'สอนสดโดย TEEM']) assert.match(html, new RegExp(text));
+test('course facts are concise and exact', () => {
+  for (const text of ['98 นาที', '98 บาท', '18 ส.ค. 2026', '18 สิงหาคม 2026', '19:00', '19:30', 'ไม่มีวิดีโอย้อนหลัง', 'สอนสดโดย Teem']) assert.match(html, new RegExp(text));
   assert.match(html, /href="\/resume\/"/);
   assert.doesNotMatch(html, /Ako|ผู้สอนร่วม/);
 });
 
-test('Discord flow has both routes and every requested benefit', () => {
+test('page opens as registration, with reading links only after the form', () => {
+  assert.match(html, /<section class="registration-card"/);
+  assert.match(html, /<form id="registrationForm"/);
   assert.match(html, /https:\/\/discord\.gg\/A5nmMqvTm/);
   assert.match(html, /href="\/guild\/"/);
-  assert.match(html, /<details class="why-discord">/);
-  for (const text of ['ทุกคนแชร์จอได้', 'ผู้สอนและผู้ช่วยสอน', 'กิจกรรมฟรีทุกสัปดาห์', 'ไม่บังคับ', 'First Class']) assert.match(html, new RegExp(text));
+  assert.ok(html.indexOf('post-form-links') > html.indexOf('</form>'));
+  assert.doesNotMatch(html, /<details|recipe-grid|discord-section|instructor-photo|resume-career-stage/);
+  assert.doesNotMatch(html, /href="\/classroom\/"|คอร์สฟรี|บทเรียน/);
+  assert.match(html, /href="\/"/);
 });
 
 test('pilot form is short and contains only the approved fields', () => {
@@ -36,10 +40,11 @@ test('success state and admin control room are present', () => {
   assert.match(adminScript, /ยืนยัน 98 บาท/);
 });
 
-test('campaign image, LINE Official and pilot admin password are wired', async () => {
+test('campaign image remains social-only, LINE and pilot password are wired', async () => {
   const image = await stat(new URL('./assets/ai-sauce-pilot.webp', import.meta.url));
   assert.ok(image.size > 10_000 && image.size < 300_000);
-  assert.match(html, /assets\/ai-sauce-pilot\.webp/);
+  assert.match(html, /property="og:image" content="[^"]+assets\/ai-sauce-pilot\.webp"/);
+  assert.doesNotMatch(html, /<img[^>]+ai-sauce-pilot/);
   assert.match(html, /https:\/\/lin\.ee\/rlSlhzT/);
   assert.doesNotMatch(html, /line\.me\/ti\/p/);
   assert.match(vercelApi, /FIRST_CLASS_ADMIN_KEY \|\| 'calling'/);
@@ -47,7 +52,7 @@ test('campaign image, LINE Official and pilot admin password are wired', async (
 });
 
 test('responsive styles cover desktop, tablet and mobile', () => {
-  assert.match(css, /@media\(max-width:980px\)/);
-  assert.match(css, /@media\(max-width:650px\)/);
-  assert.match(css, /\.mobile-bar\{display:block/);
+  assert.match(css, /@media\(max-width:820px\)/);
+  assert.match(css, /@media\(max-width:520px\)/);
+  assert.match(css, /\.registration-card\{display:grid/);
 });
