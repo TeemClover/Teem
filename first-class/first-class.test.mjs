@@ -38,10 +38,13 @@ test('hero, social preview and registration are ready', async () => {
 });
 
 test('classroom promotes the current live First Class course', () => {
+  assert.match(classroom, /<a class="liveart" href="\/first-class\/"[^>]*><img src="\/first-class\/assets\/ai-sauce-pilot-social\.jpg" width="1440" height="756"/);
   assert.match(classroom, /🔴 คลาสสดของบ้าน · AI ใส่ซอส/);
   assert.match(classroom, /98 นาที · 98 บาท · สดผ่าน Discord/);
   assert.match(classroom, /อังคาร 18 สิงหาคม 2026 ห้องเปิด 19:00 · เริ่ม 19:30 ตรงเวลา/);
   assert.match(classroom, /<a href="\/first-class\/">ดูรายละเอียดและลงทะเบียน →<\/a>/);
+  assert.match(classroom, /\.livebody\{padding:20px 24px 22px/);
+  assert.match(classroom, /\.livebody>a\{background:var\(--gold\)/);
   assert.doesNotMatch(classroom, /รับข่าวคลาสถัดไป/);
 });
 
