@@ -121,11 +121,18 @@
     try { window.MC_ACT && window.MC_ACT('boss-invite-shown'); } catch (e) {}
   }
 
+  /* บท 6 มีทางจบของตัวเองอยู่แล้ว — ประตูบอสโผล่ตอนเลื่อนลงมาถึงท้ายบท
+     จึงไม่ต้องเด้งซ้ำ แต่ยังปั๊มว่าเห็นแล้ว กันไม่ให้ไปเด้งย้อนหลังหน้าอื่น */
+  function isLessonSix() {
+    return /\/classroom\/first-web(?:\.html)?$/.test(location.pathname);
+  }
+
   function check() {
     if (shown) return true;
     if (ls(SEEN) === '1') return true;
     var done = learned();
     if (done.length < NEED) return false;
+    if (isLessonSix()) { save(SEEN, '1'); shown = true; return true; }
     show(done);
     return true;
   }
