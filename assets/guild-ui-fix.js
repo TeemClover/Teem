@@ -116,7 +116,7 @@
 })();
 
 if (/^\/guild\/?(?:index\.html)?$/.test(location.pathname)) {
-  import('/assets/guild-questboard-visual.js?v=20260814-2').catch(error => {
+  import('/assets/guild-questboard-visual.js?v=20260814-3').catch(error => {
     console.error('[Guild X] quest board visual failed to load:', error);
   });
 }
