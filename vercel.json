@@ -17,6 +17,10 @@
     { "source": "/xty/new", "destination": "/xty/new/", "permanent": false },
     { "source": "/xty/join", "destination": "/xty/join/", "permanent": false },
     { "source": "/xty/p", "destination": "/xty/p/", "permanent": false },
+    { "source": "/xty/about", "destination": "/xty/about/", "permanent": false },
+    { "source": "/xty/about/why", "destination": "/xty/about/why/", "permanent": false },
+    { "source": "/xty/about/how", "destination": "/xty/about/how/", "permanent": false },
+    { "source": "/xty/about/what", "destination": "/xty/about/what/", "permanent": false },
     { "source": "/profile", "destination": "/profile/", "permanent": false },
 
     { "source": "/xircle/doc", "destination": "/xircle/doc/", "permanent": false },
