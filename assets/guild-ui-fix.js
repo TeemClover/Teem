@@ -2,7 +2,7 @@
 (() => {
   if (!/^\/guild\/?(?:index\.html)?$/.test(location.pathname)) return;
 
-  const STYLE_ID = 'guild-ui-fix-20260814-v2';
+  const STYLE_ID = 'guild-ui-fix-20260814-v3';
   const THAI_RE = /[\u0E00-\u0E7F]/;
 
   function markThaiSafety(root = document) {
@@ -23,23 +23,33 @@
         .brandmark{width:38px!important;height:38px!important;display:grid!important;place-items:center!important;flex:0 0 38px!important;position:relative!important}
         .brandmark img{position:static!important;inset:auto!important;width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
 
-        /* Thai glyph safety: reserve real ascender/descender room for marks such as ่ ้ ุ ู. */
+        /* Thai glyph safety: real vertical room for ่ ้ ๊ ๋ ุ ู and stacked marks. */
         .guild-thai-heading-safe{
-          line-height:1.16!important;
+          line-height:1.24!important;
           overflow:visible!important;
-          padding-top:.09em!important;
-          padding-bottom:.13em!important;
+          padding-top:.15em!important;
+          padding-bottom:.18em!important;
           text-wrap:balance;
           -webkit-font-smoothing:antialiased;
         }
-        h3.guild-thai-heading-safe{line-height:1.20!important}
+        h1.guild-thai-heading-safe{line-height:1.20!important}
+        h3.guild-thai-heading-safe{line-height:1.24!important}
+
+        /* Gold gradient text was the remaining clip source on Thai glyphs.
+           Give the gradient span its own ink box without changing visible size. */
         .guild-thai-heading-safe .shine{
-          line-height:inherit!important;
+          display:inline-block!important;
+          line-height:1.24!important;
           overflow:visible!important;
+          padding:.16em .035em .20em!important;
+          margin:-.16em -.035em -.20em!important;
+          vertical-align:baseline!important;
           -webkit-box-decoration-break:clone;
           box-decoration-break:clone;
+          background-clip:text!important;
+          -webkit-background-clip:text!important;
         }
-        .guild-thai-control-safe{line-height:1.42!important;padding-top:7px!important;padding-bottom:7px!important;white-space:normal!important}
+        .guild-thai-control-safe{line-height:1.46!important;padding-top:8px!important;padding-bottom:8px!important;white-space:normal!important}
 
         /* Hero title: give the gold X a little right-side ink room. */
         .hero-copy{overflow:visible!important;min-width:0!important;padding-right:22px!important}
@@ -68,7 +78,8 @@
           .hero-petal.pb{animation:guildPetalBMobile 8.1s ease-in-out infinite -2.2s!important}
           .hero-petal.ps{animation:guildPetalSMobile 7.5s ease-in-out infinite -3s!important}
           .r1{left:4%!important;top:22%!important}.r2{right:4%!important;top:24%!important}.r3{left:7%!important;bottom:17%!important}.r4{right:7%!important;bottom:15%!important}
-          .guild-thai-heading-safe{line-height:1.18!important;padding-top:.10em!important;padding-bottom:.15em!important}
+          .guild-thai-heading-safe{line-height:1.27!important;padding-top:.17em!important;padding-bottom:.20em!important}
+          .guild-thai-heading-safe .shine{line-height:1.27!important;padding-top:.18em!important;padding-bottom:.22em!important;margin-top:-.18em!important;margin-bottom:-.22em!important}
         }
         @media(prefers-reduced-motion:reduce){
           .hero-petal.pr,.hero-petal.pg,.hero-petal.pb,.hero-petal.ps{animation:none!important}
