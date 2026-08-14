@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#062718">
+<meta name="theme-color" content="#F6F2E8">
 <title>XTY — ตั้งตี้ทำอะไรก็ได้</title>
 <meta name="description" content="ตั้งตี้ 2–5 คน ทำอะไรก็ได้ด้วยกัน — ไม่ต้องสมัครก่อนเล่น">
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=3">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=4">
 </head>
 <body>
 
@@ -26,10 +26,10 @@
     <div class="xty-hero" aria-hidden="true">
       <img class="xty-sigil" src="/guild/assets/guild-x-mark.png" alt="">
       <div class="xty-pets">
-        <img class="xty-pet" src="/xty/assets/pets/starter-pig.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/starter-dog.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/starter-crow.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/starter-chicken.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/v1/pig.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/v1/dog.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/v1/crow.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/v1/chicken.webp" alt="">
       </div>
       <span class="xty-hero-copy">THE GAME HAPPENS IN REAL LIFE</span>
     </div>
@@ -60,20 +60,38 @@
 
   <section id="home" hidden>
     <p class="kicker">XTY</p>
-    <h1 class="title" id="greet">ตั้งตี้<br>ทำอะไรก็ได้</h1>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="profile-avatar" id="homeAvatar" aria-hidden="true"></div>
+      <h1 class="title" id="greet" style="margin:0">ตั้งตี้<br>ทำอะไรก็ได้</h1>
+    </div>
 
     <div class="xty-hero" aria-hidden="true" style="min-height:230px;margin-top:-8px">
       <img class="xty-sigil" src="/guild/assets/guild-x-mark.png" alt="">
       <div class="xty-pets">
-        <img class="xty-pet" src="/xty/assets/pets/starter-pig.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/starter-dog.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/starter-crow.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/starter-chicken.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/v1/pig.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/v1/dog.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/v1/crow.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/v1/chicken.webp" alt="">
       </div>
     </div>
 
     <a class="btn gold" href="/xty/new/">+ ตั้งตี้</a>
     <a class="btn ghost" href="/xty/join/" style="margin-top:10px">เข้าตี้ด้วยรหัส</a>
+
+    <div class="card" style="margin-top:18px">
+      <div class="account-row">
+        <div>
+          <span class="label" style="margin-bottom:5px">PROGRESS</span>
+          <div id="accountStatus" class="whisper" style="margin:0">เก็บไว้ในเครื่องนี้</div>
+        </div>
+        <button class="btn ghost sm" id="lineBtn">เชื่อม LINE</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <span class="label">ACTIVE PARTIES</span>
+      <div class="capacity-number" id="capacityN">0 / 2<small>ตี้ที่ใช้งานอยู่</small></div>
+    </div>
 
     <h2 class="title" style="margin-top:34px;font-size:19px">ตี้ของคุณ</h2>
     <div id="myParties"></div>
@@ -83,35 +101,39 @@
     <nav class="tabs">
       <a class="active" href="/xty/">XTY</a>
       <a href="/profile/">โปรไฟล์</a>
-      <a href="/xircle/">Xircle</a>
-      <a href="/core7/">CORE7</a>
+      <a href="/xty/about/">เกี่ยวกับ</a>
     </nav>
   </section>
 </main>
 
 <script type="module">
-import { hasProfile, getProfile, createProfile, allParties, myPartyCodes, refreshParty } from '/xty/_shared/store.js';
+import {
+  hasProfile, getProfile, createProfile, allParties, myPartyCodes, refreshParty,
+  activePartyUsage, committedToday,
+} from '/xty/_shared/store.js';
 import { PET_BY_ID } from '/xty/_shared/pets.js';
+import { XTY_AVATARS, avatarById } from '/xty/_shared/avatars.js';
+import { saveCloudProgress, startLineLogin, syncXtyProfile } from '/xty/_shared/account.js';
 
-const AVATARS = ['🍀','🐷','🐶','🐦‍⬛','🐔','🌻','🔥','🌊','⛰️','🍜','🎲','🎧'];
 const $ = id => document.getElementById(id);
+let accountState = { authenticated: false, user: null };
 
 /* ---------- first run: pick an alias ---------- */
 function renderGate() {
   $('gate').hidden = false;
   const pick = $('avatarPick');
-  let chosen = AVATARS[0];
+  let chosen = XTY_AVATARS[0].id;
 
-  AVATARS.forEach((emoji, i) => {
+  XTY_AVATARS.forEach((avatar, i) => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'pc pickable' + (i === 0 ? ' picked' : '');
+    b.className = 'pc avatar-card pickable' + (i === 0 ? ' picked' : '');
     b.setAttribute('role', 'radio');
     b.setAttribute('aria-checked', i === 0 ? 'true' : 'false');
-    b.setAttribute('aria-label', 'avatar ' + emoji);
-    b.innerHTML = `<span class="glyph">${emoji}</span>`;
+    b.setAttribute('aria-label', avatar.nameTh);
+    b.innerHTML = `<span class="glyph"><img src="${avatar.art}" alt=""></span>`;
     b.addEventListener('click', () => {
-      chosen = emoji;
+      chosen = avatar.id;
       pick.querySelectorAll('.pc').forEach(x => {
         const on = x === b;
         x.classList.toggle('picked', on);
@@ -128,8 +150,9 @@ function renderGate() {
   alias.addEventListener('keydown', e => { if (e.key === 'Enter' && !go.disabled) go.click(); });
   sync();
 
-  go.addEventListener('click', () => {
-    createProfile({ alias: alias.value, avatar: chosen });
+  go.addEventListener('click', async () => {
+    const profile = createProfile({ alias: alias.value, avatarId: chosen });
+    if (accountState.authenticated) await saveCloudProgress(profile);
     location.reload();
   });
 }
@@ -138,11 +161,24 @@ function renderGate() {
 async function renderHome() {
   const p = getProfile();
   $('home').hidden = false;
-  $('greet').innerHTML = `สวัสดี ${p.avatar}<br>${escapeHtml(p.alias)}`;
+  $('greet').innerHTML = `สวัสดี<br>${escapeHtml(p.alias)}`;
+  const avatar = avatarById(p.avatarId);
+  $('homeAvatar').innerHTML = `<img src="${avatar.art}" alt="">`;
+
+  if (accountState.authenticated) {
+    $('accountStatus').innerHTML = '<span class="status-pill">LINE เชื่อมแล้ว ✓</span><br>Progress เก็บกับบัญชีนี้';
+    $('lineBtn').hidden = true;
+  } else {
+    $('accountStatus').textContent = 'เก็บไว้ในเครื่องนี้ — เชื่อม LINE เพื่อใช้ต่อข้ามอุปกรณ์';
+    $('lineBtn').hidden = false;
+    $('lineBtn').addEventListener('click', () => startLineLogin('/xty/'), { once: true });
+  }
 
   const mine = new Set(myPartyCodes());
   await Promise.all([...mine].map(code => refreshParty(code).catch(() => null)));
   const list = allParties().filter(x => mine.has(x.code));
+  const capacity = activePartyUsage(p);
+  $('capacityN').innerHTML = `${capacity.total} / ${capacity.maxTotal}<small>ตี้ที่ใช้งานอยู่</small>`;
   const box = $('myParties');
 
   if (!list.length) {
@@ -157,10 +193,11 @@ async function renderHome() {
     a.className = 'row';
     a.href = `/xty/p/?c=${encodeURIComponent(party.code)}`;
     const petEmoji = party.petId ? petGlyph(party.petId) : '· ·';
+    const done = committedToday(party).size;
     a.innerHTML =
       `<span class="ic">${petEmoji}</span>` +
       `<span class="tx"><b>${escapeHtml(party.name)}</b>` +
-      `<small>${escapeHtml(party.activity || 'ยังไม่ระบุกิจกรรม')} · ${party.members.length}/5 คน</small></span>` +
+      `<small>${escapeHtml(party.activity || 'ยังไม่ระบุกิจกรรม')} · ${done}/${party.members.length} Commit วันนี้</small></span>` +
       `<span class="go">›</span>`;
     rows.appendChild(a);
   });
@@ -175,7 +212,15 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
-if (hasProfile()) renderHome(); else renderGate();
+async function boot() {
+  accountState = await syncXtyProfile();
+  if (new URLSearchParams(location.search).has('account')) {
+    history.replaceState(null, '', '/xty/');
+  }
+  if (hasProfile()) await renderHome(); else renderGate();
+}
+
+boot();
 </script>
 </body>
 </html>

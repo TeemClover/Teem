@@ -7,6 +7,7 @@ const PARTY_MAX = 5;
 const BUDGETS = Object.freeze({ quiet: 1, normal: 3, social: 5 });
 const DEFAULT_BUDGET = 'normal';
 const REACTIONS = Object.freeze(['❤️', '🔥', '👏', '😂', '🫡', '💪', '👀', '🍀']);
+const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 /* TODO(config): move this to party-level time-zone settings when that
    open product decision is locked. V1 launches in ICT. */
 const DAY_OFFSET_MINUTES = 7 * 60;
@@ -38,8 +39,59 @@ function dayKey(date = new Date()) {
 
 async function partyByCode(sql, value) {
   const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,budget,pet_id,owner_id,
-    created_at,updated_at,head_seq,pet_last_wake FROM xty_parties WHERE code=$1`, [value]);
+    state,created_at,updated_at,head_seq,pet_last_wake FROM xty_parties WHERE code=$1`, [value]);
   return rows[0] || null;
+}
+
+function localIdentity(body) {
+  const value = clean(body?.profileId, 80);
+  return /^[a-z0-9_-]{6,80}$/i.test(value) ? `local:${value}` : '';
+}
+
+function requestedHandSize(body) {
+  const value = Math.floor(Number(body?.handSize || 1));
+  return Number.isFinite(value) ? Math.max(1, Math.min(50, value)) : 1;
+}
+
+function parseMaybe(value) {
+  if (value && typeof value === 'object') return value;
+  try { return JSON.parse(value); } catch { return null; }
+}
+
+async function handSizeFor(sql, account, body) {
+  if (!account) return requestedHandSize(body);
+  const rows = await sql.query('SELECT progress_json FROM mc_progress WHERE user_id=$1', [account.id]);
+  const progress = parseMaybe(rows[0]?.progress_json) || {};
+  const profile = parseMaybe(progress.mc_xty_profile);
+  if (!profile) return requestedHandSize(body);
+  const value = Math.floor(Number(profile.handSize || profile.maxProfileCardSlots || 1));
+  return Number.isFinite(value) ? Math.max(1, Math.min(50, value)) : 1;
+}
+
+async function identityFor(req, sql, body) {
+  const account = await currentUser(req, sql);
+  const accountId = account ? `account:${account.id}` : '';
+  const localId = localIdentity(body);
+  const primary = accountId || localId || `u_${randomUUID()}`;
+  return {
+    account,
+    primary,
+    ids: [accountId || primary, localId || accountId || primary],
+  };
+}
+
+async function capacityUsage(sql, ids) {
+  const rows = await sql.query(`SELECT
+      COUNT(DISTINCT p.id) FILTER (WHERE p.owner_id IN ($1,$2))::int owned,
+      COUNT(DISTINCT p.id) FILTER (WHERE m.role <> 'lead')::int joined,
+      COUNT(DISTINCT p.id)::int total
+    FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
+    WHERE m.user_id IN ($1,$2) AND p.state = ANY($3::text[])`, [ids[0], ids[1], ACTIVE_STATES]);
+  return {
+    owned: Number(rows[0]?.owned || 0),
+    joined: Number(rows[0]?.joined || 0),
+    total: Number(rows[0]?.total || 0),
+  };
 }
 
 async function memberFor(req, sql, partyId) {
@@ -89,7 +141,7 @@ function shape(row, members, posts) {
   return {
     id: row.id, code: row.code, name: row.name, activity: row.activity || '',
     commitRule: row.commit_rule || '', budget: BUDGETS[row.budget] ? row.budget : DEFAULT_BUDGET,
-    petId: row.pet_id || null, ownerId: row.owner_id,
+    petId: row.pet_id || null, ownerId: row.owner_id, state: row.state || 'ACTIVE',
     createdAt: new Date(row.created_at).toISOString(), updatedAt: new Date(row.updated_at).toISOString(),
     members, log: posts,
   };
@@ -161,22 +213,37 @@ export default async function handler(req, res) {
     if (method === 'POST' && parts.length === 1) {
       const body = bodyOf(req); const name = clean(body.name, 40); const alias = clean(body.alias, 24);
       if (!name || !alias) return sendJson(res, { ok: false, error: 'INVALID_PARTY' }, 400);
-      const account = await currentUser(req, sql);
-      const userId = account ? `account:${account.id}` : `u_${randomUUID()}`;
+      const identity = await identityFor(req, sql, body);
+      const userId = identity.primary;
+      const handSize = await handSizeFor(sql, identity.account, body);
+      const usage = await capacityUsage(sql, identity.ids);
+      if (usage.owned >= handSize) return sendJson(res, { ok: false, error: 'OWNED_PARTY_LIMIT' }, 409);
+      if (usage.total >= handSize + 1) return sendJson(res, { ok: false, error: 'ACTIVE_PARTY_LIMIT' }, 409);
       const memberToken = token(); const now = new Date(); const partyId = randomUUID();
       const budget = BUDGETS[body.budget] ? body.budget : DEFAULT_BUDGET;
       for (let attempt = 0; attempt < 30; attempt += 1) {
         const inviteCode = code();
         try {
-          await sql.query(`WITH party AS (
+          const inserted = await sql.query(`WITH guard AS (
+            SELECT pg_advisory_xact_lock(hashtext($13))
+          ), capacity AS (
+            SELECT 1 FROM guard WHERE
+              (SELECT COUNT(DISTINCT p.id) FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
+                WHERE m.user_id IN ($13,$14) AND p.state = ANY($16::text[])) < $15 + 1
+              AND (SELECT COUNT(DISTINCT p.id) FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
+                WHERE m.user_id IN ($13,$14) AND p.owner_id IN ($13,$14)
+                  AND p.state = ANY($16::text[])) < $15
+          ), party AS (
             INSERT INTO xty_parties (id,code,name,activity,commit_rule,budget,pet_id,owner_id,created_at,updated_at)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$9) RETURNING id
+            SELECT $1,$2,$3,$4,$5,$6,$7,$8,$9,$9 FROM capacity RETURNING id
           ) INSERT INTO xty_members (party_id,user_id,alias,avatar,role,auth_hash,joined_at)
-            SELECT id,$8,$10,$11,'lead',$12,$9 FROM party`, [
+            SELECT id,$8,$10,$11,'lead',$12,$9 FROM party RETURNING party_id`, [
             partyId, inviteCode, name, clean(body.activity, 60), clean(body.commitRule, 120),
             budget, clean(body.petId, 40) || null, userId, now, alias,
             clean(body.avatar, 24) || '🍀', await sha256(memberToken),
+            identity.ids[0], identity.ids[1], handSize, ACTIVE_STATES,
           ]);
+          if (!inserted[0]) return sendJson(res, { ok: false, error: 'ACTIVE_PARTY_LIMIT' }, 409);
           const row = await partyByCode(sql, inviteCode);
           return sendJson(res, { ...(await stateFor(sql, row, { user_id: userId })), token: memberToken }, 201);
         } catch (error) {
@@ -194,7 +261,13 @@ export default async function handler(req, res) {
     if (method === 'POST' && parts[2] === 'join') {
       const body = bodyOf(req); const alias = clean(body.alias, 24);
       if (!alias) return sendJson(res, { ok: false, error: 'INVALID_ALIAS' }, 400);
-      const existingMember = await memberFor(req, sql, row.id);
+      const identity = await identityFor(req, sql, body);
+      let existingMember = await memberFor(req, sql, row.id);
+      if (!existingMember && identity.ids[1]) {
+        const sameLocal = await sql.query(`SELECT user_id,alias,avatar,role FROM xty_members
+          WHERE party_id=$1 AND user_id=$2`, [row.id, identity.ids[1]]);
+        existingMember = sameLocal[0] || null;
+      }
       if (existingMember) {
         const memberToken = token();
         await sql.query(`UPDATE xty_members SET alias=$1,avatar=$2,auth_hash=$3
@@ -205,17 +278,34 @@ export default async function handler(req, res) {
           ...(await stateFor(sql, row, { ...existingMember, alias })), token: memberToken,
         });
       }
-      const account = await currentUser(req, sql);
-      const userId = account ? `account:${account.id}` : `u_${randomUUID()}`;
+      const handSize = await handSizeFor(sql, identity.account, body);
+      const usage = await capacityUsage(sql, identity.ids);
+      if (usage.joined >= handSize) return sendJson(res, { ok: false, error: 'JOINED_PARTY_LIMIT' }, 409);
+      if (usage.total >= handSize + 1) return sendJson(res, { ok: false, error: 'ACTIVE_PARTY_LIMIT' }, 409);
+      const userId = identity.primary;
       const memberToken = token(); const authHash = await sha256(memberToken); const now = new Date();
-      const inserted = await sql.query(`WITH locked AS (
-          SELECT id FROM xty_parties WHERE id=$1 FOR UPDATE
+      const inserted = await sql.query(`WITH guard AS (
+          SELECT pg_advisory_xact_lock(hashtext($8))
+        ), locked AS (
+          SELECT p.id FROM xty_parties p,guard WHERE p.id=$1 FOR UPDATE
         ), capacity AS (
           SELECT id FROM locked WHERE (SELECT COUNT(*) FROM xty_members WHERE party_id=$1) < $7
+            AND (SELECT COUNT(DISTINCT p.id) FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
+              WHERE m.user_id IN ($8,$9) AND p.state = ANY($11::text[])) < $10 + 1
+            AND (SELECT COUNT(DISTINCT p.id) FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
+              WHERE m.user_id IN ($8,$9) AND m.role <> 'lead'
+                AND p.state = ANY($11::text[])) < $10
         ) INSERT INTO xty_members (party_id,user_id,alias,avatar,role,auth_hash,joined_at)
           SELECT id,$2,$3,$4,'member',$5,$6 FROM capacity RETURNING user_id`,
-      [row.id, userId, alias, clean(body.avatar, 24) || '🍀', authHash, now, PARTY_MAX]);
-      if (!inserted[0]) return sendJson(res, { ok: false, error: 'FULL' }, 409);
+      [row.id, userId, alias, clean(body.avatar, 24) || '🍀', authHash, now, PARTY_MAX,
+        identity.ids[0], identity.ids[1], handSize, ACTIVE_STATES]);
+      if (!inserted[0]) {
+        const count = await sql.query('SELECT COUNT(*)::int n FROM xty_members WHERE party_id=$1', [row.id]);
+        if (Number(count[0]?.n || 0) >= PARTY_MAX) return sendJson(res, { ok: false, error: 'FULL' }, 409);
+        const latest = await capacityUsage(sql, identity.ids);
+        if (latest.joined >= handSize) return sendJson(res, { ok: false, error: 'JOINED_PARTY_LIMIT' }, 409);
+        return sendJson(res, { ok: false, error: 'ACTIVE_PARTY_LIMIT' }, 409);
+      }
       await sql.query('UPDATE xty_parties SET updated_at=$1 WHERE id=$2', [now, row.id]);
       return sendJson(res, { ...(await stateFor(sql, row, { user_id: userId })), token: memberToken }, 201);
     }

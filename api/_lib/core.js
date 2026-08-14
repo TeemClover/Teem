@@ -57,10 +57,12 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS xty_parties (
     id TEXT PRIMARY KEY, code TEXT NOT NULL UNIQUE, name TEXT NOT NULL,
     activity TEXT, commit_rule TEXT, budget TEXT NOT NULL DEFAULT 'normal',
-    pet_id TEXT, owner_id TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL,
+    pet_id TEXT, owner_id TEXT NOT NULL, state TEXT NOT NULL DEFAULT 'ACTIVE', created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL, head_seq INTEGER NOT NULL DEFAULT 0,
     pet_last_wake TIMESTAMPTZ
   )`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS state TEXT NOT NULL DEFAULT 'ACTIVE'`,
+  `CREATE INDEX IF NOT EXISTS idx_xty_parties_owner_state ON xty_parties(owner_id, state)`,
   `CREATE TABLE IF NOT EXISTS xty_members (
     party_id TEXT NOT NULL, user_id TEXT NOT NULL, alias TEXT NOT NULL,
     avatar TEXT, role TEXT NOT NULL, auth_hash TEXT, joined_at TIMESTAMPTZ NOT NULL,

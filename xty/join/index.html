@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#062718">
+<meta name="theme-color" content="#F6F2E8">
 <title>เข้าตี้ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=3">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=4">
 </head>
 <body>
 
@@ -58,7 +58,7 @@ go.addEventListener('click', async () => {
   go.disabled = true;
   go.textContent = 'กำลังเข้าตี้…';
   const p = getProfile();
-  const res = await joinParty(input.value, { alias: p.alias, avatar: p.avatar });
+  const res = await joinParty(input.value, { alias: p.alias, avatar: p.avatarId || p.avatarFallback });
   if (res.error === 'NOT_FOUND') {
     err.textContent = 'ไม่เจอตี้รหัสนี้ ลองเช็กรหัสอีกครั้ง';
     err.hidden = false;
@@ -68,6 +68,20 @@ go.addEventListener('click', async () => {
   }
   if (res.error === 'FULL') {
     err.textContent = 'ตี้นี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)';
+    err.hidden = false;
+    go.disabled = false;
+    go.textContent = 'เข้าตี้';
+    return;
+  }
+  if (res.error === 'JOINED_PARTY_LIMIT') {
+    err.textContent = 'ตอนนี้เข้าร่วมตี้เพิ่มไม่ได้ — การ์ดในมือของคุณ Join ได้ 1 ตี้';
+    err.hidden = false;
+    go.disabled = false;
+    go.textContent = 'เข้าตี้';
+    return;
+  }
+  if (res.error === 'ACTIVE_PARTY_LIMIT') {
+    err.textContent = 'มือตี้เต็มแล้ว — จบหรือพักตี้หนึ่งก่อน';
     err.hidden = false;
     go.disabled = false;
     go.textContent = 'เข้าตี้';

@@ -27,6 +27,11 @@ function requestOrigin(req) {
   const proto = String(req.headers['x-forwarded-proto'] || 'https').split(',')[0];
   return `${proto}://${req.headers['x-forwarded-host'] || req.headers.host}`;
 }
+function accountReturn(returnTo, status, origin) {
+  const back = new URL(safeReturn(returnTo || '/card/'), origin);
+  back.searchParams.set('account', status);
+  return `${back.pathname}${back.search}${back.hash}`;
+}
 
 async function googleIdentity(code, verifier, redirectUri, config) {
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
@@ -104,9 +109,11 @@ export default async function handler(req, res) {
     }
 
     if (method === 'GET' && route[0] === 'oauth' && route[2] === 'start') {
-      const provider = route[1]; const config = providerConfig(provider); if (!config) return redirect(res, '/card/?account=unavailable');
-      if (await authRateLimited(sql, req, `oauth-${provider}`, '', 30, 60)) return redirect(res, '/card/?account=rate_limited');
-      const returnTo = safeReturn(req.query.return || '/card/'); const state = await createOAuthState(sql, provider, returnTo);
+      const provider = route[1]; const returnTo = safeReturn(req.query.return || '/card/'); const origin = requestOrigin(req);
+      const config = providerConfig(provider);
+      if (!config) return redirect(res, accountReturn(returnTo, 'unavailable', origin));
+      if (await authRateLimited(sql, req, `oauth-${provider}`, '', 30, 60)) return redirect(res, accountReturn(returnTo, 'rate_limited', origin));
+      const state = await createOAuthState(sql, provider, returnTo);
       const redirectUri = `${requestOrigin(req)}/api/auth/oauth/${provider}/callback`; const challenge = await pkceChallenge(state.verifier);
       if (provider === 'google') {
         const auth = new URL('https://accounts.google.com/o/oauth2/v2/auth');
@@ -120,14 +127,15 @@ export default async function handler(req, res) {
 
     if (method === 'GET' && route[0] === 'oauth' && route[2] === 'callback') {
       const provider = route[1]; const config = providerConfig(provider); const state = config ? await consumeOAuthState(sql, provider, req.query.state) : null;
-      if (!config || !state || !req.query.code) return redirect(res, '/card/?account=oauth_error');
+      if (!config || !state) return redirect(res, '/card/?account=oauth_error');
+      if (!req.query.code) return redirect(res, accountReturn(state.return_to, 'oauth_error', requestOrigin(req)));
       const redirectUri = `${requestOrigin(req)}/api/auth/oauth/${provider}/callback`;
       try {
         const identity = provider === 'google' ? await googleIdentity(req.query.code, state.verifier, redirectUri, config) : await lineIdentity(req.query.code, state.verifier, redirectUri, config);
         const account = await accountForIdentity(sql, identity); const token = await createSession(sql, account.id);
         const back = new URL(safeReturn(state.return_to), requestOrigin(req)); back.searchParams.set('account', 'connected');
         return redirect(res, `${back.pathname}${back.search}${back.hash}`, sessionCookie(token));
-      } catch (error) { console.error('OAuth callback failed', provider, error); return redirect(res, '/card/?account=oauth_error'); }
+      } catch (error) { console.error('OAuth callback failed', provider, error); return redirect(res, accountReturn(state.return_to, 'oauth_error', requestOrigin(req))); }
     }
     return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
   } catch (error) {

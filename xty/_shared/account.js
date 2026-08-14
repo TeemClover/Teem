@@ -1,0 +1,129 @@
+import {
+  XTY_PROFILE_KEY, getProfile, handSizeOf, normalizeProfile, saveProfile,
+} from './store.js';
+import { XTY_V1_PET_IDS } from './pets.js';
+
+async function request(path, options = {}) {
+  try {
+    const response = await fetch(path, {
+      credentials: 'same-origin',
+      headers: { accept: 'application/json', ...(options.body ? { 'content-type': 'application/json' } : {}) },
+      ...options,
+    });
+    const data = await response.json().catch(() => ({}));
+    return response.ok ? data : { ...data, error: data.error || `HTTP_${response.status}` };
+  } catch {
+    return { ok: false, error: 'OFFLINE' };
+  }
+}
+
+export async function getSession() {
+  const result = await request('/api/auth/session');
+  return result.error ? null : (result.user || null);
+}
+
+export async function isAuthenticated() {
+  return !!(await getSession());
+}
+
+export function startLineLogin(returnTo = '/xty/') {
+  const target = returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : '/xty/';
+  location.href = `/api/auth/oauth/line/start?return=${encodeURIComponent(target)}`;
+}
+
+function parseProfile(value) {
+  if (value && typeof value === 'object') return normalizeProfile(value);
+  try { return normalizeProfile(JSON.parse(value)); }
+  catch { return null; }
+}
+
+function time(value) {
+  const n = new Date(value || 0).getTime();
+  return Number.isFinite(n) ? n : 0;
+}
+
+function earlier(a, b) {
+  if (!a) return b || new Date().toISOString();
+  if (!b) return a;
+  return time(a) <= time(b) ? a : b;
+}
+
+function later(a, b) {
+  if (!a) return b || new Date().toISOString();
+  if (!b) return a;
+  return time(a) >= time(b) ? a : b;
+}
+
+/* Merge is intentionally narrow. Alias/avatar follow the latest explicit
+   profile edit, capacity takes the maximum earned value, pets form a
+   union, and client balances are never added together. */
+export function mergeXtyProfile(localValue, cloudValue) {
+  const local = parseProfile(localValue);
+  const cloud = parseProfile(cloudValue);
+  if (!local) return cloud;
+  if (!cloud) return local;
+
+  const newest = time(local.updatedAt) >= time(cloud.updatedAt) ? local : cloud;
+  const older = newest === local ? cloud : local;
+  return normalizeProfile({
+    ...older,
+    ...newest,
+    /* Once a profile exists in cloud its id is the durable account-side
+       XTY identity and must survive a second-device merge. */
+    id: cloud.id || local.id,
+    alias: newest.alias,
+    avatarId: newest.avatarId,
+    avatarFallback: newest.avatarFallback,
+    handSize: Math.max(handSizeOf(local), handSizeOf(cloud)),
+    petIds: [...new Set([
+      ...(local.petIds || []),
+      ...(cloud.petIds || []),
+      ...XTY_V1_PET_IDS,
+    ])],
+    equippedCardId: newest.equippedCardId || older.equippedCardId || null,
+    createdAt: earlier(local.createdAt, cloud.createdAt),
+    updatedAt: later(local.updatedAt, cloud.updatedAt),
+    lifetimeCommitCount: Math.max(
+      Number(local.lifetimeCommitCount || 0),
+      Number(cloud.lifetimeCommitCount || 0),
+    ),
+    /* latest profile wins; never sum two client balances */
+    pointsBalance: newest.pointsBalance ?? older.pointsBalance ?? 0,
+  });
+}
+
+export async function loadCloudProgress() {
+  const result = await request('/api/progress');
+  if (result.error) return result;
+  const progress = result.progress && typeof result.progress === 'object' ? result.progress : {};
+  return {
+    ...result,
+    profile: parseProfile(progress[XTY_PROFILE_KEY]),
+  };
+}
+
+export async function saveCloudProgress(profile = getProfile()) {
+  const normalized = normalizeProfile(profile);
+  if (!normalized) return { ok: false, error: 'NO_PROFILE' };
+  return request('/api/progress', {
+    method: 'PUT',
+    body: JSON.stringify({ progress: { [XTY_PROFILE_KEY]: JSON.stringify(normalized) } }),
+  });
+}
+
+export async function syncXtyProfile() {
+  const user = await getSession();
+  if (!user) return { ok: true, authenticated: false, profile: getProfile(), user: null };
+
+  const cloud = await loadCloudProgress();
+  if (cloud.error) return { ...cloud, authenticated: true, profile: getProfile(), user };
+
+  const merged = mergeXtyProfile(getProfile(), cloud.profile);
+  if (!merged) return { ok: true, authenticated: true, profile: null, user };
+  const profile = saveProfile(merged);
+  const saved = await saveCloudProgress(profile);
+  return saved.error
+    ? { ...saved, authenticated: true, profile, user }
+    : { ok: true, authenticated: true, profile, user };
+}
+

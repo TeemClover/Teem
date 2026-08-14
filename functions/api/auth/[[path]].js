@@ -19,6 +19,12 @@ function redirect(url, cookie) {
   return new Response(null, { status: 302, headers: { Location: url, 'Cache-Control': 'no-store', ...headers } });
 }
 
+function accountReturn(returnTo, status, origin) {
+  const back = new URL(safeReturn(returnTo || '/card/'), origin);
+  back.searchParams.set('account', status);
+  return `${back.pathname}${back.search}${back.hash}`;
+}
+
 async function googleIdentity(code, verifier, redirectUri, config) {
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -143,11 +149,11 @@ export async function onRequest(context) {
 
   if (method === 'GET' && route[0] === 'oauth' && route[2] === 'start') {
     const provider = route[1];
-    const config = providerConfig(env, provider);
-    if (!config) return redirect('/card/?account=unavailable');
-    if (await authRateLimited(env.DB, request, `oauth-${provider}`, '', 30, 60)) return redirect('/card/?account=rate_limited');
     const url = new URL(request.url);
     const returnTo = safeReturn(url.searchParams.get('return') || '/card/');
+    const config = providerConfig(env, provider);
+    if (!config) return redirect(accountReturn(returnTo, 'unavailable', url.origin));
+    if (await authRateLimited(env.DB, request, `oauth-${provider}`, '', 30, 60)) return redirect(accountReturn(returnTo, 'rate_limited', url.origin));
     const state = await createOAuthState(env.DB, provider, returnTo);
     const redirectUri = `${url.origin}/api/auth/oauth/${provider}/callback`;
     const challenge = await pkceChallenge(state.verifier);
@@ -170,7 +176,8 @@ export async function onRequest(context) {
     const config = providerConfig(env, provider);
     const url = new URL(request.url);
     const state = config ? await consumeOAuthState(env.DB, provider, url.searchParams.get('state')) : null;
-    if (!config || !state || !url.searchParams.get('code')) return redirect('/card/?account=oauth_error');
+    if (!config || !state) return redirect('/card/?account=oauth_error');
+    if (!url.searchParams.get('code')) return redirect(accountReturn(state.return_to, 'oauth_error', url.origin));
     const redirectUri = `${url.origin}/api/auth/oauth/${provider}/callback`;
     try {
       const identity = provider === 'google'
@@ -183,7 +190,7 @@ export async function onRequest(context) {
       return redirect(`${back.pathname}${back.search}${back.hash}`, sessionCookie(token));
     } catch (error) {
       console.error('OAuth callback failed', provider, error);
-      return redirect('/card/?account=oauth_error');
+      return redirect(accountReturn(state.return_to, 'oauth_error', url.origin));
     }
   }
 

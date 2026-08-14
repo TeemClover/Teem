@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#062718">
+<meta name="theme-color" content="#F6F2E8">
 <title>ตั้งตี้ใหม่ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=3">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=4">
 </head>
 <body>
 
@@ -67,7 +67,7 @@
 
 <script type="module">
 import { hasProfile, getProfile, createParty, MESSAGE_BUDGETS, DEFAULT_BUDGET } from '/xty/_shared/store.js';
-import { PETS, PET_BY_ID, SERIES } from '/xty/_shared/pets.js';
+import { XTY_V1_PETS, PET_BY_ID } from '/xty/_shared/pets.js';
 
 const $ = id => document.getElementById(id);
 
@@ -79,8 +79,8 @@ if (!hasProfile()) {
 
 function init() {
   const profile = getProfile();
-  /* Only pets this player actually owns can be placed (Pet Blueprint §24) */
-  const owned = PETS.filter(p => profile.petIds.includes(p.id));
+  /* XTY V1 shows the complete friendly eight-pet set from the start. */
+  const owned = XTY_V1_PETS.filter(p => profile.petIds.includes(p.id));
   let petId = null;
 
   /* Prefill from a hand-off, e.g. Xircle sends ?template=xircle (§38).
@@ -127,9 +127,9 @@ function init() {
     b.setAttribute('aria-checked', 'false');
     b.setAttribute('aria-label', p.nameTh);
     b.innerHTML =
-      `<span class="cn">${SERIES[p.series].labelEn}</span>` +
       `<span class="glyph">${p.art ? `<img src="${p.art}" alt="">` : p.emoji}</span>` +
-      `<span class="nm">${p.nameTh}</span>`;
+      `<span class="nm">${p.nameTh}</span>` +
+      `<span class="pet-persona">${p.persona}</span>`;
     b.addEventListener('click', () => {
       petId = (petId === p.id) ? null : p.id;   /* tap again to clear */
       pick.querySelectorAll('.pc').forEach(x => {
@@ -163,9 +163,12 @@ function init() {
       location.href = `/xty/p/?c=${encodeURIComponent(party.code)}&new=1`;
     } catch (err) {
       const t = $('toast');
-      t.textContent = err.code === 'XTY_DB_NOT_CONFIGURED'
-        ? 'เซิร์ฟเวอร์ XTY ยังไม่พร้อม'
-        : 'สร้างตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองอีกครั้ง';
+      const messages = {
+        XTY_DB_NOT_CONFIGURED: 'เซิร์ฟเวอร์ XTY ยังไม่พร้อม',
+        OWNED_PARTY_LIMIT: 'สร้างตี้เพิ่มไม่ได้ตอนนี้ — การ์ดในมือของคุณสร้างตี้ได้ 1 ตี้',
+        ACTIVE_PARTY_LIMIT: 'มือตี้เต็มแล้ว — จบหรือพักตี้หนึ่งก่อน',
+      };
+      t.textContent = messages[err.code] || 'สร้างตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองอีกครั้ง';
       t.classList.add('on');
       setTimeout(() => t.classList.remove('on'), 3000);
       go.disabled = false;

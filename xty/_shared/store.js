@@ -6,14 +6,18 @@
    server. A local party snapshot keeps the last readable state offline.
    ═══════════════════════════════════════════════════════════════ */
 
-import { STARTER_PET_IDS } from './pets.js';
+import { XTY_V1_PET_IDS } from './pets.js';
+import { AVATAR_BY_ID, avatarFallback } from './avatars.js';
 
 const K_PROFILE = 'mc_xty_profile';
 const K_PARTIES = 'mc_xty_parties';
 const K_TOKENS = 'mc_xty_tokens';
 
+export const XTY_PROFILE_KEY = K_PROFILE;
+
 export const PARTY_MIN = 2;
 export const PARTY_MAX = 5;
+/* Kept for legacy data compatibility only. XTY V1 never renders /7. */
 export const MAX_PROFILE_WORDS = 7;
 
 /* Message is a limited resource on purpose: the party should be
@@ -79,8 +83,63 @@ export function inviteCode() {
 
 /* ---------- profile ---------- */
 
+const LEGACY_AVATAR_IDS = Object.freeze({
+  '🍀': 'clover', '☀️': 'sun', '🌻': 'sun', '☁️': 'cloud',
+  '🔥': 'flame', '🌊': 'wave', '⛰️': 'mountain', '🍜': 'ramen',
+  '🎲': 'dice', '🎧': 'headphones', '📕': 'book', '📚': 'book',
+  '👟': 'sneaker', '📷': 'camera',
+});
+
+function profileAvatarId(value) {
+  if (AVATAR_BY_ID[value?.avatarId]) return value.avatarId;
+  if (AVATAR_BY_ID[value?.avatar]) return value.avatar;
+  return LEGACY_AVATAR_IDS[value?.avatar] || 'clover';
+}
+
+function validHandSize(value) {
+  const n = Math.floor(Number(value));
+  return Number.isFinite(n) ? Math.max(1, n) : 1;
+}
+
+export function normalizeProfile(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const avatarId = profileAvatarId(value);
+  const fallback = typeof value.avatarFallback === 'string' && value.avatarFallback
+    ? value.avatarFallback
+    : (typeof value.avatar === 'string' && !AVATAR_BY_ID[value.avatar] ? value.avatar : avatarFallback(avatarId));
+  const currentPets = Array.isArray(value.petIds) ? value.petIds.filter(id => typeof id === 'string') : [];
+  const createdAt = value.createdAt || now();
+  return {
+    ...value,
+    version: 2,
+    id: String(value.id || uid()),
+    alias: String(value.alias || '').trim().slice(0, 24),
+    avatarId,
+    avatarFallback: fallback,
+    /* Keep a compact legacy field while party rows migrate from emoji to
+       canonical avatar ids. New writes store the id here. */
+    avatar: avatarId,
+    handSize: validHandSize(value.handSize || value.maxProfileCardSlots || 0),
+    equippedCardId: typeof value.equippedCardId === 'string' ? value.equippedCardId : null,
+    petIds: [...new Set([...currentPets, ...XTY_V1_PET_IDS])],
+    createdAt,
+    updatedAt: value.updatedAt || createdAt,
+  };
+}
+
+export function saveProfile(value, { touch = false } = {}) {
+  const profile = normalizeProfile(value);
+  if (!profile) return null;
+  if (touch) profile.updatedAt = now();
+  write(K_PROFILE, profile);
+  return profile;
+}
+
 export function getProfile() {
-  return read(K_PROFILE, null);
+  const raw = read(K_PROFILE, null);
+  const profile = normalizeProfile(raw);
+  if (profile && JSON.stringify(profile) !== JSON.stringify(raw)) write(K_PROFILE, profile);
+  return profile;
 }
 
 export function hasProfile() {
@@ -88,44 +147,50 @@ export function hasProfile() {
   return !!(p && p.alias);
 }
 
-/* Creating a profile grants the four Starter pets immediately, while
-   Profile Word slots deliberately start empty at 0/7 (Pet Blueprint §15). */
-export function createProfile({ alias, avatar }) {
-  const profile = {
+/* Every XTY V1 player starts with one Hand card and all eight friendly
+   V1 pets. Unlock thresholds are intentionally not invented here. */
+export function createProfile({ alias, avatarId, avatar }) {
+  const pickedId = AVATAR_BY_ID[avatarId] ? avatarId
+    : (AVATAR_BY_ID[avatar] ? avatar : (LEGACY_AVATAR_IDS[avatar] || 'clover'));
+  return saveProfile({
     id: uid(),
     alias: String(alias || '').trim().slice(0, 24),
-    avatar: avatar || '🍀',
+    avatarId: pickedId,
+    avatarFallback: avatarFallback(pickedId, avatar),
+    avatar: pickedId,
     createdAt: now(),
     updatedAt: now(),
-    /* TODO(config): level/XP and the slot-unlock cadence are explicitly
-       undecided (Pivot Blueprint §10, §52) — do not invent a formula. */
-    level: 1,
-    xp: 0,
-    maxProfileCardSlots: 0,
-    profileCardIds: [],
-    petIds: [...STARTER_PET_IDS],
-  };
-  write(K_PROFILE, profile);
-  return profile;
+    handSize: 1,
+    equippedCardId: null,
+    petIds: [...XTY_V1_PET_IDS],
+  });
 }
 
 export function updateProfile(patch) {
   const p = getProfile();
   if (!p) return null;
-  const next = { ...p, ...patch, updatedAt: now() };
-  if (next.profileCardIds.length > next.maxProfileCardSlots) {
-    next.profileCardIds = next.profileCardIds.slice(0, next.maxProfileCardSlots);
-  }
-  if (next.maxProfileCardSlots > MAX_PROFILE_WORDS) {
-    next.maxProfileCardSlots = MAX_PROFILE_WORDS;
-  }
-  write(K_PROFILE, next);
-  return next;
+  return saveProfile({ ...p, ...patch }, { touch: true });
 }
 
 export function ownsPet(petId) {
   const p = getProfile();
   return !!(p && p.petIds.includes(petId));
+}
+
+export function handSizeOf(profile) {
+  return validHandSize(profile?.handSize || 1);
+}
+
+export function maxActiveParties(profile) {
+  return handSizeOf(profile) + 1;
+}
+
+export function maxOwnedActiveParties(profile) {
+  return handSizeOf(profile);
+}
+
+export function maxJoinedActiveParties(profile) {
+  return handSizeOf(profile);
 }
 
 /* ---------- parties ---------- */
@@ -169,6 +234,40 @@ export function partyIdentity(code) {
   return typeof entry === 'string' ? { token: entry, userId: '' } : entry;
 }
 
+const ACTIVE_PARTY_STATES = new Set(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
+
+export function isActiveParty(party) {
+  return !!party && ACTIVE_PARTY_STATES.has(String(party.state || 'ACTIVE').toUpperCase());
+}
+
+/* Capacity is derived from canonical party membership cached on this
+   device. The server repeats these guards; this copy exists to explain a
+   limit before the user fills a form or submits a join code. */
+export function activePartyUsage(profile = getProfile()) {
+  const knownCodes = new Set(Object.keys(tokenMap()));
+  let owned = 0; let joined = 0;
+  for (const party of allParties()) {
+    if (!knownCodes.has(party.code) || !isActiveParty(party)) continue;
+    const userId = partyIdentity(party.code)?.userId;
+    if (userId && party.ownerId === userId) owned += 1;
+    else joined += 1;
+  }
+  return {
+    owned,
+    joined,
+    total: owned + joined,
+    maxOwned: maxOwnedActiveParties(profile),
+    maxJoined: maxJoinedActiveParties(profile),
+    maxTotal: maxActiveParties(profile),
+  };
+}
+
+function limitError(code) {
+  const error = new Error(code);
+  error.code = code;
+  return error;
+}
+
 function rememberParty(party) {
   if (!party || !party.code || !Array.isArray(party.members) || !Array.isArray(party.log)) return null;
   const list = allParties();
@@ -206,12 +305,17 @@ function rememberResponse(code, result) {
 export async function createParty({ name, activity, commitRule, budget, petId }) {
   const profile = getProfile();
   if (!profile) throw new Error('NO_PROFILE');
+  const capacity = activePartyUsage(profile);
+  if (capacity.owned >= capacity.maxOwned) throw limitError('OWNED_PARTY_LIMIT');
+  if (capacity.total >= capacity.maxTotal) throw limitError('ACTIVE_PARTY_LIMIT');
   const result = await api('/api/xty/party', { method: 'POST', body: {
     name, activity, commitRule,
     budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
     petId: petId || null,
     alias: profile.alias,
-    avatar: profile.avatar,
+    avatar: profile.avatarId || profile.avatarFallback,
+    profileId: profile.id,
+    handSize: handSizeOf(profile),
   }});
   if (result.error) {
     const error = new Error(result.error);
@@ -224,8 +328,20 @@ export async function createParty({ name, activity, commitRule, budget, petId })
 
 export async function joinParty(code, { alias, avatar }) {
   const wanted = String(code || '').toUpperCase();
+  const profile = getProfile();
+  const alreadyKnown = !!tokenMap()[wanted];
+  if (profile && !alreadyKnown) {
+    const capacity = activePartyUsage(profile);
+    if (capacity.joined >= capacity.maxJoined) return { ok: false, error: 'JOINED_PARTY_LIMIT' };
+    if (capacity.total >= capacity.maxTotal) return { ok: false, error: 'ACTIVE_PARTY_LIMIT' };
+  }
   const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/join`, {
-    method: 'POST', code: wanted, body: { alias, avatar },
+    method: 'POST', code: wanted, body: {
+      alias,
+      avatar: profile?.avatarId || avatar || profile?.avatarFallback,
+      profileId: profile?.id || '',
+      handSize: handSizeOf(profile),
+    },
   });
   return rememberResponse(wanted, result);
 }
@@ -367,7 +483,7 @@ export function myPartyCodes() {
   if (!p) return [];
   const serverCodes = Object.keys(tokenMap());
   const localCodes = allParties()
-    .filter(x => x.members.some(m => m.userId === p.id))
+    .filter(x => x.members.some(m => m.userId === p.id || m.userId === `local:${p.id}`))
     .map(x => x.code);
   return [...new Set([...serverCodes, ...localCodes])];
 }
