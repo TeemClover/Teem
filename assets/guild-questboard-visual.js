@@ -36,22 +36,22 @@
       .party-world .pet-crow{left:15%!important;bottom:-1%!important}
       .party-world .pet-chicken{right:15%!important;bottom:-1%!important}
 
-      /* Real quest board: smaller, lower, and quieter than the foreground pets. */
+      /* Real quest board: show the full transparent PNG. No crop, no mask. */
       .party-board-window{
         position:absolute;z-index:4;left:50%;bottom:-2%;
-        width:58%;height:74%;overflow:hidden;border-radius:24px;
+        width:58%;height:74%;overflow:visible;border-radius:24px;
         pointer-events:none;
         transform:translate3d(calc(-50% + var(--px)*3px),calc(var(--py)*2px + var(--scene)*-4px),0);
         filter:drop-shadow(0 22px 32px rgba(0,0,0,.38));
-        -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 93%,transparent 100%);
-        mask-image:linear-gradient(180deg,transparent 0,#000 10%,#000 93%,transparent 100%);
+        -webkit-mask-image:none!important;
+        mask-image:none!important;
         animation:gQuestBoardFloat 8.2s ease-in-out infinite;
       }
       .party-board-window:after{content:"";position:absolute;inset:10% 12% 8%;border-radius:22px;box-shadow:0 0 34px rgba(141,246,189,.07),0 0 54px rgba(240,202,107,.045);pointer-events:none}
       .party-board-img{
-        position:absolute!important;left:-39%!important;top:-4%!important;
-        width:178%!important;height:auto!important;max-width:none!important;
-        object-fit:contain!important;opacity:.94;
+        position:absolute!important;inset:0!important;
+        width:100%!important;height:100%!important;max-width:100%!important;
+        object-fit:contain!important;object-position:center bottom!important;opacity:.94;
         transform:translate3d(calc(var(--px)*-2px),calc(var(--py)*-2px),0) scale(1.005);
         transform-origin:50% 50%;filter:saturate(1.02) contrast(1.01);
         animation:gQuestBoardBreathe 7.6s ease-in-out infinite;
@@ -73,7 +73,6 @@
         .party-world .guild-world-copy .btn,.party-world .guild-world-copy .pill{width:100%!important;min-width:0!important;padding-inline:10px!important;font-size:12px!important}
         .party-world .guild-world-art{inset:410px 0 0!important}
         .party-board-window{width:63%;height:70%;bottom:-1%;border-radius:18px}
-        .party-board-img{left:-41%!important;width:182%!important;top:-1%!important}
         .party-world .party-pet{width:24%!important;height:32%!important}
         .party-world .pet-pig{left:1%!important;bottom:13%!important}.party-world .pet-dog{right:1%!important;bottom:14%!important}.party-world .pet-crow{left:13%!important;bottom:0!important}.party-world .pet-chicken{right:13%!important;bottom:0!important}
       }
