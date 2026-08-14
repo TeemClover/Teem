@@ -3,9 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:first-class": "node --test first-class/first-class.test.mjs"
+    "test": "node --test --experimental-test-module-mocks first-class/first-class.test.mjs api/_lib/pet-brain.test.mjs api/_lib/pet-wake.test.mjs",
+    "test:first-class": "node --test first-class/first-class.test.mjs",
+    "test:pet-brain": "node --test api/_lib/pet-brain.test.mjs",
+    "test:pet-wake": "node --test --experimental-test-module-mocks api/_lib/pet-wake.test.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "0.117.1",
     "@neondatabase/serverless": "1.1.0"
   }
 }
