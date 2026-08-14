@@ -97,3 +97,11 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
   else boot();
 })();
+
+// The multiplayer section is injected later by its own patch, so this visual
+// helper watches for that DOM and installs only when the Party/XTY card exists.
+if (/^\/guild\/?(?:index\.html)?$/.test(location.pathname)) {
+  import('/assets/guild-questboard-visual.js?v=20260814-1').catch(error => {
+    console.error('[Guild X] quest board visual failed to load:', error);
+  });
+}
