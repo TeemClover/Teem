@@ -95,6 +95,18 @@
     addStyle();
     const art = document.querySelector('.party-world .guild-world-art');
     if (!art) return false;
+
+    const petSources = [
+      ['.pet-pig', '/guild/assets/pig.webp'],
+      ['.pet-crow', '/guild/assets/dog.webp'],
+      ['.pet-chicken', '/guild/assets/crow.webp'],
+      ['.pet-dog', '/guild/assets/chicken.webp']
+    ];
+    petSources.forEach(([selector, src]) => {
+      const pet = art.querySelector(selector);
+      if (pet && pet.getAttribute('src') !== src) pet.src = src;
+    });
+
     if (art.querySelector('.party-board-window')) return true;
     const windowEl = document.createElement('div');
     windowEl.className = 'party-board-window';
