@@ -8,12 +8,12 @@
 <meta name="theme-color" content="#062718">
 <title>XTY — ตั้งตี้ทำอะไรก็ได้</title>
 <meta name="description" content="ตั้งตี้ 2–5 คน ทำอะไรก็ได้ด้วยกัน — ไม่ต้องสมัครก่อนเล่น">
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=2">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=3">
 </head>
 <body>
 
 <header class="top">
-  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="mark" href="/xty/"><img src="/assets/myclover-icon.png" alt="">X<b>TY</b></a>
   <a class="back" href="/profile/">โปรไฟล์</a>
 </header>
 
@@ -23,9 +23,19 @@
        enough, and the ask to save comes later once there is progress
        worth keeping. -->
   <section id="gate" hidden>
+    <div class="xty-hero" aria-hidden="true">
+      <img class="xty-sigil" src="/guild/assets/guild-x-mark.png" alt="">
+      <div class="xty-pets">
+        <img class="xty-pet" src="/xty/assets/pets/starter-pig.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/starter-dog.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/starter-crow.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/starter-chicken.webp" alt="">
+      </div>
+      <span class="xty-hero-copy">THE GAME HAPPENS IN REAL LIFE</span>
+    </div>
     <p class="kicker">XTY · MYCLOVER</p>
     <h1 class="title">ตั้งตี้<br>ทำอะไรก็ได้</h1>
-    <p class="lede">2–5 คน หนึ่งกิจกรรม ทิ้งข้อความหากันไว้ แล้วค่อยกลับมาดู — ไม่ต้องสมัคร ไม่ต้องใช้ชื่อจริง</p>
+    <p class="lede">2–5 คน ตั้งกติกา แล้วออกไปทำจริง — Commit เมื่อทำแล้ว Message เมื่อจำเป็น React ได้เต็มที่ ไม่ต้องสมัคร ไม่ต้องใช้ชื่อจริง</p>
 
     <div class="card">
       <span class="label">เริ่มด้วยชื่อที่สบายใจ</span>
@@ -43,12 +53,22 @@
       <button class="btn gold" id="createProfile" style="margin-top:22px" disabled>เข้าสู่ XTY</button>
     </div>
 
-    <p class="note">ตอนนี้ข้อมูลเก็บไว้ในเครื่องนี้เท่านั้น ถ้าอยากให้ย้ายเครื่องได้ ค่อยผูกบัญชีทีหลัง</p>
+    <p class="note">ชื่อเรียกและสัตว์ที่มีเก็บไว้ในเครื่องนี้ เมื่อสร้างหรือเข้าตี้ กติกาและ Party Log จะเก็บบนเซิร์ฟเวอร์เพื่อให้สมาชิกข้ามเครื่องมาเห็นร่วมกัน — อย่าส่งรหัสผ่านหรือข้อมูลอ่อนไหว</p>
   </section>
 
   <section id="home" hidden>
     <p class="kicker">XTY</p>
     <h1 class="title" id="greet">ตั้งตี้<br>ทำอะไรก็ได้</h1>
+
+    <div class="xty-hero" aria-hidden="true" style="min-height:230px;margin-top:-8px">
+      <img class="xty-sigil" src="/guild/assets/guild-x-mark.png" alt="">
+      <div class="xty-pets">
+        <img class="xty-pet" src="/xty/assets/pets/starter-pig.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/starter-dog.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/starter-crow.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/pets/starter-chicken.webp" alt="">
+      </div>
+    </div>
 
     <a class="btn gold" href="/xty/new/">+ ตั้งตี้</a>
     <a class="btn ghost" href="/xty/join/" style="margin-top:10px">เข้าตี้ด้วยรหัส</a>
@@ -66,7 +86,7 @@
 </main>
 
 <script type="module">
-import { hasProfile, getProfile, createProfile, allParties, myPartyCodes } from '/xty/_shared/store.js';
+import { hasProfile, getProfile, createProfile, allParties, myPartyCodes, refreshParty } from '/xty/_shared/store.js';
 import { PET_BY_ID } from '/xty/_shared/pets.js';
 
 const AVATARS = ['🍀','🐷','🐶','🐦‍⬛','🐔','🌻','🔥','🌊','⛰️','🍜','🎲','🎧'];
@@ -111,12 +131,13 @@ function renderGate() {
 }
 
 /* ---------- returning: parties on this device ---------- */
-function renderHome() {
+async function renderHome() {
   const p = getProfile();
   $('home').hidden = false;
   $('greet').innerHTML = `สวัสดี ${p.avatar}<br>${escapeHtml(p.alias)}`;
 
   const mine = new Set(myPartyCodes());
+  await Promise.all([...mine].map(code => refreshParty(code).catch(() => null)));
   const list = allParties().filter(x => mine.has(x.code));
   const box = $('myParties');
 
@@ -144,7 +165,7 @@ function renderHome() {
 
 function petGlyph(id) {
   const p = PET_BY_ID[id];
-  return p ? p.emoji : '🐾';
+  return p && p.art ? `<img src="${p.art}" alt="">` : (p ? p.emoji : '🐾');
 }
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));

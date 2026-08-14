@@ -1,7 +1,25 @@
 # XTY — Server Handoff
 
-**สถานะ frontend:** เกมเล่นได้ครบแล้ว · เก็บข้อมูลใน `localStorage` เครื่องเดียว
-**สิ่งที่ต้องทำต่อ:** (1) backend ให้ตี้ข้ามเครื่องได้ (2) บอทสัตว์ประจำตี้ที่ตื่นวันละ 4 รอบ
+**สถานะ production 2026-08-14:** ต่อ Vercel API + Neon แล้ว · รหัสตี้ใช้ข้ามเครื่องได้
+
+ไฟล์ production:
+
+- `api/xty/[...path].js` — Party API บน Vercel
+- `api/_lib/core.js` — Neon schema รวมตาราง XTY
+- `api/xty-pet.js` — pet wake endpoint แบบ secure + quiet-first
+- `xty/_shared/store.js` — server adapter + local cache (ไม่มี WebSocket/long-poll)
+
+สิ่งที่ต้องตั้งใน deployment ก่อนเปิด pet wake อัตโนมัติ:
+
+1. ตั้ง `CRON_SECRET` ใน Vercel
+2. ให้ scheduler เรียก `GET /api/xty-pet` พร้อม `Authorization: Bearer <CRON_SECRET>`
+   เวลา UTC `17:00 · 23:00 · 05:00 · 11:00` (ตรงกับไทย `00:00 · 06:00 · 12:00 · 18:00`)
+
+ยังไม่ใส่ `crons` ลง `vercel.json` เพราะ Vercel Hobby อนุญาตเพียงวันละครั้ง
+แต่ requirement ของ XTY คือ 4 รอบ/วัน; เปิด config นี้เมื่อยืนยันแผน deployment แล้วเท่านั้น
+
+> Schema D1 ด้านล่างเก็บไว้เป็น portable reference จากร่างเดิม
+> ส่วนระบบที่ myclover.com ใช้งานจริงปัจจุบันคือ Neon/Postgres ใน `api/`.
 
 ---
 

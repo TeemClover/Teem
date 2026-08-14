@@ -16,6 +16,7 @@
     { "source": "/xty", "destination": "/xty/", "permanent": false },
     { "source": "/xty/new", "destination": "/xty/new/", "permanent": false },
     { "source": "/xty/join", "destination": "/xty/join/", "permanent": false },
+    { "source": "/xty/p", "destination": "/xty/p/", "permanent": false },
     { "source": "/profile", "destination": "/profile/", "permanent": false },
 
     { "source": "/xircle/doc", "destination": "/xircle/doc/", "permanent": false },
@@ -61,6 +62,12 @@
     { "source": "/core7/assets/core7-rules-overview.png", "destination": "/core7/assets/core7-rules-overview.webp", "permanent": true }
   ],
   "headers": [
+    {
+      "source": "/xty/assets/pets/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
     {
       "source": "/core7/assets/(card-back-core7|core7-rules-overview).webp",
       "headers": [

@@ -7,12 +7,12 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#062718">
 <title>เข้าตี้ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=2">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=3">
 </head>
 <body>
 
 <header class="top">
-  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="mark" href="/xty/"><img src="/assets/myclover-icon.png" alt="">X<b>TY</b></a>
   <a class="back" href="/xty/">ยกเลิก</a>
 </header>
 
@@ -32,7 +32,7 @@
     <p class="hint" id="err" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
   </div>
 
-  <p class="note">ตอนนี้ตี้ยังอยู่แค่ในเครื่องที่ตั้งมัน — รหัสจะข้ามเครื่องได้เมื่อเปิดใช้เซิร์ฟเวอร์แล้ว</p>
+  <p class="note">รหัสนี้ใช้เข้าตี้ข้ามเครื่องได้ สมาชิกหนึ่งตี้มีได้ 2–5 คน และสมาชิกในตี้จะเห็น Party Log ร่วมกัน</p>
 </main>
 
 <script type="module">
@@ -54,17 +54,30 @@ input.addEventListener('input', () => {
 const prefill = new URLSearchParams(location.search).get('c');
 if (prefill) { input.value = prefill.toUpperCase(); input.dispatchEvent(new Event('input')); }
 
-go.addEventListener('click', () => {
+go.addEventListener('click', async () => {
+  go.disabled = true;
+  go.textContent = 'กำลังเข้าตี้…';
   const p = getProfile();
-  const res = joinParty(input.value, { alias: p.alias, avatar: p.avatar });
+  const res = await joinParty(input.value, { alias: p.alias, avatar: p.avatar });
   if (res.error === 'NOT_FOUND') {
-    err.textContent = 'ไม่เจอตี้รหัสนี้ในเครื่องนี้ ลองเช็ครหัสอีกครั้ง';
+    err.textContent = 'ไม่เจอตี้รหัสนี้ ลองเช็กรหัสอีกครั้ง';
     err.hidden = false;
+    go.disabled = false;
+    go.textContent = 'เข้าตี้';
     return;
   }
   if (res.error === 'FULL') {
     err.textContent = 'ตี้นี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)';
     err.hidden = false;
+    go.disabled = false;
+    go.textContent = 'เข้าตี้';
+    return;
+  }
+  if (res.error) {
+    err.textContent = 'เข้าตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองใหม่';
+    err.hidden = false;
+    go.disabled = false;
+    go.textContent = 'เข้าตี้';
     return;
   }
   location.href = `/xty/p/?c=${encodeURIComponent(res.party.code)}`;

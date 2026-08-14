@@ -7,19 +7,19 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#062718">
 <title>ตี้ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=2">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=3">
 </head>
 <body>
 
 <header class="top">
-  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="mark" href="/xty/"><img src="/assets/myclover-icon.png" alt="">X<b>TY</b></a>
   <a class="back" href="/xty/">ตี้ทั้งหมด</a>
 </header>
 
 <main class="wrap">
   <section id="missing" hidden>
     <h1 class="title">ไม่เจอตี้นี้</h1>
-    <p class="lede">รหัสอาจพิมพ์ผิด หรือตี้นี้ถูกตั้งไว้บนเครื่องอื่น</p>
+    <p class="lede">รหัสอาจพิมพ์ผิด หรือตี้นี้ไม่มีอยู่แล้ว</p>
     <a class="btn ghost" href="/xty/join/">ลองใส่รหัสอีกครั้ง</a>
   </section>
 
@@ -57,13 +57,16 @@
       <span class="label">ชวนคนเข้าตี้</span>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <span class="code-chip" id="code"></span>
-        <button class="btn ghost sm" id="copy">คัดลอกรหัส</button>
+        <button class="btn ghost sm" id="copy">แชร์คำเชิญ</button>
       </div>
       <p class="hint" id="seatHint" style="margin-top:10px"></p>
     </div>
 
     <div class="card">
-      <span class="label">PARTY LOG</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <span class="label" style="margin:0">PARTY LOG</span>
+        <button class="btn ghost sm" id="refresh" style="min-height:36px;padding:0 13px">↻ ดึงอัปเดต</button>
+      </div>
       <p class="whisper" style="margin:0">Commit ทุกวัน · Message เมื่อจำเป็น · React ได้ไม่จำกัด</p>
 
       <div class="log" id="log"></div>
@@ -103,16 +106,29 @@
 import {
   getParty, postToParty, getProfile, toggleReaction, retractPost,
   committedToday, hasCommittedToday, messagesLeftToday, budgetOf,
-  messagesUsedToday, dayKey, PARTY_MAX, REACTIONS,
+  messagesUsedToday, dayKey, PARTY_MAX, REACTIONS, refreshParty, partyIdentity,
 } from '/xty/_shared/store.js';
 import { PET_BY_ID, SERIES } from '/xty/_shared/pets.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
 const me = getProfile();
-const myId = me ? me.id : 'anon';
+let myId = (partyIdentity(code) && partyIdentity(code).userId) || (me ? me.id : 'anon');
 
-if (!getParty(code)) { $('missing').hidden = false; } else { render(); }
+start();
+
+async function start() {
+  if (!code) { $('missing').hidden = false; return; }
+  const fresh = await refreshParty(code);
+  if (fresh.error === 'AUTH_REQUIRED') {
+    location.replace(`/xty/join/?c=${encodeURIComponent(code)}`);
+    return;
+  }
+  if (fresh.error && !getParty(code)) { $('missing').hidden = false; return; }
+  myId = (partyIdentity(code) && partyIdentity(code).userId) || myId;
+  render();
+  if (fresh.error === 'OFFLINE') toast('ออฟไลน์อยู่ — แสดงข้อมูลล่าสุดในเครื่องนี้');
+}
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
@@ -197,12 +213,14 @@ function render() {
   const pet = p.petId ? PET_BY_ID[p.petId] : null;
   const slot = $('petSlot');
   if (pet) {
-    slot.textContent = pet.emoji;
+    slot.innerHTML = pet.art ? `<img src="${pet.art}" alt="">` : pet.emoji;
     slot.classList.remove('empty');
+    slot.classList.toggle('art', !!pet.art);
     $('petLine').textContent = `${pet.emoji} ${pet.nameTh} · ${SERIES[pet.series].labelEn} — ${pet.persona}`;
   } else {
     slot.textContent = '—';
     slot.classList.add('empty');
+    slot.classList.remove('art');
     $('petLine').textContent = 'ตี้นี้ไม่มีสัตว์ประจำตี้';
   }
 
@@ -253,12 +271,13 @@ function renderLog(p) {
        own identity rather than a member's */
     const petCard = isPet ? PET_BY_ID[post.petId] : null;
     if (isPet) {
-      post = { ...post, avatar: petCard ? petCard.emoji : '🐾',
+      post = { ...post, avatar: petCard && petCard.art ? `<img src="${petCard.art}" alt="">` : (petCard ? petCard.emoji : '🐾'),
                alias: petCard ? petCard.nameTh : 'สัตว์ประจำตี้' };
     }
+    const avatarHtml = isPet ? post.avatar : esc(post.avatar);
 
     el.innerHTML =
-      `<div class="av">${post.avatar}</div>` +
+      `<div class="av">${avatarHtml}</div>` +
       `<div class="bd">` +
         `<div class="meta"><span class="who">${esc(post.alias)}</span>` +
         `<span class="when">${stamp(post.sentAt)}</span></div>` +
@@ -275,7 +294,7 @@ function renderLog(p) {
       b.className = who.includes(myId) ? 'mine' : '';
       b.innerHTML = `${emoji}<span class="c">${who.length}</span>`;
       b.setAttribute('aria-label', `${emoji} ${who.length}`);
-      b.addEventListener('click', () => { toggleReaction(code, post.seq, emoji); render(); });
+      b.addEventListener('click', async () => { await toggleReaction(code, post.seq, emoji); render(); });
       rx.appendChild(b);
     });
 
@@ -296,7 +315,7 @@ function renderLog(p) {
       r.className = 'retract';
       r.textContent = 'ถอนข้อความ';
       let armed = false;
-      r.addEventListener('click', () => {
+      r.addEventListener('click', async () => {
         if (!armed) {
           armed = true;
           r.textContent = 'แน่ใจ? กดอีกครั้งเพื่อถอน';
@@ -309,7 +328,7 @@ function renderLog(p) {
           }, 4000);
           return;
         }
-        retractPost(code, post.seq);
+        await retractPost(code, post.seq);
         render();
         toast('ถอนข้อความแล้ว — ประวัติยังบอกว่ามีข้อความตรงนี้');
       });
@@ -330,7 +349,7 @@ function openPicker(container, seq) {
     b.type = 'button';
     b.textContent = emoji;
     b.setAttribute('aria-label', 'react ' + emoji);
-    b.addEventListener('click', () => { toggleReaction(code, seq, emoji); render(); });
+    b.addEventListener('click', async () => { await toggleReaction(code, seq, emoji); render(); });
     pick.appendChild(b);
   });
   container.parentElement.appendChild(pick);
@@ -340,9 +359,11 @@ function openPicker(container, seq) {
 const sheet = $('commitSheet');
 $('commitBtn').addEventListener('click', () => { sheet.hidden = false; $('commitNote').focus(); });
 $('commitCancel').addEventListener('click', () => { sheet.hidden = true; $('commitNote').value = ''; });
-$('commitDo').addEventListener('click', () => {
+$('commitDo').addEventListener('click', async () => {
+  $('commitDo').disabled = true;
   const note = $('commitNote').value.trim();
-  const res = postToParty(code, { body: note || '✓', kind: 'commit' });
+  const res = await postToParty(code, { body: note || '✓', kind: 'commit' });
+  $('commitDo').disabled = false;
   sheet.hidden = true;
   $('commitNote').value = '';
   if (res.error === 'ALREADY_COMMITTED') { toast('วันนี้ Commit ไปแล้ว'); return; }
@@ -357,10 +378,12 @@ msg.addEventListener('input', () => {
   msg.style.height = Math.min(msg.scrollHeight, 150) + 'px';
 });
 
-function send() {
+async function send() {
   const body = msg.value.trim();
   if (!body) return;
-  const res = postToParty(code, { body, kind: 'message' });
+  $('send').disabled = true;
+  const res = await postToParty(code, { body, kind: 'message' });
+  $('send').disabled = false;
   if (res.error === 'NO_BUDGET') { toast('ใช้ Message ครบแล้ววันนี้ — React แทนได้'); return; }
   if (res.error) { toast('ส่งไม่สำเร็จ'); return; }
   msg.value = '';
@@ -373,12 +396,33 @@ msg.addEventListener('keydown', e => {
 });
 
 $('copy').addEventListener('click', async () => {
+  const inviteUrl = `${location.origin}/xty/join/?c=${encodeURIComponent(getParty(code).code)}`;
   try {
-    await navigator.clipboard.writeText(getParty(code).code);
-    toast('คัดลอกรหัสแล้ว — ส่งให้เพื่อนได้เลย');
+    if (navigator.share) {
+      await navigator.share({ title: `เข้าตี้ ${getParty(code).name}`, text: `รหัสตี้ ${getParty(code).code}`, url: inviteUrl });
+      return;
+    }
+    await navigator.clipboard.writeText(`${getParty(code).code}\n${inviteUrl}`);
+    toast('คัดลอกรหัสกับลิงก์แล้ว — ส่งให้เพื่อนได้เลย');
   } catch {
     toast('รหัสตี้: ' + getParty(code).code);
   }
+});
+
+$('refresh').addEventListener('click', async () => {
+  $('refresh').disabled = true;
+  const result = await refreshParty(code);
+  $('refresh').disabled = false;
+  if (result.error) { toast('ยังดึงอัปเดตไม่ได้'); return; }
+  myId = (partyIdentity(code) && partyIdentity(code).userId) || myId;
+  render();
+  toast(result.party.log.length ? 'ตามตี้ทันแล้ว' : 'ยังไม่มีอัปเดตใหม่');
+});
+
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState !== 'visible') return;
+  const result = await refreshParty(code);
+  if (!result.error) render();
 });
 
 if (new URLSearchParams(location.search).get('new') === '1') {

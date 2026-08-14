@@ -54,6 +54,32 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS mc_counters (
     key TEXT PRIMARY KEY, value BIGINT NOT NULL DEFAULT 0
   )`,
+  `CREATE TABLE IF NOT EXISTS xty_parties (
+    id TEXT PRIMARY KEY, code TEXT NOT NULL UNIQUE, name TEXT NOT NULL,
+    activity TEXT, commit_rule TEXT, budget TEXT NOT NULL DEFAULT 'normal',
+    pet_id TEXT, owner_id TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL, head_seq INTEGER NOT NULL DEFAULT 0,
+    pet_last_wake TIMESTAMPTZ
+  )`,
+  `CREATE TABLE IF NOT EXISTS xty_members (
+    party_id TEXT NOT NULL, user_id TEXT NOT NULL, alias TEXT NOT NULL,
+    avatar TEXT, role TEXT NOT NULL, auth_hash TEXT, joined_at TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (party_id, user_id)
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_xty_members_auth ON xty_members(party_id, auth_hash)`,
+  `CREATE TABLE IF NOT EXISTS xty_posts (
+    party_id TEXT NOT NULL, seq INTEGER NOT NULL, user_id TEXT NOT NULL,
+    kind TEXT NOT NULL, body TEXT NOT NULL, sent_at TIMESTAMPTZ NOT NULL,
+    day_key DATE NOT NULL, retracted BOOLEAN NOT NULL DEFAULT FALSE,
+    pet_id TEXT, wake_hour INTEGER, PRIMARY KEY (party_id, seq)
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_xty_posts_day ON xty_posts(party_id, day_key, kind)`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_xty_one_commit_per_day
+     ON xty_posts(party_id, user_id, day_key) WHERE kind = 'commit'`,
+  `CREATE TABLE IF NOT EXISTS xty_reactions (
+    party_id TEXT NOT NULL, seq INTEGER NOT NULL, user_id TEXT NOT NULL,
+    emoji TEXT NOT NULL, PRIMARY KEY (party_id, seq, user_id, emoji)
+  )`,
 ];
 
 export async function ensureSchema(sql) {

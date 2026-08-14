@@ -8,12 +8,12 @@
 <meta name="theme-color" content="#062718">
 <title>โปรไฟล์ — myClover</title>
 <meta name="description" content="ตัวละครของคุณในจักรวาล myClover — คำที่คุณเลือกถือ และสัตว์ที่คุณค้นพบ">
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=2">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=3">
 </head>
 <body>
 
 <header class="top">
-  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="mark" href="/xty/"><img src="/assets/myclover-icon.png" alt="">X<b>TY</b></a>
   <a class="back" href="/xty/">XTY</a>
 </header>
 
@@ -47,7 +47,7 @@
 
     <div class="card">
       <span class="label">สัตว์ที่คุณมี · <span id="petCount">0</span></span>
-      <p class="whisper" style="margin:0 0 4px">ตั้งตี้แล้วได้สี่ตัวแรกทันที ที่เหลือค่อย ๆ เจอระหว่างทาง</p>
+      <p class="whisper" style="margin:0 0 4px">สร้างโปรไฟล์แล้วได้สี่ตัวแรกทันที ที่เหลือค่อย ๆ เจอระหว่างทาง</p>
       <div class="card-grid" id="pets"></div>
       <p class="note">ยังมีตัวอื่นรออยู่ — เจอเมื่อไหร่จะขึ้นมาเอง</p>
     </div>
@@ -55,7 +55,7 @@
     <div class="card">
       <span class="label">เก็บตัวละครนี้ไว้</span>
       <p style="margin:0;font-size:14.5px;line-height:1.6;color:rgba(245,237,222,.82)">
-        ตอนนี้ทุกอย่างอยู่ในเครื่องนี้เครื่องเดียว ถ้าล้างเบราว์เซอร์หรือย้ายเครื่องจะหาย
+        โปรไฟล์และ Collection หน้านี้ยังอยู่ในเครื่องจนกว่าจะผูกบัญชี ส่วนตี้และ Party Log เก็บบนเซิร์ฟเวอร์เพื่อให้สมาชิกใช้รหัสเดียวกันข้ามเครื่องได้
       </p>
       <a class="btn ghost sm" href="/card/" style="margin-top:14px">ผูกบัญชีเก็บ Progress →</a>
     </div>
@@ -113,7 +113,7 @@ function render() {
     d.dataset.color = pet.color;
     d.innerHTML =
       `<span class="cn">${SERIES[pet.series].labelEn}</span>` +
-      `<span class="glyph">${pet.emoji}</span>` +
+      `<span class="glyph">${pet.art ? `<img src="${pet.art}" alt="">` : pet.emoji}</span>` +
       `<span class="nm">${esc(pet.nameTh)}</span>`;
     box.appendChild(d);
   });

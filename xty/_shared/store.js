@@ -1,19 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════
-   XTY — local-first data layer
+   XTY — server-backed data layer with a local display cache
 
-   Everything is kept on the device today. Keys are namespaced `mc_xty_*`
-   deliberately: the existing account sync (assets/account.js) only
-   harvests keys prefixed `mc_`, `mc-` or `c7:`, so a player who later
-   signs in keeps their profile and parties without any extra wiring.
-
-   Every read/write for parties goes through this module so the storage
-   backend can be swapped for the server (D1) without touching any page.
+   The player's lightweight profile and party credentials stay on the
+   device; canonical party membership and the shared log live on the
+   server. A local party snapshot keeps the last readable state offline.
    ═══════════════════════════════════════════════════════════════ */
 
 import { STARTER_PET_IDS } from './pets.js';
 
 const K_PROFILE = 'mc_xty_profile';
 const K_PARTIES = 'mc_xty_parties';
+const K_TOKENS = 'mc_xty_tokens';
 
 export const PARTY_MIN = 2;
 export const PARTY_MAX = 5;
@@ -146,63 +143,116 @@ export function getParty(code) {
 
 function saveParties(list) { write(K_PARTIES, list); }
 
-export function createParty({ name, activity, commitRule, budget, petId }) {
-  const profile = getProfile();
-  if (!profile) throw new Error('NO_PROFILE');
+function tokenMap() {
+  const value = read(K_TOKENS, {});
+  return value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+}
 
-  const party = {
-    id: uid(),
-    code: inviteCode(),
-    name: String(name || '').trim().slice(0, 40),
-    /* Activity is free text on purpose: XTY must never be hard-coded to
-       one domain (Pivot Blueprint §15, §51). */
-    activity: String(activity || '').trim().slice(0, 60),
-    /* The lead decides what counts as a Commit — that rule is the game
-       (Party Game Blueprint §7). */
-    commitRule: String(commitRule || '').trim().slice(0, 120),
-    budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
-    petId: petId || null,   /* no pet is simply an empty seat */
-    createdAt: now(),
-    updatedAt: now(),
-    members: [{
-      userId: profile.id,
-      alias: profile.alias,
-      avatar: profile.avatar,
-      role: 'lead',
-      joinedAt: now(),
-    }],
-    log: [],
+function saveToken(code, token, userId) {
+  const map = tokenMap();
+  const old = map[code] || {};
+  map[code] = {
+    token: token || old.token || '',
+    userId: userId || old.userId || '',
   };
+  write(K_TOKENS, map);
+}
 
+function tokenFor(code) {
+  const entry = tokenMap()[String(code || '').toUpperCase()];
+  return typeof entry === 'string' ? entry : (entry && entry.token) || '';
+}
+
+export function partyIdentity(code) {
+  const entry = tokenMap()[String(code || '').toUpperCase()];
+  if (!entry) return null;
+  return typeof entry === 'string' ? { token: entry, userId: '' } : entry;
+}
+
+function rememberParty(party) {
+  if (!party || !party.code || !Array.isArray(party.members) || !Array.isArray(party.log)) return null;
   const list = allParties();
-  list.unshift(party);
+  const at = list.findIndex(item => item.code === party.code);
+  if (at >= 0) list[at] = party; else list.unshift(party);
   saveParties(list);
   return party;
 }
 
-export function joinParty(code, { alias, avatar }) {
-  const list = allParties();
-  const i = list.findIndex(p => p.code === String(code || '').toUpperCase());
-  if (i < 0) return { error: 'NOT_FOUND' };
+async function api(path, { method = 'GET', body, code } = {}) {
+  const headers = { accept: 'application/json' };
+  if (body !== undefined) headers['content-type'] = 'application/json';
+  const token = tokenFor(code);
+  if (token) headers.authorization = `Bearer ${token}`;
+  try {
+    const response = await fetch(path, {
+      method, headers, credentials: 'same-origin',
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) return { ...data, error: data.error || `HTTP_${response.status}` };
+    return data;
+  } catch {
+    return { ok: false, error: 'OFFLINE' };
+  }
+}
 
-  const party = list[i];
+function rememberResponse(code, result) {
+  if (!result || result.error) return result;
+  const party = rememberParty(result.party);
+  if (result.token || result.meUserId) saveToken(code || party?.code, result.token, result.meUserId);
+  return { ...result, party };
+}
+
+export async function createParty({ name, activity, commitRule, budget, petId }) {
   const profile = getProfile();
-  const userId = profile ? profile.id : uid();
+  if (!profile) throw new Error('NO_PROFILE');
+  const result = await api('/api/xty/party', { method: 'POST', body: {
+    name, activity, commitRule,
+    budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
+    petId: petId || null,
+    alias: profile.alias,
+    avatar: profile.avatar,
+  }});
+  if (result.error) {
+    const error = new Error(result.error);
+    error.code = result.error;
+    throw error;
+  }
+  const saved = rememberResponse(result.party.code, result);
+  return saved.party;
+}
 
-  if (party.members.some(m => m.userId === userId)) return { party };
-  if (party.members.length >= PARTY_MAX) return { error: 'FULL' };
-
-  party.members.push({
-    userId,
-    alias: String(alias || (profile && profile.alias) || '').trim().slice(0, 24),
-    avatar: avatar || (profile && profile.avatar) || '🍀',
-    role: 'member',
-    joinedAt: now(),
+export async function joinParty(code, { alias, avatar }) {
+  const wanted = String(code || '').toUpperCase();
+  const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/join`, {
+    method: 'POST', code: wanted, body: { alias, avatar },
   });
-  party.updatedAt = now();
-  list[i] = party;
-  saveParties(list);
-  return { party };
+  return rememberResponse(wanted, result);
+}
+
+/* A relay read, deliberately called only on entry, return-to-tab, or a
+   manual refresh. There is no socket, long-poll, or unread treadmill. */
+export async function refreshParty(code, since = 0) {
+  const wanted = String(code || '').toUpperCase();
+  const cursor = Math.max(0, Number(since) || 0);
+  const result = await api(
+    `/api/xty/party/${encodeURIComponent(wanted)}/feed?since=${cursor}`,
+    { code: wanted },
+  );
+  if (result.error === 'AUTH_REQUIRED') return result;
+  if (!result.error && cursor > 0 && result.party) {
+    const cached = getParty(wanted);
+    if (cached) {
+      const bySeq = new Map((cached.log || []).map(post => [post.seq, post]));
+      for (const post of result.party.log || []) bySeq.set(post.seq, post);
+      result.party = {
+        ...cached,
+        ...result.party,
+        log: [...bySeq.values()].sort((a, b) => a.seq - b.seq),
+      };
+    }
+  }
+  return rememberResponse(wanted, result);
 }
 
 /* ---------- the day's game state ---------- */
@@ -276,102 +326,48 @@ export function messagesLeftToday(party, userId) {
    relay reads everything after a cursor in one go rather than streaming
    message by message. Once written a post is never edited — it can only
    be retracted (§16, §17). */
-export function postToParty(code, { body, kind = 'message' }) {
-  const list = allParties();
-  const i = list.findIndex(p => p.code === String(code || '').toUpperCase());
-  if (i < 0) return { error: 'NOT_FOUND' };
-
-  const profile = getProfile();
-  const party = list[i];
-  const userId = profile ? profile.id : 'anon';
-  const text = String(body || '').trim().slice(0, 2000);
-
-  if (kind === 'message') {
-    if (!text) return { error: 'EMPTY' };
-    if (messagesLeftToday(party, userId) <= 0) return { error: 'NO_BUDGET' };
-  }
-  if (kind === 'commit' && hasCommittedToday(party, userId)) {
-    return { error: 'ALREADY_COMMITTED' };
-  }
-
-  const post = {
-    seq: (party.log.length ? party.log[party.log.length - 1].seq : 0) + 1,
-    userId,
-    alias: profile ? profile.alias : 'ใครบางคน',
-    avatar: profile ? profile.avatar : '🍀',
-    kind,                 /* 'commit' | 'message' */
-    body: text,
-    sentAt: now(),
-    reactions: {},        /* emoji -> [userId] */
-    retracted: false,
-  };
-  party.log.push(post);
-  party.updatedAt = now();
-  list[i] = party;
-  saveParties(list);
-  return { post, party };
+export async function postToParty(code, { body, kind = 'message' }) {
+  const wanted = String(code || '').toUpperCase();
+  const path = kind === 'commit' ? 'commit' : 'message';
+  const payload = kind === 'commit' ? { note: body } : { body };
+  const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/${path}`, {
+    method: 'POST', code: wanted, body: payload,
+  });
+  return rememberResponse(wanted, result);
 }
 
 /* React is free and mutable — it is the acknowledgement channel that
    keeps low-value replies out of the log entirely (§13, §15). */
-export function toggleReaction(code, seq, emoji) {
+export async function toggleReaction(code, seq, emoji) {
   if (!REACTIONS.includes(emoji)) return { error: 'BAD_EMOJI' };
-  const list = allParties();
-  const i = list.findIndex(p => p.code === String(code || '').toUpperCase());
-  if (i < 0) return { error: 'NOT_FOUND' };
-
-  const profile = getProfile();
-  const userId = profile ? profile.id : 'anon';
-  const party = list[i];
-  const post = party.log.find(p => p.seq === seq);
-  if (!post) return { error: 'NO_POST' };
-
-  post.reactions = post.reactions || {};
-  const who = post.reactions[emoji] || [];
-  const at = who.indexOf(userId);
-  if (at >= 0) who.splice(at, 1); else who.push(userId);
-  if (who.length) post.reactions[emoji] = who; else delete post.reactions[emoji];
-
-  party.updatedAt = now();
-  list[i] = party;
-  saveParties(list);
-  return { post };
+  const wanted = String(code || '').toUpperCase();
+  const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/react`, {
+    method: 'POST', code: wanted, body: { seq, emoji },
+  });
+  return rememberResponse(wanted, result);
 }
 
 /* Not an edit and not a delete: the entry stays in history, its content
    does not. This exists so a stray password or phone number can be
    pulled back without rewriting what the log says happened (§17). */
-export function retractPost(code, seq) {
-  const list = allParties();
-  const i = list.findIndex(p => p.code === String(code || '').toUpperCase());
-  if (i < 0) return { error: 'NOT_FOUND' };
-
-  const profile = getProfile();
-  const userId = profile ? profile.id : 'anon';
-  const party = list[i];
-  const post = party.log.find(p => p.seq === seq);
-  if (!post) return { error: 'NO_POST' };
-  if (post.userId !== userId) return { error: 'NOT_YOURS' };
-
-  post.retracted = true;
-  post.body = '';
-  party.updatedAt = now();
-  list[i] = party;
-  saveParties(list);
-  return { post };
+export async function retractPost(code, seq) {
+  const wanted = String(code || '').toUpperCase();
+  const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/retract`, {
+    method: 'POST', code: wanted, body: { seq },
+  });
+  return rememberResponse(wanted, result);
 }
 
-export function postsSince(code, seq = 0) {
-  const party = getParty(code);
-  if (!party) return { posts: [], head: 0 };
-  const posts = party.log.filter(p => p.seq > seq);
-  return { posts, head: party.log.length ? party.log[party.log.length - 1].seq : 0 };
+export async function postsSince(code, seq = 0) {
+  return refreshParty(code, seq);
 }
 
 export function myPartyCodes() {
   const p = getProfile();
   if (!p) return [];
-  return allParties()
+  const serverCodes = Object.keys(tokenMap());
+  const localCodes = allParties()
     .filter(x => x.members.some(m => m.userId === p.id))
     .map(x => x.code);
+  return [...new Set([...serverCodes, ...localCodes])];
 }

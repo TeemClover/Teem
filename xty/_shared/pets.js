@@ -35,6 +35,9 @@ export const RGBS = Object.freeze({
 function pet(id, nameTh, emoji, color, series, persona, opts = {}) {
   return Object.freeze({
     id, nameTh, emoji, color, series, persona,
+    /* Starter portraits are XTY originals. Later pets may point at an
+       existing myClover universe asset instead of duplicating it. */
+    art: opts.art || null,
     /* craftArt: Silver only — what human hands make of it (§4) */
     craftArt: opts.craftArt || null,
     unlockedByDefault: series === 'starter',
@@ -47,10 +50,10 @@ function pet(id, nameTh, emoji, color, series, persona, opts = {}) {
 
 export const PETS = Object.freeze([
   /* 01 STARTER — granted to every new XTY profile (§15) */
-  pet('pig',     'หมู',   '🐷', 'red',    'starter', 'สนุก เป็นกันเอง ชวนลงมือแบบไม่กดดัน'),
-  pet('dog',     'หมา',   '🐶', 'green',  'starter', 'เพื่อนตี้ ซื่อสัตย์ ให้กำลังใจ เรียกคนกลับมา'),
-  pet('crow',    'กา',    '🐦‍⬛', 'blue',  'starter', 'ช่างสังเกต จำคำพูด จับ pattern แบบเบา ๆ'),
-  pet('chicken', 'ไก่',   '🐔', 'silver', 'starter', 'จิกงานทีละนิด เตือนให้เริ่ม ทำเรื่องยากให้เป็นขั้นเล็ก', { craftArt: 'ไก่ทอด' }),
+  pet('pig',     'หมู',   '🐷', 'red',    'starter', 'สนุก เป็นกันเอง ชวนลงมือแบบไม่กดดัน', { art: '/xty/assets/pets/starter-pig.webp' }),
+  pet('dog',     'หมา',   '🐶', 'green',  'starter', 'เพื่อนตี้ ซื่อสัตย์ ให้กำลังใจ เรียกคนกลับมา', { art: '/xty/assets/pets/starter-dog.webp' }),
+  pet('crow',    'กา',    '🐦‍⬛', 'blue',  'starter', 'ช่างสังเกต จำคำพูด จับ pattern แบบเบา ๆ', { art: '/xty/assets/pets/starter-crow.webp' }),
+  pet('chicken', 'ไก่',   '🐔', 'silver', 'starter', 'จิกงานทีละนิด เตือนให้เริ่ม ทำเรื่องยากให้เป็นขั้นเล็ก', { craftArt: 'ไก่ทอด', art: '/xty/assets/pets/starter-chicken.webp' }),
 
   /* 02 WORK */
   pet('buffalo', 'ควาย',  '🐃', 'red',    'work', 'อึด ถึก ทำต่อ ไม่บ่นเยอะ'),
@@ -73,20 +76,20 @@ export const PETS = Object.freeze([
   /* 05 FOREST */
   pet('gorilla', 'กอริลลา','🦍', 'red',   'forest', 'พลังเยอะ ปกป้องตี้ ชอบให้ลงมือจริง'),
   pet('deer',    'กวาง',  '🦌', 'green',  'forest', 'แซ่บ ไว อ่านห้องเก่ง พูดมีสีสัน'),
-  pet('fox',     'จิ้งจอก','🦊', 'blue',  'forest', 'ฉลาดแกมโกง หาทางลัด จับจุดอ่อนของแผน'),
+  pet('fox',     'จิ้งจอก','🦊', 'blue',  'forest', 'ฉลาดแกมโกง หาทางลัด จับจุดอ่อนของแผน', { art: '/guild/assets/avatar-fox-ui.png' }),
   pet('sheep',   'แกะ',   '🐑', 'silver', 'forest', 'นุ่มนวลแต่เป็นระบบ เปลี่ยนของดิบให้ใช้งานได้', { craftArt: 'เสื้อขนแกะ' }),
 
   /* 06 UNTAMED */
   pet('bear',    'หมี',   '🐻', 'red',    'untamed', 'อบอุ่น ใจดี ตัวใหญ่แต่ใจเย็น เป็น safe anchor'),
   pet('rabbit',  'กระต่าย','🐇', 'green', 'untamed', 'รีบไปหมด กระตือรือร้น ชวนคนทำเดี๋ยวนี้'),
-  pet('cat',     'แมว',   '🐱', 'blue',   'untamed', 'ฉลาด เย่อหยิ่ง ขี้เกียจตอบถ้าเรื่องไม่สำคัญ'),
+  pet('cat',     'แมว',   '🐱', 'blue',   'untamed', 'ฉลาด เย่อหยิ่ง ขี้เกียจตอบถ้าเรื่องไม่สำคัญ', { art: '/guild/assets/avatar-cat-ui.png' }),
   pet('turtle',  'เต่า',  '🐢', 'silver', 'untamed', 'อืดอาดยืดยาด แต่สุดท้ายทำเป็นขั้นเป็นตอน', { craftArt: 'เครื่องประดับลายกระดอง' }),
 
   /* 07 LEGEND — hidden discovery, prestige only, never smarter (§11, §21) */
   pet('dragon',  'มังกร', '🐉', 'red',    'legend', 'พลังมหาศาล ท้าทายให้ทำเรื่องที่ดูเป็นไปไม่ได้'),
   pet('unicorn', 'ยูนิคอร์น','🦄','green','legend', 'พลังบวกแบบเหนือจริง เชื่อในคน ฉลองแบบเว่อร์'),
   pet('sloth',   'สลอธ',  '🦥', 'blue',   'legend', 'ช้ามาก คิดก่อนตอบ ต่อต้านความรีบ'),
-  pet('robot',   'หุ่นยนต์','🤖', 'silver','legend', 'precise, systematic, deadpan — สิ่งที่มนุษย์สร้างขึ้น'),
+  pet('robot',   'หุ่นยนต์','🤖', 'silver','legend', 'precise, systematic, deadpan — สิ่งที่มนุษย์สร้างขึ้น', { art: '/guild/assets/avatar-android-ui.png' }),
 ]);
 
 export const PET_BY_ID = Object.freeze(

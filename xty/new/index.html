@@ -7,12 +7,12 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#062718">
 <title>ตั้งตี้ใหม่ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=2">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=3">
 </head>
 <body>
 
 <header class="top">
-  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="mark" href="/xty/"><img src="/assets/myclover-icon.png" alt="">X<b>TY</b></a>
   <a class="back" href="/xty/">ยกเลิก</a>
 </header>
 
@@ -128,7 +128,7 @@ function init() {
     b.setAttribute('aria-label', p.nameTh);
     b.innerHTML =
       `<span class="cn">${SERIES[p.series].labelEn}</span>` +
-      `<span class="glyph">${p.emoji}</span>` +
+      `<span class="glyph">${p.art ? `<img src="${p.art}" alt="">` : p.emoji}</span>` +
       `<span class="nm">${p.nameTh}</span>`;
     b.addEventListener('click', () => {
       petId = (petId === p.id) ? null : p.id;   /* tap again to clear */
@@ -149,9 +149,11 @@ function init() {
   name.addEventListener('input', sync);
   sync();
 
-  go.addEventListener('click', () => {
+  go.addEventListener('click', async () => {
+    go.disabled = true;
+    go.textContent = 'กำลังตั้งตี้…';
     try {
-      const party = createParty({
+      const party = await createParty({
         name: name.value,
         activity: act.value,
         commitRule: $('prule').value,
@@ -161,9 +163,13 @@ function init() {
       location.href = `/xty/p/?c=${encodeURIComponent(party.code)}&new=1`;
     } catch (err) {
       const t = $('toast');
-      t.textContent = 'สร้างตี้ไม่สำเร็จ — ลองใหม่อีกครั้ง';
+      t.textContent = err.code === 'XTY_DB_NOT_CONFIGURED'
+        ? 'เซิร์ฟเวอร์ XTY ยังไม่พร้อม'
+        : 'สร้างตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองอีกครั้ง';
       t.classList.add('on');
       setTimeout(() => t.classList.remove('on'), 3000);
+      go.disabled = false;
+      go.textContent = 'สร้างตี้';
     }
   });
 }
