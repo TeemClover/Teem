@@ -1,0 +1,23 @@
+name: XTY Patch Reconstruct
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - agent/xty-c5f5d41-upload
+    paths:
+      - '.patch/**'
+      - '.github/workflows/xty-patch-reconstruct.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconstruct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/xty-c5f5d41-upload
+      - name: Placeholder
+        run: echo ready
