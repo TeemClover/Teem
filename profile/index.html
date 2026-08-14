@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#062718">
+<title>โปรไฟล์ — myClover</title>
+<meta name="description" content="ตัวละครของคุณในจักรวาล myClover — คำที่คุณเลือกถือ และสัตว์ที่คุณค้นพบ">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=2">
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="/xty/">X<b>TY</b></a>
+  <a class="back" href="/xty/">XTY</a>
+</header>
+
+<main class="wrap">
+  <section id="none" hidden>
+    <h1 class="title">ยังไม่มีโปรไฟล์</h1>
+    <p class="lede">สร้างชื่อเรียกก่อน แล้วค่อยกลับมาดูตัวละครของคุณ</p>
+    <a class="btn gold" href="/xty/">ไปสร้างโปรไฟล์</a>
+  </section>
+
+  <section id="view" hidden>
+    <div class="card">
+      <div class="party-head">
+        <div class="pet-slot" id="av" aria-hidden="true"></div>
+        <div style="flex:1;min-width:0">
+          <p class="kicker" style="margin-bottom:6px">MYCLOVER PROFILE</p>
+          <h1 class="title" id="alias" style="font-size:clamp(24px,6vw,32px);margin:0"></h1>
+        </div>
+      </div>
+      <p class="whisper" id="since"></p>
+    </div>
+
+    <!-- Two progressions that are deliberately separate (Pet Blueprint §15):
+         words answer "who am I?", pets answer "what have I found?" -->
+    <div class="card">
+      <span class="label">คำที่คุณเลือกถือ · <span id="wordCount">0 / 7</span></span>
+      <p class="whisper" style="margin:0 0 4px">ช่องคำจะเปิดทีละช่องเมื่อคุณใช้ XTY มากขึ้น</p>
+      <div class="card-grid" id="words"></div>
+      <p class="note" id="wordNote"></p>
+    </div>
+
+    <div class="card">
+      <span class="label">สัตว์ที่คุณมี · <span id="petCount">0</span></span>
+      <p class="whisper" style="margin:0 0 4px">ตั้งตี้แล้วได้สี่ตัวแรกทันที ที่เหลือค่อย ๆ เจอระหว่างทาง</p>
+      <div class="card-grid" id="pets"></div>
+      <p class="note">ยังมีตัวอื่นรออยู่ — เจอเมื่อไหร่จะขึ้นมาเอง</p>
+    </div>
+
+    <div class="card">
+      <span class="label">เก็บตัวละครนี้ไว้</span>
+      <p style="margin:0;font-size:14.5px;line-height:1.6;color:rgba(245,237,222,.82)">
+        ตอนนี้ทุกอย่างอยู่ในเครื่องนี้เครื่องเดียว ถ้าล้างเบราว์เซอร์หรือย้ายเครื่องจะหาย
+      </p>
+      <a class="btn ghost sm" href="/card/" style="margin-top:14px">ผูกบัญชีเก็บ Progress →</a>
+    </div>
+
+    <nav class="tabs">
+      <a href="/xty/">XTY</a>
+      <a class="active" href="/profile/">โปรไฟล์</a>
+      <a href="/core7/collection/">CORE7 Collection</a>
+    </nav>
+  </section>
+</main>
+
+<script type="module">
+import { getProfile, hasProfile, MAX_PROFILE_WORDS } from '/xty/_shared/store.js';
+import { PETS, SERIES } from '/xty/_shared/pets.js';
+
+const $ = id => document.getElementById(id);
+if (!hasProfile()) { $('none').hidden = false; } else { render(); }
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function render() {
+  const p = getProfile();
+  $('view').hidden = false;
+  $('av').textContent = p.avatar;
+  $('alias').textContent = p.alias;
+  $('since').textContent = 'เริ่มเมื่อ ' +
+    new Date(p.createdAt).toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  /* words: locked slots are shown as empty frames so the ceiling of 7 is
+     visible without pretending any slot is earned yet */
+  $('wordCount').textContent = `${p.profileCardIds.length} / ${MAX_PROFILE_WORDS}`;
+  const words = $('words');
+  for (let i = 0; i < MAX_PROFILE_WORDS; i++) {
+    const d = document.createElement('div');
+    const unlocked = i < p.maxProfileCardSlots;
+    d.className = 'pc' + (unlocked ? '' : ' unknown');
+    if (unlocked) d.innerHTML = '<span class="glyph">＋</span><span class="sr">ว่าง</span>';
+    words.appendChild(d);
+  }
+  $('wordNote').textContent = p.maxProfileCardSlots === 0
+    ? 'ยังไม่เปิดช่องแรก — ใช้ XTY ไปเรื่อย ๆ แล้วช่องแรกจะเปิดให้เลือกคำ'
+    : 'เลือกคำจากชุดการ์ด CORE7 มาถือไว้ได้';
+
+  /* pets: only what is actually owned appears — the rest of the set
+     stays unknown on purpose (Pet Blueprint §20, §30) */
+  const owned = PETS.filter(x => p.petIds.includes(x.id));
+  $('petCount').textContent = String(owned.length);
+  const box = $('pets');
+  owned.forEach(pet => {
+    const d = document.createElement('div');
+    d.className = 'pc';
+    d.dataset.color = pet.color;
+    d.innerHTML =
+      `<span class="cn">${SERIES[pet.series].labelEn}</span>` +
+      `<span class="glyph">${pet.emoji}</span>` +
+      `<span class="nm">${esc(pet.nameTh)}</span>`;
+    box.appendChild(d);
+  });
+  /* a couple of silhouettes hint that the world is bigger */
+  for (let i = 0; i < 4; i++) {
+    const d = document.createElement('div');
+    d.className = 'pc unknown';
+    d.innerHTML = '<span class="glyph">🐾</span><span class="nm">???</span>';
+    box.appendChild(d);
+  }
+}
+</script>
+</body>
+</html>

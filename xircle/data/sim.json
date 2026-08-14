@@ -1,0 +1,33 @@
+{
+  "_status": "DEMO_ONLY",
+  "_note": "Directional demonstration only. Not production scoring. Values drive animation width/arc only and must never be shown as 'Sleep Score 82' style numbers (Blueprint §33).",
+  "sleep": {
+    "short": { "visual": 0.35, "label": "นอนน้อย" },
+    "mid": { "visual": 0.62, "label": "พอใช้" },
+    "full": { "visual": 0.82, "label": "ได้นอนเต็มที่" }
+  },
+  "move": {
+    "sedentary": { "visual": 0.25, "label": "นั่งยาว" },
+    "walk": { "visual": 0.55, "label": "เดินบ้าง" },
+    "intentional": { "visual": 0.8, "label": "ตั้งใจขยับ" }
+  },
+  "eat": {
+    "light": {
+      "label": "จานเบา ผักเยอะ",
+      "macros": { "protein": 0.55, "carb": 0.35, "fat": 0.3, "pattern": 0.7 }
+    },
+    "balanced": {
+      "label": "จานสมดุล",
+      "macros": { "protein": 0.65, "carb": 0.55, "fat": 0.45, "pattern": 0.8 }
+    },
+    "heavy": {
+      "label": "จานหนัก ของทอด",
+      "macros": { "protein": 0.4, "carb": 0.75, "fat": 0.8, "pattern": 0.45 }
+    }
+  },
+  "circle_preview": {
+    "size": 5,
+    "showed_up": 4,
+    "note": "mocked composition — no live members in V0.3"
+  }
+}

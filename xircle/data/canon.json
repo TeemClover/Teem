@@ -1,0 +1,53 @@
+{
+  "_note": "Public-safe canonical statements used by the playable journey. Source of truth: XIRCLE_PROJECT_SOURCE_OF_TRUTH_v1_2026-08-11.md — if anything here conflicts, the Source of Truth wins.",
+  "entries": [
+    {
+      "id": "habit-score",
+      "statement": "Habit Score สรุปพฤติกรรมของเมื่อวานจาก 3 เสา: Eat + Move + Sleep เท่านั้น",
+      "status": "canon",
+      "visibility": "public_safe",
+      "source": ["XIRCLE_PROJECT_SOURCE_OF_TRUTH_v1"],
+      "last_reviewed": "2026-08-13"
+    },
+    {
+      "id": "behavior-vs-outcome",
+      "statement": "Behavior (Eat/Move/Sleep/Habit Score) กับ Outcome (Body Composition/Trend) เป็นคนละชั้น ไม่เอามารวมกัน",
+      "status": "canon",
+      "visibility": "public_safe",
+      "source": ["XIRCLE_PROJECT_SOURCE_OF_TRUTH_v1"],
+      "last_reviewed": "2026-08-13"
+    },
+    {
+      "id": "band-scale-roles",
+      "statement": "Band วัดสิ่งที่คุณทำ (Behavior) / Scale วัดผลลัพธ์ที่ร่างกายตอบ (Outcome)",
+      "status": "canon",
+      "visibility": "public_safe",
+      "source": ["XIRCLE_PROJECT_SOURCE_OF_TRUTH_v1"],
+      "last_reviewed": "2026-08-13"
+    },
+    {
+      "id": "abcd-mapping",
+      "statement": "A=ABSORB → G.U.S.+ / B=BUILD → Protein HMB+ / C=CONTROL → Behavior (ซื้อไม่ได้) / D=DAILY BALANCE → AstaMega+ + Vita Matrix / += Flavor+",
+      "status": "canon",
+      "visibility": "public_safe",
+      "source": ["XIRCLE_PROJECT_SOURCE_OF_TRUTH_v1"],
+      "last_reviewed": "2026-08-13"
+    },
+    {
+      "id": "circle-pulse",
+      "statement": "Circle Pulse วัดการ 'โผล่มา' (showed up) ของสมาชิกในวง ไม่ใช่ผลสุขภาพ ไม่มี ranking",
+      "status": "canon",
+      "visibility": "public_safe",
+      "source": ["XIRCLE_PLAYABLE_PRODUCT_BUILD_BLUEPRINT_v0.3"],
+      "last_reviewed": "2026-08-13"
+    },
+    {
+      "id": "xvisor-role",
+      "statement": "X-VISOR คือ Health Partner ที่ผ่านการเรียนและ Certification เพื่อช่วยแปลข้อมูลเป็นการดูแล ไม่ใช่ผู้วินิจฉัยหรือรักษาโรค",
+      "status": "canon",
+      "visibility": "public_safe",
+      "source": ["XIRCLE_PROJECT_SOURCE_OF_TRUTH_v1"],
+      "last_reviewed": "2026-08-13"
+    }
+  ]
+}
