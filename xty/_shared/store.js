@@ -17,6 +17,9 @@ export const XTY_PROFILE_KEY = K_PROFILE;
 
 export const PARTY_MIN = 2;
 export const PARTY_MAX = 5;
+export const MAX_OWNED_ACTIVE_PARTIES = 1;
+export const MAX_JOINED_ACTIVE_PARTIES = 3;
+export const MAX_ACTIVE_PARTIES = 4;
 /* Kept for legacy data compatibility only. XTY V1 never renders /7. */
 export const MAX_PROFILE_WORDS = 7;
 
@@ -70,30 +73,30 @@ export function uid(n = 10) {
   return s;
 }
 
-/* Invite codes are read aloud and typed by hand, so keep them short and
-   drop the character pairs people confuse. */
+/* Four numeric digits are fast to read aloud and preserve leading zeroes. */
 export function inviteCode() {
-  const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const buf = new Uint32Array(6);
+  const buf = new Uint32Array(4);
   (crypto || window.crypto).getRandomValues(buf);
-  let s = '';
-  for (let i = 0; i < 6; i++) s += a[buf[i] % a.length];
-  return s.slice(0, 3) + '-' + s.slice(3);
+  return [...buf].map(n => String(n % 10)).join('');
 }
 
 /* ---------- profile ---------- */
 
 const LEGACY_AVATAR_IDS = Object.freeze({
-  '🍀': 'clover', '☀️': 'sun', '🌻': 'sun', '☁️': 'cloud',
-  '🔥': 'flame', '🌊': 'wave', '⛰️': 'mountain', '🍜': 'ramen',
-  '🎲': 'dice', '🎧': 'headphones', '📕': 'book', '📚': 'book',
-  '👟': 'sneaker', '📷': 'camera',
+  clover: 'orange_cat', sun: 'orange_cat', cloud: 'white_pom',
+  flame: 'fox', wave: 'white_cat', mountain: 'buffalo',
+  ramen: 'pig', dice: 'owl', headphones: 'rabbit', book: 'turtle',
+  sneaker: 'white_pom', camera: 'crow',
+  '🍀': 'orange_cat', '☀️': 'orange_cat', '🌻': 'orange_cat', '☁️': 'white_pom',
+  '🔥': 'fox', '🌊': 'white_cat', '⛰️': 'buffalo', '🍜': 'pig',
+  '🎲': 'owl', '🎧': 'rabbit', '📕': 'turtle', '📚': 'turtle',
+  '👟': 'white_pom', '📷': 'crow', '🐱': 'orange_cat', '🐶': 'white_pom',
 });
 
 function profileAvatarId(value) {
   if (AVATAR_BY_ID[value?.avatarId]) return value.avatarId;
   if (AVATAR_BY_ID[value?.avatar]) return value.avatar;
-  return LEGACY_AVATAR_IDS[value?.avatar] || 'clover';
+  return LEGACY_AVATAR_IDS[value?.avatarId] || LEGACY_AVATAR_IDS[value?.avatar] || 'orange_cat';
 }
 
 function validHandSize(value) {
@@ -116,6 +119,7 @@ export function normalizeProfile(value) {
     alias: String(value.alias || '').trim().slice(0, 24),
     avatarId,
     avatarFallback: fallback,
+    avatarFrame: ['red', 'green', 'blue', 'silver'].includes(value.avatarFrame) ? value.avatarFrame : 'green',
     /* Keep a compact legacy field while party rows migrate from emoji to
        canonical avatar ids. New writes store the id here. */
     avatar: avatarId,
@@ -147,17 +151,17 @@ export function hasProfile() {
   return !!(p && p.alias);
 }
 
-/* Every XTY V1 player starts with one Hand card and all eight friendly
-   V1 pets. Unlock thresholds are intentionally not invented here. */
-export function createProfile({ alias, avatarId, avatar }) {
+/* Every XTY V1 player starts with all eight friendly pets. */
+export function createProfile({ alias, avatarId, avatar, avatarFrame = 'green' }) {
   const pickedId = AVATAR_BY_ID[avatarId] ? avatarId
-    : (AVATAR_BY_ID[avatar] ? avatar : (LEGACY_AVATAR_IDS[avatar] || 'clover'));
+    : (AVATAR_BY_ID[avatar] ? avatar : (LEGACY_AVATAR_IDS[avatar] || 'orange_cat'));
   return saveProfile({
     id: uid(),
     alias: String(alias || '').trim().slice(0, 24),
     avatarId: pickedId,
     avatarFallback: avatarFallback(pickedId, avatar),
     avatar: pickedId,
+    avatarFrame: ['red', 'green', 'blue', 'silver'].includes(avatarFrame) ? avatarFrame : 'green',
     createdAt: now(),
     updatedAt: now(),
     handSize: 1,
@@ -182,15 +186,15 @@ export function handSizeOf(profile) {
 }
 
 export function maxActiveParties(profile) {
-  return handSizeOf(profile) + 1;
+  return MAX_ACTIVE_PARTIES;
 }
 
 export function maxOwnedActiveParties(profile) {
-  return handSizeOf(profile);
+  return MAX_OWNED_ACTIVE_PARTIES;
 }
 
 export function maxJoinedActiveParties(profile) {
-  return handSizeOf(profile);
+  return MAX_JOINED_ACTIVE_PARTIES;
 }
 
 /* ---------- parties ---------- */
@@ -302,20 +306,19 @@ function rememberResponse(code, result) {
   return { ...result, party };
 }
 
-export async function createParty({ name, activity, commitRule, budget, petId }) {
+export async function createParty({ name, activity, activityId, preset, durationDays, color, visibility, commitRule, budget, petId }) {
   const profile = getProfile();
   if (!profile) throw new Error('NO_PROFILE');
   const capacity = activePartyUsage(profile);
   if (capacity.owned >= capacity.maxOwned) throw limitError('OWNED_PARTY_LIMIT');
   if (capacity.total >= capacity.maxTotal) throw limitError('ACTIVE_PARTY_LIMIT');
   const result = await api('/api/xty/party', { method: 'POST', body: {
-    name, activity, commitRule,
+    name, activity, activityId, preset, durationDays, color, visibility, commitRule,
     budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
     petId: petId || null,
     alias: profile.alias,
     avatar: profile.avatarId || profile.avatarFallback,
     profileId: profile.id,
-    handSize: handSizeOf(profile),
   }});
   if (result.error) {
     const error = new Error(result.error);
@@ -340,7 +343,6 @@ export async function joinParty(code, { alias, avatar }) {
       alias,
       avatar: profile?.avatarId || avatar || profile?.avatarFallback,
       profileId: profile?.id || '',
-      handSize: handSizeOf(profile),
     },
   });
   return rememberResponse(wanted, result);
@@ -459,6 +461,16 @@ export async function toggleReaction(code, seq, emoji) {
   const wanted = String(code || '').toUpperCase();
   const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/react`, {
     method: 'POST', code: wanted, body: { seq, emoji },
+  });
+  return rememberResponse(wanted, result);
+}
+
+/* Confirm belongs to one Commit. One other active member may confirm it;
+   the server rejects self-confirmation and duplicate confirmation. */
+export async function confirmCommit(code, seq) {
+  const wanted = String(code || '').toUpperCase();
+  const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/confirm`, {
+    method: 'POST', code: wanted, body: { seq },
   });
   return rememberResponse(wanted, result);
 }

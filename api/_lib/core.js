@@ -62,6 +62,11 @@ const SCHEMA = [
     pet_last_wake TIMESTAMPTZ
   )`,
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS state TEXT NOT NULL DEFAULT 'ACTIVE'`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS activity_id TEXT`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS preset TEXT NOT NULL DEFAULT 'casual'`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS duration_days INTEGER NOT NULL DEFAULT 14`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS color TEXT NOT NULL DEFAULT 'green'`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS visibility TEXT NOT NULL DEFAULT 'private'`,
   `CREATE INDEX IF NOT EXISTS idx_xty_parties_owner_state ON xty_parties(owner_id, state)`,
   `CREATE TABLE IF NOT EXISTS xty_members (
     party_id TEXT NOT NULL, user_id TEXT NOT NULL, alias TEXT NOT NULL,
@@ -81,6 +86,10 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS xty_reactions (
     party_id TEXT NOT NULL, seq INTEGER NOT NULL, user_id TEXT NOT NULL,
     emoji TEXT NOT NULL, PRIMARY KEY (party_id, seq, user_id, emoji)
+  )`,
+  `CREATE TABLE IF NOT EXISTS xty_confirmations (
+    party_id TEXT NOT NULL, commit_seq INTEGER NOT NULL, confirmer_id TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL, PRIMARY KEY (party_id, commit_seq)
   )`,
 ];
 

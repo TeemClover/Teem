@@ -55,8 +55,7 @@ function later(a, b) {
 }
 
 /* Merge is intentionally narrow. Alias/avatar follow the latest explicit
-   profile edit, capacity takes the maximum earned value, pets form a
-   union, and client balances are never added together. */
+   profile edit, pets form a union, and client balances are never added. */
 export function mergeXtyProfile(localValue, cloudValue) {
   const local = parseProfile(localValue);
   const cloud = parseProfile(cloudValue);
@@ -74,6 +73,7 @@ export function mergeXtyProfile(localValue, cloudValue) {
     alias: newest.alias,
     avatarId: newest.avatarId,
     avatarFallback: newest.avatarFallback,
+    avatarFrame: newest.avatarFrame || older.avatarFrame || 'green',
     handSize: Math.max(handSizeOf(local), handSizeOf(cloud)),
     petIds: [...new Set([
       ...(local.petIds || []),
@@ -126,4 +126,3 @@ export async function syncXtyProfile() {
     ? { ...saved, authenticated: true, profile, user }
     : { ok: true, authenticated: true, profile, user };
 }
-

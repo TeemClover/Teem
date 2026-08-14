@@ -85,7 +85,7 @@ unread badge แบบ `99+`, push ทุกข้อความ, infinite scro
 ```sql
 CREATE TABLE IF NOT EXISTS xty_parties (
   id           TEXT PRIMARY KEY,
-  code         TEXT NOT NULL UNIQUE,        -- ABC-123
+  code         TEXT NOT NULL UNIQUE,        -- รหัสตัวเลข 4 หลัก เช่น 0123
   name         TEXT NOT NULL,
   activity     TEXT,
   commit_rule  TEXT,                        -- อะไรถึงนับเป็น Commit

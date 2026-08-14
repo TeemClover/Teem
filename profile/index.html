@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#F6F2E8">
+<meta name="theme-color" content="#FFF9E9">
 <title>XTY Profile</title>
-<meta name="description" content="โปรไฟล์ XTY, Hand, Party capacity และ Pet ของคุณ">
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=4">
+<meta name="description" content="โปรไฟล์ XTY, ตี้ที่กำลังเล่น และ Pet ของคุณ">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=5">
 </head>
 <body>
 
 <header class="top">
-  <a class="mark" href="/xty/"><img src="/assets/myclover-icon.png" alt="">X<b>TY</b></a>
+  <a class="mark" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a>
   <a class="back" href="/xty/">XTY</a>
 </header>
 
 <main class="wrap">
   <section id="none" hidden>
     <h1 class="title">ยังไม่มีโปรไฟล์</h1>
-    <p class="lede">เลือกชื่อเรียกกับ Avatar ก่อน แล้วค่อยกลับมาดู Hand และ Pet ของคุณ</p>
+    <p class="lede">เลือกชื่อเรียกกับ Avatar ก่อน แล้วค่อยกลับมาดูตี้และ Pet ของคุณ</p>
     <a class="btn gold" href="/xty/">เข้าสู่ XTY</a>
   </section>
 
@@ -47,15 +47,12 @@
     </div>
 
     <div class="card">
-      <span class="label">YOUR HAND</span>
-      <div class="hand-wrap">
-        <div class="hand-card" aria-label="การ์ดในมือ 1 ใบ">
-          <b>YOUR CARD</b>
-          <small>IDENTITY · CAPACITY</small>
-        </div>
+      <span class="label">PARTIES</span>
+      <div class="capacity-panel">
+        <img src="/xty/assets/art/mascots/orange-cat.webp" alt="" aria-hidden="true">
         <div>
-          <div class="capacity-number" id="capacity">0 / 2<small>ACTIVE PARTIES</small></div>
-          <p class="whisper" id="capacityHint">สร้างได้ 1 ตี้ · Join ได้ 1 ตี้</p>
+          <div class="capacity-number" id="capacity">0 / 4<small>ตี้ที่กำลังเล่น</small></div>
+          <p class="whisper" id="capacityHint">สร้างได้ 1 ตี้ · เข้าร่วมได้ 3 ตี้</p>
         </div>
       </div>
     </div>
@@ -90,6 +87,7 @@ function render(account) {
   const p = getProfile();
   $('view').hidden = false;
   const avatar = avatarById(p.avatarId);
+  $('av').dataset.color = p.avatarFrame || 'green';
   $('av').innerHTML = `<img src="${avatar.art}" alt="">`;
   $('alias').textContent = p.alias;
   $('since').textContent = 'เริ่มเมื่อ ' +
@@ -106,7 +104,7 @@ function render(account) {
 
   const usage = activePartyUsage(p);
   $('capacity').innerHTML = `${usage.total} / ${usage.maxTotal}<small>ACTIVE PARTIES</small>`;
-  $('capacityHint').textContent = `สร้างได้ ${usage.maxOwned} ตี้ · Join ได้ ${usage.maxJoined} ตี้ · Hand ${p.handSize} ใบ`;
+  $('capacityHint').textContent = `สร้างได้ ${usage.maxOwned} ตี้ · เข้าร่วมได้ ${usage.maxJoined} ตี้`;
 
   const box = $('pets');
   box.innerHTML = '';
@@ -123,10 +121,15 @@ function render(account) {
 }
 
 async function boot() {
-  const account = await syncXtyProfile();
+  const localAccount = { authenticated: false };
   if (new URLSearchParams(location.search).has('account')) history.replaceState(null, '', '/profile/');
   if (!hasProfile()) $('none').hidden = false;
-  else render(account);
+  else render(localAccount);
+  const account = await syncXtyProfile();
+  if (hasProfile() && account.authenticated) {
+    $('lineStatus').innerHTML = '<span class="status-pill">Connected ✓</span><br>Progress เก็บกับบัญชีนี้';
+    $('lineBtn').hidden = true;
+  }
 }
 
 boot();

@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#F6F2E8">
+<meta name="theme-color" content="#FFF9E9">
 <title>XTY — ตั้งตี้ทำอะไรก็ได้</title>
 <meta name="description" content="ตั้งตี้ 2–5 คน ทำอะไรก็ได้ด้วยกัน — ไม่ต้องสมัครก่อนเล่น">
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=4">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=5">
 </head>
 <body>
 
 <header class="top">
-  <a class="mark" href="/xty/"><img src="/assets/myclover-icon.png" alt="">X<b>TY</b></a>
+  <a class="mark" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a>
   <a class="back" href="/profile/">โปรไฟล์</a>
 </header>
 
@@ -24,18 +24,16 @@
        worth keeping. -->
   <section id="gate" hidden>
     <div class="xty-hero" aria-hidden="true">
-      <img class="xty-sigil" src="/guild/assets/guild-x-mark.png" alt="">
       <div class="xty-pets">
-        <img class="xty-pet" src="/xty/assets/pets/v1/pig.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/v1/dog.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/v1/crow.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/v1/chicken.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/art/mascots/white-pom.webp" alt="">
+        <img class="xty-pet hero-main" src="/xty/assets/art/mascots/orange-cat.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/art/mascots/white-cat.webp" alt="">
       </div>
-      <span class="xty-hero-copy">THE GAME HAPPENS IN REAL LIFE</span>
+      <span class="xty-hero-copy">REAL-LIFE PARTY GAME</span>
     </div>
     <p class="kicker">XTY · MYCLOVER</p>
-    <h1 class="title">ตั้งตี้<br>ทำอะไรก็ได้</h1>
-    <p class="lede">2–5 คน ตั้งกติกา แล้วออกไปทำจริง — Commit เมื่อทำแล้ว Message เมื่อจำเป็น React ได้เต็มที่ ไม่ต้องสมัคร ไม่ต้องใช้ชื่อจริง</p>
+    <h1 class="title">ตั้งตี้ แล้วออกไป<br>เล่นชีวิตจริงด้วยกัน</h1>
+    <p class="lede">2–5 คน เลือกกิจกรรม ตั้งกติกา แล้วค่อยกลับมา Commit · Message · React · Confirm</p>
 
     <div class="card">
       <span class="label">เริ่มด้วยชื่อที่สบายใจ</span>
@@ -48,6 +46,11 @@
       <div class="field">
         <label>เลือกหน้าตา</label>
         <div class="card-grid" id="avatarPick" role="radiogroup" aria-label="เลือก avatar"></div>
+      </div>
+
+      <div class="field">
+        <label>เลือกสีกรอบ</label>
+        <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีกรอบ avatar"></div>
       </div>
 
       <button class="btn gold" id="createProfile" style="margin-top:22px" disabled>เข้าสู่ XTY</button>
@@ -65,13 +68,11 @@
       <h1 class="title" id="greet" style="margin:0">ตั้งตี้<br>ทำอะไรก็ได้</h1>
     </div>
 
-    <div class="xty-hero" aria-hidden="true" style="min-height:230px;margin-top:-8px">
-      <img class="xty-sigil" src="/guild/assets/guild-x-mark.png" alt="">
+    <div class="xty-hero compact" aria-hidden="true">
       <div class="xty-pets">
-        <img class="xty-pet" src="/xty/assets/pets/v1/pig.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/v1/dog.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/v1/crow.webp" alt="">
-        <img class="xty-pet" src="/xty/assets/pets/v1/chicken.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/art/mascots/white-pom.webp" alt="">
+        <img class="xty-pet hero-main" src="/xty/assets/art/mascots/orange-cat.webp" alt="">
+        <img class="xty-pet" src="/xty/assets/art/mascots/white-cat.webp" alt="">
       </div>
     </div>
 
@@ -90,7 +91,8 @@
 
     <div class="card" style="margin-top:12px">
       <span class="label">ACTIVE PARTIES</span>
-      <div class="capacity-number" id="capacityN">0 / 2<small>ตี้ที่ใช้งานอยู่</small></div>
+      <div class="capacity-number" id="capacityN">0 / 4<small>ตี้ที่กำลังเล่น</small></div>
+      <p class="whisper">สร้างได้ 1 ตี้ · เข้าร่วมได้ 3 ตี้</p>
     </div>
 
     <h2 class="title" style="margin-top:34px;font-size:19px">ตี้ของคุณ</h2>
@@ -112,7 +114,7 @@ import {
   activePartyUsage, committedToday,
 } from '/xty/_shared/store.js';
 import { PET_BY_ID } from '/xty/_shared/pets.js';
-import { XTY_AVATARS, avatarById } from '/xty/_shared/avatars.js';
+import { XTY_AVATARS, AVATAR_FRAMES, avatarById } from '/xty/_shared/avatars.js';
 import { saveCloudProgress, startLineLogin, syncXtyProfile } from '/xty/_shared/account.js';
 
 const $ = id => document.getElementById(id);
@@ -123,6 +125,7 @@ function renderGate() {
   $('gate').hidden = false;
   const pick = $('avatarPick');
   let chosen = XTY_AVATARS[0].id;
+  let avatarFrame = 'green';
 
   XTY_AVATARS.forEach((avatar, i) => {
     const b = document.createElement('button');
@@ -143,6 +146,25 @@ function renderGate() {
     pick.appendChild(b);
   });
 
+  Object.values(AVATAR_FRAMES).forEach(frame => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'color-choice' + (frame.id === avatarFrame ? ' picked' : '');
+    b.style.setProperty('--swatch', frame.hex);
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', frame.id === avatarFrame ? 'true' : 'false');
+    b.innerHTML = `<span></span><b>${frame.labelTh}</b>`;
+    b.addEventListener('click', () => {
+      avatarFrame = frame.id;
+      $('framePick').querySelectorAll('button').forEach(x => {
+        const on = x === b;
+        x.classList.toggle('picked', on);
+        x.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+    });
+    $('framePick').appendChild(b);
+  });
+
   const alias = $('alias');
   const go = $('createProfile');
   const sync = () => { go.disabled = alias.value.trim().length < 1; };
@@ -151,7 +173,7 @@ function renderGate() {
   sync();
 
   go.addEventListener('click', async () => {
-    const profile = createProfile({ alias: alias.value, avatarId: chosen });
+    const profile = createProfile({ alias: alias.value, avatarId: chosen, avatarFrame });
     if (accountState.authenticated) await saveCloudProgress(profile);
     location.reload();
   });
@@ -163,6 +185,7 @@ async function renderHome() {
   $('home').hidden = false;
   $('greet').innerHTML = `สวัสดี<br>${escapeHtml(p.alias)}`;
   const avatar = avatarById(p.avatarId);
+  $('homeAvatar').dataset.color = p.avatarFrame || 'green';
   $('homeAvatar').innerHTML = `<img src="${avatar.art}" alt="">`;
 
   if (accountState.authenticated) {
@@ -178,7 +201,7 @@ async function renderHome() {
   await Promise.all([...mine].map(code => refreshParty(code).catch(() => null)));
   const list = allParties().filter(x => mine.has(x.code));
   const capacity = activePartyUsage(p);
-  $('capacityN').innerHTML = `${capacity.total} / ${capacity.maxTotal}<small>ตี้ที่ใช้งานอยู่</small>`;
+  $('capacityN').innerHTML = `${capacity.total} / ${capacity.maxTotal}<small>ตี้ที่กำลังเล่น</small>`;
   const box = $('myParties');
 
   if (!list.length) {
@@ -213,11 +236,20 @@ function escapeHtml(s) {
 }
 
 async function boot() {
-  accountState = await syncXtyProfile();
+  /* Paint the local shell first. Cloud sync is enhancement, not a gate. */
+  if (hasProfile()) renderHome(); else renderGate();
   if (new URLSearchParams(location.search).has('account')) {
     history.replaceState(null, '', '/xty/');
   }
-  if (hasProfile()) await renderHome(); else renderGate();
+  accountState = await syncXtyProfile();
+  if (hasProfile()) updateAccountState();
+}
+
+function updateAccountState() {
+  if (accountState.authenticated) {
+    $('accountStatus').innerHTML = '<span class="status-pill">LINE เชื่อมแล้ว ✓</span><br>Progress เก็บกับบัญชีนี้';
+    $('lineBtn').hidden = true;
+  }
 }
 
 boot();

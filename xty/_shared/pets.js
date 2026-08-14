@@ -26,10 +26,10 @@ export const SERIES = Object.freeze({
 /* RGBS mirrors core7 COLOR_META. Kept as ids only — the hex values stay
    owned by /core7/js/cards.js so there is one source of truth (§11). */
 export const RGBS = Object.freeze({
-  red:    { id: 'red',    emoji: '🔴', labelEn: 'BODY',  labelTh: 'กาย' },
-  green:  { id: 'green',  emoji: '🟢', labelEn: 'SOUL',  labelTh: 'ใจ' },
-  blue:   { id: 'blue',   emoji: '🔵', labelEn: 'MIND',  labelTh: 'ความคิด' },
-  silver: { id: 'silver', emoji: '⚙️', labelEn: 'CRAFT', labelTh: 'สร้าง' },
+  red:    { id: 'red',    emoji: '🔴', labelEn: 'RED',    labelTh: 'แดง',    hex: '#E45B5B' },
+  green:  { id: 'green',  emoji: '🟢', labelEn: 'GREEN',  labelTh: 'เขียว',  hex: '#55B56A' },
+  blue:   { id: 'blue',   emoji: '🔵', labelEn: 'BLUE',   labelTh: 'น้ำเงิน', hex: '#5B8DFF' },
+  silver: { id: 'silver', emoji: '⚪', labelEn: 'SILVER', labelTh: 'เงิน',    hex: '#98A0A8' },
 });
 
 function pet(id, nameTh, emoji, color, series, persona, opts = {}) {
@@ -50,13 +50,13 @@ function pet(id, nameTh, emoji, color, series, persona, opts = {}) {
 
 export const PETS = Object.freeze([
   /* 01 STARTER — granted to every new XTY profile (§15) */
-  pet('pig',     'หมู',   '🐷', 'red',    'starter', 'สนุก เป็นกันเอง ชวนลงมือแบบไม่กดดัน', { art: '/xty/assets/pets/v1/pig.webp' }),
-  pet('dog',     'หมา',   '🐶', 'green',  'starter', 'เพื่อนตี้ ซื่อสัตย์ ให้กำลังใจ เรียกคนกลับมา', { art: '/xty/assets/pets/v1/dog.webp' }),
-  pet('crow',    'กา',    '🐦‍⬛', 'blue',  'starter', 'ช่างสังเกต จำคำพูด จับ pattern แบบเบา ๆ', { art: '/xty/assets/pets/v1/crow.webp' }),
-  pet('chicken', 'ไก่',   '🐔', 'silver', 'starter', 'จิกงานทีละนิด เตือนให้เริ่ม ทำเรื่องยากให้เป็นขั้นเล็ก', { craftArt: 'ไก่ทอด', art: '/xty/assets/pets/v1/chicken.webp' }),
+  pet('pig',     'หมู',   '🐷', 'red',    'starter', 'อารมณ์ดี เป็นกันเอง ชวนเริ่มโดยไม่กดดัน', { art: '/xty/assets/art/pets/pig.webp' }),
+  pet('dog',     'ปอมขาว','🐶', 'green',  'starter', 'เพื่อนตี้ใจดี คอยเรียกทุกคนกลับมา', { art: '/xty/assets/art/pets/dog.webp' }),
+  pet('crow',    'กา',    '🐦‍⬛', 'blue',  'starter', 'ช่างสังเกต จำรายละเอียดเล็ก ๆ ได้ดี', { art: '/xty/assets/art/pets/crow.webp' }),
+  pet('chicken', 'ไก่',   '🐔', 'silver', 'starter', 'จิกงานทีละนิด ทำเรื่องยากให้เป็นขั้นเล็ก', { art: '/xty/assets/art/pets/chicken.webp' }),
 
   /* 02 WORK */
-  pet('buffalo', 'ควาย',  '🐃', 'red',    'work', 'อึด ถึก ทำต่อ ไม่บ่นเยอะ', { art: '/xty/assets/pets/v1/buffalo.webp' }),
+  pet('buffalo', 'ควาย',  '🐃', 'red',    'work', 'ใจสู้ ทำต่อได้ทีละก้าว', { art: '/xty/assets/art/pets/buffalo.webp' }),
   pet('horse',   'ม้า',   '🐎', 'green',  'work', 'กระตือรือร้น พาตี้วิ่งไปข้างหน้า ชอบ momentum'),
   pet('elephant','ช้าง',  '🐘', 'blue',   'work', 'จำเก่ง สุขุม สรุปสิ่งที่ตี้เคยพูดไว้'),
   pet('cow',     'วัว',   '🐄', 'silver', 'work', 'practical เน้นผลลัพธ์ ทำของธรรมดาให้เกิด output', { craftArt: 'สเต็ก' }),
@@ -82,12 +82,12 @@ export const PETS = Object.freeze([
   /* 06 UNTAMED */
   pet('bear',    'หมี',   '🐻', 'red',    'untamed', 'อบอุ่น ใจดี ตัวใหญ่แต่ใจเย็น เป็น safe anchor'),
   pet('rabbit',  'กระต่าย','🐇', 'green', 'untamed', 'รีบไปหมด กระตือรือร้น ชวนคนทำเดี๋ยวนี้'),
-  pet('cat',     'แมวส้ม','🐱', 'blue',   'untamed', 'ฉลาด ขี้เล่น รู้ว่าเรื่องไหนสำคัญ', { art: '/xty/assets/pets/v1/cat-orange.webp' }),
-  pet('turtle',  'เต่า',  '🐢', 'silver', 'untamed', 'ค่อยเป็นค่อยไป แต่ทำต่อจนถึงเป้าหมาย', { craftArt: 'เครื่องประดับลายกระดอง', art: '/xty/assets/pets/v1/turtle.webp' }),
+  pet('cat',     'แมวส้ม','🐱', 'blue',   'untamed', 'ขี้เล่น ชวนมองเรื่องยากให้เบาลง', { art: '/xty/assets/art/pets/orange-cat.webp' }),
+  pet('turtle',  'เต่า',  '🐢', 'silver', 'untamed', 'ค่อยเป็นค่อยไป แต่ทำต่อจนถึงเป้าหมาย', { art: '/xty/assets/art/pets/turtle.webp' }),
 
   /* 07 LEGEND — hidden discovery, prestige only, never smarter (§11, §21) */
   pet('dragon',  'มังกร', '🐉', 'red',    'legend', 'พลังมหาศาล ท้าทายให้ทำเรื่องที่ดูเป็นไปไม่ได้'),
-  pet('unicorn', 'ยูนิคอร์น','🦄','green','legend', 'พลังบวกแบบเหนือจริง เชื่อในคน ฉลองแบบเว่อร์', { art: '/xty/assets/pets/v1/unicorn.webp' }),
+  pet('unicorn', 'ยูนิคอร์น','🦄','green','legend', 'พลังบวก ชวนพักใจและฉลองก้าวเล็ก ๆ', { art: '/xty/assets/art/pets/unicorn.webp' }),
   pet('sloth',   'สลอธ',  '🦥', 'blue',   'legend', 'ช้ามาก คิดก่อนตอบ ต่อต้านความรีบ'),
   pet('robot',   'หุ่นยนต์','🤖', 'silver','legend', 'precise, systematic, deadpan — สิ่งที่มนุษย์สร้างขึ้น', { art: '/guild/assets/avatar-android-ui.png' }),
 ]);

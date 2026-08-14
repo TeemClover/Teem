@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#F6F2E8">
+<meta name="theme-color" content="#FFF9E9">
 <title>ตี้ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=4">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=5">
 </head>
 <body>
 
 <header class="top">
-  <a class="mark" href="/xty/"><img src="/assets/myclover-icon.png" alt="">X<b>TY</b></a>
+  <a class="mark" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a>
   <a class="back" href="/xty/">ตี้ทั้งหมด</a>
 </header>
 
@@ -102,6 +102,7 @@
 <script type="module">
 import {
   getParty, postToParty, getProfile, toggleReaction, retractPost,
+  confirmCommit,
   committedToday, hasCommittedToday, messagesLeftToday, budgetOf,
   messagesUsedToday, dayKey, PARTY_MAX, REACTIONS, refreshParty, partyIdentity,
 } from '/xty/_shared/store.js';
@@ -117,6 +118,8 @@ start();
 
 async function start() {
   if (!code) { $('missing').hidden = false; return; }
+  /* A cached party paints immediately; the network only refreshes it. */
+  if (getParty(code)) render();
   const fresh = await refreshParty(code);
   if (fresh.error === 'AUTH_REQUIRED') {
     location.replace(`/xty/join/?c=${encodeURIComponent(code)}`);
@@ -124,7 +127,7 @@ async function start() {
   }
   if (fresh.error && !getParty(code)) { $('missing').hidden = false; return; }
   myId = (partyIdentity(code) && partyIdentity(code).userId) || myId;
-  render();
+  if (fresh.error || fresh.party) render();
   if (fresh.error === 'OFFLINE') toast('ออฟไลน์อยู่ — แสดงข้อมูลล่าสุดในเครื่องนี้');
 }
 
@@ -293,8 +296,31 @@ function renderLog(p) {
         `<div class="meta"><span class="who">${esc(post.alias)}</span>` +
         `<span class="when">${stamp(post.sentAt)}</span></div>` +
         `<div class="txt">${tag}${body}</div>` +
+        `<div class="confirm-slot"></div>` +
         `<div class="rx" data-seq="${post.seq}"></div>` +
       `</div>`;
+
+    if (post.kind === 'commit' && !post.retracted) {
+      const slot = el.querySelector('.confirm-slot');
+      if (post.confirmedBy) {
+        const confirmer = p.members.find(member => member.userId === post.confirmedBy);
+        slot.innerHTML = `<span class="confirmed-mark">◎ ${esc(confirmer?.alias || 'เพื่อนในตี้')} Confirm แล้ว</span>`;
+      } else if (post.userId !== myId) {
+        const confirm = document.createElement('button');
+        confirm.type = 'button'; confirm.className = 'confirm-button';
+        confirm.textContent = '◎ Confirm ให้เพื่อน';
+        confirm.addEventListener('click', async () => {
+          confirm.disabled = true;
+          const result = await confirmCommit(code, post.seq);
+          if (result.error === 'ALREADY_CONFIRMED') toast('มีเพื่อน Confirm แล้ว');
+          else if (result.error) toast('ยัง Confirm ไม่สำเร็จ');
+          render();
+        });
+        slot.appendChild(confirm);
+      } else {
+        slot.innerHTML = '<span class="confirm-wait">รอเพื่อนหนึ่งคนช่วย Confirm</span>';
+      }
+    }
 
     const rx = el.querySelector('.rx');
     const reacts = post.reactions || {};
