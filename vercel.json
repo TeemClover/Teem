@@ -109,6 +109,7 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/auth/:path*", "destination": "/api/auth?path=:path*" }
+    { "source": "/api/auth/:path*", "destination": "/api/auth?path=:path*" },
+    { "source": "/api/xty/:path*", "destination": "/api/xty?path=:path*" }
   ]
 }
