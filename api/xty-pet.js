@@ -1,10 +1,11 @@
 import { database, ensureSchema, sendJson } from './_lib/core.js';
 import { aiConfigured, hasPersona, readAndRespond } from './_lib/pet-brain.js';
+import { AVATAR_BY_ID } from '../xty/_shared/avatars.js';
 
 const ICT_OFFSET_MINUTES = 7 * 60;
 const WAKE_HOURS = [0, 6, 12, 18];
 const STARTERS = new Set(['pig', 'dog', 'crow', 'chicken']);
-const LOG_SLICE = 60;          /* posts handed to the pet per wake */
+const LOG_SLICE = 60;          /* posts + party events handed to the pet per wake */
 const OWN_RECALL = 3;          /* its own last lines, so it stops repeating */
 const QUIET_CHECKIN_HOURS = 24; /* a party silent this long gets one nudge */
 
@@ -17,6 +18,47 @@ function wakeWindow(now = new Date()) {
 
 function dayKey(date = new Date()) {
   return new Date(date.getTime() + ICT_OFFSET_MINUTES * 60000).toISOString().slice(0, 10);
+}
+
+function dataOf(value) {
+  if (value && typeof value === 'object') return value;
+  try { return JSON.parse(value || '{}'); } catch { return {}; }
+}
+
+function avatarName(id) {
+  return AVATAR_BY_ID[id]?.nameTh || String(id || 'ตัวละคร');
+}
+
+function eventLine(type, rawData) {
+  const data = dataOf(rawData);
+  switch (String(type || '')) {
+    case 'PARTY_CREATED': return data.alias ? `${data.alias} ตั้งตี้นี้` : 'ตี้ถูกสร้างขึ้น';
+    case 'MEMBER_JOINED': return `${data.alias || 'สมาชิก'} เข้าร่วมตี้`;
+    case 'MEMBER_LEFT': return `${data.alias || 'สมาชิก'} ออกจากตี้`;
+    case 'MEMBER_KICKED': return `${data.alias || 'สมาชิก'} ถูกนำออกจากตี้`;
+    case 'MEMBER_ALIAS_CHANGED': return `${data.from || 'สมาชิก'} เปลี่ยนชื่อในตี้เป็น ${data.to || data.alias || 'ชื่อใหม่'}`;
+    case 'MEMBER_AVATAR_CHANGED': {
+      const alias = data.alias || 'สมาชิก';
+      if (data.fromAvatar || data.toAvatar) return `${alias} เปลี่ยนตัวละครจาก ${avatarName(data.fromAvatar)} เป็น ${avatarName(data.toAvatar)}`;
+      return `${alias} เปลี่ยนตัวละครเป็น ${avatarName(data.avatar)}`;
+    }
+    case 'LEAD_TRANSFERRED': return `${data.to || 'สมาชิกคนถัดไป'} รับหน้าที่หัวตี้ต่อจาก ${data.from || 'หัวตี้เดิม'}`;
+    case 'PARTY_RENAMED': return `ชื่อตี้เปลี่ยนจาก ${data.from || 'ชื่อเดิม'} เป็น ${data.to || 'ชื่อใหม่'}`;
+    case 'RULE_CHANGED': return 'กติกา Commit ของตี้ถูกเปลี่ยน';
+    case 'LEAD_CARD_CHANGED': return 'Party Cover ถูกเปลี่ยน';
+    case 'NPC_CHANGED': return 'PET / NPC ของตี้ถูกเปลี่ยน';
+    case 'PARTY_COMPLETED': return 'Quest ของตี้จบสำเร็จ';
+    case 'PARTY_DISSOLVED': return 'ตี้ถูกยุบ';
+    default: return `เกิด Event: ${String(type || 'UNKNOWN')}`;
+  }
+}
+
+function laterDate(a, b) {
+  const aa = a ? new Date(a) : null;
+  const bb = b ? new Date(b) : null;
+  if (!aa || !Number.isFinite(aa.getTime())) return bb && Number.isFinite(bb.getTime()) ? bb : null;
+  if (!bb || !Number.isFinite(bb.getTime())) return aa;
+  return aa.getTime() >= bb.getTime() ? aa : bb;
 }
 
 /* Fallback voice: used when the AI path is off, unconfigured, failing, or
@@ -73,22 +115,39 @@ export function worthReading(hour, context) {
 }
 
 async function logSlice(sql, partyId, since) {
-  const rows = await sql.query(`SELECT p.seq,p.kind,p.body,p.sent_at,p.retracted,m.alias
-    FROM xty_posts p LEFT JOIN xty_members m
-      ON m.party_id=p.party_id AND m.user_id=p.user_id
-    WHERE p.party_id=$1 AND p.sent_at>$2 ORDER BY p.seq DESC LIMIT $3`, [partyId, since, LOG_SLICE]);
-  const posts = rows.reverse();
-  if (!posts.length) return posts;
-
-  const reactions = await sql.query(`SELECT seq,emoji,COUNT(*)::int n FROM xty_reactions
-    WHERE party_id=$1 AND seq>=$2 GROUP BY seq,emoji`, [partyId, Number(posts[0].seq)]);
-  const bySeq = new Map();
-  for (const row of reactions) {
-    const key = Number(row.seq);
-    bySeq.set(key, `${bySeq.get(key) ? `${bySeq.get(key)} ` : ''}${row.emoji}×${row.n}`);
+  const [postRows, eventRows] = await Promise.all([
+    sql.query(`SELECT p.seq,p.kind,p.body,p.sent_at,p.retracted,m.alias
+      FROM xty_posts p LEFT JOIN xty_members m
+        ON m.party_id=p.party_id AND m.user_id=p.user_id
+      WHERE p.party_id=$1 AND p.sent_at>$2 ORDER BY p.seq DESC LIMIT $3`, [partyId, since, LOG_SLICE]),
+    sql.query(`SELECT id,type,data_json,created_at FROM xty_party_events
+      WHERE party_id=$1 AND created_at>$2 ORDER BY id DESC LIMIT $3`, [partyId, since, LOG_SLICE]),
+  ]);
+  const posts = postRows.reverse();
+  if (posts.length) {
+    const reactions = await sql.query(`SELECT seq,emoji,COUNT(*)::int n FROM xty_reactions
+      WHERE party_id=$1 AND seq>=$2 GROUP BY seq,emoji`, [partyId, Number(posts[0].seq)]);
+    const bySeq = new Map();
+    for (const row of reactions) {
+      const key = Number(row.seq);
+      bySeq.set(key, `${bySeq.get(key) ? `${bySeq.get(key)} ` : ''}${row.emoji}×${row.n}`);
+    }
+    for (const post of posts) post.reactions = bySeq.get(Number(post.seq)) || '';
   }
-  for (const post of posts) post.reactions = bySeq.get(Number(post.seq)) || '';
-  return posts;
+
+  const events = eventRows.reverse().map(event => ({
+    seq: `event:${event.id}`,
+    kind: 'event',
+    body: eventLine(event.type, event.data_json),
+    sent_at: event.created_at,
+    retracted: false,
+    alias: 'ระบบตี้',
+    reactions: '',
+  }));
+
+  return [...posts, ...events]
+    .sort((a, b) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime())
+    .slice(-LOG_SLICE);
 }
 
 async function ownRecent(sql, partyId, since) {
@@ -133,33 +192,34 @@ export default async function handler(req, res) {
       claimed += 1;
 
       const since = party.pet_last_wake ? new Date(party.pet_last_wake) : wake.start;
-      const [counts, members] = await Promise.all([
+      const [counts, eventCounts, members] = await Promise.all([
         sql.query(`SELECT
             COUNT(*) FILTER (WHERE kind IN ('commit','message') AND sent_at>$2)::int human_updates,
             COUNT(DISTINCT CASE WHEN kind='commit' AND retracted=FALSE AND day_key=$3::date THEN user_id END)::int committed,
             MAX(sent_at) FILTER (WHERE kind IN ('commit','message')) last_human_at,
             MAX(sent_at) FILTER (WHERE kind='pet') last_pet_at
           FROM xty_posts WHERE party_id=$1`, [party.id, since, dayKey(now)]),
-        sql.query(`SELECT alias,role FROM xty_members WHERE party_id=$1
+        sql.query(`SELECT COUNT(*) FILTER (WHERE created_at>$2)::int event_updates,
+            MAX(created_at) FILTER (WHERE created_at>$2) last_event_at
+          FROM xty_party_events WHERE party_id=$1`, [party.id, since]),
+        sql.query(`SELECT alias,role FROM xty_members WHERE party_id=$1 AND left_at IS NULL
           ORDER BY CASE role WHEN 'lead' THEN 0 ELSE 1 END, joined_at`, [party.id]),
       ]);
       const count = counts[0] || {};
+      const eventCount = eventCounts[0] || {};
       const context = {
-        humanUpdates: Number(count.human_updates || 0),
+        humanUpdates: Number(count.human_updates || 0) + Number(eventCount.event_updates || 0),
         committed: Number(count.committed || 0),
         members,
-        lastHumanAt: count.last_human_at ? new Date(count.last_human_at) : null,
+        lastHumanAt: laterDate(count.last_human_at, eventCount.last_event_at),
         lastPetAt: count.last_pet_at ? new Date(count.last_pet_at) : null,
       };
 
-      /* The pet reads the actual conversation; the templates below are
-         only what is left when reading is unavailable. */
+      /* The pet reads the actual conversation and party events; the
+         templates below are only what is left when reading is unavailable. */
       let lines = null;
       if (aiConfigured() && hasPersona(party.pet_id) && worthReading(wake.hour, context)) {
         read += 1;
-        /* On a quiet check-in there is nothing after the last wake, so the
-           window reaches back to the last real activity instead — otherwise
-           the pet would be asked to speak about a blank page. */
         const quietCheckin = context.humanUpdates === 0;
         const readSince = quietCheckin
           ? new Date(context.lastHumanAt.getTime() - 1)
