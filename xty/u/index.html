@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#FFF9E9">
+<title>โปรไฟล์สมาชิก — XTY</title>
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
+<style>
+.member-head{display:flex;align-items:center;gap:16px}.member-head .profile-avatar{flex:none;width:82px;height:82px}
+.member-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.member-pill{padding:5px 10px;border:1px solid var(--xty-border);border-radius:999px;background:var(--xty-paper);font:800 10px/1.2 var(--sans);letter-spacing:.08em}
+.party-cover-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:14px;margin-top:14px;align-items:start}
+.party-cover-slot{min-width:0}.cover-frame{width:100%;aspect-ratio:63/88;border-radius:14px;overflow:hidden;background:#13291d;box-shadow:var(--shadow)}
+.cover-frame img,.cover-frame svg,.cover-frame .animal-card{display:block;width:100%;height:100%;object-fit:cover}.cover-frame .animal-card{border-radius:0}
+.cover-name{display:block;margin-top:8px;font-size:12.5px;font-weight:800;line-height:1.35}.cover-party{display:block;margin-top:2px;color:var(--xty-muted);font-size:11.5px;line-height:1.35}
+.empty-cover{position:relative;opacity:.52}.empty-cover::after{content:"ช่องว่าง";position:absolute;inset:auto 0 12px;text-align:center;color:white;font-size:12px;font-weight:800;text-shadow:0 1px 3px #000}
+.profile-counts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.profile-count{padding:16px;border:1px solid var(--xty-border);border-radius:var(--r-lg);background:var(--xty-surface);text-align:center}.profile-count b{display:block;font:800 28px/1 var(--sans)}.profile-count span{display:block;margin-top:7px;color:var(--xty-muted);font-size:12px}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="mark" id="backParty" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a>
+  <a class="back" id="backLink" href="/xty/">กลับตี้</a>
+</header>
+<main class="wrap">
+  <section class="card" id="loading"><p class="kicker">XTY MEMBER PROFILE</p><p class="whisper" style="margin:0">กำลังเปิดโปรไฟล์จากตี้…</p></section>
+  <section id="error" hidden><div class="card"><h1 class="title" style="font-size:28px">เปิดโปรไฟล์นี้ไม่ได้</h1><p class="lede" id="errorText">ต้องอยู่ในตี้เดียวกันก่อน</p><a class="btn ghost" href="/xty/">กลับ XTY</a></div></section>
+  <section id="view" hidden>
+    <div class="card">
+      <div class="member-head">
+        <div class="profile-avatar" id="avatar" aria-hidden="true"></div>
+        <div style="min-width:0;flex:1">
+          <p class="kicker" style="margin-bottom:5px">XTY PROFILE</p>
+          <h1 class="title" id="alias" style="font-size:clamp(25px,6vw,34px);margin:0"></h1>
+          <div class="member-meta"><span class="member-pill" id="level">LV.1</span><span class="member-pill" id="role"></span></div>
+        </div>
+      </div>
+      <p class="whisper" id="since"></p>
+    </div>
+
+    <div class="card">
+      <span class="label">PARTY COVERS · ตี้ที่สร้างเอง</span>
+      <p class="whisper" style="margin:0">แต่ละ Level เพิ่มช่องตั้งตี้ใหม่ขึ้นมา 1 ช่อง · ตี้ที่ไปเข้าร่วมคนอื่นจะไม่แสดงตรงนี้</p>
+      <div class="party-cover-grid" id="covers"></div>
+    </div>
+
+    <div class="card">
+      <span class="label">PARTY SLOTS</span>
+      <div class="profile-counts">
+        <div class="profile-count"><b id="owned">0/1</b><span>สร้างตี้</span></div>
+        <div class="profile-count"><b id="joined">0/3</b><span>เข้าร่วม</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script type="module">
+import { avatarById } from '/xty/_shared/avatars.js';
+import { cardById as xtyCardById } from '/xty/_shared/cards.js';
+import { cardMarkup } from '/xty/_shared/card-ui.js';
+import { cardById as core7CardById } from '/core7/js/cards.js';
+import { cardSVG } from '/core7/js/art.js';
+
+const $ = id => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const code = q.get('c') || '';
+const member = q.get('m') || '';
+const BACK = '/core7/assets/myclover-back.webp';
+
+if (/^\d{5}$/.test(code)) {
+  $('backParty').href = `/xty/p/?c=${encodeURIComponent(code)}`;
+  $('backLink').href = `/xty/p/?c=${encodeURIComponent(code)}`;
+}
+
+function tokenFor() {
+  try { const map = JSON.parse(localStorage.getItem('mc_xty_tokens') || '{}'); const entry = map?.[code]; return typeof entry === 'string' ? entry : (entry?.token || ''); }
+  catch { return ''; }
+}
+function esc(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function backMarkup(extra = '') { return `<div class="cover-frame ${extra}"><img src="${BACK}" alt="หลังการ์ด myClover"></div>`; }
+function coverMarkup(item) {
+  if (item?.coverType === 'card' && item.leadCardId) {
+    const card = xtyCardById(item.leadCardId); if (card) return `<div class="cover-frame">${cardMarkup(card, { role: 'lead', eager: true })}</div>`;
+  }
+  if (item?.coverType === 'core7_card' && item.coverValue) {
+    const card = core7CardById(item.coverValue); if (card) return `<div class="cover-frame">${cardSVG(card.id, { width: 300, showNumber: true })}</div>`;
+  }
+  return backMarkup();
+}
+function render(profile) {
+  const avatar = avatarById(profile.avatar);
+  $('avatar').dataset.color = profile.avatarColor || 'green'; $('avatar').innerHTML = `<img src="${avatar.art}" alt="">`;
+  $('alias').textContent = profile.alias; $('level').textContent = `LV.${profile.level}`;
+  $('role').textContent = profile.roleHere === 'lead' ? '★ หัวตี้นี้' : 'สมาชิกตี้นี้';
+  $('since').textContent = 'เข้าร่วมตี้นี้เมื่อ ' + new Date(profile.joinedHereAt).toLocaleDateString('th-TH', { day:'numeric', month:'long', year:'numeric' });
+  $('owned').textContent = `${profile.owned}/${profile.maxOwned}`; $('joined').textContent = `${profile.joined}/${profile.maxJoined}`;
+
+  const host = $('covers'); host.innerHTML = '';
+  for (let i = 0; i < profile.maxOwned; i += 1) {
+    const party = profile.ownedParties[i]; const slot = document.createElement('div'); slot.className = 'party-cover-slot';
+    if (party) {
+      slot.innerHTML = coverMarkup(party)
+        + `<span class="cover-name">${esc(party.coverName || 'การ์ดประจำตี้')}</span>`
+        + `<span class="cover-party">${esc(party.name || `ตี้ที่ ${i + 1}`)}</span>`;
+    } else {
+      slot.innerHTML = backMarkup('empty-cover') + `<span class="cover-name">ช่องตั้งตี้ #${i + 1}</span><span class="cover-party">ยังว่าง</span>`;
+    }
+    host.appendChild(slot);
+  }
+  $('loading').hidden = true; $('view').hidden = false; document.title = `${profile.alias} — XTY`;
+}
+async function boot() {
+  if (!/^\d{5}$/.test(code) || !member) { $('loading').hidden = true; $('error').hidden = false; return; }
+  const headers = { accept:'application/json' }; const token = tokenFor(); if (token) headers.authorization = `Bearer ${token}`;
+  try {
+    const r = await fetch(`/api/xty-party-finish?op=profile-v2&code=${encodeURIComponent(code)}&member=${encodeURIComponent(member)}`, { credentials:'same-origin', headers });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || data.error || !data.profile) throw new Error(data.error || 'PROFILE_ERROR');
+    render(data.profile);
+  } catch (error) {
+    $('loading').hidden = true; $('error').hidden = false;
+    $('errorText').textContent = error.message === 'AUTH_REQUIRED' ? 'ต้องเปิดจากตี้ที่คุณเป็นสมาชิกอยู่' : 'โปรไฟล์นี้ไม่พร้อมให้เปิดจากตี้นี้';
+  }
+}
+boot();
+</script>
+</body>
+</html>
