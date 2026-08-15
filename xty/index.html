@@ -68,6 +68,7 @@
       </div>
 
         <button class="btn gold" id="createProfile" style="margin-top:22px" disabled>เข้าสู่ XTY</button>
+        <p class="hint" id="inviteJoinError" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
       </div>
       <button class="btn ghost" id="backWelcome" style="margin-top:10px">กลับ</button>
       <p class="note">ชื่อเรียกและ Animal Avatar เก็บในเครื่องนี้ก่อน Avatar ฟรีไม่ใช่การ์ด การ์ดใบแรกจะมาจาก Quest Clear</p>
@@ -121,7 +122,7 @@
 
 <script type="module">
 import {
-  hasProfile, getProfile, createProfile, allParties, myPartyCodes, refreshParty,
+  hasProfile, getProfile, createProfile, joinParty, allParties, myPartyCodes, refreshParty,
   activePartyUsage, committedToday, isActiveParty, shouldOfferProgressSave, updateProfile,
 } from '/xty/_shared/store.js';
 import { PET_BY_ID } from '/xty/_shared/pets.js';
@@ -133,19 +134,42 @@ import { saveCloudProgress, syncXtyProfile } from '/xty/_shared/account.js';
 const $ = id => document.getElementById(id);
 let accountState = { authenticated: false, user: null };
 
+function inviteCodeFromUrl() {
+  const value = new URLSearchParams(location.search).get('c');
+  return /^\d{5}$/.test(value || '') ? value : '';
+}
+
+function joinErrorText(code) {
+  const messages = {
+    NOT_FOUND: 'ไม่เจอตี้รหัสนี้ ลองเช็กรหัสอีกครั้ง',
+    FULL: 'ตี้นี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)',
+    PARTY_CLOSED: 'ตี้นี้จบแล้วและไม่รับสมาชิกเพิ่ม',
+    MEMBERSHIP_CLOSED: 'ช่วงการร่วมทางของคุณในตี้นี้ถูกปิดแล้ว',
+    JOINED_PARTY_LIMIT: 'ตอนนี้เข้าร่วมตี้เพิ่มไม่ได้ — คุณเข้าร่วมได้พร้อมกันไม่เกิน 3 ตี้',
+    ACTIVE_PARTY_LIMIT: 'คุณใช้ช่องตี้ของ Level นี้ครบแล้ว — จบตี้หนึ่งก่อนหรือเพิ่ม Level',
+  };
+  return messages[code] || 'เข้าตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองใหม่';
+}
+
 /* ---------- first run: pick an alias ---------- */
 function renderGate() {
   $('gate').hidden = false;
   let nextCode = '';
   const showIdentity = (code = '') => {
-    nextCode = code;
+    nextCode = /^\d{5}$/.test(code) ? code : '';
     $('welcomeStep').hidden = true;
     $('identityStep').hidden = false;
+    $('inviteJoinError').hidden = true;
+    $('createProfile').textContent = nextCode ? 'สร้างตัวแล้วเข้าตี้' : 'เข้าสู่ XTY';
     $('alias').focus();
   };
   $('startButton').addEventListener('click', () => showIdentity());
   $('backWelcome').addEventListener('click', () => {
-    nextCode = ''; $('identityStep').hidden = true; $('welcomeStep').hidden = false;
+    nextCode = '';
+    $('identityStep').hidden = true;
+    $('welcomeStep').hidden = false;
+    $('createProfile').textContent = 'เข้าสู่ XTY';
+    $('inviteJoinError').hidden = true;
   });
   const quickCode = $('quickCode');
   quickCode.addEventListener('input', () => {
@@ -156,8 +180,13 @@ function renderGate() {
   quickCode.addEventListener('keydown', event => {
     if (event.key === 'Enter' && /^\d{5}$/.test(quickCode.value)) showIdentity(quickCode.value);
   });
-  const initialCode = new URLSearchParams(location.search).get('c');
-  if (/^\d{5}$/.test(initialCode || '')) showIdentity(initialCode);
+
+  const initialCode = inviteCodeFromUrl();
+  if (initialCode) {
+    quickCode.value = initialCode;
+    quickCode.dispatchEvent(new Event('input'));
+  }
+
   const pick = $('avatarPick');
   let chosen = XTY_AVATARS[0].id;
   let avatarFrame = 'green';
@@ -191,7 +220,7 @@ function renderGate() {
     b.innerHTML = `<span></span><b>${frame.labelTh}</b>`;
     b.addEventListener('click', () => {
       avatarFrame = frame.id;
-      $('framePick').querySelectorAll('button').forEach(x => {
+      $('framePick').querySelectorAll('.color-choice').forEach(x => {
         const on = x === b;
         x.classList.toggle('picked', on);
         x.setAttribute('aria-checked', on ? 'true' : 'false');
@@ -208,9 +237,34 @@ function renderGate() {
   sync();
 
   go.addEventListener('click', async () => {
-    const profile = createProfile({ alias: alias.value, avatarId: chosen, avatarFrame });
-    if (accountState.authenticated) await saveCloudProgress(profile);
-    location.href = nextCode ? `/xty/join/?c=${encodeURIComponent(nextCode)}` : '/xty/';
+    go.disabled = true;
+    $('inviteJoinError').hidden = true;
+    const profile = hasProfile()
+      ? getProfile()
+      : createProfile({ alias: alias.value, avatarId: chosen, avatarFrame });
+    if (accountState.authenticated) {
+      try { await saveCloudProgress(profile); } catch { /* local-first: joining still works */ }
+    }
+    if (!nextCode) {
+      location.href = '/xty/';
+      return;
+    }
+
+    go.textContent = 'กำลังเข้าตี้…';
+    const result = await joinParty(nextCode, {
+      alias: profile.alias,
+      avatar: chosen,
+      avatarColor: avatarFrame,
+    });
+    if (!result.error && result.party?.code) {
+      location.href = `/xty/p/?c=${encodeURIComponent(result.party.code)}`;
+      return;
+    }
+
+    $('inviteJoinError').textContent = joinErrorText(result.error);
+    $('inviteJoinError').hidden = false;
+    go.disabled = false;
+    go.textContent = 'ลองเข้าตี้อีกครั้ง';
   });
 }
 
@@ -310,19 +364,30 @@ function petGlyph(id) {
   return p && p.art ? `<img src="${p.art}" alt="">` : (p ? p.emoji : '🐾');
 }
 function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;' }[c]));
 }
 
 async function boot() {
   /* Paint the local shell first. Cloud sync is enhancement, not a gate. */
   $('shell').hidden = true;
+  const inviteCode = inviteCodeFromUrl();
   const hadLocalProfile = hasProfile();
+
+  if (hadLocalProfile && inviteCode) {
+    location.replace(`/xty/join/?c=${encodeURIComponent(inviteCode)}`);
+    return;
+  }
+
   if (hadLocalProfile) renderHome(); else renderGate();
   if (new URLSearchParams(location.search).has('account')) {
-    history.replaceState(null, '', '/xty/');
+    history.replaceState(null, '', inviteCode ? `/xty/?c=${encodeURIComponent(inviteCode)}` : '/xty/');
   }
   accountState = await syncXtyProfile();
   if (!hadLocalProfile && hasProfile()) {
+    if (inviteCode) {
+      location.replace(`/xty/join/?c=${encodeURIComponent(inviteCode)}`);
+      return;
+    }
     $('gate').hidden = true;
     await renderHome();
   } else if (hasProfile()) updateAccountState();
