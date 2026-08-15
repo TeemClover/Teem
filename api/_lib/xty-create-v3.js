@@ -2,6 +2,7 @@ import { currentUser, database, ensureSchema, sendJson } from './core.js';
 import { handleCreatePartyV2 } from './xty-create-v2.js';
 import { cardById as xtyCardById, cardDescriptorTh } from '../../xty/_shared/cards.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
+import { AVATAR_BY_ID } from '../../xty/_shared/avatars.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 
@@ -20,6 +21,31 @@ function localUserId(body) {
 
 function core7Name(card) {
   return card ? `${card.en} · ${card.th}` : '';
+}
+
+function avatarCover(body) {
+  const avatarId = cleanId(body.avatar, 40) || 'orange_cat';
+  const avatar = AVATAR_BY_ID[avatarId] || AVATAR_BY_ID.orange_cat;
+  const color = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : 'green';
+  return {
+    type: 'avatar',
+    value: JSON.stringify({ species: avatar.id, color }),
+    leadCardId: null,
+    name: `การ์ดตัวละคร ${avatar.nameTh}`,
+    characterName: avatar.nameTh,
+  };
+}
+
+async function progressionLevelFor(req, sql, body) {
+  const account = await currentUser(req, sql);
+  const ids = [...new Set([
+    account?.id ? `account:${account.id}` : '',
+    localUserId(body),
+  ].filter(Boolean))];
+  if (!ids.length) return 1;
+  const rows = await sql.query(`SELECT level FROM xty_progression
+    WHERE user_id = ANY($1::text[]) ORDER BY level DESC LIMIT 1`, [ids]);
+  return Math.min(4, Math.max(1, Math.floor(Number(rows[0]?.level || 1)) || 1));
 }
 
 async function requestedCover(req, sql) {
@@ -92,6 +118,13 @@ async function captureV2(req) {
   return { status: capture.statusCode, data, headers };
 }
 
+function creationLabel(alias, level, cover) {
+  const who = cleanId(alias, 24) || 'หัวตี้';
+  if (level <= 1) return `${who} สร้างตี้ ด้วยการ์ดตัวละคร ${cover.characterName || 'ของตัวเอง'}`;
+  if (cover.type === 'card_back') return `${who} สร้างตี้ ด้วยหลังการ์ด myClover`;
+  return `${who} สร้างตี้ ด้วยการ์ด ${cover.name}`;
+}
+
 export async function handleCreatePartyV3(req, res) {
   try {
     if (String(req.method || '').toUpperCase() !== 'POST') {
@@ -99,7 +132,9 @@ export async function handleCreatePartyV3(req, res) {
     }
     const sql = database();
     await ensureSchema(sql);
-    const cover = await requestedCover(req, sql);
+    const body = bodyOf(req);
+    const levelBeforeCreate = await progressionLevelFor(req, sql, body);
+    const cover = levelBeforeCreate <= 1 ? avatarCover(body) : await requestedCover(req, sql);
 
     const created = await captureV2(req);
     if (created.status >= 400 || created.data?.error || !created.data?.party?.id) {
@@ -107,6 +142,8 @@ export async function handleCreatePartyV3(req, res) {
     }
 
     const party = created.data.party;
+    const creatorLevel = Math.min(4, Math.max(1, Number(created.data?.meProgression?.level || levelBeforeCreate || 1)));
+    const label = creationLabel(body.alias, creatorLevel, cover);
     const at = new Date();
     await sql.query(`UPDATE xty_parties
       SET cover_type=$1,cover_value=$2,lead_card_id=$3,updated_at=$4
@@ -118,13 +155,21 @@ export async function handleCreatePartyV3(req, res) {
       coverValue: cover.value,
       leadCardId: cover.leadCardId,
       coverName: cover.name,
+      characterName: cover.characterName || null,
+      creatorLevel,
+      creationLabel: label,
     }), party.id]);
 
     party.coverType = cover.type;
     party.coverValue = cover.value;
     party.leadCardId = cover.leadCardId;
     party.updatedAt = at.toISOString();
-    return sendJson(res, { ...created.data, party, coverName: cover.name }, created.status || 201);
+    if (Array.isArray(party.events)) {
+      party.events = party.events.map(event => event.type === 'PARTY_CREATED'
+        ? { ...event, data: { ...(event.data || {}), coverType: cover.type, coverValue: cover.value, leadCardId: cover.leadCardId, coverName: cover.name, characterName: cover.characterName || null, creatorLevel, creationLabel: label } }
+        : event);
+    }
+    return sendJson(res, { ...created.data, party, coverName: cover.name, creationLabel: label }, created.status || 201);
   } catch (error) {
     console.error('XTY create v3 failed', error);
     if (error.code === 'DATABASE_URL_NOT_CONFIGURED') return sendJson(res, { ok: false, error: error.code }, 503);
