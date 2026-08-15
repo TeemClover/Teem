@@ -4,6 +4,7 @@ import { handleCreatePartyV2 } from './_lib/xty-create-v2.js';
 import { handleCreatePartyV3 } from './_lib/xty-create-v3.js';
 import { handleJoinPartyV2 } from './_lib/xty-join-v2.js';
 import { handleIdentityV2, handleLeaveV2, handleProfileV2, handleCoverV2 } from './_lib/xty-member-actions-v2.js';
+import { handleDebugLevel2 } from './_lib/xty-debug-level-v2.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const DISSOLVEABLE_STATES = Object.freeze([...ACTIVE_STATES, 'DISSOLVED']);
@@ -47,6 +48,7 @@ export default async function handler(req, res) {
   if (op === 'leave-v2') return handleLeaveV2(req, res);
   if (op === 'profile-v2') return handleProfileV2(req, res);
   if (op === 'cover-v2') return handleCoverV2(req, res, legacyXtyHandler);
+  if (op === 'debug-level2') return handleDebugLevel2(req, res);
 
   const mode = bodyOf(req).mode === 'dissolve' ? 'dissolve' : 'complete';
   if (mode !== 'dissolve') {
