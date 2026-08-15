@@ -201,3 +201,47 @@ export async function syncXtyProfile() {
     ? { ...saved, authenticated: true, profile, user }
     : { ok: true, authenticated: true, profile, user };
 }
+
+/* Invite onboarding polish.
+   The home page owns the actual join state; this only keeps the UI aligned
+   with an invite URL without changing the party API or membership rules. */
+(function installInviteOnboardingUi() {
+  if (typeof document === 'undefined' || typeof location === 'undefined') return;
+  const start = document.getElementById('startButton');
+  const back = document.getElementById('backWelcome');
+  const quickCode = document.getElementById('quickCode');
+  const quickJoin = document.getElementById('quickJoin');
+  if (!start || !back || !quickCode || !quickJoin) return;
+
+  const fromUrl = new URLSearchParams(location.search).get('c');
+  const inviteCode = /^\d{5}$/.test(fromUrl || '') ? fromUrl : '';
+  if (inviteCode) start.textContent = 'เข้าตี้';
+
+  start.addEventListener('click', event => {
+    const code = /^\d{5}$/.test(quickCode.value || '') ? quickCode.value : inviteCode;
+    if (!code) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    quickCode.value = code;
+    quickJoin.disabled = false;
+    quickJoin.click();
+  }, true);
+
+  back.addEventListener('click', event => {
+    const code = /^\d{5}$/.test(quickCode.value || '') ? quickCode.value : inviteCode;
+    if (!code) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const welcome = document.getElementById('welcomeStep');
+    const identity = document.getElementById('identityStep');
+    const create = document.getElementById('createProfile');
+    const error = document.getElementById('inviteJoinError');
+    if (identity) identity.hidden = true;
+    if (welcome) welcome.hidden = false;
+    quickCode.value = code;
+    quickJoin.disabled = false;
+    start.textContent = 'เข้าตี้';
+    if (create) create.textContent = 'สร้างตัวแล้วเข้าตี้';
+    if (error) error.hidden = true;
+  }, true);
+})();
