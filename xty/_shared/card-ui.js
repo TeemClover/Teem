@@ -7,7 +7,7 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-canonical-b
   style.id = 'xty-canonical-back-style';
   style.textContent = `
     .animal-card.card-back{
-      aspect-ratio:63/88!important;
+      aspect-ratio:5/7!important;
       background:#13291d url('/core7/assets/myclover-back.webp') center/cover no-repeat!important;
       overflow:hidden;
     }
@@ -60,17 +60,17 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
   const style = document.createElement('style');
   style.id = 'xty-party-cover-size-style';
   style.textContent = `
-    /* One physical Party Cover size across Home, Public Lobby and Public Detail.
-       The card face may come from XTY, FIRST HAND, avatar or the myClover back,
-       but the slot never changes size after first paint. */
-    :root{--xty-party-cover-size:112px}
+    /* CORE7 FIRST HAND is authored at viewBox 300x420. Party Cover follows
+       that exact 5:7 physical shape everywhere; no second XTY-only ratio. */
+    :root{--xty-party-cover-size:132px;--xty-party-cover-aspect:5/7}
     .public-party{
       grid-template-columns:var(--xty-party-cover-size) minmax(0,1fr)!important;
       gap:14px!important;align-items:center!important;
     }
     .public-party>:first-child{
       width:var(--xty-party-cover-size)!important;max-width:none!important;min-width:0!important;
-      height:auto!important;aspect-ratio:63/88!important;overflow:hidden!important;border-radius:14px!important;
+      height:auto!important;aspect-ratio:var(--xty-party-cover-aspect)!important;
+      overflow:hidden!important;border-radius:14px!important;
     }
     .public-party>.public-core7-cover svg,
     .public-party>:first-child>svg,
@@ -83,12 +83,65 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
     }
     .preview-cover{
       width:var(--xty-party-cover-size)!important;max-width:none!important;min-width:0!important;
-      height:auto!important;aspect-ratio:63/88!important;overflow:hidden!important;border-radius:14px!important;
+      height:auto!important;aspect-ratio:var(--xty-party-cover-aspect)!important;
+      overflow:hidden!important;border-radius:14px!important;
     }
-    .preview-cover>*{width:100%!important;height:100%!important;max-width:none!important;aspect-ratio:63/88!important}
+    .preview-cover>*{
+      width:100%!important;height:100%!important;max-width:none!important;
+      aspect-ratio:var(--xty-party-cover-aspect)!important;
+    }
     .preview-cover svg,.preview-cover img{display:block!important;object-fit:cover!important}
-    @media(max-width:480px){:root{--xty-party-cover-size:104px}}
-    @media(max-width:360px){:root{--xty-party-cover-size:92px}}
+
+    /* LV.1 Character Cover is still a card. Keep it visually compatible
+       with FIRST HAND, but intentionally quiet: art + name + one small tag. */
+    .xty-home-cover.avatar-cover,
+    .public-party>.avatar-cover,
+    .preview-cover>.avatar-cover{
+      --cover-accent:var(--xty-green);
+      position:relative!important;display:block!important;
+      padding:7px 7px 42px!important;
+      aspect-ratio:var(--xty-party-cover-aspect)!important;
+      border:3px solid var(--cover-accent)!important;border-radius:16px!important;
+      background:#FFF4C8!important;box-shadow:3px 4px 0 rgba(62,51,44,.12)!important;
+      overflow:hidden!important;
+    }
+    .xty-home-cover.avatar-cover[data-color="red"],
+    .public-party>.avatar-cover[data-color="red"],
+    .preview-cover>.avatar-cover[data-color="red"]{--cover-accent:var(--xty-red)}
+    .xty-home-cover.avatar-cover[data-color="blue"],
+    .public-party>.avatar-cover[data-color="blue"],
+    .preview-cover>.avatar-cover[data-color="blue"]{--cover-accent:var(--xty-blue)}
+    .xty-home-cover.avatar-cover[data-color="silver"],
+    .public-party>.avatar-cover[data-color="silver"],
+    .preview-cover>.avatar-cover[data-color="silver"]{--cover-accent:var(--xty-silver)}
+    .xty-home-cover.avatar-cover>img,
+    .public-party>.avatar-cover>img,
+    .preview-cover>.avatar-cover>img{
+      display:block!important;width:100%!important;height:100%!important;max-width:none!important;
+      object-fit:contain!important;border-radius:9px!important;background:#FFFEF8!important;
+    }
+    .xty-home-cover.avatar-cover>b,
+    .public-party>.avatar-cover>b,
+    .preview-cover>.avatar-cover>b{
+      position:absolute!important;left:7px!important;right:7px!important;bottom:21px!important;
+      display:block!important;margin:0!important;padding:0!important;
+      color:var(--xty-ink)!important;font-size:13px!important;font-weight:800!important;line-height:1.15!important;
+      text-align:center!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+      background:transparent!important;
+    }
+    .xty-home-cover.avatar-cover::after,
+    .public-party>.avatar-cover::after,
+    .preview-cover>.avatar-cover::after{
+      content:'STARTER';position:absolute;left:50%;bottom:7px;transform:translateX(-50%);
+      padding:3px 7px;border-radius:999px;background:rgba(255,254,248,.92);
+      color:var(--xty-muted);font:800 7px/1 var(--sans);letter-spacing:.12em;white-space:nowrap;
+    }
+    .xty-home-cover.avatar-cover small,
+    .public-party>.avatar-cover small,
+    .preview-cover>.avatar-cover small{display:none!important}
+
+    @media(max-width:480px){:root{--xty-party-cover-size:124px}}
+    @media(max-width:340px){:root{--xty-party-cover-size:110px}}
   `;
   document.head.appendChild(style);
 }
