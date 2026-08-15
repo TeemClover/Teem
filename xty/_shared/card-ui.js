@@ -16,6 +16,46 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-canonical-b
   document.head.appendChild(style);
 }
 
+if (typeof document !== 'undefined' && !document.getElementById('xty-clean-card-face-style')) {
+  const style = document.createElement('style');
+  style.id = 'xty-clean-card-face-style';
+  style.textContent = `
+    /* Canonical XTY card face: art first. The only visible copy on-card is
+       the card name plus one rarity tag at bottom center. */
+    .animal-card .role-badge,
+    .animal-card .color-badge,
+    .animal-card .card-accessory,
+    .animal-card .card-copy small{display:none!important}
+    .animal-card .card-copy{
+      position:absolute!important;
+      left:8px!important;right:8px!important;bottom:31px!important;z-index:5!important;
+      display:block!important;margin:0!important;padding:4px 6px!important;
+      text-align:center!important;border:0!important;border-radius:7px!important;
+      background:rgba(255,254,248,.91)!important;
+      box-shadow:none!important;
+    }
+    .animal-card .card-copy b{
+      display:block!important;overflow:hidden!important;
+      color:var(--xty-ink)!important;font-size:clamp(10px,3vw,14px)!important;
+      line-height:1.25!important;font-weight:800!important;
+      text-overflow:ellipsis!important;white-space:nowrap!important;
+    }
+    .animal-card .rarity-badge{
+      top:auto!important;right:50%!important;bottom:8px!important;left:auto!important;
+      transform:translateX(50%)!important;z-index:6!important;
+      min-width:0!important;padding:4px 8px!important;
+      font-size:7px!important;line-height:1!important;letter-spacing:.11em!important;
+      text-align:center!important;white-space:nowrap!important;
+    }
+    .animal-card.rarity-rare .card-art,
+    .animal-card.rarity-epic .card-art,
+    .animal-card.rarity-legendary .card-art{
+      margin:0!important;width:100%!important;height:100%!important;object-fit:cover!important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathname)) {
   import('./party-enhancements.js').catch(error => console.warn('XTY party enhancements unavailable', error));
   import('./party-profile-covers.js').catch(error => console.warn('XTY profile/cover layer unavailable', error));
@@ -31,7 +71,6 @@ if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
 export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
   const card = typeof cardOrId === 'string' ? cardById(cardOrId) : cardOrId;
   if (!card) return '';
-  const roleLabel = role === 'lead' ? 'LEAD' : (role === 'npc' ? 'NPC' : (role === 'pet' ? 'PET' : ''));
   const classes = ['animal-card'];
   if (role === 'lead') classes.push('lead-card');
   if (role === 'npc' || role === 'pet') classes.push('companion-card');
@@ -39,12 +78,9 @@ export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } 
   classes.push(`rarity-${card.rarity || 'common'}`);
   const rarity = XTY_RARITY_META[card.rarity] || XTY_RARITY_META.common;
   return `<div class="${classes.join(' ')}" data-color="${card.color}" data-species="${card.species}" aria-label="${cardDescriptorTh(card)}">`
-    + (roleLabel ? `<span class="role-badge">${roleLabel}</span>` : '')
-    + `<span class="rarity-badge">${rarity.label}</span>`
-    + `<span class="color-badge">${card.colorNameTh}</span>`
     + `<img class="card-art" src="${card.imageFull || card.art}" alt="" width="630" height="880" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`
-    + '<span class="card-accessory" aria-hidden="true"><i></i><i></i><i></i><i></i><b>✦</b></span>'
-    + `<span class="card-copy"><b>${cardNameTh(card)}</b><small>สี${card.colorNameTh} · ${rarity.label}</small></span>`
+    + `<span class="card-copy"><b>${cardNameTh(card)}</b></span>`
+    + `<span class="rarity-badge">${rarity.label}</span>`
     + '</div>';
 }
 
