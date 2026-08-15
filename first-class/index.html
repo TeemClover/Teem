@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>AI ใส่ซอส — คอร์สสด 98 นาที 98 บาท | myClover</title>
-  <meta name="description" content="คอร์สสอน AI ไม่ใช่คอร์สทำอาหาร เรียนสดกับ Teem ผ่าน Discord วันอังคารที่ 18 สิงหาคม 2026 เวลา 19:30 น. รอบ First Class 98 นาที 98 บาท ไม่มีวิดีโอย้อนหลัง">
+  <title>AI ใส่ซอส — จากคุยกับ AI สู่ของจริงใน 98 นาที | myClover</title>
+  <meta name="description" content="เรียนสด 98 นาทีเรื่อง Source หรือ “ซอส” ที่ช่วยให้ AI เข้าใจบริบทและสร้างงานต่อได้จริง พร้อมดูเคส XTY ที่ต้นแบบขึ้นเว็บได้ตั้งแต่วันแรกที่ผู้เรียนเริ่มใช้ ChatGPT">
   <meta name="theme-color" content="#08251d">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="th_TH">
   <meta property="og:site_name" content="myClover">
   <meta property="og:url" content="https://www.myclover.com/first-class/">
-  <meta property="og:title" content="AI ใส่ซอส — คอร์สสด 98 นาที 98 บาท">
-  <meta property="og:description" content="คอร์สสอน AI ไม่ใช่คอร์สทำอาหาร 🍀 เรียนสดกับ Teem ผ่าน Discord อังคาร 18 ส.ค. 2026 เวลา 19:30 น. รอบ First Class ครั้งเดียว ไม่มีวิดีโอย้อนหลัง">
+  <meta property="og:title" content="AI ใส่ซอส — จากคุยกับ AI สู่ของจริงใน 98 นาที">
+  <meta property="og:description" content="First Class 98 บาท · เรียนสดเรื่อง Source/ซอส ดูเคส XTY ของจริง แล้วเอาหลักเดียวกันไปใช้กับงานของคุณ">
   <meta property="og:image" content="https://www.myclover.com/first-class/assets/ai-sauce-pilot-social.jpg">
   <meta property="og:image:secure_url" content="https://www.myclover.com/first-class/assets/ai-sauce-pilot-social.jpg">
   <meta property="og:image:type" content="image/jpeg">
@@ -19,8 +19,8 @@
   <meta property="og:image:height" content="756">
   <meta property="og:image:alt" content="AI ใส่ซอส คอร์สสด 98 นาที 98 บาท วันที่ 18 สิงหาคม 2026 เวลา 19:30 น.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="AI ใส่ซอส — คอร์สสด 98 นาที 98 บาท">
-  <meta name="twitter:description" content="คอร์สสอน AI ไม่ใช่คอร์สทำอาหาร เรียนสดกับ Teem ผ่าน Discord รอบ First Class ครั้งเดียว">
+  <meta name="twitter:title" content="AI ใส่ซอส — จากคุยกับ AI สู่ของจริงใน 98 นาที">
+  <meta name="twitter:description" content="First Class 98 บาท · เรียนสดเรื่อง Source/ซอส ดูเคส XTY ของจริง แล้วเอาหลักเดียวกันไปใช้กับงานของคุณ">
   <meta name="twitter:image" content="https://www.myclover.com/first-class/assets/ai-sauce-pilot-social.jpg">
   <meta name="twitter:image:alt" content="AI ใส่ซอส คอร์สสด 98 นาที 98 บาท วันที่ 18 สิงหาคม 2026 เวลา 19:30 น.">
   <link rel="canonical" href="https://www.myclover.com/first-class/">
@@ -29,6 +29,70 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./first-class.css?v=20260813-5">
+  <style>
+    .proof-wrap{margin:0 0 34px}
+    .proof-kicker{display:flex;align-items:center;gap:8px;font:800 9px Manrope,sans-serif;letter-spacing:.12em;color:var(--green-dark);text-transform:uppercase}
+    .proof-kicker:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(40,200,117,.12)}
+    .proof-wrap h2{font:800 clamp(28px,3vw,39px)/1.08 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.045em;margin:12px 0 12px}
+    .proof-wrap h2 em{font-style:normal;color:var(--green-dark)}
+    .proof-lead{font-size:14px;line-height:1.75;color:#50625a;margin:0 0 20px}
+    .proof-lead strong{color:var(--ink)}
+    .xty-case{display:block;text-decoration:none;border:1px solid rgba(8,37,29,.13);border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 18px 48px rgba(6,25,20,.09);transition:transform .2s ease,box-shadow .2s ease}
+    .xty-case:hover{transform:translateY(-2px);box-shadow:0 24px 58px rgba(6,25,20,.13)}
+    .xty-case img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;background:#f4f1e8}
+    .xty-case-body{padding:17px 18px 19px}
+    .live-label{display:inline-flex;align-items:center;gap:7px;font:800 8px Manrope,sans-serif;letter-spacing:.1em;color:var(--green-dark)}
+    .live-label:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+    .xty-case h3{font:800 19px/1.25 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.025em;margin:7px 0 6px}
+    .xty-case p{font-size:12px;line-height:1.7;color:var(--muted);margin:0}
+    .xty-case strong{display:inline-block;margin-top:11px;font-size:11px;color:var(--green-dark)}
+    .proof-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0 0}
+    .proof-step{border:1px solid var(--line);border-radius:14px;padding:13px 12px;background:#fbfcfa}
+    .proof-step b{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:var(--ink);color:#fff;font:800 9px Manrope,sans-serif;margin-bottom:8px}
+    .proof-step strong{display:block;font-size:11px;line-height:1.45}
+    .proof-step p{font-size:9px;line-height:1.55;color:var(--muted);margin:5px 0 0}
+    .proof-thesis{margin-top:14px;border-radius:17px;background:linear-gradient(145deg,#08251d,#0d392d);color:#fff;padding:20px 18px}
+    .proof-thesis small{font:800 8px Manrope,sans-serif;letter-spacing:.1em;color:#8fe3b3}
+    .proof-thesis blockquote{font:700 17px/1.55 "IBM Plex Sans Thai",sans-serif;margin:8px 0 0}
+    .proof-thesis blockquote em{font-style:normal;color:#ffd28f}
+    .offer-stack{margin-top:14px;border:1px solid #cfe9da;border-radius:17px;background:#f1fbf5;padding:17px}
+    .offer-stack>small{font:800 8px Manrope,sans-serif;letter-spacing:.1em;color:var(--green-dark)}
+    .offer-stack h3{font-size:17px;line-height:1.35;margin:5px 0 11px}
+    .offer-stack ul{list-style:none;padding:0;margin:0;display:grid;gap:7px}
+    .offer-stack li{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:11px;line-height:1.55;color:#42564d}
+    .offer-stack li:before{content:"✓";display:grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--green);color:#052017;font-weight:900}
+    .honesty-note{margin:12px 2px 0;font-size:9.5px;line-height:1.65;color:#77867f}
+    .proof-cta{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
+    .proof-cta small,.proof-cta strong{display:block}
+    .proof-cta small{font:800 8px Manrope,sans-serif;letter-spacing:.09em;color:var(--green-dark)}
+    .proof-cta strong{font-size:12px;margin-top:3px}
+    .proof-cta a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:11px;padding:0 14px;background:var(--ink);color:#fff;text-decoration:none;font-size:10px;font-weight:800}
+    .proof-divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:30px 0}
+    .form-heading small{font-size:9px}
+    .field>span,fieldset legend{font-size:12px}
+    .field small{font-size:9px}
+    @media(max-width:760px){
+      .proof-wrap{margin-bottom:28px}
+      .proof-wrap h2{font-size:31px}
+      .proof-lead{font-size:15px}
+      .xty-case-body{padding:16px}
+      .xty-case h3{font-size:20px}
+      .xty-case p{font-size:13px}
+      .proof-flow{grid-template-columns:1fr}
+      .proof-step{display:grid;grid-template-columns:34px 1fr;column-gap:10px}
+      .proof-step b{grid-row:1/3;margin:0}
+      .proof-step strong{font-size:12px}
+      .proof-step p{font-size:10px}
+      .proof-thesis blockquote{font-size:18px}
+      .offer-stack li{font-size:12px}
+      .honesty-note{font-size:10.5px}
+      .proof-cta{grid-template-columns:1fr}
+      .proof-cta a{min-height:50px;font-size:12px}
+      .form-heading h2{font-size:30px}
+      .field>span,fieldset legend{font-size:13px}
+      .field small{font-size:10px}
+    }
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -44,9 +108,9 @@
         <div class="intro-body">
           <p class="eyebrow">AI ใส่ซอส · LIVE on DISCORD</p>
           <h1 id="pageTitle">นี่คือคอร์สสอน AI<br><em>ไม่ใช่คอร์สทำอาหาร</em></h1>
-          <p class="intro-lead">เรียนรู้วิธีจัด “ซอส” — Source ให้ AI และคนในทีมเข้าใจงานตรงกัน ทำงานต่อได้เร็วขึ้น โดยไม่ต้องเริ่มเล่าใหม่ทุกครั้ง</p>
+          <p class="intro-lead">จาก “คุยกับ AI” ไปสู่ “สร้างของจริง” ด้วยวิธีจัด Source หรือ “ซอส” ให้ AI เข้าใจเป้าหมาย บริบท และงานเดิมของคุณโดยไม่ต้องเริ่มเล่าใหม่ทุกครั้ง</p>
 
-          <div class="value-pills" aria-label="จุดเด่นคอร์ส"><span>98 นาที</span><span>98 บาท</span><span>สดผ่าน Discord</span><span>รอบเต็มวัน 1,960 (ลด 95%)</span></div>
+          <div class="value-pills" aria-label="จุดเด่นคอร์ส"><span>98 นาที</span><span>98 บาท</span><span>สดผ่าน Discord</span><span>แก่นสำคัญจากหลักสูตรเต็มวัน</span></div>
 
           <div class="schedule-card">
             <div class="date"><small>อ.</small><strong>18</strong><span>ส.ค. 2026</span></div>
@@ -58,9 +122,56 @@
       </aside>
 
       <div class="form-pane">
+        <section class="proof-wrap" aria-labelledby="proofTitle">
+          <p class="proof-kicker">CASE STUDY · จากผู้เริ่มต้นสู่ของจริง</p>
+          <h2 id="proofTitle">วันแรกที่เริ่มใช้ ChatGPT<br><em>ต้นแบบก็ขึ้นเว็บจริงได้</em></h2>
+          <p class="proof-lead">นี่คือผลงานของ <strong>นักเรียนคนแรกของวิชา “ปรุงซอส”</strong> — เริ่มใช้ ChatGPT เป็นวันแรก แต่ไม่ได้เริ่มจากการจำ Prompt เป็นร้อยข้อ เขาเริ่มจากการเข้าใจว่า <strong>ต้องเอาบริบทอะไรให้ AI กิน และจัดมันเป็นโครงสร้างยังไง</strong></p>
+
+          <a class="xty-case" href="/xty/" target="_blank" rel="noopener" aria-label="เปิดดู XTY ผลงานจริง">
+            <img src="/xty/assets/xty-og-share-1200x630.jpg" width="1200" height="630" alt="XTY — ตั้งตี้ทำอะไรก็ได้">
+            <div class="xty-case-body">
+              <span class="live-label">LIVE PRODUCT · เปิดใช้งานจริง</span>
+              <h3>XTY — ตั้งตี้ทำอะไรก็ได้</h3>
+              <p>ต้นแบบแรกขึ้นเว็บได้ตั้งแต่วันแรกที่เริ่มใช้ ChatGPT และถูกพัฒนาต่อมาจนเป็นระบบ XTY ที่คุณเปิดลองได้จริงตอนนี้</p>
+              <strong>ลองเปิด XTY ของจริง ↗</strong>
+            </div>
+          </a>
+
+          <div class="proof-flow" aria-label="จากซอสสู่ผลงาน">
+            <article class="proof-step"><b>01</b><strong>ไม่เริ่มจาก Prompt</strong><p>เริ่มจากเป้าหมาย ข้อมูลเดิม ข้อจำกัด และสิ่งที่งานต้องรักษาไว้</p></article>
+            <article class="proof-step"><b>02</b><strong>ปรุงเป็น “ซอส”</strong><p>จัดบริบทให้คนหรือ AI ตัวถัดไปรับงานต่อได้โดยไม่ต้องเดาใหม่</p></article>
+            <article class="proof-step"><b>03</b><strong>ส่งต่อจนเป็นของจริง</strong><p>Source → AI → Output → ตรวจ → ปรุงต่อ จนงานเติบโตเป็นระบบ</p></article>
+          </div>
+
+          <div class="proof-thesis">
+            <small>สิ่งที่วิชานี้อยากให้คุณเห็น</small>
+            <blockquote>AI ไม่ได้เก่งขึ้นเพราะเราเจอ “คำสั่งวิเศษ” แต่ผลงานดีขึ้นเมื่อเรา <em>ส่งของที่มันต้องรู้ให้ครบและเป็นโครงสร้าง</em></blockquote>
+          </div>
+
+          <div class="offer-stack">
+            <small>FIRST CLASS · 98 บาทนี้ซื้ออะไร</small>
+            <h3>ไม่ได้ซื้อวิดีโอ 98 นาที — ซื้อวิธีคิดที่เอากลับไปใช้กับงานของคุณได้</h3>
+            <ul>
+              <li>เห็นวิธีสกัด Source จากแชต ไฟล์ งานเดิม หรือความคิดที่กระจัดกระจาย</li>
+              <li>เห็นวิธี “ปรุงซอส” ให้เหมาะกับเป้าหมาย ก่อนส่งต่อให้ AI หรือคนในทีม</li>
+              <li>ดู Workflow จริงจาก Source → Prompt → Output → ตรวจ → ปรุงต่อ</li>
+              <li>เรียนสด ถามงานจริง และแชร์หน้าจอได้ใน Discord</li>
+              <li>ใช้หลักเดียวต่อกับ ChatGPT, Claude, Gemini หรือ AI ตัวอื่นได้</li>
+            </ul>
+          </div>
+
+          <p class="honesty-note"><strong>หมายเหตุ:</strong> เคส XTY ไม่ได้แปลว่าทุกคนจะสร้างเว็บเสร็จใน 1 วัน ผลลัพธ์ขึ้นกับงานและการลงมือทำ แต่เคสนี้แสดงให้เห็นว่า “คนเพิ่งเริ่มใช้ AI” ก็สามารถขยับจากการคุยเล่นไปสู่การสร้างของจริงได้เร็วมาก เมื่อเข้าใจโครงสร้าง Source/ซอสก่อน</p>
+
+          <div class="proof-cta">
+            <div><small>18 AUG 2026 · LIVE 19:30</small><strong>98 นาที · 98 บาท · First Class รอบแรกครั้งเดียว</strong></div>
+            <a href="#registrationForm">เอาซอสไปใช้กับงานของฉัน →</a>
+          </div>
+          <div class="proof-divider" aria-hidden="true"></div>
+        </section>
+
         <form id="registrationForm" novalidate>
           <div class="form-heading">
-            <div><small>ใช้เวลาประมาณ 2 นาที</small><h2>ลงทะเบียนรอบ First Class</h2></div>
+            <div><small>พร้อมเปลี่ยนจาก “คุยกับ AI” → “สร้างของจริง”</small><h2>ลงทะเบียนรอบ First Class</h2></div>
             <div class="price"><span>ทั้งหมด</span><strong>฿98</strong></div>
           </div>
 
