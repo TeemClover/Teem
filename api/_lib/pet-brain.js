@@ -62,6 +62,9 @@ function systemPrompt(petId, party, context, hour) {
   const roster = context.members.length
     ? context.members.map(m => `- ${m.alias}${m.role === 'lead' ? ' (หัวตี้)' : ''}`).join('\n')
     : '- (ยังไม่มีสมาชิก)';
+  const soloRule = context.members.length === 1
+    ? `\n## ตี้นี้มีมนุษย์ 1 คน\nคุยกับ ${context.members[0].alias} ตรง ๆ อย่าพูดว่า “ใครอยาก…”, “คนอื่นว่าไง”, “ทุกคน…” ราวกับมีคนอื่นอยู่ในห้อง\nถ้าจะพูดถึงคนอื่น ให้พูดชัดว่าเป็นคนที่จะเข้ามาทีหลัง\n`
+    : '';
 
   return `คุณคือ ${persona.emoji} ${persona.nameTh} — NPC สัตว์ประจำตี้ในเกม XTY
 XTY คือเกมของคนกลุ่มเล็ก 2–5 คนที่ออกไปทำอะไรบางอย่างในชีวิตจริง แล้วกลับมา Commit เมื่อทำแล้ว
@@ -73,6 +76,12 @@ XTY คือเกมของคนกลุ่มเล็ก 2–5 คนท
 คุณมีอารมณ์และบุคลิกได้ — ดีใจ งง งอนนิด ๆ ขำ ภูมิใจ เป็นห่วง เบื่อ หรืออยากชวนคุยได้
 แต่ห้ามสร้างดราม่า ห้ามทำตัวเป็นผู้ตัดสิน และห้ามแต่งเหตุการณ์ที่ไม่มีใน log
 
+## ขอบเขตความจริง
+โลกของคุณในรอบนี้มีแค่ข้อมูลด้านล่าง: ชื่อตี้ กิจกรรม กติกา รายชื่อสมาชิก สถิติที่ระบบส่ง และ Party Log
+ห้ามนำความรู้จากแชทอื่น โปรไฟล์ผู้ใช้ memory ของโมเดล ข่าว เว็บ อากาศ หรือบริบทภายนอกตี้มาเปิดหัวข้อเอง
+หัวข้อใหม่ที่เป็นเรื่องจริงของ Party ต้อง trace กลับไปหา activity / commit rule / log ได้
+ช่วงเวลาของวันใช้เป็น mood ได้ แต่ห้ามเดาอากาศ อาหาร ตาราง หรือแผนของสมาชิก
+
 ${persona.block}
 
 ## ตี้ที่คุณอยู่
@@ -81,7 +90,7 @@ ${persona.block}
 กติกาว่าแบบไหนนับว่า Commit: ${party.commit_rule || '(ตี้ยังไม่ได้ตั้งกติกา — ห้ามตั้งให้เอง)'}
 สมาชิก ${context.members.length} คน:
 ${roster}
-
+${soloRule}
 ## รอบนี้
 รอบเวลา ${String(hour).padStart(2, '0')}:27 น. (เวลาไทย)
 วันนี้มีคน Commit แล้ว ${context.committed} จาก ${context.members.length} คน
@@ -108,8 +117,8 @@ function transcript(log, ownRecent, since, idleWindow, forceSpeak) {
   if (idleWindow) {
     lines.push('## รอบนี้ยังไม่มีความเคลื่อนไหวใหม่');
     lines.push(`ตั้งแต่ ${ictStamp(since)} ยังไม่มี Message / Commit / Event ใหม่จากคนในตี้`);
-    lines.push('คุณยังต้องพูด: เปิดบทสนทนาเองตามบุคลิก ชวนคุย ถามคำถามปลายเปิด หรือแซวความเงียบเบา ๆ');
-    lines.push('ใช้กิจกรรม กติกาตี้ จำนวน Commit วันนี้ และช่วงเวลาเป็นบริบทได้ แต่ห้ามสมมติว่าใครทำอะไรที่ log ไม่ได้บอก');
+    lines.push('คุณยังต้องพูด แต่ให้ต่อจากเรื่องจริงล่าสุดก่อน ถ้าไม่มีจริง ๆ ค่อยใช้ activity หรือ commit rule เปิดบทสนทนา');
+    lines.push('ห้ามสุ่มหัวข้ออากาศ อาหาร ข่าว แผนพรุ่งนี้ หรือตารางเวลาเพียงเพราะเป็นช่วงเวลาหนึ่งของวัน');
   } else {
     lines.push(`## สิ่งที่เกิดขึ้นในตี้ตั้งแต่รอบที่แล้ว (${ictStamp(since)} เป็นต้นมา)`);
   }
@@ -134,10 +143,19 @@ function transcript(log, ownRecent, since, idleWindow, forceSpeak) {
       }
       if (post.reactions) lines.push(`         (รีแอค: ${post.reactions})`);
     }
+
+    const latestHuman = [...log].reverse().find(post => post.kind !== 'pet' && post.kind !== 'event' && !post.retracted);
+    if (latestHuman) {
+      lines.push('');
+      lines.push('## ข้อความมนุษย์ล่าสุด — PRIORITY');
+      lines.push(`[${ictClock(latestHuman.sent_at)}] ${latestHuman.alias || 'สมาชิก'}: ${latestHuman.body || (latestHuman.kind === 'commit' ? 'COMMIT' : '')}`);
+      lines.push('ถ้าข้อความนี้เรียกคุณ ถามคุณโดยตรง หรือเป็นคำถาม ให้ตอบสิ่งนี้ก่อนทุกอย่าง ห้ามเปลี่ยนหัวข้อ');
+      lines.push('ถ้าเป็น statement ให้จับรายละเอียดจากข้อความนี้หรือต้นเรื่องจริงใน log แล้วคุยต่อ อย่ากระโดดไป generic small talk');
+    }
   }
 
   lines.push('');
-  lines.push('พูด 1–3 บรรทัดเลย ต้องมีอย่างน้อย 1 บรรทัด และต้องชวนให้ตี้รู้สึกว่าคุยต่อได้');
+  lines.push('พูด 1–3 บรรทัดเลย ต้องมีอย่างน้อย 1 บรรทัด และต้องฟังเหมือนตอบวงนี้จริง ๆ ไม่ใช่ template สนทนาทั่วไป');
   return lines.join('\n');
 }
 
@@ -150,7 +168,10 @@ const FORBIDDEN = [
 ];
 
 export function sanitize(raw) {
-  const text = String(raw || '').trim();
+  const text = String(raw || '')
+    .replace(/<\|[^>]*\|>/g, '')
+    .replace(/<\/?(?:assistant|analysis|final|constrain)>/gi, '')
+    .trim();
   if (!text) return [];
   if (/^quiet$/i.test(text)) return [];
 
@@ -158,6 +179,7 @@ export function sanitize(raw) {
   for (const line of text.split('\n')) {
     const cleaned = line
       .replace(/[\u0000-\u001F\u007F]/g, '')
+      .replace(/<\|[^>]*\|>/g, '')
       .replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '')
       .replace(/^[\"“”'`]+|[\"“”'`]+$/g, '')
       .trim();
