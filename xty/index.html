@@ -39,7 +39,6 @@
       <p class="label" style="margin:20px 0 8px">มีรหัสตี้แล้ว</p>
       <div class="quick-code field" style="margin:0">
         <input id="quickCode" inputmode="numeric" maxlength="5" placeholder="00000" aria-label="รหัสตี้ 5 หลัก">
-        <button class="btn ghost" id="quickJoin" disabled>เข้าตี้</button>
       </div>
       <a class="about-link" href="/xty/about/">XTY คืออะไร? →</a>
     </div>
@@ -102,9 +101,12 @@
     </div>
 
     <div class="card" style="margin-top:12px">
-      <span class="label">ACTIVE PARTIES</span>
-      <div class="capacity-number" id="capacityN">0 / 4<small>ตี้ที่กำลังเล่น</small></div>
-      <p class="whisper">สร้างได้ 1 ตี้ · เข้าร่วมได้ 3 ตี้</p>
+      <span class="label">PARTY SLOTS</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="capacity-number" id="ownedCapacityN">0 / 1<small>สร้างตี้</small></div>
+        <div class="capacity-number" id="joinedCapacityN">0 / 3<small>เข้าร่วม</small></div>
+      </div>
+      <p class="whisper">ช่องสร้างตี้และช่องเข้าร่วมนับแยกกัน</p>
     </div>
 
     <h2 class="title" id="partyHeading" style="margin-top:34px;font-size:19px">ตี้อื่นของคุณ</h2>
@@ -122,9 +124,10 @@
 
 <script type="module">
 import {
-  hasProfile, getProfile, createProfile, joinParty, allParties, myPartyCodes, refreshParty,
+  hasProfile, getProfile, createProfile, allParties, myPartyCodes, refreshParty,
   activePartyUsage, committedToday, isActiveParty, shouldOfferProgressSave, updateProfile,
 } from '/xty/_shared/store.js';
+import { joinPartyV2 } from '/xty/_shared/join-party-v2.js';
 import { PET_BY_ID } from '/xty/_shared/pets.js';
 import { XTY_AVATARS, AVATAR_FRAMES, avatarById } from '/xty/_shared/avatars.js';
 import { cardById, cardNameTh } from '/xty/_shared/cards.js';
@@ -145,8 +148,7 @@ function joinErrorText(code) {
     FULL: 'ตี้นี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)',
     PARTY_CLOSED: 'ตี้นี้จบแล้วและไม่รับสมาชิกเพิ่ม',
     MEMBERSHIP_CLOSED: 'ช่วงการร่วมทางของคุณในตี้นี้ถูกปิดแล้ว',
-    JOINED_PARTY_LIMIT: 'ตอนนี้เข้าร่วมตี้เพิ่มไม่ได้ — คุณเข้าร่วมได้พร้อมกันไม่เกิน 3 ตี้',
-    ACTIVE_PARTY_LIMIT: 'คุณใช้ช่องตี้ของ Level นี้ครบแล้ว — จบตี้หนึ่งก่อนหรือเพิ่ม Level',
+    JOINED_PARTY_LIMIT: 'ช่องเข้าร่วมตี้เต็มแล้ว — เข้าร่วมพร้อมกันได้ไม่เกิน 3 ตี้',
   };
   return messages[code] || 'เข้าตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองใหม่';
 }
@@ -155,6 +157,13 @@ function joinErrorText(code) {
 function renderGate() {
   $('gate').hidden = false;
   let nextCode = '';
+  const quickCode = $('quickCode');
+  const startButton = $('startButton');
+
+  const validQuickCode = () => /^\d{5}$/.test(quickCode.value || '') ? quickCode.value : '';
+  const syncWelcomeCta = () => {
+    startButton.textContent = validQuickCode() ? 'เข้าตี้' : 'เริ่มเล่น';
+  };
   const showIdentity = (code = '') => {
     nextCode = /^\d{5}$/.test(code) ? code : '';
     $('welcomeStep').hidden = true;
@@ -163,28 +172,38 @@ function renderGate() {
     $('createProfile').textContent = nextCode ? 'สร้างตัวแล้วเข้าตี้' : 'เข้าสู่ XTY';
     $('alias').focus();
   };
-  $('startButton').addEventListener('click', () => showIdentity());
+
+  startButton.addEventListener('click', () => {
+    const code = validQuickCode();
+    showIdentity(code);
+  });
+
   $('backWelcome').addEventListener('click', () => {
-    nextCode = '';
+    const savedCode = nextCode || validQuickCode();
+    nextCode = savedCode;
     $('identityStep').hidden = true;
     $('welcomeStep').hidden = false;
-    $('createProfile').textContent = 'เข้าสู่ XTY';
+    if (savedCode) quickCode.value = savedCode;
+    syncWelcomeCta();
+    $('createProfile').textContent = savedCode ? 'สร้างตัวแล้วเข้าตี้' : 'เข้าสู่ XTY';
     $('inviteJoinError').hidden = true;
   });
-  const quickCode = $('quickCode');
+
   quickCode.addEventListener('input', () => {
     quickCode.value = quickCode.value.replace(/\D/g, '').slice(0, 5);
-    $('quickJoin').disabled = !/^\d{5}$/.test(quickCode.value);
+    syncWelcomeCta();
   });
-  $('quickJoin').addEventListener('click', () => showIdentity(quickCode.value));
   quickCode.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && /^\d{5}$/.test(quickCode.value)) showIdentity(quickCode.value);
+    const code = validQuickCode();
+    if (event.key === 'Enter' && code) showIdentity(code);
   });
 
   const initialCode = inviteCodeFromUrl();
   if (initialCode) {
     quickCode.value = initialCode;
     quickCode.dispatchEvent(new Event('input'));
+  } else {
+    syncWelcomeCta();
   }
 
   const pick = $('avatarPick');
@@ -251,7 +270,7 @@ function renderGate() {
     }
 
     go.textContent = 'กำลังเข้าตี้…';
-    const result = await joinParty(nextCode, {
+    const result = await joinPartyV2(nextCode, {
       alias: profile.alias,
       avatar: chosen,
       avatarColor: avatarFrame,
@@ -303,7 +322,8 @@ async function renderHome() {
 function paintPartyList(p, mine) {
   const list = allParties().filter(x => mine.has(x.code));
   const capacity = activePartyUsage(p);
-  $('capacityN').innerHTML = `${capacity.total} / ${capacity.maxTotal}<small>ตี้ที่กำลังเล่น</small>`;
+  $('ownedCapacityN').innerHTML = `${capacity.owned} / ${capacity.maxOwned}<small>สร้างตี้</small>`;
+  $('joinedCapacityN').innerHTML = `${capacity.joined} / ${capacity.maxJoined}<small>เข้าร่วม</small>`;
   const box = $('myParties');
   box.innerHTML = '';
 
