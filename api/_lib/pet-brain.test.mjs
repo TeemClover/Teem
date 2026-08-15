@@ -10,7 +10,7 @@ globalThis.fetch = (url, init) => respond(url, init);
 const { sanitize, aiConfigured, hasPersona, readAndRespond } =
   await import('./pet-brain.js');
 
-test('QUIET means stay quiet', () => {
+test('legacy QUIET / empty output is rejected so caller can fall back', () => {
   assert.deepEqual(sanitize('QUIET'), []);
   assert.deepEqual(sanitize('  quiet \n'), []);
   assert.deepEqual(sanitize(''), []);
@@ -40,11 +40,13 @@ test('long lines are clipped, not dropped', () => {
   assert.equal(out[0].length, 160);
 });
 
-test('config + persona gates', () => {
+test('config + detailed and registry persona gates', () => {
   assert.equal(aiConfigured(), true);
   assert.equal(hasPersona('crow'), true);
-  assert.equal(hasPersona('fox'), false);
+  assert.equal(hasPersona('fox'), true);
+  assert.equal(hasPersona('unicorn'), true);
   assert.equal(hasPersona('__proto__'), false);
+  assert.equal(hasPersona('not-a-pet'), false);
 });
 
 const party = {
@@ -61,7 +63,7 @@ const log = [
   { seq: 6, kind: 'message', body: '', sent_at: '2026-08-14T03:10:00Z', retracted: true, alias: 'นนท์', reactions: '' },
 ];
 
-test('Groq request carries the real log, roster, rule and NPC guards', async () => {
+test('Groq request carries the real log, roster, rule and always-speak guards', async () => {
   let sent = null;
   let endpoint = null;
   let headers = null;
@@ -104,18 +106,18 @@ test('Groq request carries the real log, roster, rule and NPC guards', async () 
   assert.match(prompt, /กา/);
   assert.match(prompt, /วิ่งอย่างน้อย 20 นาที/);
   assert.match(prompt, /แพร \(หัวตี้\)/);
-  assert.match(prompt, /12:00 น\./);
-  assert.match(prompt, /Roast the commitment/);
-  assert.match(prompt, /QUIET/);
+  assert.match(prompt, /12:27 น\./);
+  assert.match(prompt, /ทุกครั้งที่ตื่นต้องพูดอย่างน้อย 1 บรรทัด/);
+  assert.match(prompt, /ห้ามตอบ QUIET/);
   assert.match(prompt, /แพร · COMMIT/);
   assert.match(prompt, /นนท์: วันนี้ฝนตก ไว้พรุ่งนี้/);
   assert.match(prompt, /ถอนข้อความออกไป/);
   assert.match(prompt, /รีแอค: 🔥×2/);
   assert.match(prompt, /เมื่อวานครบทุกคน/);
-  assert.match(prompt, /08:30/);   // 01:30Z rendered in ICT
+  assert.match(prompt, /08:30/);
 });
 
-test('a content filter means silence, an API error means fallback', async () => {
+test('a content filter means caller fallback, an API error means fallback', async () => {
   respond = async () => new Response(JSON.stringify({
     id: 'chatcmpl_2',
     choices: [{ index: 0, message: { role: 'assistant', content: '' }, finish_reason: 'content_filter' }],
@@ -137,7 +139,7 @@ test('no Groq key or flag off means fallback, never a call', async () => {
   process.env.GROQ_API_KEY = 'gsk-test';
 });
 
-test('a day-long silence reads back to the last real activity, once', async () => {
+test('an idle window explicitly asks the NPC to start a conversation', async () => {
   let sent = null;
   respond = async (url, init) => {
     sent = JSON.parse(init.body);
@@ -145,33 +147,30 @@ test('a day-long silence reads back to the last real activity, once', async () =
       id: 'chatcmpl_3',
       choices: [{
         index: 0,
-        message: { role: 'assistant', content: 'เงียบไปวันนึงแล้ว — ยังอยู่กันไหม' },
+        message: { role: 'assistant', content: 'รอบนี้เงียบแฮะ — ถ้าวันนี้จะวิ่งนิดเดียว อยากออกช่วงไหนกัน' },
         finish_reason: 'stop',
       }],
     }), { status: 200, headers: { 'content-type': 'application/json' } });
   };
 
   const out = await readAndRespond({
-    party, context: { ...context, humanUpdates: 0 }, log,
-    ownRecent: [], since: new Date('2026-08-12T03:00:00Z'), hour: 18, quietCheckin: true,
+    party, context: { ...context, humanUpdates: 0 }, log: [],
+    ownRecent: [], since: new Date('2026-08-16T05:27:00Z'), hour: 18, idleWindow: true,
   });
-  assert.deepEqual(out, ['เงียบไปวันนึงแล้ว — ยังอยู่กันไหม']);
+  assert.equal(out.length, 1);
 
   const prompt = sent.messages[0].content;
-  assert.match(prompt, /เงียบมาเกินหนึ่งวันแล้ว/);
-  assert.match(prompt, /ทักหรือจิกเบา ๆ ได้ครั้งเดียว/);
-  assert.match(prompt, /นนท์: วันนี้ฝนตก ไว้พรุ่งนี้/);
+  assert.match(prompt, /รอบนี้ยังไม่มีความเคลื่อนไหวใหม่/);
+  assert.match(prompt, /เปิดบทสนทนาเอง/);
+  assert.match(prompt, /ห้ามสมมติว่าใครทำอะไร/);
 });
 
 const { worthReading } = await import('../xty-pet.js');
-const hoursAgo = h => new Date(Date.now() - h * 3600000);
 
-test('reading is gated so a dead party costs nothing', () => {
-  assert.equal(worthReading(12, { humanUpdates: 1, lastHumanAt: null, lastPetAt: null }), true);
-  assert.equal(worthReading(12, { humanUpdates: 0, lastHumanAt: hoursAgo(50), lastPetAt: null }), false);
-  assert.equal(worthReading(6, { humanUpdates: 0, lastHumanAt: hoursAgo(50), lastPetAt: null }), false);
-  assert.equal(worthReading(18, { humanUpdates: 0, lastHumanAt: hoursAgo(30), lastPetAt: null }), true);
-  assert.equal(worthReading(18, { humanUpdates: 0, lastHumanAt: hoursAgo(10), lastPetAt: null }), false);
-  assert.equal(worthReading(18, { humanUpdates: 0, lastHumanAt: hoursAgo(30), lastPetAt: hoursAgo(6) }), false);
-  assert.equal(worthReading(18, { humanUpdates: 0, lastHumanAt: null, lastPetAt: null }), false);
+test('every due active pet is read on every wake', () => {
+  assert.equal(worthReading(0, { humanUpdates: 0 }), true);
+  assert.equal(worthReading(6, { humanUpdates: 0 }), true);
+  assert.equal(worthReading(12, { humanUpdates: 0 }), true);
+  assert.equal(worthReading(18, { humanUpdates: 0 }), true);
+  assert.equal(worthReading(12, { humanUpdates: 5 }), true);
 });
