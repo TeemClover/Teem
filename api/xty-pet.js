@@ -1,13 +1,12 @@
 import { database, ensureSchema, sendJson } from './_lib/core.js';
 import { aiConfigured, hasPersona, readAndRespond } from './_lib/pet-brain.js';
 import { AVATAR_BY_ID } from '../xty/_shared/avatars.js';
+import { PET_BY_ID } from '../xty/_shared/pets.js';
 
 const ICT_OFFSET_MINUTES = 7 * 60;
 const WAKE_HOURS = [0, 6, 12, 18];
-const STARTERS = new Set(['pig', 'dog', 'crow', 'chicken']);
 const LOG_SLICE = 60;
 const OWN_RECALL = 3;
-const QUIET_CHECKIN_HOURS = 24;
 
 function wakeWindow(now = new Date()) {
   const local = new Date(now.getTime() + ICT_OFFSET_MINUTES * 60000);
@@ -51,42 +50,33 @@ function laterDate(a, b) {
   return aa.getTime() >= bb.getTime() ? aa : bb;
 }
 
-function observe(party, hour, context) {
-  if (!STARTERS.has(party.pet_id) || context.humanUpdates === 0) return [];
+/* Provider failure, filtering or a missing future persona must never make
+   an ACTIVE pet disappear. This is intentionally simple: Groq owns the
+   expressive turn; this fallback only guarantees that the NPC is alive. */
+function fallbackWake(party, hour, context) {
+  const pet = PET_BY_ID[party.pet_id] || { id: party.pet_id, nameTh: 'สัตว์ประจำตี้', emoji: '🐾' };
   const score = `${context.committed}/${context.members.length}`;
-  if (hour === 12 && context.committed >= 2) {
-    const lines = { pig:`ครึ่งวันแล้ว ตี้นี้ Commit ไป ${score} คน 🐷`, dog:`เห็นแล้วนะ — วันนี้มีคน Commit ${score} คนแล้ว 🐶`, crow:`กลางวัน: ${score} คน Commit แล้ว กาจดไว้แค่นี้ 🐦‍⬛`, chicken:`${score} คนลงมือแล้ว ทีละนิดก็เดินหน้า 🐔` };
-    return [lines[party.pet_id]];
-  }
-  if (hour === 18 && context.committed > 0 && context.committed < context.members.length) {
-    const rule = party.commit_rule ? ` — กติกาคือ “${party.commit_rule}”` : '';
-    const lines = { pig:`เย็นนี้ ${score} คน Commit แล้ว ที่เหลือยังทันนะ${rule}`, dog:`วันนี้ ${score} คน Commit แล้ว ค่อย ๆ กลับมาตอนพร้อม${rule}`, crow:`18:00 — ตอนนี้ Commit ${score} คน${rule}`, chicken:`ตอนนี้ ${score} คนแล้ว เหลือก้าวเล็ก ๆ ก่อนปิดวัน${rule}` };
-    return [lines[party.pet_id]];
-  }
-  if (hour === 0 && context.committed > 0) {
-    const lines = { pig:`ปิดวันด้วย ${score} Commit เจอกันรอบหน้า 🐷`, dog:`วันนี้ตี้เรากลับมา Commit ${score} คน พักได้แล้ว 🐶`, crow:`สรุปวันนี้: Commit ${score} คน · ไม่มีอะไรต้องแต่งเพิ่ม 🐦‍⬛`, chicken:`วันนี้จิกงานสำเร็จ ${score} คน พรุ่งนี้ค่อยต่อ 🐔` };
-    return [lines[party.pet_id]];
-  }
-  return [];
-}
-
-function manualWakeFallback(party) {
-  const lines = {
-    pig: 'กูตื่นละ 🐷 รอบนี้มาดูตี้จริง ๆ แล้ว',
-    dog: 'กูตื่นแล้ว 🐶 ยังอยู่กับตี้นี้นะ',
-    crow: 'กาตื่นแล้ว 🐦‍⬛ รอบนี้อ่านตี้จริง',
-    chicken: 'ตื่นแล้ว 🐔 รอบนี้มาจิกดูตี้จริง ๆ',
+  const activity = String(party.activity || '').trim();
+  const subject = activity ? `เรื่อง ${activity}` : 'เควสนี้';
+  const byPet = {
+    pig: context.humanUpdates > 0 ? `เห็นตี้ขยับแล้ว 🐷 ใครมีอะไรอยากเล่าต่ออีกไหม` : `เงียบจัง 🐷 วันนี้ใครอยากเริ่ม ${subject} จากตรงไหนบ้าง`,
+    dog: context.humanUpdates > 0 ? `กูเห็นอัปเดตแล้วนะ 🐶 มีใครอยากต่อเรื่องนี้ไหม` : `กูยังอยู่นี่ 🐶 วันนี้ใครเป็นไงกับ ${subject} บ้าง`,
+    crow: context.humanUpdates > 0 ? `กาเห็นความเคลื่อนไหวแล้ว 🐦‍⬛ มีรายละเอียดไหนที่ตี้ควรจำไว้ไหม` : `รอบนี้เงียบ 🐦‍⬛ ถ้าต้องเลือกเรื่องเดียวเกี่ยวกับ ${subject} ตอนนี้ จะคุยเรื่องอะไร`,
+    chicken: context.humanUpdates > 0 ? `มีคนขยับแล้ว 🐔 ก้าวถัดไปเล็กสุดของตี้คืออะไร` : `จิกถามหนึ่งที 🐔 วันนี้ก้าวเล็กสุดของ ${subject} ที่อยากทำคืออะไร`,
+    buffalo: context.humanUpdates > 0 ? `เห็นตี้เดินต่อแล้ว 🐃 รอบนี้ใครอยากพา ${subject} ไปอีกก้าว` : `ค่อย ๆ ไปก็ได้ 🐃 วันนี้ ${subject} จะขยับหนึ่งก้าวตรงไหนดี`,
+    unicorn: context.humanUpdates > 0 ? `มีอะไรเกิดขึ้นแล้วนะ 🦄 อยากเก็บโมเมนต์ไหนของรอบนี้ไว้ที่สุด` : `รอบนี้ยังเงียบอยู่ 🦄 ถ้าวันนี้ ${subject} ดีขึ้นนิดเดียว อยากให้เป็นตรงไหน`,
+    cat: context.humanUpdates > 0 ? `โอเค มีเรื่องให้ตามแล้ว 🐱 ใครจะเล่าต่อให้กูฟังหน่อย` : `เงียบจนแมวจะงีบแล้ว 🐱 ใครมีอะไรเกี่ยวกับ ${subject} มาโยนไว้ให้กูฟังหน่อย`,
+    turtle: context.humanUpdates > 0 ? `ตี้ขยับแล้ว 🐢 ไม่ต้องรีบ รอบหน้าพวกเราจะค่อย ๆ ต่อจากตรงไหนดี` : `ยังไม่ขยับก็ไม่เป็นไร 🐢 วันนี้อยากค่อย ๆ เริ่ม ${subject} ตรงไหน`,
   };
-  return lines[party.pet_id] ? [lines[party.pet_id]] : [];
+  if (byPet[party.pet_id]) return [byPet[party.pet_id]];
+  if (context.humanUpdates > 0) return [`${pet.emoji} ${pet.nameTh} เห็นอัปเดตรอบนี้แล้ว — ใครอยากเล่าต่ออีกหน่อยไหม`];
+  if (hour === 0) return [`${pet.emoji} ก่อนปิดวัน กูขอถามหน่อย — วันนี้มีอะไรเกี่ยวกับ ${subject} ที่อยากเล่าไว้ไหม`];
+  return [`${pet.emoji} รอบนี้กูเปิดวงเอง — ใครมีอะไรเกี่ยวกับ ${subject} อยากคุยบ้าง`];
 }
 
-export function worthReading(hour, context, force = false) {
-  if (force) return true;
-  if (context.humanUpdates > 0) return true;
-  if (hour !== 18 || !context.lastHumanAt) return false;
-  if (context.lastPetAt && context.lastPetAt >= context.lastHumanAt) return false;
-  return (Date.now() - context.lastHumanAt.getTime()) / 3600000 >= QUIET_CHECKIN_HOURS;
-}
+/* Kept exported for tests/diagnostics. Product rule now is simple:
+   every due ACTIVE pet reads every wake; there is no silence gate. */
+export function worthReading() { return true; }
 
 async function logSlice(sql, partyId, since) {
   const [postRows, eventRows] = await Promise.all([
@@ -123,15 +113,15 @@ export default async function handler(req, res) {
     const force = ['1','true','yes'].includes(String(req.query?.force || '').toLowerCase());
     const sql = database(); await ensureSchema(sql); const now = new Date(); const wake = wakeWindow(now);
 
-    // Manual runs are a proof-of-life test: pick exactly one recent ACTIVE party
-    // whose PET has a real persona, so one click never spams every party.
+    // Manual runs are proof-of-life: one recent ACTIVE party only.
+    // Scheduled runs process every party that is due for this wake window.
     const due = force
       ? await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties
-          WHERE pet_id IN ('pig','dog','crow','chicken') AND state='ACTIVE' ORDER BY updated_at DESC LIMIT 1`)
+          WHERE pet_id IS NOT NULL AND state='ACTIVE' ORDER BY updated_at DESC LIMIT 1`)
       : await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties WHERE pet_id IS NOT NULL AND state='ACTIVE'
           AND (pet_last_wake IS NULL OR pet_last_wake < $1) ORDER BY updated_at LIMIT 250`, [wake.start]);
 
-    let claimed=0, read=0, spoke=0, bubbles=0, byAi=0;
+    let claimed=0, read=0, spoke=0, bubbles=0, byAi=0, fallbacks=0;
     for (const party of due) {
       const marked = force
         ? await sql.query(`UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2 RETURNING id`, [now, party.id])
@@ -149,26 +139,27 @@ export default async function handler(req, res) {
       const count=counts[0]||{}, eventCount=eventCounts[0]||{};
       const context={ humanUpdates:Number(count.human_updates||0)+Number(eventCount.event_updates||0), committed:Number(count.committed||0), members,
         lastHumanAt:laterDate(count.last_human_at,eventCount.last_event_at), lastPetAt:count.last_pet_at?new Date(count.last_pet_at):null };
+
+      const idleWindow = context.humanUpdates === 0;
+      const [log,mine] = await Promise.all([logSlice(sql,party.id,since),ownRecent(sql,party.id,since)]);
       let lines=null;
-      if (aiConfigured() && hasPersona(party.pet_id) && worthReading(wake.hour,context,force)) {
+      if (aiConfigured() && hasPersona(party.pet_id)) {
         read += 1;
-        const quietCheckin=!force && context.humanUpdates===0;
-        const readSince=quietCheckin && context.lastHumanAt ? new Date(context.lastHumanAt.getTime()-1) : since;
-        const [log,mine]=await Promise.all([logSlice(sql,party.id,readSince),ownRecent(sql,party.id,readSince)]);
-        lines=await readAndRespond({party,context,log,ownRecent:mine,since:readSince,hour:wake.hour,quietCheckin,forceSpeak:force});
-        if (Array.isArray(lines)) byAi += 1;
+        lines=await readAndRespond({party,context,log,ownRecent:mine,since,hour:wake.hour,idleWindow,forceSpeak:force});
+        if (Array.isArray(lines) && lines.length) byAi += 1;
       }
 
-      // A scheduled wake may stay silent. A manual wake may not: it is a
-      // diagnostic button whose whole purpose is proving the bubble path works.
-      if (force && (!Array.isArray(lines) || lines.length === 0)) lines=manualWakeFallback(party);
-      if (!lines) lines=observe(party,wake.hour,context);
+      // Product rule: a pet that wakes is visible. Provider errors, filters,
+      // empty model output or a future pet without a full persona all fall back.
+      if (!Array.isArray(lines) || lines.length === 0) {
+        lines=fallbackWake(party,wake.hour,context);
+        fallbacks += 1;
+      }
       lines=lines.slice(0,3);
-      if(!lines.length) continue;
       spoke += 1;
       for (const line of lines) if (await appendBubble(sql,party,line,wake.hour,now)) bubbles += 1;
     }
-    return sendJson(res,{ok:true,wakeHour:wake.hour,ai:aiConfigured(),force,due:due.length,claimed,read,byAi,spoke,bubbles});
+    return sendJson(res,{ok:true,wakeHour:wake.hour,ai:aiConfigured(),force,due:due.length,claimed,read,byAi,fallbacks,spoke,bubbles});
   } catch (error) {
     console.error('XTY pet wake failed', error);
     if (error.code === 'DATABASE_URL_NOT_CONFIGURED') return sendJson(res,{ok:false,error:error.code},503);
