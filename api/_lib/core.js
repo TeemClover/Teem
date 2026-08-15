@@ -106,6 +106,7 @@ const SCHEMA = [
     party_id TEXT NOT NULL, seq INTEGER NOT NULL, user_id TEXT NOT NULL,
     emoji TEXT NOT NULL, PRIMARY KEY (party_id, seq, user_id, emoji)
   )`,
+  `ALTER TABLE xty_reactions ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ`,
   `CREATE TABLE IF NOT EXISTS xty_confirmations (
     party_id TEXT NOT NULL, commit_seq INTEGER NOT NULL, confirmer_id TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL, PRIMARY KEY (party_id, commit_seq)
@@ -137,6 +138,10 @@ const SCHEMA = [
   )`,
   `CREATE INDEX IF NOT EXISTS idx_xty_card_rewards_party ON xty_card_rewards(party_id, created_at)`,
   `CREATE INDEX IF NOT EXISTS idx_xty_card_ownership_user ON xty_card_ownership(user_id, acquired_at)`,
+  `CREATE TABLE IF NOT EXISTS xty_system_errors (
+    id BIGSERIAL PRIMARY KEY, error_code TEXT NOT NULL, endpoint TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_xty_system_errors_created ON xty_system_errors(created_at DESC)`,
 ];
 
 export async function ensureSchema(sql) {

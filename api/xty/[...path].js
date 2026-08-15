@@ -7,6 +7,7 @@ import {
   partyDateKey, partyDayNumber, scheduledEndAt, startOfPartyDay, validPartyCode,
 } from '../_lib/xty-rules.js';
 import { XTY_CARDS, cardById } from '../../xty/_shared/cards.js';
+import { handleXtyAdmin } from '../_lib/xty-admin.js';
 
 const PARTY_MAX = 5;
 const MAX_JOINED_ACTIVE = 3;
@@ -435,11 +436,14 @@ async function applyProgressionForParty(sql, row, at = new Date()) {
 }
 
 export default async function handler(req, res) {
+  let sql;
   try {
-    const sql = database(); await ensureSchema(sql);
+    sql = database(); await ensureSchema(sql);
     const method = req.method.toUpperCase();
     if (method !== 'GET' && !sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);
     const parts = routeParts(req);
+
+    if (parts[0] === 'admin') return handleXtyAdmin(req, res, sql, method, parts);
 
     if (method === 'GET' && parts[0] === 'public') {
       const pageSize = 16;
@@ -956,10 +960,13 @@ export default async function handler(req, res) {
       if (!Number.isInteger(seq) || !REACTIONS.includes(emoji)) return sendJson(res, { ok: false, error: 'BAD_REACTION' }, 400);
       const post = await sql.query('SELECT 1 FROM xty_posts WHERE party_id=$1 AND seq=$2', [row.id, seq]);
       if (!post[0]) return sendJson(res, { ok: false, error: 'NO_POST' }, 404);
+      const at = new Date();
       const removed = await sql.query(`DELETE FROM xty_reactions WHERE party_id=$1 AND seq=$2
         AND user_id=$3 AND emoji=$4 RETURNING emoji`, [row.id, seq, member.user_id, emoji]);
-      if (!removed[0]) await sql.query(`INSERT INTO xty_reactions (party_id,seq,user_id,emoji)
-        VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING`, [row.id, seq, member.user_id, emoji]);
+      if (!removed[0]) await sql.query(`INSERT INTO xty_reactions (party_id,seq,user_id,emoji,created_at)
+        VALUES ($1,$2,$3,$4,$5) ON CONFLICT DO NOTHING`, [row.id, seq, member.user_id, emoji, at]);
+      await sql.query('UPDATE xty_parties SET updated_at=$1 WHERE id=$2', [at, row.id]);
+      row.updated_at = at;
       return sendJson(res, await stateFor(sql, row, member));
     }
     if (method === 'POST' && parts[2] === 'confirm') {
@@ -990,6 +997,8 @@ export default async function handler(req, res) {
       if (!saved[0]) {
         return sendJson(res, { ok: false, error: 'ALREADY_CONFIRMED' }, 409);
       }
+      await sql.query('UPDATE xty_parties SET updated_at=$1 WHERE id=$2', [at, row.id]);
+      row.updated_at = at;
       if (String(row.state || '').toUpperCase() === 'COMPLETED') await applyProgressionForParty(sql, row, at);
       return sendJson(res, await stateFor(sql, row, member));
     }
@@ -1005,6 +1014,12 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('XTY API failed', error);
     if (error.code === 'DATABASE_URL_NOT_CONFIGURED') return sendJson(res, { ok: false, error: error.code }, 503);
+    if (sql) {
+      const errorCode = /^[A-Z0-9_]{2,60}$/i.test(String(error?.code || '')) ? String(error.code) : 'XTY_API_ERROR';
+      const endpoint = clean(new URL(req.url || '/', 'https://myclover.local').pathname, 160) || '/api/xty';
+      await sql.query(`INSERT INTO xty_system_errors (error_code,endpoint,created_at)
+        VALUES ($1,$2,$3)`, [errorCode, endpoint, new Date()]).catch(() => {});
+    }
     return sendJson(res, { ok: false, error: 'XTY_API_ERROR' }, 500);
   }
 }

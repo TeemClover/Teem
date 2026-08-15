@@ -9,6 +9,7 @@
 import { PET_BY_ID, XTY_V1_PET_IDS } from './pets.js';
 import { AVATAR_BY_ID, avatarFallback } from './avatars.js';
 import { XTY_CARDS, canonicalCardId, cardById, cardNameTh } from './cards.js';
+import { activityContextForParty } from './activities.js';
 
 const K_PROFILE = 'mc_xty_profile';
 const K_PARTIES = 'mc_xty_parties';
@@ -1048,12 +1049,68 @@ function possibleCommitSlots(party, members, durationDays) {
   }, 0);
 }
 
+function safeList(values, fallback = '—') {
+  const items = (values || []).map(value => safeLine(value)).filter(Boolean);
+  return items.length ? items.join(', ') : fallback;
+}
+
+function postReactionCount(post) {
+  return Object.values(post?.reactions || {}).reduce(
+    (total, people) => total + (Array.isArray(people) ? people.length : 0), 0,
+  );
+}
+
+function shortMessage(value, max = 120) {
+  const text = String(value || '').replace(/\s+/g, ' ').trim();
+  return safeLine(text.length > max ? `${text.slice(0, max - 1)}…` : text, 'ข้อความกำลังใจหนึ่งข้อความ');
+}
+
+function fullTeamCommitDay(commits, members) {
+  const byDay = new Map();
+  for (const post of commits) {
+    const key = dayKey(post.sentAt);
+    if (!byDay.has(key)) byDay.set(key, new Set());
+    byDay.get(key).add(post.userId);
+  }
+  for (const [key, people] of [...byDay.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+    const active = members.filter(member => {
+      const joined = dayKey(member.joinedAt || key);
+      const left = member.leftAt ? dayKey(member.leftAt) : null;
+      return joined <= key && (!left || left >= key);
+    });
+    if (active.length > 1 && active.every(member => people.has(member.userId))) return key;
+  }
+  return '';
+}
+
+function selectTurningPoint({ events, messages, peakDay, fullCommitDay, context }) {
+  const highImpactTypes = ['RULE_CHANGED', 'LEAD_CARD_CHANGED', 'NPC_CHANGED', 'MEMBER_LEFT', 'MEMBER_KICKED', 'PARTY_RENAMED'];
+  const meaningfulEvent = highImpactTypes.map(type => events.find(event => event.type === type)).find(Boolean);
+  if (meaningfulEvent) return `Day ${Number(meaningfulEvent.partyDay || 1)} — ${eventLine(meaningfulEvent)}`;
+
+  const reactedMessage = [...messages]
+    .filter(post => postReactionCount(post) > 0)
+    .sort((a, b) => postReactionCount(b) - postReactionCount(a))[0];
+  if (reactedMessage) {
+    return `ข้อความ “${shortMessage(reactedMessage.body)}” กลายเป็น moment ที่เพื่อนตอบรับกัน ${postReactionCount(reactedMessage)} ครั้ง`;
+  }
+
+  const otherEvent = events.find(event => [
+    'MEMBER_JOINED', 'MEMBER_ALIAS_CHANGED', 'MEMBER_AVATAR_CHANGED',
+  ].includes(event.type));
+  if (otherEvent) return `Day ${Number(otherEvent.partyDay || 1)} — ${eventLine(otherEvent)}`;
+  if (fullCommitDay) return `วันที่ ${fullCommitDay} สมาชิกที่ยังอยู่ Commit พร้อมกันครบตี้`;
+  if (peakDay) return `วันที่ ${peakDay[0]} ตี้ขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)`;
+  return context.comicGuidance.panel3;
+}
+
 export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
   if (!party) return '';
   const members = (party.memberHistory?.length ? party.memberHistory : party.members || []);
   const lead = members.find(member => member.role === 'lead') || members[0];
   const events = Array.isArray(party.events) ? party.events : [];
   const log = Array.isArray(party.log) ? party.log : [];
+  const context = activityContextForParty(party);
   const commits = log.filter(post => post.kind === 'commit' && !post.retracted
     && (party.verificationMode !== 'confirm' || post.valid === true || !!post.confirmedBy));
   const messages = log.filter(post => post.kind === 'message' && !post.retracted);
@@ -1084,10 +1141,21 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
   const commitsByDay = new Map();
   commits.forEach(post => commitsByDay.set(dayKey(post.sentAt), (commitsByDay.get(dayKey(post.sentAt)) || 0) + 1));
   const peakDay = [...commitsByDay.entries()].sort((a, b) => b[1] - a[1])[0];
+  const togetherDay = fullTeamCommitDay(commits, members);
+  const topMessage = [...messages]
+    .filter(post => postReactionCount(post) > 0)
+    .sort((a, b) => postReactionCount(b) - postReactionCount(a))[0];
+  const endedAt = new Date(party.endAt || party.endedAt || 0).getTime();
+  const finalMessage = Number.isFinite(endedAt) && endedAt > 0
+    ? [...messages].reverse().find(post => new Date(post.sentAt).getTime() >= endedAt)
+    : null;
   const memorableMoments = [
     peakDay ? `- วันที่ ${peakDay[0]} เป็นวันที่ตี้ขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)` : '- ยังไม่มี Commit ใน snapshot นี้',
     `- ภาษากำลังใจที่ใช้บ่อย: ${reactionHighlights}`,
   ];
+  if (togetherDay) memorableMoments.push(`- วันที่ ${togetherDay} สมาชิกที่ยังอยู่ Commit พร้อมกันครบตี้`);
+  if (topMessage) memorableMoments.push(`- Message ที่เพื่อนตอบรับมาก: “${shortMessage(topMessage.body)}” (${postReactionCount(topMessage)} reactions)`);
+  if (finalMessage) memorableMoments.push(`- Final Message: “${shortMessage(finalMessage.body)}”`);
   const castLines = members.map(member => {
     const interval = member.leftAt ? ` · อยู่ถึง ${isoDate(member.leftAt)}` : '';
     return `- ${member.role === 'lead' ? 'Lead' : 'Member'}: ${safeLine(member.alias)} · เข้าร่วม ${isoDate(member.joinedAt)}${interval}`;
@@ -1098,6 +1166,10 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
     ? 'การเดินทางหยุดก่อนกำหนด แต่ทุก Commit และการช่วยกันที่เกิดขึ้นยังเป็นหลักฐานของชีวิตจริง ไม่ถูกลบทิ้งหรือปลอมให้เป็นชัยชนะ'
     : `ตี้ปิดฉากด้วย ${commits.length} Commit และความคืบหน้า ${completion}% ของกรอบเวลาที่ตั้งใจไว้`;
   const names = members.map(member => safeLine(member.alias)).join(', ') || 'เพื่อนในตี้';
+  const turningPoint = selectTurningPoint({
+    events, messages, peakDay, fullCommitDay: togetherDay, context,
+  });
+  const visualCues = [...context.visualCues, ...context.objectCues];
 
   return `# XTY Party Ending — ${safeLine(party.name)}
 
@@ -1106,12 +1178,12 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
 ## Party
 
 - สถานะตอนจบ: ${endingKind}
-- กิจกรรม: ${safeLine(party.activity)}
+- กิจกรรม: ${safeLine(context.activityText)}
 - กติกา Commit: ${safeLine(party.commitRule)}
 - ระยะเวลา: ${duration} วัน
 - เริ่ม: ${isoDate(party.startAt || party.createdAt)}
 - จบ: ${isoDate(party.endAt || party.endedAt || generatedAt)}
-- Preset: ${safeLine(party.preset, 'casual')}
+- รูปแบบตี้: ${safeLine(party.preset, 'casual')}
 - สีประจำตี้: ${safeLine(party.color, 'green')}
 - Lead Card: ${leadCard ? cardNameTh(leadCard) : safeLine(party.leadCardId)}
 - PET / NPC: ${safeLine(companion)}
@@ -1119,6 +1191,19 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
 ## Cast
 
 ${castLines.join('\n')}
+
+## Activity Preset Context
+
+- Preset: ${safeLine(context.label)} (${safeLine(context.key)})
+- Category: ${safeLine(context.category)}
+- Tone: ${safeList(context.tone)}
+- Story Frame: ${safeLine(context.storyFrame)}
+- Success Meaning: ${safeLine(context.successMeaning)}
+- Team Meaning: ${safeLine(context.teamMeaning)}
+- Visual Cues: ${safeList(visualCues)}
+- Ending Motifs: ${safeList(context.endingMotifs)}
+- Avoid: ${safeList(context.avoid)}
+${context.inferred ? `- Custom Context: infer จาก Activity “${safeLine(context.activityText)}” + Commit Rule + Quest Log จริง` : ''}
 
 ## Timeline
 
@@ -1150,18 +1235,25 @@ ${memorableMoments.join('\n')}
 
 ## Story Summary
 
-“${safeLine(party.name)}” เริ่มจากความตั้งใจเรื่อง ${safeLine(party.activity)} โดยมี ${safeLine(lead?.alias, 'หัวตี้')} และ ${safeLine(companion)} เป็นภาพจำของตี้ ทุกคนกลับมา Commit เมื่อได้ทำสิ่งที่ตกลงกันในชีวิตจริง และใช้ Message เท่าที่จำเป็นเพื่อให้ตามกันทัน
+“${safeLine(party.name)}” เริ่มจาก ${safeLine(context.storyFrame)} กติกาจริงคือ “${safeLine(party.commitRule)}” โดยมี ${safeLine(lead?.alias, 'หัวตี้')} สมาชิก ${names} และ ${safeLine(companion)} เป็นภาพจำของการเดินทาง
 
-${storyEnd} สิ่งสำคัญไม่ใช่การทำให้ประวัติดูสมบูรณ์แบบ แต่คือการเก็บร่องรอยของคนที่เคยลงมือทำร่วมกันไว้ตามจริง
+จาก Quest Log ความสำเร็จของเรื่องนี้หมายถึง ${safeLine(context.successMeaning)} และคุณค่าของทีมคือ ${safeLine(context.teamMeaning)} Turning point ที่ควรใช้เล่าเรื่องคือ ${safeLine(turningPoint)}
+
+${storyEnd} ใช้ข้อเท็จจริงจาก Timeline, Commit, Message, Reaction และ Confirm ก่อน template เสมอ อย่าทำให้ประวัติดูสมบูรณ์แบบเกินสิ่งที่เกิดขึ้นจริง
 
 ## 4-Panel Comic Prompt
 
-Create a warm, bright four-panel doodle comic drawn with colored pencils and crayons on a school notebook page. Keep every character friendly and recognizable as an animal card; no photorealism, no dark mood, no text-heavy UI, and no casino or loot-box imagery.
+Create one warm, bright school-notebook page with four static comic panels, colored-pencil and crayon texture, warm cream paper, leafy-green accents, cute premium animal characters, and small physical notebook props. Make it a collectible memory, not an app screen. No photorealism, animation, dark mood, text-heavy UI, or loot-box imagery.
 
-- Panel 1 — The beginning: ${safeLine(lead?.alias, 'the lead')} places the ${safeLine(leadCard ? cardNameTh(leadCard) : 'Lead Card')} on a notebook table and invites ${names} to begin “${safeLine(party.name)}”.
-- Panel 2 — Along the way: show small real-life actions for “${safeLine(party.activity)}”, with gentle check marks representing Commit and ${safeLine(companion)} quietly traveling beside the group.
-- Panel 3 — Turning point: use the most meaningful change from the timeline — ${safeLine(events[1] ? eventLine(events[1]) : 'the group helps one another continue on a difficult day')}.
-- Panel 4 — Ending: show the group together with ${commits.length} small notebook check marks and the feeling “${safeLine(storyEnd)}”. Leave a little blank space for the party to add its own caption.
+- Activity direction: ${safeLine(context.storyFrame)}
+- Visual cues: ${safeList(visualCues)}
+- Motifs: ${safeList(context.endingMotifs)}
+- Avoid: ${safeList(context.avoid)}
+
+- Panel 1 — Beginning: ${safeLine(context.comicGuidance.panel1)}. ${safeLine(lead?.alias, 'The lead')} places the ${safeLine(leadCard ? cardNameTh(leadCard) : 'Lead Card')} down and invites ${names} to begin “${safeLine(party.name)}”.
+- Panel 2 — Life of the Quest: ${safeLine(context.comicGuidance.panel2)}. Show real actions for “${safeLine(context.activityText)}”, gentle Commit check marks, and ${safeLine(companion)} traveling beside the group.
+- Panel 3 — Meaningful turning point: ${safeLine(turningPoint)}. Shape the scene with: ${safeLine(context.comicGuidance.panel3)}.
+- Panel 4 — Actual ending: ${safeLine(context.comicGuidance.panel4)}. Show the ${endingKind} outcome, the cast who finished together, ${commits.length} real Commit marks, and the feeling “${safeLine(storyEnd)}”. Leave a little blank space for the party to add its own caption.
 
 ## Poster Prompt
 
@@ -1169,7 +1261,7 @@ Create a cheerful notebook-doodle celebration poster for “${safeLine(party.nam
 
 ## Group Illustration Prompt
 
-Draw ${names} and ${safeLine(companion)} doing “${safeLine(party.activity)}” together in a bright colored-pencil storybook scene. Preserve each animal identity, use imperfect hand-drawn outlines, and make participation feel equally valuable.
+Draw ${names} and ${safeLine(companion)} doing “${safeLine(context.activityText)}” together in a bright colored-pencil storybook scene. Use ${safeList(context.visualCues)}. Preserve each animal identity, use imperfect hand-drawn outlines, and make participation feel equally valuable.
 
 ## Postcard Memory Prompt
 

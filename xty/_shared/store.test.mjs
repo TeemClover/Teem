@@ -17,6 +17,7 @@ const store = await import('./store.js');
 const account = await import('./account.js');
 const cards = await import('./cards.js');
 const cardUi = await import('./card-ui.js');
+const activities = await import('./activities.js');
 
 test.beforeEach(() => localStorage.clear());
 
@@ -40,7 +41,7 @@ test('legacy profile migrates without inventing a starter card', () => {
   );
 });
 
-test('catalog contains 48 common and 12 rare cards with separate cover rights', () => {
+test('catalog contains 48 common and 12 rare cards with a minimal canonical card face', () => {
   assert.equal(cards.XTY_CARDS.length, 60);
   assert.equal(cards.XTY_COMMON_CARDS.length, 48);
   assert.equal(cards.XTY_RARE_CARDS.length, 12);
@@ -64,9 +65,21 @@ test('catalog contains 48 common and 12 rare cards with separate cover rights', 
   assert.equal(cards.cardNameTh('ORANGE_CAT_GREEN_COMMON_001'), 'แมวส้ม');
   assert.match(cards.cardDescriptorTh('ORANGE_CAT_GREEN_COMMON_001'), /แมวส้ม · สีเขียว · COMMON/);
   const markup = cardUi.cardMarkup('ORANGE_CAT_GREEN_COMMON_001');
-  assert.match(markup, /class="card-accessory"/);
-  assert.match(markup, /class="color-badge">เขียว/);
-  assert.match(markup, /<b>แมวส้ม<\/b><small>สีเขียว · COMMON<\/small>/);
+  assert.match(markup, /data-color="green"/);
+  assert.match(markup, /<b>แมวส้ม<\/b>/);
+  assert.match(markup, /class="rarity-badge">COMMON/);
+  assert.doesNotMatch(markup, /card-accessory|color-badge|card-copy"><b>.*<small>/);
+});
+
+test('activity metadata is one canonical source with legacy aliases and a safe custom fallback', () => {
+  assert.equal(activities.activityMetadataById('exercise').key, 'workout');
+  assert.equal(activities.activityMetadataById('trade').category, 'trading');
+  assert.match(activities.activityMetadataById('trade').avoid.join(' '), /casino/);
+  assert.equal(activities.activityContextForParty({ activity: 'เดิน 20 นาที' }).key, 'walk');
+  const custom = activities.activityContextForParty({ activityId: 'unknown', activity: 'ฝึกพรีเซนต์' });
+  assert.equal(custom.key, 'custom');
+  assert.equal(custom.inferred, true);
+  assert.equal(custom.activityText, 'ฝึกพรีเซนต์');
 });
 
 test('new profile starts at level 1 with a free avatar and no owned cards', () => {
@@ -193,17 +206,28 @@ test('confirm mode separates waiting commits from valid progress', () => {
 test('Ending Markdown is portable and never leaks member ids', () => {
   const ending = store.buildEndingMarkdown({
     code: '01234', name: 'เดินด้วยกัน', activity: 'เดิน 20 นาที', commitRule: 'เดินจริงแล้วค่อย Commit',
-    durationDays: 7, preset: 'casual', color: 'green', state: 'DISSOLVED',
+    activityId: 'walk', durationDays: 7, preset: 'casual', color: 'green', state: 'DISSOLVED',
     createdAt: '2026-08-01T00:00:00.000Z', endedAt: '2026-08-04T00:00:00.000Z',
     memberHistory: [
       { userId: 'account:secret-lead-id', alias: 'คีน', role: 'lead', joinedAt: '2026-08-01T00:00:00.000Z' },
       { userId: 'local:secret-member-id', alias: 'กล้วย', role: 'member', joinedAt: '2026-08-01T00:00:00.000Z' },
     ],
-    members: [], events: [{ type: 'PARTY_DISSOLVED', partyDay: 4, at: '2026-08-04T00:00:00.000Z', data: {} }],
-    log: [{ seq: 1, kind: 'commit', userId: 'account:secret-lead-id', sentAt: '2026-08-01T08:00:00.000Z', retracted: false, reactions: {} }],
+    members: [], events: [
+      { type: 'PARTY_CREATED', partyDay: 1, at: '2026-08-01T00:00:00.000Z', data: { name: 'เดินด้วยกัน' } },
+      { type: 'RULE_CHANGED', partyDay: 3, at: '2026-08-03T00:00:00.000Z', data: {} },
+      { type: 'PARTY_DISSOLVED', partyDay: 4, at: '2026-08-04T00:00:00.000Z', data: {} },
+    ],
+    log: [
+      { seq: 1, kind: 'commit', userId: 'account:secret-lead-id', sentAt: '2026-08-01T08:00:00.000Z', retracted: false, reactions: {} },
+      { seq: 2, kind: 'message', userId: 'local:secret-member-id', body: 'วันนี้ช้าแต่ยังมา', sentAt: '2026-08-03T08:00:00.000Z', retracted: false, reactions: { '❤️': ['account:secret-lead-id'] } },
+    ],
   }, { generatedAt: '2026-08-05T00:00:00.000Z' });
   assert.match(ending, /# XTY Party Ending/);
   assert.match(ending, /## 4-Panel Comic Prompt/);
+  assert.match(ending, /## Activity Preset Context/);
+  assert.match(ending, /Preset: เดิน \(walk\)/);
+  assert.match(ending, /เริ่มจากก้าวเล็ก/);
+  assert.match(ending, /ปรับกติกาของตี้ระหว่างทาง/);
   assert.match(ending, /DISSOLVED/);
   assert.doesNotMatch(ending, /secret-lead-id|secret-member-id/);
 });
