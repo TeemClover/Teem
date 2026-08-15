@@ -25,10 +25,15 @@ jobs:
             exit 1
           fi
 
+          url="https://www.myclover.com/api/xty-pet"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            url="${url}?force=1"
+          fi
+
           response="$(curl --fail-with-body --show-error --silent \
             --request POST \
             --header "Authorization: Bearer ${CRON_SECRET}" \
             --header "Content-Type: application/json" \
-            https://www.myclover.com/api/xty-pet)"
+            "${url}")"
 
           echo "$response"
