@@ -5,7 +5,7 @@ const code = new URLSearchParams(location.search).get('c');
 const ACTIVE_STATES = new Set(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const COLOR_TH = Object.freeze({ red: 'แดง', green: 'เขียว', blue: 'น้ำเงิน', silver: 'เงิน' });
 const FILE_EXT = /\.(?:pdf|zip|rar|7z|tar|gz|docx?|xlsx?|pptx?|csv|tsv|txt|md|json|xml|html?|css|js|jsx|ts|tsx|png|jpe?g|gif|webp|svg|heic|mp3|m4a|wav|ogg|mp4|mov|m4v|avi|webm|epub)(?:$|[?#])/i;
-const URL_RE = /(?:https?:\/\/|www\.)[^\s<>]+/giu;
+const URL_RE = /(?:(?:https?|ftp):\/\/|www\.)[^\s<>]+|(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}(?:\/[^\s<>]*)?/giu;
 let syncing = false;
 let scheduled = false;
 
@@ -111,6 +111,10 @@ function trimUrl(raw) {
   return { url, tail };
 }
 
+function absoluteHref(url) {
+  return /^(?:https?|ftp):\/\//i.test(url) ? url : `https://${url}`;
+}
+
 function linkifyTextNode(node) {
   const text = node.nodeValue || '';
   URL_RE.lastIndex = 0;
@@ -121,7 +125,7 @@ function linkifyTextNode(node) {
     if (match.index > last) frag.append(document.createTextNode(text.slice(last, match.index)));
     const raw = match[0];
     const { url, tail } = trimUrl(raw);
-    const href = url.startsWith('www.') ? `https://${url}` : url;
+    const href = absoluteHref(url);
     const a = document.createElement('a');
     a.className = 'xty-chat-link';
     a.href = href;
@@ -153,11 +157,25 @@ function linkify(container) {
     const node = walker.currentNode;
     const parent = node.parentElement;
     if (!parent || parent.closest('a,.tag,.reward-log-card')) continue;
-    if (URL_RE.test(node.nodeValue || '')) nodes.push(node);
     URL_RE.lastIndex = 0;
+    if (URL_RE.test(node.nodeValue || '')) nodes.push(node);
   }
+  URL_RE.lastIndex = 0;
   nodes.forEach(linkifyTextNode);
   container.dataset.linkified = '1';
+}
+
+function timelineSignature(log, events) {
+  const lastPost = log[log.length - 1];
+  const lastEvent = events[events.length - 1];
+  return [
+    log.length,
+    lastPost?.seq || '',
+    lastPost?.sentAt || '',
+    events.length,
+    lastEvent?.type || '',
+    lastEvent?.at || '',
+  ].join('|');
 }
 
 function syncTimeline() {
@@ -170,18 +188,21 @@ function syncTimeline() {
   if (posts.length !== log.length) return;
 
   posts.forEach(post => linkify(post.querySelector('.txt')));
+  const visibleEvents = (Array.isArray(party.events) ? party.events : []).filter(event => eventText(event));
+  const signature = timelineSignature(log, visibleEvents);
+  if (box.dataset.xtyTimelineSignature === signature
+      && box.querySelectorAll(':scope > .party-event').length === visibleEvents.length) return;
+
   const entries = posts.map((node, index) => ({
     at: new Date(log[index]?.sentAt || 0).getTime(),
     order: index * 2 + 1,
     node,
   }));
-  const events = (Array.isArray(party.events) ? party.events : [])
-    .filter(event => eventText(event))
-    .map((event, index) => ({
-      at: new Date(event.at || 0).getTime(),
-      order: index * 2,
-      node: eventNode(event),
-    }));
+  const events = visibleEvents.map((event, index) => ({
+    at: new Date(event.at || 0).getTime(),
+    order: index * 2,
+    node: eventNode(event),
+  }));
 
   if (!entries.length && !events.length) return;
   const empty = box.querySelector(':scope > .empty');
@@ -189,6 +210,7 @@ function syncTimeline() {
   const merged = [...entries, ...events].sort((a, b) => (a.at - b.at) || (a.order - b.order));
   syncing = true;
   box.replaceChildren(...merged.map(item => item.node));
+  box.dataset.xtyTimelineSignature = signature;
   syncing = false;
 }
 
