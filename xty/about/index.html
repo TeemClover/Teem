@@ -2,6 +2,32 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<!-- ประตูโดเมน + ทางลัดสำหรับคนเก่า ต้องอยู่บนสุดและห้ามรอไฟล์นอก -->
+<script>
+(function () {
+  var base = 'https://www.myclover.com';
+
+  /* หน้านี้ถูกเสิร์ฟบนซับโดเมนเมื่อไหร่ ให้ย้ายออกก่อน ไม่งั้นกดปุ่มต่อ
+     จากตรงนี้จะเล่นอยู่บน origin เก่าแล้ว progress แยกกองอีกรอบ */
+  if (location.hostname === 'xty.myclover.com') {
+    var path = location.pathname.replace(/^\/xty(?=\/|$)/, '');
+    if (path.charAt(0) !== '/') path = '/' + path;
+    location.replace(base + '/xty' + path + location.search + location.hash);
+    return;
+  }
+
+  if (location.search.indexOf('from=xty') < 0) return;
+  var played = false;
+  try {
+    played = localStorage.getItem('mc_xty_profile') !== null
+          || localStorage.getItem('mc_xty_tokens') !== null;
+  } catch (e) {}
+  /* คนเก่าที่พิมพ์ลิงก์เดิมเข้ามา ไม่ต้องอ่านหน้าแนะนำซ้ำ พาเข้าเกมเลย */
+  if (played) { location.replace('/xty/'); return; }
+  /* คนใหม่ให้อยู่อ่านต่อ แต่เก็บ ?from=xty ออกจากช่องที่อยู่ กันแชร์ต่อแล้วงง */
+  history.replaceState(null, '', location.pathname);
+})();
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -44,8 +70,8 @@
       <h1>ตั้งตี้ แล้วออกไป<br>เล่นชีวิตจริงด้วยกัน</h1>
       <p>เล่นคนเดียวก็ได้ หรือชวนเพื่อนรวมเป็นตี้สูงสุด 5 คน เลือกเรื่องที่อยากทำ ตั้งกติกาที่ทุกคนเข้าใจ แล้วกลับมาอัปเดตกันวันละนิด</p>
       <div class="hero-actions">
-        <a class="btn gold" href="/xty/new/">+ ตั้งตี้</a>
-        <a class="btn ghost" href="/xty/join/">ใส่รหัสเข้าตี้</a>
+        <a class="btn gold" href="https://www.myclover.com/xty/new/">+ ตั้งตี้</a>
+        <a class="btn ghost" href="https://www.myclover.com/xty/join/">ใส่รหัสเข้าตี้</a>
       </div>
     </div>
     <figure class="hero-game-box">
@@ -198,7 +224,7 @@
 
   <section class="story-end">
     <img loading="lazy" decoding="async" src="/xty/assets/art/mascots/white-pom.webp" alt="ปอมขาวยิ้มชวนตั้งตี้">
-    <div><p class="kicker">READY WHEN YOU ARE</p><h2>ตั้งตี้ แล้วออกไปเล่นชีวิตจริง</h2><div class="hero-actions"><a class="btn gold" href="/xty/new/">ตั้งตี้แรก</a><a class="btn ghost" href="/xty/">กลับไป XTY</a></div></div>
+    <div><p class="kicker">READY WHEN YOU ARE</p><h2>ตั้งตี้ แล้วออกไปเล่นชีวิตจริง</h2><div class="hero-actions"><a class="btn gold" href="https://www.myclover.com/xty/new/">ตั้งตี้แรก</a><a class="btn ghost" href="https://www.myclover.com/xty/">กลับไป XTY</a></div></div>
   </section>
 </main>
 

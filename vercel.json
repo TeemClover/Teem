@@ -23,6 +23,17 @@
       "permanent": true
     },
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "xty.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/xty/about/?from=xty",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {

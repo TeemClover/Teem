@@ -1682,10 +1682,14 @@ lines = ['# สร้างอัตโนมัติจาก tools/build.py �
          '# รองรับลิงก์จากโครงตอนเก่า', '',
          '# xty.myclover.com เป็นชื่อเก่า ให้ไปรวมที่ /xty/ บนโดเมนหลัก',
          '# progress ของ XTY ผูกกับ origin ถ้าปล่อยให้เข้าสองทางของที่เซฟไว้จะคนละกอง',
-         '# กฎนี้ต้องอยู่บนสุด Cloudflare Pages ใช้กฎแรกที่ match',
+         '# กฎพวกนี้ต้องอยู่บนสุด Cloudflare Pages ใช้กฎแรกที่ match',
          '# ตัวเดียวกันนี้อยู่ใน vercel.json ด้วย เพราะเว็บขึ้นทั้งสองที่',
+         '# หน้าแรกพาไปหน้าเข้าเกม ส่วนคนที่เคยเล่นแล้วหน้านั้นจะเด้งเข้า /xty/ ให้เอง',
+         'https://xty.myclover.com/                 https://www.myclover.com/xty/about/?from=xty  301',
+         '# ลิงก์ที่ชี้หน้าไหนอยู่แล้วต้องไปหน้านั้น ห้ามเปลี่ยนปลายทาง ตี้จะพัง',
          'https://xty.myclover.com/xty/*            https://www.myclover.com/xty/:splat  301',
-         'https://xty.myclover.com/*                https://www.myclover.com/xty/:splat  301', '']
+         'https://xty.myclover.com/*                https://www.myclover.com/xty/:splat  301',
+         '']
 lines += [f'/forge/{o}/{" " * max(1, 38 - len(o))}/forge/{n}/  301' for o, n in OLD_TO_NEW]
 lines += ['', '# ตอน 8–12 จากโครงเก่า เก็บไว้ใน Version แรก ไม่ให้ชนกับชุดใหม่ 7 ตอน']
 lines += [f'/forge/{slug}/*{" " * max(1, 38 - len(slug))}/forge/original/  301'

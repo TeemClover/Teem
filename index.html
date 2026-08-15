@@ -10,17 +10,27 @@
   /* progress ของ XTY ผูกกับ origin ผ่าน localStorage ย้ายโดเมนเฉย ๆ แล้วของหาย
      ยกเฉพาะคีย์ที่สร้างใหม่ไม่ได้ ส่วน mc_xty_parties เป็นแคชที่เซิร์ฟเวอร์เติมกลับเองได้ */
   var KEYS = ['mc_xty_profile', 'mc_xty_tokens', 'c7:collection'];
-  var carry = {}, found = false;
+  var carry = {}, found = false, played = false;
   try {
     for (var i = 0; i < KEYS.length; i++) {
       var v = localStorage.getItem(KEYS[i]);
       if (v !== null) { carry[KEYS[i]] = v; found = true; }
     }
+    played = localStorage.getItem('mc_xty_profile') !== null
+          || localStorage.getItem('mc_xty_tokens') !== null;
   } catch (e) {}
   /* xty.myclover.com/p/12345 กับ xty.myclover.com/xty/p/12345 คือที่เดียวกัน */
   var path = location.pathname.replace(/^\/xty(?=\/|$)/, '');
   if (path.charAt(0) !== '/') path = '/' + path;
-  var deep = '/xty' + (path === '/' ? '/' : path) + location.search + location.hash;
+  var q = location.search;
+  var deep;
+  if (path === '/') {
+    /* เข้าหน้าแรกของซับโดเมน คนยังไม่เคยเล่นให้แวะอ่านหน้าเข้าเกมก่อน
+       ส่วนลิงก์ที่ชี้ตรงหน้าไหนอยู่แล้วห้ามเปลี่ยนปลายทาง ตี้จะพัง */
+    deep = played ? ('/xty/' + q) : ('/xty/about/' + (q ? q + '&from=xty' : '?from=xty'));
+  } else {
+    deep = '/xty' + path + q + location.hash;
+  }
   var base = 'https://www.myclover.com';
   var payload = '';
   if (found) {

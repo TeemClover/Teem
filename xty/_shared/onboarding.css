@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════════════════════════════
+   XTY — ป้ายบอกทางตอนเริ่มใช้
+
+   สามชิ้นที่ใช้ร่วมกัน: ป๊อปอัปบอกว่าย้ายบ้านแล้ว ป๊อปอัปกติกา
+   และการ์ดชวนบันทึกตี้ไว้ที่หน้าจอโฮม ทั้งหมดยืมโทเคนจาก xty.css
+   ═══════════════════════════════════════════════════════════════ */
+
+.xo-dialog{
+  width:min(94vw,460px);max-height:90svh;padding:0;
+  border:2px solid var(--xty-ink);border-radius:24px;
+  background:var(--xty-surface);color:var(--xty-ink);
+  box-shadow:6px 8px 0 rgba(62,51,44,.14);
+}
+.xo-dialog::backdrop{background:rgba(25,22,20,.62);backdrop-filter:blur(3px)}
+.xo-inner{padding:24px 22px 20px;overflow-y:auto;max-height:90svh}
+
+.xo-badge{
+  display:inline-block;margin:0 0 12px;padding:5px 12px;border-radius:999px;
+  background:var(--xty-paper);color:var(--xty-primary);
+  font:800 10.5px/1.3 var(--sans);letter-spacing:.18em;
+}
+.xo-dialog h2{margin:0 0 10px;font-size:21px;line-height:1.35}
+.xo-lead{margin:0 0 16px;color:var(--xty-muted);font-size:14.5px;line-height:1.62}
+
+/* รายการกติกา — หนึ่งบรรทัดหนึ่งกลไก อ่านจบใน 20 วินาที */
+.xo-rules{margin:0 0 18px;padding:0;list-style:none;display:grid;gap:10px}
+.xo-rules li{
+  display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:start;
+  padding:12px 14px;border:1px solid var(--xty-border);border-radius:14px;
+  background:var(--xty-bg);
+}
+.xo-rules b{font-size:14.5px}
+.xo-rules span{display:block;margin-top:2px;color:var(--xty-muted);font-size:13px;line-height:1.55}
+.xo-ico{font-size:19px;line-height:1.2}
+
+.xo-steps{margin:0 0 18px;padding-left:20px;color:var(--xty-muted);font-size:13.5px;line-height:1.7}
+.xo-steps li{margin-bottom:5px}
+.xo-steps b{color:var(--xty-ink)}
+
+.xo-actions{display:grid;gap:9px}
+.xo-actions .btn{width:100%}
+
+/* การ์ดชวนบันทึกไว้ที่หน้าจอโฮม — อยู่ในหน้าตี้ ปิดแล้วไม่กวนอีก */
+.xo-save-card{
+  position:relative;margin:0 0 16px;padding:16px 16px 15px;
+  border:2px dashed var(--xty-primary);border-radius:18px;background:var(--xty-paper);
+}
+.xo-save-card h3{margin:0 0 6px;font-size:15.5px}
+.xo-save-card p{margin:0 0 12px;color:var(--xty-muted);font-size:13.2px;line-height:1.6}
+.xo-save-card .btn{min-height:46px;font-size:15px}
+.xo-save-actions{display:flex;gap:8px;flex-wrap:wrap}
+.xo-save-actions .btn{flex:1 1 150px;width:auto}
+.xo-dismiss{
+  position:absolute;top:9px;right:9px;width:30px;height:30px;padding:0;
+  border:1px solid var(--xty-border);border-radius:50%;background:var(--xty-surface);
+  color:var(--xty-muted);font-size:15px;font-weight:800;line-height:1;
+}
+
+@media (max-width:430px){
+  .xo-inner{padding:20px 17px 17px}
+  .xo-dialog h2{font-size:19px}
+  .xo-save-actions .btn{flex:1 1 100%}
+}

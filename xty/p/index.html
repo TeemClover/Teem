@@ -25,6 +25,7 @@
 <meta name="twitter:image:alt" content="XTY — ตั้งตี้ทำอะไรก็ได้ ชวนเพื่อนทำของจริง แล้วกลับมา Commit ด้วยกัน">
 <!-- /XTY SOCIAL SHARE -->
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
+<link rel="stylesheet" href="/xty/_shared/onboarding.css?v=1">
 </head>
 <body>
 
@@ -203,6 +204,7 @@ import { PET_BY_ID, XTY_V1_PETS } from '/xty/_shared/pets.js';
 import { AVATAR_BY_ID, XTY_AVATARS, AVATAR_FRAMES } from '/xty/_shared/avatars.js';
 import { cardById, cardDescriptorTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
+import { showRulesIntro, mountSaveToHome } from '/xty/_shared/onboarding.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
@@ -226,6 +228,16 @@ async function start() {
   myId = (partyIdentity(code) && partyIdentity(code).userId) || myId;
   if (fresh.error || fresh.party) render();
   if (fresh.error === 'OFFLINE') toast('ออฟไลน์อยู่ — แสดงข้อมูลล่าสุดในเครื่องนี้');
+  welcome();
+}
+
+/* เข้าตี้ได้แล้วค่อยพูด ไม่งั้นทักตั้งแต่ยังไม่รู้ว่าตี้มีจริงไหม
+   การ์ดเกาะ main ไม่ใช่ #shell เพราะ render() เขียนทับ #shell ทุกครั้ง */
+function welcome() {
+  const party = getParty(code);
+  if (!party) return;
+  showRulesIntro();
+  mountSaveToHome(document.querySelector('main.wrap'), party.name || 'ตี้ของฉัน');
 }
 
 function esc(s) {

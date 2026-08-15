@@ -11,16 +11,24 @@
 
   if (location.hostname === 'xty.myclover.com') {
     var KEYS = ['mc_xty_profile', 'mc_xty_tokens', 'c7:collection'];
-    var carry = {}, found = false;
+    var carry = {}, found = false, played = false;
     try {
       for (var i = 0; i < KEYS.length; i++) {
         var v = localStorage.getItem(KEYS[i]);
         if (v !== null) { carry[KEYS[i]] = v; found = true; }
       }
+      played = localStorage.getItem('mc_xty_profile') !== null
+            || localStorage.getItem('mc_xty_tokens') !== null;
     } catch (e) {}
     var path = location.pathname.replace(/^\/xty(?=\/|$)/, '');
     if (path.charAt(0) !== '/') path = '/' + path;
-    var deep = '/xty' + (path === '/' ? '/' : path) + location.search + location.hash;
+    var q = location.search;
+    var deep;
+    if (path === '/') {
+      deep = played ? ('/xty/' + q) : ('/xty/about/' + (q ? q + '&from=xty' : '?from=xty'));
+    } else {
+      deep = '/xty' + path + q + location.hash;
+    }
     var payload = '';
     if (found) {
       try { payload = encodeURIComponent(JSON.stringify(carry)); } catch (e) { payload = ''; }
@@ -78,6 +86,7 @@
 <!-- /XTY SOCIAL SHARE -->
 <meta name="description" content="ชวนเพื่อนมาตั้งตี้ ทำของจริง แล้วกลับมา Commit ด้วยกัน จะตั้งตี้เองหรือเข้าตี้ของเพื่อนก็ได้">
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
+<link rel="stylesheet" href="/xty/_shared/onboarding.css?v=1">
 <!-- XTY SEO SCHEMA -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"XTY — ตั้งตี้ทำอะไรก็ได้","url":"https://www.myclover.com/xty/","description":"ชวนเพื่อนมาตั้งตี้ ทำของจริง แล้วกลับมา Commit ด้วยกัน","image":"https://www.myclover.com/xty/assets/xty-og-share-1200x630.jpg","applicationCategory":"LifestyleApplication","operatingSystem":"Web","isPartOf":{"@type":"WebSite","name":"myClover","url":"https://www.myclover.com/"}}</script>
 <!-- /XTY SEO SCHEMA -->
@@ -205,6 +214,11 @@ import { XTY_AVATARS, AVATAR_FRAMES, avatarById } from '/xty/_shared/avatars.js'
 import { cardById, cardNameTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
 import { saveCloudProgress, syncXtyProfile } from '/xty/_shared/account.js';
+import { showOriginNotice } from '/xty/_shared/onboarding.js';
+
+/* คนที่เคยเล่นตอนยังเข้าทาง xty.myclover.com ควรรู้ว่าย้ายมารวมที่นี่แล้ว
+   ตัวฟังก์ชันเช็คเองว่าเคยเล่นไหมและเคยเห็นหรือยัง เด้งครั้งเดียวจบ */
+showOriginNotice();
 
 const $ = id => document.getElementById(id);
 let accountState = { authenticated: false, user: null };
