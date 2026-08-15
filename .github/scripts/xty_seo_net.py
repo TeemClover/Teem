@@ -1,0 +1,159 @@
+from pathlib import Path
+import re, json
+
+pages = {
+    'xty/index.html': {
+        'title': 'XTY — หาตี้ สร้างตี้ หาเพื่อนทำกิจกรรม | วิ่ง อ่านหนังสือ ทำเป้าหมายด้วยกัน',
+        'desc': 'XTY พื้นที่ตั้งตี้ 2–5 คนสำหรับทำของจริงด้วยกัน หาตี้สาธารณะ หาเพื่อนวิ่ง ออกกำลังกาย ลดน้ำหนัก อ่านหนังสือ เรียน ทำโปรเจกต์ งานอาสา แล้วกลับมา Commit ให้กัน',
+        'url': 'https://www.myclover.com/xty/', 'type': 'WebApplication'},
+    'xty/about/index.html': {
+        'title': 'XTY คืออะไร — Real-Life Party Game สำหรับทำเป้าหมายด้วยกัน',
+        'desc': 'รู้จัก XTY เกมตี้ในชีวิตจริงสำหรับ 2–5 คน ตั้งเป้าหมายร่วมกัน ออกไปทำจริง แล้วกลับมา Commit เหมาะกับกลุ่มวิ่ง อ่านหนังสือ สุขภาพ การเรียน งาน และกิจกรรมกับเพื่อน',
+        'url': 'https://www.myclover.com/xty/about/', 'type': 'WebPage'},
+    'xty/about/why/index.html': {
+        'title': 'ทำเป้าหมายด้วยกันแบบไม่ต้องคุยทั้งวัน — ทำไมต้อง XTY',
+        'desc': 'XTY ช่วยกลุ่มเล็ก 2–5 คนทำเป้าหมายร่วมกันโดยไม่สร้างหนี้ข้อความ เหมาะกับเพื่อนวิ่ง กลุ่มอ่านหนังสือ กลุ่มเรียน ทีมโปรเจกต์ และ accountability group',
+        'url': 'https://www.myclover.com/xty/about/why/', 'type': 'WebPage'},
+    'xty/about/how/index.html': {
+        'title': 'วิธีสร้างตี้ หาเพื่อน และ Commit เป้าหมายร่วมกัน | XTY',
+        'desc': 'วิธีใช้ XTY แบบสั้น ๆ: สร้างตี้หรือเข้าตี้ ตั้งกติกาว่าอะไรนับเป็น Commit ออกไปทำจริง แล้วกลับมาอัปเดต เหมาะกับวิ่ง อ่านหนังสือ เรียน งาน และ challenge กลุ่มเล็ก',
+        'url': 'https://www.myclover.com/xty/about/how/', 'type': 'HowTo'},
+    'xty/about/what/index.html': {
+        'title': 'ตั้งตี้ทำอะไรได้บ้าง — วิ่ง ลดน้ำหนัก อ่านหนังสือ เรียน ทำงาน | XTY',
+        'desc': 'ไอเดียตั้งตี้ XTY: หาเพื่อนวิ่ง กลุ่มวิ่ง ออกกำลังกาย ดูแลน้ำหนัก อ่านหนังสือ Book Club เรียนภาษา แชร์ความรู้ ทำโปรเจกต์ งานอาสา และกิจกรรมที่อยากทำให้เกิดขึ้นจริง',
+        'url': 'https://www.myclover.com/xty/about/what/', 'type': 'WebPage'},
+    'xty/public/index.html': {
+        'title': 'หาตี้ หาเพื่อนทำกิจกรรม — กลุ่มวิ่ง อ่านหนังสือ ออกกำลังกาย | XTY',
+        'desc': 'หาตี้สาธารณะใน XTY อ่านรายละเอียดและ Party Log ก่อนเข้าร่วม ใช้หาเพื่อนทำกิจกรรม เช่น วิ่ง ออกกำลังกาย อ่านหนังสือ เรียน ทำโปรเจกต์ แชร์ความรู้ และงานอาสา',
+        'url': 'https://www.myclover.com/xty/public/', 'type': 'CollectionPage'},
+}
+
+image = 'https://www.myclover.com/xty/assets/xty-og-share-1200x630.jpg'
+robots = '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">'
+googlebot = '<meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">'
+
+def replace_meta(text, attr, key, value):
+    pat = rf'<meta\s+{attr}=["\']{re.escape(key)}["\'][^>]*>'
+    tag = f'<meta {attr}="{key}" content="{value}">'
+    return re.sub(pat, tag, text, count=1, flags=re.I) if re.search(pat, text, flags=re.I) else text
+
+for filename, cfg in pages.items():
+    path = Path(filename)
+    text = path.read_text(encoding='utf-8')
+    text = re.sub(r'<meta\s+name=["\']robots["\'][^>]*>', robots, text, count=1, flags=re.I)
+    if re.search(r'<meta\s+name=["\']googlebot["\'][^>]*>', text, flags=re.I):
+        text = re.sub(r'<meta\s+name=["\']googlebot["\'][^>]*>', googlebot, text, count=1, flags=re.I)
+    else:
+        text = text.replace(robots, robots + '\n' + googlebot, 1)
+    text = re.sub(r'<title>.*?</title>', f'<title>{cfg["title"]}</title>', text, count=1, flags=re.I|re.S)
+    text = replace_meta(text, 'name', 'description', cfg['desc'])
+    text = replace_meta(text, 'property', 'og:title', cfg['title'])
+    text = replace_meta(text, 'property', 'og:description', cfg['desc'])
+    text = replace_meta(text, 'name', 'twitter:title', cfg['title'])
+    text = replace_meta(text, 'name', 'twitter:description', cfg['desc'])
+    text = re.sub(r'\s*<link\s+rel=["\']canonical["\'][^>]*>\s*', '\n', text, flags=re.I)
+    title_end = re.search(r'</title>', text, flags=re.I)
+    if title_end:
+        text = text[:title_end.end()] + f'\n<link rel="canonical" href="{cfg["url"]}">' + text[title_end.end():]
+    if '/xty/_shared/seo.css' not in text:
+        text = text.replace('</head>', '<link rel="stylesheet" href="/xty/_shared/seo.css?v=1">\n</head>', 1)
+    schema = {'@context':'https://schema.org','@type':cfg['type'],'name':cfg['title'].split(' | ')[0],'url':cfg['url'],'description':cfg['desc'],'image':image}
+    if cfg['type'] == 'WebApplication':
+        schema.update({'applicationCategory':'LifestyleApplication','operatingSystem':'Web','isPartOf':{'@type':'WebSite','name':'myClover','url':'https://www.myclover.com/'}})
+    if cfg['type'] == 'HowTo':
+        schema['step'] = [
+            {'@type':'HowToStep','position':1,'name':'สร้างตี้หรือเข้าตี้','text':'เริ่มตี้ 2–5 คน หรือเข้าร่วมตี้ที่เพื่อนส่งรหัสมาให้'},
+            {'@type':'HowToStep','position':2,'name':'ตั้งกติกา Commit','text':'ตกลงให้ชัดว่าวันนี้ทำอะไรถึงนับเป็น Commit'},
+            {'@type':'HowToStep','position':3,'name':'ออกไปทำจริงแล้วกลับมา Commit','text':'ทำกิจกรรมในชีวิตจริงก่อน แล้วกลับมาอัปเดตให้ตี้รู้'}]
+    block = '<!-- XTY SEO SCHEMA -->\n<script type="application/ld+json">' + json.dumps(schema, ensure_ascii=False, separators=(',',':')) + '</script>\n<!-- /XTY SEO SCHEMA -->'
+    text = re.sub(r'\s*<!-- XTY SEO SCHEMA -->.*?<!-- /XTY SEO SCHEMA -->\s*', '\n', text, flags=re.I|re.S)
+    text = text.replace('</head>', block + '\n</head>', 1)
+    path.write_text(text, encoding='utf-8')
+
+# Home discovery net
+p=Path('xty/index.html'); text=p.read_text(encoding='utf-8')
+home='''<!-- XTY SEO DISCOVERY -->
+  <section class="seo-net" aria-labelledby="xty-discovery-title">
+    <p class="kicker">FIND YOUR PARTY</p>
+    <h2 id="xty-discovery-title">หาตี้ หาเพื่อนทำกิจกรรม หรือสร้างกลุ่มเล็กของตัวเอง</h2>
+    <p class="seo-lede">XTY คือพื้นที่สำหรับคน 2–5 คนที่อยากทำอะไรให้เกิดขึ้นจริงด้วยกัน จะชวนเพื่อนเดิมมาตั้งตี้ หรือเปิดดูตี้สาธารณะเพื่อหาเพื่อนใหม่ก็ได้ กติกาง่าย ๆ คือทำของจริงก่อน แล้วกลับมา Commit ให้กันเห็นว่าไปถึงไหนแล้ว</p>
+    <div class="seo-intent-grid">
+      <article class="seo-intent"><h3>วิ่ง · ออกกำลังกาย · ดูแลน้ำหนัก</h3><p>ใช้เป็นกลุ่มวิ่ง หาเพื่อนวิ่ง นัดเดิน ออกกำลังกาย หรือทำ challenge สุขภาพร่วมกัน XTY ช่วยเรื่องการลงมือทำและ accountability ไม่ได้แทนคำแนะนำทางการแพทย์หรือโภชนาการ</p><a href="/xty/about/what/">ดูตัวอย่างตี้สุขภาพและกิจกรรม</a></article>
+      <article class="seo-intent"><h3>อ่านหนังสือ · Book Club · เรียนภาษา</h3><p>ตั้งเป้าอ่านวันละกี่หน้า แชร์สิ่งที่ได้เรียนรู้ ฝึกภาษา เตรียมสอบ หรือทำ study group เล็ก ๆ ที่ไม่ต้องคุยทั้งวัน</p><a href="/xty/about/how/">ดูวิธีตั้งกติกา Commit</a></article>
+      <article class="seo-intent"><h3>ทำงาน · Side Project · Accountability</h3><p>หาเพื่อนทำโปรเจกต์ ทำเว็บ สร้างคอนเทนต์ เริ่มธุรกิจ หรือมีเพื่อนคอยเช็กว่าแต่ละวันขยับงานจริงหรือยัง</p><a href="/xty/about/why/">ทำไมกลุ่มเล็กถึงช่วยให้ไปต่อได้</a></article>
+      <article class="seo-intent"><h3>แชร์ความรู้ · งานอาสา · กิจกรรมกับเพื่อน</h3><p>ตั้งตี้สำหรับแบ่งปันความรู้ นัดทำงานอาสา งานชุมชน งานสร้างสรรค์ บอร์ดเกม หรือกิจกรรมอะไรก็ได้ที่กำหนดได้ว่าอะไรนับเป็นการลงมือทำ</p><a href="/xty/public/">หาตี้สาธารณะที่กำลังเปิดอยู่</a></article>
+    </div>
+    <div class="seo-faq"><h3>ใช้ XTY กับโค้ชหรือคลาสได้ไหม?</h3><p>ได้ ถ้ามีโค้ช เมนเทอร์ หรือกลุ่มอยู่แล้ว สามารถใช้ XTY เป็นพื้นที่ตั้งเป้าและ Commit ระหว่างครั้งได้ ส่วน XTY เองไม่ใช่ตลาดรับรองหรือจับคู่โค้ช</p><h3>ไม่มีเพื่อนเริ่มด้วยได้ไหม?</h3><p>ได้ เปิด <a href="/xty/public/">หน้าหาตี้สาธารณะ</a> เพื่ออ่านรายละเอียดและ Party Log ก่อนตัดสินใจเข้าร่วม หรือ <a href="/xty/new/">สร้างตี้ของตัวเอง</a> แล้วส่งลิงก์ชวนคนที่อยากทำเรื่องเดียวกัน</p></div>
+    <nav class="seo-links" aria-label="ทางเข้าหลักของ XTY"><a href="/xty/public/">หาตี้และหาเพื่อนทำกิจกรรม</a><a href="/xty/new/">สร้างตี้ใหม่</a><a href="/xty/about/">XTY คืออะไร</a><a href="/xty/about/what/">ดูว่า XTY ใช้ทำอะไรได้บ้าง</a></nav>
+  </section>
+<!-- /XTY SEO DISCOVERY -->'''
+text=re.sub(r'\s*<!-- XTY SEO DISCOVERY -->.*?<!-- /XTY SEO DISCOVERY -->\s*','\n',text,flags=re.S)
+text=text.replace('</main>',home+'\n</main>',1); p.write_text(text,encoding='utf-8')
+
+# Public lobby intent copy
+p=Path('xty/public/index.html'); text=p.read_text(encoding='utf-8')
+public='''<!-- XTY PUBLIC DISCOVERY -->
+  <section class="seo-net" aria-labelledby="public-use-title">
+    <h2 id="public-use-title">กำลังหาเพื่อนทำอะไรอยู่?</h2>
+    <p class="seo-lede">ตี้สาธารณะอาจเป็นกลุ่มวิ่ง กลุ่มออกกำลังกาย กลุ่มอ่านหนังสือ Study Group กลุ่มทำโปรเจกต์ แชร์ความรู้ งานอาสา หรือ challenge เล็ก ๆ อ่านประวัติตี้ก่อน แล้วค่อยเลือกว่ากลุ่มไหนเหมาะกับคุณ</p>
+    <ul class="seo-topic-list" aria-label="ตัวอย่างกิจกรรม"><li>หาเพื่อนวิ่ง</li><li>กลุ่มวิ่ง</li><li>ออกกำลังกาย</li><li>ดูแลน้ำหนัก</li><li>อ่านหนังสือ</li><li>Book Club</li><li>เรียนภาษา</li><li>แชร์ความรู้</li><li>Accountability</li><li>ทำโปรเจกต์</li><li>งานอาสา</li><li>กิจกรรมกับเพื่อน</li></ul>
+    <div class="seo-links"><a href="/xty/about/what/">ดูไอเดียตั้งตี้เพิ่มเติม</a><a href="/xty/about/how/">ดูวิธีเล่น XTY</a><a href="/xty/new/">สร้างตี้ของตัวเอง</a></div>
+  </section>
+<!-- /XTY PUBLIC DISCOVERY -->'''
+text=re.sub(r'\s*<!-- XTY PUBLIC DISCOVERY -->.*?<!-- /XTY PUBLIC DISCOVERY -->\s*','\n',text,flags=re.S)
+text=text.replace('<div class="public-list" id="list">',public+'\n  <div class="public-list" id="list">',1); p.write_text(text,encoding='utf-8')
+
+# WHAT long-tail hub
+p=Path('xty/about/what/index.html'); text=p.read_text(encoding='utf-8')
+what='''<!-- XTY LONG TAIL USE CASES -->
+  <section class="seo-net" aria-labelledby="search-intent-title">
+    <p class="kicker">START FROM WHAT YOU WANT TO DO</p><h2 id="search-intent-title">ถ้ากำลังหาเพื่อนทำเรื่องเดียวกัน XTY ใช้เป็นจุดนัดได้</h2>
+    <p class="seo-lede">ไม่ต้องเริ่มจากคำว่าเกม เริ่มจากเรื่องที่อยากทำให้สำเร็จ แล้วเปลี่ยนมันเป็นกติกา Commit ที่กลุ่มเข้าใจตรงกัน</p>
+    <div class="seo-intent-grid">
+      <article class="seo-intent"><h3>หาเพื่อนวิ่ง หรือหากลุ่มวิ่ง</h3><p>ตั้งระยะ เวลา หรือจำนวนวันที่จะออกไปวิ่ง แล้ว Commit หลังทำจริง เหมาะกับเพื่อนวิ่งกลุ่มเล็กที่ไม่ต้องการแชตคุยทั้งวัน</p></article>
+      <article class="seo-intent"><h3>หาเพื่อนออกกำลังกาย หรือดูแลน้ำหนักด้วยกัน</h3><p>ใช้ติดตามพฤติกรรมที่กลุ่มตกลงกัน เช่น เดิน ออกกำลัง นอนให้พอ หรือทำตามแผนของผู้เชี่ยวชาญที่คุณเลือกเอง โดย XTY ไม่วินิจฉัยหรือให้แผนการรักษา</p></article>
+      <article class="seo-intent"><h3>อ่านหนังสือด้วยกัน · Book Club · แชร์ความรู้</h3><p>กำหนดจำนวนหน้า บท หรือหัวข้อที่อ่าน แล้วกลับมา Commit หรือฝากโน้ตสั้น ๆ ว่าเจออะไรน่าสนใจ</p></article>
+      <article class="seo-intent"><h3>หาเพื่อนเรียน · เรียนภาษา · เตรียมสอบ</h3><p>สร้าง Study Group เล็ก ๆ ตั้งกติกาว่าวันนี้ต้องเรียน ฝึก หรือทำโจทย์อะไรถึงนับ แล้วเห็นความต่อเนื่องของเพื่อนในตี้</p></article>
+      <article class="seo-intent"><h3>Accountability Partner · ทำงาน · ทำโปรเจกต์</h3><p>เหมาะกับคนทำงานอิสระ สร้างเว็บ ทำคอนเทนต์ Side Project หรือทีมเล็กที่อยากเห็นว่าทุกวันงานขยับจริง</p></article>
+      <article class="seo-intent"><h3>งานอาสา · ชุมชน · งานสร้างสรรค์</h3><p>นัดทำงานอาสา เตรียมกิจกรรมชุมชน ฝึกดนตรี วาดรูป ทำของ หรือกิจกรรมกับเพื่อนที่ต้องการทั้งความสนุกและการลงมือจริง</p></article>
+    </div><nav class="seo-links"><a href="/xty/public/">หาตี้สาธารณะ</a><a href="/xty/new/">สร้างตี้ของคุณ</a><a href="/xty/about/how/">ดูวิธีตั้งกติกา Commit</a></nav>
+  </section>
+<!-- /XTY LONG TAIL USE CASES -->'''
+text=re.sub(r'\s*<!-- XTY LONG TAIL USE CASES -->.*?<!-- /XTY LONG TAIL USE CASES -->\s*','\n',text,flags=re.S)
+text=text.replace('<section aria-labelledby="relation-title">',what+'\n\n  <section aria-labelledby="relation-title">',1); p.write_text(text,encoding='utf-8')
+
+# About hub discovery copy
+p=Path('xty/about/index.html'); text=p.read_text(encoding='utf-8')
+about='''<!-- XTY ABOUT DISCOVERY -->
+  <section class="seo-net" aria-labelledby="about-discovery-title"><h2 id="about-discovery-title">เริ่มจากสิ่งที่คุณอยากทำ ไม่ใช่จากหน้าจอ</h2><p class="seo-lede">บางคนเข้ามาเพราะอยากหาเพื่อนวิ่ง บางคนอยากมี Book Club กลุ่มเรียน คนช่วยกันทำโปรเจกต์ หรือเพื่อนคอย Commit เรื่องสุขภาพ XTY ใช้โครงเดียวกันกับทั้งหมด: ตั้งตี้ 2–5 คน ตกลงกติกา แล้วออกไปทำจริง</p><nav class="seo-links"><a href="/xty/about/what/">ดูตัวอย่างตี้: วิ่ง อ่านหนังสือ สุขภาพ งาน และกิจกรรมอื่น</a><a href="/xty/public/">หาตี้สาธารณะและอ่าน Party Log</a><a href="/xty/about/how/">วิธีสร้างตี้และ Commit</a></nav></section>
+<!-- /XTY ABOUT DISCOVERY -->'''
+text=re.sub(r'\s*<!-- XTY ABOUT DISCOVERY -->.*?<!-- /XTY ABOUT DISCOVERY -->\s*','\n',text,flags=re.S)
+text=text.replace('<section class="story-section problem-story">',about+'\n\n  <section class="story-section problem-story">',1); p.write_text(text,encoding='utf-8')
+
+# WHY/HOW contextual internal links
+for filename, marker, links in [
+    ('xty/about/why/index.html','<section class="end-cta">','<nav class="seo-links" aria-label="ค้นหา XTY ตามสิ่งที่อยากทำ"><a href="/xty/public/">หาตี้และหาเพื่อนทำกิจกรรม</a><a href="/xty/about/what/">ไอเดียกลุ่มวิ่ง อ่านหนังสือ งาน และสุขภาพ</a><a href="/xty/about/how/">วิธีเล่น XTY</a></nav>'),
+    ('xty/about/how/index.html','<section class="end-cta">','<nav class="seo-links" aria-label="ไปต่อใน XTY"><a href="/xty/public/">หาตี้สาธารณะ</a><a href="/xty/about/what/">ดูว่า XTY ใช้ทำอะไรได้บ้าง</a><a href="/xty/new/">สร้างตี้แรก</a></nav>')]:
+    p=Path(filename); text=p.read_text(encoding='utf-8')
+    text=re.sub(r'\s*<!-- XTY CONTEXT LINKS -->.*?<!-- /XTY CONTEXT LINKS -->\s*','\n',text,flags=re.S)
+    text=text.replace(marker,'<!-- XTY CONTEXT LINKS -->\n  '+links+'\n<!-- /XTY CONTEXT LINKS -->\n\n  '+marker,1)
+    p.write_text(text,encoding='utf-8')
+
+# Sitemap canonical discovery URLs only
+sp=Path('sitemap.xml'); sm=sp.read_text(encoding='utf-8')
+urls=[cfg['url'] for cfg in pages.values()]
+for url in urls:
+    sm=re.sub(rf'\s*<url>\s*<loc>{re.escape(url)}</loc>.*?</url>\s*','\n',sm,flags=re.S)
+entries=''.join(f'  <url>\n    <loc>{url}</loc>\n    <lastmod>2026-08-15</lastmod>\n  </url>\n' for url in urls)
+sm=sm.replace('</urlset>',entries+'</urlset>'); sp.write_text(sm,encoding='utf-8')
+
+# Validate
+import xml.etree.ElementTree as ET
+for f in pages:
+    t=Path(f).read_text(encoding='utf-8')
+    tag=re.search(r'<meta name="robots"[^>]*>',t,re.I)
+    assert tag and 'noindex' not in tag.group(0).lower(), f
+    assert '<link rel="canonical"' in t, f
+    assert '/xty/_shared/seo.css?v=1' in t, f
+ET.parse('sitemap.xml')
+print('XTY SEO net OK:', ', '.join(pages))
