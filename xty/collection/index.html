@@ -47,7 +47,7 @@
 
 <script type="module">
 import {
-  getProfile, hasProfile, ownedCardIds, cardAvailability, useCardAsAvatar,
+  getProfile, hasProfile, updateProfile, ownedCardIds, cardAvailability, useCardAsAvatar,
   allParties, isActiveParty, partyIdentity, syncCollectionDebugCode,
 } from '/xty/_shared/store.js';
 import { XTY_CARDS, XTY_RARITY_META, cardById, cardDescriptorTh, cardNameTh } from '/xty/_shared/cards.js';
@@ -91,16 +91,75 @@ function openCard(cardId) {
   if (typeof $('detail').showModal === 'function') $('detail').showModal(); else $('detail').setAttribute('open', '');
 }
 
+async function runLevel2Test() {
+  const account = await syncXtyProfile();
+  if (!account?.authenticated) {
+    return { ok: false, message: 'ต้องล็อกอินด้วยบัญชี MY-2026-0003 ก่อนใช้ level2test' };
+  }
+
+  const ownedParty = allParties().find(party => {
+    const identity = partyIdentity(party.code);
+    return isActiveParty(party) && identity?.token && identity?.userId && party.ownerId === identity.userId;
+  });
+  if (!ownedParty) {
+    return { ok: false, message: 'ต้องมี Quest ที่คุณเป็นหัวตี้และกำลังเล่นอยู่ก่อนใช้ level2test' };
+  }
+
+  const identity = partyIdentity(ownedParty.code);
+  const headers = { accept: 'application/json', 'content-type': 'application/json' };
+  if (identity?.token) headers.authorization = `Bearer ${identity.token}`;
+
+  let response;
+  try {
+    response = await fetch(`/api/xty-party-finish?op=debug-level2&code=${encodeURIComponent(ownedParty.code)}`, {
+      method: 'POST', credentials: 'same-origin', headers,
+      body: JSON.stringify({ profileId: getProfile()?.id || '' }),
+    });
+  } catch {
+    return { ok: false, message: 'เชื่อม Server ไม่ได้ ลองใหม่อีกครั้ง' };
+  }
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.error) {
+    const messages = {
+      DEBUG_FORBIDDEN: 'รหัสนี้เปิดไว้เฉพาะ MY-2026-0003',
+      AUTH_REQUIRED: 'ต้องล็อกอินบัญชี MY-2026-0003 ก่อน',
+      LEAD_REQUIRED: 'Quest ที่ใช้ทดสอบต้องเป็นตี้ที่คุณเป็นหัวตี้',
+      PARTY_CLOSED: 'Quest นี้ปิดไปแล้ว ต้องใช้ตี้ที่กำลังเล่นอยู่',
+    };
+    return { ok: false, message: messages[data.error] || `ยังตั้ง LV.2 ไม่ได้ · ${data.error || response.status}` };
+  }
+
+  if (data.progression) {
+    updateProfile({
+      level: data.progression.level,
+      paidTier: data.progression.paidTier,
+      bonusSlotEntitlement: data.progression.bonusSlotEntitlement,
+      unlockedBonusSlots: data.progression.unlockedBonusSlots,
+    });
+  }
+  await syncXtyProfile();
+  return {
+    ok: true,
+    message: data.changed
+      ? 'ตั้ง Server Progression เป็น LV.2 แล้ว · Quest ที่เป็นหัวตี้ตอนนี้ยังเก็บ trigger จริงไว้สำหรับ LV.2 → LV.3'
+      : `Progression ตอนนี้เป็น LV.${data.progression?.level || 2} อยู่แล้ว · ไม่ได้ consume trigger ของ Quest ปัจจุบัน`,
+  };
+}
+
 $('close').addEventListener('click', () => $('detail').close());
 $('debugForm').addEventListener('submit', async event => {
   event.preventDefault();
-  const result = await syncCollectionDebugCode($('debugCode').value);
+  const code = $('debugCode').value.trim().toLowerCase();
+  const result = code === 'level2test'
+    ? await runLevel2Test()
+    : await syncCollectionDebugCode(code);
   $('debugFeedback').textContent = result.message;
   $('debugFeedback').classList.toggle('error', !result.ok);
   if (!result.ok) return;
   $('debugCode').value = '';
   render();
-  await syncXtyProfile();
+  if (code !== 'level2test') await syncXtyProfile();
 });
 </script>
 </body>
