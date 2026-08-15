@@ -8,7 +8,7 @@
 
 import { PET_BY_ID, XTY_V1_PET_IDS } from './pets.js';
 import { AVATAR_BY_ID, avatarFallback } from './avatars.js';
-import { XTY_CARDS, cardById, cardIdFor, cardNameTh } from './cards.js';
+import { XTY_CARDS, canonicalCardId, cardById, cardNameTh } from './cards.js';
 
 const K_PROFILE = 'mc_xty_profile';
 const K_PARTIES = 'mc_xty_parties';
@@ -18,9 +18,11 @@ export const XTY_PROFILE_KEY = K_PROFILE;
 
 export const PARTY_MIN = 2;
 export const PARTY_MAX = 5;
-export const MAX_OWNED_ACTIVE_PARTIES = 1;
+/* Absolute v0.4 caps. A new free profile starts at 1 owned slot; the
+   effective value still comes from level + unlocked paid milestones. */
+export const MAX_OWNED_ACTIVE_PARTIES = 7;
 export const MAX_JOINED_ACTIVE_PARTIES = 3;
-export const MAX_ACTIVE_PARTIES = 4;
+export const MAX_ACTIVE_PARTIES = 10;
 /* Kept for legacy data compatibility only. XTY V1 never renders /7. */
 export const MAX_PROFILE_WORDS = 7;
 
@@ -45,11 +47,21 @@ export const REACTIONS = Object.freeze(['❤️', '🔥', '👏', '😂', '🫡'
 export const PET_WAKE_HOURS = Object.freeze([0, 6, 12, 18]);
 export const PET_MAX_BUBBLES = 3;
 
-/* TODO(config): reset time and time-zone behaviour are open decisions
-   (§40). Local midnight is the placeholder, not a locked rule. */
+const ICT_OFFSET_MS = 7 * 60 * 60 * 1000;
+
+function startOfIctDay(value = new Date()) {
+  const date = value instanceof Date ? new Date(value) : new Date(value);
+  const safe = Number.isFinite(date.getTime()) ? date : new Date();
+  const shifted = new Date(safe.getTime() + ICT_OFFSET_MS);
+  return new Date(Date.UTC(shifted.getUTCFullYear(), shifted.getUTCMonth(), shifted.getUTCDate()) - ICT_OFFSET_MS);
+}
+
+/* Party days are fixed to Asia/Bangkok for launch, independent of the
+   device timezone. This must match api/_lib/xty-rules.js exactly. */
 export function dayKey(iso) {
-  const d = iso ? new Date(iso) : new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const date = iso ? new Date(iso) : new Date();
+  const safe = Number.isFinite(date.getTime()) ? date : new Date();
+  return new Date(safe.getTime() + ICT_OFFSET_MS).toISOString().slice(0, 10);
 }
 
 function read(key, fallback) {
@@ -74,9 +86,9 @@ export function uid(n = 10) {
   return s;
 }
 
-/* Four numeric digits are fast to read aloud and preserve leading zeroes. */
+/* Five numeric digits preserve leading zeroes and match the server-only code format. */
 export function inviteCode() {
-  const buf = new Uint32Array(4);
+  const buf = new Uint32Array(5);
   (crypto || window.crypto).getRandomValues(buf);
   return [...buf].map(n => String(n % 10)).join('');
 }
@@ -105,13 +117,13 @@ function validHandSize(value) {
   return Number.isFinite(n) ? Math.max(1, n) : 1;
 }
 
-function normalizedOwnedCards(value, starterCardId, createdAt) {
+function normalizedOwnedCards(value, createdAt) {
   const raw = Array.isArray(value.ownedCards) ? value.ownedCards
     : (Array.isArray(value.cards) ? value.cards : []);
   const cards = [];
   const seen = new Set();
   for (const entry of raw) {
-    const cardId = String(typeof entry === 'string' ? entry : entry?.cardId || '').trim().toUpperCase();
+    const cardId = canonicalCardId(String(typeof entry === 'string' ? entry : entry?.cardId || '').trim());
     if (!cardId || seen.has(cardId)) continue;
     seen.add(cardId);
     cards.push({
@@ -121,11 +133,6 @@ function normalizedOwnedCards(value, starterCardId, createdAt) {
       acquiredFrom: String(entry?.acquiredFrom || 'legacy'),
     });
   }
-  if (!seen.has(starterCardId)) cards.unshift({
-    cardId: starterCardId,
-    acquiredAt: createdAt,
-    acquiredFrom: 'starter',
-  });
   return cards;
 }
 
@@ -135,18 +142,19 @@ function normalizedCardRewards(value, ownedCardIds) {
   const seen = new Set();
   for (const entry of raw) {
     if (!entry || typeof entry !== 'object') continue;
-    const cardId = entry.cardId ? String(entry.cardId).toUpperCase() : null;
+    const cardId = entry.cardId ? canonicalCardId(entry.cardId) : null;
     const rewardId = String(entry.rewardId || '').trim();
     if (!rewardId || seen.has(rewardId) || (cardId && !ownedCardIds.has(cardId))) continue;
     seen.add(rewardId);
     rewards.push({
       rewardId,
       questId: String(entry.questId || 'milestone').slice(0, 100),
-      partyCode: String(entry.partyCode || '').toUpperCase().slice(0, 4),
+      partyCode: String(entry.partyCode || '').toUpperCase().slice(0, 5),
       cardId,
       complete: !!entry.complete,
       earnedAt: entry.earnedAt || now(),
       revealedAt: entry.revealedAt || null,
+      source: entry.source === 'server' ? 'server' : 'local',
     });
   }
   return rewards;
@@ -161,18 +169,23 @@ export function normalizeProfile(value) {
   const currentPets = Array.isArray(value.petIds) ? value.petIds.filter(id => typeof id === 'string') : [];
   const createdAt = value.createdAt || now();
   const avatarFrame = ['red', 'green', 'blue', 'silver'].includes(value.avatarFrame) ? value.avatarFrame : 'green';
-  const derivedStarterCardId = cardIdFor(avatarId, avatarFrame);
-  const savedStarterCardId = String(value.starterCardId || '').toUpperCase();
-  const starterCardId = cardById(savedStarterCardId) ? savedStarterCardId : derivedStarterCardId;
-  const ownedCards = normalizedOwnedCards(value, starterCardId, createdAt);
+  const ownedCards = normalizedOwnedCards(value, createdAt);
   const ownedCardIds = new Set(ownedCards.map(entry => entry.cardId));
   const cardRewards = normalizedCardRewards(value, ownedCardIds);
-  const equippedCardId = ownedCardIds.has(String(value.equippedCardId || '').toUpperCase())
-    ? String(value.equippedCardId).toUpperCase()
-    : starterCardId;
+  const equippedWanted = canonicalCardId(value.equippedCardId || '');
+  const equippedCardId = ownedCardIds.has(equippedWanted)
+    ? equippedWanted
+    : (ownedCards[0]?.cardId || null);
+  const wantedLevel = Math.floor(Number(value.level || 1));
+  const level = Number.isFinite(wantedLevel) ? Math.min(4, Math.max(1, wantedLevel)) : 1;
+  const paidTier = ['plus', 'max'].includes(value.paidTier) ? value.paidTier : 'free';
+  const bonusSlotEntitlement = paidTier === 'max' ? 3 : (paidTier === 'plus' ? 2 : 0);
+  const wantedBonusSlots = Math.floor(Number(value.unlockedBonusSlots || 0));
+  const unlockedBonusSlots = Number.isFinite(wantedBonusSlots)
+    ? Math.min(bonusSlotEntitlement, Math.max(0, wantedBonusSlots)) : 0;
   return {
     ...value,
-    version: 3,
+    version: 5,
     id: String(value.id || uid()),
     alias: String(value.alias || '').trim().slice(0, 24),
     avatarId,
@@ -182,10 +195,16 @@ export function normalizeProfile(value) {
        canonical avatar ids. New writes store the id here. */
     avatar: avatarId,
     handSize: validHandSize(value.handSize || value.maxProfileCardSlots || 0),
-    starterCardId,
+    level,
+    paidTier,
+    bonusSlotEntitlement,
+    unlockedBonusSlots,
+    starterCardId: null,
     equippedCardId,
     ownedCards,
     cardRewards,
+    collectionResetAt: value.collectionResetAt || null,
+    debugUnlockedAt: value.debugUnlockedAt || null,
     petIds: [...new Set([...currentPets, ...XTY_V1_PET_IDS])],
     createdAt,
     updatedAt: value.updatedAt || createdAt,
@@ -218,7 +237,6 @@ export function createProfile({ alias, avatarId, avatar, avatarFrame = 'green' }
     : (AVATAR_BY_ID[avatar] ? avatar : (LEGACY_AVATAR_IDS[avatar] || 'orange_cat'));
   const pickedFrame = ['red', 'green', 'blue', 'silver'].includes(avatarFrame) ? avatarFrame : 'green';
   const createdAt = now();
-  const starterCardId = cardIdFor(pickedId, pickedFrame);
   return saveProfile({
     id: uid(),
     alias: String(alias || '').trim().slice(0, 24),
@@ -229,9 +247,12 @@ export function createProfile({ alias, avatarId, avatar, avatarFrame = 'green' }
     createdAt,
     updatedAt: createdAt,
     handSize: 1,
-    starterCardId,
-    equippedCardId: starterCardId,
-    ownedCards: [{ cardId: starterCardId, acquiredAt: createdAt, acquiredFrom: 'starter' }],
+    level: 1,
+    paidTier: 'free',
+    unlockedBonusSlots: 0,
+    starterCardId: null,
+    equippedCardId: null,
+    ownedCards: [],
     cardRewards: [],
     petIds: [...XTY_V1_PET_IDS],
   });
@@ -250,6 +271,57 @@ export function ownedCards(profile = getProfile()) {
 
 export function ownedCardIds(profile = getProfile()) {
   return ownedCards(profile).map(entry => entry.cardId);
+}
+
+/* Visible only inside the secondary Collection surface during the test
+   stage. These codes change the local/account profile, never Party state. */
+export function applyCollectionDebugCode(value) {
+  const profile = getProfile();
+  if (!profile) return { ok: false, error: 'NO_PROFILE', message: 'ยังไม่มีโปรไฟล์ XTY' };
+  const code = String(value || '').trim().toLowerCase();
+  const at = now();
+  if (code === 'getallitem') {
+    const owned = new Set(ownedCardIds(profile));
+    const added = XTY_CARDS.filter(card => !owned.has(card.cardId)).map(card => ({
+      cardId: card.cardId, acquiredAt: at, acquiredFrom: 'debug:getallitem',
+    }));
+    saveProfile({
+      ...profile,
+      ownedCards: [...profile.ownedCards, ...added],
+      debugUnlockedAt: at,
+    }, { touch: true });
+    return { ok: true, code, count: XTY_CARDS.length, message: `ปลดการ์ดทดสอบครบ ${XTY_CARDS.length} ใบแล้ว` };
+  }
+  if (code === 'discard') {
+    saveProfile({
+      ...profile,
+      equippedCardId: null,
+      ownedCards: [],
+      cardRewards: [],
+      collectionResetAt: at,
+      debugUnlockedAt: null,
+    }, { touch: true });
+    return { ok: true, code, count: 0, message: 'รีเซ็ต Collection บนโปรไฟล์นี้แล้ว' };
+  }
+  return { ok: false, error: 'INVALID_DEBUG_CODE', message: 'ไม่พบรหัสทดสอบนี้' };
+}
+
+export async function syncCollectionDebugCode(value) {
+  const local = applyCollectionDebugCode(value);
+  if (!local.ok) return local;
+  const party = allParties().find(item => partyIdentity(item.code)?.token);
+  if (!party) return { ...local, serverSynced: false };
+  const remote = await api(`/api/xty/party/${encodeURIComponent(party.code)}/debug/collection`, {
+    method: 'POST', code: party.code, body: { code: local.code },
+  });
+  if (remote.error) {
+    return {
+      ...local,
+      serverSynced: false,
+      message: `${local.message} · Server test state ยังไม่ sync`,
+    };
+  }
+  return { ...local, serverSynced: true };
 }
 
 /* Avatar is only a profile presentation choice. Lead/NPC placement is
@@ -278,11 +350,12 @@ export function handSizeOf(profile) {
 }
 
 export function maxActiveParties(profile) {
-  return MAX_ACTIVE_PARTIES;
+  return maxOwnedActiveParties(profile) + MAX_JOINED_ACTIVE_PARTIES;
 }
 
 export function maxOwnedActiveParties(profile) {
-  return MAX_OWNED_ACTIVE_PARTIES;
+  const normalized = profile ? normalizeProfile(profile) : getProfile();
+  return Math.min(7, Math.max(1, Number(normalized?.level || 1)) + Math.max(0, Number(normalized?.unlockedBonusSlots || 0)));
 }
 
 export function maxJoinedActiveParties(profile) {
@@ -421,16 +494,59 @@ async function api(path, { method = 'GET', body, code } = {}) {
   }
 }
 
+export function importServerCardReward(value) {
+  const profile = getProfile();
+  const rewardId = String(value?.rewardId || '').trim();
+  if (!profile || !rewardId) return null;
+  const earnedAt = value.earnedAt || now();
+  const resetAt = new Date(profile.collectionResetAt || 0).getTime();
+  const earnedTime = new Date(earnedAt).getTime();
+  if (Number.isFinite(resetAt) && Number.isFinite(earnedTime) && resetAt >= earnedTime) return null;
+  const card = value.cardId ? cardById(value.cardId) : null;
+  const cardId = card?.cardId || null;
+  const existing = profile.cardRewards.find(item => item.rewardId === rewardId);
+  const reward = {
+    rewardId,
+    questId: String(value.questId || `party-complete:${value.partyCode || ''}`).slice(0, 100),
+    partyCode: String(value.partyCode || '').toUpperCase().slice(0, 5),
+    cardId,
+    complete: !!value.complete || !cardId,
+    earnedAt,
+    revealedAt: existing?.revealedAt || value.revealedAt || null,
+    source: 'server',
+  };
+  const owned = new Set(ownedCardIds(profile));
+  const ownedCards = cardId && !owned.has(cardId)
+    ? [...profile.ownedCards, { cardId, acquiredAt: earnedAt, acquiredFrom: `party:${reward.partyCode}` }]
+    : profile.ownedCards;
+  const cardRewards = existing
+    ? profile.cardRewards.map(item => item.rewardId === rewardId ? reward : item)
+    : [...profile.cardRewards, reward];
+  saveProfile({ ...profile, ownedCards, cardRewards }, { touch: true });
+  return reward;
+}
+
 function rememberResponse(code, result) {
   if (!result || result.error) return result;
+  if (result.myReward) importServerCardReward(result.myReward);
   const party = rememberParty(result.party);
   if (result.token || result.meUserId) saveToken(code || party?.code, result.token, result.meUserId);
+  if (result.meProgression) {
+    const profile = getProfile();
+    if (profile) saveProfile({
+      ...profile,
+      level: result.meProgression.level,
+      paidTier: result.meProgression.paidTier,
+      bonusSlotEntitlement: result.meProgression.bonusSlotEntitlement,
+      unlockedBonusSlots: result.meProgression.unlockedBonusSlots,
+    }, { touch: true });
+  }
   return { ...result, party };
 }
 
 export async function createParty({
-  name, activity, activityId, preset, durationDays, color, visibility,
-  commitRule, budget, petId, leadCardId, npcCardId,
+  name, activity, activityId, preset, verificationMode = 'trust', durationDays, color, visibility,
+  commitRule, budget, petId, coverType = 'avatar', leadCardId, npcCardId, partyAvatar,
 }) {
   const profile = getProfile();
   if (!profile) throw new Error('NO_PROFILE');
@@ -438,20 +554,23 @@ export async function createParty({
   if (capacity.owned >= capacity.maxOwned) throw limitError('OWNED_PARTY_LIMIT');
   if (capacity.total >= capacity.maxTotal) throw limitError('ACTIVE_PARTY_LIMIT');
   const owned = new Set(ownedCardIds(profile));
-  const lead = String(leadCardId || profile.equippedCardId || profile.starterCardId || '').toUpperCase();
+  const pickedCover = ['avatar', 'card_back', 'card'].includes(coverType) ? coverType : 'avatar';
+  const lead = pickedCover === 'card' ? String(leadCardId || '').toUpperCase() : null;
   const npc = String(npcCardId || '').toUpperCase() || null;
-  if (!cardById(lead) || !owned.has(lead)) throw limitError('CARD_NOT_OWNED');
-  if (cardAvailability(lead).status !== 'AVAILABLE') throw limitError('CARD_IN_USE');
+  if (lead && (!cardById(lead)?.eligibility?.partyCover || !owned.has(lead))) throw limitError('CARD_NOT_COVER_ELIGIBLE');
+  if (lead && cardAvailability(lead).status !== 'AVAILABLE') throw limitError('CARD_IN_USE');
   if (npc && (!cardById(npc) || !owned.has(npc))) throw limitError('CARD_NOT_OWNED');
   if (npc && (npc === lead || cardAvailability(npc).status !== 'AVAILABLE')) throw limitError('CARD_IN_USE');
   const result = await api('/api/xty/party', { method: 'POST', body: {
-    name, activity, activityId, preset, durationDays, color, visibility, commitRule,
+    name, activity, activityId, preset, verificationMode, durationDays, color, visibility, commitRule,
     budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
     petId: petId || null,
+    coverType: pickedCover,
     leadCardId: lead,
     npcCardId: npc,
     alias: profile.alias,
-    avatar: profile.avatarId || profile.avatarFallback,
+    avatar: partyAvatar?.species || profile.avatarId || profile.avatarFallback,
+    avatarColor: partyAvatar?.color || profile.avatarFrame || 'green',
     profileId: profile.id,
   }});
   if (result.error) {
@@ -463,7 +582,7 @@ export async function createParty({
   return saved.party;
 }
 
-export async function joinParty(code, { alias, avatar }) {
+export async function joinParty(code, { alias, avatar, avatarColor }) {
   const wanted = String(code || '').toUpperCase();
   const profile = getProfile();
   const alreadyKnown = !!tokenMap()[wanted];
@@ -475,7 +594,8 @@ export async function joinParty(code, { alias, avatar }) {
   const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/join`, {
     method: 'POST', code: wanted, body: {
       alias,
-      avatar: profile?.avatarId || avatar || profile?.avatarFallback,
+      avatar: avatar || profile?.avatarId || profile?.avatarFallback,
+      avatarColor: avatarColor || profile?.avatarFrame || 'green',
       profileId: profile?.id || '',
     },
   });
@@ -544,6 +664,16 @@ export function messagesUsedToday(party, userId) {
   ).length;
 }
 
+export function messagesUsedFinal(party, userId) {
+  if (String(party?.state || '').toUpperCase() !== 'COMPLETED') return 0;
+  const endedAt = new Date(party.endAt || party.endedAt || 0).getTime();
+  if (!Number.isFinite(endedAt) || endedAt <= 0) return 0;
+  return (party.log || []).filter(post =>
+    post.kind === 'message' && post.userId === userId
+      && new Date(post.sentAt).getTime() >= endedAt
+  ).length;
+}
+
 /* Written by the server-side pet worker, never by a player. Kept here so
    the log can already render pet turns before the AI exists. */
 export function appendPetTurn(code, { petId, bubbles, wakeHour }) {
@@ -584,6 +714,20 @@ export function budgetOf(party) {
 
 export function messagesLeftToday(party, userId) {
   return Math.max(0, budgetOf(party).perDay - messagesUsedToday(party, userId));
+}
+
+export function messageAllowance(party, userId) {
+  const budget = budgetOf(party);
+  if (isActiveParty(party)) {
+    const used = messagesUsedToday(party, userId);
+    return { phase: 'daily', limit: budget.perDay, used, left: Math.max(0, budget.perDay - used), writable: true };
+  }
+  if (String(party?.state || '').toUpperCase() === 'COMPLETED') {
+    const used = messagesUsedFinal(party, userId);
+    const left = Math.max(0, budget.perDay - used);
+    return { phase: left ? 'final' : 'history', limit: budget.perDay, used, left, writable: left > 0 };
+  }
+  return { phase: 'history', limit: budget.perDay, used: 0, left: 0, writable: false };
 }
 
 /* ---------- writing to the log ---------- */
@@ -654,10 +798,16 @@ export function renameParty(code, name) {
 
 export function changeLeadCard(code, leadCardId) {
   const wanted = String(leadCardId || '').toUpperCase();
-  if (!ownedCardIds().includes(wanted)) return Promise.resolve({ ok: false, error: 'CARD_NOT_OWNED' });
+  if (!ownedCardIds().includes(wanted) || !cardById(wanted)?.eligibility?.partyCover) {
+    return Promise.resolve({ ok: false, error: 'CARD_NOT_COVER_ELIGIBLE' });
+  }
   const place = cardAvailability(wanted, { exceptPartyCode: code });
   if (place.status !== 'AVAILABLE') return Promise.resolve({ ok: false, error: 'CARD_IN_USE' });
-  return manageParty(code, 'change_lead_card', { leadCardId: wanted });
+  return manageParty(code, 'change_cover', { coverType: 'card', leadCardId: wanted });
+}
+
+export function useCardBackAsCover(code) {
+  return manageParty(code, 'change_cover', { coverType: 'card_back', leadCardId: null });
 }
 
 export function changeNpcCard(code, npcCardId, petId = null) {
@@ -673,12 +823,38 @@ export function kickPartyMember(code, userId) {
   return manageParty(code, 'kick', { userId });
 }
 
+export async function updatePartyIdentity(code, { alias, avatar, avatarColor }) {
+  const wanted = String(code || '').toUpperCase();
+  const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/me`, {
+    method: 'POST', code: wanted, body: { alias, avatar, avatarColor },
+  });
+  return rememberResponse(wanted, result);
+}
+
 export async function finishParty(code, mode = 'complete') {
   const wanted = String(code || '').toUpperCase();
   const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/finish`, {
     method: 'POST', code: wanted, body: { mode: mode === 'dissolve' ? 'dissolve' : 'complete' },
   });
   return rememberResponse(wanted, result);
+}
+
+export function partyCompletionState(party, at = new Date()) {
+  const startedAt = new Date(party?.startAt || party?.startedAt || party?.createdAt || at);
+  const durationDays = Math.max(1, Number(party?.durationDays || 7));
+  const start = startOfIctDay(startedAt);
+  const fallbackEnd = new Date(start.getTime() + durationDays * 86400000);
+  const scheduledEnd = new Date(party?.scheduledEndAt || fallbackEnd);
+  const current = at instanceof Date ? at : new Date(at);
+  const currentDay = startOfIctDay(current);
+  const elapsed = Math.max(0, Math.floor((currentDay.getTime() - start.getTime()) / 86400000));
+  return {
+    eligible: Number.isFinite(scheduledEnd.getTime()) && current.getTime() >= scheduledEnd.getTime(),
+    scheduledEndAt: scheduledEnd.toISOString(),
+    day: Math.min(durationDays, elapsed + 1),
+    durationDays,
+    remainingMs: Math.max(0, scheduledEnd.getTime() - current.getTime()),
+  };
 }
 
 /* ---------- unique local-first card rewards ---------- */
@@ -708,7 +884,7 @@ export function prepareCardReward({ questId = 'milestone', partyCode = '' } = {}
   const profile = getProfile();
   if (!profile) return null;
   const normalizedQuest = String(questId || 'milestone').slice(0, 100);
-  const normalizedParty = String(partyCode || '').toUpperCase().slice(0, 4);
+  const normalizedParty = String(partyCode || '').toUpperCase().slice(0, 5);
   const existing = cardRewardForQuest(normalizedQuest, normalizedParty);
   if (existing) return existing;
 
@@ -754,11 +930,27 @@ export function markCardRewardRevealed(rewardId) {
   return saveProfile({ ...profile, cardRewards: rewards }, { touch: true });
 }
 
+export async function revealPartyCardReward(rewardId) {
+  const reward = pendingCardReward(rewardId);
+  if (!reward) return { ok: false, error: 'REWARD_NOT_FOUND' };
+  if (reward.revealedAt) return { ok: true, reward };
+  if (!reward.partyCode || reward.source !== 'server') {
+    markCardRewardRevealed(reward.rewardId);
+    return { ok: true, reward: pendingCardReward(reward.rewardId) };
+  }
+  const result = await api(`/api/xty/party/${encodeURIComponent(reward.partyCode)}/reward/reveal`, {
+    method: 'POST', code: reward.partyCode, body: { rewardId: reward.rewardId },
+  });
+  if (result.error) return result;
+  const remembered = rememberResponse(reward.partyCode, result);
+  return { ...remembered, reward: pendingCardReward(reward.rewardId) };
+}
+
 export function shouldOfferProgressSave(profile = getProfile()) {
   if (!profile) return false;
   const dismissedAt = new Date(profile.savePromptDismissedAt || 0).getTime();
   if (Number.isFinite(dismissedAt) && Date.now() - dismissedAt < 7 * 86400000) return false;
-  return ownedCardIds(profile).length >= 2 || allParties().some(party =>
+  return ownedCardIds(profile).length >= 1 || allParties().some(party =>
     ['COMPLETED', 'DISSOLVED'].includes(String(party.state || '').toUpperCase())
   );
 }
@@ -767,19 +959,26 @@ export function shouldOfferProgressSave(profile = getProfile()) {
 
 export function partyProgress(party) {
   const length = Math.max(1, Number(party?.durationDays || 7));
-  const start = new Date(party?.startAt || party?.createdAt || Date.now());
-  start.setHours(0, 0, 0, 0);
+  const start = startOfIctDay(party?.startAt || party?.createdAt || Date.now());
   const commits = new Map();
+  const valid = new Map();
   for (const post of party?.log || []) {
     if (post.kind !== 'commit' || post.retracted) continue;
     const key = dayKey(post.sentAt);
     if (!commits.has(key)) commits.set(key, new Set());
     commits.get(key).add(post.userId);
+    const isValid = party?.verificationMode !== 'confirm' || post.valid === true || !!post.confirmedBy;
+    if (isValid) {
+      if (!valid.has(key)) valid.set(key, new Set());
+      valid.get(key).add(post.userId);
+    }
   }
   return Array.from({ length }, (_, index) => {
-    const date = new Date(start); date.setDate(start.getDate() + index);
+    const date = new Date(start.getTime() + index * 86400000);
     const key = dayKey(date.toISOString());
-    return { day: index + 1, key, count: commits.get(key)?.size || 0 };
+    const count = commits.get(key)?.size || 0;
+    const validCount = valid.get(key)?.size || 0;
+    return { day: index + 1, key, count, validCount, waitingCount: Math.max(0, count - validCount) };
   });
 }
 
@@ -798,13 +997,16 @@ function isoDate(value) {
 function eventLine(event) {
   const data = event?.data || {};
   const companionName = value => cardById(value) ? cardNameTh(value) : (PET_BY_ID[value]?.nameTh || 'ไม่มี');
+  const coverName = value => value === 'card_back' ? 'Card Back' : cardNameTh(value);
   const labels = {
     PARTY_CREATED: `เริ่มตี้ในชื่อ “${safeLine(data.name)}”`,
     MEMBER_JOINED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เข้าร่วมการเดินทาง`,
     MEMBER_LEFT: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} ออกจากการเดินทาง`,
     MEMBER_KICKED: `สมาชิกคนหนึ่งออกจากการเดินทาง`,
     PARTY_RENAMED: `เปลี่ยนชื่อตี้จาก “${safeLine(data.from)}” เป็น “${safeLine(data.to)}”`,
-    LEAD_CARD_CHANGED: `เปลี่ยน Lead Card จาก ${cardNameTh(data.from)} เป็น ${cardNameTh(data.to)}`,
+    MEMBER_ALIAS_CHANGED: `เปลี่ยนชื่อในตี้เป็น “${safeLine(data.alias)}”`,
+    MEMBER_AVATAR_CHANGED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เปลี่ยนตัวละครประจำตี้`,
+    LEAD_CARD_CHANGED: `เปลี่ยนปกตี้จาก ${coverName(data.from)} เป็น ${coverName(data.to)}`,
     NPC_CHANGED: `เปลี่ยนเพื่อนร่วมทางจาก ${companionName(data.from)} เป็น ${companionName(data.to)}`,
     RULE_CHANGED: 'ปรับกติกาของตี้ระหว่างทาง',
     PARTY_COMPLETED: 'ทำการเดินทางนี้ครบและปิดตี้อย่างสมบูรณ์',
@@ -833,15 +1035,13 @@ function bestCommitStreak(posts) {
 }
 
 function possibleCommitSlots(party, members, durationDays) {
-  const start = new Date(party.startAt || party.createdAt || Date.now());
-  start.setHours(0, 0, 0, 0);
-  const plannedEnd = new Date(start); plannedEnd.setDate(start.getDate() + durationDays - 1);
-  const actualEnd = new Date(party.endAt || party.endedAt || plannedEnd);
-  actualEnd.setHours(0, 0, 0, 0);
+  const start = startOfIctDay(party.startAt || party.createdAt || Date.now());
+  const plannedEnd = new Date(start.getTime() + (durationDays - 1) * 86400000);
+  const actualEnd = startOfIctDay(party.endAt || party.endedAt || plannedEnd);
   const end = actualEnd < plannedEnd ? actualEnd : plannedEnd;
   return members.reduce((total, member) => {
-    const joined = new Date(member.joinedAt || start); joined.setHours(0, 0, 0, 0);
-    const left = new Date(member.leftAt || end); left.setHours(0, 0, 0, 0);
+    const joined = startOfIctDay(member.joinedAt || start);
+    const left = startOfIctDay(member.leftAt || end);
     const from = joined > start ? joined : start;
     const until = left < end ? left : end;
     return total + Math.max(0, Math.floor((until - from) / 86400000) + 1);
@@ -854,7 +1054,8 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
   const lead = members.find(member => member.role === 'lead') || members[0];
   const events = Array.isArray(party.events) ? party.events : [];
   const log = Array.isArray(party.log) ? party.log : [];
-  const commits = log.filter(post => post.kind === 'commit' && !post.retracted);
+  const commits = log.filter(post => post.kind === 'commit' && !post.retracted
+    && (party.verificationMode !== 'confirm' || post.valid === true || !!post.confirmedBy));
   const messages = log.filter(post => post.kind === 'message' && !post.retracted);
   const confirms = commits.filter(post => post.confirmedBy).length;
   const reactions = new Map();

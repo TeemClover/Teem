@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#FFF9E9">
+<title>หาตี้สาธารณะ — XTY</title>
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
+</head>
+<body>
+<header class="top"><a class="mark" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a><a class="back" href="/xty/">กลับ Home</a></header>
+<main class="wrap">
+  <p class="kicker">PUBLIC PARTY LOBBY</p>
+  <h1 class="title">หาตี้ที่อยากลงมือทำด้วยกัน</h1>
+  <p class="lede">หน้านี้เริ่มโหลดเมื่อคุณเปิดเท่านั้น และแสดงเฉพาะข้อมูลชวนเล่นที่ปลอดภัย</p>
+  <div class="public-list" id="list"><div class="empty">กำลังหาตี้ที่ยังรับสมาชิก…</div></div>
+  <button class="btn ghost" id="more" hidden>ดูเพิ่ม</button>
+  <p class="note">Party Log, Email, Photo Memory และข้อมูลบัญชีจะไม่แสดงใน Lobby</p>
+</main>
+
+<script type="module">
+import { avatarById } from '/xty/_shared/avatars.js';
+import { cardById } from '/xty/_shared/cards.js';
+import { cardMarkup } from '/xty/_shared/card-ui.js';
+
+const $ = id => document.getElementById(id); let cursor = null;
+const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+function coverMarkup(party) {
+  const card = cardById(party.coverValue);
+  if (card) return cardMarkup(card);
+  if (party.coverType === 'card_back') return '<div class="animal-card card-back"><span class="back-mark">XTY</span><small>CARD BACK</small></div>';
+  let snapshot = { species: party.lead.avatar, color: party.lead.avatarColor };
+  try { snapshot = { ...snapshot, ...JSON.parse(party.coverValue || '{}') }; } catch {}
+  const avatar = avatarById(snapshot.species);
+  return `<div class="avatar-cover" data-color="${esc(snapshot.color || 'green')}"><img src="${avatar.art}" alt=""><b>${esc(avatar.nameTh)}</b><small>PARTY COVER</small></div>`;
+}
+
+function addParty(party) {
+  const article = document.createElement('article'); article.className = 'card public-party';
+  const mode = party.verificationMode === 'confirm' ? 'ต้อง Confirm' : 'เชื่อใจกัน';
+  article.innerHTML = `${coverMarkup(party)}<div><span class="status-pill">${mode}</span><h2>${esc(party.name)}</h2>`
+    + `<p>${esc(party.activity || 'กิจกรรมที่ตกลงกันในตี้')}</p>`
+    + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · ${party.memberCount}/${party.maxMembers} คน · วันนี้ ${party.todayCommitCount} Commit</p>`
+    + `<p class="whisper">Lead: ${esc(party.lead.alias)}</p>`
+    + (party.joinable ? `<a class="btn gold sm" href="/xty/join/?c=${encodeURIComponent(party.code)}">เข้าตี้นี้</a>` : '<span class="status-pill">เต็มแล้ว</span>')
+    + '</div>';
+  $('list').appendChild(article);
+}
+
+async function load({ append = false } = {}) {
+  $('more').disabled = true;
+  const url = new URL('/api/xty/public', location.origin); if (cursor) url.searchParams.set('cursor', cursor);
+  try {
+    const response = await fetch(url, { headers: { accept: 'application/json' }, credentials: 'same-origin' });
+    const data = await response.json(); if (!response.ok) throw new Error(data.error || 'HTTP');
+    if (!append) $('list').innerHTML = '';
+    data.parties.forEach(addParty); cursor = data.nextCursor;
+    if (!$('list').children.length) $('list').innerHTML = '<div class="empty">ยังไม่มีตี้สาธารณะที่เข้าร่วมได้</div>';
+    $('more').hidden = !cursor;
+  } catch { if (!append) $('list').innerHTML = '<div class="empty">ยังเปิด Lobby ไม่สำเร็จ · ลองใหม่อีกครั้ง</div>'; }
+  $('more').disabled = false;
+}
+
+$('more').addEventListener('click', () => load({ append: true })); load();
+</script>
+</body>
+</html>

@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#FFF9E9">
 <title>XTY — ตั้งตี้ทำอะไรก็ได้</title>
 <meta name="description" content="ตั้งตี้ 2–5 คน ทำอะไรก็ได้ด้วยกัน — ไม่ต้องสมัครก่อนเล่น">
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 </head>
 <body>
 
@@ -38,7 +38,7 @@
       <button class="btn gold" id="startButton">เริ่มเล่น</button>
       <p class="label" style="margin:20px 0 8px">มีรหัสตี้แล้ว</p>
       <div class="quick-code field" style="margin:0">
-        <input id="quickCode" inputmode="numeric" maxlength="4" placeholder="0000" aria-label="รหัสตี้ 4 หลัก">
+        <input id="quickCode" inputmode="numeric" maxlength="5" placeholder="00000" aria-label="รหัสตี้ 5 หลัก">
         <button class="btn ghost" id="quickJoin" disabled>เข้าตี้</button>
       </div>
       <a class="about-link" href="/xty/about/">XTY คืออะไร? →</a>
@@ -70,7 +70,7 @@
         <button class="btn gold" id="createProfile" style="margin-top:22px" disabled>เข้าสู่ XTY</button>
       </div>
       <button class="btn ghost" id="backWelcome" style="margin-top:10px">กลับ</button>
-      <p class="note">ชื่อเรียกและ Starter Card เก็บในเครื่องนี้ก่อน ไม่ต้องสมัคร ไม่ต้องโหลดแอป และไม่มีโฆษณา</p>
+      <p class="note">ชื่อเรียกและ Animal Avatar เก็บในเครื่องนี้ก่อน Avatar ฟรีไม่ใช่การ์ด การ์ดใบแรกจะมาจาก Quest Clear</p>
     </div>
   </section>
 
@@ -85,6 +85,7 @@
 
     <a class="btn gold" href="/xty/new/">+ ตั้งตี้</a>
     <a class="btn ghost" href="/xty/join/" style="margin-top:10px">เข้าตี้ด้วยรหัส</a>
+    <a class="about-link" href="/xty/public/">หาตี้สาธารณะ ›</a>
 
     <div class="card" id="accountCard" style="margin-top:18px" hidden>
       <div class="account-row">
@@ -127,7 +128,7 @@ import { PET_BY_ID } from '/xty/_shared/pets.js';
 import { XTY_AVATARS, AVATAR_FRAMES, avatarById } from '/xty/_shared/avatars.js';
 import { cardById, cardNameTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
-import { saveCloudProgress, startLineLogin, syncXtyProfile } from '/xty/_shared/account.js';
+import { saveCloudProgress, syncXtyProfile } from '/xty/_shared/account.js';
 
 const $ = id => document.getElementById(id);
 let accountState = { authenticated: false, user: null };
@@ -148,15 +149,15 @@ function renderGate() {
   });
   const quickCode = $('quickCode');
   quickCode.addEventListener('input', () => {
-    quickCode.value = quickCode.value.replace(/\D/g, '').slice(0, 4);
-    $('quickJoin').disabled = !/^\d{4}$/.test(quickCode.value);
+    quickCode.value = quickCode.value.replace(/\D/g, '').slice(0, 5);
+    $('quickJoin').disabled = !/^\d{5}$/.test(quickCode.value);
   });
   $('quickJoin').addEventListener('click', () => showIdentity(quickCode.value));
   quickCode.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && /^\d{4}$/.test(quickCode.value)) showIdentity(quickCode.value);
+    if (event.key === 'Enter' && /^\d{5}$/.test(quickCode.value)) showIdentity(quickCode.value);
   });
   const initialCode = new URLSearchParams(location.search).get('c');
-  if (/^\d{4}$/.test(initialCode || '')) showIdentity(initialCode);
+  if (/^\d{5}$/.test(initialCode || '')) showIdentity(initialCode);
   const pick = $('avatarPick');
   let chosen = XTY_AVATARS[0].id;
   let avatarFrame = 'green';
@@ -224,15 +225,15 @@ async function renderHome() {
 
   if (accountState.authenticated) {
     $('accountCard').hidden = false;
-    $('accountStatus').innerHTML = '<span class="status-pill">LINE เชื่อมแล้ว ✓</span><br>Progress เก็บกับบัญชีนี้';
+    $('accountStatus').innerHTML = `<span class="status-pill">เก็บแล้ว ✓</span><br>${escapeHtml(accountState.user?.email || 'Progress เก็บกับบัญชีนี้')}`;
     $('lineBtn').hidden = true;
     $('lineLater').hidden = true;
   } else {
     $('accountCard').hidden = !shouldOfferProgressSave(p);
-    $('accountStatus').textContent = 'เก็บไว้ในเครื่องนี้ — เชื่อม LINE เพื่อใช้ต่อข้ามอุปกรณ์';
+    $('accountStatus').textContent = 'เก็บไว้ในเครื่องนี้ — ผูก Email เพื่อกู้คืนข้ามอุปกรณ์';
     $('lineBtn').hidden = false;
     $('lineLater').hidden = false;
-    $('lineBtn').addEventListener('click', () => startLineLogin('/xty/'), { once: true });
+    $('lineBtn').addEventListener('click', () => { location.href = '/profile/?save=1'; }, { once: true });
     $('lineLater').addEventListener('click', () => {
       updateProfile({ savePromptDismissedAt: new Date().toISOString() });
       $('accountCard').hidden = true;
@@ -253,17 +254,27 @@ function paintPartyList(p, mine) {
   box.innerHTML = '';
 
   if (!list.length) {
-    $('mainParty').innerHTML = `<div class="empty">ยังไม่มีตี้<br><span style="font-size:13px">วาง Starter Card แล้วตั้งตี้แรกได้เลย</span></div>`;
+    $('mainParty').innerHTML = `<div class="empty">ยังไม่มีตี้<br><span style="font-size:13px">ใช้ Animal Avatar เป็นปก แล้วตั้งตี้แรกได้เลย</span></div>`;
     $('partyHeading').hidden = true;
     return;
   }
 
   const main = list.find(isActiveParty) || list[0];
-  const mainCard = cardById(main.leadCardId || p.equippedCardId || p.starterCardId);
+  const usesCardCover = ['card', 'legacy_card'].includes(main.coverType) || (!main.coverType && main.leadCardId);
+  const mainCard = usesCardCover ? cardById(main.leadCardId || main.coverValue) : null;
+  let mainCover = '';
+  if (mainCard) mainCover = cardMarkup(mainCard, { role: 'lead' });
+  else if (main.coverType === 'card_back') mainCover = '<div class="animal-card card-back"><span class="back-mark">XTY</span><small>CARD BACK</small></div>';
+  else {
+    let snapshot = { species: p.avatarId, color: p.avatarFrame };
+    try { snapshot = { ...snapshot, ...JSON.parse(main.coverValue || '{}') }; } catch {}
+    const art = avatarById(snapshot.species);
+    mainCover = `<div class="avatar-cover" data-color="${snapshot.color || 'green'}"><img src="${art.art}" alt=""><b>${escapeHtml(art.nameTh)}</b><small>PARTY COVER</small></div>`;
+  }
   const mainDone = committedToday(main).size;
   const terminal = !isActiveParty(main);
   $('mainParty').innerHTML = `<div class="card main-party">`
-    + (mainCard ? cardMarkup(mainCard, { role: 'lead' }) : `<div class="profile-avatar" data-color="${p.avatarFrame}"><img src="${avatar.art}" alt=""></div>`)
+    + mainCover
     + `<div><span class="party-state">${terminal ? escState(main.state) : 'MAIN PARTY'}</span>`
     + `<h2>${escapeHtml(main.name)}</h2><p class="whisper" style="margin:0">${escapeHtml(main.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
     + `<p class="whisper">${mainDone}/${main.members.length} Commit วันนี้${mainCard ? ` · ${escapeHtml(cardNameTh(mainCard))}` : ''}</p>`
@@ -320,7 +331,7 @@ async function boot() {
 function updateAccountState() {
   if (accountState.authenticated) {
     $('accountCard').hidden = false;
-    $('accountStatus').innerHTML = '<span class="status-pill">LINE เชื่อมแล้ว ✓</span><br>Progress เก็บกับบัญชีนี้';
+    $('accountStatus').innerHTML = `<span class="status-pill">เก็บแล้ว ✓</span><br>${escapeHtml(accountState.user?.email || 'Progress เก็บกับบัญชีนี้')}`;
     $('lineBtn').hidden = true;
     $('lineLater').hidden = true;
   }

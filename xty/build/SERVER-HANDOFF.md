@@ -1,6 +1,15 @@
 # XTY — Server Handoff
 
-**สถานะ production 2026-08-15:** ต่อ Vercel API + Neon แล้ว · รหัสตี้ใช้ข้ามเครื่องได้ · เพิ่ม local-first Animal Card, Party Event และ Ending `.md` แล้ว
+**สถานะ production candidate 2026-08-15:** ต่อ Vercel API + Neon แล้ว · รหัสตี้ 5 หลักใช้ข้ามเครื่องได้ · ใช้ Trust/Confirm, Bangkok party day, Level 1–4, local-first Animal Card, Party Event และ Ending `.md`
+
+กติกา v0.5 ที่ server ต้องเป็นผู้ตัดสิน:
+
+- ปุ่ม `เสร็จเควส` แสดงแต่ disabled จน `scheduled_end_at`; API ตอบ `QUEST_NOT_FINISHED` ก่อนเวลาเสมอ
+- `DISSOLVED` ทำได้ทันทีและไม่แจกความสำเร็จแทน `COMPLETED`
+- Confirm ทำแทนตัวเองไม่ได้ และทำย้อนหลังได้ถึงเที่ยงคืนไทยหลังวันถัดไป
+- Avatar ฟรีไม่ใช่ Card ownership; Common ใช้เป็น NPC ได้ ส่วน Rare เท่านั้นที่ใช้เป็นปกตี้
+- หน้า Home ไม่โหลด Public Lobby; เรียก `/api/xty/public` เมื่อเปิด `/xty/public/` เท่านั้น
+- Email OTP เก็บแบบ hash อายุ 10 นาที; ตั้ง `RESEND_API_KEY` และ `XTY_FROM_EMAIL` ก่อนเปิดใช้งานจริง
 
 ไฟล์ production:
 
@@ -10,9 +19,10 @@
 - `api/_lib/pet-brain.js` — ตัวที่อ่านแชทจริงแล้วตัดสินใจว่าจะพูดหรือเงียบ
 - `api/_lib/pet-personas.js` — บุคลิกที่ส่งเข้าโมเดล (คู่กับ `xty/pets/personas/*.md`)
 - `xty/_shared/store.js` — server adapter + local cache (ไม่มี WebSocket/long-poll)
-- `xty/_shared/cards.js` — catalog 12 สัตว์ × RGBS = 48 Card IDs
+- `xty/_shared/cards.js` — catalog Common 48 + Rare 12 = 60 Card IDs
 - `xty/cards/personalities/*.md` — บุคลิกถาวรของ Animal Card
 - `xty/reveal/index.html` — unique reward reveal; persist ก่อน flip
+- `xty/assets/cards/rare/*.webp` — Rare art 12 ใบแบบ static 630×880
 
 ฟิลด์ production ที่เพิ่มใน v0.2:
 
@@ -98,7 +108,7 @@ unread badge แบบ `99+`, push ทุกข้อความ, infinite scro
 ```sql
 CREATE TABLE IF NOT EXISTS xty_parties (
   id           TEXT PRIMARY KEY,
-  code         TEXT NOT NULL UNIQUE,        -- รหัสตัวเลข 4 หลัก เช่น 0123
+  code         TEXT NOT NULL UNIQUE,        -- รหัสตัวเลข 5 หลัก เช่น 01234
   name         TEXT NOT NULL,
   activity     TEXT,
   commit_rule  TEXT,                        -- อะไรถึงนับเป็น Commit
@@ -303,17 +313,18 @@ frontend รองรับแล้ว — เรียก `appendPetTurn(code,
 
 ## 6. ยังไม่ต้องทำ / ห้ามแต่งเอง
 
-**ยังไม่ทำ:** XP, public discovery, marketplace, rarity, paid pack หรือ reroll
+**ยังไม่ทำ:** XP, marketplace, paid pack, reroll, Epic/Legendary asset catalog หรือ drop-rate tuning
 
-Card reward v0.2 สุ่มเท่ากันจาก pool ที่ยังไม่เป็นเจ้าของเท่านั้น และบันทึก
-`cardId` ลง `mc_xty_profile` ก่อนเริ่ม flip. ห้ามเปลี่ยน ritual นี้เป็น lootbox
+Card reward v0.6 เลือกจาก pool ที่ server ยังไม่เคยออกให้ user นั้น บันทึก
+`xty_card_rewards` + `xty_card_ownership` ก่อนเริ่ม flip แล้วค่อยโพสต์ `kind='reward'`
+เมื่อเจ้าตัวเปิด. ห้ามเปลี่ยน ritual นี้เป็น lootbox
 หรือเปิดขายการสุ่มด้วยเงินจริง
 
 **ห้ามแต่งตัวเลขเอง** (open decisions):
 ```
 XTY score formula        pet draw cost        drop rates
 future exhaustion reward slot unlock cadence  legendary odds
-message reset time       time-zone behaviour  retention ceiling
+retention ceiling
 pet intervention budget ที่ละเอียดกว่า 0–3 ต่อรอบ
 ```
 ทำเป็น config แล้ว mark TODO
@@ -323,9 +334,10 @@ pet intervention budget ที่ละเอียดกว่า 0–3 ต่�
 ## 7. Frontend ↔ server ปัจจุบัน
 
 `xty/_shared/store.js` ใช้ server เป็น canonical party state แล้ว และเก็บ snapshot
-ใน `mc_xty_parties` เพื่อ paint ก่อน network. Profile, card ownership และผล reward
-เขียน local ก่อน; เมื่อผู้ใช้สมัครใจเชื่อมบัญชีจึง merge แบบ union ที่ไม่ลบการ์ด
-ซึ่งหาได้จริงจากเครื่องใดเครื่องหนึ่ง
+ใน `mc_xty_parties` เพื่อ paint ก่อน network. Profile paint ยังเขียน local ก่อน แต่
+reward จาก Quest COMPLETE เป็น server-canonical แล้ว mirror ลง `mc_xty_profile`;
+เมื่อผู้ใช้สมัครใจเชื่อมบัญชี ระบบย้าย ownership/reward จาก `local:<profileId>`
+ไป `account:<id>` และ merge profile โดยเคารพ Collection reset tombstone
 
 Party write endpoints ปัจจุบัน:
 
@@ -334,11 +346,23 @@ Party write endpoints ปัจจุบัน:
 - `POST /api/xty/party/:code/commit|message|react|confirm|retract`
 - `POST /api/xty/party/:code/manage`
 - `POST /api/xty/party/:code/finish`
+- `POST /api/xty/party/:code/reward/reveal`
+- `POST /api/xty/party/:code/debug/collection` (test codes ของ user นั้นเท่านั้น)
 
 ห้ามเปลี่ยน local paint ให้รอ network และห้ามเพิ่ม WebSocket/long-poll
 
-ฟังก์ชันคำนวณสถานะเกม (`committedToday`, `messagesLeftToday`, `budgetOf`)
+ฟังก์ชันคำนวณสถานะเกม (`committedToday`, `messageAllowance`, `budgetOf`)
 เป็น pure function รับ party object — ใช้ต่อได้เลยไม่ต้องแก้
+
+### Card System v0.6 lock
+
+- Rarity vocabulary มี 4 ค่าเท่านั้น: `common`, `rare`, `epic`, `legendary`
+- ชื่อที่แสดงเป็นชื่อสัตว์ล้วน สีแสดงแยกผ่าน metadata, badge, card background และ clover charm
+- Catalog ที่ออก reward ตอนนี้มี Common 48 + Rare 12; Epic/Legendary มี grammar/eligibility เตรียมไว้แต่ยังไม่มี asset ที่ออกจริง
+- Common ใช้เป็น Party Cover ไม่ได้; Rare/Epic/Legendary ใช้ได้
+- COMPLETE ออก reward row ให้สมาชิกปัจจุบันทุกคน และ `rewardClaims` ซ่อน `cardId` จนเจ้าตัว reveal
+- Message หลัง COMPLETE นับใหม่จาก `ended_at` คนละหนึ่งรอบตาม budget เดิม และไม่มี daily refill อีก
+- Collection test codes: `getallitem`, `discard`
 
 ---
 

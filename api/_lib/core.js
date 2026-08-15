@@ -51,6 +51,12 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS mc_auth_hits (
     bucket TEXT PRIMARY KEY, hits INTEGER NOT NULL DEFAULT 1, expires_at TIMESTAMPTZ NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS mc_email_otps (
+    id TEXT PRIMARY KEY, normalized_email TEXT NOT NULL, otp_hash TEXT NOT NULL,
+    otp_salt TEXT NOT NULL, attempt_count INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL, expires_at TIMESTAMPTZ NOT NULL, used_at TIMESTAMPTZ
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_mc_email_otps_email ON mc_email_otps(normalized_email, created_at DESC)`,
   `CREATE TABLE IF NOT EXISTS mc_counters (
     key TEXT PRIMARY KEY, value BIGINT NOT NULL DEFAULT 0
   )`,
@@ -73,6 +79,10 @@ const SCHEMA = [
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ`,
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS ended_at TIMESTAMPTZ`,
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS timezone TEXT NOT NULL DEFAULT 'Asia/Bangkok'`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS verification_mode TEXT NOT NULL DEFAULT 'trust'`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS scheduled_end_at TIMESTAMPTZ`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS cover_type TEXT NOT NULL DEFAULT 'legacy_card'`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS cover_value TEXT`,
   `CREATE INDEX IF NOT EXISTS idx_xty_parties_owner_state ON xty_parties(owner_id, state)`,
   `CREATE TABLE IF NOT EXISTS xty_members (
     party_id TEXT NOT NULL, user_id TEXT NOT NULL, alias TEXT NOT NULL,
@@ -82,6 +92,7 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS idx_xty_members_auth ON xty_members(party_id, auth_hash)`,
   `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS left_at TIMESTAMPTZ`,
   `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS removal_reason TEXT`,
+  `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS avatar_color TEXT NOT NULL DEFAULT 'green'`,
   `CREATE TABLE IF NOT EXISTS xty_posts (
     party_id TEXT NOT NULL, seq INTEGER NOT NULL, user_id TEXT NOT NULL,
     kind TEXT NOT NULL, body TEXT NOT NULL, sent_at TIMESTAMPTZ NOT NULL,
@@ -105,6 +116,27 @@ const SCHEMA = [
     data_json JSONB NOT NULL DEFAULT '{}'::jsonb, created_at TIMESTAMPTZ NOT NULL
   )`,
   `CREATE INDEX IF NOT EXISTS idx_xty_party_events_party ON xty_party_events(party_id, id)`,
+  `CREATE TABLE IF NOT EXISTS xty_progression (
+    user_id TEXT PRIMARY KEY, level INTEGER NOT NULL DEFAULT 1,
+    paid_tier TEXT NOT NULL DEFAULT 'free', unlocked_bonus_slots INTEGER NOT NULL DEFAULT 0,
+    updated_at TIMESTAMPTZ NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS xty_level_events (
+    user_id TEXT NOT NULL, party_id TEXT NOT NULL, from_level INTEGER NOT NULL,
+    to_level INTEGER NOT NULL, reason TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL,
+    PRIMARY KEY (user_id, party_id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS xty_card_ownership (
+    user_id TEXT NOT NULL, card_id TEXT NOT NULL, acquired_from TEXT NOT NULL,
+    acquired_at TIMESTAMPTZ NOT NULL, PRIMARY KEY (user_id, card_id)
+  )`,
+  `CREATE TABLE IF NOT EXISTS xty_card_rewards (
+    id TEXT PRIMARY KEY, user_id TEXT NOT NULL, party_id TEXT NOT NULL,
+    card_id TEXT, created_at TIMESTAMPTZ NOT NULL, revealed_at TIMESTAMPTZ,
+    UNIQUE (user_id, party_id)
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_xty_card_rewards_party ON xty_card_rewards(party_id, created_at)`,
+  `CREATE INDEX IF NOT EXISTS idx_xty_card_ownership_user ON xty_card_ownership(user_id, acquired_at)`,
 ];
 
 export async function ensureSchema(sql) {

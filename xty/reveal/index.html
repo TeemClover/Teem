@@ -7,12 +7,12 @@
 <meta name="theme-color" content="#FFF9E9">
 <title>เปิดการ์ด — XTY</title>
 <meta name="description" content="เปิด Animal Card ที่ได้จากการทำ Quest จริงใน XTY">
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 </head>
 <body>
 <header class="top">
   <a class="mark" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a>
-  <a class="back" href="/profile/">คอลเลกชัน</a>
+  <a class="back" href="/xty/collection/">คอลเลกชัน</a>
 </header>
 
 <main class="wrap reveal-page">
@@ -31,7 +31,7 @@
     <p class="kicker">COLLECTION COMPLETE ✦</p>
     <h1 class="title">คุณเก็บครบทุกใบแล้ว</h1>
     <p class="lede">Quest นี้ยังถูกบันทึกไว้ โดยไม่แจกการ์ดซ้ำ</p>
-    <a class="btn gold" href="/profile/">ดูคอลเลกชัน</a>
+    <a class="btn gold" href="/xty/collection/">ดูคอลเลกชัน</a>
   </section>
 
   <section id="reveal" hidden>
@@ -53,12 +53,15 @@
 
     <div class="reveal-copy" id="copy" hidden>
       <h2 class="title" id="cardName"></h2>
+      <p class="card-detail-meta" id="cardMeta"></p>
+      <p id="description"></p>
       <p id="flavor"></p>
       <p class="whisper">เพิ่มเข้าคอลเลกชันแล้วก่อนเปิด จึง refresh เพื่อสุ่มใหม่ไม่ได้</p>
     </div>
 
     <div class="reveal-actions" id="actions" hidden>
-      <a class="btn gold" href="/profile/">เก็บเข้าคอลเลกชัน</a>
+      <button class="btn gold accepted-card" disabled>รับเข้าคอลเลกชันแล้ว ✓</button>
+      <a class="btn ghost" href="/xty/collection/">ดู Collection</a>
       <button class="btn ghost" id="useAvatar">ใช้เป็น Avatar</button>
       <a class="btn ghost" id="useNpc" href="/xty/new/">ให้ร่วมตี้เป็น NPC</a>
     </div>
@@ -77,12 +80,13 @@
 
 <script type="module">
 import {
-  pendingCardReward, markCardRewardRevealed, useCardAsAvatar, shouldOfferProgressSave,
+  pendingCardReward, markCardRewardRevealed, revealPartyCardReward,
+  useCardAsAvatar, shouldOfferProgressSave,
   updateProfile, allParties, isActiveParty, partyIdentity,
 } from '/xty/_shared/store.js';
-import { cardById, cardNameTh } from '/xty/_shared/cards.js';
+import { XTY_RARITY_META, cardById, cardNameTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
-import { getSession, startLineLogin, syncXtyProfile } from '/xty/_shared/account.js';
+import { getSession, syncXtyProfile } from '/xty/_shared/account.js';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -109,20 +113,33 @@ function showReward(item) {
   const card = cardById(item.cardId);
   if (!card) { $('missing').hidden = false; return; }
   $('reveal').hidden = false;
-  $('front').innerHTML = cardMarkup(card);
+  $('front').innerHTML = cardMarkup(card, { eager: true, foil: card.rarity === 'rare' });
   $('cardName').textContent = cardNameTh(card);
+  $('cardMeta').textContent = `สี${card.colorNameTh} · ${(XTY_RARITY_META[card.rarity] || XTY_RARITY_META.common).label}`;
+  $('description').textContent = card.descriptionTh;
   $('flavor').textContent = `“${card.flavorTh}”`;
   const button = $('cardButton');
   let opened = !!item.revealedAt;
   if (opened) finishOpen();
-  button.addEventListener('click', () => {
+  button.addEventListener('click', async () => {
     if (opened) return;
+    button.disabled = true;
+    $('instruction').textContent = 'กำลังบันทึกช่วงเวลานี้ลง Party Log…';
+    const revealed = await revealPartyCardReward(item.rewardId);
+    if (revealed.error) {
+      button.disabled = false;
+      $('instruction').textContent = revealed.error === 'OFFLINE'
+        ? 'ยังออฟไลน์อยู่ · ต่อเน็ตแล้วกดเปิดอีกครั้ง'
+        : 'ยังเปิดการ์ดไม่ได้ · ลองอีกครั้ง';
+      return;
+    }
     opened = true;
     markCardRewardRevealed(item.rewardId);
     button.classList.add('is-open');
     button.setAttribute('aria-expanded', 'true');
     button.setAttribute('aria-label', cardNameTh(card));
     $('instruction').textContent = 'การ์ดใบนี้เป็นความทรงจำจาก Quest ไม่ใช่ของที่ซื้อสุ่ม';
+    syncXtyProfile();
     if (navigator.vibrate) navigator.vibrate(12);
     setTimeout(finishOpen, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 500);
   });
@@ -156,7 +173,7 @@ async function maybeOfferSave() {
 }
 
 $('saveProgress').addEventListener('click', () => {
-  startLineLogin(`${location.pathname}${location.search}`);
+  location.href = '/profile/?save=1';
 });
 $('later').addEventListener('click', () => {
   sessionStorage.setItem('xty_save_prompt_later', '1');

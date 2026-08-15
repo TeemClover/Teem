@@ -4,7 +4,36 @@ import {
   ensureSchema, newPasswordRecord, passwordMatches, pkceChallenge, providerConfig,
   publicUser, prune, safeReturn, sameOrigin, sendJson, sessionCookie, validEmail,
 } from '../_lib/core.js';
-import { randomUUID } from 'node:crypto';
+import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from 'node:crypto';
+
+const OTP_TTL_MS = 10 * 60 * 1000;
+const OTP_MAX_ATTEMPTS = 5;
+
+function otpRecord(value, salt = randomBytes(16).toString('hex')) {
+  return { salt, hash: scryptSync(String(value), salt, 32).toString('hex') };
+}
+
+function otpMatches(value, row) {
+  if (!/^\d{6}$/.test(String(value || '')) || !row?.otp_hash || !row.otp_salt) return false;
+  const actual = Buffer.from(otpRecord(value, row.otp_salt).hash, 'hex');
+  const expected = Buffer.from(row.otp_hash, 'hex');
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+
+async function sendOtpEmail(email, otp) {
+  const key = process.env.RESEND_API_KEY;
+  const from = process.env.XTY_FROM_EMAIL || process.env.FIRST_CLASS_FROM_EMAIL;
+  if (!key || !from) return { ok: false, error: 'EMAIL_DELIVERY_NOT_CONFIGURED' };
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
+    body: JSON.stringify({
+      from, to: [email], subject: 'รหัสเก็บ Progress ของ XTY',
+      text: `รหัส XTY ของคุณคือ ${otp}\n\nรหัสนี้ใช้ได้ 10 นาที และใช้ได้ครั้งเดียว\nถ้าคุณไม่ได้ขอรหัสนี้ ไม่ต้องทำอะไร`,
+    }),
+  });
+  return response.ok ? { ok: true } : { ok: false, error: 'EMAIL_DELIVERY_FAILED' };
+}
 
 function routeParts(req) {
   // Vercel does not consistently expose catch-all segments in req.query for
@@ -71,6 +100,66 @@ export default async function handler(req, res) {
 
     if (method === 'GET' && route[0] === 'providers') return sendJson(res, { ok: true, providers: { email: true, google: !!providerConfig('google'), line: !!providerConfig('line') } });
     if (method === 'GET' && route[0] === 'session') return sendJson(res, { ok: true, user: await currentUser(req, sql) });
+
+    if (method === 'POST' && route[0] === 'otp' && route[1] === 'request') {
+      if (!sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);
+      const body = bodyOf(req); const email = clean(body.email, 120).trim().toLowerCase();
+      if (!validEmail(email)) return sendJson(res, { ok: false, error: 'EMAIL_INVALID', message: 'อีเมลยังไม่ถูกรูปแบบครับ' }, 400);
+      if (await authRateLimited(sql, req, 'email-otp-request', email, 5, 60)) {
+        return sendJson(res, { ok: false, error: 'RATE_LIMITED', message: 'ขอรหัสถี่เกินไป ลองใหม่ภายหลังครับ' }, 429);
+      }
+      const otp = String(randomBytes(4).readUInt32BE(0) % 1000000).padStart(6, '0');
+      const record = otpRecord(otp); const id = randomUUID(); const createdAt = new Date();
+      const expiresAt = new Date(createdAt.getTime() + OTP_TTL_MS);
+      await sql.query(`UPDATE mc_email_otps SET used_at=$1 WHERE normalized_email=$2 AND used_at IS NULL`, [createdAt, email]);
+      await sql.query(`INSERT INTO mc_email_otps
+        (id,normalized_email,otp_hash,otp_salt,attempt_count,created_at,expires_at,used_at)
+        VALUES ($1,$2,$3,$4,0,$5,$6,NULL)`, [id, email, record.hash, record.salt, createdAt, expiresAt]);
+      const sent = await sendOtpEmail(email, otp);
+      if (!sent.ok) {
+        await sql.query('DELETE FROM mc_email_otps WHERE id=$1', [id]);
+        return sendJson(res, { ok: false, error: sent.error }, 503);
+      }
+      return sendJson(res, { ok: true, requestId: id, expiresIn: Math.floor(OTP_TTL_MS / 1000), resendAfter: 45 });
+    }
+
+    if (method === 'POST' && route[0] === 'otp' && route[1] === 'verify') {
+      if (!sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);
+      const body = bodyOf(req); const requestId = clean(body.requestId, 80); const otp = clean(body.otp, 6);
+      if (!requestId || !/^\d{6}$/.test(otp)) return sendJson(res, { ok: false, error: 'OTP_INVALID' }, 400);
+      const rows = await sql.query(`SELECT id,normalized_email,otp_hash,otp_salt,attempt_count,expires_at,used_at
+        FROM mc_email_otps WHERE id=$1`, [requestId]);
+      const row = rows[0]; const now = new Date();
+      if (!row || row.used_at || new Date(row.expires_at).getTime() <= now.getTime()) {
+        return sendJson(res, { ok: false, error: 'OTP_EXPIRED', message: 'รหัสหมดอายุแล้ว ขอรหัสใหม่ได้เลยครับ' }, 410);
+      }
+      if (Number(row.attempt_count || 0) >= OTP_MAX_ATTEMPTS) {
+        return sendJson(res, { ok: false, error: 'OTP_ATTEMPTS_EXCEEDED' }, 429);
+      }
+      if (!otpMatches(otp, row)) {
+        await sql.query('UPDATE mc_email_otps SET attempt_count=attempt_count+1 WHERE id=$1 AND used_at IS NULL', [requestId]);
+        return sendJson(res, { ok: false, error: 'OTP_INVALID', message: 'รหัสไม่ถูกต้อง ลองอีกครั้งครับ' }, 401);
+      }
+      const claimed = await sql.query(`UPDATE mc_email_otps SET used_at=$1
+        WHERE id=$2 AND used_at IS NULL AND expires_at>$1 RETURNING normalized_email`, [now, requestId]);
+      if (!claimed[0]) return sendJson(res, { ok: false, error: 'OTP_ALREADY_USED' }, 409);
+      const email = claimed[0].normalized_email;
+      let accounts = await sql.query('SELECT id,email,display_name,member_no FROM mc_accounts WHERE email=$1', [email]);
+      let account = accounts[0];
+      if (!account) {
+        const id = randomUUID(); const name = clean(body.name, 80) || 'Clover';
+        const memberNo = await ensureMemberNo(sql, email, name, now);
+        accounts = await sql.query(`INSERT INTO mc_accounts
+          (id,email,display_name,password_hash,password_salt,password_iterations,member_no,consent_at,created_at,updated_at)
+          VALUES ($1,$2,$3,NULL,NULL,NULL,$4,$5,$5,$5) RETURNING id,email,display_name,member_no`,
+        [id, email, name, memberNo || null, now]);
+        account = accounts[0];
+      }
+      await sql.query(`INSERT INTO mc_auth_identities (provider,provider_user_id,user_id,email,created_at)
+        VALUES ('email',$1,$2,$1,$3) ON CONFLICT (provider,provider_user_id) DO NOTHING`, [email, account.id, now]);
+      const session = await createSession(sql, account.id); await prune(sql);
+      return sendJson(res, { ok: true, user: publicUser(account) }, 200, { 'Set-Cookie': sessionCookie(session) });
+    }
 
     if (method === 'POST' && route[0] === 'signup') {
       if (!sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);

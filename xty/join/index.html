@@ -7,7 +7,7 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#FFF9E9">
 <title>เข้าตี้ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 </head>
 <body>
 
@@ -24,9 +24,15 @@
   <div class="card">
     <div class="field" style="margin-top:0">
       <label for="code">รหัสตี้</label>
-      <input id="code" type="text" inputmode="numeric" maxlength="4" placeholder="0123"
+      <input id="code" type="text" inputmode="numeric" maxlength="5" placeholder="00427"
              autocomplete="one-time-code" spellcheck="false"
              style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;font-size:19px">
+    </div>
+    <div class="field">
+      <label>เล่นตี้นี้เป็นตัวไหนดี?</label>
+      <div class="card-grid" id="avatarPick" role="radiogroup" aria-label="เลือกตัวละครประจำตี้"></div>
+      <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีตัวละครประจำตี้" style="margin-top:10px"></div>
+      <p class="hint">เลือกเฉพาะตี้นี้ได้ และใช้หน้าตาซ้ำข้ามตี้ได้</p>
     </div>
     <button class="btn gold" id="go" style="margin-top:20px" disabled>เข้าตี้</button>
     <p class="hint" id="err" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
@@ -37,28 +43,61 @@
 
 <script type="module">
 import { hasProfile, joinParty, getProfile } from '/xty/_shared/store.js';
+import { XTY_AVATARS, AVATAR_FRAMES } from '/xty/_shared/avatars.js';
 
 const $ = id => document.getElementById(id);
 if (!hasProfile()) location.replace('/xty/');
 
 const input = $('code'), go = $('go'), err = $('err');
 
-/* Keep leading zeroes: the invite code is exactly four numeric digits. */
+/* Keep leading zeroes: the invite code is exactly five numeric digits. */
 input.addEventListener('input', () => {
-  const v = input.value.replace(/\D/g, '').slice(0, 4);
+  const v = input.value.replace(/\D/g, '').slice(0, 5);
   input.value = v;
-  go.disabled = v.length < 4;
+  go.disabled = v.length < 5;
   err.hidden = true;
 });
 
 const prefill = new URLSearchParams(location.search).get('c');
 if (prefill) { input.value = prefill.toUpperCase(); input.dispatchEvent(new Event('input')); }
 
+const profile = getProfile();
+let partyAvatar = profile.avatarId;
+let partyAvatarColor = profile.avatarFrame || 'green';
+XTY_AVATARS.forEach(avatar => {
+  const button = document.createElement('button'); button.type = 'button';
+  button.className = 'pc avatar-card pickable' + (avatar.id === partyAvatar ? ' picked' : '');
+  button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', avatar.id === partyAvatar ? 'true' : 'false');
+  button.setAttribute('aria-label', avatar.nameTh);
+  button.innerHTML = `<span class="glyph"><img src="${avatar.art}" alt="" loading="lazy" decoding="async"></span>`;
+  button.addEventListener('click', () => {
+    partyAvatar = avatar.id;
+    $('avatarPick').querySelectorAll('button').forEach(node => {
+      const on = node === button; node.classList.toggle('picked', on); node.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+  });
+  $('avatarPick').appendChild(button);
+});
+Object.values(AVATAR_FRAMES).forEach(frame => {
+  const button = document.createElement('button'); button.type = 'button';
+  button.className = 'color-choice' + (frame.id === partyAvatarColor ? ' picked' : '');
+  button.style.setProperty('--swatch', frame.hex); button.setAttribute('role', 'radio');
+  button.setAttribute('aria-checked', frame.id === partyAvatarColor ? 'true' : 'false');
+  button.innerHTML = `<span></span><b>${frame.labelTh}</b>`;
+  button.addEventListener('click', () => {
+    partyAvatarColor = frame.id;
+    $('framePick').querySelectorAll('button').forEach(node => {
+      const on = node === button; node.classList.toggle('picked', on); node.setAttribute('aria-checked', on ? 'true' : 'false');
+    });
+  });
+  $('framePick').appendChild(button);
+});
+
 go.addEventListener('click', async () => {
   go.disabled = true;
   go.textContent = 'กำลังเข้าตี้…';
   const p = getProfile();
-  const res = await joinParty(input.value, { alias: p.alias, avatar: p.avatarId || p.avatarFallback });
+  const res = await joinParty(input.value, { alias: p.alias, avatar: partyAvatar, avatarColor: partyAvatarColor });
   if (res.error === 'NOT_FOUND') {
     err.textContent = 'ไม่เจอตี้รหัสนี้ ลองเช็กรหัสอีกครั้ง';
     err.hidden = false;
@@ -95,7 +134,7 @@ go.addEventListener('click', async () => {
     return;
   }
   if (res.error === 'ACTIVE_PARTY_LIMIT') {
-    err.textContent = 'คุณอยู่ในตี้ที่กำลังเล่นครบ 4 ตี้แล้ว — จบหรือพักตี้หนึ่งก่อน';
+    err.textContent = 'คุณใช้ช่องตี้ของ Level นี้ครบแล้ว — จบตี้หนึ่งก่อนหรือเพิ่ม Level';
     err.hidden = false;
     go.disabled = false;
     go.textContent = 'เข้าตี้';

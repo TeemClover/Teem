@@ -31,6 +31,30 @@ export function startLineLogin(returnTo = '/xty/') {
   location.href = `/api/auth/oauth/line/start?return=${encodeURIComponent(target)}`;
 }
 
+export function requestEmailOtp(email) {
+  return request('/api/auth/otp/request', {
+    method: 'POST', body: JSON.stringify({ email: String(email || '').trim().toLowerCase() }),
+  });
+}
+
+export async function bindXtyIdentity(profileId = getProfile()?.id) {
+  if (!profileId) return { ok: false, error: 'NO_PROFILE' };
+  return request('/api/xty/bind', {
+    method: 'POST', body: JSON.stringify({ profileId }),
+  });
+}
+
+export async function verifyEmailOtp({ requestId, otp, name } = {}) {
+  const verified = await request('/api/auth/otp/verify', {
+    method: 'POST', body: JSON.stringify({ requestId, otp, name }),
+  });
+  if (verified.error) return verified;
+  const bound = await bindXtyIdentity();
+  if (bound.error) return bound;
+  const synced = await syncXtyProfile();
+  return synced.error ? synced : { ...verified, profile: synced.profile };
+}
+
 function parseProfile(value) {
   if (value && typeof value === 'object') return normalizeProfile(value);
   try { return normalizeProfile(JSON.parse(value)); }
@@ -79,6 +103,14 @@ export function mergeXtyProfile(localValue, cloudValue) {
 
   const newest = time(local.updatedAt) >= time(cloud.updatedAt) ? local : cloud;
   const older = newest === local ? cloud : local;
+  const collectionResetAt = !local.collectionResetAt ? (cloud.collectionResetAt || null)
+    : (!cloud.collectionResetAt ? local.collectionResetAt
+      : (time(local.collectionResetAt) >= time(cloud.collectionResetAt) ? local.collectionResetAt : cloud.collectionResetAt));
+  const resetTime = time(collectionResetAt);
+  const mergedOwnedCards = unionById(local.ownedCards, cloud.ownedCards, 'cardId')
+    .filter(item => !resetTime || time(item.acquiredAt) > resetTime);
+  const mergedCardRewards = unionById(local.cardRewards, cloud.cardRewards, 'rewardId')
+    .filter(item => !resetTime || time(item.earnedAt) > resetTime);
   return normalizeProfile({
     ...older,
     ...newest,
@@ -90,16 +122,26 @@ export function mergeXtyProfile(localValue, cloudValue) {
     avatarFallback: newest.avatarFallback,
     avatarFrame: newest.avatarFrame || older.avatarFrame || 'green',
     handSize: Math.max(handSizeOf(local), handSizeOf(cloud)),
+    level: Math.max(Number(local.level || 1), Number(cloud.level || 1)),
+    paidTier: cloud.paidTier || local.paidTier || 'free',
+    bonusSlotEntitlement: Math.max(Number(local.bonusSlotEntitlement || 0), Number(cloud.bonusSlotEntitlement || 0)),
+    unlockedBonusSlots: Math.max(Number(local.unlockedBonusSlots || 0), Number(cloud.unlockedBonusSlots || 0)),
     petIds: [...new Set([
       ...(local.petIds || []),
       ...(cloud.petIds || []),
       ...XTY_V1_PET_IDS,
     ])],
     /* Card ownership is append-only during a conservative local/cloud
-       merge. A legitimately earned local card must never disappear. */
-    ownedCards: unionById(local.ownedCards, cloud.ownedCards, 'cardId'),
-    cardRewards: unionById(local.cardRewards, cloud.cardRewards, 'rewardId'),
-    equippedCardId: newest.equippedCardId || older.equippedCardId || null,
+       merge, except after the explicit Collection test reset tombstone. */
+    ownedCards: mergedOwnedCards,
+    cardRewards: mergedCardRewards,
+    equippedCardId: mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)
+      ? newest.equippedCardId
+      : (mergedOwnedCards.some(item => item.cardId === older.equippedCardId) ? older.equippedCardId : null),
+    collectionResetAt,
+    debugUnlockedAt: !local.debugUnlockedAt ? (cloud.debugUnlockedAt || null)
+      : (!cloud.debugUnlockedAt ? local.debugUnlockedAt
+        : (time(local.debugUnlockedAt) >= time(cloud.debugUnlockedAt) ? local.debugUnlockedAt : cloud.debugUnlockedAt)),
     createdAt: earlier(local.createdAt, cloud.createdAt),
     updatedAt: later(local.updatedAt, cloud.updatedAt),
     lifetimeCommitCount: Math.max(

@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#FFF9E9">
 <title>ตั้งตี้ใหม่ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 </head>
 <body>
 <header class="top">
@@ -19,11 +19,11 @@
   <h1 class="title">ตั้งตี้ในหน้าเดียว</h1>
   <p class="lede">เลือกของที่ตรงใจ แล้วออกไปทำในชีวิตจริงได้เลย</p>
 
-  <section class="notebook-card">
+  <section class="notebook-card" id="coverSection">
     <span class="step-sticker">1</span>
-    <h2>วาง Lead Card ของตี้</h2>
-    <p class="whisper">Starter Card จะถูกเลือกไว้ให้ การ์ดใบเดียวเป็น Lead ได้ทีละหนึ่ง Active Party</p>
-    <div class="card-select-grid" id="leadPick" role="radiogroup" aria-label="เลือก Lead Card"></div>
+    <h2>เลือกปกตี้</h2>
+    <p class="whisper" id="coverHint">ตี้แรกใช้ Animal Avatar ของคุณเป็นปกอัตโนมัติ</p>
+    <div class="card-select-grid" id="leadPick" role="radiogroup" aria-label="เลือกปกตี้"></div>
   </section>
 
   <section class="notebook-card">
@@ -38,8 +38,8 @@
 
   <section class="notebook-card">
     <span class="step-sticker">3</span>
-    <h2>เลือกวิธีเล่น</h2>
-    <div class="preset-grid" id="presetPick" role="radiogroup" aria-label="เลือกวิธีเล่น"></div>
+    <h2>เลือกรูปแบบการเล่น</h2>
+    <div class="preset-grid" id="verificationPick" role="radiogroup" aria-label="เลือกรูปแบบการเล่น"></div>
   </section>
 
   <section class="notebook-card">
@@ -72,7 +72,7 @@
     <span class="step-sticker">7</span>
     <h2>ใครเข้าร่วมได้?</h2>
     <div class="choice-row two" id="visibilityPick" role="radiogroup" aria-label="เลือกการมองเห็น"></div>
-    <p class="hint">ตี้ส่วนตัวใช้รหัส 4 หลักชวนเพื่อนเข้ามา</p>
+    <p class="hint">ตี้ส่วนตัวใช้รหัส 5 หลักชวนเพื่อนเข้ามา</p>
   </section>
 
   <section class="notebook-card">
@@ -100,11 +100,12 @@
 <script type="module">
 import {
   hasProfile, getProfile, createParty, MESSAGE_BUDGETS, DEFAULT_BUDGET,
-  availableOwnedCards,
+  availableOwnedCards, allParties, partyIdentity,
 } from '/xty/_shared/store.js';
 import { XTY_V1_PETS, PET_BY_ID, RGBS } from '/xty/_shared/pets.js';
-import { XTY_ACTIVITIES, XTY_PRESETS } from '/xty/_shared/activities.js';
-import { cardById, cardNameTh } from '/xty/_shared/cards.js';
+import { XTY_ACTIVITIES } from '/xty/_shared/activities.js';
+import { avatarById } from '/xty/_shared/avatars.js';
+import { cardById, cardDescriptorTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
 
 const $ = id => document.getElementById(id);
@@ -138,34 +139,58 @@ function init() {
   const profile = getProfile();
   const ownedPets = XTY_V1_PETS.filter(p => profile.petIds.includes(p.id));
   const leadCards = availableOwnedCards({ role: 'lead', profile });
+  const npcCards = availableOwnedCards({ role: 'npc', profile });
+  const firstParty = !allParties().some(party => partyIdentity(party.code)?.userId === party.ownerId);
   const qs = new URLSearchParams(location.search);
   const requestedLead = String(qs.get('lead') || '').toUpperCase();
-  let leadCardId = leadCards.some(card => card.cardId === requestedLead) ? requestedLead
-    : (leadCards.some(card => card.cardId === profile.equippedCardId)
-      ? profile.equippedCardId : leadCards[0]?.cardId);
+  let coverType = firstParty ? 'avatar' : 'card_back';
+  let leadCardId = !firstParty && leadCards.some(card => card.cardId === requestedLead) ? requestedLead : null;
+  if (leadCardId) coverType = 'card';
   const requestedNpc = String(qs.get('npc') || '').toUpperCase();
-  let npcCardId = leadCards.some(card => card.cardId === requestedNpc && card.cardId !== leadCardId)
+  let npcCardId = npcCards.some(card => card.cardId === requestedNpc && card.cardId !== leadCardId)
     ? requestedNpc : null;
 
-  leadCards.forEach(card => {
-    const button = document.createElement('button');
-    button.type = 'button'; button.className = 'card-select' + (card.cardId === leadCardId ? ' picked' : '');
-    button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', card.cardId === leadCardId ? 'true' : 'false');
-    button.setAttribute('aria-label', `ใช้ ${cardNameTh(card)} เป็น Lead`);
-    button.innerHTML = cardMarkup(card, { role: 'lead' });
+  const coverButtons = [];
+  const addCoverButton = (button, type, cardId = null) => {
+    button.type = 'button'; button.classList.add('card-select');
+    button.setAttribute('role', 'radio');
     button.addEventListener('click', () => {
-      leadCardId = card.cardId;
-      if (npcCardId === leadCardId) {
-        npcCardId = null;
-        $('petHint').textContent = 'ยังไม่ได้เลือกเพื่อนร่วมทาง';
-      }
-      $('leadPick').querySelectorAll('button').forEach(node => {
-        const on = node === button; node.classList.toggle('picked', on); node.setAttribute('aria-checked', on ? 'true' : 'false');
+      coverType = type; leadCardId = cardId;
+      coverButtons.forEach(item => {
+        const on = item.button === button;
+        item.button.classList.toggle('picked', on);
+        item.button.setAttribute('aria-checked', on ? 'true' : 'false');
       });
-      renderNpcCards();
+      renderNpcCards(); syncReady();
     });
-    $('leadPick').appendChild(button);
-  });
+    coverButtons.push({ button, type, cardId }); $('leadPick').appendChild(button);
+  };
+
+  if (firstParty) {
+    const avatar = avatarById(profile.avatarId);
+    const button = document.createElement('button');
+    button.className = 'card-select picked'; button.setAttribute('aria-checked', 'true');
+    button.setAttribute('aria-label', `ใช้ ${avatar.nameTh} เป็นปกตี้แรก`);
+    button.innerHTML = `<div class="avatar-cover" data-color="${profile.avatarFrame}"><img src="${avatar.art}" alt=""><b>${avatar.nameTh}</b><small>FIRST PARTY COVER</small></div>`;
+    addCoverButton(button, 'avatar');
+  } else {
+    const back = document.createElement('button');
+    back.className = 'card-select picked'; back.setAttribute('aria-checked', 'true');
+    back.setAttribute('aria-label', 'ใช้ Card Back เป็นปกตี้');
+    back.innerHTML = '<div class="animal-card card-back" aria-hidden="true"><span class="back-mark">XTY</span><small>CARD BACK</small></div>';
+    addCoverButton(back, 'card_back');
+    leadCards.forEach(card => {
+      const button = document.createElement('button');
+      button.className = 'card-select' + (card.cardId === leadCardId ? ' picked' : '');
+      button.setAttribute('aria-checked', card.cardId === leadCardId ? 'true' : 'false');
+      button.setAttribute('aria-label', `ใช้ ${cardDescriptorTh(card)} เป็นปกตี้`);
+      button.innerHTML = cardMarkup(card, { role: 'lead' });
+      addCoverButton(button, 'card', card.cardId);
+    });
+    $('coverHint').textContent = leadCards.length
+      ? 'ใช้ Card Back หรือ Rare / Epic / Legendary ที่ปลดแล้ว · Common ใช้เป็นปกไม่ได้'
+      : 'ใช้ Card Back ได้เลย · Rare / Epic / Legendary ที่ได้ภายหลังจะใช้เป็นปกตี้ได้';
+  }
 
   const activityButtons = XTY_ACTIVITIES.map(item => {
     const button = document.createElement('button');
@@ -180,14 +205,17 @@ function init() {
     syncReady();
   });
 
-  const presetButtons = XTY_PRESETS.map(item => {
+  const verificationButtons = [
+    { id: 'trust', labelTh: 'เชื่อใจกัน', hintTh: 'Commit แล้วผ่านทันที', art: '/xty/assets/art/activities/activity-walk.webp' },
+    { id: 'confirm', labelTh: 'ต้อง Confirm', hintTh: 'ให้เพื่อนอย่างน้อย 1 คน Confirm · ย้อนหลังได้ถึงวันถัดไป', art: '/xty/assets/art/activities/activity-study.webp' },
+  ].map(item => {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'preset-choice'; button.setAttribute('role', 'radio');
     button.innerHTML = `<img src="${item.art}" alt=""><span><b>${item.labelTh}</b><small>${item.hintTh}</small></span>`;
     return { id: item.id, button };
   });
-  let preset = 'casual';
-  radioGroup($('presetPick'), presetButtons, preset, id => { preset = id; });
+  let verificationMode = 'trust';
+  radioGroup($('verificationPick'), verificationButtons, verificationMode, id => { verificationMode = id; });
 
   let durationDays = 7;
   const durationButtons = [7, 14, 28].map(days => {
@@ -214,7 +242,7 @@ function init() {
 
   let visibility = 'private';
   const visibilityButtons = [
-    ['private', '🔒', 'ส่วนตัว', 'เข้าด้วยรหัส 4 หลัก'],
+    ['private', '🔒', 'ส่วนตัว', 'เข้าด้วยรหัส 5 หลัก'],
     ['public', '☀️', 'สาธารณะ', 'แสดงในหน้าเปิดตี้'],
   ].map(([id, icon, label, hint]) => {
     const button = document.createElement('button');
@@ -254,7 +282,7 @@ function init() {
       const button = document.createElement('button');
       button.type = 'button'; button.className = 'card-select' + (card.cardId === npcCardId ? ' picked' : '');
       button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', card.cardId === npcCardId ? 'true' : 'false');
-      button.setAttribute('aria-label', `ใช้ ${cardNameTh(card)} เป็น NPC`);
+      button.setAttribute('aria-label', `ใช้ ${cardDescriptorTh(card)} เป็น NPC`);
       button.innerHTML = cardMarkup(card, { role: 'npc' });
       button.addEventListener('click', () => {
         npcCardId = npcCardId === card.cardId ? null : card.cardId;
@@ -266,14 +294,14 @@ function init() {
         }
         renderNpcCards();
         $('petHint').textContent = npcCardId
-          ? `${cardNameTh(cardById(npcCardId))} จะร่วมตี้เป็น NPC`
+          ? `${cardDescriptorTh(cardById(npcCardId))} จะร่วมตี้เป็น NPC`
           : 'ยังไม่ได้เลือกเพื่อนร่วมทาง';
       });
       box.appendChild(button);
     });
   }
   renderNpcCards();
-  if (npcCardId) $('petHint').textContent = `${cardNameTh(cardById(npcCardId))} จะร่วมตี้เป็น NPC`;
+  if (npcCardId) $('petHint').textContent = `${cardDescriptorTh(cardById(npcCardId))} จะร่วมตี้เป็น NPC`;
 
   let budget = DEFAULT_BUDGET;
   const budgetButtons = Object.values(MESSAGE_BUDGETS).map(item => {
@@ -299,18 +327,19 @@ function init() {
     const activity = activityId === 'custom' ? $('customActivity').value.trim() : selected.labelTh;
     try {
       const party = await createParty({
-        name: $('pname').value, activity, activityId, preset, durationDays,
-        color, visibility, commitRule: $('prule').value, budget, petId, leadCardId, npcCardId,
+        name: $('pname').value, activity, activityId, verificationMode, durationDays,
+        color, visibility, commitRule: $('prule').value, budget, petId, coverType, leadCardId, npcCardId,
       });
       location.href = `/xty/p/?c=${encodeURIComponent(party.code)}&new=1`;
     } catch (error) {
       const messages = {
         XTY_DB_NOT_CONFIGURED: 'เซิร์ฟเวอร์ XTY ยังไม่พร้อม',
         DATABASE_URL_NOT_CONFIGURED: 'เซิร์ฟเวอร์ XTY ยังไม่พร้อม',
-        OWNED_PARTY_LIMIT: 'คุณมีตี้ที่สร้างและกำลังเล่นอยู่แล้ว 1 ตี้',
-        ACTIVE_PARTY_LIMIT: 'คุณอยู่ในตี้ที่กำลังเล่นครบ 4 ตี้แล้ว',
+        OWNED_PARTY_LIMIT: 'คุณใช้ช่องสร้างตี้ของ Level นี้ครบแล้ว',
+        ACTIVE_PARTY_LIMIT: 'คุณใช้ช่องตี้ของ Level นี้ครบแล้ว',
         CARD_IN_USE: 'การ์ดใบนี้กำลังอยู่ใน Active Party อื่น',
         CARD_NOT_OWNED: 'ไม่พบการ์ดใบนี้ในคอลเลกชัน',
+        CARD_NOT_COVER_ELIGIBLE: 'ปกตี้ใช้ได้เฉพาะ Card Back หรือ Rare Card',
       };
       toast(messages[error.code] || 'สร้างตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองอีกครั้ง');
       go.disabled = false; go.textContent = 'สร้างตี้';
@@ -319,7 +348,7 @@ function init() {
 
   function syncReady() {
     const customReady = activityId !== 'custom' || $('customActivity').value.trim().length > 0;
-    $('go').disabled = $('pname').value.trim().length < 1 || !customReady || !leadCardId;
+    $('go').disabled = $('pname').value.trim().length < 1 || !customReady || !coverType;
   }
 }
 
