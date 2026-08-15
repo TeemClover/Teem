@@ -1,6 +1,39 @@
 {
   "redirects": [
     {
+      "source": "/xty/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "xty.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/xty/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xty",
+      "has": [
+        {
+          "type": "host",
+          "value": "xty.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/xty/",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "xty.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/xty/:path*",
+      "permanent": false
+    },
+    {
       "source": "/guild",
       "destination": "/guild/",
       "permanent": false
@@ -403,16 +436,6 @@
     {
       "source": "/api/xty/:path*",
       "destination": "/api/xty?path=:path*"
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "xty.myclover.com"
-        }
-      ],
-      "destination": "/xty/:path*"
     },
     {
       "source": "/:path*",
