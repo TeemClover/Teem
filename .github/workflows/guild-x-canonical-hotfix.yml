@@ -105,21 +105,21 @@ jobs:
           html = re.sub(r'<img\s+class="(?:ring|xenergy|xgold|crest|hero-petal\s+(?:pr|pg|pb|ps))"[^>]*>\s*', '', html)
 
           override = r'''
-/* === Guild X canonical identity hotfix === */
-.brandmark{width:42px!important;height:42px!important;flex:0 0 42px}
-.brandmark img{display:none!important}
-.brandmark::before{content:"";position:absolute;inset:0;background:url('/guild/assets/guild-x-mark-ui.png') center/contain no-repeat;filter:drop-shadow(0 5px 12px rgba(0,0,0,.38)) drop-shadow(0 0 9px rgba(82,237,154,.13))}
-.orbital{isolation:isolate}
-.orbital::before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(91,239,154,.17),rgba(23,91,55,.06) 42%,transparent 70%);filter:blur(26px);animation:guildAura 5.2s ease-in-out infinite}
-.orbital::after{content:"";position:absolute;z-index:8;inset:3%;background:url('/guild/assets/guild-x-mark.png') center/contain no-repeat;filter:drop-shadow(0 28px 38px rgba(0,0,0,.52)) drop-shadow(0 0 25px rgba(79,222,145,.15));animation:guildMarkFloat 6s ease-in-out infinite;will-change:transform,filter}
-@keyframes guildMarkFloat{0%,100%{transform:translate3d(0,2px,0) scale(.985);filter:drop-shadow(0 28px 38px rgba(0,0,0,.52)) drop-shadow(0 0 20px rgba(79,222,145,.12))}50%{transform:translate3d(0,-7px,0) scale(1);filter:drop-shadow(0 32px 42px rgba(0,0,0,.50)) drop-shadow(0 0 34px rgba(79,222,145,.22))}}
-@keyframes guildAura{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:.9;transform:scale(1.04)}}
-@media(max-width:760px){.brandmark{width:38px!important;height:38px!important;flex-basis:38px}.orbital::after{inset:7%}}
-@media(prefers-reduced-motion:reduce){.orbital::after,.orbital::before{animation:none!important}}
-/* Keep large art inside its presentation frame. */
-.hero-art,.multiply-art,.identity-stage,.upgrade-art,.dungeon-art{overflow:hidden!important}
-img[src*="hero-card"]{object-fit:contain!important;object-position:center!important}
-'''
+          /* === Guild X canonical identity hotfix === */
+          .brandmark{width:42px!important;height:42px!important;flex:0 0 42px}
+          .brandmark img{display:none!important}
+          .brandmark::before{content:"";position:absolute;inset:0;background:url('/guild/assets/guild-x-mark-ui.png') center/contain no-repeat;filter:drop-shadow(0 5px 12px rgba(0,0,0,.38)) drop-shadow(0 0 9px rgba(82,237,154,.13))}
+          .orbital{isolation:isolate}
+          .orbital::before{content:"";position:absolute;inset:8%;border-radius:50%;background:radial-gradient(circle,rgba(91,239,154,.17),rgba(23,91,55,.06) 42%,transparent 70%);filter:blur(26px);animation:guildAura 5.2s ease-in-out infinite}
+          .orbital::after{content:"";position:absolute;z-index:8;inset:3%;background:url('/guild/assets/guild-x-mark.png') center/contain no-repeat;filter:drop-shadow(0 28px 38px rgba(0,0,0,.52)) drop-shadow(0 0 25px rgba(79,222,145,.15));animation:guildMarkFloat 6s ease-in-out infinite;will-change:transform,filter}
+          @keyframes guildMarkFloat{0%,100%{transform:translate3d(0,2px,0) scale(.985);filter:drop-shadow(0 28px 38px rgba(0,0,0,.52)) drop-shadow(0 0 20px rgba(79,222,145,.12))}50%{transform:translate3d(0,-7px,0) scale(1);filter:drop-shadow(0 32px 42px rgba(0,0,0,.50)) drop-shadow(0 0 34px rgba(79,222,145,.22))}}
+          @keyframes guildAura{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:.9;transform:scale(1.04)}}
+          @media(max-width:760px){.brandmark{width:38px!important;height:38px!important;flex-basis:38px}.orbital::after{inset:7%}}
+          @media(prefers-reduced-motion:reduce){.orbital::after,.orbital::before{animation:none!important}}
+          /* Keep large art inside its presentation frame. */
+          .hero-art,.multiply-art,.identity-stage,.upgrade-art,.dungeon-art{overflow:hidden!important}
+          img[src*="hero-card"]{object-fit:contain!important;object-position:center!important}
+          '''
           html = html.replace('</style>', override + '\n</style>', 1)
 
           # Avoid decoding stalls for content below the first screen.
