@@ -1,6 +1,6 @@
 import { currentUser, database, ensureSchema, sendJson } from './core.js';
 import { handleCreatePartyV2 } from './xty-create-v2.js';
-import { cardById as xtyCardById, cardDescriptorTh } from '../../xty/_shared/cards.js';
+import { cardById as xtyCardById, cardNameTh } from '../../xty/_shared/cards.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
 import { AVATAR_BY_ID } from '../../xty/_shared/avatars.js';
 
@@ -96,7 +96,7 @@ async function requestedCover(req, sql) {
       error.code = 'CARD_IN_USE';
       throw error;
     }
-    return { type: 'card', value: id, leadCardId: id, name: cardDescriptorTh(card) };
+    return { type: 'card', value: id, leadCardId: id, name: cardNameTh(card) };
   }
 
   return { type: 'card_back', value: 'myclover-back-v1', leadCardId: null, name: 'หลังการ์ด myClover' };
