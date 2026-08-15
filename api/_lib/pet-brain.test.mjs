@@ -2,10 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 process.env.XTY_PET_AI = 'on';
-process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
+process.env.GROQ_API_KEY = 'gsk-test';
 
-/* The SDK captures globalThis.fetch when the client is constructed, so
-   the stub is installed once and swapped through this handler. */
 let respond = async () => { throw new Error('no stub installed'); };
 globalThis.fetch = (url, init) => respond(url, init);
 
@@ -63,18 +61,22 @@ const log = [
   { seq: 6, kind: 'message', body: '', sent_at: '2026-08-14T03:10:00Z', retracted: true, alias: 'นนท์', reactions: '' },
 ];
 
-test('request carries the real log, roster, rule and guards', async () => {
+test('Groq request carries the real log, roster, rule and NPC guards', async () => {
   let sent = null;
+  let endpoint = null;
+  let headers = null;
   respond = async (url, init) => {
+    endpoint = String(url);
+    headers = init.headers;
     sent = JSON.parse(init.body);
     return new Response(JSON.stringify({
-      id: 'msg_1', type: 'message', role: 'assistant', model: 'claude-opus-5',
-      stop_reason: 'end_turn', stop_sequence: null,
-      content: [
-        { type: 'thinking', thinking: 'พิจารณาก่อน' },
-        { type: 'text', text: 'แพรวิ่งแล้ววันนี้\nนนท์เลื่อนไปพรุ่งนี้ — จดไว้แล้ว' },
-      ],
-      usage: { input_tokens: 10, output_tokens: 5 },
+      id: 'chatcmpl_1', object: 'chat.completion', model: 'openai/gpt-oss-20b',
+      choices: [{
+        index: 0,
+        message: { role: 'assistant', content: 'แพรวิ่งแล้ววันนี้\nนนท์เลื่อนไปพรุ่งนี้ — จดไว้แล้ว' },
+        finish_reason: 'stop',
+      }],
+      usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
     }), { status: 200, headers: { 'content-type': 'application/json' } });
   };
 
@@ -85,48 +87,54 @@ test('request carries the real log, roster, rule and guards', async () => {
   });
 
   assert.deepEqual(out, ['แพรวิ่งแล้ววันนี้', 'นนท์เลื่อนไปพรุ่งนี้ — จดไว้แล้ว']);
-  assert.equal(sent.model, 'claude-opus-5');
-  assert.equal(sent.temperature, undefined);
-  assert.equal(sent.thinking, undefined);
-  assert.deepEqual(sent.output_config, { effort: 'low' });
+  assert.equal(endpoint, 'https://api.groq.com/openai/v1/chat/completions');
+  assert.equal(headers.Authorization, 'Bearer gsk-test');
+  assert.equal(sent.model, 'openai/gpt-oss-20b');
+  assert.equal(sent.reasoning_effort, 'low');
+  assert.equal(sent.reasoning_format, 'hidden');
+  assert.equal(sent.max_completion_tokens, 300);
+  assert.equal(sent.stream, false);
+  assert.equal(sent.messages.length, 1);
+  assert.equal(sent.messages[0].role, 'user');
 
-  const sys = sent.system;
-  assert.match(sys, /กา/);
-  assert.match(sys, /วิ่งอย่างน้อย 20 นาที/);
-  assert.match(sys, /แพร \(หัวตี้\)/);
-  assert.match(sys, /12:00 น\./);
-  assert.match(sys, /Roast the commitment/);
-  assert.match(sys, /QUIET/);
-
-  const user = sent.messages[0].content;
-  assert.match(user, /แพร · COMMIT/);
-  assert.match(user, /นนท์: วันนี้ฝนตก ไว้พรุ่งนี้/);
-  assert.match(user, /ถอนข้อความออกไป/);
-  assert.match(user, /รีแอค: 🔥×2/);
-  assert.match(user, /เมื่อวานครบทุกคน/);
-  assert.match(user, /08:30/);   // 01:30Z rendered in ICT
+  const prompt = sent.messages[0].content;
+  assert.match(prompt, /NPC สัตว์ประจำตี้/);
+  assert.match(prompt, /ไม่ใช่ AI assistant/);
+  assert.match(prompt, /เท่าเทียมกับตัวเอง/);
+  assert.match(prompt, /กา/);
+  assert.match(prompt, /วิ่งอย่างน้อย 20 นาที/);
+  assert.match(prompt, /แพร \(หัวตี้\)/);
+  assert.match(prompt, /12:00 น\./);
+  assert.match(prompt, /Roast the commitment/);
+  assert.match(prompt, /QUIET/);
+  assert.match(prompt, /แพร · COMMIT/);
+  assert.match(prompt, /นนท์: วันนี้ฝนตก ไว้พรุ่งนี้/);
+  assert.match(prompt, /ถอนข้อความออกไป/);
+  assert.match(prompt, /รีแอค: 🔥×2/);
+  assert.match(prompt, /เมื่อวานครบทุกคน/);
+  assert.match(prompt, /08:30/);   // 01:30Z rendered in ICT
 });
 
-test('a refusal turns into silence, an API error into fallback', async () => {
+test('a content filter means silence, an API error means fallback', async () => {
   respond = async () => new Response(JSON.stringify({
-    id: 'msg_2', type: 'message', role: 'assistant', model: 'claude-opus-5',
-    stop_reason: 'refusal', content: [], usage: { input_tokens: 1, output_tokens: 1 },
+    id: 'chatcmpl_2',
+    choices: [{ index: 0, message: { role: 'assistant', content: '' }, finish_reason: 'content_filter' }],
   }), { status: 200, headers: { 'content-type': 'application/json' } });
   assert.deepEqual(await readAndRespond({ party, context, log, ownRecent: [], since: new Date(), hour: 12 }), []);
 
-  respond = async () => new Response('{"type":"error"}', { status: 500, headers: { 'content-type': 'application/json' } });
+  respond = async () => new Response('{"error":{"message":"provider down"}}', { status: 500, headers: { 'content-type': 'application/json' } });
   assert.equal(await readAndRespond({ party, context, log, ownRecent: [], since: new Date(), hour: 12 }), null);
 });
 
-test('no key or flag off means fallback, never a call', async () => {
+test('no Groq key or flag off means fallback, never a call', async () => {
   respond = async () => { throw new Error('must not call the API'); };
   process.env.XTY_PET_AI = 'off';
   assert.equal(await readAndRespond({ party, context, log, ownRecent: [], since: new Date(), hour: 12 }), null);
   process.env.XTY_PET_AI = 'on';
 
-  delete process.env.ANTHROPIC_API_KEY;
+  delete process.env.GROQ_API_KEY;
   assert.equal(await readAndRespond({ party, context, log, ownRecent: [], since: new Date(), hour: 12 }), null);
-  process.env.ANTHROPIC_API_KEY = 'sk-ant-test';
+  process.env.GROQ_API_KEY = 'gsk-test';
 });
 
 test('a day-long silence reads back to the last real activity, once', async () => {
@@ -134,10 +142,12 @@ test('a day-long silence reads back to the last real activity, once', async () =
   respond = async (url, init) => {
     sent = JSON.parse(init.body);
     return new Response(JSON.stringify({
-      id: 'msg_3', type: 'message', role: 'assistant', model: 'claude-opus-5',
-      stop_reason: 'end_turn',
-      content: [{ type: 'text', text: 'เงียบไปวันนึงแล้ว — ยังอยู่กันไหม' }],
-      usage: { input_tokens: 1, output_tokens: 1 },
+      id: 'chatcmpl_3',
+      choices: [{
+        index: 0,
+        message: { role: 'assistant', content: 'เงียบไปวันนึงแล้ว — ยังอยู่กันไหม' },
+        finish_reason: 'stop',
+      }],
     }), { status: 200, headers: { 'content-type': 'application/json' } });
   };
 
@@ -147,27 +157,21 @@ test('a day-long silence reads back to the last real activity, once', async () =
   });
   assert.deepEqual(out, ['เงียบไปวันนึงแล้ว — ยังอยู่กันไหม']);
 
-  const user = sent.messages[0].content;
-  assert.match(user, /เงียบมาเกินหนึ่งวันแล้ว/);
-  assert.match(user, /ทักได้ครั้งเดียว/);
-  assert.match(user, /นนท์: วันนี้ฝนตก ไว้พรุ่งนี้/);
+  const prompt = sent.messages[0].content;
+  assert.match(prompt, /เงียบมาเกินหนึ่งวันแล้ว/);
+  assert.match(prompt, /ทักหรือจิกเบา ๆ ได้ครั้งเดียว/);
+  assert.match(prompt, /นนท์: วันนี้ฝนตก ไว้พรุ่งนี้/);
 });
 
 const { worthReading } = await import('../xty-pet.js');
 const hoursAgo = h => new Date(Date.now() - h * 3600000);
 
 test('reading is gated so a dead party costs nothing', () => {
-  /* anything happened → read */
   assert.equal(worthReading(12, { humanUpdates: 1, lastHumanAt: null, lastPetAt: null }), true);
-  /* nothing happened, nothing to say */
   assert.equal(worthReading(12, { humanUpdates: 0, lastHumanAt: hoursAgo(50), lastPetAt: null }), false);
   assert.equal(worthReading(6, { humanUpdates: 0, lastHumanAt: hoursAgo(50), lastPetAt: null }), false);
-  /* quiet a full day → one 18:00 check-in */
   assert.equal(worthReading(18, { humanUpdates: 0, lastHumanAt: hoursAgo(30), lastPetAt: null }), true);
-  /* quiet, but not a full day yet */
   assert.equal(worthReading(18, { humanUpdates: 0, lastHumanAt: hoursAgo(10), lastPetAt: null }), false);
-  /* already nudged since the last human post → never again until someone returns */
   assert.equal(worthReading(18, { humanUpdates: 0, lastHumanAt: hoursAgo(30), lastPetAt: hoursAgo(6) }), false);
-  /* a party that never posted at all */
   assert.equal(worthReading(18, { humanUpdates: 0, lastHumanAt: null, lastPetAt: null }), false);
 });
