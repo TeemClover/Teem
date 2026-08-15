@@ -1,7 +1,5 @@
 import { getParty, getProfile, partyIdentity, availableOwnedCards, committedToday } from './store.js';
-import { cardMarkup } from './card-ui.js';
 import { cardById as xtyCardById, cardDescriptorTh } from './cards.js';
-import { getUnlockedFirstHandIds } from '../../core7/js/collection-progress.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
 import { cardSVG } from '../../core7/js/art.js';
 
@@ -10,6 +8,17 @@ const BACK = '/core7/assets/myclover-back.webp';
 let busy = false;
 
 if (/^\d{5}$/.test(code || '')) install();
+
+function unlockedCore7Ids() {
+  try {
+    const ids = JSON.parse(localStorage.getItem('c7:collection') || '[]');
+    if (!Array.isArray(ids)) return [];
+    return [...new Set(ids)].filter(id => {
+      const card = typeof id === 'string' ? core7CardById(id) : null;
+      return !!card && !card.generic && String(card.id || '').startsWith('fh-');
+    });
+  } catch { return []; }
+}
 
 function install() {
   injectStyle();
@@ -21,7 +30,9 @@ function install() {
 }
 
 function injectStyle() {
+  if (document.getElementById('xty-party-profile-cover-style')) return;
   const s = document.createElement('style');
+  s.id = 'xty-party-profile-cover-style';
   s.textContent = `
     .xty-profile-click{cursor:pointer}.xty-profile-click:focus-visible{outline:3px solid rgba(91,141,255,.45);outline-offset:3px}
     .xty-core7-seat,.xty-back-seat{width:100%;aspect-ratio:63/88;overflow:hidden;border-radius:14px}
@@ -69,14 +80,16 @@ function syncLeadCover() {
   const lead = p.members.find(m => m.role === 'lead'); if (!lead) return;
   const first = seats.children[0]; if (!first) return;
   const mark = committedToday(p).has(lead.userId) ? '✓' : '○';
+  const signature = `${p.coverType || ''}|${p.coverValue || p.leadCardId || ''}|${lead.alias}|${mark}`;
+  if (first.dataset.coverV3 === signature) return;
 
   if (p.coverType === 'core7_card' && p.coverValue) {
     const card = core7CardById(p.coverValue); if (!card) return;
-    first.className = 'seat-card-wrap xty-profile-click';
+    first.className = 'seat-card-wrap xty-profile-click'; first.dataset.coverV3 = signature;
     first.innerHTML = `<div class="xty-core7-seat">${cardSVG(card.id, { width: 300, showNumber: true })}</div>`
       + `<span class="seat-card-name">${lead.alias} · ${mark}</span>`;
   } else if (p.coverType === 'card_back') {
-    first.className = 'seat-card-wrap xty-profile-click';
+    first.className = 'seat-card-wrap xty-profile-click'; first.dataset.coverV3 = signature;
     first.innerHTML = `<div class="xty-back-seat"><img src="${BACK}" alt="หลังการ์ด myClover"></div>`
       + `<span class="seat-card-name">${lead.alias} · ${mark}</span>`;
   }
@@ -103,7 +116,8 @@ function syncCoverTools() {
   if (!p || !select || !button) return;
   const me = partyIdentity(code); const member = p.members.find(m => m.userId === me?.userId);
   if (!member || member.role !== 'lead') return;
-  const signature = [p.coverType, p.coverValue, p.leadCardId, getUnlockedFirstHandIds().join(',')].join('|');
+  const core7Ids = unlockedCore7Ids();
+  const signature = [p.coverType, p.coverValue, p.leadCardId, core7Ids.join(',')].join('|');
   if (select.dataset.coverV3 === signature) return;
   select.dataset.coverV3 = signature; select.disabled = false; button.disabled = false; select.innerHTML = '';
 
@@ -112,8 +126,8 @@ function syncCoverTools() {
   const xtyCards = availableOwnedCards({ role: 'lead', exceptPartyCode: code });
   if (p.leadCardId) { const current = xtyCardById(p.leadCardId); if (current && !xtyCards.some(c => c.cardId === current.cardId)) xtyCards.unshift(current); }
   xtyCards.forEach(card => add(`v3:xty:${card.cardId}`, cardDescriptorTh(card), p.coverType === 'card' && p.leadCardId === card.cardId));
-  const ids = getUnlockedFirstHandIds(); if (p.coverType === 'core7_card' && p.coverValue && !ids.includes(p.coverValue)) ids.push(p.coverValue);
-  ids.forEach(id => { const card = core7CardById(id); if (card) add(`v3:core7:${id}`, `${card.en} · ${card.th}`, p.coverType === 'core7_card' && p.coverValue === id); });
+  if (p.coverType === 'core7_card' && p.coverValue && !core7Ids.includes(p.coverValue)) core7Ids.push(p.coverValue);
+  core7Ids.forEach(id => { const card = core7CardById(id); if (card) add(`v3:core7:${id}`, `${card.en} · ${card.th}`, p.coverType === 'core7_card' && p.coverValue === id); });
 }
 
 async function interceptCoverSave(event) {
@@ -142,6 +156,8 @@ function syncRichEvents() {
   const events = (p.events || []).filter(e => richText(e)); const counters = new Map();
   document.querySelectorAll('#log > .party-event').forEach(node => {
     const type = node.dataset.event || ''; const n = counters.get(type) || 0; const matches = events.filter(e => e.type === type); const event = matches[n]; counters.set(type, n + 1);
-    if (!event) return; const copy = node.querySelector('.event-copy'); if (copy) copy.textContent = richText(event);
+    if (!event) return;
+    const copy = node.querySelector('.event-copy'); const text = richText(event);
+    if (copy && copy.textContent !== text) copy.textContent = text;
   });
 }
