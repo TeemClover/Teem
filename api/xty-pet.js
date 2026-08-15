@@ -70,6 +70,16 @@ function observe(party, hour, context) {
   return [];
 }
 
+function manualWakeFallback(party) {
+  const lines = {
+    pig: 'กูตื่นละ 🐷 รอบนี้มาดูตี้จริง ๆ แล้ว',
+    dog: 'กูตื่นแล้ว 🐶 ยังอยู่กับตี้นี้นะ',
+    crow: 'กาตื่นแล้ว 🐦‍⬛ รอบนี้อ่านตี้จริง',
+    chicken: 'ตื่นแล้ว 🐔 รอบนี้มาจิกดูตี้จริง ๆ',
+  };
+  return lines[party.pet_id] ? [lines[party.pet_id]] : [];
+}
+
 export function worthReading(hour, context, force = false) {
   if (force) return true;
   if (context.humanUpdates > 0) return true;
@@ -112,10 +122,15 @@ export default async function handler(req, res) {
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) return sendJson(res, { ok:false,error:'UNAUTHORIZED' }, 401);
     const force = ['1','true','yes'].includes(String(req.query?.force || '').toLowerCase());
     const sql = database(); await ensureSchema(sql); const now = new Date(); const wake = wakeWindow(now);
+
+    // Manual runs are a proof-of-life test: pick exactly one recent ACTIVE party
+    // whose PET has a real persona, so one click never spams every party.
     const due = force
-      ? await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties WHERE pet_id IS NOT NULL AND state='ACTIVE' ORDER BY updated_at DESC LIMIT 50`)
+      ? await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties
+          WHERE pet_id IN ('pig','dog','crow','chicken') AND state='ACTIVE' ORDER BY updated_at DESC LIMIT 1`)
       : await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties WHERE pet_id IS NOT NULL AND state='ACTIVE'
           AND (pet_last_wake IS NULL OR pet_last_wake < $1) ORDER BY updated_at LIMIT 250`, [wake.start]);
+
     let claimed=0, read=0, spoke=0, bubbles=0, byAi=0;
     for (const party of due) {
       const marked = force
@@ -140,9 +155,17 @@ export default async function handler(req, res) {
         const quietCheckin=!force && context.humanUpdates===0;
         const readSince=quietCheckin && context.lastHumanAt ? new Date(context.lastHumanAt.getTime()-1) : since;
         const [log,mine]=await Promise.all([logSlice(sql,party.id,readSince),ownRecent(sql,party.id,readSince)]);
-        lines=await readAndRespond({party,context,log,ownRecent:mine,since:readSince,hour:wake.hour,quietCheckin}); if(lines) byAi += 1;
+        lines=await readAndRespond({party,context,log,ownRecent:mine,since:readSince,hour:wake.hour,quietCheckin,forceSpeak:force});
+        if (Array.isArray(lines)) byAi += 1;
       }
-      if (!lines) lines=observe(party,wake.hour,context); lines=lines.slice(0,3); if(!lines.length) continue; spoke += 1;
+
+      // A scheduled wake may stay silent. A manual wake may not: it is a
+      // diagnostic button whose whole purpose is proving the bubble path works.
+      if (force && (!Array.isArray(lines) || lines.length === 0)) lines=manualWakeFallback(party);
+      if (!lines) lines=observe(party,wake.hour,context);
+      lines=lines.slice(0,3);
+      if(!lines.length) continue;
+      spoke += 1;
       for (const line of lines) if (await appendBubble(sql,party,line,wake.hour,now)) bubbles += 1;
     }
     return sendJson(res,{ok:true,wakeHour:wake.hour,ai:aiConfigured(),force,due:due.length,claimed,read,byAi,spoke,bubbles});
