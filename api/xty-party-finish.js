@@ -2,6 +2,7 @@ import legacyXtyHandler from './xty/[...path].js';
 import { currentUser, database, ensureSchema, sameOrigin, sendJson, sha256 } from './_lib/core.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
+const DISSOLVEABLE_STATES = Object.freeze([...ACTIVE_STATES, 'DISSOLVED']);
 
 function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
@@ -100,30 +101,33 @@ export default async function handler(req, res) {
     const member = await memberFor(req, sql, row.id);
     if (!member) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
     if (member.role !== 'lead') return sendJson(res, { ok: false, error: 'LEAD_REQUIRED' }, 403);
-    if (!ACTIVE_STATES.includes(String(row.state || '').toUpperCase())) {
+    if (!DISSOLVEABLE_STATES.includes(String(row.state || '').toUpperCase())) {
       return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
     }
 
     const at = new Date();
+    const endedAt = row.ended_at ? new Date(row.ended_at) : at;
     const changed = await sql.query(`WITH dissolved AS (
         UPDATE xty_parties
-        SET state='DISSOLVED',ended_at=$1,updated_at=$1,visibility='private'
+        SET state='DISSOLVED',ended_at=COALESCE(ended_at,$1),updated_at=$1,visibility='private'
         WHERE id=$2 AND state = ANY($3::text[])
         RETURNING id
       )
       UPDATE xty_members
       SET left_at=$1,removal_reason='DISSOLVED',auth_hash=NULL
       WHERE party_id=$2 AND left_at IS NULL AND EXISTS (SELECT 1 FROM dissolved)
-      RETURNING user_id`, [at, row.id, ACTIVE_STATES]);
+      RETURNING user_id`, [at, row.id, DISSOLVEABLE_STATES]);
 
     if (!changed.length) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
 
     // Audit is best-effort only. Dissolving the party must never fail just because
-    // an optional history/event write fails.
+    // an optional history/event write fails. Avoid duplicating an event during recovery.
     try {
       await sql.query(`INSERT INTO xty_party_events
         (party_id,type,actor_id,party_day,data_json,created_at)
-        VALUES ($1,'PARTY_DISSOLVED',$2,1,'{}'::jsonb,$3)`, [row.id, member.user_id, at]);
+        SELECT $1,'PARTY_DISSOLVED',$2,1,'{}'::jsonb,$3
+        WHERE NOT EXISTS (SELECT 1 FROM xty_party_events WHERE party_id=$1 AND type='PARTY_DISSOLVED')`,
+      [row.id, member.user_id, at]);
     } catch (eventError) {
       console.warn('XTY dissolve audit event failed', eventError);
     }
@@ -133,7 +137,7 @@ export default async function handler(req, res) {
       dissolved: true,
       removedMembers: changed.length,
       meUserId: null,
-      party: closedPartySnapshot(row, at),
+      party: closedPartySnapshot(row, endedAt),
     });
   } catch (error) {
     console.error('XTY dissolve failed', error);
