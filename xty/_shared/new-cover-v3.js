@@ -1,11 +1,21 @@
 import { getProfile, availableOwnedCards } from './store.js';
 import { cardMarkup } from './card-ui.js';
 import { cardDescriptorTh } from './cards.js';
-import { getUnlockedFirstHandIds } from '../../core7/js/collection-progress.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
 import { cardSVG } from '../../core7/js/art.js';
 
 const BACK = '/core7/assets/myclover-back.webp';
+
+function unlockedCore7Ids() {
+  try {
+    const ids = JSON.parse(localStorage.getItem('c7:collection') || '[]');
+    if (!Array.isArray(ids)) return [];
+    return [...new Set(ids)].filter(id => {
+      const card = typeof id === 'string' ? core7CardById(id) : null;
+      return !!card && !card.generic && String(card.id || '').startsWith('fh-');
+    });
+  } catch { return []; }
+}
 
 function installStyles() {
   if (document.getElementById('xty-cover-v3-style')) return;
@@ -24,44 +34,28 @@ function installStyles() {
 function backMarkup() {
   return `<div class="xty-real-card-back"><img src="${BACK}" alt="หลังการ์ด myClover"></div><span class="xty-cover-caption">หลังการ์ด myClover</span>`;
 }
-
 function core7Markup(id) {
-  const card = core7CardById(id);
-  if (!card) return '';
+  const card = core7CardById(id); if (!card) return '';
   return `<div class="xty-core7-cover">${cardSVG(id, { width: 300, showNumber: true })}</div><span class="xty-cover-caption">${card.en} · ${card.th}</span>`;
 }
-
-function setOverride(coverType, leadCardId = null, core7CardId = null) {
-  window.__xtyCoverV2 = { coverType, leadCardId, core7CardId };
-}
-
+function setOverride(coverType, leadCardId = null, core7CardId = null) { window.__xtyCoverV2 = { coverType, leadCardId, core7CardId }; }
 function button(markup, label, onClick) {
-  const b = document.createElement('button');
-  b.type = 'button'; b.className = 'card-select'; b.setAttribute('role', 'radio');
-  b.setAttribute('aria-label', label); b.innerHTML = markup; b.addEventListener('click', onClick);
-  return b;
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'card-select'; b.setAttribute('role', 'radio');
+  b.setAttribute('aria-label', label); b.innerHTML = markup; b.addEventListener('click', onClick); return b;
 }
 
 function install() {
-  const host = document.getElementById('leadPick');
-  const hint = document.getElementById('coverHint');
+  const host = document.getElementById('leadPick'); const hint = document.getElementById('coverHint');
   if (!host || host.dataset.coverV3 === '1') return;
   host.dataset.coverV3 = '1'; installStyles(); host.innerHTML = '';
 
   const items = [];
-  const choose = selected => {
-    items.forEach(item => {
-      const on = item === selected;
-      item.classList.toggle('picked', on);
-      item.setAttribute('aria-checked', on ? 'true' : 'false');
-    });
-  };
-
-  const back = button(backMarkup(), 'ใช้หลังการ์ด myClover เป็นปกตี้', () => {
-    setOverride('card_back'); choose(back);
+  const choose = selected => items.forEach(item => {
+    const on = item === selected; item.classList.toggle('picked', on); item.setAttribute('aria-checked', on ? 'true' : 'false');
   });
-  back.classList.add('picked'); back.setAttribute('aria-checked', 'true'); items.push(back); host.appendChild(back);
-  setOverride('card_back');
+
+  const back = button(backMarkup(), 'ใช้หลังการ์ด myClover เป็นปกตี้', () => { setOverride('card_back'); choose(back); });
+  back.classList.add('picked'); back.setAttribute('aria-checked', 'true'); items.push(back); host.appendChild(back); setOverride('card_back');
 
   const profile = getProfile();
   const xtyCards = availableOwnedCards({ role: 'lead', profile });
@@ -71,12 +65,10 @@ function install() {
     items.push(b); host.appendChild(b);
   }
 
-  const core7Ids = getUnlockedFirstHandIds();
+  const core7Ids = unlockedCore7Ids();
   for (const id of core7Ids) {
     const card = core7CardById(id); if (!card) continue;
-    const b = button(core7Markup(id), `ใช้ ${card.en} ${card.th} เป็นปกตี้`, () => {
-      setOverride('core7_card', null, id); choose(b);
-    });
+    const b = button(core7Markup(id), `ใช้ ${card.en} ${card.th} เป็นปกตี้`, () => { setOverride('core7_card', null, id); choose(b); });
     items.push(b); host.appendChild(b);
   }
 
@@ -87,5 +79,4 @@ function install() {
     hint.textContent = bits.join(' · ');
   }
 }
-
 requestAnimationFrame(() => requestAnimationFrame(install));
