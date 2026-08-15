@@ -2,11 +2,11 @@ import {
   XTY_RARITY_META, cardById, cardDescriptorTh, cardNameTh,
 } from './cards.js';
 
-/* Party-only progressive enhancement: linkify chat URLs, merge canonical
-   party events into the visible log, and expose self-leave without making
-   every XTY page pay for that code. */
 if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathname)) {
   import('./party-enhancements.js').catch(error => console.warn('XTY party enhancements unavailable', error));
+}
+if (typeof location !== 'undefined' && /^\/xty\/new(?:\/|$)/.test(location.pathname)) {
+  import('./new-cover-v3.js').catch(error => console.warn('XTY cover picker unavailable', error));
 }
 
 export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
@@ -30,10 +30,5 @@ export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } 
 }
 
 export function cardStatusLabel(status) {
-  return ({
-    AVAILABLE: 'พร้อมใช้งาน',
-    AVATAR_IN_USE: 'ใช้อยู่เป็น Avatar',
-    IN_PARTY: 'ใช้อยู่เป็น Party Cover',
-    NPC_IN_PARTY: 'ใช้อยู่เป็น NPC',
-  })[status] || 'เก็บในคอลเลกชัน';
+  return ({ AVAILABLE: 'พร้อมใช้งาน', AVATAR_IN_USE: 'ใช้อยู่เป็น Avatar', IN_PARTY: 'ใช้อยู่เป็น Party Cover', NPC_IN_PARTY: 'ใช้อยู่เป็น NPC' })[status] || 'เก็บในคอลเลกชัน';
 }
