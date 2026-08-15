@@ -56,6 +56,43 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-clean-card-
   document.head.appendChild(style);
 }
 
+if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover-size-style')) {
+  const style = document.createElement('style');
+  style.id = 'xty-party-cover-size-style';
+  style.textContent = `
+    /* One physical Party Cover size across Home, Public Lobby and Public Detail.
+       The card face may come from XTY, FIRST HAND, avatar or the myClover back,
+       but the slot never changes size after first paint. */
+    :root{--xty-party-cover-size:112px}
+    .public-party{
+      grid-template-columns:var(--xty-party-cover-size) minmax(0,1fr)!important;
+      gap:14px!important;align-items:center!important;
+    }
+    .public-party>:first-child{
+      width:var(--xty-party-cover-size)!important;max-width:none!important;min-width:0!important;
+      height:auto!important;aspect-ratio:63/88!important;overflow:hidden!important;border-radius:14px!important;
+    }
+    .public-party>.public-core7-cover svg,
+    .public-party>:first-child>svg,
+    .public-party>:first-child>img{
+      display:block!important;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;
+    }
+    .preview-hero{
+      grid-template-columns:var(--xty-party-cover-size) minmax(0,1fr)!important;
+      gap:16px!important;align-items:center!important;
+    }
+    .preview-cover{
+      width:var(--xty-party-cover-size)!important;max-width:none!important;min-width:0!important;
+      height:auto!important;aspect-ratio:63/88!important;overflow:hidden!important;border-radius:14px!important;
+    }
+    .preview-cover>*{width:100%!important;height:100%!important;max-width:none!important;aspect-ratio:63/88!important}
+    .preview-cover svg,.preview-cover img{display:block!important;object-fit:cover!important}
+    @media(max-width:480px){:root{--xty-party-cover-size:104px}}
+    @media(max-width:360px){:root{--xty-party-cover-size:92px}}
+  `;
+  document.head.appendChild(style);
+}
+
 if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathname)) {
   import('./party-enhancements.js').catch(error => console.warn('XTY party enhancements unavailable', error));
   import('./party-profile-covers.js').catch(error => console.warn('XTY profile/cover layer unavailable', error));
@@ -66,7 +103,11 @@ if (typeof location !== 'undefined' && /^\/xty\/new(?:\/|$)/.test(location.pathn
   import('./new-cover-v3.js').catch(error => console.warn('XTY cover picker unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
-  import('./home-cover-v3.js').catch(error => console.warn('XTY home cover layer unavailable', error));
+  /* Home used to paint the legacy main-party layout first and dynamically
+     import the carousel afterward, producing a visible size jump. Await the
+     canonical renderer here: any module importing card-ui on Home cannot run
+     its own paint until the carousel CSS/observer are already installed. */
+  await import('./home-cover-v3.js').catch(error => console.warn('XTY home cover layer unavailable', error));
 }
 
 export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
