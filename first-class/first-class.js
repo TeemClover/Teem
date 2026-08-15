@@ -9,6 +9,112 @@
   const otherInput = form.elements.aiOther;
   const copyBankButton = document.getElementById('copyBankButton');
 
+  const installFirstClassUrgency = () => {
+    if (document.getElementById('firstClassUrgency')) return;
+
+    const style = document.createElement('style');
+    style.textContent = `
+      .first-class-urgency{margin:0 0 28px;border:1px solid #ffd5ad;border-radius:20px;background:linear-gradient(145deg,#fff8ee,#fffdf8);overflow:hidden;box-shadow:0 16px 42px rgba(121,66,18,.08)}
+      .first-class-urgency__top{padding:18px 18px 15px;background:linear-gradient(135deg,#ff8c3e,#f26f24);color:#fff}
+      .first-class-urgency__eyebrow{margin:0 0 4px;font:800 9px Manrope,sans-serif;letter-spacing:.11em;text-transform:uppercase;opacity:.9}
+      .first-class-urgency__top h3{margin:0;font:800 21px/1.25 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.025em}
+      .first-class-urgency__top p{margin:7px 0 0;font-size:11px;line-height:1.6;color:#fff9f2}
+      .first-class-urgency__countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:13px 14px;background:#fff}
+      .first-class-urgency__unit{min-width:0;border:1px solid #f0dfd1;border-radius:12px;background:#fffaf5;padding:10px 5px;text-align:center}
+      .first-class-urgency__unit strong{display:block;font:800 clamp(20px,3vw,27px)/1 Manrope,sans-serif;color:#b44c0c;font-variant-numeric:tabular-nums}
+      .first-class-urgency__unit span{display:block;margin-top:5px;font-size:8px;font-weight:700;color:#8a6e5b}
+      .first-class-urgency__price{padding:0 17px 16px;background:#fff}
+      .first-class-urgency__price strong{display:block;font-size:13px;line-height:1.55;color:#08251d}
+      .first-class-urgency__price p{margin:5px 0 0;font-size:10px;line-height:1.65;color:#6e776f}
+      .first-class-urgency__price b{color:#d95f15}
+      .first-class-urgency__offline{margin-top:10px;padding:10px 11px;border-radius:11px;background:#f4f6f4;font-size:9px;line-height:1.6;color:#69766f}
+      .first-class-urgency__offline strong{display:inline;font-size:inherit}
+      .first-class-urgency.is-ended .first-class-urgency__countdown{grid-template-columns:1fr}
+      .first-class-urgency.is-ended .first-class-urgency__unit{padding:14px}
+      .first-class-urgency.is-ended .first-class-urgency__unit strong{font-size:17px}
+      @media(max-width:760px){
+        .first-class-urgency{margin-bottom:25px;border-radius:18px}
+        .first-class-urgency__top{padding:18px 16px 15px}
+        .first-class-urgency__top h3{font-size:23px}
+        .first-class-urgency__top p{font-size:12px}
+        .first-class-urgency__countdown{gap:5px;padding:11px 10px}
+        .first-class-urgency__unit{padding:10px 3px}
+        .first-class-urgency__unit strong{font-size:24px}
+        .first-class-urgency__unit span{font-size:8px}
+        .first-class-urgency__price{padding:2px 15px 16px}
+        .first-class-urgency__price strong{font-size:14px}
+        .first-class-urgency__price p{font-size:11px}
+        .first-class-urgency__offline{font-size:10px}
+      }
+    `;
+    document.head.appendChild(style);
+
+    const urgency = document.createElement('section');
+    urgency.id = 'firstClassUrgency';
+    urgency.className = 'first-class-urgency';
+    urgency.setAttribute('aria-labelledby', 'firstClassUrgencyTitle');
+    urgency.innerHTML = `
+      <div class="first-class-urgency__top">
+        <p class="first-class-urgency__eyebrow">FIRST CLASS · ราคาเปิดคลาสครั้งแรก</p>
+        <h3 id="firstClassUrgencyTitle">98 บาทเฉพาะรอบนี้ — เริ่มแล้วราคานี้จบเลย</h3>
+        <p>รอบสดเริ่มวันอังคารที่ 18 สิงหาคม 2026 เวลา 19:30 น. และไม่มีวิดีโอย้อนหลัง</p>
+      </div>
+      <div class="first-class-urgency__countdown" id="firstClassCountdown" aria-live="polite">
+        <div class="first-class-urgency__unit"><strong data-countdown="days">00</strong><span>วัน</span></div>
+        <div class="first-class-urgency__unit"><strong data-countdown="hours">00</strong><span>ชั่วโมง</span></div>
+        <div class="first-class-urgency__unit"><strong data-countdown="minutes">00</strong><span>นาที</span></div>
+        <div class="first-class-urgency__unit"><strong data-countdown="seconds">00</strong><span>วินาที</span></div>
+      </div>
+      <div class="first-class-urgency__price">
+        <strong>ถ้าอยากเรียน First Class ในราคา <b>98 บาท</b> นี่คือรอบเดียวครับ</strong>
+        <p>ราคา 98 บาทเป็นราคาพิเศษสำหรับ First Class รอบเปิดครั้งแรก เมื่อคลาสเริ่ม ข้อเสนอนี้สิ้นสุดและจะไม่มีการจัด First Class ในราคานี้อีก</p>
+        <div class="first-class-urgency__offline"><strong>หลักสูตรออฟไลน์เต็มวัน 1,960 บาท</strong> เป็นอีก Format ที่ลงลึกกว่า มี Workshop และรายละเอียดมากกว่า จะประกาศรอบแยกในภายหลัง — ไม่ใช่คอร์สเดียวกันที่นำมาลดราคาเหลือ 98 บาท</div>
+      </div>
+    `;
+
+    form.insertAdjacentElement('beforebegin', urgency);
+
+    const valuePills = document.querySelector('.value-pills');
+    if (valuePills && !valuePills.querySelector('[data-first-class-last-price]')) {
+      const pill = document.createElement('span');
+      pill.dataset.firstClassLastPrice = 'true';
+      pill.textContent = '98 บาท · รอบเดียวเท่านั้น';
+      valuePills.appendChild(pill);
+    }
+
+    const target = new Date('2026-08-18T19:30:00+07:00').getTime();
+    const pad = value => String(value).padStart(2, '0');
+    let timer = null;
+
+    const renderCountdown = () => {
+      const remaining = target - Date.now();
+      if (remaining <= 0) {
+        urgency.classList.add('is-ended');
+        const countdown = document.getElementById('firstClassCountdown');
+        if (countdown) countdown.innerHTML = '<div class="first-class-urgency__unit"><strong>คลาสเริ่มแล้ว · ข้อเสนอ 98 บาทสิ้นสุดแล้ว</strong></div>';
+        if (timer) window.clearInterval(timer);
+        return;
+      }
+
+      const totalSeconds = Math.floor(remaining / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const values = { days, hours, minutes, seconds };
+
+      Object.entries(values).forEach(([key, value]) => {
+        const el = urgency.querySelector(`[data-countdown="${key}"]`);
+        if (el) el.textContent = pad(value);
+      });
+    };
+
+    renderCountdown();
+    timer = window.setInterval(renderCountdown, 1000);
+  };
+
+  installFirstClassUrgency();
+
   const setMessage = (text, field) => {
     message.textContent = text;
     message.hidden = false;
