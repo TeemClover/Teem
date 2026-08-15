@@ -1,4 +1,4 @@
-import { getParty, getProfile, partyIdentity, availableOwnedCards } from './store.js';
+import { getParty, getProfile, partyIdentity, availableOwnedCards, committedToday } from './store.js';
 import { cardMarkup } from './card-ui.js';
 import { cardById as xtyCardById, cardDescriptorTh } from './cards.js';
 import { getUnlockedFirstHandIds } from '../../core7/js/collection-progress.js';
@@ -37,9 +37,7 @@ function schedule() {
   requestAnimationFrame(() => { scheduled = false; syncLeadCover(); syncProfileLinks(); syncCoverTools(); syncRichEvents(); });
 }
 
-function profileHref(userId) {
-  return `/xty/u/?c=${encodeURIComponent(code)}&m=${encodeURIComponent(userId)}`;
-}
+function profileHref(userId) { return `/xty/u/?c=${encodeURIComponent(code)}&m=${encodeURIComponent(userId)}`; }
 
 function syncProfileLinks() {
   const p = getParty(code); const seats = document.getElementById('seats');
@@ -70,8 +68,7 @@ function syncLeadCover() {
   if (!p || !seats || !p.members?.length) return;
   const lead = p.members.find(m => m.role === 'lead'); if (!lead) return;
   const first = seats.children[0]; if (!first) return;
-  const done = new Set((p.log || []).filter(x => x.kind === 'commit' && !x.retracted).map(x => x.userId));
-  const mark = done.has(lead.userId) ? '✓' : '○';
+  const mark = committedToday(p).has(lead.userId) ? '✓' : '○';
 
   if (p.coverType === 'core7_card' && p.coverValue) {
     const card = core7CardById(p.coverValue); if (!card) return;
