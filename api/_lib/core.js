@@ -64,9 +64,15 @@ const SCHEMA = [
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS state TEXT NOT NULL DEFAULT 'ACTIVE'`,
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS activity_id TEXT`,
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS preset TEXT NOT NULL DEFAULT 'casual'`,
-  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS duration_days INTEGER NOT NULL DEFAULT 14`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS duration_days INTEGER NOT NULL DEFAULT 7`,
+  `ALTER TABLE xty_parties ALTER COLUMN duration_days SET DEFAULT 7`,
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS color TEXT NOT NULL DEFAULT 'green'`,
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS visibility TEXT NOT NULL DEFAULT 'private'`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS lead_card_id TEXT`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS npc_card_id TEXT`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS ended_at TIMESTAMPTZ`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS timezone TEXT NOT NULL DEFAULT 'Asia/Bangkok'`,
   `CREATE INDEX IF NOT EXISTS idx_xty_parties_owner_state ON xty_parties(owner_id, state)`,
   `CREATE TABLE IF NOT EXISTS xty_members (
     party_id TEXT NOT NULL, user_id TEXT NOT NULL, alias TEXT NOT NULL,
@@ -74,6 +80,8 @@ const SCHEMA = [
     PRIMARY KEY (party_id, user_id)
   )`,
   `CREATE INDEX IF NOT EXISTS idx_xty_members_auth ON xty_members(party_id, auth_hash)`,
+  `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS left_at TIMESTAMPTZ`,
+  `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS removal_reason TEXT`,
   `CREATE TABLE IF NOT EXISTS xty_posts (
     party_id TEXT NOT NULL, seq INTEGER NOT NULL, user_id TEXT NOT NULL,
     kind TEXT NOT NULL, body TEXT NOT NULL, sent_at TIMESTAMPTZ NOT NULL,
@@ -91,6 +99,12 @@ const SCHEMA = [
     party_id TEXT NOT NULL, commit_seq INTEGER NOT NULL, confirmer_id TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL, PRIMARY KEY (party_id, commit_seq)
   )`,
+  `CREATE TABLE IF NOT EXISTS xty_party_events (
+    id BIGSERIAL PRIMARY KEY, party_id TEXT NOT NULL, type TEXT NOT NULL,
+    actor_id TEXT, party_day INTEGER NOT NULL DEFAULT 1,
+    data_json JSONB NOT NULL DEFAULT '{}'::jsonb, created_at TIMESTAMPTZ NOT NULL
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_xty_party_events_party ON xty_party_events(party_id, id)`,
 ];
 
 export async function ensureSchema(sql) {

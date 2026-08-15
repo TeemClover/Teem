@@ -54,6 +54,21 @@ function later(a, b) {
   return time(a) >= time(b) ? a : b;
 }
 
+function unionById(local = [], cloud = [], key) {
+  const merged = new Map();
+  for (const item of [...cloud, ...local]) {
+    if (!item || !item[key]) continue;
+    const old = merged.get(item[key]);
+    if (!old) { merged.set(item[key], item); continue; }
+    const combined = { ...old, ...item };
+    if (old.acquiredAt || item.acquiredAt) combined.acquiredAt = earlier(old.acquiredAt, item.acquiredAt);
+    if (old.earnedAt || item.earnedAt) combined.earnedAt = earlier(old.earnedAt, item.earnedAt);
+    if ('revealedAt' in old || 'revealedAt' in item) combined.revealedAt = old.revealedAt || item.revealedAt || null;
+    merged.set(item[key], combined);
+  }
+  return [...merged.values()];
+}
+
 /* Merge is intentionally narrow. Alias/avatar follow the latest explicit
    profile edit, pets form a union, and client balances are never added. */
 export function mergeXtyProfile(localValue, cloudValue) {
@@ -80,6 +95,10 @@ export function mergeXtyProfile(localValue, cloudValue) {
       ...(cloud.petIds || []),
       ...XTY_V1_PET_IDS,
     ])],
+    /* Card ownership is append-only during a conservative local/cloud
+       merge. A legitimately earned local card must never disappear. */
+    ownedCards: unionById(local.ownedCards, cloud.ownedCards, 'cardId'),
+    cardRewards: unionById(local.cardRewards, cloud.cardRewards, 'rewardId'),
     equippedCardId: newest.equippedCardId || older.equippedCardId || null,
     createdAt: earlier(local.createdAt, cloud.createdAt),
     updatedAt: later(local.updatedAt, cloud.updatedAt),

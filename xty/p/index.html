@@ -7,7 +7,7 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#FFF9E9">
 <title>ตี้ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=5">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
 </head>
 <body>
 
@@ -17,6 +17,10 @@
 </header>
 
 <main class="wrap">
+  <section class="card" id="shell">
+    <p class="kicker">XTY · LOCAL FIRST</p>
+    <p class="whisper" style="margin:0">กำลังเปิดตี้จาก snapshot ในเครื่องนี้…</p>
+  </section>
   <section id="missing" hidden>
     <h1 class="title">ไม่เจอตี้นี้</h1>
     <p class="lede">รหัสอาจพิมพ์ผิด หรือตี้นี้ไม่มีอยู่แล้ว</p>
@@ -46,8 +50,24 @@
         <button class="btn" id="commitBtn">✓ COMMIT วันนี้</button>
       </div>
 
+      <div style="margin-top:18px">
+        <span class="label">DAILY PROGRESS · ไม่มีคะแนนแข่งกัน</span>
+        <div class="progress-grid" id="progress" aria-label="ความคืบหน้ารายวัน"></div>
+      </div>
+
       <div class="party-table" id="seats" aria-label="สมาชิกตี้ 5 ที่และ Pet 1 ที่"></div>
       <p class="whisper" id="petLine" style="margin-top:14px"></p>
+    </div>
+
+    <div class="card terminal-card" id="endingCard" hidden>
+      <span class="label" id="endingLabel">PARTY COMPLETE</span>
+      <h2 class="title" id="endingTitle" style="font-size:24px">การเดินทางนี้ถูกเก็บไว้แล้ว</h2>
+      <p class="whisper" id="endingText"></p>
+      <div class="ending-actions">
+        <button class="btn gold" id="rewardButton" hidden>เปิดการ์ดรางวัล</button>
+        <button class="btn gold" id="downloadEnding">ดาวน์โหลด Ending .md</button>
+        <a class="btn ghost" href="/profile/">ดูคอลเลกชัน</a>
+      </div>
     </div>
 
     <div class="card">
@@ -74,6 +94,39 @@
       </div>
       <div class="budget" id="budget"></div>
     </div>
+
+    <details class="party-tools" id="partyTools">
+      <summary id="manage">จัดการตี้</summary>
+      <p class="whisper">ทุกการเปลี่ยนแปลงเก็บเป็น Event สำหรับเล่า Ending โดยไม่แก้ประวัติเดิม</p>
+
+      <div class="tool-row">
+        <div class="field"><label for="renameInput">ชื่อตี้</label><input id="renameInput" maxlength="40"></div>
+        <button class="btn ghost sm" id="renameBtn">บันทึก</button>
+      </div>
+      <div class="tool-row">
+        <div class="field"><label for="ruleInput">กติกา Commit</label><input id="ruleInput" maxlength="120"></div>
+        <button class="btn ghost sm" id="ruleBtn">บันทึก</button>
+      </div>
+      <div class="tool-row">
+        <div class="field"><label for="leadSelect">Lead Card</label><select id="leadSelect"></select></div>
+        <button class="btn ghost sm" id="leadBtn">เปลี่ยน</button>
+      </div>
+      <div class="tool-row">
+        <div class="field"><label for="npcSelect">PET / NPC</label><select id="npcSelect"></select></div>
+        <button class="btn ghost sm" id="npcBtn">เปลี่ยน</button>
+      </div>
+
+      <span class="label" style="margin-top:18px">MEMBERS</span>
+      <div class="member-tools" id="memberTools"></div>
+
+      <div class="danger-zone">
+        <p class="whisper">Complete แจก Card Reward จาก Quest นี้ ส่วน Dissolve ปิดก่อนกำหนดและจะไม่ปลอมว่า Complete ทั้งสองแบบสร้าง Ending .md</p>
+        <div class="ending-actions">
+          <button class="btn ghost" id="completeParty">จบตี้และรับการ์ด</button>
+          <button class="btn danger" id="dissolveParty">ยุบตี้</button>
+        </div>
+      </div>
+    </details>
 
     <nav class="tabs">
       <a href="/xty/">XTY</a>
@@ -105,19 +158,26 @@ import {
   confirmCommit,
   committedToday, hasCommittedToday, messagesLeftToday, budgetOf,
   messagesUsedToday, dayKey, PARTY_MAX, REACTIONS, refreshParty, partyIdentity,
+  partyProgress, isActiveParty, availableOwnedCards, renameParty, manageParty,
+  changeLeadCard, changeNpcCard, kickPartyMember, finishParty,
+  prepareCardReward, downloadEndingMarkdown,
 } from '/xty/_shared/store.js';
-import { PET_BY_ID } from '/xty/_shared/pets.js';
+import { PET_BY_ID, XTY_V1_PETS } from '/xty/_shared/pets.js';
 import { AVATAR_BY_ID } from '/xty/_shared/avatars.js';
+import { cardById, cardIdFor, cardNameTh } from '/xty/_shared/cards.js';
+import { cardMarkup } from '/xty/_shared/card-ui.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
 const me = getProfile();
 let myId = (partyIdentity(code) && partyIdentity(code).userId) || (me ? me.id : 'anon');
+let foilPlayed = false;
+let terminalReward = null;
 
 start();
 
 async function start() {
-  if (!code) { $('missing').hidden = false; return; }
+  if (!code) { $('shell').hidden = true; $('missing').hidden = false; return; }
   /* A cached party paints immediately; the network only refreshes it. */
   if (getParty(code)) render();
   const fresh = await refreshParty(code);
@@ -125,7 +185,7 @@ async function start() {
     location.replace(`/xty/join/?c=${encodeURIComponent(code)}`);
     return;
   }
-  if (fresh.error && !getParty(code)) { $('missing').hidden = false; return; }
+  if (fresh.error && !getParty(code)) { $('shell').hidden = true; $('missing').hidden = false; return; }
   myId = (partyIdentity(code) && partyIdentity(code).userId) || myId;
   if (fresh.error || fresh.party) render();
   if (fresh.error === 'OFFLINE') toast('ออฟไลน์อยู่ — แสดงข้อมูลล่าสุดในเครื่องนี้');
@@ -156,6 +216,7 @@ function toast(text) {
 
 function render() {
   const p = getParty(code);
+  $('shell').hidden = true;
   $('view').hidden = false;
   document.title = p.name + ' — XTY';
   $('pname').textContent = p.name;
@@ -188,16 +249,28 @@ function render() {
   }
 
   const already = hasCommittedToday(p, myId);
+  const active = isActiveParty(p);
   const cb = $('commitBtn');
   cb.textContent = already ? '✓ COMMIT แล้ววันนี้' : '✓ COMMIT วันนี้';
   cb.classList.toggle('done', already);
-  cb.disabled = already;
+  cb.disabled = already || !active;
+  cb.parentElement.hidden = !active;
+
+  const progress = $('progress'); progress.innerHTML = '';
+  partyProgress(p).forEach(item => {
+    const day = document.createElement('span');
+    day.className = 'progress-day' + (item.count ? ' done' : '') + (item.key === dayKey() ? ' today' : '');
+    day.setAttribute('aria-label', `Day ${item.day}: ${item.count} Commit`);
+    day.innerHTML = `${item.day}${item.count ? `<small>${item.count}</small>` : ''}`;
+    progress.appendChild(day);
+  });
 
   /* Fixed 3×2 table: Lead, four Members, then Pet. Empty human slots and
      the Pet slot remain visible at every viewport width. */
   const seats = $('seats');
   seats.innerHTML = '';
   const lead = p.members.find(m => m.role === 'lead') || null;
+  const leadCard = cardById(p.leadCardId || (lead ? cardIdFor(lead.avatar, p.color) : '') || me?.equippedCardId || me?.starterCardId);
   const others = p.members.filter(m => m.role !== 'lead');
   const slots = [lead, others[0] || null, others[1] || null, others[2] || null, others[3] || null];
   slots.forEach((m, index) => {
@@ -209,6 +282,14 @@ function render() {
       return;
     }
     const committed = done.has(m.userId);
+    if (m.role === 'lead' && leadCard) {
+      d.className = 'seat-card-wrap';
+      d.innerHTML = cardMarkup(leadCard, { role: 'lead', foil: !foilPlayed })
+        + `<span class="seat-card-name" title="${esc(m.alias)}">${esc(m.alias)} · ${committed ? '✓' : '○'}</span>`;
+      seats.appendChild(d);
+      foilPlayed = true;
+      return;
+    }
     d.className = 'seat xty-card' + (m.role === 'lead' ? ' lead' : ' member');
     d.innerHTML =
       `<span class="slot-label">${m.role === 'lead' ? '★ LEAD' : `MEMBER ${index + 1}`}</span>` +
@@ -223,29 +304,116 @@ function render() {
     ? `ยังรับได้อีก ${left} คน (ตี้หนึ่งไม่เกิน ${PARTY_MAX})`
     : 'ตี้เต็มแล้ว — อยากชวนเพิ่มต้องเปิดตี้ใหม่';
 
+  const npc = cardById(p.npcCardId);
   const pet = p.petId ? PET_BY_ID[p.petId] : null;
   const petCard = document.createElement('div');
-  petCard.className = 'seat xty-card pet-card' + (pet ? '' : ' open');
-  if (pet) {
-    petCard.innerHTML =
-      '<span class="slot-label">🐾 PET</span>' +
-      `<div class="av">${pet.art ? `<img src="${pet.art}" alt="${esc(pet.nameTh)}">` : pet.emoji}</div>` +
-      `<div class="al">${esc(pet.nameTh)}</div><div class="rl">เพื่อนประจำตี้</div>`;
+  if (npc) {
+    petCard.className = 'seat-card-wrap';
+    petCard.innerHTML = cardMarkup(npc, { role: 'npc' })
+      + `<span class="seat-card-name">${esc(npc.personalityNameTh)}</span>`;
+    $('petLine').textContent = `${cardNameTh(npc)} — ${npc.flavorTh}`;
+  } else if (pet) {
+    petCard.className = 'seat-card-wrap';
+    petCard.innerHTML = `<div class="animal-card companion-card" data-color="${pet.color}">`
+      + '<span class="role-badge">PET</span>'
+      + `${pet.art ? `<img class="card-art" src="${pet.art}" alt="" width="256" height="256" loading="lazy">` : `<span class="card-art">${pet.emoji}</span>`}`
+      + `<span class="card-copy"><b>${esc(pet.nameTh)}</b><small>V1 COMPANION</small></span></div>`;
     $('petLine').textContent = `${pet.emoji} ${pet.nameTh} — ${pet.persona}`;
   } else {
+    petCard.className = 'seat xty-card pet-card open';
     petCard.innerHTML = '<span class="slot-label">🐾 PET</span><div class="av">🐾</div><div class="al">เลือกทีหลังได้</div>';
     $('petLine').textContent = 'ตี้นี้ยังไม่มี Pet — เลือกทีหลังได้';
   }
   seats.appendChild(petCard);
 
+  const terminal = ['COMPLETED', 'DISSOLVED'].includes(String(p.state || '').toUpperCase());
+  $('endingCard').hidden = !terminal;
+  $('endingCard').classList.toggle('dissolved', p.state === 'DISSOLVED');
+  if (terminal) {
+    $('endingLabel').textContent = p.state === 'DISSOLVED' ? 'PARTY DISSOLVED' : 'PARTY COMPLETE ✓';
+    $('endingTitle').textContent = p.state === 'DISSOLVED' ? 'ปิดตี้ก่อนกำหนด โดยไม่ลบเรื่องที่เกิดขึ้น' : `${p.durationDays || 7} DAYS · การเดินทางถูกเก็บไว้แล้ว`;
+    $('endingText').textContent = 'ดาวน์โหลดไฟล์ซอสตอนจบ แล้วให้ใครในตี้ก็ได้เอาไปสร้างการ์ตูน 4 ช่อง โปสเตอร์ หรือโปสการ์ดต่อ';
+    terminalReward = p.state === 'COMPLETED'
+      ? prepareCardReward({ questId: `party-complete:${code}`, partyCode: code }) : null;
+    $('rewardButton').hidden = !terminalReward || !!terminalReward.revealedAt;
+  }
+  document.querySelector('.composer').hidden = terminal;
+
+  const myMember = p.members.find(member => member.userId === myId);
+  $('partyTools').hidden = !active || myMember?.role !== 'lead';
+  if (!$('partyTools').hidden) renderManagement(p);
+
   renderLog(p);
   renderBudget(p);
+}
+
+function renderManagement(p) {
+  if (document.activeElement !== $('renameInput')) $('renameInput').value = p.name || '';
+  if (document.activeElement !== $('ruleInput')) $('ruleInput').value = p.commitRule || '';
+
+  const leadSelect = $('leadSelect'); leadSelect.innerHTML = '';
+  const leadCards = availableOwnedCards({ role: 'lead', exceptPartyCode: code })
+    .filter(card => card.cardId !== p.npcCardId);
+  leadCards.forEach(card => {
+    const option = document.createElement('option');
+    option.value = card.cardId; option.textContent = cardNameTh(card);
+    option.selected = card.cardId === p.leadCardId;
+    leadSelect.appendChild(option);
+  });
+  if (p.leadCardId && !leadCards.some(card => card.cardId === p.leadCardId)) {
+    const option = document.createElement('option'); option.value = p.leadCardId;
+    option.textContent = cardNameTh(p.leadCardId); option.selected = true; leadSelect.appendChild(option);
+  }
+
+  const npcSelect = $('npcSelect'); npcSelect.innerHTML = '<option value="">ไม่มีเพื่อนร่วมทาง</option>';
+  XTY_V1_PETS.forEach(pet => {
+    const option = document.createElement('option'); option.value = `pet:${pet.id}`;
+    option.textContent = `PET · ${pet.nameTh}`; option.selected = pet.id === p.petId; npcSelect.appendChild(option);
+  });
+  availableOwnedCards({ role: 'npc', exceptPartyCode: code })
+    .filter(card => card.cardId !== p.leadCardId)
+    .forEach(card => {
+      const option = document.createElement('option'); option.value = `card:${card.cardId}`;
+      option.textContent = `NPC · ${cardNameTh(card)}`; option.selected = card.cardId === p.npcCardId;
+      npcSelect.appendChild(option);
+    });
+
+  const requestedNpc = String(new URLSearchParams(location.search).get('npc') || '').toUpperCase();
+  if (requestedNpc && [...npcSelect.options].some(option => option.value === `card:${requestedNpc}`)) {
+    npcSelect.value = `card:${requestedNpc}`;
+    $('partyTools').open = true;
+    const params = new URLSearchParams(location.search); params.delete('npc');
+    history.replaceState(null, '', `${location.pathname}?${params}#manage`);
+  }
+
+  const members = $('memberTools'); members.innerHTML = '';
+  p.members.filter(member => member.role !== 'lead').forEach(member => {
+    const row = document.createElement('div'); row.className = 'member-tool';
+    const name = document.createElement('span'); name.textContent = member.alias;
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'btn ghost sm';
+    button.textContent = 'ให้ออกจากตี้';
+    let armed = false;
+    button.addEventListener('click', async () => {
+      if (!armed) {
+        armed = true; button.textContent = 'กดอีกครั้งเพื่อยืนยัน';
+        setTimeout(() => { if (armed) { armed = false; button.textContent = 'ให้ออกจากตี้'; } }, 4000);
+        return;
+      }
+      button.disabled = true;
+      const result = await kickPartyMember(code, member.userId);
+      if (result.error) { button.disabled = false; toast('ยังนำสมาชิกออกไม่ได้'); return; }
+      render(); toast('ปิดช่วงการร่วมทางของสมาชิกแล้ว — ประวัติยังอยู่');
+    });
+    row.append(name, button); members.appendChild(row);
+  });
+  if (!members.children.length) members.innerHTML = '<p class="whisper" style="margin:0">ยังไม่มีสมาชิกอื่นในตี้</p>';
 }
 
 function renderBudget(p) {
   const b = budgetOf(p);
   const used = messagesUsedToday(p, myId);
-  const leftN = messagesLeftToday(p, myId);
+  const active = isActiveParty(p);
+  const leftN = active ? messagesLeftToday(p, myId) : 0;
   const el = $('budget');
   el.classList.toggle('out', leftN === 0);
   const pips = Array.from({ length: b.perDay }, (_, i) =>
@@ -254,11 +422,12 @@ function renderBudget(p) {
     `<span class="pips">${pips}</span>` +
     `<span>${leftN > 0 ? `เหลือ ${leftN} Message วันนี้` : 'ใช้ Message ครบแล้ววันนี้ — React ได้ไม่จำกัด'}</span>`;
   $('send').disabled = leftN === 0;
-  $('msg').placeholder = leftN === 0 ? 'พรุ่งนี้ค่อยว่ากัน — React ได้ไม่จำกัด' : 'ฝากไว้ในตี้…';
+  $('msg').placeholder = !active ? 'ตี้นี้ปิดแล้ว — Party Log เก็บไว้อ่านได้' : (leftN === 0 ? 'พรุ่งนี้ค่อยว่ากัน — React ได้ไม่จำกัด' : 'ฝากไว้ในตี้…');
 }
 
 function renderLog(p) {
   const box = $('log');
+  const writable = isActiveParty(p);
   box.innerHTML = '';
   if (!p.log.length) {
     const e = document.createElement('div');
@@ -300,7 +469,7 @@ function renderLog(p) {
         `<div class="rx" data-seq="${post.seq}"></div>` +
       `</div>`;
 
-    if (post.kind === 'commit' && !post.retracted) {
+    if (writable && post.kind === 'commit' && !post.retracted) {
       const slot = el.querySelector('.confirm-slot');
       if (post.confirmedBy) {
         const confirmer = p.members.find(member => member.userId === post.confirmedBy);
@@ -331,19 +500,22 @@ function renderLog(p) {
       b.className = who.includes(myId) ? 'mine' : '';
       b.innerHTML = `${emoji}<span class="c">${who.length}</span>`;
       b.setAttribute('aria-label', `${emoji} ${who.length}`);
-      b.addEventListener('click', async () => { await toggleReaction(code, post.seq, emoji); render(); });
+      b.disabled = !writable;
+      if (writable) b.addEventListener('click', async () => { await toggleReaction(code, post.seq, emoji); render(); });
       rx.appendChild(b);
     });
 
-    const add = document.createElement('button');
-    add.type = 'button';
-    add.className = 'add';
-    add.textContent = '＋';
-    add.setAttribute('aria-label', 'เพิ่ม React');
-    add.addEventListener('click', () => openPicker(rx, post.seq));
-    rx.appendChild(add);
+    if (writable) {
+      const add = document.createElement('button');
+      add.type = 'button';
+      add.className = 'add';
+      add.textContent = '＋';
+      add.setAttribute('aria-label', 'เพิ่ม React');
+      add.addEventListener('click', () => openPicker(rx, post.seq));
+      rx.appendChild(add);
+    }
 
-    if (post.userId === myId && !post.retracted && post.kind === 'message') {
+    if (writable && post.userId === myId && !post.retracted && post.kind === 'message') {
       /* two-tap confirm rather than window.confirm(): native dialogs are
          unreliable inside in-app browsers such as LINE, where most of
          these links get opened */
@@ -430,6 +602,75 @@ async function send() {
 $('send').addEventListener('click', send);
 msg.addEventListener('keydown', e => {
   if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
+});
+
+/* ---------- lead-only party tools ---------- */
+async function runTool(button, task, success) {
+  button.disabled = true;
+  const result = await task();
+  button.disabled = false;
+  if (result.error) {
+    const messages = {
+      CARD_IN_USE: 'การ์ดใบนี้กำลังอยู่ใน Active role อื่น',
+      PARTY_CLOSED: 'ตี้นี้ปิดแล้ว',
+      LEAD_REQUIRED: 'เฉพาะหัวตี้เท่านั้น',
+    };
+    toast(messages[result.error] || 'ยังบันทึกการเปลี่ยนแปลงไม่ได้');
+    return result;
+  }
+  render(); toast(success); return result;
+}
+
+$('renameBtn').addEventListener('click', () => runTool(
+  $('renameBtn'), () => renameParty(code, $('renameInput').value), 'เปลี่ยนชื่อตี้แล้ว · เก็บ Event ไว้แล้ว',
+));
+$('ruleBtn').addEventListener('click', () => runTool(
+  $('ruleBtn'), () => manageParty(code, 'change_rule', { commitRule: $('ruleInput').value }), 'เปลี่ยนกติกาแล้ว · ประวัติเดิมยังอยู่',
+));
+$('leadBtn').addEventListener('click', () => runTool(
+  $('leadBtn'), () => changeLeadCard(code, $('leadSelect').value), 'เปลี่ยน Lead Card แล้ว',
+));
+$('npcBtn').addEventListener('click', () => {
+  const [kind, value] = String($('npcSelect').value || '').split(':');
+  return runTool(
+    $('npcBtn'),
+    () => kind === 'card' ? changeNpcCard(code, value, null)
+      : changeNpcCard(code, null, kind === 'pet' ? value : null),
+    'เปลี่ยนเพื่อนร่วมทางแล้ว',
+  );
+});
+
+function twoTap(button, armedText, action) {
+  const original = button.textContent; let armed = false;
+  button.addEventListener('click', async () => {
+    if (!armed) {
+      armed = true; button.textContent = armedText;
+      setTimeout(() => { if (armed) { armed = false; button.textContent = original; } }, 5000);
+      return;
+    }
+    armed = false; button.disabled = true;
+    await action();
+    if (document.contains(button)) { button.disabled = false; button.textContent = original; }
+  });
+}
+
+twoTap($('completeParty'), 'กดอีกครั้งเพื่อจบและรับการ์ด', async () => {
+  const result = await finishParty(code, 'complete');
+  if (result.error) { toast('ยังจบตี้ไม่ได้'); return; }
+  const reward = prepareCardReward({ questId: `party-complete:${code}`, partyCode: code });
+  if (reward) location.href = `/xty/reveal/?r=${encodeURIComponent(reward.rewardId)}`;
+  else { render(); toast('จบตี้แล้ว'); }
+});
+
+twoTap($('dissolveParty'), 'แน่ใจ? กดอีกครั้งเพื่อยุบตี้', async () => {
+  const result = await finishParty(code, 'dissolve');
+  if (result.error) { toast('ยังยุบตี้ไม่ได้'); return; }
+  render(); toast('ยุบตี้แล้ว · Ending เก็บว่าเป็นการจบก่อนกำหนด');
+});
+
+$('downloadEnding').addEventListener('click', () => downloadEndingMarkdown(getParty(code)));
+$('rewardButton').addEventListener('click', () => {
+  if (terminalReward) location.href = `/xty/reveal/?r=${encodeURIComponent(terminalReward.rewardId)}`;
 });
 
 $('copy').addEventListener('click', async () => {

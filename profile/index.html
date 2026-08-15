@@ -7,8 +7,8 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#FFF9E9">
 <title>XTY Profile</title>
-<meta name="description" content="โปรไฟล์ XTY, ตี้ที่กำลังเล่น และ Pet ของคุณ">
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=5">
+<meta name="description" content="โปรไฟล์ XTY, Animal Card Collection และตี้ที่กำลังเล่น">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
 </head>
 <body>
 
@@ -18,6 +18,10 @@
 </header>
 
 <main class="wrap">
+  <section class="card" id="shell">
+    <p class="kicker">XTY PROFILE · LOCAL FIRST</p>
+    <p class="whisper" style="margin:0">กำลังเปิดคอลเลกชันจากเครื่องนี้…</p>
+  </section>
   <section id="none" hidden>
     <h1 class="title">ยังไม่มีโปรไฟล์</h1>
     <p class="lede">เลือกชื่อเรียกกับ Avatar ก่อน แล้วค่อยกลับมาดูตี้และ Pet ของคุณ</p>
@@ -25,7 +29,7 @@
   </section>
 
   <section id="view" hidden>
-    <div class="card">
+    <div class="card" id="lineCard" hidden>
       <div class="party-head">
         <div class="profile-avatar" id="av" aria-hidden="true"></div>
         <div style="flex:1;min-width:0">
@@ -42,7 +46,10 @@
           <span class="label" style="margin-bottom:6px">LINE</span>
           <div id="lineStatus" class="whisper" style="margin:0">กำลังตรวจสอบ…</div>
         </div>
-        <button class="btn ghost sm" id="lineBtn">เชื่อม LINE</button>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn ghost sm" id="lineLater">ไว้ทีหลัง</button>
+          <button class="btn gold sm" id="lineBtn">เก็บ Progress</button>
+        </div>
       </div>
     </div>
 
@@ -55,6 +62,15 @@
           <p class="whisper" id="capacityHint">สร้างได้ 1 ตี้ · เข้าร่วมได้ 3 ตี้</p>
         </div>
       </div>
+    </div>
+
+    <div class="card">
+      <span class="label">ANIMAL CARD COLLECTION</span>
+      <div class="account-row" style="margin-bottom:14px">
+        <p class="whisper" style="margin:0">การ์ดเดียวกันใช้เป็น Avatar, Lead หรือ NPC ได้ · Active role ล็อกทีละหนึ่งตี้</p>
+        <b id="cardCount"></b>
+      </div>
+      <div class="collection-grid" id="collection"></div>
     </div>
 
     <div class="card">
@@ -71,10 +87,29 @@
   </section>
 </main>
 
+<dialog class="card-detail" id="cardDetail">
+  <div id="detailCard"></div>
+  <h2 class="title" id="detailName" style="font-size:24px"></h2>
+  <p id="detailFlavor"></p>
+  <p class="whisper" id="detailStatus"></p>
+  <div class="card-detail-actions">
+    <button class="btn gold" id="useAvatar">ใช้เป็น Avatar</button>
+    <a class="btn ghost" id="useLead" href="/xty/new/">ใช้เปิดตี้</a>
+    <a class="btn ghost" id="useNpc" href="/xty/new/">ให้ร่วมตี้เป็น NPC</a>
+    <button class="btn ghost" id="closeDetail">กลับ</button>
+  </div>
+</dialog>
+
 <script type="module">
-import { getProfile, hasProfile, activePartyUsage } from '/xty/_shared/store.js';
+import {
+  getProfile, hasProfile, activePartyUsage, ownedCards, cardAvailability,
+  useCardAsAvatar, allParties, isActiveParty, partyIdentity, shouldOfferProgressSave,
+  updateProfile,
+} from '/xty/_shared/store.js';
 import { XTY_V1_PETS } from '/xty/_shared/pets.js';
 import { avatarById } from '/xty/_shared/avatars.js';
+import { cardById, cardNameTh, XTY_CARDS } from '/xty/_shared/cards.js';
+import { cardMarkup, cardStatusLabel } from '/xty/_shared/card-ui.js';
 import { startLineLogin, syncXtyProfile } from '/xty/_shared/account.js';
 
 const $ = id => document.getElementById(id);
@@ -85,6 +120,7 @@ function esc(s) {
 
 function render(account) {
   const p = getProfile();
+  $('none').hidden = true;
   $('view').hidden = false;
   const avatar = avatarById(p.avatarId);
   $('av').dataset.color = p.avatarFrame || 'green';
@@ -94,17 +130,39 @@ function render(account) {
     new Date(p.createdAt).toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
 
   if (account.authenticated) {
+    $('lineCard').hidden = false;
     $('lineStatus').innerHTML = '<span class="status-pill">Connected ✓</span><br>Progress เก็บกับบัญชีนี้';
     $('lineBtn').hidden = true;
+    $('lineLater').hidden = true;
   } else {
+    $('lineCard').hidden = !shouldOfferProgressSave(p);
     $('lineStatus').textContent = 'ยังไม่ได้เชื่อม — Progress อยู่ในเครื่องนี้';
     $('lineBtn').hidden = false;
+    $('lineLater').hidden = false;
     $('lineBtn').addEventListener('click', () => startLineLogin('/profile/'), { once: true });
+    $('lineLater').addEventListener('click', () => {
+      updateProfile({ savePromptDismissedAt: new Date().toISOString() });
+      $('lineCard').hidden = true;
+    }, { once: true });
   }
 
   const usage = activePartyUsage(p);
   $('capacity').innerHTML = `${usage.total} / ${usage.maxTotal}<small>ACTIVE PARTIES</small>`;
   $('capacityHint').textContent = `สร้างได้ ${usage.maxOwned} ตี้ · เข้าร่วมได้ ${usage.maxJoined} ตี้`;
+
+  const collection = ownedCards(p).map(item => cardById(item.cardId)).filter(Boolean);
+  $('cardCount').textContent = `${collection.length} / ${XTY_CARDS.length}`;
+  const collectionBox = $('collection'); collectionBox.innerHTML = '';
+  collection.forEach(card => {
+    const placement = cardAvailability(card.cardId);
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'collection-card';
+    button.setAttribute('aria-label', `${cardNameTh(card)} · ${cardStatusLabel(placement.status)}`);
+    button.innerHTML = cardMarkup(card)
+      + `<span class="collection-status">${esc(cardStatusLabel(placement.status))}</span>`;
+    button.addEventListener('click', () => showCardDetail(card.cardId));
+    collectionBox.appendChild(button);
+  });
 
   const box = $('pets');
   box.innerHTML = '';
@@ -120,15 +178,48 @@ function render(account) {
   });
 }
 
+function showCardDetail(cardId) {
+  const card = cardById(cardId); if (!card) return;
+  const placement = cardAvailability(card.cardId);
+  $('detailCard').innerHTML = cardMarkup(card);
+  $('detailName').textContent = cardNameTh(card);
+  $('detailFlavor').textContent = `“${card.flavorTh}”`;
+  $('detailStatus').textContent = `${card.personalityNameTh} · ${cardStatusLabel(placement.status)}`;
+  $('useAvatar').onclick = () => {
+    const profile = useCardAsAvatar(card.cardId);
+    if (!profile) return;
+    const avatar = avatarById(profile.avatarId);
+    $('av').dataset.color = profile.avatarFrame;
+    $('av').innerHTML = `<img src="${avatar.art}" alt="">`;
+    $('cardDetail').close();
+    syncXtyProfile();
+  };
+  $('useLead').href = `/xty/new/?lead=${encodeURIComponent(card.cardId)}`;
+  const ownedParty = allParties().find(party => {
+    const identity = partyIdentity(party.code);
+    return isActiveParty(party) && identity?.userId === party.ownerId;
+  });
+  $('useNpc').href = ownedParty
+    ? `/xty/p/?c=${encodeURIComponent(ownedParty.code)}&npc=${encodeURIComponent(card.cardId)}#manage`
+    : `/xty/new/?npc=${encodeURIComponent(card.cardId)}`;
+  const freeForRole = placement.status === 'AVAILABLE';
+  $('useLead').hidden = !freeForRole;
+  $('useNpc').hidden = !freeForRole;
+  if (typeof $('cardDetail').showModal === 'function') $('cardDetail').showModal();
+  else $('cardDetail').setAttribute('open', '');
+}
+
+$('closeDetail').addEventListener('click', () => $('cardDetail').close());
+
 async function boot() {
+  $('shell').hidden = true;
   const localAccount = { authenticated: false };
   if (new URLSearchParams(location.search).has('account')) history.replaceState(null, '', '/profile/');
   if (!hasProfile()) $('none').hidden = false;
   else render(localAccount);
   const account = await syncXtyProfile();
   if (hasProfile() && account.authenticated) {
-    $('lineStatus').innerHTML = '<span class="status-pill">Connected ✓</span><br>Progress เก็บกับบัญชีนี้';
-    $('lineBtn').hidden = true;
+    render(account);
   }
 }
 

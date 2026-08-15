@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#FFF9E9">
+<title>เปิดการ์ด — XTY</title>
+<meta name="description" content="เปิด Animal Card ที่ได้จากการทำ Quest จริงใน XTY">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
+</head>
+<body>
+<header class="top">
+  <a class="mark" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a>
+  <a class="back" href="/profile/">คอลเลกชัน</a>
+</header>
+
+<main class="wrap reveal-page">
+  <section class="card" id="shell">
+    <p class="kicker">CARD REVEAL · LOCAL FIRST</p>
+    <p class="whisper" style="margin:0">กำลังอ่านผลรางวัลที่บันทึกไว้ในเครื่องนี้…</p>
+  </section>
+  <section id="missing" hidden>
+    <p class="kicker">CARD REVEAL</p>
+    <h1 class="title">ยังไม่มีการ์ดรอเปิด</h1>
+    <p class="lede">จบ Quest หรือ Party ก่อน แล้วของขวัญจากการเดินทางจะมารอที่นี่</p>
+    <a class="btn gold" href="/xty/">กลับไป XTY</a>
+  </section>
+
+  <section id="complete" hidden>
+    <p class="kicker">COLLECTION COMPLETE ✦</p>
+    <h1 class="title">คุณเก็บครบทุกใบแล้ว</h1>
+    <p class="lede">Quest นี้ยังถูกบันทึกไว้ โดยไม่แจกการ์ดซ้ำ</p>
+    <a class="btn gold" href="/profile/">ดูคอลเลกชัน</a>
+  </section>
+
+  <section id="reveal" hidden>
+    <p class="kicker">QUEST COMPLETE ✓</p>
+    <h1 class="title">ได้การ์ด 1 ใบ</h1>
+    <p class="lede" id="instruction">กดการ์ดเพื่อเปิดของขวัญจากการเดินทาง</p>
+
+    <div class="reveal-stage">
+      <button class="reveal-card" id="cardButton" aria-label="กดเปิดการ์ด" aria-expanded="false">
+        <span class="reveal-inner">
+          <span class="reveal-face card-back">
+            <img src="/xty/assets/xty-logo.png" alt="" width="320" height="320">
+            <b>TAP TO FLIP</b>
+          </span>
+          <span class="reveal-face reveal-front" id="front"></span>
+        </span>
+      </button>
+    </div>
+
+    <div class="reveal-copy" id="copy" hidden>
+      <h2 class="title" id="cardName"></h2>
+      <p id="flavor"></p>
+      <p class="whisper">เพิ่มเข้าคอลเลกชันแล้วก่อนเปิด จึง refresh เพื่อสุ่มใหม่ไม่ได้</p>
+    </div>
+
+    <div class="reveal-actions" id="actions" hidden>
+      <a class="btn gold" href="/profile/">เก็บเข้าคอลเลกชัน</a>
+      <button class="btn ghost" id="useAvatar">ใช้เป็น Avatar</button>
+      <a class="btn ghost" id="useNpc" href="/xty/new/">ให้ร่วมตี้เป็น NPC</a>
+    </div>
+
+    <div class="card save-prompt" id="savePrompt" hidden>
+      <span class="label">SAVE PROGRESS · OPTIONAL</span>
+      <h2 style="margin:0;font-size:20px">อยากเก็บของพวกนี้ไว้ไหม?</h2>
+      <p class="whisper">ตอนนี้ Progress อยู่ในเครื่องนี้ ผูกบัญชีไว้ จะได้ไม่หายถ้าเปลี่ยนเครื่อง</p>
+      <div class="actions">
+        <button class="btn gold sm" id="saveProgress">เก็บ Progress</button>
+        <button class="btn ghost sm" id="later">ไว้ทีหลัง</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+import {
+  pendingCardReward, markCardRewardRevealed, useCardAsAvatar, shouldOfferProgressSave,
+  updateProfile, allParties, isActiveParty, partyIdentity,
+} from '/xty/_shared/store.js';
+import { cardById, cardNameTh } from '/xty/_shared/cards.js';
+import { cardMarkup } from '/xty/_shared/card-ui.js';
+import { getSession, startLineLogin, syncXtyProfile } from '/xty/_shared/account.js';
+
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const rewardId = params.get('r') || '';
+const reward = pendingCardReward(rewardId);
+$('shell').hidden = true;
+
+if (params.has('account')) {
+  syncXtyProfile().then(() => { $('savePrompt').hidden = true; });
+  params.delete('account');
+  history.replaceState(null, '', `${location.pathname}${params.size ? `?${params}` : ''}`);
+} else syncXtyProfile();
+
+if (!reward) {
+  $('missing').hidden = false;
+} else if (reward.complete || !reward.cardId) {
+  $('complete').hidden = false;
+  markCardRewardRevealed(reward.rewardId);
+} else {
+  showReward(reward);
+}
+
+function showReward(item) {
+  const card = cardById(item.cardId);
+  if (!card) { $('missing').hidden = false; return; }
+  $('reveal').hidden = false;
+  $('front').innerHTML = cardMarkup(card);
+  $('cardName').textContent = cardNameTh(card);
+  $('flavor').textContent = `“${card.flavorTh}”`;
+  const button = $('cardButton');
+  let opened = !!item.revealedAt;
+  if (opened) finishOpen();
+  button.addEventListener('click', () => {
+    if (opened) return;
+    opened = true;
+    markCardRewardRevealed(item.rewardId);
+    button.classList.add('is-open');
+    button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-label', cardNameTh(card));
+    $('instruction').textContent = 'การ์ดใบนี้เป็นความทรงจำจาก Quest ไม่ใช่ของที่ซื้อสุ่ม';
+    if (navigator.vibrate) navigator.vibrate(12);
+    setTimeout(finishOpen, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 500);
+  });
+
+  function finishOpen() {
+    button.classList.add('is-open');
+    button.setAttribute('aria-expanded', 'true');
+    $('copy').hidden = false; $('actions').hidden = false;
+    $('useAvatar').onclick = () => {
+      useCardAsAvatar(card.cardId);
+      syncXtyProfile();
+      $('useAvatar').textContent = 'ใช้เป็น Avatar แล้ว ✓';
+      $('useAvatar').disabled = true;
+    };
+    const ownedParty = allParties().find(party => {
+      const identity = partyIdentity(party.code);
+      return isActiveParty(party) && identity?.userId === party.ownerId;
+    });
+    $('useNpc').href = ownedParty
+      ? `/xty/p/?c=${encodeURIComponent(ownedParty.code)}&npc=${encodeURIComponent(card.cardId)}#manage`
+      : `/xty/new/?npc=${encodeURIComponent(card.cardId)}`;
+    maybeOfferSave();
+  }
+}
+
+async function maybeOfferSave() {
+  if (!shouldOfferProgressSave()) return;
+  const session = await getSession();
+  const dismissed = sessionStorage.getItem('xty_save_prompt_later');
+  if (!session && !dismissed) $('savePrompt').hidden = false;
+}
+
+$('saveProgress').addEventListener('click', () => {
+  startLineLogin(`${location.pathname}${location.search}`);
+});
+$('later').addEventListener('click', () => {
+  sessionStorage.setItem('xty_save_prompt_later', '1');
+  updateProfile({ savePromptDismissedAt: new Date().toISOString() });
+  $('savePrompt').hidden = true;
+});
+</script>
+</body>
+</html>

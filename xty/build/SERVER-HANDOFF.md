@@ -1,6 +1,6 @@
 # XTY — Server Handoff
 
-**สถานะ production 2026-08-14:** ต่อ Vercel API + Neon แล้ว · รหัสตี้ใช้ข้ามเครื่องได้
+**สถานะ production 2026-08-15:** ต่อ Vercel API + Neon แล้ว · รหัสตี้ใช้ข้ามเครื่องได้ · เพิ่ม local-first Animal Card, Party Event และ Ending `.md` แล้ว
 
 ไฟล์ production:
 
@@ -10,6 +10,19 @@
 - `api/_lib/pet-brain.js` — ตัวที่อ่านแชทจริงแล้วตัดสินใจว่าจะพูดหรือเงียบ
 - `api/_lib/pet-personas.js` — บุคลิกที่ส่งเข้าโมเดล (คู่กับ `xty/pets/personas/*.md`)
 - `xty/_shared/store.js` — server adapter + local cache (ไม่มี WebSocket/long-poll)
+- `xty/_shared/cards.js` — catalog 12 สัตว์ × RGBS = 48 Card IDs
+- `xty/cards/personalities/*.md` — บุคลิกถาวรของ Animal Card
+- `xty/reveal/index.html` — unique reward reveal; persist ก่อน flip
+
+ฟิลด์ production ที่เพิ่มใน v0.2:
+
+- `xty_parties.lead_card_id / npc_card_id / started_at / ended_at / timezone`
+- `xty_members.left_at / removal_reason`
+- `xty_party_events` — structured story events แยกจาก Party Log
+
+Lifecycle ที่เขียนได้จาก client: rename, change rule, change Lead Card,
+change PET/NPC, kick member, Complete และ Dissolve. `COMPLETED` กับ
+`DISSOLVED` เป็นคนละสถานะและทั้งคู่ดาวน์โหลด Ending `.md` ได้
 
 สิ่งที่ต้องตั้งใน deployment ก่อนเปิด pet wake อัตโนมัติ:
 
@@ -290,12 +303,16 @@ frontend รองรับแล้ว — เรียก `appendPetTurn(code,
 
 ## 6. ยังไม่ต้องทำ / ห้ามแต่งเอง
 
-**ยังไม่ทำ:** pet draw, XP, unlock, public discovery, marketplace, lootbox
+**ยังไม่ทำ:** XP, public discovery, marketplace, rarity, paid pack หรือ reroll
+
+Card reward v0.2 สุ่มเท่ากันจาก pool ที่ยังไม่เป็นเจ้าของเท่านั้น และบันทึก
+`cardId` ลง `mc_xty_profile` ก่อนเริ่ม flip. ห้ามเปลี่ยน ritual นี้เป็น lootbox
+หรือเปิดขายการสุ่มด้วยเงินจริง
 
 **ห้ามแต่งตัวเลขเอง** (open decisions):
 ```
 XTY score formula        pet draw cost        drop rates
-duplicate handling       slot unlock cadence  legendary odds
+future exhaustion reward slot unlock cadence  legendary odds
 message reset time       time-zone behaviour  retention ceiling
 pet intervention budget ที่ละเอียดกว่า 0–3 ต่อรอบ
 ```
@@ -303,15 +320,22 @@ pet intervention budget ที่ละเอียดกว่า 0–3 ต่�
 
 ---
 
-## 7. สลับ frontend มาใช้ server
+## 7. Frontend ↔ server ปัจจุบัน
 
-`xty/_shared/store.js` แยก I/O ไว้ในฟังก์ชันเดียวกันหมด
-เปลี่ยน body ของ `createParty` `joinParty` `postToParty` `toggleReaction`
-`retractPost` `postsSince` `getParty` ให้ `fetch` แทน `localStorage`
+`xty/_shared/store.js` ใช้ server เป็น canonical party state แล้ว และเก็บ snapshot
+ใน `mc_xty_parties` เพื่อ paint ก่อน network. Profile, card ownership และผล reward
+เขียน local ก่อน; เมื่อผู้ใช้สมัครใจเชื่อมบัญชีจึง merge แบบ union ที่ไม่ลบการ์ด
+ซึ่งหาได้จริงจากเครื่องใดเครื่องหนึ่ง
 
-**ข้อควรระวัง:** ตอนนี้เป็น **synchronous** ถ้าเปลี่ยนเป็น async
-ต้องไล่ใส่ `await` ในหน้า `xty/p/`, `xty/new/`, `xty/join/`, `xty/index.html`, `profile/`
-(จุดเรียกไม่เยอะ ประมาณ 15 จุด)
+Party write endpoints ปัจจุบัน:
+
+- `POST /api/xty/party`
+- `POST /api/xty/party/:code/join`
+- `POST /api/xty/party/:code/commit|message|react|confirm|retract`
+- `POST /api/xty/party/:code/manage`
+- `POST /api/xty/party/:code/finish`
+
+ห้ามเปลี่ยน local paint ให้รอ network และห้ามเพิ่ม WebSocket/long-poll
 
 ฟังก์ชันคำนวณสถานะเกม (`committedToday`, `messagesLeftToday`, `budgetOf`)
 เป็น pure function รับ party object — ใช้ต่อได้เลยไม่ต้องแก้
@@ -322,6 +346,6 @@ pet intervention budget ที่ละเอียดกว่า 0–3 ต่�
 
 - **Consent** — ต้องมีหน้าอธิบายว่าข้อความถูกเก็บนานแค่ไหน ใครเห็นได้บ้าง
 - **Retention** — เจ้าของตี้เลือกตอนตั้ง แต่ควรมีเพดาน ยังไม่ได้ล็อกตัวเลข
-- **ใครลบตี้ได้** และเกิดอะไรกับ log เมื่อสมาชิกออก
+- **Retention จริงในฐานข้อมูล** — ตอนนี้ Lead ใช้ Dissolve เพื่อปิดการเล่นโดยไม่ลบ log
 - **Moderation** — วงเล็ก 2–5 คนและเข้าด้วยคำเชิญ ทำให้ปัญหาเล็กกว่าแชทสาธารณะมาก
   แต่ยังต้องมีทางรายงาน

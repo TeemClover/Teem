@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#FFF9E9">
 <title>ตั้งตี้ใหม่ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=5">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
 </head>
 <body>
 <header class="top">
@@ -21,6 +21,13 @@
 
   <section class="notebook-card">
     <span class="step-sticker">1</span>
+    <h2>วาง Lead Card ของตี้</h2>
+    <p class="whisper">Starter Card จะถูกเลือกไว้ให้ การ์ดใบเดียวเป็น Lead ได้ทีละหนึ่ง Active Party</p>
+    <div class="card-select-grid" id="leadPick" role="radiogroup" aria-label="เลือก Lead Card"></div>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">2</span>
     <h2>วันนี้อยากทำอะไรด้วยกัน?</h2>
     <div class="activity-grid" id="activityPick" role="radiogroup" aria-label="เลือกกิจกรรม"></div>
     <div class="field" id="customField" hidden>
@@ -30,19 +37,19 @@
   </section>
 
   <section class="notebook-card">
-    <span class="step-sticker">2</span>
+    <span class="step-sticker">3</span>
     <h2>เลือกวิธีเล่น</h2>
     <div class="preset-grid" id="presetPick" role="radiogroup" aria-label="เลือกวิธีเล่น"></div>
   </section>
 
   <section class="notebook-card">
-    <span class="step-sticker">3</span>
+    <span class="step-sticker">4</span>
     <h2>เล่นกันกี่วัน?</h2>
     <div class="choice-row" id="durationPick" role="radiogroup" aria-label="เลือกระยะเวลา"></div>
   </section>
 
   <section class="notebook-card">
-    <span class="step-sticker">4</span>
+    <span class="step-sticker">5</span>
     <h2>ตั้งชื่อและกติกา</h2>
     <div class="field">
       <label for="pname">ชื่อตี้</label>
@@ -56,23 +63,25 @@
   </section>
 
   <section class="notebook-card">
-    <span class="step-sticker">5</span>
+    <span class="step-sticker">6</span>
     <h2>สีประจำตี้</h2>
     <div class="color-row" id="colorPick" role="radiogroup" aria-label="เลือกสีประจำตี้"></div>
   </section>
 
   <section class="notebook-card">
-    <span class="step-sticker">6</span>
+    <span class="step-sticker">7</span>
     <h2>ใครเข้าร่วมได้?</h2>
     <div class="choice-row two" id="visibilityPick" role="radiogroup" aria-label="เลือกการมองเห็น"></div>
     <p class="hint">ตี้ส่วนตัวใช้รหัส 4 หลักชวนเพื่อนเข้ามา</p>
   </section>
 
   <section class="notebook-card">
-    <span class="step-sticker">7</span>
-    <h2>เลือก Pet ประจำตี้</h2>
-    <p class="whisper">เลือกได้หนึ่งตัว หรือข้ามไว้ก่อนก็ได้</p>
+    <span class="step-sticker">8</span>
+    <h2>เลือกเพื่อนร่วมทาง</h2>
+    <p class="whisper">ใช้ Pet ชุดเดิม หรือวาง Animal Card ที่ปลดล็อกแล้วเป็น NPC ก็ได้ · ข้ามได้</p>
     <div class="pet-art-grid" id="petPick" role="radiogroup" aria-label="เลือก Pet ประจำตี้"></div>
+    <p class="label" style="margin-top:18px">ANIMAL CARD AS NPC</p>
+    <div class="card-select-grid" id="npcCardPick" role="radiogroup" aria-label="เลือก Animal Card เป็น NPC"></div>
     <p class="hint" id="petHint">ยังไม่ได้เลือก Pet</p>
   </section>
 
@@ -89,9 +98,14 @@
 <div class="toast" id="toast" role="status"></div>
 
 <script type="module">
-import { hasProfile, getProfile, createParty, MESSAGE_BUDGETS, DEFAULT_BUDGET } from '/xty/_shared/store.js';
+import {
+  hasProfile, getProfile, createParty, MESSAGE_BUDGETS, DEFAULT_BUDGET,
+  availableOwnedCards,
+} from '/xty/_shared/store.js';
 import { XTY_V1_PETS, PET_BY_ID, RGBS } from '/xty/_shared/pets.js';
 import { XTY_ACTIVITIES, XTY_PRESETS } from '/xty/_shared/activities.js';
+import { cardById, cardNameTh } from '/xty/_shared/cards.js';
+import { cardMarkup } from '/xty/_shared/card-ui.js';
 
 const $ = id => document.getElementById(id);
 if (!hasProfile()) location.replace('/xty/'); else init();
@@ -123,6 +137,35 @@ function radioGroup(container, buttons, initial, onPick) {
 function init() {
   const profile = getProfile();
   const ownedPets = XTY_V1_PETS.filter(p => profile.petIds.includes(p.id));
+  const leadCards = availableOwnedCards({ role: 'lead', profile });
+  const qs = new URLSearchParams(location.search);
+  const requestedLead = String(qs.get('lead') || '').toUpperCase();
+  let leadCardId = leadCards.some(card => card.cardId === requestedLead) ? requestedLead
+    : (leadCards.some(card => card.cardId === profile.equippedCardId)
+      ? profile.equippedCardId : leadCards[0]?.cardId);
+  const requestedNpc = String(qs.get('npc') || '').toUpperCase();
+  let npcCardId = leadCards.some(card => card.cardId === requestedNpc && card.cardId !== leadCardId)
+    ? requestedNpc : null;
+
+  leadCards.forEach(card => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'card-select' + (card.cardId === leadCardId ? ' picked' : '');
+    button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', card.cardId === leadCardId ? 'true' : 'false');
+    button.setAttribute('aria-label', `ใช้ ${cardNameTh(card)} เป็น Lead`);
+    button.innerHTML = cardMarkup(card, { role: 'lead' });
+    button.addEventListener('click', () => {
+      leadCardId = card.cardId;
+      if (npcCardId === leadCardId) {
+        npcCardId = null;
+        $('petHint').textContent = 'ยังไม่ได้เลือกเพื่อนร่วมทาง';
+      }
+      $('leadPick').querySelectorAll('button').forEach(node => {
+        const on = node === button; node.classList.toggle('picked', on); node.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      renderNpcCards();
+    });
+    $('leadPick').appendChild(button);
+  });
 
   const activityButtons = XTY_ACTIVITIES.map(item => {
     const button = document.createElement('button');
@@ -146,7 +189,7 @@ function init() {
   let preset = 'casual';
   radioGroup($('presetPick'), presetButtons, preset, id => { preset = id; });
 
-  let durationDays = 14;
+  let durationDays = 7;
   const durationButtons = [7, 14, 28].map(days => {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'pill-choice'; button.setAttribute('role', 'radio');
@@ -189,14 +232,48 @@ function init() {
     button.innerHTML = `<img src="${pet.art}" alt=""><b>${pet.nameTh}</b><small>${pet.persona}</small>`;
     button.addEventListener('click', () => {
       petId = petId === pet.id ? null : pet.id;
+      if (petId) npcCardId = null;
       $('petPick').querySelectorAll('button').forEach(x => {
         const on = x === button && petId === pet.id;
         x.classList.toggle('picked', on); x.setAttribute('aria-checked', on ? 'true' : 'false');
       });
       $('petHint').textContent = petId ? `${PET_BY_ID[petId].nameTh} จะเป็นเพื่อนประจำตี้` : 'ยังไม่ได้เลือก Pet';
+      renderNpcCards();
     });
     $('petPick').appendChild(button);
   });
+
+  function renderNpcCards() {
+    const box = $('npcCardPick'); box.innerHTML = '';
+    const choices = availableOwnedCards({ role: 'npc', profile }).filter(card => card.cardId !== leadCardId);
+    if (!choices.length) {
+      box.innerHTML = '<p class="whisper" style="grid-column:1/-1;margin:0">ยังไม่มีการ์ดว่างอีกใบ — เปิดได้หลังจบ Quest แรก</p>';
+      return;
+    }
+    choices.forEach(card => {
+      const button = document.createElement('button');
+      button.type = 'button'; button.className = 'card-select' + (card.cardId === npcCardId ? ' picked' : '');
+      button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', card.cardId === npcCardId ? 'true' : 'false');
+      button.setAttribute('aria-label', `ใช้ ${cardNameTh(card)} เป็น NPC`);
+      button.innerHTML = cardMarkup(card, { role: 'npc' });
+      button.addEventListener('click', () => {
+        npcCardId = npcCardId === card.cardId ? null : card.cardId;
+        if (npcCardId) {
+          petId = null;
+          $('petPick').querySelectorAll('button').forEach(node => {
+            node.classList.remove('picked'); node.setAttribute('aria-checked', 'false');
+          });
+        }
+        renderNpcCards();
+        $('petHint').textContent = npcCardId
+          ? `${cardNameTh(cardById(npcCardId))} จะร่วมตี้เป็น NPC`
+          : 'ยังไม่ได้เลือกเพื่อนร่วมทาง';
+      });
+      box.appendChild(button);
+    });
+  }
+  renderNpcCards();
+  if (npcCardId) $('petHint').textContent = `${cardNameTh(cardById(npcCardId))} จะร่วมตี้เป็น NPC`;
 
   let budget = DEFAULT_BUDGET;
   const budgetButtons = Object.values(MESSAGE_BUDGETS).map(item => {
@@ -207,7 +284,6 @@ function init() {
   });
   radioGroup($('budgetPick'), budgetButtons, budget, id => { budget = id; });
 
-  const qs = new URLSearchParams(location.search);
   if (qs.get('template') === 'xircle') {
     $('pname').value = 'ตี้สุขภาพของเรา';
     $('prule').value = 'วันนี้ปรับหนึ่งอย่างที่ตั้งใจไว้';
@@ -224,14 +300,17 @@ function init() {
     try {
       const party = await createParty({
         name: $('pname').value, activity, activityId, preset, durationDays,
-        color, visibility, commitRule: $('prule').value, budget, petId,
+        color, visibility, commitRule: $('prule').value, budget, petId, leadCardId, npcCardId,
       });
       location.href = `/xty/p/?c=${encodeURIComponent(party.code)}&new=1`;
     } catch (error) {
       const messages = {
         XTY_DB_NOT_CONFIGURED: 'เซิร์ฟเวอร์ XTY ยังไม่พร้อม',
+        DATABASE_URL_NOT_CONFIGURED: 'เซิร์ฟเวอร์ XTY ยังไม่พร้อม',
         OWNED_PARTY_LIMIT: 'คุณมีตี้ที่สร้างและกำลังเล่นอยู่แล้ว 1 ตี้',
         ACTIVE_PARTY_LIMIT: 'คุณอยู่ในตี้ที่กำลังเล่นครบ 4 ตี้แล้ว',
+        CARD_IN_USE: 'การ์ดใบนี้กำลังอยู่ใน Active Party อื่น',
+        CARD_NOT_OWNED: 'ไม่พบการ์ดใบนี้ในคอลเลกชัน',
       };
       toast(messages[error.code] || 'สร้างตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองอีกครั้ง');
       go.disabled = false; go.textContent = 'สร้างตี้';
@@ -240,7 +319,7 @@ function init() {
 
   function syncReady() {
     const customReady = activityId !== 'custom' || $('customActivity').value.trim().length > 0;
-    $('go').disabled = $('pname').value.trim().length < 1 || !customReady;
+    $('go').disabled = $('pname').value.trim().length < 1 || !customReady || !leadCardId;
   }
 }
 

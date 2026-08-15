@@ -32,14 +32,22 @@ function code() {
   return [...randomBytes(4)].map(byte => String(byte % 10)).join('');
 }
 function validCode(value) { return /^\d{4}$/.test(String(value || '')); }
+function validCardId(value) { return /^[A-Z0-9_]{8,80}$/.test(String(value || '')); }
+function activeParty(row) { return ACTIVE_STATES.includes(String(row?.state || 'ACTIVE').toUpperCase()); }
 function dayKey(date = new Date()) {
   return new Date(date.getTime() + DAY_OFFSET_MINUTES * 60000).toISOString().slice(0, 10);
 }
 
 async function partyByCode(sql, value) {
   const rows = await sql.query(`SELECT id,code,name,activity,activity_id,preset,duration_days,color,visibility,commit_rule,budget,pet_id,owner_id,
-    state,created_at,updated_at,head_seq,pet_last_wake FROM xty_parties WHERE code=$1`, [value]);
+    state,created_at,updated_at,head_seq,pet_last_wake,lead_card_id,npc_card_id,started_at,ended_at,timezone
+    FROM xty_parties WHERE code=$1`, [value]);
   return rows[0] || null;
+}
+
+function partyDay(row, at = new Date()) {
+  const start = new Date(row.started_at || row.created_at || at);
+  return Math.max(1, Math.floor((at.getTime() - start.getTime()) / 86400000) + 1);
 }
 
 function localIdentity(body) {
@@ -65,7 +73,8 @@ async function capacityUsage(sql, ids) {
       COUNT(DISTINCT p.id) FILTER (WHERE m.role <> 'lead')::int joined,
       COUNT(DISTINCT p.id)::int total
     FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
-    WHERE m.user_id IN ($1,$2) AND p.state = ANY($3::text[])`, [ids[0], ids[1], ACTIVE_STATES]);
+    WHERE m.user_id IN ($1,$2) AND m.left_at IS NULL
+      AND p.state = ANY($3::text[])`, [ids[0], ids[1], ACTIVE_STATES]);
   return {
     owned: Number(rows[0]?.owned || 0),
     joined: Number(rows[0]?.joined || 0),
@@ -77,21 +86,41 @@ async function memberFor(req, sql, partyId) {
   const account = await currentUser(req, sql);
   if (account) {
     const rows = await sql.query(`SELECT user_id,alias,avatar,role FROM xty_members
-      WHERE party_id=$1 AND user_id=$2`, [partyId, `account:${account.id}`]);
+      WHERE party_id=$1 AND user_id=$2 AND left_at IS NULL`, [partyId, `account:${account.id}`]);
     if (rows[0]) return rows[0];
   }
   const auth = String(req.headers.authorization || '');
   const value = auth.startsWith('Bearer ') ? auth.slice(7) : '';
   if (!value) return null;
   const rows = await sql.query(`SELECT user_id,alias,avatar,role FROM xty_members
-    WHERE party_id=$1 AND auth_hash=$2`, [partyId, await sha256(value)]);
+    WHERE party_id=$1 AND auth_hash=$2 AND left_at IS NULL`, [partyId, await sha256(value)]);
   return rows[0] || null;
 }
 
 async function membersOf(sql, partyId) {
-  const rows = await sql.query(`SELECT user_id,alias,avatar,role,joined_at FROM xty_members
+  const rows = await sql.query(`SELECT user_id,alias,avatar,role,joined_at,left_at,removal_reason FROM xty_members
     WHERE party_id=$1 ORDER BY CASE role WHEN 'lead' THEN 0 ELSE 1 END, joined_at`, [partyId]);
-  return rows.map(row => ({ userId: row.user_id, alias: row.alias, avatar: row.avatar || '🍀', role: row.role, joinedAt: row.joined_at }));
+  return rows.map(row => ({
+    userId: row.user_id, alias: row.alias, avatar: row.avatar || '🍀', role: row.role,
+    joinedAt: new Date(row.joined_at).toISOString(),
+    leftAt: row.left_at ? new Date(row.left_at).toISOString() : null,
+    removalReason: row.removal_reason || null,
+  }));
+}
+
+async function eventsOf(sql, partyId) {
+  const rows = await sql.query(`SELECT type,party_day,data_json,created_at FROM xty_party_events
+    WHERE party_id=$1 ORDER BY id`, [partyId]);
+  return rows.map(row => {
+    let data = row.data_json || {};
+    if (typeof data === 'string') {
+      try { data = JSON.parse(data); } catch { data = {}; }
+    }
+    return {
+      type: row.type, partyDay: Number(row.party_day || 1), data,
+      at: new Date(row.created_at).toISOString(),
+    };
+  });
 }
 
 async function postsOf(sql, partyId, since = 0) {
@@ -126,22 +155,26 @@ async function postsOf(sql, partyId, since = 0) {
   return posts;
 }
 
-function shape(row, members, posts) {
+function shape(row, memberHistory, posts, events) {
+  const members = memberHistory.filter(member => !member.leftAt);
   return {
     id: row.id, code: row.code, name: row.name, activity: row.activity || '',
     activityId: row.activity_id || 'custom', preset: row.preset || 'casual',
-    durationDays: Number(row.duration_days || 14), color: row.color || 'green',
+    durationDays: Number(row.duration_days || 7), color: row.color || 'green',
     visibility: row.visibility || 'private',
     commitRule: row.commit_rule || '', budget: BUDGETS[row.budget] ? row.budget : DEFAULT_BUDGET,
-    petId: row.pet_id || null, ownerId: row.owner_id, state: row.state || 'ACTIVE',
+    petId: row.pet_id || null, leadCardId: row.lead_card_id || null, npcCardId: row.npc_card_id || null,
+    ownerId: row.owner_id, state: row.state || 'ACTIVE', timezone: row.timezone || 'Asia/Bangkok',
+    startAt: new Date(row.started_at || row.created_at).toISOString(),
+    endAt: row.ended_at ? new Date(row.ended_at).toISOString() : null,
     createdAt: new Date(row.created_at).toISOString(), updatedAt: new Date(row.updated_at).toISOString(),
-    members, log: posts,
+    members, memberHistory, events, log: posts,
   };
 }
 
 async function stateFor(sql, row, member, since = 0) {
-  const [members, posts, counts] = await Promise.all([
-    membersOf(sql, row.id), postsOf(sql, row.id, since),
+  const [memberHistory, posts, events, counts] = await Promise.all([
+    membersOf(sql, row.id), postsOf(sql, row.id, since), eventsOf(sql, row.id),
     sql.query(`SELECT
       COUNT(DISTINCT CASE WHEN kind='commit' AND retracted=FALSE THEN user_id END)::int committed,
       COUNT(*)::int updates,
@@ -149,12 +182,13 @@ async function stateFor(sql, row, member, since = 0) {
       FROM xty_posts WHERE party_id=$1 AND day_key=$3::date`, [row.id, member?.user_id || '', dayKey()]),
   ]);
   const count = counts[0] || {};
+  const members = memberHistory.filter(item => !item.leftAt);
   const limit = BUDGETS[row.budget] || BUDGETS[DEFAULT_BUDGET];
   return {
     ok: true, head: Number(row.head_seq || 0), meUserId: member?.user_id || null,
     today: { committed: Number(count.committed || 0), members: members.length, updates: Number(count.updates || 0) },
     budgetLeft: member ? Math.max(0, limit - Number(count.messages_used || 0)) : null,
-    party: shape(row, members, posts),
+    party: shape(row, memberHistory, posts, events),
   };
 }
 
@@ -213,9 +247,15 @@ export default async function handler(req, res) {
       const memberToken = token(); const now = new Date(); const partyId = randomUUID();
       const budget = BUDGETS[body.budget] ? body.budget : DEFAULT_BUDGET;
       const preset = ['casual', 'challenge', 'mission', 'verified'].includes(body.preset) ? body.preset : 'casual';
-      const durationDays = [7, 14, 28].includes(Number(body.durationDays)) ? Number(body.durationDays) : 14;
+      const durationDays = [7, 14, 28].includes(Number(body.durationDays)) ? Number(body.durationDays) : 7;
       const color = ['red', 'green', 'blue', 'silver'].includes(body.color) ? body.color : 'green';
       const visibility = ['public', 'private'].includes(body.visibility) ? body.visibility : 'private';
+      const leadCardId = validCardId(body.leadCardId) ? String(body.leadCardId) : null;
+      const npcCardId = validCardId(body.npcCardId) ? String(body.npcCardId) : null;
+      const legacyPetId = npcCardId ? null : (clean(body.petId, 40) || null);
+      if (!leadCardId || (npcCardId && npcCardId === leadCardId)) {
+        return sendJson(res, { ok: false, error: 'INVALID_CARD_PLACEMENT' }, 400);
+      }
       for (let attempt = 0; attempt < 30; attempt += 1) {
         const inviteCode = code();
         try {
@@ -224,21 +264,26 @@ export default async function handler(req, res) {
           ), capacity AS (
             SELECT 1 FROM guard WHERE
               (SELECT COUNT(DISTINCT p.id) FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
-                WHERE m.user_id IN ($13,$14) AND p.state = ANY($16::text[])) < $15
+                WHERE m.user_id IN ($13,$14) AND m.left_at IS NULL AND p.state = ANY($16::text[])) < $15
               AND (SELECT COUNT(DISTINCT p.id) FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
                 WHERE m.user_id IN ($13,$14) AND p.owner_id IN ($13,$14)
-                  AND p.state = ANY($16::text[])) < $17
+                  AND m.left_at IS NULL AND p.state = ANY($16::text[])) < $17
           ), party AS (
             INSERT INTO xty_parties (id,code,name,activity,commit_rule,budget,pet_id,owner_id,created_at,updated_at,
-              activity_id,preset,duration_days,color,visibility)
-            SELECT $1,$2,$3,$4,$5,$6,$7,$8,$9,$9,$18,$19,$20,$21,$22 FROM capacity RETURNING id
-          ) INSERT INTO xty_members (party_id,user_id,alias,avatar,role,auth_hash,joined_at)
-            SELECT id,$8,$10,$11,'lead',$12,$9 FROM party RETURNING party_id`, [
+              activity_id,preset,duration_days,color,visibility,lead_card_id,npc_card_id,started_at,timezone)
+            SELECT $1,$2,$3,$4,$5,$6,$7,$8,$9,$9,$18,$19,$20,$21,$22,$23,$24,$9,$25 FROM capacity RETURNING id
+          ), lead_member AS (
+            INSERT INTO xty_members (party_id,user_id,alias,avatar,role,auth_hash,joined_at)
+            SELECT id,$8,$10,$11,'lead',$12,$9 FROM party RETURNING party_id
+          ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+            SELECT party_id,'PARTY_CREATED',$8,1,$26::jsonb,$9 FROM lead_member RETURNING party_id`, [
             partyId, inviteCode, name, clean(body.activity, 60), clean(body.commitRule, 120),
-            budget, clean(body.petId, 40) || null, userId, now, alias,
+            budget, legacyPetId, userId, now, alias,
             clean(body.avatar, 24) || '🍀', await sha256(memberToken),
             identity.ids[0], identity.ids[1], MAX_ACTIVE, ACTIVE_STATES, MAX_OWNED_ACTIVE,
             clean(body.activityId, 40) || 'custom', preset, durationDays, color, visibility,
+            leadCardId, npcCardId, 'Asia/Bangkok',
+            JSON.stringify({ name, leadCardId, npcCardId, alias }),
           ]);
           if (!inserted[0]) return sendJson(res, { ok: false, error: 'ACTIVE_PARTY_LIMIT' }, 409);
           const row = await partyByCode(sql, inviteCode);
@@ -258,14 +303,16 @@ export default async function handler(req, res) {
     if (method === 'POST' && parts[2] === 'join') {
       const body = bodyOf(req); const alias = clean(body.alias, 24);
       if (!alias) return sendJson(res, { ok: false, error: 'INVALID_ALIAS' }, 400);
+      if (!activeParty(row)) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
       const identity = await identityFor(req, sql, body);
       let existingMember = await memberFor(req, sql, row.id);
       if (!existingMember && identity.ids[1]) {
-        const sameLocal = await sql.query(`SELECT user_id,alias,avatar,role FROM xty_members
-          WHERE party_id=$1 AND user_id=$2`, [row.id, identity.ids[1]]);
+        const sameLocal = await sql.query(`SELECT user_id,alias,avatar,role,left_at,removal_reason FROM xty_members
+          WHERE party_id=$1 AND user_id IN ($2,$3) ORDER BY left_at NULLS FIRST LIMIT 1`, [row.id, identity.ids[0], identity.ids[1]]);
         existingMember = sameLocal[0] || null;
       }
       if (existingMember) {
+        if (existingMember.left_at) return sendJson(res, { ok: false, error: 'MEMBERSHIP_CLOSED' }, 403);
         const memberToken = token();
         await sql.query(`UPDATE xty_members SET alias=$1,avatar=$2,auth_hash=$3
           WHERE party_id=$4 AND user_id=$5`, [
@@ -283,42 +330,171 @@ export default async function handler(req, res) {
       const inserted = await sql.query(`WITH guard AS (
           SELECT pg_advisory_xact_lock(hashtext($8))
         ), locked AS (
-          SELECT p.id FROM xty_parties p,guard WHERE p.id=$1 FOR UPDATE
+          SELECT p.id FROM xty_parties p,guard WHERE p.id=$1 AND p.state = ANY($11::text[]) FOR UPDATE
         ), capacity AS (
-          SELECT id FROM locked WHERE (SELECT COUNT(*) FROM xty_members WHERE party_id=$1) < $7
+          SELECT id FROM locked WHERE (SELECT COUNT(*) FROM xty_members WHERE party_id=$1 AND left_at IS NULL) < $7
             AND (SELECT COUNT(DISTINCT p.id) FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
-              WHERE m.user_id IN ($8,$9) AND p.state = ANY($11::text[])) < $10
+              WHERE m.user_id IN ($8,$9) AND m.left_at IS NULL AND p.state = ANY($11::text[])) < $10
             AND (SELECT COUNT(DISTINCT p.id) FROM xty_members m JOIN xty_parties p ON p.id=m.party_id
-              WHERE m.user_id IN ($8,$9) AND m.role <> 'lead'
+              WHERE m.user_id IN ($8,$9) AND m.left_at IS NULL AND m.role <> 'lead'
                 AND p.state = ANY($11::text[])) < $12
-        ) INSERT INTO xty_members (party_id,user_id,alias,avatar,role,auth_hash,joined_at)
-          SELECT id,$2,$3,$4,'member',$5,$6 FROM capacity RETURNING user_id`,
+        ), joined AS (
+          INSERT INTO xty_members (party_id,user_id,alias,avatar,role,auth_hash,joined_at)
+          SELECT id,$2,$3,$4,'member',$5,$6 FROM capacity RETURNING party_id
+        ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+          SELECT party_id,'MEMBER_JOINED',$2,$14,$13::jsonb,$6 FROM joined RETURNING party_id`,
       [row.id, userId, alias, clean(body.avatar, 24) || '🍀', authHash, now, PARTY_MAX,
-        identity.ids[0], identity.ids[1], MAX_ACTIVE, ACTIVE_STATES, MAX_JOINED_ACTIVE]);
+        identity.ids[0], identity.ids[1], MAX_ACTIVE, ACTIVE_STATES, MAX_JOINED_ACTIVE,
+        JSON.stringify({ alias }), partyDay(row, now)]);
       if (!inserted[0]) {
-        const count = await sql.query('SELECT COUNT(*)::int n FROM xty_members WHERE party_id=$1', [row.id]);
+        const count = await sql.query('SELECT COUNT(*)::int n FROM xty_members WHERE party_id=$1 AND left_at IS NULL', [row.id]);
         if (Number(count[0]?.n || 0) >= PARTY_MAX) return sendJson(res, { ok: false, error: 'FULL' }, 409);
         const latest = await capacityUsage(sql, identity.ids);
         if (latest.joined >= MAX_JOINED_ACTIVE) return sendJson(res, { ok: false, error: 'JOINED_PARTY_LIMIT' }, 409);
         return sendJson(res, { ok: false, error: 'ACTIVE_PARTY_LIMIT' }, 409);
       }
       await sql.query('UPDATE xty_parties SET updated_at=$1 WHERE id=$2', [now, row.id]);
+      row.updated_at = now;
       return sendJson(res, { ...(await stateFor(sql, row, { user_id: userId })), token: memberToken }, 201);
     }
 
     const member = await memberFor(req, sql, row.id);
     if (method === 'GET' && parts.length === 2) {
       if (!member) {
-        const count = await sql.query('SELECT COUNT(*)::int n FROM xty_members WHERE party_id=$1', [row.id]);
+        const count = await sql.query('SELECT COUNT(*)::int n FROM xty_members WHERE party_id=$1 AND left_at IS NULL', [row.id]);
         return sendJson(res, { ok: true, joined: false, party: { code: row.code, name: row.name, activity: row.activity || '', members: Number(count[0]?.n || 0) } });
       }
       return sendJson(res, await stateFor(sql, row, member));
     }
     if (!member) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
 
+    if (method === 'POST' && parts[2] === 'finish') {
+      if (member.role !== 'lead') return sendJson(res, { ok: false, error: 'LEAD_REQUIRED' }, 403);
+      if (!activeParty(row)) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
+      const mode = bodyOf(req).mode === 'dissolve' ? 'dissolve' : 'complete';
+      const state = mode === 'dissolve' ? 'DISSOLVED' : 'COMPLETED';
+      const eventType = mode === 'dissolve' ? 'PARTY_DISSOLVED' : 'PARTY_COMPLETED';
+      const at = new Date();
+      const changed = await sql.query(`WITH party AS (
+          UPDATE xty_parties SET state=$1,ended_at=$2,updated_at=$2
+          WHERE id=$3 AND state = ANY($4::text[]) RETURNING id
+        ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+          SELECT id,$5,$6,$7,'{}'::jsonb,$2 FROM party RETURNING party_id`, [
+        state, at, row.id, ACTIVE_STATES, eventType, member.user_id, partyDay(row, at),
+      ]);
+      if (!changed[0]) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
+      row.state = state; row.ended_at = at; row.updated_at = at;
+      return sendJson(res, await stateFor(sql, row, member));
+    }
+
+    if (method === 'POST' && parts[2] === 'manage') {
+      if (member.role !== 'lead') return sendJson(res, { ok: false, error: 'LEAD_REQUIRED' }, 403);
+      if (!activeParty(row)) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
+      const body = bodyOf(req); const action = String(body.action || ''); const at = new Date();
+
+      if (action === 'rename') {
+        const name = clean(body.name, 40);
+        if (!name) return sendJson(res, { ok: false, error: 'INVALID_PARTY' }, 400);
+        if (name !== row.name) {
+          const old = row.name;
+          await sql.query(`WITH party AS (
+              UPDATE xty_parties SET name=$1,updated_at=$2 WHERE id=$3 RETURNING id
+            ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+              SELECT id,'PARTY_RENAMED',$4,$5,$6::jsonb,$2 FROM party`, [
+            name, at, row.id, member.user_id, partyDay(row, at), JSON.stringify({ from: old, to: name }),
+          ]);
+          row.name = name; row.updated_at = at;
+        }
+        return sendJson(res, await stateFor(sql, row, member));
+      }
+
+      if (action === 'change_rule') {
+        const rule = clean(body.commitRule, 120); const old = row.commit_rule || '';
+        if (rule !== old) {
+          await sql.query(`WITH party AS (
+              UPDATE xty_parties SET commit_rule=$1,updated_at=$2 WHERE id=$3 RETURNING id
+            ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+              SELECT id,'RULE_CHANGED',$4,$5,$6::jsonb,$2 FROM party`, [
+            rule, at, row.id, member.user_id, partyDay(row, at), JSON.stringify({ from: old, to: rule }),
+          ]);
+          row.commit_rule = rule; row.updated_at = at;
+        }
+        return sendJson(res, await stateFor(sql, row, member));
+      }
+
+      if (action === 'change_lead_card') {
+        const next = String(body.leadCardId || '');
+        if (!validCardId(next) || next === row.npc_card_id) return sendJson(res, { ok: false, error: 'INVALID_CARD_PLACEMENT' }, 400);
+        const occupied = await sql.query(`SELECT 1 FROM xty_parties WHERE owner_id=$1 AND code<>$2
+          AND state = ANY($3::text[]) AND (lead_card_id=$4 OR npc_card_id=$4) LIMIT 1`, [row.owner_id, row.code, ACTIVE_STATES, next]);
+        if (occupied[0]) return sendJson(res, { ok: false, error: 'CARD_IN_USE' }, 409);
+        const old = row.lead_card_id || null;
+        if (next !== old) {
+          await sql.query(`WITH party AS (
+              UPDATE xty_parties SET lead_card_id=$1,updated_at=$2 WHERE id=$3 RETURNING id
+            ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+              SELECT id,'LEAD_CARD_CHANGED',$4,$5,$6::jsonb,$2 FROM party`, [
+            next, at, row.id, member.user_id, partyDay(row, at), JSON.stringify({ from: old, to: next }),
+          ]);
+          row.lead_card_id = next; row.updated_at = at;
+        }
+        return sendJson(res, await stateFor(sql, row, member));
+      }
+
+      if (action === 'change_npc') {
+        const nextCard = body.npcCardId ? String(body.npcCardId) : null;
+        const nextPet = clean(body.petId, 40) || null;
+        if (nextCard && (!validCardId(nextCard) || nextCard === row.lead_card_id)) {
+          return sendJson(res, { ok: false, error: 'INVALID_CARD_PLACEMENT' }, 400);
+        }
+        if (nextCard) {
+          const occupied = await sql.query(`SELECT 1 FROM xty_parties WHERE owner_id=$1 AND code<>$2
+            AND state = ANY($3::text[]) AND (lead_card_id=$4 OR npc_card_id=$4) LIMIT 1`, [row.owner_id, row.code, ACTIVE_STATES, nextCard]);
+          if (occupied[0]) return sendJson(res, { ok: false, error: 'CARD_IN_USE' }, 409);
+        }
+        const old = row.npc_card_id || row.pet_id || null;
+        const next = nextCard || nextPet || null;
+        if (next === old) return sendJson(res, await stateFor(sql, row, member));
+        await sql.query(`WITH party AS (
+            UPDATE xty_parties SET npc_card_id=$1,pet_id=$2,updated_at=$3 WHERE id=$4 RETURNING id
+          ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+            SELECT id,'NPC_CHANGED',$5,$6,$7::jsonb,$3 FROM party`, [
+          nextCard, nextCard ? null : nextPet, at, row.id, member.user_id, partyDay(row, at),
+          JSON.stringify({ from: old, to: next }),
+        ]);
+        row.npc_card_id = nextCard; row.pet_id = nextCard ? null : nextPet; row.updated_at = at;
+        return sendJson(res, await stateFor(sql, row, member));
+      }
+
+      if (action === 'kick') {
+        const target = clean(body.userId, 120);
+        const rows = await sql.query(`SELECT user_id,alias,role FROM xty_members
+          WHERE party_id=$1 AND user_id=$2 AND left_at IS NULL`, [row.id, target]);
+        const kicked = rows[0];
+        if (!kicked) return sendJson(res, { ok: false, error: 'MEMBER_NOT_FOUND' }, 404);
+        if (kicked.role === 'lead') return sendJson(res, { ok: false, error: 'CANNOT_KICK_LEAD' }, 409);
+        await sql.query(`WITH member AS (
+            UPDATE xty_members SET left_at=$1,removal_reason='KICKED',auth_hash=NULL
+            WHERE party_id=$2 AND user_id=$3 AND left_at IS NULL RETURNING party_id
+          ), party AS (
+            UPDATE xty_parties SET updated_at=$1 WHERE id=$2 AND EXISTS (SELECT 1 FROM member) RETURNING id
+          ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+            SELECT id,'MEMBER_KICKED',$5,$6,$4::jsonb,$1 FROM party`, [
+          at, row.id, kicked.user_id, JSON.stringify({ alias: kicked.alias }), member.user_id, partyDay(row, at),
+        ]);
+        row.updated_at = at;
+        return sendJson(res, await stateFor(sql, row, member));
+      }
+
+      return sendJson(res, { ok: false, error: 'BAD_ACTION' }, 400);
+    }
+
     if (method === 'GET' && parts[2] === 'feed') {
       const since = Math.max(0, Number(req.query?.since || 0));
       return sendJson(res, await stateFor(sql, row, member, since));
+    }
+    if (method === 'POST' && !activeParty(row)) {
+      return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
     }
     if (method === 'POST' && parts[2] === 'commit') {
       const result = await appendPost(sql, row, member, 'commit', clean(bodyOf(req).note, 300) || '✓');

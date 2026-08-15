@@ -6,8 +6,9 @@
    server. A local party snapshot keeps the last readable state offline.
    ═══════════════════════════════════════════════════════════════ */
 
-import { XTY_V1_PET_IDS } from './pets.js';
+import { PET_BY_ID, XTY_V1_PET_IDS } from './pets.js';
 import { AVATAR_BY_ID, avatarFallback } from './avatars.js';
+import { XTY_CARDS, cardById, cardIdFor, cardNameTh } from './cards.js';
 
 const K_PROFILE = 'mc_xty_profile';
 const K_PARTIES = 'mc_xty_parties';
@@ -104,6 +105,53 @@ function validHandSize(value) {
   return Number.isFinite(n) ? Math.max(1, n) : 1;
 }
 
+function normalizedOwnedCards(value, starterCardId, createdAt) {
+  const raw = Array.isArray(value.ownedCards) ? value.ownedCards
+    : (Array.isArray(value.cards) ? value.cards : []);
+  const cards = [];
+  const seen = new Set();
+  for (const entry of raw) {
+    const cardId = String(typeof entry === 'string' ? entry : entry?.cardId || '').trim().toUpperCase();
+    if (!cardId || seen.has(cardId)) continue;
+    seen.add(cardId);
+    cards.push({
+      ...(entry && typeof entry === 'object' ? entry : {}),
+      cardId,
+      acquiredAt: entry?.acquiredAt || createdAt,
+      acquiredFrom: String(entry?.acquiredFrom || 'legacy'),
+    });
+  }
+  if (!seen.has(starterCardId)) cards.unshift({
+    cardId: starterCardId,
+    acquiredAt: createdAt,
+    acquiredFrom: 'starter',
+  });
+  return cards;
+}
+
+function normalizedCardRewards(value, ownedCardIds) {
+  const raw = Array.isArray(value.cardRewards) ? value.cardRewards : [];
+  const rewards = [];
+  const seen = new Set();
+  for (const entry of raw) {
+    if (!entry || typeof entry !== 'object') continue;
+    const cardId = entry.cardId ? String(entry.cardId).toUpperCase() : null;
+    const rewardId = String(entry.rewardId || '').trim();
+    if (!rewardId || seen.has(rewardId) || (cardId && !ownedCardIds.has(cardId))) continue;
+    seen.add(rewardId);
+    rewards.push({
+      rewardId,
+      questId: String(entry.questId || 'milestone').slice(0, 100),
+      partyCode: String(entry.partyCode || '').toUpperCase().slice(0, 4),
+      cardId,
+      complete: !!entry.complete,
+      earnedAt: entry.earnedAt || now(),
+      revealedAt: entry.revealedAt || null,
+    });
+  }
+  return rewards;
+}
+
 export function normalizeProfile(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const avatarId = profileAvatarId(value);
@@ -112,19 +160,32 @@ export function normalizeProfile(value) {
     : (typeof value.avatar === 'string' && !AVATAR_BY_ID[value.avatar] ? value.avatar : avatarFallback(avatarId));
   const currentPets = Array.isArray(value.petIds) ? value.petIds.filter(id => typeof id === 'string') : [];
   const createdAt = value.createdAt || now();
+  const avatarFrame = ['red', 'green', 'blue', 'silver'].includes(value.avatarFrame) ? value.avatarFrame : 'green';
+  const derivedStarterCardId = cardIdFor(avatarId, avatarFrame);
+  const savedStarterCardId = String(value.starterCardId || '').toUpperCase();
+  const starterCardId = cardById(savedStarterCardId) ? savedStarterCardId : derivedStarterCardId;
+  const ownedCards = normalizedOwnedCards(value, starterCardId, createdAt);
+  const ownedCardIds = new Set(ownedCards.map(entry => entry.cardId));
+  const cardRewards = normalizedCardRewards(value, ownedCardIds);
+  const equippedCardId = ownedCardIds.has(String(value.equippedCardId || '').toUpperCase())
+    ? String(value.equippedCardId).toUpperCase()
+    : starterCardId;
   return {
     ...value,
-    version: 2,
+    version: 3,
     id: String(value.id || uid()),
     alias: String(value.alias || '').trim().slice(0, 24),
     avatarId,
     avatarFallback: fallback,
-    avatarFrame: ['red', 'green', 'blue', 'silver'].includes(value.avatarFrame) ? value.avatarFrame : 'green',
+    avatarFrame,
     /* Keep a compact legacy field while party rows migrate from emoji to
        canonical avatar ids. New writes store the id here. */
     avatar: avatarId,
     handSize: validHandSize(value.handSize || value.maxProfileCardSlots || 0),
-    equippedCardId: typeof value.equippedCardId === 'string' ? value.equippedCardId : null,
+    starterCardId,
+    equippedCardId,
+    ownedCards,
+    cardRewards,
     petIds: [...new Set([...currentPets, ...XTY_V1_PET_IDS])],
     createdAt,
     updatedAt: value.updatedAt || createdAt,
@@ -155,17 +216,23 @@ export function hasProfile() {
 export function createProfile({ alias, avatarId, avatar, avatarFrame = 'green' }) {
   const pickedId = AVATAR_BY_ID[avatarId] ? avatarId
     : (AVATAR_BY_ID[avatar] ? avatar : (LEGACY_AVATAR_IDS[avatar] || 'orange_cat'));
+  const pickedFrame = ['red', 'green', 'blue', 'silver'].includes(avatarFrame) ? avatarFrame : 'green';
+  const createdAt = now();
+  const starterCardId = cardIdFor(pickedId, pickedFrame);
   return saveProfile({
     id: uid(),
     alias: String(alias || '').trim().slice(0, 24),
     avatarId: pickedId,
     avatarFallback: avatarFallback(pickedId, avatar),
     avatar: pickedId,
-    avatarFrame: ['red', 'green', 'blue', 'silver'].includes(avatarFrame) ? avatarFrame : 'green',
-    createdAt: now(),
-    updatedAt: now(),
+    avatarFrame: pickedFrame,
+    createdAt,
+    updatedAt: createdAt,
     handSize: 1,
-    equippedCardId: null,
+    starterCardId,
+    equippedCardId: starterCardId,
+    ownedCards: [{ cardId: starterCardId, acquiredAt: createdAt, acquiredFrom: 'starter' }],
+    cardRewards: [],
     petIds: [...XTY_V1_PET_IDS],
   });
 }
@@ -174,6 +241,31 @@ export function updateProfile(patch) {
   const p = getProfile();
   if (!p) return null;
   return saveProfile({ ...p, ...patch }, { touch: true });
+}
+
+export function ownedCards(profile = getProfile()) {
+  if (!profile) return [];
+  return normalizeProfile(profile).ownedCards;
+}
+
+export function ownedCardIds(profile = getProfile()) {
+  return ownedCards(profile).map(entry => entry.cardId);
+}
+
+/* Avatar is only a profile presentation choice. Lead/NPC placement is
+   derived from active parties and never locks the profile avatar itself. */
+export function useCardAsAvatar(cardId) {
+  const profile = getProfile();
+  const wanted = String(cardId || '').toUpperCase();
+  const card = cardById(wanted);
+  if (!profile || !card || !ownedCardIds(profile).includes(wanted)) return null;
+  return updateProfile({
+    equippedCardId: wanted,
+    avatarId: card.species,
+    avatar: card.species,
+    avatarFallback: card.fallback,
+    avatarFrame: card.color,
+  });
 }
 
 export function ownsPet(petId) {
@@ -227,6 +319,12 @@ function saveToken(code, token, userId) {
   write(K_TOKENS, map);
 }
 
+function removeToken(code) {
+  const map = tokenMap();
+  delete map[String(code || '').toUpperCase()];
+  write(K_TOKENS, map);
+}
+
 function tokenFor(code) {
   const entry = tokenMap()[String(code || '').toUpperCase()];
   return typeof entry === 'string' ? entry : (entry && entry.token) || '';
@@ -242,6 +340,30 @@ const ACTIVE_PARTY_STATES = new Set(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']
 
 export function isActiveParty(party) {
   return !!party && ACTIVE_PARTY_STATES.has(String(party.state || 'ACTIVE').toUpperCase());
+}
+
+export function cardAvailability(cardId, { exceptPartyCode = '' } = {}) {
+  const wanted = String(cardId || '').toUpperCase();
+  const except = String(exceptPartyCode || '').toUpperCase();
+  for (const party of allParties()) {
+    if (!isActiveParty(party) || party.code === except) continue;
+    const identity = partyIdentity(party.code);
+    if (!identity?.userId || party.ownerId !== identity.userId) continue;
+    if (String(party.leadCardId || '').toUpperCase() === wanted) {
+      return { status: 'IN_PARTY', partyCode: party.code, role: 'lead' };
+    }
+    if (String(party.npcCardId || '').toUpperCase() === wanted) {
+      return { status: 'NPC_IN_PARTY', partyCode: party.code, role: 'npc' };
+    }
+  }
+  return { status: 'AVAILABLE', partyCode: null, role: null };
+}
+
+export function availableOwnedCards({ role = 'lead', exceptPartyCode = '', profile = getProfile() } = {}) {
+  return ownedCardIds(profile)
+    .map(cardById)
+    .filter(Boolean)
+    .filter(card => card.eligibility[role] && cardAvailability(card.cardId, { exceptPartyCode }).status === 'AVAILABLE');
 }
 
 /* Capacity is derived from canonical party membership cached on this
@@ -306,16 +428,28 @@ function rememberResponse(code, result) {
   return { ...result, party };
 }
 
-export async function createParty({ name, activity, activityId, preset, durationDays, color, visibility, commitRule, budget, petId }) {
+export async function createParty({
+  name, activity, activityId, preset, durationDays, color, visibility,
+  commitRule, budget, petId, leadCardId, npcCardId,
+}) {
   const profile = getProfile();
   if (!profile) throw new Error('NO_PROFILE');
   const capacity = activePartyUsage(profile);
   if (capacity.owned >= capacity.maxOwned) throw limitError('OWNED_PARTY_LIMIT');
   if (capacity.total >= capacity.maxTotal) throw limitError('ACTIVE_PARTY_LIMIT');
+  const owned = new Set(ownedCardIds(profile));
+  const lead = String(leadCardId || profile.equippedCardId || profile.starterCardId || '').toUpperCase();
+  const npc = String(npcCardId || '').toUpperCase() || null;
+  if (!cardById(lead) || !owned.has(lead)) throw limitError('CARD_NOT_OWNED');
+  if (cardAvailability(lead).status !== 'AVAILABLE') throw limitError('CARD_IN_USE');
+  if (npc && (!cardById(npc) || !owned.has(npc))) throw limitError('CARD_NOT_OWNED');
+  if (npc && (npc === lead || cardAvailability(npc).status !== 'AVAILABLE')) throw limitError('CARD_IN_USE');
   const result = await api('/api/xty/party', { method: 'POST', body: {
     name, activity, activityId, preset, durationDays, color, visibility, commitRule,
     budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
     petId: petId || null,
+    leadCardId: lead,
+    npcCardId: npc,
     alias: profile.alias,
     avatar: profile.avatarId || profile.avatarFallback,
     profileId: profile.id,
@@ -357,7 +491,21 @@ export async function refreshParty(code, since = 0) {
     `/api/xty/party/${encodeURIComponent(wanted)}/feed?since=${cursor}`,
     { code: wanted },
   );
-  if (result.error === 'AUTH_REQUIRED') return result;
+  if (result.error === 'AUTH_REQUIRED') {
+    const revokedUserId = partyIdentity(wanted)?.userId;
+    if (revokedUserId) {
+      const list = allParties(); const index = list.findIndex(item => item.code === wanted);
+      if (index >= 0) {
+        list[index] = {
+          ...list[index], accessRevoked: true,
+          members: (list[index].members || []).filter(member => member.userId !== revokedUserId),
+        };
+        saveParties(list);
+      }
+    }
+    removeToken(wanted);
+    return result;
+  }
   if (!result.error && cursor > 0 && result.party) {
     const cached = getParty(wanted);
     if (cached) {
@@ -488,6 +636,363 @@ export async function retractPost(code, seq) {
 
 export async function postsSince(code, seq = 0) {
   return refreshParty(code, seq);
+}
+
+/* ---------- party management + lifecycle ---------- */
+
+export async function manageParty(code, action, patch = {}) {
+  const wanted = String(code || '').toUpperCase();
+  const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/manage`, {
+    method: 'POST', code: wanted, body: { action, ...patch },
+  });
+  return rememberResponse(wanted, result);
+}
+
+export function renameParty(code, name) {
+  return manageParty(code, 'rename', { name });
+}
+
+export function changeLeadCard(code, leadCardId) {
+  const wanted = String(leadCardId || '').toUpperCase();
+  if (!ownedCardIds().includes(wanted)) return Promise.resolve({ ok: false, error: 'CARD_NOT_OWNED' });
+  const place = cardAvailability(wanted, { exceptPartyCode: code });
+  if (place.status !== 'AVAILABLE') return Promise.resolve({ ok: false, error: 'CARD_IN_USE' });
+  return manageParty(code, 'change_lead_card', { leadCardId: wanted });
+}
+
+export function changeNpcCard(code, npcCardId, petId = null) {
+  const wanted = String(npcCardId || '').toUpperCase() || null;
+  if (wanted && !ownedCardIds().includes(wanted)) return Promise.resolve({ ok: false, error: 'CARD_NOT_OWNED' });
+  if (wanted && cardAvailability(wanted, { exceptPartyCode: code }).status !== 'AVAILABLE') {
+    return Promise.resolve({ ok: false, error: 'CARD_IN_USE' });
+  }
+  return manageParty(code, 'change_npc', { npcCardId: wanted, petId });
+}
+
+export function kickPartyMember(code, userId) {
+  return manageParty(code, 'kick', { userId });
+}
+
+export async function finishParty(code, mode = 'complete') {
+  const wanted = String(code || '').toUpperCase();
+  const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/finish`, {
+    method: 'POST', code: wanted, body: { mode: mode === 'dissolve' ? 'dissolve' : 'complete' },
+  });
+  return rememberResponse(wanted, result);
+}
+
+/* ---------- unique local-first card rewards ---------- */
+
+function seededIndex(value, length) {
+  let hash = 2166136261;
+  for (const char of String(value)) {
+    hash ^= char.codePointAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return length ? (hash >>> 0) % length : 0;
+}
+
+export function cardRewardForQuest(questId, partyCode = '') {
+  const profile = getProfile();
+  const wantedQuest = String(questId || 'milestone');
+  const wantedParty = String(partyCode || '').toUpperCase();
+  return profile?.cardRewards.find(reward =>
+    reward.questId === wantedQuest && reward.partyCode === wantedParty
+  ) || null;
+}
+
+/* Selection, ownership and the pending reveal are saved in one profile
+   write before the reveal UI starts. Reloading can therefore only reopen
+   the same card; it can never reroll the reward. */
+export function prepareCardReward({ questId = 'milestone', partyCode = '' } = {}) {
+  const profile = getProfile();
+  if (!profile) return null;
+  const normalizedQuest = String(questId || 'milestone').slice(0, 100);
+  const normalizedParty = String(partyCode || '').toUpperCase().slice(0, 4);
+  const existing = cardRewardForQuest(normalizedQuest, normalizedParty);
+  if (existing) return existing;
+
+  const owned = new Set(ownedCardIds(profile));
+  const eligible = XTY_CARDS.filter(card => card.eligibility.reward && !owned.has(card.cardId));
+  const earnedAt = now();
+  const rewardId = `reward_${uid(12)}`;
+  const card = eligible.length
+    ? eligible[seededIndex(`${profile.id}|${normalizedQuest}|${normalizedParty}|${owned.size}`, eligible.length)]
+    : null;
+  const reward = {
+    rewardId,
+    questId: normalizedQuest,
+    partyCode: normalizedParty,
+    cardId: card?.cardId || null,
+    complete: !card,
+    earnedAt,
+    revealedAt: null,
+  };
+  saveProfile({
+    ...profile,
+    ownedCards: card ? [...profile.ownedCards, {
+      cardId: card.cardId, acquiredAt: earnedAt, acquiredFrom: `quest:${normalizedQuest}`,
+    }] : profile.ownedCards,
+    cardRewards: [...profile.cardRewards, reward],
+  }, { touch: true });
+  return reward;
+}
+
+export function pendingCardReward(rewardId = '') {
+  const rewards = getProfile()?.cardRewards || [];
+  if (rewardId) return rewards.find(item => item.rewardId === rewardId) || null;
+  return [...rewards].reverse().find(item => !item.revealedAt) || null;
+}
+
+export function markCardRewardRevealed(rewardId) {
+  const profile = getProfile();
+  if (!profile) return null;
+  const at = now();
+  const rewards = profile.cardRewards.map(item => item.rewardId === rewardId
+    ? { ...item, revealedAt: item.revealedAt || at }
+    : item);
+  return saveProfile({ ...profile, cardRewards: rewards }, { touch: true });
+}
+
+export function shouldOfferProgressSave(profile = getProfile()) {
+  if (!profile) return false;
+  const dismissedAt = new Date(profile.savePromptDismissedAt || 0).getTime();
+  if (Number.isFinite(dismissedAt) && Date.now() - dismissedAt < 7 * 86400000) return false;
+  return ownedCardIds(profile).length >= 2 || allParties().some(party =>
+    ['COMPLETED', 'DISSOLVED'].includes(String(party.state || '').toUpperCase())
+  );
+}
+
+/* ---------- calm progress surface ---------- */
+
+export function partyProgress(party) {
+  const length = Math.max(1, Number(party?.durationDays || 7));
+  const start = new Date(party?.startAt || party?.createdAt || Date.now());
+  start.setHours(0, 0, 0, 0);
+  const commits = new Map();
+  for (const post of party?.log || []) {
+    if (post.kind !== 'commit' || post.retracted) continue;
+    const key = dayKey(post.sentAt);
+    if (!commits.has(key)) commits.set(key, new Set());
+    commits.get(key).add(post.userId);
+  }
+  return Array.from({ length }, (_, index) => {
+    const date = new Date(start); date.setDate(start.getDate() + index);
+    const key = dayKey(date.toISOString());
+    return { day: index + 1, key, count: commits.get(key)?.size || 0 };
+  });
+}
+
+/* ---------- portable Ending Markdown ---------- */
+
+function safeLine(value, fallback = '—') {
+  const text = String(value ?? '').replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim();
+  return (text || fallback).replace(/([\\`*_[\]<>#])/g, '\\$1');
+}
+
+function isoDate(value) {
+  const date = new Date(value || Date.now());
+  return Number.isFinite(date.getTime()) ? date.toISOString().slice(0, 10) : '—';
+}
+
+function eventLine(event) {
+  const data = event?.data || {};
+  const companionName = value => cardById(value) ? cardNameTh(value) : (PET_BY_ID[value]?.nameTh || 'ไม่มี');
+  const labels = {
+    PARTY_CREATED: `เริ่มตี้ในชื่อ “${safeLine(data.name)}”`,
+    MEMBER_JOINED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เข้าร่วมการเดินทาง`,
+    MEMBER_LEFT: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} ออกจากการเดินทาง`,
+    MEMBER_KICKED: `สมาชิกคนหนึ่งออกจากการเดินทาง`,
+    PARTY_RENAMED: `เปลี่ยนชื่อตี้จาก “${safeLine(data.from)}” เป็น “${safeLine(data.to)}”`,
+    LEAD_CARD_CHANGED: `เปลี่ยน Lead Card จาก ${cardNameTh(data.from)} เป็น ${cardNameTh(data.to)}`,
+    NPC_CHANGED: `เปลี่ยนเพื่อนร่วมทางจาก ${companionName(data.from)} เป็น ${companionName(data.to)}`,
+    RULE_CHANGED: 'ปรับกติกาของตี้ระหว่างทาง',
+    PARTY_COMPLETED: 'ทำการเดินทางนี้ครบและปิดตี้อย่างสมบูรณ์',
+    PARTY_DISSOLVED: 'ปิดการเดินทางก่อนกำหนด โดยเก็บสิ่งที่เกิดขึ้นไว้',
+  };
+  return labels[event?.type] || safeLine(event?.type, 'มีการเปลี่ยนแปลงในตี้');
+}
+
+function bestCommitStreak(posts) {
+  const byUser = new Map();
+  for (const post of posts) {
+    if (post.kind !== 'commit' || post.retracted) continue;
+    if (!byUser.has(post.userId)) byUser.set(post.userId, new Set());
+    byUser.get(post.userId).add(dayKey(post.sentAt));
+  }
+  let best = 0;
+  for (const keys of byUser.values()) {
+    const days = [...keys].sort().map(key => new Date(`${key}T00:00:00`).getTime());
+    let run = 0; let previous = null;
+    for (const value of days) {
+      run = previous !== null && value - previous === 86400000 ? run + 1 : 1;
+      best = Math.max(best, run); previous = value;
+    }
+  }
+  return best;
+}
+
+function possibleCommitSlots(party, members, durationDays) {
+  const start = new Date(party.startAt || party.createdAt || Date.now());
+  start.setHours(0, 0, 0, 0);
+  const plannedEnd = new Date(start); plannedEnd.setDate(start.getDate() + durationDays - 1);
+  const actualEnd = new Date(party.endAt || party.endedAt || plannedEnd);
+  actualEnd.setHours(0, 0, 0, 0);
+  const end = actualEnd < plannedEnd ? actualEnd : plannedEnd;
+  return members.reduce((total, member) => {
+    const joined = new Date(member.joinedAt || start); joined.setHours(0, 0, 0, 0);
+    const left = new Date(member.leftAt || end); left.setHours(0, 0, 0, 0);
+    const from = joined > start ? joined : start;
+    const until = left < end ? left : end;
+    return total + Math.max(0, Math.floor((until - from) / 86400000) + 1);
+  }, 0);
+}
+
+export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
+  if (!party) return '';
+  const members = (party.memberHistory?.length ? party.memberHistory : party.members || []);
+  const lead = members.find(member => member.role === 'lead') || members[0];
+  const events = Array.isArray(party.events) ? party.events : [];
+  const log = Array.isArray(party.log) ? party.log : [];
+  const commits = log.filter(post => post.kind === 'commit' && !post.retracted);
+  const messages = log.filter(post => post.kind === 'message' && !post.retracted);
+  const confirms = commits.filter(post => post.confirmedBy).length;
+  const reactions = new Map();
+  for (const post of log) for (const [emoji, people] of Object.entries(post.reactions || {})) {
+    reactions.set(emoji, (reactions.get(emoji) || 0) + (Array.isArray(people) ? people.length : 0));
+  }
+  const reactionHighlights = [...reactions.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3)
+    .map(([emoji, count]) => `${emoji} × ${count}`).join(', ') || '—';
+  const duration = Math.max(1, Number(party.durationDays || 7));
+  const possible = Math.max(1, possibleCommitSlots(party, members, duration));
+  const completion = Math.min(100, Math.round((commits.length / possible) * 100));
+  const pet = PET_BY_ID[party.petId];
+  const leadCard = cardById(party.leadCardId);
+  const npcCard = cardById(party.npcCardId);
+  const companion = npcCard ? cardNameTh(npcCard) : (pet?.nameTh || 'ไม่มี');
+  const endingKind = String(party.state || '').toUpperCase() === 'DISSOLVED'
+    ? 'จบก่อนกำหนด (DISSOLVED)'
+    : 'เดินทางครบและปิดตี้ (COMPLETED)';
+  const eventLines = events.length
+    ? events.map((event, index) => `${index + 1}. Day ${Number(event.partyDay || 1)} · ${isoDate(event.at)} — ${eventLine(event)}`)
+    : [`1. Day 1 · ${isoDate(party.createdAt)} — เริ่มตี้ในชื่อ “${safeLine(party.name)}”`];
+  const importantChanges = events
+    .filter(event => ['PARTY_RENAMED', 'LEAD_CARD_CHANGED', 'NPC_CHANGED', 'RULE_CHANGED', 'MEMBER_KICKED'].includes(event.type))
+    .map(event => `- Day ${Number(event.partyDay || 1)} — ${eventLine(event)}`);
+  if (!importantChanges.length) importantChanges.push('- ไม่มีการเปลี่ยนแปลงสำคัญระหว่างทาง');
+  const commitsByDay = new Map();
+  commits.forEach(post => commitsByDay.set(dayKey(post.sentAt), (commitsByDay.get(dayKey(post.sentAt)) || 0) + 1));
+  const peakDay = [...commitsByDay.entries()].sort((a, b) => b[1] - a[1])[0];
+  const memorableMoments = [
+    peakDay ? `- วันที่ ${peakDay[0]} เป็นวันที่ตี้ขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)` : '- ยังไม่มี Commit ใน snapshot นี้',
+    `- ภาษากำลังใจที่ใช้บ่อย: ${reactionHighlights}`,
+  ];
+  const castLines = members.map(member => {
+    const interval = member.leftAt ? ` · อยู่ถึง ${isoDate(member.leftAt)}` : '';
+    return `- ${member.role === 'lead' ? 'Lead' : 'Member'}: ${safeLine(member.alias)} · เข้าร่วม ${isoDate(member.joinedAt)}${interval}`;
+  });
+  if (!castLines.length) castLines.push('- ไม่มีข้อมูลสมาชิกใน snapshot นี้');
+
+  const storyEnd = String(party.state || '').toUpperCase() === 'DISSOLVED'
+    ? 'การเดินทางหยุดก่อนกำหนด แต่ทุก Commit และการช่วยกันที่เกิดขึ้นยังเป็นหลักฐานของชีวิตจริง ไม่ถูกลบทิ้งหรือปลอมให้เป็นชัยชนะ'
+    : `ตี้ปิดฉากด้วย ${commits.length} Commit และความคืบหน้า ${completion}% ของกรอบเวลาที่ตั้งใจไว้`;
+  const names = members.map(member => safeLine(member.alias)).join(', ') || 'เพื่อนในตี้';
+
+  return `# XTY Party Ending — ${safeLine(party.name)}
+
+> ไฟล์ความทรงจำจาก XTY · สร้างเมื่อ ${isoDate(generatedAt)} · ไม่มีอีเมล เบอร์โทร หรือรหัสภายใน
+
+## Party
+
+- สถานะตอนจบ: ${endingKind}
+- กิจกรรม: ${safeLine(party.activity)}
+- กติกา Commit: ${safeLine(party.commitRule)}
+- ระยะเวลา: ${duration} วัน
+- เริ่ม: ${isoDate(party.startAt || party.createdAt)}
+- จบ: ${isoDate(party.endAt || party.endedAt || generatedAt)}
+- Preset: ${safeLine(party.preset, 'casual')}
+- สีประจำตี้: ${safeLine(party.color, 'green')}
+- Lead Card: ${leadCard ? cardNameTh(leadCard) : safeLine(party.leadCardId)}
+- PET / NPC: ${safeLine(companion)}
+
+## Cast
+
+${castLines.join('\n')}
+
+## Timeline
+
+${eventLines.join('\n')}
+
+## Important Changes
+
+${importantChanges.join('\n')}
+
+## Funny / Memorable Moments
+
+${memorableMoments.join('\n')}
+
+## Character Notes
+
+- ${safeLine(lead?.alias, 'หัวตี้')} เป็นคนเปิดพื้นที่และถือ Lead Card ของการเดินทางนี้
+- สมาชิกที่ร่วมทาง: ${names}
+- เพื่อนร่วมทาง: ${safeLine(companion)}${npcCard ? ` · บุคลิก “${safeLine(npcCard.personalityNameTh)}” · “${safeLine(npcCard.flavorTh)}”` : ''}
+- โทนของตี้: เบา เป็นมิตร และยึดสิ่งที่ทำจริงมากกว่าคะแนน
+
+## Summary Stats
+
+- Total valid commits: ${commits.length}
+- Best streak: ${bestCommitStreak(commits)} วัน
+- Completion rate: ${completion}%
+- Confirms: ${confirms}
+- Messages: ${messages.length}
+- React highlights: ${reactionHighlights}
+
+## Story Summary
+
+“${safeLine(party.name)}” เริ่มจากความตั้งใจเรื่อง ${safeLine(party.activity)} โดยมี ${safeLine(lead?.alias, 'หัวตี้')} และ ${safeLine(companion)} เป็นภาพจำของตี้ ทุกคนกลับมา Commit เมื่อได้ทำสิ่งที่ตกลงกันในชีวิตจริง และใช้ Message เท่าที่จำเป็นเพื่อให้ตามกันทัน
+
+${storyEnd} สิ่งสำคัญไม่ใช่การทำให้ประวัติดูสมบูรณ์แบบ แต่คือการเก็บร่องรอยของคนที่เคยลงมือทำร่วมกันไว้ตามจริง
+
+## 4-Panel Comic Prompt
+
+Create a warm, bright four-panel doodle comic drawn with colored pencils and crayons on a school notebook page. Keep every character friendly and recognizable as an animal card; no photorealism, no dark mood, no text-heavy UI, and no casino or loot-box imagery.
+
+- Panel 1 — The beginning: ${safeLine(lead?.alias, 'the lead')} places the ${safeLine(leadCard ? cardNameTh(leadCard) : 'Lead Card')} on a notebook table and invites ${names} to begin “${safeLine(party.name)}”.
+- Panel 2 — Along the way: show small real-life actions for “${safeLine(party.activity)}”, with gentle check marks representing Commit and ${safeLine(companion)} quietly traveling beside the group.
+- Panel 3 — Turning point: use the most meaningful change from the timeline — ${safeLine(events[1] ? eventLine(events[1]) : 'the group helps one another continue on a difficult day')}.
+- Panel 4 — Ending: show the group together with ${commits.length} small notebook check marks and the feeling “${safeLine(storyEnd)}”. Leave a little blank space for the party to add its own caption.
+
+## Poster Prompt
+
+Create a cheerful notebook-doodle celebration poster for “${safeLine(party.name)}”. Feature the full cast (${names}), the Lead Card, ${safeLine(companion)}, RGBS pencil accents, ${commits.length} commit marks, and a handmade scrapbook feeling. No app interface and no advertising.
+
+## Group Illustration Prompt
+
+Draw ${names} and ${safeLine(companion)} doing “${safeLine(party.activity)}” together in a bright colored-pencil storybook scene. Preserve each animal identity, use imperfect hand-drawn outlines, and make participation feel equally valuable.
+
+## Postcard Memory Prompt
+
+Create a landscape postcard from the ending of “${safeLine(party.name)}”: one warm group moment, notebook-paper texture, a small Lead Card motif, ${reactionHighlights} as tiny doodle accents, and blank room on the back for a personal note.
+
+---
+
+นำไฟล์นี้ไปให้ AI ที่คุณใช้ แล้วพิมพ์ว่า: **“ทำการ์ตูน 4 ช่องจากไฟล์นี้”**
+XTY สร้างซอสตอนจบให้ แต่ไม่สร้างหรือขายภาพสุ่มในแอป
+`;
+}
+
+export function endingFileName(party) {
+  const base = String(party?.name || party?.code || 'xty-party')
+    .trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60) || 'xty-party';
+  return `XTY-Ending-${base}.md`;
+}
+
+export function downloadEndingMarkdown(party) {
+  const blob = new Blob([buildEndingMarkdown(party)], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url; anchor.download = endingFileName(party); anchor.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export function myPartyCodes() {

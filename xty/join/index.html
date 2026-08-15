@@ -7,7 +7,7 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#FFF9E9">
 <title>เข้าตี้ — XTY</title>
-<link rel="stylesheet" href="/xty/_shared/xty.css?v=5">
+<link rel="stylesheet" href="/xty/_shared/xty.css?v=6">
 </head>
 <body>
 
@@ -68,6 +68,20 @@ go.addEventListener('click', async () => {
   }
   if (res.error === 'FULL') {
     err.textContent = 'ตี้นี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)';
+    err.hidden = false;
+    go.disabled = false;
+    go.textContent = 'เข้าตี้';
+    return;
+  }
+  if (res.error === 'PARTY_CLOSED') {
+    err.textContent = 'ตี้นี้จบแล้วและไม่รับสมาชิกเพิ่ม';
+    err.hidden = false;
+    go.disabled = false;
+    go.textContent = 'เข้าตี้';
+    return;
+  }
+  if (res.error === 'MEMBERSHIP_CLOSED') {
+    err.textContent = 'ช่วงการร่วมทางของคุณในตี้นี้ถูกปิดแล้ว';
     err.hidden = false;
     go.disabled = false;
     go.textContent = 'เข้าตี้';
