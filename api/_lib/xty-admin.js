@@ -15,6 +15,9 @@ export async function handleXtyAdmin(req, res, sql, method, parts) {
   await ensureXtyAdminSchema(sql);
   const action = String(parts[1] || 'session').toLowerCase();
 
+  // Legacy server-auth endpoints are kept for compatibility, but the dashboard
+  // no longer depends on them. The visible password screen is now only a
+  // lightweight client-side deterrent.
   if (method === 'POST' && action === 'login') {
     if (!process.env.XTY_ADMIN_PASSWORD) {
       return sendJson(res, { ok: false, error: 'ADMIN_NOT_CONFIGURED' }, 503);
@@ -41,14 +44,19 @@ export async function handleXtyAdmin(req, res, sql, method, parts) {
     return sendJson(res, { ok: true });
   }
 
-  const session = await currentAdminSession(sql, req);
-  if (!session) return sendJson(res, { ok: false, error: 'ADMIN_AUTH_REQUIRED' }, 401);
   if (method !== 'GET') return sendJson(res, { ok: false, error: 'METHOD_NOT_ALLOWED' }, 405);
 
+  // Session remains available for backwards compatibility only.
   if (action === 'session') {
+    const session = await currentAdminSession(sql, req);
+    if (!session) return sendJson(res, { ok: false, error: 'ADMIN_AUTH_REQUIRED' }, 401);
     await pruneAdminAuth(sql);
     return sendJson(res, { ok: true, expiresAt: session.expiresAt.toISOString() });
   }
+
+  // Read-only stats are intentionally available without a server auth session.
+  // Privacy is still limited to aggregate/internal metadata; destructive actions
+  // do not exist in this admin surface.
   if (action === 'summary') return sendJson(res, { ok: true, ...(await getAdminSummary(sql, req.query?.range)) });
   if (action === 'parties') {
     const detailCode = clean(parts[2], 5);
