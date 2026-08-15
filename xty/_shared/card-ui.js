@@ -2,12 +2,29 @@ import {
   XTY_RARITY_META, cardById, cardDescriptorTh, cardNameTh,
 } from './cards.js';
 
+if (typeof document !== 'undefined' && !document.getElementById('xty-canonical-back-style')) {
+  const style = document.createElement('style');
+  style.id = 'xty-canonical-back-style';
+  style.textContent = `
+    .animal-card.card-back{
+      aspect-ratio:63/88!important;
+      background:#13291d url('/core7/assets/myclover-back.webp') center/cover no-repeat!important;
+      overflow:hidden;
+    }
+    .animal-card.card-back>.back-mark,.animal-card.card-back>small{display:none!important}
+  `;
+  document.head.appendChild(style);
+}
+
 if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathname)) {
   import('./party-enhancements.js').catch(error => console.warn('XTY party enhancements unavailable', error));
   import('./party-profile-covers.js').catch(error => console.warn('XTY profile/cover layer unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/xty\/new(?:\/|$)/.test(location.pathname)) {
   import('./new-cover-v3.js').catch(error => console.warn('XTY cover picker unavailable', error));
+}
+if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
+  import('./home-cover-v3.js').catch(error => console.warn('XTY home cover layer unavailable', error));
 }
 
 export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
