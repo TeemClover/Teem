@@ -32,11 +32,11 @@ function installStyles() {
     .xty-cover-library{border:1px solid var(--xty-border);border-radius:18px;background:var(--xty-surface);overflow:hidden;box-shadow:0 10px 26px rgba(62,51,44,.10)}
     .xty-cover-tabs{display:flex;gap:6px;padding:9px;overflow-x:auto;border-bottom:1px solid var(--xty-border);scrollbar-width:none}.xty-cover-tabs::-webkit-scrollbar{display:none}
     .xty-cover-tab{flex:none;border:1px solid var(--xty-border);background:var(--xty-paper);border-radius:999px;padding:8px 11px;font:800 11px/1 var(--sans);color:var(--xty-muted)}
-    .xty-cover-tab.active{border-color:var(--xty-green);color:var(--xty-green);background:rgba(50,139,92,.08)}
+    .xty-cover-tab.active{border-color:#2e8b59;color:#2e8b59;background:rgba(50,139,92,.08)}
     .xty-cover-scroll{max-height:min(52dvh,520px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:12px}
     .xty-cover-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start}
     .xty-cover-option{border:1px solid var(--xty-border);border-radius:13px;background:var(--xty-paper);padding:6px;min-width:0;text-align:left}
-    .xty-cover-option[aria-checked="true"]{outline:3px solid rgba(50,139,92,.22);border-color:var(--xty-green)}
+    .xty-cover-option[aria-checked="true"]{outline:3px solid rgba(50,139,92,.22);border-color:#2e8b59}
     .xty-cover-thumb{width:100%;aspect-ratio:63/88;overflow:hidden;border-radius:9px;background:#13291d}.xty-cover-thumb img,.xty-cover-thumb svg,.xty-cover-thumb .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
     .xty-cover-label{display:block;margin-top:6px;font-size:10.5px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
     .xty-cover-empty{grid-column:1/-1;margin:4px 0;color:var(--xty-muted);font-size:12px}
@@ -45,87 +45,68 @@ function installStyles() {
   document.head.appendChild(style);
 }
 
-function backArt() {
-  return `<img src="${BACK}" alt="หลังการ์ด myClover">`;
-}
+function backArt() { return `<img src="${BACK}" alt="หลังการ์ด myClover">`; }
 function core7Art(id) {
   const card = core7CardById(id);
   return card ? cardSVG(id, { width: 300, showNumber: true }) : '';
 }
 function setOverride(item) {
-  window.__xtyCoverV2 = {
-    coverType: item.coverType,
-    leadCardId: item.leadCardId || null,
-    core7CardId: item.core7CardId || null,
-  };
+  window.__xtyCoverV2 = { coverType: item.coverType, leadCardId: item.leadCardId || null, core7CardId: item.core7CardId || null };
 }
 
 function install() {
   const host = document.getElementById('leadPick');
   const hint = document.getElementById('coverHint');
   if (!host || host.dataset.coverV3 === '1') return;
-  host.dataset.coverV3 = '1';
-  installStyles();
-  host.innerHTML = '';
+  host.dataset.coverV3 = '1'; installStyles(); host.innerHTML = '';
 
   const profile = getProfile();
   const xtyCards = availableOwnedCards({ role: 'lead', profile });
   const core7Ids = unlockedCore7Ids();
   const groups = {
-    back: [{
-      key: 'back', category: 'back', coverType: 'card_back', title: 'หลังการ์ด myClover',
-      subtitle: 'ใช้ได้เสมอ', art: backArt(),
-    }],
+    back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด myClover', subtitle:'ใช้ได้เสมอ', art:backArt() }],
     xty: xtyCards.map(card => ({
-      key: `xty:${card.cardId}`, category: 'xty', coverType: 'card', leadCardId: card.cardId,
-      title: cardDescriptorTh(card), subtitle: 'XTY CARD', art: cardMarkup(card, { role: 'lead' }),
+      key:`xty:${card.cardId}`, category:'xty', coverType:'card', leadCardId:card.cardId,
+      title:cardDescriptorTh(card), subtitle:'XTY CARD', art:cardMarkup(card, { role:'lead' }),
     })),
     core7: core7Ids.map(id => {
       const card = core7CardById(id);
       return card ? {
-        key: `core7:${id}`, category: 'core7', coverType: 'core7_card', core7CardId: id,
-        title: `${card.en} · ${card.th}`, subtitle: 'myClover · FIRST HAND', art: core7Art(id),
+        key:`core7:${id}`, category:'core7', coverType:'core7_card', core7CardId:id,
+        title:`${card.en} · ${card.th}`, subtitle:'myClover · FIRST HAND', art:core7Art(id),
       } : null;
     }).filter(Boolean),
   };
 
+  const total = 1 + xtyCards.length + core7Ids.length;
   let selected = groups.back[0];
   let activeCategory = 'back';
   setOverride(selected);
 
-  const shell = document.createElement('div');
-  shell.className = 'xty-cover-picker';
-  const current = document.createElement('div');
-  current.className = 'xty-cover-current';
-  const currentArt = document.createElement('div');
-  currentArt.className = 'xty-cover-current-art';
-  const currentCopy = document.createElement('div');
-  currentCopy.className = 'xty-cover-current-copy';
+  const shell = document.createElement('div'); shell.className = 'xty-cover-picker';
+  const current = document.createElement('div'); current.className = 'xty-cover-current';
+  const currentArt = document.createElement('div'); currentArt.className = 'xty-cover-current-art';
+  const currentCopy = document.createElement('div'); currentCopy.className = 'xty-cover-current-copy';
   const currentTitle = document.createElement('b');
   const currentSub = document.createElement('small');
-  const open = document.createElement('button');
-  open.type = 'button'; open.className = 'btn ghost sm xty-cover-open'; open.textContent = 'เปลี่ยนปก';
-  currentCopy.append(currentTitle, currentSub, open);
-  current.append(currentArt, currentCopy);
+  const open = document.createElement('button'); open.type = 'button'; open.className = 'btn ghost sm xty-cover-open'; open.textContent = 'เปลี่ยนปก';
+  currentCopy.append(currentTitle, currentSub, open); current.append(currentArt, currentCopy);
 
-  const library = document.createElement('div');
-  library.className = 'xty-cover-library'; library.hidden = true;
+  const library = document.createElement('div'); library.className = 'xty-cover-library'; library.hidden = true;
   const tabs = document.createElement('div'); tabs.className = 'xty-cover-tabs';
   const scroller = document.createElement('div'); scroller.className = 'xty-cover-scroll';
   const grid = document.createElement('div'); grid.className = 'xty-cover-grid'; scroller.appendChild(grid);
-  library.append(tabs, scroller);
-  shell.append(current, library); host.appendChild(shell);
+  library.append(tabs, scroller); shell.append(current, library); host.appendChild(shell);
 
   const categoryMeta = [
-    ['back', 'หลังการ์ด', groups.back.length],
-    ['xty', 'XTY', groups.xty.length],
-    ['core7', 'FIRST HAND', groups.core7.length],
+    ['back','หลังการ์ด',groups.back.length], ['xty','XTY',groups.xty.length], ['core7','FIRST HAND',groups.core7.length],
   ];
 
   function syncCurrent() {
     currentArt.innerHTML = selected.art;
     currentTitle.textContent = selected.title;
     currentSub.textContent = selected.subtitle;
+    if (hint) hint.textContent = `เลือกไว้ ${selected.title} · มีปกให้เลือก ${total} แบบ กด “เปลี่ยนปก” เพื่อเปิดคลัง`;
   }
 
   function renderCategory() {
@@ -133,14 +114,12 @@ function install() {
     const list = groups[activeCategory] || [];
     if (!list.length) {
       const empty = document.createElement('p'); empty.className = 'xty-cover-empty';
-      empty.textContent = activeCategory === 'core7'
-        ? 'ยังไม่มี FIRST HAND ที่ปลดล็อกในเครื่องนี้'
-        : 'ยังไม่มีการ์ดหมวดนี้ที่ใช้เป็นปกได้';
+      empty.textContent = activeCategory === 'core7' ? 'ยังไม่มี FIRST HAND ที่ปลดล็อกในเครื่องนี้' : 'ยังไม่มีการ์ดหมวดนี้ที่ใช้เป็นปกได้';
       grid.appendChild(empty); return;
     }
     for (const item of list) {
       const option = document.createElement('button');
-      option.type = 'button'; option.className = 'xty-cover-option'; option.setAttribute('role', 'radio');
+      option.type = 'button'; option.className = 'xty-cover-option'; option.setAttribute('role','radio');
       option.setAttribute('aria-checked', item.key === selected.key ? 'true' : 'false');
       option.setAttribute('aria-label', `ใช้ ${item.title} เป็นปกตี้`);
       option.innerHTML = `<div class="xty-cover-thumb">${item.art}</div><span class="xty-cover-label"></span>`;
@@ -153,7 +132,7 @@ function install() {
     scroller.scrollTop = 0;
   }
 
-  categoryMeta.forEach(([id, label, count]) => {
+  categoryMeta.forEach(([id,label,count]) => {
     const tab = document.createElement('button'); tab.type = 'button'; tab.className = 'xty-cover-tab'; tab.dataset.category = id;
     tab.textContent = `${label}${id === 'back' ? '' : ` ${count}`}`;
     tab.addEventListener('click', () => {
@@ -176,10 +155,6 @@ function install() {
   });
 
   syncCurrent();
-  if (hint) {
-    const total = 1 + xtyCards.length + core7Ids.length;
-    hint.textContent = `เลือกไว้ ${selected.title} · มีปกให้เลือก ${total} แบบ กด “เปลี่ยนปก” เพื่อเปิดคลัง`;
-  }
 }
 
 requestAnimationFrame(() => requestAnimationFrame(install));
