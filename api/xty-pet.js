@@ -70,7 +70,8 @@ function observe(party, hour, context) {
   return [];
 }
 
-export function worthReading(hour, context) {
+export function worthReading(hour, context, force = false) {
+  if (force) return true;
   if (context.humanUpdates > 0) return true;
   if (hour !== 18 || !context.lastHumanAt) return false;
   if (context.lastPetAt && context.lastPetAt >= context.lastHumanAt) return false;
@@ -109,12 +110,17 @@ export default async function handler(req, res) {
     if (req.method !== 'GET' && req.method !== 'POST') return sendJson(res, { ok:false,error:'METHOD_NOT_ALLOWED' }, 405);
     if (!process.env.CRON_SECRET) return sendJson(res, { ok:false,error:'CRON_SECRET_NOT_CONFIGURED' }, 503);
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) return sendJson(res, { ok:false,error:'UNAUTHORIZED' }, 401);
+    const force = ['1','true','yes'].includes(String(req.query?.force || '').toLowerCase());
     const sql = database(); await ensureSchema(sql); const now = new Date(); const wake = wakeWindow(now);
-    const due = await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties WHERE pet_id IS NOT NULL
-      AND (pet_last_wake IS NULL OR pet_last_wake < $1) ORDER BY updated_at LIMIT 250`, [wake.start]);
+    const due = force
+      ? await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties WHERE pet_id IS NOT NULL AND state='ACTIVE' ORDER BY updated_at DESC LIMIT 50`)
+      : await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties WHERE pet_id IS NOT NULL AND state='ACTIVE'
+          AND (pet_last_wake IS NULL OR pet_last_wake < $1) ORDER BY updated_at LIMIT 250`, [wake.start]);
     let claimed=0, read=0, spoke=0, bubbles=0, byAi=0;
     for (const party of due) {
-      const marked = await sql.query(`UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2 AND (pet_last_wake IS NULL OR pet_last_wake < $3) RETURNING id`, [now, party.id, wake.start]);
+      const marked = force
+        ? await sql.query(`UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2 RETURNING id`, [now, party.id])
+        : await sql.query(`UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2 AND (pet_last_wake IS NULL OR pet_last_wake < $3) RETURNING id`, [now, party.id, wake.start]);
       if (!marked[0]) continue; claimed += 1;
       const since = party.pet_last_wake ? new Date(party.pet_last_wake) : wake.start;
       const [counts,eventCounts,members] = await Promise.all([
@@ -129,15 +135,17 @@ export default async function handler(req, res) {
       const context={ humanUpdates:Number(count.human_updates||0)+Number(eventCount.event_updates||0), committed:Number(count.committed||0), members,
         lastHumanAt:laterDate(count.last_human_at,eventCount.last_event_at), lastPetAt:count.last_pet_at?new Date(count.last_pet_at):null };
       let lines=null;
-      if (aiConfigured() && hasPersona(party.pet_id) && worthReading(wake.hour,context)) {
-        read += 1; const quietCheckin=context.humanUpdates===0; const readSince=quietCheckin?new Date(context.lastHumanAt.getTime()-1):since;
+      if (aiConfigured() && hasPersona(party.pet_id) && worthReading(wake.hour,context,force)) {
+        read += 1;
+        const quietCheckin=!force && context.humanUpdates===0;
+        const readSince=quietCheckin && context.lastHumanAt ? new Date(context.lastHumanAt.getTime()-1) : since;
         const [log,mine]=await Promise.all([logSlice(sql,party.id,readSince),ownRecent(sql,party.id,readSince)]);
         lines=await readAndRespond({party,context,log,ownRecent:mine,since:readSince,hour:wake.hour,quietCheckin}); if(lines) byAi += 1;
       }
       if (!lines) lines=observe(party,wake.hour,context); lines=lines.slice(0,3); if(!lines.length) continue; spoke += 1;
       for (const line of lines) if (await appendBubble(sql,party,line,wake.hour,now)) bubbles += 1;
     }
-    return sendJson(res,{ok:true,wakeHour:wake.hour,ai:aiConfigured(),due:due.length,claimed,read,byAi,spoke,bubbles});
+    return sendJson(res,{ok:true,wakeHour:wake.hour,ai:aiConfigured(),force,due:due.length,claimed,read,byAi,spoke,bubbles});
   } catch (error) {
     console.error('XTY pet wake failed', error);
     if (error.code === 'DATABASE_URL_NOT_CONFIGURED') return sendJson(res,{ok:false,error:error.code},503);
