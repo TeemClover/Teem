@@ -1,6 +1,7 @@
 import legacyXtyHandler from './xty/[...path].js';
 import { currentUser, database, ensureSchema, sameOrigin, sendJson, sha256 } from './_lib/core.js';
 import { handleCreatePartyV2 } from './_lib/xty-create-v2.js';
+import { handleJoinPartyV2 } from './_lib/xty-join-v2.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const DISSOLVEABLE_STATES = Object.freeze([...ACTIVE_STATES, 'DISSOLVED']);
@@ -72,6 +73,7 @@ function closedPartySnapshot(row, endedAt) {
 export default async function handler(req, res) {
   const op = Array.isArray(req.query?.op) ? req.query.op[0] : req.query?.op;
   if (op === 'create-v2') return handleCreatePartyV2(req, res);
+  if (op === 'join-v2') return handleJoinPartyV2(req, res, legacyXtyHandler);
 
   const mode = bodyOf(req).mode === 'dissolve' ? 'dissolve' : 'complete';
 
