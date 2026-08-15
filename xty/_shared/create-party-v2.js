@@ -60,7 +60,7 @@ export async function createPartyV2({
 
   let response;
   try {
-    response = await fetch('/api/xty-party-create-v2', {
+    response = await fetch('/api/xty-party-finish?op=create-v2', {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'content-type': 'application/json', accept: 'application/json' },
