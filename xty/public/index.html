@@ -13,10 +13,10 @@
 <main class="wrap">
   <p class="kicker">PUBLIC PARTY LOBBY</p>
   <h1 class="title">หาตี้ที่อยากลงมือทำด้วยกัน</h1>
-  <p class="lede">หน้านี้เริ่มโหลดเมื่อคุณเปิดเท่านั้น และแสดงเฉพาะข้อมูลชวนเล่นที่ปลอดภัย</p>
+  <p class="lede">เปิดดูรายละเอียดและอ่าน Party Log ย้อนหลังก่อนได้ แล้วค่อยตัดสินใจว่าจะเข้าร่วมไหม</p>
   <div class="public-list" id="list"><div class="empty">กำลังหาตี้ที่ยังรับสมาชิก…</div></div>
   <button class="btn ghost" id="more" hidden>ดูเพิ่ม</button>
-  <p class="note">Party Log, Email, Photo Memory และข้อมูลบัญชีจะไม่แสดงใน Lobby</p>
+  <p class="note">ตี้สาธารณะเปิดให้อ่านเฉพาะข้อมูลในตี้และ Party Log · Email, token และข้อมูลบัญชีไม่ถูกเปิดเผย</p>
 </main>
 
 <script type="module">
@@ -44,7 +44,7 @@ function addParty(party) {
     + `<p>${esc(party.activity || 'กิจกรรมที่ตกลงกันในตี้')}</p>`
     + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · ${party.memberCount}/${party.maxMembers} คน · วันนี้ ${party.todayCommitCount} Commit</p>`
     + `<p class="whisper">Lead: ${esc(party.lead.alias)}</p>`
-    + (party.joinable ? `<a class="btn gold sm" href="/xty/join/?c=${encodeURIComponent(party.code)}">เข้าตี้นี้</a>` : '<span class="status-pill">เต็มแล้ว</span>')
+    + `<a class="btn ghost sm" href="/xty/public/p/?c=${encodeURIComponent(party.code)}">ดูรายละเอียด · อ่าน Party Log</a>`
     + '</div>';
   $('list').appendChild(article);
 }
