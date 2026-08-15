@@ -5,7 +5,9 @@
    module whatever the party said since the pet last woke, plus the
    pet's own last few lines. It returns 0–3 short bubbles.
 
-   Zero is a normal, frequent, correct answer.
+   Zero is a normal, frequent, correct answer for scheduled wakes.
+   A manual force wake is different: it is an explicit end-to-end test,
+   so the model is asked to say at least one grounded line.
 
    Everything the model is allowed to know comes from the party's own
    log — there is no memory, no profile, no health data, no browsing.
@@ -22,8 +24,6 @@ const MAX_BUBBLE_CHARS = 160;
 const ICT_OFFSET_MINUTES = 7 * 60;
 const REQUEST_TIMEOUT_MS = 30000;
 
-/* The pet only speaks with AI when the party turned it on AND a Groq
-   key exists. Shipping the code must never start paid/provider traffic. */
 export function aiConfigured() {
   return process.env.XTY_PET_AI === 'on' && !!process.env.GROQ_API_KEY;
 }
@@ -41,8 +41,6 @@ function ictStamp(value) {
   const date = new Date(new Date(value).getTime() + ICT_OFFSET_MINUTES * 60000);
   return `${date.toISOString().slice(5, 10)} ${ictClock(value)}`;
 }
-
-/* ---------- prompt ---------- */
 
 function systemPrompt(petId, party, context, hour) {
   const persona = PET_PERSONAS[petId];
@@ -75,12 +73,20 @@ ${roster}
 ${SHARED_RULES}`;
 }
 
-function transcript(log, ownRecent, since, quietCheckin) {
+function transcript(log, ownRecent, since, quietCheckin, forceSpeak) {
   const lines = [];
 
   if (ownRecent.length) {
     lines.push('## สิ่งที่คุณพูดไปก่อนหน้านี้ (ห้ามพูดซ้ำ)');
     for (const post of ownRecent) lines.push(`[${ictStamp(post.sent_at)}] ${post.body}`);
+    lines.push('');
+  }
+
+  if (forceSpeak) {
+    lines.push('## MANUAL WAKE TEST');
+    lines.push('เจ้าของเกมกดปลุกคุณด้วยมือเพื่อทดสอบว่าคุณตื่นและพูดเข้าตี้ได้จริง');
+    lines.push('รอบนี้ห้ามตอบ QUIET: พูดอย่างน้อย 1 บรรทัด สั้น เป็นตัวเอง และอิงเฉพาะข้อมูลจริงด้านล่าง');
+    lines.push('ถ้าไม่มีความเคลื่อนไหวใหม่ ให้ทักว่าตื่นแล้วหรือแซวความเงียบเบา ๆ โดยห้ามแต่งเหตุการณ์');
     lines.push('');
   }
 
@@ -113,11 +119,9 @@ function transcript(log, ownRecent, since, quietCheckin) {
   }
 
   lines.push('');
-  lines.push('อ่านแล้วตัดสินใจ: จะพูดอะไรไหม หรือ QUIET');
+  lines.push(forceSpeak ? 'พูด 1–3 บรรทัดเลย ห้าม QUIET' : 'อ่านแล้วตัดสินใจ: จะพูดอะไรไหม หรือ QUIET');
   return lines.join('\n');
 }
-
-/* ---------- output guards ---------- */
 
 const FORBIDDEN = [
   'อ้วน', 'ผอม', 'น้ำหนัก', 'พุง', 'หุ่น', 'ลดความอ้วน',
@@ -185,17 +189,15 @@ async function groqCompletion(prompt) {
   }
 }
 
-/* ---------- the call ---------- */
-
 /**
  * @returns {Promise<string[]|null>} bubbles to post, [] to stay quiet,
  *   or null when the AI path is unavailable and the caller should fall
  *   back to its fixed templates.
  */
-export async function readAndRespond({ party, context, log, ownRecent, since, hour, quietCheckin = false }) {
+export async function readAndRespond({ party, context, log, ownRecent, since, hour, quietCheckin = false, forceSpeak = false }) {
   if (!aiConfigured() || !hasPersona(party.pet_id)) return null;
 
-  const prompt = `${systemPrompt(party.pet_id, party, context, hour)}\n\n${transcript(log, ownRecent, since, quietCheckin)}`;
+  const prompt = `${systemPrompt(party.pet_id, party, context, hour)}\n\n${transcript(log, ownRecent, since, quietCheckin, forceSpeak)}`;
 
   let response;
   try {
