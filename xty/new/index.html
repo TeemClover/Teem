@@ -99,9 +99,10 @@
 
 <script type="module">
 import {
-  hasProfile, getProfile, createParty, MESSAGE_BUDGETS, DEFAULT_BUDGET,
+  hasProfile, getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET,
   availableOwnedCards, allParties, partyIdentity,
 } from '/xty/_shared/store.js';
+import { createPartyV2 } from '/xty/_shared/create-party-v2.js';
 import { XTY_V1_PETS, PET_BY_ID, RGBS } from '/xty/_shared/pets.js';
 import { XTY_ACTIVITIES } from '/xty/_shared/activities.js';
 import { avatarById } from '/xty/_shared/avatars.js';
@@ -326,7 +327,7 @@ function init() {
     const selected = XTY_ACTIVITIES.find(item => item.id === activityId);
     const activity = activityId === 'custom' ? $('customActivity').value.trim() : selected.labelTh;
     try {
-      const party = await createParty({
+      const party = await createPartyV2({
         name: $('pname').value, activity, activityId, verificationMode, durationDays,
         color, visibility, commitRule: $('prule').value, budget, petId, coverType, leadCardId, npcCardId,
       });
