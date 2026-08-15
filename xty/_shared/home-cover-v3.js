@@ -47,9 +47,47 @@ function schedule() {
 }
 
 const style = document.createElement('style');
+style.id = 'xty-home-cover-v3-style';
 style.textContent = `
-  .xty-home-core7-cover,.xty-home-real-back{flex:none;width:min(154px,34vw);aspect-ratio:63/88;overflow:hidden;border-radius:14px;box-shadow:var(--shadow);background:#13291d}
-  .xty-home-core7-cover svg,.xty-home-real-back img{display:block;width:100%;height:100%;object-fit:cover}
+  /* One canonical cover slot on Home. Every cover type — XTY Animal Card,
+     FIRST HAND, avatar legacy cover and myClover back — must occupy exactly
+     the same 63:88 box. Components are never allowed to choose their own
+     width inside this grid. */
+  .main-party{
+    grid-template-columns:clamp(96px,28vw,132px) minmax(0,1fr)!important;
+    gap:clamp(13px,3vw,18px)!important;
+    align-items:center;
+  }
+  .main-party>:first-child,
+  .main-party>.animal-card,
+  .main-party>.avatar-cover,
+  .main-party>.xty-home-core7-cover,
+  .main-party>.xty-home-real-back{
+    display:block;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    height:auto!important;
+    aspect-ratio:63/88!important;
+    overflow:hidden;
+    border-radius:14px;
+  }
+  .main-party>div:nth-child(2){min-width:0}
+  .main-party h2{overflow-wrap:anywhere}
+  .xty-home-core7-cover,.xty-home-real-back{
+    box-shadow:var(--shadow);
+    background:#13291d;
+  }
+  .xty-home-core7-cover svg,.xty-home-real-back img{
+    display:block;
+    width:100%!important;
+    height:100%!important;
+    max-width:none!important;
+    object-fit:cover;
+  }
+  @media(max-width:360px){
+    .main-party{grid-template-columns:92px minmax(0,1fr)!important}
+  }
 `;
 document.head.appendChild(style);
 
