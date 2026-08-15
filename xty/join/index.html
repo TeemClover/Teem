@@ -71,7 +71,8 @@
 </main>
 
 <script type="module">
-import { hasProfile, joinParty, getProfile } from '/xty/_shared/store.js';
+import { hasProfile, getProfile } from '/xty/_shared/store.js';
+import { joinPartyV2 } from '/xty/_shared/join-party-v2.js';
 import { XTY_AVATARS, AVATAR_FRAMES } from '/xty/_shared/avatars.js';
 
 const $ = id => document.getElementById(id);
@@ -136,7 +137,7 @@ function initJoin(initialCode) {
     go.disabled = true;
     go.textContent = 'กำลังเข้าตี้…';
     const p = getProfile();
-    const res = await joinParty(input.value, { alias: p.alias, avatar: partyAvatar, avatarColor: partyAvatarColor });
+    const res = await joinPartyV2(input.value, { alias: p.alias, avatar: partyAvatar, avatarColor: partyAvatarColor });
     if (res.error === 'NOT_FOUND') {
       err.textContent = 'ไม่เจอตี้รหัสนี้ ลองเช็กรหัสอีกครั้ง';
       err.hidden = false;
@@ -166,14 +167,7 @@ function initJoin(initialCode) {
       return;
     }
     if (res.error === 'JOINED_PARTY_LIMIT') {
-      err.textContent = 'ตอนนี้เข้าร่วมตี้เพิ่มไม่ได้ — คุณเข้าร่วมได้พร้อมกันไม่เกิน 3 ตี้';
-      err.hidden = false;
-      go.disabled = false;
-      go.textContent = 'เข้าตี้';
-      return;
-    }
-    if (res.error === 'ACTIVE_PARTY_LIMIT') {
-      err.textContent = 'คุณใช้ช่องตี้ของ Level นี้ครบแล้ว — จบตี้หนึ่งก่อนหรือเพิ่ม Level';
+      err.textContent = 'ช่องเข้าร่วมตี้เต็มแล้ว — เข้าร่วมพร้อมกันได้ไม่เกิน 3 ตี้';
       err.hidden = false;
       go.disabled = false;
       go.textContent = 'เข้าตี้';
