@@ -1679,7 +1679,13 @@ print(f'สร้างหน้าสาย {len(PATHS)+1} หน้า')
 # Cloudflare Pages อ่านไฟล์นี้เอง ไม่ต้องตั้งอะไรเพิ่ม
 # ─────────────────────────────────────────────────────────────
 lines = ['# สร้างอัตโนมัติจาก tools/build.py — อย่าแก้ไฟล์นี้ตรง ๆ',
-         '# รองรับลิงก์จากโครงตอนเก่า', '']
+         '# รองรับลิงก์จากโครงตอนเก่า', '',
+         '# xty.myclover.com เป็นชื่อเก่า ให้ไปรวมที่ /xty/ บนโดเมนหลัก',
+         '# progress ของ XTY ผูกกับ origin ถ้าปล่อยให้เข้าสองทางของที่เซฟไว้จะคนละกอง',
+         '# กฎนี้ต้องอยู่บนสุด Cloudflare Pages ใช้กฎแรกที่ match',
+         '# ตัวเดียวกันนี้อยู่ใน vercel.json ด้วย เพราะเว็บขึ้นทั้งสองที่',
+         'https://xty.myclover.com/xty/*            https://www.myclover.com/xty/:splat  301',
+         'https://xty.myclover.com/*                https://www.myclover.com/xty/:splat  301', '']
 lines += [f'/forge/{o}/{" " * max(1, 38 - len(o))}/forge/{n}/  301' for o, n in OLD_TO_NEW]
 lines += ['', '# ตอน 8–12 จากโครงเก่า เก็บไว้ใน Version แรก ไม่ให้ชนกับชุดใหม่ 7 ตอน']
 lines += [f'/forge/{slug}/*{" " * max(1, 38 - len(slug))}/forge/original/  301'

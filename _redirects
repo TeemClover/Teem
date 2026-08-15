@@ -1,6 +1,13 @@
 # สร้างอัตโนมัติจาก tools/build.py — อย่าแก้ไฟล์นี้ตรง ๆ
 # รองรับลิงก์จากโครงตอนเก่า
 
+# xty.myclover.com เป็นชื่อเก่า ให้ไปรวมที่ /xty/ บนโดเมนหลัก
+# progress ของ XTY ผูกกับ origin ถ้าปล่อยให้เข้าสองทางของที่เซฟไว้จะคนละกอง
+# กฎนี้ต้องอยู่บนสุด Cloudflare Pages ใช้กฎแรกที่ match
+# ตัวเดียวกันนี้อยู่ใน vercel.json ด้วย เพราะเว็บขึ้นทั้งสองที่
+https://xty.myclover.com/xty/*            https://www.myclover.com/xty/:splat  301
+https://xty.myclover.com/*                https://www.myclover.com/xty/:splat  301
+
 /forge/ep0-my-own-machine/                    /forge/ep1-everyone-gets-to-play/  301
 /forge/ep1-month-five/                        /forge/ep2-the-first-item/  301
 /forge/ep2-footsteps/                         /forge/ep3-the-item-that-came-back/  301
