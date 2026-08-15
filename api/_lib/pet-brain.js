@@ -30,7 +30,7 @@ export function aiConfigured() {
 
 function personaFor(petId) {
   if (Object.prototype.hasOwnProperty.call(PET_PERSONAS, petId)) return PET_PERSONAS[petId];
-  const pet = PET_BY_ID[petId];
+  const pet = Object.prototype.hasOwnProperty.call(PET_BY_ID, petId) ? PET_BY_ID[petId] : null;
   if (!pet) return null;
   return {
     nameTh: pet.nameTh,
