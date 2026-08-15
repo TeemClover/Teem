@@ -60,6 +60,7 @@ if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathnam
   import('./party-enhancements.js').catch(error => console.warn('XTY party enhancements unavailable', error));
   import('./party-profile-covers.js').catch(error => console.warn('XTY profile/cover layer unavailable', error));
   import('./party-log-viewport.js').catch(error => console.warn('XTY party log viewport unavailable', error));
+  import('./party-event-copy-v2.js').catch(error => console.warn('XTY party event copy unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/xty\/new(?:\/|$)/.test(location.pathname)) {
   import('./new-cover-v3.js').catch(error => console.warn('XTY cover picker unavailable', error));
