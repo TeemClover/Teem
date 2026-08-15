@@ -31,10 +31,10 @@ function partiesForHome() {
       const activeA = isActiveParty(a.party) ? 0 : 1;
       const activeB = isActiveParty(b.party) ? 0 : 1;
       if (activeA !== activeB) return activeA - activeB;
-      if (a.owned !== b.owned) return a.owned ? -1 : 1;
       const timeA = new Date(a.party.createdAt || a.party.startAt || 0).getTime() || 0;
       const timeB = new Date(b.party.createdAt || b.party.startAt || 0).getTime() || 0;
       if (timeA !== timeB) return timeA - timeB;
+      if (a.owned !== b.owned) return a.owned ? -1 : 1;
       return a.index - b.index;
     });
 }
