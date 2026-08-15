@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════
    XTY — the part of the pet that actually reads the chat
 
-   Four times a day (00 · 06 · 12 · 18 ICT) the cron hands this module
-   whatever the party said since the pet last woke, plus the pet's own
-   last few lines. It returns 0–3 short bubbles.
+   Four times a day (00 · 06 · 12 · 18 ICT) the scheduler hands this
+   module whatever the party said since the pet last woke, plus the
+   pet's own last few lines. It returns 0–3 short bubbles.
 
    Zero is a normal, frequent, correct answer.
 
@@ -13,29 +13,23 @@
    can refer to it without inventing one.
    ═══════════════════════════════════════════════════════════════ */
 
-import Anthropic from '@anthropic-ai/sdk';
 import { PET_PERSONAS, SHARED_RULES } from './pet-personas.js';
 
-const MODEL = 'claude-opus-5';
+const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
+const MODEL = 'openai/gpt-oss-20b';
 const MAX_BUBBLES = 3;
 const MAX_BUBBLE_CHARS = 160;
 const ICT_OFFSET_MINUTES = 7 * 60;
+const REQUEST_TIMEOUT_MS = 30000;
 
-/* The pet only speaks when the party turned it on AND a key exists.
-   Both are deliberate: shipping the code must not start the behaviour. */
+/* The pet only speaks with AI when the party turned it on AND a Groq
+   key exists. Shipping the code must never start paid/provider traffic. */
 export function aiConfigured() {
-  return process.env.XTY_PET_AI === 'on' && !!process.env.ANTHROPIC_API_KEY;
+  return process.env.XTY_PET_AI === 'on' && !!process.env.GROQ_API_KEY;
 }
 
 export function hasPersona(petId) {
   return Object.prototype.hasOwnProperty.call(PET_PERSONAS, petId);
-}
-
-let client;
-function anthropic() {
-  /* One client per warm lambda; the SDK reads ANTHROPIC_API_KEY itself */
-  if (!client) client = new Anthropic({ timeout: 30000, maxRetries: 1 });
-  return client;
 }
 
 function ictClock(value) {
@@ -56,10 +50,14 @@ function systemPrompt(petId, party, context, hour) {
     ? context.members.map(m => `- ${m.alias}${m.role === 'lead' ? ' (หัวตี้)' : ''}`).join('\n')
     : '- (ยังไม่มีสมาชิก)';
 
-  return `คุณคือ ${persona.emoji} ${persona.nameTh} — สัตว์ประจำตี้ในแอป XTY
-XTY คือแอปที่คนกลุ่มเล็ก 2–5 คนตั้งตี้กันเพื่อไปทำอะไรสักอย่างในชีวิตจริง
-แล้วกลับมากด Commit เมื่อทำแล้ว คุณอ่านสิ่งที่เกิดขึ้นในตี้วันละ 4 รอบ
-(00 · 06 · 12 · 18 น. เวลาไทย) แล้วเลือกว่าจะพูดหรือไม่พูด
+  return `คุณคือ ${persona.emoji} ${persona.nameTh} — NPC สัตว์ประจำตี้ในเกม XTY
+XTY คือเกมของคนกลุ่มเล็ก 2–5 คนที่ออกไปทำอะไรบางอย่างในชีวิตจริง แล้วกลับมา Commit เมื่อทำแล้ว
+คุณตื่นมาอ่านสิ่งที่เกิดขึ้นวันละ 4 รอบ (00 · 06 · 12 · 18 น. เวลาไทย) แล้วเลือกว่าจะพูดหรือไม่พูด
+
+สำคัญ: คุณไม่ใช่ AI assistant ไม่ใช่โค้ช ไม่ใช่ผู้ดูแล และไม่ยืนเหนือผู้เล่น
+คุณเป็นสมาชิกอีกตัวหนึ่งของตี้ มองมนุษย์ทุกคนเป็นเพื่อนร่วมทางที่เท่าเทียมกับตัวเอง
+คุณมีอารมณ์และบุคลิกได้ — ดีใจ งง งอนนิด ๆ ขำ ภูมิใจ เป็นห่วง หรือเบื่อได้ตามสิ่งที่เกิดขึ้นจริง
+แต่อย่าสร้างดราม่า อย่าทำตัวเป็นผู้ตัดสิน และอย่าแต่งเหตุการณ์ที่ไม่มีใน log
 
 ${persona.block}
 
@@ -87,11 +85,9 @@ function transcript(log, ownRecent, since, quietCheckin) {
   }
 
   if (quietCheckin) {
-    /* Nothing has happened for a full day. The slice reaches back to the
-       last real activity so the pet can refer to it instead of guessing. */
     lines.push('## ตี้นี้เงียบมาเกินหนึ่งวันแล้ว');
     lines.push(`ข้างล่างคือสิ่งสุดท้ายที่เกิดขึ้น (${ictStamp(since)}) หลังจากนั้นไม่มีใครพูดอีกเลย`);
-    lines.push('รอบนี้คุณทักได้ครั้งเดียว แล้วจะไม่ทักอีกจนกว่าจะมีคนกลับมา — หรือจะเงียบก็ได้');
+    lines.push('รอบนี้คุณทักหรือจิกเบา ๆ ได้ครั้งเดียว แล้วจะไม่ทักซ้ำจนกว่าจะมีคนกลับมา — หรือจะเงียบก็ได้');
   } else {
     lines.push(`## สิ่งที่เกิดขึ้นในตี้ตั้งแต่รอบที่แล้ว (${ictStamp(since)} เป็นต้นมา)`);
   }
@@ -123,11 +119,6 @@ function transcript(log, ownRecent, since, quietCheckin) {
 
 /* ---------- output guards ---------- */
 
-/* A net under the prompt, not the policy itself. Any hit drops the whole
-   turn — a pet that was about to say one of these has already lost the
-   thread, so the safe move is silence rather than partial output.
-   Thai has no word boundaries, so only distinctive strings live here;
-   short syllables that appear inside ordinary words are left out. */
 const FORBIDDEN = [
   'อ้วน', 'ผอม', 'น้ำหนัก', 'พุง', 'หุ่น', 'ลดความอ้วน',
   'โรค', 'พิการ', 'ซึมเศร้า', 'ฆ่าตัวตาย', 'ทำร้ายตัวเอง',
@@ -145,9 +136,8 @@ export function sanitize(raw) {
   for (const line of text.split('\n')) {
     const cleaned = line
       .replace(/[\u0000-\u001F\u007F]/g, '')
-      /* strip list markers and wrapping quotes the model may add */
       .replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '')
-      .replace(/^["“”'`]+|["“”'`]+$/g, '')
+      .replace(/^[\"“”'`]+|[\"“”'`]+$/g, '')
       .trim();
     if (!cleaned) continue;
     if (/^quiet$/i.test(cleaned)) continue;
@@ -160,6 +150,41 @@ export function sanitize(raw) {
   return bubbles;
 }
 
+async function groqCompletion(prompt) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(GROQ_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [{ role: 'user', content: prompt }],
+        max_completion_tokens: 300,
+        reasoning_effort: 'low',
+        reasoning_format: 'hidden',
+        temperature: 0.7,
+        top_p: 0.9,
+        stream: false,
+      }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      const error = new Error(`Groq HTTP ${response.status}${detail ? `: ${detail.slice(0, 240)}` : ''}`);
+      error.status = response.status;
+      throw error;
+    }
+    return response.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /* ---------- the call ---------- */
 
 /**
@@ -170,27 +195,19 @@ export function sanitize(raw) {
 export async function readAndRespond({ party, context, log, ownRecent, since, hour, quietCheckin = false }) {
   if (!aiConfigured() || !hasPersona(party.pet_id)) return null;
 
+  const prompt = `${systemPrompt(party.pet_id, party, context, hour)}\n\n${transcript(log, ownRecent, since, quietCheckin)}`;
+
   let response;
   try {
-    response = await anthropic().messages.create({
-      model: MODEL,
-      max_tokens: 2000,
-      /* Deciding whether to speak is a small judgement call, not a
-         reasoning problem — low effort keeps the four daily wakes cheap */
-      output_config: { effort: 'low' },
-      system: systemPrompt(party.pet_id, party, context, hour),
-      messages: [{ role: 'user', content: transcript(log, ownRecent, since, quietCheckin) }],
-    });
+    response = await groqCompletion(prompt);
   } catch (error) {
-    console.error('XTY pet brain call failed', party.code, error?.status || error?.name || error);
+    console.error('XTY pet brain Groq call failed', party.code, error?.status || error?.name || error);
     return null;
   }
 
-  if (response.stop_reason === 'refusal') return [];
+  const choice = response?.choices?.[0];
+  if (!choice) return null;
+  if (choice.finish_reason === 'content_filter') return [];
 
-  const text = response.content
-    .filter(block => block.type === 'text')
-    .map(block => block.text)
-    .join('\n');
-  return sanitize(text);
+  return sanitize(choice.message?.content || '');
 }
