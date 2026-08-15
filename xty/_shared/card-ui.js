@@ -2,6 +2,13 @@ import {
   XTY_RARITY_META, cardById, cardDescriptorTh, cardNameTh,
 } from './cards.js';
 
+/* Party-only progressive enhancement: linkify chat URLs, merge canonical
+   party events into the visible log, and expose self-leave without making
+   every XTY page pay for that code. */
+if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathname)) {
+  import('./party-enhancements.js').catch(error => console.warn('XTY party enhancements unavailable', error));
+}
+
 export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
   const card = typeof cardOrId === 'string' ? cardById(cardOrId) : cardOrId;
   if (!card) return '';
