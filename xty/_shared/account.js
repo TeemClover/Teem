@@ -176,6 +176,20 @@ export async function syncXtyProfile() {
   const user = await getSession();
   if (!user) return { ok: true, authenticated: false, profile: getProfile(), user: null };
 
+  /* Bind the local XTY identity to the account on every authenticated
+     sync, not just after an email OTP. A party created before signing in
+     is filed under `local:<profileId>`, and the server counts that id
+     against the account's party limit but will not accept it as proof of
+     membership — so an unbound party blocks party creation while being
+     impossible to open or dissolve.
+
+     This must run before the merge below: the merge adopts the cloud
+     profile id when there is one, and any party still filed under the
+     current local id would be stranded for good. Binding is idempotent
+     and best-effort — a failure here must not block the profile sync. */
+  const localId = getProfile()?.id;
+  if (localId) await bindXtyIdentity(localId);
+
   const cloud = await loadCloudProgress();
   if (cloud.error) return { ...cloud, authenticated: true, profile: getProfile(), user };
 

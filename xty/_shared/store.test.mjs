@@ -242,3 +242,64 @@ test('newer collection reset tombstone prevents cloud cards from reappearing', (
   assert.deepEqual(merged.ownedCards, []);
   assert.equal(merged.collectionResetAt, '2026-08-15T12:00:00.000Z');
 });
+
+/* A party created before signing in is filed under `local:<profileId>`.
+   The server counts that id against the account's party limit but will
+   not accept it as proof of membership, so an unbound party blocks
+   party creation while being impossible to open or dissolve. Signing in
+   through any route must bind it — not only the email OTP route. */
+test('an authenticated sync binds the local identity before merging', async () => {
+  localStorage.setItem('mc_xty_profile', JSON.stringify({
+    id: 'stranded-player', alias: 'คีน', avatarId: 'orange_cat',
+    createdAt: '2026-08-01T00:00:00.000Z', updatedAt: '2026-08-01T00:00:00.000Z',
+  }));
+
+  const calls = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (path, options = {}) => {
+    calls.push({ path, body: options.body ? JSON.parse(options.body) : null });
+    const reply = value => new Response(JSON.stringify(value), {
+      status: 200, headers: { 'content-type': 'application/json' },
+    });
+    if (path === '/api/auth/session') return reply({ user: { id: 'acct1' } });
+    if (path === '/api/xty/bind') return reply({ ok: true });
+    /* cloud already holds a different profile id — the merge will adopt
+       it, which is exactly why the bind has to happen first */
+    if (path === '/api/progress' && (options.method || 'GET') === 'GET') {
+      return reply({ progress: { mc_xty_profile: JSON.stringify({
+        id: 'cloud-player', alias: 'คีน', updatedAt: '2026-08-02T00:00:00.000Z',
+      }) } });
+    }
+    return reply({ ok: true });
+  };
+
+  const result = await account.syncXtyProfile();
+  globalThis.fetch = realFetch;
+
+  const paths = calls.map(call => call.path);
+  const bindAt = paths.indexOf('/api/xty/bind');
+  assert.notEqual(bindAt, -1, 'sync must bind the local identity');
+  assert.deepEqual(calls[bindAt].body, { profileId: 'stranded-player' });
+  assert.ok(bindAt < paths.lastIndexOf('/api/progress'), 'bind must run before the merge');
+  assert.equal(result.authenticated, true);
+  assert.equal(result.profile.id, 'cloud-player');
+});
+
+test('an anonymous sync never binds', async () => {
+  localStorage.setItem('mc_xty_profile', JSON.stringify({
+    id: 'anon-player', alias: 'คีน', createdAt: '2026-08-01T00:00:00.000Z',
+  }));
+  const calls = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (path) => {
+    calls.push(path);
+    return new Response(JSON.stringify(path === '/api/auth/session' ? {} : { ok: true }), {
+      status: 200, headers: { 'content-type': 'application/json' },
+    });
+  };
+  const result = await account.syncXtyProfile();
+  globalThis.fetch = realFetch;
+
+  assert.equal(result.authenticated, false);
+  assert.equal(calls.includes('/api/xty/bind'), false);
+});
