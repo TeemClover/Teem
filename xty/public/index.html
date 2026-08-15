@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#FFF9E9">
 <title>หาตี้สาธารณะ — XTY</title>
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
+<style>.public-party>.public-core7-cover{width:74px;aspect-ratio:63/88;overflow:hidden;border-radius:12px}.public-core7-cover svg{display:block;width:100%;height:100%}@media(max-width:480px){.public-party>.public-core7-cover{width:62px}}</style>
 </head>
 <body>
 <header class="top"><a class="mark" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a><a class="back" href="/xty/">กลับ Home</a></header>
@@ -23,11 +24,17 @@
 import { avatarById } from '/xty/_shared/avatars.js';
 import { cardById } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
+import { cardById as core7CardById } from '/core7/js/cards.js';
+import { cardSVG } from '/core7/js/art.js';
 
 const $ = id => document.getElementById(id); let cursor = null;
 const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
 function coverMarkup(party) {
+  if (party.coverType === 'core7_card') {
+    const core = core7CardById(party.coverValue);
+    if (core) return `<div class="public-core7-cover">${cardSVG(core.id,{width:300,showNumber:true})}</div>`;
+  }
   const card = cardById(party.coverValue);
   if (card) return cardMarkup(card);
   if (party.coverType === 'card_back') return '<div class="animal-card card-back"><span class="back-mark">XTY</span><small>CARD BACK</small></div>';
