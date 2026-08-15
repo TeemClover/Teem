@@ -10,11 +10,28 @@
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 <script>
 (() => {
-  let hasLocalProfile = false;
-  try { hasLocalProfile = !!localStorage.getItem('mc_xty_profile'); } catch {}
-  if (hasLocalProfile) return;
   const value = new URLSearchParams(location.search).get('c');
   const code = /^\d{5}$/.test(value || '') ? value : '';
+
+  let hasLocalProfile = false;
+  let hasMembership = false;
+  try {
+    hasLocalProfile = !!localStorage.getItem('mc_xty_profile');
+    if (code) {
+      const tokens = JSON.parse(localStorage.getItem('mc_xty_tokens') || '{}');
+      const membership = tokens && typeof tokens === 'object' ? tokens[code] : null;
+      hasMembership = !!(membership && membership.token && membership.userId);
+    }
+  } catch {}
+
+  /* An invite link doubles as a bookmark. If this browser has already
+     joined the same party, skip Join entirely and reopen the party. */
+  if (hasLocalProfile && code && hasMembership) {
+    location.replace(`/xty/p/?c=${encodeURIComponent(code)}`);
+    return;
+  }
+
+  if (hasLocalProfile) return;
   location.replace(code ? `/xty/?c=${encodeURIComponent(code)}` : '/xty/');
 })();
 </script>
