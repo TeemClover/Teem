@@ -9,7 +9,7 @@
         }
       ],
       "destination": "https://www.myclover.com/xty/:path*",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/xty",
@@ -20,7 +20,7 @@
         }
       ],
       "destination": "https://www.myclover.com/xty/",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/:path*",
@@ -31,7 +31,7 @@
         }
       ],
       "destination": "https://www.myclover.com/xty/:path*",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/guild",

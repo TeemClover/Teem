@@ -2,6 +2,57 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<!-- ประตูโดเมนของ XTY ต้องอยู่บนสุดของ head และห้ามรอไฟล์นอก
+     ขาส่ง: เผื่อ xty.myclover.com ยังเสิร์ฟหน้านี้อยู่แทนที่จะ redirect
+     ขารับ: รับ progress ที่ยกมาจาก origin เดิม แล้วส่งต่อไปหน้าที่ผู้ใช้ตั้งใจเปิด -->
+<script>
+(function () {
+  var base = 'https://www.myclover.com';
+
+  if (location.hostname === 'xty.myclover.com') {
+    var KEYS = ['mc_xty_profile', 'mc_xty_tokens', 'c7:collection'];
+    var carry = {}, found = false;
+    try {
+      for (var i = 0; i < KEYS.length; i++) {
+        var v = localStorage.getItem(KEYS[i]);
+        if (v !== null) { carry[KEYS[i]] = v; found = true; }
+      }
+    } catch (e) {}
+    var path = location.pathname.replace(/^\/xty(?=\/|$)/, '');
+    if (path.charAt(0) !== '/') path = '/' + path;
+    var deep = '/xty' + (path === '/' ? '/' : path) + location.search + location.hash;
+    var payload = '';
+    if (found) {
+      try { payload = encodeURIComponent(JSON.stringify(carry)); } catch (e) { payload = ''; }
+    }
+    if (!payload || payload.length > 30000) { location.replace(base + deep); return; }
+    location.replace(base + '/xty/#mc-migrate=' + payload + '&mc-next=' + encodeURIComponent(deep));
+    return;
+  }
+
+  if (location.hash.indexOf('mc-migrate=') < 0) return;
+  var incoming = null, next = '';
+  try {
+    var q = new URLSearchParams(location.hash.slice(1));
+    incoming = JSON.parse(q.get('mc-migrate') || 'null');
+    next = q.get('mc-next') || '';
+  } catch (e) {}
+  try {
+    /* เขียนเฉพาะคีย์ที่ยังว่าง ของที่เล่นบนโดเมนหลักไปแล้วต้องไม่ถูกของเก่าทับ */
+    if (incoming) {
+      for (var k in incoming) {
+        if (Object.prototype.hasOwnProperty.call(incoming, k) && localStorage.getItem(k) === null) {
+          localStorage.setItem(k, incoming[k]);
+        }
+      }
+    }
+  } catch (e) {}
+  var here = location.pathname + location.search;
+  /* mc-next ต้องเป็น path ภายในเท่านั้น กัน //evil.com ที่เบราว์เซอร์อ่านเป็นโดเมนอื่น */
+  if (next && /^\/(?!\/)/.test(next) && next !== here) { location.replace(next); return; }
+  history.replaceState(null, '', here);
+})();
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
 <meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">

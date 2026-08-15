@@ -2,6 +2,35 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
+<!-- ตาข่ายรับ xty.myclover.com — ถ้า redirect ที่ขอบไม่ทำงาน ซับโดเมนจะมาโผล่หน้านี้
+     ต้องอยู่ก่อนทุกอย่างใน head และห้ามรอไฟล์นอก ไม่งั้นผู้ใช้เห็นหน้าผิดก่อนโดนย้าย -->
+<script>
+(function () {
+  if (location.hostname !== 'xty.myclover.com') return;
+  /* progress ของ XTY ผูกกับ origin ผ่าน localStorage ย้ายโดเมนเฉย ๆ แล้วของหาย
+     ยกเฉพาะคีย์ที่สร้างใหม่ไม่ได้ ส่วน mc_xty_parties เป็นแคชที่เซิร์ฟเวอร์เติมกลับเองได้ */
+  var KEYS = ['mc_xty_profile', 'mc_xty_tokens', 'c7:collection'];
+  var carry = {}, found = false;
+  try {
+    for (var i = 0; i < KEYS.length; i++) {
+      var v = localStorage.getItem(KEYS[i]);
+      if (v !== null) { carry[KEYS[i]] = v; found = true; }
+    }
+  } catch (e) {}
+  /* xty.myclover.com/p/12345 กับ xty.myclover.com/xty/p/12345 คือที่เดียวกัน */
+  var path = location.pathname.replace(/^\/xty(?=\/|$)/, '');
+  if (path.charAt(0) !== '/') path = '/' + path;
+  var deep = '/xty' + (path === '/' ? '/' : path) + location.search + location.hash;
+  var base = 'https://www.myclover.com';
+  var payload = '';
+  if (found) {
+    try { payload = encodeURIComponent(JSON.stringify(carry)); } catch (e) { payload = ''; }
+  }
+  /* ถ้าไม่มีอะไรต้องยก ก็ไปหน้าปลายทางตรง ๆ ไม่ต้องแวะ */
+  if (!payload || payload.length > 30000) { location.replace(base + deep); return; }
+  location.replace(base + '/xty/#mc-migrate=' + payload + '&mc-next=' + encodeURIComponent(deep));
+})();
+</script>
 <!-- assets/track.js อ่านสองอย่างนี้แล้วยิงเอง ไม่ต้องเขียน JS เพิ่ม -->
 <meta name="mc-act-view" content="home-open">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
