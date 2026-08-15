@@ -59,13 +59,14 @@ async function findExistingMember(req, sql, partyId, identityIds) {
   return byToken[0] || null;
 }
 
-async function joinedUsage(sql, quotaKey) {
+async function joinedUsage(sql, quotaKey, identityIds) {
   const rows = await sql.query(`SELECT COUNT(DISTINCT q.party_id)::int n
     FROM xty_party_quota_v2 q
     JOIN xty_parties p ON p.id=q.party_id
-    JOIN xty_members m ON m.party_id=q.party_id AND m.role <> 'lead' AND m.left_at IS NULL
+    JOIN xty_members m ON m.party_id=q.party_id
+      AND m.user_id = ANY($3::text[]) AND m.role <> 'lead' AND m.left_at IS NULL
     WHERE q.quota_key=$1 AND q.role='member' AND q.released_at IS NULL
-      AND p.state = ANY($2::text[])`, [quotaKey, ACTIVE_STATES]);
+      AND p.state = ANY($2::text[])`, [quotaKey, ACTIVE_STATES, [...new Set(identityIds.filter(Boolean))]]);
   return Number(rows[0]?.n || 0);
 }
 
@@ -154,7 +155,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
       return sendJson(res, { ...state, token, quotaSystem: 'v2-separated' });
     }
 
-    const used = await joinedUsage(sql, quotaKey);
+    const used = await joinedUsage(sql, quotaKey, identityIds);
     if (used >= MAX_JOINED_ACTIVE) {
       return sendJson(res, { ok: false, error: 'JOINED_PARTY_LIMIT', joined: used, maxJoined: MAX_JOINED_ACTIVE }, 409);
     }
@@ -173,7 +174,8 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
         WHERE (SELECT COUNT(*) FROM xty_members WHERE party_id=$1 AND left_at IS NULL) < $10
           AND (SELECT COUNT(DISTINCT q.party_id) FROM xty_party_quota_v2 q
             JOIN xty_parties p ON p.id=q.party_id
-            JOIN xty_members m ON m.party_id=q.party_id AND m.role <> 'lead' AND m.left_at IS NULL
+            JOIN xty_members m ON m.party_id=q.party_id
+              AND m.user_id IN ($4,$3) AND m.role <> 'lead' AND m.left_at IS NULL
             WHERE q.quota_key=$2 AND q.role='member' AND q.released_at IS NULL
               AND p.state = ANY($11::text[])) < $12
       ), joined AS (
@@ -199,7 +201,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
       }
       const count = await sql.query('SELECT COUNT(*)::int n FROM xty_members WHERE party_id=$1 AND left_at IS NULL', [row.id]);
       if (Number(count[0]?.n || 0) >= PARTY_MAX) return sendJson(res, { ok: false, error: 'FULL' }, 409);
-      const latest = await joinedUsage(sql, quotaKey);
+      const latest = await joinedUsage(sql, quotaKey, identityIds);
       if (latest >= MAX_JOINED_ACTIVE) {
         return sendJson(res, { ok: false, error: 'JOINED_PARTY_LIMIT', joined: latest, maxJoined: MAX_JOINED_ACTIVE }, 409);
       }
