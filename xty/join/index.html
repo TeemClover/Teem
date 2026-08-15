@@ -20,7 +20,9 @@
     if (code) {
       const tokens = JSON.parse(localStorage.getItem('mc_xty_tokens') || '{}');
       const membership = tokens && typeof tokens === 'object' ? tokens[code] : null;
-      hasMembership = !!(membership && membership.token && membership.userId);
+      hasMembership = typeof membership === 'string'
+        ? membership.length > 0
+        : !!(membership && membership.token);
     }
   } catch {}
 
