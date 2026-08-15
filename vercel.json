@@ -397,6 +397,10 @@
       "destination": "/api/auth?path=:path*"
     },
     {
+      "source": "/api/xty/party/:code/finish",
+      "destination": "/api/xty-party-finish?code=:code"
+    },
+    {
       "source": "/api/xty/:path*",
       "destination": "/api/xty?path=:path*"
     },
