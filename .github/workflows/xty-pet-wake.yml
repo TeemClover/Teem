@@ -5,6 +5,9 @@ on:
     # 00:27 · 06:27 · 12:27 · 18:27 Asia/Bangkok (ICT = UTC+7)
     - cron: '27 5,11,17,23 * * *'
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/xty-pet-wake.yml'
 
 concurrency:
   group: xty-pet-wake
@@ -26,7 +29,9 @@ jobs:
           fi
 
           url="https://www.myclover.com/api/xty-pet"
-          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+          # Manual runs and edits to this workflow are explicit test wakes.
+          # Scheduled wakes keep the normal gating and only process due parties.
+          if [ "${GITHUB_EVENT_NAME}" != "schedule" ]; then
             url="${url}?force=1"
           fi
 
