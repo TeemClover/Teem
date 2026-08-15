@@ -426,7 +426,7 @@ Strong line:
 
 Hero visual:
 
-- ภาพการ์ตูน Ending 4 ช่องเต็มหน้า 5:7 เป็นพระเอก
+- ภาพการ์ตูน Ending 4 ช่องเต็มหน้า 63:88 เป็นพระเอก
 - Ending `.md` card ซ้อนเล็ก ๆ
 - Animal cast / notebook props เป็น secondary
 - ห้ามทำ hero เป็น dashboard
@@ -483,7 +483,7 @@ Visual proof:
 - screenshot Party Complete
 - ปุ่ม `ดาวน์โหลด Ending .md`
 
-## 2. สั่งปรุง
+## 2. ปรุงภาพ
 
 **แนบไฟล์ให้ AI → พิมพ์ prompt เดียว**
 
@@ -514,11 +514,11 @@ Copy:
 `เก็บไว้ ส่งให้เพื่อนในตี้ ตั้งเป็นความทรงจำ หรือโพสต์ลง social ก็ได้`
 
 Visual proof:
-- Ending comic 5:7 เต็มภาพ
+- Ending comic 63:88 เต็มภาพ
 
 Flow graphic:
 
-**รับซอส → สั่งปรุง → ดื่มด่ำ**
+**รับซอส → ปรุงภาพ → ดื่มด่ำ**
 
 ควรอ่านได้แม้ไม่อ่าน paragraph
 
@@ -542,7 +542,7 @@ Flow graphic:
 
 ## Golden ratio ของ XTY
 
-Ending artwork และ gallery card ใช้ **5:7** เป็นสัดส่วน canon
+Ending artwork และ gallery card ใช้ **63:88** เป็นสัดส่วน canon เสมอ
 
 นี่คือสัดส่วนเดียวกับการ์ด standard / FIRST HAND ที่ใช้เป็น visual grammar ของระบบ
 
@@ -556,6 +556,8 @@ Ending artwork และ gallery card ใช้ **5:7** เป็นสัดส
 - เส้นสมุด ดินสอ เทป กระดาษโน้ต สติกเกอร์ รอยวาดมือ
 - cute premium
 - ตัวละคร Animal Avatar ต้อง recognizable
+- การนำเสนอบนหน้าเว็บเป็นภาพนิ่ง ไม่มี character animation และไม่มี parallax
+- บางฉากเพิ่มโคอาล่า สลอธ และคาปิบาร่าได้ เพื่อให้โลกสัตว์หลากหลายขึ้น โดยยังคงลายเส้น XTY เดิม
 - ความสำเร็จแบบอบอุ่น ไม่ใช่แข่งขัน
 - ไม่มี casino / loot-box visual
 - ไม่มี dashboard หนัก ๆ
@@ -563,7 +565,7 @@ Ending artwork และ gallery card ใช้ **5:7** เป็นสัดส
 
 ## Character tone
 
-ให้สัตว์ดูมี personality และ movement มากขึ้น:
+ให้สัตว์ในภาพนิ่งดูมี personality และ body language มากขึ้น:
 
 - ไม่ยืนเรียงเหมือน icon
 - มี body language
@@ -578,17 +580,17 @@ Ending artwork และ gallery card ใช้ **5:7** เป็นสัดส
 
 ถ้าต้อง materialize/copy เข้ repo ให้ใช้ชื่อ canonical:
 
-1. `/xty/assets/ending/ending-step-1-complete.jpg`
+1. `/xty/assets/ending/ending-step-1-complete.webp`
    - Party Complete UI
    - เห็นปุ่มดาวน์โหลด Ending `.md`
 
-2. `/xty/assets/ending/ending-step-2-ai.jpg`
+2. `/xty/assets/ending/ending-step-2-ai.webp`
    - ChatGPT conversation
    - แนบ Ending `.md`
    - prompt สั้น
    - เห็นผลลัพธ์ image generation
 
-3. `/xty/assets/ending/ending-step-3-comic.jpg` หรือ `.webp`
+3. `/xty/assets/ending/ending-step-3-comic.webp`
    - การ์ตูน 4 ช่องตัวอย่าง “กินยาทุกวัน / ดูแลตัวเอง”
    - ใช้เป็น Hero proof และ Step 3
 
@@ -617,7 +619,7 @@ Style ต้องตรง XTY notebook / warm hand-drawn canon
 
 ## Required generated gallery examples
 
-สร้าง Ending mockups อย่างน้อย 4–6 ใบ สัดส่วน 5:7:
+สร้าง Ending mockups อย่างน้อย 4–6 ใบ สัดส่วน 63:88:
 
 ### A. Running Party
 สัตว์ 3–5 ตัวซ้อมวิ่งกันคนละ pace มีรองเท้า เส้นทาง tick marks และ Finish note
@@ -762,7 +764,7 @@ Structured data:
 HowTo:
 
 1. รับซอส — ดาวน์โหลด Ending `.md`
-2. สั่งปรุง — แนบให้ AI และใช้ prompt เดียว
+2. ปรุงภาพ — แนบให้ AI และใช้ prompt เดียว
 3. ดื่มด่ำ — รับภาพ 4 ช่องและเก็บ/แชร์
 
 เพิ่ม route ลง sitemap
@@ -830,7 +832,7 @@ Tone ที่ไม่เอา:
 
 # 21. Mobile-first Rules
 
-- ภาพ 5:7 ต้องเห็นเต็มและสวยบนมือถือ
+- ภาพ 63:88 ต้องเห็นเต็มและสวยบนมือถือ
 - text block ไม่ยาวจนกลายเป็น wall of text
 - 3-step proof ควรเป็น 1 column บน mobile
 - screenshot frame อ่านรายละเอียดหลักได้
@@ -889,7 +891,7 @@ Tone ที่ไม่เอา:
 - มีภาพประกอบใหม่ที่ Work สร้างเพิ่ม
 
 ## VISUAL
-- Ending artwork ใช้ 5:7
+- Ending artwork ใช้ 63:88
 - notebook / colored pencil canon ไม่หลุด
 - mobile สวยและลื่น
 
