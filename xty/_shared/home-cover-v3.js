@@ -131,13 +131,21 @@ function sync() {
 function schedule() {
   if (scheduled || rendering) return;
   scheduled = true;
-  requestAnimationFrame(sync);
+  /* MutationObserver + microtask runs before the browser's next paint. This
+     removes the old one-frame legacy layout that used to flash before the
+     carousel took over. */
+  queueMicrotask(sync);
 }
 
 const style = document.createElement('style');
 style.id = 'xty-home-cover-v3-style';
 style.textContent = `
   #mainParty{margin-top:18px;margin-right:-20px;margin-left:-20px}
+  /* index.html still owns the local-first data paint, but its old direct
+     main-party card is never allowed to become visible. The observer swaps
+     it for the canonical carousel in the same paint cycle. */
+  #mainParty>.main-party{visibility:hidden!important;pointer-events:none!important}
+  #partyHeading,#myParties{display:none!important}
   .xty-party-carousel{
     display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;
     padding:0 20px 9px;scroll-snap-type:x mandatory;scroll-padding-left:20px;
@@ -148,12 +156,12 @@ style.textContent = `
   .xty-party-slide{flex:0 0 calc(100% - 34px);min-width:0;scroll-snap-align:start;scroll-snap-stop:always}
   .xty-party-slide.single{flex-basis:100%}
   .xty-party-slide .main-party{
-    display:grid!important;grid-template-columns:clamp(96px,28vw,132px) minmax(0,1fr)!important;
+    display:grid!important;grid-template-columns:var(--xty-party-cover-size,112px) minmax(0,1fr)!important;
     gap:clamp(13px,3vw,18px)!important;align-items:center!important;
     min-height:100%;margin-top:0!important;
   }
   .xty-home-cover{
-    display:block;width:100%!important;max-width:none!important;min-width:0!important;
+    display:block;width:var(--xty-party-cover-size,112px)!important;max-width:none!important;min-width:0!important;
     height:auto!important;aspect-ratio:63/88!important;overflow:hidden;border-radius:14px;
   }
   .xty-home-cover>.animal-card,
@@ -170,10 +178,7 @@ style.textContent = `
   .xty-home-cover.avatar-cover small{display:none!important}
   @media(max-width:480px){
     .xty-party-slide{flex-basis:calc(100% - 30px)}
-    .xty-party-slide .main-party{grid-template-columns:104px minmax(0,1fr)!important;gap:13px!important}
-  }
-  @media(max-width:360px){
-    .xty-party-slide .main-party{grid-template-columns:92px minmax(0,1fr)!important}
+    .xty-party-slide .main-party{gap:13px!important}
   }
 `;
 document.head.appendChild(style);
