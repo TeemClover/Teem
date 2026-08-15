@@ -1,5 +1,6 @@
 import legacyXtyHandler from './xty/[...path].js';
 import { currentUser, database, ensureSchema, sameOrigin, sendJson, sha256 } from './_lib/core.js';
+import { handleCreatePartyV2 } from './_lib/xty-create-v2.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const DISSOLVEABLE_STATES = Object.freeze([...ACTIVE_STATES, 'DISSOLVED']);
@@ -69,6 +70,9 @@ function closedPartySnapshot(row, endedAt) {
 }
 
 export default async function handler(req, res) {
+  const op = Array.isArray(req.query?.op) ? req.query.op[0] : req.query?.op;
+  if (op === 'create-v2') return handleCreatePartyV2(req, res);
+
   const mode = bodyOf(req).mode === 'dissolve' ? 'dissolve' : 'complete';
 
   // Keep the existing, battle-tested completion/reward flow untouched.
@@ -119,6 +123,14 @@ export default async function handler(req, res) {
       RETURNING user_id`, [at, row.id, DISSOLVEABLE_STATES]);
 
     if (!changed.length) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
+
+    // V2 quota rows are only a capacity index; history remains in the party tables.
+    try {
+      await sql.query(`UPDATE xty_party_quota_v2 SET released_at=COALESCE(released_at,$1)
+        WHERE party_id=$2 AND released_at IS NULL`, [at, row.id]);
+    } catch (quotaError) {
+      if (quotaError.code !== '42P01') console.warn('XTY quota v2 release failed', quotaError);
+    }
 
     // Audit is best-effort only. Dissolving the party must never fail just because
     // an optional history/event write fails. Avoid duplicating an event during recovery.
