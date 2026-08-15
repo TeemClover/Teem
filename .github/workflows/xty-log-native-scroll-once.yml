@@ -1,0 +1,27 @@
+name: XTY log native scroll once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/xty-log-native-scroll-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch public log scrolling
+        run: python3 .github/scripts/xty-log-native-scroll.py
+      - name: Commit and clean up
+        run: |
+          rm -f .github/scripts/xty-log-native-scroll.py .github/workflows/xty-log-native-scroll-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add xty/public/p/index.html .github/scripts/xty-log-native-scroll.py .github/workflows/xty-log-native-scroll-once.yml
+          git commit -m "Remove XTY public log auto-scroll"
+          git push origin HEAD:main
