@@ -4,47 +4,8 @@ if (box) install();
 
 function install() {
   injectStyle();
-  let forceLatest = true;
-  let programmatic = false;
-
-  const nearBottom = () => box.scrollHeight - box.clientHeight - box.scrollTop < 72;
-
-  function pinLatest(force = false) {
-    if (!force && !forceLatest && box.dataset.xtyPinned === '0') return;
-    requestAnimationFrame(() => {
-      programmatic = true;
-      box.scrollTop = box.scrollHeight;
-      box.dataset.xtyPinned = '1';
-      forceLatest = false;
-      requestAnimationFrame(() => { programmatic = false; });
-    });
-  }
-
-  box.addEventListener('scroll', () => {
-    if (programmatic) return;
-    box.dataset.xtyPinned = nearBottom() ? '1' : '0';
-  }, { passive: true });
-
-  document.addEventListener('click', event => {
-    if (event.target?.closest?.('#refresh,#send,#commitDo')) {
-      forceLatest = true;
-      box.dataset.xtyPinned = '1';
-      setTimeout(() => pinLatest(true), 40);
-      setTimeout(() => pinLatest(true), 240);
-    }
-  }, true);
-
-  const observer = new MutationObserver(() => pinLatest(false));
-  observer.observe(box, { childList: true, subtree: true, characterData: true });
-
-  window.addEventListener('resize', () => {
-    if (box.dataset.xtyPinned !== '0') pinLatest(true);
-  }, { passive: true });
-
-  box.dataset.xtyPinned = '1';
-  pinLatest(true);
-  setTimeout(() => pinLatest(true), 80);
-  setTimeout(() => pinLatest(true), 360);
+  box.tabIndex = 0;
+  box.setAttribute('aria-label', 'Party Log — เลื่อนอ่านบันทึกได้อย่างอิสระ');
 }
 
 function injectStyle() {
@@ -57,10 +18,12 @@ function injectStyle() {
       min-height:320px;
       overflow-y:auto!important;
       overflow-x:hidden;
-      overscroll-behavior:contain;
+      overscroll-behavior-y:auto;
       -webkit-overflow-scrolling:touch;
+      touch-action:pan-y;
+      scroll-behavior:auto!important;
+      overflow-anchor:none;
       scrollbar-gutter:stable;
-      scroll-behavior:smooth;
       padding-right:4px;
       border-top:1px solid rgba(62,51,44,.08);
       border-bottom:1px solid rgba(62,51,44,.08);
@@ -70,6 +33,4 @@ function injectStyle() {
     @media (min-width:760px){#log{height:min(62vh,620px)}}
   `;
   document.head.appendChild(style);
-  box.tabIndex = 0;
-  box.setAttribute('aria-label', 'Party Log — เลื่อนขึ้นเพื่อดูข้อความเก่า ข้อความล่าสุดอยู่ด้านล่าง');
 }
