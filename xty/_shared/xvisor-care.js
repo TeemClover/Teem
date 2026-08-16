@@ -203,7 +203,7 @@ function enhanceCreatePage() {
     fixed.innerHTML = guideCardHtml('lead', { startAt: new Date().toISOString(), durationDays: 28 });
     petSection.insertBefore(fixed, document.getElementById('petHint') || null);
     const hint = document.getElementById('petHint');
-    if (hint) hint.textContent = 'แมวขาวสีเงินเป็น Pet ลับของ X-VISOR · หลังสร้างตี้ ปุ่ม Xircle Invite พิเศษจะอยู่ในกรอบ Care Assist ของหัวตี้';
+    if (hint) hint.textContent = 'แมวขาวเป็น Pet ลับของ X-VISOR · หลังสร้างตี้ ปุ่ม Xircle Invite พิเศษจะอยู่ในกรอบ Care Assist ของหัวตี้';
   }
 }
 
