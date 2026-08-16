@@ -33,7 +33,27 @@
   background:transparent!important;
   filter:drop-shadow(0 16px 28px rgba(0,0,0,.22));
 }
+
 @media(max-width:620px){
   .xp-cat-cutout-stage{min-height:150px}
   .xp-cat-cutout-stage img{height:150px;width:min(100%,180px)}
+
+  /* Progress shortcuts are earned navigation, so keep them visible on mobile too. */
+  .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"]{
+    display:flex;
+    max-width:72vw;
+    overflow-x:auto;
+    gap:5px;
+    padding-bottom:2px;
+    scrollbar-width:none;
+  }
+  .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"]::-webkit-scrollbar{display:none}
+  .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"] a,
+  .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"] a:not(.cat){
+    display:inline-flex!important;
+    flex:0 0 auto;
+    white-space:nowrap;
+    padding:7px 9px;
+    font-size:9px;
+  }
 }
