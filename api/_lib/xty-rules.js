@@ -38,7 +38,9 @@ export function startOfPartyDay(value = new Date(), timezone = XTY_TIMEZONE) {
 
 export function scheduledEndAt(startedAt, durationDays = XTY_DEFAULT_DURATION_DAYS, timezone = XTY_TIMEZONE) {
   const days = Math.max(1, Math.floor(Number(durationDays) || XTY_DEFAULT_DURATION_DAYS));
-  return new Date(startOfPartyDay(startedAt, timezone).getTime() + days * 86400000);
+  /* Quest duration is elapsed time, not calendar labels. A 7-day Quest
+     opened at 13:07 can finish no earlier than 13:07 seven days later. */
+  return new Date(validDate(startedAt).getTime() + days * 86400000);
 }
 
 export function partyDayNumber(startedAt, at = new Date(), timezone = XTY_TIMEZONE) {
@@ -56,16 +58,19 @@ export function confirmDeadlineForDayKey(dayKey, timezone = XTY_TIMEZONE) {
 
 export function completionGate(party, at = new Date()) {
   const now = validDate(at);
-  const end = party?.scheduled_end_at || party?.scheduledEndAt
-    ? validDate(party.scheduled_end_at || party.scheduledEndAt)
-    : scheduledEndAt(
-      party?.started_at || party?.startedAt || party?.startAt || party?.created_at || party?.createdAt,
-      party?.duration_days || party?.durationDays,
-      party?.timezone || XTY_TIMEZONE,
-    );
-  const durationDays = Math.max(1, Number(party?.duration_days || party?.durationDays || XTY_DEFAULT_DURATION_DAYS));
-  const day = Math.min(durationDays, partyDayNumber(
+  const startedAt = validDate(
     party?.started_at || party?.startedAt || party?.startAt || party?.created_at || party?.createdAt,
+    now,
+  );
+  const durationDays = Math.max(1, Number(party?.duration_days || party?.durationDays || XTY_DEFAULT_DURATION_DAYS));
+  const strictEnd = scheduledEndAt(startedAt, durationDays, party?.timezone || XTY_TIMEZONE);
+  const storedValue = party?.scheduled_end_at || party?.scheduledEndAt;
+  const storedEnd = storedValue ? validDate(storedValue, strictEnd) : strictEnd;
+  /* Older parties may have a midnight-based scheduled_end_at. Never let
+     that legacy timestamp shorten the duration selected by the player. */
+  const end = new Date(Math.max(strictEnd.getTime(), storedEnd.getTime()));
+  const day = Math.min(durationDays, partyDayNumber(
+    startedAt,
     now,
     party?.timezone || XTY_TIMEZONE,
   ));
