@@ -10,6 +10,7 @@ import { cardById } from '../../xty/_shared/cards.js';
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const BUDGETS = Object.freeze({ quiet: 1, normal: 3, social: 5 });
 const DEFAULT_BUDGET = 'normal';
+const CONTEXT_PRESETS = Object.freeze(['xircle', 'xircle_xvisor']);
 
 function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
@@ -155,7 +156,10 @@ export async function handleCreatePartyV2(req, res) {
 
     const budget = BUDGETS[body.budget] ? body.budget : DEFAULT_BUDGET;
     const verificationMode = normalizeVerificationMode(body.verificationMode);
-    const preset = verificationMode === 'confirm' ? 'verified' : 'casual';
+    const requestedPreset = clean(body.preset, 40);
+    const preset = CONTEXT_PRESETS.includes(requestedPreset)
+      ? requestedPreset
+      : (verificationMode === 'confirm' ? 'verified' : 'casual');
     const durationDays = [7, 14, 28].includes(Number(body.durationDays)) ? Number(body.durationDays) : 7;
     const color = ['red', 'green', 'blue', 'silver'].includes(body.color) ? body.color : 'green';
     const visibility = ['public', 'private'].includes(body.visibility) ? body.visibility : 'private';
@@ -198,6 +202,9 @@ export async function handleCreatePartyV2(req, res) {
       try {
         const eventData = JSON.stringify({
           name, coverType, leadCardId, npcCardId, alias, verificationMode, quotaSystem: 'v2', quotaKey,
+          origin: CONTEXT_PRESETS.includes(preset) ? 'xircle' : null,
+          careMode: preset === 'xircle_xvisor' ? 'xvisor' : null,
+          guideId: preset === 'xircle_xvisor' ? 'xvisor_white_cat_silver' : null,
         });
         const rows = await sql.query(`WITH guard AS (
             SELECT pg_advisory_xact_lock(hashtext($1))
