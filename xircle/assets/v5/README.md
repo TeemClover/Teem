@@ -4,11 +4,12 @@ All top-level `/xircle/**` product pages are designed to work without final art.
 
 ## Production rules
 - No baked-in headline text unless explicitly requested.
-- Keep the focal subject inside the center safe zone for responsive crop.
-- Export WebP for website use.
+- Thai-first: user-facing explanatory copy in generated images should be natural Thai; keep English for official product names only when appropriate.
+- Export WebP for website use when possible. Existing O4/O5/O6 production assets are PNG and are referenced as PNG.
 - Prefer crisp premium product/editorial illustration over stock-photo or generic AI-neon visuals.
 - Xircle world: deep green / cream / cyan / mint / restrained gold, cinematic and clean.
-- XTY White Cat world: warm cream paper / graphite / mint / restrained gold, tactile notebook feel.
+- XTY White Cat world: warm cream / graphite / mint / restrained gold, tactile notebook feel.
+- **Browser rule: generated artwork is a completed canvas. Do not crop it again in CSS.** Use `object-fit: contain` and preserve the declared ratio so baked Thai UI/copy stays readable on desktop and mobile.
 
 ## P0 — make these first
 | File | Ratio | Recommended size | Route / moment |
@@ -18,7 +19,7 @@ All top-level `/xircle/**` product pages are designed to work without final art.
 | `xircle-s08-seeing-not-doing.webp` | 16:9 | 1920×1080 | Knowing ≠ Doing |
 | `xircle-s09-connected-loop.webp` | 4:3 | 1600×1200 | connected loop + first strong White Cat presence |
 | `xircle-care-hero.webp` | 16:9 | 1920×1080 | Human Care hero |
-| `xircle-opportunity-o6-whitecat-reveal.webp` | 4:3 | 1600×1200 | full White Cat reveal |
+| `xircle-opportunity-o6-whitecat-reveal.png` | 4:3 | 1600×1200 | full White Cat reveal |
 | `xircle-party-create-hero.webp` | 16:9 | 1920×1080 | Xircle → XTY Create transition |
 | `xircle-party-join-hero.webp` | 16:9 | 1920×1080 | Join invitation transition |
 
@@ -36,8 +37,8 @@ All top-level `/xircle/**` product pages are designed to work without final art.
 | `xircle-opportunity-o1-signal.webp` | 4:3 | 1600×1200 |
 | `xircle-opportunity-o2-context.webp` | 3:2 | 1800×1200 |
 | `xircle-opportunity-o3-followup.webp` | 4:3 | 1600×1200 |
-| `xircle-opportunity-o4-boundary.webp` | 4:3 | 1600×1200 |
-| `xircle-opportunity-o5-summary.webp` | 4:3 | 1600×1200 |
+| `xircle-opportunity-o4-boundary.png` | 4:3 | 1600×1200 |
+| `xircle-opportunity-o5-summary.png` | 4:3 | 1600×1200 |
 
 ## P2 — supporting pages
 | File | Ratio | Recommended size |
@@ -53,11 +54,11 @@ All top-level `/xircle/**` product pages are designed to work without final art.
 ## Optional reusable character asset
 - `whitecat-guide-cutout.webp` — 1:1 canvas, 1600×1600, transparent background preferred.
 
-## Safe-zone rule
-- 16:9 hero: keep critical subject/action inside center ~70%; mobile may crop toward 4:3.
-- 4:3 scene: keep critical subject inside center ~80%.
-- 3:2 editorial scene: avoid important faces/details at extreme left/right edges.
-- 1:1: keep the full score/character system comfortably inside center 82%.
+## Display rule
+- Keep the full source canvas visible on desktop and mobile.
+- Preserve the declared 16:9 / 4:3 / 3:2 / 1:1 ratio.
+- Letterboxing on very narrow screens is acceptable; cutting baked UI, Thai copy, faces, or diagrams is not.
+- Primary website narration remains HTML/CSS; generated text should stay minimal.
 
 ## Naming rule
 Do not rename these files after generation. The HTML already points to these paths; uploading a file with the matching name replaces the CSS fallback automatically.
