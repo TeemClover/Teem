@@ -20,7 +20,6 @@
     });
   }
   function revealBeats(scope){
-    /* Do not hide before JS. When JS is alive, use WAAPI from visible-ish to visible. */
     if(reduced||!scope||!Element.prototype.animate)return;
     qsa('[data-beat]',scope).forEach(function(el,i){
       try{el.animate([{opacity:.35,transform:'translateY(9px)',filter:'blur(2px)'},{opacity:1,transform:'none',filter:'none'}],{duration:420,delay:i*70,easing:'cubic-bezier(.2,.78,.18,1)',fill:'both'})}catch(e){}
@@ -107,7 +106,11 @@
         btn.classList.add(good?'correct':'wrong');
         if(out){
           out.className='xp-consequence '+(good?'good':'bad');out.hidden=false;
-          out.innerHTML=good?'<strong>'+String(btn.getAttribute('data-good-title')||'ดี')</strong><p>'+String(btn.getAttribute('data-good-body')||'')+'</p>':'<strong>'+String(btn.getAttribute('data-bad-title')||'ลองอีกทาง')</strong><p>'+String(btn.getAttribute('data-bad-body')||'')+'</p>';
+          if(good){
+            out.innerHTML='<strong>'+String(btn.getAttribute('data-good-title')||'ดี')+'</strong><p>'+String(btn.getAttribute('data-good-body')||'')+'</p>';
+          }else{
+            out.innerHTML='<strong>'+String(btn.getAttribute('data-bad-title')||'ลองอีกทาง')+'</strong><p>'+String(btn.getAttribute('data-bad-body')||'')+'</p>';
+          }
         }
         if(next)next.disabled=!good;
         if(good&&btn.getAttribute('data-sim-choice')==='boundary')safeState(function(s){s.setLocal&&s.setLocal('xvisorSimCompleted',true)});
