@@ -7,7 +7,7 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#04100d">
 <title>Try Being an X-VISOR — Xircle</title>
-<meta name="description" content="ลองนั่งเก้าอี้คนดูแลจริง ๆ ก่อนตัดสินใจอะไรทั้งนั้น — งานมาก่อนคำชวน">
+<meta name="description" content="ลองดูงาน X-VISOR ผ่านเคสสั้น ๆ ก่อนตัดสินใจ">
 <link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
 <link rel="stylesheet" href="/xircle/_shared/playable.css?v=2">
 </head>
@@ -16,12 +16,9 @@
 <div class="px-progress" aria-hidden="true"><i id="opp-progress" style="width:5%"></i></div>
 <header class="px-top">
   <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
-  <a class="px-exit" href="/xircle/start/">กลับหน้าเริ่มวัน</a>
+  <a class="px-exit" href="/xircle/care/">Human Care</a>
 </header>
 
-<!-- X-VISOR Job Simulator (Blueprint §25–§27).
-     Rules: fictional cases only, no diagnosis, no income numbers,
-     workload is visible before any revenue story. -->
 <main class="px-stage" id="stage">
 
   <section class="scene has-visual" data-scene="O0" data-progress="5" aria-label="แนะนำ">
@@ -36,11 +33,11 @@
         <p class="px-kicker gold fx">TRY BEING AN X-VISOR</p>
         <h1 class="px-title fx d1">บางครั้งข้อมูลบอกว่า<br>อะไรเปลี่ยน</h1>
         <p class="px-lede fx d2">แต่คนช่วยกันคิดว่า<strong>ควรทำอะไรต่อ</strong></p>
-        <p class="px-whisper fx d3">X-VISOR คือ Health Partner ที่ผ่านการเรียนและ Certification เพื่อช่วยแปลข้อมูลเป็นการดูแล — ไม่ใช่แพทย์ และไม่วินิจฉัยโรค</p>
-        <p class="px-note fx d3">เคสทั้งหมดต่อจากนี้เป็นเรื่องสมมติ สร้างขึ้นเพื่อให้คุณได้ลองสัมผัสเนื้องานจริง</p>
+        <p class="px-whisper fx d3">X-VISOR คือ Health Partner ที่ผ่านการเรียนและ Certification เพื่อช่วยแปลข้อมูลเป็นการดูแล — ไม่วินิจฉัยโรค</p>
+        <p class="px-note fx d3">เคสต่อไปเป็นเรื่องสมมติ เพื่อให้ลองดูเนื้องานจริง</p>
       </div>
       <div class="scene-foot">
-        <button type="button" class="px-cta fx d4" data-next="O1" id="sim-start">เปิดกะเช้าของคนดูแล</button>
+        <button type="button" class="px-cta fx d4" data-next="O1" id="sim-start">ลองดูงาน X-VISOR →</button>
       </div>
     </div>
   </section>
@@ -48,7 +45,7 @@
   <section class="scene" data-scene="O1" data-progress="30" aria-label="เลือกเคส">
     <div class="scene-inner">
       <div class="scene-body">
-        <p class="px-time fx">08:05 · สามคนในการดูแลของคุณ</p>
+        <p class="px-time fx">WORKLIST · 3 คนในการดูแลของคุณ</p>
         <h2 class="px-title fx d1">วันนี้คุณจะ<br>ดูแลใครก่อน?</h2>
         <div class="case-list fx d2" id="case-list" role="group" aria-label="เลือกหนึ่งคน"></div>
         <article class="px-card strong" id="case-detail" hidden style="margin-top:18px"></article>
@@ -68,7 +65,7 @@
         <div class="trust-c" id="opener-feedback" role="note" style="margin-top:18px"></div>
       </div>
       <div class="scene-foot">
-        <button type="button" class="px-cta reveal-later" data-next="O3" id="to-workload">งานทั้งเดือนหน้าตาเป็นไง?</button>
+        <button type="button" class="px-cta reveal-later" data-next="O3" id="to-workload">หนึ่งเดือนต้องทำอะไรบ้าง?</button>
       </div>
     </div>
   </section>
@@ -76,15 +73,15 @@
   <section class="scene" data-scene="O3" data-progress="80" aria-label="ปริมาณงาน">
     <div class="scene-inner">
       <div class="scene-body">
-        <p class="px-kicker fx">WORKLOAD — BEFORE ANYTHING ELSE</p>
+        <p class="px-kicker fx">WORKLOAD</p>
         <h2 class="px-title fx d1">ถ้าคุณดูแล<br>ลูกค้า 5 คน</h2>
-        <p class="px-whisper fx d1">นี่คืองานจริงที่ตามมา ไม่ใช่ภาพฝัน</p>
+        <p class="px-whisper fx d1">นี่คืองานที่ต้องถือจังหวะให้ต่อเนื่อง</p>
         <div class="workload-grid fx d2" id="workload-list"></div>
         <p class="px-lede fx d3" style="font-size:18px;margin-top:26px"><strong>ยังอยากทำไหม?</strong></p>
-        <p class="px-whisper fx d3">ถ้าคำตอบคือ “ใช่” — เส้นทางเริ่มจากการเรียน ไม่ใช่การขาย</p>
+        <p class="px-whisper fx d3">ถ้าใช่ — เริ่มจากเรียนและฝึกก่อน</p>
       </div>
       <div class="scene-foot">
-        <button type="button" class="px-cta" data-next="O4" id="sim-complete">ดูเส้นทางของคนที่เลือกทางนี้</button>
+        <button type="button" class="px-cta" data-next="O4" id="sim-complete">ดูเครื่องมือที่ช่วยทำงานนี้ →</button>
       </div>
     </div>
   </section>
@@ -102,20 +99,20 @@
           <p style="font-size:15px;margin:12px 0 0;color:var(--cream-dim)" class="en">SELL → MENTOR → MANAGE → EXPAND</p>
         </div>
 
-        <p class="px-note fx d3">หน้านี้ไม่มีตัวเลขรายได้ — ตั้งใจ ไม่ใช่ลืม รายละเอียดค่าตอบแทนอยู่ในชั้นข้อมูลที่ต้องคุยกับคนจริงและตรวจทานแล้วเท่านั้น</p>
+        <p class="px-note fx d3">ไม่มีตัวเลขรายได้ในหน้านี้ รายละเอียดค่าตอบแทนต้องตรวจทานและคุยกับคนจริง</p>
 
         <div class="fork-grid fx d3">
           <a class="fork-card health" href="/xircle/start/" id="fork-health">
             <b>MY HEALTH</b>
-            <h3>ขอใช้ระบบเพื่อตัวเองก่อน</h3>
-            <p>ไม่ต้องรีบตัดสินใจ — วงจะยังอยู่ตรงนี้</p>
-            <span class="go">กลับหน้าเริ่มวัน →</span>
+            <h3>กลับไปใช้ Xircle</h3>
+            <p>ทำของตัวเองต่อ</p>
+            <span class="go">กลับหน้า Today →</span>
           </a>
           <a class="fork-card care" href="/xircle/care/" id="fork-care">
-            <b>HELP OTHERS</b>
-            <h3>อยากเรียนรู้เส้นทางนี้ต่อ</h3>
-            <p>ทำความรู้จัก CARE, การเรียน และ Certification</p>
-            <span class="go">เข้าโซน Human Care →</span>
+            <b>HUMAN CARE</b>
+            <h3>อ่านระบบ X-VISOR ต่อ</h3>
+            <p>บทบาท CARE และ Certification</p>
+            <span class="go">เปิด Human Care →</span>
           </a>
         </div>
       </div>
@@ -127,12 +124,10 @@
 
 </main>
 
-<script src="/xircle/_shared/state.js?v=2"></script>
+<script src="/xircle/_shared/state.js?v=3"></script>
 <script src="/xircle/_shared/analytics.js?v=2"></script>
 <script src="/xircle/_shared/source-drawer.js?v=2"></script>
 <script>
-/* Mini scene driver for the job simulator — same patterns as playable.js
-   but scoped to this page. Case data comes from /xircle/data/opportunity.json. */
 (function () {
   "use strict";
   var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
