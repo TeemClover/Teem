@@ -3,6 +3,7 @@
    existing quota-v2 persistence model. */
 
 import { getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET } from './store.js';
+import { applyXircleCreateDefaults } from './xvisor-care.js';
 
 const K_PARTIES = 'mc_xty_parties';
 const K_TOKENS = 'mc_xty_tokens';
@@ -28,10 +29,13 @@ function remember(result) {
   return party;
 }
 
-export async function createPartyV2({
-  name, activity, activityId, preset, verificationMode = 'trust', durationDays, color, visibility,
-  commitRule, budget, petId, coverType = 'card_back', leadCardId, npcCardId, partyAvatar, core7CardId,
-}) {
+export async function createPartyV2(options = {}) {
+  const applied = applyXircleCreateDefaults(options);
+  const {
+    name, activity, activityId, preset, verificationMode = 'trust', durationDays, color, visibility,
+    commitRule, budget, petId, coverType = 'card_back', leadCardId, npcCardId, partyAvatar, core7CardId,
+  } = applied;
+
   const profile = getProfile();
   if (!profile) { const error = new Error('NO_PROFILE'); error.code = 'NO_PROFILE'; throw error; }
 
