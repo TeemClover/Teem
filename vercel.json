@@ -2,127 +2,460 @@
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "xty.myclover.com" }],
-      "destination": "https://myclover.com/xty/about",
+      "has": [
+        {
+          "type": "host",
+          "value": "xty.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/xty/about/",
       "permanent": false
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "xircle.myclover.com" }],
-      "destination": "https://myclover.com/xircle",
+      "has": [
+        {
+          "type": "host",
+          "value": "xircle.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/xircle/",
       "permanent": false
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "teem.myclover.com" }],
-      "destination": "https://myclover.com/resume",
+      "has": [
+        {
+          "type": "host",
+          "value": "teem.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/resume/",
       "permanent": false
     },
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "ako.myclover.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "ako.myclover.com"
+        }
+      ],
       "destination": "https://youtube.com/@akosohungry",
       "permanent": false
     },
-    { "source": "/guild", "destination": "/guild/", "permanent": false },
-    { "source": "/xircle", "destination": "/xircle/", "permanent": false },
-    { "source": "/xircle/start", "destination": "/xircle/start/", "permanent": false },
-    { "source": "/xircle/circle", "destination": "/xircle/circle/", "permanent": false },
-    { "source": "/xircle/ghost", "destination": "/xircle/ghost/", "permanent": false },
-    { "source": "/xircle/routinex", "destination": "/xircle/routinex/", "permanent": false },
-    { "source": "/xircle/hardware", "destination": "/xircle/hardware/", "permanent": false },
-    { "source": "/xircle/products", "destination": "/xircle/products/", "permanent": false },
-    { "source": "/xircle/care", "destination": "/xircle/care/", "permanent": false },
-    { "source": "/xircle/opportunity", "destination": "/xircle/opportunity/", "permanent": false },
-    { "source": "/xircle/learn", "destination": "/xircle/learn/", "permanent": false },
-    { "source": "/xty", "destination": "/xty/", "permanent": false },
-    { "source": "/xty/new", "destination": "/xty/new/", "permanent": false },
-    { "source": "/xty/join", "destination": "/xty/join/", "permanent": false },
-    { "source": "/xty/p", "destination": "/xty/p/", "permanent": false },
-    { "source": "/xty/about", "destination": "/xty/about/", "permanent": false },
-    { "source": "/xty/about/why", "destination": "/xty/about/why/", "permanent": false },
-    { "source": "/xty/about/how", "destination": "/xty/about/how/", "permanent": false },
-    { "source": "/xty/about/what", "destination": "/xty/about/what/", "permanent": false },
-    { "source": "/profile", "destination": "/profile/", "permanent": false },
-    { "source": "/xircle/doc", "destination": "/xircle/doc/", "permanent": false },
-    { "source": "/xircle2", "destination": "/xircle/doc/", "permanent": false },
-    { "source": "/xircle2/", "destination": "/xircle/doc/", "permanent": false },
-    { "source": "/xircle2/:path*", "destination": "/xircle/doc/:path*", "permanent": false },
-    { "source": "/xircle/app/:path*", "destination": "/xircle/doc/app/:path*", "permanent": false },
-    { "source": "/xircle/habix/:path*", "destination": "/xircle/doc/habix/:path*", "permanent": false },
-    { "source": "/xircle/ecosystem/:path*", "destination": "/xircle/doc/ecosystem/:path*", "permanent": false },
-    { "source": "/xircle/xvisor/:path*", "destination": "/xircle/doc/xvisor/:path*", "permanent": false },
-    { "source": "/xircle/xos/:path*", "destination": "/xircle/doc/xos/:path*", "permanent": false },
-    { "source": "/xircle/commerce/:path*", "destination": "/xircle/doc/commerce/:path*", "permanent": false },
-    { "source": "/xircle/academy/:path*", "destination": "/xircle/doc/academy/:path*", "permanent": false },
-    { "source": "/xircle/source/:path*", "destination": "/xircle/doc/source/:path*", "permanent": false },
-    { "source": "/xircle/_shared/experience.css", "destination": "/xircle/doc/_shared/experience.css", "permanent": false },
-    { "source": "/xircle/_shared/story.css", "destination": "/xircle/doc/_shared/story.css", "permanent": false },
-    { "source": "/xircle/_shared/story.js", "destination": "/xircle/doc/_shared/story.js", "permanent": false },
-    { "source": "/xircle/assets/source/:path*", "destination": "/xircle/doc/assets/source/:path*", "permanent": false },
-    { "source": "/xircle/assets/generated/:path*", "destination": "/xircle/doc/assets/generated/:path*", "permanent": false },
-    { "source": "/xircle/assets/campaign/:path*", "destination": "/xircle/doc/assets/campaign/:path*", "permanent": false },
-    { "source": "/app", "destination": "/xircle/doc/app/", "permanent": false },
-    { "source": "/app/", "destination": "/xircle/doc/app/", "permanent": false },
-    { "source": "/routinex", "destination": "/xircle/routinex/", "permanent": false },
-    { "source": "/routinex/", "destination": "/xircle/routinex/", "permanent": false },
-    { "source": "/habix", "destination": "/xircle/doc/habix/", "permanent": false },
-    { "source": "/habix/", "destination": "/xircle/doc/habix/", "permanent": false },
-    { "source": "/ecosystem", "destination": "/xircle/doc/ecosystem/", "permanent": false },
-    { "source": "/ecosystem/", "destination": "/xircle/doc/ecosystem/", "permanent": false },
-    { "source": "/xvisor", "destination": "/xircle/doc/xvisor/", "permanent": false },
-    { "source": "/xvisor/", "destination": "/xircle/doc/xvisor/", "permanent": false },
-    { "source": "/xos", "destination": "/xircle/doc/xos/", "permanent": false },
-    { "source": "/xos/", "destination": "/xircle/doc/xos/", "permanent": false },
-    { "source": "/commerce", "destination": "/xircle/doc/commerce/", "permanent": false },
-    { "source": "/commerce/", "destination": "/xircle/doc/commerce/", "permanent": false },
-    { "source": "/academy", "destination": "/xircle/doc/academy/", "permanent": false },
-    { "source": "/academy/", "destination": "/xircle/doc/academy/", "permanent": false },
-    { "source": "/kickstart/", "destination": "/kickstarter/", "permanent": true },
-    { "source": "/core7/assets/card-back-core7.png", "destination": "/core7/assets/card-back-core7.webp", "permanent": true },
-    { "source": "/core7/assets/core7-rules-overview.png", "destination": "/core7/assets/core7-rules-overview.webp", "permanent": true }
+    {
+      "source": "/guild",
+      "destination": "/guild/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle",
+      "destination": "/xircle/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/start",
+      "destination": "/xircle/start/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/circle",
+      "destination": "/xircle/circle/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/ghost",
+      "destination": "/xircle/ghost/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/routinex",
+      "destination": "/xircle/routinex/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/hardware",
+      "destination": "/xircle/hardware/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/products",
+      "destination": "/xircle/products/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/care",
+      "destination": "/xircle/care/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/opportunity",
+      "destination": "/xircle/opportunity/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/learn",
+      "destination": "/xircle/learn/",
+      "permanent": false
+    },
+    {
+      "source": "/xty",
+      "destination": "/xty/",
+      "permanent": false
+    },
+    {
+      "source": "/xty/new",
+      "destination": "/xty/new/",
+      "permanent": false
+    },
+    {
+      "source": "/xty/join",
+      "destination": "/xty/join/",
+      "permanent": false
+    },
+    {
+      "source": "/xty/p",
+      "destination": "/xty/p/",
+      "permanent": false
+    },
+    {
+      "source": "/xty/about",
+      "destination": "/xty/about/",
+      "permanent": false
+    },
+    {
+      "source": "/xty/about/why",
+      "destination": "/xty/about/why/",
+      "permanent": false
+    },
+    {
+      "source": "/xty/about/how",
+      "destination": "/xty/about/how/",
+      "permanent": false
+    },
+    {
+      "source": "/xty/about/what",
+      "destination": "/xty/about/what/",
+      "permanent": false
+    },
+    {
+      "source": "/profile",
+      "destination": "/profile/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/doc",
+      "destination": "/xircle/doc/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle2",
+      "destination": "/xircle/doc/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle2/",
+      "destination": "/xircle/doc/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle2/:path*",
+      "destination": "/xircle/doc/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/app/:path*",
+      "destination": "/xircle/doc/app/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/habix/:path*",
+      "destination": "/xircle/doc/habix/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/ecosystem/:path*",
+      "destination": "/xircle/doc/ecosystem/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/xvisor/:path*",
+      "destination": "/xircle/doc/xvisor/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/xos/:path*",
+      "destination": "/xircle/doc/xos/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/commerce/:path*",
+      "destination": "/xircle/doc/commerce/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/academy/:path*",
+      "destination": "/xircle/doc/academy/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/source/:path*",
+      "destination": "/xircle/doc/source/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/_shared/experience.css",
+      "destination": "/xircle/doc/_shared/experience.css",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/_shared/story.css",
+      "destination": "/xircle/doc/_shared/story.css",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/_shared/story.js",
+      "destination": "/xircle/doc/_shared/story.js",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/assets/source/:path*",
+      "destination": "/xircle/doc/assets/source/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/assets/generated/:path*",
+      "destination": "/xircle/doc/assets/generated/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/assets/campaign/:path*",
+      "destination": "/xircle/doc/assets/campaign/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/app",
+      "destination": "/xircle/doc/app/",
+      "permanent": false
+    },
+    {
+      "source": "/app/",
+      "destination": "/xircle/doc/app/",
+      "permanent": false
+    },
+    {
+      "source": "/routinex",
+      "destination": "/xircle/routinex/",
+      "permanent": false
+    },
+    {
+      "source": "/routinex/",
+      "destination": "/xircle/routinex/",
+      "permanent": false
+    },
+    {
+      "source": "/habix",
+      "destination": "/xircle/doc/habix/",
+      "permanent": false
+    },
+    {
+      "source": "/habix/",
+      "destination": "/xircle/doc/habix/",
+      "permanent": false
+    },
+    {
+      "source": "/ecosystem",
+      "destination": "/xircle/doc/ecosystem/",
+      "permanent": false
+    },
+    {
+      "source": "/ecosystem/",
+      "destination": "/xircle/doc/ecosystem/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor",
+      "destination": "/xircle/doc/xvisor/",
+      "permanent": false
+    },
+    {
+      "source": "/xvisor/",
+      "destination": "/xircle/doc/xvisor/",
+      "permanent": false
+    },
+    {
+      "source": "/xos",
+      "destination": "/xircle/doc/xos/",
+      "permanent": false
+    },
+    {
+      "source": "/xos/",
+      "destination": "/xircle/doc/xos/",
+      "permanent": false
+    },
+    {
+      "source": "/commerce",
+      "destination": "/xircle/doc/commerce/",
+      "permanent": false
+    },
+    {
+      "source": "/commerce/",
+      "destination": "/xircle/doc/commerce/",
+      "permanent": false
+    },
+    {
+      "source": "/academy",
+      "destination": "/xircle/doc/academy/",
+      "permanent": false
+    },
+    {
+      "source": "/academy/",
+      "destination": "/xircle/doc/academy/",
+      "permanent": false
+    },
+    {
+      "source": "/kickstart/",
+      "destination": "/kickstarter/",
+      "permanent": true
+    },
+    {
+      "source": "/core7/assets/card-back-core7.png",
+      "destination": "/core7/assets/card-back-core7.webp",
+      "permanent": true
+    },
+    {
+      "source": "/core7/assets/core7-rules-overview.png",
+      "destination": "/core7/assets/core7-rules-overview.webp",
+      "permanent": true
+    }
   ],
   "headers": [
     {
       "source": "/xty/assets/pets/:path*",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
       "source": "/xty/assets/avatars/:path*",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
       "source": "/core7/assets/(card-back-core7|core7-rules-overview).webp",
       "headers": [
-        { "key": "Content-Type", "value": "image/webp" },
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Content-Type",
+          "value": "image/webp"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
-    { "source": "/kickstarter/", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/kickstarter/kickstarter.js", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/kickstarter/kickstarter-distilled.js", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/kickstarter/kickstarter-distilled-legacy.js", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/kickstarter/kickstarter.css", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/kickstarter/kickstarter-v2.css", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/kickstarter/kickstarter-failsafe.css", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] },
-    { "source": "/kickstarter/kickstarter-static-story.css", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] }
+    {
+      "source": "/kickstarter/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/kickstarter/kickstarter.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/kickstarter/kickstarter-distilled.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/kickstarter/kickstarter-distilled-legacy.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/kickstarter/kickstarter.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/kickstarter/kickstarter-v2.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/kickstarter/kickstarter-failsafe.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/kickstarter/kickstarter-static-story.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
   ],
   "rewrites": [
     {
-      "source": "/api/auth",
-      "destination": "/api/auth/__root"
-    },
-    {
-      "source": "/api/xty",
-      "destination": "/api/xty/__root"
+      "source": "/api/auth/:path*",
+      "destination": "/api/auth?path=:path*"
     },
     {
       "source": "/api/xty/party/:code/finish",
       "destination": "/api/xty-party-finish?code=:code"
     },
     {
+      "source": "/api/xty/:path*",
+      "destination": "/api/xty?path=:path*"
+    },
+    {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "xircle.myclover.com" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "xircle.myclover.com"
+        }
+      ],
       "destination": "/xircle/:path*"
     }
   ]
