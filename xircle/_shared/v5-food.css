@@ -1,0 +1,37 @@
+/* Xircle v5 — Eat / camera capture moment. Enhancement-only; never hides the page shell. */
+.xp-food-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:23px}
+.xp-food-choice{appearance:none;color:var(--xp-ink);text-align:left;padding:15px;border:1px solid var(--xp-line2);border-radius:20px;background:rgba(255,255,255,.035);cursor:pointer;transition:.22s var(--xp-ease)}
+.xp-food-choice:hover{transform:translateY(-2px);background:rgba(255,255,255,.065)}
+.xp-food-choice[aria-pressed=true]{border-color:rgba(143,220,175,.7);background:rgba(143,220,175,.11);box-shadow:0 0 0 1px rgba(143,220,175,.12),0 18px 45px rgba(0,0,0,.18)}
+.xp-food-choice b{display:block;font-size:17px}.xp-food-choice small{display:block;margin-top:5px;color:var(--xp-dim);line-height:1.42}
+.xp-camera-wrap{position:absolute;inset:0;z-index:2;padding:18px;display:grid;grid-template-rows:1fr auto;gap:12px;background:radial-gradient(circle at 50% 26%,rgba(123,215,232,.08),transparent 34%),linear-gradient(155deg,#07120f,#0b1b16)}
+.xp-camera-view{position:relative;overflow:hidden;border-radius:25px;border:1px solid rgba(245,240,230,.16);background:linear-gradient(145deg,#15251d,#0b1511);min-height:0;isolation:isolate}
+.xp-camera-view>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.82;filter:saturate(.92) contrast(1.02)}
+.xp-camera-view:before,.xp-camera-view:after{content:"";position:absolute;z-index:7;pointer-events:none}
+.xp-camera-view:before{inset:15px;border:1px solid rgba(245,240,230,.16);border-radius:19px;background:linear-gradient(#7bd7e8,#7bd7e8) left top/28px 2px no-repeat,linear-gradient(#7bd7e8,#7bd7e8) left top/2px 28px no-repeat,linear-gradient(#7bd7e8,#7bd7e8) right top/28px 2px no-repeat,linear-gradient(#7bd7e8,#7bd7e8) right top/2px 28px no-repeat,linear-gradient(#7bd7e8,#7bd7e8) left bottom/28px 2px no-repeat,linear-gradient(#7bd7e8,#7bd7e8) left bottom/2px 28px no-repeat,linear-gradient(#7bd7e8,#7bd7e8) right bottom/28px 2px no-repeat,linear-gradient(#7bd7e8,#7bd7e8) right bottom/2px 28px no-repeat;opacity:.72}
+.xp-camera-view:after{left:13%;right:13%;top:50%;height:1px;background:linear-gradient(90deg,transparent,rgba(123,215,232,.88),transparent);box-shadow:0 0 18px rgba(123,215,232,.7);opacity:.18}
+.xp-camera-placeholder{position:absolute;inset:0;display:grid;place-items:center;z-index:1}
+.xp-camera-plate{position:relative;width:min(68%,330px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#e9e0c9 0 52%,#c6b99e 53% 56%,transparent 57%);filter:drop-shadow(0 26px 38px rgba(0,0,0,.32))}
+.xp-camera-plate:before{content:"";position:absolute;width:29%;height:22%;left:23%;top:30%;border-radius:55%;background:#8fdcaf;box-shadow:90px 55px 0 #e6c483,66px -20px 0 #efa46e,-25px 78px 0 #7bd7e8;opacity:.83}
+.xp-camera-status{position:absolute;z-index:8;left:28px;top:27px;display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:rgba(4,14,11,.58);border:1px solid rgba(245,240,230,.13);backdrop-filter:blur(12px);font:800 9px/1 var(--font-ui);letter-spacing:.12em;color:var(--xp-soft)}
+.xp-camera-status i{width:7px;height:7px;border-radius:50%;background:var(--xp-green);box-shadow:0 0 0 5px rgba(143,220,175,.1)}
+.xp-camera-scan{position:absolute;z-index:9;left:8%;right:8%;height:2px;top:12%;opacity:0;background:linear-gradient(90deg,transparent,var(--xp-cyan),#fff,var(--xp-cyan),transparent);box-shadow:0 0 24px rgba(123,215,232,.85)}
+.xp-camera-flash{position:absolute;z-index:12;inset:0;background:#fff;opacity:0;pointer-events:none}
+.xp-camera-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 5px 0;color:var(--xp-dim);font-size:10px;letter-spacing:.08em}
+.xp-shutter{width:56px;height:56px;flex:0 0 56px;border-radius:50%;border:2px solid rgba(245,240,230,.65);background:transparent;display:grid;place-items:center;cursor:pointer;transition:.2s}
+.xp-shutter:after{content:"";width:40px;height:40px;border-radius:50%;background:var(--xp-ink);transition:.2s}
+.xp-shutter:not(:disabled):hover{transform:scale(1.05)}.xp-shutter:disabled{opacity:.3;cursor:not-allowed}.xp-shutter:disabled:after{background:var(--xp-dim)}
+.xp-camera-help{max-width:160px;line-height:1.35}.xp-camera-help.right{text-align:right}
+.xp-food-result{display:none;position:absolute;z-index:14;left:7%;right:7%;bottom:8%;padding:18px 20px;border-radius:20px;border:1px solid rgba(143,220,175,.34);background:rgba(7,18,15,.88);backdrop-filter:blur(18px);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.xp-food-result .xp-label{color:var(--xp-green)}.xp-food-result strong{display:block;margin-top:7px;font-size:23px}.xp-food-result p{margin:6px 0 0;color:var(--xp-soft);font-size:12px;line-height:1.5}
+.xp-camera-wrap[data-state="scanning"] .xp-camera-scan{opacity:1;animation:xpFoodScan 1.18s cubic-bezier(.32,.02,.28,1) both}
+.xp-camera-wrap[data-state="scanning"] .xp-camera-flash{animation:xpFoodFlash .32s .08s ease both}
+.xp-camera-wrap[data-state="scanning"] .xp-camera-view{animation:xpFoodPress .3s ease both}
+.xp-camera-wrap[data-state="captured"] .xp-food-result{display:block;animation:xpFoodResult .5s var(--xp-ease) both}
+.xp-camera-wrap[data-state="captured"] .xp-camera-status i{background:var(--xp-gold);box-shadow:0 0 0 5px rgba(230,196,131,.1)}
+@keyframes xpFoodScan{0%{top:12%;opacity:0}12%{opacity:1}88%{opacity:1}100%{top:86%;opacity:0}}
+@keyframes xpFoodFlash{0%,100%{opacity:0}40%{opacity:.72}}
+@keyframes xpFoodPress{50%{transform:scale(.992)}}
+@keyframes xpFoodResult{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+@media(max-width:620px){.xp-food-choices{grid-template-columns:1fr}.xp-camera-wrap{padding:12px}.xp-camera-view{border-radius:20px}.xp-camera-status{left:20px;top:20px}.xp-camera-controls{font-size:9px}.xp-food-result{left:5%;right:5%;bottom:6%;padding:15px}.xp-food-result strong{font-size:20px}}
+@media(prefers-reduced-motion:reduce){.xp-camera-wrap[data-state="scanning"] .xp-camera-scan{animation:none;top:76%;opacity:.8}.xp-camera-wrap[data-state="scanning"] .xp-camera-flash,.xp-camera-wrap[data-state="scanning"] .xp-camera-view{animation:none}}
