@@ -5,11 +5,14 @@ const code = new URLSearchParams(location.search).get('c');
 const ACTIVE_STATES = new Set(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const COLOR_TH = Object.freeze({ red: 'แดง', green: 'เขียว', blue: 'น้ำเงิน', silver: 'เงิน' });
 const IDENTITY_EDIT_WINDOW_MS = 24 * 60 * 60 * 1000;
+const PARTY_SETTINGS_WINDOW_MS = 24 * 60 * 60 * 1000;
 const FILE_EXT = /\.(?:pdf|zip|rar|7z|tar|gz|docx?|xlsx?|pptx?|csv|tsv|txt|md|json|xml|html?|css|js|jsx|ts|tsx|png|jpe?g|gif|webp|svg|heic|mp3|m4a|wav|ogg|mp4|mov|m4v|avi|webm|epub)(?:$|[?#])/i;
 const URL_RE = /(?:(?:https?|ftp):\/\/|www\.)[^\s<>]+|(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}(?:\/[^\s<>]*)?/giu;
 let syncing = false;
 let scheduled = false;
 let identityLockTimer = 0;
+let partySettingsLockTimer = 0;
+let questGateTimer = 0;
 
 if (code && /^\d{5}$/.test(code)) install();
 
@@ -17,6 +20,8 @@ function install() {
   injectStyle();
   installLeaveButton();
   installIdentityCapture();
+  installPartySettingsGuard();
+  installQuestFinishGuard();
   const log = document.getElementById('log');
   if (log) {
     const observer = new MutationObserver(scheduleSync);
@@ -40,6 +45,9 @@ function injectStyle() {
     .leave-party-zone .btn{min-height:46px}
     #myCharacterTools.identity-locked{opacity:.78}
     #myCharacterTools.identity-locked input,#myCharacterTools.identity-locked select{cursor:not-allowed}
+    #partyTools.party-settings-locked .tool-row input,
+    #partyTools.party-settings-locked .tool-row select{cursor:not-allowed;opacity:.72}
+    #partyTools .party-settings-lock-note{margin:0 0 12px}
   `;
   document.head.appendChild(style);
 }
@@ -52,6 +60,8 @@ function scheduleSync() {
     syncTimeline();
     syncLeaveVisibility();
     syncIdentityLock();
+    syncPartySettingsLock();
+    syncQuestFinishGate();
   });
 }
 
@@ -95,7 +105,7 @@ function stamp(value) {
   return d.toLocaleString('th-TH', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 }
 
-function identityLockStamp(value) {
+function lockStamp(value) {
   const d = new Date(value || 0);
   if (!Number.isFinite(d.getTime())) return '';
   return d.toLocaleString('th-TH', {
@@ -103,15 +113,18 @@ function identityLockStamp(value) {
   }) + ' น.';
 }
 
-function identityTimeRemaining(lockedAt) {
-  const remaining = Math.max(0, Number(lockedAt || 0) - Date.now());
+function timeRemaining(until) {
+  const remaining = Math.max(0, Number(until || 0) - Date.now());
   if (remaining <= 0) return 'หมดเวลาแล้ว';
   const totalMinutes = Math.max(1, Math.ceil(remaining / 60000));
-  const hours = Math.floor(totalMinutes / 60);
+  const days = Math.floor(totalMinutes / 1440);
+  const hours = Math.floor((totalMinutes % 1440) / 60);
   const minutes = totalMinutes % 60;
-  if (hours && minutes) return `${hours} ชม. ${minutes} นาที`;
-  if (hours) return `${hours} ชม.`;
-  return `${minutes} นาที`;
+  const chunks = [];
+  if (days) chunks.push(`${days} วัน`);
+  if (hours) chunks.push(`${hours} ชม.`);
+  if (!days && minutes) chunks.push(`${minutes} นาที`);
+  return chunks.join(' ') || 'น้อยกว่า 1 นาที';
 }
 
 function eventNode(event) {
@@ -314,8 +327,8 @@ function syncIdentityLock() {
   if (summary) summary.textContent = state.locked ? 'ตัวละครของฉันในตี้นี้ · ล็อกแล้ว' : 'ตัวละครของฉันในตี้นี้';
   if (note) {
     note.textContent = state.locked
-      ? `ครบ 24 ชม. แล้ว · ชื่อและ Avatar ถูกล็อกตั้งแต่ ${identityLockStamp(state.lockedAt)} เพื่อให้ตัวละครต่อเนื่องจนจบ Quest`
-      : `เหลือเวลาเปลี่ยนได้อีก ${identityTimeRemaining(state.lockedAt)} · เปลี่ยนได้ถึง ${identityLockStamp(state.lockedAt)}`;
+      ? `ครบ 24 ชม. แล้ว · ชื่อและ Avatar ถูกล็อกตั้งแต่ ${lockStamp(state.lockedAt)} เพื่อให้ตัวละครต่อเนื่องจนจบ Quest`
+      : `เหลือเวลาเปลี่ยนได้อีก ${timeRemaining(state.lockedAt)} · เปลี่ยนได้ถึง ${lockStamp(state.lockedAt)}`;
   }
 
   if (identityLockTimer) clearTimeout(identityLockTimer);
@@ -324,6 +337,115 @@ function syncIdentityLock() {
     const untilLock = Math.max(100, state.lockedAt - Date.now() + 50);
     identityLockTimer = setTimeout(syncIdentityLock, Math.min(60000, untilLock));
   }
+}
+
+function partySettingsLockState(party) {
+  const anchor = new Date(party?.createdAt || party?.startAt || 0).getTime();
+  const lockedAt = Number.isFinite(anchor) && anchor > 0 ? anchor + PARTY_SETTINGS_WINDOW_MS : 0;
+  return { lockedAt, locked: !lockedAt || Date.now() >= lockedAt };
+}
+
+function syncPartySettingsLock() {
+  const tools = document.getElementById('partyTools');
+  if (!tools || tools.hidden) return;
+  const party = getParty(code);
+  if (!party) return;
+  const identity = partyIdentity(code);
+  const member = party?.members?.find(item => item.userId === identity?.userId);
+  if (!member || member.role !== 'lead') return;
+
+  const state = partySettingsLockState(party);
+  const summary = tools.querySelector('summary');
+  let note = tools.querySelector('.party-settings-lock-note');
+  if (!note) {
+    note = document.createElement('p');
+    note.className = 'whisper party-settings-lock-note';
+    const first = tools.querySelector('.whisper');
+    if (first) first.insertAdjacentElement('afterend', note);
+    else summary?.insertAdjacentElement('afterend', note);
+  }
+  tools.classList.toggle('party-settings-locked', state.locked);
+  if (summary) summary.textContent = state.locked ? 'จัดการตี้ · ตั้งค่าล็อกแล้ว' : 'จัดการตี้';
+  if (note) {
+    note.textContent = state.locked
+      ? `ตั้งค่าหลักของตี้ล็อกตั้งแต่ ${lockStamp(state.lockedAt)} · สมาชิกยังจัดการได้ และยุบตี้ได้ตามปกติ`
+      : `เหลือเวลาแก้ชื่อตี้ กติกา ปก และ PET / NPC อีก ${timeRemaining(state.lockedAt)} · เปลี่ยนได้ถึง ${lockStamp(state.lockedAt)}`;
+  }
+
+  const settingIds = ['renameInput', 'ruleInput', 'leadSelect', 'npcSelect', 'renameBtn', 'ruleBtn', 'leadBtn', 'npcBtn'];
+  settingIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = state.locked;
+  });
+
+  if (partySettingsLockTimer) clearTimeout(partySettingsLockTimer);
+  partySettingsLockTimer = 0;
+  if (!state.locked && state.lockedAt) {
+    const untilLock = Math.max(100, state.lockedAt - Date.now() + 50);
+    partySettingsLockTimer = setTimeout(syncPartySettingsLock, Math.min(60000, untilLock));
+  }
+}
+
+function installPartySettingsGuard() {
+  const guarded = new Set(['renameBtn', 'ruleBtn', 'leadBtn', 'npcBtn']);
+  document.addEventListener('click', event => {
+    const button = event.target?.closest?.('button');
+    if (!button || !guarded.has(button.id)) return;
+    const party = getParty(code);
+    if (!party || !partySettingsLockState(party).locked) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    syncPartySettingsLock();
+    toast('ตั้งค่าตี้ล็อกแล้วหลังครบ 24 ชม.');
+  }, true);
+}
+
+function strictQuestGate(party) {
+  const start = new Date(party?.startAt || party?.startedAt || party?.createdAt || 0).getTime();
+  const durationDays = Math.max(1, Number(party?.durationDays || 7));
+  const fullDurationEnd = Number.isFinite(start) && start > 0 ? start + durationDays * 86400000 : 0;
+  const stored = new Date(party?.scheduledEndAt || 0).getTime();
+  const endAt = Math.max(fullDurationEnd, Number.isFinite(stored) ? stored : 0);
+  return { durationDays, endAt, eligible: !!endAt && Date.now() >= endAt };
+}
+
+function syncQuestFinishGate() {
+  const party = getParty(code);
+  const panel = document.getElementById('questFinishPanel');
+  const button = document.getElementById('completeParty');
+  const copy = document.getElementById('completeGate');
+  if (!party || !panel || !button || panel.hidden) return;
+  const state = strictQuestGate(party);
+  const active = ACTIVE_STATES.has(String(party.state || '').toUpperCase());
+  button.disabled = !active || !state.eligible;
+  button.classList.toggle('quest-locked', !state.eligible);
+  if (state.eligible) {
+    button.textContent = 'เสร็จเควส';
+    if (copy) copy.textContent = `ครบ ${state.durationDays} วันเต็มแล้ว · กดเสร็จเควสเพื่อรับการ์ดได้`;
+  } else {
+    button.textContent = `เสร็จเควส · ต้องอยู่ครบ ${state.durationDays} วัน`;
+    if (copy) copy.textContent = `ต้องอยู่ครบ ${state.durationDays} วันเต็ม · กดได้ ${lockStamp(state.endAt)}`;
+  }
+
+  if (questGateTimer) clearTimeout(questGateTimer);
+  questGateTimer = 0;
+  if (!state.eligible && state.endAt) {
+    const untilEnd = Math.max(100, state.endAt - Date.now() + 50);
+    questGateTimer = setTimeout(syncQuestFinishGate, Math.min(60000, untilEnd));
+  }
+}
+
+function installQuestFinishGuard() {
+  document.addEventListener('click', event => {
+    const button = event.target?.closest?.('#completeParty');
+    if (!button) return;
+    const party = getParty(code);
+    if (!party || strictQuestGate(party).eligible) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    syncQuestFinishGate();
+    toast(`ต้องอยู่ครบ ${strictQuestGate(party).durationDays} วันก่อนเสร็จ Quest`);
+  }, true);
 }
 
 function installIdentityCapture() {
