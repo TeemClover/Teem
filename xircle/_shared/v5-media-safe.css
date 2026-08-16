@@ -1,0 +1,18 @@
+/* Xircle v5 media-safe invariant.
+   Generated artwork is a complete designed canvas, often with baked Thai UI/copy.
+   Never crop it again in the browser. */
+.xp-art{
+  background:
+    radial-gradient(circle at 50% 45%,rgba(255,255,255,.025),transparent 58%),
+    #07120f;
+}
+.xp-art img{
+  object-fit:contain!important;
+  object-position:center center!important;
+  background:#07120f;
+}
+/* Preserve source ratios whenever the route declares them. */
+.xp-art.r169{aspect-ratio:16/9!important}
+.xp-art.r43{aspect-ratio:4/3!important}
+.xp-art.r32{aspect-ratio:3/2!important}
+.xp-art.r11{aspect-ratio:1!important}
