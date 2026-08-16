@@ -5,70 +5,93 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#04100d">
-<title>Human Care — Xircle</title>
-<meta name="description" content="X-VISOR · CARE · Certification — อ่านชุดเต็มได้ที่โซนอ้างอิงเดิม">
+<meta name="theme-color" content="#06110e">
+<title>Human Care — Xircle × XTY</title>
+<meta name="description" content="ข้อมูลช่วยให้เราเห็น คนช่วยให้เราไปต่อ — เข้าใจบทบาท X-VISOR ผ่านสถานการณ์จริง">
 <link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
-<link rel="stylesheet" href="/xircle/_shared/playable.css?v=2">
+<link rel="stylesheet" href="/xircle/_shared/v3.css?v=1">
+<style>
+.care-demo-switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.care-demo-switch button{border:1px solid var(--x-line);background:rgba(255,255,255,.035);color:var(--x-soft);border-radius:999px;padding:9px 12px;cursor:pointer}.care-demo-switch button[aria-pressed="true"]{background:var(--x-ink);color:#07110e;border-color:transparent}.care-question{margin-top:16px;padding:18px;border-radius:18px;background:rgba(123,215,232,.06);border:1px solid rgba(123,215,232,.16)}
+</style>
 </head>
 <body>
-<header class="px-top">
-  <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
-  <a class="px-exit" href="/xircle/start/">หน้าเริ่มวัน</a>
+<header class="x-top">
+  <a class="x-mark" href="/xircle/">XIR<b>CLE</b></a>
+  <div class="x-toplinks"><a href="/xircle/start/">Today</a><a href="/xircle/learn/">Learn</a></div>
 </header>
+<main class="x-page">
+  <div class="x-shell">
+    <section class="x-page-hero">
+      <div>
+        <p class="x-kicker gold">HUMAN CARE</p>
+        <h1 class="x-page-title">ข้อมูลช่วยให้เราเห็น<br>คนช่วยให้เราไปต่อ</h1>
+        <p class="x-lede">Xircle ช่วยให้เห็น Pattern<br><strong>X-VISOR ช่วยเข้าใจชีวิตจริง</strong></p>
+        <div class="x-actions"><a class="x-btn green" id="primaryCareCta" href="/xircle/opportunity/">ลองดูงาน X-VISOR →</a></div>
+      </div>
+      <figure class="x-art r16x9">
+        <img data-art-src="/xircle/assets/v3/xircle-care-hero.webp" alt="" hidden>
+        <div class="x-art-fallback"><div class="x-context-demo" style="width:min(92%,560px)"><div class="x-context-panel"><span class="x-label">DATA SEES</span><div class="big">SLEEP ↓</div><p>เห็นว่าอะไรเปลี่ยน</p></div><div class="x-context-arrow">→</div><div class="x-context-panel life"><span class="x-label">HUMAN CARE</span><div class="big">ถามก่อน</div><p>ชีวิตจริงเกิดอะไรขึ้น?</p></div></div></div>
+        <figcaption class="x-art-tag">ART SLOT · xircle-care-hero.webp · 16:9</figcaption>
+      </figure>
+    </section>
 
-<main class="zone-page">
-  <p class="px-kicker gold">HUMAN CARE</p>
-  <h1 class="px-title">งานดูแลคน<br>ต้องเรียนก่อนเสมอ</h1>
-  <p class="px-lede" style="font-size:16.5px">บทบาท กรอบการดูแล และเส้นทาง Certification ของ X-VISOR</p>
+    <section class="x-section" id="context">
+      <div class="x-section-head"><p class="x-kicker">DATA DOESN'T KNOW EVERYTHING</p><h2>ตัวเลขเห็นบางอย่าง<br>แต่ไม่เห็นทั้งชีวิต</h2><p class="sub">เลือกสถานการณ์ แล้วดูว่าข้อมูลหนึ่งบรรทัดเปลี่ยนความหมายยังไงเมื่อมี Context</p></div>
+      <div class="care-demo-switch" role="group" aria-label="เลือกสถานการณ์">
+        <button type="button" data-case="sleep" aria-pressed="true">Sleep ↓</button>
+        <button type="button" data-case="move" aria-pressed="false">Move ↓</button>
+        <button type="button" data-case="eat" aria-pressed="false">Eat pattern เปลี่ยน</button>
+      </div>
+      <div class="x-context-demo" id="contextDemo">
+        <div class="x-context-panel"><span class="x-label">DATA SEES</span><div class="big" id="dataSignal">Sleep trend ↓</div><p id="dataDetail">ต่ำกว่า baseline ช่วงนี้</p></div>
+        <div class="x-context-arrow">→</div>
+        <div class="x-context-panel life"><span class="x-label">DATA DOESN'T KNOW</span><div class="big" id="lifeSignal">ลูกป่วย</div><p id="lifeDetail">ต้องตื่นดูแลลูกตอนกลางคืนหลายคืนติดกัน</p></div>
+      </div>
+      <div class="care-question"><span class="x-label">HUMAN CARE</span><h3 id="humanCare" style="margin:8px 0 0;font-size:23px">ถามก่อน แล้วค่อยเลือกสิ่งที่ทำได้จริง</h3></div>
+      <figure class="x-art r3x2" style="margin-top:18px">
+        <img data-art-src="/xircle/assets/v3/xircle-care-data-vs-life-01.webp" alt="" hidden>
+        <div class="x-art-fallback"><span class="x-label">ART SLOT · DATA → CONTEXT → HUMAN CARE</span></div>
+        <figcaption class="x-art-tag">ART SLOT · xircle-care-data-vs-life-01.webp · 3:2</figcaption>
+      </figure>
+    </section>
 
-  <div class="codex-list">
-    <a class="codex-card" href="/xircle/doc/xvisor/role/">
-      <span class="top"><h3>X-VISOR Role — Health Partner</h3><span class="status-tag ref">อ่านได้เลย</span></span>
-      <p>ขอบเขตของบทบาทนี้ — และสิ่งที่ไม่ใช่หน้าที่ เพราะไม่ใช่แพทย์และไม่วินิจฉัยโรค</p>
-      <span class="go">เปิดโซนอ้างอิง →</span>
-    </a>
-    <a class="codex-card" href="/xircle/doc/xvisor/care/">
-      <span class="top"><h3 class="en">CARE Framework</h3><span class="status-tag ref">อ่านได้เลย</span></span>
-      <p>กรอบการดูแลที่ใช้แปลข้อมูลให้กลายเป็นการช่วยเหลือจริง</p>
-      <span class="go">เปิดโซนอ้างอิง →</span>
-    </a>
-    <a class="codex-card" href="/xircle/doc/academy/certification/">
-      <span class="top"><h3>X-VISOR Certification</h3><span class="status-tag ref">อ่านได้เลย</span></span>
-      <p>เส้นทาง LEARN → PRACTICE → CERTIFY → CARE ในรายละเอียด</p>
-      <span class="go">เปิดโซนอ้างอิง →</span>
-    </a>
-    <a class="codex-card" href="/xircle/doc/xvisor/onboarding/">
-      <span class="top"><h3>Onboarding</h3><span class="status-tag ref">อ่านได้เลย</span></span>
-      <p>วันแรกของคนดูแลหน้าตาเป็นยังไง</p>
-      <span class="go">เปิดโซนอ้างอิง →</span>
-    </a>
-    <a class="codex-card" href="/xircle/doc/xvisor/privacy/">
-      <span class="top"><h3>Privacy &amp; Consent</h3><span class="status-tag ref">อ่านได้เลย</span></span>
-      <p>ข้อมูลสุขภาพของคนอื่นถูกใช้ได้แค่ไหน และต้องขออนุญาตยังไง</p>
-      <span class="go">เปิดโซนอ้างอิง →</span>
-    </a>
-    <a class="codex-card" href="/xircle/doc/xvisor/claims/">
-      <span class="top"><h3>Claim Guard</h3><span class="status-tag ref">อ่านได้เลย</span></span>
-      <p>อะไรพูดได้ อะไรพูดไม่ได้ — เส้นที่ห้ามข้ามเวลาสื่อสารกับคนจริง</p>
-      <span class="go">เปิดโซนอ้างอิง →</span>
-    </a>
+    <section class="x-section">
+      <div class="x-section-head"><p class="x-kicker">THE ROLE</p><h2>งานไม่ได้อยู่ที่<br>อ่านเลขให้เก่ง</h2><p class="sub">แต่อยู่ที่ช่วยให้คนรู้ว่า “ทำอะไรต่อ” โดยไม่ลืมชีวิตจริงและขอบเขตของการดูแล</p></div>
+      <div class="x-role-steps">
+        <div class="x-role-step"><b>01</b><strong>ถามเป้าหมาย</strong></div>
+        <div class="x-role-step"><b>02</b><strong>ฟัง Context</strong></div>
+        <div class="x-role-step"><b>03</b><strong>เลือกสิ่งเดียว</strong></div>
+        <div class="x-role-step"><b>04</b><strong>ติดตาม</strong></div>
+        <div class="x-role-step"><b>05</b><strong>รู้ขอบเขต</strong></div>
+      </div>
+      <div class="x-card strong" style="margin-top:16px"><span class="x-label">BOUNDARY</span><h3>X-VISOR ไม่วินิจฉัยโรค และไม่ปรับยา</h3><p>ข้อมูลช่วยให้ดู Trend และ Context ได้ แต่การวินิจฉัยต้องให้ผู้เชี่ยวชาญด้านสุขภาพประเมิน</p></div>
+      <div class="x-actions"><a class="x-btn" href="/xircle/opportunity/">ลองเคสจริงแบบ Interactive →</a></div>
+    </section>
+
+    <section class="x-section" id="library">
+      <div class="x-section-head"><p class="x-kicker">KNOWLEDGE LIBRARY</p><h2>อยากเข้าใจมาตรฐานเบื้องหลัง?</h2><p class="sub">ส่วนนี้เอาไว้ค้น ไม่ใช่ต้องอ่านเรียง</p></div>
+      <div class="x-grid3">
+        <a class="x-qa" href="/xircle/doc/xvisor/role/"><strong>X-VISOR Role</strong><span>บทบาทและขอบเขต</span></a>
+        <a class="x-qa" href="/xircle/doc/xvisor/care/"><strong>CARE Framework</strong><span>กรอบการดูแล</span></a>
+        <a class="x-qa" href="/xircle/doc/academy/certification/"><strong>Certification</strong><span>LEARN → PRACTICE → CERTIFY → CARE</span></a>
+        <a class="x-qa" href="/xircle/doc/xvisor/onboarding/"><strong>Onboarding</strong><span>เริ่มดูแลอย่างไร</span></a>
+        <a class="x-qa" href="/xircle/doc/xvisor/privacy/"><strong>Privacy & Consent</strong><span>ข้อมูลของคนอื่นใช้ได้แค่ไหน</span></a>
+        <a class="x-qa" href="/xircle/doc/xvisor/claims/"><strong>Claim Guard</strong><span>อะไรพูดได้ / ไม่ได้</span></a>
+      </div>
+    </section>
+
+    <nav class="x-tabs" aria-label="ไปต่อ"><a href="/xircle/">Intro</a><a href="/xircle/start/">Today</a><a class="active" href="/xircle/care/">Human Care</a><a href="/xircle/learn/">Learn</a></nav>
   </div>
-
-  <section class="px-card" style="margin-top:22px">
-    <span class="px-label">อยากเห็นงานก่อน?</span>
-    <p style="margin:10px 0 14px;font-size:14.5px;line-height:1.62;color:var(--cream-soft)">
-      ลองเคสสั้น ๆ แล้วกลับมาอ่านต่อได้
-    </p>
-    <a class="px-cta is-ready" href="/xircle/opportunity/">ลองดูงาน X-VISOR →</a>
-  </section>
-
-  <nav class="zone-tabs" aria-label="ไปต่อ">
-    <a href="/xircle/">เล่นหนึ่งวัน</a>
-    <a href="/xircle/start/">Today</a>
-    <a href="/xircle/learn/">Learn</a>
-    <a href="/xircle/doc/">โซนอ้างอิงเดิม</a>
-  </nav>
 </main>
+<script src="/xircle/_shared/state.js?v=4"></script>
+<script src="/xircle/_shared/analytics.js?v=2"></script>
+<script src="/xircle/_shared/v3.js?v=1"></script>
+<script>
+(function(){
+  var cases={sleep:{data:'Sleep trend ↓',detail:'ต่ำกว่า baseline ช่วงนี้',life:'ลูกป่วย',lifeDetail:'ต้องตื่นดูแลลูกตอนกลางคืนหลายคืนติดกัน',care:'ถามก่อน แล้วค่อยเลือกสิ่งที่ทำได้จริง'},move:{data:'Move ↓',detail:'ต่ำกว่าช่วงก่อน',life:'เดินทางทั้งวัน',lifeDetail:'ตารางงานเปลี่ยนและต้องนั่งรถนานหลายชั่วโมง',care:'ปรับ Action ให้เข้ากับชีวิต ไม่ใช่ตำหนิตัวเลข'},eat:{data:'Eat pattern เปลี่ยน',detail:'เวลาและรูปแบบมื้อไม่เหมือนเดิม',life:'ตารางครอบครัวเปลี่ยน',lifeDetail:'หลายมื้อต้องกินตามสถานการณ์ที่ควบคุมไม่ได้',care:'หาจุดที่เลือกได้จริง แล้วเริ่มจากจุดเดียว'}};
+  document.querySelectorAll('[data-case]').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('[data-case]').forEach(function(b){b.setAttribute('aria-pressed',b===btn?'true':'false')});var c=cases[btn.dataset.case];document.getElementById('dataSignal').textContent=c.data;document.getElementById('dataDetail').textContent=c.detail;document.getElementById('lifeSignal').textContent=c.life;document.getElementById('lifeDetail').textContent=c.lifeDetail;document.getElementById('humanCare').textContent=c.care;});});
+  if(window.XState){XState.touchVisit();XState.setLocal('careIntroSeen',true);var cta=document.getElementById('primaryCareCta');if(XState.getLocal('xvisorSimCompleted')){cta.href='/xircle/care/party/?mode=create';cta.textContent='เริ่มตี้แมวขาว 28 วัน →'}var h=XState.getXtyHandoff();if(h){cta.href='/xircle/care/party/?mode=join';cta.textContent='เข้าตี้ ROOM '+h.partyCode+' →'}}
+})();
+</script>
 </body>
 </html>
