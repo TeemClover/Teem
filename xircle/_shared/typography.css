@@ -58,3 +58,9 @@
   --font-thai:"IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans Thai",sans-serif;
   --font-ui:"Manrope","IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
+
+/* FAIL-SAFE: product copy must never depend on animation JavaScript to be visible.
+   This intentionally wins over v4/v5 base [data-beat] hidden states. Animation is
+   enhancement only; a partial deploy, stale JS, blocked script or runtime error
+   must still render the complete first screen and its CTA. */
+html body [data-beat]{opacity:1!important;transform:none!important;filter:none!important}
