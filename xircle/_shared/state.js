@@ -1,8 +1,8 @@
-/* XIRCLE PLAYABLE — state.js
-   Three tiers:
-   memory  — health-like simulator choices. Never persisted.
-   session — journey position for one visit.
-   local   — non-health return state such as remembered XTY invite.
+/* XIRCLE × XTY PARTNER EXPERIENCE — state.js
+   State only. UI belongs to each route.
+   memory  = health-like simulator choices; never persisted
+   session = current journey state for this visit
+   local   = non-sensitive continuity / invite state
 */
 (function () {
   "use strict";
@@ -11,26 +11,20 @@
   var LOCAL_KEY = "xircle.local.v1";
   var HANDOFF_TTL = 7 * 24 * 60 * 60 * 1000;
 
+  function clone(obj) { return Object.assign({}, obj); }
   function safeRead(storage, key, fallback) {
     try {
       var raw = window[storage].getItem(key);
-      if (!raw) return Object.assign({}, fallback);
-      return Object.assign({}, fallback, JSON.parse(raw));
-    } catch (e) {
-      return Object.assign({}, fallback);
-    }
+      return raw ? Object.assign({}, fallback, JSON.parse(raw)) : clone(fallback);
+    } catch (e) { return clone(fallback); }
   }
-
   function safeWrite(storage, key, value) {
-    try {
-      window[storage].setItem(key, JSON.stringify(value));
-    } catch (e) {}
+    try { window[storage].setItem(key, JSON.stringify(value)); } catch (e) {}
   }
 
   var SESSION_DEFAULTS = {
     scene: "S0",
-    completedFirstJourney: false,
-    hasSeenProducts: false
+    completedFirstJourney: false
   };
 
   var LOCAL_DEFAULTS = {
@@ -38,7 +32,9 @@
     journeyCompletedAt: null,
     lastVisitDate: null,
     visitCount: 0,
-    circlePreviewStarted: false,
+    careIntroSeen: false,
+    xvisorSimCompleted: false,
+    whiteCatIntroSeen: false,
     rolePathSeen: null,
     xtyHandoff: null
   };
@@ -46,24 +42,31 @@
   var session = safeRead("sessionStorage", SESSION_KEY, SESSION_DEFAULTS);
   var local = safeRead("localStorage", LOCAL_KEY, LOCAL_DEFAULTS);
 
+  function validHandoff(item) {
+    if (!item || !/^\d{5}$/.test(String(item.partyCode || ""))) return false;
+    if (!Number.isFinite(Number(item.receivedAt))) return false;
+    return Date.now() - Number(item.receivedAt) <= HANDOFF_TTL;
+  }
+
   var XState = {
     memory: {
       memoryGapChoice: null,
       sleep: null,
       eat: null,
       move: null,
-      adjust: null
+      adjust: null,
+      xvisorCase: null
     },
 
-    getSession: function (k) { return session[k]; },
-    setSession: function (k, v) {
-      session[k] = v;
+    getSession: function (key) { return session[key]; },
+    setSession: function (key, value) {
+      session[key] = value;
       safeWrite("sessionStorage", SESSION_KEY, session);
     },
 
-    getLocal: function (k) { return local[k]; },
-    setLocal: function (k, v) {
-      local[k] = v;
+    getLocal: function (key) { return local[key]; },
+    setLocal: function (key, value) {
+      local[key] = value;
       safeWrite("localStorage", LOCAL_KEY, local);
     },
 
@@ -76,22 +79,27 @@
       }
     },
 
-    resetJourney: function () {
-      session = Object.assign({}, SESSION_DEFAULTS);
+    completeJourney: function () {
+      local.journeyCompleted = true;
+      local.journeyCompletedAt = Date.now();
+      session.completedFirstJourney = true;
+      safeWrite("localStorage", LOCAL_KEY, local);
       safeWrite("sessionStorage", SESSION_KEY, session);
-      this.memory.memoryGapChoice = null;
-      this.memory.sleep = null;
-      this.memory.eat = null;
-      this.memory.move = null;
-      this.memory.adjust = null;
+    },
+
+    resetJourney: function () {
+      session = clone(SESSION_DEFAULTS);
+      safeWrite("sessionStorage", SESSION_KEY, session);
+      Object.keys(this.memory).forEach(function (key) { XState.memory[key] = null; });
     },
 
     getXtyHandoff: function () {
       var item = local.xtyHandoff;
-      if (!item || !/^\d{5}$/.test(String(item.partyCode || ""))) return null;
-      if (!Number.isFinite(Number(item.receivedAt)) || Date.now() - Number(item.receivedAt) > HANDOFF_TTL) {
-        local.xtyHandoff = null;
-        safeWrite("localStorage", LOCAL_KEY, local);
+      if (!validHandoff(item)) {
+        if (item) {
+          local.xtyHandoff = null;
+          safeWrite("localStorage", LOCAL_KEY, local);
+        }
         return null;
       }
       return item;
@@ -100,6 +108,17 @@
     clearXtyHandoff: function () {
       local.xtyHandoff = null;
       safeWrite("localStorage", LOCAL_KEY, local);
+    },
+
+    partyJoinUrl: function () {
+      var h = this.getXtyHandoff();
+      return h ? "/xty/join/?c=" + encodeURIComponent(h.partyCode) : null;
+    },
+
+    partyBridgeUrl: function (mode) {
+      var h = this.getXtyHandoff();
+      if (mode === "join" && h) return "/xircle/care/party/?mode=join";
+      return "/xircle/care/party/?mode=create";
     }
   };
 
@@ -110,6 +129,7 @@
       var url = new URL(window.location.href);
       var code = url.searchParams.get("xty");
       if (!/^\d{5}$/.test(String(code || ""))) return;
+
       local.xtyHandoff = {
         partyCode: code,
         source: "xircle_invite",
@@ -117,152 +137,12 @@
         receivedAt: Date.now()
       };
       safeWrite("localStorage", LOCAL_KEY, local);
+
       url.searchParams.delete("xty");
       url.searchParams.delete("xvisor");
       history.replaceState(null, "", url.pathname + (url.search ? url.search : "") + url.hash);
     } catch (e) {}
   }
 
-  function exactXircleHome() {
-    return /^\/xircle\/(?:index\.html)?$/.test(location.pathname);
-  }
-
-  function styleInviteEnding(handoff) {
-    var s12 = document.querySelector('[data-scene="S12"]');
-    var s13 = document.querySelector('[data-scene="S13"]');
-    if (!s12 || !s13) return;
-    var code = handoff.partyCode;
-
-    var kicker = s12.querySelector(".px-kicker");
-    var title = s12.querySelector(".px-title");
-    if (kicker) kicker.textContent = "X-VISOR INVITE";
-    if (title) title.innerHTML = "ตี้ของคุณ<br>รออยู่";
-
-    var preview = s12.querySelector(".circle-preview");
-    if (preview) {
-      preview.classList.add("on");
-      var badge = preview.querySelector(".px-demo");
-      var head = preview.querySelector("h3");
-      var body = preview.querySelector("p");
-      var pulse = preview.querySelector(".pulse-line");
-      var demoLink = preview.querySelector(".invite-demo");
-      var why = preview.querySelector('[data-source-id="circle-preview"]');
-      if (badge) badge.textContent = "ROOM " + code;
-      if (head) head.textContent = "เล่นให้จบ แล้วไปต่อ";
-      if (body) body.textContent = "รหัสถูกเก็บไว้แล้ว";
-      if (pulse) pulse.innerHTML = '<span class="beat" aria-hidden="true"></span><strong style="font-size:15px">จบแล้วเลือก: เข้าตี้ หรือ ลองเป็น X-VISOR</strong>';
-      if (demoLink) demoLink.hidden = true;
-      if (why) why.hidden = true;
-    }
-
-    s12.querySelector(".circle-dots")?.classList.add("lit");
-    var create = s12.querySelector("[data-circle-create]");
-    var next = s12.querySelector(".px-cta.reveal-later");
-    var solo = s12.querySelector('.px-ghost[data-next="S13"]');
-    if (create) create.hidden = true;
-    if (next) {
-      next.classList.add("is-ready");
-      next.textContent = "ไปหน้าสุดท้าย";
-    }
-    if (solo) solo.hidden = true;
-
-    var endKicker = s13.querySelector(".px-kicker");
-    var endTitle = s13.querySelector(".px-title");
-    var fork = s13.querySelector(".fork-grid");
-    if (endKicker) endKicker.textContent = "NEXT";
-    if (endTitle) endTitle.innerHTML = "เลือกทางต่อ";
-    if (fork) {
-      fork.innerHTML =
-        '<a class="fork-card health" href="/xty/join/?c=' + encodeURIComponent(code) + '">' +
-          '<b>ROOM ' + code + '</b>' +
-          '<h3>เข้าตี้</h3>' +
-          '<p>กลับไปหาคนที่ชวนคุณ</p>' +
-          '<span class="go">เข้าตี้ →</span>' +
-        '</a>' +
-        '<a class="fork-card care" href="/xircle/opportunity/?from=invite">' +
-          '<b>X-VISOR</b>' +
-          '<h3>ลองเป็นคนดูแล</h3>' +
-          '<p>รหัสห้องยังเก็บไว้</p>' +
-          '<span class="go">ลองก่อน →</span>' +
-        '</a>';
-    }
-
-    var tail = s13.querySelector(".px-whisper");
-    if (tail) tail.innerHTML = '<a href="/xircle/care/" style="color:var(--cream-soft)">อ่าน Human Care →</a>';
-  }
-
-  function installOpportunityCareCta() {
-    if (!/^\/xircle\/opportunity\/?$/.test(location.pathname)) return;
-    var scene = document.querySelector('[data-scene="O4"]');
-    if (!scene || scene.querySelector("[data-xvisor-xty-create]")) return;
-
-    var anchor = scene.querySelector(".px-card.strong");
-    if (!anchor) return;
-
-    var handoff = XState.getXtyHandoff();
-    if (handoff) {
-      var introBody = document.querySelector('[data-scene="O0"] .scene-body');
-      if (introBody && !introBody.querySelector("[data-room-kept]")) {
-        var roomNote = document.createElement("p");
-        roomNote.className = "px-note fx d3";
-        roomNote.setAttribute("data-room-kept", "");
-        roomNote.textContent = "ROOM " + handoff.partyCode + " ยังเก็บไว้ · ลองจบแล้วกลับเข้าตี้ได้";
-        introBody.appendChild(roomNote);
-      }
-    }
-
-    var fork = scene.querySelector(".fork-grid");
-    if (fork) fork.hidden = true;
-
-    var block = document.createElement("div");
-    block.className = "px-card strong";
-    block.setAttribute("data-xvisor-xty-create", "");
-    block.style.marginTop = "14px";
-
-    if (handoff) {
-      var code = handoff.partyCode;
-      block.innerHTML =
-        '<span class="px-label" style="color:var(--green)">ROOM ' + code + ' ยังอยู่</span>' +
-        '<h3 style="margin:10px 0 0;font-size:22px;line-height:1.35">กลับเข้าตี้เดิม หรือเปิดตี้ของคุณ</h3>' +
-        '<p class="px-whisper">ถ้าเปิดเอง คุณจะได้แมวขาวสีเงิน + Care Script 28 วัน ช่วยถือจังหวะโดยไม่ต้องตามแชตทั้งวัน</p>' +
-        '<a class="px-cta" href="/xty/join/?c=' + encodeURIComponent(code) + '" style="margin-top:16px">เข้าตี้ ' + code + ' →</a>' +
-        '<a class="px-ghost" href="/xty/new/?template=xircle_xvisor" style="display:flex;margin-top:8px">เปิด X-VISOR Care Party ของฉัน →</a>' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">' +
-          '<a class="px-ghost" href="/xircle/care/" style="justify-content:flex-start">อ่าน Human Care →</a>' +
-          '<a class="px-ghost" href="/xircle/start/" style="justify-content:flex-start">กลับหน้า Today →</a>' +
-        '</div>';
-    } else {
-      block.innerHTML =
-        '<span class="px-label" style="color:var(--gold)">X-VISOR CARE PARTY · 28 DAYS</span>' +
-        '<div style="display:flex;gap:12px;align-items:center;margin-top:12px">' +
-          '<img src="/xty/assets/art/avatars/white-cat.webp" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:20px;background:#f3f1ea">' +
-          '<div><strong style="display:block;font-size:18px;line-height:1.35">แมวขาวสีเงิน</strong><span class="px-whisper" style="display:block;margin-top:2px">แมวตัวนี้เทรนนิ่ง X-VISOR มาแล้ว</span></div>' +
-        '</div>' +
-        '<p style="margin:16px 0 0;font-size:15px;line-height:1.65;color:var(--cream-soft)">XTY ช่วยถือ Action และจังหวะติดตามให้ X-VISOR ทำงานง่ายขึ้น</p>' +
-        '<div style="margin-top:10px;font-size:14px;line-height:1.75;color:var(--cream-soft)">' +
-          '<div>✓ 1 Action → Commit สั้น ไม่ต้องตามแชตทั้งวัน</div>' +
-          '<div>✓ Care Script พร้อมใช้ Day 1–28</div>' +
-          '<div>✓ Review → Pattern → One Action ถัดไป</div>' +
-        '</div>' +
-        '<a class="px-cta" href="/xty/new/?template=xircle_xvisor" style="margin-top:18px">เปิด X-VISOR Care Party 28 วัน →</a>' +
-        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">' +
-          '<a class="px-ghost" href="/xircle/care/" style="justify-content:flex-start">อ่าน Human Care →</a>' +
-          '<a class="px-ghost" href="/xircle/start/" style="justify-content:flex-start">กลับหน้า Today →</a>' +
-        '</div>';
-    }
-
-    anchor.insertAdjacentElement("afterend", block);
-  }
-
-  function installBridgeUi() {
-    if (exactXircleHome()) {
-      var handoff = XState.getXtyHandoff();
-      if (handoff) styleInviteEnding(handoff);
-    }
-    installOpportunityCareCta();
-  }
-
   captureXtyInvite();
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", installBridgeUi);
-  else setTimeout(installBridgeUi, 0);
 })();
