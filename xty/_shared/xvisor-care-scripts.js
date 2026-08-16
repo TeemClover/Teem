@@ -1,17 +1,69 @@
-/* Built-in X-VISOR helper scripts.
-   Separate from normal Pet personalities: these prompts only appear inside
-   a Party whose preset is xircle_xvisor. They fill the Message composer for
-   the human X-VISOR to review/edit; they never auto-send or diagnose. */
+/* Built-in scripts for the secret X-VISOR silver cat.
+   These are tools for the HUMAN X-VISOR: they only fill the Message composer
+   for review/edit. They never auto-send, diagnose, or prescribe health action.
+
+   Runtime Pet speech is generated separately from the canonical persona in
+   api/_lib/pet-personas.js. The two systems share the same Pattern → One Action
+   philosophy without hard-coding the Pet to repeat these lines. */
 
 import { careDay, careCheckpointForDay, isXvisorPreset } from './xvisor-care.js';
 
 const SCRIPTS = Object.freeze({
-  day0: 'ถ้า 28 วันนี้เลือกเปลี่ยนได้เรื่องเดียว เรื่องไหนจะช่วยชีวิตจริงของคุณมากที่สุด?',
-  day1_3: 'ช่วงนี้มีอะไรติดตอนทำสิ่งที่เราตกลงกันไว้ไหม?',
-  day7: 'อาทิตย์นี้อะไรทำได้ง่ายขึ้นกว่าวันแรกบ้าง?',
-  day14: 'ถ้าจะทำให้ง่ายขึ้นอีกนิด เราควรเปลี่ยนตรงไหนแค่จุดเดียว?',
-  day21: 'อะไรจะช่วยให้ช่วงท้ายของรอบนี้ทำต่อได้ง่ายที่สุด?',
-  day28: 'จากรอบนี้ อะไรคือหนึ่งอย่างที่อยากทำต่อใน Quest ถัดไป?',
+  day0: Object.freeze({
+    quiet: Object.freeze([
+      'ถ้า 28 วันนี้ให้เลือกแค่หนึ่งอย่างที่อยากเห็นเกิดขึ้นจริง จะเลือกอะไร?',
+      'ก่อนเริ่ม ขอเลือก One Action เดียวก่อนนะ อะไรคือสิ่งที่ทำแล้วนับว่าเกิดขึ้นจริงสำหรับรอบนี้?',
+    ]),
+    moving: Object.freeze([
+      'เราเริ่มมี Action แล้วนะ ก่อนเพิ่มอย่างอื่น อยากยึดอะไรเป็นหนึ่งเรื่องหลักของรอบนี้?',
+    ]),
+  }),
+  day1_3: Object.freeze({
+    quiet: Object.freeze([
+      'จากที่ลองเริ่มจริง มีตรงไหนที่ติดที่สุดตอนนี้?',
+      'ยังไม่ต้องเปลี่ยนหลายอย่าง ถ้าจะทำให้ Action เดิมง่ายขึ้นหนึ่งจุด อยากปรับตรงไหน?',
+    ]),
+    moving: Object.freeze([
+      'มี Action เกิดขึ้นแล้ว จากที่ทำจริง อะไรทำให้มันเกิดได้ง่ายกว่าที่คิด?',
+      'จากสิ่งที่เกิดขึ้นจริงรอบนี้ มีจุดไหนที่อยากเก็บไว้เหมือนเดิม?',
+    ]),
+  }),
+  day7: Object.freeze({
+    quiet: Object.freeze([
+      'ช่วงแรกยังไม่ค่อยมี Action เกิดขึ้น ถ้าจะดูแค่หนึ่ง friction ตอนนี้คืออะไร?',
+    ]),
+    moving: Object.freeze([
+      'จากสิ่งที่เกิดขึ้นจริงช่วงแรก มีอะไรเริ่มเกิดซ้ำจนอยากสังเกตต่อ?',
+      'ถ้าจะเก็บเพียงหนึ่ง Pattern จากสัปดาห์แรก จุดไหนมีหลักฐานใน log ชัดที่สุด?',
+    ]),
+  }),
+  day14: Object.freeze({
+    quiet: Object.freeze([
+      'ครึ่งทางแล้ว ถ้าจะปรับแค่หนึ่งอย่างเพื่อให้ Action เดิมเกิดง่ายขึ้น อยากเปลี่ยนตรงไหน?',
+    ]),
+    moving: Object.freeze([
+      'จากครึ่งทางที่ผ่านมา มีอะไรที่เกิดได้จริงและควรเก็บไว้ก่อนจะปรับอย่างอื่น?',
+      'ถ้าปรับได้แค่หนึ่งจุด โดยไม่รื้อสิ่งที่เวิร์กอยู่ อยากแตะตรงไหน?',
+    ]),
+  }),
+  day21: Object.freeze({
+    quiet: Object.freeze([
+      'ช่วงท้ายนี้ยังไม่ต้องเพิ่ม Challenge ใหม่ อะไรคือหนึ่งจุดที่ทำให้ Action เดิมกลับมาเกิดได้ง่ายขึ้น?',
+    ]),
+    moving: Object.freeze([
+      'ช่วงท้ายนี้มีอะไรที่ทำต่อได้อยู่แล้ว และไม่จำเป็นต้องเปลี่ยน?',
+      'ถ้าจะพารอบนี้ไปจนจบโดยไม่เพิ่มของใหม่ หนึ่งอย่างที่อยากรักษาไว้คืออะไร?',
+    ]),
+  }),
+  day28: Object.freeze({
+    quiet: Object.freeze([
+      'รอบนี้อาจยังไม่มี Pattern ชัดพอ ถ้าตั้ง Quest ใหม่ อยากทำให้จุดเริ่มง่ายขึ้นตรงไหน?',
+    ]),
+    moving: Object.freeze([
+      'จาก log รอบนี้ มีหนึ่ง Pattern ไหนที่อยากพาไป Quest ถัดไป?',
+      'ถ้าเอาไปต่อได้เพียงหนึ่ง Action จากรอบนี้ อยากเก็บอะไรไว้?',
+    ]),
+  }),
 });
 
 function readParty(code) {
@@ -36,6 +88,22 @@ function checkpointKey(party) {
   return careCheckpointForDay(careDay(party)).key;
 }
 
+function hasMovement(party) {
+  return (party?.log || []).some(item => {
+    const kind = String(item?.kind || item?.type || '').toLowerCase();
+    return kind === 'commit' && !item?.retracted;
+  });
+}
+
+function scriptFor(party) {
+  const key = checkpointKey(party);
+  const group = SCRIPTS[key] || SCRIPTS.day1_3;
+  const pool = hasMovement(party) ? group.moving : group.quiet;
+  const lines = pool?.length ? pool : group.quiet;
+  const seed = (party?.log?.length || 0) + (party?.members?.length || 0);
+  return lines[seed % lines.length];
+}
+
 function install(attempt = 0) {
   if (!/^\/xty\/p\/?$/.test(location.pathname)) return;
   const code = new URLSearchParams(location.search).get('c') || '';
@@ -48,16 +116,15 @@ function install(attempt = 0) {
   }
   if (!isLead(party) || document.getElementById('xvisorBuiltInScript')) return;
 
-  const key = checkpointKey(party);
-  const text = SCRIPTS[key] || SCRIPTS.day1_3;
+  const text = scriptFor(party);
   const block = document.createElement('div');
   block.id = 'xvisorBuiltInScript';
   block.className = 'rule-box';
   block.style.marginTop = '14px';
-  block.innerHTML = `<b>BUILT-IN X-VISOR SCRIPT</b>` +
+  block.innerHTML = `<b>🐈 SILVER CAT · X-VISOR SCRIPT</b>` +
     `<p style="margin:7px 0 10px">“${text}”</p>` +
     `<button type="button" class="btn ghost sm" id="xvisorUseScript">ใส่ข้อความนี้ใน Message</button>` +
-    `<p class="hint" style="margin:8px 0 0">ระบบแค่เตรียมประโยคให้ · X-VISOR แก้ก่อนส่งได้เสมอ และต้องใช้วิจารณญาณของคนดูแล</p>`;
+    `<p class="hint" style="margin:8px 0 0">แมวแค่เตรียมคำถามให้ · X-VISOR แก้ก่อนส่งได้เสมอ · ไม่ auto-send และไม่ใช้แทนวิจารณญาณของคนดูแล</p>`;
   assist.appendChild(block);
 
   document.getElementById('xvisorUseScript')?.addEventListener('click', () => {
