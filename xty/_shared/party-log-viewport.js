@@ -191,6 +191,30 @@ function injectStyle() {
       border-bottom:1px solid rgba(62,51,44,.08);
     }
     #log:focus-visible{outline:3px solid rgba(50,139,92,.18);outline-offset:3px}
+
+    /* System events are timeline annotations, not conversation. Human/PET
+       messages and Commit posts keep their full visual weight. */
+    #log>.party-event{
+      gap:5px!important;
+      margin:0!important;
+      padding:3px 6px!important;
+      color:color-mix(in srgb,var(--xty-muted) 82%,transparent)!important;
+      font-size:10.5px!important;
+      line-height:1.35!important;
+      border-left:2px solid rgba(91,141,255,.18)!important;
+      background:rgba(255,255,255,.22)!important;
+      border-radius:0 6px 6px 0!important;
+    }
+    #log>.party-event .event-dot{
+      width:4px!important;
+      height:4px!important;
+      opacity:.55!important;
+    }
+    #log>.party-event .event-time{
+      font-size:8.5px!important;
+      opacity:.7!important;
+    }
+
     @media (max-height:650px){#log{height:62dvh;min-height:260px}}
     @media (min-width:760px){#log{height:min(62vh,620px)}}
   `;
