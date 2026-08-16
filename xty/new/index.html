@@ -214,6 +214,14 @@ function init() {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'activity-choice'; button.setAttribute('role', 'radio');
     button.innerHTML = `<img src="${item.art}" alt=""><b>${item.labelTh}</b>`;
+    if (item.id === 'sleep' || item.id === 'wellness') {
+      button.setAttribute('aria-label', `${item.labelTh} · Xircle`);
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        location.href = '/xircle/';
+      });
+    }
     return { id: item.id, button };
   });
   let activityId = 'walk';
