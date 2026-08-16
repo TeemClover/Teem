@@ -3,6 +3,7 @@ import {
 } from './store.js';
 import { cardById as xtyCardById, cardNameTh, XTY_RARITY_META } from './cards.js';
 import { avatarById } from './avatars.js';
+import { PET_BY_ID } from './pets.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
 import { cardSVG } from '../../core7/js/art.js';
 
@@ -26,13 +27,11 @@ function isOwnedParty(party) {
   return !!((party.ownerId && identity.userId === party.ownerId) || member?.role === 'lead');
 }
 
-/* The large Home carousel is OWNER space only. Joined parties belong in
-   the lower "ตี้ที่เป็นสมาชิก" list and must never appear as a hero card. */
-function partiesForHome() {
+function allMyParties() {
   const mine = new Set(myPartyCodes());
   return allParties()
-    .filter(party => mine.has(party.code) && isOwnedParty(party))
-    .map((party, index) => ({ party, index, owned: true }))
+    .filter(party => mine.has(party.code))
+    .map((party, index) => ({ party, index, owned: isOwnedParty(party) }))
     .sort((a, b) => {
       const activeA = isActiveParty(a.party) ? 0 : 1;
       const activeB = isActiveParty(b.party) ? 0 : 1;
@@ -40,8 +39,15 @@ function partiesForHome() {
       const timeA = new Date(a.party.createdAt || a.party.startAt || 0).getTime() || 0;
       const timeB = new Date(b.party.createdAt || b.party.startAt || 0).getTime() || 0;
       if (timeA !== timeB) return timeA - timeB;
+      if (a.owned !== b.owned) return a.owned ? -1 : 1;
       return a.index - b.index;
     });
+}
+
+/* The large Home carousel is OWNER space only. Joined parties belong in
+   the lower "ตี้ที่เป็นสมาชิก" list and must never appear as a hero card. */
+function partiesForHome(entries = allMyParties()) {
+  return entries.filter(entry => entry.owned);
 }
 
 function xtyCardMarkup(card) {
@@ -71,11 +77,65 @@ function coverMarkup(party) {
   }
 
   const profile = getProfile();
-  let snapshot = { species: profile?.avatarId || 'orange_cat', color: profile?.avatarFrame || 'green' };
+  const lead = Array.isArray(party.members) ? party.members.find(member => member.role === 'lead') : null;
+  let snapshot = {
+    species: lead?.avatar || profile?.avatarId || 'orange_cat',
+    color: lead?.avatarColor || lead?.avatar_color || profile?.avatarFrame || 'green',
+  };
   try { snapshot = { ...snapshot, ...JSON.parse(party.coverValue || '{}') }; } catch {}
   const avatar = avatarById(snapshot.species);
   return `<div class="xty-home-cover avatar-cover" data-color="${esc(snapshot.color || 'green')}">`
     + `<img src="${esc(avatar.art)}" alt=""><b>${esc(avatar.nameTh)}</b></div>`;
+}
+
+function petThumbMarkup(party) {
+  const npc = party.npcCardId ? xtyCardById(party.npcCardId) : null;
+  if (npc) {
+    const art = npc.art || npc.imageFull;
+    if (art) return `<span class="xty-party-row-pet"><img src="${esc(art)}" alt="${esc(cardNameTh(npc))}" loading="lazy" decoding="async"></span>`;
+  }
+
+  const pet = party.petId ? PET_BY_ID[party.petId] : null;
+  if (pet?.art) {
+    return `<span class="xty-party-row-pet"><img src="${esc(pet.art)}" alt="${esc(pet.nameTh)}" loading="lazy" decoding="async"></span>`;
+  }
+  if (pet?.emoji) return `<span class="xty-party-row-pet emoji" aria-label="${esc(pet.nameTh)}">${esc(pet.emoji)}</span>`;
+
+  /* Keep the slot even when there is no companion so every title starts at
+     exactly the same x-position. */
+  return '<span class="xty-party-row-pet empty" aria-hidden="true"></span>';
+}
+
+function rowVisualSignature(party) {
+  return [
+    party.coverType || '', party.coverValue || '', party.leadCardId || '',
+    party.npcCardId || '', party.petId || '', party.updatedAt || '',
+  ].join(':');
+}
+
+function decoratePartyRows(entries) {
+  const byCode = new Map(entries.map(entry => [String(entry.party.code), entry.party]));
+  const rows = document.querySelectorAll('#leadPartyRows a.row, #joinedPartyRows a.row');
+  for (const row of rows) {
+    let code = '';
+    try { code = new URL(row.href, location.href).searchParams.get('c') || ''; } catch {}
+    const party = byCode.get(code);
+    if (!party) continue;
+
+    const signature = rowVisualSignature(party);
+    if (row.dataset.xtyVisualSignature === signature && row.classList.contains('xty-party-summary-row')) continue;
+
+    const visual = document.createElement('span');
+    visual.className = 'xty-party-row-visual';
+    visual.setAttribute('aria-hidden', 'true');
+    visual.innerHTML = `<span class="xty-party-row-cover">${coverMarkup(party)}</span>${petThumbMarkup(party)}`;
+
+    const oldIcon = row.querySelector('.ic');
+    if (oldIcon) oldIcon.replaceWith(visual);
+    else row.prepend(visual);
+    row.classList.add('xty-party-summary-row');
+    row.dataset.xtyVisualSignature = signature;
+  }
 }
 
 function terminalLabel(party) {
@@ -114,7 +174,10 @@ function sync() {
   if (rendering) return;
   const host = document.getElementById('mainParty');
   if (!host) return;
-  const entries = partiesForHome();
+
+  const allEntries = allMyParties();
+  decoratePartyRows(allEntries);
+  const entries = partiesForHome(allEntries);
 
   /* A user who only joined other people's parties gets no large hero card.
      Their parties remain visible in the lower member group. */
@@ -179,9 +242,87 @@ style.textContent = `
   .xty-party-copy h2{overflow-wrap:anywhere;margin:4px 0 3px;font-size:22px;line-height:1.25}
   .xty-party-copy .btn{margin-top:13px}
   .xty-home-cover.avatar-cover small{display:none!important}
+
+  /* Lower party lists: the Party Cover is the primary visual. The companion
+     gets its own fixed secondary slot. Empty companion slots stay reserved,
+     so every party name/detail column lines up exactly and nothing overlaps. */
+  .party-group .xty-party-summary-row{
+    display:grid!important;
+    grid-template-columns:100px minmax(0,1fr) 18px!important;
+    gap:12px!important;align-items:center!important;
+    min-height:104px!important;padding:10px 14px!important;
+  }
+  .xty-party-row-visual{
+    width:100px;height:82px;display:grid;grid-template-columns:58px 34px;
+    gap:8px;align-items:center;justify-content:start;overflow:visible;
+  }
+  .xty-party-row-cover{
+    width:58px;height:82px;display:block;overflow:hidden;border-radius:9px;
+  }
+  .xty-party-row-cover .xty-home-cover{
+    width:58px!important;height:82px!important;max-width:58px!important;
+    min-width:58px!important;aspect-ratio:5/7!important;border-radius:9px!important;
+  }
+  .xty-party-row-cover .xty-home-cover>.animal-card,
+  .xty-party-row-cover .xty-home-core7-cover,
+  .xty-party-row-cover .xty-home-real-back,
+  .xty-party-row-cover .xty-home-cover.avatar-cover{
+    width:58px!important;height:82px!important;min-width:58px!important;
+    aspect-ratio:5/7!important;border-radius:9px!important;
+  }
+  .xty-party-row-cover .xty-home-core7-cover svg,
+  .xty-party-row-cover .xty-home-real-back img{
+    width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;
+  }
+  .xty-party-row-cover .animal-card .card-copy,
+  .xty-party-row-cover .animal-card .rarity-badge{display:none!important}
+  .xty-party-row-cover .animal-card .card-art{
+    width:100%!important;height:100%!important;margin:0!important;object-fit:cover!important;
+  }
+  .xty-party-row-cover .xty-home-cover.avatar-cover{
+    padding:3px!important;border-width:2px!important;box-shadow:none!important;
+  }
+  .xty-party-row-cover .xty-home-cover.avatar-cover>b,
+  .xty-party-row-cover .xty-home-cover.avatar-cover::after{display:none!important}
+  .xty-party-row-cover .xty-home-cover.avatar-cover>img{
+    width:100%!important;height:100%!important;border-radius:6px!important;object-fit:contain!important;
+  }
+  .xty-party-row-pet{
+    width:34px;height:34px;display:grid;place-items:center;align-self:center;
+    overflow:visible;font-size:27px;line-height:1;
+  }
+  .xty-party-row-pet img{
+    display:block;width:34px;height:34px;max-width:none;object-fit:contain;
+  }
+  .xty-party-row-pet.empty{visibility:hidden}
+  .party-group .xty-party-summary-row .tx{min-width:0;align-self:center}
+  .party-group .xty-party-summary-row .tx b{
+    display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .party-group .xty-party-summary-row .tx small{
+    display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .party-group .xty-party-summary-row .go{justify-self:end;align-self:center}
+
   @media(max-width:480px){
     .xty-party-slide{flex-basis:calc(100% - 30px)}
     .xty-party-slide .main-party{gap:13px!important}
+  }
+  @media(max-width:380px){
+    .party-group .xty-party-summary-row{
+      grid-template-columns:90px minmax(0,1fr) 16px!important;gap:9px!important;padding:9px 11px!important;
+    }
+    .xty-party-row-visual{width:90px;height:76px;grid-template-columns:54px 30px;gap:6px}
+    .xty-party-row-cover,
+    .xty-party-row-cover .xty-home-cover,
+    .xty-party-row-cover .xty-home-cover>.animal-card,
+    .xty-party-row-cover .xty-home-core7-cover,
+    .xty-party-row-cover .xty-home-real-back,
+    .xty-party-row-cover .xty-home-cover.avatar-cover{
+      width:54px!important;min-width:54px!important;height:76px!important;
+    }
+    .xty-party-row-pet,.xty-party-row-pet img{width:30px;height:30px}
+    .xty-party-row-pet{font-size:24px}
   }
 `;
 document.head.appendChild(style);
