@@ -5,123 +5,32 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#04100d">
-<title>Xircle — วันนี้</title>
-<meta name="description" content="เลือกหนึ่งอย่าง แล้วดูว่าจะทำอะไรต่อ">
+<meta name="theme-color" content="#06110e">
+<title>Xircle — Today</title>
+<meta name="description" content="กลับมาดูเมื่อวาน แล้วเลือกหนึ่งอย่างวันนี้">
 <link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
-<link rel="stylesheet" href="/xircle/_shared/playable.css?v=2">
-<style>
-.next-card{margin-top:12px;border-color:rgba(121,217,232,.25)}
-.next-card h2{margin:8px 0 0;font-size:22px;line-height:1.35}
-.next-actions{display:flex;flex-direction:column;gap:8px;margin-top:14px}
-.next-actions .px-ghost{border:1px solid var(--line);border-radius:999px;background:rgba(244,238,224,.035)}
-.deep-link{display:flex;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;margin-top:12px}
-.deep-link strong{font-size:16px}
-.deep-link span{color:var(--cream-dim);font-size:13px}
-.nav-label{margin:24px 0 8px;font-size:11px;font-family:var(--font-ui);font-weight:800;letter-spacing:.18em;color:var(--cream-dim)}
-.zone-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:0}
-.zone-tabs a{justify-content:center;text-align:center;padding:10px 6px;background:rgba(244,238,224,.055);border-color:rgba(244,238,224,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)}
-.zone-tabs a:not(.active)::after{content:"›";margin-left:5px;color:var(--cream-dim)}
-.invite-room{font-family:var(--font-ui);font-size:28px;font-weight:800;letter-spacing:.08em;margin:8px 0 0}
-@media(max-width:390px){.zone-tabs a{font-size:12px}}
-</style>
+<link rel="stylesheet" href="/xircle/_shared/v3.css?v=1">
 </head>
 <body>
-
-<div class="px-progress" aria-hidden="true"><i style="width:100%"></i></div>
-<header class="px-top">
-  <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
-  <a class="px-exit" href="/xircle/learn/">ข้อมูล</a>
-</header>
-
-<main class="zone-page">
-  <p class="px-kicker" id="greet">GOOD MORNING</p>
-  <h1 class="px-title">วันนี้เลือกแค่<br>หนึ่งอย่าง</h1>
-
-  <section class="px-card strong" style="margin-top:26px" aria-label="เมื่อวาน">
-    <span class="px-label">YESTERDAY</span>
-    <div class="habit-legend" style="justify-content:flex-start;margin-top:12px">
-      <span><i class="c-eat"></i>Eat</span>
-      <span><i class="c-move"></i>Move</span>
-      <span><i class="c-sleep"></i>Sleep</span>
-      <span class="px-demo">DEMO</span>
-    </div>
-    <p class="px-whisper">ตอนนี้เป็นตัวอย่าง · มีข้อมูลจริงเมื่อระบบบันทึกเปิด</p>
+<header class="x-top"><a class="x-mark" href="/xircle/">XIR<b>CLE</b></a><div class="x-toplinks"><a href="/xircle/care/">Human Care</a><a href="/xircle/learn/">Learn</a></div></header>
+<main class="x-page"><div class="x-shell">
+  <section class="x-page-hero" style="margin-bottom:36px">
+    <div><p class="x-kicker" id="greet">GOOD MORNING</p><h1 class="x-page-title">วันนี้เลือกแค่<br>หนึ่งอย่าง</h1><p class="x-lede">ดูเมื่อวานพอให้เข้าใจ แล้วกลับมาที่สิ่งที่ทำได้วันนี้</p></div>
+    <figure class="x-art r4x3"><img data-art-src="/xircle/assets/v3/xircle-start-today.webp" alt="" hidden><div class="x-art-fallback"><div class="x-card strong" style="width:min(86%,420px)"><span class="x-label">TODAY</span><h3 style="font-size:32px">ONE ACTION</h3><p>Minimal teaching · Maximum continuity</p></div></div><figcaption class="x-art-tag">ART SLOT · xircle-start-today.webp · 4:3</figcaption></figure>
   </section>
 
-  <section class="px-card" style="margin-top:12px" aria-label="เลือกหนึ่งอย่างวันนี้">
-    <span class="px-label" style="color:var(--gold)">วันนี้ · เลือก 1 อย่าง</span>
-    <div class="px-choices" style="margin-top:14px" role="group" aria-label="เลือกหนึ่งอย่าง">
-      <button type="button" class="px-choice" data-adjust="eat" aria-pressed="false">กิน<span class="tick" aria-hidden="true">✓</span></button>
-      <button type="button" class="px-choice" data-adjust="move" aria-pressed="false">ขยับ<span class="tick" aria-hidden="true">✓</span></button>
-      <button type="button" class="px-choice" data-adjust="sleep" aria-pressed="false">นอน<span class="tick" aria-hidden="true">✓</span></button>
-    </div>
-    <p class="px-whisper" id="adjust-done" hidden>เลือกแล้ว ✓ พรุ่งนี้ค่อยดูต่อ</p>
-  </section>
+  <div class="x-grid2">
+    <section class="x-card strong"><span class="x-label">YESTERDAY · DEMO</span><h3>เมื่อวานเกิดอะไรขึ้น?</h3><div class="x-legend"><span><i class="eat"></i>Eat</span><span><i class="move"></i>Move</span><span><i class="sleep"></i>Sleep</span></div><p>ตอนนี้เป็นตัวอย่าง · ข้อมูลจริงจะแสดงเมื่อระบบบันทึกเปิด</p></section>
+    <section class="x-card"><span class="x-label">TODAY · CHOOSE 1</span><h3>วันนี้จะปรับเรื่องไหน?</h3><div class="x-choices" style="margin-top:14px"><button class="x-choice" type="button" data-adjust="eat" aria-pressed="false"><b>กิน</b></button><button class="x-choice" type="button" data-adjust="move" aria-pressed="false"><b>ขยับ</b></button><button class="x-choice" type="button" data-adjust="sleep" aria-pressed="false"><b>นอน</b></button></div><p id="adjustDone" hidden>เลือกแล้ว ✓ หนึ่งอย่างพอ</p></section>
+  </div>
 
-  <section class="px-card next-card" id="careNext" aria-label="ทำอะไรต่อ">
-    <span class="px-label" style="color:var(--green)">CARE PARTY</span>
-    <h2>มี X-VISOR ดูแลอยู่?</h2>
-    <p class="px-whisper">ให้เขาส่ง Xircle Invite มา · ตี้จริงจะขึ้นตรงนี้</p>
-    <a class="px-ghost" href="/xircle/doc/xvisor/" style="justify-content:flex-start;margin-top:8px">X-VISOR คืออะไร →</a>
-  </section>
+  <section class="x-section" style="padding-bottom:24px"><div class="x-section-head"><p class="x-kicker gold">TOGETHER</p><h2>ทำคนเดียวได้<br>แต่ไม่จำเป็นต้องทำคนเดียว</h2></div><div class="x-card strong" id="togetherCard"><span class="x-label">HUMAN CARE</span><h3>ข้อมูลเห็น Pattern — คนช่วยเข้าใจ Context</h3><p>ถ้าอยากดูว่าการดูแลต่อจาก Score ไปยังชีวิตจริงยังไง</p><div class="x-actions"><a class="x-btn green" href="/xircle/care/">Human Care คืออะไร →</a></div></div></section>
 
-  <a class="px-card deep-link" href="/xircle/learn/" aria-label="ดูข้อมูลเชิงลึก">
-    <div><strong>อยากดูข้อมูลลึก?</strong><br><span>หลักการ · X-VISOR · Source · Ecosystem</span></div>
-    <b aria-hidden="true">→</b>
-  </a>
-
-  <p class="nav-label">ไปต่อ</p>
-  <nav class="zone-tabs" aria-label="พื้นที่หลัก">
-    <a class="active" href="/xircle/start/">วันนี้</a>
-    <a href="/xircle/circle/">วง</a>
-    <a href="/xircle/ghost/">แนวโน้ม</a>
-    <a href="/xircle/learn/">ข้อมูล</a>
-  </nav>
-
-  <p class="px-whisper" style="margin-top:22px">
-    <a href="/xircle/" style="color:var(--cream-soft)">เล่น Intro ใหม่ →</a>
-  </p>
-</main>
-
-<script src="/xircle/_shared/state.js?v=3"></script>
-<script src="/xircle/_shared/analytics.js?v=2"></script>
+  <nav class="x-tabs" aria-label="พื้นที่หลัก"><a class="active" href="/xircle/start/">Today</a><a href="/xircle/care/">Human Care</a><a href="/xircle/routinex/">RoutineX</a><a href="/xircle/learn/">Learn</a></nav>
+  <div class="x-actions"><a class="x-btn ghost" href="/xircle/">เล่น Intro ใหม่</a></div>
+</div></main>
+<script src="/xircle/_shared/state.js?v=4"></script><script src="/xircle/_shared/analytics.js?v=2"></script><script src="/xircle/_shared/v3.js?v=1"></script>
 <script>
-(function () {
-  "use strict";
-  window.XState.touchVisit();
-  window.XAnalytics.track("xircle_view", { returning: true });
-
-  var h = new Date().getHours();
-  var greet = document.getElementById("greet");
-  if (h >= 12 && h < 17) greet.textContent = "GOOD AFTERNOON";
-  else if (h >= 17 || h < 4) greet.textContent = "GOOD EVENING";
-
-  document.querySelectorAll("[data-adjust]").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      document.querySelectorAll("[data-adjust]").forEach(function (b) {
-        b.setAttribute("aria-pressed", b === btn ? "true" : "false");
-      });
-      document.getElementById("adjust-done").hidden = false;
-      window.XAnalytics.track("adjust_one_complete");
-    });
-  });
-
-  var handoff = window.XState.getXtyHandoff();
-  var care = document.getElementById("careNext");
-  if (handoff && care) {
-    var code = handoff.partyCode;
-    care.innerHTML =
-      '<span class="px-label" style="color:var(--green)">X-VISOR INVITE</span>' +
-      '<div class="invite-room">ROOM ' + code + '</div>' +
-      '<p class="px-whisper">ตี้รออยู่ · รหัสถูกเก็บไว้แล้ว</p>' +
-      '<div class="next-actions">' +
-        '<a class="px-cta" href="/xty/join/?c=' + encodeURIComponent(code) + '">เข้าตี้ ' + code + ' →</a>' +
-        '<a class="px-ghost" href="/xircle/opportunity/?from=invite">ลองเป็น X-VISOR ก่อน →</a>' +
-      '</div>' +
-      '<a class="px-ghost" href="/xircle/doc/xvisor/" style="justify-content:flex-start;margin-top:4px">อ่านข้อมูล X-VISOR →</a>';
-  }
-})();
+(function(){var h=new Date().getHours(),g=document.getElementById('greet');if(h>=12&&h<17)g.textContent='GOOD AFTERNOON';else if(h>=17||h<4)g.textContent='GOOD EVENING';document.querySelectorAll('[data-adjust]').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('[data-adjust]').forEach(function(b){b.setAttribute('aria-pressed',b===btn?'true':'false')});document.getElementById('adjustDone').hidden=false;window.XAnalytics&&XAnalytics.track('adjust_one_complete')})});if(window.XState){XState.touchVisit();var handoff=XState.getXtyHandoff(),card=document.getElementById('togetherCard');if(handoff){card.innerHTML='<span class="x-label">X-VISOR INVITE</span><div class="x-room">ROOM '+handoff.partyCode+'</div><h3>คนที่ชวนคุณรออยู่</h3><p>รหัสถูกเก็บไว้แล้ว จะเปิด Human Care ก่อนก็ไม่หาย</p><div class="x-actions"><a class="x-btn green" href="/xty/join/?c='+encodeURIComponent(handoff.partyCode)+'">เข้าตี้แมวขาว →</a><a class="x-btn ghost" href="/xircle/care/">Human Care คืออะไร</a></div>'}}})();
 </script>
-</body>
-</html>
+</body></html>
