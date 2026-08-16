@@ -190,35 +190,6 @@
     if (tail) tail.innerHTML = 'รหัส <strong>' + code + '</strong> ถูกเก็บไว้แล้ว · กดเข้าตี้ต่อได้เลย';
   }
 
-  function styleNormalXtyEnding() {
-    var s12 = document.querySelector('[data-scene="S12"]');
-    var s13 = document.querySelector('[data-scene="S13"]');
-    if (!s12 || !s13) return;
-
-    var create = s12.querySelector('[data-circle-create]');
-    if (create) {
-      create.textContent = 'ตั้งตี้ 7 วันใน XTY';
-      create.addEventListener('click', function (event) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        location.href = '/xty/new/?template=xircle';
-      }, true);
-    }
-
-    var health = s13.querySelector('.fork-card.health');
-    if (health) {
-      health.href = '/xty/new/?template=xircle';
-      var b = health.querySelector('b');
-      var h = health.querySelector('h3');
-      var p = health.querySelector('p');
-      var go = health.querySelector('.go');
-      if (b) b.textContent = 'DO IT TOGETHER';
-      if (h) h.textContent = 'เอาหนึ่งอย่างนี้ไปเล่นต่อ 7 วัน';
-      if (p) p.textContent = 'Xircle ช่วยให้เห็นสิ่งที่อยากปรับ ส่วน XTY ช่วยให้ทำมันจริงกับคนอื่น';
-      if (go) go.textContent = 'ตั้งตี้ใน XTY →';
-    }
-  }
-
   function installOpportunityCareCta() {
     if (!/^\/xircle\/opportunity\/?$/.test(location.pathname)) return;
     var scene = document.querySelector('[data-scene="O4"]');
@@ -240,10 +211,12 @@
   }
 
   function installBridgeUi() {
+    /* Normal Xircle keeps its original ending/routes. XTY creation is only
+       introduced after the X-VISOR simulator, or when this visit already
+       came from an XTY/Xircle invite carrying a remembered room code. */
     if (exactXircleHome()) {
       var handoff = XState.getXtyHandoff();
       if (handoff) styleInviteEnding(handoff);
-      else styleNormalXtyEnding();
     }
     installOpportunityCareCta();
   }
