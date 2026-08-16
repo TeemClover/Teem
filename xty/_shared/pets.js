@@ -17,6 +17,15 @@
    install Xircle/X-VISOR page handlers or override the XTY share button. */
 import { XVISOR_GUIDE } from './xvisor-guide.js';
 
+/* The Party page is the only place that needs the route-only X-VISOR UI.
+   Load it there explicitly on the client. Both modules self-check the party
+   preset, and X-VISOR no longer owns or overrides the normal XTY share flow. */
+if (typeof window !== 'undefined' && /^\/xty\/p\/?$/.test(window.location.pathname)) {
+  import('./xvisor-care.js')
+    .then(() => import('./xvisor-care-scripts.js'))
+    .catch(() => {});
+}
+
 export const SERIES = Object.freeze({
   starter: { id: 'starter', no: '01', labelTh: 'เริ่มต้น', labelEn: 'STARTER' },
   work:    { id: 'work',    no: '02', labelTh: 'ลุยงาน',   labelEn: 'WORK' },
@@ -24,7 +33,7 @@ export const SERIES = Object.freeze({
   wild:    { id: 'wild',    no: '04', labelTh: 'สายแรง',   labelEn: 'WILD' },
   forest:  { id: 'forest',  no: '05', labelTh: 'สายป่า',   labelEn: 'FOREST' },
   untamed: { id: 'untamed', no: '06', labelTh: 'สุดทาง',   labelEn: 'UNTAMED' },
-  legend:  { id: 'legend',  no: '07', labelTh: 'ตำนาน',    labelEn: 'LEGEND' },
+  legend:  { id: 'legend',  no: '07', labelTh: 'ตำนาน',   labelEn: 'LEGEND' },
 });
 
 /* RGBS mirrors core7 COLOR_META. Kept as ids only — the hex values stay
