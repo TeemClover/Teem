@@ -27,6 +27,16 @@
 <!-- /XTY SOCIAL SHARE -->
 <meta name="description" content="ชวนเพื่อนมาตั้งตี้ ทำของจริง แล้วกลับมา Commit ด้วยกัน จะตั้งตี้เองหรือเข้าตี้ของเพื่อนก็ได้">
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
+<style>
+  .party-group{margin-top:10px;border:1px solid var(--xty-line);border-radius:var(--r-lg);background:rgba(255,255,255,.55);overflow:hidden}
+  .party-group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;font-weight:800}
+  .party-group>summary::-webkit-details-marker{display:none}
+  .party-group>summary::after{content:'⌄';font-size:18px;line-height:1;transition:transform .18s ease}
+  .party-group:not([open])>summary::after{transform:rotate(-90deg)}
+  .party-group-count{font-size:12px;font-weight:700;color:var(--xty-muted);margin-left:auto}
+  .party-group .rows{border-top:1px solid var(--xty-line)}
+  .party-group-empty{padding:12px 15px 15px;color:var(--xty-muted);font-size:13px;border-top:1px solid var(--xty-line)}
+</style>
 <!-- XTY SEO SCHEMA -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"XTY — ตั้งตี้ทำอะไรก็ได้","url":"https://www.myclover.com/xty/","description":"ชวนเพื่อนมาตั้งตี้ ทำของจริง แล้วกลับมา Commit ด้วยกัน","image":"https://www.myclover.com/xty/assets/xty-og-share-1200x630.jpg","applicationCategory":"LifestyleApplication","operatingSystem":"Web","isPartOf":{"@type":"WebSite","name":"myClover","url":"https://www.myclover.com/"}}</script>
 <!-- /XTY SEO SCHEMA -->
@@ -130,7 +140,7 @@
       <p class="whisper">ช่องสร้างตี้และช่องเข้าร่วมนับแยกกัน</p>
     </div>
 
-    <h2 class="title" id="partyHeading" style="margin-top:34px;font-size:19px">ตี้อื่นของคุณ</h2>
+    <h2 class="title" id="partyHeading" style="margin-top:34px;font-size:19px">ตี้ทั้งหมด</h2>
     <div id="myParties"></div>
 
     <a class="about-link" href="/xty/about/">เกี่ยวกับ XTY →</a>
@@ -147,6 +157,7 @@
 import {
   hasProfile, getProfile, createProfile, allParties, myPartyCodes, refreshParty,
   activePartyUsage, committedToday, isActiveParty, shouldOfferProgressSave, updateProfile,
+  partyIdentity,
 } from '/xty/_shared/store.js';
 import { joinPartyV2 } from '/xty/_shared/join-party-v2.js';
 import { PET_BY_ID } from '/xty/_shared/pets.js';
@@ -340,6 +351,51 @@ async function renderHome() {
   paintPartyList(getProfile() || p, new Set(myPartyCodes()));
 }
 
+function roleInParty(party) {
+  const identity = partyIdentity(party?.code);
+  const member = party?.members?.find(item => item.userId === identity?.userId);
+  if (member?.role === 'lead') return 'lead';
+  if (identity?.userId && party?.ownerId === identity.userId) return 'lead';
+  return 'member';
+}
+
+function partyRow(party) {
+  const a = document.createElement('a');
+  a.className = 'row';
+  a.href = `/xty/p/?c=${encodeURIComponent(party.code)}`;
+  const npc = cardById(party.npcCardId);
+  const petEmoji = npc ? `<img src="${npc.art}" alt="">` : (party.petId ? petGlyph(party.petId) : '· ·');
+  const done = committedToday(party).size;
+  const terminal = !isActiveParty(party);
+  a.innerHTML =
+    `<span class="ic">${petEmoji}</span>` +
+    `<span class="tx"><b>${escapeHtml(party.name)}</b>` +
+    `<small>${escapeHtml(party.activity || 'ยังไม่ระบุกิจกรรม')} · ${done}/${party.members.length} Commit วันนี้${terminal ? ` · ${escState(party.state)}` : ''}</small></span>` +
+    `<span class="go">›</span>`;
+  return a;
+}
+
+function partyGroup(title, parties, emptyText) {
+  const details = document.createElement('details');
+  details.className = 'party-group';
+  details.open = true;
+  const summary = document.createElement('summary');
+  summary.innerHTML = `<span>${escapeHtml(title)}</span><span class="party-group-count">${parties.length} ตี้</span>`;
+  details.appendChild(summary);
+  if (!parties.length) {
+    const empty = document.createElement('div');
+    empty.className = 'party-group-empty';
+    empty.textContent = emptyText;
+    details.appendChild(empty);
+    return details;
+  }
+  const rows = document.createElement('div');
+  rows.className = 'rows';
+  parties.forEach(party => rows.appendChild(partyRow(party)));
+  details.appendChild(rows);
+  return details;
+}
+
 function paintPartyList(p, mine) {
   const list = allParties().filter(x => mine.has(x.code));
   const capacity = activePartyUsage(p);
@@ -354,46 +410,38 @@ function paintPartyList(p, mine) {
     return;
   }
 
-  const main = list.find(isActiveParty) || list[0];
-  const usesCardCover = ['card', 'legacy_card'].includes(main.coverType) || (!main.coverType && main.leadCardId);
-  const mainCard = usesCardCover ? cardById(main.leadCardId || main.coverValue) : null;
-  let mainCover = '';
-  if (mainCard) mainCover = cardMarkup(mainCard, { role: 'lead' });
-  else if (main.coverType === 'card_back') mainCover = '<div class="animal-card card-back"><span class="back-mark">XTY</span><small>CARD BACK</small></div>';
-  else {
-    let snapshot = { species: p.avatarId, color: p.avatarFrame };
-    try { snapshot = { ...snapshot, ...JSON.parse(main.coverValue || '{}') }; } catch {}
-    const art = avatarById(snapshot.species);
-    mainCover = `<div class="avatar-cover" data-color="${snapshot.color || 'green'}"><img src="${art.art}" alt=""><b>${escapeHtml(art.nameTh)}</b><small>PARTY COVER</small></div>`;
-  }
-  const mainDone = committedToday(main).size;
-  const terminal = !isActiveParty(main);
-  $('mainParty').innerHTML = `<div class="card main-party">`
-    + mainCover
-    + `<div><span class="party-state">${terminal ? escState(main.state) : 'MAIN PARTY'}</span>`
-    + `<h2>${escapeHtml(main.name)}</h2><p class="whisper" style="margin:0">${escapeHtml(main.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
-    + `<p class="whisper">${mainDone}/${main.members.length} Commit วันนี้${mainCard ? ` · ${escapeHtml(cardNameTh(mainCard))}` : ''}</p>`
-    + `<a class="btn gold sm" href="/xty/p/?c=${encodeURIComponent(main.code)}">${terminal ? 'ดู Ending' : 'เข้าตี้ / Commit'}</a></div></div>`;
+  const leadParties = list.filter(party => roleInParty(party) === 'lead');
+  const joinedParties = list.filter(party => roleInParty(party) !== 'lead');
+  const main = leadParties.find(isActiveParty) || leadParties[0] || null;
 
-  const rows = document.createElement('div');
-  rows.className = 'rows';
-  const rest = list.filter(party => party.code !== main.code);
-  $('partyHeading').hidden = !rest.length;
-  rest.forEach(party => {
-    const a = document.createElement('a');
-    a.className = 'row';
-    a.href = `/xty/p/?c=${encodeURIComponent(party.code)}`;
-    const npc = cardById(party.npcCardId);
-    const petEmoji = npc ? `<img src="${npc.art}" alt="">` : (party.petId ? petGlyph(party.petId) : '· ·');
-    const done = committedToday(party).size;
-    a.innerHTML =
-      `<span class="ic">${petEmoji}</span>` +
-      `<span class="tx"><b>${escapeHtml(party.name)}</b>` +
-      `<small>${escapeHtml(party.activity || 'ยังไม่ระบุกิจกรรม')} · ${done}/${party.members.length} Commit วันนี้</small></span>` +
-      `<span class="go">›</span>`;
-    rows.appendChild(a);
-  });
-  box.appendChild(rows);
+  if (main) {
+    const usesCardCover = ['card', 'legacy_card'].includes(main.coverType) || (!main.coverType && main.leadCardId);
+    const mainCard = usesCardCover ? cardById(main.leadCardId || main.coverValue) : null;
+    let mainCover = '';
+    if (mainCard) mainCover = cardMarkup(mainCard, { role: 'lead' });
+    else if (main.coverType === 'card_back') mainCover = '<div class="animal-card card-back"><span class="back-mark">XTY</span><small>CARD BACK</small></div>';
+    else {
+      let snapshot = { species: p.avatarId, color: p.avatarFrame };
+      try { snapshot = { ...snapshot, ...JSON.parse(main.coverValue || '{}') }; } catch {}
+      const art = avatarById(snapshot.species);
+      mainCover = `<div class="avatar-cover" data-color="${snapshot.color || 'green'}"><img src="${art.art}" alt=""><b>${escapeHtml(art.nameTh)}</b><small>PARTY COVER</small></div>`;
+    }
+    const mainDone = committedToday(main).size;
+    const terminal = !isActiveParty(main);
+    $('mainParty').innerHTML = `<div class="card main-party">`
+      + mainCover
+      + `<div><span class="party-state">${terminal ? escState(main.state) : 'MAIN PARTY'}</span>`
+      + `<h2>${escapeHtml(main.name)}</h2><p class="whisper" style="margin:0">${escapeHtml(main.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
+      + `<p class="whisper">${mainDone}/${main.members.length} Commit วันนี้${mainCard ? ` · ${escapeHtml(cardNameTh(mainCard))}` : ''}</p>`
+      + `<a class="btn gold sm" href="/xty/p/?c=${encodeURIComponent(main.code)}">${terminal ? 'ดู Ending' : 'เข้าตี้ / Commit'}</a></div></div>`;
+  } else {
+    /* Joined parties never take over the large owner card. */
+    $('mainParty').innerHTML = '';
+  }
+
+  $('partyHeading').hidden = false;
+  box.appendChild(partyGroup('ตี้ที่เป็นหัวตี้', leadParties, 'ยังไม่มีตี้ที่คุณเป็นหัวตี้'));
+  box.appendChild(partyGroup('ตี้ที่เป็นสมาชิก', joinedParties, 'ยังไม่มีตี้ที่คุณเข้าร่วมเป็นสมาชิก'));
 }
 
 function escState(value) {
