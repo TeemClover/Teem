@@ -65,6 +65,9 @@ function systemPrompt(petId, party, context, hour) {
   const soloRule = context.members.length === 1
     ? `\n## ตี้นี้มีมนุษย์ 1 คน\nคุยกับ ${context.members[0].alias} ตรง ๆ อย่าพูดว่า “ใครอยาก…”, “คนอื่นว่าไง”, “ทุกคน…” ราวกับมีคนอื่นอยู่ในห้อง\nถ้าจะพูดถึงคนอื่น ให้พูดชัดว่าเป็นคนที่จะเข้ามาทีหลัง\n`
     : '';
+  const pronounRule = petId === 'monitor_lizard'
+    ? `## กฎคำแทนตัว\nเหี้ยเป็นข้อยกเว้นตัวเดียวที่ใช้ “กู/มึง” ได้ตามคาแรกเตอร์ แต่ยังห้ามด่าหรือทำร้ายผู้เล่น`
+    : `## กฎคำแทนตัว — PRODUCT OVERRIDE\nห้ามใช้คำว่า “กู” หรือ “มึง” ในข้อความที่ส่งถึงผู้เล่น ไม่ว่าจะใช้แทนตัวเอง เรียกผู้เล่น หรือยกตัวอย่าง\nใช้ alias, “เรา”, “ตี้”, “ทุกคน” หรือเว้นสรรพนามแทน ให้ฟังเป็นมิตรสำหรับคนที่เพิ่งเจอกัน\nกฎนี้มีลำดับเหนือ persona เดิมทุกข้อที่อาจอนุญาตคำว่า “กู/มึง”`;
 
   return `คุณคือ ${persona.emoji} ${persona.nameTh} — NPC สัตว์ประจำตี้ในเกม XTY
 XTY คือเกมของคนกลุ่มเล็ก 2–5 คนที่ออกไปทำอะไรบางอย่างในชีวิตจริง แล้วกลับมา Commit เมื่อทำแล้ว
@@ -83,6 +86,8 @@ XTY คือเกมของคนกลุ่มเล็ก 2–5 คนท
 ช่วงเวลาของวันใช้เป็น mood ได้ แต่ห้ามเดาอากาศ อาหาร ตาราง หรือแผนของสมาชิก
 
 ${persona.block}
+
+${pronounRule}
 
 ## ตี้ที่คุณอยู่
 ชื่อตี้: ${party.name || '(ไม่มีชื่อ)'}
@@ -167,7 +172,7 @@ const FORBIDDEN = [
   'fat', 'obese', 'lazy', 'loser', 'stupid', 'pathetic',
 ];
 
-export function sanitize(raw) {
+export function sanitize(raw, petId = '') {
   const text = String(raw || '')
     .replace(/<\|[^>]*\|>/g, '')
     .replace(/<\/?(?:assistant|analysis|final|constrain)>/gi, '')
@@ -191,6 +196,10 @@ export function sanitize(raw) {
 
   const joined = bubbles.join(' ').toLowerCase();
   if (FORBIDDEN.some(term => joined.includes(term))) return [];
+  /* Hard product guard: only the monitor-lizard persona may use the
+     deliberately rough กู/มึง voice. If another model slips, discard the
+     turn and let the caller use a friendly deterministic fallback. */
+  if (petId !== 'monitor_lizard' && (joined.includes('กู') || joined.includes('มึง'))) return [];
   return bubbles;
 }
 
@@ -251,5 +260,5 @@ export async function readAndRespond({ party, context, log, ownRecent, since, ho
   if (!choice) return null;
   if (choice.finish_reason === 'content_filter') return [];
 
-  return sanitize(choice.message?.content || '');
+  return sanitize(choice.message?.content || '', party.pet_id);
 }
