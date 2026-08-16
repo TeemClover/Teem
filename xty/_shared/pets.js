@@ -13,8 +13,9 @@
    - Chat representation is always the animal emoji + name.
    ═══════════════════════════════════════════════════════════════ */
 
-import { XVISOR_GUIDE } from './xvisor-care.js';
-import './xvisor-care-scripts.js';
+/* Registry data only: importing PET_BY_ID from a normal XTY page must never
+   install Xircle/X-VISOR page handlers or override the XTY share button. */
+import { XVISOR_GUIDE } from './xvisor-guide.js';
 
 export const SERIES = Object.freeze({
   starter: { id: 'starter', no: '01', labelTh: 'เริ่มต้น', labelEn: 'STARTER' },
