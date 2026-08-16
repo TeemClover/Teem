@@ -1,0 +1,22 @@
+/* XTY About + Ending — contain notebook layouts inside the mobile viewport. */
+html,body{max-width:100%;overflow-x:clip}
+.about-shell,.ending-shell{box-sizing:border-box;max-width:100%;overflow-x:clip}
+.about-shell *,.ending-shell *{box-sizing:border-box}
+.about-shell>*,.ending-shell>*{min-width:0;max-width:100%}
+.story-copy,.ending-hero>div,.ending-head,.ending-teaser-copy,.future-note>div,.many-parties>div,.story-end>div{min-width:0;max-width:100%}
+.about-shell h1,.about-shell h2,.about-shell h3,.about-shell p,.ending-shell h1,.ending-shell h2,.ending-shell h3,.ending-shell p{max-width:100%;white-space:normal;word-break:normal;overflow-wrap:break-word}
+
+@media(max-width:640px){
+  .about-shell,.ending-shell{width:100%;max-width:100%;padding-left:16px!important;padding-right:16px!important;margin-left:auto;margin-right:auto;overflow-x:clip}
+  .story-hero,.ending-hero,.real-life-explainer,.future-note,.many-parties,.story-end,.ending-about-teaser,.finish-promise,.ending-step,.mechanism,.card-tease,.ending-final{width:100%;max-width:100%;min-width:0}
+  .ending-about-teaser,.future-note,.many-parties,.story-end{overflow:hidden}
+  .ending-about-teaser{padding-left:18px!important;padding-right:18px!important}
+  .ending-teaser-copy,.ending-teaser-copy p,.ending-teaser-copy h2,.future-note p,.future-note h2,.many-parties p,.many-parties h2,.story-end h2{width:100%;max-width:100%;min-width:0;overflow-wrap:break-word}
+  .ending-actions,.ending-teaser-actions,.hero-actions{width:100%;max-width:100%}
+  .ending-actions .btn,.ending-teaser-actions .btn{min-width:0!important;max-width:100%;width:100%}
+  .ending-art-card{width:100%!important;max-width:calc(100vw - 48px)!important;margin-left:auto!important;margin-right:auto!important;transform:none!important}
+  .ending-art-card::before{left:8px!important;top:18px!important}
+  .ending-art-card::after{right:8px!important;bottom:18px!important}
+  .ending-preview-card{width:100%;max-width:100%;min-width:0}
+  .ending-preview-card img{max-width:100%}
+}
