@@ -137,12 +137,41 @@
     });
   }
 
+  /* Library is the contextual answer layer of the product, not a separate island.
+     Inject one quiet question affordance into v5 headers. It is enhancement-only:
+     if this code fails, the page and all core navigation remain untouched. */
+  function initContextHelp(){
+    var path=(location.pathname.replace(/\/+$/,'')||'/xircle');
+    var map={
+      '/xircle':{q:'Habit Score',tip:'ถามต่อเรื่อง Habit Score'},
+      '/xircle/start':{q:'Habit Score',tip:'ถามต่อเรื่อง Today / Habit Score'},
+      '/xircle/care':{q:'X-VISOR',tip:'ถามต่อเรื่อง Human Care'},
+      '/xircle/opportunity':{q:'Boundary',tip:'ถามต่อเรื่อง X-VISOR / Boundary'},
+      '/xircle/care/party':{q:'แมวขาว',tip:'ถามต่อเรื่อง XTY / แมวขาว'},
+      '/xircle/routinex':{q:'ABCD',tip:'ถามต่อเรื่อง RoutineX / ABCD'},
+      '/xircle/products':{q:'Habix',tip:'ถามต่อเรื่อง Habix'},
+      '/xircle/hardware':{q:'Band Scale',tip:'ถามต่อเรื่อง Band / Scale'},
+      '/xircle/circle':{q:'Community',tip:'ถามต่อเรื่อง Together'},
+      '/xircle/ghost':{q:'Body Composition',tip:'ถามต่อเรื่อง Pattern / Outcome'}
+    };
+    var item=map[path],nav=qs('.xp-nav');if(!item||!nav||qs('.xp-context-help',nav))return;
+    var style=document.getElementById('xp-context-help-style');
+    if(!style){
+      style=document.createElement('style');style.id='xp-context-help-style';
+      style.textContent='.xp-context-help{position:relative;display:inline-grid!important;place-items:center;width:31px;height:31px;padding:0!important;border-radius:50%!important;border:1px solid rgba(123,215,232,.22)!important;color:#9fcfda!important;background:rgba(123,215,232,.045)!important;font:800 12px var(--font-ui)!important;text-decoration:none;transition:.2s ease}.xp-context-help:hover{color:#f4efe4!important;border-color:rgba(123,215,232,.48)!important;background:rgba(123,215,232,.1)!important}.xp-context-help:after{content:attr(data-tip);position:absolute;right:0;top:calc(100% + 9px);width:max-content;max-width:240px;padding:8px 10px;border-radius:10px;background:#0a1713;border:1px solid rgba(255,255,255,.1);color:#c7d2cc;font:600 11px var(--font-thai);box-shadow:0 14px 32px rgba(0,0,0,.28);opacity:0;transform:translateY(-3px);pointer-events:none;transition:.18s;z-index:90}.xp-context-help:hover:after,.xp-context-help:focus-visible:after{opacity:1;transform:none}@media(max-width:680px){.xp-context-help:after{display:none}}';
+      document.head.appendChild(style);
+    }
+    var a=document.createElement('a');a.className='xp-context-help';a.href='/xircle/learn/?q='+encodeURIComponent(item.q);a.textContent='?';a.dataset.tip=item.tip;a.title=item.tip;a.setAttribute('aria-label',item.tip);
+    var cat=qs('.cat',nav);if(cat)nav.insertBefore(a,cat);else nav.appendChild(a);
+  }
+
   try{
     loadArt();
     initStage();
     initSimulator();
     initOutsideChoices();
     initWhiteCat();
+    initContextHelp();
     safeState(function(s){s.touchVisit&&s.touchVisit()});
     safeTrack('xircle_view',{v:5,path:location.pathname});
     window.XV5_READY=true;
