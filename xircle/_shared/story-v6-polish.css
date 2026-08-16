@@ -1,0 +1,201 @@
+/* v6.2 polish — Thai-safe type, UI-safe artwork, concentric Habit Score, RoutineX ABCD + Flavor+. */
+.xp-story .xp-kicker{
+  font-size:12px;
+  line-height:1.65;
+  margin-bottom:12px;
+  letter-spacing:.14em;
+}
+.xp-story .xp-title,
+.xp-story .xp-title.sm{
+  line-height:1.1;
+  letter-spacing:-.025em;
+  padding-block:.03em;
+  overflow:visible;
+}
+.xp-story .xp-lede{line-height:1.58}
+
+/* Images with baked UI/copy must remain fully legible rather than being cinematic-cropped. */
+.xp-story .xp-art.art-ui-safe{
+  background:#07120f;
+}
+.xp-story .xp-art.art-ui-safe img{
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  background:#07120f;
+}
+.xp-story .xp-scene.is-reacting .xp-art.art-ui-safe img{transform:scale(1.008)!important}
+@media(min-width:781px){
+  .xp-story .xp-art.art-ui-safe.r169{height:auto;aspect-ratio:16/9!important;max-height:78dvh}
+  .xp-story .xp-art.art-ui-safe.r43{height:auto;aspect-ratio:4/3!important;max-height:78dvh}
+  .xp-story .xp-art.art-ui-safe.r32{height:auto;aspect-ratio:3/2!important;max-height:78dvh}
+  .xp-story .xp-art.art-ui-safe.r11{height:min(72dvh,720px);aspect-ratio:1!important}
+}
+
+/* Habit Score: three concentric rings = Eat + Move + Sleep becoming one score. */
+.xp-habit-score{
+  display:grid;
+  grid-template-columns:150px minmax(0,1fr);
+  align-items:center;
+  gap:15px;
+  width:min(100%,390px);
+  margin-top:14px;
+  padding:12px 14px 12px 10px;
+  border:1px solid rgba(245,240,230,.15);
+  border-radius:22px;
+  background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025));
+  box-shadow:inset 0 1px rgba(255,255,255,.025),0 18px 45px rgba(0,0,0,.16);
+}
+.xp-habit-rings{position:relative;width:150px;aspect-ratio:1}
+.xp-habit-rings svg{display:block;width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.xp-habit-track,.xp-habit-ring{fill:none;stroke-width:11}
+.xp-habit-track{stroke:rgba(255,255,255,.075)}
+.xp-habit-ring{
+  stroke-linecap:round;
+  transition:stroke-dashoffset .9s var(--xp-story-ease);
+  filter:drop-shadow(0 0 7px rgba(255,255,255,.05));
+}
+.xp-habit-ring.eat{stroke:var(--xp-orange)}
+.xp-habit-ring.move{stroke:var(--xp-green)}
+.xp-habit-ring.sleep{stroke:var(--xp-cyan)}
+.xp-habit-center{position:absolute;inset:0;display:grid;place-content:center;text-align:center;pointer-events:none}
+.xp-habit-center small{font-size:9px;line-height:1.4;color:var(--xp-soft);letter-spacing:.04em}
+.xp-habit-center b{display:block;margin-top:2px;font-size:35px;line-height:1;color:var(--xp-ink)}
+.xp-habit-meaning{min-width:0}
+.xp-habit-meaning>strong{display:block;font-size:16px;line-height:1.35;color:var(--xp-ink)}
+.xp-habit-meaning>small{display:block;margin-top:7px;font-size:10px;line-height:1.5;color:var(--xp-dim)}
+.xp-habit-legend{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:8px}
+.xp-habit-legend span{display:inline-flex;align-items:center;gap:5px;font-size:10px;line-height:1.4;color:var(--xp-soft)}
+.xp-habit-legend span:before{content:"";width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+.xp-habit-legend span.eat:before{background:var(--xp-orange)}
+.xp-habit-legend span.move:before{background:var(--xp-green)}
+.xp-habit-legend span.sleep:before{background:var(--xp-cyan)}
+.xp-habit-legend span b{font-size:10px;color:var(--xp-ink)}
+
+/* RoutineX uses the source-backed ABCD + Flavor+ structure. English terms are visual anchors. */
+.xp-routinex-story .xp-routine-term{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  margin:0 0 13px;
+  color:var(--xp-cyan);
+  line-height:1.1;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.xp-routinex-story .xp-routine-term.gold{color:var(--xp-gold)}
+.xp-routinex-story .xp-routine-term b{
+  font-size:clamp(30px,3.2vw,48px);
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-.03em;
+}
+.xp-routinex-story .xp-routine-term span{
+  font-size:clamp(16px,1.55vw,23px);
+  line-height:1.2;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+.xp-routine-sequence{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.xp-routine-sequence b{
+  display:grid;place-items:center;
+  width:31px;height:31px;border-radius:50%;
+  border:1px solid rgba(245,240,230,.18);
+  background:rgba(255,255,255,.055);
+  font-size:16px;color:var(--xp-ink)
+}
+.xp-routine-sequence b:nth-child(3){border-color:rgba(143,220,175,.6);color:var(--xp-green);background:rgba(143,220,175,.1)}
+.xp-routine-sequence b:last-child{border-color:rgba(239,164,110,.58);color:var(--xp-orange);background:rgba(239,164,110,.09)}
+.xp-routine-sequence em{font-style:normal;font-size:15px;color:var(--xp-dim)}
+.xp-routine-support>span{display:block;margin-top:4px}
+
+/* Five-node map: A B C D plus Flavor+, with C visually strongest. */
+.xp-routinex-story .xp-routine-map{width:min(86%,590px)}
+.xp-routinex-story .xp-routine-node{width:24%;min-width:92px}
+.xp-routinex-story .xp-routine-node.a{left:38%;top:-1%}
+.xp-routinex-story .xp-routine-node.b{right:1%;top:24%}
+.xp-routinex-story .xp-routine-node.c{right:11%;bottom:3%;top:auto}
+.xp-routinex-story .xp-routine-node.d{left:11%;bottom:3%}
+.xp-routinex-story .xp-routine-node.f{left:1%;top:24%}
+.xp-routinex-story .xp-routine-node b{font-size:clamp(25px,3vw,40px)}
+.xp-routinex-story .xp-routine-node small{
+  margin-top:5px;
+  font-size:clamp(9px,.9vw,12px);
+  line-height:1.08;
+  letter-spacing:.06em;
+  font-weight:800;
+  color:var(--xp-soft);
+}
+.xp-routinex-story .xp-routine-map[data-active="A"] .a,
+.xp-routinex-story .xp-routine-map[data-active="B"] .b,
+.xp-routinex-story .xp-routine-map[data-active="C"] .c,
+.xp-routinex-story .xp-routine-map[data-active="D"] .d,
+.xp-routinex-story .xp-routine-map[data-active="F"] .f,
+.xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-node{
+  opacity:1;
+  transform:scale(1.08);
+}
+
+@media(max-width:780px){
+  /* Thai needs breathing room above/below vowels and tone marks. */
+  .xp-story .xp-copy{padding:13px 2px 4px;overflow:hidden}
+  .xp-story .xp-kicker{
+    margin-bottom:8px;
+    font-size:clamp(11px,3vw,12.5px);
+    line-height:1.65;
+    letter-spacing:.11em;
+  }
+  .xp-story .xp-title,
+  .xp-story .xp-title.sm{
+    font-size:clamp(27px,7.35vw,35px);
+    line-height:1.14;
+    letter-spacing:-.02em;
+    padding-block:.04em;
+  }
+  .xp-story .xp-lede{margin-top:9px;font-size:14px;line-height:1.54}
+  .xp-story .xp-mini{font-size:9.5px;line-height:1.55}
+  .xp-story .xp-art.art-ui-safe img{object-fit:contain!important;object-position:center center!important;transform:none!important}
+
+  .xp-habit-score{
+    grid-template-columns:108px minmax(0,1fr);
+    gap:10px;
+    width:min(100%,340px);
+    margin-top:7px;
+    padding:8px 10px 8px 7px;
+    border-radius:16px;
+  }
+  .xp-habit-rings{width:108px}
+  .xp-habit-track,.xp-habit-ring{stroke-width:10}
+  .xp-habit-center small{font-size:7px}
+  .xp-habit-center b{font-size:26px}
+  .xp-habit-meaning>strong{font-size:13px}
+  .xp-habit-meaning>small{margin-top:4px;font-size:8px;line-height:1.4}
+  .xp-habit-legend{gap:3px 8px;margin-top:5px}
+  .xp-habit-legend span,.xp-habit-legend span b{font-size:8.5px}
+
+  .xp-routinex-story .xp-routine-term{gap:8px;margin-bottom:8px}
+  .xp-routinex-story .xp-routine-term b{font-size:27px}
+  .xp-routinex-story .xp-routine-term span{font-size:14px;line-height:1.2;letter-spacing:.065em}
+  .xp-routinex-story .xp-routine-map{width:min(84%,315px)}
+  .xp-routinex-story .xp-routine-node{width:25%;min-width:0;padding:5px}
+  .xp-routinex-story .xp-routine-node b{font-size:22px}
+  .xp-routinex-story .xp-routine-node small{font-size:8px;line-height:1.05;letter-spacing:.035em}
+  .xp-routinex-story .xp-routine-core b{font-size:15px}
+  .xp-routinex-story .xp-routine-core small{font-size:7px}
+  .xp-routinex-story .xp-routine-support{font-size:10px;line-height:1.38}
+  .xp-routine-sequence{gap:5px}
+  .xp-routine-sequence b{width:27px;height:27px;font-size:14px}
+}
+
+@media(max-height:680px) and (max-width:780px){
+  .xp-story .xp-kicker{font-size:10.5px;line-height:1.55;margin-bottom:5px}
+  .xp-story .xp-title,
+  .xp-story .xp-title.sm{font-size:clamp(23px,6.5vw,29px);line-height:1.13}
+  .xp-story .xp-lede{font-size:12px;line-height:1.45;margin-top:6px}
+  .xp-routinex-story .xp-routine-term{margin-bottom:5px}
+  .xp-routinex-story .xp-routine-term b{font-size:23px}
+  .xp-routinex-story .xp-routine-term span{font-size:12px}
+  .xp-habit-score{grid-template-columns:92px 1fr;padding:6px 8px 6px 5px}
+  .xp-habit-rings{width:92px}
+  .xp-habit-meaning>small{display:none}
+}
