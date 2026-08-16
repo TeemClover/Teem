@@ -34,6 +34,7 @@
     visitCount: 0,
     careIntroSeen: false,
     xvisorSimCompleted: false,
+    routineCompleted: false,
     whiteCatIntroSeen: false,
     rolePathSeen: null,
     xtyHandoff: null
@@ -46,6 +47,60 @@
     if (!item || !/^\d{5}$/.test(String(item.partyCode || ""))) return false;
     if (!Number.isFinite(Number(item.receivedAt))) return false;
     return Date.now() - Number(item.receivedAt) <= HANDOFF_TTL;
+  }
+
+  function normalizedPath() {
+    var p = String(location.pathname || "/").replace(/\/+$/, "");
+    return p || "/";
+  }
+
+  function isProgressRoute(path) {
+    return [
+      "/xircle",
+      "/xircle/start",
+      "/xircle/care",
+      "/xircle/opportunity",
+      "/xircle/routinex",
+      "/xircle/care/party"
+    ].indexOf(path) !== -1;
+  }
+
+  function addShortcut(nav, href, label, className) {
+    var a = document.createElement("a");
+    a.href = href;
+    a.textContent = label;
+    if (className) a.className = className;
+    nav.appendChild(a);
+  }
+
+  function renderProgressNav() {
+    var path = normalizedPath();
+    if (!isProgressRoute(path)) return;
+    var nav = document.querySelector(".xp-nav");
+    if (!nav) return;
+
+    nav.innerHTML = "";
+    nav.setAttribute("aria-label", "ทางลัดที่ปลดล็อกแล้ว");
+
+    var h = validHandoff(local.xtyHandoff) ? local.xtyHandoff : null;
+
+    // First visit is intentionally linear. Shortcuts appear only after milestones.
+    if (local.journeyCompleted && path !== "/xircle/opportunity") {
+      addShortcut(nav, "/xircle/opportunity/", "X-VISOR");
+    }
+    if (local.xvisorSimCompleted && path !== "/xircle/routinex") {
+      addShortcut(nav, "/xircle/routinex/", "RoutineX");
+    }
+
+    if (h) {
+      if (path !== "/xircle/care/party") {
+        addShortcut(nav, "/xircle/care/party/?mode=join", "เข้าตี้ " + h.partyCode, "cat");
+      }
+    } else if ((local.routineCompleted || local.whiteCatIntroSeen) && path !== "/xircle/care/party") {
+      addShortcut(nav, "/xircle/care/party/?mode=create", "แมวขาว · XTY", "cat");
+    }
+
+    nav.hidden = nav.children.length === 0;
   }
 
   var XState = {
@@ -62,12 +117,18 @@
     setSession: function (key, value) {
       session[key] = value;
       safeWrite("sessionStorage", SESSION_KEY, session);
+      if (key === "scene" && value === "R6" && normalizedPath() === "/xircle/routinex") {
+        local.routineCompleted = true;
+        safeWrite("localStorage", LOCAL_KEY, local);
+        renderProgressNav();
+      }
     },
 
     getLocal: function (key) { return local[key]; },
     setLocal: function (key, value) {
       local[key] = value;
       safeWrite("localStorage", LOCAL_KEY, local);
+      renderProgressNav();
     },
 
     touchVisit: function () {
@@ -85,6 +146,7 @@
       session.completedFirstJourney = true;
       safeWrite("localStorage", LOCAL_KEY, local);
       safeWrite("sessionStorage", SESSION_KEY, session);
+      renderProgressNav();
     },
 
     resetJourney: function () {
@@ -99,6 +161,7 @@
         if (item) {
           local.xtyHandoff = null;
           safeWrite("localStorage", LOCAL_KEY, local);
+          renderProgressNav();
         }
         return null;
       }
@@ -108,6 +171,7 @@
     clearXtyHandoff: function () {
       local.xtyHandoff = null;
       safeWrite("localStorage", LOCAL_KEY, local);
+      renderProgressNav();
     },
 
     partyJoinUrl: function () {
@@ -119,7 +183,9 @@
       var h = this.getXtyHandoff();
       if (mode === "join" && h) return "/xircle/care/party/?mode=join";
       return "/xircle/care/party/?mode=create";
-    }
+    },
+
+    renderProgressNav: renderProgressNav
   };
 
   window.XState = XState;
@@ -145,4 +211,5 @@
   }
 
   captureXtyInvite();
+  renderProgressNav();
 })();
