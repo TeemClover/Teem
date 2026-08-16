@@ -5,7 +5,7 @@
 
 export const XVISOR_GUIDE = Object.freeze({
   id: 'xvisor_white_cat_silver',
-  nameTh: 'แมวขาวสีเงิน',
+  nameTh: 'แมวขาว',
   emoji: '🐈',
   color: 'silver',
   art: '/xty/assets/art/avatars/white-cat.webp',
