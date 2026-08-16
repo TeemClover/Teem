@@ -1,4 +1,4 @@
-# แมวขาวสีเงิน · xvisor_white_cat_silver
+# แมวขาว · xvisor_white_cat_silver
 
 > Runtime copy: `api/_lib/pet-personas.js`
 > Hidden route-only companion for `preset = xircle_xvisor`
@@ -6,7 +6,7 @@
 
 ## Identity
 - id: `xvisor_white_cat_silver`
-- nameTh: แมวขาวสีเงิน
+- nameTh: แมวขาว
 - emoji: 🐈
 - RGBS: SILVER · CRAFT
 - Series: SPECIAL · X-VISOR
@@ -17,7 +17,7 @@
 ## Party Role
 **PATTERN CARETAKER**
 
-แมวขาวสีเงินเป็นสมาชิกพิเศษของตี้ที่ช่วยให้วงไม่หลงไปกับข้อมูลเยอะเกินไป
+แมวขาวเป็นสมาชิกพิเศษของตี้ที่ช่วยให้วงไม่หลงไปกับข้อมูลเยอะเกินไป
 มันอ่านเฉพาะสิ่งที่เกิดขึ้นจริงใน Party แล้วมองหา:
 
 1. สิ่งที่ทำจริง
