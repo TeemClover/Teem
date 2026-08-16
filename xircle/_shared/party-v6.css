@@ -1,0 +1,140 @@
+/* Xircle × XTY — White Cat partner page v6 final polish */
+body.xp-party{
+  color:var(--xp-ink);
+  background:
+    radial-gradient(circle at 14% 0%,rgba(123,215,232,.08),transparent 27%),
+    radial-gradient(circle at 88% 8%,rgba(230,196,131,.08),transparent 25%),
+    linear-gradient(180deg,#07120f 0%,#06110e 58%,#050d0b 100%);
+}
+body.xp-party:before{opacity:.18}
+.xp-party .xp-top{
+  background:linear-gradient(180deg,rgba(5,13,11,.98),rgba(5,13,11,.83),rgba(5,13,11,.28),transparent);
+}
+.xp-party .xp-page{padding-top:102px}
+.xp-party .xp-shell{--party-max:1240px;width:min(var(--party-max),calc(100% - 40px))}
+.xp-party .xp-hero{
+  grid-template-columns:minmax(330px,.82fr) minmax(520px,1.18fr);
+  gap:clamp(34px,5vw,78px);
+  min-height:min(690px,82dvh);
+  margin-bottom:34px;
+}
+.xp-party .xp-page-title{
+  color:#fbf7ed;
+  font-size:clamp(58px,6vw,92px);
+  line-height:.96;
+  letter-spacing:-.05em;
+}
+.xp-party .xp-kicker{color:var(--xp-green);font-size:11px;line-height:1.6}
+.xp-party .xp-lede{color:#cfd8d1;font-size:clamp(20px,1.8vw,27px);line-height:1.55}
+.xp-party .xp-lede strong{color:#fffaf0}
+.xp-party .xp-mini{color:#82938a;font-size:11px;line-height:1.55}
+.xp-party .xp-art{
+  border-color:rgba(230,196,131,.2);
+  background:#07120f;
+  box-shadow:0 34px 110px rgba(0,0,0,.46),0 0 0 1px rgba(255,255,255,.018) inset;
+}
+.xp-party .xp-section{border-top-color:rgba(245,240,230,.11);padding:62px 0}
+.xp-party .xp-section-head{max-width:850px;margin-bottom:30px}
+.xp-party .xp-section h2{color:#fbf7ed;font-size:clamp(38px,4vw,60px);line-height:1.08}
+.xp-party .xp-section .sub{color:#b9c6bf;font-size:17px;line-height:1.72}
+
+.xp-party .xp-card,
+.xp-party .xp-linkcard{
+  color:var(--xp-ink);
+  background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025));
+  border-color:rgba(245,240,230,.14);
+  box-shadow:inset 0 1px rgba(255,255,255,.035),0 18px 44px rgba(0,0,0,.16);
+}
+.xp-party .xp-card.strong{
+  background:linear-gradient(145deg,rgba(230,196,131,.105),rgba(143,220,175,.045) 52%,rgba(255,255,255,.028));
+  border-color:rgba(230,196,131,.24);
+}
+.xp-party .xp-card h3{color:#fbf7ed;font-size:24px}
+.xp-party .xp-card p{color:#b9c6bf;font-size:15px;line-height:1.65}
+.xp-party .xp-label{color:#7fc99e;font-size:10px;line-height:1.5}
+.xp-party .xp-grid3>.xp-card{min-height:164px;padding:25px}
+.xp-party .xp-grid3>.xp-card:nth-child(2){border-color:rgba(143,220,175,.28);background:linear-gradient(145deg,rgba(143,220,175,.085),rgba(255,255,255,.025))}
+
+.xp-party .xp-days{gap:10px}
+.xp-party .xp-day{
+  min-height:108px;
+  padding:17px 15px;
+  color:var(--xp-ink);
+  border:1px solid rgba(245,240,230,.13);
+  background:linear-gradient(160deg,rgba(255,255,255,.065),rgba(255,255,255,.025));
+  box-shadow:inset 0 1px rgba(255,255,255,.025);
+}
+.xp-party .xp-day b{display:block;color:#78c99b;font-size:10px;line-height:1.4}
+.xp-party .xp-day strong{color:#f7f1e5;font-size:14px;line-height:1.45}
+.xp-party .xp-day:nth-child(1),
+.xp-party .xp-day:nth-child(6){border-color:rgba(230,196,131,.26)}
+
+.xp-party .xp-whitecat-banner{
+  position:relative;
+  grid-template-columns:minmax(180px,230px) minmax(0,1fr) auto;
+  gap:28px;
+  min-height:230px;
+  padding:28px 30px;
+  border-color:rgba(230,196,131,.34);
+  background:
+    radial-gradient(circle at 10% 55%,rgba(143,220,175,.12),transparent 32%),
+    linear-gradient(130deg,rgba(230,196,131,.105),rgba(143,220,175,.045) 48%,rgba(255,255,255,.025));
+  box-shadow:0 28px 80px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.04);
+}
+.xp-party .xp-whitecat-visual{height:190px;display:grid;place-items:center;align-self:end}
+.xp-party .xp-whitecat-cutout{
+  display:block;
+  width:min(100%,220px);
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+  filter:drop-shadow(0 18px 26px rgba(0,0,0,.28));
+}
+.xp-party .xp-whitecat-banner h3{color:#fff8e9;font-size:clamp(27px,2.5vw,36px);line-height:1.2;margin:7px 0 0}
+.xp-party .xp-whitecat-banner p{color:#c5d0c9;font-size:15px;line-height:1.65}
+.xp-party .xp-whitecat-banner .xp-btn{white-space:nowrap}
+.xp-party .xp-safety{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.xp-party .xp-safety span{padding:7px 10px;border-radius:999px;border:1px solid rgba(245,240,230,.12);color:#aebdb5;background:rgba(255,255,255,.025);font-size:10px;line-height:1.35}
+
+.xp-party .xp-partner-card{padding:27px 30px;border-radius:28px}
+.xp-party .xp-partner-card h3{font-size:27px}
+.xp-party .xp-footer{color:#7f9188}
+.xp-party .xp-return-note{margin-top:14px;color:#8ea097;font-size:11px;line-height:1.55}
+.xp-party .xp-return-note strong{color:var(--xp-gold)}
+
+/* Actual white-cat cutout reused on other v5 banners. */
+.xp-cat-cutout-stage{min-height:160px;display:grid;place-items:center;overflow:hidden}
+.xp-cat-cutout-stage img{display:block;width:min(100%,190px);height:160px;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 16px 28px rgba(0,0,0,.22))}
+
+@media(max-width:1000px){
+  .xp-party .xp-hero{grid-template-columns:1fr;min-height:0}
+  .xp-party .xp-hero>div{max-width:760px}
+  .xp-party .xp-art{max-width:none}
+  .xp-party .xp-whitecat-banner{grid-template-columns:170px 1fr}
+  .xp-party .xp-whitecat-banner>.xp-btn{grid-column:1/-1;justify-self:start;margin-left:198px}
+}
+@media(max-width:700px){
+  .xp-party .xp-page{padding-top:80px}
+  .xp-party .xp-shell{width:min(100% - 24px,var(--party-max))}
+  .xp-party .xp-hero{gap:22px;margin-bottom:12px}
+  .xp-party .xp-page-title{font-size:clamp(46px,14vw,68px);line-height:.98}
+  .xp-party .xp-lede{font-size:18px;line-height:1.55}
+  .xp-party .xp-section{padding:42px 0}
+  .xp-party .xp-section h2{font-size:clamp(32px,9vw,46px);line-height:1.12}
+  .xp-party .xp-section .sub{font-size:15px}
+  .xp-party .xp-grid3{grid-template-columns:1fr}
+  .xp-party .xp-grid3>.xp-card{min-height:0}
+  .xp-party .xp-days{grid-template-columns:1fr 1fr}
+  .xp-party .xp-day{min-height:96px}
+  .xp-party .xp-whitecat-banner{grid-template-columns:1fr;text-align:center;padding:22px 18px;gap:13px}
+  .xp-party .xp-whitecat-visual{height:180px}
+  .xp-party .xp-whitecat-cutout{width:190px}
+  .xp-party .xp-whitecat-banner>.xp-btn{grid-column:auto;justify-self:center;margin-left:0;width:min(100%,320px)}
+  .xp-party .xp-safety{justify-content:center}
+  .xp-party .xp-partner-card{padding:22px}
+}
+@media(max-width:420px){
+  .xp-party .xp-days{grid-template-columns:1fr 1fr;gap:7px}
+  .xp-party .xp-day{padding:13px 11px;min-height:86px}
+  .xp-party .xp-day strong{font-size:12px}
+}
