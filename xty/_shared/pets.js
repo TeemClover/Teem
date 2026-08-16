@@ -14,6 +14,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 import { XVISOR_GUIDE } from './xvisor-care.js';
+import './xvisor-care-scripts.js';
 
 export const SERIES = Object.freeze({
   starter: { id: 'starter', no: '01', labelTh: 'เริ่มต้น', labelEn: 'STARTER' },
