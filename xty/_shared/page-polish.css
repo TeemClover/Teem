@@ -24,6 +24,7 @@
   line-height:1.25!important;
   letter-spacing:.09em!important;
 }
+.story-copy .kicker{margin-bottom:30px!important}
 .story-copy .kicker + h1,.story-end .kicker + h2,.ending-teaser-copy .kicker + h2,.ending-head .kicker + h2{margin-top:8px!important}
 .story-copy h1,.ending-hero h1{font-size:clamp(38px,5.3vw,62px)!important;line-height:1.3!important}
 .section-title h2,.story-end h2,.ending-head h2,.finish-promise h2,.payoff h2,.card-tease h2,.ending-final h2{line-height:1.32!important}
@@ -171,6 +172,7 @@
 }
 @media(max-width:620px){
   .about-shell .kicker,.ending-shell .kicker{margin-bottom:18px!important;font-size:13px!important;line-height:1.25!important}
+  .story-copy .kicker{margin-bottom:28px!important}
   .story-copy h1,.ending-hero h1{font-size:clamp(36px,10.4vw,50px)!important;line-height:1.32!important}
   .story-hero{padding-top:10px}.hero-game-box img{width:min(96vw,520px);transform:none}
   .real-life-explainer{padding:20px}
