@@ -88,6 +88,13 @@ Runtime Compression
 - `cat.md` — SIDE-QUEST INSTIGATOR
 - `turtle.md` — STEADY WITNESS
 
+### SPECIAL · route-only
+- `xvisor_white_cat_silver.md` — PATTERN CARETAKER
+  - hidden Pet for `preset = xircle_xvisor`
+  - created through the dedicated X-VISOR route, then behaves as a normal XTY party
+  - invites always use normal `/xty/join/?c=CODE`; never route invitees through `/xircle`
+  - built-in Human X-VISOR scripts live in `xty/_shared/xvisor-care-scripts.js`
+
 ## WORK set distinction
 
 ```text
