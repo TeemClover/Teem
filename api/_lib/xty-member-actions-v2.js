@@ -7,6 +7,7 @@ import { cardById as core7CardById } from '../../core7/js/cards.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const MAX_JOINED = 3;
+const IDENTITY_EDIT_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 function bodyOf(req) { return req.body && typeof req.body === 'object' ? req.body : {}; }
 function codeOf(req) {
@@ -57,6 +58,13 @@ async function memberFor(req, sql, partyId) {
 }
 function partyDay(row, at) {
   return partyDayNumber(row.started_at || row.created_at || at, at, row.timezone || XTY_TIMEZONE);
+}
+function identityLockAt(row, member) {
+  const source = member?.role === 'lead'
+    ? (row?.created_at || member?.joined_at)
+    : (member?.joined_at || row?.created_at);
+  const anchor = new Date(source || 0).getTime();
+  return Number.isFinite(anchor) && anchor > 0 ? anchor + IDENTITY_EDIT_WINDOW_MS : 0;
 }
 function core7Name(card) { return card ? `${card.en} · ${card.th}` : ''; }
 function coverInfo(row) {
@@ -191,11 +199,16 @@ export async function handleIdentityV2(req, res, legacyXtyHandler) {
     if (!row) return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
     if (!ACTIVE_STATES.includes(String(row.state || '').toUpperCase())) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
     const { member } = await memberFor(req, sql, row.id); if (!member) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
+    const at = new Date();
+    const lockedAt = identityLockAt(row, member);
+    if (!lockedAt || at.getTime() >= lockedAt) {
+      return sendJson(res, { ok: false, error: 'IDENTITY_LOCKED', lockedAt: lockedAt ? new Date(lockedAt).toISOString() : null }, 409);
+    }
     const body = bodyOf(req); const alias = clean(body.alias, 24) || member.alias; const avatar = clean(body.avatar, 40) || member.avatar || 'orange_cat';
     const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : (member.avatar_color || 'green');
     const aliasChanged = alias !== member.alias; const avatarChanged = avatar !== member.avatar || avatarColor !== member.avatar_color;
     if (!aliasChanged && !avatarChanged) return sendJson(res, await stateViaLegacy(legacyXtyHandler, req, code));
-    const at = new Date(); const aliasType = aliasChanged ? 'MEMBER_ALIAS_CHANGED' : ''; const avatarType = avatarChanged ? 'MEMBER_AVATAR_CHANGED' : '';
+    const aliasType = aliasChanged ? 'MEMBER_ALIAS_CHANGED' : ''; const avatarType = avatarChanged ? 'MEMBER_AVATAR_CHANGED' : '';
     const aliasData = JSON.stringify({ from: member.alias, to: alias, alias });
     const avatarData = JSON.stringify({ alias, fromAvatar: member.avatar || 'orange_cat', toAvatar: avatar, fromColor: member.avatar_color || 'green', toColor: avatarColor });
     await sql.query(`WITH changed AS (UPDATE xty_members SET alias=$1,avatar=$2,avatar_color=$3
@@ -223,50 +236,19 @@ export async function handleLeaveV2(req, res) {
     if (!ACTIVE_STATES.includes(String(row.state || '').toUpperCase())) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
     const found = await memberFor(req, sql, row.id); const member = found.member;
     if (!member) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
+    if (member.role === 'lead') return sendJson(res, { ok: false, error: 'LEAD_CANNOT_LEAVE' }, 409);
     const at = new Date(); const day = partyDay(row, at); const quotaKey = quotaKeyFor(found.account, bodyOf(req), member);
     const leftData = JSON.stringify({ alias: member.alias, avatar: member.avatar, role: member.role });
 
-    if (member.role !== 'lead') {
-      const changed = await sql.query(`WITH left_member AS (UPDATE xty_members SET left_at=$1,removal_reason='LEFT',auth_hash=NULL
-          WHERE party_id=$2 AND user_id=$3 AND left_at IS NULL RETURNING party_id),
-        touched AS (UPDATE xty_parties SET updated_at=$1 WHERE id=$2 AND EXISTS (SELECT 1 FROM left_member) RETURNING id)
-        INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
-        SELECT id,'MEMBER_LEFT',$3,$4,$5::jsonb,$1 FROM touched RETURNING party_id`, [at, row.id, member.user_id, day, leftData]);
-      if (!changed[0]) return sendJson(res, { ok: false, error: 'MEMBERSHIP_CLOSED' }, 409);
-      if (quotaKey) await sql.query(`UPDATE xty_party_quota_v2 SET released_at=COALESCE(released_at,$1)
-        WHERE quota_key=$2 AND party_id=$3 AND role='member' AND released_at IS NULL`, [at, quotaKey, row.id]);
-      return sendJson(res, { ok: true, left: true, dissolved: false, transferredTo: null });
-    }
-
-    const nextRows = await sql.query(`SELECT user_id,alias FROM xty_members WHERE party_id=$1 AND user_id<>$2 AND left_at IS NULL ORDER BY joined_at LIMIT 1`, [row.id, member.user_id]);
-    const next = nextRows[0] || null;
-    if (next) {
-      const transferData = JSON.stringify({ from: member.alias, to: next.alias, toUserId: next.user_id });
-      const changed = await sql.query(`WITH left_member AS (UPDATE xty_members SET left_at=$1,removal_reason='LEFT',auth_hash=NULL
-          WHERE party_id=$2 AND user_id=$3 AND left_at IS NULL RETURNING party_id),
-        promoted AS (UPDATE xty_members SET role='lead' WHERE party_id=$2 AND user_id=$4 AND left_at IS NULL AND EXISTS (SELECT 1 FROM left_member) RETURNING party_id),
-        touched AS (UPDATE xty_parties SET owner_id=$4,updated_at=$1 WHERE id=$2 AND EXISTS (SELECT 1 FROM promoted) RETURNING id)
-        INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
-        SELECT touched.id,v.type,$3,$5,v.data::jsonb,$1 FROM touched
-        CROSS JOIN (VALUES ('MEMBER_LEFT'::text,$6::text),('LEAD_TRANSFERRED'::text,$7::text)) AS v(type,data) RETURNING party_id`,
-      [at, row.id, member.user_id, next.user_id, day, leftData, transferData]);
-      if (!changed.length) return sendJson(res, { ok: false, error: 'LEAVE_FAILED' }, 409);
-      if (quotaKey) await sql.query(`UPDATE xty_party_quota_v2 SET released_at=COALESCE(released_at,$1)
-        WHERE quota_key=$2 AND party_id=$3 AND role='owner' AND released_at IS NULL`, [at, quotaKey, row.id]);
-      return sendJson(res, { ok: true, left: true, dissolved: false, transferredTo: next.alias });
-    }
-
     const changed = await sql.query(`WITH left_member AS (UPDATE xty_members SET left_at=$1,removal_reason='LEFT',auth_hash=NULL
         WHERE party_id=$2 AND user_id=$3 AND left_at IS NULL RETURNING party_id),
-      closed AS (UPDATE xty_parties SET state='DISSOLVED',ended_at=$1,updated_at=$1,visibility='private'
-        WHERE id=$2 AND EXISTS (SELECT 1 FROM left_member) RETURNING id)
+      touched AS (UPDATE xty_parties SET updated_at=$1 WHERE id=$2 AND EXISTS (SELECT 1 FROM left_member) RETURNING id)
       INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
-      SELECT closed.id,v.type,$3,$4,v.data::jsonb,$1 FROM closed
-      CROSS JOIN (VALUES ('MEMBER_LEFT'::text,$5::text),('PARTY_DISSOLVED'::text,'{}'::text)) AS v(type,data) RETURNING party_id`,
-    [at, row.id, member.user_id, day, leftData]);
-    if (!changed.length) return sendJson(res, { ok: false, error: 'LEAVE_FAILED' }, 409);
-    await sql.query(`UPDATE xty_party_quota_v2 SET released_at=COALESCE(released_at,$1) WHERE party_id=$2 AND released_at IS NULL`, [at, row.id]);
-    return sendJson(res, { ok: true, left: true, dissolved: true, transferredTo: null });
+      SELECT id,'MEMBER_LEFT',$3,$4,$5::jsonb,$1 FROM touched RETURNING party_id`, [at, row.id, member.user_id, day, leftData]);
+    if (!changed[0]) return sendJson(res, { ok: false, error: 'MEMBERSHIP_CLOSED' }, 409);
+    if (quotaKey) await sql.query(`UPDATE xty_party_quota_v2 SET released_at=COALESCE(released_at,$1)
+      WHERE quota_key=$2 AND party_id=$3 AND role='member' AND released_at IS NULL`, [at, quotaKey, row.id]);
+    return sendJson(res, { ok: true, left: true, dissolved: false, transferredTo: null });
   } catch (error) {
     console.error('XTY leave v2 failed', error);
     if (error.code === 'DATABASE_URL_NOT_CONFIGURED') return sendJson(res, { ok: false, error: error.code }, 503);
