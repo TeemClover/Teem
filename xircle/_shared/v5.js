@@ -7,16 +7,30 @@
   function qs(s,c){return (c||document).querySelector(s)}
   function qsa(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
   var reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var ART_REV='20260816-01';
 
   function safeTrack(name,props){try{window.XAnalytics&&window.XAnalytics.track(name,props||{})}catch(e){}}
   function safeState(fn){try{return window.XState?fn(window.XState):null}catch(e){return null}}
+  function artUrl(src){
+    if(src&&src.indexOf('/xircle/assets/v5/')===0)return src+(src.indexOf('?')>-1?'&':'?')+'v='+ART_REV;
+    return src;
+  }
   function loadArt(){
     qsa('img[data-art-src]').forEach(function(img){
       var src=img.getAttribute('data-art-src');if(!src)return;
+      var frame=img.closest('.xp-art'),fallback=img.nextElementSibling;
       img.hidden=true;
-      img.onload=function(){img.hidden=false};
-      img.onerror=function(){img.hidden=true};
-      img.src=src;
+      img.onload=function(){
+        img.hidden=false;
+        if(frame)frame.classList.add('art-ready');
+        if(fallback&&fallback.classList&&fallback.classList.contains('xp-fallback'))fallback.style.opacity='0';
+      };
+      img.onerror=function(){
+        img.hidden=true;
+        if(frame)frame.classList.remove('art-ready');
+        if(fallback&&fallback.classList&&fallback.classList.contains('xp-fallback'))fallback.style.opacity='';
+      };
+      img.src=artUrl(src);
     });
   }
   function revealBeats(scope){
