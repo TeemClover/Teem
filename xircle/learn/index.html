@@ -9,49 +9,56 @@
 <title>Learn — Xircle</title>
 <meta name="description" content="อยากรู้เรื่องไหน เปิดเรื่องนั้น — Xircle, RoutineX, X-VISOR และ CloverX">
 <link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
-<link rel="stylesheet" href="/xircle/_shared/v3.css?v=1">
-<style>.learn-group{margin-top:42px}.learn-group-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:14px}.learn-group-head h2{margin:0;font-size:30px}.learn-group-head span{font-size:11px;color:var(--x-dim);letter-spacing:.12em}.learn-status{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}</style>
+<link rel="stylesheet" href="/xircle/_shared/v3.css?v=2">
+<link rel="stylesheet" href="/xircle/_shared/v4.css?v=1">
+<style>
+.learn-search{margin-top:26px;position:relative}.learn-search input{width:100%;min-height:58px;padding:14px 52px 14px 18px;border-radius:20px;border:1px solid var(--x-line2);background:rgba(255,255,255,.045);color:var(--x-ink);font:inherit;font-size:16px;outline:none;transition:.25s}.learn-search input:focus{border-color:rgba(123,215,232,.52);box-shadow:0 0 0 4px rgba(123,215,232,.06)}.learn-search:after{content:"⌕";position:absolute;right:19px;top:50%;transform:translateY(-50%);font-size:25px;color:var(--x-cyan)}.learn-group{margin-top:50px}.learn-group[hidden]{display:none}.learn-group-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:14px}.learn-group-head h2{margin:0;font-size:32px}.learn-group-head span{font-size:10px;color:var(--x-dim);letter-spacing:.13em}.learn-status{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.learn-empty{display:none;margin-top:36px;padding:26px;border:1px solid var(--x-line);border-radius:22px;background:rgba(255,255,255,.03)}.learn-empty.show{display:block}.learn-card{position:relative}.learn-card[hidden]{display:none}.learn-card:after{content:"→";position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--x-dim);transition:.25s}.learn-card:hover:after{right:14px;color:var(--x-cyan)}
+</style>
 </head>
 <body>
 <header class="x-top"><a class="x-mark" href="/xircle/">XIR<b>CLE</b></a><div class="x-toplinks"><a href="/xircle/start/">Today</a><a href="/xircle/care/">Human Care</a></div></header>
 <main class="x-page"><div class="x-shell">
-  <section class="x-page-hero"><div><p class="x-kicker">LEARN</p><h1 class="x-page-title">อยากรู้เรื่องไหน<br>เปิดเรื่องนั้น</h1><p class="x-lede">ไม่ต้องอ่านเรียง — เส้นทางหลักมีไว้ให้รู้สึก ส่วนหน้านี้มีไว้หาคำตอบ</p><div class="learn-status"><span class="x-status canon">CANON</span><span class="x-status demo">DEMO</span><span class="x-status concept">CONCEPT</span><span class="x-status confirm">TO CONFIRM</span></div></div><figure class="x-art r16x9"><img data-art-src="/xircle/assets/v3/xircle-learn-hero.webp" alt="" hidden><div class="x-art-fallback"><div class="x-card strong" style="width:min(86%,460px)"><span class="x-label">ANSWER ENGINE</span><h3 style="font-size:30px">ถามจากสิ่งที่สงสัย</h3><p>ไม่ต้องรู้ก่อนว่าเอกสารชื่ออะไร</p></div></div><figcaption class="x-art-tag">ART SLOT · xircle-learn-hero.webp · 16:9</figcaption></figure></section>
+  <section class="x-page-hero"><div><p class="x-kicker">LEARN</p><h1 class="x-page-title">อยากรู้เรื่องไหน<br>เปิดเรื่องนั้น</h1><p class="x-lede">ไม่ต้องอ่านเรียง — เส้นทางหลักมีไว้ให้รู้สึก<br><strong>หน้านี้มีไว้หาคำตอบ</strong></p><div class="learn-search"><input id="learnSearch" type="search" placeholder="พิมพ์ เช่น Habit Score, 28 วัน, X-VISOR, Privacy..." aria-label="ค้นคำถาม"></div><div class="learn-status"><span class="x-status canon">CANON</span><span class="x-status demo">DEMO</span><span class="x-status concept">CONCEPT</span><span class="x-status confirm">TO CONFIRM</span></div></div><figure class="x-art r16x9" data-parallax><img data-art-src="/xircle/assets/v4/xircle-learn-hero.webp" alt="" hidden><div class="x-art-fallback"><div class="v4-memory" aria-hidden="true"><div class="m"><small>QUESTION</small><strong>Habit Score?</strong></div><div class="m"><small>QUESTION</small><strong>ทำไม 28 วัน?</strong></div><div class="m"><small>ANSWER ENGINE</small><strong>เปิดเรื่องที่สงสัย</strong></div></div></div><figcaption class="x-art-tag">ART SLOT · xircle-learn-hero.webp · 16:9</figcaption></figure></section>
 
-  <section class="learn-group"><div class="learn-group-head"><h2>SEE — Xircle</h2><span>THE HABIT TRACKER</span></div><div class="x-qa-list">
-    <a class="x-qa" href="/xircle/doc/app/"><strong>Xircle คืออะไร?</strong><span>ภาพรวมของ The Habit Tracker · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/app/habit-score/"><strong>Habit Score คืออะไร?</strong><span>Eat + Move + Sleep · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/app/body/"><strong>ทำไม Body Composition ไม่รวมใน Habit Score?</strong><span>Behavior ≠ Outcome · CANON</span></a>
-    <a class="x-qa" href="/xircle/hardware/"><strong>Band กับ Scale ทำหน้าที่ต่างกันยังไง?</strong><span>สิ่งที่ทำ vs สิ่งที่ร่างกายตอบ · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/app/"><strong>ทำไมต้องดู Trend มากกว่าวันเดียว?</strong><span>Personal baseline / trend · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/app/"><strong>Food AI เป็นค่าประมาณแบบไหน?</strong><span>Estimate / editable awareness support · CANON + DEMO</span></a>
-    <a class="x-qa" href="/xircle/doc/app/"><strong>Bio Age / MaxAge™ คืออะไร?</strong><span>ไม่ใช่การทำนายอายุขัย · CANON</span></a>
+  <section class="learn-group" data-group><div class="learn-group-head"><h2>SEE — Xircle</h2><span>THE HABIT TRACKER</span></div><div class="x-qa-list">
+    <a class="x-qa learn-card" data-search="xircle habit tracker คืออะไร" href="/xircle/doc/app/"><strong>Xircle คืออะไร?</strong><span>The Habit Tracker · CANON</span></a>
+    <a class="x-qa learn-card" data-search="habit score eat move sleep คะแนน" href="/xircle/doc/app/habit-score/"><strong>Habit Score คืออะไร?</strong><span>Eat + Move + Sleep · CANON</span></a>
+    <a class="x-qa learn-card" data-search="body composition habit score behavior outcome" href="/xircle/doc/app/body/"><strong>ทำไม Body Composition ไม่รวมใน Habit Score?</strong><span>Behavior ≠ Outcome · CANON</span></a>
+    <a class="x-qa learn-card" data-search="band scale hardware xircle band xircle scale" href="/xircle/hardware/"><strong>Band กับ Scale ทำหน้าที่ต่างกันยังไง?</strong><span>สิ่งที่ทำ vs สิ่งที่ร่างกายตอบ · CANON</span></a>
+    <a class="x-qa learn-card" data-search="trend baseline วันเดียว แนวโน้ม" href="/xircle/doc/app/"><strong>ทำไมต้องดู Trend มากกว่าวันเดียว?</strong><span>Personal baseline / trend · CANON</span></a>
+    <a class="x-qa learn-card" data-search="food ai scan estimate อาหาร ai ค่าประมาณ" href="/xircle/doc/app/"><strong>Food AI เป็นค่าประมาณแบบไหน?</strong><span>Estimate / editable awareness support · CANON + DEMO</span></a>
+    <a class="x-qa learn-card" data-search="bio age maxage อายุขัย" href="/xircle/doc/app/"><strong>Bio Age / MaxAge™ คืออะไร?</strong><span>ไม่ใช่การทำนายอายุขัย · CANON</span></a>
   </div></section>
 
-  <section class="learn-group"><div class="learn-group-head"><h2>ACT — Habix + RoutineX</h2><span>ACT & REPEAT</span></div><div class="x-qa-list">
-    <a class="x-qa" href="/xircle/routinex/"><strong>RoutineX คืออะไร?</strong><span>Guided routine / Act & Repeat · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/routinex/day-28/"><strong>ทำไม 28 วัน?</strong><span>Fulfillment cycle + coaching cycle · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/routinex/abcd/"><strong>ABCD คืออะไร?</strong><span>A Absorb · B Build · C Control · D Daily Balance · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/routinex/abcd/"><strong>ทำไม C ไม่มีสินค้า?</strong><span>C = Behavior · CANON</span></a>
-    <a class="x-qa" href="/xircle/products/"><strong>Habix / FIVES / Flavor+ อยู่ตรงไหน?</strong><span>Product reference · CANON / latest approved source</span></a>
+  <section class="learn-group" data-group><div class="learn-group-head"><h2>ACT — Habix + RoutineX</h2><span>ACT & REPEAT</span></div><div class="x-qa-list">
+    <a class="x-qa learn-card" data-search="routinex routine act repeat" href="/xircle/routinex/"><strong>RoutineX คืออะไร?</strong><span>Guided routine / Act & Repeat · CANON</span></a>
+    <a class="x-qa learn-card" data-search="28 วัน day 28 coaching fulfillment" href="/xircle/doc/routinex/day-28/"><strong>ทำไม 28 วัน?</strong><span>Fulfillment cycle + coaching cycle · CANON</span></a>
+    <a class="x-qa learn-card" data-search="abcd absorb build control daily balance" href="/xircle/doc/routinex/abcd/"><strong>ABCD คืออะไร?</strong><span>A Absorb · B Build · C Control · D Daily Balance · CANON</span></a>
+    <a class="x-qa learn-card" data-search="control c ไม่มีสินค้า behavior" href="/xircle/doc/routinex/abcd/"><strong>ทำไม C ไม่มีสินค้า?</strong><span>C = Behavior · CANON</span></a>
+    <a class="x-qa learn-card" data-search="habix fives flavor product" href="/xircle/products/"><strong>Habix / FIVES / Flavor+ อยู่ตรงไหน?</strong><span>Product reference · CANON / approved source</span></a>
   </div></section>
 
-  <section class="learn-group"><div class="learn-group-head"><h2>CARE — X-VISOR</h2><span>HUMAN CARE</span></div><div class="x-qa-list">
-    <a class="x-qa" href="/xircle/care/"><strong>มี AI แล้วทำไมยังต้อง X-VISOR?</strong><span>Context Interpreter · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/xvisor/role/"><strong>X-VISOR ทำอะไร / ไม่ทำอะไร?</strong><span>Role boundary · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/xvisor/care/"><strong>CARE คืออะไร?</strong><span>Change · Attract · Result · Elevate · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/academy/certification/"><strong>ทำไมต้อง Certification?</strong><span>Capability + ethics + practice · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/xvisor/privacy/"><strong>ข้อมูลลูกค้าเห็นได้แค่ไหน?</strong><span>Consent + role + least privilege · CANON</span></a>
+  <section class="learn-group" data-group><div class="learn-group-head"><h2>CARE — X-VISOR</h2><span>HUMAN CARE</span></div><div class="x-qa-list">
+    <a class="x-qa learn-card" data-search="ai xvisor ทำไม human care context interpreter" href="/xircle/care/"><strong>มี AI แล้วทำไมยังต้อง X-VISOR?</strong><span>Context Interpreter · CANON</span></a>
+    <a class="x-qa learn-card" data-search="xvisor role ทำอะไร ไม่ทำอะไร boundary" href="/xircle/doc/xvisor/role/"><strong>X-VISOR ทำอะไร / ไม่ทำอะไร?</strong><span>Role boundary · CANON</span></a>
+    <a class="x-qa learn-card" data-search="care change attract result elevate" href="/xircle/doc/xvisor/care/"><strong>CARE คืออะไร?</strong><span>Change · Attract · Result · Elevate · CANON</span></a>
+    <a class="x-qa learn-card" data-search="certification certify capability ethics practice" href="/xircle/doc/academy/certification/"><strong>ทำไมต้อง Certification?</strong><span>Capability + ethics + practice · CANON</span></a>
+    <a class="x-qa learn-card" data-search="privacy consent ข้อมูลลูกค้า least privilege" href="/xircle/doc/xvisor/privacy/"><strong>ข้อมูลลูกค้าเห็นได้แค่ไหน?</strong><span>Consent + role + least privilege · CANON</span></a>
   </div></section>
 
-  <section class="learn-group"><div class="learn-group-head"><h2>SYSTEM — CloverX</h2><span>CONNECTED ECOSYSTEM</span></div><div class="x-qa-list">
-    <a class="x-qa" href="/xircle/doc/ecosystem/"><strong>CloverX ทั้งระบบต่อกันยังไง?</strong><span>Measure → Understand → Act → Support → Improve → Repeat · CANON</span></a>
-    <a class="x-qa" href="/xircle/doc/ecosystem/"><strong>Xircle กับ XOS ต่างกันยังไง?</strong><span>Consumer habit experience vs operating system · CANON</span></a>
-    <a class="x-qa" href="/xircle/care/party/"><strong>ตี้แมวขาวอยู่ตรงไหน?</strong><span>myClover XTY Partner Mode · CONCEPT / Partner implementation</span></a>
-    <a class="x-qa" href="/xircle/doc/ecosystem/"><strong>Community อยู่ตรงไหน?</strong><span>Environment / support layer · CANON</span></a>
+  <section class="learn-group" data-group><div class="learn-group-head"><h2>SYSTEM — CloverX</h2><span>CONNECTED ECOSYSTEM</span></div><div class="x-qa-list">
+    <a class="x-qa learn-card" data-search="cloverx ecosystem measure understand act support improve repeat" href="/xircle/doc/ecosystem/"><strong>CloverX ทั้งระบบต่อกันยังไง?</strong><span>Measure → Understand → Act → Support → Improve → Repeat · CANON</span></a>
+    <a class="x-qa learn-card" data-search="xircle xos operating system ต่างกัน" href="/xircle/doc/ecosystem/"><strong>Xircle กับ XOS ต่างกันยังไง?</strong><span>Consumer habit experience vs operating system · CANON</span></a>
+    <a class="x-qa learn-card" data-search="xty white cat ตี้แมวขาว myclover partner mode" href="/xircle/care/party/"><strong>ตี้แมวขาวอยู่ตรงไหน?</strong><span>myClover XTY Partner Mode · PARTNER IMPLEMENTATION</span></a>
+    <a class="x-qa learn-card" data-search="community environment support" href="/xircle/doc/ecosystem/"><strong>Community อยู่ตรงไหน?</strong><span>Environment / support layer · CANON</span></a>
   </div></section>
 
-  <section class="x-section"><div class="x-card strong"><span class="x-label">STATUS NOTE</span><h3>Circle Pulse ไม่ถูกเรียก CANON ในหน้านี้อีกแล้ว</h3><p>Community เป็นส่วนของ ecosystem ตาม source แต่ mechanic / ชื่อเฉพาะที่ myClover ออกแบบให้ XTY ต้องแยกสถานะเป็น CONCEPT หรือ Partner implementation จนกว่าจะมี source บริษัทรับรองโดยตรง</p></div></section>
+  <div class="learn-empty" id="learnEmpty"><strong>ยังไม่เจอคำถามนี้ใน Library</strong><p class="x-note">ลองพิมพ์คำสั้นลง หรือเปิด Reference เต็มด้านล่าง</p></div>
+  <section class="x-section"><div class="x-card strong"><span class="x-label">SOURCE STATUS</span><h3>CANON, DEMO และ Partner Design แยกกันชัด</h3><p>สิ่งที่เป็น myClover XTY Partner Mode จะไม่ถูกเรียกเป็น CloverX CANON จนกว่าจะมี approved source รองรับโดยตรง</p></div></section>
   <nav class="x-tabs" aria-label="พื้นที่หลัก"><a href="/xircle/">Intro</a><a href="/xircle/start/">Today</a><a href="/xircle/care/">Human Care</a><a class="active" href="/xircle/learn/">Learn</a><a href="/xircle/doc/">Reference</a></nav>
 </div></main>
-<script src="/xircle/_shared/state.js?v=4"></script><script src="/xircle/_shared/analytics.js?v=2"></script><script src="/xircle/_shared/v3.js?v=1"></script>
+<script src="/xircle/_shared/state.js?v=4"></script><script src="/xircle/_shared/analytics.js?v=2"></script><script src="/xircle/_shared/v3.js?v=2"></script><script src="/xircle/_shared/v4.js?v=1"></script>
+<script>
+(function(){var input=document.getElementById('learnSearch'),cards=[].slice.call(document.querySelectorAll('.learn-card')),groups=[].slice.call(document.querySelectorAll('[data-group]')),empty=document.getElementById('learnEmpty');function normalize(s){return (s||'').toLowerCase().trim()}function filter(){var q=normalize(input.value),shown=0;cards.forEach(function(card){var hay=normalize(card.dataset.search+' '+card.textContent),ok=!q||hay.indexOf(q)>=0;card.hidden=!ok;if(ok)shown++});groups.forEach(function(g){g.hidden=!g.querySelector('.learn-card:not([hidden])')});empty.classList.toggle('show',shown===0);if(q&&window.XAnalytics)XAnalytics.track('learn_question_open',{query_length:q.length})}input.addEventListener('input',filter)})();
+</script>
 </body></html>
