@@ -13,6 +13,8 @@
    - Chat representation is always the animal emoji + name.
    ═══════════════════════════════════════════════════════════════ */
 
+import { XVISOR_GUIDE } from './xvisor-care.js';
+
 export const SERIES = Object.freeze({
   starter: { id: 'starter', no: '01', labelTh: 'เริ่มต้น', labelEn: 'STARTER' },
   work:    { id: 'work',    no: '02', labelTh: 'ลุยงาน',   labelEn: 'WORK' },
@@ -92,9 +94,13 @@ export const PETS = Object.freeze([
   pet('robot',   'หุ่นยนต์','🤖', 'silver','legend', 'precise, systematic, deadpan — สิ่งที่มนุษย์สร้างขึ้น', { art: '/guild/assets/avatar-android-ui.png' }),
 ]);
 
-export const PET_BY_ID = Object.freeze(
-  PETS.reduce((map, p) => { map[p.id] = p; return map; }, {})
-);
+/* X-VISOR Guide is intentionally NOT appended to PETS. That keeps the
+   normal 28-card registry, discovery counts, pickers and personalities
+   unchanged. It is only addressable by id when a hidden X-VISOR preset
+   explicitly places it in the Party PET slot. */
+const PET_MAP = PETS.reduce((map, p) => { map[p.id] = p; return map; }, {});
+PET_MAP[XVISOR_GUIDE.id] = XVISOR_GUIDE;
+export const PET_BY_ID = Object.freeze(PET_MAP);
 
 /* XTY V1 deliberately exposes a friendly eight-pet set from day one.
    The larger registry stays available for future discovery systems, but
