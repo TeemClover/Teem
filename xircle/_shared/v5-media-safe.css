@@ -16,3 +16,24 @@
 .xp-art.r43{aspect-ratio:4/3!important}
 .xp-art.r32{aspect-ratio:3/2!important}
 .xp-art.r11{aspect-ratio:1!important}
+
+/* Real White Cat asset — used instead of the old CSS placeholder character. */
+.xp-cat-cutout-stage{
+  min-height:160px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.xp-cat-cutout-stage img{
+  display:block;
+  width:min(100%,190px);
+  height:160px;
+  object-fit:contain;
+  object-position:center bottom;
+  background:transparent!important;
+  filter:drop-shadow(0 16px 28px rgba(0,0,0,.22));
+}
+@media(max-width:620px){
+  .xp-cat-cutout-stage{min-height:150px}
+  .xp-cat-cutout-stage img{height:150px;width:min(100%,180px)}
+}
