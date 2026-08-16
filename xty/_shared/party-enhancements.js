@@ -4,10 +4,12 @@ import { getParty, getProfile, partyIdentity } from './store.js';
 const code = new URLSearchParams(location.search).get('c');
 const ACTIVE_STATES = new Set(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 const COLOR_TH = Object.freeze({ red: 'แดง', green: 'เขียว', blue: 'น้ำเงิน', silver: 'เงิน' });
+const IDENTITY_EDIT_WINDOW_MS = 24 * 60 * 60 * 1000;
 const FILE_EXT = /\.(?:pdf|zip|rar|7z|tar|gz|docx?|xlsx?|pptx?|csv|tsv|txt|md|json|xml|html?|css|js|jsx|ts|tsx|png|jpe?g|gif|webp|svg|heic|mp3|m4a|wav|ogg|mp4|mov|m4v|avi|webm|epub)(?:$|[?#])/i;
 const URL_RE = /(?:(?:https?|ftp):\/\/|www\.)[^\s<>]+|(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}(?:\/[^\s<>]*)?/giu;
 let syncing = false;
 let scheduled = false;
+let identityLockTimer = 0;
 
 if (code && /^\d{5}$/.test(code)) install();
 
@@ -36,6 +38,8 @@ function injectStyle() {
     .party-event .event-time{flex:none;color:var(--xty-muted);font:10px/1.2 var(--sans)}
     .leave-party-zone{margin-top:12px;padding:14px;border:1px solid rgba(228,91,91,.35);border-radius:var(--r-lg);background:rgba(255,255,255,.72)}
     .leave-party-zone .btn{min-height:46px}
+    #myCharacterTools.identity-locked{opacity:.78}
+    #myCharacterTools.identity-locked input,#myCharacterTools.identity-locked select{cursor:not-allowed}
   `;
   document.head.appendChild(style);
 }
@@ -47,6 +51,7 @@ function scheduleSync() {
     scheduled = false;
     syncTimeline();
     syncLeaveVisibility();
+    syncIdentityLock();
   });
 }
 
@@ -258,12 +263,63 @@ async function callMemberAction(op, body = {}) {
   }
 }
 
+function identityLockState(party, member) {
+  const source = member?.role === 'lead'
+    ? (party?.createdAt || member?.joinedAt)
+    : (member?.joinedAt || party?.createdAt);
+  const anchor = new Date(source || 0).getTime();
+  const lockedAt = Number.isFinite(anchor) && anchor > 0 ? anchor + IDENTITY_EDIT_WINDOW_MS : 0;
+  return { lockedAt, locked: !lockedAt || Date.now() >= lockedAt };
+}
+
+function syncIdentityLock() {
+  const tools = document.getElementById('myCharacterTools');
+  if (!tools) return;
+  const party = getParty(code);
+  const identity = partyIdentity(code);
+  const member = party?.members?.find(item => item.userId === identity?.userId);
+  if (!party || !member) return;
+
+  const state = identityLockState(party, member);
+  const alias = document.getElementById('myAliasInput');
+  const avatar = document.getElementById('myAvatarSelect');
+  const color = document.getElementById('myColorSelect');
+  const button = document.getElementById('saveMyCharacter');
+  const summary = tools.querySelector('summary');
+  const note = tools.querySelector('.whisper');
+  tools.classList.toggle('identity-locked', state.locked);
+  if (alias) alias.disabled = state.locked;
+  if (avatar) avatar.disabled = state.locked;
+  if (color) color.disabled = state.locked;
+  if (button) button.disabled = state.locked;
+  if (summary) summary.textContent = state.locked ? 'ตัวละครของฉันในตี้นี้ · ล็อกแล้ว' : 'ตัวละครของฉันในตี้นี้';
+  if (note) {
+    note.textContent = state.locked
+      ? 'ครบ 24 ชม. แล้ว · ชื่อและ Avatar ถูกล็อกเพื่อให้ตัวละครต่อเนื่องจนจบ Quest'
+      : `เปลี่ยนชื่อและ Avatar ได้ภายใน 24 ชม. · ล็อก ${stamp(state.lockedAt)}`;
+  }
+
+  if (identityLockTimer) clearTimeout(identityLockTimer);
+  identityLockTimer = 0;
+  if (!state.locked && state.lockedAt) {
+    identityLockTimer = setTimeout(syncIdentityLock, Math.max(100, state.lockedAt - Date.now() + 50));
+  }
+}
+
 function installIdentityCapture() {
   document.addEventListener('click', async event => {
     const button = event.target?.closest?.('#saveMyCharacter');
     if (!button) return;
     event.preventDefault();
     event.stopImmediatePropagation();
+    const party = getParty(code);
+    const identity = partyIdentity(code);
+    const member = party?.members?.find(item => item.userId === identity?.userId);
+    if (!party || !member || identityLockState(party, member).locked) {
+      syncIdentityLock();
+      toast('ชื่อและ Avatar ล็อกแล้วหลังครบ 24 ชม.');
+      return;
+    }
     button.disabled = true;
     const result = await callMemberAction('identity-v2', {
       alias: document.getElementById('myAliasInput')?.value || '',
@@ -271,6 +327,11 @@ function installIdentityCapture() {
       avatarColor: document.getElementById('myColorSelect')?.value || 'green',
     });
     button.disabled = false;
+    if (result.error === 'IDENTITY_LOCKED') {
+      syncIdentityLock();
+      toast('ครบ 24 ชม. แล้ว · ชื่อและ Avatar ถูกล็อก');
+      return;
+    }
     if (result.error) { toast('ยังเปลี่ยนตัวละครตี้นี้ไม่ได้'); return; }
     rememberParty(result);
     toast('เปลี่ยนตัวละครแล้ว · เก็บไว้ใน Party Log');
@@ -289,7 +350,7 @@ function installLeaveButton() {
   const note = document.createElement('p');
   note.className = 'whisper';
   note.style.margin = '0 0 10px';
-  note.textContent = 'ออกจากตี้ได้ทุกเมื่อ · สิ่งที่เคย Commit และข้อความจะยังอยู่ในประวัติตี้';
+  note.textContent = 'สมาชิกออกจากตี้ได้ทุกเมื่อ · สิ่งที่เคย Commit และข้อความจะยังอยู่ในประวัติตี้';
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'btn ghost';
@@ -312,6 +373,12 @@ function installLeaveButton() {
     }
     armed = false; button.disabled = true; button.textContent = 'กำลังออกตี้…';
     const result = await callMemberAction('leave-v2');
+    if (result.error === 'LEAD_CANNOT_LEAVE') {
+      button.disabled = false; button.textContent = 'ออกตี้';
+      syncLeaveVisibility();
+      toast('หัวตี้ออกตี้ไม่ได้ · ถ้าไม่ใช้ตี้นี้ให้ยุบตี้');
+      return;
+    }
     if (result.error) {
       button.disabled = false; button.textContent = 'ออกตี้';
       toast('ยังออกตี้ไม่ได้');
@@ -328,7 +395,7 @@ function syncLeaveVisibility() {
   const party = getParty(code);
   const identity = partyIdentity(code);
   const member = party?.members?.find(item => item.userId === identity?.userId);
-  zone.hidden = !(party && ACTIVE_STATES.has(String(party.state || '').toUpperCase()) && member);
+  zone.hidden = !(party && ACTIVE_STATES.has(String(party.state || '').toUpperCase()) && member && member.role !== 'lead');
 }
 
 function clearLocalParty() {
