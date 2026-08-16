@@ -117,6 +117,11 @@
     setSession: function (key, value) {
       session[key] = value;
       safeWrite("sessionStorage", SESSION_KEY, session);
+      if (key === "scene" && value === "R6" && normalizedPath() === "/xircle/routinex") {
+        local.routineCompleted = true;
+        safeWrite("localStorage", LOCAL_KEY, local);
+        renderProgressNav();
+      }
     },
 
     getLocal: function (key) { return local[key]; },
