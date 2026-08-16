@@ -188,7 +188,7 @@
     }
 
     var tail = s13.querySelector(".px-whisper");
-    if (tail) tail.innerHTML = '<a href="/xircle/doc/xvisor/" style="color:var(--cream-soft)">อ่านข้อมูล X-VISOR →</a>';
+    if (tail) tail.innerHTML = '<a href="/xircle/care/" style="color:var(--cream-soft)">อ่าน Human Care →</a>';
   }
 
   function installOpportunityCareCta() {
@@ -206,7 +206,7 @@
         var roomNote = document.createElement("p");
         roomNote.className = "px-note fx d3";
         roomNote.setAttribute("data-room-kept", "");
-        roomNote.textContent = "ROOM " + handoff.partyCode + " เก็บไว้แล้ว · เล่นจบแล้วกลับเข้าตี้ได้";
+        roomNote.textContent = "ROOM " + handoff.partyCode + " ยังเก็บไว้ · ลองจบแล้วกลับเข้าตี้ได้";
         introBody.appendChild(roomNote);
       }
     }
@@ -223,21 +223,32 @@
       var code = handoff.partyCode;
       block.innerHTML =
         '<span class="px-label" style="color:var(--green)">ROOM ' + code + ' ยังอยู่</span>' +
-        '<h3 style="margin:10px 0 0;font-size:22px">เลือกทางต่อ</h3>' +
-        '<p class="px-whisper">เข้าตี้เดิม หรือเปิด Care Party ของคุณ</p>' +
-        '<a class="px-cta" href="/xty/join/?c=' + encodeURIComponent(code) + '" style="display:flex;margin-top:16px">เข้าตี้ ' + code + ' →</a>' +
-        '<a class="px-ghost" href="/xty/new/?template=xircle_xvisor" style="display:flex;margin-top:8px">สร้าง Care Party ของฉัน →</a>' +
-        '<a class="px-ghost" href="/xircle/doc/xvisor/" style="display:flex">อ่านข้อมูล X-VISOR →</a>';
+        '<h3 style="margin:10px 0 0;font-size:22px;line-height:1.35">กลับเข้าตี้เดิม หรือเปิดตี้ของคุณ</h3>' +
+        '<p class="px-whisper">ถ้าเปิดเอง คุณจะได้แมวขาวสีเงิน + Care Script 28 วัน ช่วยถือจังหวะโดยไม่ต้องตามแชตทั้งวัน</p>' +
+        '<a class="px-cta" href="/xty/join/?c=' + encodeURIComponent(code) + '" style="margin-top:16px">เข้าตี้ ' + code + ' →</a>' +
+        '<a class="px-ghost" href="/xty/new/?template=xircle_xvisor" style="display:flex;margin-top:8px">เปิด X-VISOR Care Party ของฉัน →</a>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">' +
+          '<a class="px-ghost" href="/xircle/care/" style="justify-content:flex-start">อ่าน Human Care →</a>' +
+          '<a class="px-ghost" href="/xircle/start/" style="justify-content:flex-start">กลับหน้า Today →</a>' +
+        '</div>';
     } else {
       block.innerHTML =
-        '<span class="px-label" style="color:var(--gold)">X-VISOR CARE PARTY</span>' +
+        '<span class="px-label" style="color:var(--gold)">X-VISOR CARE PARTY · 28 DAYS</span>' +
         '<div style="display:flex;gap:12px;align-items:center;margin-top:12px">' +
-          '<img src="/xty/assets/art/avatars/white-cat.webp" alt="" style="width:68px;height:68px;object-fit:cover;border-radius:20px;background:#f3f1ea">' +
-          '<div><strong style="display:block;font-size:17px">แมวขาวสีเงิน</strong><span class="px-whisper">เทรนนิ่ง X-VISOR มาแล้ว</span></div>' +
+          '<img src="/xty/assets/art/avatars/white-cat.webp" alt="" style="width:72px;height:72px;object-fit:cover;border-radius:20px;background:#f3f1ea">' +
+          '<div><strong style="display:block;font-size:18px;line-height:1.35">แมวขาวสีเงิน</strong><span class="px-whisper" style="display:block;margin-top:2px">แมวตัวนี้เทรนนิ่ง X-VISOR มาแล้ว</span></div>' +
         '</div>' +
-        '<p class="px-whisper">Care Script 28 วัน · Pattern → One Action</p>' +
-        '<a class="px-cta" href="/xty/new/?template=xircle_xvisor" style="display:flex;margin-top:16px">สร้าง Care Party →</a>' +
-        '<a class="px-ghost" href="/xircle/doc/xvisor/" style="display:flex;margin-top:6px">อ่านข้อมูล X-VISOR →</a>';
+        '<p style="margin:16px 0 0;font-size:15px;line-height:1.65;color:var(--cream-soft)">XTY ช่วยถือ Action และจังหวะติดตามให้ X-VISOR ทำงานง่ายขึ้น</p>' +
+        '<div style="margin-top:10px;font-size:14px;line-height:1.75;color:var(--cream-soft)">' +
+          '<div>✓ 1 Action → Commit สั้น ไม่ต้องตามแชตทั้งวัน</div>' +
+          '<div>✓ Care Script พร้อมใช้ Day 1–28</div>' +
+          '<div>✓ Review → Pattern → One Action ถัดไป</div>' +
+        '</div>' +
+        '<a class="px-cta" href="/xty/new/?template=xircle_xvisor" style="margin-top:18px">เปิด X-VISOR Care Party 28 วัน →</a>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">' +
+          '<a class="px-ghost" href="/xircle/care/" style="justify-content:flex-start">อ่าน Human Care →</a>' +
+          '<a class="px-ghost" href="/xircle/start/" style="justify-content:flex-start">กลับหน้า Today →</a>' +
+        '</div>';
     }
 
     anchor.insertAdjacentElement("afterend", block);
