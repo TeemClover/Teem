@@ -5,300 +5,150 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
-<meta name="theme-color" content="#04100d">
-<title>Try Being an X-VISOR — Xircle</title>
-<meta name="description" content="ลองดูงาน X-VISOR ผ่านเคสสั้น ๆ ก่อนตัดสินใจ">
+<meta name="theme-color" content="#06110e">
+<title>Try X-VISOR Thinking — Xircle</title>
+<meta name="description" content="ลองวิธีคิดแบบ X-VISOR: เห็นสัญญาณ ฟัง Context เลือกหนึ่ง Action ติดตาม และรู้ขอบเขต">
 <link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
-<link rel="stylesheet" href="/xircle/_shared/playable.css?v=2">
+<link rel="stylesheet" href="/xircle/_shared/v3.css?v=1">
+<style>
+.sim-signal{font-size:clamp(38px,6vw,68px);font-weight:800;letter-spacing:-.04em;margin:12px 0}.sim-customer{margin-top:18px;padding:18px 20px;border-radius:22px;background:rgba(255,255,255,.055);border:1px solid var(--x-line);font-size:17px;line-height:1.6}.sim-feedback{margin-top:14px;min-height:92px}.sim-feedback .x-reveal{margin-top:0}.sim-summary{display:grid;gap:8px}.sim-summary div{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid var(--x-line);border-radius:16px;background:rgba(255,255,255,.035)}.sim-summary b{color:var(--x-cyan);font-size:11px;letter-spacing:.12em;width:70px}.sim-summary strong{font-size:16px}
+</style>
 </head>
 <body>
-
-<div class="px-progress" aria-hidden="true"><i id="opp-progress" style="width:5%"></i></div>
-<header class="px-top">
-  <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
-  <a class="px-exit" href="/xircle/care/">Human Care</a>
+<div class="x-progress" aria-hidden="true"><i data-x-progress></i></div>
+<header class="x-top">
+  <a class="x-mark" href="/xircle/">XIR<b>CLE</b></a>
+  <div class="x-toplinks"><a href="/xircle/care/">Human Care</a><a href="/xircle/learn/">Learn</a></div>
 </header>
-
-<main class="px-stage" id="stage">
-
-  <section class="scene has-visual" data-scene="O0" data-progress="5" aria-label="แนะนำ">
-    <figure class="scene-visual">
-      <img src="/xircle/assets/lifestyle/xvisor-960.webp"
-           srcset="/xircle/assets/lifestyle/xvisor-640.webp 640w, /xircle/assets/lifestyle/xvisor-960.webp 960w, /xircle/assets/lifestyle/xvisor-1440.webp 1440w"
-           sizes="(min-width:980px) 560px, 100vw"
-           alt="" fetchpriority="high" decoding="async">
-    </figure>
-    <div class="scene-inner">
-      <div class="scene-body">
-        <p class="px-kicker gold fx">TRY BEING AN X-VISOR</p>
-        <h1 class="px-title fx d1">บางครั้งข้อมูลบอกว่า<br>อะไรเปลี่ยน</h1>
-        <p class="px-lede fx d2">แต่คนช่วยกันคิดว่า<strong>ควรทำอะไรต่อ</strong></p>
-        <p class="px-whisper fx d3">X-VISOR คือ Health Partner ที่ผ่านการเรียนและ Certification เพื่อช่วยแปลข้อมูลเป็นการดูแล — ไม่วินิจฉัยโรค</p>
-        <p class="px-note fx d3">เคสต่อไปเป็นเรื่องสมมติ เพื่อให้ลองดูเนื้องานจริง</p>
+<main class="x-stage" data-x-stage>
+  <section class="x-scene is-active" data-scene="O0" data-progress="4">
+    <div class="x-shell x-grid">
+      <div class="x-copy">
+        <p class="x-kicker gold">TRY X-VISOR THINKING</p>
+        <h1 class="x-title">ข้อมูลบอกว่า<br>อะไรเปลี่ยน</h1>
+        <p class="x-lede">แต่คนยังต้องเข้าใจว่า <strong>เกิดอะไรขึ้นในชีวิตจริง</strong></p>
+        <p class="x-note">เคสนี้เป็นเรื่องสมมติ เพื่อให้ลองวิธีคิด ไม่ใช่การสอบ Certification</p>
+        <div class="x-actions"><button class="x-btn" type="button" data-next="O1" id="simStart">ลองเคสนี้ →</button></div>
       </div>
-      <div class="scene-foot">
-        <button type="button" class="px-cta fx d4" data-next="O1" id="sim-start">ลองดูงาน X-VISOR →</button>
-      </div>
+      <figure class="x-art r16x9"><img data-art-src="/xircle/assets/v3/xircle-opportunity-o0-intro.webp" alt="" hidden><div class="x-art-fallback"><div class="x-card strong" style="width:min(86%,430px)"><span class="x-label">SIGNAL</span><h3 style="font-size:32px">SLEEP ↓</h3><p>ข้อมูลเห็นการเปลี่ยนแปลง<br>แต่ยังไม่รู้ว่าเกิดอะไรขึ้น</p></div></div><figcaption class="x-art-tag">ART SLOT · xircle-opportunity-o0-intro.webp · 16:9</figcaption></figure>
     </div>
   </section>
 
-  <section class="scene" data-scene="O1" data-progress="30" aria-label="เลือกเคส">
-    <div class="scene-inner">
-      <div class="scene-body">
-        <p class="px-time fx">WORKLIST · 3 คนในการดูแลของคุณ</p>
-        <h2 class="px-title fx d1">วันนี้คุณจะ<br>ดูแลใครก่อน?</h2>
-        <div class="case-list fx d2" id="case-list" role="group" aria-label="เลือกหนึ่งคน"></div>
-        <article class="px-card strong" id="case-detail" hidden style="margin-top:18px"></article>
-      </div>
-      <div class="scene-foot">
-        <button type="button" class="px-cta reveal-later" data-next="O2" id="to-opener">แล้วจะเริ่มยังไง?</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="scene" data-scene="O2" data-progress="55" aria-label="เริ่มบทสนทนา">
-    <div class="scene-inner">
-      <div class="scene-body">
-        <p class="px-kicker fx">CARE APPROACH</p>
-        <h2 class="px-title fx d1">คุณจะเริ่ม<br>บทสนทนายังไง?</h2>
-        <div class="px-choices fx d2" id="opener-list" role="group" aria-label="เลือกหนึ่งแบบ"></div>
-        <div class="trust-c" id="opener-feedback" role="note" style="margin-top:18px"></div>
-      </div>
-      <div class="scene-foot">
-        <button type="button" class="px-cta reveal-later" data-next="O3" id="to-workload">หนึ่งเดือนต้องทำอะไรบ้าง?</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="scene" data-scene="O3" data-progress="80" aria-label="ปริมาณงาน">
-    <div class="scene-inner">
-      <div class="scene-body">
-        <p class="px-kicker fx">WORKLOAD</p>
-        <h2 class="px-title fx d1">ถ้าคุณดูแล<br>ลูกค้า 5 คน</h2>
-        <p class="px-whisper fx d1">นี่คืองานที่ต้องถือจังหวะให้ต่อเนื่อง</p>
-        <div class="workload-grid fx d2" id="workload-list"></div>
-        <p class="px-lede fx d3" style="font-size:18px;margin-top:26px"><strong>ยังอยากทำไหม?</strong></p>
-        <p class="px-whisper fx d3">ถ้าใช่ — เริ่มจากเรียนและฝึกก่อน</p>
-      </div>
-      <div class="scene-foot">
-        <button type="button" class="px-cta" data-next="O4" id="sim-complete">ดูเครื่องมือที่ช่วยทำงานนี้ →</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="scene" data-scene="O4" data-progress="100" aria-label="เส้นทาง">
-    <div class="scene-inner">
-      <div class="scene-body">
-        <p class="px-kicker gold fx">THE PATH</p>
-        <h2 class="px-title fx d1">งานดูแลคน<br>ต้องเรียนก่อนเสมอ</h2>
-
-        <div class="px-card strong fx d2" style="margin-top:22px">
-          <span class="px-label" style="color:var(--green)">เริ่มจากตรงนี้</span>
-          <p style="font-size:20px;font-weight:700;margin:10px 0 0" class="en">LEARN → PRACTICE → CERTIFY → CARE</p>
-          <p class="px-whisper" style="margin-top:8px">ผ่านการดูแลจริงแล้ว เส้นทางจึงค่อยขยาย</p>
-          <p style="font-size:15px;margin:12px 0 0;color:var(--cream-dim)" class="en">SELL → MENTOR → MANAGE → EXPAND</p>
+  <section class="x-scene" data-scene="O1" data-progress="18">
+    <div class="x-shell x-grid">
+      <div class="x-copy">
+        <p class="x-kicker">SIGNAL</p>
+        <div class="sim-signal">Sleep trend ↓</div>
+        <p class="x-lede">ต่ำกว่า baseline ช่วงนี้<br><strong>คุณจะทำอะไรเป็นอย่างแรก?</strong></p>
+        <div class="x-choices" data-sim="signal">
+          <button class="x-choice" type="button" data-answer="wrong"><b>บอกให้นอนเร็วขึ้น</b><small>คำแนะนำตรงจากตัวเลข</small></button>
+          <button class="x-choice" type="button" data-answer="correct"><b>ถามว่า “ช่วงนี้มีอะไรเปลี่ยนไปบ้าง?”</b><small>ถามก่อนที่จะสรุป</small></button>
+          <button class="x-choice" type="button" data-answer="wrong"><b>บอกว่าคะแนนไม่ดี ต้องรีบแก้</b><small>เริ่มจากการตัดสินค่า</small></button>
         </div>
-
-        <p class="px-note fx d3">ไม่มีตัวเลขรายได้ในหน้านี้ รายละเอียดค่าตอบแทนต้องตรวจทานและคุยกับคนจริง</p>
-
-        <div class="fork-grid fx d3">
-          <a class="fork-card health" href="/xircle/start/" id="fork-health">
-            <b>MY HEALTH</b>
-            <h3>กลับไปใช้ Xircle</h3>
-            <p>ทำของตัวเองต่อ</p>
-            <span class="go">กลับหน้า Today →</span>
-          </a>
-          <a class="fork-card care" href="/xircle/care/" id="fork-care">
-            <b>HUMAN CARE</b>
-            <h3>อ่านระบบ X-VISOR ต่อ</h3>
-            <p>บทบาท CARE และ Certification</p>
-            <span class="go">เปิด Human Care →</span>
-          </a>
-        </div>
+        <div class="sim-feedback" data-feedback></div>
+        <div class="x-actions"><button class="x-btn" type="button" data-next="O2" data-sim-next disabled>Context อยู่ตรงไหน? →</button></div>
       </div>
-      <div class="scene-foot">
-        <button type="button" class="px-src-btn" data-source-id="xvisor-sim">เคสพวกนี้คือข้อมูลจริงไหม?</button>
+      <figure class="x-art r4x3"><img data-art-src="/xircle/assets/v3/xircle-opportunity-o1-signal.webp" alt="" hidden><div class="x-art-fallback"><div class="x-ring"><span><b>↓</b><small>SLEEP TREND</small></span></div></div><figcaption class="x-art-tag">ART SLOT · xircle-opportunity-o1-signal.webp · 4:3</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="x-scene" data-scene="O2" data-progress="34">
+    <div class="x-shell x-grid">
+      <div class="x-copy">
+        <p class="x-kicker">CONTEXT FOUND</p>
+        <h2 class="x-title small">“ช่วงนี้ต้องดูแลลูก<br>ตอนกลางคืนครับ”</h2>
+        <p class="x-lede">ถ้าต้องเลือกเพียง <strong>1 Action</strong> วันนี้ อะไรควรเป็นหลัก?</p>
+        <div class="x-choices" data-sim="context">
+          <button class="x-choice" type="button" data-answer="wrong"><b>เพิ่มเป้าหมายหลายอย่างพร้อมกัน</b><small>ชดเชยให้ครบทุกด้าน</small></button>
+          <button class="x-choice" type="button" data-answer="correct"><b>เลือกสิ่งเล็กที่สุดที่ทำได้จริงคืนนี้</b><small>ให้ Action อยู่ในชีวิตจริงได้</small></button>
+          <button class="x-choice" type="button" data-answer="wrong"><b>ยืนยันว่าต้องทำตาม Routine เดิมให้ครบ</b><small>ให้ระบบมาก่อน Context</small></button>
+        </div>
+        <div class="sim-feedback" data-feedback></div>
+        <div class="x-actions"><button class="x-btn" type="button" data-next="O3" data-sim-next disabled>ผ่านไป 3 วัน →</button></div>
+      </div>
+      <figure class="x-art r3x2"><img data-art-src="/xircle/assets/v3/xircle-opportunity-o2-context.webp" alt="" hidden><div class="x-art-fallback"><div class="x-context-demo" style="width:min(92%,560px)"><div class="x-context-panel"><span class="x-label">DATA</span><div class="big">Sleep ↓</div></div><div class="x-context-arrow">+</div><div class="x-context-panel life"><span class="x-label">LIFE</span><div class="big">ดูแลลูก</div></div></div></div><figcaption class="x-art-tag">ART SLOT · xircle-opportunity-o2-context.webp · 3:2</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="x-scene" data-scene="O3" data-progress="50">
+    <div class="x-shell x-grid">
+      <div class="x-copy">
+        <p class="x-kicker">DAY 3 · FOLLOW-UP</p>
+        <h2 class="x-title small">Follow-up มีไว้<br>จับผิดหรือช่วยไปต่อ?</h2>
+        <div class="x-choices" data-sim="follow">
+          <button class="x-choice" type="button" data-answer="wrong"><b>“ทำครบหรือยัง?”</b><small>ตรวจว่าทำตามหรือไม่</small></button>
+          <button class="x-choice" type="button" data-answer="correct"><b>“สิ่งที่เราตกลงกันไว้ มีตรงไหนทำยากไหม?”</b><small>หาว่าอะไรทำให้ Action ไปต่อยาก</small></button>
+          <button class="x-choice" type="button" data-answer="wrong"><b>“คะแนนดีขึ้นหรือยัง?”</b><small>เริ่มจากผลลัพธ์ก่อนชีวิตจริง</small></button>
+        </div>
+        <div class="sim-feedback" data-feedback></div>
+        <div class="x-actions"><button class="x-btn" type="button" data-next="O4" data-sim-next disabled>เจอคำถามยาก →</button></div>
+      </div>
+      <figure class="x-art r4x3"><img data-art-src="/xircle/assets/v3/xircle-opportunity-o3-followup.webp" alt="" hidden><div class="x-art-fallback"><div class="x-card strong" style="width:min(86%,430px)"><span class="x-label">DAY 3</span><h3>“มีตรงไหนทำยากไหม?”</h3><p>Follow-up = ช่วยหา friction</p></div></div><figcaption class="x-art-tag">ART SLOT · xircle-opportunity-o3-followup.webp · 4:3</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="x-scene" data-scene="O4" data-progress="66">
+    <div class="x-shell x-grid">
+      <div class="x-copy">
+        <p class="x-kicker gold">BOUNDARY</p>
+        <h2 class="x-title small">“ค่าแบบนี้แปลว่า<br>ผมเป็นโรคอะไรไหม?”</h2>
+        <div class="x-choices" data-sim="boundary">
+          <button class="x-choice" type="button" data-answer="wrong"><b>ลองวินิจฉัยจาก Trend ที่เห็น</b><small>ช่วยให้คำตอบทันที</small></button>
+          <button class="x-choice" type="button" data-answer="correct"><b>บอกขอบเขต แล้วส่งต่อผู้เชี่ยวชาญเมื่อจำเป็น</b><small>ช่วยดู Trend/Context ได้ แต่ไม่วินิจฉัย</small></button>
+          <button class="x-choice" type="button" data-answer="wrong"><b>บอกว่าไม่ต้องกังวลแน่นอน</b><small>ให้ความมั่นใจเกินข้อมูล</small></button>
+        </div>
+        <div class="sim-feedback" data-feedback></div>
+        <div class="x-actions"><button class="x-btn gold" type="button" data-next="O5" data-sim-next disabled>สรุปสิ่งที่เพิ่งทำ →</button></div>
+      </div>
+      <figure class="x-art r4x3"><img data-art-src="/xircle/assets/v3/xircle-opportunity-o4-boundary.webp" alt="" hidden><div class="x-art-fallback"><div class="x-card strong" style="width:min(86%,430px)"><span class="x-label">GOOD CARE</span><h3>รู้ว่าเมื่อไรควรหยุดตอบ</h3><p>ขอบเขตคือส่วนหนึ่งของความน่าเชื่อถือ</p></div></div><figcaption class="x-art-tag">ART SLOT · xircle-opportunity-o4-boundary.webp · 4:3</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="x-scene" data-scene="O5" data-progress="82">
+    <div class="x-shell x-grid">
+      <div class="x-copy">
+        <p class="x-kicker">THIS IS X-VISOR WORK</p>
+        <h2 class="x-title small">นี่คืองาน<br>Context Interpreter</h2>
+        <p class="x-lede">ไม่ใช่อ่านเลขให้เก่งที่สุด แต่ช่วยให้คนรู้ว่า <strong>ทำอะไรต่อในชีวิตจริง</strong></p>
+        <p class="x-note">คุณเพิ่งลอง “วิธีคิดแบบ X-VISOR” — ไม่ใช่การรับรองว่าเป็น Certified X-VISOR</p>
+        <div class="x-actions"><button class="x-btn green" type="button" data-next="O6" id="simComplete">แล้วถือจังหวะ 28 วันยังไง? →</button></div>
+      </div>
+      <div class="sim-summary">
+        <div><b>SEE</b><strong>เห็นข้อมูล</strong></div>
+        <div><b>LISTEN</b><strong>ฟังชีวิตจริง</strong></div>
+        <div><b>CHOOSE</b><strong>เลือกสิ่งเดียว</strong></div>
+        <div><b>FOLLOW</b><strong>ติดตาม</strong></div>
+        <div><b>BOUNDARY</b><strong>รู้ขอบเขต</strong></div>
       </div>
     </div>
   </section>
 
+  <section class="x-scene" data-scene="O6" data-progress="100">
+    <div class="x-shell x-grid">
+      <div class="x-copy">
+        <p class="x-kicker gold">HUMAN CARE × myClover XTY</p>
+        <h2 class="x-title small">งานดูแลไม่จำเป็นต้อง<br>อยู่ในหัวคุณทั้งหมด</h2>
+        <p class="x-lede"><strong>แมวขาวช่วยถือจังหวะ</strong><br>แต่คนยังเป็นคนดูแล</p>
+        <div class="x-daytabs" aria-label="Care checkpoints"><span>DAY 0</span><span>3</span><span>7</span><span>14</span><span>21</span><span>28</span></div>
+        <div class="x-actions" id="whiteCatActions"><a class="x-btn gold" href="/xircle/care/party/?mode=create">ดูตี้แมวขาว 28 วัน →</a><a class="x-btn ghost" href="/xircle/care/#library">อ่านมาตรฐาน X-VISOR</a></div>
+        <p class="x-mini">XTY by myClover · Partner Mode สำหรับ Xircle × X-VISOR</p>
+      </div>
+      <figure class="x-art r4x3"><img data-art-src="/xircle/assets/v3/xircle-opportunity-o6-whitecat-reveal.webp" alt="" hidden><div class="x-art-fallback"><div><div class="x-cat-placeholder" aria-hidden="true"></div><div class="x-notebook" style="min-height:150px;width:min(88vw,420px);padding-top:24px"><span class="x-label">WHITE CAT CARE GUIDE</span><div class="x-paper-action" style="margin-top:16px">1 ACTION · ทำด้วยกัน</div></div></div></div><figcaption class="x-art-tag">ART SLOT · xircle-opportunity-o6-whitecat-reveal.webp · 4:3</figcaption></figure>
+    </div>
+  </section>
 </main>
-
-<script src="/xircle/_shared/state.js?v=3"></script>
+<div class="x-toast" data-toast></div>
+<script src="/xircle/_shared/state.js?v=4"></script>
 <script src="/xircle/_shared/analytics.js?v=2"></script>
-<script src="/xircle/_shared/source-drawer.js?v=2"></script>
+<script src="/xircle/_shared/v3.js?v=1"></script>
 <script>
-(function () {
-  "use strict";
-  var REDUCED = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var stage = document.getElementById("stage");
-  var bar = document.getElementById("opp-progress");
-  var current = stage.querySelector('[data-scene="O0"]');
-  current.classList.add("active");
-
-  window.XState.touchVisit();
-  window.XAnalytics.track("opportunity_view");
-
-  function go(id) {
-    var next = stage.querySelector('[data-scene="' + id + '"]');
-    if (!next || next === current) return;
-    current.classList.remove("active");
-    if (!REDUCED) {
-      current.classList.add("leaving");
-      (function (p) { setTimeout(function () { p.classList.remove("leaving"); }, 380); })(current);
-    }
-    current = next;
-    next.classList.add("active");
-    window.scrollTo(0, 0);
-    bar.style.width = (next.dataset.progress || 0) + "%";
-    var h = next.querySelector(".px-title");
-    if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
-  }
-
-  stage.addEventListener("click", function (e) {
-    var btn = e.target.closest("[data-next]");
-    if (btn) go(btn.getAttribute("data-next"));
-  });
-
-  document.getElementById("sim-start").addEventListener("click", function () {
-    window.XAnalytics.track("xvisor_sim_start");
-  });
-  document.getElementById("sim-complete").addEventListener("click", function () {
-    window.XAnalytics.track("xvisor_sim_complete");
-  });
-  document.getElementById("fork-health").addEventListener("click", function () {
-    window.XAnalytics.track("health_path_choose");
-    window.XState.setLocal("rolePathSeen", "health");
-  });
-  document.getElementById("fork-care").addEventListener("click", function () {
-    window.XAnalytics.track("care_path_choose");
-    window.XState.setLocal("rolePathSeen", "care");
-  });
-
-  fetch("/xircle/data/opportunity.json", { cache: "no-cache" })
-    .then(function (r) { return r.json(); })
-    .then(build)
-    .catch(function () {
-      document.getElementById("case-list").innerHTML =
-        '<p class="px-whisper">โหลดเคสสาธิตไม่สำเร็จ — ลองรีเฟรชอีกครั้ง</p>';
-    });
-
-  function build(data) {
-    var caseList = document.getElementById("case-list");
-    var caseDetail = document.getElementById("case-detail");
-    var toOpener = document.getElementById("to-opener");
-
-    var SIGNAL_CLASS = { prae: "sig-change", non: "sig-review", mean: "sig-quiet" };
-
-    data.cases.forEach(function (c) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "case-card";
-      b.setAttribute("aria-pressed", "false");
-
-      var avatar = document.createElement("span");
-      avatar.className = "avatar";
-      avatar.setAttribute("aria-hidden", "true");
-      avatar.textContent = c.name.charAt(0);
-      var dot = document.createElement("i");
-      dot.className = SIGNAL_CLASS[c.id] || "sig-change";
-      avatar.appendChild(dot);
-
-      var who = document.createElement("span");
-      who.className = "who";
-      var nm = document.createElement("b");
-      nm.textContent = c.name;
-      var sg = document.createElement("small");
-      sg.textContent = c.signal;
-      who.appendChild(nm);
-      who.appendChild(sg);
-
-      var tick = document.createElement("span");
-      tick.className = "tick";
-      tick.setAttribute("aria-hidden", "true");
-      tick.textContent = "✓";
-
-      b.appendChild(avatar);
-      b.appendChild(who);
-      b.appendChild(tick);
-
-      b.addEventListener("click", function () {
-        caseList.querySelectorAll(".case-card").forEach(function (x) {
-          x.setAttribute("aria-pressed", x === b ? "true" : "false");
-        });
-        caseDetail.hidden = false;
-        caseDetail.innerHTML = "";
-
-        var head = document.createElement("span");
-        head.className = "px-label";
-        head.style.color = "var(--cyan)";
-        head.textContent = "CARE BRIEF · " + c.name;
-        caseDetail.appendChild(head);
-
-        var brief = document.createElement("div");
-        brief.className = "care-brief";
-        [["signal", "SIGNAL", c.detail],
-         ["why", "WHY IT MATTERS", c.why],
-         ["mission", "MISSION", c.mission],
-         ["follow", "FOLLOW-UP", c.follow_up]].forEach(function (row) {
-          var step = document.createElement("div");
-          step.className = "step " + row[0];
-          var lbl = document.createElement("b");
-          lbl.textContent = row[1];
-          var p = document.createElement("p");
-          p.textContent = row[2];
-          step.appendChild(lbl);
-          step.appendChild(p);
-          brief.appendChild(step);
-        });
-        caseDetail.appendChild(brief);
-
-        var note = document.createElement("p");
-        note.className = "px-note";
-        note.style.marginTop = "16px";
-        note.textContent = "ไม่มีคำตอบผิดในหน้านี้ — ทุกคนสมควรได้รับการดูแล ลำดับคือทักษะที่ฝึกได้";
-        caseDetail.appendChild(note);
-
-        toOpener.classList.add("is-ready");
-      });
-      caseList.appendChild(b);
-    });
-
-    var openerList = document.getElementById("opener-list");
-    var openerFeedback = document.getElementById("opener-feedback");
-    var toWorkload = document.getElementById("to-workload");
-
-    data.openers.forEach(function (o) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "px-choice";
-      b.setAttribute("aria-pressed", "false");
-      b.innerHTML = "<span>" + o.text + "</span><span class='tick' aria-hidden='true'>✓</span>";
-      b.addEventListener("click", function () {
-        openerList.querySelectorAll(".px-choice").forEach(function (x) {
-          x.setAttribute("aria-pressed", x === b ? "true" : "false");
-        });
-        openerFeedback.innerHTML = "<p style='margin:0;font-size:14.5px;line-height:1.65'>" + o.feedback + "</p>";
-        openerFeedback.classList.add("on");
-        toWorkload.classList.add("is-ready");
-      });
-      openerList.appendChild(b);
-    });
-
-    var wl = document.getElementById("workload-list");
-    data.workload_per_customer.forEach(function (item) {
-      var row = document.createElement("div");
-      row.className = "workload-item";
-      var count = document.createElement("span");
-      count.className = "count";
-      count.textContent = "×5";
-      var text = document.createElement("span");
-      text.textContent = item;
-      row.appendChild(count);
-      row.appendChild(text);
-      wl.appendChild(row);
-    });
-  }
+(function(){
+  var good={signal:['ถูกทาง','ข้อมูลบอกว่าอะไรเปลี่ยน แต่ยังไม่รู้ว่าทำไม'],context:['Action ต้องอยู่ในชีวิตจริงได้','เลือกสิ่งที่ทำได้จริงก่อนสิ่งที่ดูสมบูรณ์แบบ'],follow:['Follow-up ไม่ได้มีไว้จับผิด','มันมีไว้หาว่าอะไรทำให้ Action ไปต่อยาก'],boundary:['รู้ขอบเขต = ส่วนหนึ่งของการดูแล','X-VISOR ช่วยดู Trend และ Context ได้ แต่ไม่วินิจฉัยโรค']};
+  var bad={signal:['คุณตอบข้อมูล แต่ยังไม่ได้ตอบชีวิตจริง','ลองถามก่อนว่าเกิดอะไรขึ้น'],context:['ระบบกำลังชนะชีวิตจริง','ลองเลือกสิ่งเล็กที่สุดที่ทำได้จริง'],follow:['ฟังเหมือนกำลังตรวจการบ้าน','ลองถามหา friction แทน'],boundary:['ตรงนี้เกินขอบเขตของ X-VISOR','การไม่วินิจฉัยเองคือการดูแลที่ถูกต้อง']};
+  document.querySelectorAll('[data-sim]').forEach(function(group){group.addEventListener('click',function(e){var btn=e.target.closest('[data-answer]');if(!btn)return;var scene=group.closest('.x-scene'),feedback=scene.querySelector('[data-feedback]'),next=scene.querySelector('[data-sim-next]'),key=group.dataset.sim,isGood=btn.dataset.answer==='correct';group.querySelectorAll('[data-answer]').forEach(function(b){b.classList.remove('is-correct','is-wrong')});btn.classList.add(isGood?'is-correct':'is-wrong');var copy=(isGood?good:bad)[key];feedback.innerHTML='<div class="x-reveal"><strong>'+copy[0]+'</strong><p>'+copy[1]+'</p></div>';if(isGood)next.disabled=false;});});
+  document.getElementById('simStart').addEventListener('click',function(){window.XAnalytics&&XAnalytics.track('xvisor_sim_start')});
+  document.getElementById('simComplete').addEventListener('click',function(){if(window.XState){XState.setLocal('xvisorSimCompleted',true)}window.XAnalytics&&XAnalytics.track('xvisor_sim_complete')});
+  if(window.XState){XState.touchVisit();XState.setLocal('whiteCatIntroSeen',true);var h=XState.getXtyHandoff(),wrap=document.getElementById('whiteCatActions');if(h){wrap.innerHTML='<a class="x-btn gold" href="/xircle/care/party/?mode=join">เข้าตี้ ROOM '+h.partyCode+' →</a><a class="x-btn ghost" href="/xircle/care/party/?mode=create">เปิดตี้ของฉันเอง</a>'}}
 })();
 </script>
 </body>
