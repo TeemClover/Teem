@@ -200,6 +200,17 @@
     if (!anchor) return;
 
     var handoff = XState.getXtyHandoff();
+    if (handoff) {
+      var introBody = document.querySelector('[data-scene="O0"] .scene-body');
+      if (introBody && !introBody.querySelector("[data-room-kept]")) {
+        var roomNote = document.createElement("p");
+        roomNote.className = "px-note fx d3";
+        roomNote.setAttribute("data-room-kept", "");
+        roomNote.textContent = "ROOM " + handoff.partyCode + " เก็บไว้แล้ว · เล่นจบแล้วกลับเข้าตี้ได้";
+        introBody.appendChild(roomNote);
+      }
+    }
+
     var fork = scene.querySelector(".fork-grid");
     if (fork) fork.hidden = true;
 
@@ -212,7 +223,7 @@
       var code = handoff.partyCode;
       block.innerHTML =
         '<span class="px-label" style="color:var(--green)">ROOM ' + code + ' ยังอยู่</span>' +
-        '<h3 style="margin:10px 0 0;font-size:22px">ตอนนี้เห็นทั้งสองฝั่งแล้ว</h3>' +
+        '<h3 style="margin:10px 0 0;font-size:22px">เลือกทางต่อ</h3>' +
         '<p class="px-whisper">เข้าตี้เดิม หรือเปิด Care Party ของคุณ</p>' +
         '<a class="px-cta" href="/xty/join/?c=' + encodeURIComponent(code) + '" style="display:flex;margin-top:16px">เข้าตี้ ' + code + ' →</a>' +
         '<a class="px-ghost" href="/xty/new/?template=xircle_xvisor" style="display:flex;margin-top:8px">สร้าง Care Party ของฉัน →</a>' +
