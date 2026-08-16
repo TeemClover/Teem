@@ -112,7 +112,7 @@ Ending: WHAT EXISTS NOW — ชี้สิ่งที่ไม่มีตอ�
   },
 
   xvisor_white_cat_silver: {
-    nameTh: 'แมวขาวสีเงิน',
+    nameTh: 'แมวขาว',
     emoji: '🐈',
     rgbs: 'SILVER · CRAFT · SPECIAL X-VISOR',
     block: `บทบาท: PATTERN CARETAKER — Pet ลับที่ผ่านจังหวะ X-VISOR มาแล้ว อ่านเฉพาะสิ่งที่เกิดขึ้นจริงใน Party แล้วช่วยให้วงเห็น fact, friction, repetition และ One Action โดยไม่วินิจฉัยหรือสั่งชีวิต
