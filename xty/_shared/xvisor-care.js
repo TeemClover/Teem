@@ -1,7 +1,7 @@
 /* XTY × Xircle — hidden X-VISOR Care mode.
    This module is intentionally separate from normal XTY animal personalities.
-   X-VISOR parties are CREATED through the hidden route, but after creation
-   they are ordinary XTY parties: invites must always use /xty/join/?c=CODE. */
+   Normal XTY sharing remains untouched; the special Xircle invite is exposed
+   only inside the Lead-only X-VISOR Care Assist surface. */
 
 import { XVISOR_GUIDE } from './xvisor-guide.js';
 export { XVISOR_GUIDE } from './xvisor-guide.js';
@@ -67,15 +67,16 @@ export function applyXircleCreateDefaults(options = {}) {
   return options;
 }
 
-/* Canonical invite for EVERY XTY party, including X-VISOR secret-route parties. */
+/* Normal XTY invite. Core XTY owns the button/handler that uses this route. */
 export function directInviteUrl(code, origin = (typeof location !== 'undefined' ? location.origin : 'https://www.myclover.com')) {
   return `${origin}/xty/join/?c=${encodeURIComponent(code)}`;
 }
 
-/* Backward-compatible name for older callers. It deliberately returns the
-   normal XTY invite now; X-VISOR must never route an invite through /xircle. */
+/* Special X-VISOR invite: recipient plays Xircle first, then Xircle hands the
+   saved room code back to XTY at the end of the intro. This link is shown only
+   inside the white-cat Care Assist card for the Party Lead. */
 export function xvisorInviteUrl(code, origin = (typeof location !== 'undefined' ? location.origin : 'https://www.myclover.com')) {
-  return directInviteUrl(code, origin);
+  return `${origin}/xircle/?xty=${encodeURIComponent(code)}&xvisor=1`;
 }
 
 export function careDay(party, now = Date.now()) {
@@ -202,7 +203,39 @@ function enhanceCreatePage() {
     fixed.innerHTML = guideCardHtml('lead', { startAt: new Date().toISOString(), durationDays: 28 });
     petSection.insertBefore(fixed, document.getElementById('petHint') || null);
     const hint = document.getElementById('petHint');
-    if (hint) hint.textContent = 'แมวขาวสีเงินเป็น Pet ลับของ X-VISOR · หลังสร้างตี้ ชวนสมาชิกด้วยรหัส XTY ปกติ';
+    if (hint) hint.textContent = 'แมวขาวสีเงินเป็น Pet ลับของ X-VISOR · หลังสร้างตี้ ปุ่ม Xircle Invite พิเศษจะอยู่ในกรอบ Care Assist ของหัวตี้';
+  }
+}
+
+async function copySpecialInvite(code, button, status) {
+  const url = xvisorInviteUrl(code);
+  let copied = false;
+  try {
+    await navigator.clipboard.writeText(url);
+    copied = true;
+  } catch {
+    try {
+      const input = document.createElement('textarea');
+      input.value = url;
+      input.setAttribute('readonly', '');
+      input.style.position = 'fixed';
+      input.style.opacity = '0';
+      document.body.appendChild(input);
+      input.select();
+      copied = document.execCommand('copy');
+      input.remove();
+    } catch { copied = false; }
+  }
+
+  if (copied) {
+    if (status) status.textContent = 'คัดลอก Xircle Invite Link แล้ว · ส่งลิงก์นี้ให้คนที่คุณจะชวน';
+    const original = button?.textContent;
+    if (button) {
+      button.textContent = 'คัดลอกแล้ว ✓';
+      setTimeout(() => { if (document.contains(button)) button.textContent = original; }, 1800);
+    }
+  } else if (status) {
+    status.textContent = url;
   }
 }
 
@@ -218,18 +251,35 @@ function enhancePartyPage(attempt = 0) {
   if (document.body.dataset.xvisorPartyReady) return;
   document.body.dataset.xvisorPartyReady = '1';
 
-  /* IMPORTANT: do not capture or replace #copy. The native XTY handler owns
-     sharing and always sends /xty/join/?c=CODE with the room code. */
-  const copy = document.getElementById('copy');
-  if (copy) copy.textContent = 'แชร์คำเชิญ';
+  /* IMPORTANT: never capture, rename, or replace #copy. Core XTY owns its
+     normal invite/share handler and must remain identical for every Party. */
+  const role = localRole(party);
 
   if (!document.getElementById('xvisorCareAssist')) {
     const card = document.createElement('div');
     card.className = 'card'; card.id = 'xvisorCareAssist';
-    card.innerHTML = `<span class="label">X-VISOR CARE ASSIST · PET ลับ</span>${guideCardHtml(localRole(party), party)}` +
-      `<p class="hint" style="margin-top:12px">แมวช่วยมอง Pattern และเตรียมคำถามทีละหนึ่งจุด · Human X-VISOR ยังเป็นคนดูแลจริง · ชวนสมาชิกด้วยรหัส XTY ตามปกติ</p>`;
+    card.innerHTML = `<span class="label">X-VISOR CARE ASSIST · PET ลับ</span>${guideCardHtml(role, party)}` +
+      `<p class="hint" style="margin-top:12px">แมวช่วยมอง Pattern และเตรียมคำถามทีละหนึ่งจุด · Human X-VISOR ยังเป็นคนดูแลจริง</p>`;
+
+    if (role === 'lead') {
+      const invite = document.createElement('div');
+      invite.className = 'rule-box';
+      invite.style.marginTop = '14px';
+      invite.innerHTML = `<b>XIRCLE INVITE · สำหรับหัวตี้ X-VISOR</b>` +
+        `<p class="whisper" style="margin:7px 0 10px">ลิงก์นี้จะให้ผู้รับเล่น Xircle Intro ก่อน แล้วพากลับเข้าห้อง ${code} ตอนเล่นจบ</p>` +
+        `<button type="button" class="btn ghost sm" id="xvisorCopyInvite">คัดลอก Xircle Invite Link</button>` +
+        `<p class="hint" id="xvisorInviteStatus" style="margin:8px 0 0">คัดลอกเฉพาะลิงก์ · ไม่มีข้อความสำเร็จรูป</p>`;
+      card.appendChild(invite);
+    }
+
     const logCard = document.getElementById('log')?.closest('.card');
     logCard?.parentElement?.insertBefore(card, logCard);
+
+    if (role === 'lead') {
+      const button = document.getElementById('xvisorCopyInvite');
+      const status = document.getElementById('xvisorInviteStatus');
+      button?.addEventListener('click', () => copySpecialInvite(code, button, status));
+    }
   }
 
   const ending = document.getElementById('downloadEnding');
