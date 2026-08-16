@@ -7,25 +7,36 @@
 <meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#04100d">
 <title>Xircle — วันนี้</title>
-<meta name="description" content="หน้าเริ่มวันของคุณ — ดูเมื่อวาน ปรับวันนี้ทีละอย่าง">
+<meta name="description" content="เลือกหนึ่งอย่าง แล้วดูว่าจะทำอะไรต่อ">
 <link rel="stylesheet" href="/xircle/_shared/typography.css?v=2">
 <link rel="stylesheet" href="/xircle/_shared/playable.css?v=2">
+<style>
+.next-card{margin-top:12px;border-color:rgba(121,217,232,.25)}
+.next-card h2{margin:8px 0 0;font-size:22px;line-height:1.35}
+.next-actions{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.next-actions .px-ghost{border:1px solid var(--line);border-radius:999px;background:rgba(244,238,224,.035)}
+.deep-link{display:flex;align-items:center;justify-content:space-between;gap:14px;text-decoration:none;margin-top:12px}
+.deep-link strong{font-size:16px}
+.deep-link span{color:var(--cream-dim);font-size:13px}
+.nav-label{margin:24px 0 8px;font-size:11px;font-family:var(--font-ui);font-weight:800;letter-spacing:.18em;color:var(--cream-dim)}
+.zone-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:0}
+.zone-tabs a{justify-content:center;text-align:center;padding:10px 6px;background:rgba(244,238,224,.055);border-color:rgba(244,238,224,.2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)}
+.zone-tabs a:not(.active)::after{content:"›";margin-left:5px;color:var(--cream-dim)}
+.invite-room{font-family:var(--font-ui);font-size:28px;font-weight:800;letter-spacing:.08em;margin:8px 0 0}
+@media(max-width:390px){.zone-tabs a{font-size:12px}}
+</style>
 </head>
 <body>
 
 <div class="px-progress" aria-hidden="true"><i style="width:100%"></i></div>
 <header class="px-top">
   <a class="px-mark" href="/xircle/">XIR<b>CLE</b></a>
-  <a class="px-exit" href="/xircle/learn/">Learn</a>
+  <a class="px-exit" href="/xircle/learn/">ข้อมูล</a>
 </header>
 
 <main class="zone-page">
-  <!-- Returning-user home (Blueprint §20). Static prototype:
-       "yesterday" is demo state until real data phases exist.
-       Primary daily action must be doable in ≤ 40 seconds. -->
-
   <p class="px-kicker" id="greet">GOOD MORNING</p>
-  <h1 class="px-title">วันนี้เอาแค่<br>อย่างเดียวพอ</h1>
+  <h1 class="px-title">วันนี้เลือกแค่<br>หนึ่งอย่าง</h1>
 
   <section class="px-card strong" style="margin-top:26px" aria-label="เมื่อวาน">
     <span class="px-label">YESTERDAY</span>
@@ -35,42 +46,45 @@
       <span><i class="c-sleep"></i>Sleep</span>
       <span class="px-demo">DEMO</span>
     </div>
-    <p class="px-whisper" style="margin-top:12px">ภาพเมื่อวานจะกลายเป็นข้อมูลจริงเมื่อเฟสอุปกรณ์/บันทึกจริงเปิดใช้ ตอนนี้เป็นตัวอย่างเพื่อให้เห็นจังหวะของการกลับมา</p>
+    <p class="px-whisper">ตอนนี้เป็นตัวอย่าง · มีข้อมูลจริงเมื่อระบบบันทึกเปิด</p>
   </section>
 
-  <section class="px-card" style="margin-top:12px" aria-label="ปรับวันนี้">
-    <span class="px-label" style="color:var(--gold)">TODAY — ADJUST ONE THING</span>
+  <section class="px-card" style="margin-top:12px" aria-label="เลือกหนึ่งอย่างวันนี้">
+    <span class="px-label" style="color:var(--gold)">วันนี้ · เลือก 1 อย่าง</span>
     <div class="px-choices" style="margin-top:14px" role="group" aria-label="เลือกหนึ่งอย่าง">
       <button type="button" class="px-choice" data-adjust="eat" aria-pressed="false">กิน<span class="tick" aria-hidden="true">✓</span></button>
       <button type="button" class="px-choice" data-adjust="move" aria-pressed="false">ขยับ<span class="tick" aria-hidden="true">✓</span></button>
       <button type="button" class="px-choice" data-adjust="sleep" aria-pressed="false">นอน<span class="tick" aria-hidden="true">✓</span></button>
     </div>
-    <p class="px-whisper" id="adjust-done" hidden>หนึ่งอย่างพอ — แล้วพรุ่งนี้ค่อยดูว่ามันพาไปไหน</p>
+    <p class="px-whisper" id="adjust-done" hidden>เลือกแล้ว ✓ พรุ่งนี้ค่อยดูต่อ</p>
   </section>
 
-  <section class="px-card" style="margin-top:12px" aria-label="วงของคุณ">
-    <span class="px-label" style="color:var(--green)">CIRCLE PULSE</span>
-    <div class="pulse-line">
-      <span class="beat" aria-hidden="true"></span>
-      <strong style="font-size:15px">3 of 5 showed up</strong>
-      <span class="px-demo orange">PREVIEW</span>
-    </div>
-    <p class="px-whisper" style="margin-top:10px">วงจริงยังไม่เปิด — นี่คือตัวอย่างจังหวะของ Circle เมื่อ Live Circle มาถึง</p>
+  <section class="px-card next-card" id="careNext" aria-label="ทำอะไรต่อ">
+    <span class="px-label" style="color:var(--green)">CARE PARTY</span>
+    <h2>มี X-VISOR ดูแลอยู่?</h2>
+    <p class="px-whisper">ให้เขาส่ง Xircle Invite มา · ตี้จริงจะขึ้นตรงนี้</p>
+    <a class="px-ghost" href="/xircle/doc/xvisor/" style="justify-content:flex-start;margin-top:8px">X-VISOR คืออะไร →</a>
   </section>
 
+  <a class="px-card deep-link" href="/xircle/learn/" aria-label="ดูข้อมูลเชิงลึก">
+    <div><strong>อยากดูข้อมูลลึก?</strong><br><span>หลักการ · X-VISOR · Source · Ecosystem</span></div>
+    <b aria-hidden="true">→</b>
+  </a>
+
+  <p class="nav-label">ไปต่อ</p>
   <nav class="zone-tabs" aria-label="พื้นที่หลัก">
-    <a class="active" href="/xircle/start/">Today</a>
-    <a href="/xircle/circle/">Circle</a>
-    <a href="/xircle/ghost/">Progress</a>
-    <a href="/xircle/learn/">Learn</a>
+    <a class="active" href="/xircle/start/">วันนี้</a>
+    <a href="/xircle/circle/">วง</a>
+    <a href="/xircle/ghost/">แนวโน้ม</a>
+    <a href="/xircle/learn/">ข้อมูล</a>
   </nav>
 
-  <p class="px-whisper" style="margin-top:30px">
-    ยังไม่เคยเดินครบหนึ่งวัน? <a href="/xircle/" style="color:var(--cream-soft)">เริ่มเส้นทางแรกที่นี่ →</a>
+  <p class="px-whisper" style="margin-top:22px">
+    <a href="/xircle/" style="color:var(--cream-soft)">เล่น Intro ใหม่ →</a>
   </p>
 </main>
 
-<script src="/xircle/_shared/state.js?v=2"></script>
+<script src="/xircle/_shared/state.js?v=3"></script>
 <script src="/xircle/_shared/analytics.js?v=2"></script>
 <script>
 (function () {
@@ -78,13 +92,11 @@
   window.XState.touchVisit();
   window.XAnalytics.track("xircle_view", { returning: true });
 
-  /* greeting follows the actual clock — small, honest liveliness */
   var h = new Date().getHours();
   var greet = document.getElementById("greet");
   if (h >= 12 && h < 17) greet.textContent = "GOOD AFTERNOON";
   else if (h >= 17 || h < 4) greet.textContent = "GOOD EVENING";
 
-  /* adjust-one-thing: value stays on this device only (§13) */
   document.querySelectorAll("[data-adjust]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       document.querySelectorAll("[data-adjust]").forEach(function (b) {
@@ -94,6 +106,21 @@
       window.XAnalytics.track("adjust_one_complete");
     });
   });
+
+  var handoff = window.XState.getXtyHandoff();
+  var care = document.getElementById("careNext");
+  if (handoff && care) {
+    var code = handoff.partyCode;
+    care.innerHTML =
+      '<span class="px-label" style="color:var(--green)">X-VISOR INVITE</span>' +
+      '<div class="invite-room">ROOM ' + code + '</div>' +
+      '<p class="px-whisper">ตี้รออยู่ · รหัสถูกเก็บไว้แล้ว</p>' +
+      '<div class="next-actions">' +
+        '<a class="px-cta" href="/xty/join/?c=' + encodeURIComponent(code) + '">เข้าตี้ ' + code + ' →</a>' +
+        '<a class="px-ghost" href="/xircle/opportunity/?from=invite">ลองเป็น X-VISOR ก่อน →</a>' +
+      '</div>' +
+      '<a class="px-ghost" href="/xircle/doc/xvisor/" style="justify-content:flex-start;margin-top:4px">อ่านข้อมูล X-VISOR →</a>';
+  }
 })();
 </script>
 </body>
