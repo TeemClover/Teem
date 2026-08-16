@@ -1,28 +1,6 @@
 {
   "redirects": [
     {
-      "source": "/xty/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "xty.myclover.com"
-        }
-      ],
-      "destination": "https://www.myclover.com/xty/:path*",
-      "permanent": false
-    },
-    {
-      "source": "/xty",
-      "has": [
-        {
-          "type": "host",
-          "value": "xty.myclover.com"
-        }
-      ],
-      "destination": "https://www.myclover.com/xty/",
-      "permanent": false
-    },
-    {
       "source": "/:path*",
       "has": [
         {
@@ -30,7 +8,40 @@
           "value": "xty.myclover.com"
         }
       ],
-      "destination": "https://www.myclover.com/xty/:path*",
+      "destination": "https://myclover.com/xty/about",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "xircle.myclover.com"
+        }
+      ],
+      "destination": "https://myclover.com/xircle",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "teem.myclover.com"
+        }
+      ],
+      "destination": "https://myclover.com/resume",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "ako.myclover.com"
+        }
+      ],
+      "destination": "https://youtube.com/@akosohungry",
       "permanent": false
     },
     {
