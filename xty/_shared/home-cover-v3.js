@@ -19,14 +19,20 @@ function esc(value) {
 
 function isOwnedParty(party) {
   const identity = partyIdentity(party.code);
-  return !!(identity?.userId && party.ownerId && identity.userId === party.ownerId);
+  if (!identity?.userId) return false;
+  const member = Array.isArray(party.members)
+    ? party.members.find(item => item.userId === identity.userId)
+    : null;
+  return !!((party.ownerId && identity.userId === party.ownerId) || member?.role === 'lead');
 }
 
+/* The large Home carousel is OWNER space only. Joined parties belong in
+   the lower "ตี้ที่เป็นสมาชิก" list and must never appear as a hero card. */
 function partiesForHome() {
   const mine = new Set(myPartyCodes());
   return allParties()
-    .filter(party => mine.has(party.code))
-    .map((party, index) => ({ party, index, owned: isOwnedParty(party) }))
+    .filter(party => mine.has(party.code) && isOwnedParty(party))
+    .map((party, index) => ({ party, index, owned: true }))
     .sort((a, b) => {
       const activeA = isActiveParty(a.party) ? 0 : 1;
       const activeB = isActiveParty(b.party) ? 0 : 1;
@@ -34,7 +40,6 @@ function partiesForHome() {
       const timeA = new Date(a.party.createdAt || a.party.startAt || 0).getTime() || 0;
       const timeB = new Date(b.party.createdAt || b.party.startAt || 0).getTime() || 0;
       if (timeA !== timeB) return timeA - timeB;
-      if (a.owned !== b.owned) return a.owned ? -1 : 1;
       return a.index - b.index;
     });
 }
@@ -81,11 +86,11 @@ function terminalLabel(party) {
 }
 
 function slideMarkup(entry, total) {
-  const { party, owned } = entry;
+  const { party } = entry;
   const done = committedToday(party).size;
   const members = Array.isArray(party.members) ? party.members.length : 0;
   const terminal = !isActiveParty(party);
-  const badge = terminal ? terminalLabel(party) : (owned ? 'หัวตี้' : 'เข้าร่วม');
+  const badge = terminal ? terminalLabel(party) : 'หัวตี้';
   return `<article class="xty-party-slide${total === 1 ? ' single' : ''}" data-code="${esc(party.code)}">`
     + `<div class="card main-party">`
     + coverMarkup(party)
@@ -98,8 +103,8 @@ function slideMarkup(entry, total) {
 }
 
 function signatureOf(entries) {
-  return entries.map(({ party, owned }) => [
-    party.code, owned ? 1 : 0, party.state, party.updatedAt, party.coverType,
+  return entries.map(({ party }) => [
+    party.code, party.state, party.updatedAt, party.coverType,
     party.coverValue, party.leadCardId, party.members?.length || 0, party.log?.length || 0,
   ].join(':')).join('|');
 }
@@ -110,20 +115,23 @@ function sync() {
   const host = document.getElementById('mainParty');
   if (!host) return;
   const entries = partiesForHome();
-  if (!entries.length) return;
+
+  /* A user who only joined other people's parties gets no large hero card.
+     Their parties remain visible in the lower member group. */
+  if (!entries.length) {
+    if (host.querySelector('.xty-party-carousel')) host.replaceChildren();
+    lastSignature = '';
+    return;
+  }
+
   const signature = signatureOf(entries);
   if (signature === lastSignature && host.querySelector('.xty-party-carousel')) return;
 
   rendering = true;
   const total = entries.length;
-  host.innerHTML = `<div class="xty-party-carousel${total > 1 ? ' multiple' : ''}" aria-label="ตี้ของคุณ · ปัดซ้ายขวาเพื่อดูตี้อื่น">`
+  host.innerHTML = `<div class="xty-party-carousel${total > 1 ? ' multiple' : ''}" aria-label="ตี้ที่คุณเป็นหัวตี้ · ปัดซ้ายขวาเพื่อดูตี้อื่น">`
     + entries.map(entry => slideMarkup(entry, total)).join('')
     + '</div>';
-
-  const rows = document.getElementById('myParties');
-  if (rows) rows.replaceChildren();
-  const heading = document.getElementById('partyHeading');
-  if (heading) heading.hidden = true;
   lastSignature = signature;
   rendering = false;
 }
@@ -131,9 +139,6 @@ function sync() {
 function schedule() {
   if (scheduled || rendering) return;
   scheduled = true;
-  /* MutationObserver + microtask runs before the browser's next paint. This
-     removes the old one-frame legacy layout that used to flash before the
-     carousel took over. */
   queueMicrotask(sync);
 }
 
@@ -141,11 +146,7 @@ const style = document.createElement('style');
 style.id = 'xty-home-cover-v3-style';
 style.textContent = `
   #mainParty{margin-top:18px;margin-right:-20px;margin-left:-20px}
-  /* index.html still owns the local-first data paint, but its old direct
-     main-party card is never allowed to become visible. The observer swaps
-     it for the canonical carousel in the same paint cycle. */
   #mainParty>.main-party{visibility:hidden!important;pointer-events:none!important}
-  #partyHeading,#myParties{display:none!important}
   .xty-party-carousel{
     display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;
     padding:0 20px 9px;scroll-snap-type:x mandatory;scroll-padding-left:20px;
