@@ -28,14 +28,14 @@
 <meta name="description" content="ชวนเพื่อนมาตั้งตี้ ทำของจริง แล้วกลับมา Commit ด้วยกัน จะตั้งตี้เองหรือเข้าตี้ของเพื่อนก็ได้">
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 <style>
-  .party-group{margin-top:10px;border:1px solid var(--xty-line);border-radius:var(--r-lg);background:rgba(255,255,255,.55);overflow:hidden}
-  .party-group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 15px;font-weight:800}
+  .party-group{margin-top:10px;border:1px solid var(--xty-border);border-radius:var(--r-lg);background:rgba(255,255,255,.72);overflow:hidden}
+  .party-group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;font-weight:800;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .party-group>summary::-webkit-details-marker{display:none}
-  .party-group>summary::after{content:'⌄';font-size:18px;line-height:1;transition:transform .18s ease}
+  .party-group>summary::after{content:'⌄';flex:none;font-size:18px;line-height:1;transition:transform .18s ease}
   .party-group:not([open])>summary::after{transform:rotate(-90deg)}
   .party-group-count{font-size:12px;font-weight:700;color:var(--xty-muted);margin-left:auto}
-  .party-group .rows{border-top:1px solid var(--xty-line)}
-  .party-group-empty{padding:12px 15px 15px;color:var(--xty-muted);font-size:13px;border-top:1px solid var(--xty-line)}
+  .party-group .rows{border-top:1px solid var(--xty-border)}
+  .party-group-empty{padding:12px 15px 15px;color:var(--xty-muted);font-size:13px;border-top:1px solid var(--xty-border)}
 </style>
 <!-- XTY SEO SCHEMA -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"XTY — ตั้งตี้ทำอะไรก็ได้","url":"https://www.myclover.com/xty/","description":"ชวนเพื่อนมาตั้งตี้ ทำของจริง แล้วกลับมา Commit ด้วยกัน","image":"https://www.myclover.com/xty/assets/xty-og-share-1200x630.jpg","applicationCategory":"LifestyleApplication","operatingSystem":"Web","isPartOf":{"@type":"WebSite","name":"myClover","url":"https://www.myclover.com/"}}</script>
@@ -55,9 +55,6 @@
     <p class="whisper" style="margin:0">กำลังเปิดสมุดจากข้อมูลในเครื่องนี้…</p>
   </section>
 
-  <!-- No account required to start (Pivot Blueprint §7): an alias is
-       enough, and the ask to save comes later once there is progress
-       worth keeping. -->
   <section id="gate" hidden>
     <div class="welcome-sheet" id="welcomeStep">
       <img class="welcome-logo" src="/xty/assets/xty-logo.png" alt="XTY" width="480" height="480">
@@ -80,23 +77,20 @@
         <div><p class="kicker">CHOOSE YOUR ANIMAL</p><p class="lede">เลือกสัตว์กับชื่อเรียก แค่นี้ก็เริ่มได้</p></div>
       </div>
       <div class="card">
-      <span class="label">เริ่มด้วยชื่อที่สบายใจ</span>
-      <div class="field" style="margin-top:0">
-        <label for="alias">ชื่อเรียกในตี้</label>
-        <input id="alias" type="text" maxlength="24" placeholder="เช่น กล้วยทอด" autocomplete="nickname">
-        <p class="hint">ใช้ชื่อจริงก็ได้ ไม่ใช้ก็ได้ — เปลี่ยนทีหลังได้ตลอด</p>
-      </div>
-
-      <div class="field">
-        <label>เลือกหน้าตา</label>
-        <div class="card-grid" id="avatarPick" role="radiogroup" aria-label="เลือก avatar"></div>
-      </div>
-
-      <div class="field">
-        <label>เลือกสีกรอบ</label>
-        <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีกรอบ avatar"></div>
-      </div>
-
+        <span class="label">เริ่มด้วยชื่อที่สบายใจ</span>
+        <div class="field" style="margin-top:0">
+          <label for="alias">ชื่อเรียกในตี้</label>
+          <input id="alias" type="text" maxlength="24" placeholder="เช่น กล้วยทอด" autocomplete="nickname">
+          <p class="hint">ใช้ชื่อจริงก็ได้ ไม่ใช้ก็ได้ — เปลี่ยนทีหลังได้ตลอด</p>
+        </div>
+        <div class="field">
+          <label>เลือกหน้าตา</label>
+          <div class="card-grid" id="avatarPick" role="radiogroup" aria-label="เลือก avatar"></div>
+        </div>
+        <div class="field">
+          <label>เลือกสีกรอบ</label>
+          <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีกรอบ avatar"></div>
+        </div>
         <button class="btn gold" id="createProfile" style="margin-top:22px" disabled>เข้าสู่ XTY</button>
         <p class="hint" id="inviteJoinError" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
       </div>
@@ -140,8 +134,21 @@
       <p class="whisper">ช่องสร้างตี้และช่องเข้าร่วมนับแยกกัน</p>
     </div>
 
-    <h2 class="title" id="partyHeading" style="margin-top:34px;font-size:19px">ตี้ทั้งหมด</h2>
-    <div id="myParties"></div>
+    <section id="allPartiesSection">
+      <h2 class="title" id="partyHeading" style="margin-top:34px;font-size:19px">ตี้ทั้งหมด</h2>
+
+      <details class="party-group" id="leadPartyGroup" open>
+        <summary><span>ตี้ที่เป็นหัวตี้</span><span class="party-group-count" id="leadPartyCount">0 ตี้</span></summary>
+        <div class="rows" id="leadPartyRows"></div>
+        <div class="party-group-empty" id="leadPartyEmpty" hidden>ยังไม่มีตี้ที่คุณเป็นหัวตี้</div>
+      </details>
+
+      <details class="party-group" id="joinedPartyGroup" open>
+        <summary><span>ตี้ที่เป็นสมาชิก</span><span class="party-group-count" id="joinedPartyCount">0 ตี้</span></summary>
+        <div class="rows" id="joinedPartyRows"></div>
+        <div class="party-group-empty" id="joinedPartyEmpty" hidden>ยังไม่มีตี้ที่คุณเข้าร่วมเป็นสมาชิก</div>
+      </details>
+    </section>
 
     <a class="about-link" href="/xty/about/">เกี่ยวกับ XTY →</a>
 
@@ -185,7 +192,6 @@ function joinErrorText(code) {
   return messages[code] || 'เข้าตี้ไม่สำเร็จ — เช็กเน็ตแล้วลองใหม่';
 }
 
-/* ---------- first run: pick an alias ---------- */
 function renderGate() {
   $('gate').hidden = false;
   let nextCode = '';
@@ -193,9 +199,7 @@ function renderGate() {
   const startButton = $('startButton');
 
   const validQuickCode = () => /^\d{5}$/.test(quickCode.value || '') ? quickCode.value : '';
-  const syncWelcomeCta = () => {
-    startButton.textContent = validQuickCode() ? 'เข้าตี้' : 'เริ่มเล่น';
-  };
+  const syncWelcomeCta = () => { startButton.textContent = validQuickCode() ? 'เข้าตี้' : 'เริ่มเล่น'; };
   const showIdentity = (code = '') => {
     nextCode = /^\d{5}$/.test(code) ? code : '';
     $('welcomeStep').hidden = true;
@@ -205,11 +209,7 @@ function renderGate() {
     $('alias').focus();
   };
 
-  startButton.addEventListener('click', () => {
-    const code = validQuickCode();
-    showIdentity(code);
-  });
-
+  startButton.addEventListener('click', () => showIdentity(validQuickCode()));
   $('backWelcome').addEventListener('click', () => {
     const savedCode = nextCode || validQuickCode();
     nextCode = savedCode;
@@ -220,23 +220,20 @@ function renderGate() {
     $('createProfile').textContent = savedCode ? 'สร้างตัวแล้วเข้าตี้' : 'เข้าสู่ XTY';
     $('inviteJoinError').hidden = true;
   });
-
   quickCode.addEventListener('input', () => {
     quickCode.value = quickCode.value.replace(/\D/g, '').slice(0, 5);
     syncWelcomeCta();
   });
   quickCode.addEventListener('keydown', event => {
-    const code = validQuickCode();
-    if (event.key === 'Enter' && code) showIdentity(code);
+    const value = validQuickCode();
+    if (event.key === 'Enter' && value) showIdentity(value);
   });
 
   const initialCode = inviteCodeFromUrl();
   if (initialCode) {
     quickCode.value = initialCode;
     quickCode.dispatchEvent(new Event('input'));
-  } else {
-    syncWelcomeCta();
-  }
+  } else syncWelcomeCta();
 
   const pick = $('avatarPick');
   let chosen = XTY_AVATARS[0].id;
@@ -294,24 +291,18 @@ function renderGate() {
       ? getProfile()
       : createProfile({ alias: alias.value, avatarId: chosen, avatarFrame });
     if (accountState.authenticated) {
-      try { await saveCloudProgress(profile); } catch { /* local-first: joining still works */ }
+      try { await saveCloudProgress(profile); } catch {}
     }
     if (!nextCode) {
       location.href = '/xty/';
       return;
     }
-
     go.textContent = 'กำลังเข้าตี้…';
-    const result = await joinPartyV2(nextCode, {
-      alias: profile.alias,
-      avatar: chosen,
-      avatarColor: avatarFrame,
-    });
+    const result = await joinPartyV2(nextCode, { alias: profile.alias, avatar: chosen, avatarColor: avatarFrame });
     if (!result.error && result.party?.code) {
       location.href = `/xty/p/?c=${encodeURIComponent(result.party.code)}`;
       return;
     }
-
     $('inviteJoinError').textContent = joinErrorText(result.error);
     $('inviteJoinError').hidden = false;
     go.disabled = false;
@@ -319,7 +310,6 @@ function renderGate() {
   });
 }
 
-/* ---------- returning: parties on this device ---------- */
 async function renderHome() {
   const p = getProfile();
   $('home').hidden = false;
@@ -375,25 +365,11 @@ function partyRow(party) {
   return a;
 }
 
-function partyGroup(title, parties, emptyText) {
-  const details = document.createElement('details');
-  details.className = 'party-group';
-  details.open = true;
-  const summary = document.createElement('summary');
-  summary.innerHTML = `<span>${escapeHtml(title)}</span><span class="party-group-count">${parties.length} ตี้</span>`;
-  details.appendChild(summary);
-  if (!parties.length) {
-    const empty = document.createElement('div');
-    empty.className = 'party-group-empty';
-    empty.textContent = emptyText;
-    details.appendChild(empty);
-    return details;
-  }
-  const rows = document.createElement('div');
-  rows.className = 'rows';
-  parties.forEach(party => rows.appendChild(partyRow(party)));
-  details.appendChild(rows);
-  return details;
+function fillPartyGroup(rowsEl, emptyEl, countEl, parties) {
+  rowsEl.replaceChildren(...parties.map(partyRow));
+  rowsEl.hidden = parties.length === 0;
+  emptyEl.hidden = parties.length !== 0;
+  countEl.textContent = `${parties.length} ตี้`;
 }
 
 function paintPartyList(p, mine) {
@@ -401,15 +377,14 @@ function paintPartyList(p, mine) {
   const capacity = activePartyUsage(p);
   $('ownedCapacityN').innerHTML = `${capacity.owned} / ${capacity.maxOwned}<small>สร้างตี้</small>`;
   $('joinedCapacityN').innerHTML = `${capacity.joined} / ${capacity.maxJoined}<small>เข้าร่วม</small>`;
-  const box = $('myParties');
-  box.innerHTML = '';
 
   if (!list.length) {
     $('mainParty').innerHTML = `<div class="empty">ยังไม่มีตี้<br><span style="font-size:13px">ใช้ Animal Avatar เป็นปก แล้วตั้งตี้แรกได้เลย</span></div>`;
-    $('partyHeading').hidden = true;
+    $('allPartiesSection').hidden = true;
     return;
   }
 
+  $('allPartiesSection').hidden = false;
   const leadParties = list.filter(party => roleInParty(party) === 'lead');
   const joinedParties = list.filter(party => roleInParty(party) !== 'lead');
   const main = leadParties.find(isActiveParty) || leadParties[0] || null;
@@ -435,13 +410,11 @@ function paintPartyList(p, mine) {
       + `<p class="whisper">${mainDone}/${main.members.length} Commit วันนี้${mainCard ? ` · ${escapeHtml(cardNameTh(mainCard))}` : ''}</p>`
       + `<a class="btn gold sm" href="/xty/p/?c=${encodeURIComponent(main.code)}">${terminal ? 'ดู Ending' : 'เข้าตี้ / Commit'}</a></div></div>`;
   } else {
-    /* Joined parties never take over the large owner card. */
     $('mainParty').innerHTML = '';
   }
 
-  $('partyHeading').hidden = false;
-  box.appendChild(partyGroup('ตี้ที่เป็นหัวตี้', leadParties, 'ยังไม่มีตี้ที่คุณเป็นหัวตี้'));
-  box.appendChild(partyGroup('ตี้ที่เป็นสมาชิก', joinedParties, 'ยังไม่มีตี้ที่คุณเข้าร่วมเป็นสมาชิก'));
+  fillPartyGroup($('leadPartyRows'), $('leadPartyEmpty'), $('leadPartyCount'), leadParties);
+  fillPartyGroup($('joinedPartyRows'), $('joinedPartyEmpty'), $('joinedPartyCount'), joinedParties);
 }
 
 function escState(value) {
@@ -457,7 +430,6 @@ function escapeHtml(s) {
 }
 
 async function boot() {
-  /* Paint the local shell first. Cloud sync is enhancement, not a gate. */
   $('shell').hidden = true;
   const inviteCode = inviteCodeFromUrl();
   const hadLocalProfile = hasProfile();
