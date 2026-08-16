@@ -9,7 +9,7 @@ export const XVISOR_GUIDE = Object.freeze({
   emoji: '🐈',
   color: 'silver',
   art: '/xty/assets/art/avatars/white-cat.webp',
-  persona: 'แมวตัวนี้เทรนนิ่ง X-VISOR มาแล้ว',
+  persona: 'PATTERN CARETAKER · เห็นสิ่งที่เกิดขึ้นจริง แล้วช่วยให้วงมองต่อทีละหนึ่งจุด',
   xvisorOnly: true,
   secret: true,
   unlockedByDefault: false,
