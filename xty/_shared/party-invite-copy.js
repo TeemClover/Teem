@@ -1,11 +1,14 @@
 /* XTY party invite — deterministic clipboard copy.
-   The Party page used to prefer navigator.share(), which means a tap on iOS
-   may open/abort a native share flow without ever putting the invite on the
-   clipboard. Product rule: the invite button must ALWAYS give the player a
-   pasteable XTY invite containing the 5-digit room code and /xty/join URL.
+   Product rule: Party sharing always stays inside XTY and gives the player
+   two explicit clipboard choices:
+   1) แชร์คำเชิญ = short ready-to-send invite with party context + join URL
+   2) แชร์ลิงก์ = join URL only
 
-   This module runs only on /xty/p/ and captures the button before legacy or
-   contextual handlers can redirect it elsewhere. */
+   Never route through /xircle and never depend on navigator.share().
+   This module runs only on /xty/p/ and captures the legacy #copy button
+   before older handlers can do anything else. */
+
+import { getParty } from './store.js';
 
 const pageCode = new URLSearchParams(location.search).get('c') || '';
 
@@ -48,34 +51,84 @@ async function copyText(text) {
   return copied;
 }
 
-function install() {
-  const button = document.getElementById('copy');
-  if (!button || button.dataset.xtyInviteCopy === '1') return;
-  button.dataset.xtyInviteCopy = '1';
+function partySnapshot() {
+  const party = getParty(pageCode) || {};
+  const displayed = String(document.getElementById('code')?.textContent || '').trim();
+  const code = /^\d{5}$/.test(displayed) ? displayed : pageCode;
+  const name = String(party.name || document.getElementById('pname')?.textContent || 'XTY').trim() || 'XTY';
+  const activity = String(party.activity || document.getElementById('act')?.textContent || 'ยังไม่ระบุกิจกรรม').trim() || 'ยังไม่ระบุกิจกรรม';
+  const durationDays = Math.max(1, Number(party.durationDays || 7) || 7);
+  const inviteUrl = `${location.origin}/xty/join/?c=${encodeURIComponent(code)}`;
+  return { code, name, activity, durationDays, inviteUrl };
+}
 
-  button.addEventListener('click', async event => {
+function inviteText(party) {
+  return [
+    'เข้าตี้ใน XTY',
+    `ตี้: ${party.name}`,
+    `ทำ: ${party.activity}`,
+    `${party.durationDays} วัน · รหัส ${party.code}`,
+    party.inviteUrl,
+  ].join('\n');
+}
+
+function flashCopied(button, text) {
+  const old = button.textContent;
+  button.textContent = text;
+  setTimeout(() => { if (button.isConnected) button.textContent = old; }, 1800);
+}
+
+async function copyFromButton(button, text, successToast, failureToast) {
+  button.disabled = true;
+  const copied = await copyText(text);
+  button.disabled = false;
+  if (copied) {
+    flashCopied(button, 'คัดลอกแล้ว ✓');
+    toast(successToast);
+    return;
+  }
+  toast(failureToast);
+}
+
+function install() {
+  const inviteButton = document.getElementById('copy');
+  if (!inviteButton || inviteButton.dataset.xtyInviteCopy === '1') return;
+  inviteButton.dataset.xtyInviteCopy = '1';
+  inviteButton.textContent = 'แชร์คำเชิญ';
+
+  /* Keep both actions beside the visible room code. The parent is already a
+     wrapping flex row, so this remains safe on narrow mobile screens. */
+  let linkButton = document.getElementById('copyLink');
+  if (!linkButton) {
+    linkButton = document.createElement('button');
+    linkButton.id = 'copyLink';
+    linkButton.type = 'button';
+    linkButton.className = 'btn ghost sm';
+    linkButton.textContent = 'แชร์ลิงก์';
+    inviteButton.insertAdjacentElement('afterend', linkButton);
+  }
+
+  inviteButton.addEventListener('click', async event => {
     event.preventDefault();
     event.stopImmediatePropagation();
+    const party = partySnapshot();
+    await copyFromButton(
+      inviteButton,
+      inviteText(party),
+      `คัดลอกคำเชิญแล้ว · รหัส ${party.code}`,
+      `คัดลอกอัตโนมัติไม่ได้ · รหัสตี้ ${party.code}`,
+    );
+  }, true);
 
-    const displayed = String(document.getElementById('code')?.textContent || '').trim();
-    const code = /^\d{5}$/.test(displayed) ? displayed : pageCode;
-    const partyName = String(document.getElementById('pname')?.textContent || 'XTY').trim() || 'XTY';
-    const inviteUrl = `${location.origin}/xty/join/?c=${encodeURIComponent(code)}`;
-    const inviteText = `เข้าตี้ ${partyName}\nรหัสตี้ ${code}\n${inviteUrl}`;
-
-    button.disabled = true;
-    const copied = await copyText(inviteText);
-    button.disabled = false;
-
-    if (copied) {
-      const old = button.textContent;
-      button.textContent = 'คัดลอกแล้ว ✓';
-      toast(`คัดลอกคำเชิญแล้ว · รหัส ${code}`);
-      setTimeout(() => { if (button.isConnected) button.textContent = old; }, 1800);
-      return;
-    }
-
-    /* Never hide the room code if clipboard permissions are unavailable. */
-    toast(`คัดลอกอัตโนมัติไม่ได้ · รหัสตี้ ${code}`);
+  linkButton.addEventListener('click', async event => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const party = partySnapshot();
+    await copyFromButton(
+      linkButton,
+      party.inviteUrl,
+      'คัดลอกลิงก์เข้าตี้แล้ว',
+      `คัดลอกลิงก์อัตโนมัติไม่ได้ · รหัสตี้ ${party.code}`,
+    );
   }, true);
 }
