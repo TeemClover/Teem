@@ -95,6 +95,25 @@ function stamp(value) {
   return d.toLocaleString('th-TH', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 }
 
+function identityLockStamp(value) {
+  const d = new Date(value || 0);
+  if (!Number.isFinite(d.getTime())) return '';
+  return d.toLocaleString('th-TH', {
+    weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+  }) + ' น.';
+}
+
+function identityTimeRemaining(lockedAt) {
+  const remaining = Math.max(0, Number(lockedAt || 0) - Date.now());
+  if (remaining <= 0) return 'หมดเวลาแล้ว';
+  const totalMinutes = Math.max(1, Math.ceil(remaining / 60000));
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours && minutes) return `${hours} ชม. ${minutes} นาที`;
+  if (hours) return `${hours} ชม.`;
+  return `${minutes} นาที`;
+}
+
 function eventNode(event) {
   const row = document.createElement('div');
   row.className = 'party-event';
@@ -295,14 +314,15 @@ function syncIdentityLock() {
   if (summary) summary.textContent = state.locked ? 'ตัวละครของฉันในตี้นี้ · ล็อกแล้ว' : 'ตัวละครของฉันในตี้นี้';
   if (note) {
     note.textContent = state.locked
-      ? 'ครบ 24 ชม. แล้ว · ชื่อและ Avatar ถูกล็อกเพื่อให้ตัวละครต่อเนื่องจนจบ Quest'
-      : `เปลี่ยนชื่อและ Avatar ได้ภายใน 24 ชม. · ล็อก ${stamp(state.lockedAt)}`;
+      ? `ครบ 24 ชม. แล้ว · ชื่อและ Avatar ถูกล็อกตั้งแต่ ${identityLockStamp(state.lockedAt)} เพื่อให้ตัวละครต่อเนื่องจนจบ Quest`
+      : `เหลือเวลาเปลี่ยนได้อีก ${identityTimeRemaining(state.lockedAt)} · เปลี่ยนได้ถึง ${identityLockStamp(state.lockedAt)}`;
   }
 
   if (identityLockTimer) clearTimeout(identityLockTimer);
   identityLockTimer = 0;
   if (!state.locked && state.lockedAt) {
-    identityLockTimer = setTimeout(syncIdentityLock, Math.max(100, state.lockedAt - Date.now() + 50));
+    const untilLock = Math.max(100, state.lockedAt - Date.now() + 50);
+    identityLockTimer = setTimeout(syncIdentityLock, Math.min(60000, untilLock));
   }
 }
 
