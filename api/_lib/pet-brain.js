@@ -12,6 +12,7 @@
    ═══════════════════════════════════════════════════════════════ */
 
 import { PET_PERSONAS } from './pet-personas.js';
+import { xircleKnowledgeFor, WHITE_CAT_ID } from './xircle-knowledge.js';
 import { PET_BY_ID } from '../../xty/_shared/pets.js';
 
 const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
@@ -116,7 +117,7 @@ function ictStamp(value) {
   return `${date.toISOString().slice(5, 10)} ${ictClock(value)}`;
 }
 
-function systemPrompt(petId, party, context, hour, trigger) {
+function systemPrompt(petId, party, context, hour, trigger, knowledge = '') {
   const persona = personaFor(petId);
   const roster = context.members.length
     ? context.members.map(m => `- ${m.alias}${m.role === 'lead' ? ' (หัวตี้)' : ''}`).join('\n')
@@ -124,6 +125,15 @@ function systemPrompt(petId, party, context, hour, trigger) {
   const pronounRule = petId === 'monitor_lizard'
     ? 'เหี้ยเป็นข้อยกเว้นตัวเดียวที่ใช้ “กู/มึง” ได้ตามคาแรกเตอร์ แต่ห้ามด่าหรือทำร้ายผู้เล่น'
     : 'ห้ามใช้ “กู/มึง” กับผู้เล่น ใช้ alias, “เรา”, “ตี้” หรือเว้นสรรพนาม';
+  const knowledgeRule = petId === WHITE_CAT_ID
+    ? `## แมวขาว · X-VISOR KNOWLEDGE MODE\n` +
+      `แมวขาวมีคลังความรู้ Xircle แยกจาก persona และแยกจาก Party Log\n` +
+      `- Party Log บอกว่า “คนในตี้ทำ/พูดอะไรจริง”\n` +
+      `- Xircle Knowledge Pack บอกว่า “ระบบ Xircle / RoutineX / X-VISOR หมายถึงอะไร”\n` +
+      `ห้ามเอาสองอย่างนี้ปนกัน: ความรู้ของระบบไม่ใช่หลักฐานว่าคนในตี้มีอาการ/ผลลัพธ์นั้น\n` +
+      `เมื่อถูกเรียกตรง ๆ แมวตอบจากคลังได้ และถ้าข้อมูลที่ผู้ถามให้มายังไม่พอ สามารถ ASK 1 คำถามที่จำเป็นก่อนแล้วค่อย ANSWER ใน turn ถัดไป\n` +
+      `เมื่อช่วยตี้แบบ scheduled ให้ใช้แนว X-VISOR: ถามบริบท → เห็น fact/friction → ช่วยเหลือให้เหลือ One Action ที่วงเลือกเอง → ติดตาม โดยไม่วินิจฉัยหรือ prescribe\n`
+    : '';
 
   return `คุณคือ ${persona.emoji} ${persona.nameTh} — สมาชิก NPC ของตี้ XTY\n` +
 `XTY คือเกมที่คนกลุ่มเล็กออกไปทำอะไรจริง แล้วกลับมา Message / Commit / React กันใน Party Log\n\n` +
@@ -146,19 +156,25 @@ function systemPrompt(petId, party, context, hour, trigger) {
 `- DIRECT: ตอบข้อความที่เรียกคุณก่อน ห้ามเปลี่ยนหัวข้อ ห้าม QUIET เพียงเพราะยังไม่มีบริบทมาก\n` +
 `- SCHEDULED: ถ้าไม่มี detail ใหม่/เรื่องค้างที่ถึงเวลา/เหตุผลเฉพาะให้มีส่วนร่วม ให้ QUIET\n` +
 `- COMMIT “✓” เปล่า ๆ ไม่ได้บังคับให้ต้องถามอะไร ถ้ามี note จริงค่อยจับ note นั้น\n` +
-`- อย่าจบทุก turn ด้วยคำถาม คนจริงพูด “อันนี้ดีว่ะ” แล้วจบได้\n` +
+`- อย่าจบทุก turn ด้วยคำถาม คนจริงพูดความเห็นสั้น ๆ แล้วจบได้\n` +
 `- ถ้าจะถาม ต้องอ้างคน/สิ่ง/เวลา/คำจริงจาก log ให้ชัด ห้าม “ใครอยากแชร์เพิ่มไหม”\n` +
 `- ถ้าสัตว์เคยชวนแล้วไม่มีมนุษย์ตอบ อย่าชวนซ้ำ ให้ QUIET จนมีเหตุใหม่\n` +
 `- ถ้าคนวิจารณ์สัตว์เอง เช่น บอกว่าพูดซ้ำ/เหมือนบอท ให้ถือเป็น social feedback และปรับ turn ถัดไป\n` +
-`- ถ้ามีเรื่องเวลา เช่น “อย่าลืม 15:35” แล้วถึงเวลาแล้ว callback ตรงเรื่องนั้นได้ครั้งเดียว\n\n` +
+`- ถ้ามีเรื่องเวลา เช่น “อย่าลืม 15:35” แล้วถึงเวลาแล้ว callback ตรงเรื่องนั้นได้ครั้งเดียว\n` +
+`- ก่อนส่ง อ่านบรรทัด [PET] เก่าด้วย ถ้าประโยคใหม่ทำหน้าที่เดิม โครงเดิม หรือถามเรื่องเดิมโดยไม่มีข้อมูลใหม่ ให้เปลี่ยน behavior หรือ QUIET\n` +
+`- ห้ามท่อง sample line/persona phrase เหมือนสคริปต์ ใช้คำจริง ชื่อจริง สิ่งจริง และ Commit note ของตี้นี้เป็นวัตถุดิบ\n` +
+`- แต่ละตี้ควรฟังไม่เหมือนกันเพราะเหตุการณ์ คน มุก และคำที่เกิดในตี้ไม่เหมือนกัน อย่าสร้าง generic “เสียงสัตว์ประจำวัน” ที่เอาไปแปะตี้อื่นได้\n\n` +
 `## ความจริงและขอบเขต\n` +
 `ข้อเท็จจริงเกี่ยวกับตี้ต้อง trace กลับไปยัง Party Log / activity / commit rule / roster ด้านล่าง\n` +
 `ห้ามเดาอากาศ อาหาร ตาราง แผน ความรู้สึก สุขภาพ หรือผลงานที่ log ไม่ได้บอก\n` +
-`ถ้าถูกถามตรง ๆ เรื่องความรู้ทั่วไป คุณตอบจากความรู้ทั่วไปได้ แต่ถ้าเป็นข้อมูลเฉพาะแบรนด์/ระบบที่ไม่มีข้อมูล ให้บอกสั้น ๆ ว่าในตี้ยังไม่มีข้อมูล แทนการแต่ง\n` +
+(petId === WHITE_CAT_ID
+  ? `ข้อมูลเฉพาะ Xircle/X-VISOR ที่อยู่ใน Knowledge Pack ใช้ตอบเป็น reference ได้ แต่ห้ามแปลงเป็นข้อเท็จจริงส่วนตัวของสมาชิก\n`
+  : `ถ้าถูกถามตรง ๆ เรื่องความรู้ทั่วไป คุณตอบจากความรู้ทั่วไปได้ แต่ถ้าเป็นข้อมูลเฉพาะแบรนด์/ระบบที่ไม่มีข้อมูล ให้บอกสั้น ๆ ว่าในตี้ยังไม่มีข้อมูล แทนการแต่ง\n`) +
 `เรื่องสุขภาพ: รับรู้และเป็นเพื่อนได้ แต่ห้ามวินิจฉัย สั่งยา กำหนดอาหาร/การออกกำลัง หรือตั้งเป้าสุขภาพ\n` +
 `ห้ามสร้างดราม่า ห้ามเป็นผู้ตัดสิน ห้ามเปรียบเทียบสมาชิก ห้าม guilt trip\n` +
 `${pronounRule}\n\n` +
 `## Persona — ใช้หลังเลือก behavior แล้วเท่านั้น\n${persona.block}\n\n` +
+`${knowledgeRule}${knowledge ? `\n${knowledge}\n` : ''}` +
 `## ตี้นี้\nชื่อ: ${party.name || '(ไม่มีชื่อ)'}\nกิจกรรม: ${party.activity || '(ยังไม่ระบุ)'}\n` +
 `กติกา Commit: ${party.commit_rule || '(ยังไม่ได้ตั้ง — ห้ามตั้งให้เอง)'}\nสมาชิก ${context.members.length} คน:\n${roster}\n` +
 `รอบเวลา ${String(hour).padStart(2, '0')}:xx น. เวลาไทย · วันนี้ Commit ${context.committed}/${context.members.length}\n\n` +
@@ -285,6 +301,46 @@ function cleanBubble(value) {
     .slice(0, MAX_BUBBLE_CHARS);
 }
 
+function similarityText(value) {
+  return String(value || '')
+    .toLocaleLowerCase('th-TH')
+    .replace(/[^\p{L}\p{N}]+/gu, '')
+    .trim();
+}
+
+function ngrams(value, size = 3) {
+  const text = similarityText(value);
+  if (!text) return new Set();
+  if (text.length <= size) return new Set([text]);
+  const out = new Set();
+  for (let i = 0; i <= text.length - size; i += 1) out.add(text.slice(i, i + size));
+  return out;
+}
+
+function overlapScore(a, b) {
+  const aa = ngrams(a); const bb = ngrams(b);
+  if (!aa.size || !bb.size) return 0;
+  let same = 0;
+  for (const item of aa) if (bb.has(item)) same += 1;
+  const union = aa.size + bb.size - same;
+  return union ? same / union : 0;
+}
+
+export function tooSimilarToRecent(bubbles, history = []) {
+  const recent = [...history].reverse()
+    .filter(item => item?.kind === 'pet' && !item?.retracted && item?.body)
+    .slice(0, 8)
+    .map(item => String(item.body));
+  if (!recent.length) return false;
+  return bubbles.some(line => recent.some(old => {
+    const a = similarityText(line); const b = similarityText(old);
+    if (!a || !b) return false;
+    if (a === b) return true;
+    if (Math.min(a.length, b.length) >= 18 && (a.includes(b) || b.includes(a))) return true;
+    return overlapScore(a, b) >= 0.72;
+  }));
+}
+
 export function sanitizeDecision(raw, petId = '', trigger = 'scheduled') {
   let value = raw;
   if (typeof value === 'string') {
@@ -336,8 +392,17 @@ export async function readAndRespond({
 }) {
   if (!aiConfigured() || !hasPersona(party.pet_id)) return null;
 
-  const visionText = await describeLinkedImages(history);
-  const prompt = `${systemPrompt(party.pet_id, party, context, hour, trigger)}\n\n` +
+  const [visionText, knowledge] = await Promise.all([
+    describeLinkedImages(history),
+    Promise.resolve(xircleKnowledgeFor({
+      petId: party.pet_id,
+      query: directText,
+      activity: party.activity || '',
+      history,
+      trigger,
+    })),
+  ]);
+  const prompt = `${systemPrompt(party.pet_id, party, context, hour, trigger, knowledge)}\n\n` +
     transcript(history, since, trigger, directText, visionText);
 
   let response;
@@ -352,8 +417,8 @@ export async function readAndRespond({
       max_completion_tokens: 500,
       reasoning_effort: 'low',
       reasoning_format: 'hidden',
-      temperature: 0.72,
-      top_p: 0.9,
+      temperature: 0.78,
+      top_p: 0.92,
       stream: false,
     });
   } catch (error) {
@@ -365,5 +430,15 @@ export async function readAndRespond({
   if (!choice || choice.finish_reason === 'content_filter') return {
     behavior: 'QUIET', focus: '', openThreads: [], bubbles: [],
   };
-  return sanitizeDecision(choice.message?.content || '', party.pet_id, trigger);
+  const decision = sanitizeDecision(choice.message?.content || '', party.pet_id, trigger);
+  if (!decision) return null;
+  if (trigger !== 'direct' && decision.bubbles.length && tooSimilarToRecent(decision.bubbles, history)) {
+    return {
+      behavior: 'QUIET',
+      focus: decision.focus || 'candidate ซ้ำกับสิ่งที่ PET เพิ่งพูด',
+      openThreads: decision.openThreads,
+      bubbles: [],
+    };
+  }
+  return decision;
 }

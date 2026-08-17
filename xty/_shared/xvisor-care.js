@@ -19,8 +19,14 @@ export const XVISOR_CARE_CHECKPOINTS = Object.freeze([
 ]);
 
 export function isXvisorPreset(value) {
-  const preset = typeof value === 'string' ? value : value?.preset;
-  return preset === XVISOR_PRESET_ID;
+  if (typeof value === 'string') return value === XVISOR_PRESET_ID;
+  /* Compatibility: early X-VISOR rooms could reach the server with the
+     White Cat correctly selected while preset was accidentally stored as
+     casual. Treat the canonical hidden PET as sufficient proof so those
+     existing rooms keep their Care surface. */
+  return value?.preset === XVISOR_PRESET_ID
+    || value?.petId === XVISOR_GUIDE.id
+    || value?.pet_id === XVISOR_GUIDE.id;
 }
 
 export function currentTemplate() {
@@ -203,7 +209,7 @@ function enhanceCreatePage() {
     fixed.innerHTML = guideCardHtml('lead', { startAt: new Date().toISOString(), durationDays: 28 });
     petSection.insertBefore(fixed, document.getElementById('petHint') || null);
     const hint = document.getElementById('petHint');
-    if (hint) hint.textContent = 'แมวขาวเป็น Pet ลับของ X-VISOR · หลังสร้างตี้ ปุ่ม Xircle Invite พิเศษจะอยู่ในกรอบ Care Assist ของหัวตี้';
+    if (hint) hint.textContent = 'แมวขาวเป็น Pet ลับของ X-VISOR · หลังสร้างตี้ สมาชิกพิมพ์ “แมวขาว” ตามด้วยคำถามเพื่อคุยกับมันได้';
   }
 }
 
@@ -239,6 +245,17 @@ async function copySpecialInvite(code, button, status) {
   }
 }
 
+function primeWhiteCatQuestion() {
+  const composer = document.getElementById('msg');
+  if (!composer || composer.disabled) return;
+  const current = String(composer.value || '').trim();
+  if (!current) composer.value = 'แมวขาว ';
+  else if (!current.includes('แมวขาว')) composer.value = `แมวขาว ${current}`;
+  composer.dispatchEvent(new Event('input', { bubbles: true }));
+  composer.focus();
+  try { composer.setSelectionRange(composer.value.length, composer.value.length); } catch { /* textarea-like only */ }
+}
+
 function enhancePartyPage(attempt = 0) {
   if (!/^\/xty\/p\/?$/.test(location.pathname)) return;
   const code = new URLSearchParams(location.search).get('c') || '';
@@ -259,7 +276,16 @@ function enhancePartyPage(attempt = 0) {
     const card = document.createElement('div');
     card.className = 'card'; card.id = 'xvisorCareAssist';
     card.innerHTML = `<span class="label">X-VISOR CARE ASSIST · PET ลับ</span>${guideCardHtml(role, party)}` +
-      `<p class="hint" style="margin-top:12px">แมวช่วยมอง Pattern และเตรียมคำถามทีละหนึ่งจุด · Human X-VISOR ยังเป็นคนดูแลจริง</p>`;
+      `<p class="hint" style="margin-top:12px">แมวขาวอ่าน Party Log เหมือนสัตว์ตัวอื่น แต่มีคลัง Xircle แยกไว้ช่วยตอบคำถามและช่วยวงมองต่อแบบ X-VISOR · Human X-VISOR ยังเป็นคนดูแลจริง</p>`;
+
+    const ask = document.createElement('div');
+    ask.className = 'rule-box';
+    ask.style.marginTop = '14px';
+    ask.innerHTML = `<b>🐈 ถามแมวขาวได้</b>` +
+      `<p class="whisper" style="margin:7px 0 10px">พิมพ์คำว่า <b>แมวขาว</b> แล้วตามด้วยคำถาม เช่น “แมวขาว ABCD คืออะไร?” หรือถามเรื่องที่เกิดขึ้นในตี้นี้ก็ได้</p>` +
+      `<button type="button" class="btn ghost sm" id="xvisorAskWhiteCat">เริ่มถามแมวขาว</button>` +
+      `<p class="hint" style="margin:8px 0 0">แมวถามกลับได้ถ้าข้อมูลยังไม่พอ · ตอบจากคลัง Xircle ได้ · ไม่วินิจฉัยหรือแทนผู้เชี่ยวชาญ</p>`;
+    card.appendChild(ask);
 
     if (role === 'lead') {
       const invite = document.createElement('div');
@@ -275,6 +301,7 @@ function enhancePartyPage(attempt = 0) {
     const logCard = document.getElementById('log')?.closest('.card');
     logCard?.parentElement?.insertBefore(card, logCard);
 
+    document.getElementById('xvisorAskWhiteCat')?.addEventListener('click', primeWhiteCatQuestion);
     if (role === 'lead') {
       const button = document.getElementById('xvisorCopyInvite');
       const status = document.getElementById('xvisorInviteStatus');
