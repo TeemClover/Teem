@@ -1,9 +1,7 @@
 /* Xircle v6.3 runtime polish
-   Invariants: v5 artwork is content, never crop it; controls are immediate;
+   Invariants: v5 artwork is content, controls are immediate;
    RoutineX keeps one persistent diagram and only changes the active node. */
 
-/* Every generated v5 artwork was composed to its requested canvas.
-   Preserve the complete canvas on every screen instead of re-cropping it in CSS. */
 .xp-story .xp-art{
   background:
     radial-gradient(circle at 50% 45%,rgba(255,255,255,.025),transparent 58%),
@@ -19,28 +17,24 @@
 .xp-story .xp-scene.is-reacting .xp-art img{transform:none!important}
 .xp-story .xp-art.art-ui-safe img{transform:none!important}
 
-/* Ratio classes are loading hints only. Once a generated image has loaded,
-   let its real canvas determine the visible frame. This avoids black bars when
-   a production asset is replaced with a new ratio. */
 .xp-story .xp-art.art-ready{
   aspect-ratio:auto!important;
   height:auto!important;
   min-height:0!important;
   max-height:none!important;
-  display:grid;
-  place-items:center;
+  display:block;
+  overflow:hidden;
 }
 .xp-story .xp-art.art-ready>img{
   position:relative!important;
   inset:auto!important;
-  width:auto!important;
+  width:100%!important;
   height:auto!important;
-  max-width:100%!important;
-  max-height:78dvh!important;
+  max-width:none!important;
+  max-height:none!important;
   object-fit:contain!important;
 }
 
-/* Match the wrapper to the source canvas on desktop while artwork is loading. */
 @media(min-width:781px){
   .xp-story .xp-art.r169{height:auto;aspect-ratio:16/9!important;max-height:78dvh}
   .xp-story .xp-art.r43{height:auto;aspect-ratio:4/3!important;max-height:78dvh}
@@ -49,16 +43,13 @@
   .xp-story .xp-art.art-ready{aspect-ratio:auto!important;max-height:none!important}
 }
 
-/* Narration can reveal slowly, but interaction must never wait for narration. */
 .xp-story .xp-scene.is-sequencing [data-next],
 .xp-story .xp-scene.is-sequencing .xp-choice,
 .xp-story .xp-scene.is-sequencing .xp-food-choice,
 .xp-story .xp-scene.is-sequencing [data-food-shutter]{pointer-events:auto!important}
 .xp-story .xp-actions,
 .xp-story .xp-choices,
-.xp-story .xp-food-choices{
-  pointer-events:auto!important;
-}
+.xp-story .xp-food-choices{pointer-events:auto!important}
 
 /* RoutineX — one diagram stays mounted for the whole chapter. */
 .xp-routinex-story .xp-stage{isolation:isolate}
@@ -82,29 +73,18 @@
   filter:none!important;
 }
 .xp-routinex-story .xp-routine-persistent:before{display:none}
-.xp-routinex-story .xp-routine-scene-shell{
-  grid-template-columns:minmax(300px,.72fr) minmax(0,1.28fr);
-}
+.xp-routinex-story .xp-routine-scene-shell{grid-template-columns:minmax(300px,.72fr) minmax(0,1.28fr)}
 .xp-routinex-story .xp-routine-scene-shell .xp-copy{grid-column:1}
 .xp-routinex-story .xp-routine-spacer{grid-column:2;min-width:0;pointer-events:none}
-
-/* Highlight changes are state changes, not scene transitions. */
-.xp-routinex-story .xp-routine-node{
-  transition:none!important;
-}
+.xp-routinex-story .xp-routine-node{transition:none!important}
 .xp-routinex-story .xp-routine-map[data-active="A"] .a,
 .xp-routinex-story .xp-routine-map[data-active="B"] .b,
 .xp-routinex-story .xp-routine-map[data-active="C"] .c,
 .xp-routinex-story .xp-routine-map[data-active="D"] .d,
 .xp-routinex-story .xp-routine-map[data-active="F"] .f,
-.xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-node{
-  transition:none!important;
-}
+.xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-node{transition:none!important}
 
 @media(max-width:780px){
-  /* On phones the image canvas owns its height. The old fixed 52% row made
-     landscape artwork sit inside a tall box, which looked like a missing image
-     above/below. Keep full width, keep the rounded frame, and remove that box. */
   .xp-story .xp-story-shell,
   .xp-story .xp-scene.xp-dense .xp-story-shell{
     grid-template-rows:auto minmax(0,1fr)!important;
@@ -131,34 +111,67 @@
     object-fit:contain!important;
   }
 
+  /* RoutineX phone layout: reserve a real row for the persistent map, then
+     start copy below it. Copy is never allowed to float back over the map. */
   .xp-routinex-story .xp-routine-persistent{
-    top:50px;
+    top:56px;
     left:12px;
     right:12px;
     bottom:auto;
     width:auto;
-    height:42dvh;
-    max-height:42dvh;
+    height:min(31dvh,270px);
+    max-height:270px;
+    min-height:210px;
     border-radius:0 0 24px 24px;
   }
   .xp-routinex-story .xp-routine-scene-shell{
-    grid-template-columns:1fr;
-    grid-template-rows:minmax(0,45%) minmax(0,55%);
+    grid-template-columns:1fr!important;
+    grid-template-rows:minmax(220px,33dvh) minmax(0,1fr)!important;
+    gap:0!important;
   }
   .xp-routinex-story .xp-routine-scene-shell .xp-copy{
     grid-column:1;
     grid-row:2;
+    align-self:stretch;
+    justify-content:flex-start;
+    min-height:0;
+    padding-top:10px;
+    overflow:visible;
   }
   .xp-routinex-story .xp-routine-spacer{
     grid-column:1;
     grid-row:1;
+    min-height:0;
   }
-  .xp-routinex-story .xp-routine-map{width:min(82%,315px)}
+  .xp-routinex-story .xp-routine-map{width:min(72vw,280px)}
+  .xp-routinex-story .xp-title.sm{
+    max-width:13ch;
+    font-size:clamp(32px,8.8vw,44px)!important;
+    line-height:.99;
+  }
+  .xp-routinex-story .xp-lede{
+    margin-top:10px;
+    font-size:15px;
+    line-height:1.43;
+  }
+  .xp-routinex-story .xp-routine-support{margin-top:10px;font-size:12px;line-height:1.42}
+  .xp-routinex-story .xp-actions{margin-top:12px}
+  .xp-routinex-story .xp-btn{min-height:46px;padding:10px 16px}
 }
 
 @media(max-height:680px) and (max-width:780px){
-  .xp-routinex-story .xp-routine-persistent{height:38dvh;max-height:38dvh}
-  .xp-routinex-story .xp-routine-scene-shell{
-    grid-template-rows:minmax(0,40%) minmax(0,60%);
+  .xp-routinex-story .xp-routine-persistent{
+    top:54px;
+    height:min(27dvh,210px);
+    max-height:210px;
+    min-height:180px;
   }
+  .xp-routinex-story .xp-routine-scene-shell{
+    grid-template-rows:minmax(190px,29dvh) minmax(0,1fr)!important;
+  }
+  .xp-routinex-story .xp-routine-map{width:min(64vw,238px)}
+  .xp-routinex-story .xp-title.sm{font-size:clamp(29px,8vw,39px)!important}
+  .xp-routinex-story .xp-lede{font-size:14px;line-height:1.36;margin-top:8px}
+  .xp-routinex-story .xp-routine-support{margin-top:8px;font-size:11px}
+  .xp-routinex-story .xp-actions{margin-top:9px}
 }
