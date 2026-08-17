@@ -1,7 +1,8 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/",
       "has": [
         {
           "type": "host",
@@ -16,6 +17,17 @@
       "has": [
         {
           "type": "host",
+          "value": "xty.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/xty/about/",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "xircle.myclover.com"
         }
       ],
@@ -27,10 +39,43 @@
       "has": [
         {
           "type": "host",
+          "value": "xircle.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/xircle/",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "teem.myclover.com"
         }
       ],
       "destination": "https://www.myclover.com/resume/",
+      "permanent": false
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "teem.myclover.com"
+        }
+      ],
+      "destination": "https://www.myclover.com/resume/",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "ako.myclover.com"
+        }
+      ],
+      "destination": "https://youtube.com/@akosohungry",
       "permanent": false
     },
     {
@@ -447,16 +492,6 @@
     {
       "source": "/api/xty/:path*",
       "destination": "/api/xty?path=:path*"
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "xircle.myclover.com"
-        }
-      ],
-      "destination": "/xircle/:path*"
     }
   ]
 }
