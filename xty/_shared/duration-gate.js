@@ -1,0 +1,58 @@
+import { getProfile } from './store.js';
+
+(function installDurationGate() {
+  if (typeof window === 'undefined' || !/^\/xty\/new\/?$/.test(location.pathname)) return;
+  const template = new URLSearchParams(location.search).get('template') || '';
+  const whiteCatRoute = template === 'xircle_xvisor';
+  const level = Math.max(1, Math.min(4, Number(getProfile()?.level || 1)));
+  const allowed = whiteCatRoute ? [28] : (level >= 2 ? [3, 7, 14, 28] : [3, 7]);
+  let selected = whiteCatRoute ? 28 : 7;
+  if (!allowed.includes(selected)) selected = allowed[0];
+
+  window.__xtyDurationOverride = selected;
+  if (whiteCatRoute) window.__xtyPresetOverride = 'xircle_xvisor';
+
+  let tries = 0;
+  const install = () => {
+    const box = document.getElementById('durationPick');
+    if (!box || !box.children.length) {
+      if (tries++ < 60) setTimeout(install, 50);
+      return;
+    }
+    if (box.dataset.durationGate === '1') return;
+    box.dataset.durationGate = '1';
+    box.replaceChildren();
+
+    const buttons = allowed.map(days => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'pill-choice' + (days === selected ? ' picked' : '');
+      button.setAttribute('role', 'radio');
+      button.setAttribute('aria-checked', days === selected ? 'true' : 'false');
+      button.innerHTML = `<b>${days}</b><small>วัน</small>`;
+      button.addEventListener('click', () => {
+        selected = days;
+        window.__xtyDurationOverride = days;
+        buttons.forEach(node => {
+          const on = node === button;
+          node.classList.toggle('picked', on);
+          node.setAttribute('aria-checked', on ? 'true' : 'false');
+        });
+      });
+      box.appendChild(button);
+      return button;
+    });
+
+    const note = document.createElement('p');
+    note.className = 'hint';
+    note.style.margin = '10px 0 0';
+    note.textContent = whiteCatRoute
+      ? 'เส้นแมวขาวเป็น Quest 28 วัน · Route นี้เลือกช่วงสั้นกว่านี้ไม่ได้'
+      : (level >= 2
+        ? `LEVEL ${level} · ปลดตี้ 14 และ 28 วันแล้ว`
+        : 'LEVEL 1 · เริ่มได้ที่ 3 หรือ 7 วัน · LEVEL 2 จะปลด 14 และ 28 วัน');
+    box.insertAdjacentElement('afterend', note);
+  };
+
+  setTimeout(install, 0);
+})();
