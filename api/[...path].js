@@ -10,10 +10,27 @@ function routeOf(req) {
   return pathname.replace(/^\/api\/?/, '');
 }
 
+function finishRequest(req, rawRoute) {
+  if (String(req.method || '').toUpperCase() !== 'POST') return false;
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  if (body.mode !== 'dissolve' && body.mode !== 'complete') return false;
+
+  const rawCode = Array.isArray(req.query?.code) ? req.query.code[0] : req.query?.code;
+  if (/^\d{5}$/.test(String(rawCode || ''))) return true;
+  if (/^xty\/party\/\d{5}\/finish\/?$/.test(String(rawRoute || ''))) return true;
+
+  const pathname = new URL(req.url || '/', 'https://myclover.local').pathname;
+  return /\/api\/xty\/party\/\d{5}\/finish\/?$/.test(pathname);
+}
+
 export default function handler(req, res) {
-  const route = routeOf(req).split('/').filter(Boolean)[0] || '';
+  const rawRoute = routeOf(req).replace(/^\/+|\/+$/g, '');
+  const route = rawRoute.split('/').filter(Boolean)[0] || '';
+
   if (route === 'xty-mine') return handleXtyMine(req, res);
   if (route === 'xty-stars') return handleXtyStars(req, res);
-  if (route === 'xty-party-finish') return handleXtyPartyFinish(req, res);
+  if (route === 'xty-party-finish' || finishRequest(req, rawRoute)) {
+    return handleXtyPartyFinish(req, res);
+  }
   return res.status(404).json({ ok: false, error: 'NOT_FOUND' });
 }
