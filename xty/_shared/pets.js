@@ -17,13 +17,16 @@
    install Xircle/X-VISOR page handlers or override the XTY share button. */
 import { XVISOR_GUIDE } from './xvisor-guide.js';
 
-/* The Party page is the only place that needs the route-only X-VISOR UI.
-   Load it there explicitly on the client. Both modules self-check the party
-   preset, and X-VISOR no longer owns or overrides the normal XTY share flow. */
+/* Page-local enhancements stay lazy so the registry itself remains safe to
+   import from Collection/Profile and server-side card code. */
 if (typeof window !== 'undefined' && /^\/xty\/p\/?$/.test(window.location.pathname)) {
   import('./xvisor-care.js')
     .then(() => import('./xvisor-care-scripts.js'))
     .catch(() => {});
+  import('./reward-loop.js').catch(() => {});
+}
+if (typeof window !== 'undefined' && /^\/xty\/new\/?$/.test(window.location.pathname)) {
+  import('./duration-gate.js').catch(() => {});
 }
 
 export const SERIES = Object.freeze({
