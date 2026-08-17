@@ -257,12 +257,12 @@ style.textContent = `
      so every party name/detail column lines up exactly and nothing overlaps. */
   .party-group .xty-party-summary-row{
     display:grid!important;
-    grid-template-columns:100px minmax(0,1fr) 18px!important;
+    grid-template-columns:106px minmax(0,1fr) 18px!important;
     gap:12px!important;align-items:center!important;
     min-height:104px!important;padding:10px 14px!important;
   }
   .xty-party-row-visual{
-    width:100px;height:82px;display:grid;grid-template-columns:58px 34px;
+    width:106px;height:82px;display:grid;grid-template-columns:58px 40px;
     gap:8px;align-items:center;justify-content:start;overflow:visible;
   }
   .xty-party-row-cover{
@@ -296,17 +296,17 @@ style.textContent = `
     width:100%!important;height:100%!important;border-radius:6px!important;object-fit:contain!important;
   }
   .xty-party-row-pet{
-    width:34px;height:34px;display:grid;place-items:center;align-self:center;
-    overflow:visible;font-size:27px;line-height:1;
+    width:40px;height:40px;display:grid;place-items:center;align-self:center;
+    overflow:visible;font-size:30px;line-height:1;
   }
   .xty-party-row-pet>img{
-    display:block;width:34px;height:34px;max-width:none;object-fit:contain;
+    display:block;width:40px;height:40px;max-width:none;object-fit:contain;
   }
-  /* The slot stays 34×34 so every row aligns. A Collection NPC keeps its
+  /* The slot stays 40×40 so every row aligns. A Collection NPC keeps its
      own 63×88 silhouette inside that invisible slot; no square portrait
      border is allowed to crop the card. */
   .xty-party-row-pet.is-card .animal-card{
-    width:auto!important;height:34px!important;max-width:none!important;
+    width:auto!important;height:40px!important;max-width:none!important;
     aspect-ratio:var(--xty-card-aspect)!important;margin:0!important;
     border-radius:5px!important;overflow:hidden!important;
     box-shadow:none!important;transform:none!important;
@@ -334,9 +334,9 @@ style.textContent = `
   }
   @media(max-width:380px){
     .party-group .xty-party-summary-row{
-      grid-template-columns:90px minmax(0,1fr) 16px!important;gap:9px!important;padding:9px 11px!important;
+      grid-template-columns:96px minmax(0,1fr) 16px!important;gap:9px!important;padding:9px 11px!important;
     }
-    .xty-party-row-visual{width:90px;height:76px;grid-template-columns:54px 30px;gap:6px}
+    .xty-party-row-visual{width:96px;height:76px;grid-template-columns:54px 36px;gap:6px}
     .xty-party-row-cover,
     .xty-party-row-cover .xty-home-cover,
     .xty-party-row-cover .xty-home-cover>.animal-card,
@@ -345,9 +345,9 @@ style.textContent = `
     .xty-party-row-cover .xty-home-cover.avatar-cover{
       width:54px!important;min-width:54px!important;height:76px!important;
     }
-    .xty-party-row-pet,.xty-party-row-pet>img{width:30px;height:30px}
-    .xty-party-row-pet.is-card .animal-card{height:30px!important}
-    .xty-party-row-pet{font-size:24px}
+    .xty-party-row-pet,.xty-party-row-pet>img{width:36px;height:36px}
+    .xty-party-row-pet.is-card .animal-card{height:36px!important}
+    .xty-party-row-pet{font-size:27px}
   }
 `;
 document.head.appendChild(style);
