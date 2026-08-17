@@ -9,19 +9,20 @@ All top-level `/xircle/**` product pages are designed to work without final art.
 - Prefer crisp premium product/editorial illustration over stock-photo or generic AI-neon visuals.
 - Xircle world: deep green / cream / cyan / mint / restrained gold, cinematic and clean.
 - XTY White Cat world: warm cream / graphite / mint / restrained gold, tactile notebook feel.
-- **Browser rule: generated artwork is a completed canvas. Do not crop it again in CSS.** Use `object-fit: contain` and preserve the declared ratio so baked Thai UI/copy stays readable on desktop and mobile.
+- **Actual uploaded file canvas is the source of truth.** This table records the intended/current slot, but an older ratio in this document must never force a newly replaced image into the wrong frame.
+- **Browser rule:** let the frame follow the real image canvas. Fill the frame width, keep the complete source canvas visible, and do not create artificial letterbox space from a stale ratio.
 
 ## P0 — make these first
-| File | Ratio | Recommended size | Route / moment |
+| File | Current ratio | Recommended size | Route / moment |
 |---|---:|---:|---|
-| `xircle-s00-hook-hero.webp` | 16:9 | 1920×1080 | `/xircle/` hook |
-| `xircle-s06-yesterday-visible.webp` | 1:1 | 1600×1600 | Habit Score payoff |
+| `xircle-s00-hook-hero.webp` | 4:3 | 1600×1200 | `/xircle/` hook |
+| `xircle-s06-yesterday-visible.webp` | 4:3 | 1600×1200 | Habit Score payoff |
 | `xircle-s08-seeing-not-doing.webp` | 16:9 | 1920×1080 | Knowing ≠ Doing |
 | `xircle-s09-connected-loop.webp` | 4:3 | 1600×1200 | connected loop + first strong White Cat presence |
-| `xircle-care-hero.webp` | 16:9 | 1920×1080 | Human Care hero |
-| `xircle-opportunity-o6-whitecat-reveal.png` | 4:3 | 1600×1200 | full White Cat reveal |
-| `xircle-party-create-hero.webp` | 16:9 | 1920×1080 | Xircle → XTY Create transition |
-| `xircle-party-join-hero.webp` | 16:9 | 1920×1080 | Join invitation transition |
+| `xircle-care-hero.webp` | 4:3 | 1600×1200 | Human Care hero |
+| `xircle-opportunity-o6-whitecat-reveal.png` | 4:3 | 1600×1200 | full White Cat reveal / White Cat safe-room hero |
+| `xircle-party-create-hero.webp` | 16:9 | 1920×1080 | 28-day / XTY transition hero |
+| `xircle-party-join-hero.webp` | 16:9 | 1920×1080 | invite-specific reserve/share art |
 
 ## P1 — core journey
 | File | Ratio | Recommended size |
@@ -55,9 +56,10 @@ All top-level `/xircle/**` product pages are designed to work without final art.
 - `whitecat-guide-cutout.webp` — 1:1 canvas, 1600×1600, transparent background preferred.
 
 ## Display rule
-- Keep the full source canvas visible on desktop and mobile.
-- Preserve the declared 16:9 / 4:3 / 3:2 / 1:1 ratio.
-- Letterboxing on very narrow screens is acceptable; cutting baked UI, Thai copy, faces, or diagrams is not.
+- The actual uploaded image dimensions override an older ratio note in this manifest.
+- After load, the wrapper should follow the real image canvas (`width:100%; height:auto`).
+- Full-row artwork on phones may expand to viewport width while keeping its rounded corners.
+- Do not distort, stretch, or hide Thai UI, faces, diagrams, or meaningful baked content.
 - Primary website narration remains HTML/CSS; generated text should stay minimal.
 
 ## Naming rule
