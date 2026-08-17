@@ -116,8 +116,6 @@ export function mergeXtyProfile(localValue, cloudValue) {
   return normalizeProfile({
     ...older,
     ...newest,
-    /* Once a profile exists in cloud its id is the durable account-side
-       XTY identity and must survive a second-device merge. */
     id: cloud.id || local.id,
     alias: newest.alias,
     avatarId: newest.avatarId,
@@ -133,8 +131,6 @@ export function mergeXtyProfile(localValue, cloudValue) {
       ...(cloud.petIds || []),
       ...XTY_V1_PET_IDS,
     ])],
-    /* Card ownership is append-only during a conservative local/cloud
-       merge, except after the explicit Collection test reset tombstone. */
     ownedCards: mergedOwnedCards,
     cardRewards: mergedCardRewards,
     equippedCardId: mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)
@@ -150,7 +146,6 @@ export function mergeXtyProfile(localValue, cloudValue) {
       Number(local.lifetimeCommitCount || 0),
       Number(cloud.lifetimeCommitCount || 0),
     ),
-    /* latest profile wins; never sum two client balances */
     pointsBalance: newest.pointsBalance ?? older.pointsBalance ?? 0,
   });
 }
@@ -196,11 +191,10 @@ function seedAccountPartyCodes(codes, meUserId) {
   try { localStorage.setItem(XTY_TOKENS_KEY, JSON.stringify(map)); } catch {}
 }
 
-/* Restore the list of currently active parties from the durable myClover
-   account. Party content itself is still canonical on the XTY server; the
-   browser only rebuilds its local display cache. This works for LINE,
-   Google, email OTP, or any other provider that creates the same account
-   session cookie. */
+/* Restore active parties from the same durable myClover account used by
+   CORE7. Provider does not matter: LINE, Google and Email all resolve to
+   the same account session. Server state is canonical; localStorage is
+   rebuilt only as a display/offline cache. */
 export async function resyncXtyParties() {
   const user = await getSession();
   if (!user) return { ok: false, error: 'AUTH_REQUIRED', restored: 0, failed: 0 };
@@ -214,12 +208,15 @@ export async function resyncXtyParties() {
   const codes = [...new Set((mine.codes || []).map(code => String(code || '').toUpperCase()).filter(code => /^\d{5}$/.test(code)))];
   seedAccountPartyCodes(codes, mine.meUserId || '');
 
+  /* Serialize local-cache writes. rememberResponse() does read/modify/write
+     on mc_xty_parties, so parallel refreshes can race and make one restored
+     party overwrite another on Safari/mobile. */
   let restored = 0; let failed = 0;
-  await Promise.all(codes.map(async code => {
+  for (const code of codes) {
     const result = await refreshParty(code);
     if (result?.error) failed += 1;
     else restored += 1;
-  }));
+  }
 
   return { ok: failed === 0, restored, failed, total: codes.length, meUserId: mine.meUserId || '' };
 }
@@ -228,12 +225,6 @@ export async function syncXtyProfile({ recoverParties = true } = {}) {
   const user = await getSession();
   if (!user) return { ok: true, authenticated: false, profile: getProfile(), user: null };
 
-  /* Bind the local XTY identity to the account on every authenticated
-     sync, not just after an email OTP. A party created before signing in
-     is filed under `local:<profileId>`, and the server counts that id
-     against the account's party limit but will not accept it as proof of
-     membership — so an unbound party blocks party creation while being
-     impossible to open or dissolve. */
   const localId = getProfile()?.id;
   if (localId) await bindXtyIdentity(localId);
 
@@ -244,10 +235,9 @@ export async function syncXtyProfile({ recoverParties = true } = {}) {
   if (!merged) return { ok: true, authenticated: true, profile: null, user };
   const profile = saveProfile(merged);
 
-  /* A fresh browser can start with no local profile at all. In that case
-     the cloud profile id becomes available only after the merge above, so
-     bind it once more here before asking the server which parties belong
-     to the account. */
+  /* On a fresh browser localStorage may be empty. The durable profile id is
+     known only after cloud progress is loaded, so bind again here before
+     recovering party membership. */
   if (profile?.id && profile.id !== localId) await bindXtyIdentity(profile.id);
 
   const saved = await saveCloudProgress(profile);
