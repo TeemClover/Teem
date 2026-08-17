@@ -56,6 +56,28 @@
   .xp-cat-cutout-stage{min-height:150px}
   .xp-cat-cutout-stage img{height:150px;width:min(100%,180px)}
 
+  /* A single artwork that already owns the whole row should use the phone width.
+     Keep the artwork intact; remove the decorative side gutters instead of cropping it. */
+  .xp-page .xp-hero>.xp-art,
+  .xp-mobile-fullbleed{
+    width:100vw!important;
+    max-width:none!important;
+    margin-left:calc((100vw - 100%)/-2)!important;
+    margin-right:calc((100vw - 100%)/-2)!important;
+    border-radius:0!important;
+    border-left:0!important;
+    border-right:0!important;
+    box-shadow:none!important;
+  }
+  .xp-page .xp-hero>.xp-art.art-ready>img,
+  .xp-mobile-fullbleed>img,
+  .xp-mobile-fullbleed img{
+    width:100%!important;
+    max-width:none!important;
+    height:auto!important;
+    object-fit:contain!important;
+  }
+
   /* Keep earned navigation visible on mobile. */
   .xp-nav[aria-label="ทางลัดหลังปลดล็อก"],
   .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"]{
