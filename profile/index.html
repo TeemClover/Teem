@@ -51,11 +51,13 @@
 
     <div class="card" id="saveCard">
       <div class="account-row">
-        <div>
-          <span class="label" style="margin-bottom:6px">DURABLE SAVE · EMAIL OTP</span>
+        <div style="min-width:0">
+          <span class="label" style="margin-bottom:6px">DURABLE SAVE · MYCLOVER ACCOUNT</span>
           <div id="lineStatus" class="whisper" style="margin:0">กำลังตรวจสอบ…</div>
+          <p class="hint" id="syncHint" style="margin:7px 0 0">LINE · Google · Email ใช้บัญชีเดียวกับ Progress ของ myClover</p>
         </div>
         <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn ghost sm" id="resyncBtn" hidden>↻ Resync XTY</button>
           <button class="btn ghost sm" id="emailLater">ไว้ทีหลัง</button>
           <button class="btn gold sm" id="emailBtn">เก็บ Progress</button>
         </div>
@@ -67,7 +69,7 @@
           <div class="field"><label for="otpInput">รหัส 6 หลัก</label><input id="otpInput" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000"></div>
           <button class="btn gold sm" id="verifyOtp">ยืนยันและเก็บ Progress</button>
         </div>
-        <p class="hint" id="emailMessage">อีเมลใช้สำหรับกู้ Progress เท่านั้น ไม่สมัครข่าวอัตโนมัติ</p>
+        <p class="hint" id="emailMessage">อีเมลเป็นอีกวิธีหนึ่งสำหรับกู้ Progress และใช้ข้ามเครื่องได้</p>
       </div>
     </div>
 
@@ -119,7 +121,11 @@ let accountState = { authenticated: false, user: null };
 let otpRequestId = '';
 
 function esc(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;' }[c]));
+}
+
+function accountLabel(user) {
+  return user?.displayName || user?.name || user?.email || 'บัญชี myClover';
 }
 
 function render(account) {
@@ -135,13 +141,15 @@ function render(account) {
 
   if (account.authenticated) {
     $('saveCard').hidden = false;
-    $('lineStatus').innerHTML = `<span class="status-pill">เก็บแล้ว ✓</span><br>${esc(account.user?.email || '')}`;
+    $('lineStatus').innerHTML = `<span class="status-pill">เชื่อมบัญชีแล้ว ✓</span><br>${esc(accountLabel(account.user))}`;
+    $('resyncBtn').hidden = false;
     $('emailBtn').hidden = true;
     $('emailLater').hidden = true;
     $('emailFlow').hidden = true;
   } else {
     $('saveCard').hidden = !shouldOfferProgressSave(p);
     $('lineStatus').textContent = 'ยังไม่ได้เชื่อม — Progress อยู่ในเครื่องนี้';
+    $('resyncBtn').hidden = true;
     $('emailBtn').hidden = false;
     $('emailLater').hidden = false;
     $('emailBtn').onclick = () => { $('emailFlow').hidden = false; $('emailInput').focus(); };
@@ -208,6 +216,25 @@ function openProfileEditor() {
 
 $('editProfile').addEventListener('click', openProfileEditor);
 $('cancelProfile').addEventListener('click', () => { $('profileEditor').hidden = true; });
+$('resyncBtn').addEventListener('click', async () => {
+  const button = $('resyncBtn');
+  button.disabled = true;
+  button.textContent = 'กำลัง Resync…';
+  $('lineStatus').textContent = 'กำลังกู้ Profile และตี้จากบัญชี myClover…';
+  const result = await syncXtyProfile();
+  accountState = result;
+  button.disabled = false;
+  button.textContent = '↻ Resync XTY';
+  if (result.error) {
+    $('lineStatus').textContent = 'Resync ยังไม่สำเร็จ ลองใหม่อีกครั้ง';
+    return;
+  }
+  render(result);
+  const recovery = result.recovery;
+  if (recovery) {
+    $('lineStatus').innerHTML = `<span class="status-pill">Resync แล้ว ✓</span><br>กู้คืน ${Number(recovery.restored || 0)} ตี้${recovery.failed ? ` · พลาด ${recovery.failed}` : ''}`;
+  }
+});
 $('otpInput').addEventListener('input', () => { $('otpInput').value = $('otpInput').value.replace(/\D/g, '').slice(0, 6); });
 $('sendOtp').addEventListener('click', async () => {
   const button = $('sendOtp'); button.disabled = true; $('emailMessage').textContent = 'กำลังส่งรหัส…';
@@ -222,7 +249,7 @@ $('verifyOtp').addEventListener('click', async () => {
   const result = await verifyEmailOtp({ requestId: otpRequestId, otp: $('otpInput').value, name: getProfile()?.alias });
   button.disabled = false;
   if (result.error) { $('emailMessage').textContent = result.message || 'รหัสไม่ถูกต้องหรือหมดอายุ'; return; }
-  accountState = { authenticated: true, user: result.user || null }; render(accountState);
+  accountState = { authenticated: true, user: result.user || null, recovery: result.recovery || null }; render(accountState);
 });
 
 async function boot() {
@@ -240,6 +267,9 @@ async function boot() {
   accountState = account;
   if (hasProfile() && account.authenticated) {
     render(account);
+    if (account.recovery?.restored) {
+      $('lineStatus').innerHTML = `<span class="status-pill">เชื่อมบัญชีแล้ว ✓</span><br>กู้ตี้กลับมา ${account.recovery.restored} ตี้`;
+    }
   }
 }
 
