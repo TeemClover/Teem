@@ -1,7 +1,9 @@
 import {
-  XTY_PROFILE_KEY, getProfile, handSizeOf, normalizeProfile, saveProfile,
+  XTY_PROFILE_KEY, getProfile, handSizeOf, normalizeProfile, refreshParty, saveProfile,
 } from './store.js';
 import { XTY_V1_PET_IDS } from './pets.js';
+
+const XTY_TOKENS_KEY = 'mc_xty_tokens';
 
 async function request(path, options = {}) {
   try {
@@ -172,7 +174,57 @@ export async function saveCloudProgress(profile = getProfile()) {
   });
 }
 
-export async function syncXtyProfile() {
+function readRecoveryTokens() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(XTY_TOKENS_KEY) || '{}');
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch { return {}; }
+}
+
+function seedAccountPartyCodes(codes, meUserId) {
+  if (typeof localStorage === 'undefined') return;
+  const map = readRecoveryTokens();
+  for (const raw of codes || []) {
+    const code = String(raw || '').toUpperCase();
+    if (!/^\d{5}$/.test(code)) continue;
+    const old = map[code];
+    map[code] = {
+      token: typeof old === 'string' ? old : (old?.token || ''),
+      userId: meUserId || (typeof old === 'object' ? old?.userId : '') || '',
+    };
+  }
+  try { localStorage.setItem(XTY_TOKENS_KEY, JSON.stringify(map)); } catch {}
+}
+
+/* Restore the list of currently active parties from the durable myClover
+   account. Party content itself is still canonical on the XTY server; the
+   browser only rebuilds its local display cache. This works for LINE,
+   Google, email OTP, or any other provider that creates the same account
+   session cookie. */
+export async function resyncXtyParties() {
+  const user = await getSession();
+  if (!user) return { ok: false, error: 'AUTH_REQUIRED', restored: 0, failed: 0 };
+
+  const profile = getProfile();
+  if (profile?.id) await bindXtyIdentity(profile.id);
+
+  const mine = await request('/api/xty-mine');
+  if (mine.error) return { ...mine, restored: 0, failed: 0 };
+
+  const codes = [...new Set((mine.codes || []).map(code => String(code || '').toUpperCase()).filter(code => /^\d{5}$/.test(code)))];
+  seedAccountPartyCodes(codes, mine.meUserId || '');
+
+  let restored = 0; let failed = 0;
+  await Promise.all(codes.map(async code => {
+    const result = await refreshParty(code);
+    if (result?.error) failed += 1;
+    else restored += 1;
+  }));
+
+  return { ok: failed === 0, restored, failed, total: codes.length, meUserId: mine.meUserId || '' };
+}
+
+export async function syncXtyProfile({ recoverParties = true } = {}) {
   const user = await getSession();
   if (!user) return { ok: true, authenticated: false, profile: getProfile(), user: null };
 
@@ -181,12 +233,7 @@ export async function syncXtyProfile() {
      is filed under `local:<profileId>`, and the server counts that id
      against the account's party limit but will not accept it as proof of
      membership — so an unbound party blocks party creation while being
-     impossible to open or dissolve.
-
-     This must run before the merge below: the merge adopts the cloud
-     profile id when there is one, and any party still filed under the
-     current local id would be stranded for good. Binding is idempotent
-     and best-effort — a failure here must not block the profile sync. */
+     impossible to open or dissolve. */
   const localId = getProfile()?.id;
   if (localId) await bindXtyIdentity(localId);
 
@@ -196,10 +243,20 @@ export async function syncXtyProfile() {
   const merged = mergeXtyProfile(getProfile(), cloud.profile);
   if (!merged) return { ok: true, authenticated: true, profile: null, user };
   const profile = saveProfile(merged);
+
+  /* A fresh browser can start with no local profile at all. In that case
+     the cloud profile id becomes available only after the merge above, so
+     bind it once more here before asking the server which parties belong
+     to the account. */
+  if (profile?.id && profile.id !== localId) await bindXtyIdentity(profile.id);
+
   const saved = await saveCloudProgress(profile);
+  let recovery = null;
+  if (recoverParties) recovery = await resyncXtyParties();
+
   return saved.error
-    ? { ...saved, authenticated: true, profile, user }
-    : { ok: true, authenticated: true, profile, user };
+    ? { ...saved, authenticated: true, profile, user, recovery }
+    : { ok: true, authenticated: true, profile, user, recovery };
 }
 
 /* Invite onboarding polish.
