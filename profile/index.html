@@ -113,6 +113,7 @@ import {
 } from '/xty/_shared/store.js';
 import { XTY_V1_PETS } from '/xty/_shared/pets.js';
 import { XTY_AVATARS, AVATAR_FRAMES, avatarById } from '/xty/_shared/avatars.js';
+import { mountCardPicker, avatarForChoice, profilePortrait } from '/xty/_shared/card-picker.js';
 import { cardById, XTY_CARDS } from '/xty/_shared/cards.js';
 import { requestEmailOtp, verifyEmailOtp, syncXtyProfile } from '/xty/_shared/account.js';
 
@@ -132,9 +133,10 @@ function render(account) {
   const p = getProfile();
   $('none').hidden = true;
   $('view').hidden = false;
-  const avatar = avatarById(p.avatarId);
+  /* Shows the equipped card when there is one, the plain animal otherwise. */
+  const portrait = profilePortrait(p);
   $('av').dataset.color = p.avatarFrame || 'green';
-  $('av').innerHTML = `<img src="${avatar.art}" alt="">`;
+  $('av').innerHTML = `<img src="${portrait.art}" alt="">`;
   $('alias').textContent = p.alias;
   $('since').textContent = 'เริ่มเมื่อ ' +
     new Date(p.createdAt).toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -184,17 +186,20 @@ function render(account) {
 function openProfileEditor() {
   const profile = getProfile();
   let chosenAvatar = profile.avatarId; let chosenColor = profile.avatarFrame || 'green';
+  let chosenCard = profile.equippedCardId || null;
   $('aliasInput').value = profile.alias; $('avatarPick').innerHTML = ''; $('framePick').innerHTML = '';
-  XTY_AVATARS.forEach(avatar => {
-    const button = document.createElement('button'); button.type = 'button';
-    button.className = 'pc avatar-card pickable' + (avatar.id === chosenAvatar ? ' picked' : '');
-    button.setAttribute('aria-checked', avatar.id === chosenAvatar ? 'true' : 'false');
-    button.innerHTML = `<span class="glyph"><img src="${avatar.art}" alt=""></span>`;
-    button.onclick = () => {
-      chosenAvatar = avatar.id;
-      $('avatarPick').querySelectorAll('button').forEach(node => node.classList.toggle('picked', node === button));
-    };
-    $('avatarPick').appendChild(button);
+  /* Cards and starter animals are the same shelf now: a card is simply the
+     better portrait of an animal you already are, so picking one moves the
+     avatar to that species rather than to some separate card identity. */
+  mountCardPicker($('avatarPick'), {
+    mode: 'avatar',
+    selected: { avatarId: chosenAvatar, cardId: chosenCard },
+    onSelect: choice => {
+      const resolved = avatarForChoice(choice);
+      if (!resolved) return;
+      chosenAvatar = resolved.avatarId;
+      chosenCard = resolved.cardId;
+    },
   });
   Object.values(AVATAR_FRAMES).forEach(frame => {
     const button = document.createElement('button'); button.type = 'button';
@@ -208,7 +213,10 @@ function openProfileEditor() {
   });
   $('saveProfile').onclick = async () => {
     const alias = $('aliasInput').value.trim(); if (!alias) return;
-    updateProfile({ alias, avatarId: chosenAvatar, avatar: chosenAvatar, avatarFrame: chosenColor });
+    updateProfile({
+      alias, avatarId: chosenAvatar, avatar: chosenAvatar, avatarFrame: chosenColor,
+      equippedCardId: chosenCard,
+    });
     $('profileEditor').hidden = true; render(accountState); await syncXtyProfile();
   };
   $('profileEditor').hidden = false; $('aliasInput').focus();

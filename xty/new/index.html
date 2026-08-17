@@ -125,6 +125,7 @@ import { XTY_ACTIVITIES } from '/xty/_shared/activities.js';
 import { avatarById } from '/xty/_shared/avatars.js';
 import { cardById, cardDescriptorTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
+import { bestCardForSpecies, petSpeciesFor } from '/xty/_shared/card-picker.js';
 
 const $ = id => document.getElementById(id);
 if (!hasProfile()) location.replace('/xty/'); else init();
@@ -155,7 +156,12 @@ function radioGroup(container, buttons, initial, onPick) {
 
 function init() {
   const profile = getProfile();
-  const ownedPets = XTY_V1_PETS.filter(p => profile.petIds.includes(p.id));
+  /* A card both unlocks its animal for the Pet seat and supplies the better
+     portrait of it. Every V1 animal is granted outright today, so in practice
+     the card is a re-skin — the unlock only matters once a species ships
+     that is not free. */
+  const petSpecies = petSpeciesFor(profile.petIds, profile);
+  const ownedPets = XTY_V1_PETS.filter(p => petSpecies.has(p.id));
   const leadCards = availableOwnedCards({ role: 'lead', profile });
   const npcCards = availableOwnedCards({ role: 'npc', profile });
   const firstParty = !allParties().some(party => partyIdentity(party.code)?.userId === party.ownerId);
@@ -283,7 +289,9 @@ function init() {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'pet-choice'; button.dataset.color = pet.color;
     button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', 'false');
-    button.innerHTML = `<img src="${pet.art}" alt=""><b>${pet.nameTh}</b><small>${pet.persona}</small>`;
+    const petCard = bestCardForSpecies(pet.id, profile);
+    button.innerHTML = `<img src="${petCard ? (petCard.imageFull || petCard.art) : pet.art}" alt="">`
+      + `<b>${pet.nameTh}</b><small>${pet.persona}</small>`;
     button.addEventListener('click', () => {
       petId = petId === pet.id ? null : pet.id;
       if (petId) npcCardId = null;
