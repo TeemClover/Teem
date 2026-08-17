@@ -303,10 +303,69 @@ test('an authenticated sync binds the local identity before merging', async () =
   const paths = calls.map(call => call.path);
   const bindAt = paths.indexOf('/api/xty/bind');
   assert.notEqual(bindAt, -1, 'sync must bind the local identity');
-  assert.deepEqual(calls[bindAt].body, { profileId: 'stranded-player' });
+  assert.equal(calls[bindAt].body.profileId, 'stranded-player');
+  assert.ok(calls[bindAt].body.profileIds.includes('stranded-player'),
+    'bind must carry the local id');
   assert.ok(bindAt < paths.lastIndexOf('/api/progress'), 'bind must run before the merge');
   assert.equal(result.authenticated, true);
   assert.equal(result.profile.id, 'cloud-player');
+
+  /* The cloud profile id is the one older parties were created under on the
+     previous device, so it has to survive into the next bind. */
+  assert.ok(account.knownProfileIds().includes('cloud-player'),
+    'the id adopted from cloud must be remembered for later binds');
+});
+
+test('bind carries every profile id this device has ever used', async () => {
+  localStorage.setItem('mc_xty_profile_ids', JSON.stringify(['retired-one', 'retired-two']));
+  localStorage.setItem('mc_xty_profile', JSON.stringify({
+    id: 'current-player', alias: 'คีน', avatarId: 'orange_cat',
+    createdAt: '2026-08-01T00:00:00.000Z', updatedAt: '2026-08-01T00:00:00.000Z',
+  }));
+
+  let sent = null;
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (path, options = {}) => {
+    if (path === '/api/xty/bind') sent = JSON.parse(options.body);
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200, headers: { 'content-type': 'application/json' },
+    });
+  };
+  await account.bindXtyIdentity();
+  globalThis.fetch = realFetch;
+
+  assert.deepEqual(
+    [...sent.profileIds].sort(),
+    ['current-player', 'retired-one', 'retired-two'],
+    'a party made under an older id is only reachable if that id is sent',
+  );
+});
+
+test('party recovery keeps codes that are not five digits', async () => {
+  localStorage.setItem('mc_xty_profile', JSON.stringify({
+    id: 'current-player', alias: 'คีน', createdAt: '2026-08-01T00:00:00.000Z',
+  }));
+
+  const refreshed = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (path, options = {}) => {
+    const reply = value => new Response(JSON.stringify(value), {
+      status: 200, headers: { 'content-type': 'application/json' },
+    });
+    if (path === '/api/auth/session') return reply({ user: { id: 'acct1' } });
+    /* the old running-number scheme did not produce 5-digit codes */
+    if (path === '/api/xty-mine') return reply({ ok: true, meUserId: 'account:acct1', codes: ['00042', '7', 'A19'] });
+    if (String(path).startsWith('/api/xty/party/')) {
+      refreshed.push(decodeURIComponent(String(path).split('/')[4]));
+      return reply({ ok: true, party: { code: 'x', log: [] } });
+    }
+    return reply({ ok: true });
+  };
+  const result = await account.resyncXtyParties();
+  globalThis.fetch = realFetch;
+
+  assert.deepEqual(refreshed.sort(), ['00042', '7', 'A19']);
+  assert.equal(result.total, 3);
 });
 
 test('an anonymous sync never binds', async () => {

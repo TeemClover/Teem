@@ -101,11 +101,15 @@ async function identityFor(req, sql, body) {
   const account = await currentUser(req, sql);
   const accountId = account ? `account:${account.id}` : '';
   const localId = localIdentity(body);
-  const primary = accountId || localId || `u_${randomUUID()}`;
+  /* Never invent an id here. A random one satisfies the insert and then
+     matches nothing ever again: the member cannot be recovered by account
+     bind, cannot be found by resync, and cannot even dissolve their own
+     party. Those are the ghost parties. Refuse instead. */
+  const primary = accountId || localId;
   return {
     account,
     primary,
-    ids: [accountId || primary, localId || accountId || primary],
+    ids: primary ? [accountId || primary, localId || accountId || primary] : [],
   };
 }
 
@@ -496,11 +500,24 @@ export default async function handler(req, res) {
     if (method === 'POST' && parts[0] === 'bind') {
       const account = await currentUser(req, sql);
       if (!account) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
-      const profileId = clean(bodyOf(req).profileId, 80);
-      if (!/^[a-z0-9_-]{6,80}$/i.test(profileId)) return sendJson(res, { ok: false, error: 'INVALID_PROFILE' }, 400);
-      const localId = `local:${profileId}`; const accountId = `account:${account.id}`; const at = new Date();
+      /* A device that loses localStorage mints a brand new profile id, so
+         binding only the current one strands every party created under an
+         earlier id. The client keeps its own id history (and restores it from
+         cloud progress), and every id it has ever used is folded in here. */
+      const body = bodyOf(req);
+      const requested = Array.isArray(body.profileIds) ? body.profileIds : [];
+      const profileIds = [...new Set([body.profileId, ...requested]
+        .map(value => clean(value, 80))
+        .filter(value => /^[a-z0-9_-]{6,80}$/i.test(value)))];
+      if (!profileIds.length) return sendJson(res, { ok: false, error: 'INVALID_PROFILE' }, 400);
+      const localIds = profileIds.map(value => `local:${value}`);
+      const accountId = `account:${account.id}`; const at = new Date();
+      /* DISTINCT ON keeps one source row per party. Without it two old ids in
+         the same party would hit the same conflict target twice, which
+         Postgres rejects outright ("cannot affect row a second time"). */
       await sql.query(`WITH local_members AS MATERIALIZED (
-          SELECT * FROM xty_members WHERE user_id=$1
+          SELECT DISTINCT ON (party_id) * FROM xty_members WHERE user_id = ANY($1::text[])
+          ORDER BY party_id,(left_at IS NULL) DESC,(role='lead') DESC,joined_at
         ), merged_members AS (
           INSERT INTO xty_members (party_id,user_id,alias,avatar,avatar_color,role,auth_hash,joined_at,left_at,removal_reason)
           SELECT party_id,$2,alias,avatar,avatar_color,role,auth_hash,joined_at,left_at,removal_reason FROM local_members
@@ -510,41 +527,44 @@ export default async function handler(req, res) {
             joined_at=LEAST(xty_members.joined_at,EXCLUDED.joined_at)
           RETURNING party_id
         ), posts AS (
-          UPDATE xty_posts SET user_id=$2 WHERE user_id=$1 RETURNING party_id
+          UPDATE xty_posts SET user_id=$2 WHERE user_id = ANY($1::text[]) RETURNING party_id
         ), reactions AS (
-          UPDATE xty_reactions SET user_id=$2 WHERE user_id=$1
+          UPDATE xty_reactions SET user_id=$2 WHERE user_id = ANY($1::text[])
             AND NOT EXISTS (SELECT 1 FROM xty_reactions r2 WHERE r2.party_id=xty_reactions.party_id
               AND r2.seq=xty_reactions.seq AND r2.user_id=$2 AND r2.emoji=xty_reactions.emoji)
           RETURNING party_id
         ), confirmations AS (
-          UPDATE xty_confirmations SET confirmer_id=$2 WHERE confirmer_id=$1 RETURNING party_id
+          UPDATE xty_confirmations SET confirmer_id=$2 WHERE confirmer_id = ANY($1::text[]) RETURNING party_id
         ), events AS (
-          UPDATE xty_party_events SET actor_id=$2 WHERE actor_id=$1 RETURNING party_id
+          UPDATE xty_party_events SET actor_id=$2 WHERE actor_id = ANY($1::text[]) RETURNING party_id
         ), owners AS (
-          UPDATE xty_parties SET owner_id=$2,updated_at=$3 WHERE owner_id=$1 RETURNING id
+          UPDATE xty_parties SET owner_id=$2,updated_at=$3 WHERE owner_id = ANY($1::text[]) RETURNING id
         ), progression AS (
           INSERT INTO xty_progression (user_id,level,paid_tier,unlocked_bonus_slots,updated_at)
-          SELECT $2,level,paid_tier,unlocked_bonus_slots,$3 FROM xty_progression WHERE user_id=$1
+          SELECT $2,level,paid_tier,unlocked_bonus_slots,$3 FROM xty_progression
+            WHERE user_id = ANY($1::text[]) ORDER BY level DESC,unlocked_bonus_slots DESC LIMIT 1
           ON CONFLICT (user_id) DO UPDATE SET level=GREATEST(xty_progression.level,EXCLUDED.level),updated_at=$3
           RETURNING user_id
         ), deleted AS (
-          DELETE FROM xty_members WHERE user_id=$1 AND EXISTS (SELECT 1 FROM merged_members) RETURNING party_id
-        ) DELETE FROM xty_progression WHERE user_id=$1`, [localId, accountId, at]);
+          DELETE FROM xty_members WHERE user_id = ANY($1::text[]) AND EXISTS (SELECT 1 FROM merged_members) RETURNING party_id
+        ) DELETE FROM xty_progression WHERE user_id = ANY($1::text[])`, [localIds, accountId, at]);
       await sql.query(`WITH copied AS (
           INSERT INTO xty_card_ownership (user_id,card_id,acquired_from,acquired_at)
-          SELECT $2,card_id,acquired_from,acquired_at FROM xty_card_ownership WHERE user_id=$1
+          SELECT DISTINCT ON (card_id) $2,card_id,acquired_from,acquired_at FROM xty_card_ownership
+            WHERE user_id = ANY($1::text[]) ORDER BY card_id,acquired_at
           ON CONFLICT (user_id,card_id) DO NOTHING RETURNING card_id
-        ) DELETE FROM xty_card_ownership WHERE user_id=$1`, [localId, accountId]);
+        ) DELETE FROM xty_card_ownership WHERE user_id = ANY($1::text[])`, [localIds, accountId]);
       await sql.query(`WITH copied AS (
           INSERT INTO xty_card_rewards (id,user_id,party_id,card_id,created_at,revealed_at)
-          SELECT id,$2,party_id,card_id,created_at,revealed_at FROM xty_card_rewards WHERE user_id=$1
+          SELECT DISTINCT ON (party_id) id,$2,party_id,card_id,created_at,revealed_at FROM xty_card_rewards
+            WHERE user_id = ANY($1::text[]) ORDER BY party_id,created_at
           ON CONFLICT (user_id,party_id) DO UPDATE SET
             card_id=COALESCE(xty_card_rewards.card_id,EXCLUDED.card_id),
             revealed_at=COALESCE(xty_card_rewards.revealed_at,EXCLUDED.revealed_at)
           RETURNING party_id
-        ) DELETE FROM xty_card_rewards WHERE user_id=$1`, [localId, accountId]);
+        ) DELETE FROM xty_card_rewards WHERE user_id = ANY($1::text[])`, [localIds, accountId]);
       await progressionFor(sql, [accountId], at);
-      return sendJson(res, { ok: true });
+      return sendJson(res, { ok: true, boundIds: profileIds.length });
     }
 
     if (parts[0] !== 'party') return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
@@ -553,6 +573,9 @@ export default async function handler(req, res) {
       const body = bodyOf(req); const name = clean(body.name, 40); const alias = clean(body.alias, 24);
       if (!name || !alias) return sendJson(res, { ok: false, error: 'INVALID_PARTY' }, 400);
       const identity = await identityFor(req, sql, body);
+      /* No account session and no usable profile id — creating anyway would
+         produce a party nobody can ever reach again. */
+      if (!identity.primary) return sendJson(res, { ok: false, error: 'PROFILE_REQUIRED' }, 400);
       const userId = identity.primary;
       const usage = await capacityUsage(sql, identity.ids);
       if (usage.owned >= usage.maxOwned) return sendJson(res, { ok: false, error: 'OWNED_PARTY_LIMIT', progression: usage.progression }, 409);
@@ -647,6 +670,7 @@ export default async function handler(req, res) {
       if (!alias) return sendJson(res, { ok: false, error: 'INVALID_ALIAS' }, 400);
       if (!activeParty(row)) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
       const identity = await identityFor(req, sql, body);
+      if (!identity.primary) return sendJson(res, { ok: false, error: 'PROFILE_REQUIRED' }, 400);
       let existingMember = await memberFor(req, sql, row.id);
       if (!existingMember && identity.ids[1]) {
         const sameLocal = await sql.query(`SELECT user_id,alias,avatar,avatar_color,role,left_at,removal_reason FROM xty_members
