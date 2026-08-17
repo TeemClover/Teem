@@ -1,5 +1,6 @@
 import { currentUser, database, ensureSchema, sendJson } from './core.js';
 import { handleCreatePartyV2 } from './xty-create-v2.js';
+import { scheduledEndAt } from './xty-rules.js';
 import { cardById as xtyCardById, cardNameTh } from '../../xty/_shared/cards.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
 import { AVATAR_BY_ID } from '../../xty/_shared/avatars.js';
@@ -162,9 +163,12 @@ export async function handleCreatePartyV3(req, res) {
     const creatorLevel = Math.min(4, Math.max(1, Number(created.data?.meProgression?.level || levelBeforeCreate || 1)));
     const label = creationLabel(body.alias, creatorLevel, cover);
     const at = new Date();
+    const startAt = new Date(party.startAt || party.createdAt || at);
+    const timezone = party.timezone || 'Asia/Bangkok';
+    const correctedScheduledEnd = scheduledEndAt(startAt, durationDays, timezone);
     await sql.query(`UPDATE xty_parties
-      SET cover_type=$1,cover_value=$2,lead_card_id=$3,updated_at=$4
-      WHERE id=$5`, [cover.type, cover.value, cover.leadCardId, at, party.id]);
+      SET cover_type=$1,cover_value=$2,lead_card_id=$3,duration_days=$4,scheduled_end_at=$5,updated_at=$6
+      WHERE id=$7`, [cover.type, cover.value, cover.leadCardId, durationDays, correctedScheduledEnd, at, party.id]);
     await sql.query(`UPDATE xty_party_events
       SET data_json = COALESCE(data_json,'{}'::jsonb) || $1::jsonb
       WHERE party_id=$2 AND type='PARTY_CREATED'`, [JSON.stringify({
@@ -182,6 +186,8 @@ export async function handleCreatePartyV3(req, res) {
     party.coverType = cover.type;
     party.coverValue = cover.value;
     party.leadCardId = cover.leadCardId;
+    party.durationDays = durationDays;
+    party.scheduledEndAt = new Date(correctedScheduledEnd).toISOString();
     party.updatedAt = at.toISOString();
     if (Array.isArray(party.events)) {
       party.events = party.events.map(event => event.type === 'PARTY_CREATED'
