@@ -115,6 +115,15 @@ Runtime Compression
 - `cat.md` — SIDE-QUEST INSTIGATOR
 - `turtle.md` — STEADY WITNESS
 
+### SPECIAL · SECRET · EPIC+
+- `monitor_lizard.md` — GREMLIN MAX
+  - id: `monitor_lizard`
+  - name: เหี้ย
+  - ไม่มี Common / Rare
+  - เป็นตัวลับระดับ EPIC+ เท่านั้น
+  - เป็น persona เดียวที่อนุญาต `กู/มึง` และ selective profanity
+  - roast ต้องอิง Party Log จริงและพุ่งไปที่ behavior / decision / process / commitment ไม่ใช่ตัวตนของสมาชิก
+
 ### SPECIAL · route-only
 - `xvisor_white_cat_silver.md` — PATTERN CARETAKER
   - hidden Pet for `preset = xircle_xvisor`
