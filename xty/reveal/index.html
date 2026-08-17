@@ -26,7 +26,7 @@
 <meta name="description" content="เปิด Animal Card ที่ได้จากการทำ Quest จริงใน XTY">
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/xty/_shared/chat-image.css?v=1">
-<link rel="stylesheet" href="/xty/_shared/card-reveal.css?v=1">
+<link rel="stylesheet" href="/xty/_shared/card-reveal.css?v=2">
 </head>
 <body>
 <header class="top">
@@ -63,7 +63,6 @@
         <span class="reveal-inner">
           <span class="reveal-face card-back">
             <img src="/core7/assets/card-back.webp" alt="" width="630" height="880" fetchpriority="high">
-            <b>TAP TO FLIP</b>
           </span>
           <span class="reveal-face reveal-front" id="front"></span>
         </span>
@@ -154,7 +153,7 @@ function showReward(item) {
     if (opened) return;
     /* Sound belongs to the tap, not to the network round trip that follows —
        waiting for the save first made the card feel unresponsive. */
-    playCardFlip();
+    playCardFlip(false);
     if (navigator.vibrate) navigator.vibrate(12);
     button.disabled = true;
     $('instruction').textContent = 'กำลังบันทึกช่วงเวลานี้ลง Party Log…';
@@ -177,9 +176,11 @@ function showReward(item) {
       ? 'เปิดแล้ว · เพื่อนในตี้จะเห็น Card Drop ใบนี้ใน Party Log'
       : 'การ์ดใบนี้เป็นความทรงจำจาก Quest ไม่ใช่ของที่ซื้อสุ่ม';
     syncXtyProfile();
-    /* A second, brighter note lands as the face comes round. */
-    setTimeout(() => playSfx('reveal'), 260);
-    setTimeout(finishOpen, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 500);
+    /* Match CORE7's reveal cadence: flip first, brighter note around the
+       quarter-turn, then let the reward copy arrive while the 3D turn settles. */
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => playSfx('reveal'), reducedMotion ? 0 : 250);
+    setTimeout(finishOpen, reducedMotion ? 0 : 390);
   });
 
   function finishOpen() {
