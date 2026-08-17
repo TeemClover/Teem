@@ -56,3 +56,66 @@ import { getProfile } from './store.js';
 
   setTimeout(install, 0);
 })();
+
+/* The white-cat tiles are normal selectable activities on /xty/new/.
+   Only the two static tiles on /xty/about/ are secret links to Xircle.
+   Older create-page code attached a redirect listener to these two buttons;
+   capture the click before that listener, prime the normal picker state, then
+   pass the intended activity through a small create override. */
+(function keepWhiteCatActivitiesSelectable() {
+  if (typeof window === 'undefined' || !/^\/xty\/new\/?$/.test(location.pathname)) return;
+  let tries = 0;
+  let priming = false;
+
+  const install = () => {
+    const box = document.getElementById('activityPick');
+    if (!box || !box.children.length) {
+      if (tries++ < 60) setTimeout(install, 50);
+      return;
+    }
+    if (box.dataset.whiteCatPickerFix === '1') return;
+    box.dataset.whiteCatPickerFix = '1';
+
+    box.addEventListener('click', event => {
+      if (priming) return;
+      const button = event.target.closest('.activity-choice');
+      if (!button || !box.contains(button)) return;
+      const label = button.querySelector('b')?.textContent?.trim() || '';
+      const special = label === 'นอนให้พอ'
+        ? { id: 'sleep', labelTh: 'นอนให้พอ' }
+        : (label === 'ดูแลตัวเอง' ? { id: 'wellness', labelTh: 'ดูแลตัวเอง' } : null);
+
+      if (!special) {
+        window.__xtyActivityOverride = null;
+        return;
+      }
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      /* Prime the original closure with a safe normal activity so its form
+         readiness/custom-field logic remains correct, then visually select
+         the white-cat activity and let create-party-v2 use the true override. */
+      const fallback = [...box.querySelectorAll('.activity-choice')].find(node => {
+        const text = node.querySelector('b')?.textContent?.trim() || '';
+        return text !== 'นอนให้พอ' && text !== 'ดูแลตัวเอง';
+      });
+      if (fallback) {
+        priming = true;
+        fallback.click();
+        priming = false;
+      }
+
+      window.__xtyActivityOverride = special;
+      [...box.querySelectorAll('.activity-choice')].forEach(node => {
+        const on = node === button;
+        node.classList.toggle('picked', on);
+        node.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      const custom = document.getElementById('customField');
+      if (custom) custom.hidden = true;
+    }, true);
+  };
+
+  setTimeout(install, 0);
+})();
