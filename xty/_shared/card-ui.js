@@ -156,6 +156,7 @@ if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathnam
 }
 if (typeof location !== 'undefined' && /^\/xty\/new(?:\/|$)/.test(location.pathname)) {
   import('./new-cover-v3.js').catch(error => console.warn('XTY cover picker unavailable', error));
+  import('./new-cover-size-fix.js').catch(error => console.warn('XTY cover size guard unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
   /* Home used to paint the legacy main-party layout first and dynamically
@@ -163,6 +164,7 @@ if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
      canonical renderer here: any module importing card-ui on Home cannot run
      its own paint until the carousel CSS/observer are already installed. */
   await import('./home-cover-v3.js').catch(error => console.warn('XTY home cover layer unavailable', error));
+  import('./home-carousel-desktop.js').catch(error => console.warn('XTY desktop carousel controls unavailable', error));
 }
 
 export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
