@@ -64,7 +64,7 @@ function pet(id, nameTh, emoji, color, series, persona, opts = {}) {
 export const PETS = Object.freeze([
   /* 01 STARTER — granted to every new XTY profile (§15) */
   pet('pig',     'หมู',   '🐷', 'red',    'starter', 'อารมณ์ดี เป็นกันเอง ชวนเริ่มโดยไม่กดดัน', { art: '/xty/assets/art/pets/pig.webp' }),
-  pet('dog',     'ปอมขาว','🐶', 'green',  'starter', 'เพื่อนตี้ใจดี คอยเรียกทุกคนกลับมา', { art: '/xty/assets/art/pets/dog.webp' }),
+  pet('dog',     'หมา','🐶', 'green',  'starter', 'เพื่อนตี้ใจดี คอยเรียกทุกคนกลับมา', { art: '/xty/assets/art/pets/dog.webp' }),
   pet('crow',    'กา',    '🐦‍⬛', 'blue',  'starter', 'ช่างสังเกต จำรายละเอียดเล็ก ๆ ได้ดี', { art: '/xty/assets/art/pets/crow.webp' }),
   pet('chicken', 'ไก่',   '🐔', 'silver', 'starter', 'จิกงานทีละนิด ทำเรื่องยากให้เป็นขั้นเล็ก', { art: '/xty/assets/art/pets/chicken.webp' }),
 
@@ -95,7 +95,7 @@ export const PETS = Object.freeze([
   /* 06 UNTAMED */
   pet('bear',    'หมี',   '🐻', 'red',    'untamed', 'อบอุ่น ใจดี ตัวใหญ่แต่ใจเย็น เป็น safe anchor'),
   pet('rabbit',  'กระต่าย','🐇', 'green', 'untamed', 'รีบไปหมด กระตือรือร้น ชวนคนทำเดี๋ยวนี้'),
-  pet('cat',     'แมวส้ม','🐱', 'blue',   'untamed', 'ขี้เล่น ชวนมองเรื่องยากให้เบาลง', { art: '/xty/assets/art/pets/orange-cat.webp' }),
+  pet('cat',     'แมว','🐱', 'blue',   'untamed', 'ขี้เล่น ชวนมองเรื่องยากให้เบาลง', { art: '/xty/assets/art/pets/orange-cat.webp' }),
   pet('turtle',  'เต่า',  '🐢', 'silver', 'untamed', 'ค่อยเป็นค่อยไป แต่ทำต่อจนถึงเป้าหมาย', { art: '/xty/assets/art/pets/turtle.webp' }),
 
   /* 07 LEGEND — hidden discovery, prestige only, never smarter (§11, §21) */
