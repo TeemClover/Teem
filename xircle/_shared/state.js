@@ -1,13 +1,8 @@
 /* XIRCLE × XTY PARTNER EXPERIENCE — state.js
-   v8 navigation model:
+   v9 navigation model:
    first run = one straight journey
    Xircle → Human Care → X-VISOR → RoutineX → White Cat · XTY
-   full shortcuts unlock only after all five milestones have been seen.
-
-   State only. UI belongs to each route.
-   memory  = health-like simulator choices; never persisted
-   session = current journey state for this visit
-   local   = non-sensitive continuity / invite state
+   after White Cat = free exploration through Map + Knowledge + XTY.
 */
 (function () {
   "use strict";
@@ -129,11 +124,12 @@
       return;
     }
 
-    nav.setAttribute("aria-label", "ทางลัด");
+    // After the payoff, keep the global nav deliberately small. The map owns
+    // the room-level navigation so every page does not become another menu dump.
+    nav.setAttribute("aria-label", "ทางลัดหลังปลดล็อก");
     if (path !== "/xircle") addShortcut(nav, "/xircle/", "Xircle");
-    if (path !== "/xircle/opportunity") addShortcut(nav, "/xircle/opportunity/", "X-VISOR");
-    if (path !== "/xircle/routinex") addShortcut(nav, "/xircle/routinex/", "RoutineX");
-    if (path !== "/xircle/learn" && path.indexOf("/xircle/doc") !== 0) addShortcut(nav, "/xircle/learn/", "Library");
+    if (path !== "/xircle/explore") addShortcut(nav, "/xircle/explore/", "แผนที่");
+    if (path !== "/xircle/learn" && path.indexOf("/xircle/doc") !== 0) addShortcut(nav, "/xircle/learn/", "ห้องความรู้");
 
     var h = currentHandoff();
     var cat = addShortcut(nav, whiteCatActionUrl(), h ? "เข้าตี้ " + h.partyCode : "แมวขาว · XTY", "cat");
@@ -148,8 +144,8 @@
     var changed = false;
     if (path === "/xircle/care/party" && !local.whiteCatIntroSeen) { local.whiteCatIntroSeen = true; changed = true; }
 
-    // Migration for people who completed the previous route before Human Care
-    // became an explicit milestone.
+    // Migration for people who finished the old path before Human Care became
+    // an explicit milestone.
     if (!local.careIntroSeen && local.journeyCompleted && local.xvisorSimCompleted && local.routineCompleted && local.whiteCatIntroSeen) {
       local.careIntroSeen = true;
       changed = true;
@@ -167,11 +163,7 @@
     if (journeyFullyUnlocked()) return false;
     var path = normalizedPath();
     if (!isXircleRoute(path)) return false;
-
-    // Canonical milestone pages are only open when they are the current step.
-    // Library/reference/support pages stay locked until White Cat has been seen.
     if (routeAllowedBeforeUnlock(path)) return false;
-
     var next = linearNext();
     if (!next) return false;
     location.replace(next.href);
@@ -279,8 +271,6 @@
     if (intended === required) return false;
 
     stopHandledEvent(event);
-    // If the current page itself is the required milestone, block sideways/backward
-    // links without reloading the same page. Its primary forward CTA advances the flag.
     if (required === normalizedPath()) return true;
     location.href = next.href;
     return true;
@@ -315,8 +305,8 @@
     },
     getLocal: function (key) { return local[key]; },
     setLocal: function (key, value) {
-      // Older simulator runtime marked X-VISOR complete on O4. Ignore that early
-      // signal; O5 summary is the real milestone in the v8 straight journey.
+      // The old simulator emitted this one scene too early. O5 summary is the
+      // actual milestone in the straight journey.
       if (key === "xvisorSimCompleted" && value === true && normalizedPath() === "/xircle/opportunity" && !document.querySelector('[data-scene="O5"].active')) return;
       markLocal(key, value);
       renderProgressNav();
