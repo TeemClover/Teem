@@ -43,6 +43,10 @@ export async function createPartyV2(options = {}) {
   const finalCoverType = override?.coverType || coverType || 'card_back';
   const finalLeadCardId = override && Object.prototype.hasOwnProperty.call(override, 'leadCardId') ? override.leadCardId : leadCardId;
   const finalCore7CardId = override?.core7CardId || core7CardId || null;
+  const finalDurationDays = typeof window !== 'undefined' && Number(window.__xtyDurationOverride)
+    ? Number(window.__xtyDurationOverride) : Number(durationDays || 7);
+  const finalPreset = typeof window !== 'undefined' && window.__xtyPresetOverride
+    ? String(window.__xtyPresetOverride) : preset;
 
   let response;
   try {
@@ -50,7 +54,7 @@ export async function createPartyV2(options = {}) {
       method: 'POST', credentials: 'same-origin',
       headers: { 'content-type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({
-        name, activity, activityId, preset, verificationMode, durationDays, color, visibility, commitRule,
+        name, activity, activityId, preset: finalPreset, verificationMode, durationDays: finalDurationDays, color, visibility, commitRule,
         budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
         petId: petId || null,
         coverType: finalCoverType,
