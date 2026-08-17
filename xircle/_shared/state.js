@@ -1,8 +1,8 @@
 /* XIRCLE × XTY PARTNER EXPERIENCE — state.js
-   v9 navigation model:
-   first run = one straight journey
-   Xircle → Human Care → X-VISOR → RoutineX → White Cat · XTY
-   after White Cat = free exploration through Map + Knowledge + XTY.
+   v10 navigation model:
+   first run = canonical first-day gate, then one straight journey
+   1 day with Xircle → Human Care → X-VISOR → RoutineX → White Cat · XTY
+   after unlock = free exploration through the White Cat route hub + Knowledge.
 */
 (function () {
   "use strict";
@@ -24,6 +24,7 @@
 
   var SESSION_DEFAULTS = { scene: "S0", completedFirstJourney: false };
   var LOCAL_DEFAULTS = {
+    firstDayCompletedV10: false,
     journeyCompleted: false,
     journeyCompletedAt: null,
     lastVisitDate: null,
@@ -38,6 +39,14 @@
 
   var session = safeRead("sessionStorage", SESSION_KEY, SESSION_DEFAULTS);
   var local = safeRead("localStorage", LOCAL_KEY, LOCAL_DEFAULTS);
+
+  // Preserve people who truly finished the previous full path. Partial legacy
+  // progress is intentionally NOT migrated: those users must see the first-day
+  // Xircle experience before being sent into an X-VISOR case.
+  if (!local.firstDayCompletedV10 && local.journeyCompleted && local.careIntroSeen && local.xvisorSimCompleted && local.routineCompleted && local.whiteCatIntroSeen) {
+    local.firstDayCompletedV10 = true;
+    safeWrite("localStorage", LOCAL_KEY, local);
+  }
 
   function validHandoff(item) {
     if (!item || !/^\d{5}$/.test(String(item.partyCode || ""))) return false;
@@ -74,13 +83,18 @@
   function whiteCatBridgeUrl() {
     return currentHandoff() ? "/xircle/care/party/?mode=join" : "/xircle/care/party/?mode=create";
   }
+  function whiteCatHubUrl() { return "/xircle/explore/"; }
+
+  function firstDayComplete() {
+    return !!(local.firstDayCompletedV10 && local.journeyCompleted);
+  }
 
   function journeyFullyUnlocked() {
-    return !!(local.journeyCompleted && local.careIntroSeen && local.xvisorSimCompleted && local.routineCompleted && local.whiteCatIntroSeen);
+    return !!(firstDayComplete() && local.careIntroSeen && local.xvisorSimCompleted && local.routineCompleted && local.whiteCatIntroSeen);
   }
 
   function linearNext() {
-    if (!local.journeyCompleted) return { href: "/xircle/", label: "เริ่ม · Xircle", step: 1, total: 5 };
+    if (!firstDayComplete()) return { href: "/xircle/", label: "เริ่ม · 1 วันกับ Xircle", step: 1, total: 5 };
     if (!local.careIntroSeen) return { href: "/xircle/care/", label: "ต่อ · Human Care", step: 2, total: 5 };
     if (!local.xvisorSimCompleted) return { href: "/xircle/opportunity/", label: "ต่อ · X-VISOR", step: 3, total: 5 };
     if (!local.routineCompleted) return { href: "/xircle/routinex/", label: "ต่อ · RoutineX", step: 4, total: 5 };
@@ -124,17 +138,15 @@
       return;
     }
 
-    // After the payoff, keep the global nav deliberately small. The map owns
-    // the room-level navigation so every page does not become another menu dump.
+    // Once unlocked, the White Cat room owns route discovery. The cat in the
+    // global top-right nav is a GUIDE HUB, not an implicit create-party action.
     nav.setAttribute("aria-label", "ทางลัดหลังปลดล็อก");
     if (path !== "/xircle") addShortcut(nav, "/xircle/", "Xircle");
-    if (path !== "/xircle/explore") addShortcut(nav, "/xircle/explore/", "แผนที่");
     if (path !== "/xircle/learn" && path.indexOf("/xircle/doc") !== 0) addShortcut(nav, "/xircle/learn/", "ห้องความรู้");
-
-    var h = currentHandoff();
-    var cat = addShortcut(nav, whiteCatActionUrl(), h ? "เข้าตี้ " + h.partyCode : "แมวขาว · XTY", "cat");
-    cat.setAttribute("data-whitecat-link", "1");
-    cat.setAttribute("data-nav-cat", "1");
+    if (path !== "/xircle/explore") {
+      var cat = addShortcut(nav, whiteCatHubUrl(), "ห้องแมวขาว", "cat");
+      cat.setAttribute("data-whitecat-hub", "1");
+    }
     nav.hidden = false;
     renderUnlockVisibility();
   }
@@ -145,8 +157,8 @@
     if (path === "/xircle/care/party" && !local.whiteCatIntroSeen) { local.whiteCatIntroSeen = true; changed = true; }
 
     // Migration for people who finished the old path before Human Care became
-    // an explicit milestone.
-    if (!local.careIntroSeen && local.journeyCompleted && local.xvisorSimCompleted && local.routineCompleted && local.whiteCatIntroSeen) {
+    // an explicit milestone. This only runs after the canonical first-day gate.
+    if (firstDayComplete() && !local.careIntroSeen && local.xvisorSimCompleted && local.routineCompleted && local.whiteCatIntroSeen) {
       local.careIntroSeen = true;
       changed = true;
     }
@@ -187,8 +199,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-whitecat-link]"), function (a) {
       if (a.tagName === "A") a.href = url;
       a.setAttribute("data-whitecat-resolved", h ? "join" : "create");
-      if (a.hasAttribute("data-nav-cat")) a.textContent = h ? "เข้าตี้ " + h.partyCode : "แมวขาว · XTY";
-      else if (a.classList.contains("xp-btn")) a.textContent = h ? "เข้าตี้ " + h.partyCode + " →" : "เปิดตี้แมวขาว →";
+      if (a.classList.contains("xp-btn")) a.textContent = h ? "เข้าตี้ " + h.partyCode + " →" : "เปิดตี้แมวขาว →";
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("[data-whitecat-bridge]"), function (a) {
@@ -305,8 +316,6 @@
     },
     getLocal: function (key) { return local[key]; },
     setLocal: function (key, value) {
-      // The old simulator emitted this one scene too early. O5 summary is the
-      // actual milestone in the straight journey.
       if (key === "xvisorSimCompleted" && value === true && normalizedPath() === "/xircle/opportunity" && !document.querySelector('[data-scene="O5"].active')) return;
       markLocal(key, value);
       renderProgressNav();
@@ -321,7 +330,8 @@
       }
     },
     completeJourney: function () {
-      markLocal("journeyCompleted", true);
+      local.firstDayCompletedV10 = true;
+      local.journeyCompleted = true;
       local.journeyCompletedAt = Date.now();
       session.completedFirstJourney = true;
       safeWrite("localStorage", LOCAL_KEY, local);
@@ -346,6 +356,7 @@
     partyCreateUrl: function () { return "/xty/new/?template=xircle_xvisor"; },
     whiteCatActionUrl: whiteCatActionUrl,
     whiteCatBridgeUrl: whiteCatBridgeUrl,
+    whiteCatHubUrl: whiteCatHubUrl,
     journeyFullyUnlocked: journeyFullyUnlocked,
     linearNext: linearNext,
     partyBridgeUrl: function (mode) { var h = this.getXtyHandoff(); if (mode === "join" && h) return "/xircle/care/party/?mode=join"; return "/xircle/care/party/?mode=create"; },
