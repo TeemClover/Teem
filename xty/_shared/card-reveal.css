@@ -1,17 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════
    XTY — the moment a card turns over
 
-   A Card Drop is the payoff for a whole Quest, so the face-down card
-   is given something to promise: it breathes, catches light, and sits
-   at a slight angle like it was set down by hand rather than laid out
-   by a grid. Everything here is anticipation; the flip itself is in
-   xty.css and the sound comes from the CORE7 samples.
+   The actual turn now follows the proven CORE7 reward flip: the button
+   owns perspective, the two faces stay in a preserve-3d stack, and the
+   inner rotates on a slower physical-feeling curve. XTY keeps its own
+   page, reward copy and sound sequence around that shared motion language.
    ═══════════════════════════════════════════════════════════════ */
 
-/* The back is the real myClover card back, not a pattern standing in for
-   one: the game is handing you a card face down. It fills the whole face
-   so the shape reads as a card from the first frame, and the flip lands on
-   the actual art. */
+/* The back is the real myClover card back, full bleed. There is deliberately
+   no FLIP label on the card — the page instruction already tells the player
+   what to do, and text on the back can flash mirrored during a 3D turn on
+   some mobile WebKit builds. */
 .card-back{
   position:relative;overflow:hidden;
   padding:0;background:#13291D;
@@ -20,56 +19,69 @@
   display:block;width:100%;height:100%;
   object-fit:cover;border-radius:15px;
 }
-.card-back>b{z-index:3}
 
+/* Same physical setup as CORE7's new-card reward. */
 .reveal-card{
+  position:relative;
   cursor:pointer;
+  perspective:1300px;
   transform:rotate(-1.4deg);
   transition:transform .25s ease,filter .25s ease;
-  filter:drop-shadow(0 14px 18px rgba(62,51,44,.22));
+  filter:drop-shadow(0 26px 28px rgba(62,51,44,.28));
   -webkit-tap-highlight-color:transparent;
 }
 .reveal-card:not(.is-open):hover,
 .reveal-card:not(.is-open):focus-visible{
   transform:rotate(-.5deg) translateY(-4px);
-  filter:drop-shadow(0 20px 24px rgba(62,51,44,.3));
+  filter:drop-shadow(0 31px 32px rgba(62,51,44,.34));
 }
 .reveal-card:focus-visible{outline:3px solid var(--xty-primary);outline-offset:7px}
-/* Once it is open the card is a picture, not a button. */
-.reveal-card.is-open{transform:none;cursor:default}
+.reveal-card.is-open{cursor:default}
 
-/* Light sweeping across the back, so the card reads as "not opened yet"
-   from across the room. It stops the instant the card is turned. */
-.reveal-card:not(.is-open) .card-back::before{
-  content:"";position:absolute;inset:0;z-index:2;
-  border-radius:15px;pointer-events:none;
-  background:linear-gradient(110deg,transparent 28%,rgba(255,255,255,.55) 46%,transparent 62%);
+/* CORE7-style true 3D flip. These rules intentionally override the faster
+   generic reveal rules in xty.css, which were the source of the flatter turn. */
+.reveal-inner{
+  display:block;
+  position:absolute;
+  inset:0;
+  width:auto;
+  height:auto;
+  transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
+  transition:transform .78s cubic-bezier(.2,.72,.16,1);
+  will-change:transform;
+}
+.reveal-card.is-open .reveal-inner{transform:rotateY(180deg)}
+.reveal-face{
+  position:absolute;
+  inset:0;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  transform-style:preserve-3d;
+  -webkit-transform-style:preserve-3d;
+}
+.reveal-front{transform:rotateY(180deg)}
+
+/* Light sweep borrowed from the same CORE7 reward language. It disappears
+   as soon as the card starts turning. */
+.reveal-card:not(.is-open)::after{
+  content:"";
+  position:absolute;inset:0;z-index:5;
+  border-radius:18px;pointer-events:none;
+  background:linear-gradient(110deg,transparent 28%,rgba(255,255,255,.16) 46%,transparent 62%);
   transform:translateX(-120%);
   animation:xtyRevealShine 2.8s ease-in-out infinite;
 }
 @keyframes xtyRevealShine{
-  0%{transform:translateX(-120%)}
-  55%,100%{transform:translateX(120%)}
-}
-
-/* A slow breath under the shine — enough to catch the eye, not enough to
-   fight the Party Log for attention on the way past. */
-.reveal-card:not(.is-open) .reveal-inner{animation:xtyRevealBreath 3.4s ease-in-out infinite}
-@keyframes xtyRevealBreath{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.022)}
-}
-
-.card-back b{animation:xtyRevealNudge 2.6s ease-in-out infinite}
-@keyframes xtyRevealNudge{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-3px)}
+  0%,28%{transform:translateX(-120%)}
+  58%,100%{transform:translateX(120%)}
 }
 
 @media (prefers-reduced-motion: reduce){
   .reveal-card,
-  .reveal-card:not(.is-open) .card-back::before,
-  .reveal-card:not(.is-open) .reveal-inner,
-  .card-back b{animation:none;transition:none}
+  .reveal-inner,
+  .reveal-card:not(.is-open)::after{
+    animation:none;transition:none
+  }
   .reveal-card{transform:none}
 }
