@@ -1,6 +1,6 @@
 /* Xircle v5 media-safe invariant.
-   Generated artwork is a complete designed canvas, often with baked Thai UI/copy.
-   Never crop it again in the browser. */
+   Generated artwork is a completed canvas. The frame should follow the real
+   canvas and the image should fill that frame without browser re-cropping. */
 .xp-art{
   background:
     radial-gradient(circle at 50% 45%,rgba(255,255,255,.025),transparent 58%),
@@ -11,8 +11,6 @@
   object-position:center center!important;
   background:#07120f;
 }
-/* Ratio classes are only loading fallbacks. Once the real image is ready,
-   the image itself owns the frame so new uploads never get letterboxed by an old ratio. */
 .xp-art.r169{aspect-ratio:16/9!important}
 .xp-art.r43{aspect-ratio:4/3!important}
 .xp-art.r32{aspect-ratio:3/2!important}
@@ -21,21 +19,19 @@
   aspect-ratio:auto!important;
   height:auto!important;
   min-height:0!important;
-  display:grid;
-  place-items:center;
+  display:block!important;
+  overflow:hidden;
 }
 .xp-art.art-ready>img{
   position:relative!important;
   inset:auto!important;
   display:block!important;
-  width:auto!important;
+  width:100%!important;
+  max-width:none!important;
   height:auto!important;
-  max-width:100%!important;
   max-height:none!important;
   object-fit:contain!important;
 }
-
-/* Real White Cat asset — used instead of the old CSS placeholder character. */
 .xp-cat-cutout-stage{
   min-height:160px;
   display:grid;
@@ -51,13 +47,9 @@
   background:transparent!important;
   filter:drop-shadow(0 16px 28px rgba(0,0,0,.22));
 }
-
 @media(max-width:620px){
   .xp-cat-cutout-stage{min-height:150px}
   .xp-cat-cutout-stage img{height:150px;width:min(100%,180px)}
-
-  /* When one artwork already owns the whole row, give the artwork the phone width.
-     Keep its full canvas and its elegant rounded corners; remove only wasted side gutters. */
   .xp-page .xp-hero>.xp-art,
   .xp-mobile-fullbleed,
   .safe .safe-art,
@@ -68,6 +60,7 @@
     margin-left:calc((100vw - 100%)/-2)!important;
     margin-right:calc((100vw - 100%)/-2)!important;
     border-radius:24px!important;
+    overflow:hidden!important;
   }
   .xp-page .xp-hero>.xp-art.art-ready>img,
   .xp-mobile-fullbleed>img,
@@ -82,8 +75,6 @@
     max-height:none!important;
     object-fit:contain!important;
   }
-
-  /* Keep earned navigation visible on mobile. */
   .xp-nav[aria-label="ทางลัดหลังปลดล็อก"],
   .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"]{
     display:flex;
