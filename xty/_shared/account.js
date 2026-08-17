@@ -4,6 +4,31 @@ import {
 import { XTY_V1_PET_IDS } from './pets.js';
 
 const XTY_TOKENS_KEY = 'mc_xty_tokens';
+const XTY_PROFILE_IDS_KEY = 'mc_xty_profile_ids';
+
+/* Every profile id this device has ever used. Losing localStorage mints a new
+   id, and parties created under the old one answer to nobody unless that id is
+   still known — so the list is kept locally and mirrored into cloud progress,
+   which is what lets a fresh device reclaim an older identity after login. */
+export function knownProfileIds() {
+  const ids = [];
+  try {
+    const stored = JSON.parse(localStorage.getItem(XTY_PROFILE_IDS_KEY) || '[]');
+    if (Array.isArray(stored)) ids.push(...stored);
+  } catch {}
+  const current = getProfile()?.id;
+  if (current) ids.push(current);
+  return [...new Set(ids.map(value => String(value || '')).filter(value => /^[a-z0-9_-]{6,80}$/i.test(value)))];
+}
+
+export function rememberProfileIds(...values) {
+  const merged = [...new Set([
+    ...knownProfileIds(),
+    ...values.flat().map(value => String(value || '')).filter(value => /^[a-z0-9_-]{6,80}$/i.test(value)),
+  ])].slice(-40);
+  try { localStorage.setItem(XTY_PROFILE_IDS_KEY, JSON.stringify(merged)); } catch {}
+  return merged;
+}
 
 async function request(path, options = {}) {
   try {
@@ -40,9 +65,12 @@ export function requestEmailOtp(email) {
 }
 
 export async function bindXtyIdentity(profileId = getProfile()?.id) {
-  if (!profileId) return { ok: false, error: 'NO_PROFILE' };
+  const profileIds = rememberProfileIds(profileId ? [profileId] : []);
+  if (!profileIds.length) return { ok: false, error: 'NO_PROFILE' };
+  /* Send the whole history, not just the id in hand — the older ones are
+     exactly the parties that would otherwise stay stranded. */
   return request('/api/xty/bind', {
-    method: 'POST', body: JSON.stringify({ profileId }),
+    method: 'POST', body: JSON.stringify({ profileId: profileId || profileIds[0], profileIds }),
   });
 }
 
@@ -150,22 +178,35 @@ export function mergeXtyProfile(localValue, cloudValue) {
   });
 }
 
+function parseIdList(value) {
+  if (Array.isArray(value)) return value;
+  try { const parsed = JSON.parse(value); return Array.isArray(parsed) ? parsed : []; }
+  catch { return []; }
+}
+
 export async function loadCloudProgress() {
   const result = await request('/api/progress');
   if (result.error) return result;
   const progress = result.progress && typeof result.progress === 'object' ? result.progress : {};
-  return {
-    ...result,
-    profile: parseProfile(progress[XTY_PROFILE_KEY]),
-  };
+  const cloudProfile = parseProfile(progress[XTY_PROFILE_KEY]);
+  /* Pull every id this account has used on any device back into this one,
+     including the id embedded in the cloud profile itself. */
+  rememberProfileIds(parseIdList(progress[XTY_PROFILE_IDS_KEY]), cloudProfile?.id ? [cloudProfile.id] : []);
+  return { ...result, profile: cloudProfile };
 }
 
 export async function saveCloudProgress(profile = getProfile()) {
   const normalized = normalizeProfile(profile);
   if (!normalized) return { ok: false, error: 'NO_PROFILE' };
+  const profileIds = rememberProfileIds(normalized.id ? [normalized.id] : []);
   return request('/api/progress', {
     method: 'PUT',
-    body: JSON.stringify({ progress: { [XTY_PROFILE_KEY]: JSON.stringify(normalized) } }),
+    body: JSON.stringify({
+      progress: {
+        [XTY_PROFILE_KEY]: JSON.stringify(normalized),
+        [XTY_PROFILE_IDS_KEY]: JSON.stringify(profileIds),
+      },
+    }),
   });
 }
 
@@ -181,7 +222,10 @@ function seedAccountPartyCodes(codes, meUserId) {
   const map = readRecoveryTokens();
   for (const raw of codes || []) {
     const code = String(raw || '').toUpperCase();
-    if (!/^\d{5}$/.test(code)) continue;
+    /* The column is free-form TEXT and older parties were numbered by a
+       different scheme, so anything the server hands back is legitimate.
+       A 5-digit-only filter here silently dropped those from recovery. */
+    if (!/^[A-Z0-9_-]{1,40}$/.test(code)) continue;
     const old = map[code];
     map[code] = {
       token: typeof old === 'string' ? old : (old?.token || ''),
@@ -205,7 +249,9 @@ export async function resyncXtyParties() {
   const mine = await request('/api/xty-mine');
   if (mine.error) return { ...mine, restored: 0, failed: 0 };
 
-  const codes = [...new Set((mine.codes || []).map(code => String(code || '').toUpperCase()).filter(code => /^\d{5}$/.test(code)))];
+  const codes = [...new Set((mine.codes || [])
+    .map(code => String(code || '').toUpperCase())
+    .filter(code => /^[A-Z0-9_-]{1,40}$/.test(code)))];
   seedAccountPartyCodes(codes, mine.meUserId || '');
 
   /* Serialize local-cache writes. rememberResponse() does read/modify/write

@@ -128,6 +128,26 @@ async function loadEvents(cursor = '') {
   $('panel-events').innerHTML = `<article class="section-card"><h2>Audit events · metadata only</h2>${table(['Time','Event','Party','User','Summary'],rows)}${data.nextCursor ? '<div class="pager"><button type="button" data-next="events">หน้าถัดไป</button></div>' : ''}</article>`;
 }
 
+/* Parties no live member is bound to an account. Nobody can log in and reach
+   these, so the lead can never dissolve them from inside the game — this is
+   the only place they can be closed. */
+async function loadGhosts() {
+  const data = await api('/api/xty/admin/ghosts', { method: 'POST', body: '{}' });
+  const rows = (data.parties || []).map(party => `<tr>
+    <td><code>${escapeHtml(party.code)}</code></td>
+    <td>${escapeHtml(party.name)}</td>
+    <td>${badge(party.state)}</td>
+    <td>${n(party.liveMembers)}</td>
+    <td>${escapeHtml(when(party.updatedAt))}</td>
+    <td><button class="quiet" type="button" data-dissolve="${escapeHtml(party.code)}">ยุบตี้</button></td>
+  </tr>`);
+  $('panel-ghosts').innerHTML = `<article class="metric-group">
+      <h2>ตี้ที่กู้ไม่ได้ (${n((data.parties || []).length)})</h2>
+      <p class="empty" style="text-align:left">ไม่มีสมาชิกที่ยังอยู่ผูกกับบัญชีเลยสักคน — เจ้าของเข้าไปยุบเองไม่ได้</p>
+      ${table(['Code', 'Name', 'State', 'Members', 'Updated', ''], rows, 'ไม่มีตี้ค้าง ✓')}
+    </article>`;
+}
+
 async function loadCurrent(cursor = '') {
   setStatus('กำลังโหลด…');
   try {
@@ -137,6 +157,7 @@ async function loadCurrent(cursor = '') {
     if (state.tab === 'cards') await loadCards();
     if (state.tab === 'system') await loadSystem();
     if (state.tab === 'events') await loadEvents(cursor);
+    if (state.tab === 'ghosts') await loadGhosts();
     $('lastUpdated').textContent = `Last updated: ${new Intl.DateTimeFormat('th-TH',{timeStyle:'medium',timeZone:'Asia/Bangkok'}).format(new Date())}`;
     setStatus('');
   } catch (error) { setStatus(error.message); }
@@ -166,6 +187,23 @@ document.addEventListener('change', event => {
 document.addEventListener('click', event => {
   const row = event.target.closest('tr[data-code]'); if (row) openParty(row.dataset.code).catch(error => setStatus(error.message));
   const next = event.target.closest('[data-next]'); if (next) loadCurrent(state.next[next.dataset.next] || '');
+});
+document.addEventListener('click', async event => {
+  const button = event.target.closest('[data-dissolve]');
+  if (!button) return;
+  const code = button.dataset.dissolve;
+  if (button.dataset.armed !== '1') {
+    button.dataset.armed = '1';
+    button.textContent = 'กดอีกครั้งเพื่อยุบ';
+    setTimeout(() => { if (button.dataset.armed === '1') { button.dataset.armed = ''; button.textContent = 'ยุบตี้'; } }, 4000);
+    return;
+  }
+  button.disabled = true; button.textContent = 'กำลังยุบ…';
+  try {
+    await api('/api/xty/admin/party-dissolve', { method: 'POST', body: JSON.stringify({ code }) });
+    setStatus(`ยุบตี้ ${code} แล้ว`);
+    await loadGhosts();
+  } catch (error) { setStatus(error.message); button.disabled = false; button.textContent = 'ยุบตี้'; }
 });
 $('closeDialog').addEventListener('click', () => $('partyDialog').close());
 $('partyDialog').addEventListener('click', event => { if (event.target === $('partyDialog')) $('partyDialog').close(); });
