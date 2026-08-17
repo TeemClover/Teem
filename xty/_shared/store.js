@@ -742,10 +742,14 @@ export function messageAllowance(party, userId) {
    relay reads everything after a cursor in one go rather than streaming
    message by message. Once written a post is never edited — it can only
    be retracted (§16, §17). */
-export async function postToParty(code, { body, kind = 'message' }) {
+export async function postToParty(code, { body, kind = 'message', image = null }) {
   const wanted = String(code || '').toUpperCase();
   const path = kind === 'commit' ? 'commit' : 'message';
   const payload = kind === 'commit' ? { note: body } : { body };
+  /* The picture is already a small WebP by this point — see
+     image-compress.js. A Commit carries one without costing extra, and a
+     Message spends the same single unit of budget it always did. */
+  if (image) payload.image = { data: image.base64, width: image.width, height: image.height };
   const result = await api(`/api/xty/party/${encodeURIComponent(wanted)}/${path}`, {
     method: 'POST', code: wanted, body: payload,
   });
