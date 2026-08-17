@@ -76,9 +76,13 @@
     </div>
     <div class="field">
       <label>เล่นตี้นี้เป็นตัวไหนดี?</label>
-      <div class="card-grid" id="avatarPick" role="radiogroup" aria-label="เลือกตัวละครประจำตี้"></div>
-      <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีตัวละครประจำตี้" style="margin-top:10px"></div>
-      <p class="hint">เลือกเฉพาะตี้นี้ได้ และใช้หน้าตาซ้ำข้ามตี้ได้</p>
+      <p class="whisper" style="margin:0 0 12px">เลือก Starter หรือ Animal Card ที่ปลดล็อกแล้วใน Collection</p>
+      <div id="avatarPick" role="radiogroup" aria-label="เลือกตัวละครหรือการ์ดประจำตี้"></div>
+      <div id="frameField">
+        <p class="label" style="margin:14px 0 8px">สีกรอบ Starter</p>
+        <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีตัวละครประจำตี้"></div>
+      </div>
+      <p class="hint" id="avatarHint">Starter เลือกสีกรอบด้านล่างได้ · เลือกเฉพาะตี้นี้ได้ และใช้หน้าตาซ้ำข้ามตี้ได้</p>
     </div>
     <button class="btn gold" id="go" style="margin-top:20px" disabled>เข้าตี้</button>
     <p class="hint" id="joinWait" style="margin-top:12px">หลังจากกดเข้าตี้แล้ว รอประมาณ 5–12 วินาที เพื่อยืนยัน Slot ตี้</p>
@@ -91,7 +95,8 @@
 <script type="module">
 import { hasProfile, getProfile } from '/xty/_shared/store.js';
 import { joinPartyV2 } from '/xty/_shared/join-party-v2.js';
-import { XTY_AVATARS, AVATAR_FRAMES } from '/xty/_shared/avatars.js';
+import { AVATAR_FRAMES } from '/xty/_shared/avatars.js';
+import { mountCardPicker } from '/xty/_shared/card-picker.js';
 
 const $ = id => document.getElementById(id);
 const rawPrefill = new URLSearchParams(location.search).get('c');
@@ -120,22 +125,29 @@ function initJoin(initialCode) {
   }
 
   const profile = getProfile();
-  let partyAvatar = profile.avatarId;
+  const defaultCardId = profile.equippedCardId || null;
+  let partyAvatar = defaultCardId || profile.avatarId;
   let partyAvatarColor = profile.avatarFrame || 'green';
-  XTY_AVATARS.forEach(avatar => {
-    const button = document.createElement('button'); button.type = 'button';
-    button.className = 'pc avatar-card pickable' + (avatar.id === partyAvatar ? ' picked' : '');
-    button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', avatar.id === partyAvatar ? 'true' : 'false');
-    button.setAttribute('aria-label', avatar.nameTh);
-    button.innerHTML = `<span class="glyph"><img src="${avatar.art}" alt="" loading="lazy" decoding="async"></span>`;
-    button.addEventListener('click', () => {
-      partyAvatar = avatar.id;
-      $('avatarPick').querySelectorAll('button').forEach(node => {
-        const on = node === button; node.classList.toggle('picked', on); node.setAttribute('aria-checked', on ? 'true' : 'false');
-      });
-    });
-    $('avatarPick').appendChild(button);
+
+  function syncAvatarMode(kind) {
+    const usingCard = kind === 'card';
+    $('frameField').hidden = usingCard;
+    $('avatarHint').textContent = usingCard
+      ? 'Animal Card ใช้สีของการ์ดเอง · เลือกเฉพาะตี้นี้ได้ และไม่เปลี่ยน Default Avatar ในโปรไฟล์'
+      : 'Starter เลือกสีกรอบด้านล่างได้ · เลือกเฉพาะตี้นี้ได้ และใช้หน้าตาซ้ำข้ามตี้ได้';
+  }
+
+  mountCardPicker($('avatarPick'), {
+    mode: 'avatar',
+    selected: defaultCardId ? { cardId: defaultCardId } : { avatarId: profile.avatarId },
+    onSelect(choice) {
+      if (choice.kind === 'card') partyAvatar = choice.cardId;
+      else partyAvatar = choice.avatarId;
+      syncAvatarMode(choice.kind);
+    },
   });
+  syncAvatarMode(defaultCardId ? 'card' : 'starter');
+
   Object.values(AVATAR_FRAMES).forEach(frame => {
     const button = document.createElement('button'); button.type = 'button';
     button.className = 'color-choice' + (frame.id === partyAvatarColor ? ' picked' : '');
