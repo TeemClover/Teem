@@ -1,3 +1,3 @@
-Redeploy requested: 2026-08-17T21:41:00+07:00
-XTY living-pet production commit: 82d1b6a59ec8d588c04b9f6a9b47b71a30b6b137
-Reason: force a fresh Vercel production deploy after the White Cat X-VISOR knowledge/onboarding merges; Vercel plan is now Pro and prior function/build quota concern should no longer block this deploy.
+Redeploy requested: 2026-08-17T21:55:00+07:00
+Xircle production commit: fb1e20211eb1e210d10332c4d87da4926d209186
+Reason: force a fresh Vercel production deploy so the merged Xircle mobile full-bleed and 28-day Circle simulator changes move from Ready preview to Production.
