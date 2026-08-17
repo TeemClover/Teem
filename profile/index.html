@@ -111,6 +111,8 @@ import '/assets/account.js?v=20260818-xty-profile-save1';
 
 const $ = id => document.getElementById(id);
 let accountState = { authenticated: false, user: null };
+let accountUiReady = false;
+let pendingAccountMode = '';
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;' }[c]));
@@ -121,6 +123,10 @@ function accountLabel(user) {
 }
 
 function openAccount(mode = 'signup') {
+  if (!accountUiReady) {
+    pendingAccountMode = mode;
+    return;
+  }
   if (window.MC_ACCOUNT?.open) window.MC_ACCOUNT.open(mode);
 }
 
@@ -251,6 +257,18 @@ window.addEventListener('mc:account-changed', event => {
   if (hasProfile()) render(accountState);
 });
 
+window.addEventListener('mc:account-ready', event => {
+  accountUiReady = true;
+  const accountUser = event.detail?.user || null;
+  accountState = { ...accountState, authenticated: !!accountUser, user: accountUser };
+  if (hasProfile()) render(accountState);
+  if (pendingAccountMode) {
+    const mode = pendingAccountMode;
+    pendingAccountMode = '';
+    openAccount(mode);
+  }
+});
+
 window.addEventListener('mc:xty-synced', event => {
   const result = event.detail;
   if (!result || result.error) return;
@@ -274,7 +292,7 @@ async function boot() {
   }
 
   if (new URLSearchParams(location.search).get('save') === '1') {
-    setTimeout(() => openAccount(account.authenticated ? 'login' : 'signup'), 0);
+    openAccount(account.authenticated ? 'login' : 'signup');
   }
 }
 
