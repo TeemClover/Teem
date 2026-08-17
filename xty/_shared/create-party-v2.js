@@ -4,7 +4,7 @@
 
 import { memberAvatarValue } from './card-picker.js';
 import {
-  activePartyUsage, getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET, myPartyCodes, refreshParty,
+  getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET, myPartyCodes, refreshParty,
 } from './store.js';
 import { avatarById } from './avatars.js';
 import { applyXircleCreateDefaults } from './xvisor-care.js';
@@ -69,70 +69,7 @@ function levelOneCover(profile) {
   }
 }
 
-/* Being out of party slots never takes the page away.
-
-   The old gate hid every section and left a dead end, which also meant a
-   new player could not look around at all. Now the page stays fully
-   usable — pick a cover, browse the cards, set the whole thing up — and
-   the limit is said in the two places it matters: a red line at the party
-   name while you are filling it in, and a dialog at the moment you press
-   create. */
-
-function blockedCopy(profile, usage) {
-  const level = Math.max(1, Number(profile?.level || 1));
-  return `ตอนนี้ใช้ช่องสร้างตี้ ${usage.owned}/${usage.maxOwned} อยู่ · LV.${level} `
-    + 'ต้องจบหรือยุบตี้เดิมก่อน แล้วช่องจะคืนกลับมาเต็ม';
-}
-
-function noteAtPartyName(profile, usage) {
-  const input = document.getElementById('pname');
-  const field = input?.closest('.field');
-  if (!field || document.getElementById('xtyCreateBlockedNote')) return;
-  const note = document.createElement('p');
-  note.id = 'xtyCreateBlockedNote';
-  note.className = 'create-blocked-note';
-  note.setAttribute('role', 'alert');
-  note.innerHTML = `<b>ยังตั้งตี้ใหม่ไม่ได้</b><span>${blockedCopy(profile, usage)}</span>`;
-  field.appendChild(note);
-  input?.setAttribute('aria-describedby', 'xtyCreateBlockedNote');
-}
-
-function blockedDialog(profile, usage) {
-  let dialog = document.getElementById('xtyCreateBlockedDialog');
-  if (dialog) return dialog;
-  dialog = document.createElement('dialog');
-  dialog.id = 'xtyCreateBlockedDialog';
-  dialog.className = 'card-detail xty-blocked-dialog';
-  dialog.innerHTML = `<p class="kicker">PARTY SLOT</p>`
-    + `<h2 class="title" style="font-size:24px">ยังตั้งตี้ใหม่ไม่ได้</h2>`
-    + `<p>${blockedCopy(profile, usage)}</p>`
-    + `<p class="whisper">ที่ตั้งค่าไว้ยังอยู่ครบ · กลับมากดสร้างได้เลยเมื่อช่องว่าง</p>`
-    + `<div class="card-detail-actions">`
-    + `<a class="btn gold" href="/xty/">ไปดูตี้ที่เล่นอยู่</a>`
-    + `<a class="btn ghost" href="/xty/collection/">ดูการ์ดของฉัน</a>`
-    + `<button class="btn ghost" type="button" data-close>ตั้งค่าต่อ</button>`
-    + `</div>`;
-  dialog.querySelector('[data-close]').addEventListener('click', () => dialog.close());
-  document.body.appendChild(dialog);
-  return dialog;
-}
-
-function markCreateBlocked(profile, usage) {
-  if (document.getElementById('xtyCreateBlockedNote')) return;
-  noteAtPartyName(profile, usage);
-  /* Capture on the document, so this lands before the page's own submit
-     handler on the button itself. */
-  document.addEventListener('click', event => {
-    if (!event.target.closest?.('#go')) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const dialog = blockedDialog(profile, usage);
-    if (typeof dialog.showModal === 'function') dialog.showModal();
-    else dialog.setAttribute('open', '');
-  }, true);
-}
-
-async function installCreatePageGuard() {
+async function installCreatePageSetup() {
   if (!onCreatePage()) return;
   let profile = getProfile();
   if (!profile) return;
@@ -147,17 +84,17 @@ async function installCreatePageGuard() {
     });
   }
 
-  /* Revalidate every locally-known membership before deciding capacity.
-     This is what makes an admin dissolve immediately give the device its
-     owner/join slots back instead of leaving stale ACTIVE localStorage. */
+  /* Refresh locally-known memberships for accurate display, but deliberately
+     never block owner creation because owned > maxOwned. The displayed slot
+     entitlement stays unchanged, so an intentionally over-limit player may
+     legitimately show 2/1, 3/1, etc. Merge/Sync must never destroy parties
+     merely to make the count fit the nominal entitlement. */
   await Promise.all(myPartyCodes().map(code => refreshParty(code).catch(() => null)));
   profile = getProfile() || profile;
-  const usage = activePartyUsage(profile);
-  if (usage.owned >= usage.maxOwned) markCreateBlocked(profile, usage);
-  else if (Math.max(1, Number(profile.level || 1)) <= 1) levelOneCover(profile);
+  if (Math.max(1, Number(profile.level || 1)) <= 1) levelOneCover(profile);
 }
 
-if (onCreatePage()) installCreatePageGuard().catch(() => {});
+if (onCreatePage()) installCreatePageSetup().catch(() => {});
 
 export async function createPartyV2(options = {}) {
   const applied = applyXircleCreateDefaults(options);
