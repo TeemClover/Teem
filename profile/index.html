@@ -114,7 +114,7 @@ import {
 import { XTY_V1_PETS } from '/xty/_shared/pets.js';
 import { XTY_AVATARS, AVATAR_FRAMES, avatarById } from '/xty/_shared/avatars.js';
 import { mountCardPicker, avatarForChoice, profilePortrait } from '/xty/_shared/card-picker.js';
-import { cardById, XTY_CARDS } from '/xty/_shared/cards.js';
+import { cardById } from '/xty/_shared/cards.js';
 import { requestEmailOtp, verifyEmailOtp, syncXtyProfile } from '/xty/_shared/account.js';
 
 const $ = id => document.getElementById(id);
@@ -166,7 +166,9 @@ function render(account) {
   $('capacityHint').textContent = `สร้างได้ ${usage.maxOwned} ตี้ · เข้าร่วมได้ ${usage.maxJoined} ตี้`;
 
   const collection = ownedCards(p).map(item => cardById(item.cardId)).filter(Boolean);
-  $('cardCount').textContent = `${collection.length} / ${XTY_CARDS.length}`;
+  /* How many you hold, never out of how many exist — the size of the set
+     is something to find out by opening cards. */
+  $('cardCount').textContent = `${collection.length}`;
   $('collectionSummary').textContent = collection.length ? `${collection.length} ใบที่พบ` : 'ยังไม่มีการ์ด · จบ Quest แรกเพื่อรับใบแรก';
 
   const box = $('pets');

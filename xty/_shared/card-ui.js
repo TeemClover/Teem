@@ -20,17 +20,18 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-clean-card-
   const style = document.createElement('style');
   style.id = 'xty-clean-card-face-style';
   style.textContent = `
-    /* Canonical XTY card face: art first. The only visible copy on-card is
-       the card name plus one rarity tag at bottom center. */
+    /* Canonical XTY card face: the art, edge to edge. A card that still
+       needs a name (a party cover) floats it over the picture; nothing is
+       allowed to take a strip of the card away from the art. */
     .animal-card .role-badge,
     .animal-card .color-badge,
     .animal-card .card-accessory,
     .animal-card .card-copy small{display:none!important}
     .animal-card .card-copy{
       position:absolute!important;
-      left:8px!important;right:8px!important;bottom:31px!important;z-index:5!important;
+      left:7px!important;right:7px!important;bottom:7px!important;z-index:5!important;
       display:block!important;margin:0!important;padding:4px 6px!important;
-      text-align:center!important;border:0!important;border-radius:7px!important;
+      text-align:center!important;border:0!important;border-radius:8px!important;
       background:rgba(255,254,248,.91)!important;
       box-shadow:none!important;
     }
@@ -47,9 +48,7 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-clean-card-
       font-size:7px!important;line-height:1!important;letter-spacing:.11em!important;
       text-align:center!important;white-space:nowrap!important;
     }
-    .animal-card.rarity-rare .card-art,
-    .animal-card.rarity-epic .card-art,
-    .animal-card.rarity-legendary .card-art{
+    .animal-card .card-art{
       margin:0!important;width:100%!important;height:100%!important;object-fit:cover!important;
     }
   `;

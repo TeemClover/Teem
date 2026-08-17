@@ -77,13 +77,12 @@ if (!hasProfile()) location.replace('/xty/'); else render();
 
 function render() {
   const profile = getProfile(); const owned = new Set(ownedCardIds(profile)); const box = $('cards'); box.innerHTML = '';
-  $('count').textContent = `${owned.size} ใบที่พบ · ${XTY_CARDS.length - owned.size} ใบยังรออยู่`;
+  /* Only what has actually been found, and only how many of them. A slot
+     for every unfound card would hand out the whole set list on day one —
+     the size of the collection is part of what there is to discover. */
+  $('count').textContent = owned.size ? `${owned.size} ใบที่พบ` : 'ยังไม่มีการ์ดในคอลเลกชันนี้';
   XTY_CARDS.forEach(card => {
-    if (!owned.has(card.cardId)) {
-      const unknown = document.createElement('div'); unknown.className = 'pc unknown';
-      unknown.setAttribute('aria-label', 'การ์ดยังไม่พบ'); unknown.innerHTML = '<span class="glyph"></span><span class="nm"></span><span class="sr"></span>';
-      box.appendChild(unknown); return;
-    }
+    if (!owned.has(card.cardId)) return;
     const button = document.createElement('button'); button.type = 'button'; button.className = 'collection-card';
     const placement = cardAvailability(card.cardId);
     const status = placement.status === 'AVAILABLE' && profile.equippedCardId === card.cardId ? 'AVATAR_IN_USE' : placement.status;

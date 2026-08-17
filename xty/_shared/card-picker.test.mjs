@@ -24,7 +24,9 @@ function el(tag = 'div') {
     setAttribute(k, v) { this.attrs[k] = String(v); },
     getAttribute(k) { return this.attrs[k]; },
     addEventListener(n, f) { (this.listeners ||= {})[n] = f; },
-    querySelector() { return el('span'); },
+    /* memoised so a test can read what the picker wrote into a slot it
+       looked up by selector */
+    querySelector(sel) { this._q ||= {}; return (this._q[sel] ||= el('span')); },
   };
   /* A real element drops its children when innerHTML is cleared; without
      this the stub kept stale shelves from the previous render. */
@@ -57,40 +59,51 @@ function setProfile(cardIds = []) {
 function shelvesOf(host) {
   return host.children[1].children.map(shelf => {
     const summary = shelf.children[0];
-    const count = /(\d+)\/(\d+)/.exec(summary.innerHTML) || [];
+    const count = /<span class="xcp-count">(\d+)<\/span>/.exec(summary.innerHTML) || [];
     const grid = shelf.children.find(c => c.className === 'xcp-grid');
     return {
       locked: shelf.classList.contains('is-locked'),
       open: shelf.open,
       owned: Number(count[1] || 0),
-      total: Number(count[2] || 0),
+      /* Deliberately no total: the summary must not carry one at all. */
+      summary: summary.innerHTML,
       options: grid ? grid.children : [],
     };
   });
 }
 
-test('all five shelves are always present, empty ones locked with a count', () => {
+test('all five shelves are always present, empty ones locked at 0', () => {
   setProfile([]);
   const host = el(); mountCardPicker(host);
   const shelves = shelvesOf(host);
   assert.equal(shelves.length, 5, 'starter + 4 rarities');
 
-  const [starter, common, rare, epic, legendary] = shelves;
+  const [starter, ...tiers] = shelves;
   assert.equal(starter.locked, false, 'the free animals are always available');
   assert.equal(starter.owned, XTY_AVATARS.length);
-  for (const shelf of [common, rare]) {
+  for (const shelf of tiers) {
     assert.equal(shelf.locked, true, 'no cards yet');
-    assert.equal(shelf.owned, 0);
-    assert.ok(shelf.total > 0, 'a locked shelf still states how many exist');
+    assert.equal(shelf.owned, 0, 'an empty tier says 0');
     assert.equal(shelf.open, false, 'locked shelves stay shut');
+    assert.equal(shelf.options.length, 0, 'and shows nothing at all');
   }
-  /* Epic and Legendary are printed now, so they behave like any other
-     unowned tier: locked, shut, but stating the size of the set. */
-  for (const shelf of [epic, legendary]) {
-    assert.equal(shelf.locked, true);
-    assert.equal(shelf.owned, 0);
-    assert.ok(shelf.total > 0, 'the tier states how many exist');
+});
+
+/* The set size is something to discover by opening cards. Nothing in the
+   picker may state it — not as a total, not as a grid of silhouettes. */
+test('the picker never reveals how many cards exist', () => {
+  setProfile([]);
+  const host = el(); mountCardPicker(host);
+  for (const shelf of shelvesOf(host)) {
+    assert.doesNotMatch(shelf.summary, /\d+\s*\/\s*\d+/, 'no X/Y anywhere in a shelf header');
   }
+
+  const oneCard = XTY_CARDS.find(c => c.rarity === 'epic');
+  setProfile([oneCard.cardId]);
+  const host2 = el(); mountCardPicker(host2);
+  const epic = shelvesOf(host2)[3];
+  assert.equal(epic.owned, 1);
+  assert.equal(epic.options.length, 1, 'only the card actually held is drawn');
 });
 
 test('owning one card unlocks exactly its own shelf', () => {
@@ -100,7 +113,9 @@ test('owning one card unlocks exactly its own shelf', () => {
   const [, common, rareShelf] = shelvesOf(host);
   assert.equal(rareShelf.locked, false);
   assert.equal(rareShelf.owned, 1);
+  assert.equal(rareShelf.options.length, 1);
   assert.equal(common.locked, true, 'a rare card does not unlock common');
+  assert.equal(common.options.length, 0);
 });
 
 test('the colour filter never empties Starter — those animals have no colour', () => {
@@ -128,15 +143,22 @@ test('the colour filter narrows card shelves to that colour', () => {
   host.children[0].children.find(chip => chip.dataset.color === 'red').listeners.click();
   const common = shelvesOf(host)[1];
   assert.equal(common.owned, 1, 'only the red one counts');
-  assert.equal(common.total, reds.length, 'total narrows to red as well');
+  assert.equal(common.options.length, 1, 'and only the red one is drawn');
 });
 
-test('unowned cards render but cannot be chosen', () => {
-  setProfile([]);
+test('a card you have not found is not shown at all', () => {
+  const mine = XTY_CARDS.find(c => c.rarity === 'common');
+  setProfile([mine.cardId]);
   const host = el(); mountCardPicker(host);
   const common = shelvesOf(host)[1];
-  assert.ok(common.options.length > 0, 'locked cards are still shown, to be collected toward');
-  assert.ok(common.options.every(option => option.disabled), 'and none of them are selectable');
+  assert.equal(common.options.length, 1, 'exactly the one card held — no silhouettes beside it');
+  assert.equal(common.options[0].disabled, false, 'and everything drawn is selectable');
+
+  /* The card label is the animal alone: colour lives on the border and
+     rarity is the shelf, so spelling them out only made it too long. */
+  const name = common.options[0]._q['.xcp-name'];
+  assert.equal(name.textContent, mine.speciesNameTh);
+  assert.doesNotMatch(name.textContent, /·/, 'no colour or rarity in the visible label');
 });
 
 test('choosing a card carries the avatar to the same animal', () => {
