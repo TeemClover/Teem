@@ -1,6 +1,6 @@
 # Xircle v5 — Artwork Usage Audit
 
-ตรวจวันที่ 2026-08-17 หลังรอบ mobile/desktop visual QA
+ตรวจวันที่ 2026-08-18 หลังเพิ่ม RoutineX product bridge และ invited-party conversion block
 
 ## Active artwork
 
@@ -24,6 +24,7 @@
 | `xircle-opportunity-o4-boundary.png` | `/xircle/opportunity/` |
 | `xircle-opportunity-o5-summary.png` | `/xircle/opportunity/` |
 | `xircle-opportunity-o6-whitecat-reveal.png` | `/xircle/explore/` — Hero ห้องแมวขาว / จุดเซฟ |
+| `xircle-routinex-hero.webp` | `/xircle/routinex/` — final payoff หลังดู A / B / C / D / Flavor+ ครบ; เปิด product window ก่อน XTY |
 | `xircle-start-today.webp` | `/xircle/start/` |
 | `xircle-hardware-hero.webp` | `/xircle/hardware/` |
 | `xircle-products-hero.webp` | `/xircle/products/` |
@@ -31,15 +32,16 @@
 | `xircle-learn-hero.webp` | `/xircle/learn/` |
 | `xircle-reference-hero.webp` | `/xircle/doc/` |
 | `xircle-together-hero.webp` | `/xircle/together/` และภาพประกอบในห้องแมวขาว |
-| `xircle-party-create-hero.webp` | `/xircle/circle/` และ `/xircle/care/party/` — ภาพหลัก 28 วัน / ทำด้วยกัน |
+| `xircle-party-create-hero.webp` | `/xircle/circle/` และ `/xircle/care/party/` — เปิดวง / ภาพหลัก 28 วัน |
+| `xircle-party-join-hero.webp` | `/xircle/circle/` — บล็อก “มีคนชวนอยู่แล้ว?” และ `/xircle/care/party/` เมื่อมี invite handoff |
 | `whitecat-guide-cutout.webp` | ใช้เป็นไกด์แมวขาวหลายหน้า เช่น Explore / Learn / Circle / Party / Reference |
 
-## Deliberate reserves — ไม่ใช่ไฟล์ตกหล่น
+## Conversion roles
 
-| Asset | สถานะ | เหตุผล |
-|---|---|---|
-| `xircle-party-join-hero.webp` | สำรองสำหรับคำชวน / share card | ผู้ใช้เลือก `xircle-party-create-hero.webp` เป็นภาพหน้าหลักของประสบการณ์ 28 วัน เพราะอธิบายการทำด้วยกันชัดกว่า จึงไม่ควรสลับ Hero หน้า Party ไปมาเมื่อมีรหัสชวน |
-| `xircle-routinex-hero.webp` | สำรอง | หน้า `/xircle/routinex/` ใช้แผนภาพ ABCD + Flavor+ แบบ interactive ที่คงอยู่บนจอทั้งบท จึงไม่ควรยัด Hero อีกภาพเข้าไปจนแย่งลำดับสายตา |
+- `xircle-routinex-hero.webp` ไม่แย่ง diagram ระหว่างบทเรียน: แสดงเฉพาะ final scene แล้วพาไป `ดูสินค้าใน RoutineX` หรือไปต่อ `แมวขาว · XTY` ได้ทันที
+- `xircle-party-create-hero.webp` = คนที่กำลังคิดจะเปิดวงของตัวเอง
+- `xircle-party-join-hero.webp` = คนที่มีคำชวน/รหัสตี้อยู่แล้ว จึงใช้เป็น visual สำหรับ Join โดยเฉพาะ
+- Product deep-dive เป็น optional detour หลัง RoutineX เท่านั้น ไม่เปิดทางให้ข้าม first-day journey
 
 ## Display invariant
 
@@ -47,4 +49,4 @@
 2. หลังภาพโหลด กรอบต้องตาม canvas จริง: `width:100%` + `height:auto`
 3. ภาพเต็มบรรทัดบนมือถือขยายได้ถึงความกว้าง viewport และยังเก็บมุมมน
 4. ไม่ยืดภาพ ไม่บีบภาพ และไม่สร้างแถบว่างบน/ล่างจากกรอบที่สูงกว่าภาพ
-5. ถ้าภาพหนึ่งถูกเก็บเป็น reserve ต้องมีเหตุผลทาง UX ชัดเจน ไม่ยัดภาพเพื่อให้ตัวเลข usage เป็น 100%
+5. ภาพแต่ละภาพต้องมีหน้าที่ใน journey/conversion ที่ชัดเจน ไม่ยัดเพื่อให้ตัวเลข usage เป็น 100%
