@@ -8,6 +8,9 @@ import {
 } from '../_lib/xty-rules.js';
 import { XTY_CARDS, cardById } from '../../xty/_shared/cards.js';
 import { handleXtyAdmin } from '../_lib/xty-admin.js';
+import {
+  blobConfigured, decodeImagePayload, discardPartyImage, isStoredImageUrl, storePartyImage,
+} from '../_lib/xty-image.js';
 
 const PARTY_MAX = 5;
 const MAX_JOINED_ACTIVE = 3;
@@ -245,7 +248,7 @@ async function rewardsOf(sql, row, member) {
 
 async function postsOf(sql, partyId, since = 0) {
   const rows = await sql.query(`SELECT p.seq,p.user_id,p.kind,p.body,p.sent_at,p.retracted,
-    p.pet_id,p.wake_hour,m.alias,m.avatar FROM xty_posts p LEFT JOIN xty_members m
+    p.pet_id,p.wake_hour,p.image_url,p.image_w,p.image_h,m.alias,m.avatar FROM xty_posts p LEFT JOIN xty_members m
     ON m.party_id=p.party_id AND m.user_id=p.user_id
     WHERE p.party_id=$1 AND p.seq>$2 ORDER BY p.seq`, [partyId, since]);
   const posts = rows.map(row => ({
@@ -253,6 +256,10 @@ async function postsOf(sql, partyId, since = 0) {
     kind: row.kind, body: row.retracted ? '' : row.body,
     sentAt: new Date(row.sent_at).toISOString(), retracted: !!row.retracted,
     petId: row.pet_id || null, wakeHour: row.wake_hour == null ? null : Number(row.wake_hour),
+    /* A retracted post drops its picture too, same as its text. */
+    imageUrl: row.retracted ? null : (row.image_url || null),
+    imageW: row.retracted || row.image_w == null ? null : Number(row.image_w),
+    imageH: row.retracted || row.image_h == null ? null : Number(row.image_h),
     reactions: {}, confirmedBy: null, confirmedAt: null,
   }));
   if (!posts.length) return posts;
@@ -340,7 +347,11 @@ async function stateFor(sql, row, member, since = 0) {
   };
 }
 
-async function appendPost(sql, row, member, kind, text) {
+async function appendPost(sql, row, member, kind, text, image = null) {
+  const img = image || {};
+  const imageUrl = img.url || null;
+  const imageW = imageUrl ? img.width ?? null : null;
+  const imageH = imageUrl ? img.height ?? null : null;
   const now = new Date(); const key = dayKey(now, row.timezone);
   if (kind === 'message') {
     const limit = BUDGETS[row.budget] || BUDGETS[DEFAULT_BUDGET];
@@ -358,9 +369,9 @@ async function appendPost(sql, row, member, kind, text) {
           UPDATE xty_parties p SET head_seq=p.head_seq+1,updated_at=$5
           FROM allowed a WHERE p.id=a.id RETURNING p.head_seq
         )
-        INSERT INTO xty_posts (party_id,seq,user_id,kind,body,sent_at,day_key,retracted)
-        SELECT $1,head_seq,$2,'message',$6,$5,$3::date,FALSE FROM next RETURNING seq`,
-      [row.id, member.user_id, key, limit, now, text, ACTIVE_STATES]);
+        INSERT INTO xty_posts (party_id,seq,user_id,kind,body,sent_at,day_key,retracted,image_url,image_w,image_h)
+        SELECT $1,head_seq,$2,'message',$6,$5,$3::date,FALSE,$8,$9,$10 FROM next RETURNING seq`,
+      [row.id, member.user_id, key, limit, now, text, ACTIVE_STATES, imageUrl, imageW, imageH]);
     } else if (state === 'COMPLETED' && row.ended_at) {
       rows = await sql.query(`WITH locked AS (
           SELECT id,ended_at FROM xty_parties WHERE id=$1 AND state='COMPLETED' FOR UPDATE
@@ -373,9 +384,9 @@ async function appendPost(sql, row, member, kind, text) {
           UPDATE xty_parties p SET head_seq=p.head_seq+1,updated_at=$5
           FROM allowed a WHERE p.id=a.id RETURNING p.head_seq
         )
-        INSERT INTO xty_posts (party_id,seq,user_id,kind,body,sent_at,day_key,retracted)
-        SELECT $1,head_seq,$2,'message',$6,$5,$3::date,FALSE FROM next RETURNING seq`,
-      [row.id, member.user_id, key, limit, now, text]);
+        INSERT INTO xty_posts (party_id,seq,user_id,kind,body,sent_at,day_key,retracted,image_url,image_w,image_h)
+        SELECT $1,head_seq,$2,'message',$6,$5,$3::date,FALSE,$7,$8,$9 FROM next RETURNING seq`,
+      [row.id, member.user_id, key, limit, now, text, imageUrl, imageW, imageH]);
     } else return { error: 'PARTY_CLOSED', status: 409 };
     if (!rows[0]) return { error: 'NO_BUDGET', status: 409 };
     row.head_seq = Number(rows[0].seq); return { seq: row.head_seq };
@@ -387,13 +398,30 @@ async function appendPost(sql, row, member, kind, text) {
     const rows = await sql.query(`WITH next AS (
         UPDATE xty_parties SET head_seq=head_seq+1,updated_at=$4 WHERE id=$1 RETURNING head_seq
       )
-      INSERT INTO xty_posts (party_id,seq,user_id,kind,body,sent_at,day_key,retracted)
-      SELECT $1,head_seq,$2,'commit',$3,$4,$5::date,FALSE FROM next RETURNING seq`,
-    [row.id, member.user_id, text, now, key]);
+      INSERT INTO xty_posts (party_id,seq,user_id,kind,body,sent_at,day_key,retracted,image_url,image_w,image_h)
+      SELECT $1,head_seq,$2,'commit',$3,$4,$5::date,FALSE,$6,$7,$8 FROM next RETURNING seq`,
+    [row.id, member.user_id, text, now, key, imageUrl, imageW, imageH]);
     row.head_seq = Number(rows[0].seq); return { seq: row.head_seq };
   } catch (error) {
     if (error.code === '23505') return { error: 'ALREADY_COMMITTED', status: 409 };
     throw error;
+  }
+}
+
+/* Turn an inbound image payload into a stored blob, or into an error the
+   caller can hand straight back. Uploading before the insert means a
+   rejected post leaves a stray blob, which we delete; doing it the other
+   way round would leave a post promising a picture that does not exist. */
+async function intakeImage(partyCode, image) {
+  if (!image) return { ok: true, stored: null };
+  if (!blobConfigured()) return { ok: false, error: 'IMAGE_UPLOAD_NOT_CONFIGURED', status: 503 };
+  const decoded = decodeImagePayload(image);
+  if (decoded.error) return { ok: false, error: decoded.error, status: 400 };
+  try {
+    return { ok: true, stored: await storePartyImage(partyCode, decoded) };
+  } catch (error) {
+    console.error('XTY image upload failed', error);
+    return { ok: false, error: 'IMAGE_UPLOAD_FAILED', status: 502 };
   }
 }
 
@@ -843,8 +871,13 @@ export default async function handler(req, res) {
 
     if (method === 'POST' && parts[2] === 'manage') {
       if (member.role !== 'lead') return sendJson(res, { ok: false, error: 'LEAD_REQUIRED' }, 403);
-      if (!activeParty(row)) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
       const body = bodyOf(req); const action = String(body.action || ''); const at = new Date();
+      /* A finished party is otherwise frozen, but its cover stays editable:
+         the ending picture only exists once the journey is over, and every
+         member sees that cover in their history. */
+      if (!activeParty(row) && action !== 'change_cover') {
+        return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
+      }
 
       if (action === 'rename') {
         const name = clean(body.name, 40);
@@ -879,6 +912,47 @@ export default async function handler(req, res) {
       if (action === 'change_lead_card' || action === 'change_cover') {
         const next = String(body.leadCardId || '');
         const requestedType = action === 'change_cover' ? String(body.coverType || 'card') : 'card';
+
+        if (requestedType === 'image') {
+          /* Either reuse a picture already posted in this party, or upload a
+             fresh one. Reuse is checked against this party's own posts so a
+             lead cannot point the cover at another party's image. */
+          let url = String(body.imageUrl || '');
+          let stored = null;
+          if (url) {
+            if (!isStoredImageUrl(url)) return sendJson(res, { ok: false, error: 'BAD_IMAGE_URL' }, 400);
+            const owned = await sql.query(
+              'SELECT 1 FROM xty_posts WHERE party_id=$1 AND image_url=$2 AND retracted=FALSE LIMIT 1',
+              [row.id, url],
+            );
+            if (!owned[0]) return sendJson(res, { ok: false, error: 'IMAGE_NOT_IN_PARTY' }, 404);
+          } else {
+            const intake = await intakeImage(row.code, body.image);
+            if (!intake.ok) return sendJson(res, { ok: false, error: intake.error }, intake.status);
+            if (!intake.stored) return sendJson(res, { ok: false, error: 'NO_IMAGE' }, 400);
+            stored = intake.stored; url = stored.url;
+          }
+          const previous = row.cover_type === 'image' ? row.cover_value : null;
+          await sql.query(`WITH party AS (
+              UPDATE xty_parties SET cover_type='image',cover_value=$1,lead_card_id=NULL,updated_at=$2
+              WHERE id=$3 RETURNING id
+            ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
+              SELECT id,'LEAD_CARD_CHANGED',$4,$5,$6::jsonb,$2 FROM party`, [
+            url, at, row.id, member.user_id, partyDay(row, at),
+            JSON.stringify({ from: previous || row.cover_type || null, to: 'image' }),
+          ]);
+          /* Swapping one uploaded cover for another leaves the old file
+             orphaned unless it is also a post in the log. */
+          if (previous && previous !== url) {
+            const stillPosted = await sql.query(
+              'SELECT 1 FROM xty_posts WHERE party_id=$1 AND image_url=$2 LIMIT 1', [row.id, previous],
+            );
+            if (!stillPosted[0]) await discardPartyImage(previous);
+          }
+          row.cover_type = 'image'; row.cover_value = url; row.lead_card_id = null; row.updated_at = at;
+          return sendJson(res, await stateFor(sql, row, member));
+        }
+
         if (requestedType === 'card_back') {
           const old = row.lead_card_id || null;
           await sql.query(`WITH party AS (
@@ -965,15 +1039,31 @@ export default async function handler(req, res) {
     }
     if (method === 'POST' && parts[2] === 'commit') {
       if (!activeParty(row)) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
-      const result = await appendPost(sql, row, member, 'commit', clean(bodyOf(req).note, 300) || '✓');
-      if (result.error) return sendJson(res, { ok: false, error: result.error }, result.status);
+      /* One Commit a day already, so a picture rides along on it rather
+         than costing anything extra. */
+      const intake = await intakeImage(row.code, bodyOf(req).image);
+      if (!intake.ok) return sendJson(res, { ok: false, error: intake.error }, intake.status);
+      const result = await appendPost(
+        sql, row, member, 'commit', clean(bodyOf(req).note, 300) || '✓', intake.stored,
+      );
+      if (result.error) {
+        await discardPartyImage(intake.stored?.url);
+        return sendJson(res, { ok: false, error: result.error }, result.status);
+      }
       return sendJson(res, await stateFor(sql, row, member));
     }
     if (method === 'POST' && parts[2] === 'message') {
+      const image = bodyOf(req).image;
       const text = clean(bodyOf(req).body, 2000);
-      if (!text) return sendJson(res, { ok: false, error: 'EMPTY' }, 400);
-      const result = await appendPost(sql, row, member, 'message', text);
-      if (result.error) return sendJson(res, { ok: false, error: result.error }, result.status);
+      /* A picture on its own is a complete message; text is optional then. */
+      if (!text && !image) return sendJson(res, { ok: false, error: 'EMPTY' }, 400);
+      const intake = await intakeImage(row.code, image);
+      if (!intake.ok) return sendJson(res, { ok: false, error: intake.error }, intake.status);
+      const result = await appendPost(sql, row, member, 'message', text, intake.stored);
+      if (result.error) {
+        await discardPartyImage(intake.stored?.url);
+        return sendJson(res, { ok: false, error: result.error }, result.status);
+      }
       return sendJson(res, await stateFor(sql, row, member));
     }
     if (method === 'POST' && parts[2] === 'react') {

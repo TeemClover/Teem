@@ -25,6 +25,7 @@
 <meta name="twitter:image:alt" content="XTY — ตั้งตี้ทำอะไรก็ได้ ชวนเพื่อนทำของจริง แล้วกลับมา Commit ด้วยกัน">
 <!-- /XTY SOCIAL SHARE -->
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
+<link rel="stylesheet" href="/xty/_shared/chat-image.css?v=1">
 </head>
 <body>
 
@@ -108,7 +109,13 @@
       <div class="reward-status-list" id="rewardStatuses"></div>
       <div class="log" id="log"></div>
 
+      <div class="xty-attach-preview" id="msgAttach" hidden>
+        <img alt="ภาพที่จะแนบ" id="msgAttachImg">
+        <div><b id="msgAttachName">ภาพแนบ</b><span id="msgAttachSize"></span></div>
+        <button type="button" id="msgAttachClear" aria-label="เอาภาพออก">×</button>
+      </div>
       <div class="composer">
+        <button id="msgAttachBtn" type="button" aria-label="แนบภาพ">🖼</button>
         <textarea id="msg" rows="1" maxlength="2000" placeholder="ฝากไว้ในตี้…" aria-label="Message ถึงตี้"></textarea>
         <button id="send" aria-label="ส่ง Message">↑</button>
       </div>
@@ -120,6 +127,17 @@
       <p class="whisper" style="margin:0">ปุ่มอยู่ตรงนี้ตลอดสำหรับหัวตี้ แต่จะเปิดให้กดเมื่อผ่านวันสุดท้ายของ Quest แล้วเท่านั้น</p>
       <p class="complete-gate" id="completeGate">กำลังตรวจวันของ Quest…</p>
       <button class="btn ghost quest-locked" id="completeParty" disabled>เสร็จเควส · ยังไม่ครบวัน</button>
+    </section>
+
+    <!-- Only reachable once the journey is over: the ending picture does
+         not exist before then, and this cover is what every member keeps
+         seeing in their history. -->
+    <section class="card" id="endingCoverPanel" hidden>
+      <span class="label">ปกฉากจบ</span>
+      <p class="whisper" style="margin:0 0 4px">เลือกภาพจากในตี้ หรืออัปโหลดภาพฉากจบ มาเป็นปกของตี้ที่จบแล้ว · ทุกคนเห็นในประวัติ</p>
+      <div class="xty-cover-pick" id="endingCoverPick"></div>
+      <p class="whisper" id="endingCoverEmpty" hidden>ยังไม่มีภาพในตี้นี้ — อัปโหลดได้เลย</p>
+      <button class="btn ghost sm" type="button" id="endingCoverUpload" style="margin-top:10px">🖼 อัปโหลดภาพฉากจบ</button>
     </section>
 
     <details class="party-tools" id="myCharacterTools">
@@ -179,14 +197,21 @@
   <p class="whisper" id="sheetRule" style="margin:0 0 10px"></p>
   <div class="field" style="margin-top:0">
     <textarea id="commitNote" rows="2" maxlength="300" placeholder="เล่าสั้น ๆ ก็ได้ หรือเว้นว่างไว้"></textarea>
-    <p class="hint">Commit ไม่กินโควตา Message</p>
+    <p class="hint">Commit ไม่กินโควตา Message · แนบภาพได้ 1 รูป</p>
   </div>
+  <div class="xty-attach-preview" id="commitAttach" hidden>
+    <img alt="ภาพที่จะแนบ" id="commitAttachImg">
+    <div><b id="commitAttachName">ภาพแนบ</b><span id="commitAttachSize"></span></div>
+    <button type="button" id="commitAttachClear" aria-label="เอาภาพออก">×</button>
+  </div>
+  <button class="btn ghost sm" type="button" id="commitAttachBtn" style="margin-top:2px">🖼 แนบภาพ</button>
   <div style="display:flex;gap:9px;margin-top:14px">
     <button class="btn ghost sm" id="commitCancel" style="flex:1">ยกเลิก</button>
     <button class="btn gold sm" id="commitDo" style="flex:2">✓ COMMIT</button>
   </div>
 </div>
 
+<input type="file" id="imagePicker" accept="image/*" hidden>
 <div class="toast" id="toast" role="status"></div>
 
 <script type="module">
@@ -203,6 +228,7 @@ import { PET_BY_ID, XTY_V1_PETS } from '/xty/_shared/pets.js';
 import { AVATAR_BY_ID, XTY_AVATARS, AVATAR_FRAMES } from '/xty/_shared/avatars.js';
 import { cardById, cardDescriptorTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
+import { compressForChat, isSupportedImage, readableBytes } from '/xty/_shared/image-compress.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
@@ -410,6 +436,7 @@ function render() {
   if (!$('partyTools').hidden) renderManagement(p);
 
   renderLog(p);
+  renderEndingCover(p);
   renderBudget(p);
 }
 
@@ -515,6 +542,34 @@ function renderBudget(p) {
     : (allowance.left === 0 ? 'โควตารอบนี้หมดแล้ว — React ยังได้' : (allowance.phase === 'final' ? 'ฝากข้อความรอบสุดท้าย…' : 'ฝากไว้ในตี้…'));
 }
 
+/* Width/height are carried on the post so the browser can reserve the
+   right box before the file lands — the log must not jump while it is
+   being read. */
+function imageMarkup(post) {
+  if (!post.imageUrl || post.retracted) return '';
+  const ratio = post.imageW && post.imageH ? ` width="${post.imageW}" height="${post.imageH}"` : '';
+  return `<img class="post-image" loading="lazy" decoding="async"${ratio}`
+    + ` src="${esc(post.imageUrl)}" alt="ภาพจาก ${esc(post.alias || 'สมาชิกในตี้')}">`;
+}
+
+/* One viewer reused for every picture rather than one dialog per post. */
+function openImageViewer(src) {
+  const dialog = document.createElement('dialog');
+  dialog.className = 'xty-image-viewer';
+  dialog.innerHTML = `<img src="${esc(src)}" alt=""><button type="button" aria-label="ปิด">×</button>`;
+  document.body.appendChild(dialog);
+  dialog.addEventListener('close', () => dialog.remove());
+  dialog.addEventListener('click', event => {
+    if (event.target === dialog || event.target.tagName === 'BUTTON') dialog.close();
+  });
+  if (typeof dialog.showModal === 'function') dialog.showModal();
+}
+
+document.addEventListener('click', event => {
+  const image = event.target.closest('.post-image');
+  if (image) openImageViewer(image.src);
+});
+
 function renderLog(p) {
   const box = $('log');
   const active = isActiveParty(p);
@@ -575,6 +630,7 @@ function renderLog(p) {
         `<div class="meta"><span class="who">${esc(post.alias)}</span>` +
         `<span class="when">${stamp(post.sentAt)}</span></div>` +
         `<div class="txt">${tag}${body}</div>` +
+        imageMarkup(post) +
         `<div class="confirm-slot"></div>` +
         `<div class="rx" data-seq="${post.seq}"></div>` +
       `</div>`;
@@ -683,13 +739,150 @@ function openPicker(container, seq) {
 const sheet = $('commitSheet');
 $('commitBtn').addEventListener('click', () => { sheet.hidden = false; $('commitNote').focus(); });
 $('commitCancel').addEventListener('click', () => { sheet.hidden = true; $('commitNote').value = ''; });
+/* ---------- ending cover ----------
+   Two sources, as asked: any picture already posted in this party, or a
+   fresh upload. Both end up as the same coverType:'image'. */
+function renderEndingCover(p) {
+  const panel = $('endingCoverPanel');
+  const isLead = p.members.some(member => member.userId === myId && member.role === 'lead');
+  const finished = ['COMPLETED', 'DISSOLVED'].includes(String(p.state || '').toUpperCase());
+  panel.hidden = !(isLead && finished);
+  if (panel.hidden) return;
+
+  const seen = new Set();
+  const posted = (p.log || [])
+    .filter(post => post.imageUrl && !post.retracted)
+    .filter(post => (seen.has(post.imageUrl) ? false : seen.add(post.imageUrl)))
+    .reverse();
+
+  const pick = $('endingCoverPick');
+  pick.innerHTML = '';
+  posted.forEach(post => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.cover = post.imageUrl;
+    button.setAttribute('aria-pressed', String(p.coverType === 'image' && p.coverValue === post.imageUrl));
+    button.innerHTML = `<img src="${esc(post.imageUrl)}" alt="ภาพจาก ${esc(post.alias || 'ในตี้')}">`;
+    pick.appendChild(button);
+  });
+  $('endingCoverEmpty').hidden = posted.length > 0;
+}
+
+async function applyEndingCover(patch, button) {
+  if (button) button.disabled = true;
+  const result = await manageParty(code, 'change_cover', { coverType: 'image', ...patch });
+  if (button) button.disabled = false;
+  const failedImage = imageError(result.error);
+  if (failedImage) { toast(failedImage); return; }
+  if (result.error === 'IMAGE_NOT_IN_PARTY') { toast('ภาพนี้ไม่ได้อยู่ในตี้นี้'); return; }
+  if (result.error) { toast('เปลี่ยนปกไม่สำเร็จ'); return; }
+  render();
+  toast('เปลี่ยนปกฉากจบแล้ว');
+}
+
+$('endingCoverPick').addEventListener('click', event => {
+  const button = event.target.closest('[data-cover]');
+  if (button) applyEndingCover({ imageUrl: button.dataset.cover }, button);
+});
+
+$('endingCoverUpload').addEventListener('click', () => {
+  attachTarget = 'cover';
+  const picker = $('imagePicker');
+  picker.value = '';
+  picker.click();
+});
+
+/* ---------- attachments ----------
+   One hidden <input type=file> serves both composers; `attachTarget`
+   says which one asked. The picture is shrunk the moment it is picked,
+   so by send time there is nothing left to wait for. */
+const attachments = { msg: null, commit: null };
+let attachTarget = 'msg';
+
+function paintAttachment(which) {
+  const item = attachments[which];
+  const box = $(which === 'msg' ? 'msgAttach' : 'commitAttach');
+  const button = $(which === 'msg' ? 'msgAttachBtn' : 'commitAttachBtn');
+  box.hidden = !item;
+  if (button) button.classList.toggle('has-image', !!item);
+  if (!item) return;
+  $(which === 'msg' ? 'msgAttachImg' : 'commitAttachImg').src = item.preview;
+  $(which === 'msg' ? 'msgAttachName' : 'commitAttachName').textContent = item.name;
+  $(which === 'msg' ? 'msgAttachSize' : 'commitAttachSize').textContent =
+    `ย่อเหลือ ${readableBytes(item.bytes)} · ${item.width}×${item.height}`;
+}
+
+function clearAttachment(which) {
+  const item = attachments[which];
+  if (item?.preview) URL.revokeObjectURL(item.preview);
+  attachments[which] = null;
+  paintAttachment(which);
+}
+
+function pickImage(which) {
+  attachTarget = which;
+  const picker = $('imagePicker');
+  picker.value = '';
+  picker.click();
+}
+
+$('imagePicker').addEventListener('change', async event => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (!isSupportedImage(file)) { toast('ไฟล์นี้ไม่ใช่รูปภาพ'); return; }
+  const which = attachTarget;
+  const button = which === 'cover' ? $('endingCoverUpload')
+    : $(which === 'msg' ? 'msgAttachBtn' : 'commitAttachBtn');
+  if (button) button.disabled = true;
+  toast('กำลังย่อรูป…');
+  try {
+    const shrunk = await compressForChat(file);
+    /* A cover upload posts nothing to the log — it goes straight on. */
+    if (which === 'cover') {
+      if (button) button.disabled = false;
+      await applyEndingCover({
+        image: { data: shrunk.base64, width: shrunk.width, height: shrunk.height },
+      }, button);
+      return;
+    }
+    clearAttachment(which);
+    attachments[which] = {
+      base64: shrunk.base64, width: shrunk.width, height: shrunk.height,
+      bytes: shrunk.bytes, name: file.name || 'ภาพแนบ',
+      preview: URL.createObjectURL(file),
+    };
+    paintAttachment(which);
+    toast(`พร้อมส่ง · ${readableBytes(shrunk.bytes)}`);
+  } catch (error) {
+    toast(String(error?.message) === 'IMAGE_TOO_LARGE' ? 'รูปนี้ใหญ่เกินไป' : 'ย่อรูปไม่สำเร็จ');
+  } finally {
+    if (button) button.disabled = false;
+  }
+});
+
+$('msgAttachBtn').addEventListener('click', () => pickImage('msg'));
+$('msgAttachClear').addEventListener('click', () => clearAttachment('msg'));
+$('commitAttachBtn').addEventListener('click', () => pickImage('commit'));
+$('commitAttachClear').addEventListener('click', () => clearAttachment('commit'));
+
+function imageError(code) {
+  if (code === 'IMAGE_UPLOAD_NOT_CONFIGURED') return 'ระบบภาพยังไม่ได้ตั้งค่า';
+  if (code === 'IMAGE_TOO_LARGE') return 'รูปใหญ่เกินไป';
+  if (code === 'UNSUPPORTED_IMAGE' || code === 'BAD_IMAGE') return 'ไฟล์รูปไม่ถูกต้อง';
+  if (code === 'IMAGE_UPLOAD_FAILED') return 'อัปโหลดรูปไม่สำเร็จ ลองใหม่อีกครั้ง';
+  return '';
+}
+
 $('commitDo').addEventListener('click', async () => {
   $('commitDo').disabled = true;
   const note = $('commitNote').value.trim();
-  const res = await postToParty(code, { body: note || '✓', kind: 'commit' });
+  const res = await postToParty(code, { body: note || '✓', kind: 'commit', image: attachments.commit });
   $('commitDo').disabled = false;
+  const failedImage = imageError(res.error);
+  if (failedImage) { toast(failedImage); return; }
   sheet.hidden = true;
   $('commitNote').value = '';
+  clearAttachment('commit');
   if (res.error === 'ALREADY_COMMITTED') { toast('วันนี้ Commit ไปแล้ว'); return; }
   render();
   toast('Commit แล้ว — เจอกันพรุ่งนี้');
@@ -704,10 +897,14 @@ msg.addEventListener('input', () => {
 
 async function send() {
   const body = msg.value.trim();
-  if (!body) return;
+  /* A picture alone is a complete message. */
+  if (!body && !attachments.msg) return;
   $('send').disabled = true;
-  const res = await postToParty(code, { body, kind: 'message' });
+  const res = await postToParty(code, { body, kind: 'message', image: attachments.msg });
   $('send').disabled = false;
+  const failedImage = imageError(res.error);
+  if (failedImage) { toast(failedImage); return; }
+  if (!res.error) clearAttachment('msg');
   if (res.error === 'NO_BUDGET') {
     toast(String(getParty(code)?.state || '').toUpperCase() === 'COMPLETED'
       ? 'Final Message หมดแล้ว — Party Log เก็บไว้อ่านได้'

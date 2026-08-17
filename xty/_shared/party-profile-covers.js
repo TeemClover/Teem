@@ -83,7 +83,12 @@ function syncLeadCover() {
   const signature = `${p.coverType || ''}|${p.coverValue || p.leadCardId || ''}|${lead.alias}|${mark}`;
   if (first.dataset.coverV3 === signature) return;
 
-  if (p.coverType === 'core7_card' && p.coverValue) {
+  if (p.coverType === 'image' && p.coverValue) {
+    first.className = 'seat-card-wrap xty-profile-click'; first.dataset.coverV3 = signature;
+    const src = String(p.coverValue).replace(/"/g, '&quot;');
+    first.innerHTML = `<div class="xty-image-seat"><img src="${src}" alt="ปกฉากจบ" loading="lazy" decoding="async"></div>`
+      + `<span class="seat-card-name">${lead.alias} · ${mark}</span>`;
+  } else if (p.coverType === 'core7_card' && p.coverValue) {
     const card = core7CardById(p.coverValue); if (!card) return;
     first.className = 'seat-card-wrap xty-profile-click'; first.dataset.coverV3 = signature;
     first.innerHTML = `<div class="xty-core7-seat">${cardSVG(card.id, { width: 300, showNumber: true })}</div>`

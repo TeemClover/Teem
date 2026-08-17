@@ -102,6 +102,11 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS idx_xty_posts_day ON xty_posts(party_id, day_key, kind)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS idx_xty_one_commit_per_day
      ON xty_posts(party_id, user_id, day_key) WHERE kind = 'commit'`,
+  // Chat images. The bytes live in blob storage; only the URL and the
+  // intrinsic size ride along so the log can reserve space before load.
+  `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS image_url TEXT`,
+  `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS image_w INTEGER`,
+  `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS image_h INTEGER`,
   `CREATE TABLE IF NOT EXISTS xty_reactions (
     party_id TEXT NOT NULL, seq INTEGER NOT NULL, user_id TEXT NOT NULL,
     emoji TEXT NOT NULL, PRIMARY KEY (party_id, seq, user_id, emoji)

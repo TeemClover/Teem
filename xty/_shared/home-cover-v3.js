@@ -60,6 +60,14 @@ function xtyCardMarkup(card) {
 }
 
 function coverMarkup(party) {
+  /* An ending picture set by the lead outranks any card: it is what the
+     party chose to be remembered by. */
+  if (party.coverType === 'image' && party.coverValue) {
+    return `<div class="xty-home-cover xty-home-image-cover">`
+      + `<img src="${esc(party.coverValue)}" alt="ปกฉากจบของ ${esc(party.name || 'ตี้')}" loading="lazy" decoding="async">`
+      + '</div>';
+  }
+
   if (party.coverType === 'core7_card' && party.coverValue) {
     const card = core7CardById(party.coverValue);
     if (card) return `<div class="xty-home-cover xty-home-core7-cover">${cardSVG(card.id, { width: 300, showNumber: true })}</div>`;
