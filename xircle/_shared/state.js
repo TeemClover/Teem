@@ -1,4 +1,9 @@
 /* XIRCLE × XTY PARTNER EXPERIENCE — state.js
+   v8 navigation model:
+   first run = one straight journey
+   Xircle → Human Care → X-VISOR → RoutineX → White Cat · XTY
+   full shortcuts unlock only after all five milestones have been seen.
+
    State only. UI belongs to each route.
    memory  = health-like simulator choices; never persisted
    session = current journey state for this visit
@@ -9,7 +14,7 @@
 
   var SESSION_KEY = "xircle.session.v1";
   var LOCAL_KEY = "xircle.local.v1";
-  var HANDOFF_TTL = 7 * 24 * 60 * 60 * 1000;
+  var HANDOFF_TTL = 35 * 24 * 60 * 60 * 1000;
 
   function clone(obj) { return Object.assign({}, obj); }
   function safeRead(storage, key, fallback) {
@@ -54,15 +59,16 @@
     return p || "/";
   }
 
-  function isProgressRoute(path) {
-    return [
-      "/xircle",
-      "/xircle/start",
-      "/xircle/care",
-      "/xircle/opportunity",
-      "/xircle/routinex",
-      "/xircle/care/party"
-    ].indexOf(path) !== -1;
+  function isXircleRoute(path) {
+    return path === "/xircle" || path.indexOf("/xircle/") === 0;
+  }
+
+  function normalizedHrefPath(href) {
+    try {
+      return String(new URL(href, location.origin).pathname || "/").replace(/\/+$/, "") || "/";
+    } catch (e) {
+      return String(href || "").split("?")[0].replace(/\/+$/, "") || "/";
+    }
   }
 
   function addShortcut(nav, href, label, className) {
@@ -71,36 +77,183 @@
     a.textContent = label;
     if (className) a.className = className;
     nav.appendChild(a);
+    return a;
+  }
+
+  function currentHandoff() {
+    return validHandoff(local.xtyHandoff) ? local.xtyHandoff : null;
+  }
+
+  function whiteCatActionUrl() {
+    var h = currentHandoff();
+    return h
+      ? "/xty/join/?c=" + encodeURIComponent(h.partyCode)
+      : "/xty/new/?template=xircle_xvisor";
+  }
+
+  function whiteCatBridgeUrl() {
+    return currentHandoff()
+      ? "/xircle/care/party/?mode=join"
+      : "/xircle/care/party/?mode=create";
+  }
+
+  function journeyFullyUnlocked() {
+    return !!(
+      local.journeyCompleted &&
+      local.careIntroSeen &&
+      local.xvisorSimCompleted &&
+      local.routineCompleted &&
+      local.whiteCatIntroSeen
+    );
+  }
+
+  function linearNext() {
+    if (!local.journeyCompleted) {
+      return { href: "/xircle/", label: "เริ่ม · Xircle", step: 1, total: 5 };
+    }
+    if (!local.careIntroSeen) {
+      return { href: "/xircle/care/", label: "ต่อ · Human Care", step: 2, total: 5 };
+    }
+    if (!local.xvisorSimCompleted) {
+      return { href: "/xircle/opportunity/", label: "ต่อ · X-VISOR", step: 3, total: 5 };
+    }
+    if (!local.routineCompleted) {
+      return { href: "/xircle/routinex/", label: "ต่อ · RoutineX", step: 4, total: 5 };
+    }
+    if (!local.whiteCatIntroSeen) {
+      var h = currentHandoff();
+      return {
+        href: whiteCatBridgeUrl(),
+        label: h ? "ต่อ · แมวขาว · ตี้ " + h.partyCode : "ต่อ · แมวขาว · XTY",
+        step: 5,
+        total: 5,
+        cat: true
+      };
+    }
+    return null;
+  }
+
+  function renderUnlockVisibility() {
+    var open = journeyFullyUnlocked();
+    var nodes = document.querySelectorAll("[data-after-unlock]");
+    Array.prototype.forEach.call(nodes, function (el) {
+      el.hidden = !open;
+    });
+    try {
+      document.documentElement.classList.toggle("xircle-journey-unlocked", open);
+      document.documentElement.classList.toggle("xircle-journey-linear", !open);
+    } catch (e) {}
   }
 
   function renderProgressNav() {
     var path = normalizedPath();
-    if (!isProgressRoute(path)) return;
+    if (!isXircleRoute(path)) return;
     var nav = document.querySelector(".xp-nav");
     if (!nav) return;
 
     nav.innerHTML = "";
-    nav.setAttribute("aria-label", "ทางลัดที่ปลดล็อกแล้ว");
 
-    var h = validHandoff(local.xtyHandoff) ? local.xtyHandoff : null;
-
-    // First visit is intentionally linear. Shortcuts appear only after milestones.
-    if (local.journeyCompleted && path !== "/xircle/opportunity") {
-      addShortcut(nav, "/xircle/opportunity/", "X-VISOR");
-    }
-    if (local.xvisorSimCompleted && path !== "/xircle/routinex") {
-      addShortcut(nav, "/xircle/routinex/", "RoutineX");
-    }
-
-    if (h) {
-      if (path !== "/xircle/care/party") {
-        addShortcut(nav, "/xircle/care/party/?mode=join", "เข้าตี้ " + h.partyCode, "cat");
+    if (!journeyFullyUnlocked()) {
+      nav.setAttribute("aria-label", "ทางไปต่อ");
+      var next = linearNext();
+      if (next && normalizedHrefPath(next.href) !== path) {
+        var a = addShortcut(nav, next.href, next.label, next.cat ? "cat" : "");
+        a.setAttribute("data-journey-next", String(next.step));
       }
-    } else if ((local.routineCompleted || local.whiteCatIntroSeen) && path !== "/xircle/care/party") {
-      addShortcut(nav, "/xircle/care/party/?mode=create", "แมวขาว · XTY", "cat");
+      nav.hidden = nav.children.length === 0;
+      renderUnlockVisibility();
+      return;
     }
+
+    nav.setAttribute("aria-label", "ทางลัด");
+
+    if (path !== "/xircle") addShortcut(nav, "/xircle/", "Xircle");
+    if (path !== "/xircle/opportunity") addShortcut(nav, "/xircle/opportunity/", "X-VISOR");
+    if (path !== "/xircle/routinex") addShortcut(nav, "/xircle/routinex/", "RoutineX");
+    if (path !== "/xircle/learn" && path.indexOf("/xircle/doc") !== 0) {
+      addShortcut(nav, "/xircle/learn/", "Library");
+    }
+
+    var h = currentHandoff();
+    var cat = addShortcut(
+      nav,
+      whiteCatActionUrl(),
+      h ? "เข้าตี้ " + h.partyCode : "แมวขาว · XTY",
+      "cat"
+    );
+    cat.setAttribute("data-whitecat-link", "1");
+    cat.setAttribute("data-nav-cat", "1");
 
     nav.hidden = nav.children.length === 0;
+    renderUnlockVisibility();
+  }
+
+  function markCurrentRouteSeen() {
+    var path = normalizedPath();
+    var changed = false;
+
+    if (path === "/xircle/care" && !local.careIntroSeen) {
+      local.careIntroSeen = true;
+      changed = true;
+    }
+    if (path === "/xircle/care/party" && !local.whiteCatIntroSeen) {
+      local.whiteCatIntroSeen = true;
+      changed = true;
+    }
+
+    // Migration for people who finished the old route before Human Care
+    // became an explicit milestone in the straight-line journey.
+    if (
+      !local.careIntroSeen &&
+      local.journeyCompleted &&
+      local.xvisorSimCompleted &&
+      local.routineCompleted &&
+      local.whiteCatIntroSeen
+    ) {
+      local.careIntroSeen = true;
+      changed = true;
+    }
+
+    if (changed) safeWrite("localStorage", LOCAL_KEY, local);
+  }
+
+  function wireWhiteCatActions() {
+    var h = currentHandoff();
+    var url = whiteCatActionUrl();
+
+    var links = document.querySelectorAll("[data-whitecat-link]");
+    Array.prototype.forEach.call(links, function (a) {
+      if (a.tagName === "A") a.href = url;
+      a.setAttribute("data-whitecat-resolved", h ? "join" : "create");
+      if (a.hasAttribute("data-nav-cat")) {
+        a.textContent = h ? "เข้าตี้ " + h.partyCode : "แมวขาว · XTY";
+      } else if (a.classList.contains("xp-btn")) {
+        a.textContent = h ? "เข้าตี้ " + h.partyCode + " →" : "เปิดตี้แมวขาว →";
+      }
+    });
+
+    var cutouts = document.querySelectorAll(
+      ".xp-cat-cutout-stage, .xp-whitecat-visual, [data-whitecat-cutout]"
+    );
+    Array.prototype.forEach.call(cutouts, function (el) {
+      el.setAttribute("role", "link");
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("aria-label", h ? "เข้าตี้แมวขาว " + h.partyCode : "เปิดตี้แมวขาว");
+      el.setAttribute("data-whitecat-cutout", "1");
+      el.style.cursor = "pointer";
+    });
+  }
+
+  function activateWhiteCat(target, event) {
+    if (!target) return false;
+    if (!target.closest) return false;
+    var hit = target.closest(
+      "[data-whitecat-link], .xp-cat-cutout-stage, .xp-whitecat-visual, [data-whitecat-cutout]"
+    );
+    if (!hit) return false;
+    if (event) event.preventDefault();
+    location.href = whiteCatActionUrl();
+    return true;
   }
 
   var XState = {
@@ -121,6 +274,7 @@
         local.routineCompleted = true;
         safeWrite("localStorage", LOCAL_KEY, local);
         renderProgressNav();
+        wireWhiteCatActions();
       }
     },
 
@@ -129,6 +283,7 @@
       local[key] = value;
       safeWrite("localStorage", LOCAL_KEY, local);
       renderProgressNav();
+      wireWhiteCatActions();
     },
 
     touchVisit: function () {
@@ -162,6 +317,7 @@
           local.xtyHandoff = null;
           safeWrite("localStorage", LOCAL_KEY, local);
           renderProgressNav();
+          wireWhiteCatActions();
         }
         return null;
       }
@@ -172,6 +328,7 @@
       local.xtyHandoff = null;
       safeWrite("localStorage", LOCAL_KEY, local);
       renderProgressNav();
+      wireWhiteCatActions();
     },
 
     partyJoinUrl: function () {
@@ -179,13 +336,23 @@
       return h ? "/xty/join/?c=" + encodeURIComponent(h.partyCode) : null;
     },
 
+    partyCreateUrl: function () {
+      return "/xty/new/?template=xircle_xvisor";
+    },
+
+    whiteCatActionUrl: whiteCatActionUrl,
+    whiteCatBridgeUrl: whiteCatBridgeUrl,
+    journeyFullyUnlocked: journeyFullyUnlocked,
+    linearNext: linearNext,
+
     partyBridgeUrl: function (mode) {
       var h = this.getXtyHandoff();
       if (mode === "join" && h) return "/xircle/care/party/?mode=join";
       return "/xircle/care/party/?mode=create";
     },
 
-    renderProgressNav: renderProgressNav
+    renderProgressNav: renderProgressNav,
+    wireWhiteCatActions: wireWhiteCatActions
   };
 
   window.XState = XState;
@@ -193,11 +360,18 @@
   function captureXtyInvite() {
     try {
       var url = new URL(window.location.href);
-      var code = url.searchParams.get("xty");
+      var path = String(url.pathname || "");
+      var mode = url.searchParams.get("mode");
+      var code = url.searchParams.get("xty") || url.searchParams.get("invite") || "";
+
+      if (!/^\d{5}$/.test(String(code || "")) && path.indexOf("/xircle") === 0 && mode === "join") {
+        code = url.searchParams.get("c") || "";
+      }
+
       if (!/^\d{5}$/.test(String(code || ""))) return;
 
       local.xtyHandoff = {
-        partyCode: code,
+        partyCode: String(code),
         source: "xircle_invite",
         xvisor: url.searchParams.get("xvisor") === "1",
         receivedAt: Date.now()
@@ -205,11 +379,29 @@
       safeWrite("localStorage", LOCAL_KEY, local);
 
       url.searchParams.delete("xty");
+      url.searchParams.delete("invite");
+      url.searchParams.delete("c");
       url.searchParams.delete("xvisor");
       history.replaceState(null, "", url.pathname + (url.search ? url.search : "") + url.hash);
     } catch (e) {}
   }
 
+  document.addEventListener("click", function (event) {
+    activateWhiteCat(event.target, event);
+  }, true);
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    var target = event.target;
+    if (!target || !target.matches || !target.matches("[data-whitecat-cutout]")) return;
+    event.preventDefault();
+    location.href = whiteCatActionUrl();
+  });
+
   captureXtyInvite();
+  markCurrentRouteSeen();
   renderProgressNav();
+  wireWhiteCatActions();
+  setTimeout(wireWhiteCatActions, 0);
+  setTimeout(wireWhiteCatActions, 250);
 })();
