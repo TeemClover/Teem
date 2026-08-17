@@ -29,13 +29,21 @@
 <body>
 <header class="top"><a class="mark" href="/xty/"><img src="/xty/assets/xty-logo.png" alt="XTY"></a><a class="back" href="/profile/">โปรไฟล์</a></header>
 <main class="wrap">
-  <p class="kicker">SECONDARY COLLECTION</p>
+  <p class="kicker">XTY COLLECTION</p>
   <h1 class="title">การ์ดที่พบระหว่างทาง</h1>
   <p class="lede" id="count">กำลังเปิด Collection จากเครื่องนี้…</p>
   <section class="card">
     <div class="collection-grid" id="cards"></div>
   </section>
   <p class="note">Avatar เลือกใช้ฟรีและไม่นับเป็นการ์ด · Common ใช้เป็น Avatar/NPC · Rare, Epic และ Legendary ใช้เป็น Party Cover ได้</p>
+
+  <section class="card" id="firstHandUnlock" hidden>
+    <span class="label">FIRST HAND COLLECTION · LV.2</span>
+    <h2 class="title" style="font-size:22px;margin-bottom:8px">การ์ด First Hand Collection ใช้เป็นปกตี้ XTY ได้แล้ว</h2>
+    <p class="whisper" style="margin:0 0 14px">ไปเล่น CORE7 เพื่อเก็บการ์ด First Hand เพิ่ม แล้วกลับมาเลือกใช้เป็นปกตี้ตอนสร้างหรือจัดการตี้</p>
+    <a class="btn gold" href="/core7/">เล่น CORE7 · เก็บ First Hand</a>
+  </section>
+
   <details class="collection-debug">
     <summary>ช่องทดสอบ Collection</summary>
     <p class="whisper">สำหรับ Dev/Test เท่านั้น · พิมพ์รหัสแล้วกดยืนยัน</p>
@@ -81,6 +89,7 @@ function render() {
      for every unfound card would hand out the whole set list on day one —
      the size of the collection is part of what there is to discover. */
   $('count').textContent = owned.size ? `${owned.size} ใบที่พบ` : 'ยังไม่มีการ์ดในคอลเลกชันนี้';
+  $('firstHandUnlock').hidden = Number(profile?.level || 1) < 2;
   XTY_CARDS.forEach(card => {
     if (!owned.has(card.cardId)) return;
     const button = document.createElement('button'); button.type = 'button'; button.className = 'collection-card';
