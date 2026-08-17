@@ -65,7 +65,7 @@ function levelOneCover(profile) {
     if (label?.classList?.contains('label')) label.hidden = true;
     const companionSection = npcPick.closest('.notebook-card');
     const intro = companionSection?.querySelector(':scope > .whisper');
-    if (intro) intro.textContent = 'LV.1 เลือก Pet เป็นเพื่อนร่วมทางได้ · Animal Card จะเปิดหลัง Quest Clear';
+    if (intro) intro.textContent = 'เลือก Pet ได้ตามปกติ · ถ้ามี Animal Card ใน Collection ใช้เป็นสกินของ Pet ได้';
   }
 }
 
@@ -113,7 +113,9 @@ export async function createPartyV2(options = {}) {
     ? null
     : (override && Object.prototype.hasOwnProperty.call(override, 'leadCardId') ? override.leadCardId : leadCardId);
   const finalCore7CardId = levelOne ? null : (override?.core7CardId || core7CardId || null);
-  const finalNpcCardId = levelOne ? null : (npcCardId || null);
+  /* Pet cards are skins at every level. The card already carries its species,
+     so LV.1 must not silently discard a Collection choice. */
+  const finalNpcCardId = npcCardId || null;
   const finalDurationDays = typeof window !== 'undefined' && Number(window.__xtyDurationOverride)
     ? Number(window.__xtyDurationOverride) : Number(durationDays || 7);
   const finalPreset = typeof window !== 'undefined' && window.__xtyPresetOverride
