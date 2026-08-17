@@ -1,0 +1,11 @@
+/* 2026-08-17 · Reference Library reading mode
+   Story pages can stay cinematic. Deep reference pages should feel like a readable book,
+   not replay the same full-screen scene on every route. */
+.x-cinema,.x-zone-banner{display:none!important}
+html body .hero{min-height:auto!important}
+.x-media-wrap img,html body .x-media>img[data-parallax],html body .x-wide-media>img[data-parallax]{transform:none!important;will-change:auto!important}
+.next{position:relative;overflow:hidden}
+.next>.wrap{position:relative;z-index:2;padding-right:min(28vw,270px)}
+.next:before{content:"";position:absolute;right:max(14px,calc((100vw - 1180px)/2));bottom:-18px;width:210px;height:210px;background:url('/xircle/assets/v5/whitecat-guide-cutout.webp?v=20260817-final') center/contain no-repeat;opacity:.96;pointer-events:none;z-index:1}
+.next:after{content:"แมวขาวแนะนำทางต่อ";position:absolute;right:max(22px,calc((100vw - 1180px)/2));top:24px;padding:7px 10px;border-radius:999px;background:rgba(120,229,200,.12);color:#8de4c9;font:800 9px/1 var(--x-font-ui,"Manrope",sans-serif);letter-spacing:.09em;z-index:2}
+@media(max-width:720px){.next>.wrap{padding-right:0;padding-bottom:155px}.next:before{right:14px;width:150px;height:150px}.next:after{right:14px;top:auto;bottom:128px}.x-source-footer summary{align-items:flex-start;flex-direction:column;padding:13px 0;gap:4px}}
