@@ -84,11 +84,12 @@ test('all five shelves are always present, empty ones locked with a count', () =
     assert.ok(shelf.total > 0, 'a locked shelf still states how many exist');
     assert.equal(shelf.open, false, 'locked shelves stay shut');
   }
-  /* Nothing has been minted at these tiers, so they announce that rather
-     than showing a 0/0 the player could never move. */
+  /* Epic and Legendary are printed now, so they behave like any other
+     unowned tier: locked, shut, but stating the size of the set. */
   for (const shelf of [epic, legendary]) {
     assert.equal(shelf.locked, true);
-    assert.equal(shelf.total, 0, 'no cards exist at this tier yet');
+    assert.equal(shelf.owned, 0);
+    assert.ok(shelf.total > 0, 'the tier states how many exist');
   }
 });
 
@@ -210,12 +211,18 @@ test('a card resolves to the plain animal for chat and the skin for seats', asyn
   assert.equal(resolveMemberAvatar('not_a_thing'), null, 'unknown values fall through to the caller');
 });
 
-test('a common card is the same picture, so seats and chat match', async () => {
+test('every printed card has its own art, and chat still shows the animal', async () => {
   const { resolveMemberAvatar } = await import('/home/user/Teem/xty/_shared/card-picker.js');
-  const common = XTY_CARDS.find(c => c.rarity === 'common');
-  const resolved = resolveMemberAvatar(common.cardId);
-  assert.equal(resolved.speciesArt, resolved.cardArt,
-    'common art is the animal art — equipping one changes nothing visually');
+  const { avatarById } = await import('/home/user/Teem/xty/_shared/avatars.js');
+  /* Commons used to reuse the avatar drawing; they are painted now, so the
+     seat differs from the log at every tier — which is the intent. */
+  for (const rarity of ['common', 'rare', 'epic', 'legendary']) {
+    const card = XTY_CARDS.find(c => c.rarity === rarity);
+    const resolved = resolveMemberAvatar(card.cardId);
+    assert.equal(resolved.speciesArt, avatarById(card.species).art, `${rarity}: chat keeps the animal`);
+    assert.notEqual(resolved.cardArt, resolved.speciesArt, `${rarity}: the seat shows the card`);
+    assert.equal(resolved.color, card.color, `${rarity}: the colour rides along for the seat border`);
+  }
 });
 
 test('the stored avatar is the card when equipped, the animal otherwise', async () => {

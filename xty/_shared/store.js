@@ -8,7 +8,7 @@
 
 import { PET_BY_ID, XTY_V1_PET_IDS } from './pets.js';
 import { AVATAR_BY_ID, avatarFallback } from './avatars.js';
-import { XTY_CARDS, canonicalCardId, cardById, cardNameTh } from './cards.js';
+import { XTY_CARDS, canonicalCardId, cardById, cardNameTh, rollRarity } from './cards.js';
 import { activityContextForParty } from './activities.js';
 
 const K_PROFILE = 'mc_xty_profile';
@@ -865,13 +865,52 @@ export function partyCompletionState(party, at = new Date()) {
 
 /* ---------- unique local-first card rewards ---------- */
 
-function seededIndex(value, length) {
+function seededHash(value) {
   let hash = 2166136261;
   for (const char of String(value)) {
     hash ^= char.codePointAt(0);
     hash = Math.imul(hash, 16777619);
   }
-  return length ? (hash >>> 0) % length : 0;
+  return hash >>> 0;
+}
+
+function seededIndex(value, length) {
+  return length ? seededHash(value) % length : 0;
+}
+
+/* A stable 0..1 from the same seed, so the rarity roll is as unrerollable
+   as the card pick already was: asking twice for the same quest gives the
+   same answer rather than a fresh spin. */
+function seededUnit(value) {
+  return seededHash(value) / 4294967296;
+}
+
+/* Roll the tier first at the published odds, then pick inside it. If that
+   tier holds nothing new, walk outward to the nearest tier that does —
+   a player who has finished a tier still deserves a card, and skipping
+   the draw entirely would be worse than shifting it. Odds never adapt to
+   past draws; there is no pity here, only exhaustion. */
+function pickRewardCard(eligible, seed) {
+  if (!eligible.length) return null;
+  const byRarity = new Map();
+  for (const card of eligible) {
+    const list = byRarity.get(card.rarity) || [];
+    list.push(card);
+    byRarity.set(card.rarity, list);
+  }
+  const ladder = ['common', 'rare', 'epic', 'legendary'];
+  const rolled = rollRarity(() => seededUnit(`${seed}|rarity`));
+  const start = Math.max(0, ladder.indexOf(rolled));
+  const order = [start];
+  for (let step = 1; step < ladder.length; step += 1) {
+    if (start - step >= 0) order.push(start - step);
+    if (start + step < ladder.length) order.push(start + step);
+  }
+  for (const index of order) {
+    const list = byRarity.get(ladder[index]);
+    if (list && list.length) return list[seededIndex(seed, list.length)];
+  }
+  return eligible[seededIndex(seed, eligible.length)];
 }
 
 export function cardRewardForQuest(questId, partyCode = '') {
@@ -898,9 +937,9 @@ export function prepareCardReward({ questId = 'milestone', partyCode = '' } = {}
   const eligible = XTY_CARDS.filter(card => card.eligibility.reward && !owned.has(card.cardId));
   const earnedAt = now();
   const rewardId = `reward_${uid(12)}`;
-  const card = eligible.length
-    ? eligible[seededIndex(`${profile.id}|${normalizedQuest}|${normalizedParty}|${owned.size}`, eligible.length)]
-    : null;
+  const card = pickRewardCard(
+    eligible, `${profile.id}|${normalizedQuest}|${normalizedParty}|${owned.size}`,
+  );
   const reward = {
     rewardId,
     questId: normalizedQuest,

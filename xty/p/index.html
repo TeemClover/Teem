@@ -251,6 +251,14 @@ function seatAvatarMarkup(value) {
   return avatarMarkup(value);
 }
 
+/* The card's colour is the only property it carries, and this is where it
+   is spent: the ring around the member's seat. A starter animal has no
+   colour, so it keeps whatever frame the player picked. */
+function seatColorFor(value, fallback) {
+  const resolved = resolveMemberAvatar(value);
+  return resolved?.color || fallback || 'green';
+}
+
 function stamp(iso) {
   const d = new Date(iso);
   const t = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
@@ -353,7 +361,7 @@ function render() {
     d.className = 'seat xty-card' + (m.role === 'lead' ? ' lead' : ' member');
     d.innerHTML =
       `<span class="slot-label">${m.role === 'lead' ? '★ LEAD' : `MEMBER ${index + 1}`}</span>` +
-      `<div class="av member-avatar" data-color="${esc(m.avatarColor || 'green')}">${seatAvatarMarkup(m.avatar)}</div>` +
+      `<div class="av member-avatar" data-color="${esc(seatColorFor(m.avatar, m.avatarColor))}">${seatAvatarMarkup(m.avatar)}</div>` +
       `<div class="al" title="${esc(m.alias)}">${esc(m.alias)}</div>` +
       `<div class="rl">${m.role === 'lead' ? 'หัวตี้' : 'สมาชิก'}</div>` +
       `<div class="commit-state" aria-label="${committed ? 'Commit แล้ว' : 'ยังไม่ Commit'}">${committed ? '✓' : '○'}</div>`;

@@ -41,11 +41,17 @@ test('legacy profile migrates without inventing a starter card', () => {
   );
 });
 
-test('catalog contains 48 common and 12 rare cards with a minimal canonical card face', () => {
-  assert.equal(cards.XTY_CARDS.length, 60);
-  assert.equal(cards.XTY_COMMON_CARDS.length, 48);
+test('catalog matches the printed set with a minimal canonical card face', () => {
+  /* Counts follow the art that exists, so they are derived rather than
+     hard-coded — the set is meant to grow without breaking this. */
+  const total = cards.XTY_COMMON_CARDS.length + cards.XTY_RARE_CARDS.length
+    + cards.XTY_EPIC_CARDS.length + cards.XTY_LEGENDARY_CARDS.length;
+  assert.equal(cards.XTY_CARDS.length, total);
+  assert.equal(cards.XTY_COMMON_CARDS.length, 40);
   assert.equal(cards.XTY_RARE_CARDS.length, 12);
-  assert.equal(new Set(cards.XTY_CARDS.map(card => card.cardId)).size, 60);
+  assert.equal(cards.XTY_EPIC_CARDS.length, 12);
+  assert.equal(cards.XTY_LEGENDARY_CARDS.length, 8);
+  assert.equal(new Set(cards.XTY_CARDS.map(card => card.cardId)).size, total);
   assert.equal(cards.XTY_COMMON_CARDS.every(card => !card.eligibility.partyCover), true);
   assert.equal(cards.XTY_RARE_CARDS.every(card => card.eligibility.partyCover), true);
   assert.equal(cards.XTY_RARE_CARDS.every(card => /\/xty\/assets\/cards\/rare\/.+\.webp$/.test(card.imageFull)), true);
@@ -62,13 +68,20 @@ test('catalog contains 48 common and 12 rare cards with a minimal canonical card
     'usableAsPartyCover', 'playableInCore7', 'status', 'unlockMethod',
   ].every(key => key in card)), true);
   assert.equal(cards.cardById('ORANGE_CAT_GREEN_001').cardId, 'ORANGE_CAT_GREEN_COMMON_001');
-  assert.equal(cards.cardNameTh('ORANGE_CAT_GREEN_COMMON_001'), 'แมวส้ม');
-  assert.match(cards.cardDescriptorTh('ORANGE_CAT_GREEN_COMMON_001'), /แมวส้ม · สีเขียว · COMMON/);
+  assert.equal(cards.cardNameTh('ORANGE_CAT_GREEN_COMMON_001'), 'แมว');
+  assert.match(cards.cardDescriptorTh('ORANGE_CAT_GREEN_COMMON_001'), /แมว · สีเขียว · COMMON/);
+  /* The face is the picture now: no name plate, no corner badge. The
+     colour stays as a data attribute because the party seat draws its
+     border from it, and the description stays on aria-label so the card
+     is still announced. */
   const markup = cardUi.cardMarkup('ORANGE_CAT_GREEN_COMMON_001');
   assert.match(markup, /data-color="green"/);
-  assert.match(markup, /<b>แมวส้ม<\/b>/);
-  assert.match(markup, /class="rarity-badge">COMMON/);
-  assert.doesNotMatch(markup, /card-accessory|color-badge|card-copy"><b>.*<small>/);
+  assert.match(markup, /data-species="orange_cat"/);
+  assert.match(markup, /aria-label="[^"]*แมว[^"]*"/);
+  assert.match(markup, /<img class="card-art"/);
+  assert.doesNotMatch(markup, /card-copy/, 'no name plate on the card');
+  assert.doesNotMatch(markup, /rarity-badge/, 'no corner badge on the card');
+  assert.doesNotMatch(markup, /card-accessory|color-badge/);
 });
 
 test('activity metadata is one canonical source with legacy aliases and a safe custom fallback', () => {
@@ -112,12 +125,15 @@ test('a rewarded card is persisted before reveal and cannot be rerolled', () => 
 
 test('collection exhaustion returns complete instead of issuing a duplicate', () => {
   store.createProfile({ alias: 'Keen', avatarId: 'orange_cat', avatarFrame: 'green' });
-  for (let index = 0; index < 60; index += 1) {
+  /* Draw the whole printed set, however big it currently is — pinning a
+     number here breaks every time a card is added, which is expected. */
+  const printed = cards.XTY_CARDS.length;
+  for (let index = 0; index < printed; index += 1) {
     const reward = store.prepareCardReward({ questId: `quest-${index}`, partyCode: String(index).padStart(5, '0') });
-    assert.ok(reward.cardId);
+    assert.ok(reward.cardId, `draw ${index} should still find an unowned card`);
   }
-  assert.equal(store.ownedCardIds().length, 60);
-  assert.equal(new Set(store.ownedCardIds()).size, 60);
+  assert.equal(store.ownedCardIds().length, printed);
+  assert.equal(new Set(store.ownedCardIds()).size, printed);
   const exhausted = store.prepareCardReward({ questId: 'quest-exhausted', partyCode: '99999' });
   assert.equal(exhausted.cardId, null);
   assert.equal(exhausted.complete, true);

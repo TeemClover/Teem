@@ -298,6 +298,7 @@ export function resolveMemberAvatar(value) {
       cardArt: card.imageFull || card.art,
       cardId: card.cardId,
       rarity: card.rarity,
+      color: card.color,
     };
   }
   /* AVATAR_BY_ID directly, not avatarById — that helper falls back to the
@@ -305,7 +306,7 @@ export function resolveMemberAvatar(value) {
      is created with) into the wrong animal instead of leaving it alone. */
   const animal = AVATAR_BY_ID[String(value || '')];
   return animal
-    ? { species: animal.id, speciesArt: animal.art, cardArt: animal.art, cardId: null, rarity: 'starter' }
+    ? { species: animal.id, speciesArt: animal.art, cardArt: animal.art, cardId: null, rarity: 'starter', color: '' }
     : null;
 }
 
