@@ -6,10 +6,19 @@ const handlers = {
   status: discordStatus,
 };
 
-export default function handler(req, res) {
+function routeOf(req) {
+  const pathname = new URL(req.url || '/', 'https://myclover.local').pathname;
+  const marker = '/api/discord/';
+  if (pathname.startsWith(marker)) {
+    return decodeURIComponent(pathname.slice(marker.length).split('/').filter(Boolean)[0] || '');
+  }
   const raw = req.query?.path;
-  const route = Array.isArray(raw) ? raw[0] : raw;
-  const target = handlers[route];
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return String(value || '').split('/').filter(Boolean)[0] || '';
+}
+
+export default function handler(req, res) {
+  const target = handlers[routeOf(req)];
 
   if (!target) {
     res.status(404).json({ error: 'not_found' });

@@ -1,4 +1,5 @@
 import { clean, sendJson } from './core.js';
+import { dissolveXtyParty } from './xty-dissolve.js';
 import {
   adminLoginBlocked, adminPasswordMatches, adminSessionCookie, clearAdminSessionCookie,
   createAdminSession, currentAdminSession, destroyAdminSession, pruneAdminAuth,
@@ -90,15 +91,18 @@ export async function handleXtyAdmin(req, res, sql, method, parts) {
 
       const code = clean(bodyOf(req).code, 40);
       if (!code) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
-      const at = new Date();
-      const changed = await sql.query(`WITH party AS (
-          UPDATE xty_parties SET state='DISSOLVED',ended_at=$2,updated_at=$2
-          WHERE upper(code)=upper($1) AND state = ANY($3::text[]) RETURNING id,code
-        ) INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
-          SELECT id,'PARTY_DISSOLVED','admin',1,$4::jsonb,$2 FROM party
-          RETURNING party_id`, [code, at, ACTIVE_PARTY_STATES, JSON.stringify({ by: 'admin' })]);
-      if (!changed[0]) return sendJson(res, { ok: false, error: 'PARTY_NOT_FOUND_OR_CLOSED' }, 404);
-      return sendJson(res, { ok: true, code, state: 'DISSOLVED' });
+      const rows = await sql.query(`SELECT id,code,state,ended_at FROM xty_parties
+        WHERE upper(code)=upper($1) LIMIT 1`, [code]);
+      const party = rows[0];
+      if (!party) return sendJson(res, { ok: false, error: 'PARTY_NOT_FOUND_OR_CLOSED' }, 404);
+      const dissolved = await dissolveXtyParty(sql, party, 'admin');
+      if (!dissolved) return sendJson(res, { ok: false, error: 'PARTY_NOT_FOUND_OR_CLOSED' }, 404);
+      return sendJson(res, {
+        ok: true,
+        code: party.code,
+        state: 'DISSOLVED',
+        removedMembers: dissolved.removedMembers,
+      });
     }
 
     if (method !== 'GET') return sendJson(res, { ok: false, error: 'METHOD_NOT_ALLOWED' }, 405);

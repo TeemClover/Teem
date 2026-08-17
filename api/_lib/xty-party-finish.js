@@ -1,5 +1,6 @@
 import legacyXtyHandler from '../xty/[...path].js';
 import { currentUser, database, ensureSchema, sameOrigin, sendJson, sha256 } from './core.js';
+import { dissolveXtyParty } from './xty-dissolve.js';
 import { handleCreatePartyV2 } from './xty-create-v2.js';
 import { handleCreatePartyV3 } from './xty-create-v3.js';
 import { handleJoinPartyV2 } from './xty-join-v2.js';
@@ -7,13 +8,15 @@ import { handleIdentityV2, handleLeaveV2, handleProfileV2, handleCoverV2 } from 
 import { handleDebugLevel2 } from './xty-debug-level-v2.js';
 import { handlePublicPreviewV2 } from './xty-public-preview-v2.js';
 
-const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
-const DISSOLVEABLE_STATES = Object.freeze([...ACTIVE_STATES, 'DISSOLVED']);
-
 function bodyOf(req) { return req.body && typeof req.body === 'object' ? req.body : {}; }
 function inviteCodeOf(req) {
   const fromQuery = Array.isArray(req.query?.code) ? req.query.code[0] : req.query?.code;
   if (/^\d{5}$/.test(String(fromQuery || ''))) return String(fromQuery);
+
+  const rawPath = Array.isArray(req.query?.path) ? req.query.path.join('/') : String(req.query?.path || '');
+  const pathMatch = rawPath.match(/(?:^|\/)party\/(\d{5})\/finish\/?$/);
+  if (pathMatch) return pathMatch[1];
+
   const match = new URL(req.url || '/', 'https://myclover.local').pathname.match(/\/party\/(\d{5})\/finish\/?$/);
   return match ? match[1] : '';
 }
@@ -54,7 +57,10 @@ export async function handleXtyPartyFinish(req, res) {
 
   const mode = bodyOf(req).mode === 'dissolve' ? 'dissolve' : 'complete';
   if (mode !== 'dissolve') {
-    const code = inviteCodeOf(req); req.query ||= {}; req.query.path = `party/${code}/finish`; return legacyXtyHandler(req, res);
+    const code = inviteCodeOf(req);
+    req.query ||= {};
+    req.query.path = `party/${code}/finish`;
+    return legacyXtyHandler(req, res);
   }
 
   try {
@@ -68,23 +74,16 @@ export async function handleXtyPartyFinish(req, res) {
     const row = rows[0]; if (!row) return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
     const member = await memberFor(req, sql, row.id); if (!member) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
     if (member.role !== 'lead') return sendJson(res, { ok: false, error: 'LEAD_REQUIRED' }, 403);
-    if (!DISSOLVEABLE_STATES.includes(String(row.state || '').toUpperCase())) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
 
-    const at = new Date(); const endedAt = row.ended_at ? new Date(row.ended_at) : at;
-    const changed = await sql.query(`WITH dissolved AS (
-        UPDATE xty_parties SET state='DISSOLVED',ended_at=COALESCE(ended_at,$1),updated_at=$1,visibility='private'
-        WHERE id=$2 AND state = ANY($3::text[]) RETURNING id)
-      UPDATE xty_members SET left_at=$1,removal_reason='DISSOLVED',auth_hash=NULL
-      WHERE party_id=$2 AND left_at IS NULL AND EXISTS (SELECT 1 FROM dissolved) RETURNING user_id`, [at, row.id, DISSOLVEABLE_STATES]);
-    if (!changed.length) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
-    try { await sql.query(`UPDATE xty_party_quota_v2 SET released_at=COALESCE(released_at,$1) WHERE party_id=$2 AND released_at IS NULL`, [at, row.id]); }
-    catch (quotaError) { if (quotaError.code !== '42P01') console.warn('XTY quota v2 release failed', quotaError); }
-    try {
-      await sql.query(`INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
-        SELECT $1,'PARTY_DISSOLVED',$2,1,'{}'::jsonb,$3 WHERE NOT EXISTS
-        (SELECT 1 FROM xty_party_events WHERE party_id=$1 AND type='PARTY_DISSOLVED')`, [row.id, member.user_id, at]);
-    } catch (eventError) { console.warn('XTY dissolve audit event failed', eventError); }
-    return sendJson(res, { ok: true, dissolved: true, removedMembers: changed.length, meUserId: null, party: closedPartySnapshot(row, endedAt) });
+    const dissolved = await dissolveXtyParty(sql, row, member.user_id);
+    if (!dissolved) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
+    return sendJson(res, {
+      ok: true,
+      dissolved: true,
+      removedMembers: dissolved.removedMembers,
+      meUserId: null,
+      party: closedPartySnapshot(row, dissolved.endedAt),
+    });
   } catch (error) {
     console.error('XTY dissolve failed', error);
     if (error.code === 'DATABASE_URL_NOT_CONFIGURED') return sendJson(res, { ok: false, error: error.code }, 503);

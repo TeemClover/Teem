@@ -2,7 +2,10 @@
    Server creation now routes through cover-aware v3 while keeping the
    existing quota-v2 persistence model. */
 
-import { getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET } from './store.js';
+import {
+  activePartyUsage, getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET, myPartyCodes, refreshParty,
+} from './store.js';
+import { avatarById } from './avatars.js';
 import { applyXircleCreateDefaults } from './xvisor-care.js';
 
 const K_PARTIES = 'mc_xty_parties';
@@ -28,6 +31,81 @@ function remember(result) {
   write(K_TOKENS, map);
   return party;
 }
+
+function onCreatePage() {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return false;
+  return /^\/xty\/new\/?$/.test(location.pathname);
+}
+
+function levelOneCover(profile) {
+  window.__xtyCoverV2 = { coverType: 'avatar', leadCardId: null, core7CardId: null };
+  const pick = document.getElementById('leadPick');
+  const hint = document.getElementById('coverHint');
+  if (!pick || !profile) return;
+  const avatar = avatarById(profile.avatarId || profile.avatarFallback || 'orange_cat');
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'card-select picked';
+  button.setAttribute('role', 'radio');
+  button.setAttribute('aria-checked', 'true');
+  button.setAttribute('aria-label', `ใช้ ${avatar.nameTh} เป็นผู้นำตี้`);
+  button.innerHTML = `<div class="avatar-cover" data-color="${profile.avatarFrame || 'green'}"><img src="${avatar.art}" alt=""><b>${avatar.nameTh}</b><small>LV.1 PARTY LEAD</small></div>`;
+  pick.replaceChildren(button);
+  if (hint) hint.textContent = 'LV.1 · ก่อน Quest Clear ใช้ Animal Avatar ของคุณเป็นผู้นำตี้เท่านั้น';
+
+  const npcPick = document.getElementById('npcCardPick');
+  if (npcPick) {
+    npcPick.hidden = true;
+    const label = npcPick.previousElementSibling;
+    if (label?.classList?.contains('label')) label.hidden = true;
+    const section = npcPick.closest('.notebook-card');
+    const intro = section?.querySelector(':scope > .whisper');
+    if (intro) intro.textContent = 'LV.1 เลือก Pet เป็นเพื่อนร่วมทางได้ · Animal Card จะเปิดหลัง Quest Clear';
+  }
+}
+
+function renderNoCreateSlot(profile, usage) {
+  const main = document.querySelector('main.create-page');
+  if (!main || document.getElementById('xtyCreateCapacityGate')) return;
+  main.querySelectorAll(':scope > .notebook-card, :scope > .advanced-card, :scope > #go, :scope > .note')
+    .forEach(node => { node.hidden = true; });
+  const panel = document.createElement('section');
+  panel.id = 'xtyCreateCapacityGate';
+  panel.className = 'card';
+  const level = Math.max(1, Number(profile?.level || 1));
+  panel.innerHTML = `<p class="kicker">PARTY SLOT</p><h2 class="title" style="font-size:26px">ไม่มีการ์ดสร้างตี้เหลือ</h2>`
+    + `<p class="lede">ตอนนี้ใช้ช่องสร้างตี้ ${usage.owned}/${usage.maxOwned} อยู่ · LV.${level} ต้องจบหรือยุบตี้เดิมก่อน แล้วช่องจะคืนกลับมาเต็ม</p>`
+    + `<a class="btn gold" href="/xty/">กลับไปดูตี้ของฉัน</a>`;
+  const lede = main.querySelector(':scope > .lede');
+  if (lede) lede.insertAdjacentElement('afterend', panel); else main.prepend(panel);
+}
+
+async function installCreatePageGuard() {
+  if (!onCreatePage()) return;
+  let profile = getProfile();
+  if (!profile) return;
+
+  const level = Math.max(1, Number(profile.level || 1));
+  if (level <= 1) {
+    const cover = document.getElementById('coverSection');
+    if (cover) cover.style.visibility = 'hidden';
+    requestAnimationFrame(() => {
+      levelOneCover(getProfile() || profile);
+      if (cover) cover.style.visibility = '';
+    });
+  }
+
+  /* Revalidate every locally-known membership before deciding capacity.
+     This is what makes an admin dissolve immediately give the device its
+     owner/join slots back instead of leaving stale ACTIVE localStorage. */
+  await Promise.all(myPartyCodes().map(code => refreshParty(code).catch(() => null)));
+  profile = getProfile() || profile;
+  const usage = activePartyUsage(profile);
+  if (usage.owned >= usage.maxOwned) renderNoCreateSlot(profile, usage);
+  else if (Math.max(1, Number(profile.level || 1)) <= 1) levelOneCover(profile);
+}
+
+if (onCreatePage()) installCreatePageGuard().catch(() => {});
 
 export async function createPartyV2(options = {}) {
   const applied = applyXircleCreateDefaults(options);
