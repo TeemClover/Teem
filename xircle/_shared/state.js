@@ -217,7 +217,19 @@
     if (changed) safeWrite("localStorage", LOCAL_KEY, local);
   }
 
+  function upgradeWhiteCatVisuals() {
+    var legacy = document.querySelectorAll(".xp-cat-stage");
+    Array.prototype.forEach.call(legacy, function (stage) {
+      if (!stage.querySelector(".xp-cat")) return;
+      stage.classList.add("xp-cat-cutout-stage");
+      stage.setAttribute("data-whitecat-cutout", "1");
+      stage.innerHTML = '<img src="/xircle/assets/v5/whitecat-guide-cutout.webp?v=20260817-final" alt="แมวขาว · XTY">';
+    });
+  }
+
   function wireWhiteCatActions() {
+    upgradeWhiteCatVisuals();
+
     var h = currentHandoff();
     var url = whiteCatActionUrl();
 
@@ -244,15 +256,82 @@
     });
   }
 
+  function enhancePartyPage() {
+    if (normalizedPath() !== "/xircle/care/party") return;
+
+    var h = currentHandoff();
+    var actions = document.getElementById("partyActions");
+    var kicker = document.getElementById("partyKicker");
+    var title = document.getElementById("partyTitle");
+    var lede = document.getElementById("partyLede");
+    var art = document.getElementById("partyArt");
+    var bottom = document.getElementById("bottomAction");
+
+    if (h) {
+      if (kicker) kicker.textContent = "X-VISOR INVITE · ตี้ " + h.partyCode;
+      if (title) title.innerHTML = "มีคนชวนคุณ<br>ทำ 1 อย่างไปด้วยกัน";
+      if (lede) lede.innerHTML = "28 วัน · ไม่ต้องทำคนเดียว<br><strong>จะเข้าตี้นี้ หรือเปิดตี้ของตัวเองก็ได้</strong>";
+      if (actions) {
+        actions.innerHTML =
+          '<a class="xp-btn gold" href="/xty/join/?c=' + encodeURIComponent(h.partyCode) + '">เข้าตี้ ' + h.partyCode + ' →</a>' +
+          '<a class="xp-btn ghost" href="/xty/new/?template=xircle_xvisor">เปิดตี้ของฉันเอง</a>';
+      }
+      if (art) {
+        art.setAttribute("data-art-src", "/xircle/assets/v5/xircle-party-join-hero.webp");
+        art.src = "/xircle/assets/v5/xircle-party-join-hero.webp?v=20260817-final";
+      }
+      if (bottom) {
+        bottom.href = "/xty/join/?c=" + encodeURIComponent(h.partyCode);
+        bottom.textContent = "เข้าตี้ " + h.partyCode + " →";
+      }
+    } else {
+      if (kicker) kicker.textContent = "XIRCLE × myClover XTY";
+      if (title) title.innerHTML = "28 วัน<br>1 Action<br>ทำด้วยกัน";
+      if (lede) lede.innerHTML = "เปิดตี้ของตัวเองได้เลย<br><strong>หรือถ้ามีรหัสตี้อยู่แล้ว ก็เลือกเข้าตี้ได้</strong>";
+      if (actions) {
+        actions.innerHTML =
+          '<a class="xp-btn gold" href="/xty/new/?template=xircle_xvisor">ตั้ง Action แล้วเปิดตี้ →</a>' +
+          '<a class="xp-btn ghost" href="/xty/join/">มีรหัสตี้ · เข้าตี้</a>';
+      }
+      if (art) {
+        art.setAttribute("data-art-src", "/xircle/assets/v5/xircle-party-create-hero.webp");
+        art.src = "/xircle/assets/v5/xircle-party-create-hero.webp?v=20260817-final";
+      }
+      if (bottom) {
+        bottom.href = "/xty/new/?template=xircle_xvisor";
+        bottom.textContent = "เปิดตี้แมวขาว →";
+      }
+    }
+  }
+
   function activateWhiteCat(target, event) {
-    if (!target) return false;
-    if (!target.closest) return false;
+    if (!target || !target.closest) return false;
     var hit = target.closest(
       "[data-whitecat-link], .xp-cat-cutout-stage, .xp-whitecat-visual, [data-whitecat-cutout]"
     );
     if (!hit) return false;
     if (event) event.preventDefault();
     location.href = whiteCatActionUrl();
+    return true;
+  }
+
+  function guardLinearJourney(target, event) {
+    if (journeyFullyUnlocked() || !target || !target.closest) return false;
+    var a = target.closest("a[href]");
+    if (!a || a.hasAttribute("data-whitecat-link")) return false;
+
+    var url;
+    try { url = new URL(a.href, location.origin); } catch (e) { return false; }
+    if (url.origin !== location.origin || !isXircleRoute(normalizedHrefPath(url.pathname))) return false;
+
+    var next = linearNext();
+    if (!next) return false;
+    var intended = normalizedHrefPath(url.pathname);
+    var required = normalizedHrefPath(next.href);
+    if (intended === required) return false;
+
+    if (event) event.preventDefault();
+    location.href = next.href;
     return true;
   }
 
@@ -387,7 +466,8 @@
   }
 
   document.addEventListener("click", function (event) {
-    activateWhiteCat(event.target, event);
+    if (activateWhiteCat(event.target, event)) return;
+    guardLinearJourney(event.target, event);
   }, true);
 
   document.addEventListener("keydown", function (event) {
@@ -402,6 +482,14 @@
   markCurrentRouteSeen();
   renderProgressNav();
   wireWhiteCatActions();
-  setTimeout(wireWhiteCatActions, 0);
-  setTimeout(wireWhiteCatActions, 250);
+  enhancePartyPage();
+  setTimeout(function () {
+    renderProgressNav();
+    wireWhiteCatActions();
+    enhancePartyPage();
+  }, 0);
+  setTimeout(function () {
+    wireWhiteCatActions();
+    enhancePartyPage();
+  }, 250);
 })();
