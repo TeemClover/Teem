@@ -153,10 +153,12 @@ if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathnam
   import('./party-pet-seat-v2.js').catch(error => console.warn('XTY pet seat unavailable', error));
   import('./party-invite-copy.js').catch(error => console.warn('XTY party invite copy unavailable', error));
   import('./party-log-export.js').catch(error => console.warn('XTY party log export unavailable', error));
+  import('./collection-skin-picker.js').catch(error => console.warn('XTY Collection skin picker unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/xty\/new(?:\/|$)/.test(location.pathname)) {
   import('./new-cover-v3.js').catch(error => console.warn('XTY cover picker unavailable', error));
   import('./new-cover-size-fix.js').catch(error => console.warn('XTY cover size guard unavailable', error));
+  import('./collection-skin-picker.js').catch(error => console.warn('XTY Collection skin picker unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
   /* Home used to paint the legacy main-party layout first and dynamically
@@ -189,5 +191,5 @@ export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } 
 }
 
 export function cardStatusLabel(status) {
-  return ({ AVAILABLE: 'พร้อมใช้งาน', AVATAR_IN_USE: 'ใช้อยู่เป็น Avatar', IN_PARTY: 'ใช้อยู่เป็น Party Cover', NPC_IN_PARTY: 'ใช้อยู่เป็น NPC' })[status] || 'เก็บในคอลเลกชัน';
+  return ({ AVAILABLE: 'พร้อมใช้งาน', AVATAR_IN_USE: 'ใช้อยู่เป็น Avatar', IN_PARTY: 'ใช้อยู่เป็น Party Cover', NPC_IN_PARTY: 'ใช้อยู่เป็น Pet' })[status] || 'เก็บในคอลเลกชัน';
 }
