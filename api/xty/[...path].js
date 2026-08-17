@@ -677,7 +677,7 @@ export default async function handler(req, res) {
             SELECT party_id,'PARTY_CREATED',$8,1,$26::jsonb,$9 FROM lead_member RETURNING party_id`, [
             partyId, inviteCode, name, clean(body.activity, 60), clean(body.commitRule, 120),
             budget, legacyPetId, userId, now, alias,
-            clean(body.avatar, 24) || '🍀', await sha256(memberToken),
+            clean(body.avatar, 40) || '🍀', await sha256(memberToken),
             identity.ids[0], identity.ids[1], usage.maxTotal, ACTIVE_STATES, usage.maxOwned,
             clean(body.activityId, 40) || 'custom', preset, durationDays, color, visibility,
             leadCardId, npcCardId, timezone,

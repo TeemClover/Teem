@@ -26,6 +26,7 @@
 <meta name="description" content="เปิด Animal Card ที่ได้จากการทำ Quest จริงใน XTY">
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/xty/_shared/chat-image.css?v=1">
+<link rel="stylesheet" href="/xty/_shared/card-reveal.css?v=1">
 </head>
 <body>
 <header class="top">
@@ -105,6 +106,10 @@ import {
 import { revealStarReward } from '/xty/_shared/star-rewards.js';
 import { XTY_RARITY_META, cardById, cardNameTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
+/* Same samples the CORE7 table uses — a real card turning over. Importing
+   the module also primes playback on the first gesture anywhere on the page,
+   which is what makes the tap itself audible instead of the tap after it. */
+import { playCardFlip, playSfx } from '/core7/js/audio.js';
 import { getSession, syncXtyProfile } from '/xty/_shared/account.js';
 
 const $ = id => document.getElementById(id);
@@ -147,6 +152,10 @@ function showReward(item) {
   if (opened) finishOpen();
   button.addEventListener('click', async () => {
     if (opened) return;
+    /* Sound belongs to the tap, not to the network round trip that follows —
+       waiting for the save first made the card feel unresponsive. */
+    playCardFlip();
+    if (navigator.vibrate) navigator.vibrate(12);
     button.disabled = true;
     $('instruction').textContent = 'กำลังบันทึกช่วงเวลานี้ลง Party Log…';
     const revealed = starDrop
@@ -168,7 +177,8 @@ function showReward(item) {
       ? 'เปิดแล้ว · เพื่อนในตี้จะเห็น Card Drop ใบนี้ใน Party Log'
       : 'การ์ดใบนี้เป็นความทรงจำจาก Quest ไม่ใช่ของที่ซื้อสุ่ม';
     syncXtyProfile();
-    if (navigator.vibrate) navigator.vibrate(12);
+    /* A second, brighter note lands as the face comes round. */
+    setTimeout(() => playSfx('reveal'), 260);
     setTimeout(finishOpen, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 500);
   });
 
