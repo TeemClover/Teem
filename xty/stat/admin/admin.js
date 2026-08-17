@@ -27,15 +27,28 @@ function table(headers, rows, empty = 'ยังไม่มีข้อมู�
 }
 
 async function api(path, options = {}) {
+  const { quietAuth = false, ...requestOptions } = options;
   const response = await fetch(path, {
-    ...options,
-    headers: { 'content-type': 'application/json', ...(options.headers || {}) },
+    ...requestOptions,
+    headers: { 'content-type': 'application/json', ...(requestOptions.headers || {}) },
     credentials: 'same-origin',
   });
   const data = await response.json().catch(() => ({ ok: false, error: 'BAD_RESPONSE' }));
-  if (response.status === 401) showLogin();
-  if (!response.ok) throw new Error(data.message || data.error || 'โหลดข้อมูลไม่สำเร็จ');
+  if (response.status === 401 && !quietAuth) showLogin();
+  if (!response.ok) {
+    const error = new Error(data.message || data.error || 'โหลดข้อมูลไม่สำเร็จ');
+    error.code = data.error || '';
+    error.status = response.status;
+    throw error;
+  }
   return data;
+}
+function realAdminApi(path, options = {}) {
+  return api(path, {
+    ...options,
+    quietAuth: true,
+    headers: { ...(options.headers || {}), 'x-xty-admin-real': '1' },
+  });
 }
 function showLogin() { $('dashboard').hidden = true; $('loginView').hidden = false; $('password').focus(); }
 function showDashboard() { $('loginView').hidden = true; $('dashboard').hidden = false; }
@@ -128,11 +141,38 @@ async function loadEvents(cursor = '') {
   $('panel-events').innerHTML = `<article class="section-card"><h2>Audit events · metadata only</h2>${table(['Time','Event','Party','User','Summary'],rows)}${data.nextCursor ? '<div class="pager"><button type="button" data-next="events">หน้าถัดไป</button></div>' : ''}</article>`;
 }
 
+function recoveryUnlockMarkup(message = '') {
+  return `<article class="login-card">
+    <p class="eyebrow">DESTRUCTIVE · SERVER AUTH</p>
+    <h1>Unlock Recovery Tools</h1>
+    <form data-recovery-login>
+      <label>รหัส Recovery Admin
+        <input name="recoveryPassword" type="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit">ปลดล็อก Ghosts</button>
+      <p class="form-status" data-recovery-status role="status">${escapeHtml(message)}</p>
+    </form>
+  </article>`;
+}
+
 /* Parties no live member is bound to an account. Nobody can log in and reach
    these, so the lead can never dissolve them from inside the game — this is
    the only place they can be closed. */
 async function loadGhosts() {
-  const data = await api('/api/xty/admin/ghosts', { method: 'POST', body: '{}' });
+  let data;
+  try {
+    data = await realAdminApi('/api/xty/admin/ghosts', { method: 'POST', body: '{}' });
+  } catch (error) {
+    if (error.status === 401 || error.code === 'ADMIN_AUTH_REQUIRED') {
+      $('panel-ghosts').innerHTML = recoveryUnlockMarkup();
+      return;
+    }
+    if (error.code === 'ADMIN_NOT_CONFIGURED') {
+      $('panel-ghosts').innerHTML = recoveryUnlockMarkup('Environment Variable ถูกตั้งแล้ว แต่ deployment นี้ยังไม่เห็นค่า — รอ Production deploy รอบใหม่');
+      return;
+    }
+    throw error;
+  }
   const rows = (data.parties || []).map(party => `<tr>
     <td><code>${escapeHtml(party.code)}</code></td>
     <td>${escapeHtml(party.name)}</td>
@@ -143,7 +183,7 @@ async function loadGhosts() {
   </tr>`);
   $('panel-ghosts').innerHTML = `<article class="metric-group">
       <h2>ตี้ที่กู้ไม่ได้ (${n((data.parties || []).length)})</h2>
-      <p class="empty" style="text-align:left">ไม่มีสมาชิกที่ยังอยู่ผูกกับบัญชีเลยสักคน — เจ้าของเข้าไปยุบเองไม่ได้</p>
+      <p class="empty">ไม่มีสมาชิกที่ยังอยู่ผูกกับบัญชีเลยสักคน — เจ้าของเข้าไปยุบเองไม่ได้</p>
       ${table(['Code', 'Name', 'State', 'Members', 'Updated', ''], rows, 'ไม่มีตี้ค้าง ✓')}
     </article>`;
 }
@@ -176,13 +216,37 @@ $('loginForm').addEventListener('submit', async event => {
     $('password').value = ''; $('loginStatus').textContent = ''; showDashboard(); await loadCurrent();
   } catch (error) { $('loginStatus').textContent = error.message; }
 });
-$('logoutButton').addEventListener('click', async () => { try { await api('/api/xty/admin/logout',{method:'POST',body:'{}'}); } catch {} showLogin(); });
+$('logoutButton').addEventListener('click', async () => {
+  try { await realAdminApi('/api/xty/admin/logout',{method:'POST',body:'{}'}); } catch {}
+  try { await api('/api/xty/admin/logout',{method:'POST',body:'{}'}); } catch {}
+  showLogin();
+});
 $('refreshButton').addEventListener('click', () => loadCurrent());
 $('rangeSelect').addEventListener('change', event => { state.range = event.target.value; if (state.tab === 'overview') loadCurrent(); });
 document.querySelector('.tabs').addEventListener('click', event => { const button = event.target.closest('[data-tab]'); if (button) selectTab(button.dataset.tab); });
 document.addEventListener('change', event => {
   if (event.target.dataset.filter) { state.filters.parties ||= {}; state.filters.parties[event.target.dataset.filter] = event.target.value; loadParties(); }
   if (event.target.dataset.userFilter) { state.filters.users ||= {}; state.filters.users[event.target.dataset.userFilter] = event.target.value; loadUsers(); }
+});
+document.addEventListener('submit', async event => {
+  const form = event.target.closest('[data-recovery-login]');
+  if (!form) return;
+  event.preventDefault();
+  const status = form.querySelector('[data-recovery-status]');
+  const input = form.elements.recoveryPassword;
+  status.textContent = 'กำลังตรวจ…';
+  try {
+    await realAdminApi('/api/xty/admin/login', {
+      method: 'POST',
+      body: JSON.stringify({ password: input.value }),
+    });
+    input.value = '';
+    status.textContent = '';
+    setStatus('Recovery Tools ปลดล็อกแล้ว');
+    await loadGhosts();
+  } catch (error) {
+    status.textContent = error.message;
+  }
 });
 document.addEventListener('click', event => {
   const row = event.target.closest('tr[data-code]'); if (row) openParty(row.dataset.code).catch(error => setStatus(error.message));
@@ -200,8 +264,8 @@ document.addEventListener('click', async event => {
   }
   button.disabled = true; button.textContent = 'กำลังยุบ…';
   try {
-    await api('/api/xty/admin/party-dissolve', { method: 'POST', body: JSON.stringify({ code }) });
-    setStatus(`ยุบตี้ ${code} แล้ว`);
+    const result = await realAdminApi('/api/xty/admin/party-dissolve', { method: 'POST', body: JSON.stringify({ code }) });
+    setStatus(`ยุบตี้ ${code} แล้ว · คืนโควต้าและนำสมาชิกออก ${n(result.removedMembers || 0)} คน`);
     await loadGhosts();
   } catch (error) { setStatus(error.message); button.disabled = false; button.textContent = 'ยุบตี้'; }
 });
