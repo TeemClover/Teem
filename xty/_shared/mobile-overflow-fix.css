@@ -19,4 +19,29 @@ html,body{max-width:100%;overflow-x:clip}
   .ending-art-card::after{right:8px!important;bottom:18px!important}
   .ending-preview-card{width:100%;max-width:100%;min-width:0}
   .ending-preview-card img{max-width:100%}
+
+  /* Safari can briefly keep the balanced line boxes calculated with the
+     fallback font while Mali/Patrick Hand are still swapping in. Force the
+     mobile layout to use ordinary wrapping so the first paint and refreshed
+     paint have the same width. */
+  .about-shell h1,.about-shell h2,.about-shell h3,
+  .ending-shell h1,.ending-shell h2,.ending-shell h3{
+    width:100%;max-width:100%;min-width:0;
+    text-wrap:wrap!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+  }
+  .story-copy,.section-title,.real-life-grid article,.how-grid article,.verb-grid article,
+  .fake-log,.custom-story>div,.future-note>div,.many-parties>div,.story-end>div{
+    min-width:0!important;max-width:100%!important;
+  }
+
+  /* content-visibility saves little on a phone here and has caused stale
+     intrinsic widths after a web-font swap in mobile Safari. Prefer stable
+     layout over off-screen containment on About. */
+  .about-shell .story-section{
+    content-visibility:visible!important;
+    contain:none!important;
+    contain-intrinsic-size:auto!important;
+  }
 }
