@@ -21,44 +21,57 @@ function addressed(body) {
   return names.some(name => text.includes(String(name).toLocaleLowerCase('th-TH')));
 }
 
+function exactHumanMessageIsLocal(body) {
+  const party = getParty(code);
+  const mine = partyIdentity(code)?.userId || '';
+  const latestHuman = [...(party?.log || [])].reverse().find(post =>
+    post.kind === 'message' && !post.retracted && (!mine || post.userId === mine));
+  return String(latestHuman?.body || '').trim() === body;
+}
+
+async function waitForCanonicalMessage(body) {
+  /* The capture listener fires before the page's normal send handler. Wait
+     until store.js has received the canonical server response and updated the
+     local party snapshot. This prevents answering an older direct message on
+     a slow LINE/in-app browser connection. */
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    if (pending !== body) return false;
+    if (exactHumanMessageIsLocal(body)) return true;
+    await sleep(250);
+  }
+  return false;
+}
+
 async function poke(body) {
   if (!code || !body || !addressed(body)) return;
   pending = body;
-  /* Let the normal message POST land first. If an in-app browser/network is
-     slow, NOT_DIRECT means the server is still seeing the previous message;
-     retry once rather than answering the wrong thread. */
-  await sleep(650);
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    if (pending !== body) return;
-    const identity = partyIdentity(code);
-    const headers = { accept: 'application/json', 'content-type': 'application/json' };
-    if (identity?.token) headers.authorization = `Bearer ${identity.token}`;
-    try {
-      const response = await fetch('/api/xty-pet', {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers,
-        body: JSON.stringify({ mode: 'direct', code, text: body }),
-      });
-      const result = await response.json().catch(() => ({}));
-      if (result?.spoke) {
-        pending = '';
-        /* Reuse the page's canonical refresh path so local cache + UI stay in
-           sync with the server-written PET bubbles. */
-        document.getElementById('refresh')?.click();
-        return;
-      }
-      if (result?.skipped !== 'NOT_DIRECT') {
-        pending = '';
-        return;
-      }
-    } catch {
-      pending = '';
-      return; // PET failure must never make the human message fail.
-    }
-    await sleep(900);
+  if (!await waitForCanonicalMessage(body)) {
+    if (pending === body) pending = '';
+    return;
   }
-  pending = '';
+
+  const identity = partyIdentity(code);
+  const headers = { accept: 'application/json', 'content-type': 'application/json' };
+  if (identity?.token) headers.authorization = `Bearer ${identity.token}`;
+  try {
+    const response = await fetch('/api/xty-pet', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers,
+      body: JSON.stringify({ mode: 'direct', code, text: body }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (result?.spoke) {
+      pending = '';
+      /* Reuse the page's canonical refresh path so local cache + UI stay in
+         sync with the server-written PET bubbles. */
+      document.getElementById('refresh')?.click();
+      return;
+    }
+  } catch {
+    // PET failure must never make the human message fail.
+  }
+  if (pending === body) pending = '';
 }
 
 function captureComposer() {
