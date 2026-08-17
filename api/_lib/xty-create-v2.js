@@ -11,6 +11,11 @@ const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']
 const BUDGETS = Object.freeze({ quiet: 1, normal: 3, social: 5 });
 const DEFAULT_BUDGET = 'normal';
 const CONTEXT_PRESETS = Object.freeze(['xircle', 'xircle_xvisor']);
+/* Intentional launch overflow. Keep the real progression maxOwned unchanged
+   for UI/entitlement, but temporarily do not enforce it when creating an
+   owned party. This makes Merge/Sync monotonic even when a player ends up
+   with more parties than their nominal slot count. */
+const INTENTIONAL_OWNER_OVERFLOW_CEILING = 2147483647;
 
 function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
@@ -242,7 +247,7 @@ export async function handleCreatePartyV2(req, res) {
           )
           INSERT INTO xty_party_events (party_id,type,actor_id,party_day,data_json,created_at)
           SELECT party_id,'PARTY_CREATED',$11,1,$29::jsonb,$12 FROM quota RETURNING party_id`, [
-          quotaKey, ACTIVE_STATES, maxOwned,
+          quotaKey, ACTIVE_STATES, INTENTIONAL_OWNER_OVERFLOW_CEILING,
           partyId, code, name, clean(body.activity, 60), clean(body.commitRule, 120), budget,
           petId, userId, at, clean(body.activityId, 40) || 'custom', preset, durationDays, color, visibility,
           XTY_TIMEZONE, verificationMode, leadCardId, npcCardId, scheduled, coverType, coverValue,
