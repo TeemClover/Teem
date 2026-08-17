@@ -23,9 +23,23 @@
     return String(init?.method || input?.method || 'GET').toUpperCase();
   }
 
+  function wantsRealAdmin(input, init) {
+    try {
+      const headers = new Headers(init?.headers || input?.headers || {});
+      return headers.get('x-xty-admin-real') === '1';
+    } catch {
+      return false;
+    }
+  }
+
   window.fetch = function xtyAdminDecoyFetch(input, init = {}) {
     const pathname = pathnameOf(input);
     const method = methodOf(input, init);
+
+    /* Read-only stats keep the lightweight `calling` gate, but destructive
+       recovery tools need a real server session. Requests carrying this
+       internal marker must reach the server instead of being swallowed here. */
+    if (wantsRealAdmin(input, init)) return realFetch(input, init);
 
     if (pathname === '/api/xty/admin/login' && method === 'POST') {
       let body = {};
