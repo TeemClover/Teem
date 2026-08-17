@@ -103,13 +103,20 @@ function safeLocalParty(code) {
   } catch { return null; }
 }
 
-function localRole(party) {
+function localIdentity(code) {
   try {
     const tokens = JSON.parse(localStorage.getItem('mc_xty_tokens') || '{}');
-    const token = tokens?.[party.code];
-    const userId = typeof token === 'string' ? '' : token?.userId;
-    return party?.members?.find(member => member.userId === userId)?.role || 'member';
-  } catch { return 'member'; }
+    const entry = tokens?.[code];
+    if (!entry) return { token: '', userId: '' };
+    return typeof entry === 'string'
+      ? { token: entry, userId: '' }
+      : { token: String(entry.token || ''), userId: String(entry.userId || '') };
+  } catch { return { token: '', userId: '' }; }
+}
+
+function localRole(party) {
+  const identity = localIdentity(party.code);
+  return party?.members?.find(member => member.userId === identity.userId)?.role || 'member';
 }
 
 function countLog(party, names) {
@@ -256,6 +263,22 @@ function primeWhiteCatQuestion() {
   try { composer.setSelectionRange(composer.value.length, composer.value.length); } catch { /* textarea-like only */ }
 }
 
+async function ensureWhiteCatIntro(code) {
+  const identity = localIdentity(code);
+  const headers = { accept: 'application/json', 'content-type': 'application/json' };
+  if (identity.token) headers.authorization = `Bearer ${identity.token}`;
+  try {
+    const response = await fetch('/api/xty-pet', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers,
+      body: JSON.stringify({ mode: 'white_cat_intro', code }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (result?.spoke) document.getElementById('refresh')?.click();
+  } catch { /* onboarding failure must never block the Party */ }
+}
+
 function enhancePartyPage(attempt = 0) {
   if (!/^\/xty\/p\/?$/.test(location.pathname)) return;
   const code = new URLSearchParams(location.search).get('c') || '';
@@ -306,6 +329,8 @@ function enhancePartyPage(attempt = 0) {
       const button = document.getElementById('xvisorCopyInvite');
       const status = document.getElementById('xvisorInviteStatus');
       button?.addEventListener('click', () => copySpecialInvite(code, button, status));
+      /* One real Party Log bubble, then the server refuses repeats forever. */
+      void ensureWhiteCatIntro(code);
     }
   }
 
