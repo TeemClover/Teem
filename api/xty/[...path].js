@@ -9,7 +9,8 @@ import {
 import { XTY_CARDS, cardById } from '../../xty/_shared/cards.js';
 import { handleXtyAdmin } from '../_lib/xty-admin.js';
 import {
-  blobConfigured, decodeImagePayload, discardPartyImage, isStoredImageUrl, storePartyImage,
+  blobConfigured, decodeImagePayload, discardPartyImage, isCredentialError, isStoredImageUrl,
+  storePartyImage,
 } from '../_lib/xty-image.js';
 
 const PARTY_MAX = 5;
@@ -421,6 +422,11 @@ async function intakeImage(partyCode, image) {
     return { ok: true, stored: await storePartyImage(partyCode, decoded) };
   } catch (error) {
     console.error('XTY image upload failed', error);
+    /* Credentials only fail once the SDK actually looks, so the
+       misconfiguration message is reported from here too. */
+    if (isCredentialError(error)) {
+      return { ok: false, error: 'IMAGE_UPLOAD_NOT_CONFIGURED', status: 503 };
+    }
     return { ok: false, error: 'IMAGE_UPLOAD_FAILED', status: 502 };
   }
 }

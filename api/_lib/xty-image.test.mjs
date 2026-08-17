@@ -67,3 +67,33 @@ test('only our own blob host may be used as a cover', () => {
   assert.equal(isStoredImageUrl('javascript:alert(1)'), false);
   assert.equal(isStoredImageUrl(''), false);
 });
+
+test('a store id alone counts as configured — OIDC injects its token at runtime', async () => {
+  const before = { rw: process.env.BLOB_READ_WRITE_TOKEN, store: process.env.BLOB_STORE_ID };
+  const { blobConfigured } = await import('./xty-image.js');
+
+  delete process.env.BLOB_READ_WRITE_TOKEN; delete process.env.BLOB_STORE_ID;
+  assert.equal(blobConfigured(), false);
+
+  process.env.BLOB_STORE_ID = 'store_abc';
+  assert.equal(blobConfigured(), true, 'BLOB_STORE_ID is the OIDC path');
+
+  delete process.env.BLOB_STORE_ID;
+  process.env.BLOB_READ_WRITE_TOKEN = 'vercel_blob_rw_x';
+  assert.equal(blobConfigured(), true);
+
+  if (before.rw === undefined) delete process.env.BLOB_READ_WRITE_TOKEN;
+  else process.env.BLOB_READ_WRITE_TOKEN = before.rw;
+  if (before.store === undefined) delete process.env.BLOB_STORE_ID;
+  else process.env.BLOB_STORE_ID = before.store;
+});
+
+test('the SDK credential wording is recognised, real failures are not', async () => {
+  const { isCredentialError } = await import('./xty-image.js');
+  /* wording copied from @vercel/blob 2.8.0 */
+  assert.equal(isCredentialError(new Error('Vercel Blob: No blob credentials found. Pass a `token` option...')), true);
+  assert.equal(isCredentialError(new Error('Vercel Blob: No read-write token found.')), true);
+  assert.equal(isCredentialError(new Error('oidcToken was passed, but no storeId was found')), true);
+  assert.equal(isCredentialError(new Error('fetch failed')), false);
+  assert.equal(isCredentialError(new Error('Vercel Blob: store suspended')), false);
+});

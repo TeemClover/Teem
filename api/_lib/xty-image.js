@@ -53,8 +53,20 @@ export function decodeImagePayload(image) {
   };
 }
 
+/* The SDK accepts either a read-write token or OIDC plus a store id, and
+   under OIDC the token is injected into the running function rather than
+   listed as a project variable — so a store id alone is enough to mean
+   "configured". This check stays deliberately permissive: guessing wrong
+   here would refuse uploads that the SDK could actually authorise, and a
+   genuinely missing credential still surfaces from the call itself. */
 export function blobConfigured() {
-  return !!process.env.BLOB_READ_WRITE_TOKEN;
+  return !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+}
+
+/* The SDK reports every credential problem as a BlobError carrying this
+   wording; anything else is a real upload failure worth its own message. */
+export function isCredentialError(error) {
+  return /no blob credentials|no read-write token|storeId was found/i.test(String(error?.message || ''));
 }
 
 /**
