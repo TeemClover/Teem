@@ -325,7 +325,7 @@ async function renderHome() {
     $('lineLater').hidden = true;
   } else {
     $('accountCard').hidden = !shouldOfferProgressSave(p);
-    $('accountStatus').textContent = 'เก็บไว้ในเครื่องนี้ — ผูก Email เพื่อกู้คืนข้ามอุปกรณ์';
+    $('accountStatus').textContent = 'เก็บไว้ในเครื่องนี้ — ผูกบัญชีเพื่อกู้คืนข้ามอุปกรณ์';
     $('lineBtn').hidden = false;
     $('lineLater').hidden = false;
     $('lineBtn').addEventListener('click', () => { location.href = '/profile/?save=1'; }, { once: true });
@@ -451,13 +451,19 @@ async function boot() {
     }
     $('gate').hidden = true;
     await renderHome();
-  } else if (hasProfile()) updateAccountState();
+  } else if (hasProfile()) {
+    /* syncXtyProfile can rebuild mc_xty_tokens + party snapshots from a
+       logged-in LINE/Google/myClover account. Repaint immediately so a
+       fresh browser does not keep showing 0/2 + 0/3 until the next reload. */
+    paintPartyList(getProfile(), new Set(myPartyCodes()));
+    updateAccountState();
+  }
 }
 
 function updateAccountState() {
   if (accountState.authenticated) {
     $('accountCard').hidden = false;
-    $('accountStatus').innerHTML = `<span class="status-pill">เก็บแล้ว ✓</span><br>${escapeHtml(accountState.user?.email || 'Progress เก็บกับบัญชีนี้')}`;
+    $('accountStatus').innerHTML = `<span class="status-pill">เก็บแล้ว ✓</span><br>${escapeHtml(accountState.user?.email || accountState.user?.displayName || 'Progress เก็บกับบัญชีนี้')}`;
     $('lineBtn').hidden = true;
     $('lineLater').hidden = true;
   }
