@@ -7,7 +7,7 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-canonical-b
   style.id = 'xty-canonical-back-style';
   style.textContent = `
     .animal-card.card-back{
-      aspect-ratio:5/7!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
       background:#13291d url('/core7/assets/myclover-back.webp') center/cover no-repeat!important;
       overflow:hidden;
     }
@@ -59,16 +59,16 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
   const style = document.createElement('style');
   style.id = 'xty-party-cover-size-style';
   style.textContent = `
-    /* CORE7 FIRST HAND is authored at viewBox 300x420. Party Cover follows
-       that exact 5:7 physical shape everywhere; no second XTY-only ratio. */
-    :root{--xty-party-cover-size:132px;--xty-party-cover-aspect:5/7}
+    /* One card shape for the whole product, from --xty-card-aspect. The
+       alias is kept only so older selectors keep resolving to it. */
+    :root{--xty-party-cover-size:132px;--xty-party-cover-aspect:var(--xty-card-aspect)}
     .public-party{
       grid-template-columns:var(--xty-party-cover-size) minmax(0,1fr)!important;
       gap:14px!important;align-items:center!important;
     }
     .public-party>:first-child{
       width:var(--xty-party-cover-size)!important;max-width:none!important;min-width:0!important;
-      height:auto!important;aspect-ratio:var(--xty-party-cover-aspect)!important;
+      height:auto!important;aspect-ratio:var(--xty-card-aspect)!important;
       overflow:hidden!important;border-radius:14px!important;
     }
     .public-party>.public-core7-cover svg,
@@ -82,12 +82,12 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
     }
     .preview-cover{
       width:var(--xty-party-cover-size)!important;max-width:none!important;min-width:0!important;
-      height:auto!important;aspect-ratio:var(--xty-party-cover-aspect)!important;
+      height:auto!important;aspect-ratio:var(--xty-card-aspect)!important;
       overflow:hidden!important;border-radius:14px!important;
     }
     .preview-cover>*{
       width:100%!important;height:100%!important;max-width:none!important;
-      aspect-ratio:var(--xty-party-cover-aspect)!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
     }
     .preview-cover svg,.preview-cover img{display:block!important;object-fit:cover!important}
 
@@ -98,8 +98,8 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
     .preview-cover>.avatar-cover{
       --cover-accent:var(--xty-green);
       position:relative!important;display:block!important;
-      padding:7px 7px 42px!important;
-      aspect-ratio:var(--xty-party-cover-aspect)!important;
+      padding:0!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
       border:3px solid var(--cover-accent)!important;border-radius:16px!important;
       background:#FFF4C8!important;box-shadow:3px 4px 0 rgba(62,51,44,.12)!important;
       overflow:hidden!important;
@@ -117,7 +117,7 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
     .public-party>.avatar-cover>img,
     .preview-cover>.avatar-cover>img{
       display:block!important;width:100%!important;height:100%!important;max-width:none!important;
-      object-fit:contain!important;border-radius:9px!important;background:#FFFEF8!important;
+      object-fit:cover!important;border-radius:9px!important;background:#FFFEF8!important;
     }
     .xty-home-cover.avatar-cover>b,
     .public-party>.avatar-cover>b,

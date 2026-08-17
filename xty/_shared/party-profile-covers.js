@@ -35,7 +35,7 @@ function injectStyle() {
   s.id = 'xty-party-profile-cover-style';
   s.textContent = `
     .xty-profile-click{cursor:pointer}.xty-profile-click:focus-visible{outline:3px solid rgba(91,141,255,.45);outline-offset:3px}
-    .xty-core7-seat,.xty-back-seat{width:100%;aspect-ratio:63/88;overflow:hidden;border-radius:14px}
+    .xty-core7-seat,.xty-back-seat{width:100%;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:14px}
     .xty-core7-seat svg,.xty-back-seat img{display:block;width:100%;height:100%;object-fit:cover}
     .post .who.xty-profile-click{text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
   `;

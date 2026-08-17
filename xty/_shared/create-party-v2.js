@@ -69,20 +69,67 @@ function levelOneCover(profile) {
   }
 }
 
-function renderNoCreateSlot(profile, usage) {
-  const main = document.querySelector('main.create-page');
-  if (!main || document.getElementById('xtyCreateCapacityGate')) return;
-  main.querySelectorAll(':scope > .notebook-card, :scope > .advanced-card, :scope > #go, :scope > .note')
-    .forEach(node => { node.hidden = true; });
-  const panel = document.createElement('section');
-  panel.id = 'xtyCreateCapacityGate';
-  panel.className = 'card';
+/* Being out of party slots never takes the page away.
+
+   The old gate hid every section and left a dead end, which also meant a
+   new player could not look around at all. Now the page stays fully
+   usable — pick a cover, browse the cards, set the whole thing up — and
+   the limit is said in the two places it matters: a red line at the party
+   name while you are filling it in, and a dialog at the moment you press
+   create. */
+
+function blockedCopy(profile, usage) {
   const level = Math.max(1, Number(profile?.level || 1));
-  panel.innerHTML = `<p class="kicker">PARTY SLOT</p><h2 class="title" style="font-size:26px">ไม่มีการ์ดสร้างตี้เหลือ</h2>`
-    + `<p class="lede">ตอนนี้ใช้ช่องสร้างตี้ ${usage.owned}/${usage.maxOwned} อยู่ · LV.${level} ต้องจบหรือยุบตี้เดิมก่อน แล้วช่องจะคืนกลับมาเต็ม</p>`
-    + `<a class="btn gold" href="/xty/">กลับไปดูตี้ของฉัน</a>`;
-  const lede = main.querySelector(':scope > .lede');
-  if (lede) lede.insertAdjacentElement('afterend', panel); else main.prepend(panel);
+  return `ตอนนี้ใช้ช่องสร้างตี้ ${usage.owned}/${usage.maxOwned} อยู่ · LV.${level} `
+    + 'ต้องจบหรือยุบตี้เดิมก่อน แล้วช่องจะคืนกลับมาเต็ม';
+}
+
+function noteAtPartyName(profile, usage) {
+  const input = document.getElementById('pname');
+  const field = input?.closest('.field');
+  if (!field || document.getElementById('xtyCreateBlockedNote')) return;
+  const note = document.createElement('p');
+  note.id = 'xtyCreateBlockedNote';
+  note.className = 'create-blocked-note';
+  note.setAttribute('role', 'alert');
+  note.innerHTML = `<b>ยังตั้งตี้ใหม่ไม่ได้</b><span>${blockedCopy(profile, usage)}</span>`;
+  field.appendChild(note);
+  input?.setAttribute('aria-describedby', 'xtyCreateBlockedNote');
+}
+
+function blockedDialog(profile, usage) {
+  let dialog = document.getElementById('xtyCreateBlockedDialog');
+  if (dialog) return dialog;
+  dialog = document.createElement('dialog');
+  dialog.id = 'xtyCreateBlockedDialog';
+  dialog.className = 'card-detail xty-blocked-dialog';
+  dialog.innerHTML = `<p class="kicker">PARTY SLOT</p>`
+    + `<h2 class="title" style="font-size:24px">ยังตั้งตี้ใหม่ไม่ได้</h2>`
+    + `<p>${blockedCopy(profile, usage)}</p>`
+    + `<p class="whisper">ที่ตั้งค่าไว้ยังอยู่ครบ · กลับมากดสร้างได้เลยเมื่อช่องว่าง</p>`
+    + `<div class="card-detail-actions">`
+    + `<a class="btn gold" href="/xty/">ไปดูตี้ที่เล่นอยู่</a>`
+    + `<a class="btn ghost" href="/xty/collection/">ดูการ์ดของฉัน</a>`
+    + `<button class="btn ghost" type="button" data-close>ตั้งค่าต่อ</button>`
+    + `</div>`;
+  dialog.querySelector('[data-close]').addEventListener('click', () => dialog.close());
+  document.body.appendChild(dialog);
+  return dialog;
+}
+
+function markCreateBlocked(profile, usage) {
+  if (document.getElementById('xtyCreateBlockedNote')) return;
+  noteAtPartyName(profile, usage);
+  /* Capture on the document, so this lands before the page's own submit
+     handler on the button itself. */
+  document.addEventListener('click', event => {
+    if (!event.target.closest?.('#go')) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const dialog = blockedDialog(profile, usage);
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+  }, true);
 }
 
 async function installCreatePageGuard() {
@@ -106,7 +153,7 @@ async function installCreatePageGuard() {
   await Promise.all(myPartyCodes().map(code => refreshParty(code).catch(() => null)));
   profile = getProfile() || profile;
   const usage = activePartyUsage(profile);
-  if (usage.owned >= usage.maxOwned) renderNoCreateSlot(profile, usage);
+  if (usage.owned >= usage.maxOwned) markCreateBlocked(profile, usage);
   else if (Math.max(1, Number(profile.level || 1)) <= 1) levelOneCover(profile);
 }
 

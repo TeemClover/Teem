@@ -71,7 +71,7 @@
 }
 .xty-cover-pick button{
   padding:0;border:2px solid var(--xty-border);border-radius:12px;
-  background:var(--xty-bg);overflow:hidden;aspect-ratio:5/7;
+  background:var(--xty-bg);overflow:hidden;aspect-ratio:var(--xty-card-aspect);
 }
 .xty-cover-pick button[aria-pressed="true"]{border-color:var(--xty-primary)}
 .xty-cover-pick img{width:100%;height:100%;object-fit:cover;display:block}
@@ -79,7 +79,7 @@
 /* Image covers stand in for a card, so they keep the 5:7 card footprint
    the rest of the shelf is built on. */
 .xty-home-image-cover,.xty-image-seat{
-  aspect-ratio:5/7;overflow:hidden;border-radius:14px;
+  aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:14px;
   border:1px solid var(--xty-border);background:var(--xty-bg);
 }
 .xty-home-image-cover img,.xty-image-seat img{
