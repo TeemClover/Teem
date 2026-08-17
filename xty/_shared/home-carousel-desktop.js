@@ -16,6 +16,35 @@ function installStyle() {
        redundant and competes with the party title. */
     .xty-party-carousel .xty-home-cover.avatar-cover>b { display:none!important; }
 
+    /* Lower party rows should use the same full-card Starter treatment as
+       the large owner card above. Keep only the outer colour frame; remove
+       the inset white padding and let the art fill the whole face. */
+    .party-group .xty-party-row-cover .xty-home-cover.avatar-cover {
+      padding:0!important;
+      box-shadow:none!important;
+      overflow:hidden!important;
+    }
+    .party-group .xty-party-row-cover .xty-home-cover.avatar-cover>img {
+      width:100%!important;
+      height:100%!important;
+      object-fit:cover!important;
+      border-radius:6px!important;
+    }
+
+    /* A Collection card used as the Pet thumbnail keeps its card art, but
+       should read like a soft little collectible — rounded, no hard box. */
+    .party-group .xty-party-row-pet {
+      border:0!important;
+      background:transparent!important;
+      box-shadow:none!important;
+    }
+    .party-group .xty-party-row-pet img {
+      border:0!important;
+      border-radius:8px!important;
+      background:transparent!important;
+      box-shadow:none!important;
+    }
+
     @media (hover:hover) and (pointer:fine) {
       .xty-party-carousel.multiple {
         cursor:grab;
@@ -32,6 +61,14 @@ function installStyle() {
     }
   `;
   document.head.appendChild(style);
+}
+
+function polishHomeFooter() {
+  const link = [...document.querySelectorAll('#home > a.about-link')]
+    .find(node => node.getAttribute('href') === '/xty/about/' && /เกี่ยวกับ\s*XTY/.test(node.textContent || ''));
+  if (!link) return;
+  link.textContent = 'กลับหน้าแรก →';
+  link.setAttribute('href', '/');
 }
 
 function enhance(carousel) {
@@ -94,6 +131,7 @@ function scan() {
 }
 
 installStyle();
+polishHomeFooter();
 scan();
 
 const host = document.getElementById('mainParty');
