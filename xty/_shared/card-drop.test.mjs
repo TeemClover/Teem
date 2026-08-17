@@ -191,3 +191,40 @@ test('a real draw follows the odds and never repeats a card', async () => {
   }
   assert.equal(seen.size, XTY_CARDS.length, 'every printed card is reachable');
 });
+
+/* The `brandnewcard` code hands out a real draw, not a special case, and
+   can be typed more than once without replaying the same card. */
+test('brandnewcard draws again every time, and never a duplicate', async () => {
+  const { webcrypto } = await import('node:crypto');
+  globalThis.crypto ||= webcrypto;
+  class Mem {
+    #v = new Map();
+    getItem(k) { return this.#v.has(k) ? this.#v.get(k) : null; }
+    setItem(k, val) { this.#v.set(k, String(val)); }
+    removeItem(k) { this.#v.delete(k); }
+    clear() { this.#v.clear(); }
+  }
+  globalThis.localStorage = new Mem();
+  const store = await import('./store.js');
+
+  localStorage.clear();
+  assert.equal(store.drawBrandNewCard(), null, 'no profile, no card');
+
+  store.createProfile({ alias: 'coder', avatarId: 'orange_cat', avatarFrame: 'green' });
+  const seen = new Set();
+  for (let i = 0; i < XTY_CARDS.length; i += 1) {
+    const reward = store.drawBrandNewCard();
+    assert.ok(reward?.cardId, `draw ${i} should hand out a card`);
+    assert.equal(seen.has(reward.cardId), false, 'the same card must not come back');
+    assert.equal(reward.partyCode, '', 'a code draw belongs to no party, so it opens offline');
+    assert.ok(store.ownedCardIds().includes(reward.cardId), 'the card is owned before it is opened');
+    seen.add(reward.cardId);
+  }
+  assert.equal(seen.size, XTY_CARDS.length, 'the whole set is reachable by code');
+
+  /* Nothing left to give: the reveal page shows COLLECTION COMPLETE
+     rather than the code silently doing nothing. */
+  const empty = store.drawBrandNewCard();
+  assert.equal(empty.cardId, null);
+  assert.equal(empty.complete, true);
+});

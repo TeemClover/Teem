@@ -959,6 +959,27 @@ export function prepareCardReward({ questId = 'milestone', partyCode = '' } = {}
   return reward;
 }
 
+export const BRAND_NEW_CARD_QUEST = 'code:brandnewcard';
+
+/* The `brandnewcard` code, typed on the Collection page. It draws exactly
+   what a Quest draws — same published odds, same "yours before you open
+   it" write, same reveal — so what a player sees here is the real thing
+   rather than a special case.
+
+   Each use gets its own quest id, which is what lets the code be typed
+   again and land somewhere new: prepareCardReward is deliberately
+   idempotent per quest, so reusing one id would just replay one card. The
+   draw carries no partyCode, so opening it never waits on a server and it
+   works for anyone, signed in or not. */
+export function drawBrandNewCard() {
+  const profile = getProfile();
+  if (!profile) return null;
+  const used = profile.cardRewards.filter(item =>
+    String(item.questId || '').startsWith(BRAND_NEW_CARD_QUEST)
+  ).length;
+  return prepareCardReward({ questId: `${BRAND_NEW_CARD_QUEST}#${used + 1}` });
+}
+
 export function pendingCardReward(rewardId = '') {
   const rewards = getProfile()?.cardRewards || [];
   if (rewardId) return rewards.find(item => item.rewardId === rewardId) || null;

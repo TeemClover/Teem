@@ -65,7 +65,7 @@
 <script type="module">
 import {
   getProfile, hasProfile, updateProfile, ownedCardIds, cardAvailability, useCardAsAvatar,
-  allParties, isActiveParty, partyIdentity, syncCollectionDebugCode,
+  allParties, isActiveParty, partyIdentity, syncCollectionDebugCode, drawBrandNewCard,
 } from '/xty/_shared/store.js';
 import { XTY_CARDS, XTY_RARITY_META, cardById, cardDescriptorTh, cardNameTh } from '/xty/_shared/cards.js';
 import { cardMarkup, cardStatusLabel } from '/xty/_shared/card-ui.js';
@@ -168,6 +168,19 @@ $('close').addEventListener('click', () => $('detail').close());
 $('debugForm').addEventListener('submit', async event => {
   event.preventDefault();
   const code = $('debugCode').value.trim().toLowerCase();
+  /* One draw, then straight to the reveal — the card is worth opening,
+     not worth reading about in a status line. */
+  if (code === 'brandnewcard') {
+    const reward = drawBrandNewCard();
+    if (!reward) {
+      $('debugFeedback').textContent = 'ยังไม่มีโปรไฟล์ XTY';
+      $('debugFeedback').classList.add('error');
+      return;
+    }
+    $('debugCode').value = '';
+    location.href = `/xty/reveal/?r=${encodeURIComponent(reward.rewardId)}`;
+    return;
+  }
   const result = code === 'level2test'
     ? await runLevel2Test()
     : await syncCollectionDebugCode(code);
