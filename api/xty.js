@@ -1,5 +1,6 @@
 import legacyXtyHandler from './xty/[...path].js';
 import { handleXtyPartyFinish } from './_lib/xty-party-finish.js';
+import { handleXtyBind } from './_lib/xty-bind.js';
 
 function pathOf(req) {
   const raw = req.query?.path;
@@ -13,6 +14,12 @@ function pathOf(req) {
 export default function handler(req, res) {
   const path = pathOf(req).replace(/^\/+|\/+$/g, '');
   const method = String(req.method || '').toUpperCase();
+
+  /* Account binding is lossless and self-healing: local lead ownership must
+     survive Login/Merge even when the account already had a membership row. */
+  if (path === 'bind' && method === 'POST') {
+    return handleXtyBind(req, res);
+  }
 
   /* Compatibility firewall for old tabs/service caches. Legacy clients used
      the original /api/xty/party routes; route lifecycle-sensitive writes into
