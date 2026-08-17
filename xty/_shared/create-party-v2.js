@@ -47,6 +47,10 @@ export async function createPartyV2(options = {}) {
     ? Number(window.__xtyDurationOverride) : Number(durationDays || 7);
   const finalPreset = typeof window !== 'undefined' && window.__xtyPresetOverride
     ? String(window.__xtyPresetOverride) : preset;
+  const activityOverride = typeof window !== 'undefined' && window.__xtyActivityOverride
+    ? window.__xtyActivityOverride : null;
+  const finalActivityId = activityOverride?.id || activityId;
+  const finalActivity = activityOverride?.labelTh || activity;
 
   let response;
   try {
@@ -54,7 +58,7 @@ export async function createPartyV2(options = {}) {
       method: 'POST', credentials: 'same-origin',
       headers: { 'content-type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({
-        name, activity, activityId, preset: finalPreset, verificationMode, durationDays: finalDurationDays, color, visibility, commitRule,
+        name, activity: finalActivity, activityId: finalActivityId, preset: finalPreset, verificationMode, durationDays: finalDurationDays, color, visibility, commitRule,
         budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
         petId: petId || null,
         coverType: finalCoverType,
