@@ -2,9 +2,28 @@ import {
   XTY_PROFILE_KEY, getProfile, handSizeOf, normalizeProfile, refreshParty, saveProfile,
 } from './store.js';
 import { XTY_V1_PET_IDS } from './pets.js';
+import { profilePortrait } from './card-picker.js';
 
 const XTY_TOKENS_KEY = 'mc_xty_tokens';
 const XTY_PROFILE_IDS_KEY = 'mc_xty_profile_ids';
+
+/* Keep the first identity users see on /xty/ in lockstep with the editable
+   Profile surface. This also fixes Safari BFCache restoring the old greeting
+   after navigating back from /profile/. */
+function refreshXtyHomeIdentity(profile = getProfile()) {
+  if (typeof document === 'undefined' || typeof location === 'undefined') return;
+  if (!/^\/xty\/?$/.test(location.pathname) || !profile) return;
+  const greet = document.getElementById('greet');
+  const homeAvatar = document.getElementById('homeAvatar');
+  if (!greet || !homeAvatar) return;
+  const esc = value => String(value || '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[char]));
+  const portrait = profilePortrait(profile);
+  greet.innerHTML = `สวัสดี<br>${esc(profile.alias)}`;
+  homeAvatar.dataset.color = profile.avatarFrame || 'green';
+  homeAvatar.innerHTML = portrait?.art ? `<img src="${portrait.art}" alt="">` : '';
+}
 
 /* Every profile id this device has ever used. Losing localStorage mints a new
    id, and parties created under the old one answer to nobody unless that id is
@@ -269,17 +288,25 @@ export async function resyncXtyParties() {
 
 export async function syncXtyProfile({ recoverParties = true } = {}) {
   const user = await getSession();
-  if (!user) return { ok: true, authenticated: false, profile: getProfile(), user: null };
+  if (!user) {
+    const profile = getProfile();
+    refreshXtyHomeIdentity(profile);
+    return { ok: true, authenticated: false, profile, user: null };
+  }
 
   const localId = getProfile()?.id;
   if (localId) await bindXtyIdentity(localId);
 
   const cloud = await loadCloudProgress();
-  if (cloud.error) return { ...cloud, authenticated: true, profile: getProfile(), user };
+  if (cloud.error) {
+    refreshXtyHomeIdentity(getProfile());
+    return { ...cloud, authenticated: true, profile: getProfile(), user };
+  }
 
   const merged = mergeXtyProfile(getProfile(), cloud.profile);
   if (!merged) return { ok: true, authenticated: true, profile: null, user };
   const profile = saveProfile(merged);
+  refreshXtyHomeIdentity(profile);
 
   /* On a fresh browser localStorage may be empty. The durable profile id is
      known only after cloud progress is loaded, so bind again here before
@@ -293,6 +320,15 @@ export async function syncXtyProfile({ recoverParties = true } = {}) {
   return saved.error
     ? { ...saved, authenticated: true, profile, user, recovery }
     : { ok: true, authenticated: true, profile, user, recovery };
+}
+
+/* Safari/iOS can restore /xty/ from BFCache without rerunning boot(). Repaint
+   from the latest local profile whenever that page is shown again. */
+if (typeof window !== 'undefined') {
+  window.addEventListener('pageshow', () => refreshXtyHomeIdentity());
+  window.addEventListener('storage', event => {
+    if (event.key === XTY_PROFILE_KEY) refreshXtyHomeIdentity();
+  });
 }
 
 /* Invite onboarding polish.
