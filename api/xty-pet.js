@@ -12,6 +12,8 @@ const ICT_OFFSET_MS = ICT_OFFSET_MINUTES * 60000;
 const WAKE_HOURS = [0, 6, 12, 18];
 const LOG_SLICE = 120;
 const ACTIVE_STATES = ['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE'];
+const WHITE_CAT_ID = 'xvisor_white_cat_silver';
+const WHITE_CAT_INTRO = 'อยู่ด้วยกันตรงนี้นะ 🐈 ถ้าอยากถามอะไร พิมพ์ “แมวขาว” แล้วตามด้วยคำถามได้เลย — เรื่อง Xircle, RoutineX, ABCD หรือตี้นี้ก็ได้';
 
 function wakeWindow(now = new Date()) {
   const local = new Date(now.getTime() + ICT_OFFSET_MS);
@@ -222,6 +224,35 @@ async function directReply(req, res, sql) {
   });
 }
 
+async function whiteCatIntro(req, res, sql) {
+  if (!sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  const code = String(body.code || '').trim();
+  if (!/^\d{5}$/.test(code)) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
+  const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake,state
+    FROM xty_parties WHERE code=$1`, [code]);
+  const party = rows[0];
+  if (!party || !ACTIVE_STATES.includes(String(party.state || '').toUpperCase())) {
+    return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
+  }
+  if (party.pet_id !== WHITE_CAT_ID) return sendJson(res, { ok: true, skipped: 'NOT_WHITE_CAT' });
+  const member = await memberForRequest(req, sql, party.id);
+  if (!member) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
+  if (member.role !== 'lead') return sendJson(res, { ok: true, skipped: 'LEAD_ONLY_INTRO' });
+
+  const existing = await sql.query(`SELECT 1 FROM xty_posts WHERE party_id=$1 AND kind='pet'
+    AND pet_id=$2 AND retracted=FALSE LIMIT 1`, [party.id, WHITE_CAT_ID]);
+  if (existing[0]) return sendJson(res, { ok: true, skipped: 'ALREADY_INTRODUCED' });
+
+  const now = new Date();
+  const seq = await appendBubble(sql, party, WHITE_CAT_INTRO, null, now);
+  if (!seq) return sendJson(res, { ok: true, skipped: 'WRITE_FAILED' });
+  /* The onboarding bubble is a real PET turn. Mark the room as read so the
+     cron does not immediately manufacture another first-turn response. */
+  await sql.query('UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2', [now, party.id]);
+  return sendJson(res, { ok: true, spoke: true, bubbles: 1, intro: true });
+}
+
 function manualFallback(party) {
   const pet = PET_BY_ID[party.pet_id] || { nameTh: 'สัตว์ประจำตี้', emoji: '🐾' };
   return [`${pet.emoji} ${pet.nameTh} ตื่นแล้ว — รอบทดสอบอ่าน Party Log ได้อยู่`];
@@ -234,10 +265,10 @@ export default async function handler(req, res) {
     }
     const sql = database(); await ensureSchema(sql);
 
-    /* Same Vercel function, two entry modes: browser-authenticated direct call
-       and CRON_SECRET scheduled wake. This avoids adding another serverless
-       function just to make direct pet conversations responsive. */
+    /* Same Vercel function, browser-authenticated direct/intro modes plus the
+       CRON_SECRET scheduled wake. No extra serverless function is needed. */
     if (req.method === 'POST' && req.body?.mode === 'direct') return directReply(req, res, sql);
+    if (req.method === 'POST' && req.body?.mode === 'white_cat_intro') return whiteCatIntro(req, res, sql);
 
     if (!process.env.CRON_SECRET) return sendJson(res, { ok: false, error: 'CRON_SECRET_NOT_CONFIGURED' }, 503);
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
