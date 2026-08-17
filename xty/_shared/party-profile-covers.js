@@ -38,6 +38,67 @@ function injectStyle() {
     .xty-core7-seat,.xty-back-seat{width:100%;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:14px}
     .xty-core7-seat svg,.xty-back-seat img{display:block;width:100%;height:100%;object-fit:cover}
     .post .who.xty-profile-click{text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+
+    /* Every party position is the same invisible 63×88 slot. If the player
+       equipped a Collection card, the *card itself* owns the visible edge —
+       never the old portrait frame. This keeps six seats aligned while the
+       printed card can run edge-to-edge inside its slot. */
+    .party-table>.xty-collection-seat{
+      position:relative!important;
+      width:100%!important;
+      min-width:0!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
+      overflow:hidden!important;
+      padding:0!important;
+      border:0!important;
+      border-radius:14px!important;
+      background:transparent!important;
+      box-shadow:none!important;
+    }
+    .xty-collection-seat__card{
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      display:block;object-fit:cover;
+      border:0;border-radius:14px;
+      background:transparent;
+    }
+    .xty-collection-seat__svg{
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      overflow:hidden;border-radius:14px;
+    }
+    .xty-collection-seat__svg svg{
+      display:block;width:100%;height:100%;max-width:none;object-fit:cover;
+    }
+    .xty-collection-seat__top,
+    .xty-collection-seat__bottom{
+      position:absolute;left:7px;right:7px;z-index:5;
+      display:flex;align-items:center;gap:5px;
+      min-width:0;color:var(--xty-ink);
+      text-shadow:0 1px 0 rgba(255,255,255,.65);
+      pointer-events:none;
+    }
+    .xty-collection-seat__top{
+      top:7px;justify-content:flex-start;
+      font-size:clamp(9px,2.5vw,12px);font-weight:900;line-height:1.15;
+    }
+    .xty-collection-seat__top span{
+      max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+      padding:3px 6px;border-radius:999px;background:rgba(255,254,248,.78);
+      backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+    }
+    .xty-collection-seat__bottom{
+      bottom:7px;justify-content:space-between;
+      font:800 clamp(8px,2.1vw,10px)/1.1 var(--sans);
+    }
+    .xty-collection-seat__bottom span{
+      display:inline-flex;align-items:center;min-height:20px;padding:3px 6px;
+      border-radius:999px;background:rgba(255,254,248,.82);
+      backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+    }
+    .xty-collection-seat__bottom .mark{
+      min-width:20px;justify-content:center;color:var(--xty-primary);font-size:13px;
+    }
   `;
   document.head.appendChild(s);
 }
@@ -45,10 +106,22 @@ function injectStyle() {
 let scheduled = false;
 function schedule() {
   if (scheduled) return; scheduled = true;
-  requestAnimationFrame(() => { scheduled = false; syncLeadCover(); syncProfileLinks(); syncCoverTools(); syncRichEvents(); });
+  requestAnimationFrame(() => {
+    scheduled = false;
+    syncLeadCover();
+    syncCollectionSeats();
+    syncProfileLinks();
+    syncCoverTools();
+    syncRichEvents();
+  });
 }
 
 function profileHref(userId) { return `/xty/u/?c=${encodeURIComponent(code)}&m=${encodeURIComponent(userId)}`; }
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
+  }[ch]));
+}
 
 function syncProfileLinks() {
   const p = getParty(code); const seats = document.getElementById('seats');
@@ -87,16 +160,98 @@ function syncLeadCover() {
     first.className = 'seat-card-wrap xty-profile-click'; first.dataset.coverV3 = signature;
     const src = String(p.coverValue).replace(/"/g, '&quot;');
     first.innerHTML = `<div class="xty-image-seat"><img src="${src}" alt="ปกฉากจบ" loading="lazy" decoding="async"></div>`
-      + `<span class="seat-card-name">${lead.alias} · ${mark}</span>`;
+      + `<span class="seat-card-name">${esc(lead.alias)} · ${mark}</span>`;
   } else if (p.coverType === 'core7_card' && p.coverValue) {
     const card = core7CardById(p.coverValue); if (!card) return;
     first.className = 'seat-card-wrap xty-profile-click'; first.dataset.coverV3 = signature;
     first.innerHTML = `<div class="xty-core7-seat">${cardSVG(card.id, { width: 300, showNumber: true })}</div>`
-      + `<span class="seat-card-name">${lead.alias} · ${mark}</span>`;
+      + `<span class="seat-card-name">${esc(lead.alias)} · ${mark}</span>`;
   } else if (p.coverType === 'card_back') {
     first.className = 'seat-card-wrap xty-profile-click'; first.dataset.coverV3 = signature;
     first.innerHTML = `<div class="xty-back-seat"><img src="${BACK}" alt="หลังการ์ด myClover"></div>`
-      + `<span class="seat-card-name">${lead.alias} · ${mark}</span>`;
+      + `<span class="seat-card-name">${esc(lead.alias)} · ${mark}</span>`;
+  }
+}
+
+function collectionSeatHtml({ art = '', svg = '', alias = '', role = '', mark = '', alt = '' }) {
+  const face = svg
+    ? `<div class="xty-collection-seat__svg" aria-hidden="true">${svg}</div>`
+    : `<img class="xty-collection-seat__card" src="${esc(art)}" alt="${esc(alt)}" loading="eager" decoding="async">`;
+  return face
+    + `<div class="xty-collection-seat__top"><span>${esc(alias)}</span></div>`
+    + `<div class="xty-collection-seat__bottom"><span>${esc(role)}</span>${mark ? `<span class="mark">${esc(mark)}</span>` : ''}</div>`;
+}
+
+function syncCollectionSeats() {
+  const p = getParty(code); const seats = document.getElementById('seats');
+  if (!p || !seats) return;
+  const done = committedToday(p);
+  const lead = p.members.find(m => m.role === 'lead') || null;
+  const others = p.members.filter(m => m.role !== 'lead');
+  const members = [lead, others[0] || null, others[1] || null, others[2] || null, others[3] || null];
+
+  members.forEach((member, index) => {
+    if (!member) return;
+    const node = seats.children[index]; if (!node) return;
+    const mark = done.has(member.userId) ? '✓' : '○';
+
+    /* Lead cover is its own card identity. If it is a real XTY/CORE7 card,
+       show that card in the same invisible slot as everybody else. */
+    if (member.role === 'lead' && p.coverType === 'card' && p.leadCardId) {
+      const card = xtyCardById(p.leadCardId); if (!card) return;
+      const signature = `lead-xty|${card.cardId}|${member.alias}|${mark}`;
+      if (node.dataset.collectionSeat === signature) return;
+      node.className = 'xty-collection-seat xty-profile-click';
+      node.dataset.collectionSeat = signature;
+      node.innerHTML = collectionSeatHtml({
+        art: card.imageFull || card.art, alias: member.alias, role: 'หัวตี้', mark,
+        alt: cardDescriptorTh(card),
+      });
+      return;
+    }
+    if (member.role === 'lead' && p.coverType === 'core7_card' && p.coverValue) {
+      const card = core7CardById(p.coverValue); if (!card) return;
+      const signature = `lead-core7|${card.id}|${member.alias}|${mark}`;
+      if (node.dataset.collectionSeat === signature) return;
+      node.className = 'xty-collection-seat xty-profile-click';
+      node.dataset.collectionSeat = signature;
+      node.innerHTML = collectionSeatHtml({
+        svg: cardSVG(card.id, { width: 300, showNumber: true }), alias: member.alias,
+        role: 'หัวตี้', mark, alt: card.en || 'First Hand',
+      });
+      return;
+    }
+
+    /* A member avatar can itself be an XTY Collection card. The outer seat
+       stays invisible 63×88; the actual card image becomes the visible edge. */
+    const card = xtyCardById(member.avatar);
+    if (!card || member.role === 'lead') return;
+    const signature = `member|${card.cardId}|${member.alias}|${mark}`;
+    if (node.dataset.collectionSeat === signature) return;
+    node.className = 'xty-collection-seat xty-profile-click';
+    node.dataset.collectionSeat = signature;
+    node.innerHTML = collectionSeatHtml({
+      art: card.imageFull || card.art, alias: member.alias, role: 'สมาชิก', mark,
+      alt: cardDescriptorTh(card),
+    });
+  });
+
+  /* PET/NPC from Collection follows exactly the same rule. A standard Pet
+     remains the portrait tile rendered by party-pet-seat-v2. */
+  const petNode = seats.children[5];
+  const npc = p.npcCardId ? xtyCardById(p.npcCardId) : null;
+  if (petNode && npc) {
+    const signature = `pet|${npc.cardId}|${npc.personalityNameTh || ''}`;
+    if (petNode.dataset.collectionSeat !== signature) {
+      petNode.className = 'xty-collection-seat';
+      petNode.dataset.collectionSeat = signature;
+      petNode.innerHTML = collectionSeatHtml({
+        art: npc.imageFull || npc.art,
+        alias: npc.personalityNameTh || 'PET',
+        role: 'PET',
+        alt: cardDescriptorTh(npc),
+      });
+    }
   }
 }
 
