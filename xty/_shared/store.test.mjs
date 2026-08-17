@@ -47,7 +47,7 @@ test('catalog matches the printed set with a minimal canonical card face', () =>
   const total = cards.XTY_COMMON_CARDS.length + cards.XTY_RARE_CARDS.length
     + cards.XTY_EPIC_CARDS.length + cards.XTY_LEGENDARY_CARDS.length;
   assert.equal(cards.XTY_CARDS.length, total);
-  assert.equal(cards.XTY_COMMON_CARDS.length, 40);
+  assert.equal(cards.XTY_COMMON_CARDS.length, 64);
   assert.equal(cards.XTY_RARE_CARDS.length, 12);
   assert.equal(cards.XTY_EPIC_CARDS.length, 12);
   assert.equal(cards.XTY_LEGENDARY_CARDS.length, 8);

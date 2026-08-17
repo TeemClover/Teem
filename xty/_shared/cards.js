@@ -120,8 +120,8 @@ function makeRareCard(animal, color) {
    not commons, and they carry no colour. */
 
 const PRINTED = Object.freeze({
-  /* 5 species × 4 colours × 2 artworks */
-  common: ['orange_cat', 'white_cat', 'white_pom', 'pig', 'buffalo']
+  /* 8 species × 4 colours × 2 artworks */
+  common: ['orange_cat', 'white_cat', 'white_pom', 'pig', 'buffalo', 'chicken', 'crow', 'turtle']
     .flatMap(species => XTY_CARD_COLORS.flatMap(color => ['a', 'b'].map((variant, index) => ({
       species, color, variant: index + 1,
       art: `/xty/assets/cards/common/${species.replaceAll('_', '-')}-${color}-${variant}.webp`,
