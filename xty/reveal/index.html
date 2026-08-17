@@ -40,19 +40,19 @@
   <section id="missing" hidden>
     <p class="kicker">CARD REVEAL</p>
     <h1 class="title">ยังไม่มีการ์ดรอเปิด</h1>
-    <p class="lede">จบ Quest หรือ Party ก่อน แล้วของขวัญจากการเดินทางจะมารอที่นี่</p>
+    <p class="lede">ทำ Quest หรือสะสม Confirmed Commit ให้ครบ ⭐⭐⭐ ก่อน แล้ว Card Drop จะมารอที่นี่</p>
     <a class="btn gold" href="/xty/">กลับไป XTY</a>
   </section>
 
   <section id="complete" hidden>
     <p class="kicker">COLLECTION COMPLETE ✦</p>
     <h1 class="title">คุณเก็บครบทุกใบแล้ว</h1>
-    <p class="lede">Quest นี้ยังถูกบันทึกไว้ โดยไม่แจกการ์ดซ้ำ</p>
+    <p class="lede">รางวัลนี้ยังถูกบันทึกไว้ โดยไม่แจกการ์ดซ้ำ</p>
     <a class="btn gold" href="/xty/collection/">ดูคอลเลกชัน</a>
   </section>
 
   <section id="reveal" hidden>
-    <p class="kicker">QUEST COMPLETE ✓</p>
+    <p class="kicker" id="rewardKicker">QUEST COMPLETE ✓</p>
     <h1 class="title">ได้การ์ด 1 ใบ</h1>
     <p class="lede" id="instruction">กดการ์ดเพื่อเปิดของขวัญจากการเดินทาง</p>
 
@@ -101,6 +101,7 @@ import {
   useCardAsAvatar, shouldOfferProgressSave,
   updateProfile, allParties, isActiveParty, partyIdentity,
 } from '/xty/_shared/store.js';
+import { revealStarReward } from '/xty/_shared/star-rewards.js';
 import { XTY_RARITY_META, cardById, cardNameTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
 import { getSession, syncXtyProfile } from '/xty/_shared/account.js';
@@ -129,7 +130,12 @@ if (!reward) {
 function showReward(item) {
   const card = cardById(item.cardId);
   if (!card) { $('missing').hidden = false; return; }
+  const starDrop = /^party-stars:/.test(String(item.questId || ''));
   $('reveal').hidden = false;
+  if (starDrop) {
+    $('rewardKicker').textContent = '⭐⭐⭐ · CARD DROP';
+    $('instruction').textContent = 'ครบ 3 Confirmed Commits ในตี้นี้ · กดเปิดการ์ด';
+  }
   $('front').innerHTML = cardMarkup(card, { eager: true, foil: card.rarity === 'rare' });
   $('cardName').textContent = cardNameTh(card);
   $('cardMeta').textContent = `สี${card.colorNameTh} · ${(XTY_RARITY_META[card.rarity] || XTY_RARITY_META.common).label}`;
@@ -142,7 +148,9 @@ function showReward(item) {
     if (opened) return;
     button.disabled = true;
     $('instruction').textContent = 'กำลังบันทึกช่วงเวลานี้ลง Party Log…';
-    const revealed = await revealPartyCardReward(item.rewardId);
+    const revealed = starDrop
+      ? await revealStarReward(item)
+      : await revealPartyCardReward(item.rewardId);
     if (revealed.error) {
       button.disabled = false;
       $('instruction').textContent = revealed.error === 'OFFLINE'
@@ -155,7 +163,9 @@ function showReward(item) {
     button.classList.add('is-open');
     button.setAttribute('aria-expanded', 'true');
     button.setAttribute('aria-label', cardNameTh(card));
-    $('instruction').textContent = 'การ์ดใบนี้เป็นความทรงจำจาก Quest ไม่ใช่ของที่ซื้อสุ่ม';
+    $('instruction').textContent = starDrop
+      ? 'เปิดแล้ว · เพื่อนในตี้จะเห็น Card Drop ใบนี้ใน Party Log'
+      : 'การ์ดใบนี้เป็นความทรงจำจาก Quest ไม่ใช่ของที่ซื้อสุ่ม';
     syncXtyProfile();
     if (navigator.vibrate) navigator.vibrate(12);
     setTimeout(finishOpen, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 500);
