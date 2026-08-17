@@ -11,8 +11,8 @@ function avatar(id, slug, nameTh, fallback) {
 }
 
 export const XTY_AVATARS = Object.freeze([
-  avatar('orange_cat', 'orange-cat', 'แมวส้ม', '🐱'),
-  avatar('white_pom', 'white-pom', 'ปอมขาว', '🐶'),
+  avatar('orange_cat', 'orange-cat', 'แมว', '🐱'),
+  avatar('white_pom', 'white-pom', 'หมา', '🐶'),
   avatar('white_cat', 'white-cat', 'แมวขาว', '🐈'),
   avatar('pig', 'pig', 'หมู', '🐷'),
   avatar('buffalo', 'buffalo', 'ควาย', '🐃'),
