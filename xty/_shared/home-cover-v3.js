@@ -97,8 +97,11 @@ function coverMarkup(party) {
 function petThumbMarkup(party) {
   const npc = party.npcCardId ? xtyCardById(party.npcCardId) : null;
   if (npc) {
-    const art = npc.art || npc.imageFull;
-    if (art) return `<span class="xty-party-row-pet"><img src="${esc(art)}" alt="${esc(cardNameTh(npc))}" loading="lazy" decoding="async"></span>`;
+    /* The little companion position beside a party is a square invisible
+       slot, but a Collection companion is still a real 63×88 card inside
+       it. Render the card itself instead of forcing the card art through a
+       square portrait crop, so the visible edge is the card's own frame. */
+    return `<span class="xty-party-row-pet is-card" aria-label="${esc(cardNameTh(npc))}">${xtyCardMarkup(npc)}</span>`;
   }
 
   const pet = party.petId ? PET_BY_ID[party.petId] : null;
@@ -296,9 +299,25 @@ style.textContent = `
     width:34px;height:34px;display:grid;place-items:center;align-self:center;
     overflow:visible;font-size:27px;line-height:1;
   }
-  .xty-party-row-pet img{
+  .xty-party-row-pet>img{
     display:block;width:34px;height:34px;max-width:none;object-fit:contain;
   }
+  /* The slot stays 34×34 so every row aligns. A Collection NPC keeps its
+     own 63×88 silhouette inside that invisible slot; no square portrait
+     border is allowed to crop the card. */
+  .xty-party-row-pet.is-card .animal-card{
+    width:auto!important;height:34px!important;max-width:none!important;
+    aspect-ratio:var(--xty-card-aspect)!important;margin:0!important;
+    border-radius:5px!important;overflow:hidden!important;
+    box-shadow:none!important;transform:none!important;
+  }
+  .xty-party-row-pet.is-card .animal-card .card-art{
+    display:block!important;width:100%!important;height:100%!important;
+    margin:0!important;object-fit:cover!important;border-radius:0!important;
+  }
+  .xty-party-row-pet.is-card .animal-card .card-copy,
+  .xty-party-row-pet.is-card .animal-card .role-badge,
+  .xty-party-row-pet.is-card .animal-card .rarity-badge{display:none!important}
   .xty-party-row-pet.empty{visibility:hidden}
   .party-group .xty-party-summary-row .tx{min-width:0;align-self:center}
   .party-group .xty-party-summary-row .tx b{
@@ -326,7 +345,8 @@ style.textContent = `
     .xty-party-row-cover .xty-home-cover.avatar-cover{
       width:54px!important;min-width:54px!important;height:76px!important;
     }
-    .xty-party-row-pet,.xty-party-row-pet img{width:30px;height:30px}
+    .xty-party-row-pet,.xty-party-row-pet>img{width:30px;height:30px}
+    .xty-party-row-pet.is-card .animal-card{height:30px!important}
     .xty-party-row-pet{font-size:24px}
   }
 `;
