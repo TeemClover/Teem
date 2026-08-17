@@ -153,11 +153,14 @@ function installNewPartyPicker() {
     const available = availableOwnedCards({ role: 'npc' });
     const allowed = new Set(available.map(card => card.cardId));
     const leadLabel = $('leadPick')?.querySelector('.picked')?.getAttribute('aria-label') || '';
+    const currentCardId = pickedCardIdFromNpcGrid();
     openCollectionPicker({
       title: 'เลือกการ์ดเป็น Pet',
-      selectedCardId: pickedCardIdFromNpcGrid(),
+      selectedCardId: currentCardId,
       allowedCardIds: allowed,
-      onPick(_choice, card, status) {
+      onPick(choice, card, status) {
+        /* Picking the already-equipped skin is a no-op, not a toggle-off. */
+        if (choice.cardId === currentCardId) return true;
         if (leadLabel === `ใช้ ${cardDescriptorTh(card)} เป็นปกตี้`) {
           status.textContent = 'การ์ดใบเดียวกันใช้เป็นปกตี้และ Pet พร้อมกันไม่ได้';
           status.classList.add('error');
