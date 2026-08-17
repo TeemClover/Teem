@@ -14,14 +14,21 @@
 /api/_lib/pet-personas.js
 ```
 
-เมื่อ persona ถูก approve และจะใช้จริง ต้อง sync **ทั้งสองฝั่ง**
+และกฎร่วมเรื่อง **เมื่อไรควรพูด / เมื่อไรควรเงียบ / behavior selection** อยู่ที่:
+
+```text
+/api/_lib/pet-brain.js
+/xty/pets/personas/RUNTIME_CONTRACT.md
+```
+
+เมื่อ persona ถูก approve และจะใช้จริง ต้อง sync **ทั้งสองฝั่ง** แต่ persona ไม่มีสิทธิ์ override living-brain contract
 
 ```text
 1. /xty/pets/personas/{pet}.md
 2. /api/_lib/pet-personas.js
 ```
 
-ห้ามแก้เพียงไฟล์เดียวแล้วถือว่า production เปลี่ยนแล้ว
+ห้ามแก้เพียงไฟล์เดียวแล้วถือว่า production เปลี่ยนแล้ว และห้าม copy กฎ legacy แบบ “ทุก wake ต้องพูด” กลับเข้า runtime
 
 ## Persona v2 structure
 
@@ -59,15 +66,35 @@ Runtime Compression
 
 ## Runtime rules currently in force
 
-1. PET ที่ถูกปลุกต้องมี **1–3 bubbles**; runtime ปัจจุบันไม่มี `QUIET` ใน wake ปกติ
-2. อ้างอิง **facts ใน Party เท่านั้น** ห้ามแต่งเหตุการณ์ ตัวเลข ผลลัพธ์ ความรู้สึก หรือคำพูดของสมาชิก
-3. ข้อความมนุษย์ล่าสุดที่เรียก/ถาม PET โดยตรงมี priority
-4. ถ้าตี้มีมนุษย์ 1 คน ห้ามพูดเหมือนมีคนอื่นอยู่ในห้อง
-5. เรียกสมาชิกด้วย **alias**; Animal Avatar เป็น visual identity ไม่ใช่ personality signal
-6. **สัตว์ทุกตัวยกเว้น `monitor_lizard` ห้ามใช้ `กู/มึง`**
-7. Roast the commitment, not the person; hard safety boundary ใช้กับทุก series
-8. เรื่องหนักให้ลด persona intensity และไม่ซัก/วินิจฉัย/ให้คำแนะนำที่ไม่ได้ถูกขอ
-9. STARTER ยัง low-pressure / no roast; WILD ต้องมี explicit tone design และ opt-in ก่อนเปิดใช้จริง
+1. PET ที่ถูกปลุก **ไม่จำเป็นต้องพูด**; `QUIET` เป็น first-class behavior และส่ง 0 bubbles ได้
+2. ถ้าพูด ใช้ได้ 1–3 bubbles และต้องอ้างอิง **facts ใน Party เท่านั้น** ห้ามแต่งเหตุการณ์ ตัวเลข ผลลัพธ์ ความรู้สึก หรือคำพูดของสมาชิก
+3. ก่อนใช้ persona ต้องเลือก behavior จาก `QUIET / REACT / ACK / CALLBACK / ANSWER / TEASE / REMIND / ASK`
+4. ข้อความมนุษย์ล่าสุดที่เรียก/ถาม PET โดยตรงมี priority และใช้ direct fast path
+5. คำถามไม่ใช่ default ending; PET สามารถ react / acknowledge / tease / callback แล้วจบได้
+6. `COMMIT ✓` เปล่า ๆ ไม่บังคับให้ PET ต้องตอบ ถ้ามี note/detail จริงค่อยใช้ detail นั้น
+7. ถ้าตี้มีมนุษย์ 1 คน ห้ามพูดเหมือนมีคนอื่นอยู่ในห้อง
+8. เรียกสมาชิกด้วย **alias**; Animal Avatar เป็น visual identity ไม่ใช่ personality signal
+9. **สัตว์ทุกตัวยกเว้น `monitor_lizard` ห้ามใช้ `กู/มึง`**
+10. Roast the commitment, not the person; hard safety boundary ใช้กับทุก series
+11. เรื่องหนักให้ลด persona intensity และไม่ซัก/วินิจฉัย/ให้คำแนะนำที่ไม่ได้ถูกขอ
+12. Scheduled provider failure ต้องเงียบแทน deterministic filler
+13. STARTER ยัง low-pressure / no roast; WILD ต้องมี explicit tone design และ opt-in ก่อนเปิดใช้จริง
+
+## XTY V1 — same intelligence layer
+
+สัตว์ 8 ตัวที่เปิดให้ผู้เล่น V1 ใช้ทั้งหมดผ่าน `api/_lib/pet-brain.js` ตัวเดียวกัน:
+
+- `pig` — หมู
+- `buffalo` — ควาย
+- `dog` — ปอมขาว
+- `unicorn` — ยูนิคอร์น
+- `crow` — กา
+- `cat` — แมวส้ม
+- `chicken` — ไก่
+- `turtle` — เต่า
+
+ทั้ง 8 ตัวใช้มาตรฐานเดียวกันในเรื่อง Party Log access, structured Groq decision, thread recovery, direct-call priority, silence policy, anti-repetition และ safety guards
+ความต่างคือ **persona / attention style / humor / voice** เท่านั้น ไม่ใช่ระดับความฉลาด
 
 ## Authored persona docs now
 
