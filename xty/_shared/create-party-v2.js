@@ -39,27 +39,31 @@ function onCreatePage() {
 
 function levelOneCover(profile) {
   window.__xtyCoverV2 = { coverType: 'avatar', leadCardId: null, core7CardId: null };
-  const pick = document.getElementById('leadPick');
-  const hint = document.getElementById('coverHint');
-  if (!pick || !profile) return;
+  const section = document.getElementById('coverSection');
+  if (!section || !profile) return;
+
   const avatar = avatarById(profile.avatarId || profile.avatarFallback || 'orange_cat');
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'card-select picked';
-  button.setAttribute('role', 'radio');
-  button.setAttribute('aria-checked', 'true');
-  button.setAttribute('aria-label', `ใช้ ${avatar.nameTh} เป็นผู้นำตี้`);
-  button.innerHTML = `<div class="avatar-cover" data-color="${profile.avatarFrame || 'green'}"><img src="${avatar.art}" alt=""><b>${avatar.nameTh}</b><small>LV.1 PARTY LEAD</small></div>`;
-  pick.replaceChildren(button);
-  if (hint) hint.textContent = 'LV.1 · ก่อน Quest Clear ใช้ Animal Avatar ของคุณเป็นผู้นำตี้เท่านั้น';
+  section.innerHTML = `
+    <span class="step-sticker">1</span>
+    <h2>การ์ดผู้นำตี้</h2>
+    <p class="whisper" id="coverHint">LV.1 ใช้การ์ดตัวละครเริ่มต้นของคุณเป็นผู้นำตี้อัตโนมัติ</p>
+    <div class="card-select-grid" id="leadPick" role="group" aria-label="การ์ดผู้นำตี้เริ่มต้น">
+      <div class="card-select picked" role="img" aria-label="ใช้ ${avatar.nameTh} เป็นผู้นำตี้">
+        <div class="avatar-cover" data-color="${profile.avatarFrame || 'green'}">
+          <img src="${avatar.art}" alt="">
+          <b>${avatar.nameTh}</b>
+          <small>LV.1 PARTY LEAD</small>
+        </div>
+      </div>
+    </div>`;
 
   const npcPick = document.getElementById('npcCardPick');
   if (npcPick) {
     npcPick.hidden = true;
     const label = npcPick.previousElementSibling;
     if (label?.classList?.contains('label')) label.hidden = true;
-    const section = npcPick.closest('.notebook-card');
-    const intro = section?.querySelector(':scope > .whisper');
+    const companionSection = npcPick.closest('.notebook-card');
+    const intro = companionSection?.querySelector(':scope > .whisper');
     if (intro) intro.textContent = 'LV.1 เลือก Pet เป็นเพื่อนร่วมทางได้ · Animal Card จะเปิดหลัง Quest Clear';
   }
 }
@@ -117,10 +121,14 @@ export async function createPartyV2(options = {}) {
   const profile = getProfile();
   if (!profile) { const error = new Error('NO_PROFILE'); error.code = 'NO_PROFILE'; throw error; }
 
+  const levelOne = Math.max(1, Number(profile.level || 1)) <= 1;
   const override = typeof window !== 'undefined' && window.__xtyCoverV2 ? window.__xtyCoverV2 : null;
-  const finalCoverType = override?.coverType || coverType || 'card_back';
-  const finalLeadCardId = override && Object.prototype.hasOwnProperty.call(override, 'leadCardId') ? override.leadCardId : leadCardId;
-  const finalCore7CardId = override?.core7CardId || core7CardId || null;
+  const finalCoverType = levelOne ? 'avatar' : (override?.coverType || coverType || 'card_back');
+  const finalLeadCardId = levelOne
+    ? null
+    : (override && Object.prototype.hasOwnProperty.call(override, 'leadCardId') ? override.leadCardId : leadCardId);
+  const finalCore7CardId = levelOne ? null : (override?.core7CardId || core7CardId || null);
+  const finalNpcCardId = levelOne ? null : (npcCardId || null);
   const finalDurationDays = typeof window !== 'undefined' && Number(window.__xtyDurationOverride)
     ? Number(window.__xtyDurationOverride) : Number(durationDays || 7);
   const finalPreset = typeof window !== 'undefined' && window.__xtyPresetOverride
@@ -140,9 +148,9 @@ export async function createPartyV2(options = {}) {
         budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
         petId: petId || null,
         coverType: finalCoverType,
-        leadCardId: finalLeadCardId || null,
-        core7CardId: finalCore7CardId || null,
-        npcCardId: npcCardId || null,
+        leadCardId: finalLeadCardId,
+        core7CardId: finalCore7CardId,
+        npcCardId: finalNpcCardId,
         alias: profile.alias,
         avatar: partyAvatar?.species || profile.avatarId || profile.avatarFallback,
         avatarColor: partyAvatar?.color || profile.avatarFrame || 'green',
