@@ -10,6 +10,13 @@
 <link rel="stylesheet" href="/xircle/_shared/typography.css?v=3">
 <link rel="stylesheet" href="/xircle/_shared/v5.css?v=3">
 <link rel="stylesheet" href="/xircle/_shared/party-v6.css?v=1">
+<style>
+.xp-freedom{border:1px solid rgba(229,196,119,.2);background:linear-gradient(145deg,rgba(229,196,119,.055),rgba(255,255,255,.018));border-radius:28px;padding:26px}
+.xp-freedom-head{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end}.xp-freedom-head h2{margin:5px 0 8px;font-size:clamp(30px,4vw,50px);line-height:1.05;color:#fff}.xp-freedom-head p{margin:0;color:var(--xp-soft);line-height:1.55;max-width:700px}
+.xp-freedom-parts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:22px}.xp-freedom-part{display:block;text-decoration:none;padding:15px;border-radius:16px;background:rgba(0,0,0,.17);border:1px solid rgba(255,255,255,.09);min-height:118px}.xp-freedom-part b{display:block;font-size:10px;letter-spacing:.13em;margin-bottom:8px}.xp-freedom-part strong{display:block;color:#fff;font-size:17px;line-height:1.25;margin-bottom:5px}.xp-freedom-part span{display:block;color:var(--xp-soft);font-size:12px;line-height:1.45}.xp-freedom-part:nth-child(1) b{color:#74cbe8}.xp-freedom-part:nth-child(2) b{color:#e79a6a}.xp-freedom-part:nth-child(3) b{color:#78d9b2}.xp-freedom-part:nth-child(4) b{color:#e5c477}
+.xp-freedom-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+@media(max-width:780px){.xp-freedom{padding:18px;border-radius:20px}.xp-freedom-head{grid-template-columns:1fr}.xp-freedom-parts{grid-template-columns:1fr 1fr}}@media(max-width:480px){.xp-freedom-parts{grid-template-columns:1fr}.xp-freedom-part{min-height:0}}
+</style>
 </head>
 <body class="xp xp-party">
 <header class="xp-top"><a class="xp-brand" href="/xircle/">XIR<b>CLE</b></a><nav class="xp-nav" aria-label="ทางลัด"></nav></header>
@@ -21,7 +28,7 @@
       <p class="xp-lede" id="partyLede">จากสิ่งที่ Xircle ช่วยให้เห็น<br>สู่สิ่งที่คน <strong>ทำต่อด้วยกันจริง ๆ</strong></p>
       <div class="xp-actions" id="partyActions"><a class="xp-btn gold" href="/xty/new/?template=xircle_xvisor">ตั้ง Action แล้วเปิดตี้ →</a><a class="xp-btn ghost" href="/xty/join/">มีรหัสตี้ · เข้าตี้</a></div>
       <p class="xp-mini">XTY Partner Mode สำหรับเส้นทาง Xircle × X-VISOR · XTY by myClover</p>
-      <p class="xp-return-note"><strong>ถึงจุดนี้แล้ว เส้นทางปลดล็อก</strong> — ครั้งถัดไปใช้ทางลัดมุมขวาบนได้เลย ไม่ต้องเดินใหม่ทั้งหมด</p>
+      <p class="xp-return-note"><strong>ถึงจุดนี้แล้ว เส้นทางปลดล็อก</strong> — ครั้งถัดไปไม่ต้องเดินเรียงอีก ใช้แผนที่หรือห้องความรู้ได้เลย</p>
     </div>
     <figure class="xp-art r169" aria-label="จากหนึ่ง Action สู่การทำด้วยกันในตี้แมวขาว"><img id="partyArt" data-art-src="/xircle/assets/v5/xircle-party-create-hero.webp" alt="" hidden><div class="xp-fallback"><div class="xp-card strong" style="width:min(86%,520px);text-align:center"><span class="xp-label">XIRCLE → XTY</span><h3 style="font-size:30px">1 Action · ทำด้วยกัน</h3><p>เลือก · Commit · เช็กอิน · ทบทวน</p></div></div></figure>
   </section>
@@ -33,9 +40,22 @@
   </section>
 
   <section class="xp-section"><div class="xp-card strong xp-partner-card"><span class="xp-label">PARTNER EXPERIENCE</span><h3>Xircle × XTY</h3><p>White Cat Care Mode คือ XTY Partner Mode ที่ myClover สร้างสำหรับเส้นทาง Xircle × X-VISOR โดย XTY Core ยังคงเป็น Product ของ myClover</p></div></section>
+
+  <section class="xp-section" data-after-unlock hidden>
+    <div class="xp-freedom">
+      <div class="xp-freedom-head"><div><p class="xp-kicker gold">FREE EXPLORE · ปลดล็อกแล้ว</p><h2>จากนี้เลือกห้องเองได้</h2><p>ไม่ต้องเดินย้อนเส้นเดิมเพื่อหาความรู้ บ้านนี้จัดเป็น 4 Part และมีเส้นทางแนะนำในแต่ละ Part ให้เริ่มจากห้องที่ยังไม่เคยเดินเป็นหลัก</p></div><a class="xp-btn" href="/xircle/explore/">เปิดแผนที่ทั้งหมด →</a></div>
+      <div class="xp-freedom-parts">
+        <a class="xp-freedom-part" href="/xircle/explore/#see"><b>PART 1 · SEE</b><strong>เข้าใจข้อมูล</strong><span>Hardware · Pattern · Habit Score</span></a>
+        <a class="xp-freedom-part" href="/xircle/explore/#act"><b>PART 2 · ACT</b><strong>ทำให้เกิดในวันจริง</strong><span>Today · RoutineX · Habix</span></a>
+        <a class="xp-freedom-part" href="/xircle/explore/#care"><b>PART 3 · CARE</b><strong>ดูแลคนอย่างมีขอบเขต</strong><span>Privacy · Claims · X-VISOR Role</span></a>
+        <a class="xp-freedom-part" href="/xircle/explore/#system"><b>PART 4 · SYSTEM</b><strong>ทำด้วยกันและขยายระบบ</strong><span>Together · Ecosystem · XOS</span></a>
+      </div>
+      <div class="xp-freedom-actions"><a class="xp-btn ghost" href="/xircle/learn/">ไม่รู้ห้องไหน · ไปห้องความรู้</a><a class="xp-btn ghost" href="/xircle/doc/">เปิด Reference Library</a></div>
+    </div>
+  </section>
 </div></main>
-<footer class="xp-footer"><div class="xp-shell"><span>Xircle × myClover XTY</span><span>28 Days · 1 Action · Together</span></div></footer>
-<script src="/xircle/_shared/state.js?v=8"></script><script src="/xircle/_shared/analytics.js?v=3"></script><script src="/xircle/_shared/v5.js?v=3"></script>
+<footer class="xp-footer"><div class="xp-shell"><span>Xircle × myClover XTY</span><span>หลังปลดล็อก · SEE · ACT · CARE · SYSTEM</span></div></footer>
+<script src="/xircle/_shared/state.js?v=9"></script><script src="/xircle/_shared/analytics.js?v=3"></script><script src="/xircle/_shared/v5.js?v=3"></script>
 <script>
 (function(){try{
   var h=window.XState&&XState.getXtyHandoff();
