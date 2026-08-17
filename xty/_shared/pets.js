@@ -24,6 +24,7 @@ if (typeof window !== 'undefined' && /^\/xty\/p\/?$/.test(window.location.pathna
     .then(() => import('./xvisor-care-scripts.js'))
     .catch(() => {});
   import('./reward-loop.js').catch(() => {});
+  import('./pet-direct.js').catch(() => {});
 }
 if (typeof window !== 'undefined' && /^\/xty\/new\/?$/.test(window.location.pathname)) {
   import('./duration-gate.js').catch(() => {});

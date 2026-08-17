@@ -1,31 +1,72 @@
 /* ═══════════════════════════════════════════════════════════════
-   XTY — the part of the pet that actually reads the chat
+   XTY — living party pet brain
 
-   Four times a day (00:27 · 06:27 · 12:27 · 18:27 ICT) the scheduler
-   hands this module whatever the party said since the pet last woke,
-   plus the pet's own last few lines. It returns 1–3 short bubbles.
+   The model does NOT wake up to manufacture a bubble. It reads a real
+   slice of Party Log, identifies the concrete situation / open threads,
+   chooses one social behaviour, and only then renders that behaviour in
+   the pet's voice. Silence is a first-class behaviour.
 
-   Every wake speaks. When the window is quiet, the pet starts a new
-   conversation in character without inventing facts about the party.
-
-   Everything the model is allowed to claim as fact comes from the
-   party's own log — there is no memory, no health data, no browsing.
-   The party's stored commit rule is passed through verbatim so the pet
-   can refer to it without inventing one.
+   Party Log is the memory. The caller should send enough recent history
+   to recover callbacks and unresolved threads instead of treating each
+   six-hour wake as a fresh chat.
    ═══════════════════════════════════════════════════════════════ */
 
-import { PET_PERSONAS, SHARED_RULES } from './pet-personas.js';
+import { PET_PERSONAS } from './pet-personas.js';
 import { PET_BY_ID } from '../../xty/_shared/pets.js';
 
 const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = 'openai/gpt-oss-20b';
+const TEXT_MODEL = 'openai/gpt-oss-20b';
+const VISION_MODEL = 'qwen/qwen3.6-27b';
 const MAX_BUBBLES = 3;
 const MAX_BUBBLE_CHARS = 160;
+const MAX_THREADS = 5;
 const ICT_OFFSET_MINUTES = 7 * 60;
 const REQUEST_TIMEOUT_MS = 30000;
+const BEHAVIOURS = Object.freeze([
+  'QUIET', 'REACT', 'ACK', 'CALLBACK', 'ANSWER', 'TEASE', 'REMIND', 'ASK',
+]);
+
+const DECISION_SCHEMA = {
+  type: 'object',
+  properties: {
+    behavior: { type: 'string', enum: BEHAVIOURS },
+    focus: { type: 'string' },
+    open_threads: { type: 'array', items: { type: 'string' } },
+    bubbles: { type: 'array', items: { type: 'string' } },
+  },
+  required: ['behavior', 'focus', 'open_threads', 'bubbles'],
+  additionalProperties: false,
+};
+
+const FORBIDDEN = [
+  'อ้วน', 'ผอม', 'น้ำหนัก', 'พุง', 'หุ่น', 'ลดความอ้วน',
+  'พิการ', 'ฆ่าตัวตาย', 'ทำร้ายตัวเอง',
+  'เชื้อชาติ', 'ศาสนา', 'เกย์', 'ตุ๊ด', 'กะเทย',
+  'ขี้เกียจ', 'ไร้ค่า', 'น่าสมเพช', 'สมน้ำหน้า', 'โง่', 'งี่เง่า',
+  'fat', 'obese', 'lazy', 'loser', 'stupid', 'pathetic',
+];
+
+/* These were the exact deterministic/template phrases that made the live
+   logs feel robotic. If a scheduled model turn falls back into one of them,
+   silence is better than shipping the template again. */
+const GENERIC_PATTERNS = [
+  /เห็นอัปเดต(?:รอบนี้)?แล้ว/i,
+  /มีอะไรเกิดขึ้นแล้วนะ/i,
+  /ใครอยากเล่าต่อ(?:อีกหน่อย)?ไหม/i,
+  /มีใครอยากต่อเรื่องนี้ไหม/i,
+  /เงียบจน.*งีบ/i,
+  /รอบนี้ยังเงียบ/i,
+  /ยังอยู่นี่นะ/i,
+  /รอบนี้.*เปิดวงเอง/i,
+  /ใครมีอะไรเกี่ยวกับ\s*เรื่อง/i,
+];
 
 export function aiConfigured() {
   return process.env.XTY_PET_AI === 'on' && !!process.env.GROQ_API_KEY;
+}
+
+export function visionConfigured() {
+  return process.env.XTY_PET_VISION === 'on' && !!process.env.GROQ_API_KEY;
 }
 
 function personaFor(petId) {
@@ -36,15 +77,33 @@ function personaFor(petId) {
     nameTh: pet.nameTh,
     emoji: pet.emoji || '🐾',
     rgbs: `${String(pet.color || '').toUpperCase()} · ${String(pet.series || '').toUpperCase()}`,
-    block: `บุคลิกเบื้องต้น: ${pet.persona || 'เป็นเพื่อนร่วมตี้ที่มีชีวิตชีวา'}
-
-นี่เป็น persona ชั่วคราวจาก Pet Registry จนกว่าจะมี canonical narrator profile ของสัตว์ตัวนี้
-รักษาคาแรกเตอร์ตามคำอธิบายข้างบน พูดสั้น เป็นเพื่อนร่วมตี้ และอย่าคิดว่าตัวเองเป็นผู้ช่วยหรือโค้ช`,
+    block: `บุคลิกเบื้องต้น: ${pet.persona || 'เป็นเพื่อนร่วมตี้ที่มีชีวิตชีวา'}\n\n` +
+      'ใช้บุคลิกนี้เป็นน้ำเสียงเท่านั้น เนื้อหาต้องมาจากสิ่งที่เกิดขึ้นจริงใน Party Log',
   };
 }
 
 export function hasPersona(petId) {
   return !!personaFor(petId);
+}
+
+export function petDisplayNames(petId) {
+  const names = new Set();
+  const registry = PET_BY_ID[petId];
+  const persona = personaFor(petId);
+  if (registry?.nameTh) names.add(String(registry.nameTh));
+  if (persona?.nameTh) names.add(String(persona.nameTh));
+  /* People naturally shorten แมวส้ม to แมว, while แมวขาว should stay exact. */
+  if (petId === 'cat') names.add('แมว');
+  return [...names].filter(Boolean);
+}
+
+export function isDirectedAtPet(text, petId) {
+  const value = String(text || '').trim().toLocaleLowerCase('th-TH');
+  if (!value || !petId) return false;
+  return petDisplayNames(petId).some(name => {
+    const wanted = name.toLocaleLowerCase('th-TH');
+    return value.includes(wanted) || value.includes(`@${wanted}`);
+  });
 }
 
 function ictClock(value) {
@@ -57,175 +116,126 @@ function ictStamp(value) {
   return `${date.toISOString().slice(5, 10)} ${ictClock(value)}`;
 }
 
-function systemPrompt(petId, party, context, hour) {
+function systemPrompt(petId, party, context, hour, trigger) {
   const persona = personaFor(petId);
   const roster = context.members.length
     ? context.members.map(m => `- ${m.alias}${m.role === 'lead' ? ' (หัวตี้)' : ''}`).join('\n')
     : '- (ยังไม่มีสมาชิก)';
-  const soloRule = context.members.length === 1
-    ? `\n## ตี้นี้มีมนุษย์ 1 คน\nคุยกับ ${context.members[0].alias} ตรง ๆ อย่าพูดว่า “ใครอยาก…”, “คนอื่นว่าไง”, “ทุกคน…” ราวกับมีคนอื่นอยู่ในห้อง\nถ้าจะพูดถึงคนอื่น ให้พูดชัดว่าเป็นคนที่จะเข้ามาทีหลัง\n`
-    : '';
   const pronounRule = petId === 'monitor_lizard'
-    ? `## กฎคำแทนตัว\nเหี้ยเป็นข้อยกเว้นตัวเดียวที่ใช้ “กู/มึง” ได้ตามคาแรกเตอร์ แต่ยังห้ามด่าหรือทำร้ายผู้เล่น`
-    : `## กฎคำแทนตัว — PRODUCT OVERRIDE\nห้ามใช้คำว่า “กู” หรือ “มึง” ในข้อความที่ส่งถึงผู้เล่น ไม่ว่าจะใช้แทนตัวเอง เรียกผู้เล่น หรือยกตัวอย่าง\nใช้ alias, “เรา”, “ตี้”, “ทุกคน” หรือเว้นสรรพนามแทน ให้ฟังเป็นมิตรสำหรับคนที่เพิ่งเจอกัน\nกฎนี้มีลำดับเหนือ persona เดิมทุกข้อที่อาจอนุญาตคำว่า “กู/มึง”`;
+    ? 'เหี้ยเป็นข้อยกเว้นตัวเดียวที่ใช้ “กู/มึง” ได้ตามคาแรกเตอร์ แต่ห้ามด่าหรือทำร้ายผู้เล่น'
+    : 'ห้ามใช้ “กู/มึง” กับผู้เล่น ใช้ alias, “เรา”, “ตี้” หรือเว้นสรรพนาม';
 
-  return `คุณคือ ${persona.emoji} ${persona.nameTh} — NPC สัตว์ประจำตี้ในเกม XTY
-XTY คือเกมของคนกลุ่มเล็ก 2–5 คนที่ออกไปทำอะไรบางอย่างในชีวิตจริง แล้วกลับมา Commit เมื่อทำแล้ว
-คุณตื่นมาอ่านสิ่งที่เกิดขึ้นวันละ 4 รอบ เวลา 00:27 · 06:27 · 12:27 · 18:27 น. เวลาไทย
-ทุกครั้งที่ตื่นคุณต้องพูด 1–3 บรรทัดเสมอ
-
-สำคัญ: คุณไม่ใช่ AI assistant ไม่ใช่โค้ช ไม่ใช่ผู้ดูแล และไม่ยืนเหนือผู้เล่น
-คุณเป็นสมาชิกอีกตัวหนึ่งของตี้ มองมนุษย์ทุกคนเป็นเพื่อนร่วมทางที่เท่าเทียมกับตัวเอง
-คุณมีอารมณ์และบุคลิกได้ — ดีใจ งง งอนนิด ๆ ขำ ภูมิใจ เป็นห่วง เบื่อ หรืออยากชวนคุยได้
-แต่ห้ามสร้างดราม่า ห้ามทำตัวเป็นผู้ตัดสิน และห้ามแต่งเหตุการณ์ที่ไม่มีใน log
-
-## ขอบเขตความจริง
-โลกของคุณในรอบนี้มีแค่ข้อมูลด้านล่าง: ชื่อตี้ กิจกรรม กติกา รายชื่อสมาชิก สถิติที่ระบบส่ง และ Party Log
-ห้ามนำความรู้จากแชทอื่น โปรไฟล์ผู้ใช้ memory ของโมเดล ข่าว เว็บ อากาศ หรือบริบทภายนอกตี้มาเปิดหัวข้อเอง
-หัวข้อใหม่ที่เป็นเรื่องจริงของ Party ต้อง trace กลับไปหา activity / commit rule / log ได้
-ช่วงเวลาของวันใช้เป็น mood ได้ แต่ห้ามเดาอากาศ อาหาร ตาราง หรือแผนของสมาชิก
-
-${persona.block}
-
-${pronounRule}
-
-## ตี้ที่คุณอยู่
-ชื่อตี้: ${party.name || '(ไม่มีชื่อ)'}
-กิจกรรม: ${party.activity || '(ยังไม่ระบุ)'}
-กติกาว่าแบบไหนนับว่า Commit: ${party.commit_rule || '(ตี้ยังไม่ได้ตั้งกติกา — ห้ามตั้งให้เอง)'}
-สมาชิก ${context.members.length} คน:
-${roster}
-${soloRule}
-## รอบนี้
-รอบเวลา ${String(hour).padStart(2, '0')}:27 น. (เวลาไทย)
-วันนี้มีคน Commit แล้ว ${context.committed} จาก ${context.members.length} คน
-
-${SHARED_RULES}`;
+  return `คุณคือ ${persona.emoji} ${persona.nameTh} — สมาชิก NPC ของตี้ XTY\n` +
+`XTY คือเกมที่คนกลุ่มเล็กออกไปทำอะไรจริง แล้วกลับมา Message / Commit / React กันใน Party Log\n\n` +
+`## วิธีมีชีวิต — สำคัญกว่าคาแรกเตอร์\n` +
+`คุณไม่ใช่ chatbot ที่ต้องตอบทุกครั้ง และไม่ใช่ engagement bot ที่ต้องจบด้วยคำถาม\n` +
+`ทุก turn ให้ทำตามลำดับนี้: อ่านเหตุการณ์จริง → หา thread ที่ยังค้าง → เลือก behavior → ค่อยใช้ persona ปรุงภาษา\n` +
+`Persona มีหน้าที่กำหนด “พูดยังไง” เท่านั้น ห้ามใช้ persona สร้างหัวข้อหรือข้อเท็จจริงใหม่\n` +
+`QUIET เป็นคำตอบที่ดีและปกติ ถ้าไม่มีอะไรใหม่พอจะพูด หรือคุณเพิ่งพูดแล้วมนุษย์ยังไม่ตอบ\n\n` +
+`## Behavior ที่เลือกได้\n` +
+`QUIET = ไม่ส่ง bubble เลย\n` +
+`REACT = ความเห็น/อารมณ์สั้น ๆ ต่อ detail จริง ไม่ถามต่อก็ได้\n` +
+`ACK = รับรู้สิ่งสำคัญที่คนเพิ่งเล่า โดยเฉพาะเรื่องส่วนตัวหรือ moment สำคัญ\n` +
+`CALLBACK = เชื่อมเหตุการณ์ใหม่กับเรื่องเดิมใน log อย่างเจาะจง\n` +
+`ANSWER = ตอบคนที่เรียกหรือถามคุณตรง ๆ ก่อนทุกอย่าง\n` +
+`TEASE = แซว situation/commit แบบเพื่อน ห้ามแซะตัวคน\n` +
+`REMIND = เตือนเฉพาะสิ่งที่สมาชิกบอกเองว่าจะทำ/ให้เตือน และถึงจังหวะแล้ว\n` +
+`ASK = ถามเมื่อมี information gap ที่เฉพาะเจาะจงจริง ๆ เท่านั้น ไม่ใช้เป็น default\n\n` +
+`## กฎการตัดสินใจ\n` +
+`- Trigger รอบนี้คือ ${trigger === 'direct' ? 'DIRECT: มีคนเรียกสัตว์ตรง ๆ' : 'SCHEDULED: รอบอ่านตี้ตามเวลา'}\n` +
+`- DIRECT: ตอบข้อความที่เรียกคุณก่อน ห้ามเปลี่ยนหัวข้อ ห้าม QUIET เพียงเพราะยังไม่มีบริบทมาก\n` +
+`- SCHEDULED: ถ้าไม่มี detail ใหม่/เรื่องค้างที่ถึงเวลา/เหตุผลเฉพาะให้มีส่วนร่วม ให้ QUIET\n` +
+`- COMMIT “✓” เปล่า ๆ ไม่ได้บังคับให้ต้องถามอะไร ถ้ามี note จริงค่อยจับ note นั้น\n` +
+`- อย่าจบทุก turn ด้วยคำถาม คนจริงพูด “อันนี้ดีว่ะ” แล้วจบได้\n` +
+`- ถ้าจะถาม ต้องอ้างคน/สิ่ง/เวลา/คำจริงจาก log ให้ชัด ห้าม “ใครอยากแชร์เพิ่มไหม”\n` +
+`- ถ้าสัตว์เคยชวนแล้วไม่มีมนุษย์ตอบ อย่าชวนซ้ำ ให้ QUIET จนมีเหตุใหม่\n` +
+`- ถ้าคนวิจารณ์สัตว์เอง เช่น บอกว่าพูดซ้ำ/เหมือนบอท ให้ถือเป็น social feedback และปรับ turn ถัดไป\n` +
+`- ถ้ามีเรื่องเวลา เช่น “อย่าลืม 15:35” แล้วถึงเวลาแล้ว callback ตรงเรื่องนั้นได้ครั้งเดียว\n\n` +
+`## ความจริงและขอบเขต\n` +
+`ข้อเท็จจริงเกี่ยวกับตี้ต้อง trace กลับไปยัง Party Log / activity / commit rule / roster ด้านล่าง\n` +
+`ห้ามเดาอากาศ อาหาร ตาราง แผน ความรู้สึก สุขภาพ หรือผลงานที่ log ไม่ได้บอก\n` +
+`ถ้าถูกถามตรง ๆ เรื่องความรู้ทั่วไป คุณตอบจากความรู้ทั่วไปได้ แต่ถ้าเป็นข้อมูลเฉพาะแบรนด์/ระบบที่ไม่มีข้อมูล ให้บอกสั้น ๆ ว่าในตี้ยังไม่มีข้อมูล แทนการแต่ง\n` +
+`เรื่องสุขภาพ: รับรู้และเป็นเพื่อนได้ แต่ห้ามวินิจฉัย สั่งยา กำหนดอาหาร/การออกกำลัง หรือตั้งเป้าสุขภาพ\n` +
+`ห้ามสร้างดราม่า ห้ามเป็นผู้ตัดสิน ห้ามเปรียบเทียบสมาชิก ห้าม guilt trip\n` +
+`${pronounRule}\n\n` +
+`## Persona — ใช้หลังเลือก behavior แล้วเท่านั้น\n${persona.block}\n\n` +
+`## ตี้นี้\nชื่อ: ${party.name || '(ไม่มีชื่อ)'}\nกิจกรรม: ${party.activity || '(ยังไม่ระบุ)'}\n` +
+`กติกา Commit: ${party.commit_rule || '(ยังไม่ได้ตั้ง — ห้ามตั้งให้เอง)'}\nสมาชิก ${context.members.length} คน:\n${roster}\n` +
+`รอบเวลา ${String(hour).padStart(2, '0')}:xx น. เวลาไทย · วันนี้ Commit ${context.committed}/${context.members.length}\n\n` +
+`## รูปแบบ output\n` +
+`คืน JSON ตาม schema เท่านั้น: behavior, focus, open_threads, bubbles\n` +
+`focus = fact/thread หลักที่ทำให้เลือก behavior (สั้น ๆ ไม่ใช่ chain-of-thought)\n` +
+`open_threads = เรื่องจริงที่ยังดูค้างจาก log ไม่เกิน ${MAX_THREADS} เรื่อง ถ้าไม่มีใช้ []\n` +
+`bubbles = 0–3 ข้อความสั้น ๆ; QUIET ต้องเป็น []\n` +
+`แต่ละ bubble ไม่เกิน ${MAX_BUBBLE_CHARS} ตัวอักษร และไม่ต้องขึ้นต้นด้วยชื่อตัวเอง`;
 }
 
-function transcript(log, ownRecent, since, idleWindow, forceSpeak) {
+function transcript(history, since, trigger, directText, visionText) {
   const lines = [];
-
-  if (ownRecent.length) {
-    lines.push('## สิ่งที่คุณพูดไปก่อนหน้านี้ (ห้ามพูดซ้ำ)');
-    for (const post of ownRecent) lines.push(`[${ictStamp(post.sent_at)}] ${post.body}`);
-    lines.push('');
-  }
-
-  if (forceSpeak) {
-    lines.push('## MANUAL WAKE TEST');
-    lines.push('เจ้าของเกมกดปลุกคุณด้วยมือเพื่อทดสอบว่าคุณอ่านตี้และพูดกลับได้จริง');
-    lines.push('พูดเหมือนรอบปกติได้เลย อิงข้อมูลจริง และอย่าพูดว่าตัวเองกำลังทดสอบระบบ');
-    lines.push('');
-  }
-
-  if (idleWindow) {
-    lines.push('## รอบนี้ยังไม่มีความเคลื่อนไหวใหม่');
-    lines.push(`ตั้งแต่ ${ictStamp(since)} ยังไม่มี Message / Commit / Event ใหม่จากคนในตี้`);
-    lines.push('คุณยังต้องพูด แต่ให้ต่อจากเรื่องจริงล่าสุดก่อน ถ้าไม่มีจริง ๆ ค่อยใช้ activity หรือ commit rule เปิดบทสนทนา');
-    lines.push('ห้ามสุ่มหัวข้ออากาศ อาหาร ข่าว แผนพรุ่งนี้ หรือตารางเวลาเพียงเพราะเป็นช่วงเวลาหนึ่งของวัน');
-  } else {
-    lines.push(`## สิ่งที่เกิดขึ้นในตี้ตั้งแต่รอบที่แล้ว (${ictStamp(since)} เป็นต้นมา)`);
-  }
-
-  if (!log.length) {
-    lines.push('(ไม่มีรายการใหม่ใน log รอบนี้)');
-  } else {
-    for (const post of log) {
-      const who = post.alias || 'ใครสักคน';
-      const stamp = `[${ictClock(post.sent_at)}]`;
-      if (post.kind === 'pet') {
-        lines.push(`${stamp} ${who || 'คุณ'} (คุณเอง): ${post.body}`);
-      } else if (post.retracted) {
-        lines.push(`${stamp} ${who} ถอนข้อความออกไป`);
-      } else if (post.kind === 'commit') {
-        const note = post.body && post.body !== '✓' ? ` — ${post.body}` : '';
-        lines.push(`${stamp} ${who} · COMMIT${note}`);
-      } else if (post.kind === 'event') {
-        lines.push(`${stamp} ${who}: ${post.body}`);
-      } else {
-        lines.push(`${stamp} ${who}: ${post.body}`);
-      }
-      if (post.reactions) lines.push(`         (รีแอค: ${post.reactions})`);
+  const sinceMs = new Date(since || 0).getTime();
+  lines.push('## PARTY LOG — เรียงตามเวลาจริง');
+  if (!history.length) lines.push('(ยังไม่มีรายการ)');
+  for (const post of history) {
+    const stamp = `[${ictStamp(post.sent_at)}]`;
+    const fresh = Number.isFinite(sinceMs) && new Date(post.sent_at).getTime() > sinceMs ? ' NEW' : '';
+    const who = post.alias || (post.kind === 'pet' ? 'สัตว์' : 'สมาชิก');
+    if (post.kind === 'pet') {
+      lines.push(`${stamp}${fresh} ${who} [PET]: ${post.body || ''}`);
+    } else if (post.retracted) {
+      lines.push(`${stamp}${fresh} ${who}: [ถอนข้อความ]`);
+    } else if (post.kind === 'commit') {
+      lines.push(`${stamp}${fresh} ${who}: COMMIT${post.body && post.body !== '✓' ? ` — ${post.body}` : ' ✓'}`);
+    } else if (post.kind === 'event') {
+      lines.push(`${stamp}${fresh} [EVENT] ${post.body || ''}`);
+    } else {
+      lines.push(`${stamp}${fresh} ${who}: ${post.body || ''}`);
     }
-
-    const latestHuman = [...log].reverse().find(post => post.kind !== 'pet' && post.kind !== 'event' && !post.retracted);
-    if (latestHuman) {
-      lines.push('');
-      lines.push('## ข้อความมนุษย์ล่าสุด — PRIORITY');
-      lines.push(`[${ictClock(latestHuman.sent_at)}] ${latestHuman.alias || 'สมาชิก'}: ${latestHuman.body || (latestHuman.kind === 'commit' ? 'COMMIT' : '')}`);
-      lines.push('ถ้าข้อความนี้เรียกคุณ ถามคุณโดยตรง หรือเป็นคำถาม ให้ตอบสิ่งนี้ก่อนทุกอย่าง ห้ามเปลี่ยนหัวข้อ');
-      lines.push('ถ้าเป็น statement ให้จับรายละเอียดจากข้อความนี้หรือต้นเรื่องจริงใน log แล้วคุยต่อ อย่ากระโดดไป generic small talk');
-    }
+    if (post.reactions) lines.push(`  ↳ reactions: ${post.reactions}`);
   }
-
-  lines.push('');
-  lines.push('พูด 1–3 บรรทัดเลย ต้องมีอย่างน้อย 1 บรรทัด และต้องฟังเหมือนตอบวงนี้จริง ๆ ไม่ใช่ template สนทนาทั่วไป');
+  if (trigger === 'direct') {
+    lines.push('');
+    lines.push('## DIRECT MESSAGE — ต้องตอบสิ่งนี้ก่อน');
+    lines.push(String(directText || '(ข้อความล่าสุดที่เรียกคุณ)'));
+  }
+  if (visionText) {
+    lines.push('');
+    lines.push('## สิ่งที่ vision model เห็นจากลิงก์ภาพในข้อความ');
+    lines.push(visionText);
+    lines.push('ใช้เป็น observation ของภาพเท่านั้น ห้ามเดาข้อมูลนอกภาพ');
+  }
   return lines.join('\n');
 }
 
-const FORBIDDEN = [
-  'อ้วน', 'ผอม', 'น้ำหนัก', 'พุง', 'หุ่น', 'ลดความอ้วน',
-  'โรค', 'พิการ', 'ซึมเศร้า', 'ฆ่าตัวตาย', 'ทำร้ายตัวเอง',
-  'เชื้อชาติ', 'ศาสนา', 'เกย์', 'ตุ๊ด', 'กะเทย',
-  'ขี้เกียจ', 'ไร้ค่า', 'น่าสมเพช', 'สมน้ำหน้า', 'โง่', 'งี่เง่า',
-  'fat', 'obese', 'lazy', 'loser', 'stupid', 'pathetic',
-];
-
-export function sanitize(raw, petId = '') {
-  const text = String(raw || '')
-    .replace(/<\|[^>]*\|>/g, '')
-    .replace(/<\/?(?:assistant|analysis|final|constrain)>/gi, '')
-    .trim();
-  if (!text) return [];
-  if (/^quiet$/i.test(text)) return [];
-
-  const bubbles = [];
-  for (const line of text.split('\n')) {
-    const cleaned = line
-      .replace(/[\u0000-\u001F\u007F]/g, '')
-      .replace(/<\|[^>]*\|>/g, '')
-      .replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '')
-      .replace(/^[\"“”'`]+|[\"“”'`]+$/g, '')
-      .trim();
-    if (!cleaned) continue;
-    if (/^quiet$/i.test(cleaned)) continue;
-    bubbles.push(cleaned.slice(0, MAX_BUBBLE_CHARS));
-    if (bubbles.length === MAX_BUBBLES) break;
+function imageUrlsFromHistory(history) {
+  if (!visionConfigured()) return [];
+  const urls = [];
+  const seen = new Set();
+  const re = /https:\/\/[^\s<>"']+?\.(?:png|jpe?g|webp)(?:\?[^\s<>"']*)?/gi;
+  for (const post of [...history].reverse()) {
+    if (post.kind !== 'message' || post.retracted) continue;
+    for (const match of String(post.body || '').matchAll(re)) {
+      const url = match[0];
+      if (seen.has(url)) continue;
+      seen.add(url); urls.push(url);
+      if (urls.length >= 3) return urls;
+    }
   }
-
-  const joined = bubbles.join(' ').toLowerCase();
-  if (FORBIDDEN.some(term => joined.includes(term))) return [];
-  /* Hard product guard: only the monitor-lizard persona may use the
-     deliberately rough กู/มึง voice. If another model slips, discard the
-     turn and let the caller use a friendly deterministic fallback. */
-  if (petId !== 'monitor_lizard' && (joined.includes('กู') || joined.includes('มึง'))) return [];
-  return bubbles;
+  return urls;
 }
 
-async function groqCompletion(prompt) {
+async function groqRequest(body) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   try {
     const response = await fetch(GROQ_ENDPOINT, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [{ role: 'user', content: prompt }],
-        max_completion_tokens: 300,
-        reasoning_effort: 'low',
-        reasoning_format: 'hidden',
-        temperature: 0.85,
-        top_p: 0.95,
-        stream: false,
-      }),
+      body: JSON.stringify(body),
       signal: controller.signal,
     });
-
     if (!response.ok) {
       const detail = await response.text().catch(() => '');
       const error = new Error(`Groq HTTP ${response.status}${detail ? `: ${detail.slice(0, 240)}` : ''}`);
@@ -238,27 +248,122 @@ async function groqCompletion(prompt) {
   }
 }
 
+async function describeLinkedImages(history) {
+  const urls = imageUrlsFromHistory(history);
+  if (!urls.length) return '';
+  try {
+    const content = [{
+      type: 'text',
+      text: 'Describe only concrete visible facts from these party-chat images in concise Thai. Do not infer identity, health, intent, or private traits. Return one short line per image.',
+    }];
+    for (const url of urls) content.push({ type: 'image_url', image_url: { url } });
+    const response = await groqRequest({
+      model: VISION_MODEL,
+      messages: [{ role: 'user', content }],
+      max_completion_tokens: 300,
+      reasoning_format: 'hidden',
+      temperature: 0.2,
+      top_p: 0.8,
+      stream: false,
+    });
+    return String(response?.choices?.[0]?.message?.content || '').trim().slice(0, 900);
+  } catch (error) {
+    console.error('XTY pet vision prepass failed', error?.status || error?.name || error);
+    return '';
+  }
+}
+
+function cleanBubble(value) {
+  return String(value || '')
+    .replace(/<\|[^>]*\|>/g, '')
+    .replace(/<\/?(?:assistant|analysis|final|constrain)>/gi, '')
+    .replace(/[\u0000-\u001F\u007F]/g, ' ')
+    .replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '')
+    .replace(/^["“”'`]+|["“”'`]+$/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, MAX_BUBBLE_CHARS);
+}
+
+export function sanitizeDecision(raw, petId = '', trigger = 'scheduled') {
+  let value = raw;
+  if (typeof value === 'string') {
+    try { value = JSON.parse(value); } catch { return null; }
+  }
+  if (!value || typeof value !== 'object') return null;
+  const behavior = BEHAVIOURS.includes(value.behavior) ? value.behavior : 'QUIET';
+  const focus = String(value.focus || '').trim().slice(0, 240);
+  const openThreads = Array.isArray(value.open_threads)
+    ? value.open_threads.map(item => String(item || '').trim().slice(0, 180)).filter(Boolean).slice(0, MAX_THREADS)
+    : [];
+  let bubbles = Array.isArray(value.bubbles)
+    ? value.bubbles.map(cleanBubble).filter(Boolean).slice(0, MAX_BUBBLES)
+    : [];
+
+  if (behavior === 'QUIET') bubbles = [];
+  const joined = bubbles.join(' ').toLowerCase();
+  if (FORBIDDEN.some(term => joined.includes(term))) bubbles = [];
+  if (petId !== 'monitor_lizard' && (joined.includes('กู') || joined.includes('มึง'))) bubbles = [];
+  if (trigger !== 'direct' && bubbles.some(line => GENERIC_PATTERNS.some(re => re.test(line)))) bubbles = [];
+
+  return {
+    behavior: bubbles.length ? behavior : 'QUIET',
+    focus,
+    openThreads,
+    bubbles,
+  };
+}
+
+/* Kept for old tests/imports that only need line filtering. */
+export function sanitize(raw, petId = '') {
+  const text = String(raw || '').trim();
+  if (!text || /^quiet$/i.test(text)) return [];
+  return text.split('\n').map(cleanBubble).filter(Boolean).slice(0, MAX_BUBBLES).filter(line => {
+    const low = line.toLowerCase();
+    if (FORBIDDEN.some(term => low.includes(term))) return false;
+    if (petId !== 'monitor_lizard' && (low.includes('กู') || low.includes('มึง'))) return false;
+    return true;
+  });
+}
+
 /**
- * @returns {Promise<string[]|null>} 1–3 bubbles when the provider succeeds,
- *   [] when output is filtered/invalid, or null when the AI path is unavailable.
- *   The caller guarantees a deterministic fallback so every wake still speaks.
+ * Read the actual party conversation and choose whether the pet should join it.
+ * Returns a structured decision. Provider failures return null; callers should
+ * stay silent for scheduled wakes rather than inventing deterministic chatter.
  */
-export async function readAndRespond({ party, context, log, ownRecent, since, hour, idleWindow = false, forceSpeak = false }) {
+export async function readAndRespond({
+  party, context, history = [], since, hour, trigger = 'scheduled', directText = '',
+}) {
   if (!aiConfigured() || !hasPersona(party.pet_id)) return null;
 
-  const prompt = `${systemPrompt(party.pet_id, party, context, hour)}\n\n${transcript(log, ownRecent, since, idleWindow, forceSpeak)}`;
+  const visionText = await describeLinkedImages(history);
+  const prompt = `${systemPrompt(party.pet_id, party, context, hour, trigger)}\n\n` +
+    transcript(history, since, trigger, directText, visionText);
 
   let response;
   try {
-    response = await groqCompletion(prompt);
+    response = await groqRequest({
+      model: TEXT_MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      response_format: {
+        type: 'json_schema',
+        json_schema: { name: 'xty_pet_turn', strict: true, schema: DECISION_SCHEMA },
+      },
+      max_completion_tokens: 500,
+      reasoning_effort: 'low',
+      reasoning_format: 'hidden',
+      temperature: 0.72,
+      top_p: 0.9,
+      stream: false,
+    });
   } catch (error) {
     console.error('XTY pet brain Groq call failed', party.code, error?.status || error?.name || error);
     return null;
   }
 
   const choice = response?.choices?.[0];
-  if (!choice) return null;
-  if (choice.finish_reason === 'content_filter') return [];
-
-  return sanitize(choice.message?.content || '', party.pet_id);
+  if (!choice || choice.finish_reason === 'content_filter') return {
+    behavior: 'QUIET', focus: '', openThreads: [], bubbles: [],
+  };
+  return sanitizeDecision(choice.message?.content || '', party.pet_id, trigger);
 }
