@@ -84,6 +84,13 @@
 .xp-routinex-story .xp-routine-map[data-active="F"] .f,
 .xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-node{transition:none!important}
 
+/* Final RoutineX payoff: swap the teaching diagram for the real product-system
+   artwork only after A/B/C/D/F have been seen. The image is the reward, not an
+   extra competing hero during the lesson. */
+.xp-routinex-story .xp-routine-summary-image{display:none!important;width:100%!important;height:auto!important;max-height:100%!important;object-fit:contain!important;border-radius:inherit}
+.xp-routinex-story .xp-routine-map[data-active="SUMMARY"]{display:none!important}
+.xp-routinex-story .xp-routine-map[data-active="SUMMARY"] + .xp-routine-summary-image{display:block!important}
+
 @media(max-width:780px){
   .xp-story .xp-story-shell,
   .xp-story .xp-scene.xp-dense .xp-story-shell{
@@ -157,6 +164,7 @@
   .xp-routinex-story .xp-routine-support{margin-top:10px;font-size:12px;line-height:1.42}
   .xp-routinex-story .xp-actions{margin-top:12px}
   .xp-routinex-story .xp-btn{min-height:46px;padding:10px 16px}
+  .xp-routinex-story .xp-routine-map[data-active="SUMMARY"] + .xp-routine-summary-image{width:100%!important;height:100%!important;object-fit:contain!important;border-radius:0 0 24px 24px}
 }
 
 @media(max-height:680px) and (max-width:780px){

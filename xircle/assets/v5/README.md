@@ -21,8 +21,8 @@ All top-level `/xircle/**` product pages are designed to work without final art.
 | `xircle-s09-connected-loop.webp` | 4:3 | 1600×1200 | connected loop + first strong White Cat presence |
 | `xircle-care-hero.webp` | 4:3 | 1600×1200 | Human Care hero |
 | `xircle-opportunity-o6-whitecat-reveal.png` | 4:3 | 1600×1200 | full White Cat reveal / White Cat safe-room hero |
-| `xircle-party-create-hero.webp` | 16:9 | 1920×1080 | 28-day / XTY transition hero |
-| `xircle-party-join-hero.webp` | 16:9 | 1920×1080 | invite-specific reserve/share art |
+| `xircle-party-create-hero.webp` | 16:9 | 1920×1080 | 28-day / XTY transition hero — เปิดวง |
+| `xircle-party-join-hero.webp` | 16:9 | 1920×1080 | invited-party conversion — มีคนชวน/มีรหัสตี้ |
 
 ## P1 — core journey
 | File | Ratio | Recommended size |
@@ -45,7 +45,7 @@ All top-level `/xircle/**` product pages are designed to work without final art.
 | File | Ratio | Recommended size |
 |---|---:|---:|
 | `xircle-learn-hero.webp` | 16:9 | 1920×1080 |
-| `xircle-routinex-hero.webp` | 16:9 | 1920×1080 |
+| `xircle-routinex-hero.webp` | 16:9 | 1920×1080 | final RoutineX payoff + product window |
 | `xircle-products-hero.webp` | 16:9 | 1920×1080 |
 | `xircle-hardware-hero.webp` | 16:9 | 1920×1080 |
 | `xircle-together-hero.webp` | 4:3 | 1600×1200 |

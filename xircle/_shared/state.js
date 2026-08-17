@@ -1,7 +1,8 @@
 /* XIRCLE × XTY PARTNER EXPERIENCE — state.js
-   v10 navigation model:
+   v11 navigation model:
    first run = canonical first-day gate, then one straight journey
    1 day with Xircle → Human Care → X-VISOR → RoutineX → White Cat · XTY
+   RoutineX completion may detour into product/deep-dive pages before White Cat.
    after unlock = free exploration through the White Cat route hub + Knowledge.
 */
 (function () {
@@ -85,6 +86,15 @@
   }
   function whiteCatHubUrl() { return "/xircle/explore/"; }
 
+  // Selling is an optional detour after the user has actually completed
+  // RoutineX. It must never let a new visitor skip the first-day journey.
+  function isRoutineProductDetour(path) {
+    if (!local.routineCompleted || local.whiteCatIntroSeen) return false;
+    return path === "/xircle/routinex" ||
+      path === "/xircle/products" ||
+      path.indexOf("/xircle/doc/habix") === 0;
+  }
+
   function firstDayComplete() {
     return !!(local.firstDayCompletedV10 && local.journeyCompleted);
   }
@@ -166,6 +176,7 @@
   }
 
   function routeAllowedBeforeUnlock(path) {
+    if (isRoutineProductDetour(path)) return true;
     var next = linearNext();
     if (!next) return true;
     return path === normalizedHrefPath(next.href);
@@ -275,6 +286,7 @@
     try { url = new URL(a.href, location.origin); } catch (e) { return false; }
     var intended = normalizedHrefPath(url.pathname);
     if (url.origin !== location.origin || !isXircleRoute(intended)) return false;
+    if (isRoutineProductDetour(intended)) return false;
 
     var next = linearNext();
     if (!next) return false;
