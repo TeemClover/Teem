@@ -11,11 +11,29 @@
   object-position:center center!important;
   background:#07120f;
 }
-/* Preserve source ratios whenever the route declares them. */
+/* Ratio classes are only loading fallbacks. Once the real image is ready,
+   the image itself owns the frame so new uploads never get letterboxed by an old ratio. */
 .xp-art.r169{aspect-ratio:16/9!important}
 .xp-art.r43{aspect-ratio:4/3!important}
 .xp-art.r32{aspect-ratio:3/2!important}
 .xp-art.r11{aspect-ratio:1!important}
+.xp-art.art-ready{
+  aspect-ratio:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  display:grid;
+  place-items:center;
+}
+.xp-art.art-ready>img{
+  position:relative!important;
+  inset:auto!important;
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:none!important;
+  object-fit:contain!important;
+}
 
 /* Real White Cat asset — used instead of the old CSS placeholder character. */
 .xp-cat-cutout-stage{
@@ -38,7 +56,8 @@
   .xp-cat-cutout-stage{min-height:150px}
   .xp-cat-cutout-stage img{height:150px;width:min(100%,180px)}
 
-  /* Progress shortcuts are earned navigation, so keep them visible on mobile too. */
+  /* Keep earned navigation visible on mobile. */
+  .xp-nav[aria-label="ทางลัดหลังปลดล็อก"],
   .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"]{
     display:flex;
     max-width:72vw;
@@ -47,7 +66,10 @@
     padding-bottom:2px;
     scrollbar-width:none;
   }
+  .xp-nav[aria-label="ทางลัดหลังปลดล็อก"]::-webkit-scrollbar,
   .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"]::-webkit-scrollbar{display:none}
+  .xp-nav[aria-label="ทางลัดหลังปลดล็อก"] a,
+  .xp-nav[aria-label="ทางลัดหลังปลดล็อก"] a:not(.cat),
   .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"] a,
   .xp-nav[aria-label="ทางลัดที่ปลดล็อกแล้ว"] a:not(.cat){
     display:inline-flex!important;
