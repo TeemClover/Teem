@@ -96,7 +96,7 @@ function installStyles() {
     .xcp-opt{padding:0;border:2px solid transparent;border-radius:12px;background:transparent;overflow:hidden}
     .xcp-opt[aria-checked="true"]{border-color:var(--xty-primary)}
     .xcp-opt .animal-card,.xcp-opt img{display:block;width:100%}
-    .xcp-opt>.xcp-thumb{aspect-ratio:5/7;display:grid;place-items:center;border-radius:10px;background:var(--xty-bg);overflow:hidden}
+    .xcp-opt>.xcp-thumb{aspect-ratio:var(--xty-card-aspect);display:grid;place-items:center;border-radius:10px;background:var(--xty-bg);overflow:hidden}
     .xcp-opt>.xcp-thumb img{width:82%;height:auto}
     .xcp-name{display:block;padding:5px 3px 0;color:var(--xty-muted);font-size:11px;line-height:1.3;
       overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

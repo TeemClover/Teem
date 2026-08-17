@@ -232,13 +232,13 @@ style.textContent = `
   }
   .xty-home-cover{
     display:block;width:var(--xty-party-cover-size,132px)!important;max-width:none!important;min-width:0!important;
-    height:auto!important;aspect-ratio:var(--xty-party-cover-aspect,5/7)!important;overflow:hidden;border-radius:14px;
+    height:auto!important;aspect-ratio:var(--xty-card-aspect)!important;overflow:hidden;border-radius:14px;
   }
   .xty-home-cover>.animal-card,
   .xty-home-cover.avatar-cover,
   .xty-home-core7-cover,
   .xty-home-real-back{
-    width:100%!important;height:100%!important;aspect-ratio:var(--xty-party-cover-aspect,5/7)!important;
+    width:100%!important;height:100%!important;aspect-ratio:var(--xty-card-aspect)!important;
   }
   .xty-home-core7-cover,.xty-home-real-back{box-shadow:var(--shadow);background:#13291d}
   .xty-home-core7-cover svg,.xty-home-real-back img{
@@ -267,14 +267,14 @@ style.textContent = `
   }
   .xty-party-row-cover .xty-home-cover{
     width:58px!important;height:82px!important;max-width:58px!important;
-    min-width:58px!important;aspect-ratio:5/7!important;border-radius:9px!important;
+    min-width:58px!important;aspect-ratio:var(--xty-card-aspect)!important;border-radius:9px!important;
   }
   .xty-party-row-cover .xty-home-cover>.animal-card,
   .xty-party-row-cover .xty-home-core7-cover,
   .xty-party-row-cover .xty-home-real-back,
   .xty-party-row-cover .xty-home-cover.avatar-cover{
     width:58px!important;height:82px!important;min-width:58px!important;
-    aspect-ratio:5/7!important;border-radius:9px!important;
+    aspect-ratio:var(--xty-card-aspect)!important;border-radius:9px!important;
   }
   .xty-party-row-cover .xty-home-core7-cover svg,
   .xty-party-row-cover .xty-home-real-back img{

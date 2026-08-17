@@ -1,0 +1,83 @@
+/* One card shape, enforced.
+
+   Every vertical card in XTY is 63×88. The moment a slot writes its own
+   ratio — 5/7 is the near-miss that was already in the tree — cards stop
+   lining up, and art that does not match the box starts leaving gaps
+   instead of being cropped into it. So the ratio lives in exactly one
+   place and this test fails if a second one appears. */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const SURFACES = ['xty', 'profile'];
+const EXTENSIONS = ['.css', '.js', '.html', '.mjs'];
+const TOKEN = '--xty-card-aspect';
+
+function walk(dir, found = []) {
+  for (const entry of readdirSync(dir)) {
+    if (entry === 'node_modules' || entry.startsWith('.')) continue;
+    const path = join(dir, entry);
+    if (statSync(path).isDirectory()) walk(path, found);
+    else if (EXTENSIONS.some(ext => entry.endsWith(ext))) found.push(path);
+  }
+  return found;
+}
+
+const files = SURFACES.flatMap(surface => walk(join(root, surface)))
+  .filter(path => !path.endsWith('card-shape.test.mjs'))
+  .map(path => ({ path: path.slice(root.length + 1), text: readFileSync(path, 'utf8') }));
+
+test('the card ratio is defined exactly once', () => {
+  const definitions = files.filter(file => file.text.includes(`${TOKEN}:63/88`));
+  assert.deepEqual(
+    definitions.map(file => file.path),
+    ['xty/_shared/xty.css'],
+    'the 63/88 numbers belong in one declaration and nowhere else'
+  );
+});
+
+test('no card slot writes its own ratio', () => {
+  /* 5/7 is 0.7143 and 63/88 is 0.7159 — close enough to look fine alone
+     and wrong the moment two cards sit side by side. */
+  const offenders = [];
+  for (const file of files) {
+    const matches = file.text.match(/aspect-ratio:\s*(?!var\()[^;!}`'"\n]+/g) || [];
+    for (const match of matches) {
+      const value = match.split(':')[1].trim();
+      if (value === '1' || value === '4/3' || value === '1.15') continue; // square and banner slots
+      if (file.text.includes(`${TOKEN}:${value}`)) continue; // the one definition
+      offenders.push(`${file.path}: ${match}`);
+    }
+  }
+  assert.deepEqual(offenders, [], `card slots must use var(${TOKEN})`);
+});
+
+test('nothing placed in a card slot is allowed to letterbox', () => {
+  /* object-fit:contain leaves bars, which is exactly the empty space a
+     card must never have. Square avatar tiles are the deliberate
+     exception: their art is 1:1 and is not a card. */
+  const allowed = [
+    '.mark img',            // the XTY wordmark in the header
+    '.xty-pet',             // hero animals
+    '.pet-slot img',        // party pet portrait
+    '.pc .glyph img',       // starter tile inside a card-shaped slot
+    '.seat .av img',        // starter animal in a seat
+    '.post .av img',        // chat avatar
+    '.avatar-cover img',    // handled explicitly in card-ui.js
+    '.xcp-opt>.xcp-thumb img',
+    '.pc.avatar-card .glyph img',
+    '.party-head .pet-slot img',
+  ];
+  for (const file of files) {
+    if (!file.text.includes('object-fit:contain')) continue;
+    /* Guard the card face itself rather than every avatar in the app. */
+    assert.doesNotMatch(
+      file.text,
+      /\.(animal-card|xty-card|card-art|reveal-front|xty-cover-thumb)[^{]*\{[^}]*object-fit:\s*contain/,
+      `${file.path}: a card face must fill its slot (allowed exceptions: ${allowed.length} avatar tiles)`
+    );
+  }
+});

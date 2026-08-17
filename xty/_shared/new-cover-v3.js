@@ -25,7 +25,7 @@ function installStyles() {
     #leadPick{display:block!important}
     .xty-cover-picker{display:grid;gap:12px}
     .xty-cover-current{display:flex;align-items:center;gap:14px;padding:12px;border:1px solid var(--xty-border);border-radius:18px;background:rgba(255,255,255,.72)}
-    .xty-cover-current-art{flex:none;width:88px;aspect-ratio:63/88;overflow:hidden;border-radius:11px;background:#13291d;box-shadow:0 3px 10px rgba(62,51,44,.14)}
+    .xty-cover-current-art{flex:none;width:88px;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:11px;background:#13291d;box-shadow:0 3px 10px rgba(62,51,44,.14)}
     .xty-cover-current-art img,.xty-cover-current-art svg,.xty-cover-current-art .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
     .xty-cover-current-copy{min-width:0;flex:1}.xty-cover-current-copy b{display:block;font-size:16px;line-height:1.35}.xty-cover-current-copy small{display:block;margin-top:4px;color:var(--xty-muted);font-size:12px;line-height:1.4}
     .xty-cover-open{margin-top:10px;min-height:40px!important;padding:0 14px!important}
@@ -37,7 +37,7 @@ function installStyles() {
     .xty-cover-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start}
     .xty-cover-option{border:1px solid var(--xty-border);border-radius:13px;background:var(--xty-paper);padding:6px;min-width:0;text-align:left}
     .xty-cover-option[aria-checked="true"]{outline:3px solid rgba(50,139,92,.22);border-color:#2e8b59}
-    .xty-cover-thumb{width:100%;aspect-ratio:63/88;overflow:hidden;border-radius:9px;background:#13291d}.xty-cover-thumb img,.xty-cover-thumb svg,.xty-cover-thumb .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
+    .xty-cover-thumb{width:100%;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:9px;background:#13291d}.xty-cover-thumb img,.xty-cover-thumb svg,.xty-cover-thumb .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
     .xty-cover-label{display:block;margin-top:6px;font-size:10.5px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
     .xty-cover-empty{grid-column:1/-1;margin:4px 0;color:var(--xty-muted);font-size:12px}
     @media (min-width:600px){.xty-cover-current-art{width:104px}.xty-cover-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
