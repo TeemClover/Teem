@@ -19,13 +19,34 @@
 .xp-story .xp-scene.is-reacting .xp-art img{transform:none!important}
 .xp-story .xp-art.art-ui-safe img{transform:none!important}
 
-/* Match the wrapper to the source canvas on desktop so contain does not make
-   intentionally sized artwork look like a small image inside a random frame. */
+/* Ratio classes are loading hints only. Once a generated image has loaded,
+   let its real canvas determine the visible frame. This avoids black bars when
+   a production asset is replaced with a new ratio. */
+.xp-story .xp-art.art-ready{
+  aspect-ratio:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  display:grid;
+  place-items:center;
+}
+.xp-story .xp-art.art-ready>img{
+  position:relative!important;
+  inset:auto!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:78dvh!important;
+  object-fit:contain!important;
+}
+
+/* Match the wrapper to the source canvas on desktop while artwork is loading. */
 @media(min-width:781px){
   .xp-story .xp-art.r169{height:auto;aspect-ratio:16/9!important;max-height:78dvh}
   .xp-story .xp-art.r43{height:auto;aspect-ratio:4/3!important;max-height:78dvh}
   .xp-story .xp-art.r32{height:auto;aspect-ratio:3/2!important;max-height:78dvh}
   .xp-story .xp-art.r11{height:auto;aspect-ratio:1!important;max-height:74dvh}
+  .xp-story .xp-art.art-ready{aspect-ratio:auto!important;max-height:none!important}
 }
 
 /* Narration can reveal slowly, but interaction must never wait for narration. */
@@ -81,13 +102,13 @@
 }
 
 @media(max-width:780px){
-  /* Full artwork stays visible on phones; letterboxing is intentional and safer
-     than clipping baked Thai copy/UI. */
+  /* Full artwork stays visible on phones without adding a fake fixed-ratio frame. */
   .xp-story .xp-art img{
     object-fit:contain!important;
     object-position:center center!important;
     transform:none!important;
   }
+  .xp-story .xp-art.art-ready>img{max-height:45dvh!important}
 
   .xp-routinex-story .xp-routine-persistent{
     top:50px;
