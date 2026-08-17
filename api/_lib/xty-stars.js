@@ -117,6 +117,9 @@ async function starState(sql, party, member) {
   return {
     ok: true,
     enabled: String(party.verification_mode || 'trust') === 'confirm',
+    /* Which row is the caller's. The client cannot work this out reliably —
+       the local id changes once an account binds — so it is answered here. */
+    meUserId: member.user_id,
     members: counts.map(row => {
       const confirmedCount = Number(row.confirmed_count || 0);
       const drops = byUser.get(row.user_id) || [];

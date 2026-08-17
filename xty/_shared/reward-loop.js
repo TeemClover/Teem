@@ -87,6 +87,19 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'xtyRewardLoopStyle';
   style.textContent = `
+    /* Folded shut by default: rewards are a thing you check, not a thing
+       you read past every day. The summary alone answers "how many stars
+       do I have", so most visits never need to open it. */
+    .xty-reward-shell{margin-top:18px;border:1px solid var(--xty-border);border-radius:var(--r-lg,18px);background:rgba(255,255,255,.72);overflow:hidden}
+    .xty-reward-shell>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:15px 16px;font-weight:800;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    .xty-reward-shell>summary::-webkit-details-marker{display:none}
+    .xty-reward-shell>summary::after{content:'⌄';flex:none;margin-left:auto;font-size:18px;line-height:1;transition:transform .18s ease}
+    .xty-reward-shell:not([open])>summary::after{transform:rotate(-90deg)}
+    .xty-reward-peek{margin-left:auto;color:var(--xty-muted);font-size:12.5px;font-weight:700;letter-spacing:1px;white-space:nowrap}
+    .xty-reward-shell>summary::after{margin-left:10px}
+    .xty-reward-shell .xty-reward-loop{margin:0 14px 14px}
+    .xty-reward-shell .xty-reward-loop:first-of-type{margin-top:2px}
+    .xty-reward-aside{border-left:3px solid var(--xty-blue,#5B8DFF);padding-left:10px}
     .xty-reward-loop{margin-top:18px;padding:16px;border:1px dashed rgba(166,116,45,.35);border-radius:18px;background:rgba(255,250,235,.68)}
     .xty-reward-loop .loop-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
     .xty-reward-loop h3{margin:2px 0 0;font-size:18px}.xty-reward-loop p{margin:5px 0;color:var(--xty-muted);font-size:13px;line-height:1.55}
@@ -101,14 +114,35 @@ function installStyle() {
 
 function install() {
   installStyle();
-  const progress = document.getElementById('progress');
-  if (!progress) return;
+  /* These used to sit directly under the daily progress grid, which put
+     two blocks of reward bookkeeping between the player and their own
+     Party Log. Rewards are something you check, not something you read
+     every day, so they now live at the foot of the page, folded away,
+     next to the Quest Ending they belong to. */
+  const anchor = document.getElementById('questFinishPanel')
+    || document.getElementById('progress');
+  if (!anchor) return;
+
+  const shell = document.createElement('details');
+  shell.className = 'xty-reward-shell'; shell.id = 'xtyRewardShell';
+  const summary = document.createElement('summary');
+  summary.innerHTML = '<span class="label">รางวัลของเควส</span>'
+    + '<span class="xty-reward-peek" id="xtyRewardPeek">กำลังเช็ก…</span>';
+  shell.appendChild(summary);
+
   const starPanel = document.createElement('div');
   starPanel.className = 'xty-reward-loop'; starPanel.id = 'xtyStarLoop';
-  progress.insertAdjacentElement('afterend', starPanel);
   const saucePanel = document.createElement('div');
   saucePanel.className = 'xty-reward-loop'; saucePanel.id = 'xtySauceLoop';
-  starPanel.insertAdjacentElement('afterend', saucePanel);
+  shell.append(starPanel, saucePanel);
+  anchor.insertAdjacentElement('afterend', shell);
+
+  /* The summary carries the live star count so the common question —
+     "how close am I to a card?" — is answered without opening anything. */
+  function setPeek(text) {
+    const peek = document.getElementById('xtyRewardPeek');
+    if (peek) peek.textContent = text;
+  }
 
   const backupKey = `xty_dissolve_backup_${code}`;
   document.addEventListener('click', event => {
@@ -124,21 +158,49 @@ function install() {
     const party = getParty(code);
     if (!party) return;
     if (party.verificationMode !== 'confirm') {
-      starPanel.innerHTML = `<div class="loop-head"><div><span class="label">CARD DROP</span><h3>ตี้นี้ใช้โหมดเชื่อใจกัน</h3></div></div><p>โหมดนี้ไม่สะสมดาว · ตี้ที่เลือก “ต้อง Confirm” จะได้ ⭐ 1 ดวงต่อ Confirmed Commit และครบ ⭐⭐⭐ รับการ์ด 1 ใบ</p>`;
+      setPeek('โหมดเชื่อใจ · ไม่มีดาว');
+      starPanel.innerHTML = '<div class="loop-head"><div><span class="label">CARD DROP</span>'
+        + '<h3>ตี้นี้เชื่อใจกัน ไม่ต้องเก็บดาว</h3></div></div>'
+        + '<p>Commit ของทุกคนผ่านทันที ไม่มีใครต้องรอใครยืนยัน</p>'
+        + '<p class="xty-reward-aside">อยากได้การ์ดไว้สะสม ตี้หน้าลองเลือกโหมด “ต้อง Confirm” ดู — '
+        + 'เพื่อนกดยืนยัน Commit ให้ 1 ครั้งได้ ⭐ 1 ดวง ครบ 3 ดวงรับการ์ด 1 ใบ</p>';
       return;
     }
+    setPeek('กำลังนับดาว…');
     starPanel.innerHTML = `<p>กำลังนับดาวจาก Confirmed Commit…</p>`;
     const state = await syncPartyStarRewards(code);
-    if (state.error) { starPanel.innerHTML = `<span class="label">CARD DROP</span><p>ยังดึงดาวไม่ได้ · ลองกด ↻ ดึงอัปเดตอีกครั้ง</p>`; return; }
+    if (state.error) {
+      setPeek('ดึงดาวไม่ได้');
+      starPanel.innerHTML = `<span class="label">CARD DROP</span><p>ยังดึงดาวไม่ได้ · ลองกด ↻ ดึงอัปเดตอีกครั้ง</p>`;
+      return;
+    }
     const rows = (state.members || []).map(member => {
       const stars = [0,1,2].map(i => `<span class="${i < member.stars ? '' : 'off'}">★</span>`).join('');
       const drops = member.dropCount ? `<span class="xty-drop">${member.dropCount} CARD DROP${member.pendingDrops ? ` · ${member.pendingDrops} รอเปิด` : ''}</span>` : '';
       return `<div class="xty-star-row"><div><b>${esc(member.alias)}</b>${drops ? `<br>${drops}` : ''}</div><div class="xty-stars">${stars}</div></div>`;
     }).join('');
     const pending = (state.myRewards || []).filter(reward => !reward.revealedAt && !reward.complete && reward.cardId);
-    starPanel.innerHTML = `<div class="loop-head"><div><span class="label">CONFIRMED COMMIT → CARD DROP</span><h3>ครบ ⭐⭐⭐ ได้การ์ด 1 ใบ</h3></div></div>` +
-      `<p>นับแยกในตี้นี้เท่านั้น · ไม่ข้ามตี้ · Commit ที่ไม่มี Confirm ไม่นับดาว</p>${rows}` +
-      (pending.length ? `<div class="xty-loop-actions">${pending.map(reward => `<a class="btn gold sm" href="/xty/reveal/?r=${encodeURIComponent(reward.rewardId)}">เปิด Card Drop #${reward.milestone}</a>`).join('')}</div>` : '');
+
+    /* Speak to the reader about their own progress, not the scoring rules. */
+    const me = state.meUserId
+      ? (state.members || []).find(member => member.userId === state.meUserId)
+      : null;
+    /* The server sends confirmedCount % 3, so this is progress toward the
+       NEXT card and never reaches 3 — hitting three issues a drop and the
+       count rolls back to zero. Cards already earned live in dropCount. */
+    const myStars = Math.max(0, Math.min(2, Number(me?.stars || 0)));
+    const myDrops = Math.max(0, Number(me?.dropCount || 0));
+    const left = 3 - myStars;
+    const dial = `${'★'.repeat(myStars)}${'☆'.repeat(3 - myStars)}`;
+    setPeek(pending.length ? `${dial} · มีการ์ดรอเปิด` : `${dial} · อีก ${left} ดวง`);
+
+    const headline = pending.length ? 'มีการ์ดรอคุณเปิดอยู่'
+      : (myDrops ? `ได้การ์ดไปแล้ว ${myDrops} ใบ · อีก ${left} ดวงได้อีกใบ`
+        : (myStars === 0 ? 'ให้เพื่อน Confirm 3 ครั้ง ได้การ์ด 1 ใบ' : `อีก ${left} ดวงได้การ์ด 1 ใบ`));
+    starPanel.innerHTML = `<div class="loop-head"><div><span class="label">CONFIRMED COMMIT → CARD DROP</span>`
+      + `<h3>${headline}</h3></div></div>`
+      + `<p>Commit ที่มีเพื่อนกดยืนยันได้ ⭐ 1 ดวง · ดาวนับเฉพาะในตี้นี้ ไม่ยกไปตี้อื่น</p>${rows}`
+      + (pending.length ? `<div class="xty-loop-actions">${pending.map(reward => `<a class="btn gold sm" href="/xty/reveal/?r=${encodeURIComponent(reward.rewardId)}">เปิด Card Drop #${reward.milestone}</a>`).join('')}</div>` : '');
   }
 
   function syncSauce() {
