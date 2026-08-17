@@ -276,14 +276,15 @@ function syncPartyControls() {
           const select = $('npcSelect');
           if (!select) return false;
           const value = `card:${choice.cardId}`;
-          let option = [...select.options].find(item => item.value === value);
+          const option = [...select.options].find(item => item.value === value);
           if (!option) {
             status.textContent = 'การ์ดใบนี้ยังไม่ว่างสำหรับ Pet ในตี้นี้';
             status.classList.add('error');
             return false;
           }
           select.value = value;
-          option.textContent = `การ์ด · ${cardDescriptorTh(card)}`;
+          const nextText = `การ์ด · ${cardDescriptorTh(card)}`;
+          if (option.textContent !== nextText) option.textContent = nextText;
           return true;
         },
       });
@@ -296,7 +297,8 @@ function syncPartyControls() {
   if (npcSelect) {
     [...npcSelect.options].forEach(option => {
       if (!option.value.startsWith('card:')) return;
-      option.textContent = option.textContent.replace(/^NPC\s*·\s*/, 'การ์ด · ');
+      const nextText = option.textContent.replace(/^NPC\s*·\s*/, 'การ์ด · ');
+      if (nextText !== option.textContent) option.textContent = nextText;
     });
   }
 }
