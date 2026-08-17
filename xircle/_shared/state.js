@@ -40,9 +40,9 @@
   var session = safeRead("sessionStorage", SESSION_KEY, SESSION_DEFAULTS);
   var local = safeRead("localStorage", LOCAL_KEY, LOCAL_DEFAULTS);
 
-  // Preserve people who truly finished the previous full path. Partial legacy
-  // progress is intentionally NOT migrated: those users must see the first-day
-  // Xircle experience before being sent into an X-VISOR case.
+  // Preserve people who truly finished the previous full path. Incomplete older
+  // progress is intentionally not carried forward: those users must see the
+  // first-day Xircle experience before being sent into an X-VISOR case.
   if (!local.firstDayCompletedV10 && local.journeyCompleted && local.careIntroSeen && local.xvisorSimCompleted && local.routineCompleted && local.whiteCatIntroSeen) {
     local.firstDayCompletedV10 = true;
     safeWrite("localStorage", LOCAL_KEY, local);
@@ -139,7 +139,7 @@
     }
 
     // Once unlocked, the White Cat room owns route discovery. The cat in the
-    // global top-right nav is a GUIDE HUB, not an implicit create-party action.
+    // global top-right nav is a guide hub, not an implicit create-party action.
     nav.setAttribute("aria-label", "ทางลัดหลังปลดล็อก");
     if (path !== "/xircle") addShortcut(nav, "/xircle/", "Xircle");
     if (path !== "/xircle/learn" && path.indexOf("/xircle/doc") !== 0) addShortcut(nav, "/xircle/learn/", "ห้องความรู้");
