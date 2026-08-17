@@ -64,7 +64,7 @@ function coverMarkup(party) {
   let snapshot = { species: party.lead.avatar, color: party.lead.avatarColor };
   try { snapshot = { ...snapshot, ...JSON.parse(party.coverValue || '{}') }; } catch {}
   const avatar = avatarById(snapshot.species);
-  return `<div class="avatar-cover" data-color="${esc(snapshot.color || 'green')}"><img src="${avatar.art}" alt=""><b>${esc(avatar.nameTh)}</b><small>PARTY COVER</small></div>`;
+  return `<div class="avatar-cover" data-color="${esc(snapshot.color || 'green')}" aria-label="Starter · ${esc(avatar.nameTh)}"><img src="${avatar.art}" alt=""></div>`;
 }
 
 function addParty(party) {
