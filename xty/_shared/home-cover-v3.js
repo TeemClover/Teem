@@ -1,7 +1,7 @@
 import {
   allParties, myPartyCodes, isActiveParty, partyIdentity, committedToday, getProfile,
 } from './store.js';
-import { cardById as xtyCardById, cardNameTh, XTY_RARITY_META } from './cards.js';
+import { cardById as xtyCardById, cardNameTh } from './cards.js';
 import { avatarById } from './avatars.js';
 import { PET_BY_ID } from './pets.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
@@ -51,11 +51,9 @@ function partiesForHome(entries = allMyParties()) {
 }
 
 function xtyCardMarkup(card) {
-  const rarity = XTY_RARITY_META[card.rarity] || XTY_RARITY_META.common;
   return `<div class="animal-card rarity-${esc(card.rarity || 'common')}" data-color="${esc(card.color)}" data-species="${esc(card.species)}">`
     + `<img class="card-art" src="${esc(card.imageFull || card.art)}" alt="" width="630" height="880" loading="lazy" decoding="async">`
     + `<span class="card-copy"><b>${esc(cardNameTh(card))}</b></span>`
-    + `<span class="rarity-badge">${esc(rarity.label)}</span>`
     + '</div>';
 }
 
@@ -275,7 +273,6 @@ style.textContent = `
     width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;
   }
   .xty-party-row-cover .animal-card .card-copy,
-  .xty-party-row-cover .animal-card .rarity-badge{display:none!important}
   .xty-party-row-cover .animal-card .card-art{
     width:100%!important;height:100%!important;margin:0!important;object-fit:cover!important;
   }

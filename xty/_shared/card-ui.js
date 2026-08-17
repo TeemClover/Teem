@@ -1,5 +1,5 @@
 import {
-  XTY_RARITY_META, cardById, cardDescriptorTh, cardNameTh,
+  cardById, cardDescriptorTh,
 } from './cards.js';
 
 if (typeof document !== 'undefined' && !document.getElementById('xty-canonical-back-style')) {
@@ -174,11 +174,16 @@ export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } 
   if (role === 'npc' || role === 'pet') classes.push('companion-card');
   if (foil) classes.push('foil-once');
   classes.push(`rarity-${card.rarity || 'common'}`);
-  const rarity = XTY_RARITY_META[card.rarity] || XTY_RARITY_META.common;
+  /* No corner badge. The frame already says the rarity — rare tints the
+     paper, epic doubles the border in gold, legendary inks it — so a label
+     on top of the art only competed with the picture. */
+  /* The card is the picture. No name plate, no corner badge — the art
+     already says which animal it is, and the frame says the rarity. The
+     colour survives as a data attribute because that is what draws the
+     border on a party seat. The readable description stays on aria-label
+     so the card is still announced properly. */
   return `<div class="${classes.join(' ')}" data-color="${card.color}" data-species="${card.species}" aria-label="${cardDescriptorTh(card)}">`
     + `<img class="card-art" src="${card.imageFull || card.art}" alt="" width="630" height="880" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`
-    + `<span class="card-copy"><b>${cardNameTh(card)}</b></span>`
-    + `<span class="rarity-badge">${rarity.label}</span>`
     + '</div>';
 }
 

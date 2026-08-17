@@ -2,6 +2,7 @@
    Server creation now routes through cover-aware v3 while keeping the
    existing quota-v2 persistence model. */
 
+import { memberAvatarValue } from './card-picker.js';
 import {
   activePartyUsage, getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET, myPartyCodes, refreshParty,
 } from './store.js';
@@ -152,7 +153,7 @@ export async function createPartyV2(options = {}) {
         core7CardId: finalCore7CardId,
         npcCardId: finalNpcCardId,
         alias: profile.alias,
-        avatar: partyAvatar?.species || profile.avatarId || profile.avatarFallback,
+        avatar: partyAvatar?.species || memberAvatarValue(profile),
         avatarColor: partyAvatar?.color || profile.avatarFrame || 'green',
         profileId: profile.id,
         quotaSystem: 'v2',

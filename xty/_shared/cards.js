@@ -3,7 +3,7 @@
    The catalog is data-driven and future-ready for all four locked rarity
    levels. Common and Rare are the currently issued NOTEBOOK_002 set. */
 
-import { XTY_AVATARS, AVATAR_FRAMES } from './avatars.js';
+import { XTY_SPECIES, speciesById, AVATAR_FRAMES } from './avatars.js';
 
 export const XTY_CARD_SERIES = 'NOTEBOOK_002';
 export const XTY_CARD_COLORS = Object.freeze(['red', 'green', 'blue', 'silver']);
@@ -38,14 +38,20 @@ export const XTY_PERSONALITIES = Object.freeze({
 });
 
 export function cardIdFor(species, color = 'green', rarity = 'common') {
-  const animal = XTY_AVATARS.find(item => item.id === species) || XTY_AVATARS[0];
+  const animal = speciesById(species) || XTY_SPECIES[0];
   const pickedColor = XTY_CARD_COLORS.includes(color) ? color : 'green';
   const pickedRarity = XTY_CARD_RARITIES.includes(rarity) ? rarity.toUpperCase() : 'COMMON';
   return `${animal.id.toUpperCase()}_${pickedColor.toUpperCase()}_${pickedRarity}_001`;
 }
 
+/* Cards print as art alone — no name, no reading of the picture — so a
+   species that ships without a written personality is a card all the same. */
+const PLAIN_PERSONALITY = Object.freeze({
+  id: 'plain', nameTh: '', descriptionTh: '', flavorTh: '',
+});
+
 function baseCard(animal, color, rarity) {
-  const personality = XTY_PERSONALITIES[animal.id];
+  const personality = XTY_PERSONALITIES[animal.id] || PLAIN_PERSONALITY;
   const rarityMeta = XTY_RARITY_META[rarity] || XTY_RARITY_META.common;
   const partyCover = rarityMeta.partyCover;
   return {
@@ -53,7 +59,7 @@ function baseCard(animal, color, rarity) {
     name: animal.nameTh, species: animal.id, speciesNameTh: animal.nameTh, color,
     colorNameTh: AVATAR_FRAMES[color].labelTh, rarity, series: XTY_CARD_SERIES,
     personalityId: personality.id, personalityNameTh: personality.nameTh,
-    personalityPath: `/xty/cards/personalities/${personality.id}.md`,
+    personalityPath: personality === PLAIN_PERSONALITY ? null : `/xty/cards/personalities/${personality.id}.md`,
     description: personality.descriptionTh, descriptionTh: personality.descriptionTh,
     flavorText: personality.flavorTh, flavorTh: personality.flavorTh,
     fallback: animal.fallback,
@@ -107,9 +113,84 @@ function makeRareCard(animal, color) {
   });
 }
 
-export const XTY_COMMON_CARDS = Object.freeze(XTY_AVATARS.flatMap(animal => XTY_CARD_COLORS.map(color => makeCommonCard(animal, color))));
-export const XTY_RARE_CARDS = Object.freeze(XTY_AVATARS.filter(animal => RARE_SCENES[animal.id]).flatMap(animal => XTY_CARD_COLORS.map(color => makeRareCard(animal, color)).filter(Boolean)));
-export const XTY_CARDS = Object.freeze([...XTY_COMMON_CARDS, ...XTY_RARE_CARDS]);
+/* ── the printed set ───────────────────────────────────────────────
+   A card exists only where art exists. Nothing is generated to fill a
+   grid, so the set is never "complete" and a tier can grow at any time
+   by dropping files in and adding a line here.
+
+   Ids keep their trailing _001/_002 because they are storage keys, not
+   anything a player sees: renaming them would orphan cards people
+   already own. The number a player never sees is not a running number.
+
+   Starter animals are deliberately absent from the tiers below — they are
+   free identities, not commons, and they carry no colour. The reverse is
+   also allowed: a species may print cards without ever joining the Starter
+   roster, which is how a new animal is met by opening a card rather than
+   being handed out. Adding one is an entry in XTY_SPECIES plus art. */
+
+const PRINTED = Object.freeze({
+  /* 8 species × 4 colours × 2 artworks */
+  common: ['orange_cat', 'white_cat', 'white_pom', 'pig', 'buffalo', 'chicken', 'crow', 'turtle']
+    .flatMap(species => XTY_CARD_COLORS.flatMap(color => ['a', 'b'].map((variant, index) => ({
+      species, color, variant: index + 1,
+      art: `/xty/assets/cards/common/${species.replaceAll('_', '-')}-${color}-${variant}.webp`,
+    })))),
+  /* the original painted scenes, kept at their existing ids */
+  rare: ['orange_cat', 'white_pom', 'white_cat']
+    .flatMap(species => XTY_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true }))),
+  epic: ['orange_cat', 'white_cat', 'white_pom']
+    .flatMap(species => XTY_CARD_COLORS.map(color => ({
+      species, color, variant: 1,
+      art: `/xty/assets/cards/epic/${species.replaceAll('_', '-')}-${color}.webp`,
+    }))),
+  /* one colour each, on purpose — no set to complete */
+  legendary: [
+    ['orange_cat', 'blue'], ['white_cat', 'silver'], ['white_pom', 'green'],
+    ['buffalo', 'silver'], ['chicken', 'red'], ['crow', 'blue'],
+    ['pig', 'red'], ['unicorn', 'green'],
+  ].map(([species, color]) => ({
+    species, color, variant: 1,
+    art: `/xty/assets/cards/legendary/${species.replaceAll('_', '-')}-${color}.webp`,
+  })),
+});
+
+function printedId(species, color, rarity, variant) {
+  return `${species.toUpperCase()}_${color.toUpperCase()}_${rarity.toUpperCase()}_${String(variant).padStart(3, '0')}`;
+}
+
+function makePrintedCard(rarity, entry) {
+  const animal = speciesById(entry.species);
+  if (!animal) return null;
+  if (rarity === 'rare') return makeRareCard(animal, entry.color);
+  const card = baseCard(animal, entry.color, rarity);
+  return Object.freeze({
+    ...card,
+    cardId: printedId(entry.species, entry.color, rarity, entry.variant),
+    artVariant: `${rarity}-${entry.variant}`, accessoryColor: entry.color,
+    image: entry.art, imageThumb: entry.art, imageFull: entry.art, art: entry.art,
+  });
+}
+
+export const XTY_COMMON_CARDS = Object.freeze(PRINTED.common.map(e => makePrintedCard('common', e)).filter(Boolean));
+export const XTY_RARE_CARDS = Object.freeze(PRINTED.rare.map(e => makePrintedCard('rare', e)).filter(Boolean));
+export const XTY_EPIC_CARDS = Object.freeze(PRINTED.epic.map(e => makePrintedCard('epic', e)).filter(Boolean));
+export const XTY_LEGENDARY_CARDS = Object.freeze(PRINTED.legendary.map(e => makePrintedCard('legendary', e)).filter(Boolean));
+export const XTY_CARDS = Object.freeze([
+  ...XTY_COMMON_CARDS, ...XTY_RARE_CARDS, ...XTY_EPIC_CARDS, ...XTY_LEGENDARY_CARDS,
+]);
+
+/* One draw, same odds every time. No pity counter, no streak memory —
+   a run of commons says nothing about the next card. */
+export const XTY_DROP_ODDS = Object.freeze({ common: 70, rare: 22, epic: 7, legendary: 1 });
+
+export function rollRarity(random = Math.random) {
+  let roll = random() * 100;
+  for (const [rarity, weight] of Object.entries(XTY_DROP_ODDS)) {
+    roll -= weight;
+    if (roll < 0) return rarity;
+  }
+  return 'common';
+}
 
 const cardsById = XTY_CARDS.reduce((map, card) => { map[card.cardId] = card; return map; }, {});
 for (const card of XTY_COMMON_CARDS) cardsById[card.cardId.replace('_COMMON_001', '_001')] = card;
