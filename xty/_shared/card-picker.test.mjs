@@ -189,3 +189,48 @@ test('a card adds its animal to the Pet seat without removing the free ones', as
   assert.ok(species.has('crow'));
   assert.ok(species.has('pig'), 'the card adds its own animal');
 });
+
+test('a card resolves to the plain animal for chat and the skin for seats', async () => {
+  const { resolveMemberAvatar } = await import('/home/user/Teem/xty/_shared/card-picker.js');
+  const { avatarById } = await import('/home/user/Teem/xty/_shared/avatars.js');
+
+  const rare = XTY_CARDS.find(c => c.rarity === 'rare');
+  const wearing = resolveMemberAvatar(rare.cardId);
+  assert.equal(wearing.species, rare.species);
+  assert.equal(wearing.speciesArt, avatarById(rare.species).art, 'chat keeps the plain animal');
+  assert.equal(wearing.cardArt, rare.imageFull || rare.art, 'seats get the rare drawing');
+  assert.notEqual(wearing.speciesArt, wearing.cardArt, 'a rare card really does look different');
+
+  /* A plain animal id must still work — most members have no card. */
+  const plain = resolveMemberAvatar('crow');
+  assert.equal(plain.species, 'crow');
+  assert.equal(plain.speciesArt, plain.cardArt, 'nothing to show off, nothing changes');
+  assert.equal(plain.cardId, null);
+
+  assert.equal(resolveMemberAvatar('not_a_thing'), null, 'unknown values fall through to the caller');
+});
+
+test('a common card is the same picture, so seats and chat match', async () => {
+  const { resolveMemberAvatar } = await import('/home/user/Teem/xty/_shared/card-picker.js');
+  const common = XTY_CARDS.find(c => c.rarity === 'common');
+  const resolved = resolveMemberAvatar(common.cardId);
+  assert.equal(resolved.speciesArt, resolved.cardArt,
+    'common art is the animal art — equipping one changes nothing visually');
+});
+
+test('the stored avatar is the card when equipped, the animal otherwise', async () => {
+  const { memberAvatarValue } = await import('/home/user/Teem/xty/_shared/card-picker.js');
+  const card = XTY_CARDS.find(c => c.rarity === 'rare');
+
+  setProfile([card.cardId]);
+  const owned = JSON.parse(store.mc_xty_profile);
+  owned.equippedCardId = card.cardId;
+  store.mc_xty_profile = JSON.stringify(owned);
+  assert.equal(memberAvatarValue(), card.cardId);
+
+  setProfile([]);
+  assert.equal(memberAvatarValue(), 'orange_cat', 'falls back to the animal');
+
+  /* It has to fit the member column, which the create path caps at 40. */
+  assert.ok(card.cardId.length <= 40, 'card id must survive storage');
+});

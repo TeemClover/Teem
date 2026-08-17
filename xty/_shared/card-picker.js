@@ -14,7 +14,7 @@
    instead of emptying it.
    ═══════════════════════════════════════════════════════════════ */
 
-import { XTY_AVATARS, avatarById } from './avatars.js';
+import { AVATAR_BY_ID, XTY_AVATARS, avatarById } from './avatars.js';
 import { XTY_CARDS, XTY_CARD_COLORS, cardById, cardDescriptorTh } from './cards.js';
 import { cardMarkup } from './card-ui.js';
 import { getProfile } from './store.js';
@@ -280,4 +280,38 @@ export function petSpeciesFor(grantedIds = [], profile = getProfile()) {
   const owned = ownedCardIds(profile);
   for (const card of XTY_CARDS) if (owned.has(card.cardId)) fromCards.add(card.species);
   return new Set([...grantedIds, ...fromCards]);
+}
+
+/* A member's stored avatar is either an animal id or, once they equip a
+   card, that card's id. Both resolve to the same creature — the card is
+   just the rarer drawing of it.
+   `species` is what the chat log uses, so a party log stays calm and
+   uniform; `cardArt` is what the six party seats use, which is the one
+   place a rare skin is worth showing off. */
+export function resolveMemberAvatar(value) {
+  const card = cardById(String(value || ''));
+  if (card) {
+    const animal = avatarById(card.species);
+    return {
+      species: card.species,
+      speciesArt: animal?.art || card.art,
+      cardArt: card.imageFull || card.art,
+      cardId: card.cardId,
+      rarity: card.rarity,
+    };
+  }
+  /* AVATAR_BY_ID directly, not avatarById — that helper falls back to the
+     orange cat, which would quietly turn an emoji avatar (the '🍀' a party
+     is created with) into the wrong animal instead of leaving it alone. */
+  const animal = AVATAR_BY_ID[String(value || '')];
+  return animal
+    ? { species: animal.id, speciesArt: animal.art, cardArt: animal.art, cardId: null, rarity: 'starter' }
+    : null;
+}
+
+/* The avatar value to store for a member: the equipped card when there is
+   one, otherwise the plain animal. */
+export function memberAvatarValue(profile = getProfile()) {
+  const card = profile?.equippedCardId ? cardById(profile.equippedCardId) : null;
+  return card ? card.cardId : (profile?.avatarId || profile?.avatarFallback || 'orange_cat');
 }

@@ -570,7 +570,12 @@ export async function createParty({
     leadCardId: lead,
     npcCardId: npc,
     alias: profile.alias,
-    avatar: partyAvatar?.species || profile.avatarId || profile.avatarFallback,
+    /* Equipping a card carries it into the party seat. Resolved here with
+       cardById rather than through card-picker, which imports this module —
+       the cycle would bind late and break at module-eval time. */
+    avatar: partyAvatar?.species
+      || (profile.equippedCardId && cardById(profile.equippedCardId)?.cardId)
+      || profile.avatarId || profile.avatarFallback,
     avatarColor: partyAvatar?.color || profile.avatarFrame || 'green',
     profileId: profile.id,
   }});

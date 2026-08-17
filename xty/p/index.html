@@ -203,6 +203,7 @@ import { PET_BY_ID, XTY_V1_PETS } from '/xty/_shared/pets.js';
 import { AVATAR_BY_ID, XTY_AVATARS, AVATAR_FRAMES } from '/xty/_shared/avatars.js';
 import { cardById, cardDescriptorTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
+import { resolveMemberAvatar } from '/xty/_shared/card-picker.js';
 
 const $ = id => document.getElementById(id);
 const code = new URLSearchParams(location.search).get('c');
@@ -232,9 +233,22 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
+/* The Party Log always shows the plain animal. A member may be wearing a
+   rare card, but forty of those down a day's scroll turns a calm log into
+   a shelf — and the card is the same creature anyway, so nothing is lost. */
 function avatarMarkup(value) {
+  const resolved = resolveMemberAvatar(value);
+  if (resolved) return `<img src="${resolved.speciesArt}" alt="">`;
   const avatar = AVATAR_BY_ID[value];
   return avatar ? `<img src="${avatar.art}" alt="">` : esc(value || '🍀');
+}
+
+/* The six party seats are the one place the rare drawing gets shown —
+   glanced at, not scrolled past, and few enough to stay legible. */
+function seatAvatarMarkup(value) {
+  const resolved = resolveMemberAvatar(value);
+  if (resolved) return `<img src="${resolved.cardArt}" alt="">`;
+  return avatarMarkup(value);
 }
 
 function stamp(iso) {
@@ -339,7 +353,7 @@ function render() {
     d.className = 'seat xty-card' + (m.role === 'lead' ? ' lead' : ' member');
     d.innerHTML =
       `<span class="slot-label">${m.role === 'lead' ? '★ LEAD' : `MEMBER ${index + 1}`}</span>` +
-      `<div class="av member-avatar" data-color="${esc(m.avatarColor || 'green')}">${avatarMarkup(m.avatar)}</div>` +
+      `<div class="av member-avatar" data-color="${esc(m.avatarColor || 'green')}">${seatAvatarMarkup(m.avatar)}</div>` +
       `<div class="al" title="${esc(m.alias)}">${esc(m.alias)}</div>` +
       `<div class="rl">${m.role === 'lead' ? 'หัวตี้' : 'สมาชิก'}</div>` +
       `<div class="commit-state" aria-label="${committed ? 'Commit แล้ว' : 'ยังไม่ Commit'}">${committed ? '✓' : '○'}</div>`;
