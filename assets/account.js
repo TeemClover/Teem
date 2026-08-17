@@ -7,6 +7,9 @@ const OWNER_KEY = 'mc_account_progress_owner';
 const EXCLUDED = [
   /^c7:match_/, /^c7roomtoken:/, /^mc_account_/, /^mc_collection_seen$/,
   /^c7:current_match$/, /^c7:install_id$/, /^c7tab_pid$/, /^mc_(email|name|nick|line|registered)$/,
+  /* XTY has its own lossless merge rules for cards/profile ids/party recovery.
+     Never let the generic shallow Progress merger touch XTY save data. */
+  /^mc_xty_/,
 ];
 
 let user = null;
@@ -136,6 +139,23 @@ async function api(path, options = {}) {
   return body;
 }
 
+function currentSurfacePath() {
+  return location.pathname.replace(/\/index\.html$/i, '').replace(/\/$/, '') || '/';
+}
+
+async function syncXtyProgressIfPresent() {
+  if (currentSurfacePath() !== '/profile') return true;
+  try {
+    const xty = await import('/xty/_shared/account.js?v=20260818-account-bridge1');
+    const result = await xty.syncXtyProfile();
+    window.dispatchEvent(new CustomEvent('mc:xty-synced', { detail: result }));
+    return !result?.error;
+  } catch {
+    window.dispatchEvent(new CustomEvent('mc:xty-synced', { detail: { ok: false, error: 'XTY_SYNC_ERROR' } }));
+    return false;
+  }
+}
+
 export async function syncProgress({ quiet = false } = {}) {
   if (!user) return false;
   try {
@@ -144,11 +164,12 @@ export async function syncProgress({ quiet = false } = {}) {
     if (previousOwner && previousOwner !== user.id) clearDeviceProgress();
     const merged = mergeIntoDevice(cloud.progress || {});
     await api('/api/progress', { method: 'PUT', body: JSON.stringify({ progress: merged }) });
+    const xtySynced = await syncXtyProgressIfPresent();
     storageSet(OWNER_KEY, user.id);
     storageSet(LAST_SYNC_KEY, new Date().toISOString());
-    if (!quiet) toast('Progress จากเครื่องนี้และบัญชีถูกรวมกันแล้ว ✓');
+    if (!quiet) toast(xtySynced ? 'Progress จากเครื่องนี้และบัญชีถูกรวมกันแล้ว ✓' : 'Progress หลัก Sync แล้ว · XTY จะลองใหม่อีกครั้ง โดยของในเครื่องยังอยู่ครบ');
     paintChip();
-    return true;
+    return xtySynced;
   } catch (error) {
     if (!quiet) toast('ยัง Sync ไม่สำเร็จ — Progress ในเครื่องยังอยู่ครบ');
     return false;
@@ -292,8 +313,8 @@ function bindEvents() {
 }
 
 function showAccountChip() {
-  const path = location.pathname.replace(/\/index\.html$/i, '').replace(/\/$/, '') || '/';
-  return path === '/collection' || path === '/card' || path === '/core7/collection';
+  const path = currentSurfacePath();
+  return path === '/collection' || path === '/card' || path === '/core7/collection' || path === '/profile';
 }
 
 function paintChip() {
