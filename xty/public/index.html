@@ -27,7 +27,19 @@
 <!-- /XTY SOCIAL SHARE -->
 <link rel="stylesheet" href="/xty/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/xty/_shared/chat-image.css?v=1">
-<style>.public-party>.public-core7-cover{width:74px;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:12px}.public-core7-cover svg{display:block;width:100%;height:100%}@media(max-width:480px){.public-party>.public-core7-cover{width:62px}}</style>
+<style>
+.public-party>.public-core7-cover{width:74px;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:12px}
+.public-core7-cover svg{display:block;width:100%;height:100%}
+.public-filters{display:flex;align-items:center;justify-content:flex-end;margin:14px 0 16px}
+.public-filter-toggle{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--xty-border);border-radius:999px;background:var(--xty-surface);color:var(--xty-ink);font-weight:750;line-height:1.2;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.public-filter-toggle input{position:absolute;opacity:0;pointer-events:none}
+.public-filter-switch{position:relative;width:38px;height:22px;flex:none;border:1px solid var(--xty-border);border-radius:999px;background:#ddd5c8;transition:.18s ease}
+.public-filter-switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.18s ease}
+.public-filter-toggle input:checked+.public-filter-switch{background:var(--xty-green);border-color:var(--xty-green)}
+.public-filter-toggle input:checked+.public-filter-switch::after{transform:translateX(16px)}
+.public-filter-toggle:has(input:focus-visible){outline:2px solid var(--xty-green);outline-offset:2px}
+@media(max-width:480px){.public-party>.public-core7-cover{width:62px}.public-filters{justify-content:flex-start}.public-filter-toggle{font-size:14px}}
+</style>
 <!-- XTY SEO SCHEMA -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"หาตี้สาธารณะ — XTY","url":"https://www.myclover.com/xty/public/","description":"เปิดดูตี้สาธารณะ อ่านรายละเอียดและ Party Log ก่อนตัดสินใจว่าจะเข้าร่วมไหม","image":"https://www.myclover.com/xty/assets/xty-og-share-1200x630.jpg"}</script>
 <!-- /XTY SEO SCHEMA -->
@@ -38,6 +50,13 @@
   <p class="kicker">PUBLIC PARTY LOBBY</p>
   <h1 class="title">หาตี้ที่อยากลงมือทำด้วยกัน</h1>
   <p class="lede">เปิดดูรายละเอียดและอ่าน Party Log ย้อนหลังก่อนได้ แล้วค่อยตัดสินใจว่าจะเข้าร่วมไหม</p>
+  <div class="public-filters">
+    <label class="public-filter-toggle">
+      <input type="checkbox" id="hideFull">
+      <span class="public-filter-switch" aria-hidden="true"></span>
+      <span>ซ่อนตี้ที่เต็มแล้ว</span>
+    </label>
+  </div>
   <div class="public-list" id="list"><div class="empty">กำลังหาตี้ที่ยังรับสมาชิก…</div></div>
   <button class="btn ghost" id="more" hidden>ดูเพิ่ม</button>
   <p class="note">ตี้สาธารณะเปิดให้อ่านเฉพาะข้อมูลในตี้และ Party Log · Email, token และข้อมูลบัญชีไม่ถูกเปิดเผย</p>
@@ -50,8 +69,28 @@ import { cardMarkup } from '/xty/_shared/card-ui.js';
 import { cardById as core7CardById } from '/core7/js/cards.js';
 import { cardSVG } from '/core7/js/art.js';
 
-const $ = id => document.getElementById(id); let cursor = null;
+const $ = id => document.getElementById(id);
+const HIDE_FULL_KEY = 'mc_xty_public_hide_full';
+let cursor = null;
+let loadedParties = [];
 const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+function readHideFull() {
+  try {
+    const saved = localStorage.getItem(HIDE_FULL_KEY);
+    return saved === null ? true : saved === '1';
+  } catch { return true; }
+}
+
+function saveHideFull(value) {
+  try { localStorage.setItem(HIDE_FULL_KEY, value ? '1' : '0'); } catch {}
+}
+
+function isFull(party) {
+  const members = Number(party.memberCount || 0);
+  const max = Number(party.maxMembers || 0);
+  return max > 0 && members >= max;
+}
 
 function coverMarkup(party) {
   if (party.coverType === 'core7_card') {
@@ -67,33 +106,65 @@ function coverMarkup(party) {
   return `<div class="avatar-cover" data-color="${esc(snapshot.color || 'green')}" aria-label="Starter · ${esc(avatar.nameTh)}"><img src="${avatar.art}" alt=""></div>`;
 }
 
-function addParty(party) {
-  const article = document.createElement('article'); article.className = 'card public-party';
+function partyMarkup(party) {
   const mode = party.verificationMode === 'confirm' ? 'ต้อง Confirm' : 'เชื่อใจกัน';
-  article.innerHTML = `${coverMarkup(party)}<div><span class="status-pill">${mode}</span><h2>${esc(party.name)}</h2>`
+  return `${coverMarkup(party)}<div><span class="status-pill">${mode}</span><h2>${esc(party.name)}</h2>`
     + `<p>${esc(party.activity || 'กิจกรรมที่ตกลงกันในตี้')}</p>`
     + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · ${party.memberCount}/${party.maxMembers} คน · วันนี้ ${party.todayCommitCount} Commit</p>`
     + `<p class="whisper">Lead: ${esc(party.lead.alias)}</p>`
     + `<a class="btn ghost sm" href="/xty/public/p/?c=${encodeURIComponent(party.code)}">ดูรายละเอียด · อ่าน Party Log</a>`
     + '</div>';
-  $('list').appendChild(article);
+}
+
+function renderParties() {
+  const list = $('list');
+  const hideFull = $('hideFull').checked;
+  const visible = hideFull ? loadedParties.filter(party => !isFull(party)) : loadedParties;
+  list.innerHTML = '';
+
+  visible.forEach(party => {
+    const article = document.createElement('article');
+    article.className = 'card public-party';
+    article.innerHTML = partyMarkup(party);
+    list.appendChild(article);
+  });
+
+  if (list.children.length) return;
+  const hiddenCount = hideFull ? loadedParties.filter(isFull).length : 0;
+  if (hiddenCount && cursor) {
+    list.innerHTML = '<div class="empty">ตี้ที่โหลดมาตอนนี้เต็มแล้วและถูกซ่อนอยู่ · กดดูเพิ่มเพื่อหาตี้ที่ยังมีที่ว่าง</div>';
+  } else if (hiddenCount) {
+    list.innerHTML = '<div class="empty">ตอนนี้ตี้สาธารณะที่พบเต็มแล้ว · ปิดตัวกรองเพื่อดูตี้ทั้งหมดได้</div>';
+  } else {
+    list.innerHTML = '<div class="empty">ยังไม่มีตี้สาธารณะที่เข้าร่วมได้</div>';
+  }
 }
 
 async function load({ append = false } = {}) {
   $('more').disabled = true;
-  const url = new URL('/api/xty/public', location.origin); if (cursor) url.searchParams.set('cursor', cursor);
+  const url = new URL('/api/xty/public', location.origin);
+  if (cursor) url.searchParams.set('cursor', cursor);
   try {
     const response = await fetch(url, { headers: { accept: 'application/json' }, credentials: 'same-origin' });
-    const data = await response.json(); if (!response.ok) throw new Error(data.error || 'HTTP');
-    if (!append) $('list').innerHTML = '';
-    data.parties.forEach(addParty); cursor = data.nextCursor;
-    if (!$('list').children.length) $('list').innerHTML = '<div class="empty">ยังไม่มีตี้สาธารณะที่เข้าร่วมได้</div>';
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'HTTP');
+    loadedParties = append ? [...loadedParties, ...data.parties] : [...data.parties];
+    cursor = data.nextCursor;
+    renderParties();
     $('more').hidden = !cursor;
-  } catch { if (!append) $('list').innerHTML = '<div class="empty">ยังเปิด Lobby ไม่สำเร็จ · ลองใหม่อีกครั้ง</div>'; }
+  } catch {
+    if (!append) $('list').innerHTML = '<div class="empty">ยังเปิด Lobby ไม่สำเร็จ · ลองใหม่อีกครั้ง</div>';
+  }
   $('more').disabled = false;
 }
 
-$('more').addEventListener('click', () => load({ append: true })); load();
+$('hideFull').checked = readHideFull();
+$('hideFull').addEventListener('change', event => {
+  saveHideFull(event.target.checked);
+  renderParties();
+});
+$('more').addEventListener('click', () => load({ append: true }));
+load();
 </script>
 </body>
 </html>
