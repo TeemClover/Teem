@@ -226,7 +226,7 @@ import {
 } from '/xty/_shared/store.js';
 import { PET_BY_ID, XTY_V1_PETS } from '/xty/_shared/pets.js';
 import { AVATAR_BY_ID, XTY_AVATARS, AVATAR_FRAMES } from '/xty/_shared/avatars.js';
-import { cardById, cardDescriptorTh } from '/xty/_shared/cards.js';
+import { cardById, cardDescriptorTh, cardNameTh, XTY_RARITY_META } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
 import { compressForChat, isSupportedImage, readableBytes } from '/xty/_shared/image-compress.js';
 import { resolveMemberAvatar } from '/xty/_shared/card-picker.js';
@@ -275,6 +275,13 @@ function seatAvatarMarkup(value) {
   const resolved = resolveMemberAvatar(value);
   if (resolved) return `<img src="${resolved.cardArt}" alt="">`;
   return avatarMarkup(value);
+}
+
+/* A seat holding a card takes the card's shape. In the square avatar box a
+   5:7 card had to letterbox, which left the very gaps a card should never
+   have; a starter animal keeps the square because its art is square. */
+function seatIsCard(value) {
+  return (resolveMemberAvatar(value)?.rarity || 'starter') !== 'starter';
 }
 
 /* The card's colour is the only property it carries, and this is where it
@@ -387,7 +394,7 @@ function render() {
     d.className = 'seat xty-card' + (m.role === 'lead' ? ' lead' : ' member');
     d.innerHTML =
       `<span class="slot-label">${m.role === 'lead' ? '★ LEAD' : `MEMBER ${index + 1}`}</span>` +
-      `<div class="av member-avatar" data-color="${esc(seatColorFor(m.avatar, m.avatarColor))}">${seatAvatarMarkup(m.avatar)}</div>` +
+      `<div class="av member-avatar${seatIsCard(m.avatar) ? ' is-card' : ''}" data-color="${esc(seatColorFor(m.avatar, m.avatarColor))}">${seatAvatarMarkup(m.avatar)}</div>` +
       `<div class="al" title="${esc(m.alias)}">${esc(m.alias)}</div>` +
       `<div class="rl">${m.role === 'lead' ? 'หัวตี้' : 'สมาชิก'}</div>` +
       `<div class="commit-state" aria-label="${committed ? 'Commit แล้ว' : 'ยังไม่ Commit'}">${committed ? '✓' : '○'}</div>`;
@@ -628,11 +635,16 @@ function renderLog(p) {
       + (isReward ? ' reward' : '')
       + (isPet ? ' pet' : '')
       + (post.retracted ? ' retracted' : '');
+    /* The whole message is tinted by what came out of the card, so a
+       Legendary reads as an event from across the log. */
+    if (rewardCard) el.dataset.rarity = rewardCard.rarity || 'common';
 
     const body = post.retracted
       ? '<span>ข้อความถูกถอนโดยเจ้าของ</span>'
       : (isReward && rewardCard
-        ? `<div class="reward-log-card">${cardMarkup(rewardCard)}<p>เปิดได้ <b>${esc(cardDescriptorTh(rewardCard))}</b></p></div>`
+        ? `<div class="reward-log-card">${cardMarkup(rewardCard)}`
+          + `<p>เปิดได้ <b>${esc(cardNameTh(rewardCard))}</b>`
+          + ` · ${esc((XTY_RARITY_META[rewardCard.rarity] || XTY_RARITY_META.common).label)}</p></div>`
         : esc(post.body));
     const tag = post.kind === 'commit' ? '<span class="tag">COMMIT</span>'
       : (isReward ? '<span class="tag reward-tag">REWARD</span>' : '');

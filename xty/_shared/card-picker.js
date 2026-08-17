@@ -5,17 +5,20 @@
    want to be right now. A dropdown answered it badly — it hides how much
    you own and gives a legendary the same single line as a starter.
 
-   So: shelves by rarity, always all five, the empty ones greyed with a
-   count rather than removed. A locked shelf is the point — it shows the
-   size of the set you are collecting into.
+   So: shelves by rarity, always all five, the empty ones greyed and shut.
 
-   Starter is the seven free animals. They are not cards and carry no
+   A card you have not found does not appear here at all — not dimmed, not
+   a silhouette, not a slot. The set is meant to be a surprise, and a grid
+   of locked cards is a catalogue of everything you have not got. The
+   shelf shows how many you hold and nothing about how many exist.
+
+   Starter is the twelve free animals. They are not cards and carry no
    colour, which is why the colour filter leaves that shelf alone
    instead of emptying it.
    ═══════════════════════════════════════════════════════════════ */
 
 import { AVATAR_BY_ID, XTY_AVATARS, avatarById, speciesById } from './avatars.js';
-import { XTY_CARDS, XTY_CARD_COLORS, cardById, cardDescriptorTh } from './cards.js';
+import { XTY_CARDS, XTY_CARD_COLORS, cardById, cardDescriptorTh, cardNameTh } from './cards.js';
 import { cardMarkup } from './card-ui.js';
 import { getProfile } from './store.js';
 
@@ -36,10 +39,10 @@ export function ownedCardIds(profile = getProfile()) {
   return new Set(list.map(item => item?.cardId).filter(Boolean));
 }
 
-/* Every card of a rarity that exists, so an empty shelf can still say how
-   many there are to find rather than just reading as broken. */
-function catalogueFor(rarity) {
-  return XTY_CARDS.filter(card => (card.rarity || 'common') === rarity);
+/* Only what the player actually holds. The catalogue is never consulted for
+   display, so nothing here can leak a card they have not found. */
+function ownedCardsOf(rarity, owned) {
+  return XTY_CARDS.filter(card => (card.rarity || 'common') === rarity && owned.has(card.cardId));
 }
 
 function starterItems() {
@@ -52,10 +55,13 @@ function starterItems() {
 }
 
 function cardItems(rarity, owned) {
-  return catalogueFor(rarity).map(card => ({
+  return ownedCardsOf(rarity, owned).map(card => ({
     key: `card:${card.cardId}`, kind: 'card', rarity,
     cardId: card.cardId, species: card.species, color: card.color,
-    title: cardDescriptorTh(card), owned: owned.has(card.cardId),
+    /* Just the animal. The colour is already on the border and the rarity
+       is already the shelf, so spelling both out only made the label too
+       long to read. The full description stays on aria-label. */
+    title: cardNameTh(card), label: cardDescriptorTh(card), owned: true,
     art: cardMarkup(card),
   }));
 }
@@ -103,11 +109,11 @@ function installStyles() {
 /**
  * @param {HTMLElement} host
  * @param {{mode?:'avatar'|'pet', selected?:{avatarId?:string,cardId?:string},
- *          showLocked?:boolean, onSelect?:(choice:object)=>void}} options
+ *          onSelect?:(choice:object)=>void}} options
  */
 export function mountCardPicker(host, options = {}) {
   if (!host) return null;
-  const { mode = 'avatar', showLocked = true, onSelect } = options;
+  const { mode = 'avatar', onSelect } = options;
   installStyles();
 
   const owned = ownedCardIds();
@@ -141,31 +147,26 @@ export function mountCardPicker(host, options = {}) {
     shelves.innerHTML = '';
     for (const rarity of RARITIES) {
       const items = itemsFor(rarity.id);
-      const ownedItems = items.filter(item => item.owned);
       const shelf = document.createElement('details');
       shelf.className = 'xcp-shelf';
-      /* Epic and Legendary are named in the ladder but have no cards minted
-         yet. "0/0" would read as a bug, so an unminted tier says so instead
-         of pretending to be a shelf you failed to fill. */
-      const unminted = items.length === 0;
-      const locked = ownedItems.length === 0;
+      /* A shelf with nothing in it is locked and shut, and says 0. It never
+         says 0 of how many — that number is exactly the thing a player is
+         meant to discover by opening cards. */
+      const locked = items.length === 0;
       if (locked) shelf.classList.add('is-locked');
       shelf.open = !locked;
 
       const summary = document.createElement('summary');
       summary.innerHTML = `${locked ? '<span class="xcp-lock">🔒</span>' : ''}<span>${rarity.label}</span>`
-        + `<span class="xcp-count">${unminted ? 'เร็ว ๆ นี้' : `${ownedItems.length}/${items.length}`}</span>`;
+        + `<span class="xcp-count">${items.length}</span>`;
       shelf.appendChild(summary);
 
-      const visible = showLocked ? items : ownedItems;
-      if (!visible.length) {
+      if (!items.length) {
         const empty = document.createElement('p');
         empty.className = 'xcp-empty';
-        empty.textContent = unminted
-          ? `${rarity.labelTh}ยังไม่เปิดให้เก็บ`
-          : (color
-            ? `ยังไม่มี${rarity.labelTh}สี${COLOR_LABEL[color] || ''}`
-            : `ยังไม่มี${rarity.labelTh}`);
+        empty.textContent = color
+          ? `ยังไม่มี${rarity.labelTh}สี${COLOR_LABEL[color] || ''}`
+          : `ยังไม่มี${rarity.labelTh}`;
         shelf.appendChild(empty);
         shelves.appendChild(shelf);
         continue;
@@ -173,28 +174,22 @@ export function mountCardPicker(host, options = {}) {
 
       const grid = document.createElement('div');
       grid.className = 'xcp-grid';
-      for (const item of visible) {
+      for (const item of items) {
         const option = document.createElement('button');
         option.type = 'button';
-        option.className = 'xcp-opt' + (item.owned ? '' : ' is-locked');
+        option.className = 'xcp-opt';
         option.setAttribute('role', 'radio');
         option.setAttribute('aria-checked', item.key === selectedKey ? 'true' : 'false');
         option.innerHTML = item.kind === 'starter'
           ? `<span class="xcp-thumb">${item.art}</span><span class="xcp-name"></span>`
           : `${item.art}<span class="xcp-name"></span>`;
         option.querySelector('.xcp-name').textContent = item.title;
-        if (!item.owned) {
-          option.disabled = true;
-          option.setAttribute('aria-disabled', 'true');
-          option.setAttribute('aria-label', `${item.title} — ยังไม่มีการ์ดใบนี้`);
-        } else {
-          option.setAttribute('aria-label', item.title);
-          option.addEventListener('click', () => {
-            selectedKey = item.key;
-            render();
-            if (onSelect) onSelect(choiceOf(item));
-          });
-        }
+        option.setAttribute('aria-label', item.label || item.title);
+        option.addEventListener('click', () => {
+          selectedKey = item.key;
+          render();
+          if (onSelect) onSelect(choiceOf(item));
+        });
         grid.appendChild(option);
       }
       shelf.appendChild(grid);

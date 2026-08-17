@@ -1,6 +1,6 @@
 import { getProfile, availableOwnedCards } from './store.js';
 import { cardMarkup } from './card-ui.js';
-import { XTY_CARDS, cardDescriptorTh } from './cards.js';
+import { cardNameTh } from './cards.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
 import { cardSVG } from '../../core7/js/art.js';
 
@@ -23,11 +23,6 @@ function installStyles() {
   style.id = 'xty-cover-v3-style';
   style.textContent = `
     #leadPick{display:block!important}
-    /* Locked covers stay legible — dimmed, not hidden — so the shelf reads
-       as something to work toward rather than something broken. */
-    .xty-cover-option.is-locked{position:relative;opacity:.5;cursor:not-allowed;filter:grayscale(.65)}
-    .xty-cover-option.is-locked::after{content:'🔒';position:absolute;top:6px;right:8px;font-size:15px;filter:none}
-    .xty-cover-option.is-locked .xty-cover-label{color:var(--xty-muted)}
     .xty-cover-picker{display:grid;gap:12px}
     .xty-cover-current{display:flex;align-items:center;gap:14px;padding:12px;border:1px solid var(--xty-border);border-radius:18px;background:rgba(255,255,255,.72)}
     .xty-cover-current-art{flex:none;width:88px;aspect-ratio:63/88;overflow:hidden;border-radius:11px;background:#13291d;box-shadow:0 3px 10px rgba(62,51,44,.14)}
@@ -72,7 +67,7 @@ function install() {
     back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด myClover', subtitle:'ใช้ได้เสมอ', art:backArt() }],
     xty: xtyCards.map(card => ({
       key:`xty:${card.cardId}`, category:'xty', coverType:'card', leadCardId:card.cardId,
-      title:cardDescriptorTh(card), subtitle:'XTY CARD', art:cardMarkup(card, { role:'lead' }),
+      title:cardNameTh(card), subtitle:'XTY CARD', art:cardMarkup(card, { role:'lead' }),
     })),
     core7: core7Ids.map(id => {
       const card = core7CardById(id);
@@ -83,17 +78,11 @@ function install() {
     }).filter(Boolean),
   };
 
-  /* A player with no cards yet still gets to see what a cover can be —
-     locked, unselectable, but visible. Hiding the shelf entirely made it
-     look like the back was the only cover XTY has. */
-  const ownedIds = new Set(xtyCards.map(card => card.cardId));
-  groups.locked = XTY_CARDS
-    .filter(card => card.eligibility?.partyCover && !ownedIds.has(card.cardId))
-    .slice(0, 12)
-    .map(card => ({
-      key: `locked:${card.cardId}`, category: 'locked', locked: true,
-      title: cardDescriptorTh(card), subtitle: 'ยังไม่ได้', art: cardMarkup(card, { role: 'lead' }),
-    }));
+  /* No shelf of cards you have not found. It used to show twelve of them,
+     locked, so a new player could see what a cover can be — but that hands
+     over the art of the set before anybody has opened a single card. What
+     a player needs here is the rule (covers come from cards, cards come
+     from finishing quests), and that is copy, not a grid. */
 
   const unlockedCovers = xtyCards.length + core7Ids.length;
   const total = 1 + unlockedCovers;
@@ -108,7 +97,7 @@ function install() {
   const currentTitle = document.createElement('b');
   const currentSub = document.createElement('small');
   const open = document.createElement('button'); open.type = 'button'; open.className = 'btn ghost sm xty-cover-open';
-  open.textContent = unlockedCovers ? 'เปลี่ยนปก' : 'ดูปกที่ยังไม่ได้';
+  open.textContent = unlockedCovers ? 'เปลี่ยนปก' : 'ดูปกที่ใช้ได้ตอนนี้';
   currentCopy.append(currentTitle, currentSub, open); current.append(currentArt, currentCopy);
 
   const library = document.createElement('div'); library.className = 'xty-cover-library'; library.hidden = true;
@@ -119,7 +108,6 @@ function install() {
 
   const categoryMeta = [
     ['back','หลังการ์ด',groups.back.length], ['xty','XTY',groups.xty.length], ['core7','FIRST HAND',groups.core7.length],
-    ['locked','ยังไม่ได้',groups.locked.length],
   ];
 
   function syncCurrent() {
@@ -131,7 +119,7 @@ function install() {
        cover is simply the one everybody starts with. */
     hint.textContent = unlockedCovers
       ? `เลือกไว้ ${selected.title} · มีปกให้เลือก ${total} แบบ กด “เปลี่ยนปก” เพื่อเปิดคลัง`
-      : 'ตี้นี้ใช้หลังการ์ด myClover เป็นปก · ปกแบบอื่นต้องมีการ์ดก่อน ซึ่งได้จากการเล่นตี้จนจบเควส — กด “ดูปกที่ยังไม่ได้” เพื่อดูว่ามีอะไรบ้าง';
+      : 'ตี้นี้ใช้หลังการ์ด myClover เป็นปก · ตั้งตี้ต่อได้เลย ไม่ต้องรอ — ปกแบบอื่นมาจากการ์ดที่ได้ตอนเล่นตี้จนจบเควส';
   }
 
   function renderCategory() {
@@ -140,13 +128,8 @@ function install() {
     if (!list.length) {
       const empty = document.createElement('p'); empty.className = 'xty-cover-empty';
       empty.textContent = activeCategory === 'core7' ? 'ยังไม่มี FIRST HAND ที่ปลดล็อกในเครื่องนี้'
-        : (activeCategory === 'locked' ? 'ปลดปกครบทุกแบบแล้ว' : 'ยังไม่มีการ์ดหมวดนี้ที่ใช้เป็นปกได้');
+        : 'ยังไม่มีการ์ดหมวดนี้ที่ใช้เป็นปกได้ · การ์ดได้จากการเล่นตี้จนจบเควส';
       grid.appendChild(empty); return;
-    }
-    if (activeCategory === 'locked') {
-      const note = document.createElement('p'); note.className = 'xty-cover-empty';
-      note.textContent = 'การ์ดพวกนี้ได้จากการเล่นตี้จนจบเควส — ตอนนี้ตั้งตี้ต่อได้เลย ไม่ต้องรอ';
-      grid.appendChild(note);
     }
     for (const item of list) {
       const option = document.createElement('button');
@@ -155,17 +138,10 @@ function install() {
       option.setAttribute('aria-label', `ใช้ ${item.title} เป็นปกตี้`);
       option.innerHTML = `<div class="xty-cover-thumb">${item.art}</div><span class="xty-cover-label"></span>`;
       option.querySelector('.xty-cover-label').textContent = item.title;
-      if (item.locked) {
-        option.classList.add('is-locked');
-        option.disabled = true;
-        option.setAttribute('aria-disabled', 'true');
-        option.setAttribute('aria-label', `${item.title} — ยังใช้เป็นปกไม่ได้ ต้องมีการ์ดใบนี้ก่อน`);
-      } else {
-        option.addEventListener('click', () => {
-          selected = item; setOverride(selected); syncCurrent(); library.hidden = true;
-          open.textContent = unlockedCovers ? 'เปลี่ยนปก' : 'ดูปกที่ยังไม่ได้';
-        });
-      }
+      option.addEventListener('click', () => {
+        selected = item; setOverride(selected); syncCurrent(); library.hidden = true;
+        open.textContent = unlockedCovers ? 'เปลี่ยนปก' : 'ดูปกที่ใช้ได้ตอนนี้';
+      });
       grid.appendChild(option);
     }
     scroller.scrollTop = 0;
@@ -185,11 +161,9 @@ function install() {
 
   open.addEventListener('click', () => {
     library.hidden = !library.hidden;
-    open.textContent = library.hidden ? (unlockedCovers ? 'เปลี่ยนปก' : 'ดูปกที่ยังไม่ได้') : 'ปิดคลัง';
+    open.textContent = library.hidden ? (unlockedCovers ? 'เปลี่ยนปก' : 'ดูปกที่ใช้ได้ตอนนี้') : 'ปิดคลัง';
     if (!library.hidden) {
-      /* With nothing unlocked, open straight onto the locked shelf —
-         the back tab holds a single item and says nothing useful. */
-      activeCategory = unlockedCovers ? selected.category : 'locked';
+      activeCategory = selected.category;
       tabs.querySelectorAll('.xty-cover-tab').forEach(node => node.classList.toggle('active', node.dataset.category === activeCategory));
       renderCategory();
     }

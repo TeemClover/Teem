@@ -8,6 +8,20 @@
    xty.css and the sound comes from the CORE7 samples.
    ═══════════════════════════════════════════════════════════════ */
 
+/* The back is the real myClover card back, not a pattern standing in for
+   one: the game is handing you a card face down. It fills the whole face
+   so the shape reads as a card from the first frame, and the flip lands on
+   the actual art. */
+.card-back{
+  position:relative;overflow:hidden;
+  padding:0;background:#13291D;
+}
+.card-back>img{
+  display:block;width:100%;height:100%;
+  object-fit:cover;border-radius:15px;
+}
+.card-back>b{z-index:3}
+
 .reveal-card{
   cursor:pointer;
   transform:rotate(-1.4deg);
