@@ -48,6 +48,11 @@ async function progressionLevelFor(req, sql, body) {
   return Math.min(4, Math.max(1, Math.floor(Number(rows[0]?.level || 1)) || 1));
 }
 
+function allowedDurations(level, preset) {
+  if (preset === 'xircle_xvisor') return [28];
+  return level >= 2 ? [3, 7, 14, 28] : [3, 7];
+}
+
 async function requestedCover(req, sql) {
   const body = bodyOf(req);
   const type = String(body.coverType || 'card_back').toLowerCase();
@@ -134,6 +139,18 @@ export async function handleCreatePartyV3(req, res) {
     await ensureSchema(sql);
     const body = bodyOf(req);
     const levelBeforeCreate = await progressionLevelFor(req, sql, body);
+    const preset = cleanId(body.preset, 40);
+    const durationDays = Number(body.durationDays || 7);
+    const allowed = allowedDurations(levelBeforeCreate, preset);
+    if (!allowed.includes(durationDays)) {
+      return sendJson(res, {
+        ok: false,
+        error: 'DURATION_LOCKED',
+        level: levelBeforeCreate,
+        preset: preset || 'normal',
+        allowedDurations: allowed,
+      }, 409);
+    }
     const cover = levelBeforeCreate <= 1 ? avatarCover(body) : await requestedCover(req, sql);
 
     const created = await captureV2(req);
@@ -158,6 +175,8 @@ export async function handleCreatePartyV3(req, res) {
       characterName: cover.characterName || null,
       creatorLevel,
       creationLabel: label,
+      durationDays,
+      durationRoute: preset === 'xircle_xvisor' ? 'white-cat' : 'level',
     }), party.id]);
 
     party.coverType = cover.type;
@@ -166,7 +185,7 @@ export async function handleCreatePartyV3(req, res) {
     party.updatedAt = at.toISOString();
     if (Array.isArray(party.events)) {
       party.events = party.events.map(event => event.type === 'PARTY_CREATED'
-        ? { ...event, data: { ...(event.data || {}), coverType: cover.type, coverValue: cover.value, leadCardId: cover.leadCardId, coverName: cover.name, characterName: cover.characterName || null, creatorLevel, creationLabel: label } }
+        ? { ...event, data: { ...(event.data || {}), coverType: cover.type, coverValue: cover.value, leadCardId: cover.leadCardId, coverName: cover.name, characterName: cover.characterName || null, creatorLevel, creationLabel: label, durationDays, durationRoute: preset === 'xircle_xvisor' ? 'white-cat' : 'level' } }
         : event);
     }
     return sendJson(res, { ...created.data, party, coverName: cover.name, creationLabel: label }, created.status || 201);
