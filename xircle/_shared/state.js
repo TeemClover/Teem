@@ -304,13 +304,20 @@
     }
   }
 
+  function stopHandledEvent(event) {
+    if (!event) return;
+    event.preventDefault();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    else if (event.stopPropagation) event.stopPropagation();
+  }
+
   function activateWhiteCat(target, event) {
     if (!target || !target.closest) return false;
     var hit = target.closest(
       "[data-whitecat-link], .xp-cat-cutout-stage, .xp-whitecat-visual, [data-whitecat-cutout]"
     );
     if (!hit) return false;
-    if (event) event.preventDefault();
+    stopHandledEvent(event);
     location.href = whiteCatActionUrl();
     return true;
   }
@@ -330,7 +337,7 @@
     var required = normalizedHrefPath(next.href);
     if (intended === required) return false;
 
-    if (event) event.preventDefault();
+    stopHandledEvent(event);
     location.href = next.href;
     return true;
   }
