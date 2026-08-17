@@ -1,10 +1,13 @@
 /* The printed set and the odds behind a single draw. Both are product
    decisions that are easy to break silently, so they are asserted here. */
-import { test } from 'node:test';
+import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   XTY_CARDS, XTY_CARD_COLORS, XTY_DROP_ODDS, cardById, rollRarity,
 } from './cards.js';
+import {
+  XTY_SPECIES, XTY_AVATARS, AVATAR_BY_ID, AVATAR_FRAMES, SPECIES_BY_ID, speciesById,
+} from './avatars.js';
 
 test('the printed set is exactly the art that exists', () => {
   const by = {};
@@ -22,6 +25,63 @@ test('no starter animal is printed as a card, and every card has a colour', () =
 
 test('cow is not findable yet', () => {
   assert.equal(XTY_CARDS.some(card => card.species === 'cow'), false);
+});
+
+/* Starter is a roster, not "every animal". It stays at twelve while the
+   card set grows, so a new animal is met by opening a card. */
+test('the Starter roster is the twelve free animals, and nothing else', () => {
+  assert.equal(XTY_AVATARS.length, 12);
+  for (const animal of XTY_AVATARS) {
+    assert.equal(animal.starter, true, `${animal.id} is offered free, so it must be a starter`);
+    assert.equal(SPECIES_BY_ID[animal.id], animal, 'the roster is derived from the species list');
+  }
+  assert.deepEqual(
+    Object.keys(AVATAR_BY_ID).sort(),
+    XTY_AVATARS.map(a => a.id).sort(),
+    'the free picker only ever offers starters'
+  );
+});
+
+test('every printed card belongs to an animal the game can draw', () => {
+  for (const card of XTY_CARDS) {
+    assert.ok(speciesById(card.species), `${card.cardId} has no species entry`);
+  }
+  assert.equal(speciesById('cow'), null, 'an unknown species answers null, not a cat');
+  assert.equal(speciesById(''), null);
+});
+
+/* The point of splitting the roster off the species list: art alone is
+   enough to print a card. Proven by demoting an animal that has real art
+   out of the roster — its cards must survive, its free identity must not. */
+test('a species can print cards without being on the Starter roster', async () => {
+  const demoted = XTY_SPECIES.map(item => Object.freeze({ ...item, starter: false }));
+  const byId = Object.fromEntries(demoted.map(item => [item.id, item]));
+
+  /* An empty roster with a full species list: nobody is handed anything
+     free, every animal still has art. The catalog must not notice. */
+  mock.module('./avatars.js', {
+    namedExports: {
+      AVATAR_FRAMES,
+      XTY_SPECIES: Object.freeze(demoted),
+      SPECIES_BY_ID: Object.freeze(byId),
+      speciesById: id => byId[String(id || '')] || null,
+      XTY_AVATARS: Object.freeze([]),
+      AVATAR_BY_ID: Object.freeze({}),
+      avatarById: () => null,
+      avatarFallback: id => byId[id]?.fallback || '🐱',
+    },
+  });
+
+  try {
+    const cards = await import('./cards.js?card-only-species');
+    assert.equal(cards.XTY_CARDS.length, XTY_CARDS.length, 'the printed set does not shrink');
+    assert.equal(
+      cards.XTY_CARDS.filter(card => card.species === 'turtle').length, 8,
+      'a card-only animal keeps every card its art supports'
+    );
+  } finally {
+    mock.restoreAll();
+  }
 });
 
 test('legendary is one colour per animal — there is no set to complete', () => {

@@ -3,7 +3,7 @@
    The catalog is data-driven and future-ready for all four locked rarity
    levels. Common and Rare are the currently issued NOTEBOOK_002 set. */
 
-import { XTY_AVATARS, AVATAR_FRAMES } from './avatars.js';
+import { XTY_SPECIES, speciesById, AVATAR_FRAMES } from './avatars.js';
 
 export const XTY_CARD_SERIES = 'NOTEBOOK_002';
 export const XTY_CARD_COLORS = Object.freeze(['red', 'green', 'blue', 'silver']);
@@ -38,14 +38,20 @@ export const XTY_PERSONALITIES = Object.freeze({
 });
 
 export function cardIdFor(species, color = 'green', rarity = 'common') {
-  const animal = XTY_AVATARS.find(item => item.id === species) || XTY_AVATARS[0];
+  const animal = speciesById(species) || XTY_SPECIES[0];
   const pickedColor = XTY_CARD_COLORS.includes(color) ? color : 'green';
   const pickedRarity = XTY_CARD_RARITIES.includes(rarity) ? rarity.toUpperCase() : 'COMMON';
   return `${animal.id.toUpperCase()}_${pickedColor.toUpperCase()}_${pickedRarity}_001`;
 }
 
+/* Cards print as art alone — no name, no reading of the picture — so a
+   species that ships without a written personality is a card all the same. */
+const PLAIN_PERSONALITY = Object.freeze({
+  id: 'plain', nameTh: '', descriptionTh: '', flavorTh: '',
+});
+
 function baseCard(animal, color, rarity) {
-  const personality = XTY_PERSONALITIES[animal.id];
+  const personality = XTY_PERSONALITIES[animal.id] || PLAIN_PERSONALITY;
   const rarityMeta = XTY_RARITY_META[rarity] || XTY_RARITY_META.common;
   const partyCover = rarityMeta.partyCover;
   return {
@@ -53,7 +59,7 @@ function baseCard(animal, color, rarity) {
     name: animal.nameTh, species: animal.id, speciesNameTh: animal.nameTh, color,
     colorNameTh: AVATAR_FRAMES[color].labelTh, rarity, series: XTY_CARD_SERIES,
     personalityId: personality.id, personalityNameTh: personality.nameTh,
-    personalityPath: `/xty/cards/personalities/${personality.id}.md`,
+    personalityPath: personality === PLAIN_PERSONALITY ? null : `/xty/cards/personalities/${personality.id}.md`,
     description: personality.descriptionTh, descriptionTh: personality.descriptionTh,
     flavorText: personality.flavorTh, flavorTh: personality.flavorTh,
     fallback: animal.fallback,
@@ -116,8 +122,11 @@ function makeRareCard(animal, color) {
    anything a player sees: renaming them would orphan cards people
    already own. The number a player never sees is not a running number.
 
-   Starter animals are deliberately absent — they are free identities,
-   not commons, and they carry no colour. */
+   Starter animals are deliberately absent from the tiers below — they are
+   free identities, not commons, and they carry no colour. The reverse is
+   also allowed: a species may print cards without ever joining the Starter
+   roster, which is how a new animal is met by opening a card rather than
+   being handed out. Adding one is an entry in XTY_SPECIES plus art. */
 
 const PRINTED = Object.freeze({
   /* 8 species × 4 colours × 2 artworks */
@@ -150,7 +159,7 @@ function printedId(species, color, rarity, variant) {
 }
 
 function makePrintedCard(rarity, entry) {
-  const animal = XTY_AVATARS.find(item => item.id === entry.species);
+  const animal = speciesById(entry.species);
   if (!animal) return null;
   if (rarity === 'rare') return makeRareCard(animal, entry.color);
   const card = baseCard(animal, entry.color, rarity);

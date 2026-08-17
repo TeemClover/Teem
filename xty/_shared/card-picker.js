@@ -14,7 +14,7 @@
    instead of emptying it.
    ═══════════════════════════════════════════════════════════════ */
 
-import { AVATAR_BY_ID, XTY_AVATARS, avatarById } from './avatars.js';
+import { AVATAR_BY_ID, XTY_AVATARS, avatarById, speciesById } from './avatars.js';
 import { XTY_CARDS, XTY_CARD_COLORS, cardById, cardDescriptorTh } from './cards.js';
 import { cardMarkup } from './card-ui.js';
 import { getProfile } from './store.js';
@@ -291,7 +291,9 @@ export function petSpeciesFor(grantedIds = [], profile = getProfile()) {
 export function resolveMemberAvatar(value) {
   const card = cardById(String(value || ''));
   if (card) {
-    const animal = avatarById(card.species);
+    /* speciesById, not avatarById: a card-only animal is not on the Starter
+       roster, and the roster helper would answer "orange cat" for it. */
+    const animal = speciesById(card.species);
     return {
       species: card.species,
       speciesArt: animal?.art || card.art,
