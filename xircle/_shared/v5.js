@@ -7,7 +7,7 @@
   function qs(s,c){return (c||document).querySelector(s)}
   function qsa(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
   var reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var ART_REV='20260816-01';
+  var ART_REV='20260817-02';
 
   function safeTrack(name,props){try{window.XAnalytics&&window.XAnalytics.track(name,props||{})}catch(e){}}
   function safeState(fn){try{return window.XState?fn(window.XState):null}catch(e){return null}}
@@ -139,10 +139,24 @@
     });
   }
   function initWhiteCat(){
-    qsa('[data-whitecat-link]').forEach(function(a){
-      var h=safeState(function(s){return s.getXtyHandoff&&s.getXtyHandoff()});
-      if(h){a.href='/xircle/care/party/?mode=join';a.textContent='แมวขาว · เข้าตี้ '+h.partyCode}
-    });
+    var path=String(location.pathname||'').replace(/\/+$/,'')||'/';
+    var hubMode=path==='/xircle/explore';
+
+    if(hubMode){
+      qsa('[data-whitecat-link]').forEach(function(a){
+        if(a.tagName==='A')a.href='/xircle/circle/';
+        a.removeAttribute('data-whitecat-link');
+        a.setAttribute('data-whitecat-circle','1');
+        if(a.classList.contains('xp-btn'))a.textContent='ดูวิธีทำด้วยกัน 28 วัน →';
+        else if(!a.querySelector('*'))a.textContent='ดูวิธีทำด้วยกัน 28 วัน →';
+      });
+    }else{
+      qsa('[data-whitecat-link]').forEach(function(a){
+        var h=safeState(function(s){return s.getXtyHandoff&&s.getXtyHandoff()});
+        if(h){a.href='/xircle/care/party/?mode=join';a.textContent='แมวขาว · เข้าตี้ '+h.partyCode}
+      });
+    }
+
     qsa('[data-invite-room]').forEach(function(el){
       var h=safeState(function(s){return s.getXtyHandoff&&s.getXtyHandoff()});
       if(!h)return;el.hidden=false;

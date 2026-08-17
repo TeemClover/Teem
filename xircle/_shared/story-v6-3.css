@@ -102,13 +102,34 @@
 }
 
 @media(max-width:780px){
-  /* Full artwork stays visible on phones without adding a fake fixed-ratio frame. */
+  /* On phones the image canvas owns its height. The old fixed 52% row made
+     landscape artwork sit inside a tall box, which looked like a missing image
+     above/below. Keep full width, keep the rounded frame, and remove that box. */
+  .xp-story .xp-story-shell,
+  .xp-story .xp-scene.xp-dense .xp-story-shell{
+    grid-template-rows:auto minmax(0,1fr)!important;
+  }
+  .xp-story .xp-art,
+  .xp-story [data-scene="S6"] .xp-art{
+    align-self:start!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    border-radius:24px!important;
+  }
   .xp-story .xp-art img{
     object-fit:contain!important;
     object-position:center center!important;
     transform:none!important;
   }
-  .xp-story .xp-art.art-ready>img{max-height:45dvh!important}
+  .xp-story .xp-art.art-ready>img,
+  .xp-story [data-scene="S6"] .xp-art.art-ready>img{
+    width:100%!important;
+    max-width:none!important;
+    height:auto!important;
+    max-height:none!important;
+    object-fit:contain!important;
+  }
 
   .xp-routinex-story .xp-routine-persistent{
     top:50px;

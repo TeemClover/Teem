@@ -56,25 +56,30 @@
   .xp-cat-cutout-stage{min-height:150px}
   .xp-cat-cutout-stage img{height:150px;width:min(100%,180px)}
 
-  /* A single artwork that already owns the whole row should use the phone width.
-     Keep the artwork intact; remove the decorative side gutters instead of cropping it. */
+  /* When one artwork already owns the whole row, give the artwork the phone width.
+     Keep its full canvas and its elegant rounded corners; remove only wasted side gutters. */
   .xp-page .xp-hero>.xp-art,
-  .xp-mobile-fullbleed{
+  .xp-mobile-fullbleed,
+  .safe .safe-art,
+  .safe .guide-visual,
+  .ref .ref-hero-art{
     width:100vw!important;
     max-width:none!important;
     margin-left:calc((100vw - 100%)/-2)!important;
     margin-right:calc((100vw - 100%)/-2)!important;
-    border-radius:0!important;
-    border-left:0!important;
-    border-right:0!important;
-    box-shadow:none!important;
+    border-radius:24px!important;
   }
   .xp-page .xp-hero>.xp-art.art-ready>img,
   .xp-mobile-fullbleed>img,
-  .xp-mobile-fullbleed img{
+  .xp-mobile-fullbleed img,
+  .safe .safe-art img,
+  .safe .guide-visual img,
+  .ref .ref-hero-art img{
+    display:block!important;
     width:100%!important;
     max-width:none!important;
     height:auto!important;
+    max-height:none!important;
     object-fit:contain!important;
   }
 
