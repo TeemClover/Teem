@@ -11,6 +11,11 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = STYLE_ID;
   style.textContent = `
+    /* Starter cover is already visually identified by the STARTER badge.
+       Keep the Home card clean: the animal name beside/under the art is
+       redundant and competes with the party title. */
+    .xty-party-carousel .xty-home-cover.avatar-cover>b { display:none!important; }
+
     @media (hover:hover) and (pointer:fine) {
       .xty-party-carousel.multiple {
         cursor:grab;
