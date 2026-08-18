@@ -73,3 +73,12 @@ export function avatarById(id) {
 export function avatarFallback(id, fallback = '🐱') {
   return AVATAR_BY_ID[id]?.fallback || fallback || '🐱';
 }
+
+/* Presentation must never be allowed to block XTY core boot. The language
+   layer is intentionally loaded as an un-awaited side effect: if it ever
+   throws on a browser edge case, avatar/store/game modules still work. */
+if (typeof window !== 'undefined') {
+  import('./language.js').catch(error => {
+    console.warn('[XTY] optional language layer failed', error);
+  });
+}
