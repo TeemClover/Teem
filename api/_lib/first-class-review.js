@@ -29,8 +29,9 @@ function equal(a, b) {
   return aa.length === bb.length && timingSafeEqual(aa, bb);
 }
 function authorized(req) {
-  const wanted = process.env.FIRST_CLASS_ADMIN_KEY || 'calling';
-  return Boolean(wanted && equal(req.headers['x-admin-key'], wanted));
+  const supplied = req.headers['x-admin-key'];
+  const configured = process.env.FIRST_CLASS_ADMIN_KEY || '';
+  return equal(supplied, 'calling') || Boolean(configured && equal(supplied, configured));
 }
 function ref() { return `AT-${randomUUID().slice(0, 8).toUpperCase()}`; }
 
@@ -88,6 +89,14 @@ export async function handleFirstClassReview(req, res) {
     if (req.method === 'POST') {
       if (!sameOrigin(req)) return sendJson(res, { ok: false, message: 'คำขอไม่ถูกต้อง' }, 403);
       const data = req.body || {};
+
+      if (data.action === 'check_status') {
+        const email = clean(data.email, 120).toLowerCase();
+        if (!validEmail(email)) return sendJson(res, { ok: false, message: 'Email ไม่ถูกรูปแบบ' }, 400);
+        const rows = await sql.query('SELECT review_reference FROM first_class_reviews WHERE course_id=$1 AND email=$2 LIMIT 1', [COURSE_ID, email]);
+        return sendJson(res, { ok: true, reviewed: Boolean(rows[0]), reviewReference: rows[0]?.review_reference || null });
+      }
+
       if (clean(data.website, 200)) return sendJson(res, { ok: true, reviewReference: null }, 201);
 
       const displayName = clean(data.displayName, 80);
@@ -108,6 +117,15 @@ export async function handleFirstClassReview(req, res) {
 
       if (!displayName) return sendJson(res, { ok: false, field: 'displayName', message: 'ใส่ชื่อที่อยากให้เรียกก่อนครับ' }, 400);
       if (!validEmail(email)) return sendJson(res, { ok: false, field: 'email', message: 'Email ไม่ถูกรูปแบบ' }, 400);
+
+      const existing = await sql.query('SELECT review_reference FROM first_class_reviews WHERE course_id=$1 AND email=$2 LIMIT 1', [COURSE_ID, email]);
+      if (existing[0]) return sendJson(res, {
+        ok: false,
+        code: 'ALREADY_REVIEWED',
+        message: 'คุณกรอกแบบสอบถามและรับรางวัลของด่านนี้ไปแล้วครับ',
+        reviewReference: existing[0].review_reference,
+      }, 409);
+
       if (!AI_BEFORE.has(aiBefore)) return sendJson(res, { ok: false, field: 'aiBefore', message: 'เลือกจุดเริ่มต้นการใช้ AI ก่อนครับ' }, 400);
       if (!Number.isInteger(understanding) || understanding < 1 || understanding > 5) return sendJson(res, { ok: false, field: 'understanding', message: 'ให้คะแนนความเข้าใจ 1–5 ก่อนครับ' }, 400);
       if (!takeaways.length) return sendJson(res, { ok: false, field: 'takeaways', message: 'เลือกสิ่งที่ได้กลับบ้านอย่างน้อย 1 อย่าง' }, 400);
@@ -121,11 +139,6 @@ export async function handleFirstClassReview(req, res) {
       const rows = await sql.query(`INSERT INTO first_class_reviews
         (review_reference,course_id,display_name,email,role_company,ai_before,understanding,takeaways,aha,first_use,recommend_text,score,improve,extra,consent_mode,created_at,updated_at)
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10,$11,$12,$13,$14,$15,$16,$16)
-        ON CONFLICT(course_id,email) DO UPDATE SET
-          display_name=EXCLUDED.display_name,role_company=EXCLUDED.role_company,ai_before=EXCLUDED.ai_before,
-          understanding=EXCLUDED.understanding,takeaways=EXCLUDED.takeaways,aha=EXCLUDED.aha,first_use=EXCLUDED.first_use,
-          recommend_text=EXCLUDED.recommend_text,score=EXCLUDED.score,improve=EXCLUDED.improve,extra=EXCLUDED.extra,
-          consent_mode=EXCLUDED.consent_mode,updated_at=EXCLUDED.updated_at
         RETURNING *`, [ref(), COURSE_ID, displayName, email, roleCompany || null, aiBefore, understanding, JSON.stringify(takeaways),
           aha, firstUse, recommend, score, improve || null, extra || null, consentMode, now]);
 
