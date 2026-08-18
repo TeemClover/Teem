@@ -3,6 +3,8 @@
    This changes presentation only — never party data, names, logs, or server payloads. */
 
 const STORAGE_KEY = 'mc_xty_language_mode';
+const CHOICE_SEEN_KEY = 'mc_xty_language_choice_seen';
+const PROFILE_KEY = 'mc_xty_profile';
 const VALID_MODES = new Set(['plain', 'xty']);
 const HAS_BROWSER = typeof window !== 'undefined'
   && typeof document !== 'undefined'
@@ -23,11 +25,13 @@ if (ON_XTY_SURFACE) {
   }
 
   installLanguageControl();
+  installLanguageChoiceOnboarding();
 
   window.XTYLanguage = Object.freeze({
     getMode: readMode,
     setMode,
-    apply: () => mode === 'plain' && applyPlainLanguage(document),
+    offerChoice: offerLanguageChoice,
+    apply: () => readMode() === 'plain' && applyPlainLanguage(document),
   });
 }
 
@@ -40,10 +44,38 @@ function readMode() {
   }
 }
 
-function setMode(next) {
-  if (!VALID_MODES.has(next)) return;
+function writeMode(next) {
+  if (!VALID_MODES.has(next)) return false;
   try { localStorage.setItem(STORAGE_KEY, next); } catch {}
+  return true;
+}
+
+function setMode(next) {
+  if (!writeMode(next)) return;
   location.reload();
+}
+
+function markChoiceSeen() {
+  try { localStorage.setItem(CHOICE_SEEN_KEY, '1'); } catch {}
+}
+
+function hasSeenChoice() {
+  try { return localStorage.getItem(CHOICE_SEEN_KEY) === '1'; }
+  catch { return false; }
+}
+
+function localProfile() {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    const value = raw ? JSON.parse(raw) : null;
+    return value && typeof value === 'object' ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function hasAnyCard(profile = localProfile()) {
+  return Array.isArray(profile?.ownedCards) && profile.ownedCards.length > 0;
 }
 
 /* Long / specific phrases first, then vocabulary. The broad replacements
@@ -65,8 +97,21 @@ const TEXT_RULES = Object.freeze([
   [/ANIMAL CARD COLLECTION/gi, 'คอลเลกชันการ์ด'],
   [/Default Animal Avatar/gi, 'รูปตัวแทนเริ่มต้น'],
   [/Default Color/gi, 'สีเริ่มต้น'],
+  [/ตั้งตี้ทำอะไรก็ได้/g, 'สร้างกลุ่มทำอะไรก็ได้'],
   [/ตี้ที่กำลังเล่น/g, 'กลุ่มที่กำลังทำ'],
+  [/ตี้ที่เป็นหัวตี้/g, 'กลุ่มที่คุณดูแล'],
+  [/ตี้ที่เป็นสมาชิก/g, 'กลุ่มที่คุณเข้าร่วม'],
+  [/ตี้ทั้งหมด/g, 'กลุ่มทั้งหมด'],
+  [/ตี้สาธารณะ/g, 'กลุ่มสาธารณะ'],
   [/สร้างตัวแล้วเข้าตี้/g, 'ตั้งชื่อแล้วเข้ากลุ่ม'],
+  [/เข้าตี้ด้วยรหัส/g, 'เข้ากลุ่มด้วยรหัส'],
+  [/เข้าตี้/g, 'เข้ากลุ่ม'],
+  [/ตั้งตี้/g, 'สร้างกลุ่ม'],
+  [/หาตี้/g, 'หากลุ่ม'],
+  [/ยุบตี้/g, 'ปิดกลุ่ม'],
+  [/หัวตี้/g, 'ผู้ดูแล'],
+  [/รหัสตี้/g, 'รหัสกลุ่ม'],
+  [/ชื่อตี้/g, 'ชื่อกลุ่ม'],
   [/ชื่อเรียกในตี้/g, 'ชื่อเรียกในกลุ่ม'],
   [/ชื่อในตี้/g, 'ชื่อในกลุ่ม'],
   [/สมาชิกตี้/g, 'สมาชิกกลุ่ม'],
@@ -223,6 +268,77 @@ function installLanguageControl() {
     button.addEventListener('click', () => {
       if (button.dataset.languageMode === current) return;
       setMode(button.dataset.languageMode);
+    });
+  });
+}
+
+/* The first card is the right moment to teach the world's vocabulary.
+   Before that, a new person gets plain Thai and can simply use the product.
+   After the first reveal, WHITECAT explains that both vocabularies describe
+   the same system. Existing players who already own a card get this once on
+   their next home/profile visit. */
+function installLanguageChoiceOnboarding() {
+  if (hasSeenChoice()) return;
+
+  const revealPath = location.pathname === '/xty/reveal/' || location.pathname === '/xty/reveal';
+  if (revealPath) {
+    const actions = document.getElementById('actions');
+    if (!actions) return;
+    const maybeAfterReveal = () => {
+      if (!actions.hidden && hasAnyCard() && !hasSeenChoice()) {
+        setTimeout(() => offerLanguageChoice(), 650);
+      }
+    };
+    maybeAfterReveal();
+    const observer = new MutationObserver(maybeAfterReveal);
+    observer.observe(actions, { attributes: true, attributeFilter: ['hidden'] });
+    return;
+  }
+
+  const legacyEntry = ['/xty', '/xty/', '/profile', '/profile/'].includes(location.pathname);
+  if (legacyEntry && hasAnyCard()) setTimeout(() => offerLanguageChoice(), 900);
+}
+
+function offerLanguageChoice() {
+  if (hasSeenChoice() || document.getElementById('xtyLanguageChoice')) return;
+
+  const shade = document.createElement('div');
+  shade.id = 'xtyLanguageChoice';
+  shade.setAttribute('data-xty-no-translate', '');
+  shade.style.cssText = 'position:fixed;inset:0;z-index:120;background:rgba(20,24,20,.36);display:flex;align-items:flex-end;justify-content:center;padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));';
+  shade.innerHTML = `
+    <section class="card" role="dialog" aria-modal="true" aria-labelledby="xtyLanguageChoiceTitle"
+      style="width:min(100%,540px);margin:0;background:var(--xty-surface,#fff9e9);box-shadow:0 20px 70px rgba(0,0,0,.24)">
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <img src="/xty/assets/art/avatars/white-cat.webp" alt="XTY WHITECAT" width="82" height="82"
+          style="width:82px;height:82px;object-fit:contain;flex:none">
+        <div style="min-width:0">
+          <span class="label">XTY WHITECAT</span>
+          <h2 class="title" id="xtyLanguageChoiceTitle" style="font-size:22px;margin:2px 0 7px">จากนี้ อยากให้เราเรียกแบบไหน?</h2>
+          <p class="whisper" style="margin:0">ในโลกเดียวกัน บางคนเรียก “กลุ่ม · บันทึก” บางคนเรียก “ตี้ · Commit” เลือกแบบที่สบายใจได้เลย</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px">
+        <button class="btn ghost" type="button" data-pick-language="plain">
+          <b>ไทยทั่วไป</b><br><small>กลุ่ม · ผู้ดูแล · บันทึก</small>
+        </button>
+        <button class="btn ghost" type="button" data-pick-language="xty">
+          <b>XTY</b><br><small>ตี้ · หัวตี้ · Commit</small>
+        </button>
+      </div>
+      <p class="hint" style="margin:11px 0 0;text-align:center">เปลี่ยนกลับได้เสมอที่โปรไฟล์ · ระบบและข้อมูลเหมือนเดิม</p>
+    </section>
+  `;
+  document.body.appendChild(shade);
+
+  shade.querySelectorAll('[data-pick-language]').forEach(button => {
+    button.addEventListener('click', () => {
+      const next = button.dataset.pickLanguage;
+      markChoiceSeen();
+      shade.remove();
+      if (next === readMode()) return;
+      writeMode(next);
+      location.reload();
     });
   });
 }
