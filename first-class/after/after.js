@@ -6,6 +6,7 @@
   const nodes=[...document.querySelectorAll('.node')];
   const xp=document.getElementById('xp');
   const scoreScale=document.getElementById('scoreScale');
+  const XTY_REWARD_KEY='mc_first_class_after_xty_reward_v1';
   let step=0;
   let submitted=false;
 
@@ -17,6 +18,90 @@
   const text=name=>(form.elements[name]?.value||'').trim();
   const checks=name=>[...form.querySelectorAll(`[name="${name}"]:checked`)].map(x=>x.value);
   const escapeHtml=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+  function readRewardState(){
+    try{return JSON.parse(localStorage.getItem(XTY_REWARD_KEY)||'null')}catch{return null}
+  }
+  function writeRewardState(value){
+    try{localStorage.setItem(XTY_REWARD_KEY,JSON.stringify(value))}catch{}
+  }
+  async function cloudRewardState(){
+    try{
+      const response=await fetch('/api/progress',{credentials:'same-origin'});
+      if(!response.ok)return null;
+      const data=await response.json();
+      const raw=data?.progress?.[XTY_REWARD_KEY];
+      if(!raw)return null;
+      return typeof raw==='string'?JSON.parse(raw):raw;
+    }catch{return null}
+  }
+  async function pushRewardMarker(state){
+    try{
+      const response=await fetch('/api/progress',{
+        method:'PUT',credentials:'same-origin',headers:{'content-type':'application/json'},
+        body:JSON.stringify({progress:{[XTY_REWARD_KEY]:JSON.stringify(state)}})
+      });
+      return response.ok;
+    }catch{return false}
+  }
+  async function grantXtyCard(payload,reviewReference){
+    let state=readRewardState()||await cloudRewardState();
+    if(state?.claimed&&state.rewardId){
+      writeRewardState(state);
+      try{
+        const account=await import('/xty/_shared/account.js');
+        await account.syncXtyProfile({recoverParties:false});
+      }catch{}
+      return state;
+    }
+
+    const store=await import('/xty/_shared/store.js');
+    let profile=store.getProfile();
+    if(!profile){
+      profile=store.createProfile({
+        alias:(payload.displayName||'First Class').slice(0,24),
+        avatarId:'orange_cat',
+        avatarFrame:'green'
+      });
+    }
+    const reward=store.drawBrandNewCard();
+    if(!reward?.rewardId)return null;
+
+    state={
+      claimed:true,
+      rewardId:reward.rewardId,
+      reviewReference:reviewReference||'',
+      earnedAt:new Date().toISOString(),
+      source:'first-class-after-taste'
+    };
+    writeRewardState(state);
+
+    let cloudSaved=false;
+    try{
+      const account=await import('/xty/_shared/account.js');
+      const saved=await account.saveCloudProgress(store.getProfile());
+      cloudSaved=!saved?.error;
+    }catch{}
+    const markerSaved=await pushRewardMarker(state);
+    return {...state,cloudSaved:cloudSaved||markerSaved};
+  }
+
+  function showXtyReward(reward){
+    if(!reward?.rewardId||document.getElementById('xtyRewardLoot'))return;
+    const reviewCard=result.querySelector('.review-card');
+    if(!reviewCard)return;
+    const cloudLine=reward.cloudSaved
+      ?'บันทึกลง myClover Progress แล้ว'
+      :'เก็บในเครื่องนี้แล้ว · ถ้า Login myClover ภายหลัง XTY จะ Sync การ์ดขึ้นบัญชีให้';
+    reviewCard.insertAdjacentHTML('beforebegin',`
+      <div id="xtyRewardLoot" style="max-width:540px;margin:18px auto 0;padding:20px;border:1px solid rgba(242,204,125,.55);border-radius:20px;background:linear-gradient(145deg,rgba(16,67,49,.96),rgba(7,30,22,.96));box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center">
+        <div style="font-size:42px;line-height:1">🎴</div>
+        <div style="margin-top:8px;font:800 10px Manrope,sans-serif;letter-spacing:.12em;color:#9af0be">QUEST LOOT</div>
+        <strong style="display:block;margin:5px 0 4px;font-size:24px;color:#fff">XTY CARD ×1</strong>
+        <span style="display:block;color:#bdd0c6;font-size:12px;line-height:1.6">${cloudLine}</span>
+        <a href="/xty/reveal/?r=${encodeURIComponent(reward.rewardId)}" style="display:inline-flex;align-items:center;justify-content:center;min-height:46px;margin-top:14px;padding:0 18px;border-radius:12px;background:#f2cc7d;color:#13291f;text-decoration:none;font-weight:900">เปิดการ์ด →</a>
+      </div>`);
+  }
 
   function show(n){
     step=n;
@@ -98,12 +183,15 @@
 
     try{
       const response=await fetch('/api/first-class-review',{
-        method:'POST',
-        headers:{'content-type':'application/json'},
-        body:JSON.stringify(payload)
+        method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)
       });
       const data=await response.json().catch(()=>({}));
       if(!response.ok||!data.ok)throw new Error(data.message||`บันทึกไม่สำเร็จ (${response.status})`);
+
+      const xtyReward=await grantXtyCard(payload,data.reviewReference).catch(error=>{
+        console.error('XTY reward failed',error);
+        return null;
+      });
 
       const mode=payload.consentMode;
       document.getElementById('cardScore').textContent=`★ ${payload.score}/10`;
@@ -120,10 +208,11 @@
       status.classList.remove('show');
       quests.forEach(item=>item.classList.remove('active'));
       nodes.forEach(node=>{node.classList.remove('now');node.classList.add('done')});
-      xp.textContent='500 XP';
+      xp.textContent=xtyReward?'500 XP · +1 CARD':'500 XP';
       result.classList.add('active');
+      if(xtyReward)showXtyReward(xtyReward);
       const saving=document.getElementById('saving');
-      saving.textContent=`บันทึกแล้ว · ${data.reviewReference||'AFTER TASTE'}`;
+      saving.textContent=`บันทึกแล้ว · ${data.reviewReference||'AFTER TASTE'}${xtyReward?' · XTY CARD +1':''}`;
       window.scrollTo({top:0,behavior:'smooth'});
     }catch(error){
       submitted=false;
