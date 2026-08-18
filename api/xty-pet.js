@@ -68,7 +68,7 @@ function laterDate(a, b) {
 
 async function recentLog(sql, partyId) {
   const [postRows, eventRows] = await Promise.all([
-    sql.query(`SELECT p.seq,p.kind,p.body,p.sent_at,p.retracted,p.pet_id,m.alias FROM xty_posts p LEFT JOIN xty_members m
+    sql.query(`SELECT p.seq,p.kind,p.body,p.sent_at,p.retracted,p.pet_id,p.image_url,m.alias FROM xty_posts p LEFT JOIN xty_members m
       ON m.party_id=p.party_id AND m.user_id=p.user_id WHERE p.party_id=$1 ORDER BY p.seq DESC LIMIT $2`, [partyId, LOG_SLICE]),
     sql.query(`SELECT id,type,data_json,created_at FROM xty_party_events WHERE party_id=$1 ORDER BY id DESC LIMIT $2`, [partyId, LOG_SLICE]),
   ]);
@@ -88,7 +88,7 @@ async function recentLog(sql, partyId) {
   }
   const events = eventRows.reverse().map(event => ({
     seq: `event:${event.id}`, kind: 'event', body: eventLine(event.type, event.data_json),
-    sent_at: event.created_at, retracted: false, alias: 'ระบบตี้', reactions: '', pet_id: null,
+    sent_at: event.created_at, retracted: false, alias: 'ระบบตี้', reactions: '', pet_id: null, image_url: null,
   }));
   return [...posts, ...events]
     .sort((a, b) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime())

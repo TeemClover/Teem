@@ -38,9 +38,11 @@ export function startOfPartyDay(value = new Date(), timezone = XTY_TIMEZONE) {
 
 export function scheduledEndAt(startedAt, durationDays = XTY_DEFAULT_DURATION_DAYS, timezone = XTY_TIMEZONE) {
   const days = Math.max(1, Math.floor(Number(durationDays) || XTY_DEFAULT_DURATION_DAYS));
-  /* Quest duration is elapsed time, not calendar labels. A 7-day Quest
-     opened at 13:07 can finish no earlier than 13:07 seven days later. */
-  return new Date(validDate(startedAt).getTime() + days * 86400000);
+  /* A Quest is counted in party days, not in elapsed hours, and every
+     boundary in XTY is the same midnight: a 7-day Quest opened at any time
+     on day 1 ends at midnight after day 7. Players can then answer "which
+     day are we on" by looking at a calendar instead of at a clock. */
+  return new Date(startOfPartyDay(startedAt, timezone).getTime() + days * 86400000);
 }
 
 export function partyDayNumber(startedAt, at = new Date(), timezone = XTY_TIMEZONE) {
@@ -66,9 +68,11 @@ export function completionGate(party, at = new Date()) {
   const strictEnd = scheduledEndAt(startedAt, durationDays, party?.timezone || XTY_TIMEZONE);
   const storedValue = party?.scheduled_end_at || party?.scheduledEndAt;
   const storedEnd = storedValue ? validDate(storedValue, strictEnd) : strictEnd;
-  /* Older parties may have a midnight-based scheduled_end_at. Never let
-     that legacy timestamp shorten the duration selected by the player. */
-  const end = new Date(Math.max(strictEnd.getTime(), storedEnd.getTime()));
+  /* Parties created while the rule was elapsed-hours carry a later
+     scheduled_end_at than the midnight rule produces. Honour the earlier of
+     the two so nobody's running Quest gets pushed further away by the
+     change; new parties are on the midnight rule from creation. */
+  const end = new Date(Math.min(strictEnd.getTime(), storedEnd.getTime()));
   const day = Math.min(durationDays, partyDayNumber(
     startedAt,
     now,
