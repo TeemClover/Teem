@@ -65,9 +65,15 @@ function publicCard(row) {
     reviewReference: row.review_reference,
     displayName: named ? row.display_name : 'ผู้เรียน AI ใส่ซอส · First Class รุ่นแรก',
     roleCompany: named ? row.role_company : null,
+    aiBefore: row.ai_before,
+    understanding: row.understanding,
+    takeaways: row.takeaways,
+    aha: row.aha,
+    firstUse: row.first_use,
     recommend: row.recommend_text,
     score: row.score,
     consentMode: row.consent_mode,
+    createdAt: row.created_at,
   };
 }
 
@@ -124,6 +130,11 @@ export async function handleFirstClassReview(req, res) {
     }
 
     if (req.method === 'GET') {
+      const wantsPublic = String(req.query?.public || '') === '1';
+      if (wantsPublic) {
+        const rows = await sql.query("SELECT * FROM first_class_reviews WHERE course_id=$1 AND consent_mode IN ('named','anonymous') ORDER BY created_at DESC LIMIT 500", [COURSE_ID]);
+        return sendJson(res, { ok: true, reviews: rows.map(publicCard) });
+      }
       if (!authorized(req)) return sendJson(res, { ok: false, message: 'ไม่มีสิทธิ์เข้าถึง' }, 401);
       const rows = await sql.query('SELECT * FROM first_class_reviews WHERE course_id=$1 ORDER BY created_at DESC LIMIT 500', [COURSE_ID]);
       return sendJson(res, { ok: true, reviews: rows });
