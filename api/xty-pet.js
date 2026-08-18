@@ -161,6 +161,12 @@ async function appendBubble(sql, party, text, wakeHour, now = new Date()) {
   return Number(rows[0]?.seq || 0);
 }
 
+async function restoreClaimedWake(sql, party, claimedAt) {
+  const previousWake = party.pet_last_wake ? new Date(party.pet_last_wake) : null;
+  await sql.query(`UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2 AND pet_last_wake=$3`,
+    [previousWake, party.id, claimedAt]);
+}
+
 async function memberForRequest(req, sql, partyId) {
   const account = await currentUser(req, sql);
   if (account) {
@@ -201,26 +207,31 @@ async function directReply(req, res, sql) {
   const already = await sql.query(`SELECT 1 FROM xty_posts WHERE party_id=$1 AND kind='pet'
     AND retracted=FALSE AND sent_at>$2 LIMIT 1`, [party.id, latest.sent_at]);
   if (already[0]) return sendJson(res, { ok: true, skipped: 'ALREADY_ANSWERED' });
+  if (!aiConfigured()) {
+    return sendJson(res, { ok: true, skipped: 'AI_UNAVAILABLE', behavior: 'QUIET', spoke: false, bubbles: 0 });
+  }
 
   const now = new Date();
   const history = await recentLog(sql, party.id);
   const since = new Date(new Date(latest.sent_at).getTime() - 1);
   const context = await contextFor(sql, party.id, since, now, history);
-  let decision = null;
-  if (aiConfigured()) {
-    decision = await readAndRespond({
-      party, context, history, since, hour: wakeWindow(now).hour,
-      trigger: 'direct', directText: latest.body,
-    });
+  const decision = await readAndRespond({
+    party, context, history, since, hour: wakeWindow(now).hour,
+    trigger: 'direct', directText: latest.body,
+  });
+  if (!decision) {
+    return sendJson(res, { ok: true, skipped: 'AI_PROVIDER_FAILURE', behavior: 'QUIET', spoke: false, bubbles: 0 });
   }
-  const bubbles = Array.isArray(decision?.bubbles) ? decision.bubbles.slice(0, 3) : [];
+
+  const bubbles = Array.isArray(decision.bubbles) ? decision.bubbles.slice(0, 3) : [];
   let written = 0;
   for (const line of bubbles) if (await appendBubble(sql, party, line, null, now)) written += 1;
-  /* A direct conversation is itself a wake/read. Do not make the scheduler
-     immediately re-read the same message and manufacture a second response. */
+  /* A successful direct brain turn is itself a wake/read — even when the
+     model deliberately chose QUIET. Provider/config failures above do not
+     consume the wake, so the same activity can still be read later. */
   await sql.query('UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2', [now, party.id]);
   return sendJson(res, {
-    ok: true, behavior: decision?.behavior || 'QUIET', spoke: written > 0, bubbles: written,
+    ok: true, behavior: decision.behavior || 'QUIET', spoke: written > 0, bubbles: written,
   });
 }
 
@@ -285,7 +296,7 @@ export default async function handler(req, res) {
           AND (pet_last_wake IS NULL OR pet_last_wake < $1) ORDER BY updated_at LIMIT 250`, [wake.start]);
 
     let claimed = 0; let read = 0; let spoke = 0; let bubbles = 0;
-    let quiet = 0; let byAi = 0; let providerFailures = 0;
+    let quiet = 0; let byAi = 0; let providerFailures = 0; let deferred = 0;
 
     for (const party of due) {
       const marked = force
@@ -312,6 +323,16 @@ export default async function handler(req, res) {
         if (decision) byAi += 1; else providerFailures += 1;
       }
 
+      /* Claim-before-read prevents duplicate cron workers, but a missing AI
+         configuration or provider outage must not permanently consume human
+         activity. Roll this claim back so the next wake can retry it. */
+      if (!force && (!aiConfigured() || !hasPersona(party.pet_id) || !decision)) {
+        await restoreClaimedWake(sql, party, now);
+        deferred += 1;
+        quiet += 1;
+        continue;
+      }
+
       let lines = Array.isArray(decision?.bubbles) ? decision.bubbles.slice(0, 3) : [];
       if (force && !lines.length) lines = manualFallback(party);
       if (!lines.length) {
@@ -325,7 +346,7 @@ export default async function handler(req, res) {
 
     return sendJson(res, {
       ok: true, wakeHour: wake.hour, ai: aiConfigured(), force,
-      due: due.length, claimed, read, byAi, providerFailures, quiet, spoke, bubbles,
+      due: due.length, claimed, read, byAi, providerFailures, deferred, quiet, spoke, bubbles,
     });
   } catch (error) {
     console.error('XTY pet wake failed', error);
