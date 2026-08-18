@@ -1,3 +1,5 @@
+import './language.js';
+
 /* XTY animal species.
 
    Two lists, deliberately:
