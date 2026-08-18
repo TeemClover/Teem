@@ -1,6 +1,6 @@
-/* Xircle v6.3 runtime polish
+/* Xircle v6.4 runtime polish
    Invariants: v5 artwork is content, controls are immediate;
-   RoutineX keeps one persistent diagram and only changes the active node. */
+   RoutineX keeps one persistent diagram and changes meaning with each phase. */
 
 .xp-story .xp-art{
   background:
@@ -84,8 +84,100 @@
 .xp-routinex-story .xp-routine-map[data-active="F"] .f,
 .xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-node{transition:none!important}
 
-/* Final RoutineX payoff: after all five parts, replace the teaching map with
-   the finished RoutineX artwork and open the optional product window. */
+/* Connection layer: each phase lights the line between the behavior system and
+   the active support layer. The LOOP scene turns those pieces into one cycle. */
+.xp-routinex-story .xp-routine-links{
+  position:absolute;
+  z-index:2;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  pointer-events:none;
+}
+.xp-routinex-story .xp-routine-link,
+.xp-routinex-story .xp-routine-loop-track,
+.xp-routinex-story .xp-routine-loop-flow{
+  fill:none;
+  vector-effect:non-scaling-stroke;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.xp-routinex-story .xp-routine-link{
+  --rx-stroke:rgba(123,215,232,.75);
+  stroke:var(--rx-stroke);
+  stroke-width:1.05;
+  stroke-dasharray:8 7;
+  opacity:.13;
+  filter:drop-shadow(0 0 5px rgba(123,215,232,.12));
+}
+.xp-routinex-story .xp-routine-link.c{--rx-stroke:rgba(143,220,175,.88)}
+.xp-routinex-story .xp-routine-link.f{--rx-stroke:rgba(239,164,110,.88)}
+.xp-routinex-story .xp-routine-loop-track{
+  stroke:rgba(245,240,230,.085);
+  stroke-width:.75;
+  opacity:.9;
+}
+.xp-routinex-story .xp-routine-loop-flow{
+  stroke:rgba(230,196,131,.88);
+  stroke-width:1.1;
+  stroke-dasharray:10 7;
+  opacity:0;
+  filter:drop-shadow(0 0 7px rgba(230,196,131,.2));
+}
+.xp-routinex-story .xp-routine-map[data-active="A"] .xp-routine-link.a,
+.xp-routinex-story .xp-routine-map[data-active="B"] .xp-routine-link.b,
+.xp-routinex-story .xp-routine-map[data-active="C"] .xp-routine-link.c,
+.xp-routinex-story .xp-routine-map[data-active="D"] .xp-routine-link.d,
+.xp-routinex-story .xp-routine-map[data-active="F"] .xp-routine-link.f{
+  opacity:.96;
+  animation:xpRoutineLinkFlow 1.55s linear infinite;
+}
+.xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-link{
+  opacity:.3;
+  animation:xpRoutineLinkFlow 4.8s linear infinite;
+}
+.xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-loop-flow{
+  opacity:.22;
+  animation:xpRoutineLoopFlow 8s linear infinite;
+}
+.xp-routinex-story .xp-routine-map[data-active="LOOP"] .xp-routine-link{
+  opacity:.76;
+  animation:xpRoutineLinkFlow 1.9s linear infinite;
+}
+.xp-routinex-story .xp-routine-map[data-active="LOOP"] .xp-routine-loop-flow{
+  opacity:.96;
+  animation:xpRoutineLoopFlow 3.4s linear infinite;
+}
+.xp-routinex-story .xp-routine-map[data-active="LOOP"] .xp-routine-node{
+  opacity:1!important;
+  transform:scale(1.035)!important;
+  border-color:rgba(123,215,232,.48);
+  background:linear-gradient(145deg,rgba(123,215,232,.1),rgba(255,255,255,.04));
+  box-shadow:0 18px 52px rgba(0,0,0,.34),0 0 48px rgba(123,215,232,.1);
+}
+.xp-routinex-story .xp-routine-map[data-active="LOOP"] .xp-routine-node.c{
+  border-color:rgba(143,220,175,.72);
+  background:linear-gradient(145deg,rgba(143,220,175,.17),rgba(255,255,255,.045));
+  box-shadow:0 18px 52px rgba(0,0,0,.34),0 0 62px rgba(143,220,175,.16);
+}
+.xp-routinex-story .xp-routine-map[data-active="LOOP"] .xp-routine-node.f{
+  border-color:rgba(239,164,110,.68);
+  background:linear-gradient(145deg,rgba(239,164,110,.14),rgba(255,255,255,.045));
+  box-shadow:0 18px 52px rgba(0,0,0,.34),0 0 58px rgba(239,164,110,.14);
+}
+.xp-routinex-story .xp-routine-map[data-active="LOOP"] .xp-routine-core{
+  animation:xpRoutineCorePulse 2.7s ease-in-out infinite;
+}
+@keyframes xpRoutineLinkFlow{to{stroke-dashoffset:-30}}
+@keyframes xpRoutineLoopFlow{to{stroke-dashoffset:-100}}
+@keyframes xpRoutineCorePulse{
+  0%,100%{box-shadow:0 22px 70px rgba(0,0,0,.35),0 0 60px rgba(123,215,232,.07)}
+  50%{box-shadow:0 22px 70px rgba(0,0,0,.35),0 0 88px rgba(143,220,175,.18)}
+}
+
+/* Final RoutineX payoff: after the system-summary scene, replace the teaching
+   diagram with the finished RoutineX artwork and open the optional product window. */
 .xp-routinex-story .xp-routine-summary-image{
   display:none!important;
   width:100%!important;
@@ -128,10 +220,10 @@
   }
 
   /* RoutineX phone: the diagram and copy own separate viewport rectangles.
-     The visual is deliberately large again; the CTA is pinned to the same
-     lower position on every step no matter how many lines the copy uses. */
+     Keep the map visually large, but inset every node enough that active circles
+     never get clipped by the rounded artwork frame. */
   .xp-routinex-story{
-    --rx-mobile-art-h:clamp(245px,38svh,330px);
+    --rx-mobile-art-h:clamp(260px,39svh,345px);
   }
   .xp-routinex-story .xp-routine-persistent{
     position:absolute!important;
@@ -168,7 +260,7 @@
     max-width:none!important;
     min-height:0!important;
     margin:0!important;
-    padding:4px 0 6px!important;
+    padding:5px 0 6px!important;
     display:flex!important;
     flex-direction:column!important;
     justify-content:flex-start!important;
@@ -178,39 +270,57 @@
     overscroll-behavior:contain;
   }
   .xp-routinex-story .xp-routine-spacer{display:none!important}
-  .xp-routinex-story .xp-routine-map{width:min(84vw,330px)!important}
+  .xp-routinex-story .xp-routine-map{width:min(86vw,340px)!important}
+  .xp-routinex-story .xp-routine-node{width:24%!important}
+  .xp-routinex-story .xp-routine-node.a{left:38%!important;top:3.5%!important}
+  .xp-routinex-story .xp-routine-node.b{right:3%!important;top:24%!important}
+  .xp-routinex-story .xp-routine-node.c{right:12%!important;bottom:5.5%!important;top:auto!important}
+  .xp-routinex-story .xp-routine-node.d{left:12%!important;right:auto!important;bottom:5.5%!important}
+  .xp-routinex-story .xp-routine-node.f{left:3%!important;top:24%!important}
+  .xp-routinex-story .xp-routine-map[data-active="A"] .a,
+  .xp-routinex-story .xp-routine-map[data-active="B"] .b,
+  .xp-routinex-story .xp-routine-map[data-active="C"] .c,
+  .xp-routinex-story .xp-routine-map[data-active="D"] .d,
+  .xp-routinex-story .xp-routine-map[data-active="F"] .f{transform:scale(1.045)!important}
+  .xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-node{transform:scale(1.025)!important}
+  .xp-routinex-story .xp-routine-map[data-active="LOOP"] .xp-routine-node{transform:scale(1.025)!important}
   .xp-routinex-story .xp-title,
   .xp-routinex-story .xp-title.sm{
     max-width:100%!important;
-    font-size:clamp(32px,8.6vw,42px)!important;
+    font-size:clamp(36px,9.8vw,48px)!important;
     line-height:1.035!important;
-    letter-spacing:-.03em!important;
+    letter-spacing:-.032em!important;
   }
   .xp-routinex-story .xp-routine-term{
     flex-wrap:wrap;
     row-gap:3px;
     margin-bottom:7px;
   }
-  .xp-routinex-story .xp-routine-term b{font-size:27px!important}
-  .xp-routinex-story .xp-routine-term span{font-size:13px!important;line-height:1.25!important}
+  .xp-routinex-story .xp-routine-term b{font-size:29px!important}
+  .xp-routinex-story .xp-routine-term span{font-size:14px!important;line-height:1.25!important}
   .xp-routinex-story .xp-lede{
-    margin-top:10px;
-    font-size:15px;
-    line-height:1.46;
+    margin-top:11px;
+    font-size:16px;
+    line-height:1.48;
   }
-  .xp-routinex-story .xp-routine-support{margin-top:10px;font-size:12px;line-height:1.45}
+  .xp-routinex-story .xp-routine-support{margin-top:10px;font-size:12.5px;line-height:1.47}
   .xp-routinex-story .xp-routine-sequence{margin-bottom:4px}
   .xp-routinex-story .xp-actions{
+    position:sticky;
+    bottom:0;
+    z-index:2;
     margin-top:auto!important;
-    padding-top:14px;
+    padding-top:18px;
+    padding-bottom:2px;
     gap:8px;
     flex:0 0 auto;
+    background:linear-gradient(180deg,rgba(6,17,14,0),rgba(6,17,14,.92) 34%,#06110e 62%);
   }
   .xp-routinex-story .xp-actions .xp-btn{
     flex:1 1 0;
     min-width:0;
   }
-  .xp-routinex-story .xp-btn{min-height:48px;padding:10px 16px;font-size:14px}
+  .xp-routinex-story .xp-btn{min-height:50px;padding:10px 16px;font-size:14.5px}
   .xp-routinex-story .xp-mini{margin-top:7px;font-size:9px;line-height:1.4;flex:0 0 auto}
   .xp-routinex-story .xp-routine-map[data-active="SUMMARY"] + .xp-routine-summary-image{
     width:100%!important;
@@ -221,12 +331,18 @@
 }
 
 @media(max-height:680px) and (max-width:780px){
-  .xp-routinex-story{--rx-mobile-art-h:clamp(195px,31svh,230px)}
-  .xp-routinex-story .xp-routine-map{width:min(72vw,260px)!important}
+  .xp-routinex-story{--rx-mobile-art-h:clamp(205px,31svh,240px)}
+  .xp-routinex-story .xp-routine-map{width:min(74vw,270px)!important}
   .xp-routinex-story .xp-title,
-  .xp-routinex-story .xp-title.sm{font-size:clamp(28px,7.6vw,35px)!important;line-height:1.035!important}
-  .xp-routinex-story .xp-lede{font-size:13.5px;line-height:1.4;margin-top:7px}
-  .xp-routinex-story .xp-routine-support{margin-top:7px;font-size:10.5px}
-  .xp-routinex-story .xp-actions{padding-top:8px}
-  .xp-routinex-story .xp-btn{min-height:42px;padding:8px 13px;font-size:12.5px}
+  .xp-routinex-story .xp-title.sm{font-size:clamp(30px,8.3vw,38px)!important;line-height:1.035!important}
+  .xp-routinex-story .xp-lede{font-size:14px;line-height:1.42;margin-top:7px}
+  .xp-routinex-story .xp-routine-support{margin-top:7px;font-size:10.8px}
+  .xp-routinex-story .xp-actions{padding-top:9px}
+  .xp-routinex-story .xp-btn{min-height:43px;padding:8px 13px;font-size:12.5px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .xp-routinex-story .xp-routine-link,
+  .xp-routinex-story .xp-routine-loop-flow,
+  .xp-routinex-story .xp-routine-core{animation:none!important}
 }
