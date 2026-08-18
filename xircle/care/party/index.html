@@ -17,7 +17,7 @@
 <main class="xp-page"><div class="xp-shell">
   <section class="xp-hero">
     <div>
-      <p class="xp-kicker" id="partyKicker">เส้นทาง 5/5 · แมวขาว · XTY</p>
+      <p class="xp-kicker" id="partyKicker">แมวขาว · XTY</p>
       <h1 class="xp-page-title" id="partyTitle">28 วัน<br>เลือก 1 อย่าง<br>ทำด้วยกัน</h1>
       <p class="xp-lede" id="partyLede">จากสิ่งที่ Xircle ช่วยให้เห็น<br>สู่สิ่งที่คน <strong>ทำต่อด้วยกันจริง ๆ</strong></p>
       <div class="xp-actions" id="partyActions"><a class="xp-btn gold" href="/xty/new/?template=xircle_xvisor">เลือกสิ่งที่จะทำ แล้วเปิดตี้ →</a><a class="xp-btn ghost" href="/xty/join/">มีรหัสตี้ · เข้าตี้</a></div>
@@ -44,13 +44,13 @@
   var title=document.getElementById('partyTitle'),lede=document.getElementById('partyLede'),actions=document.getElementById('partyActions'),k=document.getElementById('partyKicker'),bottom=document.getElementById('bottomAction');
   if(window.XState){XState.setLocal('whiteCatIntroSeen',true);XState.renderProgressNav&&XState.renderProgressNav();}
   if(h){
-    k.textContent='เส้นทาง 5/5 · คำชวน · ตี้ '+h.partyCode;
+    k.textContent='คำชวน · ตี้ '+h.partyCode;
     title.innerHTML='มีคนชวนคุณ<br>ทำ 1 อย่างไปด้วยกัน';
     lede.innerHTML='28 วัน · ไม่ต้องทำคนเดียว<br><strong>จะเข้าตี้นี้ หรือเปิดตี้ของตัวเองก็ได้</strong>';
     actions.innerHTML='<a class="xp-btn gold" href="/xty/join/?c='+encodeURIComponent(h.partyCode)+'">เข้าตี้ '+h.partyCode+' →</a><a class="xp-btn ghost" href="/xty/new/?template=xircle_xvisor">เปิดตี้ของฉันเอง</a>';
     bottom.href='/xty/join/?c='+encodeURIComponent(h.partyCode);bottom.textContent='เข้าตี้ '+h.partyCode+' →';
   }else{
-    k.textContent='เส้นทาง 5/5 · แมวขาว · XTY';
+    k.textContent='แมวขาว · XTY';
     lede.innerHTML='เปิดตี้ของตัวเองได้เลย<br><strong>หรือถ้ามีรหัสตี้อยู่แล้ว ก็เลือกเข้าตี้ได้</strong>';
     actions.innerHTML='<a class="xp-btn gold" href="/xty/new/?template=xircle_xvisor">เลือกสิ่งที่จะทำ แล้วเปิดตี้ →</a><a class="xp-btn ghost" href="/xty/join/">มีรหัสตี้ · เข้าตี้</a>';
   }

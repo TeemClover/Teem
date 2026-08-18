@@ -127,11 +127,11 @@
     object-fit:contain!important;
   }
 
-  /* RoutineX phone: do not rely on scene-grid row sizing. Safari could collapse
-     that row and let copy overlap the absolute persistent diagram. The diagram
-     and copy now own two explicit, non-overlapping rectangles of the viewport. */
+  /* RoutineX phone: the diagram and copy own separate viewport rectangles.
+     The visual is deliberately large again; the CTA is pinned to the same
+     lower position on every step no matter how many lines the copy uses. */
   .xp-routinex-story{
-    --rx-mobile-art-h:clamp(210px,31dvh,270px);
+    --rx-mobile-art-h:clamp(245px,38svh,330px);
   }
   .xp-routinex-story .xp-routine-persistent{
     position:absolute!important;
@@ -162,8 +162,8 @@
     z-index:5!important;
     left:12px!important;
     right:12px!important;
-    top:calc(var(--rx-mobile-art-h) + 14px)!important;
-    bottom:max(8px,env(safe-area-inset-bottom))!important;
+    top:calc(var(--rx-mobile-art-h) + 12px)!important;
+    bottom:max(10px,env(safe-area-inset-bottom))!important;
     width:auto!important;
     max-width:none!important;
     min-height:0!important;
@@ -178,31 +178,40 @@
     overscroll-behavior:contain;
   }
   .xp-routinex-story .xp-routine-spacer{display:none!important}
-  .xp-routinex-story .xp-routine-map{width:min(72vw,278px)!important}
+  .xp-routinex-story .xp-routine-map{width:min(84vw,330px)!important}
   .xp-routinex-story .xp-title,
   .xp-routinex-story .xp-title.sm{
     max-width:100%!important;
-    font-size:clamp(28px,7.5vw,36px)!important;
-    line-height:1.05!important;
-    letter-spacing:-.025em!important;
+    font-size:clamp(32px,8.6vw,42px)!important;
+    line-height:1.035!important;
+    letter-spacing:-.03em!important;
   }
   .xp-routinex-story .xp-routine-term{
     flex-wrap:wrap;
     row-gap:3px;
     margin-bottom:7px;
   }
-  .xp-routinex-story .xp-routine-term b{font-size:24px!important}
-  .xp-routinex-story .xp-routine-term span{font-size:12px!important;line-height:1.25!important}
+  .xp-routinex-story .xp-routine-term b{font-size:27px!important}
+  .xp-routinex-story .xp-routine-term span{font-size:13px!important;line-height:1.25!important}
   .xp-routinex-story .xp-lede{
-    margin-top:9px;
-    font-size:14px;
-    line-height:1.43;
+    margin-top:10px;
+    font-size:15px;
+    line-height:1.46;
   }
-  .xp-routinex-story .xp-routine-support{margin-top:9px;font-size:11px;line-height:1.42}
-  .xp-routinex-story .xp-routine-sequence{margin-bottom:3px}
-  .xp-routinex-story .xp-actions{margin-top:11px;gap:7px}
-  .xp-routinex-story .xp-btn{min-height:44px;padding:9px 15px;font-size:13px}
-  .xp-routinex-story .xp-mini{margin-top:7px;font-size:9px;line-height:1.4}
+  .xp-routinex-story .xp-routine-support{margin-top:10px;font-size:12px;line-height:1.45}
+  .xp-routinex-story .xp-routine-sequence{margin-bottom:4px}
+  .xp-routinex-story .xp-actions{
+    margin-top:auto!important;
+    padding-top:14px;
+    gap:8px;
+    flex:0 0 auto;
+  }
+  .xp-routinex-story .xp-actions .xp-btn{
+    flex:1 1 0;
+    min-width:0;
+  }
+  .xp-routinex-story .xp-btn{min-height:48px;padding:10px 16px;font-size:14px}
+  .xp-routinex-story .xp-mini{margin-top:7px;font-size:9px;line-height:1.4;flex:0 0 auto}
   .xp-routinex-story .xp-routine-map[data-active="SUMMARY"] + .xp-routine-summary-image{
     width:100%!important;
     height:100%!important;
@@ -212,12 +221,12 @@
 }
 
 @media(max-height:680px) and (max-width:780px){
-  .xp-routinex-story{--rx-mobile-art-h:clamp(175px,27dvh,210px)}
-  .xp-routinex-story .xp-routine-map{width:min(62vw,230px)!important}
+  .xp-routinex-story{--rx-mobile-art-h:clamp(195px,31svh,230px)}
+  .xp-routinex-story .xp-routine-map{width:min(72vw,260px)!important}
   .xp-routinex-story .xp-title,
-  .xp-routinex-story .xp-title.sm{font-size:clamp(25px,6.8vw,31px)!important;line-height:1.04!important}
-  .xp-routinex-story .xp-lede{font-size:12.5px;line-height:1.38;margin-top:6px}
-  .xp-routinex-story .xp-routine-support{margin-top:6px;font-size:10px}
-  .xp-routinex-story .xp-actions{margin-top:7px}
-  .xp-routinex-story .xp-btn{min-height:40px;padding:8px 13px;font-size:12px}
+  .xp-routinex-story .xp-title.sm{font-size:clamp(28px,7.6vw,35px)!important;line-height:1.035!important}
+  .xp-routinex-story .xp-lede{font-size:13.5px;line-height:1.4;margin-top:7px}
+  .xp-routinex-story .xp-routine-support{margin-top:7px;font-size:10.5px}
+  .xp-routinex-story .xp-actions{padding-top:8px}
+  .xp-routinex-story .xp-btn{min-height:42px;padding:8px 13px;font-size:12.5px}
 }
