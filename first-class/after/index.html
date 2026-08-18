@@ -10,155 +10,98 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{--deep:#071e16;--deep2:#0c3024;--ink:#10291f;--paper:#fbf8ef;--cream:#f3ead9;--green:#2abf79;--gold:#d8ae59;--orange:#ef7f38;--muted:#728079;--line:rgba(16,41,31,.13);--shadow:0 28px 80px rgba(0,0,0,.28)}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:"IBM Plex Sans Thai",system-ui,sans-serif;background:radial-gradient(900px 520px at 50% -8%,#17553c 0,transparent 70%),linear-gradient(180deg,var(--deep2),var(--deep));color:#fff;-webkit-font-smoothing:antialiased}button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.5}a{color:inherit}.shell{width:min(100% - 24px,720px);margin:auto;padding:16px 0 56px}.hud{position:sticky;top:10px;z-index:20;display:flex;align-items:center;gap:12px;padding:10px 13px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:rgba(4,19,14,.78);backdrop-filter:blur(14px);box-shadow:0 10px 30px rgba(0,0,0,.18)}.brand{display:flex;align-items:center;gap:8px;text-decoration:none;font:800 13px Manrope,sans-serif;white-space:nowrap}.brand img{width:24px;height:24px;border-radius:7px}.brand b{color:#8cf0ba}.track{display:flex;align-items:center;gap:5px;flex:1;justify-content:center}.node{width:9px;height:9px;border-radius:50%;background:#29483b;border:1px solid #466456;transition:.25s}.node.done{background:var(--gold);border-color:#ffe09a;box-shadow:0 0 13px rgba(216,174,89,.55)}.node.now{background:var(--green);border-color:#a7ffd0;box-shadow:0 0 14px rgba(42,191,121,.55);transform:scale(1.15)}.xp{font:800 10px Manrope,sans-serif;letter-spacing:.08em;color:#b7c9bf;white-space:nowrap}.intro{text-align:center;padding:48px 12px 28px}.eyebrow{display:inline-flex;gap:8px;align-items:center;font:800 10px Manrope,sans-serif;letter-spacing:.12em;color:#a4f2c5}.eyebrow:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(42,191,121,.12)}.intro h1{margin:12px 0 9px;font:800 clamp(36px,9vw,64px)/.96 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.055em}.intro h1 em{display:block;font-style:normal;color:#f2cc7d}.intro p{max-width:520px;margin:0 auto;color:#bfd0c7;font-size:15px;line-height:1.75}.start{margin-top:22px;min-height:52px;padding:0 22px;border:0;border-radius:13px;background:var(--gold);color:#11251c;font-weight:900;box-shadow:0 10px 30px rgba(216,174,89,.22)}.fine{display:block;margin-top:9px;color:#81978b;font-size:11px}.quest{display:none;background:var(--paper);color:var(--ink);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.12)}.quest.active{display:block;animation:enter .28s ease}@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}.qtop{padding:20px 22px 18px;background:linear-gradient(145deg,#0a2b20,#104331);color:#fff}.qmeta{font:800 9px Manrope,sans-serif;letter-spacing:.12em;color:#83e1ad}.qtop h2{margin:7px 0 4px;font-size:25px;line-height:1.25}.qtop p{margin:0;color:#bed1c7;font-size:13px;line-height:1.6}.qbody{padding:22px}.question{margin:0 0 20px}.question:last-child{margin-bottom:0}.question>label,.legend{display:block;font-weight:800;font-size:14px;margin-bottom:9px}.hint{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:400}.choices{display:grid;gap:8px}.choices.cols{grid-template-columns:repeat(2,minmax(0,1fr))}.choice{position:relative}.choice input{position:absolute;opacity:0;pointer-events:none}.choice span{display:flex;min-height:48px;align-items:center;justify-content:center;text-align:center;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:12px;font-weight:700;transition:.16s}.choice input:checked+span{border-color:#178551;background:#e9f8ef;color:#0b6038;box-shadow:inset 0 0 0 1px #178551}.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.scale.ten{grid-template-columns:repeat(10,1fr)}.scale .choice span{min-height:43px;padding:5px;font-family:Manrope,sans-serif}.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{position:relative}.chip input{position:absolute;opacity:0}.chip span{display:block;padding:9px 11px;border:1px solid var(--line);background:#fff;border-radius:999px;font-size:11px;font-weight:700}.chip input:checked+span{background:#e7f8ee;border-color:#21a866;color:#0b6b3d}textarea,input[type=text],input[type=email]{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:12px 13px;color:var(--ink);outline:none}textarea{min-height:95px;resize:vertical;line-height:1.65}textarea:focus,input:focus{border-color:#24925e;box-shadow:0 0 0 3px rgba(36,146,94,.1)}.counter{text-align:right;color:#94a098;font-size:10px;margin-top:4px}.qnav{display:flex;justify-content:space-between;gap:9px;padding:15px 22px 20px;border-top:1px solid var(--line);background:#fff}.qnav button{min-height:46px;border-radius:12px;padding:0 16px;font-weight:800}.back{border:1px solid var(--line);background:#fff;color:#5d6963}.next{margin-left:auto;border:0;background:var(--ink);color:#fff}.next.gold{background:var(--orange)}.toast{display:none;margin:0 22px 14px;padding:10px 12px;border-radius:10px;background:#fff0e8;color:#9c4415;font-size:12px;font-weight:700}.toast.show{display:block}.loot-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.loot{position:relative}.loot input{position:absolute;opacity:0}.loot span{display:block;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;min-height:74px}.loot b{display:block;font-size:12px}.loot small{display:block;color:var(--muted);font-size:10px;line-height:1.45;margin-top:3px}.loot input:checked+span{border-color:#25945f;background:#eaf9f0;box-shadow:inset 0 0 0 1px #25945f}.consent{display:grid;gap:8px}.consent .choice span{justify-content:flex-start;text-align:left;line-height:1.5;padding:11px 13px}.identity{display:grid;grid-template-columns:1fr 1fr;gap:10px}.privacy{margin-top:12px;padding:10px 12px;border-radius:11px;background:#f1f3ef;color:#66736c;font-size:10.5px;line-height:1.6}.result{display:none;text-align:center}.result.active{display:block;animation:enter .35s ease}.clear{padding:40px 14px 20px}.clear .spark{font-size:48px}.clear small{font:800 10px Manrope,sans-serif;letter-spacing:.14em;color:#98e8ba}.clear h2{font:800 clamp(35px,8vw,54px)/1 Manrope,"IBM Plex Sans Thai",sans-serif;margin:8px 0 8px}.clear p{margin:0;color:#bdd0c6}.review-card{margin:18px auto 0;max-width:540px;text-align:left;background:linear-gradient(145deg,#fffaf0,#f6ead3);color:#132a20;border-radius:22px;padding:22px;border:1px solid #e7cc93;box-shadow:0 22px 70px rgba(0,0,0,.25);position:relative;overflow:hidden}.review-card:after{content:"FIRST CLASS · 2026";position:absolute;right:-25px;bottom:14px;transform:rotate(-90deg);font:800 8px Manrope,sans-serif;letter-spacing:.12em;color:#b49a69}.card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.card-top b{font:800 10px Manrope,sans-serif;letter-spacing:.1em;color:#136b43}.score{font:800 12px Manrope,sans-serif;color:#9a6a12}.quote{font-size:19px;line-height:1.55;font-weight:700;margin:18px 0 16px}.who{font-size:12px;color:#59675f}.who strong{color:#172d23}.card-note{margin-top:12px;padding-top:10px;border-top:1px solid rgba(16,41,31,.1);font-size:9px;color:#8a918c}.result-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:18px}.result-actions a{display:inline-flex;min-height:46px;align-items:center;padding:0 15px;border-radius:12px;text-decoration:none;font-size:12px;font-weight:800;border:1px solid rgba(255,255,255,.16)}.result-actions .discord{background:#fff;color:#13291f}.result-actions .home{color:#d8e5dd}.screen-note{font-size:11px;color:#789084;margin-top:10px}.hidden-pot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important}.saving{display:none;margin-top:10px;color:#f2cc7d;font-size:12px}.saving.show{display:block}
-    @media(max-width:620px){.shell{width:min(100% - 16px,720px)}.hud{top:6px}.brand span{display:none}.intro{padding-top:36px}.quest{border-radius:20px}.qbody{padding:18px}.qtop{padding:18px}.qnav{padding:13px 18px 17px}.choices.cols,.identity,.loot-grid{grid-template-columns:1fr}.scale.ten{grid-template-columns:repeat(5,1fr)}.quote{font-size:18px}}
-  </style>
+  <link rel="stylesheet" href="./after.css?v=20260818-1">
 </head>
 <body>
-  <div class="shell">
-    <header class="hud">
-      <a class="brand" href="/first-class/"><img src="/icons/icon-192.png" alt=""><span>my<b>Clover</b></span></a>
-      <div class="track" aria-label="ความคืบหน้า"><i class="node now"></i><i class="node"></i><i class="node"></i><i class="node"></i><i class="node"></i></div>
-      <div class="xp" id="xp">0 XP</div>
-    </header>
+<div class="shell">
+  <header class="hud">
+    <a class="brand" href="/first-class/"><img src="/icons/icon-192.png" alt=""><span>my<b>Clover</b></span></a>
+    <div class="track" aria-label="ความคืบหน้า"><i class="node now"></i><i class="node"></i><i class="node"></i><i class="node"></i><i class="node"></i></div>
+    <div class="xp" id="xp">0 XP</div>
+  </header>
 
-    <section class="intro" id="intro">
-      <span class="eyebrow">AFTER TASTE · REVIEW QUEST</span>
-      <h1>ชิมแล้ว<em>เป็นยังไงบ้าง?</em></h1>
-      <p>เคลียร์ 5 ห้องสั้น ๆ ประมาณ 3 นาที คำตอบของคุณจะช่วยปรุง First Class รุ่นต่อไป และคุณเลือกเองได้ว่าจะให้คำรีวิวเผยแพร่หรือเก็บไว้ภายใน</p>
-      <button class="start" id="startButton" type="button">เริ่มด่านหลังเรียน →</button>
-      <small class="fine">ไม่มีคำตอบถูกผิด · พูดตามที่รู้สึกจริงได้เลย</small>
+  <section class="intro" id="intro">
+    <span class="eyebrow">AFTER TASTE · REVIEW QUEST</span>
+    <h1>ชิมแล้ว<em>เป็นยังไงบ้าง?</em></h1>
+    <p>เคลียร์ 5 ห้องสั้น ๆ ประมาณ 3 นาที คำตอบของคุณจะช่วยปรุง First Class รุ่นต่อไป และคุณเลือกเองได้ว่าจะให้คำรีวิวเผยแพร่หรือเก็บไว้ภายใน</p>
+    <button class="start" id="startButton" type="button">เริ่มด่านหลังเรียน →</button>
+    <small class="fine">ไม่มีคำตอบถูกผิด · พูดตามที่รู้สึกจริงได้เลย</small>
+  </section>
+
+  <form id="reviewForm" novalidate>
+    <section class="quest" data-step="0">
+      <div class="qtop"><span class="qmeta">ROOM 01 · BEFORE → AFTER</span><h2>เริ่มจากจุดไหน แล้วตอนนี้อยู่ไหน?</h2><p>เราอยากเห็นการเปลี่ยนแปลง ไม่ได้วัดว่าใครเก่งกว่าใคร</p></div>
+      <div class="qbody">
+        <div class="question"><span class="legend">ก่อนเข้าเรียน คุณใช้ AI ประมาณไหน?</span><div class="choices cols">
+          <label class="choice"><input type="radio" name="aiBefore" value="เพิ่งเริ่ม"><span>เพิ่งเริ่ม / ยังไม่ค่อยใช้</span></label>
+          <label class="choice"><input type="radio" name="aiBefore" value="ใช้บ้าง"><span>ใช้บ้างเป็นครั้ง ๆ</span></label>
+          <label class="choice"><input type="radio" name="aiBefore" value="ใช้ประจำ"><span>ใช้ประจำกับงาน</span></label>
+          <label class="choice"><input type="radio" name="aiBefore" value="ใช้จริงจัง"><span>ใช้จริงจัง / มี Workflow อยู่แล้ว</span></label>
+        </div></div>
+        <div class="question"><span class="legend">ตอนนี้เข้าใจ “ซอส / Source” แค่ไหน?<small class="hint">1 = ยังงง · 5 = พร้อมกลับไปใช้เอง</small></span><div class="scale">
+          <label class="choice"><input type="radio" name="understanding" value="1"><span>1</span></label><label class="choice"><input type="radio" name="understanding" value="2"><span>2</span></label><label class="choice"><input type="radio" name="understanding" value="3"><span>3</span></label><label class="choice"><input type="radio" name="understanding" value="4"><span>4</span></label><label class="choice"><input type="radio" name="understanding" value="5"><span>5</span></label>
+        </div></div>
+      </div><div class="toast"></div><div class="qnav"><button class="next" type="button">ผ่านห้อง 1 →</button></div>
     </section>
 
-    <form id="reviewForm" novalidate>
-      <section class="quest" data-step="0">
-        <div class="qtop"><span class="qmeta">ROOM 01 · BEFORE → AFTER</span><h2>เริ่มจากจุดไหน แล้วตอนนี้อยู่ไหน?</h2><p>เราอยากเห็นการเปลี่ยนแปลง ไม่ได้วัดว่าใครเก่งกว่าใคร</p></div>
-        <div class="qbody">
-          <div class="question"><span class="legend">ก่อนเข้าเรียน คุณใช้ AI ประมาณไหน?</span><div class="choices cols">
-            <label class="choice"><input type="radio" name="aiBefore" value="เพิ่งเริ่ม"><span>เพิ่งเริ่ม / ยังไม่ค่อยใช้</span></label>
-            <label class="choice"><input type="radio" name="aiBefore" value="ใช้บ้าง"><span>ใช้บ้างเป็นครั้ง ๆ</span></label>
-            <label class="choice"><input type="radio" name="aiBefore" value="ใช้ประจำ"><span>ใช้ประจำกับงาน</span></label>
-            <label class="choice"><input type="radio" name="aiBefore" value="ใช้จริงจัง"><span>ใช้จริงจัง / มี Workflow อยู่แล้ว</span></label>
-          </div></div>
-          <div class="question"><span class="legend">ตอนนี้เข้าใจ “ซอส / Source” แค่ไหน?<small class="hint">1 = ยังงง · 5 = พร้อมกลับไปใช้เอง</small></span><div class="scale">
-            <label class="choice"><input type="radio" name="understanding" value="1"><span>1</span></label><label class="choice"><input type="radio" name="understanding" value="2"><span>2</span></label><label class="choice"><input type="radio" name="understanding" value="3"><span>3</span></label><label class="choice"><input type="radio" name="understanding" value="4"><span>4</span></label><label class="choice"><input type="radio" name="understanding" value="5"><span>5</span></label>
-          </div></div>
-        </div><div class="toast"></div><div class="qnav"><button class="next" type="button">ผ่านห้อง 1 →</button></div>
-      </section>
-
-      <section class="quest" data-step="1">
-        <div class="qtop"><span class="qmeta">ROOM 02 · LOOT CHECK</span><h2>วันนี้เก็บอะไรกลับบ้าน?</h2><p>เลือกได้หลายชิ้น นี่คือ Loot ของคุณ ไม่ใช่ข้อสอบ</p></div>
-        <div class="qbody"><div class="loot-grid">
-          <label class="loot"><input type="checkbox" name="takeaways" value="ซอสแม่ .md"><span><b>🧴 ซอสแม่ .md</b><small>บริบทอเนกประสงค์ที่ย้ายข้ามแชทได้</small></span></label>
-          <label class="loot"><input type="checkbox" name="takeaways" value="วิธีสกัดซอสลูก"><span><b>🥣 ซอสลูก</b><small>เลือกเฉพาะบริบทที่ผู้รับต้องรู้</small></span></label>
-          <label class="loot"><input type="checkbox" name="takeaways" value="New Session Test"><span><b>🪄 New Session Test</b><small>เช็กว่าความเข้าใจอยู่ใน Source จริงไหม</small></span></label>
-          <label class="loot"><input type="checkbox" name="takeaways" value="Output คือช้อนชิม"><span><b>🥄 ช้อนชิม</b><small>ใช้ Output ตรวจและย้อนแก้ Source</small></span></label>
-          <label class="loot"><input type="checkbox" name="takeaways" value="Prompt คือเครื่องปรุง"><span><b>🧂 Prompt = เครื่องปรุง</b><small>ไม่แบกบริบททั้งหมดไว้ในคำสั่ง</small></span></label>
-          <label class="loot"><input type="checkbox" name="takeaways" value="ส่งต่อ AI และทีม"><span><b>🤝 ส่งต่องานได้</b><small>คนและ AI รับ Context เดียวกันต่อได้</small></span></label>
-        </div></div><div class="toast"></div><div class="qnav"><button class="back" type="button">← กลับ</button><button class="next" type="button">เก็บ Loot →</button></div>
-      </section>
-
-      <section class="quest" data-step="2">
-        <div class="qtop"><span class="qmeta">ROOM 03 · AHA!</span><h2>จังหวะไหนที่ “อ๋อ” ที่สุด?</h2><p>ภาษาของคุณเองมีค่ากว่าคำตอบแบบตำรา</p></div>
-        <div class="qbody">
-          <div class="question"><label for="aha">สิ่งที่เปลี่ยนวิธีคิดคุณมากที่สุดคืออะไร?</label><textarea id="aha" name="aha" maxlength="500" placeholder="เช่น ที่ผ่านมาผมแก้ Prompt ตลอด แต่จริง ๆ รากมันอยู่ที่ Source..."></textarea><div class="counter"><span data-count="aha">0</span>/500</div></div>
-          <div class="question"><label for="firstUse">พรุ่งนี้จะเอาไปใช้กับงานอะไรเป็นอย่างแรก?</label><textarea id="firstUse" name="firstUse" maxlength="400" placeholder="งานจริง 1 เรื่องก็พอ"></textarea><div class="counter"><span data-count="firstUse">0</span>/400</div></div>
-        </div><div class="toast"></div><div class="qnav"><button class="back" type="button">← กลับ</button><button class="next" type="button">ล็อก Insight →</button></div>
-      </section>
-
-      <section class="quest" data-step="3">
-        <div class="qtop"><span class="qmeta">ROOM 04 · YOUR VOICE</span><h2>ถ้าเพื่อนถามว่า “คุ้มไหม?”</h2><p>ตอบเหมือนคุยกับเพื่อนจริง ๆ ไม่ต้องเขียนเป็นโฆษณา</p></div>
-        <div class="qbody">
-          <div class="question"><label for="recommend">คุณจะเล่า AI ใส่ซอสให้เขาฟังว่ายังไง?</label><textarea id="recommend" name="recommend" maxlength="600" placeholder="เขียนตามที่คุณจะพูดจริง"></textarea><div class="counter"><span data-count="recommend">0</span>/600</div></div>
-          <div class="question"><span class="legend">ให้คะแนน First Class 98 นาทีนี้<small class="hint">1 = ไม่ตอบโจทย์ · 10 = อยากแนะนำต่อ</small></span><div class="scale ten" id="scoreScale"></div></div>
-          <div class="question"><label for="improve">ถ้าปรับได้ 1 อย่างในรอบหน้า อยากให้ปรับอะไร? <span class="hint">ไม่บังคับ</span></label><textarea id="improve" name="improve" maxlength="400" placeholder="ติได้เต็มที่ ยิ่งตรงยิ่งช่วย"></textarea></div>
-        </div><div class="toast"></div><div class="qnav"><button class="back" type="button">← กลับ</button><button class="next" type="button">ไปด่านสุดท้าย →</button></div>
-      </section>
-
-      <section class="quest" data-step="4">
-        <div class="qtop"><span class="qmeta">ROOM 05 · SHARE PERMISSION</span><h2>คำตอบนี้ให้เราใช้แค่ไหน?</h2><p>คุณเป็นเจ้าของคำพูด เลือกขอบเขตได้เอง</p></div>
-        <div class="qbody">
-          <div class="identity">
-            <div class="question"><label for="displayName">ชื่อที่อยากให้เรียก</label><input id="displayName" name="displayName" type="text" maxlength="80" placeholder="ชื่อเล่นก็ได้"></div>
-            <div class="question"><label for="email">Email <span class="hint">ใช้จับคู่ผู้เรียน ไม่เผยแพร่</span></label><input id="email" name="email" type="email" maxlength="120" placeholder="name@example.com"></div>
-          </div>
-          <div class="question"><label for="roleCompany">บทบาท / บริษัท <span class="hint">ไม่บังคับ</span></label><input id="roleCompany" name="roleCompany" type="text" maxlength="120" placeholder="เช่น เจ้าของกิจการ · ABC Studio"></div>
-          <div class="question"><span class="legend">เลือกสิทธิ์การใช้คำรีวิว</span><div class="consent">
-            <label class="choice"><input type="radio" name="consentMode" value="named"><span>✅ ใช้เผยแพร่ได้ พร้อมชื่อที่ฉันกรอกด้านบน</span></label>
-            <label class="choice"><input type="radio" name="consentMode" value="anonymous"><span>✅ ใช้เผยแพร่ได้ แต่ไม่เปิดเผยชื่อ/ข้อมูลระบุตัวตน</span></label>
-            <label class="choice"><input type="radio" name="consentMode" value="private"><span>🔒 ใช้เพื่อปรับปรุงคอร์สภายในเท่านั้น</span></label>
-          </div></div>
-          <div class="question"><label for="extra">มีอะไรอยากบอก Teem เพิ่มไหม? <span class="hint">ไม่บังคับ</span></label><textarea id="extra" name="extra" maxlength="600" placeholder="ชม ติ หรือเล่าอะไรที่แบบฟอร์มไม่ได้ถามก็ได้"></textarea></div>
-          <input class="hidden-pot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <div class="privacy">คำตอบทั้งหมดเก็บเพื่อพัฒนาคลาส ส่วนการนำข้อความไปใช้ประชาสัมพันธ์จะยึดตามตัวเลือกด้านบนเท่านั้น Email จะไม่แสดงใน Review Card หรือสื่อประชาสัมพันธ์</div>
-        </div><div class="toast"></div><div class="qnav"><button class="back" type="button">← กลับ</button><button class="next gold" id="submitButton" type="button">เปิดหีบ AFTER TASTE ✦</button></div>
-      </section>
-    </form>
-
-    <section class="result" id="result">
-      <div class="clear"><div class="spark">✦</div><small>QUEST CLEAR · +500 XP</small><h2>AFTER TASTE<br>CLEAR</h2><p>ขอบคุณที่ช่วยชิม First Class รุ่นแรก 🍀</p>
-        <div class="review-card" id="reviewCard"><div class="card-top"><b>AI ใส่ซอส · FIRST CLASS</b><span class="score" id="cardScore">★ 10/10</span></div><div class="quote" id="cardQuote"></div><div class="who" id="cardWho"></div><div class="card-note" id="cardNote"></div></div>
-        <div class="screen-note">การ์ดนี้ไม่มี Email และข้อมูลส่วนตัวที่ไม่ได้รับอนุญาต · แคปหน้าจอเก็บไว้ได้</div>
-        <div class="saving" id="saving">กำลังบันทึกคำตอบ…</div>
-        <div class="result-actions"><a class="discord" href="https://discord.gg/A5nmMqvTm" target="_blank" rel="noopener noreferrer">กลับ Discord ↗</a><a class="home" href="/">กลับ myClover</a></div>
-      </div>
+    <section class="quest" data-step="1">
+      <div class="qtop"><span class="qmeta">ROOM 02 · LOOT CHECK</span><h2>วันนี้เก็บอะไรกลับบ้าน?</h2><p>เลือกได้หลายชิ้น นี่คือ Loot ของคุณ ไม่ใช่ข้อสอบ</p></div>
+      <div class="qbody"><div class="loot-grid">
+        <label class="loot"><input type="checkbox" name="takeaways" value="ซอสแม่ .md"><span><b>🧴 ซอสแม่ .md</b><small>บริบทอเนกประสงค์ที่ย้ายข้ามแชทได้</small></span></label>
+        <label class="loot"><input type="checkbox" name="takeaways" value="วิธีสกัดซอสลูก"><span><b>🥣 ซอสลูก</b><small>เลือกเฉพาะบริบทที่ผู้รับต้องรู้</small></span></label>
+        <label class="loot"><input type="checkbox" name="takeaways" value="New Session Test"><span><b>🪄 New Session Test</b><small>เช็กว่าความเข้าใจอยู่ใน Source จริงไหม</small></span></label>
+        <label class="loot"><input type="checkbox" name="takeaways" value="Output คือช้อนชิม"><span><b>🥄 ช้อนชิม</b><small>ใช้ Output ตรวจและย้อนแก้ Source</small></span></label>
+        <label class="loot"><input type="checkbox" name="takeaways" value="Prompt คือเครื่องปรุง"><span><b>🧂 Prompt = เครื่องปรุง</b><small>ไม่แบกบริบททั้งหมดไว้ในคำสั่ง</small></span></label>
+        <label class="loot"><input type="checkbox" name="takeaways" value="ส่งต่อ AI และทีม"><span><b>🤝 ส่งต่องานได้</b><small>คนและ AI รับ Context เดียวกันต่อได้</small></span></label>
+      </div></div><div class="toast"></div><div class="qnav"><button class="back" type="button">← กลับ</button><button class="next" type="button">เก็บ Loot →</button></div>
     </section>
-  </div>
 
-  <script>
-  (()=>{
-    const form=document.getElementById('reviewForm'), intro=document.getElementById('intro'), result=document.getElementById('result');
-    const quests=[...document.querySelectorAll('.quest')], nodes=[...document.querySelectorAll('.node')], xp=document.getElementById('xp');
-    let step=0, submitted=false;
-    const scoreScale=document.getElementById('scoreScale');
-    for(let i=1;i<=10;i++) scoreScale.insertAdjacentHTML('beforeend',`<label class="choice"><input type="radio" name="score" value="${i}"><span>${i}</span></label>`);
-    const show=n=>{step=n;quests.forEach((q,i)=>q.classList.toggle('active',i===n));nodes.forEach((node,i)=>{node.classList.toggle('done',i<n);node.classList.toggle('now',i===n)});xp.textContent=`${n*100} XP`;window.scrollTo({top:0,behavior:'smooth'})};
-    const toast=(q,msg)=>{const t=q.querySelector('.toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)};
-    const val=name=>form.querySelector(`[name="${name}"]:checked`)?.value||'';
-    const text=name=>(form.elements[name]?.value||'').trim();
-    const checks=name=>[...form.querySelectorAll(`[name="${name}"]:checked`)].map(x=>x.value);
-    const validate=n=>{
-      if(n===0&&!val('aiBefore')) return 'เลือกจุดเริ่มต้นก่อนเข้าเรียนหน่อยครับ';
-      if(n===0&&!val('understanding')) return 'ให้คะแนนความเข้าใจซอส 1–5 ก่อนครับ';
-      if(n===1&&!checks('takeaways').length) return 'เก็บ Loot อย่างน้อย 1 ชิ้นก่อนผ่านห้องนี้';
-      if(n===2&&text('aha').length<8) return 'เล่า Aha moment สั้น ๆ อีกนิดครับ';
-      if(n===2&&text('firstUse').length<5) return 'บอกงานแรกที่อยากเอาไปลองหน่อยครับ';
-      if(n===3&&text('recommend').length<8) return 'ลองตอบเหมือนมีเพื่อนถามจริง ๆ อีกนิดครับ';
-      if(n===3&&!val('score')) return 'ให้คะแนน 1–10 ก่อนครับ';
-      if(n===4&&!text('displayName')) return 'ใส่ชื่อที่อยากให้เรียกก่อนครับ';
-      if(n===4&&!/^\S+@\S+\.\S+$/.test(text('email'))) return 'ตรวจ Email อีกครั้งครับ';
-      if(n===4&&!val('consentMode')) return 'เลือกสิทธิ์การใช้คำรีวิวก่อนเปิดหีบครับ';
-      return '';
-    };
-    document.getElementById('startButton').addEventListener('click',()=>{intro.hidden=true;show(0)});
-    quests.forEach((q,i)=>{
-      q.querySelector('.back')?.addEventListener('click',()=>show(Math.max(0,i-1)));
-      q.querySelector('.next')?.addEventListener('click',async()=>{
-        const error=validate(i);if(error)return toast(q,error);
-        if(i<quests.length-1){show(i+1);return}
-        await finish();
-      });
-    });
-    document.querySelectorAll('textarea').forEach(el=>el.addEventListener('input',()=>{const out=document.querySelector(`[data-count="${el.id}"]`);if(out)out.textContent=el.value.length}));
-    async function finish(){
-      if(submitted)return;submitted=true;
-      const payload={action:'submit_review',displayName:text('displayName'),email:text('email'),roleCompany:text('roleCompany'),aiBefore:val('aiBefore'),understanding:Number(val('understanding')),takeaways:checks('takeaways'),aha:text('aha'),firstUse:text('firstUse'),recommend:text('recommend'),score:Number(val('score')),improve:text('improve'),extra:text('extra'),consentMode:val('consentMode'),website:text('website')};
-      const mode=payload.consentMode;
-      document.getElementById('cardScore').textContent=`★ ${payload.score}/10`;
-      document.getElementById('cardQuote').textContent=`“${payload.recommend||payload.aha}”`;
-      document.getElementById('cardWho').innerHTML=mode==='named'?`<strong>${escapeHtml(payload.displayName)}</strong>${payload.roleCompany?` · ${escapeHtml(payload.roleCompany)}`:''}`:'<strong>ผู้เรียน AI ใส่ซอส · First Class รุ่นแรก</strong>';
-      document.getElementById('cardNote').textContent=mode==='private'?'PRIVATE REVIEW · ใช้ภายในเพื่อปรับปรุงคอร์สเท่านั้น':mode==='anonymous'?'ANONYMOUS REVIEW · อนุญาตให้เผยแพร่โดยไม่ระบุตัวตน':'SHARE-SAFE REVIEW · อนุญาตให้เผยแพร่พร้อมชื่อ';
-      quests.forEach(q=>q.classList.remove('active'));nodes.forEach(n=>{n.classList.remove('now');n.classList.add('done')});xp.textContent='500 XP';result.classList.add('active');document.getElementById('saving').classList.add('show');window.scrollTo({top:0,behavior:'smooth'});
-      try{
-        const response=await fetch('/api/first-class',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});const data=await response.json();
-        if(!response.ok||!data.ok)throw new Error(data.message||'บันทึกไม่สำเร็จ');
-        document.getElementById('saving').textContent=`บันทึกแล้ว · ${data.reviewReference||'AFTER TASTE'}`;
-      }catch(error){submitted=false;document.getElementById('saving').textContent='บันทึกไม่สำเร็จ — คำตอบยังอยู่บนหน้านี้ ลองกดเปิดหีบอีกครั้งได้';document.getElementById('submitButton').disabled=false;}
-    }
-    const escapeHtml=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-  })();
-  </script>
+    <section class="quest" data-step="2">
+      <div class="qtop"><span class="qmeta">ROOM 03 · AHA!</span><h2>จังหวะไหนที่ “อ๋อ” ที่สุด?</h2><p>ภาษาของคุณเองมีค่ากว่าคำตอบแบบตำรา</p></div>
+      <div class="qbody">
+        <div class="question"><label for="aha">สิ่งที่เปลี่ยนวิธีคิดคุณมากที่สุดคืออะไร?</label><textarea id="aha" name="aha" maxlength="500" placeholder="เช่น ที่ผ่านมาผมแก้ Prompt ตลอด แต่จริง ๆ รากมันอยู่ที่ Source..."></textarea><div class="counter"><span data-count="aha">0</span>/500</div></div>
+        <div class="question"><label for="firstUse">พรุ่งนี้จะเอาไปใช้กับงานอะไรเป็นอย่างแรก?</label><textarea id="firstUse" name="firstUse" maxlength="400" placeholder="งานจริง 1 เรื่องก็พอ"></textarea><div class="counter"><span data-count="firstUse">0</span>/400</div></div>
+      </div><div class="toast"></div><div class="qnav"><button class="back" type="button">← กลับ</button><button class="next" type="button">ล็อก Insight →</button></div>
+    </section>
+
+    <section class="quest" data-step="3">
+      <div class="qtop"><span class="qmeta">ROOM 04 · YOUR VOICE</span><h2>ถ้าเพื่อนถามว่า “คุ้มไหม?”</h2><p>ตอบเหมือนคุยกับเพื่อนจริง ๆ ไม่ต้องเขียนเป็นโฆษณา</p></div>
+      <div class="qbody">
+        <div class="question"><label for="recommend">คุณจะเล่า AI ใส่ซอสให้เขาฟังว่ายังไง?</label><textarea id="recommend" name="recommend" maxlength="600" placeholder="เขียนตามที่คุณจะพูดจริง"></textarea><div class="counter"><span data-count="recommend">0</span>/600</div></div>
+        <div class="question"><span class="legend">ให้คะแนน First Class 98 นาทีนี้<small class="hint">1 = ไม่ตอบโจทย์ · 10 = อยากแนะนำต่อ</small></span><div class="scale ten" id="scoreScale"></div></div>
+        <div class="question"><label for="improve">ถ้าปรับได้ 1 อย่างในรอบหน้า อยากให้ปรับอะไร? <span class="hint">ไม่บังคับ</span></label><textarea id="improve" name="improve" maxlength="400" placeholder="ติได้เต็มที่ ยิ่งตรงยิ่งช่วย"></textarea></div>
+      </div><div class="toast"></div><div class="qnav"><button class="back" type="button">← กลับ</button><button class="next" type="button">ไปด่านสุดท้าย →</button></div>
+    </section>
+
+    <section class="quest" data-step="4">
+      <div class="qtop"><span class="qmeta">ROOM 05 · SHARE PERMISSION</span><h2>คำตอบนี้ให้เราใช้แค่ไหน?</h2><p>คุณเป็นเจ้าของคำพูด เลือกขอบเขตได้เอง</p></div>
+      <div class="qbody">
+        <div class="identity">
+          <div class="question"><label for="displayName">ชื่อที่อยากให้เรียก</label><input id="displayName" name="displayName" type="text" maxlength="80" placeholder="ชื่อเล่นก็ได้"></div>
+          <div class="question"><label for="email">Email <span class="hint">ใช้จับคู่ผู้เรียน ไม่เผยแพร่</span></label><input id="email" name="email" type="email" maxlength="120" placeholder="name@example.com"></div>
+        </div>
+        <div class="question"><label for="roleCompany">บทบาท / บริษัท <span class="hint">ไม่บังคับ</span></label><input id="roleCompany" name="roleCompany" type="text" maxlength="120" placeholder="เช่น เจ้าของกิจการ · ABC Studio"></div>
+        <div class="question"><span class="legend">เลือกสิทธิ์การใช้คำรีวิว</span><div class="consent">
+          <label class="choice"><input type="radio" name="consentMode" value="named"><span>✅ ใช้เผยแพร่ได้ พร้อมชื่อที่ฉันกรอกด้านบน</span></label>
+          <label class="choice"><input type="radio" name="consentMode" value="anonymous"><span>✅ ใช้เผยแพร่ได้ แต่ไม่เปิดเผยชื่อ/ข้อมูลระบุตัวตน</span></label>
+          <label class="choice"><input type="radio" name="consentMode" value="private"><span>🔒 ใช้เพื่อปรับปรุงคอร์สภายในเท่านั้น</span></label>
+        </div></div>
+        <div class="question"><label for="extra">มีอะไรอยากบอก Teem เพิ่มไหม? <span class="hint">ไม่บังคับ</span></label><textarea id="extra" name="extra" maxlength="600" placeholder="ชม ติ หรือเล่าอะไรที่แบบฟอร์มไม่ได้ถามก็ได้"></textarea></div>
+        <input class="hidden-pot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="privacy">คำตอบทั้งหมดเก็บเพื่อพัฒนาคลาส ส่วนการนำข้อความไปใช้ประชาสัมพันธ์จะยึดตามตัวเลือกด้านบนเท่านั้น Email จะไม่แสดงใน Review Card หรือสื่อประชาสัมพันธ์</div>
+      </div><div class="toast"></div><div class="qnav"><button class="back" type="button">← กลับ</button><button class="next gold" type="button">เปิดหีบ AFTER TASTE ✦</button></div>
+    </section>
+  </form>
+
+  <section class="result" id="result">
+    <div class="clear"><div class="spark">✦</div><small>QUEST CLEAR · +500 XP</small><h2>AFTER TASTE<br>CLEAR</h2><p>ขอบคุณที่ช่วยชิม First Class รุ่นแรก 🍀</p>
+      <div class="review-card"><div class="card-top"><b>AI ใส่ซอส · FIRST CLASS</b><span class="score" id="cardScore"></span></div><div class="quote" id="cardQuote"></div><div class="who" id="cardWho"></div><div class="card-note" id="cardNote"></div></div>
+      <div class="screen-note">การ์ดนี้ไม่มี Email และข้อมูลส่วนตัวที่ไม่ได้รับอนุญาต · แคปหน้าจอเก็บไว้ได้</div>
+      <div class="saving" id="saving"></div>
+      <div class="result-actions"><a class="discord" href="https://discord.gg/A5nmMqvTm" target="_blank" rel="noopener noreferrer">กลับ Discord ↗</a><a class="home" href="/">กลับ myClover</a></div>
+    </div>
+  </section>
+</div>
+<script src="./after.js?v=20260818-1" defer></script>
 </body>
 </html>
