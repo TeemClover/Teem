@@ -5,11 +5,12 @@ import { readFileSync } from 'node:fs';
 const root = new URL('../../', import.meta.url);
 const text = path => readFileSync(new URL(path, root), 'utf8');
 
-test('Vercel schedules the XTY living pet worker at all four Bangkok wake slots', () => {
+test('Vercel schedules the XTY living pet worker at all four Bangkok :27 wake slots', () => {
   const config = JSON.parse(text('vercel.json'));
   const petCron = (config.crons || []).find(entry => entry.path === '/api/xty-pet');
   assert.ok(petCron, 'vercel.json must invoke /api/xty-pet');
-  assert.equal(petCron.schedule, '0 5,11,17,23 * * *');
+  // Vercel cron is UTC: 05:27 / 11:27 / 17:27 / 23:27 UTC = 12:27 / 18:27 / 00:27 / 06:27 ICT.
+  assert.equal(petCron.schedule, '27 5,11,17,23 * * *');
 });
 
 test('party profile cover scheduler is initialized before install can call it', () => {
