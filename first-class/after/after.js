@@ -7,6 +7,7 @@
   const xp=document.getElementById('xp');
   const scoreScale=document.getElementById('scoreScale');
   const XTY_REWARD_KEY='mc_first_class_after_xty_reward_v1';
+  const XTY_REWARD_QUEST='first-class:after-taste:2026-08-18';
   let step=0;
   let submitted=false;
 
@@ -44,18 +45,21 @@
       return response.ok;
     }catch{return false}
   }
+
   async function grantXtyCard(payload,reviewReference){
+    const store=await import('/xty/_shared/store.js');
+    let account=null;
+    try{
+      account=await import('/xty/_shared/account.js');
+      await account.syncXtyProfile({recoverParties:false});
+    }catch{}
+
     let state=readRewardState()||await cloudRewardState();
     if(state?.claimed&&state.rewardId){
       writeRewardState(state);
-      try{
-        const account=await import('/xty/_shared/account.js');
-        await account.syncXtyProfile({recoverParties:false});
-      }catch{}
       return state;
     }
 
-    const store=await import('/xty/_shared/store.js');
     let profile=store.getProfile();
     if(!profile){
       profile=store.createProfile({
@@ -64,23 +68,26 @@
         avatarFrame:'green'
       });
     }
-    const reward=store.drawBrandNewCard();
-    if(!reward?.rewardId)return null;
+
+    const reward=store.prepareCardReward({questId:XTY_REWARD_QUEST});
+    if(!reward?.rewardId||!reward?.cardId)return null;
 
     state={
       claimed:true,
       rewardId:reward.rewardId,
+      cardId:reward.cardId,
       reviewReference:reviewReference||'',
-      earnedAt:new Date().toISOString(),
+      earnedAt:reward.earnedAt||new Date().toISOString(),
       source:'first-class-after-taste'
     };
     writeRewardState(state);
 
     let cloudSaved=false;
     try{
-      const account=await import('/xty/_shared/account.js');
-      const saved=await account.saveCloudProgress(store.getProfile());
-      cloudSaved=!saved?.error;
+      if(account){
+        const saved=await account.saveCloudProgress(store.getProfile());
+        cloudSaved=!saved?.error;
+      }
     }catch{}
     const markerSaved=await pushRewardMarker(state);
     return {...state,cloudSaved:cloudSaved||markerSaved};
