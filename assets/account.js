@@ -34,7 +34,7 @@ function publishUser() {
 }
 
 function allowedKey(key) {
-  return (key.startsWith('mc_') || key.startsWith('mc-') || key.startsWith('c7:')) &&
+  return (key === 'xircle.local.v1' || key.startsWith('mc_') || key.startsWith('mc-') || key.startsWith('c7:')) &&
     !EXCLUDED.some(pattern => pattern.test(key));
 }
 
@@ -144,7 +144,8 @@ function currentSurfacePath() {
 }
 
 async function syncXtyProgressIfPresent() {
-  if (currentSurfacePath() !== '/profile') return true;
+  const path = currentSurfacePath();
+  if (path !== '/profile' && path !== '/xty/collection') return true;
   try {
     const xty = await import('/xty/_shared/account.js?v=20260818-account-bridge1');
     const result = await xty.syncXtyProfile();
@@ -314,7 +315,7 @@ function bindEvents() {
 
 function showAccountChip() {
   const path = currentSurfacePath();
-  return path === '/collection' || path === '/card' || path === '/core7/collection' || path === '/profile';
+  return path === '/card' || path === '/collection' || path === '/xty/collection' || path === '/xircle/explore' || path === '/core7/collection';
 }
 
 function paintChip() {
@@ -325,8 +326,8 @@ function paintChip() {
   }
   if (!chip) { chip = document.createElement('button'); chip.type = 'button'; chip.className = 'mc-account-chip'; chip.dataset.accountOpen = 'login'; document.body.appendChild(chip); }
   chip.dataset.state = user ? 'member' : 'guest';
-  chip.textContent = user ? '☁️ บัญชี' : '☁️ เก็บ Progress';
-  chip.setAttribute('aria-label', user ? `เปิดบัญชี ${user.displayName || 'ของฉัน'}` : 'เก็บ Progress ด้วยบัญชี');
+  chip.textContent = '☁️SAVE';
+  chip.setAttribute('aria-label', user ? `เปิด SAVE ของ ${user.displayName || 'ฉัน'}` : 'เปิด SAVE เพื่อสมัครหรือเข้าสู่ระบบ');
 }
 
 function maybePromptFirstHand14(event) {
