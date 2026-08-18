@@ -1,6 +1,7 @@
 import { handleXtyMine } from './_lib/xty-mine.js';
 import { handleXtyStars } from './_lib/xty-stars.js';
 import { handleXtyPartyFinish } from './_lib/xty-party-finish.js';
+import { handleFirstClassReview } from './_lib/first-class-review.js';
 
 function routeOf(req) {
   const raw = req.query?.path;
@@ -27,6 +28,7 @@ export default function handler(req, res) {
   const rawRoute = routeOf(req).replace(/^\/+|\/+$/g, '');
   const route = rawRoute.split('/').filter(Boolean)[0] || '';
 
+  if (rawRoute === 'first-class/review') return handleFirstClassReview(req, res);
   if (route === 'xty-mine') return handleXtyMine(req, res);
   if (route === 'xty-stars') return handleXtyStars(req, res);
   if (route === 'xty-party-finish' || finishRequest(req, rawRoute)) {
