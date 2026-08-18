@@ -1,9 +1,6 @@
 name: XTY Pet Wake
 
 on:
-  schedule:
-    # 00:27 · 06:27 · 12:27 · 18:27 Asia/Bangkok (ICT = UTC+7)
-    - cron: '27 5,11,17,23 * * *'
   workflow_dispatch:
   push:
     paths:
@@ -28,17 +25,31 @@ jobs:
             exit 1
           fi
 
-          url="https://www.myclover.com/api/xty-pet"
-          # Manual runs and edits to this workflow are explicit test wakes.
-          # Scheduled wakes keep the normal gating and only process due parties.
-          if [ "${GITHUB_EVENT_NAME}" != "schedule" ]; then
-            url="${url}?force=1"
-          fi
-
+          # This manual action is a production health check. It runs the same
+          # due-room scheduler as Vercel Cron instead of force-waking one random
+          # recent party. Vercel is the single automatic scheduler at :27 ICT.
           response="$(curl --fail-with-body --show-error --silent \
             --request POST \
             --header "Authorization: Bearer ${CRON_SECRET}" \
             --header "Content-Type: application/json" \
-            "${url}")"
+            "https://www.myclover.com/api/xty-pet")"
 
           echo "$response"
+
+          RESPONSE="$response" python - <<'PY'
+          import json, os, sys
+          data = json.loads(os.environ['RESPONSE'])
+          if not data.get('ok'):
+              print('PET wake endpoint returned ok=false')
+              sys.exit(1)
+          if not data.get('ai'):
+              print('XTY PET AI is not configured in production')
+              sys.exit(1)
+          if int(data.get('providerFailures') or 0) > 0:
+              print('PET provider failures detected:', data.get('providerFailures'))
+              sys.exit(1)
+          if int(data.get('deferred') or 0) > 0:
+              print('PET turns were deferred:', data.get('deferred'))
+              sys.exit(1)
+          print('PET scheduler healthy:', json.dumps(data, ensure_ascii=False))
+          PY
