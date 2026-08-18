@@ -2,7 +2,8 @@
    Default: ordinary Thai for everyone. XTY vocabulary stays one tap away.
 
    Product principle:
-   - plain mode explains nothing with game jargon; the visuals can carry the game.
+   - plain mode uses ordinary language; the notebook/card visuals carry the game feeling.
+   - QUEST becomes "Challenge" — familiar enough to need no game glossary.
    - COMMIT becomes "ลงชื่อ" — a human signs the living notebook after doing the real thing.
    - CONFIRM becomes "ยืนยัน" — a friend acknowledges that signature.
    - user-written names, rules, notes and Party Log bodies are never rewritten.
@@ -66,29 +67,46 @@ function hasAnyCard(profile = localProfile()) {
 }
 
 /* Long / semantic phrases first, vocabulary last.
-   "ลงชื่อ" is intentionally the ordinary-Thai equivalent of COMMIT.
    The green check/signature treatment belongs to the visual layer, not a new term
    that people have to learn. */
 const PLAIN_RULES = Object.freeze([
   [/REAL-LIFE PARTY GAME/gi, 'สมุดกลุ่มที่มีชีวิต'],
+  [/WHAT IS A REAL-LIFE PARTY GAME\?/gi, 'XTY คืออะไร?'],
   [/WHAT COUNTS AS A COMMIT/gi, 'วันนี้ลงชื่อได้เมื่อ'],
   [/CONFIRMED COMMITS?/gi, 'วันที่ลงชื่อและมีเพื่อนยืนยัน'],
   [/COMMITTED TODAY/gi, 'ลงชื่อแล้ววันนี้'],
+  [/\bCOMMITTED\b/gi, 'ลงชื่อแล้ว'],
+  [/\bCONFIRMED\b/gi, 'ยืนยันแล้ว'],
   [/PARTY DISSOLVED/gi, 'ปิดกลุ่มก่อนจบ'],
-  [/PARTY COMPLETE/gi, 'จบรอบแล้ว'],
+  [/PARTY COMPLETE/gi, 'จบ Challenge แล้ว'],
   [/PARTY LOG/gi, 'สมุดของกลุ่ม'],
   [/PARTY SLOTS/gi, 'พื้นที่กลุ่ม'],
   [/ACTIVE PARTIES/gi, 'กลุ่มที่กำลังทำ'],
   [/MAIN PARTY/gi, 'กลุ่มหลัก'],
   [/PARTY COVER/gi, 'ปกกลุ่ม'],
-  [/QUEST ENDING/gi, 'สรุปรอบนี้'],
-  [/QUEST COMPLETE/gi, 'จบรอบแล้ว'],
+  [/QUEST ENDING/gi, 'สรุป Challenge'],
+  [/QUEST COMPLETE/gi, 'จบ Challenge แล้ว'],
   [/CARD DROP/gi, 'ได้การ์ด'],
   [/CHOOSE YOUR ANIMAL/gi, 'เลือกตัวแทนของคุณ'],
   [/DURABLE SAVE\s*·\s*MYCLOVER ACCOUNT/gi, 'เก็บความคืบหน้ากับบัญชี myClover'],
   [/ANIMAL CARD COLLECTION/gi, 'คอลเลกชันการ์ด'],
   [/Default Animal Avatar/gi, 'รูปตัวแทนเริ่มต้น'],
   [/Default Color/gi, 'สีเริ่มต้น'],
+
+  /* Plain mode should not require people to adopt our game vocabulary. */
+  [/เกมตี้ในชีวิตจริง/g, 'พื้นที่กลุ่มเล็กสำหรับชีวิตจริง'],
+  [/เกมที่หน้าจอเป็นแค่โต๊ะกลาง/g, 'หน้าจอเป็นแค่โต๊ะกลาง'],
+  [/ตัวเกมไม่ได้อยู่/g, 'สิ่งสำคัญไม่ได้อยู่'],
+  [/สนามเกมคือชีวิตจริง/g, 'สิ่งสำคัญเกิดในชีวิตจริง'],
+  [/เกมทั้งเกมอยู่ใน 4 คำนี้/g, 'ใช้งานหลัก ๆ อยู่ใน 4 อย่างนี้'],
+  [/เล่นคนเดียวก็ได้/g, 'เริ่มคนเดียวก็ได้'],
+  [/เล่นชีวิตจริง/g, 'ใช้ชีวิตจริง'],
+  [/เล่นเลย/g, 'เริ่มเลย'],
+  [/ดูวิธีเล่น XTY/g, 'ดูวิธีใช้ XTY'],
+  [/ดูวิธีเล่น/g, 'ดูวิธีใช้'],
+  [/วิธีเล่น XTY/g, 'วิธีใช้ XTY'],
+  [/วิธีเล่น/g, 'วิธีใช้'],
+  [/เล่นต่อจะรู้เอง/g, 'ใช้ต่อจะรู้เอง'],
 
   [/ตั้งตี้ทำอะไรก็ได้/g, 'สร้างกลุ่มทำอะไรก็ได้'],
   [/ตี้ที่กำลังเล่น/g, 'กลุ่มที่กำลังทำ'],
@@ -120,11 +138,11 @@ const PLAIN_RULES = Object.freeze([
   [/กลับมา\s*Commit/gi, 'กลับมาลงชื่อ'],
   [/Confirmed\s*Commit/gi, 'การลงชื่อที่เพื่อนยืนยันแล้ว'],
 
-  [/เสร็จเควส/g, 'จบรอบ'],
-  [/Quest Clear/gi, 'จบรอบแล้ว'],
-  [/จบ Quest/gi, 'จบรอบ'],
-  [/Quest แรก/gi, 'รอบแรก'],
-  [/Quest นี้/gi, 'รอบนี้'],
+  [/เสร็จเควส/g, 'จบ Challenge'],
+  [/Quest Clear/gi, 'จบ Challenge แล้ว'],
+  [/จบ Quest/gi, 'จบ Challenge'],
+  [/Quest แรก/gi, 'Challenge แรก'],
+  [/Quest นี้/gi, 'Challenge นี้'],
   [/เริ่มเล่น/g, 'เริ่ม'],
   [/วิธีเล่นสั้น\s*ๆ/g, 'เริ่มยังไง'],
   [/ตัวละครของฉัน/g, 'ตัวแทนของฉัน'],
@@ -138,7 +156,7 @@ const PLAIN_RULES = Object.freeze([
   [/MEMBERS/gi, 'สมาชิก'],
   [/MEMBER/gi, 'สมาชิก'],
   [/\bLEAD\b/gi, 'ผู้ดูแล'],
-  [/\bQUEST\b/gi, 'รอบ'],
+  [/\bQUEST\b/gi, 'Challenge'],
   [/\bCOMMIT\b/gi, 'ลงชื่อ'],
   [/\bMESSAGE\b/gi, 'ข้อความ'],
   [/\bREACT\b/gi, 'ส่งกำลังใจ'],
@@ -147,7 +165,7 @@ const PLAIN_RULES = Object.freeze([
   [/\bNPC\b/gi, 'เพื่อนร่วมทาง'],
   [/\bPET\b/gi, 'เพื่อนร่วมทาง'],
   [/\bAVATAR\b/gi, 'ตัวแทน'],
-  [/เควส/g, 'รอบ'],
+  [/เควส/g, 'Challenge'],
   [/ตี้/g, 'กลุ่ม'],
 ]);
 
@@ -255,7 +273,7 @@ function installLanguageControl() {
       <button class="btn sm" type="button" data-language-mode="plain" aria-pressed="false">ไทยทั่วไป</button>
       <button class="btn sm" type="button" data-language-mode="xty" aria-pressed="false">XTY</button>
     </div>
-    <p class="hint" style="margin:10px 0 0">ไทยทั่วไป: กลุ่ม · ผู้ดูแล · ลงชื่อ &nbsp;|&nbsp; XTY: ตี้ · หัวตี้ · Commit</p>
+    <p class="hint" style="margin:10px 0 0">ไทยทั่วไป: กลุ่ม · Challenge · ลงชื่อ · ยืนยัน &nbsp;|&nbsp; XTY: ตี้ · Quest · Commit · Confirm</p>
   `;
 
   const anchor = document.getElementById('profileCard');
@@ -322,15 +340,15 @@ function offerLanguageChoice() {
         <div style="min-width:0">
           <span class="label">XTY WHITECAT</span>
           <h2 class="title" id="xtyLanguageChoiceTitle" style="font-size:22px;margin:2px 0 7px">จากนี้ อยากให้เราเรียกแบบไหน?</h2>
-          <p class="whisper" style="margin:0">แบบไทยใช้คำธรรมดา เช่น “กลุ่ม · ลงชื่อ” ส่วนแบบ XTY ใช้ “ตี้ · Commit” ระบบเดียวกัน เลือกแบบที่สบายใจได้เลย</p>
+          <p class="whisper" style="margin:0">แบบไทยใช้ “กลุ่ม · Challenge · ลงชื่อ · ยืนยัน” ส่วนแบบ XTY ใช้ “ตี้ · Quest · Commit · Confirm” ระบบเดียวกัน เลือกแบบที่สบายใจได้เลย</p>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px">
         <button class="btn ghost" type="button" data-pick-language="plain">
-          <b>ไทยทั่วไป</b><br><small>กลุ่ม · ผู้ดูแล · ลงชื่อ</small>
+          <b>ไทยทั่วไป</b><br><small>กลุ่ม · Challenge · ลงชื่อ · ยืนยัน</small>
         </button>
         <button class="btn ghost" type="button" data-pick-language="xty">
-          <b>XTY</b><br><small>ตี้ · หัวตี้ · Commit</small>
+          <b>XTY</b><br><small>ตี้ · Quest · Commit · Confirm</small>
         </button>
       </div>
       <p class="hint" style="margin:11px 0 0;text-align:center">เปลี่ยนกลับได้เสมอที่โปรไฟล์ · ระบบและข้อมูลเหมือนเดิม</p>
