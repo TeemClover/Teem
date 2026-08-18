@@ -1,0 +1,72 @@
+/* RoutineX mobile fine tune — 2026-08-18
+   Keep the cinematic one-screen rhythm, but use the available vertical space.
+   The final product-payoff artwork gets its own natural-height frame instead of
+   inheriting the teaching diagram height. */
+
+@media (max-width:780px) and (min-height:681px){
+  .xp-routinex-story .xp-title,
+  .xp-routinex-story .xp-title.sm{
+    max-width:100%!important;
+    font-size:clamp(40px,10.8vw,54px)!important;
+    line-height:1.025!important;
+    letter-spacing:-.036em!important;
+  }
+
+  .xp-routinex-story .xp-routine-term{
+    gap:9px!important;
+    margin-bottom:8px!important;
+  }
+  .xp-routinex-story .xp-routine-term b{
+    font-size:32px!important;
+    line-height:1!important;
+  }
+  .xp-routinex-story .xp-routine-term span{
+    font-size:15px!important;
+    line-height:1.2!important;
+  }
+
+  .xp-routinex-story .xp-lede{
+    margin-top:12px!important;
+    font-size:17px!important;
+    line-height:1.5!important;
+  }
+  .xp-routinex-story .xp-routine-support{
+    margin-top:11px!important;
+    padding:10px 12px!important;
+    font-size:13.5px!important;
+    line-height:1.48!important;
+  }
+  .xp-routinex-story .xp-routine-sequence b{
+    width:30px!important;
+    height:30px!important;
+    font-size:15px!important;
+  }
+  .xp-routinex-story .xp-btn{
+    min-height:52px!important;
+    padding:11px 17px!important;
+    font-size:15.5px!important;
+  }
+}
+
+@media (max-width:780px){
+  /* The last scene uses the actual artwork ratio, set by routinex-fit.js.
+     No inherited diagram-height letterboxing. */
+  .xp-routinex-story .xp-routine-persistent[data-routine-active="SUMMARY"]{
+    place-items:stretch!important;
+    border-radius:24px!important;
+    background:transparent!important;
+    overflow:hidden!important;
+  }
+  .xp-routinex-story .xp-routine-persistent[data-routine-active="SUMMARY"] .xp-routine-summary-image{
+    display:block!important;
+    width:100%!important;
+    height:100%!important;
+    max-width:none!important;
+    max-height:none!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    margin:0!important;
+    border-radius:24px!important;
+    background:transparent!important;
+  }
+}
