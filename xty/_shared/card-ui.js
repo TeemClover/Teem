@@ -160,6 +160,9 @@ if (typeof location !== 'undefined' && /^\/xty\/new(?:\/|$)/.test(location.pathn
   import('./new-cover-size-fix.js').catch(error => console.warn('XTY cover size guard unavailable', error));
   import('./collection-skin-picker.js').catch(error => console.warn('XTY Collection skin picker unavailable', error));
 }
+if (typeof location !== 'undefined' && /^\/xty\/collection(?:\/|$)/.test(location.pathname)) {
+  import('/assets/account.js?v=20260818-save5').catch(error => console.warn('myClover SAVE unavailable', error));
+}
 if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
   /* Home used to paint the legacy main-party layout first and dynamically
      import the carousel afterward, producing a visible size jump. Await the
