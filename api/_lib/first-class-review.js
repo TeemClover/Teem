@@ -63,6 +63,12 @@ async function ensureSchema(sql) {
   await sql.query('CREATE INDEX IF NOT EXISTS idx_first_class_reviews_public_created ON first_class_reviews(admin_hidden,consent_mode,created_at DESC)');
 }
 
+async function firstClassStudent(sql, email) {
+  const rows = await sql.query(`SELECT id,display_name,payment_status,first_class_status,attended
+    FROM first_class_registrations WHERE course_id=$1 AND email=$2 LIMIT 1`, [COURSE_ID, email]);
+  return rows[0] || null;
+}
+
 function publicCard(row) {
   const named = row.consent_mode === 'named';
   return {
@@ -93,8 +99,19 @@ export async function handleFirstClassReview(req, res) {
       if (data.action === 'check_status') {
         const email = clean(data.email, 120).toLowerCase();
         if (!validEmail(email)) return sendJson(res, { ok: false, message: 'Email ไม่ถูกรูปแบบ' }, 400);
+        const student = await firstClassStudent(sql, email);
+        if (!student) return sendJson(res, {
+          ok: false,
+          code: 'NOT_FIRST_CLASS_STUDENT',
+          message: 'ลิงก์นี้เปิดให้ผู้เรียน First Class รุ่นแรกเท่านั้นครับ',
+        }, 403);
         const rows = await sql.query('SELECT review_reference FROM first_class_reviews WHERE course_id=$1 AND email=$2 LIMIT 1', [COURSE_ID, email]);
-        return sendJson(res, { ok: true, reviewed: Boolean(rows[0]), reviewReference: rows[0]?.review_reference || null });
+        return sendJson(res, {
+          ok: true,
+          eligible: true,
+          reviewed: Boolean(rows[0]),
+          reviewReference: rows[0]?.review_reference || null,
+        });
       }
 
       if (clean(data.website, 200)) return sendJson(res, { ok: true, reviewReference: null }, 201);
@@ -117,6 +134,13 @@ export async function handleFirstClassReview(req, res) {
 
       if (!displayName) return sendJson(res, { ok: false, field: 'displayName', message: 'ใส่ชื่อที่อยากให้เรียกก่อนครับ' }, 400);
       if (!validEmail(email)) return sendJson(res, { ok: false, field: 'email', message: 'Email ไม่ถูกรูปแบบ' }, 400);
+
+      const student = await firstClassStudent(sql, email);
+      if (!student) return sendJson(res, {
+        ok: false,
+        code: 'NOT_FIRST_CLASS_STUDENT',
+        message: 'แบบสอบถามและหีบ AFTER TASTE เปิดให้ผู้เรียน First Class รุ่นแรกเท่านั้นครับ',
+      }, 403);
 
       const existing = await sql.query('SELECT review_reference FROM first_class_reviews WHERE course_id=$1 AND email=$2 LIMIT 1', [COURSE_ID, email]);
       if (existing[0]) return sendJson(res, {
