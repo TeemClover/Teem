@@ -80,7 +80,7 @@ export function avatarFallback(id, fallback = '🐱') {
    Version the optional import because mobile Safari can keep an older module
    response longer than the surrounding page after a deploy. */
 if (typeof window !== 'undefined') {
-  import('./language.js?v=20260819-0147').catch(error => {
+  import('./language.js?v=20260819-0202').catch(error => {
     console.warn('[XTY] optional language layer failed', error);
   });
 }
