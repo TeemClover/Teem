@@ -52,11 +52,14 @@ async function ensureSchema(sql) {
     improve TEXT,
     extra TEXT,
     consent_mode TEXT NOT NULL,
+    admin_hidden BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL
   )`);
+  await sql.query('ALTER TABLE first_class_reviews ADD COLUMN IF NOT EXISTS admin_hidden BOOLEAN NOT NULL DEFAULT FALSE');
   await sql.query('CREATE UNIQUE INDEX IF NOT EXISTS idx_first_class_reviews_course_email ON first_class_reviews(course_id,email)');
   await sql.query('CREATE INDEX IF NOT EXISTS idx_first_class_reviews_consent_created ON first_class_reviews(consent_mode,created_at DESC)');
+  await sql.query('CREATE INDEX IF NOT EXISTS idx_first_class_reviews_public_created ON first_class_reviews(admin_hidden,consent_mode,created_at DESC)');
 }
 
 function publicCard(row) {
@@ -129,10 +132,22 @@ export async function handleFirstClassReview(req, res) {
       return sendJson(res, { ok: true, reviewReference: rows[0].review_reference, card: publicCard(rows[0]) }, 201);
     }
 
+    if (req.method === 'PATCH') {
+      if (!sameOrigin(req)) return sendJson(res, { ok: false, message: 'คำขอไม่ถูกต้อง' }, 403);
+      if (!authorized(req)) return sendJson(res, { ok: false, message: 'ไม่มีสิทธิ์เข้าถึง' }, 401);
+      const id = Number(req.body?.id);
+      const action = clean(req.body?.action, 30);
+      if (!Number.isInteger(id) || id < 1) return sendJson(res, { ok: false, message: 'ไม่พบรีวิวที่ต้องการ' }, 400);
+      if (!['hide', 'unhide'].includes(action)) return sendJson(res, { ok: false, message: 'Action ไม่ถูกต้อง' }, 400);
+      const rows = await sql.query(`UPDATE first_class_reviews SET admin_hidden=$1,updated_at=$2 WHERE id=$3 AND course_id=$4 RETURNING *`, [action === 'hide', new Date(), id, COURSE_ID]);
+      if (!rows.length) return sendJson(res, { ok: false, message: 'ไม่พบรีวิวที่ต้องการ' }, 404);
+      return sendJson(res, { ok: true, review: rows[0] });
+    }
+
     if (req.method === 'GET') {
       const wantsPublic = String(req.query?.public || '') === '1';
       if (wantsPublic) {
-        const rows = await sql.query("SELECT * FROM first_class_reviews WHERE course_id=$1 AND consent_mode IN ('named','anonymous') ORDER BY created_at DESC LIMIT 500", [COURSE_ID]);
+        const rows = await sql.query("SELECT * FROM first_class_reviews WHERE course_id=$1 AND consent_mode IN ('named','anonymous') AND admin_hidden=FALSE ORDER BY created_at DESC LIMIT 500", [COURSE_ID]);
         return sendJson(res, { ok: true, reviews: rows.map(publicCard) });
       }
       if (!authorized(req)) return sendJson(res, { ok: false, message: 'ไม่มีสิทธิ์เข้าถึง' }, 401);
