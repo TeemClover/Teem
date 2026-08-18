@@ -13,6 +13,14 @@ test('Vercel schedules the XTY living pet worker at all four Bangkok :27 wake sl
   assert.equal(petCron.schedule, '27 5,11,17,23 * * *');
 });
 
+test('GitHub manual wake runs the real due-room scheduler and does not duplicate the automatic cron', () => {
+  const source = text('.github/workflows/xty-pet-wake.yml');
+  assert.doesNotMatch(source, /^\s*schedule:\s*$/m, 'Vercel must be the only automatic PET scheduler');
+  assert.doesNotMatch(source, /\?force=1/, 'manual health check must not wake one arbitrary room');
+  assert.match(source, /providerFailures/);
+  assert.match(source, /deferred/);
+});
+
 test('party profile cover scheduler is initialized before install can call it', () => {
   const source = text('xty/_shared/party-profile-covers.js');
   const declaration = source.indexOf('let scheduled = false;');
