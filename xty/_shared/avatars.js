@@ -76,9 +76,11 @@ export function avatarFallback(id, fallback = '🐱') {
 
 /* Presentation must never be allowed to block XTY core boot. The language
    layer is intentionally loaded as an un-awaited side effect: if it ever
-   throws on a browser edge case, avatar/store/game modules still work. */
+   throws on a browser edge case, avatar/store/game modules still work.
+   Version the optional import because mobile Safari can keep an older module
+   response longer than the surrounding page after a deploy. */
 if (typeof window !== 'undefined') {
-  import('./language.js').catch(error => {
+  import('./language.js?v=20260819-0147').catch(error => {
     console.warn('[XTY] optional language layer failed', error);
   });
 }
