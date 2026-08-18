@@ -11,6 +11,25 @@ const ICT_OFFSET_MINUTES = 7 * 60;
 const ICT_OFFSET_MS = ICT_OFFSET_MINUTES * 60000;
 const WAKE_HOURS = [0, 6, 12, 18];
 const LOG_SLICE = 120;
+/* หนึ่งรอบต้องอ่าน "ทุกตี้ที่มีเหตุ" ไม่ใช่สุ่มบางตี้
+
+   เวลาเกือบทั้งหมดของหนึ่งตี้คือการนั่งรอโมเดลตอบ ไม่ใช่การประมวลผล
+   การวนทีละตี้จึงเป็นการต่อคิวรอเปล่า ๆ — ทำพร้อมกันทีละกลุ่มทำให้ 100 ตี้
+   จบในเวลาที่เดิมใช้กับสิบกว่าตี้
+
+   และมีงบเวลาไว้ด้วย: พองบใกล้หมดจะหยุด "เริ่ม" ตี้ใหม่ ตี้ที่ยังไม่ได้
+   เริ่มจะไม่ถูกจอง รอบถัดไปจึงหยิบไปทำได้ตามปกติ ดีกว่าถูกฆ่ากลางทาง
+   แล้วตี้ที่จองไว้เงียบหายไปหกชั่วโมงโดยไม่มีใครรู้
+
+   ค่าพวกนี้อ่านจาก env ตอนเรียกทุกครั้ง ไม่ใช่ตอนโหลดไฟล์ — ปรับจังหวะรอบตื่น
+   ได้จากหน้า Vercel โดยไม่ต้อง deploy ใหม่ */
+function wakeTuning() {
+  return {
+    limit: Number(process.env.XTY_PET_WAKE_LIMIT) || 400,
+    concurrency: Math.max(1, Number(process.env.XTY_PET_WAKE_CONCURRENCY) || 6),
+    budgetMs: Math.max(100, Number(process.env.XTY_PET_WAKE_BUDGET_MS) || 45000),
+  };
+}
 const ACTIVE_STATES = ['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE'];
 const WHITE_CAT_ID = 'xvisor_white_cat_silver';
 const WHITE_CAT_INTRO = 'อยู่ด้วยกันตรงนี้นะ 🐈 ถ้าอยากถามอะไร พิมพ์ “แมวขาว” แล้วตามด้วยคำถามได้เลย — เรื่อง Xircle, RoutineX, ABCD หรือตี้นี้ก็ได้';
@@ -287,66 +306,98 @@ export default async function handler(req, res) {
     }
 
     const force = ['1', 'true', 'yes'].includes(String(req.query?.force || '').toLowerCase());
+    const tuning = wakeTuning();
     const now = new Date(); const wake = wakeWindow(now);
     const due = force
       ? await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties
           WHERE pet_id IS NOT NULL AND state='ACTIVE' ORDER BY updated_at DESC LIMIT 1`)
       : await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties
           WHERE pet_id IS NOT NULL AND state='ACTIVE'
-          AND (pet_last_wake IS NULL OR pet_last_wake < $1) ORDER BY updated_at LIMIT 250`, [wake.start]);
+          AND (pet_last_wake IS NULL OR pet_last_wake < $1)
+          ORDER BY updated_at DESC LIMIT $2`, [wake.start, tuning.limit]);
 
-    let claimed = 0; let read = 0; let spoke = 0; let bubbles = 0;
-    let quiet = 0; let byAi = 0; let providerFailures = 0; let deferred = 0;
+    const tally = {
+      claimed: 0, read: 0, spoke: 0, bubbles: 0,
+      quiet: 0, byAi: 0, providerFailures: 0, deferred: 0, failed: 0,
+    };
 
-    for (const party of due) {
+    /* งานหนึ่งตี้ทั้งชุด เขียนเป็นก้อนเดียวเพื่อให้รันพร้อมกันได้ปลอดภัย
+       ทุกทางออกต้องคืนสิทธิ์ให้ตี้ถ้ายังไม่ได้พูด ไม่งั้นตี้จะถูกนับว่า
+       "รอบนี้ทำแล้ว" ทั้งที่ไม่มีอะไรเกิดขึ้น */
+    async function runParty(party) {
       const marked = force
         ? await sql.query('UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2 RETURNING id', [now, party.id])
         : await sql.query(`UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2
             AND (pet_last_wake IS NULL OR pet_last_wake < $3) RETURNING id`, [now, party.id, wake.start]);
-      if (!marked[0]) continue;
-      claimed += 1;
+      if (!marked[0]) return;
+      tally.claimed += 1;
 
-      const since = party.pet_last_wake ? new Date(party.pet_last_wake) : wake.start;
-      const history = await recentLog(sql, party.id);
-      const context = await contextFor(sql, party.id, since, now, history);
-      if (!worthReading(wake.hour, context, force)) {
-        quiet += 1;
-        continue;
+      try {
+        const since = party.pet_last_wake ? new Date(party.pet_last_wake) : wake.start;
+        const history = await recentLog(sql, party.id);
+        const context = await contextFor(sql, party.id, since, now, history);
+        if (!worthReading(wake.hour, context, force)) {
+          tally.quiet += 1;
+          return;
+        }
+
+        tally.read += 1;
+        let decision = null;
+        if (aiConfigured() && hasPersona(party.pet_id)) {
+          decision = await readAndRespond({
+            party, context, history, since, hour: wake.hour, trigger: 'scheduled',
+          });
+          if (decision) tally.byAi += 1; else tally.providerFailures += 1;
+        }
+
+        /* Claim-before-read prevents duplicate cron workers, but a missing AI
+           configuration or provider outage must not permanently consume human
+           activity. Roll this claim back so the next wake can retry it. */
+        if (!force && (!aiConfigured() || !hasPersona(party.pet_id) || !decision)) {
+          await restoreClaimedWake(sql, party, now);
+          tally.deferred += 1;
+          tally.quiet += 1;
+          return;
+        }
+
+        let lines = Array.isArray(decision?.bubbles) ? decision.bubbles.slice(0, 3) : [];
+        if (force && !lines.length) lines = manualFallback(party);
+        if (!lines.length) {
+          tally.quiet += 1;
+          return;
+        }
+
+        tally.spoke += 1;
+        for (const line of lines) if (await appendBubble(sql, party, line, wake.hour, now)) tally.bubbles += 1;
+      } catch (error) {
+        /* งานตี้เดียวล้มต้องไม่ลากทั้งรอบลงไปด้วย และตี้นั้นต้องได้คิวรอบหน้า */
+        console.error('XTY pet wake party failed', party.code, error?.message || error);
+        tally.failed += 1;
+        if (!force) {
+          await restoreClaimedWake(sql, party, now).catch(() => {});
+          tally.deferred += 1;
+        }
       }
-
-      read += 1;
-      let decision = null;
-      if (aiConfigured() && hasPersona(party.pet_id)) {
-        decision = await readAndRespond({
-          party, context, history, since, hour: wake.hour, trigger: 'scheduled',
-        });
-        if (decision) byAi += 1; else providerFailures += 1;
-      }
-
-      /* Claim-before-read prevents duplicate cron workers, but a missing AI
-         configuration or provider outage must not permanently consume human
-         activity. Roll this claim back so the next wake can retry it. */
-      if (!force && (!aiConfigured() || !hasPersona(party.pet_id) || !decision)) {
-        await restoreClaimedWake(sql, party, now);
-        deferred += 1;
-        quiet += 1;
-        continue;
-      }
-
-      let lines = Array.isArray(decision?.bubbles) ? decision.bubbles.slice(0, 3) : [];
-      if (force && !lines.length) lines = manualFallback(party);
-      if (!lines.length) {
-        quiet += 1;
-        continue;
-      }
-
-      spoke += 1;
-      for (const line of lines) if (await appendBubble(sql, party, line, wake.hour, now)) bubbles += 1;
     }
+
+    const startedAt = Date.now();
+    let remaining = 0;
+    for (let index = 0; index < due.length; index += tuning.concurrency) {
+      if (!force && Date.now() - startedAt > tuning.budgetMs) {
+        remaining = due.length - index;
+        break;
+      }
+      await Promise.all(due.slice(index, index + tuning.concurrency).map(runParty));
+    }
+    if (remaining) {
+      console.warn('XTY pet wake ran out of budget', `remaining=${remaining}`, `of=${due.length}`);
+    }
+    const { claimed, read, spoke, bubbles, quiet, byAi, providerFailures, deferred, failed } = tally;
 
     return sendJson(res, {
       ok: true, wakeHour: wake.hour, ai: aiConfigured(), force,
-      due: due.length, claimed, read, byAi, providerFailures, deferred, quiet, spoke, bubbles,
+      due: due.length, claimed, read, byAi, providerFailures, deferred, failed, quiet, spoke, bubbles,
+      remaining, concurrency: tuning.concurrency, elapsedMs: Date.now() - startedAt,
     });
   } catch (error) {
     console.error('XTY pet wake failed', error);
