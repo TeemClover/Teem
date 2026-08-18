@@ -15,6 +15,7 @@ globalThis.fetch = (url, init) => respond(url, init);
 
 const issued = [];
 const insertedBodies = [];
+const wakeUpdates = [];
 let humanUpdates = 2;
 let lastHumanAt = new Date();
 let lastPetAt = null;
@@ -31,7 +32,10 @@ function fakeSql() {
           pet_last_wake: new Date(Date.now() - 6 * 3600000),
         }];
       }
-      if (t.startsWith('UPDATE xty_parties SET pet_last_wake')) return [{ id: 'p1' }];
+      if (t.startsWith('UPDATE xty_parties SET pet_last_wake')) {
+        wakeUpdates.push({ text: t, params: [...params] });
+        return [{ id: 'p1' }];
+      }
       if (t.includes('human_updates')) {
         return [{
           human_updates: humanUpdates,
@@ -82,11 +86,14 @@ function completion(value) {
   }), { status: 200, headers: { 'content-type': 'application/json' } });
 }
 
+function resetWakeUpdates() { wakeUpdates.length = 0; }
+
 test('one scheduled wake reads the real multi-wake log and writes a concrete Groq bubble', async () => {
   humanUpdates = 2;
   lastHumanAt = new Date();
   lastPetAt = new Date(Date.now() - 7 * 3600000);
   insertedBodies.length = 0;
+  resetWakeUpdates();
   let sent = null;
   let endpoint = null;
   respond = async (url, init) => {
@@ -106,10 +113,12 @@ test('one scheduled wake reads the real multi-wake log and writes a concrete Gro
   assert.equal(res.body.claimed, 1);
   assert.equal(res.body.read, 1);
   assert.equal(res.body.byAi, 1);
+  assert.equal(res.body.deferred, 0);
   assert.equal(res.body.spoke, 1);
   assert.equal(res.body.bubbles, 1);
   assert.equal(res.body.quiet, 0);
   assert.equal(insertedBodies.length, 1);
+  assert.equal(wakeUpdates.length, 1, 'successful brain turn keeps the claimed wake');
   assert.equal(endpoint, 'https://api.groq.com/openai/v1/chat/completions');
   assert.equal(sent.response_format.type, 'json_schema');
   assert.equal(sent.response_format.json_schema.strict, true);
@@ -125,6 +134,7 @@ test('dead room skips Groq entirely and writes zero bubbles', async () => {
   lastHumanAt = new Date(Date.now() - 8 * 3600000);
   lastPetAt = new Date(Date.now() - 2 * 3600000); // pet already spoke after the human
   insertedBodies.length = 0;
+  resetWakeUpdates();
   let calls = 0;
   respond = async () => { calls += 1; throw new Error('should not call Groq'); };
 
@@ -134,6 +144,7 @@ test('dead room skips Groq entirely and writes zero bubbles', async () => {
   assert.equal(res.body.spoke, 0);
   assert.equal(res.body.bubbles, 0);
   assert.equal(res.body.quiet, 1);
+  assert.equal(res.body.deferred, 0);
   assert.equal(insertedBodies.length, 0);
   assert.equal(calls, 0);
 });
@@ -143,6 +154,7 @@ test('model QUIET remains quiet instead of falling back to engagement copy', asy
   lastHumanAt = new Date();
   lastPetAt = new Date(Date.now() - 7 * 3600000);
   insertedBodies.length = 0;
+  resetWakeUpdates();
   respond = async () => completion({
     behavior: 'QUIET', focus: 'มีเพียง COMMIT ที่ไม่มี detail ใหม่', open_threads: [], bubbles: [],
   });
@@ -151,17 +163,20 @@ test('model QUIET remains quiet instead of falling back to engagement copy', asy
   await handler({ method: 'GET', headers: { authorization: 'Bearer secret' }, query: {} }, res);
   assert.equal(res.body.read, 1);
   assert.equal(res.body.byAi, 1);
+  assert.equal(res.body.deferred, 0);
   assert.equal(res.body.spoke, 0);
   assert.equal(res.body.bubbles, 0);
   assert.equal(res.body.quiet, 1);
   assert.equal(insertedBodies.length, 0);
+  assert.equal(wakeUpdates.length, 1, 'a deliberate QUIET is still a completed brain turn');
 });
 
-test('provider failure stays silent on scheduled wake', async () => {
+test('provider failure stays silent but rolls the claim back for the next wake', async () => {
   humanUpdates = 1;
   lastHumanAt = new Date();
   lastPetAt = null;
   insertedBodies.length = 0;
+  resetWakeUpdates();
   respond = async () => new Response('{"error":{"message":"down"}}', {
     status: 500, headers: { 'content-type': 'application/json' },
   });
@@ -169,9 +184,37 @@ test('provider failure stays silent on scheduled wake', async () => {
   const res = {};
   await handler({ method: 'GET', headers: { authorization: 'Bearer secret' }, query: {} }, res);
   assert.equal(res.body.providerFailures, 1);
+  assert.equal(res.body.deferred, 1);
   assert.equal(res.body.spoke, 0);
   assert.equal(res.body.quiet, 1);
   assert.equal(insertedBodies.length, 0);
+  assert.equal(wakeUpdates.length, 2, 'claim + rollback');
+  assert.match(wakeUpdates[1].text, /AND pet_last_wake=\$3/);
+  assert.ok(wakeUpdates[1].params[0] instanceof Date, 'rollback restores the previous wake timestamp');
+  assert.ok(wakeUpdates[1].params[0].getTime() < wakeUpdates[1].params[2].getTime());
+});
+
+test('missing AI configuration defers active room instead of consuming its activity', async () => {
+  humanUpdates = 1;
+  lastHumanAt = new Date();
+  lastPetAt = null;
+  insertedBodies.length = 0;
+  resetWakeUpdates();
+  let calls = 0;
+  respond = async () => { calls += 1; throw new Error('Groq should not be called'); };
+  process.env.XTY_PET_AI = 'off';
+  try {
+    const res = {};
+    await handler({ method: 'GET', headers: { authorization: 'Bearer secret' }, query: {} }, res);
+    assert.equal(res.body.ai, false);
+    assert.equal(res.body.read, 1);
+    assert.equal(res.body.deferred, 1);
+    assert.equal(res.body.spoke, 0);
+    assert.equal(wakeUpdates.length, 2, 'claim + rollback when AI is unavailable');
+    assert.equal(calls, 0);
+  } finally {
+    process.env.XTY_PET_AI = 'on';
+  }
 });
 
 test('manual force wake still has a diagnostic proof-of-life fallback', async () => {
@@ -179,6 +222,7 @@ test('manual force wake still has a diagnostic proof-of-life fallback', async ()
   lastHumanAt = null;
   lastPetAt = null;
   insertedBodies.length = 0;
+  resetWakeUpdates();
   respond = async () => completion({ behavior: 'QUIET', focus: '', open_threads: [], bubbles: [] });
 
   const res = {};
