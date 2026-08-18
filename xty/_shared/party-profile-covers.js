@@ -6,6 +6,7 @@ import { cardSVG } from '../../core7/js/art.js';
 const code = new URLSearchParams(location.search).get('c');
 const BACK = '/core7/assets/myclover-back.webp';
 let busy = false;
+let scheduled = false;
 
 if (/^\d{5}$/.test(code || '')) install();
 
@@ -103,7 +104,6 @@ function injectStyle() {
   document.head.appendChild(s);
 }
 
-let scheduled = false;
 function schedule() {
   if (scheduled) return; scheduled = true;
   requestAnimationFrame(() => {
