@@ -143,6 +143,7 @@
     var hubMode=path==='/xircle/explore';
 
     if(hubMode){
+      try{import('/assets/account.js?v=20260818-save5').catch(function(){})}catch(e){}
       qsa('[data-whitecat-link]').forEach(function(a){
         if(a.tagName==='A')a.href='/xircle/circle/';
         a.removeAttribute('data-whitecat-link');
