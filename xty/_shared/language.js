@@ -1,6 +1,13 @@
 /* XTY language layer
-   Default: plain Thai for everyone. XTY vocabulary stays one tap away in Profile.
-   This changes presentation only — never party data, names, logs, or server payloads. */
+   Default: ordinary Thai for everyone. XTY vocabulary stays one tap away.
+
+   Product principle:
+   - plain mode explains nothing with game jargon; the visuals can carry the game.
+   - COMMIT becomes "ลงชื่อ" — a human signs the living notebook after doing the real thing.
+   - CONFIRM becomes "ยืนยัน" — a friend acknowledges that signature.
+   - user-written names, rules, notes and Party Log bodies are never rewritten.
+
+   Presentation only. Never mutate party data, logs, server payloads or canonical history. */
 
 const STORAGE_KEY = 'mc_xty_language_mode';
 const CHOICE_SEEN_KEY = 'mc_xty_language_choice_seen';
@@ -14,26 +21,6 @@ const ON_XTY_SURFACE = HAS_BROWSER && (
   || location.pathname === '/profile'
   || location.pathname.startsWith('/xty/')
 );
-
-if (ON_XTY_SURFACE) {
-  const mode = readMode();
-  document.documentElement.dataset.xtyLanguage = mode;
-
-  if (mode === 'plain') {
-    applyPlainLanguage(document);
-    watchForNewUi();
-  }
-
-  installLanguageControl();
-  installLanguageChoiceOnboarding();
-
-  window.XTYLanguage = Object.freeze({
-    getMode: readMode,
-    setMode,
-    offerChoice: offerLanguageChoice,
-    apply: () => readMode() === 'plain' && applyPlainLanguage(document),
-  });
-}
 
 function readMode() {
   try {
@@ -78,25 +65,31 @@ function hasAnyCard(profile = localProfile()) {
   return Array.isArray(profile?.ownedCards) && profile.ownedCards.length > 0;
 }
 
-/* Long / specific phrases first, then vocabulary. The broad replacements
-   never touch user-written log bodies or party names (see shouldSkipText). */
-const TEXT_RULES = Object.freeze([
+/* Long / semantic phrases first, vocabulary last.
+   "ลงชื่อ" is intentionally the ordinary-Thai equivalent of COMMIT.
+   The green check/signature treatment belongs to the visual layer, not a new term
+   that people have to learn. */
+const PLAIN_RULES = Object.freeze([
   [/REAL-LIFE PARTY GAME/gi, 'สมุดกลุ่มที่มีชีวิต'],
-  [/WHAT COUNTS AS A COMMIT/gi, 'วันนี้นับว่าทำแล้วเมื่อ'],
-  [/COMMITTED TODAY/gi, 'บันทึกวันนี้'],
+  [/WHAT COUNTS AS A COMMIT/gi, 'วันนี้ลงชื่อได้เมื่อ'],
+  [/CONFIRMED COMMITS?/gi, 'วันที่ลงชื่อและมีเพื่อนยืนยัน'],
+  [/COMMITTED TODAY/gi, 'ลงชื่อแล้ววันนี้'],
   [/PARTY DISSOLVED/gi, 'ปิดกลุ่มก่อนจบ'],
-  [/PARTY COMPLETE/gi, 'ทำร่วมกันครบแล้ว'],
-  [/PARTY LOG/gi, 'บันทึกของกลุ่ม'],
+  [/PARTY COMPLETE/gi, 'จบรอบแล้ว'],
+  [/PARTY LOG/gi, 'สมุดของกลุ่ม'],
   [/PARTY SLOTS/gi, 'พื้นที่กลุ่ม'],
   [/ACTIVE PARTIES/gi, 'กลุ่มที่กำลังทำ'],
   [/MAIN PARTY/gi, 'กลุ่มหลัก'],
   [/PARTY COVER/gi, 'ปกกลุ่ม'],
-  [/QUEST ENDING/gi, 'จบภารกิจ'],
+  [/QUEST ENDING/gi, 'สรุปรอบนี้'],
+  [/QUEST COMPLETE/gi, 'จบรอบแล้ว'],
+  [/CARD DROP/gi, 'ได้การ์ด'],
   [/CHOOSE YOUR ANIMAL/gi, 'เลือกตัวแทนของคุณ'],
   [/DURABLE SAVE\s*·\s*MYCLOVER ACCOUNT/gi, 'เก็บความคืบหน้ากับบัญชี myClover'],
   [/ANIMAL CARD COLLECTION/gi, 'คอลเลกชันการ์ด'],
   [/Default Animal Avatar/gi, 'รูปตัวแทนเริ่มต้น'],
   [/Default Color/gi, 'สีเริ่มต้น'],
+
   [/ตั้งตี้ทำอะไรก็ได้/g, 'สร้างกลุ่มทำอะไรก็ได้'],
   [/ตี้ที่กำลังเล่น/g, 'กลุ่มที่กำลังทำ'],
   [/ตี้ที่เป็นหัวตี้/g, 'กลุ่มที่คุณดูแล'],
@@ -105,30 +98,39 @@ const TEXT_RULES = Object.freeze([
   [/ตี้สาธารณะ/g, 'กลุ่มสาธารณะ'],
   [/สร้างตัวแล้วเข้าตี้/g, 'ตั้งชื่อแล้วเข้ากลุ่ม'],
   [/เข้าตี้ด้วยรหัส/g, 'เข้ากลุ่มด้วยรหัส'],
+  [/เข้าตี้\s*\/\s*Commit/gi, 'เปิดกลุ่ม / ลงชื่อ'],
   [/เข้าตี้/g, 'เข้ากลุ่ม'],
   [/ตั้งตี้/g, 'สร้างกลุ่ม'],
   [/หาตี้/g, 'หากลุ่ม'],
   [/ยุบตี้/g, 'ปิดกลุ่ม'],
-  [/หัวตี้/g, 'ผู้ดูแล'],
+  [/หัวตี้/g, 'ผู้ดูแลกลุ่ม'],
   [/รหัสตี้/g, 'รหัสกลุ่ม'],
   [/ชื่อตี้/g, 'ชื่อกลุ่ม'],
   [/ชื่อเรียกในตี้/g, 'ชื่อเรียกในกลุ่ม'],
   [/ชื่อในตี้/g, 'ชื่อในกลุ่ม'],
   [/สมาชิกตี้/g, 'สมาชิกกลุ่ม'],
-  [/กติกา\s*Commit/gi, 'กติกาการบันทึก'],
-  [/Commit\s*ทุกวัน/gi, 'บันทึกทุกวัน'],
-  [/Commit\s*วันนี้/gi, 'บันทึกวันนี้'],
-  [/Commit\s*แล้ววันนี้/gi, 'บันทึกแล้ววันนี้'],
-  [/ยังไม่\s*Commit/gi, 'ยังไม่ได้บันทึก'],
-  [/Commit\s*แล้ว/gi, 'บันทึกแล้ว'],
-  [/เสร็จเควส/g, 'จบภารกิจ'],
-  [/Quest Clear/gi, 'ทำภารกิจสำเร็จ'],
-  [/เริ่มเล่น/g, 'เริ่มใช้ XTY'],
+
+  [/กติกา\s*Commit/gi, 'ข้อตกลงก่อนลงชื่อ'],
+  [/Commit\s*ทุกวัน/gi, 'ลงชื่อทุกวัน'],
+  [/Commit\s*วันนี้/gi, 'ลงชื่อวันนี้'],
+  [/Commit\s*แล้ววันนี้/gi, 'ลงชื่อแล้ววันนี้'],
+  [/ยังไม่\s*Commit/gi, 'ยังไม่ได้ลงชื่อ'],
+  [/Commit\s*แล้ว/gi, 'ลงชื่อแล้ว'],
+  [/Commit\s*ได้เลย/gi, 'ลงชื่อได้เลย'],
+  [/กลับมา\s*Commit/gi, 'กลับมาลงชื่อ'],
+  [/Confirmed\s*Commit/gi, 'การลงชื่อที่เพื่อนยืนยันแล้ว'],
+
+  [/เสร็จเควส/g, 'จบรอบ'],
+  [/Quest Clear/gi, 'จบรอบแล้ว'],
+  [/จบ Quest/gi, 'จบรอบ'],
+  [/Quest แรก/gi, 'รอบแรก'],
+  [/Quest นี้/gi, 'รอบนี้'],
+  [/เริ่มเล่น/g, 'เริ่ม'],
   [/วิธีเล่นสั้น\s*ๆ/g, 'เริ่มยังไง'],
   [/ตัวละครของฉัน/g, 'ตัวแทนของฉัน'],
   [/บันทึกตัวละคร/g, 'บันทึกตัวแทน'],
   [/ตัวละคร/g, 'ตัวแทน'],
-  [/Lead Card/gi, 'การ์ดประจำกลุ่ม'],
+  [/Lead Card/gi, 'การ์ดของกลุ่ม'],
   [/PET\s*\/\s*NPC/gi, 'เพื่อนร่วมทาง'],
   [/FINAL MESSAGE/gi, 'ข้อความรอบสุดท้าย'],
   [/Final Message/gi, 'ข้อความรอบสุดท้าย'],
@@ -136,22 +138,23 @@ const TEXT_RULES = Object.freeze([
   [/MEMBERS/gi, 'สมาชิก'],
   [/MEMBER/gi, 'สมาชิก'],
   [/\bLEAD\b/gi, 'ผู้ดูแล'],
-  [/\bQUEST\b/gi, 'ภารกิจ'],
-  [/\bCOMMIT\b/gi, 'บันทึก'],
+  [/\bQUEST\b/gi, 'รอบ'],
+  [/\bCOMMIT\b/gi, 'ลงชื่อ'],
   [/\bMESSAGE\b/gi, 'ข้อความ'],
   [/\bREACT\b/gi, 'ส่งกำลังใจ'],
   [/\bCONFIRM\b/gi, 'ยืนยัน'],
   [/\bPARTY\b/gi, 'กลุ่ม'],
   [/\bNPC\b/gi, 'เพื่อนร่วมทาง'],
   [/\bPET\b/gi, 'เพื่อนร่วมทาง'],
-  [/\bAVATAR\b/gi, 'รูปตัวแทน'],
-  [/เควส/g, 'ภารกิจ'],
+  [/\bAVATAR\b/gi, 'ตัวแทน'],
+  [/เควส/g, 'รอบ'],
   [/ตี้/g, 'กลุ่ม'],
 ]);
 
 function translate(value) {
   let out = String(value ?? '');
-  for (const [pattern, replacement] of TEXT_RULES) out = out.replace(pattern, replacement);
+  if (readMode() !== 'plain') return out;
+  for (const [pattern, replacement] of PLAIN_RULES) out = out.replace(pattern, replacement);
   return out;
 }
 
@@ -161,8 +164,7 @@ function shouldSkipText(node) {
   if (el.closest('[data-xty-no-translate]')) return true;
   if (['SCRIPT', 'STYLE', 'NOSCRIPT', 'CODE', 'PRE'].includes(el.tagName)) return true;
 
-  /* These are user-owned words. Never rewrite a person's message, alias,
-     activity, rule, or a party name just because it contains XTY slang. */
+  /* Human-authored source stays exactly as written. */
   if (el.matches('#pname, #act, #ruleText, #sheetRule, .who, .al, .seat-card-name')) return true;
   if (el.matches('#log .txt')) return true;
   if (el.matches('#mainParty h2')) return true;
@@ -193,7 +195,7 @@ function translateAttributes(el) {
 }
 
 function applyPlainLanguage(root) {
-  if (!root) return;
+  if (!root || readMode() !== 'plain') return;
   if (root.nodeType === Node.TEXT_NODE) {
     translateTextNode(root);
     return;
@@ -212,6 +214,7 @@ function applyPlainLanguage(root) {
 
 function watchForNewUi() {
   const observer = new MutationObserver(mutations => {
+    if (readMode() !== 'plain') return;
     for (const mutation of mutations) {
       if (mutation.type === 'characterData') {
         translateTextNode(mutation.target);
@@ -252,31 +255,35 @@ function installLanguageControl() {
       <button class="btn sm" type="button" data-language-mode="plain" aria-pressed="false">ไทยทั่วไป</button>
       <button class="btn sm" type="button" data-language-mode="xty" aria-pressed="false">XTY</button>
     </div>
-    <p class="hint" style="margin:10px 0 0">ไทยทั่วไป: กลุ่ม · ผู้ดูแล · บันทึก &nbsp;|&nbsp; XTY: ตี้ · หัวตี้ · Commit</p>
+    <p class="hint" style="margin:10px 0 0">ไทยทั่วไป: กลุ่ม · ผู้ดูแล · ลงชื่อ &nbsp;|&nbsp; XTY: ตี้ · หัวตี้ · Commit</p>
   `;
 
   const anchor = document.getElementById('profileCard');
   if (anchor?.parentNode) anchor.insertAdjacentElement('afterend', card);
   else host.prepend(card);
 
+  paintLanguageButtons(card);
+}
+
+function paintLanguageButtons(root = document) {
   const current = readMode();
-  card.querySelectorAll('[data-language-mode]').forEach(button => {
+  root.querySelectorAll?.('[data-language-mode]').forEach(button => {
     const selected = button.dataset.languageMode === current;
     button.classList.toggle('gold', selected);
     button.classList.toggle('ghost', !selected);
     button.setAttribute('aria-pressed', selected ? 'true' : 'false');
-    button.addEventListener('click', () => {
-      if (button.dataset.languageMode === current) return;
-      setMode(button.dataset.languageMode);
-    });
+    if (!button.dataset.languageBound) {
+      button.dataset.languageBound = '1';
+      button.addEventListener('click', () => {
+        if (button.dataset.languageMode === readMode()) return;
+        setMode(button.dataset.languageMode);
+      });
+    }
   });
 }
 
-/* The first card is the right moment to teach the world's vocabulary.
-   Before that, a new person gets plain Thai and can simply use the product.
-   After the first reveal, WHITECAT explains that both vocabularies describe
-   the same system. Existing players who already own a card get this once on
-   their next home/profile visit. */
+/* First card = first time WHITECAT teaches that XTY has its own vocabulary.
+   Before that, people simply use normal Thai. */
 function installLanguageChoiceOnboarding() {
   if (hasSeenChoice()) return;
 
@@ -315,12 +322,12 @@ function offerLanguageChoice() {
         <div style="min-width:0">
           <span class="label">XTY WHITECAT</span>
           <h2 class="title" id="xtyLanguageChoiceTitle" style="font-size:22px;margin:2px 0 7px">จากนี้ อยากให้เราเรียกแบบไหน?</h2>
-          <p class="whisper" style="margin:0">ในโลกเดียวกัน บางคนเรียก “กลุ่ม · บันทึก” บางคนเรียก “ตี้ · Commit” เลือกแบบที่สบายใจได้เลย</p>
+          <p class="whisper" style="margin:0">แบบไทยใช้คำธรรมดา เช่น “กลุ่ม · ลงชื่อ” ส่วนแบบ XTY ใช้ “ตี้ · Commit” ระบบเดียวกัน เลือกแบบที่สบายใจได้เลย</p>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px">
         <button class="btn ghost" type="button" data-pick-language="plain">
-          <b>ไทยทั่วไป</b><br><small>กลุ่ม · ผู้ดูแล · บันทึก</small>
+          <b>ไทยทั่วไป</b><br><small>กลุ่ม · ผู้ดูแล · ลงชื่อ</small>
         </button>
         <button class="btn ghost" type="button" data-pick-language="xty">
           <b>XTY</b><br><small>ตี้ · หัวตี้ · Commit</small>
@@ -341,4 +348,37 @@ function offerLanguageChoice() {
       location.reload();
     });
   });
+}
+
+function bootLanguage() {
+  if (!ON_XTY_SURFACE) return;
+  const mode = readMode();
+  document.documentElement.dataset.xtyLanguage = mode;
+
+  /* The plain layer runs after the DOM exists and keeps watching UI that is
+     rendered later by XTY modules. XTY mode leaves the original game copy alone. */
+  if (mode === 'plain') {
+    applyPlainLanguage(document);
+    watchForNewUi();
+  }
+
+  installLanguageControl();
+  paintLanguageButtons(document);
+  installLanguageChoiceOnboarding();
+
+  window.XTYLanguage = Object.freeze({
+    getMode: readMode,
+    setMode,
+    offerChoice: offerLanguageChoice,
+    apply: () => readMode() === 'plain' && applyPlainLanguage(document),
+  });
+  window.dispatchEvent(new CustomEvent('xty:language-ready', { detail: { mode } }));
+}
+
+if (ON_XTY_SURFACE) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootLanguage, { once: true });
+  } else {
+    bootLanguage();
+  }
 }
