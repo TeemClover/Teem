@@ -6,6 +6,10 @@ on:
     paths:
       - '.github/workflows/xty-pet-wake.yml'
 
+permissions:
+  contents: read
+  statuses: write
+
 concurrency:
   group: xty-pet-wake
   cancel-in-progress: false
@@ -15,41 +19,89 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Wake XTY pets
+      - name: Probe XTY PET scheduler
+        id: probe
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        shell: bash
         run: |
-          set -euo pipefail
+          set +e
+          state="failure"
+          description="PET health check failed"
+          response=""
+
           if [ -z "${CRON_SECRET:-}" ]; then
-            echo "Missing GitHub Actions secret: CRON_SECRET"
-            exit 1
+            description="GitHub CRON_SECRET missing"
+          else
+            response="$(curl --fail-with-body --show-error --silent \
+              --request POST \
+              --header "Authorization: Bearer ${CRON_SECRET}" \
+              --header "Content-Type: application/json" \
+              "https://www.myclover.com/api/xty-pet")"
+            curl_rc=$?
+
+            if [ "$curl_rc" -ne 0 ]; then
+              description="PET endpoint auth/network failure"
+            else
+              parsed="$(RESPONSE="$response" python - <<'PY'
+          import json, os
+          try:
+              data = json.loads(os.environ.get('RESPONSE') or '{}')
+          except Exception:
+              print('failure|PET endpoint returned invalid JSON')
+              raise SystemExit
+
+          if not data.get('ok'):
+              print('failure|PET endpoint returned ok=false')
+          elif not data.get('ai'):
+              print('failure|XTY PET AI is not configured')
+          elif int(data.get('providerFailures') or 0) > 0:
+              print(f"failure|providerFailures={int(data.get('providerFailures') or 0)}")
+          elif int(data.get('deferred') or 0) > 0:
+              print(f"failure|deferred={int(data.get('deferred') or 0)}")
+          else:
+              due = int(data.get('due') or 0)
+              read = int(data.get('read') or 0)
+              spoke = int(data.get('spoke') or 0)
+              bubbles = int(data.get('bubbles') or 0)
+              print(f'success|PET healthy due={due} read={read} spoke={spoke} bubbles={bubbles}')
+          PY
+              )"
+              state="${parsed%%|*}"
+              description="${parsed#*|}"
+            fi
           fi
 
-          # This manual action is a production health check. It runs the same
-          # due-room scheduler as Vercel Cron instead of force-waking one random
-          # recent party. Vercel is the single automatic scheduler at :27 ICT.
-          response="$(curl --fail-with-body --show-error --silent \
-            --request POST \
-            --header "Authorization: Bearer ${CRON_SECRET}" \
-            --header "Content-Type: application/json" \
-            "https://www.myclover.com/api/xty-pet")"
-
           echo "$response"
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+          echo "description=$description" >> "$GITHUB_OUTPUT"
+          echo "XTY Pet Health: $state — $description"
 
-          RESPONSE="$response" python - <<'PY'
-          import json, os, sys
-          data = json.loads(os.environ['RESPONSE'])
-          if not data.get('ok'):
-              print('PET wake endpoint returned ok=false')
-              sys.exit(1)
-          if not data.get('ai'):
-              print('XTY PET AI is not configured in production')
-              sys.exit(1)
-          if int(data.get('providerFailures') or 0) > 0:
-              print('PET provider failures detected:', data.get('providerFailures'))
-              sys.exit(1)
-          if int(data.get('deferred') or 0) > 0:
-              print('PET turns were deferred:', data.get('deferred'))
-              sys.exit(1)
-          print('PET scheduler healthy:', json.dumps(data, ensure_ascii=False))
+      - name: Publish XTY Pet Health status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STATE: ${{ steps.probe.outputs.state }}
+          DESCRIPTION: ${{ steps.probe.outputs.description }}
+        shell: bash
+        run: |
+          payload="$(python - <<'PY'
+          import json, os
+          print(json.dumps({
+              'state': os.environ.get('STATE') or 'failure',
+              'context': 'XTY Pet Health',
+              'description': (os.environ.get('DESCRIPTION') or 'PET health check failed')[:140],
+          }))
           PY
+          )"
+          curl --fail-with-body --show-error --silent \
+            --request POST \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Content-Type: application/json" \
+            --data "$payload" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+
+      - name: Fail if PET runtime is unhealthy
+        if: always() && steps.probe.outputs.state != 'success'
+        run: exit 1
