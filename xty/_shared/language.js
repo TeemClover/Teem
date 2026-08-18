@@ -4,9 +4,14 @@
 
 const STORAGE_KEY = 'mc_xty_language_mode';
 const VALID_MODES = new Set(['plain', 'xty']);
-const ON_XTY_SURFACE = location.pathname === '/profile/'
+const HAS_BROWSER = typeof window !== 'undefined'
+  && typeof document !== 'undefined'
+  && typeof location !== 'undefined';
+const ON_XTY_SURFACE = HAS_BROWSER && (
+  location.pathname === '/profile/'
   || location.pathname === '/profile'
-  || location.pathname.startsWith('/xty/');
+  || location.pathname.startsWith('/xty/')
+);
 
 if (ON_XTY_SURFACE) {
   const mode = readMode();
