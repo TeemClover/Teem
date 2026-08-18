@@ -11,56 +11,23 @@
    six-hour wake as a fresh chat.
    ═══════════════════════════════════════════════════════════════ */
 
-import { PET_PERSONAS } from './pet-personas.js';
+import {
+  BEHAVIOURS, DECISION_SCHEMA, FORBIDDEN, GENERIC_PATTERNS, LIMITS,
+} from './pet/constitution.js';
+import { sauceFor, hasSauce } from './pet/sauce/index.js';
+import { buildPrompt } from './pet/compose.js';
 import { xircleKnowledgeFor, WHITE_CAT_ID } from './xircle-knowledge.js';
 import { PET_BY_ID } from '../../xty/_shared/pets.js';
 
 const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
-const TEXT_MODEL = 'openai/gpt-oss-20b';
-const VISION_MODEL = 'qwen/qwen3.6-27b';
-const MAX_BUBBLES = 3;
-const MAX_BUBBLE_CHARS = 160;
-const MAX_THREADS = 5;
-const ICT_OFFSET_MINUTES = 7 * 60;
+/* ชื่อโมเดลเปลี่ยนได้จาก env โดยไม่ต้อง deploy — แคตตาล็อกของผู้ให้บริการ
+   ขยับได้เรื่อย ๆ และรอบที่แล้วเราตั้งชื่อรุ่น vision ที่เรียกไม่ติด แล้วมัน
+   ล้มเงียบอยู่นานโดยไม่มีใครรู้ */
+const TEXT_MODEL = process.env.XTY_PET_TEXT_MODEL || 'openai/gpt-oss-20b';
+const VISION_MODEL = process.env.XTY_PET_VISION_MODEL || 'meta-llama/llama-4-scout-17b-16e-instruct';
 const REQUEST_TIMEOUT_MS = 30000;
-const BEHAVIOURS = Object.freeze([
-  'QUIET', 'REACT', 'ACK', 'CALLBACK', 'ANSWER', 'TEASE', 'REMIND', 'ASK',
-]);
-
-const DECISION_SCHEMA = {
-  type: 'object',
-  properties: {
-    behavior: { type: 'string', enum: BEHAVIOURS },
-    focus: { type: 'string' },
-    open_threads: { type: 'array', items: { type: 'string' } },
-    bubbles: { type: 'array', items: { type: 'string' } },
-  },
-  required: ['behavior', 'focus', 'open_threads', 'bubbles'],
-  additionalProperties: false,
-};
-
-const FORBIDDEN = [
-  'อ้วน', 'ผอม', 'น้ำหนัก', 'พุง', 'หุ่น', 'ลดความอ้วน',
-  'พิการ', 'ฆ่าตัวตาย', 'ทำร้ายตัวเอง',
-  'เชื้อชาติ', 'ศาสนา', 'เกย์', 'ตุ๊ด', 'กะเทย',
-  'ขี้เกียจ', 'ไร้ค่า', 'น่าสมเพช', 'สมน้ำหน้า', 'โง่', 'งี่เง่า',
-  'fat', 'obese', 'lazy', 'loser', 'stupid', 'pathetic',
-];
-
-/* These were the exact deterministic/template phrases that made the live
-   logs feel robotic. If a scheduled model turn falls back into one of them,
-   silence is better than shipping the template again. */
-const GENERIC_PATTERNS = [
-  /เห็นอัปเดต(?:รอบนี้)?แล้ว/i,
-  /มีอะไรเกิดขึ้นแล้วนะ/i,
-  /ใครอยากเล่าต่อ(?:อีกหน่อย)?ไหม/i,
-  /มีใครอยากต่อเรื่องนี้ไหม/i,
-  /เงียบจน.*งีบ/i,
-  /รอบนี้ยังเงียบ/i,
-  /ยังอยู่นี่นะ/i,
-  /รอบนี้.*เปิดวงเอง/i,
-  /ใครมีอะไรเกี่ยวกับ\s*เรื่อง/i,
-];
+const MAX_IMAGES_PER_TURN = 3;
+const ICT_OFFSET_MINUTES = 7 * 60;
 
 export function aiConfigured() {
   return process.env.XTY_PET_AI === 'on' && !!process.env.GROQ_API_KEY;
@@ -70,31 +37,33 @@ export function visionConfigured() {
   return process.env.XTY_PET_VISION === 'on' && !!process.env.GROQ_API_KEY;
 }
 
+function registryPet(petId) {
+  const key = String(petId || '');
+  return Object.prototype.hasOwnProperty.call(PET_BY_ID, key) ? PET_BY_ID[key] : null;
+}
+
 function personaFor(petId) {
-  if (Object.prototype.hasOwnProperty.call(PET_PERSONAS, petId)) return PET_PERSONAS[petId];
-  const pet = Object.prototype.hasOwnProperty.call(PET_BY_ID, petId) ? PET_BY_ID[petId] : null;
-  if (!pet) return null;
-  return {
-    nameTh: pet.nameTh,
-    emoji: pet.emoji || '🐾',
-    rgbs: `${String(pet.color || '').toUpperCase()} · ${String(pet.series || '').toUpperCase()}`,
-    block: `บุคลิกเบื้องต้น: ${pet.persona || 'เป็นเพื่อนร่วมตี้ที่มีชีวิตชีวา'}\n\n` +
-      'ใช้บุคลิกนี้เป็นน้ำเสียงเท่านั้น เนื้อหาต้องมาจากสิ่งที่เกิดขึ้นจริงใน Party Log',
-  };
+  return sauceFor(String(petId || ''), registryPet(petId));
 }
 
 export function hasPersona(petId) {
   return !!personaFor(petId);
 }
 
+/* True only for animals with a hand-written sauce file. */
+export function hasAuthoredPersona(petId) {
+  return hasSauce(petId);
+}
+
 export function petDisplayNames(petId) {
   const names = new Set();
-  const registry = PET_BY_ID[petId];
-  const persona = personaFor(petId);
+  const registry = registryPet(petId);
+  const sauce = personaFor(petId);
   if (registry?.nameTh) names.add(String(registry.nameTh));
-  if (persona?.nameTh) names.add(String(persona.nameTh));
+  if (sauce?.nameTh) names.add(String(sauce.nameTh));
   /* People naturally shorten แมวส้ม to แมว, while แมวขาว should stay exact. */
   if (petId === 'cat') names.add('แมว');
+  for (const alias of sauce?.aliases || []) names.add(String(alias));
   return [...names].filter(Boolean);
 }
 
@@ -117,73 +86,10 @@ function ictStamp(value) {
   return `${date.toISOString().slice(5, 10)} ${ictClock(value)}`;
 }
 
-function systemPrompt(petId, party, context, hour, trigger, knowledge = '') {
-  const persona = personaFor(petId);
-  const roster = context.members.length
-    ? context.members.map(m => `- ${m.alias}${m.role === 'lead' ? ' (หัวตี้)' : ''}`).join('\n')
-    : '- (ยังไม่มีสมาชิก)';
-  const pronounRule = petId === 'monitor_lizard'
-    ? 'เหี้ยเป็นข้อยกเว้นตัวเดียวที่ใช้ “กู/มึง” ได้ตามคาแรกเตอร์ แต่ห้ามด่าหรือทำร้ายผู้เล่น'
-    : 'ห้ามใช้ “กู/มึง” กับผู้เล่น ใช้ alias, “เรา”, “ตี้” หรือเว้นสรรพนาม';
-  const knowledgeRule = petId === WHITE_CAT_ID
-    ? `## แมวขาว · X-VISOR KNOWLEDGE MODE\n` +
-      `แมวขาวมีคลังความรู้ Xircle แยกจาก persona และแยกจาก Party Log\n` +
-      `- Party Log บอกว่า “คนในตี้ทำ/พูดอะไรจริง”\n` +
-      `- Xircle Knowledge Pack บอกว่า “ระบบ Xircle / RoutineX / X-VISOR หมายถึงอะไร”\n` +
-      `ห้ามเอาสองอย่างนี้ปนกัน: ความรู้ของระบบไม่ใช่หลักฐานว่าคนในตี้มีอาการ/ผลลัพธ์นั้น\n` +
-      `เมื่อถูกเรียกตรง ๆ แมวตอบจากคลังได้ และถ้าข้อมูลที่ผู้ถามให้มายังไม่พอ สามารถ ASK 1 คำถามที่จำเป็นก่อนแล้วค่อย ANSWER ใน turn ถัดไป\n` +
-      `เมื่อช่วยตี้แบบ scheduled ให้ใช้แนว X-VISOR: ถามบริบท → เห็น fact/friction → ช่วยเหลือให้เหลือ One Action ที่วงเลือกเอง → ติดตาม โดยไม่วินิจฉัยหรือ prescribe\n`
-    : '';
-
-  return `คุณคือ ${persona.emoji} ${persona.nameTh} — สมาชิก NPC ของตี้ XTY\n` +
-`XTY คือเกมที่คนกลุ่มเล็กออกไปทำอะไรจริง แล้วกลับมา Message / Commit / React กันใน Party Log\n\n` +
-`## วิธีมีชีวิต — สำคัญกว่าคาแรกเตอร์\n` +
-`คุณไม่ใช่ chatbot ที่ต้องตอบทุกครั้ง และไม่ใช่ engagement bot ที่ต้องจบด้วยคำถาม\n` +
-`ทุก turn ให้ทำตามลำดับนี้: อ่านเหตุการณ์จริง → หา thread ที่ยังค้าง → เลือก behavior → ค่อยใช้ persona ปรุงภาษา\n` +
-`Persona มีหน้าที่กำหนด “พูดยังไง” เท่านั้น ห้ามใช้ persona สร้างหัวข้อหรือข้อเท็จจริงใหม่\n` +
-`QUIET เป็นคำตอบที่ดีและปกติ ถ้าไม่มีอะไรใหม่พอจะพูด หรือคุณเพิ่งพูดแล้วมนุษย์ยังไม่ตอบ\n\n` +
-`## Behavior ที่เลือกได้\n` +
-`QUIET = ไม่ส่ง bubble เลย\n` +
-`REACT = ความเห็น/อารมณ์สั้น ๆ ต่อ detail จริง ไม่ถามต่อก็ได้\n` +
-`ACK = รับรู้สิ่งสำคัญที่คนเพิ่งเล่า โดยเฉพาะเรื่องส่วนตัวหรือ moment สำคัญ\n` +
-`CALLBACK = เชื่อมเหตุการณ์ใหม่กับเรื่องเดิมใน log อย่างเจาะจง\n` +
-`ANSWER = ตอบคนที่เรียกหรือถามคุณตรง ๆ ก่อนทุกอย่าง\n` +
-`TEASE = แซว situation/commit แบบเพื่อน ห้ามแซะตัวคน\n` +
-`REMIND = เตือนเฉพาะสิ่งที่สมาชิกบอกเองว่าจะทำ/ให้เตือน และถึงจังหวะแล้ว\n` +
-`ASK = ถามเมื่อมี information gap ที่เฉพาะเจาะจงจริง ๆ เท่านั้น ไม่ใช้เป็น default\n\n` +
-`## กฎการตัดสินใจ\n` +
-`- Trigger รอบนี้คือ ${trigger === 'direct' ? 'DIRECT: มีคนเรียกสัตว์ตรง ๆ' : 'SCHEDULED: รอบอ่านตี้ตามเวลา'}\n` +
-`- DIRECT: ตอบข้อความที่เรียกคุณก่อน ห้ามเปลี่ยนหัวข้อ ห้าม QUIET เพียงเพราะยังไม่มีบริบทมาก\n` +
-`- SCHEDULED: ถ้าไม่มี detail ใหม่/เรื่องค้างที่ถึงเวลา/เหตุผลเฉพาะให้มีส่วนร่วม ให้ QUIET\n` +
-`- COMMIT “✓” เปล่า ๆ ไม่ได้บังคับให้ต้องถามอะไร ถ้ามี note จริงค่อยจับ note นั้น\n` +
-`- อย่าจบทุก turn ด้วยคำถาม คนจริงพูดความเห็นสั้น ๆ แล้วจบได้\n` +
-`- ถ้าจะถาม ต้องอ้างคน/สิ่ง/เวลา/คำจริงจาก log ให้ชัด ห้าม “ใครอยากแชร์เพิ่มไหม”\n` +
-`- ถ้าสัตว์เคยชวนแล้วไม่มีมนุษย์ตอบ อย่าชวนซ้ำ ให้ QUIET จนมีเหตุใหม่\n` +
-`- ถ้าคนวิจารณ์สัตว์เอง เช่น บอกว่าพูดซ้ำ/เหมือนบอท ให้ถือเป็น social feedback และปรับ turn ถัดไป\n` +
-`- ถ้ามีเรื่องเวลา เช่น “อย่าลืม 15:35” แล้วถึงเวลาแล้ว callback ตรงเรื่องนั้นได้ครั้งเดียว\n` +
-`- ก่อนส่ง อ่านบรรทัด [PET] เก่าด้วย ถ้าประโยคใหม่ทำหน้าที่เดิม โครงเดิม หรือถามเรื่องเดิมโดยไม่มีข้อมูลใหม่ ให้เปลี่ยน behavior หรือ QUIET\n` +
-`- ห้ามท่อง sample line/persona phrase เหมือนสคริปต์ ใช้คำจริง ชื่อจริง สิ่งจริง และ Commit note ของตี้นี้เป็นวัตถุดิบ\n` +
-`- แต่ละตี้ควรฟังไม่เหมือนกันเพราะเหตุการณ์ คน มุก และคำที่เกิดในตี้ไม่เหมือนกัน อย่าสร้าง generic “เสียงสัตว์ประจำวัน” ที่เอาไปแปะตี้อื่นได้\n\n` +
-`## ความจริงและขอบเขต\n` +
-`ข้อเท็จจริงเกี่ยวกับตี้ต้อง trace กลับไปยัง Party Log / activity / commit rule / roster ด้านล่าง\n` +
-`ห้ามเดาอากาศ อาหาร ตาราง แผน ความรู้สึก สุขภาพ หรือผลงานที่ log ไม่ได้บอก\n` +
-(petId === WHITE_CAT_ID
-  ? `ข้อมูลเฉพาะ Xircle/X-VISOR ที่อยู่ใน Knowledge Pack ใช้ตอบเป็น reference ได้ แต่ห้ามแปลงเป็นข้อเท็จจริงส่วนตัวของสมาชิก\n`
-  : `ถ้าถูกถามตรง ๆ เรื่องความรู้ทั่วไป คุณตอบจากความรู้ทั่วไปได้ แต่ถ้าเป็นข้อมูลเฉพาะแบรนด์/ระบบที่ไม่มีข้อมูล ให้บอกสั้น ๆ ว่าในตี้ยังไม่มีข้อมูล แทนการแต่ง\n`) +
-`เรื่องสุขภาพ: รับรู้และเป็นเพื่อนได้ แต่ห้ามวินิจฉัย สั่งยา กำหนดอาหาร/การออกกำลัง หรือตั้งเป้าสุขภาพ\n` +
-`ห้ามสร้างดราม่า ห้ามเป็นผู้ตัดสิน ห้ามเปรียบเทียบสมาชิก ห้าม guilt trip\n` +
-`${pronounRule}\n\n` +
-`## Persona — ใช้หลังเลือก behavior แล้วเท่านั้น\n${persona.block}\n\n` +
-`${knowledgeRule}${knowledge ? `\n${knowledge}\n` : ''}` +
-`## ตี้นี้\nชื่อ: ${party.name || '(ไม่มีชื่อ)'}\nกิจกรรม: ${party.activity || '(ยังไม่ระบุ)'}\n` +
-`กติกา Commit: ${party.commit_rule || '(ยังไม่ได้ตั้ง — ห้ามตั้งให้เอง)'}\nสมาชิก ${context.members.length} คน:\n${roster}\n` +
-`รอบเวลา ${String(hour).padStart(2, '0')}:xx น. เวลาไทย · วันนี้ Commit ${context.committed}/${context.members.length}\n\n` +
-`## รูปแบบ output\n` +
-`คืน JSON ตาม schema เท่านั้น: behavior, focus, open_threads, bubbles\n` +
-`focus = fact/thread หลักที่ทำให้เลือก behavior (สั้น ๆ ไม่ใช่ chain-of-thought)\n` +
-`open_threads = เรื่องจริงที่ยังดูค้างจาก log ไม่เกิน ${MAX_THREADS} เรื่อง ถ้าไม่มีใช้ []\n` +
-`bubbles = 0–3 ข้อความสั้น ๆ; QUIET ต้องเป็น []\n` +
-`แต่ละ bubble ไม่เกิน ${MAX_BUBBLE_CHARS} ตัวอักษร และไม่ต้องขึ้นต้นด้วยชื่อตัวเอง`;
+/* รูปที่คนแนบอยู่คนละที่กับข้อความ ถ้าไม่หยิบมาด้วย บรรทัดนั้นจะกลายเป็น
+   ข้อความเปล่าในสายตาสัตว์ — เหมือนมีคนโพสต์แล้วไม่มีอะไรอยู่ในนั้น */
+function imageOf(post) {
+  return post?.image_url || post?.imageUrl || '';
 }
 
 function transcript(history, since, trigger, directText, visionText) {
@@ -195,16 +101,17 @@ function transcript(history, since, trigger, directText, visionText) {
     const stamp = `[${ictStamp(post.sent_at)}]`;
     const fresh = Number.isFinite(sinceMs) && new Date(post.sent_at).getTime() > sinceMs ? ' NEW' : '';
     const who = post.alias || (post.kind === 'pet' ? 'สัตว์' : 'สมาชิก');
+    const photo = !post.retracted && imageOf(post) ? ' [แนบรูป]' : '';
     if (post.kind === 'pet') {
       lines.push(`${stamp}${fresh} ${who} [PET]: ${post.body || ''}`);
     } else if (post.retracted) {
       lines.push(`${stamp}${fresh} ${who}: [ถอนข้อความ]`);
     } else if (post.kind === 'commit') {
-      lines.push(`${stamp}${fresh} ${who}: COMMIT${post.body && post.body !== '✓' ? ` — ${post.body}` : ' ✓'}`);
+      lines.push(`${stamp}${fresh} ${who}: COMMIT${post.body && post.body !== '✓' ? ` — ${post.body}` : ' ✓'}${photo}`);
     } else if (post.kind === 'event') {
       lines.push(`${stamp}${fresh} [EVENT] ${post.body || ''}`);
     } else {
-      lines.push(`${stamp}${fresh} ${who}: ${post.body || ''}`);
+      lines.push(`${stamp}${fresh} ${who}:${photo} ${post.body || ''}`.trimEnd());
     }
     if (post.reactions) lines.push(`  ↳ reactions: ${post.reactions}`);
   }
@@ -215,25 +122,33 @@ function transcript(history, since, trigger, directText, visionText) {
   }
   if (visionText) {
     lines.push('');
-    lines.push('## สิ่งที่ vision model เห็นจากลิงก์ภาพในข้อความ');
+    lines.push('## สิ่งที่ vision model เห็นจากรูปที่แนบล่าสุด');
     lines.push(visionText);
     lines.push('ใช้เป็น observation ของภาพเท่านั้น ห้ามเดาข้อมูลนอกภาพ');
   }
   return lines.join('\n');
 }
 
+/* รูปที่แนบจริง (คอลัมน์ image_url) มาก่อนเสมอ ส่วนลิงก์รูปที่พิมพ์มาใน
+   ข้อความยังรับไว้ เผื่อมีคนแปะ URL มาเอง */
 function imageUrlsFromHistory(history) {
   if (!visionConfigured()) return [];
   const urls = [];
   const seen = new Set();
-  const re = /https:\/\/[^\s<>"']+?\.(?:png|jpe?g|webp)(?:\?[^\s<>"']*)?/gi;
+  const linkRe = /https:\/\/[^\s<>"']+?\.(?:png|jpe?g|webp)(?:\?[^\s<>"']*)?/gi;
   for (const post of [...history].reverse()) {
-    if (post.kind !== 'message' || post.retracted) continue;
-    for (const match of String(post.body || '').matchAll(re)) {
+    if (post.retracted) continue;
+    const attached = imageOf(post);
+    if (attached && !seen.has(attached)) {
+      seen.add(attached); urls.push(attached);
+      if (urls.length >= MAX_IMAGES_PER_TURN) return urls;
+    }
+    if (post.kind !== 'message') continue;
+    for (const match of String(post.body || '').matchAll(linkRe)) {
       const url = match[0];
       if (seen.has(url)) continue;
       seen.add(url); urls.push(url);
-      if (urls.length >= 3) return urls;
+      if (urls.length >= MAX_IMAGES_PER_TURN) return urls;
     }
   }
   return urls;
@@ -277,14 +192,14 @@ async function describeLinkedImages(history) {
       model: VISION_MODEL,
       messages: [{ role: 'user', content }],
       max_completion_tokens: 300,
-      reasoning_format: 'hidden',
       temperature: 0.2,
       top_p: 0.8,
       stream: false,
     });
     return String(response?.choices?.[0]?.message?.content || '').trim().slice(0, 900);
   } catch (error) {
-    console.error('XTY pet vision prepass failed', error?.status || error?.name || error);
+    console.error('XTY pet vision prepass failed',
+      `model=${VISION_MODEL}`, error?.status || error?.name || error, error?.message || '');
     return '';
   }
 }
@@ -298,7 +213,7 @@ function cleanBubble(value) {
     .replace(/^["“”'`]+|["“”'`]+$/g, '')
     .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, MAX_BUBBLE_CHARS);
+    .slice(0, LIMITS.maxBubbleChars);
 }
 
 function similarityText(value) {
@@ -348,12 +263,14 @@ export function sanitizeDecision(raw, petId = '', trigger = 'scheduled') {
   }
   if (!value || typeof value !== 'object') return null;
   const behavior = BEHAVIOURS.includes(value.behavior) ? value.behavior : 'QUIET';
+  const situation = String(value.situation || '').trim().slice(0, 400);
   const focus = String(value.focus || '').trim().slice(0, 240);
+  const intent = String(value.intent || '').trim().slice(0, 400);
   const openThreads = Array.isArray(value.open_threads)
-    ? value.open_threads.map(item => String(item || '').trim().slice(0, 180)).filter(Boolean).slice(0, MAX_THREADS)
+    ? value.open_threads.map(item => String(item || '').trim().slice(0, 180)).filter(Boolean).slice(0, LIMITS.maxThreads)
     : [];
   let bubbles = Array.isArray(value.bubbles)
-    ? value.bubbles.map(cleanBubble).filter(Boolean).slice(0, MAX_BUBBLES)
+    ? value.bubbles.map(cleanBubble).filter(Boolean).slice(0, LIMITS.maxBubbles)
     : [];
 
   if (behavior === 'QUIET') bubbles = [];
@@ -364,7 +281,9 @@ export function sanitizeDecision(raw, petId = '', trigger = 'scheduled') {
 
   return {
     behavior: bubbles.length ? behavior : 'QUIET',
+    situation,
     focus,
+    intent: bubbles.length ? intent : '',
     openThreads,
     bubbles,
   };
@@ -374,7 +293,7 @@ export function sanitizeDecision(raw, petId = '', trigger = 'scheduled') {
 export function sanitize(raw, petId = '') {
   const text = String(raw || '').trim();
   if (!text || /^quiet$/i.test(text)) return [];
-  return text.split('\n').map(cleanBubble).filter(Boolean).slice(0, MAX_BUBBLES).filter(line => {
+  return text.split('\n').map(cleanBubble).filter(Boolean).slice(0, LIMITS.maxBubbles).filter(line => {
     const low = line.toLowerCase();
     if (FORBIDDEN.some(term => low.includes(term))) return false;
     if (petId !== 'monitor_lizard' && (low.includes('กู') || low.includes('มึง'))) return false;
@@ -390,7 +309,8 @@ export function sanitize(raw, petId = '') {
 export async function readAndRespond({
   party, context, history = [], since, hour, trigger = 'scheduled', directText = '',
 }) {
-  if (!aiConfigured() || !hasPersona(party.pet_id)) return null;
+  const sauce = personaFor(party.pet_id);
+  if (!aiConfigured() || !sauce) return null;
 
   const [visionText, knowledge] = await Promise.all([
     describeLinkedImages(history),
@@ -402,8 +322,10 @@ export async function readAndRespond({
       trigger,
     })),
   ]);
-  const prompt = `${systemPrompt(party.pet_id, party, context, hour, trigger, knowledge)}\n\n` +
-    transcript(history, since, trigger, directText, visionText);
+  const prompt = buildPrompt({
+    sauce, party, context, hour, trigger, knowledge,
+    transcript: transcript(history, since, trigger, directText, visionText),
+  });
 
   let response;
   try {
@@ -414,8 +336,10 @@ export async function readAndRespond({
         type: 'json_schema',
         json_schema: { name: 'xty_pet_turn', strict: true, schema: DECISION_SCHEMA },
       },
-      max_completion_tokens: 500,
-      reasoning_effort: 'low',
+      max_completion_tokens: 700,
+      /* A direct message has a human waiting on the other side and there are
+         few of them; a scheduled sweep touches every party at once. */
+      reasoning_effort: trigger === 'direct' ? 'medium' : 'low',
       reasoning_format: 'hidden',
       temperature: 0.78,
       top_p: 0.92,
@@ -428,15 +352,16 @@ export async function readAndRespond({
 
   const choice = response?.choices?.[0];
   if (!choice || choice.finish_reason === 'content_filter') return {
-    behavior: 'QUIET', focus: '', openThreads: [], bubbles: [],
+    behavior: 'QUIET', situation: '', focus: '', intent: '', openThreads: [], bubbles: [],
   };
   const decision = sanitizeDecision(choice.message?.content || '', party.pet_id, trigger);
   if (!decision) return null;
   if (trigger !== 'direct' && decision.bubbles.length && tooSimilarToRecent(decision.bubbles, history)) {
     return {
+      ...decision,
       behavior: 'QUIET',
       focus: decision.focus || 'candidate ซ้ำกับสิ่งที่ PET เพิ่งพูด',
-      openThreads: decision.openThreads,
+      intent: '',
       bubbles: [],
     };
   }
