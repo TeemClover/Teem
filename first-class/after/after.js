@@ -6,10 +6,21 @@
   const nodes=[...document.querySelectorAll('.node')];
   const xp=document.getElementById('xp');
   const scoreScale=document.getElementById('scoreScale');
+  const startButton=document.getElementById('startButton');
   const XTY_REWARD_KEY='mc_first_class_after_xty_reward_v1';
+  const DONE_KEY='mc_first_class_after_done_v1';
   const XTY_REWARD_QUEST='first-class:after-taste:2026-08-18';
   let step=0;
   let submitted=false;
+
+  startButton.insertAdjacentHTML('beforebegin',`
+    <div id="playerGate" style="width:min(100%,440px);margin:18px auto 10px;text-align:left">
+      <label for="gateEmail" style="display:block;margin-bottom:6px;font-weight:700;font-size:12px;color:#c9ddd2">PLAYER CHECK · Email ที่ใช้สมัคร First Class</label>
+      <input id="gateEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" style="width:100%;min-height:48px;border:1px solid rgba(255,255,255,.18);border-radius:13px;background:rgba(255,255,255,.08);color:#fff;padding:0 14px;font:600 15px 'IBM Plex Sans Thai',sans-serif;outline:none">
+      <div id="gateMessage" style="min-height:18px;margin-top:6px;color:#f2cc7d;font-size:11px;line-height:1.5"></div>
+    </div>`);
+  const gateEmail=document.getElementById('gateEmail');
+  const gateMessage=document.getElementById('gateMessage');
 
   for(let i=1;i<=10;i++){
     scoreScale.insertAdjacentHTML('beforeend',`<label class="choice"><input type="radio" name="score" value="${i}"><span>${i}</span></label>`);
@@ -19,31 +30,94 @@
   const text=name=>(form.elements[name]?.value||'').trim();
   const checks=name=>[...form.querySelectorAll(`[name="${name}"]:checked`)].map(x=>x.value);
   const escapeHtml=s=>String(s||'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const validEmail=value=>/^\S+@\S+\.\S+$/.test(String(value||'').trim());
 
-  function readRewardState(){
-    try{return JSON.parse(localStorage.getItem(XTY_REWARD_KEY)||'null')}catch{return null}
+  function readJson(key){
+    try{return JSON.parse(localStorage.getItem(key)||'null')}catch{return null}
   }
-  function writeRewardState(value){
-    try{localStorage.setItem(XTY_REWARD_KEY,JSON.stringify(value))}catch{}
+  function writeJson(key,value){
+    try{localStorage.setItem(key,JSON.stringify(value))}catch{}
   }
-  async function cloudRewardState(){
+  function readRewardState(){return readJson(XTY_REWARD_KEY)}
+  function writeRewardState(value){writeJson(XTY_REWARD_KEY,value)}
+  function readDoneState(){return readJson(DONE_KEY)}
+  function writeDoneState(value){writeJson(DONE_KEY,value)}
+
+  async function cloudState(key){
     try{
-      const response=await fetch('/api/progress',{credentials:'same-origin'});
+      const response=await fetch('/api/progress',{credentials:'same-origin',cache:'no-store'});
       if(!response.ok)return null;
       const data=await response.json();
-      const raw=data?.progress?.[XTY_REWARD_KEY];
+      const raw=data?.progress?.[key];
       if(!raw)return null;
       return typeof raw==='string'?JSON.parse(raw):raw;
     }catch{return null}
   }
-  async function pushRewardMarker(state){
+  async function pushProgressMarker(key,state){
     try{
       const response=await fetch('/api/progress',{
         method:'PUT',credentials:'same-origin',headers:{'content-type':'application/json'},
-        body:JSON.stringify({progress:{[XTY_REWARD_KEY]:JSON.stringify(state)}})
+        body:JSON.stringify({progress:{[key]:JSON.stringify(state)}})
       });
       return response.ok;
     }catch{return false}
+  }
+
+  async function existingCompletion(){
+    const localDone=readDoneState();
+    if(localDone?.completed)return localDone;
+    const localReward=readRewardState();
+    if(localReward?.claimed)return {...localReward,completed:true};
+
+    const [cloudDone,cloudReward]=await Promise.all([cloudState(DONE_KEY),cloudState(XTY_REWARD_KEY)]);
+    if(cloudDone?.completed){writeDoneState(cloudDone);return cloudDone}
+    if(cloudReward?.claimed){writeRewardState(cloudReward);return {...cloudReward,completed:true}}
+
+    try{
+      const store=await import('/xty/_shared/store.js');
+      try{
+        const account=await import('/xty/_shared/account.js');
+        await account.syncXtyProfile({recoverParties:false});
+      }catch{}
+      const reward=store.cardRewardForQuest?.(XTY_REWARD_QUEST);
+      if(reward?.rewardId){
+        const state={completed:true,claimed:true,rewardId:reward.rewardId,cardId:reward.cardId||null,earnedAt:reward.earnedAt||'',source:'xty-profile'};
+        writeDoneState(state);writeRewardState(state);
+        return state;
+      }
+    }catch{}
+    return null;
+  }
+
+  function showAlreadyCleared(state={}){
+    submitted=true;
+    form.hidden=true;
+    result.classList.remove('active');
+    quests.forEach(item=>item.classList.remove('active'));
+    nodes.forEach(node=>{node.classList.remove('now');node.classList.add('done')});
+    xp.textContent=state?.rewardId?'500 XP · +1 CARD':'500 XP';
+    const rewardLink=state?.rewardId
+      ?`<a href="/xty/reveal/?r=${encodeURIComponent(state.rewardId)}" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin:16px 6px 0;padding:0 18px;border-radius:13px;background:#f2cc7d;color:#13291f;text-decoration:none;font-weight:900">ดูการ์ดที่ได้รับ →</a>`
+      :`<a href="/collection/" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin:16px 6px 0;padding:0 18px;border-radius:13px;background:#f2cc7d;color:#13291f;text-decoration:none;font-weight:900">เปิด Collection →</a>`;
+    intro.hidden=false;
+    intro.innerHTML=`
+      <span class="eyebrow">QUEST ALREADY CLEAR</span>
+      <h1>ด่านนี้<em>เคลียร์แล้ว ✓</em></h1>
+      <p>คุณกรอกแบบสอบถามและรับรางวัล AFTER TASTE ไปแล้ว ด่านนี้รับรางวัลได้ 1 ครั้งต่อผู้เรียน จึงไม่ต้องกรอกซ้ำครับ</p>
+      ${rewardLink}
+      <a href="/first-class/" style="display:inline-flex;align-items:center;justify-content:center;min-height:48px;margin:16px 6px 0;padding:0 18px;border-radius:13px;border:1px solid rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:800">กลับ First Class</a>
+      <small class="fine">รีวิวเดิมยังถูกเก็บไว้ตามสิทธิ์การเผยแพร่ที่คุณเลือก</small>`;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  async function checkServerReviewed(email){
+    const response=await fetch('/api/first-class-review',{
+      method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({action:'check_status',email})
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.ok)throw new Error(data.message||'ตรวจสถานะไม่สำเร็จ');
+    return data;
   }
 
   async function grantXtyCard(payload,reviewReference){
@@ -54,7 +128,7 @@
       await account.syncXtyProfile({recoverParties:false});
     }catch{}
 
-    let state=readRewardState()||await cloudRewardState();
+    let state=readRewardState()||await cloudState(XTY_REWARD_KEY);
     if(state?.claimed&&state.rewardId){
       writeRewardState(state);
       return state;
@@ -74,6 +148,7 @@
 
     state={
       claimed:true,
+      completed:true,
       rewardId:reward.rewardId,
       cardId:reward.cardId,
       reviewReference:reviewReference||'',
@@ -89,7 +164,7 @@
         cloudSaved=!saved?.error;
       }
     }catch{}
-    const markerSaved=await pushRewardMarker(state);
+    const markerSaved=await pushProgressMarker(XTY_REWARD_KEY,state);
     return {...state,cloudSaved:cloudSaved||markerSaved};
   }
 
@@ -143,9 +218,36 @@
     return'';
   }
 
-  document.getElementById('startButton').addEventListener('click',()=>{
-    intro.hidden=true;
-    show(0);
+  startButton.addEventListener('click',async()=>{
+    const email=String(gateEmail.value||'').trim().toLowerCase();
+    gateMessage.textContent='';
+    if(!validEmail(email)){
+      gateMessage.textContent='ใส่ Email ที่ใช้สมัคร First Class ก่อนครับ';
+      gateEmail.focus();
+      return;
+    }
+    startButton.disabled=true;
+    const original=startButton.textContent;
+    startButton.textContent='กำลังตรวจสิทธิ์…';
+    try{
+      const local=await existingCompletion();
+      if(local)return showAlreadyCleared(local);
+      const status=await checkServerReviewed(email);
+      if(status.reviewed){
+        const done={completed:true,reviewReference:status.reviewReference||'',source:'review-database'};
+        writeDoneState(done);
+        pushProgressMarker(DONE_KEY,done).catch(()=>{});
+        return showAlreadyCleared(done);
+      }
+      form.elements.email.value=email;
+      form.elements.email.readOnly=true;
+      intro.hidden=true;
+      show(0);
+    }catch(error){
+      gateMessage.textContent=error.message||'ตรวจสิทธิ์สะดุด ลองอีกครั้งครับ';
+    }finally{
+      if(!submitted){startButton.disabled=false;startButton.textContent=original}
+    }
   });
 
   quests.forEach((q,i)=>{
@@ -193,12 +295,25 @@
         method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)
       });
       const data=await response.json().catch(()=>({}));
+      if(response.status===409&&data.code==='ALREADY_REVIEWED'){
+        const done={completed:true,reviewReference:data.reviewReference||'',source:'review-database'};
+        writeDoneState(done);pushProgressMarker(DONE_KEY,done).catch(()=>{});
+        return showAlreadyCleared(done);
+      }
       if(!response.ok||!data.ok)throw new Error(data.message||`บันทึกไม่สำเร็จ (${response.status})`);
+
+      const done={completed:true,reviewReference:data.reviewReference||'',completedAt:new Date().toISOString(),source:'first-class-after-taste'};
+      writeDoneState(done);
+      pushProgressMarker(DONE_KEY,done).catch(()=>{});
 
       const xtyReward=await grantXtyCard(payload,data.reviewReference).catch(error=>{
         console.error('XTY reward failed',error);
         return null;
       });
+      if(xtyReward){
+        writeDoneState({...done,...xtyReward,completed:true});
+        pushProgressMarker(DONE_KEY,{...done,...xtyReward,completed:true}).catch(()=>{});
+      }
 
       const mode=payload.consentMode;
       document.getElementById('cardScore').textContent=`★ ${payload.score}/10`;
@@ -230,4 +345,14 @@
       console.error('After Taste save failed',error);
     }
   }
+
+  (async()=>{
+    startButton.disabled=true;
+    const original=startButton.textContent;
+    startButton.textContent='กำลังตรวจสถานะ…';
+    const existing=await existingCompletion();
+    if(existing)return showAlreadyCleared(existing);
+    startButton.disabled=false;
+    startButton.textContent=original;
+  })();
 })();
