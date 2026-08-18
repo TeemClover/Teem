@@ -28,7 +28,7 @@ export default function handler(req, res) {
   const rawRoute = routeOf(req).replace(/^\/+|\/+$/g, '');
   const route = rawRoute.split('/').filter(Boolean)[0] || '';
 
-  if (rawRoute === 'first-class/review') return handleFirstClassReview(req, res);
+  if (rawRoute === 'first-class/review' || rawRoute === 'first-class-review') return handleFirstClassReview(req, res);
   if (route === 'xty-mine') return handleXtyMine(req, res);
   if (route === 'xty-stars') return handleXtyStars(req, res);
   if (route === 'xty-party-finish' || finishRequest(req, rawRoute)) {
