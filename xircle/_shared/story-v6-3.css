@@ -51,7 +51,7 @@
 .xp-story .xp-choices,
 .xp-story .xp-food-choices{pointer-events:auto!important}
 
-/* RoutineX — one diagram stays mounted for the whole chapter. */
+/* RoutineX desktop — one diagram stays mounted for the whole chapter. */
 .xp-routinex-story .xp-stage{isolation:isolate}
 .xp-routinex-story .xp-scene{z-index:2;background:transparent}
 .xp-routinex-story .xp-routine-persistent{
@@ -84,10 +84,19 @@
 .xp-routinex-story .xp-routine-map[data-active="F"] .f,
 .xp-routinex-story .xp-routine-map[data-active="ALL"] .xp-routine-node{transition:none!important}
 
-/* Final RoutineX payoff: swap the teaching diagram for the real product-system
-   artwork only after A/B/C/D/F have been seen. The image is the reward, not an
-   extra competing hero during the lesson. */
-.xp-routinex-story .xp-routine-summary-image{display:none!important;width:100%!important;height:auto!important;max-height:100%!important;object-fit:contain!important;border-radius:inherit}
+/* Final RoutineX payoff: after all five parts, replace the teaching map with
+   the finished RoutineX artwork and open the optional product window. */
+.xp-routinex-story .xp-routine-summary-image{
+  display:none!important;
+  width:100%!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  border-radius:inherit;
+  background:#07120f;
+}
 .xp-routinex-story .xp-routine-map[data-active="SUMMARY"]{display:none!important}
 .xp-routinex-story .xp-routine-map[data-active="SUMMARY"] + .xp-routine-summary-image{display:block!important}
 
@@ -118,68 +127,97 @@
     object-fit:contain!important;
   }
 
-  /* RoutineX phone layout: reserve a real row for the persistent map, then
-     start copy below it. Copy is never allowed to float back over the map. */
+  /* RoutineX phone: do not rely on scene-grid row sizing. Safari could collapse
+     that row and let copy overlap the absolute persistent diagram. The diagram
+     and copy now own two explicit, non-overlapping rectangles of the viewport. */
+  .xp-routinex-story{
+    --rx-mobile-art-h:clamp(210px,31dvh,270px);
+  }
   .xp-routinex-story .xp-routine-persistent{
-    top:56px;
-    left:12px;
-    right:12px;
-    bottom:auto;
-    width:auto;
-    height:min(31dvh,270px);
-    max-height:270px;
-    min-height:210px;
-    border-radius:0 0 24px 24px;
+    position:absolute!important;
+    z-index:3!important;
+    top:52px!important;
+    left:12px!important;
+    right:12px!important;
+    bottom:auto!important;
+    width:auto!important;
+    height:var(--rx-mobile-art-h)!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    border-radius:0 0 24px 24px!important;
+    overflow:hidden!important;
   }
   .xp-routinex-story .xp-routine-scene-shell{
-    grid-template-columns:1fr!important;
-    grid-template-rows:minmax(220px,33dvh) minmax(0,1fr)!important;
-    gap:0!important;
+    display:block!important;
+    position:relative!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    margin:0 auto!important;
+    padding:0!important;
   }
   .xp-routinex-story .xp-routine-scene-shell .xp-copy{
-    grid-column:1;
-    grid-row:2;
-    align-self:stretch;
-    justify-content:flex-start;
-    min-height:0;
-    padding-top:10px;
-    overflow:visible;
+    position:absolute!important;
+    z-index:5!important;
+    left:12px!important;
+    right:12px!important;
+    top:calc(var(--rx-mobile-art-h) + 14px)!important;
+    bottom:max(8px,env(safe-area-inset-bottom))!important;
+    width:auto!important;
+    max-width:none!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:4px 0 6px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:flex-start!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
   }
-  .xp-routinex-story .xp-routine-spacer{
-    grid-column:1;
-    grid-row:1;
-    min-height:0;
-  }
-  .xp-routinex-story .xp-routine-map{width:min(72vw,280px)}
+  .xp-routinex-story .xp-routine-spacer{display:none!important}
+  .xp-routinex-story .xp-routine-map{width:min(72vw,278px)!important}
+  .xp-routinex-story .xp-title,
   .xp-routinex-story .xp-title.sm{
-    max-width:13ch;
-    font-size:clamp(32px,8.8vw,44px)!important;
-    line-height:.99;
+    max-width:100%!important;
+    font-size:clamp(28px,7.5vw,36px)!important;
+    line-height:1.05!important;
+    letter-spacing:-.025em!important;
   }
+  .xp-routinex-story .xp-routine-term{
+    flex-wrap:wrap;
+    row-gap:3px;
+    margin-bottom:7px;
+  }
+  .xp-routinex-story .xp-routine-term b{font-size:24px!important}
+  .xp-routinex-story .xp-routine-term span{font-size:12px!important;line-height:1.25!important}
   .xp-routinex-story .xp-lede{
-    margin-top:10px;
-    font-size:15px;
+    margin-top:9px;
+    font-size:14px;
     line-height:1.43;
   }
-  .xp-routinex-story .xp-routine-support{margin-top:10px;font-size:12px;line-height:1.42}
-  .xp-routinex-story .xp-actions{margin-top:12px}
-  .xp-routinex-story .xp-btn{min-height:46px;padding:10px 16px}
-  .xp-routinex-story .xp-routine-map[data-active="SUMMARY"] + .xp-routine-summary-image{width:100%!important;height:100%!important;object-fit:contain!important;border-radius:0 0 24px 24px}
+  .xp-routinex-story .xp-routine-support{margin-top:9px;font-size:11px;line-height:1.42}
+  .xp-routinex-story .xp-routine-sequence{margin-bottom:3px}
+  .xp-routinex-story .xp-actions{margin-top:11px;gap:7px}
+  .xp-routinex-story .xp-btn{min-height:44px;padding:9px 15px;font-size:13px}
+  .xp-routinex-story .xp-mini{margin-top:7px;font-size:9px;line-height:1.4}
+  .xp-routinex-story .xp-routine-map[data-active="SUMMARY"] + .xp-routine-summary-image{
+    width:100%!important;
+    height:100%!important;
+    object-fit:contain!important;
+    border-radius:0 0 24px 24px!important;
+  }
 }
 
 @media(max-height:680px) and (max-width:780px){
-  .xp-routinex-story .xp-routine-persistent{
-    top:54px;
-    height:min(27dvh,210px);
-    max-height:210px;
-    min-height:180px;
-  }
-  .xp-routinex-story .xp-routine-scene-shell{
-    grid-template-rows:minmax(190px,29dvh) minmax(0,1fr)!important;
-  }
-  .xp-routinex-story .xp-routine-map{width:min(64vw,238px)}
-  .xp-routinex-story .xp-title.sm{font-size:clamp(29px,8vw,39px)!important}
-  .xp-routinex-story .xp-lede{font-size:14px;line-height:1.36;margin-top:8px}
-  .xp-routinex-story .xp-routine-support{margin-top:8px;font-size:11px}
-  .xp-routinex-story .xp-actions{margin-top:9px}
+  .xp-routinex-story{--rx-mobile-art-h:clamp(175px,27dvh,210px)}
+  .xp-routinex-story .xp-routine-map{width:min(62vw,230px)!important}
+  .xp-routinex-story .xp-title,
+  .xp-routinex-story .xp-title.sm{font-size:clamp(25px,6.8vw,31px)!important;line-height:1.04!important}
+  .xp-routinex-story .xp-lede{font-size:12.5px;line-height:1.38;margin-top:6px}
+  .xp-routinex-story .xp-routine-support{margin-top:6px;font-size:10px}
+  .xp-routinex-story .xp-actions{margin-top:7px}
+  .xp-routinex-story .xp-btn{min-height:40px;padding:8px 13px;font-size:12px}
 }
