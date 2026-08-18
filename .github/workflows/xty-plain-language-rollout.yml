@@ -1,0 +1,79 @@
+name: XTY plain language rollout
+
+on:
+  push:
+    paths:
+      - '.github/workflows/xty-plain-language-rollout.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rollout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply plain-language layer everywhere in XTY
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          version = '20260819-challenge3'
+          script = f'<script type="module" src="/xty/_shared/language.js?v={version}"></script>'
+          script_re = re.compile(r'<script\s+type="module"\s+src="/xty/_shared/language\.js(?:\?[^\"]*)?"\s*></script>')
+
+          pages = [Path('profile/index.html')]
+          pages.extend(sorted(Path('xty').rglob('index.html')))
+
+          touched = []
+          for path in pages:
+              text = path.read_text(encoding='utf-8')
+              before = text
+              if script_re.search(text):
+                  text = script_re.sub(script, text)
+              elif '</head>' in text:
+                  text = text.replace('</head>', script + '\n</head>', 1)
+
+              if path.as_posix() == 'profile/index.html':
+                  text = text.replace(
+                      'ไทยทั่วไป: กลุ่ม · ผู้ดูแล · ลงชื่อ &nbsp;|&nbsp; XTY: ตี้ · หัวตี้ · Commit',
+                      'ไทยทั่วไป: กลุ่ม · Challenge · ลงชื่อ · ยืนยัน &nbsp;|&nbsp; XTY: ตี้ · Quest · Commit · Confirm'
+                  )
+
+              if text != before:
+                  path.write_text(text, encoding='utf-8')
+                  touched.append(path.as_posix())
+
+          avatars = Path('xty/_shared/avatars.js')
+          text = avatars.read_text(encoding='utf-8')
+          before = text
+          text = re.sub(
+              r"import\('\./language\.js(?:\?[^']*)?'\)",
+              f"import('./language.js?v={version}')",
+              text,
+          )
+          if text != before:
+              avatars.write_text(text, encoding='utf-8')
+              touched.append(avatars.as_posix())
+
+          print('Updated:')
+          print('\n'.join(touched) if touched else '(nothing)')
+          PY
+
+      - name: Remove one-time workflow and commit
+        shell: bash
+        run: |
+          rm -f .github/workflows/xty-plain-language-rollout.yml
+          git config user.name "myClover Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Roll out Challenge and notebook language across XTY"
+          git push
