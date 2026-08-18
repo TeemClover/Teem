@@ -3,266 +3,136 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>AI ใส่ซอส — จากคุยกับ AI สู่ของจริงใน 98 นาที | myClover</title>
-  <meta name="description" content="เรียนสด 98 นาทีเรื่อง Source หรือ “ซอส” ที่ช่วยให้ AI เข้าใจบริบทและสร้างงานต่อได้จริง พร้อมดูเคส XTY ที่ต้นแบบขึ้นเว็บได้ตั้งแต่วันแรกที่ผู้เรียนเริ่มใช้ ChatGPT">
+  <title>AI ใส่ซอส · First Class รุ่นแรก — ผลลัพธ์จริง | myClover</title>
+  <meta name="description" content="First Class รุ่นแรกจบแล้ว ดูสิ่งที่เกิดขึ้นจริง รีวิวจากผู้เรียน ผลงาน XTY และกลับไปอ่านเส้นทาง AI ใส่ซอสทั้ง 6 บทได้เสมอ">
   <meta name="theme-color" content="#08251d">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="th_TH">
   <meta property="og:site_name" content="myClover">
   <meta property="og:url" content="https://www.myclover.com/first-class/">
-  <meta property="og:title" content="AI ใส่ซอส — จากคุยกับ AI สู่ของจริงใน 98 นาที">
-  <meta property="og:description" content="First Class 98 บาท · เรียนสดเรื่อง Source/ซอส ดูเคส XTY ของจริง แล้วเอาหลักเดียวกันไปใช้กับงานของคุณ">
+  <meta property="og:title" content="AI ใส่ซอส · First Class รุ่นแรก — จาก .md ไปถึงเว็บจริง">
+  <meta property="og:description" content="คลาสจบแล้ว แต่เส้นทางยังอยู่ ดูผลลัพธ์ รีวิวจริง ผลงานลูกศิษย์ และกลับไปอ่าน AI ใส่ซอสทั้ง 6 บท">
   <meta property="og:image" content="https://www.myclover.com/first-class/assets/ai-sauce-pilot-social.jpg">
-  <meta property="og:image:secure_url" content="https://www.myclover.com/first-class/assets/ai-sauce-pilot-social.jpg">
-  <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="1440">
-  <meta property="og:image:height" content="756">
-  <meta property="og:image:alt" content="AI ใส่ซอส คอร์สสด 98 นาที 98 บาท วันที่ 18 สิงหาคม 2026 เวลา 19:30 น.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="AI ใส่ซอส — จากคุยกับ AI สู่ของจริงใน 98 นาที">
-  <meta name="twitter:description" content="First Class 98 บาท · เรียนสดเรื่อง Source/ซอส ดูเคส XTY ของจริง แล้วเอาหลักเดียวกันไปใช้กับงานของคุณ">
+  <meta name="twitter:title" content="AI ใส่ซอส · First Class รุ่นแรก — จาก .md ไปถึงเว็บจริง">
+  <meta name="twitter:description" content="ดูผลลัพธ์ รีวิวจริง ผลงาน XTY และเส้นทาง AI ใส่ซอสหลังจบคลาส">
   <meta name="twitter:image" content="https://www.myclover.com/first-class/assets/ai-sauce-pilot-social.jpg">
-  <meta name="twitter:image:alt" content="AI ใส่ซอส คอร์สสด 98 นาที 98 บาท วันที่ 18 สิงหาคม 2026 เวลา 19:30 น.">
   <link rel="canonical" href="https://www.myclover.com/first-class/">
   <link rel="icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./first-class.css?v=20260813-5">
   <style>
-    .proof-wrap{margin:0 0 34px}
-    .proof-kicker{display:flex;align-items:center;gap:8px;font:800 9px Manrope,sans-serif;letter-spacing:.12em;color:var(--green-dark);text-transform:uppercase}
-    .proof-kicker:before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(40,200,117,.12)}
-    .proof-wrap h2{font:800 clamp(28px,3vw,39px)/1.08 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.045em;margin:12px 0 12px}
-    .proof-wrap h2 em{font-style:normal;color:var(--green-dark)}
-    .proof-lead{font-size:14px;line-height:1.75;color:#50625a;margin:0 0 20px}
-    .proof-lead strong{color:var(--ink)}
-    .xty-case{display:block;text-decoration:none;border:1px solid rgba(8,37,29,.13);border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 18px 48px rgba(6,25,20,.09);transition:transform .2s ease,box-shadow .2s ease}
-    .xty-case:hover{transform:translateY(-2px);box-shadow:0 24px 58px rgba(6,25,20,.13)}
-    .xty-case img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;background:#f4f1e8}
-    .xty-case-body{padding:17px 18px 19px}
-    .live-label{display:inline-flex;align-items:center;gap:7px;font:800 8px Manrope,sans-serif;letter-spacing:.1em;color:var(--green-dark)}
-    .live-label:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
-    .xty-case h3{font:800 19px/1.25 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.025em;margin:7px 0 6px}
-    .xty-case p{font-size:12px;line-height:1.7;color:var(--muted);margin:0}
-    .xty-case strong{display:inline-block;margin-top:11px;font-size:11px;color:var(--green-dark)}
-    .proof-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0 0}
-    .proof-step{border:1px solid var(--line);border-radius:14px;padding:13px 12px;background:#fbfcfa}
-    .proof-step b{display:grid;place-items:center;width:27px;height:27px;border-radius:8px;background:var(--ink);color:#fff;font:800 9px Manrope,sans-serif;margin-bottom:8px}
-    .proof-step strong{display:block;font-size:11px;line-height:1.45}
-    .proof-step p{font-size:9px;line-height:1.55;color:var(--muted);margin:5px 0 0}
-    .proof-thesis{margin-top:14px;border-radius:17px;background:linear-gradient(145deg,#08251d,#0d392d);color:#fff;padding:20px 18px}
-    .proof-thesis small{font:800 8px Manrope,sans-serif;letter-spacing:.1em;color:#8fe3b3}
-    .proof-thesis blockquote{font:700 17px/1.55 "IBM Plex Sans Thai",sans-serif;margin:8px 0 0}
-    .proof-thesis blockquote em{font-style:normal;color:#ffd28f}
-    .offer-stack{margin-top:14px;border:1px solid #cfe9da;border-radius:17px;background:#f1fbf5;padding:17px}
-    .offer-stack>small{font:800 8px Manrope,sans-serif;letter-spacing:.1em;color:var(--green-dark)}
-    .offer-stack h3{font-size:17px;line-height:1.35;margin:5px 0 11px}
-    .offer-stack ul{list-style:none;padding:0;margin:0;display:grid;gap:7px}
-    .offer-stack li{display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start;font-size:11px;line-height:1.55;color:#42564d}
-    .offer-stack li:before{content:"✓";display:grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--green);color:#052017;font-weight:900}
-    .honesty-note{margin:12px 2px 0;font-size:9.5px;line-height:1.65;color:#77867f}
-    .proof-cta{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
-    .proof-cta small,.proof-cta strong{display:block}
-    .proof-cta small{font:800 8px Manrope,sans-serif;letter-spacing:.09em;color:var(--green-dark)}
-    .proof-cta strong{font-size:12px;margin-top:3px}
-    .proof-cta a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:11px;padding:0 14px;background:var(--ink);color:#fff;text-decoration:none;font-size:10px;font-weight:800}
-    .proof-divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:30px 0}
-    .form-heading small{font-size:9px}
-    .field>span,fieldset legend{font-size:12px}
-    .field small{font-size:9px}
-    @media(max-width:760px){
-      .proof-wrap{margin-bottom:28px}
-      .proof-wrap h2{font-size:31px}
-      .proof-lead{font-size:15px}
-      .xty-case-body{padding:16px}
-      .xty-case h3{font-size:20px}
-      .xty-case p{font-size:13px}
-      .proof-flow{grid-template-columns:1fr}
-      .proof-step{display:grid;grid-template-columns:34px 1fr;column-gap:10px}
-      .proof-step b{grid-row:1/3;margin:0}
-      .proof-step strong{font-size:12px}
-      .proof-step p{font-size:10px}
-      .proof-thesis blockquote{font-size:18px}
-      .offer-stack li{font-size:12px}
-      .honesty-note{font-size:10.5px}
-      .proof-cta{grid-template-columns:1fr}
-      .proof-cta a{min-height:50px;font-size:12px}
-      .form-heading h2{font-size:30px}
-      .field>span,fieldset legend{font-size:13px}
-      .field small{font-size:10px}
-    }
+    :root{--ink:#09271e;--ink2:#123a2d;--green:#21b86b;--green2:#86e0ab;--cream:#f6f2e8;--paper:#fffdf8;--gold:#d4aa57;--muted:#65766e;--line:rgba(9,39,30,.12);--shadow:0 24px 70px rgba(5,30,22,.10)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:"IBM Plex Sans Thai",sans-serif}a{color:inherit}img{max-width:100%}
+    .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;min-height:66px;padding:10px max(16px,calc((100vw - 1180px)/2));background:rgba(7,31,23,.94);backdrop-filter:blur(14px);color:#fff;border-bottom:1px solid rgba(255,255,255,.08)}
+    .brand{display:flex;align-items:center;gap:8px;text-decoration:none;font:800 14px Manrope,sans-serif}.brand img{width:30px;height:30px;border-radius:9px}.brand b{color:#79e3a5}.status{margin-left:auto;display:flex;align-items:center;gap:8px;font:800 9px Manrope,sans-serif;letter-spacing:.09em;color:#b9dfc8}.status i{width:8px;height:8px;border-radius:50%;background:#7be0a4;box-shadow:0 0 0 5px rgba(123,224,164,.12)}
+    main{overflow:hidden}.hero{background:radial-gradient(circle at 78% 20%,rgba(62,185,113,.23),transparent 30%),linear-gradient(145deg,#061d16,#0b3327 62%,#124b37);color:#fff;padding:70px 18px 64px}.hero-inner{width:min(1120px,100%);margin:auto;display:grid;grid-template-columns:1.05fr .95fr;gap:42px;align-items:center}.kicker{font:800 10px Manrope,sans-serif;letter-spacing:.13em;color:#88e3ae}.hero h1{font:800 clamp(42px,6.2vw,76px)/.98 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.055em;margin:13px 0 18px}.hero h1 em{display:block;font-style:normal;color:#f1c879}.hero p{max-width:680px;font-size:18px;line-height:1.75;color:#d1dfd8;margin:0}.hero p strong{color:#fff}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 19px;border-radius:13px;text-decoration:none;font-weight:800;font-size:13px}.btn.gold{background:#f0c978;color:#14291f}.btn.ghost{border:1px solid rgba(255,255,255,.2);color:#fff;background:rgba(255,255,255,.05)}
+    .hero-card{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);border-radius:26px;padding:12px;box-shadow:0 30px 80px rgba(0,0,0,.25);transform:rotate(1deg)}.hero-card img{display:block;width:100%;border-radius:18px}.hero-card figcaption{padding:14px 10px 8px;font-size:12px;line-height:1.6;color:#c9d8d1}.hero-card figcaption b{display:block;color:#fff;font-size:15px}
+    .result-strip{width:min(1120px,calc(100% - 30px));margin:-28px auto 0;position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}.result-strip article{padding:20px 22px;border-right:1px solid var(--line)}.result-strip article:last-child{border:0}.result-strip small{font:800 8px Manrope,sans-serif;letter-spacing:.11em;color:#29875a}.result-strip strong{display:block;font-size:18px;line-height:1.45;margin-top:4px}.result-strip p{font-size:11px;line-height:1.55;color:var(--muted);margin:5px 0 0}
+    .section{padding:74px 18px}.section.alt{background:var(--paper)}.wrap{width:min(1080px,100%);margin:auto}.section-head{max-width:760px;margin-bottom:28px}.section-head .eyebrow{font:800 9px Manrope,sans-serif;letter-spacing:.12em;color:#2a8f5e}.section-head h2{font:800 clamp(31px,4vw,48px)/1.08 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.045em;margin:9px 0 12px}.section-head p{font-size:15px;line-height:1.8;color:var(--muted);margin:0}.section-head strong{color:var(--ink)}
+    .route{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.route a{text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px 13px;min-height:154px;transition:.2s}.route a:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(8,37,29,.08)}.route b{display:grid;place-items:center;width:31px;height:31px;border-radius:9px;background:var(--ink);color:#fff;font:800 9px Manrope,sans-serif}.route strong{display:block;font-size:13px;margin-top:12px}.route span{display:block;color:#2b8b5d;font:800 9px Manrope,sans-serif;letter-spacing:.07em;margin-top:2px}.route p{font-size:10px;line-height:1.55;color:var(--muted);margin:8px 0 0}.reread{margin-top:18px;border-radius:18px;background:linear-gradient(145deg,#0a2e23,#104733);color:#fff;padding:22px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}.reread small{font:800 8px Manrope,sans-serif;letter-spacing:.1em;color:#86e0ab}.reread h3{font-size:20px;margin:5px 0}.reread p{font-size:12px;line-height:1.7;color:#c6d7cf;margin:0}.reread .btn{background:#f2cc7d;color:#153126}
+    .reviews-bar{display:flex;align-items:end;justify-content:space-between;gap:15px;flex-wrap:wrap}.review-count{font:800 10px Manrope,sans-serif;color:#287c56;background:#eaf7ef;border:1px solid #cce8d7;border-radius:999px;padding:7px 11px}.review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:22px}.review{background:#fff;border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:0 12px 34px rgba(8,37,29,.055)}.review-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.review-mode{font:800 8px Manrope,sans-serif;letter-spacing:.1em;color:#2a8f5e}.review-score{font:800 11px Manrope,sans-serif;color:#a26f1d}.review blockquote{font-weight:700;font-size:17px;line-height:1.6;margin:13px 0;color:#173a2d}.review .who{font-size:11px;color:#6f7d76}.review .detail{margin-top:12px;padding-top:11px;border-top:1px solid var(--line);font-size:11px;line-height:1.7;color:#5b6a63}.review .detail b{color:#19392d}.review-empty{margin-top:20px;border:1px dashed #b8c7bf;border-radius:18px;padding:34px;text-align:center;color:#738179;background:#fafbf8}.review-empty b{display:block;color:#23483a;margin-bottom:5px}.wall-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.wall-actions .btn{min-height:46px}.wall-actions .btn.dark{background:var(--ink);color:#fff}.wall-actions .btn.light{background:#fff;border:1px solid var(--line);color:var(--ink)}
+    .case-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}.case-media{display:block;border-radius:23px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:#fff}.case-media img{display:block;width:100%}.case-copy .tag{font:800 9px Manrope,sans-serif;letter-spacing:.11em;color:#2a8f5e}.case-copy h2{font:800 clamp(32px,4.5vw,50px)/1.05 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.045em;margin:10px 0 14px}.case-copy p{font-size:15px;line-height:1.8;color:var(--muted);margin:0 0 12px}.case-copy p strong{color:var(--ink)}.case-copy .btn{background:var(--ink);color:#fff;margin-top:8px}
+    .final{padding:76px 18px;background:linear-gradient(145deg,#071f17,#0d3d2d);color:#fff}.final .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center}.final small{font:800 9px Manrope,sans-serif;letter-spacing:.11em;color:#85e2aa}.final h2{font:800 clamp(34px,5vw,56px)/1.05 Manrope,"IBM Plex Sans Thai",sans-serif;letter-spacing:-.045em;margin:9px 0 13px}.final p{font-size:15px;line-height:1.8;color:#c9d9d1;margin:0}.final-links{display:grid;gap:10px}.final-links a{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 18px;border-radius:15px;text-decoration:none;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}.final-links a:hover{background:rgba(255,255,255,.1)}.final-links b{font-size:14px}.final-links span{font-size:11px;color:#a9c9ba}
+    footer{padding:24px 18px;background:#061b14;color:#7fa393;text-align:center;font-size:10px}
+    @media(max-width:880px){.hero-inner,.case-grid,.final .wrap{grid-template-columns:1fr}.hero{padding-top:52px}.hero-card{transform:none}.route{grid-template-columns:repeat(3,1fr)}.result-strip{grid-template-columns:1fr}.result-strip article{border-right:0;border-bottom:1px solid var(--line)}.reread{grid-template-columns:1fr}.review-grid{grid-template-columns:1fr}.final-links{margin-top:5px}}
+    @media(max-width:560px){.hero h1{font-size:47px}.hero p{font-size:16px}.route{grid-template-columns:repeat(2,1fr)}.section{padding:58px 14px}.result-strip{width:calc(100% - 18px)}.topbar{padding-left:12px;padding-right:12px}.status{font-size:8px}.case-copy h2{font-size:38px}}
   </style>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="กลับหน้าแรก myClover"><img src="/icons/icon-192.png" alt="" width="192" height="192"><span>my<b>Clover</b></span></a>
-    <span class="pilot-chip"><i></i> FIRST CLASS · รอบแรกครั้งเดียว</span>
+    <a class="brand" href="/" aria-label="myClover"><img src="/icons/icon-192.png" alt=""><span>my<b>Clover</b></span></a>
+    <div class="status"><i></i> FIRST CLASS #1 · QUEST CLEAR</div>
   </header>
 
-  <main class="registration-shell">
-    <section class="registration-card" aria-labelledby="pageTitle">
-      <aside class="course-intro">
-        <figure class="hero-banner"><img src="./assets/ai-sauce-pilot.webp" width="1440" height="756" alt="AI ใส่ซอส 98 นาที 98 บาท วันที่ 18 สิงหาคม 2026 เวลา 19:30 น."></figure>
-
-        <div class="intro-body">
-          <p class="eyebrow">AI ใส่ซอส · LIVE on DISCORD</p>
-          <h1 id="pageTitle">นี่คือคอร์สสอน AI<br><em>ไม่ใช่คอร์สทำอาหาร</em></h1>
-          <p class="intro-lead">จาก “คุยกับ AI” ไปสู่ “สร้างของจริง” ด้วยวิธีจัด Source หรือ “ซอส” ให้ AI เข้าใจเป้าหมาย บริบท และงานเดิมของคุณโดยไม่ต้องเริ่มเล่าใหม่ทุกครั้ง</p>
-
-          <div class="value-pills" aria-label="จุดเด่นคอร์ส"><span>98 นาที</span><span>98 บาท</span><span>สดผ่าน Discord</span><span>แก่นสำคัญจากหลักสูตรเต็มวัน</span></div>
-
-          <div class="schedule-card">
-            <div class="date"><small>อ.</small><strong>18</strong><span>ส.ค. 2026</span></div>
-            <div><span><b>19:00</b> ห้องเปิด คุยกันก่อนเรียน</span><span class="start"><b>19:30</b> เริ่มคอร์สตรงเวลา</span></div>
-          </div>
-
-          <p class="instructor-line">🍀 <a class="instructor-link" href="/resume/" aria-label="ดูประวัติผู้สอน Teem"><b>สอนสดโดย Teem <span aria-hidden="true">↗</span></b><small>เข้าใจหลักเดียว ใช้ต่อได้กับ AI ตัวไหนก็ได้ · ไม่มีวิดีโอย้อนหลัง</small></a></p>
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <div class="kicker">AI ใส่ซอส · FIRST CLASS รุ่นแรก · 18 AUG 2026</div>
+          <h1>จาก `.md`<em>ไปถึงของจริง</em></h1>
+          <p>คลาสจบแล้วครับ — และสิ่งที่เกิดขึ้นสำคัญกว่าเวลาบนสไลด์ เราค่อย ๆ เดินทีละบทจน <strong>ผู้เรียนทุกคนที่อยู่จนจบไปถึงการสร้างเว็บได้จริง</strong> คนที่เพิ่งเริ่มได้เห็นทางเดิน ส่วนคนที่ใช้ AI อยู่แล้วได้เห็นว่าการวาง Source เป็นโครงสร้างทำให้งานไปต่อได้ยังไง</p>
+          <div class="hero-actions"><a class="btn gold" href="/classroom/">กลับไปอ่าน AI ใส่ซอส →</a><a class="btn ghost" href="#reviews">อ่านรีวิวจากผู้เรียน</a></div>
         </div>
-      </aside>
+        <figure class="hero-card"><img src="./assets/ai-sauce-pilot.webp" width="1440" height="756" alt="AI ใส่ซอส First Class"><figcaption><b>98 นาทีที่ตั้งใจไว้ กลายเป็นคลาสที่ยาวกว่านั้น</b>เพราะเราเลือกไม่รีบตัด Workshop แต่ค่อย ๆ พาคนทำของจริงจนถึงปลายทาง</figcaption></figure>
+      </div>
+    </section>
 
-      <div class="form-pane">
-        <section class="proof-wrap" aria-labelledby="proofTitle">
-          <p class="proof-kicker">CASE STUDY · จากผู้เริ่มต้นสู่ของจริง</p>
-          <h2 id="proofTitle">วันแรกที่เริ่มใช้ ChatGPT<br><em>ต้นแบบก็ขึ้นเว็บจริงได้</em></h2>
-          <p class="proof-lead">นี่คือผลงานของ <strong>นักเรียนคนแรกของวิชา “ปรุงซอส”</strong> — เริ่มใช้ ChatGPT เป็นวันแรก แต่ไม่ได้เริ่มจากการจำ Prompt เป็นร้อยข้อ เขาเริ่มจากการเข้าใจว่า <strong>ต้องเอาบริบทอะไรให้ AI กิน และจัดมันเป็นโครงสร้างยังไง</strong></p>
+    <section class="result-strip" aria-label="ผลลัพธ์ First Class รุ่นแรก">
+      <article><small>01 · HANDS-ON</small><strong>ไม่ได้จบที่ Demo</strong><p>ผู้เรียนทำตามทีละบทและลงมือกับ Source ของตัวเอง</p></article>
+      <article><small>02 · SOURCE FIRST</small><strong>.md กลายเป็นโครงสร้างงาน</strong><p>ทั้งมือใหม่และคนใช้ AI อยู่แล้วเห็นประโยชน์ของ Context ที่ส่งต่อได้</p></article>
+      <article><small>03 · REAL OUTPUT</small><strong>ปลายทางคือเว็บที่ทำได้จริง</strong><p>สิ่งที่เรียนถูกเอาไปสร้าง Output ต่อหน้ากันในคลาส</p></article>
+    </section>
 
-          <a class="xty-case" href="/xty/" target="_blank" rel="noopener" aria-label="เปิดดู XTY ผลงานจริง">
-            <img src="/xty/assets/xty-og-share-1200x630.jpg" width="1200" height="630" alt="XTY — ตั้งตี้ทำอะไรก็ได้">
-            <div class="xty-case-body">
-              <span class="live-label">LIVE PRODUCT · เปิดใช้งานจริง</span>
-              <h3>XTY — ตั้งตี้ทำอะไรก็ได้</h3>
-              <p>ต้นแบบแรกขึ้นเว็บได้ตั้งแต่วันแรกที่เริ่มใช้ ChatGPT และถูกพัฒนาต่อมาจนเป็นระบบ XTY ที่คุณเปิดลองได้จริงตอนนี้</p>
-              <strong>ลองเปิด XTY ของจริง ↗</strong>
-            </div>
-          </a>
-
-          <div class="proof-flow" aria-label="จากซอสสู่ผลงาน">
-            <article class="proof-step"><b>01</b><strong>ไม่เริ่มจาก Prompt</strong><p>เริ่มจากเป้าหมาย ข้อมูลเดิม ข้อจำกัด และสิ่งที่งานต้องรักษาไว้</p></article>
-            <article class="proof-step"><b>02</b><strong>ปรุงเป็น “ซอส”</strong><p>จัดบริบทให้คนหรือ AI ตัวถัดไปรับงานต่อได้โดยไม่ต้องเดาใหม่</p></article>
-            <article class="proof-step"><b>03</b><strong>ส่งต่อจนเป็นของจริง</strong><p>Source → AI → Output → ตรวจ → ปรุงต่อ จนงานเติบโตเป็นระบบ</p></article>
-          </div>
-
-          <div class="proof-thesis">
-            <small>สิ่งที่วิชานี้อยากให้คุณเห็น</small>
-            <blockquote>AI ไม่ได้เก่งขึ้นเพราะเราเจอ “คำสั่งวิเศษ” แต่ผลงานดีขึ้นเมื่อเรา <em>ส่งของที่มันต้องรู้ให้ครบและเป็นโครงสร้าง</em></blockquote>
-          </div>
-
-          <div class="offer-stack">
-            <small>FIRST CLASS · 98 บาทนี้ซื้ออะไร</small>
-            <h3>ไม่ได้ซื้อวิดีโอ 98 นาที — ซื้อวิธีคิดที่เอากลับไปใช้กับงานของคุณได้</h3>
-            <ul>
-              <li>เห็นวิธีสกัด Source จากแชต ไฟล์ งานเดิม หรือความคิดที่กระจัดกระจาย</li>
-              <li>เห็นวิธี “ปรุงซอส” ให้เหมาะกับเป้าหมาย ก่อนส่งต่อให้ AI หรือคนในทีม</li>
-              <li>ดู Workflow จริงจาก Source → Prompt → Output → ตรวจ → ปรุงต่อ</li>
-              <li>เรียนสด ถามงานจริง และแชร์หน้าจอได้ใน Discord</li>
-              <li>ใช้หลักเดียวต่อกับ ChatGPT, Claude, Gemini หรือ AI ตัวอื่นได้</li>
-            </ul>
-          </div>
-
-          <p class="honesty-note"><strong>หมายเหตุ:</strong> เคส XTY ไม่ได้แปลว่าทุกคนจะสร้างเว็บเสร็จใน 1 วัน ผลลัพธ์ขึ้นกับงานและการลงมือทำ แต่เคสนี้แสดงให้เห็นว่า “คนเพิ่งเริ่มใช้ AI” ก็สามารถขยับจากการคุยเล่นไปสู่การสร้างของจริงได้เร็วมาก เมื่อเข้าใจโครงสร้าง Source/ซอสก่อน</p>
-
-          <div class="proof-cta">
-            <div><small>18 AUG 2026 · LIVE 19:30</small><strong>98 นาที · 98 บาท · First Class รอบแรกครั้งเดียว</strong></div>
-            <a href="#registrationForm">เอาซอสไปใช้กับงานของฉัน →</a>
-          </div>
-          <div class="proof-divider" aria-hidden="true"></div>
-        </section>
-
-        <form id="registrationForm" novalidate>
-          <div class="form-heading">
-            <div><small>พร้อมเปลี่ยนจาก “คุยกับ AI” → “สร้างของจริง”</small><h2>ลงทะเบียนรอบ First Class</h2></div>
-            <div class="price"><span>ทั้งหมด</span><strong>฿98</strong></div>
-          </div>
-
-          <div id="formMessage" class="form-message" role="alert" hidden></div>
-
-          <div class="section-label"><span>1</span><strong>ข้อมูลผู้เรียน</strong></div>
-          <label class="field"><span>ชื่อที่อยากให้เรียก <b>*</b></span><input name="name" autocomplete="name" maxlength="80" placeholder="ชื่อจริง ชื่อเล่น หรือนามแฝง" required></label>
-          <label class="field"><span>Email <b>*</b></span><input name="email" type="email" inputmode="email" autocomplete="email" maxlength="120" placeholder="name@example.com" required><small>ใช้ส่งข้อมูลสำคัญเกี่ยวกับคลาส</small></label>
-
-          <div class="discord-entry">
-            <div><small>DISCORD · ห้องเรียนของเรา</small><strong>เข้า Server รอไว้ก่อนได้เลย</strong><p>พื้นที่สาธารณะเข้าฟรี หลังยืนยันยอด ระบบจะเปิดสิทธิ์ First Class</p></div>
-            <div class="discord-routes"><a class="discord-direct" href="https://discord.gg/A5nmMqvTm" target="_blank" rel="noopener noreferrer">เข้า Discord ตอนนี้ ↗</a><a href="/guild/">อ่านเรื่องของ Discord</a></div>
-          </div>
-
-          <details class="smart-details why-discord">
-            <summary><span><b>Why Discord?</b> ทำไมคอร์สนี้ใช้ Discord</span><i>+</i></summary>
-            <div class="details-body why-grid">
-              <article><b>ทุกคนแชร์หน้าจอได้</b><p>ผู้เรียนแชร์จอของตัวเองพร้อมกันได้ Teem จึงดูงานจริงและแนะนำได้ตรงจุด</p></article>
-              <article><b>ห้องไม่หายหลังเรียน</b><p>ประกาศ คำถาม และ Resources อยู่ต่อในชุมชน ไม่หายไปพร้อมลิงก์ประชุม</p></article>
-              <article><b>มีกิจกรรมฟรีทุกสัปดาห์</b><p>เลือกกลับมาฝึกหรือพูดคุยต่อได้ฟรี ไม่เข้าได้ ไม่บังคับ</p></article>
-            </div>
-          </details>
-
-          <label class="field"><span>Discord Username <em>ไม่บังคับ</em></span><input name="discordUsername" autocomplete="off" maxlength="80" placeholder="เช่น teemclover"><small>ยังไม่พร้อมใส่ตอนนี้ได้ สมัครก่อนแล้วแจ้ง Username พร้อมแนบสลิปทาง LINE Official ภายหลัง</small></label>
-
-          <div class="section-label"><span>2</span><strong>ตอนนี้ใช้ AI แบบไหนอยู่บ้าง</strong></div>
-          <fieldset>
-            <legend>เลือกได้มากกว่า 1 ข้อ <b>*</b></legend>
-            <div class="ai-grid">
-              <label><input type="checkbox" name="aiTools" value="ChatGPT"><span>C</span>ChatGPT</label>
-              <label><input type="checkbox" name="aiTools" value="Claude"><span>Cl</span>Claude</label>
-              <label><input type="checkbox" name="aiTools" value="Gemini"><span>G</span>Gemini</label>
-              <label><input type="checkbox" name="aiTools" value="NotebookLM"><span>N</span>NotebookLM</label>
-              <label><input type="checkbox" name="aiTools" value="ยังไม่ค่อยได้ใช้ AI"><span>○</span>ยังไม่ค่อยได้ใช้</label>
-              <label><input type="checkbox" name="aiTools" value="อื่น ๆ" id="aiOtherToggle"><span>+</span>อื่น ๆ</label>
-            </div>
-          </fieldset>
-          <label class="field other-ai-field" id="aiOtherField"><span>ชื่อ AI อื่น ๆ <em>กรอกเมื่อเลือก “อื่น ๆ”</em></span><input name="aiOther" maxlength="80" placeholder="เช่น Microsoft Copilot, Perplexity" disabled></label>
-
-          <fieldset class="level-fieldset">
-            <legend>ให้คะแนนความเชี่ยวชาญ AI ของตัวเอง <b>*</b></legend>
-            <div class="level-scale" role="radiogroup" aria-label="ระดับความเชี่ยวชาญ AI 1 ถึง 10">
-              <label><input type="radio" name="aiLevel" value="1"><span>1</span></label><label><input type="radio" name="aiLevel" value="2"><span>2</span></label><label><input type="radio" name="aiLevel" value="3"><span>3</span></label><label><input type="radio" name="aiLevel" value="4"><span>4</span></label><label><input type="radio" name="aiLevel" value="5"><span>5</span></label><label><input type="radio" name="aiLevel" value="6"><span>6</span></label><label><input type="radio" name="aiLevel" value="7"><span>7</span></label><label><input type="radio" name="aiLevel" value="8"><span>8</span></label><label><input type="radio" name="aiLevel" value="9"><span>9</span></label><label><input type="radio" name="aiLevel" value="10"><span>10</span></label>
-            </div>
-            <div class="level-hints"><span>เพิ่งเริ่ม</span><span>ใช้คล่องมาก</span></div>
-          </fieldset>
-
-          <div class="section-label"><span>3</span><strong>ยืนยันการชำระเงิน</strong></div>
-          <div class="bank-card">
-            <div><small>บัญชีโอนเงิน</small><strong>ธนาคารกสิกรไทย</strong><span>นรินทร์ ลีลาภรณ์</span></div>
-            <div class="bank-number"><code>049-3-86430-0</code><button type="button" id="copyBankButton" data-account="0493864300">คัดลอกเลขบัญชี</button></div>
-          </div>
-
-          <div class="form-row">
-            <label class="field"><span>เวลาโอน 98 บาท <b>*</b></span><input name="transferTime" type="time" required><small>ระบุให้ตรงกับรายการโอนที่สุด</small></label>
-            <label class="field"><span>LINE ID <em>ไม่บังคับ</em></span><input name="lineId" maxlength="50" placeholder="เช่น teemclover"><small>เผื่อกรณีระบบหายอดไม่เจอ</small></label>
-          </div>
-
-          <div class="payment-note"><b>ไม่ต้องแนบสลิปในฟอร์ม</b><span>ระบบจะจับคู่จากเวลาโอน หากยังไม่ได้แจ้ง Discord Username ให้ส่ง Username พร้อมสลิปทาง <a href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer">LINE Official</a></span></div>
-          <label class="consent"><input type="checkbox" name="consent" required><span>ฉันยืนยันว่าข้อมูลถูกต้อง และยอมรับให้ใช้ข้อมูลนี้เพื่อยืนยันสิทธิ์ ติดต่อ และวัดผลการสมัคร First Class (<a href="/privacy/" target="_blank" rel="noopener">นโยบายข้อมูล</a>) <b>*</b></span></label>
-          <input class="honeypot" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <button class="submit-button" type="submit">ลงทะเบียน First Class <span>→</span></button>
-        </form>
-
-        <div id="successState" class="success-state" hidden>
-          <div class="success-medal">🏅</div><p class="eyebrow">REGISTRATION RECEIVED</p><h2>ลงทะเบียนแล้ว</h2>
-          <p>เราได้รับข้อมูลของ <b id="successName"></b> แล้ว เมื่อยืนยันยอด 98 บาท ระบบจะเปิด TITLE First Class ให้ครับ</p>
-          <div class="success-title"><small>MYCLOVER TITLE</small><strong>🏅 First Class</strong></div>
-          <p id="successDiscordStatus" class="success-discord"></p>
-          <div class="success-schedule"><span><b>19:00</b> ห้องเปิด</span><span><b>19:30</b> เริ่มเรียนตรงเวลา</span><small>วันอังคารที่ 18 สิงหาคม 2026 · ไม่มีวิดีโอย้อนหลัง</small></div>
-          <p class="success-email">ข้อมูลสำคัญจะส่งไปที่ <b id="successEmail"></b></p>
-          <div class="success-actions"><a class="button discord" href="https://discord.gg/A5nmMqvTm" target="_blank" rel="noopener noreferrer">เข้า Discord ไปรอ ↗</a><a class="button line" href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer">แจ้งทาง LINE Official</a></div>
-          <a class="home-link" href="/">ไปหน้าแรก myClover</a><p class="reference">เลขอ้างอิง <b id="successReference"></b></p>
+    <section class="section alt">
+      <div class="wrap">
+        <div class="section-head"><div class="eyebrow">THE ROUTE · 6 บทเดิม แต่สายตาไม่เหมือนเดิม</div><h2>กลับไปอ่านหลังเรียน<br>คุณจะเห็นมากกว่าครั้งแรก</h2><p>หน้าเรียนยังเปิดให้อ่านได้เสมอ และหลังจากเคยเดิน Workflow จริงมาแล้ว <strong>คำบางคำในบทเดิมจะเริ่มมีความหมายอีกชั้น</strong> เพราะตอนนี้คุณไม่ได้แค่รู้ชื่อแต่ละขั้น — คุณเคยใช้มันต่อกันมาแล้ว</p></div>
+        <div class="route">
+          <a href="/classroom/free-ai.html"><b>01</b><span>SOURCE</span><strong>ซอส</strong><p>เริ่มจากบริบทและความจริงที่งานต้องใช้</p></a>
+          <a href="/classroom/image-ai.html"><b>02</b><span>TASTE</span><strong>เทส</strong><p>ชิม Output เพื่อดูว่า Source ขาดอะไร</p></a>
+          <a href="/classroom/clip-ai.html"><b>03</b><span>COOK</span><strong>ผัด</strong><p>เอาซอสไปทำจานจริง ไม่หยุดที่การคุย</p></a>
+          <a href="/classroom/notebooklm.html"><b>04</b><span>SPLIT</span><strong>แบ่ง</strong><p>Source เดียวแตกไปทำงานได้หลายแบบ</p></a>
+          <a href="/classroom/prompts.html"><b>05</b><span>SEASON</span><strong>ปรุง</strong><p>เลือกคำสั่งที่งานนี้ต้องใช้ ไม่แบกทุกอย่างไว้ใน Prompt</p></a>
+          <a href="/classroom/first-web.html"><b>06</b><span>SERVE</span><strong>เสิร์ฟ</strong><p>เปลี่ยนสิ่งที่เข้าใจให้กลายเป็นไฟล์ที่มีชีวิต</p></a>
         </div>
+        <div class="reread"><div><small>NEW GAME+</small><h3>ลองอ่านใหม่โดยไม่ต้องรีบทำตาม</h3><p>ครั้งนี้อ่านเหมือนคนที่รู้แล้วว่าปลายทางหน้าตาเป็นยังไง คุณจะเริ่มเห็นเหตุผลที่บทต่าง ๆ ถูกวางเรียงแบบนี้</p></div><a class="btn" href="/classroom/">เปิดหน้าบทเรียนทั้งหมด →</a></div>
+      </div>
+    </section>
 
-        <details class="smart-details more-value">
-          <summary><span><b>อยากเตรียมตัวให้คุ้มที่สุด?</b> ดูว่าของฟรีดีแค่ไหน และห้องสดให้อะไรมากกว่า</span><i>+</i></summary>
-          <div class="details-body value-compare">
-            <article><small>เล่นฟรีบนเว็บไซต์</small><h3>ดีพอให้เริ่มทำของจริงได้เลย</h3><ul><li>เรียนแนวคิด Source และ Workflow หลัก</li><li>ทดลองทำซอสขวดแรกด้วยตัวเอง</li><li>เล่นตามเส้นทางหลักได้ฟรีจากหน้าแรก</li></ul></article>
-            <article class="live-value"><small>First Class · ห้องสด</small><h3>ได้เหตุผล สนามจริง และคนช่วยดู</h3><ul><li>เห็นวิธีคิดและบริบทที่ไม่ได้เขียนไว้บนเว็บ</li><li>แชร์จอ ถาม และรับคำแนะนำกับงานจริง</li><li>เห็นการส่ง Source ต่อระหว่างคนและ AI ในทีม</li></ul></article>
-            <div class="prep-callout"><b>แนะนำให้เล่นเส้นทางหลักให้จบก่อนวันเรียน</b><span>จะได้ประโยชน์จากห้องสดสูงสุด แต่ไม่บังคับ</span><a href="/">เริ่มเล่นจากหน้าแรก myClover →</a></div>
-          </div>
-        </details>
+    <section class="section" id="reviews">
+      <div class="wrap">
+        <div class="reviews-bar"><div class="section-head" style="margin-bottom:0"><div class="eyebrow">PUBLIC REVIEW WALL · AFTER TASTE</div><h2>คนเรียนพูดเอง</h2><p>ตรงนี้ดึงเฉพาะรีวิวที่เจ้าของเลือกให้เผยแพร่ได้เท่านั้น รีวิวแบบ Private จะไม่ถูกส่งออกมาหน้านี้</p></div><div class="review-count" id="reviewCount">กำลังโหลดรีวิว…</div></div>
+        <div class="review-grid" id="reviewGrid"></div>
+        <div class="review-empty" id="reviewEmpty" hidden><b>กำลังรอคนเปิดหีบ AFTER TASTE</b>รีวิวที่อนุญาตเผยแพร่จะขึ้นตรงนี้อัตโนมัติ</div>
+        <div class="wall-actions"><a class="btn dark" href="/first-class/after/">เรียนรุ่นแรก? เปิดหีบ AFTER TASTE →</a><a class="btn light" href="/classroom/">ไปอ่านบทเรียน</a></div>
+      </div>
+    </section>
 
-        <nav class="post-form-links" aria-label="ข้อมูลเพิ่มเติม"><a href="/resume/">ประวัติผู้สอน</a><a href="https://lin.ee/rlSlhzT" target="_blank" rel="noopener noreferrer">ติดต่อทีมงาน</a><a href="/">หน้าแรก myClover</a></nav>
+    <section class="section alt">
+      <div class="wrap case-grid">
+        <a class="case-media" href="/xty/" target="_blank" rel="noopener"><img src="/xty/assets/xty-og-share-1200x630.jpg" width="1200" height="630" alt="XTY — ตั้งตี้ทำอะไรก็ได้"></a>
+        <div class="case-copy"><div class="tag">STUDENT WORK · BUILT FROM SAUCE</div><h2>XTY<br>ผลงานที่โตต่อจากซอส</h2><p>XTY เริ่มจากต้นแบบที่ <strong>นักเรียนคนแรกของวิชา “ปรุงซอส”</strong> ทำขึ้นในวันที่เริ่มใช้ ChatGPT แล้วค่อย ๆ ถูกพัฒนาต่อจนกลายเป็นระบบที่เปิดใช้งานจริง</p><p>มันไม่ได้ถูกเอามาโชว์เพื่อบอกว่า AI สร้างทุกอย่างให้เอง แต่เพื่อโชว์ว่าเมื่อ Source ชัด คนกับ AI สามารถรับช่วงงานต่อกันได้เร็วขึ้นแค่ไหน</p><a class="btn" href="/xty/" target="_blank" rel="noopener">เปิด XTY ของจริง ↗</a></div>
+      </div>
+    </section>
+
+    <section class="final">
+      <div class="wrap">
+        <div><small>FIRST CLASS จบแล้ว · การสร้างของจริงยังไม่จบ</small><h2>มีของอยากสร้าง<br>เอามาสร้างต่อด้วยกัน</h2><p>กลับไปอ่านบทเดิมเมื่อไหร่ก็ได้ หรือถ้ามี Project ที่อยากลงมือจริง เอาเข้ามาคุยและสร้างต่อใน Guild X ได้เลย จุดหมายไม่ใช่การสะสม Prompt แต่คือทำให้ของที่อยู่ในหัวค่อย ๆ มีชีวิตขึ้นมา</p></div>
+        <div class="final-links">
+          <a href="/guild/"><div><b>⚒️ Guild X</b><span>เอางานจริงมาสร้างต่อและขอคำแนะนำ</span></div><strong>→</strong></a>
+          <a href="/classroom/"><div><b>📚 AI ใส่ซอส · 6 บท</b><span>กลับไปอ่านเส้นทางทั้งหมดอีกครั้ง</span></div><strong>→</strong></a>
+          <a href="/first-class/after/"><div><b>🎁 AFTER TASTE</b><span>สำหรับผู้เรียนรุ่นแรก · รีวิวและเปิดหีบรางวัล</span></div><strong>→</strong></a>
+        </div>
       </div>
     </section>
   </main>
 
-  <script src="./meta-pixel.js?v=20260813-3" defer></script>
-  <script src="./first-class.js?v=20260813-4" defer></script>
+  <footer>myClover · AI ใส่ซอส · First Class #1 · 18 Aug 2026</footer>
+  <script>
+  (()=>{
+    const grid=document.getElementById('reviewGrid');
+    const empty=document.getElementById('reviewEmpty');
+    const count=document.getElementById('reviewCount');
+    const esc=s=>String(s??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
+    async function loadReviews(){
+      try{
+        const response=await fetch('/api/first-class-review?public=1',{cache:'no-store'});
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok||!data.ok)throw new Error('LOAD_FAILED');
+        const rows=Array.isArray(data.reviews)?data.reviews:[];
+        count.textContent=`${rows.length} รีวิวที่เผยแพร่ได้`;
+        empty.hidden=rows.length>0;
+        grid.innerHTML=rows.map(r=>`<article class="review"><div class="review-top"><span class="review-mode">${r.consentMode==='named'?'SHARE · NAMED':'SHARE · ANONYMOUS'}</span><span class="review-score">★ ${esc(r.score)}/10</span></div><blockquote>“${esc(r.recommend||r.aha)}”</blockquote><div class="who"><b>${esc(r.displayName)}</b>${r.roleCompany?` · ${esc(r.roleCompany)}`:''}</div><div class="detail"><b>Aha:</b> ${esc(r.aha)}<br><b>จะเอาไปใช้:</b> ${esc(r.firstUse)}</div></article>`).join('');
+      }catch(error){
+        count.textContent='Review Wall';
+        empty.hidden=false;
+        empty.innerHTML='<b>Review Wall โหลดไม่สำเร็จชั่วคราว</b>ลองรีเฟรชหน้าอีกครั้ง';
+      }
+    }
+    loadReviews();
+  })();
+  </script>
   <script type="module" src="/assets/track.js"></script>
 </body>
 </html>
