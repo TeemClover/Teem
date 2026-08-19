@@ -6,6 +6,24 @@ import { hasAuthoredPersona, hasPersona, petDisplayNames } from './pet-brain.js'
 import { PET_SAUCE } from './pet/sauce/index.js';
 import * as constitution from './pet/constitution.js';
 import { XTY_V1_PET_IDS } from '../../xty/_shared/pets.js';
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const CANON_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'xty', 'pets', 'personas');
+const AXES = ['warmth', 'directness', 'humor', 'sarcasm', 'profanity', 'pressure', 'verbosity', 'weirdness'];
+
+function canonVector(id) {
+  const md = readFileSync(join(CANON_DIR, `${id}.md`), 'utf8');
+  const block = /voiceVector:\s*\n([\s\S]*?)```/.exec(md);
+  if (!block) return null;
+  const vector = {};
+  for (const line of block[1].split('\n')) {
+    const kv = /^\s*([a-z]+):\s*(\d+)/.exec(line);
+    if (kv && AXES.includes(kv[1])) vector[kv[1]] = Number(kv[2]);
+  }
+  return vector;
+}
 
 const EXPECTED_V1 = Object.freeze([
   'pig', 'buffalo', 'dog', 'unicorn', 'crow', 'cat', 'chicken', 'turtle',
@@ -75,4 +93,51 @@ test('an animal without a sauce file still has a usable voice', () => {
   assert.equal(hasAuthoredPersona('lion'), false);
   assert.equal(hasPersona('lion'), true);
   assert.equal(hasPersona('__proto__'), false);
+});
+
+/* เสียงของแต่ละตัวถูกเขียนไว้ละเอียดใน xty/pets/personas/*.md แต่เดิมมันไม่เคย
+   ไปถึงโมเดลเลย — ยูนิคอร์นมี canon 655 บรรทัดแต่ runtime ไม่มีข้อมูลเสียงสักบรรทัด
+   ตัวเลข voiceVector คือสิ่งที่สั่งเสียงได้คมที่สุดและกันไม่ให้ทุกตัวกลืนกัน */
+test('every live pet carries the voice mechanics its canon actually specifies', () => {
+  for (const id of EXPECTED_V1) {
+    const sauce = PET_SAUCE[id];
+    assert.ok(sauce.voiceVector, `${id} ต้องมี voiceVector`);
+    assert.deepEqual(Object.keys(sauce.voiceVector).sort(), [...AXES].sort(),
+      `${id} ต้องมีครบทุกแกน`);
+    for (const [axis, value] of Object.entries(sauce.voiceVector)) {
+      assert.ok(Number.isInteger(value) && value >= 0 && value <= 5, `${id}.${axis} ต้องเป็น 0–5`);
+    }
+    assert.ok(sauce.speech?.length?.length, `${id} ต้องบอกความยาวการพูดที่เป็นรูปธรรม`);
+  }
+});
+
+/* canon เป็นแหล่งความจริง ถ้าสองฝั่งเริ่มไม่ตรงกันต้องรู้ทันที ไม่ใช่รอให้
+   ใครสักคนสังเกตเห็นเองว่าสัตว์เสียงเพี้ยนไปจากที่เขียนไว้ */
+test('runtime voice vectors have not drifted from the authored canon', () => {
+  for (const id of EXPECTED_V1) {
+    const canon = canonVector(id);
+    assert.ok(canon, `${id}.md ต้องมี voiceVector`);
+    assert.deepEqual(PET_SAUCE[id].voiceVector, canon,
+      `${id}: runtime กับ canon ไม่ตรงกัน — แก้ให้ตรงกันก่อน`);
+  }
+});
+
+test('no two live pets share the same voice', () => {
+  const seen = new Map();
+  for (const id of EXPECTED_V1) {
+    const key = AXES.map(a => PET_SAUCE[id].voiceVector[a]).join(',');
+    assert.equal(seen.has(key), false, `${id} มีเสียงเหมือน ${seen.get(key)} เป๊ะ`);
+    seen.set(key, id);
+  }
+});
+
+/* กับดักที่เจอจริง: canon ของควายสร้างเสียงจาก "กู" แต่ sanitizeDecision ลบทั้ง
+   turn ทิ้งถ้าเจอคำนี้ (ยกเว้นเหี้ย) การใส่คำพวกนี้ลง sauce จึงเท่ากับสั่งให้
+   มันพูดในสิ่งที่ระบบจะลบทิ้ง = สัตว์ตัวนั้นเงียบกว่าตัวอื่นโดยไม่มีใครรู้ */
+test('a live pet is never told to speak words the sanitizer deletes', () => {
+  for (const id of EXPECTED_V1) {
+    const flat = JSON.stringify(PET_SAUCE[id]);
+    assert.doesNotMatch(flat, /กู|มึง/,
+      `${id} ถูกสั่งให้ใช้คำที่ sanitizeDecision จะลบทั้ง turn ทิ้ง`);
+  }
 });
