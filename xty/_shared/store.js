@@ -42,8 +42,20 @@ const EPOCH_KEYS = [
 function applyDataEpoch() {
   try {
     if (typeof localStorage === 'undefined') return;
-    const stored = Number(localStorage.getItem(K_EPOCH) || 0);
-    if (stored === DATA_EPOCH) return;
+    const stored = localStorage.getItem(K_EPOCH);
+    /* A device with no epoch stamp at all is a device from before this
+       mechanism existed, not a device that missed a wipe. It is adopted into
+       the current epoch and keeps everything it holds. Clearing here would
+       mean the first deploy after adding the epoch wiped every existing
+       player's books — which is what happened, and is what this guards. */
+    if (stored === null) {
+      localStorage.setItem(K_EPOCH, String(DATA_EPOCH));
+      return;
+    }
+    /* Only a deliberate bump clears: the device is behind the current epoch,
+       so the server data it remembers is gone. A device that is somehow ahead
+       is left alone rather than wiped on a rollback. */
+    if (Number(stored) >= DATA_EPOCH) return;
     for (const key of EPOCH_KEYS) localStorage.removeItem(key);
     localStorage.setItem(K_EPOCH, String(DATA_EPOCH));
   } catch { /* private mode — the app still runs from memory */ }
