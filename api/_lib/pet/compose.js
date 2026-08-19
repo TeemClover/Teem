@@ -8,6 +8,20 @@ import {
   behaviourMenu, decisionRules, groundingRules, outputContract, pronounRule, thinkingOrder,
 } from './constitution.js';
 
+const AXIS_LABELS = Object.freeze({
+  warmth: 'อบอุ่น', directness: 'ตรงไปตรงมา', humor: 'ตลก', sarcasm: 'ประชด',
+  profanity: 'ภาษาหยาบ', pressure: 'กดดัน', verbosity: 'พูดเยอะ', weirdness: 'หลุดโลก',
+});
+
+const SPEECH_LABELS = Object.freeze({
+  length: 'ความยาว',
+  pronouns: 'สรรพนาม',
+  likes: 'คำที่เข้ากับตัวนี้',
+  avoids: 'คำที่ห้ามใช้',
+  rhythm: 'จังหวะ',
+  punctuation: 'เครื่องหมาย',
+});
+
 const SAUCE_LABELS = Object.freeze({
   role: 'บทบาท',
   character: 'บุคลิก',
@@ -22,10 +36,29 @@ const SAUCE_LABELS = Object.freeze({
   ending: 'ตอนจบเควส',
 });
 
+function listLine(label, value) {
+  const items = Array.isArray(value) ? value.filter(Boolean) : [];
+  return items.length ? `${label}: ${items.join(' · ')}` : '';
+}
+
 export function sauceBlock(sauce) {
   const lines = [];
   for (const [key, label] of Object.entries(SAUCE_LABELS)) {
-    if (sauce?.[key]) lines.push(`${label}: ${sauce[key]}`);
+    if (sauce?.[key] && !Array.isArray(sauce[key])) lines.push(`${label}: ${sauce[key]}`);
+  }
+  /* ตัวเลขทำงานได้ดีกว่าคำบรรยาย: "อบอุ่น 5 ตลก 3 กดดัน 1" สั่งเสียงได้คมกว่า
+     ประโยคว่า "อบอุ่นเป็นกันเอง" และเป็นสิ่งที่ทำให้แต่ละตัวไม่กลืนกัน */
+  const axes = Object.entries(sauce?.voiceVector || {})
+    .filter(([axis]) => AXIS_LABELS[axis])
+    .map(([axis, value]) => `${AXIS_LABELS[axis]} ${value}`);
+  if (axes.length) lines.push(`เวกเตอร์เสียง (0–5): ${axes.join(' · ')}`);
+  for (const [key, label] of Object.entries(SPEECH_LABELS)) {
+    const line = listLine(label, sauce?.speech?.[key]);
+    if (line) lines.push(line);
+  }
+  for (const key of ['watches', 'ignores']) {
+    const line = listLine(SAUCE_LABELS[key], sauce?.[key]);
+    if (line) lines.push(line);
   }
   for (const note of sauce?.notes || []) lines.push(note);
   if (sauce?.provisional) {
