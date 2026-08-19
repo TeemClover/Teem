@@ -1,0 +1,108 @@
+/* Xircle mobile route tune — 2026-08-19
+   One-day and X-VISOR routes use a stable action rail: answers may reveal
+   more copy, but the main next button never changes vertical position. */
+
+@media (max-width:780px){
+  .xp-one-day-story .xp-copy,
+  .xp-xvisor-story .xp-copy{
+    justify-content:flex-start!important;
+    padding-top:12px!important;
+    padding-bottom:60px!important;
+    overflow:hidden!important;
+  }
+
+  .xp-one-day-story .xp-title,
+  .xp-one-day-story .xp-title.sm,
+  .xp-xvisor-story .xp-title,
+  .xp-xvisor-story .xp-title.sm{
+    max-width:15ch!important;
+    font-size:clamp(31px,8.55vw,41px)!important;
+    line-height:1.025!important;
+    letter-spacing:-.038em!important;
+  }
+
+  .xp-one-day-story .xp-lede,
+  .xp-xvisor-story .xp-lede{
+    margin-top:8px!important;
+    font-size:15.5px!important;
+    line-height:1.42!important;
+  }
+
+  .xp-one-day-story .xp-kicker,
+  .xp-xvisor-story .xp-kicker{
+    font-size:9px!important;
+    margin-bottom:6px!important;
+  }
+
+  .xp-one-day-story .xp-choice b,
+  .xp-one-day-story .xp-food-choice b,
+  .xp-xvisor-story [data-sim-step] .xp-choice b{
+    font-size:13px!important;
+    line-height:1.22!important;
+  }
+
+  .xp-one-day-story .xp-choice,
+  .xp-one-day-story .xp-food-choice,
+  .xp-xvisor-story [data-sim-step] .xp-choice{
+    min-height:42px!important;
+  }
+
+  /* Reserve one answer slot before the answer appears. This removes the
+     visual jump caused by adding the explanation block after a choice. */
+  .xp-one-day-story .xp-reveal,
+  .xp-xvisor-story [data-sim-output]{
+    box-sizing:border-box!important;
+    min-height:54px!important;
+    max-height:64px!important;
+    overflow:hidden!important;
+    flex:0 0 54px!important;
+  }
+  .xp-one-day-story .xp-reveal.xp-hidden,
+  .xp-xvisor-story [data-sim-output].xp-hidden{
+    display:block!important;
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+
+  /* Every scene owns the same bottom action rail. Copy above it can wrap to
+     a different number of lines without moving the primary CTA. */
+  .xp-one-day-story .xp-copy>.xp-actions,
+  .xp-xvisor-story .xp-copy>.xp-actions{
+    position:absolute!important;
+    left:2px!important;
+    right:2px!important;
+    bottom:2px!important;
+    margin:0!important;
+    z-index:8!important;
+  }
+  .xp-one-day-story .xp-btn,
+  .xp-xvisor-story .xp-btn{
+    min-height:44px!important;
+    font-size:14px!important;
+  }
+
+  .xp-xvisor-story [data-sim-step] .xp-choices{
+    gap:5px!important;
+    margin-top:8px!important;
+  }
+  .xp-xvisor-story [data-sim-step] .xp-choice{
+    padding:7px 10px!important;
+    text-align:left!important;
+  }
+}
+
+@media (max-height:680px) and (max-width:780px){
+  .xp-one-day-story .xp-title,
+  .xp-one-day-story .xp-title.sm,
+  .xp-xvisor-story .xp-title,
+  .xp-xvisor-story .xp-title.sm{
+    font-size:clamp(27px,7.7vw,35px)!important;
+  }
+  .xp-one-day-story .xp-lede,
+  .xp-xvisor-story .xp-lede{font-size:13px!important}
+  .xp-one-day-story .xp-copy,
+  .xp-xvisor-story .xp-copy{padding-bottom:54px!important}
+  .xp-one-day-story .xp-reveal,
+  .xp-xvisor-story [data-sim-output]{min-height:48px!important;max-height:54px!important;flex-basis:48px!important}
+}

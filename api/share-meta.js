@@ -3,7 +3,7 @@ const SITE = 'https://www.myclover.com';
 const XIRCLE = {
   root: {
     title: 'Xircle — เห็นเมื่อวาน เลือก 1 อย่างสำหรับวันนี้',
-    description: 'ลองประสบการณ์ Xircle แล้วค่อยเห็นว่า X-VISOR, RoutineX และ แมวขาว · XTY ต่อกันอย่างไร',
+    description: 'ลองประสบการณ์ Xircle แล้วค่อยเห็นว่า X-VISOR, RoutineX และสมุดแมวขาวต่อกันอย่างไร',
     image: '/xircle/assets/v5/xircle-s00-hook-hero.webp',
     alt: 'Xircle — เห็นเมื่อวานผ่าน กิน ขยับ และนอน',
   },
@@ -44,10 +44,10 @@ const XIRCLE = {
     alt: 'Xircle Band และ Scale — สัญญาณประกอบภาพของเมื่อวาน',
   },
   circle: {
-    title: 'ทำด้วยกัน — จาก 1 Action สู่คนจริง | Xircle',
-    description: 'การเห็นข้อมูลเป็นจุดเริ่มต้น การทำต่อมีทั้ง Commit เช็กอิน และคนที่ช่วยกันถือจังหวะ',
+    title: 'สมุดแมวขาว — จาก 1 Action สู่การทำด้วยกัน | Xircle',
+    description: 'สมุดแมวขาวช่วยถือจังหวะให้กลุ่มกลับมาลงชื่อ เช็กอิน และทบทวน โดยไม่ต้องคุยกันทั้งวัน',
     image: '/xircle/assets/v5/xircle-together-hero.webp',
-    alt: 'ทำด้วยกัน — คนช่วยกันถือ Action ให้ไปต่อ',
+    alt: 'สมุดแมวขาว — ทำสิ่งที่เลือกต่อด้วยกัน',
   },
   ghost: {
     title: 'ดู Pattern ไม่ดูแค่วันเดียว — Xircle',
@@ -56,28 +56,28 @@ const XIRCLE = {
     alt: 'Xircle — มอง Pattern จากหลายวัน',
   },
   learn: {
-    title: 'ถาม Xircle — Answer Engine',
-    description: 'ถามเรื่อง Xircle, Habit Score, X-VISOR, RoutineX, XTY และ Source แล้วไปต่อยัง Reference ที่ลึกขึ้นได้',
+    title: 'ห้องความรู้ — Xircle',
+    description: 'ถามเรื่อง Xircle, Habit Score, X-VISOR, RoutineX, White Cat Care และแหล่งข้อมูล แล้วเลือกอ่านเท่าที่อยากรู้',
     image: '/xircle/assets/v5/xircle-learn-hero.webp',
-    alt: 'Xircle Answer Engine — ถามแล้วไปต่อได้',
+    alt: 'ห้องความรู้ Xircle — ถามเรื่องไหน เปิดเรื่องนั้น',
   },
   reference: {
-    title: 'Xircle Reference Library — อ่านลึกจาก Source',
-    description: 'คลังอ้างอิงของ Xircle, X-VISOR, RoutineX, XTY และระบบที่เกี่ยวข้อง พร้อมสถานะ CANON / DEMO / CONCEPT / TO CONFIRM',
+    title: 'ข้อมูลเชิงลึก — Xircle',
+    description: 'ข้อมูลเชิงลึกของ Xircle, X-VISOR, RoutineX, White Cat Care และระบบที่เกี่ยวข้อง สำหรับเวลาที่ต้องการตรวจรายละเอียด',
     image: '/xircle/assets/v5/xircle-reference-hero.webp',
-    alt: 'Xircle Reference Library',
+    alt: 'ข้อมูลเชิงลึกของ Xircle',
   },
   partyCreate: {
-    title: '28 วัน · 1 Action · ทำด้วยกัน — แมวขาว · XTY',
-    description: 'จากสิ่งที่ Xircle ช่วยให้เห็น สู่สิ่งที่คนทำต่อด้วยกันจริง ๆ — ตั้ง Action แล้วเปิดตี้แมวขาว',
+    title: 'สมุดแมวขาว — 28 วัน · เลือก 1 อย่าง · ทำด้วยกัน',
+    description: 'จากสิ่งที่ Xircle ช่วยให้เห็น สู่สิ่งที่คนทำต่อด้วยกันจริง ๆ — เลือกสิ่งที่จะทำแล้วเปิดสมุดแมวขาว',
     image: '/xircle/assets/v5/xircle-party-create-hero.webp',
-    alt: 'แมวขาว · XTY — 28 วัน 1 Action ทำด้วยกัน',
+    alt: 'สมุดแมวขาว · White Cat Care — 28 วัน เลือก 1 อย่าง ทำด้วยกัน',
   },
   partyJoin: {
-    title: 'เข้าตี้แมวขาว — 28 วัน · 1 Action · ทำด้วยกัน',
-    description: 'มีคนชวนคุณทำ 1 อย่างไปด้วยกัน — เข้าตี้แมวขาว แล้วช่วยกัน Commit · เช็กอิน · ติดตาม',
+    title: 'เข้าสมุดแมวขาว — 28 วัน · เลือก 1 อย่าง · ทำด้วยกัน',
+    description: 'มีคนชวนคุณทำ 1 อย่างไปด้วยกัน — เข้าสมุดแมวขาว แล้วกลับมาลงชื่อ เช็กอิน และทบทวนด้วยกัน',
     image: '/xircle/assets/v5/xircle-party-join-hero.webp',
-    alt: 'เข้าตี้แมวขาว · XTY',
+    alt: 'เข้าสมุดแมวขาว · White Cat Care',
   },
 };
 
@@ -166,12 +166,12 @@ export default function handler(req, res) {
 
   if (path === 'xty/join' || path.startsWith('xty/join/') || path === 'xty/p' || path.startsWith('xty/p/')) {
     card = {
-      title: code ? `มีคนชวนคุณเข้าตี้ ${code} — XTY` : 'มีคนชวนคุณเข้าตี้ — XTY',
+      title: code ? `มีคนชวนคุณเข้าสมุด ${code} — TeamBook` : 'มีคนชวนคุณเข้าสมุด — TeamBook',
       description: code
-        ? `รหัสตี้ ${code} · กดลิงก์เพื่อเข้าร่วม แล้วทำของจริงและกลับมา Commit ด้วยกันใน XTY`
-        : 'กดลิงก์เพื่อเข้าร่วมตี้ แล้วทำของจริงและกลับมา Commit ด้วยกันใน XTY',
+        ? `รหัสสมุด ${code} · กดลิงก์เพื่อเข้าร่วม แล้วออกไปทำจริงและกลับมาลงชื่อในสมุดหน้าเดียวกัน`
+        : 'กดลิงก์เพื่อเข้าร่วมสมุดกลุ่ม แล้วออกไปทำจริงและกลับมาลงชื่อด้วยกันใน TeamBook',
       image: '/xty/assets/xty-og-share-1200x630.jpg',
-      alt: 'XTY — ตั้งตี้ทำอะไรก็ได้ แล้วกลับมา Commit ด้วยกัน',
+      alt: 'TeamBook — สมุดกลุ่มมีชีวิต ออกไปทำจริงแล้วกลับมาลงชื่อด้วยกัน',
     };
     const invitePath = path.startsWith('xty/p') ? 'xty/p' : 'xty/join';
     canonical = canonicalFor(invitePath, code ? `?c=${encodeURIComponent(code)}` : '');

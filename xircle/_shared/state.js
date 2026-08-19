@@ -1,8 +1,8 @@
-/* XIRCLE × XTY PARTNER EXPERIENCE — state.js
-   v11 navigation model:
+/* XIRCLE × WHITE CAT CARE EXPERIENCE — state.js
+   v12 navigation model:
    first run = canonical first-day gate, then one straight journey
-   1 day with Xircle → Human Care → X-VISOR → RoutineX → White Cat · XTY
-   RoutineX completion may detour into product/deep-dive pages before White Cat.
+   1 day with Xircle → Human Care → X-VISOR → RoutineX → สมุดแมวขาว
+   RoutineX completion may detour into product/deep-dive pages before White Cat Care.
    after unlock = free exploration through the White Cat route hub + Knowledge.
 */
 (function () {
@@ -110,7 +110,7 @@
     if (!local.routineCompleted) return { href: "/xircle/routinex/", label: "ต่อ · RoutineX", step: 4, total: 5 };
     if (!local.whiteCatIntroSeen) {
       var h = currentHandoff();
-      return { href: whiteCatBridgeUrl(), label: h ? "ต่อ · แมวขาว · ตี้ " + h.partyCode : "ต่อ · แมวขาว · XTY", step: 5, total: 5, cat: true };
+      return { href: whiteCatBridgeUrl(), label: h ? "ต่อ · สมุดแมวขาว · " + h.partyCode : "ต่อ · สมุดแมวขาว", step: 5, total: 5, cat: true };
     }
     return null;
   }
@@ -149,7 +149,7 @@
     }
 
     // Once unlocked, the White Cat room owns route discovery. The cat in the
-    // global top-right nav is a guide hub, not an implicit create-party action.
+    // global top-right nav is a guide hub, not an implicit notebook-create action.
     nav.setAttribute("aria-label", "ทางลัดหลังปลดล็อก");
     if (path !== "/xircle") addShortcut(nav, "/xircle/", "Xircle");
     if (path !== "/xircle/learn" && path.indexOf("/xircle/doc") !== 0) addShortcut(nav, "/xircle/learn/", "ห้องความรู้");
@@ -198,7 +198,7 @@
       if (!stage.querySelector(".xp-cat")) return;
       stage.classList.add("xp-cat-cutout-stage");
       stage.setAttribute("data-whitecat-cutout", "1");
-      stage.innerHTML = '<img src="/xircle/assets/v5/whitecat-guide-cutout.webp?v=20260817-final" alt="แมวขาว · XTY">';
+      stage.innerHTML = '<img src="/xircle/assets/v5/whitecat-guide-cutout.webp?v=20260817-final" alt="แมวขาว">';
     });
   }
 
@@ -210,7 +210,7 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-whitecat-link]"), function (a) {
       if (a.tagName === "A") a.href = url;
       a.setAttribute("data-whitecat-resolved", h ? "join" : "create");
-      if (a.classList.contains("xp-btn")) a.textContent = h ? "เข้าตี้ " + h.partyCode + " →" : "เปิดตี้แมวขาว →";
+      if (a.classList.contains("xp-btn")) a.textContent = h ? "เข้าสมุด " + h.partyCode + " →" : "เปิดสมุดแมวขาว →";
     });
 
     Array.prototype.forEach.call(document.querySelectorAll("[data-whitecat-bridge]"), function (a) {
@@ -220,7 +220,7 @@
     Array.prototype.forEach.call(document.querySelectorAll(".xp-cat-cutout-stage, .xp-whitecat-visual, [data-whitecat-cutout]"), function (el) {
       el.setAttribute("role", "link");
       el.setAttribute("tabindex", "0");
-      el.setAttribute("aria-label", h ? "เข้าตี้แมวขาว " + h.partyCode : "เปิดตี้แมวขาว");
+      el.setAttribute("aria-label", h ? "เข้าสมุดแมวขาว " + h.partyCode : "เปิดสมุดแมวขาว");
       el.setAttribute("data-whitecat-cutout", "1");
       el.style.cursor = "pointer";
     });
@@ -237,19 +237,19 @@
     var bottom = document.getElementById("bottomAction");
 
     if (h) {
-      if (kicker) kicker.textContent = "X-VISOR INVITE · ตี้ " + h.partyCode;
+      if (kicker) kicker.textContent = "คำชวน · สมุด " + h.partyCode;
       if (title) title.innerHTML = "มีคนชวนคุณ<br>ทำ 1 อย่างไปด้วยกัน";
-      if (lede) lede.innerHTML = "28 วัน · ไม่ต้องทำคนเดียว<br><strong>จะเข้าตี้นี้ หรือเปิดตี้ของตัวเองก็ได้</strong>";
-      if (actions) actions.innerHTML = '<a class="xp-btn gold" href="/xty/join/?c=' + encodeURIComponent(h.partyCode) + '">เข้าตี้ ' + h.partyCode + ' →</a><a class="xp-btn ghost" href="/xty/new/?template=xircle_xvisor">เปิดตี้ของฉันเอง</a>';
+      if (lede) lede.innerHTML = "28 วัน · ไม่ต้องทำคนเดียว<br><strong>จะเข้าสมุดนี้ หรือเปิดสมุดของตัวเองก็ได้</strong>";
+      if (actions) actions.innerHTML = '<a class="xp-btn gold" href="/xty/join/?c=' + encodeURIComponent(h.partyCode) + '">เข้าสมุด ' + h.partyCode + ' →</a><a class="xp-btn ghost" href="/xty/new/?template=xircle_xvisor">เปิดสมุดของฉันเอง</a>';
       if (art) { art.setAttribute("data-art-src", "/xircle/assets/v5/xircle-party-join-hero.webp"); art.src = "/xircle/assets/v5/xircle-party-join-hero.webp?v=20260817-final"; }
-      if (bottom) { bottom.href = "/xty/join/?c=" + encodeURIComponent(h.partyCode); bottom.textContent = "เข้าตี้ " + h.partyCode + " →"; }
+      if (bottom) { bottom.href = "/xty/join/?c=" + encodeURIComponent(h.partyCode); bottom.textContent = "เข้าสมุด " + h.partyCode + " →"; }
     } else {
-      if (kicker) kicker.textContent = "XIRCLE × myClover XTY";
-      if (title) title.innerHTML = "28 วัน<br>1 Action<br>ทำด้วยกัน";
-      if (lede) lede.innerHTML = "เปิดตี้ของตัวเองได้เลย<br><strong>หรือถ้ามีรหัสตี้อยู่แล้ว ก็เลือกเข้าตี้ได้</strong>";
-      if (actions) actions.innerHTML = '<a class="xp-btn gold" href="/xty/new/?template=xircle_xvisor">ตั้ง Action แล้วเปิดตี้ →</a><a class="xp-btn ghost" href="/xty/join/">มีรหัสตี้ · เข้าตี้</a>';
+      if (kicker) kicker.textContent = "สมุดแมวขาว";
+      if (title) title.innerHTML = "28 วัน<br>เลือก 1 อย่าง<br>ทำด้วยกัน";
+      if (lede) lede.innerHTML = "เปิดสมุดของตัวเองได้เลย<br><strong>หรือถ้ามีรหัสสมุดอยู่แล้ว ก็เลือกเข้าสมุดได้</strong>";
+      if (actions) actions.innerHTML = '<a class="xp-btn gold" href="/xty/new/?template=xircle_xvisor">เลือกสิ่งที่จะทำ แล้วเปิดสมุด →</a><a class="xp-btn ghost" href="/xty/join/">มีรหัสสมุด · เข้าสมุด</a>';
       if (art) { art.setAttribute("data-art-src", "/xircle/assets/v5/xircle-party-create-hero.webp"); art.src = "/xircle/assets/v5/xircle-party-create-hero.webp?v=20260817-final"; }
-      if (bottom) { bottom.href = "/xty/new/?template=xircle_xvisor"; bottom.textContent = "เปิดตี้แมวขาว →"; }
+      if (bottom) { bottom.href = "/xty/new/?template=xircle_xvisor"; bottom.textContent = "เปิดสมุดแมวขาว →"; }
     }
   }
 

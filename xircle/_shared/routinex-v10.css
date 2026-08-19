@@ -1,50 +1,49 @@
-/* RoutineX mobile fine tune — 2026-08-18
-   Keep the cinematic one-screen rhythm, but use the available vertical space.
-   The final product-payoff artwork gets its own natural-height frame instead of
-   inheriting the teaching diagram height. */
+/* RoutineX mobile fine tune — 2026-08-19
+   Keep the cinematic one-screen rhythm, but let the denser RoutineX chapter
+   breathe. The final product-payoff artwork keeps its own natural-height frame. */
 
 @media (max-width:780px) and (min-height:681px){
   .xp-routinex-story .xp-title,
   .xp-routinex-story .xp-title.sm{
     max-width:100%!important;
-    font-size:clamp(40px,10.8vw,54px)!important;
-    line-height:1.025!important;
-    letter-spacing:-.036em!important;
+    font-size:clamp(37px,9.6vw,48px)!important;
+    line-height:1.03!important;
+    letter-spacing:-.034em!important;
   }
 
   .xp-routinex-story .xp-routine-term{
-    gap:9px!important;
-    margin-bottom:8px!important;
+    gap:8px!important;
+    margin-bottom:7px!important;
   }
   .xp-routinex-story .xp-routine-term b{
-    font-size:32px!important;
+    font-size:29px!important;
     line-height:1!important;
   }
   .xp-routinex-story .xp-routine-term span{
-    font-size:15px!important;
+    font-size:14px!important;
     line-height:1.2!important;
   }
 
   .xp-routinex-story .xp-lede{
-    margin-top:12px!important;
-    font-size:17px!important;
-    line-height:1.5!important;
+    margin-top:10px!important;
+    font-size:16px!important;
+    line-height:1.46!important;
   }
   .xp-routinex-story .xp-routine-support{
-    margin-top:11px!important;
-    padding:10px 12px!important;
-    font-size:13.5px!important;
-    line-height:1.48!important;
+    margin-top:10px!important;
+    padding:9px 11px!important;
+    font-size:12.75px!important;
+    line-height:1.44!important;
   }
   .xp-routinex-story .xp-routine-sequence b{
-    width:30px!important;
-    height:30px!important;
-    font-size:15px!important;
+    width:29px!important;
+    height:29px!important;
+    font-size:14px!important;
   }
   .xp-routinex-story .xp-btn{
-    min-height:52px!important;
-    padding:11px 17px!important;
-    font-size:15.5px!important;
+    min-height:50px!important;
+    padding:10px 16px!important;
+    font-size:15px!important;
   }
 }
 
