@@ -8,6 +8,32 @@
 
 .start-wrap{width:min(100% - 32px,1080px);margin:0 auto}
 
+/* landing.css styles the pieces but leaves the page grid to whoever uses
+   it, so the entrance brings its own two-column shape and body copy. */
+.landing-section{margin-inline:auto}
+.start-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
+.start-grid>*{min-width:0}
+/* landing.css leaves the hero headline unsized, and the page font is large
+   enough that Thai breaks mid-phrase without a ceiling. */
+.start-grid h1{
+  margin:12px 0 0;font-size:clamp(32px,4.4vw,56px);line-height:1.14;
+  letter-spacing:-.025em;font-weight:800;text-wrap:balance;
+}
+.landing-section h2{
+  margin:10px 0 0;font-size:clamp(26px,3.4vw,42px);line-height:1.18;
+  letter-spacing:-.02em;font-weight:800;text-wrap:balance;
+}
+.start-grid .lead{font-size:clamp(17px,1.5vw,21px);line-height:1.55;margin-top:18px}
+.start-wrap>.copy,.start-grid .copy{
+  margin:16px 0 0;color:#62574F;font-size:16px;line-height:1.75;max-width:640px;
+}
+.landing-section .center-title{text-align:center}
+@media(max-width:900px){
+  .start-grid{grid-template-columns:1fr;gap:30px}
+  /* On one column the picture reads better under the words that set it up. */
+  .start-grid>.hero-visual,.start-grid>figure{order:2;justify-self:center}
+}
+
 /* ── Art frames ────────────────────────────────────────────────
    Every picture is a page torn out of a notebook, so the frame is
    paper rather than a card: soft edge, a little lift, no border. */
