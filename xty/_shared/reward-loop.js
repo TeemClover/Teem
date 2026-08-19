@@ -126,7 +126,7 @@ function install() {
   const shell = document.createElement('details');
   shell.className = 'xty-reward-shell'; shell.id = 'xtyRewardShell';
   const summary = document.createElement('summary');
-  summary.innerHTML = '<span class="label">รางวัลของช่วง</span>'
+  summary.innerHTML = '<span class="label">รางวัลของเล่มนี้</span>'
     + '<span class="xty-reward-peek" id="xtyRewardPeek">กำลังเช็ก…</span>';
   shell.appendChild(summary);
 

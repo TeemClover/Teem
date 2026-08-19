@@ -515,7 +515,7 @@ export default async function handler(req, res) {
         maxMembers: PARTY_MAX,
         todayCommitCount: Number(row.commit_count || 0),
         lead: {
-          alias: row.lead_alias || 'หัวตี้',
+          alias: row.lead_alias || 'เจ้าของสมุด',
           avatar: row.lead_avatar || 'orange_cat',
           avatarColor: row.lead_avatar_color || 'green',
         },
