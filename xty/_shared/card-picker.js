@@ -93,9 +93,30 @@ function installStyles() {
     .xcp-lock{font-size:13px;filter:grayscale(1)}
 
     .xcp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:9px;padding:0 12px 13px}
-    .xcp-opt{padding:0;border:2px solid transparent;border-radius:12px;background:transparent;overflow:hidden}
+    .xcp-opt{padding:0;border:2px solid transparent;border-radius:12px;background:transparent;overflow:visible}
     .xcp-opt[aria-checked="true"]{border-color:var(--xty-primary)}
-    .xcp-opt .animal-card,.xcp-opt img{display:block;width:100%}
+    .xcp-opt img{display:block;width:100%}
+
+    /* The picker frame belongs OUTSIDE the XTY card. Never crop an XTY card
+       into the selection tile: preserve the complete printed edge/frame and
+       fit the whole 63×88 card inside a small breathing-space inset. */
+    .xcp-opt>.xcp-card-thumb{
+      aspect-ratio:var(--xty-card-aspect);display:grid;place-items:center;
+      padding:7px;border-radius:10px;background:var(--xty-bg);overflow:visible;
+    }
+    .xcp-card-thumb>.animal-card{
+      width:100%!important;height:100%!important;max-width:100%!important;
+      margin:0!important;padding:0!important;
+      border:0!important;border-radius:0!important;
+      background:transparent!important;box-shadow:none!important;
+      overflow:visible!important;
+    }
+    .xcp-card-thumb>.animal-card .card-art{
+      display:block!important;width:100%!important;height:100%!important;
+      max-width:100%!important;object-fit:contain!important;object-position:center!important;
+      border-radius:0!important;
+    }
+
     .xcp-opt>.xcp-thumb{aspect-ratio:var(--xty-card-aspect);display:grid;place-items:center;border-radius:10px;background:var(--xty-bg);overflow:hidden}
     .xcp-opt>.xcp-thumb img{width:82%;height:auto}
     .xcp-name{display:block;padding:5px 3px 0;color:var(--xty-muted);font-size:11px;line-height:1.3;
@@ -182,7 +203,7 @@ export function mountCardPicker(host, options = {}) {
         option.setAttribute('aria-checked', item.key === selectedKey ? 'true' : 'false');
         option.innerHTML = item.kind === 'starter'
           ? `<span class="xcp-thumb">${item.art}</span><span class="xcp-name"></span>`
-          : `${item.art}<span class="xcp-name"></span>`;
+          : `<span class="xcp-card-thumb">${item.art}</span><span class="xcp-name"></span>`;
         option.querySelector('.xcp-name').textContent = item.title;
         option.setAttribute('aria-label', item.label || item.title);
         option.addEventListener('click', () => {
