@@ -247,12 +247,26 @@ function ensureTextOverlay(node, className, text) {
   return el;
 }
 
-function removeOldInteraction(node) {
+function clearLegacyProfileInteraction(node) {
   node.classList.remove('xty-profile-click');
   node.onclick = null;
   node.onkeydown = null;
-  node.removeAttribute('role');
-  node.removeAttribute('tabindex');
+}
+
+function syncSeatInteraction(node, actionable, alias) {
+  clearLegacyProfileInteraction(node);
+  if (actionable) {
+    node.classList.add('tb-can-seen');
+    if (node.tabIndex !== 0) node.tabIndex = 0;
+    if (node.getAttribute('role') !== 'button') node.setAttribute('role', 'button');
+    const aria = `กดการ์ดเพื่อ เห็นแล้ว ให้ ${alias}`;
+    if (node.getAttribute('aria-label') !== aria) node.setAttribute('aria-label', aria);
+    return;
+  }
+  node.classList.remove('tb-can-seen');
+  if (node.hasAttribute('tabindex')) node.removeAttribute('tabindex');
+  if (node.hasAttribute('role')) node.removeAttribute('role');
+  if (node.hasAttribute('aria-label')) node.removeAttribute('aria-label');
 }
 
 function syncStateElement(node, member, state, actionable) {
@@ -276,9 +290,8 @@ function syncStateElement(node, member, state, actionable) {
 
 function syncHumanSeat(node, member, index, party) {
   node.classList.add('tb-person-seat');
-  node.classList.remove('tb-companion-seat', 'tb-can-seen');
+  node.classList.remove('tb-companion-seat');
   node.dataset.tbUserId = member.userId;
-  removeOldInteraction(node);
 
   ensureTextOverlay(node, 'tb-card-name', member.alias || 'ไม่ระบุชื่อ');
   if (member.role === 'lead') ensureTextOverlay(node, 'tb-owner-label', 'เจ้าของสมุด');
@@ -290,12 +303,7 @@ function syncHumanSeat(node, member, index, party) {
 
   const actionable = canSee(party, member, state);
   syncStateElement(node, member, state, actionable);
-  if (actionable) {
-    node.classList.add('tb-can-seen');
-    node.tabIndex = 0;
-    node.setAttribute('role', 'button');
-    node.setAttribute('aria-label', `กดการ์ดเพื่อ เห็นแล้ว ให้ ${member.alias}`);
-  }
+  syncSeatInteraction(node, actionable, member.alias || 'เพื่อน');
 
   /* Slot number is no longer part of identity. Keep index only in data for
      debugging/layout continuity, never as visible MEMBER 2 / MEMBER 3 UI. */
@@ -311,8 +319,11 @@ function companionName(party) {
 
 function syncCompanion(node, party) {
   node.classList.add('tb-companion-seat');
-  node.classList.remove('tb-person-seat', 'tb-can-seen', 'xty-profile-click');
-  removeOldInteraction(node);
+  node.classList.remove('tb-person-seat');
+  clearLegacyProfileInteraction(node);
+  node.classList.remove('tb-can-seen');
+  if (node.hasAttribute('role')) node.removeAttribute('role');
+  if (node.hasAttribute('tabindex')) node.removeAttribute('tabindex');
   node.removeAttribute('data-tb-user-id');
   node.removeAttribute('data-tb-state');
   node.removeAttribute('data-tb-commit-seq');
