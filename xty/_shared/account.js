@@ -344,7 +344,7 @@ if (typeof window !== 'undefined') {
 
   const fromUrl = new URLSearchParams(location.search).get('c');
   const inviteCode = /^\d{5}$/.test(fromUrl || '') ? fromUrl : '';
-  if (inviteCode) start.textContent = 'เข้าตี้';
+  if (inviteCode) start.textContent = 'เข้าร่วมสมุด';
 
   start.addEventListener('click', event => {
     const code = /^\d{5}$/.test(quickCode.value || '') ? quickCode.value : inviteCode;
@@ -369,8 +369,8 @@ if (typeof window !== 'undefined') {
     if (welcome) welcome.hidden = false;
     quickCode.value = code;
     quickJoin.disabled = false;
-    start.textContent = 'เข้าตี้';
-    if (create) create.textContent = 'สร้างตัวแล้วเข้าตี้';
+    start.textContent = 'เข้าร่วมสมุด';
+    if (create) create.textContent = 'ตั้งชื่อแล้วเข้าร่วมสมุด';
     if (error) error.hidden = true;
   }, true);
 })();

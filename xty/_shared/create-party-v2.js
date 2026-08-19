@@ -46,10 +46,10 @@ function levelOneCover(profile) {
   const avatar = avatarById(profile.avatarId || profile.avatarFallback || 'orange_cat');
   section.innerHTML = `
     <span class="step-sticker">1</span>
-    <h2>การ์ดผู้นำตี้</h2>
-    <p class="whisper" id="coverHint">LV.1 ใช้การ์ดตัวละครเริ่มต้นของคุณเป็นผู้นำตี้อัตโนมัติ</p>
-    <div class="card-select-grid" id="leadPick" role="group" aria-label="การ์ดผู้นำตี้เริ่มต้น">
-      <div class="card-select picked" role="img" aria-label="ใช้ ${avatar.nameTh} เป็นผู้นำตี้">
+    <h2>การ์ดผู้นำสมุด</h2>
+    <p class="whisper" id="coverHint">LV.1 ใช้การ์ดตัวละครเริ่มต้นของคุณเป็นผู้นำสมุดอัตโนมัติ</p>
+    <div class="card-select-grid" id="leadPick" role="group" aria-label="การ์ดผู้นำสมุดเริ่มต้น">
+      <div class="card-select picked" role="img" aria-label="ใช้ ${avatar.nameTh} เป็นผู้นำสมุด">
         <div class="avatar-cover" data-color="${profile.avatarFrame || 'green'}">
           <img src="${avatar.art}" alt="">
           <b>${avatar.nameTh}</b>
@@ -65,7 +65,7 @@ function levelOneCover(profile) {
     if (label?.classList?.contains('label')) label.hidden = true;
     const companionSection = npcPick.closest('.notebook-card');
     const intro = companionSection?.querySelector(':scope > .whisper');
-    if (intro) intro.textContent = 'เลือก Pet ได้ตามปกติ · ถ้ามี Animal Card ใน Collection ใช้เป็นสกินของ Pet ได้';
+    if (intro) intro.textContent = 'เลือกเพื่อนร่วมทางได้ตามปกติ · ถ้ามีการ์ดในคอลเลกชัน ใช้เป็นสกินของเพื่อนร่วมทางได้';
   }
 }
 

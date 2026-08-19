@@ -5,7 +5,7 @@ if (box) install();
 function install() {
   injectStyle();
   box.tabIndex = 0;
-  box.setAttribute('aria-label', 'Party Log — เลื่อนอ่านบันทึกได้อย่างอิสระ');
+  box.setAttribute('aria-label', 'เรื่องในสมุด — เลื่อนอ่านบันทึกได้อย่างอิสระ');
 
   const code = new URLSearchParams(location.search).get('c') || 'unknown';
   const readKey = `xty:party-log-read:v1:${code}`;

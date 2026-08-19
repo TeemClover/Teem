@@ -230,7 +230,7 @@ test('manual force wake still has a diagnostic proof-of-life fallback', async ()
   assert.equal(res.body.read, 1);
   assert.equal(res.body.spoke, 1);
   assert.equal(res.body.bubbles, 1);
-  assert.match(insertedBodies[0], /รอบทดสอบอ่าน Party Log/);
+  assert.match(insertedBodies[0], /รอบทดสอบอ่านเรื่องในสมุดได้อยู่/);
 });
 
 test('unauthorized scheduled wake is rejected', async () => {

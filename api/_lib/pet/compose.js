@@ -19,7 +19,7 @@ const SAUCE_LABELS = Object.freeze({
   example: 'ตัวอย่างพลัง',
   signature: 'มุกหลัก',
   heavyMode: 'โหมดเรื่องหนัก',
-  ending: 'ตอนจบเควส',
+  ending: 'ตอนจบช่วง',
 });
 
 export function sauceBlock(sauce) {
@@ -29,7 +29,7 @@ export function sauceBlock(sauce) {
   }
   for (const note of sauce?.notes || []) lines.push(note);
   if (sauce?.provisional) {
-    lines.push('ใช้บุคลิกนี้เป็นน้ำเสียงเท่านั้น เนื้อหาต้องมาจากสิ่งที่เกิดขึ้นจริงใน Party Log');
+    lines.push('ใช้บุคลิกนี้เป็นน้ำเสียงเท่านั้น เนื้อหาต้องมาจากสิ่งที่เกิดขึ้นจริงใน เรื่องในสมุด');
   }
   return lines.join('\n');
 }
@@ -38,20 +38,20 @@ export function buildPrompt({
   sauce, party, context, hour, trigger = 'scheduled', knowledge = '', transcript = '',
 }) {
   const roster = context.members.length
-    ? context.members.map(m => `- ${m.alias}${m.role === 'lead' ? ' (หัวตี้)' : ''}`).join('\n')
-    : '- (ยังไม่มีสมาชิก)';
+    ? context.members.map(m => `- ${m.alias}${m.role === 'lead' ? ' (เจ้าของสมุด)' : ''}`).join('\n')
+    : '- (ยังไม่มีคนในสมุด)';
 
   return [
-    `คุณคือ ${sauce.emoji} ${sauce.nameTh} — สมาชิก NPC ของตี้ XTY`,
-    'XTY คือเกมที่คนกลุ่มเล็กออกไปทำอะไรจริง แล้วกลับมา Message / Commit / React กันใน Party Log',
+    `คุณคือ ${sauce.emoji} ${sauce.nameTh} — เพื่อนร่วมทางประจำสมุดเล่มนี้`,
+    'TeamBook คือสมุดกลุ่มมีชีวิต คนกลุ่มเล็กออกไปใช้ชีวิตจริง แล้วกลับมาลงชื่อ เขียนสั้น ๆ และกดเห็นแล้วให้กันในสมุดเล่มเดียวกัน',
     '',
-    '## ตี้นี้',
+    '## สมุดนี้',
     `ชื่อ: ${party.name || '(ไม่มีชื่อ)'}`,
     `กิจกรรม: ${party.activity || '(ยังไม่ระบุ)'}`,
-    `กติกา Commit: ${party.commit_rule || '(ยังไม่ได้ตั้ง — ห้ามตั้งให้เอง)'}`,
-    `สมาชิก ${context.members.length} คน:`,
+    `วันนี้ลงชื่อได้เมื่อ: ${party.commit_rule || '(ยังไม่ได้ตั้ง — ห้ามตั้งให้เอง)'}`,
+    `คนในสมุด ${context.members.length} คน:`,
     roster,
-    `รอบเวลา ${String(hour).padStart(2, '0')}:xx น. เวลาไทย · วันนี้ Commit ${context.committed}/${context.members.length}`,
+    `รอบเวลา ${String(hour).padStart(2, '0')}:xx น. เวลาไทย · วันนี้ ลงชื่อ ${context.committed}/${context.members.length}`,
     '',
     transcript,
     '',

@@ -68,14 +68,14 @@ function pet(id, nameTh, emoji, color, series, persona, opts = {}) {
 export const PETS = Object.freeze([
   /* 01 STARTER — granted to every new XTY profile (§15) */
   pet('pig',     'หมู',   '🐷', 'red',    'starter', 'อารมณ์ดี เป็นกันเอง ชวนเริ่มโดยไม่กดดัน', { art: '/xty/assets/art/pets/pig.webp' }),
-  pet('dog',     'หมา','🐶', 'green',  'starter', 'เพื่อนตี้ใจดี คอยเรียกทุกคนกลับมา', { art: '/xty/assets/art/pets/dog.webp' }),
+  pet('dog',     'หมา','🐶', 'green',  'starter', 'เพื่อนสมุดใจดี คอยเรียกทุกคนกลับมา', { art: '/xty/assets/art/pets/dog.webp' }),
   pet('crow',    'กา',    '🐦‍⬛', 'blue',  'starter', 'ช่างสังเกต จำรายละเอียดเล็ก ๆ ได้ดี', { art: '/xty/assets/art/pets/crow.webp' }),
   pet('chicken', 'ไก่',   '🐔', 'silver', 'starter', 'จิกงานทีละนิด ทำเรื่องยากให้เป็นขั้นเล็ก', { art: '/xty/assets/art/pets/chicken.webp' }),
 
   /* 02 WORK */
   pet('buffalo', 'ควาย',  '🐃', 'red',    'work', 'ใจสู้ ทำต่อได้ทีละก้าว', { art: '/xty/assets/art/pets/buffalo.webp' }),
-  pet('horse',   'ม้า',   '🐎', 'green',  'work', 'กระตือรือร้น พาตี้วิ่งไปข้างหน้า ชอบ momentum'),
-  pet('elephant','ช้าง',  '🐘', 'blue',   'work', 'จำเก่ง สุขุม สรุปสิ่งที่ตี้เคยพูดไว้'),
+  pet('horse',   'ม้า',   '🐎', 'green',  'work', 'กระตือรือร้น พาสมุดวิ่งไปข้างหน้า ชอบ momentum'),
+  pet('elephant','ช้าง',  '🐘', 'blue',   'work', 'จำเก่ง สุขุม สรุปสิ่งที่สมุดเคยพูดไว้'),
   pet('cow',     'วัว',   '🐄', 'silver', 'work', 'practical เน้นผลลัพธ์ ทำของธรรมดาให้เกิด output', { craftArt: 'สเต็ก' }),
 
   /* 03 BEAST */
@@ -91,7 +91,7 @@ export const PETS = Object.freeze([
   pet('crocodile','จระเข้','🐊', 'silver', 'wild', 'พูดน้อย ต่อยหนัก ประโยคสั้นแต่จบ', { craftArt: 'กระเป๋าหนัง' }),
 
   /* 05 FOREST */
-  pet('gorilla', 'กอริลลา','🦍', 'red',   'forest', 'พลังเยอะ ปกป้องตี้ ชอบให้ลงมือจริง'),
+  pet('gorilla', 'กอริลลา','🦍', 'red',   'forest', 'พลังเยอะ ปกป้องสมุด ชอบให้ลงมือจริง'),
   pet('deer',    'กวาง',  '🦌', 'green',  'forest', 'แซ่บ ไว อ่านห้องเก่ง พูดมีสีสัน'),
   pet('fox',     'จิ้งจอก','🦊', 'blue',  'forest', 'ฉลาดแกมโกง หาทางลัด จับจุดอ่อนของแผน', { art: '/guild/assets/avatar-fox-ui.png' }),
   pet('sheep',   'แกะ',   '🐑', 'silver', 'forest', 'นุ่มนวลแต่เป็นระบบ เปลี่ยนของดิบให้ใช้งานได้', { craftArt: 'เสื้อขนแกะ' }),

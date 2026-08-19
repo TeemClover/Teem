@@ -393,7 +393,7 @@ async function triggerSeen(seat) {
       // Another friend got there first. The refreshed response still paints green.
     } else if (result?.error) {
       seat.title = result.error === 'CONFIRM_WINDOW_CLOSED'
-        ? 'ช่วงกด เห็นแล้ว ของวันนี้จบแล้ว'
+        ? 'ช่วงกดเห็นแล้วของวันนี้จบแล้ว'
         : 'ยังบันทึก เห็นแล้ว ไม่สำเร็จ';
     }
   } finally {

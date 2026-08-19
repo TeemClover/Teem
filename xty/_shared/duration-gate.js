@@ -47,9 +47,9 @@ import { getProfile } from './store.js';
     note.className = 'hint';
     note.style.margin = '10px 0 0';
     note.textContent = whiteCatRoute
-      ? 'เส้นแมวขาวเป็น Quest 28 วัน · Route นี้เลือกช่วงสั้นกว่านี้ไม่ได้'
+      ? 'เส้นแมวขาวเป็นเล่ม 28 วัน · เส้นนี้เลือกช่วงสั้นกว่านี้ไม่ได้'
       : (level >= 2
-        ? `LEVEL ${level} · ปลดตี้ 14 และ 28 วันแล้ว`
+        ? `LEVEL ${level} · ปลดสมุด 14 และ 28 วันแล้ว`
         : 'LEVEL 1 · เริ่มได้ที่ 3 หรือ 7 วัน · LEVEL 2 จะปลด 14 และ 28 วัน');
     box.insertAdjacentElement('afterend', note);
   };

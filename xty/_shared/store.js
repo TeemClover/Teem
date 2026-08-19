@@ -302,7 +302,7 @@ export function applyCollectionDebugCode(value) {
       collectionResetAt: at,
       debugUnlockedAt: null,
     }, { touch: true });
-    return { ok: true, code, count: 0, message: 'รีเซ็ต Collection บนโปรไฟล์นี้แล้ว' };
+    return { ok: true, code, count: 0, message: 'รีเซ็ตคอลเลกชันบนโปรไฟล์นี้แล้ว' };
   }
   return { ok: false, error: 'INVALID_DEBUG_CODE', message: 'ไม่พบรหัสทดสอบนี้' };
 }
@@ -1069,20 +1069,20 @@ function eventLine(event) {
   const companionName = value => cardById(value) ? cardNameTh(value) : (PET_BY_ID[value]?.nameTh || 'ไม่มี');
   const coverName = value => value === 'card_back' ? 'Card Back' : cardNameTh(value);
   const labels = {
-    PARTY_CREATED: `เริ่มตี้ในชื่อ “${safeLine(data.name)}”`,
+    PARTY_CREATED: `เริ่มสมุดในชื่อ “${safeLine(data.name)}”`,
     MEMBER_JOINED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เข้าร่วมการเดินทาง`,
     MEMBER_LEFT: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} ออกจากการเดินทาง`,
     MEMBER_KICKED: `สมาชิกคนหนึ่งออกจากการเดินทาง`,
-    PARTY_RENAMED: `เปลี่ยนชื่อตี้จาก “${safeLine(data.from)}” เป็น “${safeLine(data.to)}”`,
-    MEMBER_ALIAS_CHANGED: `เปลี่ยนชื่อในตี้เป็น “${safeLine(data.alias)}”`,
-    MEMBER_AVATAR_CHANGED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เปลี่ยนตัวละครประจำตี้`,
-    LEAD_CARD_CHANGED: `เปลี่ยนปกตี้จาก ${coverName(data.from)} เป็น ${coverName(data.to)}`,
+    PARTY_RENAMED: `เปลี่ยนชื่อสมุดจาก “${safeLine(data.from)}” เป็น “${safeLine(data.to)}”`,
+    MEMBER_ALIAS_CHANGED: `เปลี่ยนชื่อในสมุดเป็น “${safeLine(data.alias)}”`,
+    MEMBER_AVATAR_CHANGED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เปลี่ยนตัวละครประจำสมุด`,
+    LEAD_CARD_CHANGED: `เปลี่ยนปกสมุดจาก ${coverName(data.from)} เป็น ${coverName(data.to)}`,
     NPC_CHANGED: `เปลี่ยนเพื่อนร่วมทางจาก ${companionName(data.from)} เป็น ${companionName(data.to)}`,
-    RULE_CHANGED: 'ปรับกติกาของตี้ระหว่างทาง',
-    PARTY_COMPLETED: 'ทำการเดินทางนี้ครบและปิดตี้อย่างสมบูรณ์',
+    RULE_CHANGED: 'ปรับกติกาของสมุดระหว่างทาง',
+    PARTY_COMPLETED: 'ทำการเดินทางนี้ครบและปิดสมุดอย่างสมบูรณ์',
     PARTY_DISSOLVED: 'ปิดการเดินทางก่อนกำหนด โดยเก็บสิ่งที่เกิดขึ้นไว้',
   };
-  return labels[event?.type] || safeLine(event?.type, 'มีการเปลี่ยนแปลงในตี้');
+  return labels[event?.type] || safeLine(event?.type, 'มีการเปลี่ยนแปลงในสมุด');
 }
 
 function bestCommitStreak(posts) {
@@ -1168,8 +1168,8 @@ function selectTurningPoint({ events, messages, peakDay, fullCommitDay, context 
     'MEMBER_JOINED', 'MEMBER_ALIAS_CHANGED', 'MEMBER_AVATAR_CHANGED',
   ].includes(event.type));
   if (otherEvent) return `Day ${Number(otherEvent.partyDay || 1)} — ${eventLine(otherEvent)}`;
-  if (fullCommitDay) return `วันที่ ${fullCommitDay} สมาชิกที่ยังอยู่ Commit พร้อมกันครบตี้`;
-  if (peakDay) return `วันที่ ${peakDay[0]} ตี้ขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)`;
+  if (fullCommitDay) return `วันที่ ${fullCommitDay} สมาชิกที่ยังอยู่ ลงชื่อ พร้อมกันครบสมุด`;
+  if (peakDay) return `วันที่ ${peakDay[0]} สมุดขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)`;
   return context.comicGuidance.panel3;
 }
 
@@ -1199,10 +1199,10 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
   const companion = npcCard ? cardNameTh(npcCard) : (pet?.nameTh || 'ไม่มี');
   const endingKind = String(party.state || '').toUpperCase() === 'DISSOLVED'
     ? 'จบก่อนกำหนด (DISSOLVED)'
-    : 'เดินทางครบและปิดตี้ (COMPLETED)';
+    : 'เดินทางครบและปิดสมุด (COMPLETED)';
   const eventLines = events.length
     ? events.map((event, index) => `${index + 1}. Day ${Number(event.partyDay || 1)} · ${isoDate(event.at)} — ${eventLine(event)}`)
-    : [`1. Day 1 · ${isoDate(party.createdAt)} — เริ่มตี้ในชื่อ “${safeLine(party.name)}”`];
+    : [`1. Day 1 · ${isoDate(party.createdAt)} — เริ่มสมุดในชื่อ “${safeLine(party.name)}”`];
   const importantChanges = events
     .filter(event => ['PARTY_RENAMED', 'LEAD_CARD_CHANGED', 'NPC_CHANGED', 'RULE_CHANGED', 'MEMBER_KICKED'].includes(event.type))
     .map(event => `- Day ${Number(event.partyDay || 1)} — ${eventLine(event)}`);
@@ -1219,11 +1219,11 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
     ? [...messages].reverse().find(post => new Date(post.sentAt).getTime() >= endedAt)
     : null;
   const memorableMoments = [
-    peakDay ? `- วันที่ ${peakDay[0]} เป็นวันที่ตี้ขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)` : '- ยังไม่มี Commit ใน snapshot นี้',
+    peakDay ? `- วันที่ ${peakDay[0]} เป็นวันที่สมุดขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)` : '- ยังไม่มีการลงชื่อใน snapshot นี้',
     `- ภาษากำลังใจที่ใช้บ่อย: ${reactionHighlights}`,
   ];
-  if (togetherDay) memorableMoments.push(`- วันที่ ${togetherDay} สมาชิกที่ยังอยู่ Commit พร้อมกันครบตี้`);
-  if (topMessage) memorableMoments.push(`- Message ที่เพื่อนตอบรับมาก: “${shortMessage(topMessage.body)}” (${postReactionCount(topMessage)} reactions)`);
+  if (togetherDay) memorableMoments.push(`- วันที่ ${togetherDay} สมาชิกที่ยังอยู่ ลงชื่อ พร้อมกันครบสมุด`);
+  if (topMessage) memorableMoments.push(`- ข้อความ ที่เพื่อนตอบรับมาก: “${shortMessage(topMessage.body)}” (${postReactionCount(topMessage)} reactions)`);
   if (finalMessage) memorableMoments.push(`- Final Message: “${shortMessage(finalMessage.body)}”`);
   const castLines = members.map(member => {
     const interval = member.leftAt ? ` · อยู่ถึง ${isoDate(member.leftAt)}` : '';
@@ -1232,30 +1232,30 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
   if (!castLines.length) castLines.push('- ไม่มีข้อมูลสมาชิกใน snapshot นี้');
 
   const storyEnd = String(party.state || '').toUpperCase() === 'DISSOLVED'
-    ? 'การเดินทางหยุดก่อนกำหนด แต่ทุก Commit และการช่วยกันที่เกิดขึ้นยังเป็นหลักฐานของชีวิตจริง ไม่ถูกลบทิ้งหรือปลอมให้เป็นชัยชนะ'
-    : `ตี้ปิดฉากด้วย ${commits.length} Commit และความคืบหน้า ${completion}% ของกรอบเวลาที่ตั้งใจไว้`;
-  const names = members.map(member => safeLine(member.alias)).join(', ') || 'เพื่อนในตี้';
+    ? 'การเดินทางหยุดก่อนกำหนด แต่ทุกครั้งที่ลงชื่อและการช่วยกันที่เกิดขึ้นยังเป็นหลักฐานของชีวิตจริง ไม่ถูกลบทิ้งหรือปลอมให้เป็นชัยชนะ'
+    : `สมุดปิดฉากด้วย ${commits.length} ครั้งที่ลงชื่อ และความคืบหน้า ${completion}% ของกรอบเวลาที่ตั้งใจไว้`;
+  const names = members.map(member => safeLine(member.alias)).join(', ') || 'เพื่อนในสมุด';
   const turningPoint = selectTurningPoint({
     events, messages, peakDay, fullCommitDay: togetherDay, context,
   });
   const visualCues = [...context.visualCues, ...context.objectCues];
 
-  return `# XTY Party Ending — ${safeLine(party.name)}
+  return `# TeamBook · ปิดเล่ม — ${safeLine(party.name)}
 
-> ไฟล์ความทรงจำจาก XTY · สร้างเมื่อ ${isoDate(generatedAt)} · ไม่มีอีเมล เบอร์โทร หรือรหัสภายใน
+> ไฟล์ความทรงจำจาก TeamBook · สร้างเมื่อ ${isoDate(generatedAt)} · ไม่มีอีเมล เบอร์โทร หรือรหัสภายใน
 
-## Party
+## สมุด
 
 - สถานะตอนจบ: ${endingKind}
 - กิจกรรม: ${safeLine(context.activityText)}
-- กติกา Commit: ${safeLine(party.commitRule)}
+- กติกาการลงชื่อ: ${safeLine(party.commitRule)}
 - ระยะเวลา: ${duration} วัน
 - เริ่ม: ${isoDate(party.startAt || party.createdAt)}
 - จบ: ${isoDate(party.endAt || party.endedAt || generatedAt)}
-- รูปแบบตี้: ${safeLine(party.preset, 'casual')}
-- สีประจำตี้: ${safeLine(party.color, 'green')}
-- Lead Card: ${leadCard ? cardNameTh(leadCard) : safeLine(party.leadCardId)}
-- PET / NPC: ${safeLine(companion)}
+- รูปแบบสมุด: ${safeLine(party.preset, 'casual')}
+- สีประจำสมุด: ${safeLine(party.color, 'green')}
+- การ์ดเปิดสมุด: ${leadCard ? cardNameTh(leadCard) : safeLine(party.leadCardId)}
+- เพื่อนร่วมทาง: ${safeLine(companion)}
 
 ## Cast
 
@@ -1272,7 +1272,7 @@ ${castLines.join('\n')}
 - Visual Cues: ${safeList(visualCues)}
 - Ending Motifs: ${safeList(context.endingMotifs)}
 - Avoid: ${safeList(context.avoid)}
-${context.inferred ? `- Custom Context: infer จาก Activity “${safeLine(context.activityText)}” + Commit Rule + Quest Log จริง` : ''}
+${context.inferred ? `- Custom Context: infer จาก Activity “${safeLine(context.activityText)}” + ลงชื่อ Rule + ช่วง Log จริง` : ''}
 
 ## Timeline
 
@@ -1288,10 +1288,10 @@ ${memorableMoments.join('\n')}
 
 ## Character Notes
 
-- ${safeLine(lead?.alias, 'หัวตี้')} เป็นคนเปิดพื้นที่และถือ Lead Card ของการเดินทางนี้
-- สมาชิกที่ร่วมทาง: ${names}
+- ${safeLine(lead?.alias, 'เจ้าของสมุด')} เป็นคนเปิดพื้นที่และถือ การ์ดเปิดสมุดของการเดินทางนี้
+- คนในสมุด: ${names}
 - เพื่อนร่วมทาง: ${safeLine(companion)}${npcCard ? ` · บุคลิก “${safeLine(npcCard.personalityNameTh)}” · “${safeLine(npcCard.flavorTh)}”` : ''}
-- โทนของตี้: เบา เป็นมิตร และยึดสิ่งที่ทำจริงมากกว่าคะแนน
+- โทนของสมุด: เบา เป็นมิตร และยึดสิ่งที่ทำจริงมากกว่าคะแนน
 
 ## Summary Stats
 
@@ -1304,11 +1304,11 @@ ${memorableMoments.join('\n')}
 
 ## Story Summary
 
-“${safeLine(party.name)}” เริ่มจาก ${safeLine(context.storyFrame)} กติกาจริงคือ “${safeLine(party.commitRule)}” โดยมี ${safeLine(lead?.alias, 'หัวตี้')} สมาชิก ${names} และ ${safeLine(companion)} เป็นภาพจำของการเดินทาง
+“${safeLine(party.name)}” เริ่มจาก ${safeLine(context.storyFrame)} กติกาจริงคือ “${safeLine(party.commitRule)}” โดยมี ${safeLine(lead?.alias, 'เจ้าของสมุด')} สมาชิก ${names} และ ${safeLine(companion)} เป็นภาพจำของการเดินทาง
 
-จาก Quest Log ความสำเร็จของเรื่องนี้หมายถึง ${safeLine(context.successMeaning)} และคุณค่าของทีมคือ ${safeLine(context.teamMeaning)} Turning point ที่ควรใช้เล่าเรื่องคือ ${safeLine(turningPoint)}
+จาก ช่วง Log ความสำเร็จของเรื่องนี้หมายถึง ${safeLine(context.successMeaning)} และคุณค่าของทีมคือ ${safeLine(context.teamMeaning)} Turning point ที่ควรใช้เล่าเรื่องคือ ${safeLine(turningPoint)}
 
-${storyEnd} ใช้ข้อเท็จจริงจาก Timeline, Commit, Message, Reaction และ Confirm ก่อน template เสมอ อย่าทำให้ประวัติดูสมบูรณ์แบบเกินสิ่งที่เกิดขึ้นจริง
+${storyEnd} ใช้ข้อเท็จจริงจาก Timeline, ลงชื่อ, ข้อความ, Reaction และ เห็นแล้ว ก่อน template เสมอ อย่าทำให้ประวัติดูสมบูรณ์แบบเกินสิ่งที่เกิดขึ้นจริง
 
 ## 4-Panel Comic Prompt
 

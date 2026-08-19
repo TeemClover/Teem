@@ -64,8 +64,8 @@ function partySnapshot() {
 
 function inviteText(party) {
   return [
-    'เข้าตี้ใน XTY',
-    `ตี้: ${party.name}`,
+    'เข้าร่วมสมุดใน XTY',
+    `สมุด: ${party.name}`,
     `ทำ: ${party.activity}`,
     `${party.durationDays} วัน · รหัส ${party.code}`,
     party.inviteUrl,
@@ -116,7 +116,7 @@ function install() {
       inviteButton,
       inviteText(party),
       `คัดลอกคำเชิญแล้ว · รหัส ${party.code}`,
-      `คัดลอกอัตโนมัติไม่ได้ · รหัสตี้ ${party.code}`,
+      `คัดลอกอัตโนมัติไม่ได้ · รหัสสมุด ${party.code}`,
     );
   }, true);
 
@@ -127,8 +127,8 @@ function install() {
     await copyFromButton(
       linkButton,
       party.inviteUrl,
-      'คัดลอกลิงก์เข้าตี้แล้ว',
-      `คัดลอกลิงก์อัตโนมัติไม่ได้ · รหัสตี้ ${party.code}`,
+      'คัดลอกลิงก์เข้าร่วมสมุดแล้ว',
+      `คัดลอกลิงก์อัตโนมัติไม่ได้ · รหัสสมุด ${party.code}`,
     );
   }, true);
 }
