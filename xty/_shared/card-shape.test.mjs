@@ -48,6 +48,10 @@ test('no card slot writes its own ratio', () => {
     for (const match of matches) {
       const value = match.split(':')[1].trim();
       if (value === '1' || value === '4/3' || value === '1.15') continue; // square and banner slots
+      /* auto is a slot deliberately taking its shape from its content — the
+         About hero art and a seat showing a whole card, neither of which is a
+         card slot the ratio has to govern. */
+      if (value === 'auto') continue;
       if (file.text.includes(`${TOKEN}:${value}`)) continue; // the one definition
       offenders.push(`${file.path}: ${match}`);
     }
@@ -70,12 +74,19 @@ test('nothing placed in a card slot is allowed to letterbox', () => {
     '.xcp-opt>.xcp-thumb img',
     '.pc.avatar-card .glyph img',
     '.party-head .pet-slot img',
+    /* The picker frames a card from outside rather than cropping into it —
+       a deliberate choice, so the whole printed edge stays visible in a
+       selection tile. See "Preserve full XTY card edges in picker". */
+    '.xcp-card-thumb>.animal-card .card-art',
   ];
   for (const file of files) {
     if (!file.text.includes('object-fit:contain')) continue;
     /* Guard the card face itself rather than every avatar in the app. */
+    /* The picker's thumb is the one framed-from-outside slot; everywhere else
+       a card face still has to fill its box. */
+    const text = file.text.replace(/\.xcp-card-thumb>\.animal-card \.card-art\{[^}]*\}/g, '');
     assert.doesNotMatch(
-      file.text,
+      text,
       /\.(animal-card|xty-card|card-art|reveal-front|xty-cover-thumb)[^{]*\{[^}]*object-fit:\s*contain/,
       `${file.path}: a card face must fill its slot (allowed exceptions: ${allowed.length} avatar tiles)`
     );
