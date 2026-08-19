@@ -71,6 +71,11 @@ export const MESSAGE_BUDGETS = Object.freeze({
 });
 export const DEFAULT_BUDGET = 'normal';
 
+/* One message, one glance. This must match MESSAGE_MAX_CHARS in
+   api/_lib/xty-rules.js exactly — the server refuses anything longer, and a
+   client that let people type past it would only produce rejected posts. */
+export const MESSAGE_MAX_CHARS = 120;
+
 export const REACTIONS = Object.freeze(['❤️', '🔥', '👏', '😂', '🫡', '💪', '👀', '🍀']);
 
 /* The pet wakes four times a day, reads what happened since it last
@@ -1338,7 +1343,7 @@ ${memorableMoments.join('\n')}
 
 “${safeLine(party.name)}” เริ่มจาก ${safeLine(context.storyFrame)} กติกาจริงคือ “${safeLine(party.commitRule)}” โดยมี ${safeLine(lead?.alias, 'เจ้าของสมุด')} สมาชิก ${names} และ ${safeLine(companion)} เป็นภาพจำของการเดินทาง
 
-จาก ช่วง Log ความสำเร็จของเรื่องนี้หมายถึง ${safeLine(context.successMeaning)} และคุณค่าของทีมคือ ${safeLine(context.teamMeaning)} Turning point ที่ควรใช้เล่าเรื่องคือ ${safeLine(turningPoint)}
+จากเรื่องในสมุด ความสำเร็จของเรื่องนี้หมายถึง ${safeLine(context.successMeaning)} และคุณค่าของทีมคือ ${safeLine(context.teamMeaning)} Turning point ที่ควรใช้เล่าเรื่องคือ ${safeLine(turningPoint)}
 
 ${storyEnd} ใช้ข้อเท็จจริงจาก Timeline, ลงชื่อ, ข้อความ, Reaction และ เห็นแล้ว ก่อน template เสมอ อย่าทำให้ประวัติดูสมบูรณ์แบบเกินสิ่งที่เกิดขึ้นจริง
 

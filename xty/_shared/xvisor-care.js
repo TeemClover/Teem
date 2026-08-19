@@ -14,8 +14,8 @@ export const XVISOR_CARE_CHECKPOINTS = Object.freeze([
   Object.freeze({ key: 'day1_3', from: 1, to: 3, label: 'DAY 1–3 · MAKE IT WORK', member: 'ยังไม่ต้องเพิ่มอะไร เช็กก่อนว่าสิ่งที่ตั้งไว้ทำจริงได้ไหม', lead: 'ถามว่าอะไรติดขัด แล้วช่วยทำให้ Action เดิมง่ายพอจะเกิดขึ้นจริง' }),
   Object.freeze({ key: 'day7', from: 4, to: 9, label: 'DAY 7 · FIRST REVIEW', member: 'ชมสิ่งที่ทำได้ก่อน แล้วค่อยดู Pattern', lead: 'ดูหนึ่ง Pattern · ชม Behavior · เลือกหนึ่ง Action ที่จะทำต่อ' }),
   Object.freeze({ key: 'day14', from: 10, to: 17, label: 'DAY 14 · ADJUST ONE THING', member: 'ถ้ายังไม่เวิร์ก ไม่ต้องรื้อทั้งชีวิต ปรับแค่หนึ่งอย่าง', lead: 'ถ้า Trend ยังไม่เดิน ให้ปรับเพียงหนึ่ง Action ไม่เปลี่ยนทุกอย่างพร้อมกัน' }),
-  Object.freeze({ key: 'day21', from: 18, to: 25, label: 'DAY 21 · KEEP GOING', member: 'ไม่ต้องเพิ่ม ช่วง ใหม่ แค่ช่วยให้วงไม่หลุด', lead: 'ย้ำความสม่ำเสมอและถามว่าอะไรจะช่วยให้ช่วงท้ายทำต่อได้ง่ายขึ้น' }),
-  Object.freeze({ key: 'day28', from: 26, to: 99, label: 'DAY 28 · REVIEW & CONTINUE', member: 'ช่วง จบได้ แต่สิ่งที่เรียนรู้เอาไปต่อได้', lead: 'ทบทวนสิ่งที่ทำจริง → Pattern ที่เห็น → เลือก One Action ถัดไป → ตั้ง ช่วง ต่อ' }),
+  Object.freeze({ key: 'day21', from: 18, to: 25, label: 'DAY 21 · KEEP GOING', member: 'ไม่ต้องเปิดเล่มใหม่ แค่ช่วยให้วงไม่หลุด', lead: 'ย้ำความสม่ำเสมอและถามว่าอะไรจะช่วยให้ช่วงท้ายทำต่อได้ง่ายขึ้น' }),
+  Object.freeze({ key: 'day28', from: 26, to: 99, label: 'DAY 28 · REVIEW & CONTINUE', member: 'เล่มนี้จบได้ แต่สิ่งที่เรียนรู้เอาไปต่อได้', lead: 'ทบทวนสิ่งที่ทำจริง → Pattern ที่เห็น → เลือก One Action ถัดไป → เปิดเล่มต่อ' }),
 ]);
 
 export function isXvisorPreset(value) {
@@ -154,7 +154,7 @@ export function buildXvisorEndingMarkdown(party) {
     `> ให้ X-VISOR และสมาชิกเขียนจากสิ่งที่เห็นร่วมกัน ไม่ใช้ไฟล์นี้วินิจฉัยโรคหรือสรุปผลสุขภาพแทนมนุษย์\n\n- \n\n` +
     `## One Action ถัดไป\n\n- \n\n` +
     `## NEXT QUEST\n\n` +
-    `นำ One Action ที่ตกลงกันไปตั้ง ช่วง ถัดไป หากยังมีประโยชน์กับชีวิตจริง ไม่จำเป็นต้องเพิ่มความยากทุกครั้ง\n\n` +
+    `นำ One Action ที่ตกลงกันไปเปิดเล่มถัดไป หากยังมีประโยชน์กับชีวิตจริง ไม่จำเป็นต้องเพิ่มความยากทุกครั้ง\n\n` +
     `---\n` +
     `TeamBook ไม่ดึง Weight, Body Fat, HR, HRV, ยา, โรคประจำตัว หรือข้อมูลสุขภาพดิบจาก Xircle เข้ามาในสมุดโดยอัตโนมัติ การดูแลต้องอยู่ในขอบเขตและ Consent ที่เหมาะสม\n`;
 }
@@ -184,7 +184,7 @@ function enhanceCreatePage() {
   const intro = document.createElement('section');
   intro.className = 'notebook-card';
   intro.innerHTML = `<span class="label">X-VISOR · HIDDEN ROUTE</span>` +
-    `<h2 style="margin-top:8px">X-VISOR Care ช่วง · 28 วัน</h2>` +
+    `<h2 style="margin-top:8px">X-VISOR Care · เล่ม 28 วัน</h2>` +
     `<p class="whisper">สร้างสมุดจาก route นี้แล้ว หลังจากนั้นใช้ TeamBook ตามปกติ · Private · Trust · ข้อความ 3 · Pattern → One Action</p>` +
     guideCardHtml('lead', { startAt: new Date().toISOString(), durationDays: 28 });
   const first = main.querySelector('.notebook-card');

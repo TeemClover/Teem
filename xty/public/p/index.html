@@ -132,7 +132,7 @@ function eventText(party, event) {
     case 'RULE_CHANGED': return 'วันนี้ลงชื่อได้เมื่อ ถูกเปลี่ยน';
     case 'LEAD_CARD_CHANGED': return `เจ้าของสมุดเปลี่ยนการ์ดประจำสมุดจาก ${d.fromName || d.from || 'ใบเดิม'} → ${d.toName || d.to || 'ใบใหม่'}`;
     case 'NPC_CHANGED': return 'สมุดเปลี่ยน เพื่อนร่วมทาง';
-    case 'PARTY_COMPLETED': return 'ช่วง จบสำเร็จ';
+    case 'PARTY_COMPLETED': return 'ปิดเล่มสำเร็จ';
     case 'PARTY_DISSOLVED': return 'สมุดถูกยุบ';
     default: return '';
   }

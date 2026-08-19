@@ -120,16 +120,17 @@
       </div>
       <div class="composer">
         <button id="msgAttachBtn" type="button" aria-label="แนบภาพ">🖼</button>
-        <textarea id="msg" rows="1" maxlength="2000" placeholder="ฝากไว้ในสมุด…" aria-label="ข้อความ ถึงสมุด"></textarea>
+        <textarea id="msg" rows="1" maxlength="120" placeholder="ฝากไว้ในสมุด…" aria-label="ข้อความถึงสมุด" aria-describedby="msgCount"></textarea>
         <button id="send" aria-label="ส่ง ข้อความ">↑</button>
       </div>
       <div class="budget" id="budget"></div>
+        <div class="msg-count" id="msgCount" aria-live="polite" hidden></div>
     </div>
 
     <section class="card quest-ending-panel" id="questFinishPanel" hidden>
       <span class="label">ฉากจบของเล่ม</span>
-      <p class="whisper" style="margin:0">ปุ่มอยู่ตรงนี้ตลอดสำหรับเจ้าของสมุด แต่จะเปิดให้กดเมื่อผ่านวันสุดท้ายของ ช่วง แล้วเท่านั้น</p>
-      <p class="complete-gate" id="completeGate">กำลังตรวจวันของ ช่วง…</p>
+      <p class="whisper" style="margin:0">ปุ่มอยู่ตรงนี้ตลอดสำหรับเจ้าของสมุด แต่จะเปิดให้กดเมื่อผ่านวันสุดท้ายของเล่มแล้วเท่านั้น</p>
+      <p class="complete-gate" id="completeGate">กำลังตรวจวันของเล่ม…</p>
       <button class="btn ghost quest-locked" id="completeParty" disabled>ปิดเล่ม · ยังไม่ครบวัน</button>
     </section>
 
@@ -182,7 +183,7 @@
       <div class="member-tools" id="memberTools"></div>
 
       <div class="danger-zone">
-        <p class="whisper">ปิดสมุดทำได้ทันทีและจะบันทึกเป็น Dissolved โดยไม่ปลอมว่า ช่วง สำเร็จ</p>
+        <p class="whisper">ปิดสมุดทำได้ทันทีและจะบันทึกว่าปิดก่อนจบ โดยไม่ปลอมว่าเล่มนี้จบสำเร็จ</p>
         <button class="btn danger" id="dissolveParty">ปิดสมุด</button>
       </div>
     </details>
@@ -223,7 +224,7 @@ import {
   getParty, postToParty, getProfile, toggleReaction, retractPost,
   confirmCommit,
   committedToday, hasCommittedToday, messageAllowance,
-  dayKey, PARTY_MAX, REACTIONS, refreshParty, partyIdentity,
+  dayKey, PARTY_MAX, MESSAGE_MAX_CHARS, REACTIONS, refreshParty, partyIdentity,
   partyProgress, isActiveParty, availableOwnedCards, renameParty, manageParty,
   changeLeadCard, changeNpcCard, kickPartyMember, finishParty, updatePartyIdentity,
   cardRewardForQuest, downloadEndingMarkdown, partyCompletionState,
@@ -561,10 +562,10 @@ function renderBudget(p) {
   const pips = Array.from({ length: allowance.limit }, (_, i) =>
     `<i class="${i < allowance.used ? 'used' : ''}"></i>`).join('');
   const label = allowance.phase === 'daily'
-    ? (allowance.left > 0 ? `เหลือ ${allowance.left} ข้อความ วันนี้` : 'ใช้ ข้อความ ครบแล้ววันนี้ — ส่งกำลังใจ ได้ไม่จำกัด')
+    ? (allowance.left > 0 ? `เหลือ ${allowance.left} ข้อความวันนี้` : 'ใช้ข้อความครบแล้ววันนี้ — ส่งกำลังใจได้ไม่จำกัด')
     : (allowance.phase === 'final'
-      ? `ข้อความสุดท้าย · เหลือ ${allowance.left} ข้อความ และจะไม่เติมอีก`
-      : 'ข้อความสุดท้าย หมดแล้ว · สมุดนี้เป็นประวัติแบบอ่านอย่างเดียว');
+      ? `ข้อความสุดท้าย · เหลืออีก ${allowance.left} ข้อความ และจะไม่เติมอีก`
+      : 'ข้อความสุดท้ายหมดแล้ว · สมุดนี้เป็นประวัติแบบอ่านอย่างเดียว');
   el.innerHTML =
     `<span class="pips">${pips}</span>` +
     `<span>${label}</span>`;
@@ -572,7 +573,7 @@ function renderBudget(p) {
   $('msg').disabled = !allowance.writable;
   $('msg').placeholder = allowance.phase === 'history'
     ? 'สมุดนี้เก็บเป็นประวัติแบบอ่านอย่างเดียวแล้ว'
-    : (allowance.left === 0 ? 'โควตารอบนี้หมดแล้ว — ส่งกำลังใจ ยังได้' : (allowance.phase === 'final' ? 'ฝากข้อความรอบสุดท้าย…' : 'ฝากไว้ในสมุด…'));
+    : (allowance.left === 0 ? 'โควตารอบนี้หมดแล้ว — ส่งกำลังใจยังได้' : (allowance.phase === 'final' ? 'ฝากข้อความรอบสุดท้าย…' : 'ฝากไว้ในสมุด…'));
 }
 
 /* Width/height are carried on the post so the browser can reserve the
@@ -696,7 +697,7 @@ function renderLog(p) {
       } else if (post.userId === myId) {
         slot.innerHTML = '<span class="confirm-wait">รอเพื่อนกด เห็นแล้ว</span>';
       } else {
-        slot.innerHTML = '<span class="confirm-wait">หมดช่วง เห็นแล้ว</span>';
+        slot.innerHTML = '<span class="confirm-wait">หมดเวลากดเห็นแล้ว</span>';
       }
     }
 
@@ -928,9 +929,23 @@ $('commitDo').addEventListener('click', async () => {
 
 /* ---------- message ---------- */
 const msg = $('msg');
+
+/* The counter stays out of the way until the limit is close enough to matter.
+   Showing 120/120 from the first keystroke turns every message into a test;
+   appearing near the end turns it into a nudge to tighten the sentence. */
+const COUNT_VISIBLE_FROM = 30;
+function renderMessageCount() {
+  const left = MESSAGE_MAX_CHARS - msg.value.length;
+  const el = $('msgCount');
+  el.hidden = left > COUNT_VISIBLE_FROM;
+  el.classList.toggle('full', left <= 0);
+  el.textContent = left > 0 ? `เหลือ ${left} ตัวอักษร` : 'ครบ 120 ตัวอักษรแล้ว';
+}
+
 msg.addEventListener('input', () => {
   msg.style.height = 'auto';
   msg.style.height = Math.min(msg.scrollHeight, 150) + 'px';
+  renderMessageCount();
 });
 
 async function send() {
@@ -945,13 +960,15 @@ async function send() {
   if (!res.error) clearAttachment('msg');
   if (res.error === 'NO_BUDGET') {
     toast(String(getParty(code)?.state || '').toUpperCase() === 'COMPLETED'
-      ? 'ข้อความสุดท้าย หมดแล้ว — เรื่องในสมุด เก็บไว้อ่านได้'
-      : 'ใช้ ข้อความ ครบแล้ววันนี้ — ส่งกำลังใจ แทนได้');
+      ? 'ข้อความสุดท้ายหมดแล้ว — เรื่องในสมุดเก็บไว้อ่านได้'
+      : 'ใช้ข้อความครบแล้ววันนี้ — ส่งกำลังใจแทนได้');
     render(); return;
   }
+  if (res.error === 'TOO_LONG') { toast(`ข้อความยาวเกิน ${MESSAGE_MAX_CHARS} ตัวอักษร`); return; }
   if (res.error) { toast('ส่งไม่สำเร็จ'); return; }
   msg.value = '';
   msg.style.height = 'auto';
+  renderMessageCount();
   render();
 }
 $('send').addEventListener('click', send);
@@ -1025,7 +1042,7 @@ function twoTap(button, armedText, action) {
 
 twoTap($('completeParty'), 'กดอีกครั้งเพื่อยืนยันปิดเล่ม', async () => {
   const result = await finishParty(code, 'complete');
-  if (result.error === 'QUEST_NOT_FINISHED') { toast('ยังไม่ครบระยะของ ช่วง · ปุ่มจะเปิดเมื่อครบวัน'); render(); return; }
+  if (result.error === 'QUEST_NOT_FINISHED') { toast('ยังไม่ครบระยะของเล่ม · ปุ่มจะเปิดเมื่อครบวัน'); render(); return; }
   if (result.error) { toast('ยังปิดเล่มไม่ได้'); return; }
   const reward = cardRewardForQuest(`party-complete:${code}`, code);
   if (reward) location.href = `/xty/reveal/?r=${encodeURIComponent(reward.rewardId)}`;
