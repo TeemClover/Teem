@@ -15,7 +15,14 @@ function install() {
   document.addEventListener('click', interceptProfileOrSeen, true);
   document.addEventListener('keydown', interceptKeyboard, true);
   const view = document.getElementById('view');
-  if (view) new MutationObserver(schedule).observe(view, { childList: true, subtree: true });
+  if (view) {
+    new MutationObserver(schedule).observe(view, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'role', 'tabindex'],
+    });
+  }
   schedule();
 }
 
@@ -183,12 +190,6 @@ function injectStyle() {
   document.head.appendChild(style);
 }
 
-function esc(value) {
-  return String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
-  }[ch]));
-}
-
 function schedule() {
   if (scheduled) return;
   scheduled = true;
@@ -254,6 +255,25 @@ function removeOldInteraction(node) {
   node.removeAttribute('tabindex');
 }
 
+function syncStateElement(node, member, state, actionable) {
+  const wantedTag = actionable ? 'BUTTON' : 'SPAN';
+  let stateEl = node.querySelector(':scope > .tb-daily-state');
+  if (!stateEl || stateEl.tagName !== wantedTag) {
+    const next = document.createElement(actionable ? 'button' : 'span');
+    if (stateEl) stateEl.replaceWith(next);
+    else node.appendChild(next);
+    stateEl = next;
+  }
+
+  const wantedClass = `tb-daily-state tb-daily-state--${state.id}`;
+  if (stateEl.className !== wantedClass) stateEl.className = wantedClass;
+  const aria = actionable ? `เห็นแล้ว · ${member.alias}` : `${member.alias} · ${state.label}`;
+  const title = actionable ? `กดเพื่อบอก ${member.alias} ว่า เห็นแล้ว` : state.label;
+  if (stateEl.getAttribute('aria-label') !== aria) stateEl.setAttribute('aria-label', aria);
+  if (stateEl.title !== title) stateEl.title = title;
+  if (actionable) stateEl.type = 'button';
+}
+
 function syncHumanSeat(node, member, index, party) {
   node.classList.add('tb-person-seat');
   node.classList.remove('tb-companion-seat', 'tb-can-seen');
@@ -268,20 +288,14 @@ function syncHumanSeat(node, member, index, party) {
   node.dataset.tbState = state.id;
   node.dataset.tbCommitSeq = state.commit?.seq ? String(state.commit.seq) : '';
 
-  node.querySelector(':scope > .tb-daily-state')?.remove();
   const actionable = canSee(party, member, state);
-  const stateEl = document.createElement(actionable ? 'button' : 'span');
-  stateEl.className = `tb-daily-state tb-daily-state--${state.id}`;
-  stateEl.setAttribute('aria-label', actionable ? `เห็นแล้ว · ${member.alias}` : `${member.alias} · ${state.label}`);
-  stateEl.title = actionable ? `กดเพื่อบอก ${member.alias} ว่า เห็นแล้ว` : state.label;
+  syncStateElement(node, member, state, actionable);
   if (actionable) {
-    stateEl.type = 'button';
     node.classList.add('tb-can-seen');
     node.tabIndex = 0;
     node.setAttribute('role', 'button');
     node.setAttribute('aria-label', `กดการ์ดเพื่อ เห็นแล้ว ให้ ${member.alias}`);
   }
-  node.appendChild(stateEl);
 
   /* Slot number is no longer part of identity. Keep index only in data for
      debugging/layout continuity, never as visible MEMBER 2 / MEMBER 3 UI. */
@@ -314,6 +328,8 @@ function syncOverviewDots(party) {
     const dot = dots[index];
     if (!dot) return;
     const state = dailyState(party, member).id;
+    if (dot.dataset.tbState === state) return;
+    dot.dataset.tbState = state;
     dot.classList.remove('on', 'tb-unsigned', 'tb-waiting', 'tb-seen');
     dot.classList.add(`tb-${state}`);
   });
@@ -347,8 +363,7 @@ function sync() {
 
 function humanSeatFromEvent(event) {
   const target = event.target instanceof Element ? event.target : null;
-  const seat = target?.closest('#seats > .tb-person-seat');
-  return seat || null;
+  return target?.closest('#seats > .tb-person-seat') || null;
 }
 
 async function triggerSeen(seat) {
