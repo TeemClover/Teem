@@ -27,7 +27,9 @@ function walk(dir, found = []) {
 }
 
 const files = SURFACES.flatMap(surface => walk(join(root, surface)))
-  .filter(path => !path.endsWith('card-shape.test.mjs'))
+  /* Tests describe these rules in regex form; scanning them reads the
+     description as a violation of the thing it describes. */
+  .filter(path => !path.endsWith('.test.mjs'))
   .map(path => ({ path: path.slice(root.length + 1), text: readFileSync(path, 'utf8') }));
 
 test('the card ratio is defined exactly once', () => {
@@ -47,7 +49,7 @@ test('no card slot writes its own ratio', () => {
     const matches = file.text.match(/aspect-ratio:\s*(?!var\()[^;!}`'"\n]+/g) || [];
     for (const match of matches) {
       const value = match.split(':')[1].trim();
-      if (value === '1' || value === '4/3' || value === '1.15') continue; // square and banner slots
+      if (['1', '4/3', '3/2', '1.15'].includes(value)) continue; // square, scene and banner slots
       /* auto is a slot deliberately taking its shape from its content — the
          About hero art and a seat showing a whole card, neither of which is a
          card slot the ratio has to govern. */
