@@ -48,7 +48,7 @@ const SCRIPTS = Object.freeze({
   }),
   day21: Object.freeze({
     quiet: Object.freeze([
-      'ช่วงท้ายนี้ยังไม่ต้องเพิ่ม Challenge ใหม่ อะไรคือหนึ่งจุดที่ทำให้ Action เดิมกลับมาเกิดได้ง่ายขึ้น?',
+      'ช่วงท้ายนี้ยังไม่ต้องเปิดเล่มใหม่ อะไรคือหนึ่งจุดที่ทำให้ Action เดิมกลับมาเกิดได้ง่ายขึ้น?',
     ]),
     moving: Object.freeze([
       'ช่วงท้ายนี้มีอะไรที่ทำต่อได้อยู่แล้ว และไม่จำเป็นต้องเปลี่ยน?',
@@ -57,10 +57,10 @@ const SCRIPTS = Object.freeze({
   }),
   day28: Object.freeze({
     quiet: Object.freeze([
-      'รอบนี้อาจยังไม่มี Pattern ชัดพอ ถ้าตั้ง Quest ใหม่ อยากทำให้จุดเริ่มง่ายขึ้นตรงไหน?',
+      'รอบนี้อาจยังไม่มี Pattern ชัดพอ ถ้าเปิดเล่มใหม่ อยากทำให้จุดเริ่มง่ายขึ้นตรงไหน?',
     ]),
     moving: Object.freeze([
-      'จาก log รอบนี้ มีหนึ่ง Pattern ไหนที่อยากพาไป Quest ถัดไป?',
+      'จาก log รอบนี้ มีหนึ่ง Pattern ไหนที่อยากพาไปเล่มถัดไป?',
       'ถ้าเอาไปต่อได้เพียงหนึ่ง Action จากรอบนี้ อยากเก็บอะไรไว้?',
     ]),
   }),
@@ -123,7 +123,7 @@ function install(attempt = 0) {
   block.style.marginTop = '14px';
   block.innerHTML = `<b>🐈 SILVER CAT · X-VISOR SCRIPT</b>` +
     `<p style="margin:7px 0 10px">“${text}”</p>` +
-    `<button type="button" class="btn ghost sm" id="xvisorUseScript">ใส่ข้อความนี้ใน Message</button>` +
+    `<button type="button" class="btn ghost sm" id="xvisorUseScript">ใส่ข้อความนี้ใน ข้อความ</button>` +
     `<p class="hint" style="margin:8px 0 0">แมวแค่เตรียมคำถามให้ · X-VISOR แก้ก่อนส่งได้เสมอ · ไม่ auto-send และไม่ใช้แทนวิจารณญาณของคนดูแล</p>`;
   assist.appendChild(block);
 

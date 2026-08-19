@@ -49,7 +49,7 @@ function closeDialog() {
 }
 
 function openCollectionPicker({
-  title = 'เลือกการ์ดใน Collection',
+  title = 'เลือกการ์ดในคอลเลกชัน',
   hint = 'การ์ดเป็นสกิน · CORE ยังคือ Species ของการ์ดใบนั้น',
   selectedCardId = '',
   allowedCardIds = null,
@@ -67,7 +67,7 @@ function openCollectionPicker({
       <button class="xskin-close" type="button" aria-label="ปิด">×</button>
     </div>
     <div class="xskin-body">
-      <p class="xskin-status">เลือกจากการ์ดที่เปิดได้แล้วใน Collection</p>
+      <p class="xskin-status">เลือกจากการ์ดที่เปิดได้แล้วในคอลเลกชัน</p>
       <div class="xskin-picker"></div>
     </div>`;
   dialog.querySelector('.xskin-head b').textContent = title;
@@ -82,7 +82,7 @@ function openCollectionPicker({
     onSelect(choice) {
       if (choice.kind !== 'card') return;
       if (allowed && !allowed.has(choice.cardId)) {
-        status.textContent = 'การ์ดใบนี้กำลังใช้อยู่ใน Active Party อื่น หรือชนกับช่องอื่นในตี้นี้';
+        status.textContent = 'การ์ดใบนี้กำลังใช้อยู่ในสมุดเล่มอื่นที่ยังเขียนอยู่ หรือชนกับช่องอื่นในสมุดนี้';
         status.classList.add('error');
         return;
       }
@@ -120,7 +120,7 @@ function pickedCardIdFromNpcGrid() {
   if (!picked) return '';
   const aria = picked.getAttribute('aria-label') || '';
   const cards = availableOwnedCards({ role: 'npc' });
-  return cards.find(card => aria === `ใช้ ${cardDescriptorTh(card)} เป็น NPC`)?.cardId || '';
+  return cards.find(card => aria === `ใช้ ${cardDescriptorTh(card)} เป็นเพื่อนร่วมทาง`)?.cardId || '';
 }
 
 function installNewPartyPicker() {
@@ -140,7 +140,7 @@ function installNewPartyPicker() {
   button.type = 'button';
   button.id = 'choosePetCardFromCollection';
   button.className = 'btn ghost xskin-trigger';
-  button.textContent = 'เลือกการ์ดใน Collection';
+  button.textContent = 'เลือกการ์ดในคอลเลกชัน';
   oldGrid.insertAdjacentElement('afterend', button);
 
   const normalizeHint = () => {
@@ -155,21 +155,21 @@ function installNewPartyPicker() {
     const leadLabel = $('leadPick')?.querySelector('.picked')?.getAttribute('aria-label') || '';
     const currentCardId = pickedCardIdFromNpcGrid();
     openCollectionPicker({
-      title: 'เลือกการ์ดเป็น Pet',
+      title: 'เลือกการ์ดเป็นเพื่อนร่วมทาง',
       selectedCardId: currentCardId,
       allowedCardIds: allowed,
       onPick(choice, card, status) {
         /* Picking the already-equipped skin is a no-op, not a toggle-off. */
         if (choice.cardId === currentCardId) return true;
-        if (leadLabel === `ใช้ ${cardDescriptorTh(card)} เป็นปกตี้`) {
-          status.textContent = 'การ์ดใบเดียวกันใช้เป็นปกตี้และ Pet พร้อมกันไม่ได้';
+        if (leadLabel === `ใช้ ${cardDescriptorTh(card)} เป็นปกสมุด`) {
+          status.textContent = 'การ์ดใบเดียวกันใช้เป็นปกสมุดและเพื่อนร่วมทางพร้อมกันไม่ได้';
           status.classList.add('error');
           return false;
         }
         const target = [...oldGrid.querySelectorAll('button')]
-          .find(node => node.getAttribute('aria-label') === `ใช้ ${cardDescriptorTh(card)} เป็น NPC`);
+          .find(node => node.getAttribute('aria-label') === `ใช้ ${cardDescriptorTh(card)} เป็นเพื่อนร่วมทาง`);
         if (!target) {
-          status.textContent = 'การ์ดใบนี้ยังไม่ว่างสำหรับ Pet ในตี้นี้';
+          status.textContent = 'การ์ดใบนี้ยังไม่ว่างสำหรับเพื่อนร่วมทางในสมุดนี้';
           status.classList.add('error');
           return false;
         }
@@ -232,7 +232,7 @@ function syncPartyControls() {
     button.type = 'button';
     button.id = 'chooseMyCharacterCard';
     button.className = 'btn ghost sm xskin-trigger';
-    button.textContent = 'เลือกการ์ดใน Collection';
+    button.textContent = 'เลือกการ์ดในคอลเลกชัน';
     $('saveMyCharacter')?.insertAdjacentElement('beforebegin', button);
     button.addEventListener('click', () => {
       openCollectionPicker({
@@ -263,7 +263,7 @@ function syncPartyControls() {
     button.type = 'button';
     button.id = 'choosePartyPetCard';
     button.className = 'btn ghost sm xskin-trigger';
-    button.textContent = 'เลือกการ์ดใน Collection';
+    button.textContent = 'เลือกการ์ดในคอลเลกชัน';
     const npcRow = $('npcSelect')?.closest('.tool-row');
     npcRow?.insertAdjacentElement('afterend', button);
     button.addEventListener('click', () => {
@@ -272,7 +272,7 @@ function syncPartyControls() {
       const available = availableOwnedCards({ role: 'npc', exceptPartyCode: code })
         .filter(card => card.cardId !== party?.leadCardId);
       openCollectionPicker({
-        title: 'เลือกการ์ดเป็น Pet',
+        title: 'เลือกการ์ดเป็นเพื่อนร่วมทาง',
         selectedCardId: party?.npcCardId || '',
         allowedCardIds: new Set(available.map(card => card.cardId)),
         onPick(choice, card, status) {
@@ -281,7 +281,7 @@ function syncPartyControls() {
           const value = `card:${choice.cardId}`;
           const option = [...select.options].find(item => item.value === value);
           if (!option) {
-            status.textContent = 'การ์ดใบนี้ยังไม่ว่างสำหรับ Pet ในตี้นี้';
+            status.textContent = 'การ์ดใบนี้ยังไม่ว่างสำหรับเพื่อนร่วมทางในสมุดนี้';
             status.classList.add('error');
             return false;
           }
@@ -300,7 +300,7 @@ function syncPartyControls() {
   if (npcSelect) {
     [...npcSelect.options].forEach(option => {
       if (!option.value.startsWith('card:')) return;
-      const nextText = option.textContent.replace(/^NPC\s*·\s*/, 'การ์ด · ');
+      const nextText = option.textContent.replace(/^(?:NPC|เพื่อนร่วมทาง)\s*·\s*/, 'การ์ด · ');
       if (nextText !== option.textContent) option.textContent = nextText;
     });
   }

@@ -42,7 +42,7 @@ export async function handlePublicPreviewV2(req, res) {
 
     const activeMembers = members.filter(member => !member.left_at).map(member => ({
       userId: member.user_id,
-      alias: member.alias || 'สมาชิก',
+      alias: member.alias || 'คนในสมุด',
       avatar: member.avatar || 'orange_cat',
       avatarColor: member.avatar_color || 'green',
       role: member.role || 'member',
@@ -52,7 +52,7 @@ export async function handlePublicPreviewV2(req, res) {
     const safePosts = posts.map(post => ({
       seq: Number(post.seq),
       userId: post.user_id,
-      alias: post.alias || (String(post.user_id || '').startsWith('pet:') ? 'PET' : 'สมาชิก'),
+      alias: post.alias || (String(post.user_id || '').startsWith('pet:') ? 'เพื่อนร่วมทาง' : 'คนในสมุด'),
       avatar: post.avatar || '',
       avatarColor: post.avatar_color || 'green',
       kind: post.kind,

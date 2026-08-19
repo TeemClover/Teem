@@ -295,5 +295,5 @@ export const XTY_PRESETS = Object.freeze([
   { id: 'casual', labelTh: 'สบาย ๆ', hintTh: 'ทำตามจังหวะของแต่ละคน', art: ACTIVITY_BY_ID.walk.art, budget: 'social' },
   { id: 'challenge', labelTh: 'ชาเลนจ์', hintTh: 'มีเป้าหมายชัด ชวนกันทำต่อ', art: ACTIVITY_BY_ID.run.art, budget: 'normal' },
   { id: 'mission', labelTh: 'ภารกิจ', hintTh: 'ร่วมมือให้ของหนึ่งอย่างเสร็จ', art: ACTIVITY_BY_ID.create.art, budget: 'normal' },
-  { id: 'verified', labelTh: 'ช่วยยืนยัน', hintTh: 'Commit แล้วให้เพื่อนหนึ่งคน Confirm', art: ACTIVITY_BY_ID.study.art, budget: 'quiet' },
+  { id: 'verified', labelTh: 'ช่วยยืนยัน', hintTh: 'ลงชื่อแล้วให้เพื่อนหนึ่งคนกดเห็นแล้ว', art: ACTIVITY_BY_ID.study.art, budget: 'quiet' },
 ]);

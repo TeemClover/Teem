@@ -170,7 +170,10 @@
       '/xircle/xvisor/care':[assets.xvisor,'X-VISOR CARE coaching framework','source'],
       '/xircle/xvisor/onboarding':[assets.xvisor,'X-VISOR onboarding experience','source'],
       '/xircle/xvisor/coaching':[assets.xvisor,'X-VISOR coaching experience','source'],
-      '/xircle/xvisor/claims':[assets.xvisor,'X-VISOR responsible communication','source'],
+      /* Claim Guard carries its own hero in the page: the manufacturer's ISO 9001
+         certificate, with the caption that says what it does and does not certify.
+         The shared X-VISOR visual is a before/after with weight and body-fat numbers
+         on it, which is the exact kind of claim this page exists to prevent. */
       '/xircle/xvisor/privacy':[assets.xvisor,'X-VISOR consent and health-data care','source'],
 
       '/xircle/xos':[assets.dashboard,'Xircle Operating System dashboard','source'],

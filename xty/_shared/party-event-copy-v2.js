@@ -14,7 +14,7 @@ function coverName(party, data = {}) {
   }
   if (['card','legacy_card'].includes(party?.coverType)) {
     const card = xtyCardById(party.leadCardId || party.coverValue);
-    return card ? cardDescriptorTh(card) : 'การ์ด XTY';
+    return card ? cardDescriptorTh(card) : 'การ์ด TeamBook';
   }
   if (party?.coverType === 'avatar') {
     let snapshot = {};
@@ -26,11 +26,11 @@ function coverName(party, data = {}) {
 
 function createdText(party, data = {}) {
   if (data.creationLabel) return data.creationLabel;
-  const alias = data.alias || party?.members?.find(member => member.role === 'lead')?.alias || 'หัวตี้';
+  const alias = data.alias || party?.members?.find(member => member.role === 'lead')?.alias || 'เจ้าของสมุด';
   const name = coverName(party, data);
-  if (name.startsWith('การ์ดตัวละคร ')) return `${alias} สร้างตี้ ด้วย${name}`;
-  if (name.startsWith('หลังการ์ด ')) return `${alias} สร้างตี้ ด้วย${name}`;
-  return `${alias} สร้างตี้ ด้วยการ์ด ${name}`;
+  if (name.startsWith('การ์ดตัวละคร ')) return `${alias} สร้างสมุด ด้วย${name}`;
+  if (name.startsWith('หลังการ์ด ')) return `${alias} สร้างสมุด ด้วย${name}`;
+  return `${alias} สร้างสมุด ด้วยการ์ด ${name}`;
 }
 
 function sync() {
@@ -50,7 +50,7 @@ function sync() {
     const data = changes[index]?.data || {};
     const from = data.fromName || data.from || 'ใบเดิม';
     const to = data.toName || data.to || 'ใบใหม่';
-    copy.textContent = `หัวตี้เปลี่ยนการ์ดประจำตี้จาก ${from} → ${to}`;
+    copy.textContent = `เจ้าของสมุดเปลี่ยนการ์ดประจำสมุดจาก ${from} → ${to}`;
   });
 }
 

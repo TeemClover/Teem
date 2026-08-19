@@ -44,41 +44,41 @@ function buildPartyLogText(party) {
   });
 
   const lines = [
-    'XTY PARTY LOG EXPORT',
-    '====================',
-    `Party: ${party.name || '-'}`,
-    `Code: ${party.code || '-'}`,
+    'TEAMBOOK · เรื่องในสมุด',
+    '========================',
+    `สมุด: ${party.name || '-'}`,
+    `รหัสสมุด: ${party.code || '-'}`,
     `Activity: ${party.activity || '-'}`,
     `State: ${party.state || '-'}`,
-    `Commit rule: ${party.commitRule || '-'}`,
+    `กติกาการลงชื่อ: ${party.commitRule || '-'}`,
     `Verification: ${party.verificationMode || '-'}`,
     `Duration: ${party.durationDays || '-'} days`,
     `Exported: ${ictStamp(new Date())}`,
     `Entries: ${log.length}`,
     '',
-    'MEMBERS',
-    '-------',
+    'คนในสมุด',
+    '--------',
   ];
 
   (party.members || []).forEach(member => {
     lines.push(`- ${member.alias || '-'} | role=${member.role || 'member'} | userId=${member.userId || '-'}`);
   });
-  if (!(party.members || []).length) lines.push('- ไม่มีข้อมูลสมาชิก');
+  if (!(party.members || []).length) lines.push('- ไม่มีข้อมูลคนในสมุด');
 
   const currentPet = party.petId ? PET_BY_ID[party.petId] : null;
   lines.push('');
-  lines.push('PARTY COMPANION');
-  lines.push('---------------');
+  lines.push('เพื่อนร่วมทางของสมุด');
+  lines.push('--------------------');
   if (party.npcCardId) lines.push(`NPC card: ${party.npcCardId}`);
   else if (party.petId) lines.push(`Pet: ${currentPet?.nameTh || party.petId} | petId=${party.petId}`);
-  else lines.push('ไม่มี Pet / NPC');
+  else lines.push('ไม่มีเพื่อนร่วมทาง');
 
   lines.push('');
-  lines.push('PARTY LOG');
-  lines.push('---------');
+  lines.push('เรื่องในสมุด');
+  lines.push('------------');
 
   if (!log.length) {
-    lines.push('(ยังไม่มี Party Log)');
+    lines.push('(ยังไม่มีเรื่องในสมุด)');
     return lines.join('\n') + '\n';
   }
 
@@ -150,7 +150,7 @@ function installPartyLogExport() {
   button.type = 'button';
   button.id = 'exportPartyLog';
   button.className = 'btn ghost';
-  button.textContent = '⬇ Export Party Log (.txt)';
+  button.textContent = '⬇ ดาวน์โหลดเรื่องในสมุด (.txt)';
   button.style.width = '100%';
   button.style.marginBottom = '10px';
   dissolve.insertAdjacentElement('beforebegin', button);
@@ -158,7 +158,7 @@ function installPartyLogExport() {
   button.addEventListener('click', async () => {
     const original = button.textContent;
     button.disabled = true;
-    button.textContent = 'กำลังรวม Party Log…';
+    button.textContent = 'กำลังรวมเรื่องในสมุด…';
     try {
       const code = new URLSearchParams(location.search).get('c');
       if (!code) throw new Error('NO_PARTY_CODE');
@@ -166,10 +166,10 @@ function installPartyLogExport() {
       const party = fresh?.party || getParty(code);
       if (!party) throw new Error(fresh?.error || 'PARTY_NOT_FOUND');
       downloadText(party);
-      button.textContent = '✓ ดาวน์โหลด Party Log แล้ว';
+      button.textContent = '✓ ดาวน์โหลดเรื่องในสมุดแล้ว';
     } catch (error) {
       console.warn('XTY Party Log export failed', error);
-      button.textContent = 'ยัง Export Party Log ไม่ได้';
+      button.textContent = 'ยังดาวน์โหลดเรื่องในสมุดไม่ได้';
     } finally {
       setTimeout(() => {
         button.disabled = false;

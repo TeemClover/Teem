@@ -179,12 +179,12 @@ async function loadGhosts() {
     <td>${badge(party.state)}</td>
     <td>${n(party.liveMembers)}</td>
     <td>${escapeHtml(when(party.updatedAt))}</td>
-    <td><button class="quiet" type="button" data-dissolve="${escapeHtml(party.code)}">ยุบตี้</button></td>
+    <td><button class="quiet" type="button" data-dissolve="${escapeHtml(party.code)}">ปิดสมุด</button></td>
   </tr>`);
   $('panel-ghosts').innerHTML = `<article class="metric-group">
-      <h2>ตี้ที่กู้ไม่ได้ (${n((data.parties || []).length)})</h2>
+      <h2>สมุดที่กู้ไม่ได้ (${n((data.parties || []).length)})</h2>
       <p class="empty">ไม่มีสมาชิกที่ยังอยู่ผูกกับบัญชีเลยสักคน — เจ้าของเข้าไปยุบเองไม่ได้</p>
-      ${table(['Code', 'Name', 'State', 'Members', 'Updated', ''], rows, 'ไม่มีตี้ค้าง ✓')}
+      ${table(['Code', 'Name', 'State', 'Members', 'Updated', ''], rows, 'ไม่มีสมุดค้าง ✓')}
     </article>`;
 }
 
@@ -259,15 +259,15 @@ document.addEventListener('click', async event => {
   if (button.dataset.armed !== '1') {
     button.dataset.armed = '1';
     button.textContent = 'กดอีกครั้งเพื่อยุบ';
-    setTimeout(() => { if (button.dataset.armed === '1') { button.dataset.armed = ''; button.textContent = 'ยุบตี้'; } }, 4000);
+    setTimeout(() => { if (button.dataset.armed === '1') { button.dataset.armed = ''; button.textContent = 'ปิดสมุด'; } }, 4000);
     return;
   }
   button.disabled = true; button.textContent = 'กำลังยุบ…';
   try {
     const result = await realAdminApi('/api/xty/admin/party-dissolve', { method: 'POST', body: JSON.stringify({ code }) });
-    setStatus(`ยุบตี้ ${code} แล้ว · คืนโควต้าและนำสมาชิกออก ${n(result.removedMembers || 0)} คน`);
+    setStatus(`ปิดสมุด ${code} แล้ว · คืนโควต้าและนำสมาชิกออก ${n(result.removedMembers || 0)} คน`);
     await loadGhosts();
-  } catch (error) { setStatus(error.message); button.disabled = false; button.textContent = 'ยุบตี้'; }
+  } catch (error) { setStatus(error.message); button.disabled = false; button.textContent = 'ปิดสมุด'; }
 });
 $('closeDialog').addEventListener('click', () => $('partyDialog').close());
 $('partyDialog').addEventListener('click', event => { if (event.target === $('partyDialog')) $('partyDialog').close(); });

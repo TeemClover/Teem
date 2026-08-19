@@ -3,8 +3,9 @@ import {
 } from '../_lib/core.js';
 import { randomBytes, randomUUID } from 'node:crypto';
 import {
-  XTY_TIMEZONE, completionGate, confirmDeadlineForDayKey, normalizeVerificationMode,
-  partyDateKey, partyDayNumber, scheduledEndAt, startOfPartyDay, validPartyCode,
+  MESSAGE_MAX_CHARS, XTY_TIMEZONE, completionGate, confirmDeadlineForDayKey,
+  normalizeVerificationMode, partyDateKey, partyDayNumber, scheduledEndAt,
+  startOfPartyDay, validPartyCode,
 } from '../_lib/xty-rules.js';
 import { XTY_CARDS, cardById } from '../../xty/_shared/cards.js';
 import { handleXtyAdmin } from '../_lib/xty-admin.js';
@@ -515,7 +516,7 @@ export default async function handler(req, res) {
         maxMembers: PARTY_MAX,
         todayCommitCount: Number(row.commit_count || 0),
         lead: {
-          alias: row.lead_alias || 'หัวตี้',
+          alias: row.lead_alias || 'เจ้าของสมุด',
           avatar: row.lead_avatar || 'orange_cat',
           avatarColor: row.lead_avatar_color || 'green',
         },
@@ -1060,7 +1061,15 @@ export default async function handler(req, res) {
     }
     if (method === 'POST' && parts[2] === 'message') {
       const image = bodyOf(req).image;
-      const text = clean(bodyOf(req).body, 2000);
+      /* Cleaned at the cap rather than above it, so control characters and
+         surrounding space cannot smuggle a longer message past the check. */
+      const text = clean(bodyOf(req).body, MESSAGE_MAX_CHARS);
+      /* Too long is refused, never trimmed. Silently dropping the tail of
+         someone's sentence loses what they wrote without telling them; a
+         refusal they can see leaves the text in the box to shorten. */
+      if (clean(bodyOf(req).body, MESSAGE_MAX_CHARS + 1).length > MESSAGE_MAX_CHARS) {
+        return sendJson(res, { ok: false, error: 'TOO_LONG', limit: MESSAGE_MAX_CHARS }, 400);
+      }
       /* A picture on its own is a complete message; text is optional then. */
       if (!text && !image) return sendJson(res, { ok: false, error: 'EMPTY' }, 400);
       const intake = await intakeImage(row.code, image);

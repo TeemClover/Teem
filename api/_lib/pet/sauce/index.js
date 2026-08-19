@@ -1,5 +1,5 @@
 /* ทะเบียนซอส — เพิ่มสัตว์ใหม่ = เพิ่มไฟล์ แล้วมาต่อ import ตรงนี้บรรทัดเดียว
-   ไม่ต้องแตะ constitution.js, compose.js หรือ pet-brain.js เลย */
+   ไม่ต้องแตะ constitution.js, compose.js หรือ เพื่อนร่วมทาง-brain.js เลย */
 
 import pig from './pig.js';
 import buffalo from './buffalo.js';
@@ -35,7 +35,7 @@ export function sauceFor(petId, registryPet = null) {
     nameTh: registryPet.nameTh,
     emoji: registryPet.emoji || '🐾',
     rgbs: `${String(registryPet.color || '').toUpperCase()} · ${String(registryPet.series || '').toUpperCase()}`,
-    character: registryPet.persona || 'เป็นเพื่อนร่วมตี้ที่มีชีวิตชีวา',
+    character: registryPet.persona || 'เป็นเพื่อนร่วมสมุดที่มีชีวิตชีวา',
     provisional: true,
   });
 }

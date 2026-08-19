@@ -76,11 +76,11 @@ function characterName(avatar, color) {
 function eventText(event) {
   const data = event?.data && typeof event.data === 'object' ? event.data : {};
   switch (String(event?.type || '')) {
-    case 'PARTY_CREATED': return data.alias ? `${data.alias} ตั้งตี้นี้` : 'ตี้ถูกสร้างขึ้น';
-    case 'MEMBER_JOINED': return `${data.alias || 'สมาชิก'} เข้าร่วมตี้`;
-    case 'MEMBER_LEFT': return `${data.alias || 'สมาชิก'} ออกจากตี้`;
-    case 'MEMBER_KICKED': return `${data.alias || 'สมาชิก'} ออกจากตี้ · ถูกนำออกโดยหัวตี้`;
-    case 'MEMBER_ALIAS_CHANGED': return `${data.from || 'สมาชิก'} เปลี่ยนชื่อในตี้เป็น ${data.to || data.alias || 'ชื่อใหม่'}`;
+    case 'PARTY_CREATED': return data.alias ? `${data.alias} เปิดสมุดนี้` : 'สมุดถูกสร้างขึ้น';
+    case 'MEMBER_JOINED': return `${data.alias || 'สมาชิก'} เข้าร่วมสมุด`;
+    case 'MEMBER_LEFT': return `${data.alias || 'สมาชิก'} ออกจากสมุด`;
+    case 'MEMBER_KICKED': return `${data.alias || 'สมาชิก'} ออกจากสมุด · ถูกนำออกโดยเจ้าของสมุด`;
+    case 'MEMBER_ALIAS_CHANGED': return `${data.from || 'สมาชิก'} เปลี่ยนชื่อในสมุดเป็น ${data.to || data.alias || 'ชื่อใหม่'}`;
     case 'MEMBER_AVATAR_CHANGED': {
       const alias = data.alias || 'สมาชิก';
       if (data.fromAvatar || data.toAvatar) {
@@ -88,13 +88,13 @@ function eventText(event) {
       }
       return `${alias} เปลี่ยนตัวละครเป็น ${characterName(data.avatar, data.avatarColor)}`;
     }
-    case 'LEAD_TRANSFERRED': return `${data.to || 'สมาชิกคนถัดไป'} รับหน้าที่หัวตี้ต่อจาก ${data.from || 'หัวตี้เดิม'}`;
-    case 'PARTY_RENAMED': return `เปลี่ยนชื่อตี้จาก “${data.from || ''}” → “${data.to || ''}”`;
-    case 'RULE_CHANGED': return 'กติกา Commit ถูกเปลี่ยน และเก็บกติกาเดิมไว้ในประวัติ';
-    case 'LEAD_CARD_CHANGED': return 'หัวตี้เปลี่ยน Party Cover';
-    case 'NPC_CHANGED': return 'ตี้เปลี่ยน PET / NPC';
-    case 'PARTY_COMPLETED': return 'Quest จบสำเร็จ';
-    case 'PARTY_DISSOLVED': return 'ตี้ถูกยุบ';
+    case 'LEAD_TRANSFERRED': return `${data.to || 'สมาชิกคนถัดไป'} รับหน้าที่เจ้าของสมุดต่อจาก ${data.from || 'เจ้าของสมุดเดิม'}`;
+    case 'PARTY_RENAMED': return `เปลี่ยนชื่อสมุดจาก “${data.from || ''}” → “${data.to || ''}”`;
+    case 'RULE_CHANGED': return 'กติกาการลงชื่อถูกเปลี่ยน และเก็บกติกาเดิมไว้ในประวัติ';
+    case 'LEAD_CARD_CHANGED': return 'เจ้าของสมุดเปลี่ยนปกสมุด';
+    case 'NPC_CHANGED': return 'สมุดเปลี่ยนเพื่อนร่วมทาง';
+    case 'PARTY_COMPLETED': return 'ปิดเล่มสำเร็จ';
+    case 'PARTY_DISSOLVED': return 'สมุดถูกยุบ';
     default: return '';
   }
 }
@@ -324,10 +324,10 @@ function syncIdentityLock() {
   if (avatar) avatar.disabled = state.locked;
   if (color) color.disabled = state.locked;
   if (button) button.disabled = state.locked;
-  if (summary) summary.textContent = state.locked ? 'ตัวละครของฉันในตี้นี้ · ล็อกแล้ว' : 'ตัวละครของฉันในตี้นี้';
+  if (summary) summary.textContent = state.locked ? 'ตัวละครของฉันในสมุดนี้ · ล็อกแล้ว' : 'ตัวละครของฉันในสมุดนี้';
   if (note) {
     note.textContent = state.locked
-      ? `ครบ 24 ชม. แล้ว · ชื่อและ Avatar ถูกล็อกตั้งแต่ ${lockStamp(state.lockedAt)} เพื่อให้ตัวละครต่อเนื่องจนจบ Quest`
+      ? `ครบ 24 ชม. แล้ว · ชื่อและสัตว์ถูกล็อกตั้งแต่ ${lockStamp(state.lockedAt)} เพื่อให้ตัวละครต่อเนื่องจนปิดเล่ม`
       : `เหลือเวลาเปลี่ยนได้อีก ${timeRemaining(state.lockedAt)} · เปลี่ยนได้ถึง ${lockStamp(state.lockedAt)}`;
   }
 
@@ -365,11 +365,11 @@ function syncPartySettingsLock() {
     else summary?.insertAdjacentElement('afterend', note);
   }
   tools.classList.toggle('party-settings-locked', state.locked);
-  if (summary) summary.textContent = state.locked ? 'จัดการตี้ · ตั้งค่าล็อกแล้ว' : 'จัดการตี้';
+  if (summary) summary.textContent = state.locked ? 'จัดการสมุด · ตั้งค่าล็อกแล้ว' : 'จัดการสมุด';
   if (note) {
     note.textContent = state.locked
-      ? `ตั้งค่าหลักของตี้ล็อกตั้งแต่ ${lockStamp(state.lockedAt)} · สมาชิกยังจัดการได้ และยุบตี้ได้ตามปกติ`
-      : `เหลือเวลาแก้ชื่อตี้ กติกา ปก และ PET / NPC อีก ${timeRemaining(state.lockedAt)} · เปลี่ยนได้ถึง ${lockStamp(state.lockedAt)}`;
+      ? `ตั้งค่าหลักของสมุดล็อกตั้งแต่ ${lockStamp(state.lockedAt)} · สมาชิกยังจัดการได้ และปิดสมุดได้ตามปกติ`
+      : `เหลือเวลาแก้ชื่อสมุด กติกา ปก และเพื่อนร่วมทาง อีก ${timeRemaining(state.lockedAt)} · เปลี่ยนได้ถึง ${lockStamp(state.lockedAt)}`;
   }
 
   const settingIds = ['renameInput', 'ruleInput', 'leadSelect', 'npcSelect', 'renameBtn', 'ruleBtn', 'leadBtn', 'npcBtn'];
@@ -396,7 +396,7 @@ function installPartySettingsGuard() {
     event.preventDefault();
     event.stopImmediatePropagation();
     syncPartySettingsLock();
-    toast('ตั้งค่าตี้ล็อกแล้วหลังครบ 24 ชม.');
+    toast('ตั้งค่าสมุดล็อกแล้วหลังครบ 24 ชม.');
   }, true);
 }
 
@@ -420,10 +420,10 @@ function syncQuestFinishGate() {
   button.disabled = !active || !state.eligible;
   button.classList.toggle('quest-locked', !state.eligible);
   if (state.eligible) {
-    button.textContent = 'เสร็จเควส';
-    if (copy) copy.textContent = `ครบ ${state.durationDays} วันเต็มแล้ว · กดเสร็จเควสเพื่อรับการ์ดได้`;
+    button.textContent = 'ปิดเล่ม';
+    if (copy) copy.textContent = `ครบ ${state.durationDays} วันเต็มแล้ว · กดปิดเล่มเพื่อรับการ์ดได้`;
   } else {
-    button.textContent = `เสร็จเควส · ต้องอยู่ครบ ${state.durationDays} วัน`;
+    button.textContent = `ปิดเล่ม · ต้องอยู่ครบ ${state.durationDays} วัน`;
     if (copy) copy.textContent = `ต้องอยู่ครบ ${state.durationDays} วันเต็ม · กดได้ ${lockStamp(state.endAt)}`;
   }
 
@@ -444,7 +444,7 @@ function installQuestFinishGuard() {
     event.preventDefault();
     event.stopImmediatePropagation();
     syncQuestFinishGate();
-    toast(`ต้องอยู่ครบ ${strictQuestGate(party).durationDays} วันก่อนเสร็จ Quest`);
+    toast(`ต้องอยู่ครบ ${strictQuestGate(party).durationDays} วันก่อนปิดเล่ม`);
   }, true);
 }
 
@@ -459,7 +459,7 @@ function installIdentityCapture() {
     const member = party?.members?.find(item => item.userId === identity?.userId);
     if (!party || !member || identityLockState(party, member).locked) {
       syncIdentityLock();
-      toast('ชื่อและ Avatar ล็อกแล้วหลังครบ 24 ชม.');
+      toast('ชื่อและสัตว์ล็อกแล้วหลังครบ 24 ชม.');
       return;
     }
     button.disabled = true;
@@ -471,12 +471,12 @@ function installIdentityCapture() {
     button.disabled = false;
     if (result.error === 'IDENTITY_LOCKED') {
       syncIdentityLock();
-      toast('ครบ 24 ชม. แล้ว · ชื่อและ Avatar ถูกล็อก');
+      toast('ครบ 24 ชม. แล้ว · ชื่อและสัตว์ถูกล็อก');
       return;
     }
-    if (result.error) { toast('ยังเปลี่ยนตัวละครตี้นี้ไม่ได้'); return; }
+    if (result.error) { toast('ยังเปลี่ยนตัวละครสมุดนี้ไม่ได้'); return; }
     rememberParty(result);
-    toast('เปลี่ยนตัวละครแล้ว · เก็บไว้ใน Party Log');
+    toast('เปลี่ยนตัวละครแล้ว · เก็บไว้ในเรื่องในสมุด');
     setTimeout(() => location.reload(), 250);
   }, true);
 }
@@ -492,12 +492,12 @@ function installLeaveButton() {
   const note = document.createElement('p');
   note.className = 'whisper';
   note.style.margin = '0 0 10px';
-  note.textContent = 'สมาชิกออกจากตี้ได้ทุกเมื่อ · สิ่งที่เคย Commit และข้อความจะยังอยู่ในประวัติตี้';
+  note.textContent = 'สมาชิกออกจากสมุดได้ทุกเมื่อ · สิ่งที่เคยลงชื่อและข้อความจะยังอยู่ในประวัติสมุด';
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'btn ghost';
   button.id = 'leavePartySelf';
-  button.textContent = 'ออกตี้';
+  button.textContent = 'ออกสมุด';
   zone.append(note, button);
   tools.insertAdjacentElement('afterend', zone);
 
@@ -505,25 +505,25 @@ function installLeaveButton() {
   button.addEventListener('click', async () => {
     if (!armed) {
       armed = true;
-      button.textContent = 'แน่ใจ? กดอีกครั้งเพื่อออกตี้';
+      button.textContent = 'แน่ใจ? กดอีกครั้งเพื่อออกสมุด';
       setTimeout(() => {
         if (!armed) return;
         armed = false;
-        button.textContent = 'ออกตี้';
+        button.textContent = 'ออกสมุด';
       }, 5000);
       return;
     }
-    armed = false; button.disabled = true; button.textContent = 'กำลังออกตี้…';
+    armed = false; button.disabled = true; button.textContent = 'กำลังออกสมุด…';
     const result = await callMemberAction('leave-v2');
     if (result.error === 'LEAD_CANNOT_LEAVE') {
-      button.disabled = false; button.textContent = 'ออกตี้';
+      button.disabled = false; button.textContent = 'ออกสมุด';
       syncLeaveVisibility();
-      toast('หัวตี้ออกตี้ไม่ได้ · ถ้าไม่ใช้ตี้นี้ให้ยุบตี้');
+      toast('เจ้าของสมุดออกสมุดไม่ได้ · ถ้าไม่ใช้สมุดนี้ให้ปิดสมุด');
       return;
     }
     if (result.error) {
-      button.disabled = false; button.textContent = 'ออกตี้';
-      toast('ยังออกตี้ไม่ได้');
+      button.disabled = false; button.textContent = 'ออกสมุด';
+      toast('ยังออกสมุดไม่ได้');
       return;
     }
     clearLocalParty();

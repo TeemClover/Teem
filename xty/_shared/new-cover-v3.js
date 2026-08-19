@@ -67,7 +67,7 @@ function install() {
     back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด myClover', subtitle:'ใช้ได้เสมอ', art:backArt() }],
     xty: xtyCards.map(card => ({
       key:`xty:${card.cardId}`, category:'xty', coverType:'card', leadCardId:card.cardId,
-      title:cardNameTh(card), subtitle:'XTY CARD', art:cardMarkup(card, { role:'lead' }),
+      title:cardNameTh(card), subtitle:'TEAMBOOK CARD', art:cardMarkup(card, { role:'lead' }),
     })),
     core7: core7Ids.map(id => {
       const card = core7CardById(id);
@@ -119,7 +119,7 @@ function install() {
        cover is simply the one everybody starts with. */
     hint.textContent = unlockedCovers
       ? `เลือกไว้ ${selected.title} · มีปกให้เลือก ${total} แบบ กด “เปลี่ยนปก” เพื่อเปิดคลัง`
-      : 'ตี้นี้ใช้หลังการ์ด myClover เป็นปก · ตั้งตี้ต่อได้เลย ไม่ต้องรอ — ปกแบบอื่นมาจากการ์ดที่ได้ตอนเล่นตี้จนจบเควส';
+      : 'สมุดนี้ใช้หลังการ์ด myClover เป็นปก · เปิดสมุดต่อได้เลย ไม่ต้องรอ — ปกแบบอื่นมาจากการ์ดที่ได้ตอนเล่นสมุดจนจบช่วง';
   }
 
   function renderCategory() {
@@ -128,14 +128,14 @@ function install() {
     if (!list.length) {
       const empty = document.createElement('p'); empty.className = 'xty-cover-empty';
       empty.textContent = activeCategory === 'core7' ? 'ยังไม่มี FIRST HAND ที่ปลดล็อกในเครื่องนี้'
-        : 'ยังไม่มีการ์ดหมวดนี้ที่ใช้เป็นปกได้ · การ์ดได้จากการเล่นตี้จนจบเควส';
+        : 'ยังไม่มีการ์ดหมวดนี้ที่ใช้เป็นปกได้ · การ์ดได้จากการเล่นสมุดจนจบช่วง';
       grid.appendChild(empty); return;
     }
     for (const item of list) {
       const option = document.createElement('button');
       option.type = 'button'; option.className = 'xty-cover-option'; option.setAttribute('role','radio');
       option.setAttribute('aria-checked', item.key === selected.key ? 'true' : 'false');
-      option.setAttribute('aria-label', `ใช้ ${item.title} เป็นปกตี้`);
+      option.setAttribute('aria-label', `ใช้ ${item.title} เป็นปกสมุด`);
       option.innerHTML = `<div class="xty-cover-thumb">${item.art}</div><span class="xty-cover-label"></span>`;
       option.querySelector('.xty-cover-label').textContent = item.title;
       option.addEventListener('click', () => {

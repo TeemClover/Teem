@@ -10,12 +10,45 @@ import { PET_BY_ID, XTY_V1_PET_IDS } from './pets.js';
 import { AVATAR_BY_ID, avatarFallback } from './avatars.js';
 import { XTY_CARDS, canonicalCardId, cardById, cardNameTh, rollRarity } from './cards.js';
 import { activityContextForParty } from './activities.js';
+import { endingPlan } from './ending-plan.js';
 
 const K_PROFILE = 'mc_xty_profile';
 const K_PARTIES = 'mc_xty_parties';
 const K_TOKENS = 'mc_xty_tokens';
 
 export const XTY_PROFILE_KEY = K_PROFILE;
+
+/* TeamBook is local-first: a device keeps its own profile, its book
+   snapshots and its join tokens. Clearing the server therefore only does
+   half a reset — every browser that played before would come back holding
+   books the server no longer knows, and the app would spend its life
+   reconciling ghosts.
+
+   The epoch closes that gap. Bump it once whenever the server data is
+   wiped: each device notices the mismatch on its next load, drops its own
+   TeamBook state exactly once, and starts clean. It is deliberately not
+   tied to a deploy or a version number — a deploy is not a reset, and
+   bumping this on every release would throw away real people's books.
+
+   Nothing outside TeamBook is touched: the CORE7 collection and the
+   account session live under their own keys and survive. */
+const DATA_EPOCH = 1;
+const K_EPOCH = 'mc_tb_data_epoch';
+const EPOCH_KEYS = [
+  K_PROFILE, K_PARTIES, K_TOKENS,
+  'mc_xty_profile_ids', 'mc_xty_public_hide_full',
+];
+
+function applyDataEpoch() {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    const stored = Number(localStorage.getItem(K_EPOCH) || 0);
+    if (stored === DATA_EPOCH) return;
+    for (const key of EPOCH_KEYS) localStorage.removeItem(key);
+    localStorage.setItem(K_EPOCH, String(DATA_EPOCH));
+  } catch { /* private mode — the app still runs from memory */ }
+}
+applyDataEpoch();
 
 export const PARTY_MIN = 2;
 export const PARTY_MAX = 5;
@@ -38,6 +71,11 @@ export const MESSAGE_BUDGETS = Object.freeze({
   social: { id: 'social', perDay: 5, labelTh: 'คุยเยอะ', hintTh: 'วันละ 5 ข้อความต่อคน' },
 });
 export const DEFAULT_BUDGET = 'normal';
+
+/* One message, one glance. This must match MESSAGE_MAX_CHARS in
+   api/_lib/xty-rules.js exactly — the server refuses anything longer, and a
+   client that let people type past it would only produce rejected posts. */
+export const MESSAGE_MAX_CHARS = 120;
 
 export const REACTIONS = Object.freeze(['❤️', '🔥', '👏', '😂', '🫡', '💪', '👀', '🍀']);
 
@@ -278,7 +316,7 @@ export function ownedCardIds(profile = getProfile()) {
    stage. These codes change the local/account profile, never Party state. */
 export function applyCollectionDebugCode(value) {
   const profile = getProfile();
-  if (!profile) return { ok: false, error: 'NO_PROFILE', message: 'ยังไม่มีโปรไฟล์ XTY' };
+  if (!profile) return { ok: false, error: 'NO_PROFILE', message: 'ยังไม่มีโปรไฟล์ TeamBook' };
   const code = String(value || '').trim().toLowerCase();
   const at = now();
   if (code === 'getallitem') {
@@ -302,7 +340,7 @@ export function applyCollectionDebugCode(value) {
       collectionResetAt: at,
       debugUnlockedAt: null,
     }, { touch: true });
-    return { ok: true, code, count: 0, message: 'รีเซ็ต Collection บนโปรไฟล์นี้แล้ว' };
+    return { ok: true, code, count: 0, message: 'รีเซ็ตคอลเลกชันบนโปรไฟล์นี้แล้ว' };
   }
   return { ok: false, error: 'INVALID_DEBUG_CODE', message: 'ไม่พบรหัสทดสอบนี้' };
 }
@@ -1069,20 +1107,20 @@ function eventLine(event) {
   const companionName = value => cardById(value) ? cardNameTh(value) : (PET_BY_ID[value]?.nameTh || 'ไม่มี');
   const coverName = value => value === 'card_back' ? 'Card Back' : cardNameTh(value);
   const labels = {
-    PARTY_CREATED: `เริ่มตี้ในชื่อ “${safeLine(data.name)}”`,
+    PARTY_CREATED: `เริ่มสมุดในชื่อ “${safeLine(data.name)}”`,
     MEMBER_JOINED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เข้าร่วมการเดินทาง`,
     MEMBER_LEFT: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} ออกจากการเดินทาง`,
     MEMBER_KICKED: `สมาชิกคนหนึ่งออกจากการเดินทาง`,
-    PARTY_RENAMED: `เปลี่ยนชื่อตี้จาก “${safeLine(data.from)}” เป็น “${safeLine(data.to)}”`,
-    MEMBER_ALIAS_CHANGED: `เปลี่ยนชื่อในตี้เป็น “${safeLine(data.alias)}”`,
-    MEMBER_AVATAR_CHANGED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เปลี่ยนตัวละครประจำตี้`,
-    LEAD_CARD_CHANGED: `เปลี่ยนปกตี้จาก ${coverName(data.from)} เป็น ${coverName(data.to)}`,
+    PARTY_RENAMED: `เปลี่ยนชื่อสมุดจาก “${safeLine(data.from)}” เป็น “${safeLine(data.to)}”`,
+    MEMBER_ALIAS_CHANGED: `เปลี่ยนชื่อในสมุดเป็น “${safeLine(data.alias)}”`,
+    MEMBER_AVATAR_CHANGED: `${safeLine(data.alias, 'สมาชิกคนหนึ่ง')} เปลี่ยนตัวละครประจำสมุด`,
+    LEAD_CARD_CHANGED: `เปลี่ยนปกสมุดจาก ${coverName(data.from)} เป็น ${coverName(data.to)}`,
     NPC_CHANGED: `เปลี่ยนเพื่อนร่วมทางจาก ${companionName(data.from)} เป็น ${companionName(data.to)}`,
-    RULE_CHANGED: 'ปรับกติกาของตี้ระหว่างทาง',
-    PARTY_COMPLETED: 'ทำการเดินทางนี้ครบและปิดตี้อย่างสมบูรณ์',
+    RULE_CHANGED: 'ปรับกติกาของสมุดระหว่างทาง',
+    PARTY_COMPLETED: 'ทำการเดินทางนี้ครบและปิดสมุดอย่างสมบูรณ์',
     PARTY_DISSOLVED: 'ปิดการเดินทางก่อนกำหนด โดยเก็บสิ่งที่เกิดขึ้นไว้',
   };
-  return labels[event?.type] || safeLine(event?.type, 'มีการเปลี่ยนแปลงในตี้');
+  return labels[event?.type] || safeLine(event?.type, 'มีการเปลี่ยนแปลงในสมุด');
 }
 
 function bestCommitStreak(posts) {
@@ -1168,9 +1206,30 @@ function selectTurningPoint({ events, messages, peakDay, fullCommitDay, context 
     'MEMBER_JOINED', 'MEMBER_ALIAS_CHANGED', 'MEMBER_AVATAR_CHANGED',
   ].includes(event.type));
   if (otherEvent) return `Day ${Number(otherEvent.partyDay || 1)} — ${eventLine(otherEvent)}`;
-  if (fullCommitDay) return `วันที่ ${fullCommitDay} สมาชิกที่ยังอยู่ Commit พร้อมกันครบตี้`;
-  if (peakDay) return `วันที่ ${peakDay[0]} ตี้ขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)`;
+  if (fullCommitDay) return `วันที่ ${fullCommitDay} สมาชิกที่ยังอยู่ ลงชื่อ พร้อมกันครบสมุด`;
+  if (peakDay) return `วันที่ ${peakDay[0]} สมุดขยับพร้อมกันมากที่สุด (ลงชื่อ ${peakDay[1]} ครั้ง)`;
   return context.comicGuidance.panel3;
+}
+
+/* Which party day a post fell on, counted from the book's own start rather
+   than the reader's clock, so an episode window means the same thing to
+   everyone in the book. */
+function partyDayOf(iso, party) {
+  const start = startOfIctDay(party?.startAt || party?.createdAt || Date.now());
+  const at = startOfIctDay(iso || start);
+  return Math.max(1, Math.round((at.getTime() - start.getTime()) / 86400000) + 1);
+}
+
+function windowFacts(party, commits, messages, events, fromDay, toDay) {
+  const inWindow = day => day >= fromDay && day <= toDay;
+  const dayCommits = commits.filter(post => inWindow(partyDayOf(post.sentAt, party)));
+  const dayMessages = messages.filter(post => inWindow(partyDayOf(post.sentAt, party)));
+  const dayEvents = events.filter(event => inWindow(Number(event.partyDay || 1)));
+  const voices = dayMessages.slice(-4).map(post =>
+    `  - “${safeLine(shortMessage(post.body))}”`);
+  const notes = dayCommits.slice(-6).map(post =>
+    `  - Day ${partyDayOf(post.sentAt, party)} · ${safeLine(shortMessage(post.body || '✓'))}`);
+  return { dayCommits, dayMessages, dayEvents, voices, notes };
 }
 
 export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
@@ -1199,10 +1258,10 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
   const companion = npcCard ? cardNameTh(npcCard) : (pet?.nameTh || 'ไม่มี');
   const endingKind = String(party.state || '').toUpperCase() === 'DISSOLVED'
     ? 'จบก่อนกำหนด (DISSOLVED)'
-    : 'เดินทางครบและปิดตี้ (COMPLETED)';
+    : 'เดินทางครบและปิดสมุด (COMPLETED)';
   const eventLines = events.length
     ? events.map((event, index) => `${index + 1}. Day ${Number(event.partyDay || 1)} · ${isoDate(event.at)} — ${eventLine(event)}`)
-    : [`1. Day 1 · ${isoDate(party.createdAt)} — เริ่มตี้ในชื่อ “${safeLine(party.name)}”`];
+    : [`1. Day 1 · ${isoDate(party.createdAt)} — เริ่มสมุดในชื่อ “${safeLine(party.name)}”`];
   const importantChanges = events
     .filter(event => ['PARTY_RENAMED', 'LEAD_CARD_CHANGED', 'NPC_CHANGED', 'RULE_CHANGED', 'MEMBER_KICKED'].includes(event.type))
     .map(event => `- Day ${Number(event.partyDay || 1)} — ${eventLine(event)}`);
@@ -1219,11 +1278,11 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
     ? [...messages].reverse().find(post => new Date(post.sentAt).getTime() >= endedAt)
     : null;
   const memorableMoments = [
-    peakDay ? `- วันที่ ${peakDay[0]} เป็นวันที่ตี้ขยับพร้อมกันมากที่สุด (${peakDay[1]} Commit)` : '- ยังไม่มี Commit ใน snapshot นี้',
+    peakDay ? `- วันที่ ${peakDay[0]} เป็นวันที่สมุดขยับพร้อมกันมากที่สุด (ลงชื่อ ${peakDay[1]} ครั้ง)` : '- ยังไม่มีการลงชื่อใน snapshot นี้',
     `- ภาษากำลังใจที่ใช้บ่อย: ${reactionHighlights}`,
   ];
-  if (togetherDay) memorableMoments.push(`- วันที่ ${togetherDay} สมาชิกที่ยังอยู่ Commit พร้อมกันครบตี้`);
-  if (topMessage) memorableMoments.push(`- Message ที่เพื่อนตอบรับมาก: “${shortMessage(topMessage.body)}” (${postReactionCount(topMessage)} reactions)`);
+  if (togetherDay) memorableMoments.push(`- วันที่ ${togetherDay} สมาชิกที่ยังอยู่ ลงชื่อ พร้อมกันครบสมุด`);
+  if (topMessage) memorableMoments.push(`- ข้อความ ที่เพื่อนตอบรับมาก: “${shortMessage(topMessage.body)}” (${postReactionCount(topMessage)} reactions)`);
   if (finalMessage) memorableMoments.push(`- Final Message: “${shortMessage(finalMessage.body)}”`);
   const castLines = members.map(member => {
     const interval = member.leftAt ? ` · อยู่ถึง ${isoDate(member.leftAt)}` : '';
@@ -1232,30 +1291,103 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
   if (!castLines.length) castLines.push('- ไม่มีข้อมูลสมาชิกใน snapshot นี้');
 
   const storyEnd = String(party.state || '').toUpperCase() === 'DISSOLVED'
-    ? 'การเดินทางหยุดก่อนกำหนด แต่ทุก Commit และการช่วยกันที่เกิดขึ้นยังเป็นหลักฐานของชีวิตจริง ไม่ถูกลบทิ้งหรือปลอมให้เป็นชัยชนะ'
-    : `ตี้ปิดฉากด้วย ${commits.length} Commit และความคืบหน้า ${completion}% ของกรอบเวลาที่ตั้งใจไว้`;
-  const names = members.map(member => safeLine(member.alias)).join(', ') || 'เพื่อนในตี้';
+    ? 'การเดินทางหยุดก่อนกำหนด แต่ทุกครั้งที่ลงชื่อและการช่วยกันที่เกิดขึ้นยังเป็นหลักฐานของชีวิตจริง ไม่ถูกลบทิ้งหรือปลอมให้เป็นชัยชนะ'
+    : `สมุดปิดฉากด้วย ${commits.length} ครั้งที่ลงชื่อ และความคืบหน้า ${completion}% ของกรอบเวลาที่ตั้งใจไว้`;
+  const names = members.map(member => safeLine(member.alias)).join(', ') || 'เพื่อนในสมุด';
   const turningPoint = selectTurningPoint({
     events, messages, peakDay, fullCommitDay: togetherDay, context,
   });
   const visualCues = [...context.visualCues, ...context.objectCues];
 
-  return `# XTY Party Ending — ${safeLine(party.name)}
+  /* A finished book pays out in episodes of seven days plus one closing
+     cover. Everything below is written from that plan, so a 3-day book and a
+     28-day book get endings shaped by what they actually contain. */
+  const plan = endingPlan(duration);
+  const artStyle = 'warm school-notebook page, colored-pencil and crayon texture, '
+    + 'cream paper, leafy-green accents, cute premium animal characters, small physical '
+    + 'notebook props. A collectible memory, not an app screen. No photorealism, no dark '
+    + 'mood, no UI chrome, no loot-box imagery.';
 
-> ไฟล์ความทรงจำจาก XTY · สร้างเมื่อ ${isoDate(generatedAt)} · ไม่มีอีเมล เบอร์โทร หรือรหัสภายใน
+  const episodeSections = plan.episodeRanges.map(range => {
+    const facts = windowFacts(party, commits, messages, events, range.fromDay, range.toDay);
+    return [
+      `## ตอนที่ ${range.episode} — วันที่ ${range.fromDay}–${range.toDay}`,
+      '',
+      `- ลงชื่อในตอนนี้: ${facts.dayCommits.length} ครั้ง`,
+      `- ข้อความในตอนนี้: ${facts.dayMessages.length} ข้อความ`,
+      facts.dayEvents.length
+        ? `- สิ่งที่เปลี่ยนไป:\n${facts.dayEvents.map(event => `  - Day ${Number(event.partyDay || 1)} — ${eventLine(event)}`).join('\n')}`
+        : '- สิ่งที่เปลี่ยนไป: ไม่มีการเปลี่ยนแปลงสำคัญในตอนนี้',
+      facts.notes.length ? `- สิ่งที่ทำจริง:\n${facts.notes.join('\n')}` : '- สิ่งที่ทำจริง: ยังไม่มีการลงชื่อในตอนนี้',
+      facts.voices.length ? `- เสียงของคนในสมุด:\n${facts.voices.join('\n')}` : null,
+      '',
+      `### Episode ${range.episode} Art Prompt`,
+      '',
+      `Draw four static comic panels telling only days ${range.fromDay}–${range.toDay} of “${safeLine(party.name)}”. ${artStyle}`,
+      '',
+      '- Speech is allowed in this picture: give the characters short spoken lines drawn '
+        + 'as hand-lettered bubbles, using the real words above rather than invented dialogue.',
+      `- Cast: ${names}${companion !== 'ไม่มี' ? ` และ ${safeLine(companion)}` : ''}`,
+      `- Activity: ${safeLine(context.activityText)}`,
+      `- Visual cues: ${safeList(visualCues)}`,
+      `- Avoid: ${safeList(context.avoid)}`,
+      `- End the episode on the feeling this week actually had, not on a win.`,
+    ].filter(line => line !== null).join('\n');
+  });
 
-## Party
+  const tail = plan.tailDays
+    ? windowFacts(party, commits, messages, events, plan.tailDays.fromDay, plan.tailDays.toDay)
+    : null;
+
+  const coverDirections = [
+    ['A · ภาพหมู่', `Everyone in the book together at the end of “${safeLine(party.name)}”, `
+      + `doing ${safeLine(context.activityText)} side by side. The warmest of the three.`],
+    ['B · ช่วงเวลาเดียว', `The single turning point of this book — ${safeLine(turningPoint)} — `
+      + 'drawn as one quiet scene rather than a summary.'],
+    ['C · ของที่เหลือไว้', `The objects this book leaves behind: ${safeList(context.endingMotifs)}, `
+      + `${safeList(context.objectCues)}, arranged as a still life on notebook paper. No characters.`],
+  ].map(([label, brief]) => `- **${label}** — ${brief}`);
+
+  const closingCover = [
+    '## ปกปิดท้าย — เจน 3 แบบ แล้วเลือก 1',
+    '',
+    'ปกนี้คือปกเดียวที่ใช้เป็นปกของสมุดเล่มนี้ได้ ให้ AI สร้างตามทิศทางข้างล่างทั้ง 3 แบบ '
+      + 'แล้วคนในสมุดเลือกมา 1 ใบ',
+    '',
+    ...coverDirections,
+    '',
+    `ทุกแบบใช้สไตล์เดียวกัน: ${artStyle}`,
+    '',
+    '- **ห้ามมีตัวหนังสือในภาพปก** ไม่มีชื่อสมุด ไม่มีคำพูด ไม่มีวันที่ — ปกที่มีคำเขียนติดมา '
+      + 'ใช้เป็นปกหนังสือไม่ได้ ชื่อจะถูกวางทับทีหลัง',
+    `- Portrait 63:88 เท่าการ์ด เว้นพื้นที่เงียบไว้ด้านบนสำหรับวางชื่อ`,
+    tail ? `- ช่วงท้ายที่ยังไม่ได้เป็นตอน (วันที่ ${plan.tailDays.fromDay}–${plan.tailDays.toDay}, `
+      + `ลงชื่อ ${tail.dayCommits.length} ครั้ง) ให้เก็บอยู่ในปกใบนี้` : null,
+    plan.toBeContinued
+      ? `- สมุดเล่มนี้ยาว ${plan.days} วัน ซึ่งสั้นเกินกว่าจะสรุปว่าเรื่องจบแล้ว `
+        + 'ให้วาดแบบ “ยังไม่จบ” — เป็นภาพเปิดค้างไว้ ให้รู้สึกว่ามีเล่มต่อไป ห้ามวาดฉากปิดจบ '
+        + 'หรือฉากฉลองความสำเร็จ'
+      : `- สมุดเล่มนี้เล่าจบ ${plan.episodes} ตอน ปกใบนี้คือภาพที่คนในสมุดจะจำเล่มนี้ได้`,
+  ].filter(line => line !== null).join('\n');
+
+  const sauceBody = [...episodeSections, closingCover].join('\n\n');
+
+  return `# TeamBook · ปิดเล่ม — ${safeLine(party.name)}
+
+> ไฟล์ความทรงจำจาก TeamBook · สร้างเมื่อ ${isoDate(generatedAt)} · ไม่มีอีเมล เบอร์โทร หรือรหัสภายใน
+
+## สมุด
 
 - สถานะตอนจบ: ${endingKind}
 - กิจกรรม: ${safeLine(context.activityText)}
-- กติกา Commit: ${safeLine(party.commitRule)}
+- กติกาการลงชื่อ: ${safeLine(party.commitRule)}
 - ระยะเวลา: ${duration} วัน
 - เริ่ม: ${isoDate(party.startAt || party.createdAt)}
 - จบ: ${isoDate(party.endAt || party.endedAt || generatedAt)}
-- รูปแบบตี้: ${safeLine(party.preset, 'casual')}
-- สีประจำตี้: ${safeLine(party.color, 'green')}
-- Lead Card: ${leadCard ? cardNameTh(leadCard) : safeLine(party.leadCardId)}
-- PET / NPC: ${safeLine(companion)}
+- รูปแบบสมุด: ${safeLine(party.preset, 'casual')}
+- สีประจำสมุด: ${safeLine(party.color, 'green')}
+- การ์ดเปิดสมุด: ${leadCard ? cardNameTh(leadCard) : safeLine(party.leadCardId)}
+- เพื่อนร่วมทาง: ${safeLine(companion)}
 
 ## Cast
 
@@ -1272,7 +1404,7 @@ ${castLines.join('\n')}
 - Visual Cues: ${safeList(visualCues)}
 - Ending Motifs: ${safeList(context.endingMotifs)}
 - Avoid: ${safeList(context.avoid)}
-${context.inferred ? `- Custom Context: infer จาก Activity “${safeLine(context.activityText)}” + Commit Rule + Quest Log จริง` : ''}
+${context.inferred ? `- Custom Context: infer จาก Activity “${safeLine(context.activityText)}” + ลงชื่อ Rule + ช่วง Log จริง` : ''}
 
 ## Timeline
 
@@ -1288,10 +1420,10 @@ ${memorableMoments.join('\n')}
 
 ## Character Notes
 
-- ${safeLine(lead?.alias, 'หัวตี้')} เป็นคนเปิดพื้นที่และถือ Lead Card ของการเดินทางนี้
-- สมาชิกที่ร่วมทาง: ${names}
+- ${safeLine(lead?.alias, 'เจ้าของสมุด')} เป็นคนเปิดพื้นที่และถือ การ์ดเปิดสมุดของการเดินทางนี้
+- คนในสมุด: ${names}
 - เพื่อนร่วมทาง: ${safeLine(companion)}${npcCard ? ` · บุคลิก “${safeLine(npcCard.personalityNameTh)}” · “${safeLine(npcCard.flavorTh)}”` : ''}
-- โทนของตี้: เบา เป็นมิตร และยึดสิ่งที่ทำจริงมากกว่าคะแนน
+- โทนของสมุด: เบา เป็นมิตร และยึดสิ่งที่ทำจริงมากกว่าคะแนน
 
 ## Summary Stats
 
@@ -1304,42 +1436,18 @@ ${memorableMoments.join('\n')}
 
 ## Story Summary
 
-“${safeLine(party.name)}” เริ่มจาก ${safeLine(context.storyFrame)} กติกาจริงคือ “${safeLine(party.commitRule)}” โดยมี ${safeLine(lead?.alias, 'หัวตี้')} สมาชิก ${names} และ ${safeLine(companion)} เป็นภาพจำของการเดินทาง
+“${safeLine(party.name)}” เริ่มจาก ${safeLine(context.storyFrame)} กติกาจริงคือ “${safeLine(party.commitRule)}” โดยมี ${safeLine(lead?.alias, 'เจ้าของสมุด')} สมาชิก ${names} และ ${safeLine(companion)} เป็นภาพจำของการเดินทาง
 
-จาก Quest Log ความสำเร็จของเรื่องนี้หมายถึง ${safeLine(context.successMeaning)} และคุณค่าของทีมคือ ${safeLine(context.teamMeaning)} Turning point ที่ควรใช้เล่าเรื่องคือ ${safeLine(turningPoint)}
+จากเรื่องในสมุด ความสำเร็จของเรื่องนี้หมายถึง ${safeLine(context.successMeaning)} และคุณค่าของทีมคือ ${safeLine(context.teamMeaning)} Turning point ที่ควรใช้เล่าเรื่องคือ ${safeLine(turningPoint)}
 
-${storyEnd} ใช้ข้อเท็จจริงจาก Timeline, Commit, Message, Reaction และ Confirm ก่อน template เสมอ อย่าทำให้ประวัติดูสมบูรณ์แบบเกินสิ่งที่เกิดขึ้นจริง
+${storyEnd} ใช้ข้อเท็จจริงจาก Timeline, ลงชื่อ, ข้อความ, Reaction และ เห็นแล้ว ก่อน template เสมอ อย่าทำให้ประวัติดูสมบูรณ์แบบเกินสิ่งที่เกิดขึ้นจริง
 
-## 4-Panel Comic Prompt
-
-Create one warm, bright school-notebook page with four static comic panels, colored-pencil and crayon texture, warm cream paper, leafy-green accents, cute premium animal characters, and small physical notebook props. Make it a collectible memory, not an app screen. No photorealism, animation, dark mood, text-heavy UI, or loot-box imagery.
-
-- Activity direction: ${safeLine(context.storyFrame)}
-- Visual cues: ${safeList(visualCues)}
-- Motifs: ${safeList(context.endingMotifs)}
-- Avoid: ${safeList(context.avoid)}
-
-- Panel 1 — Beginning: ${safeLine(context.comicGuidance.panel1)}. ${safeLine(lead?.alias, 'The lead')} places the ${safeLine(leadCard ? cardNameTh(leadCard) : 'Lead Card')} down and invites ${names} to begin “${safeLine(party.name)}”.
-- Panel 2 — Life of the Quest: ${safeLine(context.comicGuidance.panel2)}. Show real actions for “${safeLine(context.activityText)}”, gentle Commit check marks, and ${safeLine(companion)} traveling beside the group.
-- Panel 3 — Meaningful turning point: ${safeLine(turningPoint)}. Shape the scene with: ${safeLine(context.comicGuidance.panel3)}.
-- Panel 4 — Actual ending: ${safeLine(context.comicGuidance.panel4)}. Show the ${endingKind} outcome, the cast who finished together, ${commits.length} real Commit marks, and the feeling “${safeLine(storyEnd)}”. Leave a little blank space for the party to add its own caption.
-
-## Poster Prompt
-
-Create a cheerful notebook-doodle celebration poster for “${safeLine(party.name)}”. Feature the full cast (${names}), the Lead Card, ${safeLine(companion)}, RGBS pencil accents, ${commits.length} commit marks, and a handmade scrapbook feeling. No app interface and no advertising.
-
-## Group Illustration Prompt
-
-Draw ${names} and ${safeLine(companion)} doing “${safeLine(context.activityText)}” together in a bright colored-pencil storybook scene. Use ${safeList(context.visualCues)}. Preserve each animal identity, use imperfect hand-drawn outlines, and make participation feel equally valuable.
-
-## Postcard Memory Prompt
-
-Create a landscape postcard from the ending of “${safeLine(party.name)}”: one warm group moment, notebook-paper texture, a small Lead Card motif, ${reactionHighlights} as tiny doodle accents, and blank room on the back for a personal note.
+${sauceBody}
 
 ---
 
-นำไฟล์นี้ไปให้ AI ที่คุณใช้ แล้วพิมพ์ว่า: **“ทำการ์ตูน 4 ช่องจากไฟล์นี้”**
-XTY สร้างซอสตอนจบให้ แต่ไม่สร้างหรือขายภาพสุ่มในแอป
+นำไฟล์นี้ไปให้ AI ที่คุณใช้ แล้วสั่งทีละส่วน — ตอนที่ 1, 2, … แล้วค่อยปกปิดท้าย 3 แบบ
+TeamBook เตรียมซอสให้จากเรื่องที่เกิดขึ้นจริง แต่ไม่สร้างหรือขายภาพสุ่มในแอป
 `;
 }
 

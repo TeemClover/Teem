@@ -238,12 +238,15 @@ test('Ending Markdown is portable and never leaks member ids', () => {
       { seq: 2, kind: 'message', userId: 'local:secret-member-id', body: 'วันนี้ช้าแต่ยังมา', sentAt: '2026-08-03T08:00:00.000Z', retracted: false, reactions: { '❤️': ['account:secret-lead-id'] } },
     ],
   }, { generatedAt: '2026-08-05T00:00:00.000Z' });
-  assert.match(ending, /# XTY Party Ending/);
-  assert.match(ending, /## 4-Panel Comic Prompt/);
+  assert.match(ending, /# TeamBook · ปิดเล่ม/);
+  /* Seven days is one episode, and every finished book gets one closing cover. */
+  assert.match(ending, /## ตอนที่ 1 — วันที่ 1–7/);
+  assert.match(ending, /## ปกปิดท้าย/);
+  assert.doesNotMatch(ending, /## ตอนที่ 2/);
   assert.match(ending, /## Activity Preset Context/);
   assert.match(ending, /Preset: เดิน \(walk\)/);
   assert.match(ending, /เริ่มจากก้าวเล็ก/);
-  assert.match(ending, /ปรับกติกาของตี้ระหว่างทาง/);
+  assert.match(ending, /ปรับกติกาของสมุดระหว่างทาง/);
   assert.match(ending, /DISSOLVED/);
   assert.doesNotMatch(ending, /secret-lead-id|secret-member-id/);
 });

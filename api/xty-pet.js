@@ -11,15 +11,15 @@ const ICT_OFFSET_MINUTES = 7 * 60;
 const ICT_OFFSET_MS = ICT_OFFSET_MINUTES * 60000;
 const WAKE_HOURS = [0, 6, 12, 18];
 const LOG_SLICE = 120;
-/* หนึ่งรอบต้องอ่าน "ทุกตี้ที่มีเหตุ" ไม่ใช่สุ่มบางตี้
+/* หนึ่งรอบต้องอ่าน "ทุกสมุดที่มีเหตุ" ไม่ใช่สุ่มบางสมุด
 
-   เวลาเกือบทั้งหมดของหนึ่งตี้คือการนั่งรอโมเดลตอบ ไม่ใช่การประมวลผล
-   การวนทีละตี้จึงเป็นการต่อคิวรอเปล่า ๆ — ทำพร้อมกันทีละกลุ่มทำให้ 100 ตี้
-   จบในเวลาที่เดิมใช้กับสิบกว่าตี้
+   เวลาเกือบทั้งหมดของหนึ่งสมุดคือการนั่งรอโมเดลตอบ ไม่ใช่การประมวลผล
+   การวนทีละสมุดจึงเป็นการต่อคิวรอเปล่า ๆ — ทำพร้อมกันทีละกลุ่มทำให้ 100 สมุด
+   จบในเวลาที่เดิมใช้กับสิบกว่าสมุด
 
-   และมีงบเวลาไว้ด้วย: พองบใกล้หมดจะหยุด "เริ่ม" ตี้ใหม่ ตี้ที่ยังไม่ได้
+   และมีงบเวลาไว้ด้วย: พองบใกล้หมดจะหยุด "เริ่ม" สมุดใหม่ สมุดที่ยังไม่ได้
    เริ่มจะไม่ถูกจอง รอบถัดไปจึงหยิบไปทำได้ตามปกติ ดีกว่าถูกฆ่ากลางทาง
-   แล้วตี้ที่จองไว้เงียบหายไปหกชั่วโมงโดยไม่มีใครรู้
+   แล้วสมุดที่จองไว้เงียบหายไปหกชั่วโมงโดยไม่มีใครรู้
 
    ค่าพวกนี้อ่านจาก env ตอนเรียกทุกครั้ง ไม่ใช่ตอนโหลดไฟล์ — ปรับจังหวะรอบตื่น
    ได้จากหน้า Vercel โดยไม่ต้อง deploy ใหม่ */
@@ -32,7 +32,7 @@ function wakeTuning() {
 }
 const ACTIVE_STATES = ['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE'];
 const WHITE_CAT_ID = 'xvisor_white_cat_silver';
-const WHITE_CAT_INTRO = 'อยู่ด้วยกันตรงนี้นะ 🐈 ถ้าอยากถามอะไร พิมพ์ “แมวขาว” แล้วตามด้วยคำถามได้เลย — เรื่อง Xircle, RoutineX, ABCD หรือตี้นี้ก็ได้';
+const WHITE_CAT_INTRO = 'อยู่ด้วยกันตรงนี้นะ 🐈 ถ้าอยากถามอะไร พิมพ์ “แมวขาว” แล้วตามด้วยคำถามได้เลย — เรื่อง Xircle, RoutineX, ABCD หรือสมุดนี้ก็ได้';
 
 function wakeWindow(now = new Date()) {
   const local = new Date(now.getTime() + ICT_OFFSET_MS);
@@ -56,24 +56,24 @@ function eventLine(type, rawData) {
   const data = dataOf(rawData);
   switch (String(type || '')) {
     case 'PARTY_CREATED': return data.coverName
-      ? `${data.alias || 'หัวตี้'} ตั้งตี้นี้ และใช้ ${data.coverName} เป็นการ์ดประจำตี้`
-      : (data.alias ? `${data.alias} ตั้งตี้นี้` : 'ตี้ถูกสร้างขึ้น');
-    case 'MEMBER_JOINED': return `${data.alias || 'สมาชิก'} เข้าร่วมตี้`;
-    case 'MEMBER_LEFT': return `${data.alias || 'สมาชิก'} ออกจากตี้`;
-    case 'MEMBER_KICKED': return `${data.alias || 'สมาชิก'} ถูกนำออกจากตี้`;
-    case 'MEMBER_ALIAS_CHANGED': return `${data.from || 'สมาชิก'} เปลี่ยนชื่อในตี้เป็น ${data.to || data.alias || 'ชื่อใหม่'}`;
+      ? `${data.alias || 'เจ้าของสมุด'} เปิดสมุดนี้ และใช้ ${data.coverName} เป็นการ์ดประจำสมุด`
+      : (data.alias ? `${data.alias} เปิดสมุดนี้` : 'สมุดถูกสร้างขึ้น');
+    case 'MEMBER_JOINED': return `${data.alias || 'สมาชิก'} เข้าร่วมสมุด`;
+    case 'MEMBER_LEFT': return `${data.alias || 'สมาชิก'} ออกจากสมุด`;
+    case 'MEMBER_KICKED': return `${data.alias || 'สมาชิก'} ถูกนำออกจากสมุด`;
+    case 'MEMBER_ALIAS_CHANGED': return `${data.from || 'สมาชิก'} เปลี่ยนชื่อในสมุดเป็น ${data.to || data.alias || 'ชื่อใหม่'}`;
     case 'MEMBER_AVATAR_CHANGED': {
       const alias = data.alias || 'สมาชิก';
       if (data.fromAvatar || data.toAvatar) return `${alias} เปลี่ยนตัวละครจาก ${avatarName(data.fromAvatar)} เป็น ${avatarName(data.toAvatar)}`;
       return `${alias} เปลี่ยนตัวละครเป็น ${avatarName(data.avatar)}`;
     }
-    case 'LEAD_TRANSFERRED': return `${data.to || 'สมาชิกคนถัดไป'} รับหน้าที่หัวตี้ต่อจาก ${data.from || 'หัวตี้เดิม'}`;
-    case 'PARTY_RENAMED': return `ชื่อตี้เปลี่ยนจาก ${data.from || 'ชื่อเดิม'} เป็น ${data.to || 'ชื่อใหม่'}`;
-    case 'RULE_CHANGED': return 'กติกา Commit ของตี้ถูกเปลี่ยน';
-    case 'LEAD_CARD_CHANGED': return `${data.alias || 'หัวตี้'} เปลี่ยนการ์ดประจำตี้จาก ${data.fromName || data.from || 'ใบเดิม'} เป็น ${data.toName || data.to || 'ใบใหม่'}`;
-    case 'NPC_CHANGED': return 'PET / NPC ของตี้ถูกเปลี่ยน';
-    case 'PARTY_COMPLETED': return 'Quest ของตี้จบสำเร็จ';
-    case 'PARTY_DISSOLVED': return 'ตี้ถูกยุบ';
+    case 'LEAD_TRANSFERRED': return `${data.to || 'สมาชิกคนถัดไป'} รับหน้าที่เจ้าของสมุดต่อจาก ${data.from || 'เจ้าของสมุดเดิม'}`;
+    case 'PARTY_RENAMED': return `ชื่อสมุดเปลี่ยนจาก ${data.from || 'ชื่อเดิม'} เป็น ${data.to || 'ชื่อใหม่'}`;
+    case 'RULE_CHANGED': return 'วันนี้ลงชื่อได้เมื่อ ของสมุดถูกเปลี่ยน';
+    case 'LEAD_CARD_CHANGED': return `${data.alias || 'เจ้าของสมุด'} เปลี่ยนการ์ดประจำสมุดจาก ${data.fromName || data.from || 'ใบเดิม'} เป็น ${data.toName || data.to || 'ใบใหม่'}`;
+    case 'NPC_CHANGED': return 'เพื่อนร่วมทางของสมุดถูกเปลี่ยน';
+    case 'PARTY_COMPLETED': return 'ช่วง ของสมุดจบสำเร็จ';
+    case 'PARTY_DISSOLVED': return 'สมุดถูกยุบ';
     default: return `เกิด Event: ${String(type || 'UNKNOWN')}`;
   }
 }
@@ -107,7 +107,7 @@ async function recentLog(sql, partyId) {
   }
   const events = eventRows.reverse().map(event => ({
     seq: `event:${event.id}`, kind: 'event', body: eventLine(event.type, event.data_json),
-    sent_at: event.created_at, retracted: false, alias: 'ระบบตี้', reactions: '', pet_id: null, image_url: null,
+    sent_at: event.created_at, retracted: false, alias: 'ระบบสมุด', reactions: '', pet_id: null, image_url: null,
   }));
   return [...posts, ...events]
     .sort((a, b) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime())
@@ -284,8 +284,8 @@ async function whiteCatIntro(req, res, sql) {
 }
 
 function manualFallback(party) {
-  const pet = PET_BY_ID[party.pet_id] || { nameTh: 'สัตว์ประจำตี้', emoji: '🐾' };
-  return [`${pet.emoji} ${pet.nameTh} ตื่นแล้ว — รอบทดสอบอ่าน Party Log ได้อยู่`];
+  const pet = PET_BY_ID[party.pet_id] || { nameTh: 'สัตว์ประจำสมุด', emoji: '🐾' };
+  return [`${pet.emoji} ${pet.nameTh} ตื่นแล้ว — รอบทดสอบอ่านเรื่องในสมุดได้อยู่`];
 }
 
 export default async function handler(req, res) {
@@ -321,8 +321,8 @@ export default async function handler(req, res) {
       quiet: 0, byAi: 0, providerFailures: 0, deferred: 0, failed: 0,
     };
 
-    /* งานหนึ่งตี้ทั้งชุด เขียนเป็นก้อนเดียวเพื่อให้รันพร้อมกันได้ปลอดภัย
-       ทุกทางออกต้องคืนสิทธิ์ให้ตี้ถ้ายังไม่ได้พูด ไม่งั้นตี้จะถูกนับว่า
+    /* งานหนึ่งสมุดทั้งชุด เขียนเป็นก้อนเดียวเพื่อให้รันพร้อมกันได้ปลอดภัย
+       ทุกทางออกต้องคืนสิทธิ์ให้สมุดถ้ายังไม่ได้พูด ไม่งั้นสมุดจะถูกนับว่า
        "รอบนี้ทำแล้ว" ทั้งที่ไม่มีอะไรเกิดขึ้น */
     async function runParty(party) {
       const marked = force
@@ -370,7 +370,7 @@ export default async function handler(req, res) {
         tally.spoke += 1;
         for (const line of lines) if (await appendBubble(sql, party, line, wake.hour, now)) tally.bubbles += 1;
       } catch (error) {
-        /* งานตี้เดียวล้มต้องไม่ลากทั้งรอบลงไปด้วย และตี้นั้นต้องได้คิวรอบหน้า */
+        /* งานสมุดเดียวล้มต้องไม่ลากทั้งรอบลงไปด้วย และสมุดนั้นต้องได้คิวรอบหน้า */
         console.error('XTY pet wake party failed', party.code, error?.message || error);
         tally.failed += 1;
         if (!force) {

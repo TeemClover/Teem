@@ -50,21 +50,21 @@ function weeklySauce(party, week) {
   const byMember = members.map(member => {
     const own = commits.filter(post => post.userId === member.userId);
     const valid = confirmed.filter(post => post.userId === member.userId);
-    return `- ${member.alias}: Commit ${own.length}${party.verificationMode === 'confirm' ? ` · Confirmed ${valid.length}` : ''}`;
+    return `- ${member.alias}: ลงชื่อ ${own.length}${party.verificationMode === 'confirm' ? ` · มีคนเห็นแล้ว ${valid.length}` : ''}`;
   }).join('\n') || '- ยังไม่มีข้อมูลสมาชิก';
   const highlights = posts.slice(-8).map(post => {
-    if (post.kind === 'reward') return `- CARD DROP · ${memberAlias(party, post.userId)} เปิดการ์ดในตี้`;
-    if (post.kind === 'commit') return `- COMMIT · ${memberAlias(party, post.userId)} · ${String(post.body || '✓').replace(/\s+/g, ' ').slice(0, 120)}`;
+    if (post.kind === 'reward') return `- เปิดการ์ด · ${memberAlias(party, post.userId)} เปิดการ์ดในสมุด`;
+    if (post.kind === 'commit') return `- ลงชื่อ · ${memberAlias(party, post.userId)} · ${String(post.body || '✓').replace(/\s+/g, ' ').slice(0, 120)}`;
     if (post.kind === 'message') return `- ${memberAlias(party, post.userId)}: ${String(post.body || '').replace(/\s+/g, ' ').slice(0, 140)}`;
     return '';
   }).filter(Boolean).join('\n') || '- สัปดาห์นี้ยังไม่มีบันทึกเด่น';
-  return `# XTY Weekly Sauce · Week ${week}\n\n` +
-    `- Party: ${party.name}\n- Code: ${party.code}\n- Activity: ${party.activity || '—'}\n` +
+  return `# TeamBook · ซอสประจำสัปดาห์ · สัปดาห์ที่ ${week}\n\n` +
+    `- สมุด: ${party.name}\n- รหัสสมุด: ${party.code}\n- กิจกรรม: ${party.activity || '—'}\n` +
     `- Week: ${week} · Day ${(week - 1) * 7 + 1}–${week * 7}\n` +
     `- Verification: ${party.verificationMode === 'confirm' ? 'Confirm' : 'Trust'}\n\n` +
-    `## สิ่งที่เกิดขึ้นในสัปดาห์นี้\n\n- Commit: ${commits.length}\n- Confirmed Commit: ${confirmed.length}\n- Message: ${messages.length}\n\n` +
+    `## สิ่งที่เกิดขึ้นในสัปดาห์นี้\n\n- ลงชื่อ: ${commits.length}\n- ลงชื่อและมีคนเห็นแล้ว: ${confirmed.length}\n- Message: ${messages.length}\n\n` +
     `## สมาชิก\n\n${byMember}\n\n## Highlights\n\n${highlights}\n\n` +
-    `## สิ่งที่ควรทำต่อ\n\n- อะไรทำได้จริงและควรทำซ้ำ?\n- อะไรติดขัดและควรปรับให้ง่ายลง?\n- สัปดาห์หน้าจะรักษา 1 อย่างอะไรไว้?\n\n---\nXTY Weekly Sauce · generated from Party Log\n`;
+    `## สิ่งที่ควรทำต่อ\n\n- อะไรทำได้จริงและควรทำซ้ำ?\n- อะไรติดขัดและควรปรับให้ง่ายลง?\n- สัปดาห์หน้าจะรักษา 1 อย่างอะไรไว้?\n\n---\nTeamBook · ซอสประจำสัปดาห์ · สร้างจากเรื่องในสมุด\n`;
 }
 
 function dissolveSauce(party) {
@@ -74,12 +74,12 @@ function dissolveSauce(party) {
   const commits = posts.filter(post => post.kind === 'commit' && !post.retracted);
   const confirmed = commits.filter(post => party.verificationMode !== 'confirm' || post.confirmedBy);
   const messages = posts.filter(post => post.kind === 'message' && !post.retracted);
-  return `# XTY · ซอสสลายตี้\n\n` +
-    `> ตี้นี้จบก่อนกำหนด ไฟล์นี้เก็บสิ่งที่เกิดขึ้นตามจริง ไม่ถือว่า Quest Clear\n\n` +
-    `- Party: ${party.name}\n- Code: ${party.code}\n- Activity: ${party.activity || '—'}\n- จบที่: Day ${day}\n` +
-    `- Commit: ${commits.length}\n- Confirmed Commit: ${confirmed.length}\n- Message: ${messages.length}\n\n` +
-    `## สิ่งที่เกิดขึ้นจริง\n\n${commits.slice(-12).map(post => `- ${memberAlias(party, post.userId)} · ${String(post.body || '✓').replace(/\s+/g, ' ').slice(0, 140)}`).join('\n') || '- ยังไม่มี Commit'}\n\n` +
-    `## ก่อนวางตี้นี้ลง\n\n- อะไรทำให้ตี้ไปต่อยาก?\n- มีอะไรที่ยังคุ้มจะเก็บไว้ทำต่อคนเดียวหรือตี้ใหม่?\n- ถ้าเริ่มใหม่ จะทำให้เล็กลงตรงไหน?\n\n---\nXTY · Dissolved Party Sauce\n`;
+  return `# TeamBook · ซอสตอนปิดสมุดก่อนจบ\n\n` +
+    `> สมุดนี้จบก่อนกำหนด ไฟล์นี้เก็บสิ่งที่เกิดขึ้นตามจริง ไม่ถือว่าปิดเล่มสำเร็จ\n\n` +
+    `- สมุด: ${party.name}\n- รหัสสมุด: ${party.code}\n- กิจกรรม: ${party.activity || '—'}\n- จบที่: วันที่ ${day}\n` +
+    `- ลงชื่อ: ${commits.length}\n- ลงชื่อและมีคนเห็นแล้ว: ${confirmed.length}\n- Message: ${messages.length}\n\n` +
+    `## สิ่งที่เกิดขึ้นจริง\n\n${commits.slice(-12).map(post => `- ${memberAlias(party, post.userId)} · ${String(post.body || '✓').replace(/\s+/g, ' ').slice(0, 140)}`).join('\n') || '- ยังไม่มีการลงชื่อ'}\n\n` +
+    `## ก่อนวางสมุดนี้ลง\n\n- อะไรทำให้สมุดไปต่อยาก?\n- มีอะไรที่ยังคุ้มจะเก็บไว้ทำต่อคนเดียวหรือสมุดใหม่?\n- ถ้าเริ่มใหม่ จะทำให้เล็กลงตรงไหน?\n\n---\nTeamBook · ซอสตอนปิดสมุดก่อนจบ\n`;
 }
 
 function installStyle() {
@@ -126,7 +126,7 @@ function install() {
   const shell = document.createElement('details');
   shell.className = 'xty-reward-shell'; shell.id = 'xtyRewardShell';
   const summary = document.createElement('summary');
-  summary.innerHTML = '<span class="label">รางวัลของเควส</span>'
+  summary.innerHTML = '<span class="label">รางวัลของเล่มนี้</span>'
     + '<span class="xty-reward-peek" id="xtyRewardPeek">กำลังเช็ก…</span>';
   shell.appendChild(summary);
 
@@ -159,24 +159,24 @@ function install() {
     if (!party) return;
     if (party.verificationMode !== 'confirm') {
       setPeek('โหมดเชื่อใจ · ไม่มีดาว');
-      starPanel.innerHTML = '<div class="loop-head"><div><span class="label">CARD DROP</span>'
-        + '<h3>ตี้นี้เชื่อใจกัน ไม่ต้องเก็บดาว</h3></div></div>'
-        + '<p>Commit ของทุกคนผ่านทันที ไม่มีใครต้องรอใครยืนยัน</p>'
-        + '<p class="xty-reward-aside">อยากได้การ์ดไว้สะสม ตี้หน้าลองเลือกโหมด “ต้อง Confirm” ดู — '
-        + 'เพื่อนกดยืนยัน Commit ให้ 1 ครั้งได้ ⭐ 1 ดวง ครบ 3 ดวงรับการ์ด 1 ใบ</p>';
+      starPanel.innerHTML = '<div class="loop-head"><div><span class="label">เปิดการ์ด</span>'
+        + '<h3>สมุดนี้เชื่อใจกัน ไม่ต้องเก็บดาว</h3></div></div>'
+        + '<p>การลงชื่อของทุกคนผ่านทันที ไม่มีใครต้องรอใครยืนยัน</p>'
+        + '<p class="xty-reward-aside">อยากได้การ์ดไว้สะสม สมุดหน้าลองเลือกโหมด “ต้องมีคนเห็นแล้ว” ดู — '
+        + 'เพื่อนกดเห็นแล้วให้ 1 ครั้งได้ ⭐ 1 ดวง ครบ 3 ดวงรับการ์ด 1 ใบ</p>';
       return;
     }
     setPeek('กำลังนับดาว…');
-    starPanel.innerHTML = `<p>กำลังนับดาวจาก Confirmed Commit…</p>`;
+    starPanel.innerHTML = `<p>กำลังนับดาวจากการลงชื่อที่มีคนเห็นแล้ว…</p>`;
     const state = await syncPartyStarRewards(code);
     if (state.error) {
       setPeek('ดึงดาวไม่ได้');
-      starPanel.innerHTML = `<span class="label">CARD DROP</span><p>ยังดึงดาวไม่ได้ · ลองกด ↻ ดึงอัปเดตอีกครั้ง</p>`;
+      starPanel.innerHTML = `<span class="label">เปิดการ์ด</span><p>ยังดึงดาวไม่ได้ · ลองกด ↻ ดึงอัปเดตอีกครั้ง</p>`;
       return;
     }
     const rows = (state.members || []).map(member => {
       const stars = [0,1,2].map(i => `<span class="${i < member.stars ? '' : 'off'}">★</span>`).join('');
-      const drops = member.dropCount ? `<span class="xty-drop">${member.dropCount} CARD DROP${member.pendingDrops ? ` · ${member.pendingDrops} รอเปิด` : ''}</span>` : '';
+      const drops = member.dropCount ? `<span class="xty-drop">${member.dropCount} การ์ด${member.pendingDrops ? ` · ${member.pendingDrops} รอเปิด` : ''}</span>` : '';
       return `<div class="xty-star-row"><div><b>${esc(member.alias)}</b>${drops ? `<br>${drops}` : ''}</div><div class="xty-stars">${stars}</div></div>`;
     }).join('');
     const pending = (state.myRewards || []).filter(reward => !reward.revealedAt && !reward.complete && reward.cardId);
@@ -196,11 +196,11 @@ function install() {
 
     const headline = pending.length ? 'มีการ์ดรอคุณเปิดอยู่'
       : (myDrops ? `ได้การ์ดไปแล้ว ${myDrops} ใบ · อีก ${left} ดวงได้อีกใบ`
-        : (myStars === 0 ? 'ให้เพื่อน Confirm 3 ครั้ง ได้การ์ด 1 ใบ' : `อีก ${left} ดวงได้การ์ด 1 ใบ`));
-    starPanel.innerHTML = `<div class="loop-head"><div><span class="label">CONFIRMED COMMIT → CARD DROP</span>`
+        : (myStars === 0 ? 'ให้เพื่อนกดเห็นแล้ว 3 ครั้ง ได้การ์ด 1 ใบ' : `อีก ${left} ดวงได้การ์ด 1 ใบ`));
+    starPanel.innerHTML = `<div class="loop-head"><div><span class="label">ลงชื่อแล้วมีคนเห็น → ได้การ์ด</span>`
       + `<h3>${headline}</h3></div></div>`
-      + `<p>Commit ที่มีเพื่อนกดยืนยันได้ ⭐ 1 ดวง · ดาวนับเฉพาะในตี้นี้ ไม่ยกไปตี้อื่น</p>${rows}`
-      + (pending.length ? `<div class="xty-loop-actions">${pending.map(reward => `<a class="btn gold sm" href="/xty/reveal/?r=${encodeURIComponent(reward.rewardId)}">เปิด Card Drop #${reward.milestone}</a>`).join('')}</div>` : '');
+      + `<p>การลงชื่อที่มีเพื่อนกดเห็นแล้วได้ ⭐ 1 ดวง · ดาวนับเฉพาะในสมุดนี้ ไม่ยกไปสมุดอื่น</p>${rows}`
+      + (pending.length ? `<div class="xty-loop-actions">${pending.map(reward => `<a class="btn gold sm" href="/xty/reveal/?r=${encodeURIComponent(reward.rewardId)}">เปิด เปิดการ์ด #${reward.milestone}</a>`).join('')}</div>` : '');
   }
 
   function syncSauce() {
@@ -223,10 +223,10 @@ function install() {
     if (state === 'DISSOLVED') {
       if (existingEnding) existingEnding.hidden = true;
       if (dissolveDay < 3) {
-        saucePanel.innerHTML = `<span class="label">PARTY SAUCE</span><h3>ตี้สลายก่อน Day 3</h3><p>ยังไม่มีซอสให้ · เก็บเป็นประวัติตี้สลายอย่างเดียว</p>`;
+        saucePanel.innerHTML = `<span class="label">PARTY SAUCE</span><h3>สมุดสลายก่อน Day 3</h3><p>ยังไม่มีซอสให้ · เก็บเป็นประวัติสมุดสลายอย่างเดียว</p>`;
         return;
       }
-      saucePanel.innerHTML = `<span class="label">DISSOLVED PARTY SAUCE</span><h3>ซอสสลายตี้ · Day ${dissolveDay}</h3><p>เก็บสิ่งที่เกิดขึ้นตามจริง โดยไม่เรียกว่า Quest Clear</p><div class="xty-loop-actions"><button class="btn gold sm" id="downloadDissolveSauce">ดาวน์โหลดซอสสลายตี้ .md</button></div>`;
+      saucePanel.innerHTML = `<span class="label">ซอสตอนปิดสมุดก่อนจบ</span><h3>ซอสสลายสมุด · Day ${dissolveDay}</h3><p>เก็บสิ่งที่เกิดขึ้นตามจริง โดยไม่เรียกว่าปิดเล่มสำเร็จ</p><div class="xty-loop-actions"><button class="btn gold sm" id="downloadDissolveSauce">ดาวน์โหลดซอสสลายสมุด .md</button></div>`;
       document.getElementById('downloadDissolveSauce')?.addEventListener('click', () => downloadMarkdown(`XTY-Sauce-Dissolved-${safeName(party.name)}.md`, dissolveSauce(party)));
       return;
     }
@@ -236,9 +236,9 @@ function install() {
       existingEnding.textContent = state === 'COMPLETED' ? 'ดาวน์โหลด Final Sauce .md' : 'ดาวน์โหลด Ending .md';
     }
     const weekButtons = weekly.map(week => `<button class="btn ghost sm" data-week-sauce="${week}">Week ${week} Sauce .md</button>`).join('');
-    saucePanel.innerHTML = `<span class="label">PARTY SAUCE</span><h3>${duration > 7 ? 'ทุก 7 วันมีซอสประจำสัปดาห์' : 'จบ Quest แล้วรับ Final Sauce'}</h3>` +
-      `<p>${duration > 7 ? `ปลดแล้ว ${weekly.length}/${Math.floor(duration / 7)} สัปดาห์ · ตอนจบยังมี Final Sauce อีกไฟล์` : `${duration} วัน · ซอสตอนจบเก็บเรื่องที่เกิดขึ้นจริงในตี้`}</p>` +
-      (weekButtons ? `<div class="xty-sauce-list">${weekButtons}</div>` : `<p>${completion.day < duration ? 'ยังเดินทางอยู่ · ทำต่อแล้วกลับมาเก็บซอสตอนจบ' : 'ถึงช่วงจบ Quest แล้ว'}</p>`);
+    saucePanel.innerHTML = `<span class="label">PARTY SAUCE</span><h3>${duration > 7 ? 'ทุก 7 วันมีซอสประจำสัปดาห์' : 'ปิดเล่มแล้วรับซอสสุดท้าย'}</h3>` +
+      `<p>${duration > 7 ? `ปลดแล้ว ${weekly.length}/${Math.floor(duration / 7)} สัปดาห์ · ตอนจบยังมี Final Sauce อีกไฟล์` : `${duration} วัน · ซอสตอนจบเก็บเรื่องที่เกิดขึ้นจริงในสมุด`}</p>` +
+      (weekButtons ? `<div class="xty-sauce-list">${weekButtons}</div>` : `<p>${completion.day < duration ? 'ยังเดินทางอยู่ · ทำต่อแล้วกลับมาเก็บซอสตอนจบ' : 'ถึงช่วงปิดเล่มแล้ว'}</p>`);
     saucePanel.querySelectorAll('[data-week-sauce]').forEach(button => button.addEventListener('click', () => {
       const week = Number(button.dataset.weekSauce);
       downloadMarkdown(`XTY-Weekly-Sauce-W${week}-${safeName(party.name)}.md`, weeklySauce(party, week));

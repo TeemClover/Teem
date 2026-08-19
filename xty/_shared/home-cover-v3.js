@@ -45,7 +45,7 @@ function allMyParties() {
 }
 
 /* The large Home carousel is OWNER space only. Joined parties belong in
-   the lower "ตี้ที่เป็นสมาชิก" list and must never appear as a hero card. */
+   the lower "สมุดที่คุณเข้าร่วม" list and must never appear as a hero card. */
 function partiesForHome(entries = allMyParties()) {
   return entries.filter(entry => entry.owned);
 }
@@ -62,7 +62,7 @@ function coverMarkup(party) {
      party chose to be remembered by. */
   if (party.coverType === 'image' && party.coverValue) {
     return `<div class="xty-home-cover xty-home-image-cover">`
-      + `<img src="${esc(party.coverValue)}" alt="ปกฉากจบของ ${esc(party.name || 'ตี้')}" loading="lazy" decoding="async">`
+      + `<img src="${esc(party.coverValue)}" alt="ปกฉากจบของ ${esc(party.name || 'สมุด')}" loading="lazy" decoding="async">`
       + '</div>';
   }
 
@@ -159,15 +159,15 @@ function slideMarkup(entry, total) {
   const done = committedToday(party).size;
   const members = Array.isArray(party.members) ? party.members.length : 0;
   const terminal = !isActiveParty(party);
-  const badge = terminal ? terminalLabel(party) : 'หัวตี้';
+  const badge = terminal ? terminalLabel(party) : 'เจ้าของสมุด';
   return `<article class="xty-party-slide${total === 1 ? ' single' : ''}" data-code="${esc(party.code)}">`
     + `<div class="card main-party">`
     + coverMarkup(party)
     + `<div class="xty-party-copy"><span class="party-state">${esc(badge)}</span>`
     + `<h2>${esc(party.name)}</h2>`
     + `<p class="whisper" style="margin:0">${esc(party.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
-    + `<p class="whisper">${done}/${members} Commit วันนี้</p>`
-    + `<a class="btn gold sm" href="/xty/p/?c=${encodeURIComponent(party.code)}">${terminal ? 'ดู Ending' : 'เข้าตี้ / Commit'}</a>`
+    + `<p class="whisper">${done}/${members} ลงชื่อวันนี้</p>`
+    + `<a class="btn gold sm" href="/xty/p/?c=${encodeURIComponent(party.code)}">${terminal ? 'ดูฉากจบ' : 'เข้าร่วมสมุด / ลงชื่อ'}</a>`
     + `</div></div></article>`;
 }
 
@@ -201,7 +201,7 @@ function sync() {
 
   rendering = true;
   const total = entries.length;
-  host.innerHTML = `<div class="xty-party-carousel${total > 1 ? ' multiple' : ''}" aria-label="ตี้ที่คุณเป็นหัวตี้ · ปัดซ้ายขวาเพื่อดูตี้อื่น">`
+  host.innerHTML = `<div class="xty-party-carousel${total > 1 ? ' multiple' : ''}" aria-label="สมุดที่คุณเป็นเจ้าของสมุด · ปัดซ้ายขวาเพื่อดูสมุดอื่น">`
     + entries.map(entry => slideMarkup(entry, total)).join('')
     + '</div>';
   lastSignature = signature;

@@ -1,4 +1,13 @@
 import { getProfile } from './store.js';
+import { endingPlan } from './ending-plan.js';
+
+function payoutOf(days) {
+  const plan = endingPlan(days);
+  const cover = 'ปกปิดท้าย 3 แบบ เลือก 1';
+  return plan.episodes
+    ? `ตอนจบได้ ${plan.episodes} ตอน + ${cover}`
+    : `ตอนจบได้แค่${cover} · สั้นเกินกว่าจะสรุปเรื่อง เล่มนี้จะจบแบบยังไม่จบ`;
+}
 
 (function installDurationGate() {
   if (typeof window === 'undefined' || !/^\/xty\/new\/?$/.test(location.pathname)) return;
@@ -30,6 +39,7 @@ import { getProfile } from './store.js';
       button.setAttribute('role', 'radio');
       button.setAttribute('aria-checked', days === selected ? 'true' : 'false');
       button.innerHTML = `<b>${days}</b><small>วัน</small>`;
+      button.setAttribute('aria-label', `${days} วัน · ${payoutOf(days)}`);
       button.addEventListener('click', () => {
         selected = days;
         window.__xtyDurationOverride = days;
@@ -38,20 +48,32 @@ import { getProfile } from './store.js';
           node.classList.toggle('picked', on);
           node.setAttribute('aria-checked', on ? 'true' : 'false');
         });
+        renderPayout();
       });
       box.appendChild(button);
       return button;
     });
 
+    /* Length is not just how long the book runs — it is how much ending the
+       book earns. Saying that at the moment of choosing is the only place it
+       can change the choice. */
+    const payout = document.createElement('p');
+    payout.className = 'hint';
+    payout.style.margin = '10px 0 0';
+    payout.id = 'durationPayout';
+    box.insertAdjacentElement('afterend', payout);
+    const renderPayout = () => { payout.textContent = `เลือก ${selected} วัน · ${payoutOf(selected)}`; };
+    renderPayout();
+
     const note = document.createElement('p');
     note.className = 'hint';
     note.style.margin = '10px 0 0';
     note.textContent = whiteCatRoute
-      ? 'เส้นแมวขาวเป็น Quest 28 วัน · Route นี้เลือกช่วงสั้นกว่านี้ไม่ได้'
+      ? 'เส้นแมวขาวเป็นเล่ม 28 วัน · เส้นนี้เลือกช่วงสั้นกว่านี้ไม่ได้'
       : (level >= 2
-        ? `LEVEL ${level} · ปลดตี้ 14 และ 28 วันแล้ว`
+        ? `LEVEL ${level} · ปลดสมุด 14 และ 28 วันแล้ว`
         : 'LEVEL 1 · เริ่มได้ที่ 3 หรือ 7 วัน · LEVEL 2 จะปลด 14 และ 28 วัน');
-    box.insertAdjacentElement('afterend', note);
+    payout.insertAdjacentElement('afterend', note);
   };
 
   setTimeout(install, 0);

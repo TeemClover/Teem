@@ -125,10 +125,10 @@ async function captureV2(req) {
 }
 
 function creationLabel(alias, level, cover) {
-  const who = cleanId(alias, 24) || 'หัวตี้';
-  if (level <= 1) return `${who} สร้างตี้ ด้วยการ์ดตัวละคร ${cover.characterName || 'ของตัวเอง'}`;
-  if (cover.type === 'card_back') return `${who} สร้างตี้ ด้วยหลังการ์ด myClover`;
-  return `${who} สร้างตี้ ด้วยการ์ด ${cover.name}`;
+  const who = cleanId(alias, 24) || 'เจ้าของสมุด';
+  if (level <= 1) return `${who} เปิดสมุดด้วยการ์ดตัวละคร ${cover.characterName || 'ของตัวเอง'}`;
+  if (cover.type === 'card_back') return `${who} เปิดสมุดด้วยหลังการ์ด myClover`;
+  return `${who} เปิดสมุดด้วยการ์ด ${cover.name}`;
 }
 
 export async function handleCreatePartyV3(req, res) {

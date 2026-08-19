@@ -2,6 +2,18 @@ export const XTY_TIMEZONE = 'Asia/Bangkok';
 export const XTY_TIMEZONE_OFFSET_MINUTES = 7 * 60;
 export const XTY_DEFAULT_DURATION_DAYS = 7;
 
+/* A day's message is meant to be readable in a glance, so the whole book
+   stays catchable-up in a minute and never accrues reading debt. 120 is the
+   locked product number, not a storage limit — the column is TEXT. The client
+   shows a counter against the same constant; both sides must agree, so this
+   is the one place it is written down. */
+export const MESSAGE_MAX_CHARS = 120;
+
+/* The episode/cover ladder lives in xty/_shared so the page and the server
+   cut the same book the same way. Re-exported here because this is where
+   the rest of the party rules are looked up. */
+export { COVER_CANDIDATES, EPISODE_DAYS, endingPlan, episodeOfDay } from '../../xty/_shared/ending-plan.js';
+
 function validDate(value, fallback = new Date()) {
   const date = value instanceof Date ? new Date(value) : new Date(value || fallback);
   return Number.isFinite(date.getTime()) ? date : new Date(fallback);
