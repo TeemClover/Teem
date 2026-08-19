@@ -1,4 +1,4 @@
-import { getParty, committedToday } from './store.js';
+import { getParty } from './store.js';
 import { PET_BY_ID } from './pets.js';
 import { resolveMemberAvatar } from './card-picker.js';
 import { cardById, cardNameTh } from './cards.js';
@@ -23,17 +23,15 @@ function injectStyle() {
   const style = document.createElement('style');
   style.id = 'xty-pet-seat-v2-style';
   style.textContent = `
-    /* The table is six literal 63×88 card spaces. Nothing in the grid gets
-       to grow taller just because it contains a name or a status. */
+    /* Six literal 63×88 card spaces. A Book cover is NOT a person's
+       character identity. Human seats always render member.avatar only. */
     #seats.party-table > *{
       width:100%;
       min-width:0;
       aspect-ratio:var(--xty-card-aspect)!important;
     }
 
-    /* If a Collection card is equipped, the card itself IS the seat. Keep
-       the frame that belongs to the card and do not add a second lead/pet
-       colour border around it. Name and state are printed over the art. */
+    /* Collection skin: the card artwork itself fills the human card slot. */
     #seats .xty-full-card-seat{
       position:relative;
       display:block;
@@ -58,82 +56,74 @@ function injectStyle() {
       height:100%!important;
       object-fit:cover!important;
     }
-    #seats .xty-full-card-seat .xty-seat-name,
-    #seats .xty-full-card-seat .xty-seat-state{
-      position:absolute;
-      right:7px;
-      left:7px;
-      z-index:8;
-      pointer-events:none;
-      color:#3E332C;
-      text-align:center;
-      text-shadow:
-        0 1px 0 rgba(255,254,248,.98),
-        1px 0 0 rgba(255,254,248,.95),
-        -1px 0 0 rgba(255,254,248,.95),
-        0 -1px 0 rgba(255,254,248,.95),
-        0 2px 5px rgba(255,254,248,.86);
-    }
-    #seats .xty-full-card-seat .xty-seat-name{
-      top:8px;
+
+    /* Starter human: source art is intentionally a square portrait inside
+       the same 63×88 card shell. Do not stretch it into fake full-art. */
+    #seats .xty-starter-member-seat{
+      position:relative;
+      display:block;
       overflow:hidden;
-      font-size:clamp(10px,3vw,13px);
-      font-weight:900;
-      line-height:1.18;
-      text-overflow:ellipsis;
-      white-space:nowrap;
+      padding:0!important;
+      border:1px solid var(--xty-border)!important;
+      border-radius:14px;
+      background:var(--xty-surface)!important;
+      box-shadow:none!important;
     }
-    #seats .xty-full-card-seat .xty-seat-state{
-      bottom:7px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:1px;
-      font-size:clamp(8px,2.4vw,10px);
-      font-weight:900;
-      line-height:1.12;
+    #seats .xty-starter-member-seat .av{
+      position:absolute;
+      left:50%;top:50%;
+      width:68%;height:auto;
+      aspect-ratio:1;
+      display:grid;place-items:center;
+      transform:translate(-50%,-50%);
     }
-    #seats .xty-full-card-seat .xty-seat-state b{
-      color:var(--xty-primary);
-      font-size:clamp(14px,4vw,18px);
-      line-height:1;
-      text-shadow:
-        0 1px 0 rgba(255,254,248,1),
-        1px 0 0 rgba(255,254,248,1),
-        -1px 0 0 rgba(255,254,248,1),
-        0 -1px 0 rgba(255,254,248,1);
+    #seats .xty-starter-member-seat .av img{
+      width:100%;height:100%;
+      object-fit:contain;
+      border-radius:12px;
     }
 
-    /* Starter PET stays a portrait, not a fake card. */
+    /* Starter companion can use the full body because it has no Signature
+       state. It still occupies the same card template as the other seats. */
     .xty-pet-companion-seat{
       position:relative;
       overflow:hidden;
-      border:2px dashed color-mix(in srgb,var(--xty-green) 72%,var(--xty-ink));
-      background:linear-gradient(180deg,#F4FBEF 0%,#E8F7E9 100%);
+      padding:0!important;
+      border:1px solid var(--xty-border)!important;
+      border-radius:14px;
+      background:var(--xty-surface)!important;
       box-shadow:3px 4px 0 rgba(62,51,44,.08);
     }
-    .xty-pet-companion-seat .slot-label{
-      color:var(--xty-primary);
-      letter-spacing:.12em;
-    }
     .xty-pet-companion-seat .av{
-      width:88%;
-      margin-top:10px;
-      aspect-ratio:1;
+      position:absolute;
+      left:50%;top:50%;
+      width:86%;height:72%;
+      display:grid;place-items:center;
+      transform:translate(-50%,-50%);
     }
     .xty-pet-companion-seat .av img{
-      width:100%;
-      height:100%;
+      width:100%;height:100%;
       object-fit:contain;
       filter:drop-shadow(0 3px 0 rgba(62,51,44,.08));
     }
-    .xty-pet-companion-seat .al{
-      margin-top:3px;
-      font-size:clamp(11px,3.2vw,14px);
-    }
-    .xty-pet-companion-seat .rl{
-      margin-top:3px;
-      color:var(--xty-primary);
+
+    /* Name plate: readable over both bright and dark artwork without hiding
+       the card illustration. This deliberately overrides the earlier nearly
+       opaque white pill from the first TeamBook pass. */
+    #seats .tb-card-name{
+      background:linear-gradient(90deg,
+        rgba(255,254,248,.24) 0%,
+        rgba(255,254,248,.54) 20%,
+        rgba(255,254,248,.54) 80%,
+        rgba(255,254,248,.24) 100%)!important;
+      border:1px solid rgba(255,255,255,.42)!important;
+      box-shadow:0 1px 0 rgba(62,51,44,.08),0 2px 10px rgba(255,254,248,.16)!important;
+      text-shadow:
+        0 1px 1px rgba(255,255,255,.98),
+        1px 0 2px rgba(255,255,255,.82),
+        -1px 0 2px rgba(255,255,255,.82)!important;
+      backdrop-filter:blur(4px) saturate(.9)!important;
+      -webkit-backdrop-filter:blur(4px) saturate(.9)!important;
     }
   `;
   document.head.appendChild(style);
@@ -151,30 +141,50 @@ function schedule() {
   queueMicrotask(sync);
 }
 
-function fullCardSeat(card, { name = '', role = '', mark = '', pet = false } = {}) {
+function fullCardSeat(card, signature) {
   const tile = document.createElement('div');
   tile.className = 'seat-card-wrap xty-full-card-seat';
-  tile.dataset.fullCardSeat = [card.cardId, name, role, mark, pet ? 'pet' : 'member'].join('|');
-  tile.innerHTML = cardMarkup(card, { role: pet ? 'npc' : '' })
-    + `<span class="xty-seat-name">${esc(name)}</span>`
-    + `<span class="xty-seat-state"><span>${esc(role)}</span>${mark ? `<b>${esc(mark)}</b>` : ''}</span>`;
+  tile.dataset.characterSeat = signature;
+  tile.innerHTML = cardMarkup(card);
   return tile;
 }
 
-function memberCardFor(party, member) {
-  if (!member) return null;
-  if (member.role === 'lead') {
-    /* A selected XTY Party Cover wins over the member's personal avatar.
-       Image, CORE7 and card-back covers are handled by the cover layer and
-       must not be replaced by the profile avatar here. */
-    if (party.coverType === 'card' || party.leadCardId) {
-      const leadCard = cardById(party.leadCardId);
-      if (leadCard) return leadCard;
-    }
-    if (['image', 'core7_card', 'card_back'].includes(party.coverType)) return null;
+function starterMemberSeat(member, resolved) {
+  const tile = document.createElement('div');
+  tile.className = 'seat xty-card xty-starter-member-seat';
+  tile.dataset.characterSeat = `starter|${member.userId}|${member.avatar}|${member.avatarColor || ''}`;
+  const art = resolved?.speciesArt || '';
+  tile.innerHTML = `<div class="av member-avatar" data-color="${esc(member.avatarColor || 'green')}">`
+    + (art ? `<img src="${esc(art)}" alt="" loading="eager" decoding="async">` : esc(member.avatar || '🍀'))
+    + '</div>';
+  return tile;
+}
+
+function memberCharacter(member) {
+  const resolved = resolveMemberAvatar(member?.avatar);
+  if (!resolved) return { resolved: null, card: null };
+  const card = resolved.cardId ? cardById(resolved.cardId) : null;
+  return { resolved, card };
+}
+
+function syncHumanSeat(seats, member, index) {
+  const current = seats.children[index];
+  if (!member || !current) return;
+  const { resolved, card } = memberCharacter(member);
+
+  /* Critical TeamBook rule: p.coverType / p.leadCardId never participate in
+     this decision. The owner is still a person and therefore shows the
+     owner's selected character exactly like everyone else. */
+  if (card) {
+    const signature = `card|${member.userId}|${card.cardId}`;
+    if (current.dataset?.characterSeat === signature) return;
+    current.replaceWith(fullCardSeat(card, signature));
+    return;
   }
-  const resolved = resolveMemberAvatar(member.avatar);
-  return resolved?.cardId ? cardById(resolved.cardId) : null;
+
+  const signature = `starter|${member.userId}|${member.avatar}|${member.avatarColor || ''}`;
+  if (current.dataset?.characterSeat === signature) return;
+  current.replaceWith(starterMemberSeat(member, resolved));
 }
 
 function sync() {
@@ -184,55 +194,39 @@ function sync() {
   const seats = document.getElementById('seats');
   if (!party || !seats) return;
 
-  const done = committedToday(party);
-  const lead = party.members.find(m => m.role === 'lead') || null;
-  const others = party.members.filter(m => m.role !== 'lead');
-  const slots = [lead, others[0] || null, others[1] || null, others[2] || null, others[3] || null];
+  const owner = party.members.find(member => member.role === 'lead') || null;
+  const others = party.members.filter(member => member.role !== 'lead');
+  const slots = [owner, others[0] || null, others[1] || null, others[2] || null, others[3] || null];
 
   syncing = true;
   try {
     slots.forEach((member, index) => {
-      if (!member) return;
-      const current = seats.children[index];
-      if (!current) return;
-      const card = memberCardFor(party, member);
-      if (!card) return; // starter/profile portrait remains the standard seat
-      const mark = done.has(member.userId) ? '✓' : '○';
-      const role = member.role === 'lead' ? 'หัวตี้' : 'สมาชิก';
-      const signature = [card.cardId, member.alias, role, mark, 'member'].join('|');
-      if (current.dataset?.fullCardSeat === signature) return;
-      current.replaceWith(fullCardSeat(card, { name: member.alias, role, mark }));
+      if (member) syncHumanSeat(seats, member, index);
     });
 
-    /* A Collection card chosen for PET/NPC also occupies the whole sixth
-       card slot. A built-in starter PET remains a portrait tile. */
+    /* Companion Collection skin: full-art. No Signature state. */
     const npc = cardById(party.npcCardId);
     const currentPet = seats.children[5];
     if (npc && currentPet) {
-      const name = cardNameTh(npc);
-      const signature = [npc.cardId, name, 'เพื่อนประจำตี้', '', 'pet'].join('|');
-      if (currentPet.dataset?.fullCardSeat !== signature) {
-        currentPet.replaceWith(fullCardSeat(npc, {
-          name,
-          role: 'เพื่อนประจำตี้',
-          pet: true,
-        }));
+      const signature = `companion-card|${npc.cardId}`;
+      if (currentPet.dataset?.characterSeat !== signature) {
+        currentPet.replaceWith(fullCardSeat(npc, signature));
       }
       return;
     }
 
+    /* Built-in Starter companion: full-body portrait. */
     const pet = party.petId ? PET_BY_ID[party.petId] : null;
     if (!pet || !currentPet) return;
-    if (currentPet.dataset?.petSeatV2 === party.petId) return;
-    if (!currentPet.querySelector('.companion-card') && !currentPet.classList.contains('pet-card')) return;
+    const signature = `companion-starter|${party.petId}`;
+    if (currentPet.dataset?.characterSeat === signature) return;
 
     const tile = document.createElement('div');
     tile.className = 'seat xty-card pet-card xty-pet-companion-seat';
-    tile.dataset.petSeatV2 = party.petId;
-    tile.innerHTML = `<span class="slot-label">🐾 PET</span>`
-      + `<div class="av">${pet.art ? `<img src="${esc(pet.art)}" alt="" width="256" height="256" loading="eager" decoding="async">` : esc(pet.emoji || '🐾')}</div>`
-      + `<div class="al">${esc(pet.nameTh)}</div>`
-      + `<div class="rl">เพื่อนประจำตี้</div>`;
+    tile.dataset.characterSeat = signature;
+    tile.innerHTML = `<div class="av">${pet.art
+      ? `<img src="${esc(pet.art)}" alt="" width="256" height="256" loading="eager" decoding="async">`
+      : esc(pet.emoji || '🐾')}</div>`;
     currentPet.replaceWith(tile);
   } finally {
     syncing = false;
