@@ -1,4 +1,4 @@
-/* XIRCLE × myClover XTY — unified v5 interactions
+/* XIRCLE × White Cat Care — unified v5 interactions
    Reliability rule: animation is enhancement only. Core navigation and copy must survive
    missing state/analytics/assets and partial deployments. */
 (function(){
@@ -154,7 +154,7 @@
     }else{
       qsa('[data-whitecat-link]').forEach(function(a){
         var h=safeState(function(s){return s.getXtyHandoff&&s.getXtyHandoff()});
-        if(h){a.href='/xircle/care/party/?mode=join';a.textContent='แมวขาว · เข้าตี้ '+h.partyCode}
+        if(h){a.href='/xircle/care/party/?mode=join';a.textContent='เข้าสมุดแมวขาว '+h.partyCode}
       });
     }
 
