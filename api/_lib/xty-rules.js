@@ -9,6 +9,11 @@ export const XTY_DEFAULT_DURATION_DAYS = 7;
    is the one place it is written down. */
 export const MESSAGE_MAX_CHARS = 120;
 
+/* The episode/cover ladder lives in xty/_shared so the page and the server
+   cut the same book the same way. Re-exported here because this is where
+   the rest of the party rules are looked up. */
+export { COVER_CANDIDATES, EPISODE_DAYS, endingPlan, episodeOfDay } from '../../xty/_shared/ending-plan.js';
+
 function validDate(value, fallback = new Date()) {
   const date = value instanceof Date ? new Date(value) : new Date(value || fallback);
   return Number.isFinite(date.getTime()) ? date : new Date(fallback);

@@ -239,7 +239,10 @@ test('Ending Markdown is portable and never leaks member ids', () => {
     ],
   }, { generatedAt: '2026-08-05T00:00:00.000Z' });
   assert.match(ending, /# TeamBook · ปิดเล่ม/);
-  assert.match(ending, /## 4-Panel Comic Prompt/);
+  /* Seven days is one episode, and every finished book gets one closing cover. */
+  assert.match(ending, /## ตอนที่ 1 — วันที่ 1–7/);
+  assert.match(ending, /## ปกปิดท้าย/);
+  assert.doesNotMatch(ending, /## ตอนที่ 2/);
   assert.match(ending, /## Activity Preset Context/);
   assert.match(ending, /Preset: เดิน \(walk\)/);
   assert.match(ending, /เริ่มจากก้าวเล็ก/);
