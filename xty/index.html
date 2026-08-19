@@ -65,10 +65,10 @@
       <img class="welcome-logo" src="/xty/assets/brand/teambook-icon-512.png" alt="TeamBook" width="512" height="512">
       <p class="kicker">สมุดกลุ่มมีชีวิต</p>
       <h1 class="title">ออกไปทำของจริง<br>แล้วกลับมาลงชื่อ</h1>
-      <div class="welcome-lines" aria-label="วิธีเล่นสั้น ๆ">
+      <div class="welcome-lines" aria-label="วิธีใช้สั้น ๆ">
         <span>เปิดสมุด</span><span>ทำของจริง</span><span>กลับมาลงชื่อ</span>
       </div>
-      <button class="btn gold" id="startButton">เริ่มเล่น</button>
+      <button class="btn gold" id="startButton">เริ่มเขียนสมุด</button>
       <p class="label" style="margin:20px 0 8px">มีรหัสสมุดแล้ว</p>
       <div class="quick-code field" style="margin:0">
         <input id="quickCode" inputmode="numeric" maxlength="5" placeholder="00000" aria-label="รหัสสมุด 5 หลัก">
@@ -204,7 +204,7 @@ function renderGate() {
   const startButton = $('startButton');
 
   const validQuickCode = () => /^\d{5}$/.test(quickCode.value || '') ? quickCode.value : '';
-  const syncWelcomeCta = () => { startButton.textContent = validQuickCode() ? 'เข้าร่วมสมุด' : 'เริ่มเล่น'; };
+  const syncWelcomeCta = () => { startButton.textContent = validQuickCode() ? 'เข้าร่วมสมุด' : 'เริ่มเขียนสมุด'; };
   const showIdentity = (code = '') => {
     nextCode = /^\d{5}$/.test(code) ? code : '';
     $('welcomeStep').hidden = true;

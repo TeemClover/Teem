@@ -310,7 +310,7 @@ export function ownedCardIds(profile = getProfile()) {
    stage. These codes change the local/account profile, never Party state. */
 export function applyCollectionDebugCode(value) {
   const profile = getProfile();
-  if (!profile) return { ok: false, error: 'NO_PROFILE', message: 'ยังไม่มีโปรไฟล์ XTY' };
+  if (!profile) return { ok: false, error: 'NO_PROFILE', message: 'ยังไม่มีโปรไฟล์ TeamBook' };
   const code = String(value || '').trim().toLowerCase();
   const at = now();
   if (code === 'getallitem') {
@@ -1371,7 +1371,7 @@ Create a landscape postcard from the ending of “${safeLine(party.name)}”: on
 ---
 
 นำไฟล์นี้ไปให้ AI ที่คุณใช้ แล้วพิมพ์ว่า: **“ทำการ์ตูน 4 ช่องจากไฟล์นี้”**
-XTY สร้างซอสตอนจบให้ แต่ไม่สร้างหรือขายภาพสุ่มในแอป
+TeamBook สร้างซอสตอนปิดเล่มให้ แต่ไม่สร้างหรือขายภาพสุ่มในแอป
 `;
 }
 
