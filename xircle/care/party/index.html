@@ -41,18 +41,20 @@
 <script>
 (function(){try{
   var h=window.XState&&XState.getXtyHandoff();
-  var title=document.getElementById('partyTitle'),lede=document.getElementById('partyLede'),actions=document.getElementById('partyActions'),k=document.getElementById('partyKicker'),bottom=document.getElementById('bottomAction');
+  var title=document.getElementById('partyTitle'),lede=document.getElementById('partyLede'),actions=document.getElementById('partyActions'),k=document.getElementById('partyKicker'),bottom=document.getElementById('bottomAction'),art=document.getElementById('partyHeroArt');
   if(window.XState){XState.setLocal('whiteCatIntroSeen',true);XState.renderProgressNav&&XState.renderProgressNav();}
   if(h){
     k.textContent='คำชวน · สมุด '+h.partyCode;
     title.innerHTML='มีคนชวนคุณ<br>ทำ 1 อย่างไปด้วยกัน';
     lede.innerHTML='28 วัน · ไม่ต้องทำคนเดียว<br><strong>จะเข้าสมุดนี้ หรือเปิดสมุดของตัวเองก็ได้</strong>';
     actions.innerHTML='<a class="xp-btn gold" href="/xty/join/?c='+encodeURIComponent(h.partyCode)+'">เข้าสมุด '+h.partyCode+' →</a><a class="xp-btn ghost" href="/xty/new/?template=xircle_xvisor">เปิดสมุดของฉันเอง</a>';
+    if(art){art.setAttribute('data-art-src','/xircle/assets/v5/xircle-party-join-hero.webp');art.src='/xircle/assets/v5/xircle-party-join-hero.webp?v=20260819-notebook';art.hidden=false;}
     bottom.href='/xty/join/?c='+encodeURIComponent(h.partyCode);bottom.textContent='เข้าสมุด '+h.partyCode+' →';
   }else{
     k.textContent='สมุดแมวขาว';
     lede.innerHTML='เปิดสมุดของตัวเองได้เลย<br><strong>หรือถ้ามีรหัสสมุดอยู่แล้ว ก็เลือกเข้าสมุดได้</strong>';
     actions.innerHTML='<a class="xp-btn gold" href="/xty/new/?template=xircle_xvisor">เลือกสิ่งที่จะทำ แล้วเปิดสมุด →</a><a class="xp-btn ghost" href="/xty/join/">มีรหัสสมุด · เข้าสมุด</a>';
+    if(art){art.setAttribute('data-art-src','/xircle/assets/v5/xircle-party-create-hero.webp');}
   }
 }catch(e){}})();
 </script>
