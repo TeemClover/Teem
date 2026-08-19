@@ -175,43 +175,6 @@
     font-size:13px!important;
     font-weight:900!important;
   }
-
-  /* The current connected-loop artwork still contains the previous White Cat
-     name baked into node 4. Cover only that title band with live HTML copy so
-     visitors never see stale product language while the artwork is regenerated. */
-  .xp-one-day-story [data-scene="S9"] .xp-art.art-ready{
-    position:relative!important;
-  }
-  .xp-one-day-story [data-scene="S9"] .xp-art.art-ready:before{
-    content:"";
-    position:absolute;
-    z-index:5;
-    left:39.5%;
-    top:71.4%;
-    width:22%;
-    height:7.2%;
-    border-radius:9px;
-    background:linear-gradient(180deg,rgba(12,31,25,.98),rgba(8,23,19,.98));
-    border:1px solid rgba(229,196,119,.22);
-    box-shadow:0 4px 14px rgba(0,0,0,.24);
-    pointer-events:none;
-  }
-  .xp-one-day-story [data-scene="S9"] .xp-art.art-ready:after{
-    content:"สมุดแมวขาว";
-    position:absolute;
-    z-index:6;
-    left:50.5%;
-    top:74.9%;
-    transform:translate(-50%,-50%);
-    color:#ead09a;
-    font-size:clamp(8px,2.35vw,11px);
-    line-height:1;
-    font-weight:900;
-    letter-spacing:.01em;
-    white-space:nowrap;
-    text-shadow:0 1px 5px rgba(0,0,0,.65);
-    pointer-events:none;
-  }
 }
 
 @media (max-height:680px) and (max-width:780px){
