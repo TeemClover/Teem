@@ -1,13 +1,20 @@
 /* Xircle mobile route tune — 2026-08-19
    One-day and X-VISOR routes use a stable action rail: answers may reveal
-   more copy, but the main next button never changes vertical position. */
+   more copy, but the main next button never changes vertical position.
+   A few story images are intentionally allowed to crop vertically on phones
+   when the meaningful content remains intact. */
 
 @media (max-width:780px){
-  .xp-one-day-story .xp-copy,
-  .xp-xvisor-story .xp-copy{
+  .xp-one-day-story .xp-copy{
     justify-content:flex-start!important;
     padding-top:12px!important;
-    padding-bottom:60px!important;
+    padding-bottom:62px!important;
+    overflow:hidden!important;
+  }
+  .xp-xvisor-story .xp-copy{
+    justify-content:flex-start!important;
+    padding-top:10px!important;
+    padding-bottom:82px!important;
     overflow:hidden!important;
   }
 
@@ -28,10 +35,14 @@
     line-height:1.42!important;
   }
 
+  /* These are wayfinding labels, not footnotes. Keep them readable. */
   .xp-one-day-story .xp-kicker,
   .xp-xvisor-story .xp-kicker{
-    font-size:9px!important;
-    margin-bottom:6px!important;
+    font-size:12px!important;
+    line-height:1.45!important;
+    font-weight:850!important;
+    letter-spacing:.07em!important;
+    margin-bottom:7px!important;
   }
 
   .xp-one-day-story .xp-choice b,
@@ -47,15 +58,21 @@
     min-height:42px!important;
   }
 
-  /* Reserve one answer slot before the answer appears. This removes the
-     visual jump caused by adding the explanation block after a choice. */
-  .xp-one-day-story .xp-reveal,
-  .xp-xvisor-story [data-sim-output]{
+  /* Reserve answer space before it appears. X-VISOR needs a little more room
+     because the boundary explanation can run to two lines. */
+  .xp-one-day-story .xp-reveal{
     box-sizing:border-box!important;
     min-height:54px!important;
     max-height:64px!important;
     overflow:hidden!important;
     flex:0 0 54px!important;
+  }
+  .xp-xvisor-story [data-sim-output]{
+    box-sizing:border-box!important;
+    min-height:68px!important;
+    max-height:74px!important;
+    overflow:hidden!important;
+    flex:0 0 68px!important;
   }
   .xp-one-day-story .xp-reveal.xp-hidden,
   .xp-xvisor-story [data-sim-output].xp-hidden{
@@ -67,12 +84,19 @@
 
   /* Every scene owns the same bottom action rail. Copy above it can wrap to
      a different number of lines without moving the primary CTA. */
-  .xp-one-day-story .xp-copy>.xp-actions,
-  .xp-xvisor-story .xp-copy>.xp-actions{
+  .xp-one-day-story .xp-copy>.xp-actions{
     position:absolute!important;
     left:2px!important;
     right:2px!important;
     bottom:2px!important;
+    margin:0!important;
+    z-index:8!important;
+  }
+  .xp-xvisor-story .xp-copy>.xp-actions{
+    position:absolute!important;
+    left:2px!important;
+    right:2px!important;
+    bottom:7px!important;
     margin:0!important;
     z-index:8!important;
   }
@@ -90,6 +114,104 @@
     padding:7px 10px!important;
     text-align:left!important;
   }
+
+  /* O4/O5 artwork is atmospheric enough to crop vertically on phones. This
+     buys the copy/feedback rail the room it needs without hiding key meaning. */
+  .xp-xvisor-story [data-scene="O4"] .xp-art,
+  .xp-xvisor-story [data-scene="O5"] .xp-art{
+    height:clamp(220px,28svh,270px)!important;
+    min-height:0!important;
+    max-height:270px!important;
+    aspect-ratio:auto!important;
+    overflow:hidden!important;
+  }
+  .xp-xvisor-story [data-scene="O4"] .xp-art.art-ready>img,
+  .xp-xvisor-story [data-scene="O5"] .xp-art.art-ready>img,
+  .xp-xvisor-story [data-scene="O4"] .xp-art>img,
+  .xp-xvisor-story [data-scene="O5"] .xp-art>img{
+    width:100%!important;
+    height:100%!important;
+    max-height:none!important;
+    object-fit:cover!important;
+    object-position:center 50%!important;
+  }
+  .xp-xvisor-story [data-scene="O5"] .xp-loop{margin-top:5px!important}
+  .xp-xvisor-story [data-scene="O5"] .xp-lede{margin-top:7px!important}
+
+  /* Habit Score: the score owns the center. The name belongs with the meaning
+     on the right, where it stays readable instead of sitting inside the rings. */
+  .xp-one-day-story [data-scene="S6"] .xp-habit-center small{display:none!important}
+  .xp-one-day-story [data-scene="S6"] .xp-habit-center b{
+    margin:0!important;
+    font-size:34px!important;
+    line-height:1!important;
+  }
+  .xp-one-day-story [data-scene="S6"] .xp-habit-meaning:before{
+    content:"Habit Score";
+    display:block;
+    margin-bottom:2px;
+    color:var(--xp-cyan);
+    font-size:11px;
+    line-height:1.25;
+    font-weight:900;
+    letter-spacing:.045em;
+  }
+  .xp-one-day-story [data-scene="S6"] .xp-habit-meaning>strong{
+    font-size:15px!important;
+    line-height:1.28!important;
+  }
+  .xp-one-day-story [data-scene="S6"] .xp-habit-legend span,
+  .xp-one-day-story [data-scene="S6"] .xp-habit-legend span b{
+    font-size:9.5px!important;
+  }
+  .xp-one-day-story [data-scene="S6"] .xp-habit-meaning>small{
+    margin-top:5px!important;
+    font-size:9px!important;
+    line-height:1.4!important;
+    color:var(--xp-soft)!important;
+  }
+  .xp-one-day-story [data-scene="S6"] .xp-kicker{
+    color:var(--xp-cyan)!important;
+    font-size:13px!important;
+    font-weight:900!important;
+  }
+
+  /* The current connected-loop artwork still contains the previous White Cat
+     name baked into node 4. Cover only that title band with live HTML copy so
+     visitors never see stale product language while the artwork is regenerated. */
+  .xp-one-day-story [data-scene="S9"] .xp-art.art-ready{
+    position:relative!important;
+  }
+  .xp-one-day-story [data-scene="S9"] .xp-art.art-ready:before{
+    content:"";
+    position:absolute;
+    z-index:5;
+    left:39.5%;
+    top:71.4%;
+    width:22%;
+    height:7.2%;
+    border-radius:9px;
+    background:linear-gradient(180deg,rgba(12,31,25,.98),rgba(8,23,19,.98));
+    border:1px solid rgba(229,196,119,.22);
+    box-shadow:0 4px 14px rgba(0,0,0,.24);
+    pointer-events:none;
+  }
+  .xp-one-day-story [data-scene="S9"] .xp-art.art-ready:after{
+    content:"สมุดแมวขาว";
+    position:absolute;
+    z-index:6;
+    left:50.5%;
+    top:74.9%;
+    transform:translate(-50%,-50%);
+    color:#ead09a;
+    font-size:clamp(8px,2.35vw,11px);
+    line-height:1;
+    font-weight:900;
+    letter-spacing:.01em;
+    white-space:nowrap;
+    text-shadow:0 1px 5px rgba(0,0,0,.65);
+    pointer-events:none;
+  }
 }
 
 @media (max-height:680px) and (max-width:780px){
@@ -101,8 +223,10 @@
   }
   .xp-one-day-story .xp-lede,
   .xp-xvisor-story .xp-lede{font-size:13px!important}
-  .xp-one-day-story .xp-copy,
-  .xp-xvisor-story .xp-copy{padding-bottom:54px!important}
-  .xp-one-day-story .xp-reveal,
-  .xp-xvisor-story [data-sim-output]{min-height:48px!important;max-height:54px!important;flex-basis:48px!important}
+  .xp-one-day-story .xp-copy{padding-bottom:54px!important}
+  .xp-xvisor-story .xp-copy{padding-bottom:72px!important}
+  .xp-one-day-story .xp-reveal{min-height:48px!important;max-height:54px!important;flex-basis:48px!important}
+  .xp-xvisor-story [data-sim-output]{min-height:60px!important;max-height:64px!important;flex-basis:60px!important}
+  .xp-xvisor-story [data-scene="O4"] .xp-art,
+  .xp-xvisor-story [data-scene="O5"] .xp-art{height:clamp(190px,27svh,225px)!important}
 }
