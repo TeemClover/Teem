@@ -3,12 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test --experimental-test-module-mocks first-class/first-class.test.mjs api/_lib/pet-brain.test.mjs api/_lib/pet-wake.test.mjs api/_lib/pet-wake-scale.test.mjs api/_lib/pet-runtime-wiring.test.mjs api/_lib/pet-v1-standard.test.mjs api/_lib/xircle-knowledge.test.mjs api/_lib/xty-rules.test.mjs api/_lib/xty-admin-auth.test.mjs api/_lib/xty-admin-stats.test.mjs api/_lib/xty-bind.test.mjs api/_lib/xty-image.test.mjs xty/_shared/card-drop.test.mjs xty/_shared/card-shape.test.mjs xty/_shared/card-picker.test.mjs xty/_shared/image-compress.test.mjs xty/_shared/store.test.mjs",
-    "test:xty": "node --test --experimental-test-module-mocks api/_lib/pet-wake.test.mjs api/_lib/pet-wake-scale.test.mjs api/_lib/pet-runtime-wiring.test.mjs api/_lib/pet-v1-standard.test.mjs api/_lib/xircle-knowledge.test.mjs api/_lib/xty-rules.test.mjs api/_lib/xty-admin-auth.test.mjs api/_lib/xty-admin-stats.test.mjs api/_lib/xty-bind.test.mjs api/_lib/xty-image.test.mjs xty/_shared/card-drop.test.mjs xty/_shared/card-shape.test.mjs xty/_shared/card-picker.test.mjs xty/_shared/image-compress.test.mjs xty/_shared/store.test.mjs",
+    "test": "node --test --experimental-test-module-mocks first-class/first-class.test.mjs api/_lib/pet-brain.test.mjs api/_lib/pet-wake.test.mjs api/_lib/pet-wake-scale.test.mjs api/_lib/pet-runtime-wiring.test.mjs api/_lib/pet-v1-standard.test.mjs api/_lib/xircle-knowledge.test.mjs api/_lib/xty-rules.test.mjs api/_lib/xty-admin-auth.test.mjs api/_lib/xty-admin-stats.test.mjs api/_lib/xty-bind.test.mjs api/_lib/xty-image.test.mjs xty/_shared/card-drop.test.mjs xty/_shared/card-shape.test.mjs xty/_shared/card-picker.test.mjs xty/_shared/image-compress.test.mjs xty/_shared/store.test.mjs xty/_shared/data-epoch.test.mjs",
+    "test:xty": "node --test --experimental-test-module-mocks api/_lib/pet-wake.test.mjs api/_lib/pet-wake-scale.test.mjs api/_lib/pet-runtime-wiring.test.mjs api/_lib/pet-v1-standard.test.mjs api/_lib/xircle-knowledge.test.mjs api/_lib/xty-rules.test.mjs api/_lib/xty-admin-auth.test.mjs api/_lib/xty-admin-stats.test.mjs api/_lib/xty-bind.test.mjs api/_lib/xty-image.test.mjs xty/_shared/card-drop.test.mjs xty/_shared/card-shape.test.mjs xty/_shared/card-picker.test.mjs xty/_shared/image-compress.test.mjs xty/_shared/store.test.mjs xty/_shared/data-epoch.test.mjs",
     "test:first-class": "node --test first-class/first-class.test.mjs",
     "test:pet-brain": "node --test api/_lib/pet-brain.test.mjs api/_lib/pet-v1-standard.test.mjs api/_lib/xircle-knowledge.test.mjs",
     "test:pet-wake": "node --test --experimental-test-module-mocks api/_lib/pet-wake.test.mjs api/_lib/pet-runtime-wiring.test.mjs",
-    "reset:xty:test": "node scripts/reset-xty-test.mjs"
+    "reset:teambook": "node scripts/reset-teambook.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "0.117.1",

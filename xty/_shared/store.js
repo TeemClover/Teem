@@ -17,6 +17,38 @@ const K_TOKENS = 'mc_xty_tokens';
 
 export const XTY_PROFILE_KEY = K_PROFILE;
 
+/* TeamBook is local-first: a device keeps its own profile, its book
+   snapshots and its join tokens. Clearing the server therefore only does
+   half a reset — every browser that played before would come back holding
+   books the server no longer knows, and the app would spend its life
+   reconciling ghosts.
+
+   The epoch closes that gap. Bump it once whenever the server data is
+   wiped: each device notices the mismatch on its next load, drops its own
+   TeamBook state exactly once, and starts clean. It is deliberately not
+   tied to a deploy or a version number — a deploy is not a reset, and
+   bumping this on every release would throw away real people's books.
+
+   Nothing outside TeamBook is touched: the CORE7 collection and the
+   account session live under their own keys and survive. */
+const DATA_EPOCH = 1;
+const K_EPOCH = 'mc_tb_data_epoch';
+const EPOCH_KEYS = [
+  K_PROFILE, K_PARTIES, K_TOKENS,
+  'mc_xty_profile_ids', 'mc_xty_public_hide_full',
+];
+
+function applyDataEpoch() {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    const stored = Number(localStorage.getItem(K_EPOCH) || 0);
+    if (stored === DATA_EPOCH) return;
+    for (const key of EPOCH_KEYS) localStorage.removeItem(key);
+    localStorage.setItem(K_EPOCH, String(DATA_EPOCH));
+  } catch { /* private mode — the app still runs from memory */ }
+}
+applyDataEpoch();
+
 export const PARTY_MIN = 2;
 export const PARTY_MAX = 5;
 /* Absolute v0.4 caps. A new free profile starts at 1 owned slot; the
