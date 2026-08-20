@@ -137,11 +137,11 @@ function injectStyle() {
       -webkit-backdrop-filter:blur(6px) saturate(.92)!important;
     }
 
-    /* Companion role pill should stay clean: no white halo on the green text.
-       Blur is enough to separate it from the art behind it. */
+    /* Companion role pill stays shadow-free, but gets a denser paper layer
+       than the name plates so the green label remains readable over busy art. */
     #seats .tb-companion-label{
-      background:rgba(255,254,248,.20)!important;
-      border:1px solid rgba(255,255,255,.24)!important;
+      background:rgba(255,254,248,.58)!important;
+      border:1px solid rgba(255,255,255,.44)!important;
       box-shadow:none!important;
       text-shadow:none!important;
       backdrop-filter:blur(6px) saturate(.92)!important;
