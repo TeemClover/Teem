@@ -7,6 +7,7 @@
 import {
   behaviourMenu, decisionRules, groundingRules, outputContract, pronounRule, thinkingOrder,
 } from './constitution.js';
+import { presencePolicyPrompt } from './presence-policy.js';
 
 const AXIS_LABELS = Object.freeze({
   warmth: 'อบอุ่น', directness: 'ตรงไปตรงมา', humor: 'ตลก', sarcasm: 'ประชด',
@@ -71,7 +72,11 @@ export function buildPrompt({
   sauce, party, context, hour, trigger = 'scheduled', knowledge = '', transcript = '',
 }) {
   const roster = context.members.length
-    ? context.members.map(m => `- ${m.alias}${m.role === 'lead' ? ' (เจ้าของสมุด)' : ''}`).join('\n')
+    ? context.members.map(m => {
+        const role = m.role === 'lead' ? ' (หัวตี้)' : '';
+        const today = Number(m.postsToday || 0);
+        return `- ${m.alias}${role} · วันนี้มี message/commit ${today} รายการ`;
+      }).join('\n')
     : '- (ยังไม่มีคนในสมุด)';
 
   return [
@@ -84,7 +89,7 @@ export function buildPrompt({
     `วันนี้ลงชื่อได้เมื่อ: ${party.commit_rule || '(ยังไม่ได้ตั้ง — ห้ามตั้งให้เอง)'}`,
     `คนในสมุด ${context.members.length} คน:`,
     roster,
-    `รอบเวลา ${String(hour).padStart(2, '0')}:xx น. เวลาไทย · วันนี้ ลงชื่อ ${context.committed}/${context.members.length}`,
+    `รอบเวลา ${String(hour).padStart(2, '0')}:27 น. เวลาไทย · วันนี้ ลงชื่อ ${context.committed}/${context.members.length}`,
     '',
     transcript,
     '',
@@ -93,6 +98,8 @@ export function buildPrompt({
     behaviourMenu(),
     '',
     decisionRules(trigger),
+    '',
+    presencePolicyPrompt({ context, hour, trigger }),
     '',
     groundingRules({ hasKnowledgePack: !!knowledge }),
     pronounRule(sauce),
