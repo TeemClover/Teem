@@ -4,30 +4,25 @@ import {
 import {
   aiConfigured, hasPersona, isDirectedAtPet, readAndRespond,
 } from './_lib/pet-brain.js';
+import {
+  dailyPresenceRequired, presenceFallback, scheduledBubbleAllowance, shouldReadScheduled,
+} from './_lib/pet/presence-policy.js';
 import { AVATAR_BY_ID } from '../xty/_shared/avatars.js';
 import { PET_BY_ID } from '../xty/_shared/pets.js';
+
+/* A scheduled sweep is intentionally allowed to finish every live Party on
+   Vercel Pro instead of abandoning the tail of the zoo after a 45s budget. */
+export const config = { maxDuration: 300 };
 
 const ICT_OFFSET_MINUTES = 7 * 60;
 const ICT_OFFSET_MS = ICT_OFFSET_MINUTES * 60000;
 const WAKE_HOURS = [0, 6, 12, 18];
-const LOG_SLICE = 120;
-/* หนึ่งรอบต้องอ่าน "ทุกสมุดที่มีเหตุ" ไม่ใช่สุ่มบางสมุด
 
-   เวลาเกือบทั้งหมดของหนึ่งสมุดคือการนั่งรอโมเดลตอบ ไม่ใช่การประมวลผล
-   การวนทีละสมุดจึงเป็นการต่อคิวรอเปล่า ๆ — ทำพร้อมกันทีละกลุ่มทำให้ 100 สมุด
-   จบในเวลาที่เดิมใช้กับสิบกว่าสมุด
-
-   และมีงบเวลาไว้ด้วย: พองบใกล้หมดจะหยุด "เริ่ม" สมุดใหม่ สมุดที่ยังไม่ได้
-   เริ่มจะไม่ถูกจอง รอบถัดไปจึงหยิบไปทำได้ตามปกติ ดีกว่าถูกฆ่ากลางทาง
-   แล้วสมุดที่จองไว้เงียบหายไปหกชั่วโมงโดยไม่มีใครรู้
-
-   ค่าพวกนี้อ่านจาก env ตอนเรียกทุกครั้ง ไม่ใช่ตอนโหลดไฟล์ — ปรับจังหวะรอบตื่น
-   ได้จากหน้า Vercel โดยไม่ต้อง deploy ใหม่ */
+/* Every wake inspects every live notebook. Concurrency only controls how many
+   Groq turns happen together; it never limits which notebooks are scanned. */
 function wakeTuning() {
   return {
-    limit: Number(process.env.XTY_PET_WAKE_LIMIT) || 400,
-    concurrency: Math.max(1, Number(process.env.XTY_PET_WAKE_CONCURRENCY) || 6),
-    budgetMs: Math.max(100, Number(process.env.XTY_PET_WAKE_BUDGET_MS) || 45000),
+    concurrency: Math.max(1, Number(process.env.XTY_PET_WAKE_CONCURRENCY) || 12),
   };
 }
 const ACTIVE_STATES = ['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE'];
@@ -85,33 +80,39 @@ function laterDate(a, b) {
   return aa.getTime() >= bb.getTime() ? aa : bb;
 }
 
+/* Party Log is the PET's session memory. Read the whole live session: system
+   events, every human message/commit, reactions and every prior PET bubble. */
 async function recentLog(sql, partyId) {
   const [postRows, eventRows] = await Promise.all([
-    sql.query(`SELECT p.seq,p.kind,p.body,p.sent_at,p.retracted,p.pet_id,p.image_url,m.alias FROM xty_posts p LEFT JOIN xty_members m
-      ON m.party_id=p.party_id AND m.user_id=p.user_id WHERE p.party_id=$1 ORDER BY p.seq DESC LIMIT $2`, [partyId, LOG_SLICE]),
-    sql.query(`SELECT id,type,data_json,created_at FROM xty_party_events WHERE party_id=$1 ORDER BY id DESC LIMIT $2`, [partyId, LOG_SLICE]),
+    sql.query(`SELECT p.seq,p.kind,p.body,p.sent_at,p.retracted,p.pet_id,p.image_url,m.alias,m.role
+      FROM xty_posts p LEFT JOIN xty_members m
+      ON m.party_id=p.party_id AND m.user_id=p.user_id
+      WHERE p.party_id=$1 ORDER BY p.seq`, [partyId]),
+    sql.query(`SELECT id,type,data_json,created_at FROM xty_party_events
+      WHERE party_id=$1 ORDER BY id`, [partyId]),
   ]);
-  const posts = postRows.reverse();
+  const posts = postRows.map(post => {
+    const copy = { ...post };
+    if (copy.kind === 'system' && !copy.alias) copy.alias = 'ระบบสมุด';
+    if (copy.role === 'lead' && copy.alias && !copy.pet_id) copy.alias = `${copy.alias} [หัวตี้]`;
+    return copy;
+  });
   if (posts.length) {
-    const numeric = posts.filter(post => Number.isFinite(Number(post.seq))).map(post => Number(post.seq));
-    if (numeric.length) {
-      const reactions = await sql.query(`SELECT seq,emoji,COUNT(*)::int n FROM xty_reactions
-        WHERE party_id=$1 AND seq>=$2 GROUP BY seq,emoji`, [partyId, Math.min(...numeric)]);
-      const bySeq = new Map();
-      for (const row of reactions) {
-        const key = Number(row.seq);
-        bySeq.set(key, `${bySeq.get(key) ? `${bySeq.get(key)} ` : ''}${row.emoji}×${row.n}`);
-      }
-      for (const post of posts) post.reactions = bySeq.get(Number(post.seq)) || '';
+    const reactions = await sql.query(`SELECT seq,emoji,COUNT(*)::int n FROM xty_reactions
+      WHERE party_id=$1 GROUP BY seq,emoji`, [partyId]);
+    const bySeq = new Map();
+    for (const row of reactions) {
+      const key = Number(row.seq);
+      bySeq.set(key, `${bySeq.get(key) ? `${bySeq.get(key)} ` : ''}${row.emoji}×${row.n}`);
     }
+    for (const post of posts) post.reactions = bySeq.get(Number(post.seq)) || '';
   }
-  const events = eventRows.reverse().map(event => ({
+  const events = eventRows.map(event => ({
     seq: `event:${event.id}`, kind: 'event', body: eventLine(event.type, event.data_json),
     sent_at: event.created_at, retracted: false, alias: 'ระบบสมุด', reactions: '', pet_id: null, image_url: null,
   }));
   return [...posts, ...events]
-    .sort((a, b) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime())
-    .slice(-LOG_SLICE);
+    .sort((a, b) => new Date(a.sent_at).getTime() - new Date(b.sent_at).getTime());
 }
 
 function reminderDue(history, lastPetAt, now = new Date()) {
@@ -130,45 +131,58 @@ function reminderDue(history, lastPetAt, now = new Date()) {
       local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate(), Number(match[1]), Number(match[2]),
     ) - ICT_OFFSET_MS;
     if (targetMs < posted.getTime()) continue;
-    /* One useful callback shortly after the promised time; never carry a stale
-       reminder into the next day and never repeat after the pet has spoken. */
     if (targetMs <= nowMs && nowMs - targetMs <= 12 * 3600000 && petMs < targetMs) return true;
   }
   return false;
 }
 
 async function contextFor(sql, partyId, since, now = new Date(), history = null) {
-  const [counts, eventCounts, members] = await Promise.all([
-    sql.query(`SELECT COUNT(*) FILTER (WHERE kind IN ('commit','message') AND sent_at>$2)::int human_updates,
+  const today = dayKey(now);
+  const [counts, eventCounts, memberRows] = await Promise.all([
+    sql.query(`SELECT
+      COUNT(*) FILTER (WHERE kind IN ('commit','message') AND retracted=FALSE AND sent_at>$2)::int human_updates,
+      COUNT(*) FILTER (WHERE kind IN ('commit','message') AND retracted=FALSE AND day_key=$3::date)::int human_today,
+      COUNT(*) FILTER (WHERE kind='pet' AND retracted=FALSE AND day_key=$3::date)::int pet_today,
       COUNT(DISTINCT CASE WHEN kind='commit' AND retracted=FALSE AND day_key=$3::date THEN user_id END)::int committed,
-      MAX(sent_at) FILTER (WHERE kind IN ('commit','message')) last_human_at,
-      MAX(sent_at) FILTER (WHERE kind='pet') last_pet_at
-      FROM xty_posts WHERE party_id=$1`, [partyId, since, dayKey(now)]),
+      MAX(sent_at) FILTER (WHERE kind IN ('commit','message') AND retracted=FALSE) last_human_at,
+      MAX(sent_at) FILTER (WHERE kind='pet' AND retracted=FALSE) last_pet_at
+      FROM xty_posts WHERE party_id=$1`, [partyId, since, today]),
     sql.query(`SELECT COUNT(*) FILTER (WHERE created_at>$2)::int event_updates,
       MAX(created_at) FILTER (WHERE created_at>$2) last_event_at FROM xty_party_events WHERE party_id=$1`, [partyId, since]),
-    sql.query(`SELECT alias,role FROM xty_members WHERE party_id=$1 AND left_at IS NULL
-      ORDER BY CASE role WHEN 'lead' THEN 0 ELSE 1 END, joined_at`, [partyId]),
+    sql.query(`SELECT m.alias,m.role,
+      COUNT(p.seq) FILTER (WHERE p.kind IN ('commit','message') AND p.retracted=FALSE AND p.day_key=$2::date)::int posts_today,
+      MAX(p.sent_at) FILTER (WHERE p.kind IN ('commit','message') AND p.retracted=FALSE) last_post_at
+      FROM xty_members m LEFT JOIN xty_posts p
+        ON p.party_id=m.party_id AND p.user_id=m.user_id
+      WHERE m.party_id=$1 AND m.left_at IS NULL
+      GROUP BY m.user_id,m.alias,m.role,m.joined_at
+      ORDER BY CASE m.role WHEN 'lead' THEN 0 ELSE 1 END, m.joined_at`, [partyId, today]),
   ]);
   const count = counts[0] || {}; const eventCount = eventCounts[0] || {};
   const lastHumanAt = laterDate(count.last_human_at, eventCount.last_event_at);
   const lastPetAt = count.last_pet_at ? new Date(count.last_pet_at) : null;
   const fullHistory = history || await recentLog(sql, partyId);
+  const members = memberRows.map(member => ({
+    alias: member.alias,
+    role: member.role,
+    postsToday: Number(member.posts_today || 0),
+    lastPostAt: member.last_post_at || null,
+  }));
   return {
     humanUpdates: Number(count.human_updates || 0) + Number(eventCount.event_updates || 0),
-    committed: Number(count.committed || 0), members,
+    humanToday: Number(count.human_today || 0),
+    petToday: Number(count.pet_today || 0),
+    committed: Number(count.committed || 0),
+    members,
     lastHumanAt, lastPetAt,
     timedThreadDue: reminderDue(fullHistory, lastPetAt, now),
   };
 }
 
-/* Scheduled pets read only when the room gives them a reason. The old rule
-   returned true for every wake and manufactured generic engagement bubbles. */
-export function worthReading(_hour, context, force = false) {
-  if (force) return true;
-  if (context?.humanUpdates > 0) return true;
-  if (context?.timedThreadDue) return true;
-  if (context?.lastHumanAt && (!context.lastPetAt || context.lastPetAt < context.lastHumanAt)) return true;
-  return false;
+/* Every live room is inspected on every scheduled wake. This function only
+   decides whether the already-inspected session needs a model turn now. */
+export function worthReading(hour, context, force = false) {
+  return shouldReadScheduled(hour, context, force);
 }
 
 async function appendBubble(sql, party, text, wakeHour, now = new Date()) {
@@ -247,10 +261,8 @@ async function directReply(req, res, sql) {
   const bubbles = Array.isArray(decision.bubbles) ? decision.bubbles.slice(0, 3) : [];
   let written = 0;
   for (const line of bubbles) if (await appendBubble(sql, party, line, null, now)) written += 1;
-  /* A successful direct brain turn is itself a wake/read — even when the
-     model deliberately chose QUIET. Provider/config failures above do not
-     consume the wake, so the same activity can still be read later. */
-  await sql.query('UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2', [now, party.id]);
+  /* Direct conversation is real Party Log, but it must never move the scheduled
+     sweep clock. Every live Party is still inspected again at the next :27. */
   return sendJson(res, {
     ok: true, behavior: decision.behavior || 'QUIET', spoke: written > 0, bubbles: written,
   });
@@ -281,9 +293,8 @@ async function whiteCatIntro(req, res, sql) {
   const now = new Date();
   const seq = await appendBubble(sql, party, WHITE_CAT_INTRO, null, now);
   if (!seq) return sendJson(res, { ok: true, skipped: 'WRITE_FAILED' });
-  /* The onboarding bubble is a real PET turn. Mark the room as read so the
-     cron does not immediately manufacture another first-turn response. */
-  await sql.query('UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2', [now, party.id]);
+  /* Intro is a PET message and therefore counts toward today's volume, but it
+     does not consume the next scheduled inspection. */
   return sendJson(res, { ok: true, spoke: true, bubbles: 1, intro: true });
 }
 
@@ -299,8 +310,6 @@ export default async function handler(req, res) {
     }
     const sql = database(); await ensureSchema(sql);
 
-    /* Same Vercel function, browser-authenticated direct/intro modes plus the
-       CRON_SECRET scheduled wake. No extra serverless function is needed. */
     if (req.method === 'POST' && req.body?.mode === 'direct') return directReply(req, res, sql);
     if (req.method === 'POST' && req.body?.mode === 'white_cat_intro') return whiteCatIntro(req, res, sql);
 
@@ -312,27 +321,26 @@ export default async function handler(req, res) {
     const force = ['1', 'true', 'yes'].includes(String(req.query?.force || '').toLowerCase());
     const tuning = wakeTuning();
     const now = new Date(); const wake = wakeWindow(now);
+    const liveStateSql = "('DRAFT','RECRUITING','STARTED','ACTIVE')";
     const due = force
       ? await sql.query(`SELECT id,code,name,activity,commit_rule,
           COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
           pet_last_wake FROM xty_parties
-          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%') AND state='ACTIVE'
+          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%') AND state IN ${liveStateSql}
           ORDER BY updated_at DESC LIMIT 1`)
       : await sql.query(`SELECT id,code,name,activity,commit_rule,
           COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
           pet_last_wake FROM xty_parties
-          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%') AND state='ACTIVE'
+          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%') AND state IN ${liveStateSql}
           AND (pet_last_wake IS NULL OR pet_last_wake < $1)
-          ORDER BY updated_at DESC LIMIT $2`, [wake.start, tuning.limit]);
+          ORDER BY updated_at DESC`, [wake.start]);
 
     const tally = {
       claimed: 0, read: 0, spoke: 0, bubbles: 0,
       quiet: 0, byAi: 0, providerFailures: 0, deferred: 0, failed: 0,
+      presenceFallbacks: 0,
     };
 
-    /* งานหนึ่งสมุดทั้งชุด เขียนเป็นก้อนเดียวเพื่อให้รันพร้อมกันได้ปลอดภัย
-       ทุกทางออกต้องคืนสิทธิ์ให้สมุดถ้ายังไม่ได้พูด ไม่งั้นสมุดจะถูกนับว่า
-       "รอบนี้ทำแล้ว" ทั้งที่ไม่มีอะไรเกิดขึ้น */
     async function runParty(party) {
       const marked = force
         ? await sql.query('UPDATE xty_parties SET pet_last_wake=$1 WHERE id=$2 RETURNING id', [now, party.id])
@@ -345,6 +353,7 @@ export default async function handler(req, res) {
         const since = party.pet_last_wake ? new Date(party.pet_last_wake) : wake.start;
         const history = await recentLog(sql, party.id);
         const context = await contextFor(sql, party.id, since, now, history);
+        const allowance = scheduledBubbleAllowance(context);
         if (!worthReading(wake.hour, context, force)) {
           tally.quiet += 1;
           return;
@@ -359,9 +368,6 @@ export default async function handler(req, res) {
           if (decision) tally.byAi += 1; else tally.providerFailures += 1;
         }
 
-        /* Claim-before-read prevents duplicate cron workers, but a missing AI
-           configuration or provider outage must not permanently consume human
-           activity. Roll this claim back so the next wake can retry it. */
         if (!force && (!aiConfigured() || !hasPersona(party.pet_id) || !decision)) {
           await restoreClaimedWake(sql, party, now);
           tally.deferred += 1;
@@ -369,7 +375,20 @@ export default async function handler(req, res) {
           return;
         }
 
-        let lines = Array.isArray(decision?.bubbles) ? decision.bubbles.slice(0, 3) : [];
+        let lines = Array.isArray(decision?.bubbles)
+          ? decision.bubbles.slice(0, force ? 3 : Math.min(1, allowance))
+          : [];
+
+        /* The model is still allowed to choose QUIET on normal sweeps. At the
+           daily presence deadline only, QUIET/similarity filtering falls back
+           to one grounded, non-identical ping that rotates lead/member focus. */
+        if (!force && !lines.length && dailyPresenceRequired(wake.hour, context) && allowance > 0) {
+          const fallback = presenceFallback({ party, context, history });
+          if (fallback) {
+            lines = [fallback];
+            tally.presenceFallbacks += 1;
+          }
+        }
         if (force && !lines.length) lines = manualFallback(party);
         if (!lines.length) {
           tally.quiet += 1;
@@ -379,7 +398,6 @@ export default async function handler(req, res) {
         tally.spoke += 1;
         for (const line of lines) if (await appendBubble(sql, party, line, wake.hour, now)) tally.bubbles += 1;
       } catch (error) {
-        /* งานสมุดเดียวล้มต้องไม่ลากทั้งรอบลงไปด้วย และสมุดนั้นต้องได้คิวรอบหน้า */
         console.error('XTY pet wake party failed', party.code, error?.message || error);
         tally.failed += 1;
         if (!force) {
@@ -390,23 +408,18 @@ export default async function handler(req, res) {
     }
 
     const startedAt = Date.now();
-    let remaining = 0;
     for (let index = 0; index < due.length; index += tuning.concurrency) {
-      if (!force && Date.now() - startedAt > tuning.budgetMs) {
-        remaining = due.length - index;
-        break;
-      }
       await Promise.all(due.slice(index, index + tuning.concurrency).map(runParty));
     }
-    if (remaining) {
-      console.warn('XTY pet wake ran out of budget', `remaining=${remaining}`, `of=${due.length}`);
-    }
-    const { claimed, read, spoke, bubbles, quiet, byAi, providerFailures, deferred, failed } = tally;
+    const {
+      claimed, read, spoke, bubbles, quiet, byAi, providerFailures, deferred, failed, presenceFallbacks,
+    } = tally;
 
     return sendJson(res, {
       ok: true, wakeHour: wake.hour, ai: aiConfigured(), force,
-      due: due.length, claimed, read, byAi, providerFailures, deferred, failed, quiet, spoke, bubbles,
-      remaining, concurrency: tuning.concurrency, elapsedMs: Date.now() - startedAt,
+      due: due.length, inspected: due.length, claimed, read, byAi, providerFailures, deferred, failed,
+      quiet, spoke, bubbles, presenceFallbacks,
+      remaining: 0, concurrency: tuning.concurrency, elapsedMs: Date.now() - startedAt,
     });
   } catch (error) {
     console.error('XTY pet wake failed', error);
