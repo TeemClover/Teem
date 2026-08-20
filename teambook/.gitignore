@@ -1,0 +1,14 @@
+node_modules/
+core7/
+assets/myclover-icon.png
+assets/cards/epic/orange-cat-blue.webp
+assets/cards/epic/orange-cat-green.webp
+assets/cards/epic/orange-cat-red.webp
+assets/cards/epic/orange-cat-silver.webp
+assets/cards/epic/white-cat-blue.webp
+assets/cards/epic/white-cat-green.webp
+assets/cards/epic/white-cat-red.webp
+assets/cards/epic/white-cat-silver.webp
+api/xty.js
+api/xty-pet.js
+api/xty/

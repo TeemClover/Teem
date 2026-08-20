@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/brand/teambook-mark-256.png">
+<link rel="apple-touch-icon" href="/assets/brand/teambook-icon-180.png">
+<meta name="theme-color" content="#FFF9E9">
+<title>เปิดสมุดใหม่ — TeamBook</title>
+<!-- TEAMBOOK SOCIAL SHARE -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TeamBook">
+<meta property="og:title" content="เปิดสมุดใหม่ — TeamBook">
+<meta property="og:description" content="ตั้งชื่อสมุด เลือกจำนวนวัน แล้วชวนคนที่อยากเขียนเรื่องนี้ด้วยกัน">
+<meta property="og:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:secure_url" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="เปิดสมุดใหม่ — TeamBook">
+<meta name="twitter:description" content="ตั้งชื่อสมุด เลือกจำนวนวัน แล้วชวนคนที่อยากเขียนเรื่องนี้ด้วยกัน">
+<meta name="twitter:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta name="twitter:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<!-- /TEAMBOOK SOCIAL SHARE -->
+<link rel="stylesheet" href="/_shared/xty.css?v=8">
+<link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
+</head>
+<body>
+<header class="top">
+  <a class="mark" href="/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a>
+  <a class="back" href="/">ยกเลิก</a>
+</header>
+
+<main class="wrap create-page">
+  <p class="kicker">เปิดสมุดเล่มใหม่</p>
+  <h1 class="title">เปิดสมุดในหน้าเดียว</h1>
+  <p class="lede">เลือกของที่ตรงใจ แล้วออกไปทำในชีวิตจริงได้เลย</p>
+
+  <section class="notebook-card" id="coverSection">
+    <span class="step-sticker">1</span>
+    <h2>เลือกปกสมุด</h2>
+    <p class="whisper" id="coverHint">สมุดเล่มแรกใช้สัตว์ของคุณเป็นปกอัตโนมัติ</p>
+    <div class="card-select-grid" id="leadPick" role="radiogroup" aria-label="เลือกปกสมุด"></div>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">2</span>
+    <h2>ในเล่มนี้จะทำแบบไหน?</h2>
+    <div class="mode-grid" id="modePick" role="radiogroup" aria-label="เลือกวิธีเล่นของสมุด"></div>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">3</span>
+    <h2 id="activityTitle">เลือกกิจกรรมของสมุด</h2>
+    <p class="whisper" id="activityHint">ทุกคนในเล่มนี้ทำกิจกรรมเดียวกัน แต่ตั้งเป้าของตัวเองได้</p>
+    <div id="activityPick"></div>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">4</span>
+    <h2>เลือกรูปแบบการเล่น</h2>
+    <div class="preset-grid" id="verificationPick" role="radiogroup" aria-label="เลือกรูปแบบการเล่น"></div>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">5</span>
+    <h2>เล่นกันกี่วัน?</h2>
+    <div class="choice-row" id="durationPick" role="radiogroup" aria-label="เลือกระยะเวลา"></div>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">6</span>
+    <h2>ตั้งชื่อและกติกา</h2>
+    <div class="field">
+      <label for="pname">ชื่อสมุด</label>
+      <input id="pname" type="text" maxlength="40" placeholder="เช่น อ่านก่อนนอนแก๊งเรา">
+    </div>
+    <div class="field">
+      <label for="prule">แบบไหนถึงนับว่า ลงชื่อ</label>
+      <input id="prule" type="text" maxlength="120" placeholder="เช่น อ่านอย่างน้อย 10 หน้า">
+      <p class="hint">เว้นว่างได้ แล้วค่อยตกลงกันในสมุด</p>
+    </div>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">7</span>
+    <h2>ใครเข้าร่วมได้?</h2>
+    <div class="choice-row two" id="visibilityPick" role="radiogroup" aria-label="เลือกการมองเห็น"></div>
+    <p class="hint">สมุดส่วนตัวใช้รหัส 5 หลักชวนเพื่อนเข้ามา</p>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">8</span>
+    <h2>เลือกเพื่อนร่วมทาง</h2>
+    <p class="whisper">ใช้เพื่อนร่วมทางชุดเดิม หรือวางการ์ดที่ปลดล็อกแล้วเป็นเพื่อนร่วมทางก็ได้ · ข้ามได้</p>
+    <div class="pet-art-grid" id="petPick" role="radiogroup" aria-label="เลือก เพื่อนร่วมทาง ประจำสมุด"></div>
+    <p class="label" style="margin-top:18px">ANIMAL CARD AS เพื่อนร่วมทาง</p>
+    <div class="card-select-grid" id="npcCardPick" role="radiogroup" aria-label="เลือกการ์ดเป็นเพื่อนร่วมทาง"></div>
+    <p class="hint" id="petHint">ยังไม่ได้เลือก เพื่อนร่วมทาง</p>
+  </section>
+
+  <details class="advanced-card">
+    <summary>ตัวเลือกเพิ่มเติม</summary>
+    <p class="whisper">ข้อความ มีเพดานเพื่อให้กลับมาอ่านแล้วตามทัน ส่วน ลงชื่อ, ส่งกำลังใจ และ เห็นแล้ว ไม่กินโควตานี้</p>
+    <div class="choice-row three" id="budgetPick" role="radiogroup" aria-label="เลือกโควตา ข้อความ"></div>
+  </details>
+
+  <button class="btn gold" id="go" disabled>สร้างสมุด</button>
+  <p class="note"><strong>หลังจากกดสร้างสมุดแล้ว รอประมาณ 5–12 วินาที เพื่อรับรหัสเข้าร่วมสมุด</strong><br>หนึ่งคนสร้างสมุดที่กำลังเขียนได้ 1 สมุด และเข้าร่วมสมุดของเพื่อนได้ 3 สมุด</p>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script type="module">
+import {
+  hasProfile, getProfile, MESSAGE_BUDGETS, DEFAULT_BUDGET,
+  availableOwnedCards, allParties, partyIdentity,
+} from '/_shared/store.js';
+import { createPartyV2 } from '/_shared/create-party-v2.js';
+import { TEAMBOOK_V1_PETS, PET_BY_ID } from '/_shared/pets.js';
+import { SHARED, INDIVIDUAL, MODE_COPY } from '/_shared/book-mode.js';
+import { mountActivityPicker } from '/_shared/activity-picker.js';
+import { avatarById } from '/_shared/avatars.js';
+import { cardById, cardDescriptorTh } from '/_shared/cards.js';
+import { cardMarkup } from '/_shared/card-ui.js';
+import { petSpeciesFor } from '/_shared/card-picker.js';
+
+const $ = id => document.getElementById(id);
+if (!hasProfile()) location.replace('/'); else init();
+
+function radioGroup(container, buttons, initial, onPick) {
+  let current = initial;
+  buttons.forEach(item => {
+    const button = item.button;
+    const sync = () => {
+      const on = item.id === current;
+      button.classList.toggle('picked', on);
+      button.setAttribute('aria-checked', on ? 'true' : 'false');
+    };
+    button.addEventListener('click', () => {
+      current = item.id;
+      buttons.forEach(x => {
+        const on = x.id === current;
+        x.button.classList.toggle('picked', on);
+        x.button.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      onPick(current);
+    });
+    sync();
+    container.appendChild(button);
+  });
+  return () => current;
+}
+
+function init() {
+  const profile = getProfile();
+  /* A card unlocks its animal for the Pet seat. It does not restyle it:
+     the free pets are Starter and keep their own art. */
+  const petSpecies = petSpeciesFor(profile.petIds, profile);
+  const ownedPets = TEAMBOOK_V1_PETS.filter(p => petSpecies.has(p.id));
+  const leadCards = availableOwnedCards({ role: 'lead', profile });
+  const npcCards = availableOwnedCards({ role: 'npc', profile });
+  const firstParty = !allParties().some(party => partyIdentity(party.code)?.userId === party.ownerId);
+  const qs = new URLSearchParams(location.search);
+  const requestedLead = String(qs.get('lead') || '').toUpperCase();
+  let coverType = firstParty ? 'avatar' : 'card_back';
+  let leadCardId = !firstParty && leadCards.some(card => card.cardId === requestedLead) ? requestedLead : null;
+  if (leadCardId) coverType = 'card';
+  const requestedNpc = String(qs.get('npc') || '').toUpperCase();
+  let npcCardId = npcCards.some(card => card.cardId === requestedNpc && card.cardId !== leadCardId)
+    ? requestedNpc : null;
+
+  const coverButtons = [];
+  const addCoverButton = (button, type, cardId = null) => {
+    button.type = 'button'; button.classList.add('card-select');
+    button.setAttribute('role', 'radio');
+    button.addEventListener('click', () => {
+      coverType = type; leadCardId = cardId;
+      coverButtons.forEach(item => {
+        const on = item.button === button;
+        item.button.classList.toggle('picked', on);
+        item.button.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      renderNpcCards(); syncReady();
+    });
+    coverButtons.push({ button, type, cardId }); $('leadPick').appendChild(button);
+  };
+
+  if (firstParty) {
+    const avatar = avatarById(profile.avatarId);
+    const button = document.createElement('button');
+    button.className = 'card-select picked'; button.setAttribute('aria-checked', 'true');
+    button.setAttribute('aria-label', `ใช้ ${avatar.nameTh} เป็นปกสมุดแรก`);
+    button.innerHTML = `<div class="avatar-cover" data-color="${profile.avatarFrame}"><img src="${avatar.art}" alt=""><b>${avatar.nameTh}</b><small>FIRST PARTY COVER</small></div>`;
+    addCoverButton(button, 'avatar');
+  } else {
+    const back = document.createElement('button');
+    back.className = 'card-select picked'; back.setAttribute('aria-checked', 'true');
+    back.setAttribute('aria-label', 'ใช้ Card Back เป็นปกสมุด');
+    back.innerHTML = '<div class="animal-card card-back" aria-hidden="true"><span class="back-mark">TB</span><small>CARD BACK</small></div>';
+    addCoverButton(back, 'card_back');
+    leadCards.forEach(card => {
+      const button = document.createElement('button');
+      button.className = 'card-select' + (card.cardId === leadCardId ? ' picked' : '');
+      button.setAttribute('aria-checked', card.cardId === leadCardId ? 'true' : 'false');
+      button.setAttribute('aria-label', `ใช้ ${cardDescriptorTh(card)} เป็นปกสมุด`);
+      button.innerHTML = cardMarkup(card, { role: 'lead' });
+      addCoverButton(button, 'card', card.cardId);
+    });
+    $('coverHint').textContent = leadCards.length
+      ? 'ใช้ Card Back หรือ Rare / Epic / Legendary ที่ปลดแล้ว · Common ใช้เป็นปกไม่ได้'
+      : 'ใช้ Card Back ได้เลย · Rare / Epic / Legendary ที่ได้ภายหลังจะใช้เป็นปกสมุดได้';
+  }
+
+  /* Which activity is being chosen here depends on the mode: the book's
+     one in shared mode, the owner's own in individual mode. The picker is
+     the same either way — only the heading above it changes. */
+  let activityMode = SHARED;
+  let picked = { activityId: null, label: '', description: '', color: null, complete: false };
+
+  const modeButtons = [SHARED, INDIVIDUAL].map(id => {
+    const copy = MODE_COPY[id];
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'mode-choice'; button.setAttribute('role', 'radio');
+    button.innerHTML = `<b>${copy.title}</b><small>${copy.blurb}</small>`;
+    return { id, button };
+  });
+  radioGroup($('modePick'), modeButtons, activityMode, id => {
+    activityMode = id;
+    $('activityTitle').textContent = MODE_COPY[id].pickerTitle;
+    $('activityHint').textContent = MODE_COPY[id].blurb;
+    syncReady();
+  });
+
+  mountActivityPicker($('activityPick'), {
+    value: 'walk',
+    onChange: value => { picked = value; syncReady(); },
+  });
+
+  const verificationButtons = [
+    { id: 'trust', labelTh: 'เชื่อใจกัน', hintTh: 'ลงชื่อแล้วผ่านทันที', art: '/assets/art/activities/activity-walk.webp' },
+    { id: 'confirm', labelTh: 'ต้อง เห็นแล้ว', hintTh: 'ให้เพื่อนอย่างน้อย 1 คน เห็นแล้ว · ย้อนหลังได้ถึงวันถัดไป', art: '/assets/art/activities/activity-study.webp' },
+  ].map(item => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'preset-choice'; button.setAttribute('role', 'radio');
+    button.innerHTML = `<img src="${item.art}" alt=""><span><b>${item.labelTh}</b><small>${item.hintTh}</small></span>`;
+    return { id: item.id, button };
+  });
+  let verificationMode = 'trust';
+  radioGroup($('verificationPick'), verificationButtons, verificationMode, id => { verificationMode = id; });
+
+  let durationDays = 7;
+  const durationButtons = [7, 14, 28].map(days => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'pill-choice'; button.setAttribute('role', 'radio');
+    button.innerHTML = `<b>${days}</b><small>วัน</small>`;
+    return { id: days, button };
+  });
+  const disabledDuration = document.createElement('button');
+  disabledDuration.type = 'button'; disabledDuration.className = 'pill-choice'; disabledDuration.disabled = true;
+  disabledDuration.innerHTML = '<b>กำหนดเอง</b><small>เร็ว ๆ นี้</small>';
+  radioGroup($('durationPick'), durationButtons, durationDays, id => { durationDays = Number(id); });
+  $('durationPick').appendChild(disabledDuration);
+
+  /* A book's colour is the colour of what it is about. In individual mode
+     nobody is all doing one thing, so the book keeps a neutral one and the
+     colour that matters lives on each member instead. */
+  function bookColor() {
+    return activityMode === SHARED ? (picked.color || 'green') : 'green';
+  }
+
+  let visibility = 'private';
+  const visibilityButtons = [
+    ['private', '🔒', 'ส่วนตัว', 'เข้าด้วยรหัส 5 หลัก'],
+    ['public', '☀️', 'สาธารณะ', 'แสดงในหน้าเปิดสมุด'],
+  ].map(([id, icon, label, hint]) => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'wide-choice'; button.setAttribute('role', 'radio');
+    button.innerHTML = `<span>${icon}</span><b>${label}</b><small>${hint}</small>`;
+    return { id, button };
+  });
+  radioGroup($('visibilityPick'), visibilityButtons, visibility, id => { visibility = id; });
+
+  let petId = null;
+  ownedPets.forEach(pet => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'pet-choice'; button.dataset.color = pet.color;
+    button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', 'false');
+    /* The free pets keep their own drawing, always. This row is Starter —
+       it is not a card shelf, and swapping in card art here made owning a
+       card silently change what the free animal looks like. */
+    button.innerHTML = `<img src="${pet.art}" alt="">`
+      + `<b>${pet.nameTh}</b><small>${pet.persona}</small>`;
+    button.addEventListener('click', () => {
+      petId = petId === pet.id ? null : pet.id;
+      if (petId) npcCardId = null;
+      $('petPick').querySelectorAll('button').forEach(x => {
+        const on = x === button && petId === pet.id;
+        x.classList.toggle('picked', on); x.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      $('petHint').textContent = petId ? `${PET_BY_ID[petId].nameTh} จะเป็นเพื่อนประจำสมุด` : 'ยังไม่ได้เลือก เพื่อนร่วมทาง';
+      renderNpcCards();
+    });
+    $('petPick').appendChild(button);
+  });
+
+  function renderNpcCards() {
+    const box = $('npcCardPick'); box.innerHTML = '';
+    const choices = availableOwnedCards({ role: 'npc', profile }).filter(card => card.cardId !== leadCardId);
+    if (!choices.length) {
+      box.innerHTML = '<p class="whisper" style="grid-column:1/-1;margin:0">ยังไม่มีการ์ดว่างอีกใบ — เปิดได้หลังปิดเล่ม แรก</p>';
+      return;
+    }
+    choices.forEach(card => {
+      const button = document.createElement('button');
+      button.type = 'button'; button.className = 'card-select' + (card.cardId === npcCardId ? ' picked' : '');
+      button.setAttribute('role', 'radio'); button.setAttribute('aria-checked', card.cardId === npcCardId ? 'true' : 'false');
+      button.setAttribute('aria-label', `ใช้ ${cardDescriptorTh(card)} เป็น เพื่อนร่วมทาง`);
+      button.innerHTML = cardMarkup(card, { role: 'npc' });
+      button.addEventListener('click', () => {
+        npcCardId = npcCardId === card.cardId ? null : card.cardId;
+        if (npcCardId) {
+          petId = null;
+          $('petPick').querySelectorAll('button').forEach(node => {
+            node.classList.remove('picked'); node.setAttribute('aria-checked', 'false');
+          });
+        }
+        renderNpcCards();
+        $('petHint').textContent = npcCardId
+          ? `${cardDescriptorTh(cardById(npcCardId))} จะร่วมสมุดเป็น เพื่อนร่วมทาง`
+          : 'ยังไม่ได้เลือกเพื่อนร่วมทาง';
+      });
+      box.appendChild(button);
+    });
+  }
+  renderNpcCards();
+  if (npcCardId) $('petHint').textContent = `${cardDescriptorTh(cardById(npcCardId))} จะร่วมสมุดเป็น เพื่อนร่วมทาง`;
+
+  let budget = DEFAULT_BUDGET;
+  const budgetButtons = Object.values(MESSAGE_BUDGETS).map(item => {
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'pill-choice'; button.setAttribute('role', 'radio');
+    button.innerHTML = `<b>${item.perDay}</b><small>${item.labelTh} / วัน</small>`;
+    return { id: item.id, button };
+  });
+  radioGroup($('budgetPick'), budgetButtons, budget, id => { budget = id; });
+
+  if (qs.get('template') === 'xircle') {
+    $('pname').value = 'สมุดสุขภาพของเรา';
+    $('prule').value = 'วันนี้ปรับหนึ่งอย่างที่ตั้งใจไว้';
+  }
+
+  $('pname').addEventListener('input', syncReady);
+
+  syncReady();
+
+  $('go').addEventListener('click', async () => {
+    const go = $('go'); go.disabled = true; go.textContent = 'กำลังสร้างสมุด…';
+    try {
+      const party = await createPartyV2({
+        name: $('pname').value,
+        activity: picked.label, activityId: picked.activityId,
+        activityMode,
+        activityDescription: picked.description,
+        activityColor: picked.color,
+        verificationMode, durationDays,
+        color: bookColor(), visibility, commitRule: $('prule').value,
+        budget, petId, coverType, leadCardId, npcCardId,
+      });
+      location.href = `/p/?c=${encodeURIComponent(party.code)}&new=1`;
+    } catch (error) {
+      const messages = {
+        TEAMBOOK_DB_NOT_CONFIGURED: 'เซิร์ฟเวอร์ TeamBook ยังไม่พร้อม',
+        TEAMBOOK_DATABASE_URL_NOT_CONFIGURED: 'เซิร์ฟเวอร์ TeamBook ยังไม่พร้อม',
+        OWNED_PARTY_LIMIT: 'คุณใช้ช่องสร้างสมุดของ Level นี้ครบแล้ว',
+        ACTIVE_PARTY_LIMIT: 'คุณใช้ช่องสมุดของ Level นี้ครบแล้ว',
+        CARD_IN_USE: 'การ์ดใบนี้กำลังอยู่ใน Active สมุด อื่น',
+        CARD_NOT_OWNED: 'ไม่พบการ์ดใบนี้ในคอลเลกชัน',
+        CARD_NOT_COVER_ELIGIBLE: 'ปกสมุดใช้ได้เฉพาะ Card Back หรือ Rare Card',
+      };
+      toast(messages[error.code] || 'สร้างสมุดไม่สำเร็จ — เช็กเน็ตแล้วลองอีกครั้ง');
+      go.disabled = false; go.textContent = 'สร้างสมุด';
+    }
+  });
+
+  function syncReady() {
+    $('go').disabled = $('pname').value.trim().length < 1 || !picked.complete || !coverType;
+  }
+}
+
+function toast(text) {
+  const node = $('toast'); node.textContent = text; node.classList.add('on');
+  setTimeout(() => node.classList.remove('on'), 3000);
+}
+</script>
+</body>
+</html>

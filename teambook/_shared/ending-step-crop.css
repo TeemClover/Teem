@@ -1,0 +1,20 @@
+/* TeamBook Ending · Step 2 proof crop
+   Show only the useful top of the ChatGPT screenshot, like the reference crop. */
+.ending-step .proof-dark{
+  min-height:0!important;
+  align-self:center;
+}
+.ending-step .proof-dark img{
+  width:100%!important;
+  height:clamp(280px,32vw,460px)!important;
+  max-height:none!important;
+  display:block;
+  object-fit:cover!important;
+  object-position:center top!important;
+}
+@media(max-width:640px){
+  .ending-step .proof-dark img{height:300px!important}
+}
+@media(max-width:390px){
+  .ending-step .proof-dark img{height:270px!important}
+}

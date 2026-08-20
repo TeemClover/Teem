@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="theme-color" content="#FFF9E9">
+<title>โปรไฟล์ — TeamBook</title>
+<meta name="description" content="โปรไฟล์ คอลเลกชันการ์ด และสมุดที่กำลังเขียนใน TeamBook">
+<link rel="stylesheet" href="/_shared/xty.css?v=7">
+<script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a>
+  <a class="back" href="/">TeamBook</a>
+</header>
+
+<main class="wrap">
+  <section class="card" id="shell">
+    <p class="kicker">TEAMBOOK PROFILE · LOCAL FIRST</p>
+    <p class="whisper" style="margin:0">กำลังเปิดคอลเลกชันจากเครื่องนี้…</p>
+  </section>
+  <section id="none" hidden>
+    <h1 class="title">ยังไม่มีโปรไฟล์</h1>
+    <p class="lede">เลือกชื่อเรียกกับ Avatar ก่อน แล้วค่อยกลับมาดูสมุดและเพื่อนร่วมทางของคุณ</p>
+    <a class="btn gold" href="/">เข้าสู่ TeamBook</a>
+  </section>
+
+  <section id="view" hidden>
+    <div class="card" id="profileCard">
+      <div class="party-head">
+        <div class="profile-avatar" id="av" aria-hidden="true"></div>
+        <div style="flex:1;min-width:0">
+          <p class="kicker" style="margin-bottom:6px">TEAMBOOK PROFILE</p>
+          <h1 class="title" id="alias" style="font-size:clamp(24px,6vw,32px);margin:0"></h1>
+          <button class="btn ghost sm" id="editProfile" style="margin-top:10px">แก้ไข</button>
+        </div>
+      </div>
+      <p class="whisper" id="since"></p>
+    </div>
+
+    <div class="card" id="xtyLanguageCard" data-xty-no-translate>
+      <span class="label">ภาษาที่ใช้ใน TeamBook</span>
+      <h2 class="title" style="font-size:20px;margin:0 0 6px">เลือกคำที่สบายใจ</h2>
+      <p class="whisper" style="margin:0 0 14px">ระบบเหมือนเดิมทุกอย่าง เปลี่ยนแค่คำบนหน้าจอ</p>
+      <div style="display:grid;grid-template-columns:1fr;gap:9px">
+        <button class="btn sm" type="button" id="xtyLangPlain">ไทยทั่วไป</button>
+        <button class="btn sm" type="button" id="xtyLangXty" hidden>คำดั้งเดิม</button>
+      </div>
+      <p class="hint" style="margin:10px 0 0">TeamBook ใช้คำตรง ๆ: สมุด · ช่วง · ลงชื่อ · เห็นแล้ว</p>
+    </div>
+
+    <div class="card" id="profileEditor" hidden>
+      <span class="label">EDIT PROFILE</span>
+      <div class="field" style="margin-top:0"><label for="aliasInput">ชื่อโปรไฟล์</label><input id="aliasInput" maxlength="24"></div>
+      <div class="field"><label>Default Animal Avatar</label><div class="card-grid" id="avatarPick"></div></div>
+      <div class="field"><label>Default Color</label><div class="color-row" id="framePick"></div></div>
+      <div class="ending-actions" style="margin-top:16px"><button class="btn gold" id="saveProfile">บันทึก</button><button class="btn ghost" id="cancelProfile">ยกเลิก</button></div>
+    </div>
+
+    <div class="card" id="saveCard">
+      <div class="account-row">
+        <div style="min-width:0">
+          <span class="label" style="margin-bottom:6px">DURABLE SAVE · TEAMBOOK ACCOUNT</span>
+          <div id="lineStatus" class="whisper" style="margin:0">กำลังตรวจสอบ…</div>
+          <p class="hint" id="syncHint" style="margin:7px 0 0">สมัครหรือ Login ด้วยอีเมล + รหัสผ่าน, LINE หรือ Google · Progress ในเครื่องกับ Cloud จะถูกรวมกัน</p>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn ghost sm" id="resyncBtn" hidden>↻ Sync TeamBook</button>
+          <button class="btn ghost sm" id="saveLater">ไว้ทีหลัง</button>
+          <button class="btn gold sm" id="accountBtn">เก็บ Progress</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="label">PARTIES</span>
+      <div class="capacity-panel">
+        <img src="/assets/art/mascots/orange-cat.webp" alt="" aria-hidden="true">
+        <div>
+          <div class="capacity-number" id="capacity">0 / 4<small>สมุดที่กำลังเขียน</small></div>
+          <p class="whisper" id="capacityHint">เปิดได้ 1 สมุด · เข้าร่วมได้ 3 สมุด</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="label">ANIMAL CARD COLLECTION</span>
+      <div class="account-row" style="margin-bottom:14px">
+        <p class="whisper" style="margin:0">Avatar ฟรีไม่ใช่การ์ด · Common ใช้เป็นเพื่อนร่วมทางได้ · Rare ใช้เป็นปกสมุดได้</p>
+        <b id="cardCount"></b>
+      </div>
+      <a class="row" href="/collection/"><span class="ic">🗂️</span><span class="tx"><b>เปิด Collection</b><small id="collectionSummary">ยังไม่มีการ์ด</small></span><span class="go">›</span></a>
+    </div>
+
+    <div class="card">
+      <span class="label">PETS · 8 ตัวพร้อมใช้</span>
+      <p class="whisper" style="margin:0 0 4px">เลือกเพื่อนร่วมทางประจำสมุดได้ หรือจะไม่เลือกก็ได้</p>
+      <div class="card-grid" id="pets"></div>
+    </div>
+
+    <nav class="tabs">
+      <a href="/">TeamBook</a>
+      <a class="active" href="/profile/">โปรไฟล์</a>
+      <a href="/read/">อ่านเรื่อง TeamBook</a>
+    </nav>
+  </section>
+</main>
+
+<script>
+(function () {
+  const KEY = 'teambook_language_mode';
+  const valid = new Set(['plain', 'xty']);
+  function mode() {
+    try {
+      const saved = localStorage.getItem(KEY);
+      return valid.has(saved) ? saved : 'plain';
+    } catch { return 'plain'; }
+  }
+  function paint() {
+    const current = mode();
+    const plain = document.getElementById('xtyLangPlain');
+    const xty = document.getElementById('xtyLangXty');
+    if (!plain || !xty) return;
+    plain.classList.toggle('gold', current === 'plain');
+    plain.classList.toggle('ghost', current !== 'plain');
+    xty.classList.toggle('gold', current === 'xty');
+    xty.classList.toggle('ghost', current !== 'xty');
+    plain.setAttribute('aria-pressed', String(current === 'plain'));
+    xty.setAttribute('aria-pressed', String(current === 'xty'));
+  }
+  function choose(next) {
+    try { localStorage.setItem(KEY, next); } catch {}
+    location.reload();
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    paint();
+    document.getElementById('xtyLangPlain')?.addEventListener('click', () => choose('plain'));
+    document.getElementById('xtyLangXty')?.addEventListener('click', () => choose('xty'));
+  });
+})();
+</script>
+
+<script type="module">
+import {
+  getProfile, hasProfile, activePartyUsage, ownedCards, shouldOfferProgressSave, updateProfile,
+} from '/_shared/store.js';
+import { TEAMBOOK_V1_PETS } from '/_shared/pets.js';
+import { AVATAR_FRAMES } from '/_shared/avatars.js';
+import { mountCardPicker, avatarForChoice, profilePortrait } from '/_shared/card-picker.js';
+import { cardById } from '/_shared/cards.js';
+import { syncXtyProfile } from '/_shared/account.js';
+import '/assets/account.js?v=20260818-xty-profile-save1';
+
+const $ = id => document.getElementById(id);
+let accountState = { authenticated: false, user: null };
+let accountUiReady = false;
+let pendingAccountMode = '';
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;' }[c]));
+}
+
+function accountLabel(user) {
+  return user?.displayName || user?.name || user?.email || 'บัญชี TeamBook';
+}
+
+function openAccount(mode = 'signup') {
+  if (!accountUiReady) {
+    pendingAccountMode = mode;
+    return;
+  }
+  if (window.TEAMBOOK_ACCOUNT?.open) window.TEAMBOOK_ACCOUNT.open(mode);
+}
+
+function render(account) {
+  const p = getProfile();
+  $('none').hidden = true;
+  $('view').hidden = false;
+  /* Shows the equipped card when there is one, the plain animal otherwise. */
+  const portrait = profilePortrait(p);
+  $('av').dataset.color = p.avatarFrame || 'green';
+  $('av').innerHTML = `<img src="${portrait.art}" alt="">`;
+  $('alias').textContent = p.alias;
+  $('since').textContent = 'เริ่มเมื่อ ' +
+    new Date(p.createdAt).toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  if (account.authenticated) {
+    $('saveCard').hidden = false;
+    $('lineStatus').innerHTML = `<span class="status-pill">เชื่อมบัญชีแล้ว ✓</span><br>${esc(accountLabel(account.user))}`;
+    $('resyncBtn').hidden = false;
+    $('accountBtn').hidden = false;
+    $('accountBtn').textContent = '☁️ เปิด Progress';
+    $('saveLater').hidden = true;
+  } else {
+    $('saveCard').hidden = !shouldOfferProgressSave(p);
+    $('lineStatus').textContent = 'ยังไม่ได้เชื่อม — Progress สำคัญยังอยู่ในเครื่องนี้';
+    $('resyncBtn').hidden = true;
+    $('accountBtn').hidden = false;
+    $('accountBtn').textContent = 'เก็บ Progress';
+    $('saveLater').hidden = false;
+  }
+
+  const usage = activePartyUsage(p);
+  $('capacity').innerHTML = `${usage.total} / ${usage.maxTotal}<small>ACTIVE PARTIES</small>`;
+  $('capacityHint').textContent = `เปิดได้ ${usage.maxOwned} สมุด · เข้าร่วมได้ ${usage.maxJoined} สมุด`;
+
+  const collection = ownedCards(p).map(item => cardById(item.cardId)).filter(Boolean);
+  /* How many you hold, never out of how many exist — the size of the set
+     is something to find out by opening cards. */
+  $('cardCount').textContent = `${collection.length}`;
+  $('collectionSummary').textContent = collection.length ? `${collection.length} ใบที่พบ` : 'ยังไม่มีการ์ด · เขียนสมุดเล่มแรกจนจบเพื่อรับใบแรก';
+
+  const box = $('pets');
+  box.innerHTML = '';
+  TEAMBOOK_V1_PETS.forEach(pet => {
+    const d = document.createElement('div');
+    d.className = 'pc';
+    d.dataset.color = pet.color;
+    d.innerHTML =
+      `<span class="glyph">${pet.art ? `<img src="${pet.art}" alt="">` : pet.emoji}</span>` +
+      `<span class="nm">${esc(pet.nameTh)}</span>` +
+      `<span class="pet-persona">${esc(pet.persona)}</span>`;
+    box.appendChild(d);
+  });
+}
+
+function openProfileEditor() {
+  const profile = getProfile();
+  let chosenAvatar = profile.avatarId; let chosenColor = profile.avatarFrame || 'green';
+  let chosenCard = profile.equippedCardId || null;
+  $('aliasInput').value = profile.alias; $('avatarPick').innerHTML = ''; $('framePick').innerHTML = '';
+  /* Cards and starter animals are the same shelf now: a card is simply the
+     better portrait of an animal you already are, so picking one moves the
+     avatar to that species rather than to some separate card identity. */
+  mountCardPicker($('avatarPick'), {
+    mode: 'avatar',
+    selected: { avatarId: chosenAvatar, cardId: chosenCard },
+    onSelect: choice => {
+      const resolved = avatarForChoice(choice);
+      if (!resolved) return;
+      chosenAvatar = resolved.avatarId;
+      chosenCard = resolved.cardId;
+    },
+  });
+  Object.values(AVATAR_FRAMES).forEach(frame => {
+    const button = document.createElement('button'); button.type = 'button';
+    button.className = 'color-choice' + (frame.id === chosenColor ? ' picked' : ''); button.style.setProperty('--swatch', frame.hex);
+    button.innerHTML = `<span></span><b>${frame.labelTh}</b>`;
+    button.onclick = () => {
+      chosenColor = frame.id;
+      $('framePick').querySelectorAll('button').forEach(node => node.classList.toggle('picked', node === button));
+    };
+    $('framePick').appendChild(button);
+  });
+  $('saveProfile').onclick = async () => {
+    const alias = $('aliasInput').value.trim(); if (!alias) return;
+    updateProfile({
+      alias, avatarId: chosenAvatar, avatar: chosenAvatar, avatarFrame: chosenColor,
+      equippedCardId: chosenCard,
+    });
+    $('profileEditor').hidden = true;
+    const result = await syncXtyProfile();
+    if (result?.authenticated) accountState = result;
+    render(accountState);
+  };
+  $('profileEditor').hidden = false; $('aliasInput').focus();
+}
+
+$('editProfile').addEventListener('click', openProfileEditor);
+$('cancelProfile').addEventListener('click', () => { $('profileEditor').hidden = true; });
+$('accountBtn').addEventListener('click', () => openAccount(accountState.authenticated ? 'login' : 'signup'));
+$('saveLater').addEventListener('click', () => {
+  updateProfile({ savePromptDismissedAt: new Date().toISOString() });
+  $('saveCard').hidden = true;
+});
+$('resyncBtn').addEventListener('click', async () => {
+  const button = $('resyncBtn');
+  button.disabled = true;
+  button.textContent = 'กำลัง Sync…';
+  $('lineStatus').textContent = 'กำลังรวมโปรไฟล์ การ์ด และกู้สมุดจากบัญชี TeamBook…';
+  const result = await syncXtyProfile();
+  accountState = result;
+  button.disabled = false;
+  button.textContent = '↻ Sync TeamBook';
+  if (result.error) {
+    $('lineStatus').textContent = 'Sync ยังไม่สำเร็จ · ของในเครื่องยังอยู่ครบ ลองใหม่อีกครั้ง';
+    return;
+  }
+  render(result);
+  const recovery = result.recovery;
+  if (recovery) {
+    $('lineStatus').innerHTML = `<span class="status-pill">Sync แล้ว ✓</span><br>กู้คืน ${Number(recovery.restored || 0)} สมุด${recovery.failed ? ` · พลาด ${recovery.failed}` : ''}`;
+  }
+});
+
+window.addEventListener('teambook:account-changed', event => {
+  const accountUser = event.detail?.user || null;
+  accountState = { ...accountState, authenticated: !!accountUser, user: accountUser };
+  if (hasProfile()) render(accountState);
+});
+
+window.addEventListener('teambook:account-ready', event => {
+  accountUiReady = true;
+  const accountUser = event.detail?.user || null;
+  accountState = { ...accountState, authenticated: !!accountUser, user: accountUser };
+  if (hasProfile()) render(accountState);
+  if (pendingAccountMode) {
+    const mode = pendingAccountMode;
+    pendingAccountMode = '';
+    openAccount(mode);
+  }
+});
+
+window.addEventListener('teambook:synced', event => {
+  const result = event.detail;
+  if (!result || result.error) return;
+  accountState = result;
+  if (hasProfile()) render(result);
+});
+
+async function boot() {
+  $('shell').hidden = true;
+  const localAccount = { authenticated: false, user: null };
+  if (!hasProfile()) $('none').hidden = false;
+  else render(localAccount);
+
+  const account = await syncXtyProfile();
+  accountState = account;
+  if (hasProfile()) {
+    render(account);
+    if (account.authenticated && account.recovery?.restored) {
+      $('lineStatus').innerHTML = `<span class="status-pill">เชื่อมบัญชีแล้ว ✓</span><br>กู้สมุดกลับมา ${account.recovery.restored} สมุด`;
+    }
+  }
+
+  if (new URLSearchParams(location.search).get('save') === '1') {
+    openAccount(account.authenticated ? 'login' : 'signup');
+  }
+}
+
+boot();
+</script>
+</body>
+</html>

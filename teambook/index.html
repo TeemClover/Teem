@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/brand/teambook-mark-256.png">
+<link rel="apple-touch-icon" href="/assets/brand/teambook-icon-180.png">
+<meta name="theme-color" content="#FFF9E9">
+<title>TeamBook — สมุดกลุ่มมีชีวิต</title>
+<link rel="canonical" href="https://teambook.me/">
+<script>
+  /* teambook.me is the only public address. New devices enter through the
+     front door; returning devices open their shelf without a landing flash. */
+  try {
+    if (!localStorage.getItem('teambook_profile_v1')) location.replace('/start/');
+  } catch (error) { location.replace('/start/'); }
+</script>
+<!-- TEAMBOOK SOCIAL SHARE -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TeamBook">
+<meta property="og:title" content="TeamBook — สมุดกลุ่มมีชีวิต">
+<meta property="og:description" content="เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้วกลับมาลงชื่อในสมุดเดียวกันทุกวัน">
+<meta property="og:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:secure_url" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TeamBook — สมุดกลุ่มมีชีวิต">
+<meta name="twitter:description" content="เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้วกลับมาลงชื่อในสมุดเดียวกันทุกวัน">
+<meta name="twitter:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta name="twitter:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<!-- /TEAMBOOK SOCIAL SHARE -->
+<meta name="description" content="เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้วกลับมาลงชื่อในสมุดเดียวกันทุกวัน">
+<link rel="stylesheet" href="/_shared/xty.css?v=8">
+<link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
+<style>
+  .party-group{margin-top:10px;border:1px solid var(--xty-border);border-radius:var(--r-lg);background:rgba(255,255,255,.72);overflow:hidden}
+  .party-group>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;font-weight:800;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .party-group>summary::-webkit-details-marker{display:none}
+  .party-group>summary::after{content:'⌄';flex:none;font-size:18px;line-height:1;transition:transform .18s ease}
+  .party-group:not([open])>summary::after{transform:rotate(-90deg)}
+  .party-group-count{font-size:12px;font-weight:700;color:var(--xty-muted);margin-left:auto}
+  .party-group .rows{border-top:1px solid var(--xty-border)}
+  .party-group-empty{padding:12px 15px 15px;color:var(--xty-muted);font-size:13px;border-top:1px solid var(--xty-border)}
+</style>
+<!-- TEAMBOOK SEO SCHEMA -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"TeamBook — สมุดกลุ่มมีชีวิต","url":"https://teambook.me/","description":"เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้วกลับมาลงชื่อในสมุดเดียวกันทุกวัน","image":"https://teambook.me/assets/brand/teambook-og-1200x630.jpg","applicationCategory":"LifestyleApplication","operatingSystem":"Web","isPartOf":{"@type":"WebSite","name":"TeamBook","url":"https://teambook.me/"}}</script>
+<!-- /TEAMBOOK SEO SCHEMA -->
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a>
+  <a class="back" href="/profile/">โปรไฟล์</a>
+</header>
+
+<main class="wrap">
+
+  <section class="card" id="shell">
+    <p class="kicker">TEAMBOOK · เก็บในเครื่องนี้ก่อน</p>
+    <p class="whisper" style="margin:0">กำลังเปิดสมุดจากข้อมูลในเครื่องนี้…</p>
+  </section>
+
+  <section id="gate" hidden>
+    <div class="welcome-sheet" id="welcomeStep">
+      <img class="welcome-logo" src="/assets/brand/teambook-icon-512.png" alt="TeamBook" width="512" height="512">
+      <p class="kicker">สมุดกลุ่มมีชีวิต</p>
+      <h1 class="title">ออกไปทำของจริง<br>แล้วกลับมาลงชื่อ</h1>
+      <div class="welcome-lines" aria-label="วิธีใช้สั้น ๆ">
+        <span>เปิดสมุด</span><span>ทำของจริง</span><span>กลับมาลงชื่อ</span>
+      </div>
+      <button class="btn gold" id="startButton">เริ่มเขียนสมุด</button>
+      <p class="label" style="margin:20px 0 8px">มีรหัสสมุดแล้ว</p>
+      <div class="quick-code field" style="margin:0">
+        <input id="quickCode" inputmode="numeric" maxlength="5" placeholder="00000" aria-label="รหัสสมุด 5 หลัก">
+      </div>
+      <div class="about-links">
+        <a class="about-link" href="/read/">อ่านเรื่อง TeamBook →</a>
+      </div>
+    </div>
+
+    <div id="identityStep" hidden>
+      <div class="identity-intro">
+        <img src="/assets/art/mascots/orange-cat.webp" alt="" width="180" height="180">
+        <div><p class="kicker">เลือกสัตว์ของคุณ</p><p class="lede">เลือกสัตว์กับชื่อเรียก แค่นี้ก็เริ่มได้</p></div>
+      </div>
+      <div class="card">
+        <span class="label">เริ่มด้วยชื่อที่สบายใจ</span>
+        <div class="field" style="margin-top:0">
+          <label for="alias">ชื่อในสมุด</label>
+          <input id="alias" type="text" maxlength="24" placeholder="เช่น กล้วยทอด" autocomplete="nickname">
+          <p class="hint">ใช้ชื่อจริงก็ได้ ไม่ใช้ก็ได้ — เปลี่ยนทีหลังได้ตลอด</p>
+        </div>
+        <div class="field">
+          <label>เลือกหน้าตา</label>
+          <div class="card-grid" id="avatarPick" role="radiogroup" aria-label="เลือกสัตว์"></div>
+        </div>
+        <div class="field">
+          <label>เลือกสีกรอบ</label>
+          <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีกรอบสัตว์"></div>
+        </div>
+        <button class="btn gold" id="createProfile" style="margin-top:22px" disabled>เข้าสู่ TeamBook</button>
+        <p class="hint" id="inviteJoinError" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
+      </div>
+      <button class="btn ghost" id="backWelcome" style="margin-top:10px">กลับ</button>
+      <p class="note">ชื่อในสมุดและสัตว์ที่เลือกเก็บไว้ในเครื่องนี้ก่อน สัตว์เริ่มต้นฟรีไม่ใช่การ์ด การ์ดใบแรกมาจากการปิดเล่ม</p>
+    </div>
+  </section>
+
+  <section id="home" hidden>
+    <p class="kicker">TeamBook</p>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="profile-avatar" id="homeAvatar" aria-hidden="true"></div>
+      <h1 class="title" id="greet" style="margin:0">เปิดสมุด<br>ทำอะไรก็ได้</h1>
+    </div>
+
+    <div id="mainParty"></div>
+
+    <a class="btn gold" href="/new/">+ เปิดสมุด</a>
+    <a class="btn ghost" href="/join/" style="margin-top:10px">เข้าร่วมสมุดด้วยรหัส</a>
+    <a class="about-link" href="/public/">หาสมุดสาธารณะ ›</a>
+
+    <div class="card" id="accountCard" style="margin-top:18px" hidden>
+      <div class="account-row">
+        <div>
+          <span class="label" style="margin-bottom:5px">ความคืบหน้า</span>
+          <div id="accountStatus" class="whisper" style="margin:0">เก็บไว้ในเครื่องนี้</div>
+        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn ghost sm" id="lineLater">ไว้ทีหลัง</button>
+          <button class="btn gold sm" id="lineBtn">เก็บความคืบหน้า</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <span class="label">ช่องสมุดของคุณ</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="capacity-number" id="ownedCapacityN">0 / 1<small>สร้างสมุด</small></div>
+        <div class="capacity-number" id="joinedCapacityN">0 / 3<small>เข้าร่วม</small></div>
+      </div>
+      <p class="whisper">ช่องสร้างสมุดและช่องเข้าร่วมนับแยกกัน</p>
+    </div>
+
+    <section id="allPartiesSection">
+      <h2 class="title" id="partyHeading" style="margin-top:34px;font-size:19px">สมุดทั้งหมด</h2>
+
+      <details class="party-group" id="leadPartyGroup" open>
+        <summary><span>สมุดที่คุณเป็นเจ้าของ</span><span class="party-group-count" id="leadPartyCount">0 สมุด</span></summary>
+        <div class="rows" id="leadPartyRows"></div>
+        <div class="party-group-empty" id="leadPartyEmpty" hidden>ยังไม่มีสมุดที่คุณเป็นเจ้าของ</div>
+      </details>
+
+      <details class="party-group" id="joinedPartyGroup" open>
+        <summary><span>สมุดที่คุณเข้าร่วม</span><span class="party-group-count" id="joinedPartyCount">0 สมุด</span></summary>
+        <div class="rows" id="joinedPartyRows"></div>
+        <div class="party-group-empty" id="joinedPartyEmpty" hidden>ยังไม่มีสมุดที่คุณเข้าร่วม</div>
+      </details>
+    </section>
+
+    <div class="about-links">
+      <a class="about-link" href="/read/">อ่านเรื่อง TeamBook →</a>
+      <a class="about-link" href="/read/why/">ทำไมต้องมี TeamBook →</a>
+    </div>
+
+    <nav class="tabs">
+      <a class="active" href="/">TeamBook</a>
+      <a href="/profile/">โปรไฟล์</a>
+      <a href="/read/">อ่านเรื่อง TeamBook</a>
+    </nav>
+  </section>
+</main>
+
+<script type="module">
+import {
+  hasProfile, getProfile, createProfile, allParties, myPartyCodes, refreshParty,
+  activePartyUsage, committedToday, isActiveParty, shouldOfferProgressSave, updateProfile,
+  partyIdentity,
+} from '/_shared/store.js';
+import { joinPartyV2 } from '/_shared/join-party-v2.js';
+import { PET_BY_ID } from '/_shared/pets.js';
+import { TEAMBOOK_AVATARS, AVATAR_FRAMES, avatarById } from '/_shared/avatars.js';
+import { cardById, cardNameTh } from '/_shared/cards.js';
+import { cardMarkup } from '/_shared/card-ui.js';
+import { saveCloudProgress, syncXtyProfile } from '/_shared/account.js';
+
+const $ = id => document.getElementById(id);
+let accountState = { authenticated: false, user: null };
+
+function inviteCodeFromUrl() {
+  const value = new URLSearchParams(location.search).get('c');
+  return /^\d{5}$/.test(value || '') ? value : '';
+}
+
+function joinErrorText(code) {
+  const messages = {
+    NOT_FOUND: 'ไม่เจอสมุดรหัสนี้ ลองเช็กรหัสอีกครั้ง',
+    FULL: 'สมุดนี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)',
+    PARTY_CLOSED: 'สมุดนี้จบแล้วและไม่รับสมาชิกเพิ่ม',
+    MEMBERSHIP_CLOSED: 'ช่วงการร่วมทางของคุณในสมุดนี้ถูกปิดแล้ว',
+    JOINED_PARTY_LIMIT: 'ช่องเข้าร่วมสมุดเต็มแล้ว — เข้าร่วมพร้อมกันได้ไม่เกิน 3 สมุด',
+  };
+  return messages[code] || 'เข้าร่วมสมุดไม่สำเร็จ — เช็กเน็ตแล้วลองใหม่';
+}
+
+function renderGate() {
+  $('gate').hidden = false;
+  let nextCode = '';
+  const quickCode = $('quickCode');
+  const startButton = $('startButton');
+
+  const validQuickCode = () => /^\d{5}$/.test(quickCode.value || '') ? quickCode.value : '';
+  const syncWelcomeCta = () => { startButton.textContent = validQuickCode() ? 'เข้าร่วมสมุด' : 'เริ่มเขียนสมุด'; };
+  const showIdentity = (code = '') => {
+    nextCode = /^\d{5}$/.test(code) ? code : '';
+    $('welcomeStep').hidden = true;
+    $('identityStep').hidden = false;
+    $('inviteJoinError').hidden = true;
+    $('createProfile').textContent = nextCode ? 'ตั้งชื่อแล้วเข้าร่วมสมุด' : 'เข้าสู่ TeamBook';
+    $('alias').focus();
+  };
+
+  startButton.addEventListener('click', () => showIdentity(validQuickCode()));
+  $('backWelcome').addEventListener('click', () => {
+    const savedCode = nextCode || validQuickCode();
+    nextCode = savedCode;
+    $('identityStep').hidden = true;
+    $('welcomeStep').hidden = false;
+    if (savedCode) quickCode.value = savedCode;
+    syncWelcomeCta();
+    $('createProfile').textContent = savedCode ? 'ตั้งชื่อแล้วเข้าร่วมสมุด' : 'เข้าสู่ TeamBook';
+    $('inviteJoinError').hidden = true;
+  });
+  quickCode.addEventListener('input', () => {
+    quickCode.value = quickCode.value.replace(/\D/g, '').slice(0, 5);
+    syncWelcomeCta();
+  });
+  quickCode.addEventListener('keydown', event => {
+    const value = validQuickCode();
+    if (event.key === 'Enter' && value) showIdentity(value);
+  });
+
+  const initialCode = inviteCodeFromUrl();
+  if (initialCode) {
+    quickCode.value = initialCode;
+    quickCode.dispatchEvent(new Event('input'));
+  } else syncWelcomeCta();
+
+  const pick = $('avatarPick');
+  let chosen = TEAMBOOK_AVATARS[0].id;
+  let avatarFrame = 'green';
+
+  TEAMBOOK_AVATARS.forEach((avatar, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pc avatar-card pickable' + (i === 0 ? ' picked' : '');
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', i === 0 ? 'true' : 'false');
+    b.setAttribute('aria-label', avatar.nameTh);
+    b.innerHTML = `<span class="glyph"><img src="${avatar.art}" alt="" width="128" height="128" loading="lazy" decoding="async"></span>`;
+    b.addEventListener('click', () => {
+      chosen = avatar.id;
+      pick.querySelectorAll('.pc').forEach(x => {
+        const on = x === b;
+        x.classList.toggle('picked', on);
+        x.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+    });
+    pick.appendChild(b);
+  });
+
+  Object.values(AVATAR_FRAMES).forEach(frame => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'color-choice' + (frame.id === avatarFrame ? ' picked' : '');
+    b.style.setProperty('--swatch', frame.hex);
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', frame.id === avatarFrame ? 'true' : 'false');
+    b.innerHTML = `<span></span><b>${frame.labelTh}</b>`;
+    b.addEventListener('click', () => {
+      avatarFrame = frame.id;
+      $('framePick').querySelectorAll('.color-choice').forEach(x => {
+        const on = x === b;
+        x.classList.toggle('picked', on);
+        x.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+    });
+    $('framePick').appendChild(b);
+  });
+
+  const alias = $('alias');
+  const go = $('createProfile');
+  const sync = () => { go.disabled = alias.value.trim().length < 1; };
+  alias.addEventListener('input', sync);
+  alias.addEventListener('keydown', e => { if (e.key === 'Enter' && !go.disabled) go.click(); });
+  sync();
+
+  go.addEventListener('click', async () => {
+    go.disabled = true;
+    $('inviteJoinError').hidden = true;
+    const profile = hasProfile()
+      ? getProfile()
+      : createProfile({ alias: alias.value, avatarId: chosen, avatarFrame });
+    if (accountState.authenticated) {
+      try { await saveCloudProgress(profile); } catch {}
+    }
+    if (!nextCode) {
+      location.href = '/';
+      return;
+    }
+    go.textContent = 'กำลังเข้าร่วมสมุด…';
+    const result = await joinPartyV2(nextCode, { alias: profile.alias, avatar: chosen, avatarColor: avatarFrame });
+    if (!result.error && result.party?.code) {
+      location.href = `/p/?c=${encodeURIComponent(result.party.code)}`;
+      return;
+    }
+    $('inviteJoinError').textContent = joinErrorText(result.error);
+    $('inviteJoinError').hidden = false;
+    go.disabled = false;
+    go.textContent = 'ลองเข้าร่วมสมุดอีกครั้ง';
+  });
+}
+
+async function renderHome() {
+  const p = getProfile();
+  $('home').hidden = false;
+  $('greet').innerHTML = `สวัสดี<br>${escapeHtml(p.alias)}`;
+  const avatar = avatarById(p.avatarId);
+  $('homeAvatar').dataset.color = p.avatarFrame || 'green';
+  $('homeAvatar').innerHTML = `<img src="${avatar.art}" alt="">`;
+
+  if (accountState.authenticated) {
+    $('accountCard').hidden = false;
+    $('accountStatus').innerHTML = `<span class="status-pill">เก็บแล้ว ✓</span><br>${escapeHtml(accountState.user?.email || 'ความคืบหน้า เก็บกับบัญชีนี้')}`;
+    $('lineBtn').hidden = true;
+    $('lineLater').hidden = true;
+  } else {
+    $('accountCard').hidden = !shouldOfferProgressSave(p);
+    $('accountStatus').textContent = 'เก็บไว้ในเครื่องนี้ — ผูกบัญชีเพื่อกู้คืนข้ามอุปกรณ์';
+    $('lineBtn').hidden = false;
+    $('lineLater').hidden = false;
+    $('lineBtn').addEventListener('click', () => { location.href = '/profile/?save=1'; }, { once: true });
+    $('lineLater').addEventListener('click', () => {
+      updateProfile({ savePromptDismissedAt: new Date().toISOString() });
+      $('accountCard').hidden = true;
+    }, { once: true });
+  }
+
+  const mine = new Set(myPartyCodes());
+  paintPartyList(p, mine);
+  await Promise.all([...mine].map(code => refreshParty(code).catch(() => null)));
+  paintPartyList(getProfile() || p, new Set(myPartyCodes()));
+}
+
+function roleInParty(party) {
+  const identity = partyIdentity(party?.code);
+  const member = party?.members?.find(item => item.userId === identity?.userId);
+  if (member?.role === 'lead') return 'lead';
+  if (identity?.userId && party?.ownerId === identity.userId) return 'lead';
+  return 'member';
+}
+
+function partyRow(party) {
+  const a = document.createElement('a');
+  a.className = 'row';
+  a.href = `/p/?c=${encodeURIComponent(party.code)}`;
+  const npc = cardById(party.npcCardId);
+  const petEmoji = npc ? `<img src="${npc.art}" alt="">` : (party.petId ? petGlyph(party.petId) : '· ·');
+  const done = committedToday(party).size;
+  const terminal = !isActiveParty(party);
+  a.innerHTML =
+    `<span class="ic">${petEmoji}</span>` +
+    `<span class="tx"><b>${escapeHtml(party.name)}</b>` +
+    `<small>${escapeHtml(party.activity || 'ยังไม่ระบุกิจกรรม')} · ${done}/${party.members.length} ลงชื่อวันนี้${terminal ? ` · ${escState(party.state)}` : ''}</small></span>` +
+    `<span class="go">›</span>`;
+  return a;
+}
+
+function fillPartyGroup(rowsEl, emptyEl, countEl, parties) {
+  rowsEl.replaceChildren(...parties.map(partyRow));
+  rowsEl.hidden = parties.length === 0;
+  emptyEl.hidden = parties.length !== 0;
+  countEl.textContent = `${parties.length} สมุด`;
+}
+
+function paintPartyList(p, mine) {
+  const list = allParties().filter(x => mine.has(x.code));
+  const capacity = activePartyUsage(p);
+  $('ownedCapacityN').innerHTML = `${capacity.owned} / ${capacity.maxOwned}<small>สร้างสมุด</small>`;
+  $('joinedCapacityN').innerHTML = `${capacity.joined} / ${capacity.maxJoined}<small>เข้าร่วม</small>`;
+
+  if (!list.length) {
+    $('mainParty').innerHTML = `<div class="empty">
+      <img class="empty-art" src="/assets/decor/mascot/cat-asleep-on-book.webp" alt="" aria-hidden="true" width="328" height="215" loading="lazy" decoding="async">
+      ยังไม่มีสมุด<br><span style="font-size:13px">ใช้สัตว์ของคุณเป็นปก แล้วเปิดสมุดเล่มแรกได้เลย</span></div>`;
+    $('allPartiesSection').hidden = true;
+    return;
+  }
+
+  $('allPartiesSection').hidden = false;
+  const leadParties = list.filter(party => roleInParty(party) === 'lead');
+  const joinedParties = list.filter(party => roleInParty(party) !== 'lead');
+  const main = leadParties.find(isActiveParty) || leadParties[0] || null;
+
+  if (main) {
+    const usesCardCover = ['card', 'legacy_card'].includes(main.coverType) || (!main.coverType && main.leadCardId);
+    const mainCard = usesCardCover ? cardById(main.leadCardId || main.coverValue) : null;
+    let mainCover = '';
+    if (mainCard) mainCover = cardMarkup(mainCard, { role: 'lead' });
+    else if (main.coverType === 'card_back') mainCover = '<div class="animal-card card-back"><span class="back-mark">TB</span><small>CARD BACK</small></div>';
+    else {
+      let snapshot = { species: p.avatarId, color: p.avatarFrame };
+      try { snapshot = { ...snapshot, ...JSON.parse(main.coverValue || '{}') }; } catch {}
+      const art = avatarById(snapshot.species);
+      mainCover = `<div class="avatar-cover" data-color="${snapshot.color || 'green'}"><img src="${art.art}" alt=""><b>${escapeHtml(art.nameTh)}</b><small>PARTY COVER</small></div>`;
+    }
+    const mainDone = committedToday(main).size;
+    const terminal = !isActiveParty(main);
+    $('mainParty').innerHTML = `<div class="card main-party">`
+      + mainCover
+      + `<div><span class="party-state">${terminal ? escState(main.state) : 'MAIN PARTY'}</span>`
+      + `<h2>${escapeHtml(main.name)}</h2><p class="whisper" style="margin:0">${escapeHtml(main.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
+      + `<p class="whisper">${mainDone}/${main.members.length} ลงชื่อวันนี้${mainCard ? ` · ${escapeHtml(cardNameTh(mainCard))}` : ''}</p>`
+      + `<a class="btn gold sm" href="/p/?c=${encodeURIComponent(main.code)}">${terminal ? 'ดู Ending' : 'เข้าร่วมสมุด / ลงชื่อ'}</a></div></div>`;
+  } else {
+    $('mainParty').innerHTML = '';
+  }
+
+  fillPartyGroup($('leadPartyRows'), $('leadPartyEmpty'), $('leadPartyCount'), leadParties);
+  fillPartyGroup($('joinedPartyRows'), $('joinedPartyEmpty'), $('joinedPartyCount'), joinedParties);
+}
+
+function escState(value) {
+  return String(value || '').toUpperCase() === 'DISSOLVED' ? 'DISSOLVED' : 'COMPLETED';
+}
+
+function petGlyph(id) {
+  const p = PET_BY_ID[id];
+  return p && p.art ? `<img src="${p.art}" alt="">` : (p ? p.emoji : '🐾');
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;' }[c]));
+}
+
+async function boot() {
+  $('shell').hidden = true;
+  const inviteCode = inviteCodeFromUrl();
+  const hadLocalProfile = hasProfile();
+
+  if (hadLocalProfile && inviteCode) {
+    location.replace(`/join/?c=${encodeURIComponent(inviteCode)}`);
+    return;
+  }
+
+  if (hadLocalProfile) renderHome(); else renderGate();
+  if (new URLSearchParams(location.search).has('account')) {
+    history.replaceState(null, '', inviteCode ? `/?c=${encodeURIComponent(inviteCode)}` : '/');
+  }
+  accountState = await syncXtyProfile();
+  if (!hadLocalProfile && hasProfile()) {
+    if (inviteCode) {
+      location.replace(`/join/?c=${encodeURIComponent(inviteCode)}`);
+      return;
+    }
+    $('gate').hidden = true;
+    await renderHome();
+  } else if (hasProfile()) {
+    /* Account sync can rebuild TeamBook book tokens and snapshots for the
+       logged-in TeamBook account. Repaint immediately so a
+       fresh browser does not keep showing 0/2 + 0/3 until the next reload. */
+    paintPartyList(getProfile(), new Set(myPartyCodes()));
+    updateAccountState();
+  }
+}
+
+function updateAccountState() {
+  if (accountState.authenticated) {
+    $('accountCard').hidden = false;
+    $('accountStatus').innerHTML = `<span class="status-pill">เก็บแล้ว ✓</span><br>${escapeHtml(accountState.user?.email || accountState.user?.displayName || 'ความคืบหน้า เก็บกับบัญชีนี้')}`;
+    $('lineBtn').hidden = true;
+    $('lineLater').hidden = true;
+  }
+}
+
+boot();
+</script>
+</body>
+</html>

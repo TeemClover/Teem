@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/brand/teambook-mark-256.png">
+<link rel="apple-touch-icon" href="/assets/brand/teambook-icon-180.png">
+<meta name="theme-color" content="#FFF9E9">
+<title>สมุดของเรา — TeamBook</title>
+<!-- TEAMBOOK SOCIAL SHARE -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TeamBook">
+<meta property="og:title" content="สมุดของเรา — TeamBook">
+<meta property="og:description" content="เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้วกลับมาลงชื่อในสมุดเดียวกันทุกวัน">
+<meta property="og:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:secure_url" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="สมุดของเรา — TeamBook">
+<meta name="twitter:description" content="เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้วกลับมาลงชื่อในสมุดเดียวกันทุกวัน">
+<meta name="twitter:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta name="twitter:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<!-- /TEAMBOOK SOCIAL SHARE -->
+<link rel="stylesheet" href="/_shared/xty.css?v=8">
+<link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a>
+  <a class="back" href="/">สมุดทั้งหมด</a>
+</header>
+
+<main class="wrap">
+  <section class="card" id="shell">
+    <p class="kicker">TEAMBOOK · เก็บในเครื่องนี้ก่อน</p>
+    <p class="whisper" style="margin:0">กำลังเปิดสมุดจาก snapshot ในเครื่องนี้…</p>
+  </section>
+  <section id="missing" hidden>
+    <h1 class="title">ไม่เจอสมุดนี้</h1>
+    <p class="lede">รหัสอาจพิมพ์ผิด หรือสมุดนี้ไม่มีอยู่แล้ว</p>
+    <a class="btn ghost" href="/join/">ลองใส่รหัสอีกครั้ง</a>
+  </section>
+
+  <section id="view" hidden>
+    <div class="card">
+      <div>
+        <p class="kicker" id="act" style="margin-bottom:6px"></p>
+        <h1 class="title" id="pname" style="font-size:clamp(22px,5.5vw,30px);margin:0"></h1>
+      </div>
+
+      <div class="rule-box" id="ruleBox">
+        <b>วันนี้ลงชื่อได้เมื่อ</b>
+        <p id="ruleText"></p>
+        <p class="hint" id="verificationLine"></p>
+      </div>
+
+      <!-- The headline is who did the thing today — never an unread count -->
+      <div class="today">
+        <span class="dots" id="dots" aria-hidden="true"></span>
+        <span class="n" id="committedN">0 / 0<small>ลงชื่อแล้ววันนี้</small></span>
+        <span class="upd" id="updates"></span>
+      </div>
+
+      <div class="commit-bar">
+        <button class="btn" id="commitBtn">✓ ลงชื่อวันนี้</button>
+      </div>
+
+      <div style="margin-top:18px">
+        <span class="label">ความคืบหน้ารายวัน · ไม่มีคะแนนแข่งกัน</span>
+        <div class="progress-grid" id="progress" aria-label="ความคืบหน้ารายวัน"></div>
+      </div>
+
+      <div class="party-table" id="seats" aria-label="คนในสมุด 5 ที่และ เพื่อนร่วมทาง 1 ที่"></div>
+      <p class="whisper" id="petLine" style="margin-top:14px"></p>
+    </div>
+
+    <div class="card terminal-card" id="endingCard" hidden>
+      <span class="label" id="endingLabel">เล่มนี้จบแล้ว</span>
+      <h2 class="title" id="endingTitle" style="font-size:24px">การเดินทางนี้ถูกเก็บไว้แล้ว</h2>
+      <p class="whisper" id="endingText"></p>
+      <div class="ending-actions">
+        <button class="btn gold" id="rewardButton" hidden>เปิดการ์ดรางวัล</button>
+        <button class="btn gold" id="downloadEnding">ดาวน์โหลด Ending .md</button>
+        <a class="btn ghost" href="/collection/">ดูคอลเลกชัน</a>
+      </div>
+      <p class="whisper" style="margin:12px 0 0"><a href="/read/what/">เรื่องที่ได้จากสมุดเอาไปทำอะไรได้?</a></p>
+    </div>
+
+    <div class="card">
+      <span class="label">ชวนคนเข้าร่วมสมุด</span>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="code-chip" id="code"></span>
+        <button class="btn ghost sm" id="copy">แชร์คำเชิญ</button>
+      </div>
+      <p class="hint" id="seatHint" style="margin-top:10px"></p>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <span class="label" style="margin:0">เรื่องในสมุด</span>
+        <button class="btn ghost sm" id="refresh" style="min-height:36px;padding:0 13px">↻ ดึงอัปเดต</button>
+      </div>
+      <p class="whisper" style="margin:0">ลงชื่อทุกวัน · หลังปิดเล่ม ทุกคนได้ ข้อความสุดท้าย อีกหนึ่งรอบ · ส่งกำลังใจ ไม่กินโควตา</p>
+
+      <div class="reward-status-list" id="rewardStatuses"></div>
+      <div class="log" id="log"></div>
+
+      <div class="xty-attach-preview" id="msgAttach" hidden>
+        <img alt="ภาพที่จะแนบ" id="msgAttachImg">
+        <div><b id="msgAttachName">ภาพแนบ</b><span id="msgAttachSize"></span></div>
+        <button type="button" id="msgAttachClear" aria-label="เอาภาพออก">×</button>
+      </div>
+      <div class="composer">
+        <button id="msgAttachBtn" type="button" aria-label="แนบภาพ">🖼</button>
+        <textarea id="msg" rows="1" maxlength="120" placeholder="ฝากไว้ในสมุด…" aria-label="ข้อความถึงสมุด" aria-describedby="msgCount"></textarea>
+        <button id="send" aria-label="ส่ง ข้อความ">↑</button>
+      </div>
+      <div class="budget" id="budget"></div>
+        <div class="msg-count" id="msgCount" aria-live="polite" hidden></div>
+    </div>
+
+    <section class="card quest-ending-panel" id="questFinishPanel" hidden>
+      <span class="label">ฉากจบของเล่ม</span>
+      <p class="whisper" style="margin:0">ปุ่มอยู่ตรงนี้ตลอดสำหรับเจ้าของสมุด แต่จะเปิดให้กดเมื่อผ่านวันสุดท้ายของเล่มแล้วเท่านั้น</p>
+      <p class="complete-gate" id="completeGate">กำลังตรวจวันของเล่ม…</p>
+      <button class="btn ghost quest-locked" id="completeParty" disabled>ปิดเล่ม · ยังไม่ครบวัน</button>
+    </section>
+
+    <!-- Only reachable once the journey is over: the ending picture does
+         not exist before then, and this cover is what every member keeps
+         seeing in their history. -->
+    <section class="card" id="endingCoverPanel" hidden>
+      <span class="label">ปกฉากจบ</span>
+      <p class="whisper" style="margin:0 0 4px">เลือกภาพจากในสมุด หรืออัปโหลดภาพฉากจบ มาเป็นปกของสมุดที่จบแล้ว · ทุกคนเห็นในประวัติ</p>
+      <div class="xty-cover-pick" id="endingCoverPick"></div>
+      <p class="whisper" id="endingCoverEmpty" hidden>ยังไม่มีภาพในสมุดนี้ — อัปโหลดได้เลย</p>
+      <button class="btn ghost sm" type="button" id="endingCoverUpload" style="margin-top:10px">🖼 อัปโหลดภาพฉากจบ</button>
+    </section>
+
+    <details class="party-tools" id="myCharacterTools">
+      <summary>ตัวละครของฉันในสมุดนี้</summary>
+      <p class="whisper">เปลี่ยนเฉพาะสมุดนี้ได้ โดยไม่เปลี่ยน Default สัตว์ ในโปรไฟล์</p>
+      <div class="tool-row">
+        <div class="field"><label for="myAliasInput">ชื่อในสมุด</label><input id="myAliasInput" maxlength="24"></div>
+      </div>
+      <div class="tool-row">
+        <div class="field"><label for="myAvatarSelect">Animal</label><select id="myAvatarSelect"></select></div>
+        <div class="field"><label for="myColorSelect">Color</label><select id="myColorSelect"></select></div>
+      </div>
+      <button class="btn ghost sm" id="saveMyCharacter">บันทึกตัวละครสมุดนี้</button>
+    </details>
+
+    <details class="party-tools" id="partyTools">
+      <summary id="manage">จัดการสมุด</summary>
+      <p class="whisper">ทุกการเปลี่ยนแปลงเก็บเป็น Event สำหรับเล่า Ending โดยไม่แก้ประวัติเดิม</p>
+
+      <div class="tool-row">
+        <div class="field"><label for="renameInput">ชื่อสมุด</label><input id="renameInput" maxlength="40"></div>
+        <button class="btn ghost sm" id="renameBtn">บันทึก</button>
+      </div>
+      <div class="tool-row">
+        <div class="field"><label for="ruleInput">วันนี้ลงชื่อได้เมื่อ</label><input id="ruleInput" maxlength="120"></div>
+        <button class="btn ghost sm" id="ruleBtn">บันทึก</button>
+      </div>
+      <div class="tool-row">
+        <div class="field"><label for="leadSelect">การ์ดเปิดสมุด</label><select id="leadSelect"></select></div>
+        <button class="btn ghost sm" id="leadBtn">เปลี่ยน</button>
+      </div>
+      <div class="tool-row">
+        <div class="field"><label for="npcSelect">เพื่อนร่วมทาง</label><select id="npcSelect"></select></div>
+        <button class="btn ghost sm" id="npcBtn">เปลี่ยน</button>
+      </div>
+
+      <span class="label" style="margin-top:18px">คนในสมุด</span>
+      <div class="member-tools" id="memberTools"></div>
+
+      <div class="danger-zone">
+        <p class="whisper">ปิดสมุดทำได้ทันทีและจะบันทึกว่าปิดก่อนจบ โดยไม่ปลอมว่าเล่มนี้จบสำเร็จ</p>
+        <button class="btn danger" id="dissolveParty">ปิดสมุด</button>
+      </div>
+    </details>
+
+    <nav class="tabs">
+      <a href="/">TeamBook</a>
+      <a href="/profile/">โปรไฟล์</a>
+    </nav>
+  </section>
+</main>
+
+<!-- commit sheet -->
+<div class="card" id="commitSheet" hidden
+     style="position:fixed;left:50%;bottom:20px;transform:translateX(-50%);width:min(92vw,560px);z-index:70;background:var(--xty-surface);box-shadow:var(--shadow)">
+  <span class="label">ลงชื่อวันนี้</span>
+  <p class="whisper" id="sheetRule" style="margin:0 0 10px"></p>
+  <div class="field" style="margin-top:0">
+    <textarea id="commitNote" rows="2" maxlength="300" placeholder="เล่าสั้น ๆ ก็ได้ หรือเว้นว่างไว้"></textarea>
+    <p class="hint">ลงชื่อ ไม่กินโควตา ข้อความ · แนบภาพได้ 1 รูป</p>
+  </div>
+  <div class="xty-attach-preview" id="commitAttach" hidden>
+    <img alt="ภาพที่จะแนบ" id="commitAttachImg">
+    <div><b id="commitAttachName">ภาพแนบ</b><span id="commitAttachSize"></span></div>
+    <button type="button" id="commitAttachClear" aria-label="เอาภาพออก">×</button>
+  </div>
+  <button class="btn ghost sm" type="button" id="commitAttachBtn" style="margin-top:2px">🖼 แนบภาพ</button>
+  <div style="display:flex;gap:9px;margin-top:14px">
+    <button class="btn ghost sm" id="commitCancel" style="flex:1">ยกเลิก</button>
+    <button class="btn gold sm" id="commitDo" style="flex:2">✓ ลงชื่อ</button>
+  </div>
+</div>
+
+<input type="file" id="imagePicker" accept="image/*" hidden>
+<div class="toast" id="toast" role="status"></div>
+
+<script type="module">
+import {
+  getParty, postToParty, getProfile, toggleReaction, retractPost,
+  confirmCommit,
+  committedToday, hasCommittedToday, messageAllowance,
+  dayKey, PARTY_MAX, MESSAGE_MAX_CHARS, REACTIONS, refreshParty, partyIdentity,
+  partyProgress, isActiveParty, availableOwnedCards, renameParty, manageParty,
+  changeLeadCard, changeNpcCard, kickPartyMember, finishParty, updatePartyIdentity,
+  cardRewardForQuest, downloadEndingMarkdown, partyCompletionState,
+} from '/_shared/store.js';
+import { PET_BY_ID, TEAMBOOK_V1_PETS } from '/_shared/pets.js';
+import { AVATAR_BY_ID, TEAMBOOK_AVATARS, AVATAR_FRAMES } from '/_shared/avatars.js';
+import { cardById, cardDescriptorTh, cardNameTh, TEAMBOOK_RARITY_META } from '/_shared/cards.js';
+import { cardMarkup } from '/_shared/card-ui.js';
+import { compressForChat, isSupportedImage, readableBytes } from '/_shared/image-compress.js';
+import { resolveMemberAvatar } from '/_shared/card-picker.js';
+
+const $ = id => document.getElementById(id);
+const code = new URLSearchParams(location.search).get('c');
+const me = getProfile();
+let myId = (partyIdentity(code) && partyIdentity(code).userId) || (me ? me.id : 'anon');
+let foilPlayed = false;
+let terminalReward = null;
+
+start();
+
+async function start() {
+  if (!code) { $('shell').hidden = true; $('missing').hidden = false; return; }
+  /* A cached party paints immediately; the network only refreshes it. */
+  if (getParty(code)) render();
+  const fresh = await refreshParty(code);
+  if (fresh.error === 'AUTH_REQUIRED') {
+    location.replace(`/join/?c=${encodeURIComponent(code)}`);
+    return;
+  }
+  if (fresh.error && !getParty(code)) { $('shell').hidden = true; $('missing').hidden = false; return; }
+  myId = (partyIdentity(code) && partyIdentity(code).userId) || myId;
+  if (fresh.error || fresh.party) render();
+  if (fresh.error === 'OFFLINE') toast('ออฟไลน์อยู่ — แสดงข้อมูลล่าสุดในเครื่องนี้');
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+/* The Party Log always shows the plain animal. A member may be wearing a
+   rare card, but forty of those down a day's scroll turns a calm log into
+   a shelf — and the card is the same creature anyway, so nothing is lost. */
+function avatarMarkup(value) {
+  const resolved = resolveMemberAvatar(value);
+  if (resolved) return `<img src="${resolved.speciesArt}" alt="">`;
+  const avatar = AVATAR_BY_ID[value];
+  return avatar ? `<img src="${avatar.art}" alt="">` : esc(value || '🍀');
+}
+
+/* The six party seats are the one place the rare drawing gets shown —
+   glanced at, not scrolled past, and few enough to stay legible. */
+function seatAvatarMarkup(value) {
+  const resolved = resolveMemberAvatar(value);
+  if (resolved) return `<img src="${resolved.cardArt}" alt="">`;
+  return avatarMarkup(value);
+}
+
+/* A seat holding a card takes the card's shape. In the square avatar box a
+   5:7 card had to letterbox, which left the very gaps a card should never
+   have; a starter animal keeps the square because its art is square. */
+function seatIsCard(value) {
+  return (resolveMemberAvatar(value)?.rarity || 'starter') !== 'starter';
+}
+
+/* The card's colour is the only property it carries, and this is where it
+   is spent: the ring around the member's seat. A starter animal has no
+   colour, so it keeps whatever frame the player picked. */
+function seatColorFor(value, fallback) {
+  const resolved = resolveMemberAvatar(value);
+  return resolved?.color || fallback || 'green';
+}
+
+function stamp(iso) {
+  const d = new Date(iso);
+  const t = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+  if (dayKey(iso) === dayKey()) return t + ' น.';
+  return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) + ' · ' + t + ' น.';
+}
+
+function toast(text) {
+  const t = $('toast');
+  t.textContent = text;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2800);
+}
+
+function render() {
+  const p = getParty(code);
+  $('shell').hidden = true;
+  $('view').hidden = false;
+  document.title = p.name + ' — TeamBook';
+  $('pname').textContent = p.name;
+  $('act').textContent = p.activity || 'ยังไม่ระบุกิจกรรม';
+  $('code').textContent = p.code;
+
+  /* today's state */
+  const done = committedToday(p);
+  const dots = $('dots');
+  dots.innerHTML = '';
+  p.members.forEach(m => {
+    const i = document.createElement('i');
+    if (done.has(m.userId)) i.className = 'on';
+    dots.appendChild(i);
+  });
+  $('committedN').innerHTML =
+    `${done.size} / ${p.members.length}<small>COMMITTED TODAY</small>`;
+
+  /* calm phrasing: what is new, not what is owed */
+  const todayPosts = p.log.filter(x => dayKey(x.sentAt) === dayKey()).length;
+  $('updates').textContent = todayPosts ? `${todayPosts} อัปเดตวันนี้` : 'ยังไม่มีอัปเดตวันนี้';
+
+  if (p.commitRule) {
+    $('ruleText').textContent = p.commitRule;
+    $('ruleBox').hidden = false;
+    $('sheetRule').textContent = p.commitRule;
+  } else {
+    $('ruleBox').hidden = true;
+    $('sheetRule').textContent = 'สมุดนี้ยังไม่ได้ตั้งกติกา — ลงชื่อได้เลยถ้าทำสิ่งที่ตกลงกันแล้ว';
+  }
+  $('verificationLine').textContent = p.verificationMode === 'confirm'
+    ? 'ลงชื่อแล้ว · ให้เพื่อนอย่างน้อย 1 คนกด เห็นแล้ว ได้ถึงวันถัดไป'
+    : 'ลงชื่อแล้ว · คนข้าง ๆ กด เห็นแล้ว ได้จากการ์ด';
+
+  const already = hasCommittedToday(p, myId);
+  const active = isActiveParty(p);
+  const cb = $('commitBtn');
+  cb.textContent = already ? '✓ ลงชื่อแล้ววันนี้' : '✓ ลงชื่อวันนี้';
+  cb.classList.toggle('done', already);
+  cb.disabled = already || !active;
+  cb.parentElement.hidden = !active;
+
+  const progress = $('progress'); progress.innerHTML = '';
+  partyProgress(p).forEach(item => {
+    const day = document.createElement('span');
+    day.className = 'progress-day' + (item.validCount ? ' done' : '') + (item.waitingCount ? ' waiting' : '') + (item.key === dayKey() ? ' today' : '');
+    day.setAttribute('aria-label', `Day ${item.day}: ${item.validCount} ผ่าน${item.waitingCount ? ` · ${item.waitingCount} รอ เห็นแล้ว` : ''}`);
+    day.innerHTML = `${item.day}${item.count ? `<small>${item.validCount}${item.waitingCount ? `+${item.waitingCount}○` : ''}</small>` : ''}`;
+    progress.appendChild(day);
+  });
+
+  /* Fixed 3×2 table: Lead, four Members, then Pet. Empty human slots and
+     the Pet slot remain visible at every viewport width. */
+  const seats = $('seats');
+  seats.innerHTML = '';
+  const lead = p.members.find(m => m.role === 'lead') || null;
+  const leadCard = cardById(p.leadCardId);
+  const others = p.members.filter(m => m.role !== 'lead');
+  const slots = [lead, others[0] || null, others[1] || null, others[2] || null, others[3] || null];
+  slots.forEach((m, index) => {
+    const d = document.createElement('div');
+    if (!m) {
+      d.className = 'seat xty-card open';
+      d.innerHTML = `<span class="slot-label">SLOT ${index + 1}</span><div class="av">+</div><div class="al">ที่ว่าง</div>`;
+      seats.appendChild(d);
+      return;
+    }
+    const committed = done.has(m.userId);
+    if (m.role === 'lead' && leadCard) {
+      d.className = 'seat-card-wrap';
+      d.innerHTML = cardMarkup(leadCard, { role: 'lead', foil: !foilPlayed })
+        + `<span class="seat-card-name" title="${esc(m.alias)}">${esc(m.alias)} · ${committed ? '✓' : '○'}</span>`;
+      seats.appendChild(d);
+      foilPlayed = true;
+      return;
+    }
+    if (m.role === 'lead' && p.coverType === 'card_back') {
+      d.className = 'seat-card-wrap';
+      d.innerHTML = '<div class="animal-card card-back"><span class="back-mark">TB</span><small>CARD BACK</small></div>'
+        + `<span class="seat-card-name" title="${esc(m.alias)}">${esc(m.alias)} · ${committed ? '✓' : '○'}</span>`;
+      seats.appendChild(d); return;
+    }
+    d.className = 'seat xty-card' + (m.role === 'lead' ? ' lead' : ' member');
+    d.innerHTML =
+      `<span class="slot-label">${m.role === 'lead' ? '★ LEAD' : `MEMBER ${index + 1}`}</span>` +
+      `<div class="av member-avatar${seatIsCard(m.avatar) ? ' is-card' : ''}" data-color="${esc(seatColorFor(m.avatar, m.avatarColor))}">${seatAvatarMarkup(m.avatar)}</div>` +
+      `<div class="al" title="${esc(m.alias)}">${esc(m.alias)}</div>` +
+      `<div class="rl">${m.role === 'lead' ? 'เจ้าของสมุด' : 'สมาชิก'}</div>` +
+      `<div class="commit-state" aria-label="${committed ? 'ลงชื่อแล้ว' : 'ยังไม่ได้ลงชื่อ'}">${committed ? '✓' : '○'}</div>`;
+    seats.appendChild(d);
+  });
+  const left = PARTY_MAX - p.members.length;
+  $('seatHint').textContent = left > 0
+    ? `ยังรับได้อีก ${left} คน (สมุดหนึ่งไม่เกิน ${PARTY_MAX})`
+    : 'สมุดเต็มแล้ว — อยากชวนเพิ่มต้องเปิดสมุดใหม่';
+
+  const npc = cardById(p.npcCardId);
+  const pet = p.petId ? PET_BY_ID[p.petId] : null;
+  const petCard = document.createElement('div');
+  if (npc) {
+    petCard.className = 'seat-card-wrap';
+    petCard.innerHTML = cardMarkup(npc, { role: 'npc' })
+      + `<span class="seat-card-name">${esc(npc.personalityNameTh)}</span>`;
+    $('petLine').textContent = `${cardDescriptorTh(npc)} — ${npc.flavorTh}`;
+  } else if (pet) {
+    petCard.className = 'seat-card-wrap';
+    petCard.innerHTML = `<div class="animal-card companion-card" data-color="${pet.color}">`
+      + '<span class="role-badge">PET</span>'
+      + `${pet.art ? `<img class="card-art" src="${pet.art}" alt="" width="256" height="256" loading="lazy">` : `<span class="card-art">${pet.emoji}</span>`}`
+      + `<span class="card-copy"><b>${esc(pet.nameTh)}</b><small>V1 COMPANION</small></span></div>`;
+    $('petLine').textContent = `${pet.emoji} ${pet.nameTh} — ${pet.persona}`;
+  } else {
+    petCard.className = 'seat xty-card pet-card open';
+    petCard.innerHTML = '<span class="slot-label">🐾 PET</span><div class="av">🐾</div><div class="al">เลือกทีหลังได้</div>';
+    $('petLine').textContent = 'สมุดนี้ยังไม่มี เพื่อนร่วมทาง — เลือกทีหลังได้';
+  }
+  seats.appendChild(petCard);
+
+  const terminal = ['COMPLETED', 'DISSOLVED'].includes(String(p.state || '').toUpperCase());
+  terminalReward = null;
+  $('endingCard').hidden = !terminal;
+  $('endingCard').classList.toggle('dissolved', p.state === 'DISSOLVED');
+  if (terminal) {
+    $('endingLabel').textContent = p.state === 'DISSOLVED' ? 'PARTY DISSOLVED' : 'PARTY COMPLETE ✓';
+    $('endingTitle').textContent = p.state === 'DISSOLVED' ? 'ปิดสมุดก่อนกำหนด โดยไม่ลบเรื่องที่เกิดขึ้น' : `${p.durationDays || 7} DAYS · การเดินทางถูกเก็บไว้แล้ว`;
+    $('endingText').textContent = p.state === 'DISSOLVED'
+      ? 'ดาวน์โหลดไฟล์ซอสตอนจบเพื่อเก็บสิ่งที่เกิดขึ้นตามจริง'
+      : 'ทุกคนมีการ์ดรอเปิดและได้ ข้อความ รอบสุดท้ายสำหรับอวดการ์ด สรุปความทรงจำ หรือนัดสมุดถัดไป';
+    terminalReward = p.state === 'COMPLETED'
+      ? cardRewardForQuest(`party-complete:${code}`, code) : null;
+    $('rewardButton').hidden = !terminalReward || !!terminalReward.revealedAt || terminalReward.complete;
+  }
+  document.querySelector('.composer').hidden = p.state === 'DISSOLVED';
+
+  const myMember = p.members.find(member => member.userId === myId);
+  $('myCharacterTools').hidden = !active || !myMember;
+  if (myMember) {
+    if (document.activeElement !== $('myAliasInput')) $('myAliasInput').value = myMember.alias || '';
+    const avatarSelect = $('myAvatarSelect'); const colorSelect = $('myColorSelect');
+    avatarSelect.innerHTML = ''; colorSelect.innerHTML = '';
+    TEAMBOOK_AVATARS.forEach(avatar => {
+      const option = document.createElement('option'); option.value = avatar.id; option.textContent = avatar.nameTh;
+      option.selected = avatar.id === myMember.avatar; avatarSelect.appendChild(option);
+    });
+    Object.values(AVATAR_FRAMES).forEach(color => {
+      const option = document.createElement('option'); option.value = color.id; option.textContent = color.labelTh;
+      option.selected = color.id === (myMember.avatarColor || 'green'); colorSelect.appendChild(option);
+    });
+  }
+  const leadToolsVisible = active && myMember?.role === 'lead';
+  $('questFinishPanel').hidden = !leadToolsVisible;
+  if (leadToolsVisible) renderCompletionGate(p);
+  $('partyTools').hidden = !leadToolsVisible;
+  if (!$('partyTools').hidden) renderManagement(p);
+
+  renderLog(p);
+  renderEndingCover(p);
+  renderBudget(p);
+}
+
+function renderManagement(p) {
+  if (document.activeElement !== $('renameInput')) $('renameInput').value = p.name || '';
+  if (document.activeElement !== $('ruleInput')) $('ruleInput').value = p.commitRule || '';
+
+  const leadSelect = $('leadSelect'); leadSelect.innerHTML = '';
+  if (p.coverType === 'avatar') {
+    const option = document.createElement('option'); option.value = 'avatar'; option.textContent = 'สัตว์ของคุณ · ปกสมุดเล่มแรก';
+    leadSelect.appendChild(option); leadSelect.disabled = true; $('leadBtn').disabled = true;
+  } else {
+    leadSelect.disabled = false; $('leadBtn').disabled = false;
+    const back = document.createElement('option'); back.value = 'back'; back.textContent = 'Card Back';
+    back.selected = p.coverType === 'card_back'; leadSelect.appendChild(back);
+  }
+  const leadCards = availableOwnedCards({ role: 'lead', exceptPartyCode: code })
+    .filter(card => card.cardId !== p.npcCardId);
+  leadCards.forEach(card => {
+    const option = document.createElement('option');
+    option.value = card.cardId; option.textContent = cardDescriptorTh(card);
+    option.selected = card.cardId === p.leadCardId;
+    leadSelect.appendChild(option);
+  });
+  if (p.leadCardId && !leadCards.some(card => card.cardId === p.leadCardId)) {
+    const option = document.createElement('option'); option.value = p.leadCardId;
+    option.textContent = cardDescriptorTh(p.leadCardId); option.selected = true; leadSelect.appendChild(option);
+  }
+
+  const npcSelect = $('npcSelect'); npcSelect.innerHTML = '<option value="">ไม่มีเพื่อนร่วมทาง</option>';
+  TEAMBOOK_V1_PETS.forEach(pet => {
+    const option = document.createElement('option'); option.value = `pet:${pet.id}`;
+    option.textContent = `PET · ${pet.nameTh}`; option.selected = pet.id === p.petId; npcSelect.appendChild(option);
+  });
+  availableOwnedCards({ role: 'npc', exceptPartyCode: code })
+    .filter(card => card.cardId !== p.leadCardId)
+    .forEach(card => {
+      const option = document.createElement('option'); option.value = `card:${card.cardId}`;
+      option.textContent = `เพื่อนร่วมทาง · ${cardDescriptorTh(card)}`; option.selected = card.cardId === p.npcCardId;
+      npcSelect.appendChild(option);
+    });
+
+  const requestedNpc = String(new URLSearchParams(location.search).get('npc') || '').toUpperCase();
+  if (requestedNpc && [...npcSelect.options].some(option => option.value === `card:${requestedNpc}`)) {
+    npcSelect.value = `card:${requestedNpc}`;
+    $('partyTools').open = true;
+    const params = new URLSearchParams(location.search); params.delete('npc');
+    history.replaceState(null, '', `${location.pathname}?${params}#manage`);
+  }
+
+  const members = $('memberTools'); members.innerHTML = '';
+  p.members.filter(member => member.role !== 'lead').forEach(member => {
+    const row = document.createElement('div'); row.className = 'member-tool';
+    const name = document.createElement('span'); name.textContent = member.alias;
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'btn ghost sm';
+    button.textContent = 'ให้ออกจากสมุด';
+    let armed = false;
+    button.addEventListener('click', async () => {
+      if (!armed) {
+        armed = true; button.textContent = 'กดอีกครั้งเพื่อยืนยัน';
+        setTimeout(() => { if (armed) { armed = false; button.textContent = 'ให้ออกจากสมุด'; } }, 4000);
+        return;
+      }
+      button.disabled = true;
+      const result = await kickPartyMember(code, member.userId);
+      if (result.error) { button.disabled = false; toast('ยังนำสมาชิกออกไม่ได้'); return; }
+      render(); toast('ปิดช่วงการร่วมทางของสมาชิกแล้ว — ประวัติยังอยู่');
+    });
+    row.append(name, button); members.appendChild(row);
+  });
+  if (!members.children.length) members.innerHTML = '<p class="whisper" style="margin:0">ยังไม่มีสมาชิกอื่นในสมุด</p>';
+}
+
+function renderCompletionGate(p) {
+  const gate = partyCompletionState(p);
+  const completeButton = $('completeParty');
+  completeButton.disabled = !gate.eligible;
+  completeButton.classList.toggle('quest-locked', !gate.eligible);
+  completeButton.textContent = gate.eligible ? 'ปิดเล่ม' : 'ปิดเล่ม · ยังไม่ครบวัน';
+  $('completeGate').textContent = gate.eligible
+    ? `ครบ ${gate.durationDays} วันแล้ว · กดปิดเล่มเพื่อรับการ์ดได้`
+    : `DAY ${gate.day} / ${gate.durationDays} · ปุ่มจะเปิด ${new Date(gate.scheduledEndAt).toLocaleString('th-TH', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}`;
+}
+
+function renderBudget(p) {
+  const allowance = messageAllowance(p, myId);
+  const el = $('budget');
+  el.classList.toggle('out', allowance.left === 0);
+  const pips = Array.from({ length: allowance.limit }, (_, i) =>
+    `<i class="${i < allowance.used ? 'used' : ''}"></i>`).join('');
+  const label = allowance.phase === 'daily'
+    ? (allowance.left > 0 ? `เหลือ ${allowance.left} ข้อความวันนี้` : 'ใช้ข้อความครบแล้ววันนี้ — ส่งกำลังใจได้ไม่จำกัด')
+    : (allowance.phase === 'final'
+      ? `ข้อความสุดท้าย · เหลืออีก ${allowance.left} ข้อความ และจะไม่เติมอีก`
+      : 'ข้อความสุดท้ายหมดแล้ว · สมุดนี้เป็นประวัติแบบอ่านอย่างเดียว');
+  el.innerHTML =
+    `<span class="pips">${pips}</span>` +
+    `<span>${label}</span>`;
+  $('send').disabled = !allowance.writable || allowance.left === 0;
+  $('msg').disabled = !allowance.writable;
+  $('msg').placeholder = allowance.phase === 'history'
+    ? 'สมุดนี้เก็บเป็นประวัติแบบอ่านอย่างเดียวแล้ว'
+    : (allowance.left === 0 ? 'โควตารอบนี้หมดแล้ว — ส่งกำลังใจยังได้' : (allowance.phase === 'final' ? 'ฝากข้อความรอบสุดท้าย…' : 'ฝากไว้ในสมุด…'));
+}
+
+/* Width/height are carried on the post so the browser can reserve the
+   right box before the file lands — the log must not jump while it is
+   being read. */
+function imageMarkup(post) {
+  if (!post.imageUrl || post.retracted) return '';
+  const ratio = post.imageW && post.imageH ? ` width="${post.imageW}" height="${post.imageH}"` : '';
+  return `<img class="post-image" loading="lazy" decoding="async"${ratio}`
+    + ` src="${esc(post.imageUrl)}" alt="ภาพจาก ${esc(post.alias || 'สมาชิกในสมุด')}">`;
+}
+
+/* One viewer reused for every picture rather than one dialog per post. */
+function openImageViewer(src) {
+  const dialog = document.createElement('dialog');
+  dialog.className = 'xty-image-viewer';
+  dialog.innerHTML = `<img src="${esc(src)}" alt=""><button type="button" aria-label="ปิด">×</button>`;
+  document.body.appendChild(dialog);
+  dialog.addEventListener('close', () => dialog.remove());
+  dialog.addEventListener('click', event => {
+    if (event.target === dialog || event.target.tagName === 'BUTTON') dialog.close();
+  });
+  if (typeof dialog.showModal === 'function') dialog.showModal();
+}
+
+document.addEventListener('click', event => {
+  const image = event.target.closest('.post-image');
+  if (image) openImageViewer(image.src);
+});
+
+function renderLog(p) {
+  const box = $('log');
+  const active = isActiveParty(p);
+  const completed = String(p.state || '').toUpperCase() === 'COMPLETED';
+  const writable = active || completed;
+  const canConfirm = p.verificationMode === 'confirm'
+    && writable;
+  const rewardStatuses = $('rewardStatuses');
+  rewardStatuses.innerHTML = '';
+  (p.rewardClaims || []).forEach(claim => {
+    const status = document.createElement('div');
+    status.className = `reward-status ${claim.revealedAt ? 'opened' : 'pending'}`;
+    if (claim.complete) status.textContent = `${claim.alias} เก็บการ์ดชุดนี้ครบแล้ว`;
+    else if (claim.revealedAt) status.textContent = `${claim.alias} เปิดรางวัลแล้ว ✓`;
+    else status.textContent = `${claim.alias} ยังไม่ได้เปิดรางวัล`;
+    rewardStatuses.appendChild(status);
+  });
+  box.innerHTML = '';
+  if (!p.log.length && !rewardStatuses.children.length) {
+    const e = document.createElement('div');
+    e.className = 'empty';
+    e.innerHTML = 'ยังไม่มีใคร ลงชื่อ<br><span style="font-size:13px">ทำสิ่งที่ตกลงกันแล้วกดปุ่มด้านบนได้เลย</span>';
+    box.appendChild(e);
+    return;
+  }
+
+  p.log.forEach(post => {
+    const isPet = post.kind === 'pet';
+    const isReward = post.kind === 'reward';
+    const rewardCard = isReward ? cardById(post.body) : null;
+    const el = document.createElement('div');
+    el.className = 'post'
+      + (post.kind === 'commit' ? ' commit' : '')
+      + (isReward ? ' reward' : '')
+      + (isPet ? ' pet' : '')
+      + (post.retracted ? ' retracted' : '');
+    /* The whole message is tinted by what came out of the card, so a
+       Legendary reads as an event from across the log. */
+    if (rewardCard) el.dataset.rarity = rewardCard.rarity || 'common';
+
+    const body = post.retracted
+      ? '<span>ข้อความถูกถอนโดยเจ้าของ</span>'
+      : (isReward && rewardCard
+        ? `<div class="reward-log-card">${cardMarkup(rewardCard)}`
+          + `<p>เปิดได้ <b>${esc(cardNameTh(rewardCard))}</b>`
+          + ` · ${esc((TEAMBOOK_RARITY_META[rewardCard.rarity] || TEAMBOOK_RARITY_META.common).label)}</p></div>`
+        : esc(post.body));
+    const tag = post.kind === 'commit' ? '<span class="tag">COMMIT</span>'
+      : (isReward ? '<span class="tag reward-tag">การ์ด</span>' : '');
+
+    /* pet turns are written by the scheduled worker and carry the pet's
+       own identity rather than a member's */
+    const petCard = isPet ? PET_BY_ID[post.petId] : null;
+    if (isPet) {
+      post = { ...post, avatar: petCard && petCard.art ? `<img src="${petCard.art}" alt="">` : (petCard ? petCard.emoji : '🐾'),
+               alias: petCard ? petCard.nameTh : 'สัตว์ประจำสมุด' };
+    }
+    const avatarHtml = isPet ? post.avatar : avatarMarkup(post.avatar);
+
+    el.innerHTML =
+      `<div class="av">${avatarHtml}</div>` +
+      `<div class="bd">` +
+        `<div class="meta"><span class="who">${esc(post.alias)}</span>` +
+        `<span class="when">${stamp(post.sentAt)}</span></div>` +
+        `<div class="txt">${tag}${body}</div>` +
+        imageMarkup(post) +
+        `<div class="confirm-slot"></div>` +
+        `<div class="rx" data-seq="${post.seq}"></div>` +
+      `</div>`;
+
+    if (post.kind === 'commit' && !post.retracted) {
+      const slot = el.querySelector('.confirm-slot');
+      if (p.verificationMode !== 'confirm') {
+        slot.innerHTML = '<span class="confirmed-mark">✓ ผ่านทันที · เชื่อใจกัน</span>';
+      } else if (post.confirmedBy) {
+        const confirmer = p.members.find(member => member.userId === post.confirmedBy);
+        slot.innerHTML = `<span class="confirmed-mark">◎ ${esc(confirmer?.alias || 'เพื่อนในสมุด')} เห็นแล้ว</span>`;
+      } else if (canConfirm && post.userId !== myId) {
+        const confirm = document.createElement('button');
+        confirm.type = 'button'; confirm.className = 'confirm-button';
+        confirm.textContent = '◎ เห็นแล้ว';
+        confirm.addEventListener('click', async () => {
+          confirm.disabled = true;
+          const result = await confirmCommit(code, post.seq);
+          if (result.error === 'ALREADY_CONFIRMED') toast('มีเพื่อน เห็นแล้ว');
+          else if (result.error === 'CONFIRM_WINDOW_CLOSED') toast('หมดเวลากดเห็นแล้วของการลงชื่อนี้');
+          else if (result.error) toast('ยัง เห็นแล้ว ไม่สำเร็จ');
+          render();
+        });
+        slot.appendChild(confirm);
+      } else if (post.userId === myId) {
+        slot.innerHTML = '<span class="confirm-wait">รอเพื่อนกด เห็นแล้ว</span>';
+      } else {
+        slot.innerHTML = '<span class="confirm-wait">หมดเวลากดเห็นแล้ว</span>';
+      }
+    }
+
+    const rx = el.querySelector('.rx');
+    const reacts = post.reactions || {};
+    Object.keys(reacts).forEach(emoji => {
+      const who = reacts[emoji];
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = who.includes(myId) ? 'mine' : '';
+      b.innerHTML = `${emoji}<span class="c">${who.length}</span>`;
+      b.setAttribute('aria-label', `${emoji} ${who.length}`);
+      b.disabled = !writable;
+      if (writable) b.addEventListener('click', async () => { await toggleReaction(code, post.seq, emoji); render(); });
+      rx.appendChild(b);
+    });
+
+    if (writable) {
+      const add = document.createElement('button');
+      add.type = 'button';
+      add.className = 'add';
+      add.textContent = '＋';
+      add.setAttribute('aria-label', 'เพิ่ม ส่งกำลังใจ');
+      add.addEventListener('click', () => openPicker(rx, post.seq));
+      rx.appendChild(add);
+    }
+
+    if (writable && post.userId === myId && !post.retracted && post.kind === 'message') {
+      /* two-tap confirm rather than window.confirm(): native dialogs are
+         unreliable inside in-app browsers such as LINE, where most of
+         these links get opened */
+      const r = document.createElement('button');
+      r.type = 'button';
+      r.className = 'retract';
+      r.textContent = 'ถอนข้อความ';
+      let armed = false;
+      r.addEventListener('click', async () => {
+        if (!armed) {
+          armed = true;
+          r.textContent = 'แน่ใจ? กดอีกครั้งเพื่อถอน';
+          r.style.color = 'var(--gold-soft)';
+          setTimeout(() => {
+            if (!armed) return;
+            armed = false;
+            r.textContent = 'ถอนข้อความ';
+            r.style.color = '';
+          }, 4000);
+          return;
+        }
+        await retractPost(code, post.seq);
+        render();
+        toast('ถอนข้อความแล้ว — ประวัติยังบอกว่ามีข้อความตรงนี้');
+      });
+      el.querySelector('.bd').appendChild(r);
+    }
+
+    box.appendChild(el);
+  });
+}
+
+function openPicker(container, seq) {
+  const existing = container.parentElement.querySelector('.rx-pick');
+  if (existing) { existing.remove(); return; }
+  const pick = document.createElement('div');
+  pick.className = 'rx-pick';
+  REACTIONS.forEach(emoji => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = emoji;
+    b.setAttribute('aria-label', 'react ' + emoji);
+    b.addEventListener('click', async () => { await toggleReaction(code, seq, emoji); render(); });
+    pick.appendChild(b);
+  });
+  container.parentElement.appendChild(pick);
+}
+
+/* ---------- commit ---------- */
+const sheet = $('commitSheet');
+$('commitBtn').addEventListener('click', () => { sheet.hidden = false; $('commitNote').focus(); });
+$('commitCancel').addEventListener('click', () => { sheet.hidden = true; $('commitNote').value = ''; });
+/* ---------- ending cover ----------
+   Two sources, as asked: any picture already posted in this party, or a
+   fresh upload. Both end up as the same coverType:'image'. */
+function renderEndingCover(p) {
+  const panel = $('endingCoverPanel');
+  const isLead = p.members.some(member => member.userId === myId && member.role === 'lead');
+  const finished = ['COMPLETED', 'DISSOLVED'].includes(String(p.state || '').toUpperCase());
+  panel.hidden = !(isLead && finished);
+  if (panel.hidden) return;
+
+  const seen = new Set();
+  const posted = (p.log || [])
+    .filter(post => post.imageUrl && !post.retracted)
+    .filter(post => (seen.has(post.imageUrl) ? false : seen.add(post.imageUrl)))
+    .reverse();
+
+  const pick = $('endingCoverPick');
+  pick.innerHTML = '';
+  posted.forEach(post => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.cover = post.imageUrl;
+    button.setAttribute('aria-pressed', String(p.coverType === 'image' && p.coverValue === post.imageUrl));
+    button.innerHTML = `<img src="${esc(post.imageUrl)}" alt="ภาพจาก ${esc(post.alias || 'ในสมุด')}">`;
+    pick.appendChild(button);
+  });
+  $('endingCoverEmpty').hidden = posted.length > 0;
+}
+
+async function applyEndingCover(patch, button) {
+  if (button) button.disabled = true;
+  const result = await manageParty(code, 'change_cover', { coverType: 'image', ...patch });
+  if (button) button.disabled = false;
+  const failedImage = imageError(result.error);
+  if (failedImage) { toast(failedImage); return; }
+  if (result.error === 'IMAGE_NOT_IN_PARTY') { toast('ภาพนี้ไม่ได้อยู่ในสมุดนี้'); return; }
+  if (result.error) { toast('เปลี่ยนปกไม่สำเร็จ'); return; }
+  render();
+  toast('เปลี่ยนปกฉากจบแล้ว');
+}
+
+$('endingCoverPick').addEventListener('click', event => {
+  const button = event.target.closest('[data-cover]');
+  if (button) applyEndingCover({ imageUrl: button.dataset.cover }, button);
+});
+
+$('endingCoverUpload').addEventListener('click', () => {
+  attachTarget = 'cover';
+  const picker = $('imagePicker');
+  picker.value = '';
+  picker.click();
+});
+
+/* ---------- attachments ----------
+   One hidden <input type=file> serves both composers; `attachTarget`
+   says which one asked. The picture is shrunk the moment it is picked,
+   so by send time there is nothing left to wait for. */
+const attachments = { msg: null, commit: null };
+let attachTarget = 'msg';
+
+function paintAttachment(which) {
+  const item = attachments[which];
+  const box = $(which === 'msg' ? 'msgAttach' : 'commitAttach');
+  const button = $(which === 'msg' ? 'msgAttachBtn' : 'commitAttachBtn');
+  box.hidden = !item;
+  if (button) button.classList.toggle('has-image', !!item);
+  if (!item) return;
+  $(which === 'msg' ? 'msgAttachImg' : 'commitAttachImg').src = item.preview;
+  $(which === 'msg' ? 'msgAttachName' : 'commitAttachName').textContent = item.name;
+  $(which === 'msg' ? 'msgAttachSize' : 'commitAttachSize').textContent =
+    `ย่อเหลือ ${readableBytes(item.bytes)} · ${item.width}×${item.height}`;
+}
+
+function clearAttachment(which) {
+  const item = attachments[which];
+  if (item?.preview) URL.revokeObjectURL(item.preview);
+  attachments[which] = null;
+  paintAttachment(which);
+}
+
+function pickImage(which) {
+  attachTarget = which;
+  const picker = $('imagePicker');
+  picker.value = '';
+  picker.click();
+}
+
+$('imagePicker').addEventListener('change', async event => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (!isSupportedImage(file)) { toast('ไฟล์นี้ไม่ใช่รูปภาพ'); return; }
+  const which = attachTarget;
+  const button = which === 'cover' ? $('endingCoverUpload')
+    : $(which === 'msg' ? 'msgAttachBtn' : 'commitAttachBtn');
+  if (button) button.disabled = true;
+  toast('กำลังย่อรูป…');
+  try {
+    const shrunk = await compressForChat(file);
+    /* A cover upload posts nothing to the log — it goes straight on. */
+    if (which === 'cover') {
+      if (button) button.disabled = false;
+      await applyEndingCover({
+        image: { data: shrunk.base64, width: shrunk.width, height: shrunk.height },
+      }, button);
+      return;
+    }
+    clearAttachment(which);
+    attachments[which] = {
+      base64: shrunk.base64, width: shrunk.width, height: shrunk.height,
+      bytes: shrunk.bytes, name: file.name || 'ภาพแนบ',
+      preview: URL.createObjectURL(file),
+    };
+    paintAttachment(which);
+    toast(`พร้อมส่ง · ${readableBytes(shrunk.bytes)}`);
+  } catch (error) {
+    toast(String(error?.message) === 'IMAGE_TOO_LARGE' ? 'รูปนี้ใหญ่เกินไป' : 'ย่อรูปไม่สำเร็จ');
+  } finally {
+    if (button) button.disabled = false;
+  }
+});
+
+$('msgAttachBtn').addEventListener('click', () => pickImage('msg'));
+$('msgAttachClear').addEventListener('click', () => clearAttachment('msg'));
+$('commitAttachBtn').addEventListener('click', () => pickImage('commit'));
+$('commitAttachClear').addEventListener('click', () => clearAttachment('commit'));
+
+function imageError(code) {
+  if (code === 'IMAGE_UPLOAD_NOT_CONFIGURED') return 'ระบบภาพยังไม่ได้ตั้งค่า';
+  if (code === 'IMAGE_TOO_LARGE') return 'รูปใหญ่เกินไป';
+  if (code === 'UNSUPPORTED_IMAGE' || code === 'BAD_IMAGE') return 'ไฟล์รูปไม่ถูกต้อง';
+  if (code === 'IMAGE_UPLOAD_FAILED') return 'อัปโหลดรูปไม่สำเร็จ ลองใหม่อีกครั้ง';
+  return '';
+}
+
+$('commitDo').addEventListener('click', async () => {
+  $('commitDo').disabled = true;
+  const note = $('commitNote').value.trim();
+  const res = await postToParty(code, { body: note || '✓', kind: 'commit', image: attachments.commit });
+  $('commitDo').disabled = false;
+  const failedImage = imageError(res.error);
+  if (failedImage) { toast(failedImage); return; }
+  sheet.hidden = true;
+  $('commitNote').value = '';
+  clearAttachment('commit');
+  if (res.error === 'ALREADY_COMMITTED') { toast('วันนี้ ลงชื่อ ไปแล้ว'); return; }
+  render();
+  toast('ลงชื่อแล้ว — เจอกันพรุ่งนี้');
+});
+
+/* ---------- message ---------- */
+const msg = $('msg');
+
+/* The counter stays out of the way until the limit is close enough to matter.
+   Showing 120/120 from the first keystroke turns every message into a test;
+   appearing near the end turns it into a nudge to tighten the sentence. */
+const COUNT_VISIBLE_FROM = 30;
+function renderMessageCount() {
+  const left = MESSAGE_MAX_CHARS - msg.value.length;
+  const el = $('msgCount');
+  el.hidden = left > COUNT_VISIBLE_FROM;
+  el.classList.toggle('full', left <= 0);
+  el.textContent = left > 0 ? `เหลือ ${left} ตัวอักษร` : 'ครบ 120 ตัวอักษรแล้ว';
+}
+
+msg.addEventListener('input', () => {
+  msg.style.height = 'auto';
+  msg.style.height = Math.min(msg.scrollHeight, 150) + 'px';
+  renderMessageCount();
+});
+
+async function send() {
+  const body = msg.value.trim();
+  /* A picture alone is a complete message. */
+  if (!body && !attachments.msg) return;
+  $('send').disabled = true;
+  const res = await postToParty(code, { body, kind: 'message', image: attachments.msg });
+  $('send').disabled = false;
+  const failedImage = imageError(res.error);
+  if (failedImage) { toast(failedImage); return; }
+  if (!res.error) clearAttachment('msg');
+  if (res.error === 'NO_BUDGET') {
+    toast(String(getParty(code)?.state || '').toUpperCase() === 'COMPLETED'
+      ? 'ข้อความสุดท้ายหมดแล้ว — เรื่องในสมุดเก็บไว้อ่านได้'
+      : 'ใช้ข้อความครบแล้ววันนี้ — ส่งกำลังใจแทนได้');
+    render(); return;
+  }
+  if (res.error === 'TOO_LONG') { toast(`ข้อความยาวเกิน ${MESSAGE_MAX_CHARS} ตัวอักษร`); return; }
+  if (res.error) { toast('ส่งไม่สำเร็จ'); return; }
+  msg.value = '';
+  msg.style.height = 'auto';
+  renderMessageCount();
+  render();
+}
+$('send').addEventListener('click', send);
+msg.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
+});
+
+$('saveMyCharacter').addEventListener('click', async () => {
+  const button = $('saveMyCharacter'); button.disabled = true;
+  const result = await updatePartyIdentity(code, {
+    alias: $('myAliasInput').value,
+    avatar: $('myAvatarSelect').value,
+    avatarColor: $('myColorSelect').value,
+  });
+  button.disabled = false;
+  if (result.error) { toast('ยังเปลี่ยนตัวละครสมุดนี้ไม่ได้'); return; }
+  render(); toast('เปลี่ยนตัวละครเฉพาะสมุดนี้แล้ว');
+});
+
+/* ---------- lead-only party tools ---------- */
+async function runTool(button, task, success) {
+  button.disabled = true;
+  const result = await task();
+  button.disabled = false;
+  if (result.error) {
+    const messages = {
+      CARD_IN_USE: 'การ์ดใบนี้กำลังอยู่ใน Active role อื่น',
+      PARTY_CLOSED: 'สมุดนี้ปิดแล้ว',
+      LEAD_REQUIRED: 'เฉพาะเจ้าของสมุดเท่านั้น',
+    };
+    toast(messages[result.error] || 'ยังบันทึกการเปลี่ยนแปลงไม่ได้');
+    return result;
+  }
+  render(); toast(success); return result;
+}
+
+$('renameBtn').addEventListener('click', () => runTool(
+  $('renameBtn'), () => renameParty(code, $('renameInput').value), 'เปลี่ยนชื่อสมุดแล้ว · เก็บ Event ไว้แล้ว',
+));
+$('ruleBtn').addEventListener('click', () => runTool(
+  $('ruleBtn'), () => manageParty(code, 'change_rule', { commitRule: $('ruleInput').value }), 'เปลี่ยนกติกาแล้ว · ประวัติเดิมยังอยู่',
+));
+$('leadBtn').addEventListener('click', () => runTool(
+  $('leadBtn'), () => $('leadSelect').value === 'back'
+    ? manageParty(code, 'change_cover', { coverType: 'card_back' })
+    : changeLeadCard(code, $('leadSelect').value), 'เปลี่ยนปกสมุดแล้ว',
+));
+$('npcBtn').addEventListener('click', () => {
+  const [kind, value] = String($('npcSelect').value || '').split(':');
+  return runTool(
+    $('npcBtn'),
+    () => kind === 'card' ? changeNpcCard(code, value, null)
+      : changeNpcCard(code, null, kind === 'pet' ? value : null),
+    'เปลี่ยนเพื่อนร่วมทางแล้ว',
+  );
+});
+
+function twoTap(button, armedText, action) {
+  const original = button.textContent; let armed = false;
+  button.addEventListener('click', async () => {
+    if (!armed) {
+      armed = true; button.textContent = armedText;
+      setTimeout(() => { if (armed) { armed = false; button.textContent = original; } }, 5000);
+      return;
+    }
+    armed = false; button.disabled = true;
+    await action();
+    if (document.contains(button)) { button.disabled = false; button.textContent = original; }
+  });
+}
+
+twoTap($('completeParty'), 'กดอีกครั้งเพื่อยืนยันปิดเล่ม', async () => {
+  const result = await finishParty(code, 'complete');
+  if (result.error === 'QUEST_NOT_FINISHED') { toast('ยังไม่ครบระยะของเล่ม · ปุ่มจะเปิดเมื่อครบวัน'); render(); return; }
+  if (result.error) { toast('ยังปิดเล่มไม่ได้'); return; }
+  const reward = cardRewardForQuest(`party-complete:${code}`, code);
+  if (reward) location.href = `/reveal/?r=${encodeURIComponent(reward.rewardId)}`;
+  else { render(); toast('จบสมุดแล้ว'); }
+});
+
+twoTap($('dissolveParty'), 'แน่ใจ? กดอีกครั้งเพื่อปิดสมุด', async () => {
+  const result = await finishParty(code, 'dissolve');
+  if (result.error) { toast('ยังปิดสมุดไม่ได้'); return; }
+  render(); toast('ปิดสมุดแล้ว · Ending เก็บว่าเป็นการจบก่อนกำหนด');
+});
+
+$('downloadEnding').addEventListener('click', () => downloadEndingMarkdown(getParty(code)));
+$('rewardButton').addEventListener('click', () => {
+  if (terminalReward) location.href = `/reveal/?r=${encodeURIComponent(terminalReward.rewardId)}`;
+});
+
+$('copy').addEventListener('click', async () => {
+  const inviteUrl = `${location.origin}/join/?c=${encodeURIComponent(getParty(code).code)}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: `เข้าร่วมสมุด ${getParty(code).name}`, text: `รหัสสมุด ${getParty(code).code}`, url: inviteUrl });
+      return;
+    }
+    await navigator.clipboard.writeText(`${getParty(code).code}\n${inviteUrl}`);
+    toast('คัดลอกรหัสกับลิงก์แล้ว — ส่งให้เพื่อนได้เลย');
+  } catch {
+    toast('รหัสสมุด: ' + getParty(code).code);
+  }
+});
+
+$('refresh').addEventListener('click', async () => {
+  $('refresh').disabled = true;
+  const result = await refreshParty(code);
+  $('refresh').disabled = false;
+  if (result.error) { toast('ยังดึงอัปเดตไม่ได้'); return; }
+  myId = (partyIdentity(code) && partyIdentity(code).userId) || myId;
+  render();
+  toast(result.party.log.length ? 'ตามสมุดทันแล้ว' : 'ยังไม่มีอัปเดตใหม่');
+});
+
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState !== 'visible') return;
+  const result = await refreshParty(code);
+  if (!result.error) render();
+});
+
+if (new URLSearchParams(location.search).get('new') === '1') {
+  toast('เปิดสมุดเรียบร้อย — ส่งรหัสให้เพื่อนได้เลย');
+}
+</script>
+</body>
+</html>

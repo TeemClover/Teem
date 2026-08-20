@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta name="googlebot" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/brand/teambook-mark-256.png">
+<link rel="apple-touch-icon" href="/assets/brand/teambook-icon-180.png">
+<meta name="theme-color" content="#FFF9E9">
+<title>สมุดสาธารณะ — TeamBook</title>
+<link rel="canonical" href="https://teambook.me/public/">
+<!-- TEAMBOOK SOCIAL SHARE -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TeamBook">
+<meta property="og:title" content="สมุดสาธารณะ — TeamBook">
+<meta property="og:description" content="สมุดที่เปิดให้คนอื่นขอเข้าร่วม หาเล่มที่อยากเขียนด้วยกันได้ที่นี่">
+<meta property="og:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:secure_url" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="สมุดสาธารณะ — TeamBook">
+<meta name="twitter:description" content="สมุดที่เปิดให้คนอื่นขอเข้าร่วม หาเล่มที่อยากเขียนด้วยกันได้ที่นี่">
+<meta name="twitter:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta name="twitter:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<!-- /TEAMBOOK SOCIAL SHARE -->
+<link rel="stylesheet" href="/_shared/xty.css?v=8">
+<link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<style>
+.public-filters{display:flex;align-items:center;justify-content:flex-end;margin:14px 0 16px}
+.public-filter-toggle{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--xty-border);border-radius:999px;background:var(--xty-surface);color:var(--xty-ink);font-weight:750;line-height:1.2;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.public-filter-toggle input{position:absolute;opacity:0;pointer-events:none}
+.public-filter-switch{position:relative;width:38px;height:22px;flex:none;border:1px solid var(--xty-border);border-radius:999px;background:#ddd5c8;transition:.18s ease}
+.public-filter-switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.18s ease}
+.public-filter-toggle input:checked+.public-filter-switch{background:var(--xty-green);border-color:var(--xty-green)}
+.public-filter-toggle input:checked+.public-filter-switch::after{transform:translateX(16px)}
+.public-filter-toggle:has(input:focus-visible){outline:2px solid var(--xty-green);outline-offset:2px}
+@media(max-width:480px){.public-filters{justify-content:flex-start}.public-filter-toggle{font-size:14px}}
+</style>
+<!-- TEAMBOOK SEO SCHEMA -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"สมุดสาธารณะ — TeamBook","url":"https://teambook.me/public/","description":"เปิดดูสมุดสาธารณะ อ่านรายละเอียดและเรื่องในสมุด ก่อนตัดสินใจว่าจะเข้าร่วมไหม","image":"https://teambook.me/assets/brand/teambook-og-1200x630.jpg"}</script>
+<!-- /TEAMBOOK SEO SCHEMA -->
+<script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
+</head>
+<body>
+<header class="top"><a class="mark" href="/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a><a class="back" href="/">กลับ Home</a></header>
+<main class="wrap">
+  <p class="kicker">สมุดสาธารณะ</p>
+  <h1 class="title">หาสมุดที่อยากลงมือทำด้วยกัน</h1>
+  <p class="lede">เปิดดูรายละเอียดและอ่าน เรื่องในสมุด ย้อนหลังก่อนได้ แล้วค่อยตัดสินใจว่าจะเข้าร่วมไหม</p>
+  <div class="public-filters">
+    <label class="public-filter-toggle">
+      <input type="checkbox" id="hideFull">
+      <span class="public-filter-switch" aria-hidden="true"></span>
+      <span>ซ่อนสมุดที่เต็มแล้ว</span>
+    </label>
+  </div>
+  <div class="public-list" id="list"><div class="empty">กำลังหาสมุดที่ยังรับสมาชิก…</div></div>
+  <button class="btn ghost" id="more" hidden>ดูเพิ่ม</button>
+  <p class="note">สมุดสาธารณะเปิดให้อ่านเฉพาะข้อมูลในสมุดและ เรื่องในสมุด · Email, token และข้อมูลบัญชีไม่ถูกเปิดเผย</p>
+</main>
+
+<script type="module">
+import { bookActivityLine } from '/_shared/book-mode.js';
+import { avatarById } from '/_shared/avatars.js';
+import { cardById } from '/_shared/cards.js';
+import { cardMarkup } from '/_shared/card-ui.js';
+
+const $ = id => document.getElementById(id);
+const HIDE_FULL_KEY = 'teambook_public_hide_full';
+let cursor = null;
+let loadedParties = [];
+const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+function readHideFull() {
+  try {
+    const saved = localStorage.getItem(HIDE_FULL_KEY);
+    return saved === null ? true : saved === '1';
+  } catch { return true; }
+}
+
+function saveHideFull(value) {
+  try { localStorage.setItem(HIDE_FULL_KEY, value ? '1' : '0'); } catch {}
+}
+
+function isFull(party) {
+  const members = Number(party.memberCount || 0);
+  const max = Number(party.maxMembers || 0);
+  return max > 0 && members >= max;
+}
+
+function coverMarkup(party) {
+  const card = cardById(party.coverValue);
+  if (card) return cardMarkup(card);
+  if (party.coverType === 'card_back') return '<div class="animal-card card-back"><span class="back-mark">TB</span><small>CARD BACK</small></div>';
+  let snapshot = { species: party.lead.avatar, color: party.lead.avatarColor };
+  try { snapshot = { ...snapshot, ...JSON.parse(party.coverValue || '{}') }; } catch {}
+  const avatar = avatarById(snapshot.species);
+  return `<div class="avatar-cover" data-color="${esc(snapshot.color || 'green')}" aria-label="Starter · ${esc(avatar.nameTh)}"><img src="${avatar.art}" alt=""></div>`;
+}
+
+function partyMarkup(party) {
+  const mode = party.verificationMode === 'confirm' ? 'ต้อง เห็นแล้ว' : 'เชื่อใจกัน';
+  return `${coverMarkup(party)}<div><span class="status-pill">${mode}</span><h2>${esc(party.name)}</h2>`
+    + `<p>${esc(bookActivityLine(party, 'กิจกรรมที่ตกลงกันในสมุด'))}</p>`
+    + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · ${party.memberCount}/${party.maxMembers} คน · วันนี้ลงชื่อ ${party.todayCommitCount} คน</p>`
+    + `<p class="whisper">Lead: ${esc(party.lead.alias)}</p>`
+    + `<a class="btn ghost sm" href="/public/p/?c=${encodeURIComponent(party.code)}">ดูรายละเอียด · อ่าน เรื่องในสมุด</a>`
+    + '</div>';
+}
+
+function renderParties() {
+  const list = $('list');
+  const hideFull = $('hideFull').checked;
+  const visible = hideFull ? loadedParties.filter(party => !isFull(party)) : loadedParties;
+  list.innerHTML = '';
+
+  visible.forEach(party => {
+    const article = document.createElement('article');
+    article.className = 'card public-party';
+    article.innerHTML = partyMarkup(party);
+    list.appendChild(article);
+  });
+
+  if (list.children.length) return;
+  const hiddenCount = hideFull ? loadedParties.filter(isFull).length : 0;
+  if (hiddenCount && cursor) {
+    list.innerHTML = '<div class="empty">สมุดที่โหลดมาตอนนี้เต็มแล้วและถูกซ่อนอยู่ · กดดูเพิ่มเพื่อหาสมุดที่ยังมีที่ว่าง</div>';
+  } else if (hiddenCount) {
+    list.innerHTML = '<div class="empty">ตอนนี้สมุดสาธารณะที่พบเต็มแล้ว · ปิดตัวกรองเพื่อดูสมุดทั้งหมดได้</div>';
+  } else {
+    list.innerHTML = '<div class="empty">ยังไม่มีสมุดสาธารณะที่เข้าร่วมได้</div>';
+  }
+}
+
+async function load({ append = false } = {}) {
+  $('more').disabled = true;
+  const url = new URL('/api/teambook/public', location.origin);
+  if (cursor) url.searchParams.set('cursor', cursor);
+  try {
+    const response = await fetch(url, { headers: { accept: 'application/json' }, credentials: 'same-origin' });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'HTTP');
+    loadedParties = append ? [...loadedParties, ...data.parties] : [...data.parties];
+    cursor = data.nextCursor;
+    renderParties();
+    $('more').hidden = !cursor;
+  } catch {
+    if (!append) $('list').innerHTML = '<div class="empty">ยังเปิด Lobby ไม่สำเร็จ · ลองใหม่อีกครั้ง</div>';
+  }
+  $('more').disabled = false;
+}
+
+$('hideFull').checked = readHideFull();
+$('hideFull').addEventListener('change', event => {
+  saveHideFull(event.target.checked);
+  renderParties();
+});
+$('more').addEventListener('click', () => load({ append: true }));
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+/* TeamBook Ending mobile — keep the real ending card centered inside the viewport. */
+@media (max-width:640px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden}
+  .ending-shell{box-sizing:border-box!important;width:100%!important;max-width:100%!important;margin:0 auto!important;padding-left:18px!important;padding-right:18px!important;overflow-x:hidden!important}
+  .ending-hero{box-sizing:border-box!important;width:100%!important;max-width:100%!important;grid-template-columns:minmax(0,1fr)!important;gap:30px!important}
+  .ending-hero>div,.ending-hero>figure{box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;margin-left:auto!important;margin-right:auto!important}
+  .ending-hero>figure{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;padding:0!important;overflow:visible!important}
+  .ending-art-card{box-sizing:border-box!important;width:100%!important;max-width:420px!important;margin:0 auto!important;left:auto!important;right:auto!important;transform:none!important}
+  .ending-art-card img{display:block!important;width:100%!important;max-width:100%!important;height:100%!important;margin:0 auto!important}
+  .ending-art-card::before{left:8px!important}
+  .ending-art-card::after{right:8px!important}
+  .ratio-note{width:100%!important;max-width:420px!important;margin-left:auto!important;margin-right:auto!important;text-align:center!important}
+}

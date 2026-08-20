@@ -1,0 +1,107 @@
+import {
+  cardById, cardDescriptorTh,
+} from './cards.js';
+
+if (typeof document !== 'undefined' && !document.getElementById('xty-canonical-back-style')) {
+  const style = document.createElement('style');
+  style.id = 'xty-canonical-back-style';
+  style.textContent = `
+    .animal-card.card-back{
+      aspect-ratio:var(--xty-card-aspect)!important;
+      display:grid!important;
+      place-content:center!important;
+      gap:8px!important;
+      color:#f6e8bd!important;
+      text-align:center!important;
+      background:radial-gradient(circle at 50% 38%,#245b3b 0,#123421 48%,#071d12 100%)!important;
+      border:3px solid #be9442!important;
+      overflow:hidden;
+    }
+    .animal-card.card-back>.back-mark{display:block!important;font:900 28px/1 var(--sans);letter-spacing:.08em}
+    .animal-card.card-back>small{display:block!important;font:800 9px/1 var(--sans);letter-spacing:.2em}
+  `;
+  document.head.appendChild(style);
+}
+
+if (typeof document !== 'undefined' && !document.getElementById('xty-clean-card-face-style')) {
+  const style = document.createElement('style');
+  style.id = 'xty-clean-card-face-style';
+  style.textContent = `
+    .animal-card .role-badge,.animal-card .color-badge,.animal-card .card-accessory,.animal-card .card-copy small{display:none!important}
+    .animal-card .card-copy{position:absolute!important;left:7px!important;right:7px!important;bottom:7px!important;z-index:5!important;display:block!important;margin:0!important;padding:4px 6px!important;text-align:center!important;border:0!important;border-radius:8px!important;background:rgba(255,254,248,.91)!important;box-shadow:none!important}
+    .animal-card .card-copy b{display:block!important;overflow:hidden!important;color:var(--xty-ink)!important;font-size:clamp(10px,3vw,14px)!important;line-height:1.25!important;font-weight:800!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+    .animal-card .rarity-badge{top:auto!important;right:50%!important;bottom:8px!important;left:auto!important;transform:translateX(50%)!important;z-index:6!important;min-width:0!important;padding:4px 8px!important;font-size:7px!important;line-height:1!important;letter-spacing:.11em!important;text-align:center!important;white-space:nowrap!important}
+    .animal-card .card-art{margin:0!important;width:100%!important;height:100%!important;object-fit:cover!important}
+  `;
+  document.head.appendChild(style);
+}
+
+if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover-size-style')) {
+  const style = document.createElement('style');
+  style.id = 'xty-party-cover-size-style';
+  style.textContent = `
+    :root{--xty-party-cover-size:132px;--xty-party-cover-aspect:var(--xty-card-aspect)}
+    .public-party{grid-template-columns:var(--xty-party-cover-size) minmax(0,1fr)!important;gap:14px!important;align-items:center!important}
+    .public-party>:first-child{width:var(--xty-party-cover-size)!important;max-width:none!important;min-width:0!important;height:auto!important;aspect-ratio:var(--xty-card-aspect)!important;overflow:hidden!important;border-radius:14px!important}
+    .public-party>:first-child>svg,.public-party>:first-child>img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important}
+    .preview-hero{grid-template-columns:var(--xty-party-cover-size) minmax(0,1fr)!important;gap:16px!important;align-items:center!important}
+    .preview-cover{width:var(--xty-party-cover-size)!important;max-width:none!important;min-width:0!important;height:auto!important;aspect-ratio:var(--xty-card-aspect)!important;overflow:hidden!important;border-radius:14px!important}
+    .preview-cover>*{width:100%!important;height:100%!important;max-width:none!important;aspect-ratio:var(--xty-card-aspect)!important}.preview-cover svg,.preview-cover img{display:block!important;object-fit:cover!important}
+    .xty-home-cover.avatar-cover,.public-party>.avatar-cover,.preview-cover>.avatar-cover{--cover-accent:var(--xty-green);position:relative!important;display:block!important;padding:0!important;aspect-ratio:var(--xty-card-aspect)!important;border:3px solid var(--cover-accent)!important;border-radius:16px!important;background:#FFF4C8!important;box-shadow:3px 4px 0 rgba(62,51,44,.12)!important;overflow:hidden!important}
+    .xty-home-cover.avatar-cover[data-color="red"],.public-party>.avatar-cover[data-color="red"],.preview-cover>.avatar-cover[data-color="red"]{--cover-accent:var(--xty-red)}
+    .xty-home-cover.avatar-cover[data-color="blue"],.public-party>.avatar-cover[data-color="blue"],.preview-cover>.avatar-cover[data-color="blue"]{--cover-accent:var(--xty-blue)}
+    .xty-home-cover.avatar-cover[data-color="silver"],.public-party>.avatar-cover[data-color="silver"],.preview-cover>.avatar-cover[data-color="silver"]{--cover-accent:var(--xty-silver)}
+    .xty-home-cover.avatar-cover>img,.public-party>.avatar-cover>img,.preview-cover>.avatar-cover>img{display:block!important;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;border-radius:9px!important;background:#FFFEF8!important}
+    .xty-home-cover.avatar-cover>b,.public-party>.avatar-cover>b,.preview-cover>.avatar-cover>b{position:absolute!important;left:7px!important;right:7px!important;bottom:21px!important;display:block!important;margin:0!important;padding:0!important;color:var(--xty-ink)!important;font-size:13px!important;font-weight:800!important;line-height:1.15!important;text-align:center!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;background:transparent!important}
+    .xty-home-cover.avatar-cover::after,.public-party>.avatar-cover::after,.preview-cover>.avatar-cover::after{content:'STARTER';position:absolute;left:50%;bottom:7px;transform:translateX(-50%);padding:3px 7px;border-radius:999px;background:rgba(255,254,248,.92);color:var(--xty-muted);font:800 7px/1 var(--sans);letter-spacing:.12em;white-space:nowrap}
+    .xty-home-cover.avatar-cover small,.public-party>.avatar-cover small,.preview-cover>.avatar-cover small{display:none!important}
+    @media(max-width:480px){:root{--xty-party-cover-size:124px}}@media(max-width:340px){:root{--xty-party-cover-size:110px}}
+  `;
+  document.head.appendChild(style);
+}
+
+if (typeof location !== 'undefined' && /^\/p(?:\/|$)/.test(location.pathname)) {
+  import('./party-enhancements.js').catch(error => console.warn('TeamBook party enhancements unavailable', error));
+  import('./party-profile-covers.js').catch(error => console.warn('TeamBook profile/cover layer unavailable', error));
+  import('./party-log-viewport.js').catch(error => console.warn('TeamBook party log viewport unavailable', error));
+  import('./party-event-copy-v2.js').catch(error => console.warn('TeamBook party event copy unavailable', error));
+  import('./party-pet-seat-v2.js').catch(error => console.warn('TeamBook pet seat unavailable', error));
+  import('./party-self-status.js?v=20260820-disabled2').catch(error => console.warn('TeamBook self status compatibility stub unavailable', error));
+  import('./party-invite-copy.js').catch(error => console.warn('TeamBook party invite copy unavailable', error));
+  import('./party-log-export.js').catch(error => console.warn('TeamBook party log export unavailable', error));
+  import('./collection-skin-picker.js').catch(error => console.warn('TeamBook Collection skin picker unavailable', error));
+}
+if (typeof location !== 'undefined' && /^\/new(?:\/|$)/.test(location.pathname)) {
+  import('./new-cover-v3.js').catch(error => console.warn('TeamBook cover picker unavailable', error));
+  import('./new-cover-size-fix.js').catch(error => console.warn('TeamBook cover size guard unavailable', error));
+  import('./collection-skin-picker.js').catch(error => console.warn('TeamBook Collection skin picker unavailable', error));
+  import('./new-capacity-guard.js?v=20260820-1').catch(error => console.warn('TeamBook capacity guard unavailable', error));
+}
+if (typeof location !== 'undefined' && /^\/collection(?:\/|$)/.test(location.pathname)) {
+  import('/assets/account.js?v=20260820-account1').catch(error => console.warn('TeamBook account unavailable', error));
+}
+if (typeof location !== 'undefined' && location.pathname === '/') {
+  await import('./home-canonical-guard.js?v=20260820-1').catch(error => console.warn('TeamBook home canonical guard unavailable', error));
+  await import('./home-cover-v3.js?v=20260820-daily2').catch(error => console.warn('TeamBook home cover layer unavailable', error));
+  await import('./home-daily-meta.js?v=20260820-2').catch(error => console.warn('TeamBook home daily metadata unavailable', error));
+  await import('./home-card-ratio-fix.js?v=20260820-1').catch(error => console.warn('TeamBook home card ratio guard unavailable', error));
+  await import('./home-self-status.js?v=20260820-4').catch(error => console.warn('TeamBook home self status unavailable', error));
+  import('./home-carousel-desktop.js').catch(error => console.warn('TeamBook desktop carousel controls unavailable', error));
+}
+
+export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
+  const card = typeof cardOrId === 'string' ? cardById(cardOrId) : cardOrId;
+  if (!card) return '';
+  const classes = ['animal-card'];
+  if (role === 'lead') classes.push('lead-card');
+  if (role === 'npc' || role === 'pet') classes.push('companion-card');
+  if (foil) classes.push('foil-once');
+  classes.push(`rarity-${card.rarity || 'common'}`);
+  return `<div class="${classes.join(' ')}" data-color="${card.color}" data-species="${card.species}" aria-label="${cardDescriptorTh(card)}">`
+    + `<img class="card-art" src="${card.imageFull || card.art}" alt="" width="630" height="880" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`
+    + '</div>';
+}
+
+export function cardStatusLabel(status) {
+  return ({ AVAILABLE: 'พร้อมใช้งาน', AVATAR_IN_USE: 'ใช้อยู่เป็นสัตว์', IN_PARTY: 'ใช้อยู่เป็นปกสมุด', NPC_IN_PARTY: 'ใช้อยู่เป็นเพื่อนร่วมทาง' })[status] || 'เก็บในคอลเลกชัน';
+}

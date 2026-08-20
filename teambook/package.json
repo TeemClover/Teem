@@ -1,0 +1,14 @@
+{
+  "name": "teambook",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --experimental-test-module-mocks _shared/*.test.mjs tests/*.test.mjs",
+    "test:smoke": "node --test tests/*.test.mjs",
+    "check:assets": "node scripts/check-assets.mjs && node scripts/check-registry-assets.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "1.1.0",
+    "@vercel/blob": "^2.8.0"
+  }
+}
