@@ -12,8 +12,8 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 12, epic: 12, legendary: 8 });
-  assert.equal(TEAMBOOK_CARDS.length, 96);
+  assert.deepEqual(by, { common: 64, rare: 12, epic: 4, legendary: 8 });
+  assert.equal(TEAMBOOK_CARDS.length, 88);
 });
 
 test('no starter animal is printed as a card, and every card has a colour', () => {

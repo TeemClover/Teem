@@ -80,9 +80,23 @@ test('runtime source has no CORE7 or legacy data boundary', () => {
       `${relative(ROOT, path)} imports CORE7`);
     assert.doesNotMatch(source, /process\.env\.DATABASE_URL\b/,
       `${relative(ROOT, path)} can fall back to a shared database`);
+    assert.doesNotMatch(source, /process\.env\.FIRST_CLASS_FROM_EMAIL\b/,
+      `${relative(ROOT, path)} can fall back to a legacy sender`);
     assert.doesNotMatch(source, /localStorage\.(?:getItem|setItem|removeItem)\(['"]mc_/,
       `${relative(ROOT, path)} reads a legacy browser namespace`);
   }
+});
+
+test('published card catalog references only shipped binary art', async () => {
+  const { TEAMBOOK_CARDS } = await import('../_shared/cards.js');
+  for (const card of TEAMBOOK_CARDS) {
+    for (const key of ['art', 'image', 'imageThumb', 'imageFull']) {
+      if (!card[key]?.startsWith('/assets/')) continue;
+      const path = join(ROOT, card[key].slice(1));
+      assert.ok(statSync(path).size > 0, `${card.cardId}.${key} points to an empty asset`);
+    }
+  }
+  assert.equal(TEAMBOOK_CARDS.some(card => /epic\/(?:orange-cat|white-cat)-/.test(card.art || '')), false);
 });
 
 test('native clients can use a TeamBook bearer session', () => {
@@ -102,7 +116,11 @@ test('preview readiness reports database, Groq, Blob and cron configuration', ()
 });
 
 test('runtime copy and PET prompts contain no myClover identity', () => {
-  for (const path of textFiles.filter(file => !file.includes('/tests/') && !file.endsWith('.test.mjs'))) {
+  for (const path of textFiles.filter(file => {
+    const label = relative(ROOT, file);
+    return !label.startsWith('tests/') && !label.startsWith('scripts/')
+      && !label.startsWith('docs/') && !file.endsWith('.test.mjs');
+  })) {
     const source = readFileSync(path, 'utf8');
     assert.doesNotMatch(source, /TeemClover|myClover|CloverX/,
       `${relative(ROOT, path)} contains a legacy identity`);

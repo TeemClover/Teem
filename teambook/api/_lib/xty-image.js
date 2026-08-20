@@ -2,7 +2,7 @@
    TeamBook — chat image intake
 
    The browser already shrinks every picture to a small WebP before it
-   gets here (see xty/_shared/image-compress.js). This module does not
+   gets here (see /_shared/image-compress.js). This module does not
    trust that: it sniffs the real bytes, refuses anything that is not a
    raster photo, and stores it under a content type we chose rather than
    one the client asked for.
@@ -76,7 +76,7 @@ export function isCredentialError(error) {
 export async function storePartyImage(partyCode, decoded) {
   const extension = decoded.contentType === 'image/png' ? 'png'
     : (decoded.contentType === 'image/jpeg' ? 'jpg' : 'webp');
-  const result = await put(`xty/${partyCode}/${Date.now()}.${extension}`, decoded.buffer, {
+  const result = await put(`teambook/${partyCode}/${Date.now()}.${extension}`, decoded.buffer, {
     access: 'public',
     contentType: decoded.contentType,
     /* Names collide across a party otherwise — two members posting in the

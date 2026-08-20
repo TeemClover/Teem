@@ -22,7 +22,7 @@ function otpMatches(value, row) {
 
 async function sendOtpEmail(email, otp) {
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.TEAMBOOK_FROM_EMAIL || process.env.FIRST_CLASS_FROM_EMAIL;
+  const from = process.env.TEAMBOOK_FROM_EMAIL;
   if (!key || !from) return { ok: false, error: 'EMAIL_DELIVERY_NOT_CONFIGURED' };
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
