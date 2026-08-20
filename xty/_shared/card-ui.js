@@ -166,13 +166,13 @@ if (typeof location !== 'undefined' && /^\/xty\/collection(?:\/|$)/.test(locatio
   import('/assets/account.js?v=20260818-save5').catch(error => console.warn('myClover SAVE unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
-  /* Home used to paint the legacy main-party layout first and dynamically
-     import the carousel afterward, producing a visible size jump. Await the
-     canonical renderer here: any module importing card-ui on Home cannot run
-     its own paint until the carousel CSS/observer are already installed. */
-  await import('./home-cover-v3.js?v=20260820-stable2').catch(error => console.warn('XTY home cover layer unavailable', error));
+  /* Home has one canonical renderer. Install its write guard before the
+     index page continues so the old fallback renderer can never tear the
+     carousel out for a frame on Safari. */
+  await import('./home-canonical-guard.js?v=20260820-1').catch(error => console.warn('XTY home canonical guard unavailable', error));
+  await import('./home-cover-v3.js?v=20260820-stable3').catch(error => console.warn('XTY home cover layer unavailable', error));
   await import('./home-card-ratio-fix.js?v=20260820-1').catch(error => console.warn('XTY home card ratio guard unavailable', error));
-  import('./home-self-status.js?v=20260820-1').catch(error => console.warn('XTY home self status unavailable', error));
+  await import('./home-self-status.js?v=20260820-2').catch(error => console.warn('XTY home self status unavailable', error));
   import('./home-carousel-desktop.js').catch(error => console.warn('XTY desktop carousel controls unavailable', error));
 }
 
