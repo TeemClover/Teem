@@ -2,16 +2,166 @@
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Command Center V.2 · TeemClover</title>
-  <meta name="robots" content="noindex,follow">
-  <meta http-equiv="refresh" content="0;url=https://myclover-command-center.teemclover.chatgpt.site/command">
-  <link rel="canonical" href="https://myclover-command-center.teemclover.chatgpt.site/command">
-  <script>
-    window.location.replace('https://myclover-command-center.teemclover.chatgpt.site/command');
-  </script>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#090b10">
+  <title>Empire Command Center · myClover</title>
+  <style>
+    :root{
+      --bg:#090b10;--panel:#11151d;--panel2:#171c26;--line:#2d3442;--ink:#f4f0e6;
+      --muted:#9da6b5;--gold:#d8b45e;--gold2:#9c7931;--red:#c84b45;--green:#64bd83;
+      --blue:#6d9ee8;--shadow:0 24px 70px rgba(0,0,0,.38);--r:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(circle at 18% -10%,rgba(216,180,94,.13),transparent 30%),radial-gradient(circle at 90% 20%,rgba(200,75,69,.08),transparent 25%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Noto Sans Thai",sans-serif;min-height:100vh}
+    a{color:inherit}
+    button,input,textarea{font:inherit}
+    .shell{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:24px 0 80px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 22px;border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:12px}.sigil{width:36px;height:36px;border:1px solid var(--gold2);border-radius:10px;display:grid;place-items:center;color:var(--gold);font-weight:900;box-shadow:inset 0 0 18px rgba(216,180,94,.08)}
+    .brand strong{display:block;font-size:15px;letter-spacing:.13em}.brand small{display:block;color:var(--muted);margin-top:2px}
+    .status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 18px rgba(100,189,131,.8)}
+    .hero{display:grid;grid-template-columns:320px 1fr;gap:30px;align-items:center;padding:46px 0 32px}
+    .keycard{background:linear-gradient(145deg,#161a22,#0e1118);border:1px solid #343b49;border-radius:28px;padding:16px;box-shadow:var(--shadow);position:relative}
+    .keycard:before{content:"KEY CARD";position:absolute;top:18px;left:18px;z-index:2;background:rgba(9,11,16,.88);border:1px solid var(--gold2);color:var(--gold);font-size:10px;font-weight:900;letter-spacing:.18em;padding:7px 9px;border-radius:999px}
+    .keycard img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:18px;display:block;background:#0d1016}
+    .key-meta{padding:14px 4px 3px}.key-meta strong{font-size:18px}.key-meta span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+    .eyebrow{color:var(--gold);font-size:12px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;margin:0 0 12px}
+    h1{font-size:clamp(42px,6.5vw,78px);line-height:.98;letter-spacing:-.045em;margin:0 0 18px;max-width:820px}
+    .hero-copy>p:not(.eyebrow){font-size:clamp(17px,2vw,21px);line-height:1.7;color:#c7ced9;max-width:760px;margin:0}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}.btn{border:1px solid var(--line);background:#171c26;color:var(--ink);min-height:48px;padding:0 18px;border-radius:14px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(135deg,#d8b45e,#a67e2e);color:#151107;border-color:#e3c26c}.btn:hover{transform:translateY(-1px)}
+    .section{padding:34px 0}.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}.section h2{font-size:28px;margin:0}.section-head p{margin:0;color:var(--muted);font-size:13px}
+    .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.mode{border:1px solid var(--line);border-radius:var(--r);padding:20px;background:linear-gradient(160deg,var(--panel2),var(--panel));cursor:pointer;min-height:188px;position:relative}.mode:hover,.mode.active{border-color:var(--gold2);box-shadow:inset 0 0 0 1px rgba(216,180,94,.16)}.mode .num{font-size:11px;color:var(--gold);font-weight:900;letter-spacing:.2em}.mode h3{font-size:26px;margin:10px 0 8px}.mode p{margin:0;color:var(--muted);line-height:1.6;font-size:14px}.mode b{position:absolute;right:16px;bottom:14px;color:#687284;font-size:11px;letter-spacing:.12em}
+    .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.console,.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);padding:20px}.console{box-shadow:var(--shadow)}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.06em}.field input,.field textarea{width:100%;border:1px solid #323a48;background:#0d1016;color:var(--ink);border-radius:12px;padding:12px 13px;outline:none}.field textarea{min-height:86px;resize:vertical}.field input:focus,.field textarea:focus{border-color:var(--gold2)}
+    .dispatch{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.dispatch .btn{width:100%}.hint{font-size:12px;color:var(--muted);line-height:1.6;margin:12px 0 0}.toast{display:none;margin-top:12px;padding:10px 12px;border-radius:11px;background:#15251b;color:#a8e2bb;border:1px solid #2c6040;font-size:13px}.toast.show{display:block}
+    .links{display:grid;gap:10px}.quick{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);background:#0e1219;border-radius:14px;padding:14px;text-decoration:none}.quick strong{display:block}.quick span{color:var(--muted);font-size:12px}.quick i{font-style:normal;color:var(--gold);font-weight:900}
+    .modules{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.module{border:1px solid var(--line);background:#0f131a;border-radius:16px;padding:14px;min-height:124px}.module b{display:block;font-size:14px}.module p{font-size:12px;line-height:1.55;color:var(--muted);margin:8px 0 0}.module .tag{font-size:9px;color:var(--gold);letter-spacing:.15em;margin-bottom:8px;display:block}
+    .brief{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.brief div{border-top:2px solid var(--gold2);padding:14px;background:#0f131a;border-radius:0 0 14px 14px;color:#cbd2dc;font-size:13px;line-height:1.5}.brief strong{display:block;color:var(--ink);font-size:20px;margin-bottom:4px}
+    .ops{margin-top:14px;display:grid;gap:8px}.oprow{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;border-bottom:1px solid #242b36;padding:9px 0;font-size:12px}.oprow:last-child{border-bottom:0}.oprow .opmode{color:var(--gold);font-weight:900}.oprow .opgoal{color:#c8cfda;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.oprow time{color:#697383}
+    footer{margin-top:42px;padding-top:20px;border-top:1px solid var(--line);color:#6f7888;font-size:12px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    @media(max-width:900px){.hero{grid-template-columns:220px 1fr}.modes{grid-template-columns:1fr}.modules{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.brief{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:640px){.shell{width:min(100% - 20px,1180px);padding-top:12px}.topbar{align-items:flex-start}.status{display:none}.hero{grid-template-columns:1fr;padding-top:24px}.keycard{max-width:280px;margin:0 auto}.hero-copy{text-align:center}h1{font-size:48px}.hero-actions{justify-content:center}.form-grid,.dispatch{grid-template-columns:1fr}.modules,.brief{grid-template-columns:1fr 1fr}.section-head{align-items:flex-start;flex-direction:column}.oprow{grid-template-columns:84px 1fr}.oprow time{display:none}}
+  </style>
 </head>
 <body>
-  <p>กำลังพาไป Command Center V.2… <a href="https://myclover-command-center.teemclover.chatgpt.site/command">กดที่นี่หากหน้าไม่เปลี่ยนอัตโนมัติ</a></p>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="sigil">MC</div><div><strong>MYCLOVER EMPIRE</strong><small>Command Center · control plane</small></div></div>
+      <div class="status"><span class="dot"></span>CONTROL PLANE ONLINE</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="keycard">
+          <img src="https://tcgplayer-cdn.tcgplayer.com/product/454212_in_1000x1000.jpg" alt="Command and Conquer Marvel — Flesh and Blood" referrerpolicy="no-referrer">
+          <div class="key-meta"><strong>Command and Conquer · Marvel</strong><span>Flesh and Blood · การ์ดที่ใช้เปิด Command Center</span></div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">CREATE · EXPAND · CONQUER</p>
+          <h1>สั่งการอาณาจักรจากลิงก์เดียว</h1>
+          <p>นี่ไม่ใช่หน้ารวมลิงก์อีกแล้ว แต่เป็นประตูของ control plane: เลือกว่าจะสร้างของใหม่ ขยายของเดิม หรือยึดระบบเข้าจักรวาล จากนั้นสร้าง Operation Packet แล้วส่งต่อให้ Command Center หรือ Keen ด้วย source และ success check ที่ชัดเจน</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#dispatch">เริ่มสั่งการ</a>
+            <a class="btn" href="https://myclover-command-center.teemclover.chatgpt.site/command" target="_blank" rel="noopener">เปิด Command Center V.2 ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><p class="eyebrow">OPERATION MODE</p><h2>เลือกคำกริยาเดียวก่อนลงมือ</h2></div><p>งานทุกก้อนควรถูกลดให้เหลือ CREATE / EXPAND / CONQUER</p></div>
+        <div class="modes">
+          <article class="mode active" data-mode="CREATE" tabindex="0"><span class="num">01 · BUILD</span><h3>CREATE</h3><p>สร้าง project / route / system ใหม่จากศูนย์ พร้อมลงทะเบียน source, owner, next action และ metric ตั้งแต่วันแรก</p><b>สร้าง</b></article>
+          <article class="mode" data-mode="EXPAND" tabindex="0"><span class="num">02 · SCALE</span><h3>EXPAND</h3><p>ขยาย project เดิมโดยไม่ทำ canon หลุด: รู้ dependency, decision, queue, health และผลต่อ population ก่อนปล่อย</p><b>ขยาย</b></article>
+          <article class="mode" data-mode="CONQUER" tabindex="0"><span class="num">03 · ABSORB</span><h3>CONQUER</h3><p>ยึด รวม ย้าย หรือครอบระบบภายนอกเข้ามาอยู่ใต้ control plane เดียว พร้อม migration map และ success metric</p><b>ยึดครอง</b></article>
+        </div>
+      </section>
+
+      <section class="section" id="dispatch">
+        <div class="section-head"><div><p class="eyebrow">DISPATCH CONSOLE</p><h2>สร้าง Operation Packet</h2></div><p>ทุก packet ต้องมีเป้าหมาย source owner output และ success check</p></div>
+        <div class="grid2">
+          <div class="console">
+            <div class="form-grid">
+              <div class="field"><label>PROJECT / TARGET</label><input id="project" placeholder="เช่น TeamBook / Xircle / project ใหม่"></div>
+              <div class="field"><label>OWNER / AGENT</label><input id="owner" placeholder="Teem / Claude / Keen / AI agent"></div>
+              <div class="field full"><label>GOAL</label><textarea id="goal" placeholder="ต้องการให้เกิดผลลัพธ์อะไรจริง ๆ"></textarea></div>
+              <div class="field"><label>SOURCE TO OBEY</label><input id="source" placeholder="path / sauce / canon / source file"></div>
+              <div class="field"><label>SUCCESS CHECK</label><input id="success" placeholder="วัดว่างานนี้เสร็จและดีได้ยังไง"></div>
+              <div class="field full"><label>CONSTRAINT / DO NOT BREAK</label><input id="constraint" placeholder="ของที่ล็อกแล้ว / ห้ามแก้ / dependency สำคัญ"></div>
+            </div>
+            <div class="dispatch">
+              <button class="btn primary" id="dispatchCommand">COPY + OPEN COMMAND CENTER</button>
+              <button class="btn" id="dispatchKeen">COPY + SEND TO KEEN</button>
+            </div>
+            <div class="toast" id="toast">Operation Packet ถูกคัดลอกแล้ว</div>
+            <p class="hint">ตอนนี้ gateway ทำหน้าที่สร้าง packet มาตรฐาน + ส่งเข้าจุดปฏิบัติการที่มีอยู่จริง โดยไม่แกล้งทำว่ามี API dispatch ที่ยังไม่ได้ต่อ ถัดไปเมื่อ Command Center เปิด action endpoint ได้ หน้าเดียวนี้สามารถเปลี่ยนจาก clipboard dispatch เป็น direct dispatch ได้โดยไม่เปลี่ยน protocol</p>
+            <div class="ops" id="ops"></div>
+          </div>
+          <aside class="panel">
+            <p class="eyebrow">CONTROL SURFACES</p>
+            <div class="links">
+              <a class="quick" href="https://myclover-command-center.teemclover.chatgpt.site/command" target="_blank" rel="noopener"><span><strong>Command Center V.2</strong><span>คิด วางแผน จัดลำดับ สั่งการ</span></span><i>OPEN ↗</i></a>
+              <a class="quick" href="/keen/"><span><strong>Keen Production Desk</strong><span>ผลิตงานปริมาณมาก / production queue</span></span><i>OPEN →</i></a>
+              <a class="quick" href="/captures/"><span><strong>Capture Library</strong><span>คลัง output / capture / หลักฐานงาน</span></span><i>OPEN →</i></a>
+              <a class="quick" href="/command/empire-manifest.json"><span><strong>Empire Manifest</strong><span>schema กลางของ control plane</span></span><i>JSON →</i></a>
+              <a class="quick" href="/command/AUTOMATION-PROTOCOL.md"><span><strong>Automation Protocol</strong><span>กติกา CREATE / EXPAND / CONQUER</span></span><i>DOC →</i></a>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><p class="eyebrow">CONTROL PLANE</p><h2>8 ระบบที่อาณาจักรต้องมี</h2></div><p>หน้า Command Center ไม่ควรเป็น source of truth เอง — มันต้องอ่านโลกและสั่งงานโลก</p></div>
+        <div class="modules">
+          <div class="module"><span class="tag">01 · IDENTITY</span><b>Project Manifest</b><p>ทุก project พูด schema เดียวกัน: ชื่อ stage owner route source release population</p></div>
+          <div class="module"><span class="tag">02 · DIRECTION</span><b>Current Goal + Next Action</b><p>แต่ละ project มีทิศเดียวที่ active และรู้สิ่งถัดไปจริง ๆ</p></div>
+          <div class="module"><span class="tag">03 · KNOWLEDGE</span><b>Source Graph</b><p>เห็น mother/child source, canon, consumer และ dependency ก่อนแก้</p></div>
+          <div class="module"><span class="tag">04 · MOTION</span><b>Work Queue</b><p>Teem → AI → Keen → Review → Merge → Live; รู้ทันทีว่างานค้างที่ใคร</p></div>
+          <div class="module"><span class="tag">05 · LABOR</span><b>Agent Registry</b><p>ใครทำอะไร อ่านอะไรได้ และบริเวณไหนห้ามแตะ</p></div>
+          <div class="module"><span class="tag">06 · DEFENSE</span><b>Health / Repo Warden</b><p>test, deploy, cron, dead route, stale source และ drift แบบ read-only ก่อน</p></div>
+          <div class="module"><span class="tag">07 · MEMORY</span><b>Decision Memory</b><p>จำว่าล็อกอะไรไว้ เพราะอะไร เพื่อไม่ให้ AI รุ่นถัดไปช่วยแก้ผิดเรื่อง</p></div>
+          <div class="module"><span class="tag">08 · PEOPLE</span><b>Population Command</b><p>คนเข้า คนทำ first action คนกลับ คนเห็นกัน และ bottleneck ของเมือง</p></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><p class="eyebrow">30-SECOND BRIEF</p><h2>เปิดหน้าเดียวแล้วตอบให้ได้ 4 ข้อ</h2></div></div>
+        <div class="brief">
+          <div><strong>01</strong>เมื่อคืนอะไรเปลี่ยน</div>
+          <div><strong>02</strong>อะไรพัง</div>
+          <div><strong>03</strong>อะไรมีคนใช้</div>
+          <div><strong>04</strong>วันนี้ควรแตะอะไรแค่เรื่องเดียว</div>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>myClover Empire Command Center · single-entry control plane</span><span>KEY CARD: Command and Conquer · Marvel</span></footer>
+  </div>
+
+  <script>
+    const COMMAND_URL='https://myclover-command-center.teemclover.chatgpt.site/command';
+    let mode='CREATE';
+    const $=id=>document.getElementById(id);
+    const modes=[...document.querySelectorAll('.mode')];
+    function setMode(next){mode=next;modes.forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));}
+    modes.forEach(x=>{x.addEventListener('click',()=>{setMode(x.dataset.mode);$('dispatch').scrollIntoView({behavior:'smooth',block:'start'});});x.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();x.click();}})});
+
+    function packet(){
+      const project=$('project').value.trim()||'[ระบุ project/target]';
+      const goal=$('goal').value.trim()||'[ระบุ goal]';
+      const owner=$('owner').value.trim()||'[ระบุ owner/agent]';
+      const source=$('source').value.trim()||'[ระบุ source/canon]';
+      const success=$('success').value.trim()||'[ระบุ success check]';
+      const constraint=$('constraint').value.trim()||'ไม่มีข้อมูลเพิ่ม';
+      return `# EMPIRE OPERATION PACKET\nOPERATION: ${mode}\nPROJECT/TARGET: ${project}\nGOAL: ${goal}\nOWNER/AGENT: ${owner}\nSOURCE TO OBEY: ${source}\nSUCCESS CHECK: ${success}\nDO NOT BREAK: ${constraint}\n\nCOMMAND RULES:\n- อ่าน source/canon ก่อนลงมือ\n- สรุป dependency ที่ได้รับผลกระทบ\n- ทำงานให้จบเป็น executable next action / production output\n- บันทึก decision ที่เปลี่ยน architecture\n- รายงาน health/release state หลังทำ\n- ระบุผลต่อ population หรือเหตุผลที่ยังวัดไม่ได้\n- ถ้าข้อมูลสำคัญหาย ให้บอกว่าขาดอะไร ห้ามเดา`;
+    }
+    async function copyPacket(){const text=packet();try{await navigator.clipboard.writeText(text);}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}saveOp();$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600);return text;}
+    function saveOp(){const list=JSON.parse(localStorage.getItem('myclover.command.ops')||'[]');list.unshift({mode,project:$('project').value.trim()||'—',goal:$('goal').value.trim()||'—',at:new Date().toISOString()});localStorage.setItem('myclover.command.ops',JSON.stringify(list.slice(0,5)));renderOps();}
+    function renderOps(){const list=JSON.parse(localStorage.getItem('myclover.command.ops')||'[]');$('ops').innerHTML=list.length?'<p class="eyebrow" style="margin-top:18px">RECENT LOCAL OPS</p>'+list.map(x=>`<div class="oprow"><span class="opmode">${x.mode}</span><span class="opgoal">${x.project} · ${x.goal}</span><time>${new Date(x.at).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}</time></div>`).join(''):'';}
+    $('dispatchCommand').addEventListener('click',async()=>{await copyPacket();window.open(COMMAND_URL,'_blank','noopener');});
+    $('dispatchKeen').addEventListener('click',async()=>{await copyPacket();window.open('/keen/','_blank','noopener');});
+    const qs=new URLSearchParams(location.search);if(qs.get('mode')&&['CREATE','EXPAND','CONQUER'].includes(qs.get('mode').toUpperCase()))setMode(qs.get('mode').toUpperCase());['project','goal','owner','source','success','constraint'].forEach(k=>{if(qs.get(k)&&$(k))$(k).value=qs.get(k)});renderOps();
+  </script>
 </body>
 </html>
