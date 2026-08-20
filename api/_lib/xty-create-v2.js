@@ -11,6 +11,7 @@ const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']
 const BUDGETS = Object.freeze({ quiet: 1, normal: 3, social: 5 });
 const DEFAULT_BUDGET = 'normal';
 const CONTEXT_PRESETS = Object.freeze(['xircle', 'xircle_xvisor']);
+const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
 /* Intentional launch overflow. Keep the real progression maxOwned unchanged
    for UI/entitlement, but temporarily do not enforce it when creating an
    owned party. This makes Merge/Sync monotonic even when a player ends up
@@ -192,7 +193,12 @@ export async function handleCreatePartyV2(req, res) {
       return sendJson(res, { ok: false, error: 'CARD_NOT_OWNED' }, 403);
     }
 
-    const petId = npcCardId ? null : (clean(body.petId, 40) || null);
+    /* White Cat is not a generic NPC skin. Every collectible White Cat card
+       unlocks the same living Xircle/X-VISOR guide used by the hidden route.
+       Other NPC cards remain visual companions until they gain an authored brain. */
+    const petId = npcCard?.species === 'white_cat'
+      ? WHITE_CAT_GUIDE_ID
+      : (npcCardId ? null : (clean(body.petId, 40) || null));
     const at = new Date();
     const scheduled = scheduledEndAt(at, durationDays, XTY_TIMEZONE);
     const memberToken = token();
@@ -209,7 +215,7 @@ export async function handleCreatePartyV2(req, res) {
           name, coverType, leadCardId, npcCardId, alias, verificationMode, quotaSystem: 'v2', quotaKey,
           origin: CONTEXT_PRESETS.includes(preset) ? 'xircle' : null,
           careMode: preset === 'xircle_xvisor' ? 'xvisor' : null,
-          guideId: preset === 'xircle_xvisor' ? 'xvisor_white_cat_silver' : null,
+          guideId: petId === WHITE_CAT_GUIDE_ID ? WHITE_CAT_GUIDE_ID : null,
         });
         const rows = await sql.query(`WITH guard AS (
             SELECT pg_advisory_xact_lock(hashtext($1))
