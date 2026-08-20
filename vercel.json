@@ -6,6 +6,28 @@
       "schedule": "27 5,11,17,23 * * *"
     }
   ],
+  "routes": [
+    {
+      "src": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www\\.teambook\\.me"
+        }
+      ],
+      "dest": "/teambook/index.html"
+    },
+    {
+      "src": "/(?!api(?:/|$)|teambook(?:/|$))(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www\\.teambook\\.me"
+        }
+      ],
+      "dest": "/teambook/$1"
+    }
+  ],
   "redirects": [
     {
       "source": "/",
