@@ -66,8 +66,7 @@
       <button class="reveal-card" id="cardButton" aria-label="กดเปิดการ์ด" aria-expanded="false">
         <span class="reveal-inner">
           <span class="reveal-face card-back">
-            <span class="teambook-card-back-mark" aria-hidden="true">TB</span>
-            <small>TEAMBOOK</small>
+            <img src="/assets/card-back.webp" alt="" width="630" height="880" fetchpriority="high">
           </span>
           <span class="reveal-face reveal-front" id="front"></span>
         </span>
@@ -112,7 +111,7 @@ import { TEAMBOOK_RARITY_META, cardById, cardNameTh } from '/_shared/cards.js';
 import { cardMarkup } from '/_shared/card-ui.js';
 /* Prime playback on the first gesture anywhere on the page,
    which is what makes the tap itself audible instead of the tap after it. */
-import { playCardFlip, playSfx } from '/_shared/audio.js';
+import { playCardFlip, playSfx } from '/_shared/audio.js?v=20260821-reveal-assets1';
 import { getSession, syncXtyProfile } from '/_shared/account.js';
 
 const $ = id => document.getElementById(id);
