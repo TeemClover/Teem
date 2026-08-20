@@ -206,7 +206,9 @@ async function directReply(req, res, sql) {
   const body = req.body && typeof req.body === 'object' ? req.body : {};
   const code = String(body.code || '').trim();
   if (!/^\d{5}$/.test(code)) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
-  const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake,state
+  const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,
+      COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+      pet_last_wake,state
     FROM xty_parties WHERE code=$1`, [code]);
   const party = rows[0];
   if (!party || !ACTIVE_STATES.includes(String(party.state || '').toUpperCase())) {
@@ -259,7 +261,9 @@ async function whiteCatIntro(req, res, sql) {
   const body = req.body && typeof req.body === 'object' ? req.body : {};
   const code = String(body.code || '').trim();
   if (!/^\d{5}$/.test(code)) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
-  const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake,state
+  const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,
+      COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+      pet_last_wake,state
     FROM xty_parties WHERE code=$1`, [code]);
   const party = rows[0];
   if (!party || !ACTIVE_STATES.includes(String(party.state || '').toUpperCase())) {
@@ -309,10 +313,15 @@ export default async function handler(req, res) {
     const tuning = wakeTuning();
     const now = new Date(); const wake = wakeWindow(now);
     const due = force
-      ? await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties
-          WHERE pet_id IS NOT NULL AND state='ACTIVE' ORDER BY updated_at DESC LIMIT 1`)
-      : await sql.query(`SELECT id,code,name,activity,commit_rule,pet_id,pet_last_wake FROM xty_parties
-          WHERE pet_id IS NOT NULL AND state='ACTIVE'
+      ? await sql.query(`SELECT id,code,name,activity,commit_rule,
+          COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+          pet_last_wake FROM xty_parties
+          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%') AND state='ACTIVE'
+          ORDER BY updated_at DESC LIMIT 1`)
+      : await sql.query(`SELECT id,code,name,activity,commit_rule,
+          COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+          pet_last_wake FROM xty_parties
+          WHERE (pet_id IS NOT NULL OR npc_card_id LIKE 'WHITE_CAT_%') AND state='ACTIVE'
           AND (pet_last_wake IS NULL OR pet_last_wake < $1)
           ORDER BY updated_at DESC LIMIT $2`, [wake.start, tuning.limit]);
 
