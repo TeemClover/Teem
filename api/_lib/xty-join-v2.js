@@ -124,7 +124,8 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     await ensureSchema(sql);
     await ensureQuotaV2(sql);
 
-    const partyRows = await sql.query(`SELECT id,code,state,started_at,created_at,timezone
+    const partyRows = await sql.query(`SELECT id,code,state,started_at,created_at,timezone,
+      activity_mode,activity_id,activity,shared_activity_description,shared_activity_color
       FROM xty_parties WHERE code=$1`, [code]);
     const row = partyRows[0];
     if (!row) return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
@@ -142,14 +143,45 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
 
     const avatar = clean(body.avatar, 40) || 'orange_cat';
     const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : 'green';
+
+    /* What a joiner brings depends on the book. In a shared book they
+       inherit its activity and only their own rule is theirs; in an
+       individual book the activity is theirs too, and without one they
+       would sit in the book with nothing to sign for. */
+    const mode = row.activity_mode === 'individual' ? 'individual' : 'shared';
+    const memberActivityId = mode === 'individual'
+      ? (clean(body.activityId, 40) || null)
+      : (row.activity_id || null);
+    const memberActivityLabel = mode === 'individual'
+      ? clean(body.activityLabel, 60)
+      : clean(row.activity, 60);
+    const memberActivityDescription = mode === 'individual'
+      ? clean(body.activityDescription, 120)
+      : clean(row.shared_activity_description, 120);
+    const memberActivityColor = ['red', 'green', 'blue', 'silver'].includes(body.activityColor)
+      ? body.activityColor
+      : (mode === 'individual' ? null : (row.shared_activity_color || null));
+    const memberSuccessRule = clean(body.successRule, 60);
+    if (mode === 'individual' && (!memberActivityId || !memberActivityLabel)) {
+      return sendJson(res, { ok: false, error: 'ACTIVITY_REQUIRED' }, 400);
+    }
     const existing = await findExistingMember(req, sql, row.id, identityIds);
 
     if (existing) {
       if (existing.left_at) return sendJson(res, { ok: false, error: 'MEMBERSHIP_CLOSED' }, 403);
       const token = memberToken();
       const at = new Date();
-      await sql.query(`UPDATE xty_members SET alias=$1,avatar=$2,avatar_color=$3,auth_hash=$4
-        WHERE party_id=$5 AND user_id=$6`, [alias, avatar, avatarColor, await sha256(token), row.id, existing.user_id]);
+      await sql.query(`UPDATE xty_members SET alias=$1,avatar=$2,avatar_color=$3,auth_hash=$4,
+          activity_id=COALESCE($7,activity_id),
+          activity_label=COALESCE(NULLIF($8,''),activity_label),
+          activity_description=COALESCE(NULLIF($9,''),activity_description),
+          activity_color=COALESCE($10,activity_color),
+          success_rule=COALESCE(NULLIF($11,''),success_rule)
+        WHERE party_id=$5 AND user_id=$6`, [
+        alias, avatar, avatarColor, await sha256(token), row.id, existing.user_id,
+        memberActivityId, memberActivityLabel, memberActivityDescription,
+        memberActivityColor, memberSuccessRule,
+      ]);
       if (existing.role !== 'lead') await attachQuota(sql, quotaKey, row.id, at);
       const state = await legacyState(legacyXtyHandler, req, code, token);
       return sendJson(res, { ...state, token, quotaSystem: 'v2-separated' });
@@ -179,8 +211,11 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
             WHERE q.quota_key=$2 AND q.role='member' AND q.released_at IS NULL
               AND p.state = ANY($11::text[])) < $12
       ), joined AS (
-        INSERT INTO xty_members (party_id,user_id,alias,avatar,avatar_color,role,auth_hash,joined_at)
-        SELECT id,$4,$5,$6,$7,'member',$8,$9 FROM capacity RETURNING party_id
+        INSERT INTO xty_members (
+          party_id,user_id,alias,avatar,avatar_color,role,auth_hash,joined_at,
+          activity_id,activity_label,activity_description,activity_color,success_rule
+        )
+        SELECT id,$4,$5,$6,$7,'member',$8,$9,$17,$18,$19,$20,$21 FROM capacity RETURNING party_id
       ), quota AS (
         INSERT INTO xty_party_quota_v2 (quota_key,party_id,role,created_at,released_at)
         SELECT $2,party_id,'member',$9,NULL FROM joined
@@ -192,6 +227,8 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
       row.id, quotaKey, identityIds[1], userId, alias, avatar, avatarColor, authHash, at,
       PARTY_MAX, ACTIVE_STATES, MAX_JOINED_ACTIVE,
       `join-user:${quotaKey}`, `join-party:${row.id}`, partyDay(row, at), eventData,
+      memberActivityId, memberActivityLabel, memberActivityDescription,
+      memberActivityColor, memberSuccessRule,
     ]);
 
     if (!inserted[0]) {

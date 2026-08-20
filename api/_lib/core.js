@@ -84,6 +84,11 @@ const SCHEMA = [
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS cover_type TEXT NOT NULL DEFAULT 'legacy_card'`,
   `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS cover_value TEXT`,
   `CREATE INDEX IF NOT EXISTS idx_xty_parties_owner_state ON xty_parties(owner_id, state)`,
+  // A book's activity may belong to everyone (shared) or to each person
+  // (individual). Older books predate the question and are shared.
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS activity_mode TEXT NOT NULL DEFAULT 'shared'`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS shared_activity_description TEXT`,
+  `ALTER TABLE xty_parties ADD COLUMN IF NOT EXISTS shared_activity_color TEXT`,
   `CREATE TABLE IF NOT EXISTS xty_members (
     party_id TEXT NOT NULL, user_id TEXT NOT NULL, alias TEXT NOT NULL,
     avatar TEXT, role TEXT NOT NULL, auth_hash TEXT, joined_at TIMESTAMPTZ NOT NULL,
@@ -93,6 +98,13 @@ const SCHEMA = [
   `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS left_at TIMESTAMPTZ`,
   `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS removal_reason TEXT`,
   `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS avatar_color TEXT NOT NULL DEFAULT 'green'`,
+  // In individual mode this is where the activity actually lives; in shared
+  // mode only the rule is the member's own.
+  `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS activity_id TEXT`,
+  `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS activity_label TEXT`,
+  `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS activity_description TEXT`,
+  `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS activity_color TEXT`,
+  `ALTER TABLE xty_members ADD COLUMN IF NOT EXISTS success_rule TEXT`,
   `CREATE TABLE IF NOT EXISTS xty_posts (
     party_id TEXT NOT NULL, seq INTEGER NOT NULL, user_id TEXT NOT NULL,
     kind TEXT NOT NULL, body TEXT NOT NULL, sent_at TIMESTAMPTZ NOT NULL,
@@ -104,6 +116,12 @@ const SCHEMA = [
      ON xty_posts(party_id, user_id, day_key) WHERE kind = 'commit'`,
   // Chat images. The bytes live in blob storage; only the URL and the
   // intrinsic size ride along so the log can reserve space before load.
+  // A signed day carries its own copy of what it was signed under. Without
+  // this, changing an activity today would rewrite every past day's meaning.
+  `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS activity_id TEXT`,
+  `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS activity_label TEXT`,
+  `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS activity_color TEXT`,
+  `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS success_rule_snapshot TEXT`,
   `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS image_url TEXT`,
   `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS image_w INTEGER`,
   `ALTER TABLE xty_posts ADD COLUMN IF NOT EXISTS image_h INTEGER`,

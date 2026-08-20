@@ -98,6 +98,13 @@ function snapshot({ row, member, event, scheduled }) {
     name: row.name,
     activity: row.activity || '',
     activityId: row.activity_id || 'custom',
+    /* In individual mode these are null on purpose: there is no book-wide
+       activity to report, and a screen that invents one lies to four people. */
+    activityMode: row.activity_mode === 'individual' ? 'individual' : 'shared',
+    sharedActivityId: row.activity_mode === 'individual' ? null : (row.activity_id || null),
+    sharedActivityLabel: row.activity_mode === 'individual' ? null : (row.activity || ''),
+    sharedActivityDescription: row.shared_activity_description || null,
+    sharedActivityColor: row.shared_activity_color || null,
     preset: row.preset || 'casual',
     durationDays: Number(row.duration_days || 7),
     color: row.color || 'green',
@@ -168,6 +175,14 @@ export async function handleCreatePartyV2(req, res) {
       : (verificationMode === 'confirm' ? 'verified' : 'casual');
     const durationDays = [7, 14, 28].includes(Number(body.durationDays)) ? Number(body.durationDays) : 7;
     const color = ['red', 'green', 'blue', 'silver'].includes(body.color) ? body.color : 'green';
+    /* Two modes and nothing else. A book from before the question existed,
+       or a request with a typo in it, is a shared book — that is the read
+       that shows the book's own activity rather than guessing at a member's. */
+    const activityMode = body.activityMode === 'individual' ? 'individual' : 'shared';
+    const activityColor = ['red', 'green', 'blue', 'silver'].includes(body.activityColor)
+      ? body.activityColor : null;
+    const activityDescription = clean(body.activityDescription, 120);
+    const successRule = clean(body.successRule, 60);
     const visibility = ['public', 'private'].includes(body.visibility) ? body.visibility : 'private';
     const avatar = clean(body.avatar, 40) || 'orange_cat';
     const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : 'green';
@@ -240,13 +255,18 @@ export async function handleCreatePartyV2(req, res) {
             INSERT INTO xty_parties (
               id,code,name,activity,commit_rule,budget,pet_id,owner_id,created_at,updated_at,
               activity_id,preset,duration_days,color,visibility,lead_card_id,npc_card_id,started_at,timezone,
-              verification_mode,scheduled_end_at,cover_type,cover_value
+              verification_mode,scheduled_end_at,cover_type,cover_value,
+              activity_mode,shared_activity_description,shared_activity_color
             )
-            SELECT $4,$5,$6,$7,$8,$9,$10,$11,$12,$12,$13,$14,$15,$16,$17,$20,$21,$12,$18,$19,$22,$23,$24
+            SELECT $4,$5,$6,$7,$8,$9,$10,$11,$12,$12,$13,$14,$15,$16,$17,$20,$21,$12,$18,$19,$22,$23,$24,
+              $30,$31,$32
             FROM capacity RETURNING id
           ), member AS (
-            INSERT INTO xty_members (party_id,user_id,alias,avatar,avatar_color,role,auth_hash,joined_at)
-            SELECT id,$11,$25,$26,$27,'lead',$28,$12 FROM party RETURNING party_id
+            INSERT INTO xty_members (
+              party_id,user_id,alias,avatar,avatar_color,role,auth_hash,joined_at,
+              activity_id,activity_label,activity_description,activity_color,success_rule
+            )
+            SELECT id,$11,$25,$26,$27,'lead',$28,$12,$13,$7,$31,$32,$33 FROM party RETURNING party_id
           ), quota AS (
             INSERT INTO xty_party_quota_v2 (quota_key,party_id,role,created_at)
             SELECT $1,party_id,'owner',$12 FROM member RETURNING party_id
@@ -258,6 +278,7 @@ export async function handleCreatePartyV2(req, res) {
           petId, userId, at, clean(body.activityId, 40) || 'custom', preset, durationDays, color, visibility,
           XTY_TIMEZONE, verificationMode, leadCardId, npcCardId, scheduled, coverType, coverValue,
           alias, avatar, avatarColor, authHash, eventData,
+          activityMode, activityDescription || null, activityColor, successRule || null,
         ]);
 
         if (!rows[0]) {
@@ -268,7 +289,8 @@ export async function handleCreatePartyV2(req, res) {
 
         const partyRows = await sql.query(`SELECT id,code,name,activity,activity_id,preset,duration_days,color,visibility,
           commit_rule,budget,pet_id,owner_id,created_at,updated_at,lead_card_id,npc_card_id,started_at,timezone,
-          verification_mode,scheduled_end_at,cover_type,cover_value
+          verification_mode,scheduled_end_at,cover_type,cover_value,
+          activity_mode,shared_activity_description,shared_activity_color
           FROM xty_parties WHERE id=$1`, [partyId]);
         const row = partyRows[0];
         const member = {
@@ -276,6 +298,11 @@ export async function handleCreatePartyV2(req, res) {
           alias,
           avatar,
           avatarColor,
+          activityId: clean(body.activityId, 40) || null,
+          activityLabel: clean(body.activity, 60),
+          activityDescription: activityDescription || null,
+          activityColor,
+          successRule: successRule || '',
           role: 'lead',
           joinedAt: at.toISOString(),
           leftAt: null,

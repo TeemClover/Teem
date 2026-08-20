@@ -8,6 +8,7 @@
    This module runs only on /xty/p/ and captures the legacy #copy button
    before older handlers can do anything else. */
 
+import { bookActivityLine } from './book-mode.js';
 import { getParty } from './store.js';
 
 const pageCode = new URLSearchParams(location.search).get('c') || '';
@@ -56,7 +57,8 @@ function partySnapshot() {
   const displayed = String(document.getElementById('code')?.textContent || '').trim();
   const code = /^\d{5}$/.test(displayed) ? displayed : pageCode;
   const name = String(party.name || document.getElementById('pname')?.textContent || 'XTY').trim() || 'XTY';
-  const activity = String(party.activity || document.getElementById('act')?.textContent || 'ยังไม่ระบุกิจกรรม').trim() || 'ยังไม่ระบุกิจกรรม';
+  const activity = bookActivityLine(party,
+    String(document.getElementById('act')?.textContent || '').trim() || 'ยังไม่ระบุกิจกรรม');
   const durationDays = Math.max(1, Number(party.durationDays || 7) || 7);
   const inviteUrl = `${location.origin}/xty/join/?c=${encodeURIComponent(code)}`;
   return { code, name, activity, durationDays, inviteUrl };
@@ -66,7 +68,7 @@ function inviteText(party) {
   return [
     'เข้าร่วมสมุดใน TeamBook',
     `สมุด: ${party.name}`,
-    `ทำ: ${party.activity}`,
+    `ทำ: ${activity}`,
     `${party.durationDays} วัน · รหัส ${party.code}`,
     party.inviteUrl,
   ].join('\n');

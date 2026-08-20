@@ -67,6 +67,7 @@
 </main>
 
 <script type="module">
+import { bookActivityLine } from '/xty/_shared/book-mode.js';
 import { avatarById } from '/xty/_shared/avatars.js';
 import { cardById } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
@@ -113,7 +114,7 @@ function coverMarkup(party) {
 function partyMarkup(party) {
   const mode = party.verificationMode === 'confirm' ? 'ต้อง เห็นแล้ว' : 'เชื่อใจกัน';
   return `${coverMarkup(party)}<div><span class="status-pill">${mode}</span><h2>${esc(party.name)}</h2>`
-    + `<p>${esc(party.activity || 'กิจกรรมที่ตกลงกันในสมุด')}</p>`
+    + `<p>${esc(bookActivityLine(party, 'กิจกรรมที่ตกลงกันในสมุด'))}</p>`
     + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · ${party.memberCount}/${party.maxMembers} คน · วันนี้ลงชื่อ ${party.todayCommitCount} คน</p>`
     + `<p class="whisper">Lead: ${esc(party.lead.alias)}</p>`
     + `<a class="btn ghost sm" href="/xty/public/p/?c=${encodeURIComponent(party.code)}">ดูรายละเอียด · อ่าน เรื่องในสมุด</a>`

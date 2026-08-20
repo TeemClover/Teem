@@ -100,6 +100,7 @@ export async function createPartyV2(options = {}) {
   const applied = applyXircleCreateDefaults(options);
   const {
     name, activity, activityId, preset, verificationMode = 'trust', durationDays, color, visibility,
+    activityMode = 'shared', activityDescription = '', activityColor = null, successRule = '',
     commitRule, budget, petId, coverType = 'card_back', leadCardId, npcCardId, partyAvatar, core7CardId,
   } = applied;
 
@@ -132,6 +133,7 @@ export async function createPartyV2(options = {}) {
       headers: { 'content-type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({
         name, activity: finalActivity, activityId: finalActivityId, preset: finalPreset, verificationMode, durationDays: finalDurationDays, color, visibility, commitRule,
+        activityMode, activityDescription, activityColor, successRule,
         budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
         petId: petId || null,
         coverType: finalCoverType,

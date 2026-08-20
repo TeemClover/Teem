@@ -598,6 +598,7 @@ function rememberResponse(code, result) {
 export async function createParty({
   name, activity, activityId, preset, verificationMode = 'trust', durationDays, color, visibility,
   commitRule, budget, petId, coverType = 'avatar', leadCardId, npcCardId, partyAvatar,
+  activityMode = 'shared', activityDescription = '', activityColor = null, successRule = '',
 }) {
   const profile = getProfile();
   if (!profile) throw new Error('NO_PROFILE');
@@ -614,6 +615,7 @@ export async function createParty({
   if (npc && (npc === lead || cardAvailability(npc).status !== 'AVAILABLE')) throw limitError('CARD_IN_USE');
   const result = await api('/api/xty/party', { method: 'POST', body: {
     name, activity, activityId, preset, verificationMode, durationDays, color, visibility, commitRule,
+    activityMode, activityDescription, activityColor, successRule,
     budget: MESSAGE_BUDGETS[budget] ? budget : DEFAULT_BUDGET,
     petId: petId || null,
     coverType: pickedCover,
