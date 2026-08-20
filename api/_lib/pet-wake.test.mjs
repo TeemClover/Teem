@@ -1,7 +1,7 @@
 /* Runs the whole scheduled wake loop against fake Neon + fake Groq.
-   Product contract: a PET reads real Party Log only when there is a reason,
-   may choose QUIET, and never manufactures a fallback bubble just because
-   the cron woke up. Needs --experimental-test-module-mocks. */
+   Product contract: every live Party is inspected each scheduled sweep; PET
+   presence is adaptive but cannot disappear for an entire day, and infrastructure
+   failures remain retryable. Needs --experimental-test-module-mocks. */
 import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -17,8 +17,12 @@ const issued = [];
 const insertedBodies = [];
 const wakeUpdates = [];
 let humanUpdates = 2;
+let humanToday = 2;
+let petToday = 0;
 let lastHumanAt = new Date();
 let lastPetAt = null;
+let leadPostsToday = 1;
+let memberPostsToday = 1;
 
 function fakeSql() {
   return {
@@ -39,18 +43,23 @@ function fakeSql() {
       if (t.includes('human_updates')) {
         return [{
           human_updates: humanUpdates,
-          committed: humanUpdates ? 1 : 0,
+          human_today: humanToday,
+          pet_today: petToday,
+          committed: humanToday ? 1 : 0,
           last_human_at: lastHumanAt,
           last_pet_at: lastPetAt,
         }];
       }
       if (t.includes('event_updates')) return [{ event_updates: 0, last_event_at: null }];
-      if (t.includes('FROM xty_members')) return [{ alias: 'แพร', role: 'lead' }, { alias: 'นนท์', role: 'member' }];
+      if (t.includes('FROM xty_members')) return [
+        { alias: 'แพร', role: 'lead', posts_today: leadPostsToday, last_post_at: lastHumanAt },
+        { alias: 'นนท์', role: 'member', posts_today: memberPostsToday, last_post_at: lastHumanAt },
+      ];
       if (t.includes('FROM xty_posts p LEFT JOIN')) {
         if (!lastHumanAt) return [];
         return [
-          { seq: 5, kind: 'message', body: 'ฝนตก ขอเลื่อนไปพรุ่งนี้', sent_at: lastHumanAt, retracted: false, alias: 'นนท์', pet_id: null },
-          { seq: 4, kind: 'commit', body: 'วิ่งสวนครบแล้ว', sent_at: new Date(lastHumanAt.getTime() - 60000), retracted: false, alias: 'แพร', pet_id: null },
+          { seq: 4, kind: 'commit', body: 'วิ่งสวนครบแล้ว', sent_at: new Date(lastHumanAt.getTime() - 60000), retracted: false, alias: 'แพร', role: 'lead', pet_id: null },
+          { seq: 5, kind: 'message', body: 'ฝนตก ขอเลื่อนไปพรุ่งนี้', sent_at: lastHumanAt, retracted: false, alias: 'นนท์', role: 'member', pet_id: null },
         ];
       }
       if (t.includes('FROM xty_party_events')) return [];
@@ -87,10 +96,18 @@ function completion(value) {
 }
 
 function resetWakeUpdates() { wakeUpdates.length = 0; }
+function resetPresence() {
+  humanUpdates = 2;
+  humanToday = 2;
+  petToday = 0;
+  lastHumanAt = new Date();
+  lastPetAt = null;
+  leadPostsToday = 1;
+  memberPostsToday = 1;
+}
 
 test('one scheduled wake reads the real multi-wake log and writes a concrete Groq bubble', async () => {
-  humanUpdates = 2;
-  lastHumanAt = new Date();
+  resetPresence();
   lastPetAt = new Date(Date.now() - 7 * 3600000);
   insertedBodies.length = 0;
   resetWakeUpdates();
@@ -101,8 +118,10 @@ test('one scheduled wake reads the real multi-wake log and writes a concrete Gro
     sent = JSON.parse(init.body);
     return completion({
       behavior: 'CALLBACK',
+      situation: 'นนท์ขอเลื่อนไปพรุ่งนี้หลังแพรวิ่งสวนครบ',
       focus: 'นนท์เลื่อนไปพรุ่งนี้หลังแพรวิ่งสวนครบ',
       open_threads: ['นนท์จะกลับมาวิ่งพรุ่งนี้'],
+      intent: 'จำ thread ของนนท์ไว้และรับรู้ commit ของแพร',
       bubbles: ['นนท์เลื่อนไปพรุ่งนี้ ส่วนแพรวิ่งสวนครบแล้ว — กาจำ thread นี้ไว้'],
     });
   };
@@ -111,6 +130,7 @@ test('one scheduled wake reads the real multi-wake log and writes a concrete Gro
   await handler({ method: 'GET', headers: { authorization: 'Bearer secret' }, query: {} }, res);
   assert.equal(res.body.ok, true);
   assert.equal(res.body.claimed, 1);
+  assert.equal(res.body.inspected, 1);
   assert.equal(res.body.read, 1);
   assert.equal(res.body.byAi, 1);
   assert.equal(res.body.deferred, 0);
@@ -122,17 +142,20 @@ test('one scheduled wake reads the real multi-wake log and writes a concrete Gro
   assert.equal(endpoint, 'https://api.groq.com/openai/v1/chat/completions');
   assert.equal(sent.response_format.type, 'json_schema');
   assert.equal(sent.response_format.json_schema.strict, true);
-  assert.match(sent.messages[0].content, /แพร: COMMIT — วิ่งสวนครบแล้ว/);
+  assert.match(sent.messages[0].content, /แพร \[หัวตี้\]: COMMIT — วิ่งสวนครบแล้ว/);
   assert.match(sent.messages[0].content, /reactions: 🔥×2/);
   assert.match(sent.messages[0].content, /นนท์: ฝนตก ขอเลื่อนไปพรุ่งนี้/);
   assert.match(sent.messages[0].content, /วิ่ง 20 นาที/);
-  assert.match(sent.messages[0].content, /QUIET เป็นคำตอบที่ดีและปกติ/);
+  assert.match(sent.messages[0].content, /หัวตี้คือ แพร/);
 });
 
-test('dead room skips Groq entirely and writes zero bubbles', async () => {
+test('already-present quiet room is still inspected but skips Groq and writes zero bubbles', async () => {
+  resetPresence();
   humanUpdates = 0;
+  humanToday = 1;
+  petToday = 1;
   lastHumanAt = new Date(Date.now() - 8 * 3600000);
-  lastPetAt = new Date(Date.now() - 2 * 3600000); // pet already spoke after the human
+  lastPetAt = new Date(Date.now() - 2 * 3600000);
   insertedBodies.length = 0;
   resetWakeUpdates();
   let calls = 0;
@@ -140,6 +163,7 @@ test('dead room skips Groq entirely and writes zero bubbles', async () => {
 
   const res = {};
   await handler({ method: 'GET', headers: { authorization: 'Bearer secret' }, query: {} }, res);
+  assert.equal(res.body.inspected, 1);
   assert.equal(res.body.read, 0);
   assert.equal(res.body.spoke, 0);
   assert.equal(res.body.bubbles, 0);
@@ -149,14 +173,18 @@ test('dead room skips Groq entirely and writes zero bubbles', async () => {
   assert.equal(calls, 0);
 });
 
-test('model QUIET remains quiet instead of falling back to engagement copy', async () => {
+test('model QUIET remains quiet after daily presence is already satisfied', async () => {
+  resetPresence();
   humanUpdates = 1;
+  humanToday = 2;
+  petToday = 1;
   lastHumanAt = new Date();
   lastPetAt = new Date(Date.now() - 7 * 3600000);
   insertedBodies.length = 0;
   resetWakeUpdates();
   respond = async () => completion({
-    behavior: 'QUIET', focus: 'มีเพียง COMMIT ที่ไม่มี detail ใหม่', open_threads: [], bubbles: [],
+    behavior: 'QUIET', situation: 'มีเพียง commit ไม่มี detail ใหม่', focus: 'commit ล่าสุด',
+    open_threads: [], intent: '', bubbles: [],
   });
 
   const res = {};
@@ -168,11 +196,14 @@ test('model QUIET remains quiet instead of falling back to engagement copy', asy
   assert.equal(res.body.bubbles, 0);
   assert.equal(res.body.quiet, 1);
   assert.equal(insertedBodies.length, 0);
-  assert.equal(wakeUpdates.length, 1, 'a deliberate QUIET is still a completed brain turn');
+  assert.equal(wakeUpdates.length, 1, 'a deliberate QUIET is still a completed scheduled inspection');
 });
 
 test('provider failure stays silent but rolls the claim back for the next wake', async () => {
+  resetPresence();
   humanUpdates = 1;
+  humanToday = 1;
+  petToday = 0;
   lastHumanAt = new Date();
   lastPetAt = null;
   insertedBodies.length = 0;
@@ -195,7 +226,10 @@ test('provider failure stays silent but rolls the claim back for the next wake',
 });
 
 test('missing AI configuration defers active room instead of consuming its activity', async () => {
+  resetPresence();
   humanUpdates = 1;
+  humanToday = 1;
+  petToday = 0;
   lastHumanAt = new Date();
   lastPetAt = null;
   insertedBodies.length = 0;
@@ -218,12 +252,19 @@ test('missing AI configuration defers active room instead of consuming its activ
 });
 
 test('manual force wake still has a diagnostic proof-of-life fallback', async () => {
+  resetPresence();
   humanUpdates = 0;
+  humanToday = 0;
+  petToday = 0;
   lastHumanAt = null;
   lastPetAt = null;
+  leadPostsToday = 0;
+  memberPostsToday = 0;
   insertedBodies.length = 0;
   resetWakeUpdates();
-  respond = async () => completion({ behavior: 'QUIET', focus: '', open_threads: [], bubbles: [] });
+  respond = async () => completion({
+    behavior: 'QUIET', situation: '', focus: '', open_threads: [], intent: '', bubbles: [],
+  });
 
   const res = {};
   await handler({ method: 'GET', headers: { authorization: 'Bearer secret' }, query: { force: '1' } }, res);
