@@ -71,9 +71,9 @@ function installStyle() {
       .xty-party-row-self-status{top:42px;width:12px;height:12px}
     }
 
-    /* Safari occasionally paints dynamically inserted cached image resources
-       one frame late. HTML IMG gets a background fallback; FIRST HAND cards
-       use an SVG <image>, which is stabilized separately below. */
+    /* Safari occasionally paints a dynamically inserted cached IMG one frame
+       late. The same source is kept as the element background as a visual
+       fallback, and all home card images skip fade/async-decode effects. */
     #home .xty-home-cover img,
     #home .xty-party-row-visual img{
       opacity:1!important;
@@ -131,47 +131,78 @@ function stabilizeImage(img) {
   });
 }
 
-const XLINK_NS = 'http://www.w3.org/1999/xlink';
-function stabilizeSvgImage(node) {
-  if (!node || node.localName !== 'image') return;
-  if (node.dataset.xtyStableBound === '1') return;
-
-  const raw = node.getAttribute('href') || node.getAttributeNS(XLINK_NS, 'href') || '';
-  if (!raw) return;
-  const src = new URL(raw, location.href).href;
-  const preloaded = warmImage(src);
-  node.dataset.xtyStableBound = '1';
-
-  /* FIRST HAND covers are inline SVGs whose artwork is another WebP loaded
-     through <image href>. Mobile Safari can keep that subresource blank on
-     the first dynamic insertion even when the WebP is already in HTTP cache.
-     Decode it as a normal Image first, then replace only the SVG image node.
-     Replacing after decode forces WebKit to paint from the decoded cache and
-     leaves the surrounding card SVG/frame/text untouched. */
-  const repaint = () => {
-    if (!node.isConnected || node.dataset.xtyStableRepainted === '1') return;
-    const clone = node.cloneNode(true);
-    clone.dataset.xtyStableBound = '1';
-    clone.dataset.xtyStableRepainted = '1';
-    clone.setAttribute('href', src);
-    try { clone.setAttributeNS(XLINK_NS, 'href', src); } catch {}
-    node.replaceWith(clone);
-  };
-
-  const afterDecode = async () => {
-    try { if (typeof preloaded?.decode === 'function') await preloaded.decode(); } catch {}
-    requestAnimationFrame(() => requestAnimationFrame(repaint));
-  };
-
-  if (preloaded?.complete && preloaded.naturalWidth) afterDecode();
-  else if (preloaded) preloaded.addEventListener('load', afterDecode, { once: true });
-}
-
 function stabilizeImages(root = document) {
   root.querySelectorAll?.('#home .xty-home-cover img, #home .xty-party-row-visual img')
     .forEach(stabilizeImage);
-  root.querySelectorAll?.('#home .xty-home-core7-cover svg image')
-    .forEach(stabilizeSvgImage);
+}
+
+/* FIRST HAND on Home is an external WebP nested inside an inline SVG. Mobile
+   Safari can render the SVG text/frame but silently skip that nested external
+   <image> until a hard refresh. A normal image preload is not enough because
+   the failure is in SVG resource painting, not HTTP cache. For Home only,
+   fetch the same-origin WebP once and replace the SVG image href with an
+   in-memory data URL. The SVG then has no external image dependency at all. */
+const XLINK_NS = 'http://www.w3.org/1999/xlink';
+const inlineCore7ArtCache = new Map();
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () => reject(reader.error || new Error('Unable to inline card art'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function inlineCore7Art(svgImage) {
+  if (!(svgImage instanceof SVGImageElement)) return;
+  if (svgImage.dataset.xtyInlineArt === 'done' || svgImage.dataset.xtyInlineArt === 'loading') return;
+
+  const raw = svgImage.getAttribute('href')
+    || svgImage.getAttributeNS(XLINK_NS, 'href')
+    || svgImage.getAttribute('xlink:href')
+    || '';
+  if (!raw) return;
+  if (raw.startsWith('data:') || raw.startsWith('blob:')) {
+    svgImage.dataset.xtyInlineArt = 'done';
+    return;
+  }
+
+  const src = new URL(raw, location.href).href;
+  /* Legacy xlink is still the most reliable immediate path on older WebKit. */
+  try { svgImage.setAttributeNS(XLINK_NS, 'xlink:href', src); } catch {}
+  svgImage.setAttribute('href', src);
+  svgImage.dataset.xtyInlineArt = 'loading';
+
+  let promise = inlineCore7ArtCache.get(src);
+  if (!promise) {
+    promise = fetch(src, { cache: 'force-cache', credentials: 'same-origin' })
+      .then(response => {
+        if (!response.ok) throw new Error(`Card art ${response.status}`);
+        return response.blob();
+      })
+      .then(blobToDataUrl);
+    inlineCore7ArtCache.set(src, promise);
+  }
+
+  promise.then(dataUrl => {
+    if (!dataUrl || !svgImage.isConnected) return;
+    svgImage.setAttribute('href', dataUrl);
+    try { svgImage.setAttributeNS(XLINK_NS, 'xlink:href', dataUrl); } catch {}
+    svgImage.dataset.xtyInlineArt = 'done';
+    /* Reinsert once after the bytes are embedded. This is a paint invalidation,
+       not a card rebuild, and avoids WebKit keeping the failed image layer. */
+    const parent = svgImage.parentNode;
+    if (parent) parent.appendChild(svgImage);
+  }).catch(() => {
+    svgImage.dataset.xtyInlineArt = 'failed';
+    svgImage.setAttribute('href', src);
+    try { svgImage.setAttributeNS(XLINK_NS, 'xlink:href', src); } catch {}
+  });
+}
+
+function stabilizeCore7Svg(root = document) {
+  root.querySelectorAll?.('#home .xty-home-core7-cover svg image').forEach(inlineCore7Art);
 }
 
 function syncCopy() {
@@ -251,6 +282,7 @@ function syncAll() {
   queued = false;
   syncCopy();
   stabilizeImages(document);
+  stabilizeCore7Svg(document);
   syncHeroStatus();
   syncRowStatus();
 }
