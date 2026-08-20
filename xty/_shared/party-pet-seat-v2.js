@@ -107,43 +107,43 @@ function injectStyle() {
       filter:drop-shadow(0 3px 0 rgba(62,51,44,.08));
     }
 
-    /* Glass name plates: blur already keeps the type readable, so let more
-       of each card's artwork show through. This applies equally to owner,
-       members and the companion. */
+    /* Owner and member names intentionally share this exact plate. The blur
+       does the readability work, so the paper can stay very transparent and
+       let more of the card illustration show through. */
     #seats .tb-card-name{
       background:linear-gradient(90deg,
-        rgba(255,254,248,.12) 0%,
-        rgba(255,254,248,.36) 20%,
-        rgba(255,254,248,.36) 80%,
-        rgba(255,254,248,.12) 100%)!important;
-      border:1px solid rgba(255,255,255,.34)!important;
-      box-shadow:0 1px 0 rgba(62,51,44,.06),0 2px 10px rgba(255,254,248,.10)!important;
+        rgba(255,254,248,.06) 0%,
+        rgba(255,254,248,.22) 20%,
+        rgba(255,254,248,.22) 80%,
+        rgba(255,254,248,.06) 100%)!important;
+      border:1px solid rgba(255,255,255,.26)!important;
+      box-shadow:0 1px 0 rgba(62,51,44,.05),0 2px 8px rgba(255,254,248,.06)!important;
       text-shadow:
-        0 1px 1px rgba(255,255,255,.98),
-        1px 0 2px rgba(255,255,255,.88),
-        -1px 0 2px rgba(255,255,255,.88)!important;
+        0 1px 1px rgba(255,255,255,.90),
+        1px 0 2px rgba(255,255,255,.68),
+        -1px 0 2px rgba(255,255,255,.68)!important;
       backdrop-filter:blur(6px) saturate(.92)!important;
       -webkit-backdrop-filter:blur(6px) saturate(.92)!important;
     }
 
-    /* The owner badge was still the old opaque pill. Keep the role readable
-       but use the same frosted-glass language as the name plates. */
+    /* The owner role badge is separate from the person's name plate. Keep it
+       subtle so it does not compete with the artwork. */
     #seats .tb-owner-label{
-      background:rgba(255,254,248,.34)!important;
-      border-color:rgba(41,136,87,.28)!important;
-      box-shadow:0 1px 0 rgba(62,51,44,.05),0 2px 8px rgba(255,254,248,.08)!important;
-      text-shadow:0 1px 1px rgba(255,255,255,.94)!important;
+      background:rgba(255,254,248,.22)!important;
+      border-color:rgba(41,136,87,.24)!important;
+      box-shadow:0 1px 0 rgba(62,51,44,.04),0 2px 7px rgba(255,254,248,.05)!important;
+      text-shadow:0 1px 1px rgba(255,255,255,.84)!important;
       backdrop-filter:blur(6px) saturate(.92)!important;
       -webkit-backdrop-filter:blur(6px) saturate(.92)!important;
     }
 
-    /* Companion role pill gets the same treatment so the pet art is not
-       covered by a second opaque label. */
+    /* Companion role pill should stay clean: no white halo on the green text.
+       Blur is enough to separate it from the art behind it. */
     #seats .tb-companion-label{
-      background:rgba(255,254,248,.30)!important;
-      border:1px solid rgba(255,255,255,.28)!important;
-      box-shadow:0 1px 0 rgba(62,51,44,.05)!important;
-      text-shadow:0 1px 1px rgba(255,255,255,.94)!important;
+      background:rgba(255,254,248,.20)!important;
+      border:1px solid rgba(255,255,255,.24)!important;
+      box-shadow:none!important;
+      text-shadow:none!important;
       backdrop-filter:blur(6px) saturate(.92)!important;
       -webkit-backdrop-filter:blur(6px) saturate(.92)!important;
     }
