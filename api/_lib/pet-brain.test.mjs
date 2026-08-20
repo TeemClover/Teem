@@ -76,7 +76,6 @@ test('structured sanitizer makes silence first-class', () => {
   assert.equal(alive.behavior, 'CALLBACK');
   assert.deepEqual(alive.openThreads, ['นนท์จะลองวิ่งพรุ่งนี้']);
   assert.equal(alive.bubbles.length, 1);
-  /* คิดก่อน แล้วค่อยแต่งเสียง: ทั้งสองชั้นต้องรอดออกมาให้ตรวจได้ */
   assert.match(alive.situation, /นนท์/);
   assert.match(alive.intent, /พรุ่งนี้/);
 });
@@ -117,7 +116,6 @@ test('Groq request uses strict schema and carries real multi-wake Party Log', as
   assert.equal(sent.response_format.json_schema.strict, true);
   assert.deepEqual(sent.response_format.json_schema.schema.properties.behavior.enum,
     ['QUIET', 'REACT', 'ACK', 'CALLBACK', 'ANSWER', 'TEASE', 'REMIND', 'ASK']);
-  /* schema บังคับให้คิดก่อน (situation, intent) แล้วค่อยพูด (bubbles) */
   assert.deepEqual(sent.response_format.json_schema.schema.required,
     ['situation', 'behavior', 'focus', 'open_threads', 'intent', 'bubbles']);
   assert.equal(sent.reasoning_effort, 'low');
@@ -186,21 +184,26 @@ test('no key or flag off means no AI call', async () => {
 const { worthReading } = await import('../xty-pet.js');
 const hoursAgo = h => new Date(Date.now() - h * 3600000);
 
-test('scheduled reader skips dead rooms and re-opens only for a real reason', () => {
-  assert.equal(worthReading(12, { humanUpdates: 1 }), true);
-  assert.equal(worthReading(12, { humanUpdates: 0, timedThreadDue: true }), true);
+test('scheduled reader enforces daily presence then goes quiet once presence is satisfied', () => {
+  assert.equal(worthReading(12, { humanUpdates: 1, humanToday: 2, petToday: 0 }), true);
+  assert.equal(worthReading(12, { humanUpdates: 0, humanToday: 2, petToday: 0, timedThreadDue: true }), true);
   assert.equal(worthReading(12, {
-    humanUpdates: 0, timedThreadDue: false,
+    humanUpdates: 0, humanToday: 2, petToday: 1, timedThreadDue: false,
     lastHumanAt: hoursAgo(2), lastPetAt: hoursAgo(5),
   }), true);
   assert.equal(worthReading(12, {
-    humanUpdates: 0, timedThreadDue: false,
+    humanUpdates: 0, humanToday: 1, petToday: 1, timedThreadDue: false,
     lastHumanAt: hoursAgo(5), lastPetAt: hoursAgo(2),
   }), false);
   assert.equal(worthReading(12, {
-    humanUpdates: 0, timedThreadDue: false, lastHumanAt: null, lastPetAt: null,
-  }), false);
-  assert.equal(worthReading(12, { humanUpdates: 0 }, true), true);
+    humanUpdates: 0, humanToday: 0, petToday: 0, timedThreadDue: false,
+    lastHumanAt: null, lastPetAt: null,
+  }), true, 'no PET yet today: 12:27 daily presence floor opens the room');
+  assert.equal(worthReading(12, {
+    humanUpdates: 0, humanToday: 0, petToday: 1, timedThreadDue: false,
+    lastHumanAt: null, lastPetAt: null,
+  }), false, 'daily presence already satisfied: silent room may stay quiet');
+  assert.equal(worthReading(12, { humanUpdates: 0, humanToday: 0, petToday: 1 }, true), true);
 });
 
 /* รูปที่คนแนบไม่ได้อยู่ในเนื้อข้อความ มันอยู่คนละคอลัมน์ ก่อนหน้านี้สัตว์
@@ -218,7 +221,6 @@ test('an attached picture reaches both the transcript and the vision pass', asyn
     },
   ];
 
-  /* ปิด vision: ยังต้องรู้ว่ามีรูป แค่ไม่ส่งรูปออกไปไหน */
   const calls = [];
   respond = async (_url, init) => {
     calls.push(JSON.parse(init.body));
@@ -232,7 +234,6 @@ test('an attached picture reaches both the transcript and the vision pass', asyn
   assert.match(calls[0].messages[0].content, /แพร: \[แนบรูป\]/);
   assert.match(calls[0].messages[0].content, /นนท์: COMMIT — วิ่งเสร็จ \[แนบรูป\]/);
 
-  /* เปิด vision: รูปที่แนบต้องถูกส่งไปให้โมเดลดูจริง ๆ */
   process.env.XTY_PET_VISION = 'on';
   calls.length = 0;
   respond = async (_url, init) => {
