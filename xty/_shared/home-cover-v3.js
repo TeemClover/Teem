@@ -53,7 +53,7 @@ function partiesForHome(entries = allMyParties()) {
 
 function xtyCardMarkup(card) {
   return `<div class="animal-card rarity-${esc(card.rarity || 'common')}" data-color="${esc(card.color)}" data-species="${esc(card.species)}">`
-    + `<img class="card-art" src="${esc(card.imageFull || card.art)}" alt="" width="630" height="880" loading="lazy" decoding="async">`
+    + `<img class="card-art" src="${esc(card.imageFull || card.art)}" alt="" width="630" height="880" loading="eager" decoding="async">`
     + `<span class="card-copy"><b>${esc(cardNameTh(card))}</b></span>`
     + '</div>';
 }
@@ -63,7 +63,7 @@ function coverMarkup(party) {
      party chose to be remembered by. */
   if (party.coverType === 'image' && party.coverValue) {
     return `<div class="xty-home-cover xty-home-image-cover">`
-      + `<img src="${esc(party.coverValue)}" alt="ปกฉากจบของ ${esc(party.name || 'สมุด')}" loading="lazy" decoding="async">`
+      + `<img src="${esc(party.coverValue)}" alt="ปกฉากจบของ ${esc(party.name || 'สมุด')}" loading="eager" decoding="async">`
       + '</div>';
   }
 
@@ -80,7 +80,7 @@ function coverMarkup(party) {
   }
 
   if (party.coverType === 'card_back') {
-    return `<div class="xty-home-cover xty-home-real-back"><img src="${BACK}" alt="หลังการ์ด myClover"></div>`;
+    return `<div class="xty-home-cover xty-home-real-back"><img src="${BACK}" alt="หลังการ์ด myClover" loading="eager" decoding="async"></div>`;
   }
 
   const profile = getProfile();
@@ -92,7 +92,7 @@ function coverMarkup(party) {
   try { snapshot = { ...snapshot, ...JSON.parse(party.coverValue || '{}') }; } catch {}
   const avatar = avatarById(snapshot.species);
   return `<div class="xty-home-cover avatar-cover" data-color="${esc(snapshot.color || 'green')}">`
-    + `<img src="${esc(avatar.art)}" alt=""><b>${esc(avatar.nameTh)}</b></div>`;
+    + `<img src="${esc(avatar.art)}" alt="" loading="eager" decoding="async"><b>${esc(avatar.nameTh)}</b></div>`;
 }
 
 function petThumbMarkup(party) {
@@ -107,7 +107,7 @@ function petThumbMarkup(party) {
 
   const pet = party.petId ? PET_BY_ID[party.petId] : null;
   if (pet?.art) {
-    return `<span class="xty-party-row-pet"><img src="${esc(pet.art)}" alt="${esc(pet.nameTh)}" loading="lazy" decoding="async"></span>`;
+    return `<span class="xty-party-row-pet"><img src="${esc(pet.art)}" alt="${esc(pet.nameTh)}" loading="eager" decoding="async"></span>`;
   }
   if (pet?.emoji) return `<span class="xty-party-row-pet emoji" aria-label="${esc(pet.nameTh)}">${esc(pet.emoji)}</span>`;
 
@@ -117,9 +117,11 @@ function petThumbMarkup(party) {
 }
 
 function rowVisualSignature(party) {
+  /* updatedAt changes for messages/commits even when the cover did not. Keep
+     image DOM alive unless something that is actually drawn has changed. */
   return [
     party.coverType || '', party.coverValue || '', party.leadCardId || '',
-    party.npcCardId || '', party.petId || '', party.updatedAt || '',
+    party.npcCardId || '', party.petId || '',
   ].join(':');
 }
 
@@ -173,9 +175,21 @@ function slideMarkup(entry, total) {
 }
 
 function signatureOf(entries) {
+  /* Only values rendered by slideMarkup belong here. updatedAt/log.length
+     caused every background sync to destroy and recreate all card images,
+     which showed up as blank/flickering cards on Safari. */
   return entries.map(({ party }) => [
-    party.code, party.state, party.updatedAt, party.coverType,
-    party.coverValue, party.leadCardId, party.members?.length || 0, party.log?.length || 0,
+    party.code,
+    party.state,
+    party.name || '',
+    bookActivityLine(party),
+    party.coverType || '',
+    party.coverValue || '',
+    party.leadCardId || '',
+    party.npcCardId || '',
+    party.petId || '',
+    party.members?.length || 0,
+    committedToday(party).size,
   ].join(':')).join('|');
 }
 

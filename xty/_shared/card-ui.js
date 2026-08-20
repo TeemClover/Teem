@@ -159,6 +159,7 @@ if (typeof location !== 'undefined' && /^\/xty\/new(?:\/|$)/.test(location.pathn
   import('./new-cover-v3.js').catch(error => console.warn('XTY cover picker unavailable', error));
   import('./new-cover-size-fix.js').catch(error => console.warn('XTY cover size guard unavailable', error));
   import('./collection-skin-picker.js').catch(error => console.warn('XTY Collection skin picker unavailable', error));
+  import('./new-capacity-guard.js?v=20260820-1').catch(error => console.warn('XTY capacity guard unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/xty\/collection(?:\/|$)/.test(location.pathname)) {
   import('/assets/account.js?v=20260818-save5').catch(error => console.warn('myClover SAVE unavailable', error));
@@ -168,7 +169,7 @@ if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
      import the carousel afterward, producing a visible size jump. Await the
      canonical renderer here: any module importing card-ui on Home cannot run
      its own paint until the carousel CSS/observer are already installed. */
-  await import('./home-cover-v3.js?v=20260820-ratio63x88').catch(error => console.warn('XTY home cover layer unavailable', error));
+  await import('./home-cover-v3.js?v=20260820-stable2').catch(error => console.warn('XTY home cover layer unavailable', error));
   await import('./home-card-ratio-fix.js?v=20260820-1').catch(error => console.warn('XTY home card ratio guard unavailable', error));
   import('./home-carousel-desktop.js').catch(error => console.warn('XTY desktop carousel controls unavailable', error));
 }

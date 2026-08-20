@@ -37,16 +37,36 @@ function avatarCover(body) {
   };
 }
 
-async function progressionLevelFor(req, sql, body) {
+async function identityIdsFor(req, sql, body) {
   const account = await currentUser(req, sql);
-  const ids = [...new Set([
+  return [...new Set([
     account?.id ? `account:${account.id}` : '',
     localUserId(body),
   ].filter(Boolean))];
+}
+
+async function progressionLevelFor(req, sql, body) {
+  const ids = await identityIdsFor(req, sql, body);
   if (!ids.length) return 1;
   const rows = await sql.query(`SELECT level FROM xty_progression
     WHERE user_id = ANY($1::text[]) ORDER BY level DESC LIMIT 1`, [ids]);
   return Math.min(4, Math.max(1, Math.floor(Number(rows[0]?.level || 1)) || 1));
+}
+
+async function creationCapacityFor(req, sql, body) {
+  const ids = await identityIdsFor(req, sql, body);
+  if (!ids.length) return { owned: 0, maxOwned: 1 };
+  const progressionRows = await sql.query(`SELECT level,paid_tier,unlocked_bonus_slots FROM xty_progression
+    WHERE user_id = ANY($1::text[])
+    ORDER BY level DESC,unlocked_bonus_slots DESC LIMIT 1`, [ids]);
+  const progression = progressionRows[0] || {};
+  const level = Math.min(4, Math.max(1, Math.floor(Number(progression.level || 1)) || 1));
+  const entitlement = progression.paid_tier === 'max' ? 3 : (progression.paid_tier === 'plus' ? 2 : 0);
+  const bonus = Math.min(entitlement, Math.max(0, Math.floor(Number(progression.unlocked_bonus_slots || 0)) || 0));
+  const maxOwned = Math.min(7, level + bonus);
+  const countRows = await sql.query(`SELECT COUNT(*)::int n FROM xty_parties
+    WHERE owner_id = ANY($1::text[]) AND state = ANY($2::text[])`, [ids, ACTIVE_STATES]);
+  return { owned: Number(countRows[0]?.n || 0), maxOwned };
 }
 
 function allowedDurations(level, preset) {
@@ -139,6 +159,17 @@ export async function handleCreatePartyV3(req, res) {
     const sql = database();
     await ensureSchema(sql);
     const body = bodyOf(req);
+
+    /* Merge/Resync is monotonic: old over-limit books stay visible. Creation
+       is not. Count the actual active books owned by this identity before any
+       new insert so a 4/2 account remains 4/2 instead of becoming 5/2. */
+    const capacity = await creationCapacityFor(req, sql, body);
+    if (capacity.owned >= capacity.maxOwned) {
+      return sendJson(res, {
+        ok: false, error: 'OWNED_PARTY_LIMIT', owned: capacity.owned, maxOwned: capacity.maxOwned,
+      }, 409);
+    }
+
     const levelBeforeCreate = await progressionLevelFor(req, sql, body);
     const preset = cleanId(body.preset, 40);
     const durationDays = Number(body.durationDays || 7);
