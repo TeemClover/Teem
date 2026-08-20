@@ -33,20 +33,23 @@ function installStyles() {
     .xty-cover-current-art{flex:none;width:88px;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:11px;background:#13291d;box-shadow:0 3px 10px rgba(62,51,44,.14)}
     .xty-cover-current-art img,.xty-cover-current-art svg{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
 
-    /* XTY card files are already finished cards with their own printed frame.
-       The picker must show that source image directly — no animal-card wrapper,
-       no extra CSS frame, no rounded-image clipping, no crop. */
+    /* XTY uses the exact same visual idea as FIRST HAND: one outer card mask,
+       one image inside. The raw XTY image is never rounded or clipped again,
+       so its printed border cannot be bitten away by a second mask. */
     .xty-cover-current-art[data-category="xty"]{
-      overflow:visible;background:transparent;border-radius:0;box-shadow:none;
+      overflow:hidden!important;
+      border-radius:11px!important;
+      background:#13291d!important;
+      box-shadow:0 3px 10px rgba(62,51,44,.14)!important;
     }
     .xty-cover-current-art[data-category="xty"]>.xty-cover-raw-card{
       display:block!important;
       width:100%!important;
       height:100%!important;
-      max-width:100%!important;
-      max-height:100%!important;
+      max-width:none!important;
+      max-height:none!important;
       margin:0!important;
-      object-fit:contain!important;
+      object-fit:cover!important;
       object-position:center!important;
       border:0!important;
       border-radius:0!important;
@@ -66,17 +69,21 @@ function installStyles() {
     .xty-cover-thumb{width:100%;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:9px;background:#13291d}
     .xty-cover-thumb img,.xty-cover-thumb svg{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
 
+    /* Single-mask crop for XTY shelf cards too. The option shell is only the
+       selection UI; the thumb is the sole clipping boundary. */
     .xty-cover-option[data-category="xty"] .xty-cover-thumb{
-      overflow:visible;background:transparent;border-radius:0;
+      overflow:hidden!important;
+      border-radius:9px!important;
+      background:#13291d!important;
     }
     .xty-cover-option[data-category="xty"] .xty-cover-thumb>.xty-cover-raw-card{
       display:block!important;
       width:100%!important;
       height:100%!important;
-      max-width:100%!important;
-      max-height:100%!important;
+      max-width:none!important;
+      max-height:none!important;
       margin:0!important;
-      object-fit:contain!important;
+      object-fit:cover!important;
       object-position:center!important;
       border:0!important;
       border-radius:0!important;
