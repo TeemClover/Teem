@@ -12,17 +12,6 @@
       "has": [
         {
           "type": "host",
-          "value": "teambook.me"
-        }
-      ],
-      "destination": "https://www.teambook.me/",
-      "permanent": false
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
           "value": "xty.myclover.com"
         }
       ],
@@ -499,6 +488,36 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "teambook.me"
+        }
+      ],
+      "destination": "/teambook/index.html"
+    },
+    {
+      "source": "/api/profile",
+      "has": [
+        {
+          "type": "host",
+          "value": "teambook.me"
+        }
+      ],
+      "destination": "/api/teambook-profile"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/index.html"
+    },
+    {
       "source": "/api/profile",
       "has": [
         {
@@ -531,6 +550,16 @@
     {
       "source": "/api/xty/:path*",
       "destination": "/api/xty?path=:path*"
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "teambook.me"
+        }
+      ],
+      "destination": "/teambook/:path*"
     },
     {
       "source": "/:path*",
