@@ -14,6 +14,11 @@ function lockStandardThai() {
 }
 
 const RULES = Object.freeze([
+  /* Canonical Thai spelling used across TeamBook UI. */
+  [/อัพเดท/g, 'อัปเดต'],
+  [/อัพเดต/g, 'อัปเดต'],
+  [/อัปเดท/g, 'อัปเดต'],
+
   [/REAL-LIFE PARTY GAME/gi, 'สมุดกลุ่มมีชีวิต'],
   [/WHAT COUNTS AS A COMMIT/gi, 'วันนี้ลงชื่อได้เมื่อ'],
   [/CONFIRMED COMMITS?/gi, 'วันที่ลงชื่อและมีคนเห็นแล้ว'],
