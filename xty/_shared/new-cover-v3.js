@@ -1,5 +1,4 @@
 import { getProfile, availableOwnedCards } from './store.js';
-import { cardMarkup } from './card-ui.js';
 import { cardNameTh } from './cards.js';
 import { cardById as core7CardById } from '../../core7/js/cards.js';
 import { cardSVG } from '../../core7/js/art.js';
@@ -17,6 +16,12 @@ function unlockedCore7Ids() {
   } catch { return []; }
 }
 
+function escAttr(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
+  }[ch]));
+}
+
 function installStyles() {
   if (document.getElementById('xty-cover-v3-style')) return;
   const style = document.createElement('style');
@@ -26,33 +31,26 @@ function installStyles() {
     .xty-cover-picker{display:grid;gap:12px}
     .xty-cover-current{display:flex;align-items:center;gap:14px;padding:12px;border:1px solid var(--xty-border);border-radius:18px;background:rgba(255,255,255,.72)}
     .xty-cover-current-art{flex:none;width:88px;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:11px;background:#13291d;box-shadow:0 3px 10px rgba(62,51,44,.14)}
-    .xty-cover-current-art img,.xty-cover-current-art svg,.xty-cover-current-art .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
+    .xty-cover-current-art img,.xty-cover-current-art svg{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
 
-    /* XTY cards already have their own visible card frame. Never crop that
-       frame into the preview box. The preview box becomes transparent and
-       the complete card is fitted inside it, including every edge. */
+    /* XTY card files are already finished cards with their own printed frame.
+       The picker must show that source image directly — no animal-card wrapper,
+       no extra CSS frame, no rounded-image clipping, no crop. */
     .xty-cover-current-art[data-category="xty"]{
       overflow:visible;background:transparent;border-radius:0;box-shadow:none;
     }
-    .xty-cover-current-art[data-category="xty"]>.animal-card{
-      box-sizing:border-box!important;
-      display:flex!important;
-      width:100%!important;
-      height:auto!important;
-      max-width:100%!important;
-      aspect-ratio:var(--xty-card-aspect)!important;
-      margin:0!important;
-      overflow:visible!important;
-      border-radius:15px!important;
-    }
-    .xty-cover-current-art[data-category="xty"]>.animal-card .card-art{
+    .xty-cover-current-art[data-category="xty"]>.xty-cover-raw-card{
       display:block!important;
       width:100%!important;
       height:100%!important;
+      max-width:100%!important;
+      max-height:100%!important;
       margin:0!important;
       object-fit:contain!important;
       object-position:center!important;
-      border-radius:13px!important;
+      border:0!important;
+      border-radius:0!important;
+      box-shadow:none!important;
     }
 
     .xty-cover-current-copy{min-width:0;flex:1}.xty-cover-current-copy b{display:block;font-size:16px;line-height:1.35}.xty-cover-current-copy small{display:block;margin-top:4px;color:var(--xty-muted);font-size:12px;line-height:1.4}
@@ -63,36 +61,26 @@ function installStyles() {
     .xty-cover-tab.active{border-color:#2e8b59;color:#2e8b59;background:rgba(50,139,92,.08)}
     .xty-cover-scroll{max-height:min(52dvh,520px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:12px}
     .xty-cover-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start}
-    .xty-cover-option{border:1px solid var(--xty-border);border-radius:13px;background:var(--xty-paper);padding:6px;min-width:0;text-align:left}
+    .xty-cover-option{border:1px solid var(--xty-border);border-radius:13px;background:var(--xty-paper);padding:6px;min-width:0;text-align:left;overflow:visible}
     .xty-cover-option[aria-checked="true"]{outline:3px solid rgba(50,139,92,.22);border-color:#2e8b59}
     .xty-cover-thumb{width:100%;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:9px;background:#13291d}
-    .xty-cover-thumb img,.xty-cover-thumb svg,.xty-cover-thumb .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
+    .xty-cover-thumb img,.xty-cover-thumb svg{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
 
-    /* Same rule inside the XTY tab: show the card itself, not a cropped
-       picture of the card. Keep the card's own rarity/color border intact;
-       the option box is only the surrounding UI. */
     .xty-cover-option[data-category="xty"] .xty-cover-thumb{
       overflow:visible;background:transparent;border-radius:0;
     }
-    .xty-cover-option[data-category="xty"] .xty-cover-thumb>.animal-card{
-      box-sizing:border-box!important;
-      display:flex!important;
-      width:100%!important;
-      height:auto!important;
-      max-width:100%!important;
-      aspect-ratio:var(--xty-card-aspect)!important;
-      margin:0!important;
-      overflow:visible!important;
-      border-radius:15px!important;
-    }
-    .xty-cover-option[data-category="xty"] .xty-cover-thumb>.animal-card .card-art{
+    .xty-cover-option[data-category="xty"] .xty-cover-thumb>.xty-cover-raw-card{
       display:block!important;
       width:100%!important;
       height:100%!important;
+      max-width:100%!important;
+      max-height:100%!important;
       margin:0!important;
       object-fit:contain!important;
       object-position:center!important;
-      border-radius:13px!important;
+      border:0!important;
+      border-radius:0!important;
+      box-shadow:none!important;
     }
 
     .xty-cover-label{display:block;margin-top:6px;font-size:10.5px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
@@ -103,6 +91,10 @@ function installStyles() {
 }
 
 function backArt() { return `<img src="${BACK}" alt="หลังการ์ด myClover">`; }
+function xtyArt(card) {
+  const src = card?.imageFull || card?.art || card?.image || '';
+  return src ? `<img class="xty-cover-raw-card" src="${escAttr(src)}" alt="" loading="eager" decoding="async">` : '';
+}
 function core7Art(id) {
   const card = core7CardById(id);
   return card ? cardSVG(id, { width: 300, showNumber: true }) : '';
@@ -124,7 +116,7 @@ function install() {
     back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด myClover', subtitle:'ใช้ได้เสมอ', art:backArt() }],
     xty: xtyCards.map(card => ({
       key:`xty:${card.cardId}`, category:'xty', coverType:'card', leadCardId:card.cardId,
-      title:cardNameTh(card), subtitle:'TEAMBOOK CARD', art:cardMarkup(card, { role:'lead' }),
+      title:cardNameTh(card), subtitle:'TEAMBOOK CARD', art:xtyArt(card),
     })),
     core7: core7Ids.map(id => {
       const card = core7CardById(id);
@@ -134,12 +126,6 @@ function install() {
       } : null;
     }).filter(Boolean),
   };
-
-  /* No shelf of cards you have not found. It used to show twelve of them,
-     locked, so a new player could see what a cover can be — but that hands
-     over the art of the set before anybody has opened a single card. What
-     a player needs here is the rule (covers come from cards, cards come
-     from finishing quests), and that is copy, not a grid. */
 
   const unlockedCovers = xtyCards.length + core7Ids.length;
   const total = 1 + unlockedCovers;
@@ -173,8 +159,6 @@ function install() {
     currentTitle.textContent = selected.title;
     currentSub.textContent = selected.subtitle;
     if (!hint) return;
-    /* Never phrased as a blocker: the party can be created right now, the
-       cover is simply the one everybody starts with. */
     hint.textContent = unlockedCovers
       ? `เลือกไว้ ${selected.title} · มีปกให้เลือก ${total} แบบ กด “เปลี่ยนปก” เพื่อเปิดคลัง`
       : 'สมุดนี้ใช้หลังการ์ด myClover เป็นปก · เปิดสมุดต่อได้เลย ไม่ต้องรอ — ปกแบบอื่นมาจากการ์ดที่ได้ตอนเล่นสมุดจนจบช่วง';
