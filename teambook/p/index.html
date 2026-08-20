@@ -644,10 +644,15 @@ function renderLog(p) {
        Legendary reads as an event from across the log. */
     if (rewardCard) el.dataset.rarity = rewardCard.rarity || 'common';
 
+    const rewardReason = post.rewardSource === 'first_seen'
+      ? 'รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก'
+      : (post.rewardSource === 'party_stars' ? 'รางวัลครบ 3 ดาวในสมุดนี้' : '');
     const body = post.retracted
       ? '<span>ข้อความถูกถอนโดยเจ้าของ</span>'
       : (isReward && rewardCard
-        ? `<div class="reward-log-card">${cardMarkup(rewardCard)}`
+        ? `<div class="reward-log-card">`
+          + (rewardReason ? `<p class="reward-log-reason"><b>${esc(rewardReason)}</b></p>` : '')
+          + `${cardMarkup(rewardCard)}`
           + `<p>เปิดได้ <b>${esc(cardNameTh(rewardCard))}</b>`
           + ` · ${esc((TEAMBOOK_RARITY_META[rewardCard.rarity] || TEAMBOOK_RARITY_META.common).label)}</p></div>`
         : esc(post.body));

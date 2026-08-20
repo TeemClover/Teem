@@ -149,3 +149,21 @@ test('first เห็นแล้ว reward belongs to the confirmer once across
   assert.match(partyPage, /firstSeenReward\?\.rewardId[\s\S]*\/reveal\/\?r=/);
   assert.match(revealPage, /เห็นคนอื่นเป็นครั้งแรก ✓/);
 });
+
+
+test('first เห็นแล้ว card opening is a shared notebook event with its own label', () => {
+  const core = readFileSync(join(ROOT, 'api/_lib/core.js'), 'utf8');
+  const partyApi = readFileSync(join(ROOT, 'api/teambook/[...path].js'), 'utf8');
+  const starApi = readFileSync(join(ROOT, 'api/_lib/xty-stars.js'), 'utf8');
+  const partyPage = readFileSync(join(ROOT, 'p/index.html'), 'utf8');
+  const weekly = readFileSync(join(ROOT, '_shared/reward-loop.js'), 'utf8');
+  const exporter = readFileSync(join(ROOT, '_shared/party-log-export.js'), 'utf8');
+
+  assert.match(core, /teambook_book_entries ADD COLUMN IF NOT EXISTS reward_source TEXT/);
+  assert.match(partyApi, /p\.reward_source/);
+  assert.match(partyApi, /claimed\.card_id,claimed\.unlock_source/);
+  assert.match(starApi, /claimed\.card_id,'party_stars'/);
+  assert.match(partyPage, /post\.rewardSource === 'first_seen'[\s\S]*รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก/);
+  assert.match(weekly, /รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก/);
+  assert.match(exporter, /rewardLabel: รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก/);
+});

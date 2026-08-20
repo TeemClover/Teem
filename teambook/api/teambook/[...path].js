@@ -326,13 +326,14 @@ async function rewardsOf(sql, row, member) {
 async function postsOf(sql, partyId, partyCode, since = 0) {
   const rows = await sql.query(`SELECT p.seq,p.user_id,p.kind,p.body,p.sent_at,p.retracted,
     p.pet_id,p.wake_hour,p.image_url,p.image_w,p.image_h,
-    p.activity_id,p.activity_label,p.activity_color,p.success_rule_snapshot,
+    p.activity_id,p.activity_label,p.activity_color,p.success_rule_snapshot,p.reward_source,
     m.alias,m.avatar FROM teambook_book_entries p LEFT JOIN teambook_book_members m
     ON m.book_id=p.book_id AND m.user_id=p.user_id
     WHERE p.book_id=$1 AND p.seq>$2 ORDER BY p.seq`, [partyId, since]);
   const posts = rows.map(row => ({
     seq: Number(row.seq), userId: row.user_id, alias: row.alias || '', avatar: row.avatar || '',
     kind: row.kind, body: row.retracted ? '' : row.body,
+    rewardSource: row.reward_source || null,
     sentAt: new Date(row.sent_at).toISOString(), retracted: !!row.retracted,
     petId: row.pet_id || null, wakeHour: row.wake_hour == null ? null : Number(row.wake_hour),
     /* A retracted post drops its picture too, same as its text. */
@@ -988,12 +989,13 @@ export default async function handler(req, res) {
         const posted = await sql.query(`WITH claimed AS (
             UPDATE teambook_card_unlock_events SET revealed_at=$1
             WHERE id=$2 AND book_id=$3 AND user_id=$4 AND revealed_at IS NULL
-            RETURNING card_id
+            RETURNING card_id,unlock_source
           ), next AS (
             UPDATE teambook_books SET head_seq=head_seq+1,updated_at=$1
             WHERE id=$3 AND EXISTS (SELECT 1 FROM claimed) RETURNING head_seq
-          ) INSERT INTO teambook_book_entries (book_id,seq,user_id,kind,body,sent_at,day_key,retracted)
-            SELECT $3,next.head_seq,$4,'reward',claimed.card_id,$1,$5::date,FALSE
+          ) INSERT INTO teambook_book_entries
+            (book_id,seq,user_id,kind,body,reward_source,sent_at,day_key,retracted)
+            SELECT $3,next.head_seq,$4,'reward',claimed.card_id,claimed.unlock_source,$1,$5::date,FALSE
             FROM next,claimed RETURNING seq`, [at, rewardId, row.id, member.user_id, key]);
         if (posted[0]) row.head_seq = Number(posted[0].seq);
       }

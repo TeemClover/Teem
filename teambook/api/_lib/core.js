@@ -124,6 +124,7 @@ const SCHEMA = [
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS activity_label TEXT`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS activity_color TEXT`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS success_rule_snapshot TEXT`,
+  `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS reward_source TEXT`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS image_url TEXT`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS image_w INTEGER`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS image_h INTEGER`,

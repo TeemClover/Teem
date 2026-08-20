@@ -90,6 +90,10 @@ function buildPartyLogText(party) {
     lines.push(`[SEQ ${seq}] ${ictStamp(post.sentAt)} | ${kind} | ${speaker}`);
     if (post.userId) lines.push(`userId: ${post.userId}`);
     if (post.petId) lines.push(`petId: ${post.petId}`);
+    if (post.kind === 'reward' && post.rewardSource) lines.push(`rewardSource: ${post.rewardSource}`);
+    if (post.kind === 'reward' && post.rewardSource === 'first_seen') {
+      lines.push('rewardLabel: รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก');
+    }
     if (post.retracted) {
       lines.push('retracted: yes');
       lines.push('message:');

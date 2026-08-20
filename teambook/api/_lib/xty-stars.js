@@ -160,8 +160,9 @@ async function revealReward(sql, party, member, rewardId) {
       UPDATE teambook_books SET head_seq=head_seq+1,updated_at=$1
       WHERE id=$3 AND EXISTS (SELECT 1 FROM claimed) RETURNING head_seq
     )
-    INSERT INTO teambook_book_entries (book_id,seq,user_id,kind,body,sent_at,day_key,retracted)
-    SELECT $3,next.head_seq,$4,'reward',claimed.card_id,$1,$5::date,FALSE
+    INSERT INTO teambook_book_entries
+      (book_id,seq,user_id,kind,body,reward_source,sent_at,day_key,retracted)
+    SELECT $3,next.head_seq,$4,'reward',claimed.card_id,'party_stars',$1,$5::date,FALSE
     FROM next,claimed RETURNING seq`, [at, rewardId, party.id, member.user_id, key]);
   return { ok: true, revealed: true, seq: posted[0]?.seq || null, cardId: reward.card_id, milestone: Number(reward.milestone) };
 }
