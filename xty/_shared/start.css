@@ -98,6 +98,18 @@
 .own b{display:block;margin:9px 0 3px;font-size:15px}
 .own span{color:#6d7566;font-size:12.5px;line-height:1.6}
 
+/* ── The line the whole product rests on ───────────────────────*/
+.pull{
+  max-width:620px;margin:30px auto 0;padding:26px 28px;
+  border-left:4px solid var(--xty-green,#55B56A);border-radius:0 18px 18px 0;
+  background:#FFFEF8;color:#4a5348;font-size:clamp(17px,2.1vw,22px);line-height:1.65;
+  text-align:center;
+}
+.pull b{display:block;margin-top:10px;color:#2f6b43;font-weight:800}
+
+/* A hint under the buttons carries more weight than a fourth button. */
+.cta-hint{margin:12px 0 0;color:#7d8a72;font-size:13.5px;line-height:1.65}
+
 /* ── Quiet close ───────────────────────────────────────────────*/
 .start-cta{text-align:center;padding:74px 0 88px}
 .start-cta h2{margin:0 0 14px;font-size:clamp(30px,5.4vw,50px);line-height:1.08;letter-spacing:-.03em}
