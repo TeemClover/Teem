@@ -390,7 +390,9 @@ function paintPartyList(p, mine) {
   $('joinedCapacityN').innerHTML = `${capacity.joined} / ${capacity.maxJoined}<small>เข้าร่วม</small>`;
 
   if (!list.length) {
-    $('mainParty').innerHTML = `<div class="empty">ยังไม่มีสมุด<br><span style="font-size:13px">ใช้สัตว์ของคุณเป็นปก แล้วเปิดสมุดเล่มแรกได้เลย</span></div>`;
+    $('mainParty').innerHTML = `<div class="empty">
+      <img class="empty-art" src="/xty/assets/decor/mascot/cat-asleep-on-book.webp" alt="" aria-hidden="true" width="328" height="215" loading="lazy" decoding="async">
+      ยังไม่มีสมุด<br><span style="font-size:13px">ใช้สัตว์ของคุณเป็นปก แล้วเปิดสมุดเล่มแรกได้เลย</span></div>`;
     $('allPartiesSection').hidden = true;
     return;
   }
