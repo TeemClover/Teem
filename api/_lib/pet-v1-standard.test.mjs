@@ -28,6 +28,8 @@ function canonVector(id) {
 const EXPECTED_V1 = Object.freeze([
   'pig', 'buffalo', 'dog', 'unicorn', 'crow', 'cat', 'chicken', 'turtle',
 ]);
+const MUTE_V1 = 'unicorn';
+const CHAT_ACTIVE_V1 = Object.freeze(EXPECTED_V1.filter(id => id !== MUTE_V1));
 const LEGACY_CONFLICTS = [
   /ทุก wake ต้องพูด/i,
   /ทุกครั้งที่ตื่นต้องพูด/i,
@@ -40,8 +42,9 @@ test('XTY V1 exposes exactly eight canonical pets', () => {
   assert.deepEqual([...XTY_V1_PET_IDS], [...EXPECTED_V1]);
 });
 
-test('all eight V1 pets use the same living-brain contract', () => {
-  for (const id of EXPECTED_V1) {
+test('seven V1 pets use the living-chat brain; unicorn keeps authored voice only for book-edge scenes', () => {
+  assert.equal(CHAT_ACTIVE_V1.length, 7);
+  for (const id of CHAT_ACTIVE_V1) {
     const persona = PET_PERSONAS[id];
     assert.ok(persona, `${id} must have an authored runtime persona`);
     assert.equal(hasPersona(id), true, `${id} must route through pet-brain`);
@@ -55,6 +58,9 @@ test('all eight V1 pets use the same living-brain contract', () => {
       assert.equal(conflict.test(text), false, `${id} still contains legacy always-speak rule: ${conflict}`);
     }
   }
+
+  assert.ok(PET_PERSONAS[MUTE_V1], 'unicorn still needs its authored voice for goodbye/finale presentation');
+  assert.equal(hasPersona(MUTE_V1), true, 'mute mode is enforced by runtime routing, not by deleting unicorn voice');
 });
 
 /* กติกาที่ทุกตัวใช้ร่วมกันต้องอยู่ในรัฐธรรมนูญที่เดียว ถ้าไฟล์ซอสเริ่ม
@@ -98,7 +104,7 @@ test('an animal without a sauce file still has a usable voice', () => {
 /* เสียงของแต่ละตัวถูกเขียนไว้ละเอียดใน xty/pets/personas/*.md แต่เดิมมันไม่เคย
    ไปถึงโมเดลเลย — ยูนิคอร์นมี canon 655 บรรทัดแต่ runtime ไม่มีข้อมูลเสียงสักบรรทัด
    ตัวเลข voiceVector คือสิ่งที่สั่งเสียงได้คมที่สุดและกันไม่ให้ทุกตัวกลืนกัน */
-test('every live pet carries the voice mechanics its canon actually specifies', () => {
+test('every V1 pet carries the voice mechanics its canon actually specifies', () => {
   for (const id of EXPECTED_V1) {
     const sauce = PET_SAUCE[id];
     assert.ok(sauce.voiceVector, `${id} ต้องมี voiceVector`);
@@ -122,7 +128,7 @@ test('runtime voice vectors have not drifted from the authored canon', () => {
   }
 });
 
-test('no two live pets share the same voice', () => {
+test('no two V1 pets share the same voice', () => {
   const seen = new Map();
   for (const id of EXPECTED_V1) {
     const key = AXES.map(a => PET_SAUCE[id].voiceVector[a]).join(',');
@@ -134,7 +140,7 @@ test('no two live pets share the same voice', () => {
 /* กับดักที่เจอจริง: canon ของควายสร้างเสียงจาก "กู" แต่ sanitizeDecision ลบทั้ง
    turn ทิ้งถ้าเจอคำนี้ (ยกเว้นเหี้ย) การใส่คำพวกนี้ลง sauce จึงเท่ากับสั่งให้
    มันพูดในสิ่งที่ระบบจะลบทิ้ง = สัตว์ตัวนั้นเงียบกว่าตัวอื่นโดยไม่มีใครรู้ */
-test('a live pet is never told to speak words the sanitizer deletes', () => {
+test('a V1 pet is never told to speak words the sanitizer deletes', () => {
   for (const id of EXPECTED_V1) {
     const flat = JSON.stringify(PET_SAUCE[id]);
     assert.doesNotMatch(flat, /กู|มึง/,

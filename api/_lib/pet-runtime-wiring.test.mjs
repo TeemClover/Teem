@@ -35,6 +35,21 @@ test('scheduled PET sweep has no room-count or wall-clock cutoff and reads the w
   assert.match(source, /kind === 'system'/);
 });
 
+test('unicorn is mute mode: scheduled and manual chat sweeps exclude it before Party Log reads', () => {
+  const source = text('api/xty-pet.js');
+  assert.match(source, /const MUTE_PET_ID = 'unicorn'/);
+  const scheduler = source.slice(source.indexOf('const due = force'), source.indexOf('const tally ='));
+  const exclusions = scheduler.match(/COALESCE\(pet_id,''\) <> '\$\{MUTE_PET_ID\}'/g) || [];
+  assert.equal(exclusions.length, 2, 'both force and normal scheduler queries must exclude unicorn');
+
+  const direct = source.slice(source.indexOf('async function directReply'), source.indexOf('async function whiteCatIntro'));
+  const muteAt = direct.indexOf('party.pet_id === MUTE_PET_ID');
+  const historyAt = direct.indexOf('recentLog(sql, party.id)');
+  assert.ok(muteAt >= 0, 'direct path must recognize unicorn mute mode');
+  assert.ok(historyAt >= 0 && muteAt < historyAt, 'mute mode must exit before reading Party Log');
+  assert.match(direct, /skipped: 'MUTE_MODE'/);
+});
+
 test('direct PET conversation never consumes the next scheduled :27 inspection', () => {
   const source = text('api/xty-pet.js');
   const direct = source.slice(source.indexOf('async function directReply'), source.indexOf('async function whiteCatIntro'));
