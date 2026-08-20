@@ -100,7 +100,7 @@ function install() {
   const profile = getProfile();
   const xtyCards = availableOwnedCards({ role: 'lead', profile });
   const groups = {
-    back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด TeamBook', subtitle:'ใช้ได้เสมอ', art:backArt() }],
+    back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด', subtitle:'ใช้ได้เสมอ', art:backArt() }],
     xty: xtyCards.map(card => ({
       key:`xty:${card.cardId}`, category:'xty', coverType:'card', leadCardId:card.cardId,
       title:cardNameTh(card), subtitle:'TEAMBOOK CARD', art:xtyArt(card),
@@ -141,7 +141,7 @@ function install() {
     if (!hint) return;
     hint.textContent = unlockedCovers
       ? `เลือกไว้ ${selected.title} · มีปกให้เลือก ${total} แบบ กด “เปลี่ยนปก” เพื่อเปิดคลัง`
-      : 'สมุดนี้ใช้หลังการ์ด TeamBook เป็นปก · เปิดสมุดต่อได้เลย ไม่ต้องรอ — ปกแบบอื่นมาจากการ์ดที่ได้ตอนเล่นสมุดจนจบช่วง';
+      : 'สมุดนี้ใช้หลังการ์ดเป็นปก · เปิดสมุดต่อได้เลย ไม่ต้องรอ — ปกแบบอื่นมาจากการ์ดที่ได้ตอนเล่นสมุดจนจบช่วง';
   }
 
   function renderCategory() {
