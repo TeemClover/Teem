@@ -198,3 +198,27 @@ test('canonical TeamBook domain redirects root to /teambook and serves the app t
     );
   }
 });
+
+
+test('www.teambook.me keeps TeamBook pages, assets, and APIs inside the /teambook app', () => {
+  const projectConfig = JSON.parse(readFileSync(join(ROOT, '../vercel.json'), 'utf8'));
+  const hostRoute = source => projectConfig.rewrites.find(route => route.source === source
+    && route.has?.some(match => match.type === 'host' && match.value === 'www.teambook.me'));
+
+  for (const prefix of ['_shared', 'assets', 'join', 'new', 'p', 'profile', 'read', 'reveal']) {
+    assert.equal(hostRoute(`/${prefix}/:path*`)?.destination, `/teambook/${prefix}/:path*`);
+  }
+  assert.equal(hostRoute('/api/profile')?.destination, '/api/teambook-profile');
+  assert.equal(
+    projectConfig.rewrites.some(route => route.source === '/api/teambook/:path*'
+      && route.destination === '/api/teambook?path=:path*'),
+    true,
+  );
+
+  for (const wrapper of ['teambook.js', 'teambook-media.js', 'teambook-pet.js', 'teambook-profile.js']) {
+    assert.match(
+      readFileSync(join(ROOT, '../api', wrapper), 'utf8'),
+      /export \{ default \} from '\.\.\/teambook\/api\//,
+    );
+  }
+});

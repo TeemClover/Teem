@@ -510,6 +510,198 @@
   ],
   "rewrites": [
     {
+      "source": "/api/profile",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/api/teambook-profile"
+    },
+    {
+      "source": "/api/teambook/party/:code/image/:seq",
+      "destination": "/api/teambook-media?code=:code&seq=:seq"
+    },
+    {
+      "source": "/api/teambook/party/:code/cover",
+      "destination": "/api/teambook-media?code=:code&cover=1"
+    },
+    {
+      "source": "/api/teambook/:path*",
+      "destination": "/api/teambook?path=:path*"
+    },
+    {
+      "source": "/_shared/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/_shared/:path*"
+    },
+    {
+      "source": "/assets/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/assets/:path*"
+    },
+    {
+      "source": "/cards/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/cards/:path*"
+    },
+    {
+      "source": "/collection/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/collection/:path*"
+    },
+    {
+      "source": "/ideas/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/ideas/:path*"
+    },
+    {
+      "source": "/join/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/join/:path*"
+    },
+    {
+      "source": "/new/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/new/:path*"
+    },
+    {
+      "source": "/p/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/p/:path*"
+    },
+    {
+      "source": "/pets/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/pets/:path*"
+    },
+    {
+      "source": "/privacy/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/privacy/:path*"
+    },
+    {
+      "source": "/profile/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/profile/:path*"
+    },
+    {
+      "source": "/public/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/public/:path*"
+    },
+    {
+      "source": "/read/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/read/:path*"
+    },
+    {
+      "source": "/reveal/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/reveal/:path*"
+    },
+    {
+      "source": "/start/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/start/:path*"
+    },
+    {
+      "source": "/stat/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/stat/:path*"
+    },
+    {
+      "source": "/u/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/u/:path*"
+    },
+    {
       "source": "/api/auth/:path*",
       "destination": "/api/auth?path=:path*"
     },
