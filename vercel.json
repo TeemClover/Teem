@@ -12,21 +12,10 @@
       "has": [
         {
           "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/",
-      "permanent": false
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
           "value": "teambook.me"
         }
       ],
-      "destination": "/teambook/",
+      "destination": "https://www.teambook.me/",
       "permanent": false
     },
     {
@@ -509,6 +498,16 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/index.html"
+    },
     {
       "source": "/api/profile",
       "has": [
