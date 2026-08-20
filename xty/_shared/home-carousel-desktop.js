@@ -5,6 +5,7 @@
 
 const STYLE_ID = 'xty-home-carousel-desktop-style';
 const ENHANCED = 'xtyDesktopScroll';
+let repairScheduled = false;
 
 function installStyle() {
   if (document.getElementById(STYLE_ID)) return;
@@ -43,6 +44,15 @@ function installStyle() {
       border-radius:8px!important;
       background:transparent!important;
       box-shadow:none!important;
+    }
+
+    /* Home is painted from local cache, then repainted after party/account
+       sync. Safari can deliver those MutationObserver batches in an order
+       where the cover decorator briefly runs twice on the same fresh row.
+       Never let duplicate decorators consume extra implicit grid columns. */
+    .party-group .xty-party-summary-row > .ic { display:none!important; }
+    .party-group .xty-party-summary-row > .xty-party-row-visual ~ .xty-party-row-visual {
+      display:none!important;
     }
 
     @media (hover:hover) and (pointer:fine) {
@@ -126,8 +136,38 @@ function enhance(carousel) {
   carousel.addEventListener('lostpointercapture', finishDrag);
 }
 
+function repairPartyRows() {
+  repairScheduled = false;
+  const rows = document.querySelectorAll('#leadPartyRows > a.row, #joinedPartyRows > a.row');
+  for (const row of rows) {
+    const visuals = [...row.querySelectorAll(':scope > .xty-party-row-visual')];
+    if (!visuals.length) continue;
+
+    /* The decorator prepends a new visual when a legacy icon is already gone,
+       so the first visual is always the newest canonical one. Keep exactly it. */
+    visuals.slice(1).forEach(node => node.remove());
+    row.querySelectorAll(':scope > .ic').forEach(node => node.remove());
+    row.classList.add('xty-party-summary-row');
+
+    /* A corrupted row can leave the text/arrow in a strange implicit column.
+       Re-appending the canonical three children restores deterministic grid
+       placement without touching their contents or click target. */
+    const visual = visuals[0];
+    const text = row.querySelector(':scope > .tx');
+    const go = row.querySelector(':scope > .go');
+    if (visual && text && go) row.append(visual, text, go);
+  }
+}
+
+function scheduleRepair() {
+  if (repairScheduled) return;
+  repairScheduled = true;
+  requestAnimationFrame(repairPartyRows);
+}
+
 function scan() {
   document.querySelectorAll('.xty-party-carousel').forEach(enhance);
+  scheduleRepair();
 }
 
 installStyle();
@@ -136,3 +176,15 @@ scan();
 
 const host = document.getElementById('mainParty');
 if (host) new MutationObserver(scan).observe(host, { childList: true, subtree: true });
+
+/* Watch only the two row containers. This deliberately repairs both the
+   initial local-cache paint and later cloud/party refresh paints, including
+   Safari BFCache restores, without observing the whole Home subtree. */
+for (const id of ['leadPartyRows', 'joinedPartyRows']) {
+  const rows = document.getElementById(id);
+  if (rows) new MutationObserver(scheduleRepair).observe(rows, { childList: true, subtree: true });
+}
+window.addEventListener('pageshow', scheduleRepair);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) scheduleRepair();
+});
