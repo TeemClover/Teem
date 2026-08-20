@@ -499,6 +499,16 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/index.html"
+    },
+    {
       "source": "/api/profile",
       "has": [
         {
