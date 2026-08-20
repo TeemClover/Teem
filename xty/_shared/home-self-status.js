@@ -71,9 +71,9 @@ function installStyle() {
       .xty-party-row-self-status{top:42px;width:12px;height:12px}
     }
 
-    /* Safari occasionally paints a dynamically inserted cached IMG one frame
-       late. The same source is kept as the element background as a visual
-       fallback, and all home card images skip fade/async-decode effects. */
+    /* Safari occasionally paints dynamically inserted cached image resources
+       one frame late. HTML IMG gets a background fallback; FIRST HAND cards
+       use an SVG <image>, which is stabilized separately below. */
     #home .xty-home-cover img,
     #home .xty-party-row-visual img{
       opacity:1!important;
@@ -131,9 +131,47 @@ function stabilizeImage(img) {
   });
 }
 
+const XLINK_NS = 'http://www.w3.org/1999/xlink';
+function stabilizeSvgImage(node) {
+  if (!node || node.localName !== 'image') return;
+  if (node.dataset.xtyStableBound === '1') return;
+
+  const raw = node.getAttribute('href') || node.getAttributeNS(XLINK_NS, 'href') || '';
+  if (!raw) return;
+  const src = new URL(raw, location.href).href;
+  const preloaded = warmImage(src);
+  node.dataset.xtyStableBound = '1';
+
+  /* FIRST HAND covers are inline SVGs whose artwork is another WebP loaded
+     through <image href>. Mobile Safari can keep that subresource blank on
+     the first dynamic insertion even when the WebP is already in HTTP cache.
+     Decode it as a normal Image first, then replace only the SVG image node.
+     Replacing after decode forces WebKit to paint from the decoded cache and
+     leaves the surrounding card SVG/frame/text untouched. */
+  const repaint = () => {
+    if (!node.isConnected || node.dataset.xtyStableRepainted === '1') return;
+    const clone = node.cloneNode(true);
+    clone.dataset.xtyStableBound = '1';
+    clone.dataset.xtyStableRepainted = '1';
+    clone.setAttribute('href', src);
+    try { clone.setAttributeNS(XLINK_NS, 'href', src); } catch {}
+    node.replaceWith(clone);
+  };
+
+  const afterDecode = async () => {
+    try { if (typeof preloaded?.decode === 'function') await preloaded.decode(); } catch {}
+    requestAnimationFrame(() => requestAnimationFrame(repaint));
+  };
+
+  if (preloaded?.complete && preloaded.naturalWidth) afterDecode();
+  else if (preloaded) preloaded.addEventListener('load', afterDecode, { once: true });
+}
+
 function stabilizeImages(root = document) {
   root.querySelectorAll?.('#home .xty-home-cover img, #home .xty-party-row-visual img')
     .forEach(stabilizeImage);
+  root.querySelectorAll?.('#home .xty-home-core7-cover svg image')
+    .forEach(stabilizeSvgImage);
 }
 
 function syncCopy() {
