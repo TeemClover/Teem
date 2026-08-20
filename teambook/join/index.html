@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow,noarchive,nosnippet">
+<link rel="icon" href="/assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/assets/brand/teambook-mark-256.png">
+<link rel="apple-touch-icon" href="/assets/brand/teambook-icon-180.png">
+<meta name="theme-color" content="#FFF9E9">
+<title>เข้าร่วมสมุด — TeamBook</title>
+<!-- TEAMBOOK SOCIAL SHARE -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TeamBook">
+<meta property="og:title" content="เข้าร่วมสมุด — TeamBook">
+<meta property="og:description" content="มีรหัสสมุดแล้วใช่ไหม ใส่รหัสเพื่อเข้าไปเขียนเรื่องนี้ด้วยกัน">
+<meta property="og:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:secure_url" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="เข้าร่วมสมุด — TeamBook">
+<meta name="twitter:description" content="มีรหัสสมุดแล้วใช่ไหม ใส่รหัสเพื่อเข้าไปเขียนเรื่องนี้ด้วยกัน">
+<meta name="twitter:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
+<meta name="twitter:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
+<!-- /TEAMBOOK SOCIAL SHARE -->
+<link rel="stylesheet" href="/_shared/xty.css?v=8">
+<script>
+(() => {
+  const value = new URLSearchParams(location.search).get('c');
+  const code = /^\d{5}$/.test(value || '') ? value : '';
+
+  let hasLocalProfile = false;
+  let hasMembership = false;
+  try {
+    hasLocalProfile = !!localStorage.getItem('teambook_profile_v1');
+    if (code) {
+      const tokens = JSON.parse(localStorage.getItem('teambook_book_tokens_v1') || '{}');
+      const membership = tokens && typeof tokens === 'object' ? tokens[code] : null;
+      hasMembership = typeof membership === 'string'
+        ? membership.length > 0
+        : !!(membership && membership.token);
+    }
+  } catch {}
+
+  /* An invite link doubles as a bookmark. If this browser has already
+     joined the same party, skip Join entirely and reopen the party. */
+  if (hasLocalProfile && code && hasMembership) {
+    location.replace(`/p/?c=${encodeURIComponent(code)}`);
+    return;
+  }
+
+  if (hasLocalProfile) return;
+  location.replace(code ? `/?c=${encodeURIComponent(code)}` : '/');
+})();
+</script>
+<script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a>
+  <a class="back" href="/">ยกเลิก</a>
+</header>
+
+<main class="wrap">
+  <p class="kicker">เข้าร่วมสมุด</p>
+  <h1 class="title">เข้าร่วมสมุด</h1>
+  <p class="lede">ใส่รหัสที่เพื่อนส่งมา</p>
+
+  <div class="card">
+    <div class="field" style="margin-top:0">
+      <label for="code">รหัสสมุด</label>
+      <input id="code" type="text" inputmode="numeric" maxlength="5" placeholder="00427"
+             autocomplete="one-time-code" spellcheck="false"
+             style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;font-size:19px">
+    </div>
+    <div class="field">
+      <label>เล่นสมุดนี้เป็นตัวไหนดี?</label>
+      <p class="whisper" style="margin:0 0 12px">เลือกสัตว์เริ่มต้น หรือการ์ดที่ปลดล็อกแล้วในคอลเลกชัน</p>
+      <div id="avatarPick" role="radiogroup" aria-label="เลือกตัวละครหรือการ์ดประจำสมุด"></div>
+      <div id="frameField">
+        <p class="label" style="margin:14px 0 8px">สีกรอบ Starter</p>
+        <div class="color-row" id="framePick" role="radiogroup" aria-label="เลือกสีตัวละครประจำสมุด"></div>
+      </div>
+      <p class="hint" id="avatarHint">Starter เลือกสีกรอบด้านล่างได้ · เลือกเฉพาะสมุดนี้ได้ และใช้หน้าตาซ้ำข้ามสมุดได้</p>
+    </div>
+
+    <div class="field" id="sharedActivityField" hidden>
+      <label>กิจกรรมของสมุดนี้</label>
+      <p class="whisper" style="margin:0 0 10px">ทุกคนในเล่มนี้ทำเรื่องเดียวกัน แต่ตั้งเป้าของตัวเองได้</p>
+      <p class="shared-activity" id="sharedActivityName"></p>
+      <div class="field" style="margin-top:14px">
+        <label for="sharedRule" id="sharedRuleLabel"></label>
+        <input id="sharedRule" type="text" maxlength="60" placeholder="เช่น อ่าน 10 หน้า">
+        <p class="hint">ไม่ใส่ก็ได้ · เขียนสั้น ๆ ด้วยคำของตัวเอง เปลี่ยนทีหลังได้</p>
+      </div>
+    </div>
+
+    <div class="field" id="ownActivityField" hidden>
+      <label>เล่มนี้ต่างคนต่างทำ — เลือกเรื่องของคุณ</label>
+      <p class="whisper" style="margin:0 0 12px">เลือกกิจกรรมของตัวเอง แล้วกลับมาลงชื่อในสมุดเดียวกันกับคนอื่น</p>
+      <div id="ownActivityPick"></div>
+    </div>
+
+    <button class="btn gold" id="go" style="margin-top:20px" disabled>เข้าร่วมสมุด</button>
+    <p class="hint" id="joinWait" style="margin-top:12px">หลังจากกดเข้าร่วมสมุดแล้ว รอประมาณ 5–12 วินาที เพื่อยืนยัน Slot สมุด</p>
+    <p class="hint" id="err" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
+  </div>
+
+  <p class="note">รหัสนี้ใช้เข้าร่วมสมุดข้ามเครื่องได้ สมาชิกหนึ่งสมุดมีได้ 2–5 คน และสมาชิกในสมุดจะเห็น เรื่องในสมุด ร่วมกัน</p>
+</main>
+
+<script type="module">
+import { hasProfile, getProfile } from '/_shared/store.js';
+import { joinPartyV2 } from '/_shared/join-party-v2.js';
+import { AVATAR_FRAMES } from '/_shared/avatars.js';
+import { mountCardPicker } from '/_shared/card-picker.js';
+import { SHARED, INDIVIDUAL, SUCCESS_RULE_PROMPT, normalizeMode } from '/_shared/book-mode.js';
+import { mountActivityPicker } from '/_shared/activity-picker.js';
+
+const $ = id => document.getElementById(id);
+const rawPrefill = new URLSearchParams(location.search).get('c');
+const prefill = /^\d{5}$/.test(rawPrefill || '') ? rawPrefill : '';
+
+if (!hasProfile()) {
+  location.replace(prefill ? `/?c=${encodeURIComponent(prefill)}` : '/');
+} else {
+  initJoin(prefill);
+}
+
+function initJoin(initialCode) {
+  const input = $('code'), go = $('go'), err = $('err');
+
+  /* Keep leading zeroes: the invite code is exactly five numeric digits. */
+  input.addEventListener('input', () => {
+    const v = input.value.replace(/\D/g, '').slice(0, 5);
+    input.value = v;
+    err.hidden = true;
+    if (v.length === 5) peek(v); else forget();
+    syncReady();
+  });
+
+  /* What this book asks of a joiner depends on how it is played, and that
+     is not knowable from a five-digit code alone — so the page looks the
+     book up as soon as the code is complete, then shows one branch or the
+     other. Until it knows, it asks nothing and stays out of the way. */
+  let bookMode = null;
+  let ownActivity = { complete: false };
+  let peeked = '';
+  let ownPicker = null;
+
+  function forget() {
+    bookMode = null;
+    peeked = '';
+    $('sharedActivityField').hidden = true;
+    $('ownActivityField').hidden = true;
+  }
+
+  async function peek(code) {
+    if (peeked === code) return;
+    peeked = code;
+    try {
+      const res = await fetch(`/api/teambook/party/${encodeURIComponent(code)}`, { headers: { accept: 'application/json' } });
+      const data = await res.json();
+      if (peeked !== code) return;             // the code moved on while we waited
+      if (!data.ok || !data.party) return forget();
+      bookMode = normalizeMode(data.party.activityMode);
+      if (bookMode === SHARED) {
+        $('sharedActivityField').hidden = false;
+        $('ownActivityField').hidden = true;
+        $('sharedActivityName').textContent = data.party.sharedActivityLabel || data.party.activity || 'ยังไม่ระบุกิจกรรม';
+        $('sharedRuleLabel').textContent = SUCCESS_RULE_PROMPT;
+      } else {
+        $('sharedActivityField').hidden = true;
+        $('ownActivityField').hidden = false;
+        if (!ownPicker) {
+          ownPicker = mountActivityPicker($('ownActivityPick'), {
+            askSuccessRule: true,
+            onChange: value => { ownActivity = value; syncReady(); },
+          });
+        }
+      }
+      syncReady();
+    } catch (error) {
+      /* Offline or a slow network is not a reason to block the code box.
+         The join itself will report the real problem. */
+      forget();
+      syncReady();
+    }
+  }
+
+  function syncReady() {
+    const codeReady = input.value.length === 5;
+    const activityReady = bookMode !== INDIVIDUAL || ownActivity.complete;
+    go.disabled = !codeReady || !activityReady;
+  }
+
+  /* Deliberately after the state above: replaying the input event is what
+     kicks off the peek, and the peek writes to bindings declared here. */
+  if (initialCode) {
+    input.value = initialCode;
+    input.dispatchEvent(new Event('input'));
+  }
+
+  const profile = getProfile();
+  const defaultCardId = profile.equippedCardId || null;
+  let partyAvatar = defaultCardId || profile.avatarId;
+  let partyAvatarColor = profile.avatarFrame || 'green';
+
+  function syncAvatarMode(kind) {
+    const usingCard = kind === 'card';
+    $('frameField').hidden = usingCard;
+    $('avatarHint').textContent = usingCard
+      ? 'การ์ดใช้สีของการ์ดเอง · เลือกเฉพาะสมุดนี้ได้ และไม่เปลี่ยนสัตว์เริ่มต้นในโปรไฟล์'
+      : 'Starter เลือกสีกรอบด้านล่างได้ · เลือกเฉพาะสมุดนี้ได้ และใช้หน้าตาซ้ำข้ามสมุดได้';
+  }
+
+  mountCardPicker($('avatarPick'), {
+    mode: 'avatar',
+    selected: defaultCardId ? { cardId: defaultCardId } : { avatarId: profile.avatarId },
+    onSelect(choice) {
+      if (choice.kind === 'card') partyAvatar = choice.cardId;
+      else partyAvatar = choice.avatarId;
+      syncAvatarMode(choice.kind);
+    },
+  });
+  syncAvatarMode(defaultCardId ? 'card' : 'starter');
+
+  Object.values(AVATAR_FRAMES).forEach(frame => {
+    const button = document.createElement('button'); button.type = 'button';
+    button.className = 'color-choice' + (frame.id === partyAvatarColor ? ' picked' : '');
+    button.style.setProperty('--swatch', frame.hex); button.setAttribute('role', 'radio');
+    button.setAttribute('aria-checked', frame.id === partyAvatarColor ? 'true' : 'false');
+    button.innerHTML = `<span></span><b>${frame.labelTh}</b>`;
+    button.addEventListener('click', () => {
+      partyAvatarColor = frame.id;
+      $('framePick').querySelectorAll('button').forEach(node => {
+        const on = node === button; node.classList.toggle('picked', on); node.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+    });
+    $('framePick').appendChild(button);
+  });
+
+  go.addEventListener('click', async () => {
+    go.disabled = true;
+    go.textContent = 'กำลังยืนยัน Slot…';
+    const p = getProfile();
+    const res = await joinPartyV2(input.value, {
+      alias: p.alias, avatar: partyAvatar, avatarColor: partyAvatarColor,
+      ...(bookMode === INDIVIDUAL ? {
+        activityId: ownActivity.activityId,
+        activityLabel: ownActivity.label,
+        activityDescription: ownActivity.description,
+        activityColor: ownActivity.color,
+        successRule: ownActivity.successRule,
+      } : { successRule: $('sharedRule').value.trim() }),
+    });
+    if (res.error === 'NOT_FOUND') {
+      err.textContent = 'ไม่เจอสมุดรหัสนี้ ลองเช็กรหัสอีกครั้ง';
+      err.hidden = false;
+      go.disabled = false;
+      go.textContent = 'เข้าร่วมสมุด';
+      return;
+    }
+    if (res.error === 'FULL') {
+      err.textContent = 'สมุดนี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)';
+      err.hidden = false;
+      go.disabled = false;
+      go.textContent = 'เข้าร่วมสมุด';
+      return;
+    }
+    if (res.error === 'PARTY_CLOSED') {
+      err.textContent = 'สมุดนี้จบแล้วและไม่รับสมาชิกเพิ่ม';
+      err.hidden = false;
+      go.disabled = false;
+      go.textContent = 'เข้าร่วมสมุด';
+      return;
+    }
+    if (res.error === 'MEMBERSHIP_CLOSED') {
+      err.textContent = 'ช่วงการร่วมทางของคุณในสมุดนี้ถูกปิดแล้ว';
+      err.hidden = false;
+      go.disabled = false;
+      go.textContent = 'เข้าร่วมสมุด';
+      return;
+    }
+    if (res.error === 'ACTIVITY_REQUIRED') {
+      err.textContent = 'เล่มนี้ต่างคนต่างทำ — เลือกกิจกรรมของคุณก่อนเข้าร่วม';
+      err.hidden = false;
+      go.disabled = false;
+      go.textContent = 'เข้าร่วมสมุด';
+      return;
+    }
+    if (res.error === 'JOINED_PARTY_LIMIT') {
+      err.textContent = 'ช่องเข้าร่วมสมุดเต็มแล้ว — เข้าร่วมพร้อมกันได้ไม่เกิน 3 สมุด';
+      err.hidden = false;
+      go.disabled = false;
+      go.textContent = 'เข้าร่วมสมุด';
+      return;
+    }
+    if (res.error) {
+      err.textContent = 'เข้าร่วมสมุดไม่สำเร็จ — เช็กเน็ตแล้วลองใหม่';
+      err.hidden = false;
+      go.disabled = false;
+      go.textContent = 'เข้าร่วมสมุด';
+      return;
+    }
+    location.href = `/p/?c=${encodeURIComponent(res.party.code)}`;
+  });
+
+  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !go.disabled) go.click(); });
+}
+</script>
+</body>
+</html>

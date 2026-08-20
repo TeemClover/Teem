@@ -1,0 +1,16 @@
+/* TeamBook public discovery / SEO sections — visible content for humans first. */
+.seo-net{margin:34px 0 18px;padding:24px;border:1px solid rgba(35,75,53,.13);border-radius:22px;background:rgba(255,255,255,.48);box-shadow:0 10px 30px rgba(43,66,51,.05)}
+.seo-net .seo-lede{max-width:720px;margin:8px 0 20px;color:var(--xty-muted,#6c756d);font-size:16px;line-height:1.75}
+.seo-intent-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.seo-intent{padding:17px;border:1px solid rgba(35,75,53,.11);border-radius:16px;background:#fffdf6}
+.seo-intent h3{margin:0 0 7px;font-size:17px;line-height:1.35;color:var(--xty-ink,#26312a)}
+.seo-intent p{margin:0;color:var(--xty-muted,#6c756d);font-size:14px;line-height:1.65}
+.seo-intent a,.seo-links a{display:inline-block;margin-top:10px;color:#17623c;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+.seo-links{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:18px;padding-top:16px;border-top:1px dashed rgba(35,75,53,.16)}
+.seo-links a{margin:0}
+.seo-faq{margin-top:22px;padding-top:18px;border-top:1px solid rgba(35,75,53,.10)}
+.seo-faq h3{margin:14px 0 5px;font-size:16px}
+.seo-faq p{margin:0;color:var(--xty-muted,#6c756d);line-height:1.7}
+.seo-topic-list{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 20px;padding:0;list-style:none}
+.seo-topic-list li{padding:7px 11px;border-radius:999px;background:#edf5ea;color:#315942;font-size:13px;font-weight:700}
+@media(max-width:620px){.seo-net{padding:19px;margin-top:26px}.seo-intent-grid{grid-template-columns:1fr}.seo-net .seo-lede{font-size:15px}}
