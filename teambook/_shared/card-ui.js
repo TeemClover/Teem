@@ -8,17 +8,12 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-canonical-b
   style.textContent = `
     .animal-card.card-back{
       aspect-ratio:var(--xty-card-aspect)!important;
-      display:grid!important;
-      place-content:center!important;
-      gap:8px!important;
-      color:#f6e8bd!important;
-      text-align:center!important;
-      background:radial-gradient(circle at 50% 38%,#245b3b 0,#123421 48%,#071d12 100%)!important;
-      border:3px solid #be9442!important;
+      background:#13291d url('/assets/card-back.webp') center/cover no-repeat!important;
+      border:0!important;
+      box-shadow:0 8px 22px rgba(62,51,44,.16);
       overflow:hidden;
     }
-    .animal-card.card-back>.back-mark{display:block!important;font:900 28px/1 var(--sans);letter-spacing:.08em}
-    .animal-card.card-back>small{display:block!important;font:800 9px/1 var(--sans);letter-spacing:.2em}
+    .animal-card.card-back>.back-mark,.animal-card.card-back>small{display:none!important}
   `;
   document.head.appendChild(style);
 }
