@@ -35,8 +35,10 @@
 
   let hasLocalProfile = false;
   let hasMembership = false;
+  let hasSeenWelcome = false;
   try {
     hasLocalProfile = !!localStorage.getItem('teambook_profile_v1');
+    hasSeenWelcome = !!localStorage.getItem('teambook_welcome_seen_v1');
     if (code) {
       const tokens = JSON.parse(localStorage.getItem('teambook_book_tokens_v1') || '{}');
       const membership = tokens && typeof tokens === 'object' ? tokens[code] : null;
@@ -45,6 +47,13 @@
         : !!(membership && membership.token);
     }
   } catch {}
+
+  /* Every invited person sees the same first welcome once. Route through
+     the TeamBook room before Join, while preserving the invitation code. */
+  if (!hasSeenWelcome) {
+    location.replace(code ? `/?c=${encodeURIComponent(code)}` : '/');
+    return;
+  }
 
   /* An invite link doubles as a bookmark. If this browser has already
      joined the same party, skip Join entirely and reopen the party. */

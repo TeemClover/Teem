@@ -11,13 +11,6 @@
 <meta name="theme-color" content="#FFF9E9">
 <title>TeamBook — สมุดกลุ่มมีชีวิต</title>
 <link rel="canonical" href="https://teambook.me/">
-<script>
-  /* teambook.me is the only public address. New devices enter through the
-     front door; returning devices open their shelf without a landing flash. */
-  try {
-    if (!localStorage.getItem('teambook_profile_v1')) location.replace('/start/');
-  } catch (error) { location.replace('/start/'); }
-</script>
 <!-- TEAMBOOK SOCIAL SHARE -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TeamBook">
@@ -48,12 +41,34 @@
   .party-group-count{font-size:12px;font-weight:700;color:var(--xty-muted);margin-left:auto}
   .party-group .rows{border-top:1px solid var(--xty-border)}
   .party-group-empty{padding:12px 15px 15px;color:var(--xty-muted);font-size:13px;border-top:1px solid var(--xty-border)}
+  body.welcome-open{overflow:hidden}
+  .first-welcome{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:16px;background:rgba(18,38,29,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  .first-welcome[hidden]{display:none}
+  .first-welcome-card{width:min(100%,520px);max-height:calc(100dvh - 32px);overflow:auto;border:1px solid rgba(255,255,255,.58);border-radius:26px;background:var(--xty-paper,#fff9e9);box-shadow:0 28px 90px rgba(5,20,14,.35)}
+  .first-welcome-art{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:25px 25px 0 0}
+  .first-welcome-copy{padding:22px}
+  .first-welcome-copy .title{margin:7px 0 10px;font-size:clamp(25px,7vw,34px);line-height:1.2}
+  .first-welcome-copy .lede{margin:0 0 20px;line-height:1.7}
+  .first-welcome-copy .about-link{display:block;margin-top:14px;text-align:center}
 </style>
 <!-- TEAMBOOK SEO SCHEMA -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"TeamBook — สมุดกลุ่มมีชีวิต","url":"https://teambook.me/","description":"เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้วกลับมาลงชื่อในสมุดเดียวกันทุกวัน","image":"https://teambook.me/assets/brand/teambook-og-1200x630.jpg","applicationCategory":"LifestyleApplication","operatingSystem":"Web","isPartOf":{"@type":"WebSite","name":"TeamBook","url":"https://teambook.me/"}}</script>
 <!-- /TEAMBOOK SEO SCHEMA -->
 </head>
 <body>
+
+<div class="first-welcome" id="firstWelcome" hidden>
+  <div class="first-welcome-card" role="dialog" aria-modal="true" aria-labelledby="firstWelcomeTitle">
+    <img class="first-welcome-art" src="/assets/start/start-companion.webp" alt="แมวขาวนั่งอยู่ข้างสมุดที่เปิดไว้" width="1200" height="800">
+    <div class="first-welcome-copy">
+      <p class="kicker">ยินดีต้อนรับสู่ TeamBook</p>
+      <h1 class="title" id="firstWelcomeTitle">ทำคนละเรื่อง<br>แต่เดินไปด้วยกัน</h1>
+      <p class="lede">เลือกสิ่งที่อยากทำ ออกไปทำของจริง แล้วกลับมาลงชื่อ ดูว่าเพื่อนกำลังทำอะไร และให้กำลังใจกันด้วย “เห็นแล้ว”</p>
+      <button class="btn gold" id="enterRoom" type="button">เข้าห้อง</button>
+      <a class="about-link" id="welcomeRead" href="/read/">รู้จัก TeamBook →</a>
+    </div>
+  </div>
+</div>
 
 <header class="top">
   <a class="mark" href="/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a>
@@ -68,23 +83,6 @@
   </section>
 
   <section id="gate" hidden>
-    <div class="welcome-sheet" id="welcomeStep">
-      <img class="welcome-logo" src="/assets/brand/teambook-icon-512.png" alt="TeamBook" width="512" height="512">
-      <p class="kicker">สมุดกลุ่มมีชีวิต</p>
-      <h1 class="title">ออกไปทำของจริง<br>แล้วกลับมาลงชื่อ</h1>
-      <div class="welcome-lines" aria-label="วิธีใช้สั้น ๆ">
-        <span>เปิดสมุด</span><span>ทำของจริง</span><span>กลับมาลงชื่อ</span>
-      </div>
-      <button class="btn gold" id="startButton">เริ่มเขียนสมุด</button>
-      <p class="label" style="margin:20px 0 8px">มีรหัสสมุดแล้ว</p>
-      <div class="quick-code field" style="margin:0">
-        <input id="quickCode" inputmode="numeric" maxlength="5" placeholder="00000" aria-label="รหัสสมุด 5 หลัก">
-      </div>
-      <div class="about-links">
-        <a class="about-link" href="/read/">อ่านเรื่อง TeamBook →</a>
-      </div>
-    </div>
-
     <div id="identityStep" hidden>
       <div class="identity-intro">
         <img src="/assets/art/mascots/orange-cat.webp" alt="" width="180" height="180">
@@ -108,7 +106,6 @@
         <button class="btn gold" id="createProfile" style="margin-top:22px" disabled>เข้าสู่ TeamBook</button>
         <p class="hint" id="inviteJoinError" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
       </div>
-      <button class="btn ghost" id="backWelcome" style="margin-top:10px">กลับ</button>
       <p class="note">ชื่อในสมุดและสัตว์ที่เลือกเก็บไว้ในเครื่องนี้ก่อน สัตว์เริ่มต้นฟรีไม่ใช่การ์ด การ์ดใบแรกมาจากการปิดเล่ม</p>
     </div>
   </section>
@@ -165,14 +162,14 @@
     </section>
 
     <div class="about-links">
-      <a class="about-link" href="/read/">อ่านเรื่อง TeamBook →</a>
+      <a class="about-link" href="/read/">รู้จัก TeamBook →</a>
       <a class="about-link" href="/read/why/">ทำไมต้องมี TeamBook →</a>
     </div>
 
     <nav class="tabs">
       <a class="active" href="/">TeamBook</a>
       <a href="/profile/">โปรไฟล์</a>
-      <a href="/read/">อ่านเรื่อง TeamBook</a>
+      <a href="/read/">รู้จัก TeamBook</a>
     </nav>
   </section>
 </main>
@@ -198,6 +195,34 @@ function inviteCodeFromUrl() {
   return /^\d{5}$/.test(value || '') ? value : '';
 }
 
+const FIRST_WELCOME_KEY = 'teambook_welcome_seen_v1';
+
+function rememberFirstWelcome() {
+  try { localStorage.setItem(FIRST_WELCOME_KEY, '1'); } catch {}
+}
+
+function showFirstWelcome() {
+  try {
+    if (localStorage.getItem(FIRST_WELCOME_KEY)) return Promise.resolve();
+  } catch {}
+
+  const modal = $('firstWelcome');
+  modal.hidden = false;
+  document.body.classList.add('welcome-open');
+  return new Promise(resolve => {
+    const enter = $('enterRoom');
+    const finish = () => {
+      rememberFirstWelcome();
+      modal.hidden = true;
+      document.body.classList.remove('welcome-open');
+      resolve();
+    };
+    enter.addEventListener('click', finish, { once: true });
+    $('welcomeRead').addEventListener('click', rememberFirstWelcome, { once: true });
+    requestAnimationFrame(() => enter.focus());
+  });
+}
+
 function joinErrorText(code) {
   const messages = {
     NOT_FOUND: 'ไม่เจอสมุดรหัสนี้ ลองเช็กรหัสอีกครั้ง',
@@ -211,46 +236,11 @@ function joinErrorText(code) {
 
 function renderGate() {
   $('gate').hidden = false;
-  let nextCode = '';
-  const quickCode = $('quickCode');
-  const startButton = $('startButton');
-
-  const validQuickCode = () => /^\d{5}$/.test(quickCode.value || '') ? quickCode.value : '';
-  const syncWelcomeCta = () => { startButton.textContent = validQuickCode() ? 'เข้าร่วมสมุด' : 'เริ่มเขียนสมุด'; };
-  const showIdentity = (code = '') => {
-    nextCode = /^\d{5}$/.test(code) ? code : '';
-    $('welcomeStep').hidden = true;
-    $('identityStep').hidden = false;
-    $('inviteJoinError').hidden = true;
-    $('createProfile').textContent = nextCode ? 'ตั้งชื่อแล้วเข้าร่วมสมุด' : 'เข้าสู่ TeamBook';
-    $('alias').focus();
-  };
-
-  startButton.addEventListener('click', () => showIdentity(validQuickCode()));
-  $('backWelcome').addEventListener('click', () => {
-    const savedCode = nextCode || validQuickCode();
-    nextCode = savedCode;
-    $('identityStep').hidden = true;
-    $('welcomeStep').hidden = false;
-    if (savedCode) quickCode.value = savedCode;
-    syncWelcomeCta();
-    $('createProfile').textContent = savedCode ? 'ตั้งชื่อแล้วเข้าร่วมสมุด' : 'เข้าสู่ TeamBook';
-    $('inviteJoinError').hidden = true;
-  });
-  quickCode.addEventListener('input', () => {
-    quickCode.value = quickCode.value.replace(/\D/g, '').slice(0, 5);
-    syncWelcomeCta();
-  });
-  quickCode.addEventListener('keydown', event => {
-    const value = validQuickCode();
-    if (event.key === 'Enter' && value) showIdentity(value);
-  });
-
   const initialCode = inviteCodeFromUrl();
-  if (initialCode) {
-    quickCode.value = initialCode;
-    quickCode.dispatchEvent(new Event('input'));
-  } else syncWelcomeCta();
+  let nextCode = initialCode;
+  $('identityStep').hidden = false;
+  $('inviteJoinError').hidden = true;
+  $('createProfile').textContent = nextCode ? 'ตั้งชื่อแล้วเข้าร่วมสมุด' : 'เข้าสู่ TeamBook';
 
   const pick = $('avatarPick');
   let chosen = TEAMBOOK_AVATARS[0].id;
@@ -449,6 +439,7 @@ function escapeHtml(s) {
 }
 
 async function boot() {
+  await showFirstWelcome();
   $('shell').hidden = true;
   const inviteCode = inviteCodeFromUrl();
   const hadLocalProfile = hasProfile();
