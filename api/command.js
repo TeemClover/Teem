@@ -76,7 +76,7 @@ async function getBrief(sql, user) {
   ]);
 
   return {
-    user: { id: user.id, displayName: user.display_name, memberNo: user.member_no || '' },
+    user: { id: user.id, displayName: user.displayName, memberNo: user.memberNo || '' },
     population: {
       accounts: Number(accounts[0]?.n || 0),
       teamBookActiveBooks: Number(activeBooks[0]?.n || 0),
