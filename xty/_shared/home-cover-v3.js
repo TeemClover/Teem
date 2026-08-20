@@ -261,24 +261,33 @@ style.textContent = `
     gap:12px!important;align-items:center!important;
     min-height:104px!important;padding:10px 14px!important;
   }
+  /* Only the width is written down. Naming a height too meant 58×82, which
+     is 0.7073 — close enough to 63:88 that one card looks fine and a column
+     of them does not line up. The ratio now derives the height. */
   .xty-party-row-visual{
-    width:106px;height:82px;display:grid;grid-template-columns:58px 40px;
+    --row-card-w:58px;
+    width:calc(var(--row-card-w) + 48px);display:grid;
+    grid-template-columns:var(--row-card-w) 40px;
     gap:8px;align-items:center;justify-content:start;overflow:visible;
   }
   .xty-party-row-cover{
-    width:58px;height:82px;display:block;overflow:hidden;border-radius:9px;
+    width:var(--row-card-w,58px);height:auto;aspect-ratio:var(--xty-card-aspect);
+    display:block;overflow:hidden;border-radius:9px;
   }
   .xty-party-row-cover .xty-home-cover{
-    width:58px!important;height:82px!important;max-width:58px!important;
-    min-width:58px!important;aspect-ratio:var(--xty-card-aspect)!important;border-radius:9px!important;
+    width:100%!important;height:100%!important;max-width:none!important;
+    min-width:0!important;aspect-ratio:var(--xty-card-aspect)!important;border-radius:9px!important;
   }
   .xty-party-row-cover .xty-home-cover>.animal-card,
   .xty-party-row-cover .xty-home-core7-cover,
   .xty-party-row-cover .xty-home-real-back,
   .xty-party-row-cover .xty-home-cover.avatar-cover{
-    width:58px!important;height:82px!important;min-width:58px!important;
+    width:100%!important;height:100%!important;min-width:0!important;
     aspect-ratio:var(--xty-card-aspect)!important;border-radius:9px!important;
   }
+  /* The CORE7 face is a 300×420 viewBox — 0.7143 against 63:88's 0.7159, a
+     0.2px difference at this size and invisible. It is the slot that has to
+     be right, which is what the rule above fixes. */
   .xty-party-row-cover .xty-home-core7-cover svg,
   .xty-party-row-cover .xty-home-real-back img{
     width:100%!important;height:100%!important;display:block!important;object-fit:cover!important;
