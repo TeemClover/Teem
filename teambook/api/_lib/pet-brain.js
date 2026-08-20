@@ -17,6 +17,7 @@ import {
 import { sauceFor, hasSauce } from './pet/sauce/index.js';
 import { buildPrompt } from './pet/compose.js';
 import { xircleKnowledgeFor, WHITE_CAT_ID } from './xircle-knowledge.js';
+import { isStoredImageUrl, storedImageDataUrl } from './xty-image.js';
 import { PET_BY_ID } from '../../_shared/pets.js';
 
 const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
@@ -183,11 +184,15 @@ async function describeLinkedImages(history) {
   const urls = imageUrlsFromHistory(history);
   if (!urls.length) return '';
   try {
+    const inputs = (await Promise.all(urls.map(async url => (
+      isStoredImageUrl(url) ? storedImageDataUrl(url) : url
+    )))).filter(Boolean);
+    if (!inputs.length) return '';
     const content = [{
       type: 'text',
       text: 'Describe only concrete visible facts from these party-chat images in concise Thai. Do not infer identity, health, intent, or private traits. Return one short line per image.',
     }];
-    for (const url of urls) content.push({ type: 'image_url', image_url: { url } });
+    for (const url of inputs) content.push({ type: 'image_url', image_url: { url } });
     const response = await groqRequest({
       model: VISION_MODEL,
       messages: [{ role: 'user', content }],

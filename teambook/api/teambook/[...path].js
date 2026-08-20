@@ -10,8 +10,8 @@ import {
 import { TEAMBOOK_CARDS, cardById } from '../../_shared/cards.js';
 import { handleXtyAdmin } from '../_lib/xty-admin.js';
 import {
-  blobConfigured, decodeImagePayload, discardPartyImage, isCredentialError, isStoredImageUrl,
-  storePartyImage,
+  blobConfigured, decodeImagePayload, discardPartyImage, isCredentialError, partyCoverUrl,
+  partyImageSeqFromUrl, partyImageUrl, refreshPartyMediaCookie, storePartyImage,
 } from '../_lib/xty-image.js';
 import { promoteCardUnlocks } from '../_lib/xty-bind.js';
 
@@ -259,7 +259,7 @@ async function rewardsOf(sql, row, member) {
   };
 }
 
-async function postsOf(sql, partyId, since = 0) {
+async function postsOf(sql, partyId, partyCode, since = 0) {
   const rows = await sql.query(`SELECT p.seq,p.user_id,p.kind,p.body,p.sent_at,p.retracted,
     p.pet_id,p.wake_hour,p.image_url,p.image_w,p.image_h,
     p.activity_id,p.activity_label,p.activity_color,p.success_rule_snapshot,
@@ -272,7 +272,8 @@ async function postsOf(sql, partyId, since = 0) {
     sentAt: new Date(row.sent_at).toISOString(), retracted: !!row.retracted,
     petId: row.pet_id || null, wakeHour: row.wake_hour == null ? null : Number(row.wake_hour),
     /* A retracted post drops its picture too, same as its text. */
-    imageUrl: row.retracted ? null : (row.image_url || null),
+    imageUrl: row.retracted || !row.image_url ? null : partyImageUrl(partyCode, row.seq),
+    _storedImageUrl: row.retracted ? null : (row.image_url || null),
     imageW: row.retracted || row.image_w == null ? null : Number(row.image_w),
     imageH: row.retracted || row.image_h == null ? null : Number(row.image_h),
     /* Null on a day signed before snapshots existed. Readers must treat that
@@ -306,9 +307,15 @@ async function postsOf(sql, partyId, since = 0) {
 function shape(row, memberHistory, posts, events, rewardClaims = []) {
   const members = memberHistory.filter(member => !member.leftAt);
   const verificationMode = normalizeVerificationMode(row.verification_mode);
-  const shapedPosts = posts.map(post => post.kind === 'commit'
-    ? { ...post, valid: verificationMode === 'trust' || !!post.confirmedBy }
-    : post);
+  const coverPost = row.cover_type === 'image'
+    ? posts.find(post => post._storedImageUrl && post._storedImageUrl === row.cover_value)
+    : null;
+  const shapedPosts = posts.map(post => {
+    const { _storedImageUrl, ...publicPost } = post;
+    return post.kind === 'commit'
+      ? { ...publicPost, valid: verificationMode === 'trust' || !!post.confirmedBy }
+      : publicPost;
+  });
   const scheduled = row.scheduled_end_at || scheduledEndAt(
     row.started_at || row.created_at, row.duration_days, row.timezone || TEAMBOOK_TIMEZONE,
   );
@@ -328,7 +335,9 @@ function shape(row, memberHistory, posts, events, rewardClaims = []) {
     commitRule: row.commit_rule || '', budget: BUDGETS[row.budget] ? row.budget : DEFAULT_BUDGET,
     petId: row.pet_id || null, leadCardId: row.lead_card_id || null, npcCardId: row.npc_card_id || null,
     coverType: row.cover_type || (row.lead_card_id ? 'legacy_card' : 'avatar'),
-    coverValue: row.cover_value || null,
+    coverValue: row.cover_type === 'image'
+      ? (coverPost?.imageUrl || partyCoverUrl(row.code))
+      : (row.cover_value || null),
     ownerId: row.owner_id, state: row.state || 'ACTIVE', timezone: row.timezone || 'Asia/Bangkok',
     startAt: new Date(row.started_at || row.created_at).toISOString(),
     scheduledEndAt: new Date(scheduled).toISOString(),
@@ -344,7 +353,7 @@ async function stateFor(sql, row, member, since = 0) {
   }
   const finalBoundary = row.ended_at || new Date('9999-12-31T00:00:00.000Z');
   const [memberHistory, posts, events, counts, progression, rewards] = await Promise.all([
-    membersOf(sql, row.id), postsOf(sql, row.id, since), eventsOf(sql, row.id),
+    membersOf(sql, row.id), postsOf(sql, row.id, row.code, since), eventsOf(sql, row.id),
     sql.query(`SELECT
       COUNT(DISTINCT CASE WHEN kind='commit' AND retracted=FALSE AND day_key=$3::date THEN user_id END)::int committed,
       COUNT(*) FILTER (WHERE day_key=$3::date)::int updates,
@@ -560,8 +569,13 @@ export default async function handler(req, res) {
           avatar: row.lead_avatar || 'orange_cat',
           avatarColor: row.lead_avatar_color || 'green',
         },
-        coverType: row.cover_type || 'card_back',
-        coverValue: row.cover_value || row.lead_card_id || null,
+        /* Member-uploaded pictures stay private even when the notebook is
+           discoverable. A separate public derivative can replace this
+           neutral cover later; never leak the private Blob locator here. */
+        coverType: row.cover_type === 'image' ? 'card_back' : (row.cover_type || 'card_back'),
+        coverValue: row.cover_type === 'image'
+          ? 'notebook-rgbs-v1'
+          : (row.cover_value || row.lead_card_id || null),
         npcCardId: row.npc_card_id || null,
         petId: row.pet_id || null,
         joinable: Number(row.member_count || 0) < PARTY_MAX,
@@ -795,6 +809,7 @@ export default async function handler(req, res) {
     }
 
     const member = await memberFor(req, sql, row.id);
+    if (member) refreshPartyMediaCookie(req, res, row.code);
     if (method === 'GET' && parts.length === 2) {
       if (!member) {
         const count = await sql.query('SELECT COUNT(*)::int n FROM teambook_book_members WHERE book_id=$1 AND left_at IS NULL', [row.id]);
@@ -971,12 +986,14 @@ export default async function handler(req, res) {
           let url = String(body.imageUrl || '');
           let stored = null;
           if (url) {
-            if (!isStoredImageUrl(url)) return sendJson(res, { ok: false, error: 'BAD_IMAGE_URL' }, 400);
+            const seq = partyImageSeqFromUrl(url, row.code);
+            if (!seq) return sendJson(res, { ok: false, error: 'BAD_IMAGE_URL' }, 400);
             const owned = await sql.query(
-              'SELECT 1 FROM teambook_book_entries WHERE book_id=$1 AND image_url=$2 AND retracted=FALSE LIMIT 1',
-              [row.id, url],
+              'SELECT image_url FROM teambook_book_entries WHERE book_id=$1 AND seq=$2 AND image_url IS NOT NULL AND retracted=FALSE LIMIT 1',
+              [row.id, seq],
             );
             if (!owned[0]) return sendJson(res, { ok: false, error: 'IMAGE_NOT_IN_PARTY' }, 404);
+            url = owned[0].image_url;
           } else {
             const intake = await intakeImage(row.code, body.image);
             if (!intake.ok) return sendJson(res, { ok: false, error: intake.error }, intake.status);

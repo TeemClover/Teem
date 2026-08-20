@@ -7,7 +7,7 @@ different values, but both must point only to TeamBook-owned resources.
 | Variable | Required | Provider | Purpose |
 |---|---:|---|---|
 | `TEAMBOOK_DATABASE_URL` | Yes | Neon/Postgres | Isolated TeamBook accounts, books, cards, sessions and PET state |
-| `BLOB_READ_WRITE_TOKEN` | Yes | Vercel Blob | Member image uploads under the `teambook/` object prefix |
+| `BLOB_READ_WRITE_TOKEN` | Yes | Vercel Blob | Private member image uploads under the `teambook/` object prefix |
 | `CRON_SECRET` | Yes | Vercel | Authenticates scheduled PET wake requests |
 | `GROQ_API_KEY` | Yes | Groq | PET text and vision replies |
 | `TEAMBOOK_PET_AI` | Yes | TeamBook | Set to `on` to enable Groq PET replies |
@@ -26,6 +26,14 @@ different values, but both must point only to TeamBook-owned resources.
 `BLOB_STORE_ID` can be injected automatically by Vercel's OIDC integration at
 runtime. It is not a substitute for configuring a dedicated TeamBook Blob store
 in the project. Local and explicit-token deployments use `BLOB_READ_WRITE_TOKEN`.
+
+The TeamBook Blob store must use **Private** access. Browsers receive images only
+through `/api/teambook/party/:code/image/:seq` or the matching `/cover` route;
+those routes verify active membership before reading Blob. Local-profile bearer
+sessions are mirrored into a path-scoped HttpOnly media cookie so normal `<img>`
+elements work without exposing the party token. Groq vision receives a temporary
+server-side data URL, never a permanent public URL. Public notebook discovery
+uses the neutral notebook cover until a deliberately public derivative exists.
 
 OAuth callbacks for the production project:
 

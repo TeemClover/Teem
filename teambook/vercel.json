@@ -70,6 +70,14 @@
       "destination": "/api/teambook-party-finish?code=:code"
     },
     {
+      "source": "/api/teambook/party/:code/image/:seq",
+      "destination": "/api/teambook-media?code=:code&seq=:seq"
+    },
+    {
+      "source": "/api/teambook/party/:code/cover",
+      "destination": "/api/teambook-media?code=:code&cover=1"
+    },
+    {
       "source": "/api/teambook/:path*",
       "destination": "/api/teambook?path=:path*"
     }
