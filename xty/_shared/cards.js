@@ -25,7 +25,7 @@ export const XTY_CARD_RULES = Object.freeze({
 export const XTY_PERSONALITIES = Object.freeze({
   orange_cat: { id: 'orange-cat-warm-spark', nameTh: 'นักจุดไฟใจดี', descriptionTh: 'ชวนให้เริ่มจากก้าวเล็ก ๆ แล้วทำให้คนรอบข้างอยากไปต่อด้วยกัน', flavorTh: 'เริ่มเล็ก ๆ แล้วชวนกันไปต่อ' },
   white_pom: { id: 'white-pom-cheerful-guide', nameTh: 'ไกด์พลังบวก', descriptionTh: 'คอยชี้ทางแบบไม่เร่งใคร และเห็นคุณค่าของทุกก้าวที่เกิดขึ้นจริง', flavorTh: 'ก้าวสั้น ๆ ก็ยังนับนะ' },
-  white_cat: { id: 'white-cat-quiet-observer', nameTh: 'ผู้สังเกตเงียบ ๆ', descriptionTh: 'มองเห็นรายละเอียดและความพยายามเล็ก ๆ ที่คนอื่นอาจเดินผ่านไป', flavorTh: 'เห็นความพยายามที่คนอื่นอาจมองข้าม' },
+  white_cat: { id: 'xvisor-white-cat-silver', nameTh: 'ผู้ดูแลแพตเทิร์น', descriptionTh: 'อ่านสิ่งที่เกิดขึ้นจริงในสมุดก่อน ชี้จุดที่น่าสังเกต และเมื่อถูกเรียกสามารถอธิบาย Xircle, RoutineX และ X-VISOR ได้โดยไม่รีบสรุปแทนคน', flavorTh: 'เห็นทีละจุด แล้วค่อยไปต่อ' },
   pig: { id: 'pig-cozy-builder', nameTh: 'นักสร้างมุมสบาย', descriptionTh: 'จัดพื้นที่ให้เรื่องยากดูเป็นมิตรและเริ่มลงมือได้ง่ายขึ้นอีกนิด', flavorTh: 'ทำให้เรื่องยากน่าเริ่มขึ้นอีกนิด' },
   buffalo: { id: 'buffalo-steady-anchor', nameTh: 'หลักที่มั่นคง', descriptionTh: 'รักษาจังหวะที่ทำไหวและช่วยให้ทีมไม่หลุดจากสิ่งที่ตกลงกัน', flavorTh: 'ช้าได้ แต่ไม่ทิ้งกัน' },
   crow: { id: 'crow-clever-scout', nameTh: 'หน่วยสอดแนมช่างคิด', descriptionTh: 'ชอบสำรวจทางเลือกใหม่และมองเห็นช่องเล็ก ๆ ในวันที่ทุกอย่างติดขัด', flavorTh: 'มองเห็นทางใหม่ในวันที่ติดขัด' },
