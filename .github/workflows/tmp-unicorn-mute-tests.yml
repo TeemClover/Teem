@@ -1,0 +1,20 @@
+name: TEMP Unicorn Mute Mode Tests
+
+on:
+  push:
+    branches:
+      - fix/xty-unicorn-mute-mode-check
+
+jobs:
+  pet-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:pet-brain
+      - run: npm run test:pet-wake
