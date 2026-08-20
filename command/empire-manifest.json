@@ -1,0 +1,135 @@
+{
+  "version": "3.0.0",
+  "name": "myClover Empire Command Center",
+  "updatedAt": "2026-08-20",
+  "entry": "/command/",
+  "controlPlane": {
+    "commandCenter": "https://myclover-command-center.teemclover.chatgpt.site/command",
+    "keenProductionDesk": "/keen/",
+    "captureLibrary": "/captures/"
+  },
+  "keyCard": {
+    "name": "Command and Conquer",
+    "variant": "Marvel",
+    "game": "Flesh and Blood",
+    "image": "https://tcgplayer-cdn.tcgplayer.com/product/454212_in_1000x1000.jpg",
+    "role": "visual key used to open the Command Center"
+  },
+  "operationModes": {
+    "CREATE": {
+      "purpose": "สร้างสิ่งใหม่จากศูนย์แล้วลงทะเบียนเข้าระบบกลาง",
+      "requiredOutputs": [
+        "project identity",
+        "current goal",
+        "next action",
+        "source registry",
+        "routes/modules",
+        "owner/agent",
+        "release target",
+        "population metric"
+      ]
+    },
+    "EXPAND": {
+      "purpose": "ขยายระบบเดิมโดยรักษา canon, source และ dependency ให้ไม่หลุด",
+      "requiredOutputs": [
+        "scope changed",
+        "dependencies affected",
+        "decision log",
+        "work queue",
+        "health checks",
+        "release plan",
+        "population impact"
+      ]
+    },
+    "CONQUER": {
+      "purpose": "ยึดหรือรวมระบบภายนอกเข้าจักรวาล myClover อย่างมีแผน",
+      "requiredOutputs": [
+        "target inventory",
+        "keep/replace/archive decisions",
+        "migration map",
+        "identity/account integration",
+        "source ownership",
+        "domain/route plan",
+        "success metric"
+      ]
+    }
+  },
+  "modules": [
+    {
+      "id": "project-manifest",
+      "name": "Project Manifest",
+      "purpose": "ทำให้ทุก project รายงานตัวด้วย schema เดียวกัน"
+    },
+    {
+      "id": "current-goal",
+      "name": "Current Goal + Next Action",
+      "purpose": "บังคับให้แต่ละ project มีเป้าหมายปัจจุบัน 1 เรื่องและงานถัดไป 1 เรื่อง"
+    },
+    {
+      "id": "source-graph",
+      "name": "Source Graph",
+      "purpose": "เห็นสายสัมพันธ์ของ mother source, child source, canon, routes และ dependency"
+    },
+    {
+      "id": "work-queue",
+      "name": "Work Queue",
+      "purpose": "เห็นว่างานอยู่กับ Teem, AI, Keen, Review, Merge หรือ Live"
+    },
+    {
+      "id": "agent-registry",
+      "name": "Agent Registry",
+      "purpose": "กำหนดว่า agent/skill ไหนทำงานอะไร อ่านอะไรได้ และห้ามแตะอะไร"
+    },
+    {
+      "id": "repo-warden",
+      "name": "Health / Repo Warden",
+      "purpose": "ตรวจ test, deploy, cron, stale source, dead route และ drift โดยไม่แก้เอง"
+    },
+    {
+      "id": "decision-memory",
+      "name": "Decision Memory",
+      "purpose": "เก็บเหตุผลของการตัดสินใจเพื่อกัน AI รุ่นถัดไปแก้ของที่ตั้งใจล็อกไว้"
+    },
+    {
+      "id": "population-command",
+      "name": "Population Command",
+      "purpose": "วัดว่าของที่สร้างมีมนุษย์เข้า ใช้ กลับมา และ interact จริงหรือยัง"
+    }
+  ],
+  "projectTemplate": {
+    "identity": {
+      "name": "",
+      "slug": "",
+      "domain": "",
+      "repo": "",
+      "owner": ""
+    },
+    "stage": "IDEA|BUILD|TEST|LIVE|MAINTAIN|ARCHIVE",
+    "currentGoal": "",
+    "nextAction": "",
+    "sources": [],
+    "dependencies": [],
+    "agents": [],
+    "workQueue": [],
+    "release": {
+      "productionCommit": "",
+      "deployment": "",
+      "health": "UNKNOWN"
+    },
+    "population": {
+      "newUsers": null,
+      "activeUsers": null,
+      "returnRate7d": null,
+      "primaryAction": null,
+      "bottleneck": null
+    },
+    "decisions": [],
+    "updatedAt": ""
+  },
+  "dailyBriefContract": [
+    "เมื่อคืนอะไรเปลี่ยน",
+    "อะไรพัง",
+    "อะไรมีคนใช้",
+    "วันนี้ควรแตะอะไรแค่เรื่องเดียว"
+  ]
+}
