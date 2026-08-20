@@ -18,7 +18,7 @@ const TOKEN = '--xty-card-aspect';
 
 function walk(dir, found = []) {
   for (const entry of readdirSync(dir)) {
-    if (entry === 'node_modules' || entry.startsWith('.')) continue;
+    if (entry === 'node_modules' || entry === 'core7' || entry === 'dist' || entry.startsWith('.')) continue;
     const path = join(dir, entry);
     if (statSync(path).isDirectory()) walk(path, found);
     else if (EXTENSIONS.some(ext => entry.endsWith(ext))) found.push(path);

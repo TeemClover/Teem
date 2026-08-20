@@ -2,7 +2,7 @@ import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, normalize, resolve, sep } from 'node:path';
 
-const ROOT = resolve('.');
+const ROOT = resolve(process.env.STATIC_ROOT || '.');
 const PORT = Number(process.env.PORT || 4173);
 const TYPES = {
   '.css': 'text/css; charset=utf-8', '.html': 'text/html; charset=utf-8',

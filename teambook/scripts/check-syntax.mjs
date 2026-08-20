@@ -2,7 +2,7 @@ import { readdirSync, statSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 
-const SKIP = new Set(['node_modules', 'core7']);
+const SKIP = new Set(['node_modules', 'core7', 'dist']);
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {

@@ -8,7 +8,7 @@
     "check:syntax": "node scripts/check-syntax.mjs",
     "check:standalone": "node scripts/check-standalone.mjs",
     "check:assets": "node scripts/check-assets.mjs && node scripts/check-registry-assets.mjs",
-    "build": "npm run check:syntax && npm run check:standalone && npm run check:assets",
+    "build": "npm run check:syntax && npm run check:standalone && npm run check:assets && node scripts/build-static.mjs",
     "serve": "node scripts/serve.mjs"
   },
   "dependencies": {

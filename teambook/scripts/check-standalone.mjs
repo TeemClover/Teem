@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 
 const ROOT = resolve('.');
-const SKIP = new Set(['node_modules', 'core7']);
+const SKIP = new Set(['node_modules', 'core7', 'dist']);
 const SOURCE_EXTENSIONS = /\.(?:html|js|mjs|css|json)$/;
 const NON_RUNTIME_DIRS = new Set(['docs', 'scripts', 'tests']);
 const IMPORT_PATTERN = /(?:\bfrom\s*|\bimport\s*\(\s*)["']([^"']+)["']/g;
