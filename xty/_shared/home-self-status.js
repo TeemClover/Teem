@@ -43,6 +43,24 @@ function installStyle() {
     .xty-home-self-status.waiting{background:#f0c84f;border-color:#d4aa27}
     .xty-home-self-status.done{background:#55b56a;border-color:#32905a}
 
+    /* On the notebook lists the companion starts at the same top edge as
+       the cover. The user's daily light lives directly underneath it. */
+    .party-group .xty-party-row-visual{align-items:start!important;overflow:visible!important}
+    .party-group .xty-party-row-pet{
+      position:relative!important;align-self:start!important;overflow:visible!important;
+    }
+    .xty-party-row-pet.empty.has-self-status{visibility:visible!important}
+    .xty-party-row-self-status{
+      position:absolute;left:50%;top:46px;transform:translateX(-50%);z-index:8;
+      display:block;width:13px;height:13px;border-radius:999px;
+      background:#b9b7b0;border:1.5px solid rgba(62,51,44,.20);
+      box-shadow:0 1px 0 rgba(255,255,255,.78) inset,0 1px 3px rgba(62,51,44,.10);
+      pointer-events:none;
+    }
+    .xty-party-row-self-status.waiting{background:#f0c84f;border-color:#d4aa27}
+    .xty-party-row-self-status.done{background:#55b56a;border-color:#32905a}
+    @media(max-width:380px){.xty-party-row-self-status{top:42px;width:12px;height:12px}}
+
     /* Safari occasionally paints a dynamically inserted cached IMG one frame
        late. The same source is kept as the element background as a visual
        fallback, and all home card images skip fade/async-decode effects. */
@@ -128,7 +146,7 @@ function syncCopy() {
   }
 }
 
-function syncStatus() {
+function syncHeroStatus() {
   document.querySelectorAll('.xty-party-slide[data-code]').forEach(slide => {
     const code = String(slide.dataset.code || '').toUpperCase();
     const party = getParty(code);
@@ -155,12 +173,38 @@ function syncStatus() {
   });
 }
 
+function syncRowStatus() {
+  document.querySelectorAll('#leadPartyRows a.row, #joinedPartyRows a.row').forEach(row => {
+    let code = '';
+    try { code = new URL(row.href, location.href).searchParams.get('c') || ''; } catch {}
+    code = String(code).toUpperCase();
+    const party = getParty(code);
+    const userId = partyIdentity(code)?.userId;
+    const pet = row.querySelector('.xty-party-row-pet');
+    if (!party || !userId || !pet) return;
+
+    const state = statusFor(party, userId);
+    let dot = pet.querySelector(':scope > .xty-party-row-self-status');
+    if (!dot) {
+      dot = document.createElement('span');
+      dot.className = 'xty-party-row-self-status';
+      pet.appendChild(dot);
+    }
+    pet.classList.add('has-self-status');
+    dot.className = `xty-party-row-self-status ${state.key}`;
+    dot.setAttribute('role', 'img');
+    dot.setAttribute('aria-label', `สถานะของคุณ: ${state.label}`);
+    dot.title = state.label;
+  });
+}
+
 let queued = false;
 function syncAll() {
   queued = false;
   syncCopy();
   stabilizeImages(document);
-  syncStatus();
+  syncHeroStatus();
+  syncRowStatus();
 }
 
 function schedule() {
