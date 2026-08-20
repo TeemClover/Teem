@@ -73,7 +73,10 @@
       <div class="quick-code field" style="margin:0">
         <input id="quickCode" inputmode="numeric" maxlength="5" placeholder="00000" aria-label="รหัสสมุด 5 หลัก">
       </div>
-      <a class="about-link" href="/xty/about/">TeamBook คืออะไร? →</a>
+      <div class="about-links">
+        <a class="about-link" href="/xty/read/">อ่านเรื่อง TeamBook →</a>
+        <a class="about-link" href="/xty/about/">TeamBook คืออะไร? →</a>
+      </div>
     </div>
 
     <div id="identityStep" hidden>
@@ -155,7 +158,10 @@
       </details>
     </section>
 
-    <a class="about-link" href="/xty/about/">เกี่ยวกับ TeamBook →</a>
+    <div class="about-links">
+      <a class="about-link" href="/xty/read/">อ่านเรื่อง TeamBook →</a>
+      <a class="about-link" href="/xty/about/">เกี่ยวกับ TeamBook →</a>
+    </div>
 
     <nav class="tabs">
       <a class="active" href="/xty/">TeamBook</a>
@@ -384,7 +390,9 @@ function paintPartyList(p, mine) {
   $('joinedCapacityN').innerHTML = `${capacity.joined} / ${capacity.maxJoined}<small>เข้าร่วม</small>`;
 
   if (!list.length) {
-    $('mainParty').innerHTML = `<div class="empty">ยังไม่มีสมุด<br><span style="font-size:13px">ใช้สัตว์ของคุณเป็นปก แล้วเปิดสมุดเล่มแรกได้เลย</span></div>`;
+    $('mainParty').innerHTML = `<div class="empty">
+      <img class="empty-art" src="/xty/assets/decor/mascot/cat-asleep-on-book.webp" alt="" aria-hidden="true" width="328" height="215" loading="lazy" decoding="async">
+      ยังไม่มีสมุด<br><span style="font-size:13px">ใช้สัตว์ของคุณเป็นปก แล้วเปิดสมุดเล่มแรกได้เลย</span></div>`;
     $('allPartiesSection').hidden = true;
     return;
   }

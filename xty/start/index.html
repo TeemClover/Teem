@@ -29,7 +29,7 @@
 <!-- /TEAMBOOK SOCIAL SHARE -->
 <meta name="description" content="เปิดสมุดกับเพื่อนไม่เกิน 5 คน แต่ละคนเลือกสิ่งที่อยากทำเอง ออกไปใช้ชีวิตจริง แล้ววันละครั้งกลับมาลงชื่อในสมุดเดียวกัน">
 <link rel="stylesheet" href="/xty/_shared/landing.css?v=20260819-1">
-<link rel="stylesheet" href="/xty/_shared/start.css?v=1">
+<link rel="stylesheet" href="/xty/_shared/start.css?v=2">
 <!-- TEAMBOOK SEO SCHEMA -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"TeamBook — สมุดกลุ่มมีชีวิต","url":"https://www.myclover.com/xty/start/","description":"เปิดสมุดกับเพื่อนไม่เกิน 5 คน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้ววันละครั้งกลับมาลงชื่อในสมุดเดียวกัน","image":"https://www.myclover.com/xty/assets/brand/teambook-og-1200x630.jpg","applicationCategory":"LifestyleApplication","operatingSystem":"Web","isPartOf":{"@type":"WebSite","name":"TeamBook","url":"https://www.myclover.com/xty/"}}</script>
 <!-- /TEAMBOOK SEO SCHEMA -->
@@ -39,8 +39,12 @@
      flash of the pitch on the way to their shelf. It reads the key rather
      than importing store.js, because an import cannot beat the paint. */
   try {
-    var back = new URLSearchParams(location.search).has('read');
-    if (!back && localStorage.getItem('mc_xty_profile')) location.replace('/xty/');
+    var reading = new URLSearchParams(location.search).has('read');
+    /* replace(), not assign(): with a history entry here, Back would land on
+       this page and bounce again, which is the trap rather than the exit. The
+       way back is /xty/read/, linked from the shelf — nobody has to know a
+       query parameter to read the story again. */
+    if (!reading && localStorage.getItem('mc_xty_profile')) location.replace('/xty/');
   } catch (error) { /* private mode — show the page */ }
 </script>
 </head>
@@ -77,7 +81,7 @@
 
       <div class="hero-visual">
         <figure class="tb-art page" style="width:min(420px,86vw)">
-          <img src="/xty/assets/start/start-hero-open-book.webp" alt="เพื่อน ๆ นั่งล้อมสมุดเล่มใหม่ที่เพิ่งเปิดหน้าแรก" width="1260" height="1760" fetchpriority="high" decoding="async">
+          <img src="/xty/assets/start/start-hero-open-book.webp" alt="เพื่อน ๆ นั่งล้อมสมุดเล่มใหม่ที่เพิ่งเปิดหน้าแรก" width="1061" height="1482" fetchpriority="high" decoding="async">
           <div class="tb-brief">
             <b>ภาพที่ 1 · Hero</b>
             <span class="size">1260 × 1760 px (63:88) · webp</span>
@@ -207,7 +211,7 @@
         </div>
       </div>
       <figure class="tb-art scene">
-        <img src="/xty/assets/start/start-companion.webp" alt="แมวขาวนั่งอยู่ข้างสมุดที่เปิดค้างไว้ อ่านสิ่งที่กลุ่มเขียนไว้" width="1200" height="800" loading="lazy" decoding="async">
+        <img src="/xty/assets/start/start-companion.webp" alt="แมวขาวนั่งอยู่ข้างสมุดที่เปิดค้างไว้ อ่านสิ่งที่กลุ่มเขียนไว้" width="1500" height="1000" loading="lazy" decoding="async">
         <div class="tb-brief">
           <b>ภาพที่ 2 · เพื่อนร่วมทาง</b>
           <span class="size">1200 × 800 px (3:2) · webp</span>
@@ -251,6 +255,7 @@
         <a class="btn secondary" href="/xty/join/">มีรหัสสมุดแล้ว</a>
       </div>
       <p class="start-note">เริ่มได้โดยไม่ต้องสมัคร · ผูกบัญชีทีหลังได้ถ้าอยากเก็บข้ามเครื่อง</p>
+      <p class="start-note">ยังไม่แน่ใจ — <a href="/xty/read/">อ่านเรื่องของ TeamBook ก่อน</a></p>
     </div>
   </section>
 
