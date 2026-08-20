@@ -76,6 +76,7 @@ if (typeof location !== 'undefined' && /^\/xty\/collection(?:\/|$)/.test(locatio
 if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
   await import('./home-canonical-guard.js?v=20260820-1').catch(error => console.warn('XTY home canonical guard unavailable', error));
   await import('./home-cover-v3.js?v=20260820-daily1').catch(error => console.warn('XTY home cover layer unavailable', error));
+  await import('./home-daily-meta.js?v=20260820-1').catch(error => console.warn('XTY home daily metadata unavailable', error));
   await import('./home-card-ratio-fix.js?v=20260820-1').catch(error => console.warn('XTY home card ratio guard unavailable', error));
   await import('./home-self-status.js?v=20260820-4').catch(error => console.warn('XTY home self status unavailable', error));
   import('./home-carousel-desktop.js').catch(error => console.warn('XTY desktop carousel controls unavailable', error));
