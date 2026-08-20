@@ -488,46 +488,6 @@
   ],
   "rewrites": [
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "teambook.me"
-        }
-      ],
-      "destination": "/teambook/index.html"
-    },
-    {
-      "source": "/api/profile",
-      "has": [
-        {
-          "type": "host",
-          "value": "teambook.me"
-        }
-      ],
-      "destination": "/api/teambook-profile"
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/index.html"
-    },
-    {
-      "source": "/api/profile",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/api/teambook-profile"
-    },
-    {
       "source": "/api/teambook/party/:code/image/:seq",
       "destination": "/api/teambook-media?code=:code&seq=:seq"
     },
@@ -550,26 +510,6 @@
     {
       "source": "/api/xty/:path*",
       "destination": "/api/xty?path=:path*"
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "teambook.me"
-        }
-      ],
-      "destination": "/teambook/:path*"
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/:path*"
     }
   ]
 }
