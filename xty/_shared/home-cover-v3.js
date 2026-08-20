@@ -121,9 +121,6 @@ function terminalLabel(party) {
   return '';
 }
 
-/* Home is a glance at TODAY. Sign-ins count unique commits; updates count
-   only player message posts. Both use the canonical Bangkok day boundary,
-   so at 00:00 ICT the displayed values naturally start again from zero. */
 function messagesToday(party, when) {
   const key = dayKey(when);
   return (party.log || []).filter(post =>
@@ -135,7 +132,7 @@ function todayLine(party) {
   const done = committedToday(party).size;
   const members = Array.isArray(party.members) ? party.members.length : 0;
   const updates = messagesToday(party);
-  return `วันนี้ : ${done}/${members} ลงชื่อ ${updates} อัพเดท`;
+  return `วันนี้ : ${done}/${members} ลงชื่อแล้ว · มี ${updates} อัปเดต`;
 }
 
 function slideMarkup(entry, total) {
