@@ -27,6 +27,34 @@ function installStyles() {
     .xty-cover-current{display:flex;align-items:center;gap:14px;padding:12px;border:1px solid var(--xty-border);border-radius:18px;background:rgba(255,255,255,.72)}
     .xty-cover-current-art{flex:none;width:88px;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:11px;background:#13291d;box-shadow:0 3px 10px rgba(62,51,44,.14)}
     .xty-cover-current-art img,.xty-cover-current-art svg,.xty-cover-current-art .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
+
+    /* XTY cards already have their own visible card frame. Never crop that
+       frame into the preview box. The preview box becomes transparent and
+       the complete card is fitted inside it, including every edge. */
+    .xty-cover-current-art[data-category="xty"]{
+      overflow:visible;background:transparent;border-radius:0;box-shadow:none;
+    }
+    .xty-cover-current-art[data-category="xty"]>.animal-card{
+      box-sizing:border-box!important;
+      display:flex!important;
+      width:100%!important;
+      height:auto!important;
+      max-width:100%!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
+      margin:0!important;
+      overflow:visible!important;
+      border-radius:15px!important;
+    }
+    .xty-cover-current-art[data-category="xty"]>.animal-card .card-art{
+      display:block!important;
+      width:100%!important;
+      height:100%!important;
+      margin:0!important;
+      object-fit:contain!important;
+      object-position:center!important;
+      border-radius:13px!important;
+    }
+
     .xty-cover-current-copy{min-width:0;flex:1}.xty-cover-current-copy b{display:block;font-size:16px;line-height:1.35}.xty-cover-current-copy small{display:block;margin-top:4px;color:var(--xty-muted);font-size:12px;line-height:1.4}
     .xty-cover-open{margin-top:10px;min-height:40px!important;padding:0 14px!important}
     .xty-cover-library{border:1px solid var(--xty-border);border-radius:18px;background:var(--xty-surface);overflow:hidden;box-shadow:0 10px 26px rgba(62,51,44,.10)}
@@ -37,7 +65,36 @@ function installStyles() {
     .xty-cover-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start}
     .xty-cover-option{border:1px solid var(--xty-border);border-radius:13px;background:var(--xty-paper);padding:6px;min-width:0;text-align:left}
     .xty-cover-option[aria-checked="true"]{outline:3px solid rgba(50,139,92,.22);border-color:#2e8b59}
-    .xty-cover-thumb{width:100%;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:9px;background:#13291d}.xty-cover-thumb img,.xty-cover-thumb svg,.xty-cover-thumb .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
+    .xty-cover-thumb{width:100%;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:9px;background:#13291d}
+    .xty-cover-thumb img,.xty-cover-thumb svg,.xty-cover-thumb .animal-card{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
+
+    /* Same rule inside the XTY tab: show the card itself, not a cropped
+       picture of the card. Keep the card's own rarity/color border intact;
+       the option box is only the surrounding UI. */
+    .xty-cover-option[data-category="xty"] .xty-cover-thumb{
+      overflow:visible;background:transparent;border-radius:0;
+    }
+    .xty-cover-option[data-category="xty"] .xty-cover-thumb>.animal-card{
+      box-sizing:border-box!important;
+      display:flex!important;
+      width:100%!important;
+      height:auto!important;
+      max-width:100%!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
+      margin:0!important;
+      overflow:visible!important;
+      border-radius:15px!important;
+    }
+    .xty-cover-option[data-category="xty"] .xty-cover-thumb>.animal-card .card-art{
+      display:block!important;
+      width:100%!important;
+      height:100%!important;
+      margin:0!important;
+      object-fit:contain!important;
+      object-position:center!important;
+      border-radius:13px!important;
+    }
+
     .xty-cover-label{display:block;margin-top:6px;font-size:10.5px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
     .xty-cover-empty{grid-column:1/-1;margin:4px 0;color:var(--xty-muted);font-size:12px}
     @media (min-width:600px){.xty-cover-current-art{width:104px}.xty-cover-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
@@ -111,6 +168,7 @@ function install() {
   ];
 
   function syncCurrent() {
+    currentArt.dataset.category = selected.category;
     currentArt.innerHTML = selected.art;
     currentTitle.textContent = selected.title;
     currentSub.textContent = selected.subtitle;
@@ -133,7 +191,7 @@ function install() {
     }
     for (const item of list) {
       const option = document.createElement('button');
-      option.type = 'button'; option.className = 'xty-cover-option'; option.setAttribute('role','radio');
+      option.type = 'button'; option.className = 'xty-cover-option'; option.dataset.category = item.category; option.setAttribute('role','radio');
       option.setAttribute('aria-checked', item.key === selected.key ? 'true' : 'false');
       option.setAttribute('aria-label', `ใช้ ${item.title} เป็นปกสมุด`);
       option.innerHTML = `<div class="xty-cover-thumb">${item.art}</div><span class="xty-cover-label"></span>`;
