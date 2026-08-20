@@ -36,6 +36,7 @@
   h2{line-height:1.28}
   .hero-cat{text-decoration:none;color:inherit}
   .cat-link{display:grid;place-items:center;text-decoration:none;color:inherit}
+  .life-card-link{text-decoration:none;color:inherit;cursor:pointer}
   @media (max-width:560px){
     .landing-logo img{width:32px;height:32px}
     .landing-logo .logo-word{font-size:18px}
@@ -43,6 +44,12 @@
     h2{font-size:clamp(29px,9.2vw,40px);line-height:1.36;letter-spacing:-.018em}
     .sign-layout h2{line-height:1.42;margin-bottom:20px}
     .sign-layout .lead{line-height:1.85}
+    .ai-story{gap:46px}
+    .ai-art{min-height:390px;padding-bottom:26px}
+    .ai-art .cat-big{width:180px}
+    .ai-bubble.b1{left:4%;top:8%}
+    .ai-bubble.b2{right:2%;top:24%}
+    .ai-bubble.b3{left:8%;bottom:9%}
   }
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"TeamBook — สมุดกลุ่มมีชีวิต","url":"https://www.myclover.com/xty/about/","description":"ชวนคนสูงสุด 5 คนมาอยู่ในสมุดหน้าเดียวกัน ออกไปทำจริง กลับมาลงชื่อ และมี AI เพื่อนร่วมทางช่วยจำเรื่องของกลุ่ม","image":"https://www.myclover.com/xty/assets/brand/teambook-og-1200x630.jpg"}</script>
@@ -87,7 +94,7 @@
         <article class="life-card"><img src="/xty/assets/art/avatars/rabbit.webp" alt="กระต่าย"><strong>เพื่อน</strong><span class="sign">✓</span></article>
         <article class="life-card"><img src="/xty/assets/art/avatars/pig.webp" alt="หมู"><strong>เพื่อน</strong><span class="sign">✓</span></article>
         <article class="life-card"><img src="/xty/assets/art/avatars/turtle.webp" alt="เต่า"><strong>เพื่อน</strong><span class="sign">✓</span></article>
-        <article class="life-card ai"><img src="/xty/assets/art/avatars/white-cat.webp" alt="แมวขาว"><strong>แมวขาว</strong><small>AI เพื่อนร่วมทาง</small></article>
+        <a class="life-card ai life-card-link" href="/xircle/" aria-label="ไป Xircle กับแมวขาว"><img src="/xty/assets/art/avatars/white-cat.webp" alt="แมวขาว"><strong>แมวขาว</strong><small>AI เพื่อนร่วมทาง</small></a>
       </div>
     </div>
   </section>
@@ -136,15 +143,15 @@
   </section>
 
   <section class="landing-section ai-story">
-    <div class="ai-art" aria-label="แมวขาว AI เพื่อนร่วมทาง">
+    <div class="ai-art" aria-label="แมวส้ม AI เพื่อนร่วมทาง">
       <div class="ai-bubble b1">“เมื่อวานทุกคนกลับมาครบ”</div>
       <div class="ai-bubble b2">“วันนี้เงียบกว่าปกตินิดนึง”</div>
       <div class="ai-bubble b3">“เรื่องนี้พวกคุณทำด้วยกันมา 5 วันแล้วนะ”</div>
-      <a class="cat-link" href="/xircle/" aria-label="ไป Xircle กับแมวขาว"><img class="cat-big" src="/xty/assets/art/avatars/white-cat.webp" alt="แมวขาว"></a>
+      <img class="cat-big" src="/xty/assets/art/avatars/orange-cat.webp" alt="แมวส้ม">
     </div>
     <div>
       <p class="eyebrow">AI อยู่ด้วย ไม่ได้ทำแทน</p>
-      <h2>แมวขาวคอยอ่านสิ่งที่เกิดขึ้น<br>แล้วช่วยให้กลุ่มจำเรื่องของตัวเองได้</h2>
+      <h2>แมวส้มคอยอ่านสิ่งที่เกิดขึ้น<br>แล้วช่วยให้กลุ่มจำเรื่องของตัวเองได้</h2>
       <p class="lead">มันไม่ได้ออกไปทำแทนคุณ และไม่จำเป็นต้องพูดทุกครั้ง หน้าที่ของมันคืออยู่กับกลุ่ม อ่านร่องรอยที่เกิดขึ้น และช่วยมองเห็นเรื่องที่คนอาจมองข้าม</p>
       <div class="ai-points">
         <div class="ai-point"><span>1</span><p><b>เห็นสิ่งที่เกิดขึ้น</b><br>จากการลงชื่อ ข้อความ การยืนยัน และเหตุการณ์ในสมุด</p></div>
