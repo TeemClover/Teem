@@ -1,4 +1,5 @@
 import legacyXtyHandler from './xty/[...path].js';
+import xtyCommitHandler from './xty/party/[code]/commit.js';
 import { handleXtyPartyFinish } from './_lib/xty-party-finish.js';
 import { handleXtyBind } from './_lib/xty-bind.js';
 
@@ -36,6 +37,18 @@ export default function handler(req, res) {
     req.query.code = join[1];
     req.query.op = 'join-v2';
     return handleXtyPartyFinish(req, res);
+  }
+
+  /* vercel.json rewrites every /api/xty/* request to this single entrypoint.
+     That means the filesystem route api/xty/party/[code]/commit.js is never
+     reached by URL matching on production unless we dispatch it here first.
+     Keep Commit out of the legacy catch-all: its old SQL used a bare head_seq
+     after JOINing xty_parties, which PostgreSQL resolves as ambiguous. */
+  const commit = path.match(/^party\/(\d{5})\/commit\/?$/);
+  if (commit && method === 'POST') {
+    req.query ||= {};
+    req.query.code = commit[1];
+    return xtyCommitHandler(req, res);
   }
 
   const finish = path.match(/^party\/(\d{5})\/finish\/?$/);
