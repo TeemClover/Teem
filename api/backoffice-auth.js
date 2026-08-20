@@ -1,4 +1,4 @@
-import { database, ensureSchema, sendJson } from './_lib/core.js';
+import { database, sendJson } from './_lib/core.js';
 import {
   backofficeLoginBlocked,
   backofficePasswordMatches,
@@ -28,6 +28,16 @@ function bodyOf(req) {
   return {};
 }
 
+async function currentSessionFast(sql, req) {
+  try {
+    return await currentBackofficeSession(sql, req);
+  } catch (error) {
+    // Cold-start fallback only. Existing production sessions skip schema creation entirely.
+    await ensureBackofficeSchema(sql);
+    return currentBackofficeSession(sql, req);
+  }
+}
+
 export default async function handler(req, res) {
   if (!['GET', 'POST'].includes(req.method)) return sendJson(res, { ok: false, error: 'METHOD_NOT_ALLOWED' }, 405);
   if (!sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);
@@ -35,21 +45,26 @@ export default async function handler(req, res) {
   let sql;
   try {
     sql = database();
-    await ensureSchema(sql);
-    await ensureBackofficeSchema(sql);
-    await pruneBackofficeAuth(sql);
   } catch (error) {
-    console.error('Backoffice auth init failed', error);
+    console.error('Backoffice database init failed', error);
     return sendJson(res, { ok: false, error: error?.code || 'BACKOFFICE_STORAGE_UNAVAILABLE' }, 503);
   }
 
   if (req.method === 'GET') {
-    const session = await currentBackofficeSession(sql, req);
-    return sendJson(res, {
-      ok: true,
-      authenticated: Boolean(session),
-      expiresAt: session?.expiresAt || null,
-    });
+    try {
+      const session = await currentSessionFast(sql, req);
+      return sendJson(res, { ok: true, authenticated: Boolean(session), expiresAt: session?.expiresAt || null });
+    } catch (error) {
+      console.error('Backoffice session lookup failed', error);
+      return sendJson(res, { ok: false, error: 'BACKOFFICE_SESSION_FAILED' }, 500);
+    }
+  }
+
+  try {
+    await ensureBackofficeSchema(sql);
+  } catch (error) {
+    console.error('Backoffice auth schema failed', error);
+    return sendJson(res, { ok: false, error: error?.code || 'BACKOFFICE_STORAGE_UNAVAILABLE' }, 503);
   }
 
   const body = bodyOf(req);
@@ -62,6 +77,9 @@ export default async function handler(req, res) {
   }
 
   if (action !== 'login') return sendJson(res, { ok: false, error: 'UNKNOWN_ACTION' }, 400);
+
+  // Cleanup is useful on a write path, but no longer blocks every page unlock.
+  await pruneBackofficeAuth(sql).catch(() => {});
   if (await backofficeLoginBlocked(sql, req)) return sendJson(res, { ok: false, error: 'TOO_MANY_ATTEMPTS' }, 429);
 
   const password = typeof body.password === 'string' ? body.password : '';
