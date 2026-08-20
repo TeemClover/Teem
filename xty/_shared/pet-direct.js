@@ -7,13 +7,24 @@ import { getParty, partyIdentity } from './store.js';
 import { PET_BY_ID } from './pets.js';
 
 const code = String(new URLSearchParams(location.search).get('c') || '').trim();
+const WHITE_CAT_ID = 'xvisor_white_cat_silver';
 let pending = '';
 
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
+/* A collectible White Cat card is still the same special White Cat from the
+   Xircle route. Older parties stored npcCardId but left petId empty, so infer
+   the living companion here instead of degrading it into a silent card skin. */
+function activePet(party = getParty(code)) {
+  const petId = String(party?.petId || '').trim();
+  if (petId && PET_BY_ID[petId]) return PET_BY_ID[petId];
+  const npcCardId = String(party?.npcCardId || '').toUpperCase();
+  if (npcCardId.startsWith('WHITE_CAT_')) return PET_BY_ID[WHITE_CAT_ID] || null;
+  return null;
+}
+
 function addressed(body) {
-  const party = getParty(code);
-  const pet = party?.petId ? PET_BY_ID[party.petId] : null;
+  const pet = activePet();
   if (!pet) return false;
   const text = String(body || '').toLocaleLowerCase('th-TH');
   const names = [pet.nameTh];
@@ -74,6 +85,28 @@ async function poke(body) {
   if (pending === body) pending = '';
 }
 
+/* Route-created White Cat already had this intro. A White Cat discovered as a
+   random card should enter the Book with exactly the same identity, so ask the
+   server for the idempotent intro once the local party snapshot is present. */
+async function introduceCollectibleWhiteCat() {
+  if (!code || activePet()?.id !== WHITE_CAT_ID) return;
+  const identity = partyIdentity(code);
+  const headers = { accept: 'application/json', 'content-type': 'application/json' };
+  if (identity?.token) headers.authorization = `Bearer ${identity.token}`;
+  try {
+    const response = await fetch('/api/xty-pet', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers,
+      body: JSON.stringify({ mode: 'white_cat_intro', code }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (result?.spoke) document.getElementById('refresh')?.click();
+  } catch {
+    // Intro is a bonus; it must never block the Book.
+  }
+}
+
 function captureComposer() {
   const body = String(document.getElementById('msg')?.value || '').trim();
   if (body && addressed(body)) void poke(body);
@@ -87,3 +120,5 @@ document.addEventListener('keydown', event => {
   if (event.target?.id !== 'msg' || event.key !== 'Enter' || !(event.metaKey || event.ctrlKey)) return;
   captureComposer();
 }, true);
+
+setTimeout(() => { void introduceCollectibleWhiteCat(); }, 650);
