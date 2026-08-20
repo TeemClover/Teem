@@ -1,8 +1,13 @@
 {
-  "version": "4.0.0",
+  "version": "5.0.0",
   "name": "myClover Empire Command Center",
   "updatedAt": "2026-08-20",
   "entry": "/command/",
+  "identity": {
+    "keyCard": "Command and Conquer · Marvel",
+    "game": "Flesh and Blood",
+    "operatingLanguage": ["ACTION", "PASS", "GO_AGAIN", "CLOSE_CHAIN", "BLOCK", "DELETE"]
+  },
   "controlPlane": {
     "commandCenter": "/command/",
     "operationsApi": "/api/command",
@@ -15,24 +20,46 @@
     "sessionHours": 12,
     "loginRateLimited": true,
     "passwordOverrideEnv": "BACKOFFICE_ADMIN_KEY",
-    "cloudflarePagesMiddleware": "functions/_middleware.js",
-    "protectedOperationalApis": ["/api/command"]
+    "protectedOperationalApis": ["/api/command"],
+    "loginExperience": "fast auth check first; heavy empire metrics load after board unlock"
   },
   "storage": {
     "operations": "mc_command_operations",
     "backofficeSessions": "mc_backoffice_sessions",
+    "backofficeAudit": "mc_backoffice_audit",
     "population": "live myClover + TeamBook database metrics",
     "learning": "first_class_registrations + first_class_reviews"
   },
+  "operationStrategy": {
+    "CREATE": "สร้างสิ่งใหม่จากศูนย์แล้วลงทะเบียนเข้าระบบกลาง",
+    "EXPAND": "ขยายของเดิมโดยรักษา source, canon และ dependency",
+    "CONQUER": "รวม/ย้าย/ยึดระบบภายนอกเข้ามาใต้ control plane เดียว"
+  },
+  "chainFlow": {
+    "ACTION": {"status":"IN_PROGRESS","meaning":"priority holder executes one concrete Next Action"},
+    "PASS": {"status":"REVIEW","meaning":"handoff packet, context, output and decision priority"},
+    "GO_AGAIN": {"status":"IN_PROGRESS","meaning":"current action resolved but Goal remains open; update Next Action and continue the same Operation"},
+    "CLOSE_CHAIN": {"status":"LIVE","meaning":"Success Check passed and output is findable"},
+    "BLOCK": {"status":"BLOCKED","meaning":"temporary blocker with explicit unblock condition"},
+    "DELETE": {"status":"REMOVED","meaning":"task is no longer wanted; remove from queue and preserve deletion in audit"}
+  },
+  "dashboard": {
+    "dailyBrief": ["เมื่อคืนอะไรเปลี่ยน", "อะไรพัง", "อะไรมีคนใช้", "วันนี้ควรแตะอะไรแค่เรื่องเดียว"],
+    "attentionFeed": true,
+    "autoSelectedCommandPulse": true,
+    "availableCharts": ["TeamBook activity", "system errors", "First Class flow", "Command chains"],
+    "achievementsWindowDays": 7,
+    "infrastructureCity": ["state", "role", "lastUpdatedAt", "lastEvent", "recommendation"]
+  },
   "externalInfrastructure": [
     {"id":"github","role":"source + history","console":"https://github.com/TeemClover/Teem"},
-    {"id":"vercel","role":"deploy + functions + cron","console":"https://vercel.com/teemclover/teem"},
-    {"id":"cloudflare","role":"DNS / Pages-compatible edge tooling","console":"https://dash.cloudflare.com/"},
+    {"id":"vercel","role":"deploy + functions + cron + blob","console":"https://vercel.com/teemclover"},
+    {"id":"cloudflare","role":"DNS / Pages / edge tooling","console":"https://dash.cloudflare.com/"},
     {"id":"neon","role":"Postgres database","console":"https://console.neon.tech/"},
-    {"id":"vercel-blob","role":"image and capture storage","console":"https://vercel.com/teemclover/teem/storage"},
     {"id":"groq","role":"TeamBook PET brain","console":"https://console.groq.com/"},
     {"id":"discord","role":"OAuth + guild automation","console":"https://discord.com/developers/applications"},
-    {"id":"resend-meta","role":"email + conversion automation","console":"https://resend.com/overview"}
+    {"id":"resend","role":"transactional email","console":"https://resend.com/emails"},
+    {"id":"meta","role":"conversion events","console":"https://business.facebook.com/events_manager2"}
   ],
   "backofficeRoutes": [
     {"name":"Keen Production Desk","path":"/keen/"},
@@ -48,6 +75,11 @@
     {"name":"Profile","path":"/profile/"},
     {"name":"Member Card","path":"/card/"}
   ],
+  "humanDevelopment": {
+    "expandableCoaching": true,
+    "missingPacketFieldWarnings": true,
+    "principle": "the system should improve operators and agents together, not only move tasks"
+  },
   "keyCard": {
     "name": "Command and Conquer",
     "variant": "Marvel",
@@ -55,21 +87,5 @@
     "image": "https://tcgplayer-cdn.tcgplayer.com/product/454212_in_1000x1000.jpg",
     "displayRule": "show full source image without CSS cropping",
     "role": "visual key used to open the Command Center"
-  },
-  "operationModes": {
-    "CREATE": {"purpose":"สร้างสิ่งใหม่จากศูนย์แล้วลงทะเบียนเข้าระบบกลาง","requiredOutputs":["project identity","current goal","next action","source registry","routes/modules","owner/agent","release target","population metric"]},
-    "EXPAND": {"purpose":"ขยายระบบเดิมโดยรักษา canon, source และ dependency ให้ไม่หลุด","requiredOutputs":["scope changed","dependencies affected","decision log","work queue","health checks","release plan","population impact"]},
-    "CONQUER": {"purpose":"ยึดหรือรวมระบบภายนอกเข้าจักรวาล myClover อย่างมีแผน","requiredOutputs":["target inventory","keep/replace/archive decisions","migration map","identity/account integration","source ownership","domain/route plan","success metric"]}
-  },
-  "modules": [
-    {"id":"project-manifest","name":"Project Manifest","purpose":"ทำให้ทุก project รายงานตัวด้วย schema เดียวกัน"},
-    {"id":"current-goal","name":"Current Goal + Next Action","purpose":"บังคับให้แต่ละ project มีเป้าหมายปัจจุบัน 1 เรื่องและงานถัดไป 1 เรื่อง"},
-    {"id":"source-graph","name":"Source Graph","purpose":"เห็นสายสัมพันธ์ของ mother source, child source, canon, routes และ dependency"},
-    {"id":"work-queue","name":"Work Queue","purpose":"เห็นว่างานอยู่กับ Teem, AI, Keen, Review, Merge หรือ Live"},
-    {"id":"agent-registry","name":"Agent Registry","purpose":"กำหนดว่า agent/skill ไหนทำงานอะไร อ่านอะไรได้ และห้ามแตะอะไร"},
-    {"id":"repo-warden","name":"Health / Repo Warden","purpose":"ตรวจ test, deploy, cron, stale source, dead route และ drift โดยไม่แก้เอง"},
-    {"id":"decision-memory","name":"Decision Memory","purpose":"เก็บเหตุผลของการตัดสินใจเพื่อกัน AI รุ่นถัดไปแก้ของที่ตั้งใจล็อกไว้"},
-    {"id":"population-command","name":"Population Command","purpose":"วัดว่าของที่สร้างมีมนุษย์เข้า ใช้ กลับมา และ interact จริงหรือยัง"}
-  ],
-  "dailyBriefContract": ["เมื่อคืนอะไรเปลี่ยน","อะไรพัง","อะไรมีคนใช้","วันนี้ควรแตะอะไรแค่เรื่องเดียว"]
+  }
 }
