@@ -43,11 +43,18 @@ function installStyle() {
     .xty-home-self-status.waiting{background:#f0c84f;border-color:#d4aa27}
     .xty-home-self-status.done{background:#55b56a;border-color:#32905a}
 
-    /* On the notebook lists the companion starts at the same top edge as
-       the cover. The user's daily light lives directly underneath it. */
-    .party-group .xty-party-row-visual{align-items:start!important;overflow:visible!important}
+    /* Treat cover + companion/status as one balanced visual cluster. The pet
+       no longer hugs the cover's top edge; its card/art plus the status light
+       are centered together against the taller 63:88 cover. */
+    .party-group .xty-party-row-visual{
+      align-items:center!important;
+      overflow:visible!important;
+    }
     .party-group .xty-party-row-pet{
-      position:relative!important;align-self:start!important;overflow:visible!important;
+      position:relative!important;
+      align-self:center!important;
+      overflow:visible!important;
+      transform:translateY(-8px);
     }
     .xty-party-row-pet.empty.has-self-status{visibility:visible!important}
     .xty-party-row-self-status{
@@ -59,7 +66,10 @@ function installStyle() {
     }
     .xty-party-row-self-status.waiting{background:#f0c84f;border-color:#d4aa27}
     .xty-party-row-self-status.done{background:#55b56a;border-color:#32905a}
-    @media(max-width:380px){.xty-party-row-self-status{top:42px;width:12px;height:12px}}
+    @media(max-width:380px){
+      .party-group .xty-party-row-pet{transform:translateY(-8px)}
+      .xty-party-row-self-status{top:42px;width:12px;height:12px}
+    }
 
     /* Safari occasionally paints a dynamically inserted cached IMG one frame
        late. The same source is kept as the element background as a visual
