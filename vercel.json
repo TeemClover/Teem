@@ -6,28 +6,6 @@
       "schedule": "27 5,11,17,23 * * *"
     }
   ],
-  "routes": [
-    {
-      "src": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "www\\.teambook\\.me"
-        }
-      ],
-      "dest": "/teambook/index.html"
-    },
-    {
-      "src": "/(?!api(?:/|$)|teambook(?:/|$))(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www\\.teambook\\.me"
-        }
-      ],
-      "dest": "/teambook/$1"
-    }
-  ],
   "redirects": [
     {
       "source": "/",
@@ -521,16 +499,6 @@
   ],
   "rewrites": [
     {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/index.html"
-    },
-    {
       "source": "/api/profile",
       "has": [
         {
@@ -553,176 +521,6 @@
       "destination": "/api/teambook?path=:path*"
     },
     {
-      "source": "/_shared/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/_shared/:path*"
-    },
-    {
-      "source": "/assets/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/assets/:path*"
-    },
-    {
-      "source": "/cards/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/cards/:path*"
-    },
-    {
-      "source": "/collection/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/collection/:path*"
-    },
-    {
-      "source": "/ideas/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/ideas/:path*"
-    },
-    {
-      "source": "/join/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/join/:path*"
-    },
-    {
-      "source": "/new/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/new/:path*"
-    },
-    {
-      "source": "/p/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/p/:path*"
-    },
-    {
-      "source": "/pets/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/pets/:path*"
-    },
-    {
-      "source": "/privacy/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/privacy/:path*"
-    },
-    {
-      "source": "/profile/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/profile/:path*"
-    },
-    {
-      "source": "/public/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/public/:path*"
-    },
-    {
-      "source": "/read/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/read/:path*"
-    },
-    {
-      "source": "/reveal/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/reveal/:path*"
-    },
-    {
-      "source": "/start/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/start/:path*"
-    },
-    {
-      "source": "/stat/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/stat/:path*"
-    },
-    {
-      "source": "/u/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.teambook.me"
-        }
-      ],
-      "destination": "/teambook/u/:path*"
-    },
-    {
       "source": "/api/auth/:path*",
       "destination": "/api/auth?path=:path*"
     },
@@ -733,6 +531,16 @@
     {
       "source": "/api/xty/:path*",
       "destination": "/api/xty?path=:path*"
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook/:path*"
     }
   ]
 }
