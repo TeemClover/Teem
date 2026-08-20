@@ -428,7 +428,9 @@ async function appendPost(sql, row, member, kind, text, image = null) {
         party_id,seq,user_id,kind,body,sent_at,day_key,retracted,image_url,image_w,image_h,
         activity_id,activity_label,activity_color,success_rule_snapshot
       )
-      SELECT $1,head_seq,$2,'commit',$3,$4,$5::date,FALSE,$6,$7,$8,
+      -- next.head_seq, not head_seq: joining xty_parties for the snapshot puts
+      -- a second head_seq in scope, and the bare name is then ambiguous.
+      SELECT $1,next.head_seq,$2,'commit',$3,$4,$5::date,FALSE,$6,$7,$8,
         -- The signed day takes its own copy here, in the statement that writes
         -- it. Read back later this gives what was true at signing, never what
         -- the member happens to be doing today.
