@@ -1,3 +1,4 @@
+# trigger cleanup after dedicated TeamBook project recreation
 name: Detach TeamBook routing from root once
 
 on:
