@@ -50,28 +50,31 @@
 
   <section class="notebook-card">
     <span class="step-sticker">2</span>
-    <h2>วันนี้อยากทำอะไรด้วยกัน?</h2>
-    <div class="activity-grid" id="activityPick" role="radiogroup" aria-label="เลือกกิจกรรม"></div>
-    <div class="field" id="customField" hidden>
-      <label for="customActivity">เขียนกิจกรรมของสมุด</label>
-      <input id="customActivity" type="text" maxlength="60" placeholder="เช่น วาดรูปวันละ 10 นาที">
-    </div>
+    <h2>ในเล่มนี้จะทำแบบไหน?</h2>
+    <div class="mode-grid" id="modePick" role="radiogroup" aria-label="เลือกวิธีเล่นของสมุด"></div>
   </section>
 
   <section class="notebook-card">
     <span class="step-sticker">3</span>
+    <h2 id="activityTitle">เลือกกิจกรรมของสมุด</h2>
+    <p class="whisper" id="activityHint">ทุกคนในเล่มนี้ทำกิจกรรมเดียวกัน แต่ตั้งเป้าของตัวเองได้</p>
+    <div id="activityPick"></div>
+  </section>
+
+  <section class="notebook-card">
+    <span class="step-sticker">4</span>
     <h2>เลือกรูปแบบการเล่น</h2>
     <div class="preset-grid" id="verificationPick" role="radiogroup" aria-label="เลือกรูปแบบการเล่น"></div>
   </section>
 
   <section class="notebook-card">
-    <span class="step-sticker">4</span>
+    <span class="step-sticker">5</span>
     <h2>เล่นกันกี่วัน?</h2>
     <div class="choice-row" id="durationPick" role="radiogroup" aria-label="เลือกระยะเวลา"></div>
   </section>
 
   <section class="notebook-card">
-    <span class="step-sticker">5</span>
+    <span class="step-sticker">6</span>
     <h2>ตั้งชื่อและกติกา</h2>
     <div class="field">
       <label for="pname">ชื่อสมุด</label>
@@ -82,12 +85,6 @@
       <input id="prule" type="text" maxlength="120" placeholder="เช่น อ่านอย่างน้อย 10 หน้า">
       <p class="hint">เว้นว่างได้ แล้วค่อยตกลงกันในสมุด</p>
     </div>
-  </section>
-
-  <section class="notebook-card">
-    <span class="step-sticker">6</span>
-    <h2>สีประจำสมุด</h2>
-    <div class="color-row" id="colorPick" role="radiogroup" aria-label="เลือกสีประจำสมุด"></div>
   </section>
 
   <section class="notebook-card">
@@ -125,8 +122,9 @@ import {
   availableOwnedCards, allParties, partyIdentity,
 } from '/xty/_shared/store.js';
 import { createPartyV2 } from '/xty/_shared/create-party-v2.js';
-import { XTY_V1_PETS, PET_BY_ID, RGBS } from '/xty/_shared/pets.js';
-import { XTY_ACTIVITIES } from '/xty/_shared/activities.js';
+import { XTY_V1_PETS, PET_BY_ID } from '/xty/_shared/pets.js';
+import { SHARED, INDIVIDUAL, MODE_COPY } from '/xty/_shared/book-mode.js';
+import { mountActivityPicker } from '/xty/_shared/activity-picker.js';
 import { avatarById } from '/xty/_shared/avatars.js';
 import { cardById, cardDescriptorTh } from '/xty/_shared/cards.js';
 import { cardMarkup } from '/xty/_shared/card-ui.js';
@@ -219,25 +217,29 @@ function init() {
       : 'ใช้ Card Back ได้เลย · Rare / Epic / Legendary ที่ได้ภายหลังจะใช้เป็นปกสมุดได้';
   }
 
-  const activityButtons = XTY_ACTIVITIES.map(item => {
+  /* Which activity is being chosen here depends on the mode: the book's
+     one in shared mode, the owner's own in individual mode. The picker is
+     the same either way — only the heading above it changes. */
+  let activityMode = SHARED;
+  let picked = { activityId: null, label: '', description: '', color: null, complete: false };
+
+  const modeButtons = [SHARED, INDIVIDUAL].map(id => {
+    const copy = MODE_COPY[id];
     const button = document.createElement('button');
-    button.type = 'button'; button.className = 'activity-choice'; button.setAttribute('role', 'radio');
-    button.innerHTML = `<img src="${item.art}" alt=""><b>${item.labelTh}</b>`;
-    if (item.id === 'sleep' || item.id === 'wellness') {
-      button.setAttribute('aria-label', `${item.labelTh} · Xircle`);
-      button.addEventListener('click', event => {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        location.href = '/xircle/';
-      });
-    }
-    return { id: item.id, button };
+    button.type = 'button'; button.className = 'mode-choice'; button.setAttribute('role', 'radio');
+    button.innerHTML = `<b>${copy.title}</b><small>${copy.blurb}</small>`;
+    return { id, button };
   });
-  let activityId = 'walk';
-  radioGroup($('activityPick'), activityButtons, activityId, id => {
-    activityId = id;
-    $('customField').hidden = id !== 'custom';
+  radioGroup($('modePick'), modeButtons, activityMode, id => {
+    activityMode = id;
+    $('activityTitle').textContent = MODE_COPY[id].pickerTitle;
+    $('activityHint').textContent = MODE_COPY[id].blurb;
     syncReady();
+  });
+
+  mountActivityPicker($('activityPick'), {
+    value: 'walk',
+    onChange: value => { picked = value; syncReady(); },
   });
 
   const verificationButtons = [
@@ -265,15 +267,12 @@ function init() {
   radioGroup($('durationPick'), durationButtons, durationDays, id => { durationDays = Number(id); });
   $('durationPick').appendChild(disabledDuration);
 
-  let color = 'green';
-  const colorButtons = Object.values(RGBS).map(item => {
-    const button = document.createElement('button');
-    button.type = 'button'; button.className = 'color-choice'; button.setAttribute('role', 'radio');
-    button.style.setProperty('--swatch', item.hex);
-    button.innerHTML = `<span></span><b>${item.labelTh}</b>`;
-    return { id: item.id, button };
-  });
-  radioGroup($('colorPick'), colorButtons, color, id => { color = id; });
+  /* A book's colour is the colour of what it is about. In individual mode
+     nobody is all doing one thing, so the book keeps a neutral one and the
+     colour that matters lives on each member instead. */
+  function bookColor() {
+    return activityMode === SHARED ? (picked.color || 'green') : 'green';
+  }
 
   let visibility = 'private';
   const visibilityButtons = [
@@ -357,17 +356,21 @@ function init() {
   }
 
   $('pname').addEventListener('input', syncReady);
-  $('customActivity').addEventListener('input', syncReady);
+
   syncReady();
 
   $('go').addEventListener('click', async () => {
     const go = $('go'); go.disabled = true; go.textContent = 'กำลังสร้างสมุด…';
-    const selected = XTY_ACTIVITIES.find(item => item.id === activityId);
-    const activity = activityId === 'custom' ? $('customActivity').value.trim() : selected.labelTh;
     try {
       const party = await createPartyV2({
-        name: $('pname').value, activity, activityId, verificationMode, durationDays,
-        color, visibility, commitRule: $('prule').value, budget, petId, coverType, leadCardId, npcCardId,
+        name: $('pname').value,
+        activity: picked.label, activityId: picked.activityId,
+        activityMode,
+        activityDescription: picked.description,
+        activityColor: picked.color,
+        verificationMode, durationDays,
+        color: bookColor(), visibility, commitRule: $('prule').value,
+        budget, petId, coverType, leadCardId, npcCardId,
       });
       location.href = `/xty/p/?c=${encodeURIComponent(party.code)}&new=1`;
     } catch (error) {
@@ -386,8 +389,7 @@ function init() {
   });
 
   function syncReady() {
-    const customReady = activityId !== 'custom' || $('customActivity').value.trim().length > 0;
-    $('go').disabled = $('pname').value.trim().length < 1 || !customReady || !coverType;
+    $('go').disabled = $('pname').value.trim().length < 1 || !picked.complete || !coverType;
   }
 }
 

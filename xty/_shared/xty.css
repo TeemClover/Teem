@@ -193,3 +193,63 @@ h2.title{margin:0 0 10px;font-size:clamp(22px,5vw,30px);line-height:1.24}
 .post.reward[data-rarity="legendary"]{--rw:#E08127}
 .reward-tag{background:var(--rw,var(--xty-blue))!important}.reward-log-card{display:grid;grid-template-columns:88px 1fr;gap:12px;align-items:center;margin-top:7px}.reward-log-card .animal-card{width:88px}.reward-log-card p{margin:0;font-size:13px;line-height:1.5}
 @media(max-width:480px){.public-party{grid-template-columns:62px 1fr auto}.public-party .preview-cover{width:62px}}
+
+/* ── Activity picker — notebook bookmark tabs ──────────────────
+   Twenty choices at once is a wall; four tabs of five is a notebook.
+   The tabs sit on the top edge of the card the way a bookmark sits on
+   a page, so which one is open is legible without reading a word. */
+.act-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:-1px}
+.act-tab{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px 6px 13px;border:1px solid var(--xty-border);border-bottom:0;
+  border-radius:13px 13px 0 0;background:#F6F1E2;color:var(--xty-muted);
+  font-size:13px;font-weight:800;cursor:pointer;
+}
+.act-tab img{width:22px;height:auto;display:block;opacity:.55}
+.act-tab.on{background:#fff;color:var(--xty-ink);padding-bottom:15px;margin-bottom:-2px}
+.act-tab.on img{opacity:1}
+.act-grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;
+  padding:12px;border:1px solid var(--xty-border);border-radius:0 14px 14px 14px;background:#fff;
+}
+.act-card{
+  padding:6px 6px 10px;border:1px solid var(--xty-border);border-radius:14px;
+  background:#fff;text-align:center;cursor:pointer;
+}
+/* height:auto matters — the img carries a height attribute, and with both
+   dimensions definite the browser ignores aspect-ratio and the art goes oblong. */
+.act-card img{width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:9px}
+.act-card b{display:block;margin-top:7px;font-size:12.5px}
+.act-card span{display:block;margin-top:2px;color:var(--xty-muted);font-size:11px;line-height:1.45}
+.act-card.is-custom{border-style:dashed}
+.act-card.picked{border:2px solid var(--xty-ink);box-shadow:3px 4px 0 rgba(85,181,106,.24)}
+.act-custom,.act-rule{margin-top:14px}
+
+@media(max-width:720px){
+  /* Five on a phone reads as 2 + 2 + 1: the last card takes the full
+     width rather than sitting half-empty beside a gap. */
+  .act-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .act-card:last-child{
+    grid-column:1 / -1;display:grid;gap:2px 12px;text-align:left;
+    grid-template-columns:64px 1fr;grid-template-rows:auto auto;align-content:center;
+  }
+  .act-card:last-child img{grid-row:1 / span 2;align-self:center;width:64px}
+  .act-card:last-child b{margin-top:0;align-self:end}
+  .act-card:last-child span{align-self:start}
+  .act-tab span{display:none}
+  .act-tab img{width:26px}
+}
+
+/* ── Which way this book is played ─────────────────────────────
+   Two choices, side by side, each carrying its own sentence — the
+   difference between them is the whole decision, so it has to be
+   readable without opening anything. */
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode-choice{
+  padding:15px 14px;border:1px solid var(--xty-border);border-radius:14px;
+  background:#fff;text-align:left;cursor:pointer;
+}
+.mode-choice b{display:block;font-size:15px}
+.mode-choice small{display:block;margin-top:5px;color:var(--xty-muted);font-size:12.5px;line-height:1.55}
+.mode-choice.picked{border:2px solid var(--xty-ink);box-shadow:3px 4px 0 rgba(85,181,106,.24)}
+@media(max-width:560px){.mode-grid{grid-template-columns:1fr}}

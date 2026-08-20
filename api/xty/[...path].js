@@ -57,7 +57,8 @@ function seededIndex(value, length) {
 async function partyByCode(sql, value) {
   const rows = await sql.query(`SELECT id,code,name,activity,activity_id,preset,duration_days,color,visibility,commit_rule,budget,pet_id,owner_id,
     state,created_at,updated_at,head_seq,pet_last_wake,lead_card_id,npc_card_id,started_at,ended_at,timezone,
-    verification_mode,scheduled_end_at,cover_type,cover_value
+    verification_mode,scheduled_end_at,cover_type,cover_value,
+    activity_mode,shared_activity_description,shared_activity_color
     FROM xty_parties WHERE code=$1`, [value]);
   return rows[0] || null;
 }
@@ -154,7 +155,8 @@ async function memberFor(req, sql, partyId) {
 }
 
 async function membersOf(sql, partyId) {
-  const rows = await sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at,left_at,removal_reason FROM xty_members
+  const rows = await sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at,left_at,removal_reason,
+    activity_id,activity_label,activity_description,activity_color,success_rule FROM xty_members
     WHERE party_id=$1 ORDER BY CASE role WHEN 'lead' THEN 0 ELSE 1 END, joined_at`, [partyId]);
   return rows.map(row => ({
     userId: row.user_id, alias: row.alias, avatar: row.avatar || '🍀', role: row.role,
@@ -162,6 +164,13 @@ async function membersOf(sql, partyId) {
     joinedAt: new Date(row.joined_at).toISOString(),
     leftAt: row.left_at ? new Date(row.left_at).toISOString() : null,
     removalReason: row.removal_reason || null,
+    /* In an individual book this is the activity; in a shared one only the
+       rule is really this person's, and the activity mirrors the book's. */
+    activityId: row.activity_id || null,
+    activityLabel: row.activity_label || '',
+    activityDescription: row.activity_description || '',
+    activityColor: row.activity_color || null,
+    successRule: row.success_rule || '',
   }));
 }
 
@@ -250,7 +259,9 @@ async function rewardsOf(sql, row, member) {
 
 async function postsOf(sql, partyId, since = 0) {
   const rows = await sql.query(`SELECT p.seq,p.user_id,p.kind,p.body,p.sent_at,p.retracted,
-    p.pet_id,p.wake_hour,p.image_url,p.image_w,p.image_h,m.alias,m.avatar FROM xty_posts p LEFT JOIN xty_members m
+    p.pet_id,p.wake_hour,p.image_url,p.image_w,p.image_h,
+    p.activity_id,p.activity_label,p.activity_color,p.success_rule_snapshot,
+    m.alias,m.avatar FROM xty_posts p LEFT JOIN xty_members m
     ON m.party_id=p.party_id AND m.user_id=p.user_id
     WHERE p.party_id=$1 AND p.seq>$2 ORDER BY p.seq`, [partyId, since]);
   const posts = rows.map(row => ({
@@ -262,6 +273,12 @@ async function postsOf(sql, partyId, since = 0) {
     imageUrl: row.retracted ? null : (row.image_url || null),
     imageW: row.retracted || row.image_w == null ? null : Number(row.image_w),
     imageH: row.retracted || row.image_h == null ? null : Number(row.image_h),
+    /* Null on a day signed before snapshots existed. Readers must treat that
+       as "unknown", never as "the same as now". */
+    activityId: row.activity_id || null,
+    activityLabel: row.activity_label || '',
+    activityColor: row.activity_color || null,
+    successRuleSnapshot: row.success_rule_snapshot || '',
     reactions: {}, confirmedBy: null, confirmedAt: null,
   }));
   if (!posts.length) return posts;
@@ -296,6 +313,13 @@ function shape(row, memberHistory, posts, events, rewardClaims = []) {
   return {
     id: row.id, code: row.code, name: row.name, activity: row.activity || '',
     activityId: row.activity_id || 'custom', preset: row.preset || 'casual',
+    activityMode: row.activity_mode === 'individual' ? 'individual' : 'shared',
+    /* Deliberately null in individual mode: there is no book-wide activity,
+       and a screen given one would tell everyone they share a thing they do not. */
+    sharedActivityId: row.activity_mode === 'individual' ? null : (row.activity_id || null),
+    sharedActivityLabel: row.activity_mode === 'individual' ? null : (row.activity || ''),
+    sharedActivityDescription: row.activity_mode === 'individual' ? null : (row.shared_activity_description || ''),
+    sharedActivityColor: row.activity_mode === 'individual' ? null : (row.shared_activity_color || null),
     durationDays: Number(row.duration_days || 7), color: row.color || 'green',
     visibility: row.visibility || 'private',
     verificationMode,
@@ -400,8 +424,22 @@ async function appendPost(sql, row, member, kind, text, image = null) {
     const rows = await sql.query(`WITH next AS (
         UPDATE xty_parties SET head_seq=head_seq+1,updated_at=$4 WHERE id=$1 RETURNING head_seq
       )
-      INSERT INTO xty_posts (party_id,seq,user_id,kind,body,sent_at,day_key,retracted,image_url,image_w,image_h)
-      SELECT $1,head_seq,$2,'commit',$3,$4,$5::date,FALSE,$6,$7,$8 FROM next RETURNING seq`,
+      INSERT INTO xty_posts (
+        party_id,seq,user_id,kind,body,sent_at,day_key,retracted,image_url,image_w,image_h,
+        activity_id,activity_label,activity_color,success_rule_snapshot
+      )
+      SELECT $1,head_seq,$2,'commit',$3,$4,$5::date,FALSE,$6,$7,$8,
+        -- The signed day takes its own copy here, in the statement that writes
+        -- it. Read back later this gives what was true at signing, never what
+        -- the member happens to be doing today.
+        CASE WHEN p.activity_mode='individual' THEN m.activity_id ELSE p.activity_id END,
+        CASE WHEN p.activity_mode='individual' THEN m.activity_label ELSE p.activity END,
+        CASE WHEN p.activity_mode='individual' THEN m.activity_color ELSE p.shared_activity_color END,
+        m.success_rule
+      FROM next
+      JOIN xty_parties p ON p.id=$1
+      JOIN xty_members m ON m.party_id=$1 AND m.user_id=$2
+      RETURNING seq`,
     [row.id, member.user_id, text, now, key, imageUrl, imageW, imageH]);
     row.head_seq = Number(rows[0].seq); return { seq: row.head_seq };
   } catch (error) {
@@ -766,7 +804,19 @@ export default async function handler(req, res) {
     if (method === 'GET' && parts.length === 2) {
       if (!member) {
         const count = await sql.query('SELECT COUNT(*)::int n FROM xty_members WHERE party_id=$1 AND left_at IS NULL', [row.id]);
-        return sendJson(res, { ok: true, joined: false, party: { code: row.code, name: row.name, activity: row.activity || '', members: Number(count[0]?.n || 0) } });
+        const mode = row.activity_mode === 'individual' ? 'individual' : 'shared';
+        return sendJson(res, { ok: true, joined: false, party: {
+          code: row.code, name: row.name,
+          /* An individual book has no activity of its own to preview, and
+             showing the owner's would promise a stranger the wrong thing. */
+          activity: mode === 'shared' ? (row.activity || '') : '',
+          activityMode: mode,
+          sharedActivityId: mode === 'shared' ? (row.activity_id || null) : null,
+          sharedActivityLabel: mode === 'shared' ? (row.activity || '') : null,
+          sharedActivityDescription: mode === 'shared' ? (row.shared_activity_description || '') : null,
+          sharedActivityColor: mode === 'shared' ? (row.shared_activity_color || null) : null,
+          members: Number(count[0]?.n || 0),
+        } });
       }
       return sendJson(res, await stateFor(sql, row, member));
     }

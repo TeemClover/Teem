@@ -1,3 +1,4 @@
+import { bookActivityLine } from './book-mode.js';
 import {
   allParties, myPartyCodes, isActiveParty, partyIdentity, committedToday, getProfile,
 } from './store.js';
@@ -165,7 +166,7 @@ function slideMarkup(entry, total) {
     + coverMarkup(party)
     + `<div class="xty-party-copy"><span class="party-state">${esc(badge)}</span>`
     + `<h2>${esc(party.name)}</h2>`
-    + `<p class="whisper" style="margin:0">${esc(party.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
+    + `<p class="whisper" style="margin:0">${esc(bookActivityLine(party))}</p>`
     + `<p class="whisper">${done}/${members} ลงชื่อวันนี้</p>`
     + `<a class="btn gold sm" href="/xty/p/?c=${encodeURIComponent(party.code)}">${terminal ? 'ดูฉากจบ' : 'เข้าร่วมสมุด / ลงชื่อ'}</a>`
     + `</div></div></article>`;

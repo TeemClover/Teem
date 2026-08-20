@@ -49,7 +49,10 @@ function remember(result) {
   return { ...result, party };
 }
 
-export async function joinPartyV2(code, { alias, avatar, avatarColor } = {}) {
+export async function joinPartyV2(code, {
+  alias, avatar, avatarColor,
+  activityId, activityLabel, activityDescription, activityColor, successRule,
+} = {}) {
   const wanted = String(code || '').replace(/\D/g, '').slice(0, 5);
   if (!/^\d{5}$/.test(wanted)) return { ok: false, error: 'INVALID_CODE' };
 
@@ -72,6 +75,13 @@ export async function joinPartyV2(code, { alias, avatar, avatarColor } = {}) {
         avatarColor: avatarColor || profile.avatarFrame || 'green',
         profileId: profile.id,
         quotaSystem: 'v2-separated',
+        /* Only meaningful in an individual book; a shared book fills these
+           in from its own activity and ignores whatever arrives here. */
+        activityId: activityId || '',
+        activityLabel: activityLabel || '',
+        activityDescription: activityDescription || '',
+        activityColor: activityColor || '',
+        successRule: successRule || '',
       }),
     });
   } catch {
