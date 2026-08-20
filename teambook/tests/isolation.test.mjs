@@ -167,3 +167,22 @@ test('first เห็นแล้ว card opening is a shared notebook event wit
   assert.match(weekly, /รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก/);
   assert.match(exporter, /rewardLabel: รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก/);
 });
+
+
+test('canonical TeamBook domain redirects root to /teambook and serves the app there', () => {
+  const config = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+  const rootRedirect = config.redirects.find(route => route.source === '/');
+  assert.deepEqual(rootRedirect, {
+    source: '/',
+    destination: '/teambook',
+    permanent: false,
+  });
+  assert.equal(
+    config.redirects.some(route => route.source === '/teambook' || route.source === '/teambook/:path*'),
+    false,
+  );
+  assert.equal(
+    config.rewrites.some(route => route.source === '/teambook' && route.destination === '/index.html'),
+    true,
+  );
+});

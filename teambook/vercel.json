@@ -9,14 +9,9 @@
   ],
   "redirects": [
     {
-      "source": "/teambook",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/teambook/:path*",
-      "destination": "/:path*",
-      "permanent": true
+      "source": "/",
+      "destination": "/teambook",
+      "permanent": false
     },
     {
       "source": "/start",
@@ -61,6 +56,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/teambook",
+      "destination": "/index.html"
+    },
     {
       "source": "/api/auth/:path*",
       "destination": "/api/auth?path=:path*"
