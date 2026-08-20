@@ -66,6 +66,15 @@ const RULES = Object.freeze([
   /* Signature / Seen vocabulary. Seen is acknowledgement, never proof. */
   [/ต้อง\s*Confirm\s*·\s*ให้เพื่อนอย่างน้อย\s*1\s*คน\s*Confirm\s*ย้อนหลังได้ถึงวันถัดไป/gi,
     'ลงชื่อแล้ว · ให้เพื่อนอย่างน้อย 1 คนกด เห็นแล้ว ได้ถึงวันถัดไป'],
+  /* Canonical copy: never render the awkward machine-translated
+     “ต้อง เห็นแล้ว”. A confirm-required rule means someone else must have
+     seen the action. Likewise the CTA always says explicitly that the
+     friend presses the Seen button. These rules intentionally catch both
+     legacy English/Thai source strings and already-translated DOM text. */
+  [/ต้อง\s*Confirm/gi, 'ต้องมีคนเห็น'],
+  [/ต้อง\s*เห็นแล้ว/g, 'ต้องมีคนเห็น'],
+  [/ให้เพื่อนอย่างน้อย\s*1\s*คน\s*Confirm/gi, 'ให้เพื่อนอย่างน้อย 1 คนกด เห็นแล้ว'],
+  [/ให้เพื่อนอย่างน้อย\s*1\s*คน\s*เห็นแล้ว/g, 'ให้เพื่อนอย่างน้อย 1 คนกด เห็นแล้ว'],
   [/เชื่อใจกัน\s*·\s*Commit\s*แล้วผ่านทันที/gi,
     'ลงชื่อแล้ว · คนข้าง ๆ กด เห็นแล้ว ได้จากการ์ด'],
   [/กติกา\s*Commit/gi, 'วันนี้ลงชื่อได้เมื่อ'],
