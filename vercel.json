@@ -12,6 +12,17 @@
       "has": [
         {
           "type": "host",
+          "value": "www.teambook.me"
+        }
+      ],
+      "destination": "/teambook",
+      "permanent": false
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "xty.myclover.com"
         }
       ],

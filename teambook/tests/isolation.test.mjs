@@ -68,6 +68,7 @@ test('server data and PET AI are environment-bound inside the new project', () =
 
 test('deployment root exposes TeamBook routes without a folder prefix', () => {
   const config = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+  const projectConfig = JSON.parse(readFileSync(join(ROOT, '../vercel.json'), 'utf8'));
   assert.ok(config.redirects.some(item => item.source === '/teambook/:path*' && item.destination === '/:path*'));
   assert.ok(config.rewrites.some(item => item.source === '/api/teambook/:path*'));
   assert.ok(config.crons.some(item => item.path === '/api/teambook-pet'));
@@ -183,6 +184,12 @@ test('canonical TeamBook domain redirects root to /teambook and serves the app t
   );
   assert.equal(
     config.rewrites.some(route => route.source === '/teambook' && route.destination === '/index.html'),
+    true,
+  );
+  assert.equal(
+    projectConfig.redirects.some(route => route.source === '/'
+      && route.destination === '/teambook'
+      && route.has?.some(match => match.type === 'host' && match.value === 'www.teambook.me')),
     true,
   );
 });
