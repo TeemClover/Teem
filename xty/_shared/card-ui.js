@@ -151,7 +151,7 @@ if (typeof location !== 'undefined' && /^\/xty\/p(?:\/|$)/.test(location.pathnam
   import('./party-log-viewport.js').catch(error => console.warn('XTY party log viewport unavailable', error));
   import('./party-event-copy-v2.js').catch(error => console.warn('XTY party event copy unavailable', error));
   import('./party-pet-seat-v2.js').catch(error => console.warn('XTY pet seat unavailable', error));
-  import('./party-self-status.js?v=20260820-1').catch(error => console.warn('XTY self status unavailable', error));
+  import('./party-self-status.js?v=20260820-disabled2').catch(error => console.warn('XTY self status compatibility stub unavailable', error));
   import('./party-invite-copy.js').catch(error => console.warn('XTY party invite copy unavailable', error));
   import('./party-log-export.js').catch(error => console.warn('XTY party log export unavailable', error));
   import('./collection-skin-picker.js').catch(error => console.warn('XTY Collection skin picker unavailable', error));
@@ -172,7 +172,7 @@ if (typeof location !== 'undefined' && /^\/xty\/?$/.test(location.pathname)) {
   await import('./home-canonical-guard.js?v=20260820-1').catch(error => console.warn('XTY home canonical guard unavailable', error));
   await import('./home-cover-v3.js?v=20260820-stable3').catch(error => console.warn('XTY home cover layer unavailable', error));
   await import('./home-card-ratio-fix.js?v=20260820-1').catch(error => console.warn('XTY home card ratio guard unavailable', error));
-  await import('./home-self-status.js?v=20260820-2').catch(error => console.warn('XTY home self status unavailable', error));
+  await import('./home-self-status.js?v=20260820-3').catch(error => console.warn('XTY home self status unavailable', error));
   import('./home-carousel-desktop.js').catch(error => console.warn('XTY desktop carousel controls unavailable', error));
 }
 
