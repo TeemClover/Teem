@@ -1,0 +1,91 @@
+name: TeamBook forward host routing fix once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/teambook-host-forward-fix-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix-routing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Make TeamBook host routing independent of www redirect
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('vercel.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+
+          def host_value(rule):
+              for h in rule.get('has', []):
+                  if h.get('type') == 'host':
+                      return h.get('value')
+              return None
+
+          # Do not depend on apex -> www. Serve TeamBook directly on both hosts.
+          data['redirects'] = [
+              r for r in data.get('redirects', [])
+              if not (
+                  r.get('source') == '/'
+                  and host_value(r) in {'teambook.me', 'www.teambook.me'}
+              )
+          ]
+
+          # Remove every older TeamBook host rewrite so there is one canonical block.
+          rewrites = [
+              r for r in data.get('rewrites', [])
+              if host_value(r) not in {'teambook.me', 'www.teambook.me'}
+          ]
+
+          host_rules = []
+          for host in ('teambook.me', 'www.teambook.me'):
+              has = [{'type': 'host', 'value': host}]
+              # Explicit root first: never let the main repo index win at '/'.
+              host_rules.append({
+                  'source': '/',
+                  'has': has,
+                  'destination': '/teambook/index.html',
+              })
+              # Public profile alias used by TeamBook.
+              host_rules.append({
+                  'source': '/api/profile',
+                  'has': has,
+                  'destination': '/api/teambook-profile',
+              })
+
+          # Keep normal API rewrites ahead of the catch-all host routing.
+          rewrites = host_rules + rewrites
+
+          for host in ('teambook.me', 'www.teambook.me'):
+              rewrites.append({
+                  'source': '/:path*',
+                  'has': [{'type': 'host', 'value': host}],
+                  'destination': '/teambook/:path*',
+              })
+
+          data['rewrites'] = rewrites
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+
+      - name: Validate routing config
+        run: python3 -m json.tool vercel.json >/dev/null
+
+      - name: Commit forward fix and remove workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/teambook-host-forward-fix-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vercel.json .github/workflows/teambook-host-forward-fix-once.yml
+          git commit -m "fix(teambook): serve both production hosts directly"
+          git push origin HEAD:main
