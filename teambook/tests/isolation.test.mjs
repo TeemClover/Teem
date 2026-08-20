@@ -131,3 +131,21 @@ test('runtime copy and PET prompts contain no myClover identity', () => {
       `${relative(ROOT, path)} contains a legacy PET identity`);
   }
 });
+
+
+test('first เห็นแล้ว reward belongs to the confirmer once across the whole account', () => {
+  const core = readFileSync(join(ROOT, 'api/_lib/core.js'), 'utf8');
+  const partyApi = readFileSync(join(ROOT, 'api/teambook/[...path].js'), 'utf8');
+  const binder = readFileSync(join(ROOT, 'api/_lib/xty-bind.js'), 'utf8');
+  const partyPage = readFileSync(join(ROOT, 'p/index.html'), 'utf8');
+  const revealPage = readFileSync(join(ROOT, 'reveal/index.html'), 'utf8');
+
+  assert.match(core, /UNIQUE INDEX IF NOT EXISTS idx_teambook_first_seen_reward_once[\s\S]*WHERE unlock_source = 'first_seen'/);
+  assert.match(partyApi, /firstSeenRewardFor\(sql, row, member, at\)/);
+  assert.match(partyApi, /unlock_source='first_seen'[\s\S]*member\.user_id/);
+  assert.match(partyApi, /myReward: firstSeenReward \|\| state\.myReward/);
+  assert.match(partyApi, /unlock_source IN \('ending','first_seen'\)/);
+  assert.match(binder, /firstSeenRows[\s\S]*SET user_id=\$1/);
+  assert.match(partyPage, /firstSeenReward\?\.rewardId[\s\S]*\/reveal\/\?r=/);
+  assert.match(revealPage, /เห็นคนอื่นเป็นครั้งแรก ✓/);
+});

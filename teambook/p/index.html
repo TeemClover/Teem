@@ -691,6 +691,11 @@ function renderLog(p) {
           if (result.error === 'ALREADY_CONFIRMED') toast('มีเพื่อน เห็นแล้ว');
           else if (result.error === 'CONFIRM_WINDOW_CLOSED') toast('หมดเวลากดเห็นแล้วของการลงชื่อนี้');
           else if (result.error) toast('ยัง เห็นแล้ว ไม่สำเร็จ');
+          else if (result.firstSeenReward?.rewardId && !result.firstSeenReward.revealedAt) {
+            toast('เห็นคนอื่นครั้งแรก · ได้การ์ด 1 ใบ');
+            location.href = `/reveal/?r=${encodeURIComponent(result.firstSeenReward.rewardId)}`;
+            return;
+          }
           render();
         });
         slot.appendChild(confirm);

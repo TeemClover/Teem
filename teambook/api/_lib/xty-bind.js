@@ -6,6 +6,25 @@ function cleanId(value) {
 }
 
 export async function promoteCardUnlocks(sql, localIds, accountId) {
+  /* "เห็นแล้วครั้งแรก" belongs to a person, not a notebook. If both a local
+     identity and the account earned it before binding, keep exactly one row
+     before the account-wide unique index sees the ownership update. */
+  const firstSeenRows = await sql.query(`SELECT id,user_id,card_id,revealed_at,created_at
+    FROM teambook_card_unlock_events
+    WHERE unlock_source='first_seen' AND (user_id = ANY($1::text[]) OR user_id=$2)
+    ORDER BY (user_id=$2) DESC,created_at,id`, [localIds, accountId]);
+  if (firstSeenRows.length) {
+    const keeper = firstSeenRows[0];
+    const bestCard = firstSeenRows.find(row => row.card_id)?.card_id || null;
+    const bestReveal = firstSeenRows.find(row => row.revealed_at)?.revealed_at || null;
+    const duplicateIds = firstSeenRows.slice(1).map(row => row.id);
+    if (duplicateIds.length) {
+      await sql.query('DELETE FROM teambook_card_unlock_events WHERE id = ANY($1::text[])', [duplicateIds]);
+    }
+    await sql.query(`UPDATE teambook_card_unlock_events
+      SET user_id=$1,card_id=COALESCE(card_id,$2),revealed_at=COALESCE(revealed_at,$3)
+      WHERE id=$4`, [accountId, bestCard, bestReveal, keeper.id]);
+  }
   /* Keep the account row when the same book/source was already promoted, but
      merge any card/reveal detail learned by the local row before deleting it. */
   await sql.query(`UPDATE teambook_card_unlock_events AS account_unlock

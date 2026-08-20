@@ -139,8 +139,12 @@ function showReward(item) {
   const card = cardById(item.cardId);
   if (!card) { $('missing').hidden = false; return; }
   const starDrop = /^party-stars:/.test(String(item.questId || ''));
+  const firstSeenDrop = /^first-seen:/.test(String(item.questId || ''));
   $('reveal').hidden = false;
-  if (starDrop) {
+  if (firstSeenDrop) {
+    $('rewardKicker').textContent = 'เห็นคนอื่นเป็นครั้งแรก ✓';
+    $('instruction').textContent = 'การเห็นคนอื่นเป็นเรื่องที่ดี · กดเปิดการ์ดใบแรกของคุณ';
+  } else if (starDrop) {
     $('rewardKicker').textContent = '⭐⭐⭐ · เปิดการ์ด';
     $('instruction').textContent = 'ครบ 3 วันที่ลงชื่อและมีคนเห็นแล้วในสมุดนี้ · กดเปิดการ์ด';
   }
@@ -175,9 +179,11 @@ function showReward(item) {
     button.classList.add('is-open');
     button.setAttribute('aria-expanded', 'true');
     button.setAttribute('aria-label', cardNameTh(card));
-    $('instruction').textContent = starDrop
-      ? 'เปิดแล้ว · เพื่อนในสมุดจะเห็น เปิดการ์ด ใบนี้ใน เรื่องในสมุด'
-      : 'การ์ดใบนี้เป็นความทรงจำจากเล่มที่เขียนจบ ไม่ใช่ของที่ซื้อสุ่ม';
+    $('instruction').textContent = firstSeenDrop
+      ? 'เปิดแล้ว · การเห็นความพยายามของคนอื่นคือเรื่องที่ดี'
+      : (starDrop
+        ? 'เปิดแล้ว · เพื่อนในสมุดจะเห็น เปิดการ์ด ใบนี้ใน เรื่องในสมุด'
+        : 'การ์ดใบนี้เป็นความทรงจำจากเล่มที่เขียนจบ ไม่ใช่ของที่ซื้อสุ่ม');
     syncXtyProfile();
     /* Keep the reveal cadence: flip first, brighter note around the
        quarter-turn, then let the reward copy arrive while the 3D turn settles. */

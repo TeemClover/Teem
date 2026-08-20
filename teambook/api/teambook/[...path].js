@@ -229,13 +229,77 @@ async function issueCardRewardsForParty(sql, row, at = new Date()) {
   }
 }
 
+function shapedFirstSeenReward(reward, fallbackCode = '') {
+  if (!reward || reward.revealed_at) return null;
+  return {
+    rewardId: reward.id,
+    questId: `first-seen:${reward.user_id}`,
+    partyCode: reward.code || fallbackCode,
+    cardId: reward.card_id || null,
+    complete: !reward.card_id,
+    earnedAt: new Date(reward.created_at).toISOString(),
+    revealedAt: null,
+  };
+}
+
+/* The first time a person presses "เห็นแล้ว", reward the person who chose to
+   notice somebody else. This is account-wide: the partial unique index makes
+   every later notebook lose the race cleanly, even when two confirmations
+   arrive together. The row remembers the notebook where the moment happened
+   so opening the card can appear in that notebook's story. */
+async function firstSeenRewardFor(sql, row, member, at = new Date()) {
+  const existing = await sql.query(`SELECT r.id,r.user_id,r.book_id,r.card_id,r.created_at,r.revealed_at,p.code
+    FROM teambook_card_unlock_events r
+    LEFT JOIN teambook_books p ON p.id=r.book_id
+    WHERE r.user_id=$1 AND r.unlock_source='first_seen'
+    ORDER BY r.created_at,r.id LIMIT 1`, [member.user_id]);
+  if (existing[0]) return shapedFirstSeenReward(existing[0], row.code);
+
+  const ownedRows = await sql.query('SELECT card_id FROM teambook_user_cards WHERE user_id=$1', [member.user_id]);
+  const owned = new Set(ownedRows.map(item => item.card_id));
+  const available = REWARD_CARD_IDS.filter(cardId => !owned.has(cardId));
+  const cardId = available.length
+    ? available[seededIndex(`${member.user_id}|first-seen|${owned.size}`, available.length)]
+    : null;
+  const rewardId = `first_seen_${randomUUID()}`;
+  const unlockEventId = `TEAMBOOK:FIRST_SEEN:USER:${member.user_id}`;
+  const inserted = await sql.query(`INSERT INTO teambook_card_unlock_events
+    (id,unlock_event_id,user_id,book_id,card_id,unlock_source,series,created_at,revealed_at)
+    VALUES ($1,$2,$3,$4,$5,'first_seen','TeamBook',$6,$7)
+    ON CONFLICT DO NOTHING
+    RETURNING id,user_id,book_id,card_id,created_at,revealed_at`, [
+    rewardId, unlockEventId, member.user_id, row.id, cardId, at, cardId ? null : at,
+  ]);
+  if (!inserted[0]) {
+    const raced = await sql.query(`SELECT r.id,r.user_id,r.book_id,r.card_id,r.created_at,r.revealed_at,p.code
+      FROM teambook_card_unlock_events r
+      LEFT JOIN teambook_books p ON p.id=r.book_id
+      WHERE r.user_id=$1 AND r.unlock_source='first_seen'
+      ORDER BY r.created_at,r.id LIMIT 1`, [member.user_id]);
+    return shapedFirstSeenReward(raced[0], row.code);
+  }
+  if (inserted[0].card_id) {
+    await sql.query(`INSERT INTO teambook_user_cards (user_id,card_id,acquired_from,acquired_at)
+      VALUES ($1,$2,'first_seen',$3) ON CONFLICT (user_id,card_id) DO NOTHING`, [
+      member.user_id, inserted[0].card_id, at,
+    ]);
+  }
+  await sql.query(`INSERT INTO teambook_book_events
+    (book_id,type,actor_id,party_day,data_json,created_at)
+    VALUES ($1,'FIRST_SEEN_REWARD_EARNED',$2,$3,$4::jsonb,$5)`, [
+    row.id, member.user_id, partyDay(row, at),
+    JSON.stringify({ rewardId: inserted[0].id, cardId: inserted[0].card_id || null }), at,
+  ]).catch(() => {});
+  return shapedFirstSeenReward({ ...inserted[0], code: row.code }, row.code);
+}
+
 async function rewardsOf(sql, row, member) {
   if (String(row?.state || '').toUpperCase() !== 'COMPLETED') {
     return { claims: [], mine: null };
   }
   const rows = await sql.query(`SELECT r.id,r.user_id,r.card_id,r.created_at,r.revealed_at,m.alias
     FROM teambook_card_unlock_events r JOIN teambook_book_members m ON m.book_id=r.book_id AND m.user_id=r.user_id
-    WHERE r.book_id=$1 ORDER BY m.joined_at`, [row.id]);
+    WHERE r.book_id=$1 AND r.unlock_source='ending' ORDER BY m.joined_at`, [row.id]);
   const claims = rows.map(reward => ({
     userId: reward.user_id,
     alias: reward.alias,
@@ -907,14 +971,15 @@ export default async function handler(req, res) {
     }
 
     if (method === 'POST' && parts[2] === 'reward' && parts[3] === 'reveal') {
-      if (String(row.state || '').toUpperCase() !== 'COMPLETED') {
-        return sendJson(res, { ok: false, error: 'REWARD_NOT_READY' }, 409);
-      }
       const rewardId = clean(bodyOf(req).rewardId, 80);
-      const rewards = await sql.query(`SELECT id,card_id,revealed_at FROM teambook_card_unlock_events
-        WHERE id=$1 AND book_id=$2 AND user_id=$3 LIMIT 1`, [rewardId, row.id, member.user_id]);
+      const rewards = await sql.query(`SELECT id,card_id,revealed_at,unlock_source FROM teambook_card_unlock_events
+        WHERE id=$1 AND book_id=$2 AND user_id=$3
+          AND unlock_source IN ('ending','first_seen') LIMIT 1`, [rewardId, row.id, member.user_id]);
       const reward = rewards[0];
       if (!reward) return sendJson(res, { ok: false, error: 'REWARD_NOT_FOUND' }, 404);
+      if (reward.unlock_source === 'ending' && String(row.state || '').toUpperCase() !== 'COMPLETED') {
+        return sendJson(res, { ok: false, error: 'REWARD_NOT_READY' }, 409);
+      }
       if (reward.card_id && !cardById(reward.card_id)) {
         return sendJson(res, { ok: false, error: 'REWARD_CARD_INVALID' }, 409);
       }
@@ -1189,8 +1254,14 @@ export default async function handler(req, res) {
       }
       await sql.query('UPDATE teambook_books SET updated_at=$1 WHERE id=$2', [at, row.id]);
       row.updated_at = at;
+      const firstSeenReward = await firstSeenRewardFor(sql, row, member, at);
       if (String(row.state || '').toUpperCase() === 'COMPLETED') await applyProgressionForParty(sql, row, at);
-      return sendJson(res, await stateFor(sql, row, member));
+      const state = await stateFor(sql, row, member);
+      return sendJson(res, {
+        ...state,
+        myReward: firstSeenReward || state.myReward,
+        firstSeenReward: firstSeenReward || null,
+      });
     }
     if (method === 'POST' && parts[2] === 'retract') {
       const seq = Number(bodyOf(req).seq);

@@ -170,6 +170,8 @@ const SCHEMA = [
     UNIQUE (user_id, book_id, unlock_source)
   )`,
   `CREATE INDEX IF NOT EXISTS idx_teambook_card_unlock_events_book ON teambook_card_unlock_events(book_id, created_at)`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS idx_teambook_first_seen_reward_once
+    ON teambook_card_unlock_events(user_id) WHERE unlock_source = 'first_seen'`,
   `CREATE INDEX IF NOT EXISTS idx_teambook_user_cards_user ON teambook_user_cards(user_id, acquired_at)`,
   `CREATE TABLE IF NOT EXISTS teambook_system_errors (
     id BIGSERIAL PRIMARY KEY, error_code TEXT NOT NULL, endpoint TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL
