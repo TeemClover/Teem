@@ -1,4 +1,5 @@
 import { getParty, committedToday, dayKey } from './store.js';
+import { bookActivityLine } from './book-mode.js';
 
 function messagesToday(party, when) {
   const key = dayKey(when);
@@ -7,11 +8,14 @@ function messagesToday(party, when) {
   ).length;
 }
 
-function todayLine(party) {
+function todayLine(party, { includeActivity = false } = {}) {
   const done = committedToday(party).size;
   const members = Array.isArray(party?.members) ? party.members.length : 0;
   const updates = messagesToday(party);
-  return `วันนี้ : ${done}/${members} ลงชื่อแล้ว · มี ${updates} อัพเดท`;
+  const base = `วันนี้ : ${done}/${members} ลงชื่อแล้ว · มี ${updates} อัปเดต`;
+  if (!includeActivity) return base;
+  const activity = String(bookActivityLine(party) || '').trim();
+  return activity ? `${base} · ${activity}` : base;
 }
 
 function partyCodeFromRow(row) {
@@ -38,7 +42,7 @@ function syncSmallCards() {
     const party = getParty(partyCodeFromRow(row));
     if (!party) return;
     const target = row.querySelector('.tx small');
-    if (target) target.textContent = todayLine(party);
+    if (target) target.textContent = todayLine(party, { includeActivity: true });
   });
 }
 
