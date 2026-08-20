@@ -92,35 +92,57 @@ function installStyles() {
     .xcp-shelf>summary::after{margin-left:9px}
     .xcp-lock{font-size:13px;filter:grayscale(1)}
 
-    .xcp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:9px;padding:0 12px 13px}
-    .xcp-opt{padding:0;border:2px solid transparent;border-radius:12px;background:transparent;overflow:visible}
-    .xcp-opt[aria-checked="true"]{border-color:var(--xty-primary)}
-    .xcp-opt img{display:block;width:100%}
+    .xcp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:12px;padding:6px 14px 16px}
 
-    /* The picker frame belongs OUTSIDE the XTY card. Never crop an XTY card
-       into the selection tile: preserve the complete printed edge/frame and
-       fit the whole 63×88 card inside a small breathing-space inset. */
-    .xcp-opt>.xcp-card-thumb{
-      aspect-ratio:var(--xty-card-aspect);display:grid;place-items:center;
-      padding:7px;border-radius:10px;background:var(--xty-bg);overflow:visible;
+    /* The selection control must never become a second card frame. XTY
+       cards already own their printed/rarity border, so the button is only
+       an invisible hit target. Selected state is an OUTER outline and does
+       not steal even one pixel from the card itself. */
+    .xcp-opt{
+      display:block;min-width:0;padding:0;border:0;border-radius:14px;
+      background:transparent;overflow:visible;outline:0;
     }
-    .xcp-card-thumb>.animal-card{
-      width:100%!important;height:100%!important;max-width:100%!important;
-      margin:0!important;padding:0!important;
-      border:0!important;border-radius:0!important;
-      background:transparent!important;box-shadow:none!important;
+    .xcp-opt[aria-checked="true"]{
+      outline:3px solid color-mix(in srgb,var(--xty-primary) 72%,transparent);
+      outline-offset:4px;
+    }
+
+    /* XTY Collection cards: show the card itself, complete. No wrapper,
+       no inset crop, no removal of the card's own border. The global card
+       face uses object-fit:cover for game seats; the picker intentionally
+       overrides that to contain so every source pixel and every edge stays
+       visible even when an asset is not exactly 63×88. */
+    .xcp-opt>.animal-card{
+      box-sizing:border-box!important;
+      display:flex!important;
+      width:100%!important;
+      height:auto!important;
+      max-width:100%!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
+      margin:0!important;
       overflow:visible!important;
     }
-    .xcp-card-thumb>.animal-card .card-art{
-      display:block!important;width:100%!important;height:100%!important;
-      max-width:100%!important;object-fit:contain!important;object-position:center!important;
-      border-radius:0!important;
+    .xcp-opt>.animal-card .card-art{
+      display:block!important;
+      width:100%!important;
+      height:100%!important;
+      max-width:100%!important;
+      margin:0!important;
+      object-fit:contain!important;
+      object-position:center!important;
+      border-radius:12px!important;
     }
 
-    .xcp-opt>.xcp-thumb{aspect-ratio:var(--xty-card-aspect);display:grid;place-items:center;border-radius:10px;background:var(--xty-bg);overflow:hidden}
-    .xcp-opt>.xcp-thumb img{width:82%;height:auto}
-    .xcp-name{display:block;padding:5px 3px 0;color:var(--xty-muted);font-size:11px;line-height:1.3;
-      overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    /* Starter animals are portraits rather than collectible cards, so they
+       keep their quiet portrait tile treatment. */
+    .xcp-opt>.xcp-thumb{
+      aspect-ratio:var(--xty-card-aspect);display:grid;place-items:center;
+      border-radius:10px;background:var(--xty-bg);overflow:hidden;
+    }
+    .xcp-opt>.xcp-thumb img{display:block;width:82%;height:auto}
+
+    .xcp-name{display:block;padding:7px 3px 0;color:var(--xty-muted);font-size:11px;line-height:1.3;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left}
     .xcp-opt.is-locked{opacity:.42;cursor:not-allowed;filter:grayscale(.7)}
     .xcp-empty{padding:0 14px 14px;margin:0;color:var(--xty-muted);font-size:12.5px;line-height:1.55}
   `;
@@ -203,7 +225,7 @@ export function mountCardPicker(host, options = {}) {
         option.setAttribute('aria-checked', item.key === selectedKey ? 'true' : 'false');
         option.innerHTML = item.kind === 'starter'
           ? `<span class="xcp-thumb">${item.art}</span><span class="xcp-name"></span>`
-          : `<span class="xcp-card-thumb">${item.art}</span><span class="xcp-name"></span>`;
+          : `${item.art}<span class="xcp-name"></span>`;
         option.querySelector('.xcp-name').textContent = item.title;
         option.setAttribute('aria-label', item.label || item.title);
         option.addEventListener('click', () => {
