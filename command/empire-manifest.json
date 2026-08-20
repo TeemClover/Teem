@@ -1,40 +1,65 @@
 {
-  "version": "3.1.0",
+  "version": "4.0.0",
   "name": "myClover Empire Command Center",
   "updatedAt": "2026-08-20",
   "entry": "/command/",
   "controlPlane": {
     "commandCenter": "/command/",
     "operationsApi": "/api/command",
+    "backofficeAuthApi": "/api/backoffice-auth",
     "keenProductionDesk": "/keen/",
-    "captureLibrary": "/captures/",
-    "legacyV2": "https://myclover-command-center.teemclover.chatgpt.site/command"
+    "captureLibrary": "/captures/"
+  },
+  "security": {
+    "serverSessionCookie": "mc_backoffice_session",
+    "sessionHours": 12,
+    "loginRateLimited": true,
+    "passwordOverrideEnv": "BACKOFFICE_ADMIN_KEY",
+    "cloudflarePagesMiddleware": "functions/_middleware.js",
+    "protectedOperationalApis": ["/api/command"]
   },
   "storage": {
     "operations": "mc_command_operations",
-    "identity": "myClover mc_session",
-    "population": "live myClover + TeamBook database metrics"
+    "backofficeSessions": "mc_backoffice_sessions",
+    "population": "live myClover + TeamBook database metrics",
+    "learning": "first_class_registrations + first_class_reviews"
   },
+  "externalInfrastructure": [
+    {"id":"github","role":"source + history","console":"https://github.com/TeemClover/Teem"},
+    {"id":"vercel","role":"deploy + functions + cron","console":"https://vercel.com/teemclover/teem"},
+    {"id":"cloudflare","role":"DNS / Pages-compatible edge tooling","console":"https://dash.cloudflare.com/"},
+    {"id":"neon","role":"Postgres database","console":"https://console.neon.tech/"},
+    {"id":"vercel-blob","role":"image and capture storage","console":"https://vercel.com/teemclover/teem/storage"},
+    {"id":"groq","role":"TeamBook PET brain","console":"https://console.groq.com/"},
+    {"id":"discord","role":"OAuth + guild automation","console":"https://discord.com/developers/applications"},
+    {"id":"resend-meta","role":"email + conversion automation","console":"https://resend.com/overview"}
+  ],
+  "backofficeRoutes": [
+    {"name":"Keen Production Desk","path":"/keen/"},
+    {"name":"Capture Library","path":"/captures/"},
+    {"name":"TeamBook Admin Stats","path":"/xty/stat/admin/"},
+    {"name":"TeamBook Stats","path":"/xty/stat/"},
+    {"name":"First Class Control Room","path":"/first-class/admin/"},
+    {"name":"First Class Student Reviews","path":"/first-class/admin/reviews/"},
+    {"name":"Registration","path":"/register/"},
+    {"name":"Members","path":"/members/"},
+    {"name":"Core7 Admin","path":"/core7/admin/"},
+    {"name":"Xircle Source System","path":"/xircle/doc/source/"},
+    {"name":"Profile","path":"/profile/"},
+    {"name":"Member Card","path":"/card/"}
+  ],
   "keyCard": {
     "name": "Command and Conquer",
     "variant": "Marvel",
     "game": "Flesh and Blood",
     "image": "https://tcgplayer-cdn.tcgplayer.com/product/454212_in_1000x1000.jpg",
+    "displayRule": "show full source image without CSS cropping",
     "role": "visual key used to open the Command Center"
   },
   "operationModes": {
-    "CREATE": {
-      "purpose": "สร้างสิ่งใหม่จากศูนย์แล้วลงทะเบียนเข้าระบบกลาง",
-      "requiredOutputs": ["project identity","current goal","next action","source registry","routes/modules","owner/agent","release target","population metric"]
-    },
-    "EXPAND": {
-      "purpose": "ขยายระบบเดิมโดยรักษา canon, source และ dependency ให้ไม่หลุด",
-      "requiredOutputs": ["scope changed","dependencies affected","decision log","work queue","health checks","release plan","population impact"]
-    },
-    "CONQUER": {
-      "purpose": "ยึดหรือรวมระบบภายนอกเข้าจักรวาล myClover อย่างมีแผน",
-      "requiredOutputs": ["target inventory","keep/replace/archive decisions","migration map","identity/account integration","source ownership","domain/route plan","success metric"]
-    }
+    "CREATE": {"purpose":"สร้างสิ่งใหม่จากศูนย์แล้วลงทะเบียนเข้าระบบกลาง","requiredOutputs":["project identity","current goal","next action","source registry","routes/modules","owner/agent","release target","population metric"]},
+    "EXPAND": {"purpose":"ขยายระบบเดิมโดยรักษา canon, source และ dependency ให้ไม่หลุด","requiredOutputs":["scope changed","dependencies affected","decision log","work queue","health checks","release plan","population impact"]},
+    "CONQUER": {"purpose":"ยึดหรือรวมระบบภายนอกเข้าจักรวาล myClover อย่างมีแผน","requiredOutputs":["target inventory","keep/replace/archive decisions","migration map","identity/account integration","source ownership","domain/route plan","success metric"]}
   },
   "modules": [
     {"id":"project-manifest","name":"Project Manifest","purpose":"ทำให้ทุก project รายงานตัวด้วย schema เดียวกัน"},
@@ -46,19 +71,5 @@
     {"id":"decision-memory","name":"Decision Memory","purpose":"เก็บเหตุผลของการตัดสินใจเพื่อกัน AI รุ่นถัดไปแก้ของที่ตั้งใจล็อกไว้"},
     {"id":"population-command","name":"Population Command","purpose":"วัดว่าของที่สร้างมีมนุษย์เข้า ใช้ กลับมา และ interact จริงหรือยัง"}
   ],
-  "projectTemplate": {
-    "identity": {"name":"","slug":"","domain":"","repo":"","owner":""},
-    "stage": "IDEA|BUILD|TEST|LIVE|MAINTAIN|ARCHIVE",
-    "currentGoal": "",
-    "nextAction": "",
-    "sources": [],
-    "dependencies": [],
-    "agents": [],
-    "workQueue": [],
-    "release": {"productionCommit":"","deployment":"","health":"UNKNOWN"},
-    "population": {"newUsers":null,"activeUsers":null,"returnRate7d":null,"primaryAction":null,"bottleneck":null},
-    "decisions": [],
-    "updatedAt": ""
-  },
   "dailyBriefContract": ["เมื่อคืนอะไรเปลี่ยน","อะไรพัง","อะไรมีคนใช้","วันนี้ควรแตะอะไรแค่เรื่องเดียว"]
 }
