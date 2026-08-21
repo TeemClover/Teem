@@ -197,7 +197,7 @@ export async function handleIdentityV2(req, res, legacyXtyHandler) {
     const body = bodyOf(req); const alias = clean(body.alias, 24) || member.alias; const avatar = clean(body.avatar, 40) || member.avatar || 'orange_cat';
     const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : (member.avatar_color || 'green');
     const aliasChanged = alias !== member.alias; const avatarChanged = avatar !== member.avatar || avatarColor !== member.avatar_color;
-    if (!aliasChanged && !avatarChanged) return sendJson(res, await stateViaLegacy(legacyXtyHandler, req, code));
+    if (!aliasChanged && !avatarChanged) return sendJson(res, { ok: true, changed: false });
     const aliasType = aliasChanged ? 'MEMBER_ALIAS_CHANGED' : ''; const avatarType = avatarChanged ? 'MEMBER_AVATAR_CHANGED' : '';
     const aliasData = JSON.stringify({ from: member.alias, to: alias, alias });
     const avatarData = JSON.stringify({ alias, fromAvatar: member.avatar || 'orange_cat', toAvatar: avatar, fromColor: member.avatar_color || 'green', toColor: avatarColor });
@@ -208,7 +208,7 @@ export async function handleIdentityV2(req, res, legacyXtyHandler) {
       SELECT touched.id,v.type,$5,$7,v.data::jsonb,$6 FROM touched
       CROSS JOIN (VALUES ($8::text,$9::text),($10::text,$11::text)) AS v(type,data) WHERE v.type<>''`,
     [alias, avatar, avatarColor, row.id, member.user_id, at, partyDay(row, at), aliasType, aliasData, avatarType, avatarData]);
-    return sendJson(res, await stateViaLegacy(legacyXtyHandler, req, code));
+    return sendJson(res, { ok: true, changed: true });
   } catch (error) {
     console.error('TeamBook identity v2 failed', error);
     if (error.code === 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED') return sendJson(res, { ok: false, error: error.code }, 503);
