@@ -1,0 +1,38 @@
+name: TeamBook Fast Reward UX Patch
+
+on:
+  push:
+    paths:
+      - '.github/workflows/teambook-fast-reward-ux.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply TeamBook reward and latency patch
+        run: python teambook/scripts/apply-fast-reward-ux.py
+
+      - name: Verify TeamBook build
+        working-directory: teambook
+        run: |
+          npm ci
+          npm run build
+
+      - name: Commit runtime changes
+        shell: bash
+        run: |
+          rm -f .github/workflows/teambook-fast-reward-ux.yml
+          rm -f teambook/scripts/apply-fast-reward-ux.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(teambook): make rewards immediate and async actions feel alive"
+          git push origin HEAD:main
