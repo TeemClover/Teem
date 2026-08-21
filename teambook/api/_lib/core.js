@@ -15,7 +15,6 @@ function teambookDatabaseUrl() {
     process.env.TEAMBOOK_DATABASE_DATABASE_URL,
     process.env.STORAGE_DATABASE_URL,
     process.env.STORAGE_URL,
-    process.env.DATABASE_URL,
   ].find(looksLikePostgres);
   if (direct) return direct.trim();
 
