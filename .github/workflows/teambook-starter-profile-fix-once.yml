@@ -1,0 +1,136 @@
+name: TeamBook starter profile fix once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/teambook-starter-profile-fix-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fix Starter profile selection and account UI
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'expected text not found in {path}: {old[:80]!r}')
+              p.write_text(text.replace(old, new, 1))
+
+          # Explicit null means the player chose a free Starter animal.
+          replace_once(
+              'teambook/_shared/store.js',
+              "  const equippedWanted = canonicalCardId(value.equippedCardId || '');\n  const equippedCardId = ownedCardIds.has(equippedWanted)\n    ? equippedWanted\n    : (ownedCards[0]?.cardId || null);",
+              "  const equippedWanted = canonicalCardId(value.equippedCardId || '');\n  const equippedCardId = ownedCardIds.has(equippedWanted) ? equippedWanted : null;"
+          )
+
+          # Cloud merge must respect the newest explicit Starter choice (null)
+          # instead of resurrecting an older equipped card.
+          replace_once(
+              'teambook/_shared/account.js',
+              "    equippedCardId: mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)\n      ? newest.equippedCardId\n      : (mergedOwnedCards.some(item => item.cardId === older.equippedCardId) ? older.equippedCardId : null),",
+              "    equippedCardId: newest.equippedCardId\n      && mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)\n        ? newest.equippedCardId\n        : null,"
+          )
+
+          # Card terminology: this is the player's identity card, not 'being an animal'.
+          replace_once(
+              'teambook/_shared/card-ui.js',
+              "AVATAR_IN_USE: 'ใช้อยู่เป็นสัตว์'",
+              "AVATAR_IN_USE: 'การ์ดประจำตัว'"
+          )
+          replace_once(
+              'teambook/collection/index.html',
+              'สัตว์เริ่มต้นเลือกใช้ฟรีและไม่นับเป็นการ์ด · Common ใช้เป็นสัตว์หรือเพื่อนร่วมทาง · Rare, Epic และ Legendary ใช้เป็นปกสมุดได้',
+              'สัตว์เริ่มต้นเลือกใช้ฟรีและไม่นับเป็นการ์ด · Common ใช้เป็นการ์ดประจำตัวหรือเพื่อนร่วมทาง · Rare, Epic และ Legendary ใช้เป็นปกสมุดได้'
+          )
+          replace_once(
+              'teambook/collection/index.html',
+              '<button class="btn gold" id="useAvatar">ใช้เป็น สัตว์</button>',
+              '<button class="btn gold" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>'
+          )
+
+          # Temporarily keep account creation/login email+password only.
+          # OAuth backend stays intact so it can be switched back on later.
+          replace_once(
+              'teambook/assets/account.js',
+              "    const [session, available] = await Promise.all([api(`${API}/session`), api(`${API}/providers`)]);\n    user = session.user || null; providers = available.providers || providers;",
+              "    const session = await api(`${API}/session`);\n    user = session.user || null; providers = { email: true, google: false, line: false };"
+          )
+          replace_once(
+              'teambook/profile/index.html',
+              'สมัครหรือ Login ด้วยอีเมล + รหัสผ่าน, LINE หรือ Google · Progress ในเครื่องกับ Cloud จะถูกรวมกัน',
+              'สมัครหรือ Login ด้วยอีเมล + รหัสผ่าน · Progress ในเครื่องกับ Cloud จะถูกรวมกัน'
+          )
+
+          # Regression tests for both local normalization and cloud merge.
+          p = Path('teambook/_shared/store.test.mjs')
+          text = p.read_text()
+          marker = "test('collection exhaustion returns complete instead of issuing a duplicate', () => {"
+          tests = r'''test('choosing a Starter explicitly releases an equipped identity card', () => {
+  store.createProfile({ alias: 'Keen', avatarId: 'orange_cat', avatarFrame: 'green' });
+  const reward = store.prepareCardReward({ questId: 'starter-switch', partyCode: '54321' });
+  const wearing = store.useCardAsAvatar(reward.cardId);
+  assert.equal(wearing.equippedCardId, reward.cardId);
+
+  const starter = store.updateProfile({ avatarId: 'crow', avatar: 'crow', equippedCardId: null });
+  assert.equal(starter.avatarId, 'crow');
+  assert.equal(starter.equippedCardId, null);
+  assert.equal(store.getProfile().equippedCardId, null);
+  assert.equal(store.cardAvailability(reward.cardId).status, 'AVAILABLE');
+});
+
+test('newer Starter choice beats an older cloud identity card', () => {
+  const card = cards.TEAMBOOK_CARDS.find(item => item.rarity === 'common');
+  const base = store.createProfile({ alias: 'Keen', avatarId: 'orange_cat', avatarFrame: 'green' });
+  const ownedCards = [{ cardId: card.cardId, acquiredAt: '2026-08-20T00:00:00.000Z' }];
+  const cloud = {
+    ...base, ownedCards, equippedCardId: card.cardId,
+    avatarId: card.species, avatar: card.species,
+    updatedAt: '2026-08-20T12:00:00.000Z',
+  };
+  const local = {
+    ...base, ownedCards, equippedCardId: null,
+    avatarId: 'crow', avatar: 'crow',
+    updatedAt: '2026-08-21T04:00:00.000Z',
+  };
+  const merged = account.mergeXtyProfile(local, cloud);
+  assert.equal(merged.equippedCardId, null);
+  assert.equal(merged.avatarId, 'crow');
+});
+
+'''
+          if "choosing a Starter explicitly releases an equipped identity card" not in text:
+              if marker not in text:
+                  raise SystemExit('store test insertion marker missing')
+              p.write_text(text.replace(marker, tests + marker, 1))
+          PY
+
+          cd teambook
+          npm ci
+          npm test
+          npm run build
+          cd ..
+
+      - name: Commit fix and remove workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/teambook-starter-profile-fix-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add teambook/_shared/store.js teambook/_shared/account.js teambook/_shared/card-ui.js teambook/_shared/store.test.mjs teambook/collection/index.html teambook/profile/index.html teambook/assets/account.js .github/workflows/teambook-starter-profile-fix-once.yml
+          git commit -m "fix(teambook): make Starter release identity card"
+          git push origin HEAD:main
