@@ -5,6 +5,7 @@
   "scripts": {
     "test": "node --test --experimental-test-module-mocks _shared/*.test.mjs tests/*.test.mjs",
     "test:smoke": "node --test tests/*.test.mjs",
+    "prebuild": "node scripts/apply-profile-runtime-fix.mjs",
     "check:syntax": "node scripts/check-syntax.mjs",
     "check:standalone": "node scripts/check-standalone.mjs",
     "check:assets": "node scripts/check-assets.mjs && node scripts/check-registry-assets.mjs",
