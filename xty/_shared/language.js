@@ -55,13 +55,10 @@ function brandAssets(root = document) {
     img.setAttribute('alt', 'XTY Legacy');
   });
 
-  document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]').forEach(link => {
-    const href = link.getAttribute('href') || '';
-    if (href.includes('/xty/assets/brand/')) {
-      link.setAttribute('href', LEGACY_LOGO);
-      link.setAttribute('type', 'image/png');
-    }
-  });
+  /* XTY lives under myClover and intentionally has no favicon identity of its
+     own anymore. Remove legacy icon declarations so the host falls back to
+     myClover's canonical four-colour clover favicon. */
+  document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]').forEach(link => link.remove());
 
   document.querySelectorAll('meta[property="og:image"], meta[property="og:image:secure_url"], meta[name="twitter:image"]').forEach(meta => {
     const value = meta.getAttribute('content') || '';
