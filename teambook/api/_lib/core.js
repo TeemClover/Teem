@@ -9,7 +9,7 @@ const crypto = webcrypto;
 let schemaPromise;
 
 export function database() {
-  const url = process.env.TEAMBOOK_DATABASE_URL || process.env.DATABASE_URL;
+  const url = process.env.TEAMBOOK_DATABASE_URL || process.env.STORAGE_URL;
   if (!url) {
     const error = new Error('TEAMBOOK_DATABASE_URL_NOT_CONFIGURED');
     error.code = 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED';
