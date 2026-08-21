@@ -76,7 +76,7 @@ body.welcome-open{overflow:hidden}
 }
 
 @media(max-width:420px) and (max-height:760px){
-  .first-welcome-art{aspect-ratio:16/8.4;object-position:center 42%}
+  .first-welcome-art{object-position:center 42%}
   .first-welcome-slogan{display:none}
   .first-welcome-copy{padding:17px 17px 19px}.first-welcome-copy .title{font-size:26px}.first-welcome-copy .lede{margin-top:10px;line-height:1.62}.first-welcome-trust{margin-top:13px}.first-welcome-copy .btn{margin-top:15px}.first-welcome-note{display:none}
 }
