@@ -75,6 +75,8 @@ function characterName(avatar, color) {
 
 function eventText(event) {
   const data = event?.data && typeof event.data === 'object' ? event.data : {};
+  const party = getParty(code);
+  const actor = (party?.memberHistory?.length ? party.memberHistory : party?.members || []).find(member => member.userId === event?.actorId);
   switch (String(event?.type || '')) {
     case 'PARTY_CREATED': return data.alias ? `${data.alias} เปิดสมุดนี้` : 'สมุดถูกสร้างขึ้น';
     case 'MEMBER_JOINED': return `${data.alias || 'สมาชิก'} เข้าร่วมสมุด`;
@@ -93,6 +95,7 @@ function eventText(event) {
     case 'RULE_CHANGED': return 'กติกาการลงชื่อถูกเปลี่ยน และเก็บกติกาเดิมไว้ในประวัติ';
     case 'LEAD_CARD_CHANGED': return 'เจ้าของสมุดเปลี่ยนปกสมุด';
     case 'NPC_CHANGED': return 'สมุดเปลี่ยนเพื่อนร่วมทาง';
+    case 'FIRST_SEEN_REWARD_EARNED': return `${data.alias || actor?.alias || 'สมาชิก'} กด “เห็นแล้ว” ครั้งแรก · ได้การ์ด 1 ใบ`;
     case 'PARTY_COMPLETED': return 'ปิดเล่มสำเร็จ';
     case 'PARTY_DISSOLVED': return 'สมุดถูกยุบ';
     default: return '';

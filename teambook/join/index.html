@@ -317,7 +317,7 @@ function initJoin(initialCode) {
       go.textContent = 'เข้าร่วมสมุด';
       return;
     }
-    location.href = `/p/?c=${encodeURIComponent(res.party.code)}`;
+    location.href = `/p/?c=${encodeURIComponent(res.party?.code || res.code || input.value)}`;
   });
 
   input.addEventListener('keydown', e => { if (e.key === 'Enter' && !go.disabled) go.click(); });

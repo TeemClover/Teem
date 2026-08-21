@@ -180,7 +180,7 @@ import {
   activePartyUsage, committedToday, isActiveParty, shouldOfferProgressSave, updateProfile,
   partyIdentity,
 } from '/_shared/store.js';
-import { joinPartyV2 } from '/_shared/join-party-v2.js';
+import { joinPartyV2, recoverPendingJoinV2 } from '/_shared/join-party-v2.js';
 import { PET_BY_ID } from '/_shared/pets.js';
 import { TEAMBOOK_AVATARS, AVATAR_FRAMES, avatarById } from '/_shared/avatars.js';
 import { cardById, cardNameTh } from '/_shared/cards.js';
@@ -443,6 +443,7 @@ async function boot() {
   $('shell').hidden = true;
   const inviteCode = inviteCodeFromUrl();
   const hadLocalProfile = hasProfile();
+  if (hadLocalProfile) await recoverPendingJoinV2().catch(() => null);
 
   if (hadLocalProfile && inviteCode) {
     location.replace(`/join/?c=${encodeURIComponent(inviteCode)}`);

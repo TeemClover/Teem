@@ -243,6 +243,13 @@ let myId = (partyIdentity(code) && partyIdentity(code).userId) || (me ? me.id : 
 let foilPlayed = false;
 let terminalReward = null;
 
+function openRecoveredFirstSeen(result) {
+  const reward = result?.myReward;
+  if (!reward?.rewardId || reward.revealedAt || !/^first-seen:/.test(String(reward.questId || ''))) return false;
+  location.replace(`/reveal/?r=${encodeURIComponent(reward.rewardId)}`);
+  return true;
+}
+
 start();
 
 async function start() {
@@ -250,6 +257,7 @@ async function start() {
   /* A cached party paints immediately; the network only refreshes it. */
   if (getParty(code)) render();
   const fresh = await refreshParty(code);
+  if (openRecoveredFirstSeen(fresh)) return;
   if (fresh.error === 'AUTH_REQUIRED') {
     location.replace(`/join/?c=${encodeURIComponent(code)}`);
     return;
@@ -1089,6 +1097,7 @@ $('refresh').addEventListener('click', async () => {
   const result = await refreshParty(code);
   $('refresh').disabled = false;
   if (result.error) { toast('ยังดึงอัปเดตไม่ได้'); return; }
+  if (openRecoveredFirstSeen(result)) return;
   myId = (partyIdentity(code) && partyIdentity(code).userId) || myId;
   render();
   toast(result.party.log.length ? 'ตามสมุดทันแล้ว' : 'ยังไม่มีอัปเดตใหม่');
@@ -1097,6 +1106,7 @@ $('refresh').addEventListener('click', async () => {
 document.addEventListener('visibilitychange', async () => {
   if (document.visibilityState !== 'visible') return;
   const result = await refreshParty(code);
+  if (openRecoveredFirstSeen(result)) return;
   if (!result.error) render();
 });
 

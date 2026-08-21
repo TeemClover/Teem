@@ -71,6 +71,7 @@ function eventLine(type, rawData) {
     case 'RULE_CHANGED': return 'วันนี้ลงชื่อได้เมื่อ ของสมุดถูกเปลี่ยน';
     case 'LEAD_CARD_CHANGED': return `${data.alias || 'เจ้าของสมุด'} เปลี่ยนการ์ดประจำสมุดจาก ${data.fromName || data.from || 'ใบเดิม'} เป็น ${data.toName || data.to || 'ใบใหม่'}`;
     case 'NPC_CHANGED': return 'เพื่อนร่วมทางของสมุดถูกเปลี่ยน';
+    case 'FIRST_SEEN_REWARD_EARNED': return `${data.alias || 'สมาชิก'} กด “เห็นแล้ว” ครั้งแรกและได้รับการ์ด 1 ใบ`;
     case 'PARTY_COMPLETED': return 'ช่วง ของสมุดจบสำเร็จ';
     case 'PARTY_DISSOLVED': return 'สมุดถูกยุบ';
     default: return `เกิด Event: ${String(type || 'UNKNOWN')}`;
@@ -219,6 +220,65 @@ async function memberForRequest(req, sql, partyId) {
   return rows[0] || null;
 }
 
+function latestScheduledWakeAt(now = new Date()) {
+  const local = new Date(now.getTime() + ICT_OFFSET_MS);
+  let hour = [...WAKE_HOURS].reverse().find(value => value <= local.getUTCHours()) ?? 0;
+  if (local.getUTCHours() === hour && local.getUTCMinutes() < 27) {
+    const index = WAKE_HOURS.indexOf(hour);
+    if (index > 0) hour = WAKE_HOURS[index - 1];
+    else { hour = WAKE_HOURS[WAKE_HOURS.length - 1]; local.setUTCDate(local.getUTCDate() - 1); }
+  }
+  const localMs = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate(), hour, 27, 0, 0);
+  return new Date(localMs - ICT_OFFSET_MS);
+}
+
+function firstWakeGreeting(party, context = {}) {
+  const pet = PET_BY_ID[party?.pet_id] || { nameTh: 'เพื่อนร่วมทาง', emoji: '🐾' };
+  const lead = (context.members || []).find(member => member.role === 'lead')?.alias || '';
+  const activity = String(party?.activity || '').trim();
+  const subject = activity ? `เรื่อง “${activity}”` : 'เรื่องในสมุดนี้';
+  return `${pet.emoji || '🐾'} ${pet.nameTh} มารายงานตัวแล้ว — ${lead ? `${lead} ` : ''}${subject} เริ่มเดินแล้วนะ ฝากเรื่องของวันนี้ไว้ได้เลย`;
+}
+
+async function firstWakeCatchup(req, res, sql) {
+  if (!sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  const code = String(body.code || '').trim();
+  if (!/^\d{5}$/.test(code)) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
+  const rows = await sql.query(`SELECT id,code,name,activity,commit_rule,
+      COALESCE(pet_id, CASE WHEN npc_card_id LIKE 'WHITE_CAT_%' THEN '${WHITE_CAT_ID}' END) AS pet_id,
+      pet_last_wake,state,created_at,started_at
+    FROM teambook_books WHERE code=$1`, [code]);
+  const party = rows[0];
+  if (!party || !ACTIVE_STATES.includes(String(party.state || '').toUpperCase())) {
+    return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
+  }
+  if (!party.pet_id || party.pet_id === MUTE_PET_ID) return sendJson(res, { ok: true, skipped: 'MUTED' });
+  const member = await memberForRequest(req, sql, party.id);
+  if (!member) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
+  if (party.pet_last_wake) return sendJson(res, { ok: true, skipped: 'ALREADY_WOKE' });
+
+  const dueAt = latestScheduledWakeAt(new Date());
+  const openedAt = new Date(party.started_at || party.created_at || 0);
+  if (!Number.isFinite(openedAt.getTime()) || openedAt.getTime() > dueAt.getTime()) {
+    return sendJson(res, { ok: true, skipped: 'NOT_DUE', dueAt: dueAt.toISOString() });
+  }
+
+  const now = new Date();
+  const claimed = await sql.query(`UPDATE teambook_books SET pet_last_wake=$1
+    WHERE id=$2 AND pet_last_wake IS NULL RETURNING id`, [now, party.id]);
+  if (!claimed[0]) return sendJson(res, { ok: true, skipped: 'ALREADY_WOKE' });
+  const history = await recentLog(sql, party.id);
+  const context = await contextFor(sql, party.id, dueAt, now, history);
+  const wake = wakeWindow(now);
+  const seq = await appendBubble(sql, party, firstWakeGreeting(party, context), wake.hour, now);
+  if (!seq) {
+    await sql.query('UPDATE teambook_books SET pet_last_wake=NULL WHERE id=$1 AND pet_last_wake=$2', [party.id, now]).catch(() => {});
+    return sendJson(res, { ok: false, error: 'FIRST_WAKE_WRITE_FAILED' }, 500);
+  }
+  return sendJson(res, { ok: true, spoke: true, firstWake: true, bubbles: 1, seq });
+}
+
 async function directReply(req, res, sql) {
   if (!sameOrigin(req)) return sendJson(res, { ok: false, error: 'BAD_ORIGIN' }, 403);
   const body = req.body && typeof req.body === 'object' ? req.body : {};
@@ -321,6 +381,7 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST' && req.body?.mode === 'direct') return directReply(req, res, sql);
     if (req.method === 'POST' && req.body?.mode === 'white_cat_intro') return whiteCatIntro(req, res, sql);
+    if (req.method === 'POST' && req.body?.mode === 'first_wake_catchup') return firstWakeCatchup(req, res, sql);
 
     if (!process.env.CRON_SECRET) return sendJson(res, { ok: false, error: 'CRON_SECRET_NOT_CONFIGURED' }, 503);
     if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -365,6 +426,15 @@ export default async function handler(req, res) {
         const history = await recentLog(sql, party.id);
         const context = await contextFor(sql, party.id, since, now, history);
         const allowance = scheduledBubbleAllowance(context);
+        const firstWake = !party.pet_last_wake;
+        if (!force && firstWake) {
+          tally.read += 1;
+          if (await appendBubble(sql, party, firstWakeGreeting(party, context), wake.hour, now)) {
+            tally.spoke += 1;
+            tally.bubbles += 1;
+            return;
+          }
+        }
         if (!worthReading(wake.hour, context, force)) {
           tally.quiet += 1;
           return;

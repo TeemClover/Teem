@@ -176,7 +176,7 @@ async function membersOf(sql, partyId) {
 }
 
 async function eventsOf(sql, partyId) {
-  const rows = await sql.query(`SELECT type,party_day,data_json,created_at FROM teambook_book_events
+  const rows = await sql.query(`SELECT type,actor_id,party_day,data_json,created_at FROM teambook_book_events
     WHERE book_id=$1 ORDER BY id`, [partyId]);
   return rows.map(row => {
     let data = row.data_json || {};
@@ -184,7 +184,7 @@ async function eventsOf(sql, partyId) {
       try { data = JSON.parse(data); } catch { data = {}; }
     }
     return {
-      type: row.type, partyDay: Number(row.party_day || 1), data,
+      type: row.type, actorId: row.actor_id || null, partyDay: Number(row.party_day || 1), data,
       at: new Date(row.created_at).toISOString(),
     };
   });
@@ -288,14 +288,22 @@ async function firstSeenRewardFor(sql, row, member, at = new Date()) {
     (book_id,type,actor_id,party_day,data_json,created_at)
     VALUES ($1,'FIRST_SEEN_REWARD_EARNED',$2,$3,$4::jsonb,$5)`, [
     row.id, member.user_id, partyDay(row, at),
-    JSON.stringify({ rewardId: inserted[0].id, cardId: inserted[0].card_id || null }), at,
+    JSON.stringify({ rewardId: inserted[0].id, cardId: inserted[0].card_id || null, alias: member.alias }), at,
   ]).catch(() => {});
   return shapedFirstSeenReward({ ...inserted[0], code: row.code }, row.code);
 }
 
 async function rewardsOf(sql, row, member) {
+  let pendingFirstSeen = null;
+  if (member?.user_id) {
+    const firstSeenRows = await sql.query(`SELECT r.id,r.user_id,r.book_id,r.card_id,r.created_at,r.revealed_at,p.code
+      FROM teambook_card_unlock_events r LEFT JOIN teambook_books p ON p.id=r.book_id
+      WHERE r.user_id=$1 AND r.unlock_source='first_seen' AND r.revealed_at IS NULL
+      ORDER BY r.created_at,r.id LIMIT 1`, [member.user_id]);
+    if (firstSeenRows[0]) pendingFirstSeen = shapedFirstSeenReward(firstSeenRows[0], row.code);
+  }
   if (String(row?.state || '').toUpperCase() !== 'COMPLETED') {
-    return { claims: [], mine: null };
+    return { claims: [], mine: pendingFirstSeen };
   }
   const rows = await sql.query(`SELECT r.id,r.user_id,r.card_id,r.created_at,r.revealed_at,m.alias
     FROM teambook_card_unlock_events r JOIN teambook_book_members m ON m.book_id=r.book_id AND m.user_id=r.user_id
@@ -311,7 +319,7 @@ async function rewardsOf(sql, row, member) {
   const mine = rows.find(reward => reward.user_id === member?.user_id);
   return {
     claims,
-    mine: mine ? {
+    mine: pendingFirstSeen || (mine ? {
       rewardId: mine.id,
       questId: `party-complete:${row.code}`,
       partyCode: row.code,
@@ -319,7 +327,7 @@ async function rewardsOf(sql, row, member) {
       complete: !mine.card_id,
       earnedAt: new Date(mine.created_at).toISOString(),
       revealedAt: mine.revealed_at ? new Date(mine.revealed_at).toISOString() : null,
-    } : null,
+    } : null),
   };
 }
 
@@ -1258,12 +1266,21 @@ export default async function handler(req, res) {
       row.updated_at = at;
       const firstSeenReward = await firstSeenRewardFor(sql, row, member, at);
       if (String(row.state || '').toUpperCase() === 'COMPLETED') await applyProgressionForParty(sql, row, at);
-      const state = await stateFor(sql, row, member);
-      return sendJson(res, {
-        ...state,
-        myReward: firstSeenReward || state.myReward,
-        firstSeenReward: firstSeenReward || null,
-      });
+      try {
+        const state = await stateFor(sql, row, member);
+        return sendJson(res, {
+          ...state,
+          myReward: firstSeenReward || state.myReward,
+          firstSeenReward: firstSeenReward || null,
+        });
+      } catch (stateError) {
+        console.error('TeamBook confirm state refresh failed after confirmation commit', row.code, stateError?.message || stateError);
+        return sendJson(res, {
+          ok: true, confirmed: true, recoveryRequired: true,
+          myReward: firstSeenReward || null,
+          firstSeenReward: firstSeenReward || null,
+        });
+      }
     }
     if (method === 'POST' && parts[2] === 'retract') {
       const seq = Number(bodyOf(req).seq);

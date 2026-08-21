@@ -98,5 +98,5 @@ export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } 
 }
 
 export function cardStatusLabel(status) {
-  return ({ AVAILABLE: 'พร้อมใช้งาน', AVATAR_IN_USE: 'ใช้อยู่เป็นสัตว์', IN_PARTY: 'ใช้อยู่เป็นปกสมุด', NPC_IN_PARTY: 'ใช้อยู่เป็นเพื่อนร่วมทาง' })[status] || 'เก็บในคอลเลกชัน';
+  return ({ AVAILABLE: 'พร้อมใช้งาน', AVATAR_IN_USE: 'การ์ดประจำตัว', IN_PARTY: 'ใช้อยู่เป็นปกสมุด', NPC_IN_PARTY: 'ใช้อยู่เป็นเพื่อนร่วมทาง' })[status] || 'เก็บในคอลเลกชัน';
 }

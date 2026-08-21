@@ -183,8 +183,16 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
         memberActivityColor, memberSuccessRule,
       ]);
       if (existing.role !== 'lead') await attachQuota(sql, quotaKey, row.id, at);
-      const state = await legacyState(legacyXtyHandler, req, code, token);
-      return sendJson(res, { ...state, token, quotaSystem: 'v2-separated' });
+      try {
+        const state = await legacyState(legacyXtyHandler, req, code, token);
+        return sendJson(res, { ...state, token, quotaSystem: 'v2-separated' });
+      } catch (stateError) {
+        console.error('TeamBook join v2 state refresh failed after existing membership recovery', code, stateError?.message || stateError);
+        return sendJson(res, {
+          ok: true, joined: true, recoveryRequired: true, code, token,
+          meUserId: existing.user_id, quotaSystem: 'v2-separated',
+        });
+      }
     }
 
     const used = await joinedUsage(sql, quotaKey, identityIds);
@@ -246,8 +254,16 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     }
 
     await sql.query('UPDATE teambook_books SET updated_at=$1 WHERE id=$2', [at, row.id]);
-    const state = await legacyState(legacyXtyHandler, req, code, token);
-    return sendJson(res, { ...state, token, quotaSystem: 'v2-separated' }, 201);
+    try {
+      const state = await legacyState(legacyXtyHandler, req, code, token);
+      return sendJson(res, { ...state, token, quotaSystem: 'v2-separated' }, 201);
+    } catch (stateError) {
+      console.error('TeamBook join v2 state refresh failed after membership commit', code, stateError?.message || stateError);
+      return sendJson(res, {
+        ok: true, joined: true, recoveryRequired: true, code, token,
+        meUserId: userId, quotaSystem: 'v2-separated',
+      }, 201);
+    }
   } catch (error) {
     console.error('TeamBook join v2 failed', error);
     if (error.code === 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED') {

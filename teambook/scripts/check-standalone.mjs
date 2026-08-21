@@ -14,6 +14,7 @@ const FORBIDDEN = [
   [/process\.env\.DATABASE_URL\b/g, 'shared database fallback'],
   [/process\.env\.FIRST_CLASS_FROM_EMAIL\b/g, 'legacy email fallback'],
   [/put\(\s*["'`]xty\//g, 'legacy Blob object prefix'],
+  [/from\s*["']\.\.\/\[\.\.\.path\]\.js["']/g, 'ambiguous top-level API catch-all'],
 ];
 
 function walk(dir, out = []) {

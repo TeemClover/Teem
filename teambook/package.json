@@ -8,8 +8,9 @@
     "prebuild": "node scripts/apply-profile-runtime-fix.mjs",
     "check:syntax": "node scripts/check-syntax.mjs",
     "check:standalone": "node scripts/check-standalone.mjs",
+    "check:wiring": "node scripts/check-runtime-wiring.mjs",
     "check:assets": "node scripts/check-assets.mjs && node scripts/check-registry-assets.mjs",
-    "build": "npm run check:syntax && npm run check:standalone && npm run check:assets && node scripts/build-static.mjs",
+    "build": "npm run check:syntax && npm run check:standalone && npm run check:wiring && npm run check:assets && node scripts/build-static.mjs",
     "serve": "node scripts/serve.mjs"
   },
   "dependencies": {

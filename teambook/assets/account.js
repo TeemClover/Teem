@@ -207,8 +207,8 @@ function paintChip() {
 async function boot() {
   addStyles(); bindEvents();
   try {
-    const [session, available] = await Promise.all([api(`${API}/session`), api(`${API}/providers`)]);
-    user = session.user || null; providers = available.providers || providers;
+    const session = await api(`${API}/session`);
+    user = session.user || null; providers = { email: true, google: false, line: false };
   } catch { user = null; }
   publishUser();
   paintChip();

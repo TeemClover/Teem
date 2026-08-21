@@ -180,9 +180,10 @@ export function mergeXtyProfile(localValue, cloudValue) {
     ])],
     ownedCards: mergedOwnedCards,
     cardRewards: mergedCardRewards,
-    equippedCardId: mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)
-      ? newest.equippedCardId
-      : (mergedOwnedCards.some(item => item.cardId === older.equippedCardId) ? older.equippedCardId : null),
+    equippedCardId: newest.equippedCardId
+      && mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)
+        ? newest.equippedCardId
+        : null,
     collectionResetAt,
     debugUnlockedAt: !local.debugUnlockedAt ? (cloud.debugUnlockedAt || null)
       : (!cloud.debugUnlockedAt ? local.debugUnlockedAt

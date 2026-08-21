@@ -223,9 +223,7 @@ export function normalizeProfile(value) {
   const ownedCardIds = new Set(ownedCards.map(entry => entry.cardId));
   const cardRewards = normalizedCardRewards(value, ownedCardIds);
   const equippedWanted = canonicalCardId(value.equippedCardId || '');
-  const equippedCardId = ownedCardIds.has(equippedWanted)
-    ? equippedWanted
-    : (ownedCards[0]?.cardId || null);
+  const equippedCardId = ownedCardIds.has(equippedWanted) ? equippedWanted : null;
   const wantedLevel = Math.floor(Number(value.level || 1));
   const level = Number.isFinite(wantedLevel) ? Math.min(4, Math.max(1, wantedLevel)) : 1;
   const paidTier = ['plus', 'max'].includes(value.paidTier) ? value.paidTier : 'free';

@@ -84,7 +84,7 @@
     <div class="reveal-actions" id="actions" hidden>
       <button class="btn gold accepted-card" disabled>รับเข้าคอลเลกชันแล้ว ✓</button>
       <a class="btn ghost" href="/collection/">ดูคอลเลกชัน</a>
-      <button class="btn ghost" id="useAvatar">ใช้เป็น สัตว์</button>
+      <button class="btn ghost" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>
       <a class="btn ghost" id="useNpc" href="/new/">ให้ร่วมสมุดเป็น เพื่อนร่วมทาง</a>
     </div>
 
@@ -199,7 +199,7 @@ function showReward(item) {
     $('useAvatar').onclick = () => {
       useCardAsAvatar(card.cardId);
       syncXtyProfile();
-      $('useAvatar').textContent = 'ใช้เป็น สัตว์ แล้ว ✓';
+      $('useAvatar').textContent = 'ใช้เป็นการ์ดประจำตัวแล้ว ✓';
       $('useAvatar').disabled = true;
     };
     const ownedParty = allParties().find(party => {

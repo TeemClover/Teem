@@ -88,6 +88,23 @@ async function poke(body) {
 /* Route-created White Cat already had this intro. A White Cat discovered as a
    random card should enter the Book with exactly the same identity, so ask the
    server for the idempotent intro once the local party snapshot is present. */
+async function catchUpFirstScheduledWake() {
+  if (!code) return;
+  const identity = partyIdentity(code);
+  const headers = { accept: 'application/json', 'content-type': 'application/json' };
+  if (identity?.token) headers.authorization = `Bearer ${identity.token}`;
+  try {
+    const response = await fetch('/api/teambook-pet', {
+      method: 'POST', credentials: 'same-origin', headers,
+      body: JSON.stringify({ mode: 'first_wake_catchup', code }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (result?.spoke) document.getElementById('refresh')?.click();
+  } catch {
+    // Scheduled cron remains canonical; this is a one-time missed-wake repair.
+  }
+}
+
 async function introduceCollectibleWhiteCat() {
   if (!code || activePet()?.id !== WHITE_CAT_ID) return;
   const identity = partyIdentity(code);
@@ -121,4 +138,5 @@ document.addEventListener('keydown', event => {
   captureComposer();
 }, true);
 
+setTimeout(() => { void catchUpFirstScheduledWake(); }, 420);
 setTimeout(() => { void introduceCollectibleWhiteCat(); }, 650);
