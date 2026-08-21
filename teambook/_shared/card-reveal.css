@@ -2,16 +2,18 @@
 
 .card-back{
   position:relative;overflow:hidden;
-  display:grid;place-items:center;padding:0;
-  color:#fff;background:
-    radial-gradient(circle at 50% 36%,rgba(255,255,255,.22),transparent 27%),
-    linear-gradient(145deg,#193f31,#0e241d 72%);
+  display:block;padding:0!important;
+  color:#fff;background:#13291d;
+  border:0!important;border-radius:18px;box-shadow:none!important;
 }
-.card-back::before{
-  content:"";position:absolute;inset:12px;border:1px solid rgba(255,255,255,.42);border-radius:12px;
+.card-back::before{display:none!important}
+.card-back>img{
+  position:absolute;inset:0;display:block!important;
+  width:100%!important;height:100%!important;max-width:none!important;
+  object-fit:cover!important;object-position:center!important;
 }
-.teambook-card-back-mark{font:800 clamp(44px,13vw,78px)/1 system-ui;letter-spacing:-.08em}
-.card-back>small{position:absolute;bottom:12%;font:700 11px/1 system-ui;letter-spacing:.24em}
+.teambook-card-back-mark{display:none!important}
+.card-back>small{display:none!important}
 
 .reveal-card{
   position:relative;
