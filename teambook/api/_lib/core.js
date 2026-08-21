@@ -8,8 +8,34 @@ const encoder = new TextEncoder();
 const crypto = webcrypto;
 let schemaPromise;
 
+function teambookDatabaseUrl() {
+  const looksLikePostgres = value => typeof value === 'string' && /^postgres(?:ql)?:\/\//i.test(value.trim());
+  const direct = [
+    process.env.TEAMBOOK_DATABASE_URL,
+    process.env.TEAMBOOK_DATABASE_DATABASE_URL,
+    process.env.STORAGE_DATABASE_URL,
+    process.env.STORAGE_URL,
+    process.env.DATABASE_URL,
+  ].find(looksLikePostgres);
+  if (direct) return direct.trim();
+
+  const candidates = Object.entries(process.env)
+    .filter(([key, value]) => key.startsWith('TEAMBOOK_')
+      && /(?:DATABASE_URL|POSTGRES_URL)$/.test(key)
+      && looksLikePostgres(value))
+    .sort(([a], [b]) => {
+      const rank = key => key.endsWith('DATABASE_URL') ? 0 : 1;
+      return rank(a) - rank(b) || a.localeCompare(b);
+    });
+  return candidates[0]?.[1]?.trim() || '';
+}
+
+export function hasDatabaseConfig() {
+  return !!teambookDatabaseUrl();
+}
+
 export function database() {
-  const url = process.env.TEAMBOOK_DATABASE_URL || process.env.TEAMBOOK_DATABASE_DATABASE_URL || process.env.STORAGE_DATABASE_URL || process.env.STORAGE_URL || process.env.DATABASE_URL;
+  const url = teambookDatabaseUrl();
   if (!url) {
     const error = new Error('TEAMBOOK_DATABASE_URL_NOT_CONFIGURED');
     error.code = 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED';

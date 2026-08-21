@@ -1,3 +1,5 @@
+import { hasDatabaseConfig } from './_lib/core.js';
+
 function reply(res, body, status = 200) {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -11,7 +13,7 @@ export default function handler(req, res) {
   }
 
   const checks = {
-    databaseConfigured: !!(process.env.TEAMBOOK_DATABASE_URL || process.env.TEAMBOOK_DATABASE_DATABASE_URL || process.env.STORAGE_DATABASE_URL || process.env.STORAGE_URL || process.env.DATABASE_URL),
+    databaseConfigured: hasDatabaseConfig(),
     groqConfigured: process.env.TEAMBOOK_PET_AI === 'on' && !!process.env.GROQ_API_KEY,
     visionConfigured: process.env.TEAMBOOK_PET_VISION === 'on' && !!process.env.GROQ_API_KEY,
     blobConfigured: !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID),
