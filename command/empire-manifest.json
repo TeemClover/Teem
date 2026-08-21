@@ -1,12 +1,30 @@
 {
-  "version": "5.0.0",
+  "version": "6.0.0",
   "name": "myClover Empire Command Center",
-  "updatedAt": "2026-08-20",
+  "updatedAt": "2026-08-22",
   "entry": "/command/",
   "identity": {
     "keyCard": "Command and Conquer · Marvel",
     "game": "Flesh and Blood",
     "operatingLanguage": ["ACTION", "PASS", "GO_AGAIN", "CLOSE_CHAIN", "BLOCK", "DELETE"]
+  },
+  "architecture": {
+    "principle": "one server house owns one Command, one database boundary and one observability boundary",
+    "crossHouseRule": "travel by Command links; do not pull another house database or copy its production secrets",
+    "myClover": {
+      "command": "https://www.myclover.com/command/",
+      "operationsApi": "/api/command",
+      "keen": "/keen/",
+      "captures": "/captures/",
+      "scope": ["myClover identity", "First Class", "Xircle", "myClover operations"]
+    },
+    "teamBook": {
+      "command": "https://teambook.me/command/",
+      "server": "dedicated Vercel project with Root Directory teambook",
+      "database": "TeamBook-owned database via TEAMBOOK_DATABASE_URL",
+      "scope": ["TeamBook users", "books", "entries", "confirmations", "cards", "PET", "TeamBook infrastructure"],
+      "monitorLocally": true
+    }
   },
   "controlPlane": {
     "commandCenter": "/command/",
@@ -21,19 +39,20 @@
     "loginRateLimited": true,
     "passwordOverrideEnv": "BACKOFFICE_ADMIN_KEY",
     "protectedOperationalApis": ["/api/command"],
-    "loginExperience": "fast auth check first; heavy empire metrics load after board unlock"
+    "crossHouseSecrets": "never copied into myClover Command"
   },
   "storage": {
     "operations": "mc_command_operations",
     "backofficeSessions": "mc_backoffice_sessions",
     "backofficeAudit": "mc_backoffice_audit",
-    "population": "live myClover + TeamBook database metrics",
-    "learning": "first_class_registrations + first_class_reviews"
+    "population": "myClover-local metrics only",
+    "learning": "first_class_registrations + first_class_reviews",
+    "teamBook": "owned and monitored by TeamBook House Command"
   },
   "operationStrategy": {
-    "CREATE": "สร้างสิ่งใหม่จากศูนย์แล้วลงทะเบียนเข้าระบบกลาง",
+    "CREATE": "สร้างสิ่งใหม่จากศูนย์แล้วลงทะเบียนเข้าระบบของบ้านนั้น",
     "EXPAND": "ขยายของเดิมโดยรักษา source, canon และ dependency",
-    "CONQUER": "รวม/ย้าย/ยึดระบบภายนอกเข้ามาใต้ control plane เดียว"
+    "CONQUER": "รวม/ย้ายระบบเข้าบ้านเป้าหมายโดยไม่ทำลาย boundary ของบ้านอื่น"
   },
   "chainFlow": {
     "ACTION": {"status":"IN_PROGRESS","meaning":"priority holder executes one concrete Next Action"},
@@ -47,25 +66,26 @@
     "dailyBrief": ["เมื่อคืนอะไรเปลี่ยน", "อะไรพัง", "อะไรมีคนใช้", "วันนี้ควรแตะอะไรแค่เรื่องเดียว"],
     "attentionFeed": true,
     "autoSelectedCommandPulse": true,
-    "availableCharts": ["TeamBook activity", "system errors", "First Class flow", "Command chains"],
+    "availableCharts": ["myClover identity", "First Class flow", "Command chains"],
     "achievementsWindowDays": 7,
-    "infrastructureCity": ["state", "role", "lastUpdatedAt", "lastEvent", "recommendation"]
+    "infrastructureCity": ["state", "role", "lastUpdatedAt", "lastEvent", "recommendation"],
+    "teamBookMetrics": "not displayed here; open TeamBook House Command"
   },
   "externalInfrastructure": [
     {"id":"github","role":"source + history","console":"https://github.com/TeemClover/Teem"},
-    {"id":"vercel","role":"deploy + functions + cron + blob","console":"https://vercel.com/teemclover"},
-    {"id":"cloudflare","role":"DNS / Pages / edge tooling","console":"https://dash.cloudflare.com/"},
-    {"id":"neon","role":"Postgres database","console":"https://console.neon.tech/"},
-    {"id":"groq","role":"TeamBook PET brain","console":"https://console.groq.com/"},
-    {"id":"discord","role":"OAuth + guild automation","console":"https://discord.com/developers/applications"},
+    {"id":"vercel","role":"myClover deploy + functions","console":"https://vercel.com/teemclover"},
+    {"id":"cloudflare","role":"DNS / edge / security tooling","console":"https://dash.cloudflare.com/"},
+    {"id":"database","role":"myClover operational database","provider":"resolved by deployment configuration"},
+    {"id":"discord","role":"OAuth + community automation","console":"https://discord.com/developers/applications"},
     {"id":"resend","role":"transactional email","console":"https://resend.com/emails"},
     {"id":"meta","role":"conversion events","console":"https://business.facebook.com/events_manager2"}
+  ],
+  "houseLinks": [
+    {"name":"TeamBook House Command","url":"https://teambook.me/command/","relationship":"separate-server"}
   ],
   "backofficeRoutes": [
     {"name":"Keen Production Desk","path":"/keen/"},
     {"name":"Capture Library","path":"/captures/"},
-    {"name":"TeamBook Admin Stats","path":"/xty/stat/admin/"},
-    {"name":"TeamBook Stats","path":"/xty/stat/"},
     {"name":"First Class Control Room","path":"/first-class/admin/"},
     {"name":"First Class Student Reviews","path":"/first-class/admin/reviews/"},
     {"name":"Registration","path":"/register/"},
@@ -86,6 +106,6 @@
     "game": "Flesh and Blood",
     "image": "https://tcgplayer-cdn.tcgplayer.com/product/454212_in_1000x1000.jpg",
     "displayRule": "show full source image without CSS cropping",
-    "role": "visual key used to open the Command Center"
+    "role": "visual key used to open the myClover Command Center"
   }
 }
