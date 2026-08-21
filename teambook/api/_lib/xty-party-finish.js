@@ -1,4 +1,4 @@
-import legacyXtyHandler from '../[...path].js';
+import legacyXtyHandler from '../teambook/[...path].js';
 import { currentUser, database, ensureSchema, sameOrigin, sendJson, sha256 } from './core.js';
 import { dissolveXtyParty } from './xty-dissolve.js';
 import { handleCreatePartyV2 } from './xty-create-v2.js';
