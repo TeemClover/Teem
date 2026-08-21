@@ -1,16 +1,68 @@
-/* Mobile-only reading rhythm for TeamBook entry + /read story pages.
-   On phones, every illustration must stay fully inside the horizontal viewport.
-   Never crop or invent a landscape ratio: use the file's real aspect ratio. */
+/* TeamBook mobile-first safety layer.
+   Mobile rule: content must never rely on desktop transforms, fixed heights,
+   absolute decoration, or crop-based image ratios. */
 
 @media (max-width: 680px) {
-  .entry-section { padding: 46px 0; }
-  .entry-section.compact { padding: 38px 0; }
-  .entry-section.paper-panel { padding-top: 42px; padding-bottom: 42px; }
+  html,
+  body.entry-page {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .entry-main,
+  .entry-shell,
+  .entry-section,
+  .entry-section.paper-panel,
+  .entry-hero,
+  .story-grid,
+  .story-grid.reverse,
+  .ending-layout,
+  .final-invite,
+  .chapter-hero,
+  .chapter-body,
+  .chapter-nav,
+  .entry-footer {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .entry-shell {
+    width: calc(100% - 24px);
+  }
+
+  .entry-section {
+    padding: 44px 0;
+  }
+
+  .entry-section.compact {
+    padding: 36px 0;
+  }
+
+  .entry-section.paper-panel {
+    width: calc(100% - 12px);
+    padding: 40px 12px;
+    border-radius: 24px;
+  }
+
+  .entry-hero,
+  .story-grid,
+  .story-grid.reverse,
+  .ending-layout,
+  .final-invite,
+  .chapter-hero {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
 
   .entry-hero {
+    min-height: 0;
     gap: 24px;
-    padding-top: 30px;
-    padding-bottom: 46px;
+    padding-top: 28px;
+    padding-bottom: 44px;
+  }
+
+  .entry-hero-art::before,
+  .memory-object::before {
+    display: none !important;
   }
 
   .entry-title {
@@ -25,33 +77,52 @@
   }
 
   .entry-copy {
+    max-width: none;
     font-size: 15.5px;
     line-height: 1.72;
+    overflow-wrap: break-word;
   }
 
-  .entry-actions { margin-top: 23px; }
-  .entry-trust { margin-top: 18px; }
+  .entry-actions {
+    margin-top: 23px;
+  }
+
+  .entry-button,
+  .entry-top-action,
+  .chapter-nav a,
+  .chapter-links a {
+    min-width: 0;
+  }
+
+  .entry-trust {
+    margin-top: 18px;
+  }
 
   .story-grid,
-  .story-grid.reverse { gap: 22px; }
+  .story-grid.reverse {
+    gap: 22px;
+  }
 
-  /* Reading-first on phones. */
+  /* Reading-first: prose before supporting art. */
   .story-grid .story-copy,
-  .story-grid.reverse .story-copy { order: 1; }
+  .story-grid.reverse .story-copy {
+    order: 1;
+    min-width: 0;
+  }
 
   .story-grid .story-figure,
-  .story-grid.reverse .story-figure { order: 2; }
+  .story-grid.reverse .story-figure {
+    order: 2;
+  }
 
   .story-copy h2 {
     font-size: clamp(29px, 8.2vw, 38px);
     line-height: 1.27;
+    overflow-wrap: break-word;
   }
 
-  /* Canonical mobile image rule:
-     - fill the available horizontal width
-     - never overflow left/right
-     - preserve the actual file ratio
-     - never crop with cover/aspect-ratio hacks */
+  /* Canonical mobile illustration rule:
+     direct image only, full available width, real aspect ratio, never cropped. */
   .story-figure,
   .entry-hero .story-figure,
   .chapter-hero .story-figure,
@@ -60,31 +131,36 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
     justify-self: stretch;
     border-radius: 18px;
     box-shadow: 0 10px 28px rgba(75,55,26,.10);
+    transform: none !important;
     overflow: hidden;
   }
 
-  .story-figure img,
-  .entry-hero .story-figure img,
-  .chapter-hero .story-figure img,
-  .final-invite .story-figure img {
+  .story-figure > img,
+  .entry-hero .story-figure > img,
+  .chapter-hero .story-figure > img,
+  .final-invite .story-figure > img {
     display: block;
     width: 100%;
     max-width: 100%;
     height: auto !important;
-    max-height: none;
+    max-height: none !important;
     aspect-ratio: auto !important;
     object-fit: contain !important;
     object-position: center;
   }
 
-  /* Caption sits below the complete image instead of covering it. */
   .story-figure figcaption {
     position: static;
+    left: auto;
+    right: auto;
+    bottom: auto;
     max-width: none;
-    padding: 7px 10px 8px;
+    padding: 8px 10px 9px;
     border: 0;
     border-top: 1px solid rgba(111,91,61,.12);
     border-radius: 0;
@@ -92,7 +168,7 @@
     background: rgba(255,249,233,.94);
     font-size: 10.5px;
     line-height: 1.4;
-    transform: none;
+    transform: none !important;
   }
 
   .story-pull {
@@ -102,34 +178,179 @@
     line-height: 1.55;
   }
 
-  .trace-notes { margin-top: 19px; gap: 9px; }
-  .trace-note { min-height: 64px; padding: 10px; }
-  .trace-note img { width: 42px; height: 42px; }
+  /* Small evidence cards: no desktop tilt and no hidden overflow. */
+  .trace-notes {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 19px;
+    gap: 9px;
+  }
 
-  .minute-routine { margin-top: 19px; }
-  .minute-step { grid-template-columns: 38px 1fr; padding: 10px 12px; }
-  .minute-step::before { width: 32px; height: 32px; }
+  .trace-note {
+    min-width: 0;
+    min-height: 62px;
+    padding: 10px;
+    transform: none !important;
+  }
 
-  .seen-demo { margin: 10px; padding: 13px; }
-  .seen-demo p { margin: 9px 0; font-size: 13px; }
+  .trace-note img {
+    width: 42px;
+    height: 42px;
+    flex: none;
+  }
+
+  .trace-note span {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .minute-routine {
+    margin-top: 19px;
+  }
+
+  .minute-step {
+    min-width: 0;
+    grid-template-columns: 38px minmax(0, 1fr);
+    padding: 10px 12px;
+  }
+
+  .minute-step::before {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Seen demo becomes part of normal document flow under the complete image. */
+  .seen-demo {
+    position: static !important;
+    inset: auto !important;
+    width: auto !important;
+    max-width: none;
+    margin: 0;
+    padding: 13px;
+    border: 0;
+    border-top: 1px solid rgba(111,91,61,.14);
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .seen-demo-head {
+    min-width: 0;
+  }
+
+  .seen-demo-head img {
+    width: 40px !important;
+    height: 40px !important;
+    max-width: 40px !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: contain !important;
+    flex: none;
+  }
+
+  .seen-demo-head span {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+
+  .seen-demo p {
+    margin: 9px 0;
+    font-size: 13px;
+  }
 
   .quiet-list,
-  .living-lines { margin-top: 18px; }
-  .quiet-item { padding: 15px; }
+  .living-lines {
+    margin-top: 18px;
+  }
 
-  .witness-label { top: 9px; right: 9px; font-size: 10px; }
+  .quiet-item,
+  .living-line {
+    min-width: 0;
+  }
 
-  .ending-layout { gap: 18px; }
-  .memory-object { min-height: 310px; }
-  .memory-card { width: min(205px, 55vw); }
-  .memory-scrap { max-width: 145px; font-size: 10.5px; }
+  .quiet-item {
+    padding: 15px;
+  }
 
-  .final-invite { gap: 22px; }
+  /* Witness label is content on mobile, not a floating overlay. */
+  .witness-label {
+    position: static !important;
+    display: block;
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 0;
+    border-top: 1px solid rgba(111,91,61,.12);
+    background: rgba(255,249,233,.94);
+    font-size: 10.5px;
+    line-height: 1.4;
+  }
+
+  /* Memory card: remove the desktop display-scene completely.
+     The card itself keeps its real ratio and the note sits below it. */
+  .ending-layout {
+    gap: 22px;
+  }
+
+  .memory-object {
+    position: relative;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    min-height: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 0 0;
+    overflow: visible;
+  }
+
+  .memory-card {
+    position: relative;
+    width: min(68vw, 250px) !important;
+    max-width: 100%;
+    margin: 0 auto !important;
+    padding: 8px 8px 12px;
+    border-radius: 20px;
+    transform: none !important;
+  }
+
+  .memory-card img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto !important;
+    aspect-ratio: auto !important;
+    object-fit: contain !important;
+    border-radius: 14px;
+  }
+
+  .memory-card figcaption {
+    margin-top: 8px;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+
+  .memory-scrap {
+    position: static !important;
+    inset: auto !important;
+    width: auto;
+    max-width: min(82vw, 300px) !important;
+    padding: 10px 12px;
+    font-size: 10.5px;
+    line-height: 1.5;
+    text-align: center;
+    transform: none !important;
+  }
+
+  .final-invite {
+    gap: 22px;
+    padding: 18px;
+    border-radius: 22px;
+    overflow: hidden;
+  }
 
   .chapter-hero {
     gap: 22px;
-    padding-top: 30px;
-    padding-bottom: 42px;
+    padding-top: 28px;
+    padding-bottom: 40px;
   }
 
   .chapter-hero h1 {
@@ -137,26 +358,95 @@
     line-height: 1.2;
   }
 
-  .chapter-body { padding-top: 4px; padding-bottom: 54px; }
-  .chapter-body h2 { margin-top: 38px; font-size: clamp(24px, 7vw, 31px); }
+  .chapter-body {
+    width: calc(100% - 28px);
+    padding-top: 4px;
+    padding-bottom: 52px;
+  }
+
+  .chapter-body h2 {
+    margin-top: 36px;
+    font-size: clamp(24px, 7vw, 31px);
+  }
+
   .chapter-body p,
-  .chapter-body ul { font-size: 15.5px; line-height: 1.78; }
-  .chapter-note { margin-top: 20px; padding: 17px; }
-  .chapter-nav { margin-bottom: 46px; }
+  .chapter-body ul {
+    font-size: 15.5px;
+    line-height: 1.78;
+    overflow-wrap: break-word;
+  }
+
+  .chapter-note {
+    margin-top: 20px;
+    padding: 16px;
+  }
+
+  .chapter-links {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chapter-links a {
+    width: 100%;
+    overflow-wrap: break-word;
+  }
+
+  .chapter-nav {
+    width: calc(100% - 28px);
+    margin-bottom: 44px;
+    gap: 8px;
+  }
+
+  .chapter-nav a {
+    white-space: normal;
+    line-height: 1.35;
+    overflow-wrap: break-word;
+  }
+
+  .entry-footer {
+    width: calc(100% - 24px);
+    gap: 12px;
+  }
+
+  .entry-footer nav {
+    width: 100%;
+    gap: 10px 14px;
+  }
 }
 
 @media (max-width: 420px) {
-  .entry-shell { width: min(100% - 24px, 1180px); }
-  .entry-section { padding: 40px 0; }
+  .entry-shell,
+  .entry-footer {
+    width: calc(100% - 20px);
+  }
 
-  /* Same rule on narrow phones: width follows the viewport, height follows the image. */
-  .story-figure,
-  .entry-hero .story-figure,
-  .chapter-hero .story-figure,
-  .final-invite .story-figure { width: 100%; max-width: 100%; }
+  .entry-section {
+    padding: 38px 0;
+  }
 
-  .story-figure img { width: 100%; height: auto !important; aspect-ratio: auto !important; object-fit: contain !important; }
+  .entry-section.paper-panel {
+    width: calc(100% - 8px);
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 
-  .entry-title { font-size: clamp(33px, 9.7vw, 40px); }
-  .story-copy h2 { font-size: clamp(28px, 7.7vw, 34px); }
+  .entry-title {
+    font-size: clamp(32px, 9.7vw, 40px);
+  }
+
+  .story-copy h2 {
+    font-size: clamp(27px, 7.7vw, 34px);
+  }
+
+  .memory-card {
+    width: min(72vw, 238px) !important;
+  }
+
+  .chapter-nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chapter-nav a {
+    width: 100%;
+  }
 }

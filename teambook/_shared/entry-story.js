@@ -1,6 +1,6 @@
 const mobileStyle = document.createElement('link');
 mobileStyle.rel = 'stylesheet';
-mobileStyle.href = '/_shared/entry-mobile.css?v=20260822-mobile1';
+mobileStyle.href = '/_shared/entry-mobile.css?v=20260822-mobile2';
 mobileStyle.media = '(max-width: 680px)';
 document.head.append(mobileStyle);
 
