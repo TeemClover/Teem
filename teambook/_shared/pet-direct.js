@@ -65,7 +65,7 @@ async function poke(body) {
   const headers = { accept: 'application/json', 'content-type': 'application/json' };
   if (identity?.token) headers.authorization = `Bearer ${identity.token}`;
   try {
-    const response = await fetch('/api/teambook-pet', {
+    const response = await fetch('/api/teambook-pet-compat', {
       method: 'POST',
       credentials: 'same-origin',
       headers,
@@ -94,7 +94,7 @@ async function introduceCollectibleWhiteCat() {
   const headers = { accept: 'application/json', 'content-type': 'application/json' };
   if (identity?.token) headers.authorization = `Bearer ${identity.token}`;
   try {
-    const response = await fetch('/api/teambook-pet', {
+    const response = await fetch('/api/teambook-pet-compat', {
       method: 'POST',
       credentials: 'same-origin',
       headers,
