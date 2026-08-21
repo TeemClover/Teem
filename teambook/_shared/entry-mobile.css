@@ -1,19 +1,11 @@
 /* Mobile-only reading rhythm for TeamBook entry + /read story pages.
-   Keep desktop composition intact; on phones, copy leads and art supports it. */
+   On phones, every illustration must stay fully inside the horizontal viewport.
+   Never crop or invent a landscape ratio: use the file's real aspect ratio. */
 
 @media (max-width: 680px) {
-  .entry-section {
-    padding: 46px 0;
-  }
-
-  .entry-section.compact {
-    padding: 38px 0;
-  }
-
-  .entry-section.paper-panel {
-    padding-top: 42px;
-    padding-bottom: 42px;
-  }
+  .entry-section { padding: 46px 0; }
+  .entry-section.compact { padding: 38px 0; }
+  .entry-section.paper-panel { padding-top: 42px; padding-bottom: 42px; }
 
   .entry-hero {
     gap: 24px;
@@ -37,59 +29,58 @@
     line-height: 1.72;
   }
 
-  .entry-actions {
-    margin-top: 23px;
-  }
-
-  .entry-trust {
-    margin-top: 18px;
-  }
+  .entry-actions { margin-top: 23px; }
+  .entry-trust { margin-top: 18px; }
 
   .story-grid,
-  .story-grid.reverse {
-    gap: 22px;
-  }
+  .story-grid.reverse { gap: 22px; }
 
-  /* Reading-first: text always lands before supporting art on phones. */
+  /* Reading-first on phones. */
   .story-grid .story-copy,
-  .story-grid.reverse .story-copy {
-    order: 1;
-  }
+  .story-grid.reverse .story-copy { order: 1; }
 
   .story-grid .story-figure,
-  .story-grid.reverse .story-figure {
-    order: 2;
-  }
+  .story-grid.reverse .story-figure { order: 2; }
 
   .story-copy h2 {
     font-size: clamp(29px, 8.2vw, 38px);
     line-height: 1.27;
   }
 
-  /* Stop 3:2 art from becoming a full-width wall between paragraphs. */
-  .story-figure {
-    width: min(82vw, 360px);
-    justify-self: center;
+  /* Canonical mobile image rule:
+     - fill the available horizontal width
+     - never overflow left/right
+     - preserve the actual file ratio
+     - never crop with cover/aspect-ratio hacks */
+  .story-figure,
+  .entry-hero .story-figure,
+  .chapter-hero .story-figure,
+  .final-invite .story-figure,
+  .story-figure:has(.seen-demo) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    justify-self: stretch;
     border-radius: 18px;
     box-shadow: 0 10px 28px rgba(75,55,26,.10);
+    overflow: hidden;
   }
 
-  .story-figure img {
+  .story-figure img,
+  .entry-hero .story-figure img,
+  .chapter-hero .story-figure img,
+  .final-invite .story-figure img {
+    display: block;
     width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto !important;
+    max-height: none;
+    aspect-ratio: auto !important;
+    object-fit: contain !important;
+    object-position: center;
   }
 
-  .entry-hero .story-figure,
-  .chapter-hero .story-figure {
-    width: min(88vw, 380px);
-  }
-
-  .final-invite .story-figure {
-    width: min(78vw, 330px);
-  }
-
-  /* Captions become a quiet paper strip instead of covering mobile artwork. */
+  /* Caption sits below the complete image instead of covering it. */
   .story-figure figcaption {
     position: static;
     max-width: none;
@@ -111,85 +102,29 @@
     line-height: 1.55;
   }
 
-  .trace-notes {
-    margin-top: 19px;
-    gap: 9px;
-  }
+  .trace-notes { margin-top: 19px; gap: 9px; }
+  .trace-note { min-height: 64px; padding: 10px; }
+  .trace-note img { width: 42px; height: 42px; }
 
-  .trace-note {
-    min-height: 64px;
-    padding: 10px;
-  }
+  .minute-routine { margin-top: 19px; }
+  .minute-step { grid-template-columns: 38px 1fr; padding: 10px 12px; }
+  .minute-step::before { width: 32px; height: 32px; }
 
-  .trace-note img {
-    width: 42px;
-    height: 42px;
-  }
-
-  .minute-routine {
-    margin-top: 19px;
-  }
-
-  .minute-step {
-    grid-template-columns: 38px 1fr;
-    padding: 10px 12px;
-  }
-
-  .minute-step::before {
-    width: 32px;
-    height: 32px;
-  }
-
-  /* Interactive Seen card may be a little wider, but must not become a tall poster. */
-  .story-figure:has(.seen-demo) {
-    width: min(90vw, 390px);
-  }
-
-  .seen-demo {
-    margin: 10px;
-    padding: 13px;
-  }
-
-  .seen-demo p {
-    margin: 9px 0;
-    font-size: 13px;
-  }
+  .seen-demo { margin: 10px; padding: 13px; }
+  .seen-demo p { margin: 9px 0; font-size: 13px; }
 
   .quiet-list,
-  .living-lines {
-    margin-top: 18px;
-  }
+  .living-lines { margin-top: 18px; }
+  .quiet-item { padding: 15px; }
 
-  .quiet-item {
-    padding: 15px;
-  }
+  .witness-label { top: 9px; right: 9px; font-size: 10px; }
 
-  .witness-label {
-    top: 9px;
-    right: 9px;
-    font-size: 10px;
-  }
+  .ending-layout { gap: 18px; }
+  .memory-object { min-height: 310px; }
+  .memory-card { width: min(205px, 55vw); }
+  .memory-scrap { max-width: 145px; font-size: 10.5px; }
 
-  .ending-layout {
-    gap: 18px;
-  }
-
-  .memory-object {
-    min-height: 310px;
-  }
-
-  .memory-card {
-    width: min(205px, 55vw);
-  }
-
-  .memory-scrap {
-    max-width: 145px;
-    font-size: 10.5px;
-  }
-
-  .final-invite {
-    gap: 22px;
-  }
+  .final-invite { gap: 22px; }
 
   .chapter-hero {
     gap: 22px;
@@ -202,59 +137,26 @@
     line-height: 1.2;
   }
 
-  .chapter-body {
-    padding-top: 4px;
-    padding-bottom: 54px;
-  }
-
-  .chapter-body h2 {
-    margin-top: 38px;
-    font-size: clamp(24px, 7vw, 31px);
-  }
-
+  .chapter-body { padding-top: 4px; padding-bottom: 54px; }
+  .chapter-body h2 { margin-top: 38px; font-size: clamp(24px, 7vw, 31px); }
   .chapter-body p,
-  .chapter-body ul {
-    font-size: 15.5px;
-    line-height: 1.78;
-  }
-
-  .chapter-note {
-    margin-top: 20px;
-    padding: 17px;
-  }
-
-  .chapter-nav {
-    margin-bottom: 46px;
-  }
+  .chapter-body ul { font-size: 15.5px; line-height: 1.78; }
+  .chapter-note { margin-top: 20px; padding: 17px; }
+  .chapter-nav { margin-bottom: 46px; }
 }
 
 @media (max-width: 420px) {
-  .entry-shell {
-    width: min(100% - 28px, 1180px);
-  }
+  .entry-shell { width: min(100% - 24px, 1180px); }
+  .entry-section { padding: 40px 0; }
 
-  .entry-section {
-    padding: 40px 0;
-  }
-
-  .story-figure {
-    width: min(78vw, 300px);
-  }
-
+  /* Same rule on narrow phones: width follows the viewport, height follows the image. */
+  .story-figure,
   .entry-hero .story-figure,
-  .chapter-hero .story-figure {
-    width: min(84vw, 330px);
-  }
+  .chapter-hero .story-figure,
+  .final-invite .story-figure { width: 100%; max-width: 100%; }
 
-  .story-figure img {
-    aspect-ratio: 1.72 / 1;
-  }
+  .story-figure img { width: 100%; height: auto !important; aspect-ratio: auto !important; object-fit: contain !important; }
 
-  .entry-title {
-    font-size: clamp(33px, 9.7vw, 40px);
-  }
-
-  .story-copy h2 {
-    font-size: clamp(28px, 7.7vw, 34px);
-  }
+  .entry-title { font-size: clamp(33px, 9.7vw, 40px); }
+  .story-copy h2 { font-size: clamp(28px, 7.7vw, 34px); }
 }
