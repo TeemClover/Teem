@@ -1,0 +1,84 @@
+body.welcome-open{overflow:hidden}
+.first-welcome{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:grid;
+  place-items:center;
+  padding:clamp(10px,2vw,24px);
+  background:rgba(23,39,30,.74);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.first-welcome[hidden]{display:none}
+.first-welcome-card{
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);
+  width:min(1060px,100%);
+  max-height:calc(100dvh - 32px);
+  overflow:auto;
+  border:1px solid rgba(255,255,255,.58);
+  border-radius:30px;
+  background:#fff9e9;
+  box-shadow:0 30px 100px rgba(4,19,12,.38);
+}
+.first-welcome-visual{position:relative;display:grid;place-items:center;min-height:520px;overflow:hidden;background:#eadfc3}
+.first-welcome-art{width:100%;height:auto;object-fit:contain;object-position:center}
+.first-welcome-brand{
+  position:absolute;
+  z-index:2;
+  left:18px;
+  top:18px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:8px 11px;
+  border:1px solid rgba(255,255,255,.72);
+  border-radius:12px;
+  background:rgba(255,249,233,.9);
+  color:#2f2b25;
+  box-shadow:0 8px 20px rgba(59,43,22,.12);
+}
+.first-welcome-brand img{width:59px;height:auto}
+.first-welcome-brand span{padding-left:9px;border-left:1px solid rgba(47,43,37,.18);font-size:11px;font-weight:800;line-height:1.35}
+.first-welcome-slogan{
+  position:absolute;
+  z-index:2;
+  right:16px;
+  bottom:16px;
+  margin:0;
+  padding:8px 11px;
+  border-radius:11px;
+  background:rgba(255,249,233,.9);
+  color:#1f6440;
+  font:800 12px/1.4 'Mali','Noto Sans Thai',sans-serif;
+  transform:rotate(-1deg);
+}
+.first-welcome-copy{display:flex;flex-direction:column;justify-content:center;padding:clamp(26px,4vw,52px)}
+.first-welcome-sticker{align-self:flex-start;padding:7px 11px;border:1px solid #dfc66b;border-radius:8px;background:#fff1ab;color:#6b5a21;font:800 11px/1 'Mali','Noto Sans Thai',sans-serif;transform:rotate(-2deg)}
+.first-welcome-copy .kicker{margin:18px 0 0}
+.first-welcome-copy .title{margin:10px 0 0;font-size:clamp(31px,4.3vw,48px);line-height:1.24;letter-spacing:-.035em;text-wrap:balance}
+.first-welcome-copy .lede{margin:16px 0 0;color:#625a50;font-size:16px;line-height:1.78}
+.first-welcome-trust{display:flex;flex-wrap:wrap;gap:7px;margin:20px 0 0;padding:0;list-style:none}
+.first-welcome-trust li{padding:6px 9px;border-radius:999px;background:#e7f2e8;color:#286747;font-size:11px;font-weight:800}
+.first-welcome-copy .btn{margin-top:24px}
+.first-welcome-copy .about-link{display:block;margin-top:14px;text-align:center}
+.first-welcome-note{margin:17px 0 0;color:#867d70;font-size:11.5px;line-height:1.6;text-align:center}
+
+@media(max-width:780px){
+  .first-welcome{place-items:start center;padding:8px}
+  .first-welcome-card{grid-template-columns:1fr;max-height:calc(100dvh - 16px);border-radius:23px}
+  .first-welcome-visual{min-height:0}.first-welcome-art{height:auto;aspect-ratio:3/2;object-position:center}
+  .first-welcome-brand{left:10px;top:10px;padding:6px 8px}.first-welcome-brand img{width:47px}.first-welcome-brand span{font-size:9px}
+  .first-welcome-slogan{right:9px;bottom:9px;font-size:10px}
+  .first-welcome-copy{padding:22px 19px 24px}.first-welcome-copy .kicker{margin-top:14px}.first-welcome-copy .title{font-size:clamp(27px,8.8vw,37px)}
+  .first-welcome-copy .lede{font-size:14.5px}.first-welcome-copy .btn{margin-top:19px}
+}
+
+@media(max-width:420px) and (max-height:760px){
+  .first-welcome-art{object-position:center 42%}
+  .first-welcome-slogan{display:none}
+  .first-welcome-copy{padding:17px 17px 19px}.first-welcome-copy .title{font-size:26px}.first-welcome-copy .lede{margin-top:10px;line-height:1.62}.first-welcome-trust{margin-top:13px}.first-welcome-copy .btn{margin-top:15px}.first-welcome-note{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){.first-welcome *{scroll-behavior:auto!important;transition:none!important}}
