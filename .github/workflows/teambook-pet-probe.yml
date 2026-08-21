@@ -1,0 +1,30 @@
+name: TeamBook PET Manual Probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call TeamBook PET scheduler with shared secret
+        env:
+          CRON_SECRET: ${{ secrets.TEAMBOOK_CRON_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${CRON_SECRET:-}" ]; then
+            echo "GitHub secret TEAMBOOK_CRON_SECRET is missing"
+            exit 1
+          fi
+
+          curl --fail-with-body --show-error --silent \
+            --request GET \
+            --header "Authorization: Bearer ${CRON_SECRET}" \
+            --header "Accept: application/json" \
+            "https://www.teambook.me/api/teambook-pet-compat"
+          echo
