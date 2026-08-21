@@ -11,7 +11,7 @@
    script, and served from our own blob host it would run as us.
    ═══════════════════════════════════════════════════════════════ */
 
-import { put, del, get } from '@vercel/blob';
+import { put, del } from '@vercel/blob';
 
 /* The client aims well under this. The ceiling is here to stop a
    hand-rolled request, not to shape normal uploads. */
@@ -130,27 +130,38 @@ export async function storePartyImage(partyCode, decoded) {
   const extension = decoded.contentType === 'image/png' ? 'png'
     : (decoded.contentType === 'image/jpeg' ? 'jpg' : 'webp');
   const result = await put(`teambook/${partyCode}/${Date.now()}.${extension}`, decoded.buffer, {
-    access: 'private',
+    access: 'public',
     contentType: decoded.contentType,
     /* Names collide across a party otherwise — two members posting in the
        same millisecond would overwrite each other. */
     addRandomSuffix: true,
-    cacheControlMaxAge: 31536000,
+    cacheControlMaxAge: 86400,
   });
   return { url: result.url, width: decoded.width, height: decoded.height };
 }
 
 export async function readStoredImage(url, options = {}) {
   if (!isStoredImageUrl(url)) return null;
-  return get(url, {
-    access: 'private',
-    ifNoneMatch: options.ifNoneMatch || undefined,
-  });
+  const headers = {};
+  if (options.ifNoneMatch) headers['If-None-Match'] = options.ifNoneMatch;
+  const response = await fetch(url, { headers, redirect: 'follow' });
+  if (response.status !== 200 && response.status !== 304) return null;
+  const contentType = response.headers.get('content-type') || 'application/octet-stream';
+  const contentLength = Number(response.headers.get('content-length') || 0);
+  const etag = response.headers.get('etag') || '';
+  return {
+    statusCode: response.status,
+    stream: response.body,
+    blob: {
+      contentType,
+      size: Number.isFinite(contentLength) && contentLength >= 0 ? contentLength : 0,
+      etag,
+    },
+  };
 }
 
-/* Groq cannot fetch a private Blob URL. Read the already-small image on the
-   server and hand vision a data URL instead; no permanent public derivative
-   is created. */
+/* The Blob object is public/shareable, but vision still receives a compact
+   data URL so provider-fetch quirks cannot make a party photo disappear. */
 export async function storedImageDataUrl(url) {
   const result = await readStoredImage(url);
   if (!result || result.statusCode !== 200 || !result.stream) return '';

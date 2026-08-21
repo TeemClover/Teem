@@ -104,7 +104,7 @@
 import {
   pendingCardReward, markCardRewardRevealed, revealPartyCardReward,
   useCardAsAvatar, shouldOfferProgressSave,
-  updateProfile, allParties, isActiveParty, partyIdentity,
+  updateProfile, allParties, isActiveParty, partyIdentity, refreshParty,
 } from '/_shared/store.js';
 import { revealStarReward } from '/_shared/star-rewards.js';
 import { TEAMBOOK_RARITY_META, cardById, cardNameTh } from '/_shared/cards.js';
@@ -117,8 +117,8 @@ import { getSession, syncXtyProfile } from '/_shared/account.js';
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const rewardId = params.get('r') || '';
-const reward = pendingCardReward(rewardId);
-$('shell').hidden = true;
+let reward = pendingCardReward(rewardId);
+$('shell').hidden = false;
 
 if (params.has('account')) {
   syncXtyProfile().then(() => { $('savePrompt').hidden = true; });
@@ -126,13 +126,30 @@ if (params.has('account')) {
   history.replaceState(null, '', `${location.pathname}${params.size ? `?${params}` : ''}`);
 } else syncXtyProfile();
 
-if (!reward) {
-  $('missing').hidden = false;
-} else if (reward.complete || !reward.cardId) {
-  $('complete').hidden = false;
-  markCardRewardRevealed(reward.rewardId);
-} else {
-  showReward(reward);
+bootReveal();
+
+async function bootReveal() {
+  if (!reward && rewardId) {
+    const hinted = String(params.get('c') || '').toUpperCase();
+    const cachedParty = allParties().find(partyItem =>
+      (partyItem.log || []).some(post => post.rewardId === rewardId)
+    );
+    const partyCode = /^\d{5}$/.test(hinted) ? hinted : (cachedParty?.code || '');
+    if (partyCode) {
+      await refreshParty(partyCode);
+      reward = pendingCardReward(rewardId);
+    }
+  }
+
+  $('shell').hidden = true;
+  if (!reward) {
+    $('missing').hidden = false;
+  } else if (reward.complete || !reward.cardId) {
+    $('complete').hidden = false;
+    markCardRewardRevealed(reward.rewardId);
+  } else {
+    showReward(reward);
+  }
 }
 
 function showReward(item) {

@@ -668,7 +668,7 @@ function renderLog(p) {
       ? '<span>ข้อความถูกถอนโดยเจ้าของ</span>'
       : (pendingFirstSeen
         ? (post.userId === myId
-          ? `<a class="reward-log-pending" href="/reveal/?r=${encodeURIComponent(post.rewardId)}">`
+          ? `<a class="reward-log-pending" href="/reveal/?r=${encodeURIComponent(post.rewardId)}&c=${encodeURIComponent(code)}">`
             + `<img src="/assets/card-back.webp" alt="การ์ดรอเปิด" width="630" height="880">`
             + `<span><b>${esc(post.alias)} เจอการ์ด</b><small>แตะเพื่อเปิด · ยังไม่เข้า Collection จนกว่าจะเปิด</small></span></a>`
           : `<div class="reward-log-pending is-waiting">`

@@ -194,7 +194,13 @@ function normalizedCardRewards(value, ownedCardIds) {
     if (!entry || typeof entry !== 'object') continue;
     const cardId = entry.cardId ? canonicalCardId(entry.cardId) : null;
     const rewardId = String(entry.rewardId || '').trim();
-    if (!rewardId || seen.has(rewardId) || (cardId && !ownedCardIds.has(cardId))) continue;
+    const pendingUnownedFirstSeen = cardId
+      && !ownedCardIds.has(cardId)
+      && /^first-seen:/.test(String(entry.questId || ''))
+      && !entry.revealedAt
+      && entry.source === 'server';
+    if (!rewardId || seen.has(rewardId)
+      || (cardId && !ownedCardIds.has(cardId) && !pendingUnownedFirstSeen)) continue;
     seen.add(rewardId);
     rewards.push({
       rewardId,

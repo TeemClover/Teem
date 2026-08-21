@@ -32,15 +32,16 @@ test('local party bearer sessions become path-scoped HttpOnly media cookies', ()
   assert.equal(partyMediaToken({ headers: { authorization: 'Bearer newer-token', cookie } }, '1234567890'), 'newer-token');
 });
 
-test('deployment and runtime enforce private storage end to end', () => {
+test('deployment writes public blobs while TeamBook state routes stay gated', () => {
   const image = readFileSync(join(ROOT, 'api/_lib/xty-image.js'), 'utf8');
   const party = readFileSync(join(ROOT, 'api/teambook/[...path].js'), 'utf8');
   const media = readFileSync(join(ROOT, 'api/teambook-media.js'), 'utf8');
   const pet = readFileSync(join(ROOT, 'api/_lib/pet-brain.js'), 'utf8');
   const config = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
 
-  assert.match(image, /access: 'private'/);
-  assert.doesNotMatch(image, /access: 'public'/);
+  assert.match(image, /access: 'public'/);
+  assert.doesNotMatch(image, /access: 'private'/);
+  assert.match(image, /fetch\(url/);
   assert.match(media, /AUTH_REQUIRED/);
   assert.match(media, /readStoredImage/);
   assert.match(media, /Cache-Control', 'private, max-age=300'/);
