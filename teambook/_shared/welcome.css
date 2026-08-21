@@ -68,17 +68,20 @@ body.welcome-open{overflow:hidden}
 @media(max-width:780px){
   .first-welcome{place-items:start center;padding:8px}
   .first-welcome-card{grid-template-columns:1fr;max-height:calc(100dvh - 16px);border-radius:23px}
-  .first-welcome-visual{min-height:0}.first-welcome-art{height:auto;aspect-ratio:3/2;object-position:center}
-  .first-welcome-brand{left:10px;top:10px;padding:6px 8px}.first-welcome-brand img{width:47px}.first-welcome-brand span{font-size:9px}
-  .first-welcome-slogan{right:9px;bottom:9px;font-size:10px}
-  .first-welcome-copy{padding:22px 19px 24px}.first-welcome-copy .kicker{margin-top:14px}.first-welcome-copy .title{font-size:clamp(27px,8.8vw,37px)}
-  .first-welcome-copy .lede{font-size:14.5px}.first-welcome-copy .btn{margin-top:19px}
+  .first-welcome-visual{min-height:190px;height:190px}
+  .first-welcome-art{width:100%;height:100%;aspect-ratio:auto;object-fit:cover;object-position:center 46%}
+  .first-welcome-brand{left:10px;top:10px;padding:6px 8px}.first-welcome-brand img{width:44px}.first-welcome-brand span{font-size:8.5px}
+  .first-welcome-slogan{right:9px;bottom:9px;font-size:9.5px;padding:6px 8px}
+  .first-welcome-copy{padding:19px 18px 22px}.first-welcome-copy .kicker{margin-top:12px}.first-welcome-copy .title{font-size:clamp(26px,7.8vw,34px);line-height:1.2}
+  .first-welcome-copy .lede{margin-top:12px;font-size:14px;line-height:1.62}.first-welcome-copy .btn{margin-top:17px}
+  .first-welcome-trust{margin-top:15px}.first-welcome-note{margin-top:13px}
 }
 
 @media(max-width:420px) and (max-height:760px){
+  .first-welcome-visual{min-height:145px;height:145px}
   .first-welcome-art{object-position:center 42%}
   .first-welcome-slogan{display:none}
-  .first-welcome-copy{padding:17px 17px 19px}.first-welcome-copy .title{font-size:26px}.first-welcome-copy .lede{margin-top:10px;line-height:1.62}.first-welcome-trust{margin-top:13px}.first-welcome-copy .btn{margin-top:15px}.first-welcome-note{display:none}
+  .first-welcome-copy{padding:15px 16px 17px}.first-welcome-copy .title{font-size:25px}.first-welcome-copy .lede{margin-top:9px;line-height:1.56}.first-welcome-trust{margin-top:11px}.first-welcome-copy .btn{margin-top:13px}.first-welcome-note{display:none}
 }
 
 @media(prefers-reduced-motion:reduce){.first-welcome *{scroll-behavior:auto!important;transition:none!important}}
