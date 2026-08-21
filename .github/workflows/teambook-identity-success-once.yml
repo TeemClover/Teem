@@ -1,0 +1,60 @@
+name: TeamBook identity success fix once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/teambook-identity-success-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fix successful identity mutation reporting
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'expected text not found in {path}')
+              p.write_text(text.replace(old, new, 1))
+
+          replace_once(
+              'teambook/api/_lib/xty-member-actions-v2.js',
+              "    return sendJson(res, await stateViaLegacy(legacyXtyHandler, req, code));\n  } catch (error) {\n    console.error('TeamBook identity v2 failed', error);",
+              "    try {\n      return sendJson(res, await stateViaLegacy(legacyXtyHandler, req, code));\n    } catch (refreshError) {\n      console.warn('TeamBook identity state refresh failed after successful update', refreshError?.code || refreshError?.message || refreshError);\n      return sendJson(res, {\n        ok: true,\n        identityUpdated: true,\n        meUserId: member.user_id,\n        identity: { alias, avatar, avatarColor },\n      });\n    }\n  } catch (error) {\n    console.error('TeamBook identity v2 failed', error);"
+          )
+
+          replace_once(
+              'teambook/_shared/party-enhancements.js',
+              "    if (result.error) { toast('ยังเปลี่ยนตัวละครสมุดนี้ไม่ได้'); return; }\n    rememberParty(result);\n    toast('เปลี่ยนตัวละครแล้ว · เก็บไว้ในเรื่องในสมุด');",
+              "    if (result.error) { toast('ยังเปลี่ยนตัวละครสมุดนี้ไม่ได้'); return; }\n    if (!result.party && result.identityUpdated && result.identity) {\n      const cachedParty = getParty(code);\n      const cachedIdentity = partyIdentity(code);\n      const cachedMember = cachedParty?.members?.find(item => item.userId === (result.meUserId || cachedIdentity?.userId));\n      if (cachedParty && cachedMember) {\n        cachedMember.alias = result.identity.alias || cachedMember.alias;\n        cachedMember.avatar = result.identity.avatar || cachedMember.avatar;\n        cachedMember.avatarColor = result.identity.avatarColor || cachedMember.avatarColor;\n        result.party = cachedParty;\n      }\n    }\n    rememberParty(result);\n    toast('เปลี่ยนตัวละครแล้ว · เก็บไว้ในเรื่องในสมุด');"
+          )
+          PY
+
+          cd teambook
+          npm ci
+          npm run build
+          cd ..
+
+      - name: Commit fix and remove workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/teambook-identity-success-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add teambook/api/_lib/xty-member-actions-v2.js teambook/_shared/party-enhancements.js .github/workflows/teambook-identity-success-once.yml
+          git commit -m "fix(teambook): report identity updates after successful write"
+          git push origin HEAD:main
