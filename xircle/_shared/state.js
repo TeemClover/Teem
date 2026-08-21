@@ -11,6 +11,7 @@
   var SESSION_KEY = "xircle.session.v1";
   var LOCAL_KEY = "xircle.local.v1";
   var HANDOFF_TTL = 35 * 24 * 60 * 60 * 1000;
+  var TEAMBOOK_ORIGIN = "https://teambook.me";
 
   function clone(obj) { return Object.assign({}, obj); }
   function safeRead(storage, key, fallback) {
@@ -76,10 +77,11 @@
     return a;
   }
 
+  function teamBookUrl(path) { return TEAMBOOK_ORIGIN + path; }
   function currentHandoff() { return validHandoff(local.xtyHandoff) ? local.xtyHandoff : null; }
   function whiteCatActionUrl() {
     var h = currentHandoff();
-    return h ? "/xty/join/?c=" + encodeURIComponent(h.partyCode) : "/xty/new/?template=xircle_xvisor";
+    return h ? teamBookUrl("/join/?c=" + encodeURIComponent(h.partyCode)) : teamBookUrl("/new/?template=xircle_xvisor");
   }
   function whiteCatBridgeUrl() {
     return currentHandoff() ? "/xircle/care/party/?mode=join" : "/xircle/care/party/?mode=create";
@@ -235,21 +237,23 @@
     var lede = document.getElementById("partyLede");
     var art = document.getElementById("partyArt");
     var bottom = document.getElementById("bottomAction");
+    var createUrl = teamBookUrl("/new/?template=xircle_xvisor");
+    var joinUrl = h ? teamBookUrl("/join/?c=" + encodeURIComponent(h.partyCode)) : teamBookUrl("/join/");
 
     if (h) {
       if (kicker) kicker.textContent = "คำชวน · สมุด " + h.partyCode;
       if (title) title.innerHTML = "มีคนชวนคุณ<br>ทำ 1 อย่างไปด้วยกัน";
       if (lede) lede.innerHTML = "28 วัน · ไม่ต้องทำคนเดียว<br><strong>จะเข้าสมุดนี้ หรือเปิดสมุดของตัวเองก็ได้</strong>";
-      if (actions) actions.innerHTML = '<a class="xp-btn gold" href="/xty/join/?c=' + encodeURIComponent(h.partyCode) + '">เข้าสมุด ' + h.partyCode + ' →</a><a class="xp-btn ghost" href="/xty/new/?template=xircle_xvisor">เปิดสมุดของฉันเอง</a>';
+      if (actions) actions.innerHTML = '<a class="xp-btn gold" href="' + joinUrl + '">เข้าสมุด ' + h.partyCode + ' →</a><a class="xp-btn ghost" href="' + createUrl + '">เปิดสมุดของฉันเอง</a>';
       if (art) { art.setAttribute("data-art-src", "/xircle/assets/v5/xircle-party-join-hero.webp"); art.src = "/xircle/assets/v5/xircle-party-join-hero.webp?v=20260817-final"; }
-      if (bottom) { bottom.href = "/xty/join/?c=" + encodeURIComponent(h.partyCode); bottom.textContent = "เข้าสมุด " + h.partyCode + " →"; }
+      if (bottom) { bottom.href = joinUrl; bottom.textContent = "เข้าสมุด " + h.partyCode + " →"; }
     } else {
       if (kicker) kicker.textContent = "สมุดแมวขาว";
       if (title) title.innerHTML = "28 วัน<br>เลือก 1 อย่าง<br>ทำด้วยกัน";
       if (lede) lede.innerHTML = "เปิดสมุดของตัวเองได้เลย<br><strong>หรือถ้ามีรหัสสมุดอยู่แล้ว ก็เลือกเข้าสมุดได้</strong>";
-      if (actions) actions.innerHTML = '<a class="xp-btn gold" href="/xty/new/?template=xircle_xvisor">เลือกสิ่งที่จะทำ แล้วเปิดสมุด →</a><a class="xp-btn ghost" href="/xty/join/">มีรหัสสมุด · เข้าสมุด</a>';
+      if (actions) actions.innerHTML = '<a class="xp-btn gold" href="' + createUrl + '">เลือกสิ่งที่จะทำ แล้วเปิดสมุด →</a><a class="xp-btn ghost" href="' + joinUrl + '">มีรหัสสมุด · เข้าสมุด</a>';
       if (art) { art.setAttribute("data-art-src", "/xircle/assets/v5/xircle-party-create-hero.webp"); art.src = "/xircle/assets/v5/xircle-party-create-hero.webp?v=20260817-final"; }
-      if (bottom) { bottom.href = "/xty/new/?template=xircle_xvisor"; bottom.textContent = "เปิดสมุดแมวขาว →"; }
+      if (bottom) { bottom.href = createUrl; bottom.textContent = "เปิดสมุดแมวขาว →"; }
     }
   }
 
@@ -364,8 +368,8 @@
       return item;
     },
     clearXtyHandoff: function () { local.xtyHandoff = null; safeWrite("localStorage", LOCAL_KEY, local); renderProgressNav(); wireWhiteCatActions(); },
-    partyJoinUrl: function () { var h = this.getXtyHandoff(); return h ? "/xty/join/?c=" + encodeURIComponent(h.partyCode) : null; },
-    partyCreateUrl: function () { return "/xty/new/?template=xircle_xvisor"; },
+    partyJoinUrl: function () { var h = this.getXtyHandoff(); return h ? teamBookUrl("/join/?c=" + encodeURIComponent(h.partyCode)) : null; },
+    partyCreateUrl: function () { return teamBookUrl("/new/?template=xircle_xvisor"); },
     whiteCatActionUrl: whiteCatActionUrl,
     whiteCatBridgeUrl: whiteCatBridgeUrl,
     whiteCatHubUrl: whiteCatHubUrl,

@@ -18,7 +18,8 @@ Reviewed: 2026-08-20 · Routes: **58** · Global source: `/xircle/XIRCLE_ROUTE_S
 - myClover Xircle Route = **Experience → Understand → Interpret → Choose → Repeat → Care → Together**
 - Main journey = **Xircle → Human Care → X-VISOR → RoutineX → สมุดแมวขาว / White Cat Care → Review Xircle**
 - Website route ไม่สร้าง production tracker/scoring/device engine ซ้ำ Xircle App.
-- Thai-first; `สมุดแมวขาว` เป็นคำหลัก; `/xty/` อยู่ได้ใน technical implementation.
+- Thai-first; `สมุดแมวขาว` เป็นคำหลัก.
+- **Public handoff ไปสมุดแมวขาวต้องไป `https://teambook.me/*` โดยตรง.** `/xty/` อยู่ได้เฉพาะ internal repo/compatibility implementation และห้ามใช้เป็น public destination จาก Xircle.
 - `Legacy` ห้ามใช้; Deep Reference/Reference Library → `ข้อมูลเชิงลึก`.
 - Health data: consent + เห็นเท่าที่จำเป็น + ไม่วินิจฉัย.
 - Mobile story: controls ทันที; feedback ห้ามดัน CTA.

@@ -162,7 +162,7 @@
       var h=safeState(function(s){return s.getXtyHandoff&&s.getXtyHandoff()});
       if(!h)return;el.hidden=false;
       var code=qs('[data-room-code]',el);if(code)code.textContent=h.partyCode;
-      var join=qs('[data-room-join]',el);if(join)join.href='/xty/join/?c='+encodeURIComponent(h.partyCode);
+      var join=qs('[data-room-join]',el);if(join)join.href='https://teambook.me/join/?c='+encodeURIComponent(h.partyCode);
     });
   }
 
