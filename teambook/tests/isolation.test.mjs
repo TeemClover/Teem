@@ -34,13 +34,15 @@ test('public TeamBook source never links back to the legacy /xty app', () => {
 test('first visit opens one shared welcome dialog without redirecting to /start', () => {
   const root = readFileSync(join(ROOT, 'index.html'), 'utf8');
   assert.doesNotMatch(root.slice(0, root.indexOf('</head>')), /location\.replace\('\/start\/'\)/);
-  assert.match(root, /id="firstWelcome"[\s\S]*assets\/start\/start-companion\.webp/);
+  assert.match(root, /id="firstWelcome"[\s\S]*assets\/entry\/notebook-open\.webp/);
   assert.match(root, /teambook_welcome_seen_v1/);
   const joinPage = readFileSync(join(ROOT, 'join/index.html'), 'utf8');
   assert.match(root, /await showFirstWelcome\(\)[\s\S]*hadLocalProfile && inviteCode/);
   assert.match(joinPage, /teambook_welcome_seen_v1[\s\S]*if \(!hasSeenWelcome\)[\s\S]*\/\?c=/);
-  assert.match(root, /id="enterRoom"[\s\S]*เข้าห้อง/);
-  assert.match(root, /href="\/read\/"[^>]*>รู้จัก TeamBook/);
+  assert.match(root, /id="enterRoom"[\s\S]*เปิด TeamBook/);
+  assert.match(root, /มีคนชวนคุณมาเขียน[\s\S]*เปิดดูสมุดเล่มนี้/);
+  assert.match(root, /welcomeRead[\s\S]*\/read\/\?c=/);
+  assert.match(root, /openIntentFromUrl[\s\S]*location\.replace\('\/new\/'\)/);
 });
 
 test('account flows return to a TeamBook page', () => {

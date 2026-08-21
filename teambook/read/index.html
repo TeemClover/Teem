@@ -8,76 +8,265 @@
 <link rel="icon" type="image/png" href="/assets/brand/teambook-mark-256.png">
 <link rel="apple-touch-icon" href="/assets/brand/teambook-icon-180.png">
 <meta name="theme-color" content="#FFF9E9">
-<title>เรื่องของ TeamBook</title>
+<title>เรื่องของ TeamBook — สมุดที่อยากส่งให้เพื่อนเขียนต่อ</title>
 <link rel="canonical" href="https://teambook.me/read/">
-<!-- TEAMBOOK SOCIAL SHARE -->
+<meta name="description" content="ชีวิตจริงเกิดข้างนอก TeamBook มีไว้เก็บร่องรอยของคน 2–5 คนไว้ในสมุดเล่มเดียวกัน">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="TeamBook">
-<meta property="og:title" content="เรื่องของ TeamBook">
-<meta property="og:description" content="อ่านว่าสมุดกลุ่มแบบนี้มีไว้ทำไม ใช้ยังไง เอาไปทำอะไรได้ และจะเริ่มเล่มแรกยังไง">
+<meta property="og:title" content="มีหน้าหนึ่งที่รอรอยของพวกคุณอยู่">
+<meta property="og:description" content="ไม่ต้องว่างพร้อมกัน ไม่ต้องทำเหมือนกัน แค่กลับมาเขียนและเห็นกัน">
 <meta property="og:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="เรื่องของ TeamBook">
-<meta name="twitter:description" content="อ่านว่าสมุดกลุ่มแบบนี้มีไว้ทำไม ใช้ยังไง เอาไปทำอะไรได้ และจะเริ่มเล่มแรกยังไง">
+<meta name="twitter:title" content="มีหน้าหนึ่งที่รอรอยของพวกคุณอยู่">
+<meta name="twitter:description" content="ไม่ต้องว่างพร้อมกัน ไม่ต้องทำเหมือนกัน แค่กลับมาเขียนและเห็นกัน">
 <meta name="twitter:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
-<!-- /TEAMBOOK SOCIAL SHARE -->
-<meta name="description" content="อ่านว่าสมุดกลุ่มแบบนี้มีไว้ทำไม ใช้ยังไง เอาไปทำอะไรได้ และจะเริ่มเล่มแรกยังไง">
-<link rel="stylesheet" href="/_shared/landing.css?v=20260819-1">
-<link rel="stylesheet" href="/_shared/start.css?v=2">
-<link rel="stylesheet" href="/_shared/read.css?v=2">
+<link rel="preload" as="image" href="/assets/entry/notebook-open.webp" type="image/webp" fetchpriority="high">
+<link rel="stylesheet" href="/_shared/entry-story.css?v=20260821-entry1">
 </head>
-<body class="landing">
+<body class="entry-page">
 
-<div class="read-bar">
-  <a class="home" href="/read/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a>
-  <a class="enter" id="enterApp" href="/start/">เข้า TeamBook</a>
-</div>
+<header class="entry-top">
+  <a class="entry-brand" href="/read/" data-keep-invite aria-label="TeamBook สมุดกลุ่มมีชีวิต">
+    <img src="/assets/brand/teambook-logo.png" alt="TeamBook" width="140" height="55">
+    <span>สมุดกลุ่ม<br>มีชีวิต</span>
+  </a>
+  <div class="entry-top-side">
+    <p class="entry-slogan">มีฉัน มีเธอ มีเรื่องของเรา</p>
+    <a class="entry-top-action" id="enterApp" href="/?open=1" data-entry-cta data-invite-label="กลับไปเปิดสมุดที่ชวนมา" data-profile-href="/" data-profile-label="ไปที่สมุดของฉัน">เปิด TeamBook</a>
+  </div>
+</header>
 
-<main class="read-wrap">
-  <img class="read-mascot" src="/assets/decor/mascot/cat-holding-book.webp" alt="" aria-hidden="true" width="233" height="284" fetchpriority="low" decoding="async">
-  <p class="eyebrow">TEAMBOOK</p>
-  <h1 style="margin:14px 0 0;font-size:clamp(32px,5.6vw,50px);line-height:1.14;letter-spacing:-.025em;font-weight:800">เรื่องของ TeamBook</h1>
-  <p class="read-lede">อ่านตอนไหนก็ได้ ไม่ต้องเรียงก็ได้ สี่บทนี้ตอบว่าสมุดกลุ่มแบบนี้มีไว้ทำไม ใช้ยังไง เอาไปทำอะไรได้ และจะเริ่มเล่มแรกยังไง</p>
+<main class="entry-main">
+  <section class="entry-shell entry-hero" aria-labelledby="readHeroTitle">
+    <div class="entry-hero-copy">
+      <p class="entry-kicker">เรื่องของ TeamBook</p>
+      <h1 class="entry-title" id="readHeroTitle">มีหน้าหนึ่ง<br><span class="soft">ที่รอรอยของพวกคุณอยู่</span></h1>
+      <p class="entry-lede">ไม่ต้องว่างพร้อมกัน ไม่ต้องทำเหมือนกัน แค่กลับมาเขียน และเห็นกัน</p>
+      <div class="entry-actions">
+        <a class="entry-button primary" href="/?open=1" data-entry-cta data-invite-label="กลับไปเปิดสมุดที่ชวนมา" data-profile-href="/new/" data-profile-label="เปิดสมุดอีกเล่ม">เปิดสมุดเล่มหนึ่ง</a>
+        <a class="entry-button text" href="#why-book">เริ่มอ่านจากหน้าแรก ↓</a>
+      </div>
+      <ul class="entry-trust" aria-label="จังหวะของ TeamBook">
+        <li>คน 2–5 คน</li>
+        <li>วันละประมาณ 1 นาที</li>
+        <li>พลาดแล้วกลับมาได้</li>
+      </ul>
+    </div>
+    <figure class="story-figure entry-hero-art tilt-right">
+      <img src="/assets/entry/notebook-open.webp" alt="แมวส้ม ปอมขาว และแมวขาวอยู่รอบสมุดที่ยังมีหน้าว่าง" width="1536" height="1024" fetchpriority="high" decoding="async">
+      <figcaption>ชีวิตจริงเกิดข้างนอก · สมุดมีไว้เก็บร่องรอย</figcaption>
+    </figure>
+  </section>
 
-  <ul class="toc">
-    <li><a href="/read/why/">
-      <span class="no">01</span>
-      <span><b>WHY</b><span>ทำไมต้องมีสมุดแบบนี้</span></span>
-      <span class="go">→</span>
-    </a></li>
-    <li><a href="/read/how/">
-      <span class="no">02</span>
-      <span><b>HOW</b><span>สมุดหนึ่งเล่มใช้ยังไง</span></span>
-      <span class="go">→</span>
-    </a></li>
-    <li><a href="/read/what/">
-      <span class="no">03</span>
-      <span><b>WHAT</b><span>เอาไปทำอะไรได้บ้าง</span></span>
-      <span class="go">→</span>
-    </a></li>
-    <li><a href="/read/next/">
-      <span class="no">04</span>
-      <span><b>NEXT</b><span>เปิดหน้าแรกของคุณ</span></span>
-      <span class="go">→</span>
-    </a></li>
-  </ul>
+  <section class="entry-section paper-panel" id="why-book">
+    <div class="entry-shell story-grid">
+      <figure class="story-figure tilt-left">
+        <img src="/assets/entry/notebook-many-traces.webp" alt="สัตว์ TeamBook หลายตัวล้อมสมุดที่เต็มด้วยรอยเขียนคนละแบบ" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption>สมุดเล่มเดียวที่เพื่อนหลายตัวเคยเขียนต่อกัน</figcaption>
+      </figure>
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 01 · ความทรงจำ</p>
+        <h2>จำสมุดที่เคยวนให้เพื่อนเขียนกันได้ไหม?</h2>
+        <p class="entry-copy">คนละรอย คนละมุก คนละเวลาที่ได้กลับมาเปิดสมุด แต่พอเปิดย้อนกลับไป เราก็ยังจำได้ว่า ตอนนั้นเราเคยอยู่ในเรื่องเดียวกัน</p>
+        <p class="story-pull">TeamBook เอาความรู้สึกนั้นกลับมา โดยให้สัตว์แต่ละตัวเป็นตัวแทนของเรา</p>
+      </div>
+    </div>
+  </section>
 
-  <p class="read-foot" style="margin-top:40px;padding:0">อยากเริ่มเลยโดยไม่ต้องอ่าน — <a href="/public/">หาสมุดที่เข้าร่วมได้</a> หรือ <a href="/new/">เปิดสมุดของตัวเอง</a></p>
+  <section class="entry-shell entry-section" id="different-lives">
+    <div class="story-grid reverse">
+      <figure class="story-figure tilt-right">
+        <img src="/assets/entry/notebook-different-lives.webp" alt="แมวส้ม นกฮูก หมู และเต่าทิ้งรอยจากชีวิตคนละเรื่องไว้รอบสมุดเดียวกัน" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption>คนละชีวิต · กลับมาอยู่หน้าเดียวกัน</figcaption>
+      </figure>
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 02 · คนละเวลา</p>
+        <h2>ทำด้วยกัน ไม่ได้แปลว่าต้องทำพร้อมกัน</h2>
+        <p class="entry-copy">ตัวหนึ่งอาจวิ่ง อีกตัวอาจอ่าน อีกตัวอาจกลับมาเปิดโปรเจกต์ที่ค้างไว้ ไม่เป็นไรเลย</p>
+        <div class="trace-notes" aria-label="ร่องรอยจากหลายชีวิต">
+          <div class="trace-note"><img src="/assets/art/avatars/orange-cat.webp" alt="" width="128" height="128"><span><b>เช้าของแมวส้ม</b>รองเท้าวิ่งหนึ่งคู่</span></div>
+          <div class="trace-note"><img src="/assets/art/avatars/owl.webp" alt="" width="128" height="128"><span><b>คืนของนกฮูก</b>หนังสืออีกสิบหน้า</span></div>
+          <div class="trace-note"><img src="/assets/art/avatars/pig.webp" alt="" width="128" height="128"><span><b>บ่ายของหมู</b>ไฟล์งานที่เปิดเสียที</span></div>
+          <div class="trace-note"><img src="/assets/art/avatars/turtle.webp" alt="" width="128" height="128"><span><b>วันช้าของเต่า</b>ใบใหม่หนึ่งใบ</span></div>
+        </div>
+        <p class="story-pull">สิ่งที่ใช้ร่วมกันคือหน้ากระดาษ ไม่ใช่ตารางชีวิต</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-section paper-panel" id="seen">
+    <div class="entry-shell story-grid">
+      <figure class="story-figure tilt-left">
+        <img src="/assets/entry/notebook-seen.webp" alt="แมวส้มและปอมขาวอยู่ข้างหน้าสมุดที่มีรอยอุ้งเท้าสีเขียวเล็ก ๆ" width="1536" height="1024" loading="lazy" decoding="async">
+        <div class="seen-demo" aria-label="ลองแตะเห็นแล้ว">
+          <div class="seen-demo-head">
+            <img src="/assets/art/avatars/orange-cat.webp" alt="แมวส้ม" width="128" height="128">
+            <span><b>เจ้าส้มกลับมาแล้ว</b>ทิ้งรอยไว้เมื่อครู่นี้</span>
+          </div>
+          <p>“วันนี้เริ่มช้าหน่อย แต่ได้ออกไปวิ่งแล้ว”</p>
+          <button class="seen-button" id="seenDemoButton" type="button" aria-pressed="false">เห็นแล้ว</button>
+        </div>
+      </figure>
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 03 · การเห็น</p>
+        <h2>บางวัน เราไม่ได้ต้องการคำแนะนำ</h2>
+        <p class="entry-copy">ไม่ได้อยากถูกถามว่าทำไมยังไม่เสร็จ ไม่ได้อยากได้คำพูดปลุกใจ แค่อยากรู้ว่าสิ่งเล็ก ๆ ที่พยายามทำวันนี้ มีใครสักคนเห็นมัน</p>
+        <ul class="seen-meaning">
+          <li>ไม่ใช่คะแนน</li>
+          <li>ไม่ใช่คำตัดสิน</li>
+          <li>ไม่ใช่การเช็กงาน</li>
+        </ul>
+        <p class="story-pull">เห็นแล้ว — มันแค่แปลว่า “ฉันเห็นนะ”</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-shell entry-section" id="one-minute">
+    <div class="story-grid reverse">
+      <figure class="story-figure tilt-right">
+        <img src="/assets/entry/notebook-return.webp" alt="สัตว์ TeamBook อยู่กับสมุดที่มีทั้งวันที่เขียนเต็ม วันที่เกือบว่าง และวันที่กลับมาใหม่" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption>หน้าที่ว่างไม่ทำให้เรื่องจบ · หน้าถัดไปยังอยู่</figcaption>
+      </figure>
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 04 · หนึ่งนาที</p>
+        <h2>วันละ 1 นาที ก็พอ</h2>
+        <div class="minute-routine" aria-label="หนึ่งนาทีใน TeamBook">
+          <div class="minute-step"><span><b>เข้ามา</b> ดูว่าหน้าวันนี้เป็นยังไง</span></div>
+          <div class="minute-step"><span><b>ลงชื่อ</b> ทิ้งรอยสั้น ๆ ของตัวเอง</span></div>
+          <div class="minute-step"><span><b>มองว่าใครกลับมา</b> เห็นใครสักตัว</span></div>
+          <div class="minute-step"><span><b>ออกไปใช้ชีวิตต่อ</b> ไม่ต้องค้างอยู่ในนี้</span></div>
+        </div>
+        <p class="story-pull">พลาดวันนี้ได้ พรุ่งนี้ยังมีหน้าใหม่</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-section paper-panel" id="social-detox">
+    <div class="entry-shell story-grid">
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 05 · ไม่มีหนี้ข้อความ</p>
+        <h2>โลกมีที่ให้คุยกันมากพอแล้ว</h2>
+        <p class="entry-copy">TeamBook ไม่ได้พยายามเป็นอีกห้องแชท เราอยากเป็นที่ที่คุณเปิดมา เห็นสิ่งที่สำคัญ ทิ้งรอยของตัวเองไว้ แล้วปิดได้โดยไม่รู้สึกว่าค้างอะไร</p>
+        <p class="story-pull">ที่นี่คือหน้าสมุด ไม่ใช่ feed ที่ต้องตามให้ทัน</p>
+      </div>
+      <div class="story-copy" aria-label="สิ่งที่ไม่ต้องแบกกลับไป">
+        <div class="quiet-list">
+          <div class="quiet-item"><b>ไม่มี 243 ข้อความ</b><p>ไม่ต้องย้อนอ่านเพื่อพิสูจน์ว่ายังอยู่ในกลุ่ม</p></div>
+          <div class="quiet-item"><b>ไม่มีเสียงเรียกกลับ</b><p>ถ้าสมุดสำคัญ คุณจะกลับมาเอง</p></div>
+          <div class="quiet-item"><b>ไม่มีคำตอบที่ค้าง</b><p>เห็นแล้วหนึ่งครั้งก็เพียงพอในบางวัน</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-shell entry-section" id="living-book">
+    <div class="story-grid reverse">
+      <figure class="story-figure tilt-right">
+        <img src="/assets/entry/notebook-many-traces.webp" alt="สมุด TeamBook ที่มีร่องรอยจากสัตว์หลายตัวสะสมอยู่บนหน้าเดียวกัน" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption>สมุดมีชีวิตจากสิ่งที่เกิดขึ้นจริง ไม่ใช่เรื่องที่แต่งรอไว้</figcaption>
+      </figure>
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 06 · สิ่งที่ทำให้มีชีวิต</p>
+        <h2>แล้วทำไมเรียกว่า “สมุดกลุ่มมีชีวิต”?</h2>
+        <p class="entry-copy">เพราะเรื่องในนี้ไม่ได้ถูกแต่งขึ้นมาก่อน มันค่อย ๆ เกิดจากชีวิตจริงที่อยู่นอกจอ</p>
+        <div class="living-lines" aria-label="ร่องรอยที่ทำให้สมุดมีชีวิต">
+          <div class="living-line">วันที่ตัวใดตัวหนึ่งกลับมา</div>
+          <div class="living-line">วันที่ใครหายไป</div>
+          <div class="living-line">วันที่มีคนเห็น</div>
+          <div class="living-line">วันที่ใครบางตัวเริ่มใหม่</div>
+        </div>
+        <p class="story-pull">สมุดไม่ได้มีชีวิตเพราะ AI มันมีชีวิตเพราะคนในเล่มใช้ชีวิตจริงอยู่ข้างนอก</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-section paper-panel" id="ai-witness">
+    <div class="entry-shell story-grid">
+      <figure class="story-figure tilt-left">
+        <img src="/assets/entry/notebook-quiet-witness.webp" alt="แมวขาวตัวเล็กนั่งเงียบอยู่ริมสมุด ขณะที่ร่องรอยของแมวส้มและปอมขาวอยู่กลางหน้า" width="1536" height="1024" loading="lazy" decoding="async">
+        <span class="witness-label">บางวันพูด · บางวันเงียบ</span>
+      </figure>
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 07 · ผู้เห็น</p>
+        <h2>AI ไม่ได้นำเรื่องนี้ มันมาเพื่อเห็นเรื่องนี้</h2>
+        <p class="entry-copy">เราเรียกมันมาอยู่ข้างสมุด เพื่อดูว่าเมื่อคน 2–5 คนเริ่มจากสัญญาใจเล็ก ๆ วันต่าง ๆ จะเปลี่ยนเรื่องนั้นไปยังไง</p>
+        <p class="entry-copy">บางวันมันพูด บางวันมันเงียบ เพราะหน้าที่ของมันไม่ใช่ทำแทนเรา</p>
+        <div class="witness-actions" aria-label="หน้าที่ของ AI ในสมุด"><span>จำ</span><span>เห็น</span><span>เรียบเรียง</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-shell entry-section" id="ending">
+    <div class="story-grid reverse">
+      <figure class="story-figure tilt-right">
+        <img src="/assets/entry/notebook-closing.webp" alt="แมวส้ม ปอมขาว เต่า และนกฮูกนั่งอยู่รอบสมุดที่กำลังปิดพร้อมร่องรอยที่เก็บอยู่ข้างใน" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption>สมุดปิดเพื่อเก็บช่วงเวลานั้นไว้ ไม่ใช่ตัดสินว่าใครชนะ</figcaption>
+      </figure>
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 08 · เมื่อเรื่องจบ</p>
+        <h2>พอถึงวันสุดท้าย สมุดจะปิดเล่ม</h2>
+        <p class="entry-copy">สิ่งที่เกิดขึ้นระหว่างทางจะไม่ถูกทิ้งเป็นบันทึกยาว ๆ เพื่อนร่วมทางจะย้อนดูร่องรอยจริง เขียน “เรื่องในสมุด” และทำภาพปิดท้ายให้ช่วงเวลานั้น</p>
+        <p class="story-pull">ไม่ใช่สรุปว่าใครเก่งที่สุด แต่เพื่อให้วันหนึ่งเปิดกลับมาแล้วจำได้ว่า ช่วงนั้นเราเคยพยายามเรื่องนี้ด้วยกัน</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-section paper-panel" id="cards">
+    <div class="entry-shell ending-layout">
+      <div class="story-copy">
+        <p class="entry-kicker">หน้า 09 · ความทรงจำที่จับต้องได้</p>
+        <h2>การ์ดทุกใบ มีเรื่องก่อนจะมีค่า</h2>
+        <p class="entry-copy">บางใบเกิดจากครั้งแรกที่คุณเห็นคนอื่น บางใบเกิดขึ้นระหว่างทาง บางใบอยู่กับความทรงจำของเล่มที่จบแล้ว</p>
+        <p class="entry-copy">มันไม่ใช่ของสะสมที่ลอยอยู่จากชีวิต แต่คือชิ้นเล็ก ๆ ของสิ่งที่เคยเกิดขึ้นกับพวกคุณจริง ๆ</p>
+        <p class="story-pull">จำก่อนว่ามันมาจากเล่มไหน และตอนนั้นมีใครอยู่ตรงนั้นกับเรา</p>
+      </div>
+      <div class="memory-object" aria-label="การ์ดหนึ่งใบที่มาจากเรื่องในสมุด">
+        <figure class="memory-card">
+          <img src="/assets/cards/common/orange-cat-green-a.webp" alt="การ์ดแมวส้มระดับเริ่มต้นจากโลก TeamBook" width="1061" height="1482" loading="lazy" decoding="async">
+          <figcaption>เรื่องเกิดก่อน · การ์ดจึงมีความหมาย</figcaption>
+        </figure>
+        <span class="memory-scrap">จากเล่มหนึ่ง<br>ที่เราเคยกลับมาเห็นกัน</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-shell entry-section compact" id="pass-it-on">
+    <div class="final-invite">
+      <div>
+        <p class="entry-kicker">หน้าถัดไป</p>
+        <h2>มีใครสักคน ที่คุณอยากมี 7 วันแบบนี้ด้วยไหม?</h2>
+        <p class="entry-copy">ไม่ต้องมีเป้าหมายใหญ่ แค่เรื่องเล็ก ๆ ที่อยากให้เกิดขึ้นจริง และใครอีกคนที่อยากเห็นมันไปด้วยกัน</p>
+        <div class="entry-actions">
+          <a class="entry-button primary" href="/?open=1" data-entry-cta data-invite-label="กลับไปเปิดสมุดที่ชวนมา" data-profile-href="/new/" data-profile-label="เปิดสมุดอีกเล่ม">เปิดสมุดเล่มแรก</a>
+          <a class="entry-button secondary" href="/join/">ใส่รหัสสมุด</a>
+        </div>
+      </div>
+      <figure class="story-figure tilt-right">
+        <img src="/assets/entry/notebook-waits-for-friend.webp" alt="แมวส้มรออยู่ข้างหน้าที่เขียนแล้ว ปอมขาวอยู่ข้างหน้าว่างที่เปิดไว้ให้เขียนต่อ" width="1536" height="1024" loading="lazy" decoding="async">
+      </figure>
+    </div>
+  </section>
+
+  <section class="entry-shell entry-section compact" aria-labelledby="deeperTitle">
+    <p class="entry-kicker">เปิดอ่านเป็นบท</p>
+    <h2 id="deeperTitle" style="font-size:clamp(28px,4vw,44px)">ถ้าอยากดูทีละหน้า</h2>
+    <ul class="chapter-links">
+      <li><a href="/read/why/" data-keep-invite><small>01 · WHY</small><b>ทำไมต้องมีสมุดแบบนี้</b></a></li>
+      <li><a href="/read/how/" data-keep-invite><small>02 · HOW</small><b>หนึ่งวันในสมุดเกิดอะไรขึ้น</b></a></li>
+      <li><a href="/read/what/" data-keep-invite><small>03 · WHAT</small><b>เรื่องแบบไหนอยู่ด้วยกันได้</b></a></li>
+      <li><a href="/read/next/" data-keep-invite><small>04 · NEXT</small><b>จะยื่นสมุดให้ใครเขียนต่อ</b></a></li>
+    </ul>
+  </section>
 </main>
 
+<footer class="entry-footer">
+  <span>TeamBook · สมุดกลุ่มมีชีวิต</span>
+  <nav aria-label="ทางเข้า TeamBook"><a href="/start/?read=1">กลับไปหน้าเริ่มต้น</a><a href="/public/">ดูสมุดที่เปิดรับ</a><a href="/join/">ใส่รหัสสมุด</a></nav>
+</footer>
 
-<script>
-  /* No dead ends. Where "เข้า TeamBook" lands depends on whether this person
-     already has a book: the shelf if they do, the front door if they do not. */
-  try {
-    if (localStorage.getItem('teambook_profile_v1')) {
-      document.getElementById('enterApp').href = '/';
-      document.getElementById('enterApp').textContent = 'ไปที่สมุดของฉัน';
-    }
-  } catch (error) { /* private mode — the front door is the safe default */ }
-</script>
+<script type="module" src="/_shared/entry-story.js?v=20260821-entry1"></script>
 </body>
 </html>

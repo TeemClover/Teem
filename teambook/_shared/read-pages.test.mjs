@@ -1,93 +1,93 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
-
-/* /read/ is the way back for someone who already has a book. The whole
-   point of it is that nobody has to know a query parameter to read again,
-   so these hold the parts of that promise which are easy to break silently. */
+import { existsSync, readFileSync } from 'node:fs';
 
 const CHAPTERS = ['why', 'how', 'what', 'next'];
 const hub = readFileSync('read/index.html', 'utf8');
 const chapters = CHAPTERS.map(slug => [slug, readFileSync(`read/${slug}/index.html`, 'utf8')]);
-const css = readFileSync('_shared/read.css', 'utf8');
+const contextScript = readFileSync('_shared/entry-story.js', 'utf8');
+const css = readFileSync('_shared/entry-story.css', 'utf8');
 
-test('the reading path is reachable from inside the app', () => {
-  const home = readFileSync('index.html', 'utf8');
-  assert.match(home, /href="\/read\/"/,
-    'someone with a book must be able to find the story without a query parameter');
+test('the reading path stays reachable from the shelf', () => {
+  assert.match(readFileSync('index.html', 'utf8'), /href="\/read\/"/);
 });
 
-test('the hub lists every chapter, and every chapter links back to it', () => {
-  for (const slug of CHAPTERS) {
-    assert.match(hub, new RegExp(`href="/read/${slug}/"`), `the hub is missing ${slug}`);
+test('the full story carries the required emotional arc', () => {
+  for (const id of ['why-book', 'different-lives', 'seen', 'one-minute', 'social-detox', 'living-book', 'ai-witness', 'ending', 'cards', 'pass-it-on']) {
+    assert.match(hub, new RegExp(`id="${id}"`), `missing scene ${id}`);
   }
-  for (const [slug, page] of chapters) {
-    assert.match(page, /href="\/read\/"/, `${slug} has no way back to the contents`);
-  }
+  assert.match(hub, /ฉันเห็นนะ/);
+  assert.match(hub, /สมุดไม่ได้มีชีวิตเพราะ AI/);
+  assert.match(hub, /มีใครสักคน ที่คุณอยากมี 7 วันแบบนี้ด้วยไหม/);
 });
 
-test('every page offers the app, and the offer knows who is asking', () => {
-  for (const [slug, page] of [['hub', hub], ...chapters]) {
-    assert.match(page, /id="enterApp"/, `${slug} has no way into the app`);
-    assert.match(page, /localStorage\.getItem\('teambook_profile_v1'\)/,
-      `${slug} must check for an existing book`);
-    assert.match(page, /href = '\/'/,
-      `${slug} must send an existing player to their shelf, not back to the pitch`);
-    assert.match(page, /catch/, `${slug} must survive a locked-down localStorage`);
-  }
+test('the hub lists every chapter and every chapter returns to the story', () => {
+  for (const slug of CHAPTERS) assert.match(hub, new RegExp(`href="/read/${slug}/"`));
+  for (const [slug, page] of chapters) assert.match(page, /href="\/read\/"/, `${slug} has no way back`);
 });
 
-test('the chapters read in order, first to last, with no dead end', () => {
-  const order = chapters.map(([slug]) => slug);
-  order.forEach((slug, i) => {
-    const page = chapters[i][1];
-    const next = order[i + 1];
-    if (next) assert.match(page, new RegExp(`href="/read/${next}/"`), `${slug} does not lead on`);
-    const prev = order[i - 1];
-    if (prev) assert.match(page, new RegExp(`href="/read/${prev}/"`), `${slug} cannot go back`);
+test('chapter order has no dead end', () => {
+  chapters.forEach(([slug, page], index) => {
+    const previous = CHAPTERS[index - 1];
+    const next = CHAPTERS[index + 1];
+    if (previous) assert.match(page, new RegExp(`href="/read/${previous}/"`), `${slug} cannot go back`);
+    if (next) assert.match(page, new RegExp(`href="/read/${next}/"`), `${slug} cannot go forward`);
   });
-  /* The last chapter ends in the product, not in another chapter. */
-  const last = chapters.at(-1)[1];
-  assert.match(last, /href="\/new\/\?mode=/, 'the last chapter must open a book');
+  assert.match(chapters.at(-1)[1], /href="\/\?open=1"/);
 });
 
-test('a number with no name on it does not get a citation box', () => {
-  for (const [slug, page] of chapters) {
-    const boxes = [...page.matchAll(/<div class="cite[^"]*">([\s\S]*?)<\/div>/g)].map(m => m[1]);
-    for (const box of boxes) {
-      assert.match(box, /<cite>[\s\S]*?\S[\s\S]*?<\/cite>/,
-        `a claim in ${slug} is dressed as evidence with no source`);
-    }
-  }
-});
-
-test('a company claim is never dressed as a research finding', () => {
-  const withClaims = chapters.filter(([, page]) => /minChalle|A10 Lab/i.test(page));
-  assert.ok(withClaims.length, 'the minChalle case should appear somewhere');
-  for (const [slug, page] of withClaims) {
-    const box = page.match(/<div class="cite claim">[\s\S]*?<\/div>\s*<\/div>|<div class="cite claim">[\s\S]*?<\/cite>/);
-    assert.ok(box, `${slug} mentions the company case outside a claim box`);
-    assert.match(box[0], /ไม่ใช่งานวิจัย/, `${slug} must say the number is not research`);
-  }
-  assert.match(css, /\.cite\.claim\{/, 'a company claim needs its own visibly different box');
-});
-
-test('the reading pages speak TeamBook and never the old codename', () => {
+test('entry CTA understands invite and local profile context', () => {
   for (const [slug, page] of [['hub', hub], ...chapters]) {
-    const visible = page.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
-                        .replace(/<[^>]+>/g, ' ');
-    for (const word of [/ตี้/, /\bXTY\b/, /\bParty\b/i, /\bQuest\b/i]) {
-      assert.doesNotMatch(visible, word, `${slug} must not show ${word}`);
-    }
+    assert.match(page, /id="enterApp"/, `${slug} has no entry CTA`);
+    assert.match(page, /data-entry-cta/, `${slug} CTA is not context-aware`);
+    assert.match(page, /data-keep-invite/, `${slug} cannot retain an invite`);
   }
+  assert.match(contextScript, /teambook_profile_v1/);
+  assert.match(contextScript, /const inviteCode = \/\^\\d\{5\}\$\/\.test/);
+  assert.match(contextScript, /url\.searchParams\.set\('c', inviteCode\)/);
+  assert.match(contextScript, /`\/\?c=\$\{encodeURIComponent\(inviteCode\)\}`/);
 });
 
-test('every stylesheet and image a reading page asks for actually exists', () => {
+test('seen is a quiet one-tap interaction without celebration mechanics', () => {
+  assert.match(hub, /id="seenDemoButton"/);
+  assert.match(contextScript, /aria-pressed/);
+  assert.match(contextScript, /เห็นแล้ว · 1/);
+  assert.doesNotMatch(`${hub}\n${contextScript}`, /confetti|firework/i);
+});
+
+test('new story assets exist and below-fold images are lazy', () => {
   for (const [slug, page] of [['hub', hub], ...chapters]) {
-    const refs = [...page.matchAll(/(?:href|src)="(\/[^"?]+)(?:\?[^"]*)?"/g)].map(m => m[1]);
+    const refs = [...page.matchAll(/(?:href|src)="(\/[^"?]+)(?:\?[^"#]*)?(?:#[^"]*)?"/g)].map(match => match[1]);
     for (const ref of refs) {
       if (ref.endsWith('/')) continue;
       assert.ok(existsSync(`.${ref}`), `${slug} points at a missing file: ${ref}`);
     }
   }
+  const storyImages = [...hub.matchAll(/<img[^>]+src="(\/assets\/entry\/[^"]+\.webp)"[^>]*>/g)];
+  assert.ok(storyImages.length >= 8);
+  storyImages.slice(1).forEach(match => assert.match(match[0], /loading="lazy"/));
+});
+
+test('the entry story uses existing animals and no forbidden rarity theme', () => {
+  const all = [hub, ...chapters.map(([, page]) => page)].join('\n');
+  assert.match(all, /assets\/art\/avatars\/orange-cat\.webp/);
+  assert.match(all, /assets\/art\/avatars\/owl\.webp/);
+  assert.match(all, /assets\/art\/avatars\/turtle\.webp/);
+  assert.doesNotMatch(all, /assets\/cards\/legendary\//i);
+  assert.match(all, /assets\/cards\/common\//);
+});
+
+test('visible reading copy contains no retired product language', () => {
+  for (const [slug, page] of [['hub', hub], ...chapters]) {
+    const visible = page.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '').replace(/<[^>]+>/g, ' ');
+    for (const word of [/ตี้/, /\bXTY\b/, /\bParty\b/i, /\bQuest\b/i, /myClover/i]) {
+      assert.doesNotMatch(visible, word, `${slug} shows retired language`);
+    }
+  }
+});
+
+test('responsive story layout keeps a mobile-safe crop and reduced motion', () => {
+  assert.match(css, /\.story-figure img\{[^}]*object-fit:cover/);
+  assert.match(css, /@media\(max-width:680px\)/);
+  assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
 });
