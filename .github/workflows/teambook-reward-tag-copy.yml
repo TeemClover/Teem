@@ -1,0 +1,48 @@
+name: TeamBook Reward Tag Copy
+
+on:
+  push:
+    paths:
+      - '.github/workflows/teambook-reward-tag-copy.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update reward tag copy only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('teambook/p/index.html')
+          s = p.read_text()
+          old = ': (isReward ? `<span class="tag reward-tag">${esc(post.alias)} เจอการ์ด</span>` : \'\');'
+          new = ': (isReward ? `<span class="tag reward-tag">เจอการ์ดใหม่ 1 ใบ</span>` : \'\');'
+          if s.count(old) != 1:
+              raise SystemExit(f'expected exactly 1 reward tag match, got {s.count(old)}')
+          p.write_text(s.replace(old, new, 1))
+          PY
+
+      - name: Verify TeamBook build
+        working-directory: teambook
+        run: |
+          npm ci
+          npm run build
+
+      - name: Commit clean runtime
+        run: |
+          rm -f .github/workflows/teambook-reward-tag-copy.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(teambook): simplify reward tag copy"
+          git push origin HEAD:main
+
+# one-shot trigger
