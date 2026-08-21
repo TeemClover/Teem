@@ -254,3 +254,17 @@ h2.title{margin:0 0 10px;font-size:clamp(22px,5vw,30px);line-height:1.24}
 .mode-choice small{display:block;margin-top:5px;color:var(--xty-muted);font-size:12.5px;line-height:1.55}
 .mode-choice.picked{border:2px solid var(--xty-ink);box-shadow:3px 4px 0 rgba(85,181,106,.24)}
 @media(max-width:560px){.mode-grid{grid-template-columns:1fr}}
+
+
+/* TEAMBOOK_ASYNC_FEEDBACK_V1 */
+.btn.is-loading,.confirm-button.is-loading{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;cursor:wait}
+.tb-spinner{width:16px;height:16px;flex:0 0 16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:tb-spin .72s linear infinite}
+.tb-loading-dots{display:inline-block;width:18px;overflow:hidden;vertical-align:bottom}
+.tb-loading-dots::after{content:'...';display:inline-block;width:0;white-space:nowrap;animation:tb-dots 1.2s steps(4,end) infinite}
+.reward-log-pending{display:flex;align-items:center;gap:13px;padding:12px;text-decoration:none;color:inherit;border:1px dashed rgba(166,116,45,.38);border-radius:16px;background:rgba(255,250,235,.72);transition:transform .16s ease,background .16s ease}
+.reward-log-pending:hover,.reward-log-pending:focus-visible{transform:translateY(-1px);background:rgba(255,247,221,.96)}
+.reward-log-pending img{width:54px;aspect-ratio:63/88;height:auto;object-fit:cover;border-radius:8px;box-shadow:0 5px 14px rgba(64,45,24,.16)}
+.reward-log-pending span{display:grid;gap:3px}.reward-log-pending b{font-size:14px}.reward-log-pending small{font-size:12px;color:var(--xty-muted);line-height:1.45}
+@keyframes tb-spin{to{transform:rotate(360deg)}}
+@keyframes tb-dots{0%{width:0}100%{width:18px}}
+@media (prefers-reduced-motion:reduce){.tb-spinner,.tb-loading-dots::after{animation:none}.tb-loading-dots::after{width:18px}.reward-log-pending{transition:none}}

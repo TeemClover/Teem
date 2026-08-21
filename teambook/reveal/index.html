@@ -78,7 +78,7 @@
       <p class="card-detail-meta" id="cardMeta"></p>
       <p id="description"></p>
       <p id="flavor"></p>
-      <p class="whisper">เพิ่มเข้าคอลเลกชันแล้วก่อนเปิด จึง refresh เพื่อสุ่มใหม่ไม่ได้</p>
+      <p class="whisper">เพิ่มเข้าคอลเลกชันแล้ว ✓ · การ์ดใบเดิมถูกล็อกไว้ตั้งแต่ตอนเจอ จึง refresh เพื่อสุ่มใหม่ไม่ได้</p>
     </div>
 
     <div class="reveal-actions" id="actions" hidden>
@@ -142,8 +142,11 @@ function showReward(item) {
   const firstSeenDrop = /^first-seen:/.test(String(item.questId || ''));
   $('reveal').hidden = false;
   if (firstSeenDrop) {
-    $('rewardKicker').textContent = 'เห็นคนอื่นเป็นครั้งแรก ✓';
-    $('instruction').textContent = 'การเห็นคนอื่นเป็นเรื่องที่ดี · กดเปิดการ์ดใบแรกของคุณ';
+    const party = allParties().find(item => item.code === item.partyCode) || allParties().find(item => item.code === reward.partyCode);
+    const identity = partyIdentity(item.partyCode);
+    const alias = party?.members?.find(member => member.userId === identity?.userId)?.alias || 'คุณ';
+    $('rewardKicker').textContent = `${alias} เจอการ์ด`;
+    $('instruction').textContent = 'การเห็นคนอื่นเป็นเรื่องที่ดี · กดการ์ดเพื่อเปิด';
   } else if (starDrop) {
     $('rewardKicker').textContent = '⭐⭐⭐ · เปิดการ์ด';
     $('instruction').textContent = 'ครบ 3 วันที่ลงชื่อและมีคนเห็นแล้วในสมุดนี้ · กดเปิดการ์ด';
@@ -156,40 +159,45 @@ function showReward(item) {
   const button = $('cardButton');
   let opened = !!item.revealedAt;
   if (opened) finishOpen();
+  let saving = false;
   button.addEventListener('click', async () => {
-    if (opened) return;
-    /* Sound belongs to the tap, not to the network round trip that follows —
-       waiting for the save first made the card feel unresponsive. */
+    if (opened || saving) return;
+    saving = true;
     playCardFlip(false);
     if (navigator.vibrate) navigator.vibrate(12);
     button.disabled = true;
-    $('instruction').textContent = 'กำลังบันทึกช่วงเวลานี้ลง เรื่องในสมุด…';
+
+    /* The reveal is visual first. The card was already reserved server-side,
+       so there is no reason to hold the flip behind a network round trip. */
+    button.classList.add('is-open');
+    button.setAttribute('aria-expanded', 'true');
+    button.setAttribute('aria-label', cardNameTh(card));
+    $('instruction').textContent = 'กำลังเก็บการ์ดเข้าคอลเลกชัน…';
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => playSfx('reveal'), reducedMotion ? 0 : 250);
+    setTimeout(() => { $('copy').hidden = false; }, reducedMotion ? 0 : 390);
+
     const revealed = starDrop
       ? await revealStarReward(item)
       : await revealPartyCardReward(item.rewardId);
     if (revealed.error) {
+      saving = false;
       button.disabled = false;
       $('instruction').textContent = revealed.error === 'OFFLINE'
-        ? 'ยังออฟไลน์อยู่ · ต่อเน็ตแล้วกดเปิดอีกครั้ง'
-        : 'ยังเปิดการ์ดไม่ได้ · ลองอีกครั้ง';
+        ? 'เห็นการ์ดแล้ว · ยังไม่ได้เก็บ เพราะออฟไลน์ · ต่อเน็ตแล้วแตะการ์ดอีกครั้ง'
+        : 'เห็นการ์ดแล้ว · ยังบันทึกไม่สำเร็จ · แตะการ์ดอีกครั้งเพื่อเก็บ';
       return;
     }
     opened = true;
+    saving = false;
     markCardRewardRevealed(item.rewardId);
-    button.classList.add('is-open');
-    button.setAttribute('aria-expanded', 'true');
-    button.setAttribute('aria-label', cardNameTh(card));
     $('instruction').textContent = firstSeenDrop
-      ? 'เปิดแล้ว · การเห็นความพยายามของคนอื่นคือเรื่องที่ดี'
+      ? 'เปิดแล้ว · เพิ่มเข้าคอลเลกชันแล้ว ✓'
       : (starDrop
-        ? 'เปิดแล้ว · เพื่อนในสมุดจะเห็น เปิดการ์ด ใบนี้ใน เรื่องในสมุด'
+        ? 'เปิดแล้ว · เพื่อนในสมุดจะเห็นการ์ดใบนี้ในเรื่องในสมุด'
         : 'การ์ดใบนี้เป็นความทรงจำจากเล่มที่เขียนจบ ไม่ใช่ของที่ซื้อสุ่ม');
     syncXtyProfile();
-    /* Keep the reveal cadence: flip first, brighter note around the
-       quarter-turn, then let the reward copy arrive while the 3D turn settles. */
-    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setTimeout(() => playSfx('reveal'), reducedMotion ? 0 : 250);
-    setTimeout(finishOpen, reducedMotion ? 0 : 390);
+    finishOpen();
   });
 
   function finishOpen() {

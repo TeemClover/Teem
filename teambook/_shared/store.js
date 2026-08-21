@@ -564,8 +564,10 @@ export function importServerCardReward(value) {
     source: 'server',
   };
   const owned = new Set(ownedCardIds(profile));
-  const ownedCards = cardId && !owned.has(cardId)
-    ? [...profile.ownedCards, { cardId, acquiredAt: earnedAt, acquiredFrom: `party:${reward.partyCode}` }]
+  const firstSeenClaim = /^first-seen:/.test(reward.questId);
+  const shouldOwnNow = cardId && (!firstSeenClaim || !!reward.revealedAt);
+  const ownedCards = shouldOwnNow && !owned.has(cardId)
+    ? [...profile.ownedCards, { cardId, acquiredAt: reward.revealedAt || earnedAt, acquiredFrom: firstSeenClaim ? 'first_seen' : `party:${reward.partyCode}` }]
     : profile.ownedCards;
   const cardRewards = existing
     ? profile.cardRewards.map(item => item.rewardId === rewardId ? reward : item)
@@ -1062,6 +1064,15 @@ export async function revealPartyCardReward(rewardId) {
   });
   if (result.error) return result;
   const remembered = rememberResponse(reward.partyCode, result);
+  if (/^first-seen:/.test(String(reward.questId || '')) && reward.cardId) {
+    const profile = getProfile();
+    if (profile && !ownedCardIds(profile).includes(reward.cardId)) {
+      saveProfile({ ...profile, ownedCards: [...profile.ownedCards, {
+        cardId: reward.cardId, acquiredAt: now(), acquiredFrom: 'first_seen',
+      }] }, { touch: true });
+    }
+  }
+  markCardRewardRevealed(reward.rewardId);
   return { ...remembered, reward: pendingCardReward(reward.rewardId) };
 }
 

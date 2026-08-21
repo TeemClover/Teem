@@ -93,6 +93,8 @@ function buildPartyLogText(party) {
     if (post.kind === 'reward' && post.rewardSource) lines.push(`rewardSource: ${post.rewardSource}`);
     if (post.kind === 'reward' && post.rewardSource === 'first_seen') {
       lines.push('rewardLabel: รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก');
+    } else if (post.kind === 'reward' && post.rewardSource === 'first_seen_pending') {
+      lines.push(`rewardLabel: ${speaker} เจอการ์ด · ยังไม่ได้เปิด`);
     }
     if (post.retracted) {
       lines.push('retracted: yes');
@@ -100,7 +102,8 @@ function buildPartyLogText(party) {
       lines.push('  [ข้อความถูกถอนโดยเจ้าของ]');
     } else {
       lines.push('message:');
-      lines.push(indentBody(post.body));
+      lines.push(post.kind === 'reward' && post.rewardSource === 'first_seen_pending'
+        ? '  [การ์ดรอเปิด]' : indentBody(post.body));
     }
 
     if (post.kind === 'commit') {

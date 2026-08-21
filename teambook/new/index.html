@@ -111,7 +111,7 @@
   </details>
 
   <button class="btn gold" id="go" disabled>สร้างสมุด</button>
-  <p class="note"><strong>หลังจากกดสร้างสมุดแล้ว รอประมาณ 5–12 วินาที เพื่อรับรหัสเข้าร่วมสมุด</strong><br>หนึ่งคนสร้างสมุดที่กำลังเขียนได้ 1 สมุด และเข้าร่วมสมุดของเพื่อนได้ 3 สมุด</p>
+  <p class="note">ตอนกดสร้าง ระบบจะเขียนสมุดและรับรหัสให้ · ปุ่มจะขยับตลอดเวลาที่กำลังบันทึก เพื่อให้รู้ว่าระบบยังทำงานอยู่<br>หนึ่งคนสร้างสมุดที่กำลังเขียนได้ตาม Level และเข้าร่วมสมุดของเพื่อนได้ 3 สมุด</p>
 </main>
 
 <div class="toast" id="toast" role="status"></div>
@@ -131,7 +131,10 @@ import { cardMarkup } from '/_shared/card-ui.js';
 import { petSpeciesFor } from '/_shared/card-picker.js';
 
 const $ = id => document.getElementById(id);
-if (!hasProfile()) location.replace('/'); else init();
+if (!hasProfile()) location.replace('/'); else {
+  fetch('/api/health', { credentials: 'same-origin', cache: 'no-store' }).catch(() => {});
+  init();
+}
 
 function radioGroup(container, buttons, initial, onPick) {
   let current = initial;
@@ -360,7 +363,8 @@ function init() {
   syncReady();
 
   $('go').addEventListener('click', async () => {
-    const go = $('go'); go.disabled = true; go.textContent = 'กำลังสร้างสมุด…';
+    const go = $('go'); go.disabled = true; go.classList.add('is-loading');
+    go.innerHTML = '<span class="tb-spinner" aria-hidden="true"></span><span>กำลังเขียนสมุด</span><span class="tb-loading-dots" aria-hidden="true"></span>';
     try {
       const party = await createPartyV2({
         name: $('pname').value,
@@ -384,7 +388,7 @@ function init() {
         CARD_NOT_COVER_ELIGIBLE: 'ปกสมุดใช้ได้เฉพาะ Card Back หรือ Rare Card',
       };
       toast(messages[error.code] || 'สร้างสมุดไม่สำเร็จ — เช็กเน็ตแล้วลองอีกครั้ง');
-      go.disabled = false; go.textContent = 'สร้างสมุด';
+      go.disabled = false; go.classList.remove('is-loading'); go.textContent = 'สร้างสมุด';
     }
   });
 

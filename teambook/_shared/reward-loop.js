@@ -53,9 +53,12 @@ function weeklySauce(party, week) {
     return `- ${member.alias}: ลงชื่อ ${own.length}${party.verificationMode === 'confirm' ? ` · มีคนเห็นแล้ว ${valid.length}` : ''}`;
   }).join('\n') || '- ยังไม่มีข้อมูลสมาชิก';
   const highlights = posts.slice(-8).map(post => {
-    if (post.kind === 'reward') return post.rewardSource === 'first_seen'
-      ? `- รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก · ${memberAlias(party, post.userId)} เปิดการ์ดในสมุด`
-      : `- เปิดการ์ด · ${memberAlias(party, post.userId)} เปิดการ์ดในสมุด`;
+    if (post.kind === 'reward') {
+      if (post.rewardSource === 'first_seen_pending') return `- ${memberAlias(party, post.userId)} เจอการ์ด · ยังไม่ได้เปิด`;
+      return post.rewardSource === 'first_seen'
+        ? `- รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก · ${memberAlias(party, post.userId)} เปิดการ์ดในสมุด`
+        : `- เปิดการ์ด · ${memberAlias(party, post.userId)} เปิดการ์ดในสมุด`;
+    }
     if (post.kind === 'commit') return `- ลงชื่อ · ${memberAlias(party, post.userId)} · ${String(post.body || '✓').replace(/\s+/g, ' ').slice(0, 120)}`;
     if (post.kind === 'message') return `- ${memberAlias(party, post.userId)}: ${String(post.body || '').replace(/\s+/g, ' ').slice(0, 140)}`;
     return '';

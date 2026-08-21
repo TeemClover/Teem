@@ -69,17 +69,9 @@ async function progressionFor(sql, ids) {
   return progressionShape(rows[0]);
 }
 
-async function ensureQuotaV2(sql) {
-  await sql.query(`CREATE TABLE IF NOT EXISTS teambook_book_quota_v2 (
-    quota_key TEXT NOT NULL,
-    book_id TEXT NOT NULL,
-    role TEXT NOT NULL DEFAULT 'owner',
-    created_at TIMESTAMPTZ NOT NULL,
-    released_at TIMESTAMPTZ,
-    PRIMARY KEY (quota_key, book_id, role)
-  )`);
-  await sql.query(`CREATE INDEX IF NOT EXISTS idx_teambook_book_quota_v2_active
-    ON teambook_book_quota_v2(quota_key, role, released_at)`);
+async function ensureQuotaV2() {
+  /* Owned by core SCHEMA. Keeping the call makes old entrypoints compatible
+     without paying CREATE TABLE / CREATE INDEX on every request. */
 }
 
 async function ownsCard(sql, ids, cardId) {

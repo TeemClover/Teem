@@ -7,6 +7,7 @@ const PASSWORD_ITERATIONS = 210000;
 const encoder = new TextEncoder();
 const crypto = webcrypto;
 let schemaPromise;
+const SCHEMA_VERSION = 1;
 
 function teambookDatabaseUrl() {
   const looksLikePostgres = value => typeof value === 'string' && /^postgres(?:ql)?:\/\//i.test(value.trim());
@@ -151,6 +152,7 @@ const SCHEMA = [
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS activity_color TEXT`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS success_rule_snapshot TEXT`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS reward_source TEXT`,
+  `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS reward_id TEXT`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS image_url TEXT`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS image_w INTEGER`,
   `ALTER TABLE teambook_book_entries ADD COLUMN IF NOT EXISTS image_h INTEGER`,
@@ -215,10 +217,31 @@ const SCHEMA = [
     mime_type TEXT NOT NULL, width INTEGER, height INTEGER,
     status TEXT NOT NULL DEFAULT 'ready', created_at TIMESTAMPTZ NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS teambook_book_quota_v2 (
+    quota_key TEXT NOT NULL, book_id TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'owner',
+    created_at TIMESTAMPTZ NOT NULL, released_at TIMESTAMPTZ,
+    PRIMARY KEY (quota_key, book_id, role)
+  )`,
+  `CREATE INDEX IF NOT EXISTS idx_teambook_book_quota_v2_active
+    ON teambook_book_quota_v2(quota_key, role, released_at)`,
+  `CREATE TABLE IF NOT EXISTS teambook_schema_state (
+    singleton BOOLEAN PRIMARY KEY DEFAULT TRUE CHECK (singleton),
+    version INTEGER NOT NULL, updated_at TIMESTAMPTZ NOT NULL
+  )`,
+  `INSERT INTO teambook_schema_state (singleton,version,updated_at) VALUES (TRUE,${SCHEMA_VERSION},NOW())
+    ON CONFLICT (singleton) DO UPDATE SET version=GREATEST(teambook_schema_state.version,EXCLUDED.version),updated_at=NOW()`,
 ];
 
 export async function ensureSchema(sql) {
   if (!schemaPromise) schemaPromise = (async () => {
+    let version = 0;
+    try {
+      const rows = await sql.query('SELECT version FROM teambook_schema_state WHERE singleton=TRUE LIMIT 1');
+      version = Number(rows[0]?.version || 0);
+    } catch (error) {
+      if (String(error?.code || '') !== '42P01') throw error;
+    }
+    if (version >= SCHEMA_VERSION) return;
     for (const statement of SCHEMA) await sql.query(statement);
   })().catch(error => { schemaPromise = undefined; throw error; });
   return schemaPromise;

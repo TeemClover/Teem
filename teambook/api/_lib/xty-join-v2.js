@@ -28,17 +28,9 @@ function quotaKeyFor(account, body) {
   return /^[a-z0-9_-]{6,80}$/i.test(profileId) ? `local-v2:${profileId}` : '';
 }
 
-async function ensureQuotaV2(sql) {
-  await sql.query(`CREATE TABLE IF NOT EXISTS teambook_book_quota_v2 (
-    quota_key TEXT NOT NULL,
-    book_id TEXT NOT NULL,
-    role TEXT NOT NULL DEFAULT 'owner',
-    created_at TIMESTAMPTZ NOT NULL,
-    released_at TIMESTAMPTZ,
-    PRIMARY KEY (quota_key, book_id, role)
-  )`);
-  await sql.query(`CREATE INDEX IF NOT EXISTS idx_teambook_book_quota_v2_active
-    ON teambook_book_quota_v2(quota_key, role, released_at)`);
+async function ensureQuotaV2() {
+  /* Owned by core SCHEMA. Keeping the call makes old entrypoints compatible
+     without paying CREATE TABLE / CREATE INDEX on every request. */
 }
 
 function bearerToken(req) {
@@ -183,16 +175,10 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
         memberActivityColor, memberSuccessRule,
       ]);
       if (existing.role !== 'lead') await attachQuota(sql, quotaKey, row.id, at);
-      try {
-        const state = await legacyState(legacyXtyHandler, req, code, token);
-        return sendJson(res, { ...state, token, quotaSystem: 'v2-separated' });
-      } catch (stateError) {
-        console.error('TeamBook join v2 state refresh failed after existing membership recovery', code, stateError?.message || stateError);
-        return sendJson(res, {
-          ok: true, joined: true, recoveryRequired: true, code, token,
-          meUserId: existing.user_id, quotaSystem: 'v2-separated',
-        });
-      }
+      return sendJson(res, {
+        ok: true, joined: true, recoveryRequired: true, code, token,
+        meUserId: existing.user_id, quotaSystem: 'v2-separated',
+      });
     }
 
     const used = await joinedUsage(sql, quotaKey, identityIds);
@@ -254,16 +240,10 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     }
 
     await sql.query('UPDATE teambook_books SET updated_at=$1 WHERE id=$2', [at, row.id]);
-    try {
-      const state = await legacyState(legacyXtyHandler, req, code, token);
-      return sendJson(res, { ...state, token, quotaSystem: 'v2-separated' }, 201);
-    } catch (stateError) {
-      console.error('TeamBook join v2 state refresh failed after membership commit', code, stateError?.message || stateError);
-      return sendJson(res, {
-        ok: true, joined: true, recoveryRequired: true, code, token,
-        meUserId: userId, quotaSystem: 'v2-separated',
-      }, 201);
-    }
+    return sendJson(res, {
+      ok: true, joined: true, recoveryRequired: true, code, token,
+      meUserId: userId, quotaSystem: 'v2-separated',
+    }, 201);
   } catch (error) {
     console.error('TeamBook join v2 failed', error);
     if (error.code === 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED') {

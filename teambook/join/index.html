@@ -116,7 +116,7 @@
     </div>
 
     <button class="btn gold" id="go" style="margin-top:20px" disabled>เข้าร่วมสมุด</button>
-    <p class="hint" id="joinWait" style="margin-top:12px">หลังจากกดเข้าร่วมสมุดแล้ว รอประมาณ 5–12 วินาที เพื่อยืนยัน Slot สมุด</p>
+    <p class="hint" id="joinWait" style="margin-top:12px">ตอนกดเข้าร่วม ปุ่มจะขยับขณะกำลังเขียนชื่อคุณลงสมุด · พอยืนยันสมาชิกแล้วจะพาเข้าเล่มทันที</p>
     <p class="hint" id="err" style="margin-top:12px;color:var(--gold-soft)" hidden></p>
   </div>
 
@@ -138,6 +138,7 @@ const prefill = /^\d{5}$/.test(rawPrefill || '') ? rawPrefill : '';
 if (!hasProfile()) {
   location.replace(prefill ? `/?c=${encodeURIComponent(prefill)}` : '/');
 } else {
+  fetch('/api/health', { credentials: 'same-origin', cache: 'no-store' }).catch(() => {});
   initJoin(prefill);
 }
 
@@ -256,7 +257,8 @@ function initJoin(initialCode) {
 
   go.addEventListener('click', async () => {
     go.disabled = true;
-    go.textContent = 'กำลังยืนยัน Slot…';
+    go.classList.add('is-loading');
+    go.innerHTML = '<span class="tb-spinner" aria-hidden="true"></span><span>กำลังเขียนชื่อคุณลงสมุด</span><span class="tb-loading-dots" aria-hidden="true"></span>';
     const p = getProfile();
     const res = await joinPartyV2(input.value, {
       alias: p.alias, avatar: partyAvatar, avatarColor: partyAvatarColor,
@@ -272,6 +274,7 @@ function initJoin(initialCode) {
       err.textContent = 'ไม่เจอสมุดรหัสนี้ ลองเช็กรหัสอีกครั้ง';
       err.hidden = false;
       go.disabled = false;
+      go.classList.remove('is-loading');
       go.textContent = 'เข้าร่วมสมุด';
       return;
     }
@@ -279,6 +282,7 @@ function initJoin(initialCode) {
       err.textContent = 'สมุดนี้เต็มแล้ว (รับได้ไม่เกิน 5 คน)';
       err.hidden = false;
       go.disabled = false;
+      go.classList.remove('is-loading');
       go.textContent = 'เข้าร่วมสมุด';
       return;
     }
@@ -286,6 +290,7 @@ function initJoin(initialCode) {
       err.textContent = 'สมุดนี้จบแล้วและไม่รับสมาชิกเพิ่ม';
       err.hidden = false;
       go.disabled = false;
+      go.classList.remove('is-loading');
       go.textContent = 'เข้าร่วมสมุด';
       return;
     }
@@ -293,6 +298,7 @@ function initJoin(initialCode) {
       err.textContent = 'ช่วงการร่วมทางของคุณในสมุดนี้ถูกปิดแล้ว';
       err.hidden = false;
       go.disabled = false;
+      go.classList.remove('is-loading');
       go.textContent = 'เข้าร่วมสมุด';
       return;
     }
@@ -300,6 +306,7 @@ function initJoin(initialCode) {
       err.textContent = 'เล่มนี้ต่างคนต่างทำ — เลือกกิจกรรมของคุณก่อนเข้าร่วม';
       err.hidden = false;
       go.disabled = false;
+      go.classList.remove('is-loading');
       go.textContent = 'เข้าร่วมสมุด';
       return;
     }
@@ -307,6 +314,7 @@ function initJoin(initialCode) {
       err.textContent = 'ช่องเข้าร่วมสมุดเต็มแล้ว — เข้าร่วมพร้อมกันได้ไม่เกิน 3 สมุด';
       err.hidden = false;
       go.disabled = false;
+      go.classList.remove('is-loading');
       go.textContent = 'เข้าร่วมสมุด';
       return;
     }
@@ -314,6 +322,7 @@ function initJoin(initialCode) {
       err.textContent = 'เข้าร่วมสมุดไม่สำเร็จ — เช็กเน็ตแล้วลองใหม่';
       err.hidden = false;
       go.disabled = false;
+      go.classList.remove('is-loading');
       go.textContent = 'เข้าร่วมสมุด';
       return;
     }

@@ -243,11 +243,16 @@ let myId = (partyIdentity(code) && partyIdentity(code).userId) || (me ? me.id : 
 let foilPlayed = false;
 let terminalReward = null;
 
+let pendingRewardNoticeShown = false;
 function openRecoveredFirstSeen(result) {
   const reward = result?.myReward;
   if (!reward?.rewardId || reward.revealedAt || !/^first-seen:/.test(String(reward.questId || ''))) return false;
-  location.replace(`/reveal/?r=${encodeURIComponent(reward.rewardId)}`);
-  return true;
+  if (!pendingRewardNoticeShown) {
+    pendingRewardNoticeShown = true;
+    toast('มีการ์ดรอเปิดอยู่ในเรื่องในสมุด · แตะการ์ดเพื่อเปิด');
+  }
+  /* Returning false deliberately keeps the player in the notebook. */
+  return false;
 }
 
 start();
@@ -641,11 +646,13 @@ function renderLog(p) {
   p.log.forEach(post => {
     const isPet = post.kind === 'pet';
     const isReward = post.kind === 'reward';
-    const rewardCard = isReward ? cardById(post.body) : null;
+    const pendingFirstSeen = isReward && post.rewardSource === 'first_seen_pending' && post.rewardId;
+    const rewardCard = isReward && !pendingFirstSeen ? cardById(post.body) : null;
     const el = document.createElement('div');
     el.className = 'post'
       + (post.kind === 'commit' ? ' commit' : '')
       + (isReward ? ' reward' : '')
+      + (pendingFirstSeen ? ' reward-pending' : '')
       + (isPet ? ' pet' : '')
       + (post.retracted ? ' retracted' : '');
     /* The whole message is tinted by what came out of the card, so a
@@ -654,18 +661,24 @@ function renderLog(p) {
 
     const rewardReason = post.rewardSource === 'first_seen'
       ? 'รางวัลเห็นสิ่งที่คนอื่นทำเป็นครั้งแรก'
-      : (post.rewardSource === 'party_stars' ? 'รางวัลครบ 3 ดาวในสมุดนี้' : '');
+      : (post.rewardSource === 'first_seen_pending'
+        ? 'เห็นความพยายามของคนอื่นเป็นครั้งแรก'
+        : (post.rewardSource === 'party_stars' ? 'รางวัลครบ 3 ดาวในสมุดนี้' : ''));
     const body = post.retracted
       ? '<span>ข้อความถูกถอนโดยเจ้าของ</span>'
-      : (isReward && rewardCard
-        ? `<div class="reward-log-card">`
-          + (rewardReason ? `<p class="reward-log-reason"><b>${esc(rewardReason)}</b></p>` : '')
-          + `${cardMarkup(rewardCard)}`
-          + `<p>เปิดได้ <b>${esc(cardNameTh(rewardCard))}</b>`
-          + ` · ${esc((TEAMBOOK_RARITY_META[rewardCard.rarity] || TEAMBOOK_RARITY_META.common).label)}</p></div>`
-        : esc(post.body));
+      : (pendingFirstSeen
+        ? `<a class="reward-log-pending" href="/reveal/?r=${encodeURIComponent(post.rewardId)}">`
+          + `<img src="/assets/card-back.webp" alt="การ์ดรอเปิด" width="630" height="880">`
+          + `<span><b>${esc(post.alias)} เจอการ์ด</b><small>แตะเพื่อเปิด · ยังไม่เข้า Collection จนกว่าจะเปิด</small></span></a>`
+        : (isReward && rewardCard
+          ? `<div class="reward-log-card">`
+            + (rewardReason ? `<p class="reward-log-reason"><b>${esc(rewardReason)}</b></p>` : '')
+            + `${cardMarkup(rewardCard)}`
+            + `<p>เปิดได้ <b>${esc(cardNameTh(rewardCard))}</b>`
+            + ` · ${esc((TEAMBOOK_RARITY_META[rewardCard.rarity] || TEAMBOOK_RARITY_META.common).label)}</p></div>`
+          : esc(post.body)));
     const tag = post.kind === 'commit' ? '<span class="tag">COMMIT</span>'
-      : (isReward ? '<span class="tag reward-tag">การ์ด</span>' : '');
+      : (isReward ? `<span class="tag reward-tag">${esc(post.alias)} เจอการ์ด</span>` : '');
 
     /* pet turns are written by the scheduled worker and carry the pet's
        own identity rather than a member's */
@@ -700,16 +713,29 @@ function renderLog(p) {
         confirm.textContent = '◎ เห็นแล้ว';
         confirm.addEventListener('click', async () => {
           confirm.disabled = true;
+          confirm.classList.add('is-loading');
+          confirm.innerHTML = '<span class="tb-spinner" aria-hidden="true"></span><span>กำลังบันทึกว่าเห็นแล้ว</span><span class="tb-loading-dots" aria-hidden="true"></span>';
           const result = await confirmCommit(code, post.seq);
-          if (result.error === 'ALREADY_CONFIRMED') toast('มีเพื่อน เห็นแล้ว');
-          else if (result.error === 'CONFIRM_WINDOW_CLOSED') toast('หมดเวลากดเห็นแล้วของการลงชื่อนี้');
-          else if (result.error) toast('ยัง เห็นแล้ว ไม่สำเร็จ');
-          else if (result.firstSeenReward?.rewardId && !result.firstSeenReward.revealedAt) {
-            toast('เห็นคนอื่นครั้งแรก · ได้การ์ด 1 ใบ');
-            location.href = `/reveal/?r=${encodeURIComponent(result.firstSeenReward.rewardId)}`;
+          if (result.error) {
+            confirm.classList.remove('is-loading');
+            confirm.disabled = false;
+            confirm.textContent = '◎ เห็นแล้ว';
+            if (result.error === 'ALREADY_CONFIRMED') toast('มีเพื่อนเห็นแล้ว');
+            else if (result.error === 'CONFIRM_WINDOW_CLOSED') toast('หมดเวลากดเห็นแล้วของการลงชื่อนี้');
+            else toast('ยังเห็นแล้วไม่สำเร็จ');
+            if (result.error === 'ALREADY_CONFIRMED') refreshParty(code).then(fresh => { if (!fresh.error) render(); });
             return;
           }
-          render();
+          confirm.classList.remove('is-loading');
+          confirm.textContent = '◎ เห็นแล้ว ✓';
+          if (result.firstSeenReward?.rewardId && !result.firstSeenReward.revealedAt) {
+            toast('เจอการ์ดแล้ว · การ์ดอยู่ในเรื่องในสมุด แตะเพื่อเปิดเมื่อพร้อม');
+          } else {
+            toast('เห็นแล้ว ✓');
+          }
+          /* Confirmation already committed. Hydrate in the background so the
+             tap never waits for the whole notebook payload. */
+          refreshParty(code).then(fresh => { if (!fresh.error) render(); });
         });
         slot.appendChild(confirm);
       } else if (post.userId === myId) {
