@@ -682,7 +682,7 @@ function renderLog(p) {
             + ` · ${esc((TEAMBOOK_RARITY_META[rewardCard.rarity] || TEAMBOOK_RARITY_META.common).label)}</p></div>`
           : esc(post.body)));
     const tag = post.kind === 'commit' ? '<span class="tag">COMMIT</span>'
-      : (isReward ? `<span class="tag reward-tag">${esc(post.alias)} เจอการ์ด</span>` : '');
+      : (isReward ? `<span class="tag reward-tag">เจอการ์ดใหม่ 1 ใบ</span>` : '');
 
     /* pet turns are written by the scheduled worker and carry the pet's
        own identity rather than a member's */
