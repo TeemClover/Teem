@@ -47,6 +47,16 @@ patch(
   `<button class="btn gold" id="useAvatar">ใช้เป็น สัตว์</button>`,
   `<button class="btn gold" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>`,
 );
+patch(
+  'reveal/index.html',
+  `<button class="btn ghost" id="useAvatar">ใช้เป็น สัตว์</button>`,
+  `<button class="btn ghost" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>`,
+);
+patch(
+  'reveal/index.html',
+  `$('useAvatar').textContent = 'ใช้เป็น สัตว์ แล้ว ✓';`,
+  `$('useAvatar').textContent = 'ใช้เป็นการ์ดประจำตัวแล้ว ✓';`,
+);
 
 // Keep OAuth server code intact, but intentionally expose only email/password
 // in the account UI for now.
