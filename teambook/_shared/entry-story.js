@@ -1,3 +1,9 @@
+const mobileStyle = document.createElement('link');
+mobileStyle.rel = 'stylesheet';
+mobileStyle.href = '/_shared/entry-mobile.css?v=20260822-mobile1';
+mobileStyle.media = '(max-width: 680px)';
+document.head.append(mobileStyle);
+
 const params = new URLSearchParams(location.search);
 const rawCode = params.get('c') || '';
 const inviteCode = /^\d{5}$/.test(rawCode) ? rawCode : '';
