@@ -1,5 +1,5 @@
 import { AVATAR_BY_ID } from './avatars.js';
-import { getParty, getProfile, partyIdentity } from './store.js';
+import { getParty, getProfile, partyIdentity, partyCompletionState } from './store.js';
 
 const code = new URLSearchParams(location.search).get('c');
 const ACTIVE_STATES = new Set(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
@@ -401,12 +401,13 @@ function installPartySettingsGuard() {
 }
 
 function strictQuestGate(party) {
-  const start = new Date(party?.startAt || party?.startedAt || party?.createdAt || 0).getTime();
-  const durationDays = Math.max(1, Number(party?.durationDays || 7));
-  const fullDurationEnd = Number.isFinite(start) && start > 0 ? start + durationDays * 86400000 : 0;
-  const stored = new Date(party?.scheduledEndAt || 0).getTime();
-  const endAt = Math.max(fullDurationEnd, Number.isFinite(stored) ? stored : 0);
-  return { durationDays, endAt, eligible: !!endAt && Date.now() >= endAt };
+  const state = partyCompletionState(party);
+  const endAt = new Date(state.scheduledEndAt || 0).getTime();
+  return {
+    durationDays: state.durationDays,
+    endAt: Number.isFinite(endAt) ? endAt : 0,
+    eligible: !!state.eligible,
+  };
 }
 
 function syncQuestFinishGate() {
