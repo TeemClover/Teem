@@ -142,7 +142,7 @@ function showReward(item) {
   const firstSeenDrop = /^first-seen:/.test(String(item.questId || ''));
   $('reveal').hidden = false;
   if (firstSeenDrop) {
-    const party = allParties().find(item => item.code === item.partyCode) || allParties().find(item => item.code === reward.partyCode);
+    const party = allParties().find(partyItem => partyItem.code === item.partyCode);
     const identity = partyIdentity(item.partyCode);
     const alias = party?.members?.find(member => member.userId === identity?.userId)?.alias || 'คุณ';
     $('rewardKicker').textContent = `${alias} เจอการ์ด`;

@@ -667,9 +667,13 @@ function renderLog(p) {
     const body = post.retracted
       ? '<span>ข้อความถูกถอนโดยเจ้าของ</span>'
       : (pendingFirstSeen
-        ? `<a class="reward-log-pending" href="/reveal/?r=${encodeURIComponent(post.rewardId)}">`
-          + `<img src="/assets/card-back.webp" alt="การ์ดรอเปิด" width="630" height="880">`
-          + `<span><b>${esc(post.alias)} เจอการ์ด</b><small>แตะเพื่อเปิด · ยังไม่เข้า Collection จนกว่าจะเปิด</small></span></a>`
+        ? (post.userId === myId
+          ? `<a class="reward-log-pending" href="/reveal/?r=${encodeURIComponent(post.rewardId)}">`
+            + `<img src="/assets/card-back.webp" alt="การ์ดรอเปิด" width="630" height="880">`
+            + `<span><b>${esc(post.alias)} เจอการ์ด</b><small>แตะเพื่อเปิด · ยังไม่เข้า Collection จนกว่าจะเปิด</small></span></a>`
+          : `<div class="reward-log-pending is-waiting">`
+            + `<img src="/assets/card-back.webp" alt="การ์ดรอ ${esc(post.alias)} เปิด" width="630" height="880">`
+            + `<span><b>${esc(post.alias)} เจอการ์ด</b><small>รอเจ้าของการ์ดเปิดเอง</small></span></div>`)
         : (isReward && rewardCard
           ? `<div class="reward-log-card">`
             + (rewardReason ? `<p class="reward-log-reason"><b>${esc(rewardReason)}</b></p>` : '')
