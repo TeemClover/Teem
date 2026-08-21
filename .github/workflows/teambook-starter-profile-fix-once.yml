@@ -121,7 +121,7 @@ test('newer Starter choice beats an older cloud identity card', () => {
 
           cd teambook
           npm ci
-          npm test
+          node --test --experimental-test-module-mocks _shared/store.test.mjs
           npm run build
           cd ..
 
