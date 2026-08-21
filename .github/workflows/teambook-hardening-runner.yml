@@ -1,0 +1,34 @@
+name: TeamBook hardening runner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/teambook-hardening-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Apply hardening
+        run: python .github/teambook-hardening.py
+      - name: Verify standalone build
+        working-directory: teambook
+        run: |
+          npm ci
+          npm run build
+      - name: Commit and clean one-time runner
+        run: |
+          rm -f .github/teambook-hardening.py .github/teambook-hardening-trigger .github/workflows/teambook-hardening-runner.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(teambook): harden standalone runtime recovery"
+          git push origin HEAD:main
