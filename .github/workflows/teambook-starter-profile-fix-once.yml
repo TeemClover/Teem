@@ -1,3 +1,4 @@
+# trigger through a GitHub merge so the push workflow runs
 name: TeamBook starter profile fix once
 
 on:
@@ -31,22 +32,18 @@ jobs:
                   raise SystemExit(f'expected text not found in {path}: {old[:80]!r}')
               p.write_text(text.replace(old, new, 1))
 
-          # Explicit null means the player chose a free Starter animal.
           replace_once(
               'teambook/_shared/store.js',
               "  const equippedWanted = canonicalCardId(value.equippedCardId || '');\n  const equippedCardId = ownedCardIds.has(equippedWanted)\n    ? equippedWanted\n    : (ownedCards[0]?.cardId || null);",
               "  const equippedWanted = canonicalCardId(value.equippedCardId || '');\n  const equippedCardId = ownedCardIds.has(equippedWanted) ? equippedWanted : null;"
           )
 
-          # Cloud merge must respect the newest explicit Starter choice (null)
-          # instead of resurrecting an older equipped card.
           replace_once(
               'teambook/_shared/account.js',
               "    equippedCardId: mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)\n      ? newest.equippedCardId\n      : (mergedOwnedCards.some(item => item.cardId === older.equippedCardId) ? older.equippedCardId : null),",
               "    equippedCardId: newest.equippedCardId\n      && mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)\n        ? newest.equippedCardId\n        : null,"
           )
 
-          # Card terminology: this is the player's identity card, not 'being an animal'.
           replace_once(
               'teambook/_shared/card-ui.js',
               "AVATAR_IN_USE: 'ใช้อยู่เป็นสัตว์'",
@@ -63,8 +60,6 @@ jobs:
               '<button class="btn gold" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>'
           )
 
-          # Temporarily keep account creation/login email+password only.
-          # OAuth backend stays intact so it can be switched back on later.
           replace_once(
               'teambook/assets/account.js',
               "    const [session, available] = await Promise.all([api(`${API}/session`), api(`${API}/providers`)]);\n    user = session.user || null; providers = available.providers || providers;",
@@ -76,7 +71,6 @@ jobs:
               'สมัครหรือ Login ด้วยอีเมล + รหัสผ่าน · Progress ในเครื่องกับ Cloud จะถูกรวมกัน'
           )
 
-          # Regression tests for both local normalization and cloud merge.
           p = Path('teambook/_shared/store.test.mjs')
           text = p.read_text()
           marker = "test('collection exhaustion returns complete instead of issuing a duplicate', () => {"
