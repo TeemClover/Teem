@@ -1,0 +1,59 @@
+name: TeamBook Neon env discovery once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/teambook-neon-env-discovery-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Make TeamBook discover its connected Neon URL safely
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          core = Path('teambook/api/_lib/core.js')
+          text = core.read_text()
+          old = """export function database() {\n  const url = process.env.TEAMBOOK_DATABASE_URL || process.env.TEAMBOOK_DATABASE_DATABASE_URL || process.env.STORAGE_DATABASE_URL || process.env.STORAGE_URL || process.env.DATABASE_URL;\n  if (!url) {\n    const error = new Error('TEAMBOOK_DATABASE_URL_NOT_CONFIGURED');\n    error.code = 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED';\n    throw error;\n  }\n  return neon(url);\n}\n"""
+          new = """function teambookDatabaseUrl() {\n  const looksLikePostgres = value => typeof value === 'string' && /^postgres(?:ql)?:\\/\\//i.test(value.trim());\n  const direct = [\n    process.env.TEAMBOOK_DATABASE_URL,\n    process.env.TEAMBOOK_DATABASE_DATABASE_URL,\n    process.env.STORAGE_DATABASE_URL,\n    process.env.STORAGE_URL,\n    process.env.DATABASE_URL,\n  ].find(looksLikePostgres);\n  if (direct) return direct.trim();\n\n  const candidates = Object.entries(process.env)\n    .filter(([key, value]) => key.startsWith('TEAMBOOK_')\n      && /(?:DATABASE_URL|POSTGRES_URL)$/.test(key)\n      && looksLikePostgres(value))\n    .sort(([a], [b]) => {\n      const rank = key => key.endsWith('DATABASE_URL') ? 0 : 1;\n      return rank(a) - rank(b) || a.localeCompare(b);\n    });\n  return candidates[0]?.[1]?.trim() || '';\n}\n\nexport function hasDatabaseConfig() {\n  return !!teambookDatabaseUrl();\n}\n\nexport function database() {\n  const url = teambookDatabaseUrl();\n  if (!url) {\n    const error = new Error('TEAMBOOK_DATABASE_URL_NOT_CONFIGURED');\n    error.code = 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED';\n    throw error;\n  }\n  return neon(url);\n}\n"""
+          if old not in text:
+              raise SystemExit('expected database() block not found')
+          core.write_text(text.replace(old, new, 1))
+
+          health = Path('teambook/api/health.js')
+          h = health.read_text()
+          if not h.startswith('function reply'):
+              raise SystemExit('unexpected health.js header')
+          h = "import { hasDatabaseConfig } from './_lib/core.js';\n\n" + h
+          old_check = "databaseConfigured: !!(process.env.TEAMBOOK_DATABASE_URL || process.env.TEAMBOOK_DATABASE_DATABASE_URL || process.env.STORAGE_DATABASE_URL || process.env.STORAGE_URL || process.env.DATABASE_URL),"
+          if old_check not in h:
+              old_check = "databaseConfigured: !!(process.env.TEAMBOOK_DATABASE_URL || process.env.STORAGE_DATABASE_URL || process.env.STORAGE_URL || process.env.DATABASE_URL),"
+          if old_check not in h:
+              raise SystemExit('expected health database check not found')
+          h = h.replace(old_check, 'databaseConfigured: hasDatabaseConfig(),', 1)
+          health.write_text(h)
+          PY
+
+          node --check teambook/api/_lib/core.js
+          node --check teambook/api/health.js
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add teambook/api/_lib/core.js teambook/api/health.js
+          git commit -m 'fix(teambook): discover connected Neon env safely'
+
+          git rm .github/workflows/teambook-neon-env-discovery-once.yml
+          git commit -m 'chore(teambook): remove one-time Neon env workflow'
+          git push origin main
