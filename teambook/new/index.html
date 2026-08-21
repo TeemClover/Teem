@@ -165,11 +165,11 @@ function init() {
   const ownedPets = TEAMBOOK_V1_PETS.filter(p => petSpecies.has(p.id));
   const leadCards = availableOwnedCards({ role: 'lead', profile });
   const npcCards = availableOwnedCards({ role: 'npc', profile });
-  const firstParty = !allParties().some(party => partyIdentity(party.code)?.userId === party.ownerId);
+  const levelOne = Math.max(1, Number(profile.level || 1)) <= 1;
   const qs = new URLSearchParams(location.search);
   const requestedLead = String(qs.get('lead') || '').toUpperCase();
-  let coverType = firstParty ? 'avatar' : 'card_back';
-  let leadCardId = !firstParty && leadCards.some(card => card.cardId === requestedLead) ? requestedLead : null;
+  let coverType = levelOne ? 'avatar' : 'card_back';
+  let leadCardId = !levelOne && leadCards.some(card => card.cardId === requestedLead) ? requestedLead : null;
   if (leadCardId) coverType = 'card';
   const requestedNpc = String(qs.get('npc') || '').toUpperCase();
   let npcCardId = npcCards.some(card => card.cardId === requestedNpc && card.cardId !== leadCardId)
@@ -191,7 +191,7 @@ function init() {
     coverButtons.push({ button, type, cardId }); $('leadPick').appendChild(button);
   };
 
-  if (firstParty) {
+  if (levelOne) {
     const avatar = avatarById(profile.avatarId);
     const button = document.createElement('button');
     button.className = 'card-select picked'; button.setAttribute('aria-checked', 'true');

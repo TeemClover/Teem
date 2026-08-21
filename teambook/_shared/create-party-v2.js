@@ -46,17 +46,18 @@ function levelOneCover(profile) {
   const avatar = avatarById(profile.avatarId || profile.avatarFallback || 'orange_cat');
   section.innerHTML = `
     <span class="step-sticker">1</span>
-    <h2>การ์ดผู้นำสมุด</h2>
-    <p class="whisper" id="coverHint">LV.1 ใช้การ์ดตัวละครเริ่มต้นของคุณเป็นผู้นำสมุดอัตโนมัติ</p>
-    <div class="card-select-grid" id="leadPick" role="group" aria-label="การ์ดผู้นำสมุดเริ่มต้น">
-      <div class="card-select picked" role="img" aria-label="ใช้ ${avatar.nameTh} เป็นผู้นำสมุด">
+    <h2>ปกสมุดของคุณ</h2>
+    <p class="whisper" id="coverHint">Level 1 ใช้การ์ดตัวละครและสีปัจจุบันของคุณเป็นปกอัตโนมัติ · ไม่มีการเลือกปก</p>
+    <div class="card-select-grid" id="leadPick" role="group" aria-label="ปกสมุดอัตโนมัติ">
+      <div class="card-select" role="img" aria-label="ใช้ ${avatar.nameTh} เป็นปกสมุดอัตโนมัติ">
         <div class="avatar-cover" data-color="${profile.avatarFrame || 'green'}">
           <img src="${avatar.art}" alt="">
           <b>${avatar.nameTh}</b>
-          <small>LV.1 PARTY LEAD</small>
+          <small>STARTER COVER</small>
         </div>
       </div>
-    </div>`;
+    </div>
+    <p class="hint">เปลี่ยน Avatar และสีได้ก่อนสร้างสมุด · เมื่อสร้างแล้ว ปกของสมุดเล่มนี้จะถูกล็อก</p>`;
 
   const npcPick = document.getElementById('npcCardPick');
   if (npcPick) {

@@ -143,6 +143,9 @@ export async function handleCoverV2(req, res, legacyXtyHandler) {
     const found = await memberFor(req, sql, row.id); const member = found.member;
     if (!member) return sendJson(res, { ok: false, error: 'AUTH_REQUIRED' }, 401);
     if (member.role !== 'lead') return sendJson(res, { ok: false, error: 'LEAD_REQUIRED' }, 403);
+    if (String(row.cover_type || '').toLowerCase() === 'avatar') {
+      return sendJson(res, { ok: false, error: 'COVER_LOCKED' }, 409);
+    }
 
     const body = bodyOf(req); const requested = String(body.coverType || 'card_back').toLowerCase();
     let nextType = 'card_back'; let nextValue = 'teambook-back-v1'; let nextLead = null; let nextName = 'หลังการ์ด TeamBook';

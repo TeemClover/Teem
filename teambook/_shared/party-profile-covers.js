@@ -78,6 +78,15 @@ function syncCoverTools() {
   const label = document.querySelector('label[for="leadSelect"]');
   if (label && label.textContent !== 'ปกสมุด') label.textContent = 'ปกสมุด';
 
+  if (p.coverType === 'avatar') {
+    select.dataset.coverV3 = [p.coverType, p.coverValue, p.leadCardId].join('|');
+    select.innerHTML = '<option selected>การ์ดตัวละครตอนสร้างสมุด · ล็อกแล้ว</option>';
+    select.disabled = true;
+    button.hidden = true;
+    return;
+  }
+  button.hidden = false;
+
   const signature = [p.coverType, p.coverValue, p.leadCardId].join('|');
   if (select.dataset.coverV3 === signature) return;
 
@@ -133,7 +142,9 @@ async function interceptCoverSave(event) {
     if (toast) {
       toast.textContent = result.error === 'CARD_IN_USE'
         ? 'การ์ดใบนี้กำลังใช้กับสมุดอื่นอยู่'
-        : 'ยังเปลี่ยนปกสมุดไม่ได้';
+        : result.error === 'COVER_LOCKED'
+          ? 'ปกสมุด Level 1 ถูกล็อกตั้งแต่สร้างสมุดแล้ว'
+          : 'ยังเปลี่ยนปกสมุดไม่ได้';
       toast.classList.add('on');
       setTimeout(() => toast.classList.remove('on'), 2800);
     }

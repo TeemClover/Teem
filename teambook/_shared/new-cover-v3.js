@@ -95,9 +95,13 @@ function install() {
   const host = document.getElementById('leadPick');
   const hint = document.getElementById('coverHint');
   if (!host || host.dataset.coverV3 === '1') return;
-  host.dataset.coverV3 = '1'; installStyles(); host.innerHTML = '';
-
   const profile = getProfile();
+  const levelOne = Math.max(1, Number(profile?.level || 1)) <= 1;
+  if (levelOne) {
+    window.__xtyCoverV2 = { coverType: 'avatar', leadCardId: null };
+    return;
+  }
+  host.dataset.coverV3 = '1'; installStyles(); host.innerHTML = '';
   const xtyCards = availableOwnedCards({ role: 'lead', profile });
   const groups = {
     back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด', subtitle:'ใช้ได้เสมอ', art:backArt() }],
