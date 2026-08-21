@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,nofollow,noarchive">
 <meta name="theme-color" content="#07090d">
 <title>Command and Conquer · myClover Empire</title>
-<link rel="stylesheet" href="/command/command-v5.css?v=20260820-1">
+<link rel="stylesheet" href="/command/command-v5.css?v=20260822-1">
 </head>
 <body class="locked">
 <div class="gate" id="gate">
@@ -14,9 +14,9 @@
     <div class="gate-card-art"><img src="https://tcgplayer-cdn.tcgplayer.com/product/454212_in_1000x1000.jpg" alt="Command and Conquer Marvel — Flesh and Blood" referrerpolicy="no-referrer"></div>
     <div class="gate-copy">
       <div class="gate-mark">C&C</div>
-      <p class="eyebrow" style="margin-top:18px">PRIVATE EMPIRE BOARD</p>
+      <p class="eyebrow" style="margin-top:18px">PRIVATE MYCLOVER HOUSE BOARD</p>
       <h2>Command and Conquer</h2>
-      <p>การ์ดใบนี้คือกุญแจของหลังบ้าน myClover · เปิดแล้วเข้าถึง Command, Keen, Stats, Student Ops, Infrastructure และ Work Queue จากบอร์ดเดียว</p>
+      <p>การ์ดใบนี้คือกุญแจของหลังบ้าน myClover · บ้านที่แยก server เช่น TeamBook จะมี Command ของตัวเองและเดินทางไปกลับผ่านลิงก์ ไม่ดึงฐานข้อมูลข้ามบ้าน</p>
       <form id="gateForm"><input id="gatePassword" type="password" autocomplete="current-password" placeholder="รหัสผ่าน" required autofocus><button type="submit">COMMAND</button></form>
       <div class="gate-msg" id="gateMsg"></div>
       <small>Server-side session · HttpOnly cookie · rate limit · audit log</small>
@@ -26,8 +26,8 @@
 
 <div class="app"><div class="shell">
 <header class="topbar">
-  <div class="brand"><div class="sigil">MC</div><div><strong>MYCLOVER EMPIRE</strong><small>Command Center V.5 · CREATE · EXPAND · CONQUER</small></div></div>
-  <div class="top-actions"><div class="status"><span class="dot"></span><span id="onlineText">CONTROL PLANE</span></div><a class="ghost" href="/keen/">KEEN DESK</a><button class="ghost" id="logout">LOCK</button></div>
+  <div class="brand"><div class="sigil">MC</div><div><strong>MYCLOVER EMPIRE</strong><small>Command Center V.6 · HOUSE-LOCAL CONTROL · CREATE · EXPAND · CONQUER</small></div></div>
+  <div class="top-actions"><div class="status"><span class="dot"></span><span id="onlineText">CONTROL PLANE</span></div><a class="ghost" href="https://teambook.me/command/" target="_blank" rel="noopener">TEAMBOOK HOUSE</a><a class="ghost" href="/keen/">KEEN DESK</a><button class="ghost" id="logout">LOCK</button></div>
 </header>
 
 <main>
@@ -38,31 +38,31 @@
   </div>
   <div class="hero-copy">
     <p class="eyebrow">ACTION · PASS · GO AGAIN · CLOSE CHAIN</p>
-    <h1>ลิงก์เดียว<br>คุมทั้งอาณาจักร</h1>
-    <p>นี่คือบอร์ดทำงาน ไม่ใช่หน้า dashboard เฉย ๆ: เห็นสิ่งที่ต้อง attention, เลือกกราฟที่ควรดู, ออก Operation, ส่งต่อ Keen, ปิด chain และเดินเข้าหลังบ้านของทุกเมืองได้จากหน้าเดียว</p>
-    <div class="hero-actions"><a class="btn primary" href="#dispatch">PLAY ACTION</a><a class="btn" href="#queue">OPEN CHAIN</a><a class="btn" href="/keen/">KEEN WORKSHOP</a></div>
+    <h1>คุมบ้านนี้ให้ชัด<br>เชื่อมอาณาจักรให้เป็น</h1>
+    <p>บอร์ดนี้อ่านและสั่งงานเฉพาะระบบของ myClover เท่านั้น ส่วนบ้านที่แยก server เช่น TeamBook มี Command Center ของตัวเอง เราเดินทางไปกลับกันด้วยลิงก์โดยไม่แชร์ database credential หรือดึง telemetry ข้ามบ้าน</p>
+    <div class="hero-actions"><a class="btn primary" href="#dispatch">PLAY ACTION</a><a class="btn" href="#queue">OPEN CHAIN</a><a class="btn" href="/keen/">KEEN WORKSHOP</a><a class="btn" href="https://teambook.me/command/" target="_blank" rel="noopener">TEAMBOOK HOUSE ↗</a></div>
     <div class="hero-rule"><span><b>ACTION</b> ลงมือ</span><span><b>PASS</b> ส่ง priority</span><span><b>GO AGAIN</b> เดินงานต่อ</span><span><b>CLOSE CHAIN</b> ปิดงานเมื่อ success check ผ่าน</span></div>
   </div>
 </section>
 
 <div class="divider"></div>
 <section class="section">
-  <div class="section-head"><div><p class="eyebrow">30 SECOND BRIEF</p><h2>เปิดมาแล้วต้องรู้ 4 เรื่อง</h2></div><p>อ่านก่อนเล่น Action ใหม่ทุกครั้ง</p></div>
+  <div class="section-head"><div><p class="eyebrow">30 SECOND BRIEF</p><h2>เปิดมาแล้วต้องรู้ 4 เรื่อง</h2></div><p>เฉพาะบ้าน myClover · บ้านอื่นมี brief ของตัวเอง</p></div>
   <div class="command-pulse" style="grid-template-columns:1fr 1fr 1fr 1fr">
     <article class="metric" style="min-height:132px"><span>เมื่อคืนอะไรเปลี่ยน</span><strong id="changeTitle" style="font-size:17px;line-height:1.18">กำลังอ่าน…</strong><small id="changeText">GitHub source history</small></article>
-    <article class="metric" style="min-height:132px"><span>อะไรพัง</span><strong id="healthTitle" style="font-size:17px;line-height:1.18">กำลังตรวจ…</strong><small id="healthText">runtime signals</small></article>
-    <article class="metric" style="min-height:132px"><span>อะไรมีคนใช้</span><strong id="populationTitle" style="font-size:17px;line-height:1.18">—</strong><small id="populationText">population</small></article>
+    <article class="metric" style="min-height:132px"><span>อะไรพัง</span><strong id="healthTitle" style="font-size:17px;line-height:1.18">กำลังตรวจ…</strong><small id="healthText">myClover runtime signals</small></article>
+    <article class="metric" style="min-height:132px"><span>อะไรมีคนใช้</span><strong id="populationTitle" style="font-size:17px;line-height:1.18">—</strong><small id="populationText">myClover population</small></article>
     <article class="metric" style="min-height:132px"><span>วันนี้ควรแตะอะไร</span><strong id="focusTitle" style="font-size:17px;line-height:1.18">—</strong><small id="focusText">current chain</small></article>
   </div>
 </section>
 
 <section class="section">
-  <div class="section-head"><div><p class="eyebrow">LIVE SIGNALS</p><h2>ประชากรและงานที่กำลังหายใจ</h2></div><p>ข้อมูลจากฐานกลาง ไม่ใช่ตัวเลข mock</p></div>
+  <div class="section-head"><div><p class="eyebrow">LIVE SIGNALS</p><h2>ประชากรและงานของบ้าน myClover</h2></div><p>ไม่รวม TeamBook ซึ่งแยก server และ database แล้ว</p></div>
   <div class="metrics" id="metrics"></div>
 </section>
 
 <section class="section" id="pulse">
-  <div class="section-head"><div><p class="eyebrow">COMMAND PULSE</p><h2>กราฟที่ควรสนใจตอนนี้</h2></div><p>ระบบเลือก default จาก attention ปัจจุบัน · เปลี่ยนดูเพิ่มได้</p></div>
+  <div class="section-head"><div><p class="eyebrow">COMMAND PULSE</p><h2>กราฟที่ควรสนใจตอนนี้</h2></div><p>ระบบเลือกจาก attention ของบ้าน myClover</p></div>
   <div class="command-pulse">
     <article class="chart-card">
       <div class="chart-top"><div><p class="eyebrow">SELECTED SIGNAL</p><h3 id="chartTitle">กำลังวิเคราะห์…</h3><p id="chartReason"></p></div><div class="chart-tabs" id="chartTabs"></div></div>
@@ -73,7 +73,7 @@
     <aside class="attention-card">
       <div class="attention-head"><div><p class="eyebrow">ATTENTION FEED</p><h3>ข่าวที่ควรแทรก Chain</h3></div><div class="attention-count" id="attentionCount">0</div></div>
       <div class="alerts" id="alerts"></div>
-      <a class="btn more-link" href="/xty/stat/admin/">เปิดหอสังเกตการณ์ TeamBook</a>
+      <a class="btn more-link" href="https://teambook.me/command/" target="_blank" rel="noopener">ไป TeamBook House Command ↗</a>
     </aside>
   </div>
 </section>
@@ -89,16 +89,16 @@
 </section>
 
 <section class="section" id="dispatch">
-  <div class="section-head"><div><p class="eyebrow">DISPATCH CONSOLE</p><h2>ออกคำสั่งให้เป็น Operation เดียว</h2></div><p>CREATE / EXPAND / CONQUER ก่อน แล้วค่อย ACTION</p></div>
+  <div class="section-head"><div><p class="eyebrow">DISPATCH CONSOLE</p><h2>ออกคำสั่งของบ้าน myClover</h2></div><p>ถ้าเป็น TeamBook ให้ข้ามไปออกคำสั่งในบ้าน TeamBook</p></div>
   <div class="grid2">
     <div class="console">
       <div class="modes">
         <article class="mode active" data-mode="CREATE" tabindex="0"><span>BUILD</span><b>CREATE</b><p>สร้างสิ่งใหม่ แล้วลงทะเบียน source / owner / metric ตั้งแต่แรก</p></article>
         <article class="mode" data-mode="EXPAND" tabindex="0"><span>SCALE</span><b>EXPAND</b><p>ขยายของเดิมโดยรักษา canon และ dependency ไม่ให้หลุด</p></article>
-        <article class="mode" data-mode="CONQUER" tabindex="0"><span>ABSORB</span><b>CONQUER</b><p>รวม/ย้าย/ยึดระบบเข้ามาอยู่ใต้ control plane เดียว</p></article>
+        <article class="mode" data-mode="CONQUER" tabindex="0"><span>ABSORB</span><b>CONQUER</b><p>รวม/ย้าย/ยึดระบบเข้ามาอยู่ใต้ control plane ของบ้านนี้</p></article>
       </div>
       <div class="form-grid">
-        <div class="field"><label>PROJECT / TARGET</label><input id="project" placeholder="TeamBook / Xircle / Project ใหม่"></div>
+        <div class="field"><label>PROJECT / TARGET</label><input id="project" placeholder="myClover / Xircle / First Class / Project ใหม่"></div>
         <div class="field"><label>OWNER / AGENT</label><input id="owner" placeholder="Teem / Keen / Claude / ChatGPT"></div>
         <div class="field full"><label>GOAL</label><textarea id="goal" placeholder="ผลลัพธ์ที่ต้องเกิดจริงคืออะไร"></textarea></div>
         <div class="field"><label>NEXT ACTION</label><input id="nextAction" placeholder="ก้าวเดียวที่ทำต่อทันที"></div>
@@ -108,13 +108,14 @@
         <div class="field full"><label>DO NOT BREAK / GUARDRAILS</label><input id="guardrails" placeholder="สิ่งที่ล็อกแล้ว / dependency / ห้ามแตะ"></div>
       </div>
       <div class="dispatch"><button class="btn primary" id="saveOperation">CREATE OPERATION</button><button class="btn" id="saveKeen">CREATE + PASS TO KEEN</button></div>
-      <p class="hint">ถ้ากดซ้ำหรืองานนี้ไม่เอาแล้ว มี DELETE อยู่ใน Work Queue และมี audit log ว่าเคยลบอะไร</p>
+      <p class="hint">ถ้ากดซ้ำหรืองานนี้ไม่เอาแล้ว มี DELETE อยู่ใน Work Queue · TeamBook ใช้ Queue ของบ้าน TeamBook แยกต่างหาก</p>
     </div>
     <aside class="panel">
       <p class="eyebrow">CONTROL PLANE</p>
       <div class="links">
-        <a class="quick" href="/keen/"><div><strong>Keen Production Desk</strong><span>โต๊ะทำงานจริง · อ่าน Operation queue เดียวกัน</span></div><i>WORK →</i></a>
-        <a class="quick" href="/captures/"><div><strong>Capture Library</strong><span>ตาม output ที่เกิดจาก Operation</span></div><i>OPEN →</i></a>
+        <a class="quick" href="/keen/"><div><strong>Keen Production Desk</strong><span>โต๊ะทำงานจริง · อ่าน Operation queue ของ myClover</span></div><i>WORK →</i></a>
+        <a class="quick" href="/captures/"><div><strong>Capture Library</strong><span>ตาม output ที่เกิดจาก Operation ของบ้านนี้</span></div><i>OPEN →</i></a>
+        <a class="quick" href="https://teambook.me/command/" target="_blank" rel="noopener"><div><strong>TeamBook House Command</strong><span>แยก server · แยก database · แยก observability</span></div><i>TRAVEL ↗</i></a>
         <a class="quick" href="/command/empire-manifest.json"><div><strong>Empire Manifest</strong><span>schema กลางของอาณาจักร</span></div><i>JSON</i></a>
         <a class="quick" href="/command/AUTOMATION-PROTOCOL.md"><div><strong>Automation Protocol</strong><span>กฎ CREATE / EXPAND / CONQUER</span></div><i>MD</i></a>
       </div>
@@ -123,16 +124,15 @@
 </section>
 
 <section class="section" id="queue">
-  <div class="section-head"><div><p class="eyebrow">WORK QUEUE</p><h2>Chain ที่กำลังเล่นอยู่</h2></div><p id="queueCount">กำลังโหลด…</p></div>
+  <div class="section-head"><div><p class="eyebrow">WORK QUEUE</p><h2>Chain ของบ้าน myClover</h2></div><p id="queueCount">กำลังโหลด…</p></div>
   <div class="ops" id="ops"><div class="empty">กำลังอ่าน Operations…</div></div>
 </section>
 
 <section class="section">
-  <div class="section-head"><div><p class="eyebrow">ONE BACKOFFICE</p><h2>เดินไปทุกหลังบ้านจากบอร์ดเดียว</h2></div><p>กดแล้วไป route ที่มีอยู่จริง</p></div>
+  <div class="section-head"><div><p class="eyebrow">ONE BACKOFFICE</p><h2>เข้าหลังบ้านจาก Command ของบ้านนั้น</h2></div><p>บ้านเดียวกันกดตรง · บ้านแยก server เดินผ่าน House Command</p></div>
   <div class="launcher">
     <a class="launch featured" href="/keen/"><em>WORKSHOP</em><b>Keen Desk</b><p>รับ priority จาก Operation แล้วทำงานจน resolve</p></a>
-    <a class="launch" href="/xty/stat/admin/"><em>TEAMBOOK</em><b>Admin Stats</b><p>recovery, error, party และ observability</p></a>
-    <a class="launch" href="/xty/stat/"><em>TEAMBOOK</em><b>Public Stats</b><p>ภาพรวมกิจกรรมและประชากร</p></a>
+    <a class="launch featured" href="https://teambook.me/command/" target="_blank" rel="noopener"><em>SEPARATE HOUSE</em><b>TeamBook Command</b><p>ไปศูนย์บัญชาการ TeamBook ก่อนเข้าถึง stats, admin และ infrastructure ของบ้านนั้น</p></a>
     <a class="launch" href="/first-class/admin/"><em>ACADEMY</em><b>First Class Control</b><p>registration, payment, grant และ automation</p></a>
     <a class="launch" href="/first-class/admin/reviews/"><em>ACADEMY</em><b>Student Reviews</b><p>อ่านและจัดการ feedback นักเรียน</p></a>
     <a class="launch" href="/register/"><em>IDENTITY</em><b>Registration</b><p>หน้าเข้าสู่ระบบลงทะเบียน</p></a>
@@ -146,33 +146,31 @@
 </section>
 
 <section class="section">
-  <div class="section-head"><div><p class="eyebrow">EXTERNAL INFRASTRUCTURE</p><h2>เมืองนี้พึ่งระบบอะไรอยู่บ้าง</h2></div><p>กดออกไป console จริง · สถานะในบอร์ดมาจาก runtime config เท่าที่ตรวจได้</p></div>
+  <div class="section-head"><div><p class="eyebrow">EXTERNAL INFRASTRUCTURE</p><h2>บ้าน myClover พึ่งระบบอะไรอยู่บ้าง</h2></div><p>สถานะนี้ไม่รวม infrastructure ของ TeamBook</p></div>
   <div class="infra-flow">
     <a class="service" href="https://github.com/TeemClover/Teem" target="_blank" rel="noopener"><div class="service-head"><b>GitHub</b><span class="chip ok">SOURCE</span></div><p>source code · history · commit truth</p></a>
     <div class="infra-arrow">→</div>
-    <a class="service" href="https://vercel.com/teemclover" target="_blank" rel="noopener"><div class="service-head"><b>Vercel</b><span class="chip ok">RUNTIME</span></div><p>deploy · functions · cron · blob</p></a>
+    <a class="service" href="https://vercel.com/teemclover" target="_blank" rel="noopener"><div class="service-head"><b>Vercel</b><span class="chip ok">RUNTIME</span></div><p>deploy · functions · runtime</p></a>
     <div class="infra-arrow">→</div>
-    <div class="service"><div class="service-head"><b>myClover</b><span class="chip ok">EMPIRE</span></div><p>identity · products · people · command plane</p></div>
+    <div class="service"><div class="service-head"><b>myClover</b><span class="chip ok">HOUSE</span></div><p>identity · learning · command · operations</p></div>
   </div>
   <div class="service-stack" id="serviceStack"></div>
 </section>
 
 <section class="section">
-  <div class="section-head"><div><p class="eyebrow">INFRASTRUCTURE BUILDINGS</p><h2>สถานะเมืองแบบเกมสร้างอาณาจักร</h2></div><p>last update · last event · advice</p></div>
+  <div class="section-head"><div><p class="eyebrow">INFRASTRUCTURE BUILDINGS</p><h2>สถานะบ้าน myClover และประตูไปบ้านอื่น</h2></div><p>last update · last event · advice</p></div>
   <div class="city-grid" id="cityGrid"></div>
 </section>
 
 <section class="section">
-  <div class="section-head"><div><p class="eyebrow">ACHIEVEMENTS · LAST 7 DAYS</p><h2>สิ่งที่อาณาจักรทำสำเร็จจริง</h2></div><p>ให้คนทำงานเห็นว่าของที่ลงแรงไว้เปลี่ยนโลกตรงไหน</p></div>
+  <div class="section-head"><div><p class="eyebrow">ACHIEVEMENTS · LAST 7 DAYS</p><h2>สิ่งที่บ้าน myClover ทำสำเร็จจริง</h2></div><p>TeamBook มี Achievement board ของบ้าน TeamBook เอง</p></div>
   <div class="achievements" id="achievements"></div>
 </section>
 </main>
-
-<footer><span>/command/ = single front door · Command and Conquer key card</span><span>ACTION → PASS → GO AGAIN → CLOSE CHAIN</span></footer>
+<footer><span>/command/ = myClover House Command · TeamBook → teambook.me/command/</span><span>ACTION → PASS → GO AGAIN → CLOSE CHAIN</span></footer>
 </div></div>
-
 <div class="modal" id="modal"><div class="modal-card"><div class="modal-head"><div><p class="eyebrow">DEEPER SIGNALS</p><h2>กราฟที่ดูเพิ่มได้</h2></div><button class="ghost" id="modalClose">CLOSE</button></div><div class="city-grid" id="modalBody" style="margin-top:16px"></div></div></div>
 <div class="toast" id="toast"></div>
-<script src="/command/command-v5.js?v=20260820-1" defer></script>
+<script src="/command/command-v5.js?v=20260822-1" defer></script>
 </body>
 </html>
