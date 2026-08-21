@@ -1,0 +1,55 @@
+name: TeamBook database env compatibility fix once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/teambook-db-env-compat-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Patch TeamBook database env compatibility
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          core = Path('teambook/api/_lib/core.js')
+          text = core.read_text()
+          old = "const url = process.env.TEAMBOOK_DATABASE_URL || process.env.STORAGE_URL;"
+          new = "const url = process.env.TEAMBOOK_DATABASE_URL || process.env.STORAGE_DATABASE_URL || process.env.STORAGE_URL || process.env.DATABASE_URL;"
+          if old not in text:
+              raise SystemExit('expected core database fallback not found')
+          core.write_text(text.replace(old, new, 1))
+
+          health = Path('teambook/api/health.js')
+          text = health.read_text()
+          old = "databaseConfigured: !!(process.env.TEAMBOOK_DATABASE_URL || process.env.STORAGE_URL),"
+          new = "databaseConfigured: !!(process.env.TEAMBOOK_DATABASE_URL || process.env.STORAGE_DATABASE_URL || process.env.STORAGE_URL || process.env.DATABASE_URL),"
+          if old not in text:
+              raise SystemExit('expected health database fallback not found')
+          health.write_text(text.replace(old, new, 1))
+          PY
+
+          node --check teambook/api/_lib/core.js
+          node --check teambook/api/health.js
+
+      - name: Commit fix and remove one-time workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/teambook-db-env-compat-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add teambook/api/_lib/core.js teambook/api/health.js .github/workflows/teambook-db-env-compat-once.yml
+          git commit -m "fix(teambook): accept connected Neon env names"
+          git push origin HEAD:main
