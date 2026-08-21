@@ -60,6 +60,10 @@
       "destination": "/api/auth?path=:path*"
     },
     {
+      "source": "/api/teambook-pet",
+      "destination": "/api/teambook-pet-compat"
+    },
+    {
       "source": "/api/teambook/party/:code/finish",
       "destination": "/api/teambook-party-finish?code=:code"
     },
