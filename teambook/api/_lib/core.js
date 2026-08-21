@@ -9,12 +9,13 @@ const crypto = webcrypto;
 let schemaPromise;
 
 export function database() {
-  if (!process.env.TEAMBOOK_DATABASE_URL) {
+  const url = process.env.TEAMBOOK_DATABASE_URL || process.env.DATABASE_URL;
+  if (!url) {
     const error = new Error('TEAMBOOK_DATABASE_URL_NOT_CONFIGURED');
     error.code = 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED';
     throw error;
   }
-  return neon(process.env.TEAMBOOK_DATABASE_URL);
+  return neon(url);
 }
 
 const SCHEMA = [
