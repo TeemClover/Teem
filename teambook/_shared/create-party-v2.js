@@ -38,6 +38,24 @@ function onCreatePage() {
   return /^\/new\/?$/.test(location.pathname);
 }
 
+/* The page's visible radio state is the last word at submit time. This closes
+   a class of bugs where an enhancement re-renders a choice after the closure
+   variable was set, leaving the screen saying Public/Confirm while the payload
+   still carries Private/Trust. TeamBook Thai pages are canonical source copy,
+   so these labels are stable UI semantics rather than a translation layer. */
+function selectedRoomChoices(options) {
+  if (!onCreatePage()) return options;
+  const visibilityText = String(document.querySelector('#visibilityPick [aria-checked="true"]')?.textContent || '');
+  const verificationText = String(document.querySelector('#verificationPick [aria-checked="true"]')?.textContent || '');
+  let visibility = options.visibility;
+  let verificationMode = options.verificationMode;
+  if (visibilityText.includes('สาธารณะ')) visibility = 'public';
+  else if (visibilityText.includes('ส่วนตัว')) visibility = 'private';
+  if (verificationText.includes('ต้อง') && verificationText.includes('เห็นแล้ว')) verificationMode = 'confirm';
+  else if (verificationText.includes('เชื่อใจกัน')) verificationMode = 'trust';
+  return { ...options, visibility, verificationMode };
+}
+
 function levelOneCover(profile) {
   window.__teambookCoverV2 = { coverType: 'avatar', leadCardId: null };
   window.__xtyCoverV2 = window.__teambookCoverV2;
@@ -96,7 +114,7 @@ async function installCreatePageSetup() {
 if (onCreatePage()) installCreatePageSetup().catch(() => {});
 
 export async function createPartyV2(options = {}) {
-  const applied = applyXircleCreateDefaults(options);
+  const applied = applyXircleCreateDefaults(selectedRoomChoices(options));
   const {
     name, activity, activityId, preset, verificationMode = 'trust', durationDays, color, visibility,
     activityMode = 'shared', activityDescription = '', activityColor = null, successRule = '',

@@ -2,6 +2,7 @@ import { handleCreatePartyV3 } from './xty-create-v3.js';
 import {
   clean, currentUser, database, ensureSchema, sameOrigin, sendJson,
 } from './core.js';
+import { normalizeVerificationMode } from './xty-rules.js';
 import { cardById, cardDescriptorTh } from '../../_shared/cards.js';
 
 const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
@@ -65,6 +66,16 @@ function petForNpc(cardId, fallbackPetId) {
   return cardId ? null : (fallbackPetId || null);
 }
 
+/* The outer V1.2 adapter is the final authority for room choices. Legacy
+   create layers may still supply defaults, but they must never silently turn
+   a visibly selected Public/Confirm room back into Private/Trust. */
+export function requestedRoomSettings(body = {}) {
+  return {
+    visibility: ['public', 'private'].includes(body.visibility) ? body.visibility : 'private',
+    verificationMode: normalizeVerificationMode(body.verificationMode),
+  };
+}
+
 export async function handleV12Create(req, res) {
   try {
     if (String(req.method || '').toUpperCase() !== 'POST') return sendJson(res, { ok: false, error: 'METHOD_NOT_ALLOWED' }, 405);
@@ -73,6 +84,7 @@ export async function handleV12Create(req, res) {
     const sql = database();
     await ensureSchema(sql);
     const original = bodyOf(req);
+    const roomSettings = requestedRoomSettings(original);
     const ids = await identityIds(req, sql, original);
     const level = await levelFor(sql, ids);
     const requestedType = String(original.coverType || 'card_back').toLowerCase();
@@ -97,9 +109,12 @@ export async function handleV12Create(req, res) {
 
     /* Canonical V3 owns quota, timing, identity and duration gates. Remove
        card placement only for the insert because legacy V3 still treats a
-       card as occupied by another active book. */
+       card as occupied by another active book. Room choices are explicitly
+       carried through this boundary as well. */
     const sanitized = {
       ...original,
+      visibility: roomSettings.visibility,
+      verificationMode: roomSettings.verificationMode,
       coverType: level <= 1 ? 'avatar' : 'card_back',
       leadCardId: null,
       npcCardId: null,
@@ -123,8 +138,9 @@ export async function handleV12Create(req, res) {
     const finalPet = petForNpc(finalNpc, clean(original.petId, 40) || null);
     const at = new Date();
     await sql.query(`UPDATE teambook_books SET cover_type=$1,cover_value=$2,lead_card_id=$3,
-      npc_card_id=$4,pet_id=$5,updated_at=$6 WHERE id=$7`, [
-      finalType, finalCoverValue, finalLead, finalNpc, finalPet, at, party.id,
+      npc_card_id=$4,pet_id=$5,visibility=$6,verification_mode=$7,updated_at=$8 WHERE id=$9`, [
+      finalType, finalCoverValue, finalLead, finalNpc, finalPet,
+      roomSettings.visibility, roomSettings.verificationMode, at, party.id,
     ]);
     const eventPatch = {
       coverType: finalType,
@@ -132,6 +148,8 @@ export async function handleV12Create(req, res) {
       leadCardId: finalLead,
       coverName: coverName(finalType, finalLead),
       npcCardId: finalNpc,
+      visibility: roomSettings.visibility,
+      verificationMode: roomSettings.verificationMode,
       reusableCards: true,
     };
     await sql.query(`UPDATE teambook_book_events
@@ -147,6 +165,8 @@ export async function handleV12Create(req, res) {
     party.leadCardId = finalLead;
     party.npcCardId = finalNpc;
     party.petId = finalPet;
+    party.visibility = roomSettings.visibility;
+    party.verificationMode = roomSettings.verificationMode;
     party.updatedAt = at.toISOString();
     if (Array.isArray(party.events)) {
       party.events = party.events.map(event => event.type === 'PARTY_CREATED'
