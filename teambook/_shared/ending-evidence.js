@@ -1,15 +1,26 @@
 /* TeamBook V1.2 — evidence-first Ending engine.
 
-   The rule is intentionally asymmetric:
-   - a state change is merely something that happened;
-   - a turning point needs evidence that the group gave that moment meaning.
+   Canonical rule:
+     Event สำคัญต้องมี Evidence of Meaning มากกว่า Evidence of Change
 
-   This module is pure data logic so browser, server and tests can share the
-   same reading. It never invents an interpretation to repair conflicting
-   dates. Instead it names the conflict and carries both facts forward. */
+   A state change is evidence that something changed, not evidence that the
+   change mattered. Companion swaps, renames, avatar swaps, rule changes and
+   cover changes therefore stay details unless the event itself carries a
+   direct meaning signal (pin/reflection/meaningEvidence). Group interaction
+   on the same day may make that DAY meaningful, but never retroactively turns
+   an unrelated settings change into the story's turning point.
+
+   This module is pure and shared by browser/server tests. It also keeps target
+   duration, lived calendar span and active signing days as separate facts;
+   conflicts are surfaced instead of silently repaired. */
 
 const ICT_OFFSET_MS = 7 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+const CHANGE_ONLY_TYPES = new Set([
+  'NPC_CHANGED', 'LEAD_CARD_CHANGED', 'MEMBER_AVATAR_CHANGED',
+  'MEMBER_ALIAS_CHANGED', 'PARTY_RENAMED', 'RULE_CHANGED',
+]);
 
 function safeDate(value) {
   const date = value instanceof Date ? new Date(value) : new Date(value || 0);
@@ -22,45 +33,47 @@ export function endingDayKey(value) {
   return new Date(date.getTime() + ICT_OFFSET_MS).toISOString().slice(0, 10);
 }
 
-function dayNumberFromKey(key) {
+function dayNumber(key) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(key || ''))) return null;
   const [year, month, day] = key.split('-').map(Number);
   return Math.floor(Date.UTC(year, month - 1, day) / DAY_MS);
 }
 
 function inclusiveSpanDays(from, to) {
-  const a = dayNumberFromKey(endingDayKey(from));
-  const b = dayNumberFromKey(endingDayKey(to));
+  const a = dayNumber(endingDayKey(from));
+  const b = dayNumber(endingDayKey(to));
   if (a == null || b == null || b < a) return null;
   return b - a + 1;
-}
-
-function reactionCount(post) {
-  return Object.values(post?.reactions || {}).reduce((sum, ids) =>
-    sum + (Array.isArray(ids) ? ids.length : 0), 0);
-}
-
-function compactText(value, max = 160) {
-  return String(value || '').replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
 function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
-function streakForDayKeys(keys) {
-  const days = unique(keys).map(dayNumberFromKey).filter(Number.isFinite).sort((a, b) => a - b);
-  let best = 0; let run = 0; let prev = null;
+function compactText(value, max = 160) {
+  return String(value || '').replace(/\s+/g, ' ').trim().slice(0, max);
+}
+
+function reactionCount(post) {
+  return Object.values(post?.reactions || {}).reduce((sum, users) =>
+    sum + (Array.isArray(users) ? users.length : 0), 0);
+}
+
+function bestStreak(keys) {
+  const days = unique(keys).map(dayNumber).filter(Number.isFinite).sort((a, b) => a - b);
+  let best = 0;
+  let run = 0;
+  let previous = null;
   for (const day of days) {
-    run = prev != null && day === prev + 1 ? run + 1 : 1;
+    run = previous != null && day === previous + 1 ? run + 1 : 1;
     best = Math.max(best, run);
-    prev = day;
+    previous = day;
   }
   return best;
 }
 
 function inferObjects(activity, rule) {
-  const hay = `${activity || ''} ${rule || ''}`.toLowerCase();
+  const text = `${activity || ''} ${rule || ''}`.toLowerCase();
   const groups = [
     { test: /(กิน|อาหาร|meal|food|lunch|dinner|breakfast|น้ำ|water)/, objects: ['จานอาหาร', 'กล่องข้าว', 'ขวดน้ำ'] },
     { test: /(นอน|sleep|bed|พักผ่อน)/, objects: ['หมอน', 'โคมไฟข้างเตียง', 'สมุดเล็ก'] },
@@ -69,104 +82,123 @@ function inferObjects(activity, rule) {
     { test: /(เรียน|study|งาน|work|เขียน|write|focus)/, objects: ['สมุด', 'ดินสอ', 'นาฬิกาจับเวลาเล็ก'] },
     { test: /(ทำอาหาร|cook|ครัว|kitchen)/, objects: ['เขียง', 'ชามเล็ก', 'ผักหรือวัตถุดิบ'] },
   ];
-  return groups.find(group => group.test.test(hay))?.objects || ['สมุด', 'ดินสอ', 'ของใช้ชิ้นเล็กจากกิจวัตร'];
+  return groups.find(group => group.test.test(text))?.objects
+    || ['สมุด', 'ดินสอ', 'ของใช้ชิ้นเล็กจากกิจวัตร'];
 }
 
-function groupDayEvidence(posts) {
-  const byDay = new Map();
-  for (const post of posts) {
-    const key = endingDayKey(post.sentAt);
+function dayEvidenceOf(log) {
+  const map = new Map();
+  for (const post of log) {
+    if (post?.retracted) continue;
+    const key = endingDayKey(post?.sentAt);
     if (!key) continue;
-    const item = byDay.get(key) || {
-      dayKey: key, commits: [], messages: [], reactions: 0, confirmations: 0,
-      participants: new Set(),
+    const day = map.get(key) || {
+      dayKey: key,
+      commits: 0,
+      committers: new Set(),
+      confirmations: 0,
+      messages: 0,
+      messageAuthors: new Set(),
+      reactions: 0,
     };
-    if (post.kind === 'commit' && !post.retracted) {
-      item.commits.push(post);
-      item.participants.add(post.userId);
-      if (post.confirmedBy) item.confirmations += 1;
+    if (post.kind === 'commit') {
+      day.commits += 1;
+      if (post.userId) day.committers.add(post.userId);
+      if (post.confirmedBy) day.confirmations += 1;
     }
-    if (post.kind === 'message' && !post.retracted) {
-      item.messages.push(post);
-      item.participants.add(post.userId);
+    if (post.kind === 'message') {
+      day.messages += 1;
+      if (post.userId) day.messageAuthors.add(post.userId);
     }
-    item.reactions += reactionCount(post);
-    byDay.set(key, item);
+    day.reactions += reactionCount(post);
+    map.set(key, day);
   }
-  return [...byDay.values()].map(item => {
-    const committers = unique(item.commits.map(post => post.userId)).length;
-    const messageAuthors = unique(item.messages.map(post => post.userId)).length;
+
+  return [...map.values()].map(day => {
+    const committers = day.committers.size;
+    const messageAuthors = day.messageAuthors.size;
     const simultaneous = committers >= 2;
     const score = committers * 3
-      + item.confirmations * 2
-      + Math.min(3, item.reactions)
-      + (messageAuthors >= 2 ? 2 : (item.messages.length ? 1 : 0))
+      + day.confirmations * 2
+      + Math.min(3, day.reactions)
+      + (messageAuthors >= 2 ? 2 : (day.messages ? 1 : 0))
       + (simultaneous ? 2 : 0);
     return {
-      dayKey: item.dayKey,
-      commits: item.commits.length,
+      dayKey: day.dayKey,
+      commits: day.commits,
       committers,
-      messages: item.messages.length,
+      confirmations: day.confirmations,
+      messages: day.messages,
       messageAuthors,
-      confirmations: item.confirmations,
-      reactions: item.reactions,
+      reactions: day.reactions,
       simultaneous,
       score,
     };
   }).sort((a, b) => b.score - a.score || a.dayKey.localeCompare(b.dayKey));
 }
 
-function eventMeaning(event, dayEvidence, eventIndex, events) {
-  const dayKey = endingDayKey(event.at);
-  const day = dayEvidence.find(item => item.dayKey === dayKey) || null;
+function directMeaningSignals(event) {
+  const data = event?.data && typeof event.data === 'object' ? event.data : {};
   const signals = [];
-  let score = 0;
+  if (data.meaningEvidence === true) signals.push('meaning-evidence');
+  if (data.userPinned === true || data.pinned === true) signals.push('user-pinned');
+  if (compactText(data.reflection || data.meaning || data.note, 120)) signals.push('reflection');
+  return signals;
+}
+
+function eventEvidence(event, days) {
+  const dayKey = endingDayKey(event?.at);
+  const day = days.find(item => item.dayKey === dayKey) || null;
+  const direct = directMeaningSignals(event);
+  const ambient = [];
+  let score = direct.length * 5;
 
   if (day?.confirmations) {
-    signals.push(`confirmed:${day.confirmations}`);
+    ambient.push(`confirmed:${day.confirmations}`);
     score += Math.min(4, day.confirmations * 2);
   }
   if (day?.reactions) {
-    signals.push(`reactions:${day.reactions}`);
+    ambient.push(`reactions:${day.reactions}`);
     score += Math.min(3, day.reactions);
   }
   if (day?.simultaneous) {
-    signals.push(`simultaneous:${day.committers}`);
+    ambient.push(`simultaneous:${day.committers}`);
     score += 2;
   }
   if ((day?.messageAuthors || 0) >= 2) {
-    signals.push(`conversation:${day.messageAuthors}`);
+    ambient.push(`conversation:${day.messageAuthors}`);
     score += 2;
   } else if (day?.messages) {
-    signals.push('message-nearby');
+    ambient.push('message-nearby');
     score += 1;
   }
 
-  const firstSameType = events.findIndex(item => item.type === event.type) === eventIndex;
-  const lastSameType = events.map(item => item.type).lastIndexOf(event.type) === eventIndex;
-  if (firstSameType) score += 0.25;
-  if (lastSameType && !firstSameType) score += 0.25;
-
-  /* A state change may enter the candidate list, but it cannot become a
-     turning point from change evidence alone. */
+  const type = String(event?.type || '');
+  const isChangeOnly = CHANGE_ONLY_TYPES.has(type);
+  const mayBeTurningPoint = isChangeOnly ? direct.length > 0 : (direct.length > 0 || ambient.length > 0);
   const meaningScore = Math.round(score * 100) / 100;
+
   return {
-    type: event.type,
-    at: event.at,
+    type,
+    at: event?.at || null,
     dayKey,
-    actorId: event.actorId || null,
-    data: event.data && typeof event.data === 'object' ? event.data : {},
+    actorId: event?.actorId || null,
+    data: event?.data && typeof event.data === 'object' ? event.data : {},
     meaningScore,
-    meaningSignals: signals,
-    classification: meaningScore >= 3 && signals.length ? 'turning_point' : 'detail',
+    directMeaningSignals: direct,
+    ambientMeaningSignals: ambient,
+    meaningSignals: [...direct, ...ambient],
+    changeOnly: isChangeOnly,
+    classification: mayBeTurningPoint && meaningScore >= 3 ? 'turning_point' : 'detail',
   };
 }
 
-function memberSummary(memberHistory, commits) {
-  return memberHistory.map(member => {
+function memberSummaries(history, commits) {
+  return history.map(member => {
     const mine = commits.filter(post => post.userId === member.userId);
     const valid = mine.filter(post => post.valid !== false);
     const confirmed = mine.filter(post => !!post.confirmedBy);
+    const keys = valid.map(post => endingDayKey(post.sentAt));
     return {
       userId: member.userId,
       alias: member.alias || '',
@@ -178,25 +210,32 @@ function memberSummary(memberHistory, commits) {
       commits: mine.length,
       validCommits: valid.length,
       confirmedCommits: confirmed.length,
-      activeDays: unique(valid.map(post => endingDayKey(post.sentAt))).length,
-      bestStreak: streakForDayKeys(valid.map(post => endingDayKey(post.sentAt))),
+      activeDays: unique(keys).length,
+      bestStreak: bestStreak(keys),
     };
   });
 }
 
 export function buildEndingEvidence(party) {
-  const log = Array.isArray(party?.log) ? [...party.log].sort((a, b) => Number(a.seq || 0) - Number(b.seq || 0)) : [];
-  const events = Array.isArray(party?.events) ? [...party.events].sort((a, b) => new Date(a.at || 0) - new Date(b.at || 0)) : [];
-  const memberHistory = Array.isArray(party?.memberHistory) && party.memberHistory.length
+  const log = Array.isArray(party?.log)
+    ? [...party.log].sort((a, b) => Number(a.seq || 0) - Number(b.seq || 0))
+    : [];
+  const events = Array.isArray(party?.events)
+    ? [...party.events].sort((a, b) => new Date(a.at || 0) - new Date(b.at || 0))
+    : [];
+  const history = Array.isArray(party?.memberHistory) && party.memberHistory.length
     ? party.memberHistory
     : (Array.isArray(party?.members) ? party.members : []);
   const commits = log.filter(post => post.kind === 'commit' && !post.retracted);
   const validCommits = commits.filter(post => post.valid !== false);
   const messages = log.filter(post => post.kind === 'message' && !post.retracted);
-  const dayEvidence = groupDayEvidence(log);
   const activeDayKeys = unique(validCommits.map(post => endingDayKey(post.sentAt))).sort();
-  const targetDays = Math.max(1, Number(party?.durationDays || 1));
-  const calendarDays = inclusiveSpanDays(party?.startAt || party?.createdAt, party?.endAt || party?.updatedAt);
+  const dayEvidence = dayEvidenceOf(log);
+  const targetDays = Math.max(1, Math.floor(Number(party?.durationDays || 1)));
+  const calendarDays = inclusiveSpanDays(
+    party?.startAt || party?.createdAt,
+    party?.endAt || party?.updatedAt,
+  );
   const activeDays = activeDayKeys.length;
   const conflicts = [];
 
@@ -210,36 +249,28 @@ export function buildEndingEvidence(party) {
   }
   if (activeDays > targetDays) {
     conflicts.push({
-      code: 'ACTIVE_DAYS_EXCEED_TARGET', targetDays, activeDays,
-      note: 'จำนวนวันที่มีหลักฐานมากกว่าค่าระยะเวลาที่ตั้งไว้ ต้องรายงานเป็นข้อมูลขัดกัน ไม่เดาเหตุผล',
+      code: 'ACTIVE_DAYS_EXCEED_TARGET',
+      targetDays,
+      activeDays,
+      note: 'จำนวนวันที่มีหลักฐานมากกว่าระยะเวลาที่ตั้งไว้ ต้องรายงานเป็นข้อมูลขัดกัน ไม่เดาเหตุผล',
     });
   }
 
   const rankedEvents = events
-    .map((event, index) => eventMeaning(event, dayEvidence, index, events))
+    .map(event => eventEvidence(event, dayEvidence))
     .sort((a, b) => b.meaningScore - a.meaningScore || new Date(a.at || 0) - new Date(b.at || 0));
-  const meaningfulEvent = rankedEvents.find(item => item.classification === 'turning_point') || null;
+  const meaningfulEvent = rankedEvents.find(event => event.classification === 'turning_point') || null;
   const bestDay = dayEvidence[0] || null;
-
-  const reactionTotal = log.reduce((sum, post) => sum + reactionCount(post), 0);
+  const members = memberSummaries(history, commits);
   const confirmations = validCommits.filter(post => !!post.confirmedBy).length;
-  const firstValid = validCommits[0] || null;
-  const lastValid = validCommits[validCommits.length - 1] || null;
-  const messageExcerpts = messages
-    .filter(post => compactText(post.body))
-    .slice(-3)
-    .map(post => ({ alias: post.alias || '', text: compactText(post.body), at: post.sentAt }));
-
-  let companionId = party?.petId || party?.npcCardId || null;
-  const npcChange = [...events].reverse().find(event => event.type === 'NPC_CHANGED');
-  if (!companionId && npcChange?.data?.to) companionId = npcChange.data.to;
-
-  const members = memberSummary(memberHistory, commits);
+  const reactions = log.reduce((sum, post) => sum + reactionCount(post), 0);
   const maxPossible = Math.max(1, targetDays * Math.max(1, members.length));
-  const completionRate = Math.min(1, validCommits.length / maxPossible);
+
+  const npcChange = [...events].reverse().find(event => event.type === 'NPC_CHANGED');
+  const companionId = party?.petId || party?.npcCardId || npcChange?.data?.to || null;
 
   return Object.freeze({
-    version: 2,
+    version: 3,
     book: {
       id: party?.id || null,
       code: party?.code || '',
@@ -261,18 +292,21 @@ export function buildEndingEvidence(party) {
       commits: commits.length,
       validCommits: validCommits.length,
       confirmations,
-      reactions: reactionTotal,
+      reactions,
       messages: messages.length,
-      completionRate,
+      completionRate: Math.min(1, validCommits.length / maxPossible),
       bestStreak: members.reduce((best, member) => Math.max(best, member.bestStreak), 0),
-      firstValidAt: firstValid?.sentAt || null,
-      lastValidAt: lastValid?.sentAt || null,
+      firstValidAt: validCommits[0]?.sentAt || null,
+      lastValidAt: validCommits[validCommits.length - 1]?.sentAt || null,
       activeDayKeys,
     },
     members,
     dayEvidence,
     rankedEvents,
-    messageExcerpts,
+    messageExcerpts: messages
+      .filter(post => compactText(post.body))
+      .slice(-3)
+      .map(post => ({ alias: post.alias || '', text: compactText(post.body), at: post.sentAt })),
     conflicts,
     visualObjects: inferObjects(party?.activity, party?.commitRule),
     moment: meaningfulEvent
@@ -287,8 +321,8 @@ function sharedStyle() {
     'warm school-notebook page illustration',
     'colored pencil and crayon on warm cream paper',
     'subtle leafy-green accents',
-    'cute premium animal characters when characters are supported by evidence',
-    'physical notebook props, tactile handmade memory',
+    'cute premium animal characters only when supported by the real book',
+    'physical notebook props and tactile handmade memory',
     'portrait composition 63:88',
     'quiet generous space at the top for a title added later outside the image',
     'no text, no letters, no logo, no watermark',
@@ -300,8 +334,8 @@ function sharedStyle() {
 export function buildEndingArtBriefs(evidence, { personaPrompt = '' } = {}) {
   const book = evidence?.book || {};
   const facts = evidence?.facts || {};
-  const aliases = (evidence?.members || []).map(member => member.alias).filter(Boolean);
-  const people = aliases.length ? aliases.join(', ') : 'the real group';
+  const members = (evidence?.members || []).map(member => member.alias).filter(Boolean);
+  const people = members.length ? members.join(', ') : 'the real group';
   const continuity = book.state === 'COMPLETED'
     ? 'The book itself is complete. Show gentle continuity: this volume is closed, but life can continue. Do not portray failure to finish and do not celebrate with a trophy.'
     : 'This book closed early. Preserve what really happened without pretending it completed its planned journey.';
@@ -309,30 +343,37 @@ export function buildEndingArtBriefs(evidence, { personaPrompt = '' } = {}) {
     ? 'Source dates contain a duration mismatch. Do not visually imply a precise number of days; keep the image about supported actions only.'
     : '';
   const persona = personaPrompt ? `${personaPrompt} ` : '';
-  const style = sharedStyle();
   const activity = compactText(book.activity || 'small everyday action', 100);
   const moment = evidence?.moment;
   const objects = (evidence?.visualObjects || []).join(', ');
+  const style = sharedStyle();
 
-  const momentLine = moment?.kind === 'event'
-    ? `Use the supported moment ${moment.type} on ${moment.dayKey}; it qualified because of ${moment.meaningSignals.join(', ')}. Never invent a reaction that is not listed.`
-    : (moment?.kind === 'shared_day'
-      ? `Use ${moment.dayKey}, when ${moment.committers} people committed and the group produced ${moment.confirmations} confirmations and ${moment.reactions} reactions.`
-      : 'There is no single moment with enough meaning evidence, so do not manufacture a turning point.');
+  let momentLine = 'There is no single event with enough meaning evidence. Do not manufacture a turning point.';
+  if (moment?.kind === 'event') {
+    momentLine = `Use the supported event ${moment.type} on ${moment.dayKey}. Its direct/ambient meaning signals are: ${moment.meaningSignals.join(', ')}. Never invent a reaction that is not listed.`;
+  } else if (moment?.kind === 'shared_day') {
+    momentLine = `Use ${moment.dayKey} as a meaningful shared day: ${moment.committers} people committed, with ${moment.confirmations} confirmations and ${moment.reactions} reactions. Do not attach that meaning to an unrelated settings change.`;
+  }
 
   const base = `${persona}${continuity} ${conflictGuard} Activity: ${activity}. Real members represented: ${people}. Real totals: ${facts.validCommits || 0} valid commits, ${facts.confirmations || 0} confirmations, ${facts.messages || 0} messages. ${style}.`;
 
   return Object.freeze([
     Object.freeze({
-      id: 'A', direction: 'group', titleTh: 'จำคนที่อยู่ในเล่ม',
+      id: 'A',
+      direction: 'group',
+      titleTh: 'จำคนที่อยู่ในเล่ม',
       prompt: `${base} Direction A — group memory. Show the members near the end of the volume doing the activity side by side in a natural low-pressure way. The feeling is warmth from sharing ordinary effort, not achievement theater. Include the final companion only if it really existed.`,
     }),
     Object.freeze({
-      id: 'B', direction: 'moment', titleTh: 'จำช่วงที่มีความหมาย',
-      prompt: `${base} Direction B — one supported moment. ${momentLine} Frame one quiet, specific scene around that evidence. A state change alone is not a turning point. If the evidence is weak, portray it as a small detail rather than a dramatic pivot.`,
+      id: 'B',
+      direction: 'moment',
+      titleTh: 'จำช่วงที่มีความหมาย',
+      prompt: `${base} Direction B — one supported moment. ${momentLine} Frame one quiet, specific scene around the evidence. A state change alone is never a turning point.`,
     }),
     Object.freeze({
-      id: 'C', direction: 'objects', titleTh: 'จำของที่เหลืออยู่',
+      id: 'C',
+      direction: 'objects',
+      titleTh: 'จำของที่เหลืออยู่',
       prompt: `${base} Direction C — objects left behind. No people or animal characters. Create a calm still life using only plausible everyday objects for this activity: ${objects}. The still life should communicate intentional, doable care and leave the page feeling open to another volume.`,
     }),
   ]);
