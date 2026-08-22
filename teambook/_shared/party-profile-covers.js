@@ -1,5 +1,6 @@
-import { getParty, getProfile, partyIdentity, availableOwnedCards } from './store.js';
+import { getParty, getProfile, partyIdentity, ownedCards } from './store.js';
 import { cardById as xtyCardById, cardDescriptorTh } from './cards.js';
+import { TEAMBOOK_V1_PETS } from './pets.js';
 
 const code = new URLSearchParams(location.search).get('c');
 let busy = false;
@@ -8,10 +9,12 @@ let scheduled = false;
 if (/^\d{5}$/.test(code || '')) install();
 
 function install() {
-  /* Cover management remains here, but this module deliberately never
-     touches #seats anymore. In TeamBook a Book Cover and a person's
-     character are two independent identities. */
+  /* Book Cover and a person's character are independent identities.
+     V1.2 cards may be reused across books; only same-book role collision is
+     excluded from these pickers. Capture phase prevents the legacy handlers
+     from re-applying the old cross-book CARD_IN_USE rule. */
   document.addEventListener('click', interceptCoverSave, true);
+  document.addEventListener('click', interceptNpcSave, true);
   const observer = new MutationObserver(schedule);
   const view = document.getElementById('view');
   if (view) observer.observe(view, { childList: true, subtree: true });
@@ -24,6 +27,7 @@ function schedule() {
   requestAnimationFrame(() => {
     scheduled = false;
     syncCoverTools();
+    syncNpcTools();
     syncRichEvents();
   });
 }
@@ -36,24 +40,19 @@ function currentToken() {
   } catch { return ''; }
 }
 
-function remember(result) {
-  if (!result?.party?.code) return;
-  try {
-    const list = JSON.parse(localStorage.getItem('teambook_books_v1') || '[]');
-    const arr = Array.isArray(list) ? list : [];
-    const i = arr.findIndex(item => item?.code === result.party.code);
-    if (i >= 0) arr[i] = result.party;
-    else arr.unshift(result.party);
-    localStorage.setItem('teambook_books_v1', JSON.stringify(arr));
-  } catch {}
+function ownedCardObjects(role) {
+  return ownedCards(getProfile())
+    .map(entry => xtyCardById(entry.cardId))
+    .filter(Boolean)
+    .filter(card => card.eligibility?.[role]);
 }
 
-async function callCover(body) {
+async function callPlacement(action, body) {
   const headers = { accept: 'application/json', 'content-type': 'application/json' };
   const token = currentToken();
   if (token) headers.authorization = `Bearer ${token}`;
   try {
-    const r = await fetch(`/api/teambook-party-finish?op=cover-v2&code=${encodeURIComponent(code)}`, {
+    const r = await fetch(`/api/teambook-v12?action=${encodeURIComponent(action)}&code=${encodeURIComponent(code)}`, {
       method: 'POST',
       credentials: 'same-origin',
       headers,
@@ -74,12 +73,11 @@ function syncCoverTools() {
   const member = p.members.find(item => item.userId === me?.userId);
   if (!member || member.role !== 'lead') return;
 
-  /* Make the separation explicit in the management UI too. */
   const label = document.querySelector('label[for="leadSelect"]');
   if (label && label.textContent !== 'ปกสมุด') label.textContent = 'ปกสมุด';
 
   if (p.coverType === 'avatar') {
-    select.dataset.coverV3 = [p.coverType, p.coverValue, p.leadCardId].join('|');
+    select.dataset.coverV12 = [p.coverType, p.coverValue, p.leadCardId].join('|');
     select.innerHTML = '<option selected>การ์ดตัวละครตอนสร้างสมุด · ล็อกแล้ว</option>';
     select.disabled = true;
     button.hidden = true;
@@ -87,10 +85,9 @@ function syncCoverTools() {
   }
   button.hidden = false;
 
-  const signature = [p.coverType, p.coverValue, p.leadCardId].join('|');
-  if (select.dataset.coverV3 === signature) return;
-
-  select.dataset.coverV3 = signature;
+  const signature = [p.coverType, p.coverValue, p.leadCardId, p.npcCardId].join('|');
+  if (select.dataset.coverV12 === signature) return;
+  select.dataset.coverV12 = signature;
   select.disabled = false;
   button.disabled = false;
   select.innerHTML = '';
@@ -103,19 +100,64 @@ function syncCoverTools() {
     select.appendChild(option);
   };
 
-  add('v3:back', 'หลังการ์ด TeamBook', p.coverType === 'card_back');
+  add('v12:back', 'หลังการ์ด TeamBook', p.coverType === 'card_back');
+  ownedCardObjects('partyCover')
+    .filter(card => card.cardId !== p.npcCardId)
+    .forEach(card => add(
+      `v12:card:${card.cardId}`,
+      cardDescriptorTh(card),
+      p.coverType === 'card' && p.leadCardId === card.cardId,
+    ));
+}
 
-  const xtyCards = availableOwnedCards({ role: 'lead', exceptPartyCode: code });
-  if (p.leadCardId) {
-    const current = xtyCardById(p.leadCardId);
-    if (current && !xtyCards.some(card => card.cardId === current.cardId)) xtyCards.unshift(current);
-  }
-  xtyCards.forEach(card => add(
-    `v3:xty:${card.cardId}`,
-    cardDescriptorTh(card),
-    p.coverType === 'card' && p.leadCardId === card.cardId,
+function syncNpcTools() {
+  const p = getParty(code);
+  const select = document.getElementById('npcSelect');
+  const button = document.getElementById('npcBtn');
+  if (!p || !select || !button) return;
+  const me = partyIdentity(code);
+  const member = p.members.find(item => item.userId === me?.userId);
+  if (!member || member.role !== 'lead') return;
+
+  const signature = [p.npcCardId, p.petId, p.leadCardId, ownedCards(getProfile()).length].join('|');
+  if (select.dataset.npcV12 === signature) return;
+  select.dataset.npcV12 = signature;
+  select.innerHTML = '';
+
+  const add = (value, text, selected = false) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = text;
+    option.selected = selected;
+    select.appendChild(option);
+  };
+  add('v12:none', 'ไม่มีเพื่อนร่วมทาง', !p.npcCardId && !p.petId);
+  TEAMBOOK_V1_PETS.forEach(pet => add(
+    `v12:pet:${pet.id}`,
+    `เพื่อนร่วมทาง · ${pet.nameTh}`,
+    !p.npcCardId && p.petId === pet.id,
   ));
+  ownedCardObjects('npc')
+    .filter(card => card.cardId !== p.leadCardId)
+    .forEach(card => add(
+      `v12:card:${card.cardId}`,
+      `การ์ด · ${cardDescriptorTh(card)}`,
+      p.npcCardId === card.cardId,
+    ));
+}
 
+function showPlacementError(result) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.textContent = result.error === 'INVALID_CARD_PLACEMENT'
+    ? 'การ์ดใบเดียวกันใช้เป็นทั้งปกและเพื่อนร่วมทางในสมุดเดียวกันไม่ได้'
+    : result.error === 'COVER_LOCKED'
+      ? 'ปกสมุด Level 1 ถูกล็อกตั้งแต่สร้างสมุดแล้ว'
+      : result.error === 'CARD_NOT_OWNED'
+        ? 'ไม่พบการ์ดใบนี้ในคอลเลกชันของคุณ'
+        : 'ยังบันทึกการเปลี่ยนแปลงไม่ได้';
+  toast.classList.add('on');
+  setTimeout(() => toast.classList.remove('on'), 2800);
 }
 
 async function interceptCoverSave(event) {
@@ -127,31 +169,41 @@ async function interceptCoverSave(event) {
 
   const value = document.getElementById('leadSelect')?.value || '';
   let payload;
-  if (value === 'v3:back') payload = { coverType: 'card_back' };
+  if (value === 'v12:back' || value === 'back' || value === 'v3:back') payload = { coverType: 'card_back' };
+  else if (value.startsWith('v12:card:')) payload = { coverType: 'card', leadCardId: value.slice('v12:card:'.length) };
   else if (value.startsWith('v3:xty:')) payload = { coverType: 'card', leadCardId: value.slice(7) };
+  else if (value && xtyCardById(value)) payload = { coverType: 'card', leadCardId: value };
   else return;
 
   busy = true;
   target.disabled = true;
-  const result = await callCover(payload);
+  const result = await callPlacement('place-cover', payload);
   busy = false;
   target.disabled = false;
+  if (result.error) { showPlacementError(result); return; }
+  location.reload();
+}
 
-  const toast = document.getElementById('toast');
-  if (result.error) {
-    if (toast) {
-      toast.textContent = result.error === 'CARD_IN_USE'
-        ? 'การ์ดใบนี้กำลังใช้กับสมุดอื่นอยู่'
-        : result.error === 'COVER_LOCKED'
-          ? 'ปกสมุด Level 1 ถูกล็อกตั้งแต่สร้างสมุดแล้ว'
-          : 'ยังเปลี่ยนปกสมุดไม่ได้';
-      toast.classList.add('on');
-      setTimeout(() => toast.classList.remove('on'), 2800);
-    }
-    return;
-  }
+async function interceptNpcSave(event) {
+  const target = event.target?.closest?.('#npcBtn');
+  if (!target) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  if (busy) return;
 
-  remember(result);
+  const value = document.getElementById('npcSelect')?.value || 'v12:none';
+  let payload = { npcCardId: null, petId: null };
+  if (value.startsWith('v12:card:')) payload = { npcCardId: value.slice('v12:card:'.length), petId: null };
+  else if (value.startsWith('v12:pet:')) payload = { npcCardId: null, petId: value.slice('v12:pet:'.length) };
+  else if (value.startsWith('card:')) payload = { npcCardId: value.slice(5), petId: null };
+  else if (value.startsWith('pet:')) payload = { npcCardId: null, petId: value.slice(4) };
+
+  busy = true;
+  target.disabled = true;
+  const result = await callPlacement('place-npc', payload);
+  busy = false;
+  target.disabled = false;
+  if (result.error) { showPlacementError(result); return; }
   location.reload();
 }
 

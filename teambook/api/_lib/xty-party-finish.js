@@ -31,16 +31,27 @@ async function memberFor(req, sql, partyId) {
   const rows = await sql.query(`SELECT user_id,role FROM teambook_book_members WHERE book_id=$1 AND auth_hash=$2 AND left_at IS NULL`, [partyId, await sha256(token)]);
   return rows[0] || null;
 }
-function closedPartySnapshot(row, endedAt) {
-  const startedAt = row.started_at || row.created_at || endedAt; const scheduledEndAt = row.scheduled_end_at || endedAt;
-  return {
-    id: row.id, code: row.code, name: row.name, activity: row.activity || '', activityId: row.activity_id || 'custom', preset: row.preset || 'casual',
-    durationDays: Number(row.duration_days || 7), color: row.color || 'green', visibility: 'private', verificationMode: row.verification_mode || 'trust',
-    commitRule: '', budget: row.budget || 'normal', petId: null, leadCardId: null, npcCardId: null, coverType: 'card_back', coverValue: null,
-    ownerId: row.owner_id, state: 'DISSOLVED', timezone: row.timezone || 'Asia/Bangkok', startAt: new Date(startedAt).toISOString(),
-    scheduledEndAt: new Date(scheduledEndAt).toISOString(), endAt: endedAt.toISOString(), createdAt: new Date(row.created_at || startedAt).toISOString(),
-    updatedAt: endedAt.toISOString(), members: [], memberHistory: [], events: [], rewardClaims: [], log: [],
+
+async function stateAfterClose(req, code) {
+  let raw = '';
+  const headers = {};
+  const capture = {
+    statusCode: 200,
+    setHeader(name, value) { headers[String(name).toLowerCase()] = value; },
+    getHeader(name) { return headers[String(name).toLowerCase()]; },
+    end(chunk = '') { raw += Buffer.isBuffer(chunk) ? chunk.toString('utf8') : String(chunk || ''); },
   };
+  const proxy = Object.create(req);
+  proxy.method = 'GET';
+  proxy.url = `/api/teambook/party/${encodeURIComponent(code)}`;
+  proxy.query = { path: `party/${code}` };
+  proxy.body = undefined;
+  proxy.headers = { ...(req.headers || {}) };
+  await legacyXtyHandler(proxy, capture);
+  let data = {};
+  try { data = raw ? JSON.parse(raw) : {}; } catch { data = {}; }
+  if (capture.statusCode >= 400 || data.error) return null;
+  return data;
 }
 
 export async function handleXtyPartyFinish(req, res) {
@@ -77,13 +88,18 @@ export async function handleXtyPartyFinish(req, res) {
 
     const dissolved = await dissolveXtyParty(sql, row, member.user_id);
     if (!dissolved) return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
-    return sendJson(res, {
-      ok: true,
-      dissolved: true,
-      removedMembers: dissolved.removedMembers,
-      meUserId: null,
-      party: closedPartySnapshot(row, dissolved.endedAt),
-    });
+
+    /* V1.2 keeps membership readable after dissolve. Return the canonical
+       closed state instead of replacing the local cache with an empty shell. */
+    const state = await stateAfterClose(req, code);
+    if (state?.party) {
+      return sendJson(res, {
+        ...state,
+        dissolved: true,
+        removedMembers: dissolved.removedMembers,
+      });
+    }
+    return sendJson(res, { ok: true, dissolved: true, removedMembers: 0 });
   } catch (error) {
     console.error('TeamBook dissolve failed', error);
     if (error.code === 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED') return sendJson(res, { ok: false, error: error.code }, 503);
