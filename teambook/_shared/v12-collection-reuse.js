@@ -37,8 +37,9 @@ function syncCollectionDates() {
     if (!record || !card) return;
     const date = dateDDMMYYYY(record.acquiredAt);
     const caption = button.querySelector('.collection-status');
-    if (caption) caption.textContent = date;
-    button.setAttribute('aria-label', `${cardDescriptorTh(card)} · พบ ${date}`);
+    if (caption && caption.textContent !== date) caption.textContent = date;
+    const label = `${cardDescriptorTh(card)} · พบ ${date}`;
+    if (button.getAttribute('aria-label') !== label) button.setAttribute('aria-label', label);
   });
 }
 
@@ -63,6 +64,16 @@ function ownedPartyForCompanion(cardId) {
   }) || null;
 }
 
+function setHidden(node, hidden) {
+  if (node && node.hidden !== hidden) node.hidden = hidden;
+}
+
+function setHref(node, href) {
+  if (!node) return;
+  const current = node.getAttribute('href') || '';
+  if (current !== href) node.setAttribute('href', href);
+}
+
 function syncDetail() {
   const dialog = document.getElementById('detail');
   if (!dialog || (!dialog.open && !dialog.hasAttribute('open'))) return;
@@ -73,21 +84,22 @@ function syncDetail() {
   const cover = document.getElementById('useCover');
   const npc = document.getElementById('useNpc');
   if (cover) {
-    cover.hidden = !card.eligibility?.partyCover;
-    cover.href = `/new/?lead=${encodeURIComponent(card.cardId)}`;
+    setHidden(cover, !card.eligibility?.partyCover);
+    setHref(cover, `/new/?lead=${encodeURIComponent(card.cardId)}`);
   }
   if (npc) {
-    npc.hidden = !card.eligibility?.npc;
+    setHidden(npc, !card.eligibility?.npc);
     const party = ownedPartyForCompanion(card.cardId);
-    npc.href = party
+    setHref(npc, party
       ? `/p/?c=${encodeURIComponent(party.code)}&npc=${encodeURIComponent(card.cardId)}#manage`
-      : `/new/?npc=${encodeURIComponent(card.cardId)}`;
+      : `/new/?npc=${encodeURIComponent(card.cardId)}`);
   }
 
   /* No IN USE / AVAILABLE copy. The equipped avatar already has its visual
      treatment, and book placement does not consume the card. */
   const status = document.getElementById('detailStatus');
-  if (status) status.textContent = card.personalityNameTh || '';
+  const persona = card.personalityNameTh || '';
+  if (status && status.textContent !== persona) status.textContent = persona;
 }
 
 let queued = false;
@@ -105,10 +117,13 @@ function install() {
   if (!/^\/collection(?:\/|$)/.test(location.pathname)) return;
   const cards = document.getElementById('cards');
   const dialog = document.getElementById('detail');
-  const observer = new MutationObserver(sync);
-  if (cards) observer.observe(cards, { childList: true, subtree: true });
+
+  /* Observe content replacement in the grid, but only the dialog's own open
+     state. Inner href/hidden/text changes are our output and must not feed
+     back into another render loop. */
+  if (cards) new MutationObserver(sync).observe(cards, { childList: true, subtree: true });
   if (dialog) {
-    observer.observe(dialog, { attributes: true, childList: true, subtree: true });
+    new MutationObserver(sync).observe(dialog, { attributes: true, attributeFilter: ['open'] });
     dialog.addEventListener('click', sync, true);
   }
   addEventListener('pageshow', sync);
