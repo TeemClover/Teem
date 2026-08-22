@@ -7,14 +7,18 @@ function boot() {
   document.getElementById('xtyLanguageChoice')?.remove();
 
   /* TeamBook V1.2 gameplay is route-aware and leaves current cosmetic
-     components in place. Loading it here gives Home, Collection, New Party,
-     active Party and Finished Book one shared rules layer. */
-  import('./v12-gameplay.js?v=20260822-v12')
+     components in place. */
+  import('./v12-gameplay.js?v=20260822-v12b')
     .catch(error => console.warn('TeamBook V1.2 gameplay layer unavailable', error));
 
   if (/^\/new(?:\/|$)/.test(location.pathname)) {
-    import('./v12-new-reuse.js?v=20260822-v12')
+    import('./v12-new-reuse.js?v=20260822-v12b')
       .catch(error => console.warn('TeamBook reusable card picker unavailable', error));
+  }
+
+  if (/^\/collection(?:\/|$)/.test(location.pathname)) {
+    import('./v12-collection-reuse.js?v=20260822-v12b')
+      .catch(error => console.warn('TeamBook reusable Collection actions unavailable', error));
   }
 
   /* Keep the party card/Seen interaction that previously piggybacked on the
@@ -22,6 +26,8 @@ function boot() {
   if (/^\/p(?:\/|$)/.test(location.pathname)) {
     import('./party-teambook-cards.js')
       .catch(error => console.warn('TeamBook party card layer unavailable', error));
+    import('./v12-party-query.js?v=20260822-v12b')
+      .catch(error => console.warn('TeamBook companion intent unavailable', error));
   }
 }
 
