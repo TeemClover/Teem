@@ -11,7 +11,7 @@
     const style = document.createElement('style');
     style.id = 'behavior-style';
     style.textContent = `
-      .behavior-wrap{display:grid;gap:12px}.behavior-metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.behavior-card{border:1px solid var(--line);background:#0b1712;border-radius:15px;padding:14px}.behavior-card span{display:block;color:#8fa59a;font-size:11px;font-weight:900}.behavior-card strong{display:block;font-size:27px;margin:8px 0 4px}.behavior-card small{color:#82968d;font-size:12px}.behavior-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.behavior-table{width:100%;border-collapse:collapse;font-size:12px}.behavior-table th{text-align:left;color:#82968d;font-size:10px;letter-spacing:.05em;padding:8px;border-bottom:1px solid var(--line)}.behavior-table td{padding:9px 8px;border-bottom:1px solid #21352c;color:#bdcbc4;vertical-align:top}.behavior-table tr:last-child td{border-bottom:0}.behavior-table b{color:#f2efe5}.behavior-table .num{text-align:right;font-variant-numeric:tabular-nums}.behavior-scroll{overflow:auto;max-height:420px}.behavior-attention{display:grid;gap:8px}.behavior-alert{border:1px solid #315042;background:#0a1611;border-radius:12px;padding:12px}.behavior-alert.warn{border-color:#6b5830;background:#17140c}.behavior-alert.ok{border-color:#315c42}.behavior-alert b{display:block;font-size:14px}.behavior-alert p{margin:5px 0 0;color:#9fb0a8;font-size:12px;line-height:1.55}.behavior-line{width:100%;height:190px;display:block;margin-top:10px}.behavior-line .grid{stroke:#22372e;stroke-width:1}.behavior-line .views{fill:none;stroke:var(--green);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.behavior-line .commits{fill:none;stroke:var(--gold);stroke-width:2.5}.behavior-line text{fill:#70877b;font-size:10px}.behavior-note{color:#859a90;font-size:12px;line-height:1.55;margin-top:10px}.returning{color:#9bd5ae;font-weight:850}@media(max-width:900px){.behavior-metrics{grid-template-columns:repeat(3,1fr)}.behavior-grid{grid-template-columns:1fr}}@media(max-width:620px){.behavior-metrics{grid-template-columns:1fr 1fr}.behavior-card strong{font-size:24px}.behavior-table{font-size:11px}}
+      .behavior-wrap{display:grid;gap:12px}.behavior-metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}.behavior-card{border:1px solid var(--line);background:#0b1712;border-radius:15px;padding:14px}.behavior-card span{display:block;color:#8fa59a;font-size:11px;font-weight:900}.behavior-card strong{display:block;font-size:27px;margin:8px 0 4px}.behavior-card small{color:#82968d;font-size:12px}.behavior-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.behavior-table{width:100%;border-collapse:collapse;font-size:12px}.behavior-table th{text-align:left;color:#82968d;font-size:10px;letter-spacing:.05em;padding:8px;border-bottom:1px solid var(--line)}.behavior-table td{padding:9px 8px;border-bottom:1px solid #21352c;color:#bdcbc4;vertical-align:top}.behavior-table tr:last-child td{border-bottom:0}.behavior-table b{color:#f2efe5}.behavior-table .num{text-align:right;font-variant-numeric:tabular-nums}.behavior-scroll{overflow:auto;max-height:420px}.behavior-attention{display:grid;gap:8px}.behavior-alert{border:1px solid #315042;background:#0a1611;border-radius:12px;padding:12px}.behavior-alert.warn{border-color:#6b5830;background:#17140c}.behavior-alert.ok{border-color:#315c42}.behavior-alert b{display:block;font-size:14px}.behavior-alert p{margin:5px 0 0;color:#9fb0a8;font-size:12px;line-height:1.55}.behavior-line{width:100%;height:190px;display:block;margin-top:10px}.behavior-line .grid{stroke:#22372e;stroke-width:1}.behavior-line .views{fill:none;stroke:var(--green);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.behavior-line .commits{fill:none;stroke:var(--gold);stroke-width:2.5}.behavior-line text{fill:#70877b;font-size:10px}.behavior-note{color:#859a90;font-size:12px;line-height:1.55;margin-top:10px}.returning{color:#9bd5ae;font-weight:850}.anon{color:#83988d;font-size:10px}@media(max-width:900px){.behavior-metrics{grid-template-columns:repeat(3,1fr)}.behavior-grid{grid-template-columns:1fr}}@media(max-width:620px){.behavior-metrics{grid-template-columns:1fr 1fr}.behavior-card strong{font-size:24px}.behavior-table{font-size:11px}}
     `;
     document.head.append(style);
   }
@@ -46,14 +46,20 @@
     document.getElementById('behaviorChart').innerHTML=`${grid}<polyline class="views" points="${points(views,width,height,pad,max)}"/><polyline class="commits" points="${points(commits,width,height,pad,max)}"/>${axes}`;
   }
 
+  function actorRows(data) {
+    const identified=(data.actors||[]).map(a=>`<tr><td><b>${esc(a.alias||a.actorId)}</b>${a.returning?'<br><span class="returning">↩ กลับมาซ้ำ</span>':''}<br><small>${when(a.lastSeenAt)}</small></td><td class="num">${n(a.sessions)}</td><td class="num">${n(a.pageViews)}</td><td class="num">${n(a.messages)}</td><td class="num">${n(a.commits)}</td></tr>`);
+    const anonymous=(data.anonymousVisitors||[]).map(a=>`<tr><td><b>Visitor · ${esc(String(a.visitorId||'').slice(-8))}</b>${a.returning?'<br><span class="returning">↩ กลับมาซ้ำ</span>':''}<br><span class="anon">anonymous · ${esc(a.lastPath||'')}</span><br><small>${when(a.lastSeenAt)}</small></td><td class="num">${n(a.sessions)}</td><td class="num">${n(a.pageViews)}</td><td class="num">—</td><td class="num">—</td></tr>`);
+    return [...identified,...anonymous];
+  }
+
   function render(data) {
     section();
     const s=data.summary||{};
     document.getElementById('behaviorUpdated').textContent=`อัปเดต ${when(data.generatedAt)}`;
     document.getElementById('behaviorMetrics').innerHTML=[
-      ['VISITORS 7D',s.visitors7d,'คน/เครื่องที่กลับมาเห็นได้'],
+      ['ACTIVE NOW',s.active15m,`${n(s.active24h)} active / 24h`],
+      ['VISITORS 7D',s.visitors7d,`${n(s.sessions7d)} sessions`],
       ['RETURNING',`${s.returningRate7d||0}%`,`${n(s.returningVisitors7d)} returning visitors`],
-      ['SESSIONS 7D',s.sessions7d,'การกลับมาเปิดใช้งาน'],
       ['PAGE VIEWS',s.pageViews7d,'จำนวนหน้าที่เปิด'],
       ['ACTIVE / SESSION',mins(s.avgActiveSecondsPerSession),'เวลาที่หน้าอยู่ active'],
       ['COMMITS 7D',s.commits7d,`${n(s.messages7d)} messages · ${n(s.committers7d)} คนลงชื่อ`],
@@ -63,8 +69,8 @@
     document.getElementById('behaviorAttention').innerHTML=(data.attention||[]).map(a=>`<div class="behavior-alert ${esc(a.level||'')}"><b>${esc(a.title)}</b><p>${esc(a.detail)}</p></div>`).join('');
     const pages=data.pages||[];
     document.getElementById('behaviorPages').innerHTML=pages.length?`<table class="behavior-table"><thead><tr><th>PAGE</th><th class="num">VIEWS</th><th class="num">PEOPLE</th><th class="num">ACTIVE</th><th class="num">SCROLL</th></tr></thead><tbody>${pages.map(p=>`<tr><td><b>${esc(p.path)}</b><br><small>${when(p.lastViewAt)}</small></td><td class="num">${n(p.views)}</td><td class="num">${n(p.visitors)}</td><td class="num">${mins(Math.round(p.avgActiveSeconds))}</td><td class="num">${Math.round(p.avgScroll||0)}%</td></tr>`).join('')}</tbody></table>`:'<p class="behavior-note">ยังไม่มี page view · ตารางนี้จะเริ่มเติมทันทีที่มีคนเปิด TeamBook</p>';
-    const actors=data.actors||[];
-    document.getElementById('behaviorActors').innerHTML=actors.length?`<table class="behavior-table"><thead><tr><th>PERSON</th><th class="num">VISITS</th><th class="num">PAGES</th><th class="num">MSG</th><th class="num">SIGN</th></tr></thead><tbody>${actors.map(a=>`<tr><td><b>${esc(a.alias||a.actorId)}</b>${a.returning?'<br><span class="returning">↩ กลับมาซ้ำ</span>':''}<br><small>${when(a.lastSeenAt)}</small></td><td class="num">${n(a.sessions)}</td><td class="num">${n(a.pageViews)}</td><td class="num">${n(a.messages)}</td><td class="num">${n(a.commits)}</td></tr>`).join('')}</tbody></table>`:'<p class="behavior-note">ยังไม่มี actor · เมื่อมีคนใช้ จะเห็นว่าใครกลับมา ส่งข้อความกี่ครั้ง และลงชื่อกี่ครั้ง</p>';
+    const rows=actorRows(data);
+    document.getElementById('behaviorActors').innerHTML=rows.length?`<table class="behavior-table"><thead><tr><th>PERSON</th><th class="num">VISITS</th><th class="num">PAGES</th><th class="num">MSG</th><th class="num">SIGN</th></tr></thead><tbody>${rows.join('')}</tbody></table>`:'<p class="behavior-note">ยังไม่มีคนใช้ · เมื่อมี signal จะเห็นทั้ง anonymous visitor และคนที่ผูกกับ TeamBook profile/account</p>';
   }
 
   async function load() {
