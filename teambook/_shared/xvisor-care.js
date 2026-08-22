@@ -81,8 +81,8 @@ export function directInviteUrl(code, origin = (typeof location !== 'undefined' 
 /* Special X-VISOR invite: recipient plays Xircle first, then Xircle hands the
    saved room code back to TeamBook at the end of the intro. This link is shown only
    inside the white-cat Care Assist card for the Party Lead. */
-export function xvisorInviteUrl(code, origin = (typeof location !== 'undefined' ? location.origin : 'https://teambook.me')) {
-  return `${origin}/xircle/?xty=${encodeURIComponent(code)}&xvisor=1`;
+export function xvisorInviteUrl(code) {
+  return `https://www.myclover.com/xircle/?xty=${encodeURIComponent(code)}&xvisor=1`;
 }
 
 export function careDay(party, now = Date.now()) {
