@@ -5,6 +5,33 @@ responsiveStyle.rel = 'stylesheet';
 responsiveStyle.href = '/_shared/entry-mobile.css?v=20260822-responsive3';
 document.head.append(responsiveStyle);
 
+/* Thai display text needs more vertical breathing room than Latin at the
+   same nominal line-height. Keep this scoped to /read so other entry flows
+   retain their existing geometry. */
+if (/^\/read(?:\/|$)/.test(location.pathname)) {
+  const thaiHeadingStyle = document.createElement('style');
+  thaiHeadingStyle.id = 'teambook-read-thai-heading-leading';
+  thaiHeadingStyle.textContent = `
+    .entry-page .entry-title,
+    .entry-page .story-copy h2,
+    .entry-page .final-invite h2,
+    .entry-page .chapter-hero h1 {
+      line-height: 1.34;
+      letter-spacing: -0.025em;
+    }
+    @media (max-width: 700px) {
+      .entry-page .entry-title,
+      .entry-page .story-copy h2,
+      .entry-page .final-invite h2,
+      .entry-page .chapter-hero h1 {
+        line-height: 1.4;
+        letter-spacing: -0.018em;
+      }
+    }
+  `;
+  document.head.append(thaiHeadingStyle);
+}
+
 const params = new URLSearchParams(location.search);
 const rawCode = params.get('c') || '';
 const inviteCode = /^\d{5}$/.test(rawCode) ? rawCode : '';
