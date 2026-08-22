@@ -30,6 +30,12 @@
 <link rel="stylesheet" href="/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/_shared/chat-image.css?v=1">
 <link rel="stylesheet" href="/_shared/card-reveal.css?v=2">
+<style>
+@media (max-width:640px){
+  .reveal-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .reveal-actions .btn{width:100%;min-height:48px}
+}
+</style>
 <script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
 </head>
 <body>
@@ -46,7 +52,7 @@
   <section id="missing" hidden>
     <p class="kicker">CARD REVEAL</p>
     <h1 class="title">ยังไม่มีการ์ดรอเปิด</h1>
-    <p class="lede">เขียนสมุดให้จบเล่ม หรือสะสมวันที่ลงชื่อและมีคนเห็นแล้วให้ครบ ⭐⭐⭐ ก่อน แล้ว เปิดการ์ด จะมารอที่นี่</p>
+    <p class="lede">การ์ดจะถูกพบจากเหตุการณ์ที่เกิดขึ้นจริงในสมุด แล้วมารอเปิดที่นี่</p>
     <a class="btn gold" href="/">กลับไป TeamBook</a>
   </section>
 
@@ -58,9 +64,9 @@
   </section>
 
   <section id="reveal" hidden>
-    <p class="kicker" id="rewardKicker">ปิดเล่มแล้ว ✓</p>
+    <p class="kicker" id="rewardKicker">เจอการ์ดแล้ว ✓</p>
     <h1 class="title">ได้การ์ด 1 ใบ</h1>
-    <p class="lede" id="instruction">กดการ์ดเพื่อเปิดของขวัญจากการเดินทาง</p>
+    <p class="lede" id="instruction">กดการ์ดเพื่อเปิดของขวัญจากเรื่องที่เกิดขึ้นในสมุด</p>
 
     <div class="reveal-stage">
       <button class="reveal-card" id="cardButton" aria-label="กดเปิดการ์ด" aria-expanded="false">
@@ -82,10 +88,8 @@
     </div>
 
     <div class="reveal-actions" id="actions" hidden>
-      <button class="btn gold accepted-card" disabled>รับเข้าคอลเลกชันแล้ว ✓</button>
-      <a class="btn ghost" href="/collection/">ดูคอลเลกชัน</a>
-      <button class="btn ghost" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>
-      <a class="btn ghost" id="useNpc" href="/new/">ให้ร่วมสมุดเป็น เพื่อนร่วมทาง</a>
+      <a class="btn gold" id="backToBook" href="/" hidden>กลับไปดูสมุดที่เจอใบนี้</a>
+      <a class="btn ghost" id="viewCollection" href="/collection/">ดูคอลเลกชัน</a>
     </div>
 
     <div class="card save-prompt" id="savePrompt" hidden>
@@ -103,8 +107,7 @@
 <script type="module">
 import {
   pendingCardReward, markCardRewardRevealed, revealPartyCardReward,
-  useCardAsAvatar, shouldOfferProgressSave,
-  updateProfile, allParties, isActiveParty, partyIdentity, refreshParty,
+  shouldOfferProgressSave, updateProfile, allParties, partyIdentity, refreshParty,
 } from '/_shared/store.js';
 import { revealStarReward } from '/_shared/star-rewards.js';
 import { TEAMBOOK_RARITY_META, cardById, cardNameTh } from '/_shared/cards.js';
@@ -120,11 +123,14 @@ const rewardId = params.get('r') || '';
 let reward = pendingCardReward(rewardId);
 $('shell').hidden = false;
 
+/* Reveal should never compete with restoring every active room on mobile.
+   The card payload is local-first; sync the cloud profile only and let the
+   source room refresh when the reveal write actually needs it. */
 if (params.has('account')) {
-  syncXtyProfile().then(() => { $('savePrompt').hidden = true; });
+  syncXtyProfile({ recoverParties:false }).then(() => { $('savePrompt').hidden = true; });
   params.delete('account');
   history.replaceState(null, '', `${location.pathname}${params.size ? `?${params}` : ''}`);
-} else syncXtyProfile();
+} else syncXtyProfile({ recoverParties:false });
 
 bootReveal();
 
@@ -152,6 +158,13 @@ async function bootReveal() {
   }
 }
 
+function afterVisibleFlipStarts() {
+  /* Two animation frames guarantee at least one painted frame with is-open
+     before any database/network work starts. The server can be slow without
+     making the physical card feel slow. */
+  return new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
 function showReward(item) {
   const card = cardById(item.cardId);
   if (!card) { $('missing').hidden = false; return; }
@@ -165,8 +178,9 @@ function showReward(item) {
     $('rewardKicker').textContent = `${alias} เจอการ์ด`;
     $('instruction').textContent = 'การเห็นคนอื่นเป็นเรื่องที่ดี · กดการ์ดเพื่อเปิด';
   } else if (starDrop) {
-    $('rewardKicker').textContent = '⭐⭐⭐ · เปิดการ์ด';
-    $('instruction').textContent = 'ครบ 3 วันที่ลงชื่อและมีคนเห็นแล้วในสมุดนี้ · กดเปิดการ์ด';
+    const milestone = Number(String(item.questId || '').split(':').pop()) || 1;
+    $('rewardKicker').textContent = 'ถูกเห็นแล้ว · เปิดการ์ด';
+    $('instruction').textContent = `ความพยายามของคุณถูกเห็นครบ ${milestone * 3} ครั้งในสมุดนี้ · กดเปิดการ์ด`;
   }
   $('front').innerHTML = cardMarkup(card, { eager: true, foil: card.rarity === 'rare' });
   $('cardName').textContent = cardNameTh(card);
@@ -184,16 +198,15 @@ function showReward(item) {
     if (navigator.vibrate) navigator.vibrate(12);
     button.disabled = true;
 
-    /* The reveal is visual first. The card was already reserved server-side,
-       so there is no reason to hold the flip behind a network round trip. */
     button.classList.add('is-open');
     button.setAttribute('aria-expanded', 'true');
     button.setAttribute('aria-label', cardNameTh(card));
-    $('instruction').textContent = 'กำลังเก็บการ์ดเข้าคอลเลกชัน…';
+    $('instruction').textContent = 'กำลังเก็บร่องรอยของการ์ดใบนี้…';
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     setTimeout(() => playSfx('reveal'), reducedMotion ? 0 : 250);
     setTimeout(() => { $('copy').hidden = false; }, reducedMotion ? 0 : 390);
 
+    await afterVisibleFlipStarts();
     const revealed = starDrop
       ? await revealStarReward(item)
       : await revealPartyCardReward(item.rewardId);
@@ -201,7 +214,7 @@ function showReward(item) {
       saving = false;
       button.disabled = false;
       $('instruction').textContent = revealed.error === 'OFFLINE'
-        ? 'เห็นการ์ดแล้ว · ยังไม่ได้เก็บ เพราะออฟไลน์ · ต่อเน็ตแล้วแตะการ์ดอีกครั้ง'
+        ? 'เห็นการ์ดแล้ว · ยังเก็บร่องรอยไม่สำเร็จเพราะออฟไลน์ · ต่อเน็ตแล้วแตะอีกครั้ง'
         : 'เห็นการ์ดแล้ว · ยังบันทึกไม่สำเร็จ · แตะการ์ดอีกครั้งเพื่อเก็บ';
       return;
     }
@@ -209,11 +222,11 @@ function showReward(item) {
     saving = false;
     markCardRewardRevealed(item.rewardId);
     $('instruction').textContent = firstSeenDrop
-      ? 'เปิดแล้ว · เพิ่มเข้าคอลเลกชันแล้ว ✓'
+      ? 'เปิดแล้ว · การ์ดใบนี้จะจำว่าวันหนึ่งคุณเลือกมองเห็นคนอื่น'
       : (starDrop
-        ? 'เปิดแล้ว · เพื่อนในสมุดจะเห็นการ์ดใบนี้ในเรื่องในสมุด'
-        : 'การ์ดใบนี้เป็นความทรงจำจากเล่มที่เขียนจบ ไม่ใช่ของที่ซื้อสุ่ม');
-    syncXtyProfile();
+        ? 'เปิดแล้ว · การ์ดใบนี้จะจำช่วงที่ความพยายามของคุณถูกมองเห็น'
+        : 'เปิดแล้ว · การ์ดใบนี้เป็นความทรงจำจากสมุดเล่มนี้');
+    syncXtyProfile({ recoverParties:false });
     finishOpen();
   });
 
@@ -221,19 +234,14 @@ function showReward(item) {
     button.classList.add('is-open');
     button.setAttribute('aria-expanded', 'true');
     $('copy').hidden = false; $('actions').hidden = false;
-    $('useAvatar').onclick = () => {
-      useCardAsAvatar(card.cardId);
-      syncXtyProfile();
-      $('useAvatar').textContent = 'ใช้เป็นการ์ดประจำตัวแล้ว ✓';
-      $('useAvatar').disabled = true;
-    };
-    const ownedParty = allParties().find(party => {
-      const identity = partyIdentity(party.code);
-      return isActiveParty(party) && identity?.userId === party.ownerId;
-    });
-    $('useNpc').href = ownedParty
-      ? `/p/?c=${encodeURIComponent(ownedParty.code)}&npc=${encodeURIComponent(card.cardId)}#manage`
-      : `/new/?npc=${encodeURIComponent(card.cardId)}`;
+    if (/^\d{5}$/.test(String(item.partyCode || ''))) {
+      $('backToBook').href = `/p/?c=${encodeURIComponent(item.partyCode)}`;
+      $('backToBook').hidden = false;
+      $('viewCollection').className = 'btn ghost';
+    } else {
+      $('backToBook').hidden = true;
+      $('viewCollection').className = 'btn gold';
+    }
     maybeOfferSave();
   }
 }

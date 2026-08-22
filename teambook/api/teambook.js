@@ -4,6 +4,7 @@ import { handleXtyPartyFinish } from './_lib/xty-party-finish.js';
 import { handleXtyBind } from './_lib/xty-bind.js';
 import { handleCreatePartyV4 } from './_lib/xty-create-v4.js';
 import { handleFinishWithMemoryV1 } from './_lib/xty-finish-memory-v1.js';
+import { handleRewardRevealFast } from './_lib/xty-reward-reveal-fast.js';
 
 function pathOf(req) {
   const raw = req.query?.path;
@@ -50,6 +51,16 @@ export default function handler(req, res) {
     req.query ||= {};
     req.query.code = commit[1];
     return xtyCommitHandler(req, res);
+  }
+
+  /* A card is already selected before this tap. Revealing only needs to seal
+     that reward and write its trace into the book; returning a full room
+     snapshot here makes the physical flip wait on unrelated reads. */
+  const rewardReveal = path.match(/^party\/(\d{5})\/reward\/reveal\/?$/);
+  if (rewardReveal && method === 'POST') {
+    req.query ||= {};
+    req.query.code = rewardReveal[1];
+    return handleRewardRevealFast(req, res);
   }
 
   /* A finished book is a time capsule. Finish the existing lifecycle first,
