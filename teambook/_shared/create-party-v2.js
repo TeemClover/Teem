@@ -1,6 +1,6 @@
 /* TeamBook book creation v2 client
-   Server creation now routes through cover-aware v3 while keeping the
-   existing quota-v2 persistence model. */
+   V1.2 routes creation through the reusable-card server adapter while keeping
+   the existing quota-v2 persistence model. */
 
 import { memberAvatarValue } from './card-picker.js';
 import {
@@ -40,6 +40,7 @@ function onCreatePage() {
 
 function levelOneCover(profile) {
   window.__teambookCoverV2 = { coverType: 'avatar', leadCardId: null };
+  window.__xtyCoverV2 = window.__teambookCoverV2;
   const section = document.getElementById('coverSection');
   if (!section || !profile) return;
 
@@ -86,10 +87,7 @@ async function installCreatePageSetup() {
   }
 
   /* Refresh locally-known memberships for accurate display, but deliberately
-     never block owner creation because owned > maxOwned. The displayed slot
-     entitlement stays unchanged, so an intentionally over-limit player may
-     legitimately show 2/1, 3/1, etc. Merge/Sync must never destroy parties
-     merely to make the count fit the nominal entitlement. */
+     never block owner creation because owned > maxOwned. */
   await Promise.all(myPartyCodes().map(code => refreshParty(code).catch(() => null)));
   profile = getProfile() || profile;
   if (Math.max(1, Number(profile.level || 1)) <= 1) levelOneCover(profile);
@@ -109,14 +107,23 @@ export async function createPartyV2(options = {}) {
   if (!profile) { const error = new Error('NO_PROFILE'); error.code = 'NO_PROFILE'; throw error; }
 
   const levelOne = Math.max(1, Number(profile.level || 1)) <= 1;
-  const override = typeof window !== 'undefined' && window.__teambookCoverV2 ? window.__teambookCoverV2 : null;
+  /* new-cover-v3 historically used __xtyCoverV2 while this module used a
+     TeamBook-prefixed name. V1.2 accepts both and keeps the public override
+     TeamBook-owned. */
+  const override = typeof window !== 'undefined'
+    ? (window.__teambookCoverV2 || window.__xtyCoverV2 || null)
+    : null;
   const finalCoverType = levelOne ? 'avatar' : (override?.coverType || coverType || 'card_back');
   const finalLeadCardId = levelOne
     ? null
     : (override && Object.prototype.hasOwnProperty.call(override, 'leadCardId') ? override.leadCardId : leadCardId);
-  /* Pet cards are skins at every level. The card already carries its species,
-     so LV.1 must not silently discard a Collection choice. */
-  const finalNpcCardId = npcCardId || null;
+
+  /* V1.2 cards are reusable across books. The create-page enhancement can
+     choose an owned NPC card even when legacy availableOwnedCards hid it. */
+  const npcOverridePresent = typeof window !== 'undefined'
+    && Object.prototype.hasOwnProperty.call(window, '__teambookNpcV12');
+  const finalNpcCardId = npcOverridePresent ? (window.__teambookNpcV12 || null) : (npcCardId || null);
+
   const finalDurationDays = typeof window !== 'undefined' && Number(window.__xtyDurationOverride)
     ? Number(window.__xtyDurationOverride) : Number(durationDays || 7);
   const finalPreset = typeof window !== 'undefined' && window.__xtyPresetOverride
@@ -128,7 +135,7 @@ export async function createPartyV2(options = {}) {
 
   let response;
   try {
-    response = await fetch('/api/teambook-party-finish?op=create-v3', {
+    response = await fetch('/api/teambook-v12?action=create', {
       method: 'POST', credentials: 'same-origin',
       headers: { 'content-type': 'application/json', accept: 'application/json' },
       body: JSON.stringify({
