@@ -1,3 +1,5 @@
+import './header-brand-th.js';
+
 const responsiveStyle = document.createElement('link');
 responsiveStyle.rel = 'stylesheet';
 responsiveStyle.href = '/_shared/entry-mobile.css?v=20260822-responsive3';

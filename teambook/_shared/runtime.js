@@ -1,4 +1,5 @@
 import './activity-ux.js';
+import './header-brand-th.js';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
