@@ -35,6 +35,8 @@ function boot() {
       .catch(error => console.warn('TeamBook companion intent unavailable', error));
     import('./v12-ending-image-auth.js?v=20260822-v12d')
       .catch(error => console.warn('TeamBook Ending image auth unavailable', error));
+    import('./level-up-growth.js?v=20260822-growth1')
+      .catch(error => console.warn('TeamBook growth celebration unavailable', error));
   }
 }
 
