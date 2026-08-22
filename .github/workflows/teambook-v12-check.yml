@@ -1,0 +1,27 @@
+name: TeamBook V1.2 Branch Check
+
+on:
+  push:
+    branches:
+      - teambook-v1.2-gameplay-upgrade
+
+permissions:
+  contents: read
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: teambook
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: teambook/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
