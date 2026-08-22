@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+// Static guard for the Home state split: active books never pay the Public Lobby fetch.
 const ROOT = new URL('..', import.meta.url).pathname;
 const home = readFileSync(join(ROOT, 'index.html'), 'utf8');
 const lobby = readFileSync(join(ROOT, 'public/index.html'), 'utf8');
