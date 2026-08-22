@@ -1,3 +1,5 @@
+import './activity-ux.js';
+
 /* Compatibility bootstrap only.
    TeamBook's old DOM translation layer was retired on 2026-08-22.
    Canonical notebook language now lives directly in page/source copy. */
