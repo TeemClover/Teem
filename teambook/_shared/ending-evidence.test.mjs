@@ -37,7 +37,7 @@ test('a state change alone never becomes a turning point', () => {
   assert.notEqual(evidence.moment?.kind === 'event' && evidence.moment?.type, 'NPC_CHANGED');
 });
 
-test('interaction evidence can promote a real event to turning point', () => {
+test('a busy meaningful day does not make an unrelated companion swap a turning point', () => {
   const party = baseParty({
     log: [
       commit(1, 'u1', '2026-08-17T05:00:00.000Z', { confirmedBy: 'u2', reactions: { '🍀': ['u2'] } }),
@@ -48,9 +48,24 @@ test('interaction evidence can promote a real event to turning point', () => {
     events: [{ type: 'NPC_CHANGED', actorId: 'u1', partyDay: 1, data: { from: 'pig', to: 'white_pom' }, at: '2026-08-17T04:00:00.000Z' }],
   });
   const evidence = buildEndingEvidence(party);
+  assert.equal(evidence.rankedEvents[0].classification, 'detail');
+  assert.equal(evidence.moment.kind, 'shared_day');
+  assert.equal(evidence.moment.dayKey, '2026-08-17');
+});
+
+test('a state change may become a turning point only with direct meaning evidence', () => {
+  const party = baseParty({
+    log: [commit(1, 'u1', '2026-08-17T05:00:00.000Z', { confirmedBy: 'u2' })],
+    events: [{
+      type: 'NPC_CHANGED', actorId: 'u1', partyDay: 1,
+      data: { from: 'pig', to: 'white_pom', userPinned: true, reflection: 'ตรงนี้สำคัญกับเรา' },
+      at: '2026-08-17T04:00:00.000Z',
+    }],
+  });
+  const evidence = buildEndingEvidence(party);
   assert.equal(evidence.rankedEvents[0].classification, 'turning_point');
   assert.equal(evidence.moment.kind, 'event');
-  assert.ok(evidence.rankedEvents[0].meaningSignals.length >= 1);
+  assert.ok(evidence.rankedEvents[0].directMeaningSignals.length >= 1);
 });
 
 test('target duration, lived calendar span and active days remain separate facts', () => {
