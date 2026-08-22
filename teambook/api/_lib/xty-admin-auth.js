@@ -6,6 +6,12 @@ export const TEAMBOOK_ADMIN_LOGIN_LIMIT = 5;
 export const TEAMBOOK_ADMIN_LOGIN_WINDOW_MINUTES = 15;
 let adminSchemaPromise;
 
+/* TeamBook is intentionally a separate house from myClover, but the private
+   house must still be operable before a Vercel env override is configured.
+   Keep the fallback as a digest only (never plaintext in the repo). Setting
+   TEAMBOOK_ADMIN_PASSWORD in Vercel replaces this fallback immediately. */
+const TEAMBOOK_ADMIN_FALLBACK_SHA256 = 'efad137e1f9224a51687fb9c12ee5a226a5f0cbb140f4d41fd54f37692f2fe9c';
+
 const ADMIN_SCHEMA = Object.freeze([
   `CREATE TABLE IF NOT EXISTS teambook_admin_sessions (
     token_hash TEXT PRIMARY KEY, created_at TIMESTAMPTZ NOT NULL, expires_at TIMESTAMPTZ NOT NULL
@@ -61,10 +67,15 @@ function requestIp(req) {
     .split(',')[0].trim().slice(0, 120);
 }
 
+export function adminPasswordConfigured() {
+  return true;
+}
+
 export function adminPasswordMatches(candidate, secret = process.env.TEAMBOOK_ADMIN_PASSWORD || '') {
-  if (!secret || typeof candidate !== 'string') return false;
+  if (typeof candidate !== 'string' || !candidate) return false;
   const actual = Buffer.from(digest(candidate), 'hex');
-  const wanted = Buffer.from(digest(secret), 'hex');
+  const wantedHex = secret ? digest(secret) : TEAMBOOK_ADMIN_FALLBACK_SHA256;
+  const wanted = Buffer.from(wantedHex, 'hex');
   return actual.length === wanted.length && timingSafeEqual(actual, wanted);
 }
 
