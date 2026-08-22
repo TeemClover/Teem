@@ -121,7 +121,11 @@ import { syncXtyProfile } from '/_shared/account.js';
 const $ = id => document.getElementById(id);
 const dateFormat = new Intl.DateTimeFormat('th-TH', { day:'numeric', month:'short', year:'numeric' });
 let memorySyncQueued = false;
-if (!hasProfile()) location.replace('/'); else render();
+if (!hasProfile()) location.replace('/');
+else {
+  render();
+  void hydrateServerMemories();
+}
 
 function stamp(value) {
   const n = new Date(value || 0).getTime();
@@ -214,6 +218,40 @@ function backfillCardMemories(profile) {
     });
   }
   return saved;
+}
+
+async function hydrateServerMemories() {
+  try {
+    const response = await fetch('/api/teambook-card-memories', {
+      credentials:'same-origin', headers:{ accept:'application/json' },
+    });
+    if (!response.ok) return;
+    const data = await response.json().catch(() => ({}));
+    if (!Array.isArray(data.memories) || !data.memories.length) return;
+    const server = new Map(data.memories.map(item => [item.cardId, item]));
+    const profile = getProfile();
+    if (!profile) return;
+    let changed = false;
+    const next = ownedCards(profile).map(record => {
+      const memory = server.get(record.cardId);
+      if (!memory) return record;
+      const merged = {
+        ...record,
+        acquiredAt: record.acquiredAt || memory.acquiredAt || record.acquiredAt,
+        originBookCode: memory.originBookCode || record.originBookCode || '',
+        originBookName: memory.originBookName || record.originBookName || '',
+        originOwnerAlias: memory.originOwnerAlias || record.originOwnerAlias || '',
+        originTrigger: memory.originTrigger || record.originTrigger || '',
+      };
+      if (JSON.stringify(merged) === JSON.stringify(record)) return record;
+      changed = true;
+      return merged;
+    });
+    if (!changed) return;
+    updateProfile({ ownedCards: next });
+    render();
+    void syncXtyProfile({ recoverParties:false }).catch(() => null);
+  } catch { /* local collection remains usable offline */ }
 }
 
 function render() {
