@@ -65,6 +65,10 @@ const SCHEMA = [
     ON teambook_analytics_events(path,occurred_at DESC)`,
   `CREATE INDEX IF NOT EXISTS idx_teambook_analytics_events_actor_time
     ON teambook_analytics_events(actor_id,occurred_at DESC)`,
+  `CREATE INDEX IF NOT EXISTS idx_teambook_analytics_events_book_time
+    ON teambook_analytics_events((metadata_json->>'bookId'),occurred_at DESC)`,
+  `CREATE INDEX IF NOT EXISTS idx_teambook_analytics_events_cohort_time
+    ON teambook_analytics_events((metadata_json->>'cohort'),occurred_at DESC)`,
 ];
 
 export async function ensureTelemetrySchema(sql) {
@@ -87,6 +91,11 @@ export function cookieValue(req, name) {
 function safeId(value, max = 100) {
   const text = String(value || '').trim();
   return /^[a-zA-Z0-9:_-]+$/.test(text) ? text.slice(0, max) : '';
+}
+
+function safeBookCode(value) {
+  const text = String(value || '').trim();
+  return /^\d{5}$/.test(text) ? text : '';
 }
 
 export function visitorId(req) {
@@ -132,7 +141,7 @@ export function normalizeActor(account, localProfileId) {
 }
 
 export function normalizeEvent(body = {}) {
-  const allowed = new Set(['PAGE_VIEW', 'ENGAGEMENT', 'NAVIGATE']);
+  const allowed = new Set(['PAGE_VIEW', 'ENGAGEMENT', 'NAVIGATE', 'INVITE_OPEN', 'BOOK_OPEN']);
   const eventType = String(body.eventType || '').trim().toUpperCase();
   if (!allowed.has(eventType)) return null;
   const eventId = safeId(body.eventId, 120) || `e_${randomUUID()}`;
@@ -151,6 +160,7 @@ export function normalizeEvent(body = {}) {
     title: String(body.title || '').trim().slice(0, 180),
     referrer: cleanReferrer(body.referrer),
     localProfileId: safeId(body.localProfileId, 80),
+    bookCode: safeBookCode(body.bookCode),
     activeSeconds,
     scrollDepth,
     occurredAt: safeOccurredAt,
