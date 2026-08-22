@@ -10,9 +10,19 @@ function replaceOnce(path, oldText, newText) {
   return true;
 }
 
+function replaceIfPresent(path, oldText, newText) {
+  const source = readFileSync(path, 'utf8');
+  if (source.includes(newText) || !source.includes(oldText)) return false;
+  writeFileSync(path, source.replace(oldText, newText));
+  return true;
+}
+
 const changes = [];
 const patch = (path, oldText, newText) => {
   if (replaceOnce(path, oldText, newText)) changes.push(path);
+};
+const optionalPatch = (path, oldText, newText) => {
+  if (replaceIfPresent(path, oldText, newText)) changes.push(path);
 };
 
 // An explicit null means the player chose a free Starter animal. Never
@@ -31,28 +41,31 @@ patch(
   `    equippedCardId: newest.equippedCardId\n      && mergedOwnedCards.some(item => item.cardId === newest.equippedCardId)\n        ? newest.equippedCardId\n        : null,`,
 );
 
-patch(
+// These were copy/placement migrations from an older UI. They are intentionally
+// non-blocking now: Collection/Reveal may evolve past both strings without
+// invalidating the underlying profile-runtime repair.
+optionalPatch(
   '_shared/card-ui.js',
   `AVATAR_IN_USE: 'ใช้อยู่เป็นสัตว์'`,
   `AVATAR_IN_USE: 'การ์ดประจำตัว'`,
 );
 
-patch(
+optionalPatch(
   'collection/index.html',
   `สัตว์เริ่มต้นเลือกใช้ฟรีและไม่นับเป็นการ์ด · Common ใช้เป็นสัตว์หรือเพื่อนร่วมทาง · Rare, Epic และ Legendary ใช้เป็นปกสมุดได้`,
   `สัตว์เริ่มต้นเลือกใช้ฟรีและไม่นับเป็นการ์ด · Common ใช้เป็นการ์ดประจำตัวหรือเพื่อนร่วมทาง · Rare, Epic และ Legendary ใช้เป็นปกสมุดได้`,
 );
-patch(
+optionalPatch(
   'collection/index.html',
   `<button class="btn gold" id="useAvatar">ใช้เป็น สัตว์</button>`,
   `<button class="btn gold" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>`,
 );
-patch(
+optionalPatch(
   'reveal/index.html',
   `<button class="btn ghost" id="useAvatar">ใช้เป็น สัตว์</button>`,
   `<button class="btn ghost" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>`,
 );
-patch(
+optionalPatch(
   'reveal/index.html',
   `$('useAvatar').textContent = 'ใช้เป็น สัตว์ แล้ว ✓';`,
   `$('useAvatar').textContent = 'ใช้เป็นการ์ดประจำตัวแล้ว ✓';`,
@@ -65,7 +78,7 @@ patch(
   `    const [session, available] = await Promise.all([api(\`${'${API}'}/session\`), api(\`${'${API}'}/providers\`)]);\n    user = session.user || null; providers = available.providers || providers;`,
   `    const session = await api(\`${'${API}'}/session\`);\n    user = session.user || null; providers = { email: true, google: false, line: false };`,
 );
-patch(
+optionalPatch(
   'profile/index.html',
   `สมัครหรือ Login ด้วยอีเมล + รหัสผ่าน, LINE หรือ Google · Progress ในเครื่องกับ Cloud จะถูกรวมกัน`,
   `สมัครหรือ Login ด้วยอีเมล + รหัสผ่าน · Progress ในเครื่องกับ Cloud จะถูกรวมกัน`,

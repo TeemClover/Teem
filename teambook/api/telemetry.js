@@ -4,12 +4,40 @@ import {
   recordTelemetry, sessionId, visitorId,
 } from './_lib/telemetry.js';
 
+const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
+const XIRCLE_PRESETS = new Set(['xircle', 'xircle_xvisor']);
+
 function bodyOf(req) {
   if (req.body && typeof req.body === 'object') return req.body;
   if (typeof req.body === 'string') {
     try { return JSON.parse(req.body); } catch { return {}; }
   }
   return {};
+}
+
+async function enrichBookContext(sql, event) {
+  if (!event.bookCode) return;
+  try {
+    const rows = await sql.query(`SELECT id,preset,pet_id FROM teambook_books WHERE code=$1 LIMIT 1`, [event.bookCode]);
+    const book = rows[0];
+    if (!book) {
+      event.metadata = { ...event.metadata, bookKnown: '0' };
+      return;
+    }
+    const cohort = XIRCLE_PRESETS.has(String(book.preset || '').toLowerCase()) ? 'xircle' : 'normal';
+    const whiteCat = String(book.pet_id || '') === WHITE_CAT_GUIDE_ID;
+    /* Never persist the five-digit invite code in analytics. Resolve it to the
+       stable internal book id and a small, explicit cohort vocabulary here. */
+    event.metadata = {
+      ...event.metadata,
+      bookKnown: '1',
+      bookId: String(book.id),
+      cohort,
+      whiteCat: whiteCat ? '1' : '0',
+    };
+  } finally {
+    delete event.bookCode;
+  }
 }
 
 export default async function handler(req, res) {
@@ -30,6 +58,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    await enrichBookContext(sql, event);
     const account = await currentUser(req, sql).catch(() => null);
     const actorId = normalizeActor(account, event.localProfileId);
     const visitor = visitorId(req);

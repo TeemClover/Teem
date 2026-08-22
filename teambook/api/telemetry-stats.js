@@ -2,10 +2,13 @@ import { database, ensureSchema, sendJson } from './_lib/core.js';
 import { currentAdminSession, ensureXtyAdminSchema } from './_lib/xty-admin-auth.js';
 import { ensureTelemetrySchema } from './_lib/telemetry.js';
 
+const WHITE_CAT_GUIDE_ID = 'xvisor_white_cat_silver';
+const XIRCLE_PRESETS = ['xircle', 'xircle_xvisor'];
+
 function num(value) { return Number(value || 0); }
 function day(value) { try { return new Date(value).toISOString().slice(0, 10); } catch { return ''; } }
 
-function attentionFor(summary, pages) {
+function attentionFor(summary, pages, growth) {
   const items = [];
   if (!summary.visitorsTotal) {
     return [{ level: 'info', title: 'Telemetry armed · รอสัญญาณแรก', detail: 'ระบบเริ่มเก็บตั้งแต่ก่อนมีผู้ใช้ เพื่อให้ baseline แรกไม่หาย' }];
@@ -29,11 +32,32 @@ function attentionFor(summary, pages) {
     level: 'warn', title: 'มี session แต่ยังไม่มีการลงชื่อ',
     detail: `${summary.sessions7d} sessions ใน 7 วัน แต่ 0 commits · ตรวจเส้นทางจากการอ่านไปสู่ action แรก`,
   });
+  if (growth.whiteCat.invitePeople7d >= 5 && growth.whiteCat.bookOpenPeople7d === 0) items.push({
+    level: 'warn', title: 'สมุดแมวขาวมีคนเปิดลิงก์ แต่ยังไม่เห็นการเปิดสมุด',
+    detail: `${growth.whiteCat.invitePeople7d} คนเปิด invite ใน 7 วัน · ตรวจ join flow ว่าติดตรงไหนก่อนเข้าเล่ม`,
+  });
   if (!items.length) items.push({
     level: 'ok', title: 'ยังไม่มี behavioral anomaly เด่น',
     detail: 'ดู return rate, หน้าที่ใช้เวลาสูง และ action ต่อ user ต่อเนื่องเพื่อสร้าง baseline ก่อนตัดสินใจใหญ่',
   });
-  return items.slice(0, 5);
+  return items.slice(0, 6);
+}
+
+function winnerFor(cohorts) {
+  const x = cohorts.xircle;
+  const n = cohorts.normal;
+  if (!x.newMembers7d && !n.newMembers7d && !x.newBooks7d && !n.newBooks7d) {
+    return { id: 'insufficient', label: 'ยังเทียบไม่ได้', reason: 'ยังไม่มี book/member growth ในช่วง 7 วัน' };
+  }
+  if (x.newMembers7d !== n.newMembers7d) {
+    const id = x.newMembers7d > n.newMembers7d ? 'xircle' : 'normal';
+    return { id, label: id === 'xircle' ? 'Xircle ขยายคนเร็วกว่า' : 'Normal ขยายคนเร็วกว่า', reason: `เทียบสมาชิกใหม่จาก invite: Xircle ${x.newMembers7d} · Normal ${n.newMembers7d}` };
+  }
+  if (x.newBooks7d !== n.newBooks7d) {
+    const id = x.newBooks7d > n.newBooks7d ? 'xircle' : 'normal';
+    return { id, label: id === 'xircle' ? 'Xircle เปิดสมุดใหม่เร็วกว่า' : 'Normal เปิดสมุดใหม่เร็วกว่า', reason: `สมาชิกใหม่เท่ากัน จึงดูจำนวนสมุดใหม่: Xircle ${x.newBooks7d} · Normal ${n.newBooks7d}` };
+  }
+  return { id: 'tie', label: 'โตใกล้เคียงกัน', reason: `7 วันนี้ Xircle และ Normal มีสมาชิกใหม่ ${x.newMembers7d} และสมุดใหม่ ${x.newBooks7d} เท่ากัน` };
 }
 
 export default async function handler(req, res) {
@@ -78,20 +102,75 @@ export default async function handler(req, res) {
     summary.returningRate7d = summary.visitors7d ? Math.round((summary.returningVisitors7d / summary.visitors7d) * 1000) / 10 : 0;
     summary.avgActiveSecondsPerSession = summary.sessions7d ? Math.round(summary.activeSeconds7d / summary.sessions7d) : 0;
 
+    const growthRows = await sql.query(`SELECT
+      (SELECT COUNT(*) FROM teambook_books WHERE pet_id=$1) AS white_cat_books_total,
+      (SELECT COUNT(*) FROM teambook_books WHERE pet_id=$1 AND created_at>=NOW()-INTERVAL '7 days') AS white_cat_books_7d,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events WHERE event_type='BOOK_OPEN' AND occurred_at>=NOW()-INTERVAL '7 days' AND metadata_json->>'whiteCat'='1') AS white_cat_book_people_7d,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events WHERE event_type='INVITE_OPEN' AND occurred_at>=NOW()-INTERVAL '7 days' AND metadata_json->>'whiteCat'='1') AS white_cat_invite_people_7d,
+      (SELECT COUNT(*) FROM teambook_analytics_events WHERE event_type='INVITE_OPEN' AND occurred_at>=NOW()-INTERVAL '7 days' AND metadata_json->>'whiteCat'='1') AS white_cat_invite_opens_7d,
+      (SELECT COUNT(*) FROM teambook_books WHERE preset=ANY($2::text[])) AS xircle_books_total,
+      (SELECT COUNT(*) FROM teambook_books WHERE NOT (preset=ANY($2::text[]))) AS normal_books_total,
+      (SELECT COUNT(*) FROM teambook_books WHERE created_at>=NOW()-INTERVAL '7 days' AND preset=ANY($2::text[])) AS xircle_books_7d,
+      (SELECT COUNT(*) FROM teambook_books WHERE created_at>=NOW()-INTERVAL '7 days' AND NOT (preset=ANY($2::text[]))) AS normal_books_7d,
+      (SELECT COUNT(*) FROM teambook_book_members m JOIN teambook_books b ON b.id=m.book_id WHERE m.role<>'lead' AND m.joined_at>=NOW()-INTERVAL '7 days' AND b.preset=ANY($2::text[])) AS xircle_members_7d,
+      (SELECT COUNT(*) FROM teambook_book_members m JOIN teambook_books b ON b.id=m.book_id WHERE m.role<>'lead' AND m.joined_at>=NOW()-INTERVAL '7 days' AND NOT (b.preset=ANY($2::text[]))) AS normal_members_7d,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events WHERE event_type='INVITE_OPEN' AND occurred_at>=NOW()-INTERVAL '7 days' AND metadata_json->>'cohort'='xircle') AS xircle_invite_people_7d,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events WHERE event_type='INVITE_OPEN' AND occurred_at>=NOW()-INTERVAL '7 days' AND metadata_json->>'cohort'='normal') AS normal_invite_people_7d,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events WHERE event_type='BOOK_OPEN' AND occurred_at>=NOW()-INTERVAL '7 days' AND metadata_json->>'cohort'='xircle') AS xircle_book_people_7d,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events WHERE event_type='BOOK_OPEN' AND occurred_at>=NOW()-INTERVAL '7 days' AND metadata_json->>'cohort'='normal') AS normal_book_people_7d`,
+    [WHITE_CAT_GUIDE_ID, XIRCLE_PRESETS]);
+    const g = growthRows[0] || {};
+    const cohorts = {
+      xircle: {
+        booksTotal: num(g.xircle_books_total), newBooks7d: num(g.xircle_books_7d), newMembers7d: num(g.xircle_members_7d),
+        invitePeople7d: num(g.xircle_invite_people_7d), bookOpenPeople7d: num(g.xircle_book_people_7d),
+      },
+      normal: {
+        booksTotal: num(g.normal_books_total), newBooks7d: num(g.normal_books_7d), newMembers7d: num(g.normal_members_7d),
+        invitePeople7d: num(g.normal_invite_people_7d), bookOpenPeople7d: num(g.normal_book_people_7d),
+      },
+    };
+    const growth = {
+      definition: { xircle: "preset IN ('xircle','xircle_xvisor')", normal: 'all other TeamBook presets', newMembers: 'joined members excluding book lead/creator' },
+      whiteCat: {
+        booksTotal: num(g.white_cat_books_total), newBooks7d: num(g.white_cat_books_7d),
+        bookOpenPeople7d: num(g.white_cat_book_people_7d), invitePeople7d: num(g.white_cat_invite_people_7d),
+        inviteOpens7d: num(g.white_cat_invite_opens_7d),
+      },
+      cohorts,
+      winner: winnerFor(cohorts),
+    };
+
     const dailyRows = await sql.query(`WITH days AS (
       SELECT generate_series(date_trunc('day',NOW())-INTERVAL '6 days',date_trunc('day',NOW()),INTERVAL '1 day') AS d
     ) SELECT d,
       (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events e WHERE e.event_type='PAGE_VIEW' AND e.occurred_at>=d AND e.occurred_at<d+INTERVAL '1 day') AS visitors,
       (SELECT COUNT(*) FROM teambook_analytics_events e WHERE e.event_type='PAGE_VIEW' AND e.occurred_at>=d AND e.occurred_at<d+INTERVAL '1 day') AS page_views,
       (SELECT COUNT(*) FROM teambook_analytics_sessions s WHERE s.started_at>=d AND s.started_at<d+INTERVAL '1 day') AS sessions,
-      (SELECT COUNT(*) FROM teambook_book_entries e WHERE e.kind='commit' AND e.retracted=FALSE AND e.sent_at>=d AND e.sent_at<d+INTERVAL '1 day') AS commits
-    FROM days ORDER BY d`);
+      (SELECT COUNT(*) FROM teambook_book_entries e WHERE e.kind='commit' AND e.retracted=FALSE AND e.sent_at>=d AND e.sent_at<d+INTERVAL '1 day') AS commits,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events e WHERE e.event_type='BOOK_OPEN' AND e.metadata_json->>'whiteCat'='1' AND e.occurred_at>=d AND e.occurred_at<d+INTERVAL '1 day') AS white_cat_book_people,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events e WHERE e.event_type='INVITE_OPEN' AND e.metadata_json->>'whiteCat'='1' AND e.occurred_at>=d AND e.occurred_at<d+INTERVAL '1 day') AS white_cat_invite_people,
+      (SELECT COUNT(*) FROM teambook_books b WHERE b.created_at>=d AND b.created_at<d+INTERVAL '1 day' AND b.preset=ANY($1::text[])) AS xircle_books,
+      (SELECT COUNT(*) FROM teambook_books b WHERE b.created_at>=d AND b.created_at<d+INTERVAL '1 day' AND NOT (b.preset=ANY($1::text[]))) AS normal_books,
+      (SELECT COUNT(*) FROM teambook_book_members m JOIN teambook_books b ON b.id=m.book_id WHERE m.role<>'lead' AND m.joined_at>=d AND m.joined_at<d+INTERVAL '1 day' AND b.preset=ANY($1::text[])) AS xircle_members,
+      (SELECT COUNT(*) FROM teambook_book_members m JOIN teambook_books b ON b.id=m.book_id WHERE m.role<>'lead' AND m.joined_at>=d AND m.joined_at<d+INTERVAL '1 day' AND NOT (b.preset=ANY($1::text[]))) AS normal_members,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events e WHERE e.event_type='INVITE_OPEN' AND e.metadata_json->>'cohort'='xircle' AND e.occurred_at>=d AND e.occurred_at<d+INTERVAL '1 day') AS xircle_invites,
+      (SELECT COUNT(DISTINCT visitor_id) FROM teambook_analytics_events e WHERE e.event_type='INVITE_OPEN' AND e.metadata_json->>'cohort'='normal' AND e.occurred_at>=d AND e.occurred_at<d+INTERVAL '1 day') AS normal_invites
+    FROM days ORDER BY d`, [XIRCLE_PRESETS]);
     const daily = {
       labels: dailyRows.map(r => day(r.d)),
       visitors: dailyRows.map(r => num(r.visitors)),
       pageViews: dailyRows.map(r => num(r.page_views)),
       sessions: dailyRows.map(r => num(r.sessions)),
       commits: dailyRows.map(r => num(r.commits)),
+      whiteCatBookPeople: dailyRows.map(r => num(r.white_cat_book_people)),
+      whiteCatInvitePeople: dailyRows.map(r => num(r.white_cat_invite_people)),
+      xircleBooks: dailyRows.map(r => num(r.xircle_books)),
+      normalBooks: dailyRows.map(r => num(r.normal_books)),
+      xircleMembers: dailyRows.map(r => num(r.xircle_members)),
+      normalMembers: dailyRows.map(r => num(r.normal_members)),
+      xircleInvites: dailyRows.map(r => num(r.xircle_invites)),
+      normalInvites: dailyRows.map(r => num(r.normal_invites)),
     };
 
     const pageRows = await sql.query(`WITH pv AS (
@@ -152,10 +231,14 @@ export default async function handler(req, res) {
     const lastRows = await sql.query(`SELECT event_type,path,occurred_at FROM teambook_analytics_events ORDER BY occurred_at DESC LIMIT 1`);
     const last = lastRows[0] || null;
     return sendJson(res, {
-      ok: true, generatedAt: new Date(), summary, daily, pages, actors, anonymousVisitors,
-      attention: attentionFor(summary, pages),
+      ok: true, generatedAt: new Date(), summary, growth, daily, pages, actors, anonymousVisitors,
+      attention: attentionFor(summary, pages, growth),
       lastSignal: last ? { type: last.event_type, path: last.path, at: last.occurred_at } : null,
-      privacy: { storesIp: false, storesQueryString: false, anonymousIdentity: 'first-party random visitor id', accountIdentity: 'server session when available' },
+      privacy: {
+        storesIp: false, storesQueryString: false, storesInviteCode: false,
+        inviteAttribution: 'invite code is resolved server-side to internal book id + cohort then discarded',
+        anonymousIdentity: 'first-party random visitor id', accountIdentity: 'server session when available',
+      },
     });
   } catch (error) {
     console.error('Telemetry stats query failed', error);

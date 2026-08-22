@@ -52,6 +52,10 @@ export async function revealStarReward(rewardOrId) {
   const result = await call(code, { action: 'reveal', rewardId: reward.rewardId });
   if (result.error) return result;
   markCardRewardRevealed(reward.rewardId);
-  await refreshParty(code).catch(() => null);
+  /* The reveal write is already durable. Rebuilding the whole room snapshot is
+     useful for the next screen, but making the card-opening tap wait for that
+     second network/database round trip makes the physical flip feel sticky on
+     mobile. Refresh in the background instead. */
+  void refreshParty(code).catch(() => null);
   return { ...result, reward: pendingCardReward(reward.rewardId) };
 }

@@ -2,6 +2,9 @@ import legacyXtyHandler from './teambook/[...path].js';
 import xtyCommitHandler from './teambook/party/[code]/commit.js';
 import { handleXtyPartyFinish } from './_lib/xty-party-finish.js';
 import { handleXtyBind } from './_lib/xty-bind.js';
+import { handleCreatePartyV4 } from './_lib/xty-create-v4.js';
+import { handleFinishWithMemoryV1 } from './_lib/xty-finish-memory-v1.js';
+import { handleRewardRevealFast } from './_lib/xty-reward-reveal-fast.js';
 
 function pathOf(req) {
   const raw = req.query?.path;
@@ -22,13 +25,12 @@ export default function handler(req, res) {
     return handleXtyBind(req, res);
   }
 
-  /* Compatibility firewall for old tabs/service caches. Legacy clients used
-     the original /api/teambook/party routes; route lifecycle-sensitive writes into
-     the canonical v2/v3 handlers so quota and LV.1 rules cannot diverge. */
+  /* Book creation v4 keeps the v3 product rules and adds durable lineage.
+     Every new book becomes either a root, an official continuation, or a
+     spawned series from a finished book. Existing callers need no changes:
+     requests without lineage metadata are recorded as roots. */
   if (path === 'party' && method === 'POST') {
-    req.query ||= {};
-    req.query.op = 'create-v3';
-    return handleXtyPartyFinish(req, res);
+    return handleCreatePartyV4(req, res);
   }
 
   const join = path.match(/^party\/(\d{5})\/join\/?$/);
@@ -51,11 +53,24 @@ export default function handler(req, res) {
     return xtyCommitHandler(req, res);
   }
 
+  /* A card is already selected before this tap. Revealing only needs to seal
+     that reward and write its trace into the book; returning a full room
+     snapshot here makes the physical flip wait on unrelated reads. */
+  const rewardReveal = path.match(/^party\/(\d{5})\/reward\/reveal\/?$/);
+  if (rewardReveal && method === 'POST') {
+    req.query ||= {};
+    req.query.code = rewardReveal[1];
+    return handleRewardRevealFast(req, res);
+  }
+
+  /* A finished book is a time capsule. Finish the existing lifecycle first,
+     then seal a historical snapshot of its cover and roster so future card or
+     profile changes cannot silently rewrite the memory. */
   const finish = path.match(/^party\/(\d{5})\/finish\/?$/);
   if (finish && method === 'POST') {
     req.query ||= {};
     req.query.code = finish[1];
-    return handleXtyPartyFinish(req, res);
+    return handleFinishWithMemoryV1(req, res);
   }
 
   return legacyXtyHandler(req, res);

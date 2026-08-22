@@ -33,6 +33,13 @@
     } catch { return ''; }
   }
 
+  function inviteCode() {
+    try {
+      const value = new URLSearchParams(location.search).get('c');
+      return /^\d{5}$/.test(value || '') ? value : '';
+    } catch { return ''; }
+  }
+
   function deviceClass() {
     const width = Math.max(screen?.width || 0, innerWidth || 0);
     return width < 600 ? 'mobile' : width < 1024 ? 'tablet' : 'desktop';
@@ -41,7 +48,7 @@
   function payload(eventType, extra = {}) {
     return {
       eventId: id('e'), eventType, path, title: document.title || '', referrer: safeReferrer(),
-      localProfileId: localProfileId(), occurredAt: Date.now(),
+      localProfileId: localProfileId(), bookCode: extra.bookCode || '', occurredAt: Date.now(),
       metadata: { device: deviceClass(), language: navigator.language || '', ...extra.metadata },
       activeSeconds: extra.activeSeconds || 0, scrollDepth: extra.scrollDepth || maxScroll,
     };
@@ -57,6 +64,28 @@
       credentials: 'same-origin', keepalive: true,
     }).catch(() => {});
     return true;
+  }
+
+  function oncePerSession(key) {
+    try {
+      if (sessionStorage.getItem(key) === '1') return false;
+      sessionStorage.setItem(key, '1');
+    } catch {}
+    return true;
+  }
+
+  function trackBookContext() {
+    const code = inviteCode();
+    if (!code) return;
+    /* Invite links can route /join/?c=... -> /?c=... before deferred JS runs.
+       A session key prevents that routing hop from becoming two invite opens. */
+    if (path === '/' || /^\/join(?:\/|$)/.test(path)) {
+      if (oncePerSession(`tb:invite-open:${code}`)) post(payload('INVITE_OPEN', { bookCode: code }), false);
+      return;
+    }
+    if (/^\/p(?:\/|$)/.test(path)) {
+      post(payload('BOOK_OPEN', { bookCode: code }), false);
+    }
   }
 
   function visible() { return document.visibilityState === 'visible' && document.hasFocus(); }
@@ -98,6 +127,7 @@
   function boot() {
     updateScroll();
     post(payload('PAGE_VIEW', { scrollDepth: maxScroll }), false);
+    trackBookContext();
     addEventListener('scroll', updateScroll, { passive: true });
     document.addEventListener('click', navigate, { capture: true });
     document.addEventListener('visibilitychange', () => {
