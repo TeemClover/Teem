@@ -43,6 +43,24 @@
   .party-group-count{font-size:12px;font-weight:700;color:var(--xty-muted);margin-left:auto}
   .party-group .rows{border-top:1px solid var(--xty-border)}
   .party-group-empty{padding:12px 15px 15px;color:var(--xty-muted);font-size:13px;border-top:1px solid var(--xty-border)}
+  .home-actions{display:grid;gap:10px;margin-top:16px}
+  .home-actions .btn{margin-top:0}
+  .home-public-discovery{margin-top:22px;padding:20px 0 4px}
+  .home-public-discovery .title{margin:0;font-size:clamp(25px,7vw,34px);line-height:1.22}
+  .home-public-discovery .lede{margin-top:9px;font-size:15px;line-height:1.7}
+  .home-public-list{display:grid;gap:12px;margin-top:18px}
+  .home-public-party{display:grid;grid-template-columns:minmax(92px,120px) minmax(0,1fr);gap:15px;align-items:start}
+  .home-public-party .animal-card,.home-public-party .avatar-cover{width:100%;max-width:120px;margin:0}
+  .home-public-party h2{margin:7px 0 4px;font-size:18px;line-height:1.35}
+  .home-public-party p{margin:5px 0}
+  .home-public-party .btn{margin-top:8px}
+  .home-public-status{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+  .home-public-full{opacity:.9}
+  .home-public-footer{display:flex;align-items:center;justify-content:flex-end;margin-top:12px}
+  @media(max-width:520px){
+    .home-public-party{grid-template-columns:88px minmax(0,1fr);gap:12px;padding:13px}
+    .home-public-party .animal-card,.home-public-party .avatar-cover{max-width:88px}
+  }
 </style>
 <!-- TEAMBOOK SEO SCHEMA -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"TeamBook — สมุดกลุ่มมีชีวิต","url":"https://teambook.me/","description":"เปิดสมุดกับเพื่อน แต่ละคนเลือกสิ่งที่อยากทำเอง แล้วกลับมาลงชื่อในสมุดเดียวกันทุกวัน","image":"https://teambook.me/assets/brand/teambook-og-1200x630.jpg","applicationCategory":"LifestyleApplication","operatingSystem":"Web","isPartOf":{"@type":"WebSite","name":"TeamBook","url":"https://teambook.me/"}}</script>
@@ -126,9 +144,19 @@
 
     <div id="mainParty"></div>
 
-    <a class="btn gold" href="/new/">+ เปิดสมุด</a>
-    <a class="btn ghost" href="/join/" style="margin-top:10px">เข้าร่วมสมุดด้วยรหัส</a>
-    <a class="about-link" href="/public/">หาสมุดสาธารณะ ›</a>
+    <section class="home-public-discovery" id="publicDiscovery" hidden aria-labelledby="publicDiscoveryTitle">
+      <p class="kicker">สมุดสาธารณะ</p>
+      <h2 class="title" id="publicDiscoveryTitle">ตอนนี้มีใครกำลังเขียนอะไรอยู่บ้าง</h2>
+      <p class="lede">เริ่มจากการเห็นก่อนก็ได้ ดูสมุดที่กำลังมีชีวิตอยู่ แล้วค่อยเลือกว่าจะเข้าไปอยู่ในเล่มไหน</p>
+      <div class="home-public-list" id="homePublicList"><div class="empty">กำลังเปิดสมุดสาธารณะ…</div></div>
+      <div class="home-public-footer"><a class="about-link" href="/public/">เปิด Lobby ทั้งหมด ›</a></div>
+    </section>
+
+    <div class="home-actions" id="homeActions">
+      <a class="btn gold" id="publicBookButton" href="/public/">ดูสมุดสาธารณะ</a>
+      <a class="btn ghost" href="/new/">+ เปิดสมุดกับเพื่อน</a>
+      <a class="btn ghost" href="/join/">มีรหัสสมุดแล้ว</a>
+    </div>
 
     <div class="card" id="accountCard" style="margin-top:18px" hidden>
       <div class="account-row">
@@ -143,7 +171,7 @@
       </div>
     </div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card" id="capacityCard" style="margin-top:12px">
       <span class="label">ช่องสมุดของคุณ</span>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div class="capacity-number" id="ownedCapacityN">0 / 1<small>สร้างสมุด</small></div>
@@ -192,10 +220,12 @@ import { PET_BY_ID } from '/_shared/pets.js';
 import { TEAMBOOK_AVATARS, AVATAR_FRAMES, avatarById } from '/_shared/avatars.js';
 import { cardById, cardNameTh } from '/_shared/cards.js';
 import { cardMarkup } from '/_shared/card-ui.js';
+import { bookActivityLine } from '/_shared/book-mode.js';
 import { saveCloudProgress, syncXtyProfile } from '/_shared/account.js';
 
 const $ = id => document.getElementById(id);
 let accountState = { authenticated: false, user: null };
+let publicDiscoveryLoaded = false;
 
 function inviteCodeFromUrl() {
   const value = new URLSearchParams(location.search).get('c');
@@ -406,24 +436,24 @@ function fillPartyGroup(rowsEl, emptyEl, countEl, parties) {
   countEl.textContent = `${parties.length} สมุด`;
 }
 
+function myBookSnapshot() {
+  const mine = new Set(myPartyCodes());
+  const list = allParties().filter(party => mine.has(party.code));
+  return { mine, list, active: list.filter(isActiveParty) };
+}
+
 function paintPartyList(p, mine) {
   const list = allParties().filter(x => mine.has(x.code));
+  const active = list.filter(isActiveParty);
   const capacity = activePartyUsage(p);
   $('ownedCapacityN').innerHTML = `${capacity.owned} / ${capacity.maxOwned}<small>สร้างสมุด</small>`;
   $('joinedCapacityN').innerHTML = `${capacity.joined} / ${capacity.maxJoined}<small>เข้าร่วม</small>`;
 
-  if (!list.length) {
-    $('mainParty').innerHTML = `<div class="empty">
-      <img class="empty-art" src="/assets/decor/mascot/cat-asleep-on-book.webp" alt="" aria-hidden="true" width="328" height="215" loading="lazy" decoding="async">
-      ยังไม่มีสมุด<br><span style="font-size:13px">ใช้สัตว์ของคุณเป็นปก แล้วเปิดสมุดเล่มแรกได้เลย</span></div>`;
-    $('allPartiesSection').hidden = true;
-    return;
-  }
-
-  $('allPartiesSection').hidden = false;
   const leadParties = list.filter(party => roleInParty(party) === 'lead');
   const joinedParties = list.filter(party => roleInParty(party) !== 'lead');
-  const main = leadParties.find(isActiveParty) || leadParties[0] || null;
+  const activeLead = leadParties.find(isActiveParty);
+  const activeJoined = joinedParties.find(isActiveParty);
+  const main = activeLead || activeJoined || null;
 
   if (main) {
     const usesCardCover = ['card', 'legacy_card'].includes(main.coverType) || (!main.coverType && main.leadCardId);
@@ -438,19 +468,91 @@ function paintPartyList(p, mine) {
       mainCover = `<div class="avatar-cover" data-color="${snapshot.color || 'green'}"><img src="${art.art}" alt=""><b>${escapeHtml(art.nameTh)}</b><small>PARTY COVER</small></div>`;
     }
     const mainDone = committedToday(main).size;
-    const terminal = !isActiveParty(main);
     $('mainParty').innerHTML = `<div class="card main-party">`
       + mainCover
-      + `<div><span class="party-state">${terminal ? escState(main.state) : 'MAIN PARTY'}</span>`
+      + `<div><span class="party-state">MAIN PARTY</span>`
       + `<h2>${escapeHtml(main.name)}</h2><p class="whisper" style="margin:0">${escapeHtml(main.activity || 'ยังไม่ระบุกิจกรรม')}</p>`
       + `<p class="whisper">${mainDone}/${main.members.length} ลงชื่อวันนี้${mainCard ? ` · ${escapeHtml(cardNameTh(mainCard))}` : ''}</p>`
-      + `<a class="btn gold sm" href="/p/?c=${encodeURIComponent(main.code)}">${terminal ? 'ดู Ending' : 'เข้าร่วมสมุด / ลงชื่อ'}</a></div></div>`;
+      + `<a class="btn gold sm" href="/p/?c=${encodeURIComponent(main.code)}">เข้าร่วมสมุด / ลงชื่อ</a></div></div>`;
   } else {
     $('mainParty').innerHTML = '';
   }
 
+  $('allPartiesSection').hidden = list.length === 0;
+  $('partyHeading').textContent = active.length ? 'สมุดทั้งหมด' : 'สมุดที่ผ่านมา';
   fillPartyGroup($('leadPartyRows'), $('leadPartyEmpty'), $('leadPartyCount'), leadParties);
   fillPartyGroup($('joinedPartyRows'), $('joinedPartyEmpty'), $('joinedPartyCount'), joinedParties);
+}
+
+function publicIsFull(party) {
+  const members = Number(party.memberCount || 0);
+  const max = Number(party.maxMembers || 0);
+  return max > 0 && members >= max;
+}
+
+function publicCoverMarkup(party) {
+  const card = cardById(party.coverValue);
+  if (card) return cardMarkup(card);
+  if (party.coverType === 'card_back') return '<div class="animal-card card-back"><span class="back-mark">TB</span><small>CARD BACK</small></div>';
+  let snapshot = { species: party.lead?.avatar, color: party.lead?.avatarColor };
+  try { snapshot = { ...snapshot, ...JSON.parse(party.coverValue || '{}') }; } catch {}
+  const avatar = avatarById(snapshot.species);
+  return `<div class="avatar-cover" data-color="${escapeHtml(snapshot.color || 'green')}" aria-label="Starter · ${escapeHtml(avatar.nameTh)}"><img src="${avatar.art}" alt=""></div>`;
+}
+
+function publicPartyMarkup(party) {
+  const full = publicIsFull(party);
+  const mode = party.verificationMode === 'confirm' ? 'ต้อง เห็นแล้ว' : 'เชื่อใจกัน';
+  const availability = full
+    ? `<span class="status-pill">${party.memberCount}/${party.maxMembers} · เต็มแล้ว · กำลังเขียน</span>`
+    : `<span class="status-pill">เปิดรับ · ${party.memberCount}/${party.maxMembers}</span>`;
+  return `${publicCoverMarkup(party)}<div><div class="home-public-status">${availability}<span class="status-pill">${mode}</span></div>`
+    + `<h2>${escapeHtml(party.name)}</h2>`
+    + `<p>${escapeHtml(bookActivityLine(party, 'กิจกรรมที่ตกลงกันในสมุด'))}</p>`
+    + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · วันนี้ลงชื่อ ${party.todayCommitCount} คน</p>`
+    + `<a class="btn ghost sm" href="/public/p/?c=${encodeURIComponent(party.code)}">${full ? 'เต็มแล้ว · แวะดูได้' : 'ดูรายละเอียด · อ่านเรื่องในสมุด'}</a>`
+    + '</div>';
+}
+
+async function loadHomePublicDiscovery() {
+  if (publicDiscoveryLoaded) return;
+  publicDiscoveryLoaded = true;
+  const list = $('homePublicList');
+  list.innerHTML = '<div class="empty">กำลังเปิดสมุดสาธารณะ…</div>';
+  try {
+    const response = await fetch('/api/teambook/public', { headers: { accept: 'application/json' }, credentials: 'same-origin' });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'HTTP');
+    const parties = [...(data.parties || [])]
+      .sort((a, b) => Number(publicIsFull(a)) - Number(publicIsFull(b)))
+      .slice(0, 4);
+    list.replaceChildren();
+    parties.forEach(party => {
+      const article = document.createElement('article');
+      article.className = `card public-party home-public-party${publicIsFull(party) ? ' home-public-full' : ''}`;
+      article.innerHTML = publicPartyMarkup(party);
+      list.appendChild(article);
+    });
+    if (!parties.length) list.innerHTML = '<div class="empty">ยังไม่มีสมุดสาธารณะตอนนี้ · เปิดสมุดของคุณเป็นเล่มแรกได้เลย</div>';
+  } catch {
+    list.innerHTML = '<div class="empty">ยังเปิด Lobby ไม่สำเร็จ · ลองเปิดหน้าสมุดสาธารณะอีกครั้ง</div>';
+  }
+}
+
+async function applyHomePriority() {
+  const { list, active } = myBookSnapshot();
+  const hasActiveBook = active.length > 0;
+
+  $('publicDiscovery').hidden = hasActiveBook;
+  $('publicBookButton').hidden = !hasActiveBook;
+  $('capacityCard').hidden = !hasActiveBook;
+  $('partyHeading').textContent = hasActiveBook ? 'สมุดทั้งหมด' : 'สมุดที่ผ่านมา';
+  if (!list.length) $('allPartiesSection').hidden = true;
+
+  if (hasActiveBook) return;
+
+  $('mainParty').innerHTML = '';
+  await loadHomePublicDiscovery();
 }
 
 function escState(value) {
@@ -462,7 +564,13 @@ function petGlyph(id) {
   return p && p.art ? `<img src="${p.art}" alt="">` : (p ? p.emoji : '🐾');
 }
 function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;' }[c]));
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+async function refreshMine() {
+  const mine = new Set(myPartyCodes());
+  await Promise.all([...mine].map(code => refreshParty(code).catch(() => null)));
+  paintPartyList(getProfile(), new Set(myPartyCodes()));
 }
 
 async function boot() {
@@ -483,10 +591,14 @@ async function boot() {
     return;
   }
 
-  if (hadLocalProfile) renderHome(); else renderGate();
+  if (hadLocalProfile) await renderHome(); else renderGate();
   if (new URLSearchParams(location.search).has('account')) {
     history.replaceState(null, '', inviteCode ? `/?c=${encodeURIComponent(inviteCode)}` : '/');
   }
+
+  /* Resolve account-backed book tokens before deciding whether Home needs
+     Public discovery. This prevents existing users with active books from
+     fetching Lobby data just to hide it a moment later. */
   accountState = await syncXtyProfile();
   if (!hadLocalProfile && hasProfile()) {
     if (inviteCode) {
@@ -500,12 +612,11 @@ async function boot() {
     $('gate').hidden = true;
     await renderHome();
   } else if (hasProfile()) {
-    /* Account sync can rebuild TeamBook book tokens and snapshots for the
-       logged-in TeamBook account. Repaint immediately so a
-       fresh browser does not keep showing 0/2 + 0/3 until the next reload. */
-    paintPartyList(getProfile(), new Set(myPartyCodes()));
+    await refreshMine();
     updateAccountState();
   }
+
+  if (hasProfile()) await applyHomePriority();
 }
 
 function updateAccountState() {

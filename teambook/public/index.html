@@ -59,7 +59,7 @@
       <span>ซ่อนสมุดที่เต็มแล้ว</span>
     </label>
   </div>
-  <div class="public-list" id="list"><div class="empty">กำลังหาสมุดที่ยังรับสมาชิก…</div></div>
+  <div class="public-list" id="list"><div class="empty">กำลังเปิดสมุดสาธารณะ…</div></div>
   <button class="btn ghost" id="more" hidden>ดูเพิ่ม</button>
   <p class="note">สมุดสาธารณะเปิดให้อ่านเฉพาะข้อมูลในสมุดและ เรื่องในสมุด · Email, token และข้อมูลบัญชีไม่ถูกเปิดเผย</p>
 </main>
@@ -79,8 +79,8 @@ const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;'
 function readHideFull() {
   try {
     const saved = localStorage.getItem(HIDE_FULL_KEY);
-    return saved === null ? true : saved === '1';
-  } catch { return true; }
+    return saved === null ? false : saved === '1';
+  } catch { return false; }
 }
 
 function saveHideFull(value) {
@@ -105,11 +105,13 @@ function coverMarkup(party) {
 
 function partyMarkup(party) {
   const mode = party.verificationMode === 'confirm' ? 'ต้อง เห็นแล้ว' : 'เชื่อใจกัน';
-  return `${coverMarkup(party)}<div><span class="status-pill">${mode}</span><h2>${esc(party.name)}</h2>`
+  const full = isFull(party);
+  const availability = full ? `${party.memberCount}/${party.maxMembers} · เต็มแล้ว · กำลังเขียน` : `เปิดรับ · ${party.memberCount}/${party.maxMembers}`;
+  return `${coverMarkup(party)}<div><span class="status-pill">${availability}</span><span class="status-pill" style="margin-left:6px">${mode}</span><h2>${esc(party.name)}</h2>`
     + `<p>${esc(bookActivityLine(party, 'กิจกรรมที่ตกลงกันในสมุด'))}</p>`
-    + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · ${party.memberCount}/${party.maxMembers} คน · วันนี้ลงชื่อ ${party.todayCommitCount} คน</p>`
+    + `<p class="whisper">DAY ${party.day} / ${party.durationDays} · วันนี้ลงชื่อ ${party.todayCommitCount} คน</p>`
     + `<p class="whisper">Lead: ${esc(party.lead.alias)}</p>`
-    + `<a class="btn ghost sm" href="/public/p/?c=${encodeURIComponent(party.code)}">ดูรายละเอียด · อ่าน เรื่องในสมุด</a>`
+    + `<a class="btn ghost sm" href="/public/p/?c=${encodeURIComponent(party.code)}">${full ? 'เต็มแล้ว · แวะดูได้' : 'ดูรายละเอียด · อ่าน เรื่องในสมุด'}</a>`
     + '</div>';
 }
 
@@ -133,7 +135,7 @@ function renderParties() {
   } else if (hiddenCount) {
     list.innerHTML = '<div class="empty">ตอนนี้สมุดสาธารณะที่พบเต็มแล้ว · ปิดตัวกรองเพื่อดูสมุดทั้งหมดได้</div>';
   } else {
-    list.innerHTML = '<div class="empty">ยังไม่มีสมุดสาธารณะที่เข้าร่วมได้</div>';
+    list.innerHTML = '<div class="empty">ยังไม่มีสมุดสาธารณะตอนนี้</div>';
   }
 }
 
@@ -146,6 +148,7 @@ async function load({ append = false } = {}) {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'HTTP');
     loadedParties = append ? [...loadedParties, ...data.parties] : [...data.parties];
+    loadedParties.sort((a, b) => Number(isFull(a)) - Number(isFull(b)));
     cursor = data.nextCursor;
     renderParties();
     $('more').hidden = !cursor;
