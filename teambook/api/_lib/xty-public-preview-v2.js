@@ -24,15 +24,18 @@ export async function handlePublicPreviewV2(req, res) {
     await ensureSchema(sql);
     const rows = await sql.query(`SELECT id,code,name,activity,activity_id,preset,duration_days,color,visibility,
       commit_rule,budget,pet_id,owner_id,state,created_at,updated_at,started_at,ended_at,timezone,
-      verification_mode,scheduled_end_at,cover_type,cover_value,lead_card_id,npc_card_id
+      verification_mode,scheduled_end_at,cover_type,cover_value,lead_card_id,npc_card_id,
+      activity_mode,shared_activity_description,shared_activity_color
       FROM teambook_books WHERE code=$1 AND visibility='public' LIMIT 1`, [code]);
     const row = rows[0];
     if (!row) return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
 
     const [members, posts, events] = await Promise.all([
-      sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at,left_at
+      sql.query(`SELECT user_id,alias,avatar,avatar_color,role,joined_at,left_at,
+          activity_id,activity_label,activity_description,activity_color,success_rule
         FROM teambook_book_members WHERE book_id=$1 ORDER BY joined_at`, [row.id]),
       sql.query(`SELECT p.seq,p.user_id,p.kind,p.body,p.sent_at,p.retracted,p.pet_id,p.wake_hour,
+          p.activity_id,p.activity_label,p.activity_color,p.success_rule_snapshot,
           m.alias,m.avatar,m.avatar_color
         FROM teambook_book_entries p LEFT JOIN teambook_book_members m ON m.book_id=p.book_id AND m.user_id=p.user_id
         WHERE p.book_id=$1 ORDER BY p.seq`, [row.id]),
@@ -47,6 +50,11 @@ export async function handlePublicPreviewV2(req, res) {
       avatarColor: member.avatar_color || 'green',
       role: member.role || 'member',
       joinedAt: new Date(member.joined_at).toISOString(),
+      activityId: member.activity_id || null,
+      activityLabel: member.activity_label || '',
+      activityDescription: member.activity_description || '',
+      activityColor: member.activity_color || null,
+      successRule: member.success_rule || '',
     }));
 
     const safePosts = posts.map(post => ({
@@ -60,6 +68,10 @@ export async function handlePublicPreviewV2(req, res) {
       retracted: !!post.retracted,
       petId: post.pet_id || null,
       wakeHour: post.wake_hour == null ? null : Number(post.wake_hour),
+      activityId: post.activity_id || null,
+      activityLabel: post.activity_label || '',
+      activityColor: post.activity_color || null,
+      successRuleSnapshot: post.success_rule_snapshot || '',
       sentAt: new Date(post.sent_at).toISOString(),
     }));
 
@@ -71,6 +83,7 @@ export async function handlePublicPreviewV2(req, res) {
     }));
 
     const state = String(row.state || 'ACTIVE').toUpperCase();
+    const activityMode = row.activity_mode === 'individual' ? 'individual' : 'shared';
     return sendJson(res, {
       ok: true,
       party: {
@@ -78,6 +91,11 @@ export async function handlePublicPreviewV2(req, res) {
         name: row.name,
         activity: row.activity || '',
         activityId: row.activity_id || 'custom',
+        activityMode,
+        sharedActivityId: activityMode === 'shared' ? (row.activity_id || null) : null,
+        sharedActivityLabel: activityMode === 'shared' ? (row.activity || '') : null,
+        sharedActivityDescription: activityMode === 'shared' ? (row.shared_activity_description || '') : null,
+        sharedActivityColor: activityMode === 'shared' ? (row.shared_activity_color || null) : null,
         preset: row.preset || 'casual',
         durationDays: Number(row.duration_days || 7),
         color: row.color || 'green',
