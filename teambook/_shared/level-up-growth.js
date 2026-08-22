@@ -14,7 +14,7 @@ function codeFromLocation() {
 
 function eventKey(code, event) {
   const toLevel = Number(event?.data?.toLevel || 0);
-  return `${MARK_PREFIX}${code}:${event?.actorId || 'me'}:${toLevel}:${event?.at || 'event'}`;
+  return `${MARK_PREFIX}${code}:${event?.actorId || 'me'}:${toLevel}`;
 }
 
 function wasShown(key) {
@@ -147,7 +147,6 @@ function installFinishInterceptor() {
         const code = (url.match(/\/party\/(\d{5})\/finish/) || [])[1] || codeFromLocation();
         const synthetic = {
           actorId: partyIdentity(code)?.userId || 'me',
-          at: new Date().toISOString(),
           data: data.levelUp,
         };
         await showLevelUp(data.levelUp, eventKey(code, synthetic));
