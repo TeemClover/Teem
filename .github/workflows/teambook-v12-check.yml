@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - teambook-v1.2-gameplay-upgrade
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
