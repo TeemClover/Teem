@@ -56,6 +56,8 @@ export default async function handler(req, res) {
     const summaryRows = await sql.query(`SELECT
       (SELECT COUNT(*) FROM teambook_analytics_visitors) AS visitors_total,
       (SELECT COUNT(*) FROM teambook_analytics_visitors WHERE last_seen_at >= NOW()-INTERVAL '7 days') AS visitors_7d,
+      (SELECT COUNT(*) FROM teambook_analytics_visitors WHERE last_seen_at >= NOW()-INTERVAL '15 minutes') AS active_15m,
+      (SELECT COUNT(*) FROM teambook_analytics_visitors WHERE last_seen_at >= NOW()-INTERVAL '24 hours') AS active_24h,
       (SELECT COUNT(*) FROM teambook_analytics_visitors WHERE last_seen_at >= NOW()-INTERVAL '7 days' AND session_count >= 2) AS returning_7d,
       (SELECT COUNT(*) FROM teambook_analytics_sessions WHERE started_at >= NOW()-INTERVAL '7 days') AS sessions_7d,
       (SELECT COALESCE(SUM(page_views),0) FROM teambook_analytics_sessions WHERE started_at >= NOW()-INTERVAL '7 days') AS page_views_7d,
@@ -67,6 +69,7 @@ export default async function handler(req, res) {
     const row = summaryRows[0] || {};
     const summary = {
       visitorsTotal: num(row.visitors_total), visitors7d: num(row.visitors_7d),
+      active15m: num(row.active_15m), active24h: num(row.active_24h),
       returningVisitors7d: num(row.returning_7d), sessions7d: num(row.sessions_7d),
       pageViews7d: num(row.page_views_7d), activeSeconds7d: num(row.active_seconds_7d),
       avgScroll7d: num(row.avg_scroll_7d), messages7d: num(row.messages_7d),
@@ -100,7 +103,7 @@ export default async function handler(req, res) {
       FROM teambook_analytics_events WHERE event_type='ENGAGEMENT' AND occurred_at>=NOW()-INTERVAL '7 days'
       GROUP BY path
     ) SELECT pv.path,pv.views,pv.visitors,pv.last_view,COALESCE(en.active_seconds,0) AS active_seconds,COALESCE(en.avg_scroll,0) AS avg_scroll
-      FROM pv LEFT JOIN en USING(path) ORDER BY pv.views DESC,pv.visitors DESC LIMIT 30`);
+      FROM pv LEFT JOIN en USING(path) ORDER BY pv.views DESC,pv.visitors DESC LIMIT 100`);
     const pages = pageRows.map(r => ({
       path: r.path, views: num(r.views), visitors: num(r.visitors), lastViewAt: r.last_view,
       activeSeconds: num(r.active_seconds), avgActiveSeconds: num(r.views) ? num(r.active_seconds) / num(r.views) : 0,
@@ -137,10 +140,19 @@ export default async function handler(req, res) {
       returning: num(r.sessions) >= 2 || num(r.visit_days) >= 2, lastSeenAt: r.last_seen,
     }));
 
+    const anonymousRows = await sql.query(`SELECT visitor_id,session_count,page_view_count,active_seconds,last_seen_at,last_path
+      FROM teambook_analytics_visitors WHERE actor_id IS NULL
+      ORDER BY last_seen_at DESC LIMIT 30`);
+    const anonymousVisitors = anonymousRows.map(r => ({
+      visitorId: r.visitor_id, sessions: num(r.session_count), pageViews: num(r.page_view_count),
+      activeSeconds: num(r.active_seconds), returning: num(r.session_count) >= 2,
+      lastSeenAt: r.last_seen_at, lastPath: r.last_path,
+    }));
+
     const lastRows = await sql.query(`SELECT event_type,path,occurred_at FROM teambook_analytics_events ORDER BY occurred_at DESC LIMIT 1`);
     const last = lastRows[0] || null;
     return sendJson(res, {
-      ok: true, generatedAt: new Date(), summary, daily, pages, actors,
+      ok: true, generatedAt: new Date(), summary, daily, pages, actors, anonymousVisitors,
       attention: attentionFor(summary, pages),
       lastSignal: last ? { type: last.event_type, path: last.path, at: last.occurred_at } : null,
       privacy: { storesIp: false, storesQueryString: false, anonymousIdentity: 'first-party random visitor id', accountIdentity: 'server session when available' },
