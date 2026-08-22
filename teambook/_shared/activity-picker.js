@@ -139,6 +139,7 @@ export function mountActivityPicker(mount, {
       tab.type = 'button';
       tab.dataset.color = group.id;
       tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-label', group.labelTh || group.tabTh);
       const on = group.id === activeColor;
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
       tab.classList.toggle('on', on);
@@ -150,7 +151,7 @@ export function mountActivityPicker(mount, {
       icon.width = 63; icon.height = 72;
       icon.decoding = 'async';
 
-      tab.append(icon, el('span', null, group.tabTh));
+      tab.append(icon);
       tab.addEventListener('click', () => {
         if (activeColor === group.id) return;
         activeColor = group.id;
