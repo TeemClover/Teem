@@ -33,9 +33,13 @@ function renderVisibility() {
   return true;
 }
 
+/* A party page renders its local snapshot first and then refreshes canonical
+   server state. Keep checking briefly even after the first render so a stale
+   local Private/Public badge cannot survive the server refresh in the same
+   tab (the browser does not fire `storage` for writes made by that tab). */
 let attempt = 0;
 function boot() {
-  if (renderVisibility()) return;
+  renderVisibility();
   if (attempt++ < 30) setTimeout(boot, 400);
 }
 
