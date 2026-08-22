@@ -23,6 +23,7 @@ if (typeof window !== 'undefined' && /^\/p\/?$/.test(window.location.pathname)) 
     .then(() => import('./xvisor-care-scripts.js'))
     .catch(() => {});
   import('./reward-loop.js').catch(() => {});
+  import('./first-received-seen.js').catch(() => {});
   import('./pet-direct.js').catch(() => {});
 }
 if (typeof window !== 'undefined' && /^\/new\/?$/.test(window.location.pathname)) {
