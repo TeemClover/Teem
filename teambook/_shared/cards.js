@@ -138,9 +138,8 @@ const PRINTED = Object.freeze({
   /* the original painted scenes, kept at their existing ids */
   rare: ['orange_cat', 'white_pom', 'white_cat']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true }))),
-  /* Only publish cards whose final binary art ships in this app. The other
-     two species return here when their eight reviewed artworks arrive. */
-  epic: ['white_pom']
+  /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
+  epic: ['orange_cat', 'white_cat', 'white_pom']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({
       species, color, variant: 1,
       art: `/assets/cards/epic/${species.replaceAll('_', '-')}-${color}.webp`,
