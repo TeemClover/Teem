@@ -1,10 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "dist",
-  "alias": [
-    "teambook.me",
-    "www.teambook.me"
-  ],
   "crons": [
     {
       "path": "/api/teambook-pet-compat",
