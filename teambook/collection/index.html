@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TeamBook">
 <meta property="og:title" content="คอลเลกชันการ์ด — TeamBook">
-<meta property="og:description" content="การ์ดที่ได้จากสมุดที่เขียนจบ เก็บไว้เป็นความทรงจำของเล่มนั้น">
+<meta property="og:description" content="การ์ดที่พบจากเรื่องจริงในสมุด เก็บไว้พร้อมความทรงจำว่าเจอจากเล่มไหน">
 <meta property="og:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
 <meta property="og:image:secure_url" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -22,12 +22,36 @@
 <meta property="og:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="คอลเลกชันการ์ด — TeamBook">
-<meta name="twitter:description" content="การ์ดที่ได้จากสมุดที่เขียนจบ เก็บไว้เป็นความทรงจำของเล่มนั้น">
+<meta name="twitter:description" content="การ์ดที่พบจากเรื่องจริงในสมุด เก็บไว้พร้อมความทรงจำว่าเจอจากเล่มไหน">
 <meta name="twitter:image" content="https://teambook.me/assets/brand/teambook-og-1200x630.jpg">
 <meta name="twitter:image:alt" content="TeamBook — สมุดกลุ่มมีชีวิต · มีฉัน มีเธอ มีเรื่องของเรา">
 <!-- /TEAMBOOK SOCIAL SHARE -->
 <link rel="stylesheet" href="/_shared/xty.css?v=8">
 <link rel="stylesheet" href="/_shared/chat-image.css?v=1">
+<style>
+.card-memory{
+  margin:16px 0 12px;padding:14px 15px;border-radius:16px;
+  background:rgba(255,249,233,.76);border:1px solid rgba(91,70,48,.13)
+}
+.card-memory .label{display:block;margin-bottom:7px}
+.card-memory-title{margin:0 0 5px;font-size:18px;font-weight:750;line-height:1.35}
+.card-memory-meta{margin:0 0 12px;line-height:1.55}
+.card-memory .btn{width:100%}
+.card-use-tools{margin-top:8px}
+.card-use-tools>summary{cursor:pointer;font-weight:700;padding:11px 2px;list-style-position:inside}
+.card-use-tools .card-detail-actions{margin-top:8px}
+.card-detail-close{width:100%;margin-top:10px}
+@media (max-width:640px){
+  dialog.card-detail{
+    width:calc(100% - 20px);max-width:none;max-height:calc(100dvh - 20px);
+    margin:auto;padding:16px;border-radius:20px;overflow:auto
+  }
+  dialog.card-detail #detailCard{width:min(72vw,270px);margin-inline:auto}
+  .card-detail-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .card-detail-actions .btn{width:100%;min-height:46px}
+  .card-memory{margin-top:14px}
+}
+</style>
 <script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
 </head>
 <body>
@@ -39,7 +63,7 @@
   <section class="card">
     <div class="collection-grid" id="cards"></div>
   </section>
-  <p class="note">สัตว์เริ่มต้นเลือกใช้ฟรีและไม่นับเป็นการ์ด · Common ใช้เป็นการ์ดประจำตัวหรือเพื่อนร่วมทาง · Rare, Epic และ Legendary ใช้เป็นปกสมุดได้</p>
+  <p class="note">เรียงจากใบที่พบล่าสุด · การ์ดแต่ละใบเก็บร่องรอยว่าวันนั้นเจอจากสมุดเล่มไหน</p>
 
   <section class="card" id="firstHandUnlock" hidden>
     <span class="label">FIRST HAND COLLECTION · LV.2</span>
@@ -66,52 +90,174 @@
   <p id="detailFlavor" class="flavor-line"></p>
   <p class="card-detail-meta" id="detailMeta"></p>
   <p class="whisper" id="detailStatus"></p>
-  <div class="card-detail-actions">
-    <button class="btn gold" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>
-    <a class="btn ghost" id="useCover" href="/new/">ใช้เป็นปกสมุด</a>
-    <a class="btn ghost" id="useNpc" href="/new/">ใช้เป็น เพื่อนร่วมทาง</a>
-    <button class="btn ghost" id="close">กลับ</button>
-  </div>
+
+  <section class="card-memory" id="detailMemory">
+    <span class="label">ความทรงจำของการ์ด</span>
+    <p class="card-memory-title" id="detailOrigin"></p>
+    <p class="card-memory-meta whisper" id="detailOriginMeta"></p>
+    <a class="btn gold" id="openSource" href="/">กลับไปดูสมุดเล่มนี้</a>
+  </section>
+
+  <details class="card-use-tools" id="useTools">
+    <summary>นำการ์ดไปใช้</summary>
+    <div class="card-detail-actions">
+      <button class="btn ghost" id="useAvatar">ใช้เป็นการ์ดประจำตัว</button>
+      <a class="btn ghost" id="useCover" href="/new/">ใช้เป็นปกสมุด</a>
+      <a class="btn ghost" id="useNpc" href="/new/">ใช้เป็นเพื่อนร่วมทาง</a>
+    </div>
+  </details>
+  <button class="btn ghost card-detail-close" id="close">กลับ</button>
 </dialog>
 
 <script type="module">
 import {
-  getProfile, hasProfile, updateProfile, ownedCardIds, cardAvailability, useCardAsAvatar,
+  getProfile, hasProfile, updateProfile, ownedCards, cardAvailability, useCardAsAvatar,
   allParties, isActiveParty, partyIdentity, syncCollectionDebugCode, drawBrandNewCard,
 } from '/_shared/store.js';
-import { TEAMBOOK_CARDS, TEAMBOOK_RARITY_META, cardById, cardDescriptorTh, cardNameTh } from '/_shared/cards.js';
+import { TEAMBOOK_RARITY_META, cardById, cardDescriptorTh, cardNameTh } from '/_shared/cards.js';
 import { cardMarkup, cardStatusLabel } from '/_shared/card-ui.js';
 import { syncXtyProfile } from '/_shared/account.js';
 
 const $ = id => document.getElementById(id);
+const dateFormat = new Intl.DateTimeFormat('th-TH', { day:'numeric', month:'short', year:'numeric' });
+let memorySyncQueued = false;
 if (!hasProfile()) location.replace('/'); else render();
 
+function stamp(value) {
+  const n = new Date(value || 0).getTime();
+  return Number.isFinite(n) ? n : 0;
+}
+
+function formatDate(value) {
+  const date = new Date(value || 0);
+  return Number.isFinite(date.getTime()) && date.getTime() > 0 ? dateFormat.format(date) : 'ไม่ทราบวันที่';
+}
+
+function rewardForCard(profile, cardId) {
+  return (profile?.cardRewards || [])
+    .filter(item => item?.cardId === cardId)
+    .sort((a, b) => stamp(a.earnedAt) - stamp(b.earnedAt))[0] || null;
+}
+
+function partyCodeFrom(record, reward) {
+  const fromReward = String(reward?.partyCode || '').toUpperCase();
+  if (/^\d{5}$/.test(fromReward)) return fromReward;
+  const from = String(record?.acquiredFrom || '');
+  const direct = from.match(/(?:party|stars):(\d{5})/i);
+  return direct ? direct[1] : '';
+}
+
+function triggerLabel(record, reward) {
+  const quest = String(reward?.questId || '');
+  if (/^first-seen:/.test(quest) || record?.acquiredFrom === 'first_seen') {
+    return 'เห็นความพยายามของคนอื่นเป็นครั้งแรก';
+  }
+  if (/^party-stars:/.test(quest) || /^stars:/.test(String(record?.acquiredFrom || ''))) {
+    const milestone = Number(quest.split(':').pop()) || Number(String(record?.acquiredFrom || '').split(':').pop()) || 1;
+    return `ถูกเห็นครบ ${Math.max(1, milestone) * 3} ครั้ง`;
+  }
+  if (/^party-complete:/.test(quest) || /^party:/.test(String(record?.acquiredFrom || ''))) {
+    return 'ความทรงจำจากตอนสมุดเล่มนี้จบ';
+  }
+  if (/^debug:|^quest:code:/.test(String(record?.acquiredFrom || ''))) return 'การ์ดทดสอบ';
+  return record?.originTrigger || 'พบระหว่างทางใน TeamBook';
+}
+
+function partyMemory(code) {
+  if (!code) return null;
+  const party = allParties().find(item => item.code === code);
+  if (!party) return null;
+  const history = party.memberHistory?.length ? party.memberHistory : (party.members || []);
+  const lead = history.find(member => member.role === 'lead');
+  return {
+    code,
+    name: party.name || '',
+    ownerAlias: lead?.alias || '',
+  };
+}
+
+function memoryFor(profile, record) {
+  const reward = rewardForCard(profile, record.cardId);
+  const code = record.originBookCode || partyCodeFrom(record, reward);
+  const party = partyMemory(code);
+  return {
+    code,
+    name: record.originBookName || party?.name || '',
+    ownerAlias: record.originOwnerAlias || party?.ownerAlias || '',
+    trigger: record.originTrigger || triggerLabel(record, reward),
+    acquiredAt: record.acquiredAt || reward?.revealedAt || reward?.earnedAt || '',
+  };
+}
+
+function backfillCardMemories(profile) {
+  if (!profile) return profile;
+  let changed = false;
+  const next = ownedCards(profile).map(record => {
+    const memory = memoryFor(profile, record);
+    if (!memory.code) return record;
+    const patch = {
+      originBookCode: memory.code,
+      originBookName: memory.name || record.originBookName || '',
+      originOwnerAlias: memory.ownerAlias || record.originOwnerAlias || '',
+      originTrigger: memory.trigger || record.originTrigger || '',
+    };
+    if (Object.entries(patch).every(([key, value]) => String(record[key] || '') === String(value || ''))) return record;
+    changed = true;
+    return { ...record, ...patch };
+  });
+  if (!changed) return profile;
+  const saved = updateProfile({ ownedCards: next }) || profile;
+  if (!memorySyncQueued) {
+    memorySyncQueued = true;
+    queueMicrotask(() => {
+      syncXtyProfile({ recoverParties:false }).catch(() => null).finally(() => { memorySyncQueued = false; });
+    });
+  }
+  return saved;
+}
+
 function render() {
-  const profile = getProfile(); const owned = new Set(ownedCardIds(profile)); const box = $('cards'); box.innerHTML = '';
-  /* Only what has actually been found, and only how many of them. A slot
-     for every unfound card would hand out the whole set list on day one —
-     the size of the collection is part of what there is to discover. */
-  $('count').textContent = owned.size ? `${owned.size} ใบที่พบ` : 'ยังไม่มีการ์ดในคอลเลกชันนี้';
+  let profile = getProfile(); profile = backfillCardMemories(profile);
+  const records = ownedCards(profile).sort((a, b) => stamp(b.acquiredAt) - stamp(a.acquiredAt));
+  const box = $('cards'); box.innerHTML = '';
+  $('count').textContent = records.length ? `${records.length} ใบที่พบ · ใบล่าสุดอยู่ก่อน` : 'ยังไม่มีการ์ดในคอลเลกชันนี้';
   $('firstHandUnlock').hidden = Number(profile?.level || 1) < 2;
-  TEAMBOOK_CARDS.forEach(card => {
-    if (!owned.has(card.cardId)) return;
+  records.forEach(record => {
+    const card = cardById(record.cardId); if (!card) return;
     const button = document.createElement('button'); button.type = 'button'; button.className = 'collection-card';
     const placement = cardAvailability(card.cardId);
     const status = placement.status === 'AVAILABLE' && profile.equippedCardId === card.cardId ? 'AVATAR_IN_USE' : placement.status;
-    button.setAttribute('aria-label', `${cardDescriptorTh(card)} · ${cardStatusLabel(status)}`);
-    button.innerHTML = cardMarkup(card) + `<span class="collection-status">${cardStatusLabel(status)}</span>`;
+    button.setAttribute('aria-label', `${cardDescriptorTh(card)} · พบ ${formatDate(record.acquiredAt)} · ${cardStatusLabel(status)}`);
+    button.innerHTML = cardMarkup(card) + `<span class="collection-status">${formatDate(record.acquiredAt)}</span>`;
     button.addEventListener('click', () => openCard(card.cardId)); box.appendChild(button);
   });
 }
 
 function openCard(cardId) {
-  const card = cardById(cardId); if (!card) return;
+  const profile = getProfile();
+  const record = ownedCards(profile).find(item => item.cardId === cardId);
+  const card = cardById(cardId); if (!card || !record) return;
+  const memory = memoryFor(profile, record);
   const placement = cardAvailability(card.cardId); const available = placement.status === 'AVAILABLE';
-  const status = available && getProfile()?.equippedCardId === card.cardId ? 'AVATAR_IN_USE' : placement.status;
+  const status = available && profile?.equippedCardId === card.cardId ? 'AVATAR_IN_USE' : placement.status;
   $('detailCard').innerHTML = cardMarkup(card, { foil: card.rarity === 'rare' });
   $('detailName').textContent = cardNameTh(card); $('detailDescription').textContent = card.descriptionTh;
   $('detailFlavor').textContent = `“${card.flavorTh}”`; $('detailStatus').textContent = `${card.personalityNameTh} · ${cardStatusLabel(status)}`;
   $('detailMeta').textContent = `สี${card.colorNameTh} · ${(TEAMBOOK_RARITY_META[card.rarity] || TEAMBOOK_RARITY_META.common).label}`;
+
+  if (memory.code) {
+    $('detailOrigin').textContent = memory.name ? `พบจาก “${memory.name}”` : `พบจากสมุด ${memory.code}`;
+    const owner = memory.ownerAlias ? `เจ้าของสมุด · ${memory.ownerAlias}` : 'เจ้าของสมุด · กำลังเก็บชื่อจากความทรงจำเดิม';
+    $('detailOriginMeta').textContent = `${memory.trigger} · ${formatDate(memory.acquiredAt)} · ${owner}`;
+    $('openSource').href = `/p/?c=${encodeURIComponent(memory.code)}`;
+    $('openSource').hidden = false;
+  } else {
+    $('detailOrigin').textContent = 'การ์ดใบนี้มาจากข้อมูลรุ่นเก่าหรือช่องทดสอบ';
+    $('detailOriginMeta').textContent = `${memory.trigger} · ${formatDate(memory.acquiredAt)}`;
+    $('openSource').hidden = true;
+  }
+
+  $('useTools').open = false;
   $('useAvatar').onclick = () => { useCardAsAvatar(card.cardId); $('detail').close(); render(); };
   $('useCover').href = `/new/?lead=${encodeURIComponent(card.cardId)}`;
   const ownedParty = allParties().find(party => isActiveParty(party) && partyIdentity(party.code)?.userId === party.ownerId);
