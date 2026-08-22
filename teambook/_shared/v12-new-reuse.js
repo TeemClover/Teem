@@ -10,7 +10,7 @@ import { cardMarkup } from './card-ui.js';
 
 function esc(value) {
   return String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;',
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
   }[ch]));
 }
 
