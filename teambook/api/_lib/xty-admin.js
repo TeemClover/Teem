@@ -1,7 +1,7 @@
 import { clean, sendJson } from './core.js';
 import { dissolveXtyParty } from './xty-dissolve.js';
 import {
-  adminLoginBlocked, adminPasswordMatches, adminSessionCookie, clearAdminSessionCookie,
+  adminLoginBlocked, adminPasswordConfigured, adminPasswordMatches, adminSessionCookie, clearAdminSessionCookie,
   createAdminSession, currentAdminSession, destroyAdminSession, pruneAdminAuth,
   ensureXtyAdminSchema, recordAdminLoginFailure, TEAMBOOK_ADMIN_LOGIN_LIMIT,
 } from './xty-admin-auth.js';
@@ -27,7 +27,7 @@ export async function handleXtyAdmin(req, res, sql, method, parts) {
     // dashboard data no longer depends on them.
     if (method === 'POST' && action === 'login') {
       await ensureXtyAdminSchema(sql);
-      if (!process.env.TEAMBOOK_ADMIN_PASSWORD) {
+      if (!adminPasswordConfigured()) {
         return sendJson(res, { ok: false, error: 'ADMIN_NOT_CONFIGURED' }, 503);
       }
       if (await adminLoginBlocked(sql, req)) {
@@ -58,7 +58,7 @@ export async function handleXtyAdmin(req, res, sql, method, parts) {
        session, because they end other people's parties. */
     if (method === 'POST' && (action === 'party-dissolve' || action === 'ghosts')) {
       await ensureXtyAdminSchema(sql);
-      if (!process.env.TEAMBOOK_ADMIN_PASSWORD) {
+      if (!adminPasswordConfigured()) {
         return sendJson(res, { ok: false, error: 'ADMIN_NOT_CONFIGURED' }, 503);
       }
       if (!(await currentAdminSession(sql, req))) {
