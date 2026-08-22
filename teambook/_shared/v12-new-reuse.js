@@ -10,7 +10,7 @@ import { cardMarkup } from './card-ui.js';
 
 function esc(value) {
   return String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;',
   }[ch]));
 }
 
@@ -26,7 +26,7 @@ function installStyles() {
     .tb12-reuse-card{padding:0;border:0;background:transparent;border-radius:12px;overflow:visible;text-align:left}
     .tb12-reuse-card[aria-checked="true"]{outline:3px solid rgba(85,181,106,.3);outline-offset:3px}
     .tb12-reuse-card.is-blocked{opacity:.42;filter:grayscale(.6)}
-    .tb12-reuse-card>.animal-card{width:100%!important;height:auto!important;aspect-ratio:63/88!important}
+    .tb12-reuse-card>.animal-card{width:100%!important;height:auto!important;aspect-ratio:var(--xty-card-aspect)!important}
     .tb12-reuse-name{display:block;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--xty-muted);font-size:9.5px}
     .tb12-reuse-note{margin:8px 0 0;color:var(--xty-muted);font-size:11px;line-height:1.45}
   `;
