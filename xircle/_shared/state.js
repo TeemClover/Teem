@@ -150,16 +150,21 @@
       return;
     }
 
-    // Once unlocked, the White Cat room owns route discovery. The cat in the
-    // global top-right nav is a guide hub, not an implicit notebook-create action.
     nav.setAttribute("aria-label", "ทางลัดหลังปลดล็อก");
     if (path !== "/xircle") addShortcut(nav, "/xircle/", "Xircle");
     if (path !== "/xircle/learn" && path.indexOf("/xircle/doc") !== 0) addShortcut(nav, "/xircle/learn/", "ห้องความรู้");
-    if (path !== "/xircle/explore") {
-      var cat = addShortcut(nav, whiteCatHubUrl(), "ห้องแมวขาว", "cat");
-      cat.setAttribute("data-whitecat-hub", "1");
+
+    // The White Cat shortcut is invitation-specific. Keep the invitation in
+    // localStorage, but do not show a permanent room button to people who were
+    // never invited. The shortcut deliberately lands on the Xircle explanation
+    // page first; the second click there performs the TeamBook join.
+    var invited = currentHandoff();
+    if (invited && path !== "/xircle/circle") {
+      var cat = addShortcut(nav, "/xircle/circle/", "ห้องแมวขาว", "cat");
+      cat.setAttribute("data-whitecat-invite-shortcut", "1");
+      cat.setAttribute("aria-label", "เปิดคำเชิญสมุดแมวขาว " + invited.partyCode);
     }
-    nav.hidden = false;
+    nav.hidden = nav.children.length === 0;
     renderUnlockVisibility();
   }
 
