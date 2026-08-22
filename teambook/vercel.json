@@ -1,12 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "dist",
-  "crons": [
-    {
-      "path": "/api/teambook-pet-compat",
-      "schedule": "27 5,11,17,23 * * *"
-    }
-  ],
   "redirects": [
     {
       "source": "/start",
