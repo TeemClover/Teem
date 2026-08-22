@@ -48,6 +48,8 @@ function boot() {
   if (/^\/p(?:\/|$)/.test(location.pathname)) {
     import('./party-teambook-cards.js')
       .catch(error => console.warn('TeamBook party card layer unavailable', error));
+    import('./party-today-details.js?v=20260822-clean1')
+      .catch(error => console.warn('TeamBook today details layer unavailable', error));
     import('./v12-party-query.js?v=20260822-v12d')
       .catch(error => console.warn('TeamBook companion intent unavailable', error));
     import('./v12-ending-image-auth.js?v=20260822-v12d')
