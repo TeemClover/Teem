@@ -18,7 +18,7 @@ const K_TOKENS = 'mc_xty_tokens';
 
 export const XTY_PROFILE_KEY = K_PROFILE;
 
-/* TeamBook is local-first: a device keeps its own profile, its book
+/* XTY is local-first: a device keeps its own profile, its book
    snapshots and its join tokens. Clearing the server therefore only does
    half a reset — every browser that played before would come back holding
    books the server no longer knows, and the app would spend its life
@@ -26,11 +26,11 @@ export const XTY_PROFILE_KEY = K_PROFILE;
 
    The epoch closes that gap. Bump it once whenever the server data is
    wiped: each device notices the mismatch on its next load, drops its own
-   TeamBook state exactly once, and starts clean. It is deliberately not
+   XTY state exactly once, and starts clean. It is deliberately not
    tied to a deploy or a version number — a deploy is not a reset, and
    bumping this on every release would throw away real people's books.
 
-   Nothing outside TeamBook is touched: the CORE7 collection and the
+   Nothing outside XTY is touched: the CORE7 collection and the
    account session live under their own keys and survive. */
 const DATA_EPOCH = 1;
 const K_EPOCH = 'mc_tb_data_epoch';
@@ -328,7 +328,7 @@ export function ownedCardIds(profile = getProfile()) {
    stage. These codes change the local/account profile, never Party state. */
 export function applyCollectionDebugCode(value) {
   const profile = getProfile();
-  if (!profile) return { ok: false, error: 'NO_PROFILE', message: 'ยังไม่มีโปรไฟล์ TeamBook' };
+  if (!profile) return { ok: false, error: 'NO_PROFILE', message: 'ยังไม่มีโปรไฟล์ XTY' };
   const code = String(value || '').trim().toLowerCase();
   const at = now();
   if (code === 'getallitem') {
@@ -1386,9 +1386,9 @@ export function buildEndingMarkdown(party, { generatedAt = now() } = {}) {
 
   const sauceBody = [...episodeSections, closingCover].join('\n\n');
 
-  return `# TeamBook · ปิดเล่ม — ${safeLine(party.name)}
+  return `# XTY · ปิดเล่ม — ${safeLine(party.name)}
 
-> ไฟล์ความทรงจำจาก TeamBook · สร้างเมื่อ ${isoDate(generatedAt)} · ไม่มีอีเมล เบอร์โทร หรือรหัสภายใน
+> ไฟล์ความทรงจำจาก XTY · สร้างเมื่อ ${isoDate(generatedAt)} · ไม่มีอีเมล เบอร์โทร หรือรหัสภายใน
 
 ## สมุด
 
@@ -1461,7 +1461,7 @@ ${sauceBody}
 ---
 
 นำไฟล์นี้ไปให้ AI ที่คุณใช้ แล้วสั่งทีละส่วน — ตอนที่ 1, 2, … แล้วค่อยปกปิดท้าย 3 แบบ
-TeamBook เตรียมซอสให้จากเรื่องที่เกิดขึ้นจริง แต่ไม่สร้างหรือขายภาพสุ่มในแอป
+XTY เตรียมซอสให้จากเรื่องที่เกิดขึ้นจริง แต่ไม่สร้างหรือขายภาพสุ่มในแอป
 `;
 }
 

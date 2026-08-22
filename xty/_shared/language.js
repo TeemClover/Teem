@@ -1,5 +1,5 @@
 /* Compatibility bootstrap only.
-   The old XTY → TeamBook DOM translation layer was retired on 2026-08-22.
+   The old XTY → XTY DOM translation layer was retired on 2026-08-22.
    Canonical notebook language now lives directly in page/source copy. */
 
 function boot() {

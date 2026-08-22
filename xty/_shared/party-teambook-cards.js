@@ -31,7 +31,7 @@ function injectStyle() {
   const style = document.createElement('style');
   style.id = 'teambook-person-card-style';
   style.textContent = `
-    /* TeamBook card grammar: every human seat is one 63×88 card template.
+    /* XTY card grammar: every human seat is one 63×88 card template.
        Starter art may stay a square portrait; Collection art may fill the
        card. The information layer never moves: name top-centre, daily state
        bottom-centre. */

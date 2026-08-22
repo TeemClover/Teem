@@ -58,7 +58,7 @@ function weeklySauce(party, week) {
     if (post.kind === 'message') return `- ${memberAlias(party, post.userId)}: ${String(post.body || '').replace(/\s+/g, ' ').slice(0, 140)}`;
     return '';
   }).filter(Boolean).join('\n') || '- สัปดาห์นี้ยังไม่มีบันทึกเด่น';
-  return `# TeamBook · ซอสประจำสัปดาห์ · สัปดาห์ที่ ${week}\n\n` +
+  return `# XTY · ซอสประจำสัปดาห์ · สัปดาห์ที่ ${week}\n\n` +
     `- สมุด: ${party.name}\n- รหัสสมุด: ${party.code}\n- กิจกรรม: ${party.activity || '—'}\n` +
     `- Week: ${week} · Day ${(week - 1) * 7 + 1}–${week * 7}\n` +
     `- Verification: ${party.verificationMode === 'confirm' ? 'Confirm' : 'Trust'}\n\n` +
@@ -74,7 +74,7 @@ function dissolveSauce(party) {
   const commits = posts.filter(post => post.kind === 'commit' && !post.retracted);
   const confirmed = commits.filter(post => party.verificationMode !== 'confirm' || post.confirmedBy);
   const messages = posts.filter(post => post.kind === 'message' && !post.retracted);
-  return `# TeamBook · ซอสตอนปิดสมุดก่อนจบ\n\n` +
+  return `# XTY · ซอสตอนปิดสมุดก่อนจบ\n\n` +
     `> สมุดนี้จบก่อนกำหนด ไฟล์นี้เก็บสิ่งที่เกิดขึ้นตามจริง ไม่ถือว่าปิดเล่มสำเร็จ\n\n` +
     `- สมุด: ${party.name}\n- รหัสสมุด: ${party.code}\n- กิจกรรม: ${party.activity || '—'}\n- จบที่: วันที่ ${day}\n` +
     `- ลงชื่อ: ${commits.length}\n- ลงชื่อและมีคนเห็นแล้ว: ${confirmed.length}\n- Message: ${messages.length}\n\n` +

@@ -194,7 +194,7 @@ function syncHumanSeat(seats, member, index) {
   if (!member || !current) return;
   const { resolved, card } = memberCharacter(member);
 
-  /* Critical TeamBook rule: p.coverType / p.leadCardId never participate in
+  /* Critical XTY rule: p.coverType / p.leadCardId never participate in
      this decision. The owner is still a person and therefore shows the
      owner's selected character exactly like everyone else. */
   if (card) {

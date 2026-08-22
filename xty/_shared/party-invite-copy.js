@@ -66,7 +66,7 @@ function partySnapshot() {
 
 function inviteText(party) {
   return [
-    'เข้าร่วมสมุดใน TeamBook',
+    'เข้าร่วมสมุดใน XTY',
     `สมุด: ${party.name}`,
     `ทำ: ${activity}`,
     `${party.durationDays} วัน · รหัส ${party.code}`,

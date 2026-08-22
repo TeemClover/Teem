@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   TeamBook — how a finished book is cut into episodes
+   XTY — how a finished book is cut into episodes
 
    A book is told in episodes of seven days. Every seven full days earns
    one episode sauce, and every book that reaches its end earns one

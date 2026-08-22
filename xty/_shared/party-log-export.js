@@ -44,7 +44,7 @@ function buildPartyLogText(party) {
   });
 
   const lines = [
-    'TEAMBOOK · เรื่องในสมุด',
+    'XTY · เรื่องในสมุด',
     '========================',
     `สมุด: ${party.name || '-'}`,
     `รหัสสมุด: ${party.code || '-'}`,

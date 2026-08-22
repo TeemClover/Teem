@@ -123,7 +123,7 @@ function install() {
     back: [{ key:'back', category:'back', coverType:'card_back', title:'หลังการ์ด myClover', subtitle:'ใช้ได้เสมอ', art:backArt() }],
     xty: xtyCards.map(card => ({
       key:`xty:${card.cardId}`, category:'xty', coverType:'card', leadCardId:card.cardId,
-      title:cardNameTh(card), subtitle:'TEAMBOOK CARD', art:xtyArt(card),
+      title:cardNameTh(card), subtitle:'XTY CARD', art:xtyArt(card),
     })),
     core7: core7Ids.map(id => {
       const card = core7CardById(id);

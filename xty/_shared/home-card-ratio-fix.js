@@ -1,4 +1,4 @@
-/* TeamBook Home — canonical card geometry guard.
+/* XTY Home — canonical card geometry guard.
    Every visible card frame on /xty/ must stay 63:88 on desktop and mobile.
    This module loads after the Home renderer so it also overrides old narrow-
    screen pixel heights that could stretch/crop a card by a few pixels. */

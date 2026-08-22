@@ -21,7 +21,7 @@ function unlockedCore7Ids() {
 
 function install() {
   /* Cover management remains here, but this module deliberately never
-     touches #seats anymore. In TeamBook a Book Cover and a person's
+     touches #seats anymore. In XTY a Book Cover and a person's
      character are two independent identities. */
   document.addEventListener('click', interceptCoverSave, true);
   const observer = new MutationObserver(schedule);

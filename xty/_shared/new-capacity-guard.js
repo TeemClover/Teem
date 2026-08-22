@@ -1,4 +1,4 @@
-/* TeamBook create-page capacity guard.
+/* XTY create-page capacity guard.
    Merge/Resync may legitimately leave an account over its current entitlement;
    those books stay. This guard only prevents adding another active owned book
    and explains the limit as soon as the player starts naming a new one. */

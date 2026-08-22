@@ -14,7 +14,7 @@ function coverName(party, data = {}) {
   }
   if (['card','legacy_card'].includes(party?.coverType)) {
     const card = xtyCardById(party.leadCardId || party.coverValue);
-    return card ? cardDescriptorTh(card) : 'การ์ด TeamBook';
+    return card ? cardDescriptorTh(card) : 'การ์ด XTY';
   }
   if (party?.coverType === 'avatar') {
     let snapshot = {};

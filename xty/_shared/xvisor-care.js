@@ -142,7 +142,7 @@ export function buildXvisorEndingMarkdown(party) {
     `- Preset: ${XVISOR_PRESET_ID}\n` +
     `- Guide: ${XVISOR_GUIDE.nameTh} — ${XVISOR_GUIDE.persona}\n\n` +
     `## กลไกของ Care ช่วง\n\n` +
-    `Xircle ช่วยให้เห็น Pattern และเลือกสิ่งที่จะปรับ ส่วน TeamBook ช่วยให้ Action นั้นเกิดขึ้นจริงกับคนในวง ผ่านการลงชื่อ, ข้อความ และ ส่งกำลังใจ แบบมีขอบเขต\n\n` +
+    `Xircle ช่วยให้เห็น Pattern และเลือกสิ่งที่จะปรับ ส่วน XTY ช่วยให้ Action นั้นเกิดขึ้นจริงกับคนในวง ผ่านการลงชื่อ, ข้อความ และ ส่งกำลังใจ แบบมีขอบเขต\n\n` +
     `**Understand Yesterday → See One Pattern → Choose One Action → Do It → ลงชื่อ → Review → เล่มถัดไป**\n\n` +
     `## จังหวะมาตรฐาน X-VISOR\n\n` +
     XVISOR_CARE_CHECKPOINTS.map(item => `- ${item.label}: ${item.lead}`).join('\n') + `\n\n` +
@@ -156,7 +156,7 @@ export function buildXvisorEndingMarkdown(party) {
     `## NEXT QUEST\n\n` +
     `นำ One Action ที่ตกลงกันไปเปิดเล่มถัดไป หากยังมีประโยชน์กับชีวิตจริง ไม่จำเป็นต้องเพิ่มความยากทุกครั้ง\n\n` +
     `---\n` +
-    `TeamBook ไม่ดึง Weight, Body Fat, HR, HRV, ยา, โรคประจำตัว หรือข้อมูลสุขภาพดิบจาก Xircle เข้ามาในสมุดโดยอัตโนมัติ การดูแลต้องอยู่ในขอบเขตและ Consent ที่เหมาะสม\n`;
+    `XTY ไม่ดึง Weight, Body Fat, HR, HRV, ยา, โรคประจำตัว หรือข้อมูลสุขภาพดิบจาก Xircle เข้ามาในสมุดโดยอัตโนมัติ การดูแลต้องอยู่ในขอบเขตและ Consent ที่เหมาะสม\n`;
 }
 
 function downloadText(filename, text) {
@@ -185,7 +185,7 @@ function enhanceCreatePage() {
   intro.className = 'notebook-card';
   intro.innerHTML = `<span class="label">X-VISOR · HIDDEN ROUTE</span>` +
     `<h2 style="margin-top:8px">X-VISOR Care · เล่ม 28 วัน</h2>` +
-    `<p class="whisper">สร้างสมุดจาก route นี้แล้ว หลังจากนั้นใช้ TeamBook ตามปกติ · Private · Trust · ข้อความ 3 · Pattern → One Action</p>` +
+    `<p class="whisper">สร้างสมุดจาก route นี้แล้ว หลังจากนั้นใช้ XTY ตามปกติ · Private · Trust · ข้อความ 3 · Pattern → One Action</p>` +
     guideCardHtml('lead', { startAt: new Date().toISOString(), durationDays: 28 });
   const first = main.querySelector('.notebook-card');
   main.insertBefore(intro, first || main.firstChild);
