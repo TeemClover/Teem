@@ -51,6 +51,21 @@ without exposing the party token. Groq vision receives a temporary server-side
 data URL, never a permanent storage URL. Public notebook discovery uses the
 neutral notebook cover until a deliberately public derivative exists.
 
+## Preview provisioning note
+
+The TeamBook Vercel project uses a Neon integration that creates per-preview
+branches. Neon branch capacity is therefore part of preview deployment capacity.
+If Vercel fails immediately with `BUILD_FAILED: Resource provisioning failed`
+and exposes no build-log events, check the Neon project branch count before
+changing application code. Stale preview branches can exhaust the integration's
+branch allowance and prevent Vercel from provisioning the next Preview even when
+the same commit builds successfully in another Vercel project.
+
+Do not delete `main` or a branch tied to an active validation session. Prefer
+removing old `preview/...` branches whose associated Git/Preview work is already
+obsolete, then trigger a fresh Preview deployment. This is an infrastructure
+recovery step, not an application-code fix.
+
 OAuth callbacks for the production project:
 
 - `https://teambook.me/api/auth/oauth/google/callback`
