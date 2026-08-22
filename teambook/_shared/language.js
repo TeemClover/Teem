@@ -8,16 +8,16 @@ function boot() {
 
   /* TeamBook V1.2 gameplay is route-aware and leaves current cosmetic
      components in place. */
-  import('./v12-gameplay.js?v=20260822-v12b')
+  import('./v12-gameplay.js?v=20260822-v12c')
     .catch(error => console.warn('TeamBook V1.2 gameplay layer unavailable', error));
 
   if (/^\/new(?:\/|$)/.test(location.pathname)) {
-    import('./v12-new-reuse.js?v=20260822-v12b')
+    import('./v12-new-reuse.js?v=20260822-v12c')
       .catch(error => console.warn('TeamBook reusable card picker unavailable', error));
   }
 
   if (/^\/collection(?:\/|$)/.test(location.pathname)) {
-    import('./v12-collection-reuse.js?v=20260822-v12b')
+    import('./v12-collection-reuse.js?v=20260822-v12c')
       .catch(error => console.warn('TeamBook reusable Collection actions unavailable', error));
   }
 
@@ -26,8 +26,10 @@ function boot() {
   if (/^\/p(?:\/|$)/.test(location.pathname)) {
     import('./party-teambook-cards.js')
       .catch(error => console.warn('TeamBook party card layer unavailable', error));
-    import('./v12-party-query.js?v=20260822-v12b')
+    import('./v12-party-query.js?v=20260822-v12c')
       .catch(error => console.warn('TeamBook companion intent unavailable', error));
+    import('./v12-ending-image-auth.js?v=20260822-v12c')
+      .catch(error => console.warn('TeamBook Ending image auth unavailable', error));
   }
 }
 
