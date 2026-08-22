@@ -131,6 +131,15 @@
     } catch (e) {}
   }
 
+  function addInvitedWhiteCatShortcut(nav, path) {
+    var invited = currentHandoff();
+    if (!invited || !firstDayComplete() || path === "/xircle/circle") return null;
+    var cat = addShortcut(nav, "/xircle/circle/", "ห้องแมวขาว", "cat");
+    cat.setAttribute("data-whitecat-invite-shortcut", "1");
+    cat.setAttribute("aria-label", "เปิดคำเชิญสมุดแมวขาว " + invited.partyCode);
+    return cat;
+  }
+
   function renderProgressNav() {
     var path = normalizedPath();
     if (!isXircleRoute(path)) return;
@@ -145,6 +154,10 @@
         var a = addShortcut(nav, next.href, next.label, next.cat ? "cat" : "");
         a.setAttribute("data-journey-next", String(next.step));
       }
+      // A brand-new visitor still gets no White Cat shortcut. Once the first
+      // Xircle journey is complete, a saved invitation becomes available even
+      // if the person has not opened every optional explainer route yet.
+      addInvitedWhiteCatShortcut(nav, path);
       nav.hidden = nav.children.length === 0;
       renderUnlockVisibility();
       return;
@@ -153,17 +166,7 @@
     nav.setAttribute("aria-label", "ทางลัดหลังปลดล็อก");
     if (path !== "/xircle") addShortcut(nav, "/xircle/", "Xircle");
     if (path !== "/xircle/learn" && path.indexOf("/xircle/doc") !== 0) addShortcut(nav, "/xircle/learn/", "ห้องความรู้");
-
-    // The White Cat shortcut is invitation-specific. Keep the invitation in
-    // localStorage, but do not show a permanent room button to people who were
-    // never invited. The shortcut deliberately lands on the Xircle explanation
-    // page first; the second click there performs the TeamBook join.
-    var invited = currentHandoff();
-    if (invited && path !== "/xircle/circle") {
-      var cat = addShortcut(nav, "/xircle/circle/", "ห้องแมวขาว", "cat");
-      cat.setAttribute("data-whitecat-invite-shortcut", "1");
-      cat.setAttribute("aria-label", "เปิดคำเชิญสมุดแมวขาว " + invited.partyCode);
-    }
+    addInvitedWhiteCatShortcut(nav, path);
     nav.hidden = nav.children.length === 0;
     renderUnlockVisibility();
   }
@@ -183,6 +186,7 @@
   }
 
   function routeAllowedBeforeUnlock(path) {
+    if (path === "/xircle/circle" && firstDayComplete() && currentHandoff()) return true;
     if (isRoutineProductDetour(path)) return true;
     var next = linearNext();
     if (!next) return true;
@@ -289,7 +293,7 @@
   function guardLinearJourney(target, event) {
     if (journeyFullyUnlocked() || !target || !target.closest) return false;
     var a = target.closest("a[href]");
-    if (!a || a.hasAttribute("data-whitecat-link")) return false;
+    if (!a || a.hasAttribute("data-whitecat-link") || a.hasAttribute("data-whitecat-invite-shortcut")) return false;
 
     var url;
     try { url = new URL(a.href, location.origin); } catch (e) { return false; }
