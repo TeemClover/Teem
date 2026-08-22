@@ -1,7 +1,6 @@
 /* TeamBook V1.2 — additive gameplay layer.
-   It does not replace the current card cosmetics. It adds the parts a book
-   needs after play: evidence-first Ending Art and a visible shelf of finished
-   books. */
+   Current card cosmetics remain untouched. This layer adds the memory side of
+   the game: evidence-first Ending Art and a visible shelf of finished books. */
 
 import {
   allParties, getParty, isActiveParty, partyIdentity, refreshParty,
@@ -13,9 +12,8 @@ import { cardMarkup } from './card-ui.js';
 if (!globalThis.__teambookV12Installed) {
   globalThis.__teambookV12Installed = true;
   installStyles();
-  const path = location.pathname;
-  if (/^\/p(?:\/|$)/.test(path)) installPartyEnding();
-  if (/^\/collection(?:\/|$)/.test(path)) installFinishedShelf();
+  if (/^\/p(?:\/|$)/.test(location.pathname)) installPartyEnding();
+  if (/^\/collection(?:\/|$)/.test(location.pathname)) installFinishedShelf();
 }
 
 function esc(value) {
@@ -44,8 +42,7 @@ function installStyles() {
     .tb12-candidates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-top:14px}
     .tb12-candidate{min-width:0;padding:7px;border:1px solid var(--xty-border);border-radius:15px;background:rgba(255,254,248,.88)}
     .tb12-candidate.is-selected{outline:3px solid rgba(85,181,106,.28);border-color:var(--xty-green)}
-    .tb12-art{position:relative;width:100%;aspect-ratio:63/88;border-radius:10px;overflow:hidden;background:
-      radial-gradient(circle at 50% 30%,#fffdf3,#f5edcf 68%,#e8ddb9)}
+    .tb12-art{position:relative;width:100%;aspect-ratio:63/88;border-radius:10px;overflow:hidden;background:radial-gradient(circle at 50% 30%,#fffdf3,#f5edcf 68%,#e8ddb9)}
     .tb12-art img{display:block;width:100%;height:100%;object-fit:cover}
     .tb12-placeholder{position:absolute;inset:0;display:grid;place-items:center;padding:12px;text-align:center;color:var(--xty-muted);font-size:12px;line-height:1.45}
     .tb12-placeholder b{display:block;color:var(--xty-ink);font-size:22px;margin-bottom:5px}
@@ -70,9 +67,9 @@ function codeFromPage() {
   return /^\d{5}$/.test(value) ? value : '';
 }
 
-function authHeaders(code, withJson = false) {
+function authHeaders(code, json = false) {
   const headers = { accept: 'application/json' };
-  if (withJson) headers['content-type'] = 'application/json';
+  if (json) headers['content-type'] = 'application/json';
   const token = partyIdentity(code)?.token || '';
   if (token) headers.authorization = `Bearer ${token}`;
   return headers;
@@ -80,20 +77,19 @@ function authHeaders(code, withJson = false) {
 
 async function endingApi(code, action = '', patch = {}) {
   const post = !!action;
-  let response;
   try {
-    response = await fetch(`/api/teambook-ending?code=${encodeURIComponent(code)}`, {
+    const response = await fetch(`/api/teambook-ending?code=${encodeURIComponent(code)}`, {
       method: post ? 'POST' : 'GET',
       credentials: 'same-origin',
       headers: authHeaders(code, post),
       body: post ? JSON.stringify({ action, ...patch }) : undefined,
       cache: 'no-store',
     });
+    const data = await response.json().catch(() => ({}));
+    return response.ok ? data : { ...data, ok: false, error: data.error || `HTTP_${response.status}` };
   } catch {
     return { ok: false, error: 'OFFLINE' };
   }
-  const data = await response.json().catch(() => ({}));
-  return response.ok ? data : { ...data, ok: false, error: data.error || `HTTP_${response.status}` };
 }
 
 function endingPanel() {
@@ -115,8 +111,7 @@ function fact(value, label) {
 }
 
 function stateCopy(evidence) {
-  const state = evidence?.book?.state || '';
-  if (state === 'DISSOLVED') return {
+  if (evidence?.book?.state === 'DISSOLVED') return {
     badge: 'CLOSED EARLY',
     title: 'สมุดนี้ปิดแล้ว และสิ่งที่เกิดขึ้นยังถูกเก็บไว้',
     body: 'TeamBook จะไม่แต่งให้กลายเป็นความสำเร็จที่ไม่ได้เกิดขึ้นจริง',
@@ -136,8 +131,7 @@ function candidateMarkup(candidate, data) {
   const count = Number(data?.votes?.counts?.[candidate.id] || 0);
   const mine = data?.votes?.mine === candidate.id;
   const selected = data?.selectedCandidate === candidate.id;
-  const canVote = data.status === 'READY';
-  const canFinalize = data?.me?.role === 'lead' && data.status === 'READY';
+  const ready = data.status === 'READY';
   const art = candidate.imageUrl
     ? `<img src="${esc(candidate.imageUrl)}" alt="ภาพความทรงจำแบบ ${esc(candidate.id)}" loading="lazy" decoding="async">`
     : `<div class="tb12-placeholder"><div><b>${esc(candidate.id)}</b>${esc(candidate.titleTh || directionLabel(candidate))}</div></div>`;
@@ -145,8 +139,8 @@ function candidateMarkup(candidate, data) {
     + `<div class="tb12-art">${art}</div>`
     + `<h3>${esc(candidate.id)} · ${esc(candidate.titleTh || directionLabel(candidate))}</h3>`
     + `<p>${esc(directionLabel(candidate))}${selected ? ' · ใช้เป็นปกแล้ว' : ''}</p>`
-    + (canVote ? `<div class="tb12-vote"><button class="btn ghost sm${mine ? ' mine' : ''}" type="button" data-ending-vote="${esc(candidate.id)}">${mine ? 'เลือกแล้ว' : 'เลือกแบบนี้'} · ${count}</button></div>` : '')
-    + (canFinalize ? `<div class="tb12-vote"><button class="btn ghost sm" type="button" data-ending-finalize="${esc(candidate.id)}">ใช้แบบนี้เป็นปก</button></div>` : '')
+    + (ready ? `<div class="tb12-vote"><button class="btn ghost sm${mine ? ' mine' : ''}" type="button" data-ending-vote="${esc(candidate.id)}">${mine ? 'เลือกแล้ว' : 'เลือกแบบนี้'} · ${count}</button></div>` : '')
+    + (ready && data?.me?.role === 'lead' ? `<div class="tb12-vote"><button class="btn ghost sm" type="button" data-ending-finalize="${esc(candidate.id)}">ใช้แบบนี้เป็นปก</button></div>` : '')
     + `</article>`;
 }
 
@@ -154,80 +148,12 @@ function errorText(code) {
   return ({
     OFFLINE: 'เชื่อมระบบฉากจบไม่ได้ ลองใหม่อีกครั้ง',
     ENDING_IMAGE_PROVIDER_NOT_CONFIGURED: 'ระบบคิดฉากพร้อมแล้ว แต่ Image Provider ของ Ending ยังไม่ได้ตั้งค่า',
-    ENDING_ALREADY_GENERATING: 'กำลังสร้างภาพอยู่ รอสักครู่แล้วกดดึงใหม่',
+    ENDING_ALREADY_GENERATING: 'กำลังสร้างภาพอยู่ รอสักครู่แล้วดึงสถานะใหม่',
     ENDING_IMAGE_PROVIDER_FAILED: 'ผู้ให้บริการภาพตอบกลับไม่สำเร็จ',
     ENDING_PROVIDER_BAD_IMAGE: 'ภาพที่ได้กลับมาไม่ใช่ไฟล์ภาพที่ TeamBook รับได้',
     ENDING_VOTE_TIED: 'ผลโหวตเสมอกัน เจ้าของสมุดเลือกแบบที่ต้องการได้โดยตรง',
     ENDING_NO_VOTES: 'ยังไม่มีใครเลือกภาพ',
   })[code] || `ยังทำรายการนี้ไม่ได้ · ${code || 'UNKNOWN'}`;
-}
-
-async function renderEnding(data) {
-  const panel = endingPanel();
-  if (!panel || !data?.evidence) return;
-  const copy = stateCopy(data.evidence);
-  const facts = data.evidence.facts || {};
-  const book = data.evidence.book || {};
-  const conflict = (data.evidence.conflicts || [])[0];
-  const candidates = data.candidates?.length ? data.candidates : data.briefs || [];
-  const generateable = data.me?.role === 'lead' && ['BRIEF_READY', 'FAILED'].includes(data.status);
-
-  panel.hidden = false;
-  panel.innerHTML = `<div class="tb12-ending-head"><div><span class="tb12-state">${esc(copy.badge)}</span><h2 class="title">${esc(copy.title)}</h2><p class="whisper" style="margin:0">${esc(copy.body)}</p></div></div>`
-    + `<div class="tb12-facts">${fact(facts.validCommits, 'ลงชื่อที่นับได้')}${fact(book.activeDays, 'วันที่มีหลักฐาน')}${fact(book.targetDays, 'วันที่ตั้งไว้')}${fact(book.calendarDays, 'ช่วงวันจริง')}</div>`
-    + (conflict ? `<div class="tb12-conflict"><b>ข้อมูลเวลาไม่ตรงกัน จึงไม่เดาแทนคน</b><br>${esc(conflict.note || '')}</div>` : '')
-    + `<div class="tb12-candidates">${candidates.map(candidate => candidateMarkup(candidate, data)).join('')}</div>`
-    + `<div class="tb12-ending-actions">`
-    + (generateable && data.generatorReady ? `<button class="btn gold" type="button" id="tb12GenerateEnding">สร้างภาพความทรงจำ 3 แบบ</button>` : '')
-    + (data.status === 'GENERATING' ? `<button class="btn ghost" type="button" id="tb12RefreshEnding">กำลังสร้างภาพ… ดึงสถานะใหม่</button>` : '')
-    + `</div>`
-    + (generateable && !data.generatorReady ? `<div class="tb12-engine-note">Evidence Brain และ Art Brief พร้อมแล้ว แต่เครื่องสร้างภาพยังไม่ได้เชื่อมกับ production. ตอนนี้ TeamBook จะไม่ใส่ภาพปลอมหรือสุ่มภาพที่ไม่อิงเล่มนี้</div>` : '')
-    + `<div class="tb12-engine-note">กติกาของ Engine: Event สำคัญต้องมี <b>Evidence of Meaning</b> มากกว่า Evidence of Change · ปกฉากจบคือความทรงจำ ไม่ใช่ระดับความหายากหรือรางวัล</div>`;
-
-  const legacyCover = document.getElementById('endingCoverPanel');
-  if (legacyCover) legacyCover.hidden = data.generatorReady || ['READY', 'FINALIZED', 'GENERATING'].includes(data.status);
-
-  panel.querySelector('#tb12GenerateEnding')?.addEventListener('click', async event => {
-    event.currentTarget.disabled = true;
-    event.currentTarget.textContent = 'กำลังสร้าง 3 ภาพ…';
-    const result = await endingApi(codeFromPage(), 'generate');
-    if (!result.ok) {
-      event.currentTarget.disabled = false;
-      event.currentTarget.textContent = 'สร้างภาพความทรงจำ 3 แบบ';
-      showEndingNotice(errorText(result.error));
-      return;
-    }
-    await renderEnding(result);
-  });
-
-  panel.querySelector('#tb12RefreshEnding')?.addEventListener('click', async event => {
-    event.currentTarget.disabled = true;
-    const result = await endingApi(codeFromPage());
-    if (result.ok) await renderEnding(result);
-    else showEndingNotice(errorText(result.error));
-  });
-
-  panel.querySelectorAll('[data-ending-vote]').forEach(button => button.addEventListener('click', async () => {
-    const id = button.dataset.endingVote;
-    button.disabled = true;
-    const result = await endingApi(codeFromPage(), 'vote', { candidateId: id });
-    if (result.ok) await renderEnding(result);
-    else { button.disabled = false; showEndingNotice(errorText(result.error)); }
-  }));
-
-  panel.querySelectorAll('[data-ending-finalize]').forEach(button => button.addEventListener('click', async () => {
-    const id = button.dataset.endingFinalize;
-    button.disabled = true;
-    const result = await endingApi(codeFromPage(), 'finalize', { candidateId: id });
-    if (!result.ok) {
-      button.disabled = false;
-      showEndingNotice(errorText(result.error));
-      return;
-    }
-    await refreshParty(codeFromPage()).catch(() => null);
-    await renderEnding(result);
-    showEndingNotice('เก็บภาพนี้เป็นปกความทรงจำของเล่มแล้ว');
-  }));
 }
 
 function showEndingNotice(text) {
@@ -241,26 +167,128 @@ function showEndingNotice(text) {
   const panel = endingPanel();
   if (!panel) return;
   let note = panel.querySelector('.tb12-action-note');
-  if (!note) { note = document.createElement('div'); note.className = 'tb12-engine-note tb12-action-note'; panel.appendChild(note); }
+  if (!note) {
+    note = document.createElement('div');
+    note.className = 'tb12-engine-note tb12-action-note';
+    panel.appendChild(note);
+  }
   note.textContent = text;
+}
+
+async function renderEnding(data) {
+  const panel = endingPanel();
+  if (!panel || !data?.evidence) return;
+  const copy = stateCopy(data.evidence);
+  const facts = data.evidence.facts || {};
+  const book = data.evidence.book || {};
+  const conflict = (data.evidence.conflicts || [])[0];
+  const candidates = data.candidates?.length ? data.candidates : data.briefs || [];
+  const canGenerate = data.me?.role === 'lead' && ['BRIEF_READY', 'FAILED'].includes(data.status);
+
+  panel.hidden = false;
+  panel.dataset.status = data.status || '';
+  panel.innerHTML = `<div class="tb12-ending-head"><div><span class="tb12-state">${esc(copy.badge)}</span><h2 class="title">${esc(copy.title)}</h2><p class="whisper" style="margin:0">${esc(copy.body)}</p></div></div>`
+    + `<div class="tb12-facts">${fact(facts.validCommits, 'ลงชื่อที่นับได้')}${fact(book.activeDays, 'วันที่มีหลักฐาน')}${fact(book.targetDays, 'วันที่ตั้งไว้')}${fact(book.calendarDays, 'ช่วงวันจริง')}</div>`
+    + (conflict ? `<div class="tb12-conflict"><b>ข้อมูลเวลาไม่ตรงกัน จึงไม่เดาแทนคน</b><br>${esc(conflict.note || '')}</div>` : '')
+    + `<div class="tb12-candidates">${candidates.map(candidate => candidateMarkup(candidate, data)).join('')}</div>`
+    + `<div class="tb12-ending-actions">`
+    + (canGenerate && data.generatorReady ? `<button class="btn gold" type="button" id="tb12GenerateEnding">สร้างภาพความทรงจำ 3 แบบ</button>` : '')
+    + (data.status === 'GENERATING' ? `<button class="btn ghost" type="button" id="tb12RefreshEnding">กำลังสร้างภาพ… ดึงสถานะใหม่</button>` : '')
+    + `</div>`
+    + (canGenerate && !data.generatorReady ? `<div class="tb12-engine-note">Evidence Brain และ Art Brief พร้อมแล้ว แต่เครื่องสร้างภาพยังไม่ได้เชื่อมกับ production. TeamBook จะไม่ใส่ภาพปลอมหรือสุ่มภาพที่ไม่อิงเล่มนี้</div>` : '')
+    + `<div class="tb12-engine-note">กติกา Engine: Event สำคัญต้องมี <b>Evidence of Meaning</b> มากกว่า Evidence of Change · ปกฉากจบคือความทรงจำ ไม่ใช่ระดับความหายากหรือรางวัล</div>`;
+
+  const legacyCover = document.getElementById('endingCoverPanel');
+  if (legacyCover) legacyCover.hidden = data.generatorReady || ['READY', 'FINALIZED', 'GENERATING'].includes(data.status);
+
+  panel.querySelector('#tb12GenerateEnding')?.addEventListener('click', async event => {
+    event.currentTarget.disabled = true;
+    event.currentTarget.textContent = 'กำลังสร้าง 3 ภาพ…';
+    const result = await endingApi(codeFromPage(), 'generate');
+    if (result.ok) await renderEnding(result);
+    else {
+      event.currentTarget.disabled = false;
+      event.currentTarget.textContent = 'สร้างภาพความทรงจำ 3 แบบ';
+      showEndingNotice(errorText(result.error));
+    }
+  });
+
+  panel.querySelector('#tb12RefreshEnding')?.addEventListener('click', async event => {
+    event.currentTarget.disabled = true;
+    const result = await endingApi(codeFromPage());
+    if (result.ok) await renderEnding(result);
+    else showEndingNotice(errorText(result.error));
+  });
+
+  panel.querySelectorAll('[data-ending-vote]').forEach(button => button.addEventListener('click', async () => {
+    button.disabled = true;
+    const result = await endingApi(codeFromPage(), 'vote', { candidateId: button.dataset.endingVote });
+    if (result.ok) await renderEnding(result);
+    else { button.disabled = false; showEndingNotice(errorText(result.error)); }
+  }));
+
+  panel.querySelectorAll('[data-ending-finalize]').forEach(button => button.addEventListener('click', async () => {
+    button.disabled = true;
+    const result = await endingApi(codeFromPage(), 'finalize', { candidateId: button.dataset.endingFinalize });
+    if (!result.ok) {
+      button.disabled = false;
+      showEndingNotice(errorText(result.error));
+      return;
+    }
+    await refreshParty(codeFromPage()).catch(() => null);
+    await renderEnding(result);
+    showEndingNotice('เก็บภาพนี้เป็นปกความทรงจำของเล่มแล้ว');
+  }));
 }
 
 function installPartyEnding() {
   const code = codeFromPage();
   if (!code) return;
-  let attempts = 0;
-  const open = async () => {
+  let busy = false;
+  let lastStatus = '';
+
+  const sync = async ({ force = false } = {}) => {
+    if (busy) return false;
     const party = getParty(code);
     if (!party || isActiveParty(party)) return false;
+    const visibleState = [party.state, party.updatedAt, party.coverType, party.coverValue].join('|');
+    if (!force && visibleState === lastStatus && !document.getElementById('tb12EndingMemory')?.hidden) return true;
+    busy = true;
     const result = await endingApi(code);
-    if (result.ok) await renderEnding(result);
+    busy = false;
+    if (!result.ok) {
+      if (!['AUTH_REQUIRED', 'ENDING_NOT_READY'].includes(result.error)) showEndingNotice(errorText(result.error));
+      return false;
+    }
+    lastStatus = visibleState;
+    await renderEnding(result);
     return true;
   };
-  if (open()) return;
-  const timer = setInterval(async () => {
+
+  /* First hydrate can finish after this module evaluates. Retry briefly, then
+     rely on the DOM observer for later lifecycle changes such as pressing
+     ปิดเล่ม minutes after page load. */
+  sync({ force: true });
+  let attempts = 0;
+  const starter = setInterval(async () => {
     attempts += 1;
-    if (await open() || attempts > 20) clearInterval(timer);
+    if (await sync() || attempts >= 20) clearInterval(starter);
   }, 300);
+
+  let queued = false;
+  const schedule = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      sync();
+    });
+  };
+  const root = document.getElementById('view') || document.body;
+  const observer = new MutationObserver(schedule);
+  observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class'] });
+  addEventListener('pageshow', () => sync({ force: true }));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) sync({ force: true }); });
 }
 
 function partyCoverMarkup(party) {
@@ -272,8 +300,7 @@ function partyCoverMarkup(party) {
   if (party.coverType === 'avatar') {
     let snapshot = { species: 'orange_cat', color: 'green' };
     try { snapshot = { ...snapshot, ...JSON.parse(party.coverValue || '{}') }; } catch {}
-    const avatar = avatarById(snapshot.species);
-    return `<img src="${esc(avatar.art)}" alt="" loading="lazy" decoding="async">`;
+    return `<img src="${esc(avatarById(snapshot.species).art)}" alt="" loading="lazy" decoding="async">`;
   }
   return `<img src="/assets/card-back.webp" alt="" loading="lazy" decoding="async">`;
 }
@@ -297,8 +324,8 @@ function renderFinishedShelf(parties) {
   section.hidden = false;
   section.innerHTML = `<div class="tb12-shelf-head"><div><span class="label">FINISHED BOOKS</span><h2>สมุดที่ปิดแล้ว</h2></div><small class="whisper">${parties.length} เล่ม</small></div>`
     + `<div class="tb12-book-grid">${parties.map(party => {
-      const state = String(party.state || '').toUpperCase();
-      const status = state === 'COMPLETED' ? 'เล่มนี้จบครบช่วงแล้ว' : 'ปิดก่อนกำหนด · ประวัติยังอยู่';
+      const complete = String(party.state || '').toUpperCase() === 'COMPLETED';
+      const status = complete ? 'เล่มนี้จบครบช่วงแล้ว' : 'ปิดก่อนกำหนด · ประวัติยังอยู่';
       return `<a class="tb12-book" href="/p/?c=${encodeURIComponent(party.code)}"><span class="tb12-book-cover">${partyCoverMarkup(party)}</span><span class="tb12-book-copy"><b>${esc(party.name)}</b><small>${esc(party.activity || 'เรื่องที่เขียนร่วมกัน')}</small><small>${esc(status)}</small></span></a>`;
     }).join('')}</div>`;
 }
