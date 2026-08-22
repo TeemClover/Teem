@@ -13,6 +13,16 @@
   ],
   "redirects": [
     {
+      "source": "/xircle",
+      "destination": "https://www.myclover.com/xircle/",
+      "permanent": false
+    },
+    {
+      "source": "/xircle/",
+      "destination": "https://www.myclover.com/xircle/",
+      "permanent": false
+    },
+    {
       "source": "/start",
       "destination": "/start/",
       "permanent": false
