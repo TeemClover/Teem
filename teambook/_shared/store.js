@@ -1481,7 +1481,7 @@ TeamBook เตรียมซอสให้จากเรื่องที�
 
 export function endingFileName(party) {
   const base = String(party?.name || party?.code || 'teambook-book')
-    .trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60) || 'teambook-book';
+    .normalize('NFC').trim().replace(/[^\p{L}\p{M}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60) || 'teambook-book';
   return `TeamBook-Ending-${base}.md`;
 }
 

@@ -1467,7 +1467,7 @@ TeamBook เตรียมซอสให้จากเรื่องที�
 
 export function endingFileName(party) {
   const base = String(party?.name || party?.code || 'xty-party')
-    .trim().replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60) || 'xty-party';
+    .normalize('NFC').trim().replace(/[^\p{L}\p{M}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60) || 'xty-party';
   return `XTY-Ending-${base}.md`;
 }
 
