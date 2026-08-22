@@ -17,16 +17,14 @@ export async function dissolveXtyParty(sql, party, actorId, at = new Date()) {
   if (!party?.id) return null;
   await ensureQuotaV2(sql);
 
+  /* V1.2: closing a book is not leaving its memory.
+     Membership + auth stay intact so every final-cast member can keep reading
+     the dissolved book, enter its Ending room and see it on the bookshelf.
+     Only active quota is released. */
   const rows = await sql.query(`WITH dissolved AS (
       UPDATE teambook_books
       SET state='DISSOLVED',ended_at=COALESCE(ended_at,$1),updated_at=$1,visibility='private'
       WHERE id=$2 AND state = ANY($3::text[]) RETURNING id
-    ), closed_members AS (
-      UPDATE teambook_book_members
-      SET left_at=$1,removal_reason='DISSOLVED',auth_hash=NULL
-      WHERE book_id=$2 AND left_at IS NULL
-        AND EXISTS (SELECT 1 FROM dissolved)
-      RETURNING user_id
     ), released_quota AS (
       UPDATE teambook_book_quota_v2
       SET released_at=COALESCE(released_at,$1)
@@ -35,7 +33,6 @@ export async function dissolveXtyParty(sql, party, actorId, at = new Date()) {
       RETURNING book_id
     )
     SELECT (SELECT id FROM dissolved) AS id,
-      (SELECT COUNT(*)::int FROM closed_members) AS removed_members,
       (SELECT COUNT(*)::int FROM released_quota) AS released_quotas`, [at, party.id, ACTIVE_STATES]);
 
   const result = rows[0];
@@ -55,7 +52,7 @@ export async function dissolveXtyParty(sql, party, actorId, at = new Date()) {
 
   return {
     endedAt: party.ended_at ? new Date(party.ended_at) : at,
-    removedMembers: Number(result.removed_members || 0),
+    removedMembers: 0,
     releasedQuotas: Number(result.released_quotas || 0),
   };
 }
