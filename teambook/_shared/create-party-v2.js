@@ -124,6 +124,16 @@ export async function createPartyV2(options = {}) {
     && Object.prototype.hasOwnProperty.call(window, '__teambookNpcV12');
   const finalNpcCardId = npcOverridePresent ? (window.__teambookNpcV12 || null) : (npcCardId || null);
 
+  /* Cross-book reuse is allowed; double-role placement inside one book is
+     not. Refuse this before creating anything so a bad mixed-picker state can
+     never leave an invisible active book behind on the server. */
+  if (finalLeadCardId && finalNpcCardId
+    && String(finalLeadCardId).toUpperCase() === String(finalNpcCardId).toUpperCase()) {
+    const error = new Error('INVALID_CARD_PLACEMENT');
+    error.code = 'INVALID_CARD_PLACEMENT';
+    throw error;
+  }
+
   const finalDurationDays = typeof window !== 'undefined' && Number(window.__xtyDurationOverride)
     ? Number(window.__xtyDurationOverride) : Number(durationDays || 7);
   const finalPreset = typeof window !== 'undefined' && window.__xtyPresetOverride
