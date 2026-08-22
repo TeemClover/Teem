@@ -50,10 +50,13 @@ export function applyXircleCreateDefaults(options = {}) {
     return {
       ...options,
       preset: XVISOR_PRESET_ID,
-      verificationMode: 'trust',
+      /* These are defaults, not locks. The create page already supplies the
+         user's current choices, so never overwrite Public/Private or
+         เห็นแล้ว/เชื่อใจกัน at submit time. */
+      verificationMode: options.verificationMode || 'trust',
       durationDays: 28,
-      visibility: 'private',
-      budget: 'normal',
+      visibility: options.visibility || 'private',
+      budget: options.budget || 'normal',
       petId: XVISOR_GUIDE.id,
       commitRule: String(options.commitRule || '').trim() || 'วันนี้ทำ Action เดียวที่ตกลงกันไว้',
     };
@@ -63,10 +66,10 @@ export function applyXircleCreateDefaults(options = {}) {
     return {
       ...options,
       preset: XIRCLE_PRESET_ID,
-      verificationMode: 'trust',
-      durationDays: 7,
-      visibility: 'private',
-      budget: 'normal',
+      verificationMode: options.verificationMode || 'trust',
+      durationDays: Number(options.durationDays) || 7,
+      visibility: options.visibility || 'private',
+      budget: options.budget || 'normal',
     };
   }
 
@@ -175,6 +178,14 @@ function guideCardHtml(role, party) {
     `<div><span class="label">${checkpoint.label}</span><p style="margin:7px 0 4px;font-weight:800">${XVISOR_GUIDE.persona}</p><p class="whisper" style="margin:0">${copy}</p></div></div>`;
 }
 
+function createCompanionHtml() {
+  return `<div style="display:grid;grid-template-columns:82px 1fr;gap:14px;align-items:center">` +
+    `<div class="avatar-cover" data-color="silver" style="margin:0"><img src="${XVISOR_GUIDE.art}" alt=""><b>${XVISOR_GUIDE.nameTh}</b><small>X-VISOR SECRET PET</small></div>` +
+    `<div><span class="label">แมวขาว · เพื่อนร่วมทางประจำเล่ม</span>` +
+    `<p style="margin:7px 0 4px;font-weight:800">อ่านเรื่องที่เกิดขึ้น แล้วช่วยตั้งคำถามให้วงมองต่อ</p>` +
+    `<p class="whisper" style="margin:0">หลังสร้างสมุด สมาชิกพิมพ์ “แมวขาว” แล้วตามด้วยคำถามได้ มันใช้ทั้งเรื่องในสมุดและคลัง Xircle ช่วยตอบ แต่คนดูแลยังเป็นคนตัดสินใจจริง</p></div></div>`;
+}
+
 function enhanceCreatePage() {
   if (!isXvisorCreateContext() || !document.querySelector('.create-page')) return;
   const main = document.querySelector('.create-page');
@@ -183,10 +194,9 @@ function enhanceCreatePage() {
 
   const intro = document.createElement('section');
   intro.className = 'notebook-card';
-  intro.innerHTML = `<span class="label">X-VISOR · HIDDEN ROUTE</span>` +
-    `<h2 style="margin-top:8px">X-VISOR Care · เล่ม 28 วัน</h2>` +
-    `<p class="whisper">สร้างสมุดจาก route นี้แล้ว หลังจากนั้นใช้ TeamBook ตามปกติ · Private · Trust · ข้อความ 3 · Pattern → One Action</p>` +
-    guideCardHtml('lead', { startAt: new Date().toISOString(), durationDays: 28 });
+  intro.innerHTML = `<span class="label">X-VISOR · สมุดแมวขาว</span>` +
+    `<h2 style="margin-top:8px">จาก Pattern ใน Xircle สู่ Action ที่ทำต่อได้จริง</h2>` +
+    `<p class="whisper">แมวขาวเชื่อม Xircle กับเรื่องในสมุด ช่วยชวนมองสิ่งที่เกิดขึ้นและตั้งคำถามต่อแบบ X-VISOR · วิธีเล่น การมองเห็น และกติกา “เห็นแล้ว” ยังเลือกได้ตามปกติ</p>`;
   const first = main.querySelector('.notebook-card');
   main.insertBefore(intro, first || main.firstChild);
 
@@ -197,12 +207,10 @@ function enhanceCreatePage() {
   pname?.dispatchEvent(new Event('input', { bubbles: true }));
   prule?.dispatchEvent(new Event('input', { bubbles: true }));
 
+  /* White Cat is a 28-day authored Care route. Everything else on the form
+     remains a real user choice; do not click/overwrite verification or visibility. */
   const duration = [...document.querySelectorAll('#durationPick .pill-choice')].find(button => button.querySelector('b')?.textContent.trim() === '28');
   duration?.click();
-  const trust = [...document.querySelectorAll('#verificationPick .preset-choice')].find(button => button.textContent.includes('เชื่อใจกัน'));
-  trust?.click();
-  const priv = [...document.querySelectorAll('#visibilityPick .wide-choice')].find(button => button.textContent.includes('ส่วนตัว'));
-  priv?.click();
 
   const petSection = document.getElementById('petPick')?.closest('.notebook-card');
   if (petSection) {
@@ -213,10 +221,10 @@ function enhanceCreatePage() {
     petSection.querySelectorAll('.label').forEach(node => { if (node.textContent.includes('ANIMAL CARD')) node.hidden = true; });
     const fixed = document.createElement('div');
     fixed.style.marginTop = '14px';
-    fixed.innerHTML = guideCardHtml('lead', { startAt: new Date().toISOString(), durationDays: 28 });
+    fixed.innerHTML = createCompanionHtml();
     petSection.insertBefore(fixed, document.getElementById('petHint') || null);
     const hint = document.getElementById('petHint');
-    if (hint) hint.textContent = 'แมวขาวเป็น เพื่อนร่วมทาง ลับของ X-VISOR · หลังสร้างสมุด สมาชิกพิมพ์ “แมวขาว” ตามด้วยคำถามเพื่อคุยกับมันได้';
+    if (hint) hint.textContent = 'เพื่อนร่วมทางของ route นี้ล็อกเป็นแมวขาว ส่วน สาธารณะ/ส่วนตัว และ เห็นแล้ว/เชื่อใจกัน เลือกได้ตามที่วงต้องการ';
   }
 }
 
