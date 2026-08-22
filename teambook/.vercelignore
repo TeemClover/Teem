@@ -2,4 +2,5 @@ node_modules/
 core7/
 assets/myclover-icon.png
 assets/decor/_source/
+**/*.test.mjs
 ASSET-MANIFEST.md
