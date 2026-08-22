@@ -18,8 +18,8 @@ for (const entry of PUBLIC_ENTRIES) {
   cpSync(source, join(OUTPUT, entry), { recursive: statSync(source).isDirectory() });
 }
 
-const TELEMETRY_TAG = '<script src="/assets/telemetry.js?v=20260822-1" defer></script>';
-const COMMAND_BEHAVIOR_TAG = '<script src="/assets/command-behavior.js?v=20260822-1" defer></script>';
+const TELEMETRY_TAG = '<script src="/assets/telemetry.js?v=20260822-2" defer></script>';
+const COMMAND_BEHAVIOR_TAG = '<script src="/assets/command-behavior.js?v=20260822-2" defer></script>';
 
 function htmlFiles(dir) {
   const files = [];
