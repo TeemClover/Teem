@@ -24,7 +24,7 @@ if (/^\/read(?:\/|$)/.test(location.pathname)) {
       .entry-page .story-copy h2,
       .entry-page .final-invite h2,
       .entry-page .chapter-hero h1 {
-        line-height: 1.4;
+        line-height: 1.6;
         letter-spacing: -0.018em;
       }
     }
