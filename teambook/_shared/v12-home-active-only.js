@@ -3,10 +3,16 @@
    carousel. Completed/dissolved books are combined in one closed-book lane.
    This is presentation-only: no local/server book data is deleted. */
 
-import { allParties, isActiveParty } from './store.js';
+import { allParties, isActiveParty, activePartyUsage, getProfile } from './store.js';
 import { bookActivityLine } from './book-mode.js';
 
+const DEBUG_MAX7_KEY = 'teambook_debug_max_owned_7';
 let closedSignature = '';
+
+function debugMax7Enabled() {
+  try { return localStorage.getItem(DEBUG_MAX7_KEY) === '1'; }
+  catch { return false; }
+}
 
 function codeFromRow(row) {
   try {
@@ -140,6 +146,15 @@ function syncHero(byCode) {
   carousel.hidden = activeCount === 0;
 }
 
+function syncDebugCapacity() {
+  if (!debugMax7Enabled()) return;
+  const node = document.getElementById('ownedCapacityN');
+  const profile = getProfile();
+  if (!node || !profile) return;
+  const capacity = activePartyUsage(profile);
+  node.innerHTML = `${capacity.owned} / 7<small>สร้างสมุด</small>`;
+}
+
 let queued = false;
 function sync() {
   if (!/^\/$/.test(location.pathname)) return;
@@ -152,6 +167,7 @@ function sync() {
   const activeTotal = lead + joined;
 
   syncHero(byCode);
+  syncDebugCapacity();
 
   const section = document.getElementById('allPartiesSection');
   if (section) section.hidden = activeTotal + closed === 0;
@@ -210,6 +226,7 @@ function install() {
   const observer = new MutationObserver(schedule);
   observer.observe(home, { childList: true, subtree: true });
   addEventListener('pageshow', schedule);
+  addEventListener('storage', schedule);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) schedule(); });
   schedule();
 }
