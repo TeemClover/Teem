@@ -10,4 +10,4 @@
    DO NOT add dictionaries, language detection, localStorage language state,
    DOM text replacement, MutationObserver translation, or language toggles here. */
 
-import './runtime.js?v=20260822-langroutes1';
+import './runtime.js?v=20260823-publicfinal1';
