@@ -4,9 +4,10 @@ import './header-brand-th.js';
    eagerly so Home can honor the user's hidden-Public preference before the
    legacy inline Home module has any chance to request Lobby data. */
 import './v13-public-first.js?v=20260823-v13a';
-import './v13-public-status.js?v=20260823-v13b';
+import './v13-public-status.js?v=20260823-v13c';
 import './trust-seen.js?v=20260823-trustseen1';
 import './home-create-capacity.js?v=20260823-capacity3';
+import './owner-label-v13.js?v=20260823-owner1';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
@@ -54,7 +55,7 @@ function boot() {
   }
 
   if (/^\/p(?:\/|$)/.test(location.pathname)) {
-    import('./party-teambook-cards.js')
+    import('./party-teambook-cards.js?v=20260823-owner1')
       .catch(error => console.warn('TeamBook party card layer unavailable', error));
     import('./party-today-details.js?v=20260822-clean1')
       .catch(error => console.warn('TeamBook today details layer unavailable', error));
