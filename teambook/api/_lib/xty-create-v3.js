@@ -5,7 +5,7 @@ import { cardById as xtyCardById, cardNameTh } from '../../_shared/cards.js';
 import { AVATAR_BY_ID } from '../../_shared/avatars.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
-const TEST_MEMBER_NO = 'MY-2026-0003';
+const DEBUG_MAX7_CODE = 'max7books';
 
 function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
@@ -49,10 +49,8 @@ async function progressionLevelFor(req, sql, body) {
   return Math.min(4, Math.max(1, Math.floor(Number(rows[0]?.level || 1)) || 1));
 }
 
-async function debugMaxOwnedFor(req, sql, body) {
-  if (body?.debugMaxOwned7 !== true) return 0;
-  const account = await currentUser(req, sql);
-  return String(account?.memberNo || '').toUpperCase() === TEST_MEMBER_NO ? 7 : 0;
+function debugMaxOwnedFor(body) {
+  return cleanId(body?.debugCapacityCode, 40).toLowerCase() === DEBUG_MAX7_CODE ? 7 : 0;
 }
 
 async function creationCapacityFor(req, sql, body) {
@@ -65,7 +63,7 @@ async function creationCapacityFor(req, sql, body) {
   const level = Math.min(4, Math.max(1, Math.floor(Number(progression.level || 1)) || 1));
   const entitlement = progression.paid_tier === 'max' ? 3 : (progression.paid_tier === 'plus' ? 2 : 0);
   const bonus = Math.min(entitlement, Math.max(0, Math.floor(Number(progression.unlocked_bonus_slots || 0)) || 0));
-  const debugMaxOwned = await debugMaxOwnedFor(req, sql, body);
+  const debugMaxOwned = debugMaxOwnedFor(body);
   const maxOwned = debugMaxOwned || Math.min(7, level + bonus);
   const countRows = await sql.query(`SELECT COUNT(*)::int n FROM teambook_books
     WHERE owner_id = ANY($1::text[]) AND state = ANY($2::text[])`, [ids, ACTIVE_STATES]);
@@ -152,9 +150,9 @@ export async function handleCreatePartyV3(req, res) {
     await ensureSchema(sql);
     const body = bodyOf(req);
 
-    /* Merge/Resync is monotonic: old over-limit books stay visible. Creation
-       is not. Count the actual active books owned by this identity before any
-       new insert so a 4/2 account remains 4/2 instead of becoming 5/2. */
+    /* The normal progression cap remains authoritative. The explicit
+       max7books debug code is the only temporary override and lifts only the
+       owned active-book ceiling; closing the toggle stops sending the code. */
     const capacity = await creationCapacityFor(req, sql, body);
     if (capacity.owned >= capacity.maxOwned) {
       return sendJson(res, {
