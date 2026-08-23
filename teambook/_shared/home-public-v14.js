@@ -60,6 +60,7 @@ function installStyle() {
   style.id = 'tb-home-public-v14-style';
   style.textContent = `
     #publicDiscovery.tb14-legacy-public,#homePublicList.tb14-legacy-public-list{display:none!important}
+    #publicBookButton{display:none!important}
 
     #tb14PublicDiscovery{margin:22px 0 4px;padding:20px 0 4px;border-top:1px dashed var(--xty-border)}
     #allPartiesSection>#tb14PublicDiscovery{margin-top:18px}
@@ -80,7 +81,6 @@ function installStyle() {
     .tb14-public-footer{display:flex;justify-content:flex-end;margin-top:12px}
     .tb14-public-collapsed{margin:16px 0;padding:13px 14px;border:1px dashed var(--xty-border);border-radius:16px;background:rgba(255,255,255,.52)}
     .tb14-public-collapsed button{border:0;background:transparent;color:var(--xty-primary);font-weight:850;cursor:pointer}
-    #publicBookButton{display:flex!important}
 
     /* Starter cover on Public cards is the same visual language as the large
        Home book cards: art fills the card and STARTER sits on the lower edge. */
@@ -177,12 +177,15 @@ async function load() {
 }
 
 function placementAnchor() {
+  const main = document.getElementById('mainParty');
   const all = document.getElementById('allPartiesSection');
   const closed = document.getElementById('closedPartyGroup');
   if (hasActiveBook() && all) {
     return { parent: all, before: closed || null };
   }
-  return { parent: all?.parentElement || document.getElementById('home'), before: all || null };
+  const parent = main?.parentElement || document.getElementById('home');
+  const before = document.getElementById('homeActions') || all || null;
+  return { parent, before };
 }
 
 function place(node) {
@@ -267,11 +270,7 @@ async function install() {
   installStyle();
 
   const publicButton = document.getElementById('publicBookButton');
-  if (publicButton) {
-    publicButton.hidden = false;
-    publicButton.textContent = 'หาสมุดสาธารณะ';
-    publicButton.href = '/public/';
-  }
+  if (publicButton) publicButton.hidden = true;
 
   document.getElementById('publicDiscovery')?.classList.add('tb14-legacy-public');
   document.getElementById('homePublicList')?.classList.add('tb14-legacy-public-list');
