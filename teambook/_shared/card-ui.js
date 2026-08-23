@@ -1,3 +1,11 @@
+/* TeamBook 1.4 — PURE card renderer.
+
+   IMPORTANT: this utility must never boot route features. Before V1.4 it also
+   imported Home/Book/New compatibility modules as a side effect, so simply
+   asking for cardMarkup() could start another render stack. Route ownership now
+   lives only in /_shared/language.js.
+*/
+
 import {
   cardById, cardDescriptorTh,
 } from './cards.js';
@@ -53,34 +61,6 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
     @media(max-width:480px){:root{--xty-party-cover-size:124px}}@media(max-width:340px){:root{--xty-party-cover-size:110px}}
   `;
   document.head.appendChild(style);
-}
-
-if (typeof location !== 'undefined' && /^\/p(?:\/|$)/.test(location.pathname)) {
-  import('./party-enhancements.js').catch(error => console.warn('TeamBook party enhancements unavailable', error));
-  import('./party-profile-covers.js').catch(error => console.warn('TeamBook profile/cover layer unavailable', error));
-  import('./party-log-viewport.js?v=20260823-stable1').catch(error => console.warn('TeamBook party log viewport unavailable', error));
-  import('./party-event-copy-v2.js?v=20260823-stable1').catch(error => console.warn('TeamBook party event copy unavailable', error));
-  import('./party-pet-seat-v2.js').catch(error => console.warn('TeamBook pet seat unavailable', error));
-  import('./party-self-status.js?v=20260820-disabled2').catch(error => console.warn('TeamBook self status compatibility stub unavailable', error));
-  import('./party-invite-copy.js').catch(error => console.warn('TeamBook party invite copy unavailable', error));
-  import('./party-log-export.js').catch(error => console.warn('TeamBook party log export unavailable', error));
-}
-if (typeof location !== 'undefined' && /^\/new(?:\/|$)/.test(location.pathname)) {
-  import('./new-cover-v3.js').catch(error => console.warn('TeamBook cover picker unavailable', error));
-  import('./new-cover-size-fix.js').catch(error => console.warn('TeamBook cover size guard unavailable', error));
-  import('./collection-skin-picker.js?v=20260823-recent3').catch(error => console.warn('TeamBook Collection skin picker unavailable', error));
-  import('./new-capacity-guard.js?v=20260820-1').catch(error => console.warn('TeamBook capacity guard unavailable', error));
-}
-if (typeof location !== 'undefined' && /^\/collection(?:\/|$)/.test(location.pathname)) {
-  import('/assets/account.js?v=20260820-account1').catch(error => console.warn('TeamBook account unavailable', error));
-}
-if (typeof location !== 'undefined' && location.pathname === '/') {
-  await import('./home-canonical-guard.js?v=20260820-1').catch(error => console.warn('TeamBook home canonical guard unavailable', error));
-  await import('./home-cover-v3.js?v=20260820-daily2').catch(error => console.warn('TeamBook home cover layer unavailable', error));
-  await import('./home-daily-meta.js?v=20260820-2').catch(error => console.warn('TeamBook home daily metadata unavailable', error));
-  await import('./home-card-ratio-fix.js?v=20260820-1').catch(error => console.warn('TeamBook home card ratio guard unavailable', error));
-  await import('./home-self-status.js?v=20260820-4').catch(error => console.warn('TeamBook home self status unavailable', error));
-  import('./home-carousel-desktop.js').catch(error => console.warn('TeamBook desktop carousel controls unavailable', error));
 }
 
 export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
