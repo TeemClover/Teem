@@ -28,6 +28,12 @@ function createdText(party, data = {}) {
   return `${alias} สร้างสมุด ด้วยการ์ด ${name}`;
 }
 
+function setTextIfChanged(node, text) {
+  if (!node || node.textContent === text) return false;
+  node.textContent = text;
+  return true;
+}
+
 function sync() {
   scheduled = false;
   if (!code) return;
@@ -37,7 +43,7 @@ function sync() {
 
   const created = (party.events || []).find(event => event.type === 'PARTY_CREATED');
   const createdCopy = log.querySelector('.party-event[data-event="PARTY_CREATED"] .event-copy');
-  if (created && createdCopy) createdCopy.textContent = createdText(party, created.data || {});
+  if (created && createdCopy) setTextIfChanged(createdCopy, createdText(party, created.data || {}));
 
   const changes = (party.events || []).filter(event => event.type === 'LEAD_CARD_CHANGED');
   const rows = [...log.querySelectorAll('.party-event[data-event="LEAD_CARD_CHANGED"] .event-copy')];
@@ -45,7 +51,7 @@ function sync() {
     const data = changes[index]?.data || {};
     const from = data.fromName || data.from || 'ใบเดิม';
     const to = data.toName || data.to || 'ใบใหม่';
-    copy.textContent = `เจ้าของสมุดเปลี่ยนการ์ดประจำสมุดจาก ${from} → ${to}`;
+    setTextIfChanged(copy, `เจ้าของสมุดเปลี่ยนการ์ดประจำสมุดจาก ${from} → ${to}`);
   });
 }
 
