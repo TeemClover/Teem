@@ -1,9 +1,8 @@
 import { partyIdentity } from './store.js';
 
 const HOT_FOR_MS = 2 * 60 * 1000;
-const HOT_POLL_MS = 1000;
-const IDLE_POLL_MS = 4000;
-const FULL_FALLBACK_MS = 15000;
+const HOT_POLL_MS = 1200;
+const IDLE_POLL_MS = 5000;
 const SYNC_COOLDOWN_MS = 1800;
 
 function pageCode() {
@@ -15,7 +14,6 @@ function pageCode() {
 const code = pageCode();
 let hotUntil = Date.now() + HOT_FOR_MS;
 let lastVersion = '';
-let lastFullSyncAt = 0;
 let pulseInFlight = false;
 let fullSyncLocked = false;
 let timer = null;
@@ -45,10 +43,12 @@ function schedule(delay = pollDelay()) {
 function requestFullSync() {
   if (fullSyncLocked || document.hidden) return;
   fullSyncLocked = true;
-  lastFullSyncAt = Date.now();
 
-  /* /p already owns the canonical refresh + render pipeline on this event.
-     Reusing it means live sync cannot drift from manual refresh semantics. */
+  /* /p already owns the canonical refresh + render pipeline on the real
+     visibility event. Only invoke it when the server version actually changed.
+     The old 15-second forced fallback kept repainting the whole Book even when
+     nothing changed, multiplying every DOM observer and eventually freezing
+     long pages/chat on mobile browsers. */
   document.dispatchEvent(new Event('visibilitychange'));
 
   setTimeout(() => { fullSyncLocked = false; }, SYNC_COOLDOWN_MS);
@@ -73,9 +73,6 @@ async function pulse() {
         lastVersion = data.version;
       } else if (data.version !== lastVersion) {
         lastVersion = data.version;
-        requestFullSync();
-      } else if (Date.now() - lastFullSyncAt >= FULL_FALLBACK_MS) {
-        /* Safety net for a write path that forgot to touch updated_at. */
         requestFullSync();
       }
     }
@@ -114,9 +111,6 @@ function installOptimisticTapFeedback() {
     try { channel?.postMessage({ type: 'poke', code, at: Date.now() }); } catch {}
 
     if (seen) {
-      /* The canonical handler still decides success/failure. This only removes
-         the dead-looking wait between tap and response; an API error restores
-         the real button state afterwards. */
       queueMicrotask(() => {
         if (!button.isConnected || !button.disabled) return;
         button.classList.add('tb-live-optimistic');
@@ -132,9 +126,7 @@ function installStyles() {
   if (document.getElementById('tb-live-sync-style')) return;
   const style = document.createElement('style');
   style.id = 'tb-live-sync-style';
-  style.textContent = `
-    .tb-live-optimistic{transition:transform .12s ease,opacity .12s ease;transform:scale(.985);opacity:.88}
-  `;
+  style.textContent = `.tb-live-optimistic{transition:transform .12s ease,opacity .12s ease;transform:scale(.985);opacity:.88}`;
   document.head.appendChild(style);
 }
 
@@ -172,9 +164,6 @@ function boot() {
     wake();
   });
 
-  /* Initial full render already runs in /p. Pulse starts shortly afterwards so
-     a second device in the same room feels live during a demo/conversation. */
-  lastFullSyncAt = Date.now();
   schedule(450);
 }
 
