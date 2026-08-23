@@ -4,7 +4,7 @@ import './header-brand-th.js';
    create defaults, and Home lane placement. Retired Public compatibility layers
    are intentionally no longer imported. */
 import './v13-public-first.js?v=20260823-v13a';
-import './trust-seen.js?v=20260823-trustseen1';
+import './trust-seen.js?v=20260823-trustseen2';
 import './home-create-capacity.js?v=20260823-capacity3';
 import './owner-label-v13.js?v=20260823-owner2';
 import './public-member-identity-v13.js?v=20260823-bookidentity3';
