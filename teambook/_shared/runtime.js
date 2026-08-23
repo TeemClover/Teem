@@ -1,15 +1,17 @@
 import './activity-ux.js';
 import './header-brand-th.js';
+/* Public access must establish the default-open canon before the Public-first
+   data layer reads the legacy hidden preference. */
+import './public-home-access-v13.js?v=20260823-publicaccess2';
 /* V1.3 is a product-behaviour layer, not a translation layer. It is imported
-   eagerly so Home can honor the user's hidden-Public preference before the
-   legacy inline Home module has any chance to request Lobby data. */
+   eagerly so Home can honor the user's Public preference before the legacy
+   inline Home module has any chance to request Lobby data. */
 import './v13-public-first.js?v=20260823-v13a';
-import './v13-public-status.js?v=20260823-v13c';
+import './v13-public-status.js?v=20260823-v13d';
 import './trust-seen.js?v=20260823-trustseen1';
 import './home-create-capacity.js?v=20260823-capacity3';
 import './owner-label-v13.js?v=20260823-owner2';
-import './public-member-identity-v13.js?v=20260823-bookidentity2';
-import './public-home-access-v13.js?v=20260823-publicaccess1';
+import './public-member-identity-v13.js?v=20260823-bookidentity3';
 import './reward-history-v13.js?v=20260823-rewardhistory1';
 import './ui-copy-fit-v13.js?v=20260823-uicopyfit2';
 
