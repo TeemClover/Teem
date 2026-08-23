@@ -170,7 +170,13 @@ function sync() {
   syncDebugCapacity();
 
   const section = document.getElementById('allPartiesSection');
-  if (section) section.hidden = activeTotal + closed === 0;
+  if (section) {
+    /* Public discovery lives in this same Home lane. A profile with zero Books
+       must still see Public immediately, so owned-book count may hide this
+       parent only when it is not hosting Public or its collapsed placeholder. */
+    const hostsPublic = !!section.querySelector('#publicDiscovery,#v13PublicCollapsed');
+    section.hidden = activeTotal + closed === 0 && !hostsPublic;
+  }
   const heading = document.getElementById('partyHeading');
   if (heading) {
     heading.textContent = 'สมุดที่กำลังเขียน';
@@ -192,26 +198,14 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'teambook-home-lanes-style';
   style.textContent = `
-    /* Home cover/row modules use display:grid!important for layout. Without an
-       equally strong hidden rule, a terminal row is logically hidden but can
-       still render inside the active owner/joined group. */
     #leadPartyRows > a.row[hidden],
     #joinedPartyRows > a.row[hidden],
     #mainParty .xty-party-slide[hidden],
-    #mainParty .xty-party-carousel[hidden]{
-      display:none!important;
-    }
+    #mainParty .xty-party-carousel[hidden]{display:none!important}
     .home-book-meta{
-      display:block;
-      max-width:100%;
-      margin:0 0 3px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      color:var(--xty-muted);
-      font-size:11px;
-      font-weight:750;
-      line-height:1.35;
+      display:block;max-width:100%;margin:0 0 3px;overflow:hidden;
+      text-overflow:ellipsis;white-space:nowrap;color:var(--xty-muted);
+      font-size:11px;font-weight:750;line-height:1.35
     }
     #closedPartyGroup{margin-top:14px}
   `;
