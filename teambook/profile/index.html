@@ -42,17 +42,6 @@
       <p class="whisper" id="since"></p>
     </div>
 
-    <div class="card" id="xtyLanguageCard" data-xty-no-translate>
-      <span class="label">ภาษาที่ใช้ใน TeamBook</span>
-      <h2 class="title" style="font-size:20px;margin:0 0 6px">เลือกคำที่สบายใจ</h2>
-      <p class="whisper" style="margin:0 0 14px">ระบบเหมือนเดิมทุกอย่าง เปลี่ยนแค่คำบนหน้าจอ</p>
-      <div style="display:grid;grid-template-columns:1fr;gap:9px">
-        <button class="btn sm" type="button" id="xtyLangPlain">ไทยทั่วไป</button>
-        <button class="btn sm" type="button" id="xtyLangXty" hidden>คำดั้งเดิม</button>
-      </div>
-      <p class="hint" style="margin:10px 0 0">TeamBook ใช้คำตรง ๆ: สมุด · ช่วง · ลงชื่อ · เห็นแล้ว</p>
-    </div>
-
     <div class="card" id="profileEditor" hidden>
       <span class="label">EDIT PROFILE</span>
       <div class="field" style="margin-top:0"><label for="aliasInput">ชื่อโปรไฟล์</label><input id="aliasInput" maxlength="24"></div>
@@ -109,40 +98,6 @@
     </nav>
   </section>
 </main>
-
-<script>
-(function () {
-  const KEY = 'teambook_language_mode';
-  const valid = new Set(['plain', 'xty']);
-  function mode() {
-    try {
-      const saved = localStorage.getItem(KEY);
-      return valid.has(saved) ? saved : 'plain';
-    } catch { return 'plain'; }
-  }
-  function paint() {
-    const current = mode();
-    const plain = document.getElementById('xtyLangPlain');
-    const xty = document.getElementById('xtyLangXty');
-    if (!plain || !xty) return;
-    plain.classList.toggle('gold', current === 'plain');
-    plain.classList.toggle('ghost', current !== 'plain');
-    xty.classList.toggle('gold', current === 'xty');
-    xty.classList.toggle('ghost', current !== 'xty');
-    plain.setAttribute('aria-pressed', String(current === 'plain'));
-    xty.setAttribute('aria-pressed', String(current === 'xty'));
-  }
-  function choose(next) {
-    try { localStorage.setItem(KEY, next); } catch {}
-    location.reload();
-  }
-  document.addEventListener('DOMContentLoaded', function () {
-    paint();
-    document.getElementById('xtyLangPlain')?.addEventListener('click', () => choose('plain'));
-    document.getElementById('xtyLangXty')?.addEventListener('click', () => choose('xty'));
-  });
-})();
-</script>
 
 <script type="module">
 import {
