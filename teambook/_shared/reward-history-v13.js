@@ -1,16 +1,14 @@
 /* TeamBook V1.3 — card reveal history.
-   Reward posts already live in the Book log. Keep that memory visible:
-   - inside a Book, the story log is a scrollable history so old card reveals
-     remain reachable without making the whole page endlessly tall
-   - in Public Detail, reward posts are rendered as card memories instead of a
-     raw card id, using the same public-preview data the page already exposes. */
+   Reward posts stay visible in the Book/Public history, but this module does
+   not own chat height or scroll position. The page is the primary scroll
+   surface; avoiding a second scroll/observer layer keeps iOS stable. */
 
 import { cardById, cardNameTh, TEAMBOOK_RARITY_META } from './cards.js';
 import { cardMarkup } from './card-ui.js';
 
-let queued = false;
 let publicParty = null;
 let publicPromise = null;
+let queued = false;
 
 function esc(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({
@@ -23,18 +21,7 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'tb-reward-history-v13-style';
   style.textContent = `
-    /* Book chat is a bounded notebook history: open on the latest area, but
-       every old message/reward remains reachable by native scrolling. */
-    body:has(#view:not([hidden])) #log.log{
-      max-height:min(62dvh,620px);
-      overflow-y:auto;
-      overscroll-behavior-y:contain;
-      -webkit-overflow-scrolling:touch;
-      scrollbar-gutter:stable;
-      padding-right:3px;
-    }
     #log .post.reward{display:flex!important}
-
     .tb-public-reward-memory{display:grid;grid-template-columns:70px minmax(0,1fr);gap:10px;align-items:center;margin-top:3px;padding:8px;border:1px solid var(--xty-border);border-radius:13px;background:rgba(255,254,248,.78)}
     .tb-public-reward-card{width:70px;aspect-ratio:var(--xty-card-aspect);overflow:hidden;border-radius:9px;background:var(--xty-paper)}
     .tb-public-reward-card>.animal-card,.tb-public-reward-card>img,.tb-public-reward-card>svg{width:100%!important;height:100%!important;object-fit:cover!important;margin:0!important}
@@ -111,44 +98,22 @@ async function decoratePublicRewards() {
   });
 }
 
-let bookLogPrimed = false;
-function primeBookLog() {
-  if (!/^\/p\/?$/.test(location.pathname)) return;
-  const log = document.getElementById('log');
-  if (!log || !log.children.length || bookLogPrimed) return;
-  /* Chat opens at the latest trace once per page load. The reader can scroll
-     upward freely to older card reveals and messages. */
-  bookLogPrimed = true;
-  requestAnimationFrame(() => { log.scrollTop = log.scrollHeight; });
-}
-
-function sync() {
-  installStyle();
-  primeBookLog();
-  decoratePublicRewards();
-}
-
-function schedule() {
+function schedulePublic() {
   if (queued) return;
   queued = true;
   requestAnimationFrame(() => {
     queued = false;
-    sync();
+    decoratePublicRewards();
   });
 }
 
 function install() {
   installStyle();
-  new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
-  addEventListener('pageshow', schedule);
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      publicParty = null;
-      publicPromise = null;
-      schedule();
-    }
-  });
-  [0, 250, 800, 1600].forEach(delay => setTimeout(schedule, delay));
+  if (!publicCode()) return;
+  const log = document.getElementById('log');
+  if (log) new MutationObserver(schedulePublic).observe(log, { childList: true, subtree: true });
+  addEventListener('pageshow', schedulePublic);
+  schedulePublic();
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
