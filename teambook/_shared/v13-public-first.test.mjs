@@ -35,7 +35,8 @@ test('Public Seen settles the author anonymously and writes the canonical event 
 });
 
 test('Public Seen cannot grant or consume witness card rewards', () => {
-  assert.doesNotMatch(endpoint, /firstSeenRewardFor\(/);
+  assert.doesNotMatch(endpoint, /await\s+firstSeenRewardFor\(/);
+  assert.doesNotMatch(endpoint, /import[\s\S]{0,120}firstSeenRewardFor/);
   assert.doesNotMatch(endpoint, /INSERT INTO teambook_card_unlock_events/);
   assert.doesNotMatch(endpoint, /INSERT INTO teambook_user_cards/);
   assert.match(endpoint, /no firstSeenRewardFor\(\), no teambook_card_unlock_events/);
