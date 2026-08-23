@@ -5,6 +5,7 @@ import './header-brand-th.js';
    legacy inline Home module has any chance to request Lobby data. */
 import './v13-public-first.js?v=20260823-v13a';
 import './v13-public-status.js?v=20260823-v13b';
+import './trust-seen.js?v=20260823-trustseen1';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
