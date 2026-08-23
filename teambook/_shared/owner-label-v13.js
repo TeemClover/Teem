@@ -1,12 +1,32 @@
 import { getParty } from './store.js';
 
-/* The owner card has two labels with two different jobs:
+/* Owner-card semantics:
    - the floating label above the card identifies WHO owns this Book
-   - the small label inside the card explains the ROLE of that seat
-   Keeping those meanings separate avoids the old "เจ้าของสมุด" badge floating
-   above a card whose actual owner name was buried inside the artwork. */
+   - the label inside the card explains the ROLE: เจ้าของสมุด
+   The legacy renderer still owns its text nodes, so this patch never fights it.
+   We attach data to the existing labels and let CSS present the corrected copy. */
 
 let queued = false;
+
+function installStyle() {
+  if (document.getElementById('tb-owner-label-v13-style')) return;
+  const style = document.createElement('style');
+  style.id = 'tb-owner-label-v13-style';
+  style.textContent = `
+    #seats>.tb-person-seat.lead>.tb-owner-label[data-owner-alias]{font-size:0!important;letter-spacing:0!important}
+    #seats>.tb-person-seat.lead>.tb-owner-label[data-owner-alias]::after{
+      content:attr(data-owner-alias);font:900 9px/1.2 var(--thai),var(--sans);letter-spacing:0
+    }
+    #seats>.tb-person-seat.lead>.tb-card-name{font-size:0!important}
+    #seats>.tb-person-seat.lead>.tb-card-name::after{
+      content:'เจ้าของสมุด';font-size:clamp(10px,2.7vw,13px);font-weight:900;line-height:1.15
+    }
+    @media(max-width:480px){
+      #seats>.tb-person-seat.lead>.tb-owner-label[data-owner-alias]::after{font-size:8px}
+    }
+  `;
+  document.head.appendChild(style);
+}
 
 function syncPartyOwnerLabel() {
   if (!/^\/p\/?$/.test(location.pathname)) return;
@@ -21,10 +41,9 @@ function syncPartyOwnerLabel() {
   if (!seat) return;
 
   const floating = seat.querySelector(':scope > .tb-owner-label');
-  if (floating && floating.textContent !== owner.alias) floating.textContent = owner.alias || 'เจ้าของสมุด';
-
-  const cardName = seat.querySelector(':scope > .tb-card-name');
-  if (cardName && cardName.textContent !== 'เจ้าของสมุด') cardName.textContent = 'เจ้าของสมุด';
+  if (floating && floating.dataset.ownerAlias !== owner.alias) {
+    floating.dataset.ownerAlias = owner.alias || 'เจ้าของสมุด';
+  }
 }
 
 function syncPublicOwnerOrder() {
@@ -41,12 +60,14 @@ function schedule() {
   queued = true;
   requestAnimationFrame(() => {
     queued = false;
+    installStyle();
     syncPartyOwnerLabel();
     syncPublicOwnerOrder();
   });
 }
 
 function install() {
+  installStyle();
   const root = document.getElementById('view') || document.body;
   new MutationObserver(schedule).observe(root, { childList: true, subtree: true });
   addEventListener('pageshow', schedule);
