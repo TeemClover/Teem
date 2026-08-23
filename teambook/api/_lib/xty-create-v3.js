@@ -5,6 +5,7 @@ import { cardById as xtyCardById, cardNameTh } from '../../_shared/cards.js';
 import { AVATAR_BY_ID } from '../../_shared/avatars.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
+const TEST_MEMBER_NO = 'MY-2026-0003';
 
 function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
@@ -48,6 +49,12 @@ async function progressionLevelFor(req, sql, body) {
   return Math.min(4, Math.max(1, Math.floor(Number(rows[0]?.level || 1)) || 1));
 }
 
+async function debugMaxOwnedFor(req, sql, body) {
+  if (body?.debugMaxOwned7 !== true) return 0;
+  const account = await currentUser(req, sql);
+  return String(account?.memberNo || '').toUpperCase() === TEST_MEMBER_NO ? 7 : 0;
+}
+
 async function creationCapacityFor(req, sql, body) {
   const ids = await identityIdsFor(req, sql, body);
   if (!ids.length) return { owned: 0, maxOwned: 1 };
@@ -58,7 +65,8 @@ async function creationCapacityFor(req, sql, body) {
   const level = Math.min(4, Math.max(1, Math.floor(Number(progression.level || 1)) || 1));
   const entitlement = progression.paid_tier === 'max' ? 3 : (progression.paid_tier === 'plus' ? 2 : 0);
   const bonus = Math.min(entitlement, Math.max(0, Math.floor(Number(progression.unlocked_bonus_slots || 0)) || 0));
-  const maxOwned = Math.min(7, level + bonus);
+  const debugMaxOwned = await debugMaxOwnedFor(req, sql, body);
+  const maxOwned = debugMaxOwned || Math.min(7, level + bonus);
   const countRows = await sql.query(`SELECT COUNT(*)::int n FROM teambook_books
     WHERE owner_id = ANY($1::text[]) AND state = ANY($2::text[])`, [ids, ACTIVE_STATES]);
   return { owned: Number(countRows[0]?.n || 0), maxOwned };
