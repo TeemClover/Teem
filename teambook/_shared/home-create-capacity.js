@@ -1,10 +1,11 @@
 /* TeamBook Home — creation CTA follows real capacity.
 
    Canon:
-   - Home has only one compact create action: “เปิดสมุดกับเพื่อน” in #homeActions.
+   - Home has one compact create action: “เปิดสมุดเล่มใหม่” in #homeActions.
+   - Action order is Create -> Join by code -> Public books.
    - The large first-book/create hero may appear when capacity allows.
    - When owned capacity is full, hide the large hero instead of injecting a
-     second “เปิดสมุดใหม่” button next to the canonical Home action.
+     second create button next to the canonical Home action.
    - /new remains reachable from the canonical action so people may inspect the
      setup even when the server will ultimately enforce capacity.
 */
@@ -45,13 +46,42 @@ function capacityState() {
 }
 
 function canonicalizeActions() {
-  document.querySelectorAll('#homeActions a[href^="/new/"]').forEach(link => {
-    link.textContent = '+ เปิดสมุดกับเพื่อน';
-    link.removeAttribute('data-v13-duplicate-create');
-  });
-  document.querySelectorAll('#homeActions a[href^="/join/"]').forEach(link => {
-    link.textContent = 'ใส่รหัสเข้าสมุด';
-  });
+  const actions = document.getElementById('homeActions');
+  if (!actions) return;
+
+  const create = actions.querySelector('a[href^="/new/"]');
+  const join = actions.querySelector('a[href^="/join/"]');
+  const publicBooks = document.getElementById('publicBookButton')
+    || actions.querySelector('a[href^="/public/"]');
+
+  if (create) {
+    create.textContent = 'เปิดสมุดเล่มใหม่';
+    create.removeAttribute('data-v13-duplicate-create');
+  }
+  if (join) join.textContent = 'ใส่รหัสเข้าสมุด';
+
+  /* Public discovery has its own live lane above, but this secondary shortcut
+     is intentionally kept under the join-by-code action. home-public-v14 may
+     hide the historical button while taking ownership of the feed, so restore
+     only this shortcut here without reviving the legacy renderer. */
+  if (publicBooks) {
+    publicBooks.textContent = 'ดูสมุดสาธารณะ';
+    if (publicBooks.hidden) publicBooks.hidden = false;
+    publicBooks.style.setProperty('display', 'flex', 'important');
+  }
+
+  /* Keep the three compact actions deterministic even if another Home module
+     has moved or retouched them during boot. */
+  if (create && create.parentElement === actions && actions.firstElementChild !== create) {
+    actions.prepend(create);
+  }
+  if (join && join.parentElement === actions && create?.nextElementSibling !== join) {
+    create ? create.insertAdjacentElement('afterend', join) : actions.prepend(join);
+  }
+  if (publicBooks && publicBooks.parentElement === actions && join?.nextElementSibling !== publicBooks) {
+    join ? join.insertAdjacentElement('afterend', publicBooks) : actions.append(publicBooks);
+  }
+
   /* Retire the old capacity fallback if it was already mounted before this
      module revision (Safari bfcache / hot deployment). */
   document.getElementById('tbCreateCapacityCompact')?.remove();
