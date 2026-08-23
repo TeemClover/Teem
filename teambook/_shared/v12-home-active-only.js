@@ -1,9 +1,12 @@
-/* TeamBook V1.2 — Active Home only.
-   Completed/dissolved books live in Collection > Finished Books, not in the
-   everyday party lists. The source rows may still exist for legacy/local
-   history, so this layer filters the rendered Home without deleting data. */
+/* TeamBook V1.2 — Home book lanes.
+   Active books stay in the everyday owner/joined groups and in the large Home
+   carousel. Completed/dissolved books are combined in one closed-book lane.
+   This is presentation-only: no local/server book data is deleted. */
 
 import { allParties, isActiveParty } from './store.js';
+import { bookActivityLine } from './book-mode.js';
+
+let closedSignature = '';
 
 function codeFromRow(row) {
   try {
@@ -11,37 +14,152 @@ function codeFromRow(row) {
   } catch { return ''; }
 }
 
-function filterGroup(rowsId, emptyId, countId) {
+function ownerAlias(party) {
+  const members = Array.isArray(party?.members) ? party.members : [];
+  const owner = members.find(member => member?.userId && member.userId === party?.ownerId)
+    || members.find(member => member?.role === 'lead')
+    || null;
+  return String(owner?.alias || owner?.name || owner?.displayName || 'ไม่ทราบชื่อ').trim();
+}
+
+function decorateRowCopy(row, party) {
+  const tx = row?.querySelector('.tx');
+  const title = tx?.querySelector('b');
+  if (!tx || !title || !party) return;
+
+  let meta = tx.querySelector('.home-book-meta');
+  if (!meta) {
+    meta = document.createElement('span');
+    meta.className = 'home-book-meta';
+    tx.insertBefore(meta, title);
+  }
+
+  const activity = String(bookActivityLine(party, 'ยังไม่ระบุกิจกรรม') || 'ยังไม่ระบุกิจกรรม').trim();
+  meta.textContent = `เจ้าของ: ${ownerAlias(party)} · ${activity}`;
+}
+
+function ensureClosedGroup() {
+  let group = document.getElementById('closedPartyGroup');
+  if (group) return group;
+
+  const joined = document.getElementById('joinedPartyGroup');
+  const section = document.getElementById('allPartiesSection');
+  if (!section) return null;
+
+  group = document.createElement('details');
+  group.className = 'party-group';
+  group.id = 'closedPartyGroup';
+  group.innerHTML = `
+    <summary><span>สมุดที่ปิดเล่มแล้ว</span><span class="party-group-count" id="closedPartyCount">0 สมุด</span></summary>
+    <div class="rows" id="closedPartyRows"></div>
+    <div class="party-group-empty" id="closedPartyEmpty" hidden>ยังไม่มีสมุดที่ปิดเล่ม</div>`;
+
+  if (joined?.parentNode === section) joined.insertAdjacentElement('afterend', group);
+  else section.appendChild(group);
+  return group;
+}
+
+function filterGroup(rowsId, emptyId, countId, groupId, byCode, terminalRows) {
   const rows = document.getElementById(rowsId);
   const empty = document.getElementById(emptyId);
   const count = document.getElementById(countId);
+  const group = document.getElementById(groupId);
   if (!rows || !empty || !count) return 0;
 
-  const byCode = new Map(allParties().map(party => [String(party.code || ''), party]));
   let visible = 0;
   rows.querySelectorAll('a.row').forEach(row => {
     const party = byCode.get(codeFromRow(row));
-    const active = !!party && isActiveParty(party);
+    if (!party) {
+      row.hidden = true;
+      return;
+    }
+
+    decorateRowCopy(row, party);
+    const active = isActiveParty(party);
     row.hidden = !active;
     if (active) visible += 1;
+    else terminalRows.push({ row, party });
   });
 
   rows.hidden = visible === 0;
-  empty.hidden = visible !== 0;
+  empty.hidden = true;
   count.textContent = `${visible} สมุด`;
+  if (group) group.hidden = visible === 0;
   return visible;
+}
+
+function syncClosedGroup(terminalRows) {
+  const group = ensureClosedGroup();
+  const rows = document.getElementById('closedPartyRows');
+  const empty = document.getElementById('closedPartyEmpty');
+  const count = document.getElementById('closedPartyCount');
+  if (!group || !rows || !empty || !count) return 0;
+
+  const unique = [];
+  const seen = new Set();
+  for (const entry of terminalRows) {
+    const code = String(entry.party?.code || codeFromRow(entry.row));
+    if (!code || seen.has(code)) continue;
+    seen.add(code);
+    unique.push(entry);
+  }
+
+  const signature = unique.map(({ row, party }) => `${party.code}:${party.state}:${row.innerHTML}`).join('|');
+  if (signature !== closedSignature) {
+    const clones = unique.map(({ row, party }) => {
+      const clone = row.cloneNode(true);
+      clone.hidden = false;
+      decorateRowCopy(clone, party);
+      return clone;
+    });
+    rows.replaceChildren(...clones);
+    closedSignature = signature;
+  }
+
+  const total = unique.length;
+  group.hidden = total === 0;
+  rows.hidden = total === 0;
+  empty.hidden = total !== 0;
+  count.textContent = `${total} สมุด`;
+  return total;
+}
+
+function syncHero(byCode) {
+  const host = document.getElementById('mainParty');
+  if (!host) return;
+  const carousel = host.querySelector('.xty-party-carousel');
+  if (!carousel) return;
+
+  let activeCount = 0;
+  carousel.querySelectorAll('.xty-party-slide[data-code]').forEach(slide => {
+    const party = byCode.get(String(slide.dataset.code || ''));
+    const active = !!party && isActiveParty(party);
+    slide.hidden = !active;
+    if (active) activeCount += 1;
+  });
+  carousel.hidden = activeCount === 0;
 }
 
 let queued = false;
 function sync() {
   if (!/^\/$/.test(location.pathname)) return;
-  const lead = filterGroup('leadPartyRows', 'leadPartyEmpty', 'leadPartyCount');
-  const joined = filterGroup('joinedPartyRows', 'joinedPartyEmpty', 'joinedPartyCount');
-  const total = lead + joined;
+
+  const byCode = new Map(allParties().map(party => [String(party.code || ''), party]));
+  const terminalRows = [];
+  const lead = filterGroup('leadPartyRows', 'leadPartyEmpty', 'leadPartyCount', 'leadPartyGroup', byCode, terminalRows);
+  const joined = filterGroup('joinedPartyRows', 'joinedPartyEmpty', 'joinedPartyCount', 'joinedPartyGroup', byCode, terminalRows);
+  const closed = syncClosedGroup(terminalRows);
+  const activeTotal = lead + joined;
+
+  syncHero(byCode);
+
   const section = document.getElementById('allPartiesSection');
-  if (section) section.hidden = total === 0;
+  if (section) section.hidden = activeTotal + closed === 0;
   const heading = document.getElementById('partyHeading');
-  if (heading && total) heading.textContent = 'สมุดที่กำลังเขียน';
+  if (heading) {
+    heading.textContent = 'สมุดที่กำลังเขียน';
+    heading.hidden = activeTotal === 0;
+  }
 }
 
 function schedule() {
@@ -53,8 +171,32 @@ function schedule() {
   });
 }
 
+function installStyle() {
+  if (document.getElementById('teambook-home-lanes-style')) return;
+  const style = document.createElement('style');
+  style.id = 'teambook-home-lanes-style';
+  style.textContent = `
+    .home-book-meta{
+      display:block;
+      max-width:100%;
+      margin:0 0 3px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      color:var(--xty-muted);
+      font-size:11px;
+      font-weight:750;
+      line-height:1.35;
+    }
+    #closedPartyGroup{margin-top:14px}
+  `;
+  document.head.appendChild(style);
+}
+
 function install() {
   if (!/^\/$/.test(location.pathname)) return;
+  installStyle();
+  ensureClosedGroup();
   const home = document.getElementById('home') || document.body;
   const observer = new MutationObserver(schedule);
   observer.observe(home, { childList: true, subtree: true });
