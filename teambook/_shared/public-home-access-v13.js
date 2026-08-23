@@ -3,10 +3,38 @@
    Public-first canon wins here without fighting those renderers in a DOM loop:
    - the Public Lobby button is always visible/clickable for every profile
    - the embedded Public lane is visible unless the person explicitly hid it
-   - explicit hide remains respected and still prevents the V1.3 loader fetch. */
+   - explicit hide remains respected and still prevents the V1.3 loader fetch
+   - a genuinely new profile starts Public-visible even on a reused browser. */
 
 const HIDDEN_KEY = 'teambook_public_home_hidden_v13';
+const NEW_PROFILE_SESSION_KEY = 'teambook_public_new_profile_session_v13';
+const PROFILE_KEY = 'teambook_profile_v1';
 let queued = false;
+
+function profileExists() {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    if (!raw) return false;
+    const profile = JSON.parse(raw);
+    return !!String(profile?.alias || '').trim();
+  } catch { return false; }
+}
+
+function prepareFreshProfileDefault() {
+  try {
+    if (!profileExists()) {
+      sessionStorage.setItem(NEW_PROFILE_SESSION_KEY, '1');
+      return;
+    }
+    if (sessionStorage.getItem(NEW_PROFILE_SESSION_KEY) === '1') {
+      /* Hidden Public is a preference of the previous local identity, not a
+         default for somebody who has just created a new TeamBook profile. */
+      localStorage.removeItem(HIDDEN_KEY);
+      sessionStorage.removeItem(NEW_PROFILE_SESSION_KEY);
+    }
+  } catch {}
+}
+prepareFreshProfileDefault();
 
 function hiddenByChoice() {
   try { return localStorage.getItem(HIDDEN_KEY) === '1'; }
@@ -33,6 +61,7 @@ function installStyle() {
 
 function sync() {
   if (location.pathname !== '/') return;
+  prepareFreshProfileDefault();
   installStyle();
 
   const button = document.getElementById('publicBookButton');
