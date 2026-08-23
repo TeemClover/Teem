@@ -63,7 +63,7 @@ function deviceGuide() {
 }
 
 function firstReceivedSeen(party) {
-  if (!party || party.verificationMode !== 'confirm') return null;
+  if (!party) return null;
   const myId = partyIdentity(code)?.userId;
   if (!myId) return null;
   const posts = (party.log || [])
@@ -75,9 +75,12 @@ function firstReceivedSeen(party) {
     });
   if (!posts.length) return null;
   const post = posts[0];
+  if (String(post.confirmedBy).startsWith('public:')) {
+    return { post, title: 'ใครบางคนนอกสมุด มองเห็นสิ่งที่คุณทำแล้ว' };
+  }
   const members = party.memberHistory?.length ? party.memberHistory : party.members || [];
   const confirmer = members.find(member => member.userId === post.confirmedBy);
-  return { post, alias: confirmer?.alias || 'เพื่อนในสมุด' };
+  return { post, title: `${confirmer?.alias || 'เพื่อนในสมุด'} เห็นสิ่งที่คุณทำแล้ว` };
 }
 
 function installStyle() {
@@ -99,7 +102,7 @@ function installStyle() {
   document.head.appendChild(style);
 }
 
-function showWelcome(alias) {
+function showWelcome(title) {
   rememberShown();
   installStyle();
   const guide = deviceGuide();
@@ -112,7 +115,7 @@ function showWelcome(alias) {
     <div class="tb-seen-card">
       <div class="tb-seen-mark" aria-hidden="true">◎</div>
       <p class="kicker">เห็นกันแล้ว · ครั้งแรกในสมุดนี้</p>
-      <h2 id="tbSeenWelcomeTitle">${esc(alias)} เห็นสิ่งที่คุณทำแล้ว</h2>
+      <h2 id="tbSeenWelcomeTitle">${esc(title)}</h2>
       <p class="tb-seen-lede">นี่คือหัวใจของ TeamBook — ไม่ต้องคุยกันทั้งวัน แค่กลับมาเขียนของเรา และเห็นกันวันละนิด</p>
       <div class="tb-home-guide">
         <b>${esc(guide.title)}</b>
@@ -135,7 +138,7 @@ function showWelcome(alias) {
 function maybeShow() {
   if (alreadyShown() || document.querySelector('.tb-seen-welcome')) return;
   const found = firstReceivedSeen(getParty(code));
-  if (found) showWelcome(found.alias);
+  if (found) showWelcome(found.title);
 }
 
 function install() {
