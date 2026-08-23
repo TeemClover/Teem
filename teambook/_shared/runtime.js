@@ -5,6 +5,7 @@ import './header-brand-th.js';
    are intentionally no longer imported. */
 import './v13-public-first.js?v=20260823-v13a';
 import './trust-seen.js?v=20260823-trustseen2';
+import './live-sync.js?v=20260823-live1';
 import './home-create-capacity.js?v=20260823-capacity3';
 import './owner-label-v13.js?v=20260823-owner2';
 import './public-member-identity-v13.js?v=20260823-bookidentity3';
