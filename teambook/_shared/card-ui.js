@@ -58,13 +58,12 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
 if (typeof location !== 'undefined' && /^\/p(?:\/|$)/.test(location.pathname)) {
   import('./party-enhancements.js').catch(error => console.warn('TeamBook party enhancements unavailable', error));
   import('./party-profile-covers.js').catch(error => console.warn('TeamBook profile/cover layer unavailable', error));
-  import('./party-log-viewport.js').catch(error => console.warn('TeamBook party log viewport unavailable', error));
-  import('./party-event-copy-v2.js').catch(error => console.warn('TeamBook party event copy unavailable', error));
+  import('./party-log-viewport.js?v=20260823-stable1').catch(error => console.warn('TeamBook party log viewport unavailable', error));
+  import('./party-event-copy-v2.js?v=20260823-stable1').catch(error => console.warn('TeamBook party event copy unavailable', error));
   import('./party-pet-seat-v2.js').catch(error => console.warn('TeamBook pet seat unavailable', error));
   import('./party-self-status.js?v=20260820-disabled2').catch(error => console.warn('TeamBook self status compatibility stub unavailable', error));
   import('./party-invite-copy.js').catch(error => console.warn('TeamBook party invite copy unavailable', error));
   import('./party-log-export.js').catch(error => console.warn('TeamBook party log export unavailable', error));
-  import('./collection-skin-picker.js?v=20260823-recent3').catch(error => console.warn('TeamBook Collection skin picker unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/new(?:\/|$)/.test(location.pathname)) {
   import('./new-cover-v3.js').catch(error => console.warn('TeamBook cover picker unavailable', error));
