@@ -64,12 +64,12 @@ if (typeof location !== 'undefined' && /^\/p(?:\/|$)/.test(location.pathname)) {
   import('./party-self-status.js?v=20260820-disabled2').catch(error => console.warn('TeamBook self status compatibility stub unavailable', error));
   import('./party-invite-copy.js').catch(error => console.warn('TeamBook party invite copy unavailable', error));
   import('./party-log-export.js').catch(error => console.warn('TeamBook party log export unavailable', error));
-  import('./collection-skin-picker.js').catch(error => console.warn('TeamBook Collection skin picker unavailable', error));
+  import('./collection-skin-picker.js?v=20260823-recent3').catch(error => console.warn('TeamBook Collection skin picker unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/new(?:\/|$)/.test(location.pathname)) {
   import('./new-cover-v3.js').catch(error => console.warn('TeamBook cover picker unavailable', error));
   import('./new-cover-size-fix.js').catch(error => console.warn('TeamBook cover size guard unavailable', error));
-  import('./collection-skin-picker.js').catch(error => console.warn('TeamBook Collection skin picker unavailable', error));
+  import('./collection-skin-picker.js?v=20260823-recent3').catch(error => console.warn('TeamBook Collection skin picker unavailable', error));
   import('./new-capacity-guard.js?v=20260820-1').catch(error => console.warn('TeamBook capacity guard unavailable', error));
 }
 if (typeof location !== 'undefined' && /^\/collection(?:\/|$)/.test(location.pathname)) {
