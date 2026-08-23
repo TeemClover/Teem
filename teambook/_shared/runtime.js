@@ -8,7 +8,7 @@ import './v13-public-status.js?v=20260823-v13c';
 import './trust-seen.js?v=20260823-trustseen1';
 import './home-create-capacity.js?v=20260823-capacity3';
 import './owner-label-v13.js?v=20260823-owner2';
-import './public-member-identity-v13.js?v=20260823-bookidentity1';
+import './public-member-identity-v13.js?v=20260823-bookidentity2';
 import './public-home-access-v13.js?v=20260823-publicaccess1';
 import './reward-history-v13.js?v=20260823-rewardhistory1';
 
