@@ -21,7 +21,7 @@ function statusCopy(status) {
 }
 
 function modeCopy(mode) {
-  return mode === 'confirm' ? 'ต้องเห็นแล้ว' : 'เชื่อใจกัน';
+  return mode === 'confirm' ? 'ต้องมีคนเห็น' : 'เชื่อใจกัน';
 }
 
 function codeFromCard(card) {
