@@ -41,6 +41,7 @@ function installStyle() {
     .tb-status-dot{width:9px;height:9px;padding:0!important;border:0!important;border-radius:50%!important;box-shadow:0 0 0 2px rgba(0,0,0,.045)}
     .tb-status-dot.green{background:#55b56a!important}.tb-status-dot.yellow{background:#e9b949!important}.tb-status-dot.gray{background:#a7a7a7!important}
     .tb-public-status-line{display:flex;align-items:center;gap:7px;margin:7px 0 2px;font-size:12px;font-weight:800}
+    .tb-public-owner-activity{margin:2px 0 0;color:var(--xty-muted);font-size:12px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .tb-public-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}
     .tb-public-detail-item{padding:10px 11px;border:1px solid var(--xty-border);border-radius:13px;background:rgba(255,255,255,.55)}
     .tb-public-detail-item small{display:block;color:var(--xty-muted);font-size:9px;font-weight:800;letter-spacing:.05em;margin-bottom:2px}.tb-public-detail-item b{font-size:12px}
@@ -71,8 +72,6 @@ function metadataMarkup(party) {
   return `<div class="tb-public-status-line"><span class="tb-status-dot ${status.cls}" aria-hidden="true"></span><span>${esc(status.label)}</span></div>`
     + `<div class="tb-public-meta">`
     + `<span>${esc(modeCopy(party.verificationMode))}</span>`
-    + `<span>เจ้าของ ${esc(party.ownerAlias || party.lead?.alias || 'เจ้าของสมุด')}</span>`
-    + `<span>${Number(party.memberCount || 0)}/5 คน</span>`
     + `<span>${Number(party.updateCount || 0)} อัปเดต</span>`
     + `</div>`;
 }
@@ -89,11 +88,21 @@ async function decorateHome() {
     const code = codeFromCard(card);
     const party = byCode.get(code);
     if (!party) return;
+
+    /* Occupancy already lives in the top "เปิดอยู่ · N/5" pill. Keep the body
+       clean: book name first, then one plain-text owner/activity line. */
+    const activity = card.querySelector('p');
+    if (activity) {
+      const owner = party.ownerAlias || party.lead?.alias || 'เจ้าของสมุด';
+      const activityLabel = party.activity || 'ยังไม่ระบุกิจกรรม';
+      activity.classList.add('tb-public-owner-activity');
+      activity.textContent = `เจ้าของ ${owner} · ${activityLabel}`;
+    }
+
     let meta = card.querySelector('.tb-public-card-details');
     if (!meta) {
       meta = document.createElement('div');
       meta.className = 'tb-public-card-details';
-      const activity = card.querySelector('p');
       if (activity) activity.insertAdjacentElement('afterend', meta);
       else card.querySelector('h2')?.insertAdjacentElement('afterend', meta);
     }
