@@ -11,6 +11,7 @@ import './owner-label-v13.js?v=20260823-owner2';
 import './public-member-identity-v13.js?v=20260823-bookidentity2';
 import './public-home-access-v13.js?v=20260823-publicaccess1';
 import './reward-history-v13.js?v=20260823-rewardhistory1';
+import './ui-copy-fit-v13.js?v=20260823-uicopyfit1';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
