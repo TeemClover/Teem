@@ -6,7 +6,7 @@ import './header-brand-th.js';
 import './v13-public-first.js?v=20260823-v13a';
 import './v13-public-status.js?v=20260823-v13b';
 import './trust-seen.js?v=20260823-trustseen1';
-import './home-create-capacity.js?v=20260823-capacity1';
+import './home-create-capacity.js?v=20260823-capacity2';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
