@@ -1,9 +1,9 @@
-/* TeamBook 1.4 — SINGLE RUNTIME ENTRYPOINT
+/* TeamBook 1.4 — SINGLE BOOTSTRAP · THAI ONLY
 
-   Historical filename note:
-   HTML pages already point at /_shared/language.js. TeamBook no longer performs
-   runtime translation; V1.4 deliberately uses this existing URL as the one
-   product bootstrap instead of loading language.js -> runtime.js -> patches.
+   Historical filename only: HTML pages already point at /_shared/language.js.
+   There is NO language module, locale switcher, runtime translation, or
+   language state in TeamBook 1.4. This URL is kept only as the single product
+   bootstrap so current pages do not add another compatibility layer.
 
    V1.4 rules:
    1. This file is the only route owner.
@@ -13,6 +13,8 @@
       the browser ES-module registry deduplicates them naturally.
    5. Concurrent identical Public GETs share one in-flight response.
    6. Retired compatibility modules are not loaded.
+   7. Human-language UI is Thai only until a future deliberate localization
+      project replaces this architecture.
 */
 
 const PATH = location.pathname;
@@ -88,12 +90,6 @@ function installNetworkGuard() {
   };
 }
 
-function clearRetiredLanguageState() {
-  document.getElementById('xtyLanguageCard')?.remove();
-  document.getElementById('xtyLanguageChoice')?.remove();
-  try { localStorage.removeItem('teambook_language_mode'); } catch {}
-}
-
 /* Install the network guard synchronously when this module evaluates. The
    bottom inline module in index.html executes later in the module-script queue,
    so its retired Public request is already neutralized before it can fire. */
@@ -102,7 +98,6 @@ installNetworkGuard();
 async function boot() {
   if (globalThis.__teambookV14Runtime) return;
   globalThis.__teambookV14Runtime = true;
-  clearRetiredLanguageState();
 
   await importOnce('./header-brand-th.js');
 
