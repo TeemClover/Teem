@@ -1,10 +1,14 @@
-/* TeamBook per-Book character editor canon.
+/* TeamBook 1.4 — per-Book character editor canon.
+
    Starter identities may choose a frame colour. Collection cards already own
    their colour, so Color mirrors card.color and becomes read-only.
 
-   This module also owns the lightweight per-Book Collection picker. It watches
-   only the two character controls — never document.body — so choosing/rendering
-   cards cannot create the MutationObserver feedback loop that froze /p. */
+   Performance contract:
+   - this module watches only the character controls, never document.body
+   - the recent-card shelf does not exist until the user expands this <details>
+   - card artwork in the shelf/dialog is lazy; a closed editor requests no card
+     images just because the page rendered
+*/
 
 import { cardById, cardDescriptorTh } from './cards.js';
 import { cardMarkup } from './card-ui.js';
@@ -89,8 +93,9 @@ function syncCharacterControls() {
   syncing = true;
   if (save.textContent !== '💾 SAVE') save.textContent = '💾 SAVE';
 
-  /* Inline /p render rebuilds Starter options. Restore the per-Book card as one
-     synthetic option after that render, without touching unrelated DOM. */
+  /* /p's canonical render rebuilds Starter options. Restore only the selected
+     per-Book Collection card as one synthetic option; do not rebuild any card
+     art here. */
   const wanted = pendingCardId === null ? currentMemberCardId() : pendingCardId;
   if (wanted) ensureCardOption(wanted);
 
@@ -107,7 +112,11 @@ function syncCharacterControls() {
     color.disabled = identityLocked;
     color.removeAttribute('title');
   }
-  syncRecentCards();
+
+  /* Critical V1.4 rule: closed editor = zero recent-card DOM/images. */
+  if (tools.open) syncRecentCards();
+  else $('tbCharacterRecent')?.remove();
+
   syncing = false;
 }
 
@@ -153,7 +162,9 @@ function installStyle() {
 
 function syncRecentCards() {
   const save = $('saveMyCharacter');
-  if (!save) return;
+  const tools = $('myCharacterTools');
+  if (!save || !tools?.open) return;
+
   const cards = avatarCards().slice(0, 3);
   let section = $('tbCharacterRecent');
   if (!cards.length) {
@@ -179,7 +190,7 @@ function syncRecentCards() {
       button.className = 'tb-char-card';
       button.dataset.cardId = card.cardId;
       button.setAttribute('aria-label', `ใช้ ${cardDescriptorTh(card)} เป็นตัวละครในสมุดนี้`);
-      button.innerHTML = cardMarkup(card, { eager: true });
+      button.innerHTML = cardMarkup(card);
       button.addEventListener('click', () => selectCard(card.cardId));
       fragment.appendChild(button);
     });
@@ -215,7 +226,7 @@ function openDialog() {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = `tb-char-card${card.cardId === selected ? ' picked' : ''}`;
-      button.innerHTML = cardMarkup(card, { eager: true });
+      button.innerHTML = cardMarkup(card);
       button.setAttribute('aria-label', `ใช้ ${cardDescriptorTh(card)} เป็นตัวละครในสมุดนี้`);
       button.addEventListener('click', () => {
         selectCard(card.cardId);
@@ -266,18 +277,19 @@ function install() {
 
   ensureOpenButton();
   avatar.addEventListener('change', useStarterSelection);
+  tools.addEventListener('toggle', syncCharacterControls);
   save.addEventListener('click', () => {
-    /* Capture phase in runtime syncs card colour before the legacy save handler.
-       After a successful repaint, canonical party state becomes source again. */
     syncCharacterControls();
     setTimeout(() => { pendingCardId = null; queueSync(); }, 500);
   }, true);
 
+  /* The canonical /p render may rebuild the select options. This targeted
+     observer restores only the currently equipped card; it cannot react to
+     chat, seats, images, or unrelated page mutations. */
   new MutationObserver(queueSync).observe(avatar, { childList: true });
   new MutationObserver(queueSync).observe(tools, { attributes: true, attributeFilter: ['class'] });
 
   syncCharacterControls();
-  requestAnimationFrame(syncCharacterControls);
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, { once: true });
