@@ -5,11 +5,11 @@ import './header-brand-th.js';
    are intentionally no longer imported. */
 import './v13-public-first.js?v=20260823-v13a';
 import './trust-seen.js?v=20260823-trustseen2';
-import './live-sync.js?v=20260823-live1';
+import './live-sync.js?v=20260823-live2';
 import './home-create-capacity.js?v=20260823-capacity3';
 import './owner-label-v13.js?v=20260823-owner2';
 import './public-member-identity-v13.js?v=20260823-bookidentity3';
-import './reward-history-v13.js?v=20260823-rewardhistory1';
+import './reward-history-v13.js?v=20260823-rewardhistory2';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
@@ -24,33 +24,24 @@ import './reward-history-v13.js?v=20260823-rewardhistory1';
    locale-specific runtime module. This file only wires product behavior. */
 
 function clearRetiredLanguageState() {
-  /* Remove the retired in-page language chooser if an older HTML document is
-     still in a browser cache. It no longer controls any TeamBook behavior. */
   document.getElementById('xtyLanguageCard')?.remove();
   document.getElementById('xtyLanguageChoice')?.remove();
-
-  try {
-    localStorage.removeItem('teambook_language_mode');
-  } catch {}
+  try { localStorage.removeItem('teambook_language_mode'); } catch {}
 }
 
 function boot() {
   clearRetiredLanguageState();
 
-  /* Final Public presentation only belongs to Home and Public Detail. Keeping
-     it off /new avoids touching the quick-create choice labels before V1.3 has
-     applied the intended shared + public + 3-day + confirm defaults. */
   if (/^\/$/.test(location.pathname) || /^\/public\/p\/?$/.test(location.pathname)) {
     import('./public-ui-v13-final.js?v=20260823-final1')
       .catch(error => console.warn('TeamBook final Public UI unavailable', error));
   }
 
-  /* TeamBook V1.2 gameplay is route-aware and leaves page copy untouched. */
   import('./v12-gameplay.js?v=20260822-v12d')
     .catch(error => console.warn('TeamBook V1.2 gameplay layer unavailable', error));
 
   if (/^\/$/.test(location.pathname)) {
-    import('./v12-home-active-only.js?v=20260822-v12d')
+    import('./v12-home-active-only.js?v=20260823-publiczero1')
       .catch(error => console.warn('TeamBook active Home filter unavailable', error));
   }
 
@@ -71,6 +62,8 @@ function boot() {
       .catch(error => console.warn('TeamBook today details layer unavailable', error));
     import('./party-visibility-status.js?v=20260822-public1')
       .catch(error => console.warn('TeamBook visibility status unavailable', error));
+    import('./party-character-save-v14.js?v=20260823-character1')
+      .catch(error => console.warn('TeamBook per-Book character controls unavailable', error));
     import('./v12-party-query.js?v=20260822-v12d')
       .catch(error => console.warn('TeamBook companion intent unavailable', error));
     import('./v12-ending-image-auth.js?v=20260822-v12d')
