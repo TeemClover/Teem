@@ -6,6 +6,9 @@
 import { allParties, getProfile, isActiveParty, ownedCards, partyIdentity } from './store.js';
 import { cardById, cardDescriptorTh } from './cards.js';
 
+const DEBUG_MAX7_CODE = 'max7books';
+const DEBUG_MAX7_KEY = 'teambook_debug_max_owned_7';
+
 const bangkokDate = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Asia/Bangkok', day: '2-digit', month: '2-digit', year: 'numeric',
 });
@@ -102,6 +105,41 @@ function syncDetail() {
   if (status && status.textContent !== persona) status.textContent = persona;
 }
 
+function debugMax7Enabled() {
+  try { return localStorage.getItem(DEBUG_MAX7_KEY) === '1'; }
+  catch { return false; }
+}
+
+function installDebugMax7Toggle() {
+  const form = document.getElementById('debugForm');
+  const input = document.getElementById('debugCode');
+  const feedback = document.getElementById('debugFeedback');
+  if (!form || !input || !feedback) return;
+
+  form.addEventListener('submit', event => {
+    const code = String(input.value || '').trim().toLowerCase();
+    if (code !== DEBUG_MAX7_CODE) return;
+
+    /* Capture this debug code before the legacy Collection handler sees it.
+       The toggle is intentionally device-local; the create API independently
+       verifies the authenticated test member before honouring the 7-book cap. */
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const enabled = !debugMax7Enabled();
+    try {
+      if (enabled) localStorage.setItem(DEBUG_MAX7_KEY, '1');
+      else localStorage.removeItem(DEBUG_MAX7_KEY);
+    } catch {}
+
+    input.value = '';
+    feedback.classList.remove('error');
+    feedback.textContent = enabled
+      ? 'โหมดทดสอบ 7 สมุด: เปิดแล้ว · สร้างสมุดที่กำลังเขียนได้สูงสุด 7 เล่ม'
+      : 'โหมดทดสอบ 7 สมุด: ปิดแล้ว · กลับไปใช้จำนวนช่องตาม Level';
+  }, true);
+}
+
 let queued = false;
 function sync() {
   if (queued) return;
@@ -117,6 +155,8 @@ function install() {
   if (!/^\/collection(?:\/|$)/.test(location.pathname)) return;
   const cards = document.getElementById('cards');
   const dialog = document.getElementById('detail');
+
+  installDebugMax7Toggle();
 
   /* Observe content replacement in the grid, but only the dialog's own open
      state. Inner href/hidden/text changes are our output and must not feed
