@@ -176,6 +176,15 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'teambook-home-lanes-style';
   style.textContent = `
+    /* Home cover/row modules use display:grid!important for layout. Without an
+       equally strong hidden rule, a terminal row is logically hidden but can
+       still render inside the active owner/joined group. */
+    #leadPartyRows > a.row[hidden],
+    #joinedPartyRows > a.row[hidden],
+    #mainParty .xty-party-slide[hidden],
+    #mainParty .xty-party-carousel[hidden]{
+      display:none!important;
+    }
     .home-book-meta{
       display:block;
       max-width:100%;
