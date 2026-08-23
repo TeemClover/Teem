@@ -13,12 +13,30 @@ function previousPartyDateKey(timezone) {
   return partyDateKey(new Date(Date.UTC(year, month - 1, day - 1, 12)), timezone);
 }
 
+/* PostgreSQL DATE may arrive from a driver as either YYYY-MM-DD text or a
+   Date object. Public Home compares DATE in SQL, while Public Detail used to
+   stringify the driver value and slice it. Date objects therefore became
+   strings such as "Sun Aug 23..." and every real commit looked like a
+   different day. Normalize every form back to the Book's canonical day key. */
+function canonicalDayKey(value, timezone) {
+  if (value == null) return '';
+  if (typeof value === 'string') {
+    const match = value.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (match) return match[1];
+  }
+  const date = value instanceof Date ? value : new Date(value);
+  if (!Number.isFinite(date.getTime())) return '';
+  return partyDateKey(date, timezone);
+}
+
 function memberStatus(member, todayKey, yesterdayKey, verificationMode, now) {
   const todays = member.commits.filter(item => item.dayKey === todayKey);
-  if (!todays.length && verificationMode !== 'confirm') return 'gray';
-  if (verificationMode !== 'confirm') return 'green';
   const yesterdayPending = member.commits.some(item =>
     item.dayKey === yesterdayKey && !item.confirmedBy && item.deadline && now < item.deadline);
+
+  /* Seen and completion are separate axes in Trust books: signing today makes
+     the status green immediately, although that same commit can still be Seen. */
+  if (verificationMode !== 'confirm') return todays.length ? 'green' : 'gray';
   if (yesterdayPending) return 'yellow';
   if (!todays.length) return 'gray';
   return todays.some(item => !item.confirmedBy) ? 'yellow' : 'green';
@@ -44,7 +62,7 @@ export default async function handler(req, res) {
     const verificationMode = book.verification_mode === 'confirm' ? 'confirm' : 'trust';
     const [members, entries] = await Promise.all([
       sql.query(`SELECT user_id,alias,role FROM teambook_book_members
-        WHERE book_id=$1 AND left_at IS NULL ORDER BY joined_at`, [book.id]),
+        WHERE book_id=$1 AND left_at IS NULL ORDER BY (role='lead') DESC,joined_at`, [book.id]),
       sql.query(`SELECT e.seq,e.user_id,e.kind,e.day_key,e.retracted,e.sent_at,c.confirmer_id,c.created_at confirmed_at
         FROM teambook_book_entries e
         LEFT JOIN teambook_confirmations c ON c.book_id=e.book_id AND c.commit_seq=e.seq
@@ -55,8 +73,8 @@ export default async function handler(req, res) {
     const commitRows = entries.filter(row => row.kind === 'commit' && !row.retracted);
     const memberStatuses = members.map(member => {
       const commits = commitRows.filter(row => row.user_id === member.user_id).map(row => {
-        const dayKey = String(row.day_key).slice(0, 10);
-        const deadline = confirmDeadlineForDayKey(dayKey, timezone);
+        const dayKey = canonicalDayKey(row.day_key, timezone);
+        const deadline = dayKey ? confirmDeadlineForDayKey(dayKey, timezone) : null;
         return {
           seq: Number(row.seq),
           dayKey,
@@ -78,7 +96,8 @@ export default async function handler(req, res) {
 
     const pendingSeen = commitRows.filter(row => {
       if (row.confirmer_id || verificationMode !== 'confirm') return false;
-      const dayKey = String(row.day_key).slice(0, 10);
+      const dayKey = canonicalDayKey(row.day_key, timezone);
+      if (!dayKey) return false;
       const deadline = confirmDeadlineForDayKey(dayKey, timezone);
       return (dayKey === todayKey || dayKey === yesterdayKey) && deadline && now < deadline.getTime();
     });
@@ -95,7 +114,7 @@ export default async function handler(req, res) {
         updateCount: entries.filter(row => !row.retracted).length,
         status,
         todayKey,
-        hasYesterdayPending: pendingSeen.some(row => String(row.day_key).slice(0, 10) === yesterdayKey),
+        hasYesterdayPending: pendingSeen.some(row => canonicalDayKey(row.day_key, timezone) === yesterdayKey),
         pendingSeenCount: pendingSeen.length,
         memberStatuses,
       },
