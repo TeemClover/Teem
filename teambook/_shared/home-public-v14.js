@@ -97,14 +97,14 @@ function installStyle() {
     .tb14-public-collapsed{margin:16px 0;padding:13px 14px;border:1px dashed var(--xty-border);border-radius:16px;background:rgba(255,255,255,.52)}
     .tb14-public-collapsed button{border:0;background:transparent;color:var(--xty-primary);font-weight:850;cursor:pointer}
 
-    /* Full Starter cover: the coloured frame is the card edge. Art fills the
-       inside of that edge; it never scales across or paints over the border. */
+    /* Starter art is full bleed to the inner edge of the frame. There is no
+       cream gutter between the animal art and the coloured card border. */
     .tb14-starter-cover{position:relative;overflow:hidden!important;padding:0!important;gap:0!important;border:3px solid var(--xty-green)!important;background:#FFF7D8!important;box-shadow:3px 4px 0 rgba(62,51,44,.10)!important}
     .tb14-starter-cover[data-color="red"]{border-color:var(--xty-red)!important;box-shadow:3px 4px 0 rgba(228,91,91,.12)!important}
     .tb14-starter-cover[data-color="green"]{border-color:var(--xty-green)!important}
     .tb14-starter-cover[data-color="blue"]{border-color:var(--xty-blue)!important;box-shadow:3px 4px 0 rgba(91,141,255,.12)!important}
     .tb14-starter-cover[data-color="silver"]{border-color:var(--xty-silver)!important;box-shadow:3px 4px 0 rgba(152,160,168,.14)!important}
-    .tb14-starter-cover>img{position:absolute;inset:3px;width:calc(100% - 6px)!important;height:calc(100% - 6px)!important;max-width:none!important;object-fit:cover!important;border-radius:10px;transform:none!important}
+    .tb14-starter-cover>img{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;border-radius:0!important;transform:none!important}
     .tb14-starter-cover>small{position:absolute;left:50%;bottom:8px;z-index:2;transform:translateX(-50%);padding:3px 10px;color:var(--xty-muted)!important;font:800 7.5px/1.1 var(--sans)!important;letter-spacing:.14em;white-space:nowrap;border:1px solid rgba(62,51,44,.08);border-radius:999px;background:rgba(255,254,248,.95);box-shadow:0 1px 3px rgba(62,51,44,.08)}
 
     .party-group{position:relative}
@@ -234,22 +234,21 @@ function placementAnchor() {
   const main = document.getElementById('mainParty');
   const all = document.getElementById('allPartiesSection');
   const closed = document.getElementById('closedPartyGroup');
-  if (hasActiveBook() && all) return { parent: all, before: closed || null };
+  if (hasActiveBook() && all) {
+    return { parent: all, before: closed || null };
+  }
   const parent = main?.parentElement || document.getElementById('home');
   const before = document.getElementById('homeActions') || all || null;
   return { parent, before };
 }
 
-function placePublic(node) {
+function place(node) {
   if (!node) return;
   const { parent, before } = placementAnchor();
   if (!parent) return;
-  if (node.parentElement !== parent || node.nextElementSibling !== before) parent.insertBefore(node, before);
-}
-
-function syncLayout() {
-  ensureCreateHero();
-  placePublic(document.getElementById('tb14PublicDiscovery') || document.getElementById('tb14PublicCollapsed'));
+  if (node.parentElement !== parent || node.nextElementSibling !== before) {
+    parent.insertBefore(node, before);
+  }
 }
 
 function schedulePlacement() {
@@ -257,14 +256,15 @@ function schedulePlacement() {
   placementQueued = true;
   requestAnimationFrame(() => {
     placementQueued = false;
-    syncLayout();
+    ensureCreateHero();
+    place(document.getElementById('tb14PublicDiscovery') || document.getElementById('tb14PublicCollapsed'));
   });
 }
 
 function makeVisibleSection() {
   let section = document.getElementById('tb14PublicDiscovery');
   if (section) {
-    placePublic(section);
+    place(section);
     return section;
   }
 
@@ -279,7 +279,7 @@ function makeVisibleSection() {
     <div id="tb14HomePublicList"><div class="empty">กำลังเปิดสมุดสาธารณะ…</div></div>
     <div class="tb14-public-footer"><a class="about-link" href="/public/">เปิด Lobby ทั้งหมด ›</a></div>`;
 
-  placePublic(section);
+  place(section);
   section.querySelector('#tb14HidePublic')?.addEventListener('click', () => {
     setHidden(true);
     section.remove();
@@ -300,6 +300,7 @@ function renderCollapsed() {
       dataPromise = null;
       node.remove();
       const section = makeVisibleSection();
+      section.hidden = false;
       try { render(await load()); }
       catch {
         const list = document.getElementById('tb14HomePublicList');
@@ -307,7 +308,7 @@ function renderCollapsed() {
       }
     });
   }
-  placePublic(node);
+  place(node);
 }
 
 function watchPlacement() {
@@ -322,6 +323,7 @@ function watchPlacement() {
 async function install() {
   if (location.pathname !== '/') return;
   installStyle();
+  ensureCreateHero();
 
   const publicButton = document.getElementById('publicBookButton');
   if (publicButton) publicButton.hidden = true;
@@ -329,21 +331,20 @@ async function install() {
   document.getElementById('publicDiscovery')?.classList.add('tb14-legacy-public');
   document.getElementById('homePublicList')?.classList.add('tb14-legacy-public-list');
 
-  ensureCreateHero();
-  watchPlacement();
-
   if (isHidden()) {
     renderCollapsed();
+    watchPlacement();
     return;
   }
 
   const section = makeVisibleSection();
   try { render(await load()); }
   catch {
-    const list = section.querySelector('#tb14HomePublicList');
+    const list = document.getElementById('tb14HomePublicList');
     if (list) list.innerHTML = '<div class="empty">ยังเปิดสมุดสาธารณะไม่สำเร็จ · ลองอีกครั้งภายหลัง</div>';
   }
-  schedulePlacement();
+  place(section);
+  watchPlacement();
 }
 
 install();
