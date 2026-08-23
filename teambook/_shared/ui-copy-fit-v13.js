@@ -50,6 +50,13 @@ function installStyle() {
 }
 
 function syncModeCopy() {
+  /* Home Public heading: the section already establishes that these are live
+     books, so "กำลังเขียน" only makes the mobile heading wrap. */
+  const publicTitle = document.getElementById('publicDiscoveryTitle');
+  if (publicTitle && publicTitle.textContent !== 'ตอนนี้มีใครทำอะไรอยู่บ้าง') {
+    publicTitle.textContent = 'ตอนนี้มีใครทำอะไรอยู่บ้าง';
+  }
+
   /* Create Book — only the confirm choice's visible label. */
   document.querySelectorAll('#verificationPick .preset-choice b').forEach(normalizeModeNode);
 
