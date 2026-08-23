@@ -1,19 +1,16 @@
 import './activity-ux.js';
 import './header-brand-th.js';
-/* Public access must establish the default-open canon before the Public-first
-   data layer reads the legacy hidden preference. */
-import './public-home-access-v13.js?v=20260823-publicaccess2';
-/* V1.3 is a product-behaviour layer, not a translation layer. It is imported
-   eagerly so Home can honor the user's Public preference before the legacy
-   inline Home module has any chance to request Lobby data. */
+/* V1.3 product behaviour stays the core source for onboarding, Public Seen,
+   create defaults, and Home lane placement. Public visual/status/access polish
+   is consolidated into ONE final owner below; retired compatibility layers are
+   intentionally no longer imported. */
 import './v13-public-first.js?v=20260823-v13a';
-import './v13-public-status.js?v=20260823-v13d';
 import './trust-seen.js?v=20260823-trustseen1';
 import './home-create-capacity.js?v=20260823-capacity3';
 import './owner-label-v13.js?v=20260823-owner2';
 import './public-member-identity-v13.js?v=20260823-bookidentity3';
 import './reward-history-v13.js?v=20260823-rewardhistory1';
-import './ui-copy-fit-v13.js?v=20260823-uicopyfit2';
+import './public-ui-v13-final.js?v=20260823-final1';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
