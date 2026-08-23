@@ -8,9 +8,10 @@
    the member is actually using a Starter species in this Book.
 
    Visual grammar:
-   - the large Public cover identifies the Book owner by alias in the top strip
-   - every member identity uses the same 63:88 silhouette, including Starters
-   - Starter art fills the card frame instead of shrinking into a square tile */
+   - the large Public cover follows the same character-card grammar as a human
+     seat inside the Book: alias pill inside the card, never a full-card overlay
+   - Starter keeps its STARTER label and square portrait treatment
+   - every member identity uses the same 63:88 silhouette, including Starters */
 
 import { avatarById } from './avatars.js';
 import { cardById, cardDescriptorTh } from './cards.js';
@@ -34,19 +35,36 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'tb-public-member-identity-style';
   style.textContent = `
-    /* Public cover follows the same meaning as the owner card inside a Book:
-       the top strip says WHO owns the Book. The old Starter species label is
-       presentation noise here and is hidden. */
+    /* Public cover = the same visual language as a person's card in the Book.
+       The previous direct-child owner pill inherited .preview-cover>* height:
+       100% and could become a white sheet over the artwork. Never place a
+       label as a direct child of #cover again. */
     #cover{position:relative!important}
+    #cover>.tb-public-cover-owner{display:none!important}
+    #cover .avatar-cover,#cover .animal-card{position:relative!important}
     #cover .avatar-cover{padding:0!important;gap:0!important;overflow:hidden!important}
-    #cover .avatar-cover>img{width:100%!important;height:100%!important;aspect-ratio:auto!important;object-fit:cover!important;border-radius:inherit!important}
+    #cover .avatar-cover>img{
+      position:absolute!important;left:50%!important;top:50%!important;
+      width:68%!important;height:auto!important;aspect-ratio:1!important;
+      transform:translate(-50%,-50%)!important;
+      display:block!important;object-fit:contain!important;object-position:center!important;
+      border-radius:12px!important;background:transparent!important
+    }
     #cover .avatar-cover>b,#cover .avatar-cover>small{display:none!important}
-    #cover>.tb-public-cover-owner{
-      position:absolute;left:7px;right:7px;top:7px;z-index:60;
+    #cover .avatar-cover::after{
+      content:'STARTER'!important;display:block!important;
+      position:absolute!important;left:50%!important;bottom:7px!important;z-index:35!important;
+      transform:translateX(-50%)!important;padding:3px 7px!important;
+      border-radius:999px!important;background:rgba(255,254,248,.92)!important;
+      color:var(--xty-muted)!important;font:800 7px/1 var(--sans)!important;
+      letter-spacing:.12em!important;white-space:nowrap!important
+    }
+    #cover .tb-public-cover-name{
+      position:absolute;left:8px;right:8px;top:8px;z-index:40;
       display:block;min-width:0;padding:4px 7px;
       overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-      color:var(--xty-ink);font:900 10px/1.15 var(--thai),var(--sans);
-      text-align:center;border-radius:999px;background:rgba(255,254,248,.92);
+      color:var(--xty-ink);font:900 clamp(10px,2.7vw,13px)/1.15 var(--thai),var(--sans);
+      text-align:center;border-radius:999px;background:rgba(255,254,248,.90);
       box-shadow:0 1px 0 rgba(62,51,44,.08);
       pointer-events:none;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)
     }
@@ -161,16 +179,19 @@ function orderedMembers(party) {
   return owner ? [owner, ...members.filter(member => member !== owner)] : members;
 }
 
-function renderCoverOwner(party) {
+function renderCoverIdentity(party) {
   const cover = document.getElementById('cover');
   if (!cover) return;
+  cover.querySelector(':scope > .tb-public-cover-owner')?.remove();
   const owner = (party?.members || []).find(member => member.role === 'lead') || party?.members?.[0];
   if (!owner) return;
-  let label = cover.querySelector(':scope > .tb-public-cover-owner');
+  const face = cover.querySelector(':scope > .avatar-cover, :scope > .animal-card') || cover.firstElementChild;
+  if (!face) return;
+  let label = face.querySelector(':scope > .tb-public-cover-name');
   if (!label) {
     label = document.createElement('span');
-    label.className = 'tb-public-cover-owner';
-    cover.appendChild(label);
+    label.className = 'tb-public-cover-name';
+    face.appendChild(label);
   }
   const alias = owner.alias || 'เจ้าของสมุด';
   if (label.textContent !== alias) label.textContent = alias;
@@ -228,7 +249,7 @@ async function sync() {
   if (!view || view.hidden) return;
   let party;
   try { party = await loadParty(); } catch { return; }
-  renderCoverOwner(party);
+  renderCoverIdentity(party);
   renderMemberStrip(party);
   decorateStatusRows(party);
 }
