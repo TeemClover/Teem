@@ -8,7 +8,7 @@ import {
 import {
   getAdminActivity, getAdminCards, getAdminEvents, getAdminParties, getAdminPartyDetail,
   getAdminSummary, getAdminSystem, getAdminUsers,
-} from './xty-admin-stats-v2.js';
+} from './xty-admin-stats-v3.js';
 
 const ACTIVE_PARTY_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
 
@@ -115,8 +115,8 @@ export async function handleXtyAdmin(req, res, sql, method, parts) {
       return sendJson(res, { ok: true, expiresAt: session.expiresAt.toISOString() });
     }
 
-    // Overview and Parties use the resilient v2 stats queries so one optional
-    // aggregate cannot take down the whole dashboard.
+    // Overview and Parties use the resilient v3 stats queries so anonymous
+    // Public Seen witnesses never inflate people counts.
     if (action === 'summary') return sendJson(res, { ok: true, ...(await getAdminSummary(sql, req.query?.range)) });
     if (action === 'parties') {
       const detailCode = clean(parts[2], 5);
