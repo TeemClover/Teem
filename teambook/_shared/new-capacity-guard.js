@@ -5,8 +5,14 @@
 
 import { getProfile, activePartyUsage } from './store.js';
 
+const DEBUG_MAX7_KEY = 'teambook_debug_max_owned_7';
 const input = document.getElementById('pname');
 const button = document.getElementById('go');
+
+function debugMaxOwned() {
+  try { return localStorage.getItem(DEBUG_MAX7_KEY) === '1' ? 7 : 0; }
+  catch { return 0; }
+}
 
 if (input && button) {
   let warning = document.getElementById('capacityWarning');
@@ -25,12 +31,13 @@ if (input && button) {
     const profile = getProfile();
     if (!profile) return;
     const capacity = activePartyUsage(profile);
-    const full = Number(capacity.owned || 0) >= Number(capacity.maxOwned || 1);
+    const maxOwned = debugMaxOwned() || Number(capacity.maxOwned || 1);
+    const full = Number(capacity.owned || 0) >= maxOwned;
     const hasName = input.value.trim().length > 0;
 
     warning.hidden = !(full && hasName);
     if (full && hasName) {
-      warning.textContent = `ช่องสร้างสมุดเต็มแล้ว (${capacity.owned}/${capacity.maxOwned}) · ปิดสมุดที่กำลังเขียนอยู่ก่อน หรือปลดช่องเพิ่ม`;
+      warning.textContent = `ช่องสร้างสมุดเต็มแล้ว (${capacity.owned}/${maxOwned}) · ปิดสมุดที่กำลังเขียนอยู่ก่อน หรือปลดช่องเพิ่ม`;
     }
 
     button.dataset.capacityBlocked = full ? '1' : '0';
