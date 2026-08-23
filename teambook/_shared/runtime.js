@@ -1,5 +1,9 @@
 import './activity-ux.js';
 import './header-brand-th.js';
+/* V1.3 is a product-behaviour layer, not a translation layer. It is imported
+   eagerly so Home can honor the user's hidden-Public preference before the
+   legacy inline Home module has any chance to request Lobby data. */
+import './v13-public-first.js?v=20260823-v13a';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
