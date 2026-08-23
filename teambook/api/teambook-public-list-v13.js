@@ -18,11 +18,11 @@ function statusRank(status) {
   return status === 'yellow' ? 2 : (status === 'green' ? 1 : 0);
 }
 
-function bookStatus({ verificationMode, todayCommits, yesterdayPending }) {
-  if (yesterdayPending > 0) return 'yellow';
-  if (!todayCommits.length) return 'gray';
+function bookStatus({ verificationMode, todayCommitCount, todayPendingCount, yesterdayPending }) {
+  if (verificationMode === 'confirm' && yesterdayPending > 0) return 'yellow';
+  if (!todayCommitCount) return 'gray';
   if (verificationMode !== 'confirm') return 'green';
-  return todayCommits.some(commit => !commit.confirmedBy) ? 'yellow' : 'green';
+  return todayPendingCount > 0 ? 'yellow' : 'green';
 }
 
 export default async function handler(req, res) {
@@ -57,19 +57,14 @@ export default async function handler(req, res) {
       LIMIT $4 OFFSET $5`, [todayKey, yesterdayKey, ACTIVE_STATES, PAGE_SIZE + 1, offset]);
 
     const now = Date.now();
-    const pageRows = rows.slice(0, PAGE_SIZE);
-    const parties = pageRows.map(row => {
+    const parties = rows.slice(0, PAGE_SIZE).map(row => {
       const verificationMode = String(row.verification_mode || 'trust') === 'confirm' ? 'confirm' : 'trust';
-      let yesterdayPending = Number(row.yesterday_pending_count || 0);
+      let yesterdayPending = verificationMode === 'confirm' ? Number(row.yesterday_pending_count || 0) : 0;
       const deadline = confirmDeadlineForDayKey(yesterdayKey, row.timezone || 'Asia/Bangkok');
       if (!deadline || now >= deadline.getTime()) yesterdayPending = 0;
       const todayCommitCount = Number(row.today_commit_count || 0);
-      const todayPendingCount = Number(row.today_pending_count || 0);
-      const status = bookStatus({
-        verificationMode,
-        todayCommits: Array.from({ length: todayCommitCount }, (_, index) => ({ confirmedBy: index >= todayPendingCount })),
-        yesterdayPending,
-      });
+      const todayPendingCount = verificationMode === 'confirm' ? Number(row.today_pending_count || 0) : 0;
+      const status = bookStatus({ verificationMode, todayCommitCount, todayPendingCount, yesterdayPending });
       return {
         code: row.code,
         name: row.name,
@@ -81,7 +76,7 @@ export default async function handler(req, res) {
         ownerAlias: row.lead_alias || 'เจ้าของสมุด',
         updateCount: Number(row.update_count || 0),
         todayCommitCount,
-        pendingSeenCount: todayPendingCount + yesterdayPending,
+        pendingSeenCount: verificationMode === 'confirm' ? todayPendingCount + yesterdayPending : 0,
         status,
         statusRank: statusRank(status),
         lead: {
