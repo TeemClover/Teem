@@ -1,11 +1,10 @@
 /* TeamBook 1.4 — SINGLE OWNER for Public discovery on Home.
 
-   Public discovery is one lane with two placements:
-   - a profile with no active books sees Public first;
-   - a profile with active books sees owned, joined, then Public, then closed.
-
-   The legacy inline Public renderer remains quarantined. This module owns the
-   visible Public list, its hide/show state, and its Starter-cover treatment.
+   Canon:
+   - no active Book: first-book CTA -> Public -> actions/finished;
+   - active Books: owned -> joined -> Public -> finished;
+   - Public is one lane, not a separate onboarding feed;
+   - Starter covers use the same full-card treatment as Home book covers.
 */
 
 import { avatarById } from './avatars.js';
@@ -22,6 +21,19 @@ let placementQueued = false;
 const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
 }[ch]));
+
+function myBooks() {
+  const mine = new Set(myPartyCodes());
+  return allParties().filter(party => mine.has(party?.code));
+}
+
+function hasActiveBook() {
+  return myBooks().some(isActiveParty);
+}
+
+function hasAnyBook() {
+  return myBooks().length > 0;
+}
 
 function isHidden() {
   try { return localStorage.getItem(HIDDEN_KEY) === '1'; }
@@ -49,11 +61,6 @@ function isFull(party) {
   return Number(party?.memberCount || 0) >= Number(party?.maxMembers || 5);
 }
 
-function hasActiveBook() {
-  const mine = new Set(myPartyCodes());
-  return allParties().some(party => mine.has(party?.code) && isActiveParty(party));
-}
-
 function installStyle() {
   if (document.getElementById('tb-home-public-v14-style')) return;
   const style = document.createElement('style');
@@ -62,6 +69,14 @@ function installStyle() {
     #publicDiscovery.tb14-legacy-public,#homePublicList.tb14-legacy-public-list{display:none!important}
     #publicBookButton{display:none!important}
 
+    .v13-create-book{margin:18px 0 4px;padding:18px;border:1px solid rgba(41,136,87,.25);border-radius:22px;background:linear-gradient(145deg,rgba(241,250,240,.96),rgba(255,252,239,.95));box-shadow:0 12px 36px rgba(41,136,87,.10)}
+    .v13-create-book h2{margin:0 0 5px;font-size:clamp(22px,6vw,29px)}
+    .v13-create-book p{margin:0;color:var(--xty-muted);font-size:14px;line-height:1.6}
+    .v13-create-book .btn{width:100%;margin-top:13px;min-height:56px;font-size:17px}
+    .v13-create-defaults{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+    .v13-create-defaults span{padding:5px 8px;border:1px solid rgba(41,136,87,.18);border-radius:999px;background:rgba(255,255,255,.65);font-size:10px;font-weight:800;color:var(--xty-muted)}
+    .v13-first-book-note{margin-top:13px!important;padding-top:11px;border-top:1px dashed rgba(41,136,87,.2);font-size:12.5px!important}
+
     #tb14PublicDiscovery{margin:22px 0 4px;padding:20px 0 4px;border-top:1px dashed var(--xty-border)}
     #allPartiesSection>#tb14PublicDiscovery{margin-top:18px}
     .tb14-public-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
@@ -69,8 +84,8 @@ function installStyle() {
     #tb14PublicDiscovery .title{margin:0;font-size:clamp(25px,7vw,34px);line-height:1.22}
     #tb14PublicDiscovery .lede{margin-top:9px;font-size:15px;line-height:1.7}
     #tb14HomePublicList{display:grid;gap:12px;margin-top:18px}
-    .tb14-public-party{display:grid;grid-template-columns:minmax(92px,120px) minmax(0,1fr);gap:15px;align-items:center}
-    .tb14-public-party .animal-card,.tb14-public-party .avatar-cover{width:100%;max-width:120px;margin:0}
+    .tb14-public-party{display:grid;grid-template-columns:minmax(132px,150px) minmax(0,1fr);gap:16px;align-items:center;padding:16px}
+    .tb14-public-party .animal-card,.tb14-public-party .avatar-cover{width:100%;max-width:150px;margin:0}
     .tb14-public-party h2{margin:7px 0 4px;font-size:18px;line-height:1.35}
     .tb14-public-status{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
     .tb14-public-owner{margin:3px 0 0;color:var(--xty-muted);font-size:12px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -82,23 +97,62 @@ function installStyle() {
     .tb14-public-collapsed{margin:16px 0;padding:13px 14px;border:1px dashed var(--xty-border);border-radius:16px;background:rgba(255,255,255,.52)}
     .tb14-public-collapsed button{border:0;background:transparent;color:var(--xty-primary);font-weight:850;cursor:pointer}
 
-    /* Starter cover on Public cards is the same visual language as the large
-       Home book cards: art fills the card and STARTER sits on the lower edge. */
-    .tb14-starter-cover{overflow:hidden!important;padding:0!important;gap:0!important;background:#FFF7D8!important}
-    .tb14-starter-cover>img{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;transform:scale(1.08);transform-origin:center}
-    .tb14-starter-cover>small{position:absolute;left:50%;bottom:7px;z-index:2;transform:translateX(-50%);padding:3px 9px;color:var(--xty-muted)!important;font:800 7.5px/1.1 var(--sans)!important;letter-spacing:.14em;white-space:nowrap;border:1px solid rgba(62,51,44,.08);border-radius:999px;background:rgba(255,254,248,.94);box-shadow:0 1px 3px rgba(62,51,44,.08)}
+    /* Full Starter cover: the coloured frame is the card edge. Art fills the
+       inside of that edge; it never scales across or paints over the border. */
+    .tb14-starter-cover{position:relative;overflow:hidden!important;padding:0!important;gap:0!important;border:3px solid var(--xty-green)!important;background:#FFF7D8!important;box-shadow:3px 4px 0 rgba(62,51,44,.10)!important}
+    .tb14-starter-cover[data-color="red"]{border-color:var(--xty-red)!important;box-shadow:3px 4px 0 rgba(228,91,91,.12)!important}
+    .tb14-starter-cover[data-color="green"]{border-color:var(--xty-green)!important}
+    .tb14-starter-cover[data-color="blue"]{border-color:var(--xty-blue)!important;box-shadow:3px 4px 0 rgba(91,141,255,.12)!important}
+    .tb14-starter-cover[data-color="silver"]{border-color:var(--xty-silver)!important;box-shadow:3px 4px 0 rgba(152,160,168,.14)!important}
+    .tb14-starter-cover>img{position:absolute;inset:3px;width:calc(100% - 6px)!important;height:calc(100% - 6px)!important;max-width:none!important;object-fit:cover!important;border-radius:10px;transform:none!important}
+    .tb14-starter-cover>small{position:absolute;left:50%;bottom:8px;z-index:2;transform:translateX(-50%);padding:3px 10px;color:var(--xty-muted)!important;font:800 7.5px/1.1 var(--sans)!important;letter-spacing:.14em;white-space:nowrap;border:1px solid rgba(62,51,44,.08);border-radius:999px;background:rgba(255,254,248,.95);box-shadow:0 1px 3px rgba(62,51,44,.08)}
 
-    /* Safari can let child backgrounds visually shave the parent stroke at the
-       lower rounded corners. Paint the group outline above its children. */
     .party-group{position:relative}
     .party-group::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;border:1px solid var(--xty-border);border-radius:inherit}
 
     @media(max-width:520px){
-      .tb14-public-party{grid-template-columns:88px minmax(0,1fr);gap:12px;padding:13px}
-      .tb14-public-party .animal-card,.tb14-public-party .avatar-cover{max-width:88px}
+      .tb14-public-party{grid-template-columns:116px minmax(0,1fr);gap:14px;padding:14px}
+      .tb14-public-party .animal-card,.tb14-public-party .avatar-cover{max-width:116px}
+    }
+    @media(max-width:370px){
+      .tb14-public-party{grid-template-columns:106px minmax(0,1fr);gap:11px;padding:12px}
+      .tb14-public-party .animal-card,.tb14-public-party .avatar-cover{max-width:106px}
     }
   `;
   document.head.appendChild(style);
+}
+
+function ensureCreateHero() {
+  let node = document.getElementById('v13CreateBook');
+  if (hasActiveBook()) {
+    node?.remove();
+    return null;
+  }
+  const main = document.getElementById('mainParty');
+  if (!main) return null;
+  if (!node) {
+    node = document.createElement('section');
+    node.id = 'v13CreateBook';
+    node.className = 'v13-create-book';
+  }
+  const first = !hasAnyBook();
+  node.innerHTML = first ? `
+    <p class="kicker">สมุดเล่มแรกของคุณ</p>
+    <h2>เปิดสมุดเล่มใหม่</h2>
+    <p>เริ่มจากเรื่องหนึ่งที่อยากทำ แล้วค่อยชวนเพื่อนเข้ามาเขียนในเล่มเดียวกันได้</p>
+    <div class="v13-create-defaults" aria-label="ค่าเริ่มต้นของสมุดเล่มแรก">
+      <span>ทำเรื่องเดียวกัน</span><span>สาธารณะ</span><span>3 วัน</span><span>ต้องมีคนเห็น</span>
+    </div>
+    <p class="v13-first-book-note">สมุดเล่มแรกคือจุดเริ่มต้นของเรื่องของคุณ · เปิดก่อน แล้วค่อยเลือกว่าจะเขียนกับใคร</p>
+    <a class="btn gold" href="/new/?quick=1">+ เปิดสมุดเล่มใหม่</a>` : `
+    <p class="kicker">เปิดเรื่องต่อไป</p>
+    <h2>เปิดสมุดเล่มใหม่</h2>
+    <p>เล่มเดิมจบแล้วก็เริ่มเรื่องใหม่ได้ เมื่อพร้อมค่อยชวนเพื่อนเข้ามาเขียนด้วยกัน</p>
+    <a class="btn gold" href="/new/?quick=1">+ เปิดสมุดเล่มใหม่</a>`;
+  if (node.previousElementSibling !== main.previousElementSibling || node.nextElementSibling !== main) {
+    main.insertAdjacentElement('beforebegin', node);
+  }
+  return node;
 }
 
 function coverMarkup(party) {
@@ -134,7 +188,7 @@ function render(parties) {
   renderedSignature = nextSignature;
 
   if (!shown.length) {
-    list.innerHTML = '<div class="empty">ยังไม่มีสมุดสาธารณะตรงนี้<br><span style="font-size:13px">เปิดสมุดของคุณคนเดียวเป็นเล่มแรกได้เลย</span></div>';
+    list.innerHTML = '<div class="empty">ยังไม่มีสมุดสาธารณะตรงนี้</div>';
     return;
   }
 
@@ -180,21 +234,22 @@ function placementAnchor() {
   const main = document.getElementById('mainParty');
   const all = document.getElementById('allPartiesSection');
   const closed = document.getElementById('closedPartyGroup');
-  if (hasActiveBook() && all) {
-    return { parent: all, before: closed || null };
-  }
+  if (hasActiveBook() && all) return { parent: all, before: closed || null };
   const parent = main?.parentElement || document.getElementById('home');
   const before = document.getElementById('homeActions') || all || null;
   return { parent, before };
 }
 
-function place(node) {
+function placePublic(node) {
   if (!node) return;
   const { parent, before } = placementAnchor();
   if (!parent) return;
-  if (node.parentElement !== parent || node.nextElementSibling !== before) {
-    parent.insertBefore(node, before);
-  }
+  if (node.parentElement !== parent || node.nextElementSibling !== before) parent.insertBefore(node, before);
+}
+
+function syncLayout() {
+  ensureCreateHero();
+  placePublic(document.getElementById('tb14PublicDiscovery') || document.getElementById('tb14PublicCollapsed'));
 }
 
 function schedulePlacement() {
@@ -202,14 +257,14 @@ function schedulePlacement() {
   placementQueued = true;
   requestAnimationFrame(() => {
     placementQueued = false;
-    place(document.getElementById('tb14PublicDiscovery') || document.getElementById('tb14PublicCollapsed'));
+    syncLayout();
   });
 }
 
 function makeVisibleSection() {
   let section = document.getElementById('tb14PublicDiscovery');
   if (section) {
-    place(section);
+    placePublic(section);
     return section;
   }
 
@@ -224,7 +279,7 @@ function makeVisibleSection() {
     <div id="tb14HomePublicList"><div class="empty">กำลังเปิดสมุดสาธารณะ…</div></div>
     <div class="tb14-public-footer"><a class="about-link" href="/public/">เปิด Lobby ทั้งหมด ›</a></div>`;
 
-  place(section);
+  placePublic(section);
   section.querySelector('#tb14HidePublic')?.addEventListener('click', () => {
     setHidden(true);
     section.remove();
@@ -245,7 +300,6 @@ function renderCollapsed() {
       dataPromise = null;
       node.remove();
       const section = makeVisibleSection();
-      section.hidden = false;
       try { render(await load()); }
       catch {
         const list = document.getElementById('tb14HomePublicList');
@@ -253,7 +307,7 @@ function renderCollapsed() {
       }
     });
   }
-  place(node);
+  placePublic(node);
 }
 
 function watchPlacement() {
@@ -274,6 +328,8 @@ async function install() {
 
   document.getElementById('publicDiscovery')?.classList.add('tb14-legacy-public');
   document.getElementById('homePublicList')?.classList.add('tb14-legacy-public-list');
+
+  ensureCreateHero();
   watchPlacement();
 
   if (isHidden()) {
@@ -281,10 +337,10 @@ async function install() {
     return;
   }
 
-  makeVisibleSection();
+  const section = makeVisibleSection();
   try { render(await load()); }
   catch {
-    const list = document.getElementById('tb14HomePublicList');
+    const list = section.querySelector('#tb14HomePublicList');
     if (list) list.innerHTML = '<div class="empty">ยังเปิดสมุดสาธารณะไม่สำเร็จ · ลองอีกครั้งภายหลัง</div>';
   }
   schedulePlacement();
