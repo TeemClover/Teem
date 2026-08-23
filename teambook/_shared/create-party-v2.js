@@ -11,12 +11,17 @@ import { applyXircleCreateDefaults } from './xvisor-care.js';
 
 const K_PARTIES = 'teambook_books_v1';
 const K_TOKENS = 'teambook_book_tokens_v1';
+const DEBUG_MAX7_KEY = 'teambook_debug_max_owned_7';
 
 function read(key, fallback) {
   try { const raw = localStorage.getItem(key); return raw === null ? fallback : JSON.parse(raw); }
   catch { return fallback; }
 }
 function write(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }
+function debugMaxOwned7Enabled() {
+  try { return localStorage.getItem(DEBUG_MAX7_KEY) === '1'; }
+  catch { return false; }
+}
 
 function remember(result) {
   const party = result?.party;
@@ -179,6 +184,7 @@ export async function createPartyV2(options = {}) {
         avatarColor: partyAvatar?.color || profile.avatarFrame || 'green',
         profileId: profile.id,
         quotaSystem: 'v2',
+        debugMaxOwned7: debugMaxOwned7Enabled(),
       }),
     });
   } catch {
