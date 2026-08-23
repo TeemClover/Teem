@@ -5,7 +5,12 @@
 
    teambook_book_members.avatar is the per-book source of truth. When it is a
    card id, render that card's current art. Only fall back to Starter art when
-   the member is actually using a Starter species in this Book. */
+   the member is actually using a Starter species in this Book.
+
+   Visual grammar:
+   - the large Public cover identifies the Book owner by alias in the top strip
+   - every member identity uses the same 63:88 silhouette, including Starters
+   - Starter art fills the card frame instead of shrinking into a square tile */
 
 import { avatarById } from './avatars.js';
 import { cardById, cardDescriptorTh } from './cards.js';
@@ -29,18 +34,63 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'tb-public-member-identity-style';
   style.textContent = `
+    /* Public cover follows the same meaning as the owner card inside a Book:
+       the top strip says WHO owns the Book. The old Starter species label is
+       presentation noise here and is hidden. */
+    #cover{position:relative!important}
+    #cover .avatar-cover{padding:0!important;gap:0!important;overflow:hidden!important}
+    #cover .avatar-cover>img{width:100%!important;height:100%!important;aspect-ratio:auto!important;object-fit:cover!important;border-radius:inherit!important}
+    #cover .avatar-cover>b,#cover .avatar-cover>small{display:none!important}
+    #cover>.tb-public-cover-owner{
+      position:absolute;left:7px;right:7px;top:7px;z-index:60;
+      display:block;min-width:0;padding:4px 7px;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+      color:var(--xty-ink);font:900 10px/1.15 var(--thai),var(--sans);
+      text-align:center;border-radius:999px;background:rgba(255,254,248,.92);
+      box-shadow:0 1px 0 rgba(62,51,44,.08);
+      pointer-events:none;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)
+    }
+
+    /* One member row = one card silhouette. Collection cards already have
+       full art; Starter portraits are promoted into the same 63:88 shell. */
     #members .preview-member{width:76px}
-    #members .tb-public-member-visual{display:grid;place-items:center;margin:0 auto 5px;background:#fff;overflow:hidden}
-    #members .tb-public-member-visual.is-starter{width:54px;height:54px;border:2px solid var(--xty-border);border-radius:14px}
-    #members .tb-public-member-visual.is-card{width:54px;aspect-ratio:var(--xty-card-aspect,63/88);border-radius:9px;box-shadow:0 2px 6px rgba(62,51,44,.12)}
-    #members .tb-public-member-visual img{display:block;width:100%!important;height:100%!important;margin:0!important;border:0!important;border-radius:inherit!important;background:transparent!important}
-    #members .tb-public-member-visual.is-starter img{object-fit:contain!important}
-    #members .tb-public-member-visual.is-card img{object-fit:cover!important}
-    .tb-member-status .tb-book-member-visual{flex:none;display:grid;place-items:center;overflow:hidden;background:#fff}
-    .tb-member-status .tb-book-member-visual.is-starter{width:30px;height:30px;border:1px solid var(--xty-border);border-radius:9px}
-    .tb-member-status .tb-book-member-visual.is-card{width:25px;aspect-ratio:var(--xty-card-aspect,63/88);border-radius:5px;box-shadow:0 1px 3px rgba(62,51,44,.12)}
-    .tb-member-status .tb-book-member-visual img{display:block;width:100%;height:100%;object-fit:cover}
-    .tb-member-status .tb-book-member-visual.is-starter img{object-fit:contain}
+    #members .tb-public-member-visual{
+      position:relative;display:grid;place-items:center;
+      width:56px!important;aspect-ratio:var(--xty-card-aspect,63/88)!important;
+      height:auto!important;margin:0 auto 6px;background:#fff;overflow:hidden;
+      border-radius:10px
+    }
+    #members .tb-public-member-visual.is-starter{
+      border:2px solid var(--xty-green);
+      box-shadow:0 2px 6px rgba(62,51,44,.10)
+    }
+    #members .tb-public-member-visual.is-starter[data-color="red"]{border-color:var(--xty-red)}
+    #members .tb-public-member-visual.is-starter[data-color="green"]{border-color:var(--xty-green)}
+    #members .tb-public-member-visual.is-starter[data-color="blue"]{border-color:var(--xty-blue)}
+    #members .tb-public-member-visual.is-starter[data-color="silver"]{border-color:var(--xty-silver)}
+    #members .tb-public-member-visual.is-card{
+      border:0;box-shadow:0 2px 6px rgba(62,51,44,.14)
+    }
+    #members .tb-public-member-visual img{
+      display:block;width:100%!important;height:100%!important;margin:0!important;
+      border:0!important;border-radius:inherit!important;background:transparent!important;
+      object-fit:cover!important;object-position:center!important
+    }
+
+    /* The compact daily-status rows use the same ratio too, so identity does
+       not jump between square Starter and vertical Collection card. */
+    .tb-member-status .tb-book-member-visual{
+      flex:none;display:grid;place-items:center;overflow:hidden;background:#fff;
+      width:28px!important;aspect-ratio:var(--xty-card-aspect,63/88)!important;
+      height:auto!important;border-radius:6px
+    }
+    .tb-member-status .tb-book-member-visual.is-starter{border:1px solid var(--xty-green)}
+    .tb-member-status .tb-book-member-visual.is-starter[data-color="red"]{border-color:var(--xty-red)}
+    .tb-member-status .tb-book-member-visual.is-starter[data-color="green"]{border-color:var(--xty-green)}
+    .tb-member-status .tb-book-member-visual.is-starter[data-color="blue"]{border-color:var(--xty-blue)}
+    .tb-member-status .tb-book-member-visual.is-starter[data-color="silver"]{border-color:var(--xty-silver)}
+    .tb-member-status .tb-book-member-visual.is-card{border:0;box-shadow:0 1px 3px rgba(62,51,44,.12)}
+    .tb-member-status .tb-book-member-visual img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
   `;
   document.head.appendChild(style);
 }
@@ -65,16 +115,18 @@ function identityVisual(member) {
 
 function visualMarkup(member, className = 'tb-public-member-visual') {
   const visual = identityVisual(member);
-  const img = document.createElement('span');
-  img.className = `${className} is-${visual.kind}`;
-  img.title = visual.label;
+  const frame = document.createElement('span');
+  frame.className = `${className} is-${visual.kind}`;
+  frame.dataset.color = ['red', 'green', 'blue', 'silver'].includes(member?.avatarColor)
+    ? member.avatarColor : 'green';
+  frame.title = visual.label;
   const art = document.createElement('img');
   art.src = visual.src;
   art.alt = '';
   art.loading = 'eager';
   art.decoding = 'async';
-  img.appendChild(art);
-  return img;
+  frame.appendChild(art);
+  return frame;
 }
 
 async function loadParty({ force = false } = {}) {
@@ -109,11 +161,28 @@ function orderedMembers(party) {
   return owner ? [owner, ...members.filter(member => member !== owner)] : members;
 }
 
+function renderCoverOwner(party) {
+  const cover = document.getElementById('cover');
+  if (!cover) return;
+  const owner = (party?.members || []).find(member => member.role === 'lead') || party?.members?.[0];
+  if (!owner) return;
+  let label = cover.querySelector(':scope > .tb-public-cover-owner');
+  if (!label) {
+    label = document.createElement('span');
+    label.className = 'tb-public-cover-owner';
+    cover.appendChild(label);
+  }
+  const alias = owner.alias || 'เจ้าของสมุด';
+  if (label.textContent !== alias) label.textContent = alias;
+}
+
 function renderMemberStrip(party) {
   const host = document.getElementById('members');
   if (!host) return;
   const members = orderedMembers(party);
-  const signature = members.map(member => `${member.userId}:${member.avatar}:${member.avatarColor}:${member.role}`).join('|');
+  const signature = members
+    .map(member => `${member.userId}:${member.alias}:${member.avatar}:${member.avatarColor}:${member.role}`)
+    .join('|');
   if (host.dataset.tbBookIdentitySignature === signature) return;
 
   const fragment = document.createDocumentFragment();
@@ -159,6 +228,7 @@ async function sync() {
   if (!view || view.hidden) return;
   let party;
   try { party = await loadParty(); } catch { return; }
+  renderCoverOwner(party);
   renderMemberStrip(party);
   decorateStatusRows(party);
 }
