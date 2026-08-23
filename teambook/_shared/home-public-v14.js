@@ -1,25 +1,23 @@
 /* TeamBook 1.4 — SINGLE OWNER for Public discovery on Home.
 
-   This replaces every visible Home Public renderer from V1/V1.3.
-   The old inline Home module is still part of index.html for the rest of the
-   local-first Home boot, but language.js blocks its legacy /api/teambook/public
-   request. This module alone fetches and paints the Public lane people see.
+   Public discovery is one lane with two placements:
+   - a profile with no active books sees Public first;
+   - a profile with active books sees owned, joined, then Public, then closed.
 
-   Contract:
-   - visible by default unless this profile explicitly hid it
-   - hidden = zero Public-list request on Home
-   - “หาสมุดสาธารณะ” remains available for everyone
-   - one fetch, one render, no MutationObserver repairing another renderer
+   The legacy inline Public renderer remains quarantined. This module owns the
+   visible Public list, its hide/show state, and its Starter-cover treatment.
 */
 
 import { avatarById } from './avatars.js';
 import { cardById } from './cards.js';
 import { cardMarkup } from './card-ui.js';
+import { allParties, myPartyCodes, isActiveParty } from './store.js';
 
 const HIDDEN_KEY = 'teambook_public_home_hidden_v13';
 const LIST_API = '/api/teambook-public-list-v13';
 let dataPromise = null;
 let renderedSignature = '';
+let placementQueued = false;
 
 const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;',
@@ -51,16 +49,20 @@ function isFull(party) {
   return Number(party?.memberCount || 0) >= Number(party?.maxMembers || 5);
 }
 
+function hasActiveBook() {
+  const mine = new Set(myPartyCodes());
+  return allParties().some(party => mine.has(party?.code) && isActiveParty(party));
+}
+
 function installStyle() {
   if (document.getElementById('tb-home-public-v14-style')) return;
   const style = document.createElement('style');
   style.id = 'tb-home-public-v14-style';
   style.textContent = `
-    /* Legacy Public DOM may still be touched by the inline Home boot, but it is
-       permanently quarantined and never painted. */
     #publicDiscovery.tb14-legacy-public,#homePublicList.tb14-legacy-public-list{display:none!important}
 
     #tb14PublicDiscovery{margin:22px 0 4px;padding:20px 0 4px;border-top:1px dashed var(--xty-border)}
+    #allPartiesSection>#tb14PublicDiscovery{margin-top:18px}
     .tb14-public-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
     .tb14-public-head .btn{flex:none;width:auto;min-height:42px;padding:0 16px;font-size:13px}
     #tb14PublicDiscovery .title{margin:0;font-size:clamp(25px,7vw,34px);line-height:1.22}
@@ -79,7 +81,22 @@ function installStyle() {
     .tb14-public-collapsed{margin:16px 0;padding:13px 14px;border:1px dashed var(--xty-border);border-radius:16px;background:rgba(255,255,255,.52)}
     .tb14-public-collapsed button{border:0;background:transparent;color:var(--xty-primary);font-weight:850;cursor:pointer}
     #publicBookButton{display:flex!important}
-    @media(max-width:520px){.tb14-public-party{grid-template-columns:88px minmax(0,1fr);gap:12px;padding:13px}.tb14-public-party .animal-card,.tb14-public-party .avatar-cover{max-width:88px}}
+
+    /* Starter cover on Public cards is the same visual language as the large
+       Home book cards: art fills the card and STARTER sits on the lower edge. */
+    .tb14-starter-cover{overflow:hidden!important;padding:0!important;gap:0!important;background:#FFF7D8!important}
+    .tb14-starter-cover>img{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;transform:scale(1.08);transform-origin:center}
+    .tb14-starter-cover>small{position:absolute;left:50%;bottom:7px;z-index:2;transform:translateX(-50%);padding:3px 9px;color:var(--xty-muted)!important;font:800 7.5px/1.1 var(--sans)!important;letter-spacing:.14em;white-space:nowrap;border:1px solid rgba(62,51,44,.08);border-radius:999px;background:rgba(255,254,248,.94);box-shadow:0 1px 3px rgba(62,51,44,.08)}
+
+    /* Safari can let child backgrounds visually shave the parent stroke at the
+       lower rounded corners. Paint the group outline above its children. */
+    .party-group{position:relative}
+    .party-group::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;border:1px solid var(--xty-border);border-radius:inherit}
+
+    @media(max-width:520px){
+      .tb14-public-party{grid-template-columns:88px minmax(0,1fr);gap:12px;padding:13px}
+      .tb14-public-party .animal-card,.tb14-public-party .avatar-cover{max-width:88px}
+    }
   `;
   document.head.appendChild(style);
 }
@@ -96,7 +113,7 @@ function coverMarkup(party) {
   };
   try { snapshot = { ...snapshot, ...JSON.parse(party?.coverValue || '{}') }; } catch {}
   const avatar = avatarById(snapshot.species || 'orange_cat');
-  return `<div class="avatar-cover" data-color="${esc(snapshot.color || 'green')}"><img src="${esc(avatar.art)}" alt="" loading="lazy" decoding="async"></div>`;
+  return `<div class="avatar-cover tb14-starter-cover" data-color="${esc(snapshot.color || 'green')}" aria-label="Starter · ${esc(avatar.nameTh)}"><img src="${esc(avatar.art)}" alt="" loading="lazy" decoding="async"><small>STARTER</small></div>`;
 }
 
 function signature(parties) {
@@ -159,31 +176,40 @@ async function load() {
   return dataPromise;
 }
 
-function ensureCreateHero() {
-  if (document.getElementById('v13CreateBook')) return;
-  const mainParty = document.getElementById('mainParty');
-  if (!mainParty) return;
-  const node = document.createElement('section');
-  node.id = 'v13CreateBook';
-  node.className = 'v13-create-book';
-  node.innerHTML = `
-    <p class="kicker">เปิดเรื่องของคุณ</p>
-    <h2>มีอะไรที่อยากลองทำอยู่ไหม?</h2>
-    <p>เปิดสมุดคนเดียวได้เลย · ถ้ามีใครอยากเข้ามาเขียนด้วย ค่อยเจอกันในเล่ม</p>
-    <div class="v13-create-defaults" aria-label="ค่าเริ่มต้นของสมุดใหม่">
-      <span>ทำเรื่องเดียวกัน</span><span>สาธารณะ</span><span>3 วัน</span><span>ต้องมีคนเห็น</span>
-    </div>
-    <a class="btn gold" href="/new/?quick=1">+ เปิดสมุดใหม่</a>`;
-  mainParty.insertAdjacentElement('beforebegin', node);
+function placementAnchor() {
+  const all = document.getElementById('allPartiesSection');
+  const closed = document.getElementById('closedPartyGroup');
+  if (hasActiveBook() && all) {
+    return { parent: all, before: closed || null };
+  }
+  return { parent: all?.parentElement || document.getElementById('home'), before: all || null };
+}
+
+function place(node) {
+  if (!node) return;
+  const { parent, before } = placementAnchor();
+  if (!parent) return;
+  if (node.parentElement !== parent || node.nextElementSibling !== before) {
+    parent.insertBefore(node, before);
+  }
+}
+
+function schedulePlacement() {
+  if (placementQueued) return;
+  placementQueued = true;
+  requestAnimationFrame(() => {
+    placementQueued = false;
+    place(document.getElementById('tb14PublicDiscovery') || document.getElementById('tb14PublicCollapsed'));
+  });
 }
 
 function makeVisibleSection() {
   let section = document.getElementById('tb14PublicDiscovery');
-  if (section) return section;
+  if (section) {
+    place(section);
+    return section;
+  }
 
-  /* Quarantine the legacy targets. They remain only so the old inline Home
-     boot can finish safely; they are not visible and their API is blocked by
-     language.js. */
   document.getElementById('publicDiscovery')?.classList.add('tb14-legacy-public');
   document.getElementById('homePublicList')?.classList.add('tb14-legacy-public-list');
 
@@ -195,10 +221,7 @@ function makeVisibleSection() {
     <div id="tb14HomePublicList"><div class="empty">กำลังเปิดสมุดสาธารณะ…</div></div>
     <div class="tb14-public-footer"><a class="about-link" href="/public/">เปิด Lobby ทั้งหมด ›</a></div>`;
 
-  const mainParty = document.getElementById('mainParty');
-  if (mainParty) mainParty.insertAdjacentElement('afterend', section);
-  else document.getElementById('home')?.prepend(section);
-
+  place(section);
   section.querySelector('#tb14HidePublic')?.addEventListener('click', () => {
     setHidden(true);
     section.remove();
@@ -208,29 +231,40 @@ function makeVisibleSection() {
 }
 
 function renderCollapsed() {
-  if (document.getElementById('tb14PublicCollapsed')) return;
-  const mainParty = document.getElementById('mainParty');
-  if (!mainParty) return;
-  const node = document.createElement('div');
-  node.id = 'tb14PublicCollapsed';
-  node.className = 'tb14-public-collapsed';
-  node.innerHTML = '<button type="button">แสดงสมุดสาธารณะ</button>';
-  mainParty.insertAdjacentElement('afterend', node);
-  node.querySelector('button')?.addEventListener('click', async () => {
-    setHidden(false);
-    dataPromise = null;
-    node.remove();
-    const section = makeVisibleSection();
-    section.hidden = false;
-    try { render(await load()); }
-    catch { document.getElementById('tb14HomePublicList').innerHTML = '<div class="empty">ยังเปิดสมุดสาธารณะไม่สำเร็จ · ลองอีกครั้งภายหลัง</div>'; }
-  });
+  let node = document.getElementById('tb14PublicCollapsed');
+  if (!node) {
+    node = document.createElement('div');
+    node.id = 'tb14PublicCollapsed';
+    node.className = 'tb14-public-collapsed';
+    node.innerHTML = '<button type="button">แสดงสมุดสาธารณะ</button>';
+    node.querySelector('button')?.addEventListener('click', async () => {
+      setHidden(false);
+      dataPromise = null;
+      node.remove();
+      const section = makeVisibleSection();
+      section.hidden = false;
+      try { render(await load()); }
+      catch {
+        const list = document.getElementById('tb14HomePublicList');
+        if (list) list.innerHTML = '<div class="empty">ยังเปิดสมุดสาธารณะไม่สำเร็จ · ลองอีกครั้งภายหลัง</div>';
+      }
+    });
+  }
+  place(node);
+}
+
+function watchPlacement() {
+  const home = document.getElementById('home');
+  if (!home) return;
+  const observer = new MutationObserver(schedulePlacement);
+  observer.observe(home, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden'] });
+  addEventListener('pageshow', schedulePlacement);
+  addEventListener('storage', schedulePlacement);
 }
 
 async function install() {
   if (location.pathname !== '/') return;
   installStyle();
-  ensureCreateHero();
 
   const publicButton = document.getElementById('publicBookButton');
   if (publicButton) {
@@ -239,9 +273,11 @@ async function install() {
     publicButton.href = '/public/';
   }
 
+  document.getElementById('publicDiscovery')?.classList.add('tb14-legacy-public');
+  document.getElementById('homePublicList')?.classList.add('tb14-legacy-public-list');
+  watchPlacement();
+
   if (isHidden()) {
-    document.getElementById('publicDiscovery')?.classList.add('tb14-legacy-public');
-    document.getElementById('homePublicList')?.classList.add('tb14-legacy-public-list');
     renderCollapsed();
     return;
   }
@@ -252,8 +288,7 @@ async function install() {
     const list = document.getElementById('tb14HomePublicList');
     if (list) list.innerHTML = '<div class="empty">ยังเปิดสมุดสาธารณะไม่สำเร็จ · ลองอีกครั้งภายหลัง</div>';
   }
+  schedulePlacement();
 }
 
-/* Home is a deferred module page. Running once here is enough; no DOM repair
-   observer is needed because the V1.4 lane uses its own container. */
 install();
