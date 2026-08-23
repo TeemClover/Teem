@@ -12,6 +12,7 @@ import { applyXircleCreateDefaults } from './xvisor-care.js';
 const K_PARTIES = 'teambook_books_v1';
 const K_TOKENS = 'teambook_book_tokens_v1';
 const DEBUG_MAX7_KEY = 'teambook_debug_max_owned_7';
+const DEBUG_MAX7_CODE = 'max7books';
 
 function read(key, fallback) {
   try { const raw = localStorage.getItem(key); return raw === null ? fallback : JSON.parse(raw); }
@@ -184,7 +185,10 @@ export async function createPartyV2(options = {}) {
         avatarColor: partyAvatar?.color || profile.avatarFrame || 'green',
         profileId: profile.id,
         quotaSystem: 'v2',
-        debugMaxOwned7: debugMaxOwned7Enabled(),
+        /* The debug slot toggle is intentionally explicit: the server validates
+           the same code before lifting the owned-book cap, so UI and API cannot
+           disagree about 1/7 vs the Level entitlement. */
+        debugCapacityCode: debugMaxOwned7Enabled() ? DEBUG_MAX7_CODE : null,
       }),
     });
   } catch {
