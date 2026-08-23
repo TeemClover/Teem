@@ -15,11 +15,12 @@ function previousPartyDateKey(timezone) {
 
 function memberStatus(member, todayKey, yesterdayKey, verificationMode, now) {
   const todays = member.commits.filter(item => item.dayKey === todayKey);
+  if (!todays.length && verificationMode !== 'confirm') return 'gray';
+  if (verificationMode !== 'confirm') return 'green';
   const yesterdayPending = member.commits.some(item =>
     item.dayKey === yesterdayKey && !item.confirmedBy && item.deadline && now < item.deadline);
   if (yesterdayPending) return 'yellow';
   if (!todays.length) return 'gray';
-  if (verificationMode !== 'confirm') return 'green';
   return todays.some(item => !item.confirmedBy) ? 'yellow' : 'green';
 }
 
@@ -94,8 +95,7 @@ export default async function handler(req, res) {
         updateCount: entries.filter(row => !row.retracted).length,
         status,
         todayKey,
-        hasYesterdayPending: memberStatuses.some(member => member.status === 'yellow')
-          && pendingSeen.some(row => String(row.day_key).slice(0, 10) === yesterdayKey),
+        hasYesterdayPending: pendingSeen.some(row => String(row.day_key).slice(0, 10) === yesterdayKey),
         pendingSeenCount: pendingSeen.length,
         memberStatuses,
       },
