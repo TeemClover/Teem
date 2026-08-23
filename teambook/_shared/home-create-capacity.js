@@ -3,8 +3,10 @@
    Product rule:
    - if another owned Book can be created, the V1.3 Create hero stays prominent
    - when creation capacity is full, the large hero is demoted below the active Book
-   - the compact create button remains tappable; tapping explains that the slot is full
-     instead of sending the person into a form they cannot submit
+   - the compact create button remains tappable
+   - first tap while full explains the limit; tapping again enters /new so the
+     person can still browse the setup and decide what to close / unlock
+   - max7books debug capacity must match /new and the create API
    - when a slot becomes available again, restore the Create hero automatically
 
    The server remains the authority that rejects an over-capacity create request. */
@@ -12,7 +14,13 @@
 import { activePartyUsage, getProfile, hasProfile } from './store.js';
 
 const COMPACT_ID = 'tbCreateCapacityCompact';
+const DEBUG_MAX7_KEY = 'teambook_debug_max_owned_7';
 let queued = false;
+
+function debugMaxOwned() {
+  try { return localStorage.getItem(DEBUG_MAX7_KEY) === '1' ? 7 : 0; }
+  catch { return 0; }
+}
 
 function installStyle() {
   if (document.getElementById('tb-home-create-capacity-style')) return;
@@ -34,10 +42,12 @@ function capacityState() {
   const profile = getProfile();
   if (!profile) return null;
   const usage = activePartyUsage(profile);
-  const ownedFull = usage.owned >= usage.maxOwned;
-  const totalFull = usage.total >= usage.maxTotal;
+  const maxOwned = debugMaxOwned() || Number(usage.maxOwned || 1);
+  const ownedFull = Number(usage.owned || 0) >= maxOwned;
+  const totalFull = Number(usage.total || 0) >= Number(usage.maxTotal || 0);
   return {
     ...usage,
+    maxOwned,
     canCreate: !ownedFull && !totalFull,
     ownedFull,
     totalFull,
@@ -45,7 +55,12 @@ function capacityState() {
 }
 
 function fullLabel(capacity) {
-  if (capacity.ownedFull) return `ช่องสร้างสมุดเต็ม · ${capacity.owned}/${capacity.maxOwned}`;
+  if (capacity.ownedFull) {
+    if (capacity.owned > capacity.maxOwned) {
+      return `ช่องสร้างสมุดเกินสิทธิ์ปัจจุบัน · ใช้อยู่ ${capacity.owned} · สร้างพร้อมกันได้ ${capacity.maxOwned}`;
+    }
+    return `ช่องสร้างสมุดเต็ม · ${capacity.owned}/${capacity.maxOwned}`;
+  }
   return `ช่องสมุดที่ใช้งานเต็ม · ${capacity.total}/${capacity.maxTotal}`;
 }
 
@@ -66,14 +81,22 @@ function ensureCompact(mainParty) {
       <div class="tb-create-capacity-message" role="status" hidden></div>`;
     node.querySelector('button')?.addEventListener('click', () => {
       const capacity = capacityState();
-      if (!capacity) return;
-      if (capacity.canCreate) {
+      if (!capacity || capacity.canCreate) {
         location.href = '/new/?quick=1';
         return;
       }
       const message = node.querySelector('.tb-create-capacity-message');
-      if (!message) return;
-      message.innerHTML = `<b>${fullLabel(capacity)}</b><span>ปิดสมุดที่กำลังเขียนอยู่ หรือ Level Up เพื่อเพิ่มช่องสร้างสมุด</span>`;
+      if (!message) {
+        location.href = '/new/?quick=1';
+        return;
+      }
+      /* Full capacity uses a deliberate two-step action: first tap explains,
+         second tap respects intent and lets the person enter /new anyway. */
+      if (!message.hidden) {
+        location.href = '/new/?quick=1';
+        return;
+      }
+      message.innerHTML = `<b>${fullLabel(capacity)}</b><span>ปิดสมุดที่กำลังเขียนอยู่ หรือ Level Up เพื่อเพิ่มช่องสร้างสมุด · กด “+ เปิดสมุดใหม่” อีกครั้งเพื่อเข้าไปดูการตั้งค่าได้</span>`;
       message.hidden = false;
     });
   }
