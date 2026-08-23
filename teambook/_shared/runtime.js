@@ -62,7 +62,7 @@ function boot() {
       .catch(error => console.warn('TeamBook today details layer unavailable', error));
     import('./party-visibility-status.js?v=20260822-public1')
       .catch(error => console.warn('TeamBook visibility status unavailable', error));
-    import('./party-character-save-v14.js?v=20260823-character1')
+    import('./party-character-save-v14.js?v=20260823-character2')
       .catch(error => console.warn('TeamBook per-Book character controls unavailable', error));
     import('./v12-party-query.js?v=20260822-v12d')
       .catch(error => console.warn('TeamBook companion intent unavailable', error));
