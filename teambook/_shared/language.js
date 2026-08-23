@@ -153,6 +153,7 @@ async function boot() {
       './public-member-identity-v13.js',
       './reward-history-v13.js',
       './public-ui-v13-final.js',
+      './public-detail-edge-fix-v14.js',
     ]);
     return;
   }
