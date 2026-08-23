@@ -1,12 +1,6 @@
 import {
-  confirmCommit, getParty, isActiveParty, partyIdentity, refreshParty,
+  getParty, importServerCardReward, isActiveParty, partyIdentity, refreshParty,
 } from './store.js';
-
-function esc(value) {
-  return String(value ?? '').replace(/[&<>"']/g, char => ({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[char]));
-}
 
 function toast(text) {
   const node = document.getElementById('toast');
@@ -48,6 +42,29 @@ function trustSeenMark(text) {
   return mark;
 }
 
+async function trustSeenCommit(code, seq) {
+  const identity = partyIdentity(code);
+  const headers = {
+    accept: 'application/json',
+    'content-type': 'application/json',
+  };
+  if (identity?.token) headers.authorization = `Bearer ${identity.token}`;
+  try {
+    const response = await fetch(`/api/teambook-trust-seen?code=${encodeURIComponent(code)}`, {
+      method: 'POST',
+      headers,
+      credentials: 'same-origin',
+      body: JSON.stringify({ seq }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok && !result.error) result.error = `HTTP_${response.status}`;
+    if (!result.error && result.myReward) importServerCardReward(result.myReward);
+    return result;
+  } catch {
+    return { ok: false, error: 'OFFLINE' };
+  }
+}
+
 function decorateTrustBook() {
   if (!/^\/p\/?$/.test(location.pathname)) return;
   const code = new URLSearchParams(location.search).get('c') || '';
@@ -83,7 +100,7 @@ function decorateTrustBook() {
     button.addEventListener('click', async () => {
       button.disabled = true;
       button.textContent = 'กำลังบันทึกว่าเห็นแล้ว…';
-      const result = await confirmCommit(code, post.seq);
+      const result = await trustSeenCommit(code, post.seq);
       if (result.error) {
         if (result.error === 'ALREADY_CONFIRMED') {
           button.replaceWith(trustSeenMark('◎ มีคนเห็นแล้ว'));
@@ -96,6 +113,7 @@ function decorateTrustBook() {
         }
         button.disabled = false;
         button.textContent = '◎ เห็นแล้ว';
+        console.warn('TeamBook trust Seen failed', result.error);
         toast('ยังเห็นแล้วไม่สำเร็จ');
         return;
       }
