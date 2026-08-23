@@ -1,16 +1,14 @@
 import './activity-ux.js';
 import './header-brand-th.js';
 /* V1.3 product behaviour stays the core source for onboarding, Public Seen,
-   create defaults, and Home lane placement. Public visual/status/access polish
-   is consolidated into ONE final owner below; retired compatibility layers are
-   intentionally no longer imported. */
+   create defaults, and Home lane placement. Retired Public compatibility layers
+   are intentionally no longer imported. */
 import './v13-public-first.js?v=20260823-v13a';
 import './trust-seen.js?v=20260823-trustseen1';
 import './home-create-capacity.js?v=20260823-capacity3';
 import './owner-label-v13.js?v=20260823-owner2';
 import './public-member-identity-v13.js?v=20260823-bookidentity3';
 import './reward-history-v13.js?v=20260823-rewardhistory1';
-import './public-ui-v13-final.js?v=20260823-final1';
 
 /* TeamBook shared runtime bootstrap.
    IMPORTANT: this module is language-architecture neutral.
@@ -37,6 +35,14 @@ function clearRetiredLanguageState() {
 
 function boot() {
   clearRetiredLanguageState();
+
+  /* Final Public presentation only belongs to Home and Public Detail. Keeping
+     it off /new avoids touching the quick-create choice labels before V1.3 has
+     applied the intended shared + public + 3-day + confirm defaults. */
+  if (/^\/$/.test(location.pathname) || /^\/public\/p\/?$/.test(location.pathname)) {
+    import('./public-ui-v13-final.js?v=20260823-final1')
+      .catch(error => console.warn('TeamBook final Public UI unavailable', error));
+  }
 
   /* TeamBook V1.2 gameplay is route-aware and leaves page copy untouched. */
   import('./v12-gameplay.js?v=20260822-v12d')
