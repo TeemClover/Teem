@@ -45,6 +45,9 @@ export default async function handler(req, res) {
     groqConfigured: enabled('TEAMBOOK_PET_AI', 'XTY_PET_AI') && !!process.env.GROQ_API_KEY,
     visionConfigured: enabled('TEAMBOOK_PET_VISION', 'XTY_PET_VISION') && !!process.env.GROQ_API_KEY,
     blobConfigured: !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID),
+    endingImageConfigured: !!process.env.TEAMBOOK_ENDING_IMAGE_ENDPOINT
+      || !!process.env.AI_GATEWAY_API_KEY
+      || !!process.env.VERCEL_OIDC_TOKEN,
     cronConfigured: !!process.env.CRON_SECRET,
     emailConfigured: !!process.env.RESEND_API_KEY && !!process.env.TEAMBOOK_FROM_EMAIL,
   };

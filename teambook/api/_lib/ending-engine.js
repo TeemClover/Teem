@@ -15,6 +15,8 @@ import {
 const TERMINAL_STATES = new Set(['COMPLETED', 'DISSOLVED']);
 const CANDIDATE_IDS = Object.freeze(['A', 'B', 'C']);
 const MAX_GENERATED_IMAGE_BYTES = 8 * 1024 * 1024;
+const VERCEL_GATEWAY_IMAGE_ENDPOINT = 'https://ai-gateway.vercel.sh/v1/images/generations';
+const DEFAULT_ENDING_IMAGE_MODEL = 'openai/gpt-image-2';
 
 const ENDING_SCHEMA = [
   `CREATE TABLE IF NOT EXISTS teambook_endings (
@@ -117,12 +119,20 @@ function companionPersonaId(party) {
 }
 
 function generatorConfig() {
-  const endpoint = String(process.env.TEAMBOOK_ENDING_IMAGE_ENDPOINT || '').trim();
+  const adapterEndpoint = String(process.env.TEAMBOOK_ENDING_IMAGE_ENDPOINT || '').trim();
+  const gatewayToken = String(
+    process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN || '',
+  ).trim();
+  const useGateway = !adapterEndpoint && !!gatewayToken;
   return {
-    endpoint,
-    token: String(process.env.TEAMBOOK_ENDING_IMAGE_TOKEN || '').trim(),
-    model: String(process.env.TEAMBOOK_ENDING_IMAGE_MODEL || '').trim(),
-    ready: !!endpoint && blobConfigured(),
+    endpoint: adapterEndpoint || (useGateway ? VERCEL_GATEWAY_IMAGE_ENDPOINT : ''),
+    token: adapterEndpoint
+      ? String(process.env.TEAMBOOK_ENDING_IMAGE_TOKEN || '').trim()
+      : gatewayToken,
+    model: String(process.env.TEAMBOOK_ENDING_IMAGE_MODEL || '').trim()
+      || (useGateway ? DEFAULT_ENDING_IMAGE_MODEL : ''),
+    mode: useGateway ? 'vercel-gateway' : 'adapter',
+    ready: !!(adapterEndpoint || useGateway) && blobConfigured(),
   };
 }
 
@@ -220,10 +230,15 @@ function decodeDataUrl(value) {
 async function providerImage(config, prompt) {
   const headers = { 'content-type': 'application/json', accept: 'application/json' };
   if (config.token) headers.authorization = `Bearer ${config.token}`;
-  const response = await fetch(config.endpoint, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
+  const body = config.mode === 'vercel-gateway'
+    ? {
+      model: config.model || DEFAULT_ENDING_IMAGE_MODEL,
+      prompt,
+      n: 1,
+      response_format: 'b64_json',
+      size: '1024x1536',
+    }
+    : {
       model: config.model || undefined,
       prompt,
       aspectRatio: '63:88',
@@ -231,7 +246,11 @@ async function providerImage(config, prompt) {
       height: 1408,
       n: 1,
       responseFormat: 'base64',
-    }),
+    };
+  const response = await fetch(config.endpoint, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -341,11 +360,12 @@ async function generateEnding(sql, req, party, member) {
   current = await endingRow(sql, party.id);
   const briefs = parseJson(current?.briefs_json, []);
   try {
-    const candidates = [];
-    for (const brief of briefs) {
-      const generated = await providerImage(config, brief.prompt);
-      candidates.push(await storeCandidate(party.code, brief, generated));
-    }
+    /* These are three independent art directions. Generate them together so
+       the owner is not forced through three provider round trips in series. */
+    const generated = await Promise.all(briefs.map(brief => providerImage(config, brief.prompt)));
+    const candidates = await Promise.all(briefs.map((brief, index) => (
+      storeCandidate(party.code, brief, generated[index])
+    )));
     if (candidates.length !== CANDIDATE_IDS.length) {
       const error = new Error('ENDING_CANDIDATE_COUNT_INVALID');
       error.code = 'ENDING_CANDIDATE_COUNT_INVALID';

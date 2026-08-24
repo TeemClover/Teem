@@ -18,6 +18,7 @@ different values, but both must point only to TeamBook-owned resources.
 | `TEAMBOOK_ENDING_IMAGE_ENDPOINT` | Optional | Image provider/adapter | Generates the 3 evidence-grounded Ending candidates |
 | `TEAMBOOK_ENDING_IMAGE_TOKEN` | Optional | Image provider/adapter | Bearer token for the Ending image adapter when required |
 | `TEAMBOOK_ENDING_IMAGE_MODEL` | Optional | Image provider/adapter | Provider-specific model identifier |
+| `AI_GATEWAY_API_KEY` | Optional | Vercel AI Gateway | Local/non-OIDC fallback for Ending image generation |
 | `RESEND_API_KEY` | Yes for email OTP | Resend | Sends one-time sign-in codes |
 | `TEAMBOOK_FROM_EMAIL` | Yes for email OTP | Resend | Verified TeamBook sender identity |
 | `TEAMBOOK_ADMIN_PASSWORD` | Yes for admin tools | TeamBook | Protects TeamBook-only administration routes |
@@ -26,9 +27,12 @@ different values, but both must point only to TeamBook-owned resources.
 | `LINE_CHANNEL_ID` | Optional | LINE | LINE sign-in |
 | `LINE_CHANNEL_SECRET` | Optional | LINE | LINE sign-in secret |
 
-If `TEAMBOOK_ENDING_IMAGE_ENDPOINT` is not configured, TeamBook still builds the
-Ending Evidence and the 3 Art Brief directions. It deliberately does not fill the
-missing candidates with unrelated stock/random imagery. The adapter receives
+If `TEAMBOOK_ENDING_IMAGE_ENDPOINT` is not configured, a Vercel deployment uses
+AI Gateway with its automatically injected `VERCEL_OIDC_TOKEN` and defaults to
+`openai/gpt-image-2`. Local/non-OIDC runtimes may set `AI_GATEWAY_API_KEY`.
+If neither route is available, TeamBook still builds the Ending Evidence and the
+3 Art Brief directions; it does not fill the missing candidates with unrelated
+stock/random imagery. A custom adapter receives
 `prompt`, `aspectRatio`, `width`, `height`, `n`, `responseFormat`, and optional
 `model`; it may return base64 image data or an HTTPS result URL as documented in
 `.env.example`.

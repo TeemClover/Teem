@@ -194,12 +194,19 @@ async function renderEnding(data) {
     + `<div class="tb12-ending-actions">`
     + (canGenerate && data.generatorReady ? `<button class="btn gold" type="button" id="tb12GenerateEnding">สร้างภาพความทรงจำ 3 แบบ</button>` : '')
     + (data.status === 'GENERATING' ? `<button class="btn ghost" type="button" id="tb12RefreshEnding">กำลังสร้างภาพ… ดึงสถานะใหม่</button>` : '')
+    + (data.me?.role === 'lead' ? `<button class="btn ghost" type="button" id="tb12UploadEndingCover">อัปโหลดภาพปกเอง</button>` : '')
     + `</div>`
-    + (canGenerate && !data.generatorReady ? `<div class="tb12-engine-note">Evidence Brain และ Art Brief พร้อมแล้ว แต่เครื่องสร้างภาพยังไม่ได้เชื่อมกับ production. TeamBook จะไม่ใส่ภาพปลอมหรือสุ่มภาพที่ไม่อิงเล่มนี้</div>` : '')
+    + (canGenerate && !data.generatorReady ? `<div class="tb12-engine-note">Evidence Brain และ Art Brief พร้อมแล้ว แต่เครื่องสร้างภาพยังไม่ได้เชื่อมกับ production — ยังอัปโหลดภาพปกเองได้จากปุ่มด้านบน</div>` : '')
+    + (data.errorCode ? `<div class="tb12-engine-note">${esc(errorText(data.errorCode))}</div>` : '')
     + `<div class="tb12-engine-note">กติกา Engine: Event สำคัญต้องมี <b>Evidence of Meaning</b> มากกว่า Evidence of Change · ปกฉากจบคือความทรงจำ ไม่ใช่ระดับความหายากหรือรางวัล</div>`;
 
-  const legacyCover = document.getElementById('endingCoverPanel');
-  if (legacyCover) legacyCover.hidden = data.generatorReady || ['READY', 'FINALIZED', 'GENERATING'].includes(data.status);
+  /* The manual cover panel is a separate, canonical path owned by /p. It
+     must stay available even when generated candidates exist. */
+  panel.querySelector('#tb12UploadEndingCover')?.addEventListener('click', () => {
+    const upload = document.getElementById('endingCoverUpload');
+    if (upload && !upload.closest('[hidden]')) upload.click();
+    else showEndingNotice('อัปโหลดปกได้เฉพาะเจ้าของสมุดหลังปิดเล่มแล้ว');
+  });
 
   panel.querySelector('#tb12GenerateEnding')?.addEventListener('click', async event => {
     event.currentTarget.disabled = true;
