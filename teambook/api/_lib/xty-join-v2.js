@@ -5,7 +5,8 @@ import {
 import { TEAMBOOK_TIMEZONE, partyDayNumber } from './xty-rules.js';
 
 const ACTIVE_STATES = Object.freeze(['DRAFT', 'RECRUITING', 'STARTED', 'ACTIVE']);
-const PARTY_MAX = 5;
+const PARTY_MAX = 11;
+const PARTY_DEFAULT = 5;
 const MAX_JOINED_ACTIVE = 3;
 
 function bodyOf(req) {
@@ -60,6 +61,15 @@ async function joinedUsage(sql, quotaKey, identityIds) {
     WHERE q.quota_key=$1 AND q.role='member' AND q.released_at IS NULL
       AND p.state = ANY($2::text[])`, [quotaKey, ACTIVE_STATES, [...new Set(identityIds.filter(Boolean))]]);
   return Number(rows[0]?.n || 0);
+}
+
+async function memberLimitFor(sql, partyId) {
+  const rows = await sql.query(`SELECT data_json->>'memberLimit' AS member_limit
+    FROM teambook_book_events
+    WHERE book_id=$1 AND type='PARTY_CREATED'
+    ORDER BY created_at ASC LIMIT 1`, [partyId]);
+  const wanted = Math.floor(Number(rows[0]?.member_limit || PARTY_DEFAULT));
+  return Number.isFinite(wanted) ? Math.min(PARTY_MAX, Math.max(1, wanted)) : PARTY_DEFAULT;
 }
 
 function partyDay(row, at) {
@@ -124,6 +134,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     if (!ACTIVE_STATES.includes(String(row.state || '').toUpperCase())) {
       return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
     }
+    const memberLimit = await memberLimitFor(sql, row.id);
 
     const account = await currentUser(req, sql);
     const localId = localIdentity(body);
@@ -136,10 +147,6 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     const avatar = clean(body.avatar, 40) || 'orange_cat';
     const avatarColor = ['red', 'green', 'blue', 'silver'].includes(body.avatarColor) ? body.avatarColor : 'green';
 
-    /* What a joiner brings depends on the book. In a shared book they
-       inherit its activity and only their own rule is theirs; in an
-       individual book the activity is theirs too, and without one they
-       would sit in the book with nothing to sign for. */
     const mode = row.activity_mode === 'individual' ? 'individual' : 'shared';
     const memberActivityId = mode === 'individual'
       ? (clean(body.activityId, 40) || null)
@@ -177,7 +184,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
       if (existing.role !== 'lead') await attachQuota(sql, quotaKey, row.id, at);
       return sendJson(res, {
         ok: true, joined: true, recoveryRequired: true, code, token,
-        meUserId: existing.user_id, quotaSystem: 'v2-separated',
+        meUserId: existing.user_id, quotaSystem: 'v2-separated', memberLimit,
       });
     }
 
@@ -219,7 +226,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
       INSERT INTO teambook_book_events (book_id,type,actor_id,party_day,data_json,created_at)
       SELECT book_id,'MEMBER_JOINED',$4,$15,$16::jsonb,$9 FROM quota RETURNING book_id`, [
       row.id, quotaKey, identityIds[1], userId, alias, avatar, avatarColor, authHash, at,
-      PARTY_MAX, ACTIVE_STATES, MAX_JOINED_ACTIVE,
+      memberLimit, ACTIVE_STATES, MAX_JOINED_ACTIVE,
       `join-user:${quotaKey}`, `join-party:${row.id}`, partyDay(row, at), eventData,
       memberActivityId, memberActivityLabel, memberActivityDescription,
       memberActivityColor, memberSuccessRule,
@@ -231,7 +238,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
         return sendJson(res, { ok: false, error: 'PARTY_CLOSED' }, 409);
       }
       const count = await sql.query('SELECT COUNT(*)::int n FROM teambook_book_members WHERE book_id=$1 AND left_at IS NULL', [row.id]);
-      if (Number(count[0]?.n || 0) >= PARTY_MAX) return sendJson(res, { ok: false, error: 'FULL' }, 409);
+      if (Number(count[0]?.n || 0) >= memberLimit) return sendJson(res, { ok: false, error: 'FULL', memberLimit }, 409);
       const latest = await joinedUsage(sql, quotaKey, identityIds);
       if (latest >= MAX_JOINED_ACTIVE) {
         return sendJson(res, { ok: false, error: 'JOINED_PARTY_LIMIT', joined: latest, maxJoined: MAX_JOINED_ACTIVE }, 409);
@@ -242,7 +249,7 @@ export async function handleJoinPartyV2(req, res, legacyXtyHandler) {
     await sql.query('UPDATE teambook_books SET updated_at=$1 WHERE id=$2', [at, row.id]);
     return sendJson(res, {
       ok: true, joined: true, recoveryRequired: true, code, token,
-      meUserId: userId, quotaSystem: 'v2-separated',
+      meUserId: userId, quotaSystem: 'v2-separated', memberLimit,
     }, 201);
   } catch (error) {
     console.error('TeamBook join v2 failed', error);
