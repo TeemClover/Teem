@@ -124,6 +124,7 @@ async function boot() {
       './party-visibility-status.js',
       './party-character-save-v14.js',
       `./party-card-picker-v15.js?v=${CAPACITY_REV}`,
+      `./collection-skin-picker.js?v=${CAPACITY_REV}`,
       './v12-party-query.js',
       './v12-ending-image-auth.js',
       './level-up-growth.js',
