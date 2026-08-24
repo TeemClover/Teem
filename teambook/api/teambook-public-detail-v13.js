@@ -1,9 +1,19 @@
 import { database, ensureSchema, sendJson } from './_lib/core.js';
 import { confirmDeadlineForDayKey, partyDateKey } from './_lib/xty-rules.js';
 
+const DEFAULT_MEMBER_LIMIT = 5;
+const MAX_MEMBER_LIMIT = 11;
+
 function codeOf(req) {
   const value = Array.isArray(req.query?.code) ? req.query.code[0] : req.query?.code;
   return /^\d{5}$/.test(String(value || '')) ? String(value) : '';
+}
+
+function memberLimit(value) {
+  const wanted = Math.floor(Number(value || DEFAULT_MEMBER_LIMIT));
+  return Number.isFinite(wanted)
+    ? Math.min(MAX_MEMBER_LIMIT, Math.max(1, wanted))
+    : DEFAULT_MEMBER_LIMIT;
 }
 
 function previousPartyDateKey(timezone) {
@@ -51,8 +61,14 @@ export default async function handler(req, res) {
     if (!code) return sendJson(res, { ok: false, error: 'INVALID_CODE' }, 400);
     const sql = database();
     await ensureSchema(sql);
-    const books = await sql.query(`SELECT id,code,visibility,state,verification_mode,timezone
-      FROM teambook_books WHERE code=$1 AND visibility='public' LIMIT 1`, [code]);
+    const books = await sql.query(`SELECT p.id,p.code,p.visibility,p.state,p.verification_mode,p.timezone,
+        COALESCE((
+          SELECT e0.data_json->>'memberLimit'
+          FROM teambook_book_events e0
+          WHERE e0.book_id=p.id AND e0.type='PARTY_CREATED'
+          ORDER BY e0.created_at ASC LIMIT 1
+        ), '5') AS member_limit
+      FROM teambook_books p WHERE p.code=$1 AND p.visibility='public' LIMIT 1`, [code]);
     const book = books[0];
     if (!book) return sendJson(res, { ok: false, error: 'NOT_FOUND' }, 404);
 
@@ -103,6 +119,7 @@ export default async function handler(req, res) {
     });
 
     const owner = members.find(member => member.role === 'lead') || members[0] || null;
+    const maxMembers = memberLimit(book.member_limit);
     return sendJson(res, {
       ok: true,
       detail: {
@@ -110,7 +127,8 @@ export default async function handler(req, res) {
         verificationMode,
         ownerAlias: owner?.alias || 'เจ้าของสมุด',
         memberCount: members.length,
-        maxMembers: 5,
+        maxMembers,
+        joinable: members.length < maxMembers,
         updateCount: entries.filter(row => !row.retracted).length,
         status,
         todayKey,
