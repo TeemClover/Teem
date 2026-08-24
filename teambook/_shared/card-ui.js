@@ -63,6 +63,74 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-party-cover
   document.head.appendChild(style);
 }
 
+/* When a collectible TeamBook card is used as a Book cover, the card belongs
+   inside the same coloured frame language as Starter. The full finished card
+   image stays visible; Book covers do not add a STARTER/name/rarity tag. */
+if (typeof document !== 'undefined' && !document.getElementById('tb-book-cover-card-style')) {
+  const style = document.createElement('style');
+  style.id = 'tb-book-cover-card-style';
+  style.textContent = `
+    .public-party > .animal-card:not(.card-back),
+    .preview-cover > .animal-card:not(.card-back),
+    #cover > .animal-card:not(.card-back),
+    .tb15-public-party > .animal-card:not(.card-back) {
+      --tb-cover-accent:var(--xty-green);
+      position:relative!important;
+      box-sizing:border-box!important;
+      padding:0!important;
+      aspect-ratio:var(--xty-card-aspect)!important;
+      border:3px solid var(--tb-cover-accent)!important;
+      border-radius:16px!important;
+      background:#FFF7D8!important;
+      box-shadow:3px 4px 0 rgba(62,51,44,.10)!important;
+      overflow:hidden!important;
+    }
+    .public-party > .animal-card[data-color="red"],
+    .preview-cover > .animal-card[data-color="red"],
+    #cover > .animal-card[data-color="red"],
+    .tb15-public-party > .animal-card[data-color="red"]{--tb-cover-accent:var(--xty-red)}
+    .public-party > .animal-card[data-color="blue"],
+    .preview-cover > .animal-card[data-color="blue"],
+    #cover > .animal-card[data-color="blue"],
+    .tb15-public-party > .animal-card[data-color="blue"]{--tb-cover-accent:var(--xty-blue)}
+    .public-party > .animal-card[data-color="silver"],
+    .preview-cover > .animal-card[data-color="silver"],
+    #cover > .animal-card[data-color="silver"],
+    .tb15-public-party > .animal-card[data-color="silver"]{--tb-cover-accent:var(--xty-silver)}
+
+    .public-party > .animal-card:not(.card-back) .card-art,
+    .preview-cover > .animal-card:not(.card-back) .card-art,
+    #cover > .animal-card:not(.card-back) .card-art,
+    .tb15-public-party > .animal-card:not(.card-back) .card-art {
+      display:block!important;
+      width:100%!important;
+      height:100%!important;
+      max-width:none!important;
+      margin:0!important;
+      object-fit:contain!important;
+      border-radius:11px!important;
+      background:#FFF7D8!important;
+      transform:none!important;
+    }
+
+    .public-party > .animal-card:not(.card-back) .card-copy,
+    .public-party > .animal-card:not(.card-back) .role-badge,
+    .public-party > .animal-card:not(.card-back) .rarity-badge,
+    .preview-cover > .animal-card:not(.card-back) .card-copy,
+    .preview-cover > .animal-card:not(.card-back) .role-badge,
+    .preview-cover > .animal-card:not(.card-back) .rarity-badge,
+    #cover > .animal-card:not(.card-back) .card-copy,
+    #cover > .animal-card:not(.card-back) .role-badge,
+    #cover > .animal-card:not(.card-back) .rarity-badge,
+    .tb15-public-party > .animal-card:not(.card-back) .card-copy,
+    .tb15-public-party > .animal-card:not(.card-back) .role-badge,
+    .tb15-public-party > .animal-card:not(.card-back) .rarity-badge {
+      display:none!important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 export function cardMarkup(cardOrId, { role = '', foil = false, eager = false } = {}) {
   const card = typeof cardOrId === 'string' ? cardById(cardOrId) : cardOrId;
   if (!card) return '';
