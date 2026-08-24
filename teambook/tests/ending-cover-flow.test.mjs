@@ -20,18 +20,30 @@ test('/p keeps manual ending-cover upload reachable beside generated art', () =>
 
 test('Ending image engine falls back to Vercel AI Gateway with OIDC', () => {
   const engine = source('api/_lib/ending-engine.js');
+  const requests = source('_shared/ending-image-request.js');
   const health = source('api/health.js');
   const vercel = JSON.parse(source('vercel.json'));
 
   assert.match(engine, /getVercelOidcToken/);
   assert.match(engine, /process\.env\.AI_GATEWAY_API_KEY \|\| process\.env\.VERCEL_OIDC_TOKEN/);
-  assert.match(engine, /https:\/\/ai-gateway\.vercel\.sh\/v1\/images\/generations/);
-  assert.match(engine, /openai\/gpt-image-2/);
-  assert.match(engine, /response_format: 'b64_json'/);
+  assert.match(requests, /https:\/\/ai-gateway\.vercel\.sh\/v1\/images\/generations/);
+  assert.match(requests, /openai\/gpt-image-2/);
+  assert.match(requests, /response_format: 'b64_json'/);
   assert.match(engine, /Promise\.all\(briefs\.map\(brief => providerImage/);
   assert.match(health, /oidcConfigured = !!await getVercelOidcToken\(\)/);
   assert.match(health, /endingImageConfigured:[\s\S]*oidcConfigured/);
   assert.equal(vercel.functions['api/teambook-ending.js'].maxDuration, 300);
+});
+
+test('Ending character directions use the final canonical cast and visual references', () => {
+  const engine = source('api/_lib/ending-engine.js');
+  const requests = source('_shared/ending-image-request.js');
+  assert.match(engine, /buildFinalCastSnapshot\(rebuilt\.state\.party\)/);
+  assert.match(engine, /absoluteCastReferences\(finalCastReferences\(cast\)\)/);
+  assert.match(engine, /brief\.direction === 'objects' \? \[\] : castReferences/);
+  assert.match(engine, /buildGatewayReferenceRequest/);
+  assert.match(requests, /google\/gemini-3\.1-flash-image-preview/);
+  assert.match(requests, /modalities: \['text', 'image'\]/);
 });
 
 test('manual cover upload remains lead-only and terminal-only in canonical /p renderer', () => {
