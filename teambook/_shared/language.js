@@ -16,6 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
+const CAPACITY_REV = '20260824-capacity-canon1';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -96,7 +97,7 @@ async function boot() {
   if (PATH === '/') {
     await importMany([
       './home-onboarding-v14.js',
-      './home-public-v15.js?v=20260824-capacity-canon1',
+      `./home-public-v15.js?v=${CAPACITY_REV}`,
       './home-create-capacity.js',
       './home-canonical-guard.js',
       './home-cover-v3.js',
@@ -111,7 +112,7 @@ async function boot() {
 
   if (/^\/p\/?$/.test(PATH)) {
     await importMany([
-      './member-capacity-v14.js',
+      `./member-capacity-v14.js?v=${CAPACITY_REV}`,
       './activity-ux.js',
       './v13-public-first.js',
       './trust-seen.js',
@@ -145,7 +146,7 @@ async function boot() {
       './owner-label-v13.js',
       './public-member-identity-v13.js',
       './reward-history-v13.js',
-      './public-ui-v13-final.js',
+      `./public-detail-v15.js?v=${CAPACITY_REV}`,
       './public-detail-edge-fix-v14.js',
     ]);
     return;
@@ -153,7 +154,7 @@ async function boot() {
 
   if (/^\/new\/?$/.test(PATH)) {
     await importMany([
-      './member-capacity-v14.js',
+      `./member-capacity-v14.js?v=${CAPACITY_REV}`,
       './v13-public-first.js',
       './v12-new-reuse.js',
       './new-cover-v3.js',
@@ -164,9 +165,7 @@ async function boot() {
     return;
   }
 
-  if (/^\/public\/?$/.test(PATH)) {
-    return;
-  }
+  if (/^\/public\/?$/.test(PATH)) return;
 
   if (/^\/collection\/?$/.test(PATH)) {
     await importMany([
