@@ -33,11 +33,42 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-home-card-r
       display:none!important;
     }
 
-    /* The frame owns 63:88. Fill it consistently with the other card views. */
+    /* A collectible TeamBook card is already a finished 63:88 image, including
+       its printed frame. Never crop it again inside a book-cover slot. The slot
+       only supplies geometry; the whole card image stays visible edge to edge. */
+    html body #home #mainParty .xty-home-cover:has(> .animal-card:not(.card-back)),
+    html body #home .party-group .xty-party-row-cover:has(.animal-card:not(.card-back)),
+    html body #home .party-group .xty-party-row-cover .xty-home-cover:has(> .animal-card:not(.card-back)),
+    html body #home .tb14-public-party:has(.animal-card:not(.card-back)) > .animal-card {
+      overflow:visible!important;
+    }
+
+    html body #home #mainParty .xty-home-cover > .animal-card:not(.card-back),
+    html body #home .party-group .xty-party-row-cover .xty-home-cover > .animal-card:not(.card-back)),
+    html body #home .tb14-public-party > .animal-card:not(.card-back) {
+      padding:0!important;
+      border:0!important;
+      background:transparent!important;
+      box-shadow:none!important;
+    }
+
+    html body #home #mainParty .xty-home-cover > .animal-card:not(.card-back) .card-art,
+    html body #home .party-group .xty-party-row-cover .animal-card:not(.card-back) .card-art,
+    html body #home .tb14-public-party .animal-card:not(.card-back) .card-art {
+      display:block!important;
+      width:100%!important;
+      height:100%!important;
+      max-width:none!important;
+      margin:0!important;
+      object-fit:contain!important;
+      border-radius:0!important;
+      transform:none!important;
+    }
+
+    /* Card backs are textures, not finished card-face artwork, so they still
+       fill their frame. */
     html body #home #mainParty .xty-home-real-back img,
-    html body #home #mainParty .xty-home-cover > .animal-card .card-art,
-    html body #home .party-group .xty-party-row-cover .xty-home-real-back img,
-    html body #home .party-group .xty-party-row-cover .animal-card .card-art {
+    html body #home .party-group .xty-party-row-cover .xty-home-real-back img {
       width:100%!important;
       height:100%!important;
       max-width:none!important;
