@@ -4,6 +4,10 @@
    This module adds live status metadata from the detail API. It never guesses
    capacity: the detail API has already resolved legacy books to 5 and newer
    books to their stored 1..11 limit.
+
+   The preview metadata stays hidden until this canonical detail payload is
+   ready, so a capacity number is painted exactly once — never as an interim
+   N/5 value that a later renderer has to replace.
 */
 
 import { bookCapacity } from './book-capacity-v15.js';
@@ -33,6 +37,10 @@ function installStyle() {
   const style = document.createElement('style');
   style.id = 'tb-public-detail-v15-style';
   style.textContent = `
+    /* Inline preview metadata used to expose an intermediate fixed-5 count.
+       Keep it non-visible; the canonical detail grid below is the only visible
+       owner of occupancy. */
+    #meta{visibility:hidden!important;min-height:0!important;margin:0!important}
     .tb-public-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:13px}
     .tb-public-detail-item{padding:10px 11px;border:1px solid var(--xty-border);border-radius:13px;background:rgba(255,255,255,.55)}
     .tb-public-detail-item small{display:block;color:var(--xty-muted);font-size:9px;font-weight:800;letter-spacing:.05em;margin-bottom:2px}.tb-public-detail-item b{font-size:12px}
