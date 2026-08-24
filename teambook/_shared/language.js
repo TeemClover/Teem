@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-profile-card-bg-v23';
+const CAPACITY_REV = '20260824-party-board-v24';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -129,6 +129,10 @@ async function boot() {
       './level-up-growth.js',
       './v12-gameplay.js',
     ]);
+    /* This must load after the competing historical seat renderers above.
+       It restores only the inside-book board: Starter portraits remain quiet,
+       real cards may fill their seat, and Companion labels cannot disappear. */
+    await importOnce(`./party-board-portrait-v21.js?v=${CAPACITY_REV}`);
     return;
   }
 
