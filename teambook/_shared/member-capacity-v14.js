@@ -17,6 +17,7 @@ function installStyle() {
     .tb-capacity-copy{min-width:0}.tb-capacity-copy b{display:block;font-size:16px}.tb-capacity-copy small{display:block;margin-top:4px;color:var(--xty-muted);line-height:1.5}
     .tb-capacity-control{display:grid;grid-template-columns:44px minmax(76px,auto) 44px;align-items:center;border:1px solid var(--xty-border);border-radius:999px;background:var(--xty-paper);overflow:hidden;flex:none}
     .tb-capacity-control button{width:44px;height:44px;border:0;background:transparent;font-size:22px;cursor:pointer}
+    .tb-capacity-control button:disabled{opacity:.28;cursor:default}
     .tb-capacity-value{font-weight:950;text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}
     .tb-open-seat{min-height:0!important;aspect-ratio:63/88;border:1.5px dashed rgba(38,65,52,.28)!important;background:rgba(255,255,255,.42)!important;box-shadow:none!important;display:grid!important;place-items:center!important;padding:10px!important;text-align:center;color:var(--xty-muted);font-size:12px;font-weight:850;line-height:1.45}
     @media(max-width:420px){.tb-capacity-step{align-items:flex-start}.tb-capacity-control{grid-template-columns:40px minmax(68px,auto) 40px}.tb-capacity-control button{width:40px;height:42px}}
@@ -101,29 +102,50 @@ async function installBookOpenSeat() {
 
   const paint = () => {
     scheduled = false;
-    seats.querySelector('.tb-open-seat')?.remove();
-    const realMemberCount = seats.querySelectorAll('.seat:not(.pet-seat), .member-seat:not(.pet-seat)').length
-      || capacity.memberCount;
-    const remaining = Math.max(0, clamp(capacity.memberLimit) - realMemberCount);
+    const limit = clamp(capacity.memberLimit);
+    const count = Math.max(0, Number(capacity.memberCount || 0));
+    const remaining = Math.max(0, limit - count);
+    const desired = remaining > 0 ? `สมุดเปิดรับอีก ${remaining} คน` : '';
+    const legacyOpen = [...seats.querySelectorAll(':scope > .seat.open:not(.pet-card):not(.tb-open-seat)')];
+    let open = seats.querySelector(':scope > .tb-open-seat');
+
+    /* The old page hard-coded four human vacancy cards. Remove those once.
+       Never remove/re-add our own vacancy card when its state is already right;
+       that avoids MutationObserver repaint loops and card flicker. */
+    if (legacyOpen.length) legacyOpen.forEach(node => node.remove());
+
     if (remaining > 0) {
-      const open = document.createElement('div');
-      open.className = 'seat tb-open-seat';
-      open.setAttribute('aria-label', `สมุดเปิดรับอีก ${remaining} คน`);
-      open.textContent = `สมุดเปิดรับอีก ${remaining} คน`;
-      seats.appendChild(open);
-      if ($('seatHint')) $('seatHint').textContent = '';
-    } else if ($('seatHint')) {
-      $('seatHint').textContent = 'สมุดเต็มแล้ว';
+      if (!open) {
+        open = document.createElement('div');
+        open.className = 'seat tb-open-seat';
+        seats.appendChild(open);
+      }
+      if (open.textContent !== desired) open.textContent = desired;
+      const aria = `สมุดเปิดรับอีก ${remaining} คน`;
+      if (open.getAttribute('aria-label') !== aria) open.setAttribute('aria-label', aria);
+      if ($('seatHint')?.textContent) $('seatHint').textContent = '';
+    } else {
+      open?.remove();
+      if ($('seatHint') && $('seatHint').textContent !== 'สมุดเต็มแล้ว') $('seatHint').textContent = 'สมุดเต็มแล้ว';
     }
-    seats.setAttribute('aria-label', `คนในสมุด ${realMemberCount} จาก ${capacity.memberLimit} คน และเพื่อนร่วมทาง`);
+
+    const boardAria = `คนในสมุด ${count} จาก ${limit} คน และเพื่อนร่วมทาง`;
+    if (seats.getAttribute('aria-label') !== boardAria) seats.setAttribute('aria-label', boardAria);
   };
+
   const requestPaint = () => {
     if (scheduled) return;
     scheduled = true;
     requestAnimationFrame(paint);
   };
+
   requestPaint();
-  const observer = new MutationObserver(requestPaint);
+  const observer = new MutationObserver(records => {
+    /* Ignore mutations that only touch the one canonical vacancy card. */
+    const meaningful = records.some(record => [...record.addedNodes, ...record.removedNodes]
+      .some(node => node.nodeType === 1 && !node.classList?.contains('tb-open-seat')));
+    if (meaningful) requestPaint();
+  });
   observer.observe(seats, { childList:true });
 }
 
@@ -165,6 +187,7 @@ async function syncVisibleBookCounts() {
 installCreateStepper();
 installBookOpenSeat();
 if (location.pathname === '/' || /^\/public\/?$/.test(location.pathname)) {
-  requestAnimationFrame(() => syncVisibleBookCounts());
+  /* Renderers are async, but bounded retries avoid another whole-page observer. */
+  [0, 180, 650].forEach(delay => setTimeout(syncVisibleBookCounts, delay));
   window.addEventListener('pageshow', () => syncVisibleBookCounts(), { passive:true });
 }
