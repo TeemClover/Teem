@@ -20,7 +20,12 @@ document.head.append(responsiveStyle);
 
 /* Thai display text needs more vertical breathing room than Latin at the
    same nominal line-height. Keep this scoped to /read so other entry flows
-   retain their existing geometry. */
+   retain their existing geometry.
+
+   The responsive layer is mobile-first and intentionally collapses chapter
+   heroes/body widths. Restore the original calm desktop chapter geometry above
+   the old 940px breakpoint so WHY / HOW / WHAT / NEXT do not stretch edge to
+   edge or stack the hero artwork underneath the headline on wide screens. */
 if (/^\/read(?:\/|$)/.test(location.pathname)) {
   const thaiHeadingStyle = document.createElement('style');
   thaiHeadingStyle.id = 'teambook-read-thai-heading-leading';
@@ -39,6 +44,38 @@ if (/^\/read(?:\/|$)/.test(location.pathname)) {
       .entry-page .chapter-hero h1 {
         line-height: 1.6;
         letter-spacing: -0.018em;
+      }
+    }
+    @media (min-width: 941px) {
+      .entry-page .chapter-hero {
+        grid-template-columns: minmax(0,.9fr) minmax(380px,1.1fr) !important;
+        align-items: center;
+        gap: clamp(28px,6vw,72px);
+        padding: clamp(50px,8vw,96px) 0 clamp(44px,7vw,82px);
+      }
+      .entry-page .chapter-hero > div {
+        min-width: 0;
+        max-width: 620px;
+      }
+      .entry-page .chapter-hero .story-figure {
+        width: min(100%,560px);
+        justify-self: end;
+      }
+      .entry-page .chapter-body {
+        width: min(760px,calc(100% - 64px));
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px 0 80px;
+      }
+      .entry-page .chapter-body h2 {
+        margin-top: 52px;
+        font-size: clamp(25px,3.7vw,38px);
+        line-height: 1.34;
+      }
+      .entry-page .chapter-body p,
+      .entry-page .chapter-body ul {
+        font-size: 17px;
+        line-height: 1.9;
       }
     }
   `;
