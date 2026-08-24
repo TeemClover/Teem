@@ -10,6 +10,11 @@ function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
 }
 
+function memberLimitOf(body) {
+  const wanted = Math.floor(Number(body?.memberLimit || 5));
+  return Number.isFinite(wanted) ? Math.min(11, Math.max(1, wanted)) : 5;
+}
+
 async function captureV3(req) {
   let raw = '';
   const headers = {};
@@ -34,8 +39,10 @@ export async function handleCreatePartyV4(req, res) {
 
     const sql = database();
     await ensureSchema(sql);
+    const requestBody = bodyOf(req);
+    const memberLimit = memberLimitOf(requestBody);
     const identityIds = await identityIdsForLineage(req, sql, currentUser);
-    const prepared = await prepareLineageForCreate(sql, bodyOf(req), identityIds);
+    const prepared = await prepareLineageForCreate(sql, requestBody, identityIds);
 
     const created = await captureV3(req);
     if (created.status >= 400 || created.data?.error || !created.data?.party?.id) {
@@ -43,8 +50,19 @@ export async function handleCreatePartyV4(req, res) {
     }
 
     const party = created.data.party;
+    party.memberLimit = memberLimit;
     const lineage = await recordCreatedBookLineage(sql, party, prepared);
     const now = new Date();
+
+    /* Keep capacity on the book's creation event instead of introducing a
+       second mutable settings table. Old books without this field resolve to
+       the historical default of 5. */
+    await sql.query(`UPDATE teambook_book_events
+      SET data_json = COALESCE(data_json,'{}'::jsonb) || $1::jsonb
+      WHERE book_id=$2 AND type='PARTY_CREATED'`, [
+      JSON.stringify({ memberLimit }), party.id,
+    ]);
+
     await sql.query(`INSERT INTO teambook_book_events (book_id,type,actor_id,party_day,data_json,created_at)
       VALUES ($1,'BOOK_LINEAGE_RECORDED',$2,1,$3::jsonb,$4)`, [
       party.id,
@@ -53,7 +71,7 @@ export async function handleCreatePartyV4(req, res) {
       now,
     ]);
 
-    return sendJson(res, { ...created.data, lineage }, created.status || 201);
+    return sendJson(res, { ...created.data, party, lineage, memberLimit }, created.status || 201);
   } catch (error) {
     console.error('TeamBook create v4 lineage failed', error);
     if (error.code === 'TEAMBOOK_DATABASE_URL_NOT_CONFIGURED') {
