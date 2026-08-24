@@ -12,20 +12,23 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 28, epic: 16, legendary: 9 });
-  assert.equal(TEAMBOOK_CARDS.length, 117);
+  assert.deepEqual(by, { common: 64, rare: 36, epic: 16, legendary: 9 });
+  assert.equal(TEAMBOOK_CARDS.length, 125);
 });
 
-test('Pig and Buffalo each have two distinct Rare cards in every colour', () => {
-  for (const species of ['pig', 'buffalo']) {
+test('Pig, Buffalo, and Chicken each have two distinct Rare cards in every colour', () => {
+  for (const species of ['pig', 'buffalo', 'chicken']) {
     const rareCards = TEAMBOOK_CARDS.filter(card => card.species === species && card.rarity === 'rare');
     assert.equal(rareCards.length, 8);
     assert.equal(new Set(rareCards.map(card => card.cardId)).size, 8);
     assert.equal(new Set(rareCards.map(card => card.imageFull)).size, 8);
     for (const color of TEAMBOOK_CARD_COLORS) {
+      const expectedIds = [1, 2].map(variant => (
+        `${species.toUpperCase()}_${color.toUpperCase()}_RARE_${String(variant).padStart(3, '0')}`
+      ));
       assert.deepEqual(
         rareCards.filter(card => card.color === color).map(card => card.cardId).sort(),
-        [`${species.toUpperCase()}_${color.toUpperCase()}_RARE_001`, `${species.toUpperCase()}_${color.toUpperCase()}_RARE_002`],
+        expectedIds,
       );
     }
   }

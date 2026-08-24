@@ -136,6 +136,24 @@ const RARE_SCENES = Object.freeze({
       { variant: 'ring-toss', description: 'ลูกควายพุ่งตัวโยนห่วงสีเงินเข้าเป้าในงานวัด สนุกกับจังหวะที่กีบปล่อยห่วง', flavor: 'เล็งให้ดี แล้วกล้าปล่อยในจังหวะของเรา' },
     ],
   },
+  chicken: {
+    red: [
+      { variant: 'morning-bell', description: 'ไก่เอนตัวดึงเชือกสีแดง ตีระฆังรับแสงเช้าให้หมู่บ้านเริ่มวันใหม่', flavor: 'เสียงเริ่มต้นหนึ่งครั้ง อาจปลุกความกล้าทั้งวัน' },
+      { variant: 'popcorn-maker', description: 'ไก่หมุนเครื่องทำป๊อปคอร์นกรอบสีแดงในงานวัด พร้อมรับเมล็ดฟูใส่ถุง', flavor: 'หมุนต่ออีกนิด ความสนุกก็พร้อมแบ่งเต็มถุง' },
+    ],
+    green: [
+      { variant: 'bubble-garden', description: 'ไก่นั่งริมกำแพงสวน เป่าฟองสบู่จากก้านวงและถ้วยสีเขียวให้ลอยรับแดด', flavor: 'เป่าเบา ๆ แล้วปล่อยเรื่องหนักให้ลอยขึ้น' },
+      { variant: 'mini-golf', description: 'ไก่ย่อตัวเล็งมินิกอล์ฟ จับจังหวะก่อนตีลูกสีเขียวเข้าสู่ทางโค้งในสวน', flavor: 'มองลูกตรงหน้า แล้วค่อยตีหนึ่งจังหวะ' },
+    ],
+    blue: [
+      { variant: 'field-cheer', description: 'ไก่ทรงตัวบนตอไม้ ส่งเสียงเชียร์ผ่านโทรโข่งสีน้ำเงินในงานกีฬากลางทุ่ง', flavor: 'เสียงเชียร์หนึ่งเสียง ทำให้ก้าวของเพื่อนไม่เดียวดาย' },
+      { variant: 'attic-xylophone', description: 'ไก่นั่งเล่นไซโลโฟนกรอบสีน้ำเงินในห้องใต้หลังคา ตีสองจังหวะสลับกันอย่างร่าเริง', flavor: 'เล่นคนละจังหวะ ก็กลายเป็นทำนองเดียวกัน' },
+    ],
+    silver: [
+      { variant: 'snow-globe', description: 'ไก่หมุนตัวประคองลูกแก้วหิมะฐานสีเงิน ชมเกล็ดขาวร่วงรอบบ้านหลังจิ๋ว', flavor: 'เขย่าโลกใบเล็ก แล้วดูความมหัศจรรย์ค่อย ๆ ตกลงมา' },
+      { variant: 'badminton-lunge', description: 'ไก่พุ่งลันจ์รับลูกแบดด้วยแร็กเก็ตสีเงินใต้แสงโคมยามเย็น', flavor: 'ตั้งหลักให้มั่น แล้วส่งจังหวะกลับไปด้วยรอยยิ้ม' },
+    ],
+  },
 });
 
 function makeRareCard(animal, color, variant = 1) {
@@ -177,10 +195,10 @@ const PRINTED = Object.freeze({
       species, color, variant: index + 1,
       art: `/assets/cards/common/${species.replaceAll('_', '-')}-${color}-${variant}.webp`,
     })))),
-  /* Original painted scenes keep their ids; Pig and Buffalo add two reviewed scenes per colour. */
+  /* Original painted scenes keep their ids; expanded species add two reviewed scenes per colour. */
   rare: ['orange_cat', 'white_pom', 'white_cat']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
-    .concat(['pig', 'buffalo'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
+    .concat(['pig', 'buffalo', 'chicken'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
       species, color, variant, scene: true,
     }))))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
