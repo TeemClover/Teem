@@ -12,8 +12,8 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 13, epic: 16, legendary: 9 });
-  assert.equal(TEAMBOOK_CARDS.length, 102);
+  assert.deepEqual(by, { common: 64, rare: 16, epic: 16, legendary: 9 });
+  assert.equal(TEAMBOOK_CARDS.length, 105);
 });
 
 test('no starter animal is printed as a card, and every card has a colour', () => {
@@ -115,16 +115,26 @@ test('cards already owned before the reprint still resolve', () => {
   }
 });
 
-test('the first chicken Rare is the reviewed red morning-bell card', () => {
-  const card = cardById('CHICKEN_RED_RARE_001');
-  assert.ok(card);
-  assert.equal(card.species, 'chicken');
-  assert.equal(card.color, 'red');
-  assert.equal(card.rarity, 'rare');
-  assert.equal(card.artVariant, 'morning-bell');
-  assert.equal(card.accessoryType, 'morning-bell');
-  assert.equal(card.accessoryColor, 'red');
-  assert.equal(card.imageFull, '/assets/cards/rare/chicken-red-rare-001.webp');
+test('the reviewed chicken Rare set contains all four colours and activities', () => {
+  const expected = [
+    ['red', 'country-kitchen-pancake', 'apron'],
+    ['green', 'birdhouse-workshop', 'tool-belt'],
+    ['blue', 'xylophone-rehearsal', 'bow-tie'],
+    ['silver', 'winter-pond-skate', 'earmuffs-and-skates'],
+  ];
+  const cards = TEAMBOOK_CARDS.filter(card => card.species === 'chicken' && card.rarity === 'rare');
+  assert.equal(cards.length, expected.length);
+  for (const [color, artVariant, accessoryType] of expected) {
+    const card = cardById(`CHICKEN_${color.toUpperCase()}_RARE_001`);
+    assert.ok(card);
+    assert.equal(card.species, 'chicken');
+    assert.equal(card.color, color);
+    assert.equal(card.rarity, 'rare');
+    assert.equal(card.artVariant, artVariant);
+    assert.equal(card.accessoryType, accessoryType);
+    assert.equal(card.accessoryColor, color);
+    assert.equal(card.imageFull, `/assets/cards/rare/chicken-${color}-rare-001.webp`);
+  }
 });
 
 test('the odds are the stated ones and sum to 100', () => {

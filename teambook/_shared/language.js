@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-card-geometry-v17-filter1';
+const CAPACITY_REV = '20260824-profile-card-bg-v23';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -91,10 +91,10 @@ async function boot() {
   globalThis.__teambookV15Runtime = true;
 
   await importOnce('./header-brand-th.js');
-  /* 63:88 is product geometry, not a page feature. Load it everywhere,
-     including Profile, Collection and Public, and retire the old Home-only
-     geometry patch so two frame systems can no longer fight each other. */
+  /* Geometry owns 63:88 sizing and the square Profile portrait. The surface
+     layer paints only full-bleed card/Starter frames and never deletes geometry. */
   await importOnce(`./card-geometry-v16.js?v=${CAPACITY_REV}`);
+  await importOnce(`./card-visual-final-v19.js?v=${CAPACITY_REV}`);
 
   if (PATH === '/') {
     await importMany([

@@ -102,9 +102,24 @@ const RARE_SCENES = Object.freeze({
   },
   chicken: {
     red: {
-      variant: 'morning-bell', accessoryType: 'morning-bell',
-      description: 'ไก่ดึงเชือกระฆังสีแดงยามเช้า ชวนเพื่อนเริ่มวันใหม่ไปพร้อมกัน',
-      flavor: 'เสียงเช้าเบา ๆ บอกว่าเราลองใหม่ได้เสมอ',
+      variant: 'country-kitchen-pancake', accessoryType: 'apron',
+      description: 'ไก่สวมผ้ากันเปื้อนสีแดง พลิกแพนเค้กในครัวสมุดด้วยจังหวะสนุก ๆ',
+      flavor: 'เช้านี้เริ่มได้ด้วยของอร่อยชิ้นเล็ก ๆ',
+    },
+    green: {
+      variant: 'birdhouse-workshop', accessoryType: 'tool-belt',
+      description: 'ไก่คาดเข็มขัดเครื่องมือสีเขียว ค่อย ๆ ต่อบ้านนกบนโต๊ะงานไม้',
+      flavor: 'วางทีละชิ้น เดี๋ยวบ้านหลังเล็กก็เป็นรูปเป็นร่าง',
+    },
+    blue: {
+      variant: 'xylophone-rehearsal', accessoryType: 'bow-tie',
+      description: 'ไก่ผูกหูกระต่ายสีน้ำเงิน ตีไซโลโฟนเป็นจังหวะสดใสในห้องดนตรี',
+      flavor: 'ทำนองสั้น ๆ ก็ชวนทั้งห้องขยับตามได้',
+    },
+    silver: {
+      variant: 'winter-pond-skate', accessoryType: 'earmuffs-and-skates',
+      description: 'ไก่ใส่ที่ครอบหูและรองเท้าสเก็ตสีเงิน กางปีกไถลบนบ่อน้ำแข็ง',
+      flavor: 'รักษาสมดุลไว้ แล้วปล่อยให้ทางโค้งพาเราไป',
     },
   },
 });
@@ -145,9 +160,8 @@ const PRINTED = Object.freeze({
       art: `/assets/cards/common/${species.replaceAll('_', '-')}-${color}-${variant}.webp`,
     })))),
   /* the original painted scenes, kept at their existing ids */
-  rare: ['orange_cat', 'white_pom', 'white_cat']
-    .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
-    .concat([{ species: 'chicken', color: 'red', variant: 1, scene: true }]),
+  rare: ['orange_cat', 'white_pom', 'white_cat', 'chicken']
+    .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true }))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
   epic: ['orange_cat', 'white_cat', 'white_pom']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({

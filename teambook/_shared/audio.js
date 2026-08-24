@@ -1,17 +1,17 @@
 const KEY = 'teambook_sfx_muted';
 
-/* Real physical-card samples. Keep these at the top because we now prepare
-   every asset as soon as the module is evaluated — before the first tap. */
+/* TeamBook-owned physical-card samples only. Keep these at the top because we
+   prepare every asset as soon as the module is evaluated — before first tap. */
 const SAMPLES = {
-  playerJoined: '/assets/audio/player-joined.mp3',
-  cardFlip: '/assets/audio/card-flip.mp3',
-  cardSwap: '/assets/audio/card-swap.mp3',
+  cardFlip: '/teambook/assets/audio/card-flip.mp3',
+  cardSwap: '/teambook/assets/audio/card-swap.mp3',
 };
 
 let context = null;
 let primed = false;
 let priming = null;
 let gestureSeen = false;
+let mediaUnlocked = false;
 
 const decoded = new Map();
 const bytes = new Map();
@@ -99,9 +99,12 @@ function sampleBuffer(name) {
 }
 
 function unlockMediaElements() {
-  /* HTMLAudio is the safety net if WebAudio gets suspended by iOS. Touch every
-     real sample while user activation is live, but muted, so later fallback
-     playback does not need a navigation-away/back cycle to become eligible. */
+  if (mediaUnlocked) return;
+  mediaUnlocked = true;
+
+  /* HTMLAudio is the safety net if WebAudio gets suspended by iOS. Touch only
+     TeamBook-owned samples while user activation is live, muted, so later
+     fallback playback does not need another navigation cycle. */
   for (const name of Object.keys(SAMPLES)) {
     const el = mediaElement(name);
     if (!el) continue;
