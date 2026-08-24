@@ -100,15 +100,37 @@ const RARE_SCENES = Object.freeze({
     blue: { variant: 'seaside-compass', description: 'หมาถือเข็มทิศริมทะเลสีฟ้า ชวนทีมฟังคลื่นและเลือกทางที่สบายใจ', flavor: 'เข็มทิศที่ดี พาเรากลับมาฟังตัวเอง' },
     silver: { variant: 'star-trail', description: 'หมาลากเส้นดาวสีเงินบนฟ้า ทำเครื่องหมายทุกก้าวที่ทีมเคยผ่าน', flavor: 'ทุกก้าวที่ผ่านไป กลายเป็นดาวนำทางดวงใหม่' },
   },
+  pig: {
+    red: [
+      { variant: 'berry-pie', description: 'หมูนวดแป้งทำพายเบอร์รีในครัวสมุด พร้อมผ้าพันคอและชุดทำครัวสีแดง', flavor: 'ของอร่อยเริ่มจากสองกีบที่ยอมลงมือ' },
+      { variant: 'picnic-wagon', description: 'หมูออกแรงลากรถเข็นปิกนิกสีแดง พาของอร่อยไปแบ่งเพื่อนที่สวน', flavor: 'ความสุขเบาลง เมื่อเราช่วยกันลาก' },
+    ],
+    green: [
+      { variant: 'seedling-garden', description: 'หมูคุกเข่ารดน้ำต้นอ่อนด้วยบัวรดน้ำสีเขียว เฝ้าดูใบแรกอย่างตั้งใจ', flavor: 'ดูแลวันละนิด แล้วสิ่งเล็ก ๆ จะเติบโต' },
+      { variant: 'birdhouse-builder', description: 'หมูเขย่งติดบ้านนกสีเขียวบนต้นไม้ พร้อมกระเป๋าเครื่องมือคู่ใจ', flavor: 'มุมเล็ก ๆ ที่เราสร้าง อาจเป็นบ้านของใครสักคน' },
+    ],
+    blue: [
+      { variant: 'parade-drum', description: 'หมูเดินขบวนตีกลองสีน้ำเงิน เติมจังหวะสนุกให้ทางเดินของทีม', flavor: 'ก้าวของเราไม่ต้องเหมือนกัน แค่ยังฟังจังหวะกัน' },
+      { variant: 'windy-pinwheel', description: 'หมูวิ่งรับลมพร้อมกังหันสีน้ำเงิน ปล่อยผ้าพันคอพลิ้วไปตามทาง', flavor: 'ลมเปลี่ยนทิศได้ แต่ความสนุกยังวิ่งต่อ' },
+    ],
+    silver: [
+      { variant: 'music-box', description: 'หมูนั่งหมุนกล่องดนตรีสีเงิน ฟังดาวกระดาษเต้นรอบตัวอย่างสงบ', flavor: 'บางจังหวะไม่ต้องดัง ก็ทำให้ใจยิ้มได้' },
+      { variant: 'winter-skater', description: 'หมูไอซ์สเกตขาเดียวด้วยผ้าพันคอและรองเท้าสีเงินบนบึงฤดูหนาว', flavor: 'เสียหลักนิดหน่อย ก็ยังหมุนเป็นท่าใหม่ได้' },
+    ],
+  },
 });
 
-function makeRareCard(animal, color) {
-  const scene = RARE_SCENES[animal.id]?.[color];
+function makeRareCard(animal, color, variant = 1) {
+  const sceneSet = RARE_SCENES[animal.id]?.[color];
+  const scene = Array.isArray(sceneSet) ? sceneSet[variant - 1] : variant === 1 ? sceneSet : null;
   if (!scene) return null;
   const card = baseCard(animal, color, 'rare');
-  const path = `/assets/cards/rare/${animal.id.replaceAll('_', '-')}-${color}-rare-001.webp`;
+  const suffix = String(variant).padStart(3, '0');
+  const path = `/assets/cards/rare/${animal.id.replaceAll('_', '-')}-${color}-rare-${suffix}.webp`;
   return Object.freeze({
-    ...card, artVariant: scene.variant, accessoryType: 'clover-charm', accessoryColor: color,
+    ...card,
+    cardId: printedId(animal.id, color, 'rare', variant),
+    artVariant: scene.variant, accessoryType: 'clover-charm', accessoryColor: color,
     description: scene.description, descriptionTh: scene.description,
     flavorText: scene.flavor, flavorTh: scene.flavor,
     image: path, imageThumb: path, imageFull: path, art: path,
@@ -137,9 +159,12 @@ const PRINTED = Object.freeze({
       species, color, variant: index + 1,
       art: `/assets/cards/common/${species.replaceAll('_', '-')}-${color}-${variant}.webp`,
     })))),
-  /* the original painted scenes, kept at their existing ids */
+  /* Original painted scenes keep their ids; Pig adds two reviewed scenes per colour. */
   rare: ['orange_cat', 'white_pom', 'white_cat']
-    .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true }))),
+    .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
+    .concat(TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
+      species: 'pig', color, variant, scene: true,
+    })))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
   epic: ['orange_cat', 'white_cat', 'white_pom']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({
@@ -168,7 +193,7 @@ function printedId(species, color, rarity, variant) {
 function makePrintedCard(rarity, entry) {
   const animal = speciesById(entry.species);
   if (!animal) return null;
-  if (rarity === 'rare') return makeRareCard(animal, entry.color);
+  if (rarity === 'rare') return makeRareCard(animal, entry.color, entry.variant);
   const card = baseCard(animal, entry.color, rarity);
   return Object.freeze({
     ...card,

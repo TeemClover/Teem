@@ -12,8 +12,21 @@ import {
 test('the printed set is exactly the art that exists', () => {
   const by = {};
   for (const card of TEAMBOOK_CARDS) by[card.rarity] = (by[card.rarity] || 0) + 1;
-  assert.deepEqual(by, { common: 64, rare: 12, epic: 16, legendary: 9 });
-  assert.equal(TEAMBOOK_CARDS.length, 101);
+  assert.deepEqual(by, { common: 64, rare: 20, epic: 16, legendary: 9 });
+  assert.equal(TEAMBOOK_CARDS.length, 109);
+});
+
+test('Pig has two distinct Rare cards in every colour', () => {
+  const pigRare = TEAMBOOK_CARDS.filter(card => card.species === 'pig' && card.rarity === 'rare');
+  assert.equal(pigRare.length, 8);
+  assert.equal(new Set(pigRare.map(card => card.cardId)).size, 8);
+  assert.equal(new Set(pigRare.map(card => card.imageFull)).size, 8);
+  for (const color of TEAMBOOK_CARD_COLORS) {
+    assert.deepEqual(
+      pigRare.filter(card => card.color === color).map(card => card.cardId).sort(),
+      [`PIG_${color.toUpperCase()}_RARE_001`, `PIG_${color.toUpperCase()}_RARE_002`],
+    );
+  }
 });
 
 test('no starter animal is printed as a card, and every card has a colour', () => {
