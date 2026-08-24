@@ -44,7 +44,7 @@ if (typeof document !== 'undefined' && !document.getElementById('xty-home-card-r
     }
 
     html body #home #mainParty .xty-home-cover > .animal-card:not(.card-back),
-    html body #home .party-group .xty-party-row-cover .xty-home-cover > .animal-card:not(.card-back)),
+    html body #home .party-group .xty-party-row-cover .xty-home-cover > .animal-card:not(.card-back),
     html body #home .tb14-public-party > .animal-card:not(.card-back) {
       padding:0!important;
       border:0!important;
