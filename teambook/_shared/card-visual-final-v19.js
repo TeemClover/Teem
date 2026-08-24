@@ -164,6 +164,34 @@ if (typeof document !== 'undefined') {
     html body #home .party-group .xty-party-row-cover .xty-home-cover.avatar-cover::after{
       display:none!important;
     }
+
+    /* ===== Starter background colour only =====
+       Public/Home public still had a historical cream background override.
+       Keep every existing size/crop/border rule; only make that background use
+       the same colour the user selected for the frame. */
+    html body #tb15HomePublicList .tb15-starter-cover,
+    html body .public-party>.avatar-cover,
+    html body .preview-cover>.avatar-cover,
+    html body #cover>.avatar-cover{
+      --tb-public-starter-bg:var(--xty-green);
+      background:var(--tb-public-starter-bg)!important;
+    }
+    html body #tb15HomePublicList .tb15-starter-cover[data-color="red"],
+    html body .public-party>.avatar-cover[data-color="red"],
+    html body .preview-cover>.avatar-cover[data-color="red"],
+    html body #cover>.avatar-cover[data-color="red"]{--tb-public-starter-bg:var(--xty-red)!important}
+    html body #tb15HomePublicList .tb15-starter-cover[data-color="green"],
+    html body .public-party>.avatar-cover[data-color="green"],
+    html body .preview-cover>.avatar-cover[data-color="green"],
+    html body #cover>.avatar-cover[data-color="green"]{--tb-public-starter-bg:var(--xty-green)!important}
+    html body #tb15HomePublicList .tb15-starter-cover[data-color="blue"],
+    html body .public-party>.avatar-cover[data-color="blue"],
+    html body .preview-cover>.avatar-cover[data-color="blue"],
+    html body #cover>.avatar-cover[data-color="blue"]{--tb-public-starter-bg:var(--xty-blue)!important}
+    html body #tb15HomePublicList .tb15-starter-cover[data-color="silver"],
+    html body .public-party>.avatar-cover[data-color="silver"],
+    html body .preview-cover>.avatar-cover[data-color="silver"],
+    html body #cover>.avatar-cover[data-color="silver"]{--tb-public-starter-bg:var(--xty-silver)!important}
   `;
   document.head.appendChild(style);
 }
