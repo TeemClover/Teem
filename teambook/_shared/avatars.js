@@ -9,7 +9,10 @@
    Keeping the roster separate is the whole reason that is possible.
 
    Avatar identity and RGBS frame color are separate profile choices;
-   changing a Pet never changes the player's avatar. */
+   changing a Pet never changes the player's avatar.
+
+   TeamBook 1.4 architecture: this file is pure data/presentation. It MUST NOT
+   boot the app runtime or import the bootstrap as a side effect. */
 
 function species(id, slug, nameTh, fallback, starter = true) {
   return Object.freeze({
@@ -43,13 +46,10 @@ export const SPECIES_BY_ID = Object.freeze(
   }, {})
 );
 
-/* No fallback here on purpose: a caller asking about an unknown species
-   wants to know it is unknown, not to be handed a cat. */
 export function speciesById(id) {
   return SPECIES_BY_ID[String(id || '')] || null;
 }
 
-/* The Starter roster — what the avatar and party pickers offer for free. */
 export const TEAMBOOK_AVATARS = Object.freeze(TEAMBOOK_SPECIES.filter(item => item.starter));
 
 export const AVATAR_BY_ID = Object.freeze(
@@ -72,15 +72,4 @@ export function avatarById(id) {
 
 export function avatarFallback(id, fallback = '🐱') {
   return AVATAR_BY_ID[id]?.fallback || fallback || '🐱';
-}
-
-/* Presentation must never be allowed to block TeamBook core boot. The language
-   layer is intentionally loaded as an un-awaited side effect: if it ever
-   throws on a browser edge case, avatar/store/game modules still work.
-   Version the optional import because mobile Safari can keep an older module
-   response longer than the surrounding page after a deploy. */
-if (typeof window !== 'undefined') {
-  import('./language.js?v=20260819-challenge3').catch(error => {
-    console.warn('[TeamBook] optional language layer failed', error);
-  });
 }
