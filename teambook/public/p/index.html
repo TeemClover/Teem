@@ -42,7 +42,7 @@
   .join-zone{position:sticky;bottom:max(10px,env(safe-area-inset-bottom));z-index:20;margin-top:14px;padding:10px;border:1px solid var(--xty-border);border-radius:999px;background:rgba(255,254,248,.94);box-shadow:var(--shadow);backdrop-filter:blur(8px)}
   @media(max-width:390px){.preview-hero{grid-template-columns:96px minmax(0,1fr)}.preview-cover{width:96px}}
 </style>
-<script type="module" src="/_shared/language.js?v=20260819-challenge3"></script>
+<script type="module" src="/_shared/language.js?v=20260824-capacity-canon1"></script>
 </head>
 <body>
 <header class="top"><a class="mark" href="/"><img src="/assets/brand/teambook-logo.png" alt="TeamBook"></a><a class="back" href="/public/">สมุดสาธารณะ</a></header>
@@ -82,6 +82,7 @@
 import { avatarById } from '/_shared/avatars.js';
 import { cardById as xtyCardById, cardDescriptorTh } from '/_shared/cards.js';
 import { cardMarkup } from '/_shared/card-ui.js';
+import { bookCapacity } from '/_shared/book-capacity-v15.js';
 import { PET_BY_ID } from '/_shared/pets.js';
 
 const $ = id => document.getElementById(id);
@@ -185,23 +186,32 @@ function renderTimeline(party) {
 }
 
 function render(party) {
+  const capacity = bookCapacity(party);
+  if (!capacity) throw new Error('BOOK_CAPACITY_MISSING');
+
   document.title = `${party.name} — TeamBook`;
   $('name').textContent=party.name; $('activity').textContent=party.activity || 'ยังไม่ระบุกิจกรรม';
   $('rule').textContent=party.commitRule || 'เจ้าของสมุดยังไม่ได้เขียนวันนี้ลงชื่อได้เมื่อ';
   const mode=party.verificationMode==='confirm'?'ต้อง เห็นแล้ว':'เชื่อใจกัน';
-  $('meta').innerHTML=`<span>${esc(mode)}</span><span>${party.members.length}/5 คน</span><span>${party.durationDays} วัน</span><span>${esc(coverName(party))}</span>`;
+  $('meta').innerHTML=`<span>${esc(mode)}</span><span>${capacity.memberCount}/${capacity.memberLimit} คน</span><span>${party.durationDays} วัน</span><span>${esc(coverName(party))}</span>`;
   renderCover(party);
   $('members').innerHTML=(party.members||[]).map(member=>`<div class="preview-member"><img src="${esc(avatarById(member.avatar).art)}" alt=""><b>${esc(member.alias)}</b><small>${member.role==='lead'?'เจ้าของสมุด':'สมาชิก'}</small></div>`).join('');
   renderTimeline(party);
   $('join').href=`/join/?c=${encodeURIComponent(party.code)}`;
-  if (!party.joinable) { $('join').removeAttribute('href'); $('join').textContent=party.members.length>=5?'สมุดเต็มแล้ว':'สมุดนี้ปิดรับแล้ว'; $('join').style.opacity='.5'; }
+  $('join').textContent='เข้าร่วมสมุดนี้';
+  $('join').style.opacity='';
+  if (!party.joinable) {
+    $('join').removeAttribute('href');
+    $('join').textContent=capacity.full?'สมุดเต็มแล้ว':'สมุดนี้ปิดรับแล้ว';
+    $('join').style.opacity='.5';
+  }
   $('loading').hidden=true; $('view').hidden=false;
 }
 
 async function start() {
   if (!/^\d{5}$/.test(code || '')) { $('loading').hidden=true; $('missing').hidden=false; return; }
   try {
-    const response=await fetch(`/api/teambook-party-finish?op=public-preview-v2&code=${encodeURIComponent(code)}`,{headers:{accept:'application/json'},credentials:'same-origin'});
+    const response=await fetch(`/api/teambook-party-finish?op=public-preview-v2&code=${encodeURIComponent(code)}`,{headers:{accept:'application/json'},credentials:'same-origin',cache:'no-store'});
     const data=await response.json(); if(!response.ok||!data.party) throw new Error(data.error||'HTTP'); render(data.party);
   } catch { $('loading').hidden=true; $('missing').hidden=false; }
 }
