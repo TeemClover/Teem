@@ -66,11 +66,6 @@ function installNetworkGuard() {
 
   globalThis.fetch = function teambookV14Fetch(input, init) {
     const { method, url } = requestInfo(input, init);
-
-    /* index.html still contains its historical Public loader. V1.4 does not
-       let that loader touch the network: the visible Home Public lane is owned
-       exclusively by home-public-v14.js and uses the richer v13 list endpoint.
-       Returning an empty legacy snapshot keeps the old Home boot harmless. */
     if (PATH === '/' && method === 'GET' && url?.origin === location.origin
         && url.pathname === '/api/teambook/public') {
       return Promise.resolve(new Response(JSON.stringify({
@@ -90,9 +85,6 @@ function installNetworkGuard() {
   };
 }
 
-/* Install the network guard synchronously when this module evaluates. The
-   bottom inline module in index.html executes later in the module-script queue,
-   so its retired Public request is already neutralized before it can fire. */
 installNetworkGuard();
 
 async function boot() {
@@ -105,6 +97,7 @@ async function boot() {
     await importMany([
       './home-onboarding-v14.js',
       './home-public-v14.js',
+      './member-capacity-v14.js',
       './home-create-capacity.js',
       './home-canonical-guard.js',
       './home-cover-v3.js',
@@ -119,6 +112,7 @@ async function boot() {
 
   if (/^\/p\/?$/.test(PATH)) {
     await importMany([
+      './member-capacity-v14.js',
       './activity-ux.js',
       './v13-public-first.js',
       './trust-seen.js',
@@ -146,6 +140,7 @@ async function boot() {
 
   if (/^\/public\/p\/?$/.test(PATH)) {
     await importMany([
+      './member-capacity-v14.js',
       './activity-ux.js',
       './v13-public-first.js',
       './trust-seen.js',
@@ -160,6 +155,7 @@ async function boot() {
 
   if (/^\/new\/?$/.test(PATH)) {
     await importMany([
+      './member-capacity-v14.js',
       './v13-public-first.js',
       './v12-new-reuse.js',
       './new-cover-v3.js',
@@ -167,6 +163,11 @@ async function boot() {
       './collection-skin-picker.js',
       './new-capacity-guard.js',
     ]);
+    return;
+  }
+
+  if (/^\/public\/?$/.test(PATH)) {
+    await importOnce('./member-capacity-v14.js');
     return;
   }
 
@@ -179,7 +180,4 @@ async function boot() {
   }
 }
 
-/* Module scripts are deferred by the browser, so the document is already
-   parsed when this entrypoint evaluates. Start immediately; do not add another
-   DOMContentLoaded layer. */
 boot();
