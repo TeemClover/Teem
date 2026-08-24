@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-profile-card-crop-v22';
+const CAPACITY_REV = '20260824-profile-card-bg-v23';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
