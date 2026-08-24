@@ -74,7 +74,7 @@ const $ = id => document.getElementById(id);
 const HIDE_FULL_KEY = 'teambook_public_hide_full';
 let cursor = null;
 let loadedParties = [];
-const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;' }[c]));
+const esc = value => String(value || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
 function readHideFull() {
   try {
