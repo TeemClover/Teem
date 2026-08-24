@@ -118,6 +118,24 @@ const RARE_SCENES = Object.freeze({
       { variant: 'winter-skater', description: 'หมูไอซ์สเกตขาเดียวด้วยผ้าพันคอและรองเท้าสีเงินบนบึงฤดูหนาว', flavor: 'เสียหลักนิดหน่อย ก็ยังหมุนเป็นท่าใหม่ได้' },
     ],
   },
+  buffalo: {
+    red: [
+      { variant: 'gift-wrap', description: 'ลูกควายนั่งห่อของขวัญด้วยริบบิ้นสีแดง ตั้งใจพับทุกมุมให้เรียบร้อย', flavor: 'ความตั้งใจเล็ก ๆ ทำให้ของขวัญอบอุ่นขึ้น' },
+      { variant: 'windy-kite', description: 'ลูกควายเอนตัวรับลม พลางประคองว่าวสีแดงให้ลอยสูงเหนือทุ่ง', flavor: 'ลมแรงแค่ไหน เรายังจับสายแห่งความหวังไว้ได้' },
+    ],
+    green: [
+      { variant: 'painted-stool', description: 'ลูกควายคุกเข่าทาสีเก้าอี้ไม้เป็นสีเขียว เติมชีวิตใหม่ให้ของชิ้นเดิม', flavor: 'ลงมือทีละปาด ของธรรมดาก็สดใสขึ้นได้' },
+      { variant: 'apple-harvest', description: 'ลูกควายเขย่งเก็บแอปเปิลใส่ตะกร้าสีเขียว เลือกลูกสวยไว้แบ่งเพื่อน', flavor: 'ผลที่เก็บด้วยกัน หวานขึ้นเมื่อได้แบ่งกัน' },
+    ],
+    blue: [
+      { variant: 'jump-rope', description: 'ลูกควายกระโดดเชือกสีน้ำเงินกลางลาน กะจังหวะให้เขาและกีบลอยพ้นเชือก', flavor: 'จับจังหวะของตัวเอง แล้วความหนักก็เบาลง' },
+      { variant: 'paper-boat', description: 'ลูกควายนอนคว่ำบนสะพานไม้ ปล่อยเรือกระดาษสีน้ำเงินออกเดินทางตามลำธาร', flavor: 'ปล่อยความฝันลำเล็ก แล้วดูว่ามันจะไปไกลแค่ไหน' },
+    ],
+    silver: [
+      { variant: 'clock-repair', description: 'ลูกควายนั่งซ่อมนาฬิกาปลุกสีเงินในห้องใต้หลังคา จัดเฟืองเล็ก ๆ อย่างใจเย็น', flavor: 'เวลาที่ค่อย ๆ ดูแล จะกลับมาเดินอีกครั้ง' },
+      { variant: 'ring-toss', description: 'ลูกควายพุ่งตัวโยนห่วงสีเงินเข้าเป้าในงานวัด สนุกกับจังหวะที่กีบปล่อยห่วง', flavor: 'เล็งให้ดี แล้วกล้าปล่อยในจังหวะของเรา' },
+    ],
+  },
 });
 
 function makeRareCard(animal, color, variant = 1) {
@@ -159,12 +177,12 @@ const PRINTED = Object.freeze({
       species, color, variant: index + 1,
       art: `/assets/cards/common/${species.replaceAll('_', '-')}-${color}-${variant}.webp`,
     })))),
-  /* Original painted scenes keep their ids; Pig adds two reviewed scenes per colour. */
+  /* Original painted scenes keep their ids; Pig and Buffalo add two reviewed scenes per colour. */
   rare: ['orange_cat', 'white_pom', 'white_cat']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({ species, color, variant: 1, scene: true })))
-    .concat(TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
-      species: 'pig', color, variant, scene: true,
-    })))),
+    .concat(['pig', 'buffalo'].flatMap(species => TEAMBOOK_CARD_COLORS.flatMap(color => [1, 2].map(variant => ({
+      species, color, variant, scene: true,
+    }))))),
   /* All reviewed Epic cat/Pom artworks are present in the TeamBook app. */
   epic: ['orange_cat', 'white_cat', 'white_pom']
     .flatMap(species => TEAMBOOK_CARD_COLORS.map(color => ({
