@@ -2,11 +2,15 @@
    Canon: 1..11 people, default 5. PET never consumes a people slot.
    Board renders only real people + PET + one quiet open-slot card. */
 
+import { cardById } from './cards.js';
+import { speciesById } from './avatars.js';
+
 const MIN = 1;
 const MAX = 11;
 const DEFAULT = 5;
 const $ = id => document.getElementById(id);
 const clamp = value => Math.min(MAX, Math.max(MIN, Math.floor(Number(value || DEFAULT)) || DEFAULT));
+const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[char]));
 
 function installStyle() {
   if ($('tb-member-capacity-v14-style')) return;
@@ -57,8 +61,6 @@ function installCreateStepper() {
   }));
   sync();
 
-  /* create-party-v2 is old code and should not own another visible UI layer.
-     Inject only the selected capacity into its outgoing create payload. */
   if (!globalThis.__teambookCapacityFetchWrapped) {
     globalThis.__teambookCapacityFetchWrapped = true;
     const previousFetch = globalThis.fetch.bind(globalThis);
@@ -91,6 +93,57 @@ function currentCode() {
   return /^\d{5}$/.test(code) ? code : '';
 }
 
+function cachedParty(code) {
+  try {
+    const list = JSON.parse(localStorage.getItem('teambook_books_v1') || '[]');
+    return Array.isArray(list) ? list.find(book => book?.code === code) || null : null;
+  } catch { return null; }
+}
+
+function ictDayKey(value = Date.now()) {
+  const date = new Date(value);
+  return new Date(date.getTime() + 7 * 3600000).toISOString().slice(0, 10);
+}
+
+function memberPortrait(member) {
+  const card = cardById(String(member?.avatar || '').toUpperCase());
+  if (card) return { art: card.art || card.imageFull || card.image || '', color: card.color || member.avatarColor || 'green', isCard:true };
+  const species = speciesById(member?.avatar) || speciesById('orange_cat');
+  return { art: species?.art || '', color: member?.avatarColor || 'green', isCard:false };
+}
+
+function renderExtraMembers(seats, party) {
+  const members = Array.isArray(party?.members) ? party.members : [];
+  const extras = members.slice(5, MAX);
+  const signature = extras.map(member => `${member.userId}|${member.alias}|${member.avatar}|${member.avatarColor}`).join('~');
+  if (seats.dataset.tbCapacityExtras === signature) return;
+
+  seats.querySelectorAll(':scope > .tb-capacity-extra-member').forEach(node => node.remove());
+  const petNode = [...seats.children].find(node => node.classList.contains('pet-card'))
+    || [...seats.children].findLast?.(node => !node.classList.contains('tb-open-seat'))
+    || null;
+  const today = ictDayKey();
+  const done = new Set((party?.log || []).filter(post =>
+    post?.kind === 'commit' && !post?.retracted && ictDayKey(post.sentAt) === today
+  ).map(post => post.userId));
+
+  extras.forEach((member, offset) => {
+    const portrait = memberPortrait(member);
+    const node = document.createElement('div');
+    node.className = 'seat xty-card member tb-capacity-extra-member';
+    node.dataset.userId = member.userId || '';
+    const committed = done.has(member.userId);
+    node.innerHTML = `
+      <span class="slot-label">MEMBER ${offset + 6}</span>
+      <div class="av member-avatar${portrait.isCard ? ' is-card' : ''}" data-color="${esc(portrait.color)}">${portrait.art ? `<img src="${esc(portrait.art)}" alt="" loading="lazy" decoding="async">` : ''}</div>
+      <div class="al" title="${esc(member.alias)}">${esc(member.alias)}</div>
+      <div class="rl">สมาชิก</div>
+      <div class="commit-state" aria-label="${committed ? 'ลงชื่อแล้ว' : 'ยังไม่ได้ลงชื่อ'}">${committed ? '✓' : '○'}</div>`;
+    seats.insertBefore(node, petNode);
+  });
+  seats.dataset.tbCapacityExtras = signature;
+}
+
 async function installBookOpenSeat() {
   if (!/^\/p\/?$/.test(location.pathname)) return;
   const code = currentCode();
@@ -102,16 +155,16 @@ async function installBookOpenSeat() {
 
   const paint = () => {
     scheduled = false;
+    const party = cachedParty(code);
+    if (party) renderExtraMembers(seats, party);
+
     const limit = clamp(capacity.memberLimit);
-    const count = Math.max(0, Number(capacity.memberCount || 0));
+    const count = Math.max(0, Number(capacity.memberCount || party?.members?.length || 0));
     const remaining = Math.max(0, limit - count);
     const desired = remaining > 0 ? `สมุดเปิดรับอีก ${remaining} คน` : '';
     const legacyOpen = [...seats.querySelectorAll(':scope > .seat.open:not(.pet-card):not(.tb-open-seat)')];
     let open = seats.querySelector(':scope > .tb-open-seat');
 
-    /* The old page hard-coded four human vacancy cards. Remove those once.
-       Never remove/re-add our own vacancy card when its state is already right;
-       that avoids MutationObserver repaint loops and card flicker. */
     if (legacyOpen.length) legacyOpen.forEach(node => node.remove());
 
     if (remaining > 0) {
@@ -141,10 +194,14 @@ async function installBookOpenSeat() {
 
   requestPaint();
   const observer = new MutationObserver(records => {
-    /* Ignore mutations that only touch the one canonical vacancy card. */
     const meaningful = records.some(record => [...record.addedNodes, ...record.removedNodes]
-      .some(node => node.nodeType === 1 && !node.classList?.contains('tb-open-seat')));
-    if (meaningful) requestPaint();
+      .some(node => node.nodeType === 1
+        && !node.classList?.contains('tb-open-seat')
+        && !node.classList?.contains('tb-capacity-extra-member')));
+    if (meaningful) {
+      seats.dataset.tbCapacityExtras = '';
+      requestPaint();
+    }
   });
   observer.observe(seats, { childList:true });
 }
@@ -187,7 +244,6 @@ async function syncVisibleBookCounts() {
 installCreateStepper();
 installBookOpenSeat();
 if (location.pathname === '/' || /^\/public\/?$/.test(location.pathname)) {
-  /* Renderers are async, but bounded retries avoid another whole-page observer. */
   [0, 180, 650].forEach(delay => setTimeout(syncVisibleBookCounts, delay));
   window.addEventListener('pageshow', () => syncVisibleBookCounts(), { passive:true });
 }
