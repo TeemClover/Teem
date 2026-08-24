@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-card-fill-v18';
+const CAPACITY_REV = '20260824-card-visual-v19';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -91,7 +91,10 @@ async function boot() {
   globalThis.__teambookV15Runtime = true;
 
   await importOnce('./header-brand-th.js');
+  /* Historical geometry may still be referenced by cached pages, but the new
+     visual owner below removes those styles and is the final paint authority. */
   await importOnce(`./card-geometry-v16.js?v=${CAPACITY_REV}`);
+  await importOnce(`./card-visual-final-v19.js?v=${CAPACITY_REV}`);
 
   if (PATH === '/') {
     await importMany([
