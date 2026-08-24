@@ -16,7 +16,7 @@
 
 const PATH = location.pathname;
 const loaded = new Set();
-const CAPACITY_REV = '20260824-card-geometry-v17-filter1';
+const CAPACITY_REV = '20260824-card-fill-v18';
 
 globalThis.__TEAMBOOK_VERSION__ = '1.5';
 document.documentElement.dataset.teambookVersion = '1.5';
@@ -91,9 +91,6 @@ async function boot() {
   globalThis.__teambookV15Runtime = true;
 
   await importOnce('./header-brand-th.js');
-  /* 63:88 is product geometry, not a page feature. Load it everywhere,
-     including Profile, Collection and Public, and retire the old Home-only
-     geometry patch so two frame systems can no longer fight each other. */
   await importOnce(`./card-geometry-v16.js?v=${CAPACITY_REV}`);
 
   if (PATH === '/') {
