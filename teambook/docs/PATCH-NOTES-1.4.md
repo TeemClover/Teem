@@ -1,12 +1,14 @@
 # TeamBook 1.4 — Runtime Cleanup / Repair Notes
 
-วันที่: 2026-08-23
+วันที่: 2026-08-24
 
 ## Product canon locked in 1.4
 
 - TeamBook ใช้ภาษาไทยเท่านั้นในรุ่นนี้
 - ไม่มี Language Module, runtime translation, language switcher, `?lang=`, DOM text replacement หรือ language state ใน localStorage
-- สมุดเริ่มได้ตั้งแต่ **1 คน** และรับได้สูงสุด **5 คน**
+- สมุดเริ่มได้ตั้งแต่ **1 คน**
+- เจ้าของสมุดกำหนดความจุของแต่ละเล่มได้ **1–11 คน** ค่าเริ่มต้นและค่าที่ TeamBook แนะนำคือ **5 คน**
+- PET / เพื่อนร่วมทาง **ไม่กินช่องคน**
 - เจ้าของสมุดคนเดียวถือว่าเป็นสมุดที่เปิดใช้งานได้สมบูรณ์แล้ว ไม่ต้องรอสมาชิกคนที่ 2
 - Public discovery เป็นส่วนหนึ่งของ Home และต้องเปิดให้คนใหม่เห็นได้โดยค่าเริ่มต้น
 - ตัวละครของสมาชิกในแต่ละสมุดใช้ identity ของสมุดเล่มนั้น ไม่ใช่ profile Starter กลาง
@@ -24,16 +26,18 @@ TeamBook 1.4 ต้องมี product bootstrap เพียงตัวเด
 
 `HTML -> bootstrap A -> runtime B -> compatibility patch C -> final patch D`
 
-และห้ามให้ utility module เช่น `card-ui.js` แอบ boot route features
+และห้ามให้ utility module เช่น `card-ui.js`, `avatars.js` แอบ boot route features
+
+`avatars.js` เป็น pure data/presentation module และห้าม import bootstrap เป็น side effect
 
 ### Route ownership
 
 Bootstrap เป็นผู้เลือก module ตาม route เท่านั้น
 
 - `/` — Home / onboarding / Public / owned-book presentation
-- `/p/` — notebook gameplay / log / cards / character editor
+- `/p/` — notebook gameplay / log / cards / character editor / member-capacity board
 - `/public/p/` — public detail / member identity / public Seen
-- `/new/` — create book
+- `/new/` — create book / member-capacity selection
 - `/collection/` — Collection + finished-book memory
 
 Feature module ที่ไม่เกี่ยวกับ route ห้ามโหลด
@@ -73,6 +77,7 @@ Visible Public lane ใช้ owner เดียวคือ `home-public-v14.js
 - legacy inline Public loader ใน `index.html` ห้ามออก network และห้ามเป็น visible renderer
 - ห้ามใช้ MutationObserver เพื่อคอยเขียนทับ Public renderer เก่า
 - open books มาก่อน full books แต่ full books ยังแสดงเป็น social proof ได้
+- count ของสมุดต้องใช้ `memberCount/memberLimit` ของเล่มนั้น เช่น `2/7`, `6/11`, `1/1`
 
 ## Card / image rendering
 
@@ -133,20 +138,44 @@ Observer ต้องมี owner ชัดและ scope แคบที่ส
 
 ถ้ากลับไป Starter จึงเลือก frame color ได้อีกครั้ง
 
-## Party size canon
+## Party size / capacity canon
 
-**1–5 คน**
+**คนในสมุด = 1–11 คนต่อเล่ม · default 5**
+
+เจ้าของเลือก `memberLimit` ตอนสร้างด้วย stepper `− 5 คน +` ช่วงค่าคือ 1–11 และ 5 เป็นคำแนะนำ ไม่ใช่ข้อจำกัดของระบบ
 
 Server create flow สร้าง owner เป็นสมาชิกคนแรกทันที ดังนั้น solo book เป็น valid state ตั้งแต่สร้างสำเร็จ
+
+`memberLimit` เป็น property ของ **สมุดแต่ละเล่ม** และถูก seal ไว้ใน `PARTY_CREATED.data_json.memberLimit`. สมุดเก่าที่ไม่มี field นี้ใช้ legacy default = 5
+
+Join API ต้องอ่าน `memberLimit` ของเล่มนั้นและบังคับ capacity ฝั่ง server เสมอ ห้ามเชื่อ client count
+
+### Board rendering
+
+Board ไม่แสดง placeholder ทุกที่นั่งที่ยังไม่มีคน เพราะทำให้สมุดเล็กดูร้าง
+
+Canonical board คือ:
+
+1. สมาชิกจริงทั้งหมด ตามจำนวนที่อยู่ในสมุดจริง สูงสุด 11 คน
+2. PET / เพื่อนร่วมทาง 1 ใบ โดย PET ไม่กิน `memberLimit`
+3. ถ้ายังไม่เต็ม แสดง vacancy card **เพียง 1 ใบ** ใกล้ที่สุด ข้อความ `สมุดเปิดรับอีก X คน`
+4. ถ้าเต็ม ไม่แสดง vacancy card
+
+ตัวอย่าง: limit 11, มี 2 คน → แสดงคน 2 ใบ + PET + vacancy 1 ใบ `สมุดเปิดรับอีก 9 คน`; ห้าม render ช่องว่างอีก 8 ใบ
+
+Grid เดิมใช้ 3 ใบต่อแถวและปล่อยให้แถวสุดท้ายว่างตามธรรมชาติ
 
 ห้ามเขียน logic ใหม่ที่:
 
 - บังคับต้องมี 2 คนก่อนเริ่ม
-- ซ่อนสมุด 1/5
-- เรียก 1/5 ว่า incomplete party
+- hardcode ว่าสมุดเต็มที่ 5 คน
+- render สมาชิกจริงได้แค่ 5 คน
+- render slot ว่างให้ครบ 11 ช่อง
+- นับ PET เป็นสมาชิก
+- เรียก solo book ว่า incomplete party
 - ปิดการลงชื่อเพราะยังไม่มีเพื่อน
 
-ถ้าเจอ constant/copy เก่าที่ระบุ min 2 หรือ `2–5` ให้ถือว่า stale และแก้เป็น 1–5 หรือ copy ที่ไม่กำหนดขั้นต่ำตามบริบท
+ถ้าเจอ constant/copy เก่าที่ระบุ min 2, max 5 หรือ `2–5` ให้ถือว่า stale เมื่อมันหมายถึงความจุของสมุด และแก้ให้ใช้ per-book `memberLimit`
 
 ## Thai-only canon
 
@@ -168,6 +197,7 @@ Server create flow สร้าง owner เป็นสมาชิกคนแ
 6. เช็ก image ว่าถูก request/render ซ้ำหรือถูกบังคับ eager โดย layer อื่นหรือไม่
 7. แก้ที่ owner หลัก ไม่เพิ่ม “final/fix/final2” layer มาทับ
 8. เมื่อเลิกใช้ patch ให้ถอด import หรือ delete ไฟล์ ไม่ปล่อยให้ execute แล้วใช้ CSS/DOM ใหม่ปิดทับ
+9. ถ้าแก้จำนวนสมาชิก ให้ตรวจ create payload → PARTY_CREATED.memberLimit → join guard → Home/Public count → `/p/` board ให้ครบเส้นทาง
 
 ## Definition of Done สำหรับ 1.4
 
@@ -178,4 +208,8 @@ Server create flow สร้าง owner เป็นสมาชิกคนแ
 - collapsed character editor ไม่โหลด recent cards
 - refresh ไม่สร้าง visual layer ซ้อนกันหลาย generation
 - ไม่มี runtime language translation
-- solo book 1/5 ใช้งานได้ตามปกติ
+- solo book ใช้งานได้ตามปกติ
+- สมุดใหม่เลือกได้ 1–11 คน default 5
+- คนที่ 6–11 ต้องมองเห็นบน Board จริง
+- Board มี vacancy card สูงสุด 1 ใบ และ PET ไม่กินช่องคน
+- Join ปฏิเสธเมื่อ `memberCount >= memberLimit` ของเล่มนั้นจริง
